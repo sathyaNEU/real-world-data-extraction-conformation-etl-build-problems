@@ -5,11 +5,11 @@
 
 ## 1. Final Recommendation
 
-**Do not adopt the 2026-27 summer bore plan as drafted: it fails the drought test at PB3, whose lowest pumping water level reaches 35.5 m below measuring point in February and in March against a minimum operating level of 35.0 m.** PB9's October 2026 constant-rate test drew PB3 down by 3.0 m at the plan's 4.40 ML/d. Not the plan holding: each bore's own drought curve leaves out PB9's draw on its neighbours. Not PB4 failing: PB4 sits nearer PB9 on the map, but the test moved it 0.5 m.
+**Do not adopt the 2026-27 summer bore plan as drafted: it fails the drought test at PB3, whose lowest pumping water level reaches 35.5 m below measuring point in February and in March against a minimum operating level of 35.0 m.** PB9's October 2026 constant-rate test drew PB3 down by 3.0 m (to the nearest half metre) at the plan's 4.40 ML/d. Not the plan holding: each bore's own drought curve leaves out PB9's draw on its neighbours. Not PB4 failing: PB4 sits nearer PB9 on the map, but the test moved it 0.5 m.
 
 ## 2. Critical Components
 
-1. At its planned 4.40 ML/d PB9 lowers PB3 by **3.0 m** and PB4 by **0.5 m**, the dip its 7 to 14 October 2026 constant-rate test left in their daily levels.
+1. At its planned 4.40 ML/d PB9 lowers PB3 by **3.0 m** and PB4 by **0.5 m** (to the nearest half metre), the dip its 7 to 14 October 2026 constant-rate test left in their daily levels.
 2. PB3's lowest level is **35.5 m** below measuring point in February and **35.5 m** in March, against its minimum operating level of 35.0 m.
 3. Every other bore, PB9 included, stays above its minimum operating level in every month.
 
@@ -41,13 +41,13 @@
 3. PB9 holds in every month.
 4. Pump electricity per megalitre the permit meters measured, whole kWh/ML:
    - PB1: Jul-Sep 2025 294, Oct-Dec 2025 293, Jan-Mar 2026 293, Apr-Jun 2026 296
-   - PB2: Jul-Sep 2025 302, Oct-Dec 2025 301, Jan-Mar 2026 300, Apr-Jun 2026 303
+   - PB2: Jul-Sep 2025 301, Oct-Dec 2025 299, Jan-Mar 2026 299, Apr-Jun 2026 302
    - PB3: Jul-Sep 2025 303, Oct-Dec 2025 305, Jan-Mar 2026 310, Apr-Jun 2026 316
-   - PB4: Jul-Sep 2025 337, Oct-Dec 2025 335, Jan-Mar 2026 332, Apr-Jun 2026 329
-   - PB5: Jul-Sep 2025 267, Oct-Dec 2025 265, Jan-Mar 2026 264, Apr-Jun 2026 273
-   - PB6: Jul-Sep 2025 258, Oct-Dec 2025 253, Jan-Mar 2026 260, Apr-Jun 2026 254
-   - PB7: Jul-Sep 2025 261, Oct-Dec 2025 263, Jan-Mar 2026 268, Apr-Jun 2026 258
-   - PB8: Jul-Sep 2025 343, Oct-Dec 2025 339, Jan-Mar 2026 333, Apr-Jun 2026 345
+   - PB4: Jul-Sep 2025 336, Oct-Dec 2025 334, Jan-Mar 2026 331, Apr-Jun 2026 328
+   - PB5: Jul-Sep 2025 263, Oct-Dec 2025 262, Jan-Mar 2026 262, Apr-Jun 2026 264
+   - PB6: Jul-Sep 2025 254, Oct-Dec 2025 252, Jan-Mar 2026 252, Apr-Jun 2026 255
+   - PB7: Jul-Sep 2025 268, Oct-Dec 2025 267, Jan-Mar 2026 267, Apr-Jun 2026 268
+   - PB8: Jul-Sep 2025 342, Oct-Dec 2025 341, Jan-Mar 2026 341, Apr-Jun 2026 342
 5. Volume by bore as the permit meters measured it, ML to one decimal:
    - PB1: Jul-Sep 2025 205.1, Oct-Dec 2025 323.1, Jan-Mar 2026 283.0, Apr-Jun 2026 140.0
    - PB2: Jul-Sep 2025 155.5, Oct-Dec 2025 226.4, Jan-Mar 2026 229.6, Apr-Jun 2026 124.2

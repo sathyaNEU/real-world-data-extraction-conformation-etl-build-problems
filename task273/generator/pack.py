@@ -50,7 +50,10 @@ def daily_rows(w):
     swap6 = pd.Timestamp("2023-03-08")
     for d in w["days"]:
         for i in W.IDS:
-            if rng.random() < 0.011:                    # telemetry gap: no row for the bore that day
+            gap = rng.random() < 0.011
+            # the radio links to the SB-3 and Paddock 14 headworks were replaced in June 2025 and have dropped no
+            # day since; elsewhere a telemetry gap leaves no row for the bore that day
+            if gap and not (i in ("PB5", "PB6", "PB7", "PB8") and d >= pd.Timestamp("2025-06-01")):
                 continue
             q = takes.at[d, i]
             lev = bt.at[i, "mp_rl"] - levels.at[d, i]

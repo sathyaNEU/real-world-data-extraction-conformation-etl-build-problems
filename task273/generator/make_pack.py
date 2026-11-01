@@ -74,6 +74,27 @@ def tune_plan(w, plan):
     return plan
 
 
+def tune_load(w, utc, local, frac, target, path):
+    """Each pump's load factor is set within its maker's band (0.86 to 0.97) in 0.002 steps, one value per
+    switchboard, so every electricity-per-ML figure sits at least 0.15 kWh/ML inside its whole-number bin."""
+    import analysis as A
+    PK.write_icp(w, utc, local, PK.pump_energy(w, utc, frac), path)
+    boards = [["PB1"], ["PB2"], ["PB3"], ["PB4"], ["PB5", "PB6"], ["PB7", "PB8"]]
+    P = A.Pack(target)
+    meters = A.ask_meters(P)
+    for b in boards:
+        base = PK.LOAD[b[0]]
+        for k in range(60):
+            step = (k // 2 + 1) * 0.002 * (1 if k % 2 == 0 else -1) if k else 0.0
+            for i in b:
+                PK.LOAD[i] = round(base + step, 3)
+            PK.write_icp(w, utc, local, PK.pump_energy(w, utc, frac), path)
+            e = A.ask_energy(P, meters=meters)
+            if all(abs((e[(i, q)] % 1) - 0.5) >= 0.15 for i in b for q in range(1, 5)):
+                break
+    return PK.pump_energy(w, utc, frac)
+
+
 def build(target, plan=None, w=None):
     os.makedirs(target, exist_ok=True)
     for f in os.listdir(target):
@@ -91,9 +112,9 @@ def build(target, plan=None, w=None):
     D.permit(f("permit"))
     utc, local, frac = PK.pump_halfhours(w)
     n["telemetry"], meter_truth, q_utc = PK.write_telemetry(w, utc, frac, f("telemetry"))
-    energy = PK.pump_energy(w, utc, frac)
-    n["icp"] = PK.write_icp(w, utc, local, energy, f("icp"))
     PK.write_icp_register(f("icp_reg"))
+    energy = tune_load(w, utc, local, frac, target, f("icp"))
+    n["icp"] = PK.write_icp(w, utc, local, energy, f("icp"))
     n["nitrate"] = PK.write_nitrate(f("nitrate"))
     n["rain"] = PK.write_rain(w, f("rain"))
     t = dt.datetime(*STAMP).timestamp()

@@ -22,9 +22,9 @@
   "nearest": "0.06 task464 v1"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "round 1 DETERMINISTIC with SOLUTION_WRONG on supplementary 4",
+  "disposition": "FIX_NOW",
+  "report": "task273/determinism_check_report.md"
  },
  "returned": [
   {
@@ -46,7 +46,7 @@
    "commit": "DRAWN (task273) architecture 5"
   }
  ],
- "resume": "Stage 4: the determinism judge thread is running on /tmp/determinism-check-task273-r1 (brief judge_brief.md, verdict to verdict.md); collect it, fix every finding in the generator in one pass, re-run the free gates, then ship (target.zip d624d9e5 at pause).",
+ "resume": "Stage 4: round 1's FIX_NOW (the shared-board electricity on days with no SCADA row) repaired in the generator and every free gate green on target.zip 0f504ad7; the re-judge runs on /tmp/determinism-check-task273-r2 (verdict.md); on APPROVE, ship.",
  "approved": null,
  "delivered": null,
  "portal": null,

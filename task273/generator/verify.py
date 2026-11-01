@@ -141,8 +141,8 @@ def main():
     # against the 7 days before and after
     a9 = {}
     full = [d for d in cr_days if q9[d] > 4.3]
-    near = [d for d in sorted(mb) if (full[0] - timedelta(days=8)) <= d < full[0] - timedelta(days=1)
-            or full[-1] + timedelta(days=1) < d <= full[-1] + timedelta(days=8)]
+    near = [d for d in sorted(mb) if full[0] - timedelta(days=10) <= d <= full[-1] + timedelta(days=10)
+            and q9.get(d, 0.0) == 0.0]
     for b in BORES:
         def r2(d):
             return resid(b, d) - coef[b][0] - sum(coef[b][1 + k] * Q[c][d] for k, c in enumerate(BORES))

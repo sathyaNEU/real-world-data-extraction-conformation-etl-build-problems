@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, golden, method, record, decisive, register, footprint, sentence, family, reflex, correction, reading, programme, shipped, forecast, reaches, recorded, reader, screen, driver, nothing, another, second, production, published
+Stump terms swept: architecture, golden, record, method, register, decisive, footprint, sentence, family, reflex, correction, recorded, reader, reading, programme, production, nothing, shipped, forecast, reaches, screen, driver, records, logger, estimand
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `SWS-03_site_water_supply_security_standard.pdf`: carries 17 of 21 distinctive words of the committed call: 'Do not adopt the 2026-27 summer bore plan as drafted: it fails the drought test at PB3, whose lowest pumping water level'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `SWS-03_site_water_supply_security_standard.pdf`: 4 of 25 stump-paragraph terms appear (record, register, recorded, production); read whether the document names the move
+- **REVIEW** `SWS-03_site_water_supply_security_standard.pdf`: 6 of 25 stump-paragraph terms appear (record, register, recorded, production, records, logger); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)
 - **REVIEW** `MRC_water_permit_AUTH-117204.pdf`: Schedule 1 Bore Maximum rate (L/s) Permit meter Bore 1 48 WM-30455 Bore 2 42 WM-30456 Bore 3 46 WM-31690 Bore 4 45 WM-31702 Bore 5 44 WM-33119 Bore 6 38 WM-33120 Bore 7 44 WM-35873 Bore 8 44 WM-35874 Bore 9 53 to be advised Advice note: meters are identified b
@@ -31,6 +31,7 @@ Stump terms swept: architecture, golden, method, record, decisive, register, foo
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

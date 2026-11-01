@@ -156,6 +156,11 @@ def main():
     gh = A.ask_energy(P, split="hours", meters=g)
     ok("Ask A: the run-hours split misses all 16 shared-board figures",
        sum(round(ge[(i, q)]) != round(gh[(i, q)]) for i in ("PB5", "PB6", "PB7", "PB8") for q in range(1, 5)) == 16)
+    ok("Ask A: every electricity figure at least 0.15 kWh/ML inside its whole-number bin",
+       min(abs((v % 1) - 0.5) for v in ge.values()) >= 0.15)
+    wy = P.daily[(P.daily["date"] >= "2025-07-01") & (P.daily["date"] <= "2026-06-30")]
+    ok("Ask A: every shared-board pump has a SCADA row on every day of the year to 30 June 2026",
+       all(wy[wy["bore"] == b]["date"].nunique() == 365 for b in ("PB5", "PB6", "PB7", "PB8")))
     gm = A.ask_energy(P, multiplier=False, meters=g)
     ok("Ask A: leaving the CT multiplier off moves PB2 in the quarters after 11 February",
        round(gm[("PB2", 3)]) != round(ge[("PB2", 3)]) and round(gm[("PB2", 4)]) != round(ge[("PB2", 4)]))
@@ -243,8 +248,8 @@ def _levels_shift_mb(P, s):
 def _dip_agrees(P, a9):
     df = P.frame(True)
     full = df[df["PB9"] > 4.3].index
-    near = df[((df.index >= full[0] - pd.Timedelta(days=8)) & (df.index < full[0] - pd.Timedelta(days=1)))
-              | ((df.index > full[-1] + pd.Timedelta(days=1)) & (df.index <= full[-1] + pd.Timedelta(days=8)))].index
+    near = df[(df["PB9"] == 0) & (df.index >= full[0] - pd.Timedelta(days=10))
+              & (df.index <= full[-1] + pd.Timedelta(days=10))].index
     coef = A.fit_full(P, False)
     out = {}
     for i in ("PB3", "PB4"):

@@ -23,13 +23,13 @@ def main():
     a("## 1. Final Recommendation\n")
     a("**Do not adopt the 2026-27 summer bore plan as drafted: it fails the drought test at PB3, whose lowest pumping "
       "water level reaches %.1f m below measuring point in February and in March against a minimum operating level "
-      "of %.1f m.** PB9's October 2026 constant-rate test drew PB3 down by %.1f m at the plan's %.2f ML/d. Not the "
+      "of %.1f m.** PB9's October 2026 constant-rate test drew PB3 down by %.1f m (to the nearest half metre) at the plan's %.2f ML/d. Not the "
       "plan holding: each bore's own drought curve leaves out PB9's draw on its neighbours. Not PB4 failing: PB4 "
       "sits nearer PB9 on the map, but the test moved it %.1f m."
       % (lv["PB3 February"], mol["PB3"], dd["PB3"], f["pb9_take_ml_d"], dd["PB4"]))
     a("")
     a("## 2. Critical Components\n")
-    a("1. At its planned %.2f ML/d PB9 lowers PB3 by **%.1f m** and PB4 by **%.1f m**, the dip its 7 to 14 October "
+    a("1. At its planned %.2f ML/d PB9 lowers PB3 by **%.1f m** and PB4 by **%.1f m** (to the nearest half metre), the dip its 7 to 14 October "
       "2026 constant-rate test left in their daily levels." % (f["pb9_take_ml_d"], dd["PB3"], dd["PB4"]))
     a("2. PB3's lowest level is **%.1f m** below measuring point in February and **%.1f m** in March, against its "
       "minimum operating level of %.1f m." % (lv["PB3 February"], lv["PB3 March"], mol["PB3"]))
