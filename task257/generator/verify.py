@@ -1,7 +1,8 @@
 """Independent verifier for task257: reads only target/ and golden/, shares no code with the generator, and
-recomputes the call (the number of dimensions on the items' latent correlations and each item's placement) and both
-asks (the district counts) by its own route: scipy's bivariate normal for the latent correlations, its own random
-data for the retention test, principal-axis factoring with varimax for the placements.
+recomputes the call (the number of dimensions on the items' latent correlations and each item's placement) and the
+department ask (respondents, response rate and stores showing results for each store department) by its own route:
+scipy's bivariate normal for the latent correlations, its own random data for the retention test, principal-axis
+factoring with varimax for the placements, and the HR report's September codes read through its 1 October rows.
 
     python3 task257/generator/verify.py"""
 from __future__ import annotations
@@ -64,16 +65,17 @@ def tetra(table):
 def main(target=None, golden=None):
     target = target or os.path.join(TASK, "target")
     golden = golden or os.path.join(TASK, "golden")
-    # codebook
-    items = sheet_rows(find(target, "kestrava_brackenmere_2026_codebook"), "Items")
-    items = [r for r in items if r["Item"] != "ENPS"]
-    order = [r["Item"] for r in items]
+    # the questionnaire's question rows: English number, French number, type
+    import re
+    from pypdf import PdfReader
+    text = " ".join(p.extract_text() for p in PdfReader(find(target, "engagement_survey_2026_questionnaire")).pages)
+    rows_q = re.findall(r"\b(Q\d\d)\s+(F\d\d)\s+KL-\d{4}\s+(Statement|Yes or no)\b", text)
+    order = [q for q, _, _ in rows_q]
     code = {}
-    for r in items:
-        code[r["Item"]] = r["Item"]
-        code[r["French code"]] = r["Item"]
-    scale = {r["Item"]: r["Scale"] for r in items}
-    rev = {r["Item"]: r["Reversed"] == "yes" for r in items}
+    for q, f, _ in rows_q:
+        code[q] = q
+        code[f] = q
+    scale = {q: ("agree5" if t == "Statement" else "yesno") for q, _, t in rows_q}
     # submissions, tokens and people
     subs = read_csv(find(target, "kestrava_brackenmere_2026_submissions"))
     test = {s["token"] for s in subs if s["status"] == "test"}
@@ -92,16 +94,30 @@ def main(target=None, golden=None):
     tz = {int(s["site_no"]): s["time_zone"] for s in sites}
     district = {int(s["site_no"]): s["district_code"] for s in sites}
     open_day = "2026-09-14"
-    on_open, ended = {}, {}
-    for h in read_csv(find(target, "hris_assignment_history")):
-        if h["action"] == "termination":
-            ended[h["employee_id"]] = h["effective_from"]
-            continue
-        if h["effective_from"] <= open_day and (h["effective_to"] == "" or h["effective_to"] >= open_day):
-            on_open[h["employee_id"]] = int(h["site_no"])
-    for e, d in ended.items():
-        if d <= open_day:
-            on_open.pop(e, None)
+    hr = read_csv(find(target, "hris_assignment_history"))
+    stores = {int(s["site_no"]) for s in sites if s["site_type"] == "store"}
+
+    def assigned(day):
+        rows_d, ended = {}, {}
+        for h in hr:
+            if h["action"] == "termination":
+                ended[h["employee_id"]] = min(ended.get(h["employee_id"], "9999"), h["effective_from"])
+                continue
+            if h["effective_from"] <= day and (h["effective_to"] == "" or h["effective_to"] >= day):
+                rows_d[h["employee_id"]] = h
+        return {e: h for e, h in rows_d.items() if not (e in ended and ended[e] <= day)}
+    open_rows = assigned(open_day)
+    on_open = {e: int(h["site_no"]) for e, h in open_rows.items()}
+    # September store codes read through the 1 October reorganisation rows
+    sep30 = assigned("2026-09-30")
+    votes = {}
+    for h in hr:
+        if h["effective_from"] == "2026-10-01" and h["action"] == "reorganisation":
+            b = sep30.get(h["employee_id"])
+            if b is not None and b["site_no"] == h["site_no"] and int(b["site_no"]) in stores:
+                votes.setdefault(b["department_code"], {}).setdefault(h["department"], 0)
+                votes[b["department_code"]][h["department"]] += 1
+    september = {c: max(v, key=v.get) for c, v in votes.items()}
     env = sheet_rows(find(target, "paper_returns"), None, header_row=5)
     sealed = {(int(r["Site"]), r["Keyed"].date().isoformat()): r["Sealed"].date() for r in env}
 
@@ -123,16 +139,32 @@ def main(target=None, golden=None):
             ok = site is not None and r["answered_at"] <= close_of(site)
         if ok:
             given.setdefault(e, {})[code[r["item"]]] = int(r["answer"])
-    # Ask A and Ask B
-    A, B = {}, {}
-    for e, ans in given.items():
-        s = on_open.get(e)
-        d = district.get(s, "") if s is not None else ""
-        if d:
-            A[d] = A.get(d, 0) + 1
-            B[d] = B.get(d, 0) + (len(ans) == 30)
-    # the call
+    # the department ask
+    dep_resp, dep_head, team = {}, {}, {}
+    for e, h in open_rows.items():
+        if int(h["site_no"]) not in stores:
+            continue
+        d = september[h["department_code"]]
+        dep_head[d] = dep_head.get(d, 0) + 1
+        if e in given:
+            dep_resp[d] = dep_resp.get(d, 0) + 1
+            team[(h["site_no"], d)] = team.get((h["site_no"], d), 0) + 1
+    shown = {}
+    for (s, d), n in team.items():
+        shown[d] = shown.get(d, 0) + (n >= 10)
+    # negatively worded statements: a statement whose answers run against the sum of the other items
     emps = sorted(given)
+    raw = np.full((len(emps), 30), np.nan)
+    for i, e in enumerate(emps):
+        for j, c in enumerate(order):
+            a = given[e].get(c)
+            if a is None or a == 6:
+                continue
+            raw[i, j] = (a - 1) if scale[c] == "agree5" else (1 if a == 1 else 0)
+    zs = np.nan_to_num((raw - np.nanmean(raw, 0)) / np.nanstd(raw, 0))
+    rev = {c: scale[c] == "agree5" and np.corrcoef(zs[:, j], zs.sum(1) - zs[:, j])[0, 1] < 0
+           for j, c in enumerate(order)}
+    # the call
     X = np.full((len(emps), 30), np.nan)
     for i, e in enumerate(emps):
         for j, c in enumerate(order):
@@ -182,8 +214,11 @@ def main(target=None, golden=None):
         if r.get("Sub-scale"):
             gpart.setdefault(r["Sub-scale"], []).append(r["Item"])
     gpart = sorted(tuple(sorted(v)) for v in gpart.values())
-    gd = {r["Code"]: (r["Answered at least one item before the close"], r["Of them, answered all 30"])
-          for r in sheet_rows(os.path.join(golden, "engagement_subscales_2027.xlsx"), "Districts") if r.get("Code")}
+    gd = {r["Store department"]: (r["Answered at least one item before the close"], r["Response rate (%)"],
+                                  r["Stores where results can be shown"])
+          for r in sheet_rows(os.path.join(golden, "engagement_subscales_2027.xlsx"), "Departments")
+          if isinstance(r.get("Answered at least one item before the close"), int) and
+          r["Store department"] != "All store departments"}
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     fails = []
     if k != 3 or fig["call_subscales"] != 3:
@@ -194,13 +229,18 @@ def main(target=None, golden=None):
         fails.append("placements differ: %s" % part)
     if max(abs(a - b) for a, b in zip(ev[:6], fig["latent_eigen"])) > 0.01:
         fails.append("eigenvalues %s against %s" % (np.round(ev[:6], 3), fig["latent_eigen"]))
-    for d, (a, b) in gd.items():
-        if A.get(d) != a or B.get(d) != b or fig["ask_a"][d] != a or fig["ask_b"][d] != b:
-            fails.append("district %s: %s %s against golden %s %s" % (d, A.get(d), B.get(d), a, b))
+    if len(gd) != 8:
+        fails.append("golden departments: %d rows" % len(gd))
+    for d, (a, rt, sh) in gd.items():
+        mine = round(100.0 * dep_resp.get(d, 0) / dep_head[d], 1)
+        if (dep_resp.get(d) != a or abs(mine - rt) > 1e-9 or shown.get(d, 0) != sh or
+                fig["dept_respondents"][d] != a or fig["dept_stores_shown"][d] != sh):
+            fails.append("department %s: %s %s %s against golden %s %s %s" % (d, dep_resp.get(d), mine, shown.get(d),
+                                                                             a, rt, sh))
     if fails:
         raise SystemExit("verify FAILED: " + "; ".join(fails))
     print("verify: %d respondents; latent eigenvalues %s keep %d (random data 95th %.2f at the fourth); Pearson keeps "
-          "%d; placements and the 24 district figures match the golden" % (len(emps), np.round(ev[:4], 2), k, ref[3],
+          "%d; placements and the 24 department figures match the golden" % (len(emps), np.round(ev[:4], 2), k, ref[3],
                                                                             kp))
 
 

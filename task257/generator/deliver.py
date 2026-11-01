@@ -1,6 +1,7 @@
 """The golden, computed from the pack alone: who answered (and when), each respondent's answers, the latent
 (tetrachoric and polychoric) correlations of the 30 items, the dimensions that stand above random data, each item's
-sub-scale, and the coverage figures for the 12 store districts. Then the three deliverables."""
+sub-scale, and the store departments' coverage (respondents, response rate, stores where the dashboard can show the
+department). Then the three deliverables."""
 from __future__ import annotations
 
 import datetime as dt
@@ -38,14 +39,31 @@ def answer_rows(T, keep="last", tests=False):
     return resp, order
 
 
-def before_close(T, rows, paper="sealed", close="local"):
+def token_sites(T):
+    """Each token's own site: the distribution list's site for a personal link or a printed form, the kiosk's store
+    (its pre-July number read through the site directory) for a kiosk session."""
+    sites = T["sites"]
+    legacy = dict(zip(sites["legacy_site_no"].astype(int), sites["site_no"].astype(int)))
+    out = dict(zip(T["dist"]["token"], T["dist"]["site_no"].astype(int)))
+    out.update({s: legacy[int(v)] for s, v in zip(T["kiosk"]["session"], T["kiosk"]["store"])})
+    return out
+
+
+def before_close(T, rows, paper="sealed", close="local", site_from="hr"):
     """Whether each answer row was given before the survey closed at the employee's site.
     paper: 'sealed' (a printed form's answers were given before its envelope was sealed) or 'answered_at'.
     close: 'local' (23:59 local at the site), 'utc_date' (before 28 September UTC), 'eastern' (23:59 Toronto time
-    for every site) or 'links' (before Kestrava's links stopped, 06:00 UTC on 28 September)."""
+    for every site) or 'links' (before Kestrava's links stopped, 06:00 UTC on 28 September).
+    site_from: 'hr' (the HR assignment on the opening day, standard 3.4) or 'token' (the token's own site); every
+    transfer stays inside its time zone, so both give the same close."""
     sites = T["sites"].set_index("site_no")
-    opening = L.opening_site(T["hris"])
-    tz = rows["employee"].map(lambda e: sites.loc[opening[e], "time_zone"] if e in opening else "America/Toronto")
+    own = token_sites(T)
+    if site_from == "hr" and "hris" in T:
+        opening = L.opening_site(T["hris"])
+        site = [opening.get(e, own.get(t)) for e, t in zip(rows["employee"], rows["token"])]
+    else:
+        site = [own.get(t) for t in rows["token"]]
+    tz = pd.Series([sites.loc[s, "time_zone"] if s is not None else "America/Toronto" for s in site], index=rows.index)
     if close == "local":
         lim = tz.map(L.close_utc)
     else:
@@ -65,66 +83,115 @@ def before_close(T, rows, paper="sealed", close="local"):
     return ok
 
 
-def district_counts(T, paper="sealed", close="local", site="opening", people="employees", complete="union",
-                    dna="answer", pre=None):
-    """Ask A and Ask B for the 12 store districts under a handling of each device and hazard.
-    site: 'opening' (HR assignment on the opening day) or 'list' (the distribution list's site; a kiosk session's
-    own store). people: 'employees' or 'tokens' (Ask A). complete: 'union' (an employee's items across their tokens),
-    'token' (one of their tokens holds all 30) or 'last_session' (their latest token holds all 30). dna: 'answer' or
-    'missing' (does-not-apply not counted as an answer)."""
+def respondents(T, pre=None, **kw):
+    """The employees who answered at least one of the 30 items before the close (standard 3.1)."""
     if pre is None:
-        rows, order = answer_rows(T)
-        ok = before_close(T, rows, paper=paper, close=close)
+        rows, _ = answer_rows(T)
+        ok = before_close(T, rows, **kw)
     else:
         rows, ok = pre
-    if dna == "missing":
-        rows = rows.assign(key=rows["key"].where(rows["answer"] != 6))
-    r = rows[ok & rows["key"].notna()]
-    sites = T["sites"].set_index("site_no")
-    if site == "opening":
-        opening = L.opening_site(T["hris"])
-        tok_site = {t: opening.get(e) for t, e in zip(r["token"], r["employee"])}
+    return set(rows.loc[ok & rows["key"].notna(), "employee"])
+
+
+# ------------------------------------------------------------------ the store departments
+
+STORE_DEPARTMENTS = ["Grocery", "Produce", "Meat and Seafood", "Deli", "Bakery", "Front End", "Receiving",
+                     "Store Management"]
+
+
+def renumbering(hris, sites):
+    """Each store department code in force before 1 October -> the department it names, read from the 1 October
+    reorganisation: every store employee's row in force on 30 September against the same employee's 1 October row
+    at the same site. Returns (code -> department, the pairs counted)."""
+    store = set(sites.loc[sites["site_type"] == "store", "site_no"].astype(int))
+    before = L.in_force(hris, K.RENUMBER_DAY - dt.timedelta(days=1))
+    before = before[before["site_no"].astype(int).isin(store)]
+    after = hris[(hris["effective_from"] == K.RENUMBER_DAY.isoformat()) & (hris["action"] == "reorganisation")]
+    m = before.merge(after, on=["employee_id", "site_no"], suffixes=("_b", "_a"))
+    pairs = m.groupby(["department_code_b", "department_a"]).size()
+    code = {}
+    for (c, d), n in pairs.items():
+        if c not in code or n > pairs[(c, code[c])]:
+            code[c] = d
+    return code, pairs
+
+
+def opening_departments(T, mode="golden"):
+    """employee_id -> (store site, department) on the opening day, for the employees assigned to a store that day.
+    mode: 'golden' (the opening-day row's code read through the 1 October renumbering), 'named' (the department as
+    the report names it on the opening-day row), 'latest' (the employee's latest row as the report names it) or
+    'own_next' (the employee's own 1 October reorganisation row where there is one, else the opening-day name)."""
+    hris, sites = T["hris"], T["sites"]
+    store = set(sites.loc[sites["site_type"] == "store", "site_no"].astype(int))
+    h = L.in_force(hris, K.OPEN_DAY)
+    h = h[h["site_no"].astype(int).isin(store)]
+    if mode == "golden":
+        code, _ = renumbering(hris, sites)
+        dep = [code[c] for c in h["department_code"]]
+    elif mode == "named":
+        dep = list(h["department"])
+    elif mode == "latest":
+        live = hris[hris["action"] != "termination"].sort_values(["employee_id", "effective_from"])
+        last = live.groupby("employee_id")["department"].last().to_dict()
+        dep = [last[e] for e in h["employee_id"]]
     else:
-        lst = dict(zip(T["dist"]["token"], T["dist"]["site_no"]))
-        legacy = dict(zip(sites["legacy_site_no"], sites.index))
-        kio = {s: legacy[int(v)] for s, v in zip(T["kiosk"]["session"], T["kiosk"]["store"])}
-        tok_site = {t: lst.get(t, kio.get(t)) for t in r["token"].unique()}
-    tok_d = {t: (sites.loc[s, "district_code"] if s is not None else "") for t, s in tok_site.items()}
-    kset = r.groupby("token")["key"].apply(set).to_dict()
-    emp_of = dict(zip(r["token"], r["employee"]))
-    last_at = r.groupby("token")["answered_at"].max().to_dict()
-    emp = {}
-    for t in sorted(kset):
-        e = emp_of[t]
-        if e not in emp:
-            emp[e] = dict(d=tok_d[t], keys=set(), toks=[])
-        emp[e]["keys"] |= kset[t]
-        emp[e]["toks"].append(t)
-    A = {d: 0 for d, _, _ in K.DISTRICTS}
-    B = {d: 0 for d, _, _ in K.DISTRICTS}
-    if people == "tokens":
-        for t in kset:
-            if tok_d[t] in A:
-                A[tok_d[t]] += 1
-    else:
-        for v in emp.values():
-            if v["d"] in A:
-                A[v["d"]] += 1
-    for v in emp.values():
-        if v["d"] not in B:
-            continue
-        if complete == "union":
-            c = len(v["keys"]) == 30
-        elif complete == "token":
-            c = any(len(kset[t]) == 30 for t in v["toks"])
-        else:
-            c = len(kset[max(v["toks"], key=lambda t: last_at[t])]) == 30
-        if c:
-            B[v["d"]] += 1
-    return A, B
+        oct1 = hris[(hris["effective_from"] == K.RENUMBER_DAY.isoformat()) & (hris["action"] == "reorganisation")]
+        nxt = dict(zip(oct1["employee_id"], oct1["department"]))
+        dep = [nxt.get(e, d) for e, d in zip(h["employee_id"], h["department"])]
+    return {e: (int(s), d) for e, s, d in zip(h["employee_id"], h["site_no"], dep)}
+
+
+def department_figures(T, resp_set=None, mode="golden", line=10):
+    """For each store department: respondents, the response rate (per cent of the employees assigned to it on the
+    opening day, standard 4.3) and the stores where its team has the respondents the dashboard needs (4.1)."""
+    if resp_set is None:
+        resp_set = respondents(T)
+    od = opening_departments(T, mode=mode)
+    head = {d: 0 for d in STORE_DEPARTMENTS}
+    resp = {d: 0 for d in STORE_DEPARTMENTS}
+    team = {}
+    for e, (s, d) in od.items():
+        head[d] = head.get(d, 0) + 1
+        if e in resp_set:
+            resp[d] = resp.get(d, 0) + 1
+            team[(s, d)] = team.get((s, d), 0) + 1
+    shown = {d: sum(1 for (s, dd), n in team.items() if dd == d and n >= line) for d in STORE_DEPARTMENTS}
+    rate = {d: round(100.0 * resp[d] / head[d], 1) if head[d] else 0.0 for d in STORE_DEPARTMENTS}
+    rate_exact = {d: 100.0 * resp[d] / head[d] if head[d] else 0.0 for d in STORE_DEPARTMENTS}
+    return dict(resp=resp, head=head, rate=rate, rate_exact=rate_exact, shown=shown)
 
 
 # ------------------------------------------------------------------ the call
+
+def negative_statements(T):
+    """The negatively worded statements, read from the answers: the statements whose answers run against the sum of
+    every other item's (the questionnaire marks none, and section 2.3 of the standard scores them the other way)."""
+    if "neg" in T:
+        return T["neg"]
+    rows, order = answer_rows(T)
+    rows = rows[rows["key"].notna()]
+    items = T["items"].set_index("Item")
+    wide = rows.drop_duplicates(["employee", "key"], keep="last").pivot(index="employee", columns="key",
+                                                                         values="answer").reindex(columns=order)
+    X = wide.to_numpy(dtype=float).copy()
+    for j, c in enumerate(order):
+        x = X[:, j]
+        x = np.where(x == 6, np.nan, x)
+        if items.loc[c, "Scale"] == "yesno":
+            x = np.where(x == 1, 1.0, np.where(x == 2, 0.0, np.nan))
+        X[:, j] = x
+    Z = (X - np.nanmean(X, 0)) / np.nanstd(X, 0)
+    Z = np.nan_to_num(Z)
+    neg = set()
+    for j, c in enumerate(order):
+        if items.loc[c, "Scale"] != "agree5":
+            continue
+        rest = Z.sum(1) - Z[:, j]
+        if np.corrcoef(Z[:, j], rest)[0, 1] < 0:
+            neg.add(c)
+    T["neg"] = neg
+    return neg
+
 
 def call_matrix(T, paper="sealed", kiosk="employee", keep="last", tests=False, late=False, language=None,
                 complete_only=False, dna="missing", enps=False, with_index=False):
@@ -149,6 +216,7 @@ def call_matrix(T, paper="sealed", kiosk="employee", keep="last", tests=False, l
     wide = rows.sort_values("answered_at").drop_duplicates(["unit", "col"], keep="last").pivot(
         index="unit", columns="col", values="answer").reindex(columns=cols)
     items = T["items"].set_index("Item")
+    neg = negative_statements(T)
     X = wide.to_numpy(dtype=float).copy()
     Kc = []
     for j, c in enumerate(cols):
@@ -156,7 +224,7 @@ def call_matrix(T, paper="sealed", kiosk="employee", keep="last", tests=False, l
         if c == "ENPS":
             Kc.append(11)
             continue
-        scale, rev = items.loc[c, "Scale"], items.loc[c, "Reversed"] == "yes"
+        scale, rev = items.loc[c, "Scale"], c in neg
         six = x == 6
         if scale == "agree5":
             x = x - 1
@@ -239,8 +307,7 @@ def compute(target):
     loading = {order[j]: float(Lp[j, groups[j]]) for j in range(len(order))}
     Lp5 = psy.promax(psy.paf(pea["R"], pea["pa95"]))
     g5 = psy.placements(Lp5)
-    A, B = district_counts(T)
-    dnames = dict(zip(T["sites"]["district_code"], T["sites"]["district"]))
+    DF = department_figures(T, respondents(T)) if "hris" in T else None
     fig = {"call_subscales": int(k), "respondents": int(lat["n"]),
            "latent_eigen": [round(float(v), 2) for v in lat["ev"][:6]],
            "pearson_eigen": [round(float(v), 2) for v in pea["ev"][:6]],
@@ -249,12 +316,16 @@ def compute(target):
            "latent_kaiser": int(lat["kaiser"]), "latent_map": int(lat["map"]), "pearson_map": int(pea["map"]),
            "subscale_items": {nm: [c for c in order if placement[c] == nm] for nm in sorted(set(placement.values()))},
            "subscale_sizes": {nm: sum(1 for c in order if placement[c] == nm) for nm in sorted(set(placement.values()))},
-           "ask_a": {d: int(A[d]) for d in A}, "ask_b": {d: int(B[d]) for d in B},
-           "ask_a_total": int(sum(A.values())), "ask_b_total": int(sum(B.values())),
            "yes_share": {c: round(100 * float(np.nanmean(X[:, j])), 1) for j, c in enumerate(order)
                          if items.loc[c, "Scale"] == "yesno"}}
+    if DF is not None:
+        fig.update({"dept_respondents": {d: int(DF["resp"][d]) for d in STORE_DEPARTMENTS},
+                    "dept_rate": {d: DF["rate"][d] for d in STORE_DEPARTMENTS},
+                    "dept_stores_shown": {d: int(DF["shown"][d]) for d in STORE_DEPARTMENTS},
+                    "dept_headcount": {d: int(DF["head"][d]) for d in STORE_DEPARTMENTS},
+                    "dept_respondents_total": int(sum(DF["resp"].values()))})
     return dict(figures=fig, T=T, X=X, Kc=Kc, order=order, units=units, lat=lat, pea=pea, groups=groups, names=names,
-                placement=placement, loading=loading, groups5=g5, A=A, B=B, dnames=dnames)
+                placement=placement, loading=loading, groups5=g5, DF=DF)
 
 
 # ------------------------------------------------------------------ deliverables
@@ -282,19 +353,30 @@ def write_xlsx(path, res):
     ws.append([])
     ws.append(["Loadings: principal-axis factoring of the tetrachoric and polychoric correlations, three factors, "
                "promax rotation; negatively worded statements reverse-scored."])
-    wd = wb.create_sheet("Districts")
-    wd.append(["District", "Code", "Answered at least one item before the close", "Of them, answered all 30"])
+    wd = wb.create_sheet("Departments")
+    wd.append(["Store department", "Answered at least one item before the close", "Employees on 14 September",
+               "Response rate (%)", "Stores where results can be shown"])
     for c in wd[1]:
         c.font, c.fill = hdr, fill
-    for d, nm, _ in K.DISTRICTS:
-        wd.append([nm, d, res["A"][d], res["B"][d]])
-    wd.append(["All store districts", None, sum(res["A"].values()), sum(res["B"].values())])
+    DF = res["DF"]
+    for d in STORE_DEPARTMENTS:
+        wd.append([d, DF["resp"][d], DF["head"][d], DF["rate"][d], DF["shown"][d]])
+        for col in (2, 3):
+            wd.cell(row=wd.max_row, column=col).number_format = "#,##0"
+        wd.cell(row=wd.max_row, column=4).number_format = "0.0"
+    tr, th = sum(DF["resp"].values()), sum(DF["head"].values())
+    wd.append(["All store departments", tr, th, round(100.0 * tr / th, 1), sum(DF["shown"].values())])
+    for col in (2, 3):
+        wd.cell(row=wd.max_row, column=col).number_format = "#,##0"
+    wd.cell(row=wd.max_row, column=4).number_format = "0.0"
     wd.cell(row=wd.max_row, column=1).font = hdr
-    for col, w in zip("ABCD", (26, 7, 42, 26)):
+    for col, w in zip("ABCDE", (24, 40, 25, 17, 31)):
         wd.column_dimensions[col].width = w
+    wd.freeze_panes = "B2"
     wd.append([])
-    wd.append(["Employees are counted once, under the district of the store they were assigned to on 14 September "
-               "2026."])
+    wd.append(["Each employee counted once, under the store and department held in HR on 14 September 2026; a store "
+               "shows a department's results when its team there has 10 or more respondents, so the last column's "
+               "total counts department teams."])
     wv = wb.create_sheet("Dimensions")
     wv.append(["Dimension", "Eigenvalue", "Random data, 95th percentile", "Kept"])
     for c in wv[1]:
@@ -317,8 +399,13 @@ def write_xlsx(path, res):
                          "pairwise; negatively worded statements reversed; does-not-apply left out."),
         ("Dimensions kept", "Eigenvalues above the 95th percentile of random normal data of the same size (%d "
                             "samples); MAP and eigenvalues above one agree." % PA_REPS),
-        ("Districts", "An employee counts under the district of the store held in HR on 14 September 2026 "
-                      "(reporting standard 3.4). Printed forms count by the envelope's sealed date."),
+        ("Departments", "An employee counts under the store and department held in HR on 14 September 2026 "
+                        "(reporting standard 3.4). The HR report names every row's department code as the code is "
+                        "used on its run date, and store departments were renumbered on 1 October, so a code in "
+                        "force on 14 September is read through the 1 October reorganisation rows, where each such "
+                        "code's employees all pass to one new code. Response rate: respondents over the employees "
+                        "assigned on 14 September (4.3). Results are shown for a team of 10 or more respondents "
+                        "(4.1). Printed forms count by the envelope's sealed date."),
         ("Prepared", "People Analytics, 12 November 2026."),
     ]
     for k_, v_ in notes:
@@ -377,8 +464,10 @@ def write_note(path, res, names_files):
     ys = f["yes_share"]
     tools = [c for c in groups["Resources"] if items.loc[c, "Scale"] == "yesno" and ys[c] > 80]
     growth = [c for c in groups["Manager and growth"] if items.loc[c, "Scale"] == "yesno" and ys[c] < 20]
-    rows = "\n".join("| %s | %s | %s |" % (nm, "{:,}".format(res["A"][code]), "{:,}".format(res["B"][code]))
-                     for code, nm, _ in K.DISTRICTS)
+    DF = res["DF"]
+    rows = "\n".join("| %s | %s | %s | %.1f | %d |" % (d, "{:,}".format(DF["resp"][d]), "{:,}".format(DF["head"][d]),
+                                                      DF["rate"][d], DF["shown"][d]) for d in STORE_DEPARTMENTS)
+    tr, th = sum(DF["resp"].values()), sum(DF["head"].values())
 
     def listing(nm):
         return "; ".join("%s %s" % (c, items.loc[c, "Question (English)"].rstrip(".?")) for c in groups[nm])
@@ -416,15 +505,19 @@ def write_note(path, res, names_files):
         "load with workload and the growth questions with the manager statements, and nothing is left over for a "
         "fourth or fifth dimension. Five sub-scales would have managers write action plans for two scores that "
         "mostly record where the yes line sits.\n\n"
-        "## Coverage by store district\n\n"
-        "| District | Answered at least one item before the close | Of them, answered all 30 |\n|---|---:|---:|\n%s\n"
-        "| All store districts | %s | %s |\n\n"
-        "Employees are counted once, under the district of the store they were assigned to in HR on 14 September. "
-        "Printed forms count by the date their store sealed the envelope (every envelope was sealed by 27 "
-        "September), not the date Kestrava keyed them; an employee's kiosk sessions are taken together; a "
-        "does-not-apply answer counts as an answer. Answers given after a site's 23:59 close but before Kestrava's "
-        "links stopped at 06:00 UTC on 28 September are left out under section 3.1 of the reporting standard. "
-        "Distribution centres and head office are outside the 12 districts.\n"
+        "## Coverage by store department\n\n"
+        "| Store department | Answered at least one item before the close | Employees on 14 September | Response rate "
+        "(%%) | Stores where results can be shown |\n|---|---:|---:|---:|---:|\n%s\n"
+        "| All store departments | %s | %s | %.1f | %d |\n\n"
+        "Each employee is counted once, under the store and department they held in HR on 14 September (reporting "
+        "standard 3.4), and a department's results show in a store when its team there has 10 or more respondents "
+        "(4.1), so the stores column totals to the department teams that will see results. HR's assignment report names each row's department code by the department table on its run date, "
+        "16 October, and store departments took new numbers on 1 October, so the codes in force on 14 September "
+        "were read through the 1 October reorganisation rows: every employee holding a given September code passed "
+        "to the same new code. Read off the report's names, Grocery and Front End, Produce and Meat and Seafood, "
+        "Deli and Bakery, and Receiving and Store Management would trade places. Printed forms count by the date "
+        "their store sealed the envelope, not the date Kestrava keyed them, and an employee's kiosk sessions are "
+        "taken together.\n"
     ) % (len(groups["Resources"]), listing("Resources"), len(groups["Manager and growth"]),
          listing("Manager and growth"), len(groups["Connection"]), listing("Connection"),
          "{:,}".format(f["respondents"]), ", ".join(tools), "%.1f" % min(ys[c] for c in tools),
@@ -433,6 +526,6 @@ def write_note(path, res, names_files):
          "%.2f" % lat[0], "%.2f" % lat[1], "%.2f" % lat[2], "%.2f" % lat[3], "%.2f" % lat[4], "%.2f" % lat[5],
          "{:,}".format(f["respondents"]), PA_REPS, "%.2f" % ref[3],
          "%.2f" % pea[0], "%.2f" % pea[1], "%.2f" % pea[2], "%.2f" % pea[3], "%.2f" % pea[4], "%.2f" % ref[3],
-         "%.2f" % ref[4], rows, "{:,}".format(f["ask_a_total"]), "{:,}".format(f["ask_b_total"]))
+         "%.2f" % ref[4], rows, "{:,}".format(tr), "{:,}".format(th), 100.0 * tr / th, sum(DF["shown"].values()))
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(text)

@@ -74,18 +74,20 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "psychology-behavioral-science/psychometric-measurement-scale-validation/2",
   "layer1": [
-    "French and English questionnaire versions with different item order, joined through the codebook's French codes",
+    "French and English questionnaire versions with different item orders, joined through the questionnaire's French numbers",
     "negatively worded statements to reverse-score",
     "a does-not-apply code",
-    "resubmitted surveys under one token",
+    "resubmissions of a personal link (the last counts)",
     "the vendor's test tokens",
     "kiosk sessions logged under the pre-July store numbers with employee numbers as typed",
-    "an effective-dated HR history renumbered in a July reorganisation",
+    "printed forms recorded when the vendor keys them, after their envelopes were sealed",
     "UTC timestamps against each site's local close",
     "a long export under a header block"
   ],
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task269": "task269 v2 (drawn 10-19, after this card) asked how reliably an OSCE total ranks candidates when the blueprint fixes each domain's stations, a variance-components question of which facet counts as error; here no total's reliability is at stake: the step is the correlation estimator, latent rather than Pearson, which keeps yes or no items answered nearly all one way from standing as dimensions of their own."
+  },
   "lineage": [],
-  "notes": "v1 drawn 2026-10-15 by sathay3012 for wave 2. The seed DA07 gave the number only (its duty-cycle step reads as the target's definition once filed); the world is redrawn. WARN three_rules.strategy_risk answered by the analyst test; WARN repeat.gate_g and overuse.gate_g answered in the design note's Draw (a dimensionality count is a method choice by nature)."
+  "notes": "v1 drawn 2026-10-15 by sathay3012 for wave 2. The seed DA07 gave the number only (its duty-cycle step reads as the target's definition once filed); the world is redrawn. WARN three_rules.strategy_risk answered by the analyst test; WARN repeat.gate_g and overuse.gate_g answered in the design note's Draw (a dimensionality count is a method choice by nature). Reshipped 11-01 under the 10-30 gates (rubric scope, the call frozen): the codebook and export notes removed (their facts in the questionnaire's fielding copy, the standard's 3.2 and the paper returns log's header); the district coverage asks (an honest cracker kept 24 of 24, pair 81.5) replaced by a store department ask on People Services' assignment report, whose 1 October renumbering of store departments is named by the run date's table (the cracker keeps 0 of 24, pair ceiling 32.6); the prompt drops its counts."
 }

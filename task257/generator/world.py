@@ -553,3 +553,85 @@ def build_survey():
     resp = [x for x in resp if x.get("subs")]
     return dict(sites=sites, people=people, items=items, invite=invite, resp=resp, sub=sub, kiosk=kiosk_log,
                 envelopes=envelopes, tests=tests)
+
+
+# ------------------------------------------------------------------ People Services' assignment history extract
+
+ACTION_RANK = {"hire": 0, "reorganisation": 1, "transfer": 2, "termination": 3}
+
+
+HR_STREAM = 16
+
+
+def hr_extract(S, stream=None):
+    """People Services' assignment history as run on 16 October 2026: every row in force on or after the July
+    reorganisation. A few store employees move between departments of their own store in the weeks around the survey;
+    on 1 October store departments take the numbers of the new labour model, so each store row in force on 30
+    September ends that day and a 1 October row carries the new code; and every row's department is named from the
+    department table as it stands on the run date. Built after the survey world and from its own random stream, so
+    nothing the survey drew moves. Returns (rows, truth): the rows as written, and for every employee assigned on the
+    opening day their site and department on that day."""
+    r = _rng(HR_STREAM if stream is None else stream)
+    by_no = {s["site_no"]: s for s in S["sites"]}
+    table = {d[1]: d[2] for d in DC_DEPTS + HO_DEPTS}
+    table.update({K.OCTOBER_CODE[d[0]]: d[2] for d in STORE_DEPTS})
+    store_keys = [d[0] for d in STORE_DEPTS]
+    store_dept = {d[0]: d for d in STORE_DEPTS}
+    wts = np.array([d[3] for d in STORE_DEPTS])
+    # each employee's segments from the July reorganisation on: [start, end, site, dept key, action]
+    segs = {}
+    for p in S["people"]:
+        out = []
+        for h in p["history"]:
+            if h["end"] is not None and h["end"] < K.REORG_DAY:
+                continue
+            out.append([h["start"], h["end"], h["site"], p["dept"], h["action"]])
+        segs[p["emp"]] = out
+    # department moves inside the employee's store, for employees with a single open store row since the
+    # reorganisation: the usual moves before the opening day (15 August to 12 September); the re-slotting of staff
+    # for the new labour model in the second half of September and the first half of October; and on 5 October the
+    # labour model's assistant department managers joining each store's management team
+    single = [p for p in S["people"] if by_no[p["site"]]["type"] == "store" and p["dept"][0] != "MGT" and
+              len(segs[p["emp"]]) == 1 and segs[p["emp"]][0][1] is None and not p.get("new_hire")]
+    pick = r.choice(len(single), size=1130, replace=False)
+    for i, q in enumerate(pick):
+        p = single[int(q)]
+        old = segs[p["emp"]][0][3]
+        if i < 210:
+            day = dt.date(2026, 8, 15) + dt.timedelta(days=int(r.integers(29)))
+        elif i < 810:
+            day = dt.date(2026, 9, 16) + dt.timedelta(days=int(r.integers(15)))
+        elif i < 910:
+            day = dt.date(2026, 10, 2) + dt.timedelta(days=int(r.integers(13)))
+        else:
+            day = dt.date(2026, 10, 5)
+        if i < 910:
+            choices = [k for k in store_keys if k not in (old[0], "MGT")]
+            w = np.array([wts[store_keys.index(k)] for k in choices])
+            new = store_dept[choices[int(r.choice(len(choices), p=w / w.sum()))]]
+        else:
+            new = store_dept["MGT"]
+        s0 = segs[p["emp"]][0]
+        segs[p["emp"]] = [[s0[0], day - dt.timedelta(days=1), s0[2], old, s0[4]],
+                          [day, None, s0[2], new, "transfer"]]
+    # the 1 October renumbering of store departments
+    rows = []
+    truth = {}
+    for p in S["people"]:
+        out = []
+        for st, en, site, dk, act in segs[p["emp"]]:
+            store = by_no[site]["type"] == "store" if site in by_no else False
+            if store and act != "termination" and st < K.RENUMBER_DAY and (en is None or en >= K.RENUMBER_DAY):
+                out.append([st, K.RENUMBER_DAY - dt.timedelta(days=1), site, dk, act])
+                out.append([K.RENUMBER_DAY, en, site, dk, "reorganisation"])
+            else:
+                out.append([st, en, site, dk, act])
+        for st, en, site, dk, act in out:
+            store = by_no[site]["type"] == "store"
+            code = K.OCTOBER_CODE[dk[0]] if (store and st >= K.RENUMBER_DAY) else dk[1]
+            rows.append(("%07d" % p["emp"], site, code, table[code], st, en, act))
+            if act != "termination" and st <= K.OPEN_DAY and (en is None or K.OPEN_DAY <= en):
+                if p["leave"] is None or p["leave"] > K.OPEN_DAY:
+                    truth["%07d" % p["emp"]] = (site, dk[2])
+    rows.sort(key=lambda v: (v[4], v[0], ACTION_RANK[v[6]]))
+    return rows, truth

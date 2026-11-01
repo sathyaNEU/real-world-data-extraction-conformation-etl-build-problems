@@ -5,34 +5,59 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-11-01",
  "stump": "The default path correlates the 30 answers as numbers and keeps five dimensions, five sub-scales (workload, tools, manager, growth, and belonging with recognition) with the six tools questions and the six growth questions each split from the dimension they measure; the step that lands it there is correlating yes or no answers that nearly everyone gives one way (yes to tools, no to growth) as scores, whose correlations are capped by their lopsided splits, so the shared split stands as a dimension of its own, and only correlating every answer as an ordered category of an underlying view (tetrachoric and polychoric correlations) shows the three dimensions the items measure.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-15"
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (the standard holds the estimand words; a prompt sentence; no rounding words for whole counts), each line harmless",
-  "reader": "nothing names the move (q1 none); no ranking or helper file; the count left to the analysis; deciding step analytical; three realism tells fixed"
+  "leak_py": "REVIEW, no LEAK (11-01 on target.zip 132068ce; the codebook and export notes gone; every line ruled in the design note's Build record)",
+  "reader": "11-01 reship cut: q1 to q4 none, q5 the asks' WHAT sentences (3.1, 3.2, 3.4, 4.1, 4.3) executing to the golden's basis and fixing no sub-scale count, q6 an analytical choice; both review items harmless; no realism tell needing a fix"
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "0.05 task17 (revision 3, lineage); guard surface clean"
+  "heart": "WARN (three_rules.strategy_risk, repeat.gate_g, overuse.gate_g, answered at the draw); the 11-01 BLOCK test.same_driver_older against task269 v2 was an H27 artifact (that card drawn 10-19, after this card's 10-15) and the card carries a differentiation line against it",
+  "nearest": "0.06 task267; guard surface exit 0, no pair promoted",
+  "date": "2026-11-01"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task257/determinism_check_report.md"
+  "disposition": "APPROVE (pass 2, the 11-01 reship cut on target.zip 132068ce; the thread spawned by the main session from the agent's brief; advisories: the department labels rest on the report's header and the 1 October code pairs, the sub-scale names unpinned, so block 4 says the grouping is the answer)",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task257/determinism_check_report_pass2.md"
  },
- "returned": [],
- "resume": "shipped; next: the portal result",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "by": "in-house (the 10-30 gates re-check; no portal return, the 10-15 version pending review)",
+   "finding": "leak.py LEAK on the codebook and the export notes (describing files); the prompt stated counts (30 items, 12 districts) and no rounding words; no survivor anatomy; the shipped ask layer measured by an independent cracker on target.zip 9a983f66 at 24 of 24 cells kept, pair 81.5 (both devices executed by the call's own respondent count, each resting on an export-notes fact, the kiosk log marking every time-out)",
+   "repair": "rubric (ask layer, the call frozen): the codebook and export notes removed (facts in the questionnaire's fielding copy, the standard's 3.2 and the paper returns log's header); the district asks replaced by a store department ask on People Services' assignment report (the 1 October renumbering of store departments named by the run date's table; ceiling.py cracker 0 of 24, pair 32.6); the prompt without counts, rounding once at the close; survivor anatomy added; freeze.py --mode rubric exit 1 on the call sentence and the default path only (recorded), every frozen figure unchanged",
+   "commit": "RESHIPPED (task257)"
+  }
+ ],
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
  "draw": {
   "card": "cards/task257.json registered 2026-10-15",
   "guard": "WARN (three_rules.strategy_risk, repeat.gate_g, overuse.gate_g), each answered in the design note's Draw; nearest driver 0.05"
- }
+ },
+ "zip_sha256": "132068cecc1c0a8b5a73df6da620b01bd3a0f4b8643a107fae53fffb9d3b4712",
+ "ceiling": {
+  "script": "generator/ceiling.py",
+  "pair": 32.6,
+  "cracker": 51.1,
+  "mirror": 14.0,
+  "mirror_leakage_pct": 3.7,
+  "cracker_kept": "0 of 24 department cells, the chart's 3 parts",
+  "full_includer_pair": 81.5
+ },
+ "reshipped": [
+  "2026-11-01"
+ ]
 }
