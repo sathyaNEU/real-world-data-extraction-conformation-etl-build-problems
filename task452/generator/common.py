@@ -41,7 +41,9 @@ def pdf_canvas_settings():
 
 
 def write_csv(path, header, rows, sep=","):
+    import csv
     with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(sep.join(header) + "\r\n")
+        w = csv.writer(f, delimiter=sep, lineterminator="\r\n", quoting=csv.QUOTE_MINIMAL)
+        w.writerow(header)
         for r in rows:
-            f.write(sep.join("" if v is None else str(v) for v in r) + "\r\n")
+            w.writerow(["" if v is None else str(v) for v in r])

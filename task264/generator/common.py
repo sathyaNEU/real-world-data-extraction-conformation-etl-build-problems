@@ -70,7 +70,7 @@ PROVIDERS = [
          vol=(512, 548, 560), c=0.120, u=-1.10, r=0.69, sev=-0.10, cap=200),
     dict(key=41355, site="LK26", name="Pellow House Hospital", kind="IS",
          org="Pellow House Healthcare Ltd",
-         vol=(288, 302, 330), c=0.065, u=-1.03, r=0.73, sev=-0.15, cap=110),
+         vol=(288, 302, 330), c=0.065, u=-1.15, r=0.73, sev=-0.15, cap=110),
     dict(key=41388, site="LK29", name="Kestrelmead Hospital", kind="IS",
          org="Kestrelmead Health Ltd",
          vol=(345, 362, 371), c=0.200, u=0.84, r=0.70, sev=-0.05, cap=170),

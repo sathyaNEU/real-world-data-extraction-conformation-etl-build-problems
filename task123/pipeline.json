@@ -1,57 +1,24 @@
 {
  "task": "task123",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics / seasonal-adjustment-official-time-series-production",
  "objective": "etl",
- "stage": 5,
- "stage_name": "shipped",
- "updated": "2026-10-12",
- "stump": "The default path prorates every straddling bill's therms across calendar months by days of service and files the day-prorated split (Ottercreek $1,135,000, Brennock $2,465,000; the region's January 11,190,000 therms) against the split by the AMI meters' measured daily use (Ottercreek $1,230,000, Brennock $2,380,000; 10,260,000 therms), because the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap used 2.4 times the gas a day.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 3,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-12",
-  "fails": "",
-  "pair_ceiling": 27.5,
-  "mirror_leakage": 0.0
- },
- "leak": {
-  "leak_py": "REVIEW (0 LEAK) at --asof 2026-04-20, six lines answered in the design note",
-  "reader": "three isolated reads: no sentence names the decisive step, nothing ranks or answers, nothing exists only to help; the literal reading of the standard executes to the golden estimand and leaves the split to the analysis (the readers' own execution, day-proration, is the stump); narration of two ask devices and realism tells fixed after the first and second reads"
- },
- "duplicate_check": {
-  "heart": "WARN only (three_rules.strategy_risk, overuse.gate_g, repeat.question_form; answered in the design note)",
-  "surface": "0 promoted pairs; personas Regina Fowler, Douglas Tyler, Alison Pacheco, all on the card",
-  "nearest": "0.09 (task94 v2 lineage)",
-  "clone_check": ""
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW on the write-up only, fixed (shipped without a fourth judge: the same fork closed further)",
-  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
-  "pass": 3,
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "fix_cycles": 2,
-  "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs); pass 3 after the portal repair: DETERMINISTIC, every graded figure reproduces, even split by days judged not defensible; FIX_NOW on step 3's Northbank move-out figures, because the step did not say the pairs lie inside the AMI reads' span (read without it, a pair's gas days before 7 October have no shape); fixed by stating the span, and every zero-therm handling then gives 536 reads, 0.27 and 3.32 points"
- },
- "returned": [
-  {
-   "date": "2026-10-12",
-   "portal": "determinism block failed (C, D, E: competing_defensible_answer, fix_location input_files): the estimator of a straddling bill's January share unforced outside Pine Harbor's territory; Northbank's HHAP count read on premises (821) or enrolled accounts (798)",
-   "repair": "determinism",
-   "moves": "(1) SF12: the utilities' own move-out reads (Kestrel Valley 567, Northbank 536) place each split where the AMI shape does (0.34 and 0.27 points) and refute an even split by days (5.28 and 3.32), shown in the write-up's step 3 and asserted; no input file changed on the main path. (2) SF13: Northbank's account history carries each account's HHAP enrollment with its end date, so Appendix B's end-date sentence executes to the golden; golden counts unchanged. freeze.py determination PASS.",
-   "commit": "",
-   "requested_by": "perssathya (author's request in session)",
-   "judge": "pass 3 DETERMINISTIC; FIX_NOW on the write-up (the AMI reads' span stated in step 3), fixed"
-  }
- ],
- "resume": "reshipped after the portal determinism repair; waiting for the portal",
+ "precut": {},
+ "leak": {},
+ "duplicate_check": {},
+ "judge": {},
+ "returned": [],
+ "resume": "architecture 3 drawn 2026-11-01 (card registered): a union of comuni's 2027 peak-month co-financing from August 2026 guest nights; design note and generator in progress",
  "approved": null,
- "delivered": "2026-10-12",
+ "delivered": null,
  "portal": null,
- "source_note": "own draw (no seed note; the ET01 slot's world is not carried)",
+ "source_note": "own draw (no seed)",
  "history": {
   "architecture_1": "v1 Steady Ground stabilisation screen (ET01): solved in-house in rounds 1 to 4 (93.8, 80.2, 86.0, 91.7), three hardening loops, retired 2026-10-11 (FAILED_TO_STUMP); re-rooted in wave 1 on 2026-10-12",
   "v1_pipeline": {
@@ -114,6 +81,55 @@
    "source_note": "analytical_tasks/07_data_extraction_conformation/ET01_sec-fsds-point-in-time-revenue-screen.md",
    "domain": "nonprofit-grant-making",
    "updated": "2026-10-11"
+  },
+  "architecture_2": {
+   "status": "SHIPPED",
+   "domain": "survey-research-official-statistics",
+   "stage": 5,
+   "stage_name": "shipped",
+   "updated": "2026-10-12",
+   "stump": "The default path prorates every straddling bill's therms across calendar months by days of service and files the day-prorated split (Ottercreek $1,135,000, Brennock $2,465,000; the region's January 11,190,000 therms) against the split by the AMI meters' measured daily use (Ottercreek $1,230,000, Brennock $2,380,000; 10,260,000 therms), because the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap used 2.4 times the gas a day.",
+   "precut": {
+    "exit": 0,
+    "date": "2026-10-12",
+    "fails": "",
+    "pair_ceiling": 27.5,
+    "mirror_leakage": 0.0
+   },
+   "leak": {
+    "leak_py": "REVIEW (0 LEAK) at --asof 2026-04-20, six lines answered in the design note",
+    "reader": "three isolated reads: no sentence names the decisive step, nothing ranks or answers, nothing exists only to help; the literal reading of the standard executes to the golden estimand and leaves the split to the analysis (the readers' own execution, day-proration, is the stump); narration of two ask devices and realism tells fixed after the first and second reads"
+   },
+   "duplicate_check": {
+    "heart": "WARN only (three_rules.strategy_risk, overuse.gate_g, repeat.question_form; answered in the design note)",
+    "surface": "0 promoted pairs; personas Regina Fowler, Douglas Tyler, Alison Pacheco, all on the card",
+    "nearest": "0.09 (task94 v2 lineage)",
+    "clone_check": ""
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW on the write-up only, fixed (shipped without a fourth judge: the same fork closed further)",
+    "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2), determinism_check_report_pass3.md (pass 3)",
+    "pass": 3,
+    "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "fix_cycles": 2,
+    "notes": "pass 1 FIX_NOW: Northbank's HHAP file named premises only (a residual fork on four counts); fixed by naming the enrolling account; pass 2 APPROVE, optional pin taken (the contractor report lists completed jobs); pass 3 after the portal repair: DETERMINISTIC, every graded figure reproduces, even split by days judged not defensible; FIX_NOW on step 3's Northbank move-out figures, because the step did not say the pairs lie inside the AMI reads' span (read without it, a pair's gas days before 7 October have no shape); fixed by stating the span, and every zero-therm handling then gives 536 reads, 0.27 and 3.32 points"
+   },
+   "returned": [
+    {
+     "date": "2026-10-12",
+     "portal": "determinism block failed (C, D, E: competing_defensible_answer, fix_location input_files): the estimator of a straddling bill's January share unforced outside Pine Harbor's territory; Northbank's HHAP count read on premises (821) or enrolled accounts (798)",
+     "repair": "determinism",
+     "moves": "(1) SF12: the utilities' own move-out reads (Kestrel Valley 567, Northbank 536) place each split where the AMI shape does (0.34 and 0.27 points) and refute an even split by days (5.28 and 3.32), shown in the write-up's step 3 and asserted; no input file changed on the main path. (2) SF13: Northbank's account history carries each account's HHAP enrollment with its end date, so Appendix B's end-date sentence executes to the golden; golden counts unchanged. freeze.py determination PASS.",
+     "commit": "",
+     "requested_by": "perssathya (author's request in session)",
+     "judge": "pass 3 DETERMINISTIC; FIX_NOW on the write-up (the AMI reads' span stated in step 3), fixed"
+    }
+   ],
+   "delivered": "2026-10-12",
+   "portal": null,
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (world closed; reports kept with the _arch2 suffix)"
   }
  }
 }

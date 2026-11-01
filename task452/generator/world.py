@@ -24,7 +24,7 @@ KILNS = {
                shutdown=((1, 12, 6), (2, 6, 18)), n_stops=6, nox=392.0, so2=118.0, o2=8.55, ratio_d=7.0,
                coal_per_clk=0.085, srf_per_clk=0.052, bleed_tph=1.25),
     "K2": dict(feed=140.0, mill_cap=176.0, silo_cap=6500.0, silo0=4300.0, loi=0.352, nm3_per_t=2320.0,
-               shutdown=((2, 16, 6), (3, 9, 18)), n_stops=5, nox=358.0, so2=96.0, o2=8.85, ratio_d=6.5,
+               shutdown=((2, 16, 6), (3, 9, 18)), n_stops=5, nox=358.2, so2=96.0, o2=8.85, ratio_d=6.5,
                coal_per_clk=0.128, srf_per_clk=0.0, bleed_tph=0.0),
 }
 
@@ -39,8 +39,8 @@ COMP = {
     "shale":      (0.1300, 9.4, 4.2, 58.0, 18.5, 6.9, 2.40, 0.60, 7.5),
     "sand":       (0.0080, 5.2, 0.6, 92.0, 3.1, 1.2, 0.20, 0.05, 1.2),
     "iron_ore":   (0.0450, 6.8, 2.1, 9.5, 3.2, 79.0, 0.80, 0.30, 3.0),
-    "steel_slag": (0.0040, 4.5, 40.5, 15.0, 4.5, 24.0, 8.10, 0.40, 1.8),
-    "fly_ash":    (0.4200, 0.6, 4.6, 52.0, 24.0, 8.5, 1.80, 0.80, 3.4),
+    "steel_slag": (0.0040, 4.5, 42.0, 15.0, 4.5, 24.0, 8.10, 0.40, 1.8),
+    "fly_ash":    (0.4237, 0.6, 4.6, 52.0, 24.0, 8.5, 1.80, 0.80, 3.4),
 }
 QUARTERLY = {"sand", "iron_ore", "steel_slag"}
 FUELS = {  # Hg mg/kg dry, moisture % ar, NCV GJ/t ar, ash % dry, S % dry

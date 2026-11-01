@@ -1,97 +1,83 @@
 {
   "task": "task123",
-  "architecture": "v2 (architecture 2, re-root after the author's retirement)",
-  "drawn": "2026-10-12",
-  "slot_note": "re-root of the retired ET01 slot in oviya1301's wave 1; no seed note: the world is drawn for its calendarization step",
+  "architecture": "v3 (architecture 3, re-root at the Batch 3 queue reset)",
+  "drawn": "2026-11-01",
+  "slot_note": "own draw; no seed (task123 has no START_HERE seed)",
   "domain": "survey-research-official-statistics",
   "subdomain": "seasonal-adjustment-official-time-series-production",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "calendarizing three gas utilities' cycle-read and bimonthly-read residential sales into the calendar-month county series a heating assistance administrator files under the state's energy data standard, which sets the 2026-27 grant split",
+  "niche": "a coastal union of comuni choosing which member comuni receive its 2027 peak-month services co-financing, each comune's August 2026 guest nights conformed from the region's monthly accommodation survey, whose missing establishment returns are filled at the occupancy the reporting establishments ran, and the quarterly tourist-tax declarations each comune's tax office totals",
   "objective": "etl",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "currency",
-  "answer": "Brennock $2,380,000, Rennick $2,145,000, Pellow $1,905,000, Halvern $1,840,000, Ashwell $1,710,000, Farrish $1,685,000, Tillery $1,525,000, Merrion $1,310,000, Ottercreek $1,230,000, Keswin $1,125,000, Sauvain $910,000, Wynnell $875,000 (the region's January 2026 residential use 10,260,000 therms)",
-  "answer_source": "submission.md, block 1",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "golden/",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G4",
+    "G18",
     "G2",
-    "G14",
+    "G3",
     "G19"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "time_semantics",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
-  "stakeholder_role": "head of research at a statewide nonprofit that administers the state's heating assistance grant and compiles the gas utilities' data behind it",
-  "role_family": "research_desk",
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who fills each missing August return at the occupancy its stratum's reporting establishments ran, as official accommodation statistics do, and then benchmarks each comune's July to September to the nights its establishments declared for the tourist tax by spreading the quarter's shortfall over the three months in proportion, designates fewer comuni than the August nights give, because the shortfall is the error of the filled returns and the filled returns are the busiest establishments' Augusts.",
+  "domain_test": "The deciding quantity is each comune's August guest nights, an official tourism statistic produced from a monthly establishment survey whose missing returns are imputed and which is benchmarked to a complete administrative count of the same nights over a longer period, the way official monthly series are benchmarked to their period totals; with a clinical trial's nouns there is no monthly establishment return, no filled return and no quarterly declaration counting the same nights, and the task stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:benchmark-shortfall-placed-in-the-filled-returns",
+  "layer1": [
+    "the region's survey platform migration in May 2026 re-keying every establishment code (a crosswalk ships)",
+    "late corrected returns superseding earlier submissions",
+    "each comune's tax office exporting its quarterly declarations in its own layout (csv with decimal commas, xlsx, a pdf table)",
+    "two comuni merged on 1 January 2026",
+    "seasonal establishments filing closed returns in the months they are shut",
+    "residence coded by ISTAT country codes before the migration and ISO codes after"
+  ],
+  "stakeholder_role": "the union's peak services planning office",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
-    "rows": 1062385,
-    "entity": "one AMI gas meter's daily consumption on one gas day while a residential account is on it",
-    "grain": "meter x gas day",
+    "file": "movimento_clienti_strutture_2025_2026.csv",
+    "rows": 30000,
+    "entity": "one establishment's monthly return of arrivals and nights for one guest-residence group",
+    "grain": "establishment x month x residence group",
     "source": "synthetic"
   },
-  "forum": "funder_or_donor",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "nonprofit_or_charity",
+  "forum": "council_or_assembly",
+  "forcing_event": "season_or_peak",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States, Michigan (fictional nonprofit, three gas utilities and a twelve-county northern region, all invented)",
-    "currency": "USD",
-    "org_type": "statewide nonprofit administering the state's heating assistance grant for the community action agencies, producing the calendar-month county gas series under the state's energy data standard",
-    "invented_names": [
-      "Kestrel Valley Gas",
-      "Northbank Natural Gas",
-      "Pine Harbor Energy",
-      "Northern Heat Assistance Grant",
-      "Ridgeline Home Energy Fund",
-      "Northline Utility Services",
-      "Home Heat Assistance Plan",
-      "Winter Care Plan"
-    ],
+    "geography": "Italy, a fictional coastal union of comuni in an invented region (comuni, union and region all invented)",
+    "currency": "EUR",
+    "org_type": "union of comuni (inter-municipal association running shared peak-season services)",
+    "invented_names": [],
     "people": [
-      "Regina Fowler",
-      "Douglas Tyler",
-      "Matthew Solis",
-      "Alison Pacheco"
+      "Goffredo Canil",
+      "Mariano Govoni",
+      "Martino Zamengo"
     ]
   },
   "deliverables": [
-    "jan2026_county_gas_series.csv",
-    "heating_grant_split_2026_27.xlsx",
-    "heating_grant_split_2026_27.png"
+    "august_2026_guest_nights.xlsx",
+    "peak_cofinancing_2027_note.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "A total each unit records over its own reading interval, one period or two long, is split onto fixed calendar periods by how fast it ran inside the interval, which a sample of units measured every day shows running well below the neighbouring periods' rate early in one period and far above it late in the same period, so splitting by elapsed days gives that period its neighbours' average rate and misallocates every straddling interval by where its reading dates fall, while scaling the daily-measured sample up instead carries its members' smaller size.",
-  "driver_concrete": "Each county's calendar-January 2026 residential gas use is every Kestrel Valley, Northbank and non-AMI Pine Harbor bill's therms split across the gas days it covers by the daily use Pine Harbor's AMI meters show (2.4 times as high a day in the 19 to 31 January cold snap as on 1 to 18 January), not by days of service, so day-proration gives January's mild days the colder December and February rate billed with them and moves the split by $23,412 to $95,625 a county (Ottercreek $1,135,000 against $1,230,000), and scaling the AMI accounts' January use up instead carries their newer, smaller homes.",
-  "stump": "A competent solver nets the cancel and rebill lines, maps premises to counties, takes Pine Harbor's AMI accounts from their calendar-month bills, prorates every other bill's therms across the months it covers by days of service and files Ottercreek at $1,135,000 and Brennock at $2,465,000 (the region's January at 11,190,000 therms) against the golden $1,230,000 and $2,380,000, because use inside a bill follows the weather: the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap colder, and day-proration treats every day of a bill as burning the same gas.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the three billing extracts and the AMI reads and reads every field right prorates each straddling bill to calendar months by days of service, the standard way to calendarize billing-period data; with the first eighteen days of January milder than the December and February days billed with them and a cold snap at the end, that inflates every day-prorated bill's January (the region by 9 per cent) while Pine Harbor's calendar-billed AMI accounts stay exact, and files Ottercreek at $1,135,000 against $1,230,000, although the AMI meters' daily reads show use is far from flat inside a bill.",
-  "domain_test": "Calendar-month statistics built from billing-period returns are what an official statistics producer calendarizes against an indicator of activity inside each period (here the AMI accounts' daily reads), as statistical offices calendarize fiscal-period returns with a monthly indicator; the stump lives in heating use swinging with the weather inside each read interval, so moving the nouns to a series whose activity is flat within periods leaves day-proration right and the task empty.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:calendar-month-use-from-read-intervals-by-a-measured-daily-shape",
-  "layer1": [
-    "three utilities' billing extracts in their own layouts: a 21-cycle monthly-read CIS export with service-period dates, a fixed-width bimonthly-read export carrying prior and current read dates, four- and five-digit registers that roll over and a monthly heating value, and a utility that bills its AMI accounts on calendar months while its other accounts still read on cycles",
-    "cancel and rebill transactions: a corrected bill carried as a reversing line and a replacement line under the original bill number",
-    "an MDMS daily-read export keyed by meter with VEE codes (validated, estimated) and daylight-saving gas days of 25 and 23 hours, exported only while a residential account is on the meter",
-    "meter-to-account history with the October AMI exchanges, each leaving a short transition bill and a new account number",
-    "unpaid accounts closed with a final read ten business days after a disconnection, and move-out final reads",
-    "premise county from a service-point file whose postal cities and ZIP codes cross county lines",
-    "account numbers that lose their leading zero in a contractor's workbook",
-    "the State's county energy data standard (residential rate schedules, gas days, service periods, therms as billed) and the Fund's notes on each utility's extracts"
-  ],
+  "question_form": "which",
+  "driver": "A unit's months are counted where its return arrived and estimated where it did not, and its quarter is known complete from a second record that counts the same thing; the quarter's shortfall against that record is the estimate's error and sits in the month that was estimated, the unit's fullest, so spreading the shortfall over the quarter in proportion leaves the peak month short and only the estimated month takes it.",
+  "driver_concrete": "Each comune's August 2026 nights are its establishments' reported August returns plus the returns the union fills at the reporting establishments' occupancy, raised by the whole gap between the comune's July to September survey nights and the nights its establishments declared for the tourist tax that quarter, because the establishments that skipped a return skipped August, their busiest month, and every reported month agrees with the declarations wherever every establishment reported.",
+  "stump": "A competent analyst fills the missing August returns at the stratum's occupancy, benchmarks each comune's July to September to its declared tourist-tax nights by spreading the shortfall over the three months in proportion, and designates the comuni that series puts over 30 nights a resident; the step that lands it there is spreading the gap, when the gap is the error of the filled August returns, and putting it all in August carries more comuni over the line.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -124,7 +110,82 @@
       "niche": "a philanthropic trust's stabilisation offers to grantees whose income is falling, scored on twelve months of income built from the grantees' quarterly portal returns and their filed annual returns, run in-house for the first time after the bureau that computed six March rounds left",
       "driver": "A trailing four-period total at a cut-off runs only over periods whose year is closed by an annual filing on record at that cut-off, each period in the year its own record names, and only units holding a contract in force on the cut-off day are scored; a unit's contract can lapse between terms while the register still carries it from its first start to the renewed term's end, and because no unit was ever between terms at a published cut-off, scope read from the register's dates reproduces every published result, but at the first cut-off that finds a unit between terms that scope scores it on a true fall, offers it and re-splits the fixed pool with it in.",
       "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine."
+    },
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "objective": "etl",
+      "shape": "05",
+      "decision_type": "allocation_to_total",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G2",
+        "G14",
+        "G19"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "time_semantics",
+      "niche": "calendarizing three gas utilities' cycle-read and bimonthly-read residential sales into the calendar-month county series a heating assistance administrator files under the state's energy data standard, which sets the 2026-27 grant split",
+      "driver": "A total each unit records over its own reading interval, one period or two long, is split onto fixed calendar periods by how fast it ran inside the interval, which a sample of units measured every day shows running well below the neighbouring periods' rate early in one period and far above it late in the same period, so splitting by elapsed days gives that period its neighbours' average rate and misallocates every straddling interval by where its reading dates fall, while scaling the daily-measured sample up instead carries its members' smaller size.",
+      "stump": "A competent solver nets the cancel and rebill lines, maps premises to counties, takes Pine Harbor's AMI accounts from their calendar-month bills, prorates every other bill's therms across the months it covers by days of service and files Ottercreek at $1,135,000 and Brennock at $2,465,000 (the region's January at 11,190,000 therms) against the golden $1,230,000 and $2,380,000, because use inside a bill follows the weather: the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap colder, and day-proration treats every day of a bill as burning the same gas.",
+      "world": {
+        "geography": "United States, Michigan (fictional nonprofit, three gas utilities and a twelve-county northern region, all invented)",
+        "currency": "USD",
+        "org_type": "statewide nonprofit administering the state's heating assistance grant for the community action agencies, producing the calendar-month county gas series under the state's energy data standard",
+        "invented_names": [
+          "Kestrel Valley Gas",
+          "Northbank Natural Gas",
+          "Pine Harbor Energy",
+          "Northern Heat Assistance Grant",
+          "Ridgeline Home Energy Fund",
+          "Northline Utility Services",
+          "Home Heat Assistance Plan",
+          "Winter Care Plan"
+        ],
+        "people": [
+          "Regina Fowler",
+          "Douglas Tyler",
+          "Matthew Solis",
+          "Alison Pacheco"
+        ]
+      },
+      "deliverables": [
+        "jan2026_county_gas_series.csv",
+        "heating_grant_split_2026_27.xlsx",
+        "heating_grant_split_2026_27.png"
+      ],
+      "question_form": "how-much",
+      "forum": "funder_or_donor",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "nonprofit_or_charity",
+      "role_family": "research_desk",
+      "context_artifact": "planning_thread",
+      "calibration_form": "none",
+      "layer2_pattern": "own:calendar-month-use-from-read-intervals-by-a-measured-daily-shape",
+      "spine": {
+        "file": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
+        "rows": 1062385,
+        "entity": "one AMI gas meter's daily consumption on one gas day while a residential account is on it",
+        "grain": "meter x gas day",
+        "source": "synthetic"
+      },
+      "architecture": "v2",
+      "fate": "shipped 2026-10-12 (portal determinism return on the straddling-bill split outside one utility territory, repaired and reshipped the same day) and re-rooted 2026-11-01 at the Batch 3 queue reset"
     }
   ],
-  "notes": "Re-root of the retired task123 (ET01) slot on 2026-10-12, architecture 2. Subdomain seasonal-adjustment-official-time-series-production: the client's Survey Research & Official Statistics task type that serves ETL, here calendarizing billing-period returns into an official calendar-month series against an indicator of activity inside each period. stump_strategy time_semantics, the reviewer's key for billing-period to calendar-month conversion; the semantics-risk WARN is answered by the analyst test (every field and rule read right, day-proration still files the wrong split). Gap time leads (the evidence is a total over each account's own interval and the decision reads a calendar month); population second (the AMI accounts are a sample whose homes are newer and smaller than the region's). G4 attribution at transition: which month holds a straddling bill's therms; G2 the bill against the month as the unit; G14 the AMI accounts' January use carried onto the whole pool; G19 the state data standard as depth. Gate method_or_model_selection: the method that splits each interval. Shape 05: a fixed grant split across twelve counties. Calibration none: nothing scores the method; the AMI daily reads are the indicator the method needs, not a control. Personas drawn with guard.py names --geo 'United States' --seed 123."
+  "notes": "re-rooted from architecture 2 (gas-utility calendarization, world closed); the old determinism and leak reports are kept in the task folder with an _arch2 suffix",
+  "registered": "2026-11-01T21:53:02Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "give",
+    "rounding opener": "round",
+    "deliverable set": "csv+png+xlsx"
+  }
 }

@@ -54,6 +54,9 @@ def write_pack(truth, target):
 
 
 # ------------------------------------------------------------------------------------------------- historian
+SNAP_MINUTE = 0     # the minute of each half-hour at which the historian samples the raw mill's run status
+
+
 def half_hour_series(truth, k):
     w = truth["world"]
     d = w["kilns"][k]
@@ -62,6 +65,7 @@ def half_hour_series(truth, k):
     n = W.NMIN // 30
     feed = d["feed"].reshape(n, 30).mean(axis=1)
     run = d["mill_on"].reshape(n, 30).mean(axis=1)
+    run_snap = d["mill_on"].reshape(n, 30)[:, SNAP_MINUTE].astype(float)
     on = d["kiln_on"].reshape(n, 30).mean(axis=1)
     heat = d["heat"].reshape(n, 30).mean(axis=1)
     clk_rate = d["clk"].reshape(n, 30).sum(axis=1) * 2.0          # t/h
@@ -76,7 +80,7 @@ def half_hour_series(truth, k):
     so2 = np.where(on > 0, p["so2"] * (1 + r.normal(0, 0.15, n)), np.where(heat > 0, 40.0, 0.0))
     temp = np.where(on > 0, 104.0 * run + 168.0 * (1 - run) + r.normal(0, 3.5, n),
                     np.where(heat > 0, 140.0 + r.normal(0, 5, n), 35.0 + r.normal(0, 2, n)))
-    return dict(t0=t0, feed=feed, run=run, on=on, heat=heat, o2=o2, q_ref=q_ref, q_act=q_act, nox=nox, so2=so2,
+    return dict(t0=t0, feed=feed, run=run, run_snap=run_snap, on=on, heat=heat, o2=o2, q_ref=q_ref, q_act=q_act, nox=nox, so2=so2,
                 temp=temp)
 
 
@@ -84,7 +88,7 @@ def write_historian(truth, target):
     fn = "PI_historian_K1K2_2026_30min.csv"
     series = {k: half_hour_series(truth, k) for k in W.KILNS}
     truth["hh"] = series
-    header = ["Time (UTC)", "Line", "KF.WF01.RATE t/h", "RM.RUN.FRAC", "STK.FLOW.DRY Nm3/h", "STK.O2.DRY %",
+    header = ["Time (UTC)", "Line", "KF.WF01.RATE t/h", "RM.MAIN.RUN", "STK.FLOW.DRY Nm3/h", "STK.O2.DRY %",
               "STK.NOX.REF10 mg/Nm3", "STK.SO2.REF10 mg/Nm3", "STK.TEMP degC"]
     rows = []
     n = len(series["K1"]["t0"])
@@ -95,7 +99,7 @@ def write_historian(truth, target):
             continue
         for k in ("K1", "K2"):
             s = series[k]
-            row = [utc_str(t), k, "%.1f" % s["feed"][i], "%.1f" % s["run"][i], "%.0f" % s["q_act"][i],
+            row = [utc_str(t), k, "%.1f" % s["feed"][i], "%d" % s["run_snap"][i], "%.0f" % s["q_act"][i],
                    "%.2f" % s["o2"][i], "%.1f" % s["nox"][i], "%.1f" % s["so2"][i], "%.1f" % s["temp"][i]]
             rows.append(row)
             if k == "K1" and dt.datetime(2026, 8, 4, 2, 0, tzinfo=W.UTC) <= t < dt.datetime(2026, 8, 4, 8, 0, tzinfo=W.UTC):
@@ -133,10 +137,13 @@ ALARMS = ["PREHEATER C4 DRAFT HIGH", "COOLER GRATE 2 PRESSURE HIGH", "KILN INLET
           "TERTIARY AIR DAMPER POSITION", "KILN SHELL SCANNER HOT SPOT"]
 
 
+JITTER = 0          # the seconds within each logged minute: a draw of the world, fixed below by build.py's tuning
+
+
 def write_journal(truth, target):
     fn = "DCS_event_journal_2026.txt"
     w = truth["world"]
-    r = np.random.default_rng(W.SEED * 53)
+    r = np.random.default_rng(W.SEED * 53 + JITTER)
     ev = []   # (utc datetime, area, tag, description, state)
     for k in ("K1", "K2"):
         d = w["kilns"][k]
@@ -170,6 +177,8 @@ def write_journal(truth, target):
         line = "KILN %d" % int(r.integers(1, 3))
         ev.append((t, line, "ALM", a + " ALARM", "RAISED"))
         ev.append((t + dt.timedelta(seconds=int(r.integers(20, 3600))), line, "ALM", a + " ALARM", "CLEARED"))
+    ev.append((dt.datetime(2026, 3, 29, 1, 0, 0, tzinfo=W.UTC), "SYSTEM", "OS.CLOCK", "CLOCK CHANGE GMT TO IST, +1 H", "SET"))
+    ev.append((dt.datetime(2026, 10, 25, 0, 59, 59, tzinfo=W.UTC), "SYSTEM", "OS.CLOCK", "CLOCK CHANGE IST TO GMT, -1 H", "SET"))
     ev = [e for e in ev if e[0] < W.T0 + dt.timedelta(days=365)]
     ev.sort(key=lambda e: (e[0], e[1], e[3]))
     lines = ["%s DCS alarm and event journal" % WORKS,
@@ -436,7 +445,7 @@ def write_tests(truth, target):
                 "Client: %s, %s. Licence %s." % (COMPANY, WORKS, LICENCE),
                 "Emission point %s (Kiln %s main stack). Parameter: total mercury, EN 13211 (manual, iodine/permanganate)." % (STACK[k], k[1]),
                 "Test date: %s. Accreditation: ISO/IEC 17025 testing laboratory." % dt.date(y, mo, da).strftime("%d %B %Y"),
-                "Results at reference conditions: 273 K, 101.3 kPa, dry gas, 10%% O2. Flow at the same reference conditions.",
+                "Results at reference conditions: 273 K, 101.3 kPa, dry gas, 10% O2. Flow at the same reference conditions.",
                 "",
                 "Process conditions during the test (from the client's control system):",
             ]:
@@ -471,7 +480,8 @@ def write_tests(truth, target):
                 yy -= 5 * mm
             mc = sum(rr["conc"] for rr in runs) / 3
             mg = sum(rr["gph"] for rr in runs) / 3
-            vals = ["Mean", "%.1f" % mc, "", "%.2f" % mg, str(ELV_HG), "compliant"]
+            mq = sum(rr["q"] for rr in runs) / 3
+            vals = ["Mean", "%.1f" % mc, "%.0f" % mq, "%.2f" % mg, str(ELV_HG), "compliant"]
             c.setFont("Helvetica-Bold", 8)
             for x, v in zip(cols, vals):
                 c.drawString(x * mm, yy, v)

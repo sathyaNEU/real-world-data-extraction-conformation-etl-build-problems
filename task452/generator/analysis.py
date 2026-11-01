@@ -121,13 +121,12 @@ def pdf_text(path):
     """Text of a reportlab PDF: every content stream decoded (ASCII85 and Flate) and its strings read."""
     raw = open(path, "rb").read()
     out = []
-    for m in re.finditer(rb"<<(.*?)>>\s*stream\r?\n(.*?)\r?\nendstream", raw, re.S):
-        dic, data = m.group(1), m.group(2)
+    for m in re.finditer(rb"<<([^<>]*?)>>\s*stream\r?\n(.*?)endstream", raw, re.S):
+        dic, data = m.group(1), m.group(2).strip()
         if b"ASCII85Decode" in dic:
-            d = data.strip()
-            if d.endswith(b"~>"):
-                d = d[:-2]
-            data = base64.a85decode(d, adobe=False)
+            if data.endswith(b"~>"):
+                data = data[:-2]
+            data = base64.a85decode(data, adobe=False)
         if b"FlateDecode" in dic:
             try:
                 data = zlib.decompress(data)
@@ -353,7 +352,7 @@ def ask1_historian(target, prorate_gap=True):
             continue
         seen.add(key)
         t = dt.datetime.strptime(r[0], "%Y-%m-%d %H:%M").replace(tzinfo=UTC)
-        data[r[1]][t] = (float(r[2]), float(r[3]))
+        data[r[1]][t] = (float(r[2]), float(r[3]))     # feed t/h, raw mill run status at the timestamp
     qb = quarter_bounds()
     out = {}
     for k, d in data.items():

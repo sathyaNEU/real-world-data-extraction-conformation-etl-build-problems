@@ -15,12 +15,12 @@ FIELD_MONTH = {"2025Q1": (2025, 2), "2025Q2": (2025, 5), "2025Q3": (2025, 8), "2
 # share of households with one adult.
 AREAS = [
     ("01", "Capital Region",   ["019", "023"],        612.4, -0.36, 0.00, 0.44),
-    ("02", "Northern Basin",   ["003", "011", "037"], 228.9, 0.06, 0.35, 0.12),
+    ("02", "Northern Basin",   ["003", "011", "037"], 228.9, 0.09, 0.35, 0.12),
     ("03", "Silver Creek",     ["041", "045"],        301.7, 0.25, 0.00, 0.40),
     ("04", "High Plains",      ["005", "013", "029", "047"], 164.2, -0.62, 0.08, 0.28),
     ("05", "Upper River",      ["007", "031"],        257.3, 0.12, 0.08, 0.28),
     ("06", "Southwest Lakes",  ["015", "021", "033"], 183.6, -0.33, 0.22, 0.14),
-    ("07", "Eastern Prairie",  ["009", "027", "041"], 141.8, 0.00, 0.31, 0.12),
+    ("07", "Eastern Prairie",  ["009", "027", "041"], 141.8, 0.08, 0.31, 0.12),
     ("08", "Timber Country",   ["001", "017", "025", "035"], 205.5, -0.15, -0.30, 0.66),
 ]
 # county 041 is split between Silver Creek (03) and Eastern Prairie (07) by ZIP code
@@ -43,7 +43,7 @@ def area_index():
 
 def build_world(seed=SEED):
     # each area draws from its own streams, so an area's households do not depend on another area's draws
-    streams = {a[0]: [np.random.default_rng([seed, i, k, STREAM[a[0]]]) for k in range(3)] for i, a in enumerate(AREAS)}
+    streams = {a[0]: [np.random.default_rng([seed, i, k, STREAM[a[0]]]) for k in range(4)] for i, a in enumerate(AREAS)}
     rng_ops = np.random.default_rng(seed + 3)
 
     # Addresses issued: one rotation group enters each quarter and stays four quarters. Entry quarters run from
@@ -116,7 +116,7 @@ def build_world(seed=SEED):
     hh_q = []          # address-quarter clean truth
     ai_map = area_index()
     for a in addresses:
-        rng_hh, rng_p, rng_q = streams[a["area"]]
+        rng_hh, rng_p, rng_q, rng_r = streams[a["area"]]
         mem = None
         hh_seq = 0
         for w in range(4):
@@ -180,7 +180,7 @@ def build_world(seed=SEED):
                 base = {"EVE": 0.24, "DAY": 0.38, "SAT": 0.28}[str(slot)]
                 p_away = base + 0.16 * emp * (0.5 if m["pt"] else 1.0) + ashift + AWAY_HOLD * (m["mjh"] == 1)
                 p_away += 0.06 * (m["age"] < 25)
-                present.append(rng_q.random() >= min(0.92, p_away))
+                present.append(rng_r.random() >= min(0.92, p_away))
             if not any(present):
                 present[0] = True     # the interviewer comes back until someone answers
             resp = [j for j, pr in enumerate(present) if pr][0]
@@ -192,15 +192,15 @@ def build_world(seed=SEED):
                 elif self_rep:
                     rep = int(m["mjh"] == 1)
                 else:
-                    rep = int(rng_q.random() < (S_PROXY if m["mjh"] == 1 else FP_PROXY))
+                    rep = int(rng_r.random() < (S_PROXY if m["mjh"] == 1 else FP_PROXY))
                 # unemployed vs out of the labour force; want a job among those out of the labour force
                 if emp:
-                    lfs = 1 if rng_q.random() > 0.03 else 2
+                    lfs = 1 if rng_r.random() > 0.03 else 2
                     want = -1
                 else:
-                    looking = rng_q.random() < (0.13 if m["age"] < 60 else 0.02)
+                    looking = rng_r.random() < (0.13 if m["age"] < 60 else 0.02)
                     lfs = 3 if looking else 4
-                    want = (1 if (rng_q.random() < (0.09 if m["age"] < 60 else 0.03)) else 2) if lfs == 4 else -1
+                    want = (1 if (rng_r.random() < (0.09 if m["age"] < 60 else 0.03)) else 2) if lfs == 4 else -1
                 persons_q.append(dict(aid=a["aid"], hh_seq=hh_seq, q=q, qi=qi, wave=w + 1, area=a["area"],
                                       county=a["county"], zip=a["zip"], line=j + 1, pid=m["pid"], rel=m["rel"],
                                       age=m["age"], sex=m["sex"], lfs=lfs, pt=m["pt"], occ=m["occ"],
