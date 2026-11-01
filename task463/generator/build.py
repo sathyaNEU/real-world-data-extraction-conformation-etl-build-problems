@@ -41,7 +41,7 @@ def world():
     import numpy as np
     rng = np.random.default_rng([W.STREAM, 501])
     x["base"] = {code: round(float(rng.uniform(118, 142)), 1) for code in W.ICODE}
-    x["coverage"] = CV.build(W.STREAM)
+    x["coverage"] = CV.build(W.STREAM, ls)
     return x
 
 

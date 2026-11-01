@@ -1,36 +1,58 @@
 {
  "task": "task463",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-31",
+ "updated": "2026-11-01",
  "stump": "The default path links the twelve month-on-month Tornqvist comparisons per item and moves five RPI items in January 2027 (Bread, Pasta and rice, Yoghurt, Butter and spreads, Fruit juice), the nine items whose goods keep ending 4.7 to 8.4 points under their published rates through offer-month stockpiling; a direct September-to-September (or multilateral) comparison moves thirteen.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-16"
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW (every line answered in the design note)",
-  "reader": "round 1: no decisive-step sentence, Q6 rule application (plan 3.5/3.6 named September to September; reworded); round 2: no decisive-step sentence, the open index construction named as the analytical element"
+  "leak_py": "REVIEW (no LEAK; every line answered in the design note), 2026-11-01 on target.zip e020250e",
+  "reader": "round 1: no decisive-step sentence, Q6 rule application (plan 3.5/3.6 named September to September; reworded); round 2: no decisive-step sentence, the open index construction named as the analytical element; 10-31 reship cut: clean; 11-01 reship cut: Q1 to Q4 none, Q5 the open construction, Q6 'mainly following the stated procedure', ruled analytical on R3a/R3b and the pass 3 judge; realism notes answered (the Wrenfold swings and reassigned codes are the coverage device)"
  },
  "duplicate_check": {
-  "heart": "WARN (answered in the draw)",
-  "nearest": "task95 0.09; surface promotions task462 (back to back), task70, task104 for the author's clone-check"
+  "heart": "BLOCK on ban.role and ban.shape against task189 (card registered 2026-10-16T21:21:17Z, 31 minutes before this card at 21:52:59Z; both shipped 10-16): an axis ban held by a build filed before this delivered build, flagged and not relabelled; the heart text screen clean (nearest driver 0.08, task95)",
+  "nearest": "surface exit 0, promoting task462 (back to back), task236, task70 and task104, card-axis only and differentiated on the card",
+  "date": "2026-11-01"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on two ask pins)",
-  "report": "task463/determinism_check_report.md"
+  "disposition": "APPROVE (pass 3, the 11-01 reship cut; pass 2 FIX_NOW on the product-month file's scope applied in the prompt)",
+  "report": "task463/determinism_check_report_pass3.md"
  },
- "returned": [],
- "resume": "PAUSED 2026-10-31 at session end; the shipped version stands in the portal (pending review). RESHIP BLOCKED ON THE ASK LAYER 2026-10-31 (the shipped version stands, pending review). Working tree: the transaction data dictionary and the folder register removed (leak.py LEAK cleared), their facts in the plan's 2.3 and 3.7; the supplier-timeliness ask cut (its UTC clock is a hygiene-battery item once filed) with the delivery log a declared distractor; prompt whether-form, The/Round openers, no count. checks 70, byte-identical, zip 9f3e5e7ce60599ae, figures unchanged, precut PASS only on the old lazy sheet. Honest ceiling.py (the battery's name join): the cracker keeps all 16 coverage figures, pair 83.5. Next: a coverage device outside supplemental-stumping 1.1c (a reconstruction across two systems no sentence states and no visible contradiction prompts), re-measure, then reader (clean on 10-31 for this cut) and judge (pass 2 spawned 10-31) before a RESHIPPED commit. Judge pass 2 on this cut: DETERMINISTIC on the call (13 of 16 move; margins 0.82 inside and 2.32 outside the line), FIX_NOW on the product-month file's scope: the prompt must say every supermarket line classified to the items, not only the lines compared (14,364 rows against 13,156); no graded figure moves. Judge report pass 2 written (determinism_check_report_pass2.md); its FIX_NOW applied in the prompt (every supermarket line classified to the items, not only the lines compared). Open watch items: metadata.json's prompt_shape still describes the cut timeliness ask; the product-month file's unit price carries no stated rounding. Rejected coverage device: a mixed department split by the supplier's own product mix (resolved by the call's construction).",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "by": "in-house (the 10-31 ask-layer audit; no portal return, the shipped version pending review)",
+   "finding": "the coverage ask's reissued-code device is a hygiene-battery item (a code contradicted by the names beside it), honest ceiling.py pair 83.5; the supplier-timeliness ask's UTC clock the same; the data dictionary and folder register describing files; metadata.json's prompt shape stale; the product-month file's unit price without a stated rounding",
+   "repair": "rubric (ask layer): the dictionary and register removed (facts in the plan's 2.3 and 3.7), the timeliness ask cut (the delivery log a declared distractor), the coverage device rebuilt (Wrenfold's July 2025 renumbering, its report grouping sales by recorded code under current names, so the first half belongs to the 2024 codes; ceiling.py pair 34.6), the returns rebuilt to agree with the feeds, unit prices to the penny, metadata.json's shape corrected; the main call, the stump and every frozen figure unchanged (freeze.py --mode rubric PASS)",
+   "commit": "RESHIPPED (task463)"
+  }
+ ],
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-16",
  "portal": null,
  "source_note": "seed ET20 (analytical_tasks/07_data_extraction_conformation): a manufacturer choosing a county for a new plant needs to know whether the county's PM2.5 design value violates the annual standard (9.0 ug/m3), from AQS daily values across monitors, quarterly means, collocated monitors and event flags; the seed's own trap (averaging every daily value) is rule application and is not used",
- "zip_sha256": "8a4d9d0531e642c9200ab3bdb5f2706d6dbd55c3f70f8975239a923dae9393b7"
+ "zip_sha256": "e020250e6b38cfea06b6b019477646ff3fa3783771a74af67ac1b5c89eb5f5fa",
+ "ceiling": {
+  "script": "generator/ceiling.py",
+  "pair": 34.6,
+  "cracker": 51.1,
+  "mirror": 18.1,
+  "mirror_leakage_pct": 11.1,
+  "cracker_kept": "0 of 16 coverage figures, 2 of 2 file criteria",
+  "full_includer_pair": 83.5
+ },
+ "reshipped": [
+  "2026-11-01"
+ ]
 }

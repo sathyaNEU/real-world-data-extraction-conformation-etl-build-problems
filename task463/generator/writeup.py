@@ -70,10 +70,14 @@ def write(fig_path, out_path):
                  WORDS[len(keep)], _p(min(dr)), _p(max(dr))))
     L.append("4. Set each rate against the item's published 12-month rate to September 2026 (%s, sheet 12-month rates) "
              "and moved the items whose rates, each to one decimal, are within 1.5 points." % W.FILES["published"])
-    L.append("5. Placed each category in %s on its RPI item by its name in %s (Wrenfold's 2025 codes name other "
-             "categories in the map), left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and "
+    L.append("5. Placed each category of %s on its RPI item through %s: Wrenfold's second-half sales by the category "
+             "names its report prints, its first-half sales by the category codes they were recorded under (Wrenfold "
+             "renumbered its categories from July 2025 and its report names each code by the category holding it now; "
+             "read this way each category's two halves agree in sales and unit price, read by name they part by %s to "
+             "%s times); left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and "
              "divided each item's sales by the households' spending in %s." % (
-                 W.FILES["returns"], W.FILES["catmap"], W.FILES["spending"]))
+                 W.FILES["returns"], W.FILES["catmap"], _p(F["coverage_name_jump"][0]), _p(F["coverage_name_jump"][1]),
+                 W.FILES["spending"]))
     L.append("")
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % W.GOLDEN["workbook"])
@@ -96,7 +100,7 @@ def write(fig_path, out_path):
     L.append("")
     L.append("### %s\n" % W.GOLDEN["products"])
     L.append("1. %s rows, one per supermarket line and month of the sixteen items over the parallel year (%s lines), "
-             "each with the line's units, sales value with GST and unit price; %s of the lines are in the lines "
+             "each with the line's units, sales value with GST and unit price to the penny; %s of the lines are in the lines "
              "compared." % (format(F["csv_rows"], ","), format(F["csv_lines"], ","), format(F["csv_panel_lines"], ",")))
     with open(out_path, "w") as f:
         f.write("\n".join(L) + "\n")

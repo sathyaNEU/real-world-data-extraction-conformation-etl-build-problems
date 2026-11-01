@@ -100,22 +100,28 @@ def delivery(target):
 
 
 def coverage(target):
+    """Each item's 2025 coverage, recomputed with pandas: Wrenfold's first half by its category numbers in the map (the
+    numbers its first-half sales were recorded under), its second half by the category names its report prints;
+    Gorsedale's retail rows; Calderby's net sales with 5 per cent GST."""
     path = find(target, "retailer_annual_returns")
     cmap = pd.read_csv(find(target, "retailer_category_map"), dtype=str)
-    names = dict(zip(zip(cmap["retailer"], cmap["category_name"]), cmap["rpi_item"]))
+    by_code = dict(zip(zip(cmap["retailer"], cmap["category_code"]), cmap["rpi_item"]))
+    by_name = dict(zip(zip(cmap["retailer"], cmap["category_name"]), cmap["rpi_item"]))
     sales = {}
-    wr = pd.read_excel(path, sheet_name="Wrenfold Stores", header=3)
+
+    def add(it, v):
+        if isinstance(it, str):
+            sales[it] = sales.get(it, 0.0) + float(v)
+    wr = pd.read_excel(path, sheet_name="Wrenfold Stores", header=3, dtype={"Category code": str})
     for _, r in wr.iterrows():
-        it = names.get(("Wrenfold Stores", r["Category"]))
-        sales[it] = sales.get(it, 0) + r["Sales 2025"]
-    gs = pd.read_excel(path, sheet_name="Gorsedale Co-operative", header=3)
+        add(by_code.get(("Wrenfold Stores", r["Category code"])), r["Sales Jan-Jun"])
+        add(by_name.get(("Wrenfold Stores", r["Category"])), r["Sales Jul-Dec"])
+    gs = pd.read_excel(path, sheet_name="Gorsedale Co-operative", header=3, dtype={"Category code": str})
     for _, r in gs[gs["Channel"] == "Retail"].iterrows():
-        it = names.get(("Gorsedale Co-operative", r["Category"]))
-        sales[it] = sales.get(it, 0) + r["Sales 2025"]
-    cs = pd.read_excel(path, sheet_name="Calderby's", header=3)
+        add(by_code.get(("Gorsedale Co-operative", r["Category code"])), r["Sales 2025"])
+    cs = pd.read_excel(path, sheet_name="Calderby's", header=3, dtype={"Dept": str})
     for _, r in cs.iterrows():
-        it = names.get(("Calderby's", r["Department"]))
-        sales[it] = sales.get(it, 0) + r["Net sales"] * 1.05
+        add(by_code.get(("Calderby's", r["Dept"])), r["Net sales"] * 1.05)
     sp = pd.read_excel(find(target, "household_spending_estimates"), header=3, dtype={"Item code": str})
     spend = dict(zip(sp["Item code"], sp["Spending 2025"]))
     return {it: int(math.floor(100 * sales[it] / 1000 / spend[it] + 0.5)) for it in ITEMS}

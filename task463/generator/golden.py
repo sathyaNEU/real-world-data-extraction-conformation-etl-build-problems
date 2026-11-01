@@ -20,6 +20,11 @@ def r1(x):
     return float(np.sign(x) * np.floor(abs(x) * 10 + 0.5) / 10)
 
 
+def G2(x):
+    """To the penny, half away from zero."""
+    return float(np.sign(x) * np.floor(abs(x) * 100 + 0.5 + 1e-9) / 100)
+
+
 def compute(target):
     pm = B.product_months(target)
     cl = B.read_classes(target)
@@ -59,18 +64,23 @@ def compute(target):
         it = B.item_of(cl, r, g, m)
         if it not in W.INAME:
             continue
-        rows.append([r, g, it, m, u, "%.2f" % v, ("%.4f" % (v / u)) if u > 0 else "", "Y" if (it, (r, g)) in panel else "N"])
+        rows.append([r, g, it, m, u, "%.2f" % v, ("%.2f" % G2(v / u)) if u > 0 else "", "Y" if (it, (r, g)) in panel else "N"])
     F["csv_rows"] = len(rows)
     F["csv_panel_lines"] = len(panel)
     F["csv_lines"] = len({(r[0], r[1]) for r in rows})
-    # Ask A: each supermarket's average days from a month's end to its records being complete
+    # the delivery log (a declared distractor): each supermarket's average days to complete records, kept as a check
     dl = B.delivery_figures(target)
     F["delivery"] = {r: r1(v["average"]) for r, v in dl.items()}
     F["delivery_lags"] = {r: v["lags"] for r, v in dl.items()}
-    # Ask B: coverage of households' 2025 spending by the supermarkets' 2025 retail sales
+    # the coverage ask: the supermarkets' 2025 retail sales as a share of households' 2025 spending
     cov = B.coverage_figures(target)
     F["coverage"] = {it: int(np.floor(cov[it] + 0.5)) for it in W.ICODE}
     F["coverage_exact"] = {it: round(cov[it], 3) for it in W.ICODE}
+    # Wrenfold's rows read by name in both halves: how far each item's two halves then part in sales
+    wrows = B.returns_rows(target)[W.RNAME["W"]]
+    bn = B.category_map(target)[1]
+    jumps = [max(r[3] / r[5], r[5] / r[3]) for r in wrows if bn[(W.RNAME["W"], r[1])] in W.INAME]
+    F["coverage_name_jump"] = [round(min(jumps), 1), round(max(jumps), 1)]
     return F, rows
 
 
@@ -110,13 +120,14 @@ def write_workbook(path, F):
     for col, wdt in zip("ABCDEFG", (10, 26, 10, 16, 16, 13, 26)):
         ws.column_dimensions[col].width = wdt
     ws.row_dimensions[4].height = 44
-    # Ask A
-    # Ask B
+    # the coverage sheet
     cs = wb.create_sheet("Coverage 2025")
     cs.append(["The three supermarkets' 2025 retail sales as a share of households' 2025 spending, by item"])
     cs["A1"].font = Font(bold=True, size=12)
-    cs.append(["Retail sales with GST from the supermarkets' annual returns (Gorsedale's trade sales left out, "
-               "Calderby's net sales with GST added), each category placed by its name in the office's category map."])
+    cs.append(["Retail sales with GST from the supermarkets' 2025 returns, divided by households' 2025 spending on the "
+               "item. Gorsedale's trade sales left out; Calderby's net sales with 5 per cent GST added. Wrenfold's "
+               "second-half sales placed by category name; its first-half sales, recorded under the category codes it "
+               "used until it renumbered its categories in July 2025, placed by those codes in the office's map."])
     cs.append([])
     cs.append(["Item code", "Item", "Coverage (%)"])
     for c in cs[4]:

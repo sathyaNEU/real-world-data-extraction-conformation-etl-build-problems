@@ -137,9 +137,9 @@ def returns_workbook(path, cv):
     ws.title = "Wrenfold Stores"
     ws.append(["Wrenfold Stores Ltd: annual return of retail sales, calendar year 2025"])
     ws["A1"].font = Font(bold=True)
-    ws.append(["Sales value including GST, pounds. Categories as in the 2025 product hierarchy."])
+    ws.append(["Units sold and sales value including GST, pounds, by the category code each sale was recorded under and by half-year. Category names as in the current product hierarchy."])
     ws.append([])
-    ws.append(["Category code", "Category", "Sales 2025"])
+    ws.append(["Category code", "Category", "Units Jan-Jun", "Sales Jan-Jun", "Units Jul-Dec", "Sales Jul-Dec"])
     for r in cv["wren"]:
         ws.append(r)
     gs = wb.create_sheet("Gorsedale Co-operative")
@@ -158,7 +158,13 @@ def returns_workbook(path, cv):
     cs.append(["Dept", "Department", "Net sales"])
     for r in cv["cald"]:
         cs.append(r)
-    for sh in (ws, gs, cs):
+    for row in ws.iter_rows(min_row=5):
+        row[2].number_format = row[4].number_format = "#,##0"
+        row[3].number_format = row[5].number_format = "#,##0.00"
+    ws.column_dimensions["B"].width = 30
+    for col in "CDEF":
+        ws.column_dimensions[col].width = 14
+    for sh in (gs, cs):
         for row in sh.iter_rows(min_row=5):
             row[-1].number_format = "#,##0.00"
         sh.column_dimensions["B"].width = 30

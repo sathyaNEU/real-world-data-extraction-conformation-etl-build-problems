@@ -1,6 +1,18 @@
 # task463 design note: Kellesay RPI transaction data readiness (architecture 1)
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+Status lives in `pipeline.json`; this note holds the design. Read `**Pass 3** (the 11-01 reship cut, target.zip e020250e; the isolated thread spawned by the main session from the
+determinism-judge agent's brief, order kept): DETERMINISTIC, APPROVE. Every block reproduced: the sixteen rates and
+the 13/3 split (Breakfast cereals 0.8 inside, Pasta and rice 2.3 outside; average, base and current share weights
+and GEKS agreeing), the counts (14,364 product-months, 1,172 lines, 1,012 compared) and all sixteen coverage figures
+with Wrenfold's first half by its 2024 codes and its second by name, which the thread confirmed from the weekly feed
+(the second half by name) and the unit prices (the first half only through the 2024 codes). Watch items: linking the
+monthly comparisons, the stump, closed by 3.6 and the data; the Wrenfold renumbering date, unstated and forced by the
+data, ask 3 only. Gate F moderate; Gate G method_or_model_selection, analytical_non_defect, no surface read, no sole
+data defect; Gate H domain pass, layers pass, decisive step analytical. Minor: the published rate from the rounded
+indices differs from the sheet by up to 0.06 (SF9, the same call); seven of 3,930 Calderby product-months differ by a
+penny when GST is added row by row rather than to the month's total. No fix required.
+
+## Tried and rejected` first.
 
 ## Draw
 
@@ -306,41 +318,71 @@ index is a neighbouring statistic, declared a distractor.
 
 ## Ask sheet
 
-- **The coverage ask, each item's 2025 coverage: the three supermarkets' 2025 retail sales with GST as a share of households' 2025
-  spending on it (16 figures, whole per cent).** H18 home: how much of each item's household spending the transaction
-  data hold, a measure every item carries that the call does not turn on. Path: the supermarkets' annual returns (three
-  sheets in three layouts), the office's category map, the household spending estimates and the plan's GST rate
-  (four files, ten columns). Primary device: D7, codes reissued: Wrenfold's 2025 return lists its categories under the
-  codes of its 2025 hierarchy, while the office's map holds the codes its categories carried before, so the code join
-  completes (only toiletries' new department code, P310, finds no row) and puts every category's sales on another item;
-  the names agree. Hazards: H4 Calderby's sheet net of GST (5 per cent added); H5 Gorsedale's trade rows (sales on trade
-  accounts) beside its retail rows. Stops (asserted): the code join (the cracker) moves every item 3.1 to 39.8 points
-  (Bread 47 against 68, Toiletries 33 against 73); trade sales kept move the nine items with trade sales and Calderby left
-  net moves every item; the golden 55 to 77 per cent.
-  Realism: a retailer renumbers its category hierarchy and the statistics office's map lags a year.
+- **The coverage ask, each item's 2025 coverage: the three supermarkets' 2025 retail sales with GST as a share of
+  households' 2025 spending on it (16 figures, whole per cent).** H18 home: how much of each item's household spending
+  the transaction data hold, a measure every item carries that the call does not turn on. Use: the programme's coverage
+  line beside each item's verdict. Path: the supermarkets' 2025 returns (three sheets in three layouts: Wrenfold's
+  half-year report with units, Gorsedale's by channel, Calderby's net of GST), the office's category map
+  (`retailer_category_map_2024.csv`, built from the 2024 returns), the household spending estimates and the plan's GST
+  rate (four files, thirteen columns).
+- **Primary device: D2 with D7, a label at the wrong vintage on a key whose meaning changed.** From 1 July 2025 Wrenfold
+  numbers its packaged categories in store order, so 19 of its 22 categories took a code another category held in
+  2024 (cosmetics and the two fresh departments kept theirs). Its report groups sales by the category code each sale
+  was recorded under and names each code by the category holding it now, so the first half's sales, recorded under
+  the 2024 codes, sit beside the names of the categories that took those codes over, and the second half's are right.
+  Against the 2024 map every renumbered row's code contradicts its name: the hygiene battery's repair (re-derive from
+  the finer key, the name) is right for July to December and wrong for January to June, the lazy code join right for
+  January to June and wrong for July to December, and only the first half by code with the second by name places every
+  category. Nothing dates the renumbering: the report's own line says what a row is ("by the category code each sale
+  was recorded under ... Category names as in the current product hierarchy") and no file says when the hierarchy
+  changed.
+- **Forcing (asserted on the shipped rows):** read the golden way, every item's two halves agree (sales 0.91 to 1.10,
+  first-half unit price 0.90 to 0.97 of the second, the first half carrying more offer months); read by name in both
+  halves, every item's halves part by 1.4 to 2.3 times in sales, and most at another category's unit price (the row
+  named Coffee sells at 1.27 a unit from January to June against 4.08 from July).
+- **Hazards:** H4 Calderby's sheet net of GST (5 per cent added: the plan's 2.3 and the sheet's own line); H5
+  Gorsedale's trade rows beside its retail rows.
+- **Stops (asserted):** names in both halves (the cracker) move every item 5 to 14 whole points (Bread 82, Cheese 80,
+  Coffee 53 against 68, 69, 59); codes in both halves 5 to 15 (Pasta and rice 75, Toilet and kitchen rolls 60); trade
+  rows kept move the nine items with trade sales and Calderby left net lowers every item; both one-way readings stay
+  between 53 and 84 per cent; the golden 55 to 77, each 0.16 or more from its whole-per-cent edge.
+- **Scope against effect (H30):** no graded coverage figure moved at this reship (the sixteen whole-per-cent figures are the shipped version's); the
+  natural read moved on 16 of 16 (names in both halves 5 to 14 points off). The files that moved are the returns workbook, the
+  category map (now `retailer_category_map_2024.csv`, with rows for every category the feeds carry) and the household spending
+  estimates (rescaled with the returns).
+- **Pin test:** the asking sentence pins the item, the year, retail sales with GST and household spending; the device
+  sits in which category each half's sales belong to, which no pin names, no filed sentence adjudicates and the
+  report's row line describes without dating.
+- **Realism:** a retailer renumbers its category hierarchy mid-year and its sales system joins the year's history to
+  the current hierarchy table, the commonest way a re-coded dimension mislabels old facts; the statistics office's map
+  lags a year. The returns now agree with the feeds: each 2025 return was rebuilt from the lines' own months
+  (September to December as sold, January to August from the same lines' offer and offer-free months at the prices of
+  the time), where the earlier returns ran 6 to 41 times the feeds, and every category the feeds carry has a row in
+  each return.
 - **The construction layer:** each item's lines compared, transaction-data 12-month rate, published rate, difference and
   verdict, the moved set, the chart and the conformed product-month file; the cracker has them.
-- **Main population zero-counts (asserted):** the main call reads no delivery log, annual return, category map or
-  household spending row (the call and every rung computed with those files deleted are identical); the coverage ask
-  reads no feed, classification or published row (computed with those files deleted, it is identical). No device or
-  hazard row sits in a file the call reads.
-- **Hazard table (asserted):** H4 every item's coverage; H5 the nine items with trade sales.
-- **Rounding edges (asserted):** each coverage 0.1 or more
-  from its whole-per-cent edge; each item's transaction-data rate 0.015 or more from its tenth's edge under every
-  drift-free comparison.
-- **Referee:** none; no total in any ask file ties only under one handling.
+- **Main population zero-counts (asserted):** the main call reads no delivery log, return, category map or household
+  spending row (the call and every rung computed with those files deleted are identical); the coverage ask reads no
+  feed, classification or published row (computed with those files deleted, it is identical). No device or hazard row
+  sits in a file the call reads.
+- **Hazard table (asserted):** H4 lowers every item's coverage; H5 moves the nine items with trade sales.
+- **Rounding edges (asserted):** each coverage 0.15 or more from its whole-per-cent edge (the tightest 0.16); each item's
+  transaction-data rate 0.015 or more from its tenth's edge under every drift-free comparison.
+- **Referee:** none; no return carries a total, and Wrenfold's whole-year sales are the same under every reading.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
 |---|---|---|
-| Coverage by item | grosses up Calderby, drops Gorsedale's trade rows, places each category by its name once the codes contradict the map's names (the hygiene battery, supplemental-stumping 1.1c) | kept |
+| Coverage by item, 16 figures | grosses up Calderby, drops Gorsedale's trade rows, and places each Wrenfold category by its name in both halves once the codes contradict the 2024 map's names (the battery, supplemental-stumping 1.1c): every item 5 to 14 points off, 0 of 16 kept | miss |
 
-- Measured by: generator/ceiling.py on the cut pack, the cracker on the hygiene battery's path: it keeps all 16
-  coverage figures and the product-month file (18 of 18); the mirror, on the same ask paths, the same.
-- Pair ceiling: 83.5 (cracker 38 + 7 + 55 = 100.0; the mirror on R2, 5 + 7 + 55 = 67.0): FAILS. The coverage ask's
-  primary device (Wrenfold's reissued codes, whose names disagree with the map's) is a code contradicted by a finer
-  key, which the battery re-derives; the leak reader of 10-31 named the mismatch unprompted (G110 Coffee in the return,
-  Bread and rolls in the map). The ask layer needs a new silent device before this build ships.
-- Mirror leakage: 100.0 per cent of ask weight.
+- Measured by: generator/ceiling.py on the cut pack (target.zip e020250e): the cracker keeps no coverage figure and the
+  product-month file's two criteria (2 of 18); the mirror, on the same ask paths, the same.
+- Pair ceiling: 34.6 (the cracker 38 + 7 + 55 x 2/18 = 51.1; the mirror on R2, 5 + 7 + 55 x 2/18 = 18.1).
+- Mirror leakage: 11.1 per cent of ask weight (the product-month file's two criteria).
+- Stress rows, not the gate (ceiling.py prints them): the code join in both halves keeps 0 of 16; names in both halves
+  with the trade rows kept and Calderby left net 0 of 16; the full includer, who reads Wrenfold's first half by code and
+  its second by name, keeps 16 of 16, which with the call landed puts the pair at 83.5. The layer stands on one primary,
+  the residual risk recorded here: the includer has to see that the report names the current hierarchy while its first
+  half was recorded under the old one, a judgment the battery does not make.
 - The supplier-timeliness ask was cut at the 10-31 reship: its one silent device was the receipt log's UTC clock, and
   with the dictionary gone the island's clock has to be filed, after which a careful cracker converts it and keeps all
   three figures; the delivery log stays in the pack as a declared distractor.
@@ -374,15 +416,24 @@ index is a neighbouring statistic, declared a distractor.
   on the clean truth files the five; R3b: only a drift-free construction files the thirteen, while unweighted
   relatives, the unit value and linked Fisher land elsewhere; since the round-1 fix the plan defines the monthly index
   and the rate as its change and leaves the construction to the analyst).
-- **Gates.** 15 files in 5 formats (csv, pdf, sqlite, txt, xlsx); Calderby's daily_sales at 287,409 rows; two
-  distractors (the field quotes and the retail sales index) the solution never reads, the call and every ask unchanged
-  with them deleted; 69 checks; `verify.py` from the bundle alone; two builds byte-identical; `figures_check.py`,
-  `precut.py` (49) and `voice-check.py` exit 0; `leak.py` REVIEW (no LEAK); guard heart WARN (answered in the draw);
-  surface promoting task462 (back to back: the population gap and designation_set) and task70 and task104 (older
-  same-driver signatures, differentiated on the card) for the author's read; the containers carry the fiction's owners
-  and dates (H1 audit clean); the folder manifest, whose column set repeated task462's, reshaped as the programme's
-  folder register; the real Jersey names among the outlets and Calderby's stores (St Aubin, Northfield, Mont Cochon)
-  renamed Elskirk, Thornsay and Gullhaven.
+- **Gates (the 11-01 reship, target.zip e020250e).** 13 files in 5 formats (csv, pdf, sqlite, txt, xlsx); Calderby's
+  daily_sales at 287,409 rows (Wrenfold's weekly file 29,280 rows, 1,014 of them the two resent weeks' second extract,
+  which is why a count of distinct week-and-line pairs gives 28,266); three distractors (the field quotes, the retail
+  sales index and the delivery log) the solution never reads, the call and every ask unchanged with them deleted; 74
+  checks; `verify.py` from the bundle alone (its own coverage reading, first half by code and second by name); two
+  builds byte-identical; `figures_check.py` 151 of 151; `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS
+  (940 characters, unit prices now rounded to the penny in the closing sentence and in the product-month file);
+  `freeze.py check --mode rubric` PASS (the main call, the stump, the ladder, the default path and every frozen
+  figure unchanged; the 18 ask figures that moved are the sixteen coverage figures' unrounded values in `figures.json`
+  and the new pair giving how far the name reading parts the halves, the sixteen graded whole-per-cent figures unchanged); `leak.py` REVIEW (no LEAK; the same lines as the shipped cut,
+  ruled below); `guard.py surface` exit 0 promoting task462 (back to back: the population gap and designation_set),
+  task236 (gap, pattern and decision type, approved 10-30) and task70 and task104 (older same-driver signatures), every
+  one card-axis only and differentiated on the card; `guard.py heart` BLOCK on two window bans, `ban.role`
+  (programme_officer) and `ban.shape` (10), both against task189, whose card was registered at 21:21Z on 10-16, 31
+  minutes before this one at 21:52Z, both builds shipped 10-16: an axis ban held by a build filed before this
+  delivered build, flagged and not relabelled; the heart text screen itself is clean (nearest driver 0.08, task95; nearest driver or stump text on file 0.05); the
+  containers carry the fiction's owners and dates (H1); `metadata.json`'s prompt shape no longer names the cut
+  timeliness ask.
 
 ## Leak check
 
@@ -425,6 +476,20 @@ the lines on sale before the parallel year carry the summer 2025 batch dates by 
 month); a line's share within its supermarket raised as unfiled (closed: SF13, the same sixteen rates); the September to
 October flatness in some published items again called minor; the register's and the delivery log's Calderby's counts
 differ by the March extract the second delivery replaced.
+
+**Reader, the 11-01 reship cut** (target.zip e020250e; the coverage ask's files changed): Q1 none (the plan's 3.4 to 3.6
+and 4.1 are procedure); Q2 none; Q3 none (the 2024 category map and the classification read as the office's
+crosswalks); Q4 none; Q5 the plan's 3.3 to 3.6, "the text does not say whether the index is chained monthly or compared
+directly"; Q6 "mainly following the stated procedure". Ruled on the measurement, not the account: every filed rule
+executed with the monthly comparisons linked files five (R3a on the clean truth) and only a drift-free comparison
+files thirteen (R3b), so the open construction the reader's own Q5 names is the decisive step, analytical, as the pass
+3 judge read it. Every REVIEW line harmless (the same lines as the shipped cut). Realism notes: Wrenfold's reassigned
+codes and its renamed rows' swings between the halves are the coverage device by design (the pass 3 judge's own
+derivation read the rows by name in both halves before opening the answers, and confirmed the golden afterwards from
+the weekly feed and the unit prices); the rest (price points, a till's fixed net price, single-unit returns, the
+published indices' flat autumn months, the field quotes' two Elskirk outlets, wordings shared across feeds, the
+classification's batch dates) sit in files the call reads or in distractors, which this ask-layer reship keeps
+byte-identical, and none moves the call or an ask.
 
 ## Determinism judge
 
@@ -481,3 +546,7 @@ with September 2025") is declined: it would file the construction, the decisive 
   own months.
 - The coverage ask's reissued-code device at the 10-31 reship: a code contradicted by the names beside it is in the hygiene battery (supplemental-stumping 1.1c), so a careful cracker places each category by name and keeps all 16 figures (pair 83.5); the lazy code-join cracker the sheet measured at 33.7 was never the careful path. The supplier-timeliness ask died the same way (a UTC clock is in the battery). Both need devices no battery item sees.
 - A coverage device that splits a supermarket's mixed department (hot drinks holding coffee and tea, and so on) across its items by the supermarket's own product mix (screened 10-31): the mix comes from the point-of-sale product-months the call itself builds, so the construction layer hands the split to both responses (supplemental-stumping ban 4); not built.
+- A household-survey denominator for the coverage ask (the HES 2025 diary records, joint shopping trips recorded by two members of a household as the device; screened 11-01): a diary shows each household's purchases, and the feeds' fixed item mix (coffee and laundry several times bread) would have shown as households buying a jar of coffee a week and a loaf a month; not built.
+- Calendarising a supermarket's fiscal-year return, off-island stores in a return, and a channel or concession counted in two returns (screened 11-01): Gorsedale's January 2026 sits in the call's own rows, a store's island is a scope fork the asking sentence would have to pin, and the rest move an annual total by less than a whole per cent; not built.
+- Wrenfold's July 2025 renumbering first drawn with cakes and crisps inside the grocery cycle (11-01): every row paired with one of those small categories jumped 8 to 14 times between the halves, a tell by inspection (supplemental-stumping 1.1d); redrawn over the packaged categories with every renamed row's halves 1.4 to 2.3 times apart and each item's coverage moving 5 or more whole points under both one-way readings.
+- Wrenfold's report line "Product hierarchy: 2025." (11-01): read literally, every row is a 2025 category in both halves, a filed sentence licensing the name reading; replaced by the report's own statement of what a row is (sales by the category code each was recorded under, names as in the current hierarchy), which dates nothing, with the map's vintage in its file name.

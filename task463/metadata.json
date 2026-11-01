@@ -5,7 +5,7 @@
  "domain": "Survey Research & Official Statistics",
  "subdomain": "seasonal-adjustment-official-time-series-production (official time-series production: a monthly retail prices index compiled from supermarket transaction records, conformed into product-months and set against the published index over a parallel year)",
  "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "10: a scorecard of sixteen items against the 1.5-point line (lines compared, transaction-data rate, published rate, difference, move or stay), with each supermarket's timeliness, each item's coverage, a chart of each item's two indices and the conformed product-month file",
+ "prompt_shape": "10: a scorecard of sixteen items against the 1.5-point line (lines compared, transaction-data rate, published rate, difference, move or stay), with each item's 2025 coverage of household spending, a chart of each item's two indices and the conformed product-month file",
  "as_of": "2026-10-21",
  "deliverables": [
   "kellesay_rpi_transaction_readiness_2027.xlsx",
@@ -92,7 +92,7 @@
   {
    "path": "household_spending_estimates_2025.xlsx",
    "format": "xlsx",
-   "bytes": 6797,
+   "bytes": 6786,
    "rows": null,
    "source": "Constructed: the statistics office's estimate of households' 2025 spending by RPI item",
    "date": "2026-10-21",
@@ -119,17 +119,17 @@
   {
    "path": "retailer_annual_returns_2025.xlsx",
    "format": "xlsx",
-   "bytes": 10048,
+   "bytes": 10856,
    "rows": null,
-   "source": "Constructed: the supermarkets' annual returns of 2025 retail sales",
+   "source": "Constructed: the supermarkets' returns of 2025 retail sales by their own categories (one by half-year with units sold)",
    "date": "2026-10-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "retailer_category_map.csv",
+   "path": "retailer_category_map_2024.csv",
    "format": "csv",
-   "bytes": 2280,
-   "rows": 58,
+   "bytes": 2551,
+   "rows": 66,
    "source": "Constructed: the statistics office's map of the supermarkets' categories to RPI items",
    "date": "2026-10-21",
    "license": "CC0-1.0 (original work, constructed for this task)"

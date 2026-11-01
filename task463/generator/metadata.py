@@ -19,7 +19,7 @@ SOURCES = {
     F["plan"]: "the statistics office's plan for introducing supermarket transaction data into the RPI",
     F["deliveries"]: "the statistics office's log of the files received from the supermarkets",
     F["quotes"]: "the RPI field collection's price quotes for the sixteen items",
-    F["returns"]: "the supermarkets' annual returns of 2025 retail sales",
+    F["returns"]: "the supermarkets' returns of 2025 retail sales by their own categories (one by half-year with units sold)",
     F["catmap"]: "the statistics office's map of the supermarkets' categories to RPI items",
     F["spending"]: "the statistics office's estimate of households' 2025 spending by RPI item",
     F["rsi"]: "the statistics office's monthly retail sales index",
@@ -60,8 +60,8 @@ def write(target, out_path):
                      "and set against the published index over a parallel year)",
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "10: a scorecard of sixteen items against the 1.5-point line (lines compared, transaction-data "
-                        "rate, published rate, difference, move or stay), with each supermarket's timeliness, each item's "
-                        "coverage, a chart of each item's two indices and the conformed product-month file",
+                        "rate, published rate, difference, move or stay), with each item's 2025 coverage of household "
+                        "spending, a chart of each item's two indices and the conformed product-month file",
         "as_of": W.PACK_DATE.isoformat(),
         "deliverables": DELIVERABLES,
         "distractor_files": DISTRACTORS,
