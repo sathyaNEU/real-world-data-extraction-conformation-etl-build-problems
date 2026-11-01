@@ -203,33 +203,63 @@ def delivery_figures(target, **kw):
     return res
 
 
-def coverage_figures(target, by_name=True, gross_up=True, retail_only=True):
-    """Each item's 2025 retail sales at the three supermarkets, with GST, as a share of households' 2025 spending."""
+def returns_rows(target):
+    """The three return sheets' rows: Wrenfold's (code, category, units and sales in each half), Gorsedale's (channel,
+    code, category, sales), Calderby's (department, name, net sales)."""
     import openpyxl
     wb = openpyxl.load_workbook(path(target, "returns"), read_only=True)
-    cmap = {}
+    out = {}
+    for sheet in (W.RNAME["W"], W.RNAME["G"], W.RNAME["C"]):
+        out[sheet] = [r for r in list(wb[sheet].iter_rows(values_only=True))[4:] if r[0] is not None]
+    return out
+
+
+def category_map(target):
+    by_code, by_name = {}, {}
     with open(path(target, "catmap"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            cmap[(r["retailer"], r["category_name"] if by_name else r["category_code"])] = r["rpi_item"]
+            by_code[(r["retailer"], r["category_code"])] = r["rpi_item"]
+            by_name[(r["retailer"], r["category_name"])] = r["rpi_item"]
+    return by_code, by_name
+
+
+def coverage_sales(target, wren="golden", gross_up=True, retail_only=True):
+    """Each item's 2025 retail sales at the three supermarkets, with GST, from the returns. Wrenfold's first half is
+    placed by its category codes in the map (the hierarchy those sales were recorded under) and its second half by its
+    category names (the hierarchy it has used since July 2025, whose names its report prints): wren="golden". The
+    readings that go one way for both halves are wren="name" and wren="code"."""
+    rows = returns_rows(target)
+    by_code, by_name = category_map(target)
     sales = defaultdict(float)
-    for sheet, retailer in ((W.RNAME["W"], W.RNAME["W"]), (W.RNAME["G"], W.RNAME["G"]), (W.RNAME["C"], W.RNAME["C"])):
-        rows = list(wb[sheet].iter_rows(values_only=True))[4:]
-        for row in rows:
-            if row[0] is None:
-                continue
-            if retailer == W.RNAME["G"]:
-                channel, code, name, val = row
-                if retail_only and channel != "Retail":
-                    continue
-            else:
-                code, name, val = row
-            it = cmap.get((retailer, name if by_name else str(code)))
-            if it is None:
-                continue
-            v = float(val)
-            if retailer == W.RNAME["C"] and gross_up:
-                v *= 1 + W.GST
-            sales[it] += v
+    for code, name, u1, v1, u2, v2 in rows[W.RNAME["W"]]:
+        k_code, k_name = (W.RNAME["W"], str(code)), (W.RNAME["W"], name)
+        first = by_name.get(k_name) if wren == "name" else by_code.get(k_code)
+        second = by_code.get(k_code) if wren == "code" else by_name.get(k_name)
+        if first:
+            sales[first] += float(v1)
+        if second:
+            sales[second] += float(v2)
+    for channel, code, name, val in rows[W.RNAME["G"]]:
+        if retail_only and channel != "Retail":
+            continue
+        it = by_code.get((W.RNAME["G"], str(code)))
+        if it:
+            sales[it] += float(val)
+    for code, name, val in rows[W.RNAME["C"]]:
+        it = by_code.get((W.RNAME["C"], str(code)))
+        if it:
+            sales[it] += float(val) * ((1 + W.GST) if gross_up else 1.0)
+    return sales
+
+
+def spending(target):
+    import openpyxl
     sw = openpyxl.load_workbook(path(target, "spending"), read_only=True)
-    spend = {str(r[0]): float(r[2]) for r in list(sw.active.iter_rows(values_only=True))[4:] if r[0]}
+    return {str(r[0]): float(r[2]) for r in list(sw.active.iter_rows(values_only=True))[4:] if r[0]}
+
+
+def coverage_figures(target, wren="golden", gross_up=True, retail_only=True):
+    """Each item's 2025 retail sales at the three supermarkets, with GST, as a share of households' 2025 spending."""
+    sales = coverage_sales(target, wren, gross_up, retail_only)
+    spend = spending(target)
     return {it: 100.0 * sales[it] / 1000.0 / spend[it] for it in W.ICODE}

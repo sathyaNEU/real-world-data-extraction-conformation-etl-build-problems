@@ -69,7 +69,7 @@ FILES = {
     "deliveries": "retailer_delivery_log_2025_2026.csv",
     "quotes": "rpi_field_quotes_2025_2026.csv",
     "returns": "retailer_annual_returns_2025.xlsx",
-    "catmap": "retailer_category_map.csv",
+    "catmap": "retailer_category_map_2024.csv",
     "spending": "household_spending_estimates_2025.xlsx",
     "rsi": "kellesay_retail_sales_index_2025_2026.xlsx",
 }

@@ -20,7 +20,7 @@ The moving items' 12-month rates to September 2026 from the transaction data sit
 2. Classified each line through statistics_kellesay_product_classification.csv and kept, for each item, the lines each supermarket sold in every month from September 2025 to September 2026: 1,012 lines over the sixteen items.
 3. Compiled each item's monthly index over those lines as a Törnqvist comparison of the month with September 2025 (each line weighted by its spending share averaged over the two months compared) and took the 12-month rate as the index's change from September 2025 to September 2026; GEKS and CCDI over the thirteen months and a direct Fisher give the same sixteen rates to one decimal. Linking the twelve month-on-month comparisons was not used: in the nine items whose goods keep, the month after an offer runs well below normal sales, so the linked index ends 4.6 to 8.4 points below the direct comparison and below every line's own change, which no change in the item's prices can do.
 4. Set each rate against the item's published 12-month rate to September 2026 (kellesay_rpi_item_indices_2024_2026.xlsx, sheet 12-month rates) and moved the items whose rates, each to one decimal, are within 1.5 points.
-5. Placed each category in retailer_annual_returns_2025.xlsx on its RPI item by its name in retailer_category_map.csv (Wrenfold's 2025 codes name other categories in the map), left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and divided each item's sales by the households' spending in household_spending_estimates_2025.xlsx.
+5. Placed each category of retailer_annual_returns_2025.xlsx on its RPI item through retailer_category_map_2024.csv: Wrenfold's second-half sales by the category names its report prints, its first-half sales by the category codes they were recorded under (Wrenfold renumbered its categories from July 2025 and its report names each code by the category holding it now; read this way each category's two halves agree in sales and unit price, read by name they part by 1.4 to 2.3 times); left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and divided each item's sales by the households' spending in household_spending_estimates_2025.xlsx.
 
 ## 4. Deliverable Answers
 
@@ -68,4 +68,4 @@ The moving items' 12-month rates to September 2026 from the transaction data sit
 
 ### kellesay_transaction_product_months_2025_2026.csv
 
-1. 14,364 rows, one per supermarket line and month of the sixteen items over the parallel year (1,172 lines), each with the line's units, sales value with GST and unit price; 1,012 of the lines are in the lines compared.
+1. 14,364 rows, one per supermarket line and month of the sixteen items over the parallel year (1,172 lines), each with the line's units, sales value with GST and unit price to the penny; 1,012 of the lines are in the lines compared.

@@ -311,26 +311,53 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("Ask A each average 0.03 or more from its tenth's edge",
           all(abs((v["average"] * 10) % 1 - 0.5) >= 0.3 for v in dl.values()))
     cov = B.coverage_figures(target)
-    cov_code = B.coverage_figures(target, by_name=False)
+    cov_name = B.coverage_figures(target, wren="name")
+    cov_code = B.coverage_figures(target, wren="code")
     cov_trade = B.coverage_figures(target, retail_only=False)
     cov_net = B.coverage_figures(target, gross_up=False)
-    gB = {it: int(np.floor(cov[it] + 0.5)) for it in W.ICODE}
+    whole = lambda c: {it: int(np.floor(c[it] + 0.5)) for it in W.ICODE}
+    gB, nB, cB = whole(cov), whole(cov_name), whole(cov_code)
     check("Ask B golden: each item's coverage", gB == {k: v for k, v in F["coverage"].items()})
-    check("Ask B the cracker (code join) misses every item by 3 points or more",
-          all(abs(cov_code[it] - cov[it]) >= 3.0 for it in W.ICODE), min(abs(cov_code[it] - cov[it]) for it in W.ICODE))
-    dB = [abs(cov_code[it] - cov[it]) for it in W.ICODE]
-    check("Ask B stops as the note states them: the code join moves every item 3.1 to 39.8 points (Bread 47 against 68, "
-          "Toiletries 33 against 73); the golden 55 to 77",
-          (round(min(dB), 1), round(max(dB), 1)) == (3.1, 39.8) and (int(np.floor(cov_code["1101"] + 0.5)), gB["1101"]) ==
-          (47, 68) and (int(np.floor(cov_code["6213"] + 0.5)), gB["6213"]) == (33, 73) and
-          (min(gB.values()), max(gB.values())) == (55, 77))
-    check("Ask B the code join stays plausible (every coverage between 30 and 95 per cent)",
-          all(30 < cov_code[it] < 95 for it in W.ICODE))
-    check("Ask B trade rows kept move the nine items with trade sales; Calderby left net moves every item",
-          sum(1 for it in W.ICODE if int(np.floor(cov_trade[it] + 0.5)) != gB[it]) == 9
-          and all(cov_net[it] < cov[it] for it in W.ICODE))
-    check("Ask B each coverage 0.1 or more from its whole-per-cent edge", all(abs(cov[it] % 1 - 0.5) >= 0.1
-                                                                             for it in W.ICODE))
+    mv_n = [abs(nB[it] - gB[it]) for it in W.ICODE]
+    mv_c = [abs(cB[it] - gB[it]) for it in W.ICODE]
+    check("Ask B the cracker (Wrenfold placed by its category names in both halves, the battery's repair of numbers the "
+          "names contradict) misses every item by 5 whole per cent or more", min(mv_n) >= 5, (min(mv_n), max(mv_n)))
+    check("Ask B the number join in both halves misses every item by 5 whole per cent or more", min(mv_c) >= 5,
+          (min(mv_c), max(mv_c)))
+    check("Ask B stops as the note states them: names in both halves move every item 5 to 14 points (Bread 82, Cheese "
+          "80, Coffee 53 against 68, 69, 59); numbers in both halves 5 to 15 (Pasta and rice 75, Toilet and kitchen "
+          "rolls 60); the golden 55 to 77",
+          (min(mv_n), max(mv_n), min(mv_c), max(mv_c)) == (5, 14, 5, 15)
+          and (nB["1101"], nB["1146"], nB["1211"]) == (82, 80, 53) and (cB["1105"], cB["5613"]) == (75, 60)
+          and (min(gB.values()), max(gB.values())) == (55, 77))
+    check("Ask B both one-way readings stay plausible (every coverage between 53 and 84 per cent)",
+          all(52.9 < c[it] < 84 for c in (cov_name, cov_code) for it in W.ICODE))
+    check("Ask B trade rows kept move the nine items with trade sales; Calderby left net lowers every item",
+          sum(1 for it in W.ICODE if whole(cov_trade)[it] != gB[it]) == 9 and all(cov_net[it] < cov[it] for it in W.ICODE))
+    check("Ask B each coverage 0.15 or more from its whole-per-cent edge", all(abs(cov[it] % 1 - 0.5) >= 0.15
+                                                                              for it in W.ICODE))
+    # the forcing figure on the shipped rows: read with the first half by number and the second by name, every item's
+    # two halves agree (sales within 10 per cent, unit price 1 to 11 per cent lower in the offer-heavy first half);
+    # read by name in both halves, every relabelled category's halves part by 1.35 times or more in sales
+    wrows = B.returns_rows(target)[W.RNAME["W"]]
+    bc, bn = B.category_map(target)
+    h1 = {bc[(W.RNAME["W"], str(r[0]))]: (r[2], r[3]) for r in wrows}
+    h2 = {bn[(W.RNAME["W"], r[1])]: (r[4], r[5]) for r in wrows}
+    gv = {it: h1[it][1] / h2[it][1] for it in W.ICODE}
+    gu = {it: (h1[it][1] / h1[it][0]) / (h2[it][1] / h2[it][0]) for it in W.ICODE}
+    nv = {bn[(W.RNAME["W"], r[1])]: r[3] / r[5] for r in wrows}
+    check("Ask B forcing: the first half by number and the second by name agree for all 16 items (sales 0.90 to 1.10, "
+          "unit price 0.89 to 0.99 of the second half)", all(0.90 <= gv[it] <= 1.10 and 0.89 <= gu[it] <= 0.99
+                                                              for it in W.ICODE),
+          (round(min(gv.values()), 3), round(max(gv.values()), 3), round(min(gu.values()), 3), round(max(gu.values()), 3)))
+    check("Ask B forcing: read by name in both halves, all 16 items' halves part by 1.35 to 2.3 times in sales",
+          all(1.35 <= max(nv[it], 1 / nv[it]) <= 2.3 for it in W.ICODE),
+          (round(min(max(v, 1 / v) for k, v in nv.items() if k in W.INAME), 3),
+           round(max(max(v, 1 / v) for k, v in nv.items() if k in W.INAME), 3)))
+    check("Ask B no marker: the renumbered rows carry the same columns as the rest, every name and every number of "
+          "Wrenfold's return is in the map, and both one-way joins complete",
+          all((W.RNAME["W"], str(r[0])) in bc and (W.RNAME["W"], r[1]) in bn for r in wrows)
+          and len(wrows) == len({r[0] for r in wrows}) == len({r[1] for r in wrows}))
 
     # ------------------------------------------------------------------ separation and distractors
     tmp = tempfile.mkdtemp()
