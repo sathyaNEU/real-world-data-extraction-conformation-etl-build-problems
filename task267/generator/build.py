@@ -57,12 +57,10 @@ def build(out, seed=W.SEED):
     n["feedback"] = R.write_feedback(p("feedback"), T)
     n["profile"] = R.write_profile(p("profile"))
     D.write_protocol(p("protocol"))
-    D.write_notes(p("notes"))
     D.write_errors(p("errors"))
     from pypdf import PdfReader
-    for k in ("protocol", "notes", "errors"):
+    for k in ("protocol", "errors"):
         n[k + "_pages"] = len(PdfReader(p(k)).pages)
-    D.write_manifest(p("manifest"), manifest(n))
     PP.COMPANY = K.ORG
     PP.normalize_ooxml(p("rules"), K.PEOPLE["data"], K.PEOPLE["data"], "2026-12-02T15:41:08Z", "2027-01-14T21:12:30Z",
                        excel=True)
@@ -73,22 +71,28 @@ def build(out, seed=W.SEED):
     PP.normalize_ooxml(p("profile"), "Regional Public Health Office", "Regional Public Health Office",
                        "2025-09-09T13:12:55Z", "2025-09-22T17:44:39Z", excel=True)
     PP.normalize_pdf(p("protocol"), b"D:20260209101544-05'00'", b"D:20260209103012-05'00'")
-    PP.normalize_pdf(p("notes"), b"D:20270114160931-05'00'", b"D:20270115092247-05'00'")
     PP.normalize_pdf(p("errors"), b"D:20250318083010-04'00'", b"D:20250318083010-04'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     T["n"] = n
+    T["provenance"] = provenance(n)
     return T
 
 
-def manifest(n):
+def provenance(n):
+    """Each shipped file's source, date, extent and licence, for metadata.json (no file in the pack lists them)."""
+    how = "synthetic: records and documents simulated by script; no real person, organisation or product"
+    return [{"file": "target/" + f, "covers": c, "source": s, "date": d, "size": e, "how_made": how,
+             "licence": "CC0 1.0, original work"} for f, c, s, d, e in sources(n)]
+
+
+def sources(n):
     F = K.FILES
     pg = lambda k: "%d page%s" % (n[k + "_pages"], "" if n[k + "_pages"] == 1 else "s")
     prog, lab = K.PROGRAM, K.LAB
     return [
         (F["protocol"], "Screening and referral protocol, 2026-27", "Medical Director, " + prog, "2026-02-09",
          pg("protocol")),
-        (F["notes"], "Notes on the 2026 season extracts", "Data manager, " + prog, "2027-01-15", pg("notes")),
         (F["encounters"], "Screening encounters, 2 March to 20 November 2026, as synced from the tablets",
          "Data manager, " + prog, "2027-01-15", "%d rows" % n["encounters"]),
         (F["ogtt"], "OGTT results on program referrals collected by 15 January 2027 (pipe-delimited)", lab,

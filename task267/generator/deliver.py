@@ -365,6 +365,6 @@ def write(target, golden, T=None):
                        title="Referral rule for the 2027 season")
     json.dump(figures(o), open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
-            "deliverables": K.DELIVERABLES, "stated_inputs": []}
+            "deliverables": K.DELIVERABLES, "provenance": (T or {}).get("provenance", [])}
     json.dump(meta, open(os.path.join(os.path.dirname(HERE), "metadata.json"), "w"), indent=2)
     return o

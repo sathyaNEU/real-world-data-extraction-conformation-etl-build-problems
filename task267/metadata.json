@@ -7,5 +7,114 @@
     "referral_rule_review_2027.xlsx",
     "referral_rule_2027_memo.docx"
   ],
-  "stated_inputs": []
+  "provenance": [
+    {
+      "file": "target/screening_referral_protocol_2026-27.pdf",
+      "covers": "Screening and referral protocol, 2026-27",
+      "source": "Medical Director, Community Screening Program",
+      "date": "2026-02-09",
+      "size": "1 page",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/screening_encounters_2026.csv",
+      "covers": "Screening encounters, 2 March to 20 November 2026, as synced from the tablets",
+      "source": "Data manager, Community Screening Program",
+      "date": "2027-01-15",
+      "size": "38154 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/ogtt_results_2026.txt",
+      "covers": "OGTT results on program referrals collected by 15 January 2027 (pipe-delimited)",
+      "source": "Thessler Laboratories",
+      "date": "2027-01-15",
+      "size": "11062 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/candidate_referral_rules_2027.xlsx",
+      "covers": "Candidate referral rules for the 2027 season",
+      "source": "Medical Director, Community Screening Program",
+      "date": "2027-01-14",
+      "size": "6 rules",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/season_close_out_2026.xlsx",
+      "covers": "2026 season close-out report",
+      "source": "Data manager, Community Screening Program",
+      "date": "2027-01-18",
+      "size": "3 sheets",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/event_calendar_2026.csv",
+      "covers": "Event calendar, 2026 season",
+      "source": "Program office, Community Screening Program",
+      "date": "2026-11-20",
+      "size": "340 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/gq200_run_log_2026.csv",
+      "covers": "GQ-200 analyzer runs held in the run database, 2026",
+      "source": "Biomedical Engineering",
+      "date": "2026-12-04",
+      "size": "49144 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/analyzer_asset_register.xlsx",
+      "covers": "Analyzer asset register",
+      "source": "Biomedical Engineering",
+      "date": "2026-12-04",
+      "size": "18 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/gq200_error_codes.pdf",
+      "covers": "GQ-200 error code quick reference (maker's document GQ-QR-07 rev C)",
+      "source": "Glyquant",
+      "date": "2025-03-18",
+      "size": "1 page",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/thessler_invoice_lines_2026.csv",
+      "covers": "Invoice and credit memo lines on the program's account, April 2026 to January 2027",
+      "source": "Thessler Laboratories, billing",
+      "date": "2027-01-06",
+      "size": "11753 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/participant_feedback_2026.csv",
+      "covers": "Post-event feedback cards, 2026 season",
+      "source": "Program office, Community Screening Program",
+      "date": "2026-11-30",
+      "size": "5318 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/orlenby_chronic_disease_profile_2024.xlsx",
+      "covers": "Community health assessment by service area, adults, 2024",
+      "source": "Regional public health office",
+      "date": "2025-09-22",
+      "size": "5 rows",
+      "how_made": "synthetic: records and documents simulated by script; no real person, organisation or product",
+      "licence": "CC0 1.0, original work"
+    }
+  ]
 }

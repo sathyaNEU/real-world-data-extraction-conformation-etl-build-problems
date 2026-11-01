@@ -64,7 +64,6 @@ FILES = {
     "encounters": "screening_encounters_2026.csv",
     "ogtt": "ogtt_results_2026.txt",
     "protocol": "screening_referral_protocol_2026-27.pdf",
-    "notes": "season_2026_extract_notes.pdf",
     "rules": "candidate_referral_rules_2027.xlsx",
     "closeout": "season_close_out_2026.xlsx",
     "events": "event_calendar_2026.csv",
@@ -74,7 +73,6 @@ FILES = {
     "invoices": "thessler_invoice_lines_2026.csv",
     "feedback": "participant_feedback_2026.csv",
     "profile": "orlenby_chronic_disease_profile_2024.xlsx",
-    "manifest": "export_manifest.csv",
 }
 DISTRACTORS = ["feedback", "profile"]
 ASK_FILES = ["runlog", "assets", "errors", "invoices"]

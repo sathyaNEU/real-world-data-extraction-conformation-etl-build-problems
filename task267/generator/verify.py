@@ -1,5 +1,5 @@
 """Independent verifier for task267: reads only the shipped bundle (and generator/figures.json to compare), on its own
-code path (pandas, the rules parsed from the candidate rules file, the season read from the notes), and recomputes
+code path (pandas, the rules parsed from the candidate rules file, the season read from the protocol), and recomputes
 the call, every rule's two shares, the rungs, and both asks.
 
     python3 task267/generator/verify.py task267/target"""
@@ -87,8 +87,7 @@ for k, v in res.items():
 check(len(adults) == FIG["counts"]["adults"] and int(adults["tested"].sum()) == FIG["counts"]["tested"], "counts")
 
 # ---------------------------------------------------------------------------------------------- Ask A
-notes = text("season_2026_extract_notes.pdf")
-m = re.search(r"(\d+) March to (\d+) November 2026", notes)
+m = re.search(r"(\d+) March to (\d+) November 2026", pro)
 start, end = pd.Timestamp(2026, 3, int(m.group(1))), pd.Timestamp(2026, 11, int(m.group(2)))
 log = pd.read_csv(os.path.join(TGT, "gq200_run_log_2026.csv"), dtype=str, keep_default_na=False)
 log["t"] = pd.to_datetime(log["run_started"])

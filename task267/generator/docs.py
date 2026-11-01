@@ -1,8 +1,7 @@
-"""The pack's documents: the program's screening and referral protocol, the data manager's notes on the 2026
-season's extracts, the analyser maker's error code reference, and the export manifest."""
+"""The pack's documents: the program's screening and referral protocol and the analyser maker's error code
+reference."""
 from __future__ import annotations
 
-import csv
 
 from reportlab import rl_config
 
@@ -86,6 +85,7 @@ def write_protocol(path):
     C("2.1", "Adults aged 18 and over who report that they have not been told they have diabetes.")
     C("2.2", "Each adult counts once in a season, at the first screening of the season. An adult already screened in "
              "the season is screened again on request but is not referred or drawn again.")
+    C("2.3", "The 2026 season ran from 2 March to 20 November 2026.")
     H("3. The screening")
     C("3.1", "The tablet records the diabetes risk questionnaire (a score from 0 to 10), a fingerstick random glucose "
              "in mg/dL and a point-of-care HbA1c in per cent from the program's GQ-200 analyzers.")
@@ -94,8 +94,9 @@ def write_protocol(path):
              "glucose of 140 mg/dL or more.")
     C("4.2", "To learn how the screening measurements perform, the tablet also offers the same test to one in five of "
              "the adults it does not refer, drawn at random (the evaluation draw).")
-    C("4.3", "Every adult referred or drawn leaves with a referral letter and an appointment within five weeks; the "
-             "program sends one reminder.")
+    C("4.3", "Every adult referred or drawn leaves with a referral letter, which carries the program number given at "
+             "the first screening (SF- and seven digits), and an appointment within five weeks; the program sends one "
+             "reminder.")
     H("5. The confirmatory test")
     C("5.1", "A 75 g oral glucose tolerance test (OGTT): a fasting glucose and a glucose two hours after the drink. "
              "Undiagnosed diabetes is a fasting glucose of 126 mg/dL or more or a two-hour glucose of 200 mg/dL or "
@@ -113,42 +114,6 @@ def write_protocol(path):
       "program director loads it into the tablets before the 2027 season opens on 1 March 2027.")
     doc.build(st, onFirstPage=_frame(K.PROGRAM, "Protocol 2026-27", "Serif"),
               onLaterPages=_frame(K.PROGRAM, "Protocol 2026-27", "Serif"))
-
-
-# ---------------------------------------------------------------------------------------------- the notes
-def write_notes(path):
-    S = styles("Sans", colors.HexColor("#2F5D50"))
-    doc = _doc(path, "Notes on the 2026 season extracts", K.PEOPLE["data"])
-    F = K.FILES
-    st = [Paragraph("Notes on the 2026 season extracts", S["h1"]),
-          Paragraph("%s, data manager, %s. 15 January 2027." % (K.PEOPLE["data"], K.PROGRAM), S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    H = lambda t: st.append(Paragraph(t, S["h2"]))
-    H("1. Screening encounters (%s)" % F["encounters"])
-    P("One row per screening as the tablets synced it, 2 March to 20 November 2026. encounter_id is the screening's "
-      "own number. A tablet that lost its connection at an event sends the event's rows again when it reconnects, so a "
-      "few rows arrive twice with the same encounter_id. program_id is given to the adult at the first screening and "
-      "found by the tablet when the adult comes back. screened_at is local time. risk_score is the questionnaire's "
-      "score, glucose_mg_dl the fingerstick random glucose and hba1c_pct the GQ-200 result the tablet received. "
-      "ogtt_referral is RULE for an adult referred by the 2026 rule, "
-      "EVAL for an adult offered the test in the evaluation draw, and NONE otherwise.")
-    H("2. OGTT results (%s)" % F["ogtt"])
-    P("%s's extract of every OGTT on a program referral collected by 15 January 2027, pipe-delimited, one row per "
-      "test. PROGRAM_ID is the number the patient service center typed from the referral letter; the hyphen or a "
-      "leading zero is sometimes dropped and some are typed in lower case, so match on the seven digits after SF. "
-      "COLLECTED is month/day/year. STATUS is INCOMPLETE when the two-hour sample was not taken. An appointment that "
-      "was not kept leaves no row." % K.LAB)
-    H("3. Candidate rules, close-out and event calendar")
-    P("%s lists the six rules the 2027 tablets could carry, in the tablet's own logic. %s is the season's close-out "
-      "report. %s lists every event with its venue, service area and hours; analyzers gives the asset tags of the "
-      "GQ-200 units used at the event." % (F["rules"], F["closeout"], F["events"]))
-    H("4. Files from other departments")
-    P("Biomedical Engineering supplied %s, %s and the maker's %s. The billing office of %s supplied %s, the "
-      "program account's invoices and credit memos. %s holds the answers to the post-event card. %s is the regional public health "
-      "office's 2024 community health assessment by service area." % (F["runlog"], F["assets"], F["errors"], K.LAB,
-                                                                      F["invoices"], F["feedback"], F["profile"]))
-    doc.build(st, onFirstPage=_frame(K.PROGRAM, "Extract notes, January 2027", "Sans"),
-              onLaterPages=_frame(K.PROGRAM, "Extract notes, January 2027", "Sans"))
 
 
 # ---------------------------------------------------------------------------------------------- the error codes
@@ -174,11 +139,3 @@ def write_errors(path):
     st.append(_table(S, rows, [16, 58, 40, 64]))
     doc.build(st, onFirstPage=_frame("Glyquant GQ-200", "GQ-QR-07 rev C", "Sans"),
               onLaterPages=_frame("Glyquant GQ-200", "GQ-QR-07 rev C", "Sans"))
-
-
-def write_manifest(path, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["file_name", "description", "supplied_by", "extract_date", "extent"])
-        for r in rows:
-            w.writerow(r)

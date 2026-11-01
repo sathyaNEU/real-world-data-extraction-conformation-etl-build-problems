@@ -112,9 +112,15 @@ def run(target, T):
     ok(len(meta["distractor_files"]) >= 2 and all(os.path.exists(os.path.join(os.path.dirname(target), f))
                                                   for f in meta["distractor_files"]), "two distractors shipped")
     ok(not any("distractor" in f for f in files), "no file name says distractor")
-    ok(files == sorted(K.FILES.values()), "the pack is exactly the manifest's files and the manifest")
-    listed = [r["file_name"] for r in csv.DictReader(open(P("manifest"), encoding="utf-8"))]
-    ok(sorted(listed) == sorted(f for f in files if f != K.FILES["manifest"]), "H9: the manifest lists every other file")
+    ok(files == sorted(K.FILES.values()), "the pack is exactly the generator's files")
+    ok(not [f for f in files if re.search(r"dictionar|manifest|readme|notes|codebook|schema|definition", f.lower())],
+       "no file describing the data ships, by name")
+    ok({r["file"] for r in meta.get("provenance", [])} == {"target/" + f for f in files} and
+       all(r["source"] and r["date"] and r["licence"] for r in meta["provenance"]),
+       "provenance in metadata.json names every shipped file with its source, date and licence")
+    ok("stated_inputs" not in meta and not re.search(r"stump|rung|decisive|mechanism|easy route|weight|verif",
+                                                     json.dumps(meta).lower()),
+       "metadata.json carries no author vocabulary")
     late = []
     export = dt.date(2027, 1, 18)
     for f in files:
@@ -231,7 +237,6 @@ def run(target, T):
 
     # ------------------------------------------------------------------ the semantic fork table
     pro = pdf_text(P("protocol"))
-    notes = pdf_text(P("notes"))
     ok("Each adult counts once in a season, at the first screening of the season" in pro, "SF1 filed")
     ok("fasting glucose of 126 mg/dL or more or a glucose two hours" not in pro and
        "Undiagnosed diabetes is a fasting glucose of 126 mg/dL or more or a two-hour glucose of 200 mg/dL or more" in pro,
@@ -262,7 +267,13 @@ def run(target, T):
     ok(max(tested_dates.values()).date() <= K.EXTRACT, "axis 4: no OGTT after the extract")
     nominal, _ = pick_from(pk, np.where(pk.ver, np.where(rule, 1.0, 1 / K.EVAL_FRACTION), 0.0))
     ok(nominal == GOLD, "SF12 nominal rates: the same call")
-    ok("each adult counts once" in notes.lower() or "first screening" in notes, "the notes speak of first screenings")
+    ok("The 2026 season ran from 2 March to 20 November 2026" in pro, "axis 3: the season filed in the protocol")
+    ok("which carries the program number given at the first screening (SF- and seven digits)" in pro,
+       "SF10/R2: the program number's form filed in the protocol (the WHAT the typed IDs are read against)")
+    raw = Counter(t["PROGRAM_ID"] for t in pk.tests)
+    ok(all(re.fullmatch(r"(?i)(sf-?)?\d{6,7}", k) for k in raw), "R2: every typed program ID is SF and its digits")
+    ids = {r["program_id"] for r in pk.adults}
+    ok(all(A.pid_key(k) in ids for k in raw), "R2: every typed program ID joins once read as SF- and seven digits")
 
     # ------------------------------------------------------------------ closure (C1)
     ok(bool(np.all((pk.glu >= 40) & (pk.glu <= 400))) and bool(np.all((pk.a1c >= 4) & (pk.a1c <= 14))),
@@ -317,9 +328,9 @@ def run(target, T):
     genuine = Counter(r["sample_id"] for r in A.runlog(target) if r["run_type"] == "PATIENT" and r["result_pct"])
     ok(sum(1 for v in genuine.values() if v == 2) > 200, "Ask A: genuine repeats on a fresh cartridge exist")
     ok("Every run, on a patient sample or a control, takes one cartridge" in pdf_text(P("errors")), "Ask A: filed")
-    ok(not any(w in notes.lower() for w in ("utc", "download", "time zone", "four hours", "memo's", "whole amount")),
-       "Ask A/B: the notes narrate no device")
-    ok(not any(w in notes for w in ("Ostervale", "Lindqvale", "Cressfield", "Elverston")), "H21: retired names gone")
+    ok(not any(w in pro.lower() for w in ("utc", "download", "time zone", "four hours", "memo's", "whole amount")),
+       "Ask A/B: the protocol narrates no device")
+    ok(not any(w in pro for w in ("Ostervale", "Lindqvale", "Cressfield", "Elverston")), "H21: retired names gone")
     # ------------------------------------------------------------------ Ask B: the laboratory's billing
     progs = {t["acc"] for t in T["tests"]}
     b_truth = AW.billed_months(T["lines"], progs)
@@ -404,7 +415,7 @@ def run(target, T):
     fb = A._csv(P("feedback"))
     ok(len(fb) > 1000 and len({r["heard_about"] for r in fb}) == 7, "the feedback cards carry their seven sources")
     for name in K.PEOPLE.values():
-        ok(name in pro or name in notes or True, "persona %s from guard.py names" % name)
+        ok(name in pro or True, "persona %s from guard.py names" % name)
 
     # ------------------------------------------------------------------ the goldens agree with figures.json
     gdir = os.path.join(os.path.dirname(target), "golden")
