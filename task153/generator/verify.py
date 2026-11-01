@@ -99,12 +99,12 @@ def golden(target):
     seen, big = set(), []
     with open(os.path.join(target, "fms_island_transactions_2025.csv"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            if (r["Site"], r["Txn"]) in seen:
+            if (r["SiteID"], r["TransNo"]) in seen:
                 continue
-            seen.add((r["Site"], r["Txn"]))
-            u = int(r["Unit"])
-            if units[u]["model"] == "T68SL" and float(r["Gallons"]) >= 225:
-                big.append(float(r["Gallons"]) / 300.0)
+            seen.add((r["SiteID"], r["TransNo"]))
+            u = int(r["VehNo"])
+            if units[u]["model"] == "T68SL" and float(r["Qty"]) >= 225:
+                big.append(float(r["Qty"]) / 300.0)
     keep = sum(big) / len(big)
     base0, base1 = dt.date(2026, 6, 29), dt.date(2026, 8, 23)
     k = wdays(dt.date(2026, 9, 14), dt.date(2026, 11, 8)) / wdays(base0, base1)

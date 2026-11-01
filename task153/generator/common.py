@@ -33,7 +33,7 @@ RACK_SERVICE = "TriState Rack Report"          # the published contract rack ave
 
 PEOPLE = {
     "jobber": "Theresa Mercado",     # Overton's commercial account manager: the offer and the 2025 letters
-    "fleet": "Gabriel Wyatt",        # Keeble's fleet services manager: the unit list, the yard notes, the README
+    "fleet": "Gabriel Wyatt",        # Keeble's fleet services manager: the unit list and the yard notes
     "controller": "Dennis Stewart",  # Keeble's controller: the card agreements' cover notes
 }
 

@@ -281,7 +281,7 @@ def run(target, golden, B=None, G=None, meta_path=None):
         p = os.path.join(target, f)
         texts[f] = pdf_text(p) if f.endswith(".pdf") else open(p, encoding="utf-8").read()
     alltext = "\n".join(texts.values())
-    src = source_text() + "\n" + texts[DOC.F_NOTES] + "\n" + texts[DOC.F_README]
+    src = source_text() + "\n" + texts[DOC.F_NOTES]
     plants = re.findall(r"\b\d+\s+loads?\b|\bloads? of \d|\bdraw\b|\bcapture|\bconvert|\bshare of\b", src, re.I)
     ok("R3c no document states a load count for the window, an island draw or a capture share", not plants, plants)
 
@@ -520,8 +520,8 @@ def run(target, golden, B=None, G=None, meta_path=None):
        ", ".join("%s %s" % (k, tot(v)) for k, v in alts.items()))
     ok("SF13 the prompt marks only the 2025 programmes as last year's: Ask A's May, June and July are 2026's",
        ptxt.count("last year's") == 1 and "last year's Jackson and Knoxville" in ptxt and "May, June and July" in ptxt)
-    ok("SF11 the as-of: the README's pull date and the offer's date agree (28 and 26 August 2026)",
-       "August 28, 2026" in texts[DOC.F_README] and "August 26, 2026" in texts[DOC.F_OFFER])
+    ok("SF11 the as-of: the yard notes' date and the offer's date agree (28 and 26 August 2026)",
+       "August 28, 2026" in texts[DOC.F_NOTES] and "August 26, 2026" in texts[DOC.F_OFFER])
 
     # ------------------------------------------------------------------ closure axes that can move
     swaps = [r for r in W.rename.values()]
@@ -764,11 +764,11 @@ def run(target, golden, B=None, G=None, meta_path=None):
         if re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)[:10] > "2026-08-28":
             late.append(f)
     ok("REALISM no document or workbook is dated after the pull", not late, late)
-    readme = texts[DOC.F_README]
-    unlisted = [f for f in sorted(os.listdir(target)) if f != DOC.F_README and f not in readme]
-    ok("REGISTER the README names every shipped file", not unlisted, unlisted)
-    tz_words = re.findall(r"\bUTC\b|time zone|Central time|Eastern time|business day|10 pm", readme + texts[DOC.F_NOTES])
-    ok("REGISTER the README and the yard notes narrate no clock or business-day convention", not tz_words, tz_words)
+    describing = [f for f in sorted(os.listdir(target)) if re.search(
+        r"readme|manifest|dictionary|codebook|layout|data_?notes|file_?list|_files_|fields|schema", f, re.I)]
+    ok("REGISTER no readme, manifest, file list, layout or dictionary ships as a file", not describing, describing)
+    tz_words = re.findall(r"\bUTC\b|time zone|Central time|Eastern time|business day|10 pm", texts[DOC.F_NOTES])
+    ok("REGISTER the yard notes narrate no clock or business-day convention", not tz_words, tz_words)
 
     # ------------------------------------------------------------------ input gates and distractors
     files = sorted(os.listdir(target))

@@ -115,6 +115,16 @@ week, back at the yard at midday every Wednesday), Knoxville (one-night loops, a
 Blountville (four-night loops, the Appalachian routes at about 5 mpg); Cookeville's 32 vans based at the Sparta and
 Crossville lots, stocked by shuttle and in the yard on Mondays.
 
+## Survivor anatomy
+
+Actor: the deciding property, what an island can put aboard a vehicle at each yard visit (the fuel burned since its previous visit, capped at its tank above the reserve), has no column in any file: the vehicle days store a day's fuel, the geofence export entries and exits, the spec sheet a model's tank, the card files where fuel was bought, and no record stores a stretch between visits or a serviceable gallon.
+Link: the stretch is read by cutting each vehicle's telematics days at its yard geofence exits, through the device-assignment table (vehicle days and geofence events carry device serials, one file on local time, the other on UTC) and the unit list's model code to the spec sheet's tank; no key joins a yard visit to a quantity of fuel, and no filed sentence invites the cut (asserted: no tankful, reserve, visit, midday or reload wording in the pack).
+Reflex: the field's first sizing of an on-site fueling programme is the card history converted, the trailing card gallons taken over whole or scaled by the 2025 islands' capture share, which sits at rung 0 and 1 and files the default path's Ends on, 29 loads, or 26 to 28 (asserted in R3a and the ladder).
+Back-test: the only validation record the pack files, the two 2025 island programmes, passes the easy routes: the capture share is measured on them, so the share route reproduces both programmes' island gallons by construction, and the overnight cut reproduces them too because no 2025 run that outlasted a tankful came back during the day (asserted in the 2025 out-of-sample block).
+Second use: measured in the strict test: with the decisive step deleted, the geofence export is still read by the overnight cut and the nights-at-yard share (R2a, R2b), the spec sheet by the overnight cut, the device table by every telematics read, the vehicle days by Ask A's referee and the 2025 island log by the share routes; no file drops out of the pack.
+Shock: the movement reads as ordinary duty mix: the golden moves Blountville from 6 to 3, Cookeville from 3 to 1 and Knoxville from 5 to 4 and leaves Nashville at 8 although its sleeper share sits between Blountville's and Knoxville's (its sleepers reload at midweek), so the moved yards are not an interval of the yards sorted by card gallons, sleeper share or vehicles (asserted on the built counts at the 11-01 re-check: card gallons rank them 2, 4 and 5 of six, vehicles 1, 4 and 6).
+Pins: the WHAT is filed in Overton's offer letter (the load, the count, the window, the commitment, the price term) and the prompt (whole loads per yard, handed out to our own vehicles by 8 November, the scenario of the eight weeks to 23 August); no filed sentence names the yard visit, the tankful, the reserve or the midweek reload the stump rides on (asserted in R3c and the HOW sentences executed to 29).
+
 ## Default path
 
 Built figures (`generator/calc.py` on the shipped files; asserted in `generator/checks.py`).
@@ -353,8 +363,8 @@ pumped, asserted).
   each island against. The call never reads a card fill.
 - Construction: every diesel sale (DEF excluded) on the local day it was pumped: Riverbend's UTC stamps put on Central
   time (Schedule A, A5); a Crossroads or SMPM sale made at 10 pm or later carries the next day's date (Addendum 4 clause
-  5, on Central time; the SMPM layout, positions 15-22), so it goes back a day; a posting a site sent twice and the
-  credit that reverses it are no purchase (A6; clause 6; the layout's C record); summed by account and month. Each
+  5, on Central time; the SMPM schedule's Exhibit A, positions 15-22), so it goes back a day; a posting a site sent twice and the
+  credit that reverses it are no purchase (A6; clause 6; Exhibit A's C record); summed by account and month. Each
   convention is filed in the programme's own document and executed, never a device.
 - Primary A3 (D8 amendments dated when processed, on D1 a replay under fresh ids): on six days a site sent its day's
   sales twice (Riverbend's Jackson sites 112 on 30 April and 115 on 30 June, the Crossroads merchants at Hopkinsville
@@ -371,15 +381,15 @@ pumped, asserted).
   1,723 Crossroads sales at its four Eastern-time merchants give the same nine figures (asserted).
 - Hazards: HA1 DEF on the same cards (every account-month by 922 to 1,684 gallons); HA2 the SMPM batch for 6 to 12 July
   transmitted twice under two batch numbers (Holston's July by 12,808 gallons); HA3 the SMPM file's gallons with three
-  implied decimals (the layout PDF).
+  implied decimals (Exhibit A of the SMPM schedule).
 - Stops (built; deltas by account, May, June, July): S1 every line on the date the files give it, the natural read
   (Riverbend -246, +230, -230; Crossroads +718, +8, -354; SMPM +948, -358, +55: 9 miss); S2 the dates as filed, the
   copies and credits handled (+172, -165, +165; +373, -261, +260; +646, -437, +437: 9 miss); S3 every filed date
   convention applied, each credit on its own date (-508, +469, -470; +345, +269, -614; +303, +79, -382: 9 miss); S4 the
   credits dropped, the copies kept (0, +469, 0; +345, +614, 0; +303, +381, 0: 5 miss); S5 UTC corrected, the 10 pm dates
   kept (6 miss); S6 the 10 pm dates corrected, UTC read as local (3 miss); S7 DEF in (9 miss); S8 the golden.
-- Span: the three exports, the SMPM layout, the card schedules, the vehicle days, the unit list (card to unit, for the
-  referee) and the rack history (the Riverbend price check): 8 files; date, time, card, unit, product, gallons,
+- Span: the three exports, the card schedules (the SMPM layout as Exhibit A), the vehicle days, the unit list (card to
+  unit, for the referee) and the rack history (the Riverbend price check): 7 files; date, time, card, unit, product, gallons,
   odometer, site, credit reference, first ignition, last ignition off and starting odometer (12 columns).
 - Realism: a chain's head-office system logs UTC and its schedule says so; a network closes its business day at 10 pm
   on its home clock and its addendum says so; a site whose day's upload times out sends it again and the programme
@@ -410,8 +420,8 @@ gallons and $891, 24,004 and $811, 7,986 and $254; Knoxville 23,977 and $446, 24
   figures miss); S3 per bill, the posting dated the delivery day (5 miss); S4 the credits unread (Knoxville July); S5 the
   credited loads dropped with their rebills (Knoxville July); S6 the service lines left out (6 miss); S7 loads dated by
   lifting (June and July); S8 the golden. Dated by invoice instead of delivery, the same twelve (asserted).
-- Span: the delivery export, the invoice export, the credits file, the rack history, the two 2025 letters and the
-  file list (6 files); terminal bill, ticket, net, gross, lifted, delivered, invoice, class, item, amount, effective date,
+- Span: the delivery export, the invoice export, the credits file, the rack history, and the two 2025 letters (5
+  files); terminal bill, ticket, net, gross, lifted, delivered, invoice, class, item, amount, effective date,
   posting (12 columns).
 - Realism: a terminal bill of lading carries the load's total on every drop made against it; jobbers lift in the
   afternoon and at night for the morning; racks post at 6 pm for the next day; a jobber credits and rebills a mis-zoned
@@ -447,15 +457,27 @@ control):
 not carry the call, the yard counts R1 shares with the golden (Memphis, Jackson, Knoxville) and nothing in A or B unless
 it cracks a device.
 
-Mirror leakage: 15 per cent of ask weight (the chart's card-gallon bars and a share of the B figures if it finds the
-repeated bills, no A figure).
+Mirror leakage: 4.3 per cent of ask weight (the chart's card-gallon series only; the mirror meets the same A3 and B1
+devices as the cracker and keeps no A or B figure).
 
-Pair ceiling: 39.5 (the cracker at 38 + 7 + about 14 of 55 ask points: the chart's parts and, if it finds the repeated
-bills, the six B gallon figures; the mirror at about 5 + 7 + 8, its three matching yard counts included). The filed
-conventions cost the asks the A1 and A2 stops a strong response used to miss; A3 and B1 hold them, rerun from the
-generated rubric at stage 4.
+Pair ceiling: 39.1 (the cracker 49.8: the call's eight criteria, 7, and 2 of 23 ask criteria, the chart's two series;
+the mirror 28.4: four of the eight main criteria, its Memphis, Jackson, Nashville and Knoxville counts, 7, and the
+chart's card series).
+
+Measured by: generator/pair.py on the cut pack (c2239b2d, the 11-01 re-check): the cracker and the mirror scored figure
+by figure on the 38 / 7 / 55 planning weights against the golden recomputed from the same files.
 
 ## Leak review
+
+Re-check of 11-01 under the new sweeps: the shipped cut (1808f2c1, rebuilt byte for byte) was LEAK on sweep 1 (the
+SMPM layout's file name) and sweep 12 (the layout named 5 of the island log's 8 plain-word headers); the file register
+`fuel_review_files_2026-08-28.md` was a manifest giving every file's role (dataset-generation section 3), REVIEW only;
+metadata.json's subdomain narrated the method (sweep 13). Repair: the layout ships as Exhibit A of the SMPM pricing
+schedule (clause 1.4 points to it; its field labels are the programme's own: vehicle number, mileage, fuel code,
+gallons dispensed), the register leaves the pack (its pull date moves to the yard notes' dated header), the island log
+carries the fuel management system's own headers (TransNo, SiteID, Hose, KeyID, VehNo, TransDate, TransTime, Qty,
+OdoReading, ProdCode) and the subdomain names the quantity only. `leak.py --asof 2026-08-28` on the repaired cut: REVIEW,
+no LEAK. The lines below are the original ship's answers and still stand for the files that remain.
 
 `leak.py --asof 2026-08-28` (rerun after the stage 4 fix): REVIEW, no LEAK. Each REVIEW line:
 - `fms_island_transactions_2025.csv` "golden figure 37,170": a substring match on an island fill of 170.1 gallons;
@@ -576,3 +598,12 @@ generated rubric at stage 4.
 - Step 3's "each vehicle's fill is capped at its tank less 10.2%": read by the round 2 judge as a claim about every
   model's fills, when only the T680s' fills show that cap (two Sprinter fills pass it); the step now names the cap the
   T680s' own fills show and the replay applying it to every tank, and SF9 asserts every model-by-model cap.
+- The SMPM record layout shipped as its own file (`smpm_member_transaction_file_layout_v3.pdf`): leak.py LEAK at the
+  11-01 re-check (sweep 1 on the name, sweep 12 on five of the island log's eight plain-word headers); the layout now
+  ships as Exhibit A of the SMPM pricing schedule with the programme's own field labels, and the island log carries
+  the fuel management system's headers.
+- A file register (`fuel_review_files_2026-08-28.md`) naming every file's role: a manifest under dataset-generation
+  section 3; removed at the 11-01 re-check, its pull date carried by the yard notes' dated header.
+- "our three card accounts" in the prompt: a count the data hold; dropped at the 11-01 re-check (freeze.py
+  determinism moves only the call sentence for it, accepted: no figure, window or population changes; the yard notes
+  name each yard's account).

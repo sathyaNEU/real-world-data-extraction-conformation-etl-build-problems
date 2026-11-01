@@ -4,7 +4,7 @@
   "domain": "General Statistics & Data Science",
   "client_domain": "General Statistics & Data Science",
   "house_domain": "supply-chain-logistics",
-  "subdomain": "resampling-simulation-monte-carlo-methods (fleet fuel procurement: each yard island's eight-week draw replayed from the vehicles' recent duty, stretch by stretch between yard visits, each stretch capped at the tankful above the driver's reserve)",
+  "subdomain": "resampling-simulation-monte-carlo-methods (fleet fuel procurement: each yard island's eight-week draw)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "a committed load count with each yard's whole loads and the saving they book, a chart of each yard's island draw against its card gallons with the loads marked, and two tables (each card account's diesel gallons in May, June and July 2026; each month of the 2025 island programmes' net gallons delivered and dollars billed above the posted rack)",
   "as_of": "2026-08-28",
@@ -19,7 +19,7 @@
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 22,
+    "files": 20,
     "formats": [
       "csv",
       "md",
@@ -44,9 +44,9 @@
     {
       "path": "card_programmes_pricing_schedules.pdf",
       "format": "pdf",
-      "bytes": 63569,
+      "bytes": 106906,
       "rows": null,
-      "source": "Constructed: Riverbend, Crossroads and SMPM pricing schedules (copies held by Keeble Supply Co.)",
+      "source": "Constructed: Riverbend, Crossroads and SMPM pricing schedules, with the SMPM member transaction file layout (copies held by Keeble Supply Co.)",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -71,18 +71,9 @@
     {
       "path": "fms_island_transactions_2025.csv",
       "format": "csv",
-      "bytes": 158687,
+      "bytes": 158705,
       "rows": 2520,
       "source": "Constructed: Keeble Supply Co., fuel management system island transactions, 2025",
-      "date": "2026-08-28",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "fuel_review_files_2026-08-28.md",
-      "format": "md",
-      "bytes": 2543,
-      "rows": null,
-      "source": "Constructed: Keeble Supply Co., fleet services list of the files pulled for the fuel review",
       "date": "2026-08-28",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -195,15 +186,6 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "smpm_member_transaction_file_layout_v3.pdf",
-      "format": "pdf",
-      "bytes": 44143,
-      "rows": null,
-      "source": "Constructed: Smoky Mountain Petroleum Marketers, member transaction file layout v3",
-      "date": "2026-08-28",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "telematics_device_assignments.csv",
       "format": "csv",
       "bytes": 6135,
@@ -224,7 +206,7 @@
     {
       "path": "yard_notes_2026-08.md",
       "format": "md",
-      "bytes": 1821,
+      "bytes": 1846,
       "rows": null,
       "source": "Constructed: Keeble Supply Co., fleet services yard notes, August 2026",
       "date": "2026-08-28",

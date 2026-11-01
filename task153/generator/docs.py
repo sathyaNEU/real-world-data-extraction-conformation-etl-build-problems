@@ -1,5 +1,5 @@
 """The pack's documents: Overton's offer, its two 2025 programme letters and its tank-wagon price sheet, the three card
-programmes' pricing schedules, the marketers' group's file layout, the fleet manager's yard notes and the README. Their
+programmes' pricing schedules (the marketers' group's file layout as Exhibit A of its schedule) and the fleet manager's yard notes. Their
 text is kept here as data so checks.py can quote and execute it."""
 from __future__ import annotations
 
@@ -254,8 +254,8 @@ CARD_SCHEDULES = [
              "purchase, plus $0.127.",
              "1.2 Federal and state fuel taxes are billed at the rates in effect at the member site.",
              "1.3 Diesel exhaust fluid is billed at the member site's posted price.",
-             "1.4 Transactions are reported in the program's member transaction file, sent weekly; the layout is "
-             "issued separately."],
+             "1.4 Transactions are reported in the program's member transaction file, sent weekly in the record "
+             "layout of Exhibit A."],
          signed="For Smoky Mountain Petroleum Marketers: Program Manager. For Holston Sanitary Supply Inc.: %s, "
                 "Controller, Keeble Supply Co." % K.PEOPLE["controller"]),
 ]
@@ -271,13 +271,14 @@ def write_cards(path):
                 Paragraph(esc(c["party"]), st["sub"])]
         out += [Paragraph(esc(p), st["body"]) for p in c["clauses"]]
         out += [Spacer(1, 10), Paragraph(esc(c["signed"]), st["small"])]
+    out.append(PageBreak())
+    out += layout_flow()
     doc = _doc(path, "Card programmes, pricing schedules", K.PEOPLE["controller"], 1.0)
     f = _footer("Keeble Supply Co.  |  Card programmes, pricing schedules (copies)", font="Carlito")
     doc.build(out, onFirstPage=f, onLaterPages=f)
 
 
 # ---------------------------------------------------------------------------------------------------- SMPM layout
-F_LAYOUT = "smpm_member_transaction_file_layout_v3.pdf"
 LAYOUT = {
     "H": [("1", "1", "Record type", "H"), ("2-8", "7", "Batch number", "numeric"),
           ("9-16", "8", "Batch week start", "CCYYMMDD"), ("17-26", "10", "Member account", "alphanumeric"),
@@ -288,21 +289,21 @@ LAYOUT = {
                          "a sale made at 10:00 pm or later carries the next day's date", "CCYYMMDD"),
           ("23-26", "4", "Transaction time at the member site, when the sale was made", "HHMM"),
           ("27-32", "6", "Site number", "alphanumeric"),
-          ("33-40", "8", "Unit (as entered at the pump)", "alphanumeric"),
+          ("33-40", "8", "Vehicle number, as keyed at the pump", "alphanumeric"),
           ("41-48", "8", "Card number (last digits)", "alphanumeric"),
-          ("49-55", "7", "Odometer (as entered)", "numeric"), ("56-59", "4", "Product code", "DSL2, DEF"),
-          ("60-68", "9", "Quantity, gallons", "numeric, 3 implied decimals"),
+          ("49-55", "7", "Mileage, as keyed at the pump", "numeric"), ("56-59", "4", "Fuel code", "DSL2, DEF"),
+          ("60-68", "9", "Gallons dispensed", "numeric, 3 implied decimals"),
           ("69-75", "7", "Price per gallon before tax", "numeric, 4 implied decimals"),
           ("76-82", "7", "Tax per gallon", "numeric, 4 implied decimals"),
           ("83-106", "24", "Site name", "alphanumeric"), ("107-108", "2", "Site state", "alphanumeric")],
     "C": [("1", "1", "Record type", "C"), ("2-14", "13", "Batch number and sequence in batch", "numeric"),
           ("15-26", "12", "Date and time the credit was made", "CCYYMMDDHHMM"),
-          ("27-108", "82", "The credited sale's site, unit, card, odometer, product, quantity, price, tax and site "
-                           "name, as in its detail record", "as in the detail record"),
+          ("27-108", "82", "The credited sale's site, vehicle number, card, mileage, fuel code, gallons, price, tax and "
+                           "site name, as in its detail record", "as in the detail record"),
           ("109-121", "13", "Batch number and sequence of the detail credited", "numeric")],
     "T": [("1", "1", "Record type", "T"), ("2-8", "7", "Batch number", "numeric"),
           ("9-14", "6", "Detail and credit records in batch", "numeric"),
-          ("15-26", "12", "Total quantity, gallons: details less credits", "numeric, 3 implied decimals")],
+          ("15-26", "12", "Batch gallons: details less credits", "numeric, 3 implied decimals")],
 }
 LAYOUT_NOTES = [
     "Numeric fields are right-justified and zero-filled; alphanumeric fields are left-justified and space-filled.",
@@ -310,14 +311,14 @@ LAYOUT_NOTES = [
     "was made.",
     "Each weekly batch carries the transactions dated Monday through Sunday of its batch week and is transmitted on "
     "the following Monday.",
-    "Product codes: DSL2 diesel No. 2; DEF diesel exhaust fluid.",
+    "Fuel codes: DSL2 diesel No. 2; DEF diesel exhaust fluid.",
 ]
 
 
-def write_layout(path):
+def layout_flow():
     st = styles("LibSans", "LibSans-Bold", SMPM, 9.6)
     s = [Paragraph("Smoky Mountain Petroleum Marketers &middot; Fleet Program", st["sub"]),
-         Paragraph("Member transaction file: record layout, version 3", st["h1"]),
+         Paragraph("Schedule 1, Exhibit A: member transaction file, record layout version 3", st["h1"]),
          Paragraph("Effective with the batch of October 2, 2023. Fixed-width text, one record per line.", st["sub"])]
     names = {"H": "Batch header (H)", "D": "Transaction detail (D)", "C": "Credit (C)", "T": "Batch trailer (T)"}
     for k in ("H", "D", "C", "T"):
@@ -326,9 +327,7 @@ def write_layout(path):
                       [0.85, 0.65, 2.75, 2.15], st))
     s.append(Paragraph("Notes", st["h2"]))
     s += [Paragraph(esc(p), st["body"]) for p in LAYOUT_NOTES]
-    doc = _doc(path, "Member transaction file record layout v3", "SMPM Fleet Program", 0.95)
-    f = _footer("SMPM Fleet Program  |  Member transaction file layout v3", font="LibSans")
-    doc.build(s, onFirstPage=f, onLaterPages=f)
+    return s
 
 
 # ---------------------------------------------------------------------------------------------------- tank wagon
@@ -366,7 +365,8 @@ def count_units(W, y, body=None, status="Active"):
 def notes_text(W):
     c = lambda y, b=None: count_units(W, y, b)
     L = ["# Yard notes, August 2026", "",
-         "Gabriel Wyatt, Fleet Services. For the fuel review; the unit list is the maintenance system's as of today.", "",
+         "Gabriel Wyatt, Fleet Services, Friday, August 28, 2026. For the fuel review; the unit list is the maintenance "
+         "system's as of today.", "",
          "Every yard runs Monday to Friday and is closed on weekends and company holidays (Labor Day, September 7; "
          "Thanksgiving, November 26 and 27).", "",
          "Each yard has one above-ground diesel tank (sizes on the tank register) and a self-serve island on the "
@@ -396,55 +396,15 @@ def notes_text(W):
     return "\n".join(L)
 
 
-# ---------------------------------------------------------------------------------------------------- README
-F_README = "fuel_review_files_2026-08-28.md"
-
-
-def readme_text(W):
-    L = ["# Fuel review: the files pulled on August 28", "",
-         "Pulled by Gabriel Wyatt (Fleet Services) on Friday, August 28, 2026. The telematics files and the "
-         "Riverbend and Crossroads downloads run through Thursday, August 27; the last SMPM batch received covers "
-         "the week to Sunday, August 23.", "",
-         "## Fleet and telematics", "",
-         "- `%s`: the telematics service's vehicle-day export, one row for each day a vehicle's engine ran, September "
-         "1, 2024 to August 27, 2026." % R.F_DAYS,
-         "- `%s`: the telematics service's geofence entries and exits, March 1 to August 27, 2026 (the service keeps "
-         "180 days of geofence history)." % R.F_GEO,
-         "- `%s`: which telematics device was fitted to which vehicle, and when." % R.F_DEV,
-         "- `%s`: the maintenance system's unit list and model specifications." % R.F_UNITS,
-         "- `%s`: the fleet manager's yard notes." % F_NOTES, "",
-         "## Yard tanks and islands", "",
-         "- `%s`: the six yard tanks." % R.F_TANKS,
-         "- `%s`: the fuel management system's island transactions for 2025, the Jackson and Knoxville "
-         "programmes." % R.F_FMS, "",
-         "## Card accounts", "",
-         "- `%s`: Delta's direct-bill transactions, downloaded from the Riverbend fleet portal." % R.F_WEST,
-         "- `%s`: Keeble's Crossroads Fleet Card transactions, exported from the Crossroads portal." % R.F_CENTRAL,
-         "- `%s`: Holston's SMPM member transaction files, as received, one weekly batch after another; layout in "
-         "`%s`." % (R.F_EAST, F_LAYOUT),
-         "- `%s`: the pricing schedules of the three card programmes." % F_CARDS,
-         "- `%s`: the IFTA returns filed for the three licences, third quarter 2025 to second quarter 2026." % R.F_IFTA,
-         "", "## Overton", "",
-         "- `%s`: Overton's offer of August 26." % F_OFFER,
-         "- `%s` and `%s`: Overton's letters for the 2025 Jackson and Knoxville programmes." % (F_JXN25, F_KNX25),
-         "- `%s`, `%s` and `%s`: Overton's 2025 delivery tickets, invoices and credit memos for the two programmes, "
-         "from Overton's customer portal." % (R.F_DELIV, R.F_INV, R.F_CRED),
-         "- `%s`: Overton's daily posted rack and the TriState contract average for ULSD No. 2 at Memphis, Nashville "
-         "and Knoxville, by effective date." % R.F_RACK,
-         "- `%s`: Overton's tank wagon prices for the week of August 24." % F_TW, ""]
-    return "\n".join(L)
-
-
 # ---------------------------------------------------------------------------------------------------- writing
 PDF_STAMPS = {
     F_OFFER: (b"D:20260826151204-05'00'", b"D:20260826151204-05'00'"),
     F_JXN25: (b"D:20250303104512-06'00'", b"D:20250303104512-06'00'"),
     F_KNX25: (b"D:20250602093847-05'00'", b"D:20250602093847-05'00'"),
     F_CARDS: (b"D:20250106142219-06'00'", b"D:20250106142219-06'00'"),
-    F_LAYOUT: (b"D:20230925111530-04'00'", b"D:20230925111530-04'00'"),
     F_TW: (b"D:20260824074102-05'00'", b"D:20260824074102-05'00'"),
 }
-DOCS = [F_OFFER, F_JXN25, F_KNX25, F_CARDS, F_LAYOUT, F_TW, F_NOTES, F_README]
+DOCS = [F_OFFER, F_JXN25, F_KNX25, F_CARDS, F_TW, F_NOTES]
 
 
 def write_all(out, W):
@@ -453,11 +413,9 @@ def write_all(out, W):
     write_prog_letter(p(F_JXN25), "JXN")
     write_prog_letter(p(F_KNX25), "KNX")
     write_cards(p(F_CARDS))
-    write_layout(p(F_LAYOUT))
     write_tankwagon(p(F_TW))
     for f, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(p(f), c, m)
     with open(p(F_NOTES), "w", encoding="utf-8", newline="") as fh:
         fh.write(notes_text(W))
-    with open(p(F_README), "w", encoding="utf-8", newline="") as fh:
-        fh.write(readme_text(W))
+

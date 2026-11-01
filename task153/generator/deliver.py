@@ -167,7 +167,7 @@ def write_xlsx(path, X):
     w2["A1"] = "Diesel gallons bought on the card accounts, by the local day of the fill"
     w2["A1"].font = Font(bold=True, size=12)
     w2["A2"] = ("Riverbend's file times are UTC (Schedule A, A5) and are put on Central time; Crossroads and SMPM date a "
-                "sale made at 10 pm or later with the next day (Addendum 4 clause 5; the SMPM layout), so those fills "
+                "sale made at 10 pm or later with the next day (Addendum 4 clause 5; SMPM Exhibit A), so those fills "
                 "are put back on the evening they were pumped. A posting sent twice is left out with the credit that "
                 "reverses it. DEF is excluded; the SMPM batch for 6 to 12 July received twice is counted once.")
     w2["A2"].alignment = Alignment(wrap_text=True, vertical="top")
@@ -250,9 +250,9 @@ def write_xlsx(path, X):
                    "saves the card charge less $0.019. Fuel taxes are paid either way and are left out."),
         ("Card gallons", "Diesel only, DEF left out. Riverbend's download stamps fills in UTC (Schedule A, A5), put "
                          "on Central time. Crossroads and SMPM date a sale made at 10 pm or later with the next day "
-                         "(Addendum 4 clause 5; the SMPM layout), so those fills are put back on the evening they were "
+                         "(Addendum 4 clause 5; SMPM Exhibit A), so those fills are put back on the evening they were "
                          "pumped. A day a site posted twice (%s) is counted once: each duplicate and the credit that "
-                         "reverses it in a later week are left out (A6; clause 6; the layout's C records). SMPM's "
+                         "reverses it in a later week are left out (A6; clause 6; Exhibit A's C records). SMPM's "
                          "batch for 6 to 12 July came in twice and is counted once." % X["dup_text"]),
         ("2025 programmes", "Each terminal bill of lading once, in the month it was delivered: a load dropped in two "
                             "visits shows the bill's net gallons on both delivery rows. Billed: the product line and "

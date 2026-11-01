@@ -23,11 +23,10 @@ SOURCES = {
     DOC.F_OFFER: "Overton Petroleum Co., transport load offer of August 26, 2026",
     DOC.F_JXN25: "Overton Petroleum Co., Jackson yard tank programme letter, 2025",
     DOC.F_KNX25: "Overton Petroleum Co., Knoxville yard tank programme letter, 2025",
-    DOC.F_CARDS: "Riverbend, Crossroads and SMPM pricing schedules (copies held by Keeble Supply Co.)",
-    DOC.F_LAYOUT: "Smoky Mountain Petroleum Marketers, member transaction file layout v3",
+    DOC.F_CARDS: "Riverbend, Crossroads and SMPM pricing schedules, with the SMPM member transaction file layout "
+                 "(copies held by Keeble Supply Co.)",
     DOC.F_TW: "Overton Petroleum Co., tank wagon prices, week of August 24, 2026",
     DOC.F_NOTES: "Keeble Supply Co., fleet services yard notes, August 2026",
-    DOC.F_README: "Keeble Supply Co., fleet services list of the files pulled for the fuel review",
 }
 DISTRACTORS = [R.F_IFTA, DOC.F_TW]
 TITLE = ("How many of a fuel jobber's discounted transport loads a distributor contracts for its six yard islands over "
@@ -64,8 +63,7 @@ def write(target, out_path, B=None):
         "client_domain": "General Statistics & Data Science",
         "house_domain": "supply-chain-logistics",
         "subdomain": "resampling-simulation-monte-carlo-methods (fleet fuel procurement: each yard island's eight-week "
-                     "draw replayed from the vehicles' recent duty, stretch by stretch between yard visits, each "
-                     "stretch capped at the tankful above the driver's reserve)",
+                     "draw)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a committed load count with each yard's whole loads and the saving they book, a chart of each "
                         "yard's island draw against its card gallons with the loads marked, and two tables (each card "

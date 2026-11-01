@@ -31,7 +31,7 @@ DAY_COLS = ["Device Serial", "Vehicle", "Day", "TZ", "First Ignition", "First La
             "Odometer End"]
 GEO_COLS = ["Event Time", "Device Serial", "Vehicle", "Geofence", "Event"]
 DEV_COLS = ["Device Serial", "Vehicle", "Installed", "Removed"]
-FMS_COLS = ["Txn", "Site", "Pump", "Fob", "Unit", "Date", "Time", "Gallons", "Odometer", "Product"]
+FMS_COLS = ["TransNo", "SiteID", "Hose", "KeyID", "VehNo", "TransDate", "TransTime", "Qty", "OdoReading", "ProdCode"]
 WEST_COLS = ["TRAN_ID", "TRAN_DATE_TIME", "SITE_NO", "SITE_NAME", "SITE_CITY", "SITE_ST", "CARD_NO", "UNIT_NO",
              "DRIVER_NO", "ODOMETER", "PROD_CD", "PROD_DESC", "QTY", "PPG", "FET", "SET", "NET_AMT", "TOTAL",
              "REF_TRAN_ID"]

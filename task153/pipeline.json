@@ -5,21 +5,22 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-11-01",
  "stump": "Taking each yard island to hand out what its vehicles now buy on the three card accounts contracts 29 loads, and scaling the card gallons by the 2025 islands' share (pooled, by account or by model) still files 26 to 28; the step that lands each there is treating a yard as able to supply a vehicle's whole fuel, when an island fuels a vehicle only while it is in the yard and at most a tankful at a time; capping each run between nights at the yard instead files 19, missing Nashville's Wednesday midday reload; only the stretch between yard visits capped at a tankful contracts 23.",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17",
-  "checks": "49 checks, 0 FAIL, 0 WARN (rerun on the shipped build)"
+  "date": "2026-11-01",
+  "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-17, rerun on the shipped build; every REVIEW line answered in the design note ## Leak review",
-  "reader": "stage 4 round 1: six findings, all fixed in the generator: the Crossroads network fee made determinate (Addendum 4 clause 2, $0.080 against $0.065 asserted); the offer's saving sentence replaced by Overton's own price term on the same TriState average; the tank register varied (12,000 to 25,000 gallons); the unit list given spare and sold units and branch-written model names; the yard-notes sentence closing the window removed (the prompt carries the scenario); the heel and alarm asserted not to bind (SF14); round 2: the fresh read of the fixed pack clean"
+  "leak_py": "REVIEW (no LEAK), 2026-11-01, on the repaired cut c2239b2d",
+  "reader": "stage 4 round 1: six findings, all fixed in the generator: the Crossroads network fee made determinate (Addendum 4 clause 2, $0.080 against $0.065 asserted); the offer's saving sentence replaced by Overton's own price term on the same TriState average; the tank register varied (12,000 to 25,000 gallons); the unit list given spare and sold units and branch-written model names; the yard-notes sentence closing the window removed (the prompt carries the scenario); the heel and alarm asserted not to bind (SF14); round 2: the fresh read of the fixed pack clean",
+  "reader_2026_11_01": "clean (questions 1 to 4 none, question 6 analytical)"
  },
  "duplicate_check": {
-  "heart": "WARN (three_rules.strategy_risk, repeat.gate_g; no BLOCK), 2026-10-17, unchanged after the stage 4 fix",
+  "heart": "BLOCK 2026-11-01 on inherited bans against task233 v2 (strategy, forum), escalated; see recheck_2026_11_01",
   "nearest": "nearest driver 0.09 (task146)",
   "surface": "task152 promotion cleared by renaming the pack file list; task94, task69, task105 promoted on the card-level gap, pattern and decision collision already differentiated (surface 0.080 to 0.087), unchanged after the stage 4 fix; adjudicated /clone-check left to the author"
  },
@@ -28,9 +29,17 @@
   "disposition": "round 1: FIX_NOW; round 2: APPROVE",
   "report": "determinism_check_report.md (round 2); determinism_check_report_round1.md (round 1)",
   "fix": "Ask 4: Riverbend's UTC stamps (Schedule A, A5), the cards' 10 pm business day (Addendum 4 clause 5 on Central time; the SMPM layout, at 10:00 pm or later) and the duplicate-posting credits (A6; clause 6; the layout's C record) filed in the programmes' own documents, alternatives asserted, silent device a day a site posted twice with its credit dated in a later week; Ask 5: the 6 pm Central posting with the next day's date filed in the 2025 letters, the delivery export's clock in its headers, the prompt defining the dollars as everything billed over the posted rack value of the gallons after credits, taxes aside, alternatives asserted (service lines out, credits unread, rebills dropped, lifting-date and delivery-date postings, by invoice month the same); the prompt pins the scenario and both chart windows (the eight weeks to 23 August); ladder R1 corrected to 26 to 28; client domain kept (answered in the note). No graded figure moved.",
-  "round2": "DETERMINISTIC, APPROVE; its notes answered before ship in the write-up and the checks: step 3 names the cap the T680s' own fills show (SF9: the Sprinters' 23.9 keeps Cookeville at 1 load), the saving's basis is the offer's price term (SF16: the by-site $17,449 excluded), the rival figures are out of the graded blocks"
+  "round2": "DETERMINISTIC, APPROVE; its notes answered before ship in the write-up and the checks: step 3 names the cap the T680s' own fills show (SF9: the Sprinters' 23.9 keeps Cookeville at 1 load), the saving's basis is the offer's price term (SF16: the by-site $17,449 excluded), the rival figures are out of the graded blocks",
+  "pass3": "pass 3 DETERMINISTIC, FIX_NOW on the chart's bar gallons only (reserve and 40/39 scaling move bars, never loads); answered without change: block 4 grades ticks and load labels, no bar gallons; Gate G analytical_non_defect, Gate H analytical; determinism_check_report_pass3.md"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (in-house re-check under the new gates)",
+   "repair": "leak (layout as Exhibit A, register out, FMS headers), prompt count, precut anatomy and Measured by",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-17",
@@ -44,12 +53,21 @@
   "checks": "107 assertions, 0 failed (three-rules block R1 to R3c, HOW sentences and the prompt's scenario, ladder with R1 26 to 28, corridor of 12 constructions, SF1 to SF16, closure axes, 2025 out-of-sample, both asks with their filed conventions, stops and fairness, the world's truth for Ask A, cracker, separation, realism sweep, input gates, distractor deletion, goldens against figures.json)",
   "verify": "independent verifier reproduces the 23 loads, the six yard draws, the $17,408 saving, Ask A (9) and Ask B (12)",
   "rebuild": "two consecutive builds byte-identical: 22 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip",
-  "target_zip_sha256": "1808f2c142401de729450ec62d2c1d8c26c5b90d6c145c9f1ecef6312831bc83",
+  "target_zip_sha256": "c2239b2d5ac2aadbb7477d1a9fd2e2a726ae81ef227cf12c7c964933f11bf63b",
   "figures_check": "PASS, 52 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (982 characters)",
+  "voice_check": "PASS (976 characters)",
   "container": "scrub_producer_metadata audit clean on target and golden",
   "golden_realism": "done: finding titles, Notes sheet, chart with finding title, annotations and source line",
   "house_fixes": "H1 clean; H3 wording fixed (reserve fills, 2025 share clause, odometer note); H16 fixed (Crossroads pending post dates, the unsent SMPM week, Riverbend daily posting); H21 real institution and brand names replaced; H24 no constructed-pack sentence under target",
   "freeze": "determinism mode: only block 1's four rival figures (29, 26, 28, 19) and their figures.json keys moved, removed on the round 2 notes"
+ },
+ "recheck_2026_11_01": {
+  "rebuild": "shipped target.zip reproduced byte for byte (1808f2c1) after installing matplotlib 3.11.2 in the container",
+  "failed_on_shipped_cut": "leak.py LEAK (sweep 1: smpm_member_transaction_file_layout_v3.pdf by name; sweep 12: the layout named 5 of the island log's 8 headers); precut FAIL (no Measured by line) and 8 WARN (survivor anatomy missing); the file register a manifest (REVIEW); metadata subdomain narrating the method (sweep 13 REVIEW); prompt's 'three card accounts' a count the data hold",
+  "repair": "layout folded into the SMPM pricing schedule as Exhibit A with the programme's own field labels; file register out (pack 20 files, five formats); island log headers the FMS's own names; yard notes dated; metadata subdomain names the quantity only; prompt drops the account count; survivor anatomy written; generator/pair.py measures the ask sheet (cracker 49.8, mirror 28.4, pair ceiling 39.1, mirror leakage 4.3)",
+  "gates": "checks 107 of 107, verify reproduces, two byte-identical builds (target.zip c2239b2d), precut 61 checks 0 FAIL 0 WARN, voice-check PASS (976 characters), leak.py REVIEW, figures_check 52 of 52, guard surface 3 promoted pairs unchanged from ship (task94, task69, task105, differentiated), freeze determinism: only the prompt call sentence (the dropped count)",
+  "heart": "BLOCK on inherited bans against task233 v2 (ban.strategy grain_or_unit, ban.forum customer_or_counterparty); task233 registered 2026-10-16T22:52Z, before this card (2026-10-17T02:13Z); nothing in this repair touches either axis; bans take no differentiation line; escalated to the author, not re-rooted",
+  "leak_reader": "clean: questions 1 to 4 none, question 6 analytical, every REVIEW item harmless",
+  "judge": "pass 3 DETERMINISTIC, FIX_NOW on the chart's bar gallons only (reserve and 40/39 scaling move bars, never loads); answered without change: block 4 grades ticks and load labels, no bar gallons; Gate G analytical_non_defect, Gate H analytical; determinism_check_report_pass3.md"
  }
 }

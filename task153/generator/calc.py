@@ -136,13 +136,13 @@ def read(folder, cards=True, use_devices=True, dedupe_fms=True, day_tz=None):
     P.fms_dupes = 0
     with open(os.path.join(folder, F_FMS), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            if r["Txn"] + r["Site"] in seen:
+            if r["TransNo"] + r["SiteID"] in seen:
                 P.fms_dupes += 1
                 if dedupe_fms:
                     continue
-            seen.add(r["Txn"] + r["Site"])
-            d = dt.datetime.strptime(r["Date"] + " " + r["Time"], "%m/%d/%Y %H:%M")
-            P.fms.append(dict(unit=int(r["Unit"]), site=r["Site"][:3], t=d, gal=float(r["Gallons"])))
+            seen.add(r["TransNo"] + r["SiteID"])
+            d = dt.datetime.strptime(r["TransDate"] + " " + r["TransTime"], "%m/%d/%Y %H:%M")
+            P.fms.append(dict(unit=int(r["VehNo"]), site=r["SiteID"][:3], t=d, gal=float(r["Qty"])))
     if cards:
         P.cards = read_cards(folder)
     return P
