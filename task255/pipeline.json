@@ -10,17 +10,17 @@
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 (--asof 2026-11-13; three lines answered in the note's Leak record)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": "",
-  "nearest": ""
+  "heart": "PASS 2026-11-01",
+  "surface": "11 pairs promoted for adjudication 2026-11-01; nearest task254 back to back on G7 (surface 0.084)",
+  "nearest": "task87 0.08"
  },
  "judge": {
   "verdict": "",
@@ -47,7 +47,7 @@
    "commit": "DRAWN (task255) architecture 2, by the main session"
   }
  ],
- "resume": "architecture 2 built 2026-11-01: free gates run on the final cut by the builder; next: stage 4 (the isolated leak reader and the determinism judge, by the main session)",
+ "resume": "architecture 2 built 2026-11-01, every free gate run on the final cut (target.zip 23cb43ec); next: stage 4, the isolated leak reader and the determinism judge, by the main session",
  "approved": null,
  "delivered": null,
  "portal": null,

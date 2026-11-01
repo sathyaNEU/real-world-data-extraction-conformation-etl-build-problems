@@ -223,7 +223,7 @@ nearest package to the line under the golden is Eindhaltes at 35.76 (4.24 points
 
 ## Literal reader
 
-Executed word for word: the prompt asks whether any package is sold in Tier G; rate card 3.1 to 3.5 and Annex A fix the
+Executed word for word: the prompt asks what belongs in Tier G; rate card 3.1 to 3.5 and Annex A fix the
 window, the regular rider, the passes, effective reach and the line. Every literal reading of those sentences gives
 the golden once the reader establishes where riders changed trains, which 3.4 leaves to the records: SF1 to SF12
 show every convention either converges or is ruled out by a quoted sentence, and the routes converge (SF7). The
@@ -292,10 +292,27 @@ Measured by: generator/ceiling.py (run on the cut pack)
 
 - Generator: `generator/` (params, world, asks_world, pack, io_util, analysis, golden, checks, verify, ceiling,
   writeup, build). World from SEED 25502, the commercial records from their own stream (salt 298); 2,232 habitual
-  riders drawn, 1,949 of them regular in the window.
-- Gates on the cut pack: checks.py 72 of 72; verify.py 7 of 7 blocks on its own code path (pandas, its own PDF
-  decoder, the peak windows found from the data); two builds byte-identical; figures_check.py PASS; ceiling.py pair
-  32.4, mirror 7.1.
+  riders drawn, 1,949 of them regular in the window. Deliverables: tier_g_2027.xlsx (four sheets) and
+  tier_g_2027.svg (the reach chart, titled with the call).
+- Free gates on the final cut (2026-11-01): checks.py 72 of 72; verify.py 7 of 7 blocks on its own code path
+  (pandas, its own PDF decoder, the peak windows found from the data); two builds byte-identical over 18 files,
+  target.zip 23cb43ec; figures_check.py 61 of 61; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS with no
+  WARN; leak.py --asof 2026-11-13 REVIEW (three lines, answered below); guard.py heart PASS; guard.py surface 11
+  pairs promoted for the author's adjudication, the nearest task254 (back to back on G7, surface 0.084); the
+  container audit clean on target/ and golden/; every shipped PDF read by pdftotext and by pypdf in strict mode.
+
+## Leak record
+
+- REVIEW, Spoorbeeld_tariefkaart_2027.pdf carries most words of the call: the rate card defines Tier G and lists
+  every package by name in its price table and Annex A; it ranks nothing and selects nothing. Harmless.
+- REVIEW, the rate card carries six stump-paragraph words (Centraal, journey, window, service, nothing, trains):
+  they come from 3.2 to 3.4 (the window, a journey, "a staff or service card", "changes trains", "and nothing
+  else") and Annex A; no sentence names a peak, a service pattern, a duration or through running. Harmless.
+- REVIEW, schermregister_2026-11-12.xlsx holds dates after the as-of date: the planned hangings of 7 to 10
+  December, the booked take-downs of 14 and 21 December and Wilgenhof's re-hanging on 1 February 2027, a register's
+  forward-looking rows (the allow-list of `reduce-house-fixes` H16). Harmless.
+- The booking numbers (0411 to 0437) appear in the agency statements and in block 4 as identifiers; they are listed
+  under `stated_inputs` in metadata.json.
 
 ## Architecture 1 record (spent 2026-11-01)
 
@@ -802,3 +819,7 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   moved within two euros.
 - The question as "which packages": the shell quota (35 per cent of prompts on file); recast as a whether-question,
   "none" grammatical.
+- A golden one-page PDF beside the workbook: the guard's recent window held pdf+xlsx (task138), docx+xlsx (task133)
+  and pptx+xlsx (task273), and png+xlsx sits over its corpus quota (21 per cent); the chart ships as an SVG.
+- The question as "whether we should sell any package in Tier G": the guard found the form in one of the last two
+  prompts (task138); recast as a what-question.
