@@ -1,91 +1,97 @@
 {
   "task": "task146",
-  "architecture": "v2",
+  "architecture": "v3 (re-root 2026-11-01: Hvidore Biologics' phase 3 dose for its anti-IL-23 antibody in plaque psoriasis, each candidate dose's expected week-16 PASI 75 response in the phase 3 population, carried from the phase 2b trial through the antibody's exposure, whose clearance rises with body weight)",
   "drawn": "2026-11-01",
-  "slot_note": "second root of task146 (batch 1 re-root, 2026-11-01): v1's claims-week refiling call retired by the batch audit (no survivor anatomy); a new client domain (banking-credit-financial-risk), world and dataset under the same objective",
-  "domain": "banking-credit-financial-risk",
-  "client_domain": "banking-credit-financial-risk",
-  "subdomain": "deposit-liquidity-behaviour",
-  "niche": "a mutual building society's treasury sizing the structural hedge on its instant-access savings from the balances still held one, two and three years on, when members move their savings to each new instant-access issue by closing one account and opening another",
+  "slot_note": "third root of task146 (batch 1 re-root, 2026-11-01): v1's claims-week refiling call retired by the batch audit; v2's structural hedge spent on paper by the rule-application lines of 19c4263b and 273af233; a new client domain (biomedical-clinical-research), task type, world and dataset under the same objective, the decisive step an estimate no shipped source lists",
+  "domain": "biomedical-clinical-research",
+  "client_domain": "biomedical-clinical-research",
+  "subdomain": "dose-response-pk-pd-modeling",
+  "niche": "a Copenhagen biotech choosing the dose its anti-IL-23 antibody takes into phase 3 in plaque psoriasis, by each candidate dose's expected week-16 PASI 75 response in the phase 3 population, which is recruited in North America and weighs more than the Nordic phase 2b population the dose-response was measured on, while the antibody's clearance rises with body weight",
   "objective": "forecasting",
-  "shape": "07",
-  "decision_type": "dial_setting",
-  "answer_unit": "currency",
+  "shape": "13",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G4",
-    "G13"
+    "G16",
+    "G17"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the treasury's extract (pounds against pence, the 2025 product re-coding, month ends dated on the last business day) and reads the ALCO policy correctly estimates the run-off on cohorts of accounts open at each start date, the field's own method for non-maturity deposits, and files a stable balance about a fifth too low and a hedge run-off, because a member who moves to a new instant-access issue closes one account and opens another the same day at the same amount and the account cohort books the move as money gone.",
-  "domain_test": "The deciding quantity is the stable (core) balance of non-maturity deposits, the behavioural estimate that sizes a deposit-taker's structural hedge, read from the book's own run-off at the grain the money moves at; put into another field's nouns (a hospital's beds, a school's pupils) there is no hedge notional, no run-off ladder and no money moving between savings issues, so the deciding quantity stops making sense.",
+  "analyst_test": "A strong analyst who conforms the phase 2b data (the central laboratory's concentrations in micrograms per litre against the Lund site's in nanograms per millilitre, the samples below the limit of quantification, the visit windows, the patients who took rescue treatment counted as non-responders under the SAP) and reads the clinical development plan's dose rule correctly takes each arm's week-16 PASI 75 rate, or the Emax curve fitted on dose, the field's dose-response method, and files 100 mg, whose arm cleared the 70 per cent bar in phase 2b; the call is wrong because the phase 3 population weighs more and the antibody's clearance rises with body weight, so at 100 mg its patients run lower trough concentrations and, response following exposure, only 200 mg clears 70 per cent there.",
+  "domain_test": "The deciding quantity is the expected PASI 75 response of a dose in a target population, worked the way clinical pharmacology works a dose choice: a population model of exposure on body weight fitted to the trough concentrations, an exposure-response model fitted to the responses, and the target population's weights carried through both; put into another field's nouns (a school's pupils, a retailer's stores) there is no clearance, no trough concentration and no dose, and the quantity stops making sense.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "banking-credit-financial-risk/deposit-liquidity-behaviour/3",
+  "layer2_pattern": "own:exposure transport across a covariate shift",
   "layer1": [
-    "pounds in the balance extract against pence in the account events",
-    "product codes re-keyed in the 2025 product rationalisation, one old code reused",
-    "month ends dated on the last business day of the month",
-    "account events stamped in UTC against local month ends",
-    "closed accounts carried at zero for one month before they drop out"
+    "trough concentrations in micrograms per litre from the central laboratory and in nanograms per millilitre from the Lund site laboratory",
+    "samples below the lower limit of quantification flagged with a text marker",
+    "PASI recorded with one decimal at some sites and as integers at others",
+    "visit dates outside the protocol window",
+    "rescue treatment recorded only in the concomitant medication listing",
+    "patients re-screened under a second number",
+    "weights in pounds at the North American feasibility sites"
   ],
-  "stakeholder_role": "the Society's treasurer",
-  "role_family": "finance_controller",
+  "stakeholder_role": "the HB-231 programme lead",
+  "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "ia_month_end_balances_2021-2026.csv",
+    "file": "hb231_epro_daily_diary.csv",
     "rows": 0,
-    "entity": "one instant-access account at one month end",
-    "grain": "account x month",
+    "entity": "one patient's daily itch and sleep entry",
+    "grain": "patient x day",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "cooperative_or_member_body",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "other",
   "world": {
-    "geography": "England (a fictional mutual building society in the East Midlands)",
-    "currency": "GBP",
-    "org_type": "a building society's treasury and its board",
+    "geography": "Denmark and Sweden (the phase 2b sites) and North America (the phase 3 sites)",
+    "currency": "EUR",
+    "org_type": "a clinical-stage biotech developing a monoclonal antibody",
     "invented_names": [
-      "Trentmoor Building Society",
-      "Trentmoor Easy Saver",
-      "Trentmoor Loyalty Saver"
+      "Hvidore Biologics",
+      "HB-231",
+      "VELA-2"
     ],
     "people": [
-      "Hugh Clements",
-      "Liam Bowen",
-      "Jennifer Russell"
+      "Helle Carlsen",
+      "Villads Kjær",
+      "Bodil Lauritsen"
     ]
   },
   "deliverables": [
-    "structural_hedge_reset_2027.pdf",
-    "stable_balance_ladder_2026-11.xlsx"
+    "hb231_phase3_dose_recommendation.docx",
+    "hb231_phase2b_tables.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The stable part of a stock held in containers is the money that stays, and a holder moves the money into a new container of the same kind by closing one and opening another on the same day at the same amount, so run-off measured container by container books every move as a loss and a new arrival, and only matching each closing payment to the opening it funded keeps the moved money in the stable part.",
-  "driver_concrete": "Instant-access members move their savings to each new issue by closing the old account and opening a new one the same day with the same amount, so account cohorts book the moves as run-off; linking each closing payment to the same-day opening deposit it funded keeps that money with the Society and raises the stable balance by about a fifth.",
-  "stump": "A competent solver estimates run-off on cohorts of accounts open at each start date, the field's own method, and sizes the 2027 hedge too low (a run-off), because a member's move to a new instant-access issue closes one account and opens another and the cohort books it as money gone; following each closing payment into the same-day opening it funded keeps that money and moves the hedge up.",
+  "question_form": "what",
+  "driver": "A response measured at each level of an input in one population is carried to a second population in which every unit takes up less of the same input, because uptake falls with a property the second population carries more of; the response follows the uptake rather than the input level, so the level that cleared a bar in the first population falls short in the second, and only a model of uptake on that property, fitted where uptake was measured, joined to a model of response on uptake, carries the response across.",
+  "driver_concrete": "The antibody's clearance rises with body weight, so the heavier phase 3 patients run lower trough concentrations at each dose; PASI 75 response follows the trough concentration, so the 100 mg dose that cleared 70 per cent in the Nordic phase 2b falls short of it in the North American phase 3 population and only 200 mg clears it.",
+  "stump": "A competent solver reads the phase 2b dose-response, the arms' week-16 PASI 75 rates or an Emax curve fitted on dose, and takes 100 mg, which cleared the 70 per cent bar in phase 2b; the phase 3 population weighs more and the antibody's clearance rises with weight, so at 100 mg its patients run lower troughs and the expected response falls under 70 per cent; carried through the weight-clearance relation and the exposure-response fitted on phase 2b, only 200 mg clears the bar.",
   "mechanism_source": "design_note",
   "lineage": [
     {
       "architecture": "v1",
       "fate": "retired 2026-11-01 by the batch 1 audit before any portal result: designed before the survivor anatomy gate, its note carries no Actor, Link or Reflex line and precut.py fails it (no Measured by: line); the claims week's refiling pool sized region by region",
       "driver": "A step a weekly count takes each time a calendar period turns is not a fixed seasonal share of the count: it is released by the turn from a pool the closing period built, units refused at their first attempt because their qualifying record had not caught up and admitted once the period moves. The share that comes back differs several-fold between the pool's segments and, within the segments that come back at all, falls steeply with the time from the refusal to the turn, since units refused early have mostly moved on by then, steady within each across past turns; so the step is each segment's pool weighed by when within the period each unit was refused, at the segment's own rates. When the closing period's refusals in the segments that come back most fell late in the period, the segments' pools taken whole at their average rates understate the step, and so do the pool taken whole at the pooled rate and every seasonal forecast."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-11-01 on paper at stage 2, before any reader or judge: its decisive step (following each member's money across a same-day close and open between instant-access issues) is an inclusion over a second source, which policy 7.3 files and the event log lists (a rule executed, task445 v2) and which, unfiled, leaves the account cohort as the literal reading (task468 v5); Trentmoor Building Society's structural hedge",
+      "driver": "The stable part of a stock held in containers is the money that stays, and a holder moves the money into a new container of the same kind by closing one and opening another on the same day at the same amount, so run-off measured container by container books every move as a loss and a new arrival, and only matching each closing payment to the opening it funded keeps the moved money in the stable part."
     }
   ],
   "lineage_shells": [
@@ -94,18 +100,26 @@
       "second-sentence opener": "put",
       "rounding opener": "give",
       "deliverable set": "docx+xlsx"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "for",
+      "rounding opener": "balances",
+      "deliverable set": "pdf+xlsx"
     }
   ],
   "differentiation": {
-    "task464": "task464 v1 fits each unit's response to an external driver and finds the units whose response changed partway through the record; task146 has no response model and no change point: the deciding quantity is the money a savings book keeps, and the step is linking each closing payment to the same-day opening it funded so a member's move between instant-access issues is not booked as run-off."
+    "task171": "task171 v5 corrects an exposure-response read on levels the response itself changed (responders lose the input more slowly), read before the response began; task146 v3's exposure-response is unconfounded and the decisive step carries it to a target population whose body weight lowers every patient's exposure at a given dose",
+    "task168": "task168 completes capped units from uncapped ones of another season; task146 v3 has no cap and nothing to complete: it moves a measured response across a covariate shift through a model of the input's uptake",
+    "task260": "task260 sets an interval that must resample both raters and items; task146 v3 sets no interval: it carries a dose's expected response to a heavier population through the exposure the dose produces there",
+    "task464": "task464 v8 inverts classification hit rates to recover a composition; task146 v3 classifies nothing: it carries a dose's response to a population whose exposure at that dose is lower"
   },
-  "notes": "Axes redrawn at the post-registration check (2026-11-01): committee_or_panel and monitoring_export were held by task231 v2 and task145 v2, filed minutes earlier; the Board approves the hedge in this mutual (ALCO recommends), and the reset acts on the treasury's swap register, so the honest labels are board_of_directors and register. Architecture 2 spent 2026-11-01 on paper at stage 2: following the money across same-day close-and-open pairs is an inclusion over a second source with no safe filing (19c4263b, 273af233).",
-  "registered": "2026-11-01T00:42:44Z",
+  "notes": "Axes redrawn at the draw-time checks on a freshly pulled tree (2026-11-01): the role family research_desk and the forum executive_team were held by task445 v3, the context artifact filed_standard and the pattern G1 by task468 v6, the pattern G6 and the forum committee_or_panel by task231 v2, and the organisation family manufacturer by task456 v2; the HB-231 programme lead carries the call to Hvidore's board, which approves the phase 3 plan, on the programme's planning thread, and a clinical-stage biotech that makes no product yet files as other.",
   "shell": {
     "question form": "how-much",
     "second-sentence opener": "for",
     "rounding opener": "balances",
     "deliverable set": "pdf+xlsx"
   },
-  "architecture_spent": true
+  "registered": "2026-11-01T01:22:51Z"
 }

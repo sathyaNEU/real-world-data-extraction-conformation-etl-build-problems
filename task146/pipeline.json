@@ -1,24 +1,23 @@
 {
  "task": "task146",
- "status": "PAUSED",
- "domain": "banking-credit-financial-risk / deposit-liquidity-behaviour (client banking-credit-financial-risk)",
+ "status": "DESIGN",
+ "domain": "biomedical-clinical-research / dose-response-pk-pd-modeling (client biomedical-clinical-research)",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-01",
- "stump": "A competent solver runs the book off on cohorts of accounts open at each 30 November (the field's method) and files a GBP 125 million hedge with a GBP 23 million new swap, because a member who takes up a new Loyalty Saver issue closes one account and opens another the same day for the same amount and the cohort books that money as gone; matching each closing payment to the same-day opening it funded keeps it in instant-access savings and puts the hedge at GBP 165 million (a GBP 63 million new swap).",
- "architecture": 2,
+ "stump": "A competent solver reads the phase 2b dose-response, the arms' week-16 PASI 75 rates or an Emax curve fitted on dose, and takes 100 mg, which cleared 70 per cent there; the phase 3 population weighs more and HB-231's clearance rises with weight, so at 100 mg its patients run lower troughs and the expected response falls under 70 per cent; carried through the weight-clearance relation and the exposure-response fitted on phase 2b, only 200 mg clears the bar.",
+ "architecture": 3,
  "loops": 0,
- "precut": {
-  "exit": null,
-  "date": null
- },
+ "precut": null,
  "leak": {
   "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-11-01 on the registered card (people.first, repeat.gate_g; test.same_driver_older differentiated against task464 v1)"
+  "guard_check": "PASS 2026-11-01 on the registered card (differentiated against task171 v5, task168, task260, task464 v8)",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
   "verdict": "",
@@ -26,14 +25,13 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 1, a re-root: architecture 2 (Trentmoor Building Society's structural hedge, the money followed across same-day close-and-open moves between instant-access issues) is spent on paper by the rule-application lines of commits 19c4263b and 273af233: its decisive step is an inclusion over a second source (the event log's same-day pairs decide which balances count as kept), which policy 7.3 files (\"to the extent the Society held it in instant-access savings\", a rule executed, task445 v2) and which unfiled leaves the account cohort as the literal reading (a withheld rule, task468 v5); the account-cohort route also contradicts 7.3. Draw architecture 3 in another world and client domain under Forecasting (guard.py recent, coverage, mechanisms and slots on a freshly pulled tree; the card's architecture 2 identity into lineage as spent) with the decisive step an estimate the filed WHAT leaves to the analyst and no shipped source lists; architecture 2's generator, pack and goldens stay in git as history (target.zip 06b54fc7, python3 task146/generator/build.py rebuilds it).",
+ "resume": "stage 2: write the ladder, the three rules, the survivor anatomy, the fork and closure tables and the asks for architecture 3 (Hvidore Biologics' HB-231 phase 3 dose), gate with precut.py, then build the generator (world, pack, golden, checks, verify, writeup, ceiling, make).",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "re-root into a new world (a mutual building society's structural hedge on its instant-access savings); architecture 1 spent",
  "lineage_v1": {
   "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
   "architecture": 1,
@@ -98,13 +96,44 @@
   {
    "date": "2026-11-01",
    "event": "architecture 2 spent on paper at stage 2: the decisive step (following the money across same-day close-and-open pairs) is an inclusion over a second source with no safe filing (19c4263b, 273af233); checked in the note's Three rules before any ask work, per the coordinator"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 3, biomedical-clinical-research dose-response-pk-pd-modeling x forecasting, registered on a freshly pulled tree"
   }
  ],
- "build": {
-  "rebuild": "python3 task146/generator/build.py",
-  "zip_sha256": "06b54fc79be5d3d3f50f5a2bb2e80fe7aa5508995dedae578266c26c136fcb07",
-  "gates": "two byte-identical builds; checks.py 0 failed (rungs: R0 221, R1 125, R2 170, R3 165; links recover the world's 4,312 switches exactly; every graded figure 0.053 million or more off a rounding edge; pooled and averaged start dates agree at the million); verify.py 0 failures; ceiling.py: cracker keeps 6 of 20 ask figures, pair ceiling 62.2, mirror leakage 30.0",
-  "call": "hedge GBP 165 million from January 2027, a new three-year swap of GBP 63 million against the GBP 101.9 million left after the January maturity"
+ "lineage_v2": {
+  "status": "PAUSED",
+  "domain": "banking-credit-financial-risk / deposit-liquidity-behaviour (client banking-credit-financial-risk)",
+  "stump": "A competent solver runs the book off on cohorts of accounts open at each 30 November (the field's method) and files a GBP 125 million hedge with a GBP 23 million new swap, because a member who takes up a new Loyalty Saver issue closes one account and opens another the same day for the same amount and the cohort books that money as gone; matching each closing payment to the same-day opening it funded keeps it in instant-access savings and puts the hedge at GBP 165 million (a GBP 63 million new swap).",
+  "architecture": 2,
+  "loops": 0,
+  "precut": {
+   "exit": null,
+   "date": null
+  },
+  "leak": {
+   "leak_py": "",
+   "reader": ""
+  },
+  "duplicate_check": {
+   "guard_check": "WARN 2026-11-01 on the registered card (people.first, repeat.gate_g; test.same_driver_older differentiated against task464 v1)"
+  },
+  "judge": {
+   "verdict": "",
+   "disposition": "",
+   "report": ""
+  },
+  "resume": "stage 1, a re-root: architecture 2 (Trentmoor Building Society's structural hedge, the money followed across same-day close-and-open moves between instant-access issues) is spent on paper by the rule-application lines of commits 19c4263b and 273af233: its decisive step is an inclusion over a second source (the event log's same-day pairs decide which balances count as kept), which policy 7.3 files (\"to the extent the Society held it in instant-access savings\", a rule executed, task445 v2) and which unfiled leaves the account cohort as the literal reading (a withheld rule, task468 v5); the account-cohort route also contradicts 7.3. Draw architecture 3 in another world and client domain under Forecasting (guard.py recent, coverage, mechanisms and slots on a freshly pulled tree; the card's architecture 2 identity into lineage as spent) with the decisive step an estimate the filed WHAT leaves to the analyst and no shipped source lists; architecture 2's generator, pack and goldens stay in git as history (target.zip 06b54fc7, python3 task146/generator/build.py rebuilds it).",
+  "build": {
+   "rebuild": "python3 task146/generator/build.py",
+   "zip_sha256": "06b54fc79be5d3d3f50f5a2bb2e80fe7aa5508995dedae578266c26c136fcb07",
+   "gates": "two byte-identical builds; checks.py 0 failed (rungs: R0 221, R1 125, R2 170, R3 165; links recover the world's 4,312 switches exactly; every graded figure 0.053 million or more off a rounding edge; pooled and averaged start dates agree at the million); verify.py 0 failures; ceiling.py: cracker keeps 6 of 20 ask figures, pair ceiling 62.2, mirror leakage 30.0",
+   "call": "hedge GBP 165 million from January 2027, a new three-year swap of GBP 63 million against the GBP 101.9 million left after the January maturity"
+  },
+  "architecture_spent": true,
+  "source_note": "re-root into a new world (a mutual building society's structural hedge on its instant-access savings); architecture 1 spent",
+  "fate": "spent 2026-11-01 on paper at stage 2 by the rule-application lines of 19c4263b and 273af233: its decisive step (the money followed across same-day close-and-open moves between instant-access issues) is an inclusion over a second source"
  },
- "architecture_spent": true
+ "source_note": "re-root into a new world (Hvidore Biologics' phase 3 dose for HB-231 in plaque psoriasis, carried from the Nordic phase 2b through exposure to the heavier North American phase 3 population); architectures 1 and 2 spent"
 }

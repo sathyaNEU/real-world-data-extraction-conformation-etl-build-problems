@@ -1,134 +1,32 @@
-# task146 design note (architecture 2)
+# task146 design note (architecture 3)
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task146.json`, architecture v2, registered 2026-11-01T00:42:44Z after a
-  pull and a guard check (WARN only). Architecture 1 (the Unemployment Insurance Board's first weekly count of the
-  quarter) moved to the card's lineage, retired by the batch 1 audit.
-- **Pairing:** Banking, Credit & Financial Risk, task type `deposit-liquidity-behaviour`, objective Forecasting &
-  Predictive Modeling (the stable balance one, two and three years on is a forecast of money the Society will still
-  hold, a window not yet closed). Banking x forecasting carries three builds (task133, task177, task446), none on
-  deposits.
-- **Niche:** Trentmoor Building Society, a fictional mutual in the East Midlands, runs its instant-access savings on a
-  run of issues (Easy Saver, a Loyalty Saver issue each spring, a cash ISA, a children's saver). Its asset and liability
-  committee (ALCO) resets the structural hedge each January: receive-fixed swaps laid against the part of the
-  instant-access balances the Society expects to keep, so the margin on that money does not swing with Bank Rate.
-- **Quantity:** the stable balance of the instant-access savings held on 30 November 2026 at the first, second and
-  third anniversaries, and from it the hedge ALCO sets in January 2027 and the change to the swaps held now.
-- **Decision:** the hedge notional (a dial) and whether swaps are added, run off or left.
-- **Shell:** question form how-much, the second sentence led by the committee's use, deliverables pdf+xlsx, the
-  rounding sentence opened on the figures it governs; it differs from architecture 1's (how-many, put, docx+xlsx).
-- **Strategy:** `decomposition_attribution` (each closing payment from an instant-access account is booked to where
-  it went: into a new instant-access issue the same day, or out of the Society), gap population then time, decisive
-  generator G4 (attribution at transition: who holds the money now), G13 the horizon.
-- **Data-native sentence:** Trentmoor cannot convert an account from one issue to another, so a member who takes up
-  each spring's Loyalty Saver closes the old account and opens the new one on the same day with the same amount, and
-  the treasury's account-level extract carries no member key: the move shows only as a closing payment and an opening
-  deposit that agree to the penny on one date.
-- **Abstraction sentence (not writable against an approved build):** "the money a book keeps is followed across a
-  container's closure into the same-day container it funded, rather than measured container by container". The
-  nearest approved shapes read differently: 124 infers an unexamined unit's kind from its group's other members, 108
-  removes a request made twice, 132 restarts a wear curve at a replacement, 72 (held after repair) books a transferred
-  enrolment to its origin, which assigns a unit to an owner rather than keeping money in a stock.
-- **Personas:** `guard.py names --geo uk --seed 146` (Hugh Clements, Liam Bowen, Jennifer Russell; Denis Law skipped as
-  a real public figure, Allan Simpson for a surname shipped in task306).
-- **Axes redrawn at the post-registration check.** The first registration (00:39:56Z) met `ban.forum`
-  (committee_or_panel, task231 v2) and `ban.artifact` (monitoring_export, task145 v2), both filed minutes earlier.
-  In a mutual of this size the Board approves the hedge each January on ALCO's recommendation, and the reset acts on
-  the treasury's swap register, so board_of_directors and register are the honester labels, not merely the passing
-  ones; the prompt names the Board and the paper became structural_hedge_reset_2027.pdf.
-- **WARN answers.** `repeat.deliverables` pdf+xlsx and `repeat.gate_g` forecasting against task145 v2: a paper and a
-  ladder workbook are what a treasury hands a board, and the mechanism is honestly a forecast. `people.first` Jennifer in task101: an older build, one first name. `repeat.gate_g` forecasting
-  against task130: the honest mechanism, a forecast of money kept; task130's is a recorded rate under an incentive.
-  `test.same_driver_older` against task464 v1: differentiated on the card (a response model's change point there, no
-  model here).
-- **Sources:** the client's rigor card deposit-prepayment-interest-rate-behavior 3 (estimate deposit decay on cohorts
-  of accounts open at the start date, not on total balances) is the default path's method, rung 1, and its shortcut
-  (decay fitted to the total balance) is rung 0; the field's practice for non-maturity deposits (behavioural core
-  balance from vintage run-off, structural hedge laid to it). Every figure is synthetic; no real society, issue or
-  member.
-- **The slot's earlier deposit screen.** task170's note records a deposit cell screened on 2026-10-19 where every
-  heterogeneity candidate, product migration among them, died on the composition ban of that round, not on a
-  measurement. This draw is not a heterogeneity: no class of saver behaves differently; the step is the unit the
-  money is followed at.
-
-## Default path
-
-1. Read the month-end extract and the ALM policy; take every instant-access account with a balance at each 30 November
-   from 2021 whose anniversary has passed.
-2. Run off each start cohort account by account, the field's method for non-maturity deposits (the client's card 3:
-   cohorts of accounts open at the start date, not total balances): each account's lowest month-end balance to the
-   anniversary, a closed account at zero.
-3. Pool each product's kept balances over its start balances across the start dates; multiply by each product's
-   30 November 2026 balance; sum.
-4. Set the hedge at the first-anniversary total to the nearest GBP 1 million and size the new swap against the
-   GBP 101.9 million left after the January maturity.
-
-**Ends on:** a hedge of GBP 125 million and a new swap of GBP 23 million (the share kept a year on 57.0 per cent).
-**Golden:** a hedge of GBP 165 million and a new swap of GBP 63 million (75.4 per cent kept a year on; GBP 130 million
-two years on and GBP 104 million three years on).
-
-## Stump sentence
-
-A competent solver runs the book off on cohorts of accounts open at each 30 November and files a GBP 125 million hedge
-(a GBP 23 million new swap), because a member who takes up a new Loyalty Saver issue closes one account and opens
-another the same day for the same amount and the cohort books that money as gone; matching each closing payment to the
-same-day opening it funded keeps it in instant-access savings and puts the hedge at GBP 165 million.
-
-## Three rules
-
-- Task type: deposit-liquidity-behaviour (banking-credit-financial-risk), which serves Forecasting.
-- Domain test: the deciding quantity is the stable (core) balance of non-maturity deposits that sizes a structural
-  hedge, estimated from the book's own run-off over each anniversary.
-- Swap: "the Board sets the hedge at the stable balance a year on" read as a school's pupils kept a year on has no
-  hedge, no notional and no money moving between savings issues; the quantity stops making sense.
-- Layer 1: pounds against pence, month ends dated on the last business day, UTC event stamps against local dates, the
-  2025 re-coding with ES02 reused, closed accounts carried at zero for a month; each comes from the core banking
-  system's own extracts.
-- Layer 2: estimand identification; the unit the run-off is measured at (the money, followed across a closure into the
-  opening it funded, not the account) flips the hedge by GBP 40 million.
-- Decisive step: following each instant-access closing payment into the same-day instant-access opening it funded, so
-  a move between issues is kept rather than run off.
-- Not semantics: every field, code, unit and date read correctly (pence converted, ES02 read by date, local dates)
-  still leaves the account cohort at GBP 125 million; no field marks a move, and no definition is misread.
-- Not rule application: FAILS the 2026-11-01 lines (commits 19c4263b, 273af233). The decisive step is an inclusion over a second source: the event log's same-day CLOSE and OPEN pairs decide which balances count as kept. Filed, it is a rule executed: policy 7.3 counts a balance as kept "to the extent the Society held it in instant-access savings at every month end", which names the money a member moves into a new issue, and the event log lists every such move, so linking it executes the estimand (task445 v2, Gate H3). Unfiled, the stable balance is an intent phrase, the literal reading files the account cohort, and the golden needs a withheld rule (task468 v5). The account-cohort route also contradicts 7.3 for any analyst who sees the moves, so it is not a route a strong analyst would file without contradicting a filed sentence. Once the money is followed nothing is left to estimate: the link is exact to the penny (4,312 of 4,312 switches recovered), and the run-off after it is arithmetic on the extract.
-- Analyst test: the easy route, account cohorts, ends on a GBP 125 million hedge and a GBP 23 million new swap.
-- Estimand: ALM Policy section 7.3 and 7.4 (trentmoor_alm_policy_structural_hedge_v4.pdf): products, the kept balance,
-  the start dates taken together, the first to third anniversaries, the hedge to the nearest GBP 1 million.
-- No decoy: nothing is planted; no memo, draft or figure argues the account-cohort answer; the Board minute states
-  last year's hedge only.
-- No certified replay: no certified or published figure is reproduced to recover the method.
-- Lesson: a deposit book's stable balance is the money kept, and where the system cannot convert an account between
-  issues the money crosses a closure; no build on file follows money across a container's closure into a stock.
-
-## Survivor anatomy
-
-- Actor: the member's move to a new issue has no column; it is a relation between a CLOSE row and an OPEN row of
-  another account, same local day, same pence.
-- Link: no key joins the two accounts (the extract carries no member number); only the amount and the local date do,
-  a cross-row comparison the cohort method never asks for.
-- Reflex: the field's named method, run-off on cohorts of accounts open at the start date, sits at rung 1 and files
-  GBP 125 million.
-- Back-test: the account cohort validates: its run-off from each earlier 30 November reproduces the accounts' own
-  month-end balances and the book reconciles to survivors plus new accounts at every month end.
-- Second use: the event log is the extract's own record of openings and closures and carries the closures that end
-  every account in the cohort route; the balance extract is the spine every route reads.
-- Shock: moves happen every April and May at about a quarter of eligible balances a year, ordinary movement; no
-  product or month stands out.
-- Pins: the WHAT is filed in the ALM policy section 7 (a policy in the Society's genre); no sentence names the link,
-  the amount, the date or the account.
-
-## Ladder
-
-| Rung | Construction | Hedge (GBP m) | New swap | Dies to |
-|---|---|---|---|---|
-| R0 | total book a year on over the book (new money in) | 221 | 119 | the policy's kept balance (7.3) |
-| R1 | account cohorts, the field's method | 125 | 23 | the same-day links |
-| R2 | money followed into instant-access and bond openings | 170 | 68 | 7.2: bonds are not instant-access |
-| R3 (decisive) | money followed into instant-access openings only | 165 | 63 | golden |
-
-Separation: R1 to R3 GBP 40 million; R2 to R3 GBP 5 million; every graded figure at least 0.05 million off a rounding
-edge (checks.py), pooled and averaged start dates agree on every graded figure (seed 146079, SF1).
+- **Card:** `.claude/skills/fingerprint/cards/task146.json`, architecture v3, registered 2026-11-01 on a freshly pulled
+  tree (guard check PASS; the differentiation lines answer task171 v5, task168, task260 and task464 v8). The axes
+  were redrawn at the draw-time checks: the role family, forum, context artifact, decisive pattern and organisation
+  family the last three live builds hold (task231 v2, task445 v3, task468 v6, task456 v2) are not used.
+- **Pairing:** Biomedical & Clinical Research, task type `dose-response-pk-pd-modeling`, objective Forecasting &
+  Predictive Modeling; the task type has never been drawn.
+- **Niche:** Hvidore Biologics A/S, a clinical-stage biotech in Copenhagen, develops HB-231, a subcutaneous
+  anti-IL-23p19 monoclonal antibody, in moderate-to-severe plaque psoriasis. Its phase 2b trial VELA-2 (HB231-201)
+  randomised adults at Nordic sites to placebo or HB-231 25, 50, 100 or 200 mg every four weeks; the primary endpoint
+  is PASI 75 at week 16. The phase 3 programme (VELA-3A and VELA-3B) starts in 2027 at North American sites. The
+  clinical development plan takes forward the lowest of 50, 100 and 200 mg whose expected week-16 PASI 75 response in
+  the phase 3 population is at least 70 per cent; Hvidore's board approves the phase 3 plan in December 2026.
+- **Quantity:** each candidate dose's expected week-16 PASI 75 response in the phase 3 population, the patients the
+  phase 3 sites will enrol as the feasibility survey lists them, response defined as in the phase 2b SAP. Forward
+  facing: phase 3 has not enrolled a patient.
+- **Decision:** the phase 3 dose, one of 50, 100 and 200 mg (golden 200 mg).
+- **Shell:** question form what, second-sentence opener "The", rounding opener "Responses", deliverables docx+csv.
+- **Setting:** VELA-2 randomised its first patient on 1 September 2025 and its last on 27 February 2026; the last
+  week-16 visit fell in June 2026 and the database locked on 18 September 2026; the feasibility survey of the phase 3
+  sites closed on 30 October 2026; the request is dated 16 November 2026 and the board meets on 9 December 2026.
+- **Personas:** drawn with `guard.py names --geo dk --seed 1463`: Villads Kjær (HB-231 programme lead, the request's
+  author), Helle Carlsen (chief medical officer), Bodil Lauritsen (head of biostatistics).
+- **Data-native sentence:** an antibody's clearance rises with body weight, so a fixed dose leaves a heavier patient
+  with a lower trough concentration; the phase 2b trial measured response at each dose in a lighter population than
+  phase 3 will enrol, and response follows the concentration, not the dose on the label.
 
 ## Tried and rejected
 
