@@ -4,7 +4,7 @@
                                           projects, the figure each is sized on (the estimand, at authority) and the
                                           decision. It says nothing about how a section's current is found.
   hv_conductor_data_EDS-02-0310.pdf       the engineering data sheet: every HV conductor's resistance and ratings.
-  iis_reporting_definitions_2025-26.pdf   the network performance team's definitions for the 2025/26 interruptions
+  iis_regulatory_return_rules_2025-26.pdf   the network performance team's definitions for the 2025/26 interruptions
                                           return, with the exceptional event accepted for the year.
   line_loss_factors_2025-26.pdf           the published line loss factor statement for the licence area.
 
@@ -27,7 +27,7 @@ SMALL = ParagraphStyle("small", parent=BODY, fontSize=7.8, leading=10, textColor
 
 BRIEF = "losses_programme_2027-28_brief.pdf"
 CATALOGUE = "hv_conductor_data_EDS-02-0310.pdf"
-IIS = "iis_reporting_definitions_2025-26.pdf"
+IIS = "iis_regulatory_return_rules_2025-26.pdf"
 LLF = "line_loss_factors_2025-26.pdf"
 
 

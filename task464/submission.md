@@ -21,7 +21,7 @@ Its replacement conductor would have removed 74.2 MWh of losses in 2025/26, wort
 3. Summed the flows of every connection beyond each section the brief lists to get the section's current each half-hour; Kestle's replaced sections carry the solar farm's export less the load beyond them.
 4. Took each replaced section's loss at that current on its existing and its replacement conductor, at 11 kV and the resistances of hv_conductor_data_EDS-02-0310.pdf, per the brief: Kestle saves 74.2 MWh and Copsewell Town 48.2 MWh.
 5. Valued each project's year at GBP 64.80 per MWh: GBP 4,800 for Kestle.
-6. Counted 2025/26 CI and CML per iis_reporting_definitions_2025-26.pdf from interruptions_2023-2026.csv, dropping the work-management LV jobs at sites already off in an HV incident, ending a site's minutes when generator_hire_2025-26.xlsx shows a generator connected there, leaving out sites a generator kept on supply through a planned outage, and dividing by customers_by_substation_2023-2026.csv at 31 March 2026: the feeders' figures below.
+6. Counted 2025/26 CI and CML per iis_regulatory_return_rules_2025-26.pdf from interruptions_2023-2026.csv, dropping the work-management LV jobs at sites already off in an HV incident, ending a site's minutes when generator_hire_2025-26.xlsx shows a generator connected there, leaving out sites a generator kept on supply through a planned outage, and dividing by customers_by_substation_2023-2026.csv at 31 March 2026: the feeders' figures below.
 7. Funded Kestle, with Copsewell Town the runner-up.
 
 ## 4. Deliverable Answers

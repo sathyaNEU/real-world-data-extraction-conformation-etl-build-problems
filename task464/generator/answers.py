@@ -390,7 +390,7 @@ def interruption_measures(incs, cust, hires, storm_circuits, *, generators=True,
 def storm_circuits_from_pdf(tgt=TGT):
     """The circuits the accepted exceptional event names, read from the definitions PDF."""
     from pypdf import PdfReader
-    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(tgt, "iis_reporting_definitions_2025-26.pdf")).pages)
+    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(tgt, "iis_regulatory_return_rules_2025-26.pdf")).pages)
     txt = re.sub(r"\s+", " ", txt)
     return [n for n in FEEDER_ORDER if n in txt.split("Exceptional event accepted for 2025/26", 1)[1]]
 

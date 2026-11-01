@@ -14,6 +14,7 @@ sessions) held its call on the portal and died twice at the determinism block, b
 forecast's estimator. Architecture 10 leaves forecasting and estimation behind: the graded quantity is the
 technical loss each project would have removed on flows the network metered, and physics, not a choice of
 estimator, forces its construction.
+- 2026-11-01, re-check under the new leak gate: the IIS reporting rules shipped under a file name the describing-file sweep reads as a dictionary (`definitions`); renamed `iis_regulatory_return_rules_2025-26.pdf` with its text unchanged, nothing else moved (freeze.py PASS).
 
 ## Draw
 

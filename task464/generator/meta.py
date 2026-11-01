@@ -38,7 +38,7 @@ FILES = [
     ("generator_hire_2025-26.xlsx", "operating extract",
      "The generation team's hire and fuel log of mobile generators deployed in 2025/26.", "%s, generation team" % DNO,
      "2026-04-09"),
-    ("iis_reporting_definitions_2025-26.pdf", "governing document",
+    ("iis_regulatory_return_rules_2025-26.pdf", "governing document",
      "The network performance team's definitions for the 2025/26 interruptions return, with the accepted exceptional "
      "event.", "%s, network performance" % DNO, "2026-05-14"),
     ("copsewell_cross_scada_2025-26.csv", "distractor",
@@ -77,7 +77,7 @@ def main():
                           "31 March 2026 (UK time), 11 kV nominal, 20 C resistances and the losses value of GBP 64.80 per MWh "
                           "(losses_programme_2027-28_brief.pdf)",
                           "the 3-minute threshold, half weight for pre-arranged interruptions, the exclusions and the accepted "
-                          "storm (iis_reporting_definitions_2025-26.pdf)"],
+                          "storm (iis_regulatory_return_rules_2025-26.pdf)"],
         "field_terms": ["technical losses", "I2R losses", "reconductoring", "embedded generation", "customer interruptions",
                         "customer minutes lost"],
         "deliverables": ["losses_programme_2027.xlsx", "losses_saving_2027.png", "iis_feeders_2025-26.csv"],

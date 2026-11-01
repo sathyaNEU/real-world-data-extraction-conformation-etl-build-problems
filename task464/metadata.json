@@ -92,7 +92,7 @@
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/iis_reporting_definitions_2025-26.pdf",
+      "path": "target/iis_regulatory_return_rules_2025-26.pdf",
       "role": "governing document",
       "covers": "The network performance team's definitions for the 2025/26 interruptions return, with the accepted exceptional event.",
       "source": "Marchway Power Networks, network performance",
@@ -125,7 +125,7 @@
     "64.8",
     "11",
     "the brief's eight projects, their section IDs and replacement conductors, the year 1 April 2025 to 31 March 2026 (UK time), 11 kV nominal, 20 C resistances and the losses value of GBP 64.80 per MWh (losses_programme_2027-28_brief.pdf)",
-    "the 3-minute threshold, half weight for pre-arranged interruptions, the exclusions and the accepted storm (iis_reporting_definitions_2025-26.pdf)"
+    "the 3-minute threshold, half weight for pre-arranged interruptions, the exclusions and the accepted storm (iis_regulatory_return_rules_2025-26.pdf)"
   ],
   "field_terms": [
     "technical losses",

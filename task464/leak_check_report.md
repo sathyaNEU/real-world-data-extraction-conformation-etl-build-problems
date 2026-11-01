@@ -7,8 +7,8 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 Stump terms swept: section, current, export, architecture, half-hour, kestle, decisive, sections, conductor, closed, nothing, beyond, primary, metered, monitors, silent, register, substation, estate, settlement, replaced, measured, reading, construction, carries
 
 ## 3 answer figures in the pack (REVIEW 5)
-- **REVIEW** `hv_conductor_data_EDS-02-0310.pdf`: golden figure 500 appears: ...Cable, 3-core belted, Cu 0.0915 0.114 0.076 445 / 500 XLPE 95 AL 95 mm2 aluminium, XLPE, triplex Cable,...
 - **REVIEW** `hv_conductor_data_EDS-02-0310.pdf`: golden figure 300 appears: ...2024. Supersedes issue 6 (2019); issue 7 adds the 300 mm2 triplex cable and corrects the 0.04 sq in rea...
+- **REVIEW** `hv_conductor_data_EDS-02-0310.pdf`: golden figure 500 appears: ...Cable, 3-core belted, Cu 0.0915 0.114 0.076 445 / 500 XLPE 95 AL 95 mm2 aluminium, XLPE, triplex Cable,...
 - **REVIEW** `losses_programme_2027-28_brief.pdf`: golden figure 300 appears: ...q in copper, paper-insulated lead-covered, 3-core 300 mm2 aluminium, XLPE, triplex Ashlade CB 4 HV-2114...
 - **REVIEW** `losses_programme_2027-28_brief.pdf`: candidate 'Copsewell Town' sits beside decision vocabulary: ...jects Feeder Breaker Sections replaced (network model IDs) Existing conductor Replacement Copsewell Town CB 3 HV-20543, HV-20609 0.1 sq in copper, paper-insulated lead-covered, 3-core 300 mm2 al...
 - **REVIEW** `losses_programme_2027-28_brief.pdf`: carries 4 of 5 distinctive words of the committed call: 'Fund the Kestle reconductoring from the 2027/28 losses programme.'
@@ -28,6 +28,10 @@ Stump terms swept: section, current, export, architecture, half-hour, kestle, de
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: the N things: "the eight savings" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 44% of 196 prompts (cap 20%); reword at the role level, not the verb
+
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
@@ -39,8 +43,6 @@ Stump terms swept: section, current, export, architecture, half-hour, kestle, de
 ## 8 column names (clean)
 
 ## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read

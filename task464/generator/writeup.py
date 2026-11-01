@@ -45,7 +45,7 @@ def main(F):
            "and the resistances of hv_conductor_data_EDS-02-0310.pdf, per the brief: %s saves %.1f MWh and %s %.1f MWh."
            % (call, c["year_mwh"], runner, r["year_mwh"])),
           "5. Valued each project's year at GBP %.2f per MWh: %s for %s." % (F["losses_value_gbp_mwh"], gbp(c["value_gbp"]), call),
-          ("6. Counted 2025/26 CI and CML per iis_reporting_definitions_2025-26.pdf from interruptions_2023-2026.csv, "
+          ("6. Counted 2025/26 CI and CML per iis_regulatory_return_rules_2025-26.pdf from interruptions_2023-2026.csv, "
            "dropping the work-management LV jobs at sites already off in an HV incident, ending a site's minutes when "
            "generator_hire_2025-26.xlsx shows a generator connected there, leaving out sites a generator kept on supply "
            "through a planned outage, and dividing by customers_by_substation_2023-2026.csv at 31 March 2026: the "

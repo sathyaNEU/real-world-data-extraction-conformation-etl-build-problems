@@ -181,7 +181,7 @@ def _ids():
         sec_ids.append(s)
     r.shuffle(node_ids)
     site = [int(x) for x in r.choice(np.arange(300000, 899999), 400, replace=False)]
-    mpan = [int(x) for x in r.choice(np.arange(10 ** 9, 10 ** 10 - 1), 60, replace=False)]
+    mpan = [int(x) for x in 10 ** 9 + r.choice(10 ** 10 - 1 - 10 ** 9, 60, replace=False)]
     return node_ids, sec_ids, site, mpan
 
 

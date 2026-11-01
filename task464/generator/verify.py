@@ -89,7 +89,7 @@ def main():
     ok(VALUE == 64.80 and "11 kV nominal" in re.sub(r"\s+", " ", brief) and "20°C" in brief,
        "brief's conventions read: GBP %.2f per MWh, 11 kV nominal, resistances at 20 C" % VALUE)
 
-    iis = re.sub(r"\s+", " ", pdf_text("iis_reporting_definitions_2025-26.pdf"))
+    iis = re.sub(r"\s+", " ", pdf_text("iis_regulatory_return_rules_2025-26.pdf"))
     ev = iis.split("Exceptional event accepted for 2025/26", 1)[1]
     storm = [f for f in feeders if f in ev]
     ok(storm == ["Oxenford Lane", "Kestle", "Stowmere"] and "3 minutes or longer" in iis and "half weight" in iis,
