@@ -112,7 +112,7 @@ def entries_xlsx(S, path):
     for col, wd in zip("ABCDE", (30, 13, 13, 13, 13)):
         ws.column_dimensions[col].width = wd
     wb.save(path)
-    PP.normalize_ooxml(path, "Melissa Chen", "Mary Deleon", "2026-12-02T22:40:00Z", "2026-12-03T06:12:00Z", excel=True)
+    PP.normalize_ooxml(path, "Pamela Sullivan", "Mary Deleon", "2026-12-02T22:40:00Z", "2026-12-03T06:12:00Z", excel=True)
 
 
 def write_all(target, golden, here):

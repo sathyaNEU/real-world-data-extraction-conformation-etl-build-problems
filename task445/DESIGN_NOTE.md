@@ -21,7 +21,7 @@ scaled, and by how many marks.
   results), the forcing event (task146's meeting; the results are certified to the admissions centres on a fixed
   date) and the structural signature (decisive gap, pattern and Gate G against older builds, each differentiated on
   the card in one line: no assignment, no follow-up, no reference group, no sampling design, the comparison is the
-  units that chose nothing). WARNs: first names in older builds (Mary, Christopher), Gate G and question form against
+  units that chose nothing). WARNs: first names in older builds (Mary), Gate G and question form against
   task231, decision type against task146, each answered in `## Pre-ship check`.
 - **Pairing:** Education & Learning Sciences, task type `item-response-theory-test-equating`, which serves ETL: the
   board's marking export (one row per marking event), the Section A scanning extract, the entries register and the
@@ -283,7 +283,7 @@ Measured by: task445/generator/ceiling.py on target.zip 51f94b0e
 
 ## Pre-ship check
 
-- WARNs answered: the first names Mary and Christopher appear in older builds as one person each (the guard's names
+- WARNs answered: the first name Mary appears in an older build as one person (the guard's names
   for this seed); Gate G method_or_model_selection and the whether question form against task231, and dial_setting
   against task146, are different mechanisms in different domains, the decision a scaling dial.
 

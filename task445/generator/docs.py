@@ -10,9 +10,9 @@ import world as W
 
 ORG = "Arafura Examinations Board"
 DOMAIN = "arafura-exams.edu.au"
-RESULTS = ("Christopher Turner", "c.turner")
+RESULTS = ("Philip Montes", "p.montes")
 STANDARDS = ("Mary Deleon", "m.deleon")
-DATA = ("Melissa Chen", "m.chen")
+DATA = ("Pamela Sullivan", "p.sullivan")
 
 
 def _styles():
@@ -147,7 +147,7 @@ To: %s
 Cc: %s
 Date: Tue, 01 Dec 2026 09:18:40 +0930
 Subject: History Paper 2: certification on 14 December
-Message-ID: <20261201091840.2210.cturner@%s>
+Message-ID: <20261201091840.2210.pmontes@%s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -158,13 +158,13 @@ Marking of History Paper 2 closed on Friday, and the executive certifies the
 History results to the admissions centres on Monday 14 December, so I need
 your section 4 report on the paper's optional questions this week.
 
-Melissa has put the marking export, the Section A scan, the entries register
+Pamela has put the marking export, the Section A scan, the entries register
 and the centres register in the usual folder, with last year's review log for
 the annual report. The executive will want the results file for the
 certification run and the entries figures by region.
 
 Thanks,
-Chris
+Philip
 
 --
 %s

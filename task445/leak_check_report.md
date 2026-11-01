@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, september, december, golden, marking, section, register, demand, essays, family, option, choice, back-test, registered, comparison, sentence, choosers, device, change, type-pooled, architecture, export, different, completion, version
+Stump terms swept: decisive, section, september, register, marking, december, golden, demand, essays, choice, option, family, sentence, back-test, registered, comparison, choosers, device, change, type-pooled, architecture, export, centres, nothing, different
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `aeb_code_of_practice_2026.pdf`: carries 10 of 14 distinctive words of the committed call: "Scale Question 6 of the 2026 History Paper 2: raise every candidate's mark on it by 2 marks before the best two essays a"
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `aeb_code_of_practice_2026.pdf`: 7 of 25 stump-paragraph terms appear (marking, section, register, demand, option, choice); read whether the document names the move
+- **REVIEW** `aeb_code_of_practice_2026.pdf`: 8 of 25 stump-paragraph terms appear (section, register, marking, demand, choice, option); read whether the document names the move
 - **REVIEW** `history_awarding_minute_2026.pdf`: 3 of 25 stump-paragraph terms appear (section, essays, option); read whether the document names the move
 
 ## 6 ranking artifacts (INFO 1)
@@ -35,6 +35,51 @@ Stump terms swept: decisive, september, december, golden, marking, section, regi
 
 
 ## Solver's-eye read
+
+Architecture 3, read 1 on target.zip 51f94b0e (isolated Sonnet reader, a fresh copy of prompt.txt and target/ only).
+
+1. Decisive step: none states it; the nearest are the code of practice's sections 4.2 and 4.3 and the awarding
+   minute's item 3 (Research and Standards will report on the optional questions under sections 4.1 to 4.3), which
+   say a report is due and not whether any question is raised.
+2. Ranking file: none; only the 2025 question statistics carry per-question figures, last year's raw data with no
+   scaling or recommendation.
+3. Helping file: none; the email names the files as an ordinary work note, and the code of practice is a governing
+   document.
+4. Answer figure or name: none; the minute's boundaries and last year's question mean are context.
+5. Population sentences: code 4.2 (an optional question is more demanding when the paper's candidates would have
+   earned fewer marks on it than on the others taken together, measured in marks) and 4.3 (the raise by that
+   difference, rounded, capped, only at 1.5 or more); read literally they fix the estimand over every candidate of
+   the paper, those who did not answer the question included, and give no method.
+6. What decides: an analytical choice, estimating what the whole cohort would have earned on each question when only
+   the candidates who chose it have marks; the filed rules 3.2, 4.3 and 5.1 apply afterwards, and nothing is planted.
+
+Sweep lines: codes 4.2 and 4.3 state the rule and say nothing about whether any question is scaled, harmless; no
+sentence names a comparison group, a section or an ability proxy, or how candidates choose, harmless; the awarding
+minute sets the boundaries and the paper's structure and defers to the report, harmless.
+
+Realism: the registers, the entries workbook, the essay-marks log with its events, markers and scan batches and the
+review log read as a board's own records, the documents terse and bureaucratic; the candidate numbers and entry rows
+are sequential, as entry registers are.
+
+Read 2 on target.zip a676a08f, after two personas were renamed for the people guard (Christopher Turner to Philip
+Montes, Melissa Chen to Pamela Sullivan; the email, the workbooks' authors and the card; no figure moved); isolated,
+a fresh copy.
+
+1. Decisive step: none states it; code 4.3 is the rule only, and no file says whether Question 6 is scaled.
+2. Ranking file: none; the 2025 question statistics are last year's context.
+3. Helping file: none; the email lists the folder in passing, the PDFs are governing documents, the centres and
+   markers files are lookups.
+4. Answer figure or name: none.
+5. Population sentences: code 4.2 as in read 1 (every candidate of the paper, those who did not answer included,
+   measured in marks), with 3.2 and 4.3 fixing the order (raise, then credit the best answers, then the boundaries).
+6. What decides: an analytical choice, estimating what the whole cohort would have earned on a question part of it
+   chose; the event log, senior re-marks, re-entries and absentees are Layer 1, nothing planted.
+
+Sweep lines as in read 1, each harmless. Realism: PDF and workbook metadata, the email's Darwin offset, natural mark
+distributions, varied scan batches; the essay-marks log's event ids stepping by 1 to 3 is mildly regular.
+
+### Architecture 1's reader (history)
+
 
 One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/` under `/sbx/leak-task445-l3/`, after the judge's pass 3 repair changed the prompt's bridge sentence, 2026-10-12.
 
