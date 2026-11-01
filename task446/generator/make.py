@@ -28,10 +28,9 @@ FILES = dict(
     facilities="facility_obligor_extract_20260930.csv",
     limits="facility_limit_history_20261008.csv",
     fx="treasury_closing_rates_20260930.csv",
-    triggers="ews_trigger_codes.csv",
+    triggers="ews_trigger_catalogue_r3.2.json",
     standard="early_warning_and_watch_list_standard.pdf",
     close="crm_year_end_close_timetable_2026.docx",
-    fieldref="credit_data_field_reference.md",
     log="reference_data_extract_log_20261008.txt",
     ratings="internal_rating_master_scale_2026.xlsx",
     outlook="group_economics_uk_outlook_oct2026.xlsx",
@@ -47,6 +46,17 @@ def wcsv(path, header, rows):
         wr.writerow(r)
     with open(path, "w", encoding="utf-8", newline="") as fh:
         fh.write(buf.getvalue())
+
+
+def trigger_catalogue(path, rows):
+    """the engine's trigger catalogue as its admin console exports it"""
+    import json
+    doc = {"catalogue_id": "EWS-TRG", "engine_release": "3.2", "exported_at": "2026-10-01T05:32:17Z",
+           "trigger_set": [{"trigger_code": c, "trigger_text": d, "source_feed": f, "default_signal": g}
+                           for c, d, f, g in rows]}
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(doc, fh, indent=2, ensure_ascii=False)
+        fh.write("\n")
 
 
 def iso(d):
@@ -240,7 +250,7 @@ def build(target=TARGET, devices=True):
          [("2026-09-30", c, "%.4f" % FX[c], "Group Treasury 16:00 London close") for c in ("EUR", "USD")] +
          [("2026-09-30", "CHF", "1.0732", "Group Treasury 16:00 London close"),
           ("2026-09-30", "SEK", "14.6815", "Group Treasury 16:00 London close")])
-    wcsv(os.path.join(target, FILES["triggers"]), ["trigger_code", "description", "feed", "default_signal"], [
+    trigger_catalogue(os.path.join(target, FILES["triggers"]), [
         ("CCJ", "County court judgment registered against the entity", "REGISTRY", "AMBER"),
         ("COVENANT_BREACH", "Financial covenant breached on the latest compliance certificate", "INTERNAL", "RED"),
         ("COVENANT_RISK", "Covenant headroom under 10 per cent on the latest certificate", "INTERNAL", "AMBER"),
@@ -260,7 +270,6 @@ def build(target=TARGET, devices=True):
     docs.register_workbook(w, os.path.join(target, FILES["register"]))
     docs.standard_pdf(os.path.join(target, FILES["standard"]))
     docs.close_docx(os.path.join(target, FILES["close"]))
-    docs.field_reference(os.path.join(target, FILES["fieldref"]), FILES)
     docs.extract_log(os.path.join(target, FILES["log"]), FILES, target)
     docs.ratings_workbook(w, os.path.join(target, FILES["ratings"]))
     docs.outlook_workbook(os.path.join(target, FILES["outlook"]))

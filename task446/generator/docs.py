@@ -174,9 +174,11 @@ def outlook_workbook(path):
         first = False
         s["A1"] = "Group Economics: UK outlook, October 2026. %s path." % name
         s["A1"].font = Font(bold=True)
-        s.append([])
-        s.append(["Quarter", "Real GDP, % q/q", "Unemployment rate, %", "Bank Rate, % (end quarter)",
-                  "CPI inflation, % y/y"])
+        s.append(["Prepared by Group Economics, 5 October 2026; Central is the Group's view at 1 October 2026, "
+                  "Downside and Severe downside are narrative sensitivity paths with no probability attached. "
+                  "Next update January 2027."])
+        s.append(["Quarter", "Real GDP, % q/q", "Unemployment rate, % (ILO 16+, quarter average)",
+                  "Bank Rate, % (end quarter)", "CPI inflation, % y/y (quarter average)"])
         for c in s[3]:
             c.font = Font(bold=True)
             c.alignment = Alignment(wrap_text=True, vertical="bottom")
@@ -187,19 +189,6 @@ def outlook_workbook(path):
             s.cell(row=s.max_row, column=4).number_format = "0.00"
         widths(s, [11, 14, 15, 17, 15])
         s.freeze_panes = "B4"
-    n = wb.create_sheet("Notes")
-    for row in [
-        ["Notes"],
-        ["Prepared by Group Economics for planning and stress-testing users across the Group."],
-        ["Paths are quarterly. GDP growth is quarter on quarter; unemployment is the quarterly average (ILO, 16+);"],
-        ["Bank Rate is the rate at quarter end; CPI is the quarterly average, year on year."],
-        ["Central reflects the Group's view at 1 October 2026. Downside and Severe downside are narrative paths for"],
-        ["sensitivity analysis and carry no probability."],
-        ["Next update: January 2027."],
-    ]:
-        n.append(row)
-    n["A1"].font = Font(bold=True)
-    widths(n, [110])
     wb.save(path)
     finish_xlsx(path, "Group Economics", "Group Economics", dt.datetime(2026, 10, 5, 13, 12, 0),
                 dt.datetime(2026, 10, 6, 9, 38, 0))
@@ -434,7 +423,8 @@ def standard_pdf(path):
               "group register at that date and not on the watch list at that date."),
         ("p", "4.2 A group in a cohort reaches the watch list if it is placed on the watch list in the twelve "
               "months after the cohort date. A group that leaves the book in that time without being placed has "
-              "not reached it. A group counts once. A cohort is closed once its twelve months have ended."),
+              "not reached it. A case at any of the three watch levels is on the watch list. A group counts once. "
+              "A cohort is closed once its twelve months have ended."),
         ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the closed "
               "cohorts scored by the current release, taken together:"),
         ("u", "hit rate: groups flagged at the cohort date that reach the watch list, as a share of groups "
@@ -476,111 +466,7 @@ def standard_pdf(path):
     _pdf(path, "Early-Warning and Watch-List Monitoring Standard", "Credit Risk Monitoring", B)
 
 
-# ------------------------------------------------------------------ markdown and text
-def field_reference(path, files):
-    txt = f"""# Credit data: field reference
-
-Maintained by Reference Data. Covers the quarter-end extracts used by Credit Risk Monitoring.
-
-## {files['signals']}
-
-Month-end publications of the early-warning engine, one row per covered entity per month-end.
-
-| field | meaning |
-|---|---|
-| publication_date | the month-end the publication is for |
-| entity_key | the entity's LEI, or `CRN:` and the Companies House number for an entity without an LEI |
-| entity_name | the name as the engine's data vendor holds it |
-| country | country of registration |
-| signal | GREEN, AMBER or RED |
-| score | 0 to 99; GREEN below 40, AMBER 40 to 69, RED 70 and over |
-| trigger_codes | triggers active at the publication, semicolon separated (see {files['triggers']}) |
-| feed | the vendor feed the leading trigger came from; COMPOSITE where no trigger is active |
-| engine_release | engine release that produced the publication |
-
-## {files['obligors']}
-
-Every customer on the credit system, open or closed.
-
-| field | meaning |
-|---|---|
-| customer_id | credit system customer number |
-| customer_name | the customer's registered name |
-| lei | the customer's LEI where held |
-| companies_house_no | Companies House number for UK-registered customers |
-| country | country of registration |
-| group_id | the obligor group the credit system books the customer to; blank until the monthly grouping review books a new customer |
-| customer_since | the date the customer was opened on the credit system |
-| customer_status | ACTIVE or CLOSED at the extract date |
-| primary_booking_entity | HB-PLC (Halstow Bank plc) or HB-DAC (Halstow Bank Ireland DAC) |
-
-## {files['register']}
-
-One row per obligor group, including groups whose relationship has ended.
-
-| field | meaning |
-|---|---|
-| ultimate_parent_lei | LEI of the group's ultimate accounting-consolidation parent; blank where the parent has none |
-| relationship_start | date the group's first facility started |
-| relationship_end | date the relationship ended (last facility repaid, refinanced elsewhere or transferred to Recoveries); blank while active |
-| sector_code, sector | the group's sector |
-
-## {files['watchlist']}
-
-Every watch-list case opened since 1 January 2020.
-
-| field | meaning |
-|---|---|
-| placed_on | date the group was placed on the watch list |
-| watch_level | 1, 2 or 3 (case intensity); every level is on the watch list |
-| removed_on | date the case closed; blank while open |
-| removal_reason | CURED, REFINANCED_AWAY or TO_RECOVERY |
-
-## {files['facilities']}
-
-Facilities on the Halstow Bank plc and Halstow Bank Ireland DAC loan ledgers when the quarter-end extract ran, with
-their obligors.
-
-| field | meaning |
-|---|---|
-| booking_entity | HB-PLC or HB-DAC, the ledger the facility is booked on |
-| facility_id | the facility number on that ledger |
-| customer_id | the obligor the row is for |
-| product | facility product |
-| currency | facility currency |
-| committed_limit | the facility's committed limit when the extract ran, in the facility currency |
-| drawn_balance | the obligor's drawings when the extract ran, in the facility currency |
-| start_date | date the facility became available |
-| final_maturity_date | date the facility falls due for repayment and the commitment ends |
-| facility_status | ACTIVE, CANCELLED or CLOSED when the extract ran |
-
-## {files['limits']}
-
-Every committed limit each facility has carried, one row per version.
-
-| field | meaning |
-|---|---|
-| booking_entity, facility_id | as in {files['facilities']} |
-| committed_limit | the committed limit of the version, in the facility currency |
-| effective_from | when the version took effect, UTC, as the loan platform records it |
-| source | SOD_BATCH for the start-of-day batch, otherwise the user who keyed it |
-
-## {files['fx']}
-
-| field | meaning |
-|---|---|
-| units_per_gbp | units of the currency for one pound sterling at the Group Treasury 16:00 London close |
-
-## GLEIF files ({files['lei']}, {files['rr']}, {files['repex']})
-
-Records from GLEIF's concatenated files published on 30 September 2026 (LEI-CDF 3.1, RR-CDF 2.1 and reporting
-exceptions), filtered by Reference Data to the LEIs in the obligor master and the engine's coverage list.
-Field names are GLEIF's.
-"""
-    with open(path, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(txt)
-
-
+# ------------------------------------------------------------------ text
 def count_rows(path):
     with open(path, encoding="utf-8") as fh:
         return sum(1 for _ in fh) - 1

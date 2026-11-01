@@ -1,66 +1,60 @@
-# determinism-check report, task446, 2026-10-21
+# determinism-check report, task446, 2026-11-01
 
 ## Verdict
 DETERMINISTIC
 **Disposition:** APPROVE
-**Stumping type:** mechanism: method_or_model_selection (design note: forecasting), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Stumping type:** mechanism: forecasting / method_or_model_selection (mix shift validated out of sample), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
-Pass: stage 4 re-judge after the FIX_NOW (CRM-07 5.2 now files the closed cohorts "taken together"). One isolated sonnet thread, fresh unzip of target.zip (sha256 06a4c8d5...01bc6, 17 members) at /tmp/determinism-check-task446-r3/target/. The brief and the thread's verdict.md are in that folder.
+One isolated sonnet thread (run 20261101T163955), fresh unzip of target.zip at /tmp/determinism-check-task446-20261101T163955/target/ (16 files). Thread verdict: /tmp/determinism-check-task446-20261101T163955/verdict.md. This overwrites the earlier report as the author directed.
 
 ## Why
-Every golden figure rebuilt from the shipped files: 913 groups, 165 flagged, 127 flagged on a customer, cohort rates 120/240 = 50.0%, 11/176 = 6.25%, 50/3,092 = 1.62%, 77.97 expected arrivals (78), and all five band rows. The cohort window is now closed by the filing: the cohort-window variants all land on 78 (77.95 to 78.23). The only structure stable across the four closed cohorts is whether the flag was raised on a member the bank lends to. Every variant that keeps that split gives 78.
+Every graded figure rebuilds from the shipped files using only CRM-07 definitions (4.1, 4.2, 5.1 to 5.3, 6.1, 6.2). The main call is 78 (77.97). The back-test that 5.2 invites picks the split by the member that raised the flag: leave-one-cohort-out largest miss 3.9% for the split, 14.4% for one flagged rate. Alternative splits that validate (customer vs other, RED, multi-member, score band) land on 77.5 to 78.2. The easy route (pooled 4.3 hit and false-alarm rates) gives 64.05, and a single all-groups rate gives 47.1.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Book at 30 Sep 2026 | 913 | 913 | yes (group register, watch-list history) |
-| Flagged / on a customer | 165 / 127 | 165 / 127 | yes (ews signals, GLEIF RR, obligor master) |
-| Cohort rates | 50.0 / 6.25 / 1.62% | 120/240, 11/176, 50/3,092 | yes |
+| Book at 30 Sep 2026 | 913 | 913 | yes |
+| Flagged / on a customer | 165 / 127 | 165 / 127 | yes |
+| Customer-flag cohorts | 120/240 = 50.0% | same | yes |
+| Other-member-flag cohorts | 11/176 = 6.25% | same | yes |
+| Not-flagged cohorts | 50/3,092 = 1.62% | same | yes |
 | Expected arrivals | 78.0 | 77.97 | yes |
+| LOCO largest miss, split / one rate | 3.9% / 14.4% | 3.9% / 14.4% | yes |
 | Bands, groups | 201/304/248/120/40 | same | yes |
-| Bands, committed GBP m | 499.9/3,112.0/6,936.6/8,402.7/6,712.2 (25,663.4) | same | yes |
-| Bands, flagged | 34/54/46/20/11 | same | yes |
 | Bands, arrivals | 16.2/25.8/21.9/9.0/5.1 | same | yes |
-| Bands, exposure arriving GBP m | 38.5/257.1/596.8/576.3/826.8 (2,295.5) | same | yes |
-| Back-test largest miss | 3.9% split, 14.4% pooled | 3.9% / 14.4% | yes |
+| Bands, arriving exposure GBP m | 38.5/257.1/596.8/576.3/826.8 | same | yes |
+| Total committed / arriving exposure GBP m | 25,663.4 / 2,295.5 | same | yes |
+| Flagged per band | 34/54/46/20/11 | same | yes |
 
 ## Competing answers that survived
-None that survive. Rejected by the data: pooled hit rate plus unflagged rate 64; base rate 47; capture/false-alarm with this year's flag share 136; latest cohort only 65 (back-test misses 12.9% to 14.4%).
-Small residual forks, none moving the call except the first two (73.7 to 73.8 against 78):
-- CLOSED customers treated as non-customers gives 74. Closed customers have no facility and 498 of 512 sit in ended groups, so counting them at the cohort date is the correct historical reading.
-- Customer defined by an in-force facility on the 1 Oct extract gives 73.7. The extract holds no purged older facilities, and the obligor master is the file's own customer list.
-- Exposure arriving as arrivals times band mean exposure gives 2,401.1 against 2,295.5. Standard 5.2 asks for the expected groups' exposure.
-- Skipping the 22 duplicate removals moves band rows only (199/302/250/118/44), not the 78. The duplicates are identified by identical user, timestamp and limit histories; no document names double booking. Watch item on the band rows only.
+- Main call: none. The pooled-rate 64 is the intended wrong route, closed by the back-test that 5.2 invites (implicit rather than spelled out, the main residual risk and also the stump).
+- Asks only (band cells, Gate C/E): 6.1 counts "facilities" and the 22 undrawn ledger twins are not filed as excluded. A literal reader who keeps them gets bands 199/302/250/118/44 and total 25,943.2. The data separates the cases (identical limit history to the preceding facility, undrawn). Other readings: UTC cut-off gives 197/298/254/114/50; dropping the GLEIF cross-group placement gives 203/312/243/120/35. The main call is unaffected.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 17 | yes |
-| Formats | 3 or more | 6 (csv, xlsx, pdf, docx, md, txt) | yes |
-| Large file | 25,000 rows or more | ews_entity_signals 125,975 rows | yes |
-| Distractors | 2 or more in metadata.json, none labelled in a file name | internal_rating_master_scale_2026.xlsx, group_economics_uk_outlook_oct2026.xlsx; neither named in a file name as a distractor | yes |
-| Distractor weight | unused by solution, relevant, ruled out by a shipped fact | the rating file is current-date only (look-ahead, cannot be back-tested); outlook is macro, does not reproduce a graded quantity | yes |
-| Deliverables | 1 to 3, all in the golden | xlsx and svg, both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | band table of 5 columns by 5 bands plus total; whole number, one decimal, GBP m to one decimal in prompt | yes |
-| Prompt shape and rubric | shape identifiable, 25 or more criteria | shape 05 (allocation to a fixed total); 25 band figures plus total row, heading, chart items | yes |
-| LLM-generated look | none | none seen by the thread; golden realism passed at stage 3 | yes |
-
-Licence and source records are in metadata.json (CC0-1.0, constructed); the thread could not check them from inside the package.
+| Files | 10 or more | 16 | yes |
+| Formats | 3 or more | 6 (csv, xlsx, json, pdf, txt, docx) | yes |
+| Large file | 25,000 rows | 125,975 rows (ews signals) | yes |
+| Distractors | 2 or more in metadata.json, none labelled by file name | 2 named (rating master scale, Group Economics outlook); file names do not label them | yes |
+| Distractor behaviour | unused, relevant, ruled out by a shipped fact | not used by the solution; thread found neither answers a graded quantity | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, svg), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | band table across 5 bands by 5 measures; whole number, one decimal, GBP m one decimal stated | yes |
+| Prompt shape / rubric | identifiable; 25+ criteria | shape 05 (allocation to a fixed total); every band cell gradable, 25+ plausible by construction (rubric not shipped, not counted here) | yes |
+| Not LLM-reading | clean | no authoring disclosures seen by the thread; prompt 798 characters, one paragraph | yes |
 
 ## Gate G reconciliation
-Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and Gate G section: mechanism forecasting, analytical_non_defect, no, no. The match is full (the thread's label is a finer name for the same forecasting-model choice). The thread names pooled-rate (64) and base-rate (47) routes as the naive reads, not the declared distractors, so neither distractor is too load-bearing. No shipped artifact ranks or forecasts. The card file was not at cards/task446.json in this checkout, so stump_class, analyst_test and domain_test were taken from the design note's Three rules section, which matches the thread.
+Thread: mechanism forecasting (method_or_model_selection), stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: Gate G mechanism forecasting, stump_class analytical, strategy composition_mix, no decoy. Match. The declared distractors (rating master scale, Group Economics outlook) are not named by the thread as the surface read, so they are not too load-bearing. No shipped artifact ranks the call wrongly.
 
-Gate G classification: analytical_non_defect, surface_read_dependency no, sole_data_defect no.
+## Gate H
+domain: pass, layers: pass, decisive_step: analytical. Matches the design note's Three rules (PD-style segmentation of the flagged population by raising member; Layer 1 key, GLEIF, UK-time and ledger-twin mess; Layer 2 stratified rate validated on closed cohorts).
 
 ## Stump power (Gate F)
-Good. A strong analyst applying the standard's 4.3 hit rate and unflagged rate files 64; one using the base rate files 47. Only the cohort-by-cohort stability check exposes the mix shift (customer share of flags 58% historically, 77% now). The thread did not class the decisive step as the field's standard method applied without judgment: the segmentation had to be found, and the data separated it. Expect partial failures, with the 22-duplicate and UK-time cut-off devices thinning the asks.
+Good on paper: customer flags rise to 77% of this September's flags against 48 to 69% in the cohorts, so the pooled rate files 64 against 78. Caveat for the main thread: the judge calls the back-test implicit in 5.2, and the design note itself records that earlier stage 4 readers filed 64 without building it. A strong solver who segments flags by raising member (the standard PD-style route) lands 78, so the ladder should be weighed against that. The decisive step is not classed analytical merely because it is a textbook method: the judge found the split needed a join from signals to the obligor master that 3.2 never invites.
 
 ## Findings, ranked
-1. None blocking.
-2. Watch: the 22 double-booked facilities are identified by the data pattern alone; the 78 is unaffected, only band rows.
-3. Watch: licence and source record not verifiable from inside the package.
+1. Optional, asks only: the 22 twin facilities are not filed as counted once. Adding a WHAT sentence (a facility the ledger booked twice counts once) would remove the band-cell fork. Do not file the method.
+2. Main residual risk: the back-test is implicit in 5.2, and is also the intended stump. No change required.
 
 ## Next action for the author
-Proceed to stage 5 ship; no repair needed.
-
-Gate H line: domain pass, layers pass, decisive_step analytical (matches the design note: the flag-source segmentation validated leave-one-cohort-out is the decisive step; Layer 1 mess does not carry it).
+None required to ship on determinism. Optionally file, as a WHAT, that a facility booked twice in the ledger counts once, then rebuild twice byte-identical and rerun figures_check.

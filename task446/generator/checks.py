@@ -164,12 +164,40 @@ def main():
     sh = [x["F"] / x["N"] for x in cc]
     ok(sorted(range(4), key=lambda i: sh[i]) != sorted(range(4), key=lambda i: shares[i]),
        "the flagged share does not track the customer-raised share across the cohorts")
-    # SF2: the customer test read other ways (constructions the field reference refuses) moves the call
+    # SF2: the customer test read other ways moves the call; the records rule both out. The obligor master is a
+    # 30 Sep 2026 snapshot, so its status is today's: a CLOSED customer's group was active on the register at a
+    # past cohort date, and dating each closure by the register's relationship end files the call
     for kw, label in ((dict(borrower="active"), "customers ACTIVE at the extract date only"),
                       (dict(borrower="facility"), "obligors on the 30 Sep 2026 extract only")):
         t2 = pk.cohort_table(**kw)
         v = solve.forecast(t2)["total"]
         ok(round(v) != CALL, "SF2: %s files %.2f, not %d" % (label, v, CALL))
+    reg_end = {r["group_id"]: r["relationship_end"] for r in pk.reg}
+    closed = [r for r in pk.obl if r["customer_status"] == "CLOSED"]
+    ok(closed and all(r["group_id"] for r in closed), "SF2: every CLOSED customer is booked to a group")
+    _ck = pk.customer_keys
+
+    def _dated(date, active_only=False):
+        out = set()
+        for r in pk.obl:
+            if solve.d(r["customer_since"]) > date:
+                continue
+            en = reg_end.get(r["group_id"])
+            if r["customer_status"] == "CLOSED" and (en is None or en <= date):
+                continue
+            out |= {r["lei"].upper()} if r["lei"] else set()
+            out |= {"CRN:" + r["companies_house_no"]} if r["companies_house_no"] else set()
+        return out
+    pk.customer_keys = _dated
+    v = solve.forecast(pk.cohort_table())["total"]
+    pk.customer_keys = _ck
+    ok(abs(v - call) < 1e-9, "SF2: closures dated by the register's relationship end file the golden (%.2f)" % v)
+    # the outcome read as levels 2 and 3 only moves the call; 4.2 files every watch level as on the list
+    _wl = pk.wl
+    pk.wl = [r for r in _wl if r["watch_level"] != "1"]
+    v = solve.forecast(pk.cohort_table())["total"]
+    pk.wl = _wl
+    ok(round(v) != CALL, "SF10: watch level 1 left out files %.2f, closed by 4.2" % v)
     # SF1: 2.2's ultimate-parent clause read without the apex moves nothing (no flag sits on an unbooked apex)
     only = solve.check_membership(G, target)
     ok(only == [0] * 5, "SF1: no apex-only flag in any cohort")
@@ -392,8 +420,8 @@ def main():
         frows = list(csv.DictReader(fh))
     ok(frows == sorted(frows, key=lambda r: (r["booking_entity"], r["facility_id"], r["customer_id"])),
        "extract sorted by booking entity, facility number and customer")
-    # the customers not yet grouped are September customers by the field reference (group_id blank until the
-    # monthly grouping review), so their facilities are the newest HB-DAC numbers wherever the run falls
+    # the customers not yet grouped carry a blank group_id (the monthly grouping review has not booked them yet),
+    # so their facilities are the newest HB-DAC numbers wherever the run falls
     hz_fac = [f for f in w.facilities if "HZ" in f.dev]
     ok(all(f.booking == "HB-DAC" and f.booked >= dt.date(2026, 9, 1) for f in hz_fac),
        "every facility of a customer not yet grouped is a September HB-DAC booking")
@@ -448,10 +476,28 @@ def main():
                    "in proportion to the band"):
         ok(phrase not in std_flat, "the standard files no model, fitting window or selection rule: " + phrase)
     ok("members are its ultimate parent, the customers the credit system books to it" in std_flat, "2.2 as amended")
+    ok("A case at any of the three watch levels is on the watch list." in std_flat, "4.2 files every watch level")
 
     # ------------------------------------------------------------ input gates
     files = sorted(os.listdir(target))
     ok(len(files) >= 10, "ten or more files")
+    # no shipped file or sheet describes the data (dataset-generation section 3)
+    for f in files:
+        ok(not re.search(r"readme|dictionar|field|manifest|notes|schema|glossary", f.lower()) and
+           not f.endswith(".md"), "no describing file by name: " + f)
+        if f.endswith(".xlsx"):
+            wbn = __import__("openpyxl").load_workbook(os.path.join(target, f), read_only=True)
+            ok(not any(re.search(r"note|readme|about|field|dictionar|how to", n.lower()) for n in wbn.sheetnames),
+               "no describing sheet in " + f)
+    hdrs = set()
+    for f in files:
+        if f.endswith(".csv"):
+            hdrs |= set(open(os.path.join(target, f), encoding="utf-8").readline().strip().split(","))
+    for f in files:
+        if f.endswith(".txt"):
+            body = open(os.path.join(target, f), encoding="utf-8").read()
+            named = [h for h in hdrs if len(h) > 5 and "_" in h and h in body]
+            ok(len(named) <= 2, "no text file names the data's columns (%s): %s" % (f, named))
     ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
     nrows = sum(1 for _ in open(os.path.join(target, make.FILES["signals"]), encoding="utf-8")) - 1
     ok(nrows >= 25000, "spine has 25,000 or more rows")
@@ -471,7 +517,7 @@ def main():
     ok(abs(pd_sum / call - 1) >= 0.15, "the rating scale's PDs summed over the book land elsewhere (%.1f)" % pd_sum)
     for f in files:
         ok("distractor" not in f.lower(), "no file named for its role")
-        if f.endswith((".csv", ".md", ".txt")):
+        if f.endswith((".csv", ".json", ".txt")):
             txt = open(os.path.join(target, f), encoding="utf-8").read()
             ok("\u2014" not in txt and "distractor" not in txt.lower(), "no em dash or role word in " + f)
             ok("golden copy" not in txt.lower(), "no 'golden copy' in " + f)

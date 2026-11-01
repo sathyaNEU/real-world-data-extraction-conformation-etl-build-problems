@@ -30,10 +30,9 @@ DESC = {
                          "ledgers, run 01:15 on 1 Oct 2026",
     FILES["limits"]: "Committed limit history for every facility, one row per version, to 7 Oct 2026",
     FILES["fx"]: "Group Treasury closing FX rates at 30 Sep 2026",
-    FILES["triggers"]: "Early-warning trigger code list with feed and default signal",
+    FILES["triggers"]: "Early-warning engine trigger catalogue, release 3.2: code, description, feed and default signal",
     FILES["standard"]: "Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
     FILES["close"]: "Credit Risk Monitoring year-end close timetable for the year to 30 Sep 2026",
-    FILES["fieldref"]: "Reference Data field reference for the quarter-end credit extracts (data dictionary)",
     FILES["log"]: "Reference Data quarter-end extract log: jobs, run times, row counts and the control check "
                   "(provenance)",
     FILES["ratings"]: "Internal rating master scale and group ratings at 30 Sep 2026",

@@ -136,6 +136,26 @@ every closed cohort within 3.9 per cent out of sample (the single flagged rate m
   year it was measured in, so a forward caseload prices each flag by the member that raised it; nearest drivers on
   file 0.06, and the two spent drivers it could be mistaken for (task192, task134 v2) are differentiated on the card.
 
+## Survivor anatomy
+
+- Actor: the deciding property is each group flag's kind (raised on a customer, or only on a member reached through
+  the GLEIF records), a relation between a group's signals and the obligor master at each cohort date that no file
+  stores at group level; the customer test itself is one join from the master's keys, the weakest line here.
+- Link: the flag is read through the signal file's entity key against the obligor master's LEI and company number,
+  a join that 3.2's group flag never invites, since the standard flags a group on any member's AMBER or RED.
+- Reflex: the field's named method, one hit rate for flagged groups and the unflagged rate for the rest (4.3's hit
+  rate over the closed cohorts), sits at rung 0 and files 64, the default path's Ends on.
+- Back-test: the textbook route is not refuted by anything the pack runs: predicting each closed cohort from the
+  other three, the single flagged rate misses one by 14.4 per cent against 3.9 for the split, a record a solver has
+  to build, and both stage 4 rounds' readers filed 64 without building it.
+- Second use: every file the decisive step reads has its own use: the obligor master builds 2.2's membership and the
+  asks' exposure, the signal file the flags, the GLEIF files the membership, the watch-list history the outcome.
+- Shock: the forward book's customer-raised share (77 per cent against 48 to 69) reads as an ordinary year's
+  movement, and the flagged share does not track the customer-raised share across the cohorts (asserted).
+- Pins: CRM-07 files the WHAT (the book 4.1, the outcome 4.2 at every watch level, the exclusions 5.1, the estimand
+  5.2, the precision 5.3) and no sentence names the segmentation, a fitting test or a model; every cohort window
+  files 78 (SF3).
+
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
@@ -153,7 +173,7 @@ every closed cohort within 3.9 per cent out of sample (the single flagged rate m
 | ID | Term | Golden reading | Alternative | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | an ultimate parent that is not booked | a member (2.2 as amended) | members only when booked or consolidated | same call: no flag sits on an unbooked ultimate parent at any cohort date (asserted) | 2.2: "A group's members are its ultimate parent, ..." |
-| SF2 | a flag raised on a customer (the decisive step's partition) | an AMBER or RED entity that is a customer on the credit system opened by the cohort date, open or closed now | customers ACTIVE at the extract date only; obligors on the 30 Sep 2026 facility extract only | 73.08 and 73.37 (both 73) | the field reference: the obligor master is "every customer on the credit system, open or closed", `customer_status` is "at the extract date", `customer_since` dates each customer; the facility extract is the 30 September 2026 book only |
+| SF2 | a flag raised on a customer (the decisive step's partition) | an AMBER or RED entity that is a customer on the credit system opened by the cohort date, open or closed now | customers ACTIVE at the extract date only; obligors on the 30 Sep 2026 facility extract only | 73.08 and 73.37 (both 73) | the records: the obligor master is the 30 September 2026 snapshot, so its status is today's, while `customer_since` dates each customer and the group register dates each relationship; every CLOSED customer is booked to a group the register shows active at the cohort dates it sits in, and dating each closure by the register's relationship end files 77.97 (asserted); the facility extract is the 30 September 2026 book only |
 | SF3 | the closed cohorts the rates are taken over | the four closed cohorts taken together | the latest alone, the last two, the last three, the first three | same call (77.95, 77.98, 78.23, 77.98; asserted); the 2025 cohort alone puts the GBP 40m to 100m band's arrivals at 9.1 | 5.2: the forecast "rests on the closed cohorts scored by the current release, taken together", and 1.2 (the engine unchanged since January 2022); filed at the stage 4 judge's FIX_NOW, a WHAT that names no model, segmentation or basis |
 | SF4 | pooled rates against the mean of the cohorts' rates | pooled | mean of the four cohorts' rates | same call (77.97) and every band's expected arrivals in the same bin (asserted) | converges |
 | SF5 | refinements within each kind of flag | none needed | RED against AMBER, covenant trigger or not, rates trended over the cohorts | same call (77.97, 77.97, 78.36; asserted) | converges: pooled over the cohorts each kind's RED and AMBER flags, and its flags with and without a covenant trigger, reach the list at exactly the kind's rate |
@@ -161,6 +181,7 @@ every closed cohort within 3.9 per cent out of sample (the single flagged rate m
 | SF7 | an international branch or a fund of a group member | read through its head office or manager, or left out | the other reading | same call | every such entity is green at every cohort date (texture inert, asserted) |
 | SF8 | a facility the ledger booked twice (22; asks only) | no commitment: left out | every facility number counted once; near-duplicates dropped on their terms; the undrawn near-duplicate dropped | same call (exposure never enters the forecast; asserted); every band figure moves (the ask's primary) | the records: each copy is undrawn and repeats, stamp, limit and user, the whole limit history of the facility numbered just before it for the same customer and terms; every genuine same-day pair is keyed apart (asserted) |
 | SF9 | the flag classes the rates are taken over | three: raised on a customer, raised only elsewhere, not flagged | two: raised on a customer against everything else | same call (78.17); three band arrival figures move by 0.1 | the closed cohorts: predicting each from the other three, the three-way split misses by at most 3.92 per cent and the two-way by 4.77 (`solve.basis_test`; the stage 4 judge measured the same) |
+| SF10 | the outcome's watch levels | a case at any of the three levels is on the watch list | levels 2 and 3 only | 32.57 (33) | 4.2: "A case at any of the three watch levels is on the watch list." (filed at the 2026-11-01 re-check, when the field reference that carried it left the pack) |
 
 ## Ladder
 
@@ -238,7 +259,7 @@ share of actual arrivals; forward figure). Nothing in the pack files this test.
 | 16 | Identity | LEI case-normalised; CRN keys through the company number; merged LEIs green (inert); a facility is its booking entity and ledger number, the copies apart (SF8) |
 | 17 | Netting | none |
 | 18 | Units | limits in facility currency; rates in `units_per_gbp` (inert) |
-| 19 | Code semantics | AMBER and RED flag, GREEN does not (3.2); every watch level is on the list; CANCELLED and CLOSED facilities carry a nil limit in the extract and in the history's version in force |
+| 19 | Code semantics | AMBER and RED flag, GREEN does not (3.2); every watch level is on the list (4.2, SF10); CANCELLED and CLOSED facilities carry a nil limit in the extract and in the history's version in force |
 | 20 | Integerisation | nearest whole group (5.3); 77.97 sits 0.47 from the nearest edge |
 | 21 | Clause scope | 5.2 files the count and exposure for the whole book and the cohorts it rests on; 5.3 the reporting precision; 2.2 makes a company booked to one group and consolidated into another a member of both (asks only, SF6) |
 | 22 | Forward window | the 30 Sep 2026 monitored book only (5.1, 5.2); every group in it carries at least one facility in force at the end of 30 Sep 2026 (asserted) |
@@ -310,12 +331,12 @@ the customers not yet grouped and of the 21 joint-venture companies, each green 
   facility per obligor with the facility's limit on each row; joint property facilities with borrowers in two
   groups; about 40 ledger numbers that coincide across the two booking entities. Right: within each group each
   (booking entity, facility number) once. Wrong stops: A1 every row summed; A2 each facility number once across the
-  extract; A3 each booking entity and number once across the extract. 6.1 and the field reference resolve it.
+  extract; A3 each booking entity and number once across the extract. 6.1 resolves it.
 - **DV-B, the limit clock (D8, documented: a mirror device).** The extract ran at 01:15 on 1 October after the
   start-of-day batch applied about 70 increases and 12 activations stamped 2026-09-30T23:30:00Z. Right: each
   facility's version in force at 23:00Z on 30 September. Wrong stops: B1 the extract's limit; B2 the history on its
-  UTC date; B3 the latest version; B0, over-cleaning, versions before 30 September only. 1.3, 6.1 and the field
-  reference resolve it.
+  UTC date; B3 the latest version; B0, over-cleaning, versions before 30 September only. 1.3, 6.1 and the history's
+  own Z-stamped times resolve it.
 - **HZ, customers not yet grouped (D7, documented: a mirror device).** 14 September HB-DAC customers with a blank
   `group_id`, each consolidated through GLEIF into a monitored group's ultimate parent (2.2). Wrong stop: dropped.
 
@@ -405,13 +426,18 @@ handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
   no forecasting model. Harmless.
 - "golden figure 5.1" in the standard: the section number 5.1, not the GBP 100m band's 5.1 expected arrivals.
   Harmless.
-- The call's words in the field reference, the close timetable and the standard: the field's own nouns (watch list,
+- The call's words in the close timetable and the standard: the field's own nouns (watch list,
   caseload, obligor group, monitored book, 30 September 2027) and no figure. Harmless.
-- Stump-paragraph terms in the field reference, the close timetable, the standard and the extract log: definitions
+- Stump-paragraph terms in the close timetable, the standard and the extract log: definitions
   of the obligor master's customers, the GLEIF parents and the cohorts; none says that a flag's conversion depends on
   where in the group it was raised. Harmless.
 - Dates after 2026-10-08 in the facility extract: final maturity dates of facilities in force, forward by nature.
   Harmless.
+- The extract log as a text file (sweep 1): Reference Data's own run log (jobs, run times, row counts, the control);
+  it names no column and defines nothing. Harmless. Sweeps 12 and 13 clean since the 2026-11-01 re-check (no file or
+  sheet describing the data; metadata.json names the decision, files and provenance only).
+- The prompt's shell quota (sweep 11): how-many at 32 per cent and the give opener at 51 per cent of the corpus; the
+  question form follows the call (a count), as the shipped prompt has carried it through two portal rounds.
 
 **Solver's-eye read, stage 4 round 1** (two isolated scored readers on the cut before DV-D): both filed 64 (one
 rate for every flagged group) and named the decisive step an analytical choice (question 6); question 1 quoted only
@@ -435,6 +461,13 @@ easy route and the golden share; ruled harmless, since the deciding segmentation
 September but run on 1 October (the log says so), lower-case LEI keys in the signal file (Layer 1 texture), the 21
 joint ventures noticed by reader D as customers booked away from their GLEIF parent (the DV-C hazard), uniform LEI
 prefixes; none moves a figure.
+
+**Stage 4 at the 2026-11-01 re-check** (cut b53dc1a9, without the field reference): one isolated reader quoted
+nothing for question 1, named no helper or ranking file, read 4.2 literally as any watch level (the golden's outcome)
+and called the decider an analytical choice; the judge's thread recomputed every graded figure (DETERMINISTIC,
+APPROVE, Gate G analytical_non_defect, Gate H pass). Its optional hardening, filing that a facility the ledger booked
+twice counts once, is declined: it would name DV-D, the ask layer's silent primary, which the records already
+separate (SF8).
 
 ## Pre-ship check
 
@@ -563,3 +596,15 @@ prefixes; none moves a figure.
   golden's favour, not a device. Re-sited onto the facility records the readers' path runs through, where no
   sentence speaks: the ledger's facilities booked twice beside genuine same-day tranches (DV-D); the joint ventures
   stay as a hazard.
+- `credit_data_field_reference.md`, the Reference Data field reference shipped since architecture 2, retired at the
+  2026-11-01 re-check: leak.py sweep 12 (a file listing the data's columns describes the data, dataset-generation
+  section 3) read it as a LEAK, naming every column of the obligor master. Two facts it carried were load-bearing on
+  the call and were measured before it left: the watch levels (levels 2 and 3 alone file 32.57), now filed at authority
+  in 4.2 as the outcome's definition (SF10), and the customer test (ACTIVE customers only file 73.08), which the
+  records close on their own (SF2: the register dates every closed customer's relationship, and dating closures by it
+  files 77.97). Every other entry is carried by the files themselves (the history's Z-stamped times, the rate file's
+  `units_per_gbp` and source, the blank `group_id`). The economics outlook's `Notes` sheet went the same way, its
+  issuer lines moved into each path sheet's header, and the trigger code list now ships as the engine's own catalogue
+  export (`ews_trigger_catalogue_r3.2.json`), which nothing on any path reads, so the pack's format mix no longer
+  matches task132 and task501 file for file (guard.py surface). The call, the stump and every graded figure
+  unchanged (freeze.py).

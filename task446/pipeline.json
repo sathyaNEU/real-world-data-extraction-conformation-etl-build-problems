@@ -4,19 +4,19 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-21",
+ "updated": "2026-11-01",
  "branch": "oviya1301/task446-lei-group-concentration",
  "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and gives each flagged group the share of flagged groups that reached the list over those cohorts taken together and each other group the unflagged share, and files 64 (Ends on); the step that lands it there is treating every group flag as one kind of signal, when a flag raised on a customer the bank lends to reaches the list half the time (120 of 240) and one raised only on a member it does not lend to one time in sixteen (11 of 176), and this September's flags are 77 per cent customer-raised against 48 to 69 per cent in the cohorts; pricing each kind of flag at its own rate predicts every closed cohort within 3.9 per cent out of sample (the single flagged rate misses one by 14.4) and gives 78.",
  "architecture": 3,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-21, --asof 2026-10-08, shipped cut 06a4c8d5); every REVIEW line answered",
-  "reader": "round 1 (cut 72419f5f): A and B filed 64, asks 18 of 34 (52.9 per cent, exit 1), the ask primary re-sited to DV-D; round 2 (shipped cut 06a4c8d5): C and D filed 64 (question 6 analytical), asks 5 and 2 of 34 (14.7 and 5.9 per cent, exit 0); REVIEW lines harmless (reader D's 'partly a leak' on 5.2's window ruled harmless: pooling the cohorts is shared by the easy route and the golden)"
+  "leak_py": "REVIEW, no LEAK (2026-11-01, --asof 2026-10-08, cut b53dc1a9); sweeps 12 and 13 clean; every REVIEW line answered in the note",
+  "reader": "2026-11-01 (cut b53dc1a9): questions 1 to 4 none, question 5 every quoted sentence executes to the golden (4.2 any watch level), question 6 analytical; REVIEW lines harmless"
  },
  "duplicate_check": {
-  "heart": "WARN (question form repeats task272, answered in the note); test.same_puzzle_older and test.same_driver_older differentiated. An earlier BLOCK on forum and forcing event against task486 v2 was cleared by redrawing both in the pack (executive_team, period_close) and re-registering at 05:35Z",
-  "surface": "4 card-level promotions (task230, task131, task149, task183; surface 0.080 to 0.084), each answered by the card's differentiation lines; no persona or surface finding; the adjudicated clone check is the author's to call",
-  "nearest": "0.06"
+  "heart": "WARN, 2026-11-01 after the final pull: repeat.question_form against task272 only; ban.calibration against task479 v6 cleared by redrawing calibration_form to realised_outcome_roster (reason on the card); test.same_puzzle_older and test.same_driver_older (task176 v2, task169 v1, both drawn after this card) differentiated",
+  "surface": "2026-11-01: 5 card-level promotions (task149, task230, task131, task183, task176), each answered by the card's differentiation lines; the task132 and task501 format-mix ties cleared by shipping the trigger catalogue as JSON",
+  "nearest": "0.08"
  },
  "solver_rounds": [
   {
@@ -71,12 +71,12 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC (round 2, shipped cut)",
-  "disposition": "APPROVE; round 1's optional FIX_NOW (pin the cohort window) applied in CRM-07 5.2",
+  "verdict": "DETERMINISTIC (2026-11-01, cut b53dc1a9)",
+  "disposition": "APPROVE; optional ask hardening (file the ledger twins) declined: it would announce DV-D, which the records already separate (SF8)",
   "report": "determinism_check_report.md: Gate G analytical_non_defect (method_or_model_selection), Gate H domain pass, layers pass, decisive_step analytical"
  },
  "approved": null,
- "delivered": "2026-10-21",
+ "delivered": "2026-11-01",
  "portal": [
   {
    "round": 1,
@@ -92,7 +92,7 @@
  ],
  "stage_6b": "no repair: the reader's realism notes (tidy extract log, standard 1.2's model-governance line, the capacity fact in prompt and agenda) read as harmless; no document changed",
  "ship": {
-  "target_zip": "3040145 bytes, 17 members, sha256 06a4c8d5, matches target/ (H7); rebuild byte-identical (checks)"
+  "target_zip": "3038140 bytes, 16 members, sha256 b53dc1a9, matches target/ (H7); rebuild byte-identical (checks)"
  },
  "returns": 1,
  "status": "SHIPPED",
@@ -100,7 +100,8 @@
  "resume": "",
  "precut": {
   "exit": 0,
-  "date": "2026-10-21"
+  "date": "2026-11-01",
+  "note": "61 checks, 0 FAIL, 0 WARN (survivor anatomy written)"
  },
  "returned": [
   {
@@ -114,19 +115,25 @@
    "portal": "the author sent the client's 2026-10-12 review again (version 363: Stumped passed, Stumped type match failed, rule application: CRM-07 5.2 filed the model, the fitting window and the selection rule). The 2026-10-15 repair had unfiled the selection rule only: 5.3 still filed one probability per flag status shared across the book, and the decisive insight repeated task192's driver",
    "repair": "re-root to architecture 3: each group flag priced by the member that raised it (a customer the bank lends to, or only a parent or sister company reached through GLEIF); CRM-07 files the estimand and the precision only; asks re-sited onto joint ventures booked to the other partner (2.2's two memberships); call 78, easy route 64",
    "commit": "RESHIPPED (task446), 2026-10-21"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: re-check under the new gates (Batch 5)",
+   "repair": "leak.py sweep 12 LEAK on credit_data_field_reference.md (a column dictionary): the file left the pack; the watch-level reading it carried filed in CRM-07 4.2 (SF10), the customer test closed by the register's relationship dates (SF2); the outlook's Notes sheet folded into its sheet headers; the trigger list shipped as the engine's JSON catalogue; card calibration_form redrawn (heart ban.calibration); call, stump and every graded figure frozen (freeze.py determinism PASS)",
+   "commit": "RESHIPPED (task446), 2026-11-01"
   }
  ],
  "build": {
-  "checks": 10222,
+  "checks": 10240,
   "byte_identical": true,
   "grid_cells": 479,
-  "target_zip": "3040145 bytes, 17 members, matches target/ (H7)",
-  "target_zip_sha256": "06a4c8d533d9e1dffc39022444e22e7bf5b21c6b0a08aad219f28bba30b01bc6",
+  "target_zip": "3038140 bytes, 16 members, matches target/ (H7)",
+  "target_zip_sha256": "b53dc1a9bf6b390284647a87674ec055962a4e3e69c4fb42239c1c35f0b4d9b3",
   "figures_check": "PASS, 71 figures",
   "voice_check": "PASS",
-  "precut": "PASS, 51 checks",
+  "precut": "PASS, 61 checks",
   "producer_metadata": "clean (pack and goldens)",
   "pair_ceiling": "35.0 (cracker on the readers' measured path)"
  },
- "status_note": "architecture 3 reshipped 2026-10-21: each group flag priced by the member that raised it (78 against the easy 64); stage 4 round 2 clean (readers off the call, asks under a fifth; judge APPROVE)"
+ "status_note": "architecture 3 reshipped 2026-11-01 on the re-check: the field reference out of the pack (leak sweep 12), 78 and every graded figure unchanged; reader clean, judge APPROVE"
 }

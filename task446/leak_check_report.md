@@ -1,25 +1,26 @@
 # leak check, task446
 
-**Verdict: REVIEW.** 17 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: cohorts, member, asserted, cohort, customer, decisive, facility, closed, raised, window, extract, history, forecasting, standard, credit, customers, booked, estimand, segmentation, nothing, pooled, conversion, trended, ultimate, parent
+Stump terms swept: cohorts, member, cohort, asserted, customer, closed, decisive, raised, facility, window, history, standard, master, extract, booked, forecasting, estimand, credit, segmentation, records, nothing, customers, pooled, signal, conversion
+
+## 1 file names (REVIEW 1)
+- **REVIEW** `reference_data_extract_log_20261008.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `early_warning_and_watch_list_standard.pdf`: \bthe model\b x1: ...have not changed since. A change would be a new release, approved by the Model Risk Committee before use. 1.3 Dates and times in this standard are U...
 
-## 3 answer figures in the pack (REVIEW 4)
+## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `early_warning_and_watch_list_standard.pdf`: golden figure 5.1 appears: ...s not reaching it. 5 Watch-list caseload forecast 5.1 In the close of each monitoring year, which ends...
-- **REVIEW** `credit_data_field_reference.md`: carries 9 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
 - **REVIEW** `crm_year_end_close_timetable_2026.docx`: carries 10 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
 - **REVIEW** `early_warning_and_watch_list_standard.pdf`: carries 14 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `credit_data_field_reference.md`: 9 of 25 stump-paragraph terms appear (customer, facility, closed, extract, credit, customers); read whether the document names the move
-- **REVIEW** `crm_year_end_close_timetable_2026.docx`: 6 of 25 stump-paragraph terms appear (cohort, closed, extract, history, standard, credit); read whether the document names the move
-- **REVIEW** `early_warning_and_watch_list_standard.pdf`: 13 of 25 stump-paragraph terms appear (cohorts, member, cohort, customer, facility, closed); read whether the document names the move
-- **REVIEW** `reference_data_extract_log_20261008.txt`: 4 of 25 stump-paragraph terms appear (facility, extract, history, credit); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `crm_year_end_close_timetable_2026.docx`: 7 of 25 stump-paragraph terms appear (cohort, closed, history, standard, master, extract); read whether the document names the move
+- **REVIEW** `early_warning_and_watch_list_standard.pdf`: 14 of 25 stump-paragraph terms appear (cohorts, member, cohort, customer, closed, facility); read whether the document names the move
+- **REVIEW** `reference_data_extract_log_20261008.txt`: 4 of 25 stump-paragraph terms appear (facility, history, extract, credit); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `facility_obligor_extract_20260930.csv`: 3091 ISO dates after 2026-10-08, e.g. 2026-10-10, 2026-10-17, 2026-10-26, 2026-10-29, 2026-10-30
@@ -27,7 +28,8 @@ Stump terms swept: cohorts, member, asserted, cohort, customer, decisive, facili
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'how-many' at 32% of 196 prompts (cap 30%); rounding opener 'give' at 51% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 5 announcements (clean)
 
@@ -37,7 +39,6 @@ Stump terms swept: cohorts, member, asserted, cohort, customer, decisive, facili
 
 ## 8 column names (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
@@ -76,3 +77,18 @@ sets. Repair: the ask primary re-sited onto facilities the ledger booked twice b
    shared by the easy route and the golden, the deciding segmentation (the member that raised the flag) is named
    nowhere, and both readers filed 64.
 5. Dates after 8 October 2026 in the facility extract: harmless, harmless (maturity dates). Harmless.
+
+## Solver's-eye read
+
+Stage 4 reader, 2026-11-01 re-check (cut without the field reference; one isolated reader, medium, prompt and target only).
+
+1. Decisive step: none. Nearest quoted, 5.2 "It rests on the closed cohorts scored by the current release, taken together", named as pooling the cohorts with no method.
+2. Ranking or forecast: none (the rating master scale's PDs read as not a forecast of the call).
+3. Help-only files: none; the standard and timetable read as governing documents, the extract log as an operational log.
+4. Answer-like figures: none.
+5. Literal sentences: 4.1 (book), 4.2 (any placement at levels 1 to 3 within twelve months, once per group), 5.1, 5.2, 3.2, 6.1, 6.2; the estimator itself left open.
+6. Decider: an analytical choice (estimating arrival rates from the closed cohorts); nothing planted.
+
+REVIEW lines: a extract log harmless (the bank's own log); b "the model" harmless (1.2 governance); c call vocabulary harmless (no number or result); d section number harmless; e forward dates harmless (maturities); f prompt shell harmless.
+
+Realism notes: limit-history users and seconds, round EUR limits, clean log counts and control line, a group name differing between register and master, uniform 213800 LEI prefixes, a uniform economics workbook, a four-row rates file. None moves a figure or sits on the decisive step; the LEI prefix note repeats earlier rounds.
