@@ -1,25 +1,25 @@
 {
  "task": "task133",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "urban-regional-science",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
  "stump": "a relaxed mass limit lifts each log truck load only until its bunks are full; the short grades gain a fraction of the six tonnes",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 (no LEAK; five REVIEW lines ruled harmless in the note's Leak review)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-11-01 (repeat.gate_g, repeat.decision against task138 v3; first names on older builds)",
+  "nearest": "surface: task134 (back to back by number) and task142 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
   "verdict": "",
@@ -34,7 +34,7 @@
    "commit": "RESHIPPED (task133): round 2 (this commit)"
   }
  ],
- "resume": "",
+ "resume": "stage 4: the isolated leak reader and the determinism judge (main session)",
  "approved": null,
  "delivered": null,
  "portal": {
@@ -70,5 +70,19 @@
   "card": ".claude/skills/fingerprint/cards/task133.json",
   "guard_check": "WARN (repeat.gate_g and repeat.decision against task138 v3; first-name WARNs on older builds); structural NOTEs differentiated against task141, task142, task148, task173",
   "world": "Matiri Forest Products Limited (Hawke's Bay): FY2028 log truck loads to Port Kowhai once the 50MAX route opens; urban-regional-science forecasting"
+ },
+ "gates": {
+  "date": "2026-11-01",
+  "generator_checks": "63 assertions, 0 failed",
+  "verify": "0 checks failed (independent: pandas merge_asof link, pdftotext for the limits and grade lengths, openpyxl)",
+  "byte_identical_builds": "two builds in fresh interpreters byte-identical (13 target files, 2 goldens, target.zip)",
+  "figures_check": "PASS, 49 figures, 0 absent",
+  "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS (704 characters)",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-10-20)",
+  "guard_heart": "WARN (no BLOCK)",
+  "guard_surface": "2 pairs promoted for adjudication (task134, task142), both differentiated on the card; no personas in the cut pack",
+  "target_zip_sha256": "e53d1a72957b74a8f5d3d03709d72a3a59d074d4c6ff9ccbbda417f0799d4125",
+  "pair_ceiling": "28.5 (46.8 if the cracker also finds one silent device); mirror leakage 0.0"
  }
 }

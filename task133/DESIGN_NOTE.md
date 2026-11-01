@@ -16,8 +16,8 @@ architecture 3 note is kept below as `## Architecture 3 record`, architecture 2'
 - Shape 14 (cuts by segment): the total and the five export grades (6), three critical components, six carriers'
   cartage (ask A), three mills by four quarters (ask B, 12), the chart and the two files: 30 criteria.
 - World: Matiri Forest Products Limited, five Hawke's Bay forests, 62 contracted units across six carriers (43 with
-  50MAX permits), FY2026's 29,984 port loads carrying 764,070 tonnes; the FY2028 plan's export tonnes 808,800; the port
-  weighbridge tickets (29,984 rows), the port's log scaling records, the fleet register, the grade specification, the
+  50MAX permits), FY2026's 29,981 port loads carrying 764,046 tonnes; the FY2028 plan's export tonnes 808,900; the port
+  weighbridge tickets (29,981 rows), the port's log scaling records, the fleet register, the grade specification, the
   route approval and the cartage planning basis.
 - Candidates written before choosing (fates in `## Tried and rejected`): (1) this draw; (2) a campus winter peak after
   heat-pump conversions, the warm-up surge beyond the units' output (energy load-forecasting: banned the moment task138's
@@ -54,8 +54,10 @@ architecture 3 note is kept below as `## Architecture 3 record`, architecture 2'
   no file.
 - Shock: nothing moves in the record; the FY2028 loads by grade read as ordinary growth on FY2026, and the short grades'
   shortfall shows only against the mass-only uplift.
-- Pins: the WHAT is filed in the cartage planning basis (load, year, fleet, the loads-by-grade arithmetic, the limits)
-  and the council's approval; no filed sentence names bunks, volume, density or which limit binds.
+- Pins: the WHAT is filed in the cartage planning basis (load, year, the fleet with each unit's registered tare,
+  permit and full-bunk volumes, the loads-by-grade arithmetic, the limits) and the council's approval; the default is an
+  omission inside that WHAT (it leaves out the full-bunk volumes 2.3 names), and no filed sentence says which limit binds,
+  how a load's density is found or how the two limits combine.
 
 ## Default path
 
@@ -64,8 +66,8 @@ architecture 3 note is kept below as `## Architecture 3 record`, architecture 2'
    their tare (planning basis 3.2, RDC-2026-114).
 3. Average each grade's FY2028 payloads and divide the plan's export tonnes for the grade by it (planning basis 3.1).
 
-Ends on: 26,900 loads (26,899 unrounded; A 4,900, Pruned 2,300, K 7,250, KI 6,950, KIS 5,500).
-Golden: 29,100 loads (29,098 unrounded; A 4,900, Pruned 2,500, K 7,550, KI 8,050, KIS 6,100).
+Ends on: 26,900 loads (26,907 unrounded; A 4,900, Pruned 2,300, K 7,250, KI 6,950, KIS 5,500).
+Golden: 29,100 loads (29,100 unrounded; A 4,900, Pruned 2,500, K 7,550, KI 8,050, KIS 6,100).
 
 ## Stump sentence
 
@@ -99,17 +101,18 @@ new limit allows and FY2028 needs 29,100 loads.
   analyst still lets each permit unit load to 50 tonnes gross, which is how a mass-limit change is reckoned, and files
   26,900; no field says a load's bunks were nearly full.
 - Not rule application: the approval and the planning basis set the limits and the arithmetic, and no filed rule says
-  a load stops at its bunks. The enumerated family spans 25,700 to 29,100 (fleet average plus six tonnes 25,690;
-  permit units to the new limit 26,899; one bunk volume per unit 26,904; plus six tonnes on permit units 27,198; only the
-  loads at the old limit lifted 27,244; the golden 29,098); the standing family (per-load or grade-mean density, the
-  re-registered units' early loads kept or dropped, any linking window from 30 to 90 minutes) spans 29,080 to 29,098,
+  a load stops at its bunks. The enumerated family spans 25,700 to 29,100 (fleet average plus six tonnes 25,692;
+  permit units to the new limit 26,907; one bunk volume per unit 26,911; plus six tonnes on permit units 27,209; only the
+  loads at the old limit lifted 27,257; the golden 29,100); the standing family (per-load or grade-mean density, the
+  re-registered units' early loads kept or dropped, any linking window from 30 to 90 minutes) spans 29,081 to 29,100,
   one bin; what rules the rest out is the data, the register's full-bunk volumes against the loads' JAS volumes.
 - Analyst test: a strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets
   every 50MAX permit unit's load rise to 50 tonnes gross less its tare and divides the plan's tonnes by the new average
   payloads files 26,900 loads, because the short-length grades fill their bunks before they reach 50 tonnes.
 - Estimand: the cartage planning basis 2.1 to 3.2 (cartage_planning_basis_FY2028.docx) with RDC-2026-114: FY2028 loads
   for a grade are the plan's export tonnes for the grade over the average payload that grade's FY2026 port loads would
-  carry on the same units in FY2028, permit units at 50 tonnes gross and others at 44.
+  carry on the same units in FY2028, each unit with the tare, permit and full-bunk volumes the register records (2.3),
+  permit units at 50 tonnes gross and others at 44.
 - No decoy: nothing is planted: no file states a payload under the new limits, a load count for FY2028 or which loads
   are mass-limited; the approval states the legal limits truly; the fleet register's volumes are the units' own.
 - No certified replay: the method is not recovered by reproducing any certified or published figure; no control total
@@ -124,7 +127,7 @@ new limit allows and FY2028 needs 29,100 loads.
 |---|---|---|---|
 | R0 fleet average payload plus six tonnes | 25,700 | the limit change alone | readable |
 | R1 permit units to 50 t gross less tare (the field's reckoning) | 26,900 | the register's tare and permit | readable |
-| R2 only the loads at the 44-tonne limit lifted, to the new limit | 27,200 | gross from net plus tare | readable |
+| R2 only the loads at the 44-tonne limit lifted, to the new limit | 27,300 | gross from net plus tare | readable |
 | Golden: each load capped by its bunks at its own density (decisive) | 29,100 | the scaling volume paired to each ticket by truck and time against the register's full-bunk volume for the grade's length | silent |
 
 ## Semantic fork table
@@ -156,12 +159,12 @@ new limit allows and FY2028 needs 29,100 loads.
 
 | Rung | Construction | FY2028 loads | Graded |
 |---|---|---|---|
-| R0 | fleet average payload plus six tonnes | 25,690 | 25,700 |
-| R1 | permit units to the new limit (the field's reckoning) | 26,899 | 26,900 |
-| R2 | only the loads at the 44-tonne limit lifted, to the new limit | 27,244 | 27,200 |
-| Golden | each load capped by its bunks at its own density | 29,098 | 29,100 |
+| R0 | fleet average payload plus six tonnes | 25,692 | 25,700 |
+| R1 | permit units to the new limit (the field's reckoning) | 26,907 | 26,900 |
+| R2 | only the loads at the 44-tonne limit lifted, to the new limit | 27,257 | 27,300 |
+| Golden | each load capped by its bunks at its own density | 29,100 | 29,100 |
 
-Every rung files another total bin and misses at least three grades; the nearest wrong total is R2, 6.4 per cent low.
+Every rung files another total bin and misses at least three grades; the nearest wrong total is R2, 6.2 per cent low.
 
 ## Closure table
 
@@ -223,7 +226,7 @@ the same five grades; the ask readings are closed in SF16 to SF20.
   every ask file leaves the call (asserted).
 - Pair ceiling: 28.5 (cracker C 45.0 keeping 0 of 18 ask figures, mirror S 12.0; 46.8 if the cracker also finds one silent device)
 - Mirror leakage: 0.0 per cent of ask weight (the mirror handles the asks as the cracker does)
-- Measured by: generator/ceiling.py on the cut pack (target.zip ZIPHASH)
+- Measured by: generator/ceiling.py on the cut pack (target.zip e53d1a72)
 
 | Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
 |---|---|---|---|---|
@@ -232,7 +235,17 @@ the same five grades; the ask readings are closed in SF16 to SF20.
 
 ## Leak review
 
-LEAKREVIEW
+`leak.py --asof 2026-10-20` on the final cut: REVIEW, no LEAK. Each REVIEW line ruled:
+
+- Sweep 3, the planning basis carries the call's words: it is the governing document that defines a load, FY2028, the
+  fleet and the limits, and it states no figure of the call. Harmless.
+- Sweep 4, the approval shares permit and limits: the council's legal limits, true as stated. Harmless.
+- Sweep 4, the planning basis shares register, record, volume, permit, credit and limits: 2.3 names what the register
+  records for each unit (tare, permit, full-bunk volumes), the WHAT the default omits; no sentence says which limit binds,
+  how a load's density is found or how the limits combine. Harmless, and the line the later judge lesson asks for.
+- Sweep 6, the fleet register names the carriers beside numbers: tares and bunk volumes, no cartage and no ranking.
+  Harmless.
+- Sweep 6, the harvest plan names the grades beside numbers: planned tonnes, not loads. Harmless.
 
 ## Architecture 3 record
 
@@ -1041,3 +1054,4 @@ same_driver_older against task180 differentiated on the card.
 - Candidate: an airline's reactionary delay on tighter turns: the swap test fails (any rotation of resources reads the same); dropped.
 - Candidate: log trucks with only the loads at the old mass limit gaining: readable from net plus tare alone; kept as rung R2 under the bunk-volume step.
 - The ask devices first drafted with the invoice's own registration and a docket file named for the weighbridge date: each was executed by the filed WHAT that pins it, so the invoice now carries only the port ticket and the dockets their posting date.
+- The planning basis's fleet sentence without the units' recorded volumes: a later judge lesson (a decisive fact the WHAT does not name reads as a hidden rule) made 2.3 name each unit's tare, permit and full-bunk volumes, so the default is an omission inside a filed WHAT; how the limits combine stays unfiled.

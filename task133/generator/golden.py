@@ -164,6 +164,9 @@ def chart(F, path):
     fig.tight_layout()
     fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None})
     plt.close(fig)
+    txt = open(path, encoding="utf-8").read().replace('id="matplotlib.axis_', 'id="axis_')
+    assert "atplotlib" not in txt
+    open(path, "w", encoding="utf-8").write(txt)
 
 
 def write(tdir, out):

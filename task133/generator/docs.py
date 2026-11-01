@@ -16,7 +16,8 @@ GRADESPEC = "export_log_grade_specifications_2025.pdf"
 S_LOAD = ("2.1 A load is one truck-and-trailer trip carrying export logs from a Matiri forest to Port Kowhai, weighed on "
           "the port weighbridge.")
 S_YEAR = "2.2 FY2028 runs from 1 July 2027 to 30 June 2028."
-S_FLEET = "2.3 The fleet is the units on the cartage fleet register at 30 June 2026."
+S_FLEET = ("2.3 The fleet is the units on the cartage fleet register at 30 June 2026, each with the tare, 50MAX "
+           "permit and full-bunk volumes the register records for it.")
 S_LOADS = ("3.1 FY2028 loads for a grade are the harvest plan's export tonnes for that grade divided by the average payload "
            "that grade's FY2026 port loads would carry on the same units in FY2028.")
 S_LIMITS = ("3.2 From 1 July 2027 units holding a 50MAX permit run at 50 tonnes gross on the route to Port Kowhai; every "

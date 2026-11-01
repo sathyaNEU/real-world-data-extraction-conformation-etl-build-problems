@@ -12,7 +12,7 @@
  "decision_type": "quantity_figure",
  "answer_unit": "count",
  "scoring_unit": "other",
- "answer": "",
+ "answer": "29,100 export log loads to Port Kowhai in FY2028 under the 50MAX route limits (A grade 4,900; Pruned 2,500; K grade 7,550; KI grade 8,050; KIS grade 6,100)",
  "answer_source": "task133/submission.md, 1. Final Recommendation",
  "gap": [
   "population",
@@ -33,7 +33,7 @@
  "validated_decoy": false,
  "context_artifact": "register",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets every 50MAX-eligible unit's load rise to 50 tonnes gross less its tare (or only the loads that were at the 44-tonne limit) and divides the plan's tonnes by the new average payloads files the FY2028 loads well short, because the short-length grades fill their bunks before they reach 50 tonnes and gain far less than the mass limit allows.",
+ "analyst_test": "A strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets every 50MAX permit unit's load rise to 50 tonnes gross less its tare and divides the plan's tonnes by the new average payloads files 26,900 loads, about 2,200 short, because the short-length grades fill their bunks before they reach 50 tonnes.",
  "domain_test": "The deciding quantity is each log truck load's payload under the FY2028 route limits, which log transport planning gets from the unit's gross mass limit less its tare and the volume its bunks hold for the logs' length at the load's density; with another field's nouns the gross mass limit, the tare, the bunk volume by log length and the JAS volume per load have nothing to attach to.",
  "layer2_family": "estimand_identification",
  "layer2_pattern": "own:payload-gain-capped-by-the-next-binding-limit-after-the-mass-limit-rises",
@@ -48,7 +48,7 @@
  "role_family": "procurement_lead",
  "spine": {
   "file": "weighbridge_tickets_port_FY2026.csv",
-  "rows": 0,
+  "rows": 29984,
   "entity": "one log truck load weighed at the port",
   "grain": "load",
   "source": "synthetic"
@@ -81,14 +81,15 @@
  "question_form": "how-many",
  "driver": "Raising the limit that binds a unit's load lifts it only until the next limit binds, and for a large share of units the next limit is a capacity in another dimension that the old limit had left with little headroom; letting every unit rise to the new limit, or only the units that sat at the old one, files the units needed low.",
  "driver_concrete": "Matiri Forest Products sizes its FY2028 cartage by dividing the harvest plan's tonnes by each grade's payload under the 50MAX limits, but a load gains mass only until its bunks are full: the port's scaling volumes, linked to the weighbridge tickets by truck and time, give each load's density, the fleet register gives each unit's bunk volume for the grade's log length, and the short grades reach full bunks a few tonnes above today's loads, so the mass-only uplift files the FY2028 loads well short.",
- "stump": "A strong solver lets each 50MAX-eligible unit's load rise to 50 tonnes gross less its tare and files the FY2028 loads well short; the step that lands it there is ignoring the bunks' volume: the short-length grades fill their bunks a few tonnes above today's payloads, so they gain a fraction of the six tonnes the new limit allows.",
+ "stump": "A strong solver lets each 50MAX permit unit's load rise to 50 tonnes gross less its tare and files 26,900 loads; the step that lands it there is ignoring the bunks: the scaling volumes and the register's full-bunk volumes show the short-length grades fill their bunks a few tonnes above today's payloads, so they gain a fraction of the six tonnes the new limit allows and FY2028 needs 29,100 loads.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task141": "task141 prices units whose term has or lacks room under a ceiling, and its earlier architectures an offsetting term filed under another key or outcomes seen only for units let through; here no term, outcome or offset is priced: each load's payload rises with a relaxed mass limit only until its bunks are full, read per load from linked weighbridge and scaling records.",
   "task142": "task142 builds an upper percentile of a period total from arrivals and durations counted inside a window; here no percentile, arrival or duration is built: a load's payload is capped by its unit's tare under the new gross limit and by its bunks' volume at the load's own density.",
   "task148": "task148 drains a queue by units that give up waiting, and its first architecture sums hazards behind a shared backer; here nothing waits, fails or is shared: each load's gain under a higher mass limit stops at the bunk volume for its logs' length.",
   "task173": "task173 adds a work-induced failure chance per scheduled visit, and its second architecture prices replacement volume from a second source sharing a meter; here no failure, visit or second source enters: a relaxed mass limit lifts each load only until the next physical limit, its bunks' volume, binds.",
-  "task133": "the slot's architecture 3 read a sector scenario through the industries paying each borrower and was spent on an unfiled transmission convention; architecture 4 forecasts truck loads whose payload gain is capped physically by bunk volume, with no convention between the scenario and the unit."
+  "task133": "the slot's architecture 3 read a sector scenario through the industries paying each borrower and was spent on an unfiled transmission convention; architecture 4 forecasts truck loads whose payload gain is capped physically by bunk volume, with no convention between the scenario and the unit.",
+  "task134": "task134 forecasts homes from lots whose raised allowance pays only once the best permitted option out-earns what stands there; here no option is chosen and nothing is rebuilt: a relaxed vehicle mass limit lifts each log load only until its bunks are full, read per load from linked weighbridge and scaling records against the fleet register's volumes."
  },
  "lineage": [
   {
@@ -200,10 +201,10 @@
  "notes": "Strategy binding_constraint: the bunks' volume binds once the mass limit rises, physically. Forum board_of_directors (the board approves the FY2028 cartage contract); forcing cutover_or_migration (the 50MAX route opens on 1 July 2027); org agriculture_or_food_producer; role procurement_lead (the haulage manager sizes the contract); context artifact register (the fleet register). Architecture 4 drew a heat-pump campus peak first (energy load-forecasting) and redrew when task138's fresh energy load-forecasting card banned the pairing.",
  "registered": "2026-11-01T20:02:02Z",
  "shell": {
-  "question form": "how-much",
-  "second-sentence opener": "set",
-  "rounding opener": "loss",
-  "deliverable set": "docx+xlsx"
+  "question form": "how-many",
+  "second-sentence opener": "matiri",
+  "rounding opener": "loads",
+  "deliverable set": "svg+xlsx"
  },
  "lineage_shells": [
   {
