@@ -24,11 +24,11 @@ def standard(path):
               "05433000) that has a 1 per cent chance of being exceeded in any year, for the river, its floodplain "
               "and its levees as they stand at the time of the review."),
         ("h", "3. Frequency analysis"),
-        ("p", "The frequency curve is a log-Pearson Type III distribution fitted to annual peak discharges by the "
-              "method of moments on their base-10 logarithms. The skew coefficient is the station skew weighted "
-              "with the generalized skew of the State Water Survey's current regional skew study, each weighted "
-              "by the inverse of its mean square error, the station skew's mean square error taken from that "
-              "study."),
+        ("p", "The frequency curve is a log-Pearson Type III distribution fitted by the method of moments to the "
+              "base-10 logarithms of one annual peak discharge for every water year since the Orrinsford gauge "
+              "opened in water year 1962. The skew coefficient is the station skew weighted with the generalized "
+              "skew of the State Water Survey's current regional skew study, each weighted by the inverse of its "
+              "mean square error, the station skew's mean square error taken from that study."),
         ("h", "4. Design water surface"),
         ("p", "The design water surface at each cross-section is read from the water surface table of the district's "
               "current hydraulic study, interpolated linearly in discharge."),
@@ -47,8 +47,9 @@ def standard(path):
               "feet, that would restore it. Each raise considered is reported with the annual chance that the "
               "river exceeds the discharge the raised levee would hold with its freeboard."),
         ("h", "8. Records"),
-        ("p", "Annual peak discharges are those published by the State Water Survey. Elevations are in feet on "
-              "NAVD 88 and stations on the levee stationing in use at the time of the review."),
+        ("p", "Discharges are taken from the State Water Survey's published records; the district's loggers record "
+              "stage for flood warning only. Elevations are in feet on NAVD 88 and stations on the levee stationing "
+              "in use at the time of the review."),
     ]
     IO.write_pdf(path, "LS-02 Levee design and review standard", "Dennis Zhang",
                  "Orrinsford Levee and Drainage District", b,
@@ -162,30 +163,34 @@ def procedure(path):
 
 
 def inspection(path):
-    items = [["Item", "Location", "Finding", "Rating"],
-             ["Vegetation", "Riverside slope, 24+00 to 41+00", "Woody growth over 2 in. diameter", "Minimally acceptable"],
-             ["Animal burrows", "Landside toe, 133+50 and 137+20", "Two active burrows, backfilled 14 August",
-              "Acceptable"],
-             ["Crown roadway", "29+00 to 33+50", "Rutting after wet-weather access, regraded", "Acceptable"],
-             ["Toe drain", "96+50", "Outlet partly blocked by sediment", "Minimally acceptable"],
-             ["PS-1 flap gate", "18+30", "Seal worn; replacement ordered", "Minimally acceptable"],
-             ["Encroachment", "140+00", "Grain terminal fence within 15 ft of landside toe", "Unacceptable"],
-             ["Main Street closure", "62+40", "Stoplogs and gaskets inventoried, trial fit 2 bays", "Acceptable"],
-             ["P&W Railroad closure", "118+70", "Gate hinges greased; seal checked with railroad", "Acceptable"],
-             ["PS-2", "161+20", "Both pumps run under load 40 minutes each", "Acceptable"]]
+    items = [["Item", "Station", "Rating", "Remark"],
+             ["Crown: grade, cracking, rutting", "0+00 to 180+00", "Acceptable", "Rutting 29+00 to 33+50 regraded"],
+             ["Riverside slope: vegetation", "24+00 to 41+00", "Minimally Acceptable", "Woody growth over 2 in."],
+             ["Riverside slope: vegetation", "41+00 to 180+00", "Acceptable", ""],
+             ["Landside slope: animal burrows", "133+50, 137+20", "Acceptable", "Backfilled 14 Aug"],
+             ["Landside slope: sloughing", "0+00 to 180+00", "Acceptable", "None seen"],
+             ["Seepage and sand boils", "0+00 to 180+00", "Acceptable", "None reported since 2024 high water"],
+             ["Toe drain outlets", "96+50", "Minimally Acceptable", "Outlet partly silted"],
+             ["Relief wells", "102+00 to 108+00", "Acceptable", "7 of 7 pumped"],
+             ["Encroachment", "140+00", "Unacceptable", "Grain terminal fence 15 ft from toe"],
+             ["Floodwall: joints and panels", "85+00 to 97+00", "Acceptable", "Joint sealant replaced 2023"],
+             ["Main Street closure", "62+40", "Acceptable", "Stoplogs inventoried, 2 bays trial fit"],
+             ["P&W Railroad closure", "118+70", "Acceptable", "Hinges greased, seal checked"],
+             ["PS-1 gravity outlet flap gate", "18+30", "Minimally Acceptable", "Seal worn, part ordered"],
+             ["PS-1 pumps", "18+30", "Acceptable", "Run 40 min under load"],
+             ["PS-2 pumps", "161+20", "Acceptable", "Run 40 min under load"],
+             ["Culverts and pipes through the levee", "various", "Acceptable", "CCTV 2024, no defects"],
+             ["Staff gauges and markers", "62+40, 118+70", "Acceptable", "Repainted"],
+             ["Overall segment rating", "", "Minimally Acceptable", ""]]
     b = [
-        ("t", "2025 annual levee inspection, summary of findings"),
-        ("s", "Orrinsford Levee and Drainage District. Inspection of 12 and 13 August 2025 with the State Department "
-              "of Natural Resources levee safety officer. Report dated 29 August 2025."),
-        ("h", "Overall rating"),
-        ("p", "Minimally acceptable. One unacceptable item (encroachment at 140+00) is to be corrected before the "
-              "2026 inspection; the grain terminal has agreed to move its fence."),
-        ("h", "Findings"),
+        ("t", "Annual levee inspection report"),
+        ("s", "Orrinsford Levee and Drainage District, levee segment TR-L-10 (stations 0+00 to 180+00). Inspected 12 "
+              "and 13 August 2025 by the district engineer with the State Department of Natural Resources levee "
+              "safety officer. Report dated 29 August 2025."),
         ("table", items),
-        ("h", "Follow-up"),
-        ("p", "The district engineer will report progress on each item to the Board at the November meeting."),
+        ("s", "Ratings: Acceptable, Minimally Acceptable, Unacceptable, per the DNR levee inspection checklist."),
     ]
-    w = {4: [34 * 2.83465, 44 * 2.83465, 62 * 2.83465, 34 * 2.83465]}
-    IO.write_pdf(path, "2025 annual levee inspection - summary", "Dennis Zhang", "Orrinsford Levee and Drainage District",
-                 b, "2025 annual inspection | Orrinsford Levee and Drainage District", "D:20250829150000-05'00'",
-                 "D:20250829152200-05'00'", widths=w)
+    w = {4: [52 * 2.83465, 34 * 2.83465, 34 * 2.83465, 56 * 2.83465]}
+    IO.write_pdf(path, "2025 annual levee inspection report", "Dennis Zhang", "Orrinsford Levee and Drainage District",
+                 b, "2025 annual inspection | Orrinsford Levee and Drainage District | segment TR-L-10",
+                 "D:20250829150000-05'00'", "D:20250829152200-05'00'", widths=w)

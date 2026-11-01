@@ -18,13 +18,15 @@ DA = {"ASH": 3880.0, "COY": 4930.0, "GALE": 412.0, "HAL": 6480.0, "FEN": 7050.0}
 COY_LOG_MEAN, COY_LOG_SD, COY_LOG_SKEW = 4.475, 0.205, 0.0
 
 # the intervening area's contribution at Orrinsford's crest, as a share of the Coyle Bridge peak
-LOCAL_MEAN, LOCAL_SD, LOCAL_LO, LOCAL_HI = 0.080, 0.018, 0.035, 0.130
+# (the intervening tributaries crest a day before the main-stem flood reaches the town, so the town's crest carries
+# their recession flow, a share of the Coyle Bridge peak that changes little from flood to flood)
+LOCAL_MEAN, LOCAL_SD, LOCAL_LO, LOCAL_HI = 0.065, 0.009, 0.035, 0.130
 # the old agricultural levees overtopped above about the five-year flood at Coyle Bridge; the floodplain behind
 # them then held back this share of every cfs above that level
 OVERTOP_CFS = 46000.0
 ATTEN = 0.56
 ATTEN_SPREAD = 0.20     # flood-to-flood variation in the share held back (longer floods fill more of the storage)
-NOISE_T = 0.011         # Orrinsford's peak against the two-gauge relation, relative
+NOISE_T = 0.0055        # Orrinsford's peak against the two-gauge relation, relative
 LOCAL_EVENT_P = 0.16    # years whose Orrinsford peak came from a storm on the intervening area alone
 
 # the agricultural levee districts between Coyle Bridge (RM 41.0) and Orrinsford (RM 12.6); raise = calendar year
@@ -50,7 +52,7 @@ OTHER_LEVEES = [
 LEVEE_LEN_FT = 18000
 # the 2019 north tie-in realignment took the levee's first 650 ft out of service: a station on the stationing in use
 # before 2019 sits at the present station 650 ft lower
-OLD_STATION_SHIFT = 650
+OLD_STATION_SHIFT = 700
 BRIDGES = {"Main Street bridge": 6240, "Prairie and Western Railroad bridge": 11870}
 TABLE4_STATIONS = [0, 1000, 2000, 3000, 4000, 5000, 6000, 6240, 7000, 8000, 9000, 10000, 11000, 11870,
                    12000, 13000, 14000, 15000, 16000, 17000, 18000]
@@ -68,20 +70,21 @@ AEP = 0.01
 
 # vertical datum: NAVD 88 = NGVD 29 + this, along the Orrinsford levee (from the benchmark pairs)
 NGVD_TO_NAVD = 0.27
-# Coyle Bridge gauge datum lowered 2.00 ft on 19 October 2021 (stage reads 2.00 ft higher for the same water)
-COY_DATUM_CHANGE = "2021-10-19 15:00"   # UTC
+# Coyle Bridge gauge datum lowered 2.00 ft on 22 October 2019 (stage reads 2.00 ft higher for the same water)
+COY_DATUM_CHANGE = "2019-10-22 15:00"   # UTC
 COY_DATUM_SHIFT = 2.00
 # Orrinsford logger: Central Standard Time stamps until the upgrade, UTC stamps after
 HAL_LOGGER_UPGRADE_UTC = "2021-06-08 15:00"
+HAL_OLD_LOGGER_OFF_UTC = "2021-06-11 15:00"   # the old logger ran beside the new one for three days
 HAL_GAUGE_DATUM = 600.00     # ft NAVD 88 (599.73 ft NGVD 29), below the lowest water the gauge sees
-WARNING_STAGE_OLD = 21.0     # Coyle Bridge, the 2014 procedure's stage (gauge datum before October 2021)
-MAIN_ST_SILL = 617.45        # ft NAVD 88, the Main Street closure sill (about 31,500 cfs at Orrinsford)
+WARNING_STAGE_OLD = 21.0     # Coyle Bridge, the 2014 procedure's stage (gauge datum before October 2019)
+MAIN_ST_SILL = 616.95        # ft NAVD 88, the Main Street closure sill (about 30,700 cfs at Orrinsford)
 # Coyle Bridge rating on the old datum: stage = a + b * Q**c (24,000 cfs at the warning stage)
 COY_RATING = (3.6, 0.0122, 0.72)
-COY_DATUM_OLD = 640.00       # ft NGVD 29, the Coyle Bridge gauge datum until October 2021 (638.00 after)
+COY_DATUM_OLD = 640.00       # ft NGVD 29, the Coyle Bridge gauge datum until October 2019 (638.00 after)
 
 # the crown at the railroad bridge station sits this far below the present river's design water surface plus its
 # freeboard (a world parameter, set so every graded figure clears its rounding edge; the design note's search)
-NEED_11870 = 1.485
+NEED_11870 = 1.500
 
 TELEM_START, TELEM_END = "2016-10-01 00:00", "2026-09-30 23:00"

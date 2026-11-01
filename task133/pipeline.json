@@ -10,15 +10,15 @@
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 (no LEAK; four REVIEW lines ruled harmless in the note's Leak review)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN 2026-11-01 (repeat.gate_g only, the lane's objective; read against the cards on file that day)",
   "nearest": "0.06 task120 v2 (lineage)"
  },
  "judge": {
@@ -34,7 +34,7 @@
    "commit": "RESHIPPED (task133): round 2 (this commit)"
   }
  ],
- "resume": "",
+ "resume": "stage 4: the isolated leak reader and the determinism judge (main session)",
  "approved": null,
  "delivered": null,
  "portal": {
@@ -63,5 +63,16 @@
   "card": ".claude/skills/fingerprint/cards/task133.json",
   "guard_check": "WARN (repeat.gate_g, the lane's objective); structural NOTEs differentiated against task134 v3, task146, task156 v2, task165, task173 v1, task465 v2, task54",
   "world": "Orari Bank Limited, a South Island regional bank (Timaru): the ICAAP severe-scenario 2027 credit loss on its business lending book; subdomain stress-testing-capital"
+ },
+ "gates": {
+  "date": "2026-11-01",
+  "generator_checks": "86 assertions, 0 failed",
+  "verify": "0 checks failed (independent reader: pandas, python-docx, openpyxl, raw PDF decoder; parameters from the shipped documents)",
+  "byte_identical_builds": "two builds in fresh interpreters byte-identical (20 target files, 2 goldens, target.zip)",
+  "figures_check": "PASS, 55 figures, 0 absent",
+  "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS (988 characters)",
+  "target_zip_sha256": "d613bac0e35fc25acb1cb6227a31258f33a8202e5722f4d73247c787ec45188e",
+  "pair_ceiling": "28.5 (43.5 if the cracker also finds one silent device); mirror leakage 0.0"
  }
 }

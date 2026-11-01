@@ -200,6 +200,9 @@ def main():
     ser = [hal[y] if y >= cut else r * coy[y] for y in yrs]
     mu, s, gw = lp3(ser, gr, mser)
     q1 = 10 ** (mu + k_factor(0.99, gw) * s)
+    std_window = int(re.search(r"opened in water year (\d{4})", std).group(1))
+    check("LS-02 window: one peak for every water year since %d (65 years)" % std_window,
+          std_window == 1962 and len(ser) == 2026 - std_window + 1)
     check("design discharge %.0f cfs reported %d" % (q1, fig["call"]["design_discharge_cfs"]),
           int(round(q1 / 5000) * 5000) == fig["call"]["design_discharge_cfs"])
 
@@ -297,24 +300,33 @@ def main():
     hh, rh = read_csv(path(r"ORF2_logger"), skip_hash=False, skip_lines=4)
     ht = [dt.datetime.strptime(x[0], "%m/%d/%Y %H:%M") for x in rh]
     hv = [float(x[1]) for x in rh]
-    gaps = [(ht[i] - ht[i - 1], i) for i in range(1, len(ht))]
-    gmax, gi = max(gaps)
-    # the published Orrinsford peak times (local standard time) against each water year's highest ORF2 reading
+    gi = next(i for i in range(1, len(ht)) if ht[i] < ht[i - 1])        # the new logger's records start here
+    old = dict(zip(ht[:gi], hv[:gi]))
+    new = dict(zip(ht[gi:], hv[gi:]))
+    best = None
+    for s in range(-12, 13):
+        pairs = [(old[t], new[t + dt.timedelta(hours=s)]) for t in old if t + dt.timedelta(hours=s) in new]
+        if len(pairs) >= 24:
+            d = sum(abs(a - b) for a, b in pairs) / len(pairs)
+            best = (d, s) if best is None or d < best[0] else best
+    dh = best[1]
+    check("ORF2 clock: the two loggers' overlap lines up at %d h" % dh, dh == 6)
     pub = []
     for r in rows:
         if r[ix["site_no"]] == "05433000" and r[ix["peak_tm"]]:
             pub.append(dt.datetime.strptime(r[ix["peak_dt"]] + " " + r[ix["peak_tm"]], "%Y-%m-%d %H:%M"))
-    pre_d, post_d = [], []
-    for p in pub:
-        lo, hi = p - dt.timedelta(days=3), p + dt.timedelta(days=3)
-        win = [i for i in range(len(ht)) if lo < ht[i] < hi]
-        if not win:
-            continue
-        top = max(win, key=lambda i: hv[i])
-        (pre_d if top < gi else post_d).append((ht[top] - p).total_seconds() / 3600)
-    dh = int(round(sorted(post_d)[len(post_d) // 2] - sorted(pre_d)[len(pre_d) // 2]))
-    check("ORF2 clock: stamps before the logger swap sit %d h behind" % dh, dh == 6)
-    ht = [t + dt.timedelta(hours=dh) if i < gi else t for i, t in enumerate(ht)]
+    offs = set()
+    for blk in ((ht[:gi], hv[:gi]), (ht[gi:], hv[gi:])):
+        for p in pub:
+            win = [i for i in range(len(blk[0])) if p - dt.timedelta(days=3) < blk[0][i] < p + dt.timedelta(days=3)]
+            if win:
+                top = max(win, key=lambda i: blk[1][i])
+                offs.add(round((blk[0][top] - p).total_seconds() / 3600))
+    check("ORF2 clock: yearly highest readings sit 0 h (old logger) and 6 h (new logger) from the published times",
+          offs == {0, 6})
+    ht2 = [t + dt.timedelta(hours=dh) for t in ht[:gi] if t + dt.timedelta(hours=dh) < ht[gi]] + ht[gi:]
+    hv = [v for t, v in zip(ht[:gi], hv[:gi]) if t + dt.timedelta(hours=dh) < ht[gi]] + hv[gi:]
+    ht = ht2
     sill_stage = sill - (hdat + shift)
     leads = []
     for j in range(1, len(hv)):

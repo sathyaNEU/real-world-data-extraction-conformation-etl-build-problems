@@ -248,13 +248,27 @@ closed in SF20 to SF30 by 2.3, 4.2, 4.3, the Table 1 note and the records.
 - Pair ceiling: 28.5 (cracker C 45.0 keeping 0 of 22 ask figures, mirror S 12.0; 43.5 if the cracker also finds one
   silent device)
 - Mirror leakage: 0.0 per cent of ask weight (the mirror handles the asks as the cracker does)
-- Measured by: generator/ceiling.py on the cut pack (target.zip 9ec7a1c7)
+- Measured by: generator/ceiling.py on the cut pack (target.zip d613bac0)
 
 | Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
 |---|---|---|---|---|
 | A net credit losses (12 cells) | agency upload paired off, receipts after write-off, business rows | A1 guarantors' personal cases | 0 of 12 | miss |
 | B default counts (5) | overrides in force, both registers, merge log | B1 the group lead's number | 0 of 5 | miss |
 | B default shares (5) | the same | B1 | 0 of 5 | miss |
+
+## Leak review
+
+`leak.py --asof 2026-10-16` on the final cut: REVIEW, no LEAK. Each REVIEW line ruled:
+
+- Sweep 3, CR-ST-02: 2.1, 1.3 and 3.4 are the standard's own section numbers and 2.4 a version in its history table;
+  none is a figure of the call. Harmless.
+- Sweep 3, CR-ST-02 carries the call's words: the standard defines the stressed loss the call reports and states no
+  figure of it. Harmless.
+- Sweep 3, the rural summary carries the call's words: the rural book's own stress under the same scenario, a declared
+  distractor whose figures are the rural book's. Harmless.
+- Sweep 4, CR-ST-02 shares seven terms of the note's vocabulary (borrower, register, division, system, carries,
+  multiplier): its sentences file the WHAT (the fall in the borrower's own sales, a borrower's segment following its own
+  division on the NZBN register); none names payers, receipts, a mix or a weighting. Harmless.
 
 ## Architecture 2 record
 
@@ -777,3 +791,4 @@ same_driver_older against task180 differentiated on the card.
 - The trigger Cross-default only on group rows: a marker isolating the device rows; ordinary events now carry it too (a borrower in default with another lender).
 - Card payments at the trade counter at 30 per cent for non-retail types: payments from individuals carried enough of manufacturing and trade sales that leaving them out moved the book total to 12.0; the trade-counter card share is 55 per cent, and leaving them out now keeps the total (manufacturing still moves, SF11).
 - Grading the book total to NZD 0.1 million: the six-month base would file 11.6 and the non-sales reading sit 0.008 from an edge; the 0.5-million bin keeps every licensed convention (11.458 to 11.574) inside with 0.18 to spare.
+- The prompt's second sentence opening on "The workbook": its shell (how-much, the, docx+xlsx) repeated task305 v3 (guard heart WARN shell.repeat); the sentence now opens "Set out".

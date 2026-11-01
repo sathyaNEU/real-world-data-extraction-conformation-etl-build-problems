@@ -4,7 +4,7 @@
  "decision": "which of the concessionaire's metro screen packages are sold in the guaranteed-reach tier (Tier G) of its 2027 rate card",
  "deliverables": [
   "tier_g_2027.xlsx",
-  "tier_g_2027.pdf"
+  "tier_g_2027.svg"
  ],
  "distractor_files": [
   "RVB_instappers_per_halte_2026.xlsx",

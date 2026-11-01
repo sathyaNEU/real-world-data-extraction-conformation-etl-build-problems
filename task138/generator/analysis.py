@@ -64,6 +64,7 @@ class Pack:
         self.fb_up = float(re.search(r"(\d\.\d) ft at station 0\+00", st).group(1))
         self.len_ft = sta_int(re.search(r"downstream end, station (\d+\+\d\d)", st).group(1))
         self.aep = float(re.search(r"has a (\d+) per cent chance", st).group(1)) / 100.0
+        self.first_wy = int(re.search(r"opened in water year (\d{4})", st).group(1))
         t4 = IO.pdf_text(_find(self.target, r"Table4.*\.pdf$"))
         qs = [int(x.replace(",", "")) for x in re.findall(r"(\d{2,3},000)", t4)]
         qs = sorted(set(qs))
@@ -187,6 +188,8 @@ def present_series(P, how="ratio", cut=None, fit_from=None):
     elif how == "ols":
         b = np.polyfit(U[pf], T[pf], 1)
         est = np.polyval(b, U)
+    elif how == "inverse_origin":
+        est = np.sum(T[pf] ** 2) / np.sum(T[pf] * U[pf]) * U
     elif how == "max_obs":
         r = np.sum(T[pf] * U[pf]) / np.sum(U[pf] ** 2)
         est = np.maximum(r * U, T)
@@ -223,23 +226,31 @@ def routes(P):
     return res
 
 
-def golden_family(P):
+FORMS = ("ratio", "ratio_of_means", "ols", "logols", "move1", "all_years")
+
+
+def golden_family(P, extras=True):
     """Every construction of the present river's record a competent analyst would defend once the raises are seen:
-    the estimator of the two-gauge relation, the years it is fitted on, which pre-raise years are carried across."""
+    the form of the two-gauge relation fitted over the post-raise years and applied to the earlier ones (through the
+    origin, ratio of means, straight line, straight line in logs, MOVE.1 in logs, and every year carried from Coyle
+    Bridge), then the stress rows: mean of ratios, the inverted regression, the fitting window, which pre-raise years
+    are carried across."""
     fam = {}
     cut = P.first_post_wy()
-    for how in ("ratio", "meanratio", "ratio_of_means", "logols", "move1", "ols", "max_obs"):
-        fam["%s_cut%d" % (how, cut)] = present_series(P, how=how)
-    for c in (cut - 1, cut + 1, cut + 3):
-        fam["ratio_fit%d" % c] = present_series(P, how="ratio", fit_from=c)
     wy = np.array(P.hal.index)
     T = P.hal.values
     U = P.coy.reindex(wy).values
+    for how in ("ratio", "ratio_of_means", "ols", "logols", "move1"):
+        fam[how] = present_series(P, how=how)
     r = np.sum(T[wy >= cut] * U[wy >= cut]) / np.sum(U[wy >= cut] ** 2)
-    fam["all_years_from_coyle"] = r * U
-    # carry across only the water years before the first raise, keep the partly raised years as observed
-    first = min(w for _, w in P.raises_between())
-    fam["keep_partial_years"] = np.where(wy >= first, T, r * U)
+    fam["all_years"] = r * U
+    if extras:
+        for how in ("meanratio", "inverse_origin", "max_obs"):
+            fam[how] = present_series(P, how=how)
+        for c in (cut - 1, cut + 1, cut + 3):
+            fam["ratio_fit%d" % c] = present_series(P, how="ratio", fit_from=c)
+        first = min(w for _, w in P.raises_between())
+        fam["keep_partial_years"] = np.where(wy >= first, T, r * U)
     return fam
 
 
@@ -359,28 +370,81 @@ def coy_datum_change(A):
     return pd.Timestamp(t[j]), step
 
 
-def halbrook_clock(A, peaks=None):
-    """The ORF2 stamps against the State Water Survey's published Orrinsford peak times (local standard time): each
-    water year's highest ORF2 reading sits on the published time before the logger swap (the long gap in the
-    stamps) and six hours after it since, so the earlier stamps are local standard time."""
-    t = A.hb["t"]
-    j = int(t.diff().idxmax())
-    swap = t.iat[j]
-    pk = peaks if peaks is not None else pd.read_csv(_find(A.target, r"annual_peaks.*\.csv$"), comment="#",
-                                                      dtype={"site_no": str})
-    pk = pk[pk.site_no == "05433000"].copy()
-    pk["when"] = pd.to_datetime(pk["peak_dt"] + " " + pk["peak_tm"].fillna("00:00"))
-    hb = A.hb.copy()
-    hb["wy"] = [water_year(x) for x in hb["t"]]
-    diffs = {"pre": [], "post": []}
-    for _, r in pk[pk["when"] >= hb["t"].min()].iterrows():
-        w = hb[(hb["t"] > r["when"] - pd.Timedelta(days=3)) & (hb["t"] < r["when"] + pd.Timedelta(days=3))]
-        if w.empty:
+def hb_blocks(A):
+    """The ORF2 export in file order: the old logger's imported records, then the new logger's own, found where the
+    stamps step back."""
+    t = A.hb["t"].values
+    j = int(np.nonzero(t[1:] < t[:-1])[0][0]) + 1
+    return A.hb.iloc[:j].copy(), A.hb.iloc[j:].copy()
+
+
+def _published(A, site):
+    pk = pd.read_csv(_find(A.target, r"annual_peaks.*\.csv$"), comment="#", dtype={"site_no": str})
+    pk = pk[(pk.site_no == site) & pk["peak_tm"].notna()]
+    return pd.to_datetime(pk["peak_dt"] + " " + pk["peak_tm"])
+
+
+def _top_offsets(times, values, published, lo, hi):
+    out = []
+    for p in published:
+        if not (lo <= p <= hi):
             continue
-        tm = w.loc[w["stage"].idxmax(), "t"]
-        diffs["pre" if tm < swap else "post"].append((tm - r["when"]) / pd.Timedelta(hours=1))
-    shift = int(round(np.median(diffs["post"]) - np.median(diffs["pre"])))
-    return swap, shift
+        m = (times > p - pd.Timedelta(days=3)) & (times < p + pd.Timedelta(days=3))
+        if not m.any():
+            continue
+        v = values[m]
+        tt = times[m]
+        out.append((tt[int(np.argmax(v))] - p) / pd.Timedelta(hours=1))
+    return out
+
+
+def clock_routes(A):
+    """Every route the data offer to the ORF2 clock: the two loggers' overlap lined up, each logger's yearly highest
+    reading against the State Water Survey's published Orrinsford peak times, and Coyle Bridge's hourly record
+    against its own published peak times (the published times' convention)."""
+    old, new = hb_blocks(A)
+    so = old.set_index("t")["stage"]
+    sn = new.set_index("t")["stage"]
+    best = None
+    for s in range(-12, 13):
+        sh = sn.copy()
+        sh.index = sh.index - pd.Timedelta(hours=s)
+        common = so.index.intersection(sh.index)
+        if len(common) < 24:
+            continue
+        d = float(np.mean(np.abs(so.loc[common].values - sh.loc[common].values)))
+        if best is None or d < best[0]:
+            best = (d, s, len(common))
+    pub_h = _published(A, "05433000")
+    pre = _top_offsets(old["t"].values.astype("datetime64[ns]"), old["stage"].values, pub_h, old["t"].min(),
+                       old["t"].max())
+    post = _top_offsets(new["t"].values.astype("datetime64[ns]"), new["stage"].values, pub_h, new["t"].min(),
+                        new["t"].max())
+    pub_c = _published(A, "05432100")
+    cy = _top_offsets(A.coy["t"].values.astype("datetime64[ns]"), A.coy["discharge_cfs"].values.astype(float), pub_c,
+                      A.coy["t"].min(), A.coy["t"].max())
+    return {"overlap_shift_h": best[1], "overlap_mad_ft": best[0], "overlap_hours": best[2],
+            "orrinsford_old_minus_published": pre, "orrinsford_new_minus_published": post,
+            "coyle_hourly_minus_published": cy}
+
+
+def halbrook_clock(A):
+    """The old logger's records sit six hours behind UTC: the overlap lines up at that shift, and the published peak
+    times say the same from both sides."""
+    r = clock_routes(A)
+    old, new = hb_blocks(A)
+    return new["t"].iloc[0], int(r["overlap_shift_h"])
+
+
+def hb_series(A, clock_fix=True):
+    """The ORF2 stage as one series: the old logger's stamps moved by the clock shift (or left as headed), the new
+    logger's records kept wherever the two overlap."""
+    old, new = hb_blocks(A)
+    if clock_fix:
+        _, sh = halbrook_clock(A)
+        old["t"] = old["t"] + pd.Timedelta(hours=sh)
+    old = old[old["t"] < new["t"].iloc[0]]
+    return pd.concat([old, new]).sort_values("t").reset_index(drop=True)
 
 
 def lead_times(A, coy_mode="per_datum", clock_fix=True, hb_convert=True, convention="interp"):
@@ -388,10 +452,7 @@ def lead_times(A, coy_mode="per_datum", clock_fix=True, hb_convert=True, convent
     sill. coy_mode: per_datum (21.0 ft before the datum change, the 2014 elevation on the present datum after),
     old_stage (21.0 ft throughout), elev_now (the 2014 elevation on the present datum throughout)."""
     change, _ = coy_datum_change(A)
-    swap, shift_h = halbrook_clock(A)
-    hb = A.hb.copy()
-    if clock_fix:
-        hb.loc[hb["t"] < swap, "t"] = hb.loc[hb["t"] < swap, "t"] + pd.Timedelta(hours=shift_h)
+    hb = hb_series(A, clock_fix=clock_fix)
     sh = datum_shift(A) if hb_convert else 0.0
     sill_stage = A.sill - (A.hb_datum + sh)
     hs, ht = hb["stage"].values, hb["t"].values

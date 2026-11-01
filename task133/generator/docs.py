@@ -26,7 +26,8 @@ S_DEFAULT = ("1.3 A facility of a customer in default at the book date (risk gra
              "provision and is outside this standard.")
 S_YEAR = ("2.2 The stress year is the twelve months after the book date. For the 2026 ICAAP the book date is "
           "30 September 2026 and the stress year ends on 30 September 2027.")
-S_FY = "2.3 The bank's financial year ends on 30 September; its halves end on 31 March and 30 September."
+S_FY = ("2.3 The bank's financial year ends on 30 September; its first half (H1) ends on 31 March and its second half "
+        "(H2) on 30 September.")
 S_SCEN = ("2.1 The stress applies the severe scenario the Board approves for the year, which states for each ANZSIC "
           "2006 division the change in the division's sales in the stress year against the year to the book date.")
 S_LOSS = ("3.1 The stressed loss of a facility is its stressed probability of default times its stressed loss given "

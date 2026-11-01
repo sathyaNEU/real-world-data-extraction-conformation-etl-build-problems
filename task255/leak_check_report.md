@@ -18,6 +18,9 @@ Stump terms swept: centraal, million, record, sentence, coverage, journey, sever
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: deliverable set 'png+xlsx' at 21% of 196 prompts (cap 20%); reword at the role level, not the verb
+
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
@@ -29,5 +32,3 @@ Stump terms swept: centraal, million, record, sentence, coverage, journey, sever
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 11 prompt gate (clean)

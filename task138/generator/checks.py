@@ -85,19 +85,25 @@ def main():
     fam = A.golden_family(P)
     fits = {k: A.fit(v, P) for k, v in fam.items()}
     qs = {k: L.quantile(f, P.aep) for k, f in fits.items()}
-    ok("golden family (%d constructions): every member files 2 ft" % len(fam),
-       all(A.raise_for(P, q) == 2 for q in qs.values()), str({k: round(v) for k, v in qs.items()}))
-    ok("golden family: every member's design discharge rounds to 110,000",
-       all(rnd(q, 5000) == 110000 for q in qs.values()))
-    ok("design discharge: 250 cfs or more inside its bin under every member",
-       min(edge(q, 5000) for q in qs.values()) >= 250, "%.0f" % min(edge(q, 5000) for q in qs.values()))
     caps = m["capacity"]
-    dev = [max(abs(100 * L.exceedance(f, c) - m["aep"][i]) for f in fits.values()) for i, c in enumerate(caps)]
-    marg = [edge(m["aep"][i], 0.1) - dev[i] for i in range(5)]
-    ok("annual chances: each raise's figure stays inside its 0.1 per cent bin under every member (margin >= 0.012)",
-       min(marg) >= 0.012, str([round(x, 4) for x in marg]))
-    ok("annual chances graded: 1.4, 1.1, 0.9, 0.7, 0.6",
-       [round(a, 1) for a in m["aep"]] == [1.4, 1.1, 0.9, 0.7, 0.6], str(m["aep"]))
+    want = [round(a, 1) for a in m["aep"]]
+    for k in A.FORMS:
+        a_k = [100 * L.exceedance(fits[k], cpt) for cpt in caps]
+        ok("form %s (fitted 2009 to 2026, applied 1962 to 2008): 2 ft, design discharge in 107,500 to 112,500 with "
+           "1,500 cfs to spare, all five annual chances in their bins with 0.02 to spare" % k,
+           A.raise_for(P, qs[k]) == 2 and edge(qs[k], 5000) >= 1500 and rnd(qs[k], 5000) == 110000 and
+           [round(x, 1) for x in a_k] == want and min(edge(x, 0.1) for x in a_k) >= 0.02,
+           "Q %.0f, chances %s" % (qs[k], [round(x, 3) for x in a_k]))
+    extra = [k for k in fam if k not in A.FORMS]
+    ok("stress rows (%s): every one files 2 ft, the same design-discharge bin and the same five chances with 0.01 to "
+       "spare" % ", ".join(extra),
+       all(A.raise_for(P, qs[k]) == 2 and rnd(qs[k], 5000) == 110000 and
+           [round(100 * L.exceedance(fits[k], cpt), 1) for cpt in caps] == want and
+           min(edge(100 * L.exceedance(fits[k], cpt), 0.1) for cpt in caps) >= 0.01 for k in extra),
+       str({k: round(qs[k]) for k in extra}))
+    ok("design discharge: 1,500 cfs or more inside its bin under every construction",
+       min(edge(q, 5000) for q in qs.values()) >= 1500, "%.0f" % min(edge(q, 5000) for q in qs.values()))
+    ok("annual chances graded: 1.4, 1.1, 0.9, 0.7, 0.6", want == [1.4, 1.1, 0.9, 0.7, 0.6], str(m["aep"]))
     ok("shortfall at 118+70 between 1.2 and 1.8 ft under every member",
        all(1.2 <= A.need(P, q) <= 1.8 for q in qs.values()))
     ok("no Bulletin 17B low outlier in the golden or the published series",
@@ -128,8 +134,21 @@ def main():
     ok("SF8 / L1 each published peak labelled by its calendar year instead of its water year: same raise and "
        "design-discharge bin", cy == (2, 110000), str(cy))
     cym = _calendar_year(P)
-    ok("SF8b regrouping to calendar-year maxima drops published annual peaks (LS-02 section 8 rules it out) and "
+    ok("SF8b regrouping to calendar-year maxima drops water years' annual peaks (LS-02 section 3 takes one per water "
+       "year) and "
        "still files 2 ft", cym[0] == 2 and _cy_drops(P) > 0, str(cym))
+    std_txt = IO.pdf_text(A._find(TARGET, r"LS-02"))
+    ok("SF21 the water years since the last raise alone (18 peaks, 1 ft) are ruled out by LS-02 section 3's window "
+       "(one annual peak for every water year since the gauge opened in 1962)",
+       "one annual peak discharge for every water year since the Orrinsford gauge opened in water year 1962" in
+       std_txt and P.first_wy == 1962 and rt["R2_post_raise_only"]["n"] == 18 and
+       len(A.present_series(P)) == 2026 - P.first_wy + 1)
+    ok("SF21b LS-02 names no Coyle Bridge, extension, homogeneity, levee raise or relation",
+       not any(w in std_txt.lower() for w in ("coyle", "extension", "extend", "homogene", "levee raise", "raised",
+                                              "relation", "upstream gauge", "agricultural")))
+    ok("SF22 LS-02 section 8 takes discharges from the State Water Survey's records without fixing which years are "
+       "used as published (positive control)", "Discharges are taken from the State Water Survey's published records"
+       in std_txt and "Annual peak discharges are those published" not in std_txt)
     ok("SF9 raises are uniform whole feet (LS-02 section 7): positive control",
        "uniform crown raise, in whole" in IO.pdf_text(A._find(TARGET, r"LS-02")))
     ok("SF10 regional skew and its mean square error read for region 2 (Pell and Marrow counties)",
@@ -201,9 +220,13 @@ def main():
     med = _settle_median(AF)
     ok("SF17b ask A: the median shot per reach gives the same bins as the mean",
        {k: rnd(v, 0.01) for k, v in med.items()} == {k: rnd(v, 0.01) for k, v in st.items()}, str(med))
+    mrm = _mean_of_reach_means(AF)
+    ok("SF17c ask A: every 2016 crown shot on today's levee pairs with exactly one 2024 shot and the reach mean of "
+       "each survey differenced gives the paired figure", _one_to_one(AF) and
+       all(abs(mrm[k] - st[k]) < 1e-9 for k in st), str({k: round(v, 4) for k, v in mrm.items()}))
     offs, common = A.station_offset(AF)
-    ok("ask A: the four structures both surveys shot give one stationing offset (650 ft)",
-       offs == [650] and len(common) == 4, str(offs))
+    ok("ask A: the four structures both surveys shot give one stationing offset (700 ft)",
+       offs == [700] and len(common) == 4, str(offs))
     nv = A.settlement(AF, offset=0)
     ok("ask A device (stationing): matching by station number misses every reach and stays positive (silent)",
        all(rnd(nv[k], 0.01) != rnd(st[k], 0.01) for k in st) and min(nv.values()) > 0.05,
@@ -215,32 +238,43 @@ def main():
        np.allclose(AF.bench["elev_navd88_ft"] - AF.bench["elev_ngvd29_ft"], 0.27))
     lt = A.lead_times(AF)
     ok("SF19 ask B: seven floods reached the Main Street sill since October 2016", len(lt) == 7, str(len(lt)))
-    conv = [[int(round(h)) for _, h in A.lead_times(AF, convention=c)] for c in
+    conv = [[int(round(h)) for _, h in A.lead_times(AF, convention=cv)] for cv in
             ("interp", "first_at_or_above", "last_below")]
-    ok("SF18 ask B: interpolated, first-hour-at-or-above and last-hour-below crossings give the same whole hours",
-       conv[0] == conv[1] == conv[2], str(conv))
-    ok("ask B: each lead time 0.1 h or more inside its whole-hour bin", min(edge(h, 1) for _, h in lt) >= 0.1,
+    trunc = [int(math.floor(h)) for _, h in lt]
+    ok("SF18 ask B: rounded, truncated, first-hour-at-or-above and last-hour-below crossings give the same whole hours",
+       conv[0] == conv[1] == conv[2] == trunc, str(conv + [trunc]))
+    ok("ask B: each lead time's fraction of an hour sits between 0.1 and 0.4", all(0.1 <= h % 1 <= 0.4 for _, h in lt),
        str([round(h, 2) for _, h in lt]))
     gold = [int(round(h)) for _, h in lt]
     old = [int(round(h)) for _, h in A.lead_times(AF, coy_mode="old_stage")]
-    ok("ask B device (Coyle Bridge datum): 21.0 ft throughout misses all four floods after October 2021",
-       all(old[i] != gold[i] for i in (3, 4, 5, 6)) and old[:3] == gold[:3], str(old))
+    ok("ask B device (Coyle Bridge datum): 21.0 ft as printed misses all seven floods (all after the October 2019 "
+       "datum change)", all(old[i] != gold[i] for i in range(7)), str(old))
     now = [int(round(h)) for _, h in A.lead_times(AF, coy_mode="elev_now")]
-    ok("ask B over-correction: 23.00 ft throughout misses all three 2020 floods",
-       all(now[i] != gold[i] for i in (0, 1, 2)) and now[3:] == gold[3:], str(now))
+    ok("ask B: the warning elevation on today's Coyle Bridge datum gives the golden for every flood", now == gold,
+       str(now))
     nc = [int(round(h)) for _, h in A.lead_times(AF, clock_fix=False)]
-    ok("ask B device (logger clock): the ORF2 stamps read as UTC throughout misses all three 2020 floods",
+    ok("ask B device (logger clock): the ORF2 stamps read as headed miss all three 2020 floods",
        all(nc[i] != gold[i] for i in (0, 1, 2)), str(nc))
     nh = [int(round(h)) for _, h in A.lead_times(AF, hb_convert=False)]
     ok("ask B hazard (Orrinsford gauge datum on NGVD 29): misses five or more floods",
        sum(nh[i] != gold[i] for i in range(7)) >= 5, str(nh))
     chg, step = A.coy_datum_change(AF)
-    ok("ask B: the Coyle Bridge stage steps 2.00 ft against discharge at 2021-10-19 15:00 UTC",
-       chg == pd.Timestamp("2021-10-19 15:00") and abs(step - 2.0) < 0.03, "%s %.3f" % (chg, step))
+    ok("ask B: the Coyle Bridge stage steps 2.00 ft against discharge at 2019-10-22 15:00 UTC",
+       chg == pd.Timestamp("2019-10-22 15:00") and abs(step - 2.0) < 0.03, "%s %.3f" % (chg, step))
+    cr = A.clock_routes(AF)
+    ok("clock route 1: the two ORF2 loggers' three-day overlap lines up at a 6 h shift and at no other",
+       cr["overlap_shift_h"] == 6 and cr["overlap_mad_ft"] < 0.005 and _overlap_runner_up(AF) > 0.02,
+       "%s %.4f %.4f" % (cr["overlap_shift_h"], cr["overlap_mad_ft"], _overlap_runner_up(AF)))
+    ok("clock route 2: each water year's highest old-logger reading sits on the published Orrinsford peak time and "
+       "each new-logger one 6 h after it", set(cr["orrinsford_old_minus_published"]) == {0.0} and
+       set(cr["orrinsford_new_minus_published"]) == {6.0} and len(cr["orrinsford_old_minus_published"]) >= 4 and
+       len(cr["orrinsford_new_minus_published"]) >= 4, str(cr))
+    ok("clock route 3: Coyle Bridge's hourly record tops out 6 h after every published Coyle Bridge peak time (the "
+       "published times are UTC less 6 h)", set(cr["coyle_hourly_minus_published"]) == {6.0} and
+       len(cr["coyle_hourly_minus_published"]) == 10, str(cr["coyle_hourly_minus_published"]))
     swap, sh = A.halbrook_clock(AF)
-    ok("ask B: each water year's highest ORF2 reading sits on the published peak time before the logger swap and 6 h "
-       "after it since", sh == 6, "%s %d" % (swap, sh))
-    ok("ask B device (logger clock) is silent: the ORF2 export carries no diurnal channel to profile",
+    ok("ask B: the old logger's records sit 6 h behind UTC", sh == 6, "%s %d" % (swap, sh))
+    ok("ask B device (logger clock): the ORF2 export carries stage alone, no diurnal channel",
        list(AF.hb.columns[:2]) == ["stamp", "stage"] and AF.hb.shape[1] == 3)
     ok("ask B: no telemetry gap within five days of any crossing", _no_gap_near(AF, lt))
     ok("ask B: the Coyle Bridge hourly maximum of each water year matches its published annual peak (1 per cent)",
@@ -265,12 +299,21 @@ def main():
     ok("distractors: deleting them leaves every graded figure", _without_distractors(meta) == _graded(P, AF))
     ok("no readme, dictionary, notes or manifest file or sheet", _no_describer())
     ok("realism: no id-like column steps by one constant (benchmarks, segments, sites)", _no_constant_steps(P, AF))
+    ok("realism: Table 4's station-to-station falls vary (reach slopes, cross-sections, bridges)",
+       _table4_irregular(P), str(_table4_irregular(P)))
+    ok("realism: the 2024 crown shows low spots and steps (three or more shots 0.12 ft or more below their 1,000 ft "
+       "running median)", _crown_low_spots(AF) >= 3, str(_crown_low_spots(AF)))
+    ok("realism: the inspection report is a ratings table with no narrative paragraph",
+       _inspection_is_table())
     ok("realism: reach point counts are not uniform", len(set(_reach_counts(AF).values())) >= 4,
        str(_reach_counts(AF)))
     ok("realism: personas are the card's (no other full name in the pack's documents)", _people_ok())
     ok("realism: every document's stated date follows the events it describes", _doc_dates_ok(P))
-    ok("realism: no exact duplicate rows in the hourly files", not AF.coy.duplicated(["datetime_utc"]).any() and
-       not AF.hb.duplicated(["stamp"]).any())
+    ob, nb = A.hb_blocks(AF)
+    ok("realism: no repeated stamp inside either logger's records or in the Coyle Bridge file; the two ORF2 loggers "
+       "overlap only across the three days both ran", not AF.coy.duplicated(["datetime_utc"]).any() and
+       not ob.duplicated(["stamp"]).any() and not nb.duplicated(["stamp"]).any() and
+       (ob["t"].max() - nb["t"].min()) < pd.Timedelta(days=3))
     ok("PDF positive controls: every shipped PDF yields text through the shared extractor",
        all(len(IO.pdf_text(os.path.join(TARGET, f))) > 400 for f in files if f.endswith(".pdf")))
     ok("XLSX: the inventory's docProps name the issuing department", _xlsx_props_ok())
@@ -294,6 +337,62 @@ def _settle_median(AF):
         if s in z24.index:
             d.setdefault(z24.loc[s, "reach"], []).append(float(r["ELEV"]) + sh - float(z24.loc[s, "elev_ft"]))
     return {k: float(np.median(v)) for k, v in sorted(d.items())}
+
+
+def _mean_of_reach_means(AF):
+    off = A.station_offset(AF)[0][0]
+    sh = A.datum_shift(AF)
+    c24 = AF.c24[AF.c24.code == "CL"]
+    c16 = AF.c16[AF.c16.DESC == "CL"].copy()
+    c16["new"] = c16["sta"] - off
+    reach = c24.set_index("sta")["reach"]
+    c16 = c16[c16["new"].isin(reach.index)]
+    c16["reach"] = c16["new"].map(reach)
+    m24 = c24.groupby("reach")["elev_ft"].mean()
+    m16 = c16.groupby("reach")["ELEV"].mean() + sh
+    return {k: float(m16[k] - m24[k]) for k in m24.index}
+
+
+def _one_to_one(AF):
+    off = A.station_offset(AF)[0][0]
+    s24 = set(AF.c24[AF.c24.code == "CL"]["sta"])
+    s16 = set(int(s) - off for s in AF.c16[AF.c16.DESC == "CL"]["sta"] if int(s) - off >= 0)
+    return s24 == s16
+
+
+def _overlap_runner_up(AF):
+    old, new = A.hb_blocks(AF)
+    so = old.set_index("t")["stage"]
+    sn = new.set_index("t")["stage"]
+    out = []
+    for s in range(-12, 13):
+        if s == 6:
+            continue
+        x = sn.copy()
+        x.index = x.index - pd.Timedelta(hours=s)
+        common = so.index.intersection(x.index)
+        if len(common) >= 24:
+            out.append(float(np.mean(np.abs(so.loc[common].values - x.loc[common].values))))
+    return min(out)
+
+
+def _table4_irregular(P):
+    d = np.diff(P.t4.values, axis=0)
+    non_bridge = [i for i, s in enumerate(P.t4.index[1:]) if s not in (6240, 11870) and P.t4.index[i] not in (6240, 11870)]
+    col = d[non_bridge, :]
+    cv = float(np.std(col[:, 4]) / abs(np.mean(col[:, 4])))
+    return round(cv, 3) if cv > 0.15 else False
+
+
+def _crown_low_spots(AF):
+    c = AF.c24[AF.c24.code == "CL"].sort_values("sta")
+    med = c["elev_ft"].rolling(11, center=True, min_periods=5).median()
+    return int(np.sum((med - c["elev_ft"]) >= 0.12))
+
+
+def _inspection_is_table():
+    t = IO.pdf_text(A._find(TARGET, r"inspection"))
+    return "Rating" in t and "Minimally Acceptable" in t and "Overall rating" not in t and "Follow-up" not in t
 
 
 def _cap_nofb(P, r):

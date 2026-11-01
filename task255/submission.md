@@ -71,6 +71,6 @@
    - Ringlijn: EUR 4,210
    - Eindhaltes: EUR 4,070
 
-### tier_g_2027.pdf
+### tier_g_2027.svg
 
-1. One-page bar chart of every package's effective reach, highest first, with the Tier G line at 40 per cent drawn across it and Overstappunten, Zuidtak and Oosttak shaded as Tier G.
+1. Bar chart of every package's effective reach, highest first, the Tier G line at 40 per cent drawn across it and Overstappunten, Zuidtak and Oosttak shaded as Tier G, titled with the call.

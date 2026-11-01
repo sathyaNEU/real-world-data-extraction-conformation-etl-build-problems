@@ -190,11 +190,19 @@ def write_coyle(path, tel):
 
 
 def write_halbrook(path, tel):
+    """The ORF2 logger's "all records" export: the old logger's file as the new logger's software imported it (its
+    clock on local standard time), then the new logger's own records (UTC); the two ran together for three days."""
     idx = pd.DatetimeIndex(tel["utc"])
     up = pd.Timestamp(PR.HAL_LOGGER_UPGRADE_UTC)
-    swap = (idx >= up - pd.Timedelta(hours=7)) & (idx < up)
-    stamp = idx.where(idx >= up, idx - pd.Timedelta(hours=6))
-    rows = [[stamp[i].strftime("%m/%d/%Y %H:%M"), "%.2f" % tel["stage_h"].iat[i]] for i in np.nonzero(~swap)[0]]
+    off = pd.Timestamp(PR.HAL_OLD_LOGGER_OFF_UTC)
+    st = tel["stage_h"].values
+    rng = np.random.default_rng(PR.TELEM_SEED + 5)
+    rows = []
+    for i in np.nonzero(idx < off)[0]:
+        v = st[i] if idx[i] < up else round(st[i] + rng.normal(0, 0.003), 2)
+        rows.append([(idx[i] - pd.Timedelta(hours=6)).strftime("%m/%d/%Y %H:%M"), "%.2f" % v])
+    for i in np.nonzero(idx >= up)[0]:
+        rows.append([idx[i].strftime("%m/%d/%Y %H:%M"), "%.2f" % st[i]])
     pre = ["Site: ORF2 Tamsen R at Orrinsford (SWS 05433000), Main St bridge",
            "Export: 2026-10-05 08:12, all records",
            "Gauge datum: %.2f ft NGVD 29" % (PR.HAL_GAUGE_DATUM - PR.NGVD_TO_NAVD),

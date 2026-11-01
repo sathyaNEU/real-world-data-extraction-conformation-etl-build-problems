@@ -78,9 +78,38 @@ def sig3(x):
 
 
 # ------------------------------------------------------------------ hydraulics
+# the water surface falls more steeply through some reaches than others (the step-backwater model's profile)
+REACH_SLOPES = [(0, 2000, 0.000232), (2000, 4500, 0.000187), (4500, 6240, 0.000262), (6240, 8500, 0.000205),
+                (8500, 11870, 0.000176), (11870, 13500, 0.000248), (13500, 16000, 0.000221), (16000, 18000, 0.000196)]
+
+
+def fall(sta):
+    """Water-surface fall (ft) from a station to the levee's downstream end."""
+    tot = 0.0
+    for a, b, s in REACH_SLOPES:
+        lo = max(a, sta)
+        if b > lo:
+            tot += s * (b - lo)
+    return tot
+
+
+def _xs_params():
+    """Each modelled cross-section's own departure from the reach profile: a depth factor and an offset that grows or
+    shrinks with discharge (expansions, contractions, the floodwall reach)."""
+    rng = np.random.default_rng(PR.OTHER_SEED + 11)
+    out = {}
+    for s in PR.TABLE4_STATIONS:
+        out[s] = (1.0 + rng.normal(0, 0.009), rng.normal(0, 0.07), rng.normal(0, 0.06))
+    return out
+
+
+XS = _xs_params()
+
+
 def wse(q, sta):
-    """Design water surface (ft NAVD 88) at a levee station for a discharge (the 2019 hydraulic study's model)."""
-    z = PR.WS_BASE_Z + PR.WS_SLOPE * (PR.LEVEE_LEN_FT - sta) + PR.WS_C * (q / 10000.0) ** PR.WS_EXP
+    """Design water surface (ft NAVD 88) at a cross-section for a discharge (the 2019 hydraulic study's model)."""
+    k, o0, oq = XS.get(sta, (1.0, 0.0, 0.0))
+    z = PR.WS_BASE_Z + fall(sta) + PR.WS_C * k * (q / 10000.0) ** PR.WS_EXP + o0 + oq * (q / 100000.0 - 1.0)
     if sta in PR.AFFLUX:
         a, b = PR.AFFLUX[sta]
         z += a + b * (q / 100000.0) ** 2
@@ -105,18 +134,32 @@ def required_freeboard(sta):
 
 
 def wse_open(q, sta):
-    """The design water surface without any bridge afflux (the grade the levee crown was built to follow)."""
-    return PR.WS_BASE_Z + PR.WS_SLOPE * (PR.LEVEE_LEN_FT - sta) + PR.WS_C * (q / 10000.0) ** PR.WS_EXP
+    """The reach profile without cross-section effects or bridge afflux (the grade the crown was built to follow)."""
+    s = np.asarray(sta, float)
+    f = np.vectorize(fall)(s) if s.ndim else fall(float(s))
+    return PR.WS_BASE_Z + f + PR.WS_C * (q / 10000.0) ** PR.WS_EXP
 
 
 def taper(sta):
-    return PR.FREEBOARD_UPSTREAM_EXTRA * (1 - sta / PR.LEVEE_LEN_FT)
+    return PR.FREEBOARD_UPSTREAM_EXTRA * (1 - np.asarray(sta, float) / PR.LEVEE_LEN_FT)
 
 
 def _wiggle(sta):
     """Smooth departure of the as-built crown from its design grade (ft)."""
     s = np.asarray(sta, float)
     return 0.16 * np.sin(2 * np.pi * s / 9300.0 + 0.6) + 0.09 * np.cos(2 * np.pi * s / 4100.0 + 1.3)
+
+
+# low spots a certification survey finds (station, depth ft, half-width ft), none within 400 ft of a bridge
+LOW_SPOTS = [(2650, 0.22, 150), (4880, 0.31, 120), (10250, 0.18, 200), (14700, 0.27, 140), (17250, 0.20, 160)]
+TIE_IN_END = 350            # the 2019 north tie-in, built 0.35 ft above the old grade
+FLOODWALL = (8500, 9700)    # the Cedar Street floodwall: a level top
+
+
+def _relief(sta):
+    s = np.asarray(sta, float)
+    d = -sum(dep * np.exp(-((s - c) / w) ** 2) for c, dep, w in LOW_SPOTS)
+    return d + np.where(s <= TIE_IN_END, 0.35, 0.0)
 
 
 def golden_design_flood(pk):
@@ -133,16 +176,22 @@ def golden_design_flood(pk):
 
 
 def crown_true(t4, q_design):
-    """The 2024 crown as a function of station: the design grade (open-channel water surface for the design flood,
-    plus 3 ft, plus the upstream taper) and a smooth as-built departure, set so the railroad bridge station sits
-    NEED_11870 below its requirement."""
+    """The 2024 crown as a function of station: the design grade (the reach profile for the design flood, plus 3 ft,
+    plus the upstream taper), a smooth as-built departure, the low spots, the 2019 tie-in and the floodwall's level
+    top, placed so the railroad bridge station sits NEED_11870 below its requirement."""
     s0 = PR.BRIDGES["Prairie and Western Railroad bridge"]
     want = table_wse(t4, q_design, s0) + required_freeboard(s0) - PR.NEED_11870
-    m0 = want - (wse_open(q_design, s0) + PR.FREEBOARD + taper(s0) + float(_wiggle(s0)))
+
+    def grade(s):
+        return wse_open(q_design, s) + PR.FREEBOARD + taper(s) + _wiggle(s)
+    m0 = want - (float(grade(s0)) + float(_relief(s0)))
+    wall = float(grade(FLOODWALL[0])) + 0.10
 
     def f(sta):
         s = np.asarray(sta, float)
-        return wse_open(q_design, s) + PR.FREEBOARD + taper(s) + m0 + _wiggle(s)
+        g = grade(s)
+        g = np.where((s >= FLOODWALL[0]) & (s <= FLOODWALL[1]), wall, g)
+        return g + m0 + _relief(s)
     return f
 
 
@@ -156,7 +205,7 @@ REACHES = [("R1", 0, 2000, "North tie-in to Pump Station 1"), ("R2", 2000, 4500,
            ("R8", 16000, 18001, "Pump Station 2 to the south tie-in")]
 # crown settlement between the 2016 and 2024 surveys, ft (reach constants; the realised reach means are what the
 # ask grades, and these are tuned so each sits mid-bin at 0.01 ft)
-SETTLE = {"R1": 0.0666, "R2": 0.1172, "R3": 0.1588, "R4": 0.2131, "R5": 0.2893, "R6": 0.2465, "R7": 0.1399, "R8": 0.0890}
+SETTLE = {"R1": 0.0686, "R2": 0.1214, "R3": 0.1588, "R4": 0.2106, "R5": 0.2889, "R6": 0.2450, "R7": 0.1408, "R8": 0.0898}
 FEATURES = [(1830, "PS-1 OUTLET"), (6240, "MAIN ST CLOSURE"), (11870, "P&W RR CLOSURE"), (16120, "PS-2 OUTLET")]
 
 
@@ -174,10 +223,10 @@ def settle_at(sta, adj=None):
 
 
 def crown2024(cf, rng):
-    """2024 certification survey (NAVD 88, present stationing): every 50 ft along the centreline plus the
+    """2024 certification survey (NAVD 88, present stationing): every 100 ft along the centreline plus the
     structures; each point carries its reach."""
     rows = []
-    for s in range(0, PR.LEVEE_LEN_FT + 1, 50):
+    for s in range(0, PR.LEVEE_LEN_FT + 1, 100):
         z = float(cf(s)) + rng.normal(0, 0.008)
         rows.append({"sta": s, "elev": round(z, 2), "code": "CL", "reach": reach_of(s)})
     for s, c in FEATURES:
@@ -188,17 +237,17 @@ def crown2024(cf, rng):
 
 def crown2016(c24, cf, rng, adj=None):
     """2016 crown survey as the district's surveyor delivered it: every 100 ft on the stationing then in use (0+00 at
-    the old north tie-in, 650 ft north of today's), elevations on NGVD 29, structures and benchmark check shots in
-    the same list."""
+    the old north tie-in, 700 ft north of today's), elevations on NGVD 29, structures and benchmark check shots in
+    the same list. Every shot on today's levee sits on a 2024 shot's position."""
     z24 = c24.set_index(["sta", "code"])["elev"]
     rows = []
     top = PR.LEVEE_LEN_FT + PR.OLD_STATION_SHIFT
     for o in range(0, top + 1, 100):
         s = o - PR.OLD_STATION_SHIFT
         if s >= 0:
-            base = float(z24.loc[(s, "CL")]) if (s, "CL") in z24.index else float(cf(s))
+            base = float(z24.loc[(s, "CL")])
         else:
-            base = float(cf(0)) + 0.05 * (-s) / 650.0     # the old north tie-in, out of service since 2019
+            base = float(cf(0)) - 0.35 + 0.05 * (-s) / 700.0    # the old north tie-in, out of service since 2019
         navd = base + settle_at(s, adj) + rng.normal(0, 0.008)
         rows.append({"old_sta": o, "elev": round(navd - PR.NGVD_TO_NAVD, 2), "code": "CL"})
     for s, c in FEATURES:
@@ -231,25 +280,29 @@ def benchmarks():
 
 # ------------------------------------------------------------------ telemetry
 COY_EVENTS_EXTRA = [
-    # (UTC peak at Coyle Bridge, Coyle peak cfs, Orrinsford/Coyle factor, lag hours, rise hours) for the floods that were
-    # not a water year's annual peak; the annual peak floods come from the peaks frame
-    ("2017-02-21 10:00", 15800, 1.07, 33, 46), ("2017-04-30 04:00", 17400, 1.08, 34, 52),
-    ("2018-04-27 20:00", 11900, 1.06, 32, 44), ("2019-05-21 06:00", 19100, 1.07, 35, 50),
-    ("2020-03-14 02:00", 42600, 1.075, 34, 58), ("2020-06-29 15:00", 35300, 1.07, 33, 54),
-    ("2021-05-30 08:00", 16700, 1.06, 32, 47), ("2022-05-27 12:00", 21300, 1.08, 33, 49),
-    ("2023-05-03 19:00", 12800, 1.07, 34, 45), ("2024-02-29 05:00", 38100, 1.08, 34, 56),
-    ("2024-06-15 23:00", 49200, 1.07, 33, 60), ("2025-03-19 16:00", 22600, 1.07, 34, 50),
-    ("2026-05-14 03:00", 17900, 1.08, 33, 48),
+    # (UTC peak at Coyle Bridge, Coyle peak cfs, departure of the Orrinsford/Coyle factor from the relation, lag hours,
+    # rise hours) for the floods that were not a water year's annual peak; the annual peak floods come from the peaks
+    ("2017-02-21 10:00", 15800, 0.002, 33, 46), ("2017-04-30 04:00", 17400, -0.003, 34, 52),
+    ("2018-04-27 20:00", 11900, 0.001, 32, 44), ("2019-05-21 06:00", 19100, -0.002, 35, 50),
+    ("2020-03-14 02:00", 42600, 0.003, 34, 58), ("2020-06-29 15:00", 35300, -0.001, 33, 54),
+    ("2021-05-30 08:00", 16700, 0.002, 32, 47), ("2022-05-27 12:00", 21300, -0.003, 33, 49),
+    ("2023-05-03 19:00", 12800, 0.001, 34, 45), ("2024-02-29 05:00", 38100, 0.002, 34, 56),
+    ("2024-06-15 23:00", 49200, -0.002, 33, 60), ("2025-03-19 16:00", 22600, 0.003, 34, 50),
+    ("2026-05-14 03:00", 17900, -0.001, 33, 48),
 ]
+# a storm on the town's own tributaries while both Orrinsford loggers were running (UTC peak, cfs added, rise hours)
+LOCAL_JUNE_2021 = ("2021-06-09 20:00", 2600.0, 20.0)
 
 
-def _shape(t, tp, rise, k=3.2, tail=2.6):
-    """Unimodal flood shape, 0 to 1 at tp: a gamma-like rise over `rise` hours and a slower recession."""
+def _shape(t, tp, rise, k=3.2, tail=2.6, crest=0.8):
+    """Unimodal flood shape, 0 to 1 at tp: a gamma-like rise over `rise` hours that still climbs into its crest hour
+    (crest sets how sharply), and a slower recession."""
     tau = (t - (tp - rise)) / rise
     out = np.zeros_like(t, dtype=float)
     m = tau > 0
     x = tau[m]
-    out[m] = np.where(x <= 1, x ** k * np.exp(k * (1 - x)), np.exp(-(x - 1) * k / tail))
+    up = x ** k * np.exp(k * (1 - x)) * (1 - crest * (1 - x))
+    out[m] = np.where(x <= 1, np.maximum(up, 0.0), np.exp(-(x - 1) * k / tail))
     return out
 
 
@@ -275,10 +328,12 @@ def _assemble(events, idx, t, base_c, base_h):
     for e in events:
         ic = (e["tp_c"] - t0) / pd.Timedelta(hours=1)
         ih = (e["tp_h"] - t0) / pd.Timedelta(hours=1)
-        sc = _shape(t, ic, e["rise"])
-        sh = _shape(t, ih, e["rise"] * 1.12, tail=2.9)
+        sc = _shape(t, ic, e["rise"], crest=e["crest"])
+        sh = _shape(t, ih, e["rise"] * 1.12, tail=2.9, crest=e["crest"])
         qc += (e["cp"] - float(np.interp(ic, t, base_c))) * sc
         qh += (e["hp"] - float(np.interp(ih, t, base_h))) * sh
+    tl, add, rise = LOCAL_JUNE_2021
+    qh += add * _shape(t, (pd.Timestamp(tl) - t0) / pd.Timedelta(hours=1), rise, crest=0.8)
     return qc, qh
 
 
@@ -294,6 +349,14 @@ def _crossing(series, thr, i0, i1):
     return j, (thr - lo) / (hi - lo)
 
 
+def _unique_top(vals, i, w=72):
+    """True when hour i is the only highest value within w hours either side."""
+    lo, hi = max(i - w, 0), min(i + w + 1, len(vals))
+    seg = vals[lo:hi]
+    top = seg.max()
+    return vals[i] == top and int(np.sum(seg == top)) == 1
+
+
 def telemetry(pk):
     rng = np.random.default_rng(PR.TELEM_SEED)
     idx = pd.date_range(PR.TELEM_START, PR.TELEM_END, freq="h")
@@ -304,61 +367,77 @@ def telemetry(pk):
     drift = np.cumsum(rng.normal(0, 18, n))
     drift = drift - pd.Series(drift).rolling(24 * 45, min_periods=1, center=True).mean().values
     base_c = np.maximum(seas + drift * 0.6, 1600)
-    base_h = base_c * 1.11 + 380
+    base_h = base_c * (1.0 + PR.LOCAL_MEAN * 1.5) + 380
     events = []
     for _, r in pk[pk["wy"] >= 2017].iterrows():
         events.append({"tp_c": pd.Timestamp(r["coy_time"]) + pd.Timedelta(hours=6),   # standard time to UTC
                        "cp": float(sig3(r["coy_q"])),
                        "tp_h": pd.Timestamp(r["hal_time"]) + pd.Timedelta(hours=6),
-                       "hp": float(sig3(r["hal_q"])), "rise": float(round(50 + 8 * rng.random()))})
-    for ts, cp, fac, lag, rise in COY_EVENTS_EXTRA:
+                       "hp": float(sig3(r["hal_q"])), "rise": float(round(50 + 8 * rng.random())), "crest": 0.8,
+                       "annual": int(r["wy"])})
+    for ts, cp, dev, lag, rise in COY_EVENTS_EXTRA:
         tp = pd.Timestamp(ts)
-        events.append({"tp_c": tp, "cp": float(cp), "tp_h": tp + pd.Timedelta(hours=lag), "hp": float(round(cp * fac)),
-                       "rise": float(rise)})
+        events.append({"tp_c": tp, "cp": float(cp), "tp_h": tp + pd.Timedelta(hours=lag),
+                       "hp": float(round(cp * (1 + PR.LOCAL_MEAN + dev))), "rise": float(rise), "crest": 0.8,
+                       "annual": 0})
     events.sort(key=lambda e: e["tp_c"])
     noise_c = rng.normal(0, 0.004, n)
     noise_h = rng.normal(0, 0.004, n)
     chg = idx >= pd.Timestamp(PR.COY_DATUM_CHANGE)
     warn_new = np.where(chg, PR.WARNING_STAGE_OLD + PR.COY_DATUM_SHIFT, PR.WARNING_STAGE_OLD)
     sill_stage = PR.MAIN_ST_SILL - PR.HAL_GAUGE_DATUM
-    # each flood that reaches the Main Street sill gets a rise (a free shape parameter, whole hours) for which both
-    # threshold crossings fall inside an hour rather than on a reading, so every crossing convention gives one lead
-    for it in range(40):
+    # free shape parameters per flood (its rise in whole hours, its crest's sharpness) are stepped until (a) every
+    # flood that reaches the Main Street sill crosses the sill and the warning level inside an hour, the sill's
+    # fraction 0.1 to 0.4 h later in its hour than the warning's, so every crossing and rounding convention gives one
+    # whole-hour lead; (b) every annual peak is a single top hour in each shipped series
+    for it in range(80):
         qc, qh = _assemble(events, idx, t, base_c, base_h)
         st_c = np.round(coy_stage_old(qc) + noise_c + np.where(chg, PR.COY_DATUM_SHIFT, 0.0), 2)
         st_h = np.round(wse(qh, 6240) + noise_h - PR.HAL_GAUGE_DATUM, 2)
+        q3 = np.array([sig3(v) for v in qc])
         bad = False
         for e in events:
+            ih = int((e["tp_h"] - idx[0]) / pd.Timedelta(hours=1))
+            ic = int((e["tp_c"] - idx[0]) / pd.Timedelta(hours=1))
+            if e["annual"]:
+                jc = int(np.argmax(qc[max(ic - 72, 0):ic + 73])) + max(ic - 72, 0)
+                jh = int(np.argmax(qh[max(ih - 72, 0):ih + 73])) + max(ih - 72, 0)
+                ok = (_unique_top(st_c, jc) and _unique_top(q3, jc) and _unique_top(st_h, jh))
+                if not ok:
+                    e["crest"] = min(e["crest"] + 0.05, 1.0)
+                    if e["crest"] >= 1.0:
+                        e["rise"] += 1.0
+                        e["crest"] = 0.8
+                    bad = True
+                    continue
             if e["hp"] < 30000:
                 continue
-            ih = int((e["tp_h"] - idx[0]) / pd.Timedelta(hours=1))
             ch = _crossing(st_h, sill_stage, max(ih - 120, 1), ih + 1)
-            ic = int((e["tp_c"] - idx[0]) / pd.Timedelta(hours=1))
             cc = _crossing(st_c, warn_new[ic], max(ic - 120, 1), ic + 1)
             if ch is None or cc is None:
                 continue
             fh, fc = ch[1], cc[1]
-            ok = 0.12 <= fh <= 0.88 and 0.12 <= fc <= 0.88 and abs(fh - fc) <= 0.36
+            ok = 0.1 <= fh <= 0.9 and 0.1 <= fc <= 0.9 and 0.1 <= fh - fc <= 0.4
             ok = ok and st_h[ch[0]] != sill_stage and st_c[cc[0]] != warn_new[ic]
             if not ok:
                 e["rise"] += 1.0
                 bad = True
         if not bad:
             break
-    stage_c = st_c
-    stage_h = st_h
-    # logger housekeeping: the battery charges by day (solar, local standard time = UTC - 6); enclosure temperature
-    h_local = ((idx.hour.values - 6) % 24) + 0.5
-    cloud = np.repeat(np.clip(rng.normal(0.75, 0.22, n // 24 + 2), 0.15, 1.0), 24)[:n]
-    newlog = idx >= pd.Timestamp(PR.HAL_LOGGER_UPGRADE_UTC)
-    batt = (np.where(newlog, 12.71, 12.46) + np.where(newlog, 0.66, 0.92) * cloud *
-            np.maximum(0, np.sin(np.pi * (h_local - 6.2) / 13.2)) + rng.normal(0, 0.012, n))
-    temp = (11 + 13 * np.cos(2 * np.pi * (doy - 200) / 365.25)
-            + 5.5 * np.sin(np.pi * (h_local - 9.0) / 12.0) + rng.normal(0, 0.4, n))
-    out = pd.DataFrame({"utc": idx, "qc": qc, "stage_c": stage_c, "qh": qh, "stage_h": stage_h, "batt": batt,
-                        "temp": temp})
+    else:
+        raise RuntimeError("telemetry shape search did not settle")
+    # the hour each water year's annual peak sits on, as the agency's own record shows it (UTC)
+    tops = {}
+    for e in events:
+        if e["annual"]:
+            ih = int((e["tp_h"] - idx[0]) / pd.Timedelta(hours=1))
+            ic = int((e["tp_c"] - idx[0]) / pd.Timedelta(hours=1))
+            jc = int(np.argmax(qc[max(ic - 72, 0):ic + 73])) + max(ic - 72, 0)
+            jh = int(np.argmax(qh[max(ih - 72, 0):ih + 73])) + max(ih - 72, 0)
+            tops[e["annual"]] = (idx[jc], idx[jh])
+    out = pd.DataFrame({"utc": idx, "qc": qc, "stage_c": st_c, "qh": qh, "stage_h": st_h})
     ev = pd.DataFrame(events)
-    return out, ev
+    return out, ev, tops
 
 
 # ------------------------------------------------------------------ the other basin gauges
@@ -391,7 +470,12 @@ def simulate():
     c24 = crown2024(cf, rng)
     c16 = crown2016(c24, cf, rng)
     bm = benchmarks()
-    tel, ev = telemetry(pk)
+    tel, ev, tops = telemetry(pk)
+    # the agency publishes each annual peak at the hour its own record tops out, in local standard time
+    for wy, (tc, th) in tops.items():
+        i = pk.index[pk["wy"] == wy][0]
+        pk.at[i, "coy_time"] = tc - pd.Timedelta(hours=6)
+        pk.at[i, "hal_time"] = th - pd.Timedelta(hours=6)
     og = other_gauges(pk)
     return {"pk": pk, "t4": t4, "q_design": qd, "cf": cf, "c24": c24, "c16": c16, "bm": bm, "tel": tel,
             "events": ev, "og": og}
