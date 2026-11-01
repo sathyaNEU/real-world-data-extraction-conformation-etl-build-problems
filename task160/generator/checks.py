@@ -199,18 +199,44 @@ def main():
     ah = Pk.ask_a(time="handle_all")
     check("ask A hazard: summed handle minutes miss every ward",
           all(int(a[u] + 0.5) != int(ah[u] + 0.5) for u in Pk.going_live))
+    sched_23 = "signing the task off signs off the review of each of them" in sched
     bt = Pk.ask_b(count="tasks")
-    check("ask B device: counting tasks misses every month-shift cell", all(b[k] != bt[k] for k in b))
-    bu = Pk.ask_b(clock="utc")
-    check("ask B hazard: shifts read in UTC miss every cell", all(b[k] != bu.get(k) for k in b))
-    # truth of the asks from the world
+    check("ask B reading: Schedule B 2.3 files that a signed-off task signs off every alert it carries, and a count of "
+          "tasks (the reading 2.3 rules out) differs in every cell", sched_23 and all(b[k] != bt[k] for k in b),
+          "golden %s; tasks %s" % ([b[k] for k in sorted(b)], [bt[k] for k in sorted(bt)]))
+    bsu = Pk.ask_b(clock="stored_utc")
+    late = [k for k in b if k[0] in ("2026-08", "2026-09")]
+    check("ask B device: reading every queue stamp as the UTC its column names misses every August and September "
+          "cell", all(b[k] != bsu[k] for k in late), str([(k, b[k], bsu[k]) for k in late]))
+    braw = Pk.ask_b(clock="raw")
+    check("ask B hazard: taking every stamp as Eastern with no conversion misses every July cell",
+          all(b[k] != braw[k] for k in b if k[0] == "2026-07"))
+    lead = Pk.queue["lead_h"]
+    check("ask B device: each queue row's clock is unambiguous (its stamp sits within three minutes of its alert's "
+          "local time or of four hours after it)", ((lead.abs() < 0.05) | ((lead - 4).abs() < 0.05)).all()
+          and Pk.queue["utc_row"].any() and (~Pk.queue["utc_row"]).any(),
+          "%d UTC rows, %d Eastern rows" % (int(Pk.queue["utc_row"].sum()), int((~Pk.queue["utc_row"]).sum())))
+    bgl = Pk.ask_b(scope="going_live")
+    check("ask B scope: the prompt pins every adult ward; the fifteen going-live wards alone differ in every cell",
+          "for all of Quillfield's adult wards" in open(os.path.join(TASK, "prompt.txt")).read()
+          and all(b[k] != bgl[k] for k in b), str([bgl[k] for k in sorted(bgl)]))
+    ct = Pk.call_tasks()
+    check("main call under the filed reading (one overridden alert, one review) is the golden; the task reading "
+          "2.1 and 2.3 rule out files %d" % A.r100(ct["net"]), A.r100(g["net"]) == 300 and A.r100(ct["net"]) != 300,
+          "alerts %.1f, tasks %.1f (added %.1f, lost %.1f)" % (g["net"], ct["net"], ct["added"], ct["lost"]))
+    # truth of the asks from the world (the queue's true Eastern times kept by the generator, never shipped)
     R = PK.relabel(w)
+    PK.QUEUE_TRUTH.clear()
+    PK.queue_rows(PK.history_rows(w, R))
+    true_t = PK.QUEUE_TRUTH
     unit_of_alert = {aid: R["enc_by"][ek].unit for (t, o, ro, pid, ek, r), aid in zip(R["alerts"], R["aid"])}
-    q = Pk.q3_sessions()
+    q = Pk.queue
     tru = {}
-    for ref, c0, c1 in zip(q["alert_ref"], q["claimed_et"], q["closed_et"]):
-        u = unit_of_alert[int(ref)]
-        tru[u] = tru.get(u, 0.0) + (c1 - c0).total_seconds() / 3600.0
+    for tid, sn, ref in zip(q["task_id"], q["session_no"], q["alert_ref"]):
+        c0, c1 = true_t[(tid, int(sn))]
+        if A.Q3[0] <= c1 < A.Q3[1]:
+            u = unit_of_alert[int(ref)]
+            tru[u] = tru.get(u, 0.0) + (c1 - c0).total_seconds() / 3600.0
     check("ask A golden equals the world's desk time by ward", all(abs(tru.get(u, 0) - a[u]) < 1e-6
                                                                    for u in Pk.going_live))
     msg_n = {}
@@ -222,11 +248,12 @@ def main():
         if r[1] in P.REVIEW_RULES and r[4] == "Overridden" and (o, t) not in first:
             first[(o, t)] = aid
     n_of = {aid: msg_n[k] for k, aid in first.items()}
-    qs = q[q["close_status"] == "Signed off"]
     tb = {}
-    for ref, c1 in zip(qs["alert_ref"], qs["closed_et"]):
-        k = (c1.strftime("%Y-%m"), A.shift_of(c1))
-        tb[k] = tb.get(k, 0) + n_of[int(ref)]
+    for tid, sn, ref, st in zip(q["task_id"], q["session_no"], q["alert_ref"], q["close_status"]):
+        c1 = true_t[(tid, int(sn))][1]
+        if st == "Signed off" and A.Q3[0] <= c1 < A.Q3[1]:
+            k = (c1.strftime("%Y-%m"), A.shift_of(c1))
+            tb[k] = tb.get(k, 0) + n_of[int(ref)]
     check("ask B golden equals the world's overridden alerts on signed-off tasks, by month and shift",
           all(tb.get(k) == v for k, v in b.items()))
     msgs = Pk.bundle_size()

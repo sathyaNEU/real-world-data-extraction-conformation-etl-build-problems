@@ -118,7 +118,8 @@ def workbook(P, g, a, b, path):
         vals = [b[(m, x)] for x in A.SHIFTS]
         s.append([MONTH_NAME[m]] + vals + [sum(vals)])
     s.append([])
-    s.append(["One review per overridden alert; month and shift of sign-off, Eastern time."])
+    s.append(["All adult wards. Each signed-off task counted as every alert it carries (Schedule B 2.3), by the month "
+              "and shift of sign-off in Eastern time; queue stamps read in each row's own clock."])
     for col, wdt in zip("ABCDE", (18, 20, 24, 22, 10)):
         s.column_dimensions[col].width = wdt
     s.freeze_panes = "B2"

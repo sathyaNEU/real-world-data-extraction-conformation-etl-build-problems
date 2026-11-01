@@ -59,8 +59,9 @@ def main():
     a("6. Desk hours: every queue session closing 1 July to 30 September 2026 Eastern, claim to close (returned "
       "sessions included), each given the department of the alert its alert_ref names in the alert history; the "
       "point of care follows the bed, and five pairs of wards exchanged wings between 20 July and 14 September.")
-    a("7. Signed-off reviews: each signed-off task counted as the overridden high-severity alerts on its order at "
-      "the same signing, by the month and shift of sign-off in Eastern time.")
+    a("7. Signed-off reviews, all adult wards: each signed-off task counted as the overridden high-severity alerts on "
+      "its order at that signing (Schedule B 2.3), by the month and shift of sign-off in Eastern time; each queue "
+      "row's clock is read off its alert, UTC until the new queue platform took over on 3 August and Eastern after.")
     a("8. Recommended planning for about %d more reviews in the 13 weeks.\n" % net)
     a("## 4. Deliverable Answers\n")
     a("### %s\n" % GD.BOOK)
