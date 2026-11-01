@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Configure 4 batch-compounded products for gravimetric verification of every dose at the April 2027 cutover: Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe.** Each made more than 10 out-of-tolerance doses per hundred thousand doses made in 2026 under PH-QP-07 3.1 once every dose is placed on its set at the litres the set had pumped. The other 8 stay on SC-SOP-12's checks. Not Cefoxitin 2 g in 20 mL syringe; Ampicillin 2 g in 50 mL bag; Piperacillin-tazobactam 4.5 g in 100 mL bag; Vancomycin 1 g in 200 mL bag; Midazolam 1 mg/mL 50 mL syringe, the products a normal fit to the weighed doses flags.
+**Configure 4 batch-compounded products for gravimetric verification of every dose at the April 2027 cutover: Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe.** Each made more than 10 out-of-tolerance doses per hundred thousand doses made in 2026 under PH-QP-07 3.1 once every dose is placed on its set at the litres the set had pumped. The other 8 stay on SC-SOP-12's checks. A normal fit to the weighed doses alone would instead add Ampicillin 2 g in 50 mL bag; Piperacillin-tazobactam 4.5 g in 100 mL bag; Vancomycin 1 g in 200 mL bag and leave out Cefazolin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe.
 
 ## 2. Critical Components
 

@@ -22,9 +22,10 @@ def write(path, fig):
           "**Configure %d batch-compounded products for gravimetric verification of every dose at the April 2027 "
           "cutover: %s.** Each made more than 10 out-of-tolerance doses per hundred thousand doses made in 2026 under "
           "PH-QP-07 3.1 once every dose is placed on its set at the litres the set had pumped. The other %d stay on "
-          "SC-SOP-12's checks. Not %s, the products a normal fit to the weighed doses flags." % (
+          "SC-SOP-12's checks. A normal fit to the weighed doses alone would instead add %s and leave out %s." % (
               len(call), "; ".join(name[c] for c in sorted(call)), len(gold) - len(call),
-              "; ".join(name[c] for c in lad["ppk"])), ""]
+              "; ".join(name[c] for c in sorted(set(lad["ppk"]) - set(call))),
+              "; ".join(name[c] for c in sorted(set(call) - set(lad["ppk"])))), ""]
     L += ["## 2. Critical Components", "",
           "1. On PC-1, PC-2 and PC-3 a product's weighed doses fall in a straight line with the litres the set had "
           "pumped since its set-up, about a start that varies from set to set; on PC-4 they do not move.",
