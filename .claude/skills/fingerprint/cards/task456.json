@@ -81,7 +81,7 @@
   "task454": "task454 fills the acquisition cost of the claims that fail to link to a priced code, imputed within product and package type from the claims that do link; here every record links to its hospital, no record is the truth, and each feed's miss and false-flag rates are estimated from the three feeds' agreement, each region's share being the latent prevalence"
  },
  "lineage": [],
- "notes": "Seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a hospital association's regional surge compact, activated region by region from hospital capacity reporting); its decoy-era traps (average of ratios, suppression sentinels, the wrong ICU) are not used. The pairing moves to General Statistics & Data Science / data integration (record linkage): hospital operations' own analytical pitfalls (demand capped at capacity, blocking probability) live in task types serving forecasting and opportunity sizing, and the ETL decision here turns on combining conflicting sources. Strategy other: a measurement model (two-class latent class model with conditional independence, common error rates statewide, prevalence by region). Gap population (a flagged hospital-day is not a full hospital-day).",
+ "notes": "Seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a hospital association's regional surge compact, activated region by region from hospital capacity reporting); its decoy-era traps (average of ratios, suppression sentinels, the wrong ICU) are not used. The pairing moves to General Statistics & Data Science / data integration (record linkage): hospital operations' own analytical pitfalls (demand capped at capacity, blocking probability) live in task types serving forecasting and opportunity sizing, and the ETL decision here turns on combining conflicting sources. Strategy other: a measurement model (two-class latent class model with conditional independence, common error rates statewide, prevalence by region). Gap population (a flagged hospital-day is not a full hospital-day). | 2026-11-01: architecture 1 spent at the batch 1 audit (short of the survivor anatomy); architecture 2's draw paused before a card was filed, see the design note's Tried and rejected.",
  "client_domain": "general-statistics-data-science",
  "layer2_family": "estimation_fit",
  "layer2_pattern": "own:latent-class-share-from-three-conflicting-feeds",
@@ -94,5 +94,6 @@
   "a facility crosswalk and a name-alias list that map licence numbers, board codes and typed names onto one hospital and its region",
   "holiday gaps in the census survey on 25 December and 1 January"
  ],
- "registered": "2026-10-14T17:55:46Z"
+ "registered": "2026-10-14T17:55:46Z",
+ "architecture_spent": true
 }
