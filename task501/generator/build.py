@@ -55,7 +55,7 @@ def write_pack(out, w):
     prow, crow = PK.survey_rows(w["parts"], w["contacts"])
     n["participants"] = PK.write_participants(p("participants"), prow)
     n["contacts"] = PK.write_contacts(p("contacts"), crow)
-    PK.write_codebook(p("codebook"), w["nat"], len(prow), len(crow))
+    n["population"] = PK.write_population(p("population"), w["nat"])
     n["people"] = PK.write_people(p("people"), w["people"], S.ACTIVE)
     n["events"] = PK.write_events(p("events"), w["events"])
     n["merges"] = PK.write_merges(p("merges"), w["merges"])
@@ -69,14 +69,9 @@ def write_pack(out, w):
     DOC.circular(p("circular"))
     DOC.guidelines(p("guidelines"))
     DOC.uptake(p("uptake"))
-    DOC.extract_notes(p("notes"))
-    DOC.fields(p("fields"))
-    PK.write_transmittal(p("transmittal"), n)
     # containers: owners and saved stamps from the fiction, no library banners
-    PP.normalize_ooxml(p("codebook"), "NSCS survey team", "NSCS survey team", "2024-02-19T10:14:00Z",
-                       "2024-03-08T16:02:00Z", excel=True)
-    PP.normalize_ooxml(p("notes"), W.PEOPLE["register"], W.PEOPLE["register"], "2027-07-04T15:21:00Z",
-                       "2027-07-05T08:47:00Z", title="Register extract notes")
+    PP.normalize_ooxml(p("population"), "NSCS survey team", "NSCS survey team", "2024-02-19T10:14:00Z",
+                       "2024-03-08T16:02:00Z", excel=True, company="National Social Contact Survey")
     PP.normalize_pdf(p("standard"), b"D:20260306141822+00'00'", b"D:20260310092611+00'00'")
     PP.normalize_pdf(p("options"), b"D:20270608163405+01'00'", b"D:20270609081944+01'00'")
     PP.normalize_pdf(p("circular"), b"D:20240411120336+01'00'", b"D:20240412090218+01'00'")

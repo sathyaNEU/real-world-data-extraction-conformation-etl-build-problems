@@ -26,6 +26,14 @@ def find(target, prefix):
     return [f for f in os.listdir(target) if f.startswith(prefix)][0]
 
 
+def pdf_text(target, name):
+    """A shipped PDF's text through pdfplumber, whitespace collapsed (the extractor every PDF read here uses)."""
+    import pdfplumber
+    with pdfplumber.open(os.path.join(target, name)) as pdf:
+        text = " ".join((p.extract_text() or "") for p in pdf.pages)
+    return re.sub(r"\s+", " ", text)
+
+
 def group(a):
     return next(i for i, (lo, hi) in enumerate(GROUPS) if lo <= a <= hi)
 
@@ -61,10 +69,7 @@ def call(target):
         if j is not None and r["contact_age_band"] in band:
             C[band[r["contact_age_band"]], j] += 1
     M = (C / n[None, :]).T
-    import pdfplumber
-    with pdfplumber.open(os.path.join(target, find(target, "mmr_catch_up_options"))) as pdf:
-        text = " ".join((p.extract_text() or "") for p in pdf.pages)
-    text = re.sub(r"\s+", " ", text)
+    text = pdf_text(target, find(target, "mmr_catch_up_options"))
     made = {}
     for m in re.finditer(r"(\d{4}) to (\d{4}) \d{1,2} to \d{1,2} .*?(\d{1,3}(?:,\d{3})+) (\d{1,3}(?:,\d{3})*) (\d{2})% "
                          r"(\d{1,3}(?:,\d{3})*)", text):
@@ -107,9 +112,40 @@ def residents(target):
     return people
 
 
-def doses(target, people, unresolved_out=False):
-    """Valid doses per resident. unresolved_out: also drop any line whose query is not closed as confirmed by the
-    as-at date (an open query read as not standing); the counts must not move."""
+def persons(target, people):
+    """One person per child: registrations in the people extract that hold the same GP return line, once the merges
+    are followed, are one child's (a return line is one dose given to one child). Registration -> person, the
+    smallest registration number of the group."""
+    surv = {r["retired_number"]: r["surviving_number"] for r in rows(target, find(target, "register_merges"))}
+    root = {p: p for p in people}
+
+    def top(x):
+        while root[x] != x:
+            root[x] = root[root[x]]
+            x = root[x]
+        return x
+    holders = {}
+    for r in rows(target, find(target, "register_mmr_events")):
+        if not r["source_ref"].startswith("GPR-"):
+            continue
+        p = r["person_number"]
+        while p in surv:
+            p = surv[p]
+        if p in people:
+            holders.setdefault(r["source_ref"], set()).add(p)
+    for hs in holders.values():
+        hs = sorted(hs)
+        for h in hs[1:]:
+            a, b = top(hs[0]), top(h)
+            if a != b:
+                root[max(a, b)] = min(a, b)
+    return {p: top(p) for p in people}
+
+
+def doses(target, people, who, unresolved_out=False):
+    """Valid doses per person (who: registration -> person), every registration's events together. unresolved_out:
+    also drop any line whose query is not closed as confirmed by the as-at date (an open query read as not standing);
+    the counts must not move."""
     surv = {r["retired_number"]: r["surviving_number"] for r in rows(target, find(target, "register_merges"))}
     log = rows(target, find(target, "gp_return_queries"))
     drop = {r["line_ref"] for r in log if r["outcome"] in ("Replaced by corrected line", "Withdrawn by practice")}
@@ -128,17 +164,17 @@ def doses(target, people, unresolved_out=False):
         while p in surv:
             p = surv[p]
         if p in people and people[p][1]:
-            per.setdefault(p, []).append(d)
+            per.setdefault(who[p], []).append(d)
     count = {}
-    for p, ds in per.items():
-        dob = people[p][0]
+    for q, ds in per.items():
+        dob = people[q][0]
         first = dt.date(dob.year + 1, dob.month, dob.day)
         n, prev = 0, None
         for d in sorted(ds):
             if d < first or (prev is not None and (d - prev).days < 28):
                 continue
             n, prev = n + 1, d
-        count[p] = n
+        count[q] = n
     return count
 
 
@@ -193,15 +229,16 @@ def main(argv):
     if below != ["Option B"] or r["No catch-up"] < 1:
         bad.append(("call", below, "Option B"))
     people = residents(target)
-    cnt = doses(target, people)
-    cnt_u = doses(target, people, unresolved_out=True)
+    who = persons(target, people)
+    cnt = doses(target, people, who)
+    cnt_u = doses(target, people, who, unresolved_out=True)
     if any(r["outcome"] not in ("Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice")
            for r in rows(target, find(target, "gp_return_queries"))):
         bad.append(("query log", "an unresolved query", "every query closed"))
     cs = cases(target)
     cs_ds = cases(target, ("date_of_birth", "sex"))
     for k, (a, b) in OPTS.items():
-        res = [p for p, (dob, here) in people.items() if here and a <= dob.year <= b]
+        res = sorted({who[p] for p, (dob, here) in people.items() if here and a <= dob.year <= b})
         n0 = sum(1 for p in res if cnt.get(p, 0) == 0)
         n1 = sum(1 for p in res if cnt.get(p, 0) == 1)
         if (n0, n1) != (sum(1 for p in res if cnt_u.get(p, 0) == 0), sum(1 for p in res if cnt_u.get(p, 0) == 1)):
@@ -220,8 +257,9 @@ def main(argv):
             print("VERIFY MISMATCH", b)
         raise SystemExit(1)
     print("VERIFY   independent recomputation matches figures.json: 6 reproduction numbers from the term-time diaries, "
-          "the call, 25 ask figures; the dose counts do not move with unresolved queries read as not standing, nor the "
-          "case counts with records joined on date of birth and sex")
+          "the call, 25 ask figures (one person per child, registrations holding one GP return line joined); the dose "
+          "counts do not move with unresolved queries read as not standing, nor the case counts with records joined "
+          "on date of birth and sex")
 
 
 if __name__ == "__main__":

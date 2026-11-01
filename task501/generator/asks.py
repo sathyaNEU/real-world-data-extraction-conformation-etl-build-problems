@@ -49,10 +49,80 @@ def in_region(people, how="golden"):
     raise ValueError(how)
 
 
-def ask1(people, how="golden"):
-    y = _yob(people)
+def _union(ids, links):
+    parent = {i: i for i in ids}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for a, b in links:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[max(ra, rb)] = min(ra, rb)
+    return {i: find(i) for i in ids}
+
+
+GP_LINE = "GPR-"
+LINKS = ("golden", "none", "any_ref", "dob_sex_area", "dob_sex_postcode")
+
+
+def persons(f, link="golden", merge_how="chain"):
+    """Which registrations in the people extract are one person, as a map from registration to person. golden:
+    registrations holding the same GP return line, once merges are followed, are one child's (a return line is one
+    dose given to one child). Stops: none (every registration a person); any_ref (any shared source reference joins,
+    and a school session's is every pupil's there); dob_sex_area and dob_sex_postcode (a person key over the
+    registrations' own fields, the postcode only where one was recorded)."""
+    people = f["people"]
+    ids = list(people["person_id"])
+    if link == "none":
+        return {i: i for i in ids}
+    links = []
+    if link in ("golden", "any_ref"):
+        ev = resolve_merges(f["events"], f["merges"], merge_how)
+        ev = ev[ev["person_id"].isin(set(ids))]
+        if link == "golden":
+            ev = ev[ev["source_ref"].str.startswith(GP_LINE)]
+        for _, grp in ev.groupby("source_ref")["person_id"]:
+            u = sorted(set(grp))
+            links.extend((u[0], x) for x in u[1:])
+        return _union(ids, links)
+    if link == "dob_sex_area":
+        key = people["date_of_birth"] + "|" + people["sex"] + "|" + people["lho_code"].fillna("")
+        keep = [True] * len(people)
+    elif link == "dob_sex_postcode":
+        key = people["date_of_birth"] + "|" + people["sex"] + "|" + people["postcode"].fillna("")
+        keep = list(people["postcode"].fillna("") != "")
+    else:
+        raise ValueError(link)
+    first = {}
+    for pid, k, kp in zip(people["person_id"], key, keep):
+        if not kp:
+            continue
+        if k in first:
+            links.append((first[k], pid))
+        else:
+            first[k] = pid
+    return _union(ids, links)
+
+
+def _population(people, how, unlisted):
     m = in_region(people, how)
-    return {k: int(((y >= a) & (y <= b) & m).sum()) for k, (a, b) in OPTION_YEARS.items()}
+    if unlisted == "drop":
+        m = m & (people["gp_practice"].fillna("") != "")
+    return m
+
+
+def ask1(f, how="golden", link="golden", unlisted="keep"):
+    """Each option's people the register holds as living in the region, one per person: how reads the area code
+    (in_region), link joins the registrations that are one person (persons), unlisted="drop" leaves out registrations
+    no practice lists (a stop)."""
+    people = f["people"]
+    sel = people[_population(people, how, unlisted)]
+    y = _yob(sel)
+    who = sel["person_id"].map(persons(f, link))
+    return {k: int(who[(y >= a) & (y <= b)].nunique()) for k, (a, b) in OPTION_YEARS.items()}
 
 
 def clean_events(events, log, how="golden"):
@@ -127,11 +197,19 @@ def resolve_merges(events, merges, how="chain"):
     return ev
 
 
-def ask2(people, events, log, merges=None, pop="golden", ev_how="golden", merge_how="chain"):
-    p = people[in_region(people, pop)]
+def ask2(f, pop="golden", ev_how="golden", merge_how="chain", link="golden", events=None, unlisted="keep"):
+    """Of Ask 1's people (pop, link, unlisted as there), those with no valid dose and with exactly one at 30 June 2027:
+    each person's events are every registration's of theirs, re-pointed through the merges (merge_how) and less the
+    GP return lines the query log shows replaced or withdrawn (ev_how); events, when given, replaces the extract's."""
+    people = f["people"]
+    who = persons(f, link, merge_how)
+    p = people[_population(people, pop, unlisted)]
+    p = p.assign(person_id=p["person_id"].map(who)).drop_duplicates("person_id")
+    ev = resolve_merges(f["events"] if events is None else events, f["merges"], merge_how)
+    ev = clean_events(ev, f["log"], ev_how)
+    ev = ev.assign(person_id=ev["person_id"].map(lambda x: who.get(x, x)))
+    counts = valid_counts(p, ev)
     y = _yob(p)
-    ev = resolve_merges(events, merges, merge_how)
-    counts = valid_counts(p, clean_events(ev, log, ev_how))
     n = p["person_id"].map(counts).fillna(0).astype(int)
     out = {}
     for k, (a, b) in OPTION_YEARS.items():

@@ -36,8 +36,8 @@ def compute(target):
     Ps = inp.matrix(CM.summer_diary)
     parts, _ = inp.survey
     f = B.ask_frames(target)
-    a1 = A.ask1(f["people"])
-    a2 = A.ask2(f["people"], f["events"], f["log"], f["merges"])
+    a1 = A.ask1(f)
+    a2 = A.ask2(f)
     a3 = A.ask3(f["cases"])
     return dict(inp=inp, R=R, r1=r1, call="B", share_1519=float(share[3]), region_share=float(region_share),
                 immune_pct=float(100 * (1 - region_share)), R_avg=CM.R_average(inp), R_all=R_all, ask1=a1, ask2=a2,
@@ -186,12 +186,14 @@ def write_xlsx(path, c):
                 cell.number_format = "#,##0"
     rn = 4 + len(W.OPTION_KEYS) + 2
     notes2 = [
-        "Living in the region: active registrations with an address in the State whose local health office, read in the "
-        "scheme in force when it was recorded, is in the region; LH27 recorded before 1 July 2024 is Monaghan West "
-        "(circular 03/2024). Records with a UK postcode, pupils living in Northern Ireland, are not living in the region.",
-        "Valid doses: MMR events re-pointed through the register's merges to the registration they now belong to, less "
-        "GP return lines the query log shows replaced or withdrawn, counted under the guidelines' 12.5 (on or after the "
-        "first birthday, at least 28 days after the previous valid dose), given on or before 30 June 2027.",
+        "Living in the region: people, not registrations. A child held on two active registrations is counted once: "
+        "registrations carrying the same GP return line are one child's. Counted where the local health office, read in "
+        "the scheme in force when it was recorded, is in the region; LH27 recorded before 1 July 2024 is Monaghan West "
+        "(circular 03/2024).",
+        "Valid doses: each person's MMR events on every registration of theirs, re-pointed through the register's merges "
+        "to the registration they now belong to, less GP return lines the query log shows replaced or withdrawn, counted "
+        "under the guidelines' 12.5 (on or after the first birthday, at least 28 days after the previous valid dose), "
+        "given on or before 30 June 2027.",
         "Cases: confirmed cases, one per person and illness: the 2019 outbreak's cases back-entered to the outbreak "
         "module in May 2021 (legacy number in the comments) count once with their migrated records, and a case "
         "notified twice (the same date of birth, sex and rash onset) once. Option E includes option D's birth years.",
@@ -389,6 +391,24 @@ def build(target, golden_dir, figures_path, w=None):
     return c
 
 
+def provenance(files, counts):
+    """Per shipped file: what it covers, the body that issued it, its own as-of or issue date, the day an extract was
+    run and its rows (dataset-generation section 9). It says what each file is, never how the files fit together."""
+    by_name = {PK.FILES[k]: (k, covers, issuer, asof, run) for k, covers, issuer, asof, run in PK.PROVENANCE}
+    assert sorted(by_name) == files, sorted(set(by_name) ^ set(files))
+    out = []
+    for fn in files:
+        key, covers, issuer, asof, run = by_name[fn]
+        rec = {"file": fn, "covers": covers, "issued_by": issuer, "as_of": asof}
+        if run:
+            rec["extracted"] = run
+        if counts.get(key):
+            rec["rows"] = int(counts[key])
+        rec["license"] = "CC0-1.0 (original work)"
+        out.append(rec)
+    return out
+
+
 def metadata(path, target, counts):
     files = sorted(os.listdir(target))
     fmts = sorted({f.rsplit(".", 1)[1] for f in files})
@@ -399,8 +419,8 @@ def metadata(path, target, counts):
                  "Region below one, with each option's register residents, unvaccinated and part-vaccinated people and "
                  "confirmed cases since 2019",
         "domain": "Epidemiology & Public Health",
-        "subdomain": "infectious-disease transmission modelling (a measles catch-up appraised on the next-generation "
-                     "matrix's dominant eigenvalue)",
+        "subdomain": "infectious-disease transmission modelling (measles' winter reproduction number under each autumn "
+                     "catch-up option)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, "
                         "with each option's register residents, no-dose and one-dose counts, confirmed and imported cases",
@@ -414,6 +434,7 @@ def metadata(path, target, counts):
                                "case records, a fictional national contact survey and immunity profile; no real person, "
                                "patient, practice or case is depicted, and the place names are used as geography only.",
                      "date": "2027-07-12", "license": "CC0-1.0 (original work)"}],
+        "provenance": provenance(files, counts),
         "created": "2026-10-12",
         "generator": "task501/generator/build.py",
     }

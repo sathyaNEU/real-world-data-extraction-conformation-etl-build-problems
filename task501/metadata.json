@@ -2,7 +2,7 @@
   "task": "task501",
   "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health Region below one, with each option's register residents, unvaccinated and part-vaccinated people and confirmed cases since 2019",
   "domain": "Epidemiology & Public Health",
-  "subdomain": "infectious-disease transmission modelling (a measles catch-up appraised on the next-generation matrix's dominant eigenvalue)",
+  "subdomain": "infectious-disease transmission modelling (measles' winter reproduction number under each autumn catch-up option)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, with each option's register residents, no-dose and one-dose counts, confirmed and imported cases",
   "as_of": "2027-07-12",
@@ -15,22 +15,167 @@
     "mmr_stock_return_2027-06-30.csv"
   ],
   "input_gates": {
-    "files": 21,
+    "files": 18,
     "formats": [
       "csv",
-      "docx",
       "pdf",
-      "txt",
       "xlsx"
     ],
     "largest_file": "register_mmr_events_born_1993-2017.csv",
-    "largest_file_rows": 279819
+    "largest_file_rows": 280221
   },
   "sources": [
     {
       "files": "all files under target/",
       "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional regional health authority (Oriel Health Region), its immunisation register and case records, a fictional national contact survey and immunity profile; no real person, patient, practice or case is depicted, and the place names are used as geography only.",
       "date": "2027-07-12",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "provenance": [
+    {
+      "file": "gp_return_queries_mmr_2005-2027.csv",
+      "covers": "Query log for GP return lines with an MMR dose, from January 2005",
+      "issued_by": "Regional Immunisation Office",
+      "as_of": "2027-07-03",
+      "extracted": "2027-07-03",
+      "rows": 1973,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "immunisation_guidelines_ch12_mmr_excerpt.pdf",
+      "covers": "National immunisation guidelines, chapter 12 (MMR), sections 12.4 to 12.6",
+      "issued_by": "National immunisation programme",
+      "as_of": "2025-11-24",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "lho_codes_national_2024-07.csv",
+      "covers": "Local health office codes in force from 1 July 2024",
+      "issued_by": "National health service planning unit",
+      "as_of": "2024-07-01",
+      "rows": 36,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "lho_revision_circular_2024-04.pdf",
+      "covers": "Circular 03/2024: local health office areas, revision of 1 July 2024",
+      "issued_by": "National health service planning unit",
+      "as_of": "2024-04-12",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "measles_immunity_profile_oriel_2027-05.csv",
+      "covers": "Measles immunity profile by year of birth, Oriel Health Region, projected to 1 January 2028",
+      "issued_by": "National immunisation programme",
+      "as_of": "2027-05-14",
+      "rows": 101,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "mmr_catch_up_options_autumn_2027.pdf",
+      "covers": "Autumn 2027 MMR catch-up: options paper",
+      "issued_by": "Regional Immunisation Office",
+      "as_of": "2027-06-09",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "mmr_stock_return_2027-06-30.csv",
+      "covers": "MMR stock return at 30 June 2027",
+      "issued_by": "Regional Immunisation Office",
+      "as_of": "2027-06-30",
+      "rows": 26,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "national_mmr_uptake_report_2027q1.pdf",
+      "covers": "MMR uptake at 24 months and 5 years, quarter 1 2027",
+      "issued_by": "National immunisation programme",
+      "as_of": "2027-06-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "nds_measles_cases_oriel_2019-2027.csv",
+      "covers": "Notifiable disease system export: measles cases resident in Oriel Health Region, notified from 2019",
+      "issued_by": "Department of Public Health, surveillance",
+      "as_of": "2027-07-06",
+      "extracted": "2027-07-06",
+      "rows": 119,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "nmrl_measles_results_2019-2027.csv",
+      "covers": "National measles reference laboratory results for those cases",
+      "issued_by": "National measles reference laboratory",
+      "as_of": "2027-07-06",
+      "extracted": "2027-07-06",
+      "rows": 89,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "nscs_2023_contacts.csv",
+      "covers": "National Social Contact Survey 2023, public use file: contacts",
+      "issued_by": "National Social Contact Survey",
+      "as_of": "2024-03-08",
+      "rows": 85393,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "nscs_2023_participants.csv",
+      "covers": "National Social Contact Survey 2023, public use file: participants",
+      "issued_by": "National Social Contact Survey",
+      "as_of": "2024-03-08",
+      "rows": 7560,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "nscs_2023_population_by_age_band.xlsx",
+      "covers": "National Social Contact Survey 2023, public use file: the statistics office's estimate of the population of the State at 1 January 2023 by age band",
+      "issued_by": "National Social Contact Survey",
+      "as_of": "2024-03-08",
+      "rows": 16,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "population_projection_oriel_2028-01-01.csv",
+      "covers": "Projected usual residents of Oriel Health Region at 1 January 2028 by county and single year of age",
+      "issued_by": "Department of Public Health, health intelligence",
+      "as_of": "2027-03-22",
+      "rows": 404,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "ps07_measles_winter_planning_standard.pdf",
+      "covers": "PS-07 Measles winter planning standard, version 3.0",
+      "issued_by": "Department of Public Health",
+      "as_of": "2026-03-10",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "register_merges_born_1993-2017.csv",
+      "covers": "Regional immunisation register extract: merged registrations, people born 1993 to 2017",
+      "issued_by": "Regional immunisation register",
+      "as_of": "2027-06-30",
+      "extracted": "2027-07-03",
+      "rows": 3945,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "register_mmr_events_born_1993-2017.csv",
+      "covers": "Regional immunisation register extract: MMR events, people born 1993 to 2017",
+      "issued_by": "Regional immunisation register",
+      "as_of": "2027-06-30",
+      "extracted": "2027-07-03",
+      "rows": 280221,
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "file": "register_people_active_born_1993-2017.csv",
+      "covers": "Regional immunisation register extract: people with an active registration, born 1993 to 2017",
+      "issued_by": "Regional immunisation register",
+      "as_of": "2027-06-30",
+      "extracted": "2027-07-03",
+      "rows": 164660,
       "license": "CC0-1.0 (original work)"
     }
   ],

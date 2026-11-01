@@ -186,6 +186,7 @@ def register(reg_total):
     spare = spare[:len(spare) - len(ni)]
     people.extend(ni)
     _practice_shown(np.random.default_rng(W.SEED + 109), people)
+    _practice_unlisted(np.random.default_rng(W.SEED + 114), people)
     events = _doses(rng_dose, people)
     merges = _merges(np.random.default_rng(W.SEED + 106), people, events, spare)
     _postcodes(np.random.default_rng(W.SEED + 107), people)
@@ -195,7 +196,8 @@ def register(reg_total):
 def _ni_pupils(rng, practices):
     """Children living in Northern Ireland who go to school in the region. The school immunisation team opens a
     register record at the first session it vaccinates them, with the home address; no local health office covers a
-    UK address, so the record takes the school's area, in the code scheme in force that day."""
+    UK address, so the register can assign the record no area and leaves its code blank (the school's area is kept
+    only to place the pupil's school sessions)."""
     out = []
     areas = list(W.NI_SCHOOL_AREAS)
     ap = np.array([W.NI_SCHOOL_AREAS[a][0] for a in areas])
@@ -219,10 +221,7 @@ def _ni_pupils(rng, practices):
                 lho_recorded = t
             if D(2024, 6, 24) <= lho_recorded <= D(2024, 7, 8):
                 lho_recorded = lho_recorded + dt.timedelta(days=15)
-            if area == "LH27" and lho_recorded >= W.CUTOVER:
-                lho = "LH26"
-            else:
-                lho = area
+            lho = ""
             district = W.NI_SCHOOL_AREAS[area][1][int(rng.integers(0, len(W.NI_SCHOOL_AREAS[area][1])))]
             pc = "%s %d%s%s" % (district, int(rng.integers(0, 10)), "ABDEFGHJLNPQRSTUWXYZ"[int(rng.integers(0, 20))],
                                 "ABDEFGHJLNPQRSTUWXYZ"[int(rng.integers(0, 20))])
@@ -238,6 +237,17 @@ def _practice_shown(rng, people):
     """The practice the extract shows: cleared when the practice deregisters someone who has left it."""
     for p in people:
         if p.status in ("moved", "portlaoise") and rng.random() < 0.6:
+            p.shown_practice = ""
+
+
+def _practice_unlisted(rng, people):
+    """Residents no practice lists: an adult who has not attended a practice since the returns began, or a child whose
+    practice closed its list or deregistered the family; the extract shows no practice for them."""
+    for p in people:
+        if p.status != "resident":
+            continue
+        share = 0.034 if p.dob.year <= 2004 else 0.011
+        if rng.random() < share:
             p.shown_practice = ""
 
 
@@ -264,7 +274,7 @@ def _postcodes(rng, people):
         p.postcode = "%s %s" % (rk, "".join(EIRCODE_CHARS[int(rng.integers(0, len(EIRCODE_CHARS)))] for _ in range(4)))
 
 
-ACTIVE = ("resident", "moved", "portlaoise", "ni")
+ACTIVE = ("resident", "moved", "portlaoise", "ni", "duplicate")
 
 
 def _merges(rng, people, events, spare):
@@ -688,6 +698,7 @@ def finish_register(people, events, rows_ext, rows_other):
             e.source_ref = "GPR-%04d%02d-%s-%03d" % (ret.year, ret.month, p.practice, counters[key])
             e.loaded = _next_month(ret) + dt.timedelta(days=int(rng.integers(4, 31)))
     events[:] = [e for e in events if e.loaded <= W.RUN]
+    rows_ext = rows_ext + _unmerged_duplicates(people, events, rows_ext + rows_other, resent)
     events.sort(key=lambda e: (e.loaded, e.pid, e.date))
     for k, e in enumerate(events):
         e.eid = "EV%08d" % (31_000_000 + k * 7 + int(rng.integers(0, 6)))
@@ -695,6 +706,89 @@ def finish_register(people, events, rows_ext, rows_other):
     for k, r in enumerate(log):
         r["query_ref"] = "Q%02d-%05d" % (r["raised"].year % 100, 10000 + k)
     return log
+
+
+DUP_RATE_THIN = 0.09      # children with no dose before school entry: the team's search found no record to match
+DUP_RATE = 0.0065         # children with an earlier dose on their record
+DUP_CARD_QUERIED = 0.5    # card lines the office queried and the practice withdrew as already returned
+
+
+def _unmerged_duplicates(people, events, log_rows, resent):
+    """Children the school immunisation team did not find on the register at school entry. It opened a second
+    registration at the session, and the school's doses from then on are loaded to that one, while the first stays
+    with the child's practice; the register's duplicate checks have not matched the two by the extract. When the
+    practice keyed the school dose from the child's card, the return loader matched the child to both registrations
+    and loaded the line to each; for half, the office queried the card line and the practice withdrew it as a dose
+    already returned. Children with no earlier dose were missed most often, their first record being the thinnest.
+    The second registration, its events and the card lines are added here on streams of their own, so no other
+    record moves; returns the query rows added."""
+    rng = np.random.default_rng(W.SEED + 112)
+    by_owner = {}
+    for e in events:
+        by_owner.setdefault(e.owner, []).append(e)
+    queried = {r["line_ref"] for r in log_rows}
+    used = {e.source_ref for e in events}
+    taken = {p.pid for p in people} | {e.pid for e in events}
+    picks = []
+    for p in sorted(people, key=lambda q: q.pid):
+        if p.status != "resident" or not p.born_in_region or not p.shown_practice:
+            continue
+        evs = sorted(by_owner.get(p.pid, []), key=lambda e: (e.date, e.source_ref))
+        if any(e.pid != p.pid or e.kind != "dose" or e.source_ref in queried for e in evs):
+            continue          # a record already merged, queried or carrying a card, re-sent or phantom line
+        school = [e for e in evs if e.given_by == "School team"]
+        if not school or school[0].source_ref in resent or school[0].date > D(2027, 4, 30):
+            continue
+        s0 = school[0]
+        if any(e is not s0 and abs((e.date - s0.date).days) < 60 for e in evs):
+            continue          # the school dose stands on its own interval, whichever record holds it
+        if p.lho_recorded > s0.date - dt.timedelta(days=21):
+            continue          # the address the team took is the one the first record holds
+        thin = not any(e.date < s0.date for e in evs)
+        if rng.random() < (DUP_RATE_THIN if thin else DUP_RATE):
+            picks.append((p, s0))
+    numbers = [n for n in _person_ids(np.random.default_rng(W.SEED + 113), 3 * len(picks) + 50) if n not in taken]
+    rows = []
+    for (p, s0), pid in zip(picks, numbers):
+        opened = s0.date - dt.timedelta(days=int(rng.integers(0, 21)))
+        rec = opened + dt.timedelta(days=15) if D(2024, 6, 24) <= opened <= D(2024, 7, 8) else opened
+        code = ("LH27" if rec < W.CUTOVER else "LH26") if p.area == "LH27" else p.area
+        if rec < W.EIRCODE_FROM or rng.random() < 0.5:
+            pc = ""
+        elif p.postcode:
+            pc = p.postcode
+        else:
+            keys = W.ROUTING_KEYS["LH27_old" if p.area == "LH27" else p.area]
+            pc = "%s %s" % (keys[int(rng.integers(0, len(keys)))],
+                            "".join(EIRCODE_CHARS[int(rng.integers(0, len(EIRCODE_CHARS)))] for _ in range(4)))
+        people.append(Person(pid=pid, dob=p.dob, sex=p.sex, lho=code, lho_recorded=rec, registered=opened,
+                             practice=p.practice, born_in_region=False, status="duplicate", area=p.area, dest=code,
+                             postcode=pc, shown_practice=""))
+        for e in by_owner[p.pid]:
+            if e.given_by == "School team" and e.date >= opened:
+                e.pid = pid
+        card = s0.date + dt.timedelta(days=int(rng.integers(3, 16)))
+        ret = D(card.year, card.month, 1)
+        n = 501
+        while "GPR-%04d%02d-%s-%03d" % (ret.year, ret.month, p.practice, n) in used:
+            n += 1
+        ref = "GPR-%04d%02d-%s-%03d" % (ret.year, ret.month, p.practice, n)
+        used.add(ref)
+        loaded = _next_month(ret) + dt.timedelta(days=int(rng.integers(4, 31)))
+        for holder in (p.pid, pid):
+            events.append(Event(eid=None, pid=holder, product=s0.product, date=card, given_by="GP", source_ref=ref,
+                                loaded=loaded, kind="dupcard", owner=p.pid))
+        if rng.random() < DUP_CARD_QUERIED:
+            raised = loaded + dt.timedelta(days=int(rng.integers(5, 41)))
+            took = int(rng.integers(6, 76))
+            closed = raised + dt.timedelta(days=took)
+            if closed > W.AS_AT:
+                closed = _chased(raised, took)
+            if closed is not None:
+                rows.append(dict(query_ref=None, line_ref=ref, practice=p.practice, raised=raised,
+                                 reason=QUERY_REASONS["duplicate"], outcome="Withdrawn by practice", replaced_by="",
+                                 closed=closed, kind="withdrawn", chased=False))
+    return rows
 
 
 # =================================================================================================================

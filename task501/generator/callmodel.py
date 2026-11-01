@@ -48,7 +48,7 @@ def survey_matrix(parts, contacts, select=None, unknown="drop"):
 class CallInputs:
     """profile: {year_of_birth: per cent immune} (1927 = 1927 and earlier); persons: {age: residents} (100 = 100 and
     over); yob: {age: year of birth} as the projection states it; P: survey matrix [participant band, contact band];
-    natpop: the codebook's population by band; options: {key: [ {years, people, susceptible, made} ... ]}."""
+    natpop: the survey's population table by band; options: {key: [ {years, people, susceptible, made} ... ]}."""
 
     def __init__(self, profile, persons, yob, P, natpop, options):
         self.profile, self.persons, self.yob, self.P, self.natpop, self.options = profile, persons, yob, P, natpop, options
@@ -146,7 +146,7 @@ def R_contact_weighted(inp, key=None, P=None):
 
 
 def matrix_variants(inp, P=None):
-    """A survey matrix under each defensible treatment: as computed, transposed, made reciprocal on the codebook's
+    """A survey matrix under each defensible treatment: as computed, transposed, made reciprocal on the survey's
     national population or on the region's projection, density-adjusted to the region's age structure."""
     P = inp.P if P is None else P
     Nn = inp.natpop

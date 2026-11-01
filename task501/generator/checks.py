@@ -12,15 +12,83 @@ import tempfile
 import zipfile
 
 import numpy as np
+import pandas as pd
 
 import asks as A
 import bundle as B
 import callmodel as CM
 import golden as G
 import pack as PK
+import verify as V
 import world as W
 
 N_OK = [0]
+
+# A file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3, house fix H9): the
+# names leak.py's first sweep refuses, plus a transmittal or file list, which is a manifest by another name.
+DESCRIBE_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+    r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
+    r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|"
+    r"data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes|transmittal\w*)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?|participants file|"
+                            r"contacts file|files?)$", re.I)
+
+
+def shipped_columns(target, files):
+    """Each data file's header as the verifier reads it (csv), or a workbook's first row on every sheet."""
+    import openpyxl
+    out = {}
+    for fn in files:
+        if fn.endswith(".csv"):
+            with open(os.path.join(target, fn), encoding="utf-8", newline="") as f:
+                out[fn] = list(next(csv.reader(f)))
+        elif fn.endswith(".xlsx"):
+            wb = openpyxl.load_workbook(os.path.join(target, fn), read_only=True)
+            out[fn] = [str(c) for ws in wb.worksheets for c in next(ws.iter_rows(max_row=1, values_only=True)) if c]
+    return out
+
+
+def identifier_columns(target, files):
+    """The data files' column names written as identifiers (snake_case, a digit or interior capitals), what a
+    dictionary lists; a plain word heading a column is what any document says."""
+    return {c for cs in shipped_columns(target, files).values() for c in cs
+            if len(c) >= 4 and ("_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c))}
+
+
+def columns_named(text, ident):
+    return {c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+
+
+def files_named(text, files, own=None):
+    return [o for o in files if o != own and o in text]
+
+
+def describing_files(target, files):
+    """The shipped files that describe the data, by name, by sheet name or by content: a document naming four or more
+    of the data files' columns written as identifiers, or any file naming three or more of the other shipped files."""
+    import openpyxl
+    hits = [("name", fn) for fn in files if DESCRIBE_NAME.search(os.path.splitext(fn)[0])]
+    for fn in files:
+        if fn.endswith(".xlsx"):
+            for sh in openpyxl.load_workbook(os.path.join(target, fn), read_only=True).sheetnames:
+                if DESCRIBE_SHEET.match(sh.strip()):
+                    hits.append(("sheet %s" % sh, fn))
+    ident = identifier_columns(target, files)
+    texts = {fn: V.pdf_text(target, fn) for fn in files if fn.endswith(".pdf")}
+    for fn in files:
+        if fn.endswith(".csv"):
+            texts[fn] = open(os.path.join(target, fn), encoding="utf-8").read()
+    for fn, t in texts.items():
+        if fn.endswith(".pdf"):
+            named = columns_named(t, ident)
+            if len(named) >= 4:
+                hits.append(("columns %s" % sorted(named)[:6], fn))
+        others = files_named(t, files, fn)
+        if len(others) >= 3:
+            hits.append(("lists %d other files" % len(others), fn))
+    return hits, texts, ident
 
 
 def ok(cond, msg):
@@ -67,9 +135,27 @@ def run(target, golden_dir, w, c):
     ok(counts["events"] >= 25000 and counts["contacts"] >= 25000,
        "input gate: the events extract has %d rows and the survey's contacts file %d" % (counts["events"], counts["contacts"]))
     ok(set(files) == set(PK.FILES.values()), "the pack is exactly the declared file list")
-    with open(os.path.join(target, PK.FILES["transmittal"]), encoding="utf-8") as f:
-        listed = {r["file"] for r in csv.DictReader(f)}
-    ok(listed == set(files) - {PK.FILES["transmittal"]}, "H9: the transmittal list names every other shipped file")
+    # H9 (dataset-generation section 3): no shipped file describes the data. Positive controls first, through the same
+    # patterns and the same extractor: the patterns refuse the describing files this pack used to ship, and the
+    # verifier's PDF and csv reads find text known to be there, so an empty search cannot pass for a clean one.
+    for old in ("nds_case_export_fields", "nscs_2023_public_file_codebook", "register_extract_notes_2027-07",
+                "transmittal_list_2027-07-12"):
+        ok(bool(DESCRIBE_NAME.search(old)), "H9 control: the name pattern refuses %s" % old)
+    ok(bool(DESCRIBE_SHEET.match("About")) and bool(DESCRIBE_SHEET.match("Contacts file"))
+       and not DESCRIBE_SHEET.match("Population"), "H9 control: the sheet pattern refuses About and Contacts file")
+    hits, h9_texts, h9_ident = describing_files(target, files)
+    ok(all(len(h9_texts[fn]) > 200 for fn in files if fn.endswith(".pdf"))
+       and "the average number of people one case infects" in h9_texts[PK.FILES["standard"]]
+       and "made immune" in h9_texts[PK.FILES["options"]],
+       "H9 control: the verifier's extractor reads every shipped PDF's text (the standard's 3.1 found)")
+    probe = "%s %s %s" % (PK.FILES["people"], PK.FILES["events"], PK.FILES["merges"])
+    ok(len(files_named(probe, files)) == 3, "H9 control: the file-list search finds three file names in a list")
+    old_notes = "person_number, date_of_birth, sex, lho_code, lho_recorded, postcode and date_given"
+    ok(columns_named(old_notes, h9_ident) == {"person_number", "date_of_birth", "lho_code", "lho_recorded", "date_given"},
+       "H9 control: the column search finds the five identifier columns in a line of the extract notes once shipped "
+       "(sex and postcode are plain words it leaves alone)")
+    ok(not hits, "H9: no shipped file describes the data, by name, sheet or content (no dictionary, field notes, "
+       "extract notes, codebook, manifest or transmittal list): %s" % (hits or "none of %d" % len(files)))
     ok(len(PK.DISTRACTORS) >= 2, "two distractors declared")
 
     inp = c["inp"]
@@ -290,66 +376,153 @@ def run(target, golden_dir, w, c):
     ok(not re.search(r"term time|term-time|school term|school holiday|summer holiday|school calendar|school year",
                      (std_text + " " + opt_text).lower()),
        "SF25: no call document names term, the holidays or a school calendar (the pin refused, Tried and rejected)")
-    # SF26: a contact is the codebook's (a conversation or skin-to-skin); physical contacts alone keep the call
-    import openpyxl
-    about = " ".join(str(v[0]) for v in openpyxl.load_workbook(os.path.join(target, PK.FILES["codebook"]),
-                                                              read_only=True)["About"].iter_rows(values_only=True) if v[0])
-    ok("a conversation of at least three words in each other's presence, or any skin-to-skin contact" in about,
-       "SF26: the codebook defines a contact as a conversation or any skin-to-skin contact")
+    # SF26: a contact is a row the contacts file lists, physical or not (the producing system carries it: physical is a
+    # Y or N attribute of each listed contact, never a second file), and standard 3.1's reproduction number counts the
+    # people one case infects; physical contacts alone keep the call. Asserted through the verifier's csv and PDF reads.
+    v_parts = V.rows(target, PK.FILES["participants"])
+    v_cont = V.rows(target, PK.FILES["contacts"])
+    v_pids = {r["part_id"] for r in v_parts}
+    v_phys = {}
+    for r in v_cont:
+        v_phys[r["physical"]] = v_phys.get(r["physical"], 0) + 1
+    ok(len(v_cont) == counts["contacts"] and len(v_parts) == 7560 and all(r["part_id"] in v_pids for r in v_cont),
+       "SF26 control (verifier's csv read): %d contact rows, each listed by one of the %d diaries" % (len(v_cont),
+                                                                                                    len(v_parts)))
+    ok(set(v_phys) == {"Y", "N"} and v_phys["N"] > 0.2 * len(v_cont) and v_phys["Y"] > 0.2 * len(v_cont),
+       "SF26 closure in the data: physical is Y on %d and N on %d of the listed contacts, an attribute of a contact "
+       "and not its definition" % (v_phys["Y"], v_phys["N"]))
+    std_v = V.pdf_text(target, PK.FILES["standard"])
+    ok("the reproduction number, the average number of people one case infects, stays below one throughout" in std_v,
+       "SF26 closure (verifier's PDF read): standard 3.1 defines the reproduction number by the people one case infects")
     rph = CM.scenarios(inp, P=CM.survey_matrix(parts, phys, CM.term_diary).T)
     ok(call_of(rph) == "B" and rph["none"] > R["none"] and not same_bins(rph, R),
        "SF26: physical contacts alone on the term diaries keep the call with other figures (%s), refused by the "
-       "codebook's contact" % fmt(rph))
+       "literal reading (every contact a diary lists) and standard 3.1" % fmt(rph))
+    # closure axis 8 (window length): the survey's two periods are its diaries' own dates, nothing between them
+    v_dates = sorted({r["diary_date"] for r in v_parts})
+    v_may = [d for d in v_dates if "2023-05-02" <= d <= "2023-05-26"]
+    v_sum = [d for d in v_dates if "2023-07-03" <= d <= "2023-08-18"]
+    ok(len(v_may) + len(v_sum) == len(v_dates) and v_may[0] == "2023-05-02" and v_may[-1] == "2023-05-26"
+       and v_sum[0] == "2023-07-03" and v_sum[-1] == "2023-08-18"
+       and sum(1 for r in v_parts if r["diary_date"] <= "2023-05-26") == 2520,
+       "closure 8 in the data (verifier's csv read): every diary is dated 2 to 26 May or 3 July to 18 August 2023, "
+       "nothing between, 2,520 in May")
+    # SF6: the survey's population table reads back (fifteen bands, the all-ages row their sum) for the reciprocity
+    # treatment, the same call under every basis
+    import openpyxl
+    pop_rows = list(openpyxl.load_workbook(os.path.join(target, PK.FILES["population"]), read_only=True)["Population"]
+                    .iter_rows(values_only=True))
+    ok([r[0] for r in pop_rows[1:-1]] == W.GROUP_LABELS and pop_rows[-1][0] == "All ages"
+       and pop_rows[-1][1] == sum(r[1] for r in pop_rows[1:-1]) and np.allclose(inp.natpop, [r[1] for r in pop_rows[1:-1]]),
+       "SF6: the survey's population table reads back, %d bands summing to its all-ages row %d" % (len(pop_rows) - 2,
+                                                                                                pop_rows[-1][1]))
     ok(abs(c["immune_pct"] - 95.17) < 0.02, "the region is %.2f per cent immune" % c["immune_pct"])
     # ---------------------------------------------------------------- the asks
     f = B.ask_frames(target)
     a1 = c["ask1"]
-    for how in ("current", "lh27", "state", "old", "all"):
-        st = A.ask1(f["people"], how)
-        ok(all(st[k] != a1[k] for k in a1), "ask 1 stop %s moves every figure (%s)" % (how, st))
     ppl = f["people"]
+    # Ask 1's silent device: children the school immunisation team did not find at school entry hold a second
+    # registration it opened, unmerged at the extract, the two joined only by the GP card line the loader put on both
+    # (a GP return line is one dose given to one child); the golden counts one person per child. Read through the
+    # verifier's own path (csv and its union of registrations), the generator's second registrations as the control.
+    v_ppl = V.rows(target, PK.FILES["people"])
+    v_people = V.residents(target)
+    v_who = V.persons(target, v_people)
+    groups_ = {}
+    for r_, q_ in v_who.items():
+        groups_.setdefault(q_, []).append(r_)
+    joined = {q_: m_ for q_, m_ in groups_.items() if len(m_) > 1}
+    dups = [p_ for p_ in w["people"] if p_.status == "duplicate"]
+    dup_ids = {p_.pid for p_ in dups}
+    ok(len(joined) == len(dups) > 100 and all(len(m_) == 2 for m_ in joined.values())
+       and {r_ for m_ in joined.values() for r_ in m_} >= dup_ids,
+       "ask 1 device control (verifier's csv read): %d children held on two registrations, each pair joined by a GP "
+       "return line loaded to both, every second registration the generator opened among them" % len(joined))
+    pinfo = {r_["person_number"]: r_ for r_ in v_ppl}
+    ok(all(len({(pinfo[x]["date_of_birth"], pinfo[x]["sex"]) for x in m_}) == 1
+           and len({v_people[x][1] for x in m_}) == 1 for m_ in joined.values()),
+       "SF29 ask 1 device C1: every pair a GP return line joins agrees on date of birth, sex and living in the region")
+    v_ev = V.rows(target, PK.FILES["events"])
+    v_surv = {r_["retired_number"]: r_["surviving_number"] for r_ in V.rows(target, PK.FILES["merges"])}
+    held = {}
+    for r_ in v_ev:
+        x = r_["person_number"]
+        while x in v_surv:
+            x = v_surv[x]
+        held.setdefault(r_["source_ref"], set()).add(x)
+    shared_gp = {ref: hs for ref, hs in held.items() if ref.startswith("GPR-") and len(hs) > 1}
+    shared_sit = sum(1 for ref, hs in held.items() if ref.startswith("SIT-") and len(hs) > 1)
+    ok(len(shared_gp) == len(dups) and all(len(hs) == 2 for hs in shared_gp.values()) and shared_sit > 5000,
+       "SF29 ask 1 device C1: %d GP return lines sit on two registrations, one line per pair and none on three, while %d "
+       "school sessions' references are shared by the pupils at them" % (len(shared_gp), shared_sit))
+    nat = A.ask1(f, how="lh27", link="none")
+    ok(all(nat[k] - a1[k] >= 10 for k in a1), "ask 1 device: the circular read with every registration a person holds "
+       "every option high (%s)" % ", ".join("%s +%d" % (k, nat[k] - a1[k]) for k in a1))
+    inr = ppl[A.in_region(ppl, "golden")]
+    unl = set(inr.loc[inr["gp_practice"].fillna("") == "", "person_id"])
+    late_reg = inr[(pd.to_datetime(inr["registered_on"]) - pd.to_datetime(inr["date_of_birth"])).dt.days > 400]
+    ok(dup_ids <= unl and len(unl) > 5 * len(dup_ids) and len(late_reg) > 5 * len(dup_ids),
+       "ask 1 no marker: %d registrations in the region show no practice and %d were opened after a first birthday, the "
+       "%d second registrations a small part of each" % (len(unl), len(late_reg), len(dup_ids)))
+    stops1 = {"the current code list, every registration a person (the natural path)": dict(how="current", link="none"),
+              "the circular read, every registration a person (the cracker)": dict(how="lh27", link="none"),
+              "the current code list, one person per child": dict(how="current"),
+              "every LH27 read as Monaghan West, one person per child": dict(how="old"),
+              "every active registration": dict(how="all", link="none"),
+              "a person key on date of birth, sex and area code": dict(link="dob_sex_area"),
+              "a person key on date of birth, sex and postcode": dict(link="dob_sex_postcode"),
+              "records joined by any shared source reference": dict(link="any_ref"),
+              "registrations no practice lists left out": dict(link="none", unlisted="drop"),
+              "registrations no practice lists left out, one person per child": dict(unlisted="drop")}
+    for name, kw in stops1.items():
+        st = A.ask1(f, **kw)
+        ok(all(st[k] != a1[k] for k in a1), "ask 1 stop, %s, moves every figure (%s)" % (
+            name, ", ".join("%s %+d" % (k, st[k] - a1[k]) for k in a1)))
+    # SF23 retired: the register gives a record at an address outside the State no area code, so the code and the
+    # address agree such a record is not in the region (C1); nothing about it is filed
     bt = ppl["postcode"].fillna("").str.startswith("BT")
-    ok(bool(ppl.loc[bt, "lho_code"].isin(set(W.REGION_LHO_NEW) | {"LH27"}).all()) and int(bt.sum()) > 900,
-       "ask 1 device: %d records with a UK postcode, every one with a regional area code" % int(bt.sum()))
-    ni_pids = {p.pid for p in w["people"] if p.status == "ni"}
-    ok(set(ppl.loc[bt, "person_id"]) == ni_pids, "SF23 ask 1 fairness: the UK postcodes are exactly the pupils living "
-       "in Northern Ireland")
+    ni_pids = {p_.pid for p_ in w["people"] if p_.status == "ni"}
+    ok(set(ppl.loc[bt, "person_id"]) == ni_pids, "SF23 retired: the UK postcodes are exactly the pupils living in "
+       "Northern Ireland")
+    v_bt = {r_["person_number"] for r_ in v_ppl if r_["postcode"].strip().upper().startswith("BT")}
+    v_blank = {r_["person_number"] for r_ in v_ppl if not r_["lho_code"].strip()}
+    ok(len(v_bt) == int(bt.sum()) > 900 and v_bt == v_blank,
+       "SF23 retired (verifier's csv read): the %d registrations with a UK postcode are the %d with no area code"
+       % (len(v_bt), len(v_blank)))
+    ok(bool((A.in_region(ppl, "lh27") == A.in_region(ppl, "golden")).all()),
+       "SF23 retired, C1: read by its area code alone or by its address as well, the region holds the same registrations")
     with open(os.path.join(target, PK.FILES["lho"]), encoding="utf-8") as fh:
         lho_rows = list(csv.DictReader(fh))
     ok(all(r["county"] in set(W.COUNTIES) | {v[1] for v in W.OTHER_LHO.values()} for r in lho_rows)
        and not any(r["county"] in ("Armagh", "Down", "Fermanagh", "Tyrone", "Antrim", "Londonderry") for r in lho_rows),
-       "SF23: the national code list holds no office outside the State, so no area code places a UK address")
-    notes = zipfile.ZipFile(os.path.join(target, PK.FILES["notes"])).read("word/document.xml").decode("utf-8")
-    ok("Local health office of the person's address" in notes, "SF23: the extract notes define lho_code by the address")
-    ok("Postcode of that address, where one was recorded." in notes,
-       "SF23: the extract notes define postcode as the postcode of the person's address")
+       "SF23 retired: the national code list holds no office outside the State")
     pcs = ppl["postcode"].fillna("")
     eircode = pcs.str.fullmatch(r"(?:[AC-FHKNPRTV-Y][0-9]{2}|D6W) [0-9AC-FHKNPRTV-Y]{4}")
     ukpc = pcs.str.fullmatch(r"BT[0-9]{1,2} [0-9][A-Z]{2}")
     ok(bool((eircode | ukpc | (pcs == "")).all()) and int(ukpc.sum()) == int(bt.sum()),
-       "SF23: every recorded postcode is an Eircode or a BT postcode (%d), and a BT postcode is an address in the UK, "
-       "outside the State and so outside the region's four counties" % int(ukpc.sum()))
-    a1_kept = A.ask1(f["people"], "lh27")
-    ok(all(a1_kept[k] > a1[k] for k in a1) and not (set(PK.CALL_FILES) & {"people", "events", "merges", "lho", "notes"}),
-       "SF23: the BT postcodes counted as living in the region raise every Ask 1 figure (%s) and no call figure, since "
-       "the call reads no register file (same call)" % ", ".join("%s +%d" % (k, a1_kept[k] - a1[k]) for k in a1))
-    y = A._yob(ppl)
-    for k, (lo, hi) in A.OPTION_YEARS.items():
-        n = int((bt & (y >= lo) & (y <= hi)).sum())
-        ok(n >= 100, "ask 1 device: option %s holds %d records with a UK postcode" % (k, n))
+       "SF23 retired: every recorded postcode is an Eircode or a BT postcode (%d)" % int(ukpc.sum()))
     rec = ppl.loc[ppl["lho_code"] == "LH27", "lho_recorded"]
     ok(not rec.between("2024-06-24", "2024-07-08").any(), "ask 1 C1: no LH27 recorded within a week of 1 July 2024")
     a2 = c["ask2"]
-    stops = {"no merges": dict(merge_how="none"), "one hop": dict(merge_how="one_hop"), "every loaded event": dict(ev_how="all"),
-             "every queried line dropped": dict(ev_how="drop_queried"), "current code list": dict(pop="current"),
-             "UK postcodes kept": dict(pop="lh27"),
-             "the cracker (loaded events, no merges)": dict(ev_how="all", merge_how="none")}
-    for name, kw in stops.items():
-        st = A.ask2(f["people"], f["events"], f["log"], f["merges"], **kw)
+    stops2 = {"no merges": dict(merge_how="none"), "one hop": dict(merge_how="one_hop"),
+              "every loaded event": dict(ev_how="all"), "every queried line dropped": dict(ev_how="drop_queried"),
+              "the current code list": dict(pop="current"),
+              "every registration a person (the cracker: merges followed, replaced and withdrawn lines out)":
+                  dict(link="none"),
+              "the natural path (loaded events, no merges, every registration a person)":
+                  dict(ev_how="all", merge_how="none", link="none")}
+    for name, kw in stops2.items():
+        st = A.ask2(f, **kw)
         moved = sum(st[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
         need = 3 if name == "one hop" else 10
         ok(moved >= need, "ask 2 stop %s moves %d of 10 figures" % (name, moved))
     log = f["log"]
+    # the cracker's no-dose figures move with the children whose first record holds no valid dose once their
+    # withdrawn card line is out (their school doses sit on the second registration)
+    cr = A.ask2(f, link="none")
+    ok(all(cr[k]["none"] > a2[k]["none"] and cr[k]["one"] > a2[k]["one"] for k in a2),
+       "ask 2 device: with every registration a person, every no-dose and one-dose figure is high (%s)" % ", ".join(
+           "%s %+d/%+d" % (k, cr[k]["none"] - a2[k]["none"], cr[k]["one"] - a2[k]["one"]) for k in a2))
     ext = set(f["events"]["source_ref"])
     lines_in = set(log["line_ref"]) & ext
     reps_needed = set(log.loc[log["line_ref"].isin(lines_in) & (log["outcome"] == "Replaced by corrected line"), "replaced_by"])
@@ -360,24 +533,47 @@ def run(target, golden_dir, w, c):
     ok(bool((log["closed_on"] != "").all()) and bool((log["raised_on"] < log["closed_on"]).all())
        and log["closed_on"].max() <= W.AS_AT.isoformat(),
        "SF17: every query closed after it was raised and by 30 June 2027 (latest %s)" % log["closed_on"].max())
-    st = A.ask2(f["people"], f["events"], log, f["merges"], ev_how="drop_unresolved")
+    st = A.ask2(f, ev_how="drop_unresolved")
     ok(st == a2, "SF17: lines under a query not closed as confirmed by 30 June 2027 dropped, every ask 2 figure unchanged")
+    # SF28 closed by the prompt as filed: the doses are those had by 30 June 2027 ("by that date"), a dose had on the
+    # day it was given (date_given); counting every row the extract holds, or the rows loaded by 30 June, moves figures
+    prompt_txt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
+    ok(prompt_txt.count("the register holds as living in the region at 30 June 2027, how many of those have had no "
+                        "valid MMR dose by that date and how many exactly one") == 1,
+       "SF28 closed by the prompt as filed: \"how many of those have had no valid MMR dose by that date\", the date the "
+       "residents are counted at")
+    ev_all = f["events"]
+    late = ev_all[(ev_all["date_given"] <= W.AS_AT.isoformat()) & (ev_all["loaded_on"] > W.AS_AT.isoformat())]
+    after = ev_all[ev_all["date_given"] > W.AS_AT.isoformat()]
+    by_load = A.ask2(f, events=ev_all[ev_all["loaded_on"] <= W.AS_AT.isoformat()])
+    moved_load = sum(by_load[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
+    keep_asat, A.AS_AT = A.AS_AT, pd.Timestamp("2099-12-31")
+    try:
+        every_row = A.ask2(f)
+    finally:
+        A.AS_AT = keep_asat
+    moved_rows = sum(every_row[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
+    ok(len(late) > 0 and len(after) > 0 and moved_load > 0 and moved_rows > 0,
+       "SF28: %d doses given by 30 June 2027 were loaded after it and %d were given after it; counted by load date %d of "
+       "10 figures move, counting every row %d" % (len(late), len(after), moved_load, moved_rows))
     chased = [r for r in w["log"] if r.get("chased")]
     on_ext = sorted(r["line_ref"] for r in chased if r["line_ref"] in ext)
     ok(len(chased) >= 3, "SF17: %d confirmed queries still open at the extract were chased and closed, %d on extract "
        "lines" % (len(chased), len(on_ext)))
     m = dict(zip(f["merges"]["retired_number"], f["merges"]["surviving_number"]))
     ok(not (set(m) & set(f["people"]["person_id"])), "ask 2: no retired registration is active")
+    who = A.persons(f)
     ev = A.resolve_merges(f["events"], f["merges"]).copy()
     ev = A.clean_events(ev, log)
     ev = ev[ev["person_id"].isin(set(f["people"]["person_id"]))]
+    ev["person_id"] = ev["person_id"].map(who)
     dob = dict(zip(f["people"]["person_id"], f["people"]["date_of_birth"]))
     d = np.array([dt.date.fromisoformat(x).toordinal() for x in ev["date_given"]])
     fb = np.array([dt.date(int(dob[p][:4]) + 1, int(dob[p][5:7]), int(dob[p][8:10])).toordinal() for p in ev["person_id"]])
     ok(int(np.sum(np.abs(d - fb) <= 3)) == 0, "ask 2 C1: no dose within three days of a first birthday")
     ev = ev.assign(o=d).sort_values(["person_id", "o"])
     gaps = ev.groupby("person_id")["o"].diff().dropna()
-    ok(int(((gaps >= 24) & (gaps <= 32)).sum()) == 0, "ask 2 C1: no two doses 24 to 32 days apart")
+    ok(int(((gaps >= 24) & (gaps <= 32)).sum()) == 0, "ask 2 C1: no two of a person's doses 24 to 32 days apart")
     first = {p_: dt.date(int(v[:4]) + 1, int(v[5:7]), int(v[8:10])).toordinal() for p_, v in dob.items()}
     differ = 0
     asat = dt.date(2027, 6, 30).toordinal()
@@ -401,6 +597,21 @@ def run(target, golden_dir, w, c):
         ok(moved == 10, "ask 3 stop %s moves all 10 figures" % how)
     st = A.ask3(f["cases"], "lab", f["lab"])
     ok(sum(st[k]["confirmed"] != a3[k]["confirmed"] for k in a3) == 5, "ask 3 stop lab-confirmed only moves every confirmed figure")
+    # Ask 3 with no field notes shipped: the export's own labels carry the case classification and the importation
+    # status, Imported a label of its own beside Import-related, blank only where the record is not a case; and the
+    # confirmed records with no reference-laboratory specimen carry their hospital laboratory result on the record
+    v_cases = V.rows(target, PK.FILES["cases"])
+    v_lab = {r["case_id"] for r in V.rows(target, PK.FILES["lab"]) if r["result"] == "Positive"}
+    v_labels = {(r["classification"], r["importation"]) for r in v_cases}
+    ok({c for c, _ in v_labels} == {"Confirmed", "Probable", "Possible", "Discarded"}
+       and {i for _, i in v_labels} == {"Imported", "Import-related", ""}
+       and all((i == "") == (c in ("Possible", "Discarded")) for c, i in v_labels),
+       "ask 3 labels (verifier's csv read): classification and importation as the export writes them, Imported "
+       "distinct from Import-related, blank only on possible and discarded records")
+    v_hosp = [r["case_id"] for r in v_cases if r["classification"] == "Confirmed" and r["case_id"] not in v_lab
+              and "hospital laboratory" in r["comments"].lower()]
+    ok(len(v_hosp) >= 3, "ask 3: %d confirmed records with no reference-laboratory specimen carry their hospital "
+       "laboratory confirmation in their own comments (%s)" % (len(v_hosp), ", ".join(v_hosp)))
     cs = f["cases"]
     held = dict(zip(cs["legacy_ref"], range(len(cs))))
     refs = cs["comments"].str.extract(A.LEGACY_IN_COMMENT)[0].dropna()
@@ -518,8 +729,8 @@ def run(target, golden_dir, w, c):
     card = os.path.join(os.path.dirname(os.path.dirname(target)), ".claude", "skills", "fingerprint", "cards", "task501.json")
     people = _json.load(open(card, encoding="utf-8"))["world"]["people"]
     ok(sorted(people) == sorted(W.PEOPLE.values()), "personas are the card's people (guard.py names, seed 501)")
-    ok(W.PEOPLE["manager"] in allnames and W.PEOPLE["director"] in allnames and W.PEOPLE["register"] in allnames,
-       "personas appear in their documents")
+    ok(W.PEOPLE["manager"] in allnames and W.PEOPLE["director"] in allnames,
+       "personas appear in their documents (the options paper's author, the standard's owner)")
     for g in os.listdir(golden_dir):
         raw = open(os.path.join(golden_dir, g), "rb").read()
         ok(b"python-pptx" not in raw and b"openpyxl" not in raw and b"Matplotlib" not in raw, "scrub: golden %s" % g)

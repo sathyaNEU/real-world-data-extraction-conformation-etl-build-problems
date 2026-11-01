@@ -20,8 +20,8 @@
 2. Built the contact matrix (mean contacts per day by participant and contact age band) from the diaries in nscs_2023_participants.csv and nscs_2023_contacts.csv kept in school term, 2 to 26 May 2023, since the 3 July to 18 August 2023 diaries fell in the school summer holidays and PS-07 3.1 needs the figure below one throughout a winter that runs in term.
 3. Multiplied it by each band's susceptible share and scaled it so that a wholly susceptible region gives the R0 of 15 (PS-07 3.2): its dominant eigenvalue is 1.3 with no catch-up, so a catch-up is needed (PS-07 3.6).
 4. Took each option's expected people made immune in mmr_catch_up_options_autumn_2027.pdf off the susceptibles of its birth years (PS-07 3.5) and recomputed: option B 0.9; options A, C, D and E 1.3.
-5. Counted each option's residents in register_people_active_born_1993-2017.csv with an address in the State (UK postcodes out), reading each lho_code in the scheme in force on its lho_recorded date (circular 03/2024: LH27 recorded before 1 July 2024 is Monaghan West, in the region).
-6. Counted their valid doses in register_mmr_events_born_1993-2017.csv, re-pointed through register_merges_born_1993-2017.csv and without the GP lines gp_return_queries_mmr_2005-2027.csv shows replaced or withdrawn, under guidelines 12.5 at 30 June 2027.
+5. Counted each option's residents in register_people_active_born_1993-2017.csv once per child, the registrations that carry the same GP return line in register_mmr_events_born_1993-2017.csv being one child's, reading each lho_code in the scheme in force on its lho_recorded date (circular 03/2024: LH27 recorded before 1 July 2024 is Monaghan West, in the region).
+6. Counted each child's valid doses across their registrations in register_mmr_events_born_1993-2017.csv, re-pointed through register_merges_born_1993-2017.csv and without the GP lines gp_return_queries_mmr_2005-2027.csv shows replaced or withdrawn, under guidelines 12.5, given by 30 June 2027.
 7. Counted confirmed cases with rash onset in the window in nds_measles_cases_oriel_2019-2027.csv by year of birth, one per person and illness: each back-entered 2019 outbreak record (its legacy number in the comments) with its migrated record, and records with the same date of birth, sex and rash onset once.
 8. Recommended option B, the only option below one (PS-07 3.6).
 
@@ -43,7 +43,7 @@
    - Option C (born 2003 to 2007): 29,398
    - Option D (born 1993 to 1997): 30,625
    - Option E (born 1993 to 2002): 57,865
-4. Of those, people with no valid MMR dose and with exactly one:
+4. Of those, people with no valid MMR dose by that date and with exactly one:
    - Option A: 3,545 with no valid dose, 4,720 with exactly one
    - Option B: 4,286 with no valid dose, 6,091 with exactly one
    - Option C: 2,857 with no valid dose, 3,960 with exactly one

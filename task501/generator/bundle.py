@@ -29,7 +29,7 @@ def call_inputs(target):
             persons[a] = persons.get(a, 0) + int(r["persons"])
             yob[a] = y
     parts, contacts = survey_from_pack(target)
-    natpop = population_from_codebook(target)
+    natpop = population_from_pack(target)
     opts = options_from_paper(target)
     inp = CM.CallInputs(prof, persons, yob, CM.survey_matrix(parts, contacts, CM.term_diary).T, natpop, opts)
     inp.survey = (parts, contacts)
@@ -51,13 +51,16 @@ def survey_from_pack(target):
     return parts, contacts
 
 
-def population_from_codebook(target):
+def population_from_pack(target):
+    """The survey's population table (the State at 1 January 2023 by age band), read back from its workbook; the
+    all-ages row must equal the bands' sum."""
     import openpyxl
-    wb = openpyxl.load_workbook(path(target, "codebook"), data_only=True)
+    wb = openpyxl.load_workbook(path(target, "population"), data_only=True)
     ws = wb["Population"]
-    rows = list(ws.iter_rows(min_row=2, max_row=1 + W.NG, values_only=True))
-    assert [r[0] for r in rows] == W.GROUP_LABELS
-    return np.array([float(r[1]) for r in rows])
+    rows = list(ws.iter_rows(min_row=2, max_row=2 + W.NG, values_only=True))
+    assert [r[0] for r in rows[:W.NG]] == W.GROUP_LABELS and rows[W.NG][0] == "All ages"
+    assert int(rows[W.NG][1]) == sum(int(r[1]) for r in rows[:W.NG])
+    return np.array([float(r[1]) for r in rows[:W.NG]])
 
 
 def options_from_paper(target):

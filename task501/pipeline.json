@@ -5,7 +5,8 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-14",
+ "updated": "2026-11-01",
+ "target_zip_md5": "81564f489c1ab10c04582ad74fecb818",
  "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
  "architecture": 4,
  "round": 2,
@@ -16,18 +17,21 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild after the stage 4 fix pass (--asof 2027-07-12), no LEAK, sweep 11 clean; the five lines (sweeps 3, 4 and 9) answered in the design note's Build record",
-  "reader": "round 2 read 2026-10-14 on the round 2 pack: no decisive-step sentence, no ranking, helping file or answer-like figure; Q5 read literally gives 0.72 (rung 0), Q6 an analytical choice; realism tells fixed in the generator (the extract notes' thumbnail and customXml parts, the stock return's batch numbers), the options paper's budget sentence left with its reason; appended to leak_check_report.md; no second read, since no document's text or the prompt changed"
+  "reader": "round 2 read 2026-10-14 on the round 2 pack: no decisive-step sentence, no ranking, helping file or answer-like figure; Q5 read literally gives 0.72 (rung 0), Q6 an analytical choice; realism tells fixed in the generator (the extract notes' thumbnail and customXml parts, the stock return's batch numbers), the options paper's budget sentence left with its reason; appended to leak_check_report.md; no second read, since no document's text or the prompt changed",
+  "reship_reader_rubric": "2026-11-01, fresh copy of 81564f48 with the new prompt: no decisive-step sentence, nothing computes R, Q6 an analytical choice (turning age-specific immunity and the contact survey into a reproduction number); its ask readings closed per pass 3"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-14 on the final round 2 rebuild, no BLOCK (nearest driver off the slot 0.06, task32; this slot's round 1 driver differentiated on the card)",
-  "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 169 cards, 0 invalid"
+  "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 169 cards, 0 invalid",
+  "heart_2026_11_01": "BLOCK read against the dates as H27 artifacts: test.same_puzzle_older against task194 v3 (drawn 2026-10-17) and test.same_driver_older against task174 v2 (2026-10-28), task242 (2026-10-17), task461 (2026-10-15) and task476 v2 (2026-10-20), all drawn after this build's 2026-10-12 draw. Surface exit 0."
  },
  "judge": {
   "verdict": "DETERMINISTIC (round 2, one isolated thread on the round 2 pack, 2026-10-14), every figure reproduced",
   "disposition": "APPROVE; its four residual forks closed in one generator pass with no graded figure moved (freeze.py PASS): SF20 and SF26 by the literal reading, SF25 closed in the data and not pinned, SF27 the 2024 twins a boy and a girl so every person key converges, SF23 the meaning of living in the region; both optional pins declined; no re-judge",
   "report": "task501/determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
   "gate_g": "method_or_model_selection on honest data, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive step analytical"
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "pass3": "2026-11-01 re-judge on 81564f489c1ab10c04582ad74fecb818: DETERMINISTIC (task501/determinism_check_report_pass3.md); the call (fund B; R 1.30 with no catch-up, B 0.89) forced and every figure reproduced; Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical. Its residual readings: the diary set is the stump (PS-07 3.1's 'throughout'); one child per GP return line is Ask 1's device, forced by the rows; the blank area codes equal the BT postcodes; LH27 by the circular; Imported by the column's own label. Its optional FIX_NOW (Ask 3's unit as people) was measured and not filed: the people clause hands the cracker Ask 3 (pair 60.4 against the 60 build line), and the judge rules the record reading incoherent (it collapses legacy pairs as one illness yet counts the same person's same-day notices twice; the pack's comments name them as notifications). Accepted residual risk on Ask 3's unit."
  },
  "returned": [
   {
@@ -41,6 +45,20 @@
    "portal": "10/10 audit 2026-10-13 COMPLIANT_WEAK (round 2): the next-generation matrix eigenvalue a textbook reflex, the contact survey a single-purpose signpost, Ask 1 cracked by the circular's table alone",
    "repair": "design",
    "commit": "the RESHIPPED (task501) commit of 2026-10-14"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK: nds_case_export_fields.txt, nscs_2023_public_file_codebook.xlsx and register_extract_notes_2027-07.docx, files whose names say they describe the data; nds_case_export_fields.txt names all 13 columns of nds_measles_cases_oriel_2019-2027.csv and register_extract_notes_2027-07.docx all 16 columns of register_people_active_born_1993-2017.csv)",
+   "repair": "leak",
+   "move": "Stopped shipping the four files that described the data: the three the sweep named and transmittal_list_2027-07-12.csv, a list of every file with its description, issuer, date and rows (the manifest the same rule bans). The codebook's Population sheet (the statistics office's 1 January 2023 estimate by age band, which SF6's reciprocity treatment reads) ships alone as nscs_2023_population_by_age_band.xlsx with its figures unchanged and the survey as its Company; per-file provenance (what each file covers, its issuer, its as-of date, an extract's run day, its rows) moved to metadata.json, whose subdomain no longer names the method. Each reading the dropped files closed is closed by the data or a sentence already filed, asserted through the verifier's csv and PDF reads: SF26 by the literal reading of the contacts file (physical an attribute of a listed contact) with standard 3.1, closure 8 by the diaries' own dates, SF23 by the meaning of living in the region and the postcodes, Ask 3 by the export's own labels and the hospital-laboratory comments on its records, Ask 2's date given against its load date (new fork row SF28, the re-judge's minor fork) by the export's own date_given with the prompt's 'have had'; no ask device was filed in any document and no document's text changed. checks.py gains H9 (no describing file by name, sheet or content, with positive controls), 310 assertions in all. The other 17 pack files are byte-identical to the round 2 pack; figures.json, submission.md, the goldens and the prompt are unchanged and freeze.py determinism passes. generator/ceiling.py added for precut's Measured by line: cracker 0 of 25 ask figures, mirror at its strongest 4 of 25, Mirror leakage 24.0, Pair ceiling 37.3.",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: the determinism judge's NOT_DETERMINISTIC of 2026-11-01 on the reship cut 8daa8d2a (FIX_NOW), asks 3 and 4: SF23, whether the register's area code or the address decides living in the region for the 1,091 pupils with a UK postcode; SF28, the date the dose counts run to",
+   "repair": "rubric",
+   "move": "Closes the judge's FIX_NOW of 2026-11-01 on asks 3 and 4 with the main call frozen. SF28 pinned in the prompt as the WHAT ('how many of those have had no valid MMR dose by that date', 904 characters, voice-check PASS). SF23 retired as a fork: the pupils living in Northern Ireland are held with no area code, so code and address agree they are not in the region (C1), nothing filed. The address pin was measured and not filed (it hands the cracker Ask 1 and Ask 2, pair 69.2), so Ask 1's silent device is re-sited: 201 children the school immunisation team did not find at school entry hold a second registration it opened, unmerged, joined to the first only by the GP card line loaded to both (106 of those lines withdrawn as already returned, leaving some first records with no valid dose); 3,479 residents in the region now show no practice, so no column marks the second registrations. Golden one person per child (SF29, C1: a return line is one dose to one child), asserted in checks.py with verifier-read controls and recomputed by verify.py on its own union. Every graded figure and figures.json unchanged (the device adds records, not people); only the people extract, events extract and query log changed, every call file byte-identical, no document changed. ceiling.py on the cut pack: cracker 0 of 25, mirror leakage 40.0, pair 41.7.",
+   "commit": "RESHIPPED (task501)"
   }
  ],
  "resume": "shipped (round 2); next event is the author's portal result",

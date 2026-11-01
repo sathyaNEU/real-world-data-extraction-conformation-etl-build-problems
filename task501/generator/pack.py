@@ -1,6 +1,8 @@
-"""Write the evidence pack's data files: the profile, the projection and the survey workbook (the call's inputs),
-the register extracts and the query log, the code list, the case export and the laboratory results (the asks'
-inputs), the stock return (a distractor) and the transmittal list."""
+"""Write the evidence pack's data files: the profile, the projection, the survey's public use files and its population
+table (the call's inputs), the register extracts and the query log, the code list, the case export and the laboratory
+results (the asks' inputs) and the stock return (a distractor). What each file is, who issued it and when lives in
+PROVENANCE, which golden.metadata writes to metadata.json outside the pack; no shipped file lists or describes the
+others (dataset-generation section 3)."""
 import csv
 import datetime as dt
 import os
@@ -13,7 +15,7 @@ FILES = {
     "projection": "population_projection_oriel_2028-01-01.csv",
     "participants": "nscs_2023_participants.csv",
     "contacts": "nscs_2023_contacts.csv",
-    "codebook": "nscs_2023_public_file_codebook.xlsx",
+    "population": "nscs_2023_population_by_age_band.xlsx",
     "options": "mmr_catch_up_options_autumn_2027.pdf",
     "standard": "ps07_measles_winter_planning_standard.pdf",
     "people": "register_people_active_born_1993-2017.csv",
@@ -22,18 +24,15 @@ FILES = {
     "queries": "gp_return_queries_mmr_2005-2027.csv",
     "lho": "lho_codes_national_2024-07.csv",
     "circular": "lho_revision_circular_2024-04.pdf",
-    "notes": "register_extract_notes_2027-07.docx",
     "guidelines": "immunisation_guidelines_ch12_mmr_excerpt.pdf",
     "cases": "nds_measles_cases_oriel_2019-2027.csv",
     "lab": "nmrl_measles_results_2019-2027.csv",
-    "fields": "nds_case_export_fields.txt",
     "uptake": "national_mmr_uptake_report_2027q1.pdf",
     "stock": "mmr_stock_return_2027-06-30.csv",
-    "transmittal": "transmittal_list_2027-07-12.csv",
 }
 DISTRACTORS = ("uptake", "stock")
-CALL_FILES = ("profile", "projection", "participants", "contacts", "codebook", "options", "standard")
-ASK_FILES = ("people", "events", "merges", "queries", "lho", "circular", "notes", "guidelines", "cases", "lab", "fields")
+CALL_FILES = ("profile", "projection", "participants", "contacts", "population", "options", "standard")
+ASK_FILES = ("people", "events", "merges", "queries", "lho", "circular", "guidelines", "cases", "lab")
 
 
 def iso(d):
@@ -174,79 +173,26 @@ def write_contacts(path, crow):
                      + ["physical", "duration", "frequency"], crow)
 
 
-def write_codebook(path, nat, n_parts, n_contacts):
+def write_population(path, nat):
+    """The survey's population table as its publisher released it beside the public use files: the statistics
+    office's estimate of the population of the State at 1 January 2023 in the survey's fifteen age bands, with the
+    all-ages total. One sheet of figures; nothing on it describes the survey's files or columns."""
     import openpyxl
-    from openpyxl.styles import Alignment, Font
+    from openpyxl.styles import Font
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "About"
-    (p1, a1, b1, q1), (p2, a2, b2, q2) = W.SURVEY_PERIODS
-    about = [
-        ("National Social Contact Survey 2023", True),
-        ("Public use file, release 1.0, %s" % W.SURVEY_RELEASE.strftime("%-d %B %Y"), False),
-        ("", False),
-        ("The survey asked a sample of people living in Ireland to record in a diary everyone they had contact with on "
-         "one assigned day: a conversation of at least three words in each other's presence, or any skin-to-skin "
-         "contact. A person met more than once on the day is recorded once.", False),
-        ("Fieldwork: diaries were kept for days from %s to %s and from %s to %s. Participants were recruited to a quota "
-         "in each five-year age band in each fieldwork period (%d per band in the first period, %d in the second), and "
-         "diary days were assigned so that each day of the week carries one seventh of each band's diaries in each "
-         "period." % (a1.strftime("%-d %B"), b1.strftime("%-d %B %Y"), a2.strftime("%-d %B"), b2.strftime("%-d %B %Y"),
-                       q1, q2), False),
-        ("%s participants returned a diary, listing %s contacts." % (format(n_parts, ","), format(n_contacts, ",")), False),
-        ("Children under 10 were reported by a parent or guardian; participants aged 10 to 14 completed the diary with a "
-         "parent's help.", False),
-        ("Ages of participants and of their contacts are released in five-year bands, with 70 and over in one band. A "
-         "contact whose age the participant could not estimate is coded Unknown. The diary had room for 45 contacts.",
-         False),
-        ("A contact can be recorded in more than one setting. School includes college and childcare.", False),
-        ("Geography below the State is not released in the public file.", False),
-        ("", False),
-        ("Files: nscs_2023_participants.csv (one row per participant) and nscs_2023_contacts.csv (one row per contact "
-         "listed), joined on part_id. The Population sheet gives the statistics office's estimate of the population of "
-         "the State at 1 January 2023 by age band.", False),
-        ("Please cite as: National Social Contact Survey 2023, public use file, release 1.0 (2024).", False),
-    ]
-    for i, (t, b) in enumerate(about, start=1):
-        if t:
-            c = ws.cell(row=i, column=1, value=t)
-            c.font = Font(bold=b, size=12 if b else 11)
-            c.alignment = Alignment(wrap_text=True, vertical="top")
-    ws.column_dimensions["A"].width = 120
-    f1 = wb.create_sheet("Participants file")
-    f1.append(["Field", "Description"])
-    for r in [("part_id", "Participant number."), ("age_band", "Age band of the participant on the diary day."),
-              ("sex", "F or M."), ("household_size", "People living in the participant's household, the participant "
-                                    "included."),
-              ("occupation", "Main activity: Pre-school, School pupil, Student, Employed, Unemployed, Home duties or "
-                             "Retired."),
-              ("diary_completed_by", "Self; Self, with a parent's help; or Parent or guardian."),
-              ("diary_date", "The day the diary was kept (yyyy-mm-dd)."), ("diary_day", "Day of the week of diary_date.")]:
-        f1.append(list(r))
-    f2 = wb.create_sheet("Contacts file")
-    f2.append(["Field", "Description"])
-    for r in [("contact_id", "Contact number."), ("part_id", "The participant who listed the contact."),
-              ("contact_age_band", "Age band of the contact, as estimated by the participant; Unknown if not given."),
-              ("contact_sex", "F or M; blank if not given."),
-              ("at_home, at_school, at_work, at_leisure, in_transport, elsewhere",
-               "Y where the contact took place in that setting; school includes college and childcare."),
-              ("physical", "Y for any skin-to-skin contact."),
-              ("duration", "Total time spent with the contact on the day, in five bands."),
-              ("frequency", "How often the participant usually sees the contact.")]:
-        f2.append(list(r))
-    f3 = wb.create_sheet("Population")
-    f3.append(["Age band", "Population, 1 January 2023"])
+    ws.title = "Population"
+    ws.append(["Age band", "Population of the State, 1 January 2023"])
     Np = CS.published_population(nat)
     for k, lab in enumerate(W.GROUP_LABELS):
-        f3.append([lab, int(Np[k])])
-    f3.append(["All ages", int(Np.sum())])
-    for sh in (f1, f2, f3):
-        for c in sh[1]:
-            c.font = Font(bold=True)
-        sh.column_dimensions["A"].width = 34
-        sh.column_dimensions["B"].width = 96
-    f3.column_dimensions["B"].width = 28
+        ws.append([lab, int(Np[k])])
+    ws.append(["All ages", int(Np.sum())])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    ws.column_dimensions["A"].width = 14
+    ws.column_dimensions["B"].width = 38
     wb.save(path)
+    return W.NG + 1
 
 
 # --- the asks' inputs ---------------------------------------------------------------------------------------------------
@@ -315,46 +261,40 @@ def write_stock(path, stock):
     return write_csv(path, ["store", "product", "batch", "expiry", "doses_on_hand", "counted_on"], rows)
 
 
-TRANSMITTAL = [
+# Provenance for metadata.json (outside the pack): per file what it covers, the body that issued it, its own as-of or
+# issue date and, for an extract, the day it was run. Never the method, a link between files or a mechanism.
+PROVENANCE = [
     ("profile", "Measles immunity profile by year of birth, Oriel Health Region, projected to 1 January 2028",
-     "National immunisation programme", "2027-05-14"),
-    ("projection", "Projected usual residents at 1 January 2028 by county and single year of age",
-     "Department of Public Health, health intelligence", "2027-03-22"),
+     "National immunisation programme", "2027-05-14", None),
+    ("projection", "Projected usual residents of Oriel Health Region at 1 January 2028 by county and single year of age",
+     "Department of Public Health, health intelligence", "2027-03-22", None),
     ("participants", "National Social Contact Survey 2023, public use file: participants", "National Social Contact Survey",
-     "2024-03-08"),
+     "2024-03-08", None),
     ("contacts", "National Social Contact Survey 2023, public use file: contacts", "National Social Contact Survey",
-     "2024-03-08"),
-    ("codebook", "National Social Contact Survey 2023, public use file: codebook", "National Social Contact Survey",
-     "2024-03-08"),
-    ("options", "Autumn 2027 MMR catch-up: options paper", "Regional Immunisation Office", "2027-06-09"),
-    ("standard", "PS-07 Measles winter planning standard (version 3.0)", "Department of Public Health", "2026-03-10"),
-    ("people", "Register extract: people with an active registration, born 1993 to 2017", "Regional immunisation register",
-     "2027-06-30"),
-    ("events", "Register extract: MMR events for registrations born 1993 to 2017", "Regional immunisation register",
-     "2027-06-30"),
-    ("merges", "Register extract: merged duplicate registrations, born 1993 to 2017", "Regional immunisation register",
-     "2027-06-30"),
+     "2024-03-08", None),
+    ("population", "National Social Contact Survey 2023, public use file: the statistics office's estimate of the "
+     "population of the State at 1 January 2023 by age band", "National Social Contact Survey", "2024-03-08", None),
+    ("options", "Autumn 2027 MMR catch-up: options paper", "Regional Immunisation Office", "2027-06-09", None),
+    ("standard", "PS-07 Measles winter planning standard, version 3.0", "Department of Public Health", "2026-03-10", None),
+    ("people", "Regional immunisation register extract: people with an active registration, born 1993 to 2017",
+     "Regional immunisation register", "2027-06-30", "2027-07-03"),
+    ("events", "Regional immunisation register extract: MMR events, people born 1993 to 2017",
+     "Regional immunisation register", "2027-06-30", "2027-07-03"),
+    ("merges", "Regional immunisation register extract: merged registrations, people born 1993 to 2017",
+     "Regional immunisation register", "2027-06-30", "2027-07-03"),
     ("queries", "Query log for GP return lines with an MMR dose, from January 2005", "Regional Immunisation Office",
-     "2027-07-03"),
-    ("lho", "Local health office codes in force from 1 July 2024", "National health service planning unit", "2024-07-01"),
-    ("circular", "Local health office areas: revision of 1 July 2024 (circular)", "National health service planning unit",
-     "2024-04-12"),
-    ("notes", "Register extract notes", "Regional immunisation register", "2027-07-05"),
+     "2027-07-03", "2027-07-03"),
+    ("lho", "Local health office codes in force from 1 July 2024", "National health service planning unit",
+     "2024-07-01", None),
+    ("circular", "Circular 03/2024: local health office areas, revision of 1 July 2024",
+     "National health service planning unit", "2024-04-12", None),
     ("guidelines", "National immunisation guidelines, chapter 12 (MMR), sections 12.4 to 12.6",
-     "National immunisation programme", "2025-11-24"),
-    ("cases", "Notifiable disease system: measles cases resident in Oriel Health Region, notified from 2019",
-     "Department of Public Health, surveillance", "2027-07-06"),
+     "National immunisation programme", "2025-11-24", None),
+    ("cases", "Notifiable disease system export: measles cases resident in Oriel Health Region, notified from 2019",
+     "Department of Public Health, surveillance", "2027-07-06", "2027-07-06"),
     ("lab", "National measles reference laboratory results for those cases", "National measles reference laboratory",
-     "2027-07-06"),
-    ("fields", "Case export field notes", "Department of Public Health, surveillance", "2025-03-03"),
-    ("uptake", "MMR uptake at 24 months and 5 years, quarter 1 2027", "National immunisation programme", "2027-06-20"),
-    ("stock", "MMR stock return at 30 June 2027", "Regional Immunisation Office", "2027-06-30"),
+     "2027-07-06", "2027-07-06"),
+    ("uptake", "MMR uptake at 24 months and 5 years, quarter 1 2027", "National immunisation programme", "2027-06-20",
+     None),
+    ("stock", "MMR stock return at 30 June 2027", "Regional Immunisation Office", "2027-06-30", None),
 ]
-
-
-def write_transmittal(path, rows_by_key):
-    rows = []
-    for key, desc, source, asof in TRANSMITTAL:
-        n = rows_by_key.get(key)
-        rows.append([FILES[key], desc, source, asof, "" if n is None else n])
-    return write_csv(path, ["file", "description", "source", "as_of", "rows"], rows)

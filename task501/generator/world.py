@@ -14,14 +14,14 @@ PEOPLE = {
     "manager": "Eadaoin Bonner",      # regional immunisation manager, the options paper
     "director": "Nigel Macmillan",    # director of public health, the planning standard
     "surveillance": "Therese McGann", # surveillance scientist, the case export
-    "register": "Karl McLoughlin",    # register data manager, the extract notes
+    "register": "Karl McLoughlin",    # register data manager (runs the register extract)
 }
 
 ASSESS = dt.date(2028, 1, 1)          # the winter assessment date (standard 3.3)
 AS_AT = dt.date(2027, 6, 30)          # register extract as-at date
 RUN = dt.date(2027, 7, 3)             # register extract run date
 NDS_RUN = dt.date(2027, 7, 6)         # case export run date
-PACK_DATE = dt.date(2027, 7, 12)      # the transmittal list; every file's mtime
+PACK_DATE = dt.date(2027, 7, 12)      # the pack's date; every file's mtime
 CUTOVER = dt.date(2024, 7, 1)         # local health office revision in force
 WINDOW = (dt.date(2019, 1, 1), dt.date(2027, 6, 30))   # the case ask's onset window
 MIGRATION = dt.date(2021, 3, 1)       # the notifiable disease system went live
