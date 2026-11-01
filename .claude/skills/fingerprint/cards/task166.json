@@ -1,95 +1,101 @@
 {
   "task": "task166",
-  "architecture": "v3",
-  "drawn": "2026-10-26",
-  "slot_note": "re-root after portal round 1 on architecture 2 (2026-10-26, both responses on the v2 golden) and nine candidates set aside on Opus call-only probes; wave 7 slot numbered from seed FC37, whose world is not kept: the new draw is a construction project-management software company's 2027 new paying customers by sales region, drawn without a seed under the author's ruling of 2026-10-26 (no retiring and no pausing; new worlds and new stump strategies allowed)",
-  "domain": "product-analytics",
-  "subdomain": "feature-adoption-diffusion-modeling",
-  "client_domain": "product-analytics",
-  "niche": "a construction project-management SaaS placing its 2027 onboarding pod with the regional sales team expected to add the most new paying customers in calendar 2027, when about two in five new customers are founded by people who left a paying customer for a contractor not yet on the software",
+  "architecture": "v4",
+  "drawn": "2026-11-01",
+  "slot_note": "re-root after the portal landed architecture 3 (shipped 2026-10-27; the author's Batch 5 sheet of 2026-10-31 records the call as landed) and architectures 1 and 2 before it, each the field's named method executed by reflex; the new draw moves to another world (a UK trade publisher's year-end returns allowance), dataset and prompt shell under the same objective and number, away from task144's axes (product-analytics, feature-adoption-diffusion-modeling, software_or_platform), with the field's development method at the bottom of the ladder and the decisive step the precondition this book violates",
+  "domain": "accounting-audit-forensic",
+  "subdomain": "revenue-receivables",
+  "client_domain": "actuarial-science-insurance",
+  "niche": "a UK trade publisher's year-end sale-or-return allowance on copies already invoiced, when its autumn 2026 hardbacks have their paperbacks scheduled four to five months after publication against about a year for the hardbacks its returns history ran off",
   "objective": "forecasting",
   "shape": "other",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Place the 2027 onboarding pod with the Southwest team: it is expected to add about 600 new paying customers in calendar 2027 (to the nearest 200), the most of the six regions, and Texas & Gulf comes second.",
-  "answer_source": "task166/submission.md block 1; task166/generator/figures.json call",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "(provisional at the draw) hold a returns allowance of about £4.5 million at 31 October 2026, against about £3.8 million on every development of the returns history",
+  "answer_source": "task166/DESIGN_NOTE.md ## Draw (provisional); submission.md block 1 at ship",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
-    "none"
+    "E"
   ],
   "generators": [
+    "G14",
     "G13",
-    "G14"
+    "G6"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "none",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "With both billing systems stitched, divisions, reactivations and voided first invoices removed and the March 2024 territory map applied, the easy route fits each region's monthly new paying customers on its own trend, season and marketing spend, picks the form by back-test, finds the customer-referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; it never links a new workspace's first user to the people who left paying customers, so the Southwest's April to September 2026 surge of departing project staff, who found new customers through 2027, never enters it.",
-  "domain_test": "The deciding quantity is each region's 2027 new paying customers, which product-adoption analysis forecasts as organic acquisition plus the adoption users carry to a new organisation when they change jobs, measured by linking each new workspace's founding admin to departures from paying workspaces and projected as a lagged yield on departures; with a hospital's or a utility's nouns there is no workspace founded by a former user and no adoption carried by a job move, so the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:peer-pipeline-through-departing-users",
+  "analyst_test": "With every channel, migrated account code, credit and strip return read correctly, the easy route develops returns by format, channel and months since invoice on the five-year record (a trailing return rate, or a chain-ladder on the returns triangle, both back-testing within a few per cent on the 2024 and 2025 year ends) and holds about £3.8 million; it never ties a forthcoming paperback to its hardback, so the autumn 2026 hardbacks run off on a history whose paperbacks came about a year later.",
+  "domain_test": "The deciding quantity is the expected credit for copies already invoiced that shops will send back under sale-or-return, which a reserving analysis develops by format, channel and months since sale; a hardback's run-off turns on when its own paperback goes on sale, and with a hospital's or a utility's nouns there is no successor edition that sends its predecessor's stock back, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:hardback-run-off-conditioned-on-its-paperback-date",
   "layer1": [
-    "the legacy billing export to February 2023 (codes, monthly price in cents) beside the subscription register from the December 2022 to February 2023 dual run (account numbers, annual contract value), migrated accounts in both",
-    "voided first invoices (refunded inside 14 days) and companies re-invoiced after a void",
-    "divisions of paying customers billed as their own accounts under a parent, rolled up through the CRM crosswalk",
-    "reactivations within 12 months on the same company, and returns after longer gaps that count as new",
-    "the March 2024 territory realignment (Tennessee from Southeast to Midwest) with the CRM's sales region stamped at creation",
-    "the marketing spend workbook in fiscal months (February to January) and thousands of dollars, the plan to January 2028",
-    "the user directory's UTC timestamps, deactivations at account closure beside job-change removals, and four deactivation reasons for one event",
-    "mobile numbers in six formats on every user (the field app signs users in by mobile), names with nicknames and middle initials",
-    "open trial workspaces with no CRM account yet",
-    "the board deck's fiscal-year counts on the old territory map (a distractor)",
-    "the onboarding session log in UTC with one booking row per customer on group training and office hours, shadowing specialists on a colleague's booking, implementation partners booking their clients' sessions under their own CRM accounts, specialists covering another pod's sessions, a specialist still listed on a colleague's booking that falls wholly inside a session of their own (office hours run half an hour into the pod partner's webinar), and an HR roster of each specialist's pod assignments with their dates (ask devices)",
-    "the subscription register's rate plan SKUs, numbered in launch order until the July 2026 product catalog renumbered them in price order, beside its Amendments sheet, same-day booking corrections on the first invoice date, a day's plan move and the seats taken with it referenced in the order they were keyed rather than the order applied, first-year prices (introductory discounts, and a spring 2025 offer selling Pro at Core's list price on Pro's own SKU) stepping up at the first anniversary, and onboarding cases whose terms follow the subscription until go-live (ask devices)"
+    "the 2023 ERP migration: six-digit legacy account codes beside the new codes, crosswalked on the account master",
+    "ISBN-13 with and without hyphens across the ledger, the distributor and the consumer panel",
+    "credits raised at the account's discount in force on the credit date, not the invoice's",
+    "the chain's branch returns consolidated through its returns hub under the hub's authorisation",
+    "strip returns (covers only) from the supermarket supplier for mass-market paperbacks",
+    "credit notes raised days to weeks after the distributor's receipt date",
+    "the financial year to 31 October against calendar quarters and the distributor's own week numbers",
+    "paperbacks retitled or subtitled against their hardbacks, contributor names in two formats",
+    "the consumer panel covers UK retail only, not export",
+    "pre-publication subscription orders invoiced ahead of the publication date",
+    "damaged-in-transit claims credited with a reason code beside returns"
   ],
-  "stakeholder_role": "VP Customer Onboarding",
-  "role_family": "other",
+  "stakeholder_role": "Group Financial Controller",
+  "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "product_user_directory_2026-10-01.csv",
-    "rows": 256204,
-    "entity": "one user on one customer workspace",
-    "grain": "user x workspace",
-    "source": "synthetic (constructed in the layout of a SaaS product's user directory export)"
+    "file": "sales_ledger_FY2022-FY2026.sqlite (invoice_lines)",
+    "rows": 0,
+    "entity": "one ISBN on one invoice to one trade account",
+    "grain": "invoice line (invoice x ISBN)",
+    "source": "synthetic (constructed in the layout of a trade publisher's sales ledger export)"
   },
-  "forum": "other",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "software_or_platform",
+  "forum": "auditor",
+  "forcing_event": "period_close",
+  "org_family": "media_or_publishing",
   "world": {
-    "geography": "United States (six sales regions)",
-    "currency": "USD",
-    "org_type": "construction project-management software company",
+    "geography": "United Kingdom",
+    "currency": "GBP",
+    "org_type": "independent trade publisher with its own imprints",
     "invented_names": [
-      "Plinthwise"
+      "Marrowgate Books"
     ],
     "people": [
-      "Jeff Guzman",
-      "Joseph Clay",
-      "Guy Morrison"
+      "Hilary Singh",
+      "Marc Hudson",
+      "Jade Hewitt"
     ]
   },
   "deliverables": [
-    "onboarding_pod_2027.docx",
-    "onboarding_staffing_2025.xlsx"
+    "returns_allowance_FY2026.xlsx",
+    "returns_allowance_note.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "Next period's new members include organisations founded by people who left an existing member for one not yet served, at a yield and a lag that linking the records shows; a forecast from each group's own arrival history, trend, season and spend misses a recent surge of departures from one group's members, which arrives as new members through the following year.",
-  "driver_concrete": "About two in five of Plinthwise's new paying customers are founded by someone who left a paying customer for a contractor not yet on the software, a median of 11 months later and close to nine times in ten in the same region; between April and September 2026 the Southwest's customers removed about four times their usual number of users, so the Southwest adds about 600 new paying customers in 2027 (to the nearest 200) against about 480 for Texas & Gulf, which leads every forecast on the regions' own history.",
-  "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
+  "question_form": "how-much",
+  "driver": "Leftover stock of a unit comes back once a successor version of the same work goes on sale, and the share that comes back grows the sooner the successor follows, so a run-off measured on cohorts whose successors followed late, which back-tests well, understates a cohort whose successors are scheduled early, a schedule held only as the successors' own forthcoming records with no key back to the units they replace.",
+  "driver_concrete": "Marrowgate's autumn 2026 hardbacks have their paperbacks listed as forthcoming titles, under their own ISBNs and often retitled, four to five months after publication, against about a year for the hardbacks in its returns history, so the shop stock kept to sell through the spring comes back once each paperback is out; the allowance at 31 October 2026 is about £4.5 million against the £3.8 million every development of the returns history gives.",
+  "stump": "The default path develops returns by format, channel and months since invoice from the five-year record (a trailing return rate or a chain-ladder on the returns triangle, back-tested on the 2024 and 2025 year ends) and holds about £3.8 million; the step that lands it there is running the autumn 2026 hardbacks off on the history's pattern, when their paperbacks, listed as forthcoming titles under their own ISBNs, are due four to five months after publication rather than a year, so the stock shops kept for the spring comes back and the allowance is about £4.5 million.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task306": "task306 forecasts failures in an asset base still taking in old units its roll does not yet hold; here no unit is missing from a roll: next year's new members are organisations founded by people who left existing members, at a yield and a lag the linked record shows, so a surge of departures, not an arriving cohort's age, carries the forward count",
-    "task468": "task468's earlier architectures cost the units active today by how long their spell has run; here nothing is costed per active unit: next year's new members are forecast from the people leaving existing members, each founder linked to the departure that seeded it, a lagged yield no tenure curve carries",
-    "task98": "task98 v6 counts units under a score threshold after a classifier change; here no threshold or classifier moves: the forward count adds the new members founded by existing members' leavers, a lagged yield on departures recovered by linking records across organisations"
+    "task117": "task117 replays closed operations under per-unit draw caps reached through a dated join; here nothing is capped or replayed: a hardback's leftover shop stock comes back when its own paperback goes on sale, a successor held only as a forthcoming record with no key back, and the history's paperbacks came about a year after publication",
+    "task137": "task137's lineage priced a one-off repricing by the gap a unit locked in (and its two kinds of unit); here no price moves: a hardback's run-off is conditioned on when its successor edition goes on sale, which the forthcoming list sets four to five months out for the autumn 2026 hardbacks against a year in the history",
+    "task171": "task171's lineage priced take-up on each unit's own saving and a collected share on the payer's renewal date; here the yield is the share of a hardback's leftover shop stock that comes back, conditioned on a successor edition's on-sale date that sits in another record with no key back",
+    "task37": "task37 conditioned a conversion on a linked entity's authorisation under a rule recovered from a closed roll; here no rule is recovered and nothing converts: the run-off of copies already invoiced is conditioned on the on-sale date of each title's own successor edition",
+    "task44": "task44 split a pilot's pooled gain by a behavioural moderator measured over a prior window; here no pilot or moderator: a run-off reserve on copies already sold in is conditioned on a successor edition's scheduled date, which no development of the record carries",
+    "task481": "task481 restates a count onto a new classification by conversion rates from a dual-coded window; here nothing is reclassified: the expected returns on copies already invoiced turn on when each hardback's own paperback goes on sale",
+    "task97": "task97 conditions a unit's need on the cumulative history of the place it occupies through a retired system; here the condition is forward, a successor edition's on-sale date on the forthcoming list, and the history it is missing from is every earlier cohort's later paperbacks",
+    "task155": "task155 conditions take-up on whether a task carries straight on from scheduled work at the same place; here the conditioned yield is leftover stock coming back to a publisher once a successor edition is on sale, scheduled sooner than any in the record",
+    "task166": "v1 conditioned a balloon loan's extension on its refinance cover at the planning rate, a borrower's own option under a rate path; v4 has no option and no rate: a hardback's leftover shop stock comes back when its own paperback goes on sale, a successor held only as a forthcoming record under another ISBN"
   },
   "lineage": [
     {
@@ -150,8 +156,63 @@
       "driver": "A junior unit leaves when the whole stack it belongs to is replaced or sold, and the holder replaces the stack when its blended price, each layer weighted by its size, rises above the price of one new senior unit; read off the junior's own price, or off the senior's alone, the exits validate on a record where a stack with a high-priced layer was high-priced throughout, and they miss a forward book whose largest juniors sit on small, cheap seniors, which lock nothing because they are small.",
       "driver_concrete": "Muskegon and the north's 1,460 equity taps of 2023 to 2026 ($70,000 to $112,000 at 8.1 to 9.4 per cent) sit behind first mortgages opened from 2010 to 2015 at 3.5 to 4.75 per cent with $65,000 to $125,000 left, so the debt on each house carries a blended rate of about 6.3 to 6.6 per cent: quiet while the posted 30-year rate held at 6.6 to 7.3 per cent through 2024 to 2026, and in the money from February 2027 as the planning cycle's base case takes it from 6.45 to 5.20 per cent; the region's members then pay off about $40 million of fixed-rate home equity principal in 2027, where the own-rate S-curve names Grand Rapids (about $60 million), the first mortgage's own incentive names the Lakeshore and the trailing payoffs name Kalamazoo and Battle Creek.",
       "stump": "A strong solver fits the home equity payoffs on each loan's own note rate against the posted home equity rate, a curve the 2019 to 2026 payoffs support, and names Grand Rapids at about $60 million, or reads the lock-in off each first mortgage's own rate and names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the north's large 2024 to 2026 taps sit behind small seasoned firsts at 3.5 to 4.75 per cent, so its stacks blend near 6.5 per cent and come into the money as the planning path falls, and it pays off about $40 million."
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-26",
+      "domain": "product-analytics",
+      "subdomain": "feature-adoption-diffusion-modeling",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:peer-pipeline-through-departing-users",
+      "forum": "other",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "software_or_platform",
+      "driver": "Next period's new members include organisations founded by people who left an existing member for one not yet served, at a yield and a lag that linking the records shows; a forecast from each group's own arrival history, trend, season and spend misses a recent surge of departures from one group's members, which arrives as new members through the following year.",
+      "driver_concrete": "About two in five of Plinthwise's new paying customers are founded by someone who left a paying customer for a contractor not yet on the software, a median of 11 months later and close to nine times in ten in the same region; between April and September 2026 the Southwest's customers removed about four times their usual number of users, so the Southwest adds about 600 new paying customers in 2027 (to the nearest 200) against about 480 for Texas & Gulf, which leads every forecast on the regions' own history.",
+      "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
+      "fate": "spent: the portal's responses landed the call on the version shipped 2026-10-27 (the author's Batch 5 sheet, 2026-10-31: the Southwest at about 600 new paying customers, the golden); linking each new workspace's founder to the users who left paying customers, through the one mobile key the determinism repair put on every directory row, and the Southwest's 2026 surge of removals (about four times usual) were read by reflex, so the slot re-roots into another world, dataset and shell"
     }
   ],
-  "notes": "stump_strategy other: a peer pipeline, next period's arrivals founded by the people who leave the existing members, at a yield and a lag the linked record shows. forum other: the VP Customer Onboarding places the pod inside the approved FY2028 plan. role_family other: VP Customer Onboarding. generators: G13 for the lag that lands the 2026 departures in the 2027 window, G14 for the yield per departing user that the region's own arrival rate does not carry. gap population first: the arrivals history is two processes, and the one founded by former users is driven by departures rather than by the region's own past arrivals.",
-  "registered": "2026-10-26T15:04:58Z"
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "send",
+      "rounding opener": "round",
+      "deliverable set": "docx+xlsx"
+    },
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "stump_strategy composition_mix: the 2026 autumn hardback cohort's mix on a property no column names (months from a hardback's publication to its own paperback's) differs from every cohort the development was measured on. forum auditor: the year-end audit of the allowance. client_domain actuarial-science-insurance: the allowance is a run-off reserve developed by the reserving task type (reserving-development-triangles, which serves forecasting); the house subdomain revenue-receivables is the variable consideration on trade receivables. lineage_shells: v3's shell read off its shipped prompt; v1's and v2's recorded from their deliverable sets (pptx+xlsx, png+xlsx) with their which questions. context_artifact published_series: the trade's weekly consumer sales panel the finance team reads beside its ledger (filed_standard, register and operations_log are held by the last three builds).",
+  "registered": "2026-11-01T22:03:36Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "build",
+    "rounding opener": "all",
+    "deliverable set": "pdf+xlsx"
+  }
 }

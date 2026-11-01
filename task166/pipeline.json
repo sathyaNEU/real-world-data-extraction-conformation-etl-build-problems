@@ -1,38 +1,32 @@
 {
  "task": "task166",
- "status": "SHIPPED",
- "domain": "product-analytics",
+ "status": "DESIGN",
+ "domain": "accounting-audit-forensic (client domain actuarial-science-insurance)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-27",
- "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
- "architecture": 3,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "The default path develops returns by format, channel and months since invoice from the five-year record, a trailing rate or a chain ladder that back-tests within a few per cent on the 2024 and 2025 year ends, and holds about £3.8 million; the step that lands it there is running the autumn 2026 hardbacks off on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs, are due four to five months after publication instead of about a year, so the stock shops kept to sell through the spring comes back once each paperback is out and the allowance is about £4.5 million (provisional at the draw).",
+ "architecture": 4,
  "loops": 0,
- "card_registered": "2026-10-26T15:04:58Z",
- "guard": "check WARN on the registered card, no BLOCK: repeat.gate_g against task137 v4, repeat.decision and repeat.question_form against task270 v6; test.same_driver_older differentiated on the card (task306, task468 v2 and v3, task98 v6); nearest driver 0.07 (task130 v3 lineage, task181 v2 lineage)",
- "ruling": "Author ruling 2026-10-26: no retiring and no pausing; task166 continues until it ships; new worlds and new stump strategies are allowed; heavier realistic Layer 1 mess, a technique where several defensible methods compete while the answer stays deterministic. Architecture 3 is candidate 11 (Plinthwise, a construction project-management software company: new paying customers founded by departing users), which passed two Opus call-only probes on 2026-10-26 (p166ya Texas & Gulf 410.3, p166yb Texas & Gulf 414.4, neither looked at departures or founders).",
+ "card_registered": "2026-11-01T22:03:36Z",
+ "guard": "check WARN on the registered card, no BLOCK: overuse.objective, repeat.gate_g and overuse.gate_g (forecasting, task273 v5, task157 v3); test.same_puzzle_older, test.same_driver_older and test.own_lineage differentiated on the card; ban.artifact cleared by redrawing the context artifact to published_series; nearest driver 0.07 (task43 lineage)",
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27",
-  "checks": 51,
-  "pair_ceiling": 34.0,
-  "mirror_leakage": 0.0
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-27 --asof 2026-10-20 on ed469ea8, no LEAK: sweep 3, the request memo shares the question's words (the 2027 onboarding pod, new paying customers, calendar 2027) and names the Southwest only among the regions each pod serves, no figure; sweep 4, four and six common stump-paragraph words in the dictionary and the request memo (record, source, specialist, mobile; months, history, roster, southwest, beside, specialist), field meanings and the memo's own definitions, neither names the move; dates, names, vocabulary, hidden content and the prompt gate clean",
-  "reader": "eight scored readers in four rounds, all off the call (Texas & Gulf at about 500, then 400, against the Southwest at 600); round 4 on ed469ea8: Sonnet 0 of 60 ask figures (12.0), Opus 12 of 60, the Enterprise cells (23.0), pair 17.5; question 1 none and question 6 analytical at every round"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-27 against origin/main at 24ecab70 with this card overlaid, no BLOCK: repeat.gate_g (forecasting, task137 v4), test.same_driver_older differentiated on the card (task306, task468 v2 and v3, task98 v6); nearest driver 0.07 (task130 v3, task181 v2, task134 v2 lineages), then 0.06 (task468 v4, task485)",
-  "surface": "exit 0 2026-10-27 against origin/main at 24ecab70: the same five pairs promoted, four on surface similarity alone (task167 0.105, task229 0.104, task139 0.103, task261 0.101; corpus top 1 per cent, different domains, decisions and drivers) and task306 0.092 on the same-driver signature already differentiated on the card; personas Jeff Guzman and Guy Morrison, both on the card"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task166/determinism_check_report_pass4.md (round 4 on ed469ea8, no fix); round 1 determinism_check_report_a3.md (NOT_DETERMINISTIC on the figure at the nearest 100), round 2 determinism_check_report.md and round 3 determinism_check_report_pass3.md (NOT_DETERMINISTIC on ask 1 only, FIX_NOW, each closed in one pass)",
-  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -46,14 +40,21 @@
    "portal": "round 1 on architecture 2 (f022d2a9, delivered 10-25): call landed by both responses, each opening the pilot in Muskegon and the North at about $40 million of 2027 payoffs with the Lakeshore second (the golden), with he_payoff_pilot_2027.xlsx and payoff_quotes_by_center.png built (137 and 163 resources reviewed, 32 minutes each); the whole-stack refinance incentive chosen over the own-rate and first-only curves on fit and back-test is a reflex for the portal's models, as stage 4's Opus reader showed",
    "repair": "re-root (architecture 3, off the enumerate-and-back-test chain; a call-only Opus probe on a prototype pack before the build)",
    "commit": ""
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "the author's Batch 5 sheet: the call landed on architecture 3 as shipped 10-27 (the Southwest at about 600 new paying customers, the golden); the founder link through the directory's one mobile key and the Southwest's 2026 removals surge read by reflex",
+   "repair": "re-root (architecture 4: another world, dataset and shell; /build task166 from 2)",
+   "commit": ""
   }
  ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": null,
  "portal": {
   "round1": "2026-10-25: not stumped, both responses on the call (CRE, $150 million)",
-  "round1_v2": "2026-10-26: not stumped, both responses on the call (Muskegon and the North, $40 million, the Lakeshore second)"
+  "round1_v2": "2026-10-26: not stumped, both responses on the call (Muskegon and the North, $40 million, the Lakeshore second)",
+  "round1_v3": "2026-10-31 (author's sheet): landed, the Southwest at about 600"
  },
  "portal_id": "",
  "portal_status": "",
@@ -138,48 +139,79 @@
   "delivered": "2026-10-25",
   "resume_at_pause": "architecture 3 draw open: nine candidates set aside (eight landed by Opus call-only probes, the ninth unprobed with task137 v3's semantics anatomy); the outside-population family conflicts with the three rules; the next draw needs a decisive step that is analytical, filed for determinacy and not found by an Opus probe, on the author's go"
  },
- "stage3": {
-  "date": "2026-10-27",
-  "zip_sha256": "ed469ea8106d0666f50d850830d6d9e5f0d938c95dac90d8088e7d8272ff3cb6",
-  "checks": "130 of 130 PASS (generator/checks.py: G1 to G6, C1 to C6, L0 to L4, F1 to F8, R1 to R4, SF1 to SF25, A1 to A9, S1 to S5, D1 to D5, Q1 to Q9)",
-  "verify": "15 of 15 PASS (generator/verify.py, independent path; plans by the SKU of record, the numbering read off the starting prices' majority fit)",
-  "rebuild": "two builds byte-identical: target, golden, figures.json",
-  "figures_check": "PASS, 78 figures in blocks 1 to 4, 0 absent",
-  "precut": "exit 0, 51 checks, 0 FAIL, 0 WARN",
-  "voice_check": "exit 0 (907 characters)",
-  "ceiling": "pair 34.0, mirror leakage 0.0 per cent (generator/ceiling.py on the cut pack, reader B's round 3 routes as the cracker, keeping the 12 Enterprise figures, and reader A's as the mirror); one device cracked: ask A 45.0, ask B 45.0",
-  "reader_routes": "both round 3 readers' conventions re-run as code on the cut pack: reader B 12 of 60 (hours 0 of 24, every listed specialist counted; plans by chained terms and price fit, the 12 Enterprise figures kept), share 23.0; reader A 0 of 60, share 12.0; round 2's routes 1 and 0 of 60; an independent golden route from the pack alone reproduces all 60",
-  "scrub": "target and golden clean (scrub_producer_metadata.py, floor 2019-01-01, ceiling 2026-10-23)",
-  "call": "Southwest 607.5 (607.55; 600 to the nearest 200, 92.5 from the edge), Texas & Gulf second 484.3, margin 1.255; the third 363.0",
-  "default_path": "Texas & Gulf 478.5 to 525.9 over the careful forms, 483.5 and 483.0 on the probes' routes, the Southwest second at 404.5 to 447.6",
-  "family": "F1 90 constructions 594.6 to 631.6; F5 12 linkage conventions 600.5 to 607.7; F6 the round 1 judge's 72 choices 509.0 to 612.0 (540.9 to 607.6 on the mobile); every one names the Southwest with Texas & Gulf second; F7 the double count 822.2 to 851.3",
-  "files": "16 files in 4 formats; product_user_directory_2026-10-01.csv 256,204 rows; distractors board_deck_2023-03_customer_growth.pdf and onboarding_csat_responses_2024-2026.csv",
-  "golden_realism": "memo unchanged; the workbook's notes state each device's handling as an analyst's footnotes (a listed specialist's booking wholly inside their own session; each customer on the plan its SKU names, the spring 2025 PLW-100 starts at Core's list being Pro); no tell, no dash",
-  "house_fixes": "H1 clean; H4 zip members equal target; H8 citations resolve; H11 one submission and prompt; H16 no export dated after the pull; H23 no presupposition",
-  "components": "removals about 6,500 (6,483 by the planning basis's Seats line, 6,486 by the leaving reasons, R4), about four times the 2025 monthly 267.0; founders 4,451, about two in five of 2025 (43.3 per cent by mobile), a median lag of 10 to 11 months (11 calendar months, 333 days, 10 whole months); about 400 founded by leavers beside a usual intake of about 150 to 200 (F8: 386.0 to 427.8 and 149.1 to 203.8); the round 2 judge's own removal and founder routes rebuilt from the repaired pack's files give 6,486 and 4,451; block 3's step 5 states the parts as about 400, about 200 and about 600"
- },
- "stage4_round1": {
-  "date": "2026-10-26",
-  "zip": "0dea9805",
-  "readers": "reader A (Sonnet, medium) Texas & Gulf 500 (510.0: a Poisson GLM with region effects, log spend at lags 0 and 1 and a trend), the Southwest second at 441, asks 24 of 48 (every cohort and contract value cell, no hour); reader B (Opus, medium) Texas & Gulf 500 (517.0: a per-region Poisson on log planned spend with a trend and month), the Southwest second at 417, asks 48 of 48; neither looked at the removals or linked a founder",
-  "judge": "NOT_DETERMINISTIC (margin_or_boundary_fragility), FIX_NOW, confined to the figure: 18 constructions at 519 to 581 against 608.9 at the nearest 100; the region and the runner-up forced, all 48 ask figures reproduced; Gate G forecasting, analytical_non_defect, surface no, sole defect no; Gate H domain, layers and decisive step analytical (determinism_check_report_a3.md)",
-  "repair": "the directory carries a mobile on every user (one link key), the memo's region sentence literal for a leaver's company, the figure to the nearest 200 (607.6, 92.4 from the edge), the judge's 72 constructions asserted (F6, 509.2 to 612.1) beside the double count (F7, 822.3 to 851.4); ask A by onboarding pod on the roster's stale pods and cross-pod cover, ask B pinned to the terms in force on the first paid invoice date and sitting on the July 2026 catalog's renumbered SKUs; each company's plan and seats follow its signup team (Q9), plan changes typed Plan change, the memo's chart split by usual intake and leavers' companies"
- },
- "stage4_round2": {
-  "date": "2026-10-26",
-  "zip": "39daad7a",
-  "readers": "reader A (Sonnet, medium) Texas & Gulf 400 (a Poisson with region effects, month and trend), the Southwest second, asks 0 of 60 (share 12.0); reader B (Opus, medium) Texas & Gulf 400 (477: a monthly Poisson with region effects, month, a common trend and log spend at lags 0 to 2, best back-tested), the Southwest second, asks 36 of 60 (all 18 counts and 18 contract values by price and seats, no hour), share 45.0, exit 1; pair 28.5, both off the call",
-  "judge": "NOT_DETERMINISTIC (underspecified_objective) on ask 1 alone, FIX_NOW: group sessions undefined (template, bookings at a start, attendees) and each specialist's 2025 pod unfiled; the call and asks 2 and 3 forced; the removal and founder components drifting (5,715 against about 6,500, about 4,000 against 4,451); Gate G forecasting, analytical_non_defect, surface no, sole defect no; Gate H domain, layers and decisive step analytical; stump power high (determinism_check_report.md)",
-  "repair": "the dictionary names the group templates (SF16) and the roster carries each specialist's pod assignments with their dates (SF15), spending the stale roster; every leaving deactivation carries its reason (R4); ask A's primary re-sited onto a specialist still listed on a booking a colleague took over while holding a session of their own (A7: 130 overlapping pairs, 59 in 2025, in all 24 cells), ask B's onto a day's plan move and its seats referenced in keying order (A8: 2,618 multi-amendment days, 1,305 against the applied order, 140 cohort starts), the renumbering kept as a hazard (B2); block 3's step 5 states the 2027 parts as the components do; the call, the runner-up, the figure and every graded ask figure unchanged"
- },
- "stage4_round3": {
-  "date": "2026-10-27",
-  "zip": "45fa2e01",
-  "readers": "reader A (Sonnet, medium) Texas & Gulf 400, asks 0 of 60 (every listed specialist counted, plans permuted by today's catalog); reader B (Opus, medium) Texas & Gulf 400, asks 36 of 60 (plans by chaining each day's amendments after to before and fitting price to seats; hours 0 of 24), exit 1",
-  "judge": "NOT_DETERMINISTIC on ask 1 alone, FIX_NOW: the clashes overlapped by 30 or 45 minutes, so counting only the minutes outside a specialist's own session was a third reading (30.25 hours against the golden's 60.5); the call, asks 2 and 3 (the old numbering forced by price on all 1,744) and the components pass; optional: step 3's 333 days and 5.7 per hundred (determinism_check_report_pass3.md)",
-  "repair": "A1 closed by construction: each office hour runs half an hour into the pod partner's webinar and every listed-not-hosting booking lies wholly inside the listed specialist's own single-host session (A7, SF24: 65 pairs, no other overlap, the minutes route equal to the golden); ask B's primary re-sited onto reader B's route: a spring 2025 offer sold Pro at Core's list price on Pro's own SKU for its first year, stepping to Pro's list at the first anniversary (A9, SF25: 36 starts in every region, 30 of 30 stepped), with 127 benign introductory price changes beside it; keying order and renumbering kept as hazards; step 3's lag stated as about 11 months; the call, the runner-up and the figure unchanged, the hours and contract values recomputed"
- },
- "gates": {
-  "target_zip_sha256": "ed469ea8106d0666f50d850830d6d9e5f0d938c95dac90d8088e7d8272ff3cb6"
+ "architecture_3": {
+  "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
+  "card_registered": "2026-10-26T15:04:58Z",
+  "guard": "check WARN on the registered card, no BLOCK: repeat.gate_g against task137 v4, repeat.decision and repeat.question_form against task270 v6; test.same_driver_older differentiated on the card (task306, task468 v2 and v3, task98 v6); nearest driver 0.07 (task130 v3 lineage, task181 v2 lineage)",
+  "ruling": "Author ruling 2026-10-26: no retiring and no pausing; task166 continues until it ships; new worlds and new stump strategies are allowed; heavier realistic Layer 1 mess, a technique where several defensible methods compete while the answer stays deterministic. Architecture 3 is candidate 11 (Plinthwise, a construction project-management software company: new paying customers founded by departing users), which passed two Opus call-only probes on 2026-10-26 (p166ya Texas & Gulf 410.3, p166yb Texas & Gulf 414.4, neither looked at departures or founders).",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-27",
+   "checks": 51,
+   "pair_ceiling": 34.0,
+   "mirror_leakage": 0.0
+  },
+  "leak": {
+   "leak_py": "REVIEW 2026-10-27 --asof 2026-10-20 on ed469ea8, no LEAK: sweep 3, the request memo shares the question's words (the 2027 onboarding pod, new paying customers, calendar 2027) and names the Southwest only among the regions each pod serves, no figure; sweep 4, four and six common stump-paragraph words in the dictionary and the request memo (record, source, specialist, mobile; months, history, roster, southwest, beside, specialist), field meanings and the memo's own definitions, neither names the move; dates, names, vocabulary, hidden content and the prompt gate clean",
+   "reader": "eight scored readers in four rounds, all off the call (Texas & Gulf at about 500, then 400, against the Southwest at 600); round 4 on ed469ea8: Sonnet 0 of 60 ask figures (12.0), Opus 12 of 60, the Enterprise cells (23.0), pair 17.5; question 1 none and question 6 analytical at every round"
+  },
+  "duplicate_check": {
+   "heart": "WARN 2026-10-27 against origin/main at 24ecab70 with this card overlaid, no BLOCK: repeat.gate_g (forecasting, task137 v4), test.same_driver_older differentiated on the card (task306, task468 v2 and v3, task98 v6); nearest driver 0.07 (task130 v3, task181 v2, task134 v2 lineages), then 0.06 (task468 v4, task485)",
+   "surface": "exit 0 2026-10-27 against origin/main at 24ecab70: the same five pairs promoted, four on surface similarity alone (task167 0.105, task229 0.104, task139 0.103, task261 0.101; corpus top 1 per cent, different domains, decisions and drivers) and task306 0.092 on the same-driver signature already differentiated on the card; personas Jeff Guzman and Guy Morrison, both on the card"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "task166/determinism_check_report_pass4.md (round 4 on ed469ea8, no fix); round 1 determinism_check_report_a3.md (NOT_DETERMINISTIC on the figure at the nearest 100), round 2 determinism_check_report.md and round 3 determinism_check_report_pass3.md (NOT_DETERMINISTIC on ask 1 only, FIX_NOW, each closed in one pass)",
+   "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+   "gate_h": "domain pass, layers pass, decisive_step analytical"
+  },
+  "delivered": "2026-10-27",
+  "stage3": {
+   "date": "2026-10-27",
+   "zip_sha256": "ed469ea8106d0666f50d850830d6d9e5f0d938c95dac90d8088e7d8272ff3cb6",
+   "checks": "130 of 130 PASS (generator/checks.py: G1 to G6, C1 to C6, L0 to L4, F1 to F8, R1 to R4, SF1 to SF25, A1 to A9, S1 to S5, D1 to D5, Q1 to Q9)",
+   "verify": "15 of 15 PASS (generator/verify.py, independent path; plans by the SKU of record, the numbering read off the starting prices' majority fit)",
+   "rebuild": "two builds byte-identical: target, golden, figures.json",
+   "figures_check": "PASS, 78 figures in blocks 1 to 4, 0 absent",
+   "precut": "exit 0, 51 checks, 0 FAIL, 0 WARN",
+   "voice_check": "exit 0 (907 characters)",
+   "ceiling": "pair 34.0, mirror leakage 0.0 per cent (generator/ceiling.py on the cut pack, reader B's round 3 routes as the cracker, keeping the 12 Enterprise figures, and reader A's as the mirror); one device cracked: ask A 45.0, ask B 45.0",
+   "reader_routes": "both round 3 readers' conventions re-run as code on the cut pack: reader B 12 of 60 (hours 0 of 24, every listed specialist counted; plans by chained terms and price fit, the 12 Enterprise figures kept), share 23.0; reader A 0 of 60, share 12.0; round 2's routes 1 and 0 of 60; an independent golden route from the pack alone reproduces all 60",
+   "scrub": "target and golden clean (scrub_producer_metadata.py, floor 2019-01-01, ceiling 2026-10-23)",
+   "call": "Southwest 607.5 (607.55; 600 to the nearest 200, 92.5 from the edge), Texas & Gulf second 484.3, margin 1.255; the third 363.0",
+   "default_path": "Texas & Gulf 478.5 to 525.9 over the careful forms, 483.5 and 483.0 on the probes' routes, the Southwest second at 404.5 to 447.6",
+   "family": "F1 90 constructions 594.6 to 631.6; F5 12 linkage conventions 600.5 to 607.7; F6 the round 1 judge's 72 choices 509.0 to 612.0 (540.9 to 607.6 on the mobile); every one names the Southwest with Texas & Gulf second; F7 the double count 822.2 to 851.3",
+   "files": "16 files in 4 formats; product_user_directory_2026-10-01.csv 256,204 rows; distractors board_deck_2023-03_customer_growth.pdf and onboarding_csat_responses_2024-2026.csv",
+   "golden_realism": "memo unchanged; the workbook's notes state each device's handling as an analyst's footnotes (a listed specialist's booking wholly inside their own session; each customer on the plan its SKU names, the spring 2025 PLW-100 starts at Core's list being Pro); no tell, no dash",
+   "house_fixes": "H1 clean; H4 zip members equal target; H8 citations resolve; H11 one submission and prompt; H16 no export dated after the pull; H23 no presupposition",
+   "components": "removals about 6,500 (6,483 by the planning basis's Seats line, 6,486 by the leaving reasons, R4), about four times the 2025 monthly 267.0; founders 4,451, about two in five of 2025 (43.3 per cent by mobile), a median lag of 10 to 11 months (11 calendar months, 333 days, 10 whole months); about 400 founded by leavers beside a usual intake of about 150 to 200 (F8: 386.0 to 427.8 and 149.1 to 203.8); the round 2 judge's own removal and founder routes rebuilt from the repaired pack's files give 6,486 and 4,451; block 3's step 5 states the parts as about 400, about 200 and about 600"
+  },
+  "stage4_round1": {
+   "date": "2026-10-26",
+   "zip": "0dea9805",
+   "readers": "reader A (Sonnet, medium) Texas & Gulf 500 (510.0: a Poisson GLM with region effects, log spend at lags 0 and 1 and a trend), the Southwest second at 441, asks 24 of 48 (every cohort and contract value cell, no hour); reader B (Opus, medium) Texas & Gulf 500 (517.0: a per-region Poisson on log planned spend with a trend and month), the Southwest second at 417, asks 48 of 48; neither looked at the removals or linked a founder",
+   "judge": "NOT_DETERMINISTIC (margin_or_boundary_fragility), FIX_NOW, confined to the figure: 18 constructions at 519 to 581 against 608.9 at the nearest 100; the region and the runner-up forced, all 48 ask figures reproduced; Gate G forecasting, analytical_non_defect, surface no, sole defect no; Gate H domain, layers and decisive step analytical (determinism_check_report_a3.md)",
+   "repair": "the directory carries a mobile on every user (one link key), the memo's region sentence literal for a leaver's company, the figure to the nearest 200 (607.6, 92.4 from the edge), the judge's 72 constructions asserted (F6, 509.2 to 612.1) beside the double count (F7, 822.3 to 851.4); ask A by onboarding pod on the roster's stale pods and cross-pod cover, ask B pinned to the terms in force on the first paid invoice date and sitting on the July 2026 catalog's renumbered SKUs; each company's plan and seats follow its signup team (Q9), plan changes typed Plan change, the memo's chart split by usual intake and leavers' companies"
+  },
+  "stage4_round2": {
+   "date": "2026-10-26",
+   "zip": "39daad7a",
+   "readers": "reader A (Sonnet, medium) Texas & Gulf 400 (a Poisson with region effects, month and trend), the Southwest second, asks 0 of 60 (share 12.0); reader B (Opus, medium) Texas & Gulf 400 (477: a monthly Poisson with region effects, month, a common trend and log spend at lags 0 to 2, best back-tested), the Southwest second, asks 36 of 60 (all 18 counts and 18 contract values by price and seats, no hour), share 45.0, exit 1; pair 28.5, both off the call",
+   "judge": "NOT_DETERMINISTIC (underspecified_objective) on ask 1 alone, FIX_NOW: group sessions undefined (template, bookings at a start, attendees) and each specialist's 2025 pod unfiled; the call and asks 2 and 3 forced; the removal and founder components drifting (5,715 against about 6,500, about 4,000 against 4,451); Gate G forecasting, analytical_non_defect, surface no, sole defect no; Gate H domain, layers and decisive step analytical; stump power high (determinism_check_report.md)",
+   "repair": "the dictionary names the group templates (SF16) and the roster carries each specialist's pod assignments with their dates (SF15), spending the stale roster; every leaving deactivation carries its reason (R4); ask A's primary re-sited onto a specialist still listed on a booking a colleague took over while holding a session of their own (A7: 130 overlapping pairs, 59 in 2025, in all 24 cells), ask B's onto a day's plan move and its seats referenced in keying order (A8: 2,618 multi-amendment days, 1,305 against the applied order, 140 cohort starts), the renumbering kept as a hazard (B2); block 3's step 5 states the 2027 parts as the components do; the call, the runner-up, the figure and every graded ask figure unchanged"
+  },
+  "stage4_round3": {
+   "date": "2026-10-27",
+   "zip": "45fa2e01",
+   "readers": "reader A (Sonnet, medium) Texas & Gulf 400, asks 0 of 60 (every listed specialist counted, plans permuted by today's catalog); reader B (Opus, medium) Texas & Gulf 400, asks 36 of 60 (plans by chaining each day's amendments after to before and fitting price to seats; hours 0 of 24), exit 1",
+   "judge": "NOT_DETERMINISTIC on ask 1 alone, FIX_NOW: the clashes overlapped by 30 or 45 minutes, so counting only the minutes outside a specialist's own session was a third reading (30.25 hours against the golden's 60.5); the call, asks 2 and 3 (the old numbering forced by price on all 1,744) and the components pass; optional: step 3's 333 days and 5.7 per hundred (determinism_check_report_pass3.md)",
+   "repair": "A1 closed by construction: each office hour runs half an hour into the pod partner's webinar and every listed-not-hosting booking lies wholly inside the listed specialist's own single-host session (A7, SF24: 65 pairs, no other overlap, the minutes route equal to the golden); ask B's primary re-sited onto reader B's route: a spring 2025 offer sold Pro at Core's list price on Pro's own SKU for its first year, stepping to Pro's list at the first anniversary (A9, SF25: 36 starts in every region, 30 of 30 stepped), with 127 benign introductory price changes beside it; keying order and renumbering kept as hazards; step 3's lag stated as about 11 months; the call, the runner-up and the figure unchanged, the hours and contract values recomputed"
+  },
+  "gates": {
+   "target_zip_sha256": "ed469ea8106d0666f50d850830d6d9e5f0d938c95dac90d8088e7d8272ff3cb6"
+  },
+  "domain": "product-analytics",
+  "portal": "2026-10-31 (the author's Batch 5 sheet): the call landed on the version shipped 10-27 (the Southwest at about 600, the golden)"
  }
 }

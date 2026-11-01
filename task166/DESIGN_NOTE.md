@@ -1,426 +1,127 @@
 # task166 design note
 
-Architecture 3, drawn 2026-10-26 (wave 7 slot, Forecasting lane, sathya8571), a re-root after portal round 1 on
-architecture 2 (both responses opened the credit union's pilot in Muskegon and the North at about $40 million: reading each
-second lien's payoff off the whole stack's blended rate, chosen on fit and back-test, is a reflex for the portal's models)
-and after the candidates set aside on Opus call-only probes below. Nothing of architectures 1 and 2 is kept: this draw is a
-construction project-management software company's 2027 new paying customers by sales region. It was screened as candidate
-11 on a probe pack and passed two Opus call-only probes on 2026-10-26: p166ya filed Texas & Gulf at 410.3 (a common-trend
-Poisson chosen by a four-fold back-test against about 30 variants) and p166yb filed Texas & Gulf at 414.4 (a back-tested
-ensemble of log and linear trends); neither looked at departures or founders.
-
-Author ruling, 2026-10-26 (the author's file setting the cap): no retiring and no pausing; task166 continues until it
-ships. New worlds and new stump strategies are allowed. The draw carries heavier realistic Layer 1 mess, and its technique
-is one where several defensible methods compete while the answer stays deterministic. The PAUSED state of 2026-10-26
-stands only as the record of architecture 3's set-aside candidates; this draw goes ahead.
-
-Stage 4 round 1 (2026-10-26, zip 0dea9805): both readers filed Texas & Gulf at about 500, the default path's answer;
-reader B kept all 48 ask figures and reader A 24; the judge returned NOT_DETERMINISTIC on the figure, its constructions
-at 519 to 581 against 608.9 at the nearest 100. The repair holds the call and its mechanism: every user in the directory
-carries a mobile (the field app signs users in by it, so the link has one key), the memo's region sentence is literal for
-a company a leaver founds (its own parent's billing state), the figure rounds to the nearest 200, and both ask devices
-sit on a record's stale mapping that only a second source exposes. The repair's last pass asserts the round 1 judge's 72
-constructions (F6: the Southwest 509.0 to 612.0, all 600 to the nearest 200, Texas & Gulf second in each) and the
-founders counted twice on top of a model of all arrivals (F7: 822.2 to 851.3, outside the bin); each company's plan and
-the seats on its order now follow the team it signs up with (Q9), the register types a change of rate plan as Plan
-change, and the memo's chart splits each region's 2027 figure into its usual intake and the companies leavers found.
-
-Stage 4 round 2 (2026-10-26, zip 39daad7a): both readers again filed Texas & Gulf at 400 with the Southwest second; reader A
-(Sonnet) kept 0 of 60 ask figures and reader B (Opus) 36 of 60, taking each starting plan from its price and seats (so the
-SKU renumbering fell) while reading the roster's pods today (so the hours held). The judge returned NOT_DETERMINISTIC on
-ask 1 alone (a group session undefined, a specialist's pod by month unfiled), forced the call and asks 2 and 3, and found
-the removal and founder components drifting (5,715 against 6,500, about 4,000 against 4,451): its removals were the
-deactivations with a leaving reason, and one leaving deactivation in eight had none. This pass files the group templates
-and each specialist's pod assignments, gives every leaving deactivation its reason (the Seats line and the reasons now
-count the same, 6,483 and 6,486, R4), and re-sites both ask devices on the readers' own routes: a specialist still listed
-on a booking a colleague took over while holding a session of their own (ask A), and a day's plan move and the seats taken
-with it referenced in the order they were keyed rather than applied (ask B). The call, the runner-up and the figure do not
-move.
-
-Stage 4 round 3 (2026-10-27, zip 45fa2e01): both readers filed Texas & Gulf at 400 with the Southwest second, six
-readers of six across three rounds; reader A kept 0 of 60 ask figures and reader B 36 of 60, chaining each day's
-amendments by their terms (so the keying order fell) and fitting each plan from price and seats (so the renumbering fell
-again), while both counted every listed specialist (so the hours held). The judge returned NOT_DETERMINISTIC on ask 1
-alone: the clashes overlapped by 30 or 45 minutes, so counting only the minutes outside a specialist's own session was a
-third reading. This pass closes it by construction, each office hour now run half an hour into the pod partner's field
-app webinar and every listed-not-hosting booking lying wholly inside the listed specialist's own session (A7, the
-minutes reading equal to the golden), and re-sites ask B's primary onto reader B's route: a spring 2025 offer sold Pro
-at Core's list price for its first year on Pro's own SKU, stepping to Pro's price at the first anniversary, so the price
-fit lands on Core (A9). The call, the runner-up and the figure do not move.
-
-Stage 4 round 4 (2026-10-27, zip ed469ea8): the judge returned DETERMINISTIC and APPROVE with no fix, every committed
-answer recomputed (the 65 containments, no other double booking, the colleague free and the outer session single-hosted,
-so the 24 hours cells follow from a specialist being in one place at a time; the 36 offer starts Pro by their SKU, 30 of
-them confirmed at the anniversary; the Southwest about 595 and Texas & Gulf 430 to 450), Gate G forecasting and
-analytical_non_defect, Gate H pass. Both scored readers again filed Texas & Gulf at 400 with the Southwest second,
-eight readers of eight across four rounds: reader A (Sonnet) kept 0 of 60 ask figures (share 12.0) and reader B (Opus)
-12 of 60, the Enterprise cells, after fitting each plan from price and seats (share 23.0); the pair is 17.5. Shipped on
-this cut.
+Architecture 4, drawn 2026-11-01 (Batch 5 queue, wave 4, oviya1301's backlog; Forecasting lane). The slot's three earlier
+architectures were each landed on the portal by the field's named method executed by reflex: architecture 1 (10-25, the
+bank's commercial real estate balloons extended on refinance cover), architecture 2 (10-26, the credit union's home equity
+payoffs off the whole stack's blended rate, chosen on fit and back-test) and architecture 3 (shipped 10-27; the author's
+Batch 5 sheet of 10-31 records the call as landed: the Southwest's founders linked to the users who left paying
+customers through the directory's one mobile key). Nothing of them is kept: this draw is another world (a UK trade
+publisher's year-end sale-or-return allowance), another dataset and another prompt shell, away from task144's axes
+(product-analytics, feature-adoption-diffusion-modeling, software_or_platform). The field's own development of returns
+sits at the bottom of the ladder and files a wrong answer; the decisive step is the precondition this book violates.
 
 ## Draw
 
 | Item | Value |
 |---|---|
-| Card | `cards/task166.json` v3, registered 2026-10-26T15:04:58Z; v1 and v2 in its lineage |
-| Pairing | product-analytics / feature-adoption-diffusion-modeling, Forecasting & Predictive Modeling |
-| Call | which of six regional sales teams the 2027 onboarding pod sits with: the region expected to add the most new paying customers in calendar 2027 under the memo's count, its 2027 figure and the runner-up |
-| Shape | other: the call, its figure to the nearest 200 and the region second (3), three critical components, and the asks (the hours each onboarding pod's specialists spent in one-to-one and in group sessions in each quarter of 2025, 24; the 2025 new customers by region and starting plan, 18; the annual contract value they signed on each, 18): 63 graded figures in two deliverables, a decision memo with one chart and a staffing workbook |
-| Strategy | other: a peer pipeline, next year's arrivals founded by the people who leave existing members, at a yield and a lag the linked record shows; Layer 2 family estimand_identification (spillover between units) |
-| Gap, pattern, Gate G | population then time; G13 (the lag lands the 2026 departures in the 2027 window) and G14 (the yield per departing user the region's own arrival rate does not carry); forecasting |
-| Forum, forcing event, org, role | other (the VP places the pod inside the approved plan); budget_or_appropriation (the FY2028 plan funds the pod); software_or_platform; other (VP Customer Onboarding) |
-| People | Jeff Guzman (VP Customer Onboarding, the memo), Joseph Clay (Marketing Operations, the spend workbook), Guy Morrison (FP&A, the planning basis), from `guard.py names --geo us --seed 166` |
-| Seed | none: drawn without a seed under the author's ruling |
+| Card | `cards/task166.json` v4, registered 2026-11-01T22:03:36Z at WARN; v1, v2 and v3 in its lineage with their fates; `lineage_shells` holds v3's shell read off its shipped prompt and v1's and v2's deliverable sets |
+| Pairing | accounting-audit-forensic (house) / revenue-receivables, client domain actuarial-science-insurance through its task type reserving-development-triangles, Forecasting & Predictive Modeling |
+| World | Marrowgate Books Ltd, an independent London trade publisher (literary, crime, commercial and children's imprints) selling on sale-or-return through a third-party distributor to a national bookshop chain, an online retailer, wholesalers, a supermarket supplier, independent shops and export accounts; financial year to 31 October |
+| Call | how much Marrowgate should hold as its returns allowance at the 31 October 2026 year end against trade sales invoiced to that date: the credit it expects to give for copies already invoiced that accounts will send back under the terms of trade |
+| Shape | other: the allowance (one figure) and its critical components (the hardback part and the part already authorised), then three asks on the returns-processing records the call never reads (the copies the distributor received back and the credit raised, by channel and quarter of FY2026; the authorised returns not yet received at the year end, by channel, copies and credit; the share of received copies scrapped as unsaleable, by channel and format); criteria arithmetic in `## Ask sheet` |
+| Decision type, unit | quantity_figure, currency (GBP) |
+| Strategy | composition_mix: the 2026 autumn hardback cohort's mix on a property no column names (the months from a hardback's publication to its own paperback's) differs from every cohort the development was measured on |
+| Gap, pattern, generators | time then population; E (the returns of a hardback's remaining shop stock conditioned on its paperback's on-sale date); G14, G13 (the paperback falls inside the run-off the history's hardbacks never exercised), G6 |
+| Gate G | forecasting |
+| Layer 2 | field_method, `own:hardback-run-off-conditioned-on-its-paperback-date` (the client card `actuarial-science-insurance/reserving-development-triangles/1` warns that a chain ladder assumes a stable development pattern; here nothing in the triangles shows the change, which sits in the forthcoming paperbacks) |
+| Forum, forcing event, org, role | auditor (the year-end audit of the allowance); period_close (the 31 October 2026 year end); media_or_publishing; finance_controller (Group Financial Controller) |
+| Context artifact, calibration | published_series (the trade's weekly consumer sales panel beside the ledger); none |
+| People | Hilary Singh (Group Financial Controller), Marc Hudson (Head of Sales Operations), Jade Hewitt (the distributor's returns manager), from `guard.py names --geo "United Kingdom" --seed 166`; none appears in the prompt |
+| Deliverables | `returns_allowance_FY2026.xlsx` (the allowance, its parts and the three asks' tables) and `returns_allowance_note.pdf` (a one-page note: the allowance, its authorised part, how it was built) |
+| Shell | how-much / build / pdf+xlsx, against v3's how-many / send / docx+xlsx and v1's and v2's which questions with pptx+xlsx and png+xlsx |
+| Seed | none: drawn without a seed |
 
 **The guard's answers.** `guard.py check` on the registered card: WARN, no BLOCK.
-- repeat.gate_g (forecasting, task137 v4): the lane's objective is Forecasting and the deciding quantity is a forecast;
-  task137 v4 is a hospital phlebotomy hub's visits with a deterrence channel, retired, nothing shared but the tag.
-- repeat.decision and repeat.question_form (pick_one_of_n, which; task270 v6): the decision is where one pod sits, one of
-  six named teams, so a pick asks which; task270 is a descriptive media-schedule build in another domain.
-- test.same_driver_older (population, G13, forecasting): differentiated on the card against task306 (a roll still taking in
-  old assets), task468 v2 and v3 (cost of today's active units by spell length) and task98 v6 (a count under a threshold
-  after a classifier change).
-- Abstraction test against the nearest drivers (0.06 to 0.07): task130 v3 forecasts a group chosen for an extreme noisy
-  value (regression to the mean); task181 v2 completes a count by its reporting delay; task485 builds a register's
-  contribution over annual rounds; task468 v4 corrects a linker's misses against an outside register. The one that maps
-  closest is task134 v2 round 1 (a pool held outside the register converting into it on a hazard by time since entry,
-  with a recent surge in the pool): the same arithmetic of a lagged yield, but its pool was listed with entry dates and
-  its step was the hazard; here no file lists a pool and no field records the conversion, so the step is finding that
-  departures found customers at all, by linking each new workspace's founder to a departure on another customer's
-  workspace, and the lag follows from the links.
-- `guard.py slots` on the mechanism's words and on the setting's (champion, workspace, founder, job change, user
-  directory, mobile, subscription, seats) found no slot note with this mechanism.
+- overuse.objective, repeat.gate_g and overuse.gate_g (forecasting, task273 v5 and task157 v3): the number belongs to the
+  Forecasting lane and the allowance is a forecast of copies still to come back; Gate G forecasting is that objective's
+  natural mechanism, and neither neighbour shares the world, the decision or the driver.
+- test.same_puzzle_older and test.same_driver_older (time, E, quantity_figure and forecasting): differentiated on the card
+  line by line against task117, task137's lineage, task171's lineage, task37, task44, task481, task97 and task155; each
+  conditions a yield on something else (draw caps through a dated join, a repricing gap, an own saving, a linked entity's
+  authorisation, a pilot's moderator, a dual-coded window, a place's history, a scheduled task's continuity), none on a
+  successor edition that sends its predecessor's stock back.
+- test.own_lineage against v1 (time, E, forecasting): differentiated; v1 conditioned a borrower's own extension option on
+  refinance cover under a rate path, here there is no option and no rate.
+- ban.artifact cleared by redrawing the context artifact: filed_standard (task273 v5), register (task464) and
+  operations_log (task157 v3) are held by the last three builds; published_series is the honest label for the consumer
+  panel the finance team reads beside its ledger.
+- Nearest drivers 0.05 to 0.07 (task43's lineage: a pooled effect carried onto a cohort with another mix of a moderator;
+  task146; task137 v2; task157 v1; task173 v1). The closest in kind is task43's: a correct pooled quantity carried onto a
+  forward cohort whose mix on a property differs; there the moderator was a behaviour in a pilot, here it is a date on
+  another record (the paperback's) that only a title-and-contributor link reaches.
+- `guard.py slots` on the setting's words (publisher, returns, hardcover, paperback, bookstore, ISBN, imprint,
+  sale-or-return, returns reserve, right of return) and on the mechanism's (successor, edition, supersede, the candidate
+  driver sentence) found no slot note with this world or this mechanism.
 
-**Data-native sentence.** A construction project manager's mobile number follows them from one contractor's workspace to
-the next, so the product's user directory records both ends of a move, the departure and, about ten months later, the new
-workspace's founding admin, while billing records only the new customer: a region's arrival history shows the move only
-after it lands, and the directory shows it the year before.
+**Abstraction sentence** (what a reviewer holding this build and its nearest approved build would say is the same): a
+run-off measured on past cohorts is carried onto a cohort whose successor products arrive sooner. No approved build says
+it: task132 restarts a wear curve when an item is replaced (the successor resets a hazard; here it ends the predecessor's
+sales and sends its stock back), task107 lifts a rate at a fixed anniversary, task175 reads a lot's chance off its
+street's fill and task124 a verified share within a kind of main.
+
+**Data-native sentence.** A bookshop keeps a hardback face-out until the paperback of the same book arrives, then sends
+what it has left back for credit, so a hardback's returns are set by when its own paperback goes on sale; Marrowgate's
+returns history ran its hardbacks off with paperbacks about a year behind them, while the autumn 2026 list's paperbacks,
+listed on the title master as forthcoming titles under their own ISBNs and often retitled, are due four to five months
+after publication.
 
 **A line per source.**
-- The client card `feature-adoption-diffusion-modeling` 2 (adoption hazards need the at-risk eligible base) teaches that
-  arrivals are a rate on a population at risk; here the population at risk of founding a customer is the people who have
-  left paying customers, which no field labels and only a linkage finds.
-- task137 v4 (explorer B's walk-in clinic: demand deterred after run-outs) is the shape the coordinator named, a causal
-  channel the solver does not think to test which the record can show; this build takes a different channel, adoption
-  carried between organisations by people, with no capacity, no filed event and no precedent.
-- Explorer C's candidates (anticipation before a fee rise, carry-over, learning curves) each had a precedent or a filed
-  calendar that a lag scan or a back-test finds; the departure surge here has no precedent in the record and no document
-  names it.
-- The outside-population family (candidates 5 to 9 and task137 v3, below) died because a body in the frame's own files is
-  tabulated once sliced; the leavers here are ordinary deactivations on paying customers' workspaces, and what makes them
-  a pipeline is recorded nowhere until a founder's number is matched across two organisations' workspaces.
-- `stumping` 1.1b: the field's own forecasting method (a count model on each region's own history with season and spend,
-  chosen by back-test) is rung 0, and the decisive step is that this record violates its precondition, a region's
-  arrivals being generated by its own past: a share of them is generated by another population's exits.
+- The client card `reserving-development-triangles` 1 (changing settlement speed distorts paid development; a chain ladder
+  assumes a stable development pattern) supplies the precondition; the card's own fix (a disposal-rate adjustment read off
+  closed counts) is not this build's step, because no triangle here shows the change.
+- `stumping` 1.1b: the field's development of returns by format, channel and months since invoice is rung 0 and rung 1
+  and files the wrong allowance; the decisive step is that the autumn 2026 hardbacks violate its precondition.
+- `stumping` 1.4, the survivor anatomy: the deciding property (months from a hardback to its own paperback) has no column;
+  it is read through a title-and-contributor link between a sold hardback and a forthcoming paperback, which no key offers.
+- The portal's three landings on this slot (`## Tried and rejected`): each was the field's named correction found because
+  something announced it (a cover metric, a stack's rate, a removals surge with a key on every row); here nothing is loud:
+  the autumn list's subscription orders, shipments and early sales are ordinary and the forthcoming paperbacks are ordinary
+  catalogue rows.
+- Industry practice (no source shipped): sale-or-return is the UK trade's standard term, and a hardback's sales fall away
+  when its paperback is published; publishers schedule paperbacks six to twelve months after the hardback.
 
 ## Three rules
 
-- Task type: product-analytics / feature-adoption-diffusion-modeling, which serves Forecasting: the 2027 adoption of the product by new customer organisations, region by region.
-- Domain test: the quantity that decides the call is each region's 2027 new paying customers, which product-adoption analysis forecasts as organic acquisition plus the adoption users carry to a new organisation when they change jobs (champion-led adoption), measured by linking each new workspace's founding user to the removals from paying workspaces and projected as a lagged yield per removal.
-- Swap: "which of a hospital group's six regions will register the most new patients in 2027": no new patient is founded by a former patient who changed employer and nothing carries the product between organisations, so the removals and the link that decide this call stop meaning anything.
-- Layer 1: the organisation's own systems produce every mess item: the legacy billing export to February 2023 beside the subscription register from the dual run, voided first invoices, divisions billed under parents, reactivations, returns after more than a year, the March 2024 realignment with the CRM's region stamped at creation, spend in fiscal periods and thousands, the directory's UTC timestamps, closure deactivations beside job-change removals under four reasons, mobiles in six formats and names with nicknames, open and abandoned trials; for the asks, a booking row per customer on group training and office hours, shadowing co-hosts on one booking, implementation partners booking under their own accounts, specialists covering another pod's sessions, an HR roster of each specialist's pod assignments, specialists still listed on bookings a colleague took over, the July 2026 product catalog's SKU numbers beside subscriptions still carrying the numbers they were sold under, cases kept in step with their subscriptions until go-live, a day's plan move and the seats taken with it keyed in either order, and same-day booking corrections in the register's amendments; nothing placed to be caught.
-- Layer 2: estimand identification, a spillover between units: a region's 2027 arrivals are partly the lagged output of removals from its existing customers, so its own arrival history is not the process that generates 2027; splitting arrivals by source and projecting the founder-led part from the linked removals flips the call.
-- Decisive step: recognising that about two in five new customers are founded by people who left paying customers, measuring that yield and its lag by linking each new workspace's first user to a removal on another customer's workspace by mobile number, and projecting 2027's founder-led customers from the removals already recorded and the planning basis's removals beside an organic model fitted on the rest.
-- Not semantics: every field reads plainly (a deactivation, a mobile number, a lead source) and both probes executed the memo's counting rules exactly; reading all of it correctly still leaves the trend-and-spend forecast on Texas & Gulf, because the deciding quantity, the yield of new customers per removal, is in no field and has to be estimated from a linkage the records support and never state.
-- Not rule application: no filed rule says removals found customers or that founders link to leavers, and executing the memo's rules and the planning basis gives the careful history and Texas & Gulf; enumerated family on the built pack: the count models on each region's own history (rung 0 and the probes' routes, Texas & Gulf 478.5 to 525.9) and the pipeline constructions (90 forms of organic model, lag, yield and destination, Southwest 594.6 to 631.6; 12 linkage conventions, Southwest 600.5 to 607.7; and 72 of the round 1 judge's choices, founders sought only from 2023, the organic fit from 2019, 2021 or 2023, a mature-cohort yield, a lag a month shorter and name matches beside the mobile, Southwest 509.0 to 612.0), so the call flips across it; standing family: the 174 pipeline constructions, since the linked record shows 43 per cent of 2025's new customers founded by leavers at a median lag of 11 months, which no own-history model carries, and they are unanimous on the Southwest at 600 to the nearest 200 with Texas & Gulf second (smallest margin 1.255 on the 102 golden-side forms); the ruling-out is not loud: no file, field or one-group-by names the pipeline, the CRM's customer-referral lead source sits at 0 to 5 per cent of new customers in every region and year, and the founders appear only when each new workspace's first user is linked to a removal elsewhere.
-- Analyst test: with both billing systems stitched, divisions, reactivations and voided first invoices removed and the March 2024 map applied, the easy route fits each region's monthly new paying customers on its own trend, season and marketing spend, picks the form by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500 (483.5 and 483.0 on the two probes' routes run on these files, 478.5 to 525.9 over the careful forms), the Southwest second; it never links a new workspace's first user to the people who left paying customers, so the Southwest's April to September 2026 removals never enter it.
-- Estimand: the memo files it: the region with the most new paying customers in calendar 2027 (a company whose first paid subscription invoice is dated in 2027, or that comes back in 2027 more than 12 months after cancelling, counted once at its parent, with voided invoices out, the region its own parent company's billing state under the March 2024 map, so a company a leaver founds counts where it bills), expected under the FY2028 planning basis that FP&A filed (marketing spend at the plan; users removed from paying workspaces at each region's 2025 monthly average from October 2026).
-- No decoy: nothing is planted: the Southwest's removals are the directory's ordinary deactivations, no memo, deck or file argues for Texas & Gulf or ranks the regions on 2027, the board deck's fiscal-year history on the old map is a distractor declared in metadata.json, and the referral lead source is the CRM's ordinary field.
-- No certified replay: no certified or published figure is reproduced to recover a method: the board deck's FY2020 to FY2023 counts tie under the careful and the golden constructions alike and say nothing about 2027, and the yield and the lag are estimated from the linked records.
-- Lesson: a forecaster of adoption learns to ask what generates the arrivals before fitting their history: where a share of new customers is founded by users who left existing customers, removals are a leading indicator found by linking records, and a surge in one region's removals moves next year's ranking where no trend, season or spend term can; no build on file forecasts arrivals as a lagged yield on another population's exits found by record linkage.
+- Task type: actuarial-science-insurance / reserving-development-triangles, which serves Forecasting: the allowance is a run-off reserve, the credit still to be given on copies already invoiced, developed by months since invoice.
+- Domain test: the quantity that decides the call is the expected credit for copies already invoiced that will come back under sale-or-return, which a reserving analysis develops from the returns triangle by format, channel and months since invoice; the hardbacks' development turns on when each hardback's own paperback goes on sale.
+- Swap: "how much should a hospital trust hold against readmissions of patients already discharged": a discharged patient has no successor edition whose publication sends the predecessor back, so the paperback dates that decide this call stop meaning anything.
+- Layer 1: the organisation's own systems produce every mess item: the 2023 ERP migration with legacy six-digit account codes crosswalked on the account master, ISBN-13 with and without hyphens across ledger, distributor and panel, the chain's branch returns consolidated through its returns hub, strip returns (covers only) from the supermarket supplier, credit notes raised after the distributor's receipt, the October financial year against calendar quarters and the distributor's week numbers, paperbacks retitled or subtitled against their hardbacks with contributor names in two formats, a consumer panel that covers UK retail and not export, subscription orders invoiced ahead of publication, damaged-in-transit claims credited beside returns; nothing placed to be caught.
+- Layer 2: field method and its precondition: a development pattern measured on cohorts whose paperbacks came about a year after the hardback does not carry a cohort whose paperbacks come four to five months after it; conditioning each hardback's run-off on its own paperback's on-sale date flips the allowance.
+- Decisive step: recognising that a hardback's remaining shop stock comes back once its own paperback goes on sale, linking each hardback still in its returns window to its paperback on the title master (title and contributor, the paperback often retitled, under its own ISBN), and developing the hardbacks by the time to their paperback, which the record shows in the hardbacks whose paperbacks came early.
+- Not semantics: every field reads plainly (an invoice, a credit quoting it, a format, a publication date, a forthcoming title) and reading all of it correctly still leaves every development on the history's pattern, because the deciding quantity, each hardback's time to its own paperback, is in no field and has to be built by linking two catalogue rows no key joins.
+- Not rule application: no filed rule says a paperback sends its hardback back or links the two editions; executing the terms of trade (18 months from invoice, credit at the invoiced terms) and every development on the record gives the careful history's figure; the enumerated family's spread and the standing family's are measured at stage 3 on the clean truth and written into `## Ladder` (the draw's paper estimate: about £3.8 million for every development that skips the step, about £4.5 million for every construction that takes it).
+- Analyst test: with every channel, migrated account code, credit and strip return read correctly, the easy route develops returns by format, channel and months since invoice on the five-year record (a trailing return rate, or a chain ladder on the returns triangle, both back-testing within a few per cent on the 2024 and 2025 year ends) and holds about £3.8 million; it never ties a forthcoming paperback to its hardback, so the autumn 2026 hardbacks run off on a history whose paperbacks came about a year later.
+- Estimand: the terms of trade (`marrowgate_terms_of_trade_2024.pdf`) file the WHAT: a trade account may return copies for credit with the distributor's authorisation within 18 months of the invoice that supplied them, quoting it, credited at the net price on that invoice; the allowance is the credit Marrowgate expects to give for copies invoiced on or before 31 October 2026 that come back under those terms.
+- No decoy: nothing is planted: the autumn list's paperback dates are the publisher's own publishing schedule on its title master, no memo, model or file argues for the history's figure or ranks anything, and the distractors are declared in `metadata.json`.
+- No certified replay: no certified or published figure is reproduced to recover a method: no prior allowance computation or audited working ships, and the development and its conditioning are estimated from the invoices and the credits that quote them.
+- Lesson: a reserving analyst learns to ask what ends a cohort's run-off before carrying its history forward: where a successor product sends a predecessor's stock back, the successor's date is the development clock, and a schedule that brings it forward moves the reserve where no triangle shows it; no build on file conditions a run-off on a successor edition's date found by linking catalogue rows.
+
+## Survivor anatomy
+
+- Actor: the hardback still in its returns window has rows (its invoices, the credits quoting them, its panel sales); the deciding property, the months from its publication to its own paperback's, has no column in any file: the title master lists the paperback as its own ISBN with its own publication date and often a changed title, and nothing on either row names the other.
+- Link: the signal is read through a link no key offers: a hardback joined to its paperback by title and contributor across the title master's published and forthcoming rows (a subtitle added or dropped, the contributor written surname-first on one and in full on the other), a comparison the field's development of returns never asks for.
+- Reflex: the field's method for the deciding quantity, the development of returns by format, channel and months since invoice (a trailing return rate or a chain ladder on the triangle), sits at rung 0 and rung 1 and files about £3.8 million, `Ends on:`, not the golden.
+- Back-test: the textbook route validates: the same development fitted at 31 October 2024 and 31 October 2025 predicts the following year's credits on the copies then invoiced within a few per cent, because every cohort it was measured on had its paperbacks about a year behind.
+- Second use: every file the decisive step reads sits in the pack for its own reason: the title master gives every route its formats, prices and publication dates; the invoices and credits are the development's own records; the consumer panel is the sell-through every stock-based route reads; none drops out when the step is deleted.
+- Shock: the movement the step recovers reads as ordinary: the autumn 2026 list's subscription orders, shipments and first weeks' sales sit inside the history's range, and its forthcoming paperbacks are ordinary catalogue rows among the season's forthcoming titles; no file's largest movement is the step.
+- Pins: the WHAT is filed in the terms of trade (who may return, within how long of which invoice, at what credit) and no filed sentence names a paperback, a successor edition, a publication schedule or a development clock.
 
 ## Default path
 
-1. Stack the legacy billing export and the subscription register, count the dual-run migrations once and carry the register's cancellations onto their legacy records.
-2. Roll each subscription up to its parent through the CRM crosswalk, drop divisions and voided first invoices, and treat a return within 12 months of a cancellation as a reactivation.
-3. Take each parent's region from its billing state under the March 2024 map (Tennessee in Midwest).
-4. Count new paying customers by region and month, January 2015 to September 2026.
-5. Fit a count model with region effects, a trend, month of year and log marketing spend, choose its form by back-test, and check the referral lead source (flat, 0 to 5 per cent) and the spend term (a small elasticity).
-6. Forecast calendar 2027 at the plan's spend and take the largest region.
+1. Read the terms of trade: returns within 18 months of the invoice quoted, credited at its net price; the allowance covers copies invoiced on or before 31 October 2026.
+2. Load the sales ledger's invoice lines and credit lines (FY2022 to FY2026), map the legacy account codes through the account master's crosswalk, normalise ISBNs, attach format and imprint from the title master and channel from the account master; keep returns credits (reason RET), leave damaged-in-transit claims aside.
+3. Tie each credit to the invoice it quotes and build the returns triangle by invoice month and months since invoice, by format and channel, in copies and credit value.
+4. Develop it the field's way: a chain ladder on cumulative returned shares (or a trailing return rate by format and channel with the lag profile), select factors on the last three years, take each open invoice line's expected further returns within its 18 months.
+5. Back-test the method at 31 October 2024 and 2025 against the credits that followed: within a few per cent.
+6. Sum over open invoice lines at net price.
 
-Ends on: Texas & Gulf, about 500 new paying customers in 2027 (483.5 and 483.0 on the two probes' routes run on these files, 400 to the nearest 200; 478.5 to 525.9 over the careful forms and 510 and 517 on round 1's readers, 400 or 600 to the nearest 200), the Southwest second
-Golden: the Southwest, about 600 new paying customers in 2027 to the nearest 200 (607.5)
+Ends on: about £3.8 million (the stage 3 build measures it on the clean truth and writes it here)
+
+Golden: about £4.5 million (the stage 3 build measures it on the clean truth and writes it here)
 
 ## Stump sentence
 
-The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map,
-fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat,
-and names Texas & Gulf at about 500 with the Southwest second; the step that lands it there is forecasting the Southwest
-from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of
-11 months earlier, and the Southwest's customers removed about four times their usual number of users between April
-and September 2026, who found new customers through 2027 and put the Southwest first at about 600.
-
-## Readability screen
-
-Reflex row, written from what the field does to a region's next-year new customers: a count model (Poisson or negative
-binomial) on each region's own arrivals with trend, season and marketing spend, its form chosen by back-test; run-rate
-and momentum extrapolation; a diffusion model with the installed base as the word-of-mouth term; the CRM's referral
-lead source as the measured word-of-mouth share; an ensemble of these.
-
-| Rung | What the solver must see | Test that fires | Verdict |
-|---|---|---|---|
-| R0 count models on each region's own new customers with trend, season and spend, back-tested (both probes) | the billing exports counted the memo's way, the spend workbook | 3 reflex | readable |
-| R1 momentum: the year to date, the last six or twelve months, with growth | the same counts | 3 reflex | readable |
-| R2 the installed base six months earlier as a diffusion term | the directory's active users by region and month | 3 reflex | readable |
-| R2b the referral lead source as the word-of-mouth channel | the CRM's Lead Source column | 2 schema | readable |
-| R3 (decisive) new customers founded by people who left paying customers, linked by mobile, projected from the removals at the linked yield and lag | nothing names it: no column holds a founder, a link, a yield or a previous employer; the lead source does not carry it; the planning basis's Seats line files removals for the seat plan and says nothing of new customers | none of the seven fires: no clause names founders or a yield (1); no column or marker (2); not an opponent default (3: both probes fitted each region's own history); no control bench (4); no hygiene finding (5); not one subtraction (6: the yield and the lag are estimated over 4,451 links); no dedicated organ (7: with the step deleted the directory still ships, for the basis's Seats and Hosting lines and for rung 2's installed base) | silent |
-
-No confidence level, significance level or test threshold is filed anywhere in the pack.
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | new paying customer | a first paid invoice dated in 2027, or a return more than 12 months after cancelling | every new subscription, reactivations in | same call (619.8) | the memo's definition (asserted, R2) |
-| SF2 | more than 12 months | over 366 days, nothing in force between | 365 days; twelve calendar months | same call | no company comes back between 360 and 372 days after cancelling: reactivations at most 334, returns at least 380 (asserted) |
-| SF3 | counted once at its parent | the root CRM account | each billing account | same call (607.5) | the memo (asserted, R2 divisions) |
-| SF4 | a voided invoice is not a paid one | the first paid invoice | the first invoice of any status | same call (605.5) | the memo (asserted, R2 voided) |
-| SF5 | the region | the parent's billing state on the March 2024 map | the CRM's Sales Region stamped at creation; the map before March 2024 | same call (605.5; 600.9) | the memo (asserted, R2) |
-| SF6 | calendar 2027 | January to December 2027 at the plan's calendar months | FY2028 periods read as calendar months | same call (606.2) | the planning basis's scope sentence (asserted) |
-| SF7 | the users removed after September 2026 | each region's 2025 monthly average | the last twelve months' pace; none | same call (687.9; 550.8) | the planning basis's Seats line (asserted) |
-| SF8 | a removal | a user deactivated on a paying customer's workspace, closures out | every deactivation | same call (561.2) | the Seats line's second sentence (asserted, R2 closed_as_removal) |
-| SF9 | expected | the mean of the forecast | a median or mode of the count | same call | a Poisson sum's median sits within one customer of its mean |
-| SF10 | to the nearest 200 | 607.5 prints 600 | half-up against half-even | same call | 92.5 from the nearer edge (asserted) |
-| SF11 | the region that comes second | Texas & Gulf | another region | same call | second in all 102 golden-side constructions and under every removal assumption (asserted) |
-| SF12 | the as-of | billing and directory activity to 30 September 2026 | the pull on 1 October | same call | nothing is dated after 30 September (asserted) |
-| SF22 | the region of a company a leaver founds | its own parent's billing state, where the new company bills | the region its founder left | same call (611.5 on the measured origin-to-destination shares; 641.6 counted in the region its founder left) | the memo's sentence names the new customer's own parent company (asserted); 88.4 per cent of founders bill in the region they left |
-| SF13 | ask A, sessions held | one host at one start with any completed booking | each completed booking once per host and start | asks only | the same hours in all 24 cells (asserted) |
-| SF14 | ask A, each quarter of 2025 | the session's date | the date in a regional clock | asks only | no session crosses a date in any regional clock (asserted) |
-| SF15 | ask A, its specialists in each quarter | the pod the roster has the specialist in on the session's date | the roster's pod today; the pod of the session's customer | asks only | filed: the roster carries each specialist's pod assignments with their first and last days; they give the pod each specialist worked in on every session's date, and three specialists' 2025 pods differ from their pod today (asserted) |
-| SF16 | ask A, one-to-one and group sessions | the templates the dictionary names: Kickoff, Admin setup and Go-live review one-to-one, Field app training and Office hours group | any start with two or more bookings; attendees above one | asks only | filed in the data dictionary; only those group templates ever seat more than one customer at a host's start, so the three readings agree (asserted) |
-| SF17 | ask B, the terms in force on the first paid invoice date | the register's terms taken back through every amendment effective after that date, latest first and a day's amendments in the order their terms chain, each SKU read as sold | the before terms of the first later amendment by date and reference; the register's terms today; the case's terms; the terms as first booked | asks only | the golden reproduces the world's starting plan and value for all 1,744, and every day's amendments chain in exactly one order (asserted, A8) |
-| SF18 | ask B, counted the same way | the memo's count for 2025 | any other count | asks only | 1,744, the 2025 months of the call's own count (asserted) |
-| SF19 | ask B, the annual contract value they signed on each | one figure per region and starting plan | one total per region | asks only | the prompt's "on each" (asserted) |
-| SF20 | hours to two decimals | exact quarter hours | rounding the quarter hours | asks only | every value is a quarter hour (asserted) |
-| SF21 | contract value to thousands of dollars with one decimal | each cell's total | rounding each contract first | asks only | the nearest cell sits 11.80 dollars from an edge (asserted) |
-| SF23 | ask B, the plan a SKU sells | the SKU as numbered when it was set: before 1 July 2026, PLW-100 Pro, PLW-200 Enterprise, PLW-300 Core | the July 2026 catalog's numbering in price order | asks only | each starting SKU's own price and seats fit one plan (691 PLW-300 Core, 712 PLW-100 Pro, 305 PLW-200 Enterprise; the 36 PLW-100 starts at Core's list are SF25's), and every unamended migrated subscription's legacy plan name agrees (533, 573 and 187, asserted) |
-| SF24 | ask A, a specialist listed on a booking a colleague holds | no time: the colleague held it | both rows counted; only the minutes outside the specialist's own session | asks only | closed by construction: every such booking lies wholly inside a session of the listed specialist's own that no one else hosts, while the colleague holds nothing else then, and outside those 65 pairs no specialist ever holds two sessions at once (A7); the minutes reading equals the golden in all 24 cells (A1), and both rows counted gives one person the same minutes twice |
-| SF25 | ask B, the plan a customer started on | the plan its SKU of record names | the plan its first-year price fits | asks only | the record forces the SKU: the 36 PLW-100 starts invoiced at exactly Core's list for their seats each moved on their first anniversary, with SKU and seats unchanged, to Pro's list less 0, 5, 10 or 15 per cent (30 of 30 that reached it), while every other price change moves a subscription between two prices of its own SKU's plan (127, A9); a plan move is a plan change with a new SKU (4,336 in the register), never a price change |
-
-Every row is asserted in `generator/checks.py` (labels SF1 to SF23).
-
-## Ladder
-
-| Rung | Construction | Answer on the built pack | Margin |
-|---|---|---|---|
-| 0 | count models on each region's own new customers: region or common trend, season, log spend, from 2015, 2019 or 2021, and last twelve months with growth | Texas & Gulf 478.5 to 525.9; the Southwest 418.5 to 447.6 | 1.10 to 1.21 |
-| 0p | the probes' routes on these files: p166ya's four-fold back-test chooses a common-trend Poisson; p166yb's equal ensemble of a log-linear Poisson and a linear trend | Texas & Gulf 483.5 and 483.0 | 1.14 and 1.19 |
-| 1 | momentum: year to date annualised, the last six months doubled, the last twelve months, with growth | Texas & Gulf 426.7 to 525.9 | 1.19 to 1.22 |
-| 2 | the installed base six months earlier as a diffusion term (elasticity 0.14) | Texas & Gulf 490.2, the Southwest 410.5 | 1.19 |
-| 2b | the referral lead source | 0 to 5 per cent of new customers in every region and year: no channel to model | |
-| 3 | organic count model on the customers no linked leaver founded, plus the founders from the removals at the linked yield (5.7 per 100 removals) and lag (median 11 months), each counted where the new company bills (88 per cent in the region its founder left) | the Southwest 607.5, Texas & Gulf 484.3 | 1.255 |
-
-The Southwest is second on every lower rung by 1.10 to 1.22: it is the second-largest region on its own history, and
-the decisive step adds its April to September 2026 removals (6,483, 4.05 times its 2025 monthly 267.0). No rung below
-3 names it, and rung 3's family never names another region.
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | new paying customers dated in 2027, including companies not yet observed | filed in the memo; the estimand is a forecast of members not yet observed |
-| 2 | Unit of account | the company at its parent | filed (SF3) |
-| 3 | Attribution window | the first paid invoice's date | filed; C1 on the 12-month return boundary (SF2) |
-| 4 | As-of dating | activity to 30 September 2026 | filed in the memo and manifest (SF12) |
-| 5 | Version basis | the register's own records; the asks' starting terms at the first paid invoice, a day's amendments undone in the order they chain | filed for the call; C4 for ask B (SF17, A8) |
-| 6 | Denominator | the yield per removal over the removals that could have founded by then | the design (the lag-weighted exposure); C1 across 90 forms |
-| 7 | Weighting | pooled yield across regions | C1: pooled, recent and by-origin yields all name the Southwest at 600 |
-| 8 | Window length | the yield over 2016 to 2026 | C1 with the recent window (emp_recent and rate recent in the family) |
-| 9 | Boundary inclusivity | over 366 days | C1 (SF2); ask B's same-day amendments are in force on the first invoice date (SF17) |
-| 10 | Rounding path | the 2027 total once, to the nearest 200 | filed in the prompt; 92.5 from the edge (SF10) |
-| 11 | Tie-break | the latest removal among a founder's candidates | C1: the earliest stays inside F5's 600.6 to 607.7 |
-| 12 | Maturity and censoring | founders of 2026 removals land through 2027 | the design: the lag distribution places them; the window's founders are censored and projected |
-| 13 | Order of operations | founders split off over the whole fitted record before the organic fit | C1: organic 187.4 to 203.8 across fit windows; split off only from 2023 under an earlier fit, 149.1 to 168.5, and the call still 541.0 or more (F6, the round 1 judge's 72 choices); the founders added on top of a model of all arrivals count them twice, 822.3 to 851.4, outside the bin (F7) |
-| 14 | Row order | none | C1: no route reads file order |
-| 15 | Duplicate resolution | dual-run migrations once; ask A one session per host and start, a specialist listed while holding an overlapping session of their own dropped | filed (the register's Migrated From); R2 both systems keeps the call; ask A forced by the overlaps (A7) |
-| 16 | Identity normalisation | mobile by its last ten digits, on every user | C1: raw phones 586.8 (R2); a name match where the mobile finds no one, within the region or anywhere, 509.0 to 612.0 (F6) |
-| 17 | Netting against gross | removals gross of additions | filed: the basis's Seats line counts removals |
-| 18 | Dimensional units | spend in thousands of dollars in fiscal periods | the workbook's own months (SF6) |
-| 19 | Code and status semantics | every deactivation carries its reason; Account closed and closures within three days out | filed (SF8); the reasons and the Seats line count the same removals (R4); C1 across closure windows of 0 to 14 days (F5) |
-| 20 | Integerisation | the forecast is a real number printed to 100 | C1 |
-| 21 | Clause scope | the memo's definition covers 2027 and the history alike | filed |
-| 22 | Forward window contents | marketing spend and removals from October 2026 | filed: the plan sheet and the basis's Seats line |
-
-## Literal reader
-
-Executed word for word, the memo fixes the population, the unit, the window, the region and the comparison (the most
-new paying customers in calendar 2027), and the planning basis fixes what the forecast assumes for spend and for
-removals after September 2026. Nothing filed says how a region's 2027 new customers are estimated, so the method stays
-open, and the records force it: about two in five of 2025's new customers were set up by someone removed from another
-paying customer a median of 11 months earlier (4,451 links by mobile), so a model on a region's own arrivals omits a
-measured leading series, and every construction that carries the founders names the Southwest at 600 to the nearest 200
-(102 of 102, `checks.py` F1 to F5, and 72 of 72 of the round 1 judge's choices, F6). The memo counts each new customer at
-its own parent company's billing state, so a company a leaver founds counts where it bills. Every term's alternative
-reading gives the same call or breaks a quoted sentence (SF1 to SF12, SF22). A literal reader who stops at the filed
-sentences has the estimand and no estimate.
-
-## Oracles
-
-none: nothing in the pack states a 2027 figure, a founder share, a yield or a lag, or ranks the regions on 2027. The
-board deck (distractor) counts FY2020 to FY2023 new customers on the old map and ARR at January 2023; the satisfaction
-survey (distractor) scores onboarding; the planning basis files assumptions, not outcomes. No file carries a founder
-flag or a link (R1 asserted).
-
-## Ask sheet
-
-**Main call's declared row population:** the billing exports (legacy and the register's Subscriptions sheet: account,
-subscription, first invoice, status, cancellation, migration), the CRM's customer and former customer accounts, the
-territory map, the spend workbook, and the user directory. Device and hazard rows in it: 0 (asserted, `checks.py` S1 to
-S3 and S5: the call reads none of the onboarding exports, the roster or the catalog; deleting the partner accounts or
-blanking the register's SKU, seats, ACV and Last Amended and deleting the Amendments sheet leaves every region's figure
-unchanged; the 90 listed-not-hosting session rows, the 5,230 same-day amendment lines and the offer's 30 price changes
-sit in a file, a sheet and columns the call never reads, and the 2025 cohort of 1,744 with its regions and first paid
-invoice dates is the call's own count, which no device moves).
-
-**Ask A. For each of the three onboarding pods, the hours its specialists spent in one-to-one and in group sessions held
-with customers in each quarter of 2025** (24 figures, two decimals). H18 home: the pod's staffing, the hours each pod's
-own specialists already give. Golden: one session per host and start, held when any of its bookings was completed, its
-length once for that host, the group sessions being the templates the dictionary names, each in the pod the roster has
-its host in on the session's date; a specialist listed on a colleague's booking that lies wholly inside a session of
-their own, which no one else hosts, spent no time on it (SF24).
-- Pins, filed at stage 4 round 2 to close the judge's two forks: the data dictionary names the one-to-one templates
-  (Kickoff, Admin setup, Go-live review) and the group templates (Field app training, Office hours), which closes the
-  template, bookings-at-a-start and attendees readings (SF16); the roster carries each specialist's pod assignments with
-  their first and last days (SF15). That spends the stale-roster device (Tried and rejected).
-- A1 (silent primary, D1 which records are one event; on both readers' measured route at round 3): when a session's
-  first assignee took a longer session of their own over it, the scheduling tool handed the booking to a colleague and
-  kept the first assignee on its host list, so the log carries a row for each. 65 sessions (39 in 2025, at least one in
-  every pod, quarter and kind) list a specialist whose own session, hosted by no one else, wholly contains them: an
-  office hour run half an hour into the pod partner's field app webinar, or a go-live review inside a kickoff or a
-  webinar. Nothing marks them, since a shadowing new specialist is a second row on a booking too and every row of a
-  booking carries its status. The remedy is a reconstruction left after noticing two-specialist bookings: which listed
-  specialist was in the room, from each specialist's own sessions. Forcing figures (A7, asserted on the cut pack):
-  outside those 65 pairs no specialist ever holds two sessions at once; in every pair the booking that lists a second
-  specialist lies wholly inside the first specialist's own session, which no one else hosts, and the second specialist
-  holds nothing else then; so counting each specialist's minutes once equals the golden in all 24 cells (A1), and the
-  round 3 judge's minutes reading is the golden. Both readers' round 3 route (every listed specialist's session counted,
-  the roster's pods by date) misses all 24 cells; one specialist per booking reference, the first listed, misses 18.
-- A2 (mirror, D7 the true key elsewhere): specialists cover another pod's sessions (about one one-to-one in twenty and
-  one group session in ten), so counting each session in the pod of its customer misses all 24 cells.
-- A3 (hazards, D6 and D1): group bookings carry one row per customer with the session's host, start and length; a
-  shadowing specialist's row repeats a colleague's booking reference with its own host; 2,003 rows sit under four partner
-  accounts (CRM Type Partner) that are no region's customer, each on a customer's onboarding case.
-- Stops (asserted, A1): both readers' round 3 route misses all 24 cells; each host in the pod the roster has them in
-  today misses 23, the customer's pod and the booking account's pod 22 each, one specialist per booking 18.
-
-**Ask B. For each region, how many of its new paying customers of 2025, counted the same way, started on Core, Pro and
-Enterprise, and the annual contract value they signed on each, on the terms in force on their first paid invoice
-date** (18 counts, 18 values in thousands of dollars to one decimal). H18 home: the pod's tier mix and the contract
-value it supports. Golden: the register's terms today taken back through every amendment effective after the first paid
-invoice date, latest first, a day's amendments in the order their own terms either side chain, each customer on the plan
-its SKU of record names as numbered when it was set (SF23, SF25).
-- B1 (silent primary, D9 self-validation and D2 a value at the wrong vintage; on reader B's measured route at round 3):
-  a spring 2025 offer sold Pro at Core's list price for its first year, on Pro's own rate plan, and the price stepped to
-  Pro's on the first anniversary. 36 of the 1,744 starting terms carry PLW-100 at exactly Core's list for their seats,
-  in every region (Pacific 9, Southeast 7, Texas & Gulf 6, Midwest 6, Northeast 5, Southwest 3); the price-and-seat fit
-  lands on Core exactly, so the check a careful reader runs confirms the wrong plan, while the SKU of record says Pro.
-  Nothing names the offer: the price change type also carries 127 benign steps of an introductory discount to the
-  company's own terms. The remedy is a reconstruction left after noticing PLW-100 starts at a Core price: which plan
-  the subscription is, from its own later terms. Forcing figure (A9, asserted): each of the 30 that reached its first
-  anniversary moved that day, SKU and seats unchanged, to exactly Pro's list less 0, 5, 10 or 15 per cent; every other
-  price change moves a subscription between two prices of its own SKU's plan; a plan move is always a plan change with
-  a new SKU. Reader B's round 3 route (the terms chained back, the plan from price and seats) misses 12 of 18 counts and
-  12 of 18 values, every Core and Pro cell (24 of 36); the Enterprise cells, which the offer never touches, it keeps.
-- B2 (hazard, D2 a stale mapping; the mirror's): the July 2026 catalog numbers the SKUs in price order (PLW-100 Core,
-  PLW-200 Pro, PLW-300 Enterprise), while every SKU set before carries its launch-order number (PLW-100 Pro, PLW-200
-  Enterprise, PLW-300 Core); forced by the starting subscriptions' own prices and seats (691 Core, 712 Pro, 305
-  Enterprise, beside B1's 36) and by every unamended migrated subscription's legacy plan name (533, 573 and 187)
-  (SF23). Reader A's route (today's catalog) misses 36 of 36.
-- B3 (D2, which amendments make up the start): 127 of 2025's 1,744 new customers (7 per cent) were corrected on the
-  first invoice date; those corrections are in force on that date.
-- B4 (hazard, D2 an event log read in the wrong order; round 2's primary): the billing platform applies a plan move
-  before the seats taken with it the same day, and each line's terms either side are as applied, while the amendment
-  number follows the order the two lines were keyed. 2,615 subscription-days carry two or more term amendments and
-  1,304 of them are referenced against the order applied; read in reference order, 138 of the 2025 cohort's starting
-  terms come out as the terms after the day's plan move (A8: every such day chains in exactly one order).
-- Stops (asserted, A2): reader B's round 3 route 24 of 36 off; reader A's route, the register's terms with today's
-  catalog, the case's terms with today's catalog, the register's terms read as sold and round 2's reference-order route
-  36 of 36 off; every amendment rolled back, those on the first invoice date too: 34 of 36 off.
-
-**Hazard table.**
-
-| Hazard | Root cause | Moves | Per-ask delta |
-|---|---|---|---|
-| H1 group bookings | the scheduling tool writes one row per customer booking | A | 30 or more hours in every group cell |
-| H2 shadow co-hosts | a new specialist co-hosts colleagues' bookings for six weeks | A | dropped by one specialist per booking |
-| H3 partner bookings | partners book their clients' one-to-ones as themselves | A | the booking account's pod misses every cell |
-| H4 listed specialists | a booking handed to a colleague keeps its first assignee listed | A | every cell (39 sessions in 2025) |
-| H5 cover | specialists cover another pod's sessions | A | the customer's pod misses every cell |
-| H6 SKU renumbering | the July 2026 catalog numbers the SKUs in price order | B | every count and value under today's catalog |
-| H7 amendments | plan moves and seat changes after the start | B | every count and value |
-| H8 keying order | a day's plan move and seats referenced in the order keyed | B | every count and value (138 cohort starts) |
-| H11 first-year prices | introductory discounts and the spring 2025 offer, stepping at the first anniversary | B | every Core and Pro count and value under a price fit (36 starts) |
-| H9 case sync | the onboarding tool mirrors the subscription until go-live | B | every count and value |
-| H10 same-day corrections | bookings corrected on the first invoice date | B | 16 counts and 18 values |
-
-**Cracker sheet** (the cracker landed the call and took reader B's measured route at round 3 on each ask, the deepest
-route a reader has run on this pack: every listed specialist's session counted in the pod the roster has them in that
-day; the starting terms chained back through the later amendments and the plan fitted from price and seats; executed by
-`generator/ceiling.py`)
-
-| Ask row | Figures | Cracker's path | Device that holds | Verdict |
-|---|---|---|---|---|
-| Ask A, hours by pod, quarter and kind of session | 24 | every listed specialist's session counted | A1 | miss |
-| Ask B, 2025 new customers by starting plan | 18 | the chained starting terms, plan by price (Core and Pro cells) | B1 | miss |
-| Ask B, contract value by region and plan | 18 | the same (Core and Pro cells) | B1 | miss |
-
-The cracker keeps the 12 Enterprise figures of ask B, 12 of 60. One crack at a time (`ceiling.py`): ask A repaired, it
-keeps 36 of 60 (pair 45.0); ask B repaired, 36 of 60 (pair 45.0); both, 60 of 60 (pair 56.0 for the response on the
-call alone).
-
-Measured by: `generator/ceiling.py` (run on the cut pack; the call and its components 38, the instructions 7, the asks
-55 over their 60 figures; a response off the call keeps 5).
-
-Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call, takes reader A's measured route at round 3: every
-listed specialist's session counted, and the chained starting terms named by today's catalog; it keeps none of the 60
-figures).
-
-Pair ceiling: 34.0 measured on the cut pack (the cracker on the call keeps 12 of 60 and scores 56.0, the mirror 12.0); both
-readers' round 3 routes re-run as code on this pack keep 12 and 0 of 60 (shares 23.0 and 12.0).
-The pack digest the rows were measured on is the zip sha in pipeline.json; a re-sited device voids them.
-
-## Layer 1 inventory
-
-| Item | System that writes it | File | Natural mishandling | Call and components under it |
-|---|---|---|---|---|
-| dual run | the register's migration | legacy CSV, register | both systems stacked | 606.4, none moved |
-| voided first invoices | card checkout | both billing files | counted | 605.5, none |
-| divisions | billing under parents | register, CRM | counted | 607.5, none |
-| reactivations | billing | both | counted as new | 619.8, none |
-| returns after more than a year | billing | both | read as reactivations | 606.2, none |
-| the 2024 map | Sales Operations | territory map | the old map | 600.9, none |
-| the CRM's stamped region | CRM | CRM | used as the region | 605.5, none |
-| closures among deactivations | the directory | directory | counted as removals | 561.2, the removals component (the basis's sentence defines it) |
-| UTC timestamps | the directory | directory | UTC dates | 607.7, none |
-| phone formats | people entering them | directory | raw strings | 586.9, none |
-| name variants | people entering them | directory | name matches added beside the mobile | 545.9 to 612.0 within the region (the judge's family), none |
-| free-text titles | people entering them | directory | project titles only | 610.2, the removals component (a narrower pool) |
-| fiscal periods | Marketing Operations | spend workbook | read as calendar months | 606.2, none |
-| the roster's pod today | People Operations | roster | each specialist on today's pod for 2025 | none (the call reads no onboarding file); ask A |
-| cover across pods | the scheduling tool | sessions | the customer's pod as the specialist's | none; ask A |
-| the July 2026 SKU numbers | the billing platform | register, cases, catalog | every SKU read by today's catalog | none (S3 blanks the register's terms); ask B |
-
-## Stage 3 gates
-
-Run 2026-10-27 on the final rebuild (target.zip sha256 ed469ea8...f3cb6, 16 members), the cut stage 4 round 4 read and
-judged.
-
-- `generator/checks.py`: 130 assertions, 0 failed (A7 the 65 containments, A8 the keying order, A9 and SF25 the offer's
-  anniversary moves, SF24 and the minutes route equal to the golden, R4 the leaving reasons, F6 and F7 the judges'
-  constructions); `generator/verify.py`: 15 of 15 on its own path, plans read by the SKU of record.
-- Two builds byte-identical; `figures_check.py`: 78 figures, 0 absent; `precut.py`: 51 checks, 0 FAIL, 0 WARN
-  (`voice-check.py` PASS, 907 characters); `generator/ceiling.py`: pair 34.0, mirror leakage 0.0 per cent.
-- `leak.py --asof 2026-10-20`: REVIEW, three lines, no LEAK (the memo restates the question; generic dictionary and memo
-  vocabulary), read by eight scored readers across four rounds as harmless.
-- `guard.py validate` clean; `heart` WARN (repeat.gate_g), no BLOCK, nearest driver 0.07; `surface` exit 0, five card-axis
-  pairs promoted (task167, task229, task139, task261, task306), each differentiated on the card.
-- Container scrub clean on `target/` and `golden/`; the zip's members equal the pack.
-
-Pre-ship check, the three rules re-read against the built pack: the quantity deciding the call is each region's 2027 new
-paying customers forecast as organic intake plus the companies leavers found, a lead-lag forecast the field would build;
-the mess (two billing systems, voided first invoices, the 2024 territory map, the SKU renumbering, UTC sessions,
-unmapped divisions) only complicates the counting, and cleaning it leaves the default path at Texas & Gulf; the decisive
-step is finding the leaver-to-founder link through the mobile numbers and carrying the 2026 removals through its lag,
-which no field, filed rule or planted row decides (the judge's Gate H at rounds 2 to 4: decisive_step analytical).
+The default path develops returns by format, channel and months since invoice from the five-year record, a trailing rate or a chain ladder that back-tests within a few per cent on the 2024 and 2025 year ends, and holds about £3.8 million; the step that lands it there is running the autumn 2026 hardbacks off on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs, are due four to five months after publication instead of about a year, so the stock shops kept to sell through the spring comes back once each paperback is out and the allowance is about £4.5 million.
 
 ## Tried and rejected
 
@@ -810,3 +511,29 @@ which no field, filed rule or planted row decides (the judge's Gate H at rounds 
   ownership as settling nothing. Every listed booking now lies wholly inside the listed specialist's own session,
   which no one else hosts, so the minutes reading is the golden (A1, A7); the office hours moved onto the pod
   partner's webinar days, half an hour into the webinar, so the group cells can carry such a booking.
+- Portal on architecture 3 (shipped 2026-10-27; the author's Batch 5 sheet of 2026-10-31 records the call as landed): the
+  Southwest at about 600 new paying customers, the golden. Linking each new workspace's founder to the users who left
+  paying customers, through the one mobile number the stage 4 determinism repair put on every directory row, and the
+  Southwest's April to September 2026 removals (about four times their usual number, the pack's loudest movement) were
+  read by reflex; architecture 3 is spent and, one architecture per world, the slot re-roots into another world, dataset
+  and shell. Lessons kept: a determinism repair that gives the decisive link a key on every row hands the link over, and a
+  forward driver that is the pack's largest movement is found.
+- Architecture 4 candidates set aside at the draw of 2026-11-01, on paper, before any data was cut:
+  an oncology trial's event-driven final analysis date (biomedical survival analysis): every oncology-native violation of
+  the blinded event prediction (progression state, crossover, delayed death ascertainment, a cure fraction) is a named
+  biostatistics correction or a reporting delay of task181's family, and no deciding relation without a column was found;
+  an avocado or pistachio cooperative's 2027 intake under alternate bearing: the on-off cycle is the crop's best-known fact
+  and the industry forecast's own first term, so the golden would be the field's method, and a synchronising frost or
+  planting wave would be the pack's loudest movement;
+  a condominium unit-owner book's water claims with leaks cascading down a stack: the expected count is additive over
+  policies whatever the dependence, so the cascade moves the variance and not the mean, and the net-of-subrogation variant
+  (no recovery when both units are insured by the same carrier) decides on the anti-subrogation rule, a rule application;
+  a multicentre trial's recruitment with new sites sharing a referral pool: the cannibalisation reads the same for shops in
+  one catchment (the swap test fails);
+  warehouse picker congestion under a peak staffing plan: generic queueing (the swap test) and a congestion function whose
+  form is a free method choice;
+  a utility's 2027 retirements at first unreduced pension eligibility: age-and-service retirement tables are the pension
+  actuary's own method, so the golden would be the field's method, and service transferred in from another scheme is a
+  field reading;
+  a school district's kindergarten intake fed by younger siblings of current pupils: the same abstraction as architecture
+  3, next period's arrivals generated by a linked population's earlier events.
