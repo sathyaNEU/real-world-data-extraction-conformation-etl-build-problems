@@ -1,148 +1,150 @@
 {
-  "task": "task231",
-  "architecture": "v2 (re-root at batch 1, 2026-11-01: the Sawyer Divide Highway District's road weather network, which stations' air-temperature spatial check is re-tuned before winter 2027/28, read on the share of each station's winter hours its check withheld a right reading, each withheld reading judged against the stations that share its basin's cold pool that hour)",
-  "drawn": "2026-11-01",
-  "slot_note": "",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "sensor-calibration-measurement",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "road weather station air-temperature quality control: what a lapse-adjusted spatial consistency test withholds at mountain basin floors on still winter nights",
-  "objective": "data-quality-monitoring",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "rule",
-    "objective"
+ "task": "task231",
+ "architecture": "v2 (re-root at batch 1, 2026-11-01: the Sawyer Divide Highway District's road weather network, which stations' air-temperature spatial check is re-tuned before winter 2027/28, read on the share of each station's winter hours its check withheld a right reading, each withheld reading judged against the stations that share its basin's cold pool that hour)",
+ "drawn": "2026-11-01",
+ "slot_note": "",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "sensor-calibration-measurement",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "road weather station air-temperature quality control: what a lapse-adjusted spatial consistency test withholds at mountain basin floors on still winter nights",
+ "objective": "data-quality-monitoring",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "rule",
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G6",
+  "G16",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "physical_verification",
+ "stump_strategy": "classification_error",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms the feed (tenths of a degree Celsius against the district's Fahrenheit, UTC against Mountain time, the two QC releases' codes, re-polled hours) and reads the data quality standard right judges each withheld reading against the hour's elevation-adjusted neighbours, refitting the lapse rate across the network hour by hour, and re-tunes the wrong set of stations; the call is wrong because on still nights cold air pools basin by basin below an inversion, so a basin-floor reading agrees only with the stations sharing its own basin's pool, which no distance, elevation band or listed grouping picks out.",
+ "domain_test": "The deciding quantity is each station's share of winter hours whose true air temperature the spatial check withheld, settled by boundary-layer meteorology (still-night cold-air pools confined to each basin under an inversion, the free atmosphere above following its lapse); swapping the nouns into another field (wards, parcel hubs, meters) loses the vertical profile and the basin pools that decide which withheld readings were the air.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:basin-pool-peers-for-a-spatial-check",
+ "layer1": [
+  "NTCIP tenths of a degree Celsius in the feed against the district's Fahrenheit reports",
+  "UTC feed time against Mountain local time with the November and March clock changes",
+  "station ids that differ between the feed, the QC export and the station register",
+  "QC test codes from two vendor releases",
+  "re-polled hours duplicated in the feed",
+  "elevations in feet and in metres"
+ ],
+ "stakeholder_role": "the district's road weather program manager",
+ "role_family": "field_unit_lead",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "sdhd_rwis_atmospheric_2026_27.csv",
+  "rows": 175000,
+  "entity": "one station's hourly atmospheric reading",
+  "grain": "station x hour",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "season_or_peak",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "United States, northern Rocky Mountains (Montana)",
+  "currency": "USD",
+  "org_type": "a state highway district's road weather information system",
+  "invented_names": [
+   "Sawyer Divide Highway District",
+   "Quillan Road Weather Systems"
   ],
-  "pattern": [
+  "people": [
+   "Melissa Hayden",
+   "Lynn Dalton",
+   "Robyn Reeves",
+   "Kathy Phillips",
+   "David Glenn"
+  ]
+ },
+ "deliverables": [
+  "rwis_spatial_check_review_2027.xlsx",
+  "spatial_check_retune_memo_2027.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "A check judges each unit's reading against an expectation built from its nearest units through one fixed gradient, while in still conditions the medium settles into separate pools, each shared only by the units inside it; the check's rejections at pooled units are mostly true readings that only the units sharing the same pool at the same hour confirm, and those units are found from how the units' records move together, not from distance, level or any listed grouping.",
+ "driver_concrete": "Each withheld air-temperature reading is judged against the stations sharing its basin's cold pool that hour, the pool's members read from how the stations' still-night temperatures move together over the winter: the spatial check's lapse-adjusted neighbours sit in other basins or above the inversion, so its rejections at basin-floor stations on still nights are true cold air, while a reading that parts from its own pool is a sensor fault.",
+ "stump": "A competent analyst judges each withheld air-temperature reading against the hour's elevation-adjusted neighbours, the lapse rate refitted across the network each hour, counts a reading as right only where it sits within the check's tolerance of that line, and re-tunes only the deepest-pooling basin floors; the step that lands there is reading a basin floor against stations outside its own basin's cold pool, so the floors of the shallower basins, whose still-night readings agree with the other stations in their own pool, keep withholding more than 2 per cent of their winter hours unremarked.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task309": "task309 reads an intervention's effect class by class of event intensity under a filed criterion that the carried effect reproduce the record; this build judges a quality check's rejections against the units sharing the reading's own still-air pool, the pool found from how the units' records move together, with no effect, intensity scale or filed reproduction criterion"
+ },
+ "lineage": [
+  {
+   "domain": "survey-research-official-statistics",
+   "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+   "objective": "data-quality-monitoring",
+   "shape": "10",
+   "decision_type": "designation_set",
+   "answer_unit": "set_of_items",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G6",
-    "G16",
-    "G17"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "physical_verification",
-  "stump_strategy": "classification_error",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the feed (tenths of a degree Celsius against the district's Fahrenheit, UTC against Mountain time, the two QC releases' codes, re-polled hours) and reads the data quality standard right judges each withheld reading against the hour's elevation-adjusted neighbours, refitting the lapse rate across the network hour by hour, and re-tunes the wrong set of stations; the call is wrong because on still nights cold air pools basin by basin below an inversion, so a basin-floor reading agrees only with the stations sharing its own basin's pool, which no distance, elevation band or listed grouping picks out.",
-  "domain_test": "The deciding quantity is each station's share of winter hours whose true air temperature the spatial check withheld, settled by boundary-layer meteorology (still-night cold-air pools confined to each basin under an inversion, the free atmosphere above following its lapse); swapping the nouns into another field (wards, parcel hubs, meters) loses the vertical profile and the basin pools that decide which withheld readings were the air.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:basin-pool-peers-for-a-spatial-check",
-  "layer1": [
-    "NTCIP tenths of a degree Celsius in the feed against the district's Fahrenheit reports",
-    "UTC feed time against Mountain local time with the November and March clock changes",
-    "station ids that differ between the feed, the QC export and the station register",
-    "QC test codes from two vendor releases",
-    "re-polled hours duplicated in the feed",
-    "elevations in feet and in metres"
-  ],
-  "stakeholder_role": "the district's road weather program manager",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "sdhd_rwis_atmospheric_2026_27.csv",
-    "rows": 175000,
-    "entity": "one station's hourly atmospheric reading",
-    "grain": "station x hour",
-    "source": "synthetic"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "United States, northern Rocky Mountains (Montana)",
-    "currency": "USD",
-    "org_type": "a state highway district's road weather information system",
+   ],
+   "generators": [
+    "G12",
+    "G11"
+   ],
+   "gate_g": "forecasting",
+   "driver": "The decisive quantity is a rate over the units still active on a reference date, but exits reach the record of exits about a year after they happen and the follow-up that could confirm a silent unit's state reaches active units far more often than exited ones, so the exited share of this round's silent units has to come from earlier rounds old enough for the record to have caught up; counting every unrecorded silent unit as active, carrying the follow-up's resolved mix onto the unresolved, or reading the share from rounds the record has not yet settled all leave the rate too low.",
+   "stump_strategy": "maturity_censoring",
+   "forum": "line_manager_or_team",
+   "forcing_event": "period_close",
+   "org_family": "financial_institution",
+   "role_family": "statistical_office_head",
+   "world": {
+    "geography": "fictional country (Brevland), northern Europe, English working language",
+    "currency": "EUR",
+    "org_type": "central bank (economic statistics department, business survey unit)",
     "invented_names": [
-      "Sawyer Divide Highway District",
-      "Quillan Road Weather Systems"
+     "Brevland",
+     "Brevland Central Bank",
+     "Business Conditions Survey",
+     "Brevland Business Register"
     ],
     "people": [
-      "Melissa Hayden",
-      "Lynn Dalton",
-      "Robyn Reeves"
+     "Wenche Myklebust",
+     "Stein Thomassen",
+     "Turid Rønning",
+     "Håkon Abrahamsen"
     ]
-  },
-  "deliverables": [
-    "rwis_spatial_check_review_2027.xlsx",
-    "spatial_check_retune_memo_2027.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "A check judges each unit's reading against an expectation built from its nearest units through one fixed gradient, while in still conditions the medium settles into separate pools, each shared only by the units inside it; the check's rejections at pooled units are mostly true readings that only the units sharing the same pool at the same hour confirm, and those units are found from how the units' records move together, not from distance, level or any listed grouping.",
-  "driver_concrete": "Each withheld air-temperature reading is judged against the stations sharing its basin's cold pool that hour, the pool's members read from how the stations' still-night temperatures move together over the winter: the spatial check's lapse-adjusted neighbours sit in other basins or above the inversion, so its rejections at basin-floor stations on still nights are true cold air, while a reading that parts from its own pool is a sensor fault.",
-  "stump": "A competent analyst judges each withheld air-temperature reading against the hour's elevation-adjusted neighbours, the lapse rate refitted across the network each hour, counts a reading as right only where it sits within the check's tolerance of that line, and re-tunes only the deepest-pooling basin floors; the step that lands there is reading a basin floor against stations outside its own basin's cold pool, so the floors of the shallower basins, whose still-night readings agree with the other stations in their own pool, keep withholding more than 2 per cent of their winter hours unremarked.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task309": "task309 reads an intervention's effect class by class of event intensity under a filed criterion that the carried effect reproduce the record; this build judges a quality check's rejections against the units sharing the reading's own still-air pool, the pool found from how the units' records move together, with no effect, intensity scale or filed reproduction criterion"
-  },
-  "lineage": [
-    {
-      "domain": "survey-research-official-statistics",
-      "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-      "objective": "data-quality-monitoring",
-      "shape": "10",
-      "decision_type": "designation_set",
-      "answer_unit": "set_of_items",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G11"
-      ],
-      "gate_g": "forecasting",
-      "driver": "The decisive quantity is a rate over the units still active on a reference date, but exits reach the record of exits about a year after they happen and the follow-up that could confirm a silent unit's state reaches active units far more often than exited ones, so the exited share of this round's silent units has to come from earlier rounds old enough for the record to have caught up; counting every unrecorded silent unit as active, carrying the follow-up's resolved mix onto the unresolved, or reading the share from rounds the record has not yet settled all leave the rate too low.",
-      "stump_strategy": "maturity_censoring",
-      "forum": "line_manager_or_team",
-      "forcing_event": "period_close",
-      "org_family": "financial_institution",
-      "role_family": "statistical_office_head",
-      "world": {
-        "geography": "fictional country (Brevland), northern Europe, English working language",
-        "currency": "EUR",
-        "org_type": "central bank (economic statistics department, business survey unit)",
-        "invented_names": [
-          "Brevland",
-          "Brevland Central Bank",
-          "Business Conditions Survey",
-          "Brevland Business Register"
-        ],
-        "people": [
-          "Wenche Myklebust",
-          "Stein Thomassen",
-          "Turid Rønning",
-          "Håkon Abrahamsen"
-        ]
-      },
-      "deliverables": [
-        "bcs_sep2026_extension.xlsx",
-        "bcs_sep2026_response.pptx"
-      ],
-      "architecture": "v1 (the Brevland Central Bank's Business Conditions Survey: which regions go into the September 2026 round's reminder-call extension, read on the round's response rate over the firms still trading, the closure share of the silent firms taken from rounds the business register has caught up with)",
-      "spent": "2026-10-31 at the batch 1 re-root: shipped 10-13 with no portal result; the audit found the survivor anatomy short in every part (no Actor, Link, Reflex, Back-test, Second use, Shock or Pins line), the pair ceiling unmeasured on the cut pack, a count the data hold in the prompt and three shipped files describing the data (data dictionary, extract notes, export manifest, each a leak.py LEAK)"
-    }
-  ],
-  "lineage_shells": [],
-  "notes": "architecture 2 re-root at batch 1; architecture 1 moved to the lineage as spent",
-  "registered": "2026-11-01T00:33:44Z",
-  "shell": {
-    "question form": "which",
-    "second-sentence opener": "record",
-    "rounding opener": "shares",
-    "deliverable set": "pptx+xlsx"
+   },
+   "deliverables": [
+    "bcs_sep2026_extension.xlsx",
+    "bcs_sep2026_response.pptx"
+   ],
+   "architecture": "v1 (the Brevland Central Bank's Business Conditions Survey: which regions go into the September 2026 round's reminder-call extension, read on the round's response rate over the firms still trading, the closure share of the silent firms taken from rounds the business register has caught up with)",
+   "spent": "2026-10-31 at the batch 1 re-root: shipped 10-13 with no portal result; the audit found the survivor anatomy short in every part (no Actor, Link, Reflex, Back-test, Second use, Shock or Pins line), the pair ceiling unmeasured on the cut pack, a count the data hold in the prompt and three shipped files describing the data (data dictionary, extract notes, export manifest, each a leak.py LEAK)"
   }
+ ],
+ "lineage_shells": [],
+ "notes": "architecture 2 re-root at batch 1; architecture 1 moved to the lineage as spent",
+ "registered": "2026-11-01T00:33:44Z",
+ "shell": {
+  "question form": "which",
+  "second-sentence opener": "record",
+  "rounding opener": "shares",
+  "deliverable set": "pptx+xlsx"
+ }
 }

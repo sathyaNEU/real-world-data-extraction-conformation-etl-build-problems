@@ -1,225 +1,457 @@
 {
- "extension": [
-  "Capital",
-  "Harbour"
+ "faulted": [
+  {
+   "fault": "connector",
+   "fr": 0,
+   "site": "SD-158",
+   "withheld": 178
+  },
+  {
+   "fault": "rime",
+   "fr": 0,
+   "site": "SD-277",
+   "withheld": 239
+  },
+  {
+   "fault": "rime",
+   "fr": 17,
+   "site": "SD-336",
+   "withheld": 225
+  },
+  {
+   "fault": "radiation shield",
+   "fr": 0,
+   "site": "SD-344",
+   "withheld": 349
+  },
+  {
+   "fault": "wet filter",
+   "fr": 0,
+   "site": "SD-411",
+   "withheld": 67
+  }
  ],
- "email": [
-  "Islands",
-  "Western Uplands"
+ "highest_below": "0.5",
+ "line": "2",
+ "method": {
+  "below_line": "1.5",
+  "corr": "0.8",
+  "fa_km": "50",
+  "fw_new": "4.1",
+  "fw_old": "3.4",
+  "grace_min": "20",
+  "group_km": "25",
+  "group_m": "80",
+  "lapse": "6.5",
+  "lapse_tol": "5",
+  "tau": "2",
+  "tau_hi": "4.5",
+  "tau_lo": "1.5"
+ },
+ "pool_groups": [
+  "Halvorsen Meadow, Bitterbrush Flat, Teller Junction",
+  "Cutler Meadow, Ransom Creek",
+  "Dutchman Flat, Hollis Junction",
+  "Upper Antler, Corrigan Lake",
+  "Maple Bend, Riverside Rest Area, Fenwick"
  ],
- "neither": [
-  "North Coast",
-  "Border",
-  "Northern Forests",
-  "South Coast",
-  "Eastern Lakes",
-  "Midlands",
-  "River Valley",
-  "Southern Plains"
+ "r2_sites": [
+  "SD-147",
+  "SD-226",
+  "SD-318"
  ],
- "levels": {
-  "R01": "red",
-  "R02": "red",
-  "R03": "green",
-  "R04": "amber",
-  "R05": "green",
-  "R06": "amber",
-  "R07": "green",
-  "R08": "green",
-  "R09": "green",
-  "R10": "green",
-  "R11": "green",
-  "R12": "green"
- },
- "level_names": {
-  "Capital": "red",
-  "Harbour": "red",
-  "North Coast": "green",
-  "Islands": "amber",
-  "Border": "green",
-  "Western Uplands": "amber",
-  "Northern Forests": "green",
-  "South Coast": "green",
-  "Eastern Lakes": "green",
-  "Midlands": "green",
-  "River Valley": "green",
-  "Southern Plains": "green"
- },
- "settled_pct": "15.3",
- "inscope_pct": "84.7",
- "settled_rounds": "23",
- "settled_den": "48,978",
- "settled_num": "7,494",
- "invited_total": "8,604",
- "R_total": "4,610",
- "known_total": "24",
- "n_total": "3,970",
- "rate": {
-  "R01": "48.7",
-  "R02": "52.7",
-  "R03": "60.6",
-  "R04": "55.5",
-  "R05": "58.7",
-  "R06": "55.4",
-  "R07": "60.6",
-  "R08": "61.2",
-  "R09": "60.8",
-  "R10": "60.4",
-  "R11": "61.4",
-  "R12": "60.8"
- },
- "default_red": [
-  "Capital",
-  "Harbour",
-  "Islands",
-  "Western Uplands",
-  "Border"
+ "retune_count": 8,
+ "retune_sites": [
+  "SD-118",
+  "SD-122",
+  "SD-131",
+  "SD-147",
+  "SD-204",
+  "SD-211",
+  "SD-226",
+  "SD-318"
  ],
- "default_red_n": "5",
- "default_amber_n": "7",
- "casro_red": [
-  "Capital",
-  "Harbour",
-  "Islands",
-  "Western Uplands"
- ],
- "casro_red_n": "4",
- "allr_red": [
-  "Capital",
-  "Harbour",
-  "Islands",
-  "Western Uplands"
- ],
- "allr_red_n": "4",
- "share_all": "12.1",
- "share_recent": "7.8",
- "reached": {
-  "R01": "454",
-  "R02": "315",
-  "R03": "224",
-  "R04": "174",
-  "R05": "197",
-  "R06": "229",
-  "R07": "179",
-  "R08": "292",
-  "R09": "270",
-  "R10": "310",
-  "R11": "218",
-  "R12": "242"
+ "rungs": {
+  "R0 trust the QC": [],
+  "R1 every withheld reading right": [
+   "SD-118",
+   "SD-122",
+   "SD-131",
+   "SD-147",
+   "SD-158",
+   "SD-204",
+   "SD-211",
+   "SD-226",
+   "SD-277",
+   "SD-318",
+   "SD-336",
+   "SD-344"
+  ],
+  "R2 hourly lapse refit within 5 C": [
+   "SD-147",
+   "SD-226",
+   "SD-318"
+  ],
+  "R3 two nearest within 150 m": [
+   "SD-131",
+   "SD-147",
+   "SD-226",
+   "SD-318"
+  ],
+  "R4 night and below 1,600 m": [
+   "SD-118",
+   "SD-122",
+   "SD-131",
+   "SD-147",
+   "SD-204",
+   "SD-211"
+  ],
+  "R6 own month-hour 2nd to 98th percentile": [
+   "SD-118",
+   "SD-122",
+   "SD-131",
+   "SD-147",
+   "SD-158",
+   "SD-204",
+   "SD-211",
+   "SD-226",
+   "SD-277",
+   "SD-318",
+   "SD-336",
+   "SD-344"
+  ],
+  "R7 withheld with a neighbour within 30 km": [
+   "SD-118",
+   "SD-122",
+   "SD-131",
+   "SD-147",
+   "SD-204",
+   "SD-211",
+   "SD-226"
+  ],
+  "R8 HRRR forecast within 5 C": [
+   "SD-147",
+   "SD-226",
+   "SD-318"
+  ]
  },
- "calls": {
-  "R01": "1359",
-  "R02": "1021",
-  "R03": "684",
-  "R04": "538",
-  "R05": "635",
-  "R06": "652",
-  "R07": "598",
-  "R08": "919",
-  "R09": "812",
-  "R10": "942",
-  "R11": "779",
-  "R12": "743"
+ "spare_site": "SD-171 Sheep Ridge",
+ "stations": {
+  "SD-109": {
+   "excluded": 0,
+   "fr": 12,
+   "freezing": "2,835",
+   "ice": 617,
+   "share": "0.2",
+   "unavailable": 652,
+   "withheld": 12,
+   "z": "1,176"
+  },
+  "SD-113": {
+   "excluded": 0,
+   "fr": 1,
+   "freezing": "3,067",
+   "ice": 682,
+   "share": "0.0",
+   "unavailable": 544,
+   "withheld": 1,
+   "z": "1,193"
+  },
+  "SD-118": {
+   "excluded": 0,
+   "fr": 221,
+   "freezing": "3,163",
+   "ice": 604,
+   "share": "4.3",
+   "unavailable": 293,
+   "withheld": 221,
+   "z": "1,118"
+  },
+  "SD-122": {
+   "excluded": 0,
+   "fr": 818,
+   "freezing": "3,212",
+   "ice": 631,
+   "share": "16.1",
+   "unavailable": 423,
+   "withheld": 818,
+   "z": "1,106"
+  },
+  "SD-127": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "2,993",
+   "ice": 658,
+   "share": "0.0",
+   "unavailable": 412,
+   "withheld": 0,
+   "z": "1,238"
+  },
+  "SD-131": {
+   "excluded": 0,
+   "fr": 439,
+   "freezing": "3,205",
+   "ice": 619,
+   "share": "8.6",
+   "unavailable": 276,
+   "withheld": 439,
+   "z": "1,142"
+  },
+  "SD-138": {
+   "excluded": 25,
+   "fr": 0,
+   "freezing": "2,648",
+   "ice": 575,
+   "share": "0.0",
+   "unavailable": 290,
+   "withheld": 0,
+   "z": "1,052"
+  },
+  "SD-147": {
+   "excluded": 6,
+   "fr": 586,
+   "freezing": "3,496",
+   "ice": 783,
+   "share": "11.5",
+   "unavailable": 264,
+   "withheld": 586,
+   "z": "1,560"
+  },
+  "SD-158": {
+   "excluded": 13,
+   "fr": 0,
+   "freezing": "3,582",
+   "ice": 801,
+   "share": "0.0",
+   "unavailable": 359,
+   "withheld": 178,
+   "z": "1,655"
+  },
+  "SD-163": {
+   "excluded": 9,
+   "fr": 0,
+   "freezing": "4,049",
+   "ice": 875,
+   "share": "0.0",
+   "unavailable": 211,
+   "withheld": 0,
+   "z": "1,984"
+  },
+  "SD-171": {
+   "excluded": 0,
+   "fr": 2,
+   "freezing": "4,095",
+   "ice": 885,
+   "share": "0.0",
+   "unavailable": 366,
+   "withheld": 2,
+   "z": "2,048"
+  },
+  "SD-204": {
+   "excluded": 0,
+   "fr": 242,
+   "freezing": "3,481",
+   "ice": 750,
+   "share": "4.8",
+   "unavailable": 197,
+   "withheld": 242,
+   "z": "1,418"
+  },
+  "SD-211": {
+   "excluded": 0,
+   "fr": 346,
+   "freezing": "3,440",
+   "ice": 723,
+   "share": "6.8",
+   "unavailable": 439,
+   "withheld": 346,
+   "z": "1,441"
+  },
+  "SD-219": {
+   "excluded": 0,
+   "fr": 13,
+   "freezing": "3,571",
+   "ice": 776,
+   "share": "0.3",
+   "unavailable": 319,
+   "withheld": 13,
+   "z": "1,462"
+  },
+  "SD-226": {
+   "excluded": 12,
+   "fr": 195,
+   "freezing": "3,860",
+   "ice": 858,
+   "share": "3.8",
+   "unavailable": 368,
+   "withheld": 195,
+   "z": "1,878"
+  },
+  "SD-233": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "3,472",
+   "ice": 744,
+   "share": "0.0",
+   "unavailable": 543,
+   "withheld": 0,
+   "z": "1,449"
+  },
+  "SD-240": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "3,986",
+   "ice": 870,
+   "share": "0.0",
+   "unavailable": 256,
+   "withheld": 0,
+   "z": "1,902"
+  },
+  "SD-251": {
+   "excluded": 0,
+   "fr": 2,
+   "freezing": "3,165",
+   "ice": 704,
+   "share": "0.0",
+   "unavailable": 328,
+   "withheld": 2,
+   "z": "1,362"
+  },
+  "SD-262": {
+   "excluded": 28,
+   "fr": 0,
+   "freezing": "4,189",
+   "ice": 895,
+   "share": "0.0",
+   "unavailable": 242,
+   "withheld": 0,
+   "z": "2,164"
+  },
+  "SD-277": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "4,367",
+   "ice": 907,
+   "share": "0.0",
+   "unavailable": 372,
+   "withheld": 239,
+   "z": "2,311"
+  },
+  "SD-289": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "4,028",
+   "ice": 889,
+   "share": "0.0",
+   "unavailable": 362,
+   "withheld": 0,
+   "z": "1,941"
+  },
+  "SD-307": {
+   "excluded": 0,
+   "fr": 23,
+   "freezing": "3,697",
+   "ice": 810,
+   "share": "0.5",
+   "unavailable": 479,
+   "withheld": 23,
+   "z": "1,688"
+  },
+  "SD-312": {
+   "excluded": 0,
+   "fr": 21,
+   "freezing": "3,810",
+   "ice": 835,
+   "share": "0.4",
+   "unavailable": 385,
+   "withheld": 21,
+   "z": "1,707"
+  },
+  "SD-318": {
+   "excluded": 0,
+   "fr": 216,
+   "freezing": "4,141",
+   "ice": 885,
+   "share": "4.2",
+   "unavailable": 409,
+   "withheld": 216,
+   "z": "2,082"
+  },
+  "SD-336": {
+   "excluded": 41,
+   "fr": 17,
+   "freezing": "4,393",
+   "ice": 898,
+   "share": "0.3",
+   "unavailable": 382,
+   "withheld": 225,
+   "z": "2,422"
+  },
+  "SD-344": {
+   "excluded": 25,
+   "fr": 0,
+   "freezing": "3,484",
+   "ice": 794,
+   "share": "0.0",
+   "unavailable": 397,
+   "withheld": 349,
+   "z": "1,562"
+  },
+  "SD-351": {
+   "excluded": 29,
+   "fr": 4,
+   "freezing": "3,521",
+   "ice": 803,
+   "share": "0.1",
+   "unavailable": 275,
+   "withheld": 4,
+   "z": "1,611"
+  },
+  "SD-402": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "2,853",
+   "ice": 599,
+   "share": "0.0",
+   "unavailable": 315,
+   "withheld": 0,
+   "z": "1,008"
+  },
+  "SD-405": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "2,781",
+   "ice": 588,
+   "share": "0.0",
+   "unavailable": 202,
+   "withheld": 0,
+   "z": "992"
+  },
+  "SD-411": {
+   "excluded": 0,
+   "fr": 0,
+   "freezing": "2,924",
+   "ice": 612,
+   "share": "0.0",
+   "unavailable": 510,
+   "withheld": 67,
+   "z": "1,031"
+  },
+  "SD-416": {
+   "excluded": 11,
+   "fr": 0,
+   "freezing": "3,243",
+   "ice": 724,
+   "share": "0.0",
+   "unavailable": 482,
+   "withheld": 0,
+   "z": "1,424"
+  }
  },
- "reached_fmt": {
-  "R01": "454",
-  "R02": "315",
-  "R03": "224",
-  "R04": "174",
-  "R05": "197",
-  "R06": "229",
-  "R07": "179",
-  "R08": "292",
-  "R09": "270",
-  "R10": "310",
-  "R11": "218",
-  "R12": "242"
- },
- "calls_fmt": {
-  "R01": "1,359",
-  "R02": "1,021",
-  "R03": "684",
-  "R04": "538",
-  "R05": "635",
-  "R06": "652",
-  "R07": "598",
-  "R08": "919",
-  "R09": "812",
-  "R10": "942",
-  "R11": "779",
-  "R12": "743"
- },
- "june_returns": {
-  "R01": "549",
-  "R02": "442",
-  "R03": "366",
-  "R04": "264",
-  "R05": "358",
-  "R06": "336",
-  "R07": "335",
-  "R08": "552",
-  "R09": "483",
-  "R10": "533",
-  "R11": "486",
-  "R12": "435"
- },
- "late": {
-  "R01": "104",
-  "R02": "75",
-  "R03": "56",
-  "R04": "43",
-  "R05": "44",
-  "R06": "44",
-  "R07": "43",
-  "R08": "78",
-  "R09": "79",
-  "R10": "74",
-  "R11": "51",
-  "R12": "47"
- },
- "late_share": {
-  "R01": "18.9",
-  "R02": "17.0",
-  "R03": "15.3",
-  "R04": "16.3",
-  "R05": "12.3",
-  "R06": "13.1",
-  "R07": "12.8",
-  "R08": "14.1",
-  "R09": "16.4",
-  "R10": "13.9",
-  "R11": "10.5",
-  "R12": "10.8"
- },
- "recruited": {
-  "A": "34",
-  "C": "112",
-  "F": "118",
-  "G": "175",
-  "H": "72",
-  "I": "81",
-  "J": "70",
-  "M": "139",
-  "N": "107"
- },
- "returned_once": {
-  "A": "30",
-  "C": "100",
-  "F": "102",
-  "G": "148",
-  "H": "64",
-  "I": "67",
-  "J": "60",
-  "M": "125",
-  "N": "99"
- },
- "recruited_total": "908",
- "returned_total": "795",
- "close_june": "19 June 2026",
- "close_sep": "25 September 2026",
- "frame": "1 September 2026",
- "lines": [
-  "55",
-  "58"
- ]
+ "total_excluded": 199,
+ "total_freezing": "108,751",
+ "total_ice": "23,394",
+ "total_unavailable": "11,352",
+ "winter_hours": 5088,
+ "winter_hours_s": "5,088"
 }

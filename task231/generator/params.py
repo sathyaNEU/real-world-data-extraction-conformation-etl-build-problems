@@ -1,57 +1,108 @@
-"""task231 parameters: the Brevland Central Bank's Business Conditions Survey panel, 2017 to the September 2026 round."""
-from datetime import date
+"""task231 architecture 2: the Sawyer Divide Highway District's road weather stations, winter 2026/27.
+Every constant the world, the pack, the goldens and the checks share."""
+import datetime as dt
 
-SEED = 23104
-REC_SEED = 23177                         # the records layer (times, identifiers, call attempts, the asks' records)
+SEED = 7
+ORG = "Sawyer Divide Highway District"
+ORG_SHORT = "SDHD"
+VENDOR = "Quillan Road Weather Systems"
+DOMAIN = "sdhd.mt.gov"
+VENDOR_DOMAIN = "quillanrws.com"
+PEOPLE = {"manager": ("Melissa Hayden", "mhayden"), "engineer": ("Lynn Dalton", "ldalton"),
+          "vendor": ("Robyn Reeves", "rreeves")}
 
-# Rounds: March, June, September and December; the frame date is the first day of the round month.
-BURN_IN = date(2014, 3, 1)              # the panel started in 2014; the round outcomes on file start in March 2017
-FIRST_ROUND = date(2017, 3, 1)
-CURRENT = date(2026, 9, 1)
-MAIN_CLOSE = date(2026, 9, 25)          # Friday, 17:00 local time
-EXTRACT = date(2026, 9, 25)             # business register extract and returns file as at the main close
-EXT_START, EXT_END = date(2026, 9, 28), date(2026, 10, 9)
-THRESHOLD = 0.55
-CALL_DAY = 15                           # the contact centre calls the round's non-returners from day 15 to the close
-RETIRE_AFTER = 6                        # a firm silent for six rounds in a row is retired before the next round
-EXPANSION_ROUND = date(2024, 3, 1)      # the panel was doubled in March 2024
-SETTLED_MONTHS = 48                     # rounds whose frame date is at least this far before the extract count as settled
+# the winter the standard reads: 1 October 2026 00:00 to 1 May 2027 00:00 Mountain time (MDT both ends)
+WIN_START_UTC = dt.datetime(2026, 10, 1, 6)
+WIN_END_UTC = dt.datetime(2027, 5, 1, 6)
+NH = int((WIN_END_UTC - WIN_START_UTC).total_seconds() // 3600)          # 5,088 hours
+DST_OFF_UTC = dt.datetime(2026, 11, 1, 8)     # 02:00 MDT becomes 01:00 MST
+DST_ON_UTC = dt.datetime(2027, 3, 14, 9)      # 02:00 MST becomes 03:00 MDT
+SETTING = dt.date(2027, 5, 18)
 
-# Region: (code, name, firms in the 2014 panel, response propensity beta (a, b), closure hazard multiplier)
-REGIONS = [
-    ("R01", "Capital",          560, (3.679, 4.921), 1.00),
-    ("R02", "Harbour",          430, (4.174, 4.426), 1.00),
-    ("R03", "North Coast",      330, (5.300, 3.300), 1.00),
-    ("R04", "Islands",          250, (4.825, 3.775), 1.00),
-    ("R05", "Border",           300, (5.159, 3.441), 1.00),
-    ("R06", "Western Uplands",  310, (4.807, 3.793), 1.00),
-    ("R07", "Northern Forests", 290, (5.335, 3.265), 1.00),
-    ("R08", "South Coast",      450, (5.454, 3.146), 1.00),
-    ("R09", "Eastern Lakes",    400, (5.442, 3.158), 1.00),
-    ("R10", "Midlands",         470, (5.352, 3.248), 1.00),
-    ("R11", "River Valley",     400, (5.753, 2.847), 1.00),
-    ("R12", "Southern Plains",  380, (5.445, 3.155), 1.00),
+# the vendor's air-temperature tests (configuration v4.3)
+SPATIAL_RADIUS_KM = 45.0
+SPATIAL_LAPSE_C_PER_KM = 6.5
+SPATIAL_TOL_C = 6.0
+SPATIAL_MIN_NEIGHBOURS = 2
+STEP_LIMIT_C = 10.0
+PERSIST_HOURS = 6
+RANGE_C = (-45.0, 50.0)
+RETUNE_LINE_PCT = 2.0
+SENSOR_ACCURACY_C = 0.3          # the standard's "within the sensor's stated accuracy"
+SLA_GRACE_MIN = 20               # Schedule B: received no later than 20 minutes after the hour ended
+
+# stations: tag, site code, RPU id, name, route, milepost, x km, y km, elevation m, group, section, travel-lane
+# pavement sensor model, a second pavement sensor's lane (or "")
+# groups: a basin floor (K, L, M, N, P, Q), a slope above a basin ("Kslope" ...), a windy gap (G), a pass or
+# ridge (R), the open plateau (T)
+STATIONS = [
+    ("K1", "SD-118", "ESS4417", "Halvorsen Meadow", "MT 271", 14.6, 10.0, 20.0, 1118, "K", "Sawyer 2", "IRS-31", ""),
+    ("K2", "SD-131", "ESS4492", "Teller Junction", "MT 271", 22.3, 18.5, 24.0, 1142, "K", "Sawyer 2", "IRS-31", "bridge deck"),
+    ("K3", "SD-122", "ESS4459", "Bitterbrush Flat", "US 487", 61.8, 25.0, 29.5, 1106, "K", "Sawyer 2", "SCAN-16", ""),
+    ("K4", "SD-147", "ESS4503", "Kimball Grade", "US 487", 55.1, 16.0, 31.0, 1560, "Kslope", "Sawyer 2", "IRS-31", ""),
+    ("L1", "SD-109", "ESS4386", "Lone Tree Siding", "MT 271", 6.9, 21.5, 10.0, 1176, "L", "Sawyer 1", "IRS-31", ""),
+    ("L2", "SD-113", "ESS4398", "Wister Bridge", "MT 309", 31.4, 27.0, 18.0, 1193, "L", "Sawyer 1", "IRS-31", "bridge deck"),
+    ("L3", "SD-158", "ESS4547", "Sapphire Hill", "MT 309", 39.0, 30.0, 9.0, 1655, "Lslope", "Sawyer 1", "SCAN-16", ""),
+    ("M1", "SD-204", "ESS4612", "Cutler Meadow", "US 487", 88.7, 52.0, 40.0, 1418, "M", "Sawyer 3", "IRS-31", ""),
+    ("M2", "SD-211", "ESS4630", "Ransom Creek", "US 487", 97.2, 61.0, 46.0, 1441, "M", "Sawyer 3", "IRS-31", "bridge deck"),
+    ("M3", "SD-226", "ESS4671", "Echo Grade", "MT 52", 18.3, 57.0, 52.0, 1878, "Mslope", "Sawyer 3", "IRS-31", ""),
+    ("N1", "SD-219", "ESS4655", "Dutchman Flat", "MT 52", 4.1, 58.0, 33.0, 1462, "N", "Sawyer 3", "IRS-31", ""),
+    ("N2", "SD-233", "ESS4688", "Hollis Junction", "MT 52", 11.6, 67.0, 37.0, 1449, "N", "Sawyer 3", "SCAN-16", ""),
+    ("N3", "SD-240", "ESS4702", "Notch Grade", "MT 52", 25.9, 72.0, 29.0, 1902, "Nslope", "Sawyer 3", "IRS-31", ""),
+    ("P1", "SD-307", "ESS4815", "Upper Antler", "US 33", 142.5, 91.0, 73.0, 1688, "P", "Sawyer 4", "IRS-31", ""),
+    ("P2", "SD-312", "ESS4829", "Corrigan Lake", "US 33", 149.8, 95.0, 76.0, 1707, "P", "Sawyer 4", "IRS-31", ""),
+    ("P3", "SD-318", "ESS4843", "Ptarmigan Grade", "US 33", 156.2, 99.0, 68.0, 2082, "Pslope", "Sawyer 4", "SCAN-16", ""),
+    ("Q1", "SD-402", "ESS4904", "Maple Bend", "US 487", 121.4, 30.0, 62.0, 1008, "Q", "Sawyer 1", "IRS-31", ""),
+    ("Q2", "SD-405", "ESS4917", "Riverside Rest Area", "US 487", 129.9, 40.0, 66.0, 992, "Q", "Sawyer 1", "IRS-31", "bridge deck"),
+    ("Q3", "SD-411", "ESS4933", "Fenwick", "US 487", 138.6, 49.0, 71.0, 1031, "Q", "Sawyer 1", "IRS-31", ""),
+    ("Q4", "SD-416", "ESS4946", "Garnet View", "MT 309", 52.7, 38.0, 78.0, 1424, "Qslope", "Sawyer 1", "SCAN-16", ""),
+    ("G1", "SD-127", "ESS4476", "Bridger Narrows", "MT 309", 44.8, 38.0, 30.0, 1238, "G", "Sawyer 2", "IRS-31", ""),
+    ("G2", "SD-251", "ESS4729", "Coyote Gap", "MT 52", 33.2, 75.0, 55.0, 1362, "G", "Sawyer 3", "IRS-31", ""),
+    ("G3", "SD-138", "ESS4518", "Ashby Crossing", "MT 271", 37.5, 20.0, 52.0, 1052, "G", "Sawyer 2", "IRS-31", "bridge deck"),
+    ("R1", "SD-163", "ESS4560", "Cedar Summit", "MT 309", 58.4, 42.0, 18.0, 1984, "R", "Sawyer 2", "IRS-31", ""),
+    ("R2", "SD-262", "ESS4744", "Ironcap Summit", "MT 52", 41.7, 70.0, 18.0, 2164, "R", "Sawyer 3", "SCAN-16", ""),
+    ("R3", "SD-277", "ESS4768", "Monument Pass", "US 33", 101.3, 82.0, 47.0, 2311, "R", "Sawyer 4", "IRS-31", ""),
+    ("R4", "SD-171", "ESS4579", "Sheep Ridge", "MT 271", 45.2, 24.0, 42.0, 2048, "R", "Sawyer 2", "IRS-31", ""),
+    ("R5", "SD-336", "ESS4871", "Thunder Saddle", "US 33", 171.9, 108.0, 85.0, 2422, "R", "Sawyer 4", "IRS-31", ""),
+    ("R6", "SD-289", "ESS4787", "Elkhorn Divide", "MT 52", 63.5, 55.0, 82.0, 1941, "R", "Sawyer 3", "SCAN-16", ""),
+    ("T1", "SD-344", "ESS4888", "Big Prairie", "US 33", 118.0, 80.0, 92.0, 1562, "T", "Sawyer 4", "IRS-31", ""),
+    ("T2", "SD-351", "ESS4899", "Antelope Bench", "US 33", 126.4, 92.0, 100.0, 1611, "T", "Sawyer 4", "IRS-31", ""),
 ]
-EXPANSION_SHARE = 1.00
-# Each region draws from its own streams; the offsets place every region clear of the 55 and 58 per cent lines.
-REGION_SEEDS = {"R01": 0, "R02": 0, "R03": 28, "R04": 19, "R05": 23, "R06": 15, "R07": 53, "R08": 13, "R09": 8, "R10": 62, "R11": 8, "R12": 18}
-AMBER = 0.58
+TAGS = [s[0] for s in STATIONS]
+SITE = {s[0]: s[1] for s in STATIONS}
+RPU = {s[0]: s[2] for s in STATIONS}
+NAME = {s[0]: s[3] for s in STATIONS}
+GROUP = {s[0]: s[9] for s in STATIONS}
+ELEV = {s[0]: s[8] for s in STATIONS}
+LAT0, LON0 = 46.205, -113.940
+KM_LAT, KM_LON = 0.008993, 0.012965
 
-INDUSTRIES = [("A", "Agriculture, forestry and fishing", 0.05), ("C", "Manufacturing", 0.14), ("F", "Construction", 0.12),
-              ("G", "Wholesale and retail trade", 0.18), ("H", "Transport and storage", 0.07), ("I", "Accommodation and food", 0.09),
-              ("J", "Information and communication", 0.08), ("M", "Professional and technical services", 0.15),
-              ("N", "Administrative and support services", 0.12)]
-SIZES = [("S1", "5 to 19", 0.46, 0.85), ("S2", "20 to 49", 0.27, 1.00), ("S3", "50 to 249", 0.20, 1.12), ("S4", "250 or more", 0.07, 1.25)]
+# basin cold pools: the deficit at the floor at full strength (C), the pool's depth (m), the share of still clear
+# nights it forms, whether it persists through the day in a long still spell
+BASIN = {"K": (11.5, 330, 0.75, True), "L": (2.5, 110, 0.25, False), "M": (9.6, 250, 0.70, False),
+         "N": (6.0, 140, 0.70, False), "P": (10.5, 190, 0.32, False), "Q": (6.5, 210, 0.80, False)}
 
-# Closures: a quarterly hazard, the same in every region and size band.
-HAZARD = 0.0215
-SIZE_HAZARD = {"S1": 1.00, "S2": 1.00, "S3": 1.00, "S4": 1.00}
-WITHDRAW = 0.004
+# sensor faults over the winter (the readings are the sensor's; the air is the generator's truth)
+ICING_PASSES = ("R3", "R5")
+WET_FILTER = "Q3"
+CONNECTOR = ("L3", 3150)        # from this hour index, intermittent spikes
+SHIELD = ("T1", 1950)           # from this hour index, sun heating on still days
 
-# The register records a closure when it is notified: (share, median lag in days, log sd) by route.
-LAG_ROUTES = [("voluntary", 0.28, 100, 0.55), ("administrative", 0.40, 500, 0.25), ("insolvency", 0.32, 780, 0.28)]
-
-# Contact-centre call outcomes for a firm still not returned on day 15: alive firms, closed firms.
-CALL_ALIVE = {"returned": 0.16, "promised": 0.22, "refused": 0.25, "ceased": 0.0, "unobtainable": 0.03, "no_answer": 0.34}
-CALL_CLOSED = {"returned": 0.0, "promised": 0.0, "refused": 0.0, "ceased": 0.10, "unobtainable": 0.24, "no_answer": 0.66}
-CALL_RETURN_LIFT = 0.55                 # a firm that answers and promises returns before the close with this probability
+FILES = {
+    "feed": "sdhd_ess_atmospheric_2026_27.csv",
+    "qc": "quillan_qc_withheld_log_2026_27.csv",
+    "register": "sdhd_rwis_site_register.xlsx",
+    "standard": "sdhd_road_weather_data_quality_standard_rev2.pdf",
+    "qcconfig": "quillan_air_temperature_qc_configuration_v4_3.pdf",
+    "sla": "quillan_service_agreement_schedule_b.pdf",
+    "messages": "sdhd_central_server_message_log_2026_27.csv",
+    "modems": "sdhd_cellular_modem_register.xlsx",
+    "outages": "sdhd_rwis_planned_outage_notices_2026_27.csv",
+    "pavement": "sdhd_pavement_sensor_readings_2026_27.csv",
+    "preseason": "sdhd_rwis_preseason_checks_oct2026.xlsx",
+    "nwp": "hrrr_point_forecasts_sdhd_2026_27.csv",
+    "traffic": "sdhd_atr_daily_volumes_2026.csv",
+    "email": "rwis_winter_review_request.eml",
+}
+DISTRACTORS = ("nwp", "traffic")
+DELIVERABLES = ("rwis_spatial_check_review_2027.xlsx", "spatial_check_retune_memo_2027.docx")

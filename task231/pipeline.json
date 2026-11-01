@@ -1,20 +1,21 @@
 {
  "task": "task231",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences / sensor-calibration-measurement (client physical-environmental-sciences)",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
  "stump": "A competent analyst judges each withheld air-temperature reading against the hour's elevation-adjusted neighbours, the lapse rate refitted across the network each hour, counts a reading as right only where it sits within the check's tolerance of that line, and re-tunes only the deepest-pooling basin floors; the step that lands there is reading a basin floor against stations outside its own basin's cold pool, so the floors of the shallower basins, whose still-night readings agree with the other stations in their own pool, keep withholding more than 2 per cent of their winter hours unremarked.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 1,
+  "date": "2026-11-01",
+  "note": "pair ceiling 82.9 over 60 (generator/ceiling.py); every other section written"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 (answer-figure coincidences in the QC configuration and the standard, the register and pre-season sheets naming stations, two column names since renamed)",
   "reader": ""
  },
  "duplicate_check": {
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder (priced on a prototype of the generator), closure table, literal reader, oracles and ask sheet into DESIGN_NOTE.md, then precut.py task231; stage 3 builds the generator in task231/generator/ (architecture 1's generator removed), the pack, the goldens and submission.md",
+ "resume": "stage 3, architecture 2: (1) rebuild with python3 task231/generator/make.py (the feed and pavement columns were renamed to NTCIP-style names and the SF5 check moved to the any-mate variant after the target.zip in this commit was cut); (2) grade each station's share at a rounding every defensible variant holds (checks.py G7's fitted lapse moves SD-318 by 6 hours, 4.2 against 4.1 at one decimal): whole per cents with SD-147's hours moved off the 11.5 boundary, or the side of the 2 per cent line, asserted in checks.py; (3) pull main, read stumping's rule-application paragraph (19c4263b, 273af233), then rework the asks (supplemental-stumping) until generator/ceiling.py measures the pair at 60 or under (82.9 as built: the Schedule B and pavement asks are executed from filed rules and register sheets); (4) precut.py, voice-check.py, leak.py --asof 2027-05-18, figures_check.py, guard.py surface and heart on the final cut; (5) stage 4: the leak copy at scratchpad/leak-task231/ and the reader brief, then the judge.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -66,6 +67,10 @@
   {
    "date": "2026-11-01",
    "event": "DRAWN: architecture 2, physical-environmental-sciences / sensor-calibration-measurement x data quality monitoring, registered 2026-11-01T00:33:44Z"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at stage 3: the main call built and gated (checks.py 75 of 75, verify.py 13 of 13, two byte-identical builds, figures_check 162 of 162, voice-check PASS); the re-tune set SD-118, SD-122, SD-131, SD-147, SD-204, SD-211, SD-226, SD-318; the asks measured at a pair ceiling of 82.9 and go back to stage 2"
   }
  ]
 }

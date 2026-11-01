@@ -1,87 +1,42 @@
-# task231 submission
-
 ## Tags
 
-**Domain:** Survey Research & Official Statistics (nonresponse, calibration and measurement-error adjustment: the eligibility of a business panel's unresolved non-respondents).
-**Analytical objective:** Data Quality Monitoring & Alerting (which regions of the September 2026 Business Conditions Survey round get further fieldwork at the main close).
+**Domain:** Physical & Environmental Sciences (sensor calibration and measurement: a highway district's road weather stations and its vendor's automated air temperature quality control).
+**Analytical objective:** Data Quality Monitoring & Alerting.
 
 ## 1. Final Recommendation
 
-**Put Capital and Harbour into the reminder-call extension, give Islands and Western Uplands the extra email reminder, and give the other eight regions neither.**
-
-The 3,970 non-returners the business register does not show as closed are in scope at 84.7%, because 15.3% of the non-returners of rounds the register has caught up with (March 2017 to September 2022) had ceased trading by their round's frame date; on that base only Capital and Harbour fall under 55%, and Islands and Western Uplands are the only others under 58%. Not the register as it stands, which counts every one of them as trading and puts five regions under 55% (Capital, Harbour, Islands, Border and Western Uplands) and the other seven under 58%: the register records a closure only when it is notified, often a year or more after trading stops. Not the contact centre's resolved calls, nor the closure share of every earlier round (12.1%) or of the last two years (7.8%), which all still put Islands and Western Uplands under 55%: a call confirms a closure only when someone answers for the firm, and those rounds' closures are still reaching the register.
+**Yes. The data quality standard sends eight stations back to Quillan for a re-tuned air temperature spatial test before winter 2027/28: SD-118 Halvorsen Meadow, SD-122 Bitterbrush Flat, SD-131 Teller Junction, SD-147 Kimball Grade, SD-204 Cutler Meadow, SD-211 Ransom Creek, SD-226 Echo Grade, SD-318 Ptarmigan Grade.**
+Their false-rejection shares were 4.3, 16.1, 8.6, 11.5, 4.8, 6.8, 3.8, 4.2 per cent of the winter's 5,088 hours, against the standard's line of 2 per cent; the highest of the other stations was 0.5 per cent. At the basin floors the test withheld the cold pools' air on still nights, and at the three grades above the pools it withheld right readings because its estimate leaned on the cold floor stations nearby. Checked against an hourly lapse line or the HRRR forecast, the floor readings look wrong and only the three grades go on the list.
 
 ## 2. Critical Components
 
-1. Firms returned by the 17:00 main close on 25 September: **4,610** of the **8,604** invited
-2. Invited firms the register shows as ceased by 1 September: **24**; non-returners with no closure on the register: **3,970**
-3. Non-returners of the settled rounds (March 2017 to September 2022) that had ceased trading by their round's frame date: **15.3%** (7,494 of 48,978)
+1. A withheld reading is right when it agrees within 2 C with the stations sharing its air that hour: a basin floor with its pool mates (Halvorsen Meadow, Bitterbrush Flat, Teller Junction; Cutler Meadow, Ransom Creek; Dutchman Flat, Hollis Junction; Upper Antler, Corrigan Lake; Maple Bend, Riverside Rest Area, Fenwick), any other station with the free-atmosphere stations within 50 km carried to its elevation at 6.5 C per km.
+2. The cold floor readings the test withheld agree with their pool mates, so they count as false rejections: SD-118 4.3, SD-122 16.1, SD-131 8.6, SD-204 4.8, SD-211 6.8.
+3. The grades above the pools agree with the free atmosphere around them: SD-147 11.5, SD-226 3.8, SD-318 4.2.
+4. Withheld readings that were wrong and stay withheld: SD-158 connector (178 hours withheld, 0 right), SD-277 rime (239 hours withheld, 0 right), SD-336 rime (225 hours withheld, 17 right), SD-344 radiation shield (349 hours withheld, 0 right), SD-411 wet filter (67 hours withheld, 0 right).
+5. The lapse-line route (each hour's elevation fit, within 5 C) re-tunes only SD-147, SD-226, SD-318.
 
 ## 3. Step-by-Step Solution
 
-1. Counted each region's invited firms in bcs_invitations_2026_09.csv with a return in bcs_returns_2026_09.csv by 17:00 Brevland time on 25 September, each firm once (the fieldwork quality standard, section 4): 4,610 of 8,604 returned.
-2. Joined the other invited firms to brevland_business_register_closures.csv on company number: 24 had ceased trading by 1 September and are out of scope under section 4 of the standard; 3,970 non-returners have no closure on the register.
-3. The register's notes say a company appears only once its closure is registered, and the extract's registration dates run long after its cessation dates, so the 3,970 include firms that had already ceased; their share comes from earlier rounds the register has caught up with.
-4. For the 23 rounds from March 2017 to September 2022 in bcs_round_outcomes_2017_2026.csv, took the firms with no return by the round's main close in BCS_round_calendar.xlsx, dropped those the register showed closed by that close, and linked the rest through bcs_panel_register.csv to the closure extract: 7,494 of 48,978, 15.3%, had ceased by the round's frame date.
-5. Counted each region's own non-returners with no register closure (3,970 in all) in scope at 84.7% and divided its returns by its returns plus that count: Capital and Harbour come out under 55%, Islands and Western Uplands at 55% or more but under 58%, the other eight at 58% or more.
-6. Set each region's alert level from the table in section 5 of the standard: red under 55%, amber from 55% to under 58%, green from 58%.
-7. Recommendation: the extension for Capital and Harbour, the extra email for Islands and Western Uplands, neither for the other eight.
+1. Joined the ESS export (tenths of a degree C, UTC hour-end stamps, RPU ids, re-sent rows kept once) to the site register and took the QC log's spatial-test air temperature rows, one per station and hour.
+2. Each hour fitted the free-atmosphere line of temperature on elevation, refitted without stations more than 1.5 C below it.
+3. Grouped the stations sharing a cold pool: night residuals from that line correlated above 0.8 on the hours both readings passed the QC, within 25 km and 80 m of each other, both below the line on an average night.
+4. Judged each withheld reading against the median of its pool mates, or of the free-atmosphere stations within 50 km carried to its elevation at 6.5 C per km; right within 2 C, and every tolerance from 1.5 to 4.5 C gives the same hours.
+5. Share = right withheld hours / 5,088 winter hours; re-tune above 2 per cent.
+6. Unavailable hours: the message log's modems to sites through the modem register with removed modems kept and the unregistered spare placed at SD-171 Sheep Ridge by the export's observations, local times with their zone to UTC, each message's hours first to last, the earliest receipt within 20 minutes of the hour's end available, hours inside a notified outage excluded.
+7. Freezing and ice hours: the pavement export with re-sent rows once, travel-lane ports only, each serial's model (replaced sensors from the register's notes) for its units, the firmware 4.1 code table from each serial's applied time and 3.4 before it and for SCAN-16 sensors.
 
 ## 4. Deliverable Answers
 
-### bcs_sep2026_extension.xlsx
+### spatial_check_retune_memo_2027.docx
 
-1. The call: extension for Capital and Harbour; extra email for Islands and Western Uplands; neither for North Coast, Border, Northern Forests, South Coast, Eastern Lakes, Midlands, River Valley and Southern Plains.
-2. Alert level by region:
-   - Capital (R01): red, reminder-call extension
-   - Harbour (R02): red, reminder-call extension
-   - North Coast (R03): green, neither
-   - Islands (R04): amber, extra email reminder
-   - Border (R05): green, neither
-   - Western Uplands (R06): amber, extra email reminder
-   - Northern Forests (R07): green, neither
-   - South Coast (R08): green, neither
-   - Eastern Lakes (R09): green, neither
-   - Midlands (R10): green, neither
-   - River Valley (R11): green, neither
-   - Southern Plains (R12): green, neither
-3. September round so far, by region, firms the contact centre has reached and calls it has placed:
-   - Capital: 454 firms reached, 1,359 calls placed
-   - Harbour: 315 firms reached, 1,021 calls placed
-   - North Coast: 224 firms reached, 684 calls placed
-   - Islands: 174 firms reached, 538 calls placed
-   - Border: 197 firms reached, 635 calls placed
-   - Western Uplands: 229 firms reached, 652 calls placed
-   - Northern Forests: 179 firms reached, 598 calls placed
-   - South Coast: 292 firms reached, 919 calls placed
-   - Eastern Lakes: 270 firms reached, 812 calls placed
-   - Midlands: 310 firms reached, 942 calls placed
-   - River Valley: 218 firms reached, 779 calls placed
-   - Southern Plains: 242 firms reached, 743 calls placed
-4. June 2026 round, by region, returns that reached us after the main close and their share of the region's June returns, one decimal:
-   - Capital: 104 returns, 18.9%
-   - Harbour: 75 returns, 17.0%
-   - North Coast: 56 returns, 15.3%
-   - Islands: 43 returns, 16.3%
-   - Border: 44 returns, 12.3%
-   - Western Uplands: 44 returns, 13.1%
-   - Northern Forests: 43 returns, 12.8%
-   - South Coast: 78 returns, 14.1%
-   - Eastern Lakes: 79 returns, 16.4%
-   - Midlands: 74 returns, 13.9%
-   - River Valley: 51 returns, 10.5%
-   - Southern Plains: 47 returns, 10.8%
-5. March 2026 refreshment, by industry group, firms recruited and of them firms that have returned at least once:
-   - A Agriculture, forestry and fishing: 34 recruited, 30 returned at least once
-   - C Manufacturing: 112 recruited, 100 returned at least once
-   - F Construction: 118 recruited, 102 returned at least once
-   - G Wholesale and retail trade: 175 recruited, 148 returned at least once
-   - H Transport and storage: 72 recruited, 64 returned at least once
-   - I Accommodation and food: 81 recruited, 67 returned at least once
-   - J Information and communication: 70 recruited, 60 returned at least once
-   - M Professional and technical services: 139 recruited, 125 returned at least once
-   - N Administrative and support services: 107 recruited, 99 returned at least once
+1. Re-tune the spatial test before winter 2027/28 at: SD-118 Halvorsen Meadow, SD-122 Bitterbrush Flat, SD-131 Teller Junction, SD-147 Kimball Grade, SD-204 Cutler Meadow, SD-211 Ransom Creek, SD-226 Echo Grade, SD-318 Ptarmigan Grade.
+2. Chart: every station's false-rejection share against the 2 per cent line, the re-tuned stations marked.
 
-### bcs_sep2026_response.pptx
+### rwis_spatial_check_review_2027.xlsx
 
-1. One slide: a column for each region's response rate at the main close (non-returners with no register closure counted in scope at 84.7%), coloured by alert level, with dashed lines at 55% and 58%; title "Capital and Harbour go into the reminder-call extension; Islands and Western Uplands get the extra email".
+1. False-rejection share of winter hours (per cent) and re-tune:
+   - SD-109 0.2; SD-113 0.0; SD-118 4.3 re-tune; SD-122 16.1 re-tune; SD-127 0.0; SD-131 8.6 re-tune; SD-138 0.0; SD-147 11.5 re-tune; SD-158 0.0; SD-163 0.0; SD-171 0.0; SD-204 4.8 re-tune; SD-211 6.8 re-tune; SD-219 0.3; SD-226 3.8 re-tune; SD-233 0.0; SD-240 0.0; SD-251 0.0; SD-262 0.0; SD-277 0.0; SD-289 0.0; SD-307 0.5; SD-312 0.4; SD-318 4.2 re-tune; SD-336 0.3; SD-344 0.0; SD-351 0.1; SD-402 0.0; SD-405 0.0; SD-411 0.0; SD-416 0.0
+2. Unavailable hours under Schedule B: SD-109 652; SD-113 544; SD-118 293; SD-122 423; SD-127 412; SD-131 276; SD-138 290; SD-147 264; SD-158 359; SD-163 211; SD-171 366; SD-204 197; SD-211 439; SD-219 319; SD-226 368; SD-233 543; SD-240 256; SD-251 328; SD-262 242; SD-277 372; SD-289 362; SD-307 479; SD-312 385; SD-318 409; SD-336 382; SD-344 397; SD-351 275; SD-402 315; SD-405 202; SD-411 510; SD-416 482.
+3. Travel-lane freezing hours: SD-109 2,835; SD-113 3,067; SD-118 3,163; SD-122 3,212; SD-127 2,993; SD-131 3,205; SD-138 2,648; SD-147 3,496; SD-158 3,582; SD-163 4,049; SD-171 4,095; SD-204 3,481; SD-211 3,440; SD-219 3,571; SD-226 3,860; SD-233 3,472; SD-240 3,986; SD-251 3,165; SD-262 4,189; SD-277 4,367; SD-289 4,028; SD-307 3,697; SD-312 3,810; SD-318 4,141; SD-336 4,393; SD-344 3,484; SD-351 3,521; SD-402 2,853; SD-405 2,781; SD-411 2,924; SD-416 3,243.
+4. Travel-lane ice hours: SD-109 617; SD-113 682; SD-118 604; SD-122 631; SD-127 658; SD-131 619; SD-138 575; SD-147 783; SD-158 801; SD-163 875; SD-171 885; SD-204 750; SD-211 723; SD-219 776; SD-226 858; SD-233 744; SD-240 870; SD-251 704; SD-262 895; SD-277 907; SD-289 889; SD-307 810; SD-312 835; SD-318 885; SD-336 898; SD-344 794; SD-351 803; SD-402 599; SD-405 588; SD-411 612; SD-416 724.
