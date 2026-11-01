@@ -1,65 +1,58 @@
 {
- "task": "task456",
- "status": "PAUSED",
- "domain": "general-statistics-data-science",
- "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": ""
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "Architecture 2's draw is owed and no card is filed (architecture 1's card carries architecture_spent). The re-root directive excluded general statistics (spent for this slot) and physical and environmental sciences, healthcare delivery and survey research (this batch's recent ETL builds), which leaves education's item-response-theory-test-equating as the only ETL task type, closed by task464 architecture 4's enumeration and task450, task474 v7, task488 and task482 architecture 11; healthcare delivery's payment-claims cell (no live build in this batch) was screened as the alternative and every candidate died on paper (design note, Tried and rejected, 2026-11-01). Next action, for the main thread: choose which exclusion to lift, then draw with guard.py recent, coverage and mechanisms on a fresh pull. Leads, none yet priced: plan-paid seasonality on each employer group's own deductible cycle (payment claims; needs time_semantics out of the guard window and a closed-period framing, as it reads as a forecast otherwise); a general-statistics data-integration draw in a fresh world (ban.subdomain cleared once task445 left the last three); or a physical-sciences or survey cell with a mechanism outside shared-meter attribution, rhythm-based classification and completion.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "source_note": "seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; the decoy-era traps are not used; pairing moved to General Statistics data integration (see ## Draw)",
- "architecture_1": {
-  "status": "SHIPPED",
-  "stage": 5,
-  "stage_name": "ship",
-  "stump": "The default path activates all eight regions because it counts a hospital-day full when any feed shows it full, carrying the bed-status board's closures of ordinary days (hospitals closing to outside transfers while keeping their last beds) into every region's count; estimating each region's share of full days from a latent class model of the three feeds, their miss and false-flag rates identified by how the feeds agree, activates four.",
-  "architecture": 1,
+  "task": "task456",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-01",
+  "stump": "A competent solver conforms the issues, the jobs and the oxidizer record and, reading the permit's bypass clause, counts as uncontrolled all the solvent the presses applied while the bypass damper stood open, or the plant's average application rate over those hours; the step that lands it there is treating the bypass as the presses' whole exhaust or their average, when the oxidizer kept treating its full air capacity throughout and each dryer's exhaust is held at a quarter of the LEL, so only the solvent above the capacity's solvent equivalent went untreated.",
+  "architecture": 2,
   "loops": 0,
-  "precut": {
-   "exit": 0,
-   "date": "2026-10-14"
+  "precut": {},
+  "leak": {},
+  "duplicate_check": {},
+  "judge": {},
+  "returned": [],
+  "resume": "stage 2: write the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder (screened as code first), closure, literal reader, oracles and ask sheet, then prompt.txt, and run precut.py; then the generator under task456/generator/.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "re-root at the batch 1 audit: new world (a flexible packaging converter's synthetic minor air permit), new dataset, new shell; no seed furniture carried",
+  "architecture_1": {
+    "status": "SHIPPED",
+    "stage": 5,
+    "stage_name": "ship",
+    "stump": "The default path activates all eight regions because it counts a hospital-day full when any feed shows it full, carrying the bed-status board's closures of ordinary days (hospitals closing to outside transfers while keeping their last beds) into every region's count; estimating each region's share of full days from a latent class model of the three feeds, their miss and false-flag rates identified by how the feeds agree, activates four.",
+    "architecture": 1,
+    "loops": 0,
+    "precut": {
+      "exit": 0,
+      "date": "2026-10-14"
+    },
+    "leak": {
+      "leak_py": "REVIEW (no LEAK)",
+      "reader": "leak reader four passes, none quoting a decisive-step sentence (the closure reasons removed after pass 1, annex section 5 thinned, article 2.2 pinned, realism repaired between passes)"
+    },
+    "duplicate_check": {
+      "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g)",
+      "nearest": "0.05 task129 lineage, task19 lineage; 0.04 task58 lineage, task253, task124",
+      "note": "drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in ## Draw; task180 and task255 differentiated for the older same-signature tests; task228, task253, task446, task452 differentiated for the abstraction test",
+      "surface": "promoted task454 (pairing), task255 and task180 (older signatures), differentiated on the card; task186 Track A fixed"
+    },
+    "judge": {
+      "verdict": "DETERMINISTIC",
+      "disposition": "APPROVE",
+      "report": "determinism_check_report.md (pass 1; its four findings disposed of in one generator pass, no graded figure moved)"
+    },
+    "delivered": "2026-10-14",
+    "source_note": "seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; the decoy-era traps are not used; pairing moved to General Statistics data integration (see ## Draw)"
   },
-  "leak": {
-   "leak_py": "REVIEW (no LEAK)",
-   "reader": "leak reader four passes, none quoting a decisive-step sentence (the closure reasons removed after pass 1, annex section 5 thinned, article 2.2 pinned, realism repaired between passes)"
-  },
-  "duplicate_check": {
-   "heart": "WARN (overuse.objective, repeat.gate_g, overuse.gate_g)",
-   "nearest": "0.05 task129 lineage, task19 lineage; 0.04 task58 lineage, task253, task124",
-   "note": "drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in ## Draw; task180 and task255 differentiated for the older same-signature tests; task228, task253, task446, task452 differentiated for the abstraction test",
-   "surface": "promoted task454 (pairing), task255 and task180 (older signatures), differentiated on the card; task186 Track A fixed"
-  },
-  "judge": {
-   "verdict": "DETERMINISTIC",
-   "disposition": "APPROVE",
-   "report": "determinism_check_report.md (pass 1; its four findings disposed of in one generator pass, no graded figure moved)"
-  },
-  "delivered": "2026-10-14",
-  "source_note": "seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; the decoy-era traps are not used; pairing moved to General Statistics data integration (see ## Draw)"
- },
- "architecture_spent": true
+  "architecture_spent": false,
+  "history": [
+    {
+      "date": "2026-11-01",
+      "event": "DRAWN: architecture 2, emissions-inventory x ETL, binding_constraint (the oxidizer's air capacity, a fixed solvent capacity under every dryer's 25 per cent LEL setpoint, binds when the presses' combined exhaust passes it), registered 2026-11-01T01:00:52Z"
+    }
+  ]
 }

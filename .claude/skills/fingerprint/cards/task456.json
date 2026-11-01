@@ -1,99 +1,122 @@
 {
- "task": "task456",
- "architecture": "v1",
- "drawn": "2026-10-14",
- "slot_note": "",
- "domain": "general-statistics-data-science",
- "subdomain": "data-integration-record-linkage-entity-resolution",
- "niche": "a statewide hospital alliance's ICU surge compact, whose regional trigger counts full adult-ICU hospital-days that three conflicting capacity feeds (a 07:00 census survey, a transfer-status board, a transfer center's declines) each record imperfectly",
- "objective": "etl",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Activate the Ridgeline ICU Surge Compact in Northeast, Upper Cumberland, South Central and West at the 20 January 2026 review: estimated shares of full adult ICU hospital-days 50, 50, 70 and 80 per cent against one in three, East, Southeast, Mid-State and Memphis Delta at 20, 10, 10 and 10.",
- "answer_source": "task456/submission.md, Final Recommendation; golden surge_activation_notice_2026-01-26.pdf",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G12",
-  "G3",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "capacity_report",
- "stakeholder_role": "the alliance's surge compact operations committee",
- "role_family": "operations_director",
- "scoring_unit": "other",
- "spine": {
-  "file": "bed_status_events_2025-11-01_2026-01-20.jsonl",
-  "rows": 114517,
-  "entity": "one status change of one hospital unit on the regional bed-status board",
-  "grain": "hospital unit by status change (UTC timestamp)",
-  "source": "synthetic (constructed in the layout of a regional bed-status board's event export)"
- },
- "forum": "committee_or_panel",
- "forcing_event": "season_or_peak",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "United States: Tennessee (eight surge regions of a statewide hospital alliance across the Eastern and Central time zones; the alliance, its hospitals, feeds and people are fictional, counties real)",
-  "currency": "USD",
-  "org_type": "a statewide hospital alliance running an ICU surge compact among its member hospitals",
-  "invented_names": [
-   "Ridgeline Hospital Alliance",
-   "Ridgeline ICU Surge Compact",
-   "Ridgeline Transfer Center"
+  "task": "task456",
+  "architecture": "v2 (re-root at the batch 1 audit: a US flexible packaging converter's 2026 VOC emissions against its 95-ton synthetic minor limit, the oxidizer's fixed air capacity a fixed solvent capacity because every dryer holds its exhaust at a quarter of the lower explosive limit, so the bypass vents only the solvent above that capacity)",
+  "drawn": "2026-11-01",
+  "slot_note": "re-root of task456 in the same objective (Data Extraction & Conformation), batch 1; architecture 1 (the hospital bed-status feeds' latent class model) spent at the batch 1 audit; new world (a flexible packaging converter's air permit), new dataset, new shell",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a flexible packaging converter's 2026 actual VOC emissions under its synthetic minor permit, conformed from the ink room's issues and returns by press job, the presses' job logs, the regenerative thermal oxidizer's 15-minute record, the waste solvent shipments and the stack test, in the year a sixth press started up and the presses' combined dryer exhaust outran the oxidizer's air capacity at peak",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "submission.md, Final Recommendation",
+  "gap": [
+    "time",
+    "objective"
   ],
-  "people": [
-   "Kaitlin Levy",
-   "Ryan Bauer",
-   "Abigail Floyd"
-  ]
- },
- "deliverables": [
-  "surge_activation_notice_2026-01-26.pdf",
-  "hospital_days_conformed_2025-12-22_2026-01-18.csv"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is how often a state held in each group of units, seen only through three independent records that each miss some instances and flag some non-instances, one catching nearly every instance but also a third of non-instances and two rarely flagging a non-instance but missing most instances, so every rule that settles each unit from its records either keeps the first record's false flags or drops most instances, and only a latent class model of the three records, their miss and false-flag rates estimated from how they agree and the state's frequency free in each group, counts the instances.",
- "driver_concrete": "The compact activates a region for the four weeks from 26 January 2026 when at least one in three of its adult-ICU hospital-days in the 28 days to 18 January were full; the bed-status board shows Closed on about 93 per cent of full days but also on about a third of ordinary days (hospitals close to transfers to keep their last beds), while the 07:00 census survey and the transfer center's no-bed declines rarely flag an ordinary day but catch under a third of full days, so counting a day full when any feed shows it activates all eight regions, requiring two feeds activates none or one, and only the latent class estimate of each region's share of full days activates the four regions where it is one in three or more.",
- "stump": "A competent analyst conforms the three feeds to hospital-days, counts a day full when any feed shows it full (the compact's 'at some time during the day') and activates all eight regions instead of four; the step that lands it there is settling each hospital-day from the feeds' flags instead of estimating each region's share of full days from a latent class model of how often each feed misses a full day or flags an ordinary one.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms every feed correctly and reads the full-day definition literally counts a day full when any feed shows it and activates all eight regions (requiring two feeds to agree, none); no rule that settles each hospital-day from its flags, the corroborated board or the model's own most likely class included, names the four regions the latent class estimate activates.",
- "domain_test": "In general statistics the swap is of the method: the deciding quantity is each region's share of full hospital-days estimated by a latent class model of three conflicting feeds (the Fellegi-Sunter machinery of record linkage: agreement patterns, per-source miss and false-flag rates, no reference source), and replacing it with any record-level reconciliation rule (any feed, two of three, corroboration, the model's own most likely class) changes which regions activate.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task180": "task180 counts events one detector records only above a daily noise cycle and recovers the masked share from its quiet hours; here no single record is the detector: three independent feeds each miss full days and flag ordinary ones, and each region's share is estimated from their joint agreement by a latent class model",
-  "task255": "task255 fits a size distribution carrying per-item truncation and censoring; here the counted state is binary, seen through three conflicting categorical feeds, and the count is a latent class prevalence by region",
-  "task228": "task228 separates continuous random errors of three collocated series by their covariances and its stump is a shared input; here the feeds are categorical with both error directions, no feed is the reference, and the stump is the record-level reconciliation rule an ETL pipeline applies",
-  "task253": "task253 counts units below a line by summing probabilities from a hierarchical model of noisy averages; here the decisive step is the measurement model of three conflicting feeds (their miss and false-flag rates identified by three-way agreement), and every record-level rule, simple or weighted, misses the set",
-  "task446": "task446 carries a screen's two error rates onto a population whose base rate moved, rates known from past outcomes; here no outcome is ever observed and the feeds' error rates are estimated from their agreement alone",
-  "task452": "task452 corrects a map's area with a stratified reference sample that observes the truth; here nothing observes the truth and the latent class model identifies the feeds' errors without a reference",
-  "task454": "task454 fills the acquisition cost of the claims that fail to link to a priced code, imputed within product and package type from the claims that do link; here every record links to its hospital, no record is the truth, and each feed's miss and false-flag rates are estimated from the three feeds' agreement, each region's share being the latent prevalence"
- },
- "lineage": [],
- "notes": "Seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a hospital association's regional surge compact, activated region by region from hospital capacity reporting); its decoy-era traps (average of ratios, suppression sentinels, the wrong ICU) are not used. The pairing moves to General Statistics & Data Science / data integration (record linkage): hospital operations' own analytical pitfalls (demand capped at capacity, blocking probability) live in task types serving forecasting and opportunity sizing, and the ETL decision here turns on combining conflicting sources. Strategy other: a measurement model (two-class latent class model with conditional independence, common error rates statewide, prevalence by region). Gap population (a flagged hospital-day is not a full hospital-day). | 2026-11-01: architecture 1 spent at the batch 1 audit (short of the survivor anatomy); architecture 2's draw paused before a card was filed, see the design note's Tried and rejected.",
- "client_domain": "general-statistics-data-science",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:latent-class-share-from-three-conflicting-feeds",
- "layer1": [
-  "three feeds for one picture, each with its own key, grain and clock: a daily census survey keyed by state licence number, a bed-status board's event log keyed by its own facility code with UTC timestamps, a transfer center's call log keyed by hospital names as typed",
-  "two time zones: East Tennessee hospitals keep Eastern time, the rest and the transfer center Central time, so each feed's timestamps fall on the hospital's own local date only after conversion",
-  "survey reports resubmitted after correction, the later submission superseding; a column renamed when the survey form changed",
-  "board lines for every unit (adult ICUs under several labels, pediatric and neonatal ICUs, emergency departments, medical-surgical floors), statuses carried over from before the window",
-  "transfer requests reopened under the same request number, cancelled requests, decline reasons recoded when the center's code list changed",
-  "a facility crosswalk and a name-alias list that map licence numbers, board codes and typed names onto one hospital and its region",
-  "holiday gaps in the census survey on 25 December and 1 January"
- ],
- "registered": "2026-10-14T17:55:46Z",
- "architecture_spent": true
+  "pattern": [
+    "C"
+  ],
+  "generators": [
+    "G1",
+    "G7"
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the ink room's issues and returns, the job logs and the oxidizer's 15-minute record and reads the permit (VOC emitted is VOC applied less the VOC the oxidizer destroyed, VOC routed through the bypass uncontrolled) counts the bypass at all the solvent the running presses applied while the bypass damper stood open, or at the plant's average application rate over those hours, and files 2026 far over or under the 95-ton limit; the oxidizer treated its full air capacity throughout every bypass and each dryer holds its exhaust at a quarter of the lower explosive limit, so only the solvent load above the capacity's solvent equivalent went untreated, and 2026 lands between the two, over the limit by a margin neither shortcut gives.",
+  "domain_test": "The deciding quantity is the plant's 2026 actual VOC emissions, which an air permit engineer estimates from a solvent mass balance with the control device's destruction efficiency, its capture and its bypass, worked here as the solvent load in each 15 minutes above the oxidizer's capacity expressed in solvent through the dryers' LEL setpoint; with another field's nouns there is no lower explosive limit holding exhaust in proportion to solvent, no oxidizer sized in air volume and no bypass of the excess, and the task stops reading the same.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:oxidizer-air-capacity-binding-on-lel-held-dryer-exhaust",
+  "layer1": [
+    "the oxidizer's DCS export in UTC at 15-minute intervals, its tags renamed at the March control system upgrade",
+    "the presses' job logs in plant local time, the five older presses on the plant MES and the new press on its vendor's system in metric units",
+    "ink and solvent issues and returns by job from the ink room, returns booked on later dates against the original job, and press-side solvent drawn from drums logged separately",
+    "jobs paused and resumed, some moved to another press under the same job number with a suffix",
+    "waste solvent shipped quarterly for recovery, each manifest with the recycler's VOC content by lot",
+    "inks' VOC content in pounds per gallon from formulation sheets, re-issued mid-year for two ink series"
+  ],
+  "stakeholder_role": "the plant's environmental manager, who certifies the 2026 annual emissions statement and answers the state's full compliance evaluation",
+  "role_family": "compliance_or_audit",
+  "spine": {
+    "file": "rto1_dcs_15min_2026.csv",
+    "rows": 35040,
+    "entity": "one 15-minute interval of the oxidizer's record (inlet flow, combustion chamber temperature, bypass damper position)",
+    "grain": "15-minute interval",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "United States (a fictional flexible packaging converter in a fictional county of a fictional state; the company, the state air division and the people are fictional)",
+    "currency": "USD",
+    "org_type": "a flexible packaging converter running six printing presses under a synthetic minor air permit",
+    "invented_nouns": [
+      "RTO-1",
+      "BD-1"
+    ],
+    "people": [
+      "Lynn Clarke",
+      "Timothy Mcdonald",
+      "Charles Patel"
+    ]
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "manufacturer",
+  "deliverables": [
+    "voc_emissions_2026.xlsx",
+    "press_jobs_2026.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "scoring_unit": "per certified output",
+  "driver": "The decisive quantity is a release a control device stops only up to a fixed capacity, set in one unit while the release accrues in another, the two tied by a setpoint every source holds; whenever the sources' combined demand passes the capacity the excess goes untreated, so the untreated amount is each interval's combined load above the capacity's equivalent in the release's unit, not the whole load while the relief stood open and not the average load over those intervals.",
+  "driver_concrete": "The VOC the bypass vented is each 15-minute interval's combined solvent load of the running presses above the oxidizer's air capacity expressed in solvent at the dryers' 25 per cent LEL setpoint, summed over the intervals the bypass damper stood open.",
+  "stump": "A competent solver conforms the issues, the jobs and the oxidizer record and, reading the permit's bypass clause, counts as uncontrolled all the solvent the presses applied while the bypass damper stood open, or the plant's average application rate over those hours; the step that lands it there is treating the bypass as the presses' whole exhaust or their average, when the oxidizer kept treating its full air capacity throughout and each dryer's exhaust is held at a quarter of the LEL, so only the solvent above the capacity's solvent equivalent went untreated.",
+  "lineage": [
+    {
+      "architecture": "v1 (the regional hospital bed-status feeds read through a latent class model of their agreement)",
+      "drawn": "2026-10-14",
+      "fate": "spent 2026-11-01 at the batch 1 audit, never returned by the portal: short of the survivor anatomy on every line (the feeds' agreement pattern is the latent class model's own textbook input, so the field's method sat at the top of the ladder), an unmeasured ask ceiling, a prompt stating the feed count, and two pack files that describe the data (leak.py LEAK)",
+      "driver": "The decisive quantity is how often a state held in each group of units, seen only through three independent records that each miss some instances and flag some non-instances, one catching nearly every instance but also a third of non-instances and two rarely flagging a non-instance but missing most instances, so every rule that settles each unit from its records either keeps the first record's false flags or drops most instances, and only a latent class model of the three records, their miss and false-flag rates estimated from how they agree and the state's frequency free in each group, counts the instances.",
+      "stump": "A competent analyst conforms the three feeds to hospital-days, counts a day full when any feed shows it full (the compact's 'at some time during the day') and activates all eight regions instead of four; the step that lands it there is settling each hospital-day from the feeds' flags instead of estimating each region's share of full days from a latent class model of how often each feed misses a full day or flags an ordinary one.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a statewide hospital alliance's ICU surge compact, whose regional trigger counts full adult-ICU hospital-days that three conflicting capacity feeds (a 07:00 census survey, a transfer-status board, a transfer center's declines) each record imperfectly",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "objective": "etl",
+      "stump_strategy": "other",
+      "forum": "committee_or_panel",
+      "forcing_event": "season_or_peak",
+      "org_family": "cooperative_or_member_body"
+    }
+  ],
+  "differentiation": {
+    "task459": "task459 carries a ratio that changes with a unit's operating level across the year; here no ratio is carried: a shared device's fixed capacity binds only in the intervals the sources' combined demand passes it, and the untreated amount is the excess over it.",
+    "task482": "task482 splits one site meter's fuel among products by each process's physical driver; here nothing is split among products: the question is how much of one stream a full device could not take, read against a capacity the device's own meter shows it held.",
+    "task98": "task98 v2 sizes how many listed units a persons target needs once arrivals join units already in place, a forward count over an ordered list; here nothing is counted forward or ordered: a shared device's fixed capacity is passed only in some intervals, and the untreated release is the excess over it in those intervals.",
+    "task156": "task156 v2 counts how often a pump station's consented capacity is passed once a new steady load is added, a frequency carried into a coming year; here the year just closed is accounted, and the untreated release is the amount above the oxidizer's capacity in the intervals it was passed, the capacity's air volume turned into solvent through the dryers' LEL setpoint."
+  },
+  "mechanism_source": "design_note",
+  "notes": "re-rooted 2026-11-01 by a batch 1 fork: new world (a flexible packaging converter's synthetic minor permit), new dataset, new shell; stump_strategy binding_constraint: a shared control device's air capacity binds when the presses' combined LEL-held exhaust passes it, and only the solvent above the capacity's solvent equivalent is untreated.",
+  "registered": "2026-11-01T01:00:52Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "round",
+    "deliverable set": "csv+pdf"
+  }
 }

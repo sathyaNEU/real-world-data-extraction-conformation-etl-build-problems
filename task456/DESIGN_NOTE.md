@@ -1,8 +1,54 @@
 # task456 design note
 
+## Draw
+
+Architecture 2, drawn 2026-11-01 at the batch 1 re-root (architecture 1 is recorded below and in `## Tried and
+rejected`).
+
+| Field | Value |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task456.json`, architecture v2, registered 2026-11-01T01:00:52Z after a fresh pull; `guard.py check` WARN only (the old prompt's shell, replaced by this architecture's prompt; `test.same_puzzle_older` differentiated against task98 v2) |
+| Pairing | `physical-environmental-sciences` / `emissions-inventory` / Data Extraction & Conformation (ETL) |
+| Shape | 03, a bridge between two totals: the solvent the presses applied to the VOC the plant emitted |
+| Decision | `quantity_figure`: the plant's 2026 VOC emissions in tons and the tons over its 95-ton limit |
+| Gate G / strategy | `binding_constraint` / `binding_constraint`: the oxidizer's air capacity is shared by six presses and binds only in the intervals their combined dryer exhaust passes it |
+| Layer 2 | `allocation_constraints`, `own:oxidizer-air-capacity-binding-on-lel-held-dryer-exhaust` |
+| Gaps / pattern / generators | time (interval by interval), objective; C; G1 (the limit is set in air volume, the release counted in solvent mass), G7 (the operating window when all presses run together) |
+| Forum / forcing event / org | the state air division at its full compliance evaluation (`regulator_or_inspector`, `audit_or_inspection`), `manufacturer` |
+| Role | the plant's environmental manager (`compliance_or_audit`); people drawn with `guard.py names --geo "United States" --seed 456`: Lynn Clarke, Timothy Mcdonald, Charles Patel |
+| Context artifact | `filed_standard`: the plant's synthetic minor permit |
+
+**The world.** A fictional flexible packaging converter runs five rotogravure presses and, from March 2026, a sixth
+press, all printing solvent inks inside permanent total enclosures whose dryer exhaust goes to one regenerative
+thermal oxidizer. Its permit caps VOC at 95 tons a year; VOC emitted is the VOC applied less what the oxidizer
+destroys, and VOC sent through the emergency bypass damper is emitted uncontrolled. Each dryer's exhaust fan is
+modulated by an LEL analyser to hold the solvent vapour at 25 per cent of its lower explosive limit, so a press's
+exhaust air rises in proportion to the solvent it is evaporating. The oxidizer's fan moves at most its rated air
+volume; when the presses' combined exhaust is larger, the inlet duct pressure rises and the bypass damper relieves
+the excess to atmosphere while the oxidizer keeps treating its full capacity.
+
+**Data-native sentence.** Every dryer holds its exhaust at a quarter of the lower explosive limit, so the oxidizer's
+fixed air capacity is a fixed solvent capacity, and when the new sixth press runs heavy work beside the others the
+solvent above that capacity is what the bypass vents, while the oxidizer goes on treating everything up to it.
+
+**Abstraction sentence (the test that would re-root the draw).** Against the nearest drivers on file (task273 v5 at
+0.08, task280 and task67 v1 at 0.06, task156 v2 at 0.05): none shares "a shared device's fixed capacity, set in one
+unit while the release accrues in another and tied by a setpoint every source holds, passed only in some intervals,
+with the untreated release the excess over it". task156 v2 counts how often a pump station's capacity is passed
+under an added load (a frequency carried forward); task482 v16 splits one meter's fuel among products (attribution);
+task459 carries a ratio across operating levels. The sentence cannot be written against an approved build.
+
+**Sources, one line each.** `stumping` 1.4 (the survivor anatomy) and Part 3 F3 (binding constraint: the limit is
+shared across candidates, never a per-candidate cap); the two 2026-11-01 lines (the deciding quantity is one no
+shipped source lists; an inclusion or exclusion over a second source has no safe filing, so the decisive step is an
+estimate); NFPA 86's dryer ventilation rule (solvent vapour held at or below 25 per cent of the LEL, up to 50 per cent
+with continuous monitors) as the world's physics; the permit's actual-emissions accounting as the filed WHAT.
+
+## Architecture 1 record (spent 2026-11-01)
+
 Architecture 1, drawn 2026-10-14 from seed ET13 (a state hospital association's regional surge compact triggered from hospital capacity reporting). The seed's world, decision and quantity are kept; its decoy-era traps (an average of hospital ratios, suppression sentinels, the wrong ICU field) are not used, and the pitfall is found from the data.
 
-## Draw
+### Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task456.json`, architecture v1 (guard WARN only: overuse.objective, repeat.gate_g, overuse.gate_g, answered below; task180 and task255 differentiated on the card for the older same-signature tests, and task228, task253, task446 and task452 differentiated for the abstraction test).
 - **Pairing:** General Statistics & Data Science / data-integration-record-linkage-entity-resolution / Data Extraction & Conformation (ETL). A statewide hospital alliance runs an ICU surge compact among its member hospitals: when a region's adult intensive care units are under sustained strain, the compact activates transfer agreements and pooled travel staffing there for four weeks. Its trigger counts full adult-ICU hospital-days, and three feeds record them, none of them completely or only: the alliance's daily census survey (each hospital's adult ICU patients against its staffed adult ICU beds at 07:00), the regional bed-status board (the status each hospital sets for its adult ICU, Open, Limited or Closed, logged as events in UTC), and the Ridgeline Transfer Center's call log (every hospital called for each ICU placement request and its answer). The alliance's data team conforms the three feeds into one hospital-day dataset under the compact's data annex and estimates each region's share of full days from it. In General Statistics the setting is another field's and the deciding quantity is the task type's own statistical object: here the latent class (Fellegi-Sunter) model of conflicting sources that record linkage and data integration rest on.
@@ -24,7 +70,7 @@ Architecture 1, drawn 2026-10-14 from seed ET13 (a state hospital association's 
 - **Surface screen (stage 3):** `guard.py surface` promotes three pairs for the author's adjudicated read, all on the mechanism layer and differentiated on the card: task454 (the same General Statistics data-integration pairing in the ETL lane, outside the draw guard's three-build window; task454 imputes the cost of claims that fail to link, this build estimates feed error rates from agreement with every record linked), task255 and task180 (the older same-driver and same-puzzle signatures answered above). A Track A pair with task186 (the prompt's closing rounding sentence opened with the same six words) was fixed by rewording it. The people sweep reads Memphis Delta, a region, as a persona; no person carries the name.
 - **Forced parameters:** the board's false-flag rate (about a third of ordinary days) is high because Closed means closed to outside transfers, which hospitals declare while keeping their last beds; the 07:00 census catches under a third of full days because units fill with the afternoon's admissions; the transfer center catches under a quarter because a decline needs a request. The feeds are generated conditionally independent given each hospital-day's state with the same rates in every region, so the model the design implies is the true one; each region's share sits at least eight points from one in three in the built pack, asserted.
 
-## Default path
+### Default path
 
 1. Conform the three feeds to hospital-days: the census survey's latest accepted report per hospital and date (full when adult ICU patients reach the staffed adult ICU beds), the board's adult ICU status lines replayed to each hospital's local date (full when Closed at any time that day), and the transfer center's adult ICU calls on each hospital's local date (full when a call was declined for no bed).
 2. Read the compact's full day ("every staffed adult intensive care bed occupied at some time that day") as any evidence of fullness that day: a hospital-day is full when any feed shows it full.
@@ -33,11 +79,11 @@ Architecture 1, drawn 2026-10-14 from seed ET13 (a state hospital association's 
 Ends on: all eight regions activate (every region's share of hospital-days some feed shows full is over one in three, the four metropolitan regions included).
 Golden: four regions activate, Northeast, Upper Cumberland, South Central and West (built: shares 52.8, 17.9, 10.3, 52.1, 12.4, 67.9, 78.9 and 11.2 per cent in region order, the nearest 15.4 points from one in three).
 
-## Stump sentence
+### Stump sentence
 
 The default path activates all eight regions because step 2 counts a hospital-day full when any feed shows it full, carrying the board's closures of ordinary days (hospitals closing to outside transfers while they keep their last beds, about a third of ordinary days) into every region's count; estimating each region's share of full days from a latent class model of the three feeds, whose miss and false-flag rates the feeds' agreement identifies, activates four.
 
-## Three rules
+### Three rules
 
 - Task type: General Statistics & Data Science, data-integration-record-linkage-entity-resolution (integrating conflicting sources into one dataset and one count: the latent class model behind Fellegi-Sunter record linkage, per-source error rates estimated from agreement patterns with no reference), which serves Data Extraction & Conformation.
 - Domain test: the quantity that decides the call is each region's share of full adult-ICU hospital-days, estimated the way data integration estimates a state that every source records with error: a two-class latent class model of the three feeds' flags (conditional independence given the day's state, each feed's miss and false-flag rate the same statewide, the share free in each region), fitted by maximum likelihood; replacing it with any record-level reconciliation rule changes which regions activate.
@@ -53,7 +99,7 @@ The default path activates all eight regions because step 2 counts a hospital-da
 - No certified replay: no certified or published figure reproduces only under one method; the method is left to the design (three independent feeds, no reference), and nothing in the pack scores a rule.
 - Lesson: a model learns that when every source of a state misses some instances and flags some non-instances and none is a reference, the count is the prevalence of a measurement model whose source error rates are identified by how the sources agree, estimated group by group, not a tally of records settled by any rule, the model's own most likely class included; no build on file estimates categorical sources' errors from their agreement without an observed truth.
 
-## Readability screen
+### Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -65,7 +111,7 @@ The default path activates all eight regions because step 2 counts a hospital-da
 | R3 the latent class model fitted, each day given its most likely state, the days counted (pooled: no region; by region: the four, every share wrong) | no | no | yes: classify, then count | no | no | no | readable |
 | R4 (decisive) each region's share is the model's prevalence: three feeds conditionally independent given the day, each feed's miss and false-flag rates the same statewide, the share free by region, fitted by maximum likelihood | no: the annex says no feed is a record of full days and every hospital reports through the same systems under the same instructions, which names no model, rate or estimator | no: no column holds a full day, a rate or a share | no: the opponent's reflexes (pool, reweight, shrink, add a control, corroborate) all settle days or feeds, none estimates a feed's error rates from agreement | none | the battery finds nothing: keys unique, no duplicates, every join complete | no: an EM fit over eight patterns | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -92,7 +138,7 @@ The default path activates all eight regions because step 2 counts a hospital-da
 | SF21 | how many times (ask A) | every placement counts, a patient moved on and placed again counting again | distinct patients | same figures: no patient has two counted placements from one region (asserted) | the prompt's "how many times" and the annex's region of the asking hospital |
 | SF22 | a decline on a case carried across the 5 January cut-over | the old system's calls, the new system holding only the re-logged acceptance | the new system's copy in place of the old | same call: every transfer flag the same, no carried case holds a no-bed decline (asserted) | the dictionary's legacy_case |
 
-## Ladder
+### Ladder
 
 As drawn on the seed (`generator/checks.py` will assert every rung by name; `verify.py` recomputes the golden from the bundle alone). Shares are each region's estimated or flagged share of hospital-days, in the order Northeast, East, Southeast, Upper Cumberland, Mid-State, South Central, West, Memphis Delta.
 
@@ -115,7 +161,7 @@ As drawn on the seed (`generator/checks.py` will assert every rung by name; `ver
 - **Direction.** The board-led rules over-activate (all eight), the corroborating rules under-activate (none or West); only the model's prevalence lands between them.
 - **Position.** The default path activates every region, twice the golden's count, and no rule settling days from flags names the four. The routes that do (the model's most likely state by region, the census scaled by a detection rate) carry the decisive insight and miss shares; both stage 4 readers landed the four by heuristics, the first on the closure reasons (since removed), the second on capture-recapture overridden by judgment (executed literally, it files six regions).
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -142,15 +188,15 @@ As drawn on the seed (`generator/checks.py` will assert every rung by name; `ver
 | 21 | Clause scope | article 2 defines, article 4 activates, article 5 says what activation does | each stated once |
 | 22 | Forward window contents | the activation covers 26 January to 22 February on the closed 28 days; retrospective because the compact's trigger is defined on the closed window | article 4 |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, the compact counts full days, not flags: a region activates when one in three or more of its hospital-days in the 28 days to 18 January were full, a full day being one on which every staffed adult ICU bed was occupied at some time. The annex says each of the three feeds misses some full days and shows some days full that were not, that none is a record of full days, and that every compact hospital reports through the same systems under the same instructions in every region. No sentence names a rule, a model or a rate; the literal estimand is the share of full days, and the only estimate of it the pack supports is a model of the feeds' agreement with each feed's rates common and the share free by region. Every rule settling a day from its flags files a different set of regions, and the model's variants that keep the share free by region file the golden set and shares.
 
-## Oracles
+### Oracles
 
 None. No control, published figure or reconciliation column ties under one method: the census survey, the board and the transfer center publish no full-day count, the federal weekly capacity extract (a distractor) gives seven-day average occupancy and no hospital-day, and last season's activation record (a distractor) lists the regions activated at each review with no share and no method.
 
-## Ask sheet
+### Ask sheet
 
 **Construction (on the decisive construction's output).** Each region's share of full hospital-days to the nearest ten per cent (eight figures: Northeast 50, East 20, Southeast 10, Upper Cumberland 50, Mid-State 10, South Central 70, West 80, Memphis Delta 10), with the notice's chart setting each share against one in three. A wrong rung misses every share; the cracker keeps them, so they never stand alone.
 
@@ -181,13 +227,13 @@ Mirror leakage: 9 per cent of ask weight (the mirror, stopping at the default pa
 
 Pair ceiling: 39.9 (planning weights 38 / 7 / 55 with the call and the eight shares as the main block and r = 5; the ask weight spread over about 40 criteria: asks A, B and C 27, the chart 6, the conformed file 4, the shares' rounding 3; the cracker keeps the main block, the chart and the file, 10 of 40 or 0.25, 38 + 7 + 13.8 = 58.8; the mirror keeps r, instruction-following and the file and chart parts its own shares do not touch, 6.5 of 40 or 0.16, 5 + 7 + 8.9 = 20.9; (58.8 + 20.9) / 2 = 39.9).
 
-## Pre-ship check
+### Pre-ship check
 
 - **Three rules.** Domain: General Statistics' data integration, the latent class model of three conflicting categorical sources with no reference, whose prevalence is each region's share of full days (swap test in the Three rules section). Two layers: the Layer 1 inventory (the census survey's two forms, its resubmissions and its holiday gaps; the board's UTC event log with six adult ICU labels, statuses carried across midnight, eight-hourly confirmations and the 8 December renumbering; the transfer center's two call systems with typed names, Central and UTC clocks, cancellations and the decline code change), each produced by the system named and each asserted neutral on the call (the R2 lines and the fork rows); and the latent class prevalence, which decides it. Decisive step analytical: the analyst who conforms everything and executes every article and annex sentence files all eight regions under any feed (asserted on the generator's clean truth, R3a); changing the decisive step alone files the four (R3b); nothing is planted (R3c).
 - **Gates.** 15 files in 4 formats (csv, jsonl, pdf, xlsx); the board's event log at 114,517 rows; two distractors (the federal weekly respiratory extract and last season's activations) the solution never reads, asserted by deleting both; 109 checks; `verify.py` 9 of 9 from the bundle alone on its own code path (pandas readers, an EM over flag-pattern counts); two builds byte-identical; `figures_check.py` exit 0 (76 figures); `precut.py` exit 0 (49 checks); `voice-check.py` PASS (958 characters); `leak.py --asof 2026-01-20` REVIEW with no LEAK; `guard.py validate` PASS, `heart` WARN (overuse.objective, repeat.gate_g, overuse.gate_g, answered in `## Draw`), `surface` three mechanism-layer promotions for the author's read (answered in `## Draw`); the container audit clean on `target/` and `golden/`.
 - **Mechanical leak lines.** The compact carries the call's nouns (the compact, its regions, the review) because it is the document the call executes, and no share; the annex shares the stump paragraph's feed vocabulary (census, survey, counts, record, decline, staffed) because it describes the feeds, and names no model, rate, rule or estimator; last season's activation record lists each region's reviews with Y or N and ranks nothing on this season's question.
 
-## Leak check
+### Leak check
 
 - `leak.py --asof 2026-01-20` (after every rebuild): REVIEW, no LEAK; the REVIEW lines are answered under `## Pre-ship check`.
 - Reader, pass 1 (isolated, Sonnet, medium, fresh copies of the prompt and the pack): Q1 none quoted as the step (the nearest, annex section 5, read as a mild pointer that the feeds err both ways); Q2 to Q4 none; Q5 every filed sentence quoted and executed (2,100 hospital-days, the full day, one in three, the placement rules); its own route kept only the board closures whose reason said "census" or "no staffed beds" and took the union with the census and the declines, landing the four regions with seven of the eight shares wrong (40, 20, 20, 40, 20, 40, 50, 20); Q6 an analytical choice. The route exposed the closure reasons as a lever: drawn without regard to the day's state, the filter thinned the board to about a third and fell between the two groups of regions. The adult ICU closures now carry no reason, as real hospitals rarely give one, which also closes the reader's ask C reading (only the full-reason closures). Realism: the set_by roles evenly spread (now each hospital's own mix of roles) and last season's activation record machine-regular (now with the two holiday weeks skipped and a running activation not decided again); the invented hospital names kept. Its asks: A 640 on its own join, B Divert alone (the device held), C exactly the golden (it read the earlier codes before the migration).
@@ -195,7 +241,7 @@ Pair ceiling: 39.9 (planning weights 38 / 7 / 55 with the call and the eight sha
 - Reader, pass 3 (isolated, Sonnet, medium, after article 2.2 placed every hospital in its county's region): Q1 none quoted as the step (the annex's per-feed limits point at the problem, not the method); Q2 to Q4 none; Q5 every filed sentence quoted and executed, article 2.2 among them; its own route filed West alone on the union of the census and the declines (35.7 per cent) and the four only on a capture-recapture correction it called noisy, East at 39 per cent left out by judgment; Q6 an analytical choice. Its asks fell on the designed hazards: A kept the acceptances later cancelled (73, 43, 32, 46, 51, 69, 66, 28, the cancellation stop), B counted Divert alone, C the golden; its one open reading (out-of-state senders) has no region row to fall in. Realism repaired in one generator pass: the board's event ids and the survey's submission ids now advance by irregular gaps (each system numbers other facilities' records too), first submissions no longer pile up at 07:05, each unit line's opening status sits at its own time on 31 October, the emergency departments word their ordinary advisories in their own ways, Cannon County (Upper Cumberland, no compact hospital) restored to Annex A's file, and the annex's reporting sentence put in the data team's operational words; no graded figure moved.
 - Reader, pass 4 (isolated, Sonnet, medium, the shipped pack): Q1 none quoted as the step (the annex names each feed's blind spot and no method; its reporting sentence read as making the feeds comparable across regions); Q2 to Q4 none; Q5 every filed sentence executed, fixing everything but the full-day flag, which needs the estimate; Q6 an analytical choice, nothing planted and no decoy. Realism: the irregular ids read as sampled sequences, the invented hospital names, the candid annex and the tidy manifest counts kept (the annex's per-feed limits close the literal reading that a feed is the record; the counts are what a manifest states).
 
-## Determinism judge
+### Determinism judge
 
 - Pass 1 (2026-10-14, isolated thread on the first cut): DETERMINISTIC, APPROVE. Every load-bearing figure reproduced from the bundle (2,100 hospital-days; 216 census flags and 82 days without a report; 1,085 board days; 176 decline days; the eight shares to 0.1 from three starts; the 387 placements, 698 diversion hours and 4,723 closed hours); hospital bootstrap intervals keep the four and the four apart. Gate G method_or_model_selection, analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive step analytical; stump power moderate to good (the annex's feed errors could send a strong model to Dawid-Skene). Findings, each disposed of in one generator pass with no graded figure moved: the decline count read 175 when the carried cases were taken from the new system's copy (no carried case now holds a no-bed decline, so both copies give 176, SF22 asserted); a census adding the patients held in the emergency department put Mid-State on a rounding edge (patients are now held there only when the unit is full at 07:00, so that reading changes no flag, SF11 asserted); the optional pin on ask B's Advisory with the reason EMS diversion not taken, since a sentence saying the board recorded diversion differently after 5 January hands the device over, and the reason on those statuses and on a third of the earlier Divert statuses closes it; the annex's section 5 thinned to the two filed facts, each feed's limits moved to its own section. Report: `determinism_check_report.md`.
 
