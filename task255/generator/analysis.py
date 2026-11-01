@@ -70,8 +70,6 @@ def cohort(target):
         f = firsts[0]
         if any(0 < (f["date"] - d["date"]).days <= LOOKBACK for d in ds if d["date"] < f["date"]):
             continue
-        if any(d["date"] < f["date"] for d in ds if (f["date"] - d["date"]).days > LOOKBACK) and False:
-            continue
         if not re.fullmatch(r"\d{6}", f["prescriber"]) or f["prescriber"] not in D["practices"]:
             continue
         out.append((pid, f["prescriber"], f["date"]))
@@ -107,17 +105,19 @@ def rate_snapped(ds):
 
 
 def persistent(ds, start, rate):
-    end = start + dt.timedelta(days=HORIZON)
-    stock_end = start
+    """No more than 30 days in a row without tablets in the 365 days from start: each dispensing's tablets last
+    tablets / rate days, taken after the tablets still in hand."""
+    stock_end = 0.0
     for d in ds:
-        if d["date"] < start:
+        x = (d["date"] - start).days
+        if x < 0:
             continue
-        if d["date"] >= end:
+        if x >= HORIZON:
             break
-        if (d["date"] - stock_end).days > GRACE:
+        if x - stock_end > GRACE:
             return False
-        stock_end = max(stock_end, d["date"]) + dt.timedelta(days=d["tablets"] / rate)
-    return (end - stock_end).days <= GRACE
+        stock_end = max(stock_end, x) + d["tablets"] / rate
+    return HORIZON - stock_end <= GRACE
 
 
 class Call:

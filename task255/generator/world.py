@@ -176,3 +176,16 @@ def build(seed=P.SEED):
             patients.append(pt)
     W.patients = patients
     return W
+
+
+def truth_persistent(pt):
+    """Each patient's persistence at the dose they take (the clean truth)."""
+    stock_end = 0.0
+    for d, packs, pack in pt.runs:
+        x = (d - pt.start).days
+        if x >= P.HORIZON_DAYS:
+            break
+        if x - stock_end > P.GRACE_DAYS:
+            return False
+        stock_end = max(stock_end, x) + packs * pack / pt.tpd
+    return P.HORIZON_DAYS - stock_end <= P.GRACE_DAYS
