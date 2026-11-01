@@ -433,7 +433,7 @@ def settle_unlinked(w, q, reg):
     site_key = {p["site"]: p["key"] for p in PROVIDERS}
     ops = w[["pid", "prov", "op_date", "sex_code", "age", "adm_off"]].copy()
     ops["mprov"] = ops.prov
-    adm = ops.op_date - ops.adm_off.apply(lambda d: D(days=int(d)))
+    adm = [o - D(days=int(a)) for o, a in zip(ops.op_date, ops.adm_off)]
     ops["yob_lo"] = [a.year - int(g) - 1 for a, g in zip(adm, ops.age)]
     ops["yob_hi"] = [a.year - int(g) for a, g in zip(adm, ops.age)]
     linked_pids = set(reg[(reg.pseudo != "") & (reg.pid >= 0)].pid)
