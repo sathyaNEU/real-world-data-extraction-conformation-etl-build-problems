@@ -74,7 +74,7 @@ PLACEMENTS = [
     ("HO-NR70-241188", "QH", D(2024, 12, 14), D(2025, 4, 12), "Out for repair"),
     ("HO-NR40-190547", "QH", D(2025, 4, 12), D(2025, 5, 3), "Loaner"),
     ("HO-NR70-241188", "QH", D(2025, 5, 3), None, "Returned from repair"),
-    # Yarrowby (pilot C): NR-40 to 22 February 2025, NR-70 after, an NR-40 loaner 7 to 21 June 2025 and 9 to 30 May 2026
+    # Yarrowby (pilot C): NR-40 to 1 February 2025, NR-70 after, an NR-40 loaner 7 to 21 June 2025 and 9 to 30 May 2026
     ("HO-NR40-180355", "YB", D(2018, 6, 4), D(2025, 2, 1), "Replaced"),
     ("HO-NR70-250251", "YB", D(2025, 2, 1), D(2025, 6, 7), "Out for repair"),
     ("HO-NR40-190547", "YB", D(2025, 6, 7), D(2025, 6, 21), "Loaner"),
@@ -96,19 +96,19 @@ PLACEMENTS = [
     ("HO-NR70-250689", "PB", D(2026, 7, 18), None, "Returned from repair"),
     # Rookwood: still on its NR-40 (replacement deferred to FY2027)
     ("HO-NR40-190208", "RW", D(2019, 4, 1), None, "New installation"),
-    # Sallow Creek: NR-40 to 8 November 2025, NR-70 after; an NR-40 loaner 4 to 25 April 2026
+    # Sallow Creek: NR-40 to 18 October 2025, NR-70 after; an NR-40 loaner 4 to 25 April 2026
     ("HO-NR40-190219", "SC", D(2019, 4, 1), D(2025, 10, 18), "Replaced"),
     ("HO-NR70-251130", "SC", D(2025, 10, 18), D(2026, 4, 4), "Out for repair"),
     ("HO-NR40-190470", "SC", D(2026, 4, 4), D(2026, 4, 25), "Loaner"),
     ("HO-NR70-251130", "SC", D(2026, 4, 25), None, "Returned from repair"),
-    # Veldane: NR-70 from July 2025; failed 10 March 2026, on an NR-40 loaner since 14 March (board on back-order)
+    # Veldane: NR-70 from July 2025; failed 23 April 2026, on an NR-40 loaner since 2 May (board on back-order)
     ("HO-NR40-190466", "VD", D(2019, 8, 26), D(2025, 7, 19), "Replaced"),
     ("HO-NR70-250694", "VD", D(2025, 7, 19), D(2026, 5, 2), "Out for repair"),
     ("HO-NR40-190533", "VD", D(2026, 5, 2), None, "Loaner"),
     # Brackenfield: still on its NR-40
     ("HO-NR40-190470", "BF", D(2019, 8, 26), D(2026, 4, 4), "Moved"),
     ("HO-NR40-180381", "BF", D(2026, 4, 4), None, "Moved"),
-    # Kestle Road: NR-70 from September 2025; failed 7 February 2026, on an NR-40 loaner since
+    # Kestle Road: NR-70 from September 2025; failed 15 April 2026, on an NR-40 loaner since 25 April
     ("HO-NR40-190502", "KN", D(2019, 10, 14), D(2025, 9, 20), "Replaced"),
     ("HO-NR70-250931", "KN", D(2025, 9, 20), D(2026, 4, 25), "Out for repair"),
     ("HO-NR40-181014", "KN", D(2026, 4, 25), None, "Loaner"),
