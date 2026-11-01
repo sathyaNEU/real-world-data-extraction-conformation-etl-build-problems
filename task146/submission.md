@@ -11,7 +11,7 @@ Not 100 mg, whose VELA-2 arm reached 81.0 per cent: the VELA-3 candidates weigh 
 ## 2. Critical Components
 
 1. Expected week-16 PASI 75 response in the phase 3 population against the 70 per cent bar: 50 mg **below it**, 100 mg **below it**, 200 mg **at or above it**.
-2. HB-231's week-16 trough concentration falls with body weight: clearance rises about in proportion to weight (exponent **1.2** in the population PK model of the VELA-2 troughs).
+2. HB-231's week-16 trough concentration falls with body weight: clearance rises about in proportion to weight (exponent **1.1** in the population PK model of the VELA-2 troughs).
 3. Mean body weight: VELA-2 patients **84.7 kg**, VELA-3 feasibility candidates **110.9 kg** (US weights converted from pounds).
 
 ## 3. Step-by-Step Solution
@@ -34,7 +34,7 @@ Not 100 mg, whose VELA-2 arm reached 81.0 per cent: the VELA-3 candidates weigh 
 
 ### hb231_phase2b_tables.csv
 
-1. PASI 75 at week 16 (per cent): Placebo 6.0, HB-231 25 mg 25.0, HB-231 50 mg 43.0, HB-231 100 mg 81.0, HB-231 200 mg 89.0.
-2. PASI 90 at week 16 (per cent): Placebo 0.0, HB-231 25 mg 11.0, HB-231 50 mg 22.0, HB-231 100 mg 66.0, HB-231 200 mg 74.0.
-3. Itch NRS responders at week 12 (per cent of patients with a baseline weekly score of at least 4): Placebo 12.0, HB-231 25 mg 35.1, HB-231 50 mg 55.8, HB-231 100 mg 86.5, HB-231 200 mg 90.1.
-4. Itch NRS responders at week 16 (per cent of patients with a baseline weekly score of at least 4): Placebo 12.0, HB-231 25 mg 30.9, HB-231 50 mg 54.7, HB-231 100 mg 85.4, HB-231 200 mg 86.8.
+1. PASI 75 at week 16 (per cent): Placebo 6.0, HB-231 25 mg 26.0, HB-231 50 mg 46.0, HB-231 100 mg 81.0, HB-231 200 mg 85.0.
+2. PASI 90 at week 16 (per cent): Placebo 0.0, HB-231 25 mg 13.0, HB-231 50 mg 24.0, HB-231 100 mg 66.0, HB-231 200 mg 72.0.
+3. Itch NRS responders at week 12 (per cent of patients with a baseline weekly score of at least 4): Placebo 16.1, HB-231 25 mg 32.6, HB-231 50 mg 58.1, HB-231 100 mg 85.9, HB-231 200 mg 84.2.
+4. Itch NRS responders at week 16 (per cent of patients with a baseline weekly score of at least 4): Placebo 12.9, HB-231 25 mg 34.8, HB-231 50 mg 55.9, HB-231 100 mg 83.7, HB-231 200 mg 87.4.

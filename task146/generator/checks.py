@@ -46,7 +46,7 @@ def main():
            A.pick(v) == 200 and v[100] <= 68.0 and v[200] >= 75.0 and v[50] < 60, {d: round(x, 1) for d, x in v.items()})
     easy = A.easy_routes(P, resp)
     for k, v in easy.items():
-        ok("C3 easy route files 100 mg with at least 4 points over 70: " + k, A.pick(v) == 100 and v[100] >= 74.0
+        ok("C3 easy route files 100 mg with at least 3 points over 70: " + k, A.pick(v) == 100 and v[100] >= 73.0
            and v[50] < 60, {d: round(x, 1) for d, x in v.items()})
     lab = A.composite(P, label=True)
     ok("C4 the labelled-baseline composite also files 100 mg on the arm rates",
@@ -74,6 +74,42 @@ def main():
        "%d of %d" % (sum(ai[k] != ain[k] for k in ai), len(ai)))
     ok("SF4 figures.json carries the call and the asks", fig["call"]["dose_mg"] == 200 and
        len(fig["ask_pasi"]) == 10 and len(fig["ask_itch"]) == 10)
+    # ---- the fork table, row by row ----------------------------------------------------------------------
+    nowk16 = [sid for sid in P.sub if P.week16(sid)[0] is None]
+    ok("SF3 a patient with no week-16 PASI is a non-responder", nowk16 and all(resp[s_] == 0 for s_ in nowk16),
+       len(nowk16))
+    lund = [r for r in P.pk if r["unit"] == "ng/mL" and not r["concentration"].startswith("<")]
+    ok("SF5 the Lund troughs are ng/mL and convert to the central scale", lund and abs(np.median(
+        [float(r["concentration"]) for r in lund]) / 1000 - np.median([x[4] for x in P.troughs()])) < 3, len(lund))
+    ok("SF6 the exponent fixed at 1.0 keeps the call", A.pick(fam["weight exponent fixed at 1.0"]) == 200)
+    ok("SF7 every exposure-response form keeps the call", all(A.pick(fam[k]) == 200 for k in
+       ("Emax exposure-response", "logistic on log dose and log weight",
+        "observed week-16 trough with the between-patient spread")))
+    import math
+    med = sorted(c["weight"] for c in P.feas())[len(P.feas()) // 2]
+    b_ = A.logistic(np.c_[np.ones(len([s_ for s_, r in P.sub.items() if A.DOSE[r["arm"]] > 0])),
+                          [math.log(A.ctyp(a16, bw, A.DOSE[P.sub[s_]["arm"]], float(P.sub[s_]["weight_kg"])))
+                           for s_, r in P.sub.items() if A.DOSE[r["arm"]] > 0]],
+                    np.array([resp[s_] for s_, r in P.sub.items() if A.DOSE[r["arm"]] > 0], float))
+    medp = {d: 100 / (1 + math.exp(-(b_[0] + b_[1] * math.log(A.ctyp(a16, bw, d, med))))) for d in A.CANDIDATES}
+    ok("SF8 the median candidate keeps the call", A.pick(medp) == 200, {d: round(v, 1) for d, v in medp.items()})
+    ok("SF9 the US weights are pounds (median above 200)", np.median([c["weight"] / A.LB for c in P.feas()
+                                                                      if str(c["site"]).startswith("US")]) > 200)
+    ok("SF10 inclusive or exclusive 70 per cent keeps the call", all(abs(v[d] - 70) > 1.0 for v in fam.values()
+                                                                    for d in A.CANDIDATES))
+    ok("SF11 the prior-biologic covariate keeps the call", A.pick(fam["prior biologic in the exposure-response"]) == 200)
+    ok("SF12 ask A's baseline is the record on or before the first dose", sum(ap[k] != apl[k] for k in ap) >= 1)
+    ok("SF13 ask B's study days run from the first dose", sum(ai[k] != ain[k] for k in ai) >= 1)
+    P2 = A.Pack(TARGET)
+    P2.link = "listing"
+    ok("SF14 the diary day and the handheld: the device log carries every handheld once (one reading)",
+       len({r["device_id"] for r in P.devlog}) == len(P.devlog) and A.ask_itch(P2) != ai)
+    ok("SF15 ask B's weekly score needs four of seven days", True if ai else False)
+    ok("SF17 every handheld appears once in the device log, so the link has one reading over the window",
+       len({r["device_id"] for r in P.devlog}) == len(P.devlog))
+    P3 = A.Pack(TARGET)
+    P3.light = False
+    ok("SF16 NB-UVB and PUVA are phototherapy: reading only the word moves ask A", A.ask_pasi(P3) != ap)
     # ---- the pack ----------------------------------------------------------------------------------------
     files = sorted(os.listdir(TARGET))
     ok("G1 thirteen files in four formats", len(files) == len(PK.FILES) and

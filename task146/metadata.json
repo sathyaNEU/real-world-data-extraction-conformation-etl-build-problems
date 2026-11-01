@@ -46,6 +46,12 @@
    "role": "evidence",
    "source": "the IRT and pharmacy dosing log"
   },
+  "vela2_epro_device_log.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the ePRO vendor's handheld issue log"
+  },
   "vela2_epro_diary.csv": {
    "date": "2026-09-18",
    "license": "synthetic, CC0",
@@ -91,7 +97,7 @@
  },
  "largest_file": {
   "name": "vela2_epro_diary.csv",
-  "rows": 51800
+  "rows": 51804
  },
  "task": "task146"
 }

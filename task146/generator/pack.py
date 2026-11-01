@@ -21,6 +21,7 @@ FILES = {
     "ae": "vela2_adverse_events.csv",
     "dlqi": "vela2_dlqi.csv",
     "sites": "vela2_sites.csv",
+    "devices": "vela2_epro_device_log.csv",
     "feas": "vela3_feasibility_survey_2026.xlsx",
     "sap": "vela2_statistical_analysis_plan_v2.0.pdf",
     "cdp": "hb231_clinical_development_plan_v2.1_section7.pdf",
@@ -46,11 +47,14 @@ class Records:
         self.w = w
         r = np.random.default_rng(W.SEED + 7)
         self.r = r
+        # screening numbers and handheld serials come from the vendors' own ranges, not a fixed step
+        scr = sorted(int(x) for x in r.choice(np.arange(10400, 31900), size=len(w.pat), replace=False))
+        hh = [int(x) for x in r.choice(np.arange(210000, 289999), size=2 * len(w.pat), replace=False)]
         seq = {}
         for p in w.pat:
             seq[p["site"]] = seq.get(p["site"], 0) + 1
             p["sid"] = "201-%s-%03d" % (p["site"], seq[p["site"]])
-            p["scr"] = "S%05d" % (10000 + 37 * p["i"] + int(r.integers(0, 30)))
+            p["scr"] = "S%05d" % scr[p["i"]]
             # the visit calendar from the first dose; a discontinued patient leaves between week 4 and week 12
             p["leave"] = int(r.choice([28, 56, 84])) if p["disc"] else None
             p["scr_date"] = p["d1"] - dt.timedelta(days=int(r.integers(14, 29)))
@@ -62,6 +66,15 @@ class Records:
                     break
                 p["vdates"][name] = p["d1"] + dt.timedelta(days=day + int(r.integers(-3, 4)))
             p["resc_day"] = int(r.integers(30, 105)) if p["resc"] else None
+            # each patient takes a handheld at randomisation; about one in eight has it replaced mid-study
+            first = p["scr_date"]
+            end = p["d1"] + dt.timedelta(days=112 if p["leave"] is None else p["leave"] + 4)
+            if r.random() < 0.13:
+                sw = p["d1"] + dt.timedelta(days=int(r.integers(20, 100)))
+                p["devices"] = [("EP-%d" % hh[2 * p["i"]], first, sw - dt.timedelta(days=1)),
+                                ("EP-%d" % hh[2 * p["i"] + 1], sw, None)]
+            else:
+                p["devices"] = [("EP-%d" % hh[2 * p["i"]], first, None)]
             p["doses"] = [p["d1"] + dt.timedelta(days=28 * k + (int(r.integers(-2, 3)) if k else 0))
                           for k in range(4) if p["leave"] is None or 28 * k < p["leave"]]
 
@@ -83,10 +96,10 @@ def write_subjects(R, path):
         reason = "" if not p["disc"] else ["Lack of efficacy", "Withdrawal by subject", "Adverse event",
                                            "Lost to follow-up"][p["i"] % 4]
         rows.append([p["sid"], p["scr"], p["site"], p["country"], p["arm"], p["rdate"].isoformat(), p["sex"],
-                     p["age"], "%.1f" % p["weight"], "%.0f" % p["height"], "Y" if p["prior_bio"] else "N", disp,
+                     p["age"], "%.1f" % p["weight"], "%.0f" % p["height"], "Y" if p["prior_bio"] else "N", p["devices"][0][0], disp,
                      ddate, reason])
     return _w(path, ["subject_id", "screening_no", "site", "country", "arm", "randomisation_date", "sex", "age",
-                     "weight_kg", "height_cm", "prior_biologic", "status_at_lock", "discontinuation_date",
+                     "weight_kg", "height_cm", "prior_biologic", "epro_device", "status_at_lock", "discontinuation_date",
                      "discontinuation_reason"], rows)
 
 
@@ -155,7 +168,9 @@ BACKGROUND = [("Atorvastatin", "C10AA05", "Hypercholesterolaemia"), ("Metformin"
               ("Emollient cream", "D02AX", "Dry skin"), ("Omeprazole", "A02BC01", "Dyspepsia")]
 RESCUE = [("Clobetasol propionate 0.05% cream", "D07AD01", "Psoriasis flare"),
           ("Betamethasone dipropionate 0.05% ointment", "D07AC01", "Psoriasis flare"),
-          ("Narrowband UVB phototherapy", "", "Psoriasis")]
+          ("NB-UVB 311 nm, three sessions a week", "", "Psoriasis flare"),
+          ("NB-UVB 311 nm, twice weekly", "", "Psoriasis"),
+          ("PUVA (oral methoxsalen and UVA)", "", "Psoriasis flare")]
 
 
 def _dmy(d, ctry):
@@ -171,7 +186,7 @@ def write_cm(R, path):
             st = p["d1"] - dt.timedelta(days=int(r.integers(30, 2000)))
             rows.append([p["sid"], m[0], m[1], m[2], _dmy(st, p["country"]), "Ongoing"])
         if p["resc"]:
-            m = RESCUE[int(r.integers(0, len(RESCUE)))]
+            m = RESCUE[int(r.choice(len(RESCUE), p=[0.22, 0.18, 0.28, 0.18, 0.14]))]
             st = p["d1"] + dt.timedelta(days=p["resc_day"])
             rows.append([p["sid"], m[0], m[1], m[2], _dmy(st, p["country"]),
                          _dmy(st + dt.timedelta(days=int(r.integers(10, 40))), p["country"])])
@@ -210,9 +225,22 @@ def write_epro(R, path):
             else:
                 t = dt.datetime.combine(ldate, dt.time(19, 0)) + dt.timedelta(minutes=int(r.integers(0, 290)))
             u = t.replace(tzinfo=tz).astimezone(UTC)
-            rows.append([p["sid"], u.strftime("%Y-%m-%dT%H:%M:%SZ"), itch, sleep])
+            dev = [dv for dv, a, b in p["devices"] if a <= ldate and (b is None or ldate <= b)][0]
+            rows.append([dev, u.strftime("%Y-%m-%dT%H:%M:%SZ"), itch, sleep])
     rows.sort(key=lambda x: (x[1], x[0]))
-    return _w(path, ["subject_id", "entry_utc", "itch_nrs", "sleep_nrs"], rows)
+    return _w(path, ["device_id", "entry_utc", "itch_nrs", "sleep_nrs"], rows)
+
+
+def write_devices(R, path):
+    rows = []
+    for p in R.w.pat:
+        for k, (dv, a, b) in enumerate(p["devices"]):
+            why = "Issued at screening" if k == 0 else ["Screen failure", "Battery not holding charge",
+                                                        "Device lost", "Synchronisation fault"][int(dv[3:]) % 4]
+            rows.append([dv, p["sid"], a.isoformat(),
+                         b.isoformat() if b else "", why])
+    rows.sort(key=lambda x: (x[2], x[0]))
+    return _w(path, ["device_id", "subject_id", "issued_date", "returned_date", "issue_reason"], rows)
 
 
 def write_ae(R, path):

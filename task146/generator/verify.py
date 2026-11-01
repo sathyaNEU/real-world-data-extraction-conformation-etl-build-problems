@@ -33,7 +33,8 @@ d1 = dose.groupby("subject_id")["dose_date"].min()
 pa = pd.read_csv(os.path.join(T, "vela2_pasi_assessments.csv"), parse_dates=["assessment_date"])
 cm = pd.read_csv(os.path.join(T, "vela2_concomitant_medications.csv"), dtype=str).fillna("")
 cm["start"] = cm["start_date"].map(dmy)
-resc = cm[cm["atc_code"].str.startswith(("D07AC", "D07AD")) | cm["medication"].str.lower().str.contains("phototherapy")]
+resc = cm[cm["atc_code"].str.startswith(("D07AC", "D07AD")) |
+          cm["medication"].str.lower().str.contains("phototherapy|uvb|puva", regex=True)]
 
 pa["d1"] = pa["subject_id"].map(d1)
 base = pa[pa["assessment_date"] <= pa["d1"]].sort_values("assessment_date").groupby("subject_id").last()["pasi_total"]
@@ -60,6 +61,8 @@ for name, r in (("PASI 75", r75), ("PASI 90", r90)):
 
 # itch
 ep = pd.read_csv(os.path.join(T, "vela2_epro_diary.csv"))
+dl = pd.read_csv(os.path.join(T, "vela2_epro_device_log.csv"))
+ep = ep.merge(dl[["device_id", "subject_id"]], on="device_id", how="inner")
 tz = pd.read_csv(os.path.join(T, "vela2_sites.csv")).set_index("site")["time_zone"]
 ep = ep.merge(sub[["subject_id", "site", "arm"]], on="subject_id")
 ep["utc"] = pd.to_datetime(ep["entry_utc"], utc=True)

@@ -67,7 +67,7 @@ SOURCES = {
     "subjects": "the trial database's subject listing at lock", "dosing": "the IRT and pharmacy dosing log",
     "pasi": "the eCRF's PASI assessment pages", "pk": "the bioanalytical laboratories' trough concentration transfer",
     "cm": "the eCRF's concomitant medication pages", "epro": "the ePRO vendor's evening diary export",
-    "ae": "the eCRF's adverse event pages", "dlqi": "the eCRF's DLQI pages", "sites": "the trial's site register",
+    "ae": "the eCRF's adverse event pages", "dlqi": "the eCRF's DLQI pages", "sites": "the trial's site register", "devices": "the ePRO vendor's handheld issue log",
     "feas": "Clinical Operations' VELA-3 site feasibility survey", "sap": "the VELA-2 statistical analysis plan",
     "cdp": "the HB-231 clinical development plan, section 7", "email": "the programme lead's request"}
 DATES = {"sap": "2026-08-12", "cdp": "2026-06-04", "email": "2026-11-16", "feas": "2026-10-31", "sites": "2025-08-20"}

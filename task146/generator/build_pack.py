@@ -22,7 +22,8 @@ def build_pack(out):
     n = {"subjects": PK.write_subjects(R, f("subjects")), "dosing": PK.write_dosing(R, f("dosing")),
          "pasi": PK.write_pasi(R, f("pasi")), "pk": PK.write_pk(R, f("pk")), "cm": PK.write_cm(R, f("cm")),
          "epro": PK.write_epro(R, f("epro")), "ae": PK.write_ae(R, f("ae")), "dlqi": PK.write_dlqi(R, f("dlqi")),
-         "sites": PK.write_sites(R, f("sites")), "feas": PK.write_feas(R, f("feas"))}
+         "sites": PK.write_sites(R, f("sites")), "devices": PK.write_devices(R, f("devices")),
+         "feas": PK.write_feas(R, f("feas"))}
     D.sap(f("sap"))
     D.cdp(f("cdp"))
     D.email(f("email"))

@@ -32,32 +32,36 @@
 
 Actor: the deciding property is each phase 3 patient's trough concentration at a dose, which no file holds: the feasibility survey lists candidates' weights (in pounds at the US sites), the VELA-2 troughs belong to lighter patients, and the response the plan's bar is read on follows the trough, not the dose on the label.
 
-Link: the signal is read through a relation no key invites: log trough per milligram against log body weight across the VELA-2 troughs (exponent 1.17 on the cut pack), joined to the composite PASI 75 through each patient's typical trough, then carried to the feasibility candidates' weights; no column crosses a dose with a weight.
+Link: the signal is read through a relation no key invites: log trough per milligram against log body weight across the VELA-2 troughs (exponent 1.14 on the cut pack), joined to the composite PASI 75 through each patient's typical trough, then carried to the feasibility candidates' weights; no column crosses a dose with a weight.
 
-Reflex: the field's dose-response method sits at rung 0 and files a wrong answer here: the arms' week-16 PASI 75 rates (100 mg at 81.0), a logistic on log dose (75.4) and an Emax fit on dose (76.8) all put 100 mg over the 70 per cent bar.
+Reflex: the field's dose-response method sits at rung 0 and files a wrong answer here: the arms' week-16 PASI 75 rates (100 mg at 81.0), a logistic on log dose (73.6) and an Emax fit on dose (76.1) all put 100 mg over the 70 per cent bar.
 
 Back-test: the textbook route validates on the checks a dose-response analyst runs: the Emax curve on dose fits the five arms, the arms' rates rise monotonically with dose, and 100 mg is the plateau's shoulder; nothing in the VELA-2 data alone says the dose transfers badly.
 
 Second use: every file the decisive step reads sits in the pack for a reason of its own: the trough samples are the trial's PK record (the SAP's section 5), the subject listing carries each patient's weight as a baseline characteristic, and the feasibility survey is the plan's own definition of the phase 3 population (section 7.2).
 
-Shock: the movement the step recovers reads as ordinary: the VELA-3 candidates average 107 kg against VELA-2's 84 kg, a difference a reader expects between North American and Nordic adults with psoriasis, and within each VELA-2 arm the heavier patients' lower response is buried in the arm's noise.
+Shock: the movement the step recovers reads as ordinary: the VELA-3 candidates average 110.9 kg against VELA-2's 84.7 kg, a difference a reader expects between North American and Nordic adults with psoriasis, and within each VELA-2 arm the heavier patients' lower response is buried in the arm's noise.
 
 Pins: the plan files the WHAT in its own genre (section 7.2: the lowest of 50, 100 and 200 mg whose expected week-16 PASI 75 in the phase 3 population is at least 70 per cent, the phase 3 population being the patients the feasibility survey lists, response as the VELA-2 SAP defines it); no document names weight, clearance, exposure or a model.
 
 ## Default path
 
-A competent solver conforms the VELA-2 exports (the Lund laboratory's ng/mL, the samples below the limit, the
-dd.mm.yyyy dates at the Finnish and Norwegian sites, the SAP's composite with rescue and missing week-16 PASI as
-non-response), reads section 7.2 and computes each arm's week-16 PASI 75: 43.0 at 50 mg, 81.0 at 100 mg, 89.0 at
-200 mg. Section 7.2 asks for the lowest dose at or above 70 per cent, and 100 mg is it; an Emax curve on dose or a
-logistic on log dose says the same (76.8, 75.4). It files 100 mg. Wrong: the phase 3 population weighs more, HB-231's
-troughs fall with weight, and the expected response at 100 mg in the phase 3 population is 64.4 per cent.
+1. Conform the VELA-2 exports: the Lund laboratory's ng/mL to ug/mL, the samples below the limit out, the dd.mm.yyyy
+   dates at the Finnish and Norwegian sites, the SAP's composite with rescue and a missing week-16 PASI as
+   non-response.
+2. Compute each arm's week-16 PASI 75: 46.0 at 50 mg, 81.0 at 100 mg, 85.0 at 200 mg; an Emax curve on dose and a
+   logistic on log dose say the same at 100 mg (76.1, 73.6).
+3. Read section 7.2 (the lowest of 50, 100 and 200 mg at or above 70 per cent) against those rates.
+
+Ends on: 100 mg, the lowest dose whose VELA-2 arm cleared the 70 per cent bar.
+Golden: 200 mg; the VELA-3 candidates weigh more (110.9 kg against 84.7 kg), HB-231's troughs fall with weight, and
+the expected response in the phase 3 population is 39.5 at 50 mg, 64.0 at 100 mg and 82.9 at 200 mg.
 
 ## Stump sentence
 
 A competent solver reads the VELA-2 dose-response and takes 100 mg, whose arm cleared the 70 per cent bar at 81.0 per
-cent; the VELA-3 candidates weigh more (107 kg against 84 kg) and HB-231's troughs fall with body weight (exponent
-1.17), so at 100 mg the phase 3 population is expected at 64.4 per cent and only 200 mg (84.9) clears the bar.
+cent; the VELA-3 candidates weigh more (110.9 kg against 84.7 kg) and HB-231's troughs fall with body weight
+(exponent 1.14), so at 100 mg the phase 3 population is expected at 64.0 per cent and only 200 mg (82.9) clears the bar.
 
 ## Three rules
 
@@ -71,13 +75,13 @@ Layer 1: the Lund laboratory's troughs in ng/mL against the central laboratory's
 
 Layer 2: the data's real structure in a dose choice carried to a new population: response follows exposure, exposure at a dose falls with body weight, and the population the bar is read on is heavier than the one the dose-response was measured on, so the expected response is a transport of the exposure-response through a population PK model to the target population's weights.
 
-Decisive step: fit the troughs' log concentration per milligram on visit and log body weight, read each VELA-2 patient's typical week-16 trough, fit the composite PASI 75 on its log, and average the fitted response over every feasibility candidate at each dose; 100 mg falls to 64.4 per cent and 200 mg holds at 84.9.
+Decisive step: fit the troughs' log concentration per milligram on visit and log body weight, read each VELA-2 patient's typical week-16 trough, fit the composite PASI 75 on its log, and average the fitted response over every feasibility candidate at each dose; 100 mg falls to 64.0 per cent and 200 mg holds at 82.9.
 
 Not semantics: every field, code and definition read correctly (the units, the limit, the composite, the labels, the dates, the pounds) still leaves the arm rates at 81.0 per cent for 100 mg, because how a dose's response moves with a population's weight is not a field: it is a relation the analyst has to model.
 
-Not rule application: no filed rule names weight, clearance, exposure or a model; executing section 7.2 word for word on the arm rates files 100 mg; the enumerated family (the arm rates, a logistic on log dose, an Emax on dose, the same routes on the Finnish labels) spreads 75.4 to 81.0 at 100 mg, all over the bar; the standing family (exposure-response through the weight model, logistic or Emax, the exponent fitted or fixed at 1.0, the prior-biologic covariate, the observed week-16 trough with the between-patient spread, a logistic on log dose and log weight) spreads 64.0 to 67.2, all under it; the ruling-out is loud: the troughs fall with weight at an exponent of 1.17 (the PK model's own fit).
+Not rule application: no filed rule names weight, clearance, exposure or a model; executing section 7.2 word for word on the arm rates files 100 mg; the enumerated family (the arm rates, a logistic on log dose, an Emax on dose, the same routes on the Finnish labels) spreads 73.6 to 81.0 at 100 mg, all over the bar; the standing family (exposure-response through the weight model, logistic or Emax, the exponent fitted or fixed at 1.0, the prior-biologic covariate, the observed week-16 trough with the between-patient spread, a logistic on log dose and log weight) spreads 63.8 to 66.9, all under it; the ruling-out is loud: the troughs fall with weight at an exponent of 1.14 (the PK model's own fit).
 
-Analyst test: a strong analyst who reads every field and rule correctly computes the composite by arm, reads section 7.2 and files 100 mg (81.0 per cent); carried through the weight model and the exposure-response to the VELA-3 candidates, 100 mg is 64.4 and only 200 mg clears 70.
+Analyst test: a strong analyst who reads every field and rule correctly computes the composite by arm, reads section 7.2 and files 100 mg (81.0 per cent); carried through the weight model and the exposure-response to the VELA-3 candidates, 100 mg is 64.0 and only 200 mg clears 70.
 
 Estimand: the plan files it: the expected week-16 PASI 75 response, as the VELA-2 SAP defines it, of each of 50, 100 and 200 mg in the phase 3 population, which is the patients the VELA-3 sites will enrol as the feasibility survey lists them; the call is the lowest dose at or above 70 per cent.
 
@@ -100,33 +104,35 @@ Lesson: a dose-response measured in one population answers a dose question in an
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "baseline" | the last PASI on or before the first dose (SAP section 2) | the record labelled Baseline | 100 mg on the arm rates (80.0): same easy call; the golden's composite unchanged | SAP section 2 (asserted C4) |
+| SF1 | "baseline" | the last PASI on or before the first dose (SAP section 2) | the record labelled Baseline | 100 mg on the arm rates: same easy call; the golden's composite unchanged | SAP section 2 (asserted C4) |
 | SF2 | rescue therapy | ATC D07AC or D07AD, or phototherapy, after the first dose and on or before the week-16 assessment (SAP section 3) | any topical corticosteroid | same call | SAP section 3 |
 | SF3 | a patient with no week-16 PASI | non-responder (SAP section 3) | excluded | same call | SAP section 3 |
 | SF4 | the troughs used | weeks 4 to 16, below-limit samples out (SAP section 5) | week 16 only | same call (asserted, the observed-trough member) | same call |
 | SF5 | the trough units | ug/mL, the Lund ng/mL divided by 1,000 | taken as written | another exponent | the unit column |
-| SF6 | the weight model | log trough per mg on visit and log weight | exponent fixed at 1.0 | 66.3 at 100 mg: same call | same call (asserted C2) |
-| SF7 | the exposure-response form | logistic on log typical trough | Emax; the observed week-16 trough with the spread; a logistic on log dose and log weight | 65.7, 67.2, 67.1 at 100 mg: same call | same call (asserted C2) |
+| SF6 | the weight model | log trough per mg on visit and log weight | exponent fixed at 1.0 | 65.3 at 100 mg: same call | same call (asserted C2) |
+| SF7 | the exposure-response form | logistic on log typical trough | Emax; the observed week-16 trough with the spread; a logistic on log dose and log weight | 66.5, 66.9, 66.2 at 100 mg: same call | same call (asserted C2) |
 | SF8 | the phase 3 population | every feasibility candidate (CDP section 7.2) | the median candidate | same call | CDP section 7.2 |
 | SF9 | the US weights | pounds times 0.45359237 | taken as kilograms | another population | the sheet's header |
-| SF10 | "at least 70 per cent" | inclusive | exclusive | same: 64.4 and 84.9 are far from 70 | same call |
-| SF11 | prior biologic use | no term (the plan's population is everyone listed) | a covariate | 64.0 at 100 mg: same call | same call (asserted C2) |
+| SF10 | "at least 70 per cent" | inclusive | exclusive | same: 64.0 and 82.9 are far from 70 | same call |
+| SF11 | prior biologic use | no term (the plan's population is everyone listed) | a covariate | 63.8 at 100 mg: same call | same call (asserted C2) |
 | SF12 | ask A's baseline | as SF1 | the labelled record | other rates | SAP section 2 |
 | SF13 | ask B's study days | from the first dose in the dosing log (SAP section 2) | from randomisation | other shares | SAP section 2 |
 | SF14 | ask B's diary day | local time, after-midnight entries to the evening before (SAP section 4) | the UTC date | other shares | SAP section 4 |
 | SF15 | ask B's weekly score | at least four of the seven days (SAP section 4) | any entry | other shares | SAP section 4 |
+| SF16 | rescue phototherapy | NB-UVB and PUVA rows are phototherapy (SAP section 3) | only rows that say phototherapy | other rates | the field's own names for light treatment; one reading |
+| SF17 | a diary entry's patient | the patient the device log records for its handheld (every handheld issued once) | the subject listing's handheld only | other shares | the device log; one reading over the window |
 
 ## Ladder
 
 | Rung | Route | 50 mg | 100 mg | 200 mg | Call |
 |---|---|---|---|---|---|
-| R0 | the arms' week-16 PASI 75 (VELA-2) | 43.0 | 81.0 | 89.0 | 100 mg |
-| R0b | logistic on log dose (VELA-2) | 48.9 | 75.4 | 90.8 | 100 mg |
-| R0c | Emax on dose (VELA-2) | 47.7 | 76.8 | 90.8 | 100 mg |
-| Golden | exposure-response through the weight model, averaged over the VELA-3 candidates | 37.2 | 64.4 | 84.9 | 200 mg |
-| Standing | exponent fixed at 1.0, Emax form, prior-biologic covariate, observed trough with spread, log dose and log weight | 34.5 to 41.2 | 64.0 to 67.2 | 84.6 to 86.7 | 200 mg |
+| R0 | the arms' week-16 PASI 75 (VELA-2) | 46.0 | 81.0 | 85.0 | 100 mg |
+| R0b | logistic on log dose (VELA-2) | 49.7 | 73.6 | 88.7 | 100 mg |
+| R0c | Emax on dose (VELA-2) | 49.5 | 76.1 | 87.9 | 100 mg |
+| Golden | exposure-response through the weight model, averaged over the VELA-3 candidates | 39.5 | 64.0 | 82.9 | 200 mg |
+| Standing | exponent fixed at 1.0, Emax form, prior-biologic covariate, observed trough with spread, log dose and log weight | 37.6 to 42.8 | 63.8 to 66.9 | 82.9 to 84.7 | 200 mg |
 
-Separation: the lowest easy rung at 100 mg (75.4) sits 5.4 over the bar; the highest standing member (67.2) sits 2.8 under it, and every member puts 200 mg at least 14.6 over it; the world's own truth is 65.6 at 100 mg and 83.0 at 200 mg.
+Separation: the lowest easy rung at 100 mg (73.6) sits 3.6 over the bar; the highest standing member (66.9) sits 3.1 under it, and every member puts 200 mg at least 12.9 over it; the world's own truth is 66.4 at 100 mg and 82.1 at 200 mg.
 
 ## Closure table
 
@@ -161,28 +167,44 @@ On paper and on the cut pack: section 7.2 files the quantity and its WHAT (the e
 SAP defines it, of each of 50, 100 and 200 mg in the phase 3 population, the patients the feasibility survey lists)
 and the rule (the lowest at or above 70 per cent). Executed word for word, the WHAT leaves open only how a dose's
 response in VELA-2 becomes an expected response in the phase 3 population, and the record forces it: the troughs fall
-with body weight (exponent 1.17), the candidates are heavier, and every member that carries VELA-2's response through
-exposure to the candidates' weights lands 64.0 to 67.2 at 100 mg and 84.6 to 86.7 at 200 mg. Every literal reading of
+with body weight (exponent 1.14), the candidates are heavier, and every member that carries VELA-2's response through
+exposure to the candidates' weights lands 63.8 to 66.9 at 100 mg and 82.9 to 84.7 at 200 mg. Every literal reading of
 a convention on the call (SF1 to SF11) keeps the golden's call or is ruled out by a quotable sentence. Pass.
 
 ## Oracles
 
-- The world's own truth: the expected response with the truth's clearance, spread and exposure-response is 65.6 at
-  100 mg and 83.0 at 200 mg (asserted C6); every trough follows dose over clearance (asserted C7).
+- The world's own truth: the expected response with the truth's clearance, spread and exposure-response is 66.4 at
+  100 mg and 82.1 at 200 mg (asserted C6); every trough follows dose over clearance (asserted C7).
 - The asks: every figure recomputed independently by verify.py (20 of 20).
 - No shipped oracle: no file ties only under the golden reading.
 
 ## Ask sheet
 
-Pair ceiling: pending (the device redesign below)
-Mirror leakage: pending
-Measured by: generator/ceiling.py, to be written after the device redesign
+Pair ceiling: 45.0 (the cracker 61.5, the mirror 28.5, on the planning weights of 38, 7 and 55)
+Mirror leakage: 30.0 per cent of the ask weight
+Measured by: generator/ceiling.py, run on the cut pack
 
 | Ask | Primary device | Golden | The cracker's figures | Cracker |
 |---|---|---|---|---|
-| A, week-16 PASI 75 and PASI 90 by arm (10 figures) | pending: the Finnish label device is defeated by the SAP's date rule | in figures.json | pending | pending |
-| B, itch responders at weeks 12 and 16 by arm (10 figures) | pending: the first-dose anchor is defeated by the SAP's day-1 rule | in figures.json | pending | pending |
+| A, week-16 PASI 75 and PASI 90 by arm (10 figures) | D1: rescue phototherapy is written in the field's own names (NB-UVB 311 nm, PUVA) and never as the word phototherapy, so a cracker that reads the SAP's rescue list against the rows as written keeps rescued patients who cleared at week 16 as responders | PASI 75: 6.0, 26.0, 46.0, 81.0, 85.0; PASI 90: 0.0, 13.0, 24.0, 66.0, 72.0 | PASI 75 100 mg 84.0, 200 mg 89.0, 50 mg 48.0; PASI 90 100 mg 68.0, 200 mg 76.0 (5 of 10 differ) | miss |
+| B, itch responders at weeks 12 and 16 by arm (10 figures) | D2: the diary export carries the handheld, not the patient, and the subject listing names only the handheld issued at screening; about one patient in eight had it replaced, and only the device log links the replacement, so a cracker linking through the listing loses their later weeks | in figures.json (week 12: 16.1, 32.6, 58.1, 85.9, 84.2) | 9 of 10 differ (week 12 100 mg 78.3, week 16 100 mg 75.0) | miss |
 
+The full includer (NB-UVB and PUVA as phototherapy, every handheld through the device log) keeps 20 of 20. Every ask
+reads rows the call never reads (the rescue rows, the diary and the device log), and no device sits on a trough, a
+weight or the feasibility survey.
+
+## Leak sweep
+
+`leak.py task146 --asof 2026-11-16` on the final cut (target.zip 381bf343): REVIEW, no LEAK. Each REVIEW line, ruled:
+
+- Sweep 1, the feasibility workbook's Notes sheet: harmless. It is Clinical Operations' own three lines (what the
+  survey is, who listed whom, who compiled it) and describes no column or file.
+- Sweep 3, the doses 100 and 200 mg and the call's words in the development plan and the SAP: harmless. They are the
+  candidate doses the plan's rule chooses among and the SAP's arms; no document states a response, a side of the bar
+  or a dose's fate.
+- Sweep 4, stump-paragraph terms in the SAP (patient, trough, method, record, carries): harmless. They are the SAP's
+  own words for its pharmacokinetic sampling and its records; no document names weight, clearance, exposure or a
+  model (asserted G3 on both PDFs and the email).
 
 ## Tried and rejected
 

@@ -11,7 +11,7 @@ from openpyxl import load_workbook
 
 F = {"subjects": "vela2_subjects.csv", "dosing": "vela2_dosing_log.csv", "pasi": "vela2_pasi_assessments.csv",
      "pk": "vela2_pk_trough_samples.csv", "cm": "vela2_concomitant_medications.csv", "epro": "vela2_epro_diary.csv",
-     "sites": "vela2_sites.csv", "feas": "vela3_feasibility_survey_2026.xlsx"}
+     "sites": "vela2_sites.csv", "devices": "vela2_epro_device_log.csv", "feas": "vela3_feasibility_survey_2026.xlsx"}
 DOSE = {"PBO": 0, "HB25": 25, "HB50": 50, "HB100": 100, "HB200": 200}
 ARMS = ["PBO", "HB25", "HB50", "HB100", "HB200"]
 CANDIDATES = (50, 100, 200)
@@ -51,6 +51,9 @@ class Pack:
             self.cm.setdefault(r["subject_id"], []).append(r)
         self.pk = rows(target, "pk")
         self.epro = rows(target, "epro")
+        self.devlog = rows(target, "devices")
+        self.light = True        # NB-UVB and PUVA are phototherapy
+        self.link = "log"        # handhelds linked to patients through the device log
         self._feas = None
 
     # ---- the week-16 composite --------------------------------------------------------------------------
@@ -69,7 +72,9 @@ class Pack:
         d1 = self.d1[sid]
         for r in self.cm.get(sid, []):
             atc, med = r["atc_code"], r["medication"].lower()
-            if not (atc.startswith("D07AC") or atc.startswith("D07AD") or "phototherapy" in med):
+            light = any(k in med for k in ("phototherapy", "uvb", "puva", "uva")) if self.light else (
+                "phototherapy" in med)
+            if not (atc.startswith("D07AC") or atc.startswith("D07AD") or light):
                 continue
             st = pdate(r["start_date"])
             if d1 < st <= last_date:
@@ -281,8 +286,14 @@ def ask_pasi(P, label=False):
 def diary_days(P, first_dose="dose"):
     """Each subject's entries by diary day (local time, after-midnight entries to the evening before)."""
     out = {}
+    if P.link == "log":
+        dev = {r["device_id"]: r["subject_id"] for r in P.devlog}
+    else:                    # the subject listing's handheld only
+        dev = {r["epro_device"]: s for s, r in P.sub.items()}
     for r in P.epro:
-        sid = r["subject_id"]
+        sid = dev.get(r["device_id"])
+        if sid is None:
+            continue
         tz = ZoneInfo(P.tz[P.sub[sid]["site"]])
         u = dt.datetime.strptime(r["entry_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=ZoneInfo("UTC"))
         loc = u.astimezone(tz)

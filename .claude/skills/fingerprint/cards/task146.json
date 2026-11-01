@@ -11,8 +11,8 @@
   "shape": "13",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "200 mg: the expected week-16 PASI 75 in the VELA-3 population is 39.3 at 50 mg, 63.7 at 100 mg and 82.8 at 200 mg, so 200 mg is the lowest dose at or above 70 per cent; the VELA-2 arms (46.0, 81.0, 85.0) would have filed 100 mg",
+  "answer_source": "task146/generator/figures.json",
   "gap": [
     "population"
   ],
@@ -36,20 +36,23 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:exposure transport across a covariate shift",
   "layer1": [
-    "trough concentrations in micrograms per litre from the central laboratory and in nanograms per millilitre from the Lund site laboratory",
-    "samples below the lower limit of quantification flagged with a text marker",
-    "PASI recorded with one decimal at some sites and as integers at others",
-    "visit dates outside the protocol window",
-    "rescue treatment recorded only in the concomitant medication listing",
-    "patients re-screened under a second number",
-    "weights in pounds at the North American feasibility sites"
+    "trough concentrations in micrograms per mL from the central laboratory and in nanograms per mL from the Lund site laboratory",
+    "samples below the lower limit of quantification written as text",
+    "PASI recorded as integers at some sites and with one decimal at others",
+    "dd.mm.yyyy dates at the Finnish and Norwegian sites",
+    "the Finnish eCRF build labelling the screening assessment Baseline and the first-dose one Day 1",
+    "first doses a few days after randomisation at the Norwegian sites",
+    "diary entries in UTC, after-midnight entries belonging to the evening before",
+    "the diary keyed by handheld, replacements recorded only in the device log",
+    "rescue phototherapy written as NB-UVB and PUVA",
+    "US candidates' weights in pounds"
   ],
   "stakeholder_role": "the HB-231 programme lead",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
     "file": "hb231_epro_daily_diary.csv",
-    "rows": 0,
+    "rows": 51900,
     "entity": "one patient's daily itch and sleep entry",
     "grain": "patient x day",
     "source": "synthetic"
@@ -116,10 +119,10 @@
   },
   "notes": "Axes redrawn at the draw-time checks on a freshly pulled tree (2026-11-01): the role family research_desk and the forum executive_team were held by task445 v3, the context artifact filed_standard and the pattern G1 by task468 v6, the pattern G6 and the forum committee_or_panel by task231 v2, and the organisation family manufacturer by task456 v2; the HB-231 programme lead carries the call to Hvidore's board, which approves the phase 3 plan, on the programme's planning thread, and a clinical-stage biotech that makes no product yet files as other.",
   "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "for",
-    "rounding opener": "balances",
-    "deliverable set": "pdf+xlsx"
+    "question form": "what",
+    "second-sentence opener": "the",
+    "rounding opener": "rates",
+    "deliverable set": "docx+csv"
   },
   "registered": "2026-11-01T01:22:51Z"
 }

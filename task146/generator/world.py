@@ -15,7 +15,7 @@ ARMS = [("PBO", 0), ("HB25", 25), ("HB50", 50), ("HB100", 100), ("HB200", 200)]
 PER_ARM = 100
 CL0, WEXP, OMEGA, RESID = 0.32, 1.1, 0.28, 0.14
 ACC = {4: 0.62, 8: 0.85, 12: 0.94, 16: 0.98}
-E0, EMAX, EC50, HILL = 0.05, 0.95, 5.4, 2.7
+E0, EMAX, EC50, HILL = 0.05, 0.95, 5.1, 2.7
 SIGMA = 1.55           # spread of the latent improvement
 LLOQ = 0.10            # micrograms per mL
 FIRST = dt.date(2025, 9, 1)
@@ -108,7 +108,9 @@ class World:
             L = a + SIGMA * float(r.normal())
             imp = IMP_LO + IMP_SPAN / (1 + math.exp(-L))
             disc = r.random() < (0.07 if d == 0 else 0.035)
-            resc = (not disc) and r.random() < (0.11 if d == 0 else 0.03) * (1.6 if imp < 0.5 else 0.6)
+            # rescue: a flare between visits treated with phototherapy or a potent topical; some rescued patients
+            # go on to clear at week 16, and the composite counts them as non-responders
+            resc = (not disc) and r.random() < (0.12 if d == 0 else 0.045) * (1.4 if imp < 0.5 else 0.8)
             self.pat.append({"i": i, "site": s[0], "country": s[1], "tz": s[3], "pasi_fmt": s[4], "ecrf": s[5],
                              "arm": arm, "dose": d, "sex": sex, "weight": w, "height": h, "age": age,
                              "pasi0": pasi0, "eta": eta, "cl": cl, "c16_true": c16_true, "p75_true": p,

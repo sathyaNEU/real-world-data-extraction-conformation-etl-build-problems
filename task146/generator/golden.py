@@ -35,6 +35,10 @@ def compute(target):
         "mean_weight_kg": {"phase2b": round(w2, 1), "phase3": round(w3, 1)},
         "ask_pasi": {"%s|%s" % k: v for k, v in pasi.items()},
         "ask_itch": {"%s|%s" % k: v for k, v in itch.items()},
+        # the filed terms the write-up states: the plan's bar and doses, the SAP's thresholds, windows and units
+        "stated": {"bar_percent": 70, "doses_mg": [50, 100, 200], "pasi_thresholds": [75, 90],
+                   "itch_threshold_points": 4, "itch_windows_study_days": [-7, -1, 78, 84, 106, 112],
+                   "ng_per_ug": "1,000", "kg_per_lb": 0.45359237},
     }
     return P, fig
 

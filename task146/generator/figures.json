@@ -1,26 +1,26 @@
 {
  "ask_itch": {
-  "Week 12|HB100": 86.5,
-  "Week 12|HB200": 90.1,
-  "Week 12|HB25": 35.1,
-  "Week 12|HB50": 55.8,
-  "Week 12|PBO": 12.0,
-  "Week 16|HB100": 85.4,
-  "Week 16|HB200": 86.8,
-  "Week 16|HB25": 30.9,
-  "Week 16|HB50": 54.7,
-  "Week 16|PBO": 12.0
+  "Week 12|HB100": 85.9,
+  "Week 12|HB200": 84.2,
+  "Week 12|HB25": 32.6,
+  "Week 12|HB50": 58.1,
+  "Week 12|PBO": 16.1,
+  "Week 16|HB100": 83.7,
+  "Week 16|HB200": 87.4,
+  "Week 16|HB25": 34.8,
+  "Week 16|HB50": 55.9,
+  "Week 16|PBO": 12.9
  },
  "ask_pasi": {
   "PASI 75|HB100": 81.0,
-  "PASI 75|HB200": 89.0,
-  "PASI 75|HB25": 25.0,
-  "PASI 75|HB50": 43.0,
+  "PASI 75|HB200": 85.0,
+  "PASI 75|HB25": 26.0,
+  "PASI 75|HB50": 46.0,
   "PASI 75|PBO": 6.0,
   "PASI 90|HB100": 66.0,
-  "PASI 90|HB200": 74.0,
-  "PASI 90|HB25": 11.0,
-  "PASI 90|HB50": 22.0,
+  "PASI 90|HB200": 72.0,
+  "PASI 90|HB25": 13.0,
+  "PASI 90|HB50": 24.0,
   "PASI 90|PBO": 0.0
  },
  "call": {
@@ -32,18 +32,41 @@
  },
  "phase2b_arm_pasi75": {
   "100": 81.0,
-  "200": 89.0,
-  "50": 43.0
+  "200": 85.0,
+  "50": 46.0
  },
  "phase3_expected": {
-  "100": 64.4,
-  "200": 84.9,
-  "50": 37.2
+  "100": 64.0,
+  "200": 82.9,
+  "50": 39.5
  },
  "phase3_side": {
   "100": "below",
   "200": "at or above",
   "50": "below"
  },
- "weight_exponent": 1.17
+ "stated": {
+  "bar_percent": 70,
+  "doses_mg": [
+   50,
+   100,
+   200
+  ],
+  "itch_threshold_points": 4,
+  "itch_windows_study_days": [
+   -7,
+   -1,
+   78,
+   84,
+   106,
+   112
+  ],
+  "kg_per_lb": 0.45359237,
+  "ng_per_ug": "1,000",
+  "pasi_thresholds": [
+   75,
+   90
+  ]
+ },
+ "weight_exponent": 1.14
 }

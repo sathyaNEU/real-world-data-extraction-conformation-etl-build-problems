@@ -3,25 +3,25 @@
  "status": "PAUSED",
  "domain": "biomedical-clinical-research / dose-response-pk-pd-modeling (client biomedical-clinical-research)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "A competent solver reads the phase 2b dose-response, the arms' week-16 PASI 75 rates or an Emax curve fitted on dose, and takes 100 mg, which cleared 70 per cent there; the phase 3 population weighs more and HB-231's clearance rises with weight, so at 100 mg its patients run lower troughs and the expected response falls under 70 per cent; carried through the weight-clearance relation and the exposure-response fitted on phase 2b, only 200 mg clears the bar.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 1,
+  "exit": 0,
   "date": "2026-11-01",
-  "checks": "58, 7 FAIL, 1 WARN: every main-call section passes (three rules, survivor anatomy, readability, fork table, ladder, closure, literal reader, oracles); the FAILs are the ask layer (pair ceiling, mirror leakage, ceiling script, cracker misses every ask) and SF ids not yet asserted by label in checks.py"
+  "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 on target.zip 381bf343 (--asof 2026-11-16, no LEAK): sweeps 1, 3 and 4 ruled harmless in the note's Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-11-01 on the registered card (differentiated against task171 v5, task168, task260, task464 v8)",
-  "heart": "",
-  "surface": ""
+  "heart": "PASS 2026-11-01 on a freshly pulled tree",
+  "surface": "exit 0 on the final cut 2026-11-01 (no BLOCK; four pairs promoted on card axes for the author's adjudicated read; personas Villads Kjaer, Helle Carlsen, Bodil Lauritsen)"
  },
  "judge": {
   "verdict": "",
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2, the ask layer only (the main call, its world and every main-call section of the note are done and green): (1) redesign both ask devices so a cracker that executes every filed SAP rule and reads each file as it presents itself still misses each ask: the first devices (the Finnish eCRF's Baseline label, the Norwegian pharmacies' later first doses) are defeated by the SAP's own date rules (the note's last Tried and rejected line). Candidates: ask B, the ePRO export keyed by handheld device_id with a device assignment log in which devices returned by early leavers were reissued, a windowed join no sentence states; ask A, phototherapy rescue recorded only in the dermatology units' UVB session log under the hospital's own patient reference, linked through the sites' identification log. (2) Write generator/ceiling.py on the cut pack (the cracker lands the call and executes filed rules; the mirror files 100 mg on the arm rates; planning weights 38, 7, 55) and fill the note's Ask sheet with a pair ceiling at or under 60, mirror leakage under 50 and every ask row a miss. (3) Assert SF3 and SF5 to SF15 by label in checks.py. (4) Bring the card current (shell rounding opener 'rates'; layer1 list to what the pack holds). (5) python3 task146/generator/make.py, then figures_check.py, precut.py, voice-check.py, leak.py task146 --asof 2026-11-16, guard.py heart and surface after a fresh pull, golden-realism and reduce-house-fixes; then the stage 4 hand-off (leak copy at scratchpad/leak-task146/, brief at scratchpad/task146_stage4_leak_brief.md), PAUSED commit, pull --rebase, push.",
+ "resume": "stage 4 from the main thread: rebuild with `python3 task146/generator/make.py` (two byte-identical builds, checks.py and verify.py; target.zip sha256 381bf34356e15bd50a6393279b5f0712f5d3e7e0959854b717b53d98627d8ab2), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task146/ with the brief scratchpad/task146_stage4_leak_brief.md and the determinism judge on task146 (architecture 1's reports are kept as determinism_check_report_arch1*.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut, the reader's section in leak_check_report.md, git add -f task146/target.zip and task146/golden/*, ledger row, card current, commit SHIPPED (task146).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -108,6 +108,10 @@
   {
    "date": "2026-11-01",
    "event": "PAUSED at stage 2: the main call built and green (make.py, checks, verify on target.zip 26bb6d65); the ask devices to redesign"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "stage 3 complete on architecture 3: the ask devices redesigned (rescue phototherapy in its own names; the diary keyed by handheld, replacements only in the device log), every free gate green on target.zip 381bf343; paused at stage 4 for the main thread"
   }
  ],
  "lineage_v2": {
@@ -146,8 +150,8 @@
  "source_note": "re-root into a new world (Hvidore Biologics' phase 3 dose for HB-231 in plaque psoriasis, carried from the Nordic phase 2b through exposure to the heavier North American phase 3 population); architectures 1 and 2 spent",
  "build": {
   "rebuild": "python3 task146/generator/make.py",
-  "zip_sha256": "26bb6d655abf7bb8f82588180e1196fec7a980a0044dc83801e5ba6b382b452e",
-  "gates": "two byte-identical builds (18 files), checks.py 0 failed, verify.py 0 failures (20 ask figures, the call and each dose's side of the bar recomputed independently with statsmodels), voice-check PASS on prompt.txt",
-  "call": "200 mg: expected week-16 PASI 75 in the VELA-3 population 37.2 / 64.4 / 84.9 at 50 / 100 / 200 mg (standing family 64.0 to 67.2 at 100 mg); the easy routes put 100 mg at 75.4 to 81.0 in VELA-2"
+  "zip_sha256": "381bf34356e15bd50a6393279b5f0712f5d3e7e0959854b717b53d98627d8ab2",
+  "gates": "two byte-identical builds (19 files), checks.py 0 failed (C1 to C7, SF1 to SF17, G1 to G5), verify.py 0 failures (the call, each dose's side of the bar, all 20 ask figures, recomputed with statsmodels), figures_check 80 of 80, precut 61 checks with no FAIL or WARN, voice-check PASS, leak.py REVIEW with no LEAK, guard heart PASS; ceiling.py: pair ceiling 45.0, mirror leakage 30.0 per cent, the cracker misses ask A 5 of 10 and ask B 9 of 10",
+  "call": "200 mg: expected week-16 PASI 75 in the VELA-3 population 39.5 / 64.0 / 82.9 at 50 / 100 / 200 mg (standing family 63.8 to 66.9 at 100 mg, 82.9 to 84.7 at 200 mg); the easy routes put 100 mg at 73.6 to 81.0 in VELA-2"
  }
 }
