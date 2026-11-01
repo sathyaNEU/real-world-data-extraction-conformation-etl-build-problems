@@ -1,18 +1,18 @@
 {
   "task": "task190",
-  "architecture": 6,
-  "drawn": "2026-10-18",
-  "slot_note": "Architecture 6 re-root. Architectures 1, 2 and 3 died on determinism verdicts; 4 on a model constraint plus a measured null; 5 (criminology-justice/crime-incidence-hotspot-analysis) died on measurement, eleven candidates on screens and the near-repeat Knox ratio on a repeat-address reflex. New ground: survey-research-official-statistics / anomaly-detection.",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "anomaly-detection",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a national environment statistics institute's plan-attainment review of business waste recovery, finding which of eight statistical waste streams the 2026 recovery share is established below its National Waste Management Plan target for, so the collection division can commit its single 2027 supplementary field module",
+  "architecture": "v11",
+  "drawn": "2026-11-01",
+  "slot_note": "eleventh root of task190 (batch 1 re-root, 2026-11-01): survey-research-official-statistics anomaly detection spent over architectures 1 to 10; a new client domain (human-factors-ergonomics), world and dataset under the same objective, a pairing (human factors x anomaly detection) never built",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "an NHS hospital trust's transfusion committee choosing which sample collection areas get a human factors review of patient identification after a wrong blood in tube sample led to an ABO-incompatible transfusion, on each area's 2026 rate of samples taken from a patient other than the one named on the tube",
   "objective": "anomaly-detection",
-  "shape": "09",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Metal and metal-bearing wastes",
-  "answer_source": "golden/recovery_attainment_2026.xlsx, Attainment sheet",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "generator/golden.py; figures.json call",
   "gap": [
     "objective"
   ],
@@ -20,83 +20,72 @@
     "none"
   ],
   "generators": [
-    "G16",
+    "G12",
+    "G14",
     "G17"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "uncertainty_hold",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stakeholder_role": "the Head of Collection Operations in the Business and Environment Statistics Division of the National Institute for Environment Statistics, who runs the Business Waste Survey's collection round and holds the division's single supplementary field module for 2027, and must name the waste stream it covers",
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the laboratory's sample log and the incident register (the collecting area, one record per sample, the investigation's confirmed wrong blood in tube samples only) computes each area's 2026 wrong blood in tube rate as its confirmed samples over its group and screen samples, the laboratory's own measure, and refers the areas over the policy's 1 in 2,000; a sample taken from the wrong patient is found only when the named patient has another group on record and the two groups differ, and the areas whose patients mostly arrive with no earlier sample are the ones whose errors go unfound, so on the rate of samples actually taken from the wrong patient the referred set is different.",
+  "domain_test": "The deciding quantity is each collection area's rate of samples taken from a patient other than the one named on the tube, the patient identification error a transfusion service's human factors work is aimed at, estimated from the error the laboratory can see: a mislabelled sample shows only when its group disagrees with another group held for the named patient.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:an-error-seen-only-where-a-second-record-of-the-named-person-exists-and-differs-by-chance",
+  "layer1": [
+    "the requesting location beside the collecting area on each sample",
+    "group discrepancies the investigation explains (a recent transfusion, a stem cell transplant, a transcription slip) beside the confirmed wrong blood in tube samples",
+    "incident register versions as investigations close",
+    "patient numbers re-keyed when two hospital records were merged",
+    "a dd/mm/yyyy reception log beside ISO times in the laboratory system",
+    "red cell units returned to the laboratory and issued again"
+  ],
+  "stakeholder_role": "the Lead Transfusion Practitioner, who runs the patient identification review programme the trust's Executive Patient Safety Group commissions",
   "role_family": "operations_director",
-  "scoring_unit": "other",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "waste_movement_legs_2026_h2.csv",
+    "file": "bloodbank_sample_log_2025_2026.csv",
     "rows": 0,
-    "entity": "one leg of one waste consignment recorded in the national waste movement register",
-    "grain": "consignment x leg (producer despatch, interim receipt, interim forward, final receipt, treatment confirmation)",
+    "entity": "one group and screen sample received by the transfusion laboratory",
+    "grain": "sample",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
+  "forum": "executive_team",
   "forcing_event": "incident_or_complaint",
-  "org_family": "research_or_statistics_office",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Portugal, five mainland regions",
-    "currency": "EUR",
-    "org_type": "statutory national institute compiling the official waste statistics and running the Business Waste Survey",
+    "geography": "England (a fictional two-hospital NHS trust)",
+    "currency": "GBP",
+    "org_type": "an NHS hospital trust with one transfusion laboratory serving its two hospitals' wards and departments",
     "invented_names": [
-      "National Institute for Environment Statistics",
-      "Business Waste Survey",
-      "National Waste Movement Register",
-      "Environment Permit Agency",
-      "National Waste Management Plan 2024-2030",
-      "Waste and Resources Council"
+      "Ravensmoor Hospitals NHS Trust",
+      "Ravensmoor General Hospital",
+      "Hexford Community Hospital"
     ],
     "people": [
-      "Diego Carvalho",
-      "Tatiana Jesus",
-      "Lourenco Monteiro",
-      "Hugo Azevedo"
+      "Cheryl Davies",
+      "Rhys Cooper",
+      "Melanie Hartley"
     ]
   },
   "deliverables": [
-    "recovery_attainment_2026.xlsx",
-    "attainment_against_target_2026.png"
+    "sample_collection_reviews_2027.pdf",
+    "transfusion_figures_2026.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is a ratio whose numerator is a complete administrative total and whose denominator is an estimate from a stratified probability sample, so none of the ratio's error comes from the numerator and none from the units the design enumerated completely; the member whose denominator sits almost wholly among those enumerated units is the only one whose gap against a fixed published reference is established, while the member with the largest raw gap, the most sampled records and the largest totals has a gap well inside its own interval, so every route that reads precision off a record count, off an overall published precision figure, or off a design variance computed without the correction for complete enumeration names that member instead.",
-  "driver_concrete": "Each waste stream's 2026 recovery share is the register's complete recovered tonnage over the Business Waste Survey's estimate of the stream's arisings, so the share's standard error is the arisings estimate's alone, and 93.7 per cent of metal arisings come from the 250-or-more employee stratum the survey enumerates completely and which therefore contributes no sampling error, giving metal a 1.3 per cent CV against mixed commercial and industrial waste's 7.2 per cent; metal's 2.0 point shortfall is 3.46 standard errors and mixed waste's 4.7 point shortfall is 1.30.",
-  "stump": "A competent solver computes every stream's 2026 recovery share correctly, ranks the shortfalls against the plan targets or tests them with a record-count or published-national precision figure, and names mixed commercial and industrial wastes, whose shortfall is the largest in points and clears every such test; the design variance of the arisings estimate, with the completely enumerated stratum contributing nothing, leaves metal and metal-bearing wastes as the only stream established below target.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who has cleaned the register, chained the consignments to final treatment, read every definition and used the survey weights correctly still ranks the eight streams by the size of their shortfall against target, or tests each shortfall against the only precision figures to hand (the stream's sampled record count, or the published national CV of total arisings), and files mixed commercial and industrial wastes, measured at 4.7 points of shortfall against metal's 2.0.",
-  "domain_test": "Design-based ratio estimation decides it: the share's variance is the linearised variance of its survey-estimated denominator, and in a stratified business survey the completely enumerated large-enterprise stratum carries a finite-population correction of zero, so a stream's precision is set by where its arisings sit in the design and not by how many records report it; swap the nouns into a world of complete records and there is no probability sample, no stratum, no inclusion fraction and no design variance, and the task stops existing.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:design-variance-of-a-ratio-whose-denominator-alone-is-estimated",
-  "layer1": [
-    "register schema change at the mid-year boundary (renamed columns, revised operation-code list)",
-    "treatment operation codes revised mid-year with a published mapping",
-    "waste classification codes revised mid-year with a crosswalk",
-    "consignments routed through interim facilities, so the same tonnage appears on two legs",
-    "confirmation date against despatch date at the year boundary",
-    "tonnes against hundreds of kilograms in a legacy extract",
-    "agency permit number against business register enterprise number, with supersessions and duplicates",
-    "preliminary and revised 2025 releases overlapping",
-    "reference tables inside a published PDF"
-  ],
+  "question_form": "how-many",
+  "driver": "A mislabelled sample is found only when the named person already has another record of the measured property and the two records disagree, so a unit's found errors are its true errors times the share of its samples with a second record times the chance two people differ; units whose people mostly arrive with no earlier record have their errors unfound, and a ranking on found errors per sample refers the units that see returning people and passes over the ones that see new ones.",
+  "driver_concrete": "",
+  "stump": "A competent solver counts each collection area's confirmed wrong blood in tube samples in 2026 over its group and screen samples and refers the areas over 1 in 2,000; a wrong patient's blood is found only where the named patient has a historical or confirmatory group and the two ABO and RhD groups differ, so the emergency department's and maternity's errors mostly go unfound, and on the rate of samples taken from the wrong patient they are over the line.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task186": "Same domain, subdomain and objective, and the only other build in this cell. task186's decisive step is the reference distribution a per-unit test needs, an empirical null built from between-period changes because unit levels cycle locally within a place; mine is which of a ratio's two terms, and which sampled units, carry sampling error at all. task186 has no probability sample, no design weights, no strata and no ratio estimator, and its world is posted fuel prices in a Canadian province; mine is a stratified business survey of waste arisings in Portugal.",
-    "task195": "task195's rung is the uncertainty of a paired difference between two screens applied to the same units, which is not the overlap of each screen's own interval. Mine is a ratio, not a difference, its two terms are not two measurements of the same units, and the decisive step is that one term carries no error whatever and that within the other the completely enumerated units carry none either; the covariance that decides task195 does not appear in my estimator at all.",
-    "task191": "task191's rigor step is selection on the maximum, judging the largest of many shortfalls against the largest a quiet set of the same size produces. Mine is not a max-selection: the bar is filed per stream at the 95 per cent level, exactly one stream clears it, and the call is measured to be unchanged under no correction, Bonferroni and Benjamini-Hochberg, so multiplicity decides nothing here.",
-    "task198": "task198's spent architecture 2 (a measured difference between places produced by the few people who did the measuring, measurer collinear with place) and architecture 3 (uncertainty computed over replication groups while the error source acts on groups the record never replicates over) are both banned to this build and neither is reused: my error source is sampling error itself, correctly captured by every design-based instrument, and the question is which terms and which units contribute any of it. No replicate weights are shipped.",
-    "client_pattern_2": "The client's second anomaly-detection rigor pattern for this subdomain is the Hidiroglou-Berthelot robust ratio test, which scales a unit-level test of a ratio of two reported values by unit size and needs no sample design at all. Mine is domain-level and turns on which of a ratio's terms carries error. No size exponent, quartile bound, unit-level ratio test or editing threshold is filed anywhere in the pack.",
-    "task228": "task228's architecture 2 separates each unit's own measurement error from the error of its comparators by the pairwise covariances of three independent measurements of a signal nothing observes, and its finding is that two comparators sharing an input co-vary in one region. Mine has no comparator, no unobserved signal and no covariance separation: the error is sampling error under a stated probability design, it is known in form and estimated in size from the sample itself, and the decisive step is that part of that sample is a complete enumeration and so contributes none of it.",
-    "task240": "task240 is the nearest build in this domain by family: there the sampling error of a calibrated total is the spread of each unit's departure from its calibration cell's mean, so treating the scaled weights as fixed overstates the error for the quantities the cells explain. Mine involves no calibration, no cells and no GREG residual; the weights are fixed design weights, the quantity is a ratio whose numerator is a complete administrative total carrying no error at all, and the decisive fact is that the denominator is partly a census and partly a sample, so 93.7 per cent of the winning stream's arisings are known rather than estimated. task240's call is a reliability flag on an estimate; mine names which of eight streams is established below a plan target.",
-    "task189": "task189's decisive quantity is a per-unit average over measurements many of which are known only to lie below a limit that differs by the instrument that produced them, so its rigor step is how to treat left-censored values. Mine has no censoring and no limit of detection: every arisings value is reported in full, the zeros are real zeros, and the step is which of a ratio's terms and which sampled units carry sampling error."
+    "task192": "task192 v3 carries an instrument's per-class behaviour from a validation batch that covered only the window's opening into a population whose class mix moved; task190 v11 has no instrument to validate and no mix shift: an error is visible only where a second record of the named person exists and happens to differ, and the found share is that availability times a chance of two people differing.",
+    "task270": "task270 v2 recovers events members chose not to report because reporting cost them more than absorbing the event; task190 v11's missing errors are not withheld by anyone, every sample is tested, and an error stays unseen because the named patient has no other group on record or shares the wrong patient's group.",
+    "task170": "task170 v5 is the train data entry error probability falling with each driver's count of start-ups, a learning curve; task190 v11 has no learning and no practice count, the error rate is fixed by area and the found rate is cut by the record's power to see an error."
   },
   "lineage": [
     {
@@ -129,9 +118,34 @@
       "domain": "criminology-justice",
       "fate": "spent at stage 1 on measurement, nothing cut: eleven candidate decisive steps died on the WHAT screen, the swap test or the corpus, and the one that cleared both, a near-repeat clustering ratio against its own Knox pair margins, died because the plain share of addresses burgled more than once reaches the designed winner at every boost by a wider margin (1.50x to 2.89x) than the decisive step (1.26x to 1.46x)",
       "driver": "Burglaries falling close together in place and time more often than each area's own spatial and temporal pair margins imply rank the areas for a post-event response, against the raw close-pair count."
+    },
+    {
+      "architecture": "v6 to v10",
+      "drawn": "2026-10-18",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "anomaly-detection",
+      "objective": "anomaly-detection",
+      "shape": "09",
+      "niche": "a national environment statistics institute's plan-attainment review of business waste recovery, finding which of eight statistical waste streams the 2026 recovery share is established below its National Waste Management Plan target for, so the collection division can commit its single 2027 supplementary field module",
+      "answer": "Metal and metal-bearing wastes",
+      "driver": "The decisive quantity is a ratio whose numerator is a complete administrative total and whose denominator is an estimate from a stratified probability sample, so none of the ratio's error comes from the numerator and none from the units the design enumerated completely; the member whose denominator sits almost wholly among those enumerated units is the only one whose gap against a fixed published reference is established, while the member with the largest raw gap, the most sampled records and the largest totals has a gap well inside its own interval, so every route that reads precision off a record count, off an overall published precision figure, or off a design variance computed without the correction for complete enumeration names that member instead.",
+      "stump": "A competent solver computes every stream's 2026 recovery share correctly, ranks the shortfalls against the plan targets or tests them with a record-count or published-national precision figure, and names mixed commercial and industrial wastes, whose shortfall is the largest in points and clears every such test; the design variance of the arisings estimate, with the completely enumerated stratum contributing nothing, leaves metal and metal-bearing wastes as the only stream established below target.",
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "uncertainty_hold",
+      "forum": "line_manager_or_team",
+      "forcing_event": "incident_or_complaint",
+      "org_family": "research_or_statistics_office",
+      "registered": "2026-10-18T13:07:36Z",
+      "fate": "spent: architectures 6 to 10 in survey-research-official-statistics anomaly detection; architecture 10 paused at stage 1 with its cell's clause closed by its own enumeration, and the batch 1 audit (2026-10-31) found the build short of the survivor anatomy; the slot moves to human-factors-ergonomics"
     }
   ],
-  "notes": "Reserved-axis deviations, with reasons: stump_strategy is uncertainty_hold rather than the reserved composition_mix, because no mix shift, standardisation or reweighting changes the comparison here and a reviewer would read the decisive move as how the evidence is judged with its uncertainty; the fingerprint rule is to use the reviewer's key rather than the passing one. calibration_form is none rather than the reserved closed_decision_corpus, because the method is forced by the sample design itself and a corpus would either bless a wrong method (the validated decoy the guard blocks) or tie only under the golden (an oracle). context_artifact is capacity_report rather than published_series, because task244 is in the last three and carries published_series, so ban.artifact blocks it; the division's collection capacity note is the file this role actually works from and carries no ranking of the streams. scoring_unit is other: the module is costed in field days and the call names a stream, so no listed unit is honest. Geography is Portugal rather than architecture 4's Finland, which this slot already spent along with three of its personas. role_family is operations_director rather than the reserved capacity_planner, after three probes. ban.role blocked capacity_planner against task197; the block appeared to lapse when the axis bans moved to the last three live cards and this slot's stale card went architecture_spent; and it fired again the moment this build's own card was put live in the window, because registering it pulls task197 back into the last three. An axis ban is not cleared by argument, so the axis is redrawn: this role runs the division's collection operation, which is what operations_director names, and the module commitment is still the forcing decision. If the window has moved again by registration, re-probe before registering. The gate_g WARNs stand answered in the design note: no other listed mechanism is honest for a call that turns on choosing the variance estimator for a design-based ratio. The decisive generator stays G16 (method selection), with G17 second. G17 was probed as an alternative because the surface screen promotes task190 against task195 on the gap, decisive generator and Gate G triple; G17 moved the promotion rather than removing it, to task189 and task191, which carry G17 and sit either side of this slot by number. Both labels are defensible and G16 is the one a reviewer reaches first given that gate_g is method_or_model_selection, so the label was not changed to clear a screen and the promoted pair is reported with its differentiation instead.\narchitecture_spent set 2026-10-20: architecture 6 spent on Gate F by measurement (the isolated reader reported 43 of 43 graded figures); architecture 7 then screened three candidates to death on this cell.",
-  "registered": "2026-10-18T13:07:36Z",
-  "architecture_spent": true
+  "lineage_shells": [],
+  "notes": "Architecture 11 re-root, 2026-11-01. survey-research-official-statistics is spent for this slot; the draw moves to human-factors-ergonomics/safety-incident-error-analysis under anomaly detection, a pairing never built. A first draw (a train operator's depots referred on a driver-error rate carrying each driver's learning curve on a new fleet) was dropped at the card: it repeats task170 v5's driver (an error probability falling with each operator's own count of attempts on a new system). Axes drawn clear of the last three live builds (task456 v2, task468 v6, task146 v3): forum committee_or_panel, forcing event incident_or_complaint, org family hospital_or_health_provider.",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "due",
+    "rounding opener": "rates",
+    "deliverable set": "png+xlsx"
+  },
+  "registered": "2026-11-01T02:02:34Z"
 }
