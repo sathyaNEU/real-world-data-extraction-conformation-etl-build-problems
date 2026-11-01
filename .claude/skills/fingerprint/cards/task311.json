@@ -5,13 +5,13 @@
   "slot_note": "OS13's world (a public charging coverage figure) set aside: its decoy-era mechanism is a site-unit reading and its government office collides with task310's org family; the number moves to survey research, never built against Opportunity Sizing",
   "domain": "survey-research-official-statistics",
   "subdomain": "sample-design-allocation-weighting",
-  "niche": "a university survey research centre placing a foundation-funded boost of 1,200 extra interviews in one of five health regions of a provincial health survey's 2027 wave, sized by how far the boost cuts that region's standard error",
+  "niche": "a university survey research centre placing a foundation-funded boost of 1,200 extra completed interviews in one of five health regions of a provincial household medicines survey's 2027 wave, each area worked to a fixed take, sized by the share of the region's 2027 standard error the boost removes",
   "objective": "opportunity-sizing-decision",
   "shape": "13",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Central Valley",
+  "answer_source": "generator clean truth, shipped sample (task311/generator/figures.json)",
   "gap": [
     "objective",
     "time"
@@ -31,25 +31,26 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins both contractors' files, applies the boundary recode and computes each region's 2025 design-based standard error with areas as clusters scales it by the square root of the interviews before and after the boost, and funds the remote region with the widest error, where the extra interviews inside the same few areas buy almost nothing.",
-  "domain_test": "The deciding quantity is the standard error a two-stage clustered sample would give the 2027 regional estimate, which survey sampling projects from the between-area and within-area variance components because interviews added inside fixed areas cut only the within part; put hospitals for regions and the clustered design, its areas and its variance components have no counterpart.",
+  "analyst_test": "A strong analyst who joins both contractors' exports, attaches the weights through the ministry's concordance and reproduces the published 2025 design effects puts each region's published intraclass correlation into Kish's factorisation of the design effect, projects it at the boosted average take with the weighting effect held, and funds Lakeshore, while the equal boost quadruples the Central Valley supplement's take and narrows its weights.",
+  "domain_test": "The deciding quantity is the standard error a two-stage weighted cluster sample will give a regional estimate once every area's take is raised, which survey sampling projects from each area's weight share and take and the between-area and within-area variance; put hospital beds for interviews and there are no areas, weights, takes or sampling error for the projection to act on.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:boost-precision-from-variance-components-not-scaled-error",
+  "layer2_pattern": "own:boost-precision-through-area-weights-not-held-design-effect",
   "layer1": [
-    "two fieldwork contractors' interview files with different code frames and date formats",
-    "a 2024 health-region boundary change recoding some sampled areas",
-    "partial interviews and proxy interviews carried with outcome codes",
-    "reissued cases appearing under a new case number",
-    "area codes in the weights file in the pre-2024 format"
+    "two fieldwork contractors' case exports with different code frames, date formats and layouts",
+    "a 2024 health-region reorganisation renumbering every survey area, the weights table still on the old numbers",
+    "partial and proxy interviews carried under disposition codes",
+    "refusals reissued under new case numbers",
+    "addresses withdrawn once an area's fixed take is reached",
+    "don't-know, refused and no-prescription answers on the item"
   ],
-  "stakeholder_role": "the survey director of a university survey research centre, placing the 2027 boost the foundation funds",
+  "stakeholder_role": "the director of a university survey research centre, placing the 2027 boost the foundation funds",
   "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
-    "file": "provincial_health_survey_interviews_2023-2025.csv",
-    "rows": 0,
-    "entity": "one completed or partial interview",
-    "grain": "interview x wave",
+    "file": "northmark_phms_case_export_2023-2025.csv",
+    "rows": 39723,
+    "entity": "one issued case (address or reissue)",
+    "grain": "case x wave",
     "source": "synthetic"
   },
   "forum": "funder_or_donor",
@@ -59,29 +60,41 @@
     "geography": "Canada (a province)",
     "currency": "CAD",
     "org_type": "a university survey research centre running a provincial health survey",
-    "invented_names": [],
+    "invented_names": [
+      "Halvorsen University",
+      "Provincial Household Medicines Survey",
+      "Wexcombe Foundation",
+      "Northmark Field Research",
+      "Ostrander Data Collection"
+    ],
     "people": [
-      "Kristin Schmidt",
+      "Heidi Roberts",
       "Jeremy Morris",
       "Jason Clarke"
     ]
   },
   "deliverables": [
     "boost_region_2027.xlsx",
-    "boost_memo_2027.docx"
+    "boost_memo_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The precision added units buy is set by how the existing variance splits between the groups they sit in and the units within them, so units added inside fixed groups cut only the within part, and scaling the present error by the count of units funds the group where the shared group effect leaves almost nothing to buy.",
-  "driver_concrete": "Each region's 2027 standard error is projected from its between-area and within-area variance components with the boost's interviews added inside the region's existing sampled areas; the remote region whose prevalence clusters by area gains little, and a low-clustering region gains most.",
-  "stump": "A competent analyst scales each region's current design-based standard error by the square root of its interviews before and after the boost and funds the remote North region, where the clustered prevalence means the boost barely moves the error; projected from the variance components, the boost belongs to a low-clustering region.",
+  "driver": "The precision an equal addition to every group buys is set by how the present error divides among the groups and how the addition reshapes the weight each record carries, so holding the present error's weighting factor fixed while raising every group's size funds a group whose error barely moves and misses the one whose small groups the addition multiplies.",
+  "driver_concrete": "Each region's 2027 standard error is projected area by area from its weight shares, its boosted takes and the between-area and within-area parts its published intraclass correlation sets; the Central Valley's supplement areas carry a third of its households on five interviews an area, so an equal boost quadruples their take and narrows the weights, while Kish's projection with the weighting effect held funds Lakeshore and count scaling funds the clustered North.",
+  "stump": "A competent analyst puts each region's published intraclass correlation into Kish's factorisation of its 2025 design effect, projects the design effect at the boosted average take with the weighting effect held and funds Lakeshore; but an equal boost quadruples the take of the Central Valley's heavily weighted supplement areas and narrows its weights, so projected area by area the boost removes the largest share of the Central Valley's error.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task240": "task240 corrects a published estimate's current error for weights scaled to known counts; this build takes the current clustered error as given and projects the error a changed design will have from its variance components",
+    "task240": "task240 corrects a published estimate's current error for weights scaled to known counts; this build projects the error a changed take will give, through the weights the take itself reshapes",
     "task269": "task269 (lineage) projects a test's reliability from examiner variance; this build projects a survey estimate's sampling error under added interviews inside fixed areas"
   },
   "lineage": [],
-  "notes": "Drawn 2026-10-27 for task311 (seed OS13's world set aside).",
+  "notes": "Drawn 2026-10-27 for task311 (seed OS13's world set aside); redesigned at stage 2 on 2026-11-01: the Kish rung made structural (the fixed small supplement take an equal boost multiplies), the memo moved to pdf, people redrawn. Stage 4 repair on 2026-11-01 after the judge's round 1 (supplementary cells forked): the report publishes each region's intraclass correlation, the terms file both errors reckoned the same way for the 2027 design, the flip asks for a strictly larger share, and the sample was reseeded; the call, the stump and the ask device unchanged.",
   "client_domain": "survey-research-official-statistics",
-  "registered": "2026-10-31T22:57:59Z"
+  "registered": "2026-11-01T20:02:53Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "lay",
+    "rounding opener": "shares",
+    "deliverable set": "pdf+xlsx"
+  }
 }
