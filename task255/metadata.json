@@ -22,7 +22,7 @@
  ],
  "field_terms": [],
  "input_gates": {
-  "files": 12,
+  "files": 13,
   "formats": [
    "csv",
    "pdf",
@@ -44,12 +44,22 @@
   {
    "path": "statin_dispensings_202401_202612.csv",
    "format": "csv",
-   "bytes": 3341131,
+   "bytes": 2537872,
    "description": "Statin dispensings to the region's residents, 1 July 2024 to 31 December 2026, one row per dispensing",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
    "license": "CC0-1.0 (original work)",
    "rows": 61788
+  },
+  {
+   "path": "cpr_persons_202612.csv",
+   "format": "csv",
+   "bytes": 196730,
+   "description": "The CPR register's person table for every pseudonym in the extract (sex, birth date, previous number)",
+   "source": "Constructed (seeded generator)",
+   "date": "2026-11-01",
+   "license": "CC0-1.0 (original work)",
+   "rows": 8538
   },
   {
    "path": "statin_products.csv",
@@ -94,7 +104,7 @@
   {
    "path": "statin_followup_programme_2027.pdf",
    "format": "pdf",
-   "bytes": 2843,
+   "bytes": 2919,
    "description": "Statin follow-up programme 2027, programme description adopted 26 January 2027",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
@@ -103,7 +113,7 @@
   {
    "path": "pharmacy_pilot_agreement_2026.pdf",
    "format": "pdf",
-   "bytes": 2216,
+   "bytes": 2262,
    "description": "Pharmacy pilot agreement 2026 (follow-up conversations and payment)",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
@@ -112,7 +122,7 @@
   {
    "path": "pilot_conversations_2026.xlsx",
    "format": "xlsx",
-   "bytes": 43629,
+   "bytes": 43647,
    "description": "Pilot conversation log 2026 kept by the pharmacies",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
@@ -122,7 +132,7 @@
   {
    "path": "pilot_statements_2026.pdf",
    "format": "pdf",
-   "bytes": 2699,
+   "bytes": 2764,
    "description": "Quarterly pilot statements 2026 sent to the pharmacies",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
@@ -131,7 +141,7 @@
   {
    "path": "regional_statin_use_ddd_2025.xlsx",
    "format": "xlsx",
-   "bytes": 5756,
+   "bytes": 5730,
    "description": "Statin use by town in 2025 in DDD per 1,000 inhabitants per day, as published",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
@@ -140,7 +150,7 @@
   {
    "path": "patient_survey_general_practice_2026.xlsx",
    "format": "xlsx",
-   "bytes": 5969,
+   "bytes": 5973,
    "description": "Patient survey of general practice, autumn 2026",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",
@@ -149,7 +159,7 @@
   {
    "path": "national_persistence_report_2025.pdf",
    "format": "pdf",
-   "bytes": 2361,
+   "bytes": 2376,
    "description": "National report on statin persistence, 2025",
    "source": "Constructed (seeded generator)",
    "date": "2026-11-01",

@@ -46,20 +46,20 @@ def write(F, path):
           "(statin_followup_programme_2027.pdf, its selection line and persistence definition).",
           "5. For the pilot, recovered each pharmacy's rate from pilot_statements_2026.pdf as each statement's "
           "amount over the conversations of its quarter in pilot_conversations_2026.xlsx not cancelled by the "
-          "quarter's last day (one rate across the four quarters), and multiplied it by the conversations held in "
-          "2026 and never cancelled (pharmacy_pilot_agreement_2026.pdf, payment terms).",
-          "6. For continuing users, joined the two pseudonyms of each person whose personal number was replaced in "
-          "2026 (same birth date and sex, the first pseudonym's dispensings ending before the second's begin, on "
-          "the same product line and practice), kept persons with a dispensing in each quarter of 2026 and counted "
+          "quarter's last day (one rate across the four quarters), and multiplied it by each quarter's conversations "
+          "held and never cancelled (pharmacy_pilot_agreement_2026.pdf, payment terms).",
+          "6. For continuing users, joined each pseudonym in cpr_persons_202612.csv that carries a previous "
+          "personal number's pseudonym to that earlier pseudonym, so each person is one, kept persons with a "
+          "dispensing in each quarter of 2026 and counted "
           "them at the practice of their last 2026 dispensing, as the programme defines continuing users.", ""]
     L += ["## 4. Deliverable Answers", "", "### statinprogram_2027.xlsx", "",
           "1. Joins the programme in 2027: " + ", ".join("%s %s" % (p["code"], p["name"]) for p in joins) + ".",
           "2. Twelve-month persistence by practice (per cent):"]
     for p in F["practices"]:
         L.append("   - %s %s: %s" % (p["code"], p["name"], pct(p)))
-    L.append("3. What each pilot pharmacy is entitled to for 2026 (DKK):")
+    L.append("3. What each pilot pharmacy is entitled to for its conversations of each quarter of 2026 (DKK, Q1 to Q4):")
     for p in F["pharmacies"]:
-        L.append("   - %s %s: %s" % (p["code"], p["name"], kr(p["due"])))
+        L.append("   - %s %s: %s" % (p["code"], p["name"], "; ".join(kr(p["q"][q]) for q in (1, 2, 3, 4))))
     L.append("4. Continuing statin users of 2026 by practice (persons):")
     for u in F["users"]:
         L.append("   - %s %s: %d" % (u["code"], u["name"], u["users"]))
@@ -75,6 +75,7 @@ def figure_values(F):
         out += [p["pct"], p["k"], p["n"], p["code"]]
     for p in F["pharmacies"]:
         out += [kr(p["due"]), p["due"], p["rate"], p["held"], p["paid"]]
+        out += [kr(v) for v in p["q"].values()] + list(p["q"].values())
     for u in F["users"]:
         out += [u["users"], u["code"]]
     out += [len(F["joins"]), F["cohort"], kr(F["cohort"]), F["floor_others"], 60, 365, 30, 12]

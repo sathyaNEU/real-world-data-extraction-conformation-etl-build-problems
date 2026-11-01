@@ -41,9 +41,9 @@
   "the register's dispensing extract with parallel-imported products under their own names and product numbers beside the originals",
   "dates written day-month-year in the older extract months and ISO in the newer",
   "prescriptions from hospital departments beside general practice in the prescriber column",
-  "the pilot's conversation log kept by the pharmacies with cancellations entered later",
+  "the pilot's conversation log kept by the pharmacies with cancellations entered weeks later",
   "quarterly pilot statements drawn up on each quarter's last day",
-  "patients whose personal number was replaced appear under a second pseudonym from the change",
+  "patients whose personal number was replaced appear under a second pseudonym from the change, the CPR person table carrying the earlier number",
   "list sizes reported per quarter in the practice register"
  ],
  "stakeholder_role": "head of the regional medicines unit",

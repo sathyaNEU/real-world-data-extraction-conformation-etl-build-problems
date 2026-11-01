@@ -9,6 +9,7 @@ import params as P
 
 FILES = {
     "dispensings": "statin_dispensings_202401_202612.csv",
+    "persons": "cpr_persons_202612.csv",
     "products": "statin_products.csv",
     "ddd": "atc_ddd_2026.xlsx",
     "practices": "practice_register_2026.xlsx",
@@ -31,10 +32,21 @@ def fmt_date(d):
 
 
 def write_dispensings(W, A, path):
-    rows = [[r["id"], r["sex"], r["born"].isoformat(), fmt_date(r["date"]), r["product"], r["packs"], r["prescriber"],
-             r["pharmacy"]] for r in A.rows]
-    return IO.write_csv(path, ["personal_number_pseudonym", "sex", "birth_date", "dispensing_date", "product_number", "packs",
+    rows = [[r["id"], fmt_date(r["date"]), r["product"], r["packs"], r["prescriber"], r["pharmacy"]] for r in A.rows]
+    return IO.write_csv(path, ["personal_number_pseudonym", "dispensing_date", "product_number", "packs",
                                "prescriber_id", "pharmacy_id"], rows)
+
+
+def write_persons(A, path):
+    """The CPR register's person table for every pseudonym in the extract: sex, birth date and, where the person's
+    personal number was replaced, the pseudonym of the number it replaced."""
+    prev = {r["new"]: r["old"] for r in A.replaced}
+    seen = {}
+    for r in A.rows:
+        seen.setdefault(r["id"], (r["sex"], r["born"]))
+    rows = [[pid, sex, born.isoformat(), prev.get(pid, "")] for pid, (sex, born) in sorted(seen.items())]
+    return IO.write_csv(path, ["personal_number_pseudonym", "sex", "birth_date", "previous_personal_number_pseudonym"],
+                        rows)
 
 
 def write_products(W, path):
@@ -75,7 +87,7 @@ def write_programme(path):
     blocks = [
         ("t", "Statin follow-up programme 2027"),
         ("s", "Region Lindholt, medicines unit. Programme description adopted by the practice planning committee on "
-              "26 January 2027."),
+              "26 January 2027. English working version kept by the medicines unit."),
         ("h", "1. Purpose"),
         ("p", "From 2027 the region funds a pharmacist-led follow-up of patients who start a statin, offered through the "
               "general practices where patients most often stop their treatment within the first year."),
@@ -92,8 +104,8 @@ def write_programme(path):
               "long as it takes the patient to use them at the daily dose they take; tablets left from an earlier "
               "dispensing are used before those of a later one."),
         ("p", "3.3 A practice's continuing statin users in 2026 are the persons who had a statin dispensed in each "
-              "quarter of 2026, each person counted once, at the practice that prescribed their last dispensing of "
-              "2026."),
+              "quarter of 2026, each person counted once however the register numbers them, at the practice that "
+              "prescribed their last dispensing of 2026."),
         ("h", "4. Follow-up"),
         ("p", "The pharmacies that took part in the 2026 pilot offer the conversations. The medicines unit reviews the "
               "selection after the 2026 cohort has completed its first year."),
@@ -106,7 +118,8 @@ def write_programme(path):
 def write_agreement(path):
     blocks = [
         ("t", "Pharmacy pilot 2026: statin follow-up conversations"),
-        ("s", "Agreement between Region Lindholt and the participating pharmacies, signed 15 December 2025."),
+        ("s", "Agreement between Region Lindholt and the participating pharmacies, signed 15 December 2025. English "
+              "working version kept by the medicines unit."),
         ("h", "1. The conversation"),
         ("p", "A follow-up conversation is a meeting of at least fifteen minutes between a pharmacist and a patient who "
               "started a statin, held at the pharmacy and entered in the pilot's conversation log."),
@@ -125,7 +138,7 @@ def write_conversations(A, path):
              c["cancelled"].isoformat() if c["cancelled"] else ""] for c in A.conversations]
     IO.write_xlsx(path, [("Conversations", ["conversation_no", "pharmacy_id", "conversation_date", "status",
                                             "cancelled_date"], rows, None)],
-                  ("Britta Winther", "Britta Winther", "2026-01-05T08:00:00Z", "2027-02-10T15:21:00Z",
+                  ("Britta Winther", "Britta Winther", "2026-01-05T08:00:00Z", "2027-01-22T15:21:00Z",
                    "Pilot conversation log 2026", "Region Lindholt"))
     return len(rows)
 
@@ -143,7 +156,8 @@ def nl_money(x):
 
 def write_statements(A, path):
     blocks = [("t", "Pharmacy pilot 2026: quarterly statements"),
-              ("s", "Region Lindholt, finance. Statements as sent to the pharmacies.")]
+              ("s", "Region Lindholt, finance. Statements as sent to the pharmacies; English working copy for the "
+                    "medicines unit.")]
     names = {c: n for c, n, t in AW.PHARMACIES}
     for qi in range(1, 5):
         rows = [["Pharmacy", "Statement date", "Amount (DKK)"]]
@@ -159,9 +173,14 @@ def write_statements(A, path):
 
 def write_distractors(W, target, rng):
     rows = []
+    level = {}
     for code, name, town, *rest in P.PRACTICES:
+        level.setdefault(town, rng.uniform(88, 124))
+    season = {1: 1.012, 2: 0.991, 3: 0.984, 4: 1.013}
+    for town in sorted(level):
         for q in range(1, 5):
-            rows.append([town, "2025-Q%d" % q, round(rng.uniform(78, 132), 1)])
+            rows.append([town, "2025-Q%d" % q, round(level[town] * (1 + 0.006 * q) * season[q] *
+                                                     (1 + rng.uniform(-0.006, 0.006)), 1)])
     rows = sorted({(a, b): c for a, b, c in rows}.items())
     IO.write_xlsx(os.path.join(target, FILES["published"]),
                   [("Statin use", ["town", "quarter", "ddd_per_1000_inhabitants_per_day"],
@@ -178,7 +197,7 @@ def write_distractors(W, target, rng):
                   ("Survey team", "Survey team", "2026-11-20T12:00:00Z", "2026-11-20T12:00:00Z",
                    "Patient survey 2026", "Region Lindholt"))
     blocks = [("t", "Persistence with statins in Denmark, 2025"),
-              ("s", "National report on medicine use, published October 2025."),
+              ("s", "National report on medicine use, published October 2025. English summary."),
               ("p", "Among patients who started a statin in 2023, 64 per cent were still collecting their tablets twelve "
                     "months later. Persistence was higher among patients over 65 and among those who started after a "
                     "cardiovascular event."),
@@ -197,6 +216,7 @@ def build_all(W, A, target):
     rng = random.Random(P.SEED * 10 + 5)
     n = {}
     n["dispensings"] = write_dispensings(W, A, os.path.join(target, FILES["dispensings"]))
+    n["persons"] = write_persons(A, os.path.join(target, FILES["persons"]))
     n["products"] = write_products(W, os.path.join(target, FILES["products"]))
     n["ddd"] = write_ddd(os.path.join(target, FILES["ddd"]))
     n["practices"] = write_practices(os.path.join(target, FILES["practices"]), rng)

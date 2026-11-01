@@ -117,11 +117,12 @@ def build(W, rng):
         # cancellations entered after the quarter's statement: a conversation registered as held that turned out
         # not to have taken place
         if code in late_pharm:
-            held = [c for c in convs if c["pharmacy"] == code and c["status"] == "afholdt"]
-            for c in rng.sample(held, rng.randint(3, 7)):
-                qe = QUARTER_ENDS[quarter_of(c["date"])]
-                c["status"] = "aflyst"
-                c["cancelled"] = qe + dt.timedelta(days=rng.randint(4, 40))
+            for qi, qe in enumerate(QUARTER_ENDS):
+                held = [c for c in convs if c["pharmacy"] == code and c["status"] == "afholdt" and
+                        quarter_of(c["date"]) == qi]
+                for c in rng.sample(held, rng.randint(1, 3)):
+                    c["status"] = "aflyst"
+                    c["cancelled"] = qe + dt.timedelta(days=rng.randint(4, 20 if qi == 3 else 40))
     convs.sort(key=lambda c: (c["date"], c["no"]))
     A.conversations = convs
     stm = []
@@ -133,4 +134,7 @@ def build(W, rng):
     A.statements = stm
     A.payment_due = {code: PILOT_RATE[code] * sum(1 for c in convs if c["pharmacy"] == code and c["cancelled"] is None)
                      for code, name, town in PHARMACIES}
+    A.payment_due_q = {(code, qi + 1): PILOT_RATE[code] * sum(1 for c in convs if c["pharmacy"] == code and
+                                                              quarter_of(c["date"]) == qi and c["cancelled"] is None)
+                       for code, name, town in PHARMACIES for qi in range(4)}
     return A

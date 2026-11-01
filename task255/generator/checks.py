@@ -251,10 +251,12 @@ def main():
         c for c, v in G.share.items() if round(v) < 60) == G.joins)
     edge = min(abs((v % 1) - 0.5) for v in G.share.values())
     check("SF10 half up or half to even: no share sits on a half per cent", edge > 0.01, "%.3f" % edge)
-    old = [r for r in rows if re.fullmatch(r"\d{2}-\d{2}-\d{4}", r[3])]
+    di = h.index("dispensing_date")
+    old = [r for r in rows if re.fullmatch(r"\d{2}-\d{2}-\d{4}", r[di])]
     check("SF11 the old-system dates read day first: days above 12 occur, so no other reading parses",
-          any(int(r[3][:2]) > 12 for r in old) and all(dt.datetime.strptime(r[3], "%d-%m-%Y").date() <= P.OLD_SYSTEM_END
-                                                       for r in old), "%d old-format rows" % len(old))
+          bool(old) and any(int(r[di][:2]) > 12 for r in old) and
+          all(dt.datetime.strptime(r[di], "%d-%m-%Y").date() <= P.OLD_SYSTEM_END for r in old),
+          "%d old-format rows" % len(old))
     check("SF12 tablets are packs times the pack size of the product number (statin_products.csv)",
           all(p.pack in (30, 98, 100) for p in W.products))
     convs = AN.load_conversations(T)
@@ -270,10 +272,12 @@ def main():
     stm = AN.load_statements(T)
     check("SF17 the statements' Danish amounts (1.234,00) parse to rate times conversations",
           len(stm) == 32 and all(s["amount"] % pay[s["pharmacy"] + ":rates"][0] == 0 for s in stm))
-    l_tight = AN.person_links(T, same_line=True, same_practice=True, max_gap=120)
-    check("SF18 one person under two pseudonyms: birth date, sex and no overlap give the same joins as adding the "
-          "product line, the practice and a gap under 120 days", links == l_tight and
-          set(links) == {r["new"] for r in A.replaced}, "%d joins" % len(links))
+    l_tight = AN.person_links_inferred(T, same_line=True, same_practice=True, max_gap=120)
+    l_loose = AN.person_links_inferred(T)
+    check("SF18 one person under two pseudonyms: the CPR person table's previous number joins exactly the replaced "
+          "numbers, and the record agrees (same birth date and sex, no overlap, same product line and practice)",
+          links == l_tight == l_loose and set(links) == {r["new"] for r in A.replaced} and
+          all(links[r["new"]] == r["old"] for r in A.replaced), "%d joins" % len(links))
     d26 = [d for ds in D["disp"].values() for d in ds if d["date"].year == 2026]
     check("SF19 quarters of 2026 by dispensing date: every 2026 row dated inside the year", all(
         dt.date(2026, 1, 1) <= d["date"] <= dt.date(2026, 12, 31) for d in d26))
@@ -293,12 +297,40 @@ def main():
     check("SF21b hospital-prescribed 2026 rows dropped moves ask B only (a hazard there, never the call)", not Mh)
 
     # ------------------------------------------------------------------ asks
-    check("A1 payment due equals the truth for every pharmacy", all(abs(pay[c] - A.payment_due[c]) < 1e-6
-                                                                   for c in A.payment_due))
+    check("A1 entitlement equals the truth for every pharmacy and quarter",
+          all(abs(pay[ph + ":q"][q] - A.payment_due_q[(ph, q)]) < 1e-6 for (ph, q) in A.payment_due_q) and
+          all(abs(pay[ph] - A.payment_due[ph]) < 1e-6 for ph in A.payment_due))
     st = AN.pilot_payments(T, "statements")
-    moved = [c for c in A.payment_due if abs(st[c] - pay[c]) >= 150]
-    check("A2 device mass: the statements' sum misses every pharmacy by a conversation or more", len(moved) == 8,
-          "%d of 8" % len(moved))
+    hn = AN.pilot_payments(T, "held_now")
+    keep_st = sum(1 for (ph, q) in A.payment_due_q if abs(st[ph + ":q"][q] - pay[ph + ":q"][q]) < 0.5)
+    keep_hn = sum(1 for (ph, q) in A.payment_due_q if abs(hn[ph + ":q"][q] - pay[ph + ":q"][q]) < 0.5)
+    check("A2 device mass: the statement as the quarter's entitlement misses all 32 figures", keep_st == 0,
+          "%d kept" % keep_st)
+    check("A3 the rate read off a statement over the conversations standing now misses all 32 figures", keep_hn == 0,
+          "%d kept" % keep_hn)
+    late_q = collections.Counter()
+    for cv in convs:
+        if cv["cancelled"]:
+            qe = AW.QUARTER_ENDS[(cv["date"].month - 1) // 3]
+            if cv["cancelled"] > qe:
+                late_q[(cv["pharmacy"], qe)] += 1
+    check("A4 every pharmacy-quarter carries a conversation cancelled after its statement (no clean quarter to read "
+          "a rate off)", len(late_q) == 32, "%d of 32, %d conversations" % (len(late_q), sum(late_q.values())))
+    clawq = collections.Counter()
+    for cv in convs:
+        if cv["cancelled"] is None:
+            clawq[(cv["pharmacy"], (cv["date"].month - 1) // 3 + 1)] += 1
+        elif cv["cancelled"] > AW.QUARTER_ENDS[(cv["date"].month - 1) // 3]:
+            clawq[(cv["pharmacy"], (cv["date"].month - 1) // 3 + 1)] += 1
+            qc = min(4, (cv["cancelled"].month - 1) // 3 + 1) if cv["cancelled"].year == 2026 else 4
+            clawq[(cv["pharmacy"], qc)] -= 1
+    alt = sum(1 for (ph, q) in A.payment_due_q if pay[ph + ":rates"][0] * clawq[(ph, q)] == pay[ph + ":q"][q])
+    check("SF22 a later cancellation counts against the quarter its conversation was held in, not the quarter it was "
+          "entered (agreement 2.1, the ask's own wording); the booking reading moves figures", alt < 32,
+          "%d of 32 agree under the booking reading" % alt)
+    adopted = dt.date(2027, 1, 26)
+    check("A5 one story: every cancellation in the pilot log is dated before the programme's adoption",
+          max(cv["cancelled"] for cv in convs if cv["cancelled"]) < adopted)
     cu = AN.continuing_users(T)
     tc = collections.Counter()
     for pt in W.patients:
@@ -315,8 +347,20 @@ def main():
     for key, pids in by_key.items():
         if len(pids) >= 2 and not set(pids) & (set(links) | set(links.values())):
             over[len(pids)] += 1
-    check("B3 people sharing a birth date and sex whose dispensings overlap stay apart (the over-joined read is wrong)",
-          sum(over.values()) > 0, "%d such groups" % sum(over.values()))
+    cub = AN.continuing_users(T, "birth_sex")
+    check("B3 people sharing a birth date and sex are not one person: joining them all is wrong",
+          sum(over.values()) > 0 and cub != cu, "%d such groups; %d against %d" % (
+              sum(over.values()), sum(cub.values()), sum(cu.values())))
+    check("B4 the literal one-pseudonym reading is wrong and the linked reading unique",
+          sum(cu0.values()) != sum(cu.values()) and links == l_tight,
+          "pseudonyms %d, persons %d" % (sum(cu0.values()), sum(cu.values())))
+    pubh, pubr = IO.read_xlsx(os.path.join(T, pack.FILES["published"]), "Statin use")
+    series = collections.defaultdict(list)
+    for town, qtr, v in pubr:
+        series[town].append(v)
+    steps = [abs(b / a - 1) for v in series.values() for a, b in zip(v, v[1:])]
+    check("Z6 realism: the published town series move smoothly quarter to quarter", max(steps) < 0.06,
+          "largest step %.1f per cent" % (100 * max(steps)))
 
     # ------------------------------------------------------------------ input gates, realism, distractors, leaks
     files = sorted(os.listdir(T))
@@ -346,7 +390,8 @@ def main():
     yrs = [int(m[1][:4]) for m in D["meta"].values()]
     check("Z4 realism: birth years 1932 to 1984", min(yrs) >= 1932 and max(yrs) <= 1984)
     check("Z5 realism: every product number is six digits and appears in the product list",
-          all(re.fullmatch(r"\d{6}", r[4]) and r[4] in D["prods"] for r in rows))
+          all(re.fullmatch(r"\d{6}", r[h.index("product_number")]) and r[h.index("product_number")] in D["prods"]
+              for r in rows))
     leak_words = re.compile(r"golden|stump|decoy|trap|own dose|daily dose they take is|refill rhythm", re.I)
     txt = " ".join(IO.pdf_text(os.path.join(T, f)) for f in files if f.endswith(".pdf"))
     check("X1 leak: no shipped document names the method or the author's intent", not leak_words.search(txt))
@@ -354,7 +399,8 @@ def main():
         f for f in files if f not in ("atc_ddd_2026.xlsx", "regional_statin_use_ddd_2025.xlsx"))))
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     check("X3 figures.json carries every graded figure", all(p in figs for p in [int(round(v)) for v in G.share.values()])
-          and all(int(round(pay[c])) in figs for c in AW.PILOT_RATE) and all(v in figs for v in cu.values()))
+          and all(int(round(v)) in figs for c in AW.PILOT_RATE for v in pay[c + ":q"].values())
+          and all(v in figs for v in cu.values()))
 
     bad = [r for r in RESULTS if not r[1]]
     for label, ok, detail in RESULTS:

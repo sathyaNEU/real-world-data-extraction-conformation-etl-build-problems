@@ -20,47 +20,30 @@ def kept(path, gold):
 
 def ask_stops():
     pay = AN.pilot_payments(T)
-    gold_a = {k: v for k, v in pay.items() if ":" not in k}
-    stm = AN.pilot_payments(T, "statements")
-    convs = AN.load_conversations(T)
-    statements = AN.load_statements(T)
-    # half-handled: each pharmacy's rate read off its first statement over the quarter's conversations held now
-    half = {}
-    for ph in gold_a:
-        s = sorted((x for x in statements if x["pharmacy"] == ph), key=lambda x: x["date"])[0]
-        q0 = AN.quarter_start(s["date"])
-        held_now = sum(1 for c in convs if c["pharmacy"] == ph and q0 <= c["date"] <= s["date"] and c["cancelled"] is None)
-        rate = s["amount"] / held_now
-        half[ph] = rate * sum(1 for c in convs if c["pharmacy"] == ph and c["cancelled"] is None)
+    gold_a = {(ph[:4], q): v for ph in pay if ph.endswith(":q") for q, v in pay[ph].items()}
+    a_paths = {}
+    for name, mode in (("statement as the quarter's figure", "statements"),
+                       ("rate off each statement over conversations standing now", "held_now")):
+        r = AN.pilot_payments(T, mode)
+        a_paths[name] = {(ph[:4], q): v for ph in r if ph.endswith(":q") for q, v in r[ph].items()}
     cu = AN.continuing_users(T)
-    pseud = AN.continuing_users(T, "pseudonyms")
-    # over-joined: every pseudonym sharing a birth date and sex taken for one person
-    D = AN.load(T)
-    by_key = collections.defaultdict(list)
-    for pid in D["disp"]:
-        by_key[D["meta"][pid]].append(pid)
-    out = collections.Counter()
-    for key, pids in by_key.items():
-        ds = sorted((d for p in pids for d in D["disp"][p] if d["date"].year == 2026), key=lambda d: (d["date"], d["product"]))
-        if {(d["date"].month - 1) // 3 for d in ds} == {0, 1, 2, 3} and ds[-1]["prescriber"] in D["practices"]:
-            out[ds[-1]["prescriber"]] += 1
-    over = {c: out.get(c, 0) for c in D["practices"]}
-    return gold_a, {"statements summed": stm, "rate off the first statement": half}, cu, {
-        "pseudonyms counted": pseud, "birth date and sex joined": over}
+    b_paths = {"pseudonyms counted": AN.continuing_users(T, "pseudonyms"),
+               "birth date and sex joined": AN.continuing_users(T, "birth_sex"),
+               "CPR previous number joined (programme 3.3 executed)": cu}
+    return gold_a, a_paths, cu, b_paths
 
 
 def main():
     gold_a, a_paths, gold_b, b_paths = ask_stops()
     n_ask = len(gold_a) + len(gold_b)
-    print("Ask A ladder (8 pharmacies, whole kroner):")
+    print("Ask A ladder (8 pharmacies x 4 quarters, whole kroner):")
     for name, path in a_paths.items():
-        print("  %-32s keeps %d of %d  %s" % (name, kept(path, gold_a), len(gold_a),
-                                             {k: int(round(path[k] - gold_a[k])) for k in sorted(gold_a)}))
+        print("  %-56s keeps %d of %d" % (name, kept(path, gold_a), len(gold_a)))
     print("Ask B ladder (16 practices, persons):")
     for name, path in b_paths.items():
-        print("  %-32s keeps %d of %d  %s" % (name, kept(path, gold_b), len(gold_b),
-                                             {k: path[k] - gold_b[k] for k in sorted(gold_b)}))
-    # the cracker takes, per ask, whichever path short of the device keeps the most figures
+        print("  %-56s keeps %d of %d  total %d" % (name, kept(path, gold_b), len(gold_b), sum(path.values())))
+    # the cracker takes, per ask, whichever of its paths keeps the most figures; on ask B the filed rule (3.3) and the
+    # CPR person table's previous number are its path, so it keeps the ask
     crack = max(kept(p, gold_a) for p in a_paths.values()) + max(kept(p, gold_b) for p in b_paths.values())
     lc = crack / float(n_ask)
     G = AN.main_call(T)
@@ -73,7 +56,7 @@ def main():
     s = 5 + 7 + 55 * lm
     print("Pair ceiling: %.1f ((38 + 7 + 55 x %.3f) and (5 + 7 + 55 x %.3f), averaged)" % ((c + s) / 2, lc, lm))
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * lm))
-    print("Full includer (both devices handled): L = 1.000, landed 100.0, off the call 67.0")
+    print("Full includer (the statements' scope handled too): L = 1.000, landed 100.0, off the call 67.0")
 
 
 if __name__ == "__main__":

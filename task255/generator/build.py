@@ -24,6 +24,7 @@ import writeup  # noqa: E402
 ZIP_TIME = (2027, 2, 12, 8, 40, 0)
 DESCRIPTIONS = {
     "dispensings": "Statin dispensings to the region's residents, 1 July 2024 to 31 December 2026, one row per dispensing",
+    "persons": "The CPR register's person table for every pseudonym in the extract (sex, birth date, previous number)",
     "products": "Statin products on the Danish market (product number, name, ATC code, strength, pack size)",
     "ddd": "ATC/DDD index for lipid modifying agents (C10AA) as applied by the region from 2026",
     "practices": "The region's general practices with listed patients per quarter of 2026",

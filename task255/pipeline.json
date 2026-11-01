@@ -3,19 +3,19 @@
  "status": "BUILD",
  "domain": "pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence",
  "objective": "descriptive-distribution",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "The default path times each dispensing at one WHO defined daily dose a day and files 041236 and 041263; each new user's own dose, read from their refill rhythm, files 041219, 041236, 041248, 041275, 041307 and 041322.",
  "architecture": 3,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-01, as-of 2027-02-12, target.zip eb685de6)",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (2026-11-01, as-of 2027-02-12, target.zip ccc93a03)",
+  "reader": "no leak (round 1); question 6 leaned rule application with a reconstruction step, settled by the judge's measurement"
  },
  "duplicate_check": {
   "heart": "PASS (2026-11-01)",
@@ -23,9 +23,9 @@
   "nearest": "task270 driver 0.11"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "round 1 (eb685de6): FIX_NOW on ask 4 only; Gates G and H PASS, Gate F moderate",
+  "disposition": "repaired in the generator (round 1)",
+  "report": "kept by the coordinator"
  },
  "returned": [
   {
@@ -53,7 +53,7 @@
    "commit": "the main session commits"
   }
  ],
- "resume": "architecture 3 built 2026-11-01: generator checks 67/67, verify 55/55, two byte-identical builds, figures_check 171/171, precut 61/0, voice-check PASS, leak.py REVIEW (no LEAK), guard heart PASS, surface one pair promoted (task265); target.zip eb685de6; next: stage 4, the leak reader and the determinism judge (coordinator)",
+ "resume": "round 1 repaired 2026-11-01 (target.zip ccc93a03): generator checks 73/73, verify 80/80, two byte-identical builds, figures_check 195/195, precut 61/0, voice-check PASS, leak.py REVIEW (no LEAK), guard heart and check PASS; next: the re-judge (coordinator)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -72,6 +72,20 @@
    ],
    "repair": "generator: per-journey duration golden with every classification and routing converging by construction; terms 6.2 connection sentence; switch-off before the take-down; _local headers; swaps on one player output with display counts; moved screens' old rows closed; open-start outages carry ask A",
    "target_zip": "bbcaedf8"
+  },
+  {
+   "round": 1,
+   "architecture": 3,
+   "date": "2026-11-01",
+   "judged": "eb685de6",
+   "findings": [
+    "supplementary ask 4, continuing users: Gate C plus B/E, the replaced numbers' link in no shipped file (2,151 needs 35 joins; one pseudonym, one person gives 2,116)",
+    "hygiene: pilot cancellations dated to 8 February 2027, after the programme's adoption on 26 January",
+    "realism (leak reader): the published town series drawn as uniform noise; English documents in a Danish frame"
+   ],
+   "repair": "generator: programme 3.3 counts a person once however the register numbers them; cpr_persons_202612.csv carries sex, birth date and the previous number's pseudonym (moved out of the extract); the pilot settlement asked per quarter (32 figures) with a later cancellation in every pharmacy-quarter; cancellations dated by 20 January 2027; seasonal, persistent published series; programme, agreement and statements marked as the region's English working versions",
+   "moved": "ask A now per quarter (32 figures); its annual totals moved at six pharmacies with the added later cancellations (A102 63,474 to 63,048; A107 43,708 to 43,120; A121 26,928 to 26,367; A133 36,408 to 35,076; A139 28,152 to 27,948; A145 49,590 to 47,763; A114 and A126 unchanged); ask B unchanged at 2,151; the call and every share unchanged",
+   "target_zip": "ccc93a03"
   }
  ]
 }

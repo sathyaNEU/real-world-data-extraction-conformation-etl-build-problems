@@ -19,8 +19,8 @@ Each kept fewer than 60 per cent of its new statin users of the second half of 2
 2. Took as new users the pseudonyms whose first dispensing from 1 July to 31 December 2025 had no statin dispensing in the 365 days before, at the practice (practice_register_2026.xlsx) that prescribed that first dispensing: 1,485 patients.
 3. Estimated each new user's daily dose from their own dispensings as the tablets dispensed before the last dispensing over the days from the first to the last (median refill rate, last three refills and the first year only give the same status for every patient); a patient with one dispensing runs out within the year at any dose.
 4. Laid each dispensing's tablets end to end at that dose from the first dispensing, tablets in hand used first, and called a patient persistent when no run of more than 30 days without tablets fell in the 365 days; took each practice's share and set it against 60 per cent (statin_followup_programme_2027.pdf, its selection line and persistence definition).
-5. For the pilot, recovered each pharmacy's rate from pilot_statements_2026.pdf as each statement's amount over the conversations of its quarter in pilot_conversations_2026.xlsx not cancelled by the quarter's last day (one rate across the four quarters), and multiplied it by the conversations held in 2026 and never cancelled (pharmacy_pilot_agreement_2026.pdf, payment terms).
-6. For continuing users, joined the two pseudonyms of each person whose personal number was replaced in 2026 (same birth date and sex, the first pseudonym's dispensings ending before the second's begin, on the same product line and practice), kept persons with a dispensing in each quarter of 2026 and counted them at the practice of their last 2026 dispensing, as the programme defines continuing users.
+5. For the pilot, recovered each pharmacy's rate from pilot_statements_2026.pdf as each statement's amount over the conversations of its quarter in pilot_conversations_2026.xlsx not cancelled by the quarter's last day (one rate across the four quarters), and multiplied it by each quarter's conversations held and never cancelled (pharmacy_pilot_agreement_2026.pdf, payment terms).
+6. For continuing users, joined each pseudonym in cpr_persons_202612.csv that carries a previous personal number's pseudonym to that earlier pseudonym, so each person is one, kept persons with a dispensing in each quarter of 2026 and counted them at the practice of their last 2026 dispensing, as the programme defines continuing users.
 
 ## 4. Deliverable Answers
 
@@ -44,15 +44,15 @@ Each kept fewer than 60 per cent of its new statin users of the second half of 2
    - 041334 Lægehuset Tvede: 75
    - 041346 Lægerne Søndergade: 71
    - 041358 Klinikken Vestervang: 65
-3. What each pilot pharmacy is entitled to for 2026 (DKK):
-   - A102 Lindholt Apotek: 63,474
-   - A107 Lindholt Torve Apotek: 43,708
-   - A114 Hornslev Apotek: 41,174
-   - A121 Vejlby Apotek: 26,928
-   - A126 Rødby Strand Apotek: 29,133
-   - A133 Ellerup Apotek: 36,408
-   - A139 Tvede Apotek: 28,152
-   - A145 Søndergade Apotek: 49,590
+3. What each pilot pharmacy is entitled to for its conversations of each quarter of 2026 (DKK, Q1 to Q4):
+   - A102 Lindholt Apotek: 14,271; 16,401; 17,253; 15,123
+   - A107 Lindholt Torve Apotek: 9,016; 11,564; 10,976; 11,564
+   - A114 Hornslev Apotek: 9,996; 10,710; 10,710; 9,758
+   - A121 Vejlby Apotek: 5,797; 6,919; 7,106; 6,545
+   - A126 Rødby Strand Apotek: 7,221; 6,972; 7,470; 7,470
+   - A133 Ellerup Apotek: 6,438; 8,436; 9,768; 10,434
+   - A139 Tvede Apotek: 7,956; 5,916; 7,548; 6,528
+   - A145 Søndergade Apotek: 10,440; 10,179; 16,704; 10,440
 4. Continuing statin users of 2026 by practice (persons):
    - 041207 Lægerne Torvegade: 135
    - 041219 Lægehuset Østergade: 129

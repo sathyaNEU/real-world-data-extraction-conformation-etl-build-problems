@@ -177,20 +177,23 @@ def payments():
     for ph, rs in rates.items():
         ok("V3 %s: one rate across its four statements" % ph, len(rs) == 1 and list(rs)[0] == int(list(rs)[0]),
            "%s" % sorted(rs))
-        due[ph] = int(list(rs)[0]) * sum(1 for c in conv if c["pharmacy_id"] == ph and c["canc"] is None)
+        for q in range(4):
+            due[(ph, q + 1)] = int(list(rs)[0]) * sum(1 for c in conv if c["pharmacy_id"] == ph and c["canc"] is None
+                                                      and (c["date"].month - 1) // 3 == q)
     return due, paid
 
 
 def continuing(disp, practices):
-    first = disp.groupby("personal_number_pseudonym")["d"].min()
-    last = disp.groupby("personal_number_pseudonym")["d"].max()
-    key = disp.groupby("personal_number_pseudonym")[["birth_date", "sex"]].first()
-    person = {pid: pid for pid in key.index}
-    for (b, s), grp in key.groupby(["birth_date", "sex"]):
-        pids = sorted(grp.index, key=lambda p: (first[p], p))
-        for a, c in zip(pids, pids[1:]):
-            if last[a] < first[c]:
-                person[c] = person[a]
+    cpr = pd.read_csv(os.path.join(T, "cpr_persons_202612.csv"), dtype=str, keep_default_na=False)
+    prev = dict(zip(cpr["personal_number_pseudonym"], cpr["previous_personal_number_pseudonym"]))
+    ok("V12 every pseudonym in the extract has a CPR person row",
+       set(disp["personal_number_pseudonym"]) <= set(prev))
+    person = {}
+    for pid in prev:
+        root = pid
+        while prev.get(root):
+            root = prev[root]
+        person[pid] = root
     d26 = disp[disp["d"].map(lambda d: d.year == 2026)].copy()
     d26["person"] = d26["personal_number_pseudonym"].map(person)
     d26["q"] = d26["d"].map(lambda d: (d.month - 1) // 3)
@@ -215,9 +218,9 @@ def main():
     due, paid = payments()
     gold = xlsx_rows(os.path.join(TASK_DIR, "golden", "statinprogram_2027.xlsx"), "Pilot settlement 2026")
     hdr, rows = table(gold, "Pharmacy")
-    g_due = {r[0]: int(r[4]) for r in rows if r[0] and re.fullmatch(r"A\d{3}", str(r[0]))}
-    for ph in sorted(due):
-        ok("V6 %s entitled DKK %d" % (ph, due[ph]), due[ph] == g_due[ph] and due[ph] in figs)
+    g_due = {(r[0], q): int(r[2 + q]) for r in rows if r[0] and re.fullmatch(r"A\d{3}", str(r[0])) for q in (1, 2, 3, 4)}
+    for key in sorted(due):
+        ok("V6 %s Q%d entitled DKK %d" % (key[0], key[1], due[key]), due[key] == g_due[key] and due[key] in figs)
     cu = continuing(disp, practices)
     gold = xlsx_rows(os.path.join(TASK_DIR, "golden", "statinprogram_2027.xlsx"), "Continuing users 2026")
     hdr, rows = table(gold, "Provider no.")

@@ -226,13 +226,19 @@ def extras(w):
         lead = int(rx.integers(14, 71))
         reg = booked - D(days=lead)
         pre_c = min(reg + D(days=int(rx.integers(0, 10))), booked)
+        gap = (row.op_date - pre_c).days
+        if 89 <= gap <= 91:
+            pre_c = row.op_date - D(days=87 if gap == 89 else 93)
         n_pre = n_sections(rx)
         rs = stream(row.rkey[0], row.rkey[1], row.rkey[2] + 4000, 6)
         pre_secs = odi_sections(row.pre_true, rs)
         pre_ans, pre_tot, pre_score = odi_from(pre_secs, n_pre, rs)
         n_m12 = n_sections(rx)
         late = int(np.floor(rx.exponential(19.0)))
-        m12_c = row.op_date + D(days=357 + late)
+        dd12 = 357 + late
+        if 446 <= dd12 <= 456:
+            dd12 = 444 if dd12 <= 450 else 458
+        m12_c = row.op_date + D(days=dd12)
         post_secs = odi_sections(row.post_true, rs)
         post_ans, post_tot, post_score = odi_from(post_secs, n_m12, rs)
         if row.symp12:
@@ -277,14 +283,16 @@ def make_spells(w):
         rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=prov, adm=adm, dis=dis, meth=meth, cls=cls,
                          diag=diag, proc=proc, opdate=row.op_date, age=int(row.age), sex=row.sex_code,
                          dest=dest, district=row.district, kind="index"))
+        cont_end = dis
         if row.transfer:
             ch = 40231 if row.prov == 40152 else 40244
-            rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=ch, adm=dis, dis=dis + D(days=int(rs.integers(3, 22))),
+            cont_end = dis + D(days=int(rs.integers(3, 22)))
+            rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=ch, adm=dis, dis=cont_end,
                              meth="81", cls="1", diag=diag, proc="", opdate=None, age=int(row.age), sex=row.sex_code,
                              dest="19", district=row.district, kind="transfer"))
         for kind, t in row.emerg:
             if kind == "comp":
-                a = dis + D(days=int(t))
+                a = cont_end + D(days=int(t))
                 if p["kind"] == "NHS":
                     pv = row.prov if rs.random() < 0.85 else [k for k in NHS_KEYS if k != row.prov][int(rs.integers(0, 2))]
                 else:
@@ -297,7 +305,7 @@ def make_spells(w):
                                  age=int(row.age + (a - row.op_date).days / 365.25), sex=row.sex_code, dest="19",
                                  district=row.district, kind="comp"))
             else:
-                a = row.op_date + D(days=int(t))
+                a = max(row.op_date + D(days=int(t)), cont_end + D(days=1))
                 pv = (row.prov if p["kind"] == "NHS" else LOCAL_TRUST[row.prov]) if rs.random() < 0.8 else 40099
                 rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=pv, adm=a, dis=a + D(days=int(rs.integers(0, 10))),
                                  meth="21", cls="1", diag=OTHER_EM_DIAG[int(rs.integers(0, len(OTHER_EM_DIAG)))], proc="",

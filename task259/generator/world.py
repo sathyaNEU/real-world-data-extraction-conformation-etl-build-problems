@@ -11,16 +11,17 @@ MIGRATION_Q = "2026Q2"          # the CAPI system change: household ids re-keyed
 FIELD_MONTH = {"2025Q1": (2025, 2), "2025Q2": (2025, 5), "2025Q3": (2025, 8), "2025Q4": (2025, 11),
                "2026Q1": (2026, 2), "2026Q2": (2026, 5), "2026Q3": (2026, 8)}
 
-# Workforce areas. code, name, counties (3-digit), adults 16+ (thousands), MJH logit shift, away shift.
+# Workforce areas. code, name, counties (3-digit), adults 16+ (thousands), MJH logit shift, away shift,
+# share of households with one adult.
 AREAS = [
-    ("01", "Capital Region",   ["019", "023"],        612.4, 0.10, 0.07),
-    ("02", "Northern Basin",   ["003", "011", "037"], 228.9, -0.05, 0.03),
-    ("03", "Silver Creek",     ["041", "045"],        301.7, 0.30, 0.11),
-    ("04", "High Plains",      ["005", "013", "029", "047"], 164.2, -0.42, -0.02),
-    ("05", "Upper River",      ["007", "031"],        257.3, 0.18, 0.08),
-    ("06", "Southwest Lakes",  ["015", "021", "033"], 183.6, -0.30, 0.00),
-    ("07", "Eastern Prairie",  ["009", "027", "041"], 141.8, -0.10, 0.02),
-    ("08", "Timber Country",   ["001", "017", "025", "035"], 205.5, 0.00, 0.10),
+    ("01", "Capital Region",   ["019", "023"],        612.4, 0.10, 0.07, 0.40),
+    ("02", "Northern Basin",   ["003", "011", "037"], 228.9, -0.05, 0.03, 0.24),
+    ("03", "Silver Creek",     ["041", "045"],        301.7, 0.30, 0.11, 0.30),
+    ("04", "High Plains",      ["005", "013", "029", "047"], 164.2, -0.42, -0.02, 0.27),
+    ("05", "Upper River",      ["007", "031"],        257.3, 0.18, 0.08, 0.31),
+    ("06", "Southwest Lakes",  ["015", "021", "033"], 183.6, -0.30, 0.00, 0.33),
+    ("07", "Eastern Prairie",  ["009", "027", "041"], 141.8, -0.10, 0.02, 0.22),
+    ("08", "Timber Country",   ["001", "017", "025", "035"], 205.5, 0.00, 0.10, 0.42),
 ]
 # county 041 is split between Silver Creek (03) and Eastern Prairie (07) by ZIP code
 SPLIT_COUNTY = "041"
@@ -32,6 +33,7 @@ S_PROXY = 0.55           # chance a household member answering for an absent adu
 FP_PROXY = 0.002         # chance the answering member reports a second job the adult does not hold
 PERSIST = 0.97           # a second job held one quarter is still held the next with this chance
 AWAY_HOLD = 0.15         # extra chance an adult who holds a second job is out when the interviewer calls
+ALLOC_SCALE = 1.0        # sample size multiplier on the base allocation
 
 
 def area_index():
@@ -39,22 +41,23 @@ def area_index():
 
 
 def build_world(seed=SEED):
-    rng_hh = np.random.default_rng(seed)
-    rng_p = np.random.default_rng(seed + 1)
-    rng_q = np.random.default_rng(seed + 2)
+    # each area draws from its own streams, so an area's households do not depend on another area's draws
+    streams = {a[0]: [np.random.default_rng([seed, i, k]) for k in range(3)] for i, a in enumerate(AREAS)}
     rng_ops = np.random.default_rng(seed + 3)
 
     # Addresses issued: one rotation group enters each quarter and stays four quarters. Entry quarters run from
     # three quarters before 2025Q1 to 2026Q3, so every quarter in QUARTERS has four groups in sample.
     entries = list(range(-3, len(QUARTERS)))
     # allocation per area per rotation group (smaller areas take a larger share of their frame)
-    alloc = {"01": 352, "02": 214, "03": 248, "04": 190, "05": 232, "06": 196, "07": 176, "08": 210}
+    alloc = {k: int(round(v * ALLOC_SCALE)) for k, v in
+             {"01": 352, "02": 214, "03": 248, "04": 190, "05": 232, "06": 196, "07": 176, "08": 210}.items()}
     frame_size = {"01": 268400, "02": 104300, "03": 133900, "04": 79800, "05": 116200, "06": 86700,
                   "07": 66400, "08": 97100}
     addresses = []
     aid = 0
     for e in entries:
-        for code, nm, ctys, adults, mshift, ashift in AREAS:
+        for code, nm, ctys, adults, mshift, ashift, _p1 in AREAS:
+            rng_hh = streams[code][0]
             for k in range(alloc[code]):
                 aid += 1
                 cty = ctys[rng_hh.integers(len(ctys))]
@@ -67,9 +70,11 @@ def build_world(seed=SEED):
 
     # Households and persons. Each occupied address holds a household; a mover replaces it with prob 0.025 a quarter.
     def new_household(area_code):
-        n_ad = int(rng_hh.choice([1, 2, 3, 4], p=[0.27, 0.47, 0.17, 0.09]))
-        mem = []
+        rng_hh = streams[area_code][0]
         ai = area_index()[area_code]
+        p1 = AREAS[ai][6]
+        n_ad = int(rng_hh.choice([1, 2, 3, 4], p=[p1, (1 - p1) * 0.64, (1 - p1) * 0.24, (1 - p1) * 0.12]))
+        mem = []
         mshift = AREAS[ai][4]
         for j in range(n_ad):
             if j == 0:
@@ -97,6 +102,7 @@ def build_world(seed=SEED):
 
     households = {}
     for a in addresses:
+        rng_hh = streams[a["area"]][0]
         a["occupied0"] = bool(rng_hh.random() < 0.905)
         a["vacant_from"] = None
         if a["occupied0"] and rng_hh.random() < 0.035:
@@ -109,6 +115,7 @@ def build_world(seed=SEED):
     hh_q = []          # address-quarter clean truth
     ai_map = area_index()
     for a in addresses:
+        rng_hh, rng_p, rng_q = streams[a["area"]]
         mem = None
         hh_seq = 0
         for w in range(4):
@@ -197,6 +204,7 @@ def build_world(seed=SEED):
                                       county=a["county"], zip=a["zip"], line=j + 1, pid=m["pid"], rel=m["rel"],
                                       age=m["age"], sex=m["sex"], lfs=lfs, pt=m["pt"], occ=m["occ"],
                                       mjh_true=int(m["mjh"] == 1) if emp else -1, mjh_rep=rep,
-                                      self_rep=bool(self_rep), resp_line=resp + 1, want=want, slot=str(slot)))
+                                      self_rep=bool(self_rep), resp_line=(j + 1 if self_rep else resp + 1), want=want,
+                                      slot=str(slot)))
     return dict(addresses=addresses, hh_q=hh_q, persons_q=persons_q, frame_size=frame_size, alloc=alloc,
                 rng_ops=rng_ops, addr_by_id={a["aid"]: a for a in addresses})

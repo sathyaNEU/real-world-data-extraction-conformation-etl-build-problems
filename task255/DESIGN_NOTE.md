@@ -26,8 +26,8 @@ worlds are closed.
   descriptive tag stands because the deciding quantity is a distribution (the share of a practice's new users still
   supplied at a horizon), not a predicted value.
 - **Shape arithmetic:** sixteen practices times persistence (16), the set and the verdict (2), the nearest practice
-  above the line (1), the chart with its line (2), what each pilot pharmacy is entitled to (8), each practice's
-  continuing users of 2026 (16): 45 gradable figures, 24 of them asks.
+  above the line (1), the chart with its line (2), what each pilot pharmacy is entitled to for each quarter's
+  conversations (32), each practice's continuing users of 2026 (16): 69 gradable figures, 48 of them asks.
 - **Data-native sentence:** a Danish dispensing register records the packs, the product number and the date of each
   dispensing but no dose, so how long a dispensing lasts is not in the record; the field times it at one WHO defined
   daily dose a day, and nearly half of this region's new statin users with a refill take something else (two defined
@@ -76,9 +76,10 @@ worlds are closed.
   originals (the national product list); (2) the extract stitched from the register's old system, dates day-month-year
   to June 2024, ISO after (the medicines unit's extract); (3) hospital departments in the prescriber column beside the
   practices, on long-standing users' dispensings (the register); (4) the pilot's conversation log with cancellations
-  entered weeks later (the pharmacies); (5) quarterly statements drawn on each quarter's last day (finance); (6) people
-  whose personal number was replaced in 2026 under a second pseudonym from the change (the register's pseudonymisation
-  of the personal number); (7) list sizes reported per quarter (practice planning). Nothing is placed to be caught;
+  entered weeks later, the last by 20 January 2027 (the pharmacies); (5) quarterly statements drawn on each quarter's
+  last day (finance); (6) people whose personal number was replaced in 2026 under a second pseudonym from the change,
+  the CPR person table carrying the earlier number (the register's pseudonymisation of the personal number); (7) list
+  sizes reported per quarter (practice planning). Nothing is placed to be caught;
   items 1 to 3 and 7 move nothing on the call (asserted R2.1 to R2.3 and R2.7), items 4 to 6 sit only in the asks'
   rows (R2.4 to R2.6).
 - **Layer 2:** estimation under a violated precondition: turning dispensings into exposure periods presumes a known
@@ -168,13 +169,14 @@ dispensings shows the dose, and the six practices under 60 per cent are 041219, 
 | SF12 | tablets in a dispensing | packs times the product's pack size | packs alone | figures move | statin_products.csv pack_size_tablets |
 | SF13 | conversations held in 2026 | every row of the log | none outside 2026 | same figures | every conversation dated 2026 |
 | SF14 | a cancelled conversation | status aflyst with a cancellation date | status alone | same figures | the two always agree (asserted) |
-| SF15 | each pharmacy's rate | each statement over the conversations it covered (not cancelled by its date) | over the conversations held now | figures move | agreement 2.1 ("its agreed rate", one per pharmacy): only the first reading gives one whole-krone rate in all four quarters |
+| SF15 | each pharmacy's rate | each statement over the conversations it covered (not cancelled by its date) | over the conversations standing now | figures move | agreement 2.1 ("its agreed rate", one per pharmacy): only the first reading gives one whole-krone rate in all four quarters |
 | SF16 | a cancellation on the statement day | none occurs | before or after the statement | same figures | no cancellation dated on a quarter's last day |
 | SF17 | the statements' amounts | Danish format 1.234,00 | read as decimals of a thousand | figures move | every amount is a whole multiple of its rate only in the Danish reading |
-| SF18 | one person under two pseudonyms | birth date and sex alike, the first pseudonym's dispensings all before the second's | adding the same product line, the same practice, a gap under 120 days | same joins (28) | same figures (asserted) |
+| SF18 | one person under two pseudonyms | the CPR person table's previous personal number joins them | one pseudonym, one person; every pseudonym sharing a birth date and sex joined | figures move (2,116 and 2,210 against 2,151) | programme 3.3 ("each person counted once however the register numbers them") and cpr_persons_202612.csv; the record agrees (same birth date and sex, no overlap, same product line and practice, asserted) |
 | SF19 | the quarters of 2026 | by dispensing date | none other | same figures | every 2026 row dated inside the year |
 | SF20 | the last dispensing of 2026 | the person's latest 2026 row | two rows on the last day | same figures | no person has two prescribers on their last day |
 | SF21 | a hospital-prescribed 2026 dispensing | a statin dispensed in that quarter | dropped with the hospital rows | ask B moves | programme 3.3 ("had a statin dispensed"); no person's last 2026 dispensing is a hospital's |
+| SF22 | the quarter a later cancellation counts against | the quarter its conversation was held in | the quarter the cancellation was entered | ask A moves (26 of 32) | agreement 2.1 (a cancelled conversation is not paid) and the ask ("its conversations of each quarter") |
 
 ## Ladder
 
@@ -227,7 +229,7 @@ patient's dose, which the register leaves to its own dates: SF1 to SF12 show eve
 out by a quoted sentence, and every estimator of the dose converges (SF7). The DDD answer is not another reading of
 any sentence; it is the field's method applied where its precondition, that a patient takes one defined daily dose a
 day, fails in the record. The asks read the same way: agreement 2.1 and 2.2 and programme 3.3 file the payment and the
-continuing users, and SF13 to SF21 close their conventions.
+continuing users, and SF13 to SF22 close their conventions.
 
 ## Oracles
 
@@ -237,63 +239,71 @@ continuing users, and SF13 to SF21 close their conventions.
   definition on the 2023 national cohort, and the published regional use in DDD per 1,000 a day measures volume.
 - Asks: each statement over the conversations it covered returns its pharmacy's whole-krone rate in all four quarters
   only when the conversations are counted as they stood on the statement date, an identity a grader can confirm once
-  the later cancellations are noticed; a replaced personal number is confirmed by the same birth date and sex and the
-  same product line continuing at the next refill, not by any control.
+  the later cancellations are noticed; a replaced personal number is filed in the CPR person table, and the record
+  agrees with it (the same birth date and sex, the same product line continuing at the next refill).
 
 ## Ask sheet
 
 Two asks on rows the call never reads (the pilot's log, statements and agreement; the register's long-standing users
-in 2026); neither feeds the chart.
+in 2026 and the CPR person table); neither feeds the chart.
 
-**Ask A, what each pilot pharmacy is entitled to for 2026 (8 figures, whole kroner).** Home: agreement 2.1, the
-pilot's settlement before the 2027 programme takes on the same pharmacies.
+**Ask A, what each pilot pharmacy is entitled to for its conversations of each quarter of 2026 (32 figures, whole
+kroner).** Home: agreement 2.1, the pilot's settlement, quarter by quarter as finance corrects its statements, before
+the 2027 programme takes on the same pharmacies.
 - Primary device (D9, a control true only in its scope): finance drew each statement on the quarter's last day over the
-  conversations not yet cancelled, and 45 conversations (3 to 7 at every pharmacy) were cancelled after a statement had
-  covered them; the rates sit in annexes that do not ship, so the only record of each is its statements over the
-  conversations they covered, a rate that comes out whole and alike in all four quarters only when the log is read as
-  it stood on each statement date; entitled is that rate times the conversations held and never cancelled.
+  conversations not yet cancelled, and 64 conversations (one to three in every pharmacy-quarter) were cancelled after a
+  statement had covered them, the last by 20 January 2027; the rates sit in annexes that do not ship, so the only
+  record of each is its statements over the conversations they covered, a rate that comes out whole and alike in all
+  four quarters only when the log is read as it stood on each statement date, and no quarter is clean enough to read
+  it off directly. Entitled is that rate times the quarter's conversations held and never cancelled.
 - Hazards: cancellations entered inside the quarter; Danish amounts (1.234,00) and dates (31.03.2026); conversations
-  late in a quarter cancelled a few days after it closed.
+  late in a quarter cancelled a few days after it closed; the quarter a later cancellation counts against (SF22).
 
 **Ask B, each practice's continuing statin users of 2026 (16 counts).** Home: programme 3.3, the baseline the 2027
-follow-up capacity is planned on.
-- Primary device (D1, the same records under two key schemes; a temporary identity resolved): 28 long-standing users
-  (1 to 3 at every practice) had their personal number replaced in 2026, and the register carries them under a new
-  pseudonym from the change (the extract's key is the pseudonym of the personal number), so neither pseudonym has a
-  dispensing in all four quarters; the person is joined only through birth date and sex, with the product line
-  (statin_products.csv) and the refill rhythm continuing across the change.
+follow-up capacity is planned on. A construction ask since the round-1 judge: 35 long-standing users (one to three at
+every practice) had their personal number replaced in 2026, the register carries them under a new pseudonym from the
+change, programme 3.3 counts each person once however the register numbers them, and the CPR person table
+(cpr_persons_202612.csv) gives each new number's previous one. A response that counts pseudonyms (2,116) or joins
+everyone sharing a birth date and sex (2,210) misses every practice; the cracker, executing 3.3, joins through the
+person table and keeps the ask (2,151).
 - Hazards: hospital-prescribed 2026 dispensings (a filter to practice prescriptions drops a quarter, SF21); 855 groups
-  of people sharing a birth date and sex whose dispensings overlap (joining them over-counts the wrong way, B3); the
-  practice of the last 2026 dispensing.
+  of people sharing a birth date and sex whose dispensings overlap; the practice of the last 2026 dispensing.
 
-Pin test: the asking sentences pin the unit (whole kroner, a count), the year and the population (each pilot pharmacy,
-each practice); no pin names a statement date, a cancellation date, a rate, a pseudonym or a replacement. Agreement 2.2
-says only when statements are drawn, not what they cover, so the dating of the later cancellations is the reader's to
-find. The main population carries zero device rows: no new user's pseudonym is joined (R2.6), no new user's row has a
-hospital prescriber (R2.3b), and the call reads no pilot file (R2.4, R2.5).
+Pin test: the asking sentences pin the unit (whole kroner, a count), the grain (each quarter's conversations, each
+practice) and the population; no pin names a statement date, a cancellation date, a rate, a pseudonym or a
+replacement. Agreement 2.2 says only when statements are drawn and paid, not what they cover. The main population
+carries zero device rows: no new user's pseudonym is joined (R2.6), no new user's row has a hospital prescriber
+(R2.3b), and the call reads no pilot file (R2.4, R2.5).
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| A, A114, A121, A133 and A145 (a later cancellation in the first quarter) | reads the rate off a statement over the conversations held now, or adds up the statements | miss |
-| A, A102, A107, A126 and A139 | adds up the statements, which still carry the later-cancelled conversations | miss |
-| B, every practice | counts each pseudonym with four quarters as a person | miss |
+| A, every pharmacy and quarter (64 later cancellations, one to three in each) | takes each statement as its quarter's entitlement, or reads the rate off a statement over the conversations standing now | miss |
 
-The cracker's best path short of the device on ask A (the rate off the first statement over the conversations held
-now) keeps A102, A107, A126 and A139, counted in the leakage below. The response that notices both devices and
-handles them keeps all 24; the asks hold the pair only while the top two miss them.
+Ask B is kept by the cracker and counted in the leakage below. The response that also reads the statements as they
+stood keeps all 48.
 
-Pair ceiling: 37.7 ((38 + 7 + 55 x 0.167) and (5 + 7 + 55 x 0.167), averaged)
-Mirror leakage: 16.7 per cent of ask weight
+Pair ceiling: 46.8 ((38 + 7 + 55 x 0.333) and (5 + 7 + 55 x 0.333), averaged)
+Mirror leakage: 33.3 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Build record
 
 Generator under `generator/`: params.py, world.py (the clean truth), asks_world.py (the register rows, replacements
-and the pilot, on its own stream), pack.py (twelve files, three formats), analysis.py (every rung and figure from
+and the pilot, on its own stream), pack.py (thirteen files, three formats), analysis.py (every rung and figure from
 target/ alone), golden.py, writeup.py, build.py (two byte-identical builds, metadata.json, figures.json,
-submission.md, target.zip), checks.py (67 assertions), verify.py (independent: pandas, its own XLSX and PDF readers,
-the median refill rate and a day-by-day count; 55 checks), ceiling.py. The spine is
+submission.md, target.zip), checks.py (73 assertions), verify.py (independent: pandas, its own XLSX and PDF readers,
+the median refill rate and a day-by-day count; 80 checks), ceiling.py. The spine is
 statin_dispensings_202401_202612.csv, 61,788 rows.
+
+Round 1 (judge on eb685de6): the call, the shares, the PDF and the pilot figures reproduced and held under windows of
+364 to 366 days, gaps of 29 to 31 and no carry-over; Gates G and H passed, Gate F moderate. Ask 4 (continuing users)
+failed Gate C: nothing shipped gave the replaced numbers' link. Repaired in the generator: programme 3.3 files that a
+person counts once however the register numbers them, the CPR person table carries the previous number (sex and birth
+date move there from the extract, as in the register), the pilot settlement is asked per quarter, every cancellation
+is dated before the programme's adoption, the published series moves smoothly, and the English documents are the
+region's working versions. The call and every share are unchanged; the continuing users are unchanged (2,151); the
+pilot entitlements are now quarterly, and with a later cancellation in every pharmacy-quarter six pharmacies' annual
+totals moved (A114 and A126 unchanged; the eight now total DKK 313,629 against 327,918 paid).
 
 ## Architecture 2 record (spent 2026-11-01)
 
@@ -1202,3 +1212,11 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   size only.
 - Ask A to the nearest 10 kroner: one pharmacy's figure sat a krone from a bin edge; whole kroner, the precision the
   arithmetic carries.
+- Round 1: continuing users with the replaced numbers' link left in no file (Gate C: sex and birth date alone gave 825
+  coincidental pairs, and the linked count rested on unfiled tests); the link now ships in the CPR person table and
+  3.3 files the WHAT, which spends the device, so the pilot settlement moved to quarterly figures with a later
+  cancellation in every pharmacy-quarter to carry the ask layer.
+- Round 1: cancellations entered up to 8 February 2027, after the programme's adoption on 26 January; the log now
+  closes on 20 January.
+- Round 1: the published town series drawn as independent noise (130.3, 85.7, 108, 131.9 at one town); each town now
+  keeps its level with a small seasonal swing.

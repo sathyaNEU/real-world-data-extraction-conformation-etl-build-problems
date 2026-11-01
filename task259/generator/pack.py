@@ -68,7 +68,7 @@ def controls(rng):
     """Adults 16 and over by area, age group and sex (July 2025 estimates), the weighting's population controls."""
     base = np.array([0.155, 0.168, 0.162, 0.150, 0.160, 0.205])
     ctl = {}
-    for code, name, ctys, adults_k, ms, ash in world.AREAS:
+    for code, name, ctys, adults_k, ms, ash, _p1 in world.AREAS:
         tilt = rng.normal(0, 0.012, size=len(base))
         sh = np.clip(base + tilt, 0.08, 0.3)
         sh = sh / sh.sum()
@@ -393,7 +393,7 @@ def write_distractors(W, tdir, rng):
     # local area unemployment statistics, monthly, the 2025 months benchmarked in March 2026
     rows = []
     months = [(2025, m) for m in range(7, 13)] + [(2026, m) for m in range(1, 10)]
-    for code, name, ctys, adults_k, ms, ash in world.AREAS:
+    for code, name, ctys, adults_k, ms, ash, _p1 in world.AREAS:
         lf0 = adults_k * 1000 * (0.63 + rng.normal(0, 0.02))
         ur0 = 3.1 + rng.normal(0, 0.5)
         for i, (y, m) in enumerate(months):

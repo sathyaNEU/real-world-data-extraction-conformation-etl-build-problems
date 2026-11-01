@@ -9,6 +9,7 @@ import io_util as IO
 
 FILES = {
     "dispensings": "statin_dispensings_202401_202612.csv",
+    "persons": "cpr_persons_202612.csv",
     "products": "statin_products.csv",
     "ddd": "atc_ddd_2026.xlsx",
     "practices": "practice_register_2026.xlsx",
@@ -42,20 +43,21 @@ def load(target):
     ddd = {r[0]: float(r[2]) for r in rows if r[0]}
     h, rows = IO.read_xlsx(p(target, "practices"), "Practices")
     practices = {str(r[0]): r[1] for r in rows if r[0]}
+    h, rows = IO.read_csv(p(target, "persons"))
+    meta = {r[0]: (r[1], r[2]) for r in rows}
+    prev = {r[0]: r[3] for r in rows if r[3]}
     h, rows = IO.read_csv(p(target, "dispensings"))
     idx = {k: i for i, k in enumerate(h)}
     disp = collections.defaultdict(list)
-    meta = {}
     for r in rows:
         pid = r[idx["personal_number_pseudonym"]]
         pr = prods[r[idx["product_number"]]]
         disp[pid].append({"date": parse_date(r[idx["dispensing_date"]]), "tablets": int(r[idx["packs"]]) * pr["pack"],
                           "atc": pr["atc"], "mg": pr["mg"], "prescriber": r[idx["prescriber_id"]],
                           "pharmacy": r[idx["pharmacy_id"]], "product": r[idx["product_number"]]})
-        meta[pid] = (r[idx["sex"]], r[idx["birth_date"]])
     for v in disp.values():
         v.sort(key=lambda x: (x["date"], x["product"]))
-    _CACHE[target] = {"prods": prods, "ddd": ddd, "practices": practices, "disp": disp, "meta": meta}
+    _CACHE[target] = {"prods": prods, "ddd": ddd, "practices": practices, "disp": disp, "meta": meta, "prev": prev}
     return _CACHE[target]
 
 
@@ -194,35 +196,55 @@ def quarter_start(d):
 
 
 def pilot_payments(target, mode="rate"):
-    """mode: 'rate' (each pharmacy's rate, recovered from its statements over the conversations they covered, times the
-    conversations held and never cancelled; the golden), 'statements' (the four statements added up)."""
+    """Per pharmacy: out[ph] the 2026 total, out[ph + ":q"] {quarter: amount}, out[ph + ":rates"].
+    mode: 'rate' (the golden: each pharmacy's rate, recovered from its statements over the conversations each covered,
+    held in the quarter and not cancelled by the statement date, times the conversations of each quarter held and
+    never cancelled), 'statements' (each statement taken as the quarter's entitlement), 'held_now' (each quarter's
+    rate read off its statement over the quarter's conversations standing now, to the whole krone)."""
     convs = load_conversations(target)
     stm = load_statements(target)
     out = {}
     for ph in sorted({s["pharmacy"] for s in stm}):
-        ss = [s for s in stm if s["pharmacy"] == ph]
-        if mode == "statements":
-            out[ph] = sum(s["amount"] for s in ss)
-            continue
-        rates = set()
+        ss = sorted((s for s in stm if s["pharmacy"] == ph), key=lambda s: s["date"])
+        qv, rates = {}, set()
         for s in ss:
             q0 = quarter_start(s["date"])
-            cnt = sum(1 for c in convs if c["pharmacy"] == ph and q0 <= c["date"] <= s["date"] and
-                      (c["cancelled"] is None or c["cancelled"] > s["date"]))
-            if cnt:
-                rates.add(round(s["amount"] / cnt, 6))
-        rate = sorted(rates)[0]
-        out[ph] = rate * sum(1 for c in convs if c["pharmacy"] == ph and c["cancelled"] is None)
-        out[ph + ":rates"] = sorted(rates)
+            q = (s["date"].month - 1) // 3 + 1
+            now = sum(1 for c in convs if c["pharmacy"] == ph and q0 <= c["date"] <= s["date"] and c["cancelled"] is None)
+            asof = sum(1 for c in convs if c["pharmacy"] == ph and q0 <= c["date"] <= s["date"] and
+                       (c["cancelled"] is None or c["cancelled"] > s["date"]))
+            if mode == "statements":
+                qv[q] = s["amount"]
+            elif mode == "held_now":
+                qv[q] = round(s["amount"] / now) * now
+            else:
+                rates.add(round(s["amount"] / asof, 6))
+                qv[q] = now
+        if mode == "rate":
+            rate = sorted(rates)[0]
+            qv = {q: rate * k for q, k in qv.items()}
+            out[ph + ":rates"] = sorted(rates)
+        out[ph + ":q"] = qv
+        out[ph] = sum(qv.values())
     return out
 
 
 # ---------------------------------------------------------------- ask: continuing statin users of 2026, each person once
-def person_links(target, same_line=False, same_practice=False, max_gap=None):
-    """Pseudonyms that are one person: the same birth date and sex, the one's dispensings all before the other's
-    (a personal number replaced: the register carries the person under the new number from the change). Optional
-    tighter tests: the same product line across the change, the same prescribing practice, a gap no longer than
-    max_gap days. Returns {later pseudonym: earliest pseudonym}."""
+def person_links(target):
+    """The CPR person table's previous-number column: {later pseudonym: the person's first pseudonym}."""
+    D = load(target)
+    links = {}
+    for new, old in D["prev"].items():
+        root = old
+        while root in D["prev"]:
+            root = D["prev"][root]
+        links[new] = root
+    return links
+
+
+def person_links_inferred(target, same_line=False, same_practice=False, max_gap=None):
+    """Pseudonyms read as one person from the record alone: the same birth date and sex, the one's dispensings all
+    before the other's, optionally the same product line, the same practice, a gap of at most max_gap days."""
     D = load(target)
     by_key = collections.defaultdict(list)
     for pid in D["disp"]:
@@ -246,13 +268,18 @@ def person_links(target, same_line=False, same_practice=False, max_gap=None):
     return links
 
 
-def continuing_users(target, mode="persons", **kw):
-    """mode: 'persons' (each person once, a replaced personal number's two pseudonyms joined; the golden),
-    'pseudonyms' (each pseudonym taken for a person)."""
+def continuing_users(target, mode="persons"):
+    """mode: 'persons' (each person once, a replaced number's pseudonyms joined through the CPR person table; the
+    golden), 'pseudonyms' (each pseudonym taken for a person), 'birth_sex' (every pseudonym sharing a birth date and
+    sex taken for one person)."""
     D = load(target)
     groups = {pid: pid for pid in D["disp"]}
     if mode == "persons":
-        groups.update(person_links(target, **kw))
+        groups.update(person_links(target))
+    elif mode == "birth_sex":
+        first = {}
+        for pid in sorted(D["disp"]):
+            groups[pid] = first.setdefault(D["meta"][pid], pid)
     persons = collections.defaultdict(list)
     for pid, ds in D["disp"].items():
         persons[groups[pid]] += ds

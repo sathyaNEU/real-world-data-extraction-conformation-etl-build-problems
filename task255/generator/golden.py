@@ -27,7 +27,8 @@ def figures(target):
         held = int(round(pay[code] / pay[code + ":rates"][0]))
         pharm.append({"code": code, "name": names[code], "rate": int(pay[code + ":rates"][0]), "held": held,
                       "due": int(round(pay[code])), "paid": int(round(stm[code])),
-                      "balance": int(round(pay[code] - stm[code]))})
+                      "balance": int(round(pay[code] - stm[code])),
+                      "q": {q: int(round(v)) for q, v in sorted(pay[code + ":q"].items())}})
     users = [{"code": code, "name": C.names[code], "users": cu[code]} for code in sorted(cu)]
     ddd = AN.main_call(target, "ddd")
     D = AN.load(target)
@@ -97,30 +98,32 @@ def write_workbook(F, path):
     ws.print_title_rows = "5:5"
 
     ws = wb.create_sheet("Pilot settlement 2026")
-    ws["A1"] = "Pharmacy pilot 2026: what each pharmacy is entitled to for its follow-up conversations"
+    ws["A1"] = "Pharmacy pilot 2026: what each pharmacy is entitled to for its follow-up conversations, by quarter"
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = ("Rate per conversation from each pharmacy's quarterly statements over the conversations they covered "
-                "(held in the quarter and not yet cancelled on the statement date); entitled = rate x conversations "
-                "held in 2026 and never cancelled (agreement 2.1).")
-    header(ws, 4, ["Pharmacy", "Name", "Rate (DKK)", "Conversations held, not cancelled", "Entitled 2026 (DKK)",
-                   "Paid on statements (DKK)", "To recover (DKK)"], [10, 24, 11, 15, 15, 15, 13])
+                "(held in the quarter and not yet cancelled on the statement date); entitled = rate x the quarter's "
+                "conversations held and never cancelled (agreement 2.1).")
+    header(ws, 4, ["Pharmacy", "Name", "Rate (DKK)", "Q1 entitled (DKK)", "Q2 entitled (DKK)", "Q3 entitled (DKK)",
+                   "Q4 entitled (DKK)", "Entitled 2026 (DKK)", "Paid on statements (DKK)", "To recover (DKK)"],
+           [10, 24, 10, 12, 12, 12, 12, 13, 14, 12])
     r = 5
     for p in F["pharmacies"]:
-        vals = [p["code"], p["name"], p["rate"], p["held"], p["due"], p["paid"], p["paid"] - p["due"]]
+        vals = [p["code"], p["name"], p["rate"]] + [p["q"][q] for q in (1, 2, 3, 4)] + [p["due"], p["paid"],
+                                                                                         p["paid"] - p["due"]]
         for i, v in enumerate(vals, start=1):
             c = ws.cell(row=r, column=i, value=v)
             if i >= 3:
                 c.number_format = "#,##0"
         r += 1
     ws.cell(row=r, column=2, value="Total").font = bold
-    for i, key in ((4, "held"), (5, "due"), (6, "paid")):
-        c = ws.cell(row=r, column=i, value=sum(p[key] for p in F["pharmacies"]))
+    totals = [sum(p["q"][q] for p in F["pharmacies"]) for q in (1, 2, 3, 4)] + [
+        sum(p["due"] for p in F["pharmacies"]), sum(p["paid"] for p in F["pharmacies"]),
+        sum(p["paid"] - p["due"] for p in F["pharmacies"])]
+    for i, v in enumerate(totals, start=4):
+        c = ws.cell(row=r, column=i, value=v)
         c.font = bold
         c.number_format = "#,##0"
-    c = ws.cell(row=r, column=7, value=sum(p["paid"] - p["due"] for p in F["pharmacies"]))
-    c.font = bold
-    c.number_format = "#,##0"
-    ws.freeze_panes = "A5"
+    ws.freeze_panes = "C5"
     ws.print_title_rows = "4:4"
 
     ws = wb.create_sheet("Continuing users 2026")
@@ -144,8 +147,8 @@ def write_workbook(F, path):
     ws = wb.create_sheet("Notes")
     notes = [
         ("Source", "statin_dispensings_202401_202612.csv (register extract, dispensings 2 January 2024 to 31 December "
-                   "2026), statin_products.csv, practice_register_2026.xlsx, pilot_conversations_2026.xlsx, "
-                   "pilot_statements_2026.pdf."),
+                   "2026), cpr_persons_202612.csv, statin_products.csv, practice_register_2026.xlsx, "
+                   "pilot_conversations_2026.xlsx, pilot_statements_2026.pdf."),
         ("New statin user", "First statin dispensing (ATC C10AA) 1 July to 31 December 2025 with none in the 365 days "
                             "before, at the practice that prescribed it (programme description 3.1)."),
         ("Persistent", "Never more than 30 days in a row without tablets in the 365 days from the first dispensing, "
@@ -154,8 +157,9 @@ def write_workbook(F, path):
         ("One dispensing", "%d new users had a single dispensing in their first year; at any dose it runs out within "
                            "the year, so they count as not persistent." % F["singles"]),
         ("Continuing user", "A person with a statin dispensed in each quarter of 2026, counted once at the practice "
-                            "that prescribed their last 2026 dispensing (3.3)."),
-        ("Pilot", "Entitled = the pharmacy's rate x conversations held in 2026 and never cancelled (agreement 2.1). "
+                            "that prescribed their last 2026 dispensing (3.3); a person whose personal number was "
+                            "replaced is joined to the earlier number through the CPR person table."),
+        ("Pilot", "Entitled = the pharmacy's rate x the quarter's conversations held and never cancelled (agreement 2.1). "
                   "Statements were drawn on each quarter's last day and paid; conversations cancelled after that "
                   "date stayed on them."),
         ("Rounding", "Shares to the whole per cent from the unrounded share; the 60 per cent line applied to the "
@@ -238,7 +242,7 @@ def write_note(F, path, png):
         ("h", "Pilot settlement and 2026 baseline"),
         ("p", "The 2026 pilot pharmacies are entitled to DKK %s for conversations held and never cancelled; the "
               "quarterly statements paid DKK %s, because conversations cancelled after a statement date stayed on "
-              "it. The workbook gives the amount per pharmacy and each practice's continuing statin users of 2026, "
+              "it. The workbook gives the amount per pharmacy and quarter and each practice's continuing statin users of 2026, "
               "each person counted once." % (kr(due), kr(paid))),
         ("s", "Note: %s of the new users had one dispensing in their first year; at any dose it runs out within the "
               "year, so they count as not persistent." % "{:,}".format(F["singles"])),
