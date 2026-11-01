@@ -1,7 +1,7 @@
 """Fixed parameters of the Region Lindholt world (architecture 3). Everything the generator draws comes from SEED."""
 import datetime as dt
 
-SEED = 25503
+SEED = 25526
 TASK = "task255"
 AS_OF = dt.date(2027, 2, 12)               # the medicines unit's analysis date (fiction)
 EXTRACT_START = dt.date(2024, 7, 1)        # the register extract's first and last dispensing dates
