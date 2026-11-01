@@ -1,5 +1,6 @@
 """The pack's documents and lookup files: capacity plan, planning basis, change log, fleet register, route
-master, close-out summary, data dictionary, the two distractors and the export manifest."""
+master, close-out summary and the two distractors. No file describes the data (dataset-generation section 3): each
+extract carries its own conventions in the header its system writes."""
 import csv
 import datetime as dt
 import os
@@ -164,7 +165,7 @@ def capacity_plan(S, path):
     for col, w in zip("ABCDEF", [18, 12, 14, 12, 18, 28]):
         ws.column_dimensions[col].width = w
 
-    ws = wb.create_sheet("Notes")
+    ws = wb.create_sheet("Versions")
     for row in [["Version", "Date", "Change"],
                 ["1", "22/09/2025", "first plan for summer 2026"],
                 ["2", "24/10/2025", "A321neo on the nine Linate routes from the season start"],
@@ -379,68 +380,6 @@ def closeout(S, path):
          when=dt.datetime(2025, 11, 14, 10, 0))
 
 
-# ------------------------------------------------------------------ the data dictionary
-def dictionary(path, refusal_span):
-    st = [Paragraph("Navigli Air - Revenue Management Systems", SMALL),
-          Paragraph("Data dictionary: analytics extracts", H1),
-          Paragraph("Revision 5, 2 December 2025. Owner: Concetta Gaito, Revenue Management Systems.", SMALL)]
-
-    def block(title, intro, fields):
-        st.append(Paragraph(title, H2))
-        st.append(Paragraph(intro, BODY))
-        st.append(_table([["Field", "Definition"]] + [[a, Paragraph(b, SMALL)] for a, b in fields],
-                         [32 * mm, 146 * mm], align_right_from=9))
-
-    block("rm_booking_build_s25.csv",
-          "One row per scheduled departure (flight number and local departure date) of summer 2025, every route, as "
-          "held by the revenue management system at the extract.",
-          [("extract_ts", "time of the extract, UTC"),
-           ("leg_key", "departure key: local date (yymmdd), scheduled time (hhmm), flight number"),
-           ("flight_no", "four-digit flight number"),
-           ("dep_date", "departure date, local"),
-           ("std_local", "scheduled departure time, local"),
-           ("orig, dest", "IATA airport codes"),
-           ("equip", "aircraft type (319 A319, 320 A320, 32N A320neo, 321 A321, 32Q A321neo)"),
-           ("cap", "seats on sale; domestic flights are not overbooked"),
-           ("sold_out_utc", "time the last seat was sold, UTC; blank if the departure did not sell out"),
-           ("bkd_dNNN", "seats sold (net bookings on hand) at the end of the local day NNN days before the departure "
-                        "date; bkd_d000 is the count at departure. Snapshots: daily from day 14, every two days from "
-                        "day 60, every five days from day 120, then days 140, 160, 180, 210, 240, 270, 300 and 330")])
-    block("ym3_leg_history_s24.sqlite",
-          "The YM3 yield management archive for summer 2024, frozen at the migration to the new revenue management "
-          "system in November 2024. Tables legs, bkg and flown join on leg_id; ym3_extract holds the archive notes.",
-          [("legs.flt", "summer 2024 flight number (three digits; the summer 2025 numbers are in the schedule change "
-                        "log)"),
-           ("legs.dep_dt, legs.std", "departure date (DD/MM/YYYY) and scheduled time (HHMM), local"),
-           ("legs.typ, legs.cap", "aircraft type and seats on sale"),
-           ("bkg.dcp, bkg.bkd", "seats sold at the YM3 data collection point dcp (days before departure, end of "
-                                "day): 330, 270, 210, 180, 150, 120, 90, 75, 60, 45, 35, 28, 21, 14, 10, 7, 3, 1, 0"),
-           ("bkg.avl", "availability after the snapshot: O seats left to sell, C none left"),
-           ("flown.pax, flown.inf", "passengers flown on the leg, lap infants included; of which lap infants")])
-    block("dcs_flight_close_s25.csv",
-          "Departure control close-out, one row per operated departure of summer 2025.",
-          [("pax_booked", "seats sold at departure"),
-           ("pax_flown", "passengers flown, lap infants excluded"),
-           ("inf_flown", "lap infants flown"),
-           ("no_show", "passengers holding a seat who did not fly"),
-           ("tail", "aircraft registration")])
-    block("booking_engine_refusals_s25.csv",
-          "Records written by the booking engines (website WEB, app APP, contact centre CC, agency feed GDS) when a "
-          "request for a departure could not be sold, for summer 2025 departures; the requests in this extract were "
-          "logged %s." % refusal_span,
-          [("event_id", "record number"),
-           ("logged_utc", "time the record was written, UTC"),
-           ("channel", "WEB, APP, CC or GDS"),
-           ("session_ref", "the engine's session reference (website and app), call reference (contact centre) or "
-                           "booking reference (agency feed)"),
-           ("flight_no, dep_date", "the departure requested (four-digit number, local date)"),
-           ("orig, dest", "IATA airport codes of the journey requested"),
-           ("fare_family", "fare family requested: LIGHT, CLASSIC or FLEX"),
-           ("pax", "passengers in the request"),
-           ("result", "NO_AVAIL")])
-    _pdf(path, st, "Data dictionary analytics extracts rev 5", "Concetta Gaito", when=dt.datetime(2025, 12, 2, 11, 0))
-
-
 # ------------------------------------------------------------------ distractors
 def fare_report(S, path):
     """Revenue Management's monthly fare report: average net fare per passenger flown, by route and month."""
@@ -475,7 +414,7 @@ def competitor_seats(S, path):
              "CAG": 5600, "TPS": 900, "AHO": 1300, "CRV": 600, "PSR": 800, "CIY": 0, "OLB": 4100}
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
-        w.writerow(["airport_pair", "season", "our_weekly_seats", "other_carriers_weekly_seats", "basis"])
+        w.writerow(["airport_pair", "iata_season", "our_weekly_seats", "other_carriers_weekly_seats", "seat_source"])
         for r in rr:
             pair = "%s-%s" % (r["base"], r["station"])
             for season, seats in (("IS25", r["seats25"]), ("IS26", r["seats26"])):
@@ -483,10 +422,3 @@ def competitor_seats(S, path):
                 base = other[r["station"]] * (1.0 if r["base"] == "LIN" else 0.35)
                 oth = int(round(base * (1 + rng.normal(0, 0.03)) / 6.0) * 6) if base > 0 else 0
                 w.writerow([pair, season, ours, oth, "filed schedules, typical week in July"])
-
-
-def export_manifest(path, rows):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, lineterminator="\n")
-        w.writerow(["file", "owner", "system", "prepared", "covers", "notes"])
-        w.writerows(rows)

@@ -5,35 +5,45 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-28",
+ "updated": "2026-11-01",
  "stump": "A strong solver who sees the routes are full carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats and files 500,000 against the golden of 175,000, when each sold-out departure's demand has to be completed from the booking build of the departures of its own month that never sold out.",
  "architecture": 1,
- "loops": 2,
+ "loops": 3,
  "precut": {
   "exit": 0,
-  "date": "2026-10-18",
-  "checks": 51
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "LEAK on the file-name rule (data_dictionary_rev5.pdf, export_manifest.csv, shipped before the rule)",
-  "reader": "not re-run: the changed sentence is on the ask, not near the decisive step"
+  "leak_py": "REVIEW, no LEAK (2026-11-01, --asof 2025-12-12, 12 files): sweeps 1 and 12 were LEAK on the shipped pack (data_dictionary_rev5.pdf and export_manifest.csv by name; the dictionary naming 26 of the extracts' columns, the planning basis two of the competitor file's five), both files out of the pack and the competitor columns renamed; sweep 13's method words in the subdomain removed; every REVIEW line answered in the design note",
+  "reader": "not re-run: the prompt is unchanged and no document gained a sentence; the repair removed two files, renamed the ask log's airport columns and a distractor's columns, and moved nothing near the decisive step (fix-determinism)"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-18, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated on the card)",
-  "nearest": "surface: task70 (0.079) and task167 back to back (0.087, the same decisive gap and decision type on the cards; different pattern, domain, Layer 2 family and strategy; task167 registered after this card), both left to the author's optional clone-check, each with a differentiation line on the card"
+  "heart": "BLOCK 2026-11-01 after the final pull, inherited from the 10-18 draw and not moved by this repair: ban.artifact (filed_standard) and ban.forum (executive_team) against task163, ban.strategy (population_selection) against task245, both cards registered hours before this one (01:45Z and 03:19Z against 06:47Z) and absent from the branch when this card's guard check ran; escalated to the author (a ban waiver, or a re-root once the portal rules on this version); shell.repeat WARN against task140 (the call sentence frozen); test.same_puzzle_older (task177 v1) and test.same_driver_older (task171 v5), both drawn after this card, differentiated on the card",
+  "surface": "exit 0, no hard tell, no personas in the cut pack; promoted on the cards alone: task167 (back to back), task171, task70, task170 (two apart), each answered by a differentiation line on the card (task171 and task170 added 2026-11-01)",
+  "nearest": "heart driver text 0.07 (task254 v3, task485 lineage); surface task463 0.092 not promoted"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (re-judge after the SF11 repair)"
+  "report": "determinism_check_report_pass2.md (the one re-judge after the 11-01 repair; derive-before-reading order kept; Gate G analytical_non_defect, Gate H domain, layers and decisive step pass; all 18 turnaway figures reproduced exactly, 50,632, and the call at 175,000)"
  },
  "returned": [
   {
    "date": "2026-10-28",
    "portal": "determinism block, 1 of 2 judges failed: the turnaway attribution fork (flight_no and dep_date against the refusal's own orig and dest), competing_defensible_answer on the 18 turnaway asks; both responses filed 47,484 and the main call's bin",
    "repair": "determinism",
-   "commit": "",
+   "commit": "1c516af",
    "move": "data_dictionary_rev5.pdf files orig and dest as the journey requested's airports; SF11 asserted; re-judge DETERMINISTIC, APPROVE"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: the author's Batch 5 sheet, determinism fix (confirm the 10-28 repair), and the re-check under the new gates",
+   "repair": "determinism",
+   "commit": "RESHIPPED (task168), 2026-11-01",
+   "move": "the 10-28 closure confirmed (fork-is-the-stump PASS: the closing text names nothing the month build recognises and the call reads no refusal record); leak.py LEAK on the shipped pack cleared by taking data_dictionary_rev5.pdf and export_manifest.csv out (dataset-generation section 3), so SF11 is now closed by the refusal log's own header, flight_no and dep_date beside journey_orig and journey_dest, and SF19's blank sold_out_utc by convergence (G10); the competitor file's columns renamed (iata_season, seat_source), the capacity plan's version sheet named Versions, the metadata subdomain and title stripped of method words; the design note's Survivor anatomy written; card differentiated against task171, task177 and task170; freeze.py determinism PASS, every graded figure, figures.json, submission.md and both goldens byte-identical",
+   "gates": "generator 108 assertions 0 failed; verify 33 checks 0 failed; two builds byte-identical; figures_check exit 0 (47); precut exit 0 (61 checks, 0 FAIL, 0 WARN); voice-check PASS (WARN shell quota, call sentence frozen); leak.py REVIEW, no LEAK; scrub_producer_metadata target/ and golden/ clean; ceiling.py on the cut zip pair 28.5, mirror 0.0; guard validate 0 invalid, surface exit 0, heart BLOCK (inherited axis bans, escalated)",
+   "judge_notes": "the re-judge's low notes, none a fix: the call's margin under its own completion (165.6k to 168.4k, 3.1k to 5.9k above the 162,500 edge, all 175,000); the turnaway ask's sell-out filter and departure route licensed by the prompt and the shipped fields, not stated in words (P1 and the SF11 header by design); the prompt's 'nine' and 'about 620,000 seats' read as counts the data hold (voice-check PASS; both in the call sentence, frozen in a determinism repair; left to the author)"
   }
  ],
  "resume": "",
@@ -46,17 +56,18 @@
  "wave": "wave 7 (new), seed FC39 (world, decision and quantity kept; the seed's planning standard of carried plus denied bookings not shipped)",
  "guard": "WARN, no BLOCK, against the registered card (2026-10-18T06:47:15Z): overuse.objective (the lane), repeat.deliverables (pptx+xlsx against task166), same-puzzle NOTE against task70 v2 differentiated; context_artifact and forcing_event redrawn before registration after task198 v4 and task199 entered the window",
  "stage3": {
-  "generator_checks": "107 assertions, 0 failed",
-  "verify": "32 checks, 0 failed",
+  "generator_checks": "108 assertions, 0 failed",
+  "verify": "33 checks, 0 failed",
   "rebuild": "byte-identical",
   "figures_check": "exit 0 (47 figures)",
-  "voice_check": "exit 0",
+  "voice_check": "exit 0 (WARN shell quota: how-many, put, give)",
   "ceiling": "pair 28.5, mirror leakage 0.0, both on the call 45.0 (generator/ceiling.py on a fresh unzip of target.zip); single cracks 0 of 18 each",
   "call": "175,000 additional passengers (nearest 25,000; 174,865)",
   "default_path": "500,000 (495,838)",
-  "precut": "exit 0 (51 checks)",
-  "h1_audit": "target/ and golden/ clean inside 2024-01-01 to 2025-12-12",
-  "target_zip_sha256": "02b3b6bb13eb117d836cf10bbe7c0a85878f3523192b5f3594289deab8b0236a",
-  "ask": "unit filed in prompt.txt's ask sentence; turned away 50,632 (LIN-CTA 4,760); cracker 47,484 and 60,404, 0 of 18 each"
+  "precut": "exit 0 (61 checks, 0 WARN)",
+  "h1_audit": "target/ and golden/ clean inside 2024-01-01 to 2025-12-12 (2026-11-01)",
+  "target_zip_sha256": "d723a5fbcba4fe3641a115145c783c42d936a71503d8bc749ceac7c33b3cd700",
+  "ask": "unit filed in prompt.txt's ask sentence; turned away 50,632 (LIN-CTA 4,760); cracker 47,484 and 60,404, 0 of 18 each",
+  "rebuild_note": "the 10-28 zip (c5a81a1b) reproduced on 11-01 before the repair: 13 of 14 files byte-identical, the YM3 sqlite identical in content (iterdump) and differing only in the SQLite library's page layout (3.53.1 here, 3.46.1 at the 10-28 cut)"
  }
 }

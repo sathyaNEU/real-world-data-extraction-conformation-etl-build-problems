@@ -160,11 +160,11 @@ def turnaways(target, rows=None, mode="golden", refusals=None):
 
     golden    request logged at or after the departure sold out; each reference once per departure; the route
               direction of the departure (flight number and date in the RM build)
-    cracker   the same, with the route direction read from the record's own airport fields
+    cracker   the same, with the route direction read from the record's journey airports
     departure every request for a departure that sold out at some point; each reference once; the departure's route
     nolight   requests for a higher fare family only (LIGHT read as a fare closure); each reference once
     nodedup   the sell-out test, every record's pax; the departure's route
-    naive     every record's pax, the record's own airport fields
+    naive     every record's pax, the record's journey airports
     """
     if rows is None:
         _, rows = read_rm(target)
@@ -175,7 +175,7 @@ def turnaways(target, rows=None, mode="golden", refusals=None):
     for e in (refusals if refusals is not None else read_refusals(target)):
         dkey = (int(e["flight_no"]), e["dep_date"])
         if mode in ("cracker", "naive"):
-            o, d = e["orig"], e["dest"]
+            o, d = e["journey_orig"], e["journey_dest"]
         else:
             o, d = route[dkey]
         if not is_nine(o, d):

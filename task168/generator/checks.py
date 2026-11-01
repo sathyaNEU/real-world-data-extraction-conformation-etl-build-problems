@@ -119,7 +119,7 @@ def main(target):
             shutil.copy(os.path.join(target, f), tmpd)
         g2 = C.golden(tmpd)
         check("R2d the call reads only the RM build and the DCS close-out", abs(g2["gain"] - gain) < 1e-6,
-              "golden recomputed with the other twelve files absent")
+              "golden recomputed with the other %d files absent" % (len(os.listdir(target)) - 2))
     finally:
         shutil.rmtree(tmpd)
     days_nine = Counter((r["orig"], r["dest"]) for r in rows if C.is_nine(r["orig"], r["dest"]))
@@ -405,7 +405,7 @@ def main(target):
         s = so[(int(e["flight_no"]), e["dep_date"])]
         if s and e["logged_utc"] < s:
             pre[od] += 1
-        if (e["orig"], e["dest"]) != od and s and e["logged_utc"] >= s:
+        if (e["journey_orig"], e["journey_dest"]) != od and s and e["logged_utc"] >= s:
             journey[od] += 1
         keys[(e["session_ref"], e["flight_no"], e["dep_date"])].append(e)
     names = defaultdict(int)
@@ -433,11 +433,14 @@ def main(target):
           len(pre) == 18 and min(pre.values()) > 20, "min %d" % min(pre.values()))
     check("A4 device P4 (agency records naming a connecting journey's airports) on every route direction",
           len(journey) == 18 and min(journey.values()) > 20, "min %d" % min(journey.values()))
-    dd = re.sub(r"\s+", " ", [v for k, v in texts.items() if "dictionary" in k.lower()][0])
-    check("SF11 a refusal's route and direction is its departure: the dictionary files flight_no and dep_date as the "
-          "departure requested and orig and dest as the journey requested (positive control first)",
-          "the departure requested" in dd and "IATA airport codes of the journey requested" in dd and len(journey) == 18,
-          "%d agency records name a journey's airports" % sum(journey.values()))
+    ref_head = open(os.path.join(target, "booking_engine_refusals_s25.csv"), encoding="utf-8").readline().strip().split(",")
+    check("SF11 a refusal's route and direction is its departure: the log's header writes the departure requested as "
+          "flight_no and dep_date, the RM build's departure key, and the airports as the journey's (journey_orig, "
+          "journey_dest), with no orig or dest column to read as the departure's (positive control first)",
+          len(journey) == 18 and {"flight_no", "dep_date", "journey_orig", "journey_dest"} <= set(ref_head)
+          and not {"orig", "dest"} & set(ref_head)
+          and all((int(e["flight_no"]), e["dep_date"]) in so for e in ref),
+          "%d agency records name a journey's airports; header %s" % (sum(journey.values()), ",".join(ref_head)))
     same_pax = all(len({x["pax"] for x in v}) == 1 for v in keys.values())
     check("A5 every record of one reference and departure carries the same pax (the unit has one weight)", same_pax,
           "%d references" % len(keys))
@@ -460,19 +463,20 @@ def main(target):
     fams = Counter(e["fare_family"] for e in ref if C.is_nine(*route_of_flight(rows, e["flight_no"], e["dep_date"])))
     check("A10 fare family is no marker: LIGHT on both sides of the sell-out", fams["LIGHT"] > sum(pre.values()),
           str(dict(fams)))
-    ch_j = Counter(e["channel"] for e in ref if (e["orig"], e["dest"]) != route_of_flight(rows, e["flight_no"], e["dep_date"]))
+    ch_j = Counter(e["channel"] for e in ref
+                   if (e["journey_orig"], e["journey_dest"]) != route_of_flight(rows, e["flight_no"], e["dep_date"]))
     gds_n = sum(1 for e in ref if e["channel"] == "GDS")
     check("A10' the journey airports are no marker: most agency records name the departure's own airports",
           set(ch_j) == {"GDS"} and ch_j["GDS"] < 0.3 * gds_n, "%s of %d agency records" % (dict(ch_j), gds_n))
     jr = [(e, route_of_flight(rows, e["flight_no"], e["dep_date"])) for e in ref
-          if (e["orig"], e["dest"]) != route_of_flight(rows, e["flight_no"], e["dep_date"])]
+          if (e["journey_orig"], e["journey_dest"]) != route_of_flight(rows, e["flight_no"], e["dep_date"])]
     jr9 = [(e, od) for e, od in jr if C.is_nine(*od)]
-    ok_j = all(e["channel"] == "GDS" and ((e["dest"] == od[1] and e["orig"] not in C.NINE + ["LIN"])
-                                          or (e["orig"] == od[0] and e["dest"] not in C.NINE + ["LIN"]))
+    ok_j = all(e["channel"] == "GDS" and ((e["journey_dest"] == od[1] and e["journey_orig"] not in C.NINE + ["LIN"])
+                                          or (e["journey_orig"] == od[0] and e["journey_dest"] not in C.NINE + ["LIN"]))
                for e, od in jr9)
     check("A12 the departure attributes the request: a record naming other airports is an agency booking's connecting "
           "journey, the departure's southern end and a hub abroad, never another route direction of the nine",
-          ok_j and not any(C.is_nine(e["orig"], e["dest"]) for e, od in jr),
+          ok_j and not any(C.is_nine(e["journey_orig"], e["journey_dest"]) for e, od in jr),
           "%d such records on the nine routes' departures" % len(jr9))
     check("A11 ask figures are distinct across route directions", len(set(ta.values())) == 18,
           "%d distinct" % len(set(ta.values())))
@@ -498,9 +502,24 @@ def main(target):
         check("G6 golden and ask unchanged with the distractors deleted", abs(g3["gain"] - gain) < 1e-6 and ta3 == ta, "")
     finally:
         shutil.rmtree(tmpd)
-    mani = list(csv.DictReader(open(os.path.join(target, "export_manifest.csv"), encoding="utf-8")))
-    check("G7 the manifest lists every other shipped file and not itself",
-          {m["file"] for m in mani} == set(files) - {"export_manifest.csv"}, "%d rows" % len(mani))
+    describing = [f for f in files if re.search(r"dictionar|manifest|readme|notes|field.?guide|schema|codebook", f, re.I)]
+    sheets = []
+    for f in files:
+        if f.endswith(".xlsx"):
+            from openpyxl import load_workbook
+            sheets += ["%s:%s" % (f, n) for n in load_workbook(os.path.join(target, f), read_only=True).sheetnames
+                       if re.search(r"notes|readme|dictionar|fields|how to", n, re.I)]
+    data_cols = set()
+    for f in files:
+        if f.endswith(".csv"):
+            data_cols |= {c for c in open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+                          if len(c) >= 4}
+    doc_cols = {k: sorted(c for c in data_cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), v))
+                for k, v in texts.items()}
+    check("G7 no shipped file or sheet describes the data (no dictionary, manifest, readme or notes; no document "
+          "naming four or more of the extracts' columns)",
+          not describing and not sheets and max(len(v) for v in doc_cols.values()) < 4,
+          "%s %s %s" % (describing, sheets, {k: v for k, v in doc_cols.items() if v}))
     fleet = list(csv.DictReader(open(os.path.join(target, "fleet_register.csv"), encoding="utf-8")))
     regs_ = [x["registration"] for x in fleet]
     check("G8 every registration is listed once in the fleet register", len(regs_) == len(set(regs_)), "%d" % len(regs_))
@@ -509,14 +528,11 @@ def main(target):
     seats_of = {"319": "144", "320": "180", "32N": "186", "321": "220", "32Q": "232"}
     check("G9 every DCS tail is in the register with its type's seats",
           all(reg_model.get(t) == seats_of[e] for t, e in dcs_tails), "%d tails" % len(dcs_tails))
-    first = min(e["logged_utc"] for e in ref)
-    last = max(e["logged_utc"] for e in ref)
-    f_loc = dt.datetime.strptime(first, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=C.UTC).astimezone(C.ROME).date()
-    l_loc = dt.datetime.strptime(last, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=C.UTC).astimezone(C.ROME).date()
-    span = "%d %s %d to %d %s %d" % (f_loc.day, f_loc.strftime("%B"), f_loc.year, l_loc.day, l_loc.strftime("%B"), l_loc.year)
-    man_ref = [m for m in mani if m["file"] == "booking_engine_refusals_s25.csv"][0]
-    check("G10 the dictionary and the manifest give the refusal log's own first and last dates",
-          span in " ".join(texts["data_dictionary_rev5.pdf"].split()) and span in man_ref["covers"], span)
+    blank_cap = sum(1 for r in rows if r["so"] == "" and max(r["bkd"]) >= r["cap"])
+    stamp_open = sum(1 for r in rows if r["so"] != "" and max(r["bkd"]) < r["cap"])
+    check("G10 a blank sold_out_utc is a departure that never sold out: no blank row reaches its seats at any snapshot "
+          "and every stamped row does (C1, the column's reading converges)", blank_cap == 0 and stamp_open == 0,
+          "%d blank at the seats, %d stamped below them, of %d" % (blank_cap, stamp_open, len(rows)))
 
     # ============================================================ realism sweep
     by_route = Counter()

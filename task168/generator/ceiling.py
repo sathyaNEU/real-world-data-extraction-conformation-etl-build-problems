@@ -27,7 +27,8 @@ def load(pack):
     rm = pd.read_csv(os.path.join(pack, "rm_booking_build_s25.csv"),
                      usecols=["flight_no", "dep_date", "orig", "dest", "sold_out_utc"], dtype={"sold_out_utc": str})
     ref = pd.read_csv(os.path.join(pack, "booking_engine_refusals_s25.csv"), dtype={"session_ref": str})
-    j = ref.merge(rm, on=["flight_no", "dep_date"], how="left", suffixes=("", "_dep"), validate="many_to_one")
+    rm = rm.rename(columns={"orig": "orig_dep", "dest": "dest_dep"})
+    j = ref.merge(rm, on=["flight_no", "dep_date"], how="left", validate="many_to_one")
     j["after"] = j["sold_out_utc"].notna() & (pd.to_datetime(j["logged_utc"], utc=True) >=
                                               pd.to_datetime(j["sold_out_utc"], utc=True))
     return j
@@ -37,7 +38,7 @@ def nine(df, o, d):
     return ((df[o] == "LIN") & df[d].isin(NINE)) | ((df[d] == "LIN") & df[o].isin(NINE))
 
 
-def counts(df, o="orig", d="dest"):
+def counts(df, o="journey_orig", d="journey_dest"):
     return {"%s-%s" % k: int(v) for k, v in df.groupby([o, d])["pax"].sum().items()}
 
 
@@ -47,8 +48,8 @@ KEY = ["session_ref", "flight_no", "dep_date"]
 def paths(j):
     out = {}
     # the cracker: the filed unit executed, the full-flight condition executed against the RM sell-out time, the
-    # nine routes read off the records' own airport fields (the first filter a reader applies to a log)
-    rec9 = j[nine(j, "orig", "dest")]
+    # nine routes read off the records' journey airports (the first filter a reader applies to a log)
+    rec9 = j[nine(j, "journey_orig", "journey_dest")]
     out["cracker (filed unit, sell-out test, record airports)"] = counts(rec9[rec9["after"]].drop_duplicates(KEY))
     # single crack the other way: the departure's route from the RM build, every request for a sold-out departure
     dep9 = j[nine(j, "orig_dep", "dest_dep")]

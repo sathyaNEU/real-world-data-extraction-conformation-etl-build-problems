@@ -278,9 +278,13 @@ def main(target):
                  "repeats summer 2025's departures", "additional passengers carried on the nine routes"):
         ok("format pdf: planning basis carries '%s'" % frag[:44], frag in basis, "")
     ok("positive control: a sentence the basis does not carry is not found", "carried plus" not in basis, "")
-    dic = pdf_text(os.path.join(target, "data_dictionary_rev5.pdf"))
-    ok("format pdf: dictionary defines sold_out_utc and the snapshots", "time the last seat was sold" in dic
-       and "end of the local day" in dic, "")
+    head = list(pd.read_csv(os.path.join(target, "booking_engine_refusals_s25.csv"), nrows=0).columns)
+    ok("format csv: the refusal log writes the departure requested and the journey's airports",
+       {"flight_no", "dep_date", "journey_orig", "journey_dest"} <= set(head) and not {"orig", "dest"} & set(head),
+       ",".join(head))
+    describing = [f for f in os.listdir(target)
+                  if any(w in f.lower() for w in ("dictionar", "manifest", "readme", "notes", "schema"))]
+    ok("pack: no file describes the data", not describing, str(describing))
     clo = pdf_text(os.path.join(target, "summer_closeout_IS24_IS25.pdf"))
     net25 = int(dcs["pax_flown"].sum())
     ok("format pdf: close-out IS25 network passengers equal the DCS total", format(net25, ",") in clo, format(net25, ","))

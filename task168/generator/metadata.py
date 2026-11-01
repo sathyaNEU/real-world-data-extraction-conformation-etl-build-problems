@@ -15,10 +15,8 @@ DESC = {
     "fleet_register.csv": "Fleet Management, fleet register as at 30 November 2025",
     "route_master.csv": "Network Planning, route master",
     "summer_closeout_IS24_IS25.pdf": "Revenue Management reporting, summer close-out by route IS24 and IS25 (14 November 2025)",
-    "data_dictionary_rev5.pdf": "Revenue Management Systems, data dictionary for the analytics extracts, revision 5",
     "fare_report_IS25.xlsx": "Revenue Management, IS25 fare report",
     "competitor_seats_IS25_IS26.csv": "Network Planning, filed weekly seats by airport pair, IS25 and IS26",
-    "export_manifest.csv": "Network Planning, export manifest for this pack (12 December 2025)",
 }
 DISTRACTORS = ["fare_report_IS25.xlsx", "competitor_seats_IS25_IS26.csv"]
 
@@ -52,14 +50,12 @@ def write(task_dir, n=None):
     meta = {
         "task": "task168",
         "title": ("How many more passengers an Italian domestic airline's nine Linate routes to the South and the "
-                  "islands will carry in summer 2026 than in summer 2025, when their A319s give way to A321neos on "
-                  "routes whose summer departures sell out"),
+                  "islands will carry in summer 2026 than in summer 2025, when their A319s give way to A321neos"),
         "domain": "Urban & Regional Science",
         "client_domain": "Urban & Regional Science",
         "house_domain": "supply-chain-logistics",
-        "subdomain": ("forecasting (transport demand: an airline's passengers carried after a gauge change, sold-out "
-                      "departures' demand completed from the booking build of departures of the same season that "
-                      "never sold out)"),
+        "subdomain": ("forecasting (air passenger traffic: the additional passengers an airline's routes carry next "
+                      "summer after a gauge change, the figure a budget and a handling tender are built on)"),
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": ("a forecast figure (additional passengers carried, summer 2026 over summer 2025, nine routes), "
                          "with the passengers turned away from summer 2025 departures because the flight was full for "

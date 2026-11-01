@@ -31,44 +31,14 @@ FILES = {
     "fleet": "fleet_register.csv",
     "routes": "route_master.csv",
     "close": "summer_closeout_IS24_IS25.pdf",
-    "dict": "data_dictionary_rev5.pdf",
     "fares": "fare_report_IS25.xlsx",
     "comp": "competitor_seats_IS25_IS26.csv",
-    "manifest": "export_manifest.csv",
 }
-
-MANIFEST = [
-    ("rm_booking_build_s25.csv", "Revenue Management Systems", "RM", "2025-12-01",
-     "summer 2025 departures, every route", "extract of 1 December 2025, 04:38 UTC"),
-    ("ym3_leg_history_s24.sqlite", "Revenue Management Systems", "YM3 archive", "2024-11-18",
-     "summer 2024 legs, every route", "archive frozen at the migration; read only"),
-    ("dcs_flight_close_s25.csv", "Airport Operations", "DCS", "2025-11-03",
-     "summer 2025 operated departures, every route", "flight close-out as finalised"),
-    ("booking_engine_refusals_s25.csv", "Digital Sales", "booking engines", "2025-12-03",
-     "requests for summer 2025 departures, logged {span}", ""),
-    ("summer2026_capacity_plan_v3.xlsx", "Network Planning", "", "2025-11-21", "summer 2026 against summer 2025",
-     "version 3"),
-    ("planning_basis_NP-PB-26S_issue2.pdf", "Network Planning", "", "2025-11-28", "the nine Linate routes",
-     "issue 2"),
-    ("schedule_change_log.xlsx", "Network Planning", "", "2025-11-21", "IS24 to IS26", ""),
-    ("fleet_register.csv", "Fleet Management", "", "2025-11-30", "registrations in service, retired and on order",
-     ""),
-    ("route_master.csv", "Network Planning", "", "2025-11-21", "routes flown in IS25", ""),
-    ("summer_closeout_IS24_IS25.pdf", "Revenue Management reporting", "", "2025-11-14", "IS24 and IS25 by route",
-     ""),
-    ("data_dictionary_rev5.pdf", "Revenue Management Systems", "", "2025-12-02", "the four analytics extracts",
-     "revision 5"),
-    ("fare_report_IS25.xlsx", "Revenue Management", "", "2025-11-10", "IS25 average net fares by route and month",
-     ""),
-    ("competitor_seats_IS25_IS26.csv", "Network Planning", "filed schedules", "2025-11-24",
-     "weekly seats by airport pair, IS25 and IS26", "typical week in July"),
-]
 
 
 def build_pack(out):
     import pack as PK
     import docs as DC
-    import sim
     from records import Seasons
     os.makedirs(out, exist_ok=True)
     S = Seasons()
@@ -78,23 +48,16 @@ def build_pack(out):
     legs, bkg = PK.ym3_archive_s24(S, os.path.join(out, FILES["ym3"]))
     n[FILES["ym3"]] = bkg
     n[FILES["dcs"]] = PK.dcs_close_s25(S, os.path.join(out, FILES["dcs"]), regs)
-    nref, _, ev = PK.refusals_log(S, os.path.join(out, FILES["ref"]))
+    nref, _, _ = PK.refusals_log(S, os.path.join(out, FILES["ref"]))
     n[FILES["ref"]] = nref
-    first = min(e[0] for e in ev).astimezone(sim.ROME).date()
-    last = max(e[0] for e in ev).astimezone(sim.ROME).date()
-    span = "%d %s %d to %d %s %d" % (first.day, first.strftime("%B"), first.year, last.day, last.strftime("%B"),
-                                      last.year)
     DC.capacity_plan(S, os.path.join(out, FILES["cap"]))
     DC.planning_basis(os.path.join(out, FILES["basis"]))
     DC.change_log(S, os.path.join(out, FILES["log"]))
     DC.fleet_register(os.path.join(out, FILES["fleet"]), regs)
     DC.route_master(S, os.path.join(out, FILES["routes"]))
     DC.closeout(S, os.path.join(out, FILES["close"]))
-    DC.dictionary(os.path.join(out, FILES["dict"]), span)
     DC.fare_report(S, os.path.join(out, FILES["fares"]))
     DC.competitor_seats(S, os.path.join(out, FILES["comp"]))
-    DC.export_manifest(os.path.join(out, FILES["manifest"]),
-                       [tuple(c.format(span=span) for c in row) for row in MANIFEST])
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     return n

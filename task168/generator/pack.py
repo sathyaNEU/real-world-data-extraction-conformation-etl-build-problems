@@ -173,6 +173,6 @@ def refusals_log(S, path):
         eid = 51000000 + 3 * k + (flt % 3)
         out.append([eid, iso_utc(t), ch, sess, flt, dep.isoformat(), o, d, fam, pax, "NO_AVAIL"])
         truth.append((eid, after, pid, size, lo, ld))
-    _w(path, ["event_id", "logged_utc", "channel", "session_ref", "flight_no", "dep_date", "orig", "dest",
-              "fare_family", "pax", "result"], out)
+    _w(path, ["event_id", "logged_utc", "channel", "session_ref", "flight_no", "dep_date", "journey_orig",
+              "journey_dest", "fare_family", "pax", "result"], out)
     return len(out), truth, ev
