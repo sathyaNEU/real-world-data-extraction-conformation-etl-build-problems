@@ -33,8 +33,8 @@ def world():
     arr = A.model(w)
     series = P.hourly_series(w)
     plants = P.register(w, series)
-    lines, meters = B.build()
-    return dict(grid=w, arrays=arr, series=series, plants=plants, lines=lines, meters=meters)
+    lines, meters, truth = B.build()
+    return dict(grid=w, arrays=arr, series=series, plants=plants, lines=lines, meters=meters, bills=truth)
 
 
 def rates_2024(table):
@@ -75,14 +75,10 @@ def build(out, x=None, quiet=False):
     DC.write_rates(f("rates24"), rates_2024(table), 2024, W.RATES_2024_RELEASE)
     DC.write_charter(f("charter"))
     DC.write_label(f("label"))
-    DC.write_dictionary(f("dict"), n)
-    n["manifest"] = DC.write_manifest(f("manifest"), n)
     PP.normalize_ooxml(f("rates"), "EDC Data Release", "EDC Data Release", "2026-08-27T13:40:00Z", "2026-09-04T18:22:41Z",
                        excel=True, company=W.AGENCY)
     PP.normalize_ooxml(f("rates24"), "EDC Data Release", "EDC Data Release", "2025-09-18T13:52:00Z",
                        "2025-09-29T20:16:45Z", excel=True, company=W.AGENCY)
-    PP.normalize_ooxml(f("dict"), W.PEOPLE["analyst"], W.PEOPLE["analyst"], "2026-10-06T16:20:00Z", "2026-10-23T18:58:31Z",
-                       excel=True, company=W.ORG)
     PP.normalize_pdf(f("charter"), b"D:20260915103000-04'00'", b"D:20260915103000-04'00'")
     PP.normalize_pdf(f("label"), b"D:20260630091500-05'00'", b"D:20260630091500-05'00'")
     ts = STAMP.timestamp()

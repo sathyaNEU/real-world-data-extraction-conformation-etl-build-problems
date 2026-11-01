@@ -1,9 +1,9 @@
 {
  "task": "task460",
  "architecture": 1,
- "title": "Which of Corvane Home & Garden's eight candidate stores gets its 2027 on-site solar pilot, the store whose array would have avoided the most grid carbon dioxide per megawatt-hour it generated in 2025, conformed from hourly balancing-area operating data, a plant register, published emission rates, an array output model and accounts-payable invoice lines",
+ "title": "Which of Corvane Home & Garden's candidate stores gets its 2027 on-site solar pilot, with each store's grid carbon dioxide avoided per megawatt-hour of its array's 2025 output, its 2025 metered use, the share its array would have supplied and the price paid, from hourly grid data, an array model and accounts-payable invoice lines",
  "domain": "Physical & Environmental Sciences",
- "subdomain": "emissions-inventory (the avoided-emissions factor of a grid-connected project: the operating margin of the store's balancing area in the hours its array generates, estimated from the hourly changes in the area's fossil CO2 and weighted by the array's output)",
+ "subdomain": "emissions-inventory (the grid carbon dioxide a store's on-site solar array would avoid per megawatt-hour it generates, the factor that credits a grid-connected project)",
  "objective": "Data Extraction & Conformation (ETL)",
  "prompt_shape": "01: a ranked list under a cap of one (eight stores, one pilot), with each store's avoided CO2 per MWh, the first store left out and its gap, each store's 2025 metered use, the share its array would have supplied and the price paid, a chart and the store-by-hour conformed file",
  "as_of": "2026-10-23",
@@ -20,7 +20,7 @@
   "2025"
  ],
  "input_gates": {
-  "files": 13,
+  "files": 11,
   "formats": [
    "csv",
    "pdf",
@@ -70,9 +70,9 @@
   {
    "path": "corvane_electricity_invoice_lines_fy2025.csv",
    "format": "csv",
-   "bytes": 215050,
-   "rows": 1467,
-   "source": "Constructed: Corvane accounts payable: every electricity invoice line for the eight stores with service in 2025",
+   "bytes": 148783,
+   "rows": 1001,
+   "source": "Constructed: Corvane accounts payable: every electricity invoice line coded to the eight stores, from the delivery utilities, the retail supplier and the bill-payment service, December 2024 to February 2026",
    "date": "2026-10-23",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
@@ -118,24 +118,6 @@
    "bytes": 2929450,
    "rows": 70080,
    "source": "Constructed: the engineering firm's hourly AC output model for each candidate store's designed array on 2025 weather",
-   "date": "2026-10-23",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "pilot_siting_data_dictionary.xlsx",
-   "format": "xlsx",
-   "bytes": 8244,
-   "rows": null,
-   "source": "Constructed: the energy team's field definitions for the folder",
-   "date": "2026-10-23",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "pilot_siting_extract_manifest.csv",
-   "format": "csv",
-   "bytes": 1831,
-   "rows": 12,
-   "source": "Constructed: the list of the files in the folder, with source, as-of date and terms",
    "date": "2026-10-23",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },

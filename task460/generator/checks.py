@@ -38,11 +38,7 @@ QUOTES = [
     ("SF4", "charter", "Each megawatt-hour the array generates is one megawatt-hour less that the area's generators produce."),
     ("SF5", "charter", "the store uses all of the array's output: each array is sized below its store's daytime load."),
     ("SF6", "charter", "The measure is stated in metric tonnes of carbon dioxide per megawatt-hour of array output."),
-    ("SF7", "dictionary", "One row per store and hour of 2025 on the store's local standard time."),
     ("SF8", "charter", "per megawatt-hour it generated in 2025, the latest calendar year of complete grid records."),
-    ("SF9", "dictionary", "End of the hour, UTC."),
-    ("SF9", "dictionary", "Start of the hour, local standard time at the store."),
-    ("SF10", "dictionary", "an area that changed its code reports under its former code before the change"),
     ("SF11", "charter", "states the measure for every candidate and names the first candidate left out."),
 ]
 # words that would name a basis, an estimator or the decisive quantity; none may appear in the documents that govern
@@ -50,8 +46,20 @@ QUOTES = [
 METHOD_WORDS = re.compile(r"marginal|margin\b|non-baseload|average|regress|slope|season|intensity|displace|"
                           r"operating margin|merit order|load-following|follow the load", re.I)
 AVOID_WORDS = re.compile(r"avoid|displace|reduction|offset|marginal|margin\b|counterfactual", re.I)
-DICT_WORDS = re.compile(r"marginal|margin\b|non-baseload|regress|slope|season|avoid|displace|intensity|"
-                        r"average (?:output )?(?:emission )?rate|counterfactual", re.I)
+# the main-call files as shipped on 2026-10-15; a rubric repair leaves every one byte for byte
+MAIN_FILES = {
+    "ardley_power_content_label_2025.pdf": "b753bc1fa63a482f3d623fbd08f0c3886fbebb1e10126655fdb28bd923940331",
+    "balancing_area_codes.csv": "b62f2abb75abfff6a9aac781c2d6abfa6b8423210f5dc0a5ba3d11906cfc25e9",
+    "balancing_area_hourly_operating_data_2025.csv": "606ed0ac8a114af461646263a1878eb0fb6a98b9c40fe8268a4e3b77f02f5bd8",
+    "corvane_pilot_store_sites.csv": "f55868e55f6729a34d69d8205852f3fd5a6cae6bd47e500bf48ece218cd38f52",
+    "edc_generation_emission_rates_2024.xlsx": "478899eae586442490beb95751c1c4c6f5946a4a625c2ab55b8d2b4de913346c",
+    "edc_generation_emission_rates_2025.xlsx": "918da1a06bf6708bf7eec402395170d5fd5a87cc6476c5fce95c765de0eda280",
+    "generating_plant_register_2025.csv": "e4e6848553f5a7e27cfa6f3b308e31596c5f1ff3208cc69630a8ad59b748852e",
+    "pilot_array_output_model_2025.csv": "451be8466d2c78876b4efed4ba219c29c45b415a45ed8a7156c3cf9b124bec79",
+    "solar_pilot_siting_charter_2027.pdf": "4c3c90372e269e780856e22dbc69fec2608df21be64e0ef18bf038b8b86b5f0e",
+    "utility_balancing_area_map.csv": "0995e11b724e74e67506f7b652dddfe1eed50ad9e742e0880e8503196b42d056",
+}
+DESCRIBING = re.compile(r"dictionary|manifest|readme|codebook|field.?notes|data.?notes|definitions", re.I)
 
 
 def ok(cond, msg):
@@ -347,14 +355,17 @@ def run(target, golden_dir, x=None, meta_path=None, fig_path=None):
                 seen[d.tobytes()] = k
     ok(not rep, "R3c: no flat or copied day in any area's hourly series or any array's output %s" % rep[:5])
     docs = {"charter": text_of(os.path.join(target, F["charter"])), "label": text_of(os.path.join(target, F["label"])),
-            "rates": text_of(os.path.join(target, F["rates"])), "rates24": text_of(os.path.join(target, F["rates24"])),
-            "dictionary": text_of(os.path.join(target, F["dict"])), "manifest": text_of(os.path.join(target, F["manifest"]))}
+            "rates": text_of(os.path.join(target, F["rates"])), "rates24": text_of(os.path.join(target, F["rates24"]))}
     hits = METHOD_WORDS.findall(docs["charter"])
     ok(not hits, "R3c: the charter defines what is avoided and names no rate, basis or estimator %s" % hits)
     hits = AVOID_WORDS.findall(docs["rates"] + " " + docs["rates24"])
     ok(not hits, "R3c: neither edition of the publication says what a project avoids or names a margin %s" % hits)
-    hits = DICT_WORDS.findall(docs["dictionary"] + " " + docs["manifest"])
-    ok(not hits, "R3c: the dictionary and the manifest name no estimator, margin or avoided rate %s" % hits)
+    ok(not [f for f in files if DESCRIBING.search(f)],
+       "R3c: no file describing the data ships (no dictionary, manifest, readme or field notes)")
+    dig = {f: hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest() for f in MAIN_FILES}
+    moved = [f for f in MAIN_FILES if dig[f] != MAIN_FILES[f]]
+    ok(not moved, "the call's files are byte-identical to the shipped 10-15 build (%d files; moved: %s)" % (
+        len(MAIN_FILES), moved))
     ok(not AVOID_WORDS.findall(docs["label"]) and len(re.findall(r"pounds per megawatt-hour", docs["label"])) == 1,
        "R3c: the supplier's label carries one intensity for every store, ranks none and says nothing of avoiding")
     ok(sorted(files) == sorted(F.values()) and not any(f.endswith((".eml", ".msg", ".docx", ".txt", ".md")) for f in files),
@@ -387,7 +398,7 @@ def run(target, golden_dir, x=None, meta_path=None, fig_path=None):
        "SF7: the array output in the local hours past the UTC year is at most %.4f%% of a store's 2025 output, so the "
        "local or the UTC year gives the same eight figures" % (100 * max(share_out)))
     # SF9's gross form: the model's local standard hour joined to the operating data's UTC label, the offset ignored.
-    # Not a reading: every operating-data row states its local time and offset beside UTC, and the dictionary names
+    # Not a reading: every operating-data row states its local time and offset beside UTC, and both files' headers name
     # both clocks. It moves the call (the margin is a matter of the hour), so the files must close it.
     gross = {}
     for st, s_ in D["stores"].items():
@@ -403,11 +414,18 @@ def run(target, golden_dir, x=None, meta_path=None, fig_path=None):
     off_ok = all(dt.datetime.fromisoformat(r["local_time_at_end_of_hour"]).replace(tzinfo=None) ==
                  dt.datetime.strptime(r["utc_time_at_end_of_hour"], "%Y-%m-%dT%H:%M:%SZ") +
                  dt.timedelta(hours=int(r["local_time_at_end_of_hour"][-6:-3])) for r in rows_h)
-    ok(off_ok and "End of the hour on the area's local clock, with its UTC offset." in docs["dictionary"] and
-       order(gross)[0] != PICK,
-       "SF9 closed: every operating-data row states its local time with its offset (%d sampled) and the dictionary "
-       "names both clocks, so the offset ignored (which files %s) is an error the files rule out, not a reading" % (
+    with open(os.path.join(target, F["hourly"]), encoding="utf-8") as fh:
+        h_head = fh.readline().strip().split(",")
+    with open(os.path.join(target, F["arrays"]), encoding="utf-8") as fh:
+        a_head = fh.readline().strip().split(",")
+    ok(off_ok and "utc_time_at_end_of_hour" in h_head and "local_time_at_end_of_hour" in h_head and
+       "hour_beginning_lst" in a_head and order(gross)[0] != PICK,
+       "SF9 closed: every operating-data row states its local time with its offset (%d sampled) and the two files' "
+       "headers name both clocks (the hour's end in UTC and local time; the model's hour beginning, local standard), "
+       "so the offset ignored (which files %s) is an error the files rule out, not a reading" % (
            len(rows_h), order(gross)[0]))
+    ok("hour_beginning_lst" in a_head and all(len(D["arrays"][st]) == 8760 for st in D["arrays"]),
+       "SF7: the model's own header names its clock (hour beginning, local standard time), 8,760 hours a store")
     codes = list(csv.DictReader(open(os.path.join(target, F["codes"]), encoding="utf-8")))
     ok([(r["ba_code"], r["former_code"], r["code_effective"]) for r in codes if r["former_code"]] ==
        [("KSTP", "KPLP", "2025-07-01")], "SF10: the code list files KPLP as Kestrel Point's former code until 1 July 2025")
@@ -417,49 +435,108 @@ def run(target, golden_dir, x=None, meta_path=None, fig_path=None):
     # ------------------------------------------------------------------ the asks
     Aa = by_area(D, M.asks(target, D, g))
     WP = by_area(D, M.ask_wrong_paths(target, D, g))
+    T = x["bills"] if x is not None else None
     for c in W.ORDER:
         a = Aa[c]
         ok(edge(a["use_mwh"], 1.0) >= 0.15 and edge(a["share"], 0.1) >= 0.03 and edge(a["price"], 1.0) >= 0.15,
            "asks %s: use %.3f MWh, share %.3f%%, price $%.3f, each clear of its rounding edge" % (
                c, a["use_mwh"], a["share"], a["price"]))
-    use = {c: round(Aa[c]["use_mwh"]) for c in W.ORDER}
-    for key, lab in (("kwh_all", "every kWh line summed"), ("max_line", "the largest kWh line per invoice"),
-                     ("supplier", "the supplier's quantities alone"), ("both", "both vendors' energy lines")):
-        miss = [c for c in W.ORDER if round(WP[c][key]) != use[c]]
-        ok(len(miss) == 8, "ask A cracker path, %s: misses all eight stores (Brackwell %s against %s)" % (
-            lab, "{:,}".format(round(WP["BRKW"][key])), "{:,}".format(use["BRKW"])))
-    hi = {c: 100.0 * (WP[c]["supplier"] / Aa[c]["use_mwh"] - 1.0) for c in W.ORDER}
-    ok(all(3.5 <= v <= 6.5 for v in hi.values()), "ask A hazard H1: the supplier's quantities run %.1f to %.1f per cent "
-                                                    "above the meters" % (min(hi.values()), max(hi.values())))
-    rb = [c for c in W.ORDER if round(WP[c]["all_bills"]) != use[c]]
-    ok(rb == ["QLBY", "OSTM"], "ask A hazard H2: keeping the estimated bills moves Quillbury and Ostlemere only %s" % rb)
-    idt = [c for c in W.ORDER if round(WP[c]["by_invoice_date"]) != use[c]]
-    ok(len(idt) == 8, "ask A hazard H4: counting invoices dated in 2025 misses %d stores" % len(idt))
+    if T is not None:
+        du = max(abs(Aa[c]["use_mwh"] - T[c]["use_kwh"] / 1000.0) for c in W.ORDER)
+        dp = max(abs(Aa[c]["paid"] - T[c]["charges"]) for c in W.ORDER)
+        ok(du < 0.01 and dp < 0.10, "fair: the golden route recovers every store's metered use (to %.4f MWh) and every "
+                                    "dollar of its 2025 charges (to $%.2f) from the shipped rows" % (du, dp))
+        dm = max(float(np.abs(Aa[c]["months"] - T[c]["months"]).max()) for c in W.ORDER)
+        ok(dm < 0.002, "fair: every store's monthly metered use recovered to %.4f MWh (the chart)" % dm)
     rows_inv = M.read_invoices(target)
-    keep = M.current_bills(rows_inv)
-    by_inv = {}
-    for r in rows_inv:
-        by_inv.setdefault(r["invoice_number"], []).append(r)
-    per_meter = {}
-    for no, L in by_inv.items():
-        if no not in keep or L[0]["vendor_name"] == W.SUPPLIER:
-            continue
-        frac = M.in_2025(L[0]["d0"], L[0]["d1"])
-        for m_, q in M.metered_kwh(L).items():
-            k = (L[0]["store"], m_)
-            per_meter[k] = per_meter.get(k, 0.0) + q * frac / 1000.0
+    cyc, sup = M.utility_cycles(rows_inv), M.supplier_cycles(rows_inv)
+    # primary 1, the forcing numbers on the shipped rows
+    first, second, eq_dev, kwh_dev, gc_dev, after = 0, 0, 0.0, 0.0, 0.0, []
+    lfs = {}
+    for meter, bills in sup.items():
+        own = {(a_, b_): q for a_, b_, q in cyc.get(meter, [])}
+        f = M.loss_factor(cyc.get(meter, []), bills)
+        lfs[meter] = f
+        for k, e in bills.items():
+            if e["rps"] is not None:
+                first += 1
+                eq_dev = max(eq_dev, abs(e["energy"] - e["rps"]))
+                if k in own:
+                    kwh_dev = max(kwh_dev, abs(e["energy"] - round(own[k] * f)))
+            else:
+                second += 1
+                if k in own:
+                    gc_dev = max(gc_dev, abs(e["energy"] - own[k]))
+                    after.append(meter)
+    ok(all(1.035 <= f <= 1.065 for f in lfs.values()) and eq_dev == 0 and kwh_dev <= 1,
+       "primary 1 forcing: under the supplier's first term its two kWh lines carry one quantity in all %d bills, %.4f to "
+       "%.4f times the meter's kWh to the kWh (%.0f) in every cycle the utility's own invoices also bill" % (
+           first, min(lfs.values()), max(lfs.values()), kwh_dev))
+    gcm = sorted(set(after))
+    ok(len(gcm) == 2 and gc_dev == 0 and second >= 60,
+       "primary 1 forcing: under the second term (%d bills, no standard line) the supplier's quantity at the two meters "
+       "the utility still bills directly is the meter's kWh exactly" % second)
+    mains = {D["stores"][st]["area"]: [m for m in cyc if m in [r["meter_number"] for r in rows_inv if r["store"] == st
+                                                                and r["src"] == "supplier"]] for st in D["stores"]}
+    last = {c: max(cyc[m][-1][1] for m in mains[c] if m not in gcm) for c in W.ORDER}
+    svc_q = [r for r in rows_inv if r["src"] == "service" and r["quantity"]]
+    ok(all(v <= dt.date(2025, 5, 31) for v in last.values()) and not svc_q,
+       "primary 1: every main account's own invoices stop by %s and the service's %d lines carry no quantity" % (
+           max(last.values()), sum(1 for r in rows_inv if r["src"] == "service")))
+    use = {c: round(Aa[c]["use_mwh"]) for c in W.ORDER}
+    share = {c: float("%.1f" % Aa[c]["share"]) for c in W.ORDER}
+    price = {c: round(Aa[c]["price"]) for c in W.ORDER}
+    mwh = {D["stores"][st]["area"]: g[st]["mwh"] for st in D["stores"]}
+
+    def misses(key, dollars):
+        u = {c: WP[c][key] for c in W.ORDER}
+        mu = [c for c in W.ORDER if round(u[c]) != use[c]]
+        ms = [c for c in W.ORDER if float("%.1f" % (100.0 * mwh[c] / u[c])) != share[c]]
+        mp = [c for c in W.ORDER if round(WP[c][dollars] / u[c]) != price[c]]
+        return mu, ms, mp
+    for key, dollars, lab in (("fill_recon", "paid_dedup", "the cracker: the utilities' invoices, then the supplier's "
+                               "energy over the factor learnt where both bill, the bill paid twice counted once"),
+                              ("fill_recon", "paid_golden", "the reconciled splice, every payment kept"),
+                              ("fill_raw", "paid_dedup", "the supplier's energy as billed after each store's last own "
+                               "invoice, the bill paid twice counted once"),
+                              ("fill_raw", "paid_golden", "the supplier's energy as billed in the gap, every payment kept"),
+                              ("sup_raw", "paid_dedup", "the supplier's energy as billed for the whole year"),
+                              ("sup_lf", "paid_dedup", "the supplier's energy over the factor for the whole year"),
+                              ("util_only", "paid_golden", "the utilities' own invoices alone"),
+                              ("kwh_all", "paid_golden", "every kWh line summed")):
+        mu, ms, mp = misses(key, dollars)
+        ok(len(mu) == 8 and len(ms) == 8 and len(mp) == 8,
+           "ask stop, %s: misses all eight uses, shares and prices (Brackwell %s MWh against %s)" % (
+               lab, "{:,}".format(round(WP["BRKW"][key])), "{:,}".format(use["BRKW"])))
+    rec = {c: 100.0 * (WP[c]["fill_recon"] / Aa[c]["use_mwh"] - 1.0) for c in W.ORDER}
+    raw = {c: 100.0 * (WP[c]["fill_raw"] / Aa[c]["use_mwh"] - 1.0) for c in W.ORDER}
+    ok(all(v <= -1.5 for v in rec.values()) and all(v >= 0.6 for v in raw.values()),
+       "primary 1 mass: the reconciled fill runs %.1f to %.1f per cent under every store's use, the fill as billed "
+       "%.1f to %.1f per cent over" % (min(rec.values()), max(rec.values()), min(raw.values()), max(raw.values())))
+    # primary 2: the bill paid twice at the move, the overpayment credited on the next bills
+    twice = {c for c in W.ORDER if abs(WP[c]["paid_dedup"] - Aa[c]["paid"]) > 1.0}
+    if T is not None:
+        ok(all(abs(Aa[c]["paid"] - WP[c]["paid_dedup"] - T[c]["credit"]) < 0.02 for c in twice) and
+           all(T[c]["paid_twice"] and abs(T[c]["credit"] - T[c]["paid_twice"]["amount"]) < 0.02 for c in twice),
+           "primary 2 forcing: at each store paid twice, counting the second payment once leaves it short by exactly the "
+           "credit the service's next payments absorbed")
+    mp = [c for c in W.ORDER if round(WP[c]["paid_dedup"] / Aa[c]["use_mwh"]) != price[c]]
+    ok(sorted(twice) == sorted(c for c in W.ORDER if c != "HLVN") and sorted(mp) == sorted(twice),
+       "primary 2: with every use right, the bill paid twice counted once misses %d prices %s (Halvane's bills reached "
+       "the service directly)" % (len(mp), mp))
+    # the hazards
+    mpg = [c for c in W.ORDER if round(WP[c]["paid_with_gas"] / Aa[c]["use_mwh"]) != price[c]]
+    ok(mpg == ["HLVN"], "hazard: Halvane Gas & Electric's gas charges kept move Halvane's price only %s" % mpg)
+    mps = [c for c in W.ORDER if round(WP[c]["paid_no_service"] / Aa[c]["use_mwh"]) != price[c]]
+    ok(len(mps) == 8, "hazard: the service's lines left out miss all eight prices")
+    mon, lf_, _ = M.metered(rows_inv)
     one = {}
     for st, s_ in D["stores"].items():
-        ms = [v for (st_, m_), v in per_meter.items() if st_ == st]
-        one[s_["area"]] = round(max(ms))
+        ms_ = [sum(q * M.in_2025(a_, b_) for a_, b_, q in mon[m]) / 1000.0 for m in mon
+               if any(r["meter_number"] == m and r["store"] == st for r in rows_inv if r["src"] == "supplier")]
+        one[s_["area"]] = round(max(ms_))
     h3 = [c for c in W.ORDER if one[c] != use[c]]
-    ok(h3 == ["QLBY", "KSTP"], "ask A hazard H3: one meter per store moves Quillbury and Kestrel Point only %s" % h3)
-    price = {c: round(Aa[c]["price"]) for c in W.ORDER}
-    pg = round(WP["HLVN"]["paid_with_gas"] / Aa["HLVN"]["use_mwh"])
-    ok(pg != price["HLVN"] and all(round(WP[c]["paid_with_gas"] / Aa[c]["use_mwh"]) == price[c] for c in W.ORDER if c != "HLVN"),
-       "ask C device: the gas lines on Halvane's invoices move only Halvane's price ($%d against $%d)" % (pg, price["HLVN"]))
-    pu = [c for c in W.ORDER if round(WP[c]["paid_util_only"] / Aa[c]["use_mwh"]) != price[c]]
-    ok(len(pu) == 8, "ask C hazard: the utility's dollars alone miss all eight prices")
+    ok(h3 == ["QLBY", "KSTP"], "hazard: one meter per store moves Quillbury and Kestrel Point only %s" % h3)
     D0 = copy.deepcopy(D)
     for c in W.ORDER:
         for k in ("demand", "ng", "coal", "natural gas", "petroleum"):
@@ -482,7 +559,7 @@ def run(target, golden_dir, x=None, meta_path=None, fig_path=None):
     ok(len(stamps) == 1, "realism: every file carries the folder's one export time")
     idates = [r["idate"] for r in rows_inv]
     ok(max(idates) <= W.AP_PULL, "realism: no invoice dated after the accounts-payable pull (%s)" % max(idates))
-    names = set(re.findall(r"\b(Barbara Rangel|Russell Scott)\b", docs["charter"] + " " + docs["dictionary"]))
+    names = set(re.findall(r"\b(Barbara Rangel|Russell Scott)\b", docs["charter"]))
     ok(names == {"Barbara Rangel"} and "Russell Scott" not in docs["charter"],
        "realism: the charter's owner is the drawn persona (Barbara Rangel); no other person is named in the documents")
 

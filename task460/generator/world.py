@@ -164,21 +164,21 @@ CLEAN_PLANTS = {
 # share of use in summer (cooling) against winter (heating).
 STORES = {
     "BRKW": dict(store=2104, town="Brackwell", lat=40.31, lon=-80.71, dc=430, ac=345, roof=96400, tilt=10, az=176,
-                 utility="Brackwell Power & Light Company", meters=[("main", 2364)], season=(0.95, 1.12)),
+                 utility="Brackwell Power & Light Company", meters=[("main", 2362.1088)], season=(0.95, 1.12)),
     "QLBY": dict(store=2163, town="Quillbury", lat=44.02, lon=-74.18, dc=390, ac=310, roof=88900, tilt=10, az=189,
-                 utility="Quillbury Electric Company", meters=[("main", 2103), ("garden centre", 260)], season=(1.12, 0.96)),
+                 utility="Quillbury Electric Company", meters=[("main", 2094.588), ("garden centre", 258.96)], season=(1.12, 0.96)),
     "TNFD": dict(store=2238, town="Tennaford", lat=41.52, lon=-93.31, dc=450, ac=360, roof=104700, tilt=10, az=172,
                  utility="Tennaford Electric Delivery Company", meters=[("main", 2459)], season=(1.03, 1.08)),
     "GRSF": dict(store=2291, town="Gorsefield", lat=38.61, lon=-90.27, dc=470, ac=375, roof=112300, tilt=10, az=184,
-                 utility="Gorsefield Power Company", meters=[("main", 2585)], season=(0.97, 1.14)),
+                 utility="Gorsefield Power Company", meters=[("main", 2576.728)], season=(0.97, 1.14)),
     "FRVW": dict(store=2317, town="Faraview", lat=46.71, lon=-121.36, dc=380, ac=305, roof=83600, tilt=12, az=195,
-                 utility="Faraview Electric Utilities", meters=[("main", 1980)], season=(1.14, 0.92)),
+                 utility="Faraview Electric Utilities", meters=[("main", 1978.416)], season=(1.14, 0.92)),
     "OSTM": dict(store=2356, town="Ostlemere", lat=33.46, lon=-111.83, dc=500, ac=400, roof=121800, tilt=8, az=170,
-                 utility="Ostlemere Electric Service Company", meters=[("main", 2865)], season=(0.86, 1.26)),
+                 utility="Ostlemere Electric Service Company", meters=[("main", 2859.843)], season=(0.86, 1.26)),
     "KSTP": dict(store=2402, town="Kestrel Point", lat=37.18, lon=-121.84, dc=410, ac=330, roof=92100, tilt=10, az=181,
-                 utility="Kestrel Point Light & Power", meters=[("main", 2221), ("garden centre", 240)], season=(0.98, 1.06)),
+                 utility="Kestrel Point Light & Power", meters=[("main", 2224.5536), ("garden centre", 240.384)], season=(0.98, 1.06)),
     "HLVN": dict(store=2449, town="Halvane", lat=35.71, lon=-79.02, dc=440, ac=350, roof=99800, tilt=10, az=166,
-                 utility="Halvane Gas & Electric", meters=[("main", 2515)], season=(1.00, 1.15), gas=True),
+                 utility="Halvane Gas & Electric", meters=[("main", 2508.964)], season=(1.00, 1.15), gas=True),
 }
 
 # ------------------------------------------------------------------------------------------------ files
@@ -194,8 +194,6 @@ FILES = {
     "invoices": "corvane_electricity_invoice_lines_fy2025.csv",
     "charter": "solar_pilot_siting_charter_2027.pdf",
     "label": "ardley_power_content_label_2025.pdf",
-    "dict": "pilot_siting_data_dictionary.xlsx",
-    "manifest": "pilot_siting_extract_manifest.csv",
 }
 GOLDEN = {"memo": "solar_pilot_site_recommendation_2027.pdf", "hourly": "pilot_sites_hourly_avoided_emissions_2025.csv"}
 DISTRACTORS = ["rates24", "label"]
