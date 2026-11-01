@@ -177,11 +177,17 @@ def recompute(target):
     hours = defaultdict(float)
     signed = defaultdict(int)
     q0, q1 = dt.datetime(2026, 7, 1), dt.datetime(2026, 10, 1)
+    fired_at = {int(r["alert_id"]): r["ts"] for r in hist}
     for r in rows(find("CRV_QueueExport_QRMC")):
-        closed, claimed = et_of_utc(r["closed_utc"]), et_of_utc(r["claimed_utc"])
+        aid = int(r["alert_ref"])
+        stamp = lambda s: dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+        lead = (stamp(r["msg_received_utc"]) - fired_at[aid]).total_seconds() / 3600.0
+        if lead > 2.0:      # a UTC row: four hours ahead of the alert's local time
+            closed, claimed = et_of_utc(r["closed_utc"]), et_of_utc(r["claimed_utc"])
+        else:               # written in Eastern time under the UTC marker
+            closed, claimed = stamp(r["closed_utc"]), stamp(r["claimed_utc"])
         if not (q0 <= closed < q1):
             continue
-        aid = int(r["alert_ref"])
         hours[dept_of[aid]] += (closed - claimed).total_seconds() / 3600.0
         if r["close_status"] == "Signed off":
             h = closed.hour

@@ -176,6 +176,9 @@ def write_schedule(path):
               "unit is sent to the desk and reviewed by a Corvane pharmacist. One overridden alert is one review."),
         ("p", "2.2 Alerts answered by removing or modifying the order, and alerts of moderate severity, are not "
               "reviewed."),
+        ("p", "2.3 Quillfield's interface opens one queue task for each order on which a prescriber overrides "
+              "high-severity alerts at a signing. The task carries every high-severity alert overridden on that "
+              "order at that signing, and signing the task off signs off the review of each of them."),
         ("h", "3. Desk hours, time and reporting"),
         ("p", "3.1 The desk works three shifts, Eastern time: day 07:00 to 15:00, evening 15:00 to 23:00 and night "
               "23:00 to 07:00. A review counts in the month and the shift in which a pharmacist signs it off."),
@@ -214,9 +217,9 @@ def write_cr(path):
     t.style = "Table Grid"
     for k, v in [("Title", "MSP26 medication safety package, hospital-wide go-live"),
                  ("Requested by", "Shawn Whitaker, Pharmacy Informatics Manager, Quillfield Regional Medical Center"),
-                 ("Date", "21 October 2026"),
+                 ("Date", "26 October 2026"),
                  ("To", "Corvane Remote Pharmacy, LLC (Chris Hernandez, Director of Pharmacy Operations)"),
-                 ("Approved", "Andrew Harvey, Chief Pharmacy Officer, 21 October 2026")]:
+                 ("Approved", "Andrew Harvey, Chief Pharmacy Officer, 26 October 2026")]:
         c = t.add_row().cells
         c[0].text, c[1].text = k, v
     d.add_heading("Change", level=2)
@@ -236,5 +239,5 @@ def write_cr(path):
         d.add_paragraph(line, style="List Bullet")
     d.core_properties.author = "Shawn Whitaker"
     d.save(path)
-    IO.repack_ooxml(path, "Shawn Whitaker", "Shawn Whitaker", "2026-10-21T13:02:00Z", "2026-10-26T14:15:00Z",
+    IO.repack_ooxml(path, "Shawn Whitaker", "Shawn Whitaker", "2026-10-26T13:02:00Z", "2026-10-26T14:15:00Z",
                     "CR-2291 MSP26 hospital-wide go-live", "Quillfield Regional Medical Center")

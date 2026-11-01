@@ -64,9 +64,20 @@ class Pack:
         self.plan = pd.DataFrame(rows, columns=["week", "dept", "adm", "pd"])
         self.plan["week"] = pd.to_datetime(self.plan["week"])
         q = pd.read_csv(f["queue"], dtype=str, keep_default_na=False)
+        # Each row's clock is read off the alert it carries: a message reaches the queue seconds after its alert
+        # fired, so a stamp four hours ahead of the alert history's local time is UTC and one level with it is
+        # Eastern already (the rows the new queue platform wrote).
+        when = dict(zip(self.hist["alert_id"].astype(int), self.hist["t"]))
+        fired = q["alert_ref"].astype(int).map(when)
+        naive = pd.to_datetime(q["msg_received_utc"].str.rstrip("Z"))
+        q["lead_h"] = (naive - fired).dt.total_seconds() / 3600.0
+        utc_row = q["lead_h"] > 2.0
         for col in ("claimed_utc", "closed_utc", "msg_received_utc"):
-            q[col.replace("_utc", "_et")] = (pd.to_datetime(q[col], utc=True).dt.tz_convert("America/New_York")
-                                             .dt.tz_localize(None))
+            conv = pd.to_datetime(q[col], utc=True).dt.tz_convert("America/New_York").dt.tz_localize(None)
+            raw = pd.to_datetime(q[col].str.rstrip("Z"))
+            q[col.replace("_utc", "_et")] = conv.where(utc_row, raw)
+            q[col.replace("_utc", "_su")] = conv
+        q["utc_row"] = utc_row
         q["handle_min"] = q["handle_min"].astype(float)
         self.queue = q
         self.pocmap = pd.read_csv(f["pocmap"], dtype=str, keep_default_na=False)
@@ -148,6 +159,31 @@ class Pack:
     def golden(self):
         return self.call()
 
+    def call_tasks(self):
+        """The call read with a queue task, not an overridden alert, as the review (the reading Schedule B 2.1 and 2.3
+        rule out): a task is lost only when every alert it carries is lost, and a QT alert opens a task only on an
+        order no other overridden alert already brought to the desk."""
+        g = self.call()
+        c, p = g["c"], g["p"]
+        h = self.hist
+        hb = h[h["dept"].isin(self.going_live) & (h["t"] >= BG0) & (h["t"] < B_END)]
+        rev = hb[hb["alert_rule_id"].isin(EXISTING) & (hb["user_action"] == "Overridden")]
+        bg = self.bg[self.bg["t"] < B_END]
+        bgw = bg[bg["t"] >= BG0]
+        dup_o = set(bg.loc[bg["rule_id"] == DUP, "order_id"])
+        qt_o = set(bg.loc[bg["rule_id"] == QT, "order_id"])
+        lost = 0.0
+        for (_o, _t), grp in rev.groupby(["order_id", "alert_dttm"]):
+            o = grp["order_id"].iloc[0]
+            keep_own = (1 - c) ** (o in dup_o) * (p if o in qt_o else 1.0)
+            all_partner_lost = float(np.prod([c if x in dup_o else 0.0 for x in grp["interacting_order_id"]]))
+            lost += (1 - keep_own) + keep_own * all_partner_lost
+        removed = set(h.loc[h["user_action"] == "Order removed", "order_id"])
+        has_task = set(h.loc[(h["severity"] == "High") & (h["user_action"] == "Overridden"), "order_id"])
+        qt_rows = bgw[(bgw["rule_id"] == QT) & ~bgw["order_id"].isin(removed)]
+        added = p * float((~qt_rows["order_id"].isin(has_task)).sum())
+        return {"added": added * g["scale"], "lost": lost * g["scale"], "net": (added - lost) * g["scale"]}
+
     def rungs(self):
         g = self.call()
         own = self.call(partner=False)
@@ -177,8 +213,12 @@ class Pack:
 
     # ------------------------------------------------------------------ the asks
     def q3_sessions(self, clock="et"):
+        """clock 'et': each row's own clock; 'stored_utc': every stamp read as the UTC its column names; 'raw': the
+        stamps taken as Eastern with no conversion."""
         q = self.queue
-        col = q["closed_et"] if clock == "et" else pd.to_datetime(q["closed_utc"], utc=True).dt.tz_localize(None)
+        col = {"et": q["closed_et"], "stored_utc": q["closed_su"],
+               "raw": pd.to_datetime(q["closed_utc"].str.rstrip("Z"))}[clock]
+        q = q.assign(close_used=col)
         return q[(col >= Q3[0]) & (col < Q3[1])]
 
     def alert_dept(self):
@@ -195,7 +235,8 @@ class Pack:
             pm = dict(zip(self.pocmap["point_of_care"], self.pocmap["point_of_care"]))
             wd = q["poc_location"].str.split("^").str[1].map(pm)
         if time == "timestamps":
-            hrs = (q["closed_et"] - q["claimed_et"]).dt.total_seconds() / 3600.0
+            hrs = (pd.to_datetime(q["closed_utc"].str.rstrip("Z")) - pd.to_datetime(q["claimed_utc"].str.rstrip("Z"))
+                   ).dt.total_seconds() / 3600.0
         elif time == "handle_all":
             hrs = q["handle_min"] / 60.0
         else:   # handle minutes on the signed-off session only
@@ -210,11 +251,14 @@ class Pack:
         return dict(zip(first["alert_id"].astype(int), [int(n[(o, t)]) for o, t in
                                                          zip(first["order_id"], first["alert_dttm"])]))
 
-    def ask_b(self, count="alerts", clock="et"):
+    def ask_b(self, count="alerts", clock="et", scope="all"):
         """Reviews signed off in each shift of each month, July to September 2026."""
         q = self.q3_sessions(clock)
         q = q[q["close_status"] == "Signed off"]
-        ts = q["closed_et"] if clock == "et" else pd.to_datetime(q["closed_utc"], utc=True).dt.tz_localize(None)
+        if scope == "going_live":
+            dept = self.alert_dept()
+            q = q[q["alert_ref"].astype(int).map(dept).isin(self.going_live)]
+        ts = q["close_used"]
         if count == "alerts":
             bs = self.bundle_size()
             n = q["alert_ref"].astype(int).map(bs).fillna(1).astype(int)

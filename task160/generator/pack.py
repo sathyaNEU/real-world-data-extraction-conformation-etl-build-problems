@@ -190,6 +190,9 @@ def shift_of(d):
     return "Night"
 
 
+QUEUE_TRUTH = {}
+
+
 def queue_rows(hist):
     """Corvane's desk: one task per message (an order's overridden high-severity alerts at one signing), sessions
     from claim to sign-off or return, stamped in UTC by the queue platform."""
@@ -254,9 +257,14 @@ def queue_rows(hist):
         for i, (c0, c1, status, hm, ph) in enumerate(sess):
             c0s = c0.replace(microsecond=0)
             c1s = c1.replace(microsecond=0)
+            # rows the new queue platform writes (sessions closing after its cutover) carry Eastern wall-clock
+            # times through the export template that still appends the UTC marker
+            clock = (lambda d: d) if c1s >= P.QUEUE_CUTOVER else to_utc
+            QUEUE_TRUTH[("T%07d" % tid, i + 1)] = (c0s, c1s)
             rows.append(["T%07d" % tid, i + 1, "%010d" % first[0], poc,
-                         to_utc(recv).strftime("%Y-%m-%dT%H:%M:%SZ"), to_utc(c0s).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                         to_utc(c1s).strftime("%Y-%m-%dT%H:%M:%SZ"), status,
+                         clock(recv.replace(microsecond=0)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                         clock(c0s).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                         clock(c1s).strftime("%Y-%m-%dT%H:%M:%SZ"), status,
                          "%.1f" % hm, ph, "QRMC"])
     lo, hi = "2026-06-30T00:00:00Z", "2026-10-02T00:00:00Z"
     return [r for r in rows if lo <= r[6] < hi]

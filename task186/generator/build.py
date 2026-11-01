@@ -91,6 +91,8 @@ def main():
     shutil.copy(os.path.join(a, "gen", "figures.json"), os.path.join(HERE, "figures.json"))
     shutil.copy(os.path.join(a, "metadata.json"), os.path.join(TASK, "metadata.json"))
     cut_zip(os.path.join(TASK, "target"), os.path.join(TASK, "target.zip"))
+    import writeup
+    writeup.main()
     z = hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()
     print("target.zip", z[:8])
     shutil.rmtree(a)

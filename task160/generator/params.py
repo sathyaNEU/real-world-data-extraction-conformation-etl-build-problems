@@ -99,3 +99,4 @@ SEVERE_PAIRS = {("OPI", "SED"), ("SED", "OPI"), ("ACG", "NSA"), ("NSA", "ACG")}
 SHIFTS = (("Day", 7, 15), ("Evening", 15, 23), ("Night", 23, 7))
 P_RETURN = 0.05
 QUEUE_SALT = 606
+QUEUE_CUTOVER = dt.datetime(2026, 8, 3, 6, 0)   # Corvane moves the QRMC queue to its new platform

@@ -147,6 +147,12 @@ def write_all(target, golden, gen):
         "ask_b": {"%s %s" % (ln, q): A.rnd_k(asks_b[(ln, q)]) for ln in P.LANES for q, _, _ in A.QUARTERS},
         "ask_b_raw": {"%s %s" % (ln, q): int(asks_b[(ln, q)]) for ln in P.LANES for q, _, _ in A.QUARTERS},
         "standard_pct": 80, "currency_hours": 20,
+        "designated_below_pct": 75, "others_at_least_pct": 83,
+        "recertified_count": int(len(tab) - len(off)),
+        "masked_ft_count": int(sum(1 for r in masked.itertuples() if r.employment == "Full-time")),
+        "raw_off_count": len(M["r0"]),
+        "pooled_first_raw": round(float(M["pooled_hit_first"]), 5),
+        "pooled_repeat_raw": round(float(M["pooled_hit_repeat"]), 5),
     }
     with open(os.path.join(gen, "figures.json"), "w") as fh:
         json.dump(fig, fh, indent=1, sort_keys=True)
