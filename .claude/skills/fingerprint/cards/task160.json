@@ -1,117 +1,117 @@
 {
-  "task": "task160",
-  "architecture": "v2",
-  "drawn": "2026-11-01",
-  "slot_note": "Batch 3 re-root: fresh world (a remote pharmacy desk's override reviews at a hospital-wide alert package go-live); no seed furniture",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "utilization-access-demand-forecasting",
-  "niche": "a remote clinical pharmacy services firm forecasting the change in override reviews its desk will take from a regional hospital's adult wards in the first thirteen weeks after a medication safety alert package goes live on every ward, when the package's duplicate PRN opioid alert, answered by removing the new order about half the time on the pilot wards, takes away severe interaction alerts that today fire against those orders",
-  "objective": "forecasting",
-  "shape": "single-figure",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "scoring_unit": "other",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task160",
+ "architecture": "v2",
+ "drawn": "2026-11-01",
+ "slot_note": "Batch 3 re-root: fresh world (a remote pharmacy desk's override reviews at a hospital-wide alert package go-live); no seed furniture",
+ "domain": "healthcare-delivery-health-economics",
+ "subdomain": "utilization-access-demand-forecasting",
+ "niche": "a remote clinical pharmacy services firm forecasting the change in override reviews its desk will take from a regional hospital's adult wards in the first thirteen weeks after a medication safety alert package goes live on every ward, when the package's duplicate PRN opioid alert, answered by removing the new order about half the time on the pilot wards, takes away severe interaction alerts that today fire against those orders",
+ "objective": "forecasting",
+ "shape": "single-figure",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "scoring_unit": "other",
+ "answer": "Plan for about 300 more override reviews (to the nearest 100) from Quillfield's adult wards in the 13 weeks from 4 January 2027 than without the go-live: the QT combination alert adds about 500, and about 200 of today's reviews no longer reach the desk.",
+ "answer_source": "task160/submission.md, block 1 (generator/figures.json call_net_change)",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G3",
+  "G9",
+  "G13"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "pilot_log",
+ "stump_strategy": "causal_design",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "With every field read and every filed sentence applied, a strong analyst runs the package's background log as a silent-mode burden study: the QT combination alerts it logged on the wards going live, times the pilot wards' override share, scaled to the volume plan's admissions for the thirteen weeks, and files about 500 more reviews, carrying today's overridden interaction alerts forward unchanged.",
+ "domain_test": "The deciding quantity is the net change in pharmacist override reviews when clinical decision support content goes live, which pharmacy informatics estimates from background (silent) mode alert counts and pilot override rates; the decisive step is that a live interruptive duplicate-therapy alert removes orders and so removes the severe interaction alerts that fire against active orders, and with another field's nouns (help-desk tickets, a software prompt) there is no active-order interaction logic, no duplicate-therapy removal and no severity-gated review for the step to stand on.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:a-live-duplicate-therapy-alert-removes-orders-that-later-interaction-alerts-fire-against",
+ "layer1": [
+  "department names changed format at the November 2025 EHR upgrade",
+  "quarterly extract chunks repeat their boundary day",
+  "background log stamped in UTC against local alert times",
+  "queue export in UTC over a padded date range",
+  "alert references zero-padded in the queue export",
+  "bed-level point of care in the queue against the alert's department",
+  "volume plan by planning week against a census by day"
+ ],
+ "stakeholder_role": "Corvane Remote Pharmacy's director of pharmacy operations, who staffs the override review desk and prices the change order for the go-live",
+ "role_family": "operations_director",
+ "spine": {
+  "file": "QRMC_MedAlertHistory_20250101-20261025.csv",
+  "rows": 48434,
+  "entity": "medication alert",
+  "grain": "one row per alert fired at an order signing",
+  "source": "synthetic, built for this task"
+ },
+ "forum": "operations_desk",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "professional_services",
+ "world": {
+  "geography": "United States (Pennsylvania, Lehigh Valley)",
+  "currency": "USD",
+  "org_type": "a remote clinical pharmacy services firm that reviews a regional hospital's overridden high-severity medication alerts",
+  "invented_names": [
+   "Corvane Remote Pharmacy",
+   "Quillfield Regional Medical Center"
+  ],
+  "people": [
+   "Chris Hernandez",
+   "Shawn Whitaker",
+   "Andrew Harvey"
+  ]
+ },
+ "deliverables": [
+  "msp26_review_forecast_q1_2027.xlsx",
+  "msp26_go_live_review_memo.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "A planned upstream prompt makes a share of responders withdraw an input, and every later prompt that needs that input then never fires; counting the later prompts as the record holds them, or adding only the new prompts' own load, keeps prompts the withdrawals remove, and only tying each would-be upstream prompt to the later prompts on the same input and case, at the withdrawal rate the units already running the upstream prompt show, sizes the forward count.",
+ "driver_concrete": "Live, the package's duplicate PRN opioid alert leads prescribers to remove about 46 per cent of second PRN opioid orders (the pilot wards' answers), and every severe opioid and sedative interaction alert that would fire against a removed order, or on it, never reaches the desk; the background log's QT alerts at the pilot override share add about 500 reviews over the thirteen weeks, and tying each background duplicate-opioid row to today's overridden alerts on the same order or naming it as the interacting order takes away about 200, a net change of about 300.",
+ "stump": "The silent-mode route (the background log's QT combination alerts on the wards going live at the pilot wards' override share, scaled to the plan's admissions) files about 500 more reviews; the step that lands it there is reading the background log as the package's whole effect, when once live the duplicate PRN opioid alert removes about 46 per cent of second opioid orders and the severe interaction alerts that fire against them never reach the desk, a net change of about 300.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task169": "a parole cohort's return rate when a filed change closes a processing route that had pre-empted another, so the record's remaining route understates the outcome; here a new upstream prompt is added, its acceptances withdraw orders that existing prompts fire against, and the new prompt's own background record overstates the added load, sized by tying each would-be prompt to the existing prompts on the same order",
+  "task304": "a placement's forward yield absorbed by a competing service and depleted by a first sweep; here nothing is absorbed or depleted: a planned prompt's live answers remove inputs that existing prompts fire against, at the rate the pilot units show"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-18",
+   "niche": "a multi-state hospital cooperative block-booking the January 2027 agency nurse shifts its 24-hospital winter surge pool funds on surge days, when the respiratory wave reached its Southeast members (Georgia and South Carolina) in late November and its Central members (Tennessee, Kentucky and West Virginia) in mid-December, and the eight northern Michigan hospitals that join the pool this winter have met the wave about four weeks after Central in every winter on file while their lag behind the Southeast moved by weeks",
+   "driver": "A recurring wave reaches each group of units at a stable lag behind the group it spreads from, while its calendar timing and its lag behind the first group it reaches move from cycle to cycle, so a fixed forward window holds whichever groups' waves fall inside it this cycle; carrying what the same window held in past cycles, or timing a group from the first group the wave reaches, misses a group whose wave has always come after the window and this cycle falls wholly inside it.",
+   "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 2,450 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by two weeks or more, puts its wave partly before the block; the North follows Central by about four weeks, and Central's spells began 9 to 17 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
+   "gap": [
     "time",
     "population"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G3",
-    "G9",
-    "G13"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "pilot_log",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "With every field read and every filed sentence applied, a strong analyst runs the package's background log as a silent-mode burden study: the QT combination alerts it logged on the wards going live, times the pilot wards' override share, scaled to the volume plan's admissions for the thirteen weeks, and files about 500 more reviews, carrying today's overridden interaction alerts forward unchanged.",
-  "domain_test": "The deciding quantity is the net change in pharmacist override reviews when clinical decision support content goes live, which pharmacy informatics estimates from background (silent) mode alert counts and pilot override rates; the decisive step is that a live interruptive duplicate-therapy alert removes orders and so removes the severe interaction alerts that fire against active orders, and with another field's nouns (help-desk tickets, a software prompt) there is no active-order interaction logic, no duplicate-therapy removal and no severity-gated review for the step to stand on.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:a-live-duplicate-therapy-alert-removes-orders-that-later-interaction-alerts-fire-against",
-  "layer1": [
-    "department names changed format at the November 2025 EHR upgrade",
-    "quarterly extract chunks repeat their boundary day",
-    "background log stamped in UTC against local alert times",
-    "queue export in UTC over a padded date range",
-    "alert references zero-padded in the queue export",
-    "bed-level point of care in the queue against the alert's department",
-    "volume plan by planning week against a census by day"
-  ],
-  "stakeholder_role": "Corvane Remote Pharmacy's director of pharmacy operations, who staffs the override review desk and prices the change order for the go-live",
-  "role_family": "operations_director",
-  "spine": {
-    "file": "QRMC_MedAlertHistory_20250101-20261025.csv",
-    "rows": 0,
-    "entity": "medication alert",
-    "grain": "one row per alert fired at an order signing",
-    "source": "synthetic, built for this task"
-  },
-  "forum": "operations_desk",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "professional_services",
-  "world": {
-    "geography": "United States (Pennsylvania, Lehigh Valley)",
-    "currency": "USD",
-    "org_type": "a remote clinical pharmacy services firm that reviews a regional hospital's overridden high-severity medication alerts",
-    "invented_names": [
-      "Corvane Remote Pharmacy",
-      "Quillfield Regional Medical Center"
-    ],
-    "people": [
-      "Chris Hernandez",
-      "Shawn Whitaker",
-      "Andrew Harvey"
-    ]
-  },
-  "deliverables": [
-    "msp26_review_forecast_q1_2027.xlsx",
-    "msp26_go_live_review_memo.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A planned upstream prompt makes a share of responders withdraw an input, and every later prompt that needs that input then never fires; counting the later prompts as the record holds them, or adding only the new prompts' own load, keeps prompts the withdrawals remove, and only tying each would-be upstream prompt to the later prompts on the same input and case, at the withdrawal rate the units already running the upstream prompt show, sizes the forward count.",
-  "driver_concrete": "Live, the package's duplicate PRN opioid alert leads prescribers to remove about 46 per cent of second PRN opioid orders (the pilot wards' answers), and every severe opioid and sedative interaction alert that would fire against a removed order, or on it, never reaches the desk; the background log's QT alerts at the pilot override share add about 500 reviews over the thirteen weeks, and tying each background duplicate-opioid row to today's overridden alerts on the same order or naming it as the interacting order takes away about 200, a net change of about 300.",
-  "stump": "The silent-mode route (the background log's QT combination alerts on the wards going live at the pilot wards' override share, scaled to the plan's admissions) files about 500 more reviews; the step that lands it there is reading the background log as the package's whole effect, when once live the duplicate PRN opioid alert removes about 46 per cent of second opioid orders and the severe interaction alerts that fire against them never reach the desk, a net change of about 300.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task169": "a parole cohort's return rate when a filed change closes a processing route that had pre-empted another, so the record's remaining route understates the outcome; here a new upstream prompt is added, its acceptances withdraw orders that existing prompts fire against, and the new prompt's own background record overstates the added load, sized by tying each would-be prompt to the existing prompts on the same order",
-    "task304": "a placement's forward yield absorbed by a competing service and depleted by a first sweep; here nothing is absorbed or depleted: a planned prompt's live answers remove inputs that existing prompts fire against, at the rate the pilot units show"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-18",
-      "niche": "a multi-state hospital cooperative block-booking the January 2027 agency nurse shifts its 24-hospital winter surge pool funds on surge days, when the respiratory wave reached its Southeast members (Georgia and South Carolina) in late November and its Central members (Tennessee, Kentucky and West Virginia) in mid-December, and the eight northern Michigan hospitals that join the pool this winter have met the wave about four weeks after Central in every winter on file while their lag behind the Southeast moved by weeks",
-      "driver": "A recurring wave reaches each group of units at a stable lag behind the group it spreads from, while its calendar timing and its lag behind the first group it reaches move from cycle to cycle, so a fixed forward window holds whichever groups' waves fall inside it this cycle; carrying what the same window held in past cycles, or timing a group from the first group the wave reaches, misses a group whose wave has always come after the window and this cycle falls wholly inside it.",
-      "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 2,450 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by two weeks or more, puts its wave partly before the block; the North follows Central by about four weeks, and Central's spells began 9 to 17 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "generators": [
-        "G16",
-        "G13",
-        "G6"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-18 with no portal result (600 agency RN shifts for January 2027), redrawn as a fresh architecture at the author's instruction; one architecture per world, so the nurse surge-pool world is closed",
-      "shell": {
-        "question_form": "how-many",
-        "opener": "put",
-        "deliverables": "png+xlsx"
-      }
-    }
-  ],
-  "notes": "",
-  "registered": "2026-11-01T22:19:32Z"
+   ],
+   "generators": [
+    "G16",
+    "G13",
+    "G6"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-18 with no portal result (600 agency RN shifts for January 2027), redrawn as a fresh architecture at the author's instruction; one architecture per world, so the nurse surge-pool world is closed",
+   "shell": {
+    "question_form": "how-many",
+    "opener": "put",
+    "deliverables": "png+xlsx"
+   }
+  }
+ ],
+ "notes": "",
+ "registered": "2026-11-01T22:19:32Z"
 }

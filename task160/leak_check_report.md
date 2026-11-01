@@ -1,21 +1,19 @@
 # leak check, task160
 
-**Verdict: LEAK.** 12 files read, 7 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 7 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: region, winter, southeast, closed, member, census, timing, winters, central, hospital, window, members, shifts, behind, staffing, cooperative, capacity, nights, asserted, agency, decisive, register, season, method, forecasting
-
-## 1 file names (LEAK 1)
-- **LEAK** `MSP26_Content_Release_Notes_v2026.2.pdf`: a file whose name says it describes the data (Release_Notes): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+Stump terms swept: background, alerts, duplicate, overridden, removal, record, interacting, history, silent-mode, burden, decisive, volume, removed, register, orders, readable, sentence, schedule, nothing, prompt, boundary, stream, relation, carries, prices
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `Corvane_QRMC_Service_Schedule_B_rev3.pdf`: carries 10 of 14 distinctive words of the committed call: "Plan for about 300 more override reviews (to the nearest 100) from Quillfield's adult wards in the first 13 weeks of the"
 - **REVIEW** `QRMC_CR-2291_MSP26_HospitalWide_GoLive.docx`: carries 9 of 14 distinctive words of the committed call: "Plan for about 300 more override reviews (to the nearest 100) from Quillfield's adult wards in the first 13 weeks of the"
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `Corvane_QRMC_Service_Schedule_B_rev3.pdf`: 4 of 25 stump-paragraph terms appear (region, shifts, staffing, register); read whether the document names the move
-- **REVIEW** `QRMC_CR-2291_MSP26_HospitalWide_GoLive.docx`: 4 of 25 stump-paragraph terms appear (region, census, hospital, register); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `Corvane_QRMC_Service_Schedule_B_rev3.pdf`: 6 of 25 stump-paragraph terms appear (alerts, overridden, volume, register, schedule, prices); read whether the document names the move
+- **REVIEW** `Halverson_MSP26_Release_2026.2_Client_Bulletin.pdf`: 5 of 25 stump-paragraph terms appear (background, duplicate, interacting, orders, nothing); read whether the document names the move
+- **REVIEW** `QRMC_CR-2291_MSP26_HospitalWide_GoLive.docx`: 6 of 25 stump-paragraph terms appear (background, duplicate, history, volume, register, schedule); read whether the document names the move
 
 ## 6 ranking artifacts (INFO 2)
 - **INFO** `CRV_PointOfCare_Map_QRMC.csv`: names 13 of 13 answer-set candidates; confirm it does not rank them on the decision question
@@ -26,6 +24,8 @@ Stump terms swept: region, winter, southeast, closed, member, census, timing, wi
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 

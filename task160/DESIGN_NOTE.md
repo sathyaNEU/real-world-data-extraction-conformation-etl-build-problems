@@ -322,3 +322,107 @@ world is closed. Its leak report is kept as `leak_check_report_arch1.md`.
   team's size, so an all-nil response took half the column and cracking B1 alone kept all 16 (pair 47.3); the nurses a
   staffing office books on the open surge request for its other units (HA7) now give every member 6 to 20, and A2
   reaches Ask B at 15 of 16 (pair with B1 cracked 36.5).
+- The first cut's hospital names: 14 sat within reach of a real hospital or institution (Calhoun Memorial, Little
+  Traverse, Clinton Valley, Fairlane, Lakeshore Macomb, Saginaw General and others, `## Draw` item 10); renamed, every
+  figure unchanged (figures.json byte-identical).
+- The first cut's southern staffing: the pool's season draw spread flat over the season (617) and the south's draw per
+  staffed bed carried to the North (612) both fell in the golden's cell by coincidence, without timing any wave; every
+  southern member's Level 2 staffing was raised by two shifts a day (the North's untouched, the golden unchanged), and
+  this winter's southern amplitude was set at 1.012 and 1.006 so the season's remainder (668) stays a bin off while the
+  scaled construction (591.7) stays in the cell; one quantity, the south's December deficit, finances both, and the
+  window that clears both runs from 48 to 91 shifts (66 built).
+- The rival clause at 2,850: the five Januaries' mean (2,872.8 per night, 2,873 shift by shift) sits two shifts from
+  the 2,875 edge, so the write-up states it as nearly 2,900, which both constructions share.
+- The dictionary's `file, field, definition` sheet, identical to task460's; the persona sweep's place pairs off
+  Schedule A (`## Surface screen`).
+- The chart graded on five parts (21 weekly bars, the agency split, the block weeks marked, the axis, a title) with only
+  the busiest week's total carrying a device: the mirror kept the free parts and both top responses on the call stood
+  at 52.2; the chart is now graded on two labelled figures, the busiest week's funded total and the agency shifts
+  starting that week billed to the pool, both moved by A2 and by the payroll date, and no chart part is free (both on
+  the call 45.0).
+- The uniform-lag world: the North followed the Southeast by 37 to 40 days in every closed winter, so the rule-3
+  audit's aligned analog (the whole census moved onto this winter's Southeast centre or first surge night) and an
+  eyeballed Southeast-to-North lag both filed 602 without reading any region's relation (P(both) about 0.12); West and
+  Central now trails the Southeast by 4 to 32 days across the closed winters and the North follows West and Central by
+  30 to 33, with the North's wastewater tied to West and Central's, so every Southeast-anchored route misses by a full
+  bin or more (aligned 1,094 to 1,282, eyeballed 0 to 90, wastewater 14) and every West and Central route files 602.
+- Inland Seas' payroll date left undocumented (B1 silent, backing A2 at all 16): the judge read it as an ask-side fork,
+  a convention no shipped sentence filed; the dictionary now files it in the pool office's voice for both workbooks, B1
+  is a convention the cracker executes, and the ask layer rests on A2 alone (pair with A2 cracked 56.0, against 35.7
+  when B1 was silent).
+- The block book's even halves, the register's uniform plan-revision dates, the query labels in Inland Seas' timesheet
+  detail ("Billed to pool after stand-down") and typed block totals that, in the regional-lag world, sat above every
+  January's draw: each read as made by hand; the splits follow the season's Schedule A slots with an agency confirming
+  short in some seasons, each member's plan carries its own revision history on working days (the North's dated when
+  each joined), the detail tab carries the agency's order numbers and request references, and each later block is the
+  last January's draw carried, the pool manager's practice.
+- The write-up's basis at 602.4 and the rival clause "not none, the pool's own draw in the same weeks after each closed
+  winter's peak": the judge's own North waves averaged 604.4 and read the clause as garbled; blocks 1 to 3 state the
+  basis as about 600, the precision every defensible construction shares, with one plain clause per rival and the
+  Southeast-timed rival named without a figure, its constructions running from none to 1,282.
+- Ask A resting on A2 alone: with A2 cracked the asks fell whole (the pair 56.0 against the bar of 40); Crestfield's
+  late-cancellation lines (D3: four hours billed on one line against a booked shift no nurse worked, clause 4.2 filed
+  as a rate term) now reach all 16 members in both columns, and each device cracked alone keeps the pair at 30.1 and
+  31.7.
+- D3's first build billed every worked night at twelve hours, so a night across the November clock change, thirteen
+  hours long, billed fewer hours than it spanned, as a cancellation does; worked lines now bill the hours as worked (11
+  or 13 across a change), and only a cancellation bills fewer hours than it spans (asserted).
+- The one-state world (the Two Peninsulas Hospital Association, Michigan): the North a month behind West and Central
+  and West and Central four days to a month behind Metro Detroit are lags no single state's season shows, where a wave
+  crosses the state in days, and the rule-3 recheck read them as implausible; the pool moved to a three-region
+  cooperative (Georgia and South Carolina, Tennessee, Kentucky and West Virginia, northern Michigan), Central 3.5 to
+  14.5 days behind the Southeast and the North 26 to 34 behind Central, that lag moving about four days either way.
+- Lockstep onsets and copied shapes: 8 of 9 Southeast members first surged on the same night this winter, tighter than
+  in any closed winter, and every member's wave had nearly the same width and height (amplitudes within about four per
+  cent); each member now carries its own stable offset, its own winter jitter, its own size and its own rise and fall (a
+  wave rising faster than it falls), and this winter's southern onsets spread over a week like the closed winters' (at
+  most five members of a region share a first night in any winter, asserted).
+- The first multi-state tuning: Central's spells this winter ran past 31 December at their longest closed length and
+  the North's typical wave touched both block edges; Central's spells were narrowed, its gap this winter set at two and
+  a half weeks, the North's spells narrowed and its surge staffing raised so each wave stays whole at about 600.
+- The draw-weighted centre left open: aligning the whole census on the season's draw-weighted centre filed 598.8 on the
+  fcb08fab cut without reading any region's relation; in the multi-state world it files 242 (118 and 391 with the anchor
+  three days either side), asserted a full bin off.
+- The first season's even block split, back in the multi-state block book: each member's Crestfield skeleton slot now
+  enters the season's Schedule A slots, so no season splits evenly.
+- The first multi-state lags: across the five closed winters the North's lag behind Central fell, by chance, with the
+  Southeast's timing and rose with Central's gap, so a regression of the North's centre on both southern regions'
+  centres beat Central's lag out of sample (1.8 days against 3.5 left out one winter at a time) and, carried to this
+  winter's early Southeast, put the North in February and filed none; the North's lags were re-drawn (26.0 to 34.25
+  days, the same spread) so the record carries no such fit: that regression now misses by 15.6 days out of sample and
+  files 600, and its first-night twin misses by 6.6 against Central's 3.1 and files 54 (asserted, OOS and REFLEX).
+- Every activation in the declaration log numbered as a pool surge request (SR-), the North's before it joined
+  included, with no line on why the northern members stayed out of the pool until 2026: the recheck read both as loose
+  ends of the joining; the North's pre-pool activations carry their own capacity-reporting numbers (CAP-) and the
+  dictionary says when and why they joined (asserted, REAL), every figure unchanged.
+- Architecture 1 (the cooperative's January 2027 agency nurse block, 600 shifts): re-rooted 2026-11-01 at the Batch 3
+  queue reset, shipped 2026-10-18 with no portal result; one architecture per world, so the surge-pool world is closed.
+- Architecture 2's first pre-emptor, the renal dosing alert removing a drug a later interaction alert needed (prototype
+  p1): the lever moved about 2 per cent of the reviews, under a tenth of a bin; the duplicate PRN opioid rule took its
+  place, its removals reaching the opioid and sedative interaction alerts that make up much of the review stream.
+- A pilot before-and-after comparison as a route (pilot units' reviews per admission before and after their go-live,
+  carried to the other units): it filed 731 to 1,130 in the prototype, off the case mix of oncology and palliative care,
+  and it would have been a confounded rival estimator; the pilot units now run the package live from before the
+  extract begins, so no before period exists.
+- Severe interaction alerts accepted at 36 per cent: orders removed by a pre-empted alert survive once live and their
+  other alerts become reviews, a second-order term at 14 per cent of the net; acceptance set at 12 per cent (an 88 per
+  cent override share, as such alerts run) cut it to 16 reviews projected, asserted inside the bin (SF13).
+- Seeds 160 to 168 and 170: standing families 35 to 116 reviews wide (seed 160's low-side combination three from the
+  250 edge, seed 166's crossing it); seed 169 at 28, then the going-live units' second QT drug and second PRN opioid
+  propensities rescaled to centre the net, the QT reviews and the reviews lost in their bins.
+- Guard axes redrawn at the draw: role capacity_planner (task123 v3), generator G11 first ((population, G11) repeats
+  task141 v4), (population, G3) (task138 and task273 inside the batch), forcing cutover_or_migration (the honest label
+  is launch_or_rollout); personas Judith Harrison and Sheila Frazier (people.first WARNs).
+- A first-cut ask on the share of reviews signed off within 60 minutes of the override, its device an interface
+  outage's late deliveries: the pin "of the override" points at the history's override time and spends the device, and
+  the outage touched two of nine cells; replaced by Ask B's count by shift.
+- Schedule B 2.1 first said a review counts "whether it reaches the desk alone or in one message with other alerts",
+  and a 3.3 named the alert history as the record of where each alert fired: the first filed Ask B's device, the second
+  pointed every reader at Ask A's link; both cut, the WHAT kept ("One overridden alert is one review"; desk time by the
+  department in which the alert fired).
+- Ask A's decant first moved three ward pairs on one date: ten of fifteen figures were free to the cracker (pair 47);
+  five pairs now move on five dates from 20 July (pair 40.0).
+- The vendor file first named "Release_Notes": leak.py sweep 1 reads a release-notes name as a describing file; renamed
+  as the client bulletin it is.
+- Unit 3E first named "3 East Neuroscience": the write-up's figure check reads "eur" as a currency next to the ward's
+  hours; renamed 3 East Stroke and Spine, every figure unchanged.
