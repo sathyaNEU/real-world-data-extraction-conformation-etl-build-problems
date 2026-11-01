@@ -344,9 +344,13 @@ Measured by: generator/ceiling.py (run on the cut pack)
      player's display count unchanged across the night's work (SF25).
   4. The repeated asset tag was a moved screen whose old row was left open; every moved screen's old row is now closed
      on the day it moved (B4).
-- Free gates on the repaired cut: checks.py 78 of 78; verify.py 7 of 7 on its own code path (it finds the empty band
-  from the data); two builds byte-identical over 18 files; figures_check.py, precut.py, voice-check.py, leak.py,
-  guard.py heart and surface as recorded in pipeline.json; ceiling.py pair 38.3, mirror 17.9.
+- Free gates on the repaired cut (target.zip bbcaedf8): checks.py 78 of 78; verify.py 7 of 7 on its own code path
+  (it finds the empty band from the data); two builds byte-identical over 18 files; figures_check.py 64 of 64;
+  precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS; leak.py --asof 2026-11-13 REVIEW (the three lines of the
+  Leak record); guard.py heart WARN only (repeat.gate_g against task125 v4, drawn 2026-10-31, which became one of the
+  last two draws when task133 and task138 re-registered; method_or_model_selection is this build's honest mechanism,
+  so it stands); guard.py surface 10 pairs for the author's adjudication, nearest task254 back to back on G7;
+  ceiling.py pair 38.3, mirror 17.9.
 
 ## Architecture 1 record (spent 2026-11-01)
 
