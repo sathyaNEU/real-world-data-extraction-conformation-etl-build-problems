@@ -21,14 +21,14 @@ FILES = {
     "qcew": "qcew_private_establishments_2024q4_2026q4.csv",
     "wages": "ui_wage_records_2024q4_2026q4.txt",
     "guideline": "formation_counties_program_guideline_2027.pdf",
-    "dict": "lmi_research_extract_dictionary.xlsx",
-    "manifest": "extract_manifest_2027-05-14.csv",
     "counties": "lornock_county_codes.csv",
     "pop": "lornock_county_population_estimates_2020_2026.csv",
     "sos": "sos_new_entity_filings_2025_2026.csv",
     "grants": "formation_grant_disbursements_fy2026.xlsx",
+    "naics": "naics_2017_to_2022_crosswalk_lornock.csv",
+    "laus": "laus_county_labor_force_2025_2026.csv",
 }
-DISTRACTORS = ["pop", "sos", "grants"]
+DISTRACTORS = ["pop", "sos", "grants", "laus"]
 
 # county code, name, seat, ZIP codes (ZIP, postal town); codes are the state's three-digit county codes
 COUNTIES = [

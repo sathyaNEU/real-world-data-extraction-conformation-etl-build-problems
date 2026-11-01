@@ -439,11 +439,9 @@ def run(target, golden_dir, world=None, meta_path=None):
 
     # ---------------------------------------------------------------- registers (H9) and the fiction (H24)
     import csv as _csv
-    man = [r["file_name"] for r in _csv.DictReader(open(os.path.join(target, W.FILES["manifest"]), encoding="utf-8"))]
-    ok("H9: the manifest names exactly the shipped files", sorted(man) == files, "%d named" % len(man))
-    dwb = openpyxl_load(os.path.join(target, W.FILES["dict"]))
-    dfiles = [r[0] for r in dwb["Files"].iter_rows(min_row=5, values_only=True) if r[0]]
-    ok("H9: the dictionary's Files sheet names exactly the shipped files", sorted(dfiles) == files, "%d named" % len(dfiles))
+    ok("H9: the pack holds exactly the files the generator names", files == sorted(W.FILES.values()), "%d" % len(files))
+    ok("H9: no dictionary, manifest, readme or field notes ship",
+       not [f for f in files if re.search(r"dictionar|manifest|readme|field_notes|codebook|schema", f, re.I)], "")
     tell = []
     for f in files:
         p = os.path.join(target, f)

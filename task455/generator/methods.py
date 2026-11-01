@@ -42,7 +42,7 @@ class Bundle:
         wag[rows, q["qi"].to_numpy()] = q["total_qtrly_wages"].to_numpy()
         self.emp, self.wag = emp, wag
         self.reg_by = self.reg.set_index("account_no")
-        self.county = self.reg_by["county_code"].to_dict()
+        self.county = self.reg_by["worksite_county_code"].to_dict()
         self.qcounty = {(a, qi): c for a, qi, c in zip(q["account_no"], q["qi"], q["county_code"])}
         has = emp > 0
         self.first_m = np.where(has.any(1), has.argmax(1), -1)
@@ -54,8 +54,8 @@ class Bundle:
         for wk, ac, qi in zip(w["worker_key"], w["account_no"], w["qi"]):
             self.payers[(wk, qi)].add(ac)
             self.paid[(ac, qi)].add(wk)
-        self.pred = {r["account_no"]: r["predecessor_account"] for _, r in self.reg.iterrows()
-                     if r["predecessor_account"]}
+        self.pred = {r["account_no"]: r["experience_transfer_from"] for _, r in self.reg.iterrows()
+                     if r["experience_transfer_from"]}
 
     # ------------------------------------------------------------- populations
     def new_accounts(self, year, liability=True):

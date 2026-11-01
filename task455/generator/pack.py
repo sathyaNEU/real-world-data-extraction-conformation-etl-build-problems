@@ -58,19 +58,19 @@ def register_rows(world, nums):
         rows.append({
             "account_no": nums[a.idx], "legal_name": a.legal, "trade_name": a.trade, "fein": a.fein,
             "worksite_address": street, "worksite_city": city, "worksite_zip": a.zip,
-            "county_code": W.CODE[a.county], "naics_code": a.naics17 if legacy else a.naics22,
+            "worksite_county_code": W.CODE[a.county], "naics_code": a.naics17 if legacy else a.naics22,
             "naics_vintage": "2017" if legacy else "2022", "ownership_code": "5",
             "registration_date": a.reg.isoformat(), "liability_date": a.liab.isoformat() if a.liab else "",
             "status": "INACTIVE" if inact else "ACTIVE", "inactivation_date": inact.isoformat() if inact else "",
-            "predecessor_account": pred, "transfer_date": tdate,
+            "experience_transfer_from": pred, "experience_transfer_date": tdate,
         })
     rows.sort(key=lambda r: r["account_no"])
     return rows
 
 
 REGISTER_COLS = ["account_no", "legal_name", "trade_name", "fein", "worksite_address", "worksite_city", "worksite_zip",
-                 "county_code", "naics_code", "naics_vintage", "ownership_code", "registration_date", "liability_date",
-                 "status", "inactivation_date", "predecessor_account", "transfer_date"]
+                 "worksite_county_code", "naics_code", "naics_vintage", "ownership_code", "registration_date",
+                 "liability_date", "status", "inactivation_date", "experience_transfer_from", "experience_transfer_date"]
 QCEW_COLS = ["account_no", "year", "qtr", "county_code", "naics_code", "own_code", "month1_emplvl", "month2_emplvl",
              "month3_emplvl", "total_qtrly_wages", "taxable_qtrly_wages"]
 
@@ -119,6 +119,46 @@ def write_counties(path):
     rows = [{"county_code": c, "county_name": n, "region": "Lornock Valley Development Region", "county_seat": s}
             for c, n, s, _ in W.COUNTIES]
     return write_csv(path, ["county_code", "county_name", "region", "county_seat"], rows)
+
+
+def write_naics_crosswalk(path):
+    """The bureau's reference table: each NAICS 2017 code on the region's accounts and its 2022 code and title."""
+    pairs = sorted({(n17, n22) for n22, n17, *_ in W.INDUSTRIES + W.SEASONAL_INDUSTRIES})
+    rows = [{"naics_2017": n17, "naics_2022": n22, "naics_2022_title": W.TITLES[n22],
+             "change": "code changed" if n17 != n22 else "no change"} for n17, n22 in pairs]
+    return write_csv(path, ["naics_2017", "naics_2022", "naics_2022_title", "change"], rows)
+
+
+# LAUS: labour force as a share of the population 16 to 64, the annual unemployment rate and its seasonal swing
+# (the lake and recreation counties swing widest)
+LAUS_LF = {"Brennock": 0.792, "Caldmere": 0.761, "Dunrath": 0.784, "Eskwell": 0.803, "Fennamore": 0.771,
+           "Quarrin": 0.776, "Tolbeck": 0.788}
+LAUS_UR = {"Brennock": (3.6, 3.4), "Caldmere": (4.6, 4.8), "Dunrath": (3.9, 3.7), "Eskwell": (3.3, 3.2),
+           "Fennamore": (4.4, 4.5), "Quarrin": (4.1, 3.9), "Tolbeck": (3.8, 3.6)}
+LAUS_SWING = {"Brennock": 0.6, "Caldmere": 1.4, "Dunrath": 0.7, "Eskwell": 1.1, "Fennamore": 0.9, "Quarrin": 0.8,
+              "Tolbeck": 1.2}
+
+
+def write_laus(path):
+    """Local Area Unemployment Statistics for the seven counties, monthly, not seasonally adjusted, 2026 as revised
+    with the annual benchmark."""
+    import math
+    rng = np.random.default_rng(W.SEED + 51)
+    rows = []
+    for code, name, _, _ in W.COUNTIES:
+        for y in (2025, 2026):
+            wa = POP[name] * (1 + GROWTH[name]) ** (y - 2020) * (0.603 - 0.0021 * (y - 2020))
+            for m in range(1, 13):
+                season = math.cos(2 * math.pi * (m - 1.5) / 12)          # high in winter, low in late summer
+                lf = int(round(wa * LAUS_LF[name] * (1 - 0.018 * season) + rng.normal(0, 30)))
+                ur = LAUS_UR[name][y - 2025] + LAUS_SWING[name] * season + rng.normal(0, 0.12)
+                un = int(round(lf * ur / 100))
+                rows.append({"laus_area_code": "CN%s00000000000" % code, "county_name": "%s County" % name, "year": y,
+                             "period": "M%02d" % m, "civilian_labor_force": lf, "employed": lf - un, "unemployed": un,
+                             "unemployment_rate": "%.1f" % (100.0 * un / lf), "seasonal_adjustment": "U",
+                             "benchmark_vintage": "2026"})
+    return write_csv(path, ["laus_area_code", "county_name", "year", "period", "civilian_labor_force", "employed",
+                            "unemployed", "unemployment_rate", "seasonal_adjustment", "benchmark_vintage"], rows)
 
 
 POP = {"Brennock": 41_873, "Caldmere": 17_914, "Dunrath": 33_406, "Eskwell": 18_652, "Fennamore": 29_731,
@@ -201,7 +241,7 @@ def write_grants(path):
     ws["A1"].font = Font(bold=True)
     ws.append(["Department of Commerce, Office of Business Development. Grant period 2025 to 2027."])
     ws.append([])
-    ws.append(["Payment date", "Grantee", "County", "Grant number", "Purpose", "Amount (USD)"])
+    ws.append(["Pay date", "Grantee", "Grantee county", "Grant no.", "Use of funds", "Amount (USD)"])
     for c in ws[4]:
         c.font = Font(bold=True)
     grantees = [("Brennock County Economic Development Authority", "Brennock", "FC-2025-011"),

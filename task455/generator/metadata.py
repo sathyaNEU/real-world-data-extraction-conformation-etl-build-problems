@@ -17,8 +17,10 @@ SOURCES = {
     F["counties"]: "the region's county codes",
     F["guideline"]: "the Department of Commerce's Formation Counties Program designation guideline FC-G-2027-01 "
                     "(issued 2 February 2027)",
-    F["dict"]: "the Labor Market Information Bureau's data dictionary for the research extract",
-    F["manifest"]: "the list of the files in the bureau's extract of 14 May 2027",
+    F["naics"]: "the Labor Market Information Bureau's NAICS 2017 to 2022 crosswalk for the industry codes on the "
+                "region's accounts (codes and 2022 titles from the North American Industry Classification System)",
+    F["laus"]: "the bureau's Local Area Unemployment Statistics for the seven counties, monthly 2025 and 2026, not "
+               "seasonally adjusted",
     F["pop"]: "the state demographer's July 1 county population estimates, vintage 2026",
     F["sos"]: "the Secretary of State's new business entity filings with a principal office in the seven counties, "
               "2025 and 2026",
@@ -47,13 +49,11 @@ def write(target, out_path):
     meta = {
         "task": "task455",
         "architecture": 2,
-        "title": "Which three of the Lornock Valley's seven counties the state Commerce Department designates as "
-                 "Formation Counties for 2027 to 2029 on their 2026 establishment birth rates, conformed from the UI "
-                 "employer register, quarterly contribution reports and wage records",
+        "title": "Which three Lornock Valley counties the state Commerce Department designates as "
+                 "Formation Counties for 2027 to 2029 on their 2026 establishment birth rates",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "census-register-administrative-data-quality (business demography from an administrative "
-                     "employer register: establishment births separated from businesses continuing under a new "
-                     "employer account by the continuity of their workforce)",
+        "subdomain": "census-register-administrative-data-quality (county establishment birth rates for business "
+                     "demography from state unemployment insurance administrative data)",
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "01: a ranked list under a cap (seven counties, three designated), with each county's births, "
                         "set-aside accounts and rate, the runner-up and gap, and each county's 2025 births and deaths "

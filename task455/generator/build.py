@@ -50,14 +50,12 @@ def build(out, quiet=False, docs=True):
     n["pop"] = P.write_population(f("pop"))
     n["sos"] = P.write_sos(f("sos"), w, nums)
     n["grants"] = P.write_grants(f("grants"))
+    n["naics"] = P.write_naics_crosswalk(f("naics"))
+    n["laus"] = P.write_laus(f("laus"))
     if docs:
         import docs as DC
         import postprocess as PP
         DC.write_guideline(f("guideline"))
-        DC.write_dictionary(f("dict"), n)
-        n["manifest"] = DC.write_manifest(f("manifest"), n)
-        PP.normalize_ooxml(f("dict"), W.PEOPLE["economist"], W.PEOPLE["economist"], "2026-11-18T15:20:00Z",
-                           "2027-05-14T21:31:07Z", excel=True, company=W.ORG_LMI.split(", ")[0])
         PP.normalize_ooxml(f("grants"), W.PEOPLE["director"], W.PEOPLE["director"], "2025-07-09T14:02:00Z",
                            "2026-07-22T19:47:33Z", excel=True, company="Department of Commerce")
         PP.normalize_pdf(f("guideline"), b"D:20270201163512-06'00'", b"D:20270202091408-06'00'")

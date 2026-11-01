@@ -1,6 +1,4 @@
-"""The pack's documents: the Department of Commerce's designation guideline for the Formation Counties Program,
-the Labor Market Information Bureau's data dictionary for the research extract, and the extract manifest."""
-import csv
+"""The pack's document: the Department of Commerce's designation guideline for the Formation Counties Program."""
 
 from reportlab import rl_config
 
@@ -67,7 +65,9 @@ def write_guideline(path):
     s.append(P("3.2&nbsp;&nbsp;<b>County.</b> An establishment is counted in the county in which its worksite lies."))
     s.append(P("3.3&nbsp;&nbsp;<b>Birth.</b> An establishment that first reported employment in 2026 and whose business "
                "did not operate before under another employer account. A business that is sold, reorganised or "
-               "changes its legal form and goes on under a new employer account continues; it is not a birth."))
+               "changes its legal form and goes on under a new employer account continues; it is not a birth. An "
+               "establishment's first reported employment is the first it ever reported under its account, not the "
+               "first in the year being measured."))
     s.append(P("3.4&nbsp;&nbsp;<b>Birth rate.</b> A county's births per 100 of its private establishments that reported "
                "employment in at least one month of the fourth quarter of 2025."))
     s.append(Paragraph("4. Rates", H2))
@@ -119,151 +119,3 @@ def write_guideline(path):
     s.append(ta)
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
-
-FILE_ROWS = {
-    "register": "Every private employer account with a worksite in the seven counties that was open at any time from 1 "
-                "October 2024 to the extract, including accounts opened that have not yet reported employment. One row "
-                "per account, as the register stood on 14 May 2027.",
-    "qcew": "The quarterly contribution reports (QCEW) of those accounts, fourth quarter of 2024 to fourth quarter of "
-            "2026. One row per account and quarter in which the account was open; an open account reports every "
-            "quarter, with zero employment when it employed no one. Reports for the fourth quarter of 2026 as received "
-            "by the extract.",
-    "wages": "The quarterly wage reports of those accounts: one row per worker, account and quarter in which the account "
-             "paid the worker wages. Pipe-delimited text with a header line.",
-    "counties": "The region's county codes.",
-    "guideline": "Department of Commerce guideline FC-G-2027-01 (designation of Formation Counties for 2027 to 2029).",
-    "dict": "This dictionary.",
-    "manifest": "The list of the files in the extract.",
-    "pop": "The state demographer's July 1 population estimates for the seven counties, vintage 2026.",
-    "sos": "New business entity filings with the Secretary of State, 2025 and 2026, with a principal office in the "
-           "seven counties.",
-    "grants": "Formation Counties Program grant disbursements in fiscal year 2026 (the 2025 to 2027 grant period).",
-}
-
-FIELDS = [
-    ("register", "account_no", "UI employer account number. Accounts opened since the UI tax system replacement went live "
-                               "on 1 January 2025 are numbered from 800000000 in the order they were opened."),
-    ("register", "legal_name", "Legal name of the employing entity."),
-    ("register", "trade_name", "Name the employer does business under at the worksite."),
-    ("register", "fein", "Federal employer identification number."),
-    ("register", "worksite_address", "Street address of the worksite. Accounts carried over from the previous system "
-                                     "keep the address as it was keyed there; accounts opened since 1 January 2025 carry "
-                                     "it as the new system standardises it."),
-    ("register", "worksite_city", "Postal city of the worksite."),
-    ("register", "worksite_zip", "ZIP code of the worksite."),
-    ("register", "county_code", "County in which the worksite lies, geocoded from the worksite address (see Codes)."),
-    ("register", "naics_code", "Industry code (NAICS) on the account."),
-    ("register", "naics_vintage", "NAICS edition of naics_code: 2017 for accounts carried over from the previous system, "
-                                  "2022 for accounts opened since."),
-    ("register", "ownership_code", "Ownership: 5 private."),
-    ("register", "registration_date", "Date the account was opened."),
-    ("register", "liability_date", "Date of the first payroll that made the employer liable under the state's "
-                                   "unemployment insurance law."),
-    ("register", "status", "ACTIVE or INACTIVE on the extract date."),
-    ("register", "inactivation_date", "Date the account was closed. An account stays open until the employer reports "
-                                      "that it has stopped employing or the tax unit closes it after four quarters "
-                                      "without employment."),
-    ("register", "predecessor_account", "Account whose experience rating was transferred to this account on the "
-                                        "employer's application (Form UI-22), recorded when the tax unit approves the "
-                                        "transfer. A transfer is required where the businesses are under common "
-                                        "ownership, management or control and is otherwise optional; an employer that "
-                                        "takes over a business without applying has no predecessor recorded."),
-    ("register", "transfer_date", "Effective date of the experience transfer."),
-    ("qcew", "account_no", "UI employer account number."),
-    ("qcew", "year", "Year of the report."),
-    ("qcew", "qtr", "Quarter of the report (1 to 4)."),
-    ("qcew", "county_code", "County of the worksite as assigned for the quarter: from the worksite ZIP code through the "
-                            "second quarter of 2025, and by geocoding the worksite street address from the third quarter "
-                            "of 2025."),
-    ("qcew", "naics_code", "Industry code for the quarter (NAICS 2022)."),
-    ("qcew", "own_code", "Ownership: 5 private."),
-    ("qcew", "month1_emplvl", "Workers on the payroll for the pay period including the 12th of the first month of the "
-                              "quarter."),
-    ("qcew", "month2_emplvl", "The same for the second month."),
-    ("qcew", "month3_emplvl", "The same for the third month."),
-    ("qcew", "total_qtrly_wages", "Wages paid in the quarter, dollars."),
-    ("qcew", "taxable_qtrly_wages", "Wages paid in the quarter up to the taxable wage base of $14,500 a worker a year, "
-                                    "dollars."),
-    ("wages", "worker_key", "The bureau's protected key for the worker's Social Security number, the same for a worker "
-                            "in every account and quarter."),
-    ("wages", "account_no", "UI employer account number of the paying account."),
-    ("wages", "year", "Year the wages were paid."),
-    ("wages", "qtr", "Quarter the wages were paid (1 to 4)."),
-    ("wages", "wages", "Wages the account paid the worker in the quarter, dollars."),
-    ("counties", "county_code", "Three-digit county code used in the register and the reports."),
-    ("counties", "county_name", "County name."),
-    ("counties", "region", "Development region."),
-    ("counties", "county_seat", "County seat."),
-]
-
-
-def write_dictionary(path, counts):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Files"
-    ws.append(["Lornock Valley research extract of 14 May 2027: files"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Labor Market Information Bureau, Business Dynamics Unit. Prepared for the Formation Counties "
-               "designation under data sharing agreement DWS-DOC-2023-07."])
-    ws.append([])
-    ws.append(["File", "Contents", "Rows"])
-    for c in ws[4]:
-        c.font = Font(bold=True)
-    for k in ("register", "qcew", "wages", "counties", "guideline", "pop", "sos", "grants", "manifest", "dict"):
-        ws.append([W.FILES[k], FILE_ROWS[k], counts.get(k)])
-    for row in ws.iter_rows(min_row=5):
-        row[1].alignment = Alignment(wrap_text=True, vertical="top")
-        row[0].alignment = Alignment(vertical="top")
-    ws.column_dimensions["A"].width = 48
-    ws.column_dimensions["B"].width = 96
-    ws.column_dimensions["C"].width = 10
-    f = wb.create_sheet("Fields")
-    f.append(["File", "Field", "Description"])
-    for c in f[1]:
-        c.font = Font(bold=True)
-    for k, fld, desc in FIELDS:
-        f.append([W.FILES[k], fld, desc])
-        f.cell(f.max_row, 3).alignment = Alignment(wrap_text=True, vertical="top")
-    f.column_dimensions["A"].width = 46
-    f.column_dimensions["B"].width = 22
-    f.column_dimensions["C"].width = 100
-    c = wb.create_sheet("Codes")
-    c.append(["Field", "Code", "Meaning"])
-    for cell in c[1]:
-        cell.font = Font(bold=True)
-    for code, name, seat, _ in W.COUNTIES:
-        c.append(["county_code", code, "%s County" % name])
-    c.append(["ownership_code / own_code", "5", "Private"])
-    c.append(["status", "ACTIVE", "Account open on the extract date"])
-    c.append(["status", "INACTIVE", "Account closed (inactivation_date)"])
-    c.append(["naics_vintage", "2017", "North American Industry Classification System, 2017 edition"])
-    c.append(["naics_vintage", "2022", "North American Industry Classification System, 2022 edition"])
-    c.column_dimensions["A"].width = 26
-    c.column_dimensions["B"].width = 10
-    c.column_dimensions["C"].width = 60
-    wb.save(path)
-
-
-def write_manifest(path, counts):
-    rows = [("register", "UI employer register", "accounts open 2024-10-01 to 2027-05-14", "UI tax system (employer accounts)"),
-            ("qcew", "Quarterly contribution reports", "2024Q4 to 2026Q4", "UI tax system (contribution reports)"),
-            ("wages", "Quarterly wage reports", "2024Q4 to 2026Q4", "UI wage record system"),
-            ("counties", "County codes", "", "LMI Bureau reference tables"),
-            ("guideline", "Program guideline FC-G-2027-01", "issued 2027-02-02", "Department of Commerce"),
-            ("pop", "County population estimates", "2020 to 2026", "State demographer"),
-            ("sos", "Secretary of State entity filings", "2025-01-01 to 2026-12-31", "Secretary of State business filings"),
-            ("grants", "Formation Counties grant disbursements", "FY2026", "Department of Commerce, Office of Business Development"),
-            ("dict", "Data dictionary", "", "LMI Bureau"),
-            ]
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["file_name", "title", "rows", "period", "source", "prepared_by", "extract_date"])
-        for k, title, period, src in rows:
-            w.writerow([W.FILES[k], title, counts.get(k, ""), period, src,
-                        "LMI Bureau, Business Dynamics Unit" if k in ("register", "qcew", "wages", "counties", "dict")
-                        else "received by the LMI Bureau", W.EXTRACT.isoformat()])
-        w.writerow([W.FILES["manifest"], "Extract manifest", len(rows) + 1, "", "LMI Bureau",
-                    "LMI Bureau, Business Dynamics Unit", W.EXTRACT.isoformat()])
-    return len(rows) + 1

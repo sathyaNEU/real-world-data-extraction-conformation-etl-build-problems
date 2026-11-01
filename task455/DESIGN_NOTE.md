@@ -54,9 +54,13 @@ examiner's error matrix) is in the card's lineage and the last line of `## Tried
   county as assigned, industry, monthly employment, total and taxable wages; about 60,000 rows);
   `ui_wage_records_2024q4_2026q4.txt` (pipe-delimited, protected worker key, account, quarter, wages; about 650,000
   rows); `formation_counties_program_guideline_2027.pdf` (the Commerce Department's guideline: designation rule, birth
-  definition, base, county, data); `lmi_research_extract_dictionary.xlsx`; `extract_manifest_2027-05-14.csv`;
-  `lornock_county_codes.csv`; distractors: `lornock_county_population_estimates_2020_2026.csv`,
-  `sos_new_entity_filings_2025_2026.csv` and `formation_grant_disbursements_fy2026.xlsx`.
+  definition, base, county, data); `lornock_county_codes.csv`; `naics_2017_to_2022_crosswalk_lornock.csv` (the
+  bureau's reference table for the two NAICS vintages on the register); distractors:
+  `lornock_county_population_estimates_2020_2026.csv`, `sos_new_entity_filings_2025_2026.csv`,
+  `formation_grant_disbursements_fy2026.xlsx` and `laus_county_labor_force_2025_2026.csv` (the bureau's monthly county
+  labour force). The data dictionary and the extract manifest shipped at first were removed at the 2026-11-01
+  re-check (leak.py sweep 1); the register's own headers carry what the dictionary said a solver needs
+  (`worksite_county_code`, `experience_transfer_from`, `experience_transfer_date`).
 - **Forcing fact:** the legislature's 2027 to 2029 appropriation requires the designation by 30 June 2027; the extract
   is dated 14 May 2027, after the 2026 fourth-quarter reports were due on 30 April. The measure is a closed year because
   the guideline designates on the latest full year; the call (which counties receive 2027 to 2029 grants) faces forward.
@@ -149,20 +153,46 @@ Dunrath, Eskwell and Quarrin.
   establishments reporting employment in at least one month of the fourth quarter of 2025), the unit (the establishment)
   and the comparison (the three highest rates, compared unrounded).
 - No decoy: no memo, draft, briefing or published figure carries a ranking or a birth count; the register's predecessor
-  field is the UI program's own record of approved transfers, true where it is filled, and its dictionary entry says it
-  is filled only on an application.
+  field (`experience_transfer_from`) is the UI tax system's own record of experience-rating transfers, true where it
+  is filled, and its header names it as a tax transfer, not a record of every business that went on.
 - No certified replay: no published or certified birth count ships, so nothing is recovered by reproducing figures.
 - Lesson: a model learns that whether a new identifier continues an old unit is read from where the old unit's members
   went together, not from where the new identifier's members came from, a filed link, a shared location or a similar
   name; no build on file decides a unit's novelty from the predecessor's side of member flows.
 
+## Survivor anatomy
+
+Written at the 2026-11-01 re-check of the shipped cut; the design is unchanged.
+
+- Actor: whether a new 2026 account continues a business has no column; the register's `predecessor_account` holds
+  only the transfers applied for (56 of the 128 set aside), and the rest is a relation between the closed account's
+  last-quarter payroll and the new account's payroll in the wage file, which no file stores.
+- Link: the wage file's protected worker key links workers, never accounts, and no sentence asks for an
+  account-to-account flow; the join a solver builds first on it reads from the new account's side (rung 2), and the
+  old account's side the golden reads is an aggregation over the same key that no key or clause names.
+- Reflex: the field's first reads of a successorship sit at rungs 0 and 2, the UI program's filed predecessor (rung
+  0, the default path, Ends on Caldmere, Eskwell and Tolbeck) and the successor's inflow share of linked employer and
+  employee data (rung 2, Caldmere, Dunrath and Eskwell); each files a wrong set, asserted in checks.py.
+- Back-test: the textbook route validates; every filed transfer's workforce moved with it (SF9, asserted), so a solver
+  checking the predecessor field against the wage records finds it true where filled, and no published or certified
+  birth count ships to refute rung 0 or rung 2.
+- Second use: every file the decisive step reads sits in the pack for its own reason: the wage records carry Ask B's
+  deaths (a closure taken on by an established employer) and Ask A's 2025 births, the register carries every county
+  code and the filed transfers, the quarterly reports carry the base and first employment for every rung.
+- Shock: the movement recovered reads as ordinary: the re-registered stores and the park arrivals are new accounts of
+  ordinary size in ordinary trades, and on rung 0's rates the golden set is Eskwell first with Dunrath and Quarrin
+  fourth and fifth, not an interval of the sort.
+- Pins: the guideline files population, outcome, base, unit and comparison and names no evidence or method (checks.py
+  asserts it names no worker, wage, flow, address, ZIP, staff or workforce); no filed sentence names the side of the
+  flow, the window or the stop test the stump rides on.
+
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0 new accounts net of the register's predecessors (default path) | the guideline's "did not operate before under another employer account" and the predecessor field's entry send the solver to the field | `predecessor_account` is a column: a row predicate | netting the register's successorships is the first reflex | none | none | one filter | readable |
-| R1 new accounts at the address of an account that closed set aside | the dictionary's "an employer that takes over a business without applying has no predecessor recorded" sends the solver looking for unfiled take-overs | the worksite address is a column; a self-join on it after normalising two address formats | address matching is the record-linkage reflex | none | none | one join | readable |
-| R2 the new account's share: more than half of its first-quarter workers paid the quarter before by one account that then stopped reporting | the same dictionary entry; the worker key "the same for a worker in every account and quarter" | no column links accounts; a grouped self-join of the wage file by worker and quarter | the linkage an analyst who starts from the new accounts builds first: where did this account's workers come from | none | none | a share per new account | readable |
+| R0 new accounts net of the register's predecessors (default path) | the guideline's "did not operate before under another employer account" and the transfer field's header sends the solver to the field | `experience_transfer_from` is a column: a row predicate | netting the register's successorships is the first reflex | none | none | one filter | readable |
+| R1 new accounts at the address of an account that closed set aside | the guideline's "sold, reorganised or changes its legal form" against a field recording only experience transfers sends the solver looking for unfiled take-overs | the worksite address is a column; a self-join on it after normalising two address formats | address matching is the record-linkage reflex | none | none | one join | readable |
+| R2 the new account's share: more than half of its first-quarter workers paid the quarter before by one account that then stopped reporting | the same; the wage file's `worker_key` across accounts and quarters | no column links accounts; a grouped self-join of the wage file by worker and quarter | the linkage an analyst who starts from the new accounts builds first: where did this account's workers come from | none | none | a share per new account | readable |
 | R3 (decisive) the old account's share: most of a closed account's last-quarter workers on the new account's payroll | none: no sentence names a side, a share, a quarter or a flow | the same wage file read from each closed account's last payroll forward | not a reflex: the new account's share is the natural reading of a question about new accounts, and its distribution has no gap (births to 0.33, expanded take-overs from 0.30 to 0.46, start-ups from a closed payroll at 0.67 to 0.80) | none: no control or published count confirms a continuity | none: the battery finds nothing wrong with the netted counts | a share per closed account over the same self-join | silent |
 
 ## Semantic fork table
@@ -242,10 +272,10 @@ Built magnitudes (rates per 100 establishments reporting employment in 2025Q4; `
 | 13 | Order of operations | conform, find new accounts, set aside continuations, divide | C1 (set operations commute) |
 | 14 | Row order | none matters | C1 |
 | 15 | Duplicate resolution | none: one row per account and quarter, one wage row per worker, account and quarter | asserted |
-| 16 | Identity normalisation | accounts by account number; workers by the protected key | dictionary; SF9 to SF14, SF17, SF18 |
+| 16 | Identity normalisation | accounts by account number; workers by the protected key | headers; SF9 to SF14, SF17, SF18 |
 | 17 | Netting against gross | births and continuations are disjoint sets of new accounts | C1 |
 | 18 | Dimensional units | establishments, workers | the files |
-| 19 | Code and status semantics | ownership, status, predecessor and county codes | dictionary; SF7, SF8; same call |
+| 19 | Code and status semantics | ownership, status, predecessor and county codes | headers (`worksite_county_code`, `experience_transfer_from`); SF7, SF8; same call |
 | 20 | Integerisation | counts whole | C1 |
 | 21 | Clause scope | the guideline's definitions apply to each county separately | guideline 2.1 |
 | 22 | Forward window contents | none: the designation reads the closed year 2026 | retrospective by the guideline's rule (the latest full year), the call (grants for 2027 to 2029) faces forward |
@@ -255,8 +285,8 @@ Built magnitudes (rates per 100 establishments reporting employment in 2025Q4; `
 Executed word for word, the guideline counts in each county the establishments that first reported employment in 2026
 and whose business did not operate before under another employer account, a business sold, reorganised or changed in
 legal form and going on under a new account not being a birth; it names no evidence for continuity. The register's
-predecessor field is, by its dictionary entry, the record of approved transfer applications and holds no take-over
-whose buyer did not apply, so a literal reader cannot take it as the set of continuations. The sentence's subject is the
+transfer field is, by its header, the record of experience-rating transfers and holds no take-over whose buyer did not
+apply for one, so a literal reader cannot take it as the set of continuations. The sentence's subject is the
 business that goes on, so the evidence is where that business's people went: in the wage records, most of the workers a
 closed account paid in its last quarter with employment are on one new account's payroll that quarter or the next (83
 per cent or more in every case), while no birth holds more than 33 per cent of any closed account's last-quarter
@@ -270,8 +300,8 @@ share no address with the accounts they continue.
 
 ## Oracles
 
-None. No control, published figure or reconciliation column confirms any rung: the extract manifest gives row counts per
-file; the county population estimates, the Secretary of State's entity filings and the program's grant disbursements
+None. No control, published figure or reconciliation column confirms any rung: the county labour force (LAUS), the
+county population estimates, the Secretary of State's entity filings and the program's grant disbursements
 carry no establishment or birth counts; the register's predecessor field confirms the filed successorships on every rung
 alike.
 
@@ -290,8 +320,8 @@ alike.
   Hazards: H1 the summer employers and paused contractors that look new in 2025 on the extract's single 2024 quarter
   (the register's liability date is their first payroll years back, and "counted as 2026's are" points at the
   guideline's first reported employment); H2 the county coding (below; the prompt counts each establishment where its
-  worksite lies); H3 the construction. Path: the quarterly reports, the register, the wage records, the guideline, the
-  dictionary, the county codes and the manifest (seven files, eleven columns). Stops (built, every figure asserted
+  worksite lies); H3 the construction. Path: the quarterly reports, the register, the wage records, the guideline and
+  the county codes (five files). Stops (built, every figure asserted
   outside its bin): the quarter-level stop (the cracker's path), births 120, 53, 106, 78, 83, 64 and 48 against 118,
   52, 104, 77, 81, 63 and 47 (Brennock to Tolbeck), every rate off by 0.11 to 0.18; the new account's share (rung 2),
   119, 54, 105, 79, 84, 65 and 49; the extract's window alone, every count high by the summer employers; the golden.
@@ -311,8 +341,8 @@ alike.
   filing zero reports (a status reading misses them); H5 inactivation dates processed months after the last payroll (an
   inactivation-year reading moves them); H6 winter pauses (twelve accounts employing no one for two to five months
   from October or November 2025, then again in 2026; a reading of December employment calls them closed); H2 the county
-  coding. Path: the quarterly reports, the register, the wage records, the dictionary, the county codes, the guideline
-  and the manifest (seven files, ten columns). Stops (built, every figure asserted outside its bin): the new accounts'
+  coding. Path: the quarterly reports, the register, the wage records, the county codes and the guideline (five
+  files). Stops (built, every figure asserted outside its bin): the new accounts'
   sources only (the cracker's path), deaths 115, 56, 91, 57, 84, 98 and 48 against 110, 54, 88, 53, 80, 96 and 46,
   every rate off by 0.2 to 0.6; the same with the stop read by quarter, 117, 57, 93, 58, 86, 99 and 49; the new
   account's share, 123, 57, 94, 59, 86, 100 and 50; filed transfers only (the mirror), 131, 57, 97, 61, 87, 102 and 50;
@@ -342,8 +372,10 @@ alike.
   the devices hold the new-account path, the first reader's, and the pair ceiling below assumes one response on it.
 - Mirror leakage: about 5 per cent of ask weight (a response on rung 0 counts the 2025 take-overs as births and their
   sources and the absorbed businesses as deaths in every county; it keeps the chart's layout criteria only).
-- Pair ceiling: 34 (cracker 38 + 7 + 55 x 0.15 = 53.3, keeping the account list and the chart's layout; the second
-  response on rung 2: 5 + 7 + 55 x 0.05 = 14.8; average 34.0), rerun from the generated rubric at build.
+- Pair ceiling: 32.6 (cracker on the call 38 + 7 + 0 of 28 ask figures + 8.25 for the account list and the chart's
+  layout = 53.2; the second response on rung 2 off the call 5 + 7 + 0 of 28 = 12.0; average 32.6).
+- Measured by: generator/ceiling.py on the cut pack (2026-11-01: the cracker lands the call and keeps 0 of the 28 Ask
+  A and B figures, the rung 2 mirror files Caldmere, Dunrath and Eskwell and keeps 0).
 
 ## Layer 1 inventory
 
@@ -398,13 +430,33 @@ golden method with the item mishandled.
   the workbook has named sheets, frozen panes, number formats by quantity, a filter and print titles on the account list
   and a notes sheet. Containers audited clean (scrub_producer_metadata).
 - **House fixes:** H1 clean; H3 the rival clause in block 1 states a checked ordering (Caldmere and Tolbeck second and
-  third on new accounts per 100); H9 the manifest and the dictionary name exactly the shipped files (asserted); H16
+  third on new accounts per 100); H9 the pack holds exactly the generator's files and no dictionary, manifest or readme ships (asserted); H16
   every register date on or before the extract (asserted); H23 the set-aside ask reads "if any"; H24 no shipped file
   says the pack was built (asserted).
 - **Guard:** heart WARN (strategy risk, organisation family, objective overuse; task82 differentiated); surface promotes
   task457 and task453 on the card pairing alone (same domain and objective; task457 also a register artifact and a
   ranked slate) and task82 on the same-driver signature, each differentiated on the card: task457 corrects faculty
   disclosures for the part of a year they could not see, task453 sets a seasonal-adjustment setting.
+- **Re-check 2026-11-01 (new gates):** the rebuild reproduced the shipped target.zip (e52e2e94). Failing gates: leak.py
+  LEAK on sweep 1 (the data dictionary and the extract manifest) and sweep 12 (the guideline sharing two of the grant
+  disbursements' five column names); precut FAIL on a missing `Measured by:` and 8 WARN on the survivor anatomy;
+  voice-check WARN on a count the data hold ("three of the Lornock Valley's seven counties"). Repaired in the
+  generator: the dictionary and manifest removed, the register's headers renamed to the tax system's own names
+  (`worksite_county_code`, `experience_transfer_from`, `experience_transfer_date`), the bureau's NAICS 2017 to 2022
+  crosswalk and the monthly county LAUS file (a fourth distractor) added to keep ten files, the disbursements' headers
+  renamed, metadata.json's title and subdomain stripped of the method, generator/ceiling.py written and the pair
+  ceiling measured at 32.6, the survivor anatomy written, the count dropped from the prompt. freeze.py determinism
+  moves only the prompt's call sentence (the dropped count); every graded figure and figures.json value unchanged.
+  leak.py REVIEW lines: the wage records' digits are wage amounts; the guideline names the counties and the program's
+  call words because it is the governing document; the shell quota is corpus-wide. Isolated leak reader clean.
+  Judge pass 3 (determinism_check_report_pass3.md): DETERMINISTIC, FIX_NOW, Gate G analytical_non_defect, Gate H pass.
+  Finding 1 (with the dictionary gone, "counted as 2026's are" left open whether an account whose first payroll fell
+  before 2025 and re-employed in 2025 is a 2025 birth) closed by one WHAT sentence in guideline 3.3: first reported
+  employment is the first ever reported under the account, not the first in the year measured; the golden already
+  reads it so (SF2 for 2026), every figure unchanged. Finding 2 (the side of the flow) left unfiled on purpose:
+  the sentence would name the decisive step (fork-is-the-stump), and the thread itself judged the new account's side
+  unlicensed. Finding 3 (the quarterly rows' county codes before 2025Q3) closed by the prompt's "where its worksite
+  lies" and the register's `worksite_county_code`.
 
 ## Tried and rejected
 

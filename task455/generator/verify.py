@@ -22,9 +22,9 @@ def main(target, golden_dir=None):
     q["qn"] = (q["year"] - 2024) * 4 + q["qtr"] - 4            # 0 = 2024Q4
     w["qn"] = (w["year"] - 2024) * 4 + w["qtr"] - 4
     w = w[["worker_key", "account_no", "qn"]].drop_duplicates()
-    county = dict(zip(reg["account_no"], reg["county_code"]))
+    county = dict(zip(reg["account_no"], reg["worksite_county_code"]))
     liab = dict(zip(reg["account_no"], reg["liability_date"]))
-    pred = {a: p for a, p in zip(reg["account_no"], reg["predecessor_account"]) if p}
+    pred = {a: p for a, p in zip(reg["account_no"], reg["experience_transfer_from"]) if p}
     m = pd.concat([q[["account_no", "qn"]].assign(mn=q["qn"] * 3 + k, e=q[c]) for k, c in
                    enumerate(["month1_emplvl", "month2_emplvl", "month3_emplvl"])])
     m = m[m["e"] > 0]
