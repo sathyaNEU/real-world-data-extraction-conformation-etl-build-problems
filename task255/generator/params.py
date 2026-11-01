@@ -41,14 +41,14 @@ LINES = {
     "M3": ["ZDW", "TNS", "RVP", "SPL", "VLH", "HDH", "PDZ", "NOP"],
 }
 INTERCHANGES = {"CEN": ("M1", "M2"), "RVP": ("M1", "M3"), "HDH": ("M2", "M3")}
-PASSAGE_WALK = {"CEN": 6.5, "RVP": 9.0, "HDH": 8.0}      # minutes, platform to platform through the passage
+PASSAGE_WALK = {"CEN": 8.0, "RVP": 9.0, "HDH": 8.0}      # minutes, platform to platform through the passage
 # (the M3 platforms at Ravelpark and Handelshaven lie across the square, so no two-change route is ever faster)
 
 # weekday frequency bands (start minute after midnight, end, headway minutes) for M1 and M2
-WEEKDAY_BANDS = [(345, 390, 7.5), (390, 600, 3.0), (600, 930, 5.0), (930, 1140, 3.0), (1140, 1320, 6.0),
-                 (1320, 1470, 10.0)]
-SAT_BANDS = [(390, 1470, 6.0)]
-SUN_BANDS = [(420, 1470, 7.5)]
+WEEKDAY_BANDS = [(345, 390, 5.0), (390, 600, 3.0), (600, 930, 4.0), (930, 1140, 3.0), (1140, 1320, 4.0),
+                 (1320, 1470, 5.0)]
+SAT_BANDS = [(390, 1470, 5.0)]
+SUN_BANDS = [(420, 1470, 5.0)]
 M3_HEADWAY = {"peak": 5.0, "day": 7.5, "weekend": 10.0, "late": 10.0}
 # the weekday peak service: trains passing Centraal in these windows run M1 north <-> M2 east and M2 west <-> M1 south
 INTERWORK = [(420, 570), (960, 1110)]

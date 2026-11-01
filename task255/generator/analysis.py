@@ -145,6 +145,49 @@ def route(net, o, d, _cache={}):
     return legs
 
 
+def route_variant(net, o, d, mode, h_in=None, h_out=None):
+    """The route under another costing: 'halls' adds the journey's own halls' walks at both ends, 'waits_peak' and
+    'waits_quiet' add the expected wait at every boarding, 'fastest' drops the preference for fewer changes."""
+    if mode == "fewest":
+        return route(net, o, d)
+    fewest = mode != "fastest"
+    waits = None
+    if mode.startswith("waits"):
+        pk = mode == "waits_peak"
+        waits = {"M1": 1.5 if pk else 2.5, "M2": 1.5 if pk else 2.5, "M3": 2.5 if pk else 5.0}
+    heap = []
+    for ln in net["lines_of"][o]:
+        t0 = (net["halls"][h_in]["walk"].get(ln, 99.0) if mode == "halls" else 0.0) + (waits[ln] if waits else 0.0)
+        heapq.heappush(heap, (0, t0, o, ln, ((ln, o),)))
+    seen, best = {}, None
+    while heap:
+        nch, t, c, ln, path = heapq.heappop(heap)
+        if c == d:
+            tt = t + (net["halls"][h_out]["walk"].get(ln, 99.0) if mode == "halls" else 0.0)
+            if best is None or (nch, tt) < best[0]:
+                best = ((nch, tt), path)
+            continue
+        if (c, ln) in seen and seen[(c, ln)] <= (nch, t):
+            continue
+        seen[(c, ln)] = (nch, t)
+        s = net["seq"][ln]
+        i = net["pos"][ln][c]
+        for j in (i - 1, i + 1):
+            if 0 <= j < len(s):
+                heapq.heappush(heap, (nch, t + net["run"][(ln, c, s[j])], s[j], ln, path))
+        for ln2 in net["lines_of"][c]:
+            if ln2 != ln:
+                extra = net["inter"][c]["walk"] + (waits[ln2] if waits else 0.0)
+                heapq.heappush(heap, ((nch + 1) if fewest else 0, t + extra, c, ln2, path + ((ln2, c),)))
+    path = best[1]
+    legs = []
+    for k, (ln, a) in enumerate(path):
+        b = path[k + 1][1] if k + 1 < len(path) else d
+        if a != b:
+            legs.append((ln, a, b))
+    return legs
+
+
 def ride(net, ln, a, b):
     s = net["seq"][ln]
     i, j = net["pos"][ln][a], net["pos"][ln][b]
@@ -186,7 +229,8 @@ def _loaded(target):
 
 
 def main_call(target, interwork_rule="duration", halls="gates", staff=False, open_journeys="checkin",
-              dating="checkin", count="place", clock_shift=False, weeks_rule="calendar"):
+              dating="checkin", count="place", clock_shift=False, weeks_rule="calendar", routing="fewest",
+              windows=None):
     """interwork_rule: 'none' (the gates only), 'linemap' (changes where the line map puts them),
     'duration' (each Centraal change read from the journey's own duration, the golden),
     'allday' (the peak pattern assumed for every weekday hour), 'stationpass' (every journey through Centraal).
@@ -197,6 +241,8 @@ def main_call(target, interwork_rule="duration", halls="gates", staff=False, ope
     net, js, prod, pk = _loaded(target)
     M = Main()
     M.net, M.packages = net, pk
+    M.gap = change_gap(target)
+    opts = {"routing": routing, "windows": windows or PEAK_WINDOWS, "gap": M.gap}
 
     def jdate(j):
         if dating == "checkout" and j["t_out"] and tmin(j["t_out"]) < tmin(j["t_in"]):
@@ -233,7 +279,7 @@ def main_call(target, interwork_rule="duration", halls="gates", staff=False, ope
             hin, hout = net["gates"][j["dev_in"]], net["gates"][j["dev_out"]]
             locs.append(hall(j["dev_out"], j["d"]))
             if interwork_rule != "none":
-                locs += changes(net, jj, hin, hout, interwork_rule, M.classified)
+                locs += changes(net, jj, hin, hout, interwork_rule, M.classified, opts)
         if count == "journey":
             jp[j["card"]].append(set(locs))
         for loc in locs:
@@ -262,8 +308,9 @@ def shift_hhmmss(s, minutes):
 PEAK_WINDOWS = ((420, 570), (960, 1110))
 
 
-def changes(net, j, hin, hout, rule, tally):
-    legs = route(net, j["o"], j["d"])
+def changes(net, j, hin, hout, rule, tally, opts=None):
+    opts = opts or {"routing": "fewest", "windows": PEAK_WINDOWS, "gap": None}
+    legs = route_variant(net, j["o"], j["d"], opts["routing"], hin, hout)
     mv = movements(legs)
     out = []
     for i, (kind, u, v) in enumerate(mv):
@@ -279,46 +326,83 @@ def changes(net, j, hin, hout, rule, tally):
             ch = True
         elif rule == "allday":
             ch = (SERVICE[bu] != SERVICE[bv]) if j["date"].weekday() < 5 else linemap
+        elif rule.startswith("clock"):
+            ch = clock_reading(net, j, hin, hout, mv, i, linemap, rule, opts["windows"])
         else:
-            ch = read_change(net, j, hin, hout, mv, i, linemap, tally)
+            ch = read_change(net, j, hin, hout, mv, i, linemap, tally, rule, opts["gap"])
         if ch:
             out.append("CEN-OV")
     return out
 
 
-def read_change(net, j, hin, hout, mv, i, linemap, tally):
-    """The golden: whether this journey changed trains at Centraal. A journey that is one M1/M2 movement through
-    Centraal is read from its own duration against the network's walking and run times: in the hours when trains
-    run every three minutes a direct ride arrives within four minutes of its run, a change takes the passage's
-    six and a half minutes on top. Where the duration cannot tell (other hours, or an M3 leg first), the service
-    pattern the single movements show holds: the north and east branches run through each other and the west and
-    south branches each other on weekdays when trains pass Centraal from 07:00 to 09:30 and from 16:00 to 18:30,
-    the line map at every other time."""
+def excess_at_centraal(net, j, hin, hout, u, v):
+    """Minutes a journey took over its walks and runs (check-out less check-in, less the hall walks and the run
+    times of its one movement through Centraal)."""
+    lu, lv = LINE[net["branch"][u]], LINE[net["branch"][v]]
+    t_in, t_out = tmin(j["t_in"]), tmin(j["t_out"])
+    dur = t_out - t_in if t_out >= t_in else t_out + 1440 - t_in
+    base = net["halls"][hin]["walk"][lu] + ride(net, lu, u, "CEN") + ride(net, lv, "CEN", v) + \
+        net["halls"][hout]["walk"][lv]
+    return dur - base
+
+
+def change_gap(target):
+    """The empty band in the excess of every journey that crosses Centraal in one movement: below it riders stayed on
+    their train, above it they changed. Returns (lower edge, upper edge)."""
+    net, js, prod, pk = _loaded(target)
+    key = ("gap", target)
+    if key in _CACHE:
+        return _CACHE[key]
+    xs = []
+    for j in js:
+        if not j["t_out"]:
+            continue
+        mv = movements(route(net, j["o"], j["d"]))
+        if len(mv) == 1 and mv[0][0] == "MM" and crosses(net, mv[0][1], mv[0][2]):
+            xs.append(excess_at_centraal(net, j, net["gates"][j["dev_in"]], net["gates"][j["dev_out"]], mv[0][1], mv[0][2]))
+    xs.sort()
+    best = max(((b - a), a, b) for a, b in zip(xs, xs[1:]) if 2.0 <= a <= 15.0)
+    _CACHE[key] = (best[1], best[2])
+    return _CACHE[key]
+
+
+def read_change(net, j, hin, hout, mv, i, linemap, tally, rule="duration", gap=None):
+    """The golden: a journey through Centraal in one movement changed trains there when its own duration exceeds its
+    walks and runs by more than the empty band in the record's excesses (a change adds the passage walk and a
+    second wait; a ride through adds only the wait for the first train). A ring-line journey through Centraal (none
+    among the regular riders) keeps the line map."""
+    kind, u, v = mv[i]
+    if len(mv) != 1:
+        tally["ring journey: line map"] += 1
+        return linemap
+    x = excess_at_centraal(net, j, hin, hout, u, v)
+    lo, hi = gap
+    cut = {"duration": (lo + hi) / 2.0, "duration_lo": lo + 0.05, "duration_hi": hi - 0.05}[rule]
+    ch = x > cut
+    tally["read: change" if ch else "read: no change"] += 1
+    return ch
+
+
+def clock_reading(net, j, hin, hout, mv, i, linemap, rule, windows):
+    """The service pattern read off the clock: the peak pattern on weekdays inside the windows, the line map at every
+    other time, with the minute taken at check-in, at Centraal (from the check-in forward or from the check-out
+    back) or at check-out."""
     kind, u, v = mv[i]
     bu, bv = net["branch"][u], net["branch"][v]
     lu, lv = LINE[bu], LINE[bv]
-    t_in, t_out = tmin(j["t_in"]), tmin(j["t_out"])
-    dur = t_out - t_in if t_out >= t_in else t_out + 1440 - t_in
-    if len(mv) == 1:
-        base = net["halls"][hin]["walk"][lu] + ride(net, lu, u, "CEN") + ride(net, lv, "CEN", v) + \
-            net["halls"][hout]["walk"][lv]
-        excess = dur - base
-        if excess < 4.6:
-            tally["read: no change"] += 1
-            return False
-        if excess > 5.4 and headway_at(net, j["date"], t_in) <= 3.0:
-            tally["read: change"] += 1
-            return True
-    # the pattern, by the minute the rider reaches Centraal (estimated from the check-in)
-    est = t_in + net["halls"][hin]["walk"][first_line(mv, net, u)] + 1.5
-    for k in range(i):
-        kk, a, b = mv[k]
-        est += ride(net, "M3" if kk == "M3" else LINE.get(net["branch"][a], "M1"), a, b) + 3.0
-        est += net["inter"][b]["walk"] if b in net["inter"] else 0.0
-    est += ride(net, lu, u, "CEN")
-    wk = j["date"].weekday() < 5
-    pk = wk and any(a <= est % 1440 < b for a, b in PEAK_WINDOWS)
-    tally["pattern: peak" if pk else "pattern: line map"] += 1
+    t_in = tmin(j["t_in"])
+    t_out = tmin(j["t_out"]) if j["t_out"] else t_in
+    if t_out < t_in:
+        t_out += 1440
+    if rule == "clock_checkin":
+        m = t_in
+    elif rule == "clock_checkout":
+        m = t_out
+    elif rule == "clock_cen_forward":
+        m = t_in + net["halls"][hin]["walk"][lu] + 1.5 + ride(net, lu, u, "CEN")
+    else:
+        m = t_out - net["halls"][hout]["walk"][lv] - ride(net, lv, "CEN", v) - 1.0
+    pk = j["date"].weekday() < 5 and any(a <= m % 1440 < b for a, b in windows)
     return (SERVICE[bu] != SERVICE[bv]) if pk else linemap
 
 

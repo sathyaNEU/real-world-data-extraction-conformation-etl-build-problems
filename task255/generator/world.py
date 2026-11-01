@@ -79,6 +79,68 @@ class Network:
         return [lg for lg in legs if lg[1] != lg[2]]
 
 
+def _route(net, o, d, fewest=True, halls=None, waits=None):
+    """Boardings (line, station) of the best route under one costing: fewest changes first (or time only), with the
+    halls' walks at both ends when given (a pair of halls), and the expected wait at every boarding when given."""
+    h_o, h_d = halls if halls else (None, None)
+    heap = []
+    for ln in net.lines_of[o]:
+        t0 = (net.halls[h_o]["walk"].get(ln, 0.0) if h_o else 0.0) + (waits[ln] if waits else 0.0)
+        heapq.heappush(heap, (0 if fewest else 0, t0, o, ln, ((ln, o),)))
+    seen = {}
+    best = None
+    while heap:
+        nch, t, c, ln, path = heapq.heappop(heap)
+        if c == d:
+            tt = t + (net.halls[h_d]["walk"].get(ln, 99.0) if h_d else 0.0)
+            if best is None or (nch, tt) < best[0]:
+                best = ((nch, tt), path)
+            continue
+        if (c, ln) in seen and seen[(c, ln)] <= (nch, t):
+            continue
+        seen[(c, ln)] = (nch, t)
+        seq = P.LINES[ln]
+        i = net.pos[ln][c]
+        for j in (i - 1, i + 1):
+            if 0 <= j < len(seq):
+                heapq.heappush(heap, (nch, t + net.run[(ln, c, seq[j])], seq[j], ln, path))
+        for ln2 in net.lines_of[c]:
+            if ln2 != ln:
+                extra = P.PASSAGE_WALK.get(c, 5.0) + (waits[ln2] if waits else 0.0)
+                heapq.heappush(heap, ((nch + 1) if fewest else 0, t + extra, c, ln2, path + ((ln2, c),)))
+    return tuple(best[1])
+
+
+def route_signatures(net, o, d):
+    """Every route a defensible costing picks between two stations: fewest changes then time (the line map), each
+    pair of halls' walks added, the expected waits of the peak and of the quiet hours added, and time alone."""
+    sigs = {_route(net, o, d)}
+    for h_o in net.station_halls[o]:
+        for h_d in net.station_halls[d]:
+            sigs.add(_route(net, o, d, halls=(h_o, h_d)))
+    for band in ("peak", "quiet"):
+        wt = {"M1": 1.5 if band == "peak" else 2.5, "M2": 1.5 if band == "peak" else 2.5,
+              "M3": (P.M3_HEADWAY["peak"] if band == "peak" else P.M3_HEADWAY["weekend"]) / 2.0}
+        sigs.add(_route(net, o, d, waits=wt))
+    sigs.add(_route(net, o, d, fewest=False))
+    return sigs
+
+
+_AMBIG = {}
+
+
+def unsettled(net, o, d):
+    """True when the stations' route is not the same under every costing, or when it crosses Centraal on a ring
+    line journey: a regular rider makes neither trip."""
+    key = (o, d)
+    if key not in _AMBIG:
+        legs = net.line_map_route(o, d)
+        ring_cross = any(lg[0] == "M3" for lg in legs) and any(
+            k == "MM" and crosses_centraal(net, u, v) for k, u, v, lg in movements(net, legs))
+        _AMBIG[key] = ring_cross or len(route_signatures(net, o, d)) > 1
+    return _AMBIG[key]
+
+
 def headway(line, day, minute):
     wd = day.weekday()
     if line == "M3":
@@ -304,13 +366,13 @@ def make_riders(net, rng):
         home = station_in(net, rng, hb, HOME_PULL)
         wb = pick(rng, P.WORK_W[hb])
         work = station_in(net, rng, wb, WORK_PULL)
-        while work == home:
+        while work == home or unsettled(net, home, work) or unsettled(net, work, home):
             work = station_in(net, rng, pick(rng, P.WORK_W[hb]), WORK_PULL)
         pattern = pick(rng, P.PATTERN_W)
         if pattern == "peak":
             dpw = pick(rng, {5: 0.50, 4: 0.33, 3: 0.17})
-            am = rng.uniform(7 * 60 + 0, 8 * 60 + 46)
-            pm = rng.uniform(16 * 60 + 0, 17 * 60 + 56)
+            am = min(max(rng.gauss(8 * 60, 16), 7 * 60 + 8), 8 * 60 + 48)
+            pm = min(max(rng.gauss(17 * 60 + 5, 18), 16 * 60 + 8), 17 * 60 + 50)
         elif pattern == "shift":
             dpw = pick(rng, {5: 0.35, 4: 0.40, 3: 0.25})
             am = rng.uniform(10 * 60 + 15, 14 * 60 + 30)
@@ -380,6 +442,46 @@ def place(net, rng, o, d, day, t):
     raise ValueError("could not place a ring-line trip outside the peak windows")
 
 
+def single_crossing(net, o, d):
+    legs = net.line_map_route(o, d)
+    mv = movements(net, legs)
+    if len(mv) == 1 and mv[0][0] == "MM" and crosses_centraal(net, mv[0][1], mv[0][2]):
+        return mv[0][1], mv[0][2]
+    return None
+
+
+def duration_bound(net, o, d):
+    u, v = single_crossing(net, o, d)
+    lu, lv = BRANCH_LINE[net.branch(u)], BRANCH_LINE[net.branch(v)]
+    walk_in = max(net.halls[h]["walk"][lu] for h in net.station_halls[o])
+    walk_out = max(net.halls[h]["walk"][lv] for h in net.station_halls[d])
+    return walk_in + 5.0 + net.ride(lu, u, "CEN") + P.PASSAGE_WALK["CEN"] + 0.3 + 5.0 + net.ride(lv, "CEN", v) + \
+        walk_out + 0.4
+
+
+def place_habit(net, rng, o, d, day, t):
+    """A habitual rider's weekday trip straight through Centraal is made wholly before or wholly after each change of
+    the service pattern (riders keep to the trains they know)."""
+    t = place(net, rng, o, d, day, t)
+    if day.weekday() >= 5 or single_crossing(net, o, d) is None:
+        return t
+    bound = duration_bound(net, o, d)
+    edges = [e for a, b in P.INTERWORK for e in (a, b)]
+
+    def clash(x):
+        return any(x - 3 < e < x + bound + 3 for e in edges)
+    if not clash(t):
+        return t
+    first = rng.choice((-1, 1))
+    for step in (first, -first):
+        x = t
+        while 350 <= x <= 1430:
+            x += step * rng.uniform(15, 30)
+            if 350 <= x <= 1430 and not clash(x):
+                return x
+    raise ValueError("could not place a trip through Centraal clear of the service change")
+
+
 def journeys_for(net, rng, r, start, end):
     """Journeys of one habitual rider from start to end (dates inclusive): (day, t_in_minute, o, d)."""
     out = []
@@ -397,20 +499,22 @@ def journeys_for(net, rng, r, start, end):
                 am = rng.uniform(6 * 60 + 40, 12 * 60)
                 pm = am + rng.uniform(3 * 60, 9 * 60)
             else:
-                am = r.am + rng.gauss(0, 5)
-                pm = r.pm + rng.gauss(0, 7)
-            out.append((day, place(net, rng, r.home, r.work, day, am), r.home, r.work))
+                am = r.am + rng.gauss(0, 4)
+                pm = r.pm + rng.gauss(0, 5)
+            out.append((day, place_habit(net, rng, r.home, r.work, day, am), r.home, r.work))
             if rng.random() < 0.97:
                 pm = min(pm, 24 * 60 - 5)
-                out.append((day, place(net, rng, r.work, r.home, day, pm), r.work, r.home))
+                out.append((day, place_habit(net, rng, r.work, r.home, day, pm), r.work, r.home))
         for day in ds:
             if day.weekday() >= 5 and rng.random() < r.leisure:
-                dest = pick(rng, {c: (1.6 if c == "CEN" else 1.0) for c in net.st if c != r.home})
+                dest = pick(rng, {c: (1.6 if c == "CEN" else 1.0) for c in net.st
+                                  if c != r.home and not unsettled(net, r.home, c) and not unsettled(net, c, r.home)})
                 t0 = rng.uniform(10 * 60, 17 * 60)
                 out.append((day, t0, r.home, dest))
                 out.append((day, t0 + rng.uniform(90, 300), dest, r.home))
             elif day.weekday() < 5 and rng.random() < r.leisure * 0.18:
-                dest = pick(rng, {c: (1.6 if c == "CEN" else 1.0) for c in net.st if c != r.home})
+                dest = pick(rng, {c: (1.6 if c == "CEN" else 1.0) for c in net.st
+                                  if c != r.home and not unsettled(net, r.home, c) and not unsettled(net, c, r.home)})
                 t0 = rng.uniform(19 * 60 + 30, 21 * 60 + 30)
                 out.append((day, t0, r.home, dest))
                 out.append((day, min(t0 + rng.uniform(90, 200), 24 * 60 - 3), dest, r.home))
@@ -433,7 +537,12 @@ def occasional_journeys(net, rng, start, end):
             trips.append((day, t0, home, dest))
             back = min(t0 + rng.uniform(60, 420), 24 * 60 - 4)
             trips.append((day, place(net, rng, dest, home, day, back), dest, home))
-        out.append(trips[:n])
+        trips = trips[:n]
+        wk = {d.isocalendar()[1] for d, *_ in trips if P.WIN_START <= d <= P.WIN_END}
+        if len(wk) == 4:
+            drop = rng.choice(sorted(wk))
+            trips = [x for x in trips if not (P.WIN_START <= x[0] <= P.WIN_END and x[0].isocalendar()[1] == drop)]
+        out.append(trips)
     return out
 
 
