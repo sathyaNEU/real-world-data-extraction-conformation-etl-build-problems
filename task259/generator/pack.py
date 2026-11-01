@@ -20,6 +20,8 @@ REV_AREA = "06"           # the area whose July 2025 adult estimate the State De
 REV_FACTOR = 1.0637
 PARALLEL_END = datetime.date(2026, 5, 31)   # the old CAPI system stayed open for interviewers until this date
 REF = world.REF_QUARTERS
+# share of an occupied unit's noninterviews (other than refusals) that end with no one found at home, by area
+NO_ONE_HOME = {"01": 0.80, "02": 0.80, "03": 0.80, "04": 0.80, "05": 0.80, "06": 0.80, "07": 0.80, "08": 0.80}
 
 
 def agegroup(age):
@@ -222,7 +224,7 @@ def write_target(W, tdir):
         if h["outcome"] == "REFUSED":
             code = 213 if new else 2
         else:
-            code = (216 if new else 3) if (rng.random() < 0.80 or (aid, q) in err_after) else (219 if new else 4)
+            code = (216 if new else 3) if (rng.random() < NO_ONE_HOME[h["area"]] or (aid, q) in err_after) else (219 if new else 4)
         hrows.append(base + [code, d.isoformat(), "", "", intv, ""])
     hrows.sort(key=lambda r: (qidx(r[0]), r[2], r[8], str(r[7])))
     common.write_csv(os.path.join(tdir, "HES_HOUSEHOLD_DISPOSITIONS_2025Q1_2026Q3.csv"),
