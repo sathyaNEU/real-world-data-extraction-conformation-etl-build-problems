@@ -20,8 +20,8 @@ def metadata(tdir):
         "objective": "Forecasting & Predictive Modeling",
         "as_of": "2026-10-20",
         "question": ("the log truck loads a forestry company's FY2028 export harvest plan needs from its forests to its "
-                     "export port once the route opens to 50MAX vehicles, by grade, with the FY2026 cartage by carrier "
-                     "and the FY2026 domestic mill deliveries by quarter"),
+                     "export port once the route opens to 50MAX vehicles, by grade, with the cartage paid for FY2026's "
+                     "loads by carrier and the FY2026 domestic mill deliveries by quarter"),
         "deliverables": ["matiri_fy2028_log_cartage_loads.xlsx", "fy2028_loads_by_grade.svg"],
         "distractor_files": [
             {"file": "export_log_prices_FY2026.csv",

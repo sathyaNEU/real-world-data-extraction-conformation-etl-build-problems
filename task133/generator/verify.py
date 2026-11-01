@@ -126,7 +126,7 @@ def main():
     g = load_workbook(os.path.join(TASK, "golden", "matiri_fy2028_log_cartage_loads.xlsx"), data_only=True)
     ok("golden workbook headline", g["FY2028 loads"]["F4"].value == figs["call"]["fy2028_loads_nearest_500"])
     ok("golden chart exists", os.path.getsize(os.path.join(TASK, "golden", "fy2028_loads_by_grade.svg")) > 10000)
-    ok("no em or en dash in the write-up", not re.search("[–—]", open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()))
+    ok("no em or en dash in the write-up", not re.search("[\u2013\u2014]", open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()))
     print("\n%d checks failed" % len(FAILS))
     return 1 if FAILS else 0
 

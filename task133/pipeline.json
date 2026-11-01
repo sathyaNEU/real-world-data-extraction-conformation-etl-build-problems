@@ -3,28 +3,28 @@
  "status": "BUILD",
  "domain": "urban-regional-science",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "a relaxed mass limit lifts each log truck load only until its bunks are full; the short grades gain a fraction of the six tonnes",
  "architecture": 4,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 (no LEAK; five REVIEW lines ruled harmless in the note's Leak review)",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on b86a875e (no LEAK; the REVIEW lines ruled harmless in the note's Leak review)",
+  "reader": "no leak (stage 4 round 1, e53d1a72); the planning basis and the prompt changed since, so the reader reads again at the re-judge"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-01 (repeat.gate_g, repeat.decision against task138 v3; first names on older builds)",
   "nearest": "surface: task134 (back to back by number) and task142 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW",
+  "report": "held by the main session (stage 4 round 1 on target.zip e53d1a72; Gates G and H PASS; the leak reader no leak)"
  },
  "returned": [
   {
@@ -34,7 +34,7 @@
    "commit": "RESHIPPED (task133): round 2 (this commit)"
   }
  ],
- "resume": "stage 4: the isolated leak reader and the determinism judge (main session)",
+ "resume": "stage 4: the re-judge (the determinism judge on target.zip b86a875e; the leak reader again, since the prompt and the planning basis changed)",
  "approved": null,
  "delivered": null,
  "portal": {
@@ -73,16 +73,35 @@
  },
  "gates": {
   "date": "2026-11-01",
-  "generator_checks": "63 assertions, 0 failed",
-  "verify": "0 checks failed (independent: pandas merge_asof link, pdftotext for the limits and grade lengths, openpyxl)",
+  "generator_checks": "81 assertions, 0 failed",
+  "verify": "0 checks failed (independent: pandas merge_asof link, pdftotext for the limits and grade lengths, openpyxl; the eight payload conventions recomputed)",
   "byte_identical_builds": "two builds in fresh interpreters byte-identical (13 target files, 2 goldens, target.zip)",
-  "figures_check": "PASS, 49 figures, 0 absent",
+  "figures_check": "PASS, 47 figures, 0 absent",
   "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
-  "voice_check": "PASS (704 characters)",
+  "voice_check": "PASS (717 characters)",
   "leak_py": "REVIEW, no LEAK (--asof 2026-10-20)",
-  "guard_heart": "WARN (no BLOCK)",
-  "guard_surface": "2 pairs promoted for adjudication (task134, task142), both differentiated on the card; no personas in the cut pack",
-  "target_zip_sha256": "e53d1a72957b74a8f5d3d03709d72a3a59d074d4c6ff9ccbbda417f0799d4125",
+  "guard_heart": "WARN (no BLOCK): repeat.gate_g and repeat.decision against task138 v3, as at the draw",
+  "guard_surface": "PENDING",
+  "target_zip_sha256": "b86a875e9b7abd52888dae29548a7690c898703dfc773007e53ae67ffbc9087e",
   "pair_ceiling": "28.5 (46.8 if the cracker also finds one silent device); mirror leakage 0.0"
- }
+ },
+ "rounds": [
+  {
+   "round": 1,
+   "date": "2026-11-01",
+   "judged": "target.zip e53d1a72",
+   "verdict": "DETERMINISTIC, FIX_NOW (order kept; Gates G and H PASS; leak reader no leak)",
+   "fixes": [
+    "cartage window filed as the loads' year: the prompt asks for 'the cartage paid for FY2026's loads against each carrier' and the basis says so; asserted SF23 (2,607 invoice lines sit on documents dated after 30 June 2026)",
+    "rounding: the licensed payload conventions (per-load or grade-mean density, mean payload or mean of inverse payloads, 44 t units recomputed or at FY2026 net, every link window) spread the total over about 145 loads, wider than a 100-load bin; loads now graded to the nearest 500 (total) and 100 (grades), the harvest plan's grade yields (PLAN_GRADE_ADJ, the planning step) tuned so every convention sits inside the bins; per-convention assertions SF11.1 to SF11.10, SF11.w, SF21, SF22; verify.py recomputes the eight conventions independently",
+    "density conventions unchanged and inside the same bins (SF7, SF11)",
+    "delivery dates unchanged",
+    "realism: fleet register numbered by Matiri's induction across carriers, tares by configuration, bunk count, age and fit-out, full-bunk volumes by bunk count with unit spread (new Bunks column), permit equal to nine-axle; weighbridge net tightness left as it was; planning basis rewritten as a Logistics planning note naming no bunk or volume",
+    "cartage rate card (4.20 + 0.121 per km) and mill contract tonnes retuned for the new world's edges"
+   ],
+   "call": "29,000 export log loads (28,945 unrounded); A 4,900, Pruned 2,500, K 7,500, KI 8,000, KIS 6,100",
+   "convention_span": "total 28,922 to 29,067 (tightest 172 inside its 500-load bin); grades tightest 28.5 (K, unit-weighted) and 29.4 among the eight licensed conventions",
+   "rebuilt": "target.zip b86a875e"
+  }
+ ]
 }
