@@ -1,85 +1,114 @@
 {
- "task": "task475",
- "architecture": "v1",
- "drawn": "2026-10-20",
- "slot_note": "seed ET32 (ZIP-level EITC tables to county allocations of a capped weatherization fund): world, decision and quantity kept, the deciding body moved from a state energy office to a regional council of governments (government_agency is banned in the current window); the pitfall re-found from the tax tables' own structure",
- "domain": "demographic-social-science",
- "subdomain": "income-poverty-inequality",
- "niche": "a regional council of governments splitting its 2027 weatherization fund across fourteen member counties by the number of working families with children claiming the earned income credit, a count the IRS ZIP-code tables do not publish and that has to be recovered within each income class from the claims' count and credit amount, then capped at 12 per cent",
- "objective": "etl",
- "shape": "05",
- "decision_type": "allocation_to_total",
- "answer_unit": "currency",
- "answer": "The Corran Valley Council of Governments should split the $20,000,000 2027 weatherization fund in proportion to each member county's tax-year 2023 earned income credit returns with qualifying children, and no county reaches the 12 per cent cap: Tallis County is the largest at 11.46 per cent, $2,292,000.",
- "answer_source": "submission.md block 1; generator/figures.json call and components",
- "gap": [
-  "objective",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G6",
-  "G2",
-  "G19"
- ],
- "gate_g": "etl_conformance",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "close_out_summary",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms the IRS ZIP-code tables to counties through the residential crosswalk, reads the allocation policy's 'returns claiming the credit with at least one qualifying child' correctly and applies the Department of Revenue's statewide share of such claimants in each AGI class to every county's credit claims files the seat county at the 12 per cent cap and spreads its excess over the rest; recovering each county's own mix in the lowest AGI class from its claims' count and credit amount, where a childless worker's credit averages a few hundred dollars and a family's several thousand, leaves the seat county below the cap and moves every other county's allocation.",
- "domain_test": "Tax-policy and income statistics read who claimed the earned income credit from the credit's own schedule: a childless worker's credit is capped near six hundred dollars and phases out by about twenty-five thousand of income, a family's runs to several thousand, so in the one income class where both claim, an area's count and credit amount together fix its number of families; with another field's nouns there is no credit schedule and an area's amount says nothing about who claimed.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:mixture recovered from a count and its paired amount by known per-kind averages",
- "layer1": [
-  "IRS ZIP-code tables in two tax years with a changed column layout, amounts in thousands of dollars, AGI classes coded 1 to 6, a state total line and an other-ZIP-codes line",
-  "the ZIP-to-county relationship file's residential, business, other and total ratios, a county-to-ZIP file in the opposite direction beside it, P.O. Box ZIP codes with no residential addresses",
-  "the Department of Revenue's statewide credit statistics as tables inside its annual report PDF"
- ],
- "stakeholder_role": "weatherization program director at a regional council of governments, who brings the 2027 allocation to the council's board",
- "role_family": "programme_officer",
- "scoring_unit": "other",
- "spine": {
-  "file": "irs_soi_zip_code_data_ty2023_extract.csv",
-  "rows": 3756,
-  "entity": "one ZIP code's returns in one AGI class",
-  "grain": "ZIP code x AGI class",
-  "source": "synthetic, in the IRS Statistics of Income individual ZIP code data layout"
- },
- "forum": "council_or_assembly",
- "forcing_event": "statutory_or_regulatory_filing",
- "org_family": "local_government",
- "world": {
-  "geography": "United States (a fictional fourteen-county region in an unnamed state)",
-  "currency": "USD",
-  "org_type": "regional council of governments administering weatherization for its member counties",
-  "invented_names": [
-   "Corran Valley Council of Governments",
-   "Tallis County"
+  "task": "task475",
+  "architecture": "v2 (architecture 2, re-root at the Batch 3 queue reset)",
+  "drawn": "2026-11-01",
+  "slot_note": "re-rooted at the Batch 3 queue reset: architecture 1 (the Corran Valley weatherization fund, IRS ZIP-code tables) is closed with its world; this draw moves to Education & Learning Sciences, the item-response-theory-test-equating task type (ETL), in an accreditation examination whose optional questions are chosen by the candidates",
+  "domain": "education-learning-sciences",
+  "subdomain": "item-response-theory-test-equating",
+  "client_domain": "education-learning-sciences",
+  "niche": "a professional institute of building certifiers conforming its November 2026 accreditation examination, where each candidate answers any five of eight written questions, into the results its examination regulations require, every question moved by the whole marks it proved harder or easier than the paper's average question for the sitting's candidates as a whole, before the examination committee approves the pass list",
+  "objective": "etl",
+  "shape": "14",
+  "decision_type": "conformed_dataset",
+  "answer_unit": "dataset",
+  "answer": "(filled at ship)",
+  "answer_source": "submission.md block 1; generator/figures.json",
+  "gap": [
+    "population"
   ],
-  "people": [
-   "Brianna Wallace",
-   "Mitchell Gonzalez"
-  ]
- },
- "deliverables": [
-  "corran_valley_2027_weatherization_allocation.xlsx",
-  "corran_valley_ty2023_county_credit_families.csv"
- ],
- "opening_move": "question-first",
- "question_form": "how-much",
- "driver": "A subtotal of one kind of member inside each area's published total is never published, but each area's total comes with a paired amount and the kinds carry known and very different average amounts, so an area's own count and amount fix its mix; applying the region-wide share of the kind to every area misplaces the subtotal wherever an area's mix departs from the region's, and a cap that binds only on the overstated area moves every other share.",
- "driver_concrete": "The council allocates by earned income credit returns with qualifying children, which the IRS ZIP-code tables do not split; in the lowest AGI class, the only one where childless workers claim, each county's claims count and credit amount together fix how many are families, because a childless worker's credit averages a few hundred dollars against several thousand for a family; the statewide share overstates the seat county, whose many young childless workers pull its average credit down, and caps it at 12 per cent instead of leaving it below the cap.",
- "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
- "mechanism_source": "design_note",
- "differentiation": {},
- "lineage": [],
- "notes": "House domain demographic-social-science (income and poverty statistics from tax returns) in client domain survey-research-official-statistics; task type census-register-administrative-data-quality (ETL). stump_strategy decomposition_attribution: the decisive move splits each county's credit claims into childless and family components by their paired amounts; composition_mix would name the shortcut's failure rather than the move and is banned in the current window.",
- "client_domain": "survey-research-official-statistics",
- "registered": "2026-10-20T12:58:04Z"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G14",
+    "G17"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the marking export correctly and applies Regulation 14 the way examination boards read question difficulty, each question's mean mark among the candidates who answered it set against the paper's mean, moves the new building-fire-safety question down because its choosers scored well and the plain planning question up because its choosers scored poorly, and files the wrong pass count; the stronger candidates chose the hard question and the weaker the easy one, so only each question's difficulty read on the same candidates across the questions they chose gives the regulation's adjustments.",
+  "domain_test": "Assessment practice sets optional questions on one scale by reading each question's difficulty from the answers given to it, and examinee choice is the case where the candidates answering a question are not the cohort, so a question's facility mixes its difficulty with its choosers' standing; with another field's nouns there is no optional question, no choice of five from eight and no mark scale for the adjustment to move.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:optional-question difficulty under self-selected choice",
+  "layer1": [
+    "the e-marking platform's export at part level with a layout change between the May and November sittings, part marks out of different maxima",
+    "second marks and clerical re-marks after the results meeting's checks, the final mark the latest agreed",
+    "candidate numbers re-issued to resitters, centres renamed mid-year in the candidate register",
+    "the examination regulations and the question paper as PDF documents",
+    "absent and withdrawn candidates carried in the export with no marks"
+  ],
+  "stakeholder_role": "assessment analyst in the institute's examinations office, who prepares the results paper for the examination committee",
+  "role_family": "research_desk",
+  "scoring_unit": "per certified output",
+  "spine": {
+    "file": "cae_marking_export_2026.csv",
+    "rows": 30000,
+    "entity": "one marker's mark on one part of one candidate's answer to one question",
+    "grain": "candidate x question x part x marking",
+    "source": "synthetic, in an e-marking platform's export layout"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "Australia (a fictional national professional institute of building certifiers)",
+    "currency": "AUD",
+    "org_type": "professional institute running the accreditation examination for building certifiers",
+    "invented_names": [
+      "Institute of Accredited Building Certifiers",
+      "Certifier Accreditation Examination"
+    ],
+    "people": [
+      "Terri Brown",
+      "Stephanie Nguyen",
+      "Joshua Fitzgerald"
+    ]
+  },
+  "deliverables": [
+    "nov2026_paper2_results.csv",
+    "paper2_results_committee_paper.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "Each unit answers a few of several alternative items it chooses itself, and the items differ in difficulty while the units choosing each differ in standing, so an item's mean outcome mixes its difficulty with its choosers' standing; the difficulty for the whole population is read by comparing the same units across the items they chose, and correcting by the mean outcome moves the hardest item the wrong way.",
+  "driver_concrete": "The November 2026 paper's new building-fire-safety question was chosen mostly by the strongest candidates and the plain planning-approvals question by the weakest, so the fire question's mean mark is the paper's highest while every candidate who answered it scored less on it than on their other questions; read on the same candidates across the questions they chose, the fire question is the hardest and the planning question the easiest, and Regulation 14's whole-mark adjustments follow from that, not from the means.",
+  "stump": "A competent analyst sets each question's mean mark among those who answered it against the paper's mean, lowers the fire-safety question and raises the planning question, and files a pass count that credits the weaker candidates who chose the easy question and docks the stronger who chose the hard one; the step that lands it there is reading a question's facility as its difficulty when its choosers are not the cohort.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [
+    {
+      "architecture": "v1 (a regional council of governments splitting its 2027 weatherization fund across fourteen member counties by working families with children claiming the earned income credit, from IRS ZIP-code tables)",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-20 with no portal result; world closed, one architecture per world)",
+      "driver": "A subtotal of one kind of member inside each area's published total is never published, but each area's total comes with a paired amount and the kinds carry known and very different average amounts, so an area's own count and amount fix its mix; applying the region-wide share of the kind to every area misplaces the subtotal wherever an area's mix departs from the region's, and a cap that binds only on the overstated area moves every other share.",
+      "driver_concrete": "The council allocates by earned income credit returns with qualifying children, which the IRS ZIP-code tables do not split; in the lowest AGI class, the only one where childless workers claim, each county's claims count and credit amount together fix how many are families, because a childless worker's credit averages a few hundred dollars against several thousand for a family; the statewide share overstates the seat county, whose many young childless workers pull its average credit down, and caps it at 12 per cent instead of leaving it below the cap.",
+      "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "stump_strategy": "decomposition_attribution",
+      "domain": "demographic-social-science",
+      "subdomain": "income-poverty-inequality",
+      "objective": "etl",
+      "shell": null
+    }
+  ],
+  "notes": "Client domain education-learning-sciences, task type item-response-theory-test-equating (ETL, DD): putting optional questions on one scale is equating within a paper. stump_strategy population_selection: each question's answerers are a population selected on standing, and the decisive move reads the question's difficulty for the whole sitting rather than for its choosers. Decisive generator G6 (the composition of each question's answerers differs from the sitting's), with G14 (the choosers' mean does not carry to the cohort) and G17 (each move asserted mid-way between whole marks). gate_g etl_conformance: the deliverable is the results file conformed to Regulation 14. Drawn after task464's ETL driver map (cells A to F refused on their spent drivers): examinee choice is within one administration, so the conversion wall that closed the cell for carried scores does not reach it, and no slot note or card carries optional-question choice.",
+  "registered": "2026-11-01T23:34:17Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "csv+xlsx"
+  }
 }

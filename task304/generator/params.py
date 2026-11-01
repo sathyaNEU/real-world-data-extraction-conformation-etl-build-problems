@@ -1,83 +1,63 @@
-"""Constants for task304 (architecture 3): Brannock Trust's find-and-treat van, placed full-time in one of four settings
-for 2027 after a 2026 rota that visited all four. Every rate here is a property of the world the records are drawn
-from; the figures the build grades are computed forward from the shipped files (solve.py), never from these."""
+"""task304 architecture 4: fixed parameters of the world (Brolga Parcel Network's sortation hubs)."""
 import datetime as dt
 
-D = dt.date
-SEED = 304301
-SEEDS = dict(pharm=3041, hh=16, ap=356, ds=115, nsp=284, courses=24, lab=3047)
-AS_OF = D(2026, 9, 30)
-ROTA_START, ROTA_END = D(2026, 1, 5), D(2026, 9, 25)
-BANK_HOLIDAYS = {D(2026, 4, 3), D(2026, 4, 6), D(2026, 5, 4), D(2026, 5, 25), D(2026, 8, 31)}
-EPR_GO_LIVE = D(2024, 10, 1)
-ASSAY_CHANGE = D(2025, 7, 1)
-ROLLOUT = D(2027, 4, 1)
+SEED = 304
 
-ORG = "Brannock Trust"
-NETWORK = "Fenwold Hepatitis C Network"
-ICB = "NHS Fenwold Integrated Care Board"
-LAB = "Fenwold Pathology"
-DIRECTOR = "Stephanie Davis"
-TEAM_LEAD = "Duncan Jackson"
-CLIN_LEAD = "Alison Hartley"
+# The reference weeks the undertaking's schedule names: shifts that began 12 October to 8 November 2026.
+REF_START = dt.date(2026, 10, 12)
+REF_END = dt.date(2026, 11, 8)
+# The sorter control system export covers two weeks before the reference weeks as well.
+LOG_START = dt.date(2026, 9, 28)
+LOG_END = dt.date(2026, 11, 8)
+EXPORT_DATE = dt.date(2026, 11, 16)
+AS_OF = dt.date(2026, 11, 27)
 
-SETTINGS = ["AP", "HH", "DS", "NSP"]
-LABEL = {"AP": "the approved premises", "HH": "the city hostels", "DS": "Fenwold Recovery's new entrants",
-         "NSP": "the needle exchange pharmacies' new registrants"}
-SHORT = {"AP": "Approved premises", "HH": "City hostels", "DS": "Fenwold Recovery new entrants",
-         "NSP": "Needle exchange new registrants"}
-# the van tablet's setting values; its app update of 18 May 2026 shortened the hostels' site names
-TABLET_OLD = {"AP": "Approved Premises", "HH": "Hostel", "DS": "Fenwold Recovery", "NSP": "Pharmacy NSP"}
-TABLET_UPDATE = D(2026, 5, 18)
-HOSTEL_SHORT = {"Albion House": "ALBION HSE", "St Bride's Court": "ST BRIDES CT", "Marlowe House": "MARLOWE HSE",
-                "Canal Street": "CANAL ST", "Holmfield": "HOLMFIELD", "The Foyer, Wexley Road": "FOYER WEXLEY RD",
-                "Greyfriars": "GREYFRIARS", "Tenter Lane": "TENTER LN", "Ropewalk House": "ROPEWALK HSE"}
+SHIFTS = {"AM": 5, "PM": 13, "NT": 21}     # local start hour; every shift is eight hours
+SHIFT_HOURS = 8.0
+BREAK_HOURS = 1.0                          # two 15-minute breaks and a 30-minute meal, taken in the amenities
+MEAL_AT = 3.75                             # hours after shift start the line stops for the 30-minute meal
+MEAL_LEN = 0.5
+STANDARD = 85.0                            # dB(A), LAeq,8h exposure standard
+PROGRAM_COST_AUD = 438                     # the hearing program's annual cost per enrolled worker (undertaking 4.3)
 
-# the world's rates (truth); the 2026 rota measures them with sampling noise
-ACCEPT = {"AP": 0.85, "HH": 0.95, "DS": 0.80, "NSP": 0.70}
-ACTIVE = {"AP": 0.060, "HH": 0.110, "DS": 0.066, "NSP": 0.170}
-ACTIVE_PILOT = 0.025            # new registrants at a pharmacy whose pharmacist already tests and treats
-START12 = {"AP": 0.48, "HH": 0.80, "DS": 0.60, "NSP": 0.62}
-COVER = {"AP": 0.84, "DS": 0.56, "NSP": 0.62}     # chance a 2026 arrival is met by the van on its rota day
-HH_ABSENT = 0.06
-HOSTEL_INCIDENCE = 0.0013       # new infections per resident-year among residents who tested negative
+# Hubs. Li: induct-area LAeq before; Lp: induct-area LAeq the supplier predicts after the enclosure;
+# Lf: sort and dock floor; La: amenities (meal room). Levels are the 2026 survey's, to 0.1 dB.
+HUBS = [
+    dict(code="LAR", name="Larapinta", city="Brisbane", state="QLD", tz="Australia/Brisbane", vendor="V1",
+         stations=16, Li=93.6, Lp=84.1, Lf=81.9, La=64.6, scheme="dedicated",
+         loaders=46, sorters=30, forklift=5, leads=2, agency=7, spares=2),
+    dict(code="ECR", name="Eastern Creek", city="Sydney", state="NSW", tz="Australia/Sydney", vendor="V1",
+         stations=20, Li=96.6, Lp=88.2, Lf=82.8, La=65.3, scheme="am_rotation",
+         loaders=58, sorters=36, forklift=6, leads=2, agency=10, spares=2),
+    dict(code="TRU", name="Truganina", city="Melbourne", state="VIC", tz="Australia/Melbourne", vendor="V2",
+         stations=12, Li=95.1, Lp=84.4, Lf=81.4, La=63.9, scheme="sorter_relief",
+         loaders=30, sorters=40, forklift=4, leads=2, agency=6, spares=2),
+    dict(code="WFD", name="Wingfield", city="Adelaide", state="SA", tz="Australia/Adelaide", vendor="V3",
+         stations=10, Li=91.4, Lp=82.9, Lf=80.6, La=63.4, scheme="break_buddies",
+         loaders=40, sorters=22, forklift=4, leads=1, agency=5, spares=2),
+    dict(code="KEW", name="Kewdale", city="Perth", state="WA", tz="Australia/Perth", vendor="V2",
+         stations=12, Li=94.9, Lp=86.4, Lf=81.8, La=64.8, scheme="half_shift",
+         loaders=34, sorters=24, forklift=4, leads=2, agency=6, spares=2),
+    dict(code="BFD", name="Beresfield", city="Newcastle", state="NSW", tz="Australia/Sydney", vendor="V3",
+         stations=8, Li=92.9, Lp=84.0, Lf=81.3, La=64.1, scheme="agency_pm",
+         loaders=22, sorters=16, forklift=3, leads=1, agency=8, spares=1),
+]
 
-AP_PREMISES = [("Holloway House", 30), ("Bracken Lodge", 38), ("Tanner's Yard", 42)]
-AP_STAY, AP_GAP = 77.0, 4.0
-HOSTELS = [("Albion House", "Fenwold Housing Trust", 86), ("St Bride's Court", "Fenwold Housing Trust", 112),
-           ("Marlowe House", "Fenwold Housing Trust", 64), ("Canal Street", "Fenwold Housing Trust", 140),
-           ("Holmfield", "Fenwold Housing Trust", 96), ("The Foyer, Wexley Road", "Calder Street Homes", 72),
-           ("Greyfriars", "Calder Street Homes", 118), ("Tenter Lane", "Calder Street Homes", 104),
-           ("Ropewalk House", "Calder Street Homes", 128)]
-HH_STAY, HH_GAP = 1095.0, 12.0
-DS_MONTHLY = 158.0
-NSP_MONTHLY = 161.0
-NSP_REISSUE = 0.085             # share of 'New' rows in a year that re-register a lapsed client
-PILOTS = {"FW318": D(2025, 3, 10), "FK207": D(2025, 6, 16), "FN562": D(2025, 11, 3)}
-
-CLINICS = ["HEP", "COMM", "FRC", "HHC", "SHC"]
-CLINIC_OLD = {"HEP": "RFI-HEP", "COMM": "KR-COM", "FRC": "FR-CLN", "HHC": "RS-HHC", "SHC": "SH-GUM"}
-CLINIC_NAME = {"HEP": "Fenwold Royal Infirmary hepatology clinic", "COMM": "Kestle Road community hepatitis clinic",
-               "FRC": "Fenwold Recovery hub clinic", "HHC": "Riverside homeless health clinic",
-               "SHC": "Fenwold sexual health clinic"}
-CLINIC_YEARLY = {"HEP": 104, "COMM": 120, "FRC": 78, "HHC": 52, "SHC": 38}
-
-FILES = {
-    "van": "van_tests_2026-01_to_2026-09.csv",
-    "register": "hcv_treatment_register_2015-2026.csv",
-    "dispensing": "daa_dispensing_2024-04_to_2026-09.csv",
-    "lab": "virology_hcv_results_2015-01_to_2026-09.csv",
-    "census": "hostel_residents_2026-09-30.xlsx",
-    "hostel_returns": "hostel_occupancy_returns_2023-10_to_2026-09.csv",
-    "ap_returns": "approved_premises_returns_2023-10_to_2026-09.csv",
-    "ds_episodes": "fenwold_recovery_new_episodes_2023-10_to_2026-09.csv",
-    "nsp_reg": "nsp_registrations_2019-04_to_2026-09.csv",
-    "pharmacies": "nsp_pharmacies_2026.csv",
-    "clinics": "network_clinics_2026.csv",
-    "plan": "find_and_treat_van_2027_plan.pdf",
-    "pathway": "fenwold_hcv_pathway_2026.pdf",
-    "intentions": "fenwold_icb_commissioning_intentions_2027-28.pdf",
-    "fibroscan": "van_fibroscan_sessions_2026.xlsx",
-    "costs": "van_running_costs_2026.xlsx",
+# Job titles as each hub's HR records write them.
+TITLES = {
+    "LAR": dict(induct="Inductor", relief="Relief Inductor", loader="Loader", sorter="Sort Operator",
+                forklift="Forklift Driver", lead="Team Leader"),
+    "ECR": dict(induct="Induction Operator", relief="Induction Relief", loader="Loader", sorter="Sort Operator",
+                forklift="Forklift Operator", lead="Shift Lead"),
+    "TRU": dict(induct="Sorter - Induct", relief="Sorter - Relief", loader="Dock Operator", sorter="Sorter - Chute",
+                forklift="MHE Driver", lead="Team Leader"),
+    "WFD": dict(induct="Inductor", relief=None, loader="Loader", sorter="Floor Operator",
+                forklift="Forklift Driver", lead="Team Leader"),
+    "KEW": dict(induct="Inductor", relief="Relief Inductor", loader="Loader", sorter="Sort Operator",
+                forklift="Forklift Driver", lead="Team Leader"),
+    "BFD": dict(induct="Induction Operator", relief=None, loader="Loader", sorter="Sort Operator",
+                forklift="Forklift Operator", lead="Shift Lead"),
 }
-DISTRACTORS = ["fibroscan", "costs"]
+
+ABSENCE = 0.07          # chance an employee is off (leave or sick) on a rostered shift
+AGENCY_SHOW = 0.80      # chance a labour-hire operative on a hub's call list works a given shift

@@ -1,68 +1,96 @@
-"""task233 parameters: the school-leaver destinations survey of a fictional island state, its 2025 nonresponse follow-up and
-the 2026 release whose quality flags the survey director signs."""
-import numpy as np
+"""World parameters for task233 architecture 3: a national statistics office's price collection
+quality assessment for the third quarter of 2026. Every random draw takes its own stream from SEED."""
+import datetime as dt
 
-SEED = 233
-TRACE_FRAC = 0.85            # share of close-time nonrespondents the 2025 follow-up resolved (the world's traced set)
-SAMPLE_EXTRA = 0.034         # further sampled nonrespondents the field team could not resolve (share of all nonrespondents)
-DUP_SHARE = 0.045            # resolved cases found by two routes (two rows, one outcome)
-LATE_SHARE = 0.028           # 2025 leavers who returned after the 2025 close (respondents in the final file)
-ADDED_SHARE = 0.012          # 2025 leavers added to the frame after the close (schools' late leaver lists)
-ADDED_RETURNED = 0.30        # of those, the share who returned a form late
+SEED = 2332026
 
-# the departure the follow-up measures: one odds ratio for NEET and one for higher education, every band and district
-OR_N, OR_H = 2.6, 0.40
-D_N, D_H = np.log(OR_N), np.log(OR_H)
+# reference months carried by the price database extract
+MONTHS = [(2025, 10), (2025, 11), (2025, 12), (2026, 1), (2026, 2), (2026, 3),
+          (2026, 4), (2026, 5), (2026, 6), (2026, 7), (2026, 8), (2026, 9)]
+QUARTER = [(2026, 7), (2026, 8), (2026, 9)]
+PATH_START = dt.date(2025, 8, 1)
+PATH_END = dt.date(2026, 10, 31)
 
-# attainment bands, index 0 lowest points (AB4) to 3 highest (AB1)
-B = 4
-BAND_LABEL = ["AB4", "AB3", "AB2", "AB1"]
-bN = np.array([1.45, 0.50, -0.40, -1.35])
-bH = np.array([-2.0, -0.70, 0.45, 1.55])
-UREL = np.array([1.8, 1.15, 0.75, 0.45])            # relative nonresponse by band
-AFF = np.array([.08, .20, .36, .36]); DEP = np.array([.32, .34, .24, .10])
-# the remainder (not NEET, not HE) split into further education, apprenticeship or training, employment, by band
-REST = np.array([[.30, .30, .40], [.38, .27, .35], [.40, .22, .38], [.45, .15, .40]])
-CATS = ["HE", "FE", "APP", "EMP", "NEET"]
+# public holidays of the fictional country (the collection calendar lists them)
+HOLIDAYS = [dt.date(2025, 10, 27), dt.date(2025, 12, 25), dt.date(2025, 12, 26), dt.date(2026, 1, 1),
+            dt.date(2026, 1, 2), dt.date(2026, 2, 6), dt.date(2026, 4, 3), dt.date(2026, 4, 6),
+            dt.date(2026, 4, 27), dt.date(2026, 6, 1), dt.date(2026, 8, 17), dt.date(2026, 10, 26)]
+WINDOW_WORKDAYS = 5          # the index day and the four working days after it
 
-# districts in the simulation's order (most affluent first); code order is geographic
-#            name              code   aN     aH    t     m24    m25    m26   followed up in 2025
-DISTRICTS = [
-    ("Southern Shore",  "ED06", -4.10,  0.95, 0.12, 0.150, 0.190, 0.1175, 0),
-    ("Upper Valley",    "ED08", -3.80,  1.05, 0.15, 0.080, 0.190, 0.115, 1),
-    ("Glen Villages",   "ED07", -3.55,  0.35, 0.22, 0.090, 0.100, 0.11, 0),
-    ("Hill Country",    "ED09", -3.30,  0.65, 0.26, 0.140, 0.150, 0.23, 0),
-    ("Northern Plains", "ED10", -2.75,  0.20, 0.32, 0.150, 0.190, 0.2325, 1),
-    ("Market Towns",    "ED11", -2.50,  0.05, 0.42, 0.130, 0.150, 0.1475, 0),
-    ("Coastal Strip",   "ED05", -2.20, -0.20, 0.50, 0.120, 0.135, 0.135, 0),
-    ("Riverside",       "ED03", -1.90, -0.45, 0.58, 0.140, 0.190, 0.2225, 1),
-    ("City West",       "ED02", -1.60, -0.75, 0.66, 0.120, 0.140, 0.185, 0),
-    ("City East",       "ED01", -1.30, -1.05, 0.74, 0.130, 0.190, 0.1775, 1),
-    ("Old Docks",       "ED04", -1.20, -1.60, 0.82, 0.090, 0.100, 0.12, 0),
-    ("Mill Towns",      "ED12", -1.25, -1.95, 0.88, 0.120, 0.190, 0.1325, 1),
+# collection regions: NSO code, NSO name, contractor's name for the region, ring of the
+# Field Quality Team's circuit, multiples and independents in the CPI outlet sample
+REGIONS = [
+    ("CR01", "Halbrook Central", "Halbrook Central", 0, 12, 15),
+    ("CR02", "Halbrook North", "Halbrook Nth", 0, 10, 14),
+    ("CR03", "Halbrook South", "Halbrook Sth", 0, 11, 16),
+    ("CR04", "Eastwick Coast", "Eastwick", 1, 9, 14),
+    ("CR05", "Belmont Valley", "Belmont", 1, 8, 15),
+    ("CR06", "Harlow Plains", "Harlow", 1, 9, 13),
+    ("CR07", "Tamsin Bay", "Tamsin Bay", 2, 8, 14),
+    ("CR08", "Greywater", "Greywater", 2, 9, 15),
+    ("CR09", "Ardmore Uplands", "Ardmore", 2, 7, 13),
+    ("CR10", "Fenwick", "Fenwick", 2, 8, 14),
+    ("CR11", "Corran Peninsula", "Corran", 3, 7, 15),
+    ("CR12", "Westholm", "Westholm", 3, 8, 13),
+    ("CR13", "Rookby Downs", "Rookby", 3, 7, 14),
+    ("CR14", "Northreach", "Northreach", 3, 8, 15),
 ]
-ND = len(DISTRICTS)
-NAME = [d[0] for d in DISTRICTS]
-CODE = [d[1] for d in DISTRICTS]
-TRACED = [i for i, d in enumerate(DISTRICTS) if d[8]]
 
-# the two schools that moved district on the 2026 map: (simulation district on the 2026 map, district on the 2025 map)
-MOVED = [(4, 3), (11, 10)]
+# Field Quality Team circuit: calendar days after the index day on which the team re-collects
+# in each region (moved to the next working day when it falls on a weekend or holiday)
+FQT_OFFSET = {"CR01": 1, "CR02": 1, "CR03": 2, "CR04": 5, "CR05": 6, "CR06": 6, "CR07": 7,
+              "CR08": 7, "CR09": 8, "CR10": 8, "CR11": 9, "CR12": 9, "CR13": 10, "CR14": 10}
+FQT_MULTIPLES = 3            # outlets re-collected per region per month
+FQT_INDEPENDENTS = 4
 
-# flag bands on the sensitivity shift, percentage points
-BAND_CAUTION, BAND_SUPPRESS = 1.0, 3.0
+# collector recording errors by region (truth): keying slips, wrong variety or size, and the
+# chance a collector keeps the handheld's pre-filled previous price when the shelf price changed
+ERRORS = {
+    "CR01": (0.0045, 0.0030, 0.020), "CR02": (0.0150, 0.0095, 0.060), "CR03": (0.0035, 0.0025, 0.015),
+    "CR04": (0.0040, 0.0030, 0.020), "CR05": (0.0050, 0.0035, 0.025), "CR06": (0.0140, 0.0090, 0.055),
+    "CR07": (0.0035, 0.0025, 0.020), "CR08": (0.0045, 0.0030, 0.020), "CR09": (0.0030, 0.0025, 0.015),
+    "CR10": (0.0230, 0.0140, 0.080), "CR11": (0.0040, 0.0030, 0.020), "CR12": (0.0035, 0.0025, 0.015),
+    "CR13": (0.0140, 0.0095, 0.050), "CR14": (0.0040, 0.0030, 0.020),
+}
 
-# calendar
-CENSUS_2025, CENSUS_2026 = "2025-10-01", "2026-10-01"
-CLOSE_2025 = "2025-10-24T16:00:00Z"     # 17:00 Irish Summer Time
-CLOSE_2026 = "2026-10-30T17:00:00Z"     # 17:00 Greenwich Mean Time (clocks went back on 25 October)
-EDITION_SWITCH = "2026-10-02T08:00:00Z" # the 2026 edition of the online form went live at 09:00 local the next morning
-FOLLOWUP_DRAWN = "2025-10-31"
-ALLOC_RUN_2026 = "2026-11-09"
-EXTRACT_2026 = "2026-11-10"
-RELEASE_2026 = "2026-12-10"
-FINAL_2025 = "2026-03-31"
+# Price Collection Quality Standard bands on collection accuracy (per cent)
+BAND_COMPLIANT = 98.0
+BAND_CREDIT = 96.5
 
-PEOPLE = {"head": "Polly Ganley", "field": "Emmett Phelan", "method": "Leanne Henebry"}
-ORG = "Social Survey Unit"
-DIVISION = "Leaver Destinations Survey"
+# item groups: monthly frequency of a shelf-price change at multiples and at independents
+GROUPS = {
+    "FV": ("Fresh fruit and vegetables", 0.34, 0.28),
+    "MF": ("Meat, fish and poultry", 0.21, 0.14),
+    "BC": ("Bread and cereals", 0.14, 0.08),
+    "DE": ("Milk, cheese and eggs", 0.15, 0.09),
+    "OF": ("Other food and non-alcoholic drinks", 0.17, 0.10),
+    "HS": ("Household supplies", 0.13, 0.06),
+    "PC": ("Personal care", 0.14, 0.07),
+    "CF": ("Clothing and footwear", 0.10, 0.05),
+}
+
+# outlet kinds: stratum, share of the stratum, quotes per outlet (low, high), item groups priced
+KINDS = {
+    "supermarket": ("M", 0.62, (34, 46), ["FV", "MF", "BC", "DE", "OF", "HS", "PC"]),
+    "pharmacy_chain": ("M", 0.20, (8, 12), ["PC", "HS"]),
+    "clothing_chain": ("M", 0.18, (7, 10), ["CF"]),
+    "greengrocer": ("I", 0.24, (7, 10), ["FV"]),
+    "butcher": ("I", 0.14, (5, 7), ["MF"]),
+    "bakery": ("I", 0.13, (4, 6), ["BC"]),
+    "convenience": ("I", 0.22, (7, 10), ["DE", "OF", "BC", "HS"]),
+    "pharmacy": ("I", 0.11, (5, 7), ["PC"]),
+    "boutique": ("I", 0.10, (4, 6), ["CF"]),
+    "hardware": ("I", 0.06, (5, 7), ["HS"]),
+}
+
+CHAINS = {
+    "supermarket": ["Freshway", "ValuMart", "Kettering's", "Harbour Fresh"],
+    "pharmacy_chain": ["CareMed Pharmacy", "Lifeline Chemists"],
+    "clothing_chain": ["Threadline", "Baxter & Co"],
+}
+
+STATUS_UNAVAILABLE = 0.028   # quote-months the collector could not price
+STATUS_REPLACED = 0.009      # quote-months the collector moved to a new variety
+LATE_VISIT = 0.045           # outlet-months first visited after the collection window
+SPLIT_VISIT = 0.06           # large supermarket outlet-months collected over two visits
+FQT_NOT_FOUND = 0.012        # back-checked items the team could not find on the day

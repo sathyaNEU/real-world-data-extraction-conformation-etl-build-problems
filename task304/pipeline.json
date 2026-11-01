@@ -1,18 +1,30 @@
 {
  "task": "task304",
- "status": "SHIPPED",
+ "status": "DESIGN",
  "domain": "epidemiology-public-health",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-28",
- "stump": "A competent analyst carries the van's 2026 yields per test to each setting's 2027 pool and files the needle exchange pharmacies' new registrants at about 130 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test and treat reaches every needle exchange pharmacy on 1 April 2027, where the three pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.168 elsewhere, and 737 of the hostels' 905 residents were tested by the van in 2026.",
- "architecture": 3,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-28",
-  "checks": "53 checks, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -30,7 +42,7 @@
  ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-28",
+ "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
  "portal_id": "",
  "portal_status": "PENDING_REVIEW",
@@ -52,22 +64,32 @@
   },
   "returned": "see returned[0]"
  },
- "target_zip": "6ccd2099",
- "leak": {
-  "leak_py": "REVIEW, each line ruled",
-  "reader": "architecture 3 read 1 on 6ccd2099: no decisive-step sentence, no ranking, no answer figure; question 3 the pathway (harmless); PH-12 seen as the filed change"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-28",
-  "nearest": "task29 0.08",
-  "surface": "8 pairs promoted for the author's clone check"
- },
- "zip_sha256_16": "6ccd2099db2bb961",
- "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (architecture 3 pass 1, zip 6ccd2099)",
-  "disposition": "APPROVE",
-  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task304/determinism_check_report_arch3.md"
+ "architecture_3": {
+  "shipped": "2026-10-28",
+  "target_zip": "6ccd2099",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-28",
+   "checks": "53 checks, 0 FAIL, 0 WARN"
+  },
+  "leak": {
+   "leak_py": "REVIEW, each line ruled",
+   "reader": "architecture 3 read 1 on 6ccd2099: no decisive-step sentence, no ranking, no answer figure; question 3 the pathway (harmless); PH-12 seen as the filed change"
+  },
+  "duplicate_check": {
+   "heart": "WARN 2026-10-28",
+   "nearest": "task29 0.08",
+   "surface": "8 pairs promoted for the author's clone check"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC, APPROVE (architecture 3 pass 1, zip 6ccd2099)",
+   "disposition": "APPROVE",
+   "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no",
+   "gate_h": "domain pass, layers pass, decisive step analytical",
+   "report": "task304/determinism_check_report_arch3.md"
+  },
+  "stump": "A competent analyst carries the van's 2026 yields per test to each setting's 2027 pool and files the needle exchange pharmacies' new registrants at about 130 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test and treat reaches every needle exchange pharmacy on 1 April 2027, where the three pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.168 elsewhere, and 737 of the hostels' 905 residents were tested by the van in 2026.",
+  "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (a determinism return reported on architecture 3; the find-and-treat world is closed)",
+  "reports": "determinism_check_report_arch3.md, leak_check_report_arch3.md"
  }
 }

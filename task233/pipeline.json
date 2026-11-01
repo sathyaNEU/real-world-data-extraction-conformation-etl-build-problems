@@ -1,40 +1,50 @@
 {
  "task": "task233",
- "status": "SHIPPED",
- "domain": "general-statistics-data-science",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-16",
- "stump": "A competent solver adds the 2025 follow-up's pooled points gap to each district's nonrespondents in proportion to their share and files 11 of the 24 flags wrong; the step that lands it there is carrying a departure measured across allocations from under 1 to over 55 per cent as a fixed number of points instead of nonrespondent by nonrespondent on the odds scale, the one scale on which the follow-up's districts and bands agree.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-16"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-16, --asof 2026-11-10)",
-  "reader": "two reads 2026-10-16: Q1 to Q4 none, Q5 the headline rate (the golden's definition), Q6 analytical; realism fixes applied (methodology date, the allocation reason, the field report's district phrase, QS-4 s.6 scope)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (three_rules.strategy_risk answered; repeat.gate_g against task463 and overuse.gate_g accepted; older same-puzzle and same-driver differentiated)",
-  "nearest": "task446 v2 0.11 (differentiated); surface promoted task81, task95, task73 (0.10, corpus top 1 per cent, other mechanisms), task256, task54, task458, task262 (differentiated on the card)"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md",
-  "arch1": "NOT_DETERMINISTIC, SEND_BACK (determinism_check_report_arch1.md)",
-  "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-16",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "architecture_history": [
+  {
+   "architecture": 2,
+   "status": "SHIPPED",
+   "delivered": "2026-10-16",
+   "portal": null,
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset; reports kept as determinism_check_report_arch2.md and leak_check_report_arch2.md"
+  },
+  {
+   "architecture": 1,
+   "fate": "spent 2026-10-16 at stage 4 (judge SEND_BACK, underspecified_objective); report determinism_check_report_arch1.md"
+  }
+ ]
 }

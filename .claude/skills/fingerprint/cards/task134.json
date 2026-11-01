@@ -1,107 +1,175 @@
 {
   "task": "task134",
-  "architecture": "v3",
-  "drawn": "2026-10-14",
-  "slot_note": "architecture 3 of 3, the slot's last: a re-root drawn fresh in Forecasting & Predictive Modeling on 2026-10-14 after architecture 2's round 2 redesign was sent back by the determinism judge (a decisive step sized from one past event); architecture 1 (criminology, recidivism) and architecture 2 (Scottish care home funding, both rounds) are in lineage with their fates. Bar top two under 50, build to 40",
-  "domain": "urban-regional-science",
-  "subdomain": "land-use-spatial-development-modeling",
-  "client_domain": "urban-regional-science",
-  "niche": "a provincial housing ministry setting the five-year housing target for a suburban city's transit-oriented areas, forecasting the net new homes that building permits will add each year 2027 to 2031 on the lots the 2027 order upzones around four rapid transit stations to 3.0, 4.0 and 5.0 FAR, where concrete towers do not pay",
+  "architecture": "v4 (re-root 2026-11-01 at the Batch 3 queue reset)",
+  "drawn": "2026-11-01",
+  "slot_note": "Forecasting lane. Architecture 4 leaves urban-regional-science for physical-environmental-sciences hydrology: a council-owned estuary port's maintenance dredging for the first contract year after its approach channel and turning basin are deepened two metres, each dredged part's infill set by how far its held bed sits below the natural bed beside it.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "hydrology-flood-frequency",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a council-owned estuary port's in-situ maintenance dredging for October 2027 to September 2028, the first contract year after its approach channel and turning basin are deepened from 12.3 to 14.3 m below chart datum, each dredged part's infill read from its own maintenance returns and from how far its held bed sits below the natural bed in the survey cells beyond the channel limits",
   "objective": "forecasting",
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Building permits will add 13,000 net new homes on the lots in the Ridgemont Line transit-oriented area order over 2027 to 2031: 2,800 in 2027, 2,700 in 2028, 2,600 in 2029, 2,500 in 2030 and 2,400 in 2031.",
-  "answer_source": "task134/submission.md block 1; task134/golden/tod_housing_target_2027-31.xlsx; generator/figures.json",
+  "scoring_unit": "other",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
     "G1",
-    "G13"
+    "G13",
+    "G14"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "senior analyst in the provincial housing ministry's housing targets branch, preparing the city's 2027 to 2031 target order",
-  "role_family": "policy_adviser",
-  "scoring_unit": "per certified output",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads the hydrographic surveys, the monthly maintenance returns, the notices and the deepening scheme correctly averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened parts by the ratio of the held depths, 14.3 over 12.3, filing about 1,450,000 cubic metres against 1,700,000, because a dredged part fills in proportion to how far its bed is held below the natural bed beside it, so two more metres raise each part's infill by two metres over its own present depth below that bed.",
+  "domain_test": "The deciding quantity is the sediment each dredged part of an estuary channel will gather once it is held two metres deeper, which harbour hydrographers estimate from the part's maintenance record and the dredged trench's trapping efficiency; with another field's nouns the chart datum, the maintained depth, the natural bed beside the channel and the infill of a dredged trench have nothing to attach to.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:maintenance-infill-proportional-to-the-held-bed-below-the-natural-bed",
+  "layer1": [
+    "hydrographic surveys from two contractors: depths below chart datum, positive down, on a 50 m grid to April 2023; elevations to Ordnance Datum Newlyn, negative down, on a 40 m grid from October 2023",
+    "monthly maintenance returns laid out by the council's financial year, the contractor's part codes renumbered in 2021, one month's certificate re-issued",
+    "channel limits given as reach corner coordinates in the harbour master's notice, the surveys on the OSGB grid",
+    "the dredger's load log in UTC with loading areas as the contractor's codes, a hired dredger's loads logged as hopper volume and mixture density",
+    "sediment sampling with stations moved from their planned positions and field duplicates under their own references",
+    "a lab batch reporting mercury in micrograms per kilogram"
+  ],
+  "stakeholder_role": "the port's dredging and hydrography manager setting the maintenance quantity for the 2027 dredging tender",
+  "role_family": "capacity_planner",
   "spine": {
-    "file": "roll_extract_2014-2018.csv and roll_extract_2019-2026.csv",
-    "rows": 222650,
-    "entity": "one folio (a legal lot, or a strata lot in a strata plan) on one year's assessment roll",
-    "grain": "folio x roll year",
-    "source": "synthetic (constructed in the layout of a BC Assessment roll extract)"
+    "file": "fendmouth_hydrographic_surveys",
+    "rows": 80000,
+    "entity": "one gridded sounding: a survey cell's bed level at one survey",
+    "grain": "cell x survey",
+    "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "government_agency",
+  "forum": "council_or_assembly",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "local_government",
   "world": {
-    "geography": "Canada, British Columbia (a fictional suburban city of about 640,000 on a fictional rapid transit line)",
-    "currency": "CAD",
-    "org_type": "provincial housing ministry (housing targets branch) setting a municipal housing target order",
+    "geography": "United Kingdom, England (a fictional council-owned port on a fictional east coast estuary)",
+    "currency": "GBP",
+    "org_type": "council-owned estuary port (the harbour authority is a borough council department)",
     "invented_names": [
-      "City of Calderbrook",
-      "Ridgemont Line",
-      "Calderbrook Centre",
-      "Pell Road",
-      "Ellery",
-      "Westerly",
-      "Haldane",
-      "North Calder",
-      "Ravensdale",
-      "Fernlea",
-      "Kerslake Road",
-      "Halvorsen Land Economics",
-      "Brockmore Cost Consulting"
+      "Fendmouth",
+      "Fend Estuary",
+      "Fend Roads",
+      "Fend Spit",
+      "Wenning Deep"
     ],
     "people": [
-      "Tonya Bartlett",
-      "Zachary Tyler",
-      "Monique Knapp",
-      "Alec Heath"
+      "Harriet Thorpe",
+      "Damian Davies",
+      "Graham Ellis",
+      "Zoe Dickinson",
+      "Martyn Rogers",
+      "Garry Stephenson",
+      "Liam O'Brien"
     ]
   },
   "deliverables": [
-    "tod_housing_target_2027-31.xlsx",
-    "tod_completions_2022-26.png"
+    "fendmouth_maintenance_2027-28.xlsx",
+    "placements_2025-26.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The forward yield of a raised allowance is each unit's chance of being rebuilt, nil until the best-paying option the allowance permits is worth more than what stands there and then the steady rate units of its kind have shown once rebuilding paid, times that option's output, which past a cost step in the construction method stays below the allowance; the allowance's capacity at a past change's take-up, a model on the visible attributes, or the option the allowance names all miss it.",
-  "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the reference tables' sale values and all-in costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses 3.0, commercial sites 8.5, rental buildings 2.0 per cent a year) have shown since 2014 once rebuilding paid, each lot once; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR bands yield the same six-storey wood frame as the 3.0 band, and zoned capacity at the corridors' take-up since their 2013 rezoning overstates the yield.",
-  "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the two roll layouts, links permits to lots through the folio history and reads the order's bands and the target methodology correctly computes zoned capacity on the transit-area lots and applies the take-up the corridors have shown since their 2013 rezoning, filing about 4,100 net new homes a year (20,400 over 2027 to 2031); only each lot's feasibility at the building that pays best, and the rate feasible lots of each kind have redeveloped, gives 13,000, falling from 2,800 to 2,400.",
-  "domain_test": "The deciding quantity is the housing a rezoning will actually produce, which urban land economics estimates lot by lot from development feasibility (the residual land value of the best-paying permitted building against the value of the existing use) and the observed redevelopment rate of sites once feasible; with another field's nouns there is no residual land value, no construction-type cost step and no existing use for a new building to outbid.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/2",
-  "layer1": [
-    "assessment roll extracts in two layouts, a 2019 schema change renaming columns and replacing actual use codes with use groups, with lot area in square feet for most folios and in acres for the few of an acre or more",
-    "zone codes on the roll as at the roll's valuation date, renamed in the 2020 bylaw consolidation",
-    "folios retired and new folios created when strata plans are deposited, with remainder parcels for phased projects, linked only through a folio history",
-    "strata plans carried as one folio per strata lot within the station areas, stalls among them, and as one summary record per plan elsewhere",
-    "building permits keyed by folio, floor area in square feet before the permit system's 2020 metric switch and in square metres after",
-    "demolished homes recorded both on the new-building permit and on a separate demolition permit for the same lot",
-    "permits cancelled, expired or superseded by a revised permit after issue",
-    "secondary suites and laneway houses permitted under their own permit types",
-    "interim and final occupancy permits, each carrying the dwelling units entered on the building permit",
-    "the order's schedule of lots as at its date, some folios since replaced by strata plans"
-  ],
+  "question_form": "how-much",
+  "driver": "A unit's forward rate is set by how far its held level sits below the level it would settle to on its own, which the record shows only in the untouched ground beside it, so lowering the held level raises the rate by the added distance over the unit's own present distance; carrying the record's rate, or scaling it by the held level, understates the rise most where the present distance is small.",
+  "driver_concrete": "Fendmouth's maintenance dredging for 2027-28 is each dredged part's infill at its new depth, and a part fills at a rate proportional to how far its bed is held below the natural bed beside it, which only the survey cells beyond the channel limits show (the disused Berth 2 relaxing toward it since 2019 shows the same rate), so each part's 2016-17 to 2025-26 infill rises by two metres over its own present depth below that bed, by a half where the natural bed is deep and a quarter where it is shallow, not by the 16 per cent the depth ratio gives.",
+  "stump": "A strong analyst averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened parts by the ratio of the held depths, 14.3 over 12.3, filing about 1,450,000 cubic metres against 1,700,000; the step that lands it there is reading a part's infill as proportional to its depth, when it is proportional to how far its bed is held below the natural bed beside it, which the survey cells beyond the channel limits put at 4.0 to 7.5 metres, so two more metres raise it by a quarter to a half.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task54": "task54 multiplies a loss per excursion by the packs still aboard along a planned run sequence; task134 conditions each lot's redevelopment on whether the building that pays best outbids the value of what stands on it, at the rate its kind of lot has shown once that held, and counts that building's homes rather than the allowance's"
+    "task154": "task154 reads a stock valued at what each holder paid over its own holding period; here no stock is valued: each dredged part's infill rate is set by how far its held bed sits below the natural bed beside it, read from survey cells outside the channel limits, and the forecast moves that distance by the deepening."
   },
   "lineage": [
+    {
+      "domain": "urban-regional-science",
+      "subdomain": "land-use-spatial-development-modeling",
+      "client_domain": "urban-regional-science",
+      "niche": "a provincial housing ministry setting the five-year housing target for a suburban city's transit-oriented areas, forecasting the net new homes that building permits will add each year 2027 to 2031 on the lots the 2027 order upzones around four rapid transit stations to 3.0, 4.0 and 5.0 FAR, where concrete towers do not pay",
+      "objective": "forecasting",
+      "shape": "single-figure",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G1",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "none",
+      "stump_strategy": "composition_mix",
+      "context_artifact": "operations_log",
+      "role_family": "policy_adviser",
+      "forum": "minister_or_cabinet",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "government_agency",
+      "driver": "The forward yield of a raised allowance is each unit's chance of being rebuilt, nil until the best-paying option the allowance permits is worth more than what stands there and then the steady rate units of its kind have shown once rebuilding paid, times that option's output, which past a cost step in the construction method stays below the allowance; the allowance's capacity at a past change's take-up, a model on the visible attributes, or the option the allowance names all miss it.",
+      "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the reference tables' sale values and all-in costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses 3.0, commercial sites 8.5, rental buildings 2.0 per cent a year) have shown since 2014 once rebuilding paid, each lot once; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR bands yield the same six-storey wood frame as the 3.0 band, and zoned capacity at the corridors' take-up since their 2013 rezoning overstates the yield.",
+      "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
+      "answer": "Building permits will add 13,000 net new homes on the lots in the Ridgemont Line transit-oriented area order over 2027 to 2031: 2,800 in 2027, 2,700 in 2028, 2,600 in 2029, 2,500 in 2030 and 2,400 in 2031.",
+      "world": {
+        "geography": "Canada, British Columbia (a fictional suburban city of about 640,000 on a fictional rapid transit line)",
+        "currency": "CAD",
+        "org_type": "provincial housing ministry (housing targets branch) setting a municipal housing target order",
+        "invented_names": [
+          "City of Calderbrook",
+          "Ridgemont Line",
+          "Calderbrook Centre",
+          "Pell Road",
+          "Ellery",
+          "Westerly",
+          "Haldane",
+          "North Calder",
+          "Ravensdale",
+          "Fernlea",
+          "Kerslake Road",
+          "Halvorsen Land Economics",
+          "Brockmore Cost Consulting"
+        ],
+        "people": [
+          "Tonya Bartlett",
+          "Zachary Tyler",
+          "Monique Knapp",
+          "Alec Heath"
+        ]
+      },
+      "deliverables": [
+        "tod_housing_target_2027-31.xlsx",
+        "tod_completions_2022-26.png"
+      ],
+      "question_form": "how-many",
+      "layer2_family": "field_method",
+      "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/2",
+      "architecture": "v3",
+      "drawn": "2026-10-14",
+      "registered": "2026-10-14T14:12:07Z",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "put",
+        "rounding opener": "homes",
+        "deliverable set": "png+xlsx"
+      },
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-14 with no portal result; one architecture per world, so the transit-oriented housing-target world (Calderbrook, the Ridgemont Line order) is closed and the slot moves to a new domain, world, dataset and shell"
+    },
     {
       "domain": "healthcare-delivery-health-economics",
       "subdomain": "utilization-access-demand-forecasting",
@@ -250,6 +318,20 @@
       ]
     }
   ],
-  "notes": "Re-root drawn 2026-10-14 (architecture 3, the slot's last) after architecture 2's round 2 was sent back by the determinism judge. Coding: decisive gap population (the lots that will actually yield homes, and the building each yields, against every lot's zoned allowance), time second (the order's allowance is one the history never saw on these lots); pattern none with G14 decisive (a past rezoning's take-up does not apply to a pool whose best-paying building and feasibility differ), G1 (the unit of yield is the best-paying building's homes, not the allowance), G13 (the forward window holds a zoning the record never had). Strategy composition_mix: the yield is conditioned on a property no column names, rebuilt from the roll, the market study and the cost guide. Forum minister_or_cabinet (the minister issues the target order); forcing event statutory_or_regulatory_filing (the order's statutory date). Layer 2 pattern urban-regional-science/land-use-spatial-development-modeling/2 (zoned capacity is not likely development); the client's version pins a feasibility rule, this one files none and estimates the rate from the record. Re-registered 2026-10-14 after task453 (architecture 2) and task127 (architecture 3) were filed first in parallel: context artifact moved from published_series (task453) to operations_log (the city's permit system log, the outcome record), shape from 02 (task127) to single-figure: the call is the five-year target total, the order's statutory unit, with its yearly path as critical components. repeat.gate_g (forecasting, against task127) answered: a forecasting call's Gate G is forecasting; task127 reads a settlement speed-up in a development triangle, this build a rezoning's yield from development feasibility. Built 2026-10-14: the corridor rezoning moved to 2013 (before the record) so that no rezoning inside the record changes feasibility; deliverable renamed tod_completions_2022-26.png; Haldane, Kerslake Road and Brockmore Cost Consulting replace Calderbrook Centre as a station, King George Way and Corvane Cost Consulting (near-real or reused names). Shipped 2026-10-14 (architecture 3): spine rows are the two roll extracts as shipped (67,251 and 155,399).",
-  "registered": "2026-10-14T14:12:07Z"
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "homes",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "notes": "Re-root drawn 2026-11-01 (architecture 4) at the Batch 3 queue reset. Coding: decisive gap time (the record measures each part's infill at 12.3 m and the contract year holds it at 14.3 m), population second (the natural bed is read from the survey cells beside the channel, not from any part's own rows); pattern none with G1 decisive (the quantity that governs the infill is the depth below the natural bed, not the depth or the area), G13 (the forward window holds a depth the channel never had), G14 (the record's rate does not carry to the deeper hold). Strategy other: a physical relaxation toward the natural bed, neither a binding limit, a composition shift nor a decomposition. Forum council_or_assembly (the council's cabinet awards the maintenance contract), forcing purchase_order_or_contract (the 2027 tender's quantity), org local_government (a council-owned port), role capacity_planner, context artifact monitoring_export (the hydrographic surveys). Forum, forcing, shape and artifact redrawn at the draw after task304 and task475 registered (regulator, statutory filing, shape 14 and filed_standard were then banned); the contract tender is the honest forcing event, since the quantity sets the tender's bill of quantities.",
+  "registered": "2026-11-01T23:45:18Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "for",
+    "rounding opener": "part",
+    "deliverable set": "svg+xlsx"
+  }
 }

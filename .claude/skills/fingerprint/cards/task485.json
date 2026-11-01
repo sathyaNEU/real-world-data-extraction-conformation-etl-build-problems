@@ -1,94 +1,90 @@
 {
   "task": "task485",
-  "architecture": "v4",
-  "drawn": "2026-10-26",
-  "slot_note": "re-rooted after architecture 3 (each scrubber's year closed on the limestone it consumed) was spent at stage 4; a fresh world and mechanism on the lane's objective, keeping only the seed's (ET42) immigration theme",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "niche": "an island Statistics Unit's provisional long-term immigration for the year to 30 June 2026 by employment sector, conformed from the Population Register's arrival registrations and leaving notices cut at 31 August 2026, set against the Population Policy's sector allowances that fix each sector's 2027 work permit quota",
+  "architecture": "v5",
+  "drawn": "2026-11-01",
+  "slot_note": "re-rooted 2026-11-01 at the Batch 3 queue reset: architecture 4 (an island Statistics Unit's provisional long-term immigration by sector) closed with its world; a fresh world, domain and mechanism on the lane's objective",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "a state public employees' health plan's Pharmacy and Therapeutics Committee setting its 2027 preferred drug list from each product's fiscal 2026 net cost per 30-day supply, with the pharmacy benefit manager's pass-through rebates remitted as quarterly lump sums per manufacturer and participating employer account rather than per product",
   "objective": "etl",
-  "shape": "07",
+  "shape": "03",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Hospitality and tourism, financial and professional services and digital and e-gaming exceed their 2025-26 allowances (253.8 against 230, 380.5 against 350, 208.7 against 190); construction, health and social care and retail and distribution stay under (181.0 against 210, 380.2 against 420, 149.4 against 170)",
-  "answer_source": "task485/submission.md block 1 and generator/figures.json (call, sector.*.provisional)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
+    "objective",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G9",
-    "G14",
-    "G13"
+    "G2",
+    "G1",
+    "G19"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst conforms the register's stays, counts each sector's arrivals in the year to 30 June 2026, resolves those whose twelve months had run or who had already left by the cut, and gives each open arrival the share of the 2024-25 arrivals of its sector still on the island after the same whole months who stayed twelve months; that files care, construction and retail over their allowances, because the returning circular workers, whose arrivals doubled in 2025-26, are counted at the rate of the first-timers among whom the reference cohort hides them.",
-  "domain_test": "Provisional long-term migration under the twelve-month usual-residence rule is official migration statistics' own estimand, and the field estimates the stays not yet completed from earlier arrivals' retention given what is known of each arrival, its migration history included; put patients for migrants and a hospital for the island and the circular returner and the twelve-month residence test stop making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:an open arrival's twelve-month stay judged on earlier arrivals with the same migration history (a stay on the register ended in the year before), not on its sector's retention by months present",
+  "analyst_test": "A strong analyst conforms the claims (reversals netted, NDCs normalised), takes each product's fiscal 2026 ingredient cost and 30-day supplies and spreads each manufacturer's remitted rebates over its products in proportion to their ingredient cost, the attribution a PBM rebate report uses, and that files the wrong preferred product in the classes where a manufacturer pays most of its rebate on one contested product while a large low-rebate product carries much of its spend.",
+  "domain_test": "Net cost per 30-day supply after manufacturer rebates is the pharmacy benefit's own formulary quantity, built from paid claims and the rebates remitted on them under a pass-through contract; with another field's nouns there are no therapeutic classes of equivalent products, no labelled 30-day supply and no rebate remitted per manufacturer and employer account that has to be traced back to the products that earned it.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:each product's rebate recovered from its manufacturer's quarterly remittances by employer account against the units of every product it supplies, not spread over its products by ingredient cost",
   "layer1": [
-    "the register's extract of 30 September 2026 holds leaving notices filed in September for departures on or before the 31 August cut",
-    "registration numbers re-issued at the 2023 move to the current register system, stays closed before it held in the legacy archive under the legacy number beside a crosswalk",
-    "stays open at the 2023 move closed in the legacy archive on the move date and reopened in the current extract under the new number",
-    "the legacy archive writing dates day first and the current extract ISO dates",
-    "the sector list revised on 1 January 2026, earlier registrations carrying the 2019 codes, several merged into one 2026 sector",
-    "dependants registered under their sponsor's number with no sector of their own",
-    "arrival dates declared on the form beside the later registration date, registrations late by days to weeks",
-    "two parishes merged in 2025, older stays carrying the old parish code"
+    "NDCs in 11-digit hyphenated, 11-digit plain and legacy 10-digit forms across the PBM's two claims extracts",
+    "reversed claims and resubmissions carried as separate rows",
+    "rebate statements as quarterly PDFs with prior-period adjustments and disputed amounts on their own lines",
+    "manufacturer names on the statements differing from the labeler names in the product file",
+    "a product moved to a new labeler mid-year with its NDCs unchanged",
+    "participating employer account codes renumbered on 1 January 2026",
+    "fill dates against paid dates across quarter ends",
+    "package sizes in pens, inhalers or millilitres against the labelled 30-day supply"
   ],
-  "stakeholder_role": "the Chief Statistician of the Statistics Unit, who certifies the provisional long-term immigration by sector to the Council of Ministers before it sets the 2027 work permit quotas",
-  "role_family": "statistical_office_head",
+  "stakeholder_role": "the plan's director of pharmacy benefits, who brings the net cost table to the Pharmacy and Therapeutics Committee",
+  "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "population_register_extract_20260930.csv",
-    "rows": 25332,
-    "entity": "one stay on the island, from an arrival registration to its leaving notice",
-    "grain": "person x stay",
+    "file": "pbm_paid_claims_fy2026.csv",
+    "rows": 60000,
+    "entity": "one paid or reversed pharmacy claim",
+    "grain": "claim x fill date",
     "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "research_or_statistics_office",
+  "forum": "trustees_or_governors",
+  "forcing_event": "season_or_peak",
+  "org_family": "government_agency",
   "world": {
-    "geography": "a fictional self-governing island in the British Isles (Esklett), its parishes, firms and people invented",
-    "currency": "GBP",
-    "org_type": "the island government's Statistics Unit, which compiles migration statistics from the Population Register",
-    "invented_names": [
-      "Esklett",
-      "Esklett Statistics Unit"
-    ],
+    "geography": "United States, an unnamed state (the plan, its PBM, the manufacturers, products and people are fictional)",
+    "currency": "USD",
+    "org_type": "a state agency administering the public employees' self-funded health plan",
+    "invented_names": [],
     "people": [
-      "Jean Grant",
-      "Gordon Hope",
-      "Melanie Hilton"
+      "Maria Burgess",
+      "Brenda Cook",
+      "Timothy Peterson"
     ]
   },
   "deliverables": [
-    "provisional_long_term_immigration_2025_26.xlsx",
-    "long_term_immigration_by_sector_2025_26.png"
+    "pdl_2027_net_cost.xlsx",
+    "pdl_2027_trustees.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "An arrival's chance of staying past a fixed horizon is read from earlier arrivals still present at the same point, but an arrival that left within the year before and came back repeats its earlier short stay, a property rebuilt from its own earlier records and read off no column, so a cohort in which such repeat arrivals have grown is over-counted by any retention measured on the earlier cohort by group and elapsed time.",
-  "driver_concrete": "Each sector's provisional long-term immigration for 2025-26 counts the arrivals whose twelve months had run on the island or who had left, plus each open arrival's chance of staying twelve months read from the 2024-25 arrivals of the same sector and the same migration history (a stay on the register that ended in the twelve months before the arrival) still present the same whole months after arriving; agency-placed care, construction and retail workers on eight- to ten-month placements from 2025 return after a break, nearly always for another short stay, so those sectors' returning arrivals doubled and their sector retention counts them at first-timers' rates.",
-  "stump": "The default path conforms the stays, resolves the arrivals whose twelve months had run or who had left by the cut, gives the rest the 2024-25 arrivals' twelve-month retention by sector and whole months present, and files care, construction and retail over their allowances beside the sectors that are; the step that lands it there is reading the retention without each arrival's migration history, so the returning circular workers are counted at the rate of the first-timers among whom the reference cohort hides them.",
+  "driver": "A total remitted for a group of items in each period and account is attributed to each item at the rate recovered from how the totals move with every item's own volume across periods and accounts, because the payer's rate differs sharply by item and a split in proportion to value moves its high rate on contested items onto the rest.",
+  "driver_concrete": "Each product's rebate per 30-day supply recovered by fitting its manufacturer's quarterly remittance to each participating employer account against the 30-day supplies of every product that manufacturer has on the claims, not the remittance spread over its products by ingredient cost.",
+  "stump": "Spreading each manufacturer's remitted rebates over its products by ingredient cost files the wrong preferred products, because a manufacturer's rebate sits mostly on its products in contested classes while its sole-source products carry much of its spend.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task100": "There a member's exit is fixed by a course structure (two stages, an optional interim stage) and found by matching the member to the prior period's snapshot; here no structure fixes a stay's length: whether an open arrival stays twelve months is estimated from the year-before arrivals' retention, and the person's own earlier stay changes which retention applies.",
-    "task136": "There an intervention's enrolments overstate its addition and the comparison is against sites not yet treated over the same months, a causal design; here nothing is treated: a provisional count of stays reaching twelve months is completed from the year-before arrivals' retention, and the arrival's migration history, rebuilt from its earlier stays, splits that retention.",
-    "task483": "There a group's half point is rebuilt from its parts' percentile tables and a unit's day from period totals, a grain change in published records; here no record is coarsened: a provisional count's open stays are completed from the year-before arrivals, and the person's own earlier stays split the retention.",
-    "task484": "There a fuel's use is carried from a survey through a price shock read off metered and unmetered households' deliveries, a difference against an earlier pair of periods; here nothing is metered or shocked: each open stay's chance of reaching twelve months is read from earlier arrivals with the same migration history.",
-    "task486": "There a multi-site unit's members are placed at its sites by size times class density measured on single-site units, an allocation across premises; here nothing is allocated across places: a stay still open at the cut is completed on the year-before arrivals of the same sector and migration history."
+    "task84": "task84 builds a composite target key over an advertiser's live campaigns and prices a copy premium from its own past merges to attribute a cost rise; here no key is built and nothing is merged: each product's rebate is recovered from its manufacturer's remittances to the plan's employer accounts across quarters against each product's units, and the call is the preferred product in each therapeutic class",
+    "task482": "task482 attributes one site meter's gas among processes by the physical driver each burns by (soak hours against tonnes melted), read from the meter's 15-minute response to the furnace logs; here every product earns its rebate on the same driver, units dispensed, and the decisive step is that a manufacturer's remittance is a set of product-specific contract terms, recovered from what it pays each employer account each quarter against the units of every product it supplies, against the split by ingredient cost a rebate report uses",
+    "task65": "task65 constitutes each entity from its child records by the child's own location before a per-entity cap; here nothing is regrouped and nothing is capped: each product's rebate is recovered from its manufacturer's remittances to the plan's employer accounts across quarters against the units of every product it supplies"
   },
   "lineage": [
     {
@@ -123,8 +119,40 @@
       "niche": "an environment ministry's 2027 Sulphur Dioxide Order, listing the permitted industrial coal boilers whose 2026 sulphur dioxide reached 250 tonnes, the inventory conformed from the coal suppliers' delivery analyses, the boiler operators' quarterly returns, the limestone quarries' delivery tickets, the annual scrubber performance tests and the permits' scrubber design data, where each wet limestone scrubber's real removal over the year is closed on the limestone it consumed",
       "gate_g": "method_or_model_selection",
       "stump_strategy": "other"
+    },
+    {
+      "version": "v4",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-26, no portal result; the island migration world closed)",
+      "driver": "An arrival's chance of staying past a fixed horizon is read from earlier arrivals still present at the same point, but an arrival that left within the year before and came back repeats its earlier short stay, a property rebuilt from its own earlier records and read off no column, so a cohort in which such repeat arrivals have grown is over-counted by any retention measured on the earlier cohort by group and elapsed time.",
+      "stump": "The default path conforms the stays, resolves the arrivals whose twelve months had run or who had left by the cut, gives the rest the 2024-25 arrivals' twelve-month retention by sector and whole months present, and files care, construction and retail over their allowances beside the sectors that are; the step that lands it there is reading the retention without each arrival's migration history, so the returning circular workers are counted at the rate of the first-timers among whom the reference cohort hides them.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "census-register-administrative-data-quality",
+      "niche": "an island Statistics Unit's provisional long-term immigration for the year to 30 June 2026 by employment sector, conformed from the Population Register's arrival registrations and leaving notices cut at 31 August 2026, set against the Population Policy's sector allowances that fix each sector's 2027 work permit quota",
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "maturity_censoring",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G14",
+        "G13"
+      ],
+      "decision_type": "designation_set"
     }
   ],
-  "notes": "stump_strategy maturity_censoring: the year's long-term immigration is not finished at the cut and its open stays are completed from the year-before arrivals' retention; the completion that holds conditions on each arrival's own migration history (a stay that ended in the twelve months before arriving), not its sector alone. G9 decisive: the arrivals counted upstream against the stays that survive twelve months, the survival class (returning circular workers) behind a self-join of the register. Pattern none. Shape redrawn from 10 to 07 at the stage 3 heart check (task269 v5, registered 01:35:57Z and reaching main after this draw's check, carries 10): the rubric's widest component is the back series' 80 cells by sector and year (arrivals and long-term immigration), the call's eight sector rows beside it, so a grid of cells is the honester label.",
-  "registered": "2026-10-26T04:06:12Z"
+  "notes": "",
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "compile",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "registered": "2026-11-01T23:46:36Z"
 }

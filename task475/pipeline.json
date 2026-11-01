@@ -1,35 +1,42 @@
 {
  "task": "task475",
- "status": "SHIPPED",
- "domain": "demographic-social-science",
+ "status": "DESIGN",
+ "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-20",
- "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
- "architecture": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (answered in the design note)",
-  "reader": "four readers in two rounds, all missed the call (Tallis 15.46 per cent, capped); round 1 reader 2 exit 1, asks re-sited; round 2 exit 0 twice at 14 of 71 (ask B)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.objective only)",
-  "nearest": "task268 v1 at 0.06 (heart), 0.10 (guard)"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC, pass 2 DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task475/determinism_check_report.md, task475/determinism_check_report_pass2.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-20",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET32 (ZIP-level EITC counts to county allocations of a capped weatherization fund): world, decision and quantity kept; the pitfall re-found from the data"
+ "source_note": "re-rooted 2026-11-01 at the Batch 3 queue reset: architecture 1 (Corran Valley weatherization fund by EITC families, IRS ZIP-code tables) closed with its world; architecture 2 drawn in Education & Learning Sciences, item-response-theory-test-equating, an accreditation examination with optional questions",
+ "architecture_1": {
+  "status_at_reset": "SHIPPED",
+  "delivered": "2026-10-20",
+  "stump": "The default path applies the statewide share of claimants with children in each AGI class to every county's credit claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about its mix of families and childless workers.",
+  "judge": "pass 1 DETERMINISTIC, pass 2 DETERMINISTIC",
+  "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset"
+ }
 }
