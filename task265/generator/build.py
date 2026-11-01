@@ -54,13 +54,11 @@ def build(out, seed=W.SEED):
     n["cases"] = O.write_cases(p("cases"), T)
     n["merges"] = O.write_merges(p("merges"), T)
     D.write_policy(p("policy"))
-    D.write_dictionary(p("dictionary"))
     D.write_schedule(p("schedule"))
     D.write_log(p("log"), T)
     from pypdf import PdfReader
-    for k in ("policy", "dictionary", "schedule"):
+    for k in ("policy", "schedule"):
         n[k + "_pages"] = len(PdfReader(p(k)).pages)
-    D.write_manifest(p("manifest"), manifest(n))
     PP.COMPANY = K.SYSTEM
     PP.normalize_ooxml(p("legacy"), K.PEOPLE["registry"], K.PEOPLE["registry"], "2018-01-12T15:20:41Z",
                        "2022-01-06T17:02:13Z", excel=True)
@@ -71,21 +69,21 @@ def build(out, seed=W.SEED):
     PP.normalize_ooxml(p("cases"), "Perioperative Informatics", "Perioperative Informatics", "2027-01-08T14:31:02Z",
                        "2027-01-08T14:33:47Z", excel=True)
     PP.normalize_pdf(p("policy"), b"D:20250211160418-06'00'", b"D:20250213093102-06'00'")
-    PP.normalize_pdf(p("dictionary"), b"D:20270112101507-06'00'", b"D:20270126155921-06'00'")
     PP.normalize_pdf(p("schedule"), b"D:20250623112744-05'00'", b"D:20250701083016-05'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     T["n"] = n
+    T["provenance"] = provenance(n)
     return T
 
 
-def manifest(n):
+def provenance(n):
+    """Each file's source, date and contents, for metadata.json outside the pack (no file under target/ describes
+    the pack)."""
     F = K.FILES
-    return [
+    rows = [
         (F["policy"], "Implant Value Analysis Policy VA-07, revision 3", "Supply Chain, Value Analysis", "13 February 2025",
          "%d pages" % n["policy_pages"]),
-        (F["dictionary"], "Registry data dictionary for the annual extract, version 4.2", K.REGISTRY, "26 January 2027",
-         "%d pages" % n["dictionary_pages"]),
         (F["prosp"], "Registry extract of 31 December 2026: hips captured from 1 January 2018", K.REGISTRY,
          "26 January 2027", n["prosp"]),
         (F["legacy"], "Registry legacy enrolment workbook, 2018 to 2021", K.REGISTRY, "6 January 2022", n["legacy"]),
@@ -107,6 +105,9 @@ def manifest(n):
         (F["schedule"], "Hip agreement 2022 to 2027, Schedule B (pricing), as amended 1 July 2025", "Supply Chain",
          "1 July 2025", "%d pages" % n["schedule_pages"]),
     ]
+    return [{"file": "target/" + f, "covers": what, "source": src, "date": date, "size": str(size),
+             "how_made": "synthetic: records and documents simulated by script; no real "
+                         "patient, organisation or product", "licence": "CC0 1.0, original work"} for f, what, src, date, size in rows]
 
 
 def tree_digest(d):

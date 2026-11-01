@@ -298,7 +298,9 @@ def write(target, golden, T=None):
                        title="Hip constructs for the 1 July 2027 agreement")
     Fj = figures(o)
     json.dump(Fj, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
-    meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS], "stated_inputs": ["5.0"]}
+    meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS]}
+    if T is not None and T.get("provenance"):
+        meta["provenance"] = T["provenance"]
     json.dump(meta, open(os.path.join(os.path.dirname(target), "metadata.json"), "w"), indent=2)
     if T is not None:
         T["o"] = o

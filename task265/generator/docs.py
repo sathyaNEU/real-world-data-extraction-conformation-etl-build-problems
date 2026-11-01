@@ -1,8 +1,7 @@
-"""The pack's documents: the Implant Value Analysis Policy (VA-07), the registry's data dictionary, Schedule B of the
-2022 to 2027 hip agreement, the registry's data-management log and the export manifest."""
+"""The pack's documents: the Implant Value Analysis Policy (VA-07), Schedule B of the 2022 to 2027 hip agreement and
+the registry's data-management log."""
 from __future__ import annotations
 
-import csv
 import datetime as dt
 
 from reportlab import rl_config
@@ -103,7 +102,10 @@ def write_policy(path):
     C("4.3", "The cumulative percent revision is estimated by Kaplan-Meier on the Brennick Valley Joint Registry for "
              "every primary total hip operation with the construct at a system hospital on the registry, the unit "
              "being the hip. A revision is any later operation on that hip that adds, removes or replaces a component, "
-             "and only the first revision of a hip counts. Deaths and loss to follow-up are censored.")
+             "and only the first revision of a hip counts. Deaths and loss to follow-up are censored. The registry "
+             "learns of revisions from its own forms at the system hospitals and from the state's hospital discharge "
+             "data for other Wisconsin hospitals, and of deaths from the Wisconsin death index, so a hip is lost to "
+             "follow-up from the first date its patient's home is outside Wisconsin.")
     C("4.4", "The committee uses the registry extract taken at the end of the calendar year before the renewal, and "
              "the estimate is reported as a percentage to one decimal place.")
     C("4.5", "A construct that does not meet 4.2 comes off the agreement for primary operations at the renewal. Its "
@@ -115,69 +117,6 @@ def write_policy(path):
     P("The committee's minutes record each decision, the evidence it relied on and the vote. Supply Chain keeps the "
       "evidence packs for ten years.")
     doc.build(st, onFirstPage=_frame(K.SYSTEM, "Policy VA-07", "Serif"), onLaterPages=_frame(K.SYSTEM, "Policy VA-07", "Serif"))
-
-
-# ---------------------------------------------------------------------------------------------- the dictionary
-def write_dictionary(path):
-    S = styles("Sans", colors.HexColor("#2f5d50"))
-    doc = _doc(path, "Brennick Valley Joint Registry: data dictionary", K.PEOPLE["registry"])
-    st = [Paragraph("Brennick Valley Joint Registry: data dictionary for the annual extract", S["h1"]),
-          Paragraph("Version 4.2, January 2027. Prepared by %s, Registry Manager. Covers the extract of 31 December "
-                    "2026." % K.PEOPLE["registry"], S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    st.append(Paragraph("1. What the registry holds", S["h2"]))
-    P("The registry records primary total hip replacements done at Brennick Valley Medical Center (BVMC), Tollefson "
-      "Lake Hospital (TLH) and Kittelstad Orthopaedic Hospital (KOH), the later revisions of those hips, and the deaths "
-      "and moves of the patients who have them.")
-    P("From 1 January 2018 the registry captures each primary total hip operation at the three hospitals at the time "
-      "of surgery from the surgeon's registry form. An operation whose form was not returned is not on the registry.")
-    P("Hips replaced at the three hospitals from 1 January 2005 to 31 December 2017 were entered when the patient "
-      "first attended a registry clinic, between 2018 and 2021: the clinic abstracted the operation and the components "
-      "from the operative record. Legacy enrolment ran at Tollefson Lake in 2018 and 2019, at BVMC in 2019 and 2020 and "
-      "at Kittelstad from July 2020 to December 2021, and closed on 31 December 2021.")
-    P("Revisions of registry hips are recorded from the registry form when the revision is at one of the three "
-      "hospitals, and from the quarterly linkage with the state's hospital discharge data when it is at another "
-      "Wisconsin hospital. Deaths come from the Wisconsin death index linkage. The linkage covers Wisconsin hospitals "
-      "and Wisconsin deaths only, so the registry loses follow-up of a hip when its patient moves out of the state, "
-      "dated by the first address outside Wisconsin in the health record's address history (left_wisconsin_on).")
-    st.append(Paragraph("2. Files in the extract", S["h2"]))
-    rows = [["File", "One row per", "Fields"],
-            [K.FILES["prosp"], "hip captured from 1 January 2018",
-             "registry_hip_id, registry_patient_id, hospital_code, hospital_mrn, operation_date, side, "
-             "stem_catalogue_no, cup_catalogue_no, head_diameter_mm, bearing, approach, surgeon_id, age_at_operation, "
-             "sex, asa_grade, primary_diagnosis"],
-            [K.FILES["legacy"], "hip entered at legacy enrolment",
-             "Registry hip ID, Registry patient ID, Hospital, MRN, Side, Date of operation (month/day/year as abstracted), "
-             "Stem and Cup catalogue no., Head (mm), Bearing, Approach, Surgeon, Age at operation, Sex, Enrolled on "
-             "(the date of the clinic visit at which the hip was entered), Clinic, Abstracted by, Notes"],
-            [K.FILES["revisions"], "revision of a registry hip",
-             "revision_id, registry_hip_id, revision_date, revision_number (1 for the hip's first revision, 2 for the "
-             "next), hospital_code (OTH: another Wisconsin hospital), components_changed, reason, source"],
-            [K.FILES["deaths"], "registry patient who has died",
-             "registry_patient_id, date_of_death (YYYY-MM-DD, or YYYY-MM where the certificate in the linkage gives "
-             "the month only), linkage_match, linkage_run"],
-            [K.FILES["status"], "registry patient",
-             "registry_patient_id, residence_state, left_wisconsin_on (the first date the address history shows a "
-             "home outside Wisconsin), address_source, last_verified"],
-            [K.FILES["crosswalk"], "catalogue number",
-             "Maker, Family, Component, Fixation, Size, Catalogue no., Catalogue no. before 1 July 2020 (Thorvik "
-             "renumbered its hip catalogue on 1 July 2020; both numbers appear in the registry)"],
-            [K.FILES["visits"], "registry clinic visit",
-             "visit_id, registry_hip_id, clinic, visit_date, visit_type, radiograph, harris_hip_score"]]
-    st.append(_table(S, rows, [64, 28, 86]))
-    st.append(Paragraph("3. Codes", S["h2"]))
-    P("Hospitals: BVMC, TLH, KOH. Side: R, L (Right, Left in the legacy workbook). Bearing: CoP ceramic on "
-      "polyethylene, MoP metal on polyethylene, CoC ceramic on ceramic. Components changed at revision: Head and "
-      "liner, Cup, Stem, All components. Revision source: Registry form, State discharge data.")
-    P("hospital_mrn and MRN are the patient's medical record number at the operating hospital. Brennick Valley Medical "
-      "Center and Tollefson Lake have always used system numbers, which begin E; Kittelstad numbers begin KO until "
-      "Kittelstad moved to the system health record on 4 March 2024, and are system numbers from then. registry_patient_id is the registry's own number for the patient and is the same in "
-      "every file; registry_hip_id is the same in every file for the hip.")
-    st.append(Paragraph("4. Grain", S["h2"]))
-    P("Each hip is one row in either the prospective export or the legacy workbook, never both. A patient with both "
-      "hips replaced has two hip rows. A hip can have more than one revision row.")
-    doc.build(st, onFirstPage=_frame(K.REGISTRY, "Data dictionary v4.2", "Sans"),
-              onLaterPages=_frame(K.REGISTRY, "Data dictionary v4.2", "Sans"))
 
 
 # ---------------------------------------------------------------------------------------------- Schedule B
@@ -262,8 +201,9 @@ def log_entries(T):
         for qq in range(1, 5):
             run = dt.date(y + (1 if qq == 4 else 0), {1: 5, 2: 8, 3: 11, 4: 1}[qq], 4 + (y * 13 + qq * 7) % 15)
             runs[(y, qq)] = run
-            E.append((run, "Linkage", "State hospital discharge data, Q%d %d discharges: %d revisions of registry hips "
-                      "at other Wisconsin hospitals added." % (qq, y, q.get((y, qq), 0)), "KL"))
+            nq = q.get((y, qq), 0)
+            E.append((run, "Linkage", "State hospital discharge data, Q%d %d discharges: %d revision%s of registry hips "
+                      "at other Wisconsin hospitals added." % (qq, y, nq, "" if nq == 1 else "s"), "KL"))
     for y in range(2018, 2027):
         E.append((runs[(y, 4)] + dt.timedelta(days=4 if y < 2026 else 9), "Extract",
                   "Annual extract of %d-12-31 taken for the outcomes team." % y, "MB"))
@@ -271,11 +211,3 @@ def log_entries(T):
               "KL"))
     E.sort(key=lambda x: (x[0], x[1]))
     return [x for x in E if x[0] <= dt.date(2027, 1, 26)]
-
-
-def write_manifest(path, entries):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh)
-        w.writerow(["file", "what it is", "source", "prepared", "rows or pages"])
-        for e in entries:
-            w.writerow(e)

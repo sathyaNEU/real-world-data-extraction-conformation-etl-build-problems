@@ -1,22 +1,22 @@
 # leak check, task265
 
-**Verdict: REVIEW.** 15 files read, 11 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 11 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: legacy, deaths, survival, kaplan-meier, ten-year, record, enrolment, dictionary, edvalt, asserted, truncation, system, follow-up, enrolled, health, delayed, standard, clinic, decisive, censored, exports, population, nothing, crosswalk, golden
+Stump terms swept: legacy, enrolment, follow-up, enrolled, edvalt, kaplan-meier, deaths, asserted, survival, ten-year, record, truncation, clinic, decisive, workbook, default, system, standard, sentence, exports, pellvoro, golden, health, delayed, population
 
-## 3 answer figures in the pack (REVIEW 5)
+## 3 answer figures in the pack (REVIEW 6)
 - **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: golden figure 4.1 appears: ...rovides the clinical evidence. 4. Hip constructs 4.1 A hip construct is one femoral stem family used...
+- **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: golden figure 5.0 appears: ...ercent revision ten years after the operation is 5.0 per cent or less. 4.3 The cumulative percent rev...
+- **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: candidate 'Kittelstad Orthopaedic Hospital' sits beside decision vocabulary: ...tem purchasing agreements for Brennick Valley Medical Center, Tollefson Lake Hospital and Kittelstad Orthopaedic Hospital, so that the products surgeons use are chosen on evidence of how they perform and on what...
 - **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: candidate 'Tollefson Lake Hospital' sits beside decision vocabulary: ...roducts are bought under system purchasing agreements for Brennick Valley Medical Center, Tollefson Lake Hospital and Kittelstad Orthopaedic Hospital, so that the products surgeons use are chosen on evid...
 - **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: candidate 'Brennick Valley Medical Center' sits beside decision vocabulary: ...alth decides which implantable products are bought under system purchasing agreements for Brennick Valley Medical Center, Tollefson Lake Hospital and Kittelstad Orthopaedic Hospital, so that the products surgeo...
-- **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: candidate 'Kittelstad Orthopaedic Hospital' sits beside decision vocabulary: ...tem purchasing agreements for Brennick Valley Medical Center, Tollefson Lake Hospital and Kittelstad Orthopaedic Hospital, so that the products surgeons use are chosen on evidence of how they perform and on what...
 - **REVIEW** `hip_agreement_2022-2027_price_schedule.pdf`: carries 14 of 17 distinctive words of the committed call: 'Keep Askvane/Quarvel, Holbrin/Pellvoro and Askvane/Pellvoro on the hip agreement renewed on 1 July 2027, and take Edvalt'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `bvjr_data_dictionary.pdf`: 10 of 25 stump-paragraph terms appear (legacy, deaths, record, enrolment, dictionary, system); read whether the document names the move
-- **REVIEW** `hip_agreement_2022-2027_price_schedule.pdf`: 3 of 25 stump-paragraph terms appear (edvalt, system, health); read whether the document names the move
-- **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: 8 of 25 stump-paragraph terms appear (deaths, kaplan-meier, record, system, follow-up, health); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `hip_agreement_2022-2027_price_schedule.pdf`: 4 of 25 stump-paragraph terms appear (edvalt, system, pellvoro, health); read whether the document names the move
+- **REVIEW** `implant_value_analysis_policy_VA-07.pdf`: 7 of 25 stump-paragraph terms appear (follow-up, kaplan-meier, deaths, record, clinic, system); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 3, INFO 1)
 - **REVIEW** `bvjr_data_management_log.xlsx`: names 3 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -26,6 +26,9 @@ Stump terms swept: legacy, deaths, survival, kaplan-meier, ten-year, record, enr
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -39,7 +42,6 @@ Stump terms swept: legacy, deaths, survival, kaplan-meier, ten-year, record, enr
 
 ## 9 dates after the setting (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
@@ -59,3 +61,18 @@ Second read (final pack):
 5. Literal sentences as above, with the move ending follow-up now filed; the clock origin and the entry of the 2018 to 2021 enrolments are not stated.
 6. What decides: an analytical choice (delayed entry for hips enrolled only after surviving unrevised to their visit); nothing planted decides it. The dictionary does not name the move.
 Realism tells fixed: a near-unique note value (box numbers removed), a file name wrapping mid-word in the dictionary's table (column widened). The linkage entries' uniform wording is the log's own entry format.
+
+## Solver's-eye read (2026-11-01)
+
+Reader: one isolated agent (sonnet, medium) on fresh copies of prompt.txt and target/ after the re-check repair (13 files; no data dictionary or export manifest).
+
+1. Decisive step: none stated. Nearest is the policy's 4.3 (the estimand, Kaplan-Meier, deaths and loss to follow-up censored, a move out of Wisconsin ending follow-up): the filed estimand, not an announcement.
+2. Ranking file: none (the crosswalk's Constructs sheet lists agreement status and year of first use, no outcomes).
+3. Helper-only file: none; the crosswalk and the HIM merge list read as ordinary lookup and identifier-repair records; the price schedule is a distractor.
+4. Answer-like figure or name: none; the policy gives only the bar and the horizon.
+5. Literal execution of 4.2 to 4.4: a product-limit estimate of first-revision-free survival per construct over every registry hip, deaths and the first out-of-state date censoring, the ten-year point to one decimal against the bar.
+6. What decides: an analytical choice (survival estimation with censoring), no planted item, no unstated rule.
+
+Sweep items: a to g all harmless (the bar and horizon are the policy's inputs; the hospital names sit in a generic purpose sentence; the schedule carries prices only and is a declared distractor; the log, the legacy workbook and the case list rank nothing; the question form gives nothing away).
+
+Realism tells: the log's templated linkage sentence read "1 revisions" at a count of one (fixed in the generator: singular at one); the legacy workbook's Notes column recurs as a small set of stock abstraction phrases (left: abstraction notes are a short controlled list in a real clinic workbook, 3.2 per cent of rows); Schedule B refers to a tier letter not shipped (left: a real schedule cites its side letters).

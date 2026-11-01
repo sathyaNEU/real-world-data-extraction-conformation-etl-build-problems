@@ -15,6 +15,7 @@ from pypdf import PdfReader
 
 import analysis as A
 import common as K
+import docs as D
 import world as W
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -53,9 +54,14 @@ def run(target, T):
     meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
     ok(len(meta["distractor_files"]) >= 2 and all(os.path.exists(os.path.join(os.path.dirname(target), f))
                                                   for f in meta["distractor_files"]), "two distractors shipped")
-    ok(sorted(files) == sorted(K.FILES.values()), "the pack is exactly the manifest's files and the manifest")
-    listed = [r["file"] for r in csv.DictReader(open(os.path.join(target, K.FILES["manifest"]), encoding="utf-8"))]
-    ok(sorted(listed) == sorted(f for f in files if f != K.FILES["manifest"]), "H9: the manifest lists every other file")
+    ok(sorted(files) == sorted(K.FILES.values()), "the pack is exactly the generator's files")
+    ok(not [f for f in files if re.search(r"dictionar|manifest|readme|notes|codebook|schema|definition", f.lower())],
+       "no file describing the data ships, by name")
+    prov = {r["file"] for r in meta.get("provenance", [])}
+    ok(prov == {"target/" + f for f in files}, "provenance in metadata.json names every shipped file")
+    graded = {"%.1f" % gold[c] for c in K.CODES} | {"%.1f" % K.BAR}
+    ok("stated_inputs" not in meta and not graded & set(re.findall(r"\b\d+\.\d\b", json.dumps(meta))),
+       "metadata.json carries no graded figure")
     asof = dt.date(2027, 1, 27)
     late = []
     for f in files:
@@ -135,12 +141,19 @@ def run(target, T):
 
     # ------------------------------------------------------------------ the semantic fork table
     pol = pdf_text(P("policy"))
-    dic = pdf_text(P("dictionary"))
     ok("one femoral stem family used with one acetabular cup family" in pol, "SF1 construct filed")
     ok("adds, removes or replaces a component" in pol and "only the first revision" in pol, "SF2 revision filed")
     revs = [r for r in csv.DictReader(open(P("revisions"), encoding="utf-8"))]
     ok(len({r["registry_hip_id"] for r in revs if r["revision_number"] == "1"}) ==
        sum(1 for r in revs if r["revision_number"] == "1"), "SF2 one first revision per hip")
+    ok(all(r["registry_hip_id"] in hips and dt.date.fromisoformat(r["revision_date"]) > hips[r["registry_hip_id"]]["op"]
+           for r in revs), "back-test: every revision joins to a registry hip and falls after its operation")
+    first_op = {}
+    for h in hips.values():
+        first_op[h["pat"]] = min(first_op.get(h["pat"], h["op"]), h["op"])
+    ok(all(r["date_of_death"][:7] >= first_op[r["registry_patient_id"]].strftime("%Y-%m")
+           for r in csv.DictReader(open(P("deaths"), encoding="utf-8")) if r["registry_patient_id"] in first_op),
+       "back-test: every death follows its patient's first operation")
     ok("ten years after the operation" in pol, "SF3 time since the operation filed")
     ok("Deaths and loss to follow-up are censored" in pol and "Kaplan-Meier" in pol, "SF4 deaths censored, KM filed")
     g5 = dict(gold)
@@ -155,8 +168,10 @@ def run(target, T):
             rr.append(((h["entry"] - h["op"]).days, (h["stop"] - h["op"]).days, h["event"]))
         moved_ignored[c] = A.km(rr)
     ok([c for c in K.CODES if moved_ignored[c] <= K.BAR] == stays, "SF5 same call")
-    ok("the registry loses follow-up of a hip when its patient moves out of the state" in dic,
-       "SF5 the move ends follow-up, filed in the dictionary")
+    ok("a hip is lost to follow-up from the first date its patient's home is outside Wisconsin" in pol,
+       "SF5 the move ends follow-up, filed in the policy")
+    st_head = next(csv.reader(open(P("status"), encoding="utf-8")))
+    ok("left_wisconsin_on" in st_head, "SF5 the move date is the status file's own column")
     ok("the unit being the hip" in pol, "SF6 the hip filed")
     ok("every primary total hip operation with the construct at a system hospital on the registry" in pol,
        "SF7 population filed")
@@ -175,10 +190,15 @@ def run(target, T):
     ok(all(h["construct"] is not None for h in hips.values()), "SF12/SF15 every registry hip maps to a construct")
     g2, _ = A.call(target, inclusive=True)
     ok(all(round(g2[c]["golden"], 1) == round(gold[c], 1) for c in K.CODES), "SF13 entry inclusive")
-    ok("entered when the patient first attended a registry clinic" in dic, "SF14 legacy entry filed in the dictionary")
+    lw = load_workbook(P("legacy"), read_only=True)
+    lhead = [c.value for c in next(lw.worksheets[0].iter_rows(max_row=1))]
+    lw.close()
+    ok("Enrolled on" in lhead and "Date of operation" in lhead, "SF14 each legacy hip's enrolment visit is the workbook's own column")
+    ok(any("registry clinic opens for legacy enrolment (hips replaced 2005 to 2017)" in x[2] for x in D.log_entries(T)),
+       "SF14 the log dates each clinic's legacy enrolment")
     ok(reg != stays, "SF14 the registry-start reading files another call (R2)")
-    ok("quarterly linkage with the state's hospital discharge data" in dic and "Revisions of registry hips are recorded" in dic,
-       "SF16 follow-up runs through the forms and the discharge-data linkage, not clinic attendance")
+    ok("learns of revisions from its own forms at the system hospitals and from the state's hospital discharge data" in pol,
+       "SF16 follow-up runs through the forms and the discharge-data linkage, not clinic attendance, filed in the policy")
 
     # ------------------------------------------------------------------ the asks
     for c in K.CODES:
@@ -210,7 +230,7 @@ def run(target, T):
         ", ".join("%s %d of %d" % (a_, h_, n_) for a_, n_, h_ in rows_cr), pair))
 
     # ------------------------------------------------------------------ separation and distractors
-    main = ["prosp", "legacy", "revisions", "deaths", "status", "crosswalk", "policy", "dictionary"]
+    main = ["prosp", "legacy", "revisions", "deaths", "status", "crosswalk", "policy"]
     d = copy_without(target, [K.FILES[k] for k in K.FILES if k not in main])
     g3, _ = A.call(d)
     shutil.rmtree(d)
@@ -228,7 +248,7 @@ def run(target, T):
         ok(all(g4[c]["golden"] == gold[c] for c in K.CODES) and a4 == a, "distractor %s: deleting it changes nothing" % k)
 
     # ------------------------------------------------------------------ Gate G and the vocabulary sweep
-    for k in ("policy", "dictionary", "schedule"):
+    for k in ("policy", "schedule"):
         t = pdf_text(P(k)).lower()
         ok(not re.search(r"left truncation|delayed entry|risk set|at risk|survivor", t), "%s: no method words" % k)
         ok(not re.search(r"\d\.\d per cent revis", t), "%s: no construct's revision figure" % k)

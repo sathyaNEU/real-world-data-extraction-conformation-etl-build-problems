@@ -3,7 +3,123 @@
     "target/hip_agreement_2022-2027_price_schedule.pdf",
     "target/bvjr_clinic_visits_2018-2026.csv"
   ],
-  "stated_inputs": [
-    "5.0"
+  "provenance": [
+    {
+      "file": "target/implant_value_analysis_policy_VA-07.pdf",
+      "covers": "Implant Value Analysis Policy VA-07, revision 3",
+      "source": "Supply Chain, Value Analysis",
+      "date": "13 February 2025",
+      "size": "1 pages",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_prospective_hips_2018-2026.csv",
+      "covers": "Registry extract of 31 December 2026: hips captured from 1 January 2018",
+      "source": "Brennick Valley Joint Registry",
+      "date": "26 January 2027",
+      "size": "8598",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_legacy_enrolment_2018-2021.xlsx",
+      "covers": "Registry legacy enrolment workbook, 2018 to 2021",
+      "source": "Brennick Valley Joint Registry",
+      "date": "6 January 2022",
+      "size": "3481",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_revisions_to_2026-12-31.csv",
+      "covers": "Registry extract of 31 December 2026: revisions of registry hips",
+      "source": "Brennick Valley Joint Registry",
+      "date": "26 January 2027",
+      "size": "363",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/death_index_linkage_2026-12-31.csv",
+      "covers": "Wisconsin death index linkage for registry patients, deaths to 31 December 2026",
+      "source": "Brennick Valley Joint Registry",
+      "date": "22 January 2027",
+      "size": "1394",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_followup_status_2026-12-31.csv",
+      "covers": "Registry patients' residence at 31 December 2026 from the health record's address history",
+      "source": "Brennick Valley Joint Registry",
+      "date": "26 January 2027",
+      "size": "11269",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_component_crosswalk.xlsx",
+      "covers": "Hip component catalogue crosswalk",
+      "source": "Brennick Valley Joint Registry",
+      "date": "17 September 2025",
+      "size": "2 sheets",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_clinic_visits_2018-2026.csv",
+      "covers": "Registry clinic visits, 2018 to 2026",
+      "source": "Brennick Valley Joint Registry",
+      "date": "26 January 2027",
+      "size": "15159",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/bvjr_data_management_log.xlsx",
+      "covers": "Registry data-management log",
+      "source": "Brennick Valley Joint Registry",
+      "date": "25 January 2027",
+      "size": "1 sheet",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/or_case_list_2026.xlsx",
+      "covers": "Orthopaedic and spine cases with implants, 2026, all three hospitals",
+      "source": "Perioperative Informatics",
+      "date": "8 January 2027",
+      "size": "5159",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/periop_implant_log_2026.csv",
+      "covers": "Perioperative implant documentation for 2026 cases, all three hospitals",
+      "source": "Perioperative Informatics",
+      "date": "8 January 2027",
+      "size": "32416",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/him_mrn_merges_2026.csv",
+      "covers": "Medical record numbers merged in 2026",
+      "source": "Health Information Management",
+      "date": "5 January 2027",
+      "size": "381",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    },
+    {
+      "file": "target/hip_agreement_2022-2027_price_schedule.pdf",
+      "covers": "Hip agreement 2022 to 2027, Schedule B (pricing), as amended 1 July 2025",
+      "source": "Supply Chain",
+      "date": "1 July 2025",
+      "size": "1 pages",
+      "how_made": "synthetic: records and documents simulated by script; no real patient, organisation or product",
+      "licence": "CC0 1.0, original work"
+    }
   ]
 }

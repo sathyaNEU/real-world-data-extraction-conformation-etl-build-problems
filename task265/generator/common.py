@@ -59,14 +59,12 @@ FILES = {
     "status": "bvjr_followup_status_2026-12-31.csv",
     "crosswalk": "bvjr_component_crosswalk.xlsx",
     "policy": "implant_value_analysis_policy_VA-07.pdf",
-    "dictionary": "bvjr_data_dictionary.pdf",
     "log": "bvjr_data_management_log.xlsx",
     "implants": "periop_implant_log_2026.csv",
     "cases": "or_case_list_2026.xlsx",
     "merges": "him_mrn_merges_2026.csv",
     "schedule": "hip_agreement_2022-2027_price_schedule.pdf",
     "visits": "bvjr_clinic_visits_2018-2026.csv",
-    "manifest": "export_manifest.csv",
 }
 DISTRACTORS = ["schedule", "visits"]
 
