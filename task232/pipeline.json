@@ -1,18 +1,18 @@
 {
  "task": "task232",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment (client survey-research-official-statistics)",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "A competent analyst who fits the survey methods' standard interviewer-effect model (the frame's dwelling covariates, then the small area held) refers interviewers 2118, 2174, 2181, 2216, 2405, 2433, 2440, 2447 and 2454, sending three interviewers whose streets and patches simply hold larger households to the review; only the households the panel visited again under a changed interviewer hold the household fixed, and on them the referrals are 2118, 2174, 2181, 2216, 2405 and 2454.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": null,
-  "checks": ""
+  "exit": 1,
+  "date": "2026-11-01",
+  "checks": "61, 4 FAIL (the stage 3 generator's checks.py, ceiling.py and the measured ask sheet), 1 WARN"
  },
  "leak": {
   "leak_py": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design note sections, the ladder priced on the generator's clean truth, then the build",
+ "resume": "stage 3, mid-build: the world (generator/world.py) and the rungs (generator/analysis.py) are written and measured on the clean truth (golden household fixed effects refer 2118, 2174, 2181, 2216, 2405, 2454; the frame-adjusted model 8 with 2223 and 2433 false, the area-held model 9 with 2433, 2440, 2447 false; the design note's ladder carries the numbers). Next: write pack.py (the eleven-plus files of the Ask sheet and Layer 1: hlp_household_interviews_2025-2026.csv as the spine, the person roster, the case file, the dwelling frame, the senior team's reissue export keyed by Eircode, the frame team's vacancy log, the UTC contact log, FQ-3 v3.2 PDF, the request email, two distractors), docs.py, golden.py (the pptx with the effect chart and the xlsx asks), writeup.py, checks.py (SF1 to SF8 asserted, every rung's set asserted, the standing family's agreement), verify.py, ceiling.py, make.py (two byte-identical builds, the zip); then precut, figures_check, voice-check, leak.py, guard surface and heart; then the stage 4 hand-off",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -79,6 +79,10 @@
   {
    "date": "2026-11-01",
    "event": "DRAWN: architecture 2, survey-research-official-statistics x data-quality-monitoring (interviewer roster effects in a household panel), card registered"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "stage 2 designed and the ladder measured on the generator's world; paused mid stage 3 at the fork's turn budget"
   }
  ]
 }
