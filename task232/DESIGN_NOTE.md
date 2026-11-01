@@ -407,3 +407,10 @@ case (asserted by count).
   case by what it is (acquired the infection from the index case), never by how to find one, and the default path
   moves to every case ill after the index (12, 1, 4, 2, 12 and 24). The judge's suggested pin (the incubation window
   named in CD-ST-07 3.1) would file the method and is not taken.
+- Architecture 1 retired at the batch 1 audit (2026-11-01): the North Coast Public Health Unit's per-feed SLA
+  alert settings fell short of the survivor anatomy on every line (no Actor, Link, Reflex, Back-test, Second use,
+  Shock or Pins line: the deciding secondary cases were read off the follow-up's own case list, a link the register's
+  keys hand over, and the field's method sat at the top of the ladder), precut failed it for an unmeasured ask ceiling
+  (no `Measured by:` script), the prompt disclosed the feed count ("each of our six"), and leak.py refused three
+  describing files (data_dictionary.xlsx, export_manifest.csv, the release notes PDF); re-rooted rather than
+  repaired so the portal sees one strong build.

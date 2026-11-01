@@ -1,86 +1,149 @@
 {
   "task": "task232",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
-  "slot_note": "DQ05 seed (an upstream-lag threshold for a feed SLA alert, with the lag measured with error) kept as an idea seed only: the world kept is a set of upstream data feeds, a lateness threshold set per feed for its SLA alert, and the downstream cost of lateness; the seed's attenuation pitfall is a general-statistics method that the author's domain review returns as a backdrop, so the pitfall is re-found in outbreak epidemiology",
-  "domain": "epidemiology-public-health",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
-  "client_domain": "epidemiology-public-health",
-  "niche": "a regional local health district's public health unit setting, for each pathology laboratory's electronic notification feed, the lateness at which the new notifiable-conditions platform's SLA alert pages the on-call officer, judged on the secondary enteric cases in childcare rooms that each hour of a laboratory's lateness lets an infectious child or staff member cause before exclusion",
+  "architecture": "v2 (re-root at batch 1, 2026-11-01: Tobar Social Research's Household Life Panel, which field interviewers the Field Quality Committee refers to the first-quarter 2027 review, read on each interviewer's roster effect, recovered from the households whose interviewer changed between the panel's waves)",
+  "drawn": "2026-11-01",
+  "slot_note": "",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a household panel survey's field quality review: which face-to-face interviewers leave household members off (or add visitors to) the rosters they take, judged on each interviewer's roster effect in persons per household against the panel's interviewers as a body",
   "objective": "data-quality-monitoring",
-  "shape": "other",
-  "decision_type": "dial_setting",
+  "shape": "10",
+  "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Set the SLA alert at 12 hours for Coast and Ranges Base Hospital Laboratory, 2 hours for Larkspur Pathology, 12 hours for Halden Pathology, 4 hours for Kestrel Pathology (Queensland), 12 hours for Highfield Pathology Services and 24 hours for the State Enteric Reference Laboratory.",
-  "answer_source": "task232/submission.md, 1. Final Recommendation; golden/elr_sla_thresholds_2026-27.csv",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G4",
-    "G13"
+    "G6",
+    "G16"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "manager of the public health unit's communicable disease surveillance team",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the panel (reissued cases under new case numbers, the roster's visitors and members away, the contact log's UTC against Irish time) and reads FQ-3 right estimates each interviewer's roster effect with the survey-methods standard, a multilevel model of persons per household with interviewer random effects, the frame's dwelling covariates and area effects, and refers the wrong interviewers; the call is wrong because interviewers work their own patches, whose household sizes the frame does not capture, and the senior interviewers' reissued non-contacts are small households, so only the households seen by two interviewers across the panel's waves separate the interviewer from the household.",
+  "domain_test": "The deciding quantity is each interviewer's systematic roster error, the survey-methods quantity of interviewer measurement error, identified from the panel's interviewer changes within households; swapping the nouns (a teacher's marks, a meter reader's reads) loses the rotation panel, the patch assignment and the reissue practice that decide which differences belong to the interviewer.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:interviewer-change-within-household",
+  "layer1": [
+    "reissued non-contact cases carried under a new case number in the senior interviewer's workload",
+    "roster lines for visitors and members away more than six months, kept with a residence code",
+    "the contact attempt log in UTC against Irish local time across the March and October clock changes",
+    "interview dates in two formats across the 2025 CAPI upgrade",
+    "a household that moved out replaced in the same dwelling by a new household",
+    "interviewer codes reissued after leavers"
+  ],
+  "stakeholder_role": "Tobar Social Research's head of field operations",
   "role_family": "field_unit_lead",
-  "scoring_unit": "per episode",
+  "scoring_unit": "other",
   "spine": {
-    "file": "ncp_elr_message_log_2022-10_2026-10.csv",
-    "rows": 45727,
-    "entity": "one electronic laboratory notification message a pathology laboratory sent to the state's notifiable-conditions platform for a case resident in the district",
-    "grain": "message",
+    "file": "hlp_household_interviews_2025-2026.csv",
+    "rows": 0,
+    "entity": "one completed household interview at one dwelling in one quarter",
+    "grain": "household x quarter",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "hospital_or_health_provider",
+  "forum": "committee_or_panel",
+  "forcing_event": "period_close",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "Australia, New South Wales (a fictional regional local health district on the Queensland border)",
-    "currency": "AUD",
-    "org_type": "a local health district's public health unit (communicable disease surveillance and control)",
-    "invented_names": [],
+    "geography": "Ireland (Connacht and Munster counties)",
+    "currency": "EUR",
+    "org_type": "an independent social research institute running a quarterly household panel survey",
+    "invented_names": [
+      "Tobar Social Research",
+      "Household Life Panel"
+    ],
     "people": [
-      "Haley Harper",
-      "Gilbert Ford",
-      "Katrina Valdez"
+      "Conan Killoughry",
+      "Theresa Bolger"
     ]
   },
   "deliverables": [
-    "elr_sla_thresholds_2026-27.csv",
-    "elr_sla_basis_2026-27.xlsx"
+    "field_quality_referrals_2027q1.pptx",
+    "interviewer_fieldwork_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is a transmission rate per unit of exposure estimated from closed episodes whose later outcomes surface only after a delay of known range and mix the episode's own consequences with earlier unrelated and later second-generation ones, so each outcome is attributed to the exposure only when it falls within the delay's range after it; counting every outcome in the follow-up inflates the rate where unrelated and second-generation outcomes are common, counting only outcomes before the exposure ended deflates it most where the delay is long, and either misjudges which sources' lateness costs most.",
-  "driver_concrete": "Each enteric pathogen's secondary transmission per child-hour of an infectious case's childcare attendance is estimated from the public health unit's closed childcare investigations by counting a room contact's illness as the index's secondary case only when its onset falls between the index's first infectious attendance plus the pathogen's shortest incubation and its last infectious attendance plus the longest, so the room's earlier source, co-primary and community cases and the second-generation and later cases after the window are left out; each laboratory feed's SLA lateness is then the longest allowed setting whose extra childcare hours cost no more than the tolerance in expected secondary cases a year.",
-  "stump": "A competent solver who counts as the index's secondary cases every room contact's case the investigation follow-up records after the index fell ill (221 of 319) gets 11.33, 4.61 and 12.16 secondary cases per 1,000 child-hours and sets the base hospital laboratory at 12 hours, Larkspur at 1, Halden at 4, Kestrel at 2, Highfield at 12 and the reference laboratory at 24, against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98); one who counts every follow-up case sets 2, 1, 2, 2, 8 and 24, and one who counts only cases ill before the exclusion sets every feed at 24; the step that lands them there is taking the follow-up period, which runs two incubation periods past the exclusion, as the window in which the index's secondary cases fall ill, instead of attributing each case to the index's infectious attendance through the condition's incubation range.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every onset, case status, attendance row, exclusion time and the guideline's secondary case definition correctly, drops the follow-up cases ill before the index and divides the rest by the index's infectious child-hours sets the base hospital laboratory at 12 hours, Larkspur 1, Halden 4, Kestrel 2, Highfield 12 and the reference laboratory 24 (the default path's Ends on); one who counts every follow-up case sets 2, 1, 2, 2, 8 and 24.",
-  "domain_test": "The deciding quantity is each pathogen's secondary transmission per child-hour of an infectious case's attendance, which outbreak epidemiology estimates by attributing contacts' illnesses to the exposure through the incubation window that follows it; with another field's nouns (a carrier's late tracking feed and missed delivery slots) nothing incubates, no illness falls days after the exposure that caused it, and there is no window to attribute it by, so the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:incubation-window-attribution-of-childcare-secondary-cases",
-  "layer1": [
-    "laboratory timestamps in three clocks: New South Wales time with daylight saving, Queensland time without it, and UTC from the state reference laboratory",
-    "one case notified by several laboratories: presumptive and confirmatory results, and corrected reports re-sent with a corrected status",
-    "condition codes changed at the platform's 2025 code-set update",
-    "childcare attendance and room rosters in each centre's own export layout",
-    "patient identifiers that differ by laboratory, linked through the platform's case number",
-    "contact follow-up onsets recorded as dates, some approximate",
-    "a private pathology group's 2024 acquisition of the regional laboratory, which changed the sending facility code mid-history"
-  ],
+  "question_form": "who",
+  "driver": "The decisive quantity is each recorder's own effect on a count the records hold, which assignment by place confounds with the units each recorder serves and which the follow-ups a few recorders take over confound again; the effect is recovered from the same units seen by different recorders across repeated visits, against units whose recorder stayed the same, while the standard model of recorder effects, with or without place effects, reads the places and the follow-ups as recorders.",
+  "driver_concrete": "Each interviewer's roster effect is estimated with household fixed effects across the panel's waves, so it rests on the households whose interviewer changed between waves (cover, transfers and reissues) against the households one interviewer kept: patches differ in household size beyond anything the dwelling frame records, and the senior interviewers' reissued non-contacts are small households, so interviewer means, frame-adjusted multilevel models and cross-classified models with area effects refer the wrong interviewers.",
+  "stump": "A competent analyst who conforms the panel and estimates each interviewer's roster effect with a multilevel model of persons per household (interviewer random effects, the frame's dwelling type, bedrooms and urban or rural class, then area effects for the small areas two interviewers worked) refers the interviewers whose patches hold small or large households and the senior interviewers who take over non-contacts, and misses the patch interviewers who leave members off in family areas; the step that lands there is reading interviewers' households as comparable once the frame and the area are held, when only the same households seen by two interviewers across the panel's waves separate the interviewer from the household.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "DQ05 kept as an idea seed only (world, decision, quantity). Hepatitis A dropped at stage 2 (its infectious period and post-exposure vaccination open conventions); three conditions remain. Answer and spine rows are filled at ship.",
-  "registered": "2026-10-13T20:45:24Z"
+  "differentiation": {
+    "task243": "task243 recovers a register's share of recorded exits from age counts at two complete censuses; this build separates each interviewer's own roster error from the households assigned to them, from the households whose interviewer changed between panel waves, with no census or exit count",
+    "task274": "task274 v2 carries an instrument's calibration bias through a reweighted population to a share below a line; this build estimates each interviewer's systematic roster error from panel households seen by two interviewers, with no instrument calibration, reweighting or cut-off share",
+    "task450": "task450 v2 separates an instrument change from a group change through a shared anchor subset; this build separates an interviewer from the households they serve through the same households re-interviewed by another interviewer, with no anchor items or equating",
+    "task121": "task121 builds each event's exposure from a worker's consecutive shifts and attributes a rise to rest; this build attributes roster differences to interviewers through households whose interviewer changed between waves, with no shift, rest or event rise",
+    "task129": "task129 assigns a rise to the provider that took over a region versus each unit's surroundings; this build separates each interviewer's roster error from the households of their patch, and the transition read is the same household under two interviewers, not a provider takeover's rise"
+  },
+  "lineage": [
+    {
+      "domain": "epidemiology-public-health",
+      "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+      "objective": "data-quality-monitoring",
+      "shape": "other",
+      "decision_type": "dial_setting",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G13"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive quantity is a transmission rate per unit of exposure estimated from closed episodes whose later outcomes surface only after a delay of known range and mix the episode's own consequences with earlier unrelated and later second-generation ones, so each outcome is attributed to the exposure only when it falls within the delay's range after it; counting every outcome in the follow-up inflates the rate where unrelated and second-generation outcomes are common, counting only outcomes before the exposure ended deflates it most where the delay is long, and either misjudges which sources' lateness costs most.",
+      "stump_strategy": "decomposition_attribution",
+      "forum": "line_manager_or_team",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "hospital_or_health_provider",
+      "role_family": "field_unit_lead",
+      "world": {
+        "geography": "Australia, New South Wales (a fictional regional local health district on the Queensland border)",
+        "currency": "AUD",
+        "org_type": "a local health district's public health unit (communicable disease surveillance and control)",
+        "invented_names": [],
+        "people": [
+          "Haley Harper",
+          "Gilbert Ford",
+          "Katrina Valdez"
+        ]
+      },
+      "deliverables": [
+        "elr_sla_thresholds_2026-27.csv",
+        "elr_sla_basis_2026-27.xlsx"
+      ],
+      "question_form": "how-many",
+      "niche": "a regional local health district's public health unit setting, for each pathology laboratory's electronic notification feed, the lateness at which the new notifiable-conditions platform's SLA alert pages the on-call officer, judged on the secondary enteric cases in childcare rooms that each hour of a laboratory's lateness lets an infectious child or staff member cause before exclusion",
+      "stump": "A competent solver who counts as the index's secondary cases every room contact's case the investigation follow-up records after the index fell ill (221 of 319) gets 11.33, 4.61 and 12.16 secondary cases per 1,000 child-hours and sets the base hospital laboratory at 12 hours, Larkspur at 1, Halden at 4, Kestrel at 2, Highfield at 12 and the reference laboratory at 24, against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98); one who counts every follow-up case sets 2, 1, 2, 2, 8 and 24, and one who counts only cases ill before the exclusion sets every feed at 24; the step that lands them there is taking the follow-up period, which runs two incubation periods past the exclusion, as the window in which the index's secondary cases fall ill, instead of attributing each case to the index's infectious attendance through the condition's incubation range.",
+      "answer": "Set the SLA alert at 12 hours for Coast and Ranges Base Hospital Laboratory, 2 hours for Larkspur Pathology, 12 hours for Halden Pathology, 4 hours for Kestrel Pathology (Queensland), 12 hours for Highfield Pathology Services and 24 hours for the State Enteric Reference Laboratory.",
+      "architecture": "v1",
+      "drawn": "2026-10-13",
+      "fate": "spent 2026-11-01 at the batch 1 audit: short of the survivor anatomy on every line (the deciding secondary cases read off the follow-up's own case list, the field's method at the top of the ladder), precut FAIL on an unmeasured ask ceiling, the feed count in the prompt, three describing files refused by leak.py; delivered 2026-10-13, no portal result on record"
+    }
+  ],
+  "lineage_shells": [],
+  "registered": "2026-11-01T01:53:13Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "i",
+    "rounding opener": "expected",
+    "deliverable set": "csv+xlsx"
+  }
 }

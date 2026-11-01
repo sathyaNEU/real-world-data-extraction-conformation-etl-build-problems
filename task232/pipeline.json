@@ -1,37 +1,84 @@
 {
  "task": "task232",
- "status": "SHIPPED",
- "domain": "epidemiology-public-health",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment (client survey-research-official-statistics)",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-13",
- "stump": "Counting as the index's secondary cases every follow-up case ill after the index (221 of 319) gives 11.33, 4.61 and 12.16 per 1,000 child-hours and sets Larkspur 1, Halden 4 and Kestrel 2 (base hospital 12, Highfield 12, reference 24), against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98 per 1,000).",
- "architecture": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-13"
+  "exit": null,
+  "date": null,
+  "checks": ""
  },
  "leak": {
-  "leak_py": "REVIEW (sweeps 3, 4, 6, 9 answered in the design note); no LEAK",
-  "reader": "two reads: first found secondary case undefined (fixed by the GL-CD-11 definition), incident templates and a register note (fixed); second clean"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS",
-  "nearest": "0.08 task122 v2 lineage; surface nothing promoted"
+  "guard_check": "PASS 2026-11-01 on the registered card (structural tests differentiated against task243, task274 v2, task450 v2, task121 v6, task129 v2; nearest driver 0.12, task245)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 2 after the definition fix; pass 1 also APPROVE)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "shipped; next: the author marks approvals on the board, then the domain and second-layer review of unapproved shipped builds",
+ "resume": "stage 2: design note sections, the ladder priced on the generator's clean truth, then the build",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "source_note": "re-root into a new world (Tobar Social Research's Household Life Panel, Ireland: which field interviewers the Field Quality Committee refers to the first-quarter 2027 review on their roster effect); architecture 1 (the North Coast public health unit's per-feed SLA alert settings) spent at the batch 1 audit",
+ "architecture_1": {
+  "status": "SHIPPED",
+  "domain": "epidemiology-public-health",
+  "objective": "data-quality-monitoring",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-13",
+  "stump": "Counting as the index's secondary cases every follow-up case ill after the index (221 of 319) gives 11.33, 4.61 and 12.16 per 1,000 child-hours and sets Larkspur 1, Halden 4 and Kestrel 2 (base hospital 12, Highfield 12, reference 24), against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98 per 1,000).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-13"
+  },
+  "leak": {
+   "leak_py": "REVIEW (sweeps 3, 4, 6, 9 answered in the design note); no LEAK",
+   "reader": "two reads: first found secondary case undefined (fixed by the GL-CD-11 definition), incident templates and a register note (fixed); second clean"
+  },
+  "duplicate_check": {
+   "heart": "PASS",
+   "nearest": "0.08 task122 v2 lineage; surface nothing promoted"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report.md (pass 2 after the definition fix; pass 1 also APPROVE)"
+  },
+  "returned": [],
+  "resume": "shipped; next: the author marks approvals on the board, then the domain and second-layer review of unapproved shipped builds",
+  "approved": null,
+  "delivered": "2026-10-13",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+ },
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "architecture 1 retired at the batch 1 audit (no survivor anatomy, precut FAIL on the unmeasured ask ceiling, the feed count in the prompt, three describing files refused by leak.py)"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 2, survey-research-official-statistics x data-quality-monitoring (interviewer roster effects in a household panel), card registered"
+  }
+ ]
 }
