@@ -103,8 +103,8 @@ def main():
        note and rel, "%d person rows, %d weight sheets" % (len(P), len(Wb)))
     ok("V2 the rule files the 7.0 percent line, the four quarters and the self-report basis",
        "7.0 percent" in rule and "30 September 2026" in rule and "would report it themselves" in rule)
-    ok("V3 the technical note files the response-rate definitions and the 2026Q3 reissue",
-       "occupied at the time of the interviewer" in note and "reissued" in note)
+    ok("V3 the technical note files the rates' scope (the address file as finally corrected) and the 2026Q3 reissue",
+       "stood on the master address file" in note and "finally corrected" in note and "reissued" in note)
 
     # ---------------------------------------------------------------- weights and employed records
     wt = {}

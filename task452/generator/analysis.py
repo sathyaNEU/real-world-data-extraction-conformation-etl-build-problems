@@ -91,6 +91,33 @@ def read_weighbridge(target):
     return out
 
 
+def read_certificates(target):
+    """The suppliers' certificate mercury (mg/kg as received) for each fuel and month, three ways: each month's own
+    consignments (coal: the cargo in use that month), the tonnage-weighted mean of the year, the plain mean."""
+    rows = []
+    with open(os.path.join(target, "fuel_receipts_2026.csv"), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            rows.append((dt.date.fromisoformat(r["Received"]), "coal" if r["Fuel"] == "Coal" else "srf",
+                         float(r["Tonnes received"]), float(r["Supplier cert. Hg ug/kg (as received)"]) / 1000.0))
+    out = {}
+    for fuel in ("coal", "srf"):
+        rs = sorted(x for x in rows if x[1] == fuel)
+        y26 = [x for x in rs if x[0].year == 2026] if fuel == "srf" else [x for x in rs if x[0] < dt.date(2026, 12, 1)]
+        wmean = sum(x[2] * x[3] for x in y26) / sum(x[2] for x in y26)
+        pmean = sum(x[3] for x in y26) / len(y26)
+        for m in MONTHS:
+            if fuel == "srf":
+                mm = [x for x in rs if x[0].year == 2026 and x[0].month == m]
+                monthly = sum(x[2] * x[3] for x in mm) / sum(x[2] for x in mm)
+            else:
+                first = dt.date(2026, m, 1)
+                monthly = [x for x in rs if x[0] <= first][-1][3]
+            out[("certificates_monthly", fuel, m)] = monthly
+            out[("certificates_annual", fuel, m)] = wmean
+            out[("certificates_plain", fuel, m)] = pmean
+    return out
+
+
 def read_journal(target):
     ev = []
     with open(os.path.join(target, "DCS_event_journal_2026.txt"), encoding="utf-8") as f:
@@ -191,6 +218,10 @@ def mercury(target, variant="golden"):
                 q = [led[(k, mat, m)] for m in MONTHS]
                 hg = sum(float(lab[(mat, m)]["Hg mg/kg"]) for m in MONTHS) / 12.0
                 tot = sum(q) * hg / 1000.0
+            elif variant.startswith("certificates") and mat in ("coal", "srf"):
+                cert = read_certificates(target)
+                for m in MONTHS:
+                    tot += led[(k, mat, m)] * cert[(variant, mat, m)] / 1000.0
             else:
                 for m in MONTHS:
                     rec = lab[(mat, m)]

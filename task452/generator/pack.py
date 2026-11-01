@@ -481,11 +481,17 @@ def write_tests(truth, target):
                 c.drawString(x * mm, yy, v)
             yy -= 8 * mm
             c.setFont("Helvetica", 8)
-            for line in [
-                "Expanded uncertainty of the mean concentration (k = 2): 18 per cent of the measured value.",
-                "Sampling plane complies with EN 15259 (homogeneity test 2019). Blank values below 0.1 ug/Nm3.",
-                "Signed for the laboratory: technical manager.",
-            ]:
+            unc = {2024: 19, 2025: 17, 2026: 18}[y] - (1 if k == "K2" else 0)
+            closing = [
+                "Expanded uncertainty of the mean concentration (k = 2): %d per cent of the measured value." % unc,
+                "Sampling plane: EN 15259 homogeneity test of %s on %s; field blanks %s." % (
+                    "2019" if k == "K1" else "2021", STACK[k],
+                    {2024: "below 0.1 ug/Nm3", 2025: "below the reporting limit", 2026: "0.04 and 0.06 ug/Nm3"}[y]),
+                {2024: "Report approved for issue by the technical manager.",
+                 2025: "Approved: senior consultant, stack emissions. Field team of two; probe recovered and rinsed on site.",
+                 2026: "Issued by the stack emissions team; reviewed by the quality manager before release."}[y],
+            ]
+            for line in closing:
                 c.drawString(20 * mm, yy, line)
                 yy -= 5 * mm
             c.showPage()
@@ -536,22 +542,40 @@ def write_register(target):
 
 # ------------------------------------------------------------------------------------------------- distractors
 def write_fuel_receipts(truth, target):
+    """Fuel receipts with the suppliers' certificate values. A certificate describes the consignment as delivered, so
+    over the consignments a month (SRF) or a quarter (coal) burned it agrees with the laboratory's as-fired composites
+    to within the analyses' own spread."""
     fn = "fuel_receipts_2026.csv"
     r = np.random.default_rng(W.SEED * 89)
+    lab = truth["lab"]
+    coal_t = {m: sum(truth["kiln"][k]["rows"][m]["fuels"]["coal"]["ar"] for k in ("K1", "K2")) for m in W.MONTHS}
     rows = []
-    for i, (d, t) in enumerate([((2025, 12, 2), 61250), ((2026, 3, 18), 58400), ((2026, 6, 22), 60120),
-                               ((2026, 9, 14), 57930), ((2026, 12, 9), 59880)]):
+    cargoes = [((2025, 12, 2), 47250, (1, 2, 3)), ((2026, 3, 18), 45400, (4, 5, 6)), ((2026, 6, 22), 46120, (7, 8, 9)),
+               ((2026, 9, 14), 44930, (10, 11, 12)), ((2026, 12, 9), 46880, (12,))]
+    for i, (d, t, use) in enumerate(cargoes):
+        hg = sum(coal_t[m] * lab[("coal", m)]["hg"] for m in use) / sum(coal_t[m] for m in use)
+        hg *= 1 + float(r.uniform(-0.006, 0.006))
         rows.append([dt.date(*d).strftime("%Y-%m-%d"), "Coal", "MV cargo %d (Foynes discharge, trucked)" % (i + 1), t,
-                     "%.0f" % (W.FUELS["coal"][0] * 1000 * (1 - W.FUELS["coal"][1] / 100) * float(np.exp(r.normal(0, 0.15)))),
-                     "%.2f" % (W.FUELS["coal"][2] * (1 + float(r.normal(0, 0.02)))), "%.1f" % (W.FUELS["coal"][1] * (1 + float(r.normal(0, 0.08))))])
+                     "%.1f" % (hg * 1000), "%.2f" % (W.FUELS["coal"][2] * (1 + float(r.normal(0, 0.02)))),
+                     "%.1f" % (W.FUELS["coal"][1] * (1 + float(r.normal(0, 0.08))))])
+    srf_t = {m: truth["kiln"]["K1"]["rows"][m]["fuels"]["srf"]["ar"] for m in W.MONTHS}
     day = dt.date(2026, 1, 5)
+    lots = {}
     while day.year == 2026:
-        if day.weekday() < 5:
-            t = int(r.integers(600, 1150))
-            rows.append([day.strftime("%Y-%m-%d"), "SRF", "Midland Recovered Fuels, weekly lot", t,
-                         "%.0f" % (W.FUELS["srf"][0] * 1000 * (1 - W.FUELS["srf"][1] / 100) * float(np.exp(r.normal(0, 0.25)))),
-                         "%.2f" % (W.FUELS["srf"][2] * (1 + float(r.normal(0, 0.04)))), "%.1f" % (W.FUELS["srf"][1] * (1 + float(r.normal(0, 0.1))))])
+        lots.setdefault(day.month, []).append(day)
         day += dt.timedelta(days=7)
+    for m in W.MONTHS:
+        days = lots[m]
+        tons = [float(r.uniform(0.85, 1.15)) for _ in days]
+        scale = srf_t[m] / sum(tons)
+        tons = [int(round(x * scale)) for x in tons]
+        raw = [float(np.exp(r.normal(0, 0.09))) for _ in days]
+        wmean = sum(t_ * x for t_, x in zip(tons, raw)) / sum(tons)
+        target_hg = lab[("srf", m)]["hg"] * (1 + float(r.uniform(-0.006, 0.006)))
+        for dd, t_, x in zip(days, tons, raw):
+            rows.append([dd.strftime("%Y-%m-%d"), "SRF", "Midland Recovered Fuels, weekly lot", t_,
+                         "%.1f" % (target_hg * x / wmean * 1000), "%.2f" % (W.FUELS["srf"][2] * (1 + float(r.normal(0, 0.04)))),
+                         "%.1f" % (W.FUELS["srf"][1] * (1 + float(r.normal(0, 0.1))))])
     C.write_csv(os.path.join(target, fn), ["Received", "Fuel", "Consignment", "Tonnes received",
                                           "Supplier cert. Hg ug/kg (as received)", "Supplier cert. NCV GJ/t", "Supplier cert. moisture %"], rows)
     return fn
@@ -592,8 +616,9 @@ def write_licence(target):
         ("Consolidated conditions incorporating the 2026 review (amendment notice of 30 June 2026). Extract: conditions 1, 5 and 6 and Schedules B and C.", "", 9),
         ("", "", 9),
         ("Condition 1  Interpretation", "B", 10),
-        ("1.4  Compound operation: hours in which a kiln is producing clinker and its raw mill is running, so that the kiln gas passes through the raw mill before the bag filter.", "", 9),
-        ("1.5  Direct operation: hours in which a kiln is producing clinker and its raw mill is stopped, so that the kiln gas passes from the conditioning tower to the bag filter.", "", 9),
+        ("1.4  Compound operation: the time during which a kiln is producing clinker and its raw mill is running, so that the kiln gas passes through the raw mill before the bag filter.", "", 9),
+        ("1.5  Direct operation: the time during which a kiln is producing clinker and its raw mill is stopped, so that the kiln gas passes from the conditioning tower to the bag filter.", "", 9),
+        ("1.8  Hours: where these conditions require hours to be stated, the hours are the elapsed time from the start to the end of each period, summed, and not a count of clock hours.", "", 9),
         ("1.6  Reference conditions: 273 K, 101.3 kPa, dry gas, 10% oxygen.", "", 9),
         ("1.7  Calendar year: 1 January to 31 December, Irish local time.", "", 9),
         ("", "", 9),
@@ -605,7 +630,7 @@ def write_licence(target):
         ("", "", 9),
         ("Condition 6  Reporting", "B", 10),
         ("6.4  The annual environmental report shall state, for each emission point in Schedule C, the mass of each listed substance released to air in the calendar year, determined for every hour of the year, and for each kiln its hours of operation and its hours in direct operation.", "", 9),
-        ("6.5  Hours of operation: hours in which a kiln is producing clinker.", "", 9),
+        ("6.5  Hours of operation: the time during which a kiln is producing clinker.", "", 9),
         ("", "", 9),
         ("Schedule B  Emission limit values, emission points A1-1 and A1-2 (reference conditions)", "B", 10),
         ("Dust 10 mg/Nm3 (daily average). Nitrogen oxides as NO2: 450 mg/Nm3 (daily average). Sulphur dioxide 400 mg/Nm3 (daily average). Mercury: 50 ug/Nm3 (mean of the sampling period). TOC 30 mg/Nm3.", "", 9),

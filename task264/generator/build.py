@@ -20,13 +20,13 @@ import writeup
 STAMP = (2026, 10, 6, 9, 30, 0)
 SOURCES = {
     "spells": ("The board's commissioning data warehouse: admitted patient care spells for the lumbar spine cohort "
-               "(index operations 2022-23 to 2025-26 and every later spell to 30 September 2026)", "2026-10-02"),
+               "(index operations 2022-23 to 2025-26 and every later spell submitted by 30 September 2026)", "2026-09-30"),
     "proms_old": ("The outcomes supplier's commissioner extract from its first platform, questionnaires completed "
                   "1 April 2022 to 31 March 2025", "2025-04-07"),
     "proms_new": ("The outcomes supplier's commissioner extract from its second platform, questionnaires completed "
                   "1 April 2025 to 30 September 2026", "2026-10-01"),
     "link": ("The supplier's patient references against the board's pseudonymised NHS numbers", "2026-10-01"),
-    "deaths": ("Civil registration deaths linked to the cohort by the board's data services", "2026-10-02"),
+    "deaths": ("Civil registration deaths linked to the cohort by the board's data services", "2026-09-30"),
     "policy": ("The board's contracting policy for the 2027-28 additional lumbar activity", "2026-09-17"),
     "capacity": ("Providers' 2027-28 capacity returns as collected by the planned care contracting team", "2026-09-29"),
     "providers": ("The warehouse's provider reference", "2026-09-30"),

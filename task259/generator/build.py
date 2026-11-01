@@ -34,6 +34,7 @@ FILES = {
     "HES_FRAME_MAINTENANCE_2024-07_2026-09.csv": ("evidence", "Tamarack master address file maintenance log; "
                                                   "synthetic"),
     "HES_DISPOSITION_CODES.csv": ("evidence", "HES disposition code list for both CAPI systems; synthetic"),
+    "HES_PERSON_CODES.csv": ("evidence", "HES person file code list as published with the public-use files; synthetic"),
     "HES_FINAL_WEIGHTS_2025Q4_2026Q3.xlsx": ("evidence", "HES final person weights by quarter, with the 2026Q3 "
                                              "reissue; synthetic"),
     "TDLI_WORKFORCE_AREAS_2026.xlsx": ("evidence", "TDLI workforce development area designations, 2026; synthetic"),

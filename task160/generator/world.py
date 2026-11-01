@@ -43,6 +43,27 @@ class Enc:
     __slots__ = ("key", "unit", "utype", "adm", "dis", "orders")
 
 
+# Prescribing follows the ward day: few signings overnight, a peak on the morning round. Every time in an encounter
+# passes through one monotone map of the hour within its own day, so no ordering between two events, and no event's
+# date, changes.
+HOURLY = (0.40, 0.30, 0.25, 0.25, 0.30, 0.45, 0.80, 1.40, 2.00, 2.20, 2.00, 1.70, 1.50, 1.50, 1.60, 1.60, 1.50, 1.40,
+          1.30, 1.20, 1.10, 1.00, 0.80, 0.60)
+_TOT = sum(HOURLY)
+_CUM = [0.0]
+for _w in HOURLY:
+    _CUM.append(_CUM[-1] + _w / _TOT)
+
+
+def ward_clock(t):
+    day = math.floor(t)
+    u = t - day
+    for h in range(24):
+        if u < _CUM[h + 1] or h == 23:
+            span = _CUM[h + 1] - _CUM[h]
+            return day + (h + (u - _CUM[h]) / span) / 24.0
+    return t
+
+
 def _draw_encounters(rng, d0, d1, units, start_key):
     """Every encounter takes a fixed block of draws, so a change to one propensity moves only the orders it governs."""
     encs = []
@@ -103,6 +124,8 @@ def _draw_encounters(rng, d0, d1, units, start_key):
                 slot[0] = 8
                 for j in range(n_oth):
                     add("OTH", a + ou[j] * (L - a), 0.5 + 2.0 * x[(j + 3) % 12])
+                orders = [(k_, c_, d_, ward_clock(t_), ward_clock(en_)) for (k_, c_, d_, t_, en_) in orders]
+                e.adm, e.dis = ward_clock(e.adm), ward_clock(e.dis)
                 orders.sort(key=lambda o: (o[3], o[0]))
                 e.orders = orders
                 encs.append(e)

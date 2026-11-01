@@ -281,7 +281,7 @@ def triage_json(A, path):
         recs.append({"triage_ref": x.ref, "patient_token": x.token, "birth_year": int(x.yob),
                      "sex": "F" if x.sex == 2 else "M", "postcode_district": x.district, "gp_practice": x.gp,
                      "received": iso(x.received), "outcome": x.outcome, "routed_to": x.routed_to or None,
-                     "outcome_date": iso(x.routed_on)})
+                     "outcome_date": iso(x.routed_on) if isinstance(x.routed_on, dt.date) else None})
     doc = {"service": "Quenmoor and Kirkbeck Community MSK Triage Service", "extract_run": "2026-04-14T07:05:00+01:00",
            "referrals": recs}
     head = json.dumps({k: v for k, v in doc.items() if k != "referrals"}, ensure_ascii=False)[:-1]

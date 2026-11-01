@@ -85,7 +85,7 @@ def col_name(i):
 
 def docx_text(path):
     x = zipfile.ZipFile(path).read("word/document.xml").decode("utf-8")
-    return " ".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", x, re.S)).replace("&amp;", "&")
+    return " ".join(re.findall(r"<w:t(?:\s[^>]*)?>([^<]*)</w:t>", x)).replace("&amp;", "&")
 
 
 def pdf_text(path):

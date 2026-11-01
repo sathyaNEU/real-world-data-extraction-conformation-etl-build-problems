@@ -261,8 +261,8 @@ def extras(w):
 
 
 NOT_INVITED = {40117: 0.0058, 40152: 0.0048, 40188: 0.0074, 41206: 0.0150, 41231: 0.0078, 41274: 0.0158, 41309: 0.0190, 41355: 0.0166, 41388: 0.0124, 41402: 0.0036}
-UNLINKED = {40117: 0.06, 40152: 0.05, 40188: 0.075, 41206: 0.09, 41231: 0.08, 41274: 0.10,
-            41309: 0.07, 41355: 0.085, 41388: 0.08, 41402: 0.08}
+UNLINKED = {40117: 0.068, 40152: 0.058, 40188: 0.085, 41206: 0.105, 41231: 0.094, 41274: 0.118,
+            41309: 0.082, 41355: 0.10, 41388: 0.094, 41402: 0.094}
 
 
 def make_spells(w):
@@ -341,7 +341,7 @@ def make_spells(w):
                              district=row.district, kind="elective"))
     s = pd.DataFrame(rows)
     s = s[(s.adm >= EXTRACT_FROM) & (s.adm <= EXTRACT_TO)].copy()
-    s.loc[s.dis > EXTRACT_TO, "dis"] = None      # still in hospital at the extract date
+    s.loc[s.dis > EXTRACT_TO, "dis"] = None      # still in hospital at the extract cut: not yet submitted
     s = s.sort_values(["pid", "adm", "kind"]).reset_index(drop=True)
     # submission dates and re-submissions under a new spell number
     r = stream(9300)
@@ -349,7 +349,7 @@ def make_spells(w):
     sub = []
     for i, row in enumerate(s.itertuples()):
         base = row.dis if row.dis is not None else row.adm
-        sub.append(min(base + D(days=int(r.integers(3, 41))), dt.date(2026, 10, 2)))
+        sub.append(base + D(days=int(r.integers(3, 41))))
     s["submitted"] = sub
     s["version"] = 1
     extra = []
@@ -358,7 +358,7 @@ def make_spells(w):
         if r.random() < pr_:
             d = row._asdict()
             d.pop("Index")
-            d["submitted"] = min(row.submitted + D(days=int(r.integers(20, 81))), dt.date(2026, 10, 2))
+            d["submitted"] = row.submitted + D(days=int(r.integers(20, 81)))
             d["version"] = 2
             if row.kind == "index" and row.proc == "V254" and r.random() < 0.3:
                 d["proc"] = "V253"
@@ -370,6 +370,8 @@ def make_spells(w):
     clash = set(e.spell_id) & set(s.spell_id)
     assert not clash
     s = pd.concat([s, e], ignore_index=True)
+    # only what reached the warehouse by the cut: finished spells submitted on or before 30 September 2026
+    s = s[s.dis.notna() & (s.submitted <= EXTRACT_TO)].reset_index(drop=True)
     return s
 
 
@@ -384,7 +386,7 @@ def make_proms(w):
         ref = new_refs[i] if new else old_refs[i]
         site = {p["key"]: p["site"] for p in PROVIDERS}[row.prov]
         sup_op = row.booked if new else row.op_date
-        unlinked = bool(new and row.unl_u < UNLINKED[row.prov])
+        unlinked = bool(new and row.booked == row.op_date and row.unl_u < UNLINKED[row.prov])
         regs.append(dict(ref=ref, pseudo="" if unlinked else row.pseudo, site=site, pid=row.pid, new=new,
                          linked_on=row.reg + D(days=3)))
         if row.pre_done and not row.not_invited and row.pre_c <= EXTRACT_TO:
@@ -435,12 +437,12 @@ def make_proms(w):
     return q, reg
 
 
-def match_candidates(ops, site_prov, booked, yob, sex):
-    """The one rule that places a questionnaire with no NHS number: same provider, same sex, a birth year the
-    age on admission allows, the operation from 120 days before to 30 days after the booked date, nearest wins."""
+def match_candidates(ops, site_prov, booked, yob, sex, lo=-30, hi=120):
+    """Operations a questionnaire with no NHS number could belong to: same provider, same sex, a birth year the
+    age on admission allows, the operation within the given days of the booked date, nearest first."""
     c = ops[(ops.mprov == site_prov) & (ops.sex_code == sex) & (ops.yob_lo <= yob) & (ops.yob_hi >= yob)]
     dd = (c.op_date - booked).apply(lambda x: x.days)
-    c = c[(dd >= -30) & (dd <= 120)].copy()
+    c = c[(dd >= lo) & (dd <= hi)].copy()
     c["gap"] = (c.op_date - booked).apply(lambda x: abs(x.days))
     return c.sort_values(["gap", "pid"])
 
@@ -460,11 +462,12 @@ def settle_unlinked(w, q, reg):
         if r.ref not in pre.index:
             continue                       # no questionnaire: nothing to place
         qq = pre.loc[r.ref]
-        c = match_candidates(free, site_key[r.site], qq.sup_op, qq.yob, qq.sex)
+        c = match_candidates(ops, site_key[r.site], qq.sup_op, qq.yob, qq.sex, lo=-120, hi=120)
         if r.pid < 0:
             ok = len(c) == 0
         else:
-            ok = len(c) >= 1 and int(c.iloc[0].pid) == r.pid and (len(c) == 1 or c.iloc[1].gap > c.iloc[0].gap)
+            ok = (len(c) >= 1 and int(c.iloc[0].pid) == r.pid and c.iloc[0].gap == 0
+                  and (len(c) == 1 or c.iloc[1].gap > 120))
         if not ok:
             flip.add(r.ref)
     pseudo_of = dict(zip(w.pid, w.pseudo))

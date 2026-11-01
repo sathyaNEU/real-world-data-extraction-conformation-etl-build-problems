@@ -48,7 +48,8 @@ BODY = [
     ("h", "6. Pre-operative questionnaire participation"),
     ("p", "A provider's participation for a financial year is the share of its index operations in that year whose "
           "patient completed a scored pre-operative questionnaire in the 90 days up to and including the day of the "
-          "operation."),
+          "operation. Every pre-operative questionnaire the outcomes supplier received for the operation counts, "
+          "whether or not it carries an NHS number."),
     ("h", "Appendix A. Index procedures (OPCS-4)"),
     ("table", [["Code", "Procedure"],
                ["V25.3", "Primary posterior laminectomy decompression of lumbar spine"],

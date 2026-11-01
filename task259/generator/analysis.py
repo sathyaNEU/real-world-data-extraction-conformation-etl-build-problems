@@ -395,24 +395,28 @@ def unit_quarters(L, quarters=REF, dedup=True, split041="zip"):
     return first.reset_index()
 
 
-def frame_deleted_at(L, U, void_in_error=True):
-    """Whether each unit-quarter's housing unit stood deleted from the frame (vacant or demolished) on the visit date.
-    void_in_error: a deletion later restored as entered in error never took effect."""
+def frame_deleted_at(L, U, void_in_error=True, mode=None):
+    """Whether each unit-quarter's housing unit stood removed from the master address file (vacant or demolished) on
+    the visit date.  mode "corrected" (the technical note's reading, void_in_error=True): a removal later restored as
+    made in error never took effect, each restore reversing the removal it follows; "asof": the file as it stood on
+    the visit date; "unit_void": any restore as made in error clears every removal of that unit."""
+    if mode is None:
+        mode = "corrected" if void_in_error else "asof"
     F = L["F"]
     dels = F[(F["ACTION"] == "DELETE") & F["REASON"].isin(["VACANT", "DEMOLISHED"])][["FRAMEID", "EFFECTIVE"]]
-    rst = F[(F["ACTION"] == "RESTORE")][["FRAMEID", "EFFECTIVE"]].rename(columns={"EFFECTIVE": "R"})
+    rst = F[(F["ACTION"] == "RESTORE") & (F["REASON"] == "DELETED IN ERROR")][["FRAMEID", "EFFECTIVE"]]
+    rst = rst.rename(columns={"EFFECTIVE": "R"})
     m = U[["FRAMEID", "SURVEY_QTR", "visit"]].merge(dels, on="FRAMEID", how="inner")
     m = m[m["EFFECTIVE"] <= m["visit"]]
-    if void_in_error:
-        r = m.merge(rst, on="FRAMEID", how="left")
-        r["voided"] = r["R"].notna() & (r["R"] >= r["EFFECTIVE"])
-        void = r.groupby(["FRAMEID", "SURVEY_QTR", "EFFECTIVE"])["voided"].any().reset_index()
-        m = void[~void["voided"]]
+    r = m.merge(rst, on="FRAMEID", how="left")
+    if mode == "corrected":
+        r["off"] = r["R"].notna() & (r["R"] >= r["EFFECTIVE"])
+    elif mode == "asof":
+        r["off"] = r["R"].notna() & (r["R"] >= r["EFFECTIVE"]) & (r["R"] <= r["visit"])
     else:
-        r = m.merge(rst, on="FRAMEID", how="left")
-        r["restored_before"] = r["R"].notna() & (r["R"] >= r["EFFECTIVE"]) & (r["R"] <= r["visit"])
-        void = r.groupby(["FRAMEID", "SURVEY_QTR", "EFFECTIVE"])["restored_before"].any().reset_index()
-        m = void[~void["restored_before"]]
+        r["off"] = r["R"].notna()
+    keep = r.groupby(["FRAMEID", "SURVEY_QTR", "EFFECTIVE"])["off"].any().reset_index()
+    m = keep[~keep["off"]]
     keys = set(zip(m["FRAMEID"], m["SURVEY_QTR"]))
     return np.array([(f, q) in keys for f, q in zip(U["FRAMEID"], U["SURVEY_QTR"])])
 
@@ -427,7 +431,7 @@ def ask_rates(L, frame="golden", dedup=True, split041="zip", interview_proves=Tr
         U["code"] = np.where(U["interviewed"], "I", U["code"])
     ne = U["code"].isin(NOT_ELIGIBLE).values
     if frame != "none":
-        dz = frame_deleted_at(L, U, void_in_error=(frame == "golden"))
+        dz = frame_deleted_at(L, U, mode={"golden": "corrected", "asof": "asof", "unit_void": "unit_void"}[frame])
         if interview_proves:
             dz = dz & ~U["interviewed"].values
         ne = ne | dz

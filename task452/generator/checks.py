@@ -63,7 +63,8 @@ def main():
     check("D1 licence PDF read back (positive control)", "From 1 January 2028 the mass of mercury" in lic and len(lic) > 500, "%d chars" % len(lic))
     check("D2 licence files the load and counts both operating modes",
           "shall not exceed %d kg" % G.LIMIT_KG in lic and "in compound operation and in direct operation" in lic)
-    check("D3 licence files the hours the annual report states", "Hours of operation: hours in which a kiln is producing clinker" in lic)
+    check("D3 licence files the hours the annual report states", "Hours of operation: the time during which a kiln is producing clinker" in lic)
+    check("SF13 licence files hours as elapsed time, not a count of clock hours", "elapsed time from the start to the end of each period, summed" in lic)
     tests_txt = A.pdf_text(os.path.join(TGT, "stack_tests_Hg_2024-2026.pdf"))
     check("D4 test reports read back (positive control)", any("AEM-2026-A1-1-Hg" in w for w in tests_txt))
     check("D5 every test run with the raw mill in operation", tests_txt.count("in operation") == 18, "%d" % tests_txt.count("in operation"))
@@ -122,6 +123,37 @@ def main():
           sum(A.ask1(TGT)["K1"]["quarters"]) > 500 and sum(A.ask1(TGT)["K2"]["quarters"]) > 500)
     check("SF9 the call is the same under any reading of keeping under: %d against %d" % (rh(works), G.LIMIT_KG), rh(works) > G.LIMIT_KG and r0 < G.LIMIT_KG)
     check("SF10 the comparison is the 2026 release itself (prompt), no forward projection licensed", "if it releases what it released in 2026" in open(os.path.join(TASK, "prompt.txt")).read())
+    # SF14: the fuels' mercury from the suppliers' certificates instead of the as-fired composites
+    for v in ("certificates_monthly", "certificates_annual", "certificates_plain"):
+        cv = A.mercury(TGT, v)
+        check("SF14 fuel mercury from the certificates (%s): every kg figure unchanged" % v,
+              rh(cv["K1"]["release"]) == rh(k1) and rh(cv["K2"]["release"]) == rh(k2) and
+              rh(cv["K1"]["release"] + cv["K2"]["release"]) == rh(works), "%.2f %.2f %.2f" % (cv["K1"]["release"], cv["K2"]["release"], cv["K1"]["release"] + cv["K2"]["release"]))
+    # SF13: the clock-hour readings the filed definition rules out
+    ivd = A.direct_intervals(TGT)
+    ivf = A.direct_intervals(TGT, want="feed")
+    import datetime as _dt
+    grid = {}
+    for name, iv in (("direct", ivd), ("feed", ivf)):
+        for k in ("K1", "K2"):
+            hours = {"any": 0, "full": 0, "majority": 0}
+            t = _dt.datetime(2026, 1, 1, tzinfo=_dt.timezone.utc)
+            end = _dt.datetime(2027, 1, 1, tzinfo=_dt.timezone.utc)
+            spans = iv[k]
+            j = 0
+            while t < end:
+                t2 = t + _dt.timedelta(hours=1)
+                ov = A.overlap_hours(spans, t, t2)
+                hours["any"] += ov > 0
+                hours["full"] += ov >= 0.9999
+                hours["majority"] += ov >= 0.5
+                t = t2
+            grid[(name, k)] = hours
+    a1g = A.ask1(TGT)
+    ex_d = {k: sum(a1g[k]["quarters"]) for k in a1g}
+    check("SF13 the clock-hour counts differ from the elapsed hours, so 1.8 is what fixes the reading",
+          all(abs(grid[("direct", k)][r] - ex_d[k]) >= 1 for k in ex_d for r in ("any", "full")),
+          "; ".join("%s %s %s" % (k, {r: grid[("direct", k)][r] for r in grid[("direct", k)]}, round(ex_d[k], 1)) for k in ex_d))
     # SF12: sand and slag quarterly composites read as covering only their first month
     q = dict(hg)
     miss = {}

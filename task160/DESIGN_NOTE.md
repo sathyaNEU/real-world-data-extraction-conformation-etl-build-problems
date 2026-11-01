@@ -14,9 +14,11 @@ reset; its record is below and its world is closed.
    question form and opener. NOTEs: differentiated against task169 v2 (a closed processing route that had pre-empted
    another, so the record understates; here an added upstream prompt removes inputs and the new prompt's own record
    overstates) and task304 v1 (absorption and depletion of a pool; nothing is absorbed here).
-2. Window at the draw (last three live cards): task259, task452, task123. Redrawn axes: role `capacity_planner` to
-   `operations_director` (task123 v3 took capacity_planner as it registered; Corvane's director of pharmacy operations
-   staffs the desk and prices the change order, the honest label); generators G11 first to G3 first (G11, eligibility
+2. Window at the draw (last three live cards): task259, task452, task123, and after the final registration (22:47Z)
+   task186, task452, task123. Redrawn axes: role `capacity_planner` (task123 v3) and then `operations_director` (task264
+   v3 came back into the window when task452 re-registered after this card) to `product_manager`: the stakeholder is
+   Corvane's override review service manager, who runs the desk as a client service line, staffs its shifts and prices
+   each client's change orders; generators G11 first to G3 first (G11, eligibility
    precondition, was never this mechanism, and (population, G11, quantity_figure) repeats task141 v4; (population, G3)
    repeats task138 and task273 inside the batch, so time leads); forcing `cutover_or_migration` to `launch_or_rollout`
    (a content go-live on a fixed date is a rollout).
@@ -41,7 +43,8 @@ reset; its record is below and its world is closed.
    2027). Gate G `forecasting`; strategy `causal_design` (the counterfactual alert stream with the package answering).
 7. Layer 2: `estimand_identification`, pattern
    `own:a-live-duplicate-therapy-alert-removes-orders-that-later-interaction-alerts-fire-against`.
-8. Furniture: forum `operations_desk` (Corvane's desk planning files the forecast; no committee approves it); forcing
+8. Furniture: role `product_manager` (above); forum `operations_desk` (Corvane's desk planning files the forecast; no
+   committee approves it); forcing
    `launch_or_rollout` (CR-2291 fixes the go-live); organisation `professional_services`; calibration `pilot_log` (the
    pilot units' answers); context artifact `operations_log` (the alert history).
 9. People, drawn with `guard.py names --geo usa --locale en_US --seed 160`: Chris Hernandez (Corvane, Director of
@@ -273,7 +276,8 @@ reported by the Quillfield department in which the alert fired.
   exchanged wings for the renovation (4N and 4S from 20 July, 9E and 9W from 3 August, 10N and 10S from 17 August, 6E
   and 6W from 31 August, 11N and 11S from 14 September); Corvane's location map reads the wing, so only taking each
   session's department from the alert its reference names in the history gives the ten wards' hours.
-- Hazards: the queue in UTC against Eastern quarter boundaries; zero-padded alert references; the platform's handle
+- Hazards: the queue in UTC against Eastern quarter boundaries (no session straddles 1 July or 1 October, so a reader
+  who splits sessions at the edge files the same hours, asserted); zero-padded alert references; the platform's handle
   minutes, which on a re-claimed task run from the first claim (a stress row: summing them misses all fifteen).
 
 **Ask B, reviews signed off in each shift of each month, July to September 2026 (9 figures, whole reviews).** Home: the
@@ -298,6 +302,14 @@ the devices live in the queue export and the location map.
 Pair ceiling: 40.0 ((38 + 7 + 55 x 5/24) and (5 + 7 + 55 x 5/24), averaged)
 Mirror leakage: 20.8 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
+
+## Leak sweep
+
+`leak.py task160 --asof 2026-10-28`: REVIEW, no LEAK. Answered: sweep 3, Schedule B and CR-2291 share the call's plain
+words (override reviews, adult wards, thirteen weeks) and carry no figure; sweep 4, the bulletin's background, duplicate,
+interacting and orders are the rule definitions and the background log's fields, the schedule's alerts, overridden and
+volume are its WHAT, and none names a removal reaching another alert; sweep 6, the location map and the register list
+units and rank nothing; sweep 9, the volume plan's weeks after the as-of date are the plan itself, a forward document.
 
 ## Build record
 
@@ -426,3 +438,7 @@ world is closed. Its leak report is kept as `leak_check_report_arch1.md`.
   as the client bulletin it is.
 - Unit 3E first named "3 East Neuroscience": the write-up's figure check reads "eur" as a currency next to the ward's
   hours; renamed 3 East Stroke and Spine, every figure unchanged.
+- Role `operations_director`: clear at the first registration, then BLOCKed by `guard.py heart` against task264 v3 once
+  task452 re-registered after this card and the window moved; redrawn to `product_manager` and re-registered. The
+  prompt's second sentence first opened on "The change order rests on that net figure" (shell how-many | the |
+  docx+xlsx, a `shell.repeat` WARN against task301 v2); it now opens on the use, "For the change order".

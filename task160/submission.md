@@ -32,23 +32,23 @@
 2. Desk hours, July to September 2026, nearest whole hour:
    - 4N 4 North Medicine: 26
    - 4S 4 South Medicine: 20
-   - 9E 9 East Medicine: 26
+   - 9E 9 East Medicine: 24
    - 9W 9 West Medicine: 14
-   - 2N 2 North Medicine: 23
-   - 12N 12 North Medicine: 16
-   - 11N 11 North Geriatrics: 16
+   - 2N 2 North Medicine: 25
+   - 12N 12 North Medicine: 15
+   - 11N 11 North Geriatrics: 17
    - 11S 11 South Pulmonary: 17
-   - 3E 3 East Stroke and Spine: 15
-   - 3W 3 West Renal: 12
+   - 3E 3 East Stroke and Spine: 17
+   - 3W 3 West Renal: 11
    - 6E 6 East Orthopaedics: 45
    - 6W 6 West General Surgery: 39
-   - 10N 10 North Surgery: 35
+   - 10N 10 North Surgery: 37
    - 10S 10 South Surgery: 22
-   - 5W 5 West Vascular Surgery: 25
+   - 5W 5 West Vascular Surgery: 27
 3. Reviews signed off, July, August and September 2026, by shift:
-   - Day shift: July 389, August 369, September 367
-   - Evening shift: July 363, August 372, September 374
-   - Night shift: July 370, August 308, September 332
+   - Day shift: July 559, August 505, September 534
+   - Evening shift: July 415, August 419, September 421
+   - Night shift: July 148, August 126, September 117
 
 ### msp26_go_live_review_memo.docx
 

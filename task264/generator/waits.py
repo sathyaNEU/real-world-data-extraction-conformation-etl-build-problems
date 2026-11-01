@@ -157,6 +157,11 @@ def make_waits():
                         outcome=outs[int(rt.integers(0, 4))], routed_to="", routed_on=rec + D(days=int(rt.integers(14, 70))),
                         path=-1))
     triage = pd.concat([sur, pd.DataFrame(tri)], ignore_index=True)
+    run = dt.date(2026, 4, 14)
+    pending = triage.routed_on > run
+    assert not (pending & (triage.outcome == "Surgical opinion - spinal")).any()
+    triage.loc[pending, "outcome"] = "Awaiting triage"
+    triage.loc[pending, "routed_on"] = None
     paths_df = pd.DataFrame(paths)
     return dict(paths=paths_df, ptl=ptl, removals=removals, triage=triage)
 

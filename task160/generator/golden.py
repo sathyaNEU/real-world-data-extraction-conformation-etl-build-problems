@@ -100,7 +100,6 @@ def workbook(P, g, a, b, path):
         c.font = HEAD
     for u in P.going_live:
         h.append([u, NAMES[u], int(np.floor(a[u] + 0.5))])
-    h.append(["", "Total", int(np.floor(sum(a.values()) + 0.5))])
     h.append([])
     h.append(["Desk time from claim to sign-off or return, every session; ward is the department the alert fired "
               "in, from the alert history."])
@@ -132,7 +131,7 @@ def memo(P, g, b, png, path):
     d.add_heading("MSP26 go-live: override review forecast for the change order", level=1)
     p = d.add_paragraph()
     p.add_run("To: ").bold = True
-    p.add_run("Director of Pharmacy Operations    ")
+    p.add_run("Override Review Service Manager    ")
     p.add_run("From: ").bold = True
     p.add_run("Desk Planning    ")
     p.add_run("Date: ").bold = True
@@ -187,7 +186,7 @@ def write_all(target, golden, gen):
                "base_reviews_lost": round(g["pre_B"]), "plan_admissions": g["plan_adm"], "base_admissions": g["adm_B"],
                "qt_added_unrounded": round(g["qt_add"]), "lost_unrounded": round(g["pre"]),
                "net_unrounded": round(g["net"]), "rounding_unit": 100,
-               "signed_off_total": sum(b.values()), "desk_hours_total": int(sum(a.values()) + 0.5)}
+               "signed_off_total": sum(b.values())}
     json.dump({"task": "task160", "figures": figs, "working": working}, open(os.path.join(gen, "figures.json"), "w"),
               indent=1, sort_keys=True)
     return figs

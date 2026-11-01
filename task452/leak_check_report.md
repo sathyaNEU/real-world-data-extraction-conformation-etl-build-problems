@@ -11,7 +11,7 @@ Stump terms swept: reference, sample, points, design, forest, stratum, deforesta
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `IEL-1186-03_conditions_consolidated_2026.pdf`: 9 of 25 stump-paragraph terms appear (reference, points, report, period, emission, laboratory); read whether the document names the move
-- **REVIEW** `stack_tests_Hg_2024-2026.pdf`: 6 of 25 stump-paragraph terms appear (reference, report, emission, laboratory, clinker, monitoring); read whether the document names the move
+- **REVIEW** `stack_tests_Hg_2024-2026.pdf`: 7 of 25 stump-paragraph terms appear (reference, report, emission, laboratory, clinker, monitoring); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

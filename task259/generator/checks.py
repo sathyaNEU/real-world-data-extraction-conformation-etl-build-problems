@@ -154,6 +154,20 @@ def main():
           not L["P"][["SURVEY_QTR", "CASEID", "LINENO"]].duplicated().any())
     check("SF13 every area's certification is the same under pooled and per-area sensitivity (four per-area forms)",
           all(standing["area_s_" + k] == gold for k in ("adj", "raw", "fwd", "bwd")))
+    note = pdf_text(os.path.join(TDIR, "HES_TECHNICAL_NOTE_2026-09.pdf"))
+    asof = A.ask_rates(L, frame="asof")
+    G0 = A.ask_rates(L)
+    moved = sum(round(asof[a]["rr"], 1) != round(G0[a]["rr"], 1) for a in A.AREAS)
+    check("SF14 rate scope filed: the master address file as finally corrected, a reversal applying from the removal",
+          "stood on the master address file on the date of the interviewer" in note and "finally corrected" in note and
+          "from the date of the removal" in note and moved == 8, "the file-as-it-stood reading moves %d of 8" % moved)
+    Dr = L["D"][L["D"]["SURVEY_QTR"].isin(A.REF)].copy()
+    Dr["code"] = Dr["DISPO"].astype(str)
+    gi = Dr.groupby(["FRAMEID", "SURVEY_QTR"])["code"].agg(lambda x: bool(set(x) & A.INTERVIEW))
+    nonint = Dr[~Dr["code"].isin(A.INTERVIEW)].groupby(["FRAMEID", "SURVEY_QTR"]).size()
+    single = nonint[~gi.reindex(nonint.index).values]
+    check("SF15 the visit date is unambiguous: every unit-quarter without an interview has exactly one disposition row",
+          (single == 1).all(), "%d unit-quarters" % len(single))
 
     # ---------------------------------------------------------------------------- Layer 1 mess neutrality
     Lx = dict(L)
@@ -214,6 +228,16 @@ def main():
     check("S7 dispositions spread across codes as a field system's would (no single code above 80 percent)",
           dd["DISPO"].value_counts(normalize=True).max() < 0.8)
     check("S8 no em dash in any shipped document or the write-up", no_em_dash())
+    pops = [float(r[1]) for r in W["release_rows"]]
+    steps = [round(b - a, 1) for a, b in zip(pops, pops[1:])]
+    check("S9 the release's population moves unevenly quarter to quarter", len(set(steps)) == len(steps), str(steps))
+    codes = pd.read_csv(os.path.join(TDIR, "HES_PERSON_CODES.csv"), dtype=str)
+    have = {(v, c) for v, c in zip(codes["VARIABLE"], codes["CODE"])}
+    need = {("LFSTAT", str(x)) for x in P["LFSTAT"].unique()} | {("MJH", str(x)) for x in P["MJH"].unique()} | \
+        {("SEX", str(x)) for x in P["SEX"].unique()} | {("RELREF", str(x)) for x in P["RELREF"].unique()} | \
+        {("WANTJOB", str(x)) for x in P["WANTJOB"].unique()}
+    check("S10 the person code list maps every coded value in the person file", need <= have,
+          str(sorted(need - have)))
 
     # ------------------------------------------------------------------------------------------- bin edges
     for a in A.AREAS:
@@ -238,6 +262,16 @@ def main():
         miss_nc = sum(round(r[a]["nc"], 1) != round(G[a]["nc"], 1) for a in A.AREAS)
         check("D %s misses every response and noncontact rate" % name, miss_rr == 8 and miss_nc == 8,
               "%d and %d of 8" % (miss_rr, miss_nc))
+    uv = A.ask_rates(L, frame="unit_void")
+    miss_rr = sum(round(uv[a]["rr"], 1) != round(G[a]["rr"], 1) for a in A.AREAS)
+    miss_nc = sum(round(uv[a]["nc"], 1) != round(G[a]["nc"], 1) for a in A.AREAS)
+    check("D a restore read as clearing every removal of its unit misses every response and noncontact rate",
+          miss_rr == 8 and miss_nc == 8, "%d and %d of 8" % (miss_rr, miss_nc))
+    dbl = {}
+    for aid in W["double"]:
+        dbl[W["addr_by_id"][aid]["area"]] = dbl.get(W["addr_by_id"][aid]["area"], 0) + 1
+    check("D every area holds 15 or more units removed in error, restored, then removed for vacancy before a visit",
+          len(dbl) == 8 and min(dbl.values()) >= 15, str(dbl))
     r3 = A.ask_rates(L, split041="03")
     check("D county 59041 sent whole to Silver Creek misses only Silver Creek and Eastern Prairie",
           {a for a in A.AREAS if round(r3[a]["rr"], 1) != round(G[a]["rr"], 1) or

@@ -89,7 +89,8 @@ worlds; their records sit under `## Leak check
 2. Take the 2026 test report for each stack in stack_tests_Hg_2024-2026.pdf: the mean of the three runs' mercury
    mass emission, 3.99 g/h on A1-1 (kiln 1) and 4.83 g/h on A1-2 (kiln 2), each at the licence's reference conditions
    and below the 50 ug/Nm3 limit.
-3. Count each kiln's 2026 hours on feed from the journal (or the historian's feed rate): about 7,940 and 8,037.
+3. Count each kiln's 2026 hours on feed from the journal (or the historian's feed rate): the quarters' figures sum to
+   7,941 and 8,037.
 4. Carry the tested rate over the hours: kiln 1 31.7 kg, kiln 2 38.8 kg (per tonne of clinker: 31.3 and 38.4 kg;
    three-year mean rate: 32.9 and 38.3 kg).
 5. Compare the works' total with the load.
@@ -185,12 +186,14 @@ Seven tests per rung: filed sentence, schema, reflex, control bench, hygiene, li
 | SF10 | the comparison | the 2026 release itself | a projection to 2028 | not licensed | the prompt's "if it releases what it released in 2026" (asserted SF10) |
 | SF11 | composite basis | dry for raw materials and clinker, as received for fuels | moisture taken off again | not the golden (141.4), a misread | the composites' own Basis column (asserted SF11) |
 | SF12 | quarterly composites | the quarter's composite on each month | the first month only | same figures | asserted SF12 |
+| SF13 | "hours" in the asks (1.4, 1.5, 6.5) | elapsed time summed: direct 1,391.9 and 1,731.2, on feed 7,940.1 and 8,036.6 | a count of clock hours: direct 1,509, 1,223 or 1,396 (kiln 1) and 1,863, 1,551 or 1,729 (kiln 2) as any, full or majority hours | different figures | licence 1.8: elapsed time from start to end of each period, summed, not a count of clock hours (asserted SF13) |
+| SF14 | the fuels' mercury | the laboratory's as-fired composites | the suppliers' certificates, by month (coal: the cargo in use), as a tonnage-weighted or plain annual mean | same figures: 67.9, 83.2 and 151.1 to 151.1 kg under each (asserted SF14) | convergence by construction: each certificate describes the fuel the composites describe |
 
 ## Ladder
 
 | Rung | Construction | Kiln 1 kg | Kiln 2 kg | Works kg | Call |
 |---|---|---|---|---|---|
-| R0 | 2026 tested rate x hours on feed (7,940 and 8,037 h) | 31.7 | 38.8 | 70.5 | under by 15 |
+| R0 | 2026 tested rate x hours on feed (7,941 and 8,037 h, the quarters summed) | 31.7 | 38.8 | 70.5 | under by 15 |
 | R1a | tested rate per tonne of clinker x 2026 clinker | 31.3 | 38.4 | 69.7 | under |
 | R1b | three-year mean tested rate x hours | 32.9 | 38.3 | 71.2 | under |
 | R2 | balance without kiln 1's dust | 79.5 | 83.2 | 162.7 | over by 78 |
@@ -527,4 +530,5 @@ Pair ceiling: 39.7 (planning weights 38 / 7 / 55 with the tonnes, the payment an
 - 2026-11-01, build: the ledger in wet tonnes with the laboratory's moisture on the main path. Rejected: mishandled, the moisture moves both kilns' figures, so R2 fails; the ledger now carries raw materials dry and fuels as fired, and the composites state their basis.
 - 2026-11-01, build: kiln 1's dust taken from the weighbridge. Rejected: the weighbridge then had no use but the decisive step (second-use test); the ledger's filter dust to silo S7 is the dust source and the weighbridge ships as a declared distractor (the readings agree, SF6).
 - 2026-11-01, build: the historian's raw mill as a run fraction to one decimal. Rejected: the fraction route lands the direct-operation hours in most quarters; the historian now carries the mill's status at each half-hour stamp.
+- 2026-11-01, stage 4 round 1 (judge DETERMINISTIC, APPROVE; leak reader clean, question 6 analytical): two advisory forks closed before the one re-judge. Hours: the clock-hour grid readings (kiln 1 direct 1,509, 1,223 or 1,396 against 1,392; kiln 2 1,863, 1,551 or 1,729 against 1,731) are ruled out by a new licence definition 1.8 (elapsed time, summed, not a count of clock hours), and 1.4, 1.5 and 6.5 now read "the time during which"; no graded figure moved. Fuel mercury: the supplier certificates had carried a moisture factor and a 15 per cent cargo spread, giving about 65, 82, 147 and 62 kg; they are now built from the fuel the as-fired composites describe (coal per cargo over the quarter it feeds, SRF per month, each within 0.6 per cent), so every certificate reading prints 68, 83, 151 and 66 kg (SF14); no graded figure moved. The design note's annual hours now state the quarters summed (7,941), and the test reports' closing lines differ report by report.
 - 2026-11-01, build: hours on feed and direct-operation hours read from FEED lines only. Kept as the device: unplanned stops are logged as burner trips, as interlocked trips are; the planned shutdowns log FEED OFF.

@@ -29,21 +29,24 @@ def main():
     L = A.load(os.path.join(os.path.dirname(HERE), "target"))
     G = A.ask_rates(L)
     stops = {
-        "codes as recorded, one record per unit and quarter (cracker and mirror)": A.ask_rates(L, frame="none"),
-        "frame log read as it stood at the visit (full includer)": A.ask_rates(L, frame="asof"),
+        "filed scope executed, a restore clearing every removal of its unit (cracker and mirror)":
+            A.ask_rates(L, frame="unit_void"),
+        "codes as recorded, the address file never consulted": A.ask_rates(L, frame="none"),
+        "address file read as it stood at the visit": A.ask_rates(L, frame="asof"),
+        "address file replayed in date order (full includer)": A.ask_rates(L),
         "rows counted as recorded": A.ask_rates(L, frame="none", dedup=False),
         "county 59041 sent whole to Silver Creek": A.ask_rates(L, split041="03"),
         "golden": G,
     }
     for k, r in stops.items():
         print("%-75s kept %5.1f%%" % (k, 100 * kept(r, G)))
-    Lc = kept(stops["codes as recorded, one record per unit and quarter (cracker and mirror)"], G)
+    Lc = kept(stops["filed scope executed, a restore clearing every removal of its unit (cracker and mirror)"], G)
     Ls = Lc
-    Lf = kept(stops["frame log read as it stood at the visit (full includer)"], G)
+    Lf = kept(stops["address file replayed in date order (full includer)"], G)
     pair = ((CALL_ON + IF + ASK * Lc) + (CALL_OFF + IF + ASK * Ls)) / 2
-    pair_full = ((CALL_ON + IF + ASK * Lf) + (CALL_OFF + IF + ASK * Ls)) / 2
+    pair_full = ((CALL_ON + IF + ASK * Lf) + (CALL_OFF + IF + ASK * Lf)) / 2
     print("Pair ceiling: %.1f" % pair)
-    print("Pair ceiling with the full includer on the call: %.1f" % pair_full)
+    print("Pair ceiling with full includers on both sides: %.1f" % pair_full)
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * Ls))
     return 0 if pair <= 60 and 100 * Ls < 50 else 1
 

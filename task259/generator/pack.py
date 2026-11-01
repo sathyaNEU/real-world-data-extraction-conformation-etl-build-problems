@@ -19,6 +19,18 @@ OCC_SOC = {11: "11-0000", 13: "13-0000", 15: "15-0000", 25: "25-0000", 29: "29-0
 REV_AREA = "06"           # the area whose July 2025 adult estimate the State Demographer revised before 2026Q3's reissue
 REV_FACTOR = 1.0637
 PARALLEL_END = datetime.date(2026, 5, 31)   # the old CAPI system stayed open for interviewers until this date
+# the State Demographer's July 2025 vintage projects each area's adults quarter by quarter, unevenly (migration, the
+# energy-sector layoffs in High Plains, the Capital Region's spring hiring)
+_STEP = {"01": [0.0012, 0.0021, 0.0009, 0.0024, 0.0016, 0.0027, 0.0011],
+         "02": [0.0004, -0.0003, 0.0008, 0.0002, 0.0011, -0.0001, 0.0006],
+         "03": [0.0017, 0.0009, 0.0022, 0.0014, 0.0005, 0.0019, 0.0013],
+         "04": [-0.0006, 0.0003, -0.0011, -0.0004, 0.0002, -0.0009, -0.0002],
+         "05": [0.0010, 0.0016, 0.0006, 0.0013, 0.0020, 0.0008, 0.0015],
+         "06": [0.0001, 0.0007, -0.0002, 0.0005, 0.0003, 0.0009, -0.0004],
+         "07": [0.0003, -0.0005, 0.0006, 0.0000, 0.0004, -0.0002, 0.0007],
+         "08": [0.0008, 0.0002, 0.0011, 0.0005, 0.0013, 0.0004, 0.0009]}
+GROWTH = {a: [float(np.prod([1 + x for x in s[:i + 1]])) / (1 + s[0] + s[1] + s[2]) for i in range(7)]
+          for a, s in _STEP.items()}
 REF = world.REF_QUARTERS
 # share of an occupied unit's noninterviews (other than refusals) that end with no one found at home, by area
 NO_ONE_HOME = {"01": 0.800, "02": 0.798, "03": 0.796, "04": 0.798, "05": 0.802, "06": 0.798, "07": 0.798, "08": 0.802}
@@ -101,8 +113,8 @@ def weights(W, ctl):
         for p in W["persons_q"]:
             if p["q"] == q:
                 cells.setdefault((p["area"], agegroup(p["age"]), p["sex"]), []).append(p)
-        grow = 1 + 0.0019 * (world.QUARTERS.index(q) - 2)     # the vintage's projection for the quarter
         for key, ps in cells.items():
+            grow = GROWTH[key[0]][world.QUARTERS.index(q)]      # the vintage's projection for the area and quarter
             f = round(ctl[key] * grow) / sum(hw[(p["aid"], q)] for p in ps)
             for p in ps:
                 out[(p["aid"], p["line"], q)] = hw[(p["aid"], q)] * f
@@ -263,6 +275,27 @@ def write_target(W, tdir):
         reason = "VACANT" if a["vacant_kind"] == "VACANT" else "DEMOLISHED"
         src = "USPS" if (reason == "VACANT" and rng.random() < 0.55) else "FIELD"
         frows.append([ids[a["aid"]]["frame"], "59" + a["county"], a["zip"], "DELETE", eff.isoformat(), reason, src])
+        W.setdefault("vac_eff", {})[a["aid"]] = eff
+    # units whose postal vacancy flag was wrong once (deleted, restored as in error) before they really emptied
+    W["double"] = []
+    by_area = {}
+    for aid, q in W["vac_nc"]:
+        if q in REF and A[aid]["vacant_kind"] == "VACANT":
+            by_area.setdefault(A[aid]["area"], []).append(aid)
+    for code, *_ in world.AREAS:
+        cand = sorted(by_area.get(code, []))
+        for k in rng.choice(len(cand), size=min(len(cand), int(rng.integers(17, 24))), replace=False):
+            aid = cand[k]
+            a = A[aid]
+            e2 = W["vac_eff"][aid]
+            d1 = e2 - datetime.timedelta(days=int(rng.integers(70, 220)))
+            r1 = d1 + datetime.timedelta(days=int(rng.integers(8, 40)))
+            if r1 >= e2 - datetime.timedelta(days=5):
+                continue
+            frows.append([ids[aid]["frame"], "59" + a["county"], a["zip"], "DELETE", d1.isoformat(), "VACANT", "USPS"])
+            frows.append([ids[aid]["frame"], "59" + a["county"], a["zip"], "RESTORE", r1.isoformat(),
+                          "DELETED IN ERROR", "FIELD"])
+            W["double"].append(aid)
     # deletions entered in error: most restored before the next visit, some only after it
     occ = [a for a in W["addresses"] if a["occupied0"] and a["vacant_from"] is None]
     W["err_before"] = []
@@ -320,6 +353,18 @@ def write_target(W, tdir):
     common.write_csv(os.path.join(tdir, "HES_FRAME_MAINTENANCE_2024-07_2026-09.csv"),
                      ["FRAMEID", "CTY", "ZIP", "ACTION", "EFFECTIVE", "REASON", "SOURCE"], frows)
     W["frows"] = frows
+
+    # ---- person file code list ----
+    pc = [["SEX", "1", "Male"], ["SEX", "2", "Female"],
+          ["RELREF", "1", "Reference person"], ["RELREF", "2", "Spouse or unmarried partner"], ["RELREF", "3", "Child"],
+          ["RELREF", "4", "Other relative"], ["RELREF", "5", "Nonrelative"],
+          ["LFSTAT", "1", "Employed, at work"], ["LFSTAT", "2", "Employed, absent from work"],
+          ["LFSTAT", "3", "Unemployed"], ["LFSTAT", "4", "Not in labor force"],
+          ["HRSMAIN", "-1", "Not in universe"], ["HRSMAIN", "-9", "Don't know"],
+          ["MJH", "1", "Yes"], ["MJH", "2", "No"], ["MJH", "-1", "Not in universe"],
+          ["WANTJOB", "1", "Yes"], ["WANTJOB", "2", "No"], ["WANTJOB", "-1", "Not in universe"],
+          ["RESPLINE", "1-9", "Line number of respondent"]]
+    common.write_csv(os.path.join(tdir, "HES_PERSON_CODES.csv"), ["VARIABLE", "CODE", "LABEL"], pc)
 
     # ---- disposition code table ----
     codes = [["1", "CAPI v3", "Interview", "I"], ["2", "CAPI v3", "Refused", "R"],

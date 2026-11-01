@@ -143,9 +143,11 @@ def write_note(path):
     s.append(Paragraph(
         "The household response rate is the number of interviewed households as a percent of eligible housing units, "
         "with each housing unit in sample counted once in each quarter. A housing unit is eligible in a quarter if it "
-        "was occupied at the time of the interviewer's visit; units that were vacant, demolished or not housing units "
-        "at that time are not eligible. The noncontact rate is the number of eligible housing units at which no one "
-        "was at home at any contact, as a percent of eligible housing units.", body))
+        "stood on the master address file on the date of the interviewer's visit and the interviewer did not find it "
+        "vacant, demolished or not a housing unit. The master address file is taken as finally corrected: a removal "
+        "later reversed as made in error counts as never having been made, from the date of the removal. The "
+        "noncontact rate is the number of eligible housing units at which no one was at home at any contact, as a "
+        "percent of eligible housing units.", body))
     s.append(Paragraph("Change of interviewing system", head))
     s.append(Paragraph(
         "From the second quarter of 2026 interviews are recorded in the department's new computer-assisted "

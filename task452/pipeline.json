@@ -3,8 +3,8 @@
  "status": "BUILD",
  "domain": "physical-environmental-sciences / emissions-inventory (a cement works, kiln mercury to air)",
  "objective": "etl",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "A competent analyst carries each stack's 2026 tested mercury rate over its kiln's hours on feed and files the works at 70 kg, under the 85 kg load, with no carbon injection; the year's release is the mercury the kilns took in less what left in clinker and in the filter dust kiln 1 bled to silo S7: 68 kg and 83 kg, 151 kg, 66 kg over.",
  "architecture": 3,
@@ -15,7 +15,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), 2026-11-01, as-of 2027-01-11; three REVIEW lines answered in the note",
-  "reader": ""
+  "reader": "clean (round 1): no leak, question 6 analytical; the mild note on condition 5.6 stays as the filed WHAT"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.decision, repeat.deliverables), no BLOCK, 2026-11-01",
@@ -23,19 +23,12 @@
   "surface": "5 pairs promoted at surface 0.10 (corpus pct 99), no hard tell; persona Naomi Lynskey"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (round 1, derive-first order kept)",
+  "report": "stage 4 round 1, main session; two advisory forks (hours reading, fuel mercury source) closed in the generator before the re-judge"
  },
- "returned": [
-  {
-   "date": "2026-10-14",
-   "portal": "none (self-found before review)",
-   "repair": "prompt: H23 presupposition (if any, would)",
-   "commit": ""
-  }
- ],
- "resume": "stage 4: the main session spawns the leak reader and the determinism judge on target.zip; fix findings in task452/generator and rebuild with build.py",
+ "returned": [],
+ "resume": "the one re-judge on the rebuilt target.zip (round 1 fixes: SF13 hours definition, SF14 certificates); then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -60,5 +53,20 @@
   "heart": "WARN, no BLOCK",
   "surface": "exit 0, 5 pairs promoted at surface 0.10, no hard tell",
   "ceiling": "pair 26.0 journal route, 35.2 historian route; mirror leakage 0.0 / 16.7 per cent"
- }
+ },
+ "rounds": [
+  {
+   "round": 1,
+   "date": "2026-11-01",
+   "judge": "DETERMINISTIC, APPROVE",
+   "leak_reader": "clean",
+   "fixes": [
+    "licence 1.8 files hours as elapsed time (1.4, 1.5, 6.5 reworded); clock-hour readings asserted different (SF13)",
+    "supplier certificates built from the fuel the as-fired composites describe; every certificate reading prints the same kg figures (SF14)",
+    "design note annual hours stated as the quarters summed (7,941)",
+    "test report closing lines varied per report"
+   ],
+   "figures_moved": "none"
+  }
+ ]
 }

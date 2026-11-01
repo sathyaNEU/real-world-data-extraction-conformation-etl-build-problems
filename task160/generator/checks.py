@@ -191,6 +191,11 @@ def main():
     pairs = {x for _w, p1, p2 in P.DECANT for x in (p1, p2)}
     check("ask A device: Corvane's location map misattributes every decant ward and no other", set(moved) == pairs,
           str(moved))
+    qq = Pk.queue
+    straddle = sum(int(((qq["claimed_et"] < e) & (qq["closed_et"] >= e)).sum())
+                   for e in (A.pd.Timestamp("2026-07-01"), A.pd.Timestamp("2026-10-01")))
+    check("ask A: no desk session straddles 1 July or 1 October Eastern, so splitting a session at the quarter's "
+          "edge files the same hours", straddle == 0, str(straddle))
     ah = Pk.ask_a(time="handle_all")
     check("ask A hazard: summed handle minutes miss every ward",
           all(int(a[u] + 0.5) != int(ah[u] + 0.5) for u in Pk.going_live))
