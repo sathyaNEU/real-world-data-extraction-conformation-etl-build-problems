@@ -10,20 +10,8 @@
 ## 2. Critical Components
 
 1. On PC-1, PC-2 and PC-3 a product's weighed doses fall in a straight line with the litres the set had pumped since its set-up, about a start that varies from set to set; on PC-4 they do not move.
-2. Each completed dose's chance of lying outside its tolerance, taken at the litres its set had pumped and summed over every dose made, gives each product's 2026 rate per hundred thousand doses made:
-   - Cefoxitin 2 g in 20 mL syringe: 451.2
-   - Phenylephrine 100 mcg/mL 10 mL syringe: 266.6
-   - Cefazolin 2 g in 20 mL syringe: 131.4
-   - Midazolam 1 mg/mL 50 mL syringe: 43.7
-   - Ampicillin 2 g in 50 mL bag: 0.2
-   - Cefazolin 1 g in 10 mL syringe: under 0.1
-   - Ephedrine 5 mg/mL 10 mL syringe: under 0.1
-   - Ketamine 10 mg/mL 10 mL syringe: under 0.1
-   - Piperacillin-tazobactam 4.5 g in 100 mL bag: under 0.1
-   - Vancomycin 1 g in 200 mL bag: under 0.1
-   - Ondansetron 8 mg in 50 mL bag: under 0.1
-   - Heparin 1,000 units/mL 5 mL syringe: under 0.1
-3. The products over 10 are Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe; every other product is under 3.
+2. Each completed dose's chance of lying outside its tolerance, taken at the litres its set had pumped and summed over every dose made, gives each product's 2026 rate per hundred thousand doses made.
+3. Against the limit of 10, Cefazolin 2 g in 20 mL syringe; Cefoxitin 2 g in 20 mL syringe; Phenylephrine 100 mcg/mL 10 mL syringe; Midazolam 1 mg/mL 50 mL syringe are **over it**; every other product is **under 3**.
 
 ## 3. Step-by-Step Solution
 

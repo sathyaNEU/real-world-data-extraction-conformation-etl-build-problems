@@ -1,10 +1,10 @@
 {
  "task": "task272",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-01",
  "stump": "A strong analyst who conforms the compounders' dose log, the set-up events and the gravimetric check register and runs the textbook capability study on each product's 2026 weighed doses (the overall mean and spread, normal tails) configures cefoxitin 2 g, the three bags and midazolam (P0431, P0610, P0614, P0618, P0702): the bag sets start high and lose about four per cent over a batch, so their weights spread wide though no bag dose comes near the limit, while cefazolin 2 g and phenylephrine hide their tails after the last weighed dose of the sets that carried a third batch; the weighed doses' own out-of-tolerance share and the quarantine sorts see only cefoxitin, and only every dose rebuilt on its set at the litres the set had pumped names P0412, P0431, P0507 and P0702.",
  "architecture": 3,
@@ -15,19 +15,28 @@
   "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 (no LEAK): section numbers and the policy's unit in the policy and procedure, the estimand's own words in both, the shell quota; each ruled in the note's Leak sweep",
-  "reader": null
+  "leak_py": "REVIEW 2026-11-01 on target.zip 81176264 (--asof 2027-01-18, no LEAK), each line ruled in the note",
+  "reader": "read 1 on 81176264, isolated, pack and prompt only: no leak, question 6 analytical (out-of-tolerance estimated across every dose made, the unweighed majority included); leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-01 after the pull (people.first Cynthia; repeat.question_form which against task468 v5); before the pull it BLOCKed on task125 v4's role family and task445 v2's organisation family and artifact, registered minutes before this card and since out of the window (the note's Pre-ship check)",
+  "heart": "WARN 2026-11-01 on the final cut (people.first Cynthia against task110)",
   "nearest": "0.08 task229 v2 (driver, lineage, differentiated on the card); test.same_driver_older differentiated against task271 v2, task308 v1 and task471 v1",
-  "surface": "exit 0 2026-11-01 (WARN people.first Cynthia); personas Cynthia Underwood, Erin Stewart, Spencer Frank, the request's sign-off fixed so no first name is read twice"
+  "surface": "exit 0 on the final cut 2026-11-01 (personas Cynthia Underwood, Erin Stewart, Spencer Frank)"
  },
- "judge": null,
+ "judge": {
+  "pass": 1,
+  "date": "2026-11-01",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task272/determinism_check_report.md",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "residual": "Midazolam's rate rests on a normal-tail extrapolation (about 20 to 90 under the fit's standard errors, over 10 throughout); the dose log's UTC clock is unlabelled but derivable from the SOP's hours and the events' Z stamps. After the thread's read the write-up's rival clause was rewritten and Critical Component 2's per-product rates (which the drift-aware variants spread at the decimal) were dropped for the sides of the limit; the pack is unchanged"
+ },
  "returned": [],
- "resume": "Stage 4 for the main thread (a fork cannot spawn the reader or the judge): rebuild with `python3 task272/generator/make.py` and confirm target.zip sha256 811762642f4a39e7d2662cd99382434112b751153dba38a13e82bfc484bde5c5, then spawn the leak reader with scratchpad/task272_stage4_leak_brief.md (its copy at scratchpad/leak-task272/) and the determinism judge together, both at medium effort; fix every finding in the generator in one pass, re-run every free gate on the final cut, then ship per the brief's last section. Watch item: the pooled Johnson SB fit to the weighed doses (it misses cefazolin 2 g on this cut, filed the golden on 4 of 10 seeds).",
+ "resume": "Shipped 2026-11-01 on architecture 3: the judge DETERMINISTIC, APPROVE (decisive step analytical, every dose placed on its set at the litres the set had pumped), the leak read clean, every free gate re-run on target.zip 81176264 (two byte-identical builds, the generator checks and verifier, figures_check 104 of 104, precut 61 checks, voice-check PASS with the which-quota WARN, guard heart WARN and surface exit 0). Waits on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -62,5 +71,11 @@
   "pair_ceiling": 36.8,
   "mirror_leakage": 15.1,
   "family_margin": "in 43.6 or more, out 1.6 or less"
- }
+ },
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "SHIPPED: architecture 3, gravimetric verification for Cefazolin 2 g, Cefoxitin 2 g, Phenylephrine and Midazolam; judge DETERMINISTIC, APPROVE; target.zip 81176264"
+  }
+ ]
 }

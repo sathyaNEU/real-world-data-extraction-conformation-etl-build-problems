@@ -30,10 +30,9 @@ def write(path, fig):
           "1. On PC-1, PC-2 and PC-3 a product's weighed doses fall in a straight line with the litres the set had "
           "pumped since its set-up, about a start that varies from set to set; on PC-4 they do not move.",
           "2. Each completed dose's chance of lying outside its tolerance, taken at the litres its set had pumped and "
-          "summed over every dose made, gives each product's 2026 rate per hundred thousand doses made:"]
-    for c in order:
-        L.append("   - %s: %s" % (name[c], ("%.1f" % gold[c]["rate"]) if gold[c]["rate"] >= 0.05 else "under 0.1"))
-    L += ["3. The products over 10 are %s; every other product is under 3." % "; ".join(name[c] for c in sorted(call)), ""]
+          "summed over every dose made, gives each product's 2026 rate per hundred thousand doses made.",
+          "3. Against the limit of 10, %s are **over it**; every other product is **under 3**." % "; ".join(
+              name[c] for c in sorted(call)), ""]
     L += ["## 3. Step-by-Step Solution", "",
           "1. Read %s's station for each serial (PC-3's two serials, before and after 14 July, are one compounder) and "
           "%s's tolerance, specific gravity and tare for each product." % (K.FILES["equipment"], K.FILES["master"]),
