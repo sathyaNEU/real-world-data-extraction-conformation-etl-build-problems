@@ -148,7 +148,7 @@ def submission(A):
              "number, and to %s on household for health region, stratum, PSU and the household answers: %s adults in "
              "%s households, %d PSUs in %d strata." % (F["members"], F["weights"], F["households"], fmt(A["adults"]),
                                                     fmt(A["households"]), A["psus"], A["strata"]))
-    L.append("2. Coded the four estimates from %s (sheet Published tables): pension = 1, tenure = 3 for every adult in "
+    L.append("2. Coded the four estimates from %s (sheet Tabulation plan): pension = 1, tenure = 3 for every adult in "
              "the household, care = 1, arrears = 1 for every adult in the household; don't know and refused not "
              "counted, proxy answers counted (QS-7 2.3)." % F["codebook"])
     L.append("3. Estimated each of the %d totals with the final weights (QS-7 2.1)." % A["n_estimates"])

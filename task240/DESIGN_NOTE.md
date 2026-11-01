@@ -125,7 +125,14 @@ within the region, age group and sex cells, which warns 9.
 - **Not rule application:** QS-7 files the coefficient of variation, the general method (Taylor linearisation of the
   estimate as published over strata and PSUs), the line and the warning, and the weighting note files how the weights
   were made; no rule says that a post-stratified total linearises to its residuals within the cells, so executing every
-  stated rule with the weights held fixed still files 15.
+  stated rule with the weights held fixed still files 15. The enumerated family (simple random sampling 7, the Kish
+  design effect another 9, Taylor linearisation with the final weights fixed 15, the delete-one-PSU jackknife with the
+  final weights rescaled and not post-stratified again 15, residuals within region only 11, within region by age group
+  10, within region by sex 11, residuals within the 96 cells 9, the jackknife post-stratified again in each replicate 9)
+  spreads from 7 to 15 warnings over eight distinct sets, every one asserted on the clean truth or the cut pack; the
+  standing family (the routes that take the variance of the estimate as published, a post-stratified total) is the
+  last two, spread zero, and what rules the rest out is quiet: the weighting note's account of how the weights were
+  made, which says nothing of sampling error (asserted), beside QS-7 3.2's "the estimate as published".
 - **Analyst test:** a strong analyst who builds the responding adults, attaches the final weights, reads the strata and
   PSUs and computes each coefficient of variation by Taylor linearisation with the final weights treated as fixed warns
   15 estimates (Ends on: 15 of the 48 estimates warned, the public pension estimates of all four northern regions and
@@ -142,6 +149,41 @@ within the region, age group and sex cells, which warns 9.
 - **Lesson:** a calibrated estimate's precision lives in its residuals from the calibration cells; holding calibrated
   weights fixed overstates the error most where the cells explain the most, which no build on file teaches (task195
   takes a paired difference's uncertainty, task228 a variance at the randomised unit, task239 a factor at team level).
+
+## Survivor anatomy
+
+Written at the 2026-11-01 re-check of the shipped cut from the clean-truth measurement in `checks.py` (R3a, R3b); the
+design is unchanged.
+
+- Actor: the deciding property, each adult's departure from the weighted rate of their own region, age group and sex
+  cell, has no column in any file: no cell identifier, design weight, residual or variance ships (R1, asserted), and
+  the age group is built from age at interview with the weighting note's bands; once the note is read the cell is a
+  group-by of three shipped columns, so the property is one construction away, not one join away.
+- Link: weak, and named as the build's main risk. The link is between two documents, the weighting note (the weights
+  scaled within the cells to known totals) and QS-7 3.2 (the standard error of the estimate as published), and no key
+  or sentence joins them; but the survey statistician's literature on calibration estimators makes exactly this link,
+  so an opponent who knows that post-stratified weights are not fixed weights reaches it without being invited.
+- Reflex: the field's named method for the deciding quantity, Taylor linearisation over the strata and PSUs as a
+  survey package runs it given the final weights, strata and PSUs, sits at rung 1 (the default path) and files 15
+  (Ends on: 15 of the 48 estimates warned), asserted on the clean truth and the cut pack; the delete-one-PSU jackknife
+  on the final weights files the same 15 on the clean truth. The risk the library test names stands: declaring the
+  design post-stratified in the package is itself a named correction, and an opponent who declares it lands the call.
+- Back-test: nothing ships that refutes the textbook route: the final weights add to the population estimates under
+  every variance method (asserted), no earlier quality report, published CV or certified figure ships, and the
+  fixed-weight standard errors pass every reasonableness check (the warned cells are the smallest regions' estimates);
+  no record validates the fixed-weight route positively either.
+- Second use: every file the decisive step reads is read by the default path for its own reason: the members, weights
+  and households files build every estimate, the weighting note says what the final weights are (QS-7 2.1 sends every
+  reader to it), and QS-7 files the line; deleting the decisive step drops no file from the pack.
+- Shock: the movement recovered reads as ordinary: on every shipped statistic (the estimate's size, the region's
+  responding adults, the weighted rate) and on the simple random sampling, Kish and fixed-weight CVs the golden nine
+  are not an interval of the sort; on rung 2's region-only residual CVs they are its top nine, but that rung files 11
+  at the line.
+- Pins: the WHAT is filed in the Branch's quality standard (population, quantity, line, warning) and the agency's
+  weighting note (how the final weights were made), each in its own genre, and no filed sentence names the variance
+  step; deleting QS-7 3.2's "of the estimate as published" leaves 2.1's "made with the wave's final weights as the
+  contractor's weighting note for the wave describes" fixing the estimate as a post-stratified total, so the call stays
+  forced and no sentence hands over the step.
 
 ## Readability screen
 
@@ -171,7 +213,7 @@ half of a reported figure.
 | SF7 | an estimate's region | the households file's region (2025 regions) | the issued sample's master-sample code | same call | QS-7 2.2; same call (asserted) |
 | SF8 | PSUs with replacement | no finite population correction | a correction for the address sampling fraction | same call (fractions under 1 per cent) | QS-7 3.2; same call (asserted) |
 | SF9 | Taylor linearisation | the linearised variance | a replicate method (jackknife, each replicate post-stratified again) | same call | QS-7 3.2; same call (asserted) |
-| SF10 | RENT and ARR | every adult in a renting or behind household | households | another quantity | codebook sheet Published tables ("each adult in the household") |
+| SF10 | RENT and ARR | every adult in a renting or behind household | households | another quantity | questionnaire sheet Tabulation plan ("each adult in a household answering 3 at tenure") |
 | SF11 | a region's estimate | a domain of the full design, every adult of the region in it (counted 1 or 0) | the region's records alone; or only the adults with the characteristic | same call for the region's records (strata nest in regions: identical); the holders alone are not the estimate's design | QS-7 3.2 ("over the wave's strata and primary sampling units"); same call (asserted) |
 | SF12 | an adult's age group | age at interview | none other in the files | same call | weighting note |
 | SF13 | the cell rate | weighted by the final weights | weighted by the design weights | same call (proportional within a cell) | same call (asserted) |
@@ -261,7 +303,7 @@ review; the region each PSU lies in is the one the households file gives its hou
 never worked (94, absent from the outcome extract, eligibility never established), the extract taken on 30 September
 before 107 interviews' tablets synced (their extract codes 220, 230 or 310), one outcome row per issue for reissued
 addresses (264), and e across the wave rather than by region (filed). Path: issued sample, outcome extract, households
-file, call records, QS-7 sections 4.1 and 4.2 and Table 1, the dictionary (6 files, 11 columns: address_id, psu,
+file, call records, QS-7 sections 4.1 and 4.2 and Table 1, the weighting note's master sample (6 files, 11 columns: address_id, psu,
 region_code, psu_frame, issue_no, outcome_code, outcome_date, hh_id, region, received_at, event_type). Stops: the
 natural read (codes as held, extract only, extract codes final) R01 56.3, R02 52.4, R10 56.3 against 59.6, 49.9, 54.8;
 the master-sample code alone moves every rate by 0.2 to 3.1; unworked addresses dropped alone, 0.2 to 1.2; the stale
@@ -276,14 +318,14 @@ pairs: a tablet whose sync failed wrote the day's calls again when it next conne
 their event numbers continuing the address's sequence, received two to five days later; every region holds at least
 one responding address with a copy); hazards: the master-sample code (as ask 1), the stale extract's interviews, advance
 letters and calling cards beside the calls, and the reissue's calls. Path: call records, households file, outcome
-extract, issued sample, QS-7 4.3, the codebook's call log codes (6 files, 10 columns). Stops: copies kept alone add 1 to
+extract, issued sample, QS-7 4.3, the questionnaire's record of calls (6 files, 10 columns). Stops: copies kept alone add 1 to
 74 calls in every region; the master-sample code alone moves every count by up to 86; the stale extract alone drops 2
 to 103; letters and cards counted add 48 to 1,037; the last issue's calls only drop up to 55 in eight regions; the
 natural read R01 78, R05 1,574 against 96 and 1,660. Realism: a tablet's sync retry writing records again is what the
 office's log shows; letters and cards are logged by the same system as calls.
 
 Main population zero-counts: the analysis files hold none of the 769 copies, no outcome row and no issued-sample code;
-the call reads only the households, members and weights files, QS-7, the weighting note and the codebook; read with the
+the call reads only the households, members and weights files, QS-7, the weighting note and the questionnaire; read with the
 master-sample codes the call is the same nine (SF7, asserted), and no ask device touches the analysis files.
 
 | Hazard | Asks moved | Per-ask deltas (largest) |
@@ -318,6 +360,9 @@ cells its fifteen shares with the golden nine where the rubric grades them (r ab
 Pair ceiling: 30.0 ((38 + 7 + 55 x 0) and (8 + 7 + 55 x 0), averaged)
 
 Mirror leakage: 0.0 per cent of ask weight
+
+Measured by: generator/ceiling.py on the cut pack (2026-11-01: the cracker lands the call and keeps 0 of the 24 ask
+figures, 45.0; the mirror on fixed weights files 15 and keeps 0, 15.0; the natural read the same; pair 30.0)
 
 ## Pre-ship check
 
@@ -385,6 +430,12 @@ dictionary's households entry changed):
   gave a full interview (final outcome 110)"); a call written twice (4.3 counts calls, not records); single-PSU strata
   (none, SF17); the domain (SF11).
 
+Re-check 2026-11-01 (dictionary, readme and codebook removed, the prompt's counts dropped): `leak.py --asof 2027-12-03`
+REVIEW, no LEAK (sweeps 1, 12 and 13 clean of LEAK; sweep 12 REVIEW on QS-7 naming four headers as ordinary words).
+One isolated read: questions 1 to 4 none; question 5 QS-7 2.1 to 4.3, noting 3.2 leaves the post-stratification's
+place in the variance to the analyst; question 6 an analytical choice; the questionnaire read as the organisation's
+own instrument.
+
 ## Tried and rejected
 
 - The seed's pitfall (one overall nonresponse factor against adjustment within cells): with the cells named it is
@@ -404,3 +455,10 @@ dictionary's households entry changed):
 - A 2026 quality report as a distractor: it ranks the same estimates on the decision question (Gate G); dropped.
 - Calls at the same address in the same minute from the simulator's clock: re-timed to the next free minute, so the
   only duplicates on address, issue, time, type, result and interviewer are the tablets' copies.
+- A data dictionary, a readme and a codebook beside the analysis files (shipped 10-17): leak.py sweeps 1 and 12 read
+  them as describing the data; removed at the 11-01 re-check. The codebook's content went to the survey's own
+  questionnaire specification (items, response options, the tabulation plan and the record of calls); the
+  dictionary's two WHATs went to the weighting note (the analysis files hold the full interviews; the addresses came
+  from the master sample), whose file-and-field paragraph was dropped; the prompt's counts ("48", "four for each of
+  the twelve") were dropped. Every graded figure, the call, the ladder and the default path frozen (freeze.py
+  determinism moves only the call sentence's dropped counts).

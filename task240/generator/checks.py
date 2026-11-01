@@ -63,6 +63,33 @@ def run(target, golden, o, X):
                                        "files the nine")
     ok(E.warned(Tw, "srs") != GOLD and E.warned(Tw, "kish") != GOLD and E.warned(Tw, "region_ps") != GOLD,
        "R3b each lower rung's single correction stays wrong on the clean truth")
+    Wf = E.frame_from_world(W)
+    for cells in (("region", "ag"), ("region", "sex")):
+        ok(E.warned(E.cv_table(Wf, cells=cells), "golden") != GOLD,
+           "R3a the partial calibration within %s on the clean truth files another set" % " by ".join(cells))
+    nj = []
+    Yw = E.indicators(Wf)
+    for r, s in Wf.groupby("region"):
+        w = s["w"].values
+        for y in E.IND:
+            yy = Yw.loc[s.index, y].values
+            v = 0.0
+            for h, g in s.groupby("stratum"):
+                ps = g["psu"].unique()
+                nh = len(ps)
+                ts = []
+                for pp in ps:
+                    w2 = w.copy()
+                    om = (s["stratum"].values == h) & (s["psu"].values == pp)
+                    w2[om] = 0.0
+                    w2[(s["stratum"].values == h) & ~om] *= nh / (nh - 1)
+                    ts.append((w2 * yy).sum())
+                ts = np.array(ts)
+                v += (nh - 1) / nh * ((ts - ts.mean()) ** 2).sum()
+            if 100 * np.sqrt(v) / (w * yy).sum() >= P.LINE:
+                nj.append((r, y))
+    ok(sorted(nj) == sorted(GOLD + EXTRA), "R3a the delete-one-PSU jackknife with the final weights rescaled and not "
+                                           "post-stratified again files the default path's 15 on the clean truth")
     rows = df[["hh_id", "age", "sex", "q_pension", "q_care", "q_tenure", "q_arrears"]].astype(str).agg("|".join, axis=1)
     hh_sig = rows.groupby(df["hh_id"]).apply(lambda s: "#".join(sorted(s)))
     ok(hh_sig.duplicated().sum() < 0.01 * len(hh_sig),
@@ -156,7 +183,7 @@ def run(target, golden, o, X):
     ok(f_max < 0.01, "SF8 with replacement (filed in 3.2) or with a finite population correction: address sampling "
                      "fractions under 1 per cent (%.4f), every CV within half a per cent of itself, same call" % f_max)
     ok(R["jk"] == GOLD, "SF9 replication (post-stratified jackknife) instead of linearisation: same call")
-    ok(True, "SF10 RENT and ARR counted per adult (codebook: each adult in the household): ruled out at household grain")
+    ok(True, "SF10 RENT and ARR counted per adult (questionnaire, sheet Tabulation plan: each adult in a household): ruled out at household grain")
     ok(True, "SF11 domain estimation over the whole sample or within the region: identical (strata nest in regions)")
     ok(True, "SF12 age group from age at interview (weighting note): one age per adult, nothing else to read")
     ok(True, "SF13 the residual cell means taken with the final or the design weights: identical within a cell")
@@ -246,7 +273,7 @@ def run(target, golden, o, X):
     ok(hh["hh_id"].is_unique and not pd.read_csv(os.path.join(target, F["weights"])).duplicated(["hh_id", "person_no"]).any(),
        "separation: the analysis files hold one row per household and per adult")
     ok(set(hh["hh_id"]) == set(resp), "separation: the households file is exactly the full interviews")
-    ok(True, "separation: the call reads only the analysis files, the standard, the weighting note and the codebook")
+    ok(True, "separation: the call reads only the analysis files, the standard, the weighting note and the questionnaire")
 
     # ---------------------------------------------------------------- documents and pins
     std = _pdf_text(os.path.join(target, F["standard"]))
@@ -265,14 +292,23 @@ def run(target, golden, o, X):
     close = _docx_text(os.path.join(target, F["close"]))
     ok(not re.search(r"sync|twice|re-?sent|copy|late|never worked|not worked|unworked|boundary|master sample|tablet",
                      close, re.I), "the close-out narrates no device")
-    dic = open(os.path.join(target, F["dict"])).read()
-    ok("held for the PSU in the master sample" in dic and "2025" not in dic,
-       "the dictionary describes the master-sample code without dating it")
+    ok("full interview" in note and "master sample" in note, "the weighting note files the analysis files' scope and "
+                                                              "the master sample the addresses came from")
 
-    # ---------------------------------------------------------------- the registers know every file (H9)
-    readme = open(os.path.join(target, F["readme"])).read()
-    ok(all(f in readme for f in os.listdir(target) if f != F["readme"]), "H9 the readme names every shipped file")
-    ok(all(F[k] in dic for k in F if F[k].endswith((".csv", ".xlsx"))), "H9 the dictionary names every data file")
+    # ---------------------------------------------------------------- no file describes the data (leak sweeps 1 and 12)
+    ok(not any(re.search(r"read_?me|dictionar|codebook|manifest|field_?notes|release_notes", f, re.I)
+               for f in os.listdir(target)), "no readme, dictionary, codebook or manifest ships")
+    heads = {}
+    for f in os.listdir(target):
+        if f.endswith(".csv"):
+            heads[f] = {c for c in pd.read_csv(os.path.join(target, f), nrows=0).columns if len(c) >= 4}
+    allh = set().union(*heads.values())
+    for k in ("standard", "note", "close"):
+        txt = _pdf_text(os.path.join(target, F[k])) if F[k].endswith(".pdf") else _docx_text(os.path.join(target, F[k]))
+        named = {c for c in allh if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), txt)}
+        share = max(len(named & h) / len(h) for h in heads.values() if len(h) >= 5)
+        ok(len(named) < 8 and share < 0.4, "%s names %d of the data files' column headers (%s), at most %.0f%% of one file"
+           % (F[k], len(named), sorted(named), 100 * share))
 
     # ---------------------------------------------------------------- input gates and realism
     files = os.listdir(target)

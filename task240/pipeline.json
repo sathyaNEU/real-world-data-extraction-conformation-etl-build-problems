@@ -5,28 +5,35 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-11-01",
  "stump": "A competent analyst takes each published total's standard error by Taylor linearisation over the strata and PSUs with the final weights treated as fixed and files 15 of the 48 estimates warned, the public pension estimates of all four northern regions and the private renting estimates of R01 and R03 among them; the post-stratified estimator's variance, from the residuals within the region, age group and sex cells, warns 9.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK)",
-  "reader": "two reads: question 1 none each time, question 6 analytical; letters' mailing-run times and the households entry fixed"
+  "leak_py": "REVIEW (no LEAK; sweeps 1, 12 and 13 clean of LEAK), 2026-11-01",
+  "reader": "one read at the 11-01 re-check: questions 1 to 4 none, question 6 analytical; the questionnaire read as the organisation's own instrument"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form)",
-  "nearest": "task194 driver 0.07; surface promotes task238 (same pairing two apart, differentiated), task239, task233"
+  "heart": "BLOCK 2026-11-01 (ban.artifact and ban.strategy against task239, drawn 16:36 the same day as this card at 18:42; the card is unchanged since its 10-17 ship at WARN, so the ban predates the re-check and nothing in the repair causes it; recorded, not re-rooted)",
+  "nearest": "task250 and task194 driver 0.06; surface exit 0, 4 promotions for the author (task238 two apart, task261, task229, task471 at the corpus top percentile)"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on step 7's wording, fixed)",
-  "report": "task240/determinism_check_report.md, task240/determinism_check_report_pass2.md"
+  "disposition": "APPROVE (pass 3, 2026-11-01; passes 1 and 2 at the 10-17 ship)",
+  "report": "task240/determinism_check_report.md, task240/determinism_check_report_pass2.md, task240/determinism_check_report_pass3.md"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (in-house re-check under the new gates)",
+   "repair": "determinism",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-17",

@@ -20,7 +20,7 @@ Each warned estimate's coefficient of variation is 27.6 per cent or more and eve
 ## 3. Step-by-Step Solution
 
 1. Built the responding adults: the members aged 16 and over in hrs27_household_members.csv joined to hrs27_final_weights.csv on household and person number, and to hrs27_households.csv on household for health region, stratum, PSU and the household answers: 7,238 adults in 3,764 households, 707 PSUs in 24 strata.
-2. Coded the four estimates from hrs27_codebook.xlsx (sheet Published tables): pension = 1, tenure = 3 for every adult in the household, care = 1, arrears = 1 for every adult in the household; don't know and refused not counted, proxy answers counted (QS-7 2.3).
+2. Coded the four estimates from hrs27_questionnaire.xlsx (sheet Tabulation plan): pension = 1, tenure = 3 for every adult in the household, care = 1, arrears = 1 for every adult in the household; don't know and refused not counted, proxy answers counted (QS-7 2.3).
 3. Estimated each of the 48 totals with the final weights (QS-7 2.1).
 4. Read hrs27_weighting_note.docx: the final weights are the design weights post-stratified within the 96 cells of health region, age group (16 to 29, 30 to 49, 50 to 64, 65 and over, from age at interview) and sex. The estimate as published (QS-7 3.2) is therefore a post-stratified total, and its Taylor linearisation is z = w(y - p), where p is the weighted rate of the adult's cell.
 5. Totalled z by PSU, took each stratum's with-replacement variance (n_h/(n_h - 1) times the sum of squared deviations of the PSU totals from their stratum mean), summed over the region's strata, and divided the standard error by the unrounded estimate (QS-7 3.1).

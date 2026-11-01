@@ -9,7 +9,7 @@ FILES = {
     "standard": "ssb_qs7_statistical_quality_standard.pdf",
     "note": "hrs27_weighting_note.docx",
     "close": "hrs27_fieldwork_closeout.docx",
-    "codebook": "hrs27_codebook.xlsx",
+    "codebook": "hrs27_questionnaire.xlsx",
     "households": "hrs27_households.csv",
     "members": "hrs27_household_members.csv",
     "weights": "hrs27_final_weights.csv",
@@ -18,8 +18,6 @@ FILES = {
     "calls": "hrs27_call_records.csv",
     "interviewers": "hrs27_interviewers.csv",
     "population": "ssb_population_estimates_2027-07-01.csv",
-    "dict": "DATA_DICTIONARY.md",
-    "readme": "README.md",
 }
 DISTRACTORS = ["interviewers", "population"]
 WORDS = {79: "Seventy-nine", 80: "Eighty", 78: "Seventy-eight"}
@@ -47,8 +45,4 @@ def run(target):
     docs.weighting_note(p("note"), FILES, f)
     docs.close_out(p("close"), FILES, f)
     docs.codebook(p("codebook"))
-    with open(p("dict"), "w") as fh:
-        fh.write(docs.dictionary(FILES))
-    with open(p("readme"), "w") as fh:
-        fh.write(docs.readme(FILES))
     return dict(W=W, R=R, f=f)

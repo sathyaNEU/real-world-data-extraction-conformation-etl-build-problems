@@ -1,5 +1,5 @@
 """task240 documents: the Branch's statistical quality standard (pdf), the agency's weighting note and fieldwork
-close-out (docx), the questionnaire codebook (xlsx), the data dictionary and the readme (md)."""
+close-out (docx) and the survey's questionnaire specification (xlsx)."""
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -178,9 +178,9 @@ def weighting_note(path, F, f):
         ("Final weights.", "The final weight is the post-stratified weight, so the final weights add to the Branch's adult "
                            "population in every region, age group and sex. Only adults (16 and over) are weighted; "
                            "children on a household's roster carry no weight."),
-        ("Files.", "%s gives each responding household's health region, stratum and PSU and its household answers; %s "
-                   "each member's age, sex and own answers; %s each adult's final weight, keyed by household and person "
-                   "number." % (F["households"], F["members"], F["weights"])),
+        ("Analysis files.", "The analysis files frozen with the weights hold the wave's full interviews: one row for "
+                            "each household that gave a full interview, one for each member on its roster, and the final "
+                            "weight of each adult."),
     ]
     _docx("%s | %s 2027" % (AGENCY, P.SURVEY),
           [("Title", "Weighting the 2027 wave"), ("Author", "%s, Lead Survey Statistician" % PEOPLE["lead"]),
@@ -211,54 +211,59 @@ def close_out(path, F, f):
           "Household Resources Survey 2027: fieldwork close-out", sign=PEOPLE["field"])
 
 
-# ------------------------------------------------------------------ the codebook (xlsx)
+# ------------------------------------------------------------------ the questionnaire specification (xlsx)
 QUESTIONS = [
-    ("tenure", "households", "Does your household own or rent this accommodation?", "the household (one answer)",
+    ("age", "Household roster", "What was your age on your last birthday?", "every member of the household",
+     "age in years"),
+    ("sex", "Household roster", "Interviewer: record the member's sex.", "every member of the household",
+     "1 male; 2 female"),
+    ("tenure", "Housing", "Does your household own or rent this accommodation?", "the household (one answer)",
      "1 owned outright; 2 owned with a mortgage or loan; 3 rented from a private landlord; 4 rented from a social or "
      "non-profit housing provider; 5 rent-free or other; -8 don't know"),
-    ("arrears", "households", "In the last twelve months, has your household been behind with paying any household bill "
-                              "(rent or mortgage, electricity, heating, water, phone or internet)?",
+    ("arrears", "Housing", "In the last twelve months, has your household been behind with paying any household bill "
+                           "(rent or mortgage, electricity, heating, water, phone or internet)?",
      "the household (one answer)", "1 yes; 2 no; -9 refused"),
-    ("pension", "members", "Do you receive a public pension (Old Age Security, the Canada Pension Plan or a provincial "
-                           "pension)?", "adults aged 55 and over",
+    ("pension", "Income", "Do you receive a public pension (Old Age Security, the Canada Pension Plan or a provincial "
+                          "pension)?", "adults aged 55 and over",
      "1 yes; 2 no; -1 not asked; -8 don't know; -9 refused"),
-    ("care", "members", "Do you look after, or give any help or support to, anyone because of a long-term physical or "
-                        "mental health condition, illness or old age, other than as part of paid work?",
+    ("care", "Caring", "Do you look after, or give any help or support to, anyone because of a long-term physical or "
+                       "mental health condition, illness or old age, other than as part of paid work?",
      "adults aged 16 and over", "1 yes; 2 no; -1 not asked; -8 don't know; -9 refused"),
+    ("proxy", "Interviewer", "Interviewer: were this adult's answers given by another member of the household?",
+     "adults aged 16 and over", "Y yes; N no"),
 ]
 TABLES = [
-    ("PEN", "Adults receiving a public pension", "members: pension = 1"),
-    ("RENT", "Adults in privately rented homes", "households: tenure = 3, each adult in the household"),
-    ("CARE", "Adults providing unpaid care", "members: care = 1"),
-    ("ARR", "Adults in households behind on a household bill", "households: arrears = 1, each adult in the household"),
+    ("PEN", "Adults receiving a public pension", "each adult answering 1 at pension"),
+    ("RENT", "Adults in privately rented homes", "each adult in a household answering 3 at tenure"),
+    ("CARE", "Adults providing unpaid care", "each adult answering 1 at care"),
+    ("ARR", "Adults in households behind on a household bill", "each adult in a household answering 1 at arrears"),
 ]
 
 
 def codebook(path):
+    """the survey's questionnaire specification: the items behind the published tables, the tabulation plan and the
+    record of calls the interviewer keeps for each address"""
     wb = Workbook()
     ws = wb.active
     ws.title = "Questions"
-    ws.append(["variable", "file", "question", "asked of", "codes"])
+    ws.append(["item", "module", "question", "asked of", "response options"])
     for row in QUESTIONS:
         ws.append(list(row))
-    w2 = wb.create_sheet("Published tables")
-    w2.append(["table", "estimate", "counted from"])
+    w2 = wb.create_sheet("Tabulation plan")
+    w2.append(["table", "estimate", "counted"])
     for row in TABLES:
         w2.append(list(row))
-    w3 = wb.create_sheet("Call log codes")
-    w3.append(["column", "code", "meaning"])
+    w3 = wb.create_sheet("Record of calls")
+    w3.append(["item", "code", "meaning"])
     for code, text in (("VISIT", "the interviewer called at the address"), ("PHONE", "the interviewer telephoned the household"),
                        ("LETTER", "an advance letter posted by the office"),
                        ("CARD", "a calling card left at the door")):
-        w3.append(["event_type", code, text])
+        w3.append(["Contact", code, text])
     for code, text in (("IC", "interview complete"), ("AP", "appointment made"), ("RF", "refusal"),
                        ("NC", "no contact"), ("OT", "other outcome at an occupied address"), ("VA", "vacant"),
                        ("NR", "not a private residence"), ("DM", "demolished or not found")):
-        w3.append(["result", code, text])
-    w4 = wb.create_sheet("Outcome codes")
-    w4.append(["outcome_code", "meaning"])
-    w4.append(["110 to 430", "final outcome codes as in QS-7 Table 1"])
-    for sh, widths in ((ws, [11, 12, 70, 24, 60]), (w2, [8, 44, 50]), (w3, [12, 9, 44]), (w4, [14, 50])):
+        w3.append(["Result", code, text])
+    for sh, widths in ((ws, [10, 18, 70, 28, 60]), (w2, [8, 44, 46]), (w3, [10, 9, 44])):
         for c in sh[1]:
             c.font = Font(bold=True)
             c.fill = PatternFill("solid", fgColor="E2E7F0")
@@ -271,84 +276,3 @@ def codebook(path):
     wb.save(path)
     postprocess.scrub(path, PEOPLE["lead"], "2027-03-19")
     postprocess.finish_office(path, "2027-03-17T16:20:00Z", "2027-03-19T13:45:00Z", AGENCY)
-
-
-# ------------------------------------------------------------------ the dictionary and the readme
-def dictionary(F):
-    return """# Data dictionary
-
-{survey} 2027 files held by {agency}. Times are the province's local time.
-
-## {households}
-One row per household that gave a full interview (final outcome 110).
-- `hh_id`: the household's identifier, the address identifier of its address.
-- `region`: the household's health region.
-- `stratum`: the stratum of the household's PSU for estimation: the health region, then `U` (urban) or `R` (rural).
-- `psu`: the primary sampling unit.
-- `interview_date`: the date of the interview.
-- `adults`, `children`: the household's members aged 16 and over, and under 16.
-- `tenure`, `arrears`: the household's answers (codebook, sheet Questions).
-
-## {members}
-One row per member on each responding household's roster: `hh_id`; `person_no` (the member's number on the household's
-roster, from 1); `age`; `sex` (1 male, 2 female); `proxy` (`Y` where another member answered for the adult; blank
-for children); `pension` and `care` (codebook, sheet Questions).
-
-## {weights}
-One row per adult in a responding household: `hh_id`, `person_no`, `final_weight` (the weighting note).
-
-## {issued}
-One row per address issued for interview in 2027.
-- `address_id`: the address identifier.
-- `psu`: the address's PSU.
-- `region_code`: the health region code held for the PSU in the master sample.
-- `psu_frame`: the master-sample selection the PSU came from: `2023` (the 2023 selection) or `2026` (the 2026 top-up).
-- `dwelling`: the dwelling type recorded at listing.
-
-## {outcomes}
-The case system's outcomes as extracted on 30 September 2027: one row per issue of an address. `address_id`;
-`issue_no` (1 for the first issue, 2 for a reissue); `interviewer_id`; `outcome_code` (QS-7 Table 1);
-`outcome_date` (the date of the call the outcome comes from).
-
-## {calls}
-The call records exported on 18 October 2027: one row per record received from interviewers' tablets and the
-office.
-- `record_id`: the office's number for the record, given as each record arrived.
-- `address_id`, `issue_no`.
-- `event_no`: the record's number among its address's records for the issue, as the tablet wrote them.
-- `event_time`: when the call was made, the letter posted or the card left.
-- `event_type`, `result`: codebook, sheet Call log codes.
-- `interviewer_id`: the interviewer working the issue (`OFFICE` for letters).
-- `received_at`: when the record reached the office.
-
-## {interviewers}
-The wave's interviewer list: `interviewer_id`, `home_region`, `psus_assigned`, `hours_claimed` (hours claimed on
-timesheets for the wave).
-
-## {population}
-The Branch's population estimates of adults on 1 July 2027 by health region, sex and five-year age band, in thousands.
-
-## {codebook}
-The questions behind the published tables and their codes, the published tables, and the call log codes.
-""".format(survey=P.SURVEY, agency=AGENCY, **F)
-
-
-def readme(F):
-    return """# {survey} 2027: wave files
-
-{agency}'s files for the 2027 wave of the {survey}, run for the {bureau} under contract, gathered by
-{lead} (Lead Survey Statistician) on Friday 3 December 2027 for the wave's quality report. The tables and the quality
-report are due to the Branch on 10 December.
-
-- `{standard}`: the Branch's statistical quality standard QS-7, edition 3.
-- `{note}`: how the 2027 weights were made.
-- `{close}`: the fieldwork close-out, 4 October 2027.
-- `{codebook}`: the 2027 codebook.
-- `{households}`, `{members}`, `{weights}`: the analysis files, frozen with the weights on 12 November 2027.
-- `{issued}`: the issued sample.
-- `{outcomes}`: the outcome extract of 30 September 2027.
-- `{calls}`: the call records exported on 18 October 2027.
-- `{interviewers}`: the interviewer list.
-- `{population}`: the Branch's population estimates for 1 July 2027.
-- `DATA_DICTIONARY.md`: the files and their fields.
-""".format(survey=P.SURVEY, agency=AGENCY, bureau=BUREAU, lead=PEOPLE["lead"], **F)
