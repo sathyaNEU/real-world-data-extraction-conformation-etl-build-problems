@@ -15,13 +15,13 @@
   "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip 9e303b47 (--asof 2027-01-12, no LEAK), every line ruled in the note's Leak check",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on target.zip e3d7e546 (--asof 2027-01-12, no LEAK), every line ruled in the note's Leak check",
+  "reader": "read 1 on 9e303b47 clean (question 6 analytical: the TOC-to-COD estimate from the 2025 paired samples, the policy filing the WHAT only); three generator tells it named fixed on e3d7e546 (agreement numbers, field job notes, inspection narratives), so a quick re-read is owed"
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-11-01 on the registered card (registered 2026-11-01T01:02:25Z)",
-  "heart": "BLOCK 2026-11-01 on a fresh pull: the pairing, the subdomain, the role, the context artifact and the forcing event repeat task456 v2 (registered 2026-11-01T01:00:52Z, 93 seconds earlier, its DRAWN commit on main after this card's check passed)",
-  "surface": "exit 0 on the final cut (one pair promoted for adjudication, against task456 v2)"
+  "heart": "BLOCK on 9e303b47 against task456 v2, which the coordinator has yielding the cell; re-run on a fresh pull once task456's new DRAWN lands",
+  "surface": "exit 0 on the final cut e3d7e546 (two pairs promoted for adjudication)"
  },
  "judge": {
   "verdict": "",
@@ -36,7 +36,7 @@
    "commit": "DRAWN (task468) architecture 5"
   }
  ],
- "resume": "held at the stage 4 hand-off by guard.py heart's BLOCK against task456 v2 (the same physical-environmental-sciences / emissions-inventory ETL cell with the same role, artifact and forcing event, registered 93 seconds before this card). The guard forbids relabelling or waiting for the window, so either the author has task456 yield the cell (then re-run guard.py heart and surface on a fresh pull and run stage 4 from the main thread: rebuild with python3 task468/generator/make.py, check target.zip 9e303b47, spawn the leak reader on scratchpad/leak-task468/ with the brief scratchpad/task468_stage4_leak_brief.md beside the determinism judge), or task468 re-roots as architecture 7 in another ETL cell (general-statistics data integration, or survey research or healthcare in a new world if the author releases them for this slot), recording architecture 6 as spent on the window in its card lineage.",
+ "resume": "stage 4 from the main thread: rebuild with python3 task468/generator/make.py and check target.zip e3d7e546; re-run guard.py heart task468 on a fresh pull once task456's new DRAWN is on main (it must clear the BLOCK against task456 v2); the judge thread on 9e303b47 stands for every graded figure (figures.json identical, only the agreement numbers, the field job notes and the inspection narratives changed), and the inspection narratives are text a reader reads, so run a quick leak re-read on the refreshed copy at scratchpad/leak-task468/ with the brief scratchpad/task468_stage4_leak_brief.md; then ship: reader sections in leak_check_report.md, judge report, ledger row, card current, git add -f task468/target.zip task468/golden/*, commit SHIPPED (task468)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -115,6 +115,10 @@
   {
    "date": "2026-11-01",
    "event": "architecture 6's asks re-sited with a silent device each; precut exit 0, every free gate green on target.zip 9e303b47 but guard.py heart, BLOCK against task456 v2 registered 93 seconds earlier on the same cell"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "the leak reader's three generator tells fixed (agreement numbers, field job notes, inspection narratives); figures.json identical; target.zip e3d7e546"
   }
  ],
  "gates": {
@@ -153,7 +157,7 @@
  },
  "build": {
   "rebuild": "python3 task468/generator/make.py",
-  "zip_sha256": "9e303b47a985884cb612a5ddcc9cccbae32fb467272edc9839f2fb63d859c78f",
-  "gates": "two byte-identical builds (19 files); checks.py every check green (C1 to C10, SF1 to SF9, G1 to G3); verify.py 0 failed; figures_check 31 of 31; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (the 'which' quota WARN); leak.py REVIEW with no LEAK; ceiling.py pair 28.5, mirror leakage 0.0; guard.py heart BLOCK (task456 v2)"
+  "zip_sha256": "e3d7e546eed6e0efafe746dab4b3c484e40547ba2e6c894fb1fcb3852962056e",
+  "gates": "two byte-identical builds (19 files); checks.py every check green; verify.py 0 failed; figures_check 31 of 31; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (the 'which' quota WARN); leak.py REVIEW with no LEAK; ceiling.py pair 28.5, mirror leakage 0.0; guard.py surface exit 0; figures.json identical to 9e303b47's"
  }
 }

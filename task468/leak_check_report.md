@@ -15,13 +15,13 @@ Stump terms swept: architecture, chloride, parallel, reader, device, sample, met
 
 ## 6 ranking artifacts (REVIEW 4, INFO 1)
 - **REVIEW** `glw_customer_production_returns_2026.xlsx`: names 11 of 14 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `glw_field_service_jobs_2026.xlsx`: names 9 of 14 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `glw_field_service_jobs_2026.xlsx`: names 11 of 14 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `glw_trade_waste_agreements_register_2026.xlsx`: names 11 of 14 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `glw_trade_waste_inspections_2026.csv`: names 11 of 14 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `glw_sampling_point_crosswalk.csv`: names 11 of 14 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `glw_trade_waste_agreements_register_2026.xlsx`: 12 ISO dates after 2027-01-12, e.g. 2027-03-01, 2027-04-01, 2027-05-01, 2027-06-01, 2027-07-01
+- **REVIEW** `glw_trade_waste_agreements_register_2026.xlsx`: 12 ISO dates after 2027-01-12, e.g. 2027-04-02, 2027-04-12, 2027-04-29, 2027-05-19, 2027-05-24
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

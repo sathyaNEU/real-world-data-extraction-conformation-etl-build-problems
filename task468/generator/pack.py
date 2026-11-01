@@ -35,12 +35,17 @@ def write_register(W, path):
     lim = limits(W)
     rows = [["Agreement", "Customer", "Industry", "Sampling point", "Flow meter", "COD limit", "COD limit unit",
              "SS limit (t/yr)", "Agreement year", "Review due"]]
+    rng = np.random.RandomState(G.SEED + 31)
+    # agreements numbered as they were first signed over two decades, the register listed by customer
+    numbers = sorted(rng.choice(np.arange(212, 1479), len(KEYS), replace=False))
+    order = rng.permutation(len(KEYS))
     for i, k in enumerate(KEYS):
         c = C[k]
         u, v = lim[k]
         meter = G.METER1[k] if any(s[0] == k for s in SWAPS) else G.METER0[k]
-        rows.append(["TWA-%04d" % (1180 + 37 * i), c["name"], c["industry"], c["point"], meter, v,
-                     "kg/yr" if u == "kg" else "t/yr", "", "calendar", "2027-0%d-01" % (3 + i % 6)])
+        due = dt.date(2027, 2, 1) + dt.timedelta(days=int(rng.randint(20, 300)))
+        rows.append(["TWA-%04d" % numbers[order[i]], c["name"], c["industry"], c["point"], meter, v,
+                     "kg/yr" if u == "kg" else "t/yr", "", "calendar", due.isoformat()])
     notes = [["Glenbrae Water trade waste agreements in force for 2026."],
              ["Limits are the annual mass the agreement allows. Prepared by the Trade Waste unit, 9 January 2027."]]
     wio.xlsx(path, [("Agreements", rows, [1], {}), ("Notes", notes, [], {})], "Erik Marks",
@@ -58,23 +63,33 @@ def write_jobs(W, path):
     rows = [["Job", "Customer", "Job type", "Started (local)", "Completed (local)", "Asset removed",
              "Removed final read (kL)", "Asset installed", "Installed opening read (kL)", "Technician notes"]]
     info = {s["key"]: s for s in W["swap_info"]}
+    rng = np.random.RandomState(G.SEED + 37)
+    swap_notes = {"GMEA": "old unit stiff on the bypass valve, flushed before fitting",
+                  "SUND": "",
+                  "PADD": "telemetry back 1400ish, rang ops to confirm"}
     jobs = []
     for k, when, gap, opening in SWAPS:
         s = info[k]
         jobs.append((when, k, "Meter exchange", when, s["on_local"], s["old"], s["final"], s["new"], opening,
-                     "logger reconnected after commissioning"))
-    extra = [(dt.datetime(2026, 2, 17, 10, 30), "BELL", "Sampler service"),
-             (dt.datetime(2026, 3, 9, 7, 45), "KING", "Valve repair"),
-             (dt.datetime(2026, 6, 2, 11, 0), "COOL", "Sampler service"),
-             (dt.datetime(2026, 7, 21, 9, 15), "TALL", "Screen clean"),
-             (dt.datetime(2026, 9, 30, 14, 0), "RIVP", "Sampler service"),
-             (dt.datetime(2026, 10, 14, 8, 30), "MTED", "Pit inspection")]
-    for when, k, jt in extra:
-        jobs.append((when, k, jt, when, when + dt.timedelta(hours=2, minutes=20), "", "", "", "", ""))
+                     swap_notes[k]))
+    extra = [(dt.datetime(2026, 2, 17, 10, 30), "BELL", "Sampler service", ""),
+             (dt.datetime(2026, 3, 9, 7, 45), "KING", "Valve repair", "isolation valve seized, replaced 80mm gate"),
+             (dt.datetime(2026, 4, 28, 13, 5), "HART", "Sampler service", ""),
+             (dt.datetime(2026, 6, 2, 11, 0), "COOL", "Sampler service", ""),
+             (dt.datetime(2026, 7, 21, 9, 15), "TALL", "Screen clean", "screen blinded w hide trimmings"),
+             (dt.datetime(2026, 8, 25, 7, 20), "WATT", "Pit inspection", ""),
+             (dt.datetime(2026, 9, 30, 14, 0), "RIVP", "Sampler service", ""),
+             (dt.datetime(2026, 10, 14, 8, 30), "MTED", "Pit inspection", ""),
+             (dt.datetime(2026, 12, 1, 9, 50), "GOLD", "Sampler service", "new pump tube")]
+    for when, k, jt, note in extra:
+        done = when + dt.timedelta(minutes=int(rng.choice([35, 50, 65, 80, 95, 140, 170, 205])))
+        jobs.append((when, k, jt, when, done, "", "", "", "", note))
     jobs.sort(key=lambda j: j[0])
-    for i, j in enumerate(jobs):
+    num = 296
+    for j in jobs:
         _, k, jt, a, b, old, fin, new, op, note = j
-        rows.append(["FS-26-%04d" % (311 + 29 * i), C[k]["name"], jt, a.strftime("%d/%m/%Y %H:%M"),
+        num += int(rng.randint(6, 61))
+        rows.append(["FS-26-%04d" % num, C[k]["name"], jt, a.strftime("%d/%m/%Y %H:%M"),
                      b.strftime("%d/%m/%Y %H:%M"), old, fin, new, op, note])
     wio.xlsx(path, [("Jobs", rows, [1], {})], "Brent Fisher", dt.datetime(2026, 1, 5, 7, 0),
              dt.datetime(2027, 1, 6, 4, 25), widths=[12, 30, 16, 17, 17, 18, 14, 18, 14, 34], company=UTILITY)
@@ -244,15 +259,33 @@ def _write(W, target):
 
 
 OFFICERS = ["Jeffery Collins", "Wendy James", "John Henry"]
-NOTES = ["pre-treatment screens clean", "grease arrestor due for pump-out", "sampler pit clear", "pH probe reading ok",
-         "bund in order", "minor odour at pit", "screen bypassed during cleaning, reinstated", "no issues"]
+SITE = {
+    "COOL": ["brine tank bund dry", "olive wash line running, screen ok", "spoke to ops re brine dump schedule",
+             "pit lid cracked, asked them to replace"],
+    "TALL": ["hide trimmings on screen again", "drum yard hosed down at time of visit", "lime dosing tank level low",
+             "new salt store near the pit, bund ok"],
+    "MTED": ["whey tanker loading during visit", "brine recovery unit commissioning, contractor on site",
+             "CIP flush in progress"],
+    "GMEA": ["save-all running, grease thick", "paunch screen ok", "kill floor washdown at 1pm", "blood tank full"],
+    "RIVP": ["DAF unit online", "feather screen cleared", "spoke to env officer about weekend cleans"],
+    "SUND": ["evaporator condensate to sewer as usual", "CIP acid wash at time of visit", "pit clean"],
+    "HART": ["spent grain trailer leaking near grate, told brewer", "tank CIP", "fine"],
+    "BELL": ["syrup room spill kit used last week per supervisor", "line changeover", "ok"],
+    "KING": ["lint screen due for clean", "heat recovery offline", "ok, nothing to note"],
+    "GOLD": ["dough washdown", "fat trap last pumped 3 wks ago", "ok"],
+    "PADD": ["soil and leaf on screen", "flume water to sewer during wash", "screens clean"],
+    "WATT": ["cooker condensate", "grease on pit walls", "rendering odour, no other issue"],
+}
 
 
 def write_inspections(W, path):
     rng = np.random.RandomState(G.SEED + 23)
     rows = []
-    for i, ins in enumerate(sorted(W["inspections"], key=lambda x: (x["when"], x["key"]))):
-        rows.append(["INS-26-%03d" % (101 + 3 * i + int(rng.randint(0, 3))), C[ins["key"]]["name"],
-                     ins["when"].strftime("%d/%m/%Y %H:%M"), OFFICERS[int(rng.randint(len(OFFICERS)))],
-                     "Y" if ins["grab"] else "N", NOTES[int(rng.randint(len(NOTES)))]])
+    num = 88
+    for ins in sorted(W["inspections"], key=lambda x: (x["when"], x["key"])):
+        num += int(rng.randint(1, 9))
+        pool = SITE[ins["key"]]
+        obs = pool[int(rng.randint(len(pool)))] if rng.rand() < 0.62 else ""
+        rows.append(["INS-26-%03d" % num, C[ins["key"]]["name"], ins["when"].strftime("%d/%m/%Y %H:%M"),
+                     OFFICERS[int(rng.randint(len(OFFICERS)))], "Y" if ins["grab"] else "N", obs])
     wio.csv_file(path, ["inspection", "customer", "visited", "officer", "grab_sample", "observations"], rows)

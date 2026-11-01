@@ -391,3 +391,7 @@ Measured by: generator/ceiling.py (run on the cut pack)
   on a fresh pull. The guard forbids relabelling a card or waiting for the window, and this world has no honest
   draw outside the physical-environmental-sciences cell, so architecture 6 re-roots unless the author has task456
   yield the cell; the build is kept whole on target.zip for that decision.
+- 2026-11-01, architecture 6 at stage 4: the leak reader named three generator tells (agreement numbers stepping by
+  exactly 37, one stock technician note on every meter exchange, inspection narratives drawn from a few stock
+  phrases); the numbers are now irregular, most jobs carry no note and each site's visits have their own narratives,
+  figures.json identical.
