@@ -52,7 +52,7 @@ def build_world():
     pid = 0
     for pi, p in enumerate(PROVIDERS):
         for fi, fy in enumerate(FY_ORDER):
-            n = p["vol"][fi - 1] if fi > 0 else int(round(0.93 * p["vol"][0]))
+            n = int(round(1.15 * p["vol"][fi - 1])) if fi > 0 else int(round(1.07 * p["vol"][0]))
             r = stream(p["key"], fi, 1)
             days = [d for d in weekdays(*FY[fy]) if d not in BANK]
             if p["kind"] == "IS":
@@ -82,19 +82,31 @@ def build_world():
     w["E_true"] = E
     pmap = {p["key"]: p for p in PROVIDERS}
     comp, imp, drop, resp, death, los, tr, pre_done = [], [], [], [], [], [], [], []
+    emerg, inj = [], []
     for row in w.itertuples():
         p = pmap[row.prov]
         r = stream(row.rkey[0], row.rkey[1], row.rkey[2] + 1000, 2)
         mult = 1 + 0.45 * (row.age > 70) + 0.35 * row.smoker + 0.45 * row.prev
         c = bool(r.random() < min(0.9, p["c"] * mult / 1.18))
         comp.append(c)
-        d = float(np.clip(r.normal(17.5, 4.5), 6, 32)) if c else 0.0
+        d = float(np.clip(r.normal(17.5, 2.5), 10, 25)) if c else 0.0
         drop.append(d)
-        imp.append(float(row.E_true + p["u"] + r.normal(0, 11.5) - d))
+        # later emergency admissions: every complication within 30 days of leaving hospital;
+        # unrelated emergencies anywhere in the year after the operation
+        ev = []
+        if c:
+            ev.append(("comp", int(min(29, 1 + r.exponential(8.0)))))
+        if r.random() < 0.013 + 0.010 * (row.age > 70):
+            ev.append(("other", int(r.integers(1, 365))))
+        emerg.append(ev)
+        # planned spinal injections in the year (day cases), patients with persisting pain
+        j = bool((not c) and r.random() < 0.011)
+        inj.append(j)
+        imp.append(float(row.E_true + p["u"] + r.normal(0, 9.0) - d))
         pd_ = 0.004 + (0.012 if c else 0.0) + 0.004 * (row.age > 78)
         death.append(bool(r.random() < pd_))
         pr = p["r"] * (1 + 0.006 * (row.age - 55))
-        pr = pr * (0.32 if c else 1.0)
+        pr = pr * (0.48 if ev else 1.0)
         resp.append(bool(r.random() < min(0.95, pr)))
         base_los = 0 if (row.disc and r.random() < 0.45) else int(r.choice([1, 1, 2, 2, 2, 3, 4]))
         if row.age > 72 and r.random() < 0.3:
@@ -102,6 +114,8 @@ def build_world():
         los.append(base_los)
         tr.append(bool(p["kind"] == "NHS" and row.age > 70 and r.random() < 0.16))
         pre_done.append(bool(r.random() < 0.885))
+    w["emerg"] = emerg
+    w["inj"] = inj
     w["comp"] = comp
     w["drop"] = drop
     w["imp_true"] = imp

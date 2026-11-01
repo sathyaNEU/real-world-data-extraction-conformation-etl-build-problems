@@ -57,3 +57,55 @@ print("netE", round(netE, 3), "eligible", len(el), "resp", round(el.resp_12m.mea
 print("comp", {names[k][:5]: round(el[el.prov == k].comp.mean(), 3) for k in keys})
 print("resp", {names[k][:5]: round(el[el.prov == k].resp_12m.mean(), 3) for k in keys})
 print("gold-R1", {names[k][:5]: round(g[k] - res['R1resp'][k], 2) for k in keys})
+
+# ---- golden family spread
+el["f30"] = el.emerg.apply(lambda ev: any(t <= 30 for k, t in ev))
+el["f90"] = el.emerg.apply(lambda ev: any(t <= 90 for k, t in ev))
+el["f365"] = el.emerg.apply(lambda ev: len(ev) > 0)
+el["finj"] = el.f365 | el.inj
+el["comp_def"] = el.f365
+X = ["pre_obs", "age", "female", "smoker", "prev", "symp12", "disc"]
+def regimp(m, compcol, pooled=None):
+    resp = m[m.resp_12m]
+    A = np.column_stack([np.ones(len(resp)), resp[compcol].astype(float)] + [resp[c].astype(float) for c in X])
+    beta, *_ = np.linalg.lstsq(A, resp.d.values, rcond=None)
+    non = m[~m.resp_12m]
+    B = np.column_stack([np.ones(len(non)), non[compcol].astype(float)] + [non[c].astype(float) for c in X])
+    return (resp.d.sum() + (B @ beta).sum()) / len(m)
+fam = {}
+for fl in ["f30", "f90", "f365", "finj"]:
+    fam["cell_" + fl] = {}
+    for k in keys:
+        m = el[el.prov == k]
+        tot = 0.0
+        for c in (False, True):
+            cell = m[m[fl] == c]
+            tot += cell[cell.resp_12m].d.sum() + cell[cell.resp_12m].d.mean() * (~cell.resp_12m).sum()
+        fam["cell_" + fl][k] = netE + tot / len(m)
+fam["cell_def"] = {}
+fam["reg_true"] = {}
+fam["reg_def"] = {}
+for k in keys:
+    m = el[el.prov == k]
+    tot = 0.0
+    for c in (False, True):
+        cell = m[m.comp_def == c]
+        tot += cell[cell.resp_12m].d.sum() + cell[cell.resp_12m].d.mean() * (~cell.resp_12m).sum()
+    fam["cell_def"][k] = netE + tot / len(m)
+    fam["reg_true"][k] = netE + regimp(m, "comp")
+    fam["reg_def"][k] = netE + regimp(m, "comp_def")
+# pooled complication effect, provider intercepts
+resp = el[el.resp_12m]
+P = pd.get_dummies(resp.prov).astype(float)
+A = np.column_stack([P.values, resp.comp_def.astype(float)])
+beta, *_ = np.linalg.lstsq(A, resp.d.values, rcond=None)
+pooled = {}
+for k in keys:
+    m = el[el.prov == k]
+    non = m[~m.resp_12m]
+    pk = list(P.columns).index(k)
+    pooled[k] = netE + (m[m.resp_12m].d.sum() + (beta[pk] + beta[-1] * non.comp_def.astype(float)).sum()) / len(m)
+fam["pooled_def"] = pooled
+for lab, s in fam.items():
+    show(lab, s)
+print("max spread vs GOLD", {names[k][:5]: round(max(abs(fam[f][k] - g[k]) for f in fam), 3) for k in keys})

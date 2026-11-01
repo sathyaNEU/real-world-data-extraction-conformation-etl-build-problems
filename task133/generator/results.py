@@ -33,8 +33,8 @@ def compute(tdir):
     a = A.ask_a(tdir, pk)
     b = A.ask_b(tdir)
     F = dict(
-        loads=g, total=sum(g.values()), total_100=nearest(sum(g.values()), 100),
-        grade_50={k: nearest(v, 50) for k, v in g.items()},
+        loads=g, total=sum(g.values()), total_500=nearest(sum(g.values()), 500),
+        grade_100={k: nearest(v, 100) for k, v in g.items()},
         fy26_loads=len(pk.loads), fy26_tonnes=sum(l["net"] for l in pk.loads),
         fy26_by_grade={k: sum(1 for l in pk.loads if l["grade"] == k) for k in P.GRADE_ORDER},
         plan=dict(pk.plan), plan_total=sum(pk.plan.values()),
@@ -47,7 +47,7 @@ def compute(tdir):
         ask_b=b, ask_b_10={k: nearest(v, 10) for k, v in b.items()},
         rows=rows,
     )
-    F["r1_100"] = nearest(F["ladder"]["R1_permit_units_to_the_new_limit"], 100)
-    F["r2_100"] = nearest(F["ladder"]["R2_loads_at_the_old_limit_only"], 100)
-    F["r0_100"] = nearest(F["ladder"]["R0_fleet_average_plus_six"], 100)
+    F["r1_1000"] = nearest(F["ladder"]["R1_permit_units_to_the_new_limit"], 1000)
+    F["r2_1000"] = nearest(F["ladder"]["R2_loads_at_the_old_limit_only"], 1000)
+    F["r0_1000"] = nearest(F["ladder"]["R0_fleet_average_plus_six"], 1000)
     return F

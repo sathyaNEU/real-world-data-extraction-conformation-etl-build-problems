@@ -135,21 +135,23 @@ def build(seed=P.SEED):
     # ---------------------------------------------------------------- domestic mill deliveries
     W.mill_loads = []
     mill_t = dict(P.MILL_TONNES)
-    dom_days = working_days(rng, dt.date(2025, 6, 16), dt.date(2026, 6, 30))
-    for mc, tot in mill_t.items():
+    dom_days = working_days(np.random.default_rng([seed, 30]), dt.date(2025, 6, 16), dt.date(2026, 6, 30))
+    W.dom_days = dom_days
+    for k, (mc, tot) in enumerate(mill_t.items()):
+        rng_m = np.random.default_rng([seed, 31, k])
         left = tot
         while left > 0:
-            u = units[int(rng.integers(len(units)))]
-            net = round(float(rng.uniform(22.5, 27.0)) / 0.02) * 0.02
-            d = dom_days[int(rng.integers(len(dom_days)))]
-            t = dt.datetime.combine(d, dt.time(7, 0)) + dt.timedelta(minutes=int(rng.integers(0, 600)))
-            post = d + dt.timedelta(days=int(rng.integers(1, 10)))
+            u = units[int(rng_m.integers(len(units)))]
+            net = round(float(rng_m.uniform(22.5, 27.0)) / 0.02) * 0.02
+            d = dom_days[int(rng_m.integers(len(dom_days)))]
+            t = dt.datetime.combine(d, dt.time(7, 0)) + dt.timedelta(minutes=int(rng_m.integers(0, 600)))
+            post = d + dt.timedelta(days=int(rng_m.integers(1, 10)))
             while post.weekday() >= 5:
                 post += dt.timedelta(days=1)
-            fc = list(P.FORESTS)[int(rng.integers(len(P.FORESTS)))]
+            fc = list(P.FORESTS)[int(rng_m.integers(len(P.FORESTS)))]
             W.mill_loads.append(dict(mill=mc, unit=u["unit"], rego=u["prev"] if (u["prev"] and d < W.rereg_date) else u["rego"],
                                      net=round(net, 2), time=t, date=d, posted=post, forest=fc,
-                                     grade=str(rng.choice(["S30", "L28", "Pulp"], p=[.45, .35, .2]))))
+                                     grade=str(rng_m.choice(["S30", "L28", "Pulp"], p=[.45, .35, .2]))))
             if P.FY26[0] <= d <= P.FY26[1]:
                 left -= net
     W.mill_loads.sort(key=lambda r: r["time"])

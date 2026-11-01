@@ -45,8 +45,6 @@ def build(W, rng):
             if fav is None or fav.pack != pack or rng.random() < 0.18:
                 fav = rng.choice(prods)
             prescriber = pt.practice
-            if i > 0 and d.year < 2026 and rng.random() < (0.05 if pt.cohort else 0.03):
-                prescriber = rng.choice(HOSPITAL_UNITS)
             pharm = pt.pharmacy if rng.random() < 0.93 else rng.choice([c for c, n, t in PHARMACIES])
             rows.append({"id": pt.id, "sex": pt.sex, "born": pt.born, "date": d, "product": fav.number,
                          "packs": packs, "prescriber": prescriber, "pharmacy": pharm, "patient": pt})
@@ -64,10 +62,13 @@ def build(W, rng):
     for r in rows:
         by_patient[r["patient"].id].append(r)
     replaced = []
-    for code, *_ in P.PRACTICES[:14]:
+    for code, *_ in P.PRACTICES:
         pool = [pt for pt in W.patients if pt.practice == code and not pt.cohort and seen[(pt.born, pt.sex)] == 1]
         rng.shuffle(pool)
+        want = rng.choice([1, 2, 2, 3])
         for pt in pool:
+            if sum(1 for r in replaced if r["practice"] == code) >= want:
+                break
             rs = sorted(by_patient[pt.id], key=lambda r: r["date"])
             q26 = {quarter_of(r["date"]) for r in rs if r["date"].year == 2026}
             if q26 != {0, 1, 2, 3}:
@@ -81,13 +82,26 @@ def build(W, rng):
                 if r["date"] >= cut:
                     r["id"] = nid
             replaced.append({"old": pt.id, "new": nid, "from": cut, "practice": code})
-            break
     A.replaced = replaced
+    # hospital departments prescribe now and then for patients long on a statin: in the old system's months and in
+    # 2026 (never a new user's dispensing, never a person's last of 2026, never around a number's replacement)
+    moved = {r["old"] for r in replaced}
+    for pid, rs in sorted(by_patient.items()):
+        pt = rs[0]["patient"]
+        if pt.cohort or pid in moved:
+            continue
+        rs = sorted(rs, key=lambda r: r["date"])
+        last26 = max([i for i, r in enumerate(rs) if r["date"].year == 2026], default=-1)
+        for i, r in enumerate(rs):
+            if i == 0 or i == last26:
+                continue
+            if (r["date"] <= P.OLD_SYSTEM_END or r["date"].year == 2026) and rng.random() < 0.04:
+                r["prescriber"] = rng.choice(HOSPITAL_UNITS)
     A.rows = sorted(rows, key=lambda r: (r["date"], r["pharmacy"], r["id"], r["product"]))
     # the 2026 pilot: follow-up conversations at the pharmacies, cancelled now and then, some after the statement
     convs = []
     n_conv = {"A102": 312, "A107": 241, "A114": 187, "A121": 158, "A126": 133, "A133": 176, "A139": 149, "A145": 204}
-    late_pharm = {"A102", "A114", "A126", "A133", "A145"}
+    late_pharm = set(n_conv)
     seq = 7000 + rng.randrange(0, 300)
     for code, n in n_conv.items():
         for _ in range(n):
@@ -97,12 +111,14 @@ def build(W, rng):
             x = rng.random()
             if x < 0.05:
                 status, cancelled = "aflyst", d + dt.timedelta(days=rng.randrange(0, 9))
+                if cancelled in QUARTER_ENDS:
+                    cancelled += dt.timedelta(days=1)
             convs.append({"no": "S%05d" % seq, "pharmacy": code, "date": d, "status": status, "cancelled": cancelled})
         # cancellations entered after the quarter's statement: a conversation registered as held that turned out
         # not to have taken place
         if code in late_pharm:
             held = [c for c in convs if c["pharmacy"] == code and c["status"] == "afholdt"]
-            for c in rng.sample(held, rng.randint(3, 8)):
+            for c in rng.sample(held, rng.randint(3, 7)):
                 qe = QUARTER_ENDS[quarter_of(c["date"])]
                 c["status"] = "aflyst"
                 c["cancelled"] = qe + dt.timedelta(days=rng.randint(4, 40))

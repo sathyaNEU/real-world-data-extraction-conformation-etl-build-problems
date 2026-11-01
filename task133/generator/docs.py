@@ -13,23 +13,26 @@ BASIS = "cartage_planning_basis_FY2028.docx"
 APPROVAL = "50MAX_route_approval_RDC-2026-114.pdf"
 GRADESPEC = "export_log_grade_specifications_2025.pdf"
 
-S_LOAD = ("2.1 A load is one truck-and-trailer trip carrying export logs from a Matiri forest to Port Kowhai, weighed on "
-          "the port weighbridge.")
-S_YEAR = "2.2 FY2028 runs from 1 July 2027 to 30 June 2028."
-S_FLEET = ("2.3 The fleet is the units on the cartage fleet register at 30 June 2026, each with the tare, 50MAX "
-           "permit and full-bunk volumes the register records for it.")
-S_LOADS = ("3.1 FY2028 loads for a grade are the harvest plan's export tonnes for that grade divided by the average payload "
-           "that grade's FY2026 port loads would carry on the same units in FY2028.")
-S_LIMITS = ("3.2 From 1 July 2027 units holding a 50MAX permit run at 50 tonnes gross on the route to Port Kowhai; every "
-            "other unit stays at 44 tonnes gross.")
-S_CART = "4.1 Cartage is reported against the carrier whose unit hauled the load, net of any credit note."
-S_MILL = "4.2 Domestic deliveries are reported by delivery date, in tonnes delivered."
+S_LOAD = ("A load is one truck-and-trailer trip carrying export logs from one of our forests to Port Kowhai, as weighed over "
+          "the port weighbridge. Sawlog and pulp deliveries to the domestic mills are not loads for this round.")
+S_YEAR = "FY2028 runs from 1 July 2027 to 30 June 2028."
+S_FLEET = ("We are sizing the round on the fleet we have: the units on the cartage fleet register at 30 June 2026, as the "
+           "register records them. No new units are assumed.")
+S_LOADS = ("For each export grade, FY2028 loads are the harvest plan's export tonnes for the grade divided by the average "
+           "payload that grade's FY2026 port loads would carry on the same units in FY2028.")
+S_PLAN = "The export tonnes are the Board-approved FY2028 harvest plan of 18 September 2026 (its Export sheet)."
+S_LIMITS = ("RDC-2026-114 opens the port route to 50MAX from 1 July 2027. From then, units holding a 50MAX permit run at 50 "
+            "tonnes gross on the route to Port Kowhai; every other unit stays at 44 tonnes gross.")
+S_CART = ("Cartage for FY2026 is what we paid for FY2026's loads, reported against the carrier whose unit hauled the load "
+          "and net of any credit note.")
+S_MILL = "Domestic deliveries are reported by delivery date, in tonnes delivered."
 
 
-def _p(doc, text, bold=False, size=10.5):
+def _p(doc, text, bold=False, size=10.5, italic=False):
     para = doc.add_paragraph()
     run = para.add_run(text)
     run.bold = bold
+    run.italic = italic
     run.font.size = Pt(size)
     return para
 
@@ -37,33 +40,38 @@ def _p(doc, text, bold=False, size=10.5):
 def write_basis(out):
     doc = Document()
     doc.styles["Normal"].font.name = "Calibri"
-    _p(doc, "MATIRI FOREST PRODUCTS LIMITED", bold=True, size=12)
-    _p(doc, "Cartage planning basis for FY2028", bold=True, size=13)
-    _p(doc, "Prepared by Logistics for the FY2028 cartage contract round. Version 2, 6 October 2026.", size=9)
-    _p(doc, "1. Purpose", bold=True)
-    _p(doc, "1.1 This note sets the basis on which Logistics sizes the FY2028 export cartage contract and reports the FY2026 "
-            "cartage and domestic deliveries that sit beside it.")
-    _p(doc, "2. Definitions", bold=True)
-    for s in (S_LOAD, S_YEAR, S_FLEET):
-        _p(doc, s)
-    _p(doc, "3. Export loads", bold=True)
-    _p(doc, S_LOADS)
+    _p(doc, "MATIRI FOREST PRODUCTS LIMITED", bold=True, size=11)
+    _p(doc, "Logistics planning note: export cartage basis for FY2028", bold=True, size=13)
+    _p(doc, "John Morris, Logistics Manager. Version 2, 6 October 2026. For Harvest Planning, Finance and the Port Kowhai "
+            "log yard.", size=9, italic=True)
+    _p(doc, "Background", bold=True)
+    _p(doc, "The FY2028 export cartage contract goes to tender in November. Carriers will price against the number of loads "
+            "we tell them to expect, and Finance is building its benchmark rates from what we paid this year, so everyone "
+            "working on the round needs to size it the same way. This note is that basis. It replaces version 1 now that "
+            "the council has approved 50MAX on the port route.")
+    _p(doc, "What we are sizing", bold=True)
+    _p(doc, S_LOAD)
+    _p(doc, S_YEAR + " " + S_FLEET)
+    _p(doc, "How we get to FY2028 loads", bold=True)
+    _p(doc, S_LOADS + " " + S_PLAN)
     _p(doc, S_LIMITS)
-    _p(doc, "3.3 The harvest plan's export tonnes are the Board-approved FY2028 plan of 18 September 2026.")
-    _p(doc, "4. Reporting beside the plan", bold=True)
-    _p(doc, S_CART)
-    _p(doc, S_MILL)
-    _p(doc, "5. Change record", bold=True)
+    _p(doc, "Anything the plan does not already carry, such as a change of grade mix or roading, sits outside this basis "
+            "and will be dealt with at the contract review.")
+    _p(doc, "What we report beside it", bold=True)
+    _p(doc, S_CART + " Finance uses these figures for the benchmark rates.")
+    _p(doc, S_MILL + " The mills have asked for them by quarter for their supply reviews.")
+    _p(doc, "Change record", bold=True)
     t = doc.add_table(rows=1, cols=3)
     t.style = "Table Grid"
     for i, h in enumerate(("Version", "Date", "Change")):
         t.rows[0].cells[i].text = h
     for row in (("1", "14 August 2026", "First issue for the contract round."),
-                ("2", "6 October 2026", "50MAX route approval received (RDC-2026-114); limits from 1 July 2027 added at 3.2.")):
+                ("2", "6 October 2026", "Route approval RDC-2026-114 received; FY2028 limits added. Cartage tied to the "
+                                        "year's loads.")):
         cells = t.add_row().cells
         for i, v in enumerate(row):
             cells[i].text = v
-    save_docx(doc, os.path.join(out, BASIS), "Cartage planning basis FY2028", "John Morris", "2026-10-06T01:30:00Z")
+    save_docx(doc, os.path.join(out, BASIS), "Export cartage basis FY2028", "John Morris", "2026-10-06T01:30:00Z")
 
 
 def _pdf(path, title, author, lines, stamp):

@@ -36,22 +36,22 @@
    "xlsx"
   ],
   "largest_file": "cartage_invoices_FY2026.csv",
-  "largest_file_rows": 29995
+  "largest_file_rows": 29963
  },
  "files": {
   "50MAX_route_approval_RDC-2026-114.pdf": "",
-  "cartage_invoices_FY2026.csv": 29995,
+  "cartage_invoices_FY2026.csv": 29963,
   "cartage_planning_basis_FY2028.docx": "",
   "export_log_grade_specifications_2025.pdf": "",
   "export_log_prices_FY2026.csv": 60,
   "fleet_register_2026-06-30.xlsx": "",
   "forest_road_closures_FY2026.csv": 62,
   "harvest_plan_FY2028.xlsx": "",
-  "log_scaling_port_kowhai_FY2026.csv": 29981,
-  "mill_dockets_FY2026.csv": 4503,
+  "log_scaling_port_kowhai_FY2026.csv": 29949,
+  "mill_dockets_FY2026.csv": 4456,
   "mill_weighbridge_logs_FY2026.csv": 11642,
   "port_kowhai_vessel_calls_FY2026.csv": 34,
-  "weighbridge_tickets_port_kowhai_FY2026.csv": 29981
+  "weighbridge_tickets_port_kowhai_FY2026.csv": 29949
  },
  "sources": [
   {

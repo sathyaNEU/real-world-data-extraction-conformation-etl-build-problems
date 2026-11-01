@@ -8,7 +8,7 @@ import statistics
 import io_util as IO
 
 FILES = {
-    "dispensings": "statin_dispensings_202407_202612.csv",
+    "dispensings": "statin_dispensings_202401_202612.csv",
     "products": "statin_products.csv",
     "ddd": "atc_ddd_2026.xlsx",
     "practices": "practice_register_2026.xlsx",
@@ -47,7 +47,7 @@ def load(target):
     disp = collections.defaultdict(list)
     meta = {}
     for r in rows:
-        pid = r[idx["pseudonym"]]
+        pid = r[idx["personal_number_pseudonym"]]
         pr = prods[r[idx["product_number"]]]
         disp[pid].append({"date": parse_date(r[idx["dispensing_date"]]), "tablets": int(r[idx["packs"]]) * pr["pack"],
                           "atc": pr["atc"], "mg": pr["mg"], "prescriber": r[idx["prescriber_id"]],
@@ -218,29 +218,47 @@ def pilot_payments(target, mode="rate"):
 
 
 # ---------------------------------------------------------------- ask: continuing statin users of 2026, each person once
-def continuing_users(target, mode="persons"):
-    """mode: 'persons' (a pseudonym that stops and one that starts the same person: same birth date and sex, same
-    practice and product line, the second beginning after the first ends; the golden), 'pseudonyms'."""
+def person_links(target, same_line=False, same_practice=False, max_gap=None):
+    """Pseudonyms that are one person: the same birth date and sex, the one's dispensings all before the other's
+    (a personal number replaced: the register carries the person under the new number from the change). Optional
+    tighter tests: the same product line across the change, the same prescribing practice, a gap no longer than
+    max_gap days. Returns {later pseudonym: earliest pseudonym}."""
+    D = load(target)
+    by_key = collections.defaultdict(list)
+    for pid in D["disp"]:
+        by_key[D["meta"][pid]].append(pid)
+    links = {}
+    for key, pids in by_key.items():
+        if len(pids) < 2:
+            continue
+        pids = sorted(pids, key=lambda x: (D["disp"][x][0]["date"], x))
+        for a, b in zip(pids, pids[1:]):
+            da, db = D["disp"][a], D["disp"][b]
+            if not da[-1]["date"] < db[0]["date"]:
+                continue
+            if same_line and (da[-1]["atc"], da[-1]["mg"]) != (db[0]["atc"], db[0]["mg"]):
+                continue
+            if same_practice and da[-1]["prescriber"] != db[0]["prescriber"]:
+                continue
+            if max_gap is not None and (db[0]["date"] - da[-1]["date"]).days > max_gap:
+                continue
+            links[b] = links.get(a, a)
+    return links
+
+
+def continuing_users(target, mode="persons", **kw):
+    """mode: 'persons' (each person once, a replaced personal number's two pseudonyms joined; the golden),
+    'pseudonyms' (each pseudonym taken for a person)."""
     D = load(target)
     groups = {pid: pid for pid in D["disp"]}
     if mode == "persons":
-        by_key = collections.defaultdict(list)
-        for pid, ds in D["disp"].items():
-            by_key[D["meta"][pid]].append(pid)
-        for key, pids in by_key.items():
-            if len(pids) != 2:
-                continue
-            a, b = sorted(pids, key=lambda x: D["disp"][x][0]["date"])
-            da, db = D["disp"][a], D["disp"][b]
-            if da[-1]["date"] < db[0]["date"] and (da[-1]["atc"], da[-1]["mg"]) == (db[0]["atc"], db[0]["mg"]) and \
-                    da[-1]["prescriber"] == db[0]["prescriber"]:
-                groups[b] = a
+        groups.update(person_links(target, **kw))
     persons = collections.defaultdict(list)
     for pid, ds in D["disp"].items():
         persons[groups[pid]] += ds
     out = collections.Counter()
     for person, ds in persons.items():
-        d26 = sorted((d for d in ds if d["date"].year == 2026), key=lambda d: d["date"])
+        d26 = sorted((d for d in ds if d["date"].year == 2026), key=lambda d: (d["date"], d["product"]))
         if {(d["date"].month - 1) // 3 for d in d26} != {0, 1, 2, 3}:
             continue
         practice = d26[-1]["prescriber"]

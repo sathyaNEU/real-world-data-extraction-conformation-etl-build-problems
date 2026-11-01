@@ -1,25 +1,25 @@
 {
  "call": {
-  "fy2028_loads_nearest_100": 29100.0,
-  "fy2028_loads_unrounded": 29100.2
+  "fy2028_loads_nearest_500": 29000.0,
+  "fy2028_loads_unrounded": 28950.5
  },
- "loads_by_grade_nearest_50": {
+ "loads_by_grade_nearest_100": {
   "A grade": 4900.0,
   "Pruned": 2500.0,
-  "K grade": 7550.0,
-  "KI grade": 8050.0,
+  "K grade": 7500.0,
+  "KI grade": 8000.0,
   "KIS grade": 6100.0
  },
- "rivals": {
-  "permit_units_to_new_limit": 26900.0,
-  "old_limit_loads_only": 27300.0,
-  "fleet_average_plus_six": 25700.0
+ "rivals_nearest_1000": {
+  "permit_units_to_new_limit": 27000.0,
+  "old_limit_loads_only": 27000.0,
+  "fleet_average_plus_six": 26000.0
  },
  "components": {
-  "fy2026_loads": 29981,
-  "fy2026_tonnes": 764046,
-  "plan_tonnes": 808900.0,
-  "permit_share_pct": 71
+  "fy2026_loads": 29949,
+  "fy2026_tonnes": 764032,
+  "plan_tonnes": 813400.0,
+  "permit_share_pct": 77
  },
  "limits_t": [
   44,
@@ -27,33 +27,27 @@
   6
  ],
  "ask_a_cartage_nzd_k": {
-  "Ruahine Log Cartage Ltd": 2073.0,
-  "Kereru Haulage Ltd": 1811.0,
-  "Tutaekuri Transport Ltd": 1632.0,
-  "Wilson & Heke Trucking Ltd": 1158.0,
-  "Kinross Contracting Ltd": 1008.0,
-  "Patoka Logging Haulage Ltd": 1012.0
+  "Ruahine Log Cartage Ltd": 2068.0,
+  "Kereru Haulage Ltd": 1803.0,
+  "Tutaekuri Transport Ltd": 1647.0,
+  "Wilson & Heke Trucking Ltd": 1151.0,
+  "Kinross Contracting Ltd": 1037.0,
+  "Patoka Logging Haulage Ltd": 980.0
  },
  "ask_b_mill_tonnes": {
-  "Mohaka Sawmills Q1": 14090.0,
-  "Mohaka Sawmills Q2": 12000.0,
-  "Mohaka Sawmills Q3": 12600.0,
-  "Mohaka Sawmills Q4": 13130.0,
-  "Ahuriri Timber Processors Q1": 10870.0,
-  "Ahuriri Timber Processors Q2": 8680.0,
-  "Ahuriri Timber Processors Q3": 8700.0,
-  "Ahuriri Timber Processors Q4": 9780.0,
-  "Heretaunga Box and Lumber Q1": 5340.0,
-  "Heretaunga Box and Lumber Q2": 4610.0,
-  "Heretaunga Box and Lumber Q3": 5610.0,
-  "Heretaunga Box and Lumber Q4": 5440.0
+  "Mohaka Sawmills Q1": 15260.0,
+  "Mohaka Sawmills Q2": 11720.0,
+  "Mohaka Sawmills Q3": 12210.0,
+  "Mohaka Sawmills Q4": 12570.0,
+  "Ahuriri Timber Processors Q1": 10600.0,
+  "Ahuriri Timber Processors Q2": 9080.0,
+  "Ahuriri Timber Processors Q3": 9230.0,
+  "Ahuriri Timber Processors Q4": 8920.0,
+  "Heretaunga Box and Lumber Q1": 5630.0,
+  "Heretaunga Box and Lumber Q2": 4890.0,
+  "Heretaunga Box and Lumber Q3": 5290.0,
+  "Heretaunga Box and Lumber Q4": 5360.0
  },
- "sections": [
-  "2.1",
-  "3.1",
-  "3.2",
-  "4.2"
- ],
  "calendar": {
   "years": [
    2025,

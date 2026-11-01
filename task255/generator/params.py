@@ -6,6 +6,8 @@ TASK = "task255"
 AS_OF = dt.date(2027, 2, 12)               # the medicines unit's analysis date (fiction)
 EXTRACT_START = dt.date(2024, 7, 1)        # the register extract's first and last dispensing dates
 EXTRACT_END = dt.date(2026, 12, 31)
+EXTRACT_FIRST = dt.date(2024, 1, 2)        # the extract reaches back into the old register system's months
+OLD_SYSTEM_END = dt.date(2024, 6, 30)      # the old system wrote dates day-month-year
 COHORT_START = dt.date(2025, 7, 1)         # new users: first dispensing in the second half of 2025
 COHORT_END = dt.date(2025, 12, 31)
 LOOKBACK_DAYS = 365
@@ -40,3 +42,4 @@ PRACTICES = [
 ]
 COHORT_SIZE = (55, 125)          # new users of the second half of 2025 per practice
 PREVALENT_PER_PRACTICE = (230, 420)
+BACKGROUND_PER_SPAN = (40, 80)    # patients starting outside the cohort window, per practice and span

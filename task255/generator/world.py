@@ -175,7 +175,90 @@ def build(seed=P.SEED):
             pt.cands = cands
             patients.append(pt)
     W.patients = patients
+    backfill(W, seed)
+    add_background(W, seed, ids)
+    separate_birthdays(W, seed)
     return W
+
+
+def backfill(W, seed):
+    """The patients already on a statin when the main window opens carry their dispensings back to January 2024 (the
+    old register system's months), drawn on their own stream."""
+    rng = random.Random(seed * 10 + 6)
+    for pt in W.patients:
+        if pt.cohort:
+            continue
+        d0, k0, pk0 = pt.runs[0]
+        days = k0 * pk0 / pt.tpd
+        prev = []
+        d = d0
+        while True:
+            d = d - dt.timedelta(days=int(round(days)) + rng.randint(-7, 2))
+            if d < P.EXTRACT_FIRST:
+                break
+            prev.insert(0, (d, k0, pk0))
+        pt.runs = prev + pt.runs
+
+
+def add_background(W, seed, ids):
+    """Patients who started a statin outside the cohort window (November 2024 to June 2025, and during 2026), drawn on
+    their own stream so the cohort and the patients already on a statin never move."""
+    rng = random.Random(seed * 10 + 2)
+
+    def pseudonym():
+        while True:
+            x = "%08X" % rng.randrange(0x10000000, 0xFFFFFFFF)
+            if x not in ids:
+                ids.add(x)
+                return x
+    spans = [(dt.date(2024, 11, 1), dt.date(2025, 6, 30)), (dt.date(2026, 1, 2), dt.date(2026, 11, 30))]
+    for code, name, town, *mix, keep in P.PRACTICES:
+        weights = dict(zip(["N", "H", "H4", "T", "S", "L"], mix))
+        for lo, hi in spans:
+            for _ in range(rng.randint(*P.BACKGROUND_PER_SPAN)):
+                pt = Patient()
+                pt.id = pseudonym()
+                pt.practice = code
+                pt.sex = rng.choice("MK")
+                pt.born = dt.date(rng.randint(1938, 1984), rng.randint(1, 12), rng.randint(1, 28))
+                pt.pattern = pick(rng, weights)
+                pt.tpd, pt.atc, pt.strength, cands = pick_product(rng, W.products, pt.pattern)
+                pt.cohort = False
+                pt.start = lo + dt.timedelta(days=rng.randrange(0, (hi - lo).days + 1))
+                pt.persistent = rng.random() < keep
+                pack_choices = [p.pack for p in cands if p.pack >= 90] or [cands[0].pack]
+                stop = 10 ** 6 if pt.persistent else rng.randint(40, 260)
+                pt.runs = dispense_run(rng, pt.start, pt.tpd, pack_choices, stop, P.EXTRACT_END, late_share=0.10)
+                pt.cands = cands
+                W.patients.append(pt)
+
+
+def separate_birthdays(W, seed):
+    """Two people sharing a birth date and sex whose dispensings never overlap would read as one person under two
+    personal numbers; redraw the later one's birth date (birth dates move nothing on the call)."""
+    rng = random.Random(seed * 10 + 3)
+
+    def span(pt):
+        return pt.runs[0][0], pt.runs[-1][0]
+    while True:
+        groups = {}
+        for pt in W.patients:
+            groups.setdefault((pt.born, pt.sex), []).append(pt)
+        moved = 0
+        for key, pts in sorted(groups.items()):
+            if len(pts) < 2:
+                continue
+            pts = sorted(pts, key=lambda x: (span(x)[0], x.id))
+            for i, a in enumerate(pts):
+                for b in pts[i + 1:]:
+                    if span(a)[1] < span(b)[0] or span(b)[1] < span(a)[0]:
+                        b.born = dt.date(rng.randint(1938, 1984), rng.randint(1, 12), rng.randint(1, 28))
+                        moved += 1
+                        break
+                if moved:
+                    break
+        if not moved:
+            return
 
 
 def truth_persistent(pt):

@@ -41,20 +41,20 @@ def workbook(F, path):
     ws["A1"] = "Matiri Forest Products - FY2028 export cartage to Port Kowhai under the 50MAX route limits"
     ws["A1"].font = Font(bold=True, size=13, color=GREEN)
     ws["A2"] = ("FY2028 = 1 July 2027 to 30 June 2028. Plan: Board-approved harvest plan of 18 September 2026. Payloads: "
-                "FY2026 port loads re-run on the same units under the FY2028 limits (planning basis 3.1, 3.2).")
+                "FY2026 port loads re-run on the same units under the FY2028 limits (cartage planning basis; RDC-2026-114).")
     ws["A2"].font = Font(italic=True, size=9, color="555555")
-    ws["A4"] = "Export log loads needed in FY2028 (nearest 100)"
+    ws["A4"] = "Export log loads needed in FY2028 (nearest 500)"
     ws["A4"].font = Font(bold=True)
-    ws["F4"] = F["total_100"]
+    ws["F4"] = F["total_500"]
     ws["F4"].number_format = "#,##0"
     ws["F4"].font = Font(bold=True, size=12, color=GREEN)
     _hdr(ws, 6, ["Grade", "Plan tonnes FY2028", "FY2026 port loads", "FY2026 average payload (t)",
-                 "FY2028 average payload (t)", "FY2028 loads (nearest 50)", "FY2028 loads (unrounded)"],
+                 "FY2028 average payload (t)", "FY2028 loads (nearest 100)", "FY2028 loads (unrounded)"],
          [16, 15, 13, 14, 14, 14, 14])
     r = 7
     for g in P.GRADE_ORDER:
         vals = [P.GRADES[g]["name"], F["plan"][g], F["fy26_by_grade"][g], round(F["avg_pay_fy26"][g], 2),
-                round(F["avg_pay"][g], 2), F["grade_50"][g], round(F["loads"][g], 1)]
+                round(F["avg_pay"][g], 2), F["grade_100"][g], round(F["loads"][g], 1)]
         fm = [None, "#,##0", "#,##0", "0.00", "0.00", "#,##0", "#,##0.0"]
         for j, (v, f) in enumerate(zip(vals, fm), start=1):
             c = ws.cell(row=r, column=j, value=v)
@@ -63,14 +63,14 @@ def workbook(F, path):
         r += 1
     ws.cell(row=r, column=1, value="All export grades").font = Font(bold=True)
     for j, (v, f) in enumerate([(F["plan_total"], "#,##0"), (F["fy26_loads"], "#,##0"), (None, None), (None, None),
-                                (F["total_100"], "#,##0"), (round(F["total"], 1), "#,##0.0")], start=2):
+                                (F["total_500"], "#,##0"), (round(F["total"], 1), "#,##0.0")], start=2):
         c = ws.cell(row=r, column=j, value=v)
         if f:
             c.number_format = f
         c.font = Font(bold=True)
         c.border = Border(top=THIN)
-    ws.cell(row=r + 2, column=1, value=("The total is rounded from the unrounded sum, so it can differ by up to 50 from the sum "
-                                        "of the rounded grade figures.")).font = Font(size=9, color="555555")
+    ws.cell(row=r + 2, column=1, value=("The total is rounded to the nearest 500 from the unrounded sum, not added up from the "
+                                        "rounded grade figures.")).font = Font(size=9, color="555555")
     ws.cell(row=r + 3, column=1, value=("A load's FY2028 payload is the lesser of its unit's FY2028 gross limit less tare and "
                                         "what its bunks hold of the grade's log length at the load's own density.")
             ).font = Font(size=9, color="555555")
@@ -94,7 +94,7 @@ def workbook(F, path):
     w2.auto_filter.ref = "A1:L%d" % (len(F["rows"]) + 1)
 
     w3 = wb.create_sheet("Cartage FY2026")
-    w3["A1"] = "FY2026 export cartage by the carrier whose unit hauled the load (NZD thousand, net of credit notes)"
+    w3["A1"] = "Cartage paid for FY2026's loads by the carrier whose unit hauled the load (NZD thousand, net of credit notes)"
     w3["A1"].font = Font(bold=True, color=GREEN)
     _hdr(w3, 3, ["Carrier", "Cartage (NZD thousand)"], [30, 16])
     r = 4
@@ -122,12 +122,12 @@ def workbook(F, path):
                                         "rounded to the nearest 10 t.")).font = Font(size=9, color="555555")
 
     w5 = wb.create_sheet("Notes")
-    notes = [("Loads", "One truck-and-trailer trip from a Matiri forest to Port Kowhai, weighed on the port weighbridge (planning basis 2.1)."),
+    notes = [("Loads", "One truck-and-trailer trip from a Matiri forest to Port Kowhai, weighed on the port weighbridge (cartage planning basis)."),
              ("Linking", "Each port weighbridge ticket is matched to the scaling record of the same truck within the hour that follows it, giving the load's JAS volume."),
              ("Units", "Units are read from the fleet register by registration, including the previous registrations of the two units re-registered on 1 February 2026."),
-             ("Limits", "50MAX permit units at 50 t gross from 1 July 2027; other units 44 t gross (RDC-2026-114; planning basis 3.2)."),
+             ("Limits", "50MAX permit units at 50 t gross from 1 July 2027; other units 44 t gross (RDC-2026-114; cartage planning basis)."),
              ("Bunks", "The fleet register's full-bunk volume for the grade's cut length (export grade specification 2025)."),
-             ("Rounding", "Half up. Total loads to the nearest 100, grade loads to the nearest 50, cartage to the nearest NZD thousand, mill tonnes to the nearest 10 t.")]
+             ("Rounding", "Half up. Total loads to the nearest 500, grade loads to the nearest 100, cartage to the nearest NZD thousand, mill tonnes to the nearest 10 t.")]
     w5.column_dimensions["A"].width = 12
     w5.column_dimensions["B"].width = 110
     w5["A1"], w5["B1"] = "Item", "Basis"
@@ -143,7 +143,7 @@ def workbook(F, path):
 def chart(F, path):
     grades = P.GRADE_ORDER
     old = [F["fy26_by_grade"][g] for g in grades]
-    new = [F["grade_50"][g] for g in grades]
+    new = [F["grade_100"][g] for g in grades]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "svg.hashsalt": "task133", "svg.fonttype": "none"})
     fig, ax = plt.subplots(figsize=(7.2, 3.6), dpi=150)
     x = list(range(len(grades)))
@@ -159,7 +159,7 @@ def chart(F, path):
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
     ax.legend(frameon=False, fontsize=8, loc="upper right")
-    ax.set_title("FY2028 needs %s export loads; the short grades fill their bunks before 50 tonnes" % f"{F['total_100']:,.0f}",
+    ax.set_title("FY2028 needs %s export loads; the short grades fill their bunks before 50 tonnes" % f"{F['total_500']:,.0f}",
                  fontsize=9.5, loc="left", color="#2E5E3E")
     fig.tight_layout()
     fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None})

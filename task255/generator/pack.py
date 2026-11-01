@@ -8,7 +8,7 @@ import io_util as IO
 import params as P
 
 FILES = {
-    "dispensings": "statin_dispensings_202407_202612.csv",
+    "dispensings": "statin_dispensings_202401_202612.csv",
     "products": "statin_products.csv",
     "ddd": "atc_ddd_2026.xlsx",
     "practices": "practice_register_2026.xlsx",
@@ -26,14 +26,14 @@ STAMP = dt.datetime(2027, 2, 12, 8, 40)
 
 
 def fmt_date(d):
-    """The extract stitches the register's old system (to 31 December 2024, day-month-year) to the new (ISO)."""
-    return d.strftime("%d-%m-%Y") if d.year < 2025 else d.isoformat()
+    """The extract stitches the register's old system (to 30 June 2024, day-month-year) to the new (ISO)."""
+    return d.strftime("%d-%m-%Y") if d <= P.OLD_SYSTEM_END else d.isoformat()
 
 
 def write_dispensings(W, A, path):
     rows = [[r["id"], r["sex"], r["born"].isoformat(), fmt_date(r["date"]), r["product"], r["packs"], r["prescriber"],
              r["pharmacy"]] for r in A.rows]
-    return IO.write_csv(path, ["pseudonym", "sex", "birth_date", "dispensing_date", "product_number", "packs",
+    return IO.write_csv(path, ["personal_number_pseudonym", "sex", "birth_date", "dispensing_date", "product_number", "packs",
                                "prescriber_id", "pharmacy_id"], rows)
 
 
@@ -113,9 +113,8 @@ def write_agreement(path):
         ("h", "2. Payment"),
         ("p", "2.1 The region pays each pharmacy its agreed rate for every follow-up conversation held in 2026. A "
               "conversation that is cancelled is not paid."),
-        ("p", "2.2 Each quarter the region draws up a statement for each pharmacy on the quarter's last day, covering "
-              "the conversations held in the quarter and not cancelled by then. The rate agreed with each pharmacy is "
-              "set out in its own annex."),
+        ("p", "2.2 Each quarter the region draws up a statement for each pharmacy on the quarter's last day and pays "
+              "it within 30 days. The rate agreed with each pharmacy is set out in its own annex."),
     ]
     IO.write_pdf(path, "Pharmacy pilot agreement 2026", "Medicines unit", "Region Lindholt", blocks,
                  "Region Lindholt, pharmacy pilot 2026", "D:20251215101500+01'00'", "D:20251215101500+01'00'")

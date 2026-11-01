@@ -42,7 +42,7 @@ def docx_text(path):
 
 
 def bins(res_entry):
-    return R.nearest(sum(res_entry.values()), 100), {g: R.nearest(v, 50) for g, v in res_entry.items()}
+    return R.nearest(sum(res_entry.values()), 500), {g: R.nearest(v, 100) for g, v in res_entry.items()}
 
 
 def edge(x, step):
@@ -88,7 +88,7 @@ def main():
     check("R2 the deciding quantity has no column: no file stores a load's FY2028 payload, its gross mass or which limit bound it",
           not deciding, deciding)
     check("R3a the analyst test on the clean truth: the mass-only payloads file another bin than the payloads capped by "
-          "the bunks", R.nearest(sum(t_mass.values()), 100) != R.nearest(sum(t_gold.values()), 100),
+          "the bunks", R.nearest(sum(t_mass.values()), 500) != R.nearest(sum(t_gold.values()), 500),
           "%.0f against %.0f" % (sum(t_mass.values()), sum(t_gold.values())))
     cheap = ["R0_fleet_average_plus_six", "R1_permit_units_to_the_new_limit", "R2_loads_at_the_old_limit_only",
              "R3_one_bunk_volume_per_unit", "R4_plus_six_on_permit_units"]
@@ -105,11 +105,14 @@ def main():
     check("R3c no decoy: no shipped document states FY2028 loads or a payload under the new limits", not leak_fig, leak_fig)
     check("R3c no certified replay: no file publishes a payload or load figure the method must reproduce",
           "payload" not in approval.lower())
+    named = [w for w in ("bunk", "volume", "cube", "JAS", "full") if re.search(r"\b%s" % w, basis, re.I)]
+    check("R3c no stated rule: the planning basis files the WHAT (the payload FY2026's loads would carry on the same units) "
+          "and names no bunk, volume or cube limit", not named, named)
 
     # ------------------------------------------------------------------ semantic fork table
     check("SF1 a load is one trip to Port Kowhai weighed on the port weighbridge: every ticket is a Matiri forest load",
           all(t["supplier"] == "MATIRI" and t["forest_code"] in P.FORESTS for t in pk.wb) and docs.S_LOAD in basis)
-    check("SF2 FY2028 runs 1 July 2027 to 30 June 2028 (planning basis 2.2, the plan's own title)", docs.S_YEAR in basis)
+    check("SF2 FY2028 runs 1 July 2027 to 30 June 2028 (the planning basis and the plan's own title)", docs.S_YEAR in basis)
     check("SF3 the fleet is the register at 30 June 2026: every ticket's registration is a current or previous one on it",
           all(l["unit"] is not None for l in pk.loads) and docs.S_FLEET in basis)
     over = 0
@@ -121,9 +124,10 @@ def main():
           "%d short-grade loads past their full-bunk volume, which no load in FY2026 exceeds" % over,
           over > 1000 and all(l["jas"] <= pk.cap(l["unit"], l["grade"]) + 0.02 for l in pk.loads)
           and bins(res["R1_permit_units_to_the_new_limit"])[0] != gold_bins[0])
-    check("SF5 permit units at 50 t gross from 1 July 2027 on every forest's route, all others at 44 t (3.2, RDC-2026-114)",
+    check("SF5 permit units at 50 t gross from 1 July 2027 on every forest's route, all others at 44 t (planning basis, RDC-2026-114)",
           docs.S_LIMITS in basis and "50 tonnes gross" in approval and "44 tonnes gross" in approval)
-    check("SF6 FY2028 loads by grade are the plan's tonnes over the grade's average FY2028 payload (3.1)", docs.S_LOADS in basis)
+    check("SF6 FY2028 loads by grade are the plan's tonnes over the grade's average FY2028 payload (planning basis)",
+          docs.S_LOADS in basis and docs.S_PLAN in basis)
     check("SF7 per-load density or the grade's mean density: same call", bins(res["V_grade_mean_density"]) == gold_bins)
     links = {}
     for win in (30, 60, 90):
@@ -142,13 +146,26 @@ def main():
           bins(res["V_unmapped_plates_dropped"]) == gold_bins)
     check("SF10 grade lengths from the 2025 grade specification match the bunk classes on the register",
           pk.length == {g: P.GRADES[g]["length"] for g in P.GRADE_ORDER})
-    check("SF11 rounding: the total sits 20 or more loads from its 100-load edge and every grade 10 or more from its "
-          "50-load edge, under the golden and the defensible family",
-          min(edge(sum(res[k].values()), 100) for k in ["golden"] + honest) >= 20 and
-          min(edge(res[k][g], 50) for k in ["golden"] + honest for g in P.GRADE_ORDER) >= 10,
-          (round(min(edge(sum(res[k].values()), 100) for k in ["golden"] + honest), 1),
-           round(min(edge(res[k][g], 50) for k in ["golden"] + honest for g in P.GRADE_ORDER), 1)))
-    check("SF12 the plan's export sheet only: the domestic sheet is mill tonnes, outside 2.1's loads",
+    conv = pk.conventions()
+    for i, (name, v) in enumerate(conv.items(), start=1):
+        tm = edge(sum(v.values()), 500)
+        gm = min(edge(v[g], 100) for g in P.GRADE_ORDER)
+        check("SF11.%d convention (%s): total %.1f files %s, %.1f loads inside its 500-load bin; every grade files the "
+              "golden's 100-load bin, the tightest %.1f inside" % (i, name, sum(v.values()), "{:,.0f}".format(bins(v)[0]), tm, gm),
+              bins(v) == gold_bins and tm >= 100 and gm >= 20)
+    wins = {}
+    for win in (30, 45, 90):
+        wins[win] = A.Pack(TDIR, window=win).conventions()
+    off = [(w, k) for w, c in wins.items() for k, v in c.items() if bins(v) != gold_bins]
+    check("SF11.w every convention under link windows of 30, 45 and 90 minutes files the same bins (%d readings)"
+          % sum(len(c) for c in wins.values()), not off, off[:3])
+    hm = [k for k in conv if "inverse payloads" in k]
+    a44 = [k for k in conv if "at FY2026 net" in k]
+    check("SF21 the average payload as the mean payload or the mean of each load's inverse payload: same call and grades",
+          len(hm) == 4 and all(bins(conv[k]) == gold_bins for k in hm))
+    check("SF22 the 44 t units' FY2028 payload recomputed from tare and bunks or kept at their FY2026 net: same call and grades",
+          len(a44) == 4 and all(bins(conv[k]) == gold_bins for k in a44))
+    check("SF12 the plan's Export sheet only: the domestic sheet is mill tonnes, outside the basis's loads",
           abs(sum(pk.plan.values()) - F["plan_total"]) < 1)
     check("SF13 the ticket's net tonnes are the load's payload (tare from the register)",
           all(abs(l["net"] - round(l["net"], 2)) < 1e-9 for l in pk.loads))
@@ -156,13 +173,13 @@ def main():
           all(P.FY26[0] <= l["date"] <= P.FY26[1] for l in pk.loads))
     check("SF15 the approval covers all five forests' roads", all(P.FORESTS[f]["name"].split()[0] in approval for f in P.FORESTS))
     billed = A.ask_a(TDIR, pk, by_owner=False)
-    check("SF16 cartage against the carrier whose unit hauled the load (4.1): the billed code moves every carrier",
+    check("SF16 cartage against the carrier whose unit hauled the load: the billed code moves every carrier",
           all(R.rhu(billed[c] / 1e3, 0) != F["ask_a_k"][c] for c in P.CARRIERS) and docs.S_CART in basis)
     nocr = A.ask_a(TDIR, pk, credits=False)
-    check("SF17 net of credit notes (4.1): leaving them out moves the carriers billed twice",
+    check("SF17 net of credit notes: leaving them out moves the carriers billed twice",
           any(R.rhu(nocr[c] / 1e3, 0) != F["ask_a_k"][c] for c in P.CARRIERS))
     dock = A.ask_b(TDIR, by_weighbridge=False)
-    check("SF18 deliveries by delivery date (4.2): the dockets' posting dates move every mill-quarter",
+    check("SF18 deliveries by delivery date: the dockets' posting dates move every mill-quarter",
           all(R.nearest(dock[k], 10) != F["ask_b_10"][k] for k in dock) and docs.S_MILL in basis)
     mwb = A.read_csv(os.path.join(TDIR, pack.MWB))
     dks = A.read_csv(os.path.join(TDIR, pack.DOCK))
@@ -203,8 +220,8 @@ def main():
             if f not in [d["file"] for d in meta["distractor_files"]]:
                 shutil.copy(os.path.join(TDIR, f), tmp)
         F2 = R.compute(tmp)
-        check("distractor deletion: every graded figure unchanged", F2["total_100"] == F["total_100"] and
-              F2["grade_50"] == F["grade_50"] and F2["ask_a_k"] == F["ask_a_k"] and F2["ask_b_10"] == F["ask_b_10"])
+        check("distractor deletion: every graded figure unchanged", F2["total_500"] == F["total_500"] and
+              F2["grade_100"] == F["grade_100"] and F2["ask_a_k"] == F["ask_a_k"] and F2["ask_b_10"] == F["ask_b_10"])
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     port_tickets = {t["ticket_no"] for t in pk.wb}
@@ -256,6 +273,27 @@ def main():
     late = [r for r in inv if dt.datetime.strptime(r["document_date"], "%d/%m/%Y") > P.EXPORT_DATE]
     check("realism: no invoice, docket or document dated after the export date 2026-10-20", not late and
           all(dt.datetime.strptime(d["docket_date"], "%d/%m/%Y").date() <= P.FY26[1] for d in dks))
+    reg_rows = list(load_workbook(os.path.join(TDIR, pack.FLEET), read_only=True)["Fleet"].iter_rows(min_row=4, values_only=True))
+    reg_rows = [r for r in reg_rows if r[0]]
+    blocks = {}
+    for i, r in enumerate(reg_rows):
+        blocks.setdefault(r[1], []).append(i)
+    check("realism: Matiri's truck numbers run across the carriers, so no carrier's units sit in one block of the register",
+          all(max(v) - min(v) + 1 > len(v) for v in blocks.values()) and [r[0] for r in reg_rows] == sorted(r[0] for r in reg_rows))
+    import statistics as st
+    sd = {c: st.pstdev([float(u["Tare (t)"]) for u in pk.units if u["Configuration"] == c]) for c in {u["Configuration"] for u in pk.units}}
+    old = [float(u["Tare (t)"]) for u in pk.units if u["50MAX permit"] == "Y" and u["Year"] <= 2016]
+    new = [float(u["Tare (t)"]) for u in pk.units if u["50MAX permit"] == "Y" and u["Year"] >= 2021]
+    check("realism: tares spread within each configuration (sd 0.25 t or more) and older nine-axle units run heavier",
+          min(sd.values()) >= 0.25 and sum(old) / len(old) > sum(new) / len(new), {k: round(v, 3) for k, v in sd.items()})
+    vb = {}
+    for u in pk.units:
+        vb.setdefault((u["Configuration"], u["Bunks"]), []).append(float(u["Full bunks 3.9 m logs (JAS m3)"]))
+    check("realism: full-bunk volumes follow the bunk count within each configuration, with unit-to-unit spread",
+          all(sum(vb[(c, 5)]) / len(vb[(c, 5)]) > sum(vb[(c, 4)]) / len(vb[(c, 4)]) for c in sd if (c, 5) in vb and (c, 4) in vb)
+          and len({x for v in vb.values() for x in v}) > 20)
+    check("realism: every 50MAX permit is held by a nine-axle unit and every nine-axle unit holds one",
+          all((u["50MAX permit"] == "Y") == u["Configuration"].startswith("9-axle") for u in pk.units))
     pays = [l["net"] for l in pk.loads]
     check("realism: FY2026 payloads between 20 and 28 t", 20 <= min(pays) and max(pays) <= 28, (min(pays), max(pays)))
     for d in (TDIR, os.path.join(TASK, "golden")):
@@ -276,7 +314,7 @@ def main():
     prompt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
     check("prompt names both deliverables and states no figure of the answer",
           all(d in prompt for d in meta["deliverables"]) and not re.search(r"\b2[5-9],\d{3}\b", prompt))
-    check("figures.json carries the call and every ask figure", figs["call"]["fy2028_loads_nearest_100"] == F["total_100"]
+    check("figures.json carries the call and every ask figure", figs["call"]["fy2028_loads_nearest_500"] == F["total_500"]
           and len(figs["ask_a_cartage_nzd_k"]) == 6 and len(figs["ask_b_mill_tonnes"]) == 12)
     n_fail = sum(1 for _, ok in RESULTS if not ok)
     print("\n%d assertions, %d failed" % (len(RESULTS), n_fail))
