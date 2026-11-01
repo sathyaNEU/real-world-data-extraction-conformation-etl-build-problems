@@ -26,7 +26,7 @@ def figures(S):
                  for r in gold},
         "planning_peak_1dp": {str(r["year"]): round(r["peak"], 1) for r in gold},
         "weather_normal_mw": {str(r["year"]): round(r["weather_normal"], 1) for r in gold},
-        "relief_mw": {str(r["year"]): round(r["relief_mw"], 1) for r in gold},
+        "relief_mw": {str(r["year"]): round(r["relief_mw"], 2) for r in gold},
         "excess_mw": {str(r["year"]): round(r["peak"] - f.firm, 1) for r in gold},
         "weather_normal_2024_mw": round(wn["B"], 1),
         "slope_mw_per_f": round(wn["slope"], 2),
@@ -84,12 +84,13 @@ def write_book(path, S, F):
     ws.append(hdr)
     _head(ws, 4, len(hdr))
     for r in gold:
-        ws.append([r["year"], round(r["weather_normal"], 1), round(r["relief_mw"], 1), int(round(r["peak"])), f.firm,
+        ws.append([r["year"], round(r["weather_normal"], 1), round(r["relief_mw"], 2), int(round(r["peak"])), f.firm,
                    round(r["peak"] - f.firm, 1), r["transfer"]])
     for row in ws.iter_rows(min_row=5, max_row=9):
         row[0].number_format = "0"
-        for c in row[1:3] + row[4:6]:
+        for c in (row[1], row[4], row[5]):
             c.number_format = "0.0"
+        row[2].number_format = "0.00"
         row[3].number_format = "0"
         row[6].number_format = "0.0"
         row[6].font = Font(bold=True)

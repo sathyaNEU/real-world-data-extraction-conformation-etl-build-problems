@@ -39,7 +39,7 @@ def main():
     a("## 2. Critical Components\n")
     a("1. The weather-normal peak (criteria 3.2) is **%.1f MW** at the 2024 level, **%.1f MW** in %s before the "
       "voltage cut." % (f["weather_normal_2024_mw"], f["weather_normal_mw"][yrs[0]], yrs[0]))
-    a("2. The %.1f per cent voltage cut takes **%.1f per cent** off the load at the planning peak (**%.1f MW** in "
+    a("2. The %.1f per cent voltage cut takes **%.1f per cent** off the load at the planning peak (**%.2f MW** in "
       "%s), read from the 2025 pilot's hours beginning 16:00 to 20:00 on days at %d F or more."
       % (k["voltage_cut_pct"], rel["golden"], f["relief_mw"][yrs[0]], yrs[0], k["hot_f"]))
     a("3. The planning peaks for %s to %s are **%s MW**." % (yrs[0], yrs[-1], ", ".join(str(p) for p in pk[:-1]) +

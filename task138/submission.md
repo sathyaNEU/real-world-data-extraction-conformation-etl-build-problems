@@ -10,7 +10,7 @@
 ## 2. Critical Components
 
 1. The weather-normal peak (criteria 3.2) is **102.9 MW** at the 2024 level, **105.9 MW** in 2027 before the voltage cut.
-2. The 3.5 per cent voltage cut takes **1.1 per cent** off the load at the planning peak (**1.1 MW** in 2027), read from the 2025 pilot's hours beginning 16:00 to 20:00 on days at 99 F or more.
+2. The 3.5 per cent voltage cut takes **1.1 per cent** off the load at the planning peak (**1.14 MW** in 2027), read from the 2025 pilot's hours beginning 16:00 to 20:00 on days at 99 F or more.
 3. The planning peaks for 2027 to 2031 are **105, 106, 107, 108 and 109 MW**.
 
 ## 3. Step-by-Step Solution
