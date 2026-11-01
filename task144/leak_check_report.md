@@ -19,6 +19,9 @@ Stump terms swept: cascade, lottery, window, launch, tracewire, kilnkit, slidewe
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'how-many' at 32% of 196 prompts (cap 30%); deliverable set 'png+xlsx' at 24% of 196 prompts (cap 20%); reword at the role level, not the verb
+
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
@@ -30,8 +33,6 @@ Stump terms swept: cascade, lottery, window, launch, tracewire, kilnkit, slidewe
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read
@@ -77,3 +78,15 @@ above is the result:
 - The ask readings are the devices, or are asserted single.
 
 The five REVIEW lines above are answered in the design note.
+
+### Round 3: the 11-01 prompt repair (no count disclosed, shell reworded), target.zip 9126d810 unchanged
+
+One isolated reader at medium effort read only the new prompt.txt and target/.
+- **Q1, the decisive step:** none. Closest is memo 2.4, which states the estimand (stars not yet received count), not a method.
+- **Q2, a file ranking or scoring the candidates:** none. The lottery workbook carries draws, no scores; the October row has no pick.
+- **Q3, a file there only to help the analyst:** none. The crosswalk and the renames read as ordinary migration records.
+- **Q4, a figure or name reading as the answer:** none.
+- **Q5, filed sentences fixing the main figure:** memo 2.1 to 2.3 fix population, outcome, window and the spotlit condition; the forecast and the spotlight's lift stay open. Consistent with the golden.
+- **Q6, what decides the answer:** an analytical choice; field and unit conventions read as Layer 1 mess.
+- REVIEW lines: the parquet hash string, the memo's shared words, the lottery's 2026-10-06 issue date and the prompt's shell quota, all harmless.
+- The prompt states no count the data hold and no sentence explaining the data.

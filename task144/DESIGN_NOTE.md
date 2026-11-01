@@ -662,3 +662,7 @@ On target.zip 9126d810 (2026-10-27), the regular checks only (`CLAUDE.md`, the S
 - Gateways that always fetch every link of the message: a reader who took a fetch only where it covered every link of
   the send matched the golden exactly (round 4); a third to two fifths of each batch's gateways now leave the
   unsubscribe link alone, as scanners that guard against opting their reader out do, and that rule misses every figure.
+- A 11-01 prompt draft opening "What shortlisted repository ..." with the stars split into a second question (to clear
+  the which and how-many question-form quotas): `freeze.py --mode rubric` found the prompt's call sentence moved, so
+  the call sentence stays verbatim and the question-form WARN stands; its "Stars go to the nearest thousand" rounding
+  matched task135's construction on `guard.py surface` and was reworded to "Round stars ...".

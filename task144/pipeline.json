@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-11-01",
  "stump": "A competent solver builds the spotlight's stars as the readers' newsletter stars plus the cascade through their followers' home feeds, measures each repository's stars per follower view over its whole life and spotlights slidewell at about 14,000; the step that lands it there is carrying slidewell's forum-carried launch week into a cascade that starts a month later: from its 8th day public slidewell converts at about 0.7 per cent a view, not the 2.0 of its whole life, and on the rate from day 8, which reproduces the lottery's spotlight lifts, kilnkit is first at about 12,000, the spotlight adding about 9,000.",
  "architecture": 2,
  "loops": 0,
@@ -15,11 +15,11 @@
   "checks": 49
  },
  "leak": {
-  "leak_py": "REVIEW, every line answered in the design note, no LEAK (2026-10-27, b370e2a4)",
-  "reader": "round 1 (aa9589a5): Q1 to Q5 clean, Q6 analytical, id and URL-form tells fixed; round 2 (f0ae1a2f, prompt changed): Q1, Q2, Q4 clean, Q3 names the organisation's own records, Q6 analytical"
+  "leak_py": "REVIEW, no LEAK (2026-11-01, 9126d810)",
+  "reader": "round 1 (aa9589a5): Q1 to Q5 clean, Q6 analytical, id and URL-form tells fixed; round 2 (f0ae1a2f, prompt changed): Q1, Q2, Q4 clean, Q3 names the organisation's own records, Q6 analytical; round 3 (11-01, prompt changed): Q1 to Q4 clean, Q5 the estimand only, Q6 analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (people.first, repeat.gate_g), after the context artifact was redrawn filed_standard to planning_thread on a ban.artifact BLOCK against task141 v3",
+  "heart": "BLOCK (ban.pairing, ban.subdomain, ban.org_family against task166 v3, inherited from the 10-27 draw, escalated); task304 differentiated 11-01",
   "nearest": "driver 0.05 (task132, task255 v1, task446 v2)",
   "surface": "no hard tell; task150, task179 (gap, G6, Gate G) and task268 (gap, G6, pick) promoted on the cards alone, differentiated on the card (2026-10-27)",
   "note": "drawn 2026-10-15 after git pull (task261, task455 v2, task262 on file): guard WARN repeat.decision and repeat.question_form, answered in ## Draw; same-puzzle and same-driver against older builds differentiated on the card"
@@ -41,6 +41,13 @@
    "portal": "FAILED_TO_STUMP: both responses landed the call (slidewell, 12,000 external stars by day 90, 9,000 added), building the readers' cascade from each repository's whole-life rate per follower view; the field notes, the extract manifest and the twin pair announced the cascade",
    "repair": "design (architecture 2): the cascade kept as rung R3, the decisive step moved to the period the rate per follower view is read over (from the 8th day public, after a forum-carried launch week, chosen by its fit to the lottery's spotlights); the field notes and manifest deleted and every file made self-describing; the twin pair removed; golden kilnkit at 12,000 with 9,000 added",
    "commit": "RESHIPPED (task144) on 2026-10-27, target.zip 9126d810"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "author's Batch 5 sheet: prompt repair under guide-to-prompt (no count disclosed, no data explained), returns 'prompt'",
+   "repair": "prompt only: 'all seven repositories' dropped for 'every shortlisted repository' (the count rule), the second sentence led with the answer rather than 'Put', the rounding sentence opened 'Round' rather than 'Give' (clearing ten shell.repeat WARNs and the task135 rounding construction); the call sentence kept verbatim, every ask, file name, unit and rounding kept; no sentence explains the data; the pack, golden and every figure frozen (target.zip 9126d810 reproduced byte for byte)",
+   "gates": "voice-check PASS (997 characters; WARN question form how-many 32 per cent and png+xlsx 24 per cent, both frozen with the call sentence and the deliverables); precut exit 0 (61 checks, 0 FAIL, 8 WARN: the Survivor anatomy section a newer gate asks of the note); leak.py --asof 2026-09-30 REVIEW, no LEAK; leak reader round 3 clean, Q6 analytical; figures_check 90 figures, 0 absent; generator 150 checks, verify agrees, two byte-identical builds; guard surface no hard tell (task150 promoted on the cards, differentiated); guard heart BLOCK on ban.pairing, ban.subdomain and ban.org_family against task166 v3 (drawn 10-26, the day before this build's architecture-2 draw), inherited from the 10-27 draw and not moved by this repair, escalated to the author (a re-root waits on the portal's word on v2); same_puzzle and same_driver against task304 v2 cleared by a differentiation line; freeze.py check --mode rubric PASS",
+   "commit": ""
   }
  ],
  "resume": "",
@@ -56,10 +63,10 @@
   "verify": "agrees (pick kilnkit at 12,086 adding 8,929; Ask A and Ask B on its own path)",
   "byte_identical": true,
   "figures_check": "90 figures, 0 absent",
-  "precut": "52 checks, 0 FAIL, 0 WARN",
-  "voice_check": "PASS",
+  "precut": "61 checks, 0 FAIL, 8 WARN",
+  "voice_check": "PASS (WARN shell quota: question form and deliverable set, frozen)",
   "container": "clean (target and golden)",
-  "freeze": "freeze.py check --mode rubric PASS: the call, the stump and every frozen figure unchanged; the 12 Ask A figures moved",
+  "freeze": "freeze.py check --mode rubric PASS (11-01): the main call, the stump and every frozen figure unchanged; no ask figure moved (prompt-only repair)",
   "target_zip_sha256": "9126d810289fe16aaa6e2c15c1f364895d38aa4c04883c859526509a57abd901"
  }
 }
