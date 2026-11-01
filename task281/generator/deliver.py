@@ -218,8 +218,8 @@ def chart(P, G, order, path):
     ax.set_yticks(range(len(order)))
     ax.set_yticklabels([NAMES[c] for c in order], fontsize=9)
     ax.set_title("Five clinics fall below the 85% floor at Standard\n"
-                 "Estimated sensitivity for referable DR, Oct 2025 to Sep 2026 screenings; outlined: each clinic's "
-                 "2027 point", fontsize=9.5, loc="left")
+                 "Estimated sensitivity for referable DR, Oct 2025 to Sep 2026 screenings\n"
+                 "Outlined: each clinic's 2027 point", fontsize=9.5, loc="left")
     cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.03)
     cb.set_label("Estimated sensitivity (%); line at the 85% floor", fontsize=8.5)
     cb.ax.axhline(85, color="#111111", lw=1.2)
@@ -259,9 +259,10 @@ def brief(P, G, f, order, png, path):
     box(0.5, 0.35, 12.3, 0.9, [("Standard at seven clinics, Enhanced at two, High at three in 2027", 26, True),
                                ("RetinaCheck operating points for contract year 2027. Clinical AI Oversight Committee, "
                                 "December meeting. Quality and Clinical AI.", 12, False)])
-    box(0.5, 7.0, 12.3, 0.4, [("Sources: local validation study 2025 (CVCH-QI-2025-01); RetinaCheck result export, "
-                               "screenings Oct 2025 to Sep 2026; Biomedical Engineering asset register and location "
-                               "history; CAI-03 v3 section 3; Pellam agreement PERC-CV-2027.        1", 9, False)])
+    box(0.5, 6.3, 5.6, 0.9, [("Sources: local validation study 2025 (CVCH-QI-2025-01); RetinaCheck result export, "
+                              "screenings Oct 2025 to Sep 2026; Biomedical Engineering asset register and location "
+                              "history; CAI-03 v3 section 3; Pellam agreement PERC-CV-2027.", 9, False)])
+    box(12.6, 7.05, 0.5, 0.3, [("1", 9, False)])
     box(0.5, 1.5, 5.6, 5.6, [
         ("Recommendation", 16, True),
         ("Standard at %s." % std, 13, False),
