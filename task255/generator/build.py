@@ -41,7 +41,7 @@ DESCRIPTIONS = {
 def zip_dir(src, out):
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for fn in sorted(os.listdir(src)):
-            zi = zipfile.ZipInfo("target/" + fn, date_time=ZIP_TIME)
+            zi = zipfile.ZipInfo(fn, date_time=ZIP_TIME)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(src, fn), "rb").read())

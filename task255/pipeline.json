@@ -1,26 +1,26 @@
 {
  "task": "task255",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "The default path times each dispensing at one WHO defined daily dose a day and files 041236 and 041263; each new user's own dose, read from their refill rhythm, files 041219, 041236, 041248, 041275, 041307 and 041322.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-11-01, as-of 2027-02-12, target.zip eb685de6)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": "",
-  "nearest": ""
+  "heart": "PASS (2026-11-01)",
+  "surface": "one pair promoted for adjudication: task265 (surface 0.101, same decision type designation_set; left-truncated implant survival against a dose read from refill rhythm), not adjudicated (2026-11-01)",
+  "nearest": "task270 driver 0.11"
  },
  "judge": {
   "verdict": "",
@@ -53,7 +53,7 @@
    "commit": "the main session commits"
   }
  ],
- "resume": "architecture 3 drawn 2026-11-01 (card registered PASS); next: design note and generator",
+ "resume": "architecture 3 built 2026-11-01: generator checks 67/67, verify 55/55, two byte-identical builds, figures_check 171/171, precut 61/0, voice-check PASS, leak.py REVIEW (no LEAK), guard heart PASS, surface one pair promoted (task265); target.zip eb685de6; next: stage 4, the leak reader and the determinism judge (coordinator)",
  "approved": null,
  "delivered": null,
  "portal": null,
