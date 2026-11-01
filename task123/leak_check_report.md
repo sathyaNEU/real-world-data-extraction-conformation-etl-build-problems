@@ -19,7 +19,7 @@ Stump terms swept: rejected, return, hardening, architecture, decisive, returns,
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 195 prompts (cap 30%); reword at the role level, not the verb
 
 ## 2 author vocabulary (clean)
 
