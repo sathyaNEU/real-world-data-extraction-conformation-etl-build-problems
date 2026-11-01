@@ -51,7 +51,7 @@ a filing reform changes who applies.
    with a first pay date from January 2022 to December 2025, 37,103 rows, two layouts across the June 2024 migration),
    with the quarterly wage files of both systems (178,829 legacy rows, 167,168 current rows). The formation statistics
    pull (applications January 2021 to September 2026) is the main call's evidence; the spine and its companions carry
-   the asks. 16 files in four formats (JSON, CSV, XLSX, DOCX); distractors `bfs_monthly_states_2026-04-15.csv` (the
+   the asks. 14 files in four formats (JSON, CSV, XLSX, DOCX); distractors `bfs_monthly_states_2026-04-15.csv` (the
    April release) and `nonemployer_statistics_2023_states.csv`, named in `metadata.json` only.
 9. Deliverables: `first_time_employer_plan_2027.xlsx` (the call, its components and the ask tables) and
    `first_time_employer_plan_2027_note.docx` (a one-page note with the chart of the reform states against the nine);
@@ -191,12 +191,12 @@ Lesson: a model learns that a leading indicator inflated by a cut in filing cost
 | SF12 | the first quarter on payroll | the calendar quarter of its first payroll with us | the first full quarter | other quarters | the counting notes: "the calendar quarter of its first payroll with us" |
 | SF13 | gross wages we ran | gross wages we ran on our payroll | wages on the returns, tax filing only included | adds filed wages | the counting notes: "the gross wages we ran on our payroll" |
 | SF14 | a legacy client quarter's wages | group 00, the client's total | every group summed | doubles two-group clients | the identity 00 = 01 + 02 in every two-group client quarter, to the cent (asserted, 37,739 client quarters) |
-| SF15 | a migrated account's signup channel | the channel of its legacy source code | the export's channel | moves four channels | the field guide: the load carried the legacy source as it mapped it; the code list; the export disagrees with the code only where the load used the default (asserted, 5,376 accounts) |
+| SF15 | a migrated account's signup channel | the export's channel | the channel its legacy source code stands for | same call | C1: the migration load wrote every legacy referral code's channel onto the export, the older CPA, BP, TEL and APX included, so the two agree on all 22,551 migrated accounts and the channel table read through the legacy codes is the golden's (checks.py SF15); verify.py recomputes the table from the export's channel alone |
 | SF16 | the window the 2025 share applies to | the share times the formations the twelve months' applications will produce | the share on its own base window (July 2024 to June 2025 applications) | 2,200 (2,155, the 2025 count back) | the standard: the share is the 2025 count "over the state's business formations within four quarters from the applications of July 2024 to June 2025", and the line is that share times the formations a year of applications "at the level of the twelve months to September 2026" will produce |
 | SF17 | a business bought by a new owner who carries it on | the same business as the seller, its accounts joined through the register | a new business | counts acquired businesses as first-time | the counting notes: "is bought by a new owner who carries it on, is the same business" |
 | SF18 | first-time status | the state's liability record: no liability date before the quarter of the first payroll with us | the onboarding flag | the flag counts 2,900 | the counting notes: "Whether a business has paid wages before is a matter of the state's record, not of its onboarding answer" |
 | SF19 | a quarter on tax filing only | not a quarter we paid: neither still with us nor wages | a quarter with wages on the returns | keeps tax-only clients still and adds their filed wages | the counting notes: "A quarter an account spent on tax filing only does not count" and "a quarter on tax filing only adds none" |
-| SF20 | a business's channel | its first account's; a migrated account's from its legacy source code through the code list | the export's channel on any account | moves four channels | the field guide: "the legacy source code in the crosswalk is the record of how the client came to us"; the counting notes: "the channel of its first account" |
+| SF20 | a business's channel | its first account's, a migrated one's in the export as its legacy code reads | the export's channel on its latest account | moves four channels (107 businesses' accounts differ) | the counting notes: "A business came to us through the channel of its first account"; SF15 C1 for a migrated first account |
 | SF21 | the year and quarter of the first payroll with us | the first quarter we ran wages, from the wage files | a migrated account's first_pay_date (its legacy client-since date) | January starters in 2023, first quarters a quarter early | the counting notes count "the year its first payroll with us ran"; wherever the field's quarter differs from the first quarter with wages it holds no wages (asserted, 4,885 migrated accounts; no current-system account differs) |
 | SF22 | a client re-opened under its corrected EIN | one business with its first account | two businesses | double counts, loses the still and the later wages | the counting notes: "A business is the employer, whatever its account or EIN"; the EIN pairs one adjacent swap apart on accounts with the same names, industry and entity are exactly the 803 clients cancelled and re-opened the next day (asserted) |
 | SF23 | a successor of an EIN with no account in the extract | its predecessor's business, not a first-time employer | a first-time employer of its own | a larger 2024 count in every territory (asserted, the count printed in checks.py) | the counting notes: "A business the successor transfer register lists as the successor of an EIN with no account in the year-end planning extract is the same business as that predecessor" |
@@ -288,14 +288,14 @@ same route.
 | 9 Boundary inclusivity | Michigan's part-month go-live counted or left out | C1: 2,499.6 and 2,502.0 |
 | 10 Rounding path | the twelve states added, then the nearest 100 | filed (the standard) |
 | 11 Tie-break | none, a single figure | nothing to break |
-| 12 Maturity and censoring | only cohorts whose four quarters have closed (to June 2025) | the field guide's release sentence; the release publishes nothing else |
+| 12 Maturity and censoring | only cohorts whose four quarters have closed (to June 2025) | the release itself: formations within four quarters through June 2025 applications and no row after (checks.py AXIS 12, verify.py); the standard and the share tab index formations by the applications' months |
 | 13 Order of operations | share times formations per state, then added | commutes; C1 |
 | 14 Row order | sums only | C1 |
 | 15 Duplicate resolution | one row per series, adjustment, month and state | asserted unique; nothing to resolve |
 | 16 Identity normalisation | FIPS codes to the twelve states | C1: the twelve codes, the standard's twelve names |
 | 17 Netting against gross | counts, nothing to net | none |
 | 18 Dimensional units | applications and formations as counts, adjusted or not | filed (unadjusted counts); C1: adjusted volume 2,495.0 |
-| 19 Code and status semantics | data type codes and the adjustment flag | the field guide; never the stump |
+| 19 Code and status semantics | data type codes and the adjustment flag | the release's own codes (BA_BA, BF_BF4Q) against the standard's measure names, its eight-quarter and duration series named nowhere in the standard (checks.py AXIS 19); the flag's yes and no, same call (SF1); never the stump |
 | 20 Integerisation | none before the rounding | none |
 | 21 Clause scope | "a year of applications at the level of the twelve months to September 2026" | filed scope (the standard) |
 | 22 Forward window contents | the twelve months' applications are all observed; the older routes closed inside them (January to March 2026); the log files no further change to formation filings | shipped (the pull and the log) |
@@ -337,7 +337,7 @@ carries no device, asserted):
   counting notes count the year and the quarter the first payroll with us ran, and only the wage files say when that
   was: 4,885 migrated accounts hold no wages in the field's quarter, and no current-system account differs. Trusting the
   field puts January 2024 starters into 2023 (12 to 54 a territory) and moves first quarters a quarter early. Silent:
-  the field guide calls the field the first pay date on the account record, and nothing invites the cross-check.
+  the export's own column calls it the first pay date, and nothing invites the cross-check.
 - A and C second primary, D7 the true key elsewhere: the legacy system could not change an EIN, so a client whose first
   quarterly return came back rejected for a mistyped EIN was cancelled and opened again the next day under the corrected
   number (803 clients), with the same legal and trade names, industry and entity and the two EINs one adjacent swap
@@ -350,18 +350,18 @@ carries no device, asserted):
 - Documented, filed at the determinism judge's request and executed by the cracker (the mirror's bar): first-time
   status from the state's liability record, not the onboarding flag, which successors and self-run businesses often
   answered yes on the older form (D2); a quarter on tax filing only is not one we paid, with its over-cleaning twin, accounts
-  moved to tax filing only from 1 January 2026, which we still paid in the fourth quarter of 2025 (D5); a migrated
-  account's channel from its legacy source code through the code list, where the load gave CPA, BP, TEL and APX the
-  default web sign-up (D7); a business bought by a new owner who carries it on is the same business, and a
-  successor of an EIN with no account in the extract is its predecessor's business, never a first-time one.
-- Shared hazards, documented: successors through the payroll tax team's register (the counting notes' re-formed entity
-  and new-owner rules), returning clients under the old EIN in three formats, the state first employed in against the
-  address state, legacy cents, legacy numbers through the crosswalk, the migration quarter split across both wage files.
+  moved to tax filing only from 1 January 2026, which we still paid in the fourth quarter of 2025 (D5); a business
+  bought by a new owner who carries it on is the same business, and a successor of an EIN with no account in the
+  extract is its predecessor's business, never a first-time one.
+- Shared hazards: successors through the payroll tax team's register (the counting notes' re-formed entity and
+  new-owner rules), returning clients under the old EIN in three formats, the state first employed in against the
+  address state (the counting notes), legacy cents (the report's own column, gross_wages_cents), legacy numbers through
+  the crosswalk, the migration quarter split across both wage files (each file's 2024 Q2 row holds only its own pay
+  dates, asserted), the channel of a business's first account (the counting notes).
 
 Spans: A reads the export, the crosswalk, both wage files (the first payroll), the registrations, the successor
-register, the territory map, the counting notes and the field guide; B adds the legacy wages' pay groups (nine files,
-fourteen columns); C reads the export, the crosswalk, the wage files, the registrations, the register, the field guide
-and the counting notes.
+register, the territory map and the counting notes; B adds the legacy wages' pay groups (eight files, fourteen
+columns); C reads the export, the crosswalk, the wage files, the registrations, the register and the counting notes.
 
 | Ask figure | Golden | Cracker | Verdict |
 |---|---|---|---|
@@ -395,10 +395,10 @@ and the counting notes.
 | channel partner marketplace | 262 | 253 | miss |
 | channel web sign-up | 801 | 757 | miss |
 
-The cracker lands the call, reads the field guide and the counting notes and executes every rule they point at (EINs
-normalised, returning clients, successors and new owners as one business through the register, first-time status from
-the liability record, tax-filing-only quarters left out, a migrated account's channel from its legacy code, the earliest
-registration's state, territories, cents, the crosswalk, both wage files summed by quarter); it trusts the account's
+The cracker lands the call, reads the counting notes and executes every rule they state (EINs normalised, returning
+clients, successors and new owners as one business through the register, first-time status from the liability record,
+tax-filing-only quarters left out, a business's channel from its first account, the earliest registration's state,
+territories, the legacy cents its column names, the crosswalk, both wage files summed by quarter); it trusts the account's
 first pay date, an EIN as the mark of a separate business and every row of a legacy client quarter. The two silent
 count devices pull the counts the same way (in every territory the January starters the field moves into 2023, 12 to
 54, outnumber the accounts a re-key adds, 1 to 13; asserted), so no mishandling composes back. Single-device cracks:
@@ -415,16 +415,24 @@ Measured by: generator/cracker.py on the cut pack (target/), re-run by checks.py
 
 ## Leak sweep
 
-`leak.py task163 --asof 2026-10-16`: REVIEW, no LEAK. Each REVIEW line and why it is harmless:
+`leak.py task163 --asof 2026-10-16` on the 14-file pack: REVIEW, no LEAK (no file or sheet describes the data, checks.py
+REGISTER). Each REVIEW line and why it is harmless:
+- The plan workbook's Notes sheet: FP&A's own workbook notes (owner, the sizing standard, the share tab's refresh, the
+  sign-off); it names no column, file or code.
 - The standard carries the golden figure 100: it is the filed rounding ("to the nearest 100"), stated once at authority.
 - The standard carries most words of the committed call: it is where the first-time-employer line is defined; it
   states no figure for it and names no rate, ratio, window or method (verify.py asserts the sizing section is free of
   them).
 - The standard carries ten stump-paragraph terms: they are the estimand's own nouns (applications, formations,
   months, release); none names the comparison, the yield or the split.
-- The surface screen promotes task124, task132 and task144 on the shared card keys (gap population, pattern G6, Gate G
-  forecasting), the same-driver signature the card's differentiation answers at the draw; heart WARN on the draw's
-  three repeats (Gate G, decision, question form), answered in `## Draw`.
+- The prompt's shell quota (the second sentence opens on "Put", 35 per cent of the corpus against a cap of 20): a
+  corpus-quota WARN on the shipped prompt, voice-check PASS; the prompt stays as shipped on a repair that moves the pack.
+- metadata.json's title shares three stump terms (formation, application, filing): it names the decision and the setting
+  the research log files, never the comparison, the yield or the split; the subdomain, which narrated the decisive
+  step, now says only what the task decides.
+- The surface screen promotes task124, task132, task165 and task175 on the shared card keys (gap population, pattern
+  G6, Gate G forecasting, decision quantity_figure), the same-driver signature the card's differentiation answers at
+  the draw; heart WARN on the draw's three repeats (Gate G, decision, question form), answered in `## Draw`.
 
 ## Pre-ship check
 
@@ -450,7 +458,7 @@ The 10/10 rules read again against the built pack (round 3):
   919,455 applications; seven variants at 2,491 to 2,500; every ask figure to the cent; Gates G and H pass). Its one ask
   fork, a successor of an EIN with no account in the extract, is closed by one sentence in the counting notes (SF23).
   The reader found no leak; its small tells are answered (the share tab's shares are formulas over the tab's own counts
-  and bases, shown to two decimals of a per cent with the results Excel stores, and the manifest's covers are filled).
+  and bases, shown to two decimals of a per cent with the results Excel stores).
   figures.json and the Deliverable Answers block are byte-identical to the judged build.
 - Residual, recorded as measured: the common rise in applications ramps from January to April 2026, and all three
   older routes close inside the ramp (Ohio 5 January, Pennsylvania 2 February, Michigan 2 March). It stays: moving the
@@ -489,3 +497,4 @@ The 10/10 rules read again against the built pack (round 3):
 - A third silent count device so that a response cracking both count primaries stays under 45 (47.7 measured, group 00 moving only the wages): not built at stage 4 round 2, since no further mess the company's systems write moves the counts apart from the first payroll and the business's identity, and a contrived one would read as planted; the pair table records it beside the both-on-call floor of 48.3.
 - Rounding the share tab's stored shares to four decimals for a finance workbook's look: rejected at stage 4 round 3, the standard prices each state at its share in the plan workbook, so stored rounded shares would move the exact line from 2,499.6 to 2,500.4 and figures.json with it; the shares are now formulas over the tab's own counts and bases, shown to two decimals of a per cent with the results Excel stores.
 - Moving the early 2026 rise off the three closings (a rise from October 2025 to January 2026): rejected in the round 2 harness and left at stage 4 round 3, the twelve-state growth carries came within 0.62 bins of the golden and the own before-and-after within 0.46; the rise ramps January to April 2026 with every closing inside the ramp, recorded as the residual in the pre-ship check.
+- The pack's field guide (plan_pack_field_guide.xlsx, every data file's fields and codes) and manifest (pack_manifest.csv, each file's owner, source, date and cover), shipped to 18 October: retired on 1 November under the new leak gate, since no shipped file describes the data. Provenance moved to metadata.json; the legacy wage report's cents into its own column (gross_wages_cents); the closed cohorts, the series codes and the migration quarter's split left to the release's and the wage files' own rows (asserted); and the one ask rule the guide carried, a migrated account's channel from its legacy referral code where the load had given CPA, BP, TEL and APX the default web sign-up, closed by convergence in the data: the load now maps every code, so the export's channel is the golden's (SF15, asserted). No call or ask figure moved.

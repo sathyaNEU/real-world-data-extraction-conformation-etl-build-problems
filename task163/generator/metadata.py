@@ -41,8 +41,34 @@ SOURCES = {
     DOC.F_LOG: "Constructed: the fictional Kilbourne Payroll Market Research's log of state business filing changes "
                "(2023 to 2026); every change it logs, in every state, is fictional, including the integrated EIN "
                "filings",
-    DOC.F_DICT: "Constructed: the fictional Kilbourne Payroll FP&A's planning pack field guide (15 October 2026)",
-    DOC.F_MANIFEST: "Constructed: the fictional Kilbourne Payroll FP&A's planning pack manifest (15 October 2026)",
+}
+# who handed each file over, from which system, its pull or document date and what it covers (the pack ships no
+# manifest: section 3 of dataset-generation keeps provenance here, outside target/)
+_MR, _SO, _FPA = ("Market Research (%s)" % DOC.P["research"], "Sales Operations (%s)" % DOC.P["salesops"],
+                  "FP&A (%s)" % DOC.P["planning"])
+PROVENANCE = {
+    R.F_BFS: (_MR, "Business Formation Statistics, October 2026 release, Market Research's copy in the API's layout",
+              "2026-10-14", "12 core states, January 2021 to September 2026"),
+    R.F_BFS_APR: (_MR, "Business Formation Statistics, April 2026 release, Market Research's copy in the monthly "
+                       "download's layout", "2026-04-15", "12 core states, January 2022 to March 2026"),
+    R.F_NES: (_MR, "Nonemployer Statistics 2023, Market Research's copy in the API's layout", "2026-05-28",
+              "12 core states by NAICS sector"),
+    DOC.F_LOG: (_MR, "Research log", "2026-10-14", "Changes logged since 2023"),
+    R.F_ACCOUNTS: (_SO, "Current account system, year-end planning extract", "2026-01-09",
+                   "Accounts with a first pay date from January 2022 to December 2025"),
+    R.F_WAGES: (_SO, "Current account system, year-end planning extract", "2026-01-09",
+                "Pay dates 17 June 2024 to 31 December 2025"),
+    R.F_REG: (_SO, "Current account system, year-end planning extract", "2026-01-09",
+              "Registrations of the accounts in the onboarding export"),
+    R.F_XWALK: (_SO, "Migration load log", "2024-06-15", "Legacy clients in the extract, as loaded to the current system"),
+    R.F_LEGACY: (_SO, "Legacy client system, quarterly wage report (archive)", "2024-06-15",
+                 "Legacy clients since January 2022; pay dates to 14 June 2024"),
+    R.F_SUTA: ("Payroll Tax", "Successor transfer register", "2026-03-02", "Transfers effective 2022 to 2025"),
+    R.F_TERR: (_SO, "2025 territory map", "2025-01-06", "12 core states"),
+    DOC.F_NOTES: (_SO, "Counting notes", "2026-02-03", "How first-time employers are counted"),
+    DOC.F_STANDARD: (_FPA, "2027 plan sizing standard", "2026-09-01", "2027 operating plan, first-time-employer line"),
+    DOC.F_PLAN: (_FPA, "Plan workbook (share tab by Sales Operations)", "2026-10-15",
+                 "Share 2025 tab for the 12 core states, workbook notes"),
 }
 DISTRACTORS = [R.F_BFS_APR, R.F_NES]
 TITLE = ("How many first-time employers a Columbus payroll company's 2027 plan should count on across twelve states, "
@@ -71,9 +97,11 @@ def write(task_dir, n=None):
     out = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
+        by, system, as_of, covers = PROVENANCE[f]
         out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
                     "source": SOURCES[f], "date": "2026-10-15",
-                    "license": "CC0-1.0 (original work, constructed for this task)"})
+                    "license": "CC0-1.0 (original work, constructed for this task)",
+                    "provenance": {"provided_by": by, "system": system, "as_of": as_of, "covers": covers}})
     big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task163",
@@ -81,9 +109,8 @@ def write(task_dir, n=None):
         "domain": "Economics & Econometrics",
         "client_domain": "Economics & Econometrics",
         "house_domain": "economics-econometrics",
-        "subdomain": "forecasting-forecast-evaluation (employer business formation forecast from business applications "
-                     "when a filing reform changed who applies: the added applications' formation yield identified "
-                     "against the states the reform did not reach, before and after)",
+        "subdomain": "forecasting-forecast-evaluation (a payroll company's 2027 plan line for first-time employers, "
+                     "sized on employer business formations in its twelve core states)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a committed plan figure to the nearest 100, a table by sales territory of the 2024 first-time "
                         "employers (signed, still with us in the fourth quarter of 2025, gross wages in their first "

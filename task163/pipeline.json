@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-11-01",
  "stump": "Carrying each state's latest closed formation rate per application onto the twelve months of applications to September 2026 at the plan's 2025 shares files 2,800; the reform states' latest closed rate blends ordinary applications with applications the integrated filing added, about a fifth of the closed cohorts and about a third of the twelve months, and only the added applications' own yield, read against the nine other states before and after go-live and carried per added application, files 2,500.",
  "architecture": 1,
  "loops": 3,
@@ -15,24 +15,36 @@
   "checks": 50
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18, no LEAK (three lines on the sizing standard: the filed rounding, the call's words, ten stump-paragraph terms; answered in the note's Leak sweep)",
-  "reader": "round 1 on a9491969, round 2 on 4d1bb550 and round 3 on 72a5ef8d: no leak, Q6 analytical; the targeted re-read of the last pins on c4ac95d2 clean (Q1 none, Q6 analytical, nothing planted, the share tab reads as a real finance workbook; the remaining tells, the notes slightly tidied and the channel row naming the fix, are the cost of the judge's pins and left)"
+  "leak_py": "REVIEW 2026-11-01, no LEAK (--asof 2026-10-16, the reshipped cut dc7c3943; the same six REVIEW lines, ruled in the note's Leak sweep)",
+  "reader": "round 1 on a9491969, round 2 on 4d1bb550 and round 3 on 72a5ef8d: no leak, Q6 analytical; the targeted re-read of the last pins on c4ac95d2 clean (Q1 none, Q6 analytical, nothing planted, the share tab reads as a real finance workbook; the remaining tells, the notes slightly tidied and the channel row naming the fix, are the cost of the judge's pins and left)",
+  "reship_reader": "2026-11-01, fresh copy of dc7c3943, no manifest or field guide: no decisive-step sentence, Q6 an analytical choice (whether the conversion holds across the integrated filing's go-live); the filing-change log reads as context pointing at the break, the plan workbook's 2025 share tab is the standard's filed input, not an answer; its ask readings are closed per the judge's report"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-18 (repeat.gate_g, repeat.decision, repeat.question_form; answered at the draw)",
-  "nearest": "surface 0.081 task124, 0.080 task132, 0.077 task144 (same-driver card keys, differentiated on the card)"
+  "nearest": "surface 0.081 task124, 0.080 task132, 0.077 task144 (same-driver card keys, differentiated on the card)",
+  "heart_2026_11_01": "BLOCK read against the dates: test.same_puzzle_older and test.same_driver_older against task175, drawn 2026-10-23 after this build's 2026-10-18 draw (task175's card already differentiates against task163; H27); ban.artifact (filed_standard) and ban.forum (executive_team) against task161, drawn 01:20 the same day ahead of this card's 01:45: the heart run at ship (2026-10-18) recorded no BLOCK, so those bans reached the pair after the draw, and the forum and artifact are the shipped world's. Surface exit 0."
  },
  "judge": {
   "verdict": "DETERMINISTIC, APPROVE (round 3 on 72a5ef8d); round 2 on 4d1bb550 DETERMINISTIC, FIX_NOW on wording; round 1 on a9491969 DETERMINISTIC, APPROVE with strength AT_RISK",
   "disposition": "round 3 no fix: 2,499.64, a relative yield of 0.2603 and 312,103 added of 919,455 reproduced, seven variants at 2,491 to 2,500, every ask figure to the cent, Gates G and H pass; its one ask fork (a successor of an EIN with no account in the extract) closed by one sentence in the counting notes; rule 3 recheck PASS, strength HOLDS, P(one) about 0.15, P(both) 0.04 to 0.05 counting the regressions as landings; realism: three of four points fixed, the rise's January to April 2026 ramp over the three closings recorded as the residual",
-  "report": "relayed by the main session (round 1: formation-only bypasses on the round-1 world; round 2: four wording pins, provenance and realism; round 3: no fix, one ask fork)"
+  "report": "relayed by the main session (round 1: formation-only bypasses on the round-1 world; round 2: four wording pins, provenance and realism; round 3: no fix, one ask fork)",
+  "reship": "2026-11-01 on dc7c39432937530f4193e1393cf044ea: DETERMINISTIC, APPROVE (task163/determinism_check_report.md); the plan line forced at 2,500 (2,499.6; nine defensible variants 2,492 to 2,508, the easy routes 2,769 to 3,000), every ask figure reproduced to the cent; the six conventions the field guide carried each one reading in the data (legacy pay group 00 the sum of 01 and 02, the release's series and state codes, the state of first employment by the earliest registration, the 2024 Q2 split across the two wage files, the first payroll from the wage records, the corrected-EIN pairs), four of them the asks' devices; Gate G forecasting, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK pack_manifest.csv: a file whose name says it describes the data (manifest); LEAK plan_pack_field_guide.xlsx: a file whose name says it describes the data (field_guide))",
+   "repair": "leak",
+   "move": "Stopped writing plan_pack_field_guide.xlsx and pack_manifest.csv (docs.py's field guide and manifest writers removed; the pack is 14 files in the same four formats). The manifest's provenance (each file's owner, system, as-of and cover) moved to metadata.json under each file's provenance. What the field guide carried that a closure or an ask figure needs now rides in the producing systems' own files, nothing filed in a document: the legacy wage report names its unit in its column (gross_wages_cents); the closed cohorts (formations within four quarters through June 2025 applications and no row after, closure axis 12) and the series codes against the standard's measure names (axis 19) are the release's own rows; the 2024 Q2 split across the two wage files is carried by each file's own pay-date counts. Its one ask rule, a migrated account's channel from its legacy referral code where the load had given CPA, BP, TEL and APX the default web sign-up (SF15, SF20), is closed by convergence in the data: the migration load now maps every code, so the export's channel is the golden's on all 22,551 migrated accounts, and the golden, the verifier and the cracker read the export's channel. checks.py asserts that no shipped file or sheet describes the data by name and no document names a data column, with a positive control on the verifier's extractors for each moved closure. metadata.json's subdomain no longer narrates the decisive step; submission step 7 and the golden workbook's By channel note name the export's channel. The counting notes lost their one sentence on how the files fit together (\"Legacy client numbers map to current accounts through the migration crosswalk.\"), which no fork row or closure axis cited; the crosswalk's own header, naming both keys, carries the join, and checks.py asserts on both docx extractors that the notes no longer carry it. No other pack document's text changed; the call, every component and every ask figure are unchanged (figures.json, cracker.json and calibration.json byte-identical, freeze check PASS).",
+   "commit": "RESHIPPED (task163)"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "target_zip_md5": "dc7c39432937530f4193e1393cf044ea"
 }

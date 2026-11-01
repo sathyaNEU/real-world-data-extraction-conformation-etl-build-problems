@@ -67,15 +67,15 @@ NEIGHBOURS = {"OH": ["KY", "IN", "PA", "MI", "WV"], "PA": ["OH", "WV", "VA"], "M
               "VA": ["WV", "TN", "PA"]}
 OUT_OF_FOOTPRINT = ["FL", "TX", "AZ", "NC", "SC", "GA", "IL", "NY", "NJ", "MD", "KS", "CO"]
 
-# the legacy client system's referral source codes; the migration mapped the current ones to the current channel list
-# and loaded the two older codes (CPA from the 2022 referral form, BP from the bank branch programme) as the current
-# system's default channel
+# the legacy client system's referral source codes; the migration load mapped each onto the current channel list, the
+# older codes included (CPA from the 2022 referral form, BP from the bank branch programme, TEL from telesales, APX from
+# the app directory listing), so a migrated account's channel in the export is its legacy code's
 LEGACY_CODES = {"accountant referral": (("ACCT", 0.66), ("CPA", 0.34)), "bank partner": (("BANK", 0.62), ("BP", 0.38)),
                 "web sign-up": (("WEB", 1.0),), "outbound": (("OUT", 0.60), ("TEL", 0.40)),
                 "partner marketplace": (("MKT", 0.60), ("APX", 0.40))}
 CODE_TO_CHANNEL = {"ACCT": "accountant referral", "BANK": "bank partner", "WEB": "web sign-up", "OUT": "outbound",
-                   "MKT": "partner marketplace", "CPA": "web sign-up", "BP": "web sign-up", "TEL": "web sign-up",
-                   "APX": "web sign-up"}
+                   "MKT": "partner marketplace", "CPA": "accountant referral", "BP": "bank partner", "TEL": "outbound",
+                   "APX": "partner marketplace"}
 # a business that ran its own payroll usually comes to us through its accountant
 INHOUSE_CHANNELS = (("accountant referral", 0.50), ("web sign-up", 0.33), ("bank partner", 0.07), ("outbound", 0.05),
                     ("partner marketplace", 0.05))

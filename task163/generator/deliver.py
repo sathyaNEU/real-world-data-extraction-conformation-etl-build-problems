@@ -207,8 +207,7 @@ def write_xlsx(path, X):
 
     ws4 = wb.create_sheet("By channel")
     _title(ws4, "First-time employers signed in 2024, by signup channel", [
-        "The channel of each business's first account; accounts opened on the legacy system by their legacy referral "
-        "source code.",
+        "The signup channel of each business's first account (January 2026 extract).",
     ], "B")
     _head(ws4, 4, ["Signup channel", "First-time employers, 2024"], [24, 14])
     r = 5
@@ -438,8 +437,8 @@ def submission(X):
         "leaving out quarters an account spent on Tax filing only, for the fourth quarter of 2025, each business's "
         "first quarter on payroll and 2024.")
     L.append(
-        "7. Read each business's signup channel from its first account, an account opened on the legacy system by "
-        "its legacy_source_code in the crosswalk.")
+        "7. Read each business's signup channel from its first account's signup_channel in "
+        "onboarding_accounts_2022-2025.csv.")
     L.append(
         "8. Priced the twelve months' ordinary applications in the three states at the state's pre-go-live rate and "
         "the added at "

@@ -50,6 +50,22 @@ def main():
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     p = lambda f: os.path.join(target, f)
 
+    # ---------------------------------------------------------------- no file describes the data
+    shipped = sorted(os.listdir(target))
+    describing = re.compile(r"(?<![a-z])(read_?me|dictionar|codebook|field_?(notes|guide)|fields?_|_fields|manifest|"
+                            r"file_list|glossary|definitions|schema|data_?notes|export_notes|extract_notes|"
+                            r"how_to_read|about_this)", re.I)
+    check("no shipped file is a dictionary, field guide, readme or manifest by name",
+          not [f for f in shipped if describing.search(f.rsplit(".", 1)[0])], ", ".join(shipped))
+    sheets = []
+    for f in shipped:
+        if f.endswith(".xlsx"):
+            sheets += [(f, s) for s in openpyxl.load_workbook(p(f), read_only=True).sheetnames]
+    check("no shipped sheet is a field list or a readme (positive control: the share tab is read)",
+          ("plan_2027_workbook.xlsx", "Share 2025") in sheets and not [x for x in sheets if re.fullmatch(
+              r"(read ?me|fields|field notes|dictionary|data dictionary|definitions|glossary|columns?|about)", x[1],
+              re.I)], str(sheets))
+
     # ---------------------------------------------------------------- formats read back
     api = json.load(open(p("bfs_state_api_2026-10-14.json")))
     check("JSON: the API pull reads, header first", api[0][0] == "cell_value" and len(api) > 8000, "%d rows" % len(api))
@@ -110,6 +126,12 @@ def main():
     states = sorted(BA)
     last_closed = max(F4["OH"])
     check("the release closes formations at June 2025 applications", last_closed == month(2025, 6))
+    f4_months = {r[head["time"]] for r in api[1:] if r[head["data_type_code"]] == "BF_BF4Q"}
+    ba_months = {r[head["time"]] for r in api[1:] if r[head["data_type_code"]] == "BA_BA"}
+    check("the release itself carries the closed cohorts: formations within four quarters through June 2025 "
+          "applications and no row after, applications to September 2026 (positive control: both series read)",
+          max(f4_months) == "2025-06" and max(ba_months) == "2026-09" and all(len(F4[s]) == month(2025, 6) + 1
+                                                                                for s in F4) and len(F4) == 12)
     ttm = range(month(2025, 10), month(2026, 9) + 1)
     for s in states:
         b = sum(F4[s][t] for t in range(month(2024, 7), month(2025, 6) + 1))
@@ -211,16 +233,39 @@ def main():
         succ_eins.add(key(r["successor_ein"]))
     acct_of = {r["legacy_client_no"]: r["account_id"] for r in xw}
     code_of = {r["account_id"]: r["legacy_source_code"] for r in xw}
+    # the producing systems carry their own units: the legacy report names its cents, the current file writes dollars
+    check("the legacy wage report names its unit and writes whole cents; the current file writes dollars to the cent",
+          "gross_wages_cents" in leg[0] and "gross_wages" not in leg[0] and
+          all(r["gross_wages_cents"].isdigit() for r in leg) and
+          all(re.fullmatch(r"\d+\.\d\d", r["gross_wages"]) for r in cur))
     wq = Counter()
     for r in leg:
         if r["pay_group"] == "00":
-            wq[(acct_of[r["client_no"]], int(r["tax_year"]), int(r["tax_qtr"]))] += int(r["gross_wages"])
+            wq[(acct_of[r["client_no"]], int(r["tax_year"]), int(r["tax_qtr"]))] += int(r["gross_wages_cents"])
     for r in cur:
         yy, qq = r["quarter"].split("-Q")
         wq[(r["account_id"], int(yy), int(qq))] += int(round(float(r["gross_wages"]) * 100))
-    codes = {"ACCT": "accountant referral", "CPA": "accountant referral", "BANK": "bank partner", "BP": "bank partner",
-             "WEB": "web sign-up", "OUT": "outbound", "TEL": "outbound", "MKT": "partner marketplace",
-             "APX": "partner marketplace"}
+    # the migration quarter: each system's 2024 Q2 row holds its own part of the quarter's pay dates
+    full_q = {"Weekly": (13,), "Biweekly": (6, 7), "Semimonthly": (6,), "Monthly": (3,)}
+    freq = {a["account_id"]: a["pay_frequency"] for a in acc}
+    lq = {(acct_of[r["client_no"]], r["tax_year"], r["tax_qtr"]): int(r["check_dates"]) for r in leg
+          if r["pay_group"] == "00"}
+    cq = {(r["account_id"], r["quarter"]): int(r["pay_dates"]) for r in cur}
+    span = [a for (a, yy, qq) in lq if (yy, qq) == ("2024", "2") and (a, "2024-Q2") in cq and
+            (a, "2024", "1") in lq and (a, "2024-Q3") in cq]
+    check("the migration quarter splits across the two wage files: for every client paid on both systems through "
+          "2024 Q2 the legacy check dates and the current pay dates add to the quarter's at its pay frequency, the "
+          "current part the smaller",
+          span and all(lq[(a, "2024", "2")] + cq[(a, "2024-Q2")] in full_q[freq[a]] and
+                       cq[(a, "2024-Q2")] < lq[(a, "2024", "2")] for a in span), "%d clients" % len(span))
+    # the export's channel is the load's reading of the legacy code: one channel per code
+    per_code = defaultdict(set)
+    for a in acc:
+        if a["account_id"] in code_of:
+            per_code[code_of[a["account_id"]]].add(a["signup_channel"])
+    check("a migrated account's export channel reads one way for each legacy referral code",
+          len(per_code) >= 5 and all(len(v) == 1 for v in per_code.values()),
+          ", ".join("%s %s" % (k, "/".join(sorted(v))) for k, v in sorted(per_code.items())))
 
     def paid(a, yy, qq):
         start = "%d-%02d-01" % (yy, 3 * qq - 2)
@@ -301,7 +346,7 @@ def main():
             T[t]["still"] += 1
         T[t]["wq"] += sum(wq[(a["account_id"], fy, fqq)] for a in chain)
         T[t]["w24"] += sum(wq[(a["account_id"], 2024, q)] for a in chain for q in (1, 2, 3, 4) if paid(a, 2024, q))
-        CH[codes[code_of[first["account_id"]]] if first["account_id"] in code_of else first["signup_channel"]] += 1
+        CH[first["signup_channel"]] += 1
     for t, v in fig["territories"].items():
         check("ask: %s signed, still, first-quarter wages, 2024 wages" % t,
               T[t]["signed"] == v["signed"] and T[t]["still"] == v["still"] and

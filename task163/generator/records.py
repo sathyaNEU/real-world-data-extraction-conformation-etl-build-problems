@@ -6,7 +6,8 @@ release through the API (long layout, FIPS state codes) and the April 2026 relea
 postal codes). The current account system's year-end planning extract of Friday 9 January 2026: the onboarding export
 of every account opened from January 2022, the quarterly wages filed for each account from the move to the current
 system, and each account's state registrations; the migration load's crosswalk from legacy client numbers; the legacy
-system's quarterly wages (in cents, by pay group); the payroll tax team's successor-transfer register; sales
+system's quarterly wages (in cents, by pay group, the report's column named for its unit as the legacy system wrote
+it); the payroll tax team's successor-transfer register; sales
 operations' territory map; and the Census Bureau's 2023 nonemployer statistics for the twelve states (read by neither
 the plan nor the asks)."""
 from __future__ import annotations
@@ -235,7 +236,7 @@ def crosswalk_rows(C):
     return out
 
 
-LEGACY_COLS = ["client_no", "tax_year", "tax_qtr", "pay_group", "check_dates", "employees_paid", "gross_wages"]
+LEGACY_COLS = ["client_no", "tax_year", "tax_qtr", "pay_group", "check_dates", "employees_paid", "gross_wages_cents"]
 WAGES_COLS = ["account_id", "quarter", "pay_dates", "employees_paid", "gross_wages"]
 
 

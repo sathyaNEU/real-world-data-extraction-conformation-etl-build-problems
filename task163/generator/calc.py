@@ -623,7 +623,7 @@ class Book:
                 continue
             a = self.acct_of_legacy[r["client_no"]]
             k = (a, int(r["tax_year"]), int(r["tax_qtr"]))
-            self.wq[k] = self.wq.get(k, 0) + int(r["gross_wages"])
+            self.wq[k] = self.wq.get(k, 0) + int(r["gross_wages_cents"])
         for r in self.cur:
             y, q = r["quarter"].split("-Q")
             k = (r["account_id"], int(y), int(q))
@@ -729,6 +729,8 @@ def cohort_2024(B):
     return out
 
 
+# the legacy referral source codes' channels: the migration load wrote each onto the export, so the golden reads the
+# export's channel; the checks read the channel table through this list as well and assert the two agree (SF15)
 CODE_CHANNEL = {"ACCT": "accountant referral", "CPA": "accountant referral", "BANK": "bank partner",
                 "BP": "bank partner", "WEB": "web sign-up", "OUT": "outbound", "TEL": "outbound",
                 "MKT": "partner marketplace", "APX": "partner marketplace"}
@@ -750,7 +752,6 @@ def asks(B):
         T[t]["wages_cents"] += sum(B.wq.get((a["account_id"], fq[0], fq[1]), 0) for a in allacc)
         T[t]["wages_2024_cents"] += sum(B.wq.get((a["account_id"], 2024, qq), 0) for a in allacc for qq in (1, 2, 3, 4)
                                         if paid_by_us(a, 2024, qq))
-        code = B.code_of.get(first["account_id"])
-        channel = CODE_CHANNEL[code] if code else first["signup_channel"]
+        channel = first["signup_channel"]
         ch[channel] = ch.get(channel, 0) + 1
     return T, ch, cohort

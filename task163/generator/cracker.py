@@ -4,12 +4,12 @@ cent). Prints the cracker sheet, the pair ceiling under each path and the mirror
 
     python3 task163/generator/cracker.py [target]
 
-The cracker lands the call, reads the field guide and the counting notes and executes every rule they point at: it
-normalises EINs and takes a business's accounts as one (a returning client under its old EIN, a successor or a new
-owner through the payroll tax team's register), reads first-time status from the state's liability record, leaves out
-the quarters an account spent on tax filing only, reads a migrated account's channel from its legacy source code,
-counts each business in the state of its earliest registration, maps states to territories, converts the legacy cents
-and joins the legacy client numbers through the crosswalk. It trusts what no rule tells it to doubt: the account's first
+The cracker lands the call, reads the counting notes and executes every rule they state: it normalises EINs and takes a
+business's accounts as one (a returning client under its old EIN, a successor or a new owner through the payroll tax
+team's register), reads first-time status from the state's liability record, leaves out the quarters an account spent on
+tax filing only, takes a business's channel from its first account, counts each business in the state of its earliest
+registration, maps states to territories, converts the legacy cents the report's column names and joins the legacy
+client numbers through the crosswalk. It trusts what no rule tells it to doubt: the account's first
 pay date, an EIN as the mark of a separate business, and every row of a legacy client quarter. A single-device crack
 repairs one of those three. The mirror stops at the default path on the call and reads the asks the plain way: flagged
 accounts by their own first pay date, the address state, the account's own fourth-quarter row, the export's channel."""
@@ -38,7 +38,7 @@ def wq_variant(B, rollup_right=True):
             continue
         a = B.acct_of_legacy[r["client_no"]]
         k = (a, int(r["tax_year"]), int(r["tax_qtr"]))
-        wq[k] = wq.get(k, 0) + int(r["gross_wages"])
+        wq[k] = wq.get(k, 0) + int(r["gross_wages_cents"])
     for r in B.cur:
         y, q = r["quarter"].split("-Q")
         k = (r["account_id"], int(y), int(q))
@@ -49,10 +49,10 @@ def wq_variant(B, rollup_right=True):
 def path(B, wages_first=False, rekey=False, rollup=False, mirror=False):
     """One solver's ask tables. The cracker executes every filed rule: an EIN's accounts and its successors through the
     register as one business, first-time status from the state's liability record, a quarter on tax filing only not
-    paid by us, a migrated account's channel from its legacy source code, the state first employed in, cents and the
-    crosswalk. Each flag set True repairs one silent device: the first payroll read from the wage files rather than
-    the account's first pay date, a client re-opened under a corrected EIN joined to its first account, the legacy
-    company-level group 00 taken as the client's total."""
+    paid by us, the channel of the business's first account, the state first employed in, cents and the crosswalk.
+    Each flag set True repairs one silent device: the first payroll read from the wage files rather than the account's
+    first pay date, a client re-opened under a corrected EIN joined to its first account, the legacy company-level
+    group 00 taken as the client's total."""
     wq = B.wq if rollup else wq_variant(B, rollup_right=False)
     T = {t: {"signed": 0, "still": 0, "wages_cents": 0, "wages_2024_cents": 0} for t in sorted(set(B.terr.values()))}
     ch = {}
@@ -100,8 +100,7 @@ def path(B, wages_first=False, rekey=False, rollup=False, mirror=False):
         T[t]["wages_cents"] += sum(wq.get((a["account_id"], fq[0], fq[1]), 0) for a in allacc)
         T[t]["wages_2024_cents"] += sum(wq.get((a["account_id"], 2024, qq), 0) for a in allacc for qq in (1, 2, 3, 4)
                                         if CA.paid_by_us(a, 2024, qq))
-        code = B.code_of.get(first["account_id"])
-        c = CA.CODE_CHANNEL[code] if code else first["signup_channel"]
+        c = first["signup_channel"]
         ch[c] = ch.get(c, 0) + 1
     return T, ch
 

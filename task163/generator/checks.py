@@ -24,6 +24,7 @@ import common as K          # noqa: E402
 import company as CO        # noqa: E402
 import cracker as CR        # noqa: E402
 import records as R         # noqa: E402
+import verify as VF         # noqa: E402  the independent verifier's extractors, for the positive controls
 import world as WD          # noqa: E402
 
 TASK = os.path.dirname(HERE)
@@ -412,16 +413,31 @@ def main():
        "gross wages we ran on our payroll" in notes)
     grp = collections.defaultdict(dict)
     for r in B.leg:
-        grp[(r["client_no"], r["tax_year"], r["tax_qtr"])][r["pay_group"]] = int(r["gross_wages"])
+        grp[(r["client_no"], r["tax_year"], r["tax_qtr"])][r["pay_group"]] = int(r["gross_wages_cents"])
     two = [v for v in grp.values() if len(v) > 1]
     ok("SF14 group 00 is the client's total in every two-group client quarter, to the cent",
        two and all(v["00"] == sum(x for k, x in v.items() if k != "00") for v in two), "%d client quarters" % len(two))
-    mism = [(a["signup_channel"], B.code_of[a["account_id"]]) for a in B.acc if a["account_id"] in B.code_of and
-            CA.CODE_CHANNEL[B.code_of[a["account_id"]]] != a["signup_channel"]]
-    ok("SF15 a migrated account's channel differs from its legacy code only where the load used the default",
-       mism and all(ch == "web sign-up" and code in ("CPA", "BP", "TEL", "APX") for ch, code in mism),
-       "%d accounts" % len(mism))
-    guide = " ".join(xlsx_strings(os.path.join(TARGET, "plan_pack_field_guide.xlsx")))
+    # SF15, closed by convergence in the data (C1): the migration load wrote every legacy referral code's channel onto the
+    # export, so the export's channel and the legacy code agree on every migrated account, and the channel table read
+    # through the legacy code list is the golden's to the business (read through the verifier's extractor, csv rows)
+    with open(os.path.join(TARGET, R.F_ACCOUNTS), encoding="utf-8", newline="") as fh_:
+        acc_rows = list(csv.DictReader(fh_))
+    with open(os.path.join(TARGET, R.F_XWALK), encoding="utf-8", newline="") as fh_:
+        code_rows = {r_["account_id"]: r_["legacy_source_code"] for r_ in csv.DictReader(fh_)}
+    migrated = [a for a in acc_rows if a["account_id"] in code_rows]
+    mism = [a["account_id"] for a in migrated if CA.CODE_CHANNEL[code_rows[a["account_id"]]] != a["signup_channel"]]
+    older = collections.Counter(code_rows[a["account_id"]] for a in migrated
+                                if code_rows[a["account_id"]] in ("CPA", "BP", "TEL", "APX"))
+    ch_by_code = collections.Counter()
+    for root_, eins_, first_, fq_ in CA.cohort_2024(B):
+        code_ = B.code_of.get(first_["account_id"])
+        ch_by_code[CA.CODE_CHANNEL[code_] if code_ else first_["signup_channel"]] += 1
+    ok("SF15 C1: the export's channel is the legacy code's on every migrated account, the older codes (CPA, BP, TEL, "
+       "APX) included, and the channel table read through the legacy code list is the golden's",
+       migrated and not mism and all(older[c_] >= 100 for c_ in ("CPA", "BP", "TEL", "APX")) and
+       dict(ch_by_code) == CA.asks(B)[1] == fig["channels"],
+       "%d migrated accounts, %d disagree; older codes %s" % (len(migrated), len(mism),
+                                                               ", ".join("%s %d" % kv for kv in sorted(older.items()))))
     ok("SF17 a business bought by a new owner who carries it on is the same business: the counting notes",
        "bought by a new owner who carries it on, is the same business" in notes)
     ok("SF18 first-time status follows the state's liability record, not the onboarding answer: the counting notes",
@@ -430,9 +446,9 @@ def main():
     ok("SF19 a quarter on tax filing only is not a quarter we paid: the counting notes",
        "A quarter an account spent on tax filing only does not count" in notes and
        "a quarter on tax filing only adds none" in notes)
-    ok("SF20 a migrated account's channel is its legacy source code's: the field guide; a business's channel is its "
-       "first account's: the counting notes", "the legacy source code in the crosswalk is the record of how the client "
-       "came to us" in guide and "the channel of its first account" in notes)
+    ok("SF20 a business's channel is its first account's: the counting notes; a migrated first account's export "
+       "channel is its legacy code's (SF15, C1)", "A business came to us through the channel of its first account" in
+       " ".join(VF.docx_paragraphs(os.path.join(TARGET, "first_time_employer_counting_notes.docx"))) and not mism)
     # SF21: the first payroll is the one we ran wages on; a migrated account's first_pay_date is its client-since date
     leg_rows = [a for a in B.acc if a["account_id"] in B.code_of]
     cur_rows = [a for a in B.acc if a["account_id"] not in B.code_of]
@@ -579,7 +595,7 @@ def main():
            ", ".join("%s %d" % (t, cnt[t]) for t in sorted(T)))
     ok("DEVICE tax filing only from 1 January 2026 in the cohort (dropping every tax-only account over-cleans)",
        tax_late >= 3, "%d" % tax_late)
-    ok("DEVICE legacy codes the load defaulted, in each channel they move",
+    ok("REALISM the older legacy codes sit in the 2024 cohort in each channel they belong to, loaded onto that channel",
        all(old_codes[c] >= 3 for c in ("accountant referral", "bank partner", "outbound", "partner marketplace")),
        ", ".join("%s %d" % kv for kv in sorted(old_codes.items())))
 
@@ -604,13 +620,83 @@ def main():
     finally:
         shutil.rmtree(sand)
 
-    man = {r["file"] for r in csv.DictReader(open(os.path.join(TARGET, "pack_manifest.csv"), encoding="utf-8"))}
-    ok("REGISTER the manifest names every shipped file but itself", man == set(files) - {"pack_manifest.csv"})
-    dict_files = set(xlsx_strings(os.path.join(TARGET, "plan_pack_field_guide.xlsx")))
-    data_files = [f for f in files if f.endswith((".csv", ".json")) or f in ("plan_2027_workbook.xlsx",
-                                                                             "state_filing_changes_log.xlsx")]
-    ok("REGISTER the dictionary names every data file", all(f in dict_files for f in data_files if
-                                                            f != "pack_manifest.csv"))
+    # no shipped file describes the data (dataset-generation section 3): no dictionary, field guide, readme, codebook,
+    # manifest or file list by its name or a sheet's, and no document naming the data files' columns
+    describing = re.compile(
+        r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+        r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
+        r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|"
+        r"definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])", re.I)
+    import openpyxl as _ox
+    sheets = [(f, s) for f in files if f.endswith(".xlsx") for s in _ox.load_workbook(os.path.join(TARGET, f),
+                                                                                       read_only=True).sheetnames]
+    ok("REGISTER no shipped file describes the data, by name: no dictionary, field guide, readme, codebook or manifest, "
+       "and no field-list sheet (positive control: the share tab's sheet is read)",
+       not [f for f in files if describing.search(f.rsplit(".", 1)[0])] and
+       ("plan_2027_workbook.xlsx", "Share 2025") in sheets and
+       not [x for x in sheets if re.fullmatch(r"(read ?me|dictionary|data dictionary|definitions|glossary|fields|"
+                                              r"field notes|columns?|about|about this (file|workbook))", x[1], re.I)],
+       "%d files, sheets %s" % (len(files), ", ".join("%s/%s" % x for x in sheets)))
+    data_cols = set()
+    for f in files:
+        if f.endswith(".csv"):
+            data_cols |= set(next(csv.reader(open(os.path.join(TARGET, f), encoding="utf-8"))))
+        elif f.endswith(".json"):
+            data_cols |= set(json.load(open(os.path.join(TARGET, f)))[0])
+    data_cols = {c for c in data_cols if "_" in c or re.search(r"\d|[a-z][A-Z]", c)}
+    named_cols = {}
+    for f in files:
+        if f.endswith(".docx"):
+            txt = " ".join(VF.docx_paragraphs(os.path.join(TARGET, f)))
+            named_cols[f] = sorted(c for c in data_cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" %
+                                                                     re.escape(c), txt))
+    ok("REGISTER no shipped document names a data file's column (positive control: %d identifier columns swept, the "
+       "counting notes read)" % len(data_cols),
+       len(data_cols) >= 30 and "first_time_employer_counting_notes.docx" in named_cols and
+       not any(named_cols.values()), str({k: v for k, v in named_cols.items() if v}))
+    notes_p = os.path.join(TARGET, "first_time_employer_counting_notes.docx")
+    joins = re.compile(r"client numbers? map|map(s|ped)? to current accounts|through the (migration )?crosswalk|"
+                       r"\bcrosswalk\b", re.I)
+    reads = [docx_text(notes_p), " ".join(VF.docx_paragraphs(notes_p))]
+    ok("REGISTER the counting notes say nothing about how the files fit together: no sentence joining legacy client "
+       "numbers to accounts through the crosswalk, on both docx extractors (positive control: the sources paragraph "
+       "reads on each, its extract and territory map sentences intact)",
+       all("year-end planning extract pulled on 9 January 2026" in t and
+           "Territories are as on the 2025 territory map" in t and not joins.search(t) for t in reads))
+    # the closures the field guide and the manifest used to carry, now carried by the producing systems' own files
+    api_ = json.load(open(os.path.join(TARGET, R.F_BFS)))
+    hd_ = {h: i for i, h in enumerate(api_[0])}
+    last_ = collections.defaultdict(str)
+    for r_ in api_[1:]:
+        k_ = r_[hd_["data_type_code"]]
+        last_[k_] = max(last_[k_], r_[hd_["time"]])
+    ok("AXIS 12 the release itself carries the closed cohorts: formations within four quarters through June 2025 "
+       "applications and no row after, applications to September 2026 (json rows, the verifier's reading)",
+       last_["BF_BF4Q"] == "2025-06" and last_["BA_BA"] == "2026-09" and last_["BF_BF8Q"] == "2024-06",
+       ", ".join("%s %s" % kv for kv in sorted(last_.items())))
+    ok("AXIS 19 the release's own codes name the standard's measures: BA_BA the business applications, BF_BF4Q the "
+       "formations within four quarters, beside the eight-quarter and duration series the standard does not name",
+       {"BA_BA", "BF_BF4Q", "BF_BF8Q", "BF_DUR4Q"} <= set(last_) and "business applications" in std and
+       "business formations within four quarters" in std and "eight quarters" not in std)
+    leg_head = next(csv.reader(open(os.path.join(TARGET, R.F_LEGACY), encoding="utf-8")))
+    cur_rows_ = VF.rows(os.path.join(TARGET, R.F_WAGES))
+    ok("UNITS the legacy wage report names its cents in its column and writes whole cents; the current file writes "
+       "dollars to the cent (csv rows, the verifier's reading)",
+       leg_head[-1] == "gross_wages_cents" and "gross_wages" not in leg_head and
+       all(r_["gross_wages_cents"].isdigit() for r_ in B.leg) and
+       all(re.fullmatch(r"\d+\.\d\d", r_["gross_wages"]) for r_ in cur_rows_))
+    lq_ = {(B.acct_of_legacy[r_["client_no"]], r_["tax_year"], r_["tax_qtr"]): int(r_["check_dates"]) for r_ in B.leg
+           if r_["pay_group"] == "00"}
+    cq_ = {(r_["account_id"], r_["quarter"]): int(r_["pay_dates"]) for r_ in cur_rows_}
+    full_ = {"Weekly": (13,), "Biweekly": (6, 7), "Semimonthly": (6,), "Monthly": (3,)}
+    span_ = [a_ for (a_, y_, q_) in lq_ if (y_, q_) == ("2024", "2") and (a_, "2024-Q2") in cq_ and
+             (a_, "2024", "1") in lq_ and (a_, "2024-Q3") in cq_]
+    dup_ = [a_ for a_ in span_ if lq_[(a_, "2024", "2")] + cq_[(a_, "2024-Q2")] not in
+            full_[B.by_acct[a_]["pay_frequency"]] or cq_[(a_, "2024-Q2")] >= lq_[(a_, "2024", "2")]]
+    ok("MIGRATION QUARTER each system's 2024 Q2 row holds its own part of the quarter: for every client paid on both "
+       "systems through the quarter, the legacy check dates and the current pay dates add to the quarter's at its pay "
+       "frequency, the current part the smaller, so summing the two files is the only reading the rows allow",
+       len(span_) >= 1000 and not dup_, "%d clients, %d do not split" % (len(span_), len(dup_)))
     outside = []
     for f in files:
         p = os.path.join(TARGET, f)

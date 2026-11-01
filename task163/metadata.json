@@ -4,7 +4,7 @@
   "domain": "Economics & Econometrics",
   "client_domain": "Economics & Econometrics",
   "house_domain": "economics-econometrics",
-  "subdomain": "forecasting-forecast-evaluation (employer business formation forecast from business applications when a filing reform changed who applies: the added applications' formation yield identified against the states the reform did not reach, before and after)",
+  "subdomain": "forecasting-forecast-evaluation (a payroll company's 2027 plan line for first-time employers, sized on employer business formations in its twelve core states)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "a committed plan figure to the nearest 100, a table by sales territory of the 2024 first-time employers (signed, still with us in the fourth quarter of 2025, gross wages in their first quarter on payroll to the cent), a table of the 2024 first-time employers by signup channel, and a one-page note with a chart of each territory's signed against still with us",
   "as_of": "2026-10-16",
@@ -19,7 +19,7 @@
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 16,
+    "files": 14,
     "formats": [
       "csv",
       "docx",
@@ -47,7 +47,13 @@
       "rows": 660,
       "source": "Constructed in the layout of the Business Formation Statistics monthly download (bfs_monthly.csv, April 2026 release). Every value is simulated for the scenario, the same constructed series as the October pull at an earlier vintage; none is a Census value",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Market Research (Charles Fernandez)",
+        "system": "Business Formation Statistics, April 2026 release, Market Research's copy in the monthly download's layout",
+        "as_of": "2026-04-15",
+        "covers": "12 core states, January 2022 to March 2026"
+      }
     },
     {
       "path": "bfs_state_api_2026-10-14.json",
@@ -56,7 +62,13 @@
       "rows": 10080,
       "source": "Constructed in the layout of the U.S. Census Bureau's Business Formation Statistics API response (timeseries/eits/bfs, October 2026 release, twelve states, January 2021 to September 2026). Nothing in it is a Census value: every series for every state is simulated for the scenario, and the Ohio, Pennsylvania and Michigan series from 2023 carry the scenario's fictional integrated EIN filings. Only the layout (field names, series codes, FIPS codes, adjustment flags, the formation series' publication lag) follows the real release",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Market Research (Charles Fernandez)",
+        "system": "Business Formation Statistics, October 2026 release, Market Research's copy in the API's layout",
+        "as_of": "2026-10-14",
+        "covers": "12 core states, January 2021 to September 2026"
+      }
     },
     {
       "path": "client_migration_crosswalk_2024-06-15.csv",
@@ -65,25 +77,43 @@
       "rows": 22551,
       "source": "Constructed: the fictional Kilbourne Payroll's simulated migration load crosswalk, legacy client numbers to accounts (15 June 2024)",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "Migration load log",
+        "as_of": "2024-06-15",
+        "covers": "Legacy clients in the extract, as loaded to the current system"
+      }
     },
     {
       "path": "first_time_employer_counting_notes.docx",
       "format": "docx",
-      "bytes": 10710,
+      "bytes": 10666,
       "rows": null,
       "source": "Constructed: written for the scenario as the fictional Kilbourne Payroll Sales Operations' first-time employer counting notes (3 February 2026)",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "Counting notes",
+        "as_of": "2026-02-03",
+        "covers": "How first-time employers are counted"
+      }
     },
     {
       "path": "legacy_quarterly_wages_2022Q1-2024Q2.csv",
       "format": "csv",
-      "bytes": 5428583,
+      "bytes": 5428589,
       "rows": 178829,
       "source": "Constructed: the fictional Kilbourne Payroll's simulated legacy client system quarterly wage report by pay group, to 14 June 2024",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "Legacy client system, quarterly wage report (archive)",
+        "as_of": "2024-06-15",
+        "covers": "Legacy clients since January 2022; pay dates to 14 June 2024"
+      }
     },
     {
       "path": "nonemployer_statistics_2023_states.csv",
@@ -92,25 +122,28 @@
       "rows": 204,
       "source": "Constructed in the layout of a Census Bureau Nonemployer Statistics API extract (2023, twelve states, NAICS sectors). Every value is simulated for the scenario; none is a Census value",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Market Research (Charles Fernandez)",
+        "system": "Nonemployer Statistics 2023, Market Research's copy in the API's layout",
+        "as_of": "2026-05-28",
+        "covers": "12 core states by NAICS sector"
+      }
     },
     {
       "path": "onboarding_accounts_2022-2025.csv",
       "format": "csv",
-      "bytes": 6093184,
+      "bytes": 6116722,
       "rows": 37103,
       "source": "Constructed: a simulated onboarding export from the current account system of Kilbourne Payroll, a fictional company (the year-end planning extract of 9 January 2026); every client, name and EIN in it is invented",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pack_manifest.csv",
-      "format": "csv",
-      "bytes": 2671,
-      "rows": 15,
-      "source": "Constructed: the fictional Kilbourne Payroll FP&A's planning pack manifest (15 October 2026)",
-      "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "Current account system, year-end planning extract",
+        "as_of": "2026-01-09",
+        "covers": "Accounts with a first pay date from January 2022 to December 2025"
+      }
     },
     {
       "path": "plan_2027_sizing_standard.docx",
@@ -119,7 +152,13 @@
       "rows": null,
       "source": "Constructed: written for the scenario as the fictional Kilbourne Payroll FP&A's 2027 plan sizing standard (1 September 2026)",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "FP&A (Dominique Thomas)",
+        "system": "2027 plan sizing standard",
+        "as_of": "2026-09-01",
+        "covers": "2027 operating plan, first-time-employer line"
+      }
     },
     {
       "path": "plan_2027_workbook.xlsx",
@@ -128,16 +167,13 @@
       "rows": 21,
       "source": "Constructed: the fictional Kilbourne Payroll FP&A's 2027 plan workbook with the 2025 share tab (15 October 2026); its formations base is summed from the constructed statistics pull",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "plan_pack_field_guide.xlsx",
-      "format": "xlsx",
-      "bytes": 9500,
-      "rows": 49,
-      "source": "Constructed: the fictional Kilbourne Payroll FP&A's planning pack field guide (15 October 2026)",
-      "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "FP&A (Dominique Thomas)",
+        "system": "Plan workbook (share tab by Sales Operations)",
+        "as_of": "2026-10-15",
+        "covers": "Share 2025 tab for the 12 core states, workbook notes"
+      }
     },
     {
       "path": "quarterly_wages_2024Q2-2025Q4.csv",
@@ -146,7 +182,13 @@
       "rows": 167168,
       "source": "Constructed: simulated quarterly wages by account from the fictional Kilbourne Payroll's current account system, 17 June 2024 to 31 December 2025",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "Current account system, year-end planning extract",
+        "as_of": "2026-01-09",
+        "covers": "Pay dates 17 June 2024 to 31 December 2025"
+      }
     },
     {
       "path": "sales_territories_2025.csv",
@@ -155,7 +197,13 @@
       "rows": 12,
       "source": "Constructed: the fictional Kilbourne Payroll Sales Operations' 2025 territory map",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "2025 territory map",
+        "as_of": "2025-01-06",
+        "covers": "12 core states"
+      }
     },
     {
       "path": "state_filing_changes_log.xlsx",
@@ -164,7 +212,13 @@
       "rows": 14,
       "source": "Constructed: the fictional Kilbourne Payroll Market Research's log of state business filing changes (2023 to 2026); every change it logs, in every state, is fictional, including the integrated EIN filings",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Market Research (Charles Fernandez)",
+        "system": "Research log",
+        "as_of": "2026-10-14",
+        "covers": "Changes logged since 2023"
+      }
     },
     {
       "path": "state_tax_registrations_2026-01-09.csv",
@@ -173,7 +227,13 @@
       "rows": 37782,
       "source": "Constructed: simulated state tax registrations from the fictional Kilbourne Payroll's current account system (9 January 2026)",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Sales Operations (Cheryl Mitchell)",
+        "system": "Current account system, year-end planning extract",
+        "as_of": "2026-01-09",
+        "covers": "Registrations of the accounts in the onboarding export"
+      }
     },
     {
       "path": "suta_successor_transfers_2022-2025.csv",
@@ -182,7 +242,13 @@
       "rows": 2495,
       "source": "Constructed: the fictional Kilbourne Payroll payroll tax team's simulated successor transfer register, 2022 to 2025; every business in it is invented",
       "date": "2026-10-15",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "license": "CC0-1.0 (original work, constructed for this task)",
+      "provenance": {
+        "provided_by": "Payroll Tax",
+        "system": "Successor transfer register",
+        "as_of": "2026-03-02",
+        "covers": "Transfers effective 2022 to 2025"
+      }
     }
   ]
 }

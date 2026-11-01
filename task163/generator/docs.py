@@ -1,5 +1,7 @@
 """task163 documents: the 2027 sizing standard (FP&A), sales operations' counting notes, the research team's log of
-state filing changes, the plan workbook with sales operations' share tab, the field guide and the pack manifest."""
+state filing changes and the plan workbook with sales operations' share tab. No file describes the data: each data file
+carries its own conventions (the release's codes, a stamp's zone, the legacy wage report's cents in its column name),
+and provenance lives in metadata.json outside the pack."""
 from __future__ import annotations
 
 import datetime as dt
@@ -10,15 +12,12 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 import common as K
 import postprocess as PP
-import records as R
 import world as WD
 
 F_STANDARD = "plan_2027_sizing_standard.docx"
 F_NOTES = "first_time_employer_counting_notes.docx"
 F_LOG = "state_filing_changes_log.xlsx"
 F_PLAN = "plan_2027_workbook.xlsx"
-F_DICT = "plan_pack_field_guide.xlsx"
-F_MANIFEST = "pack_manifest.csv"
 
 P = K.PEOPLE
 GREEN = "2F4F6B"
@@ -140,8 +139,8 @@ NOTES = [
     ]),
     ("Where the counts come from", [
         "The year-end planning extract pulled on 9 January 2026: every account with a first pay date from January 2022, "
-        "the quarterly wages for each account, and each account's state registrations. Legacy client numbers map to "
-        "current accounts through the migration crosswalk. Territories are as on the 2025 territory map.",
+        "the quarterly wages for each account, and each account's state registrations. Territories are as on the 2025 "
+        "territory map.",
     ]),
 ]
 
@@ -300,127 +299,6 @@ def write_plan(path, share):
     wb.save(path)
 
 
-DICT = [
-    (R.F_BFS, "cell_value", "The statistic's value for the series, adjustment, month and state."),
-    (R.F_BFS, "data_type_code", "Series: BA_BA business applications; BA_HBA high-propensity business applications; "
-     "BA_WBA business applications with planned wages; BA_CBA business applications from corporations; BF_BF4Q "
-     "business formations within four quarters; BF_BF8Q business formations within eight quarters; BF_DUR4Q and "
-     "BF_DUR8Q average duration in quarters from application to formation, within four and eight quarters."),
-    (R.F_BFS, "seasonally_adj", "yes for seasonally adjusted values, no for not adjusted."),
-    (R.F_BFS, "time", "Month of the application (YYYY-MM). A formation series is published for an application month "
-     "once its window and the payroll filings behind it have closed: in this release, formations within four "
-     "quarters through June 2025 applications and within eight quarters through June 2024."),
-    (R.F_BFS, "state", "State FIPS code."),
-    (R.F_BFS, "time_slot_id, error_data, category_code", "Census API fields: 0; no; TOTAL (all industries)."),
-    (R.F_BFS_APR, "sa", "A seasonally adjusted, U not adjusted."),
-    (R.F_BFS_APR, "series, geo, year, jan to dec", "Series code as in the API pull; state postal code; year; monthly "
-     "values (blank where the release has none)."),
-    (R.F_ACCOUNTS, "account_id", "Current account number (KP and seven digits). Legacy clients were renumbered at the "
-     "June 2024 migration (see the crosswalk)."),
-    (R.F_ACCOUNTS, "ein", "Federal employer identification number on the account."),
-    (R.F_ACCOUNTS, "legal_name, dba_name", "Legal name and trade name on the account."),
-    (R.F_ACCOUNTS, "entity_type, naics", "Entity type and industry code (NAICS 2022) given at onboarding."),
-    (R.F_ACCOUNTS, "address_state", "State of the business address on the account at the extract."),
-    (R.F_ACCOUNTS, "opened_at", "When the account was opened: UTC on the current system; accounts opened on the legacy "
-     "system keep their legacy client-since stamp (Eastern time, month/day/year)."),
-    (R.F_ACCOUNTS, "first_pay_date", "First pay date on the account record."),
-    (R.F_ACCOUNTS, "first_time_employer", "Onboarding answer: Y when the business has not paid employees before."),
-    (R.F_ACCOUNTS, "previous_provider", "Who ran the business's payroll before, from onboarding."),
-    (R.F_ACCOUNTS, "signup_channel", "How the client came to us. Accounts loaded at the June 2024 migration carry the "
-     "legacy referral source as the migration load mapped it; for those accounts the legacy source code in the "
-     "crosswalk is the record of how the client came to us, and the code list there gives its channel."),
-    (R.F_ACCOUNTS, "pay_frequency, employees_at_signup", "Pay schedule; employees on the first payroll."),
-    (R.F_ACCOUNTS, "product, product_since", "Current product (Payroll; Payroll + HR; Tax filing only) and the date it "
-     "took effect when it changed after opening."),
-    (R.F_ACCOUNTS, "status, cancelled_on", "Account status at the extract and the cancellation date."),
-    (R.F_XWALK, "legacy_client_no, account_id", "Legacy client number and the current account it was loaded as."),
-    (R.F_XWALK, "legacy_source_code", "Referral source on the legacy client record: ACCT accountant referral; CPA "
-     "accountant referral (2022 referral form); BANK bank partner; BP bank partner (branch programme); WEB web "
-     "sign-up; OUT outbound; TEL outbound (telesales); MKT partner marketplace; APX partner marketplace (app "
-     "directory listing)."),
-    (R.F_XWALK, "status_at_migration, migrated_at", "Client status on the legacy system at the load; load time (UTC)."),
-    (R.F_LEGACY, "client_no", "Legacy client number."),
-    (R.F_LEGACY, "tax_year, tax_qtr", "Calendar year and quarter of the pay date."),
-    (R.F_LEGACY, "pay_group", "Legacy pay group code."),
-    (R.F_LEGACY, "check_dates, employees_paid", "Pay dates in the quarter; employees paid."),
-    (R.F_LEGACY, "gross_wages", "Gross wages, cents."),
-    (R.F_WAGES, "account_id", "Current account number."),
-    (R.F_WAGES, "quarter", "Calendar quarter of the pay date (YYYY-Qn)."),
-    (R.F_WAGES, "pay_dates, employees_paid", "Pay dates in the quarter; employees paid."),
-    (R.F_WAGES, "gross_wages", "Gross wages on the account's returns for the quarter, dollars."),
-    (R.F_REG, "account_id, state", "Account and the state it is registered in for withholding and unemployment tax."),
-    (R.F_REG, "withholding_account, ui_account", "State withholding and unemployment insurance account numbers."),
-    (R.F_REG, "liability_date", "The date the state holds the employer liable for unemployment tax from."),
-    (R.F_REG, "filing_start, filing_end", "Dates we filed in the state for the account (blank: still filing)."),
-    (R.F_SUTA, "transfer_no", "Payroll tax team's transfer number."),
-    (R.F_SUTA, "state, effective_date", "State and date of the transfer."),
-    (R.F_SUTA, "basis", "Why the business passed to a new employer: change of entity (same owners, new legal form), "
-     "reorganisation (same owners, a new holding entity) or acquisition (a new owner)."),
-    (R.F_SUTA, "predecessor_ein, predecessor_name, predecessor_trade_name, successor_ein, successor_name, "
-     "successor_trade_name", "Successor-employer transfers we filed with the states: a client's business passes to a "
-     "successor employer, a new entity carrying it on under a new EIN, and the state unemployment experience and wage "
-     "base move with it."),
-    (R.F_SUTA, "transfer, filed_on", "Total or partial transfer; date we filed it."),
-    (R.F_TERR, "state, state_name, territory", "The 2025 sales territory of each core state."),
-    (F_LOG, "Logged, State, Effective, Change type, Change, Source", "Research log of state business filing changes: "
-     "the day it was logged, the state, the state's effective date, the kind of change, what changed and where it "
-     "was announced."),
-    (R.F_NES, "NESTAB, NRCPTOT", "Census nonemployer statistics, 2023: nonemployer establishments and their receipts "
-     "($1,000), by state and NAICS sector."),
-    (F_PLAN, "Share 2025", "State, 2025 first-time employers, formations base and share (see the tab's note)."),
-]
-
-
-def write_dictionary(path):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Fields"
-    _title(ws, "Planning pack field guide", "FP&A, for the 2027 plan pack. Field descriptions as each owner keeps "
-           "them.", "C")
-    _head(ws, 4, ["File", "Field", "Description"], [40, 30, 100])
-    for i, (f, fld, d) in enumerate(DICT, start=5):
-        for c, v in enumerate((f, fld, d), start=1):
-            cell = ws.cell(row=i, column=c, value=v)
-            cell.font = Font(name="Calibri", size=10)
-            cell.alignment = Alignment(wrap_text=True, vertical="top")
-    ws.freeze_panes = "A5"
-    wb.save(path)
-
-
-MANIFEST_COLS = ["file", "provided_by", "source", "as_of", "covers"]
-
-
-def manifest_rows():
-    return [
-        [R.F_BFS, "Market Research (%s)" % P["research"], "Business Formation Statistics, October 2026 release: Market "
-         "Research's internal copy, in the API's layout", "2026-10-14", "12 core states, applications January 2021 "
-         "to September 2026"],
-        [R.F_BFS_APR, "Market Research (%s)" % P["research"], "Business Formation Statistics, April 2026 release: "
-         "Market Research's internal copy, in the monthly download's layout", "2026-04-15", "12 core states, "
-         "applications January 2022 to March 2026"],
-        [R.F_NES, "Market Research (%s)" % P["research"], "Nonemployer Statistics 2023: Market Research's internal "
-         "copy, in the API's layout", "2026-05-28", "12 core states by NAICS sector"],
-        [F_LOG, "Market Research (%s)" % P["research"], "Research log", "2026-10-14", "Changes logged since 2023"],
-        [R.F_ACCOUNTS, "Sales Operations (%s)" % P["salesops"], "Current account system, year-end planning extract",
-         "2026-01-09", "Accounts with a first pay date from January 2022 to December 2025"],
-        [R.F_WAGES, "Sales Operations (%s)" % P["salesops"], "Current account system, year-end planning extract",
-         "2026-01-09", "Pay dates 17 June 2024 to 31 December 2025"],
-        [R.F_REG, "Sales Operations (%s)" % P["salesops"], "Current account system, year-end planning extract",
-         "2026-01-09", "Registrations of the accounts in the onboarding export"],
-        [R.F_XWALK, "Sales Operations (%s)" % P["salesops"], "Migration load log", "2024-06-15",
-         "Legacy clients in the extract, as loaded to the current system"],
-        [R.F_LEGACY, "Sales Operations (%s)" % P["salesops"], "Legacy client system, quarterly wage report (archive)",
-         "2024-06-15", "Legacy clients since January 2022; pay dates to 14 June 2024"],
-        [R.F_SUTA, "Payroll Tax", "Successor transfer register", "2026-03-02", "Transfers effective 2022 to 2025"],
-        [R.F_TERR, "Sales Operations (%s)" % P["salesops"], "2025 territory map", "2025-01-06", "12 core states"],
-        [F_NOTES, "Sales Operations (%s)" % P["salesops"], "Counting notes", "2026-02-03",
-         "How first-time employers are counted: who counts, still with us, wages and channel"],
-        [F_STANDARD, "FP&A (%s)" % P["planning"], "2027 plan sizing standard", "2026-09-01",
-         "2027 operating plan, first-time-employer line: states, measure, share and rounding"],
-        [F_PLAN, "FP&A (%s)" % P["planning"], "Plan workbook (share tab by Sales Operations)", "2026-10-15",
-         "Share 2025 tab for the 12 core states, workbook notes"],
-        [F_DICT, "FP&A (%s)" % P["planning"], "Field guide", "2026-10-15", "Fields and codes of the files in this pack"],
-    ]
 
 
 def write_all(out, share):
@@ -429,8 +307,6 @@ def write_all(out, share):
     write_notes(p(F_NOTES))
     write_log(p(F_LOG))
     write_plan(p(F_PLAN), share)
-    write_dictionary(p(F_DICT))
-    K.write_csv(p(F_MANIFEST), MANIFEST_COLS, manifest_rows())
     PP.normalize_docx(p(F_STANDARD), P["planning"], P["planning"], "2026-08-27T14:12:00Z", "2026-09-01T15:46:00Z",
                       revision=9, total_time=143, seed="task163/standard",
                       title="2027 operating plan: sizing the first-time-employer line")
@@ -449,5 +325,3 @@ def write_all(out, share):
     f.update({"C%d" % tot: "SUM(C%d:C%d)" % (first, last), "D%d" % tot: "SUM(D%d:D%d)" % (first, last),
               "E%d" % tot: "C%d/D%d" % (tot, tot)})
     PP.add_formulas(p(F_PLAN), 1, f)
-    PP.normalize_ooxml(p(F_DICT), P["planning"], P["planning"], "2026-10-15T19:10:00Z", "2026-10-15T20:02:00Z",
-                       excel=True)
