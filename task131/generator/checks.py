@@ -1,10 +1,12 @@
 """task131 generator: assertions on the built pack and the in-memory world.
 
-Groups: input gates; the three rules (R1 raw material, R2 every mess item neutral on the call, R3a the analyst test
-on the clean truth, R3b the decisive step alone, R3c no plant); the ladder (winners, margins, position, dominance);
-every semantic fork row (SF1 to SF13); the closure variants; bins; the asks against the world's own truth, with the
-cracker's and the mirror's paths; the realism sweep; distractor deletion."""
+Groups: input gates and H9 (no shipped file or sheet describes the data, by name, sheet or content); the three rules
+(R1 raw material, R2 every mess item neutral on the call, R3a the analyst test on the clean truth, R3b the decisive
+step alone, R3c no plant); the ladder (winners, margins, position, dominance); every semantic fork row (SF1 to SF14,
+SF8 and SF9 read from the extracts' own records through the verifier's reader); the closure variants; bins; the asks
+against the world's own truth, with the narrowed reader's paths; the realism sweep; distractor deletion."""
 import os
+import re
 from collections import Counter
 from datetime import date, timedelta
 
@@ -16,6 +18,17 @@ import knobs as K
 import weather as WX
 import sim as S
 import analysis as A
+import verify as V
+
+# a file or sheet whose job is to describe the data (dataset-generation section 3), by name
+DESCRIBE = re.compile(r"(?<![a-z])(read_?me|dictionar\w*|codebook|notes|file_?list|manifest|glossary|definitions|schema|"
+                      r"layouts?|field_?guide|fields|how_to_read|about_this|extract_contents|contents)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|about|"
+                            r"about this (file|workbook)|how to (read|use)( this)?|columns?|contents)$", re.I)
+# a sentence each shipped PDF is known to carry, from the writer's own text
+PDF_CONTROL = {"summer_pricing_trial_plan.pdf": "compared with the control households as assigned",
+               "residential_charges_2025-26.pdf": "Home Plan RH1",
+               "trial_survey_instruments_2026-03.pdf": "its first submitted response counts"}
 
 N_OK = [0]
 
@@ -45,8 +58,7 @@ def run(task_dir, tgt, Wd, R, meta):
     n300 = sum(1 for line in open(os.path.join(tgt, "MRP_NEM12_202601.csv")) if line.startswith("300"))
     ok(n300 >= 25000, "gate: a file of 25,000 or more rows (%d)" % n300)
     ok(len(meta["distractor_files"]) >= 2, "gate: two or more distractors")
-    man = pd.read_csv(os.path.join(tgt, "tariff_advice_file_list_2026-10-09.csv"))
-    ok(set(man.file) == set(files) - {"tariff_advice_file_list_2026-10-09.csv"}, "H9 the file list names every other shipped file")
+    describing_files(tgt, files, meta)
     for f in meta["distractor_files"]:
         ok(os.path.basename(f) in files, "gate: distractor shipped %s" % f)
         ok("distractor" not in f.lower(), "gate: no distractor in a file name")
@@ -164,6 +176,30 @@ def run(task_dir, tgt, Wd, R, meta):
     ok(all(rnd(f10[a]) != rnd(ch[a]) for a in P.DESIGNS if a != "C") or True, "SF3 the 10 per cent POE day is another figure")
     shift = figs(transform=lambda e: np.roll(e, 1))
     ok(max(shift, key=shift.get) == "C", "SF8 a one-interval shift keeps the call (%s)" % shift)
+    # SF8 and SF9 rest on the extracts themselves: each 200 record states its unit and interval length, each 300 record
+    # holds a day's reads from midnight, and every design's response steps exactly at its filed price boundaries in
+    # that numbering, so no other clock fits. Read through the verifier's own NEM12 reader.
+    lay = V.nem_layout(tgtp)
+    ok(lay["files"] == 4 and lay["n200"] >= P.N_HH and lay["n300"] >= 100000 and {15, 30} <= lay["ilen"],
+       "SF8/SF9 positive control: the verifier's NEM12 reader finds the four extracts' 200 and 300 records, 30- and "
+       "15-minute meters (%d and %d records)" % (lay["n200"], lay["n300"]))
+    ok(lay["uom"] == {"KWH"} and lay["ilen"] == {15, 30},
+       "SF9 every 200 record states its unit (%s) and its interval length (%s minutes)" % (lay["uom"], sorted(lay["ilen"])))
+    ok(lay["bad300"] == 0, "SF8 every 300 record holds 1440 / interval-length values, a day's reads from midnight (%d not)" % lay["bad300"])
+    for a, st in window_steps(tgtp).items():
+        ok(st["top"] == st["edges"], "SF8 Design %s's response steps at its filed price boundaries in the extracts' own "
+                                     "numbering (largest steps at %s, boundaries %s)" % (a, st["top"], st["edges"]))
+        ok(st["ratio"] >= 1.3, "SF8 Design %s's smallest boundary step is %.2f times the largest other step" % (a, st["ratio"]))
+        ok(st["late"] != st["edges"] and st["aest"] != st["edges"],
+           "SF8 negative control: read one interval late (%s) or two hours ahead (%s), Design %s's steps leave its "
+           "boundaries" % (st["late"], st["aest"], a))
+    # the meters' clock, filed once: read on eastern time every design would raise the maximum (the call would be none)
+    clock = "Times are Western Australian Standard Time, the time the corporation's interval meters keep."
+    texts = {f: V.pdf_text(os.path.join(tgtp, f)) for f in files if f.endswith(".pdf")}
+    ok(clock in texts["residential_charges_2025-26.pdf"], "SF8 Schedule 1 files the meters' clock: %r" % clock)
+    ok(sum("interval meters" in t for t in texts.values()) == 1, "SF8 the meters' clock is filed in one document only")
+    east = figs(transform=lambda e: np.roll(e, -4))
+    ok(max(east.values()) < 0, "SF8 on eastern time every design raises the maximum, so the clock is filed (%s)" % east)
     half = figs(transform=lambda e: e / 2.0)
     note["sf9_kwh_read_as_kw"] = dict(half)
     ok(rnd(half["A"]) != rnd(ch["A"]) and rnd(half["B"]) != rnd(ch["B"]) and half["A"] > 0,
@@ -244,6 +280,8 @@ def run(task_dir, tgt, Wd, R, meta):
                  "c_flip_effect_8pm_kw": float((R["md50"] - R["c50"][40]) / (R["n_flat"] / 1000.0))})
     q = quality_on_hot(tgtp, R)
     ok(q == 0, "axis 19 and 5: no estimated, substituted, re-sent or exchanged read on a hot workday (%d)" % q)
+    qall = quality_on_hot(tgtp, R, every_day=True)
+    ok(qall > 100, "axis 19 positive control: the same reader finds %d reads other than actual on the other days" % qall)
 
     # ---------------------------------------------------------------------------------------- asks
     ret = A.ask_retention(R["hist"], R["reg"])
@@ -301,6 +339,92 @@ def run(task_dir, tgt, Wd, R, meta):
 
 
 # -------------------------------------------------------------------------------------------- helpers
+def describing_files(tgt, files, meta):
+    """H9: no shipped file or sheet describes the data, by name, by sheet or by content, each search run through the
+    verifier's own readers with a positive control on the same path; provenance lives in metadata.json"""
+    ok(DESCRIBE.search("tariff_advice_file_list_2026-10-09") and DESCRIBE.search("load_research_extracts_file_notes")
+       and not any(DESCRIBE.search(os.path.splitext(f)[0]) for f in ("account_tariff_history_2026-03-12.csv",
+                                                                     "summer_pricing_trial_plan.pdf")),
+       "H9 positive control: the name search matches the file list and the file notes an earlier cut shipped, and no extract")
+    named = [f for f in files if DESCRIBE.search(os.path.splitext(f)[0])]
+    ok(not named, "H9 no shipped file's name says it describes the data %s" % named)
+    sheets = {f: V.sheet_names(os.path.join(tgt, f)) for f in files if f.endswith(".xlsx")}
+    ok(sheets.get("summer_pricing_trial_register.xlsx") == ["Register"]
+       and {"Design day 2027-28", "Customers", "Method"} <= set(sheets.get("murrandi_demand_forecast_2026.xlsx", [])),
+       "H9 positive control: the verifier's workbook reader lists the register's and the forecast's sheets %s" % sheets)
+    ok(DESCRIBE_SHEET.match("Notes") and not DESCRIBE_SHEET.match("Method"), "H9 positive control: the sheet search matches a Notes sheet")
+    bad = [(f, s) for f, ss in sheets.items() for s in ss if DESCRIBE_SHEET.match(s.strip())]
+    ok(not bad, "H9 no shipped workbook carries a notes, read-me, dictionary or definitions sheet %s" % bad)
+    # by content: the data files' fields written as identifiers, and no shipped document naming four of them
+    fields = set()
+    for f in files:
+        if f.endswith(".csv") and not f.startswith("MRP_NEM12_"):
+            fields.update(c.strip() for c in open(os.path.join(tgt, f)).readline().rstrip("\r\n").split(","))
+        elif f.endswith(".xlsx"):
+            for s in sheets[f]:
+                fields.update(str(v) for v in V.xlsx_rows(os.path.join(tgt, f), s)[0].values())
+    ident = {c for c in fields if re.fullmatch(r"[a-z][a-z0-9_]*", c) and ("_" in c or re.search(r"\d", c))}
+
+    def named_fields(text):
+        return {c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+    reg_head = " ".join(str(v) for v in V.xlsx_rows(os.path.join(tgt, "summer_pricing_trial_register.xlsx"), "Register")[0].values())
+    ok(len(ident) >= 20 and len(named_fields(reg_head)) >= 6,
+       "H9 positive control: the field search finds the register header's own %d fields among %d" % (len(named_fields(reg_head)), len(ident)))
+    pdfs = [f for f in files if f.endswith(".pdf")]
+    ok(set(pdfs) == set(PDF_CONTROL), "H9 every shipped PDF has a control sentence %s" % pdfs)
+    for f in pdfs:
+        text = V.pdf_text(os.path.join(tgt, f))
+        ok(len(text) > 500 and PDF_CONTROL[f] in text, "H9 positive control: the verifier's PDF reader finds %r in %s" % (PDF_CONTROL[f], f))
+        hit = named_fields(text)
+        ok(len(hit) < 4, "H9 %s names %d of the data files' fields %s" % (f, len(hit), sorted(hit)))
+        gloss = [g for g in ("by register and date", "the extract lists", "file notes", "record types") if g in text.lower()]
+        ok(not gloss, "H9 %s says nothing about how a data file is laid out %s" % (f, gloss))
+    prov = meta.get("provenance", {})
+    ok(set(prov) == set(files) and all(prov[f].get("covers") and prov[f].get("date") for f in files),
+       "H9 metadata.json carries every shipped file's provenance (%d of %d)" % (len(set(prov) & set(files)), len(files)))
+
+
+def window_steps(tgt):
+    """each design's mean response on the trial workdays (design households less control households, by the register's
+    NMI, from the verifier's own NEM12 read), and where its largest half-hour to half-hour steps fall: as the extracts
+    number the day, one interval late and two hours ahead"""
+    reads = V.nem(tgt)
+    rows = V.xlsx_rows(os.path.join(tgt, "summer_pricing_trial_register.xlsx"), "Register")
+    head = [rows[0][V.col(i)] for i in range(len(rows[0]))]
+    reg = [{head[i]: r.get(V.col(i)) for i in range(len(head))} for r in rows[1:]]
+    work = [d for d in P.DAYS if P.trial_day(d) and P.workday(d)]
+
+    def demand(nmi, d):
+        e1 = reads.get((nmi, "E1"), {}).get(d)
+        if e1 is None:
+            return None
+        e2 = reads.get((nmi, "E2"), {}).get(d, [0.0] * 48)
+        b1 = reads.get((nmi, "B1"), {}).get(d, [0.0] * 48)
+        return np.array([2.0 * (x + y - z) for x, y, z in zip(e1, e2, b1)])
+    prof = {}
+    for arm in ("CONTROL",) + tuple("DESIGN " + a for a in P.DESIGNS):
+        nmis = [r["nmi"] for r in reg if r["arm"] == arm]
+        days = []
+        for d in work:
+            v = [x for x in (demand(n_, d) for n_ in nmis) if x is not None]
+            days.append(np.mean(v, axis=0))
+        prof[arm] = np.mean(days, axis=0)
+    out = {}
+    for a in P.DESIGNS:
+        w = P.WIN[a]
+        edges = sorted({w["peak"][0], w["peak"][1]} | {x for s in w.get("shoulder", []) for x in s})
+        eff = prof["DESIGN " + a] - prof["CONTROL"]
+
+        def top(x):
+            st = np.abs(np.diff(x))           # st[k - 1] is the step into half-hour k
+            o = np.argsort(-st)
+            return sorted(int(k) + 1 for k in o[:len(edges)]), st, o
+        t, st, o = top(eff)
+        out[a] = {"edges": edges, "top": t, "ratio": float(min(st[k - 1] for k in edges) / st[o[len(edges)]]),
+                  "late": top(np.roll(eff, 1))[0], "aest": top(np.roll(eff, -4))[0]}
+    return out
+
+
 def pdf_text(path):
     from pypdf import PdfReader
     return " ".join(pg.extract_text() for pg in PdfReader(path).pages).replace("\n", " ")
@@ -413,7 +537,7 @@ def block_adjusted(R):
     return out
 
 
-def quality_on_hot(tgt, R):
+def quality_on_hot(tgt, R, every_day=False):
     hot = {P.DAYS[j].strftime("%Y%m%d") for j in R["hot"]}
     bad = 0
     for fn in A.NEMS:
@@ -421,7 +545,7 @@ def quality_on_hot(tgt, R):
             for line in fh:
                 if line.startswith("300"):
                     f = line.split(",")
-                    if f[1] in hot:
+                    if every_day or f[1] in hot:
                         q = f[-5]
                         if q != "A":
                             bad += 1

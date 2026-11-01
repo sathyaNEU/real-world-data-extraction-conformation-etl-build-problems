@@ -1,17 +1,18 @@
 {
  "task": "task131",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities",
  "objective": "experiment-causal",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-13",
+ "updated": "2026-11-01",
  "stump": "A competent solver takes each design's treatment-minus-control drop in household demand over its peak window across the trial's workdays, scales it to the 2027-28 flat-rate residential customers and files Design B as lowering the 50% POE maximum demand by about 15 MW; the step that lands it there is reading a design's effect as its cut inside the window on an average trial day, when the cooling put off past the peak price comes back as one pull-down when the price falls and on the design day's heat outgrows the cut, so B's maximum moves to the half-hour from 8 p.m. and rises, A's to the half-hour from 9 p.m., and only the stepped design C lowers it.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-13"
+  "exit": 1,
+  "date": "2026-11-01",
+  "fail": "pair ceiling 83.5, mirror leakage 100.0, cracker misses every ask"
  },
  "leak": {
   "leak_py": "REVIEW (sweep 4 only: control, effect, corporation in the trial plan; answered in the note), 2026-10-13, --asof 2026-10-09",
@@ -32,9 +33,16 @@
    "portal": "FAILED_TO_STUMP (architecture 1 left off the approved list)",
    "repair": "design (re-root to architecture 2)",
    "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK, sweep 1 file names: tariff_advice_file_list_2026-10-09.csv, a file whose name says it describes the data (file_list), dataset-generation section 3)",
+   "repair": "leak",
+   "move": "Stopped writing the three things that described the data: the file list tariff_advice_file_list_2026-10-09.csv (the LEAK), Metering Services' extract notes load_research_extracts_file_notes.pdf (NEM12 record layout, kWh per interval, interval 1 from midnight AWST, NMI suffixes, quality codes) and the register's Notes sheet (column glosses); the pack goes from 18 to 16 files; two describing sentences in governing documents were dropped as well (the trial plan's 'the billing system's account history records each account's tariff by register and date', the instruments' 'The extract lists every response started, submitted or not, by trial ID'). Per-file provenance (what each file covers, its issuer in the setting, its date, the real format it follows) moved to metadata.json. SF9 now rests on the NEM12 200 records' own unit (KWH) and interval length, SF8 on the 300 records' 1440 / interval-length values from midnight and on each design's response stepping exactly at its filed price boundaries (asserted through the verifier's reader, with one-interval and two-hour negative controls); the meters' clock, which turns the call to none if read as eastern time, is filed once in Schedule 1 section 2 ('Times are Western Australian Standard Time, the time the corporation's interval meters keep.'); closure 19 cites the NEM12 format's own quality codes. checks.py asserts no describing file by name, sheet or content (positive controls through the verifier's readers) and each moved closure: 166 checks, verify 22 of 22, two builds byte-identical, figures.json and both goldens unchanged, freeze determinism PASS, leak.py REVIEW with no LEAK. generator/ceiling.py measured the ask layer on the cut pack for the first time: the careful solver keeps all 18 ask figures (the customer chain, the register grain, the exchange days and the telephone code order are each missed only by a narrowed reader), pair 83.5 (56.0 with a natural-read mirror), so precut fails on the ask layer and the reship waits on /fix-rubric; nothing was tuned. A rubric pass the same day (prompt and main call frozen) found one device that holds against the careful cracker (A1: in-town movers' new accounts under a second customer record, measured on a transformed copy at 5 of 18 kept, pair 43.8) but not yet forced (5 of 11 orphan accounts have several candidate households), and none for Ask C or for B's and C's charged-more counts; it stopped before any ask data moved (candidate table in the design note's Tried and rejected).",
+   "commit": ""
   }
  ],
- "resume": "",
+ "resume": "ASK LAYER owed before any reship (measured 2026-11-01). The leak repair is done on dbfabd6c (the file list and the extract notes no longer ship; the meters' time zone filed once in Schedule 1 section 2; the register's Notes sheet dropped; two describing sentences dropped from the trial plan's 6 and the survey instruments). generator/ceiling.py with the careful-solver cracker keeps all 18 ask figures (pair 83.5), so precut FAILs 'cracker misses every ask'; every device was missed only by a reader who ignores a field a careful solver reads. A /fix-rubric pass found one candidate that holds Ask A (the design households' in-town moves re-keyed under a second customer record: careful cracker 5 of 18, pair 43.8) but is not yet forced (5 of 11 orphan accounts have 2 or 3 candidate households; the move dates would need re-drawing so each orphan has one), and nothing that holds Ask C as worded. Next: build A1 with re-drawn move dates, and reword Ask C onto a reconstruction (the ask sentence may change, the call sentence not), measured with the careful solver and the judge's standard; or re-root at stage 1. Freeze treats retention.A.gone and retention.B.gone as main-call keys by value; moving them needs --allow with a reason.",
  "approved": null,
  "delivered": "2026-10-13",
  "portal": null,
@@ -42,5 +50,6 @@
  "portal_status": "",
  "portal_status_date": "",
  "replaces": "task130",
- "history": "architecture 1 (marketing-consumer-research, card-randomised member offers) shipped 2026-10-10, FAILED_TO_STUMP; re-rooted 2026-10-13"
+ "history": "architecture 1 (marketing-consumer-research, card-randomised member offers) shipped 2026-10-10, FAILED_TO_STUMP; re-rooted 2026-10-13",
+ "target_zip_md5": "dbfabd6c2cb9f7d134f451d77c943a52"
 }

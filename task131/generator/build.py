@@ -8,9 +8,7 @@ import json
 import os
 import shutil
 import sys
-from datetime import date, datetime
-
-import pandas as pd
+from datetime import datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -26,7 +24,6 @@ import docs            # noqa: E402
 F = {
     "nem11": "MRP_NEM12_202511.csv", "nem12": "MRP_NEM12_202512.csv", "nem01": "MRP_NEM12_202601.csv",
     "nem02": "MRP_NEM12_202602.csv",
-    "notes": "load_research_extracts_file_notes.pdf",
     "register": "summer_pricing_trial_register.xlsx",
     "plan": "summer_pricing_trial_plan.pdf",
     "tariffs": "residential_charges_2025-26.pdf",
@@ -39,31 +36,29 @@ F = {
     "zones": "zone_substation_loads_2025-26.csv",
     "pv": "rooftop_pv_connections_2026-06.csv",
     "gen": "generation_availability_2027-28.xlsx",
-    "manifest": "tariff_advice_file_list_2026-10-09.csv",
 }
 DISTRACTORS = ["zones", "pv", "gen"]
-DESC = {
-    "nem11": ("interval reads for every trial premise, November 2025 (NEM12)", "Metering Services", "2025-12-05"),
-    "nem12": ("interval reads for every trial premise, December 2025 (NEM12)", "Metering Services", "2026-01-06"),
-    "nem01": ("interval reads for every trial premise, January 2026 (NEM12)", "Metering Services", "2026-02-05"),
-    "nem02": ("interval reads for every trial premise, February 2026 (NEM12)", "Metering Services", "2026-03-10"),
-    "notes": ("how the load research extracts are laid out", "Metering Services", "2024-02-12"),
-    "register": ("the trial households, their blocks and assignment", "Load Research", "2025-11-07"),
-    "plan": ("the summer pricing trial plan, version 2", "Load Research", "2025-11-03"),
-    "tariffs": ("the gazetted residential charges for 2025-26", "Pricing and Tariffs", "2025-10-31"),
-    "forecast": ("the 2026 system demand forecast, version 1.2", "System Planning", "2026-08-14"),
-    "history": ("each account's tariff by register and date", "Billing", "2026-03-12"),
-    "survey": ("every response started in the March 2026 survey of design households", "Customer Insights", "2026-03-26"),
-    "instruments": ("the March 2026 survey's online form and telephone script", "Customer Insights", "2026-03-01"),
-    "wx_daily": ("daily maximum temperature, Murrandi Aero (Bureau of Meteorology product IDCJAC0010)", "Bureau of Meteorology", "2026-04-02"),
-    "wx_hh": ("half-hourly observations, Murrandi Aero, November 2025 to February 2026 (Bureau of Meteorology product HM01X)", "Bureau of Meteorology", "2026-04-02"),
-    "zones": ("half-hourly zone substation loads, November 2025 to February 2026 (SCADA)", "Network Operations", "2026-03-04"),
-    "pv": ("rooftop PV connection applications and connections", "Network Connections", "2026-06-30"),
-    "gen": ("generating units' firm summer capacity and planned outages, 2027-28", "System Planning", "2026-08-21"),
-    "manifest": ("this list", "Pricing and Tariffs", "2026-10-09"),
+# provenance, written to metadata.json only (no file under target/ describes the pack, dataset-generation section 3):
+# what each file covers, its issuer in the world and its date, and the real format it follows where it follows one
+PROV = {
+    "nem11": ("interval reads of the trial premises' meters, November 2025", "Metering Services", "2025-12-05", "the AEMO NEM12 meter data file format"),
+    "nem12": ("interval reads of the trial premises' meters, December 2025", "Metering Services", "2026-01-06", "the AEMO NEM12 meter data file format"),
+    "nem01": ("interval reads of the trial premises' meters, January 2026", "Metering Services", "2026-02-05", "the AEMO NEM12 meter data file format"),
+    "nem02": ("interval reads of the trial premises' meters, February 2026", "Metering Services", "2026-03-10", "the AEMO NEM12 meter data file format"),
+    "register": ("the summer pricing trial's register of households", "Load Research", "2025-11-07", ""),
+    "plan": ("the summer pricing trial plan, version 2", "Load Research", "2025-11-03", ""),
+    "tariffs": ("the gazetted residential charges for 2025-26", "Pricing and Tariffs", "2025-10-31", ""),
+    "forecast": ("the 2026 system demand forecast, version 1.2", "System Planning", "2026-08-14", ""),
+    "history": ("the billing system's account tariff history", "Billing", "2026-03-12", ""),
+    "survey": ("the March 2026 survey's responses", "Customer Insights", "2026-03-26", ""),
+    "instruments": ("the March 2026 survey's online form and telephone script", "Customer Insights", "2026-03-01", ""),
+    "wx_daily": ("daily maximum temperature at Murrandi Aero", "Bureau of Meteorology", "2026-04-02", "the Bureau of Meteorology's IDCJAC0010 product layout"),
+    "wx_hh": ("half-hourly observations at Murrandi Aero, November 2025 to February 2026", "Bureau of Meteorology", "2026-04-02", "the Bureau of Meteorology's HM01X product layout"),
+    "zones": ("zone substation loads, November 2025 to February 2026", "Network Operations", "2026-03-04", ""),
+    "pv": ("rooftop PV connection applications and connections", "Network Connections", "2026-06-30", ""),
+    "gen": ("generating units' firm summer capacity and planned outages, 2027-28", "System Planning", "2026-08-21", ""),
 }
-MTIME = {k: v[2] + " 09:15" for k, v in DESC.items()}
-MTIME["manifest"] = "2026-10-09 16:40"
+MTIME = {k: v[2] + " 09:15" for k, v in PROV.items()}
 
 
 def world():
@@ -105,16 +100,9 @@ def write_pack(outdir, Wd=None):
     R.pv_connections(hh, Wd["exch"], P.SEED + 61).to_csv(os.path.join(tgt, F["pv"]), index=False, lineterminator="\n")
     docs.trial_plan(os.path.join(tgt, F["plan"]))
     docs.tariffs(os.path.join(tgt, F["tariffs"]))
-    docs.meter_notes(os.path.join(tgt, F["notes"]))
     docs.survey_instruments(os.path.join(tgt, F["instruments"]))
     docs.forecast(os.path.join(tgt, F["forecast"]))
     docs.generation(os.path.join(tgt, F["gen"]))
-    man = []
-    for k in F:
-        if k == "manifest":
-            continue
-        man.append({"file": F[k], "holds": DESC[k][0], "from": DESC[k][1], "as_at": DESC[k][2]})
-    pd.DataFrame(man).to_csv(os.path.join(tgt, F["manifest"]), index=False, lineterminator="\n")
     Wd["hist"], Wd["reg"], Wd["survey"] = hist, reg, sv
     return tgt, Wd
 
@@ -131,7 +119,14 @@ def metadata(outdir):
             "domain": "Energy Systems & Utilities", "task_type": "tariff-demand-response-evaluation",
             "objective": "Experiment & Causal Analysis",
             "stated_inputs": ["41,860", "41860", "214.6", "44.6"],
-            "sources": {"all files": "constructed for this task by the author (synthetic, no third-party data); no licence restriction"}}
+            "sources": {"all files": "constructed for this task by the author (synthetic, no third-party data); no licence restriction"},
+            "provenance": {F[k]: {"covers": PROV[k][0],
+                                  "issued_in_setting_by": PROV[k][1] if PROV[k][1] == "Bureau of Meteorology"
+                                  else "Murrandi Regional Power, " + PROV[k][1],
+                                  "date": PROV[k][2],
+                                  "source": "constructed by the author, synthetic and seeded, no third-party data"
+                                            + ("; follows " + PROV[k][3] if PROV[k][3] else ""),
+                                  "licence": "no licence restriction"} for k in F}}
     with open(os.path.join(outdir, "metadata.json"), "w") as fh:
         json.dump(meta, fh, indent=2)
     return meta

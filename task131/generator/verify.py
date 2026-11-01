@@ -63,6 +63,40 @@ def xlsx_rows(path, sheet):
     return rows
 
 
+def sheet_names(path):
+    """a workbook's sheet names, read from xl/workbook.xml as xlsx_rows reads them"""
+    wb = ET.fromstring(zipfile.ZipFile(path).read("xl/workbook.xml"))
+    return [s.get("name") for s in wb.find("m:sheets", NS)]
+
+
+def pdf_text(path):
+    """a PDF's text as the verifier reads Schedule 1: every page's extracted text, whitespace collapsed"""
+    from pypdf import PdfReader
+    return re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(path).pages))
+
+
+def nem_layout(tgt):
+    """the NEM12 extracts' 200 records (unit of measure, interval length) and 300 records (values a day against the
+    interval length), split the way nem() splits them"""
+    out = {"files": 0, "n200": 0, "uom": set(), "ilen": set(), "n300": 0, "bad300": 0}
+    for fn in sorted(f for f in os.listdir(tgt) if f.startswith("MRP_NEM12_")):
+        out["files"] += 1
+        il = None
+        with open(os.path.join(tgt, fn)) as fh:
+            for line in fh:
+                p = line.strip().split(",")
+                if p[0] == "200":
+                    out["n200"] += 1
+                    out["uom"].add(p[7])
+                    il = int(p[8])
+                    out["ilen"].add(il)
+                elif p[0] == "300":
+                    out["n300"] += 1
+                    if il is None or len(p) - 7 != 1440 // il:
+                        out["bad300"] += 1
+    return out
+
+
 def col(i):
     return "ABCDEFGHIJKLMNOP"[i]
 
@@ -98,6 +132,13 @@ def nem(tgt):
 
 
 def main(tgt, record=None):
+    lay = nem_layout(tgt)
+    print("NEM12: %d files, %d 200 records in %s at %s minutes, %d 300 records, %d without 1440 / interval-length values" % (
+        lay["files"], lay["n200"], ", ".join(sorted(lay["uom"])), " and ".join(str(x) for x in sorted(lay["ilen"])),
+        lay["n300"], lay["bad300"]))
+    if lay["uom"] != {"KWH"} or not lay["ilen"] <= {15, 30} or lay["bad300"]:
+        print("verify: the NEM12 extracts are not kWh per 15 or 30 minutes read from midnight, the figures below would not hold")
+        return 1
     reads = nem(tgt)
     reg = xlsx_rows(os.path.join(tgt, "summer_pricing_trial_register.xlsx"), "Register")
     head = [reg[0][col(i)] for i in range(len(reg[0]))]
@@ -194,9 +235,7 @@ def main(tgt, record=None):
 
     # ask B: charges against the Home Plan, general supply, GST inclusive, cents
     # the gazetted charges as Schedule 1 prints them
-    from pypdf import PdfReader
-    sched = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(tgt, "residential_charges_2025-26.pdf")).pages)
-    sched = re.sub(r"\s+", " ", sched)
+    sched = pdf_text(os.path.join(tgt, "residential_charges_2025-26.pdf"))
 
     def charge(pat):
         m = re.search(pat, sched)

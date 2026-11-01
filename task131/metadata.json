@@ -20,5 +20,119 @@
   ],
   "sources": {
     "all files": "constructed for this task by the author (synthetic, no third-party data); no licence restriction"
+  },
+  "provenance": {
+    "MRP_NEM12_202511.csv": {
+      "covers": "interval reads of the trial premises' meters, November 2025",
+      "issued_in_setting_by": "Murrandi Regional Power, Metering Services",
+      "date": "2025-12-05",
+      "source": "constructed by the author, synthetic and seeded, no third-party data; follows the AEMO NEM12 meter data file format",
+      "licence": "no licence restriction"
+    },
+    "MRP_NEM12_202512.csv": {
+      "covers": "interval reads of the trial premises' meters, December 2025",
+      "issued_in_setting_by": "Murrandi Regional Power, Metering Services",
+      "date": "2026-01-06",
+      "source": "constructed by the author, synthetic and seeded, no third-party data; follows the AEMO NEM12 meter data file format",
+      "licence": "no licence restriction"
+    },
+    "MRP_NEM12_202601.csv": {
+      "covers": "interval reads of the trial premises' meters, January 2026",
+      "issued_in_setting_by": "Murrandi Regional Power, Metering Services",
+      "date": "2026-02-05",
+      "source": "constructed by the author, synthetic and seeded, no third-party data; follows the AEMO NEM12 meter data file format",
+      "licence": "no licence restriction"
+    },
+    "MRP_NEM12_202602.csv": {
+      "covers": "interval reads of the trial premises' meters, February 2026",
+      "issued_in_setting_by": "Murrandi Regional Power, Metering Services",
+      "date": "2026-03-10",
+      "source": "constructed by the author, synthetic and seeded, no third-party data; follows the AEMO NEM12 meter data file format",
+      "licence": "no licence restriction"
+    },
+    "summer_pricing_trial_register.xlsx": {
+      "covers": "the summer pricing trial's register of households",
+      "issued_in_setting_by": "Murrandi Regional Power, Load Research",
+      "date": "2025-11-07",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "summer_pricing_trial_plan.pdf": {
+      "covers": "the summer pricing trial plan, version 2",
+      "issued_in_setting_by": "Murrandi Regional Power, Load Research",
+      "date": "2025-11-03",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "residential_charges_2025-26.pdf": {
+      "covers": "the gazetted residential charges for 2025-26",
+      "issued_in_setting_by": "Murrandi Regional Power, Pricing and Tariffs",
+      "date": "2025-10-31",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "murrandi_demand_forecast_2026.xlsx": {
+      "covers": "the 2026 system demand forecast, version 1.2",
+      "issued_in_setting_by": "Murrandi Regional Power, System Planning",
+      "date": "2026-08-14",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "account_tariff_history_2026-03-12.csv": {
+      "covers": "the billing system's account tariff history",
+      "issued_in_setting_by": "Murrandi Regional Power, Billing",
+      "date": "2026-03-12",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "trial_survey_responses_2026-03.csv": {
+      "covers": "the March 2026 survey's responses",
+      "issued_in_setting_by": "Murrandi Regional Power, Customer Insights",
+      "date": "2026-03-26",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "trial_survey_instruments_2026-03.pdf": {
+      "covers": "the March 2026 survey's online form and telephone script",
+      "issued_in_setting_by": "Murrandi Regional Power, Customer Insights",
+      "date": "2026-03-01",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "IDCJAC0010_013027_1800_Data.csv": {
+      "covers": "daily maximum temperature at Murrandi Aero",
+      "issued_in_setting_by": "Bureau of Meteorology",
+      "date": "2026-04-02",
+      "source": "constructed by the author, synthetic and seeded, no third-party data; follows the Bureau of Meteorology's IDCJAC0010 product layout",
+      "licence": "no licence restriction"
+    },
+    "HM01X_Data_013027_202511_202602.csv": {
+      "covers": "half-hourly observations at Murrandi Aero, November 2025 to February 2026",
+      "issued_in_setting_by": "Bureau of Meteorology",
+      "date": "2026-04-02",
+      "source": "constructed by the author, synthetic and seeded, no third-party data; follows the Bureau of Meteorology's HM01X product layout",
+      "licence": "no licence restriction"
+    },
+    "zone_substation_loads_2025-26.csv": {
+      "covers": "zone substation loads, November 2025 to February 2026",
+      "issued_in_setting_by": "Murrandi Regional Power, Network Operations",
+      "date": "2026-03-04",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "rooftop_pv_connections_2026-06.csv": {
+      "covers": "rooftop PV connection applications and connections",
+      "issued_in_setting_by": "Murrandi Regional Power, Network Connections",
+      "date": "2026-06-30",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    },
+    "generation_availability_2027-28.xlsx": {
+      "covers": "generating units' firm summer capacity and planned outages, 2027-28",
+      "issued_in_setting_by": "Murrandi Regional Power, System Planning",
+      "date": "2026-08-21",
+      "source": "constructed by the author, synthetic and seeded, no third-party data",
+      "licence": "no licence restriction"
+    }
   }
 }

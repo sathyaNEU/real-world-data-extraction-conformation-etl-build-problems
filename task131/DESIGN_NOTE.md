@@ -186,8 +186,8 @@ from C than the default does on the graded figures (B's change moves from 15 to 
 | SF5 | each design's change to that maximum demand | the same signed quantity in MW | the MD level under each design | same call | the prompt's "change" |
 | SF6 | the three peak designs we trialled last summer | A (3 to 9 p.m.), B (4 to 8 p.m.), C (stepped: shoulders 2 to 4 and 8 to 10 p.m., peak 4 to 8 p.m.), 1 December 2025 to 28 February 2026 | none | same call | the trial plan's design table and dates |
 | SF7 | household demand in the trial | net of the meter's import, controlled-load and export channels | general supply import only | same call and same figures | asserted: after 6 p.m. the export channel reads zero and the controlled-load circuit is off, so every half-hour that sets a maximum is identical |
-| SF8 | half-hour labels | interval n of a NEM12 day and trading interval n of the forecast both cover (n-1)/2 to n/2 hours after midnight AWST | interval-ending labels read as starting times | same call | the meter data notes and the forecast's notes state the numbering; asserted that a one-interval shift is the only error it can make and it moves every curve together |
-| SF9 | kWh per half-hour against MW | average kW is kWh per half-hour times two; MW is kW times customers over 1,000 | kWh read as kW | every figure moves (A 8.2 and C 7.6 MW lower, B 4.7 MW higher) | the meter data notes give the unit and interval length, the forecast states MW averaged over the half-hour; a units error, not a reading |
+| SF8 | half-hour labels and the meters' clock | interval n of a NEM12 day and trading interval n of the forecast both cover (n-1)/2 to n/2 hours after midnight AWST | interval-ending labels read as starting times; the meters read on eastern time | one interval off: same call, every figure moves (C 14 or 5); on eastern time: none, every design raises the maximum | filed once: Schedule 1 section 2, "Times are Western Australian Standard Time, the time the corporation's interval meters keep." The extracts carry the rest: every 300 record holds a day's 1440 / interval-length reads from midnight, and each design's response steps exactly at its filed price boundaries in that numbering (A at 3 and 9 p.m., B at 4 and 8 p.m., C at 2, 4, 8 and 10 p.m.), a one-interval or two-hour shift putting every step off them; the forecast's Method sheet and Interval start column number its trading intervals the same way (all asserted, through the verifier's readers) |
+| SF9 | kWh per half-hour against MW | average kW is kWh per half-hour times two; MW is kW times customers over 1,000 | kWh read as kW | every figure moves (A 8.2 and C 7.6 MW lower, B 4.7 MW higher) | every NEM12 200 record states its unit (KWH) and its interval length (30 or 15 minutes), asserted through the verifier's reader; the forecast states MW averaged over the half-hour; a units error, not a reading |
 | SF10 | workdays with peak prices | weekdays other than Western Australian public holidays | every weekday | same call | the tariff schedule; no public holiday falls in the trial's hot workdays (asserted) |
 | SF11 | days like the design day | the trial workdays at the design day's heat: seven, 43.7 to 45.3 degrees; no other workday above 39.7 | any threshold from 40.0 to 43.5 degrees, within a degree of 44.6, or at least 44.6 (four days); the k hottest workdays for k from 3 to 7; the half-hourly file's daily maxima at 40 to 43 | same call and same figures (C1, asserted) | the design day's weather in the forecast; a threshold below 39.7 or k above 7 takes in ordinary days and moves A's figure; a straight line in the day's maximum over every workday keeps C but misses the hot workdays' own response by 0.12 kW, 25 standard errors (asserted), an easier method on the same literal estimand that the data rejects, not another reading |
 | SF12 | the trial sample against the 2027 population | the trial's households are a random draw of Home Plan households with an interval meter | reweighting to another mix | same call | the trial plan's draw; every Home Plan customer has had an interval meter since 2024 (forecast notes) |
@@ -248,7 +248,7 @@ Measured by the generator on the shipped pack (`generator/checks.py` asserts eve
 | 16 | Identity normalisation | NMIs in the register and NEM12 | C1: the same ten-character NMIs |
 | 17 | Netting against gross | net household demand against general supply | C1: SF7 asserted |
 | 18 | Dimensional units | kWh per half-hour to MW, metered to sent-out | C4: SF9 (kWh as kW moves every figure); filed: SF14 (no loss adjustment) |
-| 19 | Code and status semantics | NEM12 quality flags | C1: every hot-workday read is actual (asserted); dictionary semantics elsewhere |
+| 19 | Code and status semantics | NEM12 quality flags | C1: every hot-workday read is actual (asserted, with the same reader finding other qualities on other days); elsewhere the NEM12 format's own quality codes, which no shipped file restates |
 | 20 | Integerisation | none on the main call | C1 |
 | 21 | Clause scope | peak prices on workdays only | filed in the tariff schedule; the design day is a workday |
 | 22 | Forward window contents | the 2027-28 design-day profile and customer count | shipped in the forecast workbook |
@@ -256,7 +256,8 @@ Measured by the generator on the shipped pack (`generator/checks.py` asserts eve
 ## Literal reader
 
 Executed word for word (the prompt, the forecast's methodology and design-day sheets, the trial plan's design
-table, dates, assignment and right to return, the tariff schedule's windows and holidays, the meter data notes):
+table, dates, assignment and right to return, the tariff schedule's windows and holidays, the NEM12 extracts' own
+unit and interval length):
 each design's change is the Home Plan's 50% POE maximum, the highest half-hour of the design-day profile, less the
 highest half-hour of that profile plus 41,860 times the design's effect per household in each half-hour of the
 design day, the effect being the assigned arm's difference from the control households. The design day is a
@@ -359,24 +360,39 @@ present on hot workdays and changes no evening half-hour (SF7, asserted).
 
 **Referee.** None needed: no ask has a designed disagreement between two files.
 
-| Ask | Figures | Cracker (lands the call, runs the battery, executes every filed rule) |
+| Ask | Figures | Cracker (lands the call, runs the battery, executes every filed rule; measured on the cut pack) |
 |---|---|---|
-| A still billed on the design (A, B, C) | 3 | miss |
-| A back on the Home Plan at own request (A, B, C) | 3 | miss |
-| A no longer our customers (A, B, C) | 3 | miss |
-| B households charged more (A, B, C) | 3 | miss |
-| B mean difference per household (A, B, C) | 3 | miss |
-| C share likely to stay (A, B, C) | 3 | miss |
+| A still billed on the design (A, B, C) | 3 | kept (3 of 3) |
+| A back on the Home Plan at own request (A, B, C) | 3 | kept (3 of 3) |
+| A no longer our customers (A, B, C) | 3 | kept (3 of 3) |
+| B households charged more (A, B, C) | 3 | kept (3 of 3) |
+| B mean difference per household (A, B, C) | 3 | kept (3 of 3) |
+| C share likely to stay (A, B, C) | 3 | kept (3 of 3) |
 
-The cracker joins on the register's account (Ask A), prices every import register at the design and dedups
-exchange days (Ask B), and reads the stay codes one way (Ask C); each device touches every design.
+Measured on the cut pack, the careful solver keeps every ask figure. It follows each household by its customer
+number (the account history shows the move: MOVE OUT on the old account, TRANSFER - TRIAL or MOVE IN on a new one
+under the same customer number, and the prompt asks who is no longer our customer), prices each register at the
+tariff the history holds it on (E2 on RC2, B1 on BB1 through the trial), reads the NEM12 quality codes (an interval
+marked N carries no read, so an exchange day is the old meter's reads and the new meter's) and executes the
+instruments as written (each mode's codes in the order its instrument lists them, a household's first submitted
+response). The four primaries are each missed only by a reader who ignores a field the careful solver reads, so
+each is spent, not silent: D7 the customer chain (the register's account join keeps 5 of 18), D6 the register grain
+(every import register priced at the design keeps 12), D1 the exchange days (the NMI-and-day dedup keeps 16, missing
+two means) and D3 the telephone order (codes read one way keeps 15). The full-includer control gives back
+figures.json's 18 ask figures exactly. The ask layer is owed to `/fix-rubric`; nothing here was tuned.
 
-Mirror leakage: 10 per cent of ask weight (the mirror stops at rung 2, files A, and runs the same ask paths as the
-cracker; it keeps at most the back-on-the-Home-Plan count of a design whose returns no mover touched, which the
-build forbids).
+Mirror leakage: 100 per cent of ask weight (the mirror stops at the default path, files B at 15 MW, and runs the
+same ask paths as the cracker; on the natural read without the hygiene battery it keeps none, 0 per cent).
 
-Pair ceiling: 31 (cracker 45 with no ask kept, mirror 5 + 7 + 6 = 18 at a tenth of the ask weight; rerun from the
-generated rubric at stage 3).
+Pair ceiling: 83.5 (cracker 38 + 7 + 55 = 100 with every ask figure kept, mirror 5 + 7 + 55 = 67; 56.0 with the
+mirror on the natural read at 12; over the bar of 60, owed to `/fix-rubric`).
+
+Measured by: generator/ceiling.py (on target.zip md5 dbfabd6c2cb9f7d134f451d77c943a52, 16 files; the cracker's
+call lands C at 11 MW, the mirror's default path files B at 15 MW, the full includer reproduces figures.json).
+
+The rubric pass of 1 November (main call frozen, prompt frozen) found one device that holds against this cracker
+(A1 in `## Tried and rejected`: in-town movers' new accounts under a second customer record) and none for Ask C or
+for B's and C's charged-more counts; it stopped before any ask data moved.
 
 ## Build record
 
@@ -456,6 +472,13 @@ points or more inside its one-decimal bin.
 (control, effect, corporation: the control group, a request that takes effect the next day, the organisation's
 name); it names no part of the decisive step. An earlier cut flagged the survey's count 112 inside the gazetted
 supply charge (112.4381 c/day); the write-up's survey lines now carry only the shares the ask asks for.
+Re-check of 1 November 2026, `--asof 2026-10-09`, after the leak repair (sweep 1's file-list LEAK gone, the
+register's Notes sheet REVIEW gone with the sheet):
+- Sweep 4, `summer_pricing_trial_plan.pdf`, effect, corporation and control: the same three words as above, the
+  control group, a request taking effect and the organisation's name; it names no part of the decisive step.
+- Sweep 11, `prompt.txt`, question form 'which' at 36 per cent of the corpus against a cap of 30: a corpus quota
+  on the shell, not a leak; the call's question sentence is frozen in a leak repair, so a reword at the role level
+  is the main thread's call.
 
 **Surface promotion.** task183 on card axes only (time gap, G14 decisive, Gate G forecasting and pick_one_of_n
 collide) at a surface score of 0.080, the corpus's 61st percentile. Different driver: task183 carries each part's
@@ -467,10 +490,11 @@ PV in the same sector's vocabulary, is the nearest surface neighbour (0.100) and
 2026); H2 every derived figure in this note is printed by `checks.py` into the `note` block of `figures.json` or by
 `verify.py`; H3 the write-up's hot-day sentence states the selection as the data has it (seven workdays at 43.7 to
 45.3 degrees against the design day's 44.6, none other above 39.7), where an earlier cut said none reached 39.7;
-H4 the zip holds exactly the 18 declared files; H7 two builds byte-identical and the zip cut from the final build;
+H4 the zip holds exactly the 16 declared files; H7 two builds byte-identical and the zip cut from the final build;
 H8 the write-up's citations resolve (section 6 of the trial plan is the as-assigned comparison, Schedule 1 the
-charges); H9 the file list names every other shipped file and no longer lists itself; H16 no date after the
-extracts (`leak.py` sweep 9); H23 every ask reads with none as an answer.
+charges); H9 no file list, extract notes or notes sheet ships and no document names four of the data files' fields
+(asserted by name, sheet and content through the verifier's readers), provenance in `metadata.json`; H16 no date
+after the extracts (`leak.py` sweep 9); H23 every ask reads with none as an answer.
 
 **Pre-ship check, the 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each
 design's ex-ante load impact on the 2027-28 50% POE maximum, estimated from the randomised trial at the design
@@ -533,6 +557,39 @@ surface-read dependency, no sole defect); nothing planted, no decoy, no certifie
 - Half-hourly readings above their day's maximum (40.3 degrees in HM01X on 9 February against a 39.7 maximum): a
   solver taking each day's maximum from the half-hourly file at 40 degrees took in two ordinary days and moved A and
   B (judge pass 3); spot readings now sit below the day's maximum.
+- A file list (`tariff_advice_file_list_2026-10-09.csv`: every other file with what it holds, its issuer and date),
+  Metering Services' extract notes (`load_research_extracts_file_notes.pdf`: the NEM12 record layout, kWh per
+  interval, interval 1 from midnight AWST, the NMI suffixes, the quality codes, re-sends) and the register's Notes
+  sheet (a gloss on its columns) shipped to 2026-10-13; the in-house re-check of 1 November under the new leak gate
+  read the file list as a LEAK (dataset-generation section 3: no shipped file describes the data), and the notes and
+  the sheet are the same kind. All three are cut: provenance went to `metadata.json`; the unit, interval length and
+  numbering rest on the extracts' own 200 and 300 records and on each design's response stepping at its filed
+  boundaries (SF8, SF9, asserted through the verifier's reader); the meters' clock, which flips the call to none if
+  read as eastern time, is filed once in Schedule 1 section 2; the NMI suffixes are carried by the account history's
+  register tariffs and the quality codes by the NEM12 format (closure 19). The same re-check measured the ask layer
+  with `generator/ceiling.py` for the first time: the careful solver keeps all 18 figures (pair 83.5), owed to
+  `/fix-rubric`.
+- Two sentences describing the data in governing documents (1 November): the trial plan's section 6 clause "the
+  billing system's account history records each account's tariff by register and date" (it stated Ask B's register
+  grain) and the survey instruments' "The extract lists every response started, submitted or not, by trial ID."
+  Both dropped; no closure rested on either (the history's own columns carry its grain, the instruments' counting rule
+  and the extract's `complete` and `submitted_at` columns carry the rest); `checks.py` guards their return.
+- Rubric pass, 1 November, prompt and main call frozen. **A1, held, not built**: design households' in-town moves
+  re-keyed under a second customer record, so the customer number no longer reaches the new account. Measured on a
+  transformed copy, the careful cracker then files exactly the register-account join's figures and keeps 5 of 18
+  (B's and C's charged-more counts, 45 and 52, and the three stay shares), pair 43.8 with the mirror on the same
+  paths. It died on forcing: 5 of the 11 orphan accounts have two or three candidate households closing on the day
+  before, even read with the orphan's tariff and each household's state at its move, so the move dates would have to
+  be re-drawn first. **D6, D1 and D3 re-sited, spent**: a controlled-load circuit on a second register or NMI is
+  priced right from the history's tariff per row; exchange days and serial corrections are both resolved by the
+  quality codes and update times; a bills extract is bypassed by pricing the reads; Q4's telephone order read from
+  duplicate pairs, with the instruments silent on it, leaves a literal reader on the web order (a fork); a web-form
+  version switch is a work order once the instruments show both forms; web clocks in UTC against telephone clocks in
+  AWST are found by the hour profile. **Ask C re-keyed to the customer number** (A1's movers invited twice): the
+  survey's join to the register then fails visibly and leads the careful solver to A1, cracking all three asks at
+  once. **The self-service effective date** (the request date stored for the next day) is not forced, which date
+  billing applied being unobservable. No device holds Ask C under the frozen prompt, so the pass stopped before any
+  ask data moved.
 
 ## Architecture 1 record (spent 2026-10-13)
 

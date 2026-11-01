@@ -1,6 +1,7 @@
 """task131 generator: the filed documents and workbooks. The trial plan, the gazetted residential tariffs, the
-2026 demand forecast, Metering Services' file notes, the March survey's instruments, the trial register and the
-2027-28 generation availability (a file the solution never reads)."""
+2026 demand forecast, the March survey's instruments, the trial register and the 2027-28 generation availability (a
+file the solution never reads). No file or sheet describes the data (dataset-generation section 3): the NEM12
+extracts carry their own unit and interval length, the account history its own registers and tariff codes."""
 from datetime import date
 
 import numpy as np
@@ -115,9 +116,8 @@ def trial_plan(path):
         ("h", "6. How the trial will be read"),
         ("p", "Each design's households will be compared with the control households as assigned, whatever they did "
               "after assignment, because a default tariff would carry the same right to return to the Home Plan. Interval "
-              "reads for every trial premise come from Metering Services' monthly NEM12 extracts; the billing system's "
-              "account history records each account's tariff by register and date. Design households will be surveyed "
-              "in March 2026."),
+              "reads for every trial premise come from Metering Services' monthly NEM12 extracts. Design households will "
+              "be surveyed in March 2026."),
     ], "2025-11-03")
 
 
@@ -144,7 +144,7 @@ def tariffs(path):
         ("p", "Trial Design A peak time is 3 pm to 9 pm; Trial Design B and Trial Design C peak time is 4 pm to 8 pm; "
               "Trial Design C shoulder time is 2 pm to 4 pm and 8 pm to 10 pm. Peak, shoulder and Daytime Saver times "
               "apply on weekdays other than public holidays, and every other time is off-peak. Times are Western "
-              "Australian Standard Time."),
+              "Australian Standard Time, the time the corporation's interval meters keep."),
         ("table", (hol, [60 * mm, 60 * mm])),
         ("h", "3. Hot Water Off-Peak"),
         ("p", "Hot Water Off-Peak applies to a separately metered hot water circuit that the corporation energises "
@@ -153,36 +153,6 @@ def tariffs(path):
         ("p", "Electricity exported to the network from a customer's rooftop PV system is credited at %s cents per "
               "kWh (code BB1) whatever the customer's tariff." % _c(P.PRICES["BUYBACK"])),
     ], "2025-10-31")
-
-
-# ------------------------------------------------------------------------------------------------ meter data notes
-def meter_notes(path):
-    _pdf(path, "Load research extracts: file notes", "Metering Services", "Murrandi Regional Power, Metering Services, load research extracts, file notes", [
-        ("title", "Load research extracts: file notes"),
-        ("small", "Murrandi Regional Power, Metering Services. Version 3, 12 February 2024. Owner: Nathaniel Maxwell."),
-        ("p", "Load research receives a monthly extract of interval reads for the meters it names. Each extract is a "
-              "NEM12 file in the AEMO meter data file format. Each extract holds the days of its month as first "
-              "delivered and every day sent again since the previous extract."),
-        ("h", "Record types"),
-        ("table", ([["Record", "Holds"],
-                    ["100", "file header: version, file date and time, sender, recipient"],
-                    ["200", "one meter register: NMI, NMI configuration, register ID, NMI suffix, data stream, meter serial number, unit of measure, interval length in minutes"],
-                    ["300", "one day of interval reads for the 200 record above it: interval date, the interval values, quality method, reason code, reason description, update date-time, MSATS load date-time"],
-                    ["400", "quality by interval range, following a 300 record whose quality method is V"],
-                    ["900", "end of file"]], [18 * mm, 150 * mm])),
-        ("h", "Values"),
-        ("p", "Interval values are kWh in the interval. A 30-minute meter has 48 values a day and a 15-minute meter 96. "
-              "Interval 1 begins at midnight Western Australian Standard Time; Western Australia does not observe "
-              "daylight saving. NMI suffix E1 is general supply import, E2 controlled-load import and B1 export to the "
-              "network."),
-        ("h", "Quality"),
-        ("table", ([["Quality method", "Meaning"],
-                    ["A", "actual reads"], ["E", "estimated"], ["S", "substituted"], ["F", "final substitute"],
-                    ["N", "null: no reads for the interval"], ["V", "variable: the quality of each interval range is in the 400 records that follow"]],
-                   [30 * mm, 138 * mm])),
-        ("p", "The update date-time records when the reads were last updated; a day sent again carries a later update "
-              "date-time."),
-    ], "2024-02-12")
 
 
 # ------------------------------------------------------------------------------------------------ survey instruments
@@ -205,8 +175,7 @@ def survey_instruments(path):
         ("h", "How the survey was run"),
         ("p", "An email invitation went on 2 March 2026 to every design household, with a reminder on 9 March. From 12 to "
               "24 March Customer Insights telephoned households that had not answered online. A response counts once it "
-              "is submitted; where a household submitted more than once, its first submitted response counts. The "
-              "extract lists every response started, submitted or not, by trial ID."),
+              "is submitted; where a household submitted more than once, its first submitted response counts."),
         ("h", "Online form"),
         ("table", (web, [10 * mm, 82 * mm, 76 * mm])),
         ("h", "Telephone script"),
@@ -335,15 +304,6 @@ def register_book(df, path):
             ws.cell(row=r, column=j, value=(v.item() if hasattr(v, "item") else v))
     _widths(ws, [13, 12, 13, 13, 8, 11, 11, 17, 24])
     ws.freeze_panes = "A2"
-    ws2 = wb.create_sheet("Notes")
-    for r, t in enumerate([
-        "Summer pricing trial 2025-26: register of trial households",
-        "One row per trial household, the customer named on the account at enrolment on 31 October 2025. arm is the household's assignment by lot within its block.",
-        "summer_2024_25_4to9pm_kw is the household's mean weekday demand between 4 pm and 9 pm, December 2024 to February 2025, used to form the blocks.",
-        "rooftop_pv and hot_water_circuit are as recorded at enrolment.",
-    ], start=1):
-        ws2.cell(row=r, column=1, value=t).font = Font(bold=(r == 1))
-    _widths(ws2, [130])
     _save(wb, path, "Peter Huang", "2025-10-31T01:05:00Z", "2025-11-07T05:22:00Z")
 
 
