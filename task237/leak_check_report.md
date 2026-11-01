@@ -1,25 +1,43 @@
 # leak check, task237
 
-**Verdict: REVIEW.** 12 files read, 24 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 12 files read, 24 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: factor, variance, wording, worded, reliability, negatively, connectedness, translation, decisive, quantity, population, nothing, method, quality, measurement, coefficient, standard, vendors, source, separated, default, golden, common, one-factor, keying
+Stump terms swept: factor, wording, variance, worded, reliability, negatively, connectedness, translation, decisive, quantity, population, nothing, standard, method, single, quality, measurement, coefficient, vendors, source, separated, default, golden, common, register
+
+## 1 file names (LEAK 3, REVIEW 1)
+- **LEAK** `DATA_DICTIONARY.md`: a file whose name says it describes the data (DATA_DICTIONARY): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `README.md`: a file whose name says it describes the data (README): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `bcs12_pilot_codebook.xlsx`: a file whose name says it describes the data (codebook): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `bcs12_translation_register_wave6.xlsx`: a sheet named 'About': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `translation_adaptation_standard_TAS-4.pdf`: golden figure 0.70 appears: ...r more Release the version is fielded in the wave 0.70 to under 0.80 Hold cognitive interviews on the it...
 - **REVIEW** `translation_adaptation_standard_TAS-4.pdf`: golden figure 0.80 appears: ...th these bands: Reliability Decision What follows 0.80 or more Release the version is fielded in the wav...
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `DATA_DICTIONARY.md`: 3 of 25 stump-paragraph terms appear (translation, method, standard); read whether the document names the move
-- **REVIEW** `README.md`: 4 of 25 stump-paragraph terms appear (translation, quality, standard, vendors); read whether the document names the move
+- **REVIEW** `DATA_DICTIONARY.md`: 4 of 25 stump-paragraph terms appear (translation, standard, method, register); read whether the document names the move
+- **REVIEW** `README.md`: 5 of 25 stump-paragraph terms appear (translation, standard, quality, vendors, register); read whether the document names the move
 - **REVIEW** `bcs12_technical_manual_english.pdf`: 8 of 25 stump-paragraph terms appear (factor, worded, reliability, negatively, connectedness, translation); read whether the document names the move
-- **REVIEW** `translation_adaptation_standard_TAS-4.pdf`: 7 of 25 stump-paragraph terms appear (variance, reliability, connectedness, translation, quality, standard); read whether the document names the move
+- **REVIEW** `translation_adaptation_standard_TAS-4.pdf`: 8 of 25 stump-paragraph terms appear (variance, reliability, connectedness, translation, standard, quality); read whether the document names the move
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: no data count disclosed: N of the M: "6 of the"; each of the N: "each of the ten" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+
+## 12 describing content (LEAK 3)
+- **LEAK** `DATA_DICTIONARY.md`: names 19 column(s) of the data files verbatim, 100% of ncp_incentive_ledger_bcs12_pilot.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **LEAK** `bcs12_technical_manual_english.pdf`: names 14 column(s) of the data files verbatim, 60% of ncp_bcs12_pilot_export_wave6.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **LEAK** `translation_adaptation_standard_TAS-4.pdf`: names 13 column(s) of the data files verbatim, 40% of bcs12_translation_register_wave6.xlsx: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+
+## 13 task metadata (REVIEW 1)
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (variance, reliability, connectedness, translation, standard): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
@@ -31,9 +49,6 @@ Stump terms swept: factor, variance, wording, worded, reliability, negatively, c
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 

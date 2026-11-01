@@ -1,10 +1,14 @@
 # leak check, task143
 
-**Verdict: REVIEW.** 23 files read, 10 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 23 files read, 10 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: chance, release, cycles, finished, asserted, fin-rs-, members, shared, effect, predictive, decisive, weakest, variance, structure, nothing, default, golden, forecasting, validation, window, groups, between-tray, genealogy, system, builds
+
+## 1 file names (REVIEW 2)
+- **REVIEW** `extract_note_battery_lab_2026-10-12.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
+- **REVIEW** `extract_note_service_operations_2026-10-09.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
 ## 2 author vocabulary (REVIEW 3)
 - **REVIEW** `extract_note_battery_lab_2026-10-12.txt`: \bthe model\b x2: ...e: Zelvora Cell s.r.o. model_k_genealogy_zc2638.csv Genealogy of the Model K packs built from lot ZC2638, one row per cell Source: Battery P...
@@ -28,10 +32,22 @@ Stump terms swept: chance, release, cycles, finished, asserted, fin-rs-, members
 - **REVIEW** `service_cost_sheet_fy2026.xlsx`: names 3 of 3 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `carrier_statement_inbound_returns_2025-09_2026-10.csv`: names 3 of 3 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "each of the four"; each of the N: "each of those twelve" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: second-sentence opener 'put' at 36% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (LEAK 1, REVIEW 1)
+- **LEAK** `extract_note_service_operations_2026-10-09.txt`: names 16 column(s) of the data files verbatim, 44% of service_cases_2024-09_2026-09.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **REVIEW** `extract_note_battery_lab_2026-10-12.txt`: names 10 column(s) of the data files verbatim (built, channel, cycle, cycles, fleet, line): confirm it is the organisation's own record and not a note written for the analyst
+
+## 13 task metadata (REVIEW 1)
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (chance, release, members, predictive, weakest): say what the task decides, not how
 
 ## 5 announcements (clean)
 
@@ -39,9 +55,6 @@ Stump terms swept: chance, release, cycles, finished, asserted, fin-rs-, members
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 

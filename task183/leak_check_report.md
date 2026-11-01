@@ -1,48 +1,55 @@
 # leak check, task183
 
-**Verdict: REVIEW.** 14 files read, 23 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 14 files read, 23 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: failure, section, quarry, decisive, in-service, second, sutter, asserted, planned, replaced, report, forecast, window, harrow, states, history, architecture, carries, outage, population, forward, sentence, hospital, method, recurrence
+Stump terms swept: section, failure, quarry, in-service, sutter, asserted, report, second, planned, harrow, decisive, window, states, record, forecast, architecture, replaced, sentence, outage, twice-failed, prompt, nothing, history, carries, forward
+
+## 1 file names (LEAK 1)
+- **LEAK** `asset_analytics_extract_notes_2026-10.md`: a file whose name says it describes the data (extract_notes): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
 
 ## 2 author vocabulary (REVIEW 1)
-- **REVIEW** `asset_analytics_extract_notes_2026-10.md`: \bthe model\b x1: ...- Device list in-service dates are blank for devices in service since the model went live (Nov 2014)....
+- **REVIEW** `asset_analytics_extract_notes_2026-10.md`: \bthe model\b x1: ...- Device list in-service dates are blank for devices in service since the model went live (Nov 2014). - SP05: the second feed to the Kessler Avenue l...
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `2025_annual_reliability_report_sec6_ug_cable.pdf`: carries 7 of 7 distinctive words of the committed call: 'Quarry Hill 21 will have the most failures of the cable itself in 2027, so it is the feeder for the 2027 cable program.'
 - **REVIEW** `asset_analytics_extract_notes_2026-10.md`: carries 6 of 7 distinctive words of the committed call: 'Quarry Hill 21 will have the most failures of the cable itself in 2027, so it is the feeder for the 2027 cable program.'
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `2025_annual_reliability_report_sec6_ug_cable.pdf`: 7 of 25 stump-paragraph terms appear (failure, section, quarry, sutter, replaced, report); read whether the document names the move
-- **REVIEW** `TVE-RS-04_reliability_reporting_standard_rev6.pdf`: 6 of 25 stump-paragraph terms appear (quarry, sutter, report, harrow, outage, method); read whether the document names the move
-- **REVIEW** `asset_analytics_extract_notes_2026-10.md`: 7 of 25 stump-paragraph terms appear (section, quarry, in-service, sutter, replaced, harrow); read whether the document names the move
+- **REVIEW** `2025_annual_reliability_report_sec6_ug_cable.pdf`: 8 of 25 stump-paragraph terms appear (section, failure, quarry, sutter, report, second); read whether the document names the move
+- **REVIEW** `TVE-RS-04_reliability_reporting_standard_rev6.pdf`: 6 of 25 stump-paragraph terms appear (quarry, sutter, report, harrow, record, outage); read whether the document names the move
+- **REVIEW** `asset_analytics_extract_notes_2026-10.md`: 8 of 25 stump-paragraph terms appear (section, quarry, in-service, sutter, second, harrow); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Which of the eight feeders on our underground network will have the most failures of the cable itself in 2027, counting insulation, splice and termination failures on the sections in service at the end of September 2026 '
 
 ## 6 ranking artifacts (REVIEW 3, INFO 2)
-- **REVIEW** `2025_annual_reliability_report_sec6_ug_cable.pdf`: names 4 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `TVE-RS-04_reliability_reporting_standard_rev6.pdf`: names 4 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `feeder_device_list.json`: names 4 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `asset_analytics_extract_notes_2026-10.md`: names 4 of 5 answer-set candidates; confirm it does not rank them on the decision question
-- **INFO** `major_event_days_RY2021-RY2025.csv`: names 4 of 5 answer-set candidates; confirm it does not rank them on the decision question
+- **REVIEW** `2025_annual_reliability_report_sec6_ug_cable.pdf`: names 5 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `TVE-RS-04_reliability_reporting_standard_rev6.pdf`: names 4 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `feeder_device_list.json`: names 4 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `asset_analytics_extract_notes_2026-10.md`: names 5 of 6 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `major_event_days_RY2021-RY2025.csv`: names 4 of 6 answer-set candidates; confirm it does not rank them on the decision question
+
+## 7 hidden content (REVIEW 1)
+- **REVIEW** `connectivity_meter_points.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is r
 
 ## 8 column names (REVIEW 3)
 - **REVIEW** `feeder_device_list.json`: columns a generator names and an organisation does not: device_id, device_type, parent_device_id, device_id, device_type, parent_device_id, device_id, device_type
 - **REVIEW** `oms_outage_export_2020-10_2026-09.csv`: columns a generator names and an organisation does not: device_id, device_type
 - **REVIEW** `oms_restoration_steps_2020-10_2026-09.csv`: columns a generator names and an organisation does not: device_id, restoring_device_id
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of the eight"; the N things: "the eight feeders" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 5 announcements (clean)
 
-## 7 hidden content (clean)
-
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 ## Solver's-eye read (pass 1, Sonnet, 2026-10-12)
 

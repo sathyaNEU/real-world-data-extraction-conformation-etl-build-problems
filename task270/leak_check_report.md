@@ -4,15 +4,15 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: census, population, reader, architecture, deaths, estimated, golden, estimates, single, resident, single-year, inside, reading, readers, decisive, and-over, published, bookings, record, counts, window, landed, primary, registered, reflex
+Stump terms swept: census, population, reader, architecture, deaths, estimated, golden, estimates, decisive, single, single-year, resident, inside, reading, readers, and-over, published, bookings, record, counts, window, landed, primary, guidelines, registered
 
 ## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `late_life_frailty_program_guidelines_2028_2030.pdf`: candidate 'Wolfram Ranges' sits beside decision vocabulary: ...netmouth, Kestrelmoor, Mallowmere, Merriwold, Saltwick Shoals, Spraymouth, Windermoor and Wolfram Ranges. The program goes to the whole of each area it names. 3 Which areas the program goes to 3...
 - **REVIEW** `late_life_frailty_program_guidelines_2028_2030.pdf`: candidate 'Saltwick Shoals' sits beside decision vocabulary: ...Cobbleton, Coldwater Plains, Dunesford, Gannetmouth, Kestrelmoor, Mallowmere, Merriwold, Saltwick Shoals, Spraymouth, Windermoor and Wolfram Ranges. The program goes to the whole of each area it...
+- **REVIEW** `late_life_frailty_program_guidelines_2028_2030.pdf`: candidate 'Wolfram Ranges' sits beside decision vocabulary: ...netmouth, Kestrelmoor, Mallowmere, Merriwold, Saltwick Shoals, Spraymouth, Windermoor and Wolfram Ranges. The program goes to the whole of each area it names. 3 Which areas the program goes to 3...
 - **REVIEW** `late_life_frailty_program_guidelines_2028_2030.pdf`: carries 18 of 19 distinctive words of the committed call: 'The 2028 to 2030 late-life frailty program should go to Windermoor, Coldwater Plains, Dunesford and Saltwick Shoals, the'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `late_life_frailty_program_guidelines_2028_2030.pdf`: 7 of 25 stump-paragraph terms appear (population, deaths, estimated, single, resident, primary); read whether the document names the move
+- **REVIEW** `late_life_frailty_program_guidelines_2028_2030.pdf`: 8 of 25 stump-paragraph terms appear (population, deaths, estimated, single, resident, primary); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 5, INFO 2)
 - **REVIEW** `bdm_death_registrations_tidewell_2016_2027.csv`: names 3 of 3 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -26,8 +26,19 @@ Stump terms swept: census, population, reader, architecture, deaths, estimated, 
 ## 8 column names (REVIEW 1)
 - **REVIEW** `asgs2021_sa2_to_lga2023.csv`: columns a generator names and an organisation does not: BMOS_NULL_FLAG
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of our twelve" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 13 task metadata (REVIEW 2)
+- **REVIEW** `metadata.json`: title shares the design note's stump vocabulary (census, population, deaths, inside, and-over): say what the task decides, not how
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (census, population, deaths, single, single-year): say what the task decides, not how
 
 ## 1 file names (clean)
 
@@ -36,10 +47,6 @@ Stump terms swept: census, population, reader, architecture, deaths, estimated, 
 ## 5 announcements (clean)
 
 ## 7 hidden content (clean)
-
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read

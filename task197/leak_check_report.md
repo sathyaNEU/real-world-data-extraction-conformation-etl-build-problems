@@ -1,20 +1,34 @@
 # leak check, task197
 
-**Verdict: REVIEW.** 18 files read, 37 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 18 files read, 37 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: second, clause, traverse, window, archive, published, extract, seconds, deviation, measured, inside, population, carries, sentence, boundaries, boundary, nothing, period, recording, asserted, device, zwartewater, printed, operator, decisive
+
+## 1 file names (LEAK 1, REVIEW 1)
+- **LEAK** `data_dictionary.csv`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `register/asset_register.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `operator/fcr_group_availability_2026-09.pdf`: 5 of 25 stump-paragraph terms appear (second, seconds, deviation, measured, operator); read whether the document names the move
 - **REVIEW** `operator/fcr_technical_conditions_2026.pdf`: 8 of 25 stump-paragraph terms appear (second, clause, published, seconds, deviation, inside); read whether the document names the move
 - **REVIEW** `standards/reserve_performance_standard_v4.pdf`: 9 of 25 stump-paragraph terms appear (second, window, published, seconds, deviation, inside); read whether the document names the move
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of our nine"; each of the N: "each of the six"; the N things: "the six blocks" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 13 task metadata (LEAK 1, REVIEW 2)
+- **LEAK** `metadata.json`: gate_g uses the author's vocabulary ('stump'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism
+- **REVIEW** `metadata.json`: files[0].one_row_is shares the design note's stump vocabulary (second, inside, recording): say what the task decides, not how
+- **REVIEW** `metadata.json`: files[4].one_row_is shares the design note's stump vocabulary (second, published, extract, deviation, inside): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
@@ -27,10 +41,6 @@ Stump terms swept: second, clause, traverse, window, archive, published, extract
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)

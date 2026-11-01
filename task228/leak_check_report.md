@@ -1,10 +1,15 @@
 # leak check, task228
 
-**Verdict: REVIEW.** 14 files read, 13 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 14 files read, 13 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: variance, per-install, installs, decisive, platform, incidents, metric, install, allowance, method, sentence, record, telemetry, metric-definition-measurement-science, reconciliation, default, golden, estimand, exports, architecture, analytics, quality, duplicate, treatment, judged
+
+## 1 file names (LEAK 2, REVIEW 1)
+- **LEAK** `data_dictionary.md`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `export_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `platform_change_log_2026.md`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `data_dictionary.md`: carries 9 of 13 distinctive words of the committed call: 'The scorecard service should hold experiments on the gap-sessions check from January 2027, at a hold line of 0.28 percen'
@@ -16,13 +21,30 @@ Stump terms swept: variance, per-install, installs, decisive, platform, incident
 - **REVIEW** `platform_change_log_2026.md`: 5 of 25 stump-paragraph terms appear (platform, install, record, exports, treatment); read whether the document names the move
 - **REVIEW** `reconciliation_summary_2026.pdf`: 7 of 25 stump-paragraph terms appear (installs, install, record, telemetry, reconciliation, default); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `booking_queue_2027q1.csv`: 18 ISO dates after 2026-10-12, e.g. 2027-01-04, 2027-01-11, 2027-01-25, 2027-02-08, 2027-02-22
+## 7 hidden content (REVIEW 2)
+- **REVIEW** `install_summary_2026q2.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is r
+- **REVIEW** `install_summary_2026q3.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is r
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "each of the five"; the N things: "the five checks" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); reword at the role level, not the verb
+
+## 12 describing content (LEAK 1, REVIEW 2)
+- **LEAK** `data_dictionary.md`: names 44 column(s) of the data files verbatim, 100% of collector_daily_2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **REVIEW** `dh3_data_health_hold_standard.pdf`: names 11 column(s) of the data files verbatim (assigned, confirmed, control, design, events, experiment): confirm it is the organisation's own record and not a note written for the analyst
+- **REVIEW** `platform_change_log_2026.md`: names 9 column(s) of the data files verbatim (control, date, experiment, experiments, install, platform): confirm it is the organisation's own record and not a note written for the analyst
+
+## 13 task metadata (REVIEW 2)
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (platform, metric, metric-definition-measurement-science): say what the task decides, not how
+- **REVIEW** `metadata.json`: prompt_shape shares the design note's stump vocabulary (incidents, allowance, record, judged): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
@@ -30,11 +52,8 @@ Stump terms swept: variance, per-install, installs, decisive, platform, incident
 
 ## 6 ranking artifacts (clean)
 
-## 7 hidden content (clean)
-
 ## 8 column names (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 

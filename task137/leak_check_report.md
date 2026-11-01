@@ -1,10 +1,13 @@
 # leak check, task137
 
-**Verdict: REVIEW.** 13 files read, 23 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 13 files read, 23 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: patients, decisive, golden, architecture, window, run-out, record, turned, run-outs, deposit, practices, service, landed, default, special, january, maturity, activity, arrivals, deterrence, previous, generator, deposits, effect, in-house
+Stump terms swept: patients, architecture, decisive, golden, window, run-out, run-outs, deposit, record, turned, practices, landed, service, special, reader, default, january, maturity, arrivals, deterrence, previous, generator, deposits, activity, effect
+
+## 1 file names (LEAK 1)
+- **LEAK** `data_dictionary.csv`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `icb_pathology_planning_assumptions_2026-27.pdf`: carries 3 of 5 distinctive words of the committed call: 'Plan for 45,000 GP-referred visits at the community phlebotomy hub in 2027-28.'
@@ -14,13 +17,14 @@ Stump terms swept: patients, decisive, golden, architecture, window, run-out, re
 - **REVIEW** `phlebotomy_annual_report_2025-26.pdf`: 6 of 25 stump-paragraph terms appear (patients, record, turned, practices, service, activity); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "The files hold Hollinsfield General Hospital's walk-in clinic records from April 2023: two queue systems, reception's turned-away log, the e-roster, the kiosk's daily tickets, the practice and clinic registers and the 20"
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `bank_holidays_england.json`: 11 ISO dates after 2026-10-02, e.g. 2026-12-25, 2026-12-28, 2027-01-01, 2027-03-26, 2027-03-29
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 2 author vocabulary (clean)
 
@@ -31,8 +35,6 @@ Stump terms swept: patients, decisive, golden, architecture, window, run-out, re
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read (stage 4, architecture 4)

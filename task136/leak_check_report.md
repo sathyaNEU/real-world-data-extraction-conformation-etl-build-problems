@@ -1,10 +1,14 @@
 # leak check, task136
 
-**Verdict: REVIEW.** 15 files read, 32 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 15 files read, 32 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: campaign, installed, systems, asserted, suburb, months, application, connected, window, suburbs, houses, records, impact, design, decisive, addition, prompt, applications, comparison, converge, network, opening, converges, system, counts
+
+## 1 file names (LEAK 2)
+- **LEAK** `data_dictionary.xlsx`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `export_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `NPP-114_micro_EG_forecasting_rev3.pdf`: carries 6 of 7 distinctive words of the committed call: 'YRB27 should get the accelerated hosting capacity augmentation in the FY2027-28 capital works program.'
@@ -17,10 +21,15 @@ Stump terms swept: campaign, installed, systems, asserted, suburb, months, appli
 ## 8 column names (REVIEW 1)
 - **REVIEW** `der_register_extract_yarrabin_20260901.csv`: columns a generator names and an organisation does not: device_type
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of the eight" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 2 author vocabulary (clean)
 
@@ -30,9 +39,6 @@ Stump terms swept: campaign, installed, systems, asserted, suburb, months, appli
 
 ## 7 hidden content (clean)
 
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 ## Solver's-eye read (round 3)
 

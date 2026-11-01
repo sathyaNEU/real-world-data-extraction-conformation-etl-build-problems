@@ -6,6 +6,9 @@ LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's sol
 
 Stump terms swept: asserted, catalogue, pfeilbrunn, record, completeness, scheme, lanzenried, window, decisive, method, magnitude, origin, reviewed, detection, nothing, complete, ordinance, passes, earthquake, counting, federal, reading, moorstetten, design, fourth
 
+## 1 file names (REVIEW 1)
+- **REVIEW** `datenabgabe_ampel_2026-10-12.md`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
+
 ## 3 answer figures in the pack (REVIEW 5)
 - **REVIEW** `monitoring_ordinance_2026.pdf`: golden figure 0.6 appears: ...at it locates every earthquake of local magnitude 0.6 or more with an epicentre within 5 km of the open...
 - **REVIEW** `tls_bulletin_2026Q3.pdf`: golden figure 120 appears: ...atalogue as at 8 October 2026. Amber is more than 120 in a quarter. Networks From 1 January 2027 the co...
@@ -21,10 +24,23 @@ Stump terms swept: asserted, catalogue, pfeilbrunn, record, completeness, scheme
 - **REVIEW** `tls_scheme_2024.pdf`: 9 of 25 stump-paragraph terms appear (catalogue, pfeilbrunn, record, scheme, lanzenried, magnitude); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'For each plant and each of the first three quarters of 2026 I also need, in tls_annex_2026.xlsx, its injected volume, the earthquakes of ML 1.0 or more within 5 km that our automatic system located, and the hours its net'
 
+## 7 hidden content (REVIEW 1)
+- **REVIEW** `injection_hourly_2023-01_2026-09.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is r
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "any of our five" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); rounding opener 'give' at 46% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (REVIEW 2)
+- **REVIEW** `datenabgabe_ampel_2026-10-12.md`: names 10 column(s) of the data files verbatim (analyst, event_type, injection, plants, received, region): confirm it is the organisation's own record and not a note written for the analyst
+- **REVIEW** `tls_scheme_2024.pdf`: names 10 column(s) of the data files verbatim (date, injection, month, operator, plant, plants): confirm it is the organisation's own record and not a note written for the analyst
 
 ## 2 author vocabulary (clean)
 
@@ -32,13 +48,7 @@ Stump terms swept: asserted, catalogue, pfeilbrunn, record, completeness, scheme
 
 ## 6 ranking artifacts (clean)
 
-## 7 hidden content (clean)
-
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)

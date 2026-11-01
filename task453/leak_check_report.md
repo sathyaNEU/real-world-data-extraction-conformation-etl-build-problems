@@ -1,10 +1,14 @@
 # leak check, task453
 
-**Verdict: REVIEW.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: sample, effect, rejected, rotation, comparison, section, golden, interview, series, decisive, design, redesign, groups, points, interviews, previous, averages, phase-in, reader, seasonal, effects, references, payroll, method, office
+Stump terms swept: sample, rejected, effect, rotation, comparison, section, golden, interview, series, decisive, design, redesign, groups, points, interviews, previous, reader, averages, phase-in, seasonal, effects, references, payroll, method, office
+
+## 1 file names (LEAK 2)
+- **LEAK** `export_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `lfs_file_dictionary.csv`: a file whose name says it describes the data (dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `lfs_redesigned_questionnaire_methodology_note.pdf`: 14 of 25 stump-paragraph terms appear (sample, rotation, interview, series, design, redesign); read whether the document names the move
@@ -21,22 +25,28 @@ Stump terms swept: sample, effect, rejected, rotation, comparison, section, gold
 - **INFO** `lfs_psu_region_lookup_2025.csv`: names 6 of 7 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `region_classification_concordance_2019_2025.csv`: names 6 of 7 answer-set candidates; confirm it does not rank them on the decision question
 
+## 7 hidden content (REVIEW 1)
+- **REVIEW** `lfs_fieldwork_contacts_2026q4.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
+A suitable version of pyarrow or fastparquet is r
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 13 task metadata (REVIEW 1)
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (series, redesign, seasonal): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
 ## 3 answer figures in the pack (clean)
 
-## 7 hidden content (clean)
-
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
@@ -77,4 +87,3 @@ Three isolated reader passes (Sonnet, medium), each on fresh copies of `prompt.t
 - **Q6** an analytical choice (how the questionnaire's effect is estimated from the overlapping rotation groups); nothing planted, the field semantics plain.
 - **Prompt read** "if so to what" is conditional; "which regions does the trigger then designate" keeps none grammatical; "the change ... it rests on" names a value that may be zero and asserts no direction; none is a grammatical answer to every ask.
 - **REVIEW lines** all harmless.
-

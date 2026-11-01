@@ -1,18 +1,22 @@
 # leak check, task263
 
-**Verdict: REVIEW.** 13 files read, 26 golden figures and 15 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 13 files read, 26 golden figures and 15 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: samples, sample, balance, sources, average, pumping, mixture, collection, source, inventory, blends, results, records, entry-point, decisive, beside, proportions, asserted, environmental, mixtures, mixing, blanks, service, nothing, golden
+Stump terms swept: samples, sample, balance, sources, average, pumping, mixture, collection, source, inventory, blends, beside, results, records, asserted, entry-point, decisive, proportions, environmental, register, mixtures, mixing, blanks, service, nothing
+
+## 1 file names (REVIEW 2)
+- **REVIEW** `data_request_notes_2026-09-02.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
+- **REVIEW** `source_facility_inventory_2026.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: candidate 'Torvik Water Utility' sits beside decision vocabulary: ...FAS priority list Rank PWS ID System County Population served Priority points 1 4626844 Torvik Water Utility Hedstrom 6,538 92 2 4664327 City of Halvorsen Water Department Engvall 8,917 88 3 4...
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: carries 13 of 18 distinctive words of the committed call: 'The $36 million reaches 16 of the 20 systems on the 2027 PFAS priority list, Torvik Water Utility through Valdahl Sanita'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `data_request_notes_2026-09-02.txt`: 8 of 25 stump-paragraph terms appear (samples, sample, sources, collection, source, results); read whether the document names the move
-- **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: 6 of 25 stump-paragraph terms appear (average, source, inventory, records, environmental, nothing); read whether the document names the move
+- **REVIEW** `data_request_notes_2026-09-02.txt`: 9 of 25 stump-paragraph terms appear (samples, sample, sources, collection, source, results); read whether the document names the move
+- **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: 7 of 25 stump-paragraph terms appear (average, source, inventory, records, environmental, register); read whether the document names the move
 - **REVIEW** `pfas_initial_monitoring_sampling_guide_rev2.pdf`: 13 of 25 stump-paragraph terms appear (samples, sample, sources, pumping, collection, source); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 5, INFO 1)
@@ -29,7 +33,12 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "How many of the twenty"; the N things: "the twenty systems" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (LEAK 1)
+- **LEAK** `data_request_notes_2026-09-02.txt`: names 12 column(s) of the data files verbatim, 26% of pfas_entry_point_results_2024-2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
 
 ## 2 author vocabulary (clean)
 
@@ -39,7 +48,6 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 
 ## 8 column names (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 

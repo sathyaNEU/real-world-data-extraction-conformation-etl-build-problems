@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: product, survey, reversals, pharmacies, package, priced, asserted, acquisition, cartons, prompt, pattern, method, unpriced, carton, records, integration, pharmacy, administrator, pricing, antipsychotics, record, missed, domain, months, closed
+Stump terms swept: product, survey, reversals, pharmacies, package, priced, asserted, acquisition, cartons, prompt, pattern, method, unpriced, carton, records, integration, pharmacy, decisive, administrator, pricing, antipsychotics, record, missed, domain, generic
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `smac_program_terms_2026.pdf`: carries 14 of 19 distinctive words of the committed call: 'We propose Anticonvulsants for the State Maximum Allowable Cost list from 1 July 2027: its ingredient spread over fills '
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `corvane_data_delivery_note_2027-04-21.docx`: 3 of 25 stump-paragraph terms appear (reversals, pharmacy, record); read whether the document names the move
-- **REVIEW** `smac_program_terms_2026.pdf`: 9 of 25 stump-paragraph terms appear (product, reversals, pharmacies, package, acquisition, pharmacy); read whether the document names the move
+- **REVIEW** `corvane_data_delivery_note_2027-04-21.docx`: 4 of 25 stump-paragraph terms appear (reversals, pharmacy, record, generic); read whether the document names the move
+- **REVIEW** `smac_program_terms_2026.pdf`: 8 of 25 stump-paragraph terms appear (product, reversals, pharmacies, package, acquisition, pharmacy); read whether the document names the move
 - **REVIEW** `smac_update_request_2027-03-08.pdf`: 3 of 25 stump-paragraph terms appear (pharmacy, administrator, antipsychotics); read whether the document names the move
 - **REVIEW** `state_aac_survey_methodology_2026.pdf`: 7 of 25 stump-paragraph terms appear (survey, pharmacies, priced, acquisition, method, pharmacy); read whether the document names the move
 
@@ -20,6 +20,14 @@ Stump terms swept: product, survey, reversals, pharmacies, package, priced, asse
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of the twelve" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 13 task metadata (REVIEW 2)
+- **REVIEW** `metadata.json`: title shares the design note's stump vocabulary (survey, pharmacies, acquisition, pharmacy, administrator): say what the task decides, not how
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (survey, acquisition, integration, pharmacy, record): say what the task decides, not how
 
 ## 1 file names (clean)
 
@@ -33,7 +41,6 @@ Stump terms swept: product, survey, reversals, pharmacies, package, priced, asse
 
 ## 8 column names (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
