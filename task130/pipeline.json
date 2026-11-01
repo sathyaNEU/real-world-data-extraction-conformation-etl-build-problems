@@ -1,12 +1,12 @@
 {
  "task": "task130",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "economics-econometrics",
  "objective": "forecasting",
  "stage": 2,
  "stage_name": "design",
- "updated": "2026-10-31",
- "stump": "A competent solver who reads the client's standard, the recognition notice and the 2027 hours plan correctly carries the recorded rate forward, or checks the bonus against the technicians it never covered and finds them no higher, and files about 2.4 recordables per 200,000 hours and a 2027 plan inside the 3.0 limit; each crew records roughly two in five fewer injuries than it has late in its 90-day cycle, and read at each crew's own rate where the reward exerts no pull 2027 comes to about 3.6 (design targets, set at the build).",
+ "updated": "2026-11-01",
+ "stump": "A competent solver who reads the client's standard, the recognition notice and the 2027 hours plan correctly carries the recorded rate forward (2.43 per 200,000 hours, 174 recordables on the 2027 plan), or checks the bonus against the technicians it never covered and finds them lower (1.92 against the crews' 2.51), and files a 2027 plan inside the 3.0 limit; the crews leave hideable injuries off the record late in each 90-day count, and read at the rate they record in the first 35 days of their counts (3.67 for crews, the technicians at their own 1.92) the 2027 plan makes 244 recordables, a rate of 3.42.",
  "architecture": 6,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: write the design note's sections and prompt.txt through precut.py, then the generator",
+ "resume": "stage 2, the ask layer: the call side is built and green (make.py --once: 65 checks, verify match; 244 recordables, 3.42, R0 174 at 2.43), but the honest cracker (the careful solver who lands the call, runs the hygiene battery and executes CS-4 3.6) keeps the district asks (cases, hours, rates by the crew's district from the register; awards and dollars a payroll group-by); re-site the asks on rows the call never reads with reconstruction devices (the 2026 window's recordables with each recurrence's outcome and days carried on its original case, the original found through a legacy or migrated case number), rewrite ceiling.py to measure the honest cracker at 0 of N, then the design note's sections through precut.py, submission.md, make.py (two byte-identical builds and target.zip), every free gate on the final cut, guard.py heart on a fresh pull, and the stage 4 hand-off (leak copy, reader brief, PAUSED commit)",
  "approved": null,
  "delivered": null,
  "portal": null,
