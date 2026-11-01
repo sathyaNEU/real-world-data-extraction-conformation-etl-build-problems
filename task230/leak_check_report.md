@@ -1,10 +1,10 @@
 # leak check, task230
 
-**Verdict: REVIEW.** 17 files read, 53 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 53 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: november, stream, population, default, client, decision, processing, sentence, forecast, method, window, counts, carried, decisive, operations, quarter, workload, selection, nothing, asserted, closed, back-test, architecture, measured, suggestion
+Stump terms swept: default, november, population, processing, sentence, counts, decision, carried, stream, client, decisive, register, workload, nothing, method, window, forecast, operations, asserted, closed, domain, coded-so-far, selection, acceptance, questionnaire
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `OQ-4_occupation_output_quality_standard.docx`: golden figure 3.2 appears: ...that the reference coding puts in the group. 3.2 The reference coding of a write-in is the code th...
@@ -12,14 +12,14 @@ Stump terms swept: november, stream, population, default, client, decision, proc
 - **REVIEW** `census2026_coding_procedures.pdf`: golden figure 0.90 appears: ...up with a score from 0 to 1. A suggestion scoring 0.90 or more becomes the production code (the automati...
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `OQ-4_occupation_output_quality_standard.docx`: 5 of 25 stump-paragraph terms appear (population, method, counts, operations, selection); read whether the document names the move
-- **REVIEW** `census2026_followup_field_manual.pdf`: 3 of 25 stump-paragraph terms appear (operations, workload, closed); read whether the document names the move
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+- **REVIEW** `OQ-4_occupation_output_quality_standard.docx`: 5 of 25 stump-paragraph terms appear (population, counts, method, operations, selection); read whether the document names the move
+- **REVIEW** `census2026_followup_field_manual.pdf`: 5 of 25 stump-paragraph terms appear (register, workload, operations, closed, questionnaire); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); deliverable set 'png+xlsx' at 24% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -33,18 +33,10 @@ Stump terms swept: november, stream, population, default, client, decision, proc
 
 ## 8 column names (clean)
 
-## 11 prompt gate (clean)
+## 9 dates after the setting (clean)
 
-## Isolated reader (stage 4)
 
-Four reads, each a general-purpose agent (Sonnet, medium effort) that saw only prompt.txt and the 17 unzipped files. In every read, questions 1 to 4 came back none and question 6 came back analytical (how the study's evidence reaches the write-ins still to code).
-
-- Read 1 (first cut): two ask figures had two readings, also raised by the judge: hours "logged that month" (shift date or entry date) and households "enumerated at those calls". The prompt now asks for the hours each team spent on occupation coding that month and for the September calls that made no contact. The dictionary names the timesheet date as the shift start and nets corrections as negative lines.
-- Read 2: the procedures said CODA closes on "the last working night of each month", but Thursday 29 October showed night coding. They now name the night of the month's last working day, and checks.py asserts that no night shift crosses a month end. The LFS distractor's CVs no longer fall smoothly with group size.
-- Read 3: the autocoder's stamps were spread evenly from 01:00 to 05:00; they now follow a nightly first-in-first-out run stamped to the second. Every fork it checked in the data is settled by a shipped sentence or the records.
-- Read 4 (the shipped cut, sha256 c0157a47): reproduced below. Its team figures at the time of coding match the golden on every team.
-
-### Solver's-eye read (fourth read)
+## Solver's-eye read (fourth read)
 
 1. Decisive step: no sentence names it. OQ-4 s2.1 ("A person whose write-in has not yet been coded on the date of an assessment is part of the release population") plus census2026_processing_plan_nov2026.xlsx Decision sheet ("From Monday 16 November 2026 the autocoder accepts a suggestion scoring 0.80 or more as the production code. Write-ins already coded keep their codes.") and the coding procedures s8 (selection intervals 10/4 self-response, 2 follow-up) point at the work, but none says how to project the uncoded ~103k (mostly follow-up) write-ins. OQ-4 s3.3 ("each studied write-in stands for as many coded write-ins as its selection interval") tells you to weight. Nothing states the decisive step (projecting the still-to-code follow-up population under the new 0.80 rule, with the study's follow-up codes and the 0.80-0.90 band).
 2. Ranks or scores the groups: none. lfs_2026q3_employment_by_occupation.csv and census2021_occupation_by_region.csv give employment counts only, no bias.
@@ -72,3 +64,60 @@ Four reads, each a general-purpose agent (Sonnet, medium effort) that saw only p
 - "follow-up calls enumerators made in September": visit_time local month vs synced_at month (6,099 calls sync in a different month); administrative closures (outcome 60, staff_id blank, 1,329 in Sept) are not calls by enumerators. Region totals differ: e.g. PA calls 20,113 by visit_time vs 20,569 by sync month; excluding staff-blank rows needed. Field manual 5.2 "Record every call on the tablet" and data dictionary "Local time of the call" settle it by visit_time.
 - "calls that made no contact": outcome 31 only ("No contact, calling card left", manual 5.3/5.7) vs also 32 Refusal (contact made) or 40/50. Data differ: PA 8,245 (31) vs 8,618 (31+32); AV 4,247 vs 4,450. Manual 5.3 settles it: 31 is the only "No contact" code; refusal is a contact. Proxy (20) is not no-contact.
 - "coding bias": signed percentage per OQ-4 3.1 (negative possible); warning is beyond plus or minus 2.0; "every group's bias in that release" unambiguous after 2.1 but dependent on uncoded treatment (see 5).
+
+## Solver's-eye read (re-check, 2026-11-01)
+
+Two isolated reads (general-purpose, Sonnet, medium) on fresh copies of prompt.txt and target/, 2026-11-01. Read 1 on the first re-check cut; read 2 on the final cut (procedures 4 trimmed after read 1's realism tell).
+
+### Read 1 (first re-check cut)
+
+Questions 2 and 4 none; question 1 and 6 named OQ-4 2.1 with the plan's 0.80 Decision (ruled as in read 2); question 3 the processing plan (capacity only, unchanged since ship). Realism tell: procedures 4 and manual 5.6 packed the timesheet, movement and tablet readings into crowded sentences that read as pre-answering the ask hazards; answered by trimming them to the two readings the records do not settle (the final cut). Every mechanical-sweep item ruled harmless.
+
+### Read 2 (final cut)
+
+Reader pass on leak-task230 (read only prompt.txt and target/; computed nothing)
+
+1. Decisive step: OQ-4 clause 2.1: "A person whose write-in has not yet been coded on the date of an assessment is part of the release population." Together with the processing plan's Decision sheet ("From Monday 16 November 2026 the autocoder accepts a suggestion scoring 0.80 or more as the production code. Write-ins already coded keep their codes.") and procedures s3 ("CODA stores the autocoder's suggestion and score on every write-in, on either path"), the pack states the route. It states it as context, not as an instruction to the analyst. Nothing says "use the 0.80 rule for the uncoded".
+
+2. Ranks or scores the candidates: none. No file lists groups with a bias or a warning flag. The study CSV is raw rows (per-write-in), and the LFS and 2021 files are context. The study's production_code and reference_code columns are inputs, not a ranking.
+
+3. Exists only to help the analyst: none. coding_staff_register / coding_staff_movements and the enumeration_districts file are lookup inputs for the secondary asks. The OQ-4 standard (s3) and the procedures PDF are the organisation's own rules. Closest to a helper: census2026_processing_plan_nov2026.xlsx "Capacity" sheet, which is a ready-made rate (14.3 write-ins an hour) and a 0.80 under-score share, but its stated purpose is "capacity only". It is a decoy for the secondary ask and the main call, not a solver aid.
+
+4. Figure or name that reads as the answer: none. No group is named as warned. The plan's "Still to code" 103,367 is context. The only prominent thresholds are +/-2.0 per cent (OQ-4 4.1) and 0.90 / 0.80.
+
+5. Sentences fixing the computation:
+- OQ-4 3.1: bias = (release-coded count less reference count) / reference count, as a percentage, per sub-major group. Literal result: signed relative difference, not an absolute difference or an error rate.
+- OQ-4 2.1: include every person in employment with a coded-from-write-in occupation, including ones not yet coded at the assessment date. Exclude blank-occupation (imputed) persons.
+- OQ-4 3.3: each studied write-in is weighted by its selection_interval, and both counts come from the same studied write-ins. Literal result: weighted estimate over the study sample, not a raw row count.
+- OQ-4 4.1: the test is on the unrounded bias, beyond +/-2.0 (both directions). Literal result: a group at, say, a displayed 2.0 may or may not be flagged, and flagging must not use the rounded 1-dp value.
+- Procedures s8 / s3: the interval depends on batch type and path (ONL/PAP 10 auto, 4 clerical; FUP 2 both), and the study covers both paths.
+- Plan Decision: write-ins coded before 16 Nov keep their codes; later ones are auto at >=0.80. (Applied to the uncoded population this fixes their release code for auto-scoring ones.)
+
+6. What decides the main answer: following a stated rule/definition (OQ-4 s2-s4, read together with the Decision sheet) plus catching the "not yet coded" population trap. The deciding sentence is OQ-4 2.1, with the plan's Decision sheet as the planted-looking twist (a rule change that affects what the not-yet-coded will be coded to). Not an analytical choice.
+
+Mechanical-sweep items
+- OQ-4 docx numbers (the warning clause 4.1 "2.0" and a clause number such as 2.0 / 3.x): harmless. The 2.0 is the published threshold itself, which the task needs the solver to be given, and the clause numbers are labels. Neither is a derived figure.
+- census2026_coding_procedures.pdf autocoder number (0.90): harmless. It is the organisation's own acceptance score, a rule parameter, not a result. It is the stale threshold superseded by the plan's 0.80, which is part of the puzzle, not an answer.
+- prompt.txt shell quota (question form 'which', png+xlsx deliverable): harmless to the pack (a format/shape quota only, not content). Nothing in the files depends on it. Both are cosmetic and no answer leaks.
+
+Main-call forks
+- For uncoded clerical-path write-ins, the filed material never says outright what the "release codes" them to. A solver might (a) apply the 0.80 autocoder rule to those scoring above and use some clerical code for others, or (b) use the 0.90 rule. Two defensible readings: apply the Nov-12 decision (0.80) or ignore it, because the release is on 30 March 2027 and the plan is "capacity only". The Decision sheet is dated after the study but is the only statement of the current rule, so (a) is probably the intended, but it is a real fork. For the uncoded clerical write-ins the code the release will have is not in the pack.
+- "Beyond plus or minus 2.0 per cent": exact boundary treatment of rounded vs unrounded is spelled out (unrounded), so no fork.
+- Reading "persons in employment enumerated by the close of field operations": receipt register vs. study scope; moderate ambiguity about whether study rows past 31 Oct are excluded.
+
+Asks whose figure can be read two ways
+- "Hours spent on occupation coding that month": OCC activity only, versus all coding hours (IND, QRY). Procedures s4 defines the activities, so OCC is the literal reading. The note/entered_on columns and a timesheet "dated by the day its shift began" rule (night shift across month end 31 Oct to 1 Nov) matter. Team attribution is via transfers (effective date), per s4.
+- "No contact" calls: outcome 31 only, versus also unanswered visits with missing codes. Field manual s5.3 defines 31. "Follow-up calls made in September" depends on visit_time versus synced_at, duplicates, and region via the ED lookup, and caseload reassignments in September (5.8: "a case keeps its calls").
+- Write-ins "coded in October": batch of coding date vs. load date; the extract's coded timestamp presumably decides.
+
+Realism tells
+- The processing plan "Capacity" sheet has computed derived rates with round numbers ("Clerical capacity a week 1705") that read as written for an analyst: ready-made 14.3/hour and 12 hours/week figures, and a "Position 13 Nov" sheet whose totals look tool-generated. They appear to be there as a tempting shortcut for the secondary ask.
+- The 13 Nov dates of the plan are after "today" semantics in a pack that is supposedly as of 1 Nov (file mtime 13 Nov), which is consistent with the organisation's own record, so fine.
+- The OQ-4 docx and PDFs are short, tidy and each section maps one-to-one to a step of the task; clause 3.3 ("both estimated from the same studied write-ins") reads written to steer the analyst. The study CSV carrying "reference_basis" AGREED/ADJUDICATED is realistic. Nothing reads as LLM chatter; the staff owners have invented-name styling, fine.
+
+### Main-thread rulings
+
+- Questions 1 and 6: OQ-4 2.1 and the plan's Decision are the filed WHAT and the readable rung R1; executed on the coded-so-far mix they file 35, 41 and 93 (judge pass 3), so the decisive step (the route carry) is named by no sentence. Harmless; Gate H analytical per the judge.
+- Main-call fork 0.80 against 0.90: closed by the Decision sheet (from 16 November the autocoder accepts 0.80; coded write-ins keep their codes), SF12.
+- Capacity sheet tidy rates: the processing plan's own capacity answer, unchanged since ship and read at ship; harmless.
+- Sweep 4 lines: ruled in the design note (pre-ship check 10).

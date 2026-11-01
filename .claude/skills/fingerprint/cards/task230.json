@@ -85,7 +85,9 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task131": "task131 projects a randomised tariff trial's household load response onto a design day's heat; this build carries a recoded quality sample's classification bias to the late part of a census coding workload by report route and by the processing rule in force, with no trial, load or weather.",
-    "task183": "task183 forecasts repeat failures from each part's failure history; this build estimates the net classification bias of published category counts from an adjudicated recode sample, and the late workload's route and acceptance rule decide it, not any unit's history."
+    "task183": "task183 forecasts repeat failures from each part's failure history; this build estimates the net classification bias of published category counts from an adjudicated recode sample, and the late workload's route and acceptance rule decide it, not any unit's history.",
+    "task169": "task169 v1 ranks cycling counters by the growth of the hour that crowds each one, holding a hot summer fixed; this build carries a recoded quality sample's net classification bias to the uncoded part of a census release by report route and the acceptance rule in force, with no growth rate, no cycle and no outside condition.",
+    "task446": "task446 v3 rebuilds a flag's conversion by the kind of component that raised it, with every flag read correctly; this build has no conversion or flag source: the late part of the release comes from a channel whose write-ins code into default groups, processed under a looser rule than the checked part."
   },
   "lineage": [
     {

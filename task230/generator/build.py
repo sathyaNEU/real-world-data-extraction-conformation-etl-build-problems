@@ -30,8 +30,6 @@ FILES = dict(
     procedures="census2026_coding_procedures.pdf",
     manual="census2026_followup_field_manual.pdf",
     plan="census2026_processing_plan_nov2026.xlsx",
-    dictionary="census2026_data_dictionary.xlsx",
-    manifest="export_manifest.csv",
 )
 DISTRACTORS = ["lfs", "c2021"]
 
@@ -122,7 +120,6 @@ def run(target, seed=P.SEED):
     counts["c2021"] = distractor_2021(os.path.join(target, FILES["c2021"]), S)
     facts = docs.write_all(target, FILES, S, T, Cd)
     counts.update(facts.get("counts", {}))
-    write_manifest(os.path.join(target, FILES["manifest"]), counts)
     return S, U, Cd, T, counts, facts
 
 
@@ -153,41 +150,3 @@ def distractor_2021(path, S):
             rows.append((code, name, g, W.SUB[g], int(round(n))))
     return write_csv(path, ["region_code", "region_name", "isco08_sub_major", "sub_major_title", "persons_in_employment"],
                      list(zip(*rows)))
-
-
-def write_manifest(path, counts):
-    desc = [
-        ("extract", "Coding system extract: every occupation write-in coded by Friday 13 November 2026, one row per person "
-                    "write-in, with its autocoder suggestion and score, coding path, production code and the coder on the "
-                    "clerical path", "Coding system (CODA)", "Census Processing"),
-        ("study", "Coding quality study: the write-ins selected from each load batch and recoded by the classification "
-                  "specialists, with the adjudicated reference code", "CODA study module", "Methodology Division"),
-        ("register", "Receipt register: every census form received by the close of field operations, with its coding "
-                     "document number and load batch", "Receipt and registration system", "Census Processing"),
-        ("visits", "Field operations system visit log: every follow-up call recorded on an enumerator tablet, 22 June to 31 "
-                   "October 2026, and the administrative closures", "Field operations system (FOS)", "Field Operations"),
-        ("aoc", "Aldmere Occupational Classification 2026 with the ISCO-08 structure", "Classification management",
-                "Methodology Division"),
-        ("eds", "Enumeration districts and regions as at census day", "Address register", "Field Operations"),
-        ("staff", "Coding staff register at 13 November 2026: everyone who has worked in census coding, with their team",
-                  "HR and rostering", "Census Processing"),
-        ("moves", "Coding staff movements since coding began on 4 May 2026: starters, transfers between teams and leavers",
-                  "HR and rostering", "Census Processing"),
-        ("timesheets", "Timesheet export for the pay fortnights from 21 September to 1 November 2026", "Timesheet system",
-                       "Census Processing"),
-        ("lfs", "Labour Force Survey, third quarter 2026: employment by ISCO-08 sub-major group", "LFS estimation system",
-                "Labour Market Statistics"),
-        ("c2021", "2021 Census of Population: persons in employment by region and ISCO-08 sub-major group (published)",
-                  "Census 2021 dissemination tables", "Census Outputs"),
-        ("standard", "Output quality standard OQ-4: occupation", "Quality management", "Methodology Division"),
-        ("procedures", "Census 2026 coding procedures, version 3", "Census Processing", "Census Processing"),
-        ("manual", "Census 2026 follow-up field manual (enumerators and field supervisors)", "Field Operations",
-                   "Field Operations"),
-        ("plan", "Census 2026 processing plan: coding capacity to the coding close, November 2026 update",
-                 "Census Processing", "Census Processing"),
-        ("dictionary", "Data dictionary for the extracts in this pack", "Census Processing", "Census Processing"),
-    ]
-    rows = []
-    for k, d, src, own in desc:
-        rows.append((FILES[k], d, counts.get(k, ""), src, own, "2026-11-13"))
-    write_csv(path, ["file", "description", "rows", "source_system", "owner", "extracted"], list(zip(*rows)))

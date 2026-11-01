@@ -255,13 +255,8 @@ def run(target, golden, S, U, Cd, T, A, D, out, R, facts):
     ok((dup_q.groupby("questionnaire_id").outcome_code.nunique() == 1).all(),
        "separation: a re-sent closing call repeats its questionnaire's outcome")
     # ---------------------------------------------------------------- registers (H9)
-    man = pd.read_csv(os.path.join(target, "export_manifest.csv"), dtype=str)
-    ok(set(man.file) == set(files) - {"export_manifest.csv"}, "H9: the manifest lists every shipped file")
-    with zipfile.ZipFile(os.path.join(target, "census2026_data_dictionary.xlsx")) as z:
-        dtext = " ".join(re.findall(r"<t[^>]*>([^<]*)</t>", z.read("xl/sharedStrings.xml").decode("utf-8")))
-    scope = [f for f in files if f.endswith((".csv", ".parquet")) and f not in meta["distractor_files"]
-             and f != "export_manifest.csv"]
-    ok(all(f in dtext for f in scope), "H9: the dictionary names every extract and reference file literally")
+    ok(not any(re.search(r"dictionary|manifest|readme|notes", f, re.I) for f in files),
+       "H9: no file describing the data ships (no dictionary, manifest, readme or notes)")
     # ---------------------------------------------------------------- distractors
     ok(not any(d in open(E.__file__).read() for d in meta["distractor_files"]), "distractors: the golden route never reads them")
     # ---------------------------------------------------------------- realism sweep

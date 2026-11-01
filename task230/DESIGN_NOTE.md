@@ -119,6 +119,16 @@ the coded-so-far mix 35, 41 and 93, and the follow-up batches carried as one 24,
   route and rule each later record will meet; no build on file teaches census coding bias carried to the follow-up proxy
   tail.
 
+## Survivor anatomy
+
+- Actor: the deciding property, each group's coding bias among the write-ins still to code under the route mix and the acceptance score they will meet, sits in no column; no coding file carries a response route (the route of a follow-up form is the outcome of the call that completed its questionnaire, in the field system) and the still-to-code write-ins have no codes at all (R3, R4 silent on the readability screen).
+- Link: the study's coded-so-far write-ins are set against the still-to-code workload route by route, a comparison between the coded and the uncoded part of one release that the study's own estimate never asks for; the route reaches the study only through the receipt register (document to questionnaire) and the visit log's closing call, and no filed sentence names the route as a stratum of the bias.
+- Reflex: the field's own estimate, the coding quality study's design-weighted net bias by group (OQ-4 3.1 and 3.3), is rung 0 and files groups 35 and 93, the default path's Ends on (checks.py R3a).
+- Back-test: the easy route validates: the study holds its systematic share of every batch and path, its weighted counts tie to the coded write-ins within 1 per cent by route (SF9), and the processing plan's position sheet recomputes from the register and the extract; nothing in the pack refutes the coded-so-far bias as a measure of the coded part.
+- Second use: every file the decisive step reads has its own use: the study and the extract feed the default path, the receipt register gives the release population (OQ-4 2.1) and the plan's position, the visit log carries ask B, the field manual governs its outcome codes, and the plan's Decision states the rule from 16 November; deleting the decisive step drops no file.
+- Shock: the four groups the step adds (24, 25, 41 and 71) sit inside the line on the default path (-1.24 to +1.40) and none is the pack's largest anomaly; on the default path's absolute bias, though, the golden six are the top six (93, 35, 41, 25, 24, 71), an interval of that sort, recorded for the author at the 11-01 re-check as the anatomy's one open line.
+- Pins: OQ-4 files the WHAT (the release population with its members still to code, the net bias against the reference coding, the study weights with both counts from the same studied write-ins, the warning line on the unrounded bias) and the plan's Decision the acceptance score from 16 November; no filed sentence names the response route, the proxy share or how the study's evidence reaches the write-ins still to code.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -241,6 +251,8 @@ Mirror leakage: 0 per cent of ask weight (every row above misses for the mirror 
 
 Pair ceiling: 34.0 (the one-cracker case at the 0.10 allowance a top response, r about 5: (38 + 7 + 5.5 + 5 + 7 + 5.5) / 2).
 
+Measured by: `generator/checks.py`, whose ask block runs `estim.ask_teams` and `estim.ask_regions` on the cut pack once per cracker path (`current`, the register's team as at 13 November; `drop_negative` and `entered_on`, the hours hazards; `key_dedupe`, the call-number dedupe; `day_dedupe`, the over-clean half; `synced`, the sync time) and asserts each one moves every team or region off the golden (the sync time at least six regions); the cracker and mirror rows above are those assertions' own.
+
 ## Pre-ship check
 
 1. Domain: census processing quality assurance's own estimate of each occupation group's net coding bias in a release,
@@ -278,6 +290,29 @@ Pair ceiling: 34.0 (the one-cracker case at the 0.10 allowance a top response, r
    closed by 3.3 (SF14). Surface screen: task231 back to back on the same pairing (another task type, the closure
    share of a business survey's silent firms), and task131 and task183 on the same-driver signature (differentiated
    on the card); the adjudicated clone check is the author's call.
+
+10. Re-check under the 11-01 gates (no portal result; reshipped on failing gates). leak.py LEAK on sweep 1 (the data
+    dictionary and the export manifest shipped) and sweep 13 (metadata.json's licence strings, CC0-1.0, and its
+    prompt_shape carried graded figures); the prompt disclosed three counts the data hold ("of the 40", "the five",
+    "the eight"); precut failed on the ask sheet's missing `Measured by:` line and warned on a missing survivor
+    anatomy. Both files leave the pack; the readings the asks need that the records do not settle on their own are
+    filed as WHATs in procedures 4 (a timesheet line is dated by the day its shift began; a transfer takes effect on its
+    date; a leaver works the leaving date), and the rest converge in the records (each negative timesheet line carries
+    its correction note; the night shift never crosses a month end, asserted; the visit log's own call and sync
+    columns); no main-call reading came from either file. Moved: prompt.txt, metadata.json, the coding procedures
+    (the field manual is byte-identical to the shipped one), the generator's file list and the H9 check, the card's differentiation (task169 v1 and task446 v3,
+    both drawn after this card, H27), this note. Not moved: the call, every graded figure, figures.json, submission.md
+    and both goldens (byte-identical); freeze.py determinism flags only the prompt's call sentence ("of the 40"
+    dropped, the ordered voice-check fix; `--allow` reaches figures.json keys only, so the move is recorded, not
+    cleared). Stage 4: leak reader read 1 (questions 2 and 4 none; its realism tell on the first cut's crowded
+    procedures and manual sentences answered by the trim above), judge pass 3 DETERMINISTIC, APPROVE, Gate H analytical
+    (determinism_check_report_pass3.md); read 2 on the final cut: questions 2 to 4 none, question 1 and 6 name OQ-4
+    2.1 and the plan's Decision (the filed WHAT and the readable rung R1, which the judge recomputed to 35, 41 and 93),
+    its 0.80 or 0.90 fork closed by the Decision's own words (SF12). Sweep 4's two REVIEW lines (the standard: population,
+    counts, method, operations, selection; the manual: register, workload, operations, closed, questionnaire) are the
+    documents' own vocabulary for a release population and a follow-up operation, and neither names the route or the
+    carry: harmless. Survivor anatomy: the Shock line records the golden six as the top six of the default path's
+    absolute bias, the anatomy's one open line, left for the author.
 
 ## Architecture 2 record (spent 2026-10-14)
 
@@ -1487,3 +1522,4 @@ inert or close.
 - Stage 4 (reader and judge, 2026-10-14): two ask figures read two ways. Hours "logged that month" read by shift date or by the date the line was entered (the prompt now asks the hours each team spent on occupation coding that month, the dictionary says hours worked and corrections as negative lines, and the night shift no longer straddles a month); households "enumerated at those calls" counted per interview or once (a household proxied and then re-interviewed in September counts twice per interview); counted once, the re-sent closing calls stop moving it, so the figure became the calls that made no contact (outcome 31), which the re-sent calls move in every region. The main call reproduced in full (all 40 biases, the six warnings, every rival set).
 - Stage 4 second read (2026-10-14): the procedures said CODA closes on "the last working night of each month", but the records close the night of the month's last working day, so Thursday 29 October showed night coding. A reader could take that as a contradiction. The procedures now name the night of the last working day, and checks.py asserts that every clerical write-in is coded in the month its shift started, with the same team on both days. The LFS distractor's coefficients of variation fell smoothly with group size, so each group now carries its own design effect.
 - Stage 4 pass 2 (judge DETERMINISTIC, APPROVE, 2026-10-14) raised an advisory literal reading. Taken word for word, OQ-4 3.1 lets the coded write-ins' release count come from the extract's exact codes while the reference count comes from the study. That reading warns 17 groups on sampling noise alone. OQ-4 3.3 now estimates both counts from the same studied write-ins (SF14). The difference estimator gives the same call within 0.06 and is asserted. In the same pass, the processing plan's one-row "Clerical share" sheet, which the first read and the pass 1 judge took as written for the task, became input rows on its Capacity sheet. The autocoder's stamps, which had been spread evenly from 01:00 to 05:00, became a nightly first-in-first-out run stamped to the second. No graded figure moved.
+- Re-check 11-01, first cut: the dictionary's readings filed as five sentences in procedures 4 and manual 5.6 (local time stamps, shift-start dating, negative correction lines, transfer and leaving dates, tablet against sync stamps); the leak reader read them as a generator pre-answering the ask hazards, so only the two the records cannot settle stay (shift-start dating, which the judge cited, and the transfer and leaving dates).

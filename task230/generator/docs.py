@@ -1,5 +1,5 @@
 """task230 documents: the output quality standard OQ-4 (docx), the coding procedures and the follow-up field manual
-(pdf), the processing plan's November update (xlsx, the capacity report) and the data dictionary (xlsx)."""
+(pdf) and the processing plan's November update (xlsx, the capacity report)."""
 from datetime import date, timedelta
 
 import numpy as np
@@ -178,7 +178,9 @@ def procedures(path):
                                "under a CODA coder id and saves a code write-in by write-in. A team lead in each team "
                                "supervises and does not code. Coding staff record their hours in the timesheet system "
                                "against these activities: OCC occupation coding, IND industry coding, QRY a turn on the "
-                               "query desk, TRN training, SUP supervision."]),
+                               "query desk, TRN training, SUP supervision. A timesheet line is dated by the day its shift began. A transfer between teams takes effect on its date, "
+                               "from which the coder works the new team's shift; a leaver works up to and including the "
+                               "leaving date."]),
         ("5 Queries", ["A coder who cannot place a write-in from the form refers it to the query desk in CODA and saves "
                        "the code once the desk has answered; the desk does not code. Experienced coders staff the desk in "
                        "turn and book that time as QRY."]),
@@ -326,96 +328,10 @@ def plan(path, S, T, Cd):
     return out
 
 
-# ------------------------------------------------------------------------------------------------ data dictionary (xlsx)
-DICT = {
-    "coding_extract": ("One row per person write-in coded by Friday 13 November 2026.", [
-        ("doc_id", "CODA document number of the form"), ("person_no", "Person number on the form"),
-        ("load_batch", "Load batch: capture mode (ONL, PAP, FUP) and load date (yymmdd)"),
-        ("coding_week", "Coding week, Monday to Sunday; week 1 starts on Monday 4 May 2026"),
-        ("autocoder_code", "ISCO-08 unit group the autocoder suggested"), ("autocoder_score", "Autocoder score, 0 to 1"),
-        ("coding_path", "AUTO (the suggestion became the production code) or CLERICAL"),
-        ("production_code", "The production code: an ISCO-08 unit group (four digits) on the automatic path, an AOC 2026 "
-                            "code (five digits) on the clerical path"),
-        ("coder_id", "CODA coder id of the clerical coder who saved the code (blank on the automatic path)"),
-        ("coded_at", "Aldmere local time the production code was saved")]),
-    "coding_quality_study": ("One row per write-in selected for the coding quality study, coded by 13 November 2026.", [
-        ("study_ref", "Study record number"), ("doc_id", "CODA document number"), ("person_no", "Person number on the form"),
-        ("load_batch", "Load batch"), ("batch_type", "SELF-RESPONSE (ONL, PAP) or FOLLOW-UP (FUP)"),
-        ("coding_path", "AUTO or CLERICAL"), ("selection_interval", "One write-in in this many was selected from the "
-                                                                    "record's batch and coding path"),
-        ("occupation_writein", "The job title as captured"), ("autocoder_code", "Autocoder's suggested unit group"),
-        ("autocoder_score", "Autocoder score"), ("production_code", "Production code"),
-        ("reference_code", "The study's adjudicated AOC 2026 code"),
-        ("reference_basis", "AGREED (both specialists gave the code) or ADJUDICATED")]),
-    "receipt_register": ("One row per census form received by the close of field operations.", [
-        ("doc_id", "CODA document number, issued when the form is loaded"), ("questionnaire_id", "Questionnaire number"),
-        ("address_id", "Address register id"), ("ed_code", "Enumeration district"),
-        ("capture_mode", "ONLINE, PAPER or FIELD"), ("received_date", "Date the form was registered as received"),
-        ("load_batch", "CODA load batch (blank: not yet loaded on 13 November)"),
-        ("usual_residents", "Persons usually resident"), ("in_employment", "Persons in employment"),
-        ("occupation_writeins", "Persons in employment with an occupation write-in")]),
-    "field_visit_log": ("One row per call stored by the field operations system, and one per administrative closure.", [
-        ("visit_id", "Record number in the field operations system"), ("address_id", "Address register id (the case)"),
-        ("ed_code", "Enumeration district"), ("staff_id", "Enumerator (blank on an administrative closure)"),
-        ("visit_no", "Call number at the address"), ("visit_time", "Local time of the call, from the tablet"),
-        ("outcome_code", "Outcome code (field manual 5.3)"),
-        ("proxy_respondent", "Who answered a proxy interview"),
-        ("questionnaire_id", "Questionnaire completed at the call (10, 20) or the return that closed the case (60)"),
-        ("tablet_id", "Tablet that recorded the call"),
-        ("synced_at", "Local time the record reached the field operations system")]),
-    "coding_staff_register": ("One row per member of staff who has worked in census coding since 4 May 2026.", [
-        ("staff_no", "HR staff number"), ("coder_id", "CODA coder id"), ("team", "Coding team (for a leaver, the team left)"),
-        ("role", "CODER or TEAM LEAD"), ("contract", "PERMANENT or TEMPORARY"), ("status", "IN POST or LEFT"),
-        ("started", "First day in census coding"), ("left", "Last day in census coding (blank: in post)")]),
-    "coding_staff_movements": ("One row per movement of coding staff since 4 May 2026.", [
-        ("staff_no", "HR staff number"), ("coder_id", "CODA coder id held"), ("movement", "STARTED, TRANSFERRED or LEFT"),
-        ("team_from", "Team left"), ("team_to", "Team joined"),
-        ("effective_date", "STARTED and TRANSFERRED: first day in the team joined; LEFT: the leaving date, the last day "
-                           "in post")]),
-    "coding_timesheets": ("One row per timesheet line.", [
-        ("staff_no", "HR staff number"), ("work_date", "Date the shift started"), ("activity", "OCC, IND, QRY, TRN or SUP"),
-        ("hours", "Hours worked on the activity (a team lead corrects a line with a further line of negative hours)"),
-        ("entered_on", "Date the line was entered"), ("note", "Note")]),
-    "enumeration_districts": ("One row per enumeration district.", [
-        ("ed_code", "Enumeration district"), ("region_code", "Region"), ("region_name", "Region name"),
-        ("addresses_listed", "Addresses on the address register")]),
-    "occupation_classification": ("One row per AOC 2026 code.", [
-        ("aoc_code", "AOC 2026 code: the ISCO-08 unit group and a national fifth digit (0 where the unit group has "
-                     "no national detail)"), ("aoc_title", "AOC 2026 title"),
-        ("isco08_unit_group", "ISCO-08 unit group"), ("isco08_unit_title", "ISCO-08 unit group title"),
-        ("isco08_sub_major", "ISCO-08 sub-major group"), ("isco08_sub_major_title", "ISCO-08 sub-major group title")]),
-}
-
-
-DICT_FILES = {"coding_extract": "census2026_occupation_coding_extract.parquet",
-              "coding_quality_study": "census2026_coding_quality_study.csv",
-              "receipt_register": "census2026_receipt_register.csv",
-              "field_visit_log": "field_visit_log_jun_oct_2026.csv",
-              "coding_staff_register": "coding_staff_register.csv",
-              "coding_staff_movements": "coding_staff_movements_2026.csv",
-              "coding_timesheets": "coding_timesheets_21sep_01nov2026.csv",
-              "enumeration_districts": "enumeration_districts_2026.csv",
-              "occupation_classification": "aoc2026_occupation_classification.csv"}
-
-
-def dictionary(path):
-    wb = Workbook()
-    first = True
-    for name, (grain, fields) in DICT.items():
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        ws.title = name[:31]
-        ws["A1"] = DICT_FILES[name] + ": " + grain
-        ws["A1"].font = Font(name="Calibri", italic=True)
-        _sheet(ws, ["Field", "Description"], [list(f) for f in fields], widths=[22, 100], start=3)
-    _save(wb, path, "Lesley Ahearne", "2026-07-02T09:00:00Z", "2026-11-13T15:20:00Z")
-
-
 def write_all(target, FILES, S, T, Cd):
     import os
     standard(os.path.join(target, FILES["standard"]))
     procedures(os.path.join(target, FILES["procedures"]))
     manual(os.path.join(target, FILES["manual"]))
     pf = plan(os.path.join(target, FILES["plan"]), S, T, Cd)
-    dictionary(os.path.join(target, FILES["dictionary"]))
     return dict(plan=pf, counts={})

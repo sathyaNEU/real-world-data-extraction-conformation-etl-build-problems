@@ -4,7 +4,7 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-14",
+ "updated": "2026-11-01",
  "stump": "Taking the coding quality study's coded-so-far bias as the release's warns only 35 and 93; carried route by route to the release's own route mix (the 103,367 write-ins still to code are 54 per cent follow-up proxy returns against 18) under the 0.80 acceptance score in force from 16 November, the release warns 24, 25, 35, 41, 71 and 93.",
  "architecture": 3,
  "loops": 0,
@@ -58,13 +58,13 @@
   "furniture": "role_family operations_director (was compliance_or_audit), context_artifact capacity_report (was operations_log), both redrawn after task229 design 2 registered first; forum, forcing event and organisation family unchanged"
  },
  "leak": {
-  "leak_py": "REVIEW (sweep 3: the standard's 2.0 line, its clause number 3.2 and the 0.90 acceptance score coincide with golden figures; sweep 4: generic document vocabulary); no LEAK; containers clean (target and golden)",
-  "reader": "four isolated reads (Sonnet, medium), the fourth on the shipped cut: questions 1 to 4 none in each, question 6 analytical in each; read 1 and judge pass 1 drove the two ask rewordings, read 2 the procedures' month-end sentence and the LFS CVs, read 3 the autocoder's nightly run; read 4's at-the-time team figures match the golden"
+  "leak_py": "2026-11-01 re-check: LEAK on the shipped cut (sweep 1: census2026_data_dictionary.xlsx and export_manifest.csv; sweep 13: metadata.json licence strings CC0-1.0 and prompt_shape carrying graded figures) and the prompt's three disclosed counts; on the final cut REVIEW only (sweep 3 the standard's 2.0 line and clause 3.2, the procedures' 0.90; sweep 4 document vocabulary, harmless; sweep 11 shell quota), sweeps 1, 12 and 13 clean, containers clean",
+  "reader": "2026-11-01: two isolated reads (Sonnet, medium). Read 1 (first cut): questions 2 and 4 none; realism tell on the crowded procedures 4 and manual 5.6 sentences, answered by the trim. Read 2 (final cut): questions 2 to 4 none; questions 1 and 6 name OQ-4 2.1 and the plan's 0.80 Decision (rung R1, recomputed wrong by the judge); its 0.80 or 0.90 fork closed by the Decision (SF12). Earlier: four reads at ship, questions 1 to 4 none, question 6 analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.strategy maturity_censoring 3 of 12; overuse.org_family government_agency; repeat.question_form which against task454; NOTE same_driver_older differentiated against task131 v2 and task183)",
+  "heart": "2026-11-01 (branch claude/tender-fermi-5v6zi5): BLOCK test.same_driver_older against task169 (v1, lineage) and task446 (v3), both cards registered after this one (10-22 and 10-21 against 10-14, H27); cleared with two differentiation lines on the card (H31), now WARN (overuse.org_family government_agency; NOTE same_driver_older differentiated against task131, task169, task183, task446). At ship 10-14: WARN",
   "nearest": "0.06 task500 lineage, task183",
-  "surface": "promotes task231 (back to back, same pairing survey-research-official-statistics x data-quality-monitoring, gap time, designation_set; another task type), task131 and task183 (same-driver signature gap time, G14, forecasting; differentiated on the card); adjudicated clone check left to the author"
+  "surface": "2026-11-01: exit 0; promotes task231 (back to back, same pairing), task233 and task128 (surface top 1 per cent), task131, task446 and task183 (same-driver signature, differentiated on the card); adjudicated clone check left to the author"
  },
  "solver_rounds": [
   {
@@ -157,7 +157,7 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "task230/determinism_check_report.md: pass 1 NOT_DETERMINISTIC, SEND_BACK on two ask figures only (the main call forced and reproduced), fixed in the prompt and the dictionary; pass 2 DETERMINISTIC, APPROVE, Gate G forecasting / analytical_non_defect / surface_read_dependency no, Gate H domain pass, layers pass, decisive_step analytical; its advisory literal reading of OQ-4 3.1 (exact extract counts against the study's reference, 17 groups) closed after approval by OQ-4 3.3 (SF14), no graded figure moved"
+  "report": "task230/determinism_check_report_pass3.md (2026-11-01 re-check, one isolated thread, every figure reproduced, Gate G forecasting / analytical_non_defect / surface_read_dependency no, Gate H domain pass, layers pass, decisive_step analytical); passes 1 and 2 in task230/determinism_check_report.md"
  },
  "approved": null,
  "delivered": "2026-10-14",
@@ -165,18 +165,18 @@
  "deferred": [],
  "precut": {
   "exit": 0,
-  "date": "2026-10-14"
+  "date": "2026-11-01"
  },
  "build": {
-  "date": "2026-10-14",
-  "checks": 121,
+  "date": "2026-11-01",
+  "checks": 118,
   "verify": "green",
   "byte_identical": true,
   "figures_check": "exit 0",
   "precut": "exit 0",
   "golden": "24, 25, 35, 41, 71 and 93",
   "architecture": 3,
-  "target_zip_sha256": "c0157a4749dd1cf25ae32d26bc0e6922d09ce6b7975cd617eaf821554bb4f1c0"
+  "target_zip_sha256": "25ef4aeb7a1e84df47e3a6347146e6de83350ea4b8b68b707a672a7e0cb7a828"
  },
  "status": "SHIPPED",
  "returned": [
@@ -185,11 +185,22 @@
    "portal": "author request",
    "repair": "re-root (domain fit)",
    "commit": "RESHIPPED (task230), 2026-10-14"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none (re-check under the new gates)",
+   "repair": "leak.py sweeps 1 and 13, prompt count rule, precut Measured by and survivor anatomy",
+   "commit": "RESHIPPED (task230), 2026-11-01"
   }
  ],
  "resume": "",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "sf16_set": "KBA-INST, KBA-PROF, BMC-FROI, HPB-UCF, HPY-TYPD (the queue-wide residual on the golden model: day 3.74, night 7.76 per 1,000)"
+ "sf16_set": "KBA-INST, KBA-PROF, BMC-FROI, HPB-UCF, HPY-TYPD (the queue-wide residual on the golden model: day 3.74, night 7.76 per 1,000)",
+ "freeze": "2026-11-01 freeze.py check --mode determinism: FAIL on one item only, the prompt's call sentence ('Which of the 40 occupation sub-major groups' to 'Which occupation sub-major groups', the ordered voice-check count fix; --allow reaches figures.json keys only); every main-call figure, figures.json, the stump, the ladder and the Deliverable Answers unchanged, goldens and submission.md byte-identical",
+ "open_for_author": [
+  "survivor anatomy Shock: the golden six are the top six of the default path's absolute bias (an interval of that sort)",
+  "prompt shell quota WARN: question form which 40 per cent (cap 30), deliverable set png+xlsx 24 per cent (cap 20); the form follows the designation_set decision, the deliverables are frozen with the goldens"
+ ]
 }
