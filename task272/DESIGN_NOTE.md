@@ -252,7 +252,12 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 81176264)
    ordering), the independent verifier on every graded figure (85), two byte-identical builds, figures_check 128 of
    128, precut, voice-check PASS with the shell quota WARN, leak.py REVIEW with no LEAK, guard surface and heart below;
    the leak reader and the determinism judge run from the main thread, since a fork cannot spawn them.
-4. Watch item for stage 4: the pooled Johnson SB fit misses cefazolin 2 g on this cut (0.4) but filed the golden four
+4. Guard. Heart run before the pull BLOCKed on three axes against builds registered minutes before this card
+   (task125 v4's role family, task445 v2's organisation family and context artifact) whose cards had not reached this
+   worktree when the draw was checked; after the pull the window holds task145, task231, task146 and task445 v3 and
+   heart is WARN only (the first name Cynthia, an older build's; the which question form against task468 v5), the
+   card's own check WARN. Surface on the cut: exit 0, WARN on the first name Cynthia only.
+5. Watch item for stage 4: the pooled Johnson SB fit misses cefazolin 2 g on this cut (0.4) but filed the golden four
    on 4 of the 10 seeds screened (Tried and rejected); a reader or judge who reaches it is the signal to deepen the
    long sets' unweighed stretch in the generator.
 

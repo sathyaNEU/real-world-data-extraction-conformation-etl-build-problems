@@ -19,9 +19,9 @@
   "reader": null
  },
  "duplicate_check": {
-  "heart": "re-run after the pull at the PAUSED commit; the result is recorded in the note's Pre-ship check",
+  "heart": "WARN 2026-11-01 after the pull (people.first Cynthia; repeat.question_form which against task468 v5); before the pull it BLOCKed on task125 v4's role family and task445 v2's organisation family and artifact, registered minutes before this card and since out of the window (the note's Pre-ship check)",
   "nearest": "0.08 task229 v2 (driver, lineage, differentiated on the card); test.same_driver_older differentiated against task271 v2, task308 v1 and task471 v1",
-  "surface": "personas Cynthia Underwood, Erin Stewart, Spencer Frank (the request's sign-off fixed so no first name is read twice)"
+  "surface": "exit 0 2026-11-01 (WARN people.first Cynthia); personas Cynthia Underwood, Erin Stewart, Spencer Frank, the request's sign-off fixed so no first name is read twice"
  },
  "judge": null,
  "returned": [],
