@@ -25,22 +25,22 @@ PROGRAM_COST_AUD = 438                     # the hearing program's annual cost p
 HUBS = [
     dict(code="LAR", name="Larapinta", city="Brisbane", state="QLD", tz="Australia/Brisbane", vendor="V1",
          stations=16, Li=93.6, Lp=84.1, Lf=81.9, La=64.6, scheme="dedicated",
-         loaders=46, sorters=30, forklift=5, leads=2, agency=7, spares=2),
+         loaders=46, sorters=30, forklift=5, leads=2, agency=7, spares=4),
     dict(code="ECR", name="Eastern Creek", city="Sydney", state="NSW", tz="Australia/Sydney", vendor="V1",
          stations=20, Li=96.6, Lp=88.2, Lf=82.8, La=65.3, scheme="am_rotation",
-         loaders=58, sorters=36, forklift=6, leads=2, agency=10, spares=2),
+         loaders=58, sorters=36, forklift=6, leads=2, agency=10, spares=6),
     dict(code="TRU", name="Truganina", city="Melbourne", state="VIC", tz="Australia/Melbourne", vendor="V2",
          stations=12, Li=95.1, Lp=84.4, Lf=81.4, La=63.9, scheme="sorter_relief",
-         loaders=30, sorters=40, forklift=4, leads=2, agency=6, spares=2),
+         loaders=30, sorters=40, forklift=4, leads=2, agency=6, spares=4),
     dict(code="WFD", name="Wingfield", city="Adelaide", state="SA", tz="Australia/Adelaide", vendor="V3",
          stations=10, Li=91.4, Lp=82.9, Lf=80.6, La=63.4, scheme="break_buddies",
-         loaders=40, sorters=22, forklift=4, leads=1, agency=5, spares=2),
+         loaders=40, sorters=22, forklift=4, leads=1, agency=5, spares=3),
     dict(code="KEW", name="Kewdale", city="Perth", state="WA", tz="Australia/Perth", vendor="V2",
          stations=12, Li=94.9, Lp=86.4, Lf=81.8, La=64.8, scheme="half_shift",
-         loaders=34, sorters=24, forklift=4, leads=2, agency=6, spares=2),
+         loaders=34, sorters=24, forklift=4, leads=2, agency=6, spares=4),
     dict(code="BFD", name="Beresfield", city="Newcastle", state="NSW", tz="Australia/Sydney", vendor="V3",
          stations=8, Li=92.9, Lp=84.0, Lf=81.3, La=64.1, scheme="agency_pm",
-         loaders=22, sorters=16, forklift=3, leads=1, agency=8, spares=1),
+         loaders=22, sorters=16, forklift=3, leads=1, agency=8, spares=3),
 ]
 
 # Job titles as each hub's HR records write them.

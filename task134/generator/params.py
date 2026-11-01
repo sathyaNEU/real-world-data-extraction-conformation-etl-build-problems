@@ -32,11 +32,11 @@ WAYPOINTS = [(0.00, 652400.0, 296100.0), (2.60, 649957.0, 296989.0), (5.10, 6474
 # margins; k: the infill coefficient (per year) of the relaxation law rate = k * (held depth - natural depth).
 PARTS = [
     # code, name, ch0, ch1, half, nat_n, nat_s, k
-    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 8.04, 8.16, 0.1170),
-    ("FR", "Fend Roads", 2.60, 5.10, 90.0, 8.26, 8.34, 0.1130),
-    ("MR", "Middle Reach", 5.10, 7.70, 85.0, 6.33, 6.47, 0.1160),
-    ("IR", "Inner Reach", 7.70, 9.40, 80.0, 5.22, 5.38, 0.1140),
-    ("TB", "Turning Basin", 9.40, 10.20, 210.0, 4.80, 4.80, 0.1150),
+    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 8.04, 8.16, 0.11750),
+    ("FR", "Fend Roads", 2.60, 5.10, 90.0, 8.26, 8.34, 0.11101),
+    ("MR", "Middle Reach", 5.10, 7.70, 85.0, 6.33, 6.47, 0.11296),
+    ("IR", "Inner Reach", 7.70, 9.40, 80.0, 5.22, 5.38, 0.11282),
+    ("TB", "Turning Basin", 9.40, 10.20, 210.0, 4.80, 4.80, 0.11192),
 ]
 REACHES = ["OC", "FR", "MR", "IR"]
 DEEPENED = ["OC", "FR", "MR", "IR", "TB"]
@@ -45,7 +45,7 @@ DEEPENED = ["OC", "FR", "MR", "IR", "TB"]
 BERTHS = [
     # code, name, s0, s1, t0, t1, depth (None = not maintained), nat, k
     ("NQ1", "North Quay Berth 1", 9.440, 9.680, 210.0, 250.0, 12.8, 3.90, 0.1160),
-    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 3.90, 0.1150),
+    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 3.90, 0.1135),
     ("NQ3", "North Quay Berth 3", 9.940, 10.180, 210.0, 250.0, 12.8, 3.90, 0.1160),
     ("CT5", "Container Terminal Berth 5", 10.200, 10.255, -165.0, 165.0, 14.3, 4.40, 0.1140),
 ]
@@ -69,3 +69,18 @@ SURVEY_A_DATES = [dt.date(2016, 4, 12), dt.date(2016, 10, 18), dt.date(2017, 4, 
 SURVEY_B_DATES = [dt.date(2023, 10, 17), dt.date(2024, 4, 16), dt.date(2024, 10, 15), dt.date(2025, 4, 15),
                   dt.date(2025, 10, 14), dt.date(2026, 4, 14), dt.date(2026, 10, 13)]
 GRID_A, GRID_B = 50.0, 40.0
+
+# Disposal sites (WGS84, degrees and decimal minutes as the licence gives them): corner points in order.
+SITES = {
+    "FS": ("Fend Spit", [(52, 3.050, 1, 38.400), (52, 3.050, 1, 39.350), (52, 2.550, 1, 39.350), (52, 2.550, 1, 38.400)]),
+    "WD": ("Wenning Deep", [(52, 1.900, 1, 44.600), (52, 1.900, 1, 45.900), (52, 1.150, 1, 45.900), (52, 1.150, 1, 44.600)]),
+}
+FS_CLOSED_MONTHS = (12, 1, 2)            # Fend Spit closed 1 December to the end of February
+ROUTE = {"OC": "WD", "FR": "WD", "MR": "FS", "IR": "FS", "TB": "FS", "NQ1": "FS", "NQ3": "FS", "CT5": "FS"}
+CODES_2021 = {"OC": "A1", "FR": "A2", "MR": "A3", "IR": "A4", "TB": "B1", "NQ1": "B2", "NQ2": "B3", "NQ3": "B4", "CT5": "B5"}
+LOAD_TDS = 1180.0
+RHO_S, RHO_W = 2.65, 1.025
+HIRE_FROM, HIRE_TO = (2025, 11, 17), (2025, 12, 21)
+GAUGE_FAULT_FROM, GAUGE_FAULT_TO = (2026, 1, 7), (2026, 3, 27)
+GAUGE_FACTOR = 1.068
+SAMPLING = {2025: ((2025, 3, 11), (2025, 3, 13), (2025, 4, 2)), 2026: ((2026, 3, 10), (2026, 3, 12), (2026, 3, 27))}

@@ -38,10 +38,11 @@ REGIONS = [
 
 # Field Quality Team circuit: calendar days after the index day on which the team re-collects
 # in each region (moved to the next working day when it falls on a weekend or holiday)
-FQT_OFFSET = {"CR01": 1, "CR02": 1, "CR03": 2, "CR04": 5, "CR05": 6, "CR06": 6, "CR07": 7,
-              "CR08": 7, "CR09": 8, "CR10": 8, "CR11": 9, "CR12": 9, "CR13": 10, "CR14": 10}
-FQT_MULTIPLES = 3            # outlets re-collected per region per month
-FQT_INDEPENDENTS = 4
+FQT_OFFSET = {"CR01": 1, "CR02": 1, "CR03": 2, "CR04": 9, "CR05": 6, "CR06": 10, "CR07": 6,
+              "CR08": 9, "CR09": 8, "CR10": 7, "CR11": 10, "CR12": 7, "CR13": 9, "CR14": 10}
+FQT_MULTIPLES = 4            # outlets re-collected per region per month
+FQT_INDEPENDENTS = 5
+FQT_DRAW_DAYS = 4            # the team re-collects at outlets visited in the window's first four working days
 
 # collector recording errors by region (truth): keying slips, wrong variety or size, and the
 # chance a collector keeps the handheld's pre-filled previous price when the shelf price changed
@@ -59,14 +60,14 @@ BAND_CREDIT = 96.5
 
 # item groups: monthly frequency of a shelf-price change at multiples and at independents
 GROUPS = {
-    "FV": ("Fresh fruit and vegetables", 0.34, 0.28),
-    "MF": ("Meat, fish and poultry", 0.21, 0.14),
-    "BC": ("Bread and cereals", 0.14, 0.08),
-    "DE": ("Milk, cheese and eggs", 0.15, 0.09),
-    "OF": ("Other food and non-alcoholic drinks", 0.17, 0.10),
-    "HS": ("Household supplies", 0.13, 0.06),
-    "PC": ("Personal care", 0.14, 0.07),
-    "CF": ("Clothing and footwear", 0.10, 0.05),
+    "FV": ("Fresh fruit and vegetables", 0.22, 0.18),
+    "MF": ("Meat, fish and poultry", 0.13, 0.09),
+    "BC": ("Bread and cereals", 0.09, 0.05),
+    "DE": ("Milk, cheese and eggs", 0.10, 0.06),
+    "OF": ("Other food and non-alcoholic drinks", 0.11, 0.07),
+    "HS": ("Household supplies", 0.08, 0.04),
+    "PC": ("Personal care", 0.09, 0.04),
+    "CF": ("Clothing and footwear", 0.07, 0.03),
 }
 
 # outlet kinds: stratum, share of the stratum, quotes per outlet (low, high), item groups priced
@@ -92,5 +93,7 @@ CHAINS = {
 STATUS_UNAVAILABLE = 0.028   # quote-months the collector could not price
 STATUS_REPLACED = 0.009      # quote-months the collector moved to a new variety
 LATE_VISIT = 0.045           # outlet-months first visited after the collection window
+VISIT_WEIGHTS = {"M": [0.10, 0.15, 0.25, 0.30, 0.20], "I": [0.30, 0.25, 0.20, 0.15, 0.10]}
 SPLIT_VISIT = 0.06           # large supermarket outlet-months collected over two visits
 FQT_NOT_FOUND = 0.012        # back-checked items the team could not find on the day
+FQT_TRIES = 12               # candidate draws of each month's back-check sample (generator only)
