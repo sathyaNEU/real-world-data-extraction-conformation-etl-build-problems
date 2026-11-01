@@ -261,7 +261,14 @@ two scored from different readings, every ask contributing a scored figure to bo
 reading 0 of N; computed on 38, 7 and 55 so builds are comparable; the worst honest number in the gated field
 (182 wrote 39.1 for a response that skipped the filed rules while the cracker measured 75.2). The script is read,
 not just run: scoring the same stops on both rows, hardcoding an ask to zero, or swapping the rows' names have
-each passed `precut.py`. Re-run it after every change, not once at the end. Cutting a figure no device reaches is
+each passed `precut.py`. **The script's cracker runs everything a careful solver runs**: every 1.1c battery item,
+every field read by its plain meaning (start and end terms, label and status columns, both clocks on a row), every
+filed rule as worded. A cracker that skips one reports a miss the portal will not see: seven builds' scripts
+recorded cracker keeps of 0 to 9 that an independent careful-solver probe on the same cut packs measured at 8 to
+50, and five of the seven were spent on every ask. So audit the script device by device: for each device name
+the battery item or filed field the cracker runs, and why it still misses; a device only a narrowed cracker misses
+is spent, and a device the careful solver misses only by an inference the rows do not force is a fork for the
+judge. Re-run it after every change, not once at the end. Cutting a figure no device reaches is
 a correctness check as well as a ceiling lever (190's plain quarterly count was hiding a quarter-basis defect).
 
 Every ask answer recomputes from the bundle, forced by the records; assert every stop and delta, recompute every
