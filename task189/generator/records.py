@@ -44,23 +44,30 @@ def _physico_level(code, det, month, rng):
 
 
 def nutrient_rows():
-    """monthly nutrient suite at every compliance and operational point"""
+    """monthly nutrient suite at every compliance and operational point, one bottle per point and
+    month; total oxidised nitrogen is the bottle's nitrate plus its nitrite, both as nitrogen"""
     rng = random.Random(RNG_BASE + 11)
+    nrng = random.Random(RNG_BASE + 13)          # nitrite, drawn apart so no other value moves
     pts = [(c, pl, wb) for (c, pl, wb, _code, _lab, _pf) in compliance_points()]
     pts += [(c, pl, wb) for (c, pl, wb) in op_points()]
     rows = []
     for (code, place, wb) in pts:
         lab = "TAS" if (sum(ord(ch) for ch in code) % 2 == 0) else "KGL"
         for (y, m) in W.MONTHS:
+            nitrate_n = None
             for det in (["NO3"] if lab == "TAS" else ["NO3N"]) + W.NUTRIENTS:
                 if det == "NO3":
-                    val = _nutrient_level(code, "TON", m, rng) * W.NO3_FACTOR
+                    nitrate_n = _nutrient_level(code, "TON", m, rng)
+                    val = nitrate_n * W.NO3_FACTOR
                     method, units = "TAS-IC-ANI-02", "mg/l"
                 elif det == "NO3N":
-                    val = _nutrient_level(code, "TON", m, rng)
+                    nitrate_n = _nutrient_level(code, "TON", m, rng)
+                    val = nitrate_n
                     method, units = "KGL-CF-NUT-03", "mg/l"
                 else:
                     val = _nutrient_level(code, det, m, rng)
+                    if det == "TON":                       # the draw above is kept so the stream holds
+                        val = max(nitrate_n, 0.0) + 0.006 + 0.05 * nrng.random()
                     method = "TAS-IC-ANI-02" if det in ("CL", "SO4", "OPO4") and lab == "TAS" else \
                              "KGL-CF-NUT-03" if lab == "KGL" else "TAS-IC-ANI-02"
                     units = "mg/l"

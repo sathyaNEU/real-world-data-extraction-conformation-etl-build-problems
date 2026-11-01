@@ -3,15 +3,15 @@
  "status": "PAUSED",
  "domain": "physical-environmental-sciences/environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-31",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-01",
  "stump": "A competent solver conforms the export, removes the QC and superseded rows, crosswalks sample points to water bodies, substitutes half the reporting limit for every non-detect and averages, and files seven non-compliant water bodies, three of them non-compliant only because their samples went to the laboratory with the coarser limit.",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-16"
+  "date": "2026-11-01"
  },
  "leak": {
   "leak_py": "REVIEW (six benign lines, answered in the report)",
@@ -27,10 +27,18 @@
   "report": "task189/determinism_check_report.md",
   "passes": 3,
   "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "last_pass": {
+   "pass": 3,
+   "verdict": "NOT_DETERMINISTIC",
+   "disposition": "SEND_BACK",
+   "label": "answer_contradicts_files on supplementary answers 2 and 3",
+   "report": "task189/determinism_check_report_pass3.md",
+   "main_call": "reproduced, 4"
+  }
  },
  "returned": [],
- "resume": "PAUSED 2026-10-31 at session end; the shipped version stands in the portal (pending review). RESHIP HELD ON THE ASK LAYER 2026-10-31; the shipped version stands in the portal, pending review. Working tree (committed PAUSED): the dictionary and manifest removed, the nitrate factor in the method schedule, the chart an SVG, the prompt opener 'The', zip rebuilt with figures unchanged. Next: new devices for A1 (the call's construction layer, kept by cracker and mirror alike, pair about 74), A2 (its maximum needs a second device) and A3 (one of three), measured with a careful cracker on the full hygiene battery, then leak reader and judge, then RESHIPPED.",
+ "resume": "RUBRIC RESHIP PAUSED 2026-11-01 (/fix-rubric scope, main call frozen and re-proved by judge passes 2 and 3): the ortho-phosphate ask layer failed determinism twice (pass 2: newer-booking, status V and CB-41 conventions; pass 3: the visit identity, see determinism_check_report_pass3.md and Tried and rejected). The working tree carries the visit-tied cut (target.zip f2c0b70568a20c9a, every free gate green, ceiling pair 28.5) but it is NOT shippable. Next: /fix-rubric task189 from the ask design: re-site the asks onto a device family whose truth one filed WHAT forces without the battery executing it (supplemental-stumping Part 5, the pin paid for with a silent primary underneath), re-measure ceiling.py, re-run every gate, judge once, then commit RESHIPPED. The shipped 10-16 version stays the portal's live version meanwhile.",
  "approved": null,
  "delivered": "2026-10-16",
  "portal": null,

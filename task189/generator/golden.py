@@ -118,44 +118,111 @@ def ask_sampling(target):
     return {o["name"]: (o["n"], o["nd"]) for o in a.values()}
 
 
-def ask_nitrate(target):
-    """A2: the abstraction points' nitrate, as mg/l NO3, once per sample"""
-    ex, xw, rg, ab, pr = load(target)
-    d = conform(ex, xw)
-    g = governing(d)
-    pts = set(ab["sample_point_code"])
-    n = g[g["point"].isin(pts) & g["determinand_code"].isin(["NO3", "NO3N"])
-          & (g["sdate"] >= W.YEAR_FROM) & (g["sdate"] <= W.YEAR_TO)].copy()
-    n["as_no3"] = [v * (W.NO3_FACTOR if c == "NO3N" else 1.0)
-                   for v, c in zip(n["val"], n["determinand_code"])]
-    # one sample is one occasion: the two sections submit the same round under two client codes
-    n = n.sort_values(["point", "sample_date", "sample_time", "client_point_code"])
-    n = n.groupby(["point", "sample_date", "sample_time"], as_index=False).head(1)
+def programme_dates(pr):
+    """each programme point's dates in the programme (regulation 4.1)"""
     out = {}
-    names = {r.sample_point_code: r.sample_point_name for r in ab.itertuples()}
-    for code, grp in n.groupby("point"):
-        out[names[code]] = (round(float(grp["as_no3"].max()), 1),
-                            int((grp["as_no3"] >= W.NITRATE_TRIGGER).sum()))
+    for i in range(len(pr)):
+        v = pr.iloc[i, 0]
+        if isinstance(v, str) and v.startswith("ARW-"):
+            out[v] = (dt.date.fromisoformat(str(pr.iloc[i, 7])[:10]),
+                      dt.date.fromisoformat(str(pr.iloc[i, 8])[:10]))
     return out
 
 
-def ask_quarter(target):
-    """A3: the quarter's ortho-phosphate, the reports against the export"""
+def operational_points(target):
+    op = pd.read_excel(os.path.join(target, PK.FILES["programme"]), sheet_name="Operational network",
+                       header=None, dtype=object)
+    out = {}
+    for i in range(len(op)):
+        v = op.iloc[i, 0]
+        if isinstance(v, str) and v.startswith("ARW-"):
+            out[v] = str(op.iloc[i, 2])
+    return out
+
+
+def shared_codes(target, xw, rg):
+    """Tirneevin numbers a point ARWA-<catchment>-<last two digits>, so an operational point can carry
+    the code of a compliance point in its catchment; such a point has no row of its own in the
+    crosswalk. Returns {(lab, client code): (compliance point, operational point)}."""
+    catch = {r.water_body_code: r.catchment for r in rg.itertuples()}
+    abbr = {}
+    for r in xw.itertuples():
+        if r.lab_code == "TAS" and r.water_body_code:
+            abbr[catch[r.water_body_code]] = r.client_point_code.split("-")[1]
+    known = set(xw["sample_point_code"])
+    owner = {(r.lab_code, r.client_point_code): r.sample_point_code for r in xw.itertuples()
+             if r.water_body_code}
+    out = {}
+    for code, c in operational_points(target).items():
+        if code in known or c not in abbr:
+            continue
+        key = ("TAS", "ARWA-%s-%s" % (abbr[c], code[-2:]))
+        if key in owner:
+            out[key] = (owner[key], code)
+    return out
+
+
+def bookings(target, programme="NUT"):
+    """the nutrient bottles as the laboratories booked them: one booking per laboratory, client
+    code, collection date and time, with its determinands' governing results"""
     ex, xw, rg, ab, pr = load(target)
     d = conform(ex, xw)
-    q = d[(d["determinand_code"] == "OPO4") & (d["sample_type"] == "FIELD")
-          & (d["sample_date"].str[:7].isin(["2025-10", "2025-11", "2025-12"]))].copy()
-    issued = set()
-    for r in q.itertuples():
-        ap = r.date_approved
-        if ap and dt.date.fromisoformat(ap) <= CUTOFF:
-            issued.add(r.lab_sample_id)
-    g = governing(d)
-    held = set(g.loc[(g["determinand_code"] == "OPO4")
-                     & (g["sample_date"].str[:7].isin(["2025-10", "2025-11", "2025-12"])),
-                     "lab_sample_id"])
-    return {"reports": len(issued), "export": len(held),
-            "one_only": len(issued ^ held)}
+    f = d[(d["sample_type"] == "FIELD") & (d["programme"] == programme)].copy()
+    f = f.sort_values(["lab_sample_id", "determinand_code", "ver"])
+    f = f.groupby(["lab_sample_id", "determinand_code"], as_index=False).tail(1)
+    out = []
+    for key, grp in f.groupby(["lab_code", "client_point_code", "sample_date", "sample_time"]):
+        sig = tuple(sorted((r.determinand_code, r.result, r.qualifier) for r in grp.itertuples()))
+        opo = grp[grp["determinand_code"] == "OPO4"]
+        out.append({"lab": key[0], "code": key[1], "date": dt.date.fromisoformat(key[2]),
+                    "time": key[3], "point": grp["point"].iloc[0], "wb": grp["wb_code"].iloc[0],
+                    "received": grp["date_received"].iloc[0], "sig": sig,
+                    "newest": max(int(x.split("/")[2]) for x in grp["lab_sample_id"]),
+                    "opo4": (opo["result_status"].iloc[0] if len(opo) else "",
+                             opo["qualifier"].iloc[0] if len(opo) else "")})
+    return out, xw, rg, pr
+
+
+def visits(target):
+    """each compliance point's monthly visit: the collection date and time of its pesticide sample"""
+    pk, _xw, _rg, _pr = bookings(target, programme="PEST")
+    out = {}
+    for b in pk:
+        out.setdefault(b["point"], set()).add((b["date"], b["time"]))
+    return out
+
+
+def bottles(target):
+    """one entry per nutrient bottle taken on a compliance point's visit: a booking under the point's
+    code whose collection date and time are those of the point's pesticide sample that month. A
+    second booking of one bottle dated from the round's pre-registration, a bottle booked under the
+    point first and later under the operational point it was taken at, and the bottles of an
+    operational point the laboratory's numbering gives the same code all fall on no visit of the
+    point they are booked to"""
+    bk, xw, rg, pr = bookings(target)
+    vis = visits(target)
+    return [b for b in bk if (b["date"], b["time"]) in vis.get(b["point"], ())], pr
+
+
+def ask_orthophosphate(target):
+    """the return's ortho-phosphate figures: for each water body, the compliance samples the year
+    holds an approved ortho-phosphate result for, and how many of those results were below the
+    reporting limit"""
+    bt, pr = bottles(target)
+    pts = programme_points(pr)
+    dates = programme_dates(pr)
+    _ex, _xw, rg, _ab, _pr = load(target)
+    names = {r.water_body_code: r.water_body_name for r in rg.itertuples()}
+    out = {}
+    for b in bt:
+        if b["point"] not in pts or not (W.YEAR_FROM <= b["date"] <= W.YEAR_TO):
+            continue
+        frm, to = dates[b["point"]]
+        if not (frm <= b["date"] <= to) or b["opo4"][0] != "A":
+            continue
+        n, nd = out.get(names[b["wb"]], (0, 0))
+        out[names[b["wb"]]] = (n + 1, nd + (1 if b["opo4"][1] == "<" else 0))
+    return out
 
 
 def report_rows(rows):
@@ -179,4 +246,4 @@ def compute(target):
     count = L["mle"]
     nc = sorted(o["name"] for o in a.values() if o["mle"] > W.STANDARD)
     return {"count": count, "non_compliant": nc, "assess": a, "rungs": L,
-            "a1": ask_sampling(target), "a2": ask_nitrate(target), "a3": ask_quarter(target)}
+            "a1": ask_sampling(target), "w": ask_orthophosphate(target)}

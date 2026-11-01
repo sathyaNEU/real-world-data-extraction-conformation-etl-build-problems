@@ -12,7 +12,7 @@ def write(task_dir, g):
         "objective": "Anomaly Detection & Diagnostics",
         "as_of": W.AS_OF.isoformat(),
         "committed_answer": "4 water bodies non-compliant for MCPA in the 2025/26 reporting year",
-        "deliverables": ["annual_compliance_return_2025_26.xlsx", "mcpa_compliance_overview.svg"],
+        "deliverables": ["annual_compliance_return_2025_26.xlsx", "orthophosphate_results_2025_26.svg"],
         "distractor_files": [
             {"file": "daily_mean_flow_2025_2026.csv",
              "why_relevant": "a concentration average can be flow weighted, and the authority holds "
@@ -23,8 +23,25 @@ def write(task_dir, g):
              "why_relevant": "merchant returns of MCPA product by month explain where and when the "
                              "herbicide went on and invite a pressure based ranking",
              "why_unused": "the assessment is of measured concentrations at the water body, and no "
-                           "sales figure enters any graded number"}],
-        "stated_inputs": ["30 November 2026", "37.5", "2025", "0.05", "0.005", "0.10",
+                           "sales figure enters any graded number"},
+            {"file": "tirneevin_quarterly_report_2025q3.pdf",
+             "why_relevant": "Tirneevin's contractual report lists the ortho-phosphate results it issued "
+                             "for October to December 2025, point by point, and invites counting a "
+                             "quarter of each water body's samples from it",
+             "why_unused": "it lists one quarter's results as they stood when it was issued on 20 "
+                           "January 2026; the export holds every result and version of the year"},
+            {"file": "kilgarron_quarterly_report_2025q3.pdf",
+             "why_relevant": "Kilgarron's contractual report lists the ortho-phosphate results it "
+                             "issued for October to December 2025, point by point",
+             "why_unused": "it lists one quarter's results as issued on 20 January 2026; the export "
+                           "holds every result and version of the year"},
+            {"file": "abstraction_point_register.csv",
+             "why_relevant": "the export holds results at these raw-water points under the same two "
+                             "laboratories and under catchment names the compliance water bodies "
+                             "share",
+             "why_unused": "they are abstraction points outside the compliance programme and carry "
+                           "neither MCPA nor ortho-phosphate results"}],
+        "stated_inputs": ["30 November 2026", "2025", "0.05", "0.005", "0.10",
                           "0.035", "0.30", "0.40", "0.065"],
         "declared_wrong_basis_distractor": None,
         "sources": [
