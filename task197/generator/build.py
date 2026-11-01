@@ -366,6 +366,11 @@ def main():
         p_mw REAL NOT NULL, quality TEXT NOT NULL)""")
     rid, rows_written, dup_src = 0, 0, None
     archive_index = {}
+    # Closure 19 by convergence: the writer's estimated flag never falls on the extreme second of a
+    # qualifying episode of either sign, so keeping or dropping the E-flagged samples prints the same
+    # graded figures and no figure rests on what the code means. The draw is still taken for every
+    # sample, so every other flag is where it was. checks.py asserts both halves on the shipped bytes.
+    ext_secs = {(d, x[2]) for d in sim.dates() for x in W[d]["under"] + W[d]["over"]}
     for (d, sid, trig, lo, hi) in recs:
         rid += 1
         P = cache[(d, sid, lo)]
@@ -374,7 +379,7 @@ def main():
         rq = sim._rng("qual", sid, d.isoformat(), lo)
         for i, t in enumerate(range(lo, hi)):
             q = "M"
-            if rq.random_sample() < 0.004:
+            if rq.random_sample() < 0.004 and (d, t) not in ext_secs:
                 q = "E"
             samples.append((rid, utc(d, t), round(float(P[i]), 3), q))
         con.execute("INSERT INTO recording VALUES (?,?,?,?,?,?)",
@@ -563,8 +568,10 @@ def main():
                  down_gain_rung0={sid: round(v["pre"]) for sid, v in so.items()
                                   if v.get("pre") == v.get("pre")}),
              counts=counts)
-    print("[stage] dictionary and goldens", flush=True)
-    counts["dictionary"] = pack2.dictionary(TGT, counts)
+    print("[stage] goldens", flush=True)
+    # No file or sheet that describes the data ships (dataset-generation section 3): the data
+    # dictionary this pack once carried is gone, its provenance is in the task's metadata.json, and
+    # what the determinism took from it rests on the producing systems, asserted in checks.py.
     # September's own contracted mean per block. These are NOT derived from the review window: the
     # window's commitments averaged over a notional 30 days gave a column that included eleven October
     # dates and omitted 1 to 20 September, and a reader recovered the arithmetic exactly from the

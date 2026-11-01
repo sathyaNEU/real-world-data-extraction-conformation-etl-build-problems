@@ -11,22 +11,26 @@
  "resume": "SHIPPED and rebuild-verified 2026-10-23: target.zip reproduces at sha256 ce23c1aa6f4a57e9 matching HEAD. REBUILD IS TWO STEPS HERE, in this order: generator/build.py then generator/submit.py. build.py writes figures.json and submit.py ENRICHES it (obliged_pairs, episodes_total and the constants block) before writing submission.md, so build.py alone leaves figures.json 23 lines short and figures_check.py reports 4 figures absent of 91 while target.zip still matches byte for byte. With both steps run, figures.json returns to the committed bytes exactly and figures_check passes 91 of 91. Filed as house fix H33.",
  "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
  "gates": {
-  "checks.py": "84 checks, 0 failed (floor 40)",
-  "verify.py": "144 checks, 0 failed, reading only the shipped bundle",
+  "checks.py": "107 checks, 0 failed",
+  "verify.py": "145 checks, 0 failed",
   "figures_check.py": "91 figures in blocks 1 to 4, 0 absent, exit 0",
-  "precut.py": "51 checks, 0 FAIL, 0 WARN, exit 0",
-  "voice-check.py": "PASS, 991 characters",
-  "ceiling.py": "pair ceiling 35.1 (bar 40), mirror leakage 6.0 per cent (bar under 35)",
+  "precut.py": "61 checks, 0 FAIL, 8 WARN, exit 0",
+  "voice-check.py": "PASS",
+  "ceiling.py": "pair ceiling 35.1, mirror leakage 6.0 per cent (unchanged)",
   "leak.py": "REVIEW, no LEAK",
   "guard surface": "clean, no personas in the pack",
   "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
   "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
   "input gates": "18 files, 4 formats, a 111,454-row csv and a 1,194,352-row sqlite, 2 distractors",
-  "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2"
+  "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2",
+  "rebuild": "byte-identical, target.zip aa74426a897dc2ec22ea9c3eb0fab3a3 twice",
+  "freeze": "determinism PASS with --allow counts.dictionary (the dropped file's own row count, ungraded)",
+  "guard": "surface exit 0, heart WARN (no BLOCK)"
  },
  "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
  "stage_name": "ship",
- "updated": "2026-10-21",
+ "updated": "2026-11-01",
+ "target_zip_md5": "aa74426a897dc2ec22ea9c3eb0fab3a3",
  "ask_layer": {
   "figures": 50,
   "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
@@ -35,8 +39,9 @@
   "measured_by": "generator/ceiling.py"
  },
  "leak": {
-  "leak_py": "REVIEW, 0 LEAK",
-  "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures."
+  "leak_py": "REVIEW, 0 LEAK (--asof 2026-10-13, the reshipped cut aa74426a, 2026-11-01)",
+  "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures.",
+  "reship_reader": "2026-11-01, fresh copy, no dictionary or notes sheet: no decisive-step sentence, nothing ranks the sites, Q6 an analytical choice (the counterfactual baseline at the extreme second); the ask readings it named (the meter stamps' convention, the out-of-service meter's new EAN through the event log) are the asks' own steps, closed by the data per judge pass 2"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -48,7 +53,8 @@
   "scope": "the approve covers the pack at target.zip 90cfc57e0096c24532325439066403d2. The only change since is the September availability statement capacity column, which moves no graded figure (figures.json and submission.md byte-identical) and alters no clause a gate turned on, so under the filed rule the approve stands. Current zip fa5f18fd82ec50801231f4d763352d55.",
   "key_closures": "two the judge established independently and that the design rests on. First, the traverse span criterion recovers each span uniquely to about a second, and every competing reading of it gives identical spans for all nine sites; the one reading that differs, committed boundaries, collapses for DLK, KPV and ZWT because the archive has no samples in the first two minutes there, so the uncommitted criterion is the only reading that identifies the call site. Second, only the ramp baseline reproduces quiet-minute power to the noise floor at a residual sd of 0.013 MW, while the rivals leave several MW after every boundary, so exactly one baseline is defensible once the power is compared against it. Rejected bases: period setpoint RDL 57.4, last pre-deviation power ZWT 71.7, common 120 s span RDL 72.1, common 300 s span ZWT 79.3.",
   "advisories": "1, the energy-against-programme ask: the standard says programme energy is the setpoint the platform held for the period, so the step is the literal reading and the committed 114.4 and 242.6 reproduce, but a solver who has just found the traverse could carry it in and file 80.5 and 216.4. Closing it needs a pin that changes what solvers see, so it stays open and the judge did not treat it as blocking. 2, the nine events carrying start_local in UTC under a +02:00 label: the UTC reading is forced because an event cannot be logged before it starts, and the main call and the under-frequency table are unaffected. 3, the settled statements, availability statement, auction results and price file are fair distractors.",
-  "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory."
+  "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory.",
+  "pass2": "2026-11-01 on the reshipped cut aa74426a897dc2ec22ea9c3eb0fab3a3: DETERMINISTIC (the thread's FIX_NOW optional); the call (Kampvliet 72 per cent over 134 episodes, Reiderland 83, gap 11) and ask 1 reproduce exactly; the event log's nine withdrawal rows on the clock read in UTC (Ask B's logged-clock device) and the meter file's interval-ending stamps (Ask C's device) each closed by convergence in the data, not filed (the reship brief bars filing an ask's device); the technical conditions' 'every unit below 90 per cent' reading not a fork (the standard's single withdrawal, the same site under both); Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; report task197/determinism_check_report_pass2.md"
  },
  "archive_spread": {
   "recordings": 4617,
@@ -79,5 +85,13 @@
   "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
  },
  "delivered": "2026-10-18",
- "returned": []
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK data_dictionary.csv: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3); LEAK metadata.json: gate_g uses the author's vocabulary ('stump'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism)",
+   "repair": "leak",
+   "move": "The generator no longer writes data_dictionary.csv (each file's row grain and column list, and the archive's quality legend) or the asset register's Notes sheet (its pull date, one row per unit, and glosses on three columns, one pointing at the commitment file), which sweep 1 had at REVIEW and section 3 names as a describing sheet: 17 files, still four formats. metadata.json now holds the decision, the deliverables, the distractors and per-file provenance (source, coverage, rows, extract or issue date) and nothing else: the gate_g and notes paragraphs and the per-file role and row glosses are gone, among them the meter file's 'stamped with the instant the interval closes', which had filed ask C's device, and the prequalification distractor's text is corrected to its own rows (step tests 2017 to 2025 and four 2026 declarations). No sentence was added to any document: SF10 rests on every timestamp's own zone and clock suffix and clause 1 of the technical conditions; closure 18 on the exports' unit headers and the meter file's unit column, checked against the volumes it labels; closure 19 on the event log's own labels and, for the archive's E flag, on C1: the writer's flag is withheld from the extreme second of every qualifying episode (two samples of 1,194,352, values unchanged; before, dropping E-flagged samples took Dollardkust's count from 144 to 143), and every traverse span recovers exactly with them left out; SF5 on the register's own 'Usual FCR blocks (indicative)' header against the dated commitment file, its checks.py line rewritten to execute the alternative, which moves only Dollardkust's count (144 to 145), not Terborgh's and Meppelerdiep's as the row had said. checks.py gains 23 assertions (no describing file, sheet or field list in the pack, by name, sheet and content, positive-controlled on the two old forms; one per moved closure through the verifier's readers; metadata.json's files and row counts against the pack; the wrong-basis distractor's stated facts): 107 checks, 0 failed; verify.py 145 checks, 0 failed. figures.json loses one key, counts.dictionary (15, the dropped file's own row count, which nothing grades), freeze.py --mode determinism PASS with --allow counts.dictionary; submission.md, both goldens, all three PDFs and every CSV are byte-identical to the judged pack. The archive's bytes also differ from the shipped file because this container's SQLite (3.53.1) lays pages out differently from the 3.45.1 that cut the shipped zip, so even the unmodified generator rebuilt here gives bdf68a69, not fa5f18fd; its rows are identical but for the two flags. Gates on the final cut aa74426a (two builds byte-identical): precut exit 0 (61 checks, 0 FAIL, 8 WARN), voice-check PASS, figures_check 91 of 91, leak.py --asof 2026-10-13 REVIEW with no LEAK (each REVIEW ruled in the design note), guard.py surface exit 0, ceiling.py unchanged (pair 35.1, mirror leakage 6.0 per cent). Stage 4: the leak read on aa74426a is clean; judge pass 2 DETERMINISTIC, both timestamp conventions on asks 2 to 4 closed by convergence (SF10's row now names Ask B's logged-clock rows).",
+   "commit": "RESHIPPED (task197)"
+  }
+ ]
 }

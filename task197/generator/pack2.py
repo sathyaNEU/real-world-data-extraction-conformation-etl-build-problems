@@ -96,17 +96,9 @@ def register(path):
     for col, w in zip("ABCDEFGHIJK", (11, 15, 16, 13, 13, 16, 22, 24, 26, 13, 26)):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A2"
-    ns = wb.create_sheet("Notes")
-    for line in [["Asset register extract, reserve portfolio desk"],
-                 ["Pulled 2026-10-12 from the asset master. One row per reserve-providing unit."],
-                 ["Metering point shows the code in force at the pull date; replaced codes are kept in the"],
-                 ["metering history held by the settlement team."],
-                 ["Usual FCR blocks is indicative only. The blocks a site is committed to on a delivery date"],
-                 ["are in the commitment file the platform writes each day."],
-                 ["Installed capacity is the connection capacity, not the capacity offered to the reserve"],
-                 ["market."]]:
-        ns.append(line)
-    ns.column_dimensions["A"].width = 100
+    # The extract is the asset master's one sheet and nothing else: no notes sheet glosses its
+    # columns or points at another file (dataset-generation section 3). The pull date is provenance
+    # in metadata.json, and the blocks column carries its own "(indicative)" label.
     wb.properties.creator = "Veerkracht Flex"; wb.properties.lastModifiedBy = "Veerkracht Flex"
     wb.properties.created = dt.datetime(2026, 10, 12, 8, 41, 0); wb.properties.modified = dt.datetime(2026, 10, 12, 8, 44, 0)
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -283,40 +275,3 @@ def prequal(tgt):
     return docs.write_csv(os.path.join(tgt, "prequalification", "prequalification_records.csv"),
                           ["site_id", "test_date", "test_method", "contracted_gain_mw_per_hz",
                            "measured_gain_mw_per_hz", "outcome", "note"], rows)
-
-
-def dictionary(tgt, counts):
-    rows = [
-        ("platform/vkf_highres_archive.sqlite", "recording", "one high resolution recording the platform kept",
-         "recording_id, site_id, trigger, start_utc, end_utc, samples"),
-        ("platform/vkf_highres_archive.sqlite", "power_1s", "net active power at the connection point, one row per second",
-         "recording_id, ts_utc, p_mw, quality (M measured, E estimated)"),
-        ("platform/site_programme_15min.csv", "", "the programme setpoint the platform held for each settlement period",
-         "site_id, period_start_local, settlement_period, programme_mw"),
-        ("platform/fcr_block_commitments.csv", "", "the delivery blocks each site was committed to, by delivery date",
-         "delivery_date, block, block_start_local, block_end_local, site_id, committed_mw"),
-        ("platform/control_platform_event_log.csv", "", "events the control platform logged, including reserve withdrawals and their corrections",
-         "event_id, logged_utc, site_id, event_type, event_code, detail, start_local, duration_min, supersedes_event_id"),
-        ("operator/system_frequency_1s_extracts.csv", "", "published system frequency at one second, one extract per deviation",
-         "extract_id, ts_utc, frequency_hz"),
-        ("operator/system_frequency_minute_summary.csv", "", "published minute summary of system frequency for the window",
-         "minute_utc, frequency_min_hz, frequency_mean_hz, frequency_max_hz"),
-        ("settlement/metered_volumes_15min.csv", "", "one interval of one metering point as the desk's meter data platform registered it, net at the connection point",
-         "metering_point, interval_ts_local, settlement_period, net_volume, unit"),
-        ("operator/settlement_statement_daily_2026-09.csv", "", "the operator's settled volumes per metering point and delivery date",
-         "metering_point, delivery_date, settled_volume_mwh"),
-        ("operator/settlement_statement_daily_2026-10_preliminary.csv", "", "as above, preliminary issue for October",
-         "metering_point, delivery_date, settled_volume_mwh"),
-        ("operator/settlement_statement_daily_2026-10_amended.csv", "", "as above, amended issue for October",
-         "metering_point, delivery_date, settled_volume_mwh"),
-        ("register/asset_register.xlsx", "Sites", "one row per reserve-providing unit in the portfolio",
-         "site id, technology, connection, installed, contracted FCR, metering point, usual blocks, controller"),
-        ("prequalification/prequalification_records.csv", "", "prequalification tests and controller-change declarations",
-         "site_id, test_date, test_method, contracted_gain_mw_per_hz, measured_gain_mw_per_hz, outcome, note"),
-        ("market/imbalance_prices_15min.csv", "", "imbalance settlement prices for the window",
-         "period_start_local, settlement_period, downward_price_eur_mwh, upward_price_eur_mwh, mid_price_eur_mwh"),
-        ("market/fcr_capacity_auction_results.csv", "", "daily FCR capacity auction outcomes and the group's awarded volume",
-         "delivery_date, block, clearing_price_eur_mw_h, awarded_mw_group, procured_mw_total"),
-    ]
-    return docs.write_csv(os.path.join(tgt, "data_dictionary.csv"),
-                          ["file", "table_or_sheet", "one row is", "columns"], rows)

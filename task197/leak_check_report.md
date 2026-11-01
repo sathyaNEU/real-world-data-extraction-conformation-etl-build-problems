@@ -1,34 +1,24 @@
 # leak check, task197
 
-**Verdict: LEAK.** 18 files read, 37 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 37 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: second, clause, traverse, window, archive, published, extract, seconds, deviation, measured, inside, population, carries, sentence, boundaries, boundary, nothing, period, recording, asserted, device, zwartewater, printed, operator, decisive
-
-## 1 file names (LEAK 1, REVIEW 1)
-- **LEAK** `data_dictionary.csv`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
-- **REVIEW** `register/asset_register.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+Stump terms swept: second, clause, traverse, window, archive, published, extract, seconds, deviation, measured, inside, population, carries, sentence, boundaries, boundary, asserted, nothing, period, recording, device, zwartewater, printed, operator, decisive
 
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `operator/fcr_group_availability_2026-09.pdf`: 5 of 25 stump-paragraph terms appear (second, seconds, deviation, measured, operator); read whether the document names the move
 - **REVIEW** `operator/fcr_technical_conditions_2026.pdf`: 8 of 25 stump-paragraph terms appear (second, clause, published, seconds, deviation, inside); read whether the document names the move
 - **REVIEW** `standards/reserve_performance_standard_v4.pdf`: 9 of 25 stump-paragraph terms appear (second, window, published, seconds, deviation, inside); read whether the document names the move
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
-
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 2)
 - **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "Which of our nine"; each of the N: "each of the six"; the N things: "the six blocks" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 36% of 196 prompts (cap 30%); second-sentence opener 'put' at 35% of 196 prompts (cap 20%); rounding opener 'give' at 44% of 196 prompts (cap 20%); reword at the role level, not the verb
 
-## 13 task metadata (LEAK 1, REVIEW 2)
-- **LEAK** `metadata.json`: gate_g uses the author's vocabulary ('stump'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism
-- **REVIEW** `metadata.json`: files[0].one_row_is shares the design note's stump vocabulary (second, inside, recording): say what the task decides, not how
-- **REVIEW** `metadata.json`: files[4].one_row_is shares the design note's stump vocabulary (second, published, extract, deviation, inside): say what the task decides, not how
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -41,6 +31,8 @@ Stump terms swept: second, clause, traverse, window, archive, published, extract
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 
 ## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
@@ -167,3 +159,7 @@ unmeasured rather than held.
 back under the bar rather than to polish one that is already there. Ask C's two portfolio totals are a
 known, measured, recorded leak of two figures in twenty-nine, and ask B is owed a measurement by a reader
 that answers it. The status returns to SHIPPED.
+
+### Reship read (2026-11-01, Sonnet at medium, fresh copy of prompt.txt and target.zip aa74426a, the data dictionary and the register's notes sheet no longer shipped)
+
+1 none states the move (the standard's 2 and 3 file the measure and the decision, the technical conditions' 5 says nothing in a programme reduces the response owed); 2 none (the group availability report attributes nothing to units, the prequalification records are old tests and declarations); 3 no dictionary, readme, manifest or notes sheet, the two PDFs are the governing documents and the register's "Usual FCR blocks (indicative)" header carries its own caveat; 4 none (the September firmware events and controller-change declarations read as context on four sites, a mild pointer at candidates, never at the site); 5 the standard's 2 to 5, each executed as written, the counterfactual output left open; 6 an analytical choice (the counterfactual baseline at the extreme second, read against the programme and the one-second archive). The ask readings it names, the meter stamps' start or end convention, the out-of-service meter's new EAN carried by the event log and the event log's start field on nine rows, are the asks' own steps; judge pass 2 rules each one reading by convergence in the data. Its realism notes (the round contracted gains, the uniform 2,016-row files, the regular event cadence) are on files this reship did not change.

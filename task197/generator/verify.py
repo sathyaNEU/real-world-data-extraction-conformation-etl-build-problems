@@ -403,8 +403,8 @@ def main():
     # ---- the shipped register, read back through the verifier's own reader -------------------
     import openpyxl
     rwb = openpyxl.load_workbook(os.path.join(TGT, "register", "asset_register.xlsx"))
-    ck("register sheets read", "Sites" in rwb.sheetnames and "Notes" in rwb.sheetnames,
-       ", ".join(rwb.sheetnames))
+    ck("register sheets read: the asset master's one sheet, no notes sheet beside it",
+       rwb.sheetnames == ["Sites"], ", ".join(rwb.sheetnames))
     rws = rwb["Sites"]
     rhdr = [c.value for c in rws[1]]
     reg = {}
@@ -416,10 +416,14 @@ def main():
     ck("register capacities match the contracted gains the call uses",
        all(abs(float(reg[r["site"]]["Contracted FCR (MW)"]) / 0.190 - r["contract_gain"]) < 0.01
            for r in F["scorecard"]), "")
-    nblob = " ".join(str(c.value) for c in rwb["Notes"]["A"] if c.value)
-    ck("positive control, the register notes reader finds text", "asset master" in nblob.lower(),
+    # SF5: the register's own header says its blocks column is indicative; the dated record of
+    # what each site was committed to is the platform's commitment file
+    ck("the register's own header labels its usual blocks indicative",
+       "Usual FCR blocks (indicative)" in rhdr, ", ".join(str(h) for h in rhdr))
+    nblob = " ".join(str(c) for row in rws.iter_rows(values_only=True) for c in row if c is not None)
+    ck("positive control, the register cell reader finds text", "kampvliet" in nblob.lower(),
        nblob[:60])
-    ck("register notes silent on the interval index and the logged clock",
+    ck("register silent on the interval index and the logged clock",
        "interval" not in nblob.lower() and "utc" not in nblob.lower(), nblob[:80])
 
     # ---- ask B recomputed from the bundle ----------------------------------------------------

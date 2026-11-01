@@ -122,11 +122,20 @@ def main():
     # SF4 denominator variant
     ck("SF4 0.200 Hz denominator gives the same call",
        min(su, key=lambda s: su[s]["traj"] * sim.SPAN / 0.200) == call, "")
-    # SF5 the register's usual blocks instead of the daily commitments
-    saved = {s["id"]: s["blocks"] for s in sim.SITES}
-    sx = core.site_scores(core.episode_table(
-        {d: W[d] for d in sim.dates()}, recs, cache, "under"))
-    ck("SF5 commitments are the record", core.ranked(sx, "traj")[0][0] == call, "")
+    # SF5 the register's usual blocks instead of the daily commitments. The alternative is executed:
+    # every site taken as contracted for its usual blocks on every date, the recorded power as it was.
+    real_commitments = sim.commitments
+    try:
+        sim.commitments = lambda site, d: site["blocks"]
+        sx = core.site_scores(core.episode_table(W, recs, cache, "under"))
+    finally:
+        sim.commitments = real_commitments
+    sf5_moved = sorted(k for k in su if k not in sx or sx[k]["n"] != su[k]["n"]
+                       or round(sx[k]["traj"]) != round(su[k]["traj"]))
+    ck("SF5 the register's indicative blocks give the same call", core.ranked(sx, "traj")[0][0] == call,
+       "names %s" % core.ranked(sx, "traj")[0][0])
+    ck("SF5 the alternative is a real one: it moves printed figures", bool(sf5_moved),
+       "sites whose printed gain or count moves: %s" % ", ".join(sf5_moved))
     # SF6 tie-break
     ties = sum(1 for d in sim.dates() for (t0, t1, tstar, fm) in W[d]["under"]
                if list(W[d]["f"][t0:t1 + 1]).count(fm) > 1)
@@ -628,8 +637,306 @@ def main():
         ck("every graded figure is printed at the precision its asking sentence states",
            not wrong, "; ".join(wrong[:6]))
 
+    describing_and_closures(W, recs, cache, su)
+
     print("%d checks, %d failed" % (N, len(FAILS)))
     return 1 if FAILS else 0
+
+
+# A file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3),
+# by the same patterns leak.py's first sweep uses.
+DESCRIBE_NAME = __import__("re").compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|list|descriptions?)|"
+    r"\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|"
+    r"export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])",
+    __import__("re").I)
+DESCRIBE_SHEET = __import__("re").compile(
+    r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+    r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", __import__("re").I)
+
+
+def describing_and_closures(W, recs, cache, su):
+    """No shipped file describes the data, and each closure the dropped data dictionary and the
+    register's dropped Notes sheet used to carry rests on the producing systems instead. Everything
+    here reads the shipped bytes through the verifier's own readers (verify.rd, ts, tl,
+    episodes_from, openpyxl, pypdf), with a positive control beside every absence."""
+    import re
+    import openpyxl
+    from pypdf import PdfReader
+    import verify as V
+
+    # ---- 1. no file, sheet or document describes the data --------------------------------------
+    shipped, sheets, text = [], {}, {}
+    for root, _, names in os.walk(TGT):
+        for n in names:
+            p = os.path.join(root, n)
+            rel = os.path.relpath(p, TGT)
+            shipped.append(rel)
+            if n.endswith(".xlsx"):
+                sheets[rel] = openpyxl.load_workbook(p).sheetnames
+            if n.endswith(".pdf"):
+                text[rel] = re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(p).pages))
+
+    def named_as_description(rel):
+        return bool(DESCRIBE_NAME.search(os.path.splitext(os.path.basename(rel))[0]))
+    bad_names = [r for r in shipped if named_as_description(r)]
+    ck("no shipped file is named as a description of the data", not bad_names and len(shipped) >= 10,
+       "%d files, flagged: %s" % (len(shipped), ", ".join(bad_names) or "none"))
+    bad_sheets = ["%s sheet %r" % (r, s) for r, v in sorted(sheets.items()) for s in v
+                  if DESCRIBE_SHEET.match(s.strip())]
+    ck("no shipped workbook carries a notes, readme or dictionary sheet", sheets and not bad_sheets,
+       "; ".join("%s: %s" % (r, ", ".join(v)) for r, v in sorted(sheets.items())))
+    ck("positive control, the name and sheet tests catch the two forms this pack once shipped",
+       named_as_description("data_dictionary.csv") and bool(DESCRIBE_SHEET.match("Notes"))
+       and not named_as_description("register/asset_register.xlsx"), "")
+    # by content: a document naming the data files' field identifiers is a dictionary whatever its name
+    fields = set()
+    for rel in shipped:
+        if rel.endswith(".csv"):
+            with open(os.path.join(TGT, rel), newline="", encoding="utf-8") as fh:
+                fields |= {c for c in next(csv.reader(fh)) if "_" in c}
+    con = sqlite3.connect(os.path.join(TGT, "platform", "vkf_highres_archive.sqlite"))
+    for tbl in ("recording", "power_1s"):
+        fields |= {r[1] for r in con.execute("PRAGMA table_info(%s)" % tbl) if "_" in r[1]}
+
+    def named_fields(t):
+        return sorted(c for c in fields if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
+    listing = {rel: named_fields(t) for rel, t in sorted(text.items())}
+    ck("no shipped document names the data files' fields",
+       len(text) >= 3 and all(len(v) <= 3 for v in listing.values()),
+       "; ".join("%s %d (%s)" % (r, len(v), ", ".join(v)) for r, v in listing.items()))
+    ck("positive control, the field test finds a field list where there is one",
+       len(named_fields("event_id, logged_utc, site_id, event_type, start_local, duration_min, "
+                        "supersedes_event_id, ts_utc, p_mw")) >= 8 and len(fields) >= 30,
+       "%d field identifiers in the shipped headers" % len(fields))
+
+    # ---- 2. SF10, the time base: each producing system writes its own clock --------------------
+    zones, bad_zone, tcols, tables = collections.Counter(), [], 0, {}
+    for rel in sorted(shipped):
+        if not rel.endswith(".csv"):
+            continue
+        rows = V.rd(rel)
+        tables[rel] = rows
+        for c in rows[0].keys():
+            vals = [r[c] for r in rows if r[c]]
+            if c.endswith("_utc"):
+                tcols += 1
+                for v in vals:
+                    try:
+                        V.ts(v)
+                        zones["Z"] += 1
+                    except ValueError:
+                        bad_zone.append("%s %s %s" % (rel, c, v))
+                        break
+            elif c.endswith("_local"):
+                tcols += 1
+                for v in vals:
+                    if re.fullmatch(r"\d\d:00", v):
+                        zones["local clock hour"] += 1
+                    elif v.endswith("+02:00"):
+                        V.tl(v)
+                        zones["+02:00"] += 1
+                    else:
+                        bad_zone.append("%s %s %s" % (rel, c, v))
+                        break
+            elif vals and re.match(r"\d{4}-\d\d-\d\dT", vals[0]):
+                bad_zone.append("%s %s names no clock" % (rel, c))
+    for tbl, cols in (("recording", ("start_utc", "end_utc")), ("power_1s", ("ts_utc",))):
+        for c in cols:
+            tcols += 1
+            n_not_z = con.execute("SELECT count(*) FROM %s WHERE %s NOT LIKE '%%Z'" % (tbl, c)).fetchone()[0]
+            zones["Z"] += con.execute("SELECT count(*) FROM %s" % tbl).fetchone()[0] - n_not_z
+            if n_not_z:
+                bad_zone.append("archive %s.%s %d stamps without Z" % (tbl, c, n_not_z))
+    try:
+        V.ts("2026-09-21T02:00:00+02:00")
+        refuses = False
+    except ValueError:
+        refuses = True
+    tc = text.get(os.path.join("operator", "fcr_technical_conditions_2026.pdf"), "")
+    ck("SF10 every timestamp column names its clock and every stamp carries its zone",
+       not bad_zone and tcols >= 12 and zones["Z"] > 0 and zones["+02:00"] > 0,
+       "%d timestamp columns; %s; %s" % (tcols, ", ".join("%s %d" % kv for kv in sorted(zones.items())),
+                                         "; ".join(bad_zone[:4]) or "no stamp without its zone"))
+    ck("positive control, the verifier's UTC reader refuses a local stamp", refuses, "")
+    ck("SF10 the technical conditions run the delivery blocks on local time",
+       "running from 00:00 local time" in tc and len(tc) > 500,
+       "clause 1's 'running from 00:00 local time' searched in %d characters of the shipped pdf" % len(tc))
+
+    # ---- 3. closure 18, units: the headers and the meter file's unit column carry them ---------
+    hdr = {rel: list(rows[0].keys()) for rel, rows in tables.items()}
+    want_unit = {"platform/site_programme_15min.csv": "programme_mw",
+                 "platform/fcr_block_commitments.csv": "committed_mw",
+                 "operator/system_frequency_1s_extracts.csv": "frequency_hz",
+                 "operator/system_frequency_minute_summary.csv": "frequency_mean_hz",
+                 "operator/settlement_statement_daily_2026-09.csv": "settled_volume_mwh",
+                 "operator/settlement_statement_daily_2026-10_amended.csv": "settled_volume_mwh",
+                 "prequalification/prequalification_records.csv": "contracted_gain_mw_per_hz"}
+    miss = ["%s %s" % (r, c) for r, c in sorted(want_unit.items()) if c not in hdr.get(r, [])]
+    if "p_mw" not in {r[1] for r in con.execute("PRAGMA table_info(power_1s)")}:
+        miss.append("archive power_1s p_mw")
+    rwb = openpyxl.load_workbook(os.path.join(TGT, "register", "asset_register.xlsx"))
+    rhdr = [c.value for c in rwb["Sites"][1]]
+    reg = {r[0]: dict(zip(rhdr, r)) for r in rwb["Sites"].iter_rows(min_row=2, values_only=True)}
+    for h in ("Contracted FCR (MW)", "Installed (MW)", "Connection (kV)"):
+        if h not in rhdr:
+            miss.append("register %s" % h)
+    ck("closure 18 every quantity's header names its unit", not miss and len(hdr) >= 12,
+       "; ".join(miss) or "%d csv headers and the archive and register read" % len(hdr))
+    met = tables["settlement/metered_volumes_15min.csv"]
+    units = collections.Counter(r["unit"] for r in met)
+    kwh_points = sorted({r["metering_point"] for r in met if r["unit"] == "kWh"})
+    prog = {(r["site_id"], r["period_start_local"][:19]): float(r["programme_mw"])
+            for r in tables["platform/site_programme_15min.csv"]}
+    by_point = {}
+    for sid, d in reg.items():
+        by_point[str(d["Metering point (EAN)"])] = sid
+
+    def scale(point):
+        sid = by_point.get(point)
+        out = []
+        for r in met:
+            if r["metering_point"] != point:
+                continue
+            start = (V.tl(r["interval_ts_local"]) - dt.timedelta(minutes=15)).strftime("%Y-%m-%dT%H:%M:%S")
+            pmw = prog.get((sid, start))
+            if pmw is not None and abs(pmw) > 1.0:
+                out.append(float(r["net_volume"]) / (pmw * 0.25))
+        return statistics.median(out) if out else float("nan"), len(out)
+    k_scale, k_n = scale(kwh_points[0]) if len(kwh_points) == 1 else (float("nan"), 0)
+    mwh_point = str(reg["VKF-ZWT"]["Metering point (EAN)"])
+    m_scale, m_n = scale(mwh_point)
+    ck("closure 18 the meter file's unit column takes MWh, and kWh on exactly one metering point",
+       set(units) == {"MWh", "kWh"} and len(kwh_points) == 1,
+       ", ".join("%s %d rows" % kv for kv in sorted(units.items())) + "; kWh on %s" % ", ".join(kwh_points))
+    ck("closure 18 the unit column is true to the volumes it labels",
+       900 < k_scale < 1100 and 0.9 < m_scale < 1.1 and k_n > 100 and m_n > 100,
+       "median volume over programme energy: %.1f on the kWh point (%d periods), %.3f on an MWh point "
+       "(%d periods)" % (k_scale, k_n, m_scale, m_n))
+
+    # ---- 4. closure 19, codes: the event log's own labels; the archive's flag moves nothing -----
+    ev = tables["platform/control_platform_event_log.csv"]
+    ids = {e["event_id"] for e in ev}
+    odd = [e["event_id"] for e in ev if not re.fullmatch(r"[a-z]+(_[a-z]+)*", e["event_type"])
+           or not e["detail"].strip()
+           or (e["event_type"] == "correction" and e["supersedes_event_id"] not in ids)]
+    ck("closure 19 every event row carries the platform's own type label and a detail text",
+       len(ev) >= 50 and not odd,
+       "%d rows, types %s; rows without: %s" % (len(ev), ", ".join(sorted({e["event_type"] for e in ev})),
+                                                ", ".join(odd) or "none"))
+    byext = collections.defaultdict(list)
+    for r in tables["operator/system_frequency_1s_extracts.csv"]:
+        byext[r["extract_id"]].append((V.ts(r["ts_utc"]), float(r["frequency_hz"])))
+    ext_utc = set()
+    for seq in byext.values():
+        seq.sort()
+        for (_, _, x, _) in (V.episodes_from(seq, V.QUAL_UNDER) + V.episodes_from(seq, V.QUAL_OVER, over=True)):
+            ext_utc.add(x.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    con.execute("CREATE TEMP TABLE ext_sec (ts_utc TEXT PRIMARY KEY)")
+    con.executemany("INSERT INTO ext_sec VALUES (?)", [(x,) for x in sorted(ext_utc)])
+    at_ext = dict(con.execute("""SELECT p.quality, count(*) FROM power_1s p JOIN ext_sec e
+                                 ON e.ts_utc = p.ts_utc GROUP BY p.quality""").fetchall())
+    n_e = con.execute("SELECT count(*) FROM power_1s WHERE quality = 'E'").fetchone()[0]
+    ck("closure 19 no estimated-flag sample sits at the extreme second of a qualifying episode",
+       at_ext.get("E", 0) == 0 and at_ext.get("M", 0) >= 900 and len(ext_utc) >= 400,
+       "%d extreme seconds of either sign; archive samples there: %s"
+       % (len(ext_utc), ", ".join("%s %d" % kv for kv in sorted(at_ext.items()))))
+    ck("positive control, the flag query finds the estimated samples the archive holds",
+       n_e >= 1000, "%d E-flagged samples in the archive" % n_e)
+    # and the traverse spans the gains rest on recover exactly with those samples left out
+    rid_of = {(r[0], r[1], r[3]): i + 1 for i, r in enumerate(recs)}
+    e_at = set()
+    for rid, t in con.execute("SELECT recording_id, ts_utc FROM power_1s WHERE quality = 'E'"):
+        lt = V.ts(t) + V.OFFSET
+        e_at.add((rid, lt.hour * 3600 + lt.minute * 60 + lt.second))
+    con.close()
+    byk = {}
+    for r in recs:
+        byk.setdefault((r[0], r[1]), []).append(r)
+    res_fit, dropped = [], 0
+    for s_site in sim.SITES:
+        sid = s_site["id"]
+        segs = []
+        for (dd, pp) in core.fit_boundaries(W, sid):
+            t = pp * 900
+            prog_d = W[dd]["prog"][sid]
+            for (d2, s2, tg, lo, hi) in byk.get((dd, sid), ()):
+                if lo <= t and t + 204 < hi:
+                    rid = rid_of[(d2, s2, lo)]
+                    keep = np.array([(rid, t + k) not in e_at for k in range(205)])
+                    dropped += int((~keep).sum())
+                    segs.append((float(prog_d[pp - 1]), float(prog_d[pp] - prog_d[pp - 1]),
+                                 cache[(d2, sid, lo)][t - lo:t - lo + 205], keep))
+                    break
+        best, bestres = None, None
+        for S in range(40, 361):
+            frac = np.minimum(1.0, np.arange(205) / float(S))
+            res = 0.0
+            for (prev, step, ys, keep) in segs:
+                e = (ys - (prev + step * frac))[keep]
+                res += float((e * e).sum())
+            if bestres is None or res < bestres:
+                best, bestres = S, res
+        res_fit.append((sid, best, s_site["ramp_s"]))
+    ck("closure 19 every traverse span recovers exactly with the E-flagged samples left out",
+       all(b == r for (_, b, r) in res_fit) and dropped > 0,
+       "%d flagged samples inside the fitting windows left out; " % dropped
+       + ", ".join("%s %d against %d" % x for x in res_fit))
+
+    # ---- 5. SF5: the register's own header labels its blocks column indicative ------------------
+    ck("SF5 the register's own header labels its usual blocks indicative",
+       "Usual FCR blocks (indicative)" in rhdr and rwb.sheetnames == ["Sites"],
+       "sheets %s; header %s" % (", ".join(rwb.sheetnames), ", ".join(str(h) for h in rhdr)))
+    com = collections.defaultdict(set)
+    for r in tables["platform/fcr_block_commitments.csv"]:
+        com[(r["site_id"], r["delivery_date"])].add(int(r["block"]))
+    off_usual = {}
+    for sid, d in sorted(reg.items()):
+        usual = {int(x) for x in str(d["Usual FCR blocks (indicative)"] or "").split(",") if x.strip()}
+        n_off = sum(1 for day in sim.dates() if com.get((sid, day.isoformat()), set()) != usual)
+        if n_off:
+            off_usual[sid] = n_off
+    ck("SF5 the platform's dated commitments depart from the indicative blocks",
+       len(off_usual) >= 2, "sites committed otherwise than their usual blocks, in delivery dates: %s"
+       % ", ".join("%s %d of %d" % (k, v, len(sim.dates())) for k, v in off_usual.items()))
+
+    # ---- 6. the provenance the dictionary carried is in metadata.json, and it is true ----------
+    md = json.load(open(os.path.join(TASK, "metadata.json")))
+    prov = {f["path"][len("target/"):]: f for f in md.get("files", [])}
+    ck("metadata.json records every shipped file and no file that does not ship",
+       set(prov) == set(shipped), "unrecorded: %s; recorded but not shipped: %s"
+       % (", ".join(sorted(set(shipped) - set(prov))) or "none",
+          ", ".join(sorted(set(prov) - set(shipped))) or "none"))
+    wrong_rows = []
+    for rel, f in sorted(prov.items()):
+        if rel in tables and f.get("rows") != len(tables[rel]):
+            wrong_rows.append("%s %s against %d" % (rel, f.get("rows"), len(tables[rel])))
+        if rel in sheets and f.get("rows") != rwb["Sites"].max_row - 1:
+            wrong_rows.append("%s %s" % (rel, f.get("rows")))
+    con = sqlite3.connect(os.path.join(TGT, "platform", "vkf_highres_archive.sqlite"))
+    arch = {t: con.execute("SELECT count(*) FROM %s" % t).fetchone()[0] for t in ("recording", "power_1s")}
+    con.close()
+    if prov.get("platform/vkf_highres_archive.sqlite", {}).get("rows") != arch:
+        wrong_rows.append("archive %s against %s" % (prov.get("platform/vkf_highres_archive.sqlite", {}).get("rows"), arch))
+    ck("metadata.json's row counts are the shipped files' own", not wrong_rows,
+       "; ".join(wrong_rows) or "%d files" % len(prov))
+    ck("metadata.json carries no gloss on the data: no per-file row description or role",
+       not [f for f in md.get("files", []) if "one_row_is" in f or "role" in f], "")
+    # the declared wrong-basis distractor says what its own rows say, and names neither the golden
+    # nor rung 0's site (dataset-generation section 8.3)
+    pq = tables["prequalification/prequalification_records.csv"]
+    ratio = {r["site_id"]: 100.0 * float(r["measured_gain_mw_per_hz"]) / float(r["contracted_gain_mw_per_hz"])
+             for r in pq if r["measured_gain_mw_per_hz"]}
+    low = min(ratio, key=ratio.get)
+    tests = sorted(int(r["test_date"][:4]) for r in pq if r["measured_gain_mw_per_hz"])
+    decl = [r for r in pq if not r["measured_gain_mw_per_hz"]]
+    ck("the declared wrong-basis distractor's stated facts hold on its own rows",
+       low == "VKF-RDL" and round(ratio[low], 1) == 98.5 and min(ratio.values()) >= 90.0
+       and (tests[0], tests[-1]) == (2017, 2025) and len(decl) == 4
+       and all(r["test_date"].startswith("2026") for r in decl),
+       "lowest %s at %.2f, step tests %d to %d, %d declarations" % (low, ratio[low], tests[0], tests[-1], len(decl)))
+    ck("the wrong-basis distractor names neither the golden nor rung 0's site",
+       low not in (core.ranked(su, "traj")[0][0], core.ranked(su, "pre")[0][0]), low)
 
 if __name__ == "__main__":
     sys.exit(main())
