@@ -27,6 +27,17 @@ def rnd(x, nd=0):
         Decimal(repr(x)).quantize(Decimal(1), rounding=ROUND_HALF_UP))
 
 
+def by_model_counts(P):
+    """Referred over referable, by camera model and point, in the validation study."""
+    rows = P.val_rows()
+    out = {}
+    for m in ("NR-40", "NR-70"):
+        rr = [r for r in rows if r["model"] == m and r["ref"]]
+        out[m] = {nm: {"referred": sum(1 for r in rr if r["ung"] or r["score"] >= cut), "referable": len(rr)}
+                  for nm, cut in P.ops}
+    return out
+
+
 def figures(P, G):
     L = G["ladder"]
     order = sorted(P.codes, key=lambda c: NAMES[c])
@@ -46,6 +57,7 @@ def figures(P, G):
         "grid_pct": {NAMES[c]: {nm: rnd(100 * L["golden"][c][0][nm]) for nm, _ in P.ops} for c in order},
         "nr40_share_pct": {NAMES[c]: rnd(100 * L["golden"][c][2].get("NR-40", 0.0)) for c in order},
         "validation_by_model_pct": {m: {nm: rnd(100 * v, 1) for nm, v in d.items()} for m, d in L["by_model"].items()},
+        "validation_by_model_counts": by_model_counts(P),
         "validation_counts": {m: {"screened": n, "referable": k} for m, (n, k) in L["counts"].items()},
         "pooled_pct": {nm: rnd(100 * v, 1) for nm, v in L["pooled"][P.codes[0]][0].items()},
         "rung_picks": {r: {NAMES[c]: L[r][c][1] for c in order} for r in ("pooled", "casemix", "worst_subgroup",
@@ -256,7 +268,7 @@ def brief(P, G, f, order, png, path):
             r.font.color.rgb = RGBColor(0x22, 0x22, 0x22)
             p.space_after = Pt(6)
 
-    box(0.5, 0.35, 12.3, 0.9, [("Standard at seven clinics, Enhanced at two, High at three in 2027", 26, True),
+    box(0.5, 0.35, 12.3, 0.9, [("Standard at seven clinics and High at five in 2027", 26, True),
                                ("RetinaCheck operating points for contract year 2027. Clinical AI Oversight Committee, "
                                 "December meeting. Quality and Clinical AI.", 12, False)])
     box(0.5, 6.3, 5.6, 0.9, [("Sources: local validation study 2025 (CVCH-QI-2025-01); RetinaCheck result export, "
@@ -266,15 +278,14 @@ def brief(P, G, f, order, png, path):
     box(0.5, 1.5, 5.6, 5.6, [
         ("Recommendation", 16, True),
         ("Standard at %s." % std, 13, False),
-        ("Enhanced at Kestle Road and Veldane.", 13, False),
-        ("High at Brackenfield, Hollinmoor and Rookwood.", 13, False),
+        ("High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane.", 13, False),
         ("On the 2025-26 screenings these points imply %s referrals against Pellam's 2027 capacity of %s." %
          ("{:,}".format(f["referrals_total"]), "{:,}".format(f["capacity"])), 13, False),
         ("Why not Standard everywhere", 16, True),
         ("The validation study pooled images from both camera models. At Standard the AI found %.1f%% of referable "
          "eyes on the NR-40 and %.1f%% on the NR-70. Rookwood, Brackenfield and Hollinmoor screened on an NR-40 all "
-         "year; Kestle Road and Veldane have run on NR-40 loaners since February and March." %
-         (vm["NR-40"]["Standard"], vm["NR-70"]["Standard"]), 13, False),
+         "year, and Kestle Road and Veldane ran on NR-40 loaners from October until their own cameras came back in "
+         "September." % (vm["NR-40"]["Standard"], vm["NR-70"]["Standard"]), 13, False),
     ])
     s.shapes.add_picture(png, Inches(6.35), Inches(1.35), height=Inches(5.95))
     when = dt.datetime(2026, 11, 16, 15, 2, 0)

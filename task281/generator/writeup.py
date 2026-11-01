@@ -19,8 +19,9 @@ def main():
     by = {p: sorted(k for k, v in pts.items() if v == p) for p in ("Standard", "Enhanced", "High", "Maximum")}
     assert by["Standard"] == ["Orrin Falls", "Pellsbury", "Quarry Hill", "Sallow Creek", "Thistlebrook", "Wendmere",
                               "Yarrowby"], by
-    assert by["Enhanced"] == ["Kestle Road", "Veldane"] and by["High"] == ["Brackenfield", "Hollinmoor", "Rookwood"]
+    assert by["High"] == ["Brackenfield", "Hollinmoor", "Kestle Road", "Rookwood", "Veldane"] and not by["Enhanced"]
     std = ", ".join(by["Standard"][:-1]) + " and " + by["Standard"][-1]
+    vc = f["validation_by_model_counts"]
     L = []
     a = L.append
     a("## Tags\n")
@@ -28,31 +29,32 @@ def main():
       "screening AI's validated sensitivity holds at each clinic of a community health center network).")
     a("**Analytical objective:** Descriptive & Distribution Analysis.\n")
     a("## 1. Final Recommendation\n")
-    a("**In 2027 run RetinaCheck at Standard at %s, at Enhanced at Kestle Road and Veldane, and at High at "
-      "Brackenfield, Hollinmoor and Rookwood; on the 2025-26 screenings these points imply %s referrals, within "
-      "Pellam's capacity of %s.** Not Standard everywhere: the pooled validation sensitivity of %.1f%% at Standard "
-      "mixes images from two camera models, %.1f%% on the NR-40 and %.1f%% on the NR-70, and five clinics screened "
-      "mostly or wholly on an NR-40. Not High at Kestle Road and Veldane, where the register now shows NR-40 "
-      "loaners: %d%% and %d%% of their year ran on an NR-40, which puts both above 85%% at Enhanced and below it at "
-      "Standard."
-      % (std, c(f["referrals_total"]), c(f["capacity"]), f["pooled_pct"]["Standard"], vm["NR-40"]["Standard"],
-         vm["NR-70"]["Standard"], nr40["Kestle Road"], nr40["Veldane"]))
+    a("**In 2027 run RetinaCheck at Standard at %s, and at High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and "
+      "Veldane; on the 2025-26 screenings these points imply %s referrals, within Pellam's capacity of %s.** Not "
+      "Standard everywhere: the validation study pooled images from two camera models, and at Standard the AI referred "
+      "%d of %d referable patients imaged on the NR-40 against %d of %d on the NR-70, while five clinics screened "
+      "%d%% or more of their year on an NR-40. Not Standard at Kestle Road and Veldane, where the register now shows "
+      "their NR-70s back: %d%% and %d%% of their year ran on NR-40 loaners."
+      % (std, c(f["referrals_total"]), c(f["capacity"]), vc["NR-40"]["Standard"]["referred"],
+         vc["NR-40"]["Standard"]["referable"], vc["NR-70"]["Standard"]["referred"], vc["NR-70"]["Standard"]["referable"],
+         min(nr40[k] for k in by["High"]), nr40["Kestle Road"], nr40["Veldane"]))
     a("")
     a("## 2. Critical Components\n")
-    a("1. Validation sensitivity by camera model at Standard, Enhanced, High and Maximum: NR-40 **%.1f%%, %.1f%%, "
-      "%.1f%%, %.1f%%**; NR-70 **%.1f%%, %.1f%%, %.1f%%, %.1f%%**." % tuple(
-          [vm["NR-40"][k] for k in ("Standard", "Enhanced", "High", "Maximum")] +
-          [vm["NR-70"][k] for k in ("Standard", "Enhanced", "High", "Maximum")]))
+    a("1. Validation study, referable patients the AI referred at Standard, Enhanced, High and Maximum: NR-40 **%d, "
+      "%d, %d and %d of %d**; NR-70 **%d, %d, %d and %d of %d**." % tuple(
+          [vc["NR-40"][k]["referred"] for k in ("Standard", "Enhanced", "High", "Maximum")] +
+          [vc["NR-40"]["Standard"]["referable"]] +
+          [vc["NR-70"][k]["referred"] for k in ("Standard", "Enhanced", "High", "Maximum")] +
+          [vc["NR-70"]["Standard"]["referable"]]))
     a("2. Share of each clinic's 2025-26 screenings captured on an NR-40: **%d%%** at Brackenfield, Hollinmoor and "
-      "Rookwood, **%d%%** Kestle Road, **%d%%** Veldane, **%d%%** Sallow Creek, **%d%%** Pellsbury, **%d%%** Orrin "
+      "Rookwood, **%d%%** Veldane, **%d%%** Kestle Road, **%d%%** Sallow Creek, **%d%%** Pellsbury, **%d%%** Orrin "
       "Falls, **%d%%** Yarrowby, **%d%%** at Quarry Hill, Thistlebrook and Wendmere."
-      % (nr40["Rookwood"], nr40["Kestle Road"], nr40["Veldane"], nr40["Sallow Creek"], nr40["Pellsbury"],
+      % (nr40["Rookwood"], nr40["Veldane"], nr40["Kestle Road"], nr40["Sallow Creek"], nr40["Pellsbury"],
          nr40["Orrin Falls"], nr40["Yarrowby"], nr40["Wendmere"]))
-    a("3. Brackenfield, Hollinmoor and Rookwood reach **%d%%** at High after **%d%%** at Enhanced; Kestle Road and "
-      "Veldane clear 85%% at Enhanced and fall short at Standard; the other seven clinics are at **%d%%** or more at "
-      "Standard." % (sens["Rookwood"], grid["Rookwood"]["Enhanced"], min(sens[k] for k in by["Standard"])))
-    a("4. The points chosen for 2027 imply **%s** referrals on the 2025-26 screenings against Pellam's **%s**; High at every "
-      "clinic would imply %s.\n" % (c(f["referrals_total"]), c(f["capacity"]), c(f["referrals_high_everywhere"])))
+    a("3. Weighted by those shares, the five clinics stay under 85% at Enhanced and clear it at High; the other seven "
+      "clear it at Standard.")
+    a("4. The points chosen for 2027 imply **%s** referrals on the 2025-26 screenings against Pellam's **%s**; High at "
+      "every clinic would imply %s.\n" % (c(f["referrals_total"]), c(f["capacity"]), c(f["referrals_high_everywhere"])))
     a("## 3. Step-by-Step Solution\n")
     a("1. Placed every image on its camera: validation images by the protocol's site letters (validation_study_"
       "protocol_2025.pdf) and capture_date, 2025-26 screenings by Site (clinic_directory.csv) and Captured (UTC) moved "
@@ -60,12 +62,14 @@ def main():
       "xlsx places at the clinic's location that day, its model from the Assets sheet.")
     a("2. From local_validation_study_2025.csv, counted as referable a final_level of moderate NPDR or worse or a "
       "final_dme of Y, and as referred an Ungradable result or a dr_score at or above the point's threshold "
-      "(the CAI-03 definitions of referable disease and sensitivity, retinacheck_operating_points.pdf): NR-40 %.1f%% and NR-70 %.1f%% at Standard."
-      % (vm["NR-40"]["Standard"], vm["NR-70"]["Standard"]))
-    a("3. Weighted each model's sensitivity at every point by its share of the clinic's screenings in retina_ai_"
+      "(the CAI-03 definitions of referable disease and sensitivity, retinacheck_operating_points.pdf), referred over "
+      "referable cases by camera model: NR-40 %d of %d and NR-70 %d of %d at Standard."
+      % (vc["NR-40"]["Standard"]["referred"], vc["NR-40"]["Standard"]["referable"],
+         vc["NR-70"]["Standard"]["referred"], vc["NR-70"]["Standard"]["referable"]))
+    a("3. Weighted each model's proportion at every point by its share of the clinic's screenings in retina_ai_"
       "results_2025-10_2026-09.csv (a screening belongs to the clinic where it was captured): Brackenfield, "
-      "Hollinmoor and Rookwood %d%% at High, the seven Standard clinics %d%% or more at Standard." %
-      (sens["Rookwood"], min(sens[k] for k in by["Standard"])))
+      "Hollinmoor, Kestle Road, Rookwood and Veldane fall short of 85% at Enhanced and clear it at High; the other "
+      "seven clear it at Standard.")
     a("4. Took each clinic's least sensitive point at or above 85%% (CAI-03 section 3) and counted the screenings it "
       "would have referred, an Ungradable result or a DR Score at or above its threshold: %s, within the %s in "
       "pellam_reading_agreement_2027.pdf." % (c(f["referrals_total"]), c(f["capacity"])))
@@ -78,8 +82,8 @@ def main():
       "outage when the Location History moved the next camera into the clinic (not at the ticket's Closed date), "
       "and counted the weekdays after the fault day with no screening in the result export (the fault day itself "
       "had screenings before the camera failed).")
-    a("7. Recommended Standard at seven clinics, Enhanced at Kestle Road and Veldane and High at Brackenfield, "
-      "Hollinmoor and Rookwood.\n")
+    a("7. Recommended Standard at seven clinics and High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and "
+      "Veldane.\n")
     a("## 4. Deliverable Answers\n")
     a("### ai_operating_points_2027.xlsx\n")
     a("1. 2027 operating point by clinic:")
@@ -104,7 +108,7 @@ def main():
     a("### operating_points_2027_committee.pptx\n")
     a("1. Heatmap on the slide with one row per clinic and one column per vendor point (Standard, Enhanced, High, Maximum), each "
       "cell the clinic's estimated sensitivity and each clinic's point for 2027 outlined: Standard at seven clinics, "
-      "Enhanced at Kestle Road and Veldane, High at Brackenfield, Hollinmoor and Rookwood.")
+      "High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane.")
     text = "\n".join(L) + "\n"
     assert "—" not in text and "–" not in text
     with open(os.path.join(TASK, "submission.md"), "w") as fh:

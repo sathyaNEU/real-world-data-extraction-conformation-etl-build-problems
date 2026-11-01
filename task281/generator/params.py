@@ -2,7 +2,7 @@
 import datetime as dt
 
 SEED = 5327
-VAL_STREAM = 0             # the validation study's own draws (enrolment, reads, grading)
+VAL_STREAM = 37            # the validation study's own draws (enrolment, reads, grading)
 ASSEMBLED = dt.datetime(2026, 11, 16, 16, 40, 0)        # every file's mtime, the in-fiction export date
 ASOF = dt.date(2026, 11, 16)
 
@@ -23,7 +23,7 @@ VAL_END = dt.date(2025, 8, 22)
 # the vendor's operating points: a screen refers when its DR score is at or above the cutoff, or it is ungradable
 OPS = [("Standard", 50), ("Enhanced", 42), ("High", 34), ("Maximum", 26)]
 FLOOR = 0.85                 # governance standard: sensitivity at least 85 per cent at the clinic
-OVERREAD_CAPACITY = 7200     # reading center agreement: overreads a contract year
+OVERREAD_CAPACITY = 7500     # reading center agreement: overreads a contract year
 
 # the AI's latent score model (score = 100 * logistic(latent))
 MU_REF = {"NR-70": 1.18, "NR-40": 0.138}     # referable eyes, by camera model

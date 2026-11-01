@@ -250,7 +250,7 @@ def build_pack(w, out):
 
 # ---------------------------------------------------------------------------------------------------------------
 LOCS = {c[0]: c[3] for c in P.CLINICS}
-HIM_PULL = D(2026, 11, 13)
+HIM_PULL = D(2026, 11, 12)
 DEPOT = "LOC-100 Biomed Depot"
 OTHER_CLASSES = [
     ("Automated BP monitor", "Welmore", "VS-300", 6), ("Vaccine refrigerator", "Thermatrue", "VR-14", 3),

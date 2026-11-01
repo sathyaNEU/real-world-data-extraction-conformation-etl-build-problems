@@ -141,7 +141,7 @@ def agreement(path):
               "A referral is closed by a grade of Referable or Not referable."),
         ("p", "1.3 Target turnaround: five business days from receipt of the photographs to the grade."),
         ("h", "2. Capacity"),
-        ("p", "2.1 The Center will overread up to 7,200 referrals in the contract year (1 January to 31 December "
+        ("p", "2.1 The Center will overread up to 7,500 referrals in the contract year (1 January to 31 December "
               "2027). A referral counts once against capacity however many cases it takes to close."),
         ("p", "2.2 Referrals above capacity are read only as the Center's workload allows and without the turnaround "
               "target."),

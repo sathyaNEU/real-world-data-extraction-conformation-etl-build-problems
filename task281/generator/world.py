@@ -327,6 +327,9 @@ class World:
 # Records the asks read. They share the patients and screenings above but none of them is read by the main call.
 
 
+LAG_CHOICES = [1, 2, 2, 3, 3, 4, 5, 7, 8, 11]     # the reading center's days from receipt to grade
+
+
 def make_ask_records(w):
     # registry patients who were never in a clinic's screening pool (patients new to the network, patients who are
     # seen rarely); their share differs by clinic
@@ -415,7 +418,7 @@ def make_ask_records(w):
         order_no += int(rd.integers(1, 9))
         s["ref_order"] = order_no
         truth = s["patient"]["ref"]
-        lag = int(rd.choice([1, 2, 2, 3, 3, 4, 5, 6, 8, 11]))
+        lag = int(rd.choice(LAG_CHOICES))
         insufficient = rd.random() < (0.25 if s["ungradable"] else 0.04)
         if rd.random() < P.NOT_READ:
             s["ref_cancel"] = str(rd.choice(["Patient seen by outside ophthalmology", "Patient declined",

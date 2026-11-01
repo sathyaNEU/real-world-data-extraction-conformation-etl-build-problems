@@ -116,20 +116,20 @@
  },
  "largest_file": {
   "name": "retina_ai_results_2025-10_2026-09.csv",
-  "rows": 26997
+  "rows": 27034
  },
  "row_counts": {
   "diabetes_registry_2026-09-30.csv": 42041,
-  "ehr_retinal_screening_orders_2025-26.csv": 35891,
-  "eye_screening_patient_survey_2026.csv": 2283,
-  "him_outside_eye_reports_2025-26.csv": 4394,
-  "local_validation_study_2025.csv": 3411,
-  "pellam_overread_log_2025-26.csv": 6520,
-  "retina_ai_results_2025-10_2026-09.csv": 26997
+  "ehr_retinal_screening_orders_2025-26.csv": 35744,
+  "eye_screening_patient_survey_2026.csv": 2537,
+  "him_outside_eye_reports_2025-26.csv": 4391,
+  "local_validation_study_2025.csv": 4477,
+  "pellam_overread_log_2025-26.csv": 6382,
+  "retina_ai_results_2025-10_2026-09.csv": 27034
  },
  "stated_inputs": [
-  "7,200",
-  "7200",
+  "7,500",
+  "7500",
   "85"
  ],
  "task": "task281"

@@ -332,12 +332,25 @@ def main():
     e5 = min(edge(x) for x in sh if 0 < x < 100)
     check("E5 every NR-40 share at least 0.15 points from its rounding edge, Pacific and UTC", e5 >= 0.15, "%.3f" % e5)
     fam = [L] + list(var.values())
-    stated = []
-    for c in ("RW", "BF", "HM"):
-        stated += [{rnd(100 * F["golden"][c][0]["High"]) for F in fam}, {rnd(100 * F["golden"][c][0]["Enhanced"]) for F in fam}]
-    stated.append({rnd(min(100 * F["golden"][c][0]["Standard"] for c in P.codes if gold[c] == "Standard")) for F in fam})
-    check("E6 the write-up's sensitivities round alike under every family member", all(len(s) == 1 for s in stated),
-          str([sorted(s) for s in stated]))
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    vc = figs["validation_by_model_counts"]
+    exact = all(vc[m][nm]["referred"] == round(L["by_model"][m][nm] * L["counts"][m][1]) and
+                vc[m][nm]["referable"] == L["counts"][m][1] for m in vc for nm in vc[m])
+    check("E6 the write-up states validation sensitivity as referred over referable counts, exact", exact, "")
+    # the estimator family a biostatistician would use, each carried to every clinic (SF16)
+    est = A.estimators(P)
+    labels = list(next(iter(est.values())).keys())
+    worst_all = 1.0
+    for lab in labels:
+        pk = {c: A.pick_point(P, est[c][lab]) for c in P.codes}
+        m = min(A.decisive_margin(P, est[c][lab], gold[c]) for c in P.codes)
+        worst_all = min(worst_all, m)
+        check("F %s: the golden's point at every clinic, decisive cells 1.5 points or more from the floor" % lab,
+              pk == gold and m >= 0.015, "%d clinics differ, tightest %.2f points" %
+              (sum(pk[c] != gold[c] for c in gold), 100 * m))
+    check("SF16 sensitivity by a smoothed calibration of referable status on the DR score: same call",
+          all({c: A.pick_point(P, est[c][lab]) for c in P.codes} == gold for lab in labels if "calibration" in lab
+              or "logistic" in lab), "tightest decisive cell across the family %.2f points" % (100 * worst_all))
     e7 = min(edge(100 * v, 0.1) for m in L["by_model"].values() for v in m.values())
     check("E7 validation sensitivity by model at least 0.005 from its one-decimal edge", e7 >= 0.005, "%.4f" % e7)
     margin = min(abs(100 * F["golden"][c][0][nm] - 85) for F in fam for c in P.codes for nm, _ in P.ops)

@@ -49,7 +49,7 @@ def metadata(n):
         "files": {P.FILES[k]: {"source": SOURCES[k], "date": P.ASOF.isoformat(), "license": "synthetic, CC0",
                                "role": "distractor" if k in P.DISTRACTORS else "evidence"} for k in P.FILES},
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
-        "stated_inputs": ["7,200", "7200", "85"],
+        "stated_inputs": ["7,500", "7500", "85"],
         "distractor_notes": {
             P.FILES["dashboard"]: "the vendor's referral and ungradable rates by site and quarter at the Standard "
                                   "point; relevant to the reading center load, unused by the solution",
