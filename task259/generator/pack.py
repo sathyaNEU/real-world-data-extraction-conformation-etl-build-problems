@@ -50,7 +50,7 @@ def build_ids(W, rng):
     n = len(W["addresses"])
     fr = 10_000_000 + rng.choice(89_999_999, size=n, replace=False)
     old = 1_000_000 + rng.choice(8_999_999, size=n, replace=False)
-    new = 100_000_000 + rng.choice(899_999_999, size=n + 400, replace=False)
+    new = 100_000_000 + rng.choice(899_999_999, size=n + 3000, replace=False)
     ids = {}
     for a, f, o, nw in zip(W["addresses"], fr, old, new[:n]):
         ids[a["aid"]] = dict(frame="FR%08d" % f, old="TH%07d" % o, new="H%09d" % nw)
