@@ -3,9 +3,9 @@
  "status": "PAUSED",
  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-28",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-11-01",
  "stump": "The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the designation at 84 per cent; Medical Assisting's pooled median (33 thousand dollars) and the CDL program's jobs dated from their own pay (63 per cent) put the share at 71 per cent, and either correction alone leaves it at 77 or 78.",
  "architecture": 1,
  "loops": 1,
@@ -47,7 +47,7 @@
    "commit": ""
   }
  ],
- "resume": "redesign at stage 2 (/build task483 from 2): the CDL dating carried the whole stump and cannot be filed or left open; either a decisive step whose method the records force (the pooled medians are landed by every reader), or a re-root; the P6 prompt clause naming the board's standard stays. The other route, the golden's dating filed in standard 4.2 (determinism passes, every figure unchanged), ships a call the readers' own path lands",
+ "resume": "re-root at stage 1 as architecture 2 (architecture 1 spent: the CDL day-180 dating was a fork that was the stump, the portal determinism block of 10-28). The 2026-11-01 screens in ## Tried and rejected leave no unscreened ETL mechanism in the window-open cells (emissions inventory, payment claims, IRT equating, record linkage), and survey research x ETL BLOCKs on ban.pairing against task456 v3. Next: the author's call (a ban waiver for survey research x ETL, the number moved to another objective, or a named borderline design accepted at its stated Gate H risk), then /build task483 from 1 with guard.py recent, mechanisms and slots re-run first",
  "approved": null,
  "delivered": "2026-10-23",
  "portal": null,
