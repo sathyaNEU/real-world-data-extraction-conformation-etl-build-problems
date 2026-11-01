@@ -40,17 +40,19 @@
  "portal_status": "",
  "portal_status_date": "",
  "gates_stage3": {
-  "target_zip": "2fd81ca5",
+  "target_zip": "5586cd17",
   "byte_identical_builds": "PASS (17 files)",
-  "checks": "65 of 65",
+  "checks": "69 of 69",
   "verify": "PASS (27 figures on the independent path)",
   "figures_check": "PASS (47 of 47)",
-  "voice_check": "PASS",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS (843 characters)",
   "leak_py": "REVIEW, no LEAK (answered in ## Leak sweep)",
-  "guard_heart": "PASS (card re-registered 22:47Z, role product_manager)",
-  "guard_surface": "exit 0; three pairs promoted for adjudication (task161 adjacent, task158 two apart, task169), answered in ## Surface screen",
-  "pair_ceiling": 40.0,
-  "mirror_leakage": 20.8,
-  "as_of": "2026-10-28"
+  "guard_heart": "PASS",
+  "guard_surface": "exit 0; the same three pairs promoted (task161, task158, task169), answered in ## Surface screen",
+  "pair_ceiling": 46.8,
+  "mirror_leakage": 33.3,
+  "as_of": "2026-10-28",
+  "round": "after judge round 1 FIX_NOW"
  }
 }
