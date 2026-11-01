@@ -29,7 +29,6 @@ def build(target, seed=P.SEED):
     DC.bank_holidays(target)
     DC.survey(target, rng)
     DC.hub_plan(target)
-    DC.dictionary(target)
     # report tables from the same records the files carry
     monthly, yearly = {}, {}
     for v in V:

@@ -199,7 +199,7 @@ def main(zp):
     ok("json: bank holidays read back", len(bh["england-and-wales"]["events"]) > 30)
     wbh = load_workbook(io.BytesIO(z.read("community_hub_session_plan_2027.xlsx")))
     ok("xlsx: the hub plan reads back", wbh.active.max_row > 5)
-    ok("zip: thirteen files", len(names) == 13, len(names))
+    ok("zip: twelve files", len(names) == 12, len(names))
     print("verify: %d failed" % len(BAD))
     return len(BAD)
 

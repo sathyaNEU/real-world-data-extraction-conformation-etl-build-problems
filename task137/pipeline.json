@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-26",
+ "updated": "2026-11-01",
  "stump": "A competent analyst adds reception's GP-referred turned-away patients to the GP-referred patients the walk-in clinic saw in 2025-26 and grows the sum, filing 42,500, where the golden is 45,000, and one who suspects the run-outs keep later patients away and models them over the previous week, or over ten clinic days of lags, files 42,500 too; the step that lands both there is taking the run-outs' reach to end within a week or two, when practices running their own phlebotomy clinics keep their patients in-house for eight weeks after the clinic's run-out weeks, 2,566 GP-referred patients in 2025-26 who never reached the clinic and appear in no count, recovered only by a model of daily GP-referred arrivals on the run-out share of the preceding weeks with the window's length chosen by fit.",
  "architecture": 4,
  "loops": 0,
@@ -35,29 +35,15 @@
   "reader": "2026-10-26 round 1 on 6611e937: Sonnet and Opus readers both missed the call at 42,500, asks 8 and 36 of 36 (ask devices re-sited). Round 2 on d3c6d25d: reader E (Sonnet) 42,500 and 0 of 36; reader F (Opus) LANDED 45,000 (base 41,217, grown 44,153) through ten daily lags of run-out days on open days with weekday, financial year and month terms, 8 of 36 (sickness only). Round 3 on c011ac53 (hardened, eight-week persistence): reader G (Sonnet) 42,500 from seen plus turned away, 0 of 36; reader H (Opus) 42,500 from the full days completed by the arrival profile, 0 of 36; score_reader PASS on both"
  },
  "judge": {
-  "verdict": "DETERMINISTIC 2026-10-26 on 6611e937",
+  "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "task137/determinism_check_report.md",
-  "gate_g": "statistical_rigor, analytical_non_defect, surface no, sole defect no",
+  "report": "task137/determinism_check_report_pass6.md",
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "applied": "item (a) the model figures to the nearest 100; item (b) the hub's booked slots for the same patients; finding 4's ask pins (financial quarters, visit date, Monday-to-Friday weeks)",
-  "pass2": {
-   "verdict": "DETERMINISTIC 2026-10-26 on d3c6d25d",
-   "disposition": "FIX_NOW (wording only)",
-   "report": "task137/determinism_check_report_pass2.md",
-   "applied": "the model intermediates as bands over the previous week's share and the previous ten clinic days' share (about 41,700 to 41,800, about 2,000 to 2,100, about 44,700 to 44,800) in submission.md, the workbook and the chart; the workbooks' Company property is the hospital"
-  },
-  "pass3": {
-   "verdict": "DETERMINISTIC 2026-10-26 on c011ac53",
-   "disposition": "FIX_NOW with both items optional, ruled notes by the judge agent: the ship goes on c011ac53 unchanged",
-   "report": "task137/determinism_check_report_pass3.md",
-   "gate_g": "method_or_model_selection, analytical_non_defect, surface no, sole defect no",
-   "gate_h": "domain pass, layers pass, decisive_step analytical",
-   "notes": "ask 3's Vacant line continuation is forced by the annual report's single vacancy and no file states it (a literal portal grader could read Y as a vacant post: 11, 10, 13, 9 days at 2.7, 2.5, 3.1, 2.1 per cent); the chart's two partial edge weeks are presentation only"
-  }
+  "history": "pass 5 FIX_NOW (the AIC margin restated at 60; the evidence for the two soft ask forks written into steps 5 and 6), pass 6 APPROVE"
  },
  "call": "45,000 GP-referred visits (44,760.2); default 42,500 (42,011.3); the round 2 Opus reader's ten daily lags 42,500 (41,934.0)",
- "resume": "",
+ "resume": "RESHIPPED 2026-11-01 (leak gate: data dictionary removed; judge pass 5 FIX_NOW repaired, pass 6 APPROVE), pending the portal.",
  "architecture_1": {
   "status": "RETURNED",
   "domain": "banking-credit-financial-risk",
@@ -231,6 +217,16 @@
   "gates": "checks 116 of 116, verify 30 of 30, byte-identical twice, figures_check 68 of 68, precut 51 of 51, pair 28.5 (over-cleaner 37.7), leak.py REVIEW no LEAK, scrub clean, guard validate clean, heart WARN (repeat.decision, repeat.deliverables), surface exit 0",
   "reader_keys": "plan_visits_2027_28, hospital_visits_2025_26.* (28) and sickness_by_quarter.* (8); every other figures.json key withheld"
  },
- "zip_sha256": "c011ac5357b4d24236bddacc09bc399feb222f05c68dcc6aa152cd29f9c7be27",
- "delivered": "2026-10-26"
+ "zip_sha256": "dd38b80da26a0322e9390c91ea4f22830184d284e9376c8e8adad8eda6f28699",
+ "delivered": "2026-10-26",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK data_dictionary.csv: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3))",
+   "repair": "leak, then the stage 4 judge's FIX_NOW (pass 5)",
+   "move": "Stopped writing data_dictionary.csv (generator/docs.py dictionary() and its FILES entry removed, build.py no longer calls it, verify.py now expects twelve zip members). The dictionary's only load on the main call was closure axis 19 (request types, Outcome values); that axis now rests on the annual report's existing activity note ('Seen are completed visits from the queue system, by the request form the patient brought') and the systems' own labels (GP form, Hospital form; GP, HOSP; Seen, Test ticket), with C1 in the data (every CHECKED_IN visit has a COMPLETED event; no test ticket carries a request form). No document text changed. The ask-side lines (Vacant line, request_date, clinic_days, clinic_code, Desk B, LES flag, survey time_waited) were dropped and left unstated: the report's section 4 and the prompt's pins close both asks. checks.py gained four assertions (no shipped file describes the data by name; the report's activity note reads back as a positive control; check-ins equal completed visits; the systems' labels and test tickets). metadata.json rewritten by the generator (twelve files). No figure moved: freeze determinism PASS, figures.json unchanged. Then the stage 4 judge (pass 5, DETERMINISTIC, FIX_NOW, on 8f5c6aa2) found step 3's 'every window of five weeks or fewer at least 67 worse' not reproduced (65.3 on the whole record, 62.6 on a common sample) and two soft forks on the asks closed only by unfiled inference. The generator now computes the margin on four samples (the whole record or the days whose twelve previous weeks lie in it, the day after a bank holiday from the closures or the bank holidays file: 67.2, 65.8, 64.1, 62.6) and states the lowest floored to ten, so aic_gap_five_weeks_or_fewer moved 67 to 60 (SF11, freeze --allow on that key only); step 5 gained one clause (the register's clinic_days pick new codes with no late-March forms on the old codes' weekdays, and the weekly visits jump at the switch under them; SF12) and step 6 one clause (every other unassigned stretch follows five Sickness lines of one holder and ends with that holder back; SF13), each asserted in checks.py with no document changed. Only submission.md and figures.json moved; target.zip and the goldens are byte-identical to the judged cut.",
+   "commit": ""
+  }
+ ],
+ "target_zip_md5": "8f5c6aa228c4385bd09c5d4fdf29e2c8"
 }

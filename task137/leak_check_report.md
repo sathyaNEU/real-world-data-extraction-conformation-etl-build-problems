@@ -1,30 +1,29 @@
 # leak check, task137
 
-**Verdict: LEAK.** 13 files read, 23 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 23 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: patients, architecture, decisive, golden, window, run-out, run-outs, deposit, record, turned, practices, landed, service, special, reader, default, january, maturity, arrivals, deterrence, previous, generator, deposits, activity, effect
-
-## 1 file names (LEAK 1)
-- **LEAK** `data_dictionary.csv`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+Stump terms swept: patients, window, architecture, decisive, golden, run-out, practices, run-outs, record, turned, deposit, service, landed, special, reader, default, january, maturity, activity, arrivals, deterrence, previous, generator, deposits, nothing
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `icb_pathology_planning_assumptions_2026-27.pdf`: carries 3 of 5 distinctive words of the committed call: 'Plan for 45,000 GP-referred visits at the community phlebotomy hub in 2027-28.'
 - **REVIEW** `phlebotomy_annual_report_2025-26.pdf`: carries 5 of 5 distinctive words of the committed call: 'Plan for 45,000 GP-referred visits at the community phlebotomy hub in 2027-28.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `phlebotomy_annual_report_2025-26.pdf`: 6 of 25 stump-paragraph terms appear (patients, record, turned, practices, service, activity); read whether the document names the move
+- **REVIEW** `phlebotomy_annual_report_2025-26.pdf`: 6 of 25 stump-paragraph terms appear (patients, practices, record, turned, service, activity); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "The files hold Hollinsfield General Hospital's walk-in clinic records from April 2023: two queue systems, reception's turned-away log, the e-roster, the kiosk's daily tickets, the practice and clinic registers and the 20"
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 9 dates after the setting (REVIEW 1)
+- **REVIEW** `bank_holidays_england.json`: 11 ISO dates after 2026-10-02, e.g. 2026-12-25, 2026-12-28, 2027-01-01, 2027-03-26, 2027-03-29
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 44% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 21% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -59,3 +58,7 @@ world's pack. Each architecture 4 reader worked on its own fresh copy of `prompt
 The mechanical REVIEW lines above are the ones the earlier rounds read: the call sentence's words in the board's letter
 and the annual report, the report's ordinary service vocabulary, the prompt's file roll, and the bank holidays file
 running past the setting into the planning year; none states a figure, a window or the move.
+
+### Reship read (2026-11-01, Sonnet at medium, fresh copy of prompt.txt and target.zip 8f5c6aa2, the data dictionary no longer shipped)
+
+1 none named outright (the annual report's sections 1 and 6, on reception turning patients away and the hub never running out, are context the shipped pack always carried); 2 none for the plan figure (the report's 2025-26 table and seen-by-year figures are context inputs); 3 no dictionary or readme; the annual report's sections 1, 2 and 4 read as explanatory, as on the shipped pack; 4 none; 5 the prompt's growth and no-working-day sentences, the ICB's base-year and annual-assumption sentences, the report's section 6 and its sickness definition; 6 an analytical choice as far as the text goes (the reader flagged that summing seen and turned away and compounding would be rule application if the log were complete for 2025-26; the design's stump rests on what the log cannot see, unchanged by this reship). The one undefined code the reader named, the HG-C clinic codes against the new PAS codes, is ask A's designed identity device and was never mapped by the removed dictionary either (checked against the shipped pack), so the reship opened no reading.

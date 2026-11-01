@@ -61,13 +61,16 @@ def write(path, F):
     L.append("5. Named each 2025-26 hospital request's clinic code: forms issued before 16 March 2026 carry the old PAS's "
              "codes, which outpatient_clinic_codes.csv does not hold, and each old code is the new code whose forms issued "
              "in the second half of March 2026 fall on the same weekdays as the old code's, before the clinics changed "
-             "their sessions in April (the register's clinic_days name all seven wrongly); then counted hospital-form "
-             "visits by specialty and financial quarter of the visit date.")
+             "their sessions in April (the register's clinic_days name all seven wrongly: none of the new codes they pick has "
+             "late-March forms on its old code's weekdays, and under them the weekly visits jump at the switch, where under "
+             "the late-March link they run on); then counted hospital-form visits by specialty and financial quarter of "
+             "the visit date.")
     L.append("6. Counted sickness in eroster_phlebotomy_2023-04_to_2026-09.csv as the holders' Sickness lines plus the "
              "lines shown unassigned (Vacant line Y) from a sickness's sixth clinic day until the same holder returns, which "
-             "are filled posts, the one vacant post being the post the annual report names (vacant from 14 July to 12 "
-             "September 2025, as section 4 states); working days lost at 7.5 hours each and the rate over every clinic day "
-             "of every filled post, by financial quarter.")
+             "are filled posts, the one vacant post being the one section 4 of the annual report names (14 July to 12 "
+             "September 2025), since every other unassigned stretch follows five Sickness lines of one holder and ends "
+             "with that holder back; working days lost at 7.5 hours each and the rate over every clinic day of every "
+             "filled post, by financial quarter.")
     L.append("7. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in "
              "gp_demand_2025-26.png.\n")
     L.append("## 4. Deliverable Answers\n")

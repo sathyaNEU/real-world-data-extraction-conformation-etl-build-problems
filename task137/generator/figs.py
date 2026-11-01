@@ -26,7 +26,7 @@ def compute(target):
         "window_weeks": g["L"],
         "window_runner_up_weeks": L2,
         "base_2025_26_runner_up": round(bases[1]),
-        "aic_gap_five_weeks_or_fewer": int(min(aic[l] - aic[g["L"]] for l in aic if l <= 5)),
+        "aic_gap_five_weeks_or_fewer": S.window_gap_bound(D, target)[0],
         "base_2025_26_low": int(round(min(bases), -2)),
         "base_2025_26_high": int(round(max(bases), -2)),
         "kept_in_house_low": int(round(min(bases) - arr25, -2)),

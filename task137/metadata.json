@@ -25,7 +25,7 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 13,
+    "files": 12,
     "formats": [
       "csv",
       "json",
@@ -150,15 +150,6 @@
       "format": "xlsx",
       "bytes": 6102,
       "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "data_dictionary.csv",
-      "format": "csv",
-      "bytes": 2648,
-      "rows": 22,
       "source": "Constructed (seeded generator)",
       "date": "2026-10-02",
       "license": "CC0-1.0 (original work)"

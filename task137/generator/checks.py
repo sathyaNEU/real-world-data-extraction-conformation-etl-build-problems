@@ -49,6 +49,23 @@ def main(target, R=None):
     check("fit: the record's fit picks the world's own eight-week window", L == P.DETER_WEEKS,
           {k: round(v - aic[L], 1) for k, v in aic.items()})
     check("fit: every window of five weeks or fewer at least 50 worse in AIC", gap5 >= 50, round(gap5, 1))
+    # SF11: the write-up's AIC margin is a bound that holds on every sample its method implies, not one sample's figure
+    bound, gvar = S.window_gap_bound(D, target)
+    for k, (Lv, gv) in gvar.items():
+        check("SF11 on the %s the fit picks eight weeks and every window of five weeks or fewer is at least the stated %d "
+              "worse, with 2 to spare for an implementation's own fit" % (k, bound), Lv == P.DETER_WEEKS and gv >= bound + 2,
+              (Lv, round(gv, 1)))
+    check("SF11 the stated bound is the lowest margin over those samples floored to ten, and at least 50",
+          bound >= 50 and bound == int(10 * np.floor(min(v[1] for v in gvar.values()) / 10.0)), bound)
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _fj = os.path.join(_here, "figures.json")
+    if os.path.exists(_fj):
+        import json as _json
+        with open(_fj) as _fh:
+            _stated = _json.load(_fh)["aic_gap_five_weeks_or_fewer"]
+        _sub = open(os.path.join(os.path.dirname(_here), "submission.md")).read()
+        check("SF11 figures.json and the write-up's step 3 carry that bound",
+              _stated == bound and ("every window of five weeks or fewer at least %d worse" % bound) in _sub, _stated)
     fam = S.family(D, ci, L)
     for k, v in fam.items():
         check("family: %s prints 45,000, at least 300 inside the cell" % k, S.rnd(v) == gold and edge(v) >= 300, round(v))
@@ -220,6 +237,30 @@ def main(target, R=None):
           hh[hh.request_org.isin(newc)].rd.min() >= P.PAS_LIVE and hh[~hh.request_org.isin(newc)].rd.max() < P.PAS_LIVE)
     h = ci[(ci.request_type == "HOSP") & (ci.d >= S.FY0) & (ci.d <= S.FY1)]
     check("ask A: the 28 cells total the 2025-26 hospital-form visits", sum(sum(q.values()) for q in hosp.values()) == len(h))
+    # SF12: the old codes named through the register's clinic_days, refuted by the late-March issues and the switch
+    late = hh[(hh.rd >= P.PAS_LIVE) & (hh.rd < S.TEMPLATES)]
+    late_wd = {c: frozenset(x.weekday() for x in late[late.request_org == c].rd) for c in newc}
+    old_wd = {c: frozenset(x.weekday() for x in hh[hh.request_org == c].rd) for c in truth_old}
+    code_of = dict(zip(reg.specialty, reg.clinic_code))
+    check("SF12 positive control: each new code the late-March link picks has its 16 to 31 March 2026 forms on exactly its "
+          "old code's weekdays", all(late_wd[code_of[code_spec[c]]] == old_wd[c] for c in truth_old))
+    miss12 = {c: (sorted(old_wd[c]), code_of[wk_spec[c]], sorted(late_wd[code_of[wk_spec[c]]])) for c in truth_old
+              if late_wd[code_of[wk_spec[c]]] == old_wd[c]}
+    check("SF12 the register's clinic_days reading fails the late-March match: none of the new codes it picks has its "
+          "16 to 31 March 2026 forms on its old code's weekdays", not miss12, miss12)
+    hh["wk"] = [d - dt.timedelta(d.weekday()) for d in hh.d]
+    sw = [P.PAS_LIVE - dt.timedelta(7), P.PAS_LIVE, P.PAS_LIVE + dt.timedelta(7)]
+
+    def switch_break(old_to_spec):
+        m = dict(zip(reg.clinic_code, reg.specialty))
+        m.update(old_to_spec)
+        x = hh[hh.wk.isin(sw)]
+        t = x.groupby([x.wk, x.request_org.map(m)]).size().unstack(fill_value=0)
+        return int((abs(t.loc[sw[1]] - t.loc[sw[0]]) + abs(t.loc[sw[2]] - t.loc[sw[1]])).sum())
+    b_gold, b_reg = switch_break(code_spec), switch_break(wk_spec)
+    check("SF12 the weekly visits run on across the switch under the late-March link and jump under the register's reading "
+          "(specialties' week-on-week moves through the fortnight both codes run, at least twice as large)",
+          b_reg >= 2 * b_gold, (b_gold, b_reg))
     days = S.clinic_days_list(target)
     sick = S.ask_sick(target, days)
     flag = S.ask_sick_flag(target, days)
@@ -252,6 +293,47 @@ def main(target, R=None):
         prev = [sub[(sub["Employee no"] == e) & (sub.d < d)].sort_values("d").Absence.iloc[-1] for e in away]
         bad += int(ny != sum(1 for a in prev if a == "Sickness"))
     check("ask B: every unassigned line outside the report's vacancy is an away holder whose last line was sickness", bad == 0, bad)
+    # SF13: Vacant line Y read as a vacant post, refuted by the report's one named vacancy and the holders' stretches
+    import re as _re13
+    rep13 = pdf_text(os.path.join(target, DC.FILES["report"]))
+    check("SF13 positive control: section 4 names one vacant post, from 14 July to 12 September 2025",
+          len(_re13.findall(r"vacant from \d+ \w+ to \d+ \w+ \d{4}", rep13)) == 1 and "One Band 2 post was vacant" in rep13
+          and (v0, v1) == (dt.date(2025, 7, 14), dt.date(2025, 9, 12)))
+    yl = sub[(sub["Vacant line"] == "Y") & (sub.d >= S.FY0) & (sub.d <= S.FY1)]
+    out13 = sorted({d for d in yl.d if not (v0 <= d <= v1)})
+    check("SF13 read as vacant posts, the 2025-26 unassigned lines would add vacancies on clinic days outside the one "
+          "section 4 names", len(out13) > 0, "%d clinic days" % len(out13))
+    rdays = sorted(sub.d.unique())
+    ri = {d: i for i, d in enumerate(rdays)}
+    held = sub[sub["Employee no"].notna()]
+    gaps13, bad13 = [], []
+    for e, x in held.groupby("Employee no"):
+        xd = set(x.d)
+        lo, hi = min(xd), max(xd)
+        gap = [d for d in rdays if lo < d < hi and d not in xd]
+        runs = []
+        for d in gap:
+            if runs and ri[d] == ri[runs[-1][-1]] + 1:
+                runs[-1].append(d)
+            else:
+                runs.append([d])
+        for g13 in runs:
+            prev = x[x.d < g13[0]].sort_values("d").Absence.tolist()
+            five = prev[-5:] == ["Sickness"] * 5 and (len(prev) < 6 or prev[-6] != "Sickness")
+            back = x[x.d > g13[-1]].sort_values("d").d.iloc[0] == rdays[ri[g13[-1]] + 1]
+            gaps13.append((e, g13[0], g13[-1]))
+            if not (five and back):
+                bad13.append((e, g13[0], g13[-1]))
+    check("SF13 every unassigned stretch outside the named vacancy is a holder's: it follows exactly five Sickness lines and "
+          "ends with the same holder back the next clinic day", len(gaps13) > 0 and not bad13, (len(gaps13), bad13))
+    in_gap = {d: sum(1 for _, a, b in gaps13 if a <= d <= b) for d in rdays}
+    ycount = sub[sub["Vacant line"] == "Y"].groupby("d").size()
+    check("SF13 every unassigned line is one of those stretches or the named vacancy",
+          all(int(n) == in_gap[d] + (1 if v0 <= d <= v1 else 0) for d, n in ycount.items()))
+    leaver = held.groupby("Employee no").d.max()
+    starter = held.groupby("Employee no").d.min()
+    check("SF13 the named vacancy runs from the clinic day after a leaver's last line to the clinic day before a starter's "
+          "first", any(rdays[ri[d] + 1] == v0 for d in leaver if d < v0) and any(rdays[ri[d] - 1] == v1 for d in starter if d > v1))
     import re as _re
     import zipfile as _zf
     for k in ("log", "hub"):
@@ -302,6 +384,22 @@ def main(target, R=None):
               strict == lenient and must in miner and must in popp and must in strict)
     icb = pdf_text(os.path.join(target, DC.FILES["icb"]))
     check("doc: the ICB letter carries 3.5% for GP direct access phlebotomy (positive control)", "GP direct access phlebotomy 3.5%" in icb)
+    # no shipped file describes the data (dataset-generation section 3)
+    describing = ("dictionary", "readme", "manifest", "codebook", "definition", "field_notes", "fieldnotes",
+                  "file_list", "filelist", "schema", "export_notes", "extract_notes", "data_notes")
+    check("pack: no shipped file describes the data, by name",
+          not any(w in f.lower().replace("-", "_").replace(" ", "_") for f in os.listdir(target) for w in describing),
+          sorted(os.listdir(target)))
+    # closure axis 19 (code and status semantics) homed in the report and the systems' own labels
+    check("axis 19: the annual report's activity note reads back (positive control): seen by the request form the patient brought",
+          "Seen are completed visits from the queue system, by the request form the patient brought" in rep)
+    evt = pd.read_csv(os.path.join(target, DC.FILES["events"]), dtype=str, usecols=["visit_ref", "event_type"])
+    check("axis 19 C1: every checked-in visit is completed, so check-ins and completed visits count the same",
+          set(evt.visit_ref[evt.event_type == "CHECKED_IN"]) == set(evt.visit_ref[evt.event_type == "COMPLETED"]))
+    legt = pd.read_csv(os.path.join(target, DC.FILES["legacy"]), dtype=str)
+    check("axis 19: the request forms are the systems' own labels (GP form, Hospital form; GP, HOSP) and no test ticket "
+          "carries one", set(legt.Request.dropna()) == {"GP form", "Hospital form"}
+          and set(ci.request_type.dropna()) == {"GP", "HOSP"} and legt[legt.Outcome == "Test ticket"].Request.isna().all())
     # realism sweep
     wk = D[D.fy == 2025].groupby("wk").seen_gp.sum()
     check("realism: no two weeks of 2025-26 carry the same GP-referred count three times", wk.value_counts().max() < 3)

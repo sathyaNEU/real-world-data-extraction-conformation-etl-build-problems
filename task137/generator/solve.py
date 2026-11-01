@@ -121,6 +121,43 @@ def window(D, y="arr"):
     return min(aic, key=aic.get), aic
 
 
+def after_bank_holiday(D, target):
+    """The day after a bank holiday read off bank_holidays_england.json: the clinic day whose last weekday before it was a
+    bank holiday."""
+    import json
+    with open(os.path.join(target, F["bh"])) as fh:
+        hol = {dt.date.fromisoformat(e["date"]) for e in json.load(fh)["england-and-wales"]["events"]}
+    out = []
+    for d in D.d:
+        x = d - dt.timedelta(1)
+        while x.weekday() >= 5:
+            x -= dt.timedelta(1)
+        out.append(int(x in hol))
+    return out
+
+
+def window_gap_bound(D, target):
+    """How much worse in AIC every window of five weeks or fewer fits than the window the fit picks, on every sample the
+    write-up's method implies: the whole record (weeks before it carrying no run-out share) or the days whose twelve
+    previous weeks all lie in the record, with the day after a bank holiday read off the record's closures or off the
+    bank holidays file, L from one to twelve. The bound stated is the lowest margin floored to ten."""
+    fw = D.wk.min()
+    common = np.array([(w - fw).days >= 7 * 12 for w in D.wk])
+    bhf = after_bank_holiday(D, target)
+    out = {}
+    for sname, mask in (("whole record", np.ones(len(D), bool)), ("common sample", common)):
+        for pname, pb in (("the record's closures", None), ("the bank holidays file", bhf)):
+            X = D.copy()
+            if pb is not None:
+                X["pbh"] = pb
+            X = X[mask].reset_index(drop=True)
+            aic = {l: sm.GLM(X.arr, calX(X, ["s%d" % l]), family=sm.families.Poisson()).fit().aic for l in range(1, 13)}
+            L = min(aic, key=aic.get)
+            out["%s, the day after a bank holiday from %s" % (sname, pname)] = (L, float(min(aic[l] - aic[L] for l in aic if l <= 5)))
+    low = min(v[1] for v in out.values())
+    return int(10 * np.floor(low / 10.0)), out
+
+
 def deterred(D, col=None, fam=None, y="arr"):
     col = col or "s%d" % window(D, y)[0]
     fam = fam or sm.families.Poisson()

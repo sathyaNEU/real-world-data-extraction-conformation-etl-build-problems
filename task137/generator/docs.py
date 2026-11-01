@@ -25,7 +25,6 @@ FILES = {
     "bh": "bank_holidays_england.json",
     "survey": "phlebotomy_patient_survey_2025.csv",
     "hub": "community_hub_session_plan_2027.xlsx",
-    "dict": "data_dictionary.csv",
 }
 PACK = list(FILES)
 DISTRACTORS = ["survey", "hub"]
@@ -359,31 +358,3 @@ def hub_plan(target):
               ("Bank phlebotomist", 2, 1.5, "Non-recurrent")]:
         ws2.append(list(r))
     save_xlsx(wb, os.path.join(target, FILES["hub"]), dt.datetime(2026, 9, 24, 11, 3), P.PEOPLE["outpatients"])
-
-
-def dictionary(target):
-    rows = [
-        (FILES["legacy"], "Date", "Clinic day the ticket was issued (dd/mm/yyyy, UK local time)"),
-        (FILES["legacy"], "Ticket", "Ticket number shown to the patient; numbering restarts each day, A for blood tests and F for fasting blood tests"),
-        (FILES["legacy"], "Issued", "Time the kiosk issued the ticket (UK local time)"),
-        (FILES["legacy"], "Called", "Time of the last call of the ticket to a desk (UK local time)"),
-        (FILES["legacy"], "Desk", "Desk number; B is the bank phlebotomist's desk"),
-        (FILES["legacy"], "Request", "Request form the patient brought, as chosen at the kiosk"),
-        (FILES["legacy"], "Outcome", "Seen, or Test ticket for kiosk tests by the IT team"),
-        (FILES["events"], "event_utc", "Time of the event in UTC"),
-        (FILES["events"], "event_type", "CHECKED_IN when the patient takes a ticket; CALLED each time the ticket is called to a bay; COMPLETED when the bay closes the visit"),
-        (FILES["events"], "visit_ref", "One reference per ticket"),
-        (FILES["events"], "request_type", "GP or HOSP, the request form the patient brought, as chosen at the kiosk"),
-        (FILES["events"], "request_org", "Code of the organisation that issued the request, read from the form's barcode: the practice's ODS code or the outpatient clinic code; blank where the form has no barcode"),
-        (FILES["events"], "request_date", "Date the request was issued, read from the form's barcode"),
-        (FILES["events"], "pathway", "WALK_IN or WALK_IN_FASTING"),
-        (FILES["roster"], "Hours", "Rostered hours for the line on the roster date"),
-        (FILES["roster"], "Absence", "Blank when worked; Annual leave; Sickness"),
-        (FILES["roster"], "Vacant line", "Y where no substantive post holder was assigned to the line on the roster date"),
-        (FILES["kiosk"], "Tickets", "Walk-in tickets the senior phlebotomist set the kiosk to issue that day"),
-        (FILES["practices"], "phlebotomy_les_2025-26", "Y where the practice holds the 2025-26 phlebotomy local enhanced service"),
-        (FILES["clinics"], "clinic_code", "Outpatient clinic code on the trust's patient administration system"),
-        (FILES["clinics"], "clinic_days", "Weekdays the clinic runs"),
-        (FILES["survey"], "time_waited", "Patient's own estimate of the wait after taking a ticket"),
-    ]
-    write_csv(os.path.join(target, FILES["dict"]), ["file", "column", "description"], rows)
