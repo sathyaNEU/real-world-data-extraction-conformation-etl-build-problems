@@ -24,7 +24,7 @@ SOURCES = {
     "census": ("Quillfield patient flow, unit census by day", "evidence"),
     "plan": ("Quillfield Finance, Decision Support, FY2027 inpatient volume plan", "evidence"),
     "register": ("Quillfield Pharmacy Informatics, medication alert rule register", "evidence"),
-    "release": ("Halverson Clinical Content, MSP26 content release notes 2026.2", "evidence"),
+    "release": ("Halverson Clinical Content, MSP26 content release 2026.2 client bulletin", "evidence"),
     "schedule": ("Corvane Remote Pharmacy and Quillfield, Schedule B override review service, revision 3",
                  "evidence"),
     "cr": ("Quillfield change request CR-2291", "evidence"),

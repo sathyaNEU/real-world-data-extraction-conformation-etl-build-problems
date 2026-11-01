@@ -23,7 +23,7 @@ FILES = {
     "census": "QRMC_UnitCensus_Daily_20250101-20261025.csv",
     "plan": "QRMC_FY2027_Inpatient_Volume_Plan.xlsx",
     "register": "QRMC_MedAlert_Rule_Register_20261026.xlsx",
-    "release": "MSP26_Content_Release_Notes_v2026.2.pdf",
+    "release": "Halverson_MSP26_Release_2026.2_Client_Bulletin.pdf",
     "schedule": "Corvane_QRMC_Service_Schedule_B_rev3.pdf",
     "cr": "QRMC_CR-2291_MSP26_HospitalWide_GoLive.docx",
     "queue": "CRV_QueueExport_QRMC_20260630-20261001.csv",

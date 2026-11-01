@@ -129,7 +129,7 @@ def write_register(path):
 def write_release(path):
     blocks = [
         ("t", "Medication Safety Package MSP26, content release 2026.2"),
-        ("s", "Release notes for client pharmacy informatics teams. Halverson Clinical Content, March 2026."),
+        ("s", "Client bulletin for pharmacy informatics teams. Halverson Clinical Content, March 2026."),
         ("h", "1. What the package adds"),
         ("p", "MSP26 adds two rules to the client's medication alert engine. Both are interruptive when live. The "
               "client sets each rule's status by unit: off, background or live."),
@@ -157,7 +157,7 @@ def write_release(path):
               "outside most US formularies."),
     ]
     IO.write_pdf(path, "MSP26 content release 2026.2", "Halverson Clinical Content", "Halverson Content Publisher",
-                 blocks, "Halverson Clinical Content, MSP26 release notes 2026.2", "D:20260316100000-04'00'",
+                 blocks, "Halverson Clinical Content, MSP26 release 2026.2 client bulletin", "D:20260316100000-04'00'",
                  "D:20260316100000-04'00'",
                  widths={5: [92, 78, 44, 160, 116]})
 
