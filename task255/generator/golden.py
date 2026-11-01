@@ -51,7 +51,6 @@ def figures(c):
          "tier_line_pct": 40, "effective_frequency": 3, "headway_min": 3, "make_good_allowance_pct": 0.5,
          "agency_rates_pct": {a: round(100 * v, 1) for a, v in c["rates"].items()},
          "booking_package": {b["booking_ref"]: b["package"] for b in c["bookings"]},
-         "peak_windows": "07:00 to 09:30 and 16:00 to 18:30",
          "clauses_cited": "rate card 3.1, 3.2, 3.3, 3.4, 3.5; general terms 6.1, 6.2, 6.3, 8.2, 8.3"}
     return f
 
@@ -152,7 +151,7 @@ def workbook(c, f, path):
            "service cards left out (rate card 3.3)." % format(len(M.regular), ","),
            "Passes: the hall of check-in, the hall of check-out and the interchange passage wherever the rider "
            "changed trains (3.4); a journey without a check-out counts its check-in hall only.",
-           "Changes at Centraal read from each journey's duration: on weekday peaks (07:00 to 09:30, 16:00 to 18:30) "
+           "Changes at Centraal read from each journey's own duration over its walks and runs: on weekday peaks "
            "north runs through to east and west to south."])
     bk = c["bookings"]
     sheet("Make-good", "Make-good owed on the autumn 2026 bookings",
@@ -163,13 +162,15 @@ def workbook(c, f, path):
           [12, 26, 16, 18, 14], {4: "#,##0"},
           ["Dark hours above 0.5 per cent of booked screen-hours, in whole hours, part of an hour counted as an hour "
            "(general terms 6.3).",
-           "Player log times are UTC and were read in Ravelmond time; re-cablings dated from the receiving player's "
-           "display report, not the register's entry."])
+           "Player log times are UTC and were read in Ravelmond time; a screen counts as connected from its player's "
+           "first display report that includes it (6.2); a player whose first status in the log is online was offline "
+           "until then."])
     sheet("Screens 2027", "Screens on sale on 1 January 2027",
           ["Package", "Code", "Screens"],
           [[pk[k][0], k, c["screens"][k]] for k in pk], [20, 8, 10], {2: "0"},
-          ["From the screen register of 12 November 2026: one screen to a position; planned hangings and take-downs "
-           "dated on or before 1 January counted; screens held outside the packages left out."])
+          ["From the screen register of 12 November 2026: one screen to a position (the units replaced on 2 to 4 "
+           "November sat on the same player output); planned hangings and take-downs dated on or before 1 January "
+           "counted; screens held outside the packages left out."])
     sheet("Net revenue", "Net revenue from the autumn 2026 bookings, by package",
           ["Package", "Code", "Net revenue (EUR)"],
           [[pk[k][0], k, r10(c["revenue"][k])] for k in pk], [20, 8, 16], {2: "#,##0"},

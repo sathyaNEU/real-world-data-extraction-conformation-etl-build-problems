@@ -142,73 +142,58 @@ def verify_main(target, fig):
                 return 60.0 / f.trains_per_hour
         return 10.0
 
-    service = {"N": "A", "E": "A", "W": "B", "S": "B"}
     line = {"N": "M1", "S": "M1", "W": "M2", "E": "M2"}
-    # the service pattern: read from the clean three-minute hours, by the ten-minute bin of the minute at Centraal
-    probe = collections.defaultdict(lambda: [0, 0])
     rows = []
-    for x in W[W.card_id.isin(regular)].itertuples():
+    for x in W.itertuples():
         legs = path(x.check_in_stop, x.check_out_stop) if x.check_out_stop else None
         rows.append((x, legs))
-        if not legs or x.d.weekday() >= 5:
-            continue
-        if len(legs) not in (1, 2) or any(l == "M3" for l, a, b in legs):
-            continue
-        u, v = legs[0][1], legs[-1][2]
-        pair = {side[u], side[v]}
-        if pair not in ({"N", "E"}, {"N", "S"}):
-            continue
-        lu, lv = line[side[u]], line[side[v]]
-        t1, t2 = minutes(x.check_in_time), minutes(x.check_out_time)
-        if headway(x.d, t1) > 3.0:
-            continue
-        dur = (t2 - t1) % 1440
-        base = float(halls.loc[gates[x.check_in_gate], "walk_to_%s_min" % lu]) + rt(lu, u, "CEN") + rt(lv, "CEN", v) + \
-            float(halls.loc[gates[x.check_out_gate], "walk_to_%s_min" % lv])
-        changed = dur - base > 5.0
-        line_map_fails = (not changed) if pair == {"N", "E"} else changed
-        at_cen = t1 + float(halls.loc[gates[x.check_in_gate], "walk_to_%s_min" % lu]) + 1.5 + rt(lu, u, "CEN")
-        probe[int(at_cen // 10)][1 if line_map_fails else 0] += 1
-    peak_bins = {b for b, (holds, fails) in probe.items() if holds + fails >= 8 and fails > holds}   # the line map fails
-    windows = sorted(peak_bins)
-    say("the service pattern read from the three-minute hours: two windows of departures through Centraal",
-        bool(windows), "%s" % ", ".join("%02d:%d0" % (b // 6, b % 6) for b in windows))
 
-    passes = collections.Counter()
+    def single(legs):
+        """(u, v) when the journey is one M1/M2 movement from one branch through Centraal to another."""
+        if not legs or any(l == "M3" for l, a, b in legs) or len(legs) > 2:
+            return None
+        u, w = legs[0][1], legs[-1][2]
+        if side[u] in "NSWE" and side[w] in "NSWE" and side[u] != side[w]:
+            return u, w
+        return None
+
+    def over_runs(x, u, w):
+        lu, lw = line[side[u]], line[side[w]]
+        t1, t2 = minutes(x.check_in_time), minutes(x.check_out_time)
+        return (t2 - t1) % 1440 - (float(halls.loc[gates[x.check_in_gate], "walk_to_%s_min" % lu]) + rt(lu, u, "CEN") +
+                                   rt(lw, "CEN", w) + float(halls.loc[gates[x.check_out_gate], "walk_to_%s_min" % lw]))
+    # the empty band in the minutes over the runs, on a tenth-of-a-minute histogram of every such journey
+    hist = collections.Counter()
     for x, legs in rows:
+        s = single(legs)
+        if s:
+            hist[int(over_runs(x, *s) * 10)] += 1
+    run, best, cur = 0, (0, 0), None
+    for b in range(20, 150):
+        if hist[b] == 0:
+            cur = b if run == 0 else cur
+            run += 1
+            if run > best[0]:
+                best = (run, cur)
+        else:
+            run = 0
+    cut = (best[1] + best[0] / 2.0) / 10.0
+    say("an empty band in the minutes a journey through Centraal took over its runs", best[0] >= 15,
+        "%.1f to %.1f minutes" % (best[1] / 10.0, (best[1] + best[0]) / 10.0))
+    regular_rows = [(x, legs) for x, legs in rows if x.card_id in regular]
+    passes = collections.Counter()
+    for x, legs in regular_rows:
         passes[(x.card_id, gates[x.check_in_gate])] += 1
         if not legs:
             continue
         passes[(x.card_id, gates[x.check_out_gate])] += 1
-        # group the legs into movements; a line-map change at Centraal between M1 and M2 sits inside one movement
-        mv, k = [], 0
-        while k < len(legs):
-            l, a, b = legs[k]
-            if l in ("M1", "M2") and b == "CEN" and k + 1 < len(legs) and legs[k + 1][0] in ("M1", "M2") and \
-                    legs[k + 1][0] != l:
-                mv.append(("MM", a, legs[k + 1][2]))
-                k += 2
-            else:
-                mv.append(("MM" if l != "M3" else "M3", a, b))
-                k += 1
-        t = minutes(x.check_in_time)
-        first = legs[0][0]
-        t += float(halls.loc[gates[x.check_in_gate], "walk_to_%s_min" % first]) + 1.5
-        for i, (kind, a, b) in enumerate(mv):
-            if i > 0:
-                passes[(x.card_id, inter.loc[a, "passage_code"])] += 1
-                t += float(inter.loc[a, "walk_min"]) + 3.0
-            if kind == "MM" and side[a] in "NSWE" and side[b] in "NSWE" and side[a] != side[b]:
-                at = t + rt(line[side[a]], a, "CEN")
-                peak = x.d.weekday() < 5 and int((at % 1440) // 10) in peak_bins
-                change = service[side[a]] != service[side[b]] if peak else line[side[a]] != line[side[b]]
-                if change:
-                    passes[(x.card_id, "CEN-OV")] += 1
-                t = at + (6.5 if change else 0.5) + rt(line[side[b]], "CEN", b)
-            elif kind == "M3":
-                t += rt("M3", a, b)
-            else:
-                t += rt([l for l in ("M1", "M2") if a in seq[l] and b in seq[l]][0], a, b)
+        s = single(legs)
+        if s:
+            if over_runs(x, *s) > cut:
+                passes[(x.card_id, "CEN-OV")] += 1
+            continue
+        for k in range(1, len(legs)):
+            passes[(x.card_id, inter.loc[legs[k][1], "passage_code"])] += 1
     rc = pdf_strings(os.path.join(target, "Spoorbeeld_tariefkaart_2027.pdf"))
     annex = rc[rc.index("Annex A"):]
     pk = {}
@@ -244,6 +229,9 @@ def verify_make_good(target, fig):
     off = collections.defaultdict(list)
     for p, g in cms.groupby("player_id"):
         cur = None
+        states = g[g.event.isin(["OFFLINE", "ONLINE"])]
+        if len(states) and states.iloc[0].event == "ONLINE":
+            off[p].append((dt.datetime(2026, 9, 1), states.iloc[0].t))
         for x in g.itertuples():
             if x.event == "OFFLINE" and cur is None:
                 cur = x.t
@@ -255,8 +243,8 @@ def verify_make_good(target, fig):
     dead = {p for p, v in off.items() if v and v[-1][1] == dt.datetime(2027, 1, 1)}
     conns = collections.defaultdict(list)
     for x in cab.itertuples():
-        a = dt.datetime.strptime(x.connected_from, "%Y-%m-%d %H:%M")
-        b = dt.datetime.strptime(x.connected_to, "%Y-%m-%d %H:%M") if x.connected_to else dt.datetime(2027, 1, 1)
+        a = dt.datetime.strptime(x.connected_from_local, "%Y-%m-%d %H:%M")
+        b = dt.datetime.strptime(x.connected_to_local, "%Y-%m-%d %H:%M") if x.connected_to_local else dt.datetime(2027, 1, 1)
         conns[x.asset_tag].append([x.player_id, a, b])
     # a move off a dead player: the receiving player's first report of its new display count dates it
     moves = collections.defaultdict(list)

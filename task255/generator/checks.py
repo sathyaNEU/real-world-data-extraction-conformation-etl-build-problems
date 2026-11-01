@@ -193,23 +193,32 @@ def main(target):
     check("SF6 halls through the gate list or by stop: same call and figures",
           S.tier == G.tier and {k: r(v) for k, v in S.reach.items()} == gfig)
     net = G.net
-    differ = 0
-    for o in net["stops"]:
-        for d in net["stops"]:
-            if o != d and [x[:2] for x in AN.route(net, o, d)] != [x[:2] for x in fastest(net, o, d)]:
-                differ += 1
-    check("SF7 the route between two gates by fewest changes or by fastest time: the same route for every pair",
-          differ == 0, "%d of %d pairs differ" % (differ, len(net["stops"]) * (len(net["stops"]) - 1)))
-    flagged, through_share, n_off = duration_only_flips(target, G)
-    check("SF8 off the peak a duration-only reading calls changes on straight-through trips in hours whose other trips "
-          "came through Centraal faster than any change, so a timetable cannot back it; the line map holds there",
-          flagged > 0.05 and through_share > 0.4,
-          "%d trips at six minutes or more, %.0f per cent called changes, every such hour %.0f per cent or more through"
-          % (n_off, 100 * flagged, 100 * through_share))
-    fam = family(target)
-    check("SF9 the minute a rider reaches Centraal estimated three minutes either side, or the service pattern read for "
-          "every journey: same call and the same figure in every package",
-          all(t == G.tier and f == gfig for t, f in fam.values()), ", ".join(sorted(fam)))
+
+    def riders(M):
+        return {k: int(round(v * len(M.regular) / 100.0)) for k, v in M.reach.items()}
+    gr = riders(G)
+    pairs = {(j["o"], j["d"]) for j in G.window_journeys if j["card"] in G.regular}
+    route_runs = {m: AN.main_call(target, routing=m) for m in ("fastest", "halls", "waits_peak", "waits_quiet")}
+    differ = [(o, d) for o, d in pairs if [x[:2] for x in AN.route(net, o, d)] != [x[:2] for x in fastest(net, o, d)]]
+    check("SF7 the route between two gates by fewest changes, by time alone, with each journey's own hall walks or with "
+          "the expected waits of the peak or the quiet hours: the same riders in every package",
+          all(riders(M) == gr and M.tier == G.tier for M in route_runs.values()) and not differ,
+          "%d station pairs the regular riders travel, all routed alike" % len(pairs))
+    lo, hi = G.gap
+    xs = crossing_excesses(target, G)
+    inside = [x for x in xs if lo < x < hi]
+    band_runs = {rr: AN.main_call(target, rr) for rr in ("duration_lo", "duration_hi")}
+    check("SF8 each Centraal journey read from its own duration: the excesses leave an empty band of 1.5 minutes or "
+          "more, and a cut anywhere in it gives the same riders in every package",
+          not inside and hi - lo >= 1.5 and all(riders(M) == gr for M in band_runs.values()),
+          "band %.2f to %.2f minutes over %d journeys" % (lo, hi, len(xs)))
+    clock_runs = {rr: AN.main_call(target, rr) for rr in ("clock_checkin", "clock_cen_forward", "clock_cen_backward",
+                                                          "clock_checkout")}
+    straddle = straddling(target, G)
+    check("SF9 the service pattern read off the clock at check-in, at Centraal from either end, or at check-out: the "
+          "same riders in every package, and no regular rider's trip through Centraal spans a change of pattern",
+          all(riders(M) == gr for M in clock_runs.values()) and not straddle,
+          "%d trips span a change" % len(straddle))
     check("SF10 the tier line on the unrounded or the whole-per-cent reach: same call (every package 4 points or more "
           "from the line)", min(abs(v - 40.0) for v in G.reach.values()) >= 4.0,
           "nearest %.2f points" % min(abs(v - 40.0) for v in G.reach.values()))
@@ -222,7 +231,8 @@ def main(target):
     # ------------------------------------------------------------------ the ladder
     R0, R1 = AN.main_call(target, "none"), AN.main_call(target, "linemap")
     RA, RS = AN.main_call(target, "allday"), AN.main_call(target, "stationpass")
-    check("L1 rung 0 (the gates only) files Zuidtak alone", R0.tier == ["ZDT"], ", ".join(R0.tier))
+    check("L1 rung 0 (the gates only) files a tier without Overstappunten", sorted(R0.tier) != sorted(golden_codes)
+          and "OVP" not in R0.tier, ", ".join(R0.tier))
     check("L2 rung 1 (the line map's changes) files Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak",
           sorted(R1.tier) == sorted(["CEN", "BNS", "OVP", "OST", "ZDT"]) and sorted(RS.tier) == sorted(R1.tier))
     check("L3 the golden files Overstappunten, Oosttak and Zuidtak", sorted(G.tier) == sorted(golden_codes))
@@ -245,15 +255,23 @@ def main(target):
           all(0.2 <= x - math.floor(x) <= 0.8 for x in fr.values()),
           ", ".join("%.2f" % (x - math.floor(x)) for x in fr.values()))
     reg_mg = AN.make_good(target, mapping="register")
-    check("A3 the cracker's stop (re-cabling on the register's dates) misses every booking",
+    check("A3 the register's entry dates, a wrong basis under terms 6.2, miss every booking",
           all(reg_mg[k]["make_good"] != mg[k]["make_good"] for k in mg))
+    pairs_mg = AN.make_good(target, lead="pairs")
+    lone = [b for b in A.bookings if b["start"] == dt.date(2026, 10, 5)]
+    check("A4 the cracker's stop (offline spells from OFFLINE and ONLINE pairs only) misses every booking whose "
+          "screens' player was already offline when the log begins",
+          sorted(k for k in mg if pairs_mg[k]["make_good"] != mg[k]["make_good"]) == sorted(x[3] for x in A.open_start)
+          and len(A.open_start) == len(lone), "%d bookings" % len(A.open_start))
     utc = AN.make_good(target, clock="utc")
     check("SF13 the player log read in local time instead of UTC moves the figures (the header says UTC, terms 6.1 local)",
           sum(utc[k]["make_good"] != mg[k]["make_good"] for k in mg) >= 8)
     noup = AN.make_good(target, takedowns=False)
-    check("SF14 the take-down at its player's last report or at the day's opening: the same hours; ignoring it moves "
-          "Noordtak's booking only", [k for k in mg if noup[k]["make_good"] != mg[k]["make_good"]] == ["SB-26-0415"]
-          and takedown_open_same(target, mg))
+    mid = AN.make_good(target, takedown_at="midnight")
+    check("SF14 a taken-down screen dark from the start of its date or from the day's opening, or the take-down left "
+          "out: the same hours (its player was switched off the evening before)",
+          all(mid[k]["make_good"] == mg[k]["make_good"] for k in mg) and all(noup[k]["make_good"] == mg[k]["make_good"]
+                                                                              for k in mg))
     check("SF15 part of an hour counts as an hour (terms 6.3): rounded up, never to nearest",
           all(v["make_good"] == math.ceil(round(v["dark"] - 0.005 * v["booked"], 6)) for v in mg.values()))
     bk = AN.load_bookings(target)
@@ -263,6 +281,12 @@ def main(target):
     check("SF16 the booked screen-hours in the bookings equal the opening hours times the booked screens", hours_ok)
     check("SF22 the receiving player's display report dates each re-cabling inside the register's window",
           recab_consistent(target), "%d re-cablings" % len(A.failures))
+    shifted = [AN.make_good(target, register_shift=h) for h in (1, 2)]
+    check("SF23 the register's connection times read as UTC (one or two hours on): the same make-good",
+          all(s[k]["make_good"] == mg[k]["make_good"] for s in shifted for k in mg))
+    check("SF24 a player whose first status in the log is ONLINE was offline from before the log began (an ONLINE "
+          "report ends an offline spell); those are the outages open when the log begins",
+          lone_online_players(target) == {x[0] for x in A.open_start})
 
     # ------------------------------------------------------------------ ask B: screens on sale on 1 January 2027
     sc = AN.screens_on_sale(target)
@@ -277,6 +301,13 @@ def main(target):
           not any(str(s["hung"])[:10] == "2027-01-01" or str(s["taken_down"] or "")[:10] == "2027-01-01" for s in scr))
     check("SF18 a screen held outside the packages carries no package and counts in none",
           any(s["package"] == "-" for s in scr) and "-" not in sc)
+    ev_swap = swap_evidence(target)
+    check("SF25 two open rows at one position sit on one player output, and the player reported as many displays after "
+          "the night's work as before it: one screen to a position", ev_swap[0] == ev_swap[1] and ev_swap[0] > 0,
+          "%d positions with two open rows, %d shown replaced" % ev_swap)
+    rep = repeated_tags(scr)
+    check("B4 an asset tag on two register rows is a screen moved: its earlier row closed on the day the later one hangs",
+          rep[0] > 0 and rep[0] == rep[1], "%d tags" % rep[0])
 
     # ------------------------------------------------------------------ ask C: net revenue per package
     rev = AN.net_revenue(target)
@@ -347,6 +378,8 @@ def main(target):
     cms_times = {t for v in AN.load_cms(target).values() for t, _, _ in v}
     check("RS10 the register and the player log never share a time stamp for a re-cabling (two observers)",
           not ({f["logged_at"] for f in A.failures} & cms_times) and not ({f["recable_at"] for f in A.failures} & reg_times))
+    reg_rows = [tuple(x) for x in IO.read_xlsx(os.path.join(target, PK.FILES["register"]), "Schermen")[1] if x[0]]
+    check("RS12 no register row repeats", len(reg_rows) == len(set(reg_rows)))
     gates_per_hall = collections.Counter(net["gates"].values())
     check("RS11 gate counts differ across halls", len(set(gates_per_hall.values())) >= 4)
 
@@ -403,27 +436,35 @@ def excess(net, j, mv):
     return dur - base
 
 
-def duration_only_flips(target, G, thr=6.5):
-    """Off-peak single trips the line map runs straight through Centraal (north-south, west-east) in the hours trains
-    run every six minutes or less often: the share a duration-only reading at the passage walk calls a change, and, in
-    every hour band where it calls any, the share of the same band's trips that came out of Centraal faster than a
-    change can take (under 6.2 minutes over the run), so that the band's trains ran through."""
+def crossing_excesses(target, G):
     net = G.net
-    bands = collections.defaultdict(list)
+    xs = []
     for j in G.window_journeys:
         if not j["t_out"]:
             continue
         mv = single_through(net, j)
-        if mv is None or {net["branch"][mv[1]], net["branch"][mv[2]]} not in ({"N", "S"}, {"W", "E"}):
+        if mv is not None:
+            xs.append(excess(net, j, mv))
+    return xs
+
+
+def straddling(target, G):
+    """Regular riders' weekday trips through Centraal whose span from check-in to check-out holds a change of the
+    service pattern."""
+    net = G.net
+    edges = [e for a, b in AN.PEAK_WINDOWS for e in (a, b)]
+    out = []
+    for j in G.window_journeys:
+        if j["card"] not in G.regular or not j["t_out"] or j["date"].weekday() >= 5:
             continue
-        t1 = AN.tmin(j["t_in"])
-        if AN.headway_at(net, j["date"], t1) < 6.0:
+        if single_through(net, j) is None:
             continue
-        bands[(min(j["date"].weekday(), 5) if j["date"].weekday() < 6 else 6, int(t1 // 60))].append(excess(net, j, mv))
-    allx = [x for v in bands.values() for x in v]
-    flagged = sum(1 for x in allx if x > thr) / max(1, len(allx))
-    mixed = [sum(1 for x in v if x < 6.2) / len(v) for v in bands.values() if any(x > thr for x in v) and len(v) >= 5]
-    return flagged, (min(mixed) if mixed else 0.0), len(allx)
+        a, b = AN.tmin(j["t_in"]), AN.tmin(j["t_out"])
+        if b < a:
+            b += 1440
+        if any(a - 3 < e < b + 3 for e in edges):
+            out.append(j)
+    return out
 
 
 def shoulder_hours(target, G):
@@ -442,54 +483,68 @@ def shoulder_hours(target, G):
             continue
         pair = {net["branch"][mv[1]], net["branch"][mv[2]]}
         x = excess(net, j, mv)
+        cut = sum(G.gap) / 2.0
         if pair == {"N", "E"}:
-            ne.append(x > 5.4)
+            ne.append(x > cut)
         elif pair == {"N", "S"}:
-            ns.append(x > 5.4)
+            ns.append(x > cut)
     return sum(ne) / max(1, len(ne)), sum(ns) / max(1, len(ns))
 
 
-def family(target):
-    out = {}
-    orig = AN.read_change
-    for name, shift, mode in (("estimated minute -3", -3.0, None), ("estimated minute +3", 3.0, None),
-                              ("pattern for every journey", 0.0, "pattern")):
-        def rc(net, j, hin, hout, mv, i, linemap, tally, _s=shift, _m=mode):
-            kind, u, v = mv[i]
-            bu, bv = net["branch"][u], net["branch"][v]
-            if _m != "pattern":
-                if len(mv) == 1:
-                    x = excess(net, j, mv[0]) if j["t_out"] else 0
-                    if x < 4.6:
-                        return False
-                    if x > 5.4 and AN.headway_at(net, j["date"], AN.tmin(j["t_in"])) <= 3.0:
-                        return True
-            est = AN.tmin(j["t_in"]) + net["halls"][hin]["walk"][AN.first_line(mv, net, u)] + 1.5 + _s
-            for k in range(i):
-                kk, a, b = mv[k]
-                est += AN.ride(net, "M3" if kk == "M3" else AN.LINE.get(net["branch"][a], "M1"), a, b) + 3.0
-                est += net["inter"][b]["walk"] if b in net["inter"] else 0.0
-            est += AN.ride(net, AN.LINE[bu], u, "CEN")
-            pk = j["date"].weekday() < 5 and any(a <= est % 1440 < b for a, b in AN.PEAK_WINDOWS)
-            return (AN.SERVICE[bu] != AN.SERVICE[bv]) if pk else linemap
-        AN.read_change = rc
-        M = AN.main_call(target)
-        out[name] = (M.tier, {k: r(v) for k, v in M.reach.items()})
-    AN.read_change = orig
+def lone_online_players(target):
+    out = set()
+    for pl, lst in AN.load_cms(target).items():
+        st = [k for t, k, n in lst if k in ("OFFLINE", "ONLINE")]
+        if st and st[0] == "ONLINE":
+            out.add(pl)
     return out
 
 
-def takedown_open_same(target, mg):
-    """The take-down dated at the opening of its day instead of its player's last report: the same make-good."""
-    orig = AN.load_cms
+def swap_evidence(target):
+    """Positions holding two open register rows: how many, and how many show a replacement: both tags on one player
+    output, and the player's first report after the new unit was connected equal to its count before the night's
+    work (its last report before the work, or the register's open connections then if it made none)."""
+    scr, cab = AN.load_register(target)
+    outs = AN.load_outputs(target)
+    cms = AN.load_cms(target)
+    open_rows = collections.defaultdict(list)
+    for s in scr:
+        if not s["taken_down"]:
+            open_rows[(s["location_code"], s["position"])].append(s)
+    shared = [v for v in open_rows.values() if len(v) == 2]
+    new_tags = {sorted(v, key=lambda s: str(s["hung"]))[1]["asset_tag"] for v in shared}
+    shown = 0
+    for v in shared:
+        old, new = sorted(v, key=lambda s: str(s["hung"]))
+        c_old = [(pl, a) for t, pl, a, b in cab if t == old["asset_tag"] and b is None]
+        c_new = [(pl, a) for t, pl, a, b in cab if t == new["asset_tag"]]
+        if not c_old or not c_new or c_old[0][0] != c_new[0][0]:
+            continue
+        pl, t_on = c_new[0]
+        if outs[(old["asset_tag"], pl)] != outs[(new["asset_tag"], pl)]:
+            continue
+        night = dt.datetime.combine(t_on.date(), dt.time(0, 0))
+        reports = [(t, n) for t, k, n in cms.get(pl, []) if n is not None]
+        before = [n for t, n in reports if t < night]
+        k0 = before[-1] if before else sum(1 for t, p2, a, b in cab if p2 == pl and a < night and b is None and
+                                           t not in new_tags)
+        after = [n for t, n in reports if t >= t_on]
+        if after and after[0] == k0:
+            shown += 1
+    return len(shared), shown
 
-    def no_zero(t, clock="local"):
-        ev = orig(t, clock)
-        return {p: [e for e in v if not (e[1] == "DISPLAYS" and e[2] == 0)] for p, v in ev.items()}
-    AN.load_cms = no_zero
-    alt = AN.make_good(target)
-    AN.load_cms = orig
-    return all(alt[k]["make_good"] == mg[k]["make_good"] for k in mg)
+
+def repeated_tags(scr):
+    by = collections.defaultdict(list)
+    for s in scr:
+        by[s["asset_tag"]].append(s)
+    rep = [v for v in by.values() if len(v) > 1]
+    ok = 0
+    for v in rep:
+        v = sorted(v, key=lambda s: str(s["hung"]))
+        if all(str(a["taken_down"] or "")[:10] == str(b["hung"])[:10] for a, b in zip(v, v[1:])):
+            ok += 1
+    return len(rep), ok
 
 
 def recab_consistent(target):

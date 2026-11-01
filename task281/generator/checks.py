@@ -236,7 +236,7 @@ def main():
     check("SF13 overreads grouped by the quarter the screening was captured (CAI-03 4.1)",
           "screenings captured in the quarter" in pdf_text[PR.FILES["standard"]], "")
     check("SF14 a fault's lost days are days with no screening captured, so the fault day is not one (CAI-03 4.2)",
-          "no AI screening was captured" in pdf_text[PR.FILES["standard"]] and
+          "scheduled screening day on which the clinic screened no one" in pdf_text[PR.FILES["standard"]] and
           all(v["days"] < u["days"] for v, u in zip(G["downtime"].values(), A.ask_downtime(P, "cancel_days").values())),
           "")
     check("SF15 days counted between Pacific calendar dates (CAI-03 4.1), not elapsed UTC time",

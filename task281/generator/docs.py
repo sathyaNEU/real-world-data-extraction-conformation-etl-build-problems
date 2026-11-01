@@ -48,9 +48,9 @@ def standard(path):
               "from the screenings captured in the quarter before: by clinic, the referrals read and the share whose "
               "closing grade is Referable, and for the network the average calendar days from the screening's local "
               "date to the local date of the closing grade."),
-        ("p", "<b>4.2</b> A camera fault is reported to Biomedical Engineering on the day it occurs. The Committee "
-              "reviews, for each camera fault, the clinic days on which no AI screening was captured at the clinic "
-              "because its camera was out of service."),
+        ("p", "<b>4.2</b> A camera fault is reported to Biomedical Engineering on the day it occurs. For each camera "
+              "fault the Committee reviews the clinic days lost to it. A clinic day lost to a camera fault is a "
+              "scheduled screening day on which the clinic screened no one because its camera was out of service."),
         ("small", "CAI-03 v3. Next review June 2027."),
     ]
     write_pdf(path, "Clinical AI Governance Standard CAI-03 v3", "%s Clinical AI Oversight Committee" % P.ORG_SHORT, b,
@@ -60,7 +60,8 @@ def standard(path):
 def protocol(path):
     b = [
         ("title", "Local Validation of %s: Study Protocol" % P.PRODUCT),
-        ("small", "Protocol CVCH-QI-2025-01, version 1.2, 6 January 2025. Principal investigator: %s, Director of "
+        ("small", "Protocol CVCH-QI-2025-01, version 1.3, 2 June 2025 (amendment 1: enrolment extended to 22 August "
+                  "2025 and the target to about 1,500 participants a site). Principal investigator: %s, Director of "
                   "Quality and Clinical AI. Grading lead: %s, %s. Approved by the %s Quality Committee as a quality "
                   "improvement project." % (P.PEOPLE["quality"], P.PEOPLE["grader"], P.READING_CENTER, P.ORG_SHORT)),
         ("h", "1. Objective"),
@@ -69,7 +70,7 @@ def protocol(path):
               "points, before the service is extended beyond the pilot clinics." % P.PRODUCT),
         ("h", "2. Design and participants"),
         ("p", "Prospective, consecutive enrolment of adults with diabetes attending for AI screening at the three pilot "
-              "clinics from 13 January to 27 June 2025. Patients already diagnosed with diabetic retinopathy are not "
+              "clinics from 13 January to 22 August 2025. Patients already diagnosed with diabetic retinopathy are not "
               "eligible. Each participant is photographed once (two fields per eye, non-mydriatic) and the AI is run "
               "at the Standard operating point; the DR score is kept, so that the result at every other operating "
               "point can be derived from it."),
@@ -83,9 +84,9 @@ def protocol(path):
               "but differ in level, the more severe level is recorded. Referable diabetic retinopathy is moderate "
               "NPDR or worse, or diabetic macular edema." % P.READING_CENTER),
         ("h", "4. Sample size"),
-        ("p", "About 1,100 participants a site. At an expected 10 per cent prevalence of referable disease this "
-              "gives about 330 referable participants, enough to estimate a sensitivity near 90 per cent to within "
-              "about 3.5 percentage points (95 per cent confidence)."),
+        ("p", "About 1,500 participants a site. At an expected 10 per cent prevalence of referable disease this "
+              "gives about 450 referable participants, enough to estimate a sensitivity near 90 per cent to within "
+              "about 3 percentage points (95 per cent confidence)."),
         ("h", "5. Analysis plan"),
         ("p", "Sensitivity and specificity with Wilson 95 per cent intervals at each operating point, overall and by "
               "site. Pre-specified subgroups: age group, sex, diabetes type, HbA1c group and ethnicity. An Ungradable "
@@ -95,7 +96,7 @@ def protocol(path):
               "and the site letter. The record is kept by the Quality department for six years."),
     ]
     write_pdf(path, "RetinaCheck local validation protocol", "%s Quality Department" % P.ORG_SHORT, b,
-              stamp_date="D:20250106102000+00'00'")
+              stamp_date="D:20250602102000+00'00'")
 
 
 def opspec(path):

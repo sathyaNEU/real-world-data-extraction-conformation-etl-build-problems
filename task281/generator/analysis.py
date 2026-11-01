@@ -422,6 +422,11 @@ def ask_downtime(P, route="history"):
     captured = defaultdict(set)
     for r in P.results:
         captured[P.code_of_portal[r["Site"]]].add(utc(r["Captured (UTC)"]).astimezone(PT).date())
+    # a scheduled screening day: a day the clinic had AI screening orders booked, whatever became of them
+    booked = defaultdict(set)
+    for o in P.orders:
+        if o["PROC_CODE"] == "IMG92229":
+            booked[P.code_of_ehr[o["DEPARTMENT"]]].add(mdy(o["ORDER_DATE"]))
     out = {}
     for t in sorted(tickets, key=lambda t: mdy(t["Opened"])):
         loc, opened = t["Location"], mdy(t["Opened"])
@@ -442,7 +447,7 @@ def ask_downtime(P, route="history"):
             days = 0
             d = opened + dt.timedelta(days=1)
             while d < back:
-                if d.weekday() < 5 and d not in captured[code]:
+                if d in booked[code] and d not in captured[code]:
                     days += 1
                 d += dt.timedelta(days=1)
         out[t["Ticket"]] = {"clinic": code, "opened": opened, "days": days, "cancelled": len(canc)}

@@ -2,6 +2,7 @@
 health, the autumn bookings and their billing. Clean truth only; pack.py writes the files."""
 import datetime as dt
 import math
+import random
 
 import params as P
 
@@ -95,6 +96,9 @@ def build(rng, net):
             i += k
     A.players = players
     A.ports = ports
+    # the operations of the season (failures, outages, the swaps, the player log) from their own stream
+    rng = random.Random(P.SEED * 7 + 1000 * P.HEALTH_SALT)
+    A.hrng = rng
     # failures during the flights: for each autumn booking one media player behind some of its package's screens
     # dies, and its screens are re-cabled to a working player at the same place a day or two later; the register
     # records the move when the work order is closed, one to six days after the job
@@ -255,7 +259,7 @@ def cms_events(A, t0, t1):
     """The content system's log in local time: a player going offline and back online (reporting the displays it
     drives when it comes back), and a change in the displays a running player drives (a re-cabling, or a screen
     unplugged for a few minutes during the night cleaning)."""
-    rng = A.rng
+    rng = A.hrng
     ev = []
     for p, st, en in A.spells:
         ev.append((st, p, "OFFLINE", ""))
@@ -267,7 +271,7 @@ def cms_events(A, t0, t1):
     for w in A.swaps:
         ev.append((w["off"], w["player"], "DISPLAYS", displays(A, w["player"], w["off"])))
         ev.append((w["on"], w["player"], "DISPLAYS", displays(A, w["player"], w["on"])))
-    removed_after = dt.datetime.combine(A.refurb[1], dt.time(5, 0))
+    removed_after = dt.datetime.combine(A.refurb[1] - dt.timedelta(days=1), dt.time(23, 40))
     busy = {}
     for p, st, en in A.spells:
         busy.setdefault(p, []).append((st - dt.timedelta(hours=1), (en or t1) + dt.timedelta(hours=1)))
@@ -505,14 +509,14 @@ def net_revenue(A):
 def register_rows(A):
     """The screen register as the screen operations team keeps it: one row per hanging of a screen (asset tag,
     place, position, package, hung, taken down, status). A screen moved to another place gets a new row and its
-    old row is not always closed; a refurbished hall's screens are re-hung under new asset tags while the old
-    tags stay open. Returns rows and the truth of what hangs on 1 January 2027 by package."""
+    old row is closed as moved; the replacement units came in under new asset tags while the old units' rows were
+    never closed. Returns rows and the truth of what hangs on 1 January 2027 by package."""
     rng = A.rng
     rows = []
     for s in A.screens:
         rows.append({"tag": s.tag, "loc": s.loc, "pos": s.pos, "pkg": s.pkg, "hung": s.hung,
                      "down": s.down.date() if s.down else None, "status": "verwijderd" if s.down else "in bedrijf"})
-    tags = {s.tag for s in A.screens}
+    tags = {s.tag for s in A.screens} | {w["new"] for w in A.swaps}
 
     def new_tag():
         while True:
@@ -520,15 +524,12 @@ def register_rows(A):
             if t not in tags:
                 tags.add(t)
                 return t
-    # 1. the supplier's 2026 replacement programme swapped the screens of eight halls and passages for new units
-    #    from 3 to 5 November; the new units came in under new tags and the old tags' rows were never closed
-    swap = {"CEN-HZ": 3, "KNO-H": 3, "HDH-OV": 4, "STP-H": 4, "MZT-H": 4, "TWB-H": 5, "VLH-H": 5, "OSE-H": 5}
-    kno = [r for r in rows if r["loc"] in swap and r["down"] is None]
-    for r in kno:
-        rows.append({"tag": new_tag(), "loc": r["loc"], "pos": r["pos"], "pkg": r["pkg"],
-                     "hung": dt.date(2026, 11, swap[r["loc"]]), "down": None, "status": "in bedrijf"})
-    A.retagged = [r["pos"] for r in kno]
-    # 2. screens moved between halls in November (same tag, a new row; the old row left open on two of three)
+    # 1. the supplier's replacement units of 2 to 4 November, under new tags; the old units' rows were never closed
+    for w in A.swaps:
+        rows.append({"tag": w["new"], "loc": w["loc"], "pos": w["pos"], "pkg": w["pkg"], "hung": w["on"].date(),
+                     "down": None, "status": "in bedrijf"})
+    A.retagged = [w["pos"] for w in A.swaps]
+    # 2. screens moved between halls in November (same tag: the old row closed as moved, a new row at the new place)
     movers = []
     for src in ("TNS-H", "ZDV-H", "HTM-H"):
         cand = [r for r in rows if r["loc"] == src and r["down"] is None]
@@ -543,9 +544,8 @@ def register_rows(A):
         day = dt.date(2026, 11, 9 + 2 * i)
         rows.append({"tag": r["tag"], "loc": dest, "pos": "%s-M%02d" % (dest, 10 + i),
                      "pkg": pkg, "hung": day, "down": None, "status": "in bedrijf"})
-        if i == 1:
-            r["down"] = day
-            r["status"] = "verplaatst"
+        r["down"] = day
+        r["status"] = "verplaatst"
         moves.append((r["tag"], r["loc"], dest, day))
     A.moves = moves
     # 3. planned: new screens in December at Universiteit and Oosterpoort; Zoutpannen's old screens out on 14 December;

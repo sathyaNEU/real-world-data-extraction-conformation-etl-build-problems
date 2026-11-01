@@ -3,6 +3,7 @@ import datetime as dt
 
 SEED = 25502
 ASKS_SALT = 298                             # the commercial records' own stream
+HEALTH_SALT = 187                           # the season's operations (failures, outages, swaps, player log)
 TASK = "task255"
 AS_OF = dt.date(2026, 11, 13)            # the head of audience research's request date (fiction)
 WIN_START = dt.date(2026, 10, 5)          # Monday
@@ -67,7 +68,7 @@ PACKAGES = {
 PACKAGE_ORDER = ["CEN", "BNS", "OVP", "NRD", "OST", "WST", "ZDT", "RNG", "EIN"]
 
 # ---------------------------------------------------------------- riders
-N_REGULAR = 2232
+N_REGULAR = 2189
 N_OCCASIONAL = 3200
 N_STAFF = 34
 HOME_W = {"N": 0.27, "S": 0.14, "W": 0.16, "E": 0.12, "P": 0.27, "X": 0.04}

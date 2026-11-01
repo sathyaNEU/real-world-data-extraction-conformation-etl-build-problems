@@ -441,10 +441,15 @@ def load_register(target):
     cab = []
     for r in rows:
         if r[0]:
-            a = dt.datetime.strptime(r[2], "%Y-%m-%d %H:%M")
-            b = dt.datetime.strptime(r[3], "%Y-%m-%d %H:%M") if r[3] else None
+            a = dt.datetime.strptime(r[3], "%Y-%m-%d %H:%M")
+            b = dt.datetime.strptime(r[4], "%Y-%m-%d %H:%M") if r[4] else None
             cab.append((r[0], r[1], a, b))
     return scr, cab
+
+
+def load_outputs(target):
+    h, rows = IO.read_xlsx(p(target, "register"), "Bekabeling")
+    return {(r[0], r[1]): int(r[2]) for r in rows if r[0]}
 
 
 def load_cms(target, clock="local"):
@@ -458,12 +463,22 @@ def load_cms(target, clock="local"):
     return ev
 
 
-def load_spells(target, clock="local"):
+EXPORT_START = dt.datetime(2026, 10, 1, 0, 0)
+
+
+def load_spells(target, clock="local", lead="state"):
+    """Offline spells per player from the log. lead='state': a player whose first status in the export is ONLINE was
+    offline from before the export began until then; lead='pairs': only OFFLINE and ONLINE pairs count."""
     ev = load_cms(target, clock)
     spells = []
     for pl, lst in ev.items():
         cur = None
+        first = True
         for tt, stt, k in lst:
+            if stt == "ONLINE" and first and cur is None and lead == "state":
+                spells.append((pl, EXPORT_START - dt.timedelta(days=30), tt))
+            if stt in ("OFFLINE", "ONLINE"):
+                first = False
             if stt == "OFFLINE" and cur is None:
                 cur = tt
             elif stt == "ONLINE" and cur is not None:
@@ -525,12 +540,16 @@ def load_bookings(target):
     return bk
 
 
-def make_good(target, mapping="cms", takedowns=True, clock="local", allowance=0.005):
+def make_good(target, mapping="cms", takedowns=True, clock="local", allowance=0.005, lead="state",
+              takedown_at="opening", register_shift=0):
     """mapping: 'cms' (the golden: each screen on the player it was cabled to, a re-cabling dated by the receiving
     player's display report), 'register' (the register's connection dates), 'first' (the first player each screen
     had), 'last' (the latest player each screen had, for the whole flight)."""
     scr, cab = load_register(target)
-    spells = load_spells(target, clock)
+    if register_shift:
+        sh = dt.timedelta(hours=register_shift)
+        cab = [(t, pl, x + sh, (y + sh) if y is not None else None) for t, pl, x, y in cab]
+    spells = load_spells(target, clock, lead)
     down = {}
     for s in scr:
         if s["taken_down"]:
@@ -543,7 +562,8 @@ def make_good(target, mapping="cms", takedowns=True, clock="local", allowance=0.
     for tag, d in down.items():
         pls = {pl for t, pl, a, b in cab if t == tag}
         hits = [tt for pl in pls for tt, kind, k in cms.get(pl, []) if kind == "DISPLAYS" and k == 0 and tt.date() == d]
-        down_at[tag] = min(hits) if hits else opening(d)[0]
+        down_at[tag] = min(hits) if hits else (dt.datetime.combine(d, dt.time(0, 0)) if takedown_at == "midnight"
+                                               else opening(d)[0])
     if mapping == "cms":
         moved = recabling_times(target, cab, clock)
         fix = {}

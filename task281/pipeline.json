@@ -14,8 +14,8 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip 0837f761: no LEAK, seven REVIEW lines ruled harmless in the note",
-  "reader": "clean, round 1"
+  "leak_py": "REVIEW 2026-11-01 on target.zip 85417530: no LEAK, seven REVIEW lines ruled harmless in the note",
+  "reader": "clean, rounds 1 and 2"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-01 (repeat.gate_g vs task255 v2, answered)",
@@ -33,6 +33,12 @@
    ],
    "repair": "closed by construction, no wording filed: NR-40 referable scores tightened (latent spread 0.605), NR-70 lifted (mean 1.18), the validation study extended to 22 August 2025 (4,477 images), Kestle Road's and Veldane's NR-70s failed in October 2025 and returned in September 2026 (90 and 91 per cent NR-40), capacity 7,500, validation draw 37 chosen from seventy on agreement of all fourteen estimators (observed proportions on screenings, days, gradable screenings, expected referables and camera by age; logistic, logit-logistic, binned and isotonic calibration on the clinic's own scores): the golden's point at all twelve clinics, tightest deciding cell 1.99 points from the floor; graded sensitivities stated as referred over referable counts; golden now Standard at seven, High at five, 7,076 referrals",
    "leak_reader": "clean (six questions; question 6 an analytical choice); optional note on the site configuration's shared dates, not taken"
+  },
+  "round2": {
+   "date": "2026-11-01",
+   "verdict": "DETERMINISTIC, APPROVE (order kept, Gate F strong, Gate G statistical_rigor, Gate H pass)",
+   "advisories_closed": "CAI-03 4.2 defines a lost clinic day (a scheduled screening day on which the clinic screened no one because its camera was out of service); protocol amendment 1 (enrolment to 22 August 2025, about 1,500 a site); the committee slide states each heatmap cell's basis. figures.json and submission.md blocks 1 to 4 identical to the round-2 copies",
+   "leak_reader": "clean, round 2"
   }
  },
  "returned": [
@@ -49,7 +55,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 4 round 1 repaired 2026-11-01 (the judge's Gate C estimator finding closed by construction; free gates green on the final cut, target.zip 0837f761). Next: the re-judge in the main session on the repaired cut; python3 task281/generator/build.py rebuilds everything and checks.py, verify.py and ceiling.py re-measure.",
+ "resume": "Re-judge approved 2026-11-01; its three advisories closed with no graded figure moved; every free gate green on target.zip 85417530. Next: ship in the main session (commit, ledger row).",
  "approved": null,
  "delivered": null,
  "portal": null,

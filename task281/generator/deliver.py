@@ -287,6 +287,9 @@ def brief(P, G, f, order, png, path):
          "year, and Kestle Road and Veldane ran on NR-40 loaners from October until their own cameras came back in "
          "September." % (vm["NR-40"]["Standard"], vm["NR-70"]["Standard"]), 13, False),
     ])
+    box(0.5, 5.45, 5.6, 0.8, [("Basis of each cell: the validation study's referred-over-referable proportion for "
+                               "each camera model at that point, weighted by the share of the clinic's Oct 2025 to "
+                               "Sep 2026 screenings captured on each model.", 10, False)])
     s.shapes.add_picture(png, Inches(6.35), Inches(1.35), height=Inches(5.95))
     when = dt.datetime(2026, 11, 16, 15, 2, 0)
     cp = prs.core_properties

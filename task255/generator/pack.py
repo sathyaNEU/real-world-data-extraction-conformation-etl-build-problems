@@ -227,7 +227,9 @@ def write_terms(path):
               "day of the flight: Monday to Friday 05:45 to 00:30, Saturday 06:30 to 00:30 and Sunday 07:00 to 00:30, "
               "local time in Ravelmond."),
         ("p", "6.2 A booked screen is dark while the media player it is connected to is offline in the content "
-              "management system, and while the screen is not hanging in its place."),
+              "management system, and while the screen is not hanging in its place. A screen is connected to a media "
+              "player from the player's first report in the content management system that counts the screen among "
+              "its displays."),
         ("p", "6.3 Dark hours above 0.5 per cent of a booking's booked screen-hours are made good in kind in the first "
               "quarter of the following year, in whole hours; part of an hour counts as an hour."),
         ("h", "Article 8. Invoicing and agency commission"),
@@ -255,12 +257,13 @@ def write_register(w, path):
                 r["down"].isoformat() if r["down"] else "", r["status"]]
                for r in sorted(rows, key=lambda r: (r["loc"], r["pos"], r["hung"], r["tag"]))]
     players = [[p, loc, "2023-03-01"] for p, loc in sorted(A.players.items())]
-    cab = [[t, p, fmt_dt(a), fmt_dt(b)] for t, p, a, b in sorted(A.cabling_register, key=lambda c: (c[0], c[2]))]
+    cab = [[t, p, A.ports[(t, p)], fmt_dt(a), fmt_dt(b)]
+           for t, p, a, b in sorted(A.cabling_register, key=lambda c: (c[0], c[2]))]
     IO.write_xlsx(path, [
         ("Schermen", ["asset_tag", "location_code", "position", "package", "hung", "taken_down", "status"], screens,
          None),
         ("Players", ["player_id", "location_code", "installed"], players, None),
-        ("Bekabeling", ["asset_tag", "player_id", "connected_from", "connected_to"], cab, None),
+        ("Bekabeling", ["asset_tag", "player_id", "output", "connected_from_local", "connected_to_local"], cab, None),
     ], XMETA_SB + ("Schermregister metro", "Spoorbeeld Media B.V."))
     return len(screens)
 

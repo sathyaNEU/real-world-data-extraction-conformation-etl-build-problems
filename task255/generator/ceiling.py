@@ -5,14 +5,15 @@ planning weights (38 for the call and its components, 7 for instruction-followin
     python3 task255/generator/ceiling.py [target_dir]
 
 Rows. The cracker lands the call and runs the battery: it reads the player log's UTC stamps in local time across
-the clock change, takes each screen's player from the register's connection dates, counts a taken-down screen as
-dark (terms 6.2), applies the 0.5 per cent allowance and rounds up (6.3); it keeps each asset tag's latest
-register row on 1 January 2027 and leaves out the screens held outside the packages; it splits the VAT out of the
-legacy invoices, nets every credit note through its invoice number, and shares each agency statement's amount over
-the bookings it lists by their value net of credit notes (8.2, settled on the statement). The mirror stops at the
-line map's rung on the call and handles the asks the same way, since nothing in them comes from the call. The full
-includer also dates each re-cabling by the receiving player's display report, keeps one screen to a register
-position and recovers each agency's contract rate from its statement (a stress row, not the gate)."""
+the clock change, dates each re-cabling by the receiving player's display report as terms 6.2 files it, counts a
+taken-down screen as dark, applies the 0.5 per cent allowance and rounds up (6.3), but builds offline spells from
+the log's OFFLINE and ONLINE pairs; it keeps each asset tag's latest register row on 1 January 2027 and leaves out
+the screens held outside the packages; it splits the VAT out of the legacy invoices, nets every credit note through
+its invoice number, and shares each agency statement's amount over the bookings it lists by their value net of
+credit notes (8.2, settled on the statement). The mirror stops at the line map's rung on the call and handles the
+asks the same way, since nothing in them comes from the call. The full includer also opens a spell for a player
+whose first status in the log is ONLINE, keeps one screen to a register position and recovers each agency's
+contract rate from its statement (a stress row, not the gate)."""
 import math
 import os
 import sys
@@ -27,8 +28,8 @@ def r10(v):
     return int(math.floor(v / 10.0 + 0.5)) * 10
 
 
-def figures(target, mapping, screens_rule, commission):
-    mg = AN.make_good(target, mapping=mapping)
+def figures(target, mapping, screens_rule, commission, lead="state"):
+    mg = AN.make_good(target, mapping=mapping, lead=lead)
     sc = AN.screens_on_sale(target, screens_rule)
     rv = AN.net_revenue(target, commission=commission)
     return ({k: v["make_good"] for k, v in mg.items()}, sc, {k: r10(v) for k, v in rv.items()})
@@ -41,7 +42,7 @@ def kept(resp, gold):
 def main(target):
     gold = figures(target, "cms", "golden", "rate")
     n = sum(len(g) for g in gold)
-    crack = kept(figures(target, "register", "latest_no_pos", "statements"), gold)
+    crack = kept(figures(target, "cms", "latest_no_pos", "statements", lead="pairs"), gold)
     full = kept(gold, gold)
     lc = sum(crack) / n
     c = 38 + 7 + 55 * lc
