@@ -45,7 +45,7 @@ def figures(S):
                                               .strftime("%H:%M")}
                      for d, t in days.items()},
         "constants": {"firm_mw": f.firm, "design_f": f.design, "block_mw": f.block, "growth_pct": round(100 * f.growth, 2),
-                      "threshold_f": f.threshold, "hot_f": HOT_F, "base_year": 2024, "window": "16:00 to 21:00",
+                      "threshold_f": f.threshold, "hot_f": HOT_F, "base_year": 2024, "window": "hours beginning 16:00 to 20:00",
                       "voltage_cut_pct": 3.5, "bandcenter_cvr_v": 119.2, "bandcenter_normal_v": 123.5,
                       "first_year": 2027, "last_year": 2031, "ten": 10},
         "ids": {"low_side_kv": 24.9, "line_kv": 69, "recorder_prefix": 41},
@@ -101,7 +101,7 @@ def write_book(path, S, F):
         % (F["days_in_fit"], F["weather_normal_2024_mw"]),
         "CVR relief: the 2027 operating plan runs CVR on every Dunraith feeder from 1 June 2027. Relief at the "
         "planning peak is %.1f per cent of load, from the 2025 pilot: DUN-2, DUN-5 and DUN-7 against DUN-1, DUN-3, "
-        "DUN-4, DUN-6 and DUN-8, CVR hours against normal hours as the regulator log switched them, 16:00 to 21:00 "
+        "DUN-4, DUN-6 and DUN-8, CVR hours against normal hours as the regulator log switched them, the hours beginning 16:00 to 20:00 "
         "on days at 99 F or more." % F["relief_pct"]["golden"],
         "Transfer requirement: excess over the 104.0 MW firm rating rounded up to whole 0.5 MW switching blocks. "
         "Planning peaks are shown to the nearest MW; the requirement is worked from the unrounded peak.",
@@ -118,7 +118,7 @@ def write_book(path, S, F):
     ws.freeze_panes = "A5"
 
     wp = wb.create_sheet("CVR pilot 2025")
-    wp.append(["Relief of the 3.5 per cent voltage cut by afternoon heat, 2025 pilot (16:00 to 21:00)"])
+    wp.append(["Relief of the 3.5 per cent voltage cut by the day's heat, 2025 pilot (hours beginning 16:00 to 20:00)"])
     wp["A1"].font = Font(bold=True, size=12)
     wp.append([])
     wp.append(["Day's maximum at Mossford airport", "CVR hours", "Normal hours", "Relief (per cent of load)"])
@@ -153,14 +153,14 @@ def write_book(path, S, F):
     we.append([])
     we.append(["Feeder", "Energy at members' meters (MWh)", "Note"])
     _head(we, 3, 3)
-    note = {"DUN-1": "section beyond S-1302 counted here to 30 June",
-            "DUN-3": "section beyond S-1302 counted here from 1 July",
-            "DUN-4": "section beyond S-4471 counted here to 30 June",
-            "DUN-8": "section beyond S-4471 counted here from 1 July",
-            "DUN-6": "section beyond S-6120 counted here to 30 June",
-            "DUN-2": "section beyond S-6120 counted here from 1 July",
-            "DUN-5": "two LP-3 services on CT metering from 2 and 3 June",
-            "DUN-7": "one LP-3 service on CT metering from 3 June"}
+    note = {"DUN-1": "section below S-1302 counted here to 30 June",
+            "DUN-3": "section below S-1302 counted here from 1 July",
+            "DUN-4": "section below S-4471 counted here to 30 June",
+            "DUN-8": "section below S-4471 counted here from 1 July",
+            "DUN-6": "section below S-6120 counted here to 30 June",
+            "DUN-2": "section below S-6120 counted here from 1 July",
+            "DUN-5": "two multiplier-20 meters set 2 and 3 June, whole kWh before",
+            "DUN-7": "one multiplier-20 meter set 3 June, whole kWh before"}
     for k, v in F["feeder_energy_mwh"].items():
         we.append([k, v, note.get(k, "")])
     we.append(["Total", F["feeder_energy_total_mwh"], "sum of unrounded feeder figures"])
@@ -170,8 +170,8 @@ def write_book(path, S, F):
         row[1].number_format = "#,##0"
     we.append([])
     we.append(["Daily kWh from the meter data system times each meter's multiplier from the day the present meter "
-               "was set (whole kWh before), on the feeder that served the transformer that day (SO-2026-114, "
-               "30 June 2026, traced through the register's device connectivity)."])
+               "was set (whole kWh before), on the feeder that served the transformer that day (SO-2026-114: the "
+               "moved sections on their new feeders from 00:00 on 1 July, traced through the register's devices)."])
     we.merge_cells(start_row=we.max_row, start_column=1, end_row=we.max_row, end_column=3)
     we.cell(row=we.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     we.row_dimensions[we.max_row].height = 44
@@ -192,8 +192,9 @@ def write_book(path, S, F):
         row[2].number_format = "0.0"
     wh.append([])
     wh.append(["MV-90 recorders 41-2207 and 41-2208 (the transformers' 24.9 kV side); 41-2391, the 69 kV line terminal, "
-               "is not a feeder. UTC interval-ending stamps moved to CDT. The replacement recorder at the T2 cabinet "
-               "(from 9 June, 10:40) stamps each interval at its start; its stamps are moved up 15 minutes."])
+               "is not a feeder. UTC interval-ending stamps moved to CDT. 41-2208 repeats a stamp on 9 June and runs "
+               "15 minutes early from there; moved 15 minutes later, the two recorders' hourly energy ties to the "
+               "historian's feeder total (scatter about 0.1 per cent, against 1.4 per cent as stamped)."])
     wh.merge_cells(start_row=wh.max_row, start_column=1, end_row=wh.max_row, end_column=4)
     wh.cell(row=wh.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     wh.row_dimensions[wh.max_row].height = 58

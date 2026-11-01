@@ -12,7 +12,7 @@
  "decision_type": "quantity_figure",
  "answer_unit": "count",
  "scoring_unit": "other",
- "answer": "29,100 export log loads to Port Kowhai in FY2028 under the 50MAX route limits (A grade 4,900; Pruned 2,500; K grade 7,550; KI grade 8,050; KIS grade 6,100)",
+ "answer": "29,000 export log loads to Port Kowhai in FY2028 under the 50MAX route limits, to the nearest 500 (A grade 4,900; Pruned 2,500; K grade 7,500; KI grade 8,000; KIS grade 6,100, each to the nearest 100)",
  "answer_source": "task133/submission.md, 1. Final Recommendation",
  "gap": [
   "population",
@@ -33,22 +33,23 @@
  "validated_decoy": false,
  "context_artifact": "register",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets every 50MAX permit unit's load rise to 50 tonnes gross less its tare and divides the plan's tonnes by the new average payloads files 26,900 loads, about 2,200 short, because the short-length grades fill their bunks before they reach 50 tonnes.",
+ "analyst_test": "A strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets every 50MAX permit unit's load rise to 50 tonnes gross less its tare and divides the plan's tonnes by the new average payloads files 27,000 loads (26,787 unrounded), about 2,200 short, because the short-length grades fill their bunks before they reach 50 tonnes.",
  "domain_test": "The deciding quantity is each log truck load's payload under the FY2028 route limits, which log transport planning gets from the unit's gross mass limit less its tare and the volume its bunks hold for the logs' length at the load's density; with another field's nouns the gross mass limit, the tare, the bunk volume by log length and the JAS volume per load have nothing to attach to.",
  "layer2_family": "estimand_identification",
  "layer2_pattern": "own:payload-gain-capped-by-the-next-binding-limit-after-the-mass-limit-rises",
  "layer1": [
-  "weighbridge tickets carrying net mass only, the unit's tare kept in the fleet register, unit codes that changed when a contractor re-registered two trucks",
+  "weighbridge tickets carrying net mass only, the unit's tare kept in the fleet register, two trucks re-registered on personalised plates mid-year",
   "port log scaling records stamped by the scaling station's clock, keyed to the truck registration rather than the weighbridge ticket, a few minutes after the weighbridge time",
-  "JAS volumes per load beside green tonnes, grades coded by the export grade spec sheet with log lengths",
-  "cartage invoices with subcontracted trucks billed under the head contractor's carrier code and credit notes reversing invoices billed twice",
-  "mill dockets in tonnes at one mill and JAS cubic metres at another, converted at each mill's contract factor"
+  "JAS volumes per load beside green tonnes, grades coded on the tickets and named in the plan, log lengths only in the export grade specification",
+  "a fleet register numbered by Matiri's induction across carriers, tares varying with configuration, bunk count, age and fit-out",
+  "cartage invoices with subcontracted trucks billed under the head contractor's carrier code and credit notes reversing lines billed twice",
+  "mill dockets dated when posted, days after delivery, the delivery date only in the mills' weighbridge logs among other suppliers' trucks"
  ],
  "stakeholder_role": "haulage manager at a forestry company, sizing the FY2028 cartage contract",
  "role_family": "procurement_lead",
  "spine": {
-  "file": "weighbridge_tickets_port_FY2026.csv",
-  "rows": 29984,
+  "file": "weighbridge_tickets_port_kowhai_FY2026.csv",
+  "rows": 30036,
   "entity": "one log truck load weighed at the port",
   "grain": "load",
   "source": "synthetic"
@@ -81,7 +82,7 @@
  "question_form": "how-many",
  "driver": "Raising the limit that binds a unit's load lifts it only until the next limit binds, and for a large share of units the next limit is a capacity in another dimension that the old limit had left with little headroom; letting every unit rise to the new limit, or only the units that sat at the old one, files the units needed low.",
  "driver_concrete": "Matiri Forest Products sizes its FY2028 cartage by dividing the harvest plan's tonnes by each grade's payload under the 50MAX limits, but a load gains mass only until its bunks are full: the port's scaling volumes, linked to the weighbridge tickets by truck and time, give each load's density, the fleet register gives each unit's bunk volume for the grade's log length, and the short grades reach full bunks a few tonnes above today's loads, so the mass-only uplift files the FY2028 loads well short.",
- "stump": "A strong solver lets each 50MAX permit unit's load rise to 50 tonnes gross less its tare and files 26,900 loads; the step that lands it there is ignoring the bunks: the scaling volumes and the register's full-bunk volumes show the short-length grades fill their bunks a few tonnes above today's payloads, so they gain a fraction of the six tonnes the new limit allows and FY2028 needs 29,100 loads.",
+ "stump": "A strong solver lets each 50MAX permit unit's load rise to 50 tonnes gross less its tare and files 27,000 loads; the step that lands it there is ignoring the bunks: the scaling volumes and the register's full-bunk volumes show the short-length grades fill their bunks a few tonnes above today's payloads, so they gain a fraction of the six tonnes the new limit allows and FY2028 needs 29,000 loads.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task141": "task141 prices units whose term has or lacks room under a ceiling, and its earlier architectures an offsetting term filed under another key or outcomes seen only for units let through; here no term, outcome or offset is priced: each load's payload rises with a relaxed mass limit only until its bunks are full, read per load from linked weighbridge and scaling records.",
@@ -198,7 +199,7 @@
    }
   }
  ],
- "notes": "Strategy binding_constraint: the bunks' volume binds once the mass limit rises, physically. Forum board_of_directors (the board approves the FY2028 cartage contract); forcing cutover_or_migration (the 50MAX route opens on 1 July 2027); org agriculture_or_food_producer; role procurement_lead (the haulage manager sizes the contract); context artifact register (the fleet register). Architecture 4 drew a heat-pump campus peak first (energy load-forecasting) and redrew when task138's fresh energy load-forecasting card banned the pairing.",
+ "notes": "Strategy binding_constraint: the bunks' volume binds once the mass limit rises, physically. Forum board_of_directors (the board approves the FY2028 cartage contract); forcing cutover_or_migration (the 50MAX route opens on 1 July 2027); org agriculture_or_food_producer; role procurement_lead (the haulage manager sizes the contract); context artifact register (the fleet register). Architecture 4 drew a heat-pump campus peak first (energy load-forecasting) and redrew when task138's fresh energy load-forecasting card banned the pairing. Stage 4 round 1 (2026-11-01, DETERMINISTIC, FIX_NOW): the licensed payload conventions spread the total over about 145 loads, so the loads are graded to the nearest 500 (total) and 100 (grades) with the plan's grade yields tuned mid-bin; the cartage window filed as FY2026's loads; the fleet register and the planning basis rewritten for realism (the basis names no bunk or volume).",
  "registered": "2026-11-01T20:02:02Z",
  "shell": {
   "question form": "how-many",

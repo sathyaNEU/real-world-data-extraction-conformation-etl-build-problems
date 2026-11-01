@@ -210,8 +210,9 @@ def main():
     rounded = [max(0.0, np.ceil(round((p - f.firm) / f.block, 9)) * f.block) for p in G_PK]
     check("SF14 the transfer worked from the planning peak rounded to the nearest MW: same transfers", rounded == G_TR)
     plan = re.sub(r"\s+", " ", IO.pdf_text(os.path.join(TARGET, PK.FILES["opplan"])))
-    check("SF15 CVR runs on every Dunraith feeder from 1 June 2027, at all hours (filed in the operating plan)",
-          "every Dunraith feeder from 1 June 2027, at all hours" in plan)
+    check("SF15 CVR runs on every Dunraith feeder at all hours every year from 1 June 2027, carried by later plans "
+          "(filed in the operating plan)", "every Dunraith feeder from 1 June 2027, at all hours" in plan and
+          "it runs every year from 1 June 2027, and later operating plans carry it unchanged" in plan)
     filled = loads.copy().ffill()
     w16 = A.weather_normal(TARGET, f, filled, obs)
     P16 = A.pilot_frame(TARGET, f, filled, obs)
@@ -222,7 +223,11 @@ def main():
     check("SF17 routine observations only: same call", same(w17["B"], rr["golden"]))
     e = S["energy"]
     e18 = A.feeder_energy(TARGET, prorate_june30=True)
-    check("SF18 Ask A: the minutes after 23:27 on 30 June pro-rated to the new feeders: same figures",
+    so_txt = re.sub(r"\s+", " ", IO.pdf_text(os.path.join(TARGET, PK.FILES["so"])))
+    check("SF18 Ask A: the order moves the sections at the day boundary (carried on the new feeders from 00:00 on 1 "
+          "July), so no daily reading is split; the minutes paralleled before midnight pro-rated: same figures",
+          "from 00:00 on 1 July 2026" in so_txt and all(t in so_txt for t in ("1 Jul 00:00 S-4471", "1 Jul 00:00 S-6120",
+                                                                              "1 Jul 00:00 S-1302")) and
           [round(x, -1) for x in e18] == [round(x, -1) for x in e])
     days, eleventh = A.hottest_days(TARGET, obs=obs)
     days_u, _ = A.hottest_days(TARGET, clock="lst", obs=obs)
@@ -293,6 +298,21 @@ def main():
     k_gr = kept(A.demand_peaks(TARGET, days, meters=("41-2207", "41-2208", "41-2391")))
     k_ut = kept(A.demand_peaks(TARGET, days, clock="utc"))
     check("Ask B device: the T2 recorder's stamps left as written keep %d of 10" % k_nr, k_nr == 0)
+    tie_g, tie_w = A.scada_tie(TARGET, True, loads), A.scada_tie(TARGET, False, loads)
+    check("SF24 Ask B alignment determinate: realigned, the recorders' hourly energy ties to the historian's total "
+          "(ratio %.4f, scatter %.2f per cent); as stamped the scatter is %.2f per cent"
+          % (tie_g[0], 100 * tie_g[1], 100 * tie_w[1]), tie_g[1] < 0.002 and tie_w[1] > 5 * tie_g[1])
+    mvr = A.mv90(TARGET)
+    pv = mvr[mvr.RECORDER.isin(["41-2207", "41-2208"])].drop_duplicates(["RECORDER", "end"]).pivot(
+        index="end", columns="RECORDER", values="VALUE").dropna()
+    both = pv[pv["41-2207"] > 0]
+    rat = both["41-2208"] / both["41-2207"]
+    check("Ask B realism: T2 is no fixed multiple of T1: each carries its own bus (ratio %.3f to %.3f, %d distinct "
+          "values to four places) and T2 carried both buses while T1 was out (%d intervals at zero)"
+          % (rat.quantile(0.01), rat.quantile(0.99), rat.round(4).nunique(), int((pv["41-2207"] == 0).sum())),
+          rat.std() / rat.mean() > 0.003 and rat.round(4).nunique() > 200 and (pv["41-2207"] == 0).sum() > 100)
+    tz_ok = all(kept(A.demand_peaks(TARGET, days, offset_h=o)) == 10 for o in (4, 5, 6, 7))
+    check("SF23 Ask B: any summer offset from UTC less 4 to UTC less 7 hours gives the same ten figures", tz_ok)
     check("Ask B hazard: the 69 kV line terminal summed in keeps %d of 10" % k_gr, k_gr == 0)
     check("Ask B hazard: UTC days keep %d of 10" % k_ut, k_ut <= 6)
     gt = Sw["gt"][Sw["gt"].meter.isin(["41-2207", "41-2208"])].copy()

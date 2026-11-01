@@ -87,7 +87,9 @@ def operating_plan(path):
         ("h", "3. Voltage"),
         ("p", "3.1 Conservation voltage reduction runs on every Dunraith feeder from 1 June 2027, at all hours, with "
               "the settings of the 2025 Dunraith pilot: feeder regulator bandcenter 119.2 V on a 120 V base "
-              "(normal setting 123.5 V), bandwidth 2.0 V, line drop compensation off."),
+              "(normal setting 123.5 V), bandwidth 2.0 V, line drop compensation off. The Board adopted it as "
+              "standing practice at Dunraith (resolution 2026-31): it runs every year from 1 June 2027, and later "
+              "operating plans carry it unchanged."),
         ("p", "3.2 AMI bellwether meters at the end of each Dunraith feeder are read every 15 minutes. If a "
               "bellwether meter reads below 114 V for 15 minutes the dispatcher returns that feeder to the normal "
               "setting and notifies the operations engineer."),
@@ -154,21 +156,22 @@ def switching_order(path):
         ("h", "Purpose"),
         ("p", "Move three line sections between Dunraith feeders to even out feeder loading. The moved sections "
               "become part of their new feeders' normal configuration."),
-        ("h", "Steps (30 June 2026)"),
+        ("h", "Steps (30 June to 1 July 2026)"),
         ("table", [["Step", "Time", "Device", "Operation", "Result"],
-                   ["1", "23:22", "TS-2236 (DUN-4 / DUN-8 tie)", "Close", "DUN-4 and DUN-8 paralleled"],
-                   ["2", "23:27", "S-4471 (DUN-4)", "Open", "Section beyond S-4471 fed from DUN-8"],
-                   ["3", "23:35", "TS-2252 (DUN-6 / DUN-2 tie)", "Close", "DUN-6 and DUN-2 paralleled"],
-                   ["4", "23:39", "S-6120 (DUN-6)", "Open", "Section beyond S-6120 fed from DUN-2"],
-                   ["5", "23:47", "TS-2219 (DUN-1 / DUN-3 tie)", "Close", "DUN-1 and DUN-3 paralleled"],
-                   ["6", "23:52", "S-1302 (DUN-1)", "Open", "Section beyond S-1302 fed from DUN-3"],
-                   ["7", "23:58", "", "Order complete, reported to dispatcher", ""]]),
+                   ["1", "30 Jun 23:56", "TS-2236 (DUN-4 / DUN-8 tie)", "Close", "DUN-4 and DUN-8 paralleled"],
+                   ["2", "30 Jun 23:57", "TS-2252 (DUN-6 / DUN-2 tie)", "Close", "DUN-6 and DUN-2 paralleled"],
+                   ["3", "30 Jun 23:58", "TS-2219 (DUN-1 / DUN-3 tie)", "Close", "DUN-1 and DUN-3 paralleled"],
+                   ["4", "1 Jul 00:00", "S-4471 (DUN-4)", "Open (SCADA)", "Section beyond S-4471 fed from DUN-8"],
+                   ["5", "1 Jul 00:00", "S-6120 (DUN-6)", "Open (SCADA)", "Section beyond S-6120 fed from DUN-2"],
+                   ["6", "1 Jul 00:00", "S-1302 (DUN-1)", "Open (SCADA)", "Section beyond S-1302 fed from DUN-3"],
+                   ["7", "1 Jul 00:04", "", "Order complete, reported to dispatcher", ""]]),
         ("h", "Closeout"),
-        ("p", "Order completed 30 June 2026 23:58 without outage. Normal open points now S-4471, S-6120 and S-1302; "
+        ("p", "Order completed without outage. The three sections are carried on their new feeders from 00:00 on 1 "
+              "July 2026, the start of the July meter-reading day. Normal open points now S-4471, S-6120 and S-1302; "
               "TS-2236, TS-2252 and TS-2219 normally closed."),
     ]
     IO.write_pdf(path, "SO-2026-114 Dunraith feeder rebalancing", "Julie Gibbs", COOP, b,
-                 "SO-2026-114 | %s dispatch | completed 30 Jun 2026" % COOP,
+                 "SO-2026-114 | %s dispatch | completed 1 Jul 2026" % COOP,
                  "D:20260618103000-05'00'", "D:20260701001500-05'00'")
 
 

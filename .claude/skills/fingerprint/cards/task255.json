@@ -1,167 +1,167 @@
 {
-  "task": "task255",
-  "architecture": "v3",
-  "drawn": "2026-11-01",
-  "slot_note": "re-rooted 2026-11-01 (architecture 3) after architecture 2's re-judge spent it (Gate G planted_defect_flip, H3 planted, reach figures unreproduced); the number keeps its Descriptive lane and moves to pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence, a domain and task type never drawn",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "subdomain": "medication-adherence-persistence",
-  "client_domain": "pharmacology-pharmacoepidemiology-safety",
-  "niche": "a Danish region's medicines unit choosing which general practices join its 2027 statin follow-up programme: the practices whose patients starting a statin in the second half of 2025 were persistent for a year less than six times in ten, persistence counted on the tablets each patient had at the dose they take, which the dispensing register records nowhere",
-  "objective": "descriptive-distribution",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "submission.md block 1; golden workbook (sheet Persistens)",
-  "gap": [
-    "objective",
-    "time"
+ "task": "task255",
+ "architecture": "v3",
+ "drawn": "2026-11-01",
+ "slot_note": "re-rooted 2026-11-01 (architecture 3) after architecture 2's re-judge spent it (Gate G planted_defect_flip, H3 planted, reach figures unreproduced); the number keeps its Descriptive lane and moves to pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence, a domain and task type never drawn",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "subdomain": "medication-adherence-persistence",
+ "client_domain": "pharmacology-pharmacoepidemiology-safety",
+ "niche": "a Danish region's medicines unit choosing which general practices join its 2027 statin follow-up programme: the practices whose patients starting a statin in the second half of 2025 were persistent for a year less than six times in ten, persistence counted on the tablets each patient had at the dose they take, which the dispensing register records nowhere",
+ "objective": "descriptive-distribution",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Yes: six practices join the 2027 statin follow-up programme, 041219 Lægehuset Østergade 48, 041236 Klinikken Bredgade 53, 041248 Lægerne Skovvej 48, 041275 Lægeklinikken Kirkebakken 48, 041307 Lægerne Møllevej 54 and 041322 Lægerne Stationsvej 53 per cent persistent at twelve months; every other practice 65 per cent or more",
+ "answer_source": "submission.md block 1; golden workbook (sheet Persistens)",
+ "gap": [
+  "objective",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G1",
+  "G12",
+  "G2"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every dispensing correctly and applies every filed rule of the programme (the new-user window, the 365-day lookback, the 30-day grace, tablets carried forward from earlier dispensings) but times each dispensing's tablets by the WHO defined daily dose, the field's standard when the register holds no dose, files 041236 and 041263 (Klinikken Bredgade and Lægerne i Vejlby) instead of the six: the high-strength practices escape the programme because two daily doses in one tablet double their patients' covered days, while the programme description counts tablets at the dose each patient takes, which their own refill rhythm shows.",
+ "domain_test": "The call turns on each practice's twelve-month persistence among new statin users, the pharmacoepidemiology measure built patient by patient from dispensings turned into exposure periods (supply carried forward, a permissible gap) and read at a fixed horizon; with another field's nouns there is no dispensing, no tablet supply, no daily dose and no permissible gap.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:exposure-periods-at-each-patients-own-daily-dose-estimated-from-their-refill-rhythm",
+ "layer1": [
+  "the register's dispensing extract with parallel-imported products under their own names and product numbers beside the originals",
+  "dates written day-month-year in the older extract months and ISO in the newer",
+  "prescriptions from hospital departments beside general practice in the prescriber column",
+  "the pilot's conversation log kept by the pharmacies with cancellations entered later",
+  "quarterly pilot statements drawn up on each quarter's last day",
+  "patients whose personal number was replaced appear under a second pseudonym from the change",
+  "list sizes reported per quarter in the practice register"
+ ],
+ "stakeholder_role": "head of the regional medicines unit",
+ "role_family": "programme_officer",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "statin_dispensings_202401_202612.csv",
+  "rows": 61788,
+  "entity": "one dispensing of a statin product to a patient at a pharmacy",
+  "grain": "dispensing",
+  "source": "synthetic (constructed register extract, declared in metadata.json)"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "local_government",
+ "world": {
+  "geography": "Denmark (a fictional region, Region Lindholt, its general practices and pharmacies)",
+  "currency": "DKK",
+  "org_type": "regional medicines unit",
+  "invented_names": [
+   "Region Lindholt",
+   "Lindholt"
   ],
-  "pattern": [
+  "people": [
+   "Hanne Overgaard",
+   "Laust Jessen",
+   "Britta Winther",
+   "Ester Poulsen"
+  ]
+ },
+ "deliverables": [
+  "statinprogram_2027.xlsx",
+  "statinprogram_2027.pdf"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "The decisive quantity is the share of a population still supplied at a fixed horizon when each member's supply is recorded only as quantities handed out on dates, and how long a quantity lasts depends on each member's own rate of use, which no record states; timing every quantity by a standard rate credits members on a double rate with twice their real cover and members on a half rate with half, while each member's own handout rhythm shows their rate.",
+ "driver_concrete": "Each practice's twelve-month persistence counts its new statin users who never went more than 30 days without tablets in the year from their first dispensing, the tablets of each dispensing lasting at the number a day the patient takes; the dispensing register records packs, strengths and dates but no dose, and the WHO defined daily dose credits a patient on one 40 mg atorvastatin a day with two days per tablet, while the patient's own refill rhythm (98 tablets about every 98 days, or every 49) shows the dose.",
+ "stump": "The default path times each dispensing's tablets by the WHO defined daily dose and files a set that leaves out the practices prescribing high-strength tablets once a day, whose patients look covered for twice as long as they were; the programme description counts the tablets at the dose each patient takes, which only the patient's own refill rhythm shows.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task118": "task118 values a levy's welfare loss on the quantity a market reaches within the appraisal year, a response-speed choice; here nothing is priced or modelled as a response: each patient's own daily dose is read from the rhythm of their own dispensings to time their tablet supply",
+  "task198": "task198 recovers suppliers' entitlements from claims values capped at the lesser of ask and entitlement; here no value is capped or recovered: the quantity is days of tablet supply, timed at the dose each patient takes as the intervals between their own refills show",
+  "task270": "task270's eighth architecture finds members on a supplier's fixed delivery schedule whose supply record cannot show a shortfall; here every patient collects their own tablets, and the step is timing each dispensing at the patient's own dose instead of the WHO defined daily dose"
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
+   "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
+   "domain": "actuarial-science-insurance",
+   "objective": "descriptive-distribution",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G1",
-    "G12",
-    "G2"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every dispensing correctly and applies every filed rule of the programme (the new-user window, the 365-day lookback, the 30-day grace, tablets carried forward from earlier dispensings) but times each dispensing's tablets by the WHO defined daily dose, the field's standard when the register holds no dose, files the wrong set of practices: the high-strength practices escape the programme because two daily doses in one tablet double their patients' covered days, while the programme description counts tablets at the dose each patient takes, which their own refill rhythm shows.",
-  "domain_test": "The call turns on each practice's twelve-month persistence among new statin users, the pharmacoepidemiology measure built patient by patient from dispensings turned into exposure periods (supply carried forward, a permissible gap) and read at a fixed horizon; with another field's nouns there is no dispensing, no tablet supply, no daily dose and no permissible gap.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:exposure-periods-at-each-patients-own-daily-dose-estimated-from-their-refill-rhythm",
-  "layer1": [
-    "the register's dispensing extract with parallel-imported products under their own names and product numbers beside the originals",
-    "dates written day-month-year in the older extract months and ISO in the newer",
-    "prescriptions from hospital departments beside general practice in the prescriber column",
-    "the pilot's conversation log kept by the pharmacies with cancellations entered later",
-    "quarterly pilot statements drawn up on each quarter's last day",
-    "patients whose personal number was replaced appear under a second pseudonym from the change",
-    "list sizes reported per quarter in the practice register"
-  ],
-  "stakeholder_role": "head of the regional medicines unit",
-  "role_family": "programme_officer",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "ekspeditioner_statiner_202407_202612.csv",
-    "rows": 0,
-    "entity": "one dispensing of a statin product to a patient at a pharmacy",
-    "grain": "dispensing",
-    "source": "synthetic (constructed register extract, declared in metadata.json)"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "dial_setting",
+   "stump_strategy": "maturity_censoring",
+   "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "local_government",
-  "world": {
-    "geography": "Denmark (a fictional region, Region Lindholt, its general practices and pharmacies)",
-    "currency": "DKK",
-    "org_type": "regional medicines unit",
-    "invented_names": [
-      "Region Lindholt",
-      "Lindholt"
-    ],
-    "people": [
-      "Hanne Overgaard",
-      "Laust Jessen",
-      "Britta Winther",
-      "Ester Poulsen"
-    ]
+  {
+   "architecture": "v1 (loop 1, shipped 10-14): the truncated and censored likelihood over every file, the open suits censored at the retention",
+   "fate": "FAILED_TO_STUMP 2026-10-26: both portal responses filed the golden (USD 4,000,000, 0.74 above it, the premium to the dollar); the deductible-and-retention likelihood is the field's reflex for a pool's loss run",
+   "domain": "actuarial-science-insurance",
+   "objective": "descriptive-distribution",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "dial_setting",
+   "stump_strategy": "maturity_censoring",
+   "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more."
   },
-  "deliverables": [
-    "statinprogram_2027.xlsx",
-    "statinprogram_2027.pdf"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is the share of a population still supplied at a fixed horizon when each member's supply is recorded only as quantities handed out on dates, and how long a quantity lasts depends on each member's own rate of use, which no record states; timing every quantity by a standard rate credits members on a double rate with twice their real cover and members on a half rate with half, while each member's own handout rhythm shows their rate.",
-  "driver_concrete": "Each practice's twelve-month persistence counts its new statin users who never went more than 30 days without tablets in the year from their first dispensing, the tablets of each dispensing lasting at the number a day the patient takes; the dispensing register records packs, strengths and dates but no dose, and the WHO defined daily dose credits a patient on one 40 mg atorvastatin a day with two days per tablet, while the patient's own refill rhythm (98 tablets about every 98 days, or every 49) shows the dose.",
-  "stump": "The default path times each dispensing's tablets by the WHO defined daily dose and files a set that leaves out the practices prescribing high-strength tablets once a day, whose patients look covered for twice as long as they were; the programme description counts the tablets at the dose each patient takes, which only the patient's own refill rhythm shows.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task118": "task118 values a levy's welfare loss on the quantity a market reaches within the appraisal year, a response-speed choice; here nothing is priced or modelled as a response: each patient's own daily dose is read from the rhythm of their own dispensings to time their tablet supply",
-    "task198": "task198 recovers suppliers' entitlements from claims values capped at the lesser of ask and entitlement; here no value is capped or recovered: the quantity is days of tablet supply, timed at the dose each patient takes as the intervals between their own refills show",
-    "task270": "task270's eighth architecture finds members on a supplier's fixed delivery schedule whose supply record cannot show a shortfall; here every patient collects their own tablets, and the step is timing each dispensing at the patient's own dose instead of the WHO defined daily dose"
+  {
+   "architecture": "v1 (loop 2, shipped 10-26): an intergovernmental liability pool's 2027 per-occurrence retention, ground-up severity fitted separately for law enforcement liability and the other coverage parts, each truncated at its deductible and censored at the retention",
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: the portal's responses filed the golden through the truncated and censored likelihood, the field's reflex for a pool's loss run; the liability pool world is closed and actuarial claims-frequency-severity is spent for a descriptive stump in this slot",
+   "domain": "actuarial-science-insurance",
+   "objective": "descriptive-distribution",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "dial_setting",
+   "stump_strategy": "other",
+   "driver": "The decisive quantity is the upper tail of a size distribution made of two kinds of item whose tails differ by far more than their bulk, with the expected number above a low anchor projected separately for each kind; the record identifies both tails once each kind is fitted on its own through the record's floor and ceiling, and the count above each high threshold is the sum of each kind's anchor times its own tail ratio, while one curve fitted to the pooled record is shaped by the short-tailed majority and puts the dial two steps too low."
   },
-  "lineage": [
-    {
-      "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
-      "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
-      "domain": "actuarial-science-insurance",
-      "objective": "descriptive-distribution",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "dial_setting",
-      "stump_strategy": "maturity_censoring",
-      "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
-    },
-    {
-      "architecture": "v1 (loop 1, shipped 10-14): the truncated and censored likelihood over every file, the open suits censored at the retention",
-      "fate": "FAILED_TO_STUMP 2026-10-26: both portal responses filed the golden (USD 4,000,000, 0.74 above it, the premium to the dollar); the deductible-and-retention likelihood is the field's reflex for a pool's loss run",
-      "domain": "actuarial-science-insurance",
-      "objective": "descriptive-distribution",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "dial_setting",
-      "stump_strategy": "maturity_censoring",
-      "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more."
-    },
-    {
-      "architecture": "v1 (loop 2, shipped 10-26): an intergovernmental liability pool's 2027 per-occurrence retention, ground-up severity fitted separately for law enforcement liability and the other coverage parts, each truncated at its deductible and censored at the retention",
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: the portal's responses filed the golden through the truncated and censored likelihood, the field's reflex for a pool's loss run; the liability pool world is closed and actuarial claims-frequency-severity is spent for a descriptive stump in this slot",
-      "domain": "actuarial-science-insurance",
-      "objective": "descriptive-distribution",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "dial_setting",
-      "stump_strategy": "other",
-      "driver": "The decisive quantity is the upper tail of a size distribution made of two kinds of item whose tails differ by far more than their bulk, with the expected number above a low anchor projected separately for each kind; the record identifies both tails once each kind is fitted on its own through the record's floor and ceiling, and the count above each high threshold is the sum of each kind's anchor times its own tail ratio, while one curve fitted to the pooled record is shaped by the short-tailed majority and puts the dial two steps too low."
-    },
-    {
-      "architecture": "v2 (2026-11-01): a metro advertising concessionaire's 2027 guaranteed-reach tier, each screen package's effective reach from smart-card journeys, the Centraal changes read from journey durations under a weekday-peak through-running",
-      "fate": "spent 2026-11-01 at the re-judge (bbcaedf8): Gate G banned (planted_defect_flip, surface_read_rejection: the stump rejected the planning model's line map, and on clean data the call collapses to executing rate card 3), Gate H3 failed as planted (the peak through-running is written in no shipped file and recoverable only from ride durations), and three reach figures (Overstappunten, Centraal, Binnenstad) were not reproduced under any reading; the metro advertising world is closed",
-      "domain": "marketing-consumer-research",
-      "objective": "descriptive-distribution",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "stump_strategy": "other",
-      "driver": "The decisive quantity is how many members of a population pass a set of points a given number of times over a period, when the record logs each member only where it enters and leaves and the points passed in between depend on how the service ran at that hour, which at the busiest hours differed from the published network; placing the in-between points from the published network credits passes to members who never made them and misses members who did, and only each journey's own duration against the network's timings shows which happened."
-    }
-  ],
-  "notes": "architecture 3 (2026-11-01): G1 (a unit-of-value swap: a tablet valued at the DDD instead of the patient's own dose) leads, G12 (dispensing dates record handouts, not days without tablets) and G2 (the patient, not the dispensing row, carries persistence) support it. The filed WHAT names the dose each patient takes, which the DDD default visibly substitutes, so the default is non-compliant on a literal reading; the analysis is estimating each patient's own rate from their dispensings.",
-  "registered": "2026-11-01T20:37:07Z",
-  "shell": {
-    "question form": "what",
-    "second-sentence opener": "for",
-    "rounding opener": "reach",
-    "deliverable set": "svg+xlsx"
+  {
+   "architecture": "v2 (2026-11-01): a metro advertising concessionaire's 2027 guaranteed-reach tier, each screen package's effective reach from smart-card journeys, the Centraal changes read from journey durations under a weekday-peak through-running",
+   "fate": "spent 2026-11-01 at the re-judge (bbcaedf8): Gate G banned (planted_defect_flip, surface_read_rejection: the stump rejected the planning model's line map, and on clean data the call collapses to executing rate card 3), Gate H3 failed as planted (the peak through-running is written in no shipped file and recoverable only from ride durations), and three reach figures (Overstappunten, Centraal, Binnenstad) were not reproduced under any reading; the metro advertising world is closed",
+   "domain": "marketing-consumer-research",
+   "objective": "descriptive-distribution",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "other",
+   "driver": "The decisive quantity is how many members of a population pass a set of points a given number of times over a period, when the record logs each member only where it enters and leaves and the points passed in between depend on how the service ran at that hour, which at the busiest hours differed from the published network; placing the in-between points from the published network credits passes to members who never made them and misses members who did, and only each journey's own duration against the network's timings shows which happened."
   }
+ ],
+ "notes": "architecture 3 (2026-11-01): G1 (a unit-of-value swap: a tablet valued at the DDD instead of the patient's own dose) leads, G12 (dispensing dates record handouts, not days without tablets) and G2 (the patient, not the dispensing row, carries persistence) support it. The filed WHAT names the dose each patient takes, which the DDD default visibly substitutes, so the default is non-compliant on a literal reading; the analysis is estimating each patient's own rate from their dispensings.",
+ "registered": "2026-11-01T20:37:07Z",
+ "shell": {
+  "question form": "what",
+  "second-sentence opener": "for",
+  "rounding opener": "reach",
+  "deliverable set": "svg+xlsx"
+ }
 }

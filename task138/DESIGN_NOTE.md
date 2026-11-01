@@ -9,7 +9,7 @@ its world, decision or quantity is used beyond the objective. Both earlier world
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task138.json`, architecture 3, registered 2026-11-01T19:49:38Z; `guard.py check` PASS at registration (redrawn off G14, G7, G6, filed_standard and committee_or_panel). Re-run on the final cut it BLOCKs on the window: builds that stood between task273 (registered 01:51Z) and this card at registration re-registered after it, so task273 (energy-systems-utilities / forecasting, capacity_planner, operations_log) and task125 and task281 (executive_team) now sit in its last three. Open for the main session (`## Build record`). |
+| Card | `.claude/skills/fingerprint/cards/task138.json`, architecture 3, registered 2026-11-01T19:49:38Z; `guard.py check` PASS at registration (redrawn off G14, G7, G6, filed_standard and committee_or_panel). Re-run on the final cut it BLOCKs on the window: builds that stood between task273 (registered 01:51Z) and this card at registration re-registered after it, so task273 (energy-systems-utilities / forecasting, capacity_planner, operations_log) and task125 and task281 (executive_team) now sit in its last three. Open for the main session (the build record below). |
 | Domain / task type | energy-systems-utilities / load-forecasting (client domain energy-systems-utilities; the task type serves Forecasting): a distribution substation's summer planning peak for the construction work plan |
 | Objective | Forecasting & Predictive Modeling: the planning peaks of summers 2027 to 2031, windows not yet open, with an operating change (CVR on every feeder from 1 June 2027) the history never ran |
 | Shape | 02 (a quantity per period): the transfer requirement for each of five summers (5) and the planning peak for each (5), the relief at the planning peak and the weather-normal peak as components; ask A (members' energy by feeder, 8) and ask B (the feeders' peak 15-minute demand on the ten hottest days of 2026, 10); the chart sheet; about 31 criteria |
@@ -149,14 +149,16 @@ takes 1.1 per cent off at the planning peak and the transfers are 1.0, 2.0, 3.0,
 | SF12 | the planning peak's conditions | days at 99 F, 16:00 to 21:00 | 98 or 100 F, other windows, weekdays, each hot day's peak hour | same call | asserted (relief 1.04 to 1.14 per cent) |
 | SF13 | relief estimator | ratio of means | a line in the day's maximum read at 101 F, mean of daily ratios | same call | asserted |
 | SF14 | transfer basis | unrounded peak | peak to the nearest MW | same transfers | asserted |
-| SF15 | CVR in summer 2027 | the whole summer | part | not taken | operating plan 3.1, from 1 June 2027 |
+| SF15 | CVR in 2027 to 2031 | every summer from 1 June 2027 | 2027 only (1, 3, 4, 5, 6 MW) | not taken | operating plan 3.1: standing practice, every year from 1 June 2027 |
 | SF16 | Bad hours | left out | filled | same call | criteria 5; asserted |
 | SF17 | specials | counted | routine only | same call | asserted |
-| SF18 | ask A, 30 June switching minutes | day on the old feeder | pro-rated | same figures | asserted |
+| SF18 | ask A, the switching day | 30 June on the old feeder, 1 July on the new | 30 June on the new | not taken | SO-2026-114 opens the switches at 00:00 on 1 July, the day boundary; the paralleled minutes pro-rated give the same figures (asserted) |
 | SF19 | ask B, the ten hottest days | local days | standard-time days | same ten | asserted, 1.44 F gap at the tenth |
 | SF20 | ask B, interval ending at midnight | previous day | next day | same figures | asserted |
 | SF21 | ask B, estimated intervals | kept | dropped | same figures | asserted, overnight only |
 | SF22 | ask A, a meter's set day | new multiplier | old | data decide | the kWh falls twentyfold on the set day |
+| SF23 | ask B, the summer clock | UTC less 5 hours | UTC less 4, 6 or 7 | same figures | asserted (every hot-day peak ends 18:30 to 19:45) |
+| SF24 | ask B, 41-2208 from its repeated stamp | 15 minutes later | as stamped, or the repeat dropped | not taken | only the realigned recorders tie to the historian's hourly feeder total (scatter 0.10 per cent against 1.5), asserted |
 
 ## Ladder
 
@@ -189,7 +191,7 @@ the hot-afternoon family spans 1.04 to 1.14 per cent and every member files the 
 | 12 | Maturity and censoring | summer 2026 complete before the review |
 | 13 | Order of operations | relief and growth multiply, order-free |
 | 14 | Row order | none matters; ask B's repeated stamp read in file order |
-| 15 | Duplicate resolution | ask B: the T2 replacement recorder's first stamp repeats the old one's last; its stamps move up 15 minutes |
+| 15 | Duplicate resolution | ask B: 41-2208 repeats a stamp on 9 June and runs 15 minutes early from there; moved 15 minutes later it ties to the historian (SF24) |
 | 16 | Identity normalisation | historian point names to feeders; recorders to Exhibit A's metering points |
 | 17 | Netting against gross | none |
 | 18 | Dimensional units | kW to MW; Celsius to F; kWh to MW over 15 minutes |
@@ -229,9 +231,11 @@ order, the MV-90 export and Exhibit A, which the call never reads (asserted: the
   register holds today's multiplier and set date, and their kWh falls twentyfold on the set day; the register's
   multiplier on every day overstates DUN-5 and DUN-7. Hazard: multipliers held in the register (every feeder).
 - Ask B, the feeders' peak 15-minute demand on the ten hottest days of 2026 (10 figures, MW to one decimal; the
-  supplier's demand bills). Primary device (D2/D8): the replacement recorder in the T2 cabinet from 9 June stamps each
-  interval at its start under the export's interval-ending header; its first stamp repeats the old recorder's last, and
-  summing T1 and T2 by stamp pairs each T1 interval with the next T2 one. Hazards: UTC interval ends (the hot-day peaks
+  supplier's demand bills). Primary device (D2/D8): from 9 June recorder 41-2208 stamps each interval at its start
+  under the export's interval-ending header; its stamp repeats once there, and summing the two recorders by stamp pairs
+  each T1 interval with the next T2 one. The alignment is determinate: only the realigned pair ties to the historian's
+  hourly feeder total. Each recorder reads its own bus (T1 DUN-1 to DUN-4, T2 DUN-5 to DUN-8) and T2 carried both
+  while T1 was out on 15 and 16 September. Hazards: UTC interval ends (the hot-day peaks
   end at 18:30 to 19:45 CDT, across UTC midnight); recorder 41-2391, the 69 kV line terminal, which Exhibit A's
   delivery point demand includes and the feeders do not.
 
@@ -239,7 +243,7 @@ order, the MV-90 export and Exhibit A, which the call never reads (asserted: the
 |---|---|---|---|---|
 | A, feeders the reconfiguration touched (DUN-1, 2, 3, 4, 6, 8) | 16,600, 16,210, 17,670, 11,150, 8,990, 15,850 | multipliers on every day, feeders as recorded | 16,050, 16,830, 18,210, 10,570, 8,360, 16,430 | miss |
 | A, DUN-5 and DUN-7 | 16,980, 14,810 | multipliers on every day | 17,120, 14,880 | miss |
-| B, ten days | 114.1, 101.0, 101.3, 99.1, 97.1, 97.3, 95.7, 94.7, 91.0, 92.9 | CDT, T1 + T2, repeated stamp dropped | 113.6, 100.8, 100.8, 98.7, 97.0, 96.7, 94.9, 94.6, 90.7, 92.8 | miss |
+| B, ten days | 112.9, 101.2, 101.6, 98.2, 97.9, 96.2, 95.5, 94.4, 90.9, 92.8 | CDT, T1 + T2, repeated stamp dropped | 112.6, 100.9, 101.7, 98.7, 97.4, 96.4, 95.3, 94.6, 90.5, 93.0 | miss |
 
 Mirror: off the call at rung 1, the same ask handling (nothing in the asks comes from the call): 0 of 18. Stress rows
 (not the gate): the tracer (also traces the moved sections) keeps 6 of 18; the full includer keeps 18 of 18.
@@ -257,24 +261,47 @@ count the data hold; no persona.
 ## Leak review
 
 `leak.py --asof 2026-10-27`: REVIEW, no LEAK. Answer figures: 2.0 (bandwidth 2.0 V in two PDFs) and 0.5 (the
-switching block, a filed input) are inputs; 15,850 matches a CSV fragment ("03:15,850.1"). The call's words in the
+switching block, a filed input) are inputs. The call's words in the
 criteria and the pilot plan are the world's nouns. Column names PROTECTIVE_DEVICE, Equipment and DRY_BULB_C are the
 source systems' own. Stump vocabulary: none of the decisive step's words (afternoon, compressor, constant power,
 relief) appears in a shipped file.
 
+## Stage 4 round 1
+
+The judge: DETERMINISTIC (SOLUTION_WRONG in wording only), FIX_NOW, order kept. The main call reproduced independently
+(102.93 MW at 101 F over 561 days; transfers 1 to 5 MW for any CVR effect between about 0.88 and 1.31 per cent), asks A
+and B reproduced, Gate F strong, Gate G PASS (statistical rigor, analytical, no surface read, no sole defect), Gate H
+PASS (decisive step analytical). The leak reader found no leak. Fixed in the generator in one pass:
+
+1. Write-up wording: step 2 names DATE_LST (local standard time) and DRY_BULB_C; step 3 the hours beginning 16:00 to
+   20:00 (65 and 50 hours); step 7 says what the export shows (41-2208's repeated stamp and the 15-minute move) and why
+   (the tie to the historian); step 6 the June meters as the register and the data show them.
+2. Ask A, feeder membership: SO-2026-114 now closes the ties at 23:56 to 23:58 on 30 June and opens S-4471, S-6120 and
+   S-1302 by SCADA at 00:00 on 1 July, and its closeout states the sections are carried on the new feeders from 00:00
+   on 1 July, the meter-reading day's start; no daily reading is split (SF18).
+3. Ask B, the T2 recorder: each recorder now reads its own bus with its own scatter (T2 to T1 from 0.906 to 0.933, no
+   fixed multiple), T2 carried both buses while T1 was out on 15 and 16 September, and the realignment is decided by the
+   tie to the historian's hourly feeder total (scatter 0.10 per cent realigned, 1.5 as stamped; SF24).
+4. CVR beyond 2027: the operating plan files it as standing practice, every year from 1 June 2027 (SF15).
+5. Time zone: every offset from UTC less 4 to UTC less 7 gives the same ten figures (SF23).
+6. Realism: the spring regulator confirmations at irregular crew-visit times; tie capacities and conductor limits at
+   working values.
+
+Resume: the re-judge, then the author's decision on the guard window BLOCK.
+
 ## Build record
 
-Built 2026-11-01; every gate on the final cut is in `pipeline.json` and the report. Generator: `generator/build.py`
-builds twice from the fixed seeds, byte-identical, and installs `target/`, `golden/`, `metadata.json`,
-`generator/figures.json` and `target.zip`; `generator/writeup.py` emits `submission.md` from `figures.json`.
-`checks.py` (74 assertions: R1 to R3c on the clean truth, the ladder and margins, SF1 to SF22, Layer 1 neutrality,
-the asks' devices and truth, separation, distractors, input gates, realism sweep, the golden workbook), `verify.py`
-on its own CSV, XLSX and PDF readers, `figures_check.py`, `precut.py`, `voice-check.py`, `leak.py` REVIEW,
-`ceiling.py` (pair 28.5). Pack: 15 files in three formats (seven CSV, five PDF, three XLSX), the largest
-`dunraith_feeder_mw_2024-2026.csv` at 70,272 rows; distractors `OMS_outage_events_2026.csv` and
-`DUN_feeder_ties_2026.xlsx`. Open: `guard.py check` and `heart` BLOCK on the window (ban.pairing, ban.role and
-ban.artifact against task273 v6, ban.forum against task125 v4 and task281 v3), which passed at registration; the
-heart's driver similarity is 0.07 at most.
+Built 2026-11-01 and rebuilt after stage 4 round 1; every gate on the final cut is in `pipeline.json` and the report.
+Generator: `generator/build.py` builds twice from the fixed seeds, byte-identical, and installs `target/`, `golden/`,
+`metadata.json`, `generator/figures.json` and `target.zip`; `generator/writeup.py` emits `submission.md` from
+`figures.json`. `checks.py` (77 assertions: R1 to R3c on the clean truth, the ladder and margins, SF1 to SF24, Layer 1
+neutrality, the asks' devices, truth and alignment, separation, distractors, input gates, realism sweep, the golden
+workbook), `verify.py` on its own CSV, XLSX and PDF readers (every graded figure and the recorders' tie),
+`figures_check.py`, `precut.py`, `voice-check.py`, `leak.py` REVIEW, `ceiling.py` (pair 28.5). Pack: 15 files in three
+formats (seven CSV, five PDF, three XLSX), the largest `dunraith_feeder_mw_2024-2026.csv` at 70,272 rows; distractors
+`OMS_outage_events_2026.csv` and `DUN_feeder_ties_2026.xlsx`. Open: `guard.py check` and `heart` BLOCK on the window
+(ban.pairing, ban.role and ban.artifact against task273 v6, ban.forum against task125 v4 and task281 v3), which passed
+at registration; the heart's driver similarity is 0.07 at most; the decision is the author's.
 
 ## Architecture 1 record (shipped 2026-10-15, re-rooted 2026-11-01)
 
@@ -527,3 +554,9 @@ heart's driver similarity is 0.07 at most.
 - The 2026 summer on the shared weather stream: the tenth and eleventh hottest days 0.1 C apart; 2026 drawn on its own
   stream, 1.44 F apart.
 - The outage log running to 31 October, after the review: cut at 20 October.
+- SO-2026-114 switching at 23:22 to 23:52 on 30 June: the day's meter reading straddled the move and putting 30 June on
+  the new feeders shifted six figures by 20 MWh (the judge's Gate C residual); the switches now open at 00:00 on 1 July.
+- T2 as a fixed 12/13 of T1: real transformers never read so; the judge recovered the recorder's shift from that
+  ratio alone; each recorder now reads its own bus with its own scatter and the historian's total decides the shift.
+- CVR filed for 2027 only: 2028 to 2031 read without it give 1, 3, 4, 5 and 6 MW; the operating plan now files it as
+  standing practice from 1 June 2027.

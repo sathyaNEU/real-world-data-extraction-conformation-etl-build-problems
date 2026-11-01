@@ -43,15 +43,15 @@ def write(F, path):
           "4. Laid each dispensing's tablets end to end at that dose from the first dispensing, tablets in hand "
           "used first, and called a patient persistent when no run of more than 30 days without tablets fell in "
           "the 365 days; took each practice's share and set it against 60 per cent "
-          "(statin_followup_programme_2027.pdf 2.1, 3.1, 3.2).",
+          "(statin_followup_programme_2027.pdf, its selection line and persistence definition).",
           "5. For the pilot, recovered each pharmacy's rate from pilot_statements_2026.pdf as each statement's "
           "amount over the conversations of its quarter in pilot_conversations_2026.xlsx not cancelled by the "
           "quarter's last day (one rate across the four quarters), and multiplied it by the conversations held in "
-          "2026 and never cancelled (pharmacy_pilot_agreement_2026.pdf 2.1).",
+          "2026 and never cancelled (pharmacy_pilot_agreement_2026.pdf, payment terms).",
           "6. For continuing users, joined the two pseudonyms of each person whose personal number was replaced in "
           "2026 (same birth date and sex, the first pseudonym's dispensings ending before the second's begin, on "
           "the same product line and practice), kept persons with a dispensing in each quarter of 2026 and counted "
-          "them at the practice of their last 2026 dispensing (programme 3.3).", ""]
+          "them at the practice of their last 2026 dispensing, as the programme defines continuing users.", ""]
     L += ["## 4. Deliverable Answers", "", "### statinprogram_2027.xlsx", "",
           "1. Joins the programme in 2027: " + ", ".join("%s %s" % (p["code"], p["name"]) for p in joins) + ".",
           "2. Twelve-month persistence by practice (per cent):"]

@@ -30,11 +30,15 @@ def figures(target):
                       "balance": int(round(pay[code] - stm[code]))})
     users = [{"code": code, "name": C.names[code], "users": cu[code]} for code in sorted(cu)]
     ddd = AN.main_call(target, "ddd")
+    D = AN.load(target)
+    singles = sum(1 for pid, pr, st in C.cohort
+                  if len([d for d in D["disp"][pid] if d["date"] >= st and (d["date"] - st).days < AN.HORIZON]) == 1)
     return {"practices": practices, "joins": [p for p in practices if p["joins"]], "pharmacies": pharm,
             "users": users, "cohort": sum(C.n.values()),
             "ddd_escape": [C.names[c] for c in C.joins if c not in ddd.joins],
             "ddd_adds": [C.names[c] for c in ddd.joins if c not in C.joins],
-            "floor_others": int(min(p["share"] for p in practices if not p["joins"]))}
+            "floor_others": int(min(p["share"] for p in practices if not p["joins"])),
+            "singles": singles, "region_share": 100.0 * sum(C.k.values()) / sum(C.n.values())}
 
 
 def kr(x):
@@ -76,8 +80,8 @@ def write_workbook(F, path):
         ws.cell(row=r, column=2, value=p["name"])
         ws.cell(row=r, column=3, value=p["n"])
         ws.cell(row=r, column=4, value=p["k"])
-        c = ws.cell(row=r, column=5, value=p["pct"])
-        c.number_format = "0"
+        c = ws.cell(row=r, column=5, value=p["share"] / 100.0)
+        c.number_format = "0%"
         ws.cell(row=r, column=6, value="Yes" if p["joins"] else "No")
         if p["joins"]:
             for col in range(1, 7):
@@ -86,7 +90,11 @@ def write_workbook(F, path):
     ws.cell(row=r, column=2, value="Region").font = bold
     ws.cell(row=r, column=3, value=sum(p["n"] for p in F["practices"])).font = bold
     ws.cell(row=r, column=4, value=sum(p["k"] for p in F["practices"])).font = bold
+    c = ws.cell(row=r, column=5, value=F["region_share"] / 100.0)
+    c.number_format = "0%"
+    c.font = bold
     ws.freeze_panes = "A6"
+    ws.print_title_rows = "5:5"
 
     ws = wb.create_sheet("Pilot settlement 2026")
     ws["A1"] = "Pharmacy pilot 2026: what each pharmacy is entitled to for its follow-up conversations"
@@ -113,6 +121,7 @@ def write_workbook(F, path):
     c.font = bold
     c.number_format = "#,##0"
     ws.freeze_panes = "A5"
+    ws.print_title_rows = "4:4"
 
     ws = wb.create_sheet("Continuing users 2026")
     ws["A1"] = "Continuing statin users in 2026 by practice"
@@ -130,6 +139,35 @@ def write_workbook(F, path):
     ws.cell(row=r, column=2, value="Region").font = bold
     ws.cell(row=r, column=3, value=sum(u["users"] for u in F["users"])).font = bold
     ws.freeze_panes = "A5"
+    ws.print_title_rows = "4:4"
+
+    ws = wb.create_sheet("Notes")
+    notes = [
+        ("Source", "statin_dispensings_202401_202612.csv (register extract, dispensings 2 January 2024 to 31 December "
+                   "2026), statin_products.csv, practice_register_2026.xlsx, pilot_conversations_2026.xlsx, "
+                   "pilot_statements_2026.pdf."),
+        ("New statin user", "First statin dispensing (ATC C10AA) 1 July to 31 December 2025 with none in the 365 days "
+                            "before, at the practice that prescribed it (programme description 3.1)."),
+        ("Persistent", "Never more than 30 days in a row without tablets in the 365 days from the first dispensing, "
+                       "tablets in hand used first (3.2). The register holds no dose: each patient's daily dose is "
+                       "the tablets dispensed before the last dispensing over the days from the first to the last."),
+        ("One dispensing", "%d new users had a single dispensing in their first year; at any dose it runs out within "
+                           "the year, so they count as not persistent." % F["singles"]),
+        ("Continuing user", "A person with a statin dispensed in each quarter of 2026, counted once at the practice "
+                            "that prescribed their last 2026 dispensing (3.3)."),
+        ("Pilot", "Entitled = the pharmacy's rate x conversations held in 2026 and never cancelled (agreement 2.1). "
+                  "Statements were drawn on each quarter's last day and paid; conversations cancelled after that "
+                  "date stayed on them."),
+        ("Rounding", "Shares to the whole per cent from the unrounded share; the 60 per cent line applied to the "
+                     "unrounded share; amounts in whole kroner."),
+        ("Prepared", "Medicines unit, 12 February 2027."),
+    ]
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 110
+    for i, (k, v) in enumerate(notes, start=1):
+        ws.cell(row=i, column=1, value=k).font = bold
+        c = ws.cell(row=i, column=2, value=v)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
     for s in wb.worksheets:
         s.sheet_view.zoomScale = 100
     wb.save(path)
@@ -145,8 +183,10 @@ def chart_png(F, path):
     ps = sorted(F["practices"], key=lambda p: p["share"])
     fig, ax = plt.subplots(figsize=(6.6, 3.9), dpi=150)
     ys = range(len(ps))
-    cols = ["#b5651d" if p["joins"] else "#7f97a6" for p in ps]
-    ax.barh(list(ys), [p["share"] for p in ps], color=cols, height=0.68)
+    cols = ["#eb6834" if p["joins"] else "#2a78d6" for p in ps]
+    ax.xaxis.grid(True, color="#e4e4e2", lw=0.6)
+    ax.set_axisbelow(True)
+    ax.barh(list(ys), [p["share"] for p in ps], color=cols, height=0.7)
     ax.set_yticks(list(ys))
     ax.set_yticklabels(["%s  %s" % (p["name"], p["code"]) for p in ps])
     for y, p in zip(ys, ps):
@@ -155,7 +195,12 @@ def chart_png(F, path):
     ax.text(60.6, len(ps) - 0.1, "programme line 60%", fontsize=7.6, va="bottom")
     ax.set_ylim(-0.7, len(ps) + 0.5)
     ax.set_xlim(0, 90)
-    ax.set_xlabel("New statin users H2 2025 persistent at 12 months (%)")
+    ax.set_xlabel("New statin users of H2 2025 persistent at 12 months (%)")
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color="#eb6834", label="Joins 2027"), Patch(color="#2a78d6", label="Stays out")],
+              loc="lower right", frameon=False, fontsize=7.8)
+    ax.set_title("%s practices under the 60%% line" % WORDS[len(F["joins"])].capitalize(), loc="left", fontsize=9.5,
+                 fontweight="bold")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     fig.tight_layout()
@@ -170,14 +215,17 @@ def write_note(F, path, png):
     due = sum(p["due"] for p in F["pharmacies"])
     paid = sum(p["paid"] for p in F["pharmacies"])
     blocks = [
-        ("t", "Statin follow-up programme 2027: practices joining"),
-        ("s", "Region Lindholt, medicines unit. To the practice planning committee, 12 February 2027."),
+        ("t", "%s general practices join the statin follow-up programme in 2027" % WORDS[len(joins)].capitalize()),
+        ("s", "To: the practice planning committee. From: Hanne Overgaard, medicines unit. 12 February 2027. "
+              "Subject: practices joining the 2027 programme (programme description 2.1)."),
         ("h", "Recommendation"),
         ("p", "Yes. %s practices join the programme in 2027: " % WORDS[len(joins)].capitalize() + "; ".join(names) +
               ". Each kept fewer than 60 per cent of its new statin users of the second half of 2025 on treatment for "
               "twelve months; the other %s practices are at %d per cent or more."
               % (WORDS[len(F["practices"]) - len(joins)], F["floor_others"])),
         ("img", (png, 170 * mm, 100 * mm)),
+        ("s", "Source: statin dispensings 2024 to 2026 (register extract), statin products, practice register 2026; "
+              "new statin users of 1 July to 31 December 2025 by the practice of their first prescription."),
         ("p", "Persistence is counted as the programme description sets it out (3.1 and 3.2): the %s patients who "
               "started a statin between 1 July and 31 December 2025, each followed for 365 days, persistent if never "
               "more than 30 days in a row without tablets. The register holds no dose, so each patient's tablets are "
@@ -192,6 +240,8 @@ def write_note(F, path, png):
               "quarterly statements paid DKK %s, because conversations cancelled after a statement date stayed on "
               "it. The workbook gives the amount per pharmacy and each practice's continuing statin users of 2026, "
               "each person counted once." % (kr(due), kr(paid))),
+        ("s", "Note: %s of the new users had one dispensing in their first year; at any dose it runs out within the "
+              "year, so they count as not persistent." % "{:,}".format(F["singles"])),
     ]
     IO.write_pdf(path, "Statin follow-up programme 2027", "Hanne Overgaard", "Region Lindholt", blocks,
                  "Region Lindholt, medicines unit", "D:20270212140500+01'00'", "D:20270212140500+01'00'")

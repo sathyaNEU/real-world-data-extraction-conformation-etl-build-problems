@@ -1,9 +1,308 @@
 # task255 design note
 
+Architecture 3, drawn 2026-11-01 at the re-root after architecture 2 (a metro concession's Tier G reach) was spent at
+its re-judge. Architectures 2 and 1 are kept below as `## Architecture 2 record` and `## Architecture 1 record`; both
+worlds are closed.
+
+## Draw
+
+- **Card:** `cards/task255.json`, architecture v3, registered 2026-11-01 (guard check PASS; nearest cards task118,
+  task198 and task270, each differentiated on the card). Pharmacology, Pharmacoepidemiology & Safety, task type
+  medication-adherence-persistence, objective Descriptive & Distribution Analysis (the number's lane is kept; the
+  marketing descriptive ground of architecture 2 is spent for this slot). Shape 10, a scorecard: every practice's
+  persistence set against the programme line. Decision designation_set; gap objective and time; generators G1, G12
+  and G2; Gate G method_or_model_selection; stakeholder the head of the regional medicines unit.
+- **World:** Region Lindholt, a fictional Danish region: sixteen general practices in five towns, eight pharmacies that
+  ran a 2026 pilot of pharmacist follow-up conversations, and the medicines unit, which holds the region's extract of
+  statin dispensings (January 2024 to December 2026) from the national register. The practice planning committee
+  adopted the 2027 statin follow-up programme on 26 January 2027. Personas from `guard.py names --geo DK --seed 255`:
+  Hanne Overgaard (medicines unit, the golden's author), Laust Jessen (the ATC/DDD table), Britta Winther (the pilot's
+  conversation log), Ester Poulsen (finance, the quarterly statements). As-of date of the fiction: Friday 12 February
+  2027.
+- **The call:** whether any practice joins the 2027 programme, and which. Golden: yes, six practices (041219
+  Lægehuset Østergade 48, 041236 Klinikken Bredgade 53, 041248 Lægerne Skovvej 48, 041275 Lægeklinikken Kirkebakken
+  48, 041307 Lægerne Møllevej 54, 041322 Lægerne Stationsvej 53 per cent); every other practice 65 per cent or more.
+  The call faces forward (2027 membership) and is measured on a closed window the programme itself fixes (2.1); the
+  descriptive tag stands because the deciding quantity is a distribution (the share of a practice's new users still
+  supplied at a horizon), not a predicted value.
+- **Shape arithmetic:** sixteen practices times persistence (16), the set and the verdict (2), the nearest practice
+  above the line (1), the chart with its line (2), what each pilot pharmacy is entitled to (8), each practice's
+  continuing users of 2026 (16): 45 gradable figures, 24 of them asks.
+- **Data-native sentence:** a Danish dispensing register records the packs, the product number and the date of each
+  dispensing but no dose, so how long a dispensing lasts is not in the record; the field times it at one WHO defined
+  daily dose a day, and nearly half of this region's new statin users with a refill take something else (two defined
+  doses in one tablet, two tablets a day, half a tablet, a half-strength tablet), which only the rhythm of each
+  patient's own dispensings shows.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, each patient's daily dose, has no column in any file: the register row holds a
+  pseudonym, a date, a product number, packs, a prescriber and a pharmacy, the product list holds strength and pack
+  size, and the dose is a relation between a patient's tablets and the days between that patient's own dispensings.
+- **Link:** the signal is read through a comparison no key offers: each patient's tablets set against the intervals
+  between their own successive dispensings, a within-patient rhythm the field's join (product number to ATC code to
+  defined daily dose) never asks for.
+- **Reflex:** the field's method for a register without doses, timing each dispensing at one WHO defined daily dose a
+  day (atc_ddd_2026.xlsx is the region's copy of the index), sits at rung 1 and files 041236 and 041263 (Klinikken
+  Bredgade and Lægerne i Vejlby), with Lægehuset Østergade at 67.9 per cent.
+- **Back-test:** the easy route validates: on the commonest products (atorvastatin 20 mg, rosuvastatin 10 mg) a tablet
+  is one defined daily dose and the typical patient refills a 98-tablet pack about every 94 days, so the DDD timing
+  checks out on the bulk of the register; the region-wide share it gives (about 65 per cent) sits beside the national
+  report's 64.
+- **Second use:** every file the decisive step reads is in the pack for its own reason: the extract is the medicines
+  unit's own record of dispensings, the product list maps product numbers to strength and pack size, and the practice
+  register maps prescribers to practices; the step reads nothing that ships for it.
+- **Shock:** the movement the step recovers reads as ordinary prescribing (high-intensity atorvastatin and two-tablet
+  regimens at some practices, tablet splitting and half-strength tablets at others), not as anything anomalous; sorted
+  by the DDD-timed share, the one-tablet-a-day share, cohort size or the patient survey's score, the golden set is not
+  an interval of any shipped statistic.
+- **Pins:** the WHAT is filed in programme 2.1, 3.1 and 3.2 in the region's own genre (the window, the lookback, the
+  practice of the first prescription, the 365 days, the 30-day run, tablets in hand used first, the dose the patient
+  takes); no filed sentence names a defined daily dose, tablets a day, a refill interval or a method, and deleting any
+  filed sentence only unfixes the population, the window or the gap, never the step.
+
+## Three rules
+
+- **Task type:** medication-adherence-persistence in pharmacology-pharmacoepidemiology-safety, which serves
+  Descriptive & Distribution Analysis: the distribution of new users' continuation on treatment, read as each
+  practice's share still supplied at a fixed horizon.
+- **Domain test:** the call turns on each practice's twelve-month persistence among new statin users, the
+  pharmacoepidemiology measure built patient by patient from dispensings turned into exposure periods (supply carried
+  forward, a permissible gap) and read at a fixed horizon; with another field's nouns there is no dispensing, no tablet
+  supply, no daily dose and no permissible gap.
+- **Swap:** "which schools join a reading programme, set by the share of new pupils still borrowing books a year on":
+  no tablets, no strength, no defined daily dose and no supply to carry forward at a rate the record does not hold.
+- **Layer 1:** (1) parallel-imported and generic products under their own names and product numbers beside the
+  originals (the national product list); (2) the extract stitched from the register's old system, dates day-month-year
+  to June 2024, ISO after (the medicines unit's extract); (3) hospital departments in the prescriber column beside the
+  practices, on long-standing users' dispensings (the register); (4) the pilot's conversation log with cancellations
+  entered weeks later (the pharmacies); (5) quarterly statements drawn on each quarter's last day (finance); (6) people
+  whose personal number was replaced in 2026 under a second pseudonym from the change (the register's pseudonymisation
+  of the personal number); (7) list sizes reported per quarter (practice planning). Nothing is placed to be caught;
+  items 1 to 3 and 7 move nothing on the call (asserted R2.1 to R2.3 and R2.7), items 4 to 6 sit only in the asks'
+  rows (R2.4 to R2.6).
+- **Layer 2:** estimation under a violated precondition: turning dispensings into exposure periods presumes a known
+  daily dose; the register holds none and the defined daily dose the field substitutes is not what these patients
+  take, so each patient's dose has to be estimated from their own record before any period is built.
+- **Decisive step:** reading each new user's daily dose off their own dispensings (the tablets handed out before the
+  last dispensing over the days from the first to the last, or the median of their refill rates) instead of assuming
+  one defined daily dose or one tablet a day, and timing every dispensing at it.
+- **Not semantics:** every field, code and unit read correctly (product numbers to strength and pack size, both date
+  formats, the prescribers, the window, the lookback, the 30-day run) still leaves the dose open, because no field,
+  code or definition holds a dose; the deciding fact is a rate in each patient's own dates.
+- **Not rule application:** programme 3.2 says the tablets last "at the daily dose they take" and leaves how to know
+  it to the analyst. Enumerated family (every construction a competent analyst reaches for): one tablet a day (nine
+  practices: 041219, 041224, 041236, 041248, 041251, 041275, 041282, 041322, 041334), one defined daily dose a day (two:
+  041236 and 041263, Kirkebakken at exactly 60.0), each product's typical rate across all its patients (the same
+  nine), each patient's own rate (six): Østergade spans 45.2 to 67.9 and the family files three distinct sets. Standing
+  family (what the record leaves defensible once the step is taken: the overall rate, the median refill rate, the last
+  three refills, the first year only, the rate snapped to half, one, two or four tablets): the same status for all
+  1,485 new users, asserted (SF7). The defined daily dose is ruled out by no filed sentence, only by the record, and
+  loudly: a patient on 98 tablets of atorvastatin 40 mg who refills every 94 days takes one tablet a day, not two
+  days per tablet.
+- **Analyst test:** a strong analyst who cleans the extract, applies every filed rule (window, lookback, 30-day run,
+  tablets carried forward) and times each dispensing at one WHO defined daily dose a day, the field's standard when the
+  register holds no dose, files 041236 and 041263 (Klinikken Bredgade and Lægerne i Vejlby); only reading each
+  patient's dose off their own refills files the six, Østergade at 47.6 instead of 67.9.
+- **Estimand:** statin_followup_programme_2027.pdf 2.1 and 3.1 to 3.2: a practice joins in 2027 when fewer than 60 per
+  cent of its new statin users of the second half of 2025 (first statin dispensing, ATC C10AA, from 1 July to 31
+  December 2025 with none in the 365 days before, at the practice that prescribed it) were persistent for twelve
+  months (never more than 30 days in a row without tablets in the 365 days from the first dispensing, each
+  dispensing's tablets lasting at the daily dose the patient takes, tablets in hand used first).
+- **No decoy:** nothing is planted to be caught: no memo, draft, briefing, stakeholder figure, copied block or hidden
+  rule ships; the ATC/DDD table is the WHO index a register extract comes with (a declared distractor), and the
+  published regional use in DDD per 1,000 a day, the patient survey and the national report answer other questions.
+- **No certified replay:** no shipped figure certifies a dose, a status or a practice's persistence; the national
+  report's 64 per cent rests on another definition (a new pack within 180 days) and another population, so the method
+  is not recovered by reproducing a published number.
+- **Lesson:** an exposure period is only as good as the dose it is timed at; where the register holds no dose, each
+  patient's own dispensing rhythm is the record of it, and a defined daily dose is a unit for counting consumption,
+  not a patient's dose. No build on file times a supply at a rate read from each member's own handout rhythm.
+
+## Default path
+
+1. Take the new statin users of 1 July to 31 December 2025 (first dispensing in the window, none in the 365 days
+   before) by the practice that prescribed the first dispensing: 1,485 patients.
+2. Turn each dispensing into days of supply the field's way when the register holds no dose: tablets times strength
+   over the WHO defined daily dose of the substance (atc_ddd_2026.xlsx), one defined daily dose a day.
+3. Lay the supplies end to end from the first dispensing, tablets in hand used first, and call a patient persistent
+   when no run of more than 30 days without supply falls in the 365 days.
+4. Take each practice's share and set it against 60 per cent.
+
+Ends on: two practices join, 041236 and 041263 (Klinikken Bredgade and Lægerne i Vejlby).
+Golden: six practices join, 041219, 041248, 041275, 041307, 041322 and 041236.
+
+## Stump sentence
+
+The default path times every dispensing at one WHO defined daily dose a day and files 041236 and 041263 (Klinikken
+Bredgade and Lægerne i Vejlby); at Østergade, Skovvej, Kirkebakken, Møllevej and Stationsvej many new users take two
+defined doses a day in one tablet or two, so the DDD credits each of their tablets with two days, and at Vejlby many
+take a half-strength tablet a day, so it credits each with half a day; only the rhythm of each patient's own
+dispensings shows the dose, and the six practices under 60 per cent are 041219, 041236, 041248, 041275, 041307 and
+041322.
+
+## Readability screen
+
+| Rung | 1 filed | 2 schema | 3 reflex | 4 control | 5 hygiene | 6 linear | 7 organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 one tablet a day | no | no dose column | yes, the usual statin label | no | no | no | no | readable |
+| R1 one defined daily dose a day | no | atc_ddd_2026.xlsx | yes, the field's method | the commonest products validate | no | no | no | readable |
+| R2 each product's typical rate | no | no | a product-level shortcut | no | no | no | no | readable |
+| G each patient's own rate from their refills (decisive) | 3.2 names the dose taken, no sentence says how to know it | no column holds a dose | the reflex lands on R1 | no control certifies a dose | the battery never sets tablets against a patient's own intervals | every new user's dose is read from their own dates | the extract ships as the unit's own record | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the window's ends | 1 July and 31 December 2025 inclusive | exclusive | same call, 15 users start on an end | programme 3.1 ("between 1 July and 31 December"); same call |
+| SF2 | the lookback | 365 days before the first window dispensing | 366 days; no earlier dispensing in the extract at all | same 1,485 users | same users (asserted) |
+| SF3 | the new user's practice | prescriber of the first window dispensing | the last or the most frequent prescriber | same practice for every user | programme 3.1; every new user's dispensings carry one practice (asserted) |
+| SF4 | "more than 30 days in a row" | a run of 31 days or more | 30 or more; part days rounded either way | same status for every user | same call (every status 15 days or more from the edge, asserted) |
+| SF5 | the 365 days | days 0 to 364 from the first dispensing | days 1 to 365; the last run counted to day 364 or 365 | same status | same call (as SF4) |
+| SF6 | tablets left from an earlier dispensing | used before a later one's | each dispensing starts afresh | same status (0 moves) | programme 3.2 |
+| SF7 | the daily dose read from the record | tablets before the last dispensing over the days first to last | the median refill rate; the last three refills; the first year only; snapped to half, one, two or four tablets | same status for all 1,485 | same call (asserted per estimator) |
+| SF8 | a new user with one dispensing | not persistent | persistent at some assumed dose | same status | the largest single supply (100 tablets) runs out by day 300 at any dose from a third of a tablet a day |
+| SF9 | the line on the unrounded or rounded share | unrounded | rounded | same set | same call (every practice 5.45 points or more from 60) |
+| SF10 | rounding a share | half up | half to even | same figures | no share on a half per cent (nearest 0.045) |
+| SF11 | old-system dates | day first | month first | same call and shares | days above 12 occur, so no other reading parses; R2.2b |
+| SF12 | tablets in a dispensing | packs times the product's pack size | packs alone | figures move | statin_products.csv pack_size_tablets |
+| SF13 | conversations held in 2026 | every row of the log | none outside 2026 | same figures | every conversation dated 2026 |
+| SF14 | a cancelled conversation | status aflyst with a cancellation date | status alone | same figures | the two always agree (asserted) |
+| SF15 | each pharmacy's rate | each statement over the conversations it covered (not cancelled by its date) | over the conversations held now | figures move | agreement 2.1 ("its agreed rate", one per pharmacy): only the first reading gives one whole-krone rate in all four quarters |
+| SF16 | a cancellation on the statement day | none occurs | before or after the statement | same figures | no cancellation dated on a quarter's last day |
+| SF17 | the statements' amounts | Danish format 1.234,00 | read as decimals of a thousand | figures move | every amount is a whole multiple of its rate only in the Danish reading |
+| SF18 | one person under two pseudonyms | birth date and sex alike, the first pseudonym's dispensings all before the second's | adding the same product line, the same practice, a gap under 120 days | same joins (28) | same figures (asserted) |
+| SF19 | the quarters of 2026 | by dispensing date | none other | same figures | every 2026 row dated inside the year |
+| SF20 | the last dispensing of 2026 | the person's latest 2026 row | two rows on the last day | same figures | no person has two prescribers on their last day |
+| SF21 | a hospital-prescribed 2026 dispensing | a statin dispensed in that quarter | dropped with the hospital rows | ask B moves | programme 3.3 ("had a statin dispensed"); no person's last 2026 dispensing is a hospital's |
+
+## Ladder
+
+| Rung | Construction | Joins | 041219 | 041236 | 041263 | 041275 | 041358 |
+|---|---|---|---|---|---|---|---|
+| R0 | one tablet a day | nine practices | 45.2 | 49.1 | 66.0 | 55.7 | 62.7 |
+| R1 | one WHO defined daily dose a day (the field's method) | 041236, 041263 | 67.9 | 54.4 | 51.5 | 60.0 | 69.1 |
+| R2 | each product's typical rate over all its patients | the same nine as R0 | 45.2 | 49.1 | 66.0 | 55.7 | 62.7 |
+| G | each patient's own rate from their dispensings | 041219, 041236, 041248, 041275, 041307, 041322 | 47.6 | 52.6 | 67.0 | 47.8 | 65.5 |
+
+R0's nine are 041219, 041224, 041236, 041248, 041251, 041275, 041282, 041322 and 041334. Every rung is asserted on
+the cut pack and on the clean truth (`checks.py` R3a, R3b, L2); the golden reproduces the world's own status for every
+new user (L1) and the independent verifier reaches it by another estimator and a day-by-day count (`verify.py`). The
+nearest practice to the line under the golden is 041358 Klinikken Vestervang at 65.45 (5.45 points). Under R1
+Kirkebakken sits at exactly 60.0, so a DDD variant may file three practices; every variant stays wrong.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | new statin users as programme 3.1 files them | filed; SF1, SF2 asserted |
+| 2 Unit of account | the patient (pseudonym) | filed (3.1, 3.2) |
+| 3 Attribution window | first dispensing 1 July to 31 December 2025 | filed (3.1); SF1 |
+| 4 As-of dating | the extract to 31 December 2026, the programme of 26 January 2027 | C1, one extract ships |
+| 5 Version basis | old-system and new-system rows | C1, both formats parse; R2.2 |
+| 6 Denominator | every new user of the practice | filed (2.1) |
+| 7 Weighting | none, each patient once | filed (2.1) |
+| 8 Window length | 365 days from the first dispensing | filed (3.2); SF5 |
+| 9 Boundary inclusivity | fewer than 60 per cent | filed (2.1); SF9, nothing within 5 points |
+| 10 Rounding path | whole per cent after counting | C1, SF10 |
+| 11 Tie-break | none needed | C1, no practice at the line |
+| 12 Maturity and censoring | every new user's year ends by 30 December 2026, inside the extract | C1, follow-up complete |
+| 13 Order of operations | cohort, dose, supply, status, share | C1 |
+| 14 Row order | file order irrelevant | C1, rows sorted by date |
+| 15 Duplicate resolution | no duplicated dispensing row | C1, R3c |
+| 16 Identity normalisation | product numbers to products, prescribers to practices | C1, SF3, SF12 |
+| 17 Netting against gross | none on the call | not applicable to the call; asks SF15, SF17 |
+| 18 Dimensional units | tablets, days, per cent | units in the headers |
+| 19 Code and status semantics | ATC C10AA, prescriber codes | filed (3.1); the product list |
+| 20 Integerisation | patients counted whole | C1 |
+| 21 Clause scope | general practices only; a hospital first prescription belongs to no practice | filed (3.1) |
+| 22 Forward window contents | 2027 membership rests on the closed 2025 cohort | filed (2.1) |
+
+## Literal reader
+
+Executed word for word: the prompt asks whether any practice joins the 2027 programme; programme 2.1, 3.1 and 3.2
+fix the cohort, the horizon, the 30-day run, the carry-over and the line, and 3.2 times each dispensing at the dose
+the patient takes. Every literal reading of those sentences gives the golden once the reader establishes each
+patient's dose, which the register leaves to its own dates: SF1 to SF12 show every convention converges or is ruled
+out by a quoted sentence, and every estimator of the dose converges (SF7). The DDD answer is not another reading of
+any sentence; it is the field's method applied where its precondition, that a patient takes one defined daily dose a
+day, fails in the record. The asks read the same way: agreement 2.1 and 2.2 and programme 3.3 file the payment and the
+continuing users, and SF13 to SF21 close their conventions.
+
+## Oracles
+
+- The DDD timing validates on the commonest products (a check that passes for the easy route, not an oracle for the
+  golden).
+- No shipped control certifies a dose, a status or a share; the national report (distractor) uses a 180-day refill
+  definition on the 2023 national cohort, and the published regional use in DDD per 1,000 a day measures volume.
+- Asks: each statement over the conversations it covered returns its pharmacy's whole-krone rate in all four quarters
+  only when the conversations are counted as they stood on the statement date, an identity a grader can confirm once
+  the later cancellations are noticed; a replaced personal number is confirmed by the same birth date and sex and the
+  same product line continuing at the next refill, not by any control.
+
+## Ask sheet
+
+Two asks on rows the call never reads (the pilot's log, statements and agreement; the register's long-standing users
+in 2026); neither feeds the chart.
+
+**Ask A, what each pilot pharmacy is entitled to for 2026 (8 figures, whole kroner).** Home: agreement 2.1, the
+pilot's settlement before the 2027 programme takes on the same pharmacies.
+- Primary device (D9, a control true only in its scope): finance drew each statement on the quarter's last day over the
+  conversations not yet cancelled, and 45 conversations (3 to 7 at every pharmacy) were cancelled after a statement had
+  covered them; the rates sit in annexes that do not ship, so the only record of each is its statements over the
+  conversations they covered, a rate that comes out whole and alike in all four quarters only when the log is read as
+  it stood on each statement date; entitled is that rate times the conversations held and never cancelled.
+- Hazards: cancellations entered inside the quarter; Danish amounts (1.234,00) and dates (31.03.2026); conversations
+  late in a quarter cancelled a few days after it closed.
+
+**Ask B, each practice's continuing statin users of 2026 (16 counts).** Home: programme 3.3, the baseline the 2027
+follow-up capacity is planned on.
+- Primary device (D1, the same records under two key schemes; a temporary identity resolved): 28 long-standing users
+  (1 to 3 at every practice) had their personal number replaced in 2026, and the register carries them under a new
+  pseudonym from the change (the extract's key is the pseudonym of the personal number), so neither pseudonym has a
+  dispensing in all four quarters; the person is joined only through birth date and sex, with the product line
+  (statin_products.csv) and the refill rhythm continuing across the change.
+- Hazards: hospital-prescribed 2026 dispensings (a filter to practice prescriptions drops a quarter, SF21); 855 groups
+  of people sharing a birth date and sex whose dispensings overlap (joining them over-counts the wrong way, B3); the
+  practice of the last 2026 dispensing.
+
+Pin test: the asking sentences pin the unit (whole kroner, a count), the year and the population (each pilot pharmacy,
+each practice); no pin names a statement date, a cancellation date, a rate, a pseudonym or a replacement. Agreement 2.2
+says only when statements are drawn, not what they cover, so the dating of the later cancellations is the reader's to
+find. The main population carries zero device rows: no new user's pseudonym is joined (R2.6), no new user's row has a
+hospital prescriber (R2.3b), and the call reads no pilot file (R2.4, R2.5).
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, A114, A121, A133 and A145 (a later cancellation in the first quarter) | reads the rate off a statement over the conversations held now, or adds up the statements | miss |
+| A, A102, A107, A126 and A139 | adds up the statements, which still carry the later-cancelled conversations | miss |
+| B, every practice | counts each pseudonym with four quarters as a person | miss |
+
+The cracker's best path short of the device on ask A (the rate off the first statement over the conversations held
+now) keeps A102, A107, A126 and A139, counted in the leakage below. The response that notices both devices and
+handles them keeps all 24; the asks hold the pair only while the top two miss them.
+
+Pair ceiling: 37.7 ((38 + 7 + 55 x 0.167) and (5 + 7 + 55 x 0.167), averaged)
+Mirror leakage: 16.7 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Build record
+
+Generator under `generator/`: params.py, world.py (the clean truth), asks_world.py (the register rows, replacements
+and the pilot, on its own stream), pack.py (twelve files, three formats), analysis.py (every rung and figure from
+target/ alone), golden.py, writeup.py, build.py (two byte-identical builds, metadata.json, figures.json,
+submission.md, target.zip), checks.py (67 assertions), verify.py (independent: pandas, its own XLSX and PDF readers,
+the median refill rate and a day-by-day count; 55 checks), ceiling.py. The spine is
+statin_dispensings_202401_202612.csv, 61,788 rows.
+
+## Architecture 2 record (spent 2026-11-01)
+
+Built 2026-11-01 (round 1 repaired to target.zip bbcaedf8) and spent the same day at the re-judge: Gate G banned (planted_defect_flip, surface_read_rejection: the stump rejected the planning model's line map, and on clean data the call collapses to executing rate card 3), Gate H3 failed as planted (the weekday-peak through-running was written in no shipped file and recoverable only from ride durations), and three reach figures (Overstappunten 45, Centraal 33, Binnenstad 32 against the shipped 47, 34 and 33) were not reproduced. Its note, kept for the record:
+
 Architecture 2, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 1 (an intergovernmental liability pool's
 per-occurrence retention) is kept below as `## Architecture 1 record`; its world is closed.
 
-## Draw
+### Draw
 
 - **Card:** `cards/task255.json`, architecture v2, registered 2026-11-01 (guard check PASS, nearest cards task451,
   task135, task161 and task460, each differentiated on the card). Marketing & Consumer Research, task type
@@ -34,7 +333,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   branches through Centraal at the weekday peaks, and the check-out time less the check-in time is the only record
   that shows it.
 
-## Survivor anatomy
+### Survivor anatomy
 
 - **Actor:** the deciding property, whether a journey changed trains at Centraal, has no column in any file: the
   journey row holds a card, two stops, two gates and two times, and the change is a relation between those times and
@@ -62,7 +361,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   duration or the interworking, and deleting any filed sentence only unfixes the population, the window or the
   count, never the step.
 
-## Three rules
+### Three rules
 
 - **Task type:** media-reach-frequency-audience-measurement in marketing-consumer-research, which serves Descriptive &
   Distribution Analysis: the distribution of opportunities to see across a rider population, read at an effective
@@ -123,7 +422,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   where a trip's own clock times exist they test that assumption, and an analyst who checks them finds the service
   that was actually ridden. No build on file reads a route from trip durations against a timetable.
 
-## Default path
+### Default path
 
 1. Take the passenger cards of RVB_metro_ritten_20261001_20261104.csv with a journey checked in during each
    calendar week from 5 October to 1 November 2026 (rate card 3.3): 1,901 regular riders.
@@ -137,7 +436,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
 Ends on: Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak, Centraal at 63 per cent.
 Golden: Tier G for Overstappunten, Oosttak and Zuidtak, Centraal at 34 per cent.
 
-## Stump sentence
+### Stump sentence
 
 The default path puts every change of trains where the line map puts it and files Tier G for Centraal, Binnenstad,
 Overstappunten, Oosttak and Zuidtak, Centraal at 63 per cent; on weekday peaks the north and east branches run
@@ -145,7 +444,7 @@ through Centraal into each other and the west and south likewise, so the big nor
 flows never use the interchange passage, which only each journey's duration against the network's timings shows,
 and Centraal and Binnenstad fall to 34 and 33 per cent.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed | 2 schema | 3 reflex | 4 control | 5 hygiene | 6 linear | 7 organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
@@ -155,7 +454,7 @@ and Centraal and Binnenstad fall to 34 and 33 per cent.
 | R2 peak pattern on every weekday hour | no | no | no | refuted by the shoulder hours | no | no | no | silent |
 | G durations read at Centraal (decisive) | no sentence names a peak, a service or a duration | no column holds a route or a change | the reflex lands on R1 | no control scores routes | the battery never sets durations against run times | the reach needs every rider's passes rebuilt | times and timings ship for fares and timetabling | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -185,7 +484,7 @@ and Centraal and Binnenstad fall to 34 and 33 per cent.
 | SF24 | a player whose first status in the log is ONLINE | offline from before the log began | online until its first OFFLINE | make-good moves | the log's own events: an ONLINE report ends an offline spell |
 | SF25 | two open register rows at one position | one screen (the replacement unit) | two screens | counts move | both tags sit on one player output, and the player reported as many displays after the night's work as before it |
 
-## Ladder
+### Ladder
 
 | Rung | Construction | Tier G | Centraal | Binnenstad | Overstappunten |
 |---|---|---|---|---|---|
@@ -200,7 +499,7 @@ asserted on the cut pack and on the clean truth; the golden reproduces the world
 every classification and routing the record licenses gives the same riders in every package (SF7 to SF9). The
 nearest package to the line under the golden is Eindhaltes at 34.82 (5.18 points).
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Move |
 |---|---|---|
@@ -227,7 +526,7 @@ nearest package to the line under the golden is Eindhaltes at 34.82 (5.18 points
 | 21 Clause scope | Annex A places per package | filed (3.4, Annex A) |
 | 22 Forward window contents | the 2027 tier rests on the closed autumn window | filed (3.1, 3.2) |
 
-## Literal reader
+### Literal reader
 
 Executed word for word: the prompt asks what belongs in Tier G; rate card 3.1 to 3.5 and Annex A fix the
 window, the regular rider, the passes, effective reach and the line. Every literal reading of those sentences gives
@@ -237,7 +536,7 @@ line-map answer is not another reading of any sentence; it is the field's method
 show was not running at the peaks. The asks read the same way: general terms 6.1 to 6.3 and 8.1 to 8.3 file the
 make-good and net revenue, and SF13 to SF25 close their conventions.
 
-## Oracles
+### Oracles
 
 - The fares reconcile to the line-map route on every journey (the operator charges by planned distance): a check
   that passes for the easy route, not an oracle for the golden.
@@ -248,7 +547,7 @@ make-good and net revenue, and SF13 to SF25 close their conventions.
   can confirm once the dating of the three later credit notes has been noticed; the receiving player's display
   report is the evidence for each re-cabling, not a control that ties only under the golden.
 
-## Ask sheet
+### Ask sheet
 
 Three asks on the files the call never reads (the register, the player log, the bookings, the terms, the two
 billing systems and the statements); none feeds the chart.
@@ -301,7 +600,7 @@ Pair ceiling: 38.3 ((38 + 7 + 55 x 0.179) and (5 + 7 + 55 x 0.179), averaged)
 Mirror leakage: 17.9 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
 
-## Build record
+### Build record
 
 - Generator: `generator/` (params, world, asks_world, pack, io_util, analysis, golden, checks, verify, ceiling,
   writeup, build). World from SEED 25502, the commercial records from their own stream (salt 298) and the season's
@@ -309,7 +608,7 @@ Measured by: generator/ceiling.py (run on the cut pack)
   Deliverables: tier_g_2027.xlsx (four sheets) and tier_g_2027.svg (the reach chart, titled with the call).
 - Free gates on the final cut after the round 1 repair: see `## Judge record`.
 
-## Leak record
+### Leak record
 
 - REVIEW, Spoorbeeld_tariefkaart_2027.pdf carries most words of the call: the rate card defines Tier G and lists
   every package by name in its price table and Annex A; it ranks nothing and selects nothing. Harmless.
@@ -322,7 +621,7 @@ Measured by: generator/ceiling.py (run on the cut pack)
 - The booking numbers (0411 to 0437) appear in the agency statements and in block 4 as identifiers; they are listed
   under `stated_inputs` in metadata.json.
 
-## Judge record
+### Judge record
 
 - Round 1 (stage 4, main session): leak reader clean, question 6 analytical. Judge NOT_DETERMINISTIC, SEND_BACK, with
   the call forced under every variant it ran (Gate F strong, G and H pass, H "analytical, borderline planted"; the
@@ -874,3 +1173,32 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   after it read differently on the check-in clock; the commute is centred in the peaks and the few trips near a
   change are moved clear of it.
 - 2,189 habitual riders: Overstappunten and Oosttak came out at the same rider count; 2,183 kept.
+- Architecture 2 (Spoorbeeld Media's Tier G reach on the Ravelmond metro, the weekday-peak through-running read from
+  journey durations) spent at its re-judge on bbcaedf8, 2026-11-01: Gate G banned (planted_defect_flip,
+  surface_read_rejection), Gate H3 planted (the through-running written in no file), three reach figures not
+  reproduced, ask 3 open to several readings, ask 4 inferable; re-rooted as architecture 3 in another client domain.
+- Draw candidates for architecture 3: a political-science small-area estimate by multilevel regression and
+  poststratification (the field's method would be the golden); activity-space segregation read from mobility traces
+  (a route inferred from timings, architecture 2's driver again); nonresponse follow-up weighting of a survey (a
+  standardisation reflex the screen reads); an anthropometric size-chart fit (a backdrop under the swap test); kept:
+  statin persistence on a register that holds no dose.
+- Agreement 2.2 saying the statements covered "the conversations held in the quarter and not cancelled by then": the
+  sentence filed the device's handling (the pin test); cut to when statements are drawn and paid.
+- Personal numbers replaced at fourteen practices only: two practices' counts carried no device; every practice now
+  has one to three.
+- Later cancellations at five pharmacies: three pharmacies' figures equalled their statements' sum; every pharmacy now
+  has some.
+- Hospital prescribers on new users' later dispensings: dropping hospital rows (a filter to practice prescriptions)
+  moved eleven shares; hospital rows now sit only on long-standing users' dispensings, in the old system's months and
+  in 2026 (never a person's last of 2026).
+- The old system's day-month-year dates running to December 2024: dropping those rows made 105 long-standing users
+  read as new; the old system now ends in June 2024 and the extract reaches back to January 2024, outside every
+  lookback.
+- No patient starting a statin outside the cohort window: the register read as built around the window; starters from
+  November 2024 to June 2025 and during 2026 added on their own stream.
+- Two people sharing a birth date and sex whose dispensings never overlap: they read as one person under two numbers;
+  the later one's birth date is redrawn.
+- A DDD-per-pack or dose column in the product list: it hands the reflex a column; the list carries strength and pack
+  size only.
+- Ask A to the nearest 10 kroner: one pharmacy's figure sat a krone from a bin edge; whole kroner, the precision the
+  arithmetic carries.

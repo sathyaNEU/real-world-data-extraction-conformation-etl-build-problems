@@ -40,7 +40,7 @@ def main():
     a("1. The weather-normal peak (criteria 3.2) is **%.1f MW** at the 2024 level, **%.1f MW** in %s before the "
       "voltage cut." % (f["weather_normal_2024_mw"], f["weather_normal_mw"][yrs[0]], yrs[0]))
     a("2. The %.1f per cent voltage cut takes **%.1f per cent** off the load at the planning peak (**%.1f MW** in "
-      "%s), read from the 2025 pilot's afternoons on days at %d F or more."
+      "%s), read from the 2025 pilot's hours beginning 16:00 to 20:00 on days at %d F or more."
       % (k["voltage_cut_pct"], rel["golden"], f["relief_mw"][yrs[0]], yrs[0], k["hot_f"]))
     a("3. The planning peaks for %s to %s are **%s MW**." % (yrs[0], yrs[-1], ", ".join(str(p) for p in pk[:-1]) +
                                                           " and %d" % pk[-1]))
@@ -49,15 +49,16 @@ def main():
     a("1. Joined DUNRAITH_FDR_KW_2022-2023.csv (kW, each hour labelled at its end) to "
       "dunraith_feeder_mw_2024-2026.csv (MW, labelled at its start; Bad hours left out per criteria 5) and took "
       "each day's highest hourly sum of the feeders.")
-    a("2. Took each local day's maximum from mossford_ap_obs_2022-2026.csv (UTC, Celsius) and fitted criteria "
+    a("2. Took each local day's maximum from mossford_ap_obs_2022-2026.csv (DATE_LST, local standard time, an hour "
+      "behind the historian's daylight time; DRY_BULB_C in Celsius) and fitted criteria "
       "3.2's line over the %d days at %d F or more: %.2f MW per F, %.1f MW at %d F, carried from 2024 at the "
       "BEC_load_forecast_2025.xlsx base case, %.2f per cent a year compounded: %.1f MW in %s."
       % (f["days_in_fit"], k["threshold_f"], f["slope_mw_per_f"], f["weather_normal_2024_mw"], k["design_f"],
          k["growth_pct"], f["weather_normal_mw"][yrs[0]], yrs[0]))
     a("3. Rebuilt each hour's setting from VR_event_log_DUN_2025.csv and compared the ratio of DUN-2, DUN-5 and "
-      "DUN-7 to the other feeders in CVR hours and normal hours, 16:00 to 21:00: the relief falls from %.1f per "
-      "cent on days under %d F to %.1f per cent on days at %d F or more (%d CVR and %d normal hours), the "
-      "conditions of the planning peak."
+      "DUN-7 to the other feeders in CVR hours and normal hours, over the hours beginning 16:00 to 20:00: the relief "
+      "falls from %.1f per cent on days under %d F to %.1f per cent on days at %d F or more (%d CVR and %d normal "
+      "hours), the conditions of the planning peak."
       % (bands[0]["relief_pct"], bands[0]["to_f"], rel["golden"], k["hot_f"], f["hot_hours"]["on"],
          f["hot_hours"]["off"]))
     a("4. Took %.1f per cent off each summer's weather-normal peak for the 2027 operating plan's CVR on every "
@@ -66,15 +67,17 @@ def main():
       "(criteria 4.1): %s MW." % (k["firm_mw"], k["block_mw"], ", ".join("%.1f" % t for t in tr)))
     ea = f["feeder_energy_mwh"]
     a("6. Ask A: multiplied each day's KWH in mdms_xfmr_daily_kwh_20260601_20260930.csv by METER_MULT in "
-      "DUN_transformer_register_2026-10.xlsx from the transformer's METER_SET date (the LP-3 services that went "
-      "onto CT metering in June read whole kWh before it) and counted June on the old feeder for every "
-      "transformer whose PROTECTIVE_DEVICE lies beyond S-4471, S-6120 or S-1302 in the register's Devices sheet "
-      "(SO-2026-114_Dunraith.pdf): %s MWh." % ", ".join("%s %s" % (x, c(v)) for x, v in ea.items()))
+      "DUN_transformer_register_2026-10.xlsx from the transformer's METER_SET date and by 1 before it (the three "
+      "multiplier-20 meters set in June 2026 read about twenty times their later daily KWH before that date), and "
+      "counted 1 to 30 June on the old feeder for every transformer whose PROTECTIVE_DEVICE lies below S-4471, "
+      "S-6120 or S-1302 in the register's Devices sheet (SO-2026-114_Dunraith.pdf: carried on the new feeders from "
+      "00:00 on 1 July): %s MWh." % ", ".join("%s %s" % (x, c(v)) for x, v in ea.items()))
     hd = f["hot_days"]
     a("7. Ask B: summed recorders 41-2207 and 41-2208 of MV90_DP0417_202606-202609.csv (the transformers' %.1f kV "
-      "side in WPC_Exhibit_A_delivery_points.pdf, not the %d kV line terminal 41-2391), moved the T2 replacement "
-      "recorder's stamps up 15 minutes from its repeated stamp of 9 June, put the UTC interval ends on CDT and took "
-      "each of the ten hottest local days' highest 15-minute demand: %s MW."
+      "side in WPC_Exhibit_A_delivery_points.pdf, not the %d kV line terminal 41-2391), moved 41-2208's stamps "
+      "from its repeated stamp of 9 June onward 15 minutes later (only then do the two recorders' hourly energy tie "
+      "to the historian's feeder total), put the UTC interval ends on CDT and took each of the ten hottest local "
+      "days' highest 15-minute demand: %s MW."
       % (f["ids"]["low_side_kv"], f["ids"]["line_kv"],
          ", ".join("%s %.1f" % (d, v["peak_mw"]) for d, v in sorted(hd.items()))))
     a("8. Transfer %s MW off Dunraith in the summers %s to %s." % (", ".join("%.1f" % t for t in tr), yrs[0],

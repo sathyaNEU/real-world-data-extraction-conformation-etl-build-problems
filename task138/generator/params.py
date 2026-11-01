@@ -7,7 +7,7 @@ WEATHER_SEED = 2138301      # the Mossford airport's summers
 WEATHER_SEED_2026 = 2138527  # summer 2026 drawn on its own stream
 LOAD_SEED = 2138302         # feeder load noise
 MDMS_SEED = 2138303         # members' transformer meters
-GT_SEED = 2138415           # the wholesale supplier's revenue meters
+GT_SEED = 2138477           # the wholesale supplier's revenue meters
 OTHER_SEED = 2138305        # distractors
 
 AS_OF = "2026-10-27"        # the planning engineer's review for the 2027 construction work plan

@@ -53,9 +53,9 @@ MILLS = {"MSM": "Mohaka Sawmills", "AHT": "Ahuriri Timber Processors", "HBL": "H
 
 # FY2026 cartage rate card (NZD per tonne = base + per-km rate x one-way km)
 RATE_BASE = 4.20
-RATE_PER_KM = 0.118
+RATE_PER_KM = 0.121
 # FY2026 domestic mill deliveries (tonnes contracted)
-MILL_TONNES = {"MSM": 51750, "AHT": 37830, "HBL": 21150}
+MILL_TONNES = {"MSM": 51590, "AHT": 37760, "HBL": 21320}
 
 # The contracted fleet: share of nine-axle (50MAX-capable) units by carrier, full-bunk volumes (JAS m3) by axle set-up
 # and bunk count for each log length, and how closely loaders work to the limits (on-board scales, full bunks)

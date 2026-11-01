@@ -8,6 +8,13 @@ log truck carry what the raised mass limit allows, and the data say it cannot: t
 register's full-bunk volumes show the short grades fill their bunks a few tonnes above today's payloads. The
 architecture 3 note is kept below as `## Architecture 3 record`, architecture 2's as `## Architecture 2 record`.
 
+Stage 4 round 1 (2026-11-01, target.zip e53d1a72): DETERMINISTIC, FIX_NOW, Gates G and H PASS, the leak reader no leak.
+Fixed in the generator in one pass: the cartage window filed as the loads' year; the payload conventions the WHAT
+licenses (per-load or grade-mean density, mean payload or mean of inverse payloads, the 44 t units recomputed or at
+their FY2026 net, every linking window) spread the total over about 145 loads, wider than a 100-load bin, so the loads
+are graded at the precision the per-load data carry (total to 500, grades to 100) and the plan's grade yields are tuned
+so every convention sits mid-bin; the fleet register and the planning basis rewritten for realism. Resume: the re-judge.
+
 ## Draw
 
 - Pairing: Urban & Regional Science (`urban-regional-science`), task type `forecasting` (F), objective Forecasting &
@@ -15,10 +22,10 @@ architecture 3 note is kept below as `## Architecture 3 record`, architecture 2'
   Port Kowhai opens to 50MAX vehicles on 1 July 2027.
 - Shape 14 (cuts by segment): the total and the five export grades (6), three critical components, six carriers'
   cartage (ask A), three mills by four quarters (ask B, 12), the chart and the two files: 30 criteria.
-- World: Matiri Forest Products Limited, five Hawke's Bay forests, 62 contracted units across six carriers (43 with
-  50MAX permits), FY2026's 29,981 port loads carrying 764,046 tonnes; the FY2028 plan's export tonnes 808,900; the port
-  weighbridge tickets (29,981 rows), the port's log scaling records, the fleet register, the grade specification, the
-  route approval and the cartage planning basis.
+- World: Matiri Forest Products Limited, five Hawke's Bay forests, 62 contracted units across six carriers (48 nine-axle
+  units holding 50MAX permits), FY2026's 30,036 port loads carrying 764,072 tonnes; the FY2028 plan's export tonnes
+  813,000; the port weighbridge tickets (30,036 rows), the port's log scaling records, the fleet register, the grade
+  specification, the route approval and the cartage planning basis.
 - Candidates written before choosing (fates in `## Tried and rejected`): (1) this draw; (2) a campus winter peak after
   heat-pump conversions, the warm-up surge beyond the units' output (energy load-forecasting: banned the moment task138's
   fresh card took the pairing); (3) a port's export tonnes after channel dredging, the berth pocket binding next; (4) a
@@ -45,8 +52,8 @@ architecture 3 note is kept below as `## Architecture 3 record`, architecture 2'
   station's time a few minutes after the weighbridge's, and the two units re-registered in February are read through
   the register's previous registrations.
 - Reflex: the field's payload-gain reckoning for a higher mass limit (each permit unit's load rises to the new gross
-  less its tare; the productivity case HPMV and 50MAX approvals are argued on) sits at rung 1 and files 26,900 loads.
-- Back-test: the textbook route validates: under the 44-tonne limit it reproduces FY2026, since 83 per cent of FY2026
+  less its tare; the productivity case HPMV and 50MAX approvals are argued on) sits at rung 1 and files 27,000 loads.
+- Back-test: the textbook route validates: under the 44-tonne limit it reproduces FY2026, since 86 per cent of FY2026
   loads sat at the mass limit and the rest are already full; nothing in the record says the bunks bind for the loads
   that were mass-limited.
 - Second use: the weighbridge tickets are the cartage invoices' references (ask A), the fleet register names each unit's
@@ -54,27 +61,28 @@ architecture 3 note is kept below as `## Architecture 3 record`, architecture 2'
   no file.
 - Shock: nothing moves in the record; the FY2028 loads by grade read as ordinary growth on FY2026, and the short grades'
   shortfall shows only against the mass-only uplift.
-- Pins: the WHAT is filed in the cartage planning basis (load, year, the fleet with each unit's registered tare,
-  permit and full-bunk volumes, the loads-by-grade arithmetic, the limits) and the council's approval; the default is an
-  omission inside that WHAT (it leaves out the full-bunk volumes 2.3 names), and no filed sentence says which limit binds,
-  how a load's density is found or how the two limits combine.
+- Pins: the WHAT is filed in the cartage planning basis (a load, FY2028, the fleet as the register records it, each
+  grade's loads as the plan's tonnes over the average payload FY2026's loads would carry on the same units, the limits)
+  and the council's approval; the default is an easier method inside that WHAT (it reads "would carry" as what the new
+  limit allows and leaves out what the same units' bunks hold, which the register records for every unit), and no filed
+  sentence names a bunk or volume limit, says which limit binds, how a load's density is found or how the limits combine.
 
 ## Default path
 
 1. Take FY2026's port loads from the weighbridge tickets and each unit's tare and 50MAX permit from the fleet register.
 2. Give each permit unit's load the FY2028 route limit: 50 tonnes gross less its tare; the other units stay at 44 less
-   their tare (planning basis 3.2, RDC-2026-114).
-3. Average each grade's FY2028 payloads and divide the plan's export tonnes for the grade by it (planning basis 3.1).
+   their tare (planning basis, RDC-2026-114).
+3. Average each grade's FY2028 payloads and divide the plan's export tonnes for the grade by it (planning basis).
 
-Ends on: 26,900 loads (26,907 unrounded; A 4,900, Pruned 2,300, K 7,250, KI 6,950, KIS 5,500).
-Golden: 29,100 loads (29,100 unrounded; A 4,900, Pruned 2,500, K 7,550, KI 8,050, KIS 6,100).
+Ends on: 27,000 loads (26,787 unrounded; A 4,900, Pruned 2,300, K 7,200, KI 6,900, KIS 5,500).
+Golden: 29,000 loads (28,945 unrounded; A 4,900, Pruned 2,500, K 7,500, KI 8,000, KIS 6,100).
 
 ## Stump sentence
 
-A strong analyst lets each 50MAX permit unit's load rise to 50 tonnes gross less its tare and files 26,900 loads; the
+A strong analyst lets each 50MAX permit unit's load rise to 50 tonnes gross less its tare and files 27,000 loads; the
 step that lands it there is ignoring the bunks: the scaling volumes and the register's full-bunk volumes show the
 short-length grades fill their bunks a few tonnes above today's payloads, so they gain a fraction of the six tonnes the
-new limit allows and FY2028 needs 29,100 loads.
+new limit allows and FY2028 needs 29,000 loads.
 
 ## Three rules
 
@@ -89,9 +97,9 @@ new limit allows and FY2028 needs 29,100 loads.
   and the scaled JAS volume of each load stop making sense.
 - Layer 1: the weighbridge keeps net tonnes only and the fleet register the tare; the scaling station keeps its own
   clock and reference and keys loads to the truck's plates; two units changed plates mid-year; JAS volume beside green
-  tonnes; grade codes on tickets and grade names in the plan; subcontracted units billed under their head contractor;
-  credit notes reversing lines billed twice; mill dockets dated when posted. Each is produced by the system that holds
-  it and none decides the call (asserted).
+  tonnes; grade codes on tickets and grade names in the plan; the register numbered by Matiri's induction across
+  carriers; subcontracted units billed under their head contractor; credit notes reversing lines billed twice; mill
+  dockets dated when posted. Each is produced by the system that holds it and none decides the call (asserted).
 - Layer 2: estimand identification under a binding constraint: relaxing the limit that binds a load lifts it only
   until the next one binds, and for the short grades the next one, the bunks' volume, sits a few tonnes above today.
 - Decisive step: recognising that a raised mass limit lifts a load only until its bunks are full, so each load's
@@ -99,20 +107,22 @@ new limit allows and FY2028 needs 29,100 loads.
   load's own density.
 - Not semantics: every field can be read right (net tonnes, tare, permit, the limits, the grade lengths) and the
   analyst still lets each permit unit load to 50 tonnes gross, which is how a mass-limit change is reckoned, and files
-  26,900; no field says a load's bunks were nearly full.
+  27,000; no field says a load's bunks were nearly full.
 - Not rule application: the approval and the planning basis set the limits and the arithmetic, and no filed rule says
-  a load stops at its bunks. The enumerated family spans 25,700 to 29,100 (fleet average plus six tonnes 25,692;
-  permit units to the new limit 26,907; one bunk volume per unit 26,911; plus six tonnes on permit units 27,209; only the
-  loads at the old limit lifted 27,257; the golden 29,100); the standing family (per-load or grade-mean density, the
-  re-registered units' early loads kept or dropped, any linking window from 30 to 90 minutes) spans 29,081 to 29,100,
-  one bin; what rules the rest out is the data, the register's full-bunk volumes against the loads' JAS volumes.
+  a load stops at its bunks. The enumerated family spans 26,000 to 29,000 (fleet average plus six tonnes 25,860;
+  permit units to the new limit 26,787; one bunk volume per unit 26,793; plus six tonnes on permit units 27,064; only the
+  loads at the old limit lifted 27,175; the golden 28,945); the standing family (per-load or grade-mean density, mean
+  payload or mean of each load's inverse payload, the 44 t units recomputed or kept at their FY2026 net, the tonne- and
+  unit-weighted averages, the re-registered units' early loads kept or dropped, any linking window from 30 to 90
+  minutes) spans 28,922 to 29,067, one 500-load bin; what rules the rest out is the data, the register's full-bunk
+  volumes against the loads' JAS volumes.
 - Analyst test: a strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets
   every 50MAX permit unit's load rise to 50 tonnes gross less its tare and divides the plan's tonnes by the new average
-  payloads files 26,900 loads, because the short-length grades fill their bunks before they reach 50 tonnes.
-- Estimand: the cartage planning basis 2.1 to 3.2 (cartage_planning_basis_FY2028.docx) with RDC-2026-114: FY2028 loads
-  for a grade are the plan's export tonnes for the grade over the average payload that grade's FY2026 port loads would
-  carry on the same units in FY2028, each unit with the tare, permit and full-bunk volumes the register records (2.3),
-  permit units at 50 tonnes gross and others at 44.
+  payloads files 27,000 loads, because the short-length grades fill their bunks before they reach 50 tonnes.
+- Estimand: the cartage planning basis (cartage_planning_basis_FY2028.docx, "What we are sizing" and "How we get to
+  FY2028 loads") with RDC-2026-114: FY2028 loads for a grade are the plan's export tonnes for the grade over the average
+  payload that grade's FY2026 port loads would carry on the same units in FY2028, the units as the register at 30 June
+  2026 records them, permit units at 50 tonnes gross and others at 44.
 - No decoy: nothing is planted: no file states a payload under the new limits, a load count for FY2028 or which loads
   are mass-limited; the approval states the legal limits truly; the fleet register's volumes are the units' own.
 - No certified replay: the method is not recovered by reproducing any certified or published figure; no control total
@@ -125,64 +135,68 @@ new limit allows and FY2028 needs 29,100 loads.
 
 | Rung | Answer | What a solver would need to see | Verdict |
 |---|---|---|---|
-| R0 fleet average payload plus six tonnes | 25,700 | the limit change alone | readable |
-| R1 permit units to 50 t gross less tare (the field's reckoning) | 26,900 | the register's tare and permit | readable |
-| R2 only the loads at the 44-tonne limit lifted, to the new limit | 27,300 | gross from net plus tare | readable |
-| Golden: each load capped by its bunks at its own density (decisive) | 29,100 | the scaling volume paired to each ticket by truck and time against the register's full-bunk volume for the grade's length | silent |
+| R0 fleet average payload plus six tonnes | 26,000 | the limit change alone | readable |
+| R1 permit units to 50 t gross less tare (the field's reckoning) | 27,000 | the register's tare and permit | readable |
+| R2 only the loads at the 44-tonne limit lifted, to the new limit | 27,000 | gross from net plus tare | readable |
+| Golden: each load capped by its bunks at its own density (decisive) | 29,000 | the scaling volume paired to each ticket by truck and time against the register's full-bunk volume for the grade's length | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
 |---|---|---|---|---|
-| SF1 | load | one trip to Port Kowhai weighed on the port weighbridge | none | basis 2.1 (same call) |
-| SF2 | FY2028 | 1 July 2027 to 30 June 2028 | none | basis 2.2 |
-| SF3 | fleet | the register at 30 June 2026 | none | basis 2.3; every plate maps (asserted) |
-| SF4 | FY2028 payload | the lesser of new gross less tare and full bunks at the load's density | the mass limit alone: 26,900 | the register's full-bunk volumes against the loads' JAS volumes (physics; no FY2026 load exceeds its bunks) |
-| SF5 | limits | 50 t gross with a permit, 44 t without | none | basis 3.2, RDC-2026-114 |
-| SF6 | loads by grade | plan tonnes over the grade's average FY2028 payload | none | basis 3.1 |
-| SF7 | density | each load's net over its JAS volume | the grade's mean density: same call | same call |
+| SF1 | load | one trip to Port Kowhai weighed over the port weighbridge | none | the basis (same call) |
+| SF2 | FY2028 | 1 July 2027 to 30 June 2028 | none | the basis |
+| SF3 | fleet | the register at 30 June 2026 | none | the basis; every plate maps (asserted) |
+| SF4 | FY2028 payload | the lesser of new gross less tare and full bunks at the load's density | the mass limit alone: 27,000 | the register's full-bunk volumes against the loads' JAS volumes (physics; no FY2026 load exceeds its bunks) |
+| SF5 | limits | 50 t gross with a permit, 44 t without | none | the basis, RDC-2026-114 |
+| SF6 | loads by grade | plan tonnes over the grade's average FY2028 payload | none | the basis |
+| SF7 | density | each load's net over its JAS volume | the grade's mean density: same call | same call (asserted) |
 | SF8 | linking | the same truck's scaling record within the hour | any window 30 to 90 minutes: same links | asserted |
 | SF9 | re-registered units | read through previous registrations | early loads dropped: same call | same call |
 | SF10 | log length | the 2025 grade specification | none | the specification (asserted) |
-| SF11 | rounding | total to 100, grades to 50 | none | the prompt; edges asserted |
-| SF12 | plan tonnes | the export sheet | the domestic sheet added | basis 2.1 (export loads to the port) |
+| SF11 | rounding | total to 500, grades to 100 | none | the prompt; every convention inside the bins (SF11.1 to SF11.10, SF11.w asserted) |
+| SF12 | plan tonnes | the Export sheet | the domestic sheet added | the basis (export loads to the port; its Export sheet) |
 | SF13 | payload | the ticket's net tonnes | none | the ticket (asserted) |
 | SF14 | the FY2026 base | tickets 1 July 2025 to 30 June 2026 | none | asserted |
 | SF15 | route | every forest's road in the approval | none | RDC-2026-114 (asserted) |
-| SF16 | cartage carrier | the carrier whose unit hauled the load | the billed code | basis 4.1 |
-| SF17 | credit notes | netted | left out | basis 4.1 "net of any credit note" |
-| SF18 | delivery quarter | the date the load crossed the mill weighbridge | the docket's posting date | basis 4.2 "by delivery date" |
+| SF16 | cartage carrier | the carrier whose unit hauled the load | the billed code | the basis |
+| SF17 | credit notes | netted | left out | the basis, "net of any credit note" |
+| SF18 | delivery quarter | the date the load crossed the mill weighbridge | the docket's posting date | the basis, "by delivery date" |
 | SF19 | tonnes delivered | gross less tare at the mill | none | equal to the docket (asserted) |
 | SF20 | Matiri loads at the mills | the MFP docket series | none | asserted |
+| SF21 | average payload | the mean of the loads' FY2028 payloads | the mean of each load's inverse payload, tonne- or unit-weighted: same call | same call (asserted) |
+| SF22 | the 44 t units' FY2028 payload | recomputed from tare, bunks and density | kept at the FY2026 net: same call | same call (asserted) |
+| SF23 | FY2026 cartage window | what was paid for FY2026's loads, July invoices, re-bills and credits included | invoices dated in FY2026 | the prompt and the basis ("paid for FY2026's loads"); asserted |
 
 ## Ladder
 
 | Rung | Construction | FY2028 loads | Graded |
 |---|---|---|---|
-| R0 | fleet average payload plus six tonnes | 25,692 | 25,700 |
-| R1 | permit units to the new limit (the field's reckoning) | 26,907 | 26,900 |
-| R2 | only the loads at the 44-tonne limit lifted, to the new limit | 27,257 | 27,300 |
-| Golden | each load capped by its bunks at its own density | 29,100 | 29,100 |
+| R0 | fleet average payload plus six tonnes | 25,860 | 26,000 |
+| R1 | permit units to the new limit (the field's reckoning) | 26,787 | 27,000 |
+| R2 | only the loads at the 44-tonne limit lifted, to the new limit | 27,175 | 27,000 |
+| Golden | each load capped by its bunks at its own density | 28,945 | 29,000 |
 
-Every rung files another total bin and misses at least three grades; the nearest wrong total is R2, 6.2 per cent low.
+Every rung files another total bin and misses at least four of the five grades; the nearest wrong total is R2, 6.1 per
+cent low.
 
 ## Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | FY2026 port loads; the plan's export tonnes | basis 2.1, 3.1, 3.3 |
-| 2 Unit of account | the load | basis 2.1 |
-| 3 Attribution window | FY2028 for the plan, FY2026 for the base | basis 2.2, the files' own windows |
-| 4 As-of dating | the register at 30 June 2026 | basis 2.3 |
+| 1 Population | FY2026 port loads; the plan's export tonnes | the basis ("What we are sizing", the Export sheet) |
+| 2 Unit of account | the load | the basis |
+| 3 Attribution window | FY2028 for the plan, FY2026 for the base | the basis, the files' own windows |
+| 4 As-of dating | the register at 30 June 2026 | the basis |
 | 5 Version basis | the 2025 grade specification; RDC-2026-114; basis version 2 | document control |
-| 6 Denominator | the grade's average FY2028 payload | basis 3.1 |
-| 7 Weighting | each FY2026 load once | basis 3.1 (an average of loads) |
-| 8 Window length | the whole of FY2026 | basis 3.1 |
+| 6 Denominator | the grade's average FY2028 payload | the basis |
+| 7 Weighting | each FY2026 load once | the basis (an average of loads); inverse, tonne- and unit-weighted averages file the same bins (asserted) |
+| 8 Window length | the whole of FY2026 | the basis |
 | 9 Boundary inclusivity | limits "up to" 50 and 44 t gross | no FY2026 load above 44 t gross (asserted) |
-| 10 Rounding path | unrounded payloads and loads, rounded once | prompt; edges asserted |
+| 10 Rounding path | unrounded payloads and loads, rounded once | prompt; every convention inside the bins (asserted) |
 | 11 Tie-break | none | not applicable |
 | 12 Maturity and censoring | none: a year's loads | not applicable |
-| 13 Order of operations | payload per load, then the grade average, then the plan's tonnes over it | basis 3.1 |
+| 13 Order of operations | payload per load, then the grade average, then the plan's tonnes over it | the basis |
 | 14 Row order | sums | C1 |
 | 15 Duplicate resolution | one scaling record per ticket | asserted (each record used once) |
 | 16 Identity normalisation | plates to units through current and previous registrations | asserted; dropping early loads same call |
@@ -191,17 +205,18 @@ Every rung files another total bin and misses at least three grades; the nearest
 | 19 Code and status semantics | grade codes to lengths; permit Y or N | the specification and the register; never the stump |
 | 20 Integerisation | loads unrounded until reported | prompt |
 | 21 Clause scope | limits for every forest's route | RDC-2026-114 |
-| 22 Forward window contents | the plan's FY2028 tonnes; the FY2026 loads re-run | basis 3.1, 3.3 |
+| 22 Forward window contents | the plan's FY2028 tonnes; the FY2026 loads re-run | the basis |
 
 ## Literal reader
 
 A reader executing the planning basis word for word takes FY2026's port loads, re-runs each on the same unit in FY2028
-at the limits 3.2 and the council's approval set, averages each grade's payloads and divides the plan's tonnes by them.
-"The payload the load would carry" is not filed as the legal maximum; it is what the load would weigh, and the data say
-what that is: the register's full-bunk volume for the grade's length times the load's density caps it, and no FY2026
-load exceeds its bunks. Reading the payload as the mass limit less tare is the easy method on the same estimand, which
-puts more logs on the short-grade loads than their bunks hold. Every licensed convention (SF7 to SF9) files 29,100 and
-the same five grades; the ask readings are closed in SF16 to SF20.
+at the limits the basis and the council's approval set, averages each grade's payloads and divides the plan's tonnes by
+them. "The payload the loads would carry" is not filed as the legal maximum; it is what the load would weigh, and the
+data say what that is: the register's full-bunk volume for the grade's length times the load's density caps it, and no
+FY2026 load exceeds its bunks. Reading the payload as the mass limit less tare is the easy method on the same estimand,
+which puts more logs on the short-grade loads than their bunks hold. Every licensed convention (SF7 to SF9, SF21, SF22)
+files 29,000 and the same five grades, the tightest grade 29 loads inside its bin and the total 172; the ask readings
+are closed in SF16 to SF20 and SF23.
 
 ## Oracles
 
@@ -213,10 +228,10 @@ the same five grades; the ask readings are closed in SF16 to SF20.
 
 ## Ask sheet
 
-- Ask A, FY2026 export cartage by the carrier whose unit hauled the load (six figures, NZD thousand): primary A1,
-  subcontracted units billed under their head contractor's carrier code, the hauler found only by pairing each invoice
-  line's ticket to the port weighbridge's plate and the plate to the register's carrier (D7, a key worked out across
-  three files); hazard: lines billed twice and their credit notes.
+- Ask A, the cartage paid for FY2026's loads by the carrier whose unit hauled the load (six figures, NZD thousand):
+  primary A1, subcontracted units billed under their head contractor's carrier code, the hauler found only by pairing
+  each invoice line's ticket to the port weighbridge's plate and the plate to the register's carrier (D7, a key worked
+  out across three files); hazard: lines billed twice and their credit notes. The window is the loads' year (SF23).
 - Ask B, FY2026 domestic deliveries by mill and quarter (twelve figures, tonnes): primary B1, the docket extract dates
   each load when the docket was posted, days after delivery, while the delivery date sits only in the mills' weighbridge
   logs among every other supplier's trucks (D8, a reconstruction across two files); hazards: two dockets re-sent in the
@@ -226,7 +241,7 @@ the same five grades; the ask readings are closed in SF16 to SF20.
   every ask file leaves the call (asserted).
 - Pair ceiling: 28.5 (cracker C 45.0 keeping 0 of 18 ask figures, mirror S 12.0; 46.8 if the cracker also finds one silent device)
 - Mirror leakage: 0.0 per cent of ask weight (the mirror handles the asks as the cracker does)
-- Measured by: generator/ceiling.py on the cut pack (target.zip e53d1a72)
+- Measured by: generator/ceiling.py on the cut pack (target.zip b86a875e)
 
 | Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
 |---|---|---|---|---|
@@ -235,17 +250,21 @@ the same five grades; the ask readings are closed in SF16 to SF20.
 
 ## Leak review
 
-`leak.py --asof 2026-10-20` on the final cut: REVIEW, no LEAK. Each REVIEW line ruled:
+`leak.py --asof 2026-10-20` on the final cut (target.zip b86a875e): REVIEW, no LEAK. Each REVIEW line ruled:
 
-- Sweep 3, the planning basis carries the call's words: it is the governing document that defines a load, FY2028, the
-  fleet and the limits, and it states no figure of the call. Harmless.
+- Sweep 3, the planning basis carries the call's words and names Port Kowhai beside them: it is the governing document
+  that defines a load, FY2028, the fleet and the limits for the port it plans for, and it states no figure of the call.
+  Harmless.
 - Sweep 4, the approval shares permit and limits: the council's legal limits, true as stated. Harmless.
-- Sweep 4, the planning basis shares register, record, volume, permit, credit and limits: 2.3 names what the register
-  records for each unit (tare, permit, full-bunk volumes), the WHAT the default omits; no sentence says which limit binds,
-  how a load's density is found or how the limits combine. Harmless, and the line the later judge lesson asks for.
+- Sweep 4, the planning basis shares register, record, permit, payload, credit and limits: it files the WHAT (the fleet
+  as the register records it, the payload FY2026's loads would carry on the same units, the limits, cartage net of credit
+  notes) and names no bunk, volume or cube; no sentence says which limit binds, how a load's density is found or how
+  the limits combine (asserted, R3c). Harmless.
 - Sweep 6, the fleet register names the carriers beside numbers: tares and bunk volumes, no cartage and no ranking.
   Harmless.
 - Sweep 6, the harvest plan names the grades beside numbers: planned tonnes, not loads. Harmless.
+- Sweep 5 (announcements) is clean on this cut: the note's first title, "Logistics planning note: ...", matched the
+  "note:" pattern and was retitled.
 
 ## Architecture 3 record
 
@@ -1055,3 +1074,24 @@ same_driver_older against task180 differentiated on the card.
 - Candidate: log trucks with only the loads at the old mass limit gaining: readable from net plus tare alone; kept as rung R2 under the bunk-volume step.
 - The ask devices first drafted with the invoice's own registration and a docket file named for the weighbridge date: each was executed by the filed WHAT that pins it, so the invoice now carries only the port ticket and the dockets their posting date.
 - The planning basis's fleet sentence without the units' recorded volumes: a later judge lesson (a decisive fact the WHAT does not name reads as a hidden rule) made 2.3 name each unit's tare, permit and full-bunk volumes, so the default is an omission inside a filed WHAT; how the limits combine stays unfiled.
+- Arch 4, the loads graded to the nearest 100 for the total and 50 for each grade (stage 4 round 1, FIX_NOW): the payload
+  conventions the WHAT licenses (per-load or grade-mean density, the mean payload or the mean of each load's inverse
+  payload, the 44 t units recomputed or kept at their FY2026 net) spread the total over about 145 loads, wider than a
+  100-load bin, and the judge's variants filed 29,200 against the golden's 29,100; no tuning of the plan can hold a
+  spread wider than its bin. Filing the payload convention was not taken (it files the HOW); the loads are graded at
+  the precision the per-load data carry, the total to 500 and each grade to 100, and the plan's grade yields are tuned
+  so every convention, the tonne- and unit-weighted averages and every linking window sit inside the bins (tightest
+  grade 29 loads, total 172).
+- Arch 4, tightening the FY2026 loading margins to narrow that spread (0.06 t under the limit, bunks 0.4 per cent short
+  of full): it halved the 44 t units' variant but left the inverse-payload variant, which follows the fleet's real
+  payload spread, at about 80 loads; reverted to the original tightness once the bins carried the spread.
+- Arch 4, "the FY2026 cartage paid against each carrier" (stage 4 round 1): open between invoices dated in FY2026 and
+  what was paid for FY2026's loads (2,607 lines sit on the July invoices, the re-bills and the credits); the prompt and
+  the basis now file the loads' year.
+- Arch 4, the planning basis's numbered definitions with the fleet sentence naming each unit's tare, permit and
+  full-bunk volumes (stage 4 round 1, realism): a planning note does not list the register's columns, and the sentence
+  pointed at the volume cap; the note is rewritten in Logistics' planning voice, files the fleet as the register records
+  it and the payload as what FY2026's loads would carry on the same units, and names no bunk or volume.
+- Arch 4, fleet units coded by carrier (RLC-01 to PLH-08) with tares drawn per configuration and one bunk volume table
+  (stage 4 round 1, realism): read as generated; Matiri's truck numbers now run with induction across the carriers,
+  tares follow configuration, bunk count, age and fit-out, and full-bunk volumes the bunk count with unit-to-unit spread.

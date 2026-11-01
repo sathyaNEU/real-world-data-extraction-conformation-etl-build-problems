@@ -229,6 +229,12 @@ def main():
     check("separation: the invoices reference only port tickets and carry no unit or registration",
           all(r["ticket_ref"] in port_tickets for r in inv) and "vehicle_rego" not in inv[0])
     check("separation: no mill docket appears among the port tickets", not ({d["docket_no"] for d in dks} & port_tickets))
+    late_inv = [r for r in inv if dt.datetime.strptime(r["document_date"], "%d/%m/%Y").date() > P.FY26[1]]
+    prompt_txt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+    check("SF23 cartage paid for FY2026's loads (the prompt and the basis): every invoice line references an FY2026 port "
+          "ticket, %d of them on documents dated after 30 June 2026 (the July invoices, re-bills and credits)" % len(late_inv),
+          late_inv and all(P.FY26[0] <= l["date"] <= P.FY26[1] for l in pk.loads) and "paid for FY2026's loads" in prompt_txt
+          and docs.S_CART in basis)
     d_a = min(abs(billed[c] - F["ask_a"][c]) for c in P.CARRIERS)
     check("device A1 subcontracted units billed under the head contractor move every carrier by NZD 100 thousand or more",
           d_a >= 1e5, round(d_a))

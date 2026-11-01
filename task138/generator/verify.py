@@ -212,7 +212,7 @@ for r in dv[1:]:
     kids.setdefault(r[dcol["UPSTREAM_DEVICE"]], []).append(r[dcol["DEVICE_ID"]])
 so = pdf_strings(os.path.join(T, "SO-2026-114_Dunraith.pdf"))
 old_feeder = {}
-for sw, a, b in re.findall(r"(S-\d+) \((DUN-\d)\) Open Section beyond S-\d+ fed from (DUN-\d)", so):
+for sw, a, b in re.findall(r"(S-\d+) \((DUN-\d)\) Open(?: \(SCADA\))? Section beyond S-\d+ fed from (DUN-\d)", so):
     seen, todo = set(), [sw]
     while todo:
         n = todo.pop()
@@ -251,6 +251,15 @@ for rec, lst in rows.items():
         end = stamp + (dt.timedelta(minutes=15) if shift else dt.timedelta(0))
         start_local = end - dt.timedelta(hours=5) - dt.timedelta(minutes=15)
         q[start_local] = q.get(start_local, 0.0) + v
+hourly = {}
+for t, v in q.items():
+    h = t.replace(minute=0)
+    hourly[h] = hourly.get(h, 0.0) + v
+ratios = [hourly[h] / 1000.0 / sum(load[h]) for h in hourly if h in load and h.year == 2026]
+mr = sum(ratios) / len(ratios)
+sd = (sum((x - mr) ** 2 for x in ratios) / (len(ratios) - 1)) ** 0.5
+ok("ask B: realigned recorders tie to the historian's hourly feeder total (ratio %.4f, scatter %.3f per cent)"
+   % (mr, 100 * sd), sd < 0.002)
 daily = {}
 for t, v in q.items():
     daily[t.date()] = max(daily.get(t.date(), 0.0), v * 4.0 / 1000.0)

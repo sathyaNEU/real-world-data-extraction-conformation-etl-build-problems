@@ -126,10 +126,13 @@ def write_reglog(path, log):
         rows.append((ts, "%s VR" % f, "CVR %s" % act, bc, "LOCAL" if late else "SCADA"))
     for (f, when) in W.MISSED:
         rows.append((pd.Timestamp(when), "%s VR" % f, "CMD NOT EXECUTED", "", "SCADA"))
-    # the spring maintenance leaves every regulator at the normal setting
-    for k, f in enumerate(PR.FEEDERS):
-        rows.append((pd.Timestamp("2025-05-12 09:00") + pd.Timedelta(minutes=37 * k), "%s VR" % f,
-                     "BANDCENTER CONFIRMED", "123.5", "LOCAL"))
+    # the spring maintenance leaves every regulator at the normal setting, one crew visit at a time
+    visit = pd.Timestamp("2025-05-12 08:40")
+    for f in PR.FEEDERS:
+        visit = visit + pd.Timedelta(minutes=int(rng.integers(26, 95)), seconds=int(rng.integers(0, 60)))
+        if visit.hour >= 15:
+            visit = visit.normalize() + pd.Timedelta(days=1, hours=8, minutes=int(rng.integers(5, 40)))
+        rows.append((visit, "%s VR" % f, "BANDCENTER CONFIRMED", "123.5", "LOCAL"))
     # the other regulators' routine events over the same months
     t = pd.Timestamp("2025-05-20 08:00")
     while t < pd.Timestamp("2025-10-10"):
@@ -266,12 +269,12 @@ def write_ties(path):
     ws.title = "Ties"
     ws.append(["Tie switch", "From feeder", "To feeder", "Normally", "Conductor limit (A)",
                "Transferable at summer peak (MW)", "Last operated"])
-    for r in (["TS-2207", "DUN-1", "CC-3 (Carrow Creek)", "Open", 400, 3.5, "2024-08-14"],
-              ["TS-2231", "DUN-3", "OST-2 (Ostby)", "Open", 600, 4.0, "2025-07-30"],
-              ["TS-2240", "DUN-5", "OST-4 (Ostby)", "Open", 400, 2.0, "2023-06-02"],
-              ["TS-2258", "DUN-7", "CC-1 (Carrow Creek)", "Open", 600, 3.0, "2022-09-19"],
-              ["TS-2263", "DUN-8", "LIN-2 (Lindell)", "Open", 300, 1.5, "never"],
-              ["TS-2269", "DUN-2", "CC-4 (Carrow Creek)", "Open", 400, 2.5, "2021-07-08"]):
+    for r in (["TS-2207", "DUN-1", "CC-3 (Carrow Creek)", "Open", 530, 3.4, "2024-08-14"],
+              ["TS-2231", "DUN-3", "OST-2 (Ostby)", "Open", 655, 4.1, "2025-07-30"],
+              ["TS-2240", "DUN-5", "OST-4 (Ostby)", "Open", 340, 1.8, "2023-06-02"],
+              ["TS-2258", "DUN-7", "CC-1 (Carrow Creek)", "Open", 530, 2.9, "2022-09-19"],
+              ["TS-2263", "DUN-8", "LIN-2 (Lindell)", "Open", 230, 1.3, ""],
+              ["TS-2269", "DUN-2", "CC-4 (Carrow Creek)", "Open", 340, 2.2, "2021-07-08"]):
         ws.append(r)
     for c, wd in zip("ABCDEFG", (11, 11, 20, 10, 18, 30, 13)):
         ws.column_dimensions[c].width = wd

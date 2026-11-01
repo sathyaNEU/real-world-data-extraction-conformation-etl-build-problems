@@ -3,31 +3,31 @@
  "status": "BUILD",
  "domain": "energy-systems-utilities/load-forecasting (client domain energy-systems-utilities; world: a member-owned electric cooperative's substation planning peaks with conservation voltage reduction on every feeder from 2027)",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "transfers of 1.0, 2.0, 3.0, 4.0 and 5.0 MW off Dunraith in summers 2027 to 2031, the voltage cut's relief read at the planning peak's conditions (1.1 per cent on the pilot's afternoons at 99 F or more) where the default takes the pilot's all-hours effect (2.4 per cent) and files 0, 0.5, 1.5, 2.5 and 3.5 MW",
  "architecture": 3,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-01"
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), --asof 2026-10-27; lines answered in the design note's Leak review",
-  "reader": ""
+  "reader": "round 1: no leak (question 6 analytical; flags harmless); realism notes fixed"
  },
  "duplicate_check": {
   "heart": "BLOCK on the guard window only: ban.pairing, ban.role and ban.artifact against task273 v6 (registered 01:51Z), ban.forum against task125 v4 and task281 v3; the card passed guard.py check at its registration (19:49Z) and the window moved when builds between re-registered; driver similarity 0.07 at most (task117)",
   "nearest": "task117 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (SOLUTION_WRONG in wording only), round 1",
+  "disposition": "FIX_NOW, order kept; fixed in one pass 2026-11-01",
+  "report": "relayed by the coordinator: main call reproduced (102.93 MW at 101 F, transfers 1 to 5 MW for a CVR effect of 0.88 to 1.31 per cent); asks reproduced; Gates F strong, G PASS, H PASS"
  },
  "returned": [],
- "resume": "stage 4 (main session): adjudicate the guard window BLOCK first (it needs another client domain under the rules, or the registration-time PASS), then the leak reader and the determinism judge together",
+ "resume": "the re-judge, then the author's decision on the guard window BLOCK",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -56,20 +56,57 @@
  },
  "build": {
   "date": "2026-11-01",
-  "target_zip": "8bd974fc",
-  "target_zip_sha256": "8bd974fc0c3040c53e1aa4076459f9e504d5571db89aae5dd9cccd2977ecfca3",
+  "target_zip": "8bf93e16",
+  "target_zip_sha256": "8bf93e162d68b58237893bc65538a0dd3d430e35c45522f5b19de41852b7ce39",
   "gates": {
-   "generator_checks": "74 of 74",
-   "verify": "16 of 16 on its own readers (every graded figure)",
+   "generator_checks": "77 of 77",
+   "verify": "17 of 17 on its own readers (every graded figure and the recorders' tie)",
    "byte_identical": "two builds byte-identical over 18 files",
-   "figures_check": "112 of 112",
+   "figures_check": "115 of 115",
    "precut": "61 checks, 0 FAIL, 0 WARN",
    "voice_check": "PASS (949 characters)",
    "leak_py": "REVIEW, no LEAK",
-   "guard_heart": "BLOCK (window bans, see duplicate_check)",
+   "guard_heart": "BLOCK (window bans, the author's decision)",
    "ceiling": "pair 28.5, mirror leakage 0.0 per cent"
   },
   "as_of": "2026-10-27",
   "answer": "transfer 1.0, 2.0, 3.0, 4.0 and 5.0 MW in summers 2027 to 2031; planning peaks 105 to 109 MW"
+ },
+ "round_1": {
+  "date": "2026-11-01",
+  "fixes": [
+   "write-up wording: DATE_LST, hours beginning 16:00 to 20:00, 41-2208's repeated stamp and the tie that decides its move",
+   "ask A: SO-2026-114 opens the three switches at 00:00 on 1 July (day boundary, filed); no daily reading split (SF18)",
+   "ask B: each recorder reads its own bus with its own scatter, T2 carried both buses while T1 was out 15-16 Sep; the 41-2208 realignment decided by the tie to the historian's feeder total (scatter 0.10 per cent against 1.5; SF24)",
+   "CVR filed as standing practice every year from 1 June 2027 (operating plan 3.1; SF15)",
+   "time zone: UTC less 4 to UTC less 7 give the same ten figures (SF23)",
+   "realism: irregular spring regulator confirmations; working tie capacities and conductor limits"
+  ],
+  "ask_figures": {
+   "A_mwh": {
+    "DUN-1": 16600,
+    "DUN-2": 16210,
+    "DUN-3": 17670,
+    "DUN-4": 11150,
+    "DUN-5": 16980,
+    "DUN-6": 8990,
+    "DUN-7": 14810,
+    "DUN-8": 15850
+   },
+   "A_tightest_margin_mwh": "1.17 (golden), 1.20 (paralleled minutes pro-rated)",
+   "B_mw": {
+    "2026-08-09": 112.9,
+    "2026-08-08": 101.2,
+    "2026-08-06": 101.6,
+    "2026-06-15": 98.2,
+    "2026-08-28": 97.9,
+    "2026-06-26": 96.2,
+    "2026-09-28": 95.5,
+    "2026-06-14": 94.4,
+    "2026-07-18": 90.9,
+    "2026-08-05": 92.8
+   },
+   "B_tightest_margin_mw": "0.014 under every offset UTC less 4 to 7"
+  }
  }
 }

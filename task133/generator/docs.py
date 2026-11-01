@@ -41,9 +41,9 @@ def write_basis(out):
     doc = Document()
     doc.styles["Normal"].font.name = "Calibri"
     _p(doc, "MATIRI FOREST PRODUCTS LIMITED", bold=True, size=11)
-    _p(doc, "Logistics planning note: export cartage basis for FY2028", bold=True, size=13)
-    _p(doc, "John Morris, Logistics Manager. Version 2, 6 October 2026. For Harvest Planning, Finance and the Port Kowhai "
-            "log yard.", size=9, italic=True)
+    _p(doc, "Export cartage planning basis for FY2028", bold=True, size=13)
+    _p(doc, "Logistics planning note. John Morris, Logistics Manager. Version 2, 6 October 2026. For Harvest Planning, "
+            "Finance and the Port Kowhai log yard.", size=9, italic=True)
     _p(doc, "Background", bold=True)
     _p(doc, "The FY2028 export cartage contract goes to tender in November. Carriers will price against the number of loads "
             "we tell them to expect, and Finance is building its benchmark rates from what we paid this year, so everyone "

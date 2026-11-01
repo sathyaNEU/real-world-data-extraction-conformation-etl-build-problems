@@ -234,7 +234,7 @@ def register(target):
 def moved_sections(target):
     """(switch opened, from feeder, to feeder) for each section SO-2026-114 moved."""
     txt = re.sub(r"\s+", " ", IO.pdf_text(fpath(target, "SO-2026-114_Dunraith.pdf")))
-    return re.findall(r"(S-\d+) \((DUN-\d)\) Open Section beyond S-\d+ fed from (DUN-\d)", txt)
+    return re.findall(r"(S-\d+) \((DUN-\d)\) Open(?: \(SCADA\))? Section beyond S-\d+ fed from (DUN-\d)", txt)
 
 
 def downstream(dev, root, depth=None):
@@ -252,7 +252,8 @@ def downstream(dev, root, depth=None):
     return out
 
 
-def feeder_energy(target, use_mult=True, mult_from_set=True, reassign=True, depth=None, prorate_june30=False):
+def feeder_energy(target, use_mult=True, mult_from_set=True, reassign=True, depth=None, prorate_june30=False,
+                  june30_new=False):
     """Each feeder's members' energy, June to September 2026, MWh: a transformer's daily kWh times its meter
     multiplier from the day the present meter was set (whole kWh before), counted on the feeder that served it
     that day (the sections the switching order moved belong to their old feeder until 30 June)."""
@@ -274,11 +275,12 @@ def feeder_energy(target, use_mult=True, mult_from_set=True, reassign=True, dept
             for t, p in prot.items():
                 if p in under:
                     old[t] = a
-        before = md.date < pd.Timestamp("2026-07-01")
+        before = md.date < pd.Timestamp("2026-06-30" if june30_new else "2026-07-01")
         o = md.XFMR_ID.map(old)
         md.loc[before & o.notna(), "feeder"] = o[before & o.notna()]
         if prorate_june30:
-            mins = {"DUN-4": 33, "DUN-6": 21, "DUN-1": 8}
+            # the minutes each section ran paralleled before midnight, counted on the new feeder
+            mins = {"DUN-4": 4, "DUN-6": 3, "DUN-1": 2}
             j30 = (md.date == pd.Timestamp("2026-06-30")) & o.notna()
             extra = md[j30].copy()
             frac = extra.feeder.map(mins) / 1440.0
@@ -315,14 +317,14 @@ def mv90(target, realign=True):
 
 
 def demand_peaks(target, days, meters=("41-2207", "41-2208"), clock="local", realign=True, dedupe=False,
-                 ending=True):
+                 ending=True, offset_h=5):
     mv = mv90(target, realign)
     mv = mv[mv.RECORDER.isin(list(meters))]
     if dedupe:
         mv = mv.drop_duplicates(["RECORDER", "stamp"], keep="first")
     end = mv["end"]
     if clock == "local":
-        end = end - CDT
+        end = end - pd.Timedelta(hours=offset_h)
     start = end - pd.Timedelta(minutes=15) if ending else end
     s = mv.assign(start=start.values).groupby("start")["VALUE"].sum() * 4.0 / 1000.0
     day = s.index.normalize()
@@ -331,6 +333,21 @@ def demand_peaks(target, days, meters=("41-2207", "41-2208"), clock="local", rea
         x = s[day == d]
         out[d] = (float(x.max()), x.idxmax())
     return out
+
+
+def scada_tie(target, realign=True, loads=None):
+    """The two transformer recorders' hourly energy against the historian's hourly feeder total for summer 2026:
+    the ratio's mean and its scatter over the hours both systems hold."""
+    loads = feeder_loads(target) if loads is None else loads
+    sub = loads[(loads.index >= pd.Timestamp("2026-06-01")) & (loads.index < pd.Timestamp("2026-10-01"))]
+    sub = sub.dropna().sum(axis=1)
+    mv = mv90(target, realign)
+    mv = mv[mv.RECORDER.isin(["41-2207", "41-2208"])].drop_duplicates(["RECORDER", "end"], keep="first")
+    start = mv["end"] - CDT - pd.Timedelta(minutes=15)
+    hr = mv.assign(h=start.dt.floor("h").values).groupby("h")["VALUE"].agg(["sum", "count"])
+    hr = hr[hr["count"] == 8]["sum"] / 1000.0
+    r = (hr / sub).dropna()
+    return float(r.mean()), float(r.std()), len(r)
 
 
 def solve(target=None):

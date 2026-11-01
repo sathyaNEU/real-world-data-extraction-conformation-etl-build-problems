@@ -161,8 +161,9 @@ def write_pdf(path, title, author, producer, blocks, footer, created, modified, 
 
 def scrub_pdf(path, created, modified):
     data = open(path, "rb").read()
-    data = re.sub(rb"%ReportLab Generated PDF document[^\n]*\n", lambda m: b"%" + b" " * (len(m.group(0)) - 2) + b"\n",
-                  data)
+    # the writer's comment lines (the binary marker line keeps its high bytes): blanked at equal length
+    data = re.sub(rb"(%[\x80-\xff]*)([^\n]*ReportLab[^\n]*)\n",
+                  lambda m: m.group(1) + b" " * len(m.group(2)) + b"\n", data)
     data = re.sub(rb"/CreationDate \(D:[^)]*\)", lambda m: b"/CreationDate (" + created.encode().ljust(
         len(m.group(0)) - 16, b" ")[:len(m.group(0)) - 16] + b")", data)
     data = re.sub(rb"/ModDate \(D:[^)]*\)", lambda m: b"/ModDate (" + modified.encode().ljust(

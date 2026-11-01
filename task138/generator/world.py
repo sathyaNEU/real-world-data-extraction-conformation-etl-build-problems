@@ -360,27 +360,45 @@ def _spread(members, e, rng, date):
 GT_METERS = [("41-2207", "T1"), ("41-2208", "T2"), ("41-2391", "GRAIN")]
 GT_SWAP_METER = "41-2208"                       # recorder replaced at the T2 metering cabinet
 GT_SWAP = pd.Timestamp("2026-06-09 10:40")      # local time of the change-out
+T1_OUT = (pd.Timestamp("2026-09-15 07:30"), pd.Timestamp("2026-09-16 16:45"))
+
+
+BUS = {"DUN-1": 1, "DUN-2": 1, "DUN-3": 1, "DUN-4": 1, "DUN-5": 2, "DUN-6": 2, "DUN-7": 2, "DUN-8": 2}
+
+
+def _quarters(hourly, rng):
+    """Four 15-minute averages for each hour whose mean is the hour's average, the load ramping toward the
+    neighbouring hours inside it, with the meter's own small scatter."""
+    prv = np.concatenate([hourly[:1], hourly[:-1]])
+    nxt = np.concatenate([hourly[1:], hourly[-1:]])
+    c = np.array([-3.0, -1.0, 1.0, 3.0]) / 16.0
+    q = hourly[:, None] + (nxt - prv)[:, None] * c[None, :]
+    e = rng.normal(0, 0.004, q.shape) * hourly[:, None]
+    q = q + e - e.mean(axis=1, keepdims=True)
+    return q.ravel()
 
 
 def revenue_meters(ld, rng=None):
-    """15-minute energy at the substation's two transformers (low side) and at the grain terminal served straight
-    from the 69 kV bus, summer 2026, interval ending, UTC. The transformers carry the feeders' load plus 0.8 per cent
-    losses, split 52/48; the grain terminal runs its dryers in long blocks."""
+    """15-minute energy at the substation's two transformers (24.9 kV side) and at the 69 kV line terminal, summer
+    2026, interval ending, UTC. T1 feeds bus 1 (DUN-1 to DUN-4), T2 bus 2 (DUN-5 to DUN-8), the bus tie open; each
+    meter reads its bus's feeders plus the bus's own losses and, on bus 1, the station service, against which the
+    feeder relays' SCADA averages scatter by about a tenth of a per cent. The line terminal (a customer's 69 kV
+    substation) runs its dryers in long blocks."""
     rng = np.random.default_rng(PR.GT_SEED)
-    s26 = ld[ld.local.dt.year == 2026].groupby("local")["mw"].sum()
-    idx_h = s26.index
+    s26 = ld[ld.local.dt.year == 2026]
+    bus = s26.assign(bus=s26.feeder.map(BUS)).groupby(["local", "bus"])["mw"].sum().unstack()
+    idx_h = bus.index
     q_idx = pd.date_range(idx_h[0], idx_h[-1] + pd.Timedelta(minutes=45), freq="15min")
-    hourly = s26.values * 1.008
-    # within the hour the load moves toward the next hour's: the reading at quarter q is a blend
-    nxt = np.concatenate([hourly[1:], hourly[-1:]])
-    vals = []
-    for k in range(len(hourly)):
-        for q in range(4):
-            frac = (q + 0.5) / 4.0
-            vals.append(hourly[k] * (1 - frac) + nxt[k] * frac)
-    vals = np.array(vals) * (1 + rng.normal(0, 0.006, len(vals)))
-    t1 = vals * 0.52
-    t2 = vals * 0.48
+    scat = 1 + rng.normal(0, 0.001, (len(idx_h), 2))
+    h1 = (bus[1].values * 1.0031 + 0.046) * scat[:, 0]
+    h2 = bus[2].values * 1.0036 * scat[:, 1]
+    t1 = _quarters(h1, rng)
+    t2 = _quarters(h2, rng)
+    # T1 out for its oil test and bushing work: bus tie closed, T2 carries both buses
+    ends = q_idx + pd.Timedelta(minutes=15)
+    out_ = np.asarray((ends > T1_OUT[0]) & (ends <= T1_OUT[1]))
+    t2 = np.where(out_, t2 + t1, t2)
+    t1 = np.where(out_, 0.0, t1)
     days = (len(q_idx) + 95) // 96
     grain = np.zeros(len(q_idx))
     for d in range(days):
