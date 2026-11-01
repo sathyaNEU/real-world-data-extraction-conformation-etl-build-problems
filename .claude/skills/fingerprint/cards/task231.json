@@ -1,96 +1,148 @@
 {
   "task": "task231",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
-  "slot_note": "DQ04 seed (network-total shortfall alert with imputed missing reads) re-found in survey research under the 10/10 rules: the world kept is a network of reporting zones, a shortfall alert for the round being closed and a quantity completed for the units whose state is missing",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a central bank's quarterly business-conditions panel survey: which regions raise the response-shortfall alert that puts them into the reminder-call extension, when the response rate counts only panel firms still trading on the round's frame date, the business register records a closure about a year after it happens, and the call centre confirms a closure only when someone answers for the firm",
+  "architecture": "v2 (re-root at batch 1, 2026-11-01: the Sawyer Divide Highway District's road weather network, which stations' air-temperature spatial check is re-tuned before winter 2027/28, read on the share of each station's winter hours its check withheld a right reading, each withheld reading judged against the stations that share its basin's cold pool that hour)",
+  "drawn": "2026-11-01",
+  "slot_note": "",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "sensor-calibration-measurement",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "road weather station air-temperature quality control: what a lapse-adjusted spatial consistency test withholds at mountain basin floors on still winter nights",
   "objective": "data-quality-monitoring",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Capital and Harbour into the reminder-call extension, Islands and Western Uplands onto the extra email reminder, the other eight regions neither",
-  "answer_source": "submission.md block 1; bcs_sep2026_extension.xlsx sheet Alert levels",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "rule",
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
-    "G11"
+    "G6",
+    "G16",
+    "G17"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "maturity_censoring",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "head of the business survey unit that runs the bank's Business Conditions Survey",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "per active unit per period",
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the feed (tenths of a degree Celsius against the district's Fahrenheit, UTC against Mountain time, the two QC releases' codes, re-polled hours) and reads the data quality standard right judges each withheld reading against the hour's elevation-adjusted neighbours, refitting the lapse rate across the network hour by hour, and re-tunes the wrong set of stations; the call is wrong because on still nights cold air pools basin by basin below an inversion, so a basin-floor reading agrees only with the stations sharing its own basin's pool, which no distance, elevation band or listed grouping picks out.",
+  "domain_test": "The deciding quantity is each station's share of winter hours whose true air temperature the spatial check withheld, settled by boundary-layer meteorology (still-night cold-air pools confined to each basin under an inversion, the free atmosphere above following its lapse); swapping the nouns into another field (wards, parcel hubs, meters) loses the vertical profile and the basin pools that decide which withheld readings were the air.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:basin-pool-peers-for-a-spatial-check",
+  "layer1": [
+    "NTCIP tenths of a degree Celsius in the feed against the district's Fahrenheit reports",
+    "UTC feed time against Mountain local time with the November and March clock changes",
+    "station ids that differ between the feed, the QC export and the station register",
+    "QC test codes from two vendor releases",
+    "re-polled hours duplicated in the feed",
+    "elevations in feet and in metres"
+  ],
+  "stakeholder_role": "the district's road weather program manager",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "other",
   "spine": {
-    "file": "bcs_round_outcomes_2017_2026.csv",
-    "rows": 210800,
-    "entity": "one panel firm's outcome in one survey round",
-    "grain": "panel firm x survey round",
+    "file": "sdhd_rwis_atmospheric_2026_27.csv",
+    "rows": 175000,
+    "entity": "one station's hourly atmospheric reading",
+    "grain": "station x hour",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "period_close",
-  "org_family": "financial_institution",
+  "forum": "committee_or_panel",
+  "forcing_event": "season_or_peak",
+  "org_family": "government_agency",
   "world": {
-    "geography": "fictional country (Brevland), northern Europe, English working language",
-    "currency": "EUR",
-    "org_type": "central bank (economic statistics department, business survey unit)",
+    "geography": "United States, northern Rocky Mountains (Montana)",
+    "currency": "USD",
+    "org_type": "a state highway district's road weather information system",
     "invented_names": [
-      "Brevland",
-      "Brevland Central Bank",
-      "Business Conditions Survey",
-      "Brevland Business Register"
+      "Sawyer Divide Highway District",
+      "Quillan Road Weather Systems"
     ],
     "people": [
-      "Wenche Myklebust",
-      "Stein Thomassen",
-      "Turid Rønning",
-      "Håkon Abrahamsen"
+      "Melissa Hayden",
+      "Lynn Dalton",
+      "Robyn Reeves"
     ]
   },
   "deliverables": [
-    "bcs_sep2026_extension.xlsx",
-    "bcs_sep2026_response.pptx"
+    "rwis_spatial_check_review_2027.xlsx",
+    "spatial_check_retune_memo_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is a rate over the units still active on a reference date, but exits reach the record of exits about a year after they happen and the follow-up that could confirm a silent unit's state reaches active units far more often than exited ones, so the exited share of this round's silent units has to come from earlier rounds old enough for the record to have caught up; counting every unrecorded silent unit as active, carrying the follow-up's resolved mix onto the unresolved, or reading the share from rounds the record has not yet settled all leave the rate too low.",
-  "driver_concrete": "Firms that stopped trading before the 1 September 2026 frame date mostly have no closure in the business register yet, and the call centre records a closure only when someone answers for the firm, so the share of the September round's non-returning firms that had already closed is taken from rounds old enough for the register to have recorded their closures, not from the register as it stands, the call outcomes, or recent rounds whose closures are still arriving.",
-  "stump": "Counting every non-returning firm without a business-register closure as still trading puts five regions under 55 per cent (Capital, Harbour, Islands, Border and Western Uplands) and the other seven under 58, so the default sends five regions into the reminder-call extension and seven onto the email reminder; the step that lands it there is taking the register as it stands for the round's in-scope population when most firms that closed before 1 September are not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have recorded their closures leaves only Capital and Harbour for the extension and Islands and Western Uplands for the email.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who deduplicates the returns, drops the firms the business register shows closed by 1 September and divides each region's returns by the rest sends five regions into the extension (Capital, Harbour, Islands, Border and Western Uplands) and seven onto the email; one who gives the unresolved non-returners the eligibility of the call centre's resolved cases (AAPOR's proportional e), or reads the closure share from every earlier round or the last two years, still sends four (Capital, Harbour, Islands and Western Uplands), where only Capital and Harbour fall under 55 per cent.",
-  "domain_test": "The deciding quantity is the survey's response rate over in-scope panel firms with the eligibility of unresolved non-respondents estimated (AAPOR's e), which the survey statistician takes from the register's settled closures of earlier rounds because nonresponse follow-up resolves closed firms far less often than trading ones; with another field's nouns (a meter fleet's read rate) there is no in-scope population fixed at a frame date by trading status, no nonresponse follow-up whose resolution depends on the outcome and no e to estimate, so the task stops being a survey-nonresponse question.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:eligibility-of-unresolved-panel-nonrespondents-from-settled-register-closures",
-  "layer1": [
-    "register closures notified long after cessation, two dates per closure",
-    "company numbers reformatted in 2021 with a check digit, the six-digit form surviving on the contractor's list",
-    "two contact-centre teams with their own outcome codes and keys, calls placed and received in one log",
-    "returns arriving by web, phone and post, a few firms returning twice",
-    "paper returns keyed by an outside bureau and telephone returns loaded overnight, two timestamps a word apart",
-    "round labels in three formats across files",
-    "timestamps in UTC against local cut-offs",
-    "a regional review that renamed two regions and recoded all twelve in 2023",
-    "panel identifiers freed in the 2024 expansion issued again",
-    "NACE Rev. 2.1 sections on recruits from 2025"
-  ],
+  "question_form": "whether",
+  "driver": "A check judges each unit's reading against an expectation built from its nearest units through one fixed gradient, while in still conditions the medium settles into separate pools, each shared only by the units inside it; the check's rejections at pooled units are mostly true readings that only the units sharing the same pool at the same hour confirm, and those units are found from how the units' records move together, not from distance, level or any listed grouping.",
+  "driver_concrete": "Each withheld air-temperature reading is judged against the stations sharing its basin's cold pool that hour, the pool's members read from how the stations' still-night temperatures move together over the winter: the spatial check's lapse-adjusted neighbours sit in other basins or above the inversion, so its rejections at basin-floor stations on still nights are true cold air, while a reading that parts from its own pool is a sensor fault.",
+  "stump": "A competent analyst judges each withheld air-temperature reading against the hour's elevation-adjusted neighbours, the lapse rate refitted across the network each hour, counts a reading as right only where it sits within the check's tolerance of that line, and re-tunes only the deepest-pooling basin floors; the step that lands there is reading a basin floor against stations outside its own basin's cold pool, so the floors of the shallower basins, whose still-night readings agree with the other stations in their own pool, keep withholding more than 2 per cent of their winter hours unremarked.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task445": "task445 completes the amounts that reporters not yet in still hold, from each reporter's last report; task231 estimates whether each non-returning unit still belongs to the population at all, from the register's later closures for earlier rounds, because the follow-up confirms closures selectively: the missing quantity is membership of the denominator, not an amount"
+    "task309": "task309 reads an intervention's effect class by class of event intensity under a filed criterion that the carried effect reproduce the record; this build judges a quality check's rejections against the units sharing the reading's own still-air pool, the pool found from how the units' records move together, with no effect, intensity scale or filed reproduction criterion"
   },
-  "lineage": [],
-  "notes": "DQ04 kept as an idea seed only (world, decision, quantity). Strategy maturity_censoring answers its overuse WARN in the design note: the tail is the register's later closures, not a delay distribution."
+  "lineage": [
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+      "objective": "data-quality-monitoring",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G11"
+      ],
+      "gate_g": "forecasting",
+      "driver": "The decisive quantity is a rate over the units still active on a reference date, but exits reach the record of exits about a year after they happen and the follow-up that could confirm a silent unit's state reaches active units far more often than exited ones, so the exited share of this round's silent units has to come from earlier rounds old enough for the record to have caught up; counting every unrecorded silent unit as active, carrying the follow-up's resolved mix onto the unresolved, or reading the share from rounds the record has not yet settled all leave the rate too low.",
+      "stump_strategy": "maturity_censoring",
+      "forum": "line_manager_or_team",
+      "forcing_event": "period_close",
+      "org_family": "financial_institution",
+      "role_family": "statistical_office_head",
+      "world": {
+        "geography": "fictional country (Brevland), northern Europe, English working language",
+        "currency": "EUR",
+        "org_type": "central bank (economic statistics department, business survey unit)",
+        "invented_names": [
+          "Brevland",
+          "Brevland Central Bank",
+          "Business Conditions Survey",
+          "Brevland Business Register"
+        ],
+        "people": [
+          "Wenche Myklebust",
+          "Stein Thomassen",
+          "Turid Rønning",
+          "Håkon Abrahamsen"
+        ]
+      },
+      "deliverables": [
+        "bcs_sep2026_extension.xlsx",
+        "bcs_sep2026_response.pptx"
+      ],
+      "architecture": "v1 (the Brevland Central Bank's Business Conditions Survey: which regions go into the September 2026 round's reminder-call extension, read on the round's response rate over the firms still trading, the closure share of the silent firms taken from rounds the business register has caught up with)",
+      "spent": "2026-10-31 at the batch 1 re-root: shipped 10-13 with no portal result; the audit found the survivor anatomy short in every part (no Actor, Link, Reflex, Back-test, Second use, Shock or Pins line), the pair ceiling unmeasured on the cut pack, a count the data hold in the prompt and three shipped files describing the data (data dictionary, extract notes, export manifest, each a leak.py LEAK)"
+    }
+  ],
+  "lineage_shells": [],
+  "notes": "architecture 2 re-root at batch 1; architecture 1 moved to the lineage as spent",
+  "registered": "2026-11-01T00:33:44Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "record",
+    "rounding opener": "shares",
+    "deliverable set": "pptx+xlsx"
+  }
 }
