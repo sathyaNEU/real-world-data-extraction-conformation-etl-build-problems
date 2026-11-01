@@ -66,6 +66,16 @@ stage 4; its identity is in the card's lineage.
     with source size) and task470 (a sensor missing whole units) complete what a survey does not see; here every
     leak is seen and the quantity is how long it emitted before it was.
 
+## Survivor anatomy
+
+Actor: the deciding property, when each surveyed leak began, has no column in any file: the finds record when a leak was found, the schedule when each segment was walked, the repair orders each visit, and no record stores a start or a season of starts; the profile exists only as the odor log's confirmed calls counted by month, a relation across rows of a file the inventory reads for other leaks.
+Link: the step carries the month mix of the called leaks' starts onto the surveyed leaks of another population, joined to each segment's own previous walk in the schedule; no key joins an odor call to a surveyed leak and no filed sentence invites setting the two populations against each other.
+Reflex: the field's interval conventions for an unseen start, the previous survey (rung 1, all 12 designated) and the midpoint between walks (rung 2, the default path), sit at the bottom of the ladder and file the default path's Ends on, Ashby, Elmwood and Ivers (checks.py on the pack and on the clean truth).
+Back-test: the midpoint validates on the survey record itself: every district is walked once a year in the same month, so every surveyed interval is a full year with no month signal in it, and the 2022 to 2026 finds per cast-iron and bare-steel mile run level by district (Fenwick 0.78 to 1.41, Ashby 0.68 to 1.13) with no ordering by walk month; only the odor log, a second record, refutes uniform starts.
+Second use: with the decisive step deleted the pack keeps every file it ships: the odor log feeds the called leaks' own starts, grades and segments on the default path, the schedule the previous walk every convention reads, the finds, repair orders and GIS the inventory itself; the cost lines, closeouts, tickets and premises carry the asks.
+Shock: the five designated districts are no interval of any shipped statistic: by walk month they run March, August, October, November and December with September (Dorrance) out; by 2026 finds per mile Ashby sits between them; on the default path Ashby is over the line and Brennan Hill, Fenwick and Harlow under, so no sort hands over the set.
+Pins: guidelines 2.1 to 2.3 file the WHAT (leaks found in calendar 2026 on cast-iron and bare-steel mains and services, methane from when the leak began to its repair or 31 December 2026 at Table 1's rate for the grade when found, a called leak begun at the call, per in-service cast-iron and bare-steel mile, at or above 3.30); no filed sentence names a season, a profile, a weighting or a start convention for a surveyed leak.
+
 ## Default path
 
 1. Read the program guidelines: designate every district whose 2026 leak methane per mile of cast-iron and
@@ -215,7 +225,7 @@ main, 2026, against 3.30).
 | 13 | Order of operations | each leak's start, its hours, its methane, the district's sum, the per-mile |
 | 14 | Row order | no dependence |
 | 15 | Duplicate resolution | one leak per leak number; a leak's several visits are its visits |
-| 16 | Identity normalisation | grades A to C before 2025 and 1 to 3 after |
+| 16 | Identity normalisation | grades A to C before 2025 and 1 to 3 after; every 2026 find and 2026 call carries the numeric grade Table 1 rates, so the recode reaches no graded figure |
 | 17 | Netting | none |
 | 18 | Dimensional units | kilograms per hour, hours, tonnes; feet over 5,280 |
 | 19 | Code and status semantics | REPAIRED against CHECKED and MONITORED; never the stump |
@@ -311,3 +321,11 @@ not allocated to districts, and no earlier designation, memo or ranking ships.
   the shared service lines. Reader 1 also read "local" as Eastern time: guidelines 2.2 now names Central time.
 - 2026-10-20, architecture 2 stage 4 reader 3 (pack 5a46ee5a, shipped): missed the call (the midpoint start) and all
   24 ask figures.
+- 2026-11-01, architecture 2 spent at the re-check's stage 4 (judge pass 4 NOT_DETERMINISTIC, SEND_BACK, Gate C/E
+  underspecified_objective; Gate G method_or_model_selection, Gate H analytical): guidelines 2.2 file a start only for
+  the called leaks, and a surveyed leak's start at the find, the previous survey, the midpoint or the seasonal
+  expectation designates 0, 12, 3 or 5 districts with nothing filed ruling out the midpoint; the sentence that would
+  close the fork names the decisive step, so the fork is the stump and no pin repairs it. The re-check's free-gate
+  repair (the extract notes out of the pack, leak.py sweeps 1 and 12 LEAK; "our 12 districts" out of the prompt;
+  survivor anatomy written, precut 61 checks, 0 WARN) went green on every free gate with no graded figure moved and
+  is not shipped; the shipped pack (5a46ee5a) stays at the portal, pending.

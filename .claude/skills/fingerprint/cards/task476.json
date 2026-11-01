@@ -80,7 +80,8 @@
     "task229": "task229 v2 reads a state share through checks that reset the unit at the check; here nothing is reset and no share is estimated: each found item's active time before the find is estimated from when in the year items begin, against when in the year its unit is inspected.",
     "task242": "task242 averages a detector's fading sensitivity over each unit's event times up to its reading date; here detection at the inspection is complete and the quantity is the duration before it, set by the seasonal start profile measured in a second record of items reported as they begin.",
     "task461": "task461 carries a quantile to a long period through a correlated auxiliary series; here no distribution tail is carried: the duration each found item was active is the expectation of its start under the seasonal profile between two inspections.",
-    "task501": "task501 v2 chooses a pacing basis by walk-forward test; here no forecast is made: the start profile is read from the reports made at start, and the inventory sums each item's active time in the year."
+    "task501": "task501 v2 chooses a pacing basis by walk-forward test; here no forecast is made: the start profile is read from the reports made at start, and the inventory sums each item's active time in the year.",
+    "task174": "task174 v2 recovers a member's within-session gain per repetition from stopping rules and an overnight decay; here no learning curve or stopping rule is fitted: each found item's unseen active time is its expected start between two scheduled inspections under the seasonal start profile a second record measures at onset."
   },
   "lineage": [
     {
@@ -96,8 +97,24 @@
         "G4",
         "G17"
       ]
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-20",
+      "fate": "spent 2026-11-01 at the re-check's stage 4: judge pass 4 NOT_DETERMINISTIC, SEND_BACK (Gate C/E underspecified_objective): guidelines 2.2 file a start only for called leaks, so a surveyed leak's start (find, previous survey, midpoint, seasonal expectation) designates 0, 12, 3 or 5 districts and nothing filed rules out the midpoint; the sentence that would close the fork names the decisive step, so the fork is the stump; the shipped pack stays at the portal, pending, untouched (target.zip 5a46ee5a)",
+      "driver": "Each item is found only at a periodic inspection made at a fixed point in the year for each unit, after having begun at an unrecorded time since the previous inspection, and items begin mostly in one season, so the time each was active before it was found depends on when in the year its unit is inspected; the even-spread assumption misprices units inspected long after the season, and the seasonal profile comes from a second record whose items are reported as soon as they begin.",
+      "stump": "The default path counts each 2026 leak's methane from the day it was found to its repair, and the textbook correction starts each surveyed leak halfway back to the previous survey; both designate the wrong districts, because leaks begin mostly in the frost months, so the districts surveyed in late autumn found leaks that had emitted since winter; estimating each leak's start from the monthly profile of the odor-report leaks designates the districts the program should fund.",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a city-owned gas utility's leak-based methane inventory by district for its accelerated cast-iron and bare-steel main replacement program, leaks found at once-a-year district surveys in each district's own month"
     }
   ],
   "notes": "Registered 2026-10-20 with --force over the slot's spent v1 card; check showed no BLOCK on the draft or the filed card (WARNs only), so the flag overrode nothing.",
-  "registered": "2026-10-20T10:37:21Z"
+  "registered": "2026-10-20T10:37:21Z",
+  "architecture_spent": true
 }
