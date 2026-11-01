@@ -81,6 +81,6 @@
    - Yarrowby, fault reported 2026-05-01: 5
    - Pellsbury, fault reported 2026-06-03: 7
 
-### operating_points_2027_committee.pptx
+### operating_points_2027_leadership.pptx
 
 1. Heatmap on the slide with one row per clinic and one column per vendor point (Standard, Enhanced, High, Maximum), each cell the clinic's estimated sensitivity and each clinic's point for 2027 outlined: Standard at seven clinics, High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane.

@@ -25,7 +25,7 @@ SOURCES = {
     "protocol": "CVCH Quality department, validation study protocol v1.2; synthetic",
     "assets": "CVCH Biomedical Engineering asset register with location history, exported 30 September 2026; "
               "synthetic",
-    "standard": "CVCH Clinical AI Oversight Committee, governance standard CAI-03 version 3; synthetic",
+    "standard": "CVCH Executive Leadership Team, governance standard CAI-03 version 3; synthetic",
     "opspec": "Kelvory Health Systems, RetinaCheck operating points site configuration guide, revision C; synthetic",
     "siteconfig": "Kelvory RetinaCheck portal, site configuration export, 1 October 2026; synthetic",
     "agreement": "Pellam Eye Reading Center, overread services agreement for contract year 2027; synthetic",

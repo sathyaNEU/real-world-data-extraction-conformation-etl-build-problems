@@ -9,7 +9,7 @@ from pack import write_pdf
 def standard(path):
     b = [
         ("title", "Clinical AI Governance Standard CAI-03, version 3"),
-        ("small", "%s. Clinical AI Oversight Committee. Approved 17 June 2026, effective 1 July 2026. Owner: Director "
+        ("small", "%s. Executive Leadership Team. Approved 17 June 2026, effective 1 July 2026. Owner: Director "
                   "of Quality and Clinical AI. Supersedes version 2 (March 2025)." % P.ORG),
         ("h", "1. Purpose and scope"),
         ("p", "This standard governs the clinical AI tools in use at %s clinics. Section 3 applies to the autonomous "
@@ -34,26 +34,27 @@ def standard(path):
         ("p", "<b>3.1</b> For each clinic, the operating point for the contract year is the least sensitive vendor "
               "operating point at which the AI's sensitivity for referable diabetic retinopathy among that clinic's "
               "reference-year screenings is at least 85 per cent. The estimate is compared with the floor as it "
-              "stands; its precision is reported to the Committee separately."),
+              "stands; its precision is reported to the Chief Medical Officer separately."),
         ("p", "<b>3.2</b> The referrals the chosen operating points imply, counted on the reference year's screenings at "
               "every clinic, may not exceed the overread capacity in the reading center agreement for the contract "
               "year."),
         ("p", "<b>3.3</b> Where no vendor operating point meets 3.1 at a clinic, that clinic suspends autonomous "
               "screening for the contract year and every screening is sent for a reading center overread."),
         ("p", "<b>3.4</b> The Director of Quality and Clinical AI presents each clinic's operating point to the "
-              "Committee by 1 December, with the evidence it rests on. Operating points are configured in the vendor "
+              "Executive Leadership Team (the Chief Executive, the Chief Medical Officer and the Chief Operating "
+              "Officer) by 1 December, with the evidence it rests on. Operating points are configured in the vendor "
               "portal before the contract year opens and are not changed during it."),
         ("h", "4. Monitoring"),
-        ("p", "<b>4.1</b> Each quarter the Committee reviews the reading center's overreads of the AI's referrals "
+        ("p", "<b>4.1</b> Each quarter the Chief Medical Officer reviews the reading center's overreads of the AI's referrals "
               "from the screenings captured in the quarter before: by clinic, the referrals read and the share whose "
               "closing grade is Referable, and for the network the average calendar days from the screening's local "
               "date to the local date of the closing grade."),
         ("p", "<b>4.2</b> A camera fault is reported to Biomedical Engineering on the day it occurs. For each camera "
-              "fault the Committee reviews the clinic days lost to it. A clinic day lost to a camera fault is a "
+              "fault the Chief Medical Officer reviews the clinic days lost to it. A clinic day lost to a camera fault is a "
               "scheduled screening day on which the clinic screened no one because its camera was out of service."),
         ("small", "CAI-03 v3. Next review June 2027."),
     ]
-    write_pdf(path, "Clinical AI Governance Standard CAI-03 v3", "%s Clinical AI Oversight Committee" % P.ORG_SHORT, b,
+    write_pdf(path, "Clinical AI Governance Standard CAI-03 v3", "%s Executive Leadership Team" % P.ORG_SHORT, b,
               stamp_date="D:20260617141500+00'00'")
 
 

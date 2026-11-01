@@ -55,7 +55,7 @@
     "grain": "patient x screening visit",
     "source": "synthetic (constructed vendor portal export)"
   },
-  "forum": "committee_or_panel",
+  "forum": "executive_team",
   "forcing_event": "purchase_order_or_contract",
   "org_family": "hospital_or_health_provider",
   "world": {
@@ -71,7 +71,7 @@
   },
   "deliverables": [
     "ai_operating_points_2027.xlsx",
-    "operating_points_2027_committee.pptx"
+    "operating_points_2027_leadership.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "what",
@@ -137,7 +137,7 @@
       "fate": "spent 2026-10-27 at the portal: both top responses landed the call (59 of 60, one returned) by rating the relief positions at the July 2025 entry classes' first-year off-post share, the Director's memo having named the July 2027 entry classes; the world screened for a new step the same day and set aside, the axes then banned (government_agency, budget_or_appropriation, research_desk, filed_standard)"
     }
   ],
-  "notes": "Architecture 3, re-rooted 2026-11-01 at the Batch 3 queue reset into general-statistics-data-science / robustness-analysis (a task type never drawn on any objective), Descriptive & Distribution Analysis kept. Strategy composition_mix: the decisive step carries a measured hit rate by a latent capture device whose mix differs between the validation corpus and each clinic. Drawn after the window moved at 17:20Z (task138 v2 filed, task125 v4 out): at 17:05Z the window held composition_mix (task125 v4) and the draw was not filed then; gap objective first (the validation study's sensitivity is correct for its own images and is not what the decision is scored on, each clinic's own), pattern none with G6 decisive. Shape and shell redrawn before filing when task255 v2 filed at 17:30Z with shape 10, a designation, a which-question and xlsx plus pdf, and task138 v2 held shape 04: the decision is the operating point each clinic runs (a grid of clinics against the vendor's points, a floor at every clinic and the reading center's capacity as the two gates), which is the decision the vendor's per-site configuration really asks the network to make.",
+  "notes": "Architecture 3, re-rooted 2026-11-01 at the Batch 3 queue reset into general-statistics-data-science / robustness-analysis (a task type never drawn on any objective), Descriptive & Distribution Analysis kept. Strategy composition_mix: the decisive step carries a measured hit rate by a latent capture device whose mix differs between the validation corpus and each clinic. Drawn after the window moved at 17:20Z (task138 v2 filed, task125 v4 out): at 17:05Z the window held composition_mix (task125 v4) and the draw was not filed then; gap objective first (the validation study's sensitivity is correct for its own images and is not what the decision is scored on, each clinic's own), pattern none with G6 decisive. Shape and shell redrawn before filing when task255 v2 filed at 17:30Z with shape 10, a designation, a which-question and xlsx plus pdf, and task138 v2 held shape 04: the decision is the operating point each clinic runs (a grid of clinics against the vendor's points, a floor at every clinic and the reading center's capacity as the two gates), which is the decision the vendor's per-site configuration really asks the network to make. Forum redrawn 2026-11-01 to executive_team (the network's Executive Leadership Team sets each clinic's point; the Chief Medical Officer receives the precision and the quarterly reviews) after task273 v6 shipped with committee_or_panel inside this card's window.",
   "registered": "2026-11-01T17:35:40Z",
   "shell": {
     "question form": "how-many",

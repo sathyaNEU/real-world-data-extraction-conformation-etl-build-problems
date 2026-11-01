@@ -105,7 +105,7 @@ def main():
     for k, v in sorted(f["downtime"].items(), key=lambda kv: kv[0].split()[-1]):
         a("   - %s: %d" % (k, v))
     a("")
-    a("### operating_points_2027_committee.pptx\n")
+    a("### operating_points_2027_leadership.pptx\n")
     a("1. Heatmap on the slide with one row per clinic and one column per vendor point (Standard, Enhanced, High, Maximum), each "
       "cell the clinic's estimated sensitivity and each clinic's point for 2027 outlined: Standard at seven clinics, "
       "High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane.")

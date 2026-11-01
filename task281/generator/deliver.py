@@ -1,7 +1,7 @@
 """The golden deliverables and figures.json, computed from target/ alone through analysis.py.
 
     ai_operating_points_2027.xlsx   the 2027 points, their referrals, the reading center reads, camera faults
-    operating_points_2027_committee.pptx  the Committee slide: the call and the heatmap of each clinic's
+    operating_points_2027_leadership.pptx  the leadership team's slide: the call and the heatmap of each clinic's
                                           estimated sensitivity at every vendor point, its point outlined
 """
 import datetime as dt
@@ -12,7 +12,7 @@ import zipfile
 import analysis as A
 
 BOOK = "ai_operating_points_2027.xlsx"
-BRIEF = "operating_points_2027_committee.pptx"
+BRIEF = "operating_points_2027_leadership.pptx"
 STAMP = (2026, 11, 16, 16, 40, 0)
 NAMES = {"OF": "Orrin Falls", "TB": "Thistlebrook", "WM": "Wendmere", "PB": "Pellsbury", "QH": "Quarry Hill",
          "RW": "Rookwood", "SC": "Sallow Creek", "VD": "Veldane", "BF": "Brackenfield", "YB": "Yarrowby",
@@ -244,7 +244,7 @@ def chart(P, G, order, path):
 
 
 def brief(P, G, f, order, png, path):
-    """One slide for the Clinical AI Oversight Committee: the call, the reason and the grid."""
+    """One slide for the Executive Leadership Team: the call, the reason and the grid."""
     from pptx import Presentation
     from pptx.util import Inches, Pt
     from pptx.dml.color import RGBColor
@@ -269,7 +269,7 @@ def brief(P, G, f, order, png, path):
             p.space_after = Pt(6)
 
     box(0.5, 0.35, 12.3, 0.9, [("Standard at seven clinics and High at five in 2027", 26, True),
-                               ("RetinaCheck operating points for contract year 2027. Clinical AI Oversight Committee, "
+                               ("RetinaCheck operating points for contract year 2027. Executive Leadership Team, "
                                 "December meeting. Quality and Clinical AI.", 12, False)])
     box(0.5, 6.3, 5.6, 0.9, [("Sources: local validation study 2025 (CVCH-QI-2025-01); RetinaCheck result export, "
                               "screenings Oct 2025 to Sep 2026; Biomedical Engineering asset register and location "

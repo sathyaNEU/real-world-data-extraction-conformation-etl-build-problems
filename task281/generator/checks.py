@@ -118,7 +118,8 @@ def main():
                 for row in ws.iter_rows(max_row=3, values_only=True):
                     if any(isinstance(x, str) and "sensitiv" in x.lower() for x in row):
                         sens_cols.append(f + ":" + ws.title)
-    pdf_text = {f: A.pdf_text(os.path.join(TARGET, f)) for f in files if f.endswith(".pdf")}
+    footer = re.compile(r"(?:CVCH [A-Za-z ]+?|Kelvory Health Systems|Pellam Eye Reading Center)\s+\|\s+[^|]+?\|\s+page \d+\s*")
+    pdf_text = {f: footer.sub("", A.pdf_text(os.path.join(TARGET, f))) for f in files if f.endswith(".pdf")}
     figure_sens = [f for f, t in pdf_text.items()
                    if re.search(r"sensitivity (?:of|was|is|at|reached|came to)\s[^.]{0,30}\d+(?:\.\d+)? ?(?:%|per cent)",
                                 t, re.I)]

@@ -4,7 +4,7 @@
  "decision": "the vendor operating point each Corrowan Valley clinic runs Kelvory RetinaCheck at in contract year 2027 under the network's clinical AI governance standard",
  "deliverables": [
   "ai_operating_points_2027.xlsx",
-  "operating_points_2027_committee.pptx"
+  "operating_points_2027_leadership.pptx"
  ],
  "distractor_files": [
   "retinacheck_site_dashboard_2026q3.xlsx",
@@ -39,7 +39,7 @@
    "date": "2026-11-16",
    "license": "synthetic, CC0",
    "role": "evidence",
-   "source": "CVCH Clinical AI Oversight Committee, governance standard CAI-03 version 3; synthetic"
+   "source": "CVCH Executive Leadership Team, governance standard CAI-03 version 3; synthetic"
   },
   "diabetes_registry_2026-09-30.csv": {
    "date": "2026-11-16",

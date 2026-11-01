@@ -3,8 +3,8 @@
  "status": "BUILD",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "ship gate: guard heart BLOCK after the window moved",
  "updated": "2026-11-01",
  "stump": "The validation study's 90.8 per cent at Standard, pooled, by pilot or reweighted to each clinic's patient mix, files Standard at all twelve clinics (5,269 referrals); its images came from two camera models (58 of 90 referable patients referred on the NR-40 against 378 of 390 on the NR-70 at Standard), and only each model's sensitivity, the camera behind each image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane to High (7,076 referrals).",
  "architecture": 3,
@@ -14,11 +14,11 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip 85417530: no LEAK, seven REVIEW lines ruled harmless in the note",
-  "reader": "clean, rounds 1 and 2"
+  "leak_py": "REVIEW 2026-11-01 on target.zip 314f3a3b: no LEAK, seven REVIEW lines ruled harmless in the note",
+  "reader": "clean in rounds 1 to 3 (no decisive-step sentence, no ranking or helper file, nothing reads as the answer; question 6 an analytical choice each round); the reader's sections appended to task281/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-01 (repeat.gate_g vs task255 v2, answered)",
+  "heart": "BLOCK 2026-11-01 at the ship gate (window moved by two re-roots): ban.shape vs task273 v6; ban.strategy and ban.forum vs task125 v4; WARN repeat.gate_g, repeat.deliverables, repeat.question_form",
   "surface": "one promoted pair for the author's adjudication: task280 vs task281, back to back on the slot pairing, surface 0.000",
   "nearest": "0.08 task181 draft lineage and task230 v2 lineage"
  },
@@ -39,7 +39,10 @@
    "verdict": "DETERMINISTIC, APPROVE (order kept, Gate F strong, Gate G statistical_rigor, Gate H pass)",
    "advisories_closed": "CAI-03 4.2 defines a lost clinic day (a scheduled screening day on which the clinic screened no one because its camera was out of service); protocol amendment 1 (enrolment to 22 August 2025, about 1,500 a site); the committee slide states each heatmap cell's basis. figures.json and submission.md blocks 1 to 4 identical to the round-2 copies",
    "leak_reader": "clean, round 2"
-  }
+  },
+  "verdict": "round 2 DETERMINISTIC, APPROVE (order kept; Gate F strong; Gate G statistical_rigor / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; round 1's estimator finding closed by construction before the re-judge; round 2's three advisory notes closed by wording and document alignment; the forum redrawn after the guard's ban (committee to the executive leadership team); no graded figure moved after round 2 (figures.json byte-identical, one heading line in block 4 renamed)",
+  "report": "task281/determinism_check_report.md"
  },
  "returned": [
   {
@@ -55,7 +58,7 @@
    "commit": ""
   }
  ],
- "resume": "Re-judge approved 2026-11-01; its three advisories closed with no graded figure moved; every free gate green on target.zip 85417530. Next: ship in the main session (commit, ledger row).",
+ "resume": "Judge round 2 APPROVE and leak reader clean (rounds 1 to 3) on target.zip 314f3a3b, every free gate green; the ship stopped at guard.py heart, which now BLOCKs ban.shape (shape 07 against task273 v6), ban.strategy and ban.forum (composition_mix and executive_team against task125 v4). At the draw the card passed; the window moved when task133 and task138 re-rooted and re-registered after it, pulling task125 and task273 into task281's last three. A ban waiver is the author's call (CLAUDE.md): asked 2026-11-01. On a waiver: record it in the card's notes, ship this cut. Without one: re-root in another world.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -72,5 +75,16 @@
    "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (LED conversion phases' group driver replacement, Tallisford Power & Light; a portal determinism return, then a landed call)"
   }
  ],
- "seed": "none (architecture 3 drawn outside the seeds: General Statistics & Data Science / robustness-analysis)"
+ "seed": "none (architecture 3 drawn outside the seeds: General Statistics & Data Science / robustness-analysis)",
+ "forum_redraw": {
+  "date": "2026-11-01",
+  "from": "committee_or_panel",
+  "to": "executive_team",
+  "why": "guard.py heart BLOCK ban.forum against task273 v6 (shipped, in this card's window)",
+  "changed": "CAI-03 approval line, 3.1's precision report (to the Chief Medical Officer, sentence otherwise word for word), 3.4's presentation (Executive Leadership Team), 4.1 and 4.2 reviews (Chief Medical Officer); the prompt's slide (the leadership team's slide, operating_points_2027_leadership.pptx); golden pptx; metadata; card forum and deliverables; design note",
+  "graded": "figures.json identical to the round-2 copy; submission.md blocks 1 to 4 differ only in the deliverable heading line (operating_points_2027_committee.pptx to operating_points_2027_leadership.pptx)"
+ },
+ "build": {
+  "target_zip": "314f3a3b (16 members, each byte-identical to target/)"
+ }
 }
