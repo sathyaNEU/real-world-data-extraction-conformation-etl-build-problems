@@ -6,16 +6,16 @@
  "stage": 3,
  "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "The validation study's 89.4 per cent at Standard, pooled, by pilot or reweighted to each clinic's patient mix, files Standard at all twelve clinics (5,411 referrals); its images came from two camera models (73.3 against 95.7 per cent at Standard), and only each model's sensitivity, the camera behind each image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor and Rookwood to High and Kestle Road and Veldane to Enhanced (6,630 referrals).",
+ "stump": "The validation study's 90.8 per cent at Standard, pooled, by pilot or reweighted to each clinic's patient mix, files Standard at all twelve clinics (5,269 referrals); its images came from two camera models (58 of 90 referable patients referred on the NR-40 against 378 of 390 on the NR-70 at Standard), and only each model's sensitivity, the camera behind each image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane to High (7,076 referrals).",
  "architecture": 3,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip 11435654: no LEAK, seven REVIEW lines ruled harmless in the note",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on target.zip 0837f761: no LEAK, seven REVIEW lines ruled harmless in the note",
+  "reader": "clean, round 1"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-01 (repeat.gate_g vs task255 v2, answered)",
@@ -23,9 +23,17 @@
   "nearest": "0.08 task181 draft lineage and task230 v2 lineage"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "round1": {
+   "date": "2026-11-01",
+   "verdict": "DETERMINISTIC, order kept, Gate G PASS, Gate H PASS",
+   "findings": [
+    "FIX_NOW Gate C: the estimator settled only by the plain reading; the validation study's calibration of referable status on the DR score (logistic or binned) carried to each clinic's own scores put Brackenfield, Hollinmoor and Rookwood at Enhanced and Kestle Road and Veldane at the Standard line",
+    "Gate E minor: clinic days with no screening (closed by CAI-03 4.2 as filed)",
+    "Gate E minor: quarter of screening and Pacific dates (closed by CAI-03 4.1 as filed)"
+   ],
+   "repair": "closed by construction, no wording filed: NR-40 referable scores tightened (latent spread 0.605), NR-70 lifted (mean 1.18), the validation study extended to 22 August 2025 (4,477 images), Kestle Road's and Veldane's NR-70s failed in October 2025 and returned in September 2026 (90 and 91 per cent NR-40), capacity 7,500, validation draw 37 chosen from seventy on agreement of all fourteen estimators (observed proportions on screenings, days, gradable screenings, expected referables and camera by age; logistic, logit-logistic, binned and isotonic calibration on the clinic's own scores): the golden's point at all twelve clinics, tightest deciding cell 1.99 points from the floor; graded sensitivities stated as referred over referable counts; golden now Standard at seven, High at five, 7,076 referrals",
+   "leak_reader": "clean (six questions; question 6 an analytical choice); optional note on the site configuration's shared dates, not taken"
+  }
  },
  "returned": [
   {
@@ -41,7 +49,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 3 complete 2026-11-01 (architecture 3, Corrowan Valley Community Health, RetinaCheck operating points by clinic). Free gates green on the final cut. Next: stage 4 in the main session, the isolated leak reader and the determinism judge, then fixes in the generator (python3 task281/generator/build.py rebuilds everything, checks.py, verify.py and ceiling.py re-measure).",
+ "resume": "Stage 4 round 1 repaired 2026-11-01 (the judge's Gate C estimator finding closed by construction; free gates green on the final cut, target.zip 0837f761). Next: the re-judge in the main session on the repaired cut; python3 task281/generator/build.py rebuilds everything and checks.py, verify.py and ceiling.py re-measure.",
  "approved": null,
  "delivered": null,
  "portal": null,

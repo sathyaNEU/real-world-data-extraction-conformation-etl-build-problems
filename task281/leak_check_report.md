@@ -1,13 +1,14 @@
 # leak check, task281
 
-**Verdict: REVIEW.** 16 files read, 30 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 29 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: device, camera, architecture, validation, relief, capture, reflex, analysis, method, distribution, register, decisive, pooled, golden, carries, corpus, nothing, history, family, budget, network, composition, screened, screen, transport
+Stump terms swept: device, validation, camera, architecture, relief, capture, reflex, analysis, method, distribution, golden, register, decisive, pooled, family, carries, corpus, nothing, history, budget, closed, network, composition, screened, screen
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `clinical_ai_governance_standard_v3.pdf`: 5 of 25 stump-paragraph terms appear (camera, validation, capture, network, screen); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `clinical_ai_governance_standard_v3.pdf`: 5 of 25 stump-paragraph terms appear (validation, camera, capture, network, screen); read whether the document names the move
+- **REVIEW** `pellam_reading_agreement_2027.pdf`: 3 of 25 stump-paragraph terms appear (closed, network, screen); read whether the document names the move
 - **REVIEW** `retinacheck_operating_points.pdf`: 3 of 25 stump-paragraph terms appear (capture, carries, screen); read whether the document names the move
 - **REVIEW** `validation_study_protocol_2025.pdf`: 4 of 25 stump-paragraph terms appear (validation, analysis, network, screen); read whether the document names the move
 

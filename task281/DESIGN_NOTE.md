@@ -21,33 +21,33 @@ Architecture 3, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 2 (Tal
    - F: grader drift in the reference standard: the call would flip on reading the adjudication rule (data semantics); dropped.
 10. Screens before the draw: `guard.py recent`, `coverage`, `mechanisms --objective descriptive-distribution` and `slots` on the mechanism nouns (camera, device, transport, composition, validation, operating point) and the setting nouns (retinopathy, screening AI, reading center, community health center): no build on file carries a capture-device composition or a screening AI.
 11. Abstraction test against task181 v6 (the older structural match, cleared by the card's differentiation line) and task258 (the approved precondition build): task181 lays a shared resource's excess risk on the units it served and removes it case by case; task258 transports an intervention's effect to units its mechanism cannot reach; this build removes nothing and transports no effect: it re-weights a measured accuracy by the composition of each clinic's screenings over a latent capture device.
-12. Data-native sentence: the validation study ran January to June 2025 while the pilots' cameras were being swapped (Wendmere's NR-40 out on 1 March, Yarrowby's on 22 February, a seven-week NR-40 loaner at Quarry Hill), so 1,018 of its 3,411 images came from NR-40 cameras, enough to leave the pooled and every pilot's sensitivity above 85 per cent at Standard, while three clinics screened the whole reference year on an NR-40 and two spent most of it on NR-40 loaners.
+12. Data-native sentence: the validation study ran January to August 2025 while the pilots' cameras were being swapped (Wendmere's NR-40 out on 1 March, Yarrowby's on 22 February with a two-week loaner in June, a three-week NR-40 loaner at Quarry Hill), so 848 of its 4,477 images came from NR-40 cameras, few enough to leave the pooled and every pilot's sensitivity above 85 per cent at Standard, while three clinics screened the whole reference year on an NR-40 and two ran most of it on NR-40 loaners whose own NR-70s came back in September.
 
 ## Survivor anatomy
 
 - Actor: the deciding property is the camera model behind each image, and no file has a column for it: the validation record carries a site letter and a capture date, the result export a site and a UTC stamp, and the model exists only as the serial the asset register's location history places at that clinic on that day.
 - Link: the signal is read through an as-of interval join no key offers: site letter to clinic through the protocol, clinic to biomedical location through the directory, capture date into the location history's move dates, serial (typed with or without the maker's prefix) to model through the Assets sheet; nothing in the standard, the protocol or the vendor guide invites the join.
-- Reflex: the field's method for a validated sensitivity at a new site (carry it pooled, check it by site and subgroup, or reweight it to the site's recorded case mix) sits at rungs 0 to 2 and files Standard at every clinic (89.4 per cent pooled at Standard).
-- Back-test: the textbook route validates: every pilot clears 85 per cent at Standard on its own (88.1, 93.1 and 87.2), the case-mix transport leaves every clinic between 89.2 and 89.3 per cent, and the subgroup table shows only the small Type 1 group (24 referable) under the floor.
+- Reflex: the field's method for a validated sensitivity at a new site (carry it pooled, check it by site and subgroup, or reweight it to the site's recorded case mix) sits at rungs 0 to 2 and files Standard at every clinic (90.8 per cent pooled at Standard).
+- Back-test: the textbook route validates: every pilot clears 85 per cent at Standard on its own (87.1, 93.1 and 91.6), the case-mix transport leaves every clinic between 90.9 and 91.0 per cent, and the weakest pre-specified subgroup (75 and over, 60 referable) still clears the floor at 88.3.
 - Second use: the asset register and the service tickets carry the camera-fault ask (clinic days lost to each fault), the result export carries the same ask's capture days, the directory carries every crosswalk, and the validation study and its protocol are the method's own evidence; delete the decisive step and every file still has its job.
 - Shock: nothing moves; the five clinics the step resets show ordinary figures on every shipped statistic (their referral and ungradable rates on the vendor dashboard sit inside the network's spread, masked by their prevalence), and no sort of any shipped column puts the five together.
 - Pins: CAI-03 v3 files the WHAT (the reference year by local date, the clinic of capture, referable disease, sensitivity with Ungradable referred, the 85 per cent floor on the estimate as it stands, the capacity test), the agreement files the capacity and the referral unit, the protocol files the reference standard and the site letters; no filed sentence names a camera, a device or a grouping.
 
 ## Default path
 
-1. Read CAI-03 v3 section 3: each clinic runs the least sensitive vendor point at which the AI's sensitivity for referable disease among its reference-year screenings is at least 85 per cent, and the referrals the points imply stay within the agreement's 7,200.
+1. Read CAI-03 v3 section 3: each clinic runs the least sensitive vendor point at which the AI's sensitivity for referable disease among its reference-year screenings is at least 85 per cent, and the referrals the points imply stay within the agreement's 7,500.
 2. Read retinacheck_operating_points.pdf for the thresholds (Standard 50, Enhanced 42, High 34, Maximum 26) and the protocol for the reference standard and the site letters.
-3. From local_validation_study_2025.csv compute sensitivity at each point: referable by final_level and final_dme, referred when Ungradable or dr_score at or above the threshold: 89.4 per cent at Standard pooled, 88.1, 93.1 and 87.2 at the three pilots.
-4. Transport it to each clinic the field's way: link each 2025-26 screening to its patient through the EHR orders and the registry, post-stratify the validation sensitivity on age group (and check sex, diabetes type, HbA1c and ethnicity): every clinic between 89 and 90 per cent at Standard.
-5. Apply section 3.1 at every clinic and count the referrals: Standard everywhere, 5,411 referrals, within capacity.
+3. From local_validation_study_2025.csv compute sensitivity at each point: referable by final_level and final_dme, referred when Ungradable or dr_score at or above the threshold: 90.8 per cent at Standard pooled, 87.1, 93.1 and 91.6 at the three pilots.
+4. Transport it to each clinic the field's way: link each 2025-26 screening to its patient through the EHR orders and the registry, post-stratify the validation sensitivity on age group (and check sex, diabetes type, HbA1c and ethnicity): every clinic at 91 per cent at Standard, the weakest subgroup at 88.3.
+5. Apply section 3.1 at every clinic and count the referrals: Standard everywhere, 5,269 referrals, within capacity.
 
-Ends on: Standard at all twelve clinics, 5,411 referrals.
+Ends on: Standard at all twelve clinics, 5,269 referrals.
 
-Golden: Standard at Orrin Falls, Pellsbury, Quarry Hill, Sallow Creek, Thistlebrook, Wendmere and Yarrowby; Enhanced at Kestle Road and Veldane; High at Brackenfield, Hollinmoor and Rookwood; 6,630 referrals against 7,200.
+Golden: Standard at Orrin Falls, Pellsbury, Quarry Hill, Sallow Creek, Thistlebrook, Wendmere and Yarrowby; High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane; 7,076 referrals against 7,500.
 
 ## Stump sentence
 
-The default path carries the validation study's 89.4 per cent at Standard to every clinic, pooled, pilot by pilot or reweighted to each clinic's patient mix, and files Standard at all twelve clinics with 5,411 referrals; but the study's images came from two camera models (73.3 per cent on the NR-40 against 95.7 on the NR-70 at Standard) in a mix the pilots' 2025 camera swaps happened to produce, and only each model's sensitivity, the model behind every image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor and Rookwood to High and Kestle Road and Veldane to Enhanced (6,630 referrals).
+The default path carries the validation study's 90.8 per cent at Standard to every clinic, pooled, pilot by pilot or reweighted to each clinic's patient mix, and files Standard at all twelve clinics with 5,269 referrals; but the study's images came from two camera models (58 of 90 referable patients referred on the NR-40 against 378 of 390 on the NR-70 at Standard) in a mix the pilots' 2025 camera swaps happened to produce, and only each model's sensitivity, the model behind every image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane to High (7,076 referrals).
 
 ## Three rules
 
@@ -58,8 +58,8 @@ The default path carries the validation study's 89.4 per cent at Standard to eve
 - Layer 2: estimation under distribution shift (composition by a latent factor): the methodological choice is to estimate sensitivity per capture device and carry it by each clinic's device mix, rather than transporting one pooled or case-mix-weighted figure.
 - Decisive step: recognising that the validated sensitivity is a mixture over capture devices the validation corpus and each clinic hold in different proportions, and estimating it per device and recombining it with each clinic's device composition recovered from the equipment history.
 - Not semantics: every field read correctly (the site letters, the final grade, the Ungradable rule, the thresholds, the UTC stamps) still leaves the camera model in no column; with the clean truth's cameras known exactly the default route still files Standard at the five clinics (R3b).
-- Not rule application: no filed rule names the camera, the device or a grouping (R3c); executing CAI-03 3.1 and 3.2 on the pooled, pilot or case-mix sensitivity files Standard everywhere. Enumerated family: pooled, by pilot, case-mix post-stratified, worst subgroup, camera by current snapshot, camera by history (with screening, day or gradable weights, with or without an age stratum, Pacific or UTC dating): Standard at 12 clinics to High at 5. Standing family once the data rule out the camera-blind routes: the four camera-by-history weightings, spread zero on the call (every clinic's point identical, the nearest cell 1.6 points from the floor); the ruling-out is loud only for a reader who joins the register (22.4 points between the models at Standard).
-- Analyst test: a strong analyst who reads CAI-03 and every file correctly, and transports the validation study's sensitivity to each clinic pooled, by pilot or reweighted to its patient mix, files Standard at all twelve clinics with 5,411 referrals, against the golden's Enhanced at two and High at three.
+- Not rule application: no filed rule names the camera, the device or a grouping (R3c); executing CAI-03 3.1 and 3.2 on the pooled, pilot or case-mix sensitivity files Standard everywhere. Enumerated family: pooled, by pilot, case-mix post-stratified, worst subgroup, camera by current snapshot, camera by history (observed proportions weighted by screenings, days, gradable screenings, expected referables or camera and age; or the validation study's calibration of referable status on the DR score, logistic, logit-logistic, binned or isotonic, carried to each clinic's own scores; Pacific or UTC dating): Standard at 12 clinics to High at 5. Standing family once the data rule out the camera-blind routes: every camera-by-history member, spread zero on the call (every clinic's point identical in all fourteen, the tightest deciding cell 1.99 points from the floor under binned calibration, 3.89 under the observed proportions); the ruling-out is loud only for a reader who joins the register (58 of 90 against 378 of 390 at Standard).
+- Analyst test: a strong analyst who reads CAI-03 and every file correctly, and transports the validation study's sensitivity to each clinic pooled, by pilot or reweighted to its patient mix, files Standard at all twelve clinics with 5,269 referrals, against the golden's High at five.
 - Estimand: CAI-03 v3 section 2 and 3.1 (clinical_ai_governance_standard_v3.pdf): the population is the screenings captured at the clinic in the reference year by local date, the outcome referable disease under the validation study's reference standard, sensitivity the share referred (Referable or Ungradable), the comparison the estimate as it stands against 85 per cent at each vendor point.
 - No decoy: nothing is planted: no memo, briefing, draft or stakeholder figure argues a point; the protocol carries no results; the vendor dashboard reports referral and ungradable rates, not sensitivity, and is a declared distractor; no block of records is copied or withheld.
 - No certified replay: no published or certified sensitivity exists anywhere in the pack to reproduce; the method is not hidden behind a figure the solver backs out.
@@ -69,9 +69,9 @@ The default path carries the validation study's 89.4 per cent at Standard to eve
 
 | Rung | What the reader does | Test that could fire | Verdict |
 |---|---|---|---|
-| 0 pooled validation sensitivity | carries 89.4 per cent at Standard to every clinic | the field's reflex | readable |
+| 0 pooled validation sensitivity | carries 90.8 per cent at Standard to every clinic | the field's reflex | readable |
 | 1 case-mix transport | post-stratifies on age group and the recorded subgroups | the field's reflex, quoted in the protocol's analysis plan | readable |
-| 2 worst subgroup | sets every clinic by the Type 1 group (Enhanced) | a conservative reflex | readable |
+| 2 worst subgroup | sets every clinic by the 75 and over group (still Standard) | a conservative reflex | readable |
 | 3 camera by the register's snapshot | reads each clinic's camera from the Assets sheet as of September 2026 | needs the camera idea first; the snapshot is one sheet away from the history | silent |
 | 4 camera by placement history (decisive) | estimates each model's sensitivity with every image placed on its camera by capture date, and carries it by each clinic's screening mix | no column, no key, no filed sentence names the camera; nothing sorts the five clinics together | silent |
 
@@ -87,25 +87,26 @@ The default path carries the validation study's 89.4 per cent at Standard to eve
 | SF6 | transport | by camera model | by camera model and age group | same call | same call |
 | SF7 | least sensitive point | highest threshold (Standard) | lowest threshold | reverses the dial | the guide: a lower threshold refers more patients |
 | SF8 | at least 85 per cent | the estimate as it stands | a confidence bound | moves points up | CAI-03 3.1 (compared with the floor as it stands) |
-| SF9 | referrals implied | referred screenings | referral orders net of cancellations | same call (6,630 and 6,424, both within 7,200) | CAI-03 3.2 (counted on the screenings); same call |
+| SF9 | referrals implied | referred screenings | referral orders net of cancellations | same call (7,076 and 6,879, both within 7,500) | CAI-03 3.2 (counted on the screenings); same call |
 | SF10 | the comparison's rounding | unrounded | whole per cent | same call (no cell within 0.5 of 85) | same call |
 | SF11 | software release | one score scale | 4.3 rescaled | same call | the guide (same scale) |
 | SF12 | a reading-center referral | one referral order | one case | figures differ | agreement 1.2 and 2.1 (a referral counts once) |
 | SF13 | quarter of a read | quarter the screening was captured | quarter of the grade | figures differ | CAI-03 4.1 (screenings captured in the quarter) |
 | SF14 | a fault's lost days | clinic days with no screening captured | days carrying an equipment cancellation | figures differ | CAI-03 4.2 (no AI screening was captured) |
 | SF15 | days to the closing grade | calendar days between Pacific dates | elapsed UTC time | figures differ | CAI-03 4.1 (calendar days between local dates) |
+| SF16 | estimating a clinic's sensitivity | observed proportions by camera, weighted by the clinic's screenings | the validation study's calibration of referable status on the DR score (logistic, logit-logistic, binned, isotonic) carried to the clinic's own scores, or weights on expected referables or camera and age | same call (all fourteen members, tightest deciding cell 1.99 points from the floor) | same call |
 
 ## Ladder
 
 | Rung | Route | Points | Referrals |
 |---|---|---|---|
-| 0 | pooled validation sensitivity (89.4 per cent at Standard) | Standard at 12 | 5,411 |
-| 1 | case-mix transport on the recorded subgroups | Standard at 12 | 5,411 |
-| 2 | worst pre-specified subgroup (Type 1 diabetes, 24 referable, 83.3 per cent at Standard) | Enhanced at 12 | 6,989 |
-| 3 | camera by the register's current snapshot | High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane; Standard at 7 | 6,992 |
-| golden | camera by placement history, weighted by each clinic's screenings | Standard at 7, Enhanced at Kestle Road and Veldane, High at Brackenfield, Hollinmoor and Rookwood | 6,630 |
+| 0 | pooled validation sensitivity (90.8 per cent at Standard) | Standard at 12 | 5,269 |
+| 1 | case-mix transport on the recorded subgroups (91 per cent at every clinic) | Standard at 12 | 5,269 |
+| 2 | worst pre-specified subgroup (75 and over, 88.3 per cent at Standard) | Standard at 12 | 5,269 |
+| 3 | camera by the register's current snapshot (NR-70s back at Kestle Road and Veldane) | High at Brackenfield, Hollinmoor and Rookwood; Standard at 9 | 6,353 |
+| golden | camera by placement history, weighted by each clinic's screenings | Standard at 7, High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane | 7,076 |
 
-Each rung differs from the golden at two or more clinics (L1); High at every clinic implies 9,204 referrals, over capacity (L2). Validation by model: NR-40 1,018 images (101 referable), NR-70 2,393 (258).
+Each rung differs from the golden at two or more clinics (L1); High at every clinic implies 9,261 referrals, over the 7,500 capacity (L2). Validation by model: NR-40 848 images (90 referable), NR-70 3,629 (390). The fourteen estimators of the standing family give the golden's point at every clinic (checks.py F and SF16).
 
 ## Closure table
 
@@ -160,7 +161,7 @@ The full includer (REF7734 orders only, the fault day kept out) keeps all 34 (st
 
 ## Leak review
 
-`leak.py --asof 2026-11-16` on the final cut: no LEAK; seven REVIEW lines, each ruled here (the capacity 7,200 and the floor are declared `stated_inputs`).
+`leak.py --asof 2026-11-16` on the final cut: no LEAK; seven REVIEW lines, each ruled here (the capacity 7,500 and the floor are declared `stated_inputs`).
 - Sweep 4, clinical_ai_governance_standard_v3.pdf (camera, validation, capture, network, screen): harmless; "camera" occurs only in 4.2, the fault ask's WHAT, "capture" in 2.1 and 2.2 (the population's local date and the clinic of capture), "validation" in 2.3's reference standard; no sentence ties a camera to the AI's performance (checks.py R3c).
 - Sweep 4, retinacheck_operating_points.pdf (capture, carries, screen): harmless, the vendor's description of a result, its thresholds and its configuration.
 - Sweep 4, validation_study_protocol_2025.pdf (validation, analysis, network, screen): harmless, the study's own design and plan; it names no camera and carries no result.
@@ -218,3 +219,4 @@ Drawn from seed DA31: the State of Merrimont's relief positions, each unit's nee
 - Whole-per-cent sensitivities for Kestle Road and Veldane, 2026-11-01: a camera-by-age stratum moves Veldane's Enhanced figure from 88.1 to 88.8 across an edge, so the write-up states only the sensitivities every family member rounds alike (E6) and the mixed clinics' cells are described against the floor.
 - NR-40 shares at their edges, 2026-11-01: Veldane at 59.6 and Yarrowby at 4.49 per cent; Veldane's fault moved to 5 March with the loaner on 14 March and Yarrowby's loaner ran to 30 May (57.8 and 6.0), and Kestle Road's fault moved to 28 January when its share sat at 67.57 (67.9).
 - A PNG chart beside the workbook, 2026-11-01: the png and xlsx set ran over its corpus quota in voice-check.py; a one-page PDF brief then repeated the pdf and xlsx set of task138 v2 and task255 v2 (guard repeat.deliverables), so the heatmap went onto a one-slide committee deck.
+- Stage 4 round 1, 2026-11-01: the judge (DETERMINISTIC, Gates G and H PASS) found the estimator open (Gate C, settled only by the plain reading): the validation study's calibration of referable status on the DR score, carried to each clinic's own scores, put Brackenfield, Hollinmoor and Rookwood at Enhanced (85.5 to 87.1 against the observed NR-40 82.2) and Veldane at Standard, because the deciding cells sat 2.0 to 2.8 points from the floor with 101 NR-40 positives. Closed by construction, no wording filed: the referable NR-40 scores tightened (latent spread 0.605), the NR-70 lifted (mean 1.18), the study ran to 22 August with 4,477 images, Kestle Road's and Veldane's NR-70s failed in October and came back in September (90 and 91 per cent NR-40), the capacity rose to 7,500, and the validation draw was chosen from seventy on the whole family's agreement (draw 37: every member gives the golden's point at every clinic, tightest deciding cell 1.99 points); the graded sensitivities are now stated as referred over referable counts.
