@@ -37,10 +37,6 @@ def write(gendir, g):
         "baseline": {b["month"]: {"released": b["released"], "flagged": b["flagged"],
                                   "per_thousand": round(b["per_thousand"], 1)}
                      for b in g["baseline"]},
-        "dilution": {d["level"]: {"prepared": d["prepared"], "replicates": d["replicates"],
-                                  "median_recovery": round(d["median_recovery"], 3),
-                                  "within_fifth": d["within_fifth"]}
-                     for d in g["dilution"]},
         "rungs": g["rungs"],
         "protocol_clauses": ["3.1", "3.2", "3.3", "3.4", "3.5", "4.1", "4.2", "5.1", "5.2"],
         "cutoff_values": ["%.3f" % c for c in W.CUTOFFS],

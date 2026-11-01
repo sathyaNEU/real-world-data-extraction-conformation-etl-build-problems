@@ -85,16 +85,16 @@ def workbook(path, g):
     ws2["A1"].font = Font(bold=True, size=12)
     ws2["A2"] = "April and May 2027 reports, register as extracted 21 June 2027."
     ws2["A2"].font = Font(size=9, italic=True)
-    header(ws2, 4, ["Report", "Week ending", "Distinct vials the results came from",
-                    "Excess of results issued over vials"])
+    header(ws2, 4, ["Report", "Week ending", "Distinct specimens the results came from",
+                    "Excess of results issued over specimens"])
     for i, w in enumerate(g["panel_weeks"]):
         for j, v in enumerate([w["report_ref"], w["report_date"], w["specimens"], w["difference"]]):
             c = ws2.cell(row=5 + i, column=1 + j, value=v)
             c.border = box
             c.alignment = Alignment(horizontal="left" if j < 2 else "right")
     ws2.cell(row=6 + len(g["panel_weeks"]), column=1,
-             value="The report's own total counts results issued. Vials are counted on the biobank "
-                   "reference in %s, because one vial can be booked in under more than one accession."
+             value="The report's own total counts results issued. A specimen is counted once on its "
+                   "vial's biobank reference in %s: a vial booked in again carries a second accession."
                    % "specimen_request_crosswalk.tsv").font = Font(size=9)
 
     ws3 = wb.create_sheet("Baseline, screen in service")
@@ -104,6 +104,10 @@ def workbook(path, g):
     ws3["A2"].font = Font(size=9, italic=True)
     header(ws3, 4, ["Reporting month", "Specimens released, counted once each", "Flagged",
                     "Per thousand specimens released"])
+    ws3.cell(row=6 + len(g["baseline"]), column=1,
+             value="Release desk amendments applied. A specimen counts once a month: a correction "
+                   "released again keeps its accession, and a depth top-up booked under its own "
+                   "accession shares the specimen's extraction.").font = Font(size=9)
     for i, b in enumerate(g["baseline"]):
         for j, v in enumerate([b["month"], b["released"], b["flagged"], round(b["per_thousand"], 1)]):
             c = ws3.cell(row=5 + i, column=1 + j, value=v)
@@ -114,31 +118,9 @@ def workbook(path, g):
             if j == 3:
                 c.number_format = "0.0"
 
-    ws4 = wb.create_sheet("Dilution panel")
-    ws4["A1"] = "Analytical sensitivity: recovery by prepared level, 2027Q1 panel"
-    ws4["A1"].font = Font(bold=True, size=12)
-    ws4["A2"] = ("Nine replicates at each level, prepared 11 March 2027 from stock NS-27-04; voided "
-                 "replicates are not counted.")
-    ws4["A2"].font = Font(size=9, italic=True)
-    header(ws4, 3, ["Level", "Prepared level, fraction", "Replicates reported",
-                    "Median recovery of the prepared level", "Replicates within a fifth of it"])
-    for i, d in enumerate(g["dilution"]):
-        for j, v in enumerate([d["level"], d["prepared"], d["replicates"],
-                               round(d["median_recovery"], 3), d["within_fifth"]]):
-            c = ws4.cell(row=4 + i, column=1 + j, value=v)
-            c.border = box
-            c.alignment = Alignment(horizontal="left" if j == 0 else "right")
-            if j == 1:
-                c.number_format = "0.0000"
-            if j == 3:
-                c.number_format = "0.000"
-
-    ws3.cell(row=6 + len(g["baseline"]), column=1,
+    ws3.cell(row=7 + len(g["baseline"]), column=1,
              value="Source: qc_screen_history_2026-02-15_2027-02-28 and the reporting pack's "
                    "release_volumes_monthly_2026-03_2027-02.").font = Font(size=9, italic=True)
-    ws4.cell(row=5 + len(g["dilution"]), column=1,
-             value="Source: dilution_panel_2027q1, prepared levels against replicate "
-                   "results.").font = Font(size=9, italic=True)
     ws2.cell(row=7 + len(g["panel_weeks"]), column=1,
              value="Source: identity_panel_register_2027 against "
                    "identity_panel_weekly_reports_2027.").font = Font(size=9, italic=True)
@@ -153,18 +135,17 @@ def workbook(path, g):
             ["A confirmed contamination event is a specimen whose panel verdict is MIXED (3.3)."],
             ["Increases are stated in percentage points of the %d confirmed contamination events."
              % t["n_mixed"]],
-            ["False-call rates are stated on the %d panel-clean specimens of the comparison (3.5)."
-             % t["n_clean"]],
+            ["False-call rates are stated on the {:,} panel-clean specimens of the comparison (3.5)."
+             .format(t["n_clean"])],
             ["Verdicts reported after the extract date are carried into the next parallel run (5.2)."]]:
         ws5.append(line)
     for sheet, widths in ((ws, [11, 15, 18, 20, 18, 22, 20]), (ws2, [16, 14, 22, 30]),
-                          (ws3, [18, 20, 12, 20]), (ws4, [9, 20, 18, 30, 26]), (ws5, [104])):
+                          (ws3, [18, 20, 12, 20]), (ws5, [104])):
         for i, wd in enumerate(widths, start=1):
             sheet.column_dimensions[get_column_letter(i)].width = wd
     ws.freeze_panes = "A10"
     ws2.freeze_panes = "A5"
     ws3.freeze_panes = "A5"
-    ws4.freeze_panes = "A4"
     ws.print_area = "A1:G%d" % (r + 2)
     wb.save(path)
 

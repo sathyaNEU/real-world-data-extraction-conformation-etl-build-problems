@@ -1,5 +1,5 @@
 """The parallel run's own records: the two quality-control exports, the re-run's estimates, the
-identity panel register, the lookups the laboratory keeps and the export manifest."""
+identity panel register and the lookups the laboratory keeps."""
 import csv
 import datetime as dt
 import json
@@ -98,11 +98,14 @@ def prior_register():
     booked under, the accession the laboratory gave it and the day its result was issued. Shared by
     the register and the biobank's request register so the two agree on every accession."""
     rng = random.Random(W.SEED + 17)
-    out, serial = [], 96000
+    qrng = random.Random(W.SEED + 1717)      # the biobank's request counter, its own stream
+    out, serial, request = [], 96000, 30500
     for k in range(912):
         serial += rng.choice([1, 1, 2, 2, 2, 3, 3, 4, 5, 7, 9, 13])
+        # the biobank's request numbers are shared with its other customers, so they skip
+        request += 0 if k == 0 else qrng.choice([1, 2, 3])
         out.append({"sid": "NFG27-%06d" % serial,
-                    "request": "REQ-2027-%05d" % (30500 + k),
+                    "request": "REQ-2027-%05d" % request,
                     "project": W.PROJECTS[k % len(W.PROJECTS)][0],
                     "day": dt.date(2027, 2, 2) + dt.timedelta(days=int(k * 0.093)),
                     "registered": dt.date(2027, 1, 6) + dt.timedelta(days=int(k * 0.088))})
@@ -254,6 +257,11 @@ def write_crosswalk(target, specimens, pairs=()):
                      pr["project"], pr["registered"].isoformat(), "BB-%s-%05d" % (stem, serial)])
     rows.sort(key=lambda r: r[1])
     _write(os.path.join(target, W.FILES["crosswalk"]), header, rows, delim="\t")
+    with open(os.path.join(target, W.FILES["crosswalk"]), "a", encoding="utf-8") as fh:
+        fh.write("# Biobank request register, supplied under the material transfer agreement: the "
+                 "request, the laboratory accession, the plate the vial was shipped on, the project, "
+                 "the date the request was registered and the biobank's own reference for the vial.\n")
+        fh.write("# Maintained by the biobank liaison.\n")
     return len(rows)
 
 
@@ -284,104 +292,3 @@ def write_config(target):
     with open(os.path.join(target, W.FILES["config"]), "w", encoding="utf-8") as fh:
         json.dump(cfg, fh, indent=2, ensure_ascii=False, sort_keys=True)
         fh.write("\n")
-
-
-def write_dictionary(target):
-    header = ["file", "field", "type", "definition", "last_reviewed", "owner"]
-    d = [
-        (W.FILES["qc_a"], "specimen_id", "text", "The laboratory accession, assigned when a vial is booked in for work."),
-        (W.FILES["qc_a"], "project_code", "text", "The project the specimen was received under."),
-        (W.FILES["qc_a"], "agreement_ref", "text", "The contract agreement a receipt falls under; empty for the cohort service's own projects."),
-        (W.FILES["qc_a"], "received_date", "date", "The date the specimen was received, local date."),
-        (W.FILES["qc_a"], "read_accepted", "text", "Y where the laboratory accepted the read; N where the read was voided on a failed instrument control, and no call is recorded."),
-        (W.FILES["qc_a"], "het_excess_pct", "number", "The specimen's autosomal heterozygosity, per cent, decimal comma."),
-        (W.FILES["qc_a"], "call_source", "text", "AUTO where the screen in service produced the call; REVIEWED where the duty bioinformatician reviewed the specimen."),
-        (W.FILES["qc_a"], "hetx_call", "text", "The call the screen in service (HETX) recorded for the accepted read: FLAG or CLEAR."),
-        (W.FILES["qc_b"], "(all fields)", "", "As the GSQ-A export; the two instruments' exports carry the same layout."),
-        (W.FILES["mf"], "read_set_id", "text", "The archived read set the estimate was computed on. A specimen has a second read set where a depth top-up library was sequenced."),
-        (W.FILES["mf"], "read_set_accepted", "text", "Y on the read set the laboratory accepted for the specimen."),
-        (W.FILES["mf"], "mixture_fraction", "number", "The estimated share of the specimen's reads from a second contributor, as a fraction, four decimals."),
-        (W.FILES["crosswalk"], "biobank_ref", "text", "The biobank's own reference for the vial the specimen was received in."),
-        (W.FILES["crosswalk"], "registered_date", "date", "The date the request the accession was booked under was registered with the biobank."),
-        (W.FILES["panel"], "verdict", "text", "The identity panel's verdict: CONCORDANT, MIXED where a second contributor was typed, INCONCLUSIVE where the panel did not type enough markers."),
-        (W.FILES["panel"], "report_ref", "text", "The partner laboratory's weekly report the result was issued in."),
-        (W.FILES["panel"], "result_seq", "number", "The sequence number of the result for the specimen and aliquot within the report."),
-        (W.FILES["panel"], "second_contributor_share", "number", "The share the panel typed for the second contributor on a MIXED verdict, as a fraction."),
-        (W.FILES["history"], "received_utc", "timestamp", "The receipt timestamp as the warehouse stores it, in UTC."),
-        (W.FILES["history"], "hetx_call", "text", "The automatic HETX call for the specimen, as the nightly load carries it."),
-        (W.FILES["history"], "review_outcome", "text", "The duty bioinformatician's outcome where call_source is REVIEWED: FLAGGED or CLEARED. Empty where the specimen was not reviewed."),
-        (W.FILES["history"], "release_status", "text", "RELEASED, WITHHELD or SUPERSEDED, as the release desk left the specimen."),
-        (W.FILES["amendments"], "field", "text", "The field the release desk amended on the record."),
-        (W.FILES["amendments"], "value_after", "text", "The value the record carries after the amendment."),
-        (W.FILES["history"], "released_date", "date", "The date the specimen's result was released, local date; empty where nothing was released."),
-    ]
-    owners = {W.FILES["qc_a"]: "LIMS team", W.FILES["qc_b"]: "LIMS team",
-              W.FILES["mf"]: "bioinformatics group", W.FILES["crosswalk"]: "biobank liaison",
-              W.FILES["panel"]: "quality team", W.FILES["history"]: "warehouse team",
-              W.FILES["amendments"]: "release desk"}
-    # an entry is reviewed once the export it describes has been pulled, never before
-    reviewed = {W.FILES["history"]: "2027-04-12"}
-    _write(os.path.join(target, W.FILES["dictionary"]), header,
-           [[a, b, c, e, reviewed.get(a, "2027-06-18"), owners.get(a, "quality team")]
-            for a, b, c, e in d])
-    with open(os.path.join(target, W.FILES["dictionary"]), "a", encoding="utf-8") as fh:
-        fh.write("# Validation extract dictionary, issue 5. Document owner: the quality system "
-                 "manager. An entry is reviewed once the export it describes has been pulled.\n")
-        fh.write("# issue 2, 2025-09-08, first issue for the validation extracts\n")
-        fh.write("# issue 3, 2026-04-21, warehouse extract entries added with the release columns\n")
-        fh.write("# issue 4, 2027-04-12, warehouse entries reviewed against the April pull\n")
-        fh.write("# issue 5, 2027-06-18, entries added for the 2027 parallel run and the "
-                 "amendment log\n")
-
-
-def write_manifest(target, counts):
-    header = ["file", "produced_by", "pulled", "covers", "rows", "licence", "note"]
-    rows = [
-        [W.FILES["qc_a"], "LIMS quality-control export", W.AS_OF.isoformat(),
-         "GSQ-A reads, receipts 2027-03-01 to 2027-05-31", counts["qc_a"], "institute internal, not for redistribution",
-         "semicolon delimited, decimal comma"],
-        [W.FILES["qc_b"], "LIMS quality-control export", W.AS_OF.isoformat(),
-         "GSQ-B reads, receipts 2027-03-01 to 2027-05-31", counts["qc_b"], "institute internal, not for redistribution",
-         "semicolon delimited, decimal comma"],
-        [W.FILES["mf"], "GKJ-PIPE v3.4.1 re-run", "2027-06-18",
-         "archived read sets, cohort service projects", counts["mf"], "institute internal, not for redistribution", "one row per read set"],
-        [W.FILES["panel"], "identity panel register", W.AS_OF.isoformat(),
-         "results issued 2027-02-05 to 2027-06-18", counts["panel"], "partner laboratory, supplied under the service agreement",
-         "as issued by " + W.PARTNER],
-        [W.FILES["weekly"], W.PARTNER, W.AS_OF.isoformat(),
-         "weekly reports, 5 March to 18 June 2027", "", "partner laboratory, supplied under the service agreement",
-         "scanned to PDF as each report arrived"],
-        [W.FILES["history"], "QC warehouse extract", W.HIST_PULL.isoformat(),
-         "receipts 2026-02-15 to 2027-02-28", counts["history"], "institute internal, not for redistribution",
-         "nightly load, two call columns"],
-        [W.FILES["amendments"], "release desk", W.AS_OF.isoformat(),
-         "records released 2026-03 to 2027-03, amended 2027-04 to 2027-06", counts.get("amendments", ""),
-         "institute internal, not for redistribution", "raised after the reporting month closed"],
-        [W.FILES["volumes"], "laboratory reporting pack", "2027-03-06",
-         "releases 2026-03 to 2027-02", counts["volumes"], "institute internal, not for redistribution", "as booked at month end"],
-        [W.FILES["dilution"], "analytical sensitivity run", "2027-04-02",
-         "2027Q1 dilution panel", "", "institute internal, not for redistribution", "prepared by the method group"],
-        [W.FILES["crosswalk"], "biobank request register", W.AS_OF.isoformat(),
-         "requests registered 2027-01 to 2027-05", counts["crosswalk"], "biobank, supplied under the material transfer agreement", "tab separated"],
-        [W.FILES["protocol"], "quality system", "2027-06-21", "KVAL-07 issue 4", "", "institute internal, quality system controlled", ""],
-        [W.FILES["modelcard"], "bioinformatics group", "2027-06-19", "estimator v3.4",
-         "", "institute internal, quality system controlled", "version 3.4.1 with the June addendum"],
-        [W.FILES["dictionary"], "quality system", W.AS_OF.isoformat(), "validation extracts",
-         "", "institute internal, quality system controlled", "issue 5"],
-        [W.FILES["config"], "GKJ-PIPE", "2027-06-08", "re-run configuration", "", "institute internal, not for redistribution", ""],
-        [W.FILES["runlog"], "LIMS run log", W.AS_OF.isoformat(),
-         "receipts 2027-03-01 to 2027-05-31", counts["runlog"], "institute internal, not for redistribution",
-         "one row per received aliquot"],
-        [W.FILES["costs"], "finance", "2027-01-15", "2027 unit costs", counts["costs"], "institute internal, not for redistribution",
-         "NOK, excluding VAT"],
-        [W.FILES["platform"], "method group", "2025-11-20", "extraction platform validation", "",
-         "institute internal, quality system controlled", ""],
-        [W.FILES["plates"], "LIMS plate map", W.AS_OF.isoformat(), "2027Q2 plates", counts["plates"],
-         "institute internal, not for redistribution", ""],
-    ]
-    _write(os.path.join(target, W.FILES["manifest"]), header, rows)
-    with open(os.path.join(target, W.FILES["manifest"]), "a", encoding="utf-8") as fh:
-        fh.write("# export manifest v2, compiled by the quality team %s for the KVAL-07 validation "
-                 "record; approved by the quality system manager\n" % W.AS_OF.isoformat())
-        fh.write("# v1 %s covered the quality-control exports and the re-run only\n"
-                 % "2027-06-19")

@@ -31,9 +31,13 @@ def history(target):
     rng = random.Random(W.SEED + 21)
     trng = random.Random(W.SEED + 81)        # accessions, intake hours and heterozygosity texture
     mrng = random.Random(W.SEED + 919)       # the booking clock's minutes and seconds
+    xrng = random.Random(W.SEED + 1953)      # the extraction counter and the depth top-ups, its own stream
     days = [(W.HIST_FROM + dt.timedelta(days=i)) for i in range((W.HIST_TO - W.HIST_FROM).days + 1)]
     days = [d for d in days if d.weekday() < 5]
     serial = [10007]
+    # the extraction counter is the extraction robot's, shared with the research group's work, and it
+    # starts again each January
+    ext_serial = {2026: 3812, 2027: 211}
     rows = []
     per_day = W.HIST_ROWS / len(days)
     k = 0
@@ -69,7 +73,9 @@ def history(target):
                 rec = near[k % len(near)] if near else rel - dt.timedelta(days=1)
             local = dt.datetime(rec.year, rec.month, rec.day, hour, minute, second)
             offset = 2 if dt.date(rec.year, 3, 29) <= rec < dt.date(rec.year, 10, 25) else 1
+            ext_serial[rec.year] += xrng.randint(1, 5)
             rows.append({"sid": "NFG%s-%06d" % (str(d.year)[2:], serial[0]),
+                         "ext": "EX%s-%06d" % (str(rec.year)[2:], ext_serial[rec.year]),
                          "project": rng.choice([p[0] for p in W.PROJECTS]),
                          "extraction": rng.choices(W.EXTRACTION, [0.6, 0.28, 0.12])[0],
                          "instrument": W.INSTRUMENTS[0] if rng.random() < 0.52 else W.INSTRUMENTS[1],
@@ -177,6 +183,54 @@ def history(target):
             r["stale"] = True
     amend.sort(key=lambda x: (x[4], x[0]))
 
+    # a depth top-up: the LIMS of 2026 held one library per accession, so a second library made from a
+    # specimen's extraction was booked as new work under an accession of its own. It keeps the
+    # specimen's receipt, project and extraction; the screen ran again on the combined reads and the
+    # result went out again a few days after the first, inside the same reporting month. A flag the
+    # duty bioinformatician wanted confirmed, or a thin first library, is what asks for one.
+    touched = {a[0] for a in amend} | {c["sid"] for c in rerun}
+    in_use = {int(r["sid"].split("-")[1]) for r in rows}
+    by_day = {}
+    for r in rows:
+        by_day.setdefault(r["received"], []).append(int(r["sid"].split("-")[1]))
+    top = []
+    for r in sorted((x for x in rows if x["status"] == "RELEASED" and x["released"]
+                     and x["sid"] not in touched), key=lambda x: (x["released"], x["sid"])):
+        if xrng.random() >= (0.16 if r["flag"] else (0.05 if r["depth"] < 32.0 else 0.008)):
+            continue
+        book = r["released"] + dt.timedelta(days=xrng.randint(0, 2))
+        while book.weekday() > 4 or book in W.HOLIDAYS:
+            book += dt.timedelta(days=1)
+        again_on = book + dt.timedelta(days=xrng.randint(3, 10))
+        while again_on.weekday() > 4 or again_on in W.HOLIDAYS:
+            again_on += dt.timedelta(days=1)
+        if (again_on.year, again_on.month) != (r["released"].year, r["released"].month):
+            continue
+        # the accession is a free number of the day the top-up was booked in
+        day = book
+        while day not in by_day and day > W.HIST_FROM:
+            day -= dt.timedelta(days=1)
+        if day in by_day and book <= W.HIST_TO:
+            lo, hi = min(by_day[day]), max(by_day[day])
+            free = [x for x in range(lo + 1, hi) if x not in in_use]
+        else:
+            top_no = max(in_use)
+            free = [x for x in range(top_no + 3, top_no + 400) if x not in in_use]
+        if not free:
+            continue
+        num = free[xrng.randint(0, len(free) - 1)]
+        in_use.add(num)
+        other = W.INSTRUMENTS[1] if r["instrument"] == W.INSTRUMENTS[0] else W.INSTRUMENTS[0]
+        top.append({"sid": "NFG%s-%06d" % (str(book.year)[2:], num), "ext": r["ext"],
+                    "project": r["project"], "extraction": r["extraction"],
+                    "instrument": r["instrument"] if xrng.random() < 0.6 else other,
+                    "plate": "GKP-%s%02d-%s%02d" % (str(book.year)[2:], book.month,
+                                                    "ABCD"[xrng.randint(0, 3)], xrng.randint(1, 23)),
+                    "received": r["received"], "utc": r["utc"],
+                    "depth": r["depth"] * (1.55 + 0.4 * xrng.random()), "status": "RELEASED",
+                    "released": again_on, "month": r["month"], "flag": r["flag"],
+                    "reviewed": r["reviewed"], "auto": r["auto"], "of": r})
+
     out = []
     for r in rows:
         # heterozygosity carries a plate effect and a right tail, and the flagged specimens sit in it
@@ -192,22 +246,34 @@ def history(target):
             if trng.random() < 0.09:
                 het += abs(trng.gauss(0.0, 1.5))
             het = min(het, 36.44)
-        out.append([r["sid"], r["project"], r["extraction"], r["instrument"], r["plate"],
+        r["het_out"] = het
+        out.append([r["sid"], r["project"], r["extraction"], r["ext"], r["instrument"], r["plate"],
                     r["received"].isoformat(), r["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "%.1f" % r["depth"], "%.2f" % het,
                     "REVIEWED" if r["reviewed"] else "AUTO",
                     "FLAG" if stored_auto else "CLEAR",
                     ("FLAGGED" if stored_flag else "CLEARED") if r["reviewed"] else "",
                     r["status"], stored_rel.isoformat() if stored_rel else ""])
-    out.sort(key=lambda r: (r[5], r[0]))
+    for t in top:
+        # the combined reads give the same call; heterozygosity moves a little with the extra depth
+        het = t["of"]["het_out"] + xrng.gauss(0.0, 0.11)
+        het = max(het, 36.61) if t["auto"] else min(het, 36.44)
+        out.append([t["sid"], t["project"], t["extraction"], t["ext"], t["instrument"], t["plate"],
+                    t["received"].isoformat(), t["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "%.1f" % t["depth"], "%.2f" % het,
+                    "REVIEWED" if t["reviewed"] else "AUTO",
+                    "FLAG" if t["auto"] else "CLEAR",
+                    ("FLAGGED" if t["flag"] else "CLEARED") if t["reviewed"] else "",
+                    t["status"], t["released"].isoformat()])
+    out.sort(key=lambda r: (r[6], r[0]))
     PK._write(os.path.join(target, W.FILES["history"]),
-              ["specimen_id", "project_code", "extraction_method", "instrument", "plate_id",
-               "received_date", "received_utc", "mean_depth", "het_excess_pct", "call_source",
-               "hetx_call", "review_outcome", "release_status", "released_date"], out)
+              ["specimen_id", "project_code", "extraction_method", "extraction_id", "instrument",
+               "plate_id", "received_date", "received_utc", "mean_depth", "het_excess_pct",
+               "call_source", "hetx_call", "review_outcome", "release_status", "released_date"], out)
     released = {m: len(p) for m, p in by_month.items()}
     flagged = {m: sum(1 for r in p if r["flag"]) for m, p in by_month.items()}
     events = {}
-    for r in rows:
+    for r in rows + top:
         if r["status"] == "RELEASED" and r["released"]:
             stored = r.get("stale_released", r["released"])
             m = "%04d-%02d" % (stored.year, stored.month)
@@ -295,7 +361,8 @@ def dilution(target):
                 break
         for i, v in enumerate(vals):
             dser[0] += rng.choice([1, 1, 2, 2, 3, 4, 6, 9])
-            results.append([lv.lower() if rng.random() < 0.21 else lv, stock_of[lv], i + 1,
+            rng.random()                         # the operator's old casing draw, kept in place
+            results.append([lv, stock_of[lv], i + 1,
                             "RS27-D%05d" % dser[0],
                             v, round(rng.uniform(31.0, 58.0), 1), None])
         if lv == "L3":

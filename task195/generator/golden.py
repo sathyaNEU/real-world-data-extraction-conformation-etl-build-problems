@@ -3,9 +3,6 @@ import csv
 import datetime as dt
 import math
 import os
-import statistics
-
-import openpyxl
 
 import world as W
 
@@ -134,9 +131,10 @@ def rungs(tab):
 
 
 def ask_panel(target, panel_rows):
-    """Ask 1: the distinct vials the results in each April and May weekly report came from, and the
-    excess of results issued over vials. The register's identifier is an accession; the vial's own
-    reference is the biobank's, and one vial booked in twice carries two accessions."""
+    """Ask 1: the distinct specimens the results in each April and May weekly report came from, and
+    the excess of results issued over them. The register's identifier is the laboratory's accession;
+    a specimen is the material in one vial, the biobank's register gives each accession's vial, and a
+    vial booked in twice carries two accessions."""
     biobank = {r["specimen_id"]: r["biobank_ref"]
                for r in _rows(os.path.join(target, W.FILES["crosswalk"]), "\t")}
     # the biobank's register covers every accession the panel register holds, so the vial a result
@@ -160,7 +158,12 @@ def ask_panel(target, panel_rows):
 
 def ask_baseline(target):
     """Ask 2: the screen in service's flagged specimens per thousand released, by release month.
-    A corrected result is released again, so a specimen released twice in a month is one specimen."""
+
+    The release desk's amendments stand over the warehouse extract. A specimen is counted once in a
+    month however many of its results went out in it: a correction released again keeps the
+    accession, and a depth top-up from the specimen's extraction carries an accession of its own, so
+    the specimen is the extraction.
+    """
     amend = {}
     for a in _rows(os.path.join(target, W.FILES["amendments"])):
         amend[(a["specimen_id"], a["field"])] = a["value_after"]
@@ -176,7 +179,7 @@ def ask_baseline(target):
                      review_outcome=amend.get((r["specimen_id"], "review_outcome"),
                                               r["review_outcome"]))
             month = released_date[:7]
-            key = (month, r["specimen_id"])
+            key = (month, r["extraction_id"])
             if key not in seen_rel:
                 seen_rel.add(key)
                 released[month] = released.get(month, 0) + 1
@@ -189,29 +192,6 @@ def ask_baseline(target):
              "per_thousand": 1000.0 * flagged.get(m, 0) / released[m]} for m in months]
 
 
-def ask_dilution(target):
-    """Ask 3: the dilution panel's median recovery and the replicates within a fifth of the level."""
-    wb = openpyxl.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
-    prepared, stocks = {}, {}
-    for row in wb["Prepared levels"].iter_rows(min_row=2, values_only=True):
-        prepared[(str(row[0]).strip(), str(row[1]).strip().upper())] = float(row[3])
-    results = {}
-    for row in wb["Replicate results"].iter_rows(min_row=2, values_only=True):
-        if row[4] in (None, ""):
-            continue
-        key = str(row[0]).strip().upper()
-        stocks[key] = str(row[1]).strip()
-        results.setdefault(key, []).append(float(row[4]))
-    out = []
-    for lv, _label, _frac in W.DILUTION:
-        vals = sorted(results[lv])
-        level = prepared[(stocks[lv], lv)]
-        within = sum(1 for v in vals if abs(v - level) <= 0.2 * level)
-        out.append({"level": lv, "prepared": level, "replicates": len(vals),
-                    "median_recovery": statistics.median(vals) / level, "within_fifth": within})
-    return out
-
-
 def compute(target):
     qc, mf, panel, panel_rows = read_pack(target)
     rows = comparison(target)
@@ -219,7 +199,7 @@ def compute(target):
     lad = rungs(tab)
     g = {"comparison": len(rows), "table": tab, "rungs": lad,
          "call": lad["rung3_paired"], "panel_weeks": ask_panel(target, panel_rows),
-         "baseline": ask_baseline(target), "dilution": ask_dilution(target), "rows": rows}
+         "baseline": ask_baseline(target), "rows": rows}
     chosen = next(r for r in tab["cutoffs"] if "%.3f" % r["cutoff"] == g["call"])
     g["chosen"] = chosen
     g["runner_up"] = next(r for r in tab["cutoffs"]

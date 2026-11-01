@@ -144,26 +144,6 @@
    ]
   }
  },
- "dilution": {
-  "L1": {
-   "median_recovery": 0.963,
-   "prepared": 0.0081,
-   "replicates": 9,
-   "within_fifth": 7
-  },
-  "L2": {
-   "median_recovery": 0.865,
-   "prepared": 0.0163,
-   "replicates": 9,
-   "within_fifth": 7
-  },
-  "L3": {
-   "median_recovery": 1.027,
-   "prepared": 0.0629,
-   "replicates": 9,
-   "within_fifth": 6
-  }
- },
  "panel_clean": 5446,
  "panel_weeks": {
   "BA-2027-W13": {
