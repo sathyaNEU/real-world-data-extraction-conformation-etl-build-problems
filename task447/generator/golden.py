@@ -80,8 +80,68 @@ def load(target):
                 provfile=provfile, facdir=facdir, medicare=medicare, wb=wb)
 
 
+def link_members(X):
+    """Members the database keyed twice. A claim under one key that reports to another carrier the service a claim under
+    another key reports (the same date, code, modifier, facility and referring provider on the facility claims; the
+    same date, code, rendering physician and billing number on the professional claims; the same units), priced on
+    what that claim left the member to pay, for two keys whose eligibility on the date gives one birth year, sex and
+    ZIP code, is the same person's: {second key: first key}."""
+    el = X["elig"]
+    demo = defaultdict(list)
+    for m, s_, e_, by, sx, z in zip(el["member_id"], el["start"], el["end"], el["birth_year"], el["sex"],
+                                    el["member_zip"]):
+        demo[m].append((s_, e_, (by, sx, z)))
+
+    def who(m, d):
+        return next((v for s_, e_, v in demo.get(m, ()) if s_ <= d <= e_), None)
+
+    pairs = defaultdict(set)
+    for df, cols in ((X["fac"], ["procedure_code", "procedure_modifier_1", "service_facility_npi", "referring_provider_npi"]),
+                     (X["prof"], ["procedure_code", "procedure_modifier_1", "rendering_provider_npi", "billing_provider_tin"])):
+        f = df[(df["dos"].dt.year == 2024) & (df["claim_frequency_code"] == "1")]
+        key = lambda amt: list(zip(f["dos"], *[f[c] for c in cols], f["qty"], amt))
+        idx = defaultdict(list)
+        for k, sub, m in zip(key(f["member_liability_amount"]), f["submitter_code"], f["member_id"]):
+            idx[k].append((sub, m))
+        for k, sub, m in zip(key(f["allowed_amount"]), f["submitter_code"], f["member_id"]):
+            for sub1, m1 in idx.get(k, ()):
+                if sub1 != sub and m1 != m and who(m, k[0]) is not None and who(m, k[0]) == who(m1, k[0]):
+                    pairs[m].add(m1)
+    assert all(len(v) == 1 for v in pairs.values()), "a second key links to one member only"
+    return {b: next(iter(a)) for b, a in pairs.items()}
+
+
+CHAIN_KEY = ("submitter_code", "member_id", "service_from_date", "billing_provider_tin")
+
+
+def rebuild_chains(df, k=CHAIN_KEY):
+    """A replacement whose original-claim reference names no claim in the file supersedes the original of the same
+    visit: the original claim of the same carrier, member, date of service and billing number, paid before it. k is
+    the visit's key; every key a reader might take (member and date, with the code, the physician, the carrier or the
+    number) names the same one original (asserted in checks.py)."""
+    cnos = set(df["payer_claim_control_number"])
+    is7 = df["claim_frequency_code"] == "7"
+    orphan = is7 & ~df["original_claim_control_number"].isin(cnos)
+    if not orphan.any():
+        return df
+    named = set(df.loc[df["claim_frequency_code"].isin(["7", "8"]), "original_claim_control_number"])
+    k = list(k)
+    o = df[(df["claim_frequency_code"] == "1") & ~df["payer_claim_control_number"].isin(named)]
+    idx = defaultdict(list)
+    for t, cno, paid in zip(zip(*[o[c] for c in k]), o["payer_claim_control_number"], o["paid"]):
+        idx[t].append((cno, paid))
+    df = df.copy()
+    ref = {}
+    for ix, t, paid in zip(df.index[orphan], zip(*[df.loc[orphan, c] for c in k]), df.loc[orphan, "paid"]):
+        cands = [c for c, p in idx.get(t, ()) if p < paid]
+        assert len(cands) == 1, ("one original for each corrected visit", t, cands)
+        ref[ix] = cands[0]
+    df.loc[list(ref), "original_claim_control_number"] = [ref[i] for i in ref]
+    return df
+
+
 def latest_versions(df):
-    """Rule 4.02(c) and the dictionary: a replacement supersedes the claim it names, a void cancels it."""
+    """Rule 4.02(c): a replacement (frequency 7) supersedes the claim it names, a void (8) cancels it."""
     named = set(df.loc[df["claim_frequency_code"].isin(["7", "8"]), "original_claim_control_number"])
     keep = df["claim_frequency_code"].isin(["1", "7"]) & ~df["payer_claim_control_number"].isin(named)
     return df[keep].copy()
@@ -109,7 +169,7 @@ def exhibit_rates(wb, medicare, prodref):
         if not r or r[0] is None:
             continue
         for cpt in str(r[1]).split(", "):
-            fac[("Bayfield Mutual Health", cpt)] = round(mc[cpt] * float(r[2]), 2)
+            fac[("Bayfield Mutual Health", cpt)] = round(mc[cpt] * (float(r[2]) / 100.0), 2)   # percent of Medicare
     prof = {}
     ws = wb["Professional"]
     rows = list(ws.iter_rows(values_only=True))
@@ -155,10 +215,10 @@ COUNTIES = ("Brown", "Calumet", "Fond du Lac", "Kewaunee", "Manitowoc", "Outagam
 
 
 def zip_county(target):
-    """The data dictionary's ZIP-to-county list (section 6)."""
+    """The technical appendix's assignment of ZIP codes to counties (A6)."""
     import re
     import pdfplumber
-    with pdfplumber.open(os.path.join(target, "apcd_extract_data_dictionary.pdf")) as pdf:
+    with pdfplumber.open(os.path.join(target, "market_oversight_technical_appendix.pdf")) as pdf:
         text = " ".join(pg.extract_text() or "" for pg in pdf.pages)
     out = {}
     for c in COUNTIES:
@@ -293,8 +353,8 @@ def compute(target):
     other_fam = referred_inc - sum(fam_inc.values())
 
     # ---- the market exhibits (rule 4.07, appendix A2 and A3)
-    ex1 = ex1_cells(X, zc, bmg_tin, spans)
-    ex2 = ex2_cells(X, zc, bmg_tin, ctrl)
+    ex1 = patients_seen(X, zc, ctrl, bmg_tin)
+    ex2 = patients_referred(X, zc, ctrl, spans, bmg_tin)
 
     return dict(total=total, P=P, P_base=P_base, referred=referred_inc, fam=fam_inc, other_fam=other_fam,
                 c1=c1, c2=c2, fit=fit, ex1=ex1, ex2=ex2,
@@ -506,6 +566,19 @@ SPECIALTY = {"207Q00000X": "primary care", "207R00000X": "primary care", "208000
 SPECIALTIES = ("primary care", "gastroenterology", "orthopaedic surgery", "cardiovascular disease")
 
 
+def _link(X, df, link):
+    """The person each claim is for. True: link_members (the golden); False: the member keys as the files give
+    them; a function of (member key, date of service): any other matching of the keys (checks.py's rival readings)."""
+    if link is False:
+        return df
+    if link is True:
+        alias = X.get("_alias")
+        if alias is None:
+            alias = X["_alias"] = link_members(X)
+        return df.assign(member_id=df["member_id"].map(lambda m: alias.get(m, m)))
+    return df.assign(member_id=[link(m, d) for m, d in zip(df["member_id"], df["dos"])])
+
+
 def _versions(df, how):
     if how == "latest":
         return latest_versions(df)
@@ -529,9 +602,11 @@ def _services(df, key, how):
 
 
 def ex1_cells(X, zc, bmg_tin, spans, versions="latest", second="once", key=("member_id", "dos", "procedure_code",
-              "procedure_modifier_1", "service_facility_npi"), residence="span", runout=False):
+              "procedure_modifier_1", "service_facility_npi", "referring_provider_npi"), residence="span", runout=False,
+              link=True):
     """Appendix A2: the commercial imaging, endoscopy and arthroscopy services each county's residents received in
-    2024, and the share whose referring provider billed under Brightwater's number on the date of service."""
+    2024, and the share whose referring provider billed under Brightwater's number on the date of service. link:
+    True reads a member the database keyed twice as one person (link_members); False takes the keys as given."""
     commercial = set(X["prodref"].loc[X["prodref"]["line_of_business"] == "Commercial", "product_id"])
     f = X["fac"]
     f = f[(f["dos"] >= BASE_START) & (f["dos"] <= BASE_END) & f["product_id"].isin(commercial)]
@@ -551,6 +626,7 @@ def ex1_cells(X, zc, bmg_tin, spans, versions="latest", second="once", key=("mem
         pick = (first.first() if residence == "first" else first.last()).to_dict()
         zips = [pick.get(m) for m in f["member_id"]]
     f = f.assign(county=[zc.get(z) for z in zips], line=f["procedure_code"].map(family))
+    f = _link(X, f, link)
     bmg = [any(t == bmg_tin and s_ <= d <= e_ for t, s_, e_ in spans.get(n, ())) for n, d in
            zip(f["referring_provider_npi"], f["dos"])]
     f = f.assign(bmg=bmg)
@@ -566,9 +642,12 @@ def ex1_cells(X, zc, bmg_tin, spans, versions="latest", second="once", key=("mem
 
 
 def ex2_cells(X, zc, bmg_tin, ctrl, versions="latest", second="once", specialty="provider", physicians=True,
-              system="register", telehealth=False, runout=False):
+              system="register", telehealth=False, runout=False, link=True, chains="rebuilt",
+              key=("member_id", "dos", "procedure_code", "rendering_provider_npi")):
     """Appendix A3: commercial office visits in the two counties by the rendering physician's specialty, and the
-    shares billed under Brightwater's number and under the numbers Ledgestone owns or controls."""
+    shares billed under Brightwater's number and under the numbers Ledgestone owns or controls. chains: 'rebuilt'
+    gives a replacement that names no claim in the file its original (rebuild_chains); 'reference' follows the
+    references as filed."""
     commercial = set(X["prodref"].loc[X["prodref"]["line_of_business"] == "Commercial", "product_id"])
     p = X["prof"]
     p = p[(p["dos"] >= BASE_START) & (p["dos"] <= BASE_END) & p["product_id"].isin(commercial)]
@@ -577,7 +656,13 @@ def ex2_cells(X, zc, bmg_tin, ctrl, versions="latest", second="once", specialty=
         p = p[(p["place_of_service"] != "10") & (p["procedure_modifier_2"] != "95")]
     if runout:
         p = p[p["paid"] <= RUNOUT]
+    if chains == "rebuilt" and versions == "latest":
+        p = rebuild_chains(p)
+    elif chains == "drop":         # a replacement that names no claim set aside, its original kept
+        p = p[~((p["claim_frequency_code"] == "7")
+                & ~p["original_claim_control_number"].isin(set(p["payer_claim_control_number"])))]
     p = _versions(p, versions)
+    p = _link(X, p, link)
     if specialty == "provider":
         prov = X["provfile"]
         tax = prov.groupby("provider_npi")["primary_taxonomy"].agg(lambda x: sorted(set(x))[0]).to_dict()
@@ -591,12 +676,18 @@ def ex2_cells(X, zc, bmg_tin, ctrl, versions="latest", second="once", specialty=
         p = p.assign(tax=p["tax"].where(p["tax"].str[:3].isin(PHYS_TAX), "207Q00000X"))
     p = p.assign(spec=p["tax"].map(SPECIALTY))
     if system == "register":
-        ldg = [ctrl.system_of(tin, d) == "Ledgestone Health" for tin, d in zip(p["billing_provider_tin"], p["dos"])]
+        memo = X.setdefault("_system_of", {})
+
+        def system_of(tin, d):
+            if (tin, d) not in memo:
+                memo[(tin, d)] = ctrl.system_of(tin, d)
+            return memo[(tin, d)]
+        ldg = [system_of(tin, d) == "Ledgestone Health" for tin, d in zip(p["billing_provider_tin"], p["dos"])]
     else:
         lmg = ctrl_tin(X, "Ledgestone Medical Group")
         ldg = list(p["billing_provider_tin"] == lmg)
     p = p.assign(ldg=ldg, bmg=(p["billing_provider_tin"] == bmg_tin).values)
-    key = ["member_id", "dos", "procedure_code", "rendering_provider_npi"]
+    key = list(key)
     out = {}
     for sp in SPECIALTIES:
         sel = p[p["spec"] == sp]
@@ -605,6 +696,221 @@ def ex2_cells(X, zc, bmg_tin, ctrl, versions="latest", second="once", specialty=
         lg = _services(sel[sel["ldg"]], key, second)
         out[sp] = (tot, b, lg, 100.0 * b / tot, 100.0 * lg / tot)
     return out
+
+
+# ------------------------------------------------------------------ the lakeshore patient exhibits (appendix A2 and A3)
+GROUPS = ("Ledgestone Health", "Kinnickinnic Health")
+
+
+def _demo_index(X):
+    el = X["elig"]
+    demo = defaultdict(list)
+    for m, s_, e_, by, sx, z in zip(el["member_id"], el["start"], el["end"], el["birth_year"], el["sex"],
+                                    el["member_zip"]):
+        demo[m].append((s_, e_, (by, sx, z)))
+    return lambda m, d: next((v for s_, e_, v in demo.get(m, ()) if s_ <= d <= e_), None)
+
+
+def link_records(X):
+    """A member the database holds twice at one carrier: two keys of one carrier whose facility claims report one
+    service (date, code, modifier, facility, referring provider and units) and whose eligibility gives one birth year,
+    sex and ZIP that day are one person's. Returns {key: the key whose coverage starts first} (the lower key where
+    both start on one day)."""
+    on = _demo_index(X)
+    starts = X["elig"].groupby("member_id")["start"].min().to_dict()
+    f = X["fac"]
+    f = f[(f["dos"].dt.year == 2024) & (f["claim_frequency_code"] == "1")]
+    groups = defaultdict(set)
+    cols = ["submitter_code", "dos", "procedure_code", "procedure_modifier_1", "service_facility_npi",
+            "referring_provider_npi", "qty"]
+    for t, m in zip(zip(*[f[c] for c in cols]), f["member_id"]):
+        groups[t].add(m)
+    out = {}
+    for t, ms in groups.items():
+        if len(ms) < 2:
+            continue
+        ms = sorted(ms)
+        for a in ms:
+            for b in ms:
+                if a < b and on(a, t[1]) is not None and on(a, t[1]) == on(b, t[1]):
+                    first, later = sorted((a, b), key=lambda k: (starts[k], k))
+                    assert out.get(later, first) == first, "a second record links to one member"
+                    out[later] = first
+    return out
+
+
+def persons(X):
+    """The person behind each member key: the second plans' keys (link_members) and the second records at one
+    carrier (link_records) read as the member's own key."""
+    if "_persons" not in X:
+        alias = dict(link_members(X))
+        for b, a in link_records(X).items():
+            alias[b] = alias.get(a, a)
+        X["_persons"] = alias
+    return X["_persons"]
+
+
+def _who(X, df, link):
+    if link is False:
+        return list(df["member_id"])
+    if link is True:
+        alias = persons(X)
+        return [alias.get(m, m) for m in df["member_id"]]
+    return [link(m, d) for m, d in zip(df["member_id"], df["dos"])]
+
+
+def _resides(X, zc, df):
+    """A2 and A3: the member's ZIP on the eligibility span (of the claim's own key and product) covering the date."""
+    el = X["elig"]
+    idx = defaultdict(list)
+    for m, p_, s_, e_, z in zip(el["member_id"], el["product_id"], el["start"], el["end"], el["member_zip"]):
+        idx[(m, p_)].append((s_, e_, z))
+    return [zc.get(next((z for s_, e_, z in idx.get((m, p_), ()) if s_ <= d <= e_), None))
+            for m, p_, d in zip(df["member_id"], df["product_id"], df["dos"])]
+
+
+def _system_memo(X, ctrl):
+    memo = X.setdefault("_system_of", {})
+
+    def system_of(tin, d):
+        if (tin, d) not in memo:
+            memo[(tin, d)] = ctrl.system_of(tin, d)
+        return memo[(tin, d)]
+    return system_of
+
+
+def independents(X, zc, ctrl, bmg_tin):
+    """The independent practices: the numbers billing 2024 office visits at locations in the two counties that no
+    hospital system owns or controls (A4), other than the target practice's, each named as the carriers' provider
+    files name it and given its physicians' specialty: [(tin, name, specialty)]."""
+    if "_independents" in X:
+        return X["_independents"]
+    system_of = _system_memo(X, ctrl)
+    p = X["prof"]
+    p = p[(p["dos"].dt.year == 2024) & p["procedure_code"].isin(OFFICE) & p["service_facility_zip"].map(zc).isin(EX_COUNTIES)]
+    tins = {}
+    for t, d in zip(p["billing_provider_tin"], p["dos"]):
+        if t != bmg_tin and system_of(t, d) is None:
+            tins[t] = True
+    prov = X["provfile"]
+    out = []
+    for t in sorted(tins):
+        sub = prov[prov["billing_tin"] == t]
+        names = sorted(set(sub["practice_name"]), key=lambda n: (n.isupper(), len(n), n))
+        specs = {SPECIALTY.get(x) for x in sub["primary_taxonomy"] if str(x)[:3] in PHYS_TAX} - {None}
+        out.append((t, names[0], sorted(specs)[0] if len(specs) == 1 else "primary care"))
+    out.sort(key=lambda x: x[1])
+    X["_independents"] = out
+    return out
+
+
+def seen_cells(X, zc, ctrl, bmg_tin):
+    return ([(g_, sp) for g_ in GROUPS for sp in SPECIALTIES] +
+            [(name, None) for _, name, _ in independents(X, zc, ctrl, bmg_tin)])
+
+
+def referred_cells(X, zc, ctrl, bmg_tin):
+    ind = independents(X, zc, ctrl, bmg_tin)
+    return ([(name, "IMG") for _, name, _ in ind] +
+            [(name, "ENDO") for _, name, sp in ind if sp == "gastroenterology"] +
+            [(name, "ARTH") for _, name, sp in ind if sp == "orthopaedic surgery"])
+
+
+def patients_seen(X, zc, ctrl, bmg_tin, link=True, specialty="provider", physicians=True, telehealth=False,
+                  versions="latest", chains="rebuilt", residence=True, sets=False, attribution="claim"):
+    """Appendix A2: for Ledgestone's and Kinnickinnic's practices by specialty, and for each independent practice, the
+    people residing in the two counties on the date of a visit who had an in-person office visit (CPT 99202 to 99215,
+    at a location in the two counties) with one of the group's physicians in 2024, each person once. A visit counts for
+    the system or the practice under whose numbers its claim was billed (attribution "claim"); checks.py's rival
+    readings attribute it by the physician's reassignment history ("history"), by every number the physician billed a
+    counted visit under that day ("date"), or leave out a physician holding two numbers at once ("exclusive")."""
+    commercial = set(X["prodref"].loc[X["prodref"]["line_of_business"] == "Commercial", "product_id"])
+    p = X["prof"]
+    p = p[(p["dos"] >= BASE_START) & (p["dos"] <= BASE_END) & p["product_id"].isin(commercial)]
+    p = p[p["procedure_code"].isin(OFFICE) & p["service_facility_zip"].map(zc).isin(EX_COUNTIES)]
+    if not telehealth:
+        p = p[(p["place_of_service"] != "10") & (p["procedure_modifier_2"] != "95")]
+    if chains == "rebuilt" and versions == "latest":
+        p = rebuild_chains(p)
+    p = _versions(p, versions)
+    if residence:
+        p = p[[c in EX_COUNTIES for c in _resides(X, zc, p)]]
+    if specialty == "provider":
+        prov = X["provfile"]
+        tax = prov.groupby("provider_npi")["primary_taxonomy"].agg(lambda x: sorted(set(x))[0]).to_dict()
+        t = p["rendering_provider_npi"].map(tax)
+    else:
+        t = p["rendering_provider_taxonomy"]
+    p = p.assign(tax=t.values)
+    if physicians:
+        p = p[p["tax"].str[:3].isin(PHYS_TAX)]
+    p = p.assign(spec=p["tax"].map(SPECIALTY))
+    system_of = _system_memo(X, ctrl)
+    ind = {t_: n for t_, n, _ in independents(X, zc, ctrl, bmg_tin)}
+    if attribution != "claim":
+        p = _attribute(X, p, attribution, system_of, ind)
+    cell = []
+    for tin, d, sp in zip(p["billing_provider_tin"], p["dos"], p["spec"]):
+        sysn = system_of(tin, d)
+        if sysn in GROUPS:
+            cell.append((sysn, sp) if isinstance(sp, str) else None)
+        elif tin in ind:
+            cell.append((ind[tin], None))
+        else:
+            cell.append(None)
+    p = p.assign(cell=cell, person=_who(X, p, link))
+    if sets:
+        return {c: set(p.loc[p["cell"] == c, "person"]) for c in seen_cells(X, zc, ctrl, bmg_tin)}
+    counts = p.dropna(subset=["cell"]).groupby("cell")["person"].nunique().to_dict()
+    return {c: int(counts.get(c, 0)) for c in seen_cells(X, zc, ctrl, bmg_tin)}
+
+
+def _attribute(X, p, how, system_of, ind):
+    """The rival attributions of a visit (checks.py, SF27): each visit row repeated under every number the reading gives
+    it, as if billed there, so the cell assignment above reads the number as the claim's."""
+    spans = billing_spans(X["reassign"])
+    if how == "date":
+        day = defaultdict(set)
+        for n, d, t in zip(p["rendering_provider_npi"], p["dos"], p["billing_provider_tin"]):
+            day[(n, d)].add(t)
+    rows = []
+    for ix, n, d, t in zip(p.index, p["rendering_provider_npi"], p["dos"], p["billing_provider_tin"]):
+        open_ = sorted({t_ for t_, s_, e_ in spans.get(n, ()) if s_ <= d <= e_})
+        if how == "history":
+            tins = open_ or [t]
+        elif how == "date":
+            tins = sorted(day[(n, d)] | {t})
+        elif how == "exclusive":
+            tins = [] if len(open_) > 1 else [t]
+        else:
+            raise ValueError(how)
+        rows += [(ix, t_) for t_ in tins]
+    q = p.loc[[ix for ix, _ in rows]].copy()
+    q["billing_provider_tin"] = [t_ for _, t_ in rows]
+    return q
+
+
+def patients_referred(X, zc, ctrl, spans, bmg_tin, link=True, versions="latest", residence=True, sets=False):
+    """Appendix A3: for each independent practice, the people residing in the two counties on the date of service who
+    received a 2024 outpatient service in the line from a facility in the database, read on the latest version of
+    the claim net of voids, whose referring provider was a physician of the practice on that date, each person once."""
+    commercial = set(X["prodref"].loc[X["prodref"]["line_of_business"] == "Commercial", "product_id"])
+    f = X["fac"]
+    f = f[(f["dos"] >= BASE_START) & (f["dos"] <= BASE_END) & f["product_id"].isin(commercial)]
+    f = f[f["procedure_code"].map(family).isin(EX1_LINES)]
+    f = _versions(f, versions)
+    if residence:
+        f = f[[c in EX_COUNTIES for c in _resides(X, zc, f)]]
+    ind = {t_: n for t_, n, _ in independents(X, zc, ctrl, bmg_tin)}
+    cell = []
+    for n, d, cpt in zip(f["referring_provider_npi"], f["dos"], f["procedure_code"]):
+        names = {ind[t_] for t_, s_, e_ in spans.get(n, ()) if s_ <= d <= e_ and t_ in ind}
+        cell.append((sorted(names)[0], family(cpt)) if len(names) == 1 else None)
+    f = f.assign(cell=cell, person=_who(X, f, link))
+    if sets:
+        return {c: set(f.loc[f["cell"] == c, "person"]) for c in referred_cells(X, zc, ctrl, bmg_tin)}
+    counts = f.dropna(subset=["cell"]).groupby("cell")["person"].nunique().to_dict()
+    return {c: int(counts.get(c, 0)) for c in referred_cells(X, zc, ctrl, bmg_tin)}
 
 
 def ctrl_tin(X, name):

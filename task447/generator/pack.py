@@ -8,6 +8,7 @@ professional and referral claims, the acquired practices' referral claims 2021 t
 members' eligibility), and every device row is tagged in the returned ledger for the checks.
 """
 import csv
+import hashlib
 import json
 import os
 from collections import defaultdict
@@ -43,7 +44,6 @@ FILES = {
     "exhibit": "N25-014_exhibit_C_ledgestone_rates.xlsx",
     "hcris": "hcris_hospital_outpatient_extract_fy2023.csv",
     "ma": "apcd_medicare_advantage_facility_claims_2024.csv",
-    "manifest": "export_manifest.csv",
 }
 
 # ------------------------------------------------------------------ identifiers
@@ -109,6 +109,45 @@ def money(x):
 
 # the second plan submits most, not all, of the services it receives after the first carrier pays
 SECOND_SUBMITTED = 0.86
+# the database's person index did not link three in four of the members covered twice: their second carrier's
+# spans and claims sit under another member key
+UNLINKED_RATE = 0.75
+# Ledgestone's central business office (Ledgestone Medical Group and Mishicot Family Practice) re-billed part of its
+# 2024 office visits after its coding review, each correction a replacement whose original-claim reference is
+# Ledgestone's own account number; other offices' corrections reference the carrier's claim number
+LDG_FIX_RATE = 0.25
+OTHER_FIX_RATE = 0.025
+OFFICE_CODES = {str(c) for c in range(99202, 99216)}
+RECODE = {"99212": "99213", "99213": "99214", "99214": "99213", "99215": "99214", "99203": "99204",
+          "99204": "99203", "99205": "99204"}
+
+
+def second_key(mid):
+    """The member key the database gave an unlinked member's records under the second carrier."""
+    return "WM" + hashlib.sha256(("m2|%s" % mid).encode()).hexdigest()[:10].upper()
+
+
+UNLINKED_SALT = "pi"
+
+
+def unlinked_members(mem):
+    return {mid for mid, inf in mem.info.items() if inf.get("second") and h01("mpi", UNLINKED_SALT, mid) < UNLINKED_RATE}
+
+
+# a second member record at the member's own carrier: opened with the member's enrolment and never merged, and one of
+# the member's 2024 outpatient services billed under it as well as under the member's record, each claim adjudicated
+# on its own record's cost sharing
+DUP_RATE = 0.07
+DUP_PRACTICES = ("RRF", "AFH", "KAC", "MDC", "SOA")
+
+
+def dup_key(mid):
+    return "WM" + hashlib.sha256(("m3|%s" % mid).encode()).hexdigest()[:10].upper()
+
+
+def account_number(key):
+    """Ledgestone's patient account number for a visit."""
+    return "4%09d" % int(h01("har", key) * 1e9)
 # billing offices that report their group's taxonomy in the rendering provider loop
 GROUP_TAXONOMY = {"KPN": "207Q00000X"}
 
@@ -125,10 +164,12 @@ def lag_days(carrier, key):
 
 
 # ------------------------------------------------------------------ claims
-def build_claims(mem, people, lines):
+def build_claims(mem, people, lines, assign=()):
     """Turn the simulated service lines into claim lines with the 2024 devices. Returns
     (facility rows by year, professional rows, device ledger)."""
     num = Numberer()
+    unl = unlinked_members(mem)
+    fixes = []                            # (line index, professional row, kind) of the corrected office visits
     fac_rows, prof_rows = [], []
     second = []                           # lines a spouse's plan may also have been billed for
     ledger = defaultdict(list)            # device -> list of claim numbers touched
@@ -165,7 +206,7 @@ def build_claims(mem, people, lines):
                         form="UB04" if hosp else "CMS1500",
                         tob="0131" if hosp else "", pos="" if hosp else INDEP_POS[W.FAC[f][3]],
                         rev=REV_BY_CPT.get(l["cpt"], FAMILY_REV[fam]) if hosp else "",
-                        freq="1", orig="", late=late, device=[])
+                        freq="1", orig="", late=late, device=[], src=i)
             if late:
                 base["device"].append("late_paid")
                 ledger["late_paid"].append(i)
@@ -222,8 +263,7 @@ def build_claims(mem, people, lines):
                                              plan=round(allowed - liab, 2), paid=npaid,
                                              device=base["device"] + ["rebilled"]))
                     ledger["voided"].append(i)
-            if not versioned and l["tag"] not in MAIN_TAGS and l["practice"] != "MFP" and sysk != "LDG":
-                second.append((i, "fac", originals))
+            pass        # the second plans' facility claims are not in the extract (the carriers' COB recoveries)
         else:
             code = l["code"]
             cpt = code.split("-")[0]
@@ -259,11 +299,31 @@ def build_claims(mem, people, lines):
                 row["device"] = row["device"] + ["group_taxonomy"]
                 ledger["group_taxonomy"].append(i)
             prof_rows.append(row)
-            if l["tag"] not in MAIN_TAGS and bp != "MFP":
+            if l["tag"] not in MAIN_TAGS and bp != "BMG" and cpt in OFFICE_CODES and code == cpt:
+                if bp in ("LMG", "MFP"):
+                    if h01("ldgfix", key) < LDG_FIX_RATE:
+                        fixes.append((i, row, "ldg"))
+                elif h01("ofix", key) < OTHER_FIX_RATE:
+                    fixes.append((i, row, "other"))
+            if l["tag"] not in MAIN_TAGS and bp != "BMG":
                 second.append((i, "prof", [row]))
+    # a correction is made only where it names one visit under any rule: Ledgestone's, where the visit is the
+    # member's only professional claim that day; the other offices', the member's one visit that day under that
+    # carrier and number (their reference names the claim)
+    day = defaultdict(int)
+    one = defaultdict(int)
+    for r in prof_rows:
+        day[(r["carrier"], r["member"], r["dos"], r["bill_tin"])] += 1
+        one[(r["member"], r["dos"])] += 1
+    fixes = [(i, r, k) for i, r, k in fixes
+             if (one[(r["member"], r["dos"])] == 1 if k == "ldg" else day[(r["carrier"], r["member"], r["dos"], r["bill_tin"])] == 1)]
+    fixed = {i for i, _, _ in fixes}
     # the spouse's plan: the same services submitted again by the second carrier after the first paid, priced on
-    # what the first left the member to pay (numbered after every first-carrier claim)
+    # what the first left the member to pay (numbered after every first-carrier claim); a corrected visit was
+    # billed to the second plan only after its correction, outside the extract
     for i, kind, rows in second:
+        if i in fixed:
+            continue
         l = lines[i]
         k2 = l.get("key", i)
         p2 = mem.second_on(l["member"], l["date"])
@@ -277,8 +337,63 @@ def build_claims(mem, people, lines):
             pl2 = round(a2 * (0.72 + 0.26 * h01("cob_pay", k2, r["line"])), 2)
             out = dict(r, carrier=car2, product=p2, cno=cno2, freq="1", orig="", paid=paid2, allowed=a2, plan=pl2,
                        liab=round(a2 - pl2, 2), device=r["device"] + ["second_plan"])
+            if l["member"] in unl:
+                out["member"] = second_key(l["member"])
+                out["device"] = out["device"] + ["unlinked"]
             (fac_rows if kind == "fac" else prof_rows).append(out)
         ledger["second_plan"].append(i)
+        if l["member"] in unl:
+            ledger["unlinked"].append(i)
+    # the corrected office visits (numbered after the second plans' claims): Ledgestone's correct the claim without
+    # changing the visit's code or physician; another office's may re-code the visit's level
+    for i, r, kind in fixes:
+        l = lines[i]
+        key = l.get("key", ("ln", i))
+        car = r["carrier"]
+        u = h01("fixk", key)
+        cpt, rnd = r["cpt"], r["rnd_npi"]
+        if u < 0.45 and cpt in RECODE and kind == "other":
+            cpt = RECODE[cpt]
+        bp = r["practice"]
+        if bp == "LMG":
+            price = S.ldg_prof_rate(car, cpt)
+        else:
+            price = S.other_prof_rate(bp, car, cpt)
+        allowed = round(price, 2)
+        liab = round(allowed * member_share(r["product"], 1, "prof", key + ("fix",)), 2)
+        fpaid = r["paid"] + timedelta(days=26 + int(h01("fixp", key) * 52))
+        prof_rows.append(dict(r, cno=num.next(car, r["dos"], ("fix", key)), freq="7",
+                              orig=account_number(key) if kind == "ldg" else r["cno"], paid=fpaid, cpt=cpt,
+                              rnd_npi=rnd, taxonomy=GROUP_TAXONOMY.get(bp, people[rnd]["taxonomy"]),
+                              allowed=allowed, liab=liab, plan=round(allowed - liab, 2), fix_of=r["cno"],
+                              device=r["device"] + ["corrected_" + kind]))
+        ledger["corrected_" + kind].append(i)
+    # the duplicate records: members (never the main call's, never one with a second plan) whose service an independent
+    # practice referred; the facility's claim for one such service was paid again under the second record, which holds
+    # the member's coverage from its start
+    cutoff = PULL - timedelta(days=15)
+    first = {}
+    for r in fac_rows:
+        if (r["year"] == 2024 and r["tag"] not in MAIN_TAGS and r["practice"] in DUP_PRACTICES and r["freq"] == "1"
+                and W.CPT[r["cpt"]][1] in ("IMG", "ENDO", "ARTH")
+                and r["paid"] <= cutoff - timedelta(days=90) and not mem.info[r["member"]].get("second")
+                and h01("dup", r["member"]) < DUP_RATE):
+            first.setdefault(r["member"], r)
+    for mid in sorted(first):
+        r = first[mid]
+        k2 = dup_key(mid)
+        start = min(s_ for _, s_, _ in mem.info[mid]["spans"])
+        mem.info[mid]["dup"] = (k2, start)
+        lines_ = [x for x in fac_rows if x["cno"] == r["cno"]]
+        cno2 = num.next(r["carrier"], r["dos"], ("dup", mid))
+        paid2 = r["paid"] + timedelta(days=31 + int(h01("dupp", mid) * 50))
+        sysk = W.FAC[r["fac"]][2]
+        ftier = 1 if sysk is None else W.tier_for(r["product"], sysk, mem.plan_year(mid, r["dos"]))
+        for x in lines_:
+            liab2 = round(x["allowed"] * member_share(x["product"], ftier, "fac", ("dup", mid, x["line"])), 2)
+            fac_rows.append(dict(x, member=k2, cno=cno2, paid=paid2, liab=liab2, plan=round(x["allowed"] - liab2, 2),
+                                 device=x["device"] + ["dup_record"]))
+        ledger["dup_record"].append(r["src"])
     return fac_rows, prof_rows, ledger
 
 
@@ -350,6 +465,7 @@ ELIG_COLS = ["member_id", "submitter_code", "product_id", "coverage_start", "cov
 
 def elig_rows(mem, used):
     out = []
+    unl = unlinked_members(mem)
     for mid in sorted(mem.info):
         if mid not in used:
             continue
@@ -373,6 +489,7 @@ def elig_rows(mem, used):
                 cuts.add(rd)
             y += 1
         cuts = sorted(c for c in cuts if first <= c <= last + timedelta(days=1))
+        i0 = len(out)
         for a, b in zip(cuts, cuts[1:]):
             e = b - timedelta(days=1)
             prod = mem.product_on(mid, a)
@@ -380,7 +497,16 @@ def elig_rows(mem, used):
             bpb = D(py, inf["renew"], 1)
             out.append([mid, W.CARRIERS[W.PRODUCTS[prod][0]]["submitter"], prod, a.isoformat(), e.isoformat(),
                         bpb.isoformat(), rel, inf["birth"], inf["sex"], mem.zip_on(mid, a)])
+        dp = inf.get("dup")
+        if dp and dp[0] in used:
+            own = out[i0:]
+            for r_ in own:
+                if r_[4] >= dp[1].isoformat():
+                    out.append([dp[0]] + r_[1:3] + [max(r_[3], dp[1].isoformat())] + r_[4:])
         sc = inf.get("second")
+        mid2 = second_key(mid) if mid in unl else mid
+        if sc and mid2 != mid and mid2 not in used:
+            sc = None
         if sc:
             p2, s2, e2, rn2 = sc
             rel2 = "01" if h01("rel_s", mid) < 0.8 else "19"
@@ -396,9 +522,10 @@ def elig_rows(mem, used):
             cuts2 = sorted(c for c in cuts2 if s2 <= c <= e2 + timedelta(days=1))
             for a, b in zip(cuts2, cuts2[1:]):
                 py = W.plan_year_of(a, rn2)
-                out.append([mid, W.CARRIERS[W.PRODUCTS[p2][0]]["submitter"], p2, a.isoformat(),
+                out.append([mid2, W.CARRIERS[W.PRODUCTS[p2][0]]["submitter"], p2, a.isoformat(),
                             (b - timedelta(days=1)).isoformat(), D(py, rn2, 1).isoformat(), rel2, inf["birth"],
                             inf["sex"], mem.zip_on(mid, a)])
+    out.sort(key=lambda r: r[0])
     return out
 
 
@@ -614,8 +741,8 @@ def exhibit_c(path):
             ("ARTH", "Arthroscopy"), ("LAB", "Clinical laboratory")]
     for fam, label in cats:
         codes = [c for c in LDG_CPTS if W.CPT[c][1] == fam]
-        ws2.append([label, ", ".join(codes), W.LDG_C2_PCT_2025[fam]])
-        ws2.cell(row=ws2.max_row, column=3).number_format = "0%"
+        ws2.append([label, ", ".join(codes), int(round(W.LDG_C2_PCT_2025[fam] * 100))])
+        ws2.cell(row=ws2.max_row, column=3).number_format = "0"
     ws2.column_dimensions["A"].width = 30
     ws2.column_dimensions["B"].width = 70
     ws2.column_dimensions["C"].width = 20
@@ -721,10 +848,58 @@ def ma_rows(mem, people, roster):
 
 
 # ------------------------------------------------------------------ everything
+def separate_namesakes(mem, lines, fac_rows, prof_rows):
+    """Two members born in one year, of one sex and at one ZIP, who received the same service on the same day under
+    two carriers would read as one person whose two plans were billed. Outside the main call's members, one of each
+    such pair is given a neighbouring birth year until no pair remains, so any matching of the second keys (on
+    birth year, sex and ZIP alone, with the service, or with the pricing) finds the same people. Returns the pairs
+    left among the main call's own members, whose rows are frozen."""
+    main = {l["member"] for l in lines if l["tag"] in MAIN_TAGS}
+    keyb = {second_key(m): m for m in unlinked_members(mem)}
+    keyb.update({inf["dup"][0]: m for m, inf in mem.info.items() if inf.get("dup")})
+    person = lambda m: keyb.get(m, m)
+    for it in range(30):
+        groups = defaultdict(set)
+        for r in fac_rows:
+            if r["year"] == 2024 and r["freq"] == "1":
+                groups[("f", r["dos"], r["cpt"], r["fac"])].add((person(r["member"]), r["carrier"]))
+        for r in prof_rows:
+            if r["freq"] == "1":
+                groups[("p", r["dos"], r["cpt"], r["rnd_npi"])].add((person(r["member"]), r["carrier"]))
+                groups[("d", r["dos"], r["rnd_npi"])].add((person(r["member"]), r["carrier"]))
+        move, frozen = set(), set()
+        for k, s_ in groups.items():
+            if len(s_) < 2:
+                continue
+            by = defaultdict(list)
+            for p, car in s_:
+                inf = mem.info[p]
+                by[(inf["birth"], inf["sex"], mem.zip_on(p, k[1]))].append((p, car))
+            for lst in by.values():
+                for a in range(len(lst)):
+                    for b in range(a + 1, len(lst)):
+                        (p1, c1), (p2, c2) = lst[a], lst[b]
+                        if p1 == p2:
+                            continue
+                        free = sorted(x for x in (p1, p2) if x not in main)
+                        if not free:
+                            frozen.add((k, min(p1, p2), max(p1, p2)))
+                        else:
+                            move.add(free[-1])
+        if not move:
+            return frozen
+        for p in sorted(move):
+            b0 = mem.info[p]["birth"]
+            step = 1 + int(h01("nb", p, it) * 3)
+            mem.info[p]["birth"] = b0 + step if b0 + step <= 2006 else b0 - step
+    raise AssertionError("namesakes left after 30 passes")
+
+
 def write_all(wd, target):
     os.makedirs(target, exist_ok=True)
     mem, people, assign, roster, lines = wd["mem"], wd["people"], wd["assign"], wd["roster"], wd["lines"]
-    fac_rows, prof_rows, ledger = build_claims(mem, people, lines)
+    fac_rows, prof_rows, ledger = build_claims(mem, people, lines, assign)
+    frozen_namesakes = separate_namesakes(mem, lines, fac_rows, prof_rows)
     f24 = write_fac24(fac_rows, os.path.join(target, FILES["fac24"]))
     fh = write_fachist(fac_rows, os.path.join(target, FILES["fachist"]))
     p24 = write_prof24(prof_rows, os.path.join(target, FILES["prof24"]))
@@ -752,4 +927,4 @@ def write_all(wd, target):
     cols, rows = ma_rows(mem, people, roster)
     write_csv(os.path.join(target, FILES["ma"]), cols, rows)
     return {"fac_rows": fac_rows, "prof_rows": prof_rows, "ledger": ledger, "f24": f24, "fh": fh, "p24": p24,
-            "elig": er}
+            "elig": er, "frozen_namesakes": frozen_namesakes}

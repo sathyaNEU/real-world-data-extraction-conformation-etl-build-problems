@@ -3,57 +3,70 @@
  "domain": "healthcare-delivery-health-economics",
  "objective": "data-extraction-conformation",
  "stage": 5,
- "stage_name": "shipped (ask layer rebuilt)",
- "updated": "2026-10-16",
+ "stage_name": "shipped (ask layer replaced)",
+ "updated": "2026-11-01",
  "branch": "main",
  "stump": "Solvers measure the referral share on Ledgestone's earlier practice purchases, pooled, by carrier or product by product (Bayfield Value Tier patients never moved), project a 2026 increase of about $1.6 million against the $2.0 million threshold and close the review; the records of every earlier acquisition show the share following each patient's tier for the acquirer (Norbridge's 2024 re-tiering of Wolf River moved its Tiered EPO patients), and Bayfield places Ledgestone in its first tier from 2025, so the projection is about $2.2 million and the notice proceeds to a cost and market impact review.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-12",
+  "date": "2026-11-01",
   "fails": "",
-  "pair_ceiling": 27.5,
-  "mirror_leakage": 0.0
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0,
+  "measured_by": "generator/ceiling.py on target.zip (md5 02e9335058bbd8a9d816bbbef030e481)"
  },
  "leak": {
-  "leak_py": "REVIEW (unchanged lines, answered in the design note)",
-  "reader": "pass after the repair: nothing quoted for the decisive step, no ranking file, question 6 analytical, nothing points at the tier filings"
+  "leak_py": "REVIEW, no LEAK (--asof 2025-10-21, 02e93350)",
+  "reader": "owed on the replaced asks (the main thread spawns it); the earlier reads passed on the earlier asks",
+  "reship_reads_2026_11_01": "three reads after the leak repair: on 60f87154 (Q6 flagged rule 4.05's 'does not estimate one share across products' as leaning toward a filed procedure; the judge rules the decisive step analytical, executing 4.05 still files 1.64M by the product's own history); on cdfe56c7 with the new asks (no sentence says how one person's records join); on 02e93350 (the attribution sentence read as stated outright, the person linkage still unstated, Q6 an analytical choice)"
  },
  "duplicate_check": {
   "heart": "WARN only (overuse.org_family, repeat.gate_g, overuse.gate_g; answered in the design note)",
   "surface": "personas Clayton Brown, Donna Mcintosh, Jacob Murillo, Samantha Abbott, all on the card",
-  "clone_check": ""
+  "clone_check": "",
+  "heart_2026_11_01": "WARN (people.last Murillo against task258), no BLOCK; surface exit 0"
  },
  "solver_rounds": [],
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass2.md",
-  "pass": 3,
-  "date": "2026-10-16",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "verdict": "DETERMINISTIC (pass 5 report, on 02e93350)",
+  "disposition": "FIX_NOW, applied: A2's attribution sentence (moves no figure)",
+  "report": "/tmp/determinism-check-task447-p5/verdict.md (the coordinator's run, outside the repo)",
+  "pass": 5,
+  "date": "2026-11-01",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "notes": "pass 2 DETERMINISTIC FIX_NOW on three input wordings (A2's two-unit case, A3's dual-carrier visit, A5's join date), all applied; pass 3 APPROVE with fix location none. The one residual the verdict names is Bayfield's first-tier share, which has to come from the same placement under other products ($576k of the $1.6M referred); taking that product's own tier-two history instead contradicts the projection-year clause, and both the judge and the isolated reader read it that way."
+  "notes": "pass 5 on cdfe56c7: the main call forced and reproduced; every exhibit figure reproduced but Kinnickinnic gastroenterology 219, open between 520 (reassignment history), 311 (billing days) and 174 (the physician left out) through Brightwater's gastroenterologist, open-ended under two numbers; one count of patients on each exhibit; 'independent practice there' one reading. Fixed by A2's WHAT ('A visit counts for the system or the practice under whose taxpayer identification numbers its claim was billed.'), asserted as SF27; the re-judge of the FIX_NOW is the pipeline's one re-judge.",
+  "earlier": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report_pass2.md",
+   "pass": 3,
+   "date": "2026-10-16",
+   "notes": "pass 2 DETERMINISTIC FIX_NOW on three input wordings (A2's two-unit case, A3's dual-carrier visit, A5's join date), all applied; pass 3 APPROVE with fix location none. The one residual the verdict names is Bayfield's first-tier share, which has to come from the same placement under other products ($576k of the $1.6M referred); taking that product's own tier-two history instead contradicts the projection-year clause, and both the judge and the isolated reader read it that way."
+  },
+  "pass5_report": "task447/determinism_check_report_pass5.md: DETERMINISTIC, APPROVE on the final cut 02e9335058bbd8a9d816bbbef030e481; the thread's one open cell on cdfe56c7 (Kinnickinnic gastroenterology 219, one physician under two systems' numbers) closed by A2's 'A visit counts for the system or the practice under whose taxpayer identification numbers its claim was billed', ruled a WHAT that files neither ask device (the person linkage stays unstated) nor the main call's step; the cell recomputed to 219 on 02e93350; Gate G forecasting, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical"
  },
  "approved": null,
  "delivered": "2026-10-12",
  "portal": null,
  "status": "SHIPPED",
  "ask_layer": {
-  "date": "2026-10-12",
-  "asks": "the review's two standing exhibits (rule 4.07, appendix A2 and A3): residents' imaging, endoscopy and arthroscopy services by county and line with Brightwater's referred share (12 figures); Brightwater's and Ledgestone's office-visit shares by specialty (8 figures)",
-  "devices": "Exhibit 1 primary: second-plan claims (659 facility services billed by two carriers for 1,025 members covered twice); Exhibit 2 primary: Kinnickinnic's business office reports its family-medicine taxonomy for every rendering physician (7,471 lines, 12 NPIs), with the second-plan office visits (1,807) shared",
-  "cracker": "misses all 20 exhibit figures (Exhibit 1 counts +4 to +67, shares 0.71 to 1.63 points low; Exhibit 2 shares 0.38 to 18.15 points off)",
-  "combinations": "24 on Exhibit 1 and 128 on Exhibit 2, none lands back inside a bin it leaves (nearest 0.13 and 0.065 points)",
-  "main_call": "byte-identical to main_call_ref.json (rows, reference files, figures)"
+  "date": "2026-11-01",
+  "asks": "the review's two standing exhibits (rule 4.07, appendix A2 and A3), rewritten as patient counts: the commercial patients living in Manitowoc and Kewaunee counties whom Ledgestone's and Kinnickinnic's physicians saw in person in 2024 by specialty (8 figures) and whom each independent practice saw (5), and whom each independent practice referred for outpatient imaging, with the gastroenterology and orthopaedic practices' endoscopy and arthroscopy (7)",
+  "devices": "Exhibit 1: members covered twice whom the database's person index did not link (909 of 1,210; 783 second keys holding 3,031 professional lines, no facility line), found only by a claim priced on another key's member liability for the same visit with one birth year, sex and ZIP; Exhibit 2: 125 second member records at the member's own carrier, opened with the enrolment and never merged, each holding one facility claim for a service an independent practice referred, paid again on its own cost sharing, found only by one carrier's two claims for one service with one birth year, sex and ZIP. No filed sentence names carriers, keys or records. Hazards: H1 versions, H2 late payment, H3 control, H4 residence, H5 RT and LT lines, H6 physicians, H7 telehealth, H8 copies under one key, H9 group taxonomy, H10 Ledgestone's account-number corrections",
+  "cracker": "misses all 20 (Exhibit 1 +2 to +451 patients, Exhibit 2 +1 to +47); the mirror keeps 0; the natural cleanups: one carrier, birth year, sex and ZIP keeps 1 (Ledgestone gastroenterology, two opposite errors), birth year, sex and ZIP alone 0, a duplicate check without the member key 0 (4 without the cost sharing)",
+  "combinations": "11 on Exhibit 1 and 1 on Exhibit 2, every one off each figure one of its errors moves",
+  "pair": "measured 27.5 on 38/7/55 with r = 3 and 28.5 with r = 5 (generator/ceiling.py); two careful responses on the call 45.0 each; the reconstruction across two carriers only 80.8 on the call (pair 46.4), under any carrier 100.0 (pair 56.0)",
+  "main_call": "reproduces main_call_ref.json (rows, reference files, figures); freeze.py rubric PASS"
  },
  "build": {
-  "date": "2026-10-12",
-  "generator": "green, 990 checks; independent verifier agrees; two builds byte-identical",
-  "gates": "19 files, 4 formats (csv, json, pdf, xlsx), eligibility spans 102,665 rows, 2 distractors in metadata.json",
-  "figures_check": "PASS, 43 figures",
-  "target_zip_sha256": "760cadac3a50b825431c2ddc866cc62396bc61b5e5a16509d66239d67afc0e6a"
+  "date": "2026-11-01",
+  "generator": "green, 714 checks; independent verifier agrees; two rebuilds byte-identical (md5 02e9335058bbd8a9d816bbbef030e481 both times)",
+  "gates": "17 files, 4 formats (csv, json, pdf, xlsx), eligibility spans 103,388 rows, 2 distractors in metadata.json",
+  "figures_check": "PASS, 42 figures",
+  "target_zip_sha256": "31500386da8c10d848acfe41c5b1c6467d72ed476761a5f5e82384fcb63e911d"
  },
  "returned": [
   {
@@ -67,6 +80,28 @@
    "portal": "house review returned the build: the deciding step not pinned by a shipped file, with the pooled or per-line reading of 4.05 landing $1.516M and close against the golden's $2.209M and proceed. Both in-task determinism judges had passed (gates A to G, F strong) and the measured response was a valid stump at an 11 per cent rubric, so the return was on the determinism axis alone.",
    "repair": "determinism",
    "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK apcd_extract_data_dictionary.pdf: a file whose name says it describes the data, and it names 50 columns, 100 per cent of apcd_medicare_advantage_facility_claims_2024.csv; LEAK export_manifest.csv: a file whose name says it describes the data)",
+   "repair": "leak",
+   "move": "The generator no longer writes apcd_extract_data_dictionary.pdf or export_manifest.csv (17 files, still four formats). Provenance and row counts stay in metadata.json only. The one fact the dictionary carried that a graded figure needs, the ZIP-to-county assignment behind appendix A2's residence and A3's two counties, is filed once in the market oversight technical appendix as A6 Counties, the unit's own assignment ('The unit assigns each ZIP code in the region to one county, as below, for a member's residence and for the location of a service alike.' with the county table), and the old A6 Sources becomes A7 without citing a dictionary; the golden's and the verifier's extractors read it there. Version handling stays filed in rule 4.02(c) and A2 and is closed by the claims' own X12 frequency codes (asserted); place of service 10, modifier 95 and the specialty codes were already in A3; the layout 2.4 crosswalk, the column glosses, the file scopes and the relationship codes are dropped (no main-call fork rests on them and no ask device is filed). The rule, the notice and the 10-16 unit-of-analysis pin in 4.04(b) and 4.05 are untouched. checks.py adds a by-name and by-content describing-file sweep and positive controls for A6 and the version codes (1043 checks green). The call, the stump, the ladder, figures.json, submission.md and the golden PDF are byte-identical; freeze.py determinism PASS. The design note's repeated '## Three rules' is merged into the 10-16 copy.",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house, generator/ceiling.py on a93914356 measured the cracker at 20 of 20 ask figures and the pair ceiling at 83.5 (mirror leakage 100 per cent), because appendix A2 and A3 (the 10-16 determinism repair) file both devices' handling; and the stage 4 judge on a93914356 (DETERMINISTIC, FIX_NOW): Exhibit C's Bayfield values 4.05, 1.55, 1.60, 1.15, 2.30 under 'Percent of Medicare' readable as per cent once the dictionary was gone",
+   "repair": "rubric",
+   "move": "Replaced the two executed ask devices on rows outside the main call's population, the appendix untouched: the second-plan copies under one member key (now hazard H8) by the person index's unlinked second keys (D7: one lakeshore member in nine covered twice, three in four of those dependents' second-carrier records under a key of their own, found only by a claim priced on another key's member liability with one birth year, sex and ZIP), and Kinnickinnic's claim taxonomy (now hazard H9) by Ledgestone's corrected office visits (D2: a quarter of Ledgestone Medical Group's and Mishicot's 2024 lakeshore visits re-billed after a coding review, each replacement citing Ledgestone's own account number in place of the claim it corrects); Ledgestone's lakeshore clinics no longer bill second plans. golden.py and verify.py link the keys and rebuild the chains independently; checks.py asserts both against the generator's truth, the separation line by count, and 48 plus 384 mishandling pipelines out of their bins. In the same rebuild, the judge's FIX_NOW: the Bayfield column now holds 405, 155, 160, 115 and 230 in whole per cent under its 'Percent of Medicare' header (no sentence added), every rate identical (SF14 asserted; main_call_ref.json digests Exhibit C by its rates). All 20 graded figures, figures.json and block 4 are unchanged (the truth is the same simulation); block 3 steps 6 and 7 and the golden's exhibit notes name the handling. ceiling.py: cracker 0 of 20, mirror 0, pair 28.5.",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house. The stage 4 judge's pass 4 (NOT_DETERMINISTIC on the supplementary exhibits: a second member key matched on birth year, sex and ZIP alone, with the service or with the pricing; a replacement naming no claim matched on the code, the physician or the number) was closed by C1 convergence on 8890c796c6a1f1074c0ac189b1d300c0, after which generator/ceiling.py's honest careful cracker, executing A2's and A3's carrier and version sentences as worded, kept 20 of 20 ask figures (pair 82.5 and 83.5): the ask layer was spent",
+   "repair": "rubric",
+   "move": "The asks replaced, the main call frozen (the call sentence, rule 4.01 to 4.06, every main figure, the stump, the Bayfield fix and main_call_ref.json untouched). The prompt's ask sentences, appendix A2 and A3 (WHAT only: each person one patient, residence on the date, in person, the provider files' taxonomy, whenever paid, the latest version; no sentence on carriers, keys or records), the claim and eligibility rows only the asks read, the golden PDF's two exhibits, figures.json's ex1 and ex2, and submission.md steps 6 and 7 and block 4 now carry the review's patient exhibits: Exhibit 1, the commercial lakeshore patients Ledgestone's and Kinnickinnic's physicians saw in person in 2024 by specialty and each independent practice saw (13 figures); Exhibit 2, the patients each independent practice referred for outpatient imaging, endoscopy and arthroscopy (7). Exhibit 1's device: the person index's unlinked second keys, now professional claims only; Exhibit 2's: second member records at one carrier with one facility service billed twice, each on its own cost sharing and spans from the member's enrolment. golden.py links both (link_members, link_records); verify.py links them in its own code; checks.py asserts both against the simulation's people, the separation line by count, SF15 to SF26 (every matching of keys that reads the claims' services converging on the golden's twenty, the others off), 12 mishandling pipelines and the no-op readings. ceiling.py: cracker 0 of 20, mirror 0, pair 28.5, two careful responses on the call 45.0; freeze.py rubric PASS, determinism flags the 20 replaced ask figures and the Deliverable Answers block; and, on judge pass 5's FIX_NOW (on cdfe56c7, Kinnickinnic gastroenterology open between 219, 520, 311 and 174 through a physician open-ended under Brightwater's and Kinnickinnic Physician Network's numbers), A2 adds 'A visit counts for the system or the practice under whose taxpayer identification numbers its claim was billed.', in rule 4.03's terms and silent on how a person's records join, which moves no figure (SF27, read back through pdfplumber and pypdf; target.zip 02e9335058bbd8a9d816bbbef030e481).",
+   "commit": "RESHIPPED (task447)"
   }
- ]
+ ],
+ "target_zip_md5": "02e9335058bbd8a9d816bbbef030e481"
 }

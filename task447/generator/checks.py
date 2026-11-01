@@ -292,111 +292,121 @@ def exhibit_context(target):
     return X, zc, spans, ctrl, bmg
 
 
-def ex1_variant(ctx, second="once", residence="span", runout=False, versions="latest"):
+def seen_variant(ctx, **kw):
     X, zc, spans, ctrl, bmg = ctx
-    kw = dict(residence=residence, runout=runout, versions=versions)
-    if second == "broad":
-        kw.update(second="one per key", key=BROAD)
-    else:
-        kw.update(second=second)
-    return G.ex1_cells(X, zc, bmg, spans, **kw)
+    return G.patients_seen(X, zc, ctrl, bmg, **kw)
 
 
-def ex2_variant(ctx, **kw):
+def referred_variant(ctx, **kw):
     X, zc, spans, ctrl, bmg = ctx
-    return G.ex2_cells(X, zc, bmg, ctrl, **kw)
+    return G.patients_referred(X, zc, ctrl, spans, bmg, **kw)
 
 
-EX1_AXES = {"second": ["once", "every claim", "broad"], "residence": ["span", "first"], "runout": [False, True],
-            "versions": ["latest", "as filed"]}
-EX2_AXES = {"specialty": ["provider", "claim"], "second": ["once", "every claim"], "physicians": [True, False],
-            "system": ["register", "lmg"], "telehealth": [False, True], "runout": [False, True]}
-EX1_STOPS = {"every claim counted (the cracker)": dict(second="every claim"),
-             "de-duplicated on member, date, code and facility": dict(second="broad"),
-             "the member's first ZIP": dict(residence="first"),
-             "rule 4.03's runout applied": dict(runout=True),
-             "versions as filed": dict(versions="as filed")}
-EX2_STOPS = {"the claim's taxonomy and both plans (the cracker)": dict(specialty="claim", second="every claim"),
-             "the claim's taxonomy": dict(specialty="claim"),
-             "both plans' copies": dict(second="every claim"),
-             "telehealth counted": dict(telehealth=True),
-             "nurse practitioner counted": dict(physicians=False),
-             "Ledgestone Medical Group's number only": dict(system="lmg"),
-             "rule 4.03's runout applied": dict(runout=True)}
+# the filed rules that move a figure (the physician rule, A4, and the latest version move none: Mishicot's nurse
+# practitioner holds no specialty and its patients see its physicians, a corrected visit keeps its patient, and no
+# independent practice's referral is replaced or voided; both are asserted no-ops below)
+SEEN_AXES = {"link": [True, False], "specialty": ["provider", "claim"], "telehealth": [False, True],
+             "residence": [True, False]}
+REFERRED_AXES = {"link": [True, False], "residence": [True, False]}
+SEEN_STOPS = {"every member key a person (the cracker)": dict(link=False),
+              "the claim's taxonomy": dict(specialty="claim"),
+              "telehealth counted": dict(telehealth=True),
+              "residence not read": dict(residence=False)}
+REFERRED_STOPS = {"every member key a person (the cracker)": dict(link=False),
+                  "residence not read": dict(residence=False)}
+SEEN_NOOPS = {"nurse practitioners counted": dict(physicians=False), "versions as filed": dict(versions="as filed")}
+REFERRED_NOOPS = {"versions as filed": dict(versions="as filed")}
+# the asks' rows of the semantic fork table carried by the stops, the no-ops and the hazards (SF15, the person, is
+# convergence_checks'; SF17, SF18, SF22 and SF23 are ask_fork_checks')
+FORK_OF = {"every member key a person (the cracker)": "SF15", "residence not read": "SF16",
+           "Mishicot Family Practice left out": "SF19", "the claim's taxonomy": "SF20", "telehealth counted": "SF21",
+           "rule 4.03's runout read in": "SF24", "nurse practitioners counted": "SF25", "versions as filed": "SF26"}
 
 
 def exhibit_truth(wd, packed):
-    """Both exhibits from the simulation's own services, without the claim files: every service once, a bilateral
-    service as its two sides, residence from the member's address on the day, specialty from the physician."""
+    """Both exhibits from the simulation's own people and services, without the claim files or their keys: every
+    person once, residence from the member's address on the day, specialty and practice from the physician."""
     mem, people, lines = wd["mem"], wd["people"], wd["lines"]
-    bil = set(packed["ledger"]["bilateral_lines"])
-    t1 = defaultdict(lambda: [0, 0])
-    for i, l in enumerate(lines):
-        if l["kind"] != "fac" or l["date"].year != 2024:
-            continue
-        fam = W.CPT[l["cpt"]][1]
-        if fam not in ("IMG", "ENDO", "ARTH"):
-            continue
-        cty = W.ZIP_COUNTY[mem.zip_on(l["member"], l["date"])]
-        if cty not in ("Manitowoc", "Kewaunee"):
-            continue
-        n = 2 if i in bil else 1
-        t1[(cty, fam)][0] += n
-        if l["tag"] == "bmg_ref":
-            t1[(cty, fam)][1] += n
     spec = {"FM": "primary care", "IM": "primary care", "PED": "primary care", "GI": "gastroenterology",
             "ORTH": "orthopaedic surgery", "CARD": "cardiovascular disease"}
     office = {str(c) for c in range(99202, 99216)}
-    t2 = defaultdict(lambda: [0, 0, 0])
+    names = {k: v[0] for k, v in O.PRACTICES.items()}
+    indep = ("RRF", "AFH", "KAC", "MDC", "SOA")
+    seen = defaultdict(set)
     for l in lines:
-        if l["kind"] != "prof" or l["code"] not in office or l["tele"] is not None:
+        if l["kind"] != "prof" or l["code"] not in office or l["tele"] is not None or l["tag"] in PK.MAIN_TAGS:
             continue
-        if W.ZIP_COUNTY[l["site_zip"]] not in ("Manitowoc", "Kewaunee"):
+        if W.ZIP_COUNTY[l["site_zip"]] not in G.EX_COUNTIES or W.ZIP_COUNTY[mem.zip_on(l["member"], l["date"])] not in G.EX_COUNTIES:
             continue
         sp = spec.get(people[l["rnd_npi"]]["spec"])
         if sp is None:
             continue
-        t2[sp][0] += 1
-        t2[sp][1] += l["practice"] == "BMG"
-        t2[sp][2] += l["practice"] in ("LMG", "MFP")
-    return t1, t2
+        if l["practice"] in ("LMG", "MFP"):
+            seen[("Ledgestone Health", sp)].add(l["member"])
+        elif l["practice"] == "KPN":
+            seen[("Kinnickinnic Health", sp)].add(l["member"])
+        elif l["practice"] in indep:
+            seen[(names[l["practice"]], None)].add(l["member"])
+    referred = defaultdict(set)
+    for l in lines:
+        if l["kind"] != "fac" or l["date"].year != 2024 or l["practice"] not in indep:
+            continue
+        fam = W.CPT[l["cpt"]][1]
+        if fam not in G.EX1_LINES or W.ZIP_COUNTY[mem.zip_on(l["member"], l["date"])] not in G.EX_COUNTIES:
+            continue
+        referred[(names[l["practice"]], fam)].add(l["member"])
+    return {k: len(v) for k, v in seen.items()}, {k: len(v) for k, v in referred.items()}
 
 
 def exhibit_checks(target, wd, packed, g):
     ctx = exhibit_context(target)
     t1, t2 = exhibit_truth(wd, packed)
     g1, g2 = g["ex1"], g["ex2"]
-    for k, (tot, b, sh) in g1.items():
-        A([tot, b] == t1[k], "Exhibit 1 %s reproduces the simulation's services (%s / %s)" % (k, [tot, b], t1[k]))
-        A(edge_distance(sh, 0.1) >= 0.01, "Exhibit 1 %s share at least 0.01 inside its bin (%.3f)" % (k, sh))
+    for k, v in g1.items():
+        A(v == t1.get(k, 0), "Exhibit 1 %s reproduces the simulation's patients (%d / %d)" % (k, v, t1.get(k, 0)))
     for k, v in g2.items():
-        A(list(v[:3]) == t2[k], "Exhibit 2 %s reproduces the simulation's visits (%s / %s)" % (k, list(v[:3]), t2[k]))
-        A(min(edge_distance(v[3], 0.1), edge_distance(v[4], 0.1)) >= 0.01,
-          "Exhibit 2 %s shares at least 0.01 inside their bins (%.3f, %.3f)" % (k, v[3], v[4]))
+        A(v == t2.get(k, 0), "Exhibit 2 %s reproduces the simulation's patients (%d / %d)" % (k, v, t2.get(k, 0)))
+    A(min(g1.values()) >= 30 and min(g2.values()) >= 30, "every exhibit cell holds thirty patients or more")
     REPORT["ex1_stops"], REPORT["ex2_stops"] = {}, {}
-    # the stops: the cracker misses every figure; every other stop lands outside every bin it moves by a full unit
-    for name, kw in EX1_STOPS.items():
-        r = ex1_variant(ctx, **kw)
-        REPORT["ex1_stops"][name] = {k: (r[k][0] - g1[k][0], r[k][2] - g1[k][2]) for k in g1}
-        for k in g1:
+    # the stops: the cracker files every figure off the golden; every other stop lands off the golden where it moves
+    for stops, fn, gold, rep in ((SEEN_STOPS, lambda **kw: seen_variant(ctx, **kw), g1, "ex1_stops"),
+                                 (REFERRED_STOPS, lambda **kw: referred_variant(ctx, **kw), g2, "ex2_stops")):
+        for name, kw in stops.items():
+            r = fn(**kw)
+            REPORT[rep][name] = {k: r[k] - gold[k] for k in gold}
             if "cracker" in name:
-                A(r[k][0] != g1[k][0] and miss(r[k][2], g1[k][2]), "the cracker misses Exhibit 1 %s (%s)" % (k, r[k]))
-            elif abs(r[k][2] - g1[k][2]) >= 0.1:
-                A(miss(r[k][2], g1[k][2]) and r[k][0] != g1[k][0], "Exhibit 1 stop '%s' leaves %s's bin" % (name, k))
-    for name, kw in EX2_STOPS.items():
-        r = ex2_variant(ctx, **kw)
-        REPORT["ex2_stops"][name] = {k: (r[k][3] - g2[k][3], r[k][4] - g2[k][4]) for k in g2}
-        for k in g2:
-            for j in (3, 4):
-                if "cracker" in name:
-                    A(miss(r[k][j], g2[k][j]), "the cracker misses Exhibit 2 %s %d (%.3f / %.3f)" % (k, j, r[k][j], g2[k][j]))
-                elif abs(r[k][j] - g2[k][j]) >= 0.1:
-                    A(miss(r[k][j], g2[k][j]), "Exhibit 2 stop '%s' leaves %s's bin" % (name, k))
-    # direction discipline: no combination of mishandlings lands back inside a bin one of them leaves
+                A(all(r[k] != gold[k] for k in gold), "%s: the cracker files every %s figure off the golden (%s)"
+                  % (FORK_OF[name], rep[:3], {k: r[k] - gold[k] for k in gold}))
+            else:
+                A(any(r[k] != gold[k] for k in gold), "%s: the stop '%s' moves a figure" % (FORK_OF[name], name))
+    for noops, fn, gold in ((SEEN_NOOPS, lambda **kw: seen_variant(ctx, **kw), g1),
+                            (REFERRED_NOOPS, lambda **kw: referred_variant(ctx, **kw), g2)):
+        for name, kw in noops.items():
+            A(fn(**kw) == gold, "%s: the reading '%s' moves no figure (same figures)" % (FORK_OF[name], name))
+    # two hazards that are no stop, measured for the ask sheet's hazard table: A2 and A3 count whenever paid, and A4's
+    # control puts Mishicot Family Practice under Ledgestone
+    X0 = ctx[0]
+    mfp = G.tin_of_name(X0, "Mishicot Family Practice")
+    REPORT["ex_hazards"] = {}
+    for name, cut in (("rule 4.03's runout read in", {"fac": lambda df: df[df["paid"] <= G.RUNOUT],
+                                                       "prof": lambda df: df[df["paid"] <= G.RUNOUT]}),
+                      ("Mishicot Family Practice left out", {"prof": lambda df: df[df["billing_provider_tin"] != mfp]})):
+        Y = {k: v for k, v in X0.items() if not k.startswith("_")}
+        for k, f_ in cut.items():
+            Y[k] = f_(Y[k])
+        cy = (Y,) + tuple(ctx[1:])
+        r1, r2 = seen_variant(cy), referred_variant(cy)
+        REPORT["ex_hazards"][name] = ([r1[k] - g1[k] for k in g1], [r2[k] - g2[k] for k in g2])
+        A(any(REPORT["ex_hazards"][name][0]), "%s: the hazard '%s' moves an Exhibit 1 figure" % (FORK_OF[name], name))
+        if "Mishicot" in name:
+            A(r1[("Ledgestone Health", "primary care")] == 0 and r2 == g2,
+              "SF19: Ledgestone's lakeshore primary-care patients are Mishicot's, and no referral moves")
+    ask_fork_checks(ctx, g, target)
+    # direction discipline: no pipeline of two or more mishandlings files a figure one of them moves back on the golden
     import itertools
-    worst = [9.0, 9.0]
-    for n_ax, (axes, fn, gold, cols) in enumerate(((EX1_AXES, lambda **kw: ex1_variant(ctx, **kw), g1, (2,)),
-                                                   (EX2_AXES, lambda **kw: ex2_variant(ctx, **kw), g2, (3, 4)))):
+    n_combo = 0
+    for axes, fn, gold in ((SEEN_AXES, lambda **kw: seen_variant(ctx, **kw), g1),
+                           (REFERRED_AXES, lambda **kw: referred_variant(ctx, **kw), g2)):
         single = {(a, v): fn(**{a: v}) for a, vals in axes.items() for v in vals[1:]}
         for combo in itertools.product(*axes.values()):
             kw = dict(zip(axes, combo))
@@ -404,22 +414,23 @@ def exhibit_checks(target, wd, packed, g):
             if len(mis) < 2:
                 continue
             r = fn(**kw)
+            n_combo += 1
             for k in gold:
-                for j in cols:
-                    if any(abs(single[m][k][j] - gold[k][j]) >= 0.1 for m in mis):
-                        A(miss(r[k][j], gold[k][j]), "combination %s keeps %s %d out of its bin" % (mis, k, j))
-                        worst[n_ax] = min(worst[n_ax], abs(r[k][j] - gold[k][j]))
-    REPORT["combo_worst"] = worst
-    # the referees, and no marker: one taxonomy per provider, a second carrier's span under every second-plan
-    # claim, second-plan claims filed as ordinary originals
+                if any(single[m][k] != gold[k] for m in mis):
+                    A(r[k] != gold[k], "combination %s files %s back on the golden" % (mis, k))
+    REPORT["combos"] = n_combo
+    # the referees, and no marker
     X = ctx[0]
     pv = X["provfile"].groupby("provider_npi")["primary_taxonomy"].nunique()
     A(int(pv.max()) == 1, "the provider file gives every NPI one taxonomy")
     lake = X["prof"][X["prof"]["service_facility_zip"].map(ctx[1]).isin(("Manitowoc", "Kewaunee"))]
     A(set(lake["rendering_provider_npi"]) <= set(X["provfile"]["provider_npi"]), "every lakeshore rendering NPI is on file")
     sp = [r for r in packed["fac_rows"] + packed["prof_rows"] if "second_plan" in r["device"]]
-    A(len(sp) > 1000 and all(r["freq"] == "1" and r["orig"] == "" for r in sp), "second-plan claims file as originals")
-    A(all(wd["mem"].second_on(r["member"], r["dos"]) == r["product"] for r in sp), "a second carrier's span under each")
+    keyb = {PK.second_key(m): m for m in PK.unlinked_members(wd["mem"])}
+    A(len(sp) > 1000 and all(r["freq"] == "1" and r["orig"] == "" and "rnd_npi" in r for r in sp),
+      "second-plan claims are office claims filed as originals")
+    A(all(wd["mem"].second_on(keyb.get(r["member"], r["member"]), r["dos"]) == r["product"] for r in sp),
+      "a second carrier's span under each")
     for key in ("fac24", "prof24"):
         df = pd.read_csv(os.path.join(target, PK.FILES[key]), dtype=str, keep_default_na=False)
         idn = (df["allowed_amount"].astype(float) - df["plan_paid_amount"].astype(float)
@@ -429,9 +440,230 @@ def exhibit_checks(target, wd, packed, g):
           "%s: no exact duplicate even without the claim number" % key)
     gt = [r for r in packed["prof_rows"] if "group_taxonomy" in r["device"]]
     A(len(gt) > 1000 and all(r["practice"] == "KPN" for r in gt), "the group taxonomy sits on Kinnickinnic's lines only")
-    A(all(r["practice"] != "MFP" and W.FAC[r["fac"]][2] != "LDG" for r in sp if "fac" in r and r.get("fac")),
-      "no second-plan claim on Mishicot's referrals or at a Ledgestone site")
-    A(all(r["practice"] != "MFP" for r in sp if "rnd_npi" in r), "Mishicot's office files no second-plan claims")
+    device_checks(target, wd, packed, ctx, g)
+    convergence_checks(target, wd, packed, ctx, g)
+
+
+ATTRIBUTION = "A visit counts for the system or the practice under whose taxpayer identification numbers its claim was billed."
+
+
+def ask_fork_checks(ctx, g, target):
+    """The asks' fork rows no stop carries: SF17 (a practice of a specialty), SF18 (the independent practices), SF22 (the
+    referring physician's practice), SF23 (the referred patients are every resident referred, not Exhibit 1's) and SF27
+    (the system or practice a visit counts for)."""
+    X, zc, spans, ctrl, bmg = ctx
+    # SF27: A2's attribution sentence reads back through both PDF extractors (pdfplumber, the checks'; pypdf, the
+    # verifier's), and every Exhibit 1 figure files under it: the visit counts for the number its claim was billed
+    # under. The one physician holding two numbers at once (Brightwater's and Kinnickinnic Physician Network's) is the
+    # only place the readings part: his Kinnickinnic-billed patients are Kinnickinnic's, his Brightwater-billed ones not.
+    from pypdf import PdfReader
+    flat = lambda t: re.sub(r"\s+", " ", t)
+    app = os.path.join(target, DC.APPENDIX)
+    A(ATTRIBUTION in flat(pdf_text(app)), "SF27: A2's attribution sentence reads back through pdfplumber")
+    A(ATTRIBUTION in flat(" ".join(pg.extract_text() or "" for pg in PdfReader(app).pages)),
+      "SF27: A2's attribution sentence reads back through pypdf")
+    rule = flat(pdf_text(os.path.join(target, DC.RULE)))
+    A("billed under its taxpayer identification numbers" in rule,
+      "SF27: the sentence agrees with rule 4.03's 'billed under its taxpayer identification numbers'")
+    A(G.patients_seen(X, zc, ctrl, bmg, attribution="claim") == g["ex1"], "SF27: every Exhibit 1 figure files under A2's "
+      "attribution sentence (each visit for the number its claim was billed under)")
+    two = sorted({n for n, lst in spans.items() for d in pd.date_range(G.BASE_START, G.BASE_END, freq="MS")
+                  if len({t for t, s_, e_ in lst if s_ <= d <= e_}) > 1})
+    A(len(two) == 1 and {t for t, s_, e_ in spans[two[0]] if e_ >= G.BASE_START} >= {bmg, G.tin_of_name(X, "Kinnickinnic Physician Network")},
+      "SF27: one physician bills under two numbers at once in 2024, Brightwater's and Kinnickinnic Physician Network's")
+    kgi = ("Kinnickinnic Health", "gastroenterology")
+    seen = G.patients_seen(X, zc, ctrl, bmg, sets=True)[kgi]
+    alias = G.persons(X)
+    p = X["prof"]
+    v = p[(p["rendering_provider_npi"] == two[0]) & (p["dos"].dt.year == 2024) & p["procedure_code"].isin(G.OFFICE)]
+    kpn = {alias.get(m, m) for m in v.loc[v["billing_provider_tin"] != bmg, "member_id"]}
+    only_bmg = {alias.get(m, m) for m in v.loc[v["billing_provider_tin"] == bmg, "member_id"]} - kpn
+    A(bool(seen & kpn) and not (seen & only_bmg), "SF27: Kinnickinnic gastroenterology (%d) holds the physician's "
+      "Kinnickinnic-billed patients and none billed only under Brightwater's number" % g["ex1"][kgi])
+    REPORT["sf27"] = {}
+    for how in ("history", "date", "exclusive"):
+        r = G.patients_seen(X, zc, ctrl, bmg, attribution=how)
+        moved = {k: r[k] for k in g["ex1"] if r[k] != g["ex1"][k]}
+        REPORT["sf27"][how] = moved
+        A(set(moved) == {kgi}, "SF27: the reading '%s' moves Kinnickinnic gastroenterology alone (%s against %d)"
+          % (how, moved, g["ex1"][kgi]))
+    ind = G.independents(X, zc, ctrl, bmg)
+    pv = X["provfile"]
+    for tin, name, sp in ind:
+        tx = {t for t in pv.loc[pv["billing_tin"] == tin, "primary_taxonomy"] if str(t)[:3] in G.PHYS_TAX}
+        named = ("gastroenterology" if "Digestive" in name else "orthopaedic surgery" if "Orthopaedic" in name
+                 else "primary care")
+        A({G.SPECIALTY[t] for t in tx} == {sp} and sp == named, "SF17: %s's physicians all hold %s, as its name says"
+          % (name, sp))
+    p = X["prof"]
+    lake = p[(p["dos"].dt.year == 2024) & p["procedure_code"].isin(G.OFFICE) & p["service_facility_zip"].map(zc).isin(G.EX_COUNTIES)]
+    reg = X["register"]
+    cin = set(reg.loc[reg["relationship"].str.contains("clinically integrated"), "entity_tin"])
+    A(bool(cin) and not (cin & set(lake["billing_provider_tin"])),
+      "SF18: no clinically integrated network participant bills an office visit in the two counties")
+    A(len(ind) == len({t for t, _, _ in ind}) and bmg not in {t for t, _, _ in ind},
+      "SF18: the independent practices are the uncontrolled numbers billing lakeshore visits, Brightwater's apart")
+    pf = defaultdict(list)
+    for n, t in zip(pv["provider_npi"], pv["billing_tin"]):
+        if (t, pd.Timestamp.min, pd.Timestamp.max) not in pf[n]:
+            pf[n].append((t, pd.Timestamp.min, pd.Timestamp.max))
+    A(G.patients_referred(X, zc, ctrl, dict(pf), bmg) == g["ex2"],
+      "SF22: the provider file's billing numbers name the same referring practices (same figures)")
+    seen = G.patients_seen(X, zc, ctrl, bmg, sets=True)
+    ref = G.patients_referred(X, zc, ctrl, spans, bmg, sets=True)
+    REPORT["sf23"] = {c: len(v & seen[(c[0], None)]) - g["ex2"][c] for c, v in ref.items()}
+    A(all(v < 0 for v in REPORT["sf23"].values()), "SF23: restricting the referred patients to those the practice saw "
+      "in the office moves every Exhibit 2 figure (%s); the prompt names the residents" % REPORT["sf23"])
+
+
+def device_checks(target, wd, packed, ctx, g):
+    """The two primaries. Exhibit 1, the second plans' keys: every second key in the files holds only a second
+    carrier's office claims and links back to its member through the claims alone (golden.link_members), no other key
+    does, and the second keys look like any dependent's. Exhibit 2, the second records at one carrier: every one holds
+    one facility service billed again under it, links back through it alone (golden.link_records), and no other key
+    does. Neither touches the main call's rows or the other exhibit."""
+    X, zc, spans, ctrl, bmg = ctx
+    mem = wd["mem"]
+    keyb = {PK.second_key(m): m for m in PK.unlinked_members(mem)}
+    keyd = {inf["dup"][0]: m for m, inf in mem.info.items() if inf.get("dup")}
+    A(not ((set(keyb) | set(keyd)) & set(mem.info)) and not (set(keyb) & set(keyd)), "no second key is another member's key")
+    rd = lambda k: pd.read_csv(os.path.join(target, PK.FILES[k]), dtype=str, keep_default_na=False)
+    f24, p24, el = rd("fac24"), rd("prof24"), rd("elig")
+    b_in = set(p24["member_id"]) & set(keyb)
+    d_in = set(f24["member_id"]) & set(keyd)
+    A(not (set(f24["member_id"]) & set(keyb)) and not (set(p24["member_id"]) & set(keyd)),
+      "the second plans' keys hold only office claims and the second records only facility claims")
+    A(G.link_members(X) == {b: keyb[b] for b in b_in}, "the second plans' keys link to their members and no other key "
+      "does (%d)" % len(b_in))
+    # the second records, as pairs (a record opened on the day the member's own coverage starts has no earlier one);
+    # the only other keys one carrier's claims join are two of the main call's own patients, namesakes on one service
+    # (pack.separate_namesakes cannot move a frozen row), in no exhibit cell
+    pairs = lambda d: {frozenset(kv) for kv in d.items()}
+    lr = G.link_records(X)
+    A(pairs({d: keyd[d] for d in d_in}) <= pairs(lr), "the second records link to their members (%d)" % len(d_in))
+    extra = pairs(lr) - pairs({d: keyd[d] for d in d_in})
+    frozen = {l["member"] for l in wd["lines"] if l["tag"] in PK.MAIN_TAGS}
+    A(all(m in frozen for pr in extra for m in pr), "no other key is joined at one carrier but two of the main call's "
+      "own patients (%d pairs)" % len(extra))
+    alias = {k: v for k, v in G.persons(X).items() if not any(k in pr for pr in extra)}
+    split = lambda m, d: alias.get(m, m)
+    A(seen_variant(ctx, link=split) == g["ex1"] and referred_variant(ctx, link=split) == g["ex2"],
+      "the main call's namesake pairs move no exhibit figure")
+    REPORT["frozen_joined"] = len(extra)
+    eb = el[el["member_id"].isin(b_in)]
+    A(set(eb["relationship_code"]) <= {"01", "19"} and int(eb.groupby("member_id")["submitter_code"].nunique().max()) == 1,
+      "a second plan's key holds spans with one carrier, as a spouse or child")
+    ed = el[el["member_id"].isin(d_in)]
+    own = el[el["member_id"].isin([keyd[d] for d in d_in])]
+    A(set(zip(ed["submitter_code"], ed["product_id"])) <= set(zip(own["submitter_code"], own["product_id"])),
+      "a second record holds the member's own carrier and product")
+    span = lambda df, key: sorted(tuple(r_[1:]) for r_ in df.assign(member_id=df["member_id"].map(key)).itertuples(index=False))
+    A(span(ed, keyd) == span(own, lambda m: m), "a second record's spans repeat its member's own, from the start")
+    starts = el.groupby("member_id")["coverage_start"].min()
+    A(set(starts[starts.index.isin(d_in)]) <= set(starts[~starts.index.isin(d_in)]),
+      "a second record's coverage starts on a day other keys' coverage starts on")
+    dd = f24[f24["member_id"].isin(d_in)]
+    A(len(dd) >= len(d_in) and bool((dd.groupby("member_id")["payer_claim_control_number"].nunique() == 1).all()),
+      "each second record holds one facility claim (%d records, %d lines)" % (len(d_in), len(dd)))
+    blind = [c for c in f24.columns if c not in ("member_id", "payer_claim_control_number", "paid_date")]
+    twin = f24[f24.duplicated(blind, keep=False)]
+    A(not twin["member_id"].isin(d_in).any(), "a second record's claim carries its own cost sharing, so no claim line "
+      "repeats it but for the member key, the claim number and the paid date")
+    # every cell of each exhibit carries its own device and only its own
+    t_seen = seen_variant(ctx, link=False)
+    t_ref = referred_variant(ctx, link=False)
+    only_b = lambda m, d: keyb.get(m, m)
+    only_d = lambda m, d: keyd.get(m, m)
+    A(all(seen_variant(ctx, link=only_b)[k] == g["ex1"][k] for k in g["ex1"]),
+      "the second plans' keys alone account for every Exhibit 1 figure the cracker misses")
+    A(all(referred_variant(ctx, link=only_d)[k] == g["ex2"][k] for k in g["ex2"]),
+      "the second records alone account for every Exhibit 2 figure the cracker misses")
+    A(all(t_seen[k] > g["ex1"][k] for k in g["ex1"]) and all(t_ref[k] > g["ex2"][k] for k in g["ex2"]),
+      "every cell of both exhibits holds a person under two keys")
+    # separation: no device row in the main call's population, by count from the shipped rows
+    pmain = p24[p24["billing_provider_tin"] == bmg]
+    ra = rd("reassign")
+    bmg_npis = set(ra.loc[ra["billing_tin"] == bmg, "npi"])
+    hist = rd("fachist")
+    fmain = f24[f24["referring_provider_npi"].isin(bmg_npis | set(hist["REF_NPI"]))]
+    main_members = set(fmain["member_id"]) | set(pmain["member_id"]) | set(hist["MEMBER_ID"])
+    A(not (main_members & (set(keyb) | set(keyd) | set(keyb.values()) | set(keyd.values()))),
+      "no main-call member is held under two keys")
+    A(bool((pmain["claim_frequency_code"] == "1").all()), "Brightwater's professional rows are originals")
+    A(not (set(fmain["payer_claim_control_number"]) & set(f24.loc[f24["member_id"].isin(d_in), "payer_claim_control_number"])),
+      "no second record's claim is a main-call row")
+
+
+def convergence_checks(target, wd, packed, ctx, g):
+    """C1 on the person each exhibit counts. Every matching of member keys that reads the claims' services (birth year,
+    sex and ZIP that day with one service, across carriers or at one carrier, or the golden's: with the second plan's
+    pricing, or the one carrier's second submission) files the same twenty figures; the matchings that do not (each
+    member key a person, birth year, sex and ZIP alone, or with the carrier) are the device and its over-cleaning half
+    (the carrier's: Exhibit 2's, every figure off there; on Exhibit 1 its two errors run opposite ways and are recorded).
+    pack.separate_namesakes keeps any two people outside the main call's frozen members from sharing a birth year, sex
+    and ZIP and one service on one day; the frozen pairs left are Brightwater's own patients, in neither exhibit."""
+    X, zc, spans, ctrl, bmg = ctx
+    on = G._demo_index(X)
+    el = X["elig"]
+    car_of = el.groupby("member_id")["submitter_code"].first().to_dict()
+
+    def union(pairs):
+        parent = {}
+
+        def find(m):
+            while parent.get(m, m) != m:
+                m = parent[m]
+            return m
+        for a, b in pairs:
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[max(ra, rb)] = min(ra, rb)
+        return lambda m, d: find(m)
+
+    def service_pairs(any_carrier):
+        out = set()
+        for df, cols in ((X["fac"], ["procedure_code", "procedure_modifier_1", "service_facility_npi", "referring_provider_npi"]),
+                         (X["prof"], ["procedure_code", "procedure_modifier_1", "rendering_provider_npi", "billing_provider_tin"])):
+            f = df[(df["dos"].dt.year == 2024) & (df["claim_frequency_code"] == "1")]
+            groups = defaultdict(list)
+            for t, sub, m in zip(zip(f["dos"], *[f[c] for c in cols], f["qty"]), f["submitter_code"], f["member_id"]):
+                groups[t].append((sub, m))
+            for t, lst in groups.items():
+                for i in range(len(lst)):
+                    for j in range(i + 1, len(lst)):
+                        (s1, m1), (s2, m2) = lst[i], lst[j]
+                        if m1 != m2 and (any_carrier or s1 != s2) and on(m1, t[0]) is not None and on(m1, t[0]) == on(m2, t[0]):
+                            out.add((m1, m2))
+        return out
+    readings = {
+        "every member key a person": (False, False),
+        "birth year, sex and ZIP alone": (lambda m, d: ("p",) + on(m, d) if on(m, d) else m, False),
+        "the carrier, birth year, sex and ZIP": (lambda m, d: ("p", car_of.get(m)) + on(m, d) if on(m, d) else m, "ex2"),
+        "with one service under two carriers": (union(service_pairs(False)), None),
+        "with one service under any carrier": (union(service_pairs(True)), True),
+        "the golden's: the pricing and the second submission": (True, True),
+    }
+    REPORT["readings"] = {}
+    for name, (link, must) in readings.items():
+        r1 = seen_variant(ctx, link=link)
+        r2 = referred_variant(ctx, link=link)
+        d1 = [r1[k] - g["ex1"][k] for k in g["ex1"]]
+        d2 = [r2[k] - g["ex2"][k] for k in g["ex2"]]
+        REPORT["readings"][name] = (d1, d2)
+        if must is True:
+            A(not any(d1) and not any(d2), "SF15: matching the keys %s files the golden's twenty figures (%s; %s)"
+              % (name, d1, d2))
+        elif must is False:
+            A(all(d1) and all(d2), "SF15: matching the keys %s files every figure off the golden (%s; %s)" % (name, d1, d2))
+        elif must == "ex2":
+            # Exhibit 2's own over-cleaning half; on Exhibit 1 it leaves the second plans' keys apart and merges people
+            # at one carrier, two errors in opposite directions, recorded as measured (ceiling.py prints its keeps)
+            A(all(d2), "SF15: matching the keys %s files every Exhibit 2 figure off the golden (%s)" % (name, d2))
+            REPORT["one_carrier_ex1_kept"] = [k for k, x in zip(g["ex1"], d1) if not x]
+    REPORT["frozen_namesakes"] = len(packed["frozen_namesakes"])
+    main_members = {l["member"] for l in wd["lines"] if l["tag"] in PK.MAIN_TAGS}
+    A(all(a in main_members and b in main_members for _, a, b in packed["frozen_namesakes"]),
+      "every namesake pair left is two of the main call's own members (%d)" % len(packed["frozen_namesakes"]))
 
 
 def main_call_frozen(target, g, L, bt):
@@ -463,7 +695,7 @@ def structure_checks(target, task_dir, wd, g):
     A(len(g["bmg_npis"]) == 18, "eighteen Brightwater physicians")
     for f in files:
         if f.endswith((".csv", ".json")):
-            A("—" not in open(os.path.join(target, f), encoding="utf-8").read(), "no em dash in %s" % f)
+            A("\u2014" not in open(os.path.join(target, f), encoding="utf-8").read(), "no em dash in %s" % f)
 
 
 def pdf_text(path):
@@ -471,16 +703,71 @@ def pdf_text(path):
         return " ".join(pg.extract_text() or "" for pg in pdf.pages)
 
 
+DESCRIBING = re.compile(r"dictionar|manifest|readme|read_me|codebook|field_?notes|field_?guide|definitions|schema|"
+                        r"file_?list|layout|extract_?notes|export_?notes|data_?notes|how_to_read|about_the_data")
+
+
+def describing_file_checks(target):
+    """dataset-generation section 3: no shipped file or sheet describes the data, by name or by content. By
+    name: no file, sheet or JSON key named as a dictionary, manifest, readme, notes or schema. By content: no
+    document names more than a fifth of any data file's columns verbatim. The closures the removed data
+    dictionary used to carry are asserted where they now live (the appendix's A6 counties, the claims' own
+    frequency codes)."""
+    import openpyxl
+    files = sorted(os.listdir(target))
+    for f in files:
+        A(not DESCRIBING.search(f.lower()), "no shipped file is named as a description of the data (%s)" % f)
+    for f in files:
+        if f.endswith(".xlsx"):
+            for sh in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames:
+                A(not DESCRIBING.search(sh.lower()) and "note" not in sh.lower(), "no describing sheet (%s: %s)" % (f, sh))
+    cols = {}
+    for f in files:
+        if f.endswith(".csv"):
+            cols[f] = [c for c in open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+                       if "_" in c and len(c) > 4]
+    for f in files:
+        if f.endswith(".pdf"):
+            t = pdf_text(os.path.join(target, f))
+            for csvf, cs in cols.items():
+                hit = sum(1 for c in cs if c in t)
+                A(hit <= max(1, len(cs) // 5), "%s names %d of %s's %d columns" % (f, hit, csvf, len(cs)))
+    # A6, the closure moved from the dictionary: the appendix assigns every ZIP the claims and spans carry to
+    # one county, read through the extractor the golden and the verifier use, and it is the world's assignment
+    zc = G.zip_county(target)
+    A(zc == W.ZIP_COUNTY, "the appendix's A6 assigns each region ZIP to its county (%d ZIPs)" % len(zc))
+    el = pd.read_csv(os.path.join(target, PK.FILES["elig"]), dtype=str, usecols=["member_zip"])
+    pr = pd.read_csv(os.path.join(target, PK.FILES["prof24"]), dtype=str, usecols=["service_facility_zip"])
+    A(set(el["member_zip"]) <= set(zc), "every eligibility ZIP has a county in A6")
+    A(set(pr["service_facility_zip"]) <= set(zc), "every professional service location ZIP has a county in A6")
+    # rows 15 and 19 of the closure table: the claims carry their own version codes (X12 frequency 1, 7, 8;
+    # layout 2.4's O, R, V), a void names the claim it cancels and carries negative units and amounts, a
+    # replacement names the claim it supersedes, and the main call's rows carry originals only
+    fac = pd.read_csv(os.path.join(target, PK.FILES["fac24"]), dtype=str)
+    A(set(fac["claim_frequency_code"]) <= {"1", "7", "8"}, "2024 facility frequency codes are 1, 7 and 8")
+    cno = set(fac["payer_claim_control_number"])
+    for code in ("7", "8"):
+        sub = fac[fac["claim_frequency_code"] == code]
+        A(len(sub) > 0 and sub["original_claim_control_number"].isin(cno).all(),
+          "every frequency %s line names a claim in the file (%d lines)" % (code, len(sub)))
+    v = fac[fac["claim_frequency_code"] == "8"]
+    A((v["quantity"].astype(float) < 0).all() and (v["allowed_amount"].astype(float) < 0).all(),
+      "every void line carries negative units and amount")
+    o = fac[fac["claim_frequency_code"] == "1"]
+    A(o["original_claim_control_number"].fillna("").eq("").all(), "an original names no prior claim")
+    hist = pd.read_csv(os.path.join(target, PK.FILES["fachist"]), dtype=str, usecols=["CLM_STATUS"])
+    A(set(hist["CLM_STATUS"]) == {"O"}, "the 2021 to 2023 extract carries originals only")
+
+
 def document_checks(target):
-    texts = {f: pdf_text(os.path.join(target, f)) for f in (DC.RULE, DC.APPENDIX, DC.DICTIONARY, DC.NOTICE)}
+    texts = {f: pdf_text(os.path.join(target, f)) for f in (DC.RULE, DC.APPENDIX, DC.NOTICE)}
     for f, t in texts.items():
         low = t.lower()
-        A("—" not in t, "no em dash in %s" % f)
+        A("\u2014" not in t, "no em dash in %s" % f)
         for w in ("capture", "steer", "placement", "placed", "followed", "follows their"):
             A(not re.search(r"\b%s\b" % w, low), "%s carries no '%s'" % (f, w))
-        if f != DC.DICTIONARY:
-            A("tier" not in low, "%s never mentions tiers" % f)
-    A("tiered network" in texts[DC.DICTIONARY].lower(), "the dictionary describes the product reference's tier flag")
+        A("tier" not in low, "%s never mentions tiers" % f)
+    describing_file_checks(target)
     A(sum("2,000,000" in t for t in texts.values()) == 1 and "2,000,000" in texts[DC.RULE], "the threshold is stated once, in the rule")
     rule = re.sub(r"\s+", " ", texts[DC.RULE])
     A("share expected for that service under the member's product as the product stands in the projection year"
@@ -512,13 +799,12 @@ def realism_checks(target, g):
     # headline figures never sit exactly on a round value
     A(round(g["total"]) % 1000 != 0 and all(round(v) % 1000 != 0 for v in [g["P"]] + list(g["fam"].values())),
       "the total and its parts are not round thousands")
-    A(all(abs(v[2] - round(v[2])) > 1e-6 for v in g["ex1"].values()) and
-      all(abs(x - round(x)) > 1e-6 for v in g["ex2"].values() for x in v[3:]), "no exhibit share is an exact whole per cent")
-    A(len({v[0] for v in g["ex1"].values()}) == 6 and all(v[0] % 100 for v in g["ex1"].values()),
-      "the six service counts differ and none is a round hundred")
+    counts = list(g["ex1"].values()) + list(g["ex2"].values())
+    A(len(set(counts)) == len(counts) and all(v % 100 for v in counts),
+      "the twenty patient counts differ and none is a round hundred")
 
 
-# ------------------------------------------------------------------ the semantic fork table (design note SF1 to SF12)
+# ------------------------------------------------------------------ the semantic fork table (design note SF1 to SF14)
 def semantic_fork_checks(target, g, L):
     X = G.load(target)
     rule = re.sub(r"\s+", " ", pdf_text(os.path.join(target, DC.RULE)))
@@ -573,6 +859,21 @@ def semantic_fork_checks(target, g, L):
     # SF12 the base: only services not already at a Ledgestone site move; the other reading proceeds as well
     A("that was not at one of the acquiring party's sites in the baseline" in rule
       and L["grid"][("tier, 2026 placements", "filed", "all")] >= T, "SF12 the base is the outside referrals (4.04(b))")
+    # SF14 Bayfield's terms: the column's header names the unit and the values are whole per cent of the Medicare
+    # amount; read so, they price every Bayfield code at the agreement's rate and reproduce the referred increase
+    import openpyxl
+    import maincall as MC
+    wb = openpyxl.load_workbook(os.path.join(target, PK.FILES["exhibit"]), data_only=True)
+    rows = list(wb["Bayfield terms"].iter_rows(values_only=True))
+    hi = next(i for i, r in enumerate(rows) if r and r[0] == "Service category")
+    vals = [r[2] for r in rows[hi + 1:] if r and r[0]]
+    A(rows[hi][2] == "Percent of Medicare" and len(vals) == 5 and all(isinstance(v, int) and 100 < v < 500 for v in vals),
+      "SF14 the Bayfield column names its unit and holds whole per cent (%s)" % vals)
+    bay = {c: r for (car, c), r in g["fac_rate"].items() if car == "Bayfield Mutual Health"}
+    A(len(bay) > 10 and all(r == PK.S.ldg_facility_rate("C2", c, 2025) for c, r in bay.items()),
+      "SF14 read as per cent, the column prices every Bayfield code at the agreement's rate (%d codes)" % len(bay))
+    A(abs(g["referred"] - MC.load_ref()["figures"]["referred"]) < 1e-6 and g["call"] == "proceed",
+      "SF14 that reading reproduces the referred increase (%.0f) and the call" % g["referred"])
 
 
 # ------------------------------------------------------------------ the write-up agrees with the golden
@@ -583,21 +884,43 @@ def submission_check(task_dir, figs, g):
     A("$%s million" % figs["total_m"] in txt, "submission carries the total")
     A(money(figs["professional"]) in txt and money(figs["referred"]) in txt, "submission carries the two parts")
     A("%d%%" % round(100 * g["c1"]) in txt, "submission carries the tier-one share")
-    names = {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}
-    for key, (n, sh) in figs["ex1"].items():
-        county, fam = key.split("|")
-        A("%s County, %s: %s services, %s%%" % (county, names[fam], n, sh) in txt, "submission carries Exhibit 1 %s" % key)
-    labels = {"primary care": "Primary care", "gastroenterology": "Gastroenterology",
-              "orthopaedic surgery": "Orthopaedics", "cardiovascular disease": "Cardiology"}
-    for sp, (b, l) in figs["ex2"].items():
-        A("%s: Brightwater %s%%, Ledgestone %s%%" % (labels[sp], b, l) in txt, "submission carries Exhibit 2 %s" % sp)
+    for line in block4_lines(figs):
+        A(line in txt, "submission carries %s" % line.strip())
     A(("Proceed" in txt) == (figs["call"] == "proceed"), "submission carries the call")
     gold = pdf_text(os.path.join(task_dir, "golden", "N25-014_preliminary_review.pdf"))
     flat = re.sub(r"\s+", " ", gold)
-    for key, (n, sh) in figs["ex1"].items():
-        A("%s %s%%" % (n, sh) in flat, "the golden PDF carries Exhibit 1 %s as the write-up does" % key)
-    for sp, (b, l) in figs["ex2"].items():
-        A("%s %s%% %s%%" % (labels[sp], b, l) in flat, "the golden PDF carries Exhibit 2 %s as the write-up does" % sp)
+    labels = (("primary care", "Primary care"), ("gastroenterology", "Gastroenterology"),
+              ("orthopaedic surgery", "Orthopaedics"), ("cardiovascular disease", "Cardiology"))
+    for sp, lab in labels:
+        row = "%s %s %s" % (lab, figs["ex1"]["Ledgestone Health|" + sp], figs["ex1"]["Kinnickinnic Health|" + sp])
+        A(row in flat, "the golden PDF carries Exhibit 1's %s row as the write-up does" % lab)
+    for k, v in figs["ex1"].items():
+        if "|" not in k:
+            A("%s %s" % (k, v) in flat, "the golden PDF carries %s's patients as the write-up does" % k)
+    for k, v in figs["ex2"].items():
+        A(v in flat, "the golden PDF carries Exhibit 2 %s" % k)
+
+
+LINE_NAMES = {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}
+SPEC_NAMES = (("primary care", "primary care"), ("gastroenterology", "gastroenterology"),
+              ("orthopaedic surgery", "orthopaedics"), ("cardiovascular disease", "cardiology"))
+
+
+def block4_lines(figs):
+    """The Deliverable Answers lines for the two exhibits, as submission.md states them."""
+    out = []
+    for g_ in ("Ledgestone Health", "Kinnickinnic Health"):
+        out.append("   - %s: %s" % (g_, "; ".join("%s %s" % (lab, figs["ex1"]["%s|%s" % (g_, sp)]) for sp, lab in SPEC_NAMES)))
+    for k, v in figs["ex1"].items():
+        if "|" not in k:
+            out.append("   - %s: %s" % (k, v))
+    pr = defaultdict(list)
+    for k, v in figs["ex2"].items():
+        n, ln = k.split("|")
+        pr[n].append((["IMG", "ENDO", "ARTH"].index(ln), "%s %s" % (LINE_NAMES[ln], v)))
+    for n in sorted(pr):
+        out.append("   - %s: %s" % (n, "; ".join(x for _, x in sorted(pr[n]))))
+    return out
 
 
 # ------------------------------------------------------------------ house fixes wired in (reduce-house-fixes)
@@ -616,9 +939,6 @@ def house_checks(target, task_dir, g):
         pts.setdefault(m, E.on(m, d)[0])
     counts = pd.Series(list(pts.values())).value_counts()
     A(counts.index[0] == "BMH-VTP3", "the Value Tier PPO is the commonest plan among Brightwater's patients")
-    # H9: the manifest registers every shipped file but itself
-    man = pd.read_csv(os.path.join(target, "export_manifest.csv"), dtype=str)
-    A(set(man["file_name"]) == set(os.listdir(target)) - {"export_manifest.csv"}, "the manifest registers every file")
     # H16: no file's dates run ahead of the stated extract dates
     tiers = json.load(open(os.path.join(target, PK.FILES["tiers"])))
     A(all(f["approved"] <= tiers["updated"][:10] for f in tiers["filings"]), "every filing approved before the compilation date")

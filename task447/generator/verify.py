@@ -53,7 +53,8 @@ def run(target):
                         orig=r["original_claim_control_number"], m=r["member_id"], prod=r["product_id"],
                         dos=d(r["service_from_date"]), paid=d(r["paid_date"]), cpt=r["procedure_code"],
                         qty=int(r["quantity"]), amt=float(r["allowed_amount"]), fac=r["service_facility_npi"],
-                        ref=r["referring_provider_npi"], mod=r["procedure_modifier_1"]))
+                        ref=r["referring_provider_npi"], mod=r["procedure_modifier_1"],
+                        alw=r["allowed_amount"], lia=r["member_liability_amount"]))
     for r in rows(P("apcd_op_facility_claims_2021_2023.csv")):
         fac.append(dict(sub=r["SUBMITTER_ID"], cno=r["CLAIM_ID"], freq={"O": "1", "R": "7", "V": "8"}[r["CLM_STATUS"]],
                         orig=r["ORIG_CLAIM_ID"], m=r["MEMBER_ID"], prod=r["PRODUCT_ID"], dos=d(r["DOS_FROM"]),
@@ -62,6 +63,20 @@ def run(target):
     gone = {x["orig"] for x in fac if x["freq"] in ("7", "8")}
     fac = [x for x in fac if x["freq"] in ("1", "7") and x["cno"] not in gone]
     prof = rows(P("apcd_professional_claims_2024.csv"))
+    # a correction whose original-claim reference is no claim in the file replaces the one original claim of the
+    # same carrier, member, date and billing number paid before it
+    known = {x["payer_claim_control_number"] for x in prof}
+    named0 = {x["original_claim_control_number"] for x in prof if x["claim_frequency_code"] in ("7", "8")}
+    first = defaultdict(list)
+    for x in prof:
+        if x["claim_frequency_code"] == "1" and x["payer_claim_control_number"] not in named0:
+            first[(x["submitter_code"], x["member_id"], x["service_from_date"], x["billing_provider_tin"])].append(x)
+    for x in prof:
+        if x["claim_frequency_code"] == "7" and x["original_claim_control_number"] not in known:
+            c = [y for y in first[(x["submitter_code"], x["member_id"], x["service_from_date"], x["billing_provider_tin"])]
+                 if d(y["paid_date"]) < d(x["paid_date"])]
+            assert len(c) == 1, "one original per corrected visit"
+            x["original_claim_control_number"] = c[0]["payer_claim_control_number"]
     gonep = {x["original_claim_control_number"] for x in prof if x["claim_frequency_code"] in ("7", "8")}
     prof = [x for x in prof if x["claim_frequency_code"] in ("1", "7") and x["payer_claim_control_number"] not in gonep]
     # ---- reference
@@ -76,7 +91,7 @@ def run(target):
     tier = lambda prod, sysn, py: place[(prod, py, sysn)] if prod in tiered else 1
     sysof = {x["facility_npi"]: x["health_system"] for x in rows(P("facility_directory.csv"))}
     county_of_zip = {}
-    text = " ".join(pg.extract_text() for pg in PdfReader(P("apcd_extract_data_dictionary.pdf")).pages)
+    text = " ".join(pg.extract_text() for pg in PdfReader(P("market_oversight_technical_appendix.pdf")).pages)
     for county in ("Brown", "Calumet", "Fond du Lac", "Kewaunee", "Manitowoc", "Outagamie", "Sheboygan", "Winnebago"):
         m = re.search(re.escape(county) + r"\s+((?:\d{5}(?:,\s*)?)+)", text)
         for z in re.findall(r"\d{5}", m.group(1)):
@@ -108,7 +123,7 @@ def run(target):
             hdr = r
         elif hdr and r[0]:
             for c in str(r[1]).split(", "):
-                frate[("Bayfield Mutual Health", c)] = round(mc[c] * float(r[2]), 2)
+                frate[("Bayfield Mutual Health", c)] = round(mc[c] * (float(r[2]) / 100.0), 2)
     hdr = None
     for r in wb["Professional"].iter_rows(values_only=True):
         if r[0] == "CPT/HCPCS":
@@ -256,63 +271,101 @@ def run(target):
             moved_q[(county_of_zip[z], line_of(x["cpt"]))] += c * x["qty"]
     total = Pinc + sum(fam.values())
 
-    # ---- Exhibit 1 (appendix A2): services by county of residence and line; a service two plans were billed
-    # for is one service, so each member, date, code, modifier and facility counts the units one plan holds
+    # ---- the person behind each member key: a claim reporting to another carrier the service another key's claim
+    # reports, priced on what that claim left the member to pay, or one carrier's claim for a service another key of
+    # that carrier also holds, for keys with one birth year, sex and ZIP that day
+    demo = defaultdict(list)
+    first_day = {}
+    for x in rows(P("apcd_eligibility_spans.csv")):
+        s_, e_ = d(x["coverage_start"]), d(x["coverage_end"])
+        demo[x["member_id"]].append((s_, e_, (x["birth_year"], x["sex"], x["member_zip"])))
+        first_day[x["member_id"]] = min(first_day.get(x["member_id"], s_), s_)
+    person = lambda m, dt: next((v for s_, e_, v in demo.get(m, ()) if s_ <= dt <= e_), None)
+    same = defaultdict(set)
+    for pool in (
+            [((x["dos"], x["cpt"], x["mod"], x["fac"], x["ref"], x["qty"]), x["sub"], x["m"], x["alw"], x["lia"])
+             for x in fac if x["dos"].year == 2024 and x["freq"] == "1"],
+            [((d(x["service_from_date"]), x["procedure_code"], x["procedure_modifier_1"], x["rendering_provider_npi"],
+               x["billing_provider_tin"], int(x["quantity"])), x["submitter_code"], x["member_id"], x["allowed_amount"],
+              x["member_liability_amount"]) for x in prof if x["claim_frequency_code"] == "1"]):
+        by_liab = defaultdict(list)
+        for k, sub, m, alw, lia in pool:
+            by_liab[k + (lia,)].append((sub, m))
+        for k, sub, m, alw, lia in pool:
+            for sub1, m1 in by_liab.get(k + (alw,), ()):
+                if sub1 != sub and m1 != m and person(m, k[0]) is not None and person(m, k[0]) == person(m1, k[0]):
+                    same[m].add(m1)
+    one_carrier = defaultdict(set)
+    for x in fac:
+        if x["dos"].year == 2024 and x["freq"] == "1":
+            one_carrier[(x["sub"], x["dos"], x["cpt"], x["mod"], x["fac"], x["ref"], x["qty"])].add(x["m"])
+    for k, ms in one_carrier.items():
+        ms = sorted(ms)
+        for i in range(len(ms)):
+            for j in range(i + 1, len(ms)):
+                a_, b_ = ms[i], ms[j]
+                if person(a_, k[1]) is not None and person(a_, k[1]) == person(b_, k[1]):
+                    early, late = sorted((a_, b_), key=lambda z: (first_day[z], z))
+                    same[late].add(early)
+    assert all(len(v) == 1 for v in same.values()), "a second key belongs to one member"
+    alias = {b: next(iter(a)) for b, a in same.items()}
+    who_is = lambda m: alias.get(m, m)
     span_zip = defaultdict(list)
     for x in rows(P("apcd_eligibility_spans.csv")):
         span_zip[(x["member_id"], x["product_id"])].append((d(x["coverage_start"]), d(x["coverage_end"]), x["member_zip"]))
-    per_plan = defaultdict(lambda: defaultdict(int))
-    bmg_key = {}
-    for x in fac:
-        if x["dos"].year != 2024 or x["prod"] not in commercial or line_of(x["cpt"]) not in ("IMG", "ENDO", "ARTH"):
-            continue
-        z = next(zz for s_, e_, zz in span_zip[(x["m"], x["prod"])] if s_ <= x["dos"] <= e_)
-        cty = county_of_zip.get(z)
-        if cty not in ("Manitowoc", "Kewaunee"):
-            continue
-        k = (cty, line_of(x["cpt"]), x["m"], x["dos"], x["cpt"], x["mod"], x["fac"])
-        per_plan[k][x["sub"]] += x["qty"]
-        bmg_key[k] = bmg_key.get(k, False) or (x["ref"] in spans and bmg in tins_on(x["ref"], x["dos"]))
-    tot1, b1 = defaultdict(int), defaultdict(int)
-    for k, by in per_plan.items():
-        n = max(by.values())
-        tot1[k[:2]] += n
-        if bmg_key[k]:
-            b1[k[:2]] += n
-    ex1 = {"%s|%s" % k: ["{:,}".format(tot1[k]), "%.1f" % (100.0 * b1[k] / tot1[k])] for k in tot1}
-
-    # ---- Exhibit 2 (appendix A3): in-person office visits by the rendering physician's own specialty
+    lives = lambda m, prod, dt: county_of_zip.get(next((z for s_, e_, z in span_zip.get((m, prod), ()) if s_ <= dt <= e_), None))
+    # ---- the independent practices: numbers billing 2024 office visits in the two counties that no system owns or
+    # controls, other than Brightwater's, named as the carriers' provider files name them
+    office = {str(c) for c in range(99202, 99216)}
+    pfile = rows(P("carrier_provider_file.csv"))
+    indep = {}
+    for x in prof:
+        dos = d(x["service_from_date"])
+        if (dos.year == 2024 and x["procedure_code"] in office and county_of_zip.get(x["service_facility_zip"]) in
+                ("Manitowoc", "Kewaunee") and x["billing_provider_tin"] != bmg and system(x["billing_provider_tin"], dos) is None):
+            indep[x["billing_provider_tin"]] = None
+    for t in indep:
+        names = sorted({y["practice_name"] for y in pfile if y["billing_tin"] == t}, key=lambda n: (n.isupper(), len(n), n))
+        indep[t] = names[0]
     own_tax = defaultdict(set)
-    for x in rows(P("carrier_provider_file.csv")):
+    for x in pfile:
         own_tax[x["provider_npi"]].add(x["primary_taxonomy"])
     assert all(len(v) == 1 for v in own_tax.values()), "one taxonomy per provider"
     spec_of = {"207Q00000X": "primary care", "207R00000X": "primary care", "208000000X": "primary care",
                "207RG0100X": "gastroenterology", "207X00000X": "orthopaedic surgery",
                "207RC0000X": "cardiovascular disease"}
-    office = {str(c) for c in range(99202, 99216)}
-    visits = defaultdict(lambda: defaultdict(int))
-    who = {}
+    # ---- Exhibit 1 (appendix A2): the people residing in the two counties seen in person, each person once
+    seen = defaultdict(set)
     for x in prof:
-        if x["product_id"] not in commercial or x["procedure_code"] not in office:
+        dos = d(x["service_from_date"])
+        if x["product_id"] not in commercial or x["procedure_code"] not in office or dos.year != 2024:
             continue
         if x["place_of_service"] == "10" or x["procedure_modifier_2"] == "95":
             continue
-        dos = d(x["service_from_date"])
-        if dos.year != 2024 or county_of_zip.get(x["service_facility_zip"]) not in ("Manitowoc", "Kewaunee"):
+        if county_of_zip.get(x["service_facility_zip"]) not in ("Manitowoc", "Kewaunee"):
+            continue
+        if lives(x["member_id"], x["product_id"], dos) not in ("Manitowoc", "Kewaunee"):
             continue
         t = next(iter(own_tax[x["rendering_provider_npi"]]))
-        if t not in spec_of:
+        if t[:3] not in ("207", "208"):
             continue
-        k = (spec_of[t], x["member_id"], dos, x["procedure_code"], x["rendering_provider_npi"])
-        visits[k][x["submitter_code"]] += int(x["quantity"])
-        who[k] = (x["billing_provider_tin"] == bmg, system(x["billing_provider_tin"], dos) == ldg)
-    tot2, b2, l2 = defaultdict(int), defaultdict(int), defaultdict(int)
-    for k, by in visits.items():
-        n = max(by.values())
-        tot2[k[0]] += n
-        b2[k[0]] += n if who[k][0] else 0
-        l2[k[0]] += n if who[k][1] else 0
-    ex2 = {sp: ["%.1f" % (100.0 * b2[sp] / tot2[sp]), "%.1f" % (100.0 * l2[sp] / tot2[sp])] for sp in tot2}
+        sysn = system(x["billing_provider_tin"], dos)
+        if sysn in ("Ledgestone Health", "Kinnickinnic Health") and t in spec_of:
+            seen["%s|%s" % (sysn, spec_of[t])].add(who_is(x["member_id"]))
+        elif x["billing_provider_tin"] in indep:
+            seen[indep[x["billing_provider_tin"]]].add(who_is(x["member_id"]))
+    ex1 = {k: "{:,}".format(len(v)) for k, v in seen.items()}
+    # ---- Exhibit 2 (appendix A3): the people the independent practices' physicians referred, each person once
+    referred = defaultdict(set)
+    for x in fac:
+        if x["dos"].year != 2024 or x["prod"] not in commercial or line_of(x["cpt"]) not in ("IMG", "ENDO", "ARTH"):
+            continue
+        if lives(x["m"], x["prod"], x["dos"]) not in ("Manitowoc", "Kewaunee"):
+            continue
+        prac = {indep[t] for t in tins_on(x["ref"], x["dos"]) if t in indep}
+        if len(prac) == 1:
+            referred["%s|%s" % (prac.pop(), line_of(x["cpt"]))].add(who_is(x["m"]))
+    ex2 = {k: "{:,}".format(len(v)) for k, v in referred.items()}
     parts = {"P": int(round(Pinc / 1e4)) * 10000}
     parts.update({k: int(round(v / 1e4)) * 10000 for k, v in fam.items()})
     return {"call": "proceed" if total >= 2_000_000 else "close", "total_m": "%.1f" % (total / 1e6),
@@ -324,8 +377,8 @@ def compare(v, figs):
     assert v["call"] == figs["call"], (v["call"], figs["call"])
     assert v["total_m"] == figs["total_m"], (v["total_m"], figs["total_m"])
     assert v["parts"] == figs["parts"], (v["parts"], figs["parts"])
-    assert v["ex1"] == {k: list(x) for k, x in figs["ex1"].items()}, (v["ex1"], figs["ex1"])
-    assert v["ex2"] == {k: list(x) for k, x in figs["ex2"].items()}, (v["ex2"], figs["ex2"])
+    assert {k: v["ex1"].get(k) for k in figs["ex1"]} == figs["ex1"], (v["ex1"], figs["ex1"])
+    assert {k: v["ex2"].get(k) for k in figs["ex2"]} == figs["ex2"], (v["ex2"], figs["ex2"])
     return True
 
 

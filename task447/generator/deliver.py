@@ -43,6 +43,10 @@ def money10k(x):
     return "${:,.0f}".format(r10k(x))
 
 
+def cell_key(c):
+    return c[0] if c[1] is None else "%s|%s" % c
+
+
 def figures(g):
     """The graded figures at the prompt's rounding, shared with submission.md."""
     parts = {"P": g["P"]}
@@ -53,8 +57,8 @@ def figures(g):
         "parts": {k: r10k(v) for k, v in parts.items()},
         "professional": r10k(g["P"]),
         "referred": r10k(g["referred"]),
-        "ex1": {"%s|%s" % k: ("{:,}".format(v[0]), "%.1f" % v[2]) for k, v in g["ex1"].items()},
-        "ex2": {k: ("%.1f" % v[3], "%.1f" % v[4]) for k, v in g["ex2"].items()},
+        "ex1": {cell_key(c): "{:,}".format(v) for c, v in g["ex1"].items()},
+        "ex2": {cell_key(c): "{:,}".format(v) for c, v in g["ex2"].items()},
     }
 
 
@@ -166,33 +170,34 @@ def write(g, out_dir):
                "kept Ledgestone in its second tier through 2024 and places it in the first tier from plan year "
                "2025, so in 2026 those patients' referrals move as well. Only Cedarbrook Choice and Norbridge "
                "Tiered EPO patients, whose plans keep Ledgestone in the second tier, stay where they are.")]
-    names = {"IMG": "Imaging", "ENDO": "Endoscopy", "ARTH": "Arthroscopy"}
-    ex1 = [("County of residence, service line", "Services received in 2024",
-            "Referred by Brightwater's physicians")]
-    for county in ("Manitowoc", "Kewaunee"):
-        for f in ("IMG", "ENDO", "ARTH"):
-            n, sh = F["ex1"]["%s|%s" % (county, f)]
-            ex1.append(("%s County, %s" % (county, names[f].lower()), n, "%s%%" % sh))
-    ex2 = [("Specialty", "Brightwater Medical Group", "Ledgestone Health")]
-    for sp, lab in (("primary care", "Primary care"), ("gastroenterology", "Gastroenterology"),
-                    ("orthopaedic surgery", "Orthopaedics"), ("cardiovascular disease", "Cardiology")):
-        b, l = F["ex2"][sp]
-        ex2.append((lab, "%s%%" % b, "%s%%" % l))
-    flow += [KeepTogether([Paragraph("Exhibit 1. Commercial outpatient imaging, endoscopy and arthroscopy received "
-                                     "by lakeshore residents, 2024", SEC),
-                           _table(ex1, [2.9 * inch, 1.6 * inch, 1.9 * inch]),
-                           Paragraph("Appendix A1 and A2. A service is one unit of the procedure code on the latest "
-                                     "version of a claim, net of voids; a service a member's two plans were both "
-                                     "billed for is counted once. Residence is the member's ZIP code on the date of "
-                                     "service; every 2024 date of service in the extract is counted.", SMALL)]),
-             KeepTogether([Paragraph("Exhibit 2. Share of commercial office visits in Manitowoc and Kewaunee "
-                                     "counties, 2024", SEC),
-                           _table(ex2, [2.2 * inch, 2.1 * inch, 2.1 * inch]),
-                           Paragraph("Appendix A3 and A4. In-person visits coded 99202 to 99215 by doctors of "
-                                     "medicine and osteopathy, by each physician's own specialty in the carriers' "
-                                     "provider files (Kinnickinnic Physician Network reports its group taxonomy on "
-                                     "every claim); a visit billed to two plans counted once. Ledgestone includes "
-                                     "Mishicot Family Practice, an affiliated, controlled practice.", SMALL)]),
+    specs = (("primary care", "Primary care"), ("gastroenterology", "Gastroenterology"),
+             ("orthopaedic surgery", "Orthopaedics"), ("cardiovascular disease", "Cardiology"))
+    ex1 = [("Specialty", "Ledgestone Health", "Kinnickinnic Health")]
+    for sp, lab in specs:
+        ex1.append((lab, F["ex1"]["Ledgestone Health|%s" % sp], F["ex1"]["Kinnickinnic Health|%s" % sp]))
+    ind = [k for k in F["ex1"] if "|" not in k]
+    ex1b = [("Independent practice", "Patients seen")] + [(k, F["ex1"][k]) for k in ind]
+    ex2 = [("Independent practice", "Imaging", "Endoscopy", "Arthroscopy")]
+    for k in ind:
+        ex2.append((k, F["ex2"].get(k + "|IMG", ""), F["ex2"].get(k + "|ENDO", ""), F["ex2"].get(k + "|ARTH", "")))
+    flow += [KeepTogether([Paragraph("Exhibit 1. Commercial patients living in Manitowoc and Kewaunee counties seen "
+                                     "in person, 2024", SEC),
+                           _table(ex1, [2.2 * inch, 2.1 * inch, 2.1 * inch]),
+                           Spacer(1, 4),
+                           _table(ex1b, [4.3 * inch, 2.1 * inch]),
+                           Paragraph("Appendix A2 and A4. People residing in the two counties on the date of a visit who "
+                                     "had an in-person office visit there (99202 to 99215) with a physician of the group, "
+                                     "each person once. A person the database holds under a second member number for a "
+                                     "second plan is matched to the member by the visit that plan paid on what the first "
+                                     "left the member to pay, with one birth year, sex and ZIP. Specialty from each "
+                                     "physician's own taxonomy in the carriers' provider files.", SMALL)]),
+             KeepTogether([Paragraph("Exhibit 2. Commercial patients the independent practices referred for outpatient "
+                                     "services, 2024", SEC),
+                           _table(ex2, [2.8 * inch, 1.2 * inch, 1.2 * inch, 1.2 * inch]),
+                           Paragraph("Appendix A1 and A3. People residing in the two counties on the date of service whose "
+                                     "service in the line was referred by a physician of the practice, each person once. A "
+                                     "member the carrier holds under two member numbers is matched where a facility billed "
+                                     "one service under both, with one birth year, sex and ZIP.", SMALL)]),
              Spacer(1, 8),
              Paragraph("<super>1</super> Bayfield pays Ledgestone a percent of the CY2025 Medicare amount by service "
                        "category under its 2025 agreement (Exhibit C, sheet Bayfield terms); Ledgestone's 2024 Bayfield "

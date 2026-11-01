@@ -4,7 +4,6 @@ target.zip.
 
     python3 task447/generator/make.py
 """
-import csv
 import filecmp
 import json
 import os
@@ -58,7 +57,6 @@ DESCRIPTIONS = {
                         "2025-03-31"),
     DC.RULE: ("Rule OHCCR 4, preliminary review of notices of material change", "OHCCR", "2023-02-14"),
     DC.APPENDIX: ("Market oversight technical appendix, revision 3", "OHCCR market oversight unit", "2025-06-02"),
-    DC.DICTIONARY: ("APCD extract data dictionary, request OHCCR-MO-2025-031", "Wisconsin APCD", "2025-09-16"),
     DC.NOTICE: ("Notice of material change N25-014 with exhibits A and B", "Ledgestone Health and Brightwater Medical Group",
                 "2025-10-06"),
 }
@@ -70,7 +68,6 @@ def build(target, golden_dir):
     wd = S.build()
     packed = PK.write_all(wd, target)
     DC.write_docs(target, wd)
-    manifest(target)
     g = G.compute(target)
     path, figs = DL.write(g, golden_dir)
     return wd, packed, g, figs
@@ -83,26 +80,14 @@ def count_rows(p):
     return ""
 
 
-def manifest(target):
-    rows = []
-    for f in sorted(DESCRIPTIONS):
-        desc, src, run = DESCRIPTIONS[f]
-        rows.append([f, desc, src, run, count_rows(os.path.join(target, f))])
-    with open(os.path.join(target, "export_manifest.csv"), "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["file_name", "description", "source", "produced", "rows"])
-        for r in rows:
-            w.writerow(r)
-
-
 def metadata(target):
     files = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
         ext = os.path.splitext(f)[1].lstrip(".")
         files.append({"path": f, "format": ext, "bytes": os.path.getsize(p), "rows": count_rows(p) or None,
-                      "source": "Constructed: " + (DESCRIPTIONS[f][0] if f in DESCRIPTIONS else "export manifest"),
-                      "date": DESCRIPTIONS[f][2] if f in DESCRIPTIONS else "2025-10-21",
+                      "source": "Constructed: " + DESCRIPTIONS[f][0],
+                      "date": DESCRIPTIONS[f][2],
                       "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     return {
@@ -111,7 +96,7 @@ def metadata(target):
         "domain": "Healthcare Delivery & Health Economics",
         "subdomain": "Payment, claims & health-plan analytics",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "07 (grid of cells): the call and the projected 2026 increase, then the review's two standing exhibits: the commercial imaging, endoscopy and arthroscopy services each lakeshore county's residents received in 2024 with Brightwater's referred share (county by line), and Brightwater's and Ledgestone's shares of the two counties' office visits by specialty",
+        "prompt_shape": "07 (grid of cells): the call and the projected 2026 increase, then the review's two lakeshore patient exhibits: the commercial patients Ledgestone's and Kinnickinnic's physicians saw in person in 2024 by specialty and each independent practice's patients, and the patients the independent practices referred for outpatient imaging, endoscopy and arthroscopy",
         "as_of": "2025-10-21",
         "deliverables": [DL.OUT],
         "distractor_files": DISTRACTORS,
@@ -229,16 +214,26 @@ def main():
             print("  corridor %-36s tier one %.5f, tier two %.5f, unrounded projection %.0f" % (k, c1, c2, tot))
     for (m, pr, b), val in L["grid"].items():
         print("  grid %-32s %-10s %-8s %.3f" % (m, pr, b, val / 1e6))
-    lab1 = lambda k: "%s %s" % (k[0], {"IMG": "imaging", "ENDO": "endoscopy", "ARTH": "arthroscopy"}[k[1]])
-    for k, (tot, b, sh) in g["ex1"].items():
-        print("  Exhibit 1 %-24s %5d services, Brightwater %5d, %.3f%%" % (lab1(k), tot, b, sh))
-    for k, v in g["ex2"].items():
-        print("  Exhibit 2 %-24s %5d visits, Brightwater %5d (%.3f%%), Ledgestone %4d (%.3f%%)" % (k, v[0], v[1], v[3], v[2], v[4]))
-    for name, cells in C.REPORT["ex1_stops"].items():
-        print("  Exhibit 1 stop %-50s %s" % (name, "; ".join("%+d %+.2f" % cells[k] for k in g["ex1"])))
-    for name, cells in C.REPORT["ex2_stops"].items():
-        print("  Exhibit 2 stop %-50s %s" % (name, "; ".join("%+.2f %+.2f" % cells[k] for k in g["ex2"])))
-    print("  combinations: nearest landing to a bin it left, Exhibit 1 %.3f, Exhibit 2 %.3f" % tuple(C.REPORT["combo_worst"]))
+    for c, v in g["ex1"].items():
+        print("  Exhibit 1 %-48s %6d patients" % (DL.cell_key(c), v))
+    for c, v in g["ex2"].items():
+        print("  Exhibit 2 %-48s %6d patients" % (DL.cell_key(c), v))
+    for name, cells in C.REPORT["readings"].items():
+        print("  reading %-44s seen %s; referred %s" % (name, " ".join("%+d" % x for x in cells[0]),
+                                                         " ".join("%+d" % x for x in cells[1])))
+    for name, cells in C.REPORT["ex_hazards"].items():
+        print("  hazard %-45s seen %s; referred %s" % (name, " ".join("%+d" % x for x in cells[0]),
+                                                       " ".join("%+d" % x for x in cells[1])))
+    for rep in ("ex1_stops", "ex2_stops"):
+        for name, cells in C.REPORT[rep].items():
+            print("  %s stop %-44s %s" % (rep[:3], name, " ".join("%+d" % v for v in cells.values())))
+    print("  main call's namesake pairs joined at one carrier: %d (in no exhibit cell); frozen namesake pairs: %d"
+          % (C.REPORT["frozen_joined"], C.REPORT["frozen_namesakes"]))
+    print("  one-carrier cleanup keeps on Exhibit 1: %s" % C.REPORT["one_carrier_ex1_kept"])
+    print("  SF27 rival attributions, Kinnickinnic gastroenterology (golden %d): %s" % (
+        g["ex1"][("Kinnickinnic Health", "gastroenterology")],
+        ", ".join("%s %s" % (k, list(v.values())[0]) for k, v in C.REPORT["sf27"].items())))
+    print("  combinations: every pipeline of mishandlings off the golden in every cell it moves (%d)" % C.REPORT["combos"])
 
 
 if __name__ == "__main__":

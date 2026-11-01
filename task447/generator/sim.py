@@ -263,7 +263,7 @@ T2_WEIGHT = 0.25        # cost sharing pulls a patient away from a second-tier f
 
 HISTORY_PRACTICES = ("P1", "P2", "P3", "P4", "P5", "W1", "W2")
 # members also covered as a spouse under a second carrier's plan, by pool
-SECOND_RATE = {"LKO": 0.055, "OTS": 0.045}
+SECOND_RATE = {"LKO": 0.11, "OTS": 0.045}
 # Kinnickinnic's specialists who hold clinic days at its Manitowoc hospital, and their share of a full week
 KPN_OUTREACH = {"GI": 0.32, "ORTH": 0.24, "CARD": 0.315}
 # the share of a full panel the Manitowoc specialty groups see from Kewaunee County
@@ -520,7 +520,7 @@ def simulate():
     professional("KPN", gi_split, "GI", 0.16, "LKO:Manitowoc", "kpn_split", ["54220"], billing_practice="KPN")
     sites = {"MFP": ["54228", "54228", "54241"], "RRF": ["54220"], "AFH": ["54201"], "KAC": ["54216", "54217"],
              "MDC": ["54220"] * 5 + ["54217"], "SOA": ["54220"] * 6 + ["54241", "54216"]}
-    for p, vol, tele in (("MFP", 0.95, 0.04), ("RRF", 1.0, 0.05), ("AFH", 0.9, 0.04), ("KAC", 0.9, 0.03),
+    for p, vol, tele in (("MFP", 0.95, 0.04), ("RRF", 1.0, 0.05), ("AFH", 0.9, 0.04), ("KAC", 0.93, 0.03),
                          ("MDC", 1.0, 0.02), ("SOA", 1.0, 0.02)):
         for npi in roster[p]:
             professional(p, npi, people[npi]["spec"], vol, "LKO:Kewaunee" if p in ("KAC", "AFH") else "LKO:Manitowoc",

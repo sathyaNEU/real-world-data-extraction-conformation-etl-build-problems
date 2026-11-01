@@ -1,48 +1,28 @@
 {
  "call": "proceed",
  "ex1": {
-  "Kewaunee|ARTH": [
-   "97",
-   "41.2"
-  ],
-  "Kewaunee|ENDO": [
-   "444",
-   "64.0"
-  ],
-  "Kewaunee|IMG": [
-   "1,008",
-   "45.4"
-  ],
-  "Manitowoc|ARTH": [
-   "328",
-   "42.7"
-  ],
-  "Manitowoc|ENDO": [
-   "1,574",
-   "52.9"
-  ],
-  "Manitowoc|IMG": [
-   "3,269",
-   "40.6"
-  ]
+  "Algoma Family Health": "1,716",
+  "Kewaunee Area Clinic": "1,751",
+  "Kinnickinnic Health|cardiovascular disease": "306",
+  "Kinnickinnic Health|gastroenterology": "219",
+  "Kinnickinnic Health|orthopaedic surgery": "422",
+  "Kinnickinnic Health|primary care": "5,967",
+  "Ledgestone Health|cardiovascular disease": "117",
+  "Ledgestone Health|gastroenterology": "57",
+  "Ledgestone Health|orthopaedic surgery": "133",
+  "Ledgestone Health|primary care": "2,432",
+  "Manitowoc Digestive Care": "539",
+  "Rapids Road Family Medicine": "3,140",
+  "Shoreline Orthopaedic Associates": "1,597"
  },
  "ex2": {
-  "cardiovascular disease": [
-   "71.9",
-   "7.6"
-  ],
-  "gastroenterology": [
-   "41.8",
-   "4.0"
-  ],
-  "orthopaedic surgery": [
-   "35.7",
-   "3.7"
-  ],
-  "primary care": [
-   "35.0",
-   "7.6"
-  ]
+  "Algoma Family Health|IMG": "171",
+  "Kewaunee Area Clinic|IMG": "164",
+  "Manitowoc Digestive Care|ENDO": "865",
+  "Manitowoc Digestive Care|IMG": "59",
+  "Rapids Road Family Medicine|IMG": "266",
+  "Shoreline Orthopaedic Associates|ARTH": "234",
+  "Shoreline Orthopaedic Associates|IMG": "742"
  },
  "parts": {
   "ARTH": 240000,

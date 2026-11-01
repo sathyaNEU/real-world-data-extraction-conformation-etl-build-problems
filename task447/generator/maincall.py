@@ -21,7 +21,7 @@ import golden as G
 import pack as PK
 
 REF = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main_call_ref.json")
-WHOLE = ("tiers", "register", "reassign", "facdir", "medicare", "exhibit", "prodref", "fachist")
+WHOLE = ("tiers", "register", "reassign", "facdir", "medicare", "prodref", "fachist")
 DOCS = ("ohccr_rule_4_preliminary_review.pdf", "N25-014_notice_of_material_change.pdf")
 
 
@@ -34,6 +34,19 @@ def _digest(lines):
 
 def _file_digest(path):
     return hashlib.sha256(open(path, "rb").read()).hexdigest()
+
+
+def exhibit_digest(target):
+    """Exhibit C as the main call reads it: every facility and professional rate, by carrier and code, from the
+    workbook through golden.py's reader (Bayfield at its percent of the Medicare amounts). The workbook's bytes moved
+    once, when the Bayfield column was written in whole per cent under its header; the rates did not."""
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(target, PK.FILES["exhibit"]), data_only=True)
+    rd = lambda k: pd.read_csv(os.path.join(target, PK.FILES[k]), dtype=str, keep_default_na=False)
+    fac, prof, _ = G.exhibit_rates(wb, rd("medicare"), rd("prodref"))
+    body = json.dumps([sorted(("|".join(k), v) for k, v in fac.items()),
+                       sorted(("|".join(k), v) for k, v in prof.items())])
+    return hashlib.sha256(body.encode()).hexdigest()
 
 
 def population(target):
@@ -57,6 +70,7 @@ def population(target):
         out[name] = [len(df), _digest(["\t".join(r) for r in df.astype(str).itertuples(index=False, name=None)])]
     for k in WHOLE:
         out[k] = _file_digest(os.path.join(target, PK.FILES[k]))
+    out["exhibit"] = exhibit_digest(target)
     for d in DOCS:
         out[d] = _file_digest(os.path.join(target, d))
     return out

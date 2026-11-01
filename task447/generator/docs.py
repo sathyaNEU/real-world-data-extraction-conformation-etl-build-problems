@@ -1,6 +1,7 @@
-"""The filed documents: the office's projection rule, its market oversight technical appendix, the
-APCD data dictionary, and notice N25-014 with its exhibits A and B. Each is short and written the way
-the office or the filer would write it. PDFs are made reproducible (fixed dates and document id) and
+"""The filed documents: the office's projection rule, its market oversight technical appendix, and
+notice N25-014 with its exhibits A and B. Each is short and written the way the office or the filer
+would write it. No document describes the data files (dataset-generation section 3): the appendix
+files the unit's own assignment of ZIP codes to counties, which its exhibits rest on. PDFs are made reproducible (fixed dates and document id) and
 carry no toolchain signature.
 """
 import re
@@ -20,7 +21,6 @@ import world as W
 
 RULE = "ohccr_rule_4_preliminary_review.pdf"
 APPENDIX = "market_oversight_technical_appendix.pdf"
-DICTIONARY = "apcd_extract_data_dictionary.pdf"
 NOTICE = "N25-014_notice_of_material_change.pdf"
 
 SS = getSampleStyleSheet()
@@ -156,32 +156,30 @@ def appendix_pdf(path):
                "gastrointestinal endoscopy is CPT 43235 to 43270 and 45378 to 45398; arthroscopy is CPT 29805 to "
                "29999; laboratory is CPT 80047 to 89398. Nuclear cardiology, sleep studies and other services fall "
                "in no line."),
-             S("A2 Outpatient services by county of residence"),
-             P("For a service line, a county and a year, the services the county's residents received are the "
-               "services in the line that facilities in the database provided to commercial members residing in the "
-               "county, with dates of service in the year, whenever paid. Each unit of a procedure code that a "
-               "facility provided to a member is one service, read on the latest version of the claim line, net of "
-               "voids, and is one service however many carriers were billed for it. Two claims that report the "
-               "same unit to two carriers are one service; two units of the code that the facility provided to the "
-               "member on the same date, which the claims show by their quantities or their referring providers, "
-               "are two services. A member resides in the county "
-               "holding the ZIP code on the member's "
-               "eligibility span that covers the date of service. A practice's referred share is the part of those "
-               "services whose referring provider is a physician of the practice. Shares are stated in per cent to "
-               "one decimal."),
-             S("A3 Office visits by specialty"),
-             P("For a specialty and a year, the office visits in Manitowoc and Kewaunee counties are the services "
-               "coded 99202 to 99215 that physicians of the specialty rendered in person to commercial members at "
-               "locations in the two counties, with dates of service in the year, whenever paid, read on the latest "
-               "version of each claim; a visit by telehealth (place of service 10, or modifier 95) is not an office "
-               "visit. A physician's specialty is the classification of the physician's own NUCC taxonomy, as the "
-               "carriers' provider files record it rather than as a claim reports it: primary care "
-               "is family medicine (207Q00000X), internal medicine (207R00000X) and pediatrics (208000000X); "
-               "gastroenterology is 207RG0100X, orthopaedic surgery 207X00000X and cardiovascular disease "
-               "207RC0000X. A practice's or a system's share is the part of "
-               "those visits billed under taxpayer identification numbers it owns or controls, read from the "
-               "register as in A4, stated in per cent to one decimal. A visit reported to more than one carrier "
-               "is one visit."),
+             S("A2 Patients seen"),
+             P("For a group of physicians and a year, the group's patients in Manitowoc and Kewaunee counties are the "
+               "people who, while residing in the two counties and covered under a commercial product, had an office "
+               "visit in person with one of the group's physicians at a location in the two counties, with a date of "
+               "service in the year, whenever paid. Each person is one patient however many visits he or she had. An "
+               "office visit is a service coded 99202 to 99215, read on the latest version of the claim, net of voids; "
+               "a visit by telehealth (place of service 10, or modifier 95) is not in person. A member resides in the "
+               "county holding the ZIP code on the member's eligibility span that covers the date of service."),
+             P("A system's physicians are those of A4, grouped by specialty: a physician's specialty is the "
+               "classification of the physician's own NUCC taxonomy, as the carriers' provider files record it rather "
+               "than as a claim reports it. Primary care is family medicine (207Q00000X), internal medicine "
+               "(207R00000X) and pediatrics (208000000X); gastroenterology is 207RG0100X, orthopaedic surgery "
+               "207X00000X and cardiovascular disease 207RC0000X. An independent practice is a practice whose "
+               "taxpayer identification numbers no hospital system owns or controls, read from the register as in "
+               "A4; its group is every physician of the practice, and a practice whose physicians all hold one "
+               "specialty is a practice of that specialty. A visit counts for the system or the practice under whose "
+               "taxpayer identification numbers its claim was billed."),
+             S("A3 Patients referred"),
+             P("For a practice, a service line and a year, the patients the practice referred are the people who, "
+               "while residing in Manitowoc or Kewaunee county and covered under a commercial product, received a "
+               "service in the line from a facility in the database, with a date of service in the year, whenever "
+               "paid, read on the latest version of the claim line, net of voids, whose referring provider was a "
+               "physician of the practice on the date of service. Each person is one patient however many services "
+               "he or she received. Residence is read as in A2."),
              S("A4 A system's physicians"),
              P("A physician is a doctor of medicine or of osteopathic medicine; nurse practitioners and physician "
                "assistants are not counted. A system's physicians on a date are the physicians billing on that "
@@ -198,115 +196,17 @@ def appendix_pdf(path):
                "date he or she first bills under the system's numbers, and that date, not the first day of its "
                "calendar year, is the date a service falls before or after; the physician joined in the calendar "
                "year that date falls in."),
-             S("A6 Sources"),
-             P("Claims, eligibility and products come from the database extracts described in the extract data "
-               "dictionary; ownership from the office's provider ownership register; billing relationships from "
-               "the NPI reassignment history.")]
-    _doc(path, flow, "Technical appendix rev 3", "Samantha Abbott", "D:20250602141108-05'00'",
-         "B71E04C9A35D2F68E0C1974AB3D85E20")
-
-
-# ------------------------------------------------------------------ data dictionary
-FAC24_DEF = [
-    ("submitter_code", "Carrier's APCD submitter code (see product reference)."),
-    ("payer_claim_control_number", "Carrier's claim number. A replacement carries its own number; a void carries "
-                                   "the number of the claim it cancels."),
-    ("line_counter", "Line number within the claim."),
-    ("claim_frequency_code", "1 original; 7 replacement of a prior claim; 8 void of a prior claim."),
-    ("original_claim_control_number", "For codes 7 and 8, the claim number replaced or voided."),
-    ("form_type", "UB04 (institutional) or CMS1500 (professional form, used by freestanding centres and laboratories)."),
-    ("member_id", "APCD de-identified member key, stable across carriers."),
-    ("product_id", "Carrier product (see product reference)."),
-    ("service_from_date", "Date of service (YYYY-MM-DD)."),
-    ("paid_date", "Date the line was adjudicated paid (YYYY-MM-DD)."),
-    ("type_of_bill", "UB04 bill type."),
-    ("place_of_service", "CMS place of service code (CMS1500 lines)."),
-    ("revenue_code", "UB04 revenue code."),
-    ("procedure_code", "CPT/HCPCS code."),
-    ("procedure_modifier_1", "First modifier."),
-    ("quantity", "Units of service. Negative on void lines."),
-    ("allowed_amount", "Allowed amount for the line (plan paid plus member liability). Negative on void lines."),
-    ("plan_paid_amount", "Amount paid by the plan."),
-    ("member_liability_amount", "Deductible, copay and coinsurance."),
-    ("billing_provider_npi", "NPI of the billing provider. Off-campus hospital departments bill under the hospital."),
-    ("billing_provider_tin", "Billing provider's taxpayer identification number."),
-    ("service_facility_npi", "NPI of the facility where the service was performed."),
-    ("service_facility_zip", "ZIP code of that facility."),
-    ("referring_provider_npi", "NPI of the referring or ordering provider."),
-]
-V2_MAP = [("SUBMITTER_ID", "submitter_code"), ("CLAIM_ID", "payer_claim_control_number"), ("LINE_NO", "line_counter"),
-          ("CLM_STATUS", "claim frequency: O original, R replacement, V void"),
-          ("ORIG_CLAIM_ID", "original_claim_control_number"), ("FORM", "UB (UB04) or CM (CMS1500)"),
-          ("MEMBER_ID", "member_id"), ("PRODUCT_ID", "product_id"), ("DOS_FROM", "service_from_date (YYYYMMDD)"),
-          ("PAID_DT", "paid_date (YYYYMMDD)"), ("TOB", "type of bill, three digits without the leading zero"),
-          ("POS", "place_of_service"), ("REV_CD", "revenue_code"), ("PROC_CD", "procedure_code"),
-          ("MOD1", "procedure_modifier_1"), ("UNITS", "quantity"), ("ALLOWED_AMT", "allowed_amount"),
-          ("PLAN_PAID_AMT", "plan_paid_amount"), ("MBR_RESP_AMT", "member_liability_amount"),
-          ("BILL_NPI", "billing_provider_npi"), ("BILL_TIN", "billing_provider_tin, nine digits, no hyphen"),
-          ("FAC_NPI", "service_facility_npi (no facility ZIP in v2.4)"), ("REF_NPI", "referring_provider_npi")]
-PROF_DEF = [
-    ("place_of_service", "CMS place of service: 10 telehealth in the patient's home, 11 office, 22 on-campus "
-                         "outpatient hospital, 24 ambulatory surgical centre."),
-    ("procedure_modifier_1, _2", "Modifiers, for example 26 professional component, 95 synchronous telehealth."),
-    ("billing_provider_npi, _tin, _zip", "The billing group's NPI, taxpayer number and billing address ZIP."),
-    ("rendering_provider_npi, _taxonomy", "The individual who performed the service, and the NUCC taxonomy code "
-                                          "submitted with the claim for the rendering provider."),
-    ("service_facility_zip", "ZIP code of the location where the service was performed."),
-]
-TAXONOMY = [("207Q00000X", "Family Medicine"), ("207R00000X", "Internal Medicine"), ("208000000X", "Pediatrics"),
-            ("207RG0100X", "Internal Medicine, Gastroenterology"), ("207X00000X", "Orthopaedic Surgery"),
-            ("207RC0000X", "Internal Medicine, Cardiovascular Disease"), ("363L00000X", "Nurse Practitioner"),
-            ("363A00000X", "Physician Assistant")]
-
-
-def dictionary_pdf(path):
-    P = lambda t: Paragraph(t, BODY)
-    S = lambda t: Paragraph(t, SEC)
-    flow = [Paragraph("Wisconsin All-Payer Claims Database", HEAD),
-            Paragraph("Extract data dictionary, request OHCCR-MO-2025-031 (notice N25-014)", SUBHEAD)]
-    flow += [S("1 The files"),
-             P("<b>apcd_op_facility_claims_2024.csv</b> (layout 3.1): commercial and Medicare Advantage outpatient "
-               "facility claims are held separately; this file holds the commercial lines, service category "
-               "OP_FACILITY (hospital outpatient departments, ambulatory surgery centres, independent diagnostic "
-               "testing facilities, sleep centres and clinical laboratories), for the facilities in the facility "
-               "directory, dates of service 1 January to 31 December 2024, paid through 31 August 2025. Extract run "
-               "15 September 2025."),
-             P("<b>apcd_op_facility_claims_2021_2023.csv</b> (layout 2.4): commercial outpatient facility claims, "
-               "dates of service 1 January 2021 to 31 December 2023, whose referring provider is a physician of a "
-               "practice acquired by Ledgestone Health or Wolf River Health from 2021 to 2023, from the unit's "
-               "acquisition review extract (run 12 August 2024, paid through 30 June 2024). The physicians' 2024 "
-               "claims are in the 2024 file."),
-             P("<b>apcd_professional_claims_2024.csv</b> (layout 3.1): commercial professional claims for services "
-               "performed at locations in Manitowoc and Kewaunee counties, dates of service in 2024, paid through 31 "
-               "August 2025."),
-             P("<b>apcd_eligibility_spans.csv</b>: eligibility for every member with a line in the three claim "
-               "files, 2021 to 2024. A span is cut at every change of product, of benefit period (the plan year, "
-               "beginning on the date in benefit_period_begin) and of address. relationship_code: 18 subscriber, 01 "
-               "spouse, 19 child."),
-             P("<b>apcd_product_reference.csv</b>: one row per carrier product, with line of business and "
-               "whether the product uses a tiered network."),
-             S("2 Layout 3.1, outpatient facility claims"),
-             _table([("Field", "Definition")] + FAC24_DEF, [1.9 * inch, 4.6 * inch]),
-             Spacer(1, 4),
-             P("Each line carries the version the carrier last submitted for it: a replacement (code 7) "
-               "supersedes the claim it names, and a void (code 8) cancels the claim it names, its lines carrying "
-               "negative quantities and amounts. The database does not remove superseded or voided lines."),
-             S("3 Layout 3.1, professional claims"),
-             P("Fields as in section 2 where the names agree, without form, bill type, revenue code and facility "
-               "NPI, and with:"),
-             _table([("Field", "Definition")] + PROF_DEF, [1.9 * inch, 4.6 * inch]),
-             S("4 Layout 2.4 (2021 to 2023 extract)"),
-             _table([("2.4 field", "3.1 equivalent")] + V2_MAP, [1.6 * inch, 4.9 * inch]),
-             S("5 Provider taxonomy (NUCC) used in these files"),
-             _table([("Code", "Classification")] + TAXONOMY, [1.6 * inch, 4.9 * inch]),
-             S("6 ZIP codes and counties"),
+             S("A6 Counties"),
+             P("The unit assigns each ZIP code in the region to one county, as below, for a member's residence and "
+               "for the location of a service alike."),
              _table([("County", "ZIP codes")] + [(c, ", ".join(z)) for c, z in sorted(W.ZIPS.items())],
                     [1.6 * inch, 4.9 * inch]),
-             Spacer(1, 6),
-             Paragraph("Prepared by Samantha Abbott, APCD data manager, 16 September 2025. Member keys are "
-                       "de-identified; do not attempt re-identification.", SMALL)]
-    _doc(path, flow, "APCD extract data dictionary", "Samantha Abbott", "D:20250916093344-05'00'",
-         "0D93B6E2F17A4C58B26E9D041F7C3A85")
+             Spacer(1, 4),
+             S("A7 Sources"),
+             P("Claims, eligibility and products come from the database's extracts; ownership from the office's "
+               "provider ownership register; billing relationships from the NPI reassignment history.")]
+    _doc(path, flow, "Technical appendix rev 3", "Samantha Abbott", "D:20250602141108-05'00'",
+         "B71E04C9A35D2F68E0C1974AB3D85E20")
 
 
 # ------------------------------------------------------------------ notice N25-014
@@ -365,5 +265,4 @@ def write_docs(target, wd):
     import os
     rule_pdf(os.path.join(target, RULE))
     appendix_pdf(os.path.join(target, APPENDIX))
-    dictionary_pdf(os.path.join(target, DICTIONARY))
     notice_pdf(os.path.join(target, NOTICE), wd["people"], wd["roster"])
