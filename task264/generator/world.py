@@ -112,7 +112,7 @@ def build_world():
         if row.age > 72 and r.random() < 0.3:
             base_los += int(r.integers(1, 4))
         los.append(base_los)
-        tr.append(bool(p["kind"] == "NHS" and row.age > 70 and r.random() < 0.16))
+        tr.append(bool(p["kind"] == "NHS" and row.age > 70 and r.random() < 0.07))
         pre_done.append(bool(r.random() < 0.885))
     w["emerg"] = emerg
     w["inj"] = inj
@@ -257,8 +257,8 @@ def extras(w):
     return w
 
 
-UNLINKED = {40117: 0.045, 40152: 0.035, 40188: 0.065, 41206: 0.085, 41231: 0.055, 41274: 0.095,
-            41309: 0.04, 41355: 0.075, 41388: 0.05, 41402: 0.07}
+UNLINKED = {40117: 0.06, 40152: 0.05, 40188: 0.075, 41206: 0.09, 41231: 0.08, 41274: 0.10,
+            41309: 0.07, 41355: 0.085, 41388: 0.08, 41402: 0.08}
 
 
 def make_spells(w):
@@ -321,12 +321,16 @@ def make_spells(w):
         # unrelated planned day cases anywhere in the extract window
         span = (EXTRACT_TO - EXTRACT_FROM).days
         n_el = int(rs.poisson(0.085 * span / 365.25))
+        busy = [(x["adm"], x["dis"]) for x in rows if x["pid"] == row.pid]
         for _ in range(n_el):
             a = EXTRACT_FROM + D(days=int(rs.integers(0, span)))
             pr, dg = UNRELATED_EL[int(rs.integers(0, len(UNRELATED_EL)))]
             pool = [40117, 40152, 40188, 40099, 41206, 41309, 41388]
             pv = provider_at(pool[int(rs.integers(0, len(pool)))], a)
             day = rs.random() < 0.85
+            if any(b0 - D(days=2) <= a <= b1 + D(days=2) for b0, b1 in busy):
+                continue
+            busy.append((a, a + D(days=3)))
             rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=pv, adm=a, dis=a if day else a + D(days=int(rs.integers(1, 4))),
                              meth="11", cls="2" if day else "1", diag=dg, proc=pr, opdate=a,
                              age=int(row.age + (a - row.op_date).days / 365.25), sex=row.sex_code, dest="19",

@@ -14,14 +14,14 @@ FIELD_MONTH = {"2025Q1": (2025, 2), "2025Q2": (2025, 5), "2025Q3": (2025, 8), "2
 # Workforce areas. code, name, counties (3-digit), adults 16+ (thousands), MJH logit shift, away shift,
 # share of households with one adult.
 AREAS = [
-    ("01", "Capital Region",   ["019", "023"],        612.4, 0.10, 0.07, 0.40),
-    ("02", "Northern Basin",   ["003", "011", "037"], 228.9, -0.05, 0.03, 0.24),
-    ("03", "Silver Creek",     ["041", "045"],        301.7, 0.30, 0.11, 0.30),
-    ("04", "High Plains",      ["005", "013", "029", "047"], 164.2, -0.42, -0.02, 0.27),
-    ("05", "Upper River",      ["007", "031"],        257.3, 0.18, 0.08, 0.31),
-    ("06", "Southwest Lakes",  ["015", "021", "033"], 183.6, -0.30, 0.00, 0.33),
-    ("07", "Eastern Prairie",  ["009", "027", "041"], 141.8, -0.10, 0.02, 0.22),
-    ("08", "Timber Country",   ["001", "017", "025", "035"], 205.5, 0.00, 0.10, 0.42),
+    ("01", "Capital Region",   ["019", "023"],        612.4, -0.36, 0.00, 0.44),
+    ("02", "Northern Basin",   ["003", "011", "037"], 228.9, 0.03, 0.35, 0.12),
+    ("03", "Silver Creek",     ["041", "045"],        301.7, 0.25, 0.00, 0.40),
+    ("04", "High Plains",      ["005", "013", "029", "047"], 164.2, -0.62, 0.08, 0.28),
+    ("05", "Upper River",      ["007", "031"],        257.3, 0.02, 0.08, 0.28),
+    ("06", "Southwest Lakes",  ["015", "021", "033"], 183.6, -0.33, 0.22, 0.14),
+    ("07", "Eastern Prairie",  ["009", "027", "041"], 141.8, 0.08, 0.31, 0.12),
+    ("08", "Timber Country",   ["001", "017", "025", "035"], 205.5, -0.18, -0.18, 0.62),
 ]
 # county 041 is split between Silver Creek (03) and Eastern Prairie (07) by ZIP code
 SPLIT_COUNTY = "041"
@@ -32,8 +32,8 @@ SPLIT_ZIPS_03 = ["59340", "59343", "59347", "59350", "59353"]
 S_PROXY = 0.55           # chance a household member answering for an absent adult reports a second job the adult holds
 FP_PROXY = 0.002         # chance the answering member reports a second job the adult does not hold
 PERSIST = 0.97           # a second job held one quarter is still held the next with this chance
-AWAY_HOLD = 0.15         # extra chance an adult who holds a second job is out when the interviewer calls
-ALLOC_SCALE = 1.0        # sample size multiplier on the base allocation
+AWAY_HOLD = 0.20         # extra chance an adult who holds a second job is out when the interviewer calls
+ALLOC_SCALE = 3.0        # sample size multiplier on the base allocation
 
 
 def area_index():

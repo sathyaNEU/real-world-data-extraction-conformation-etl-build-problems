@@ -20,8 +20,8 @@ def ods_for(key, day):
 def wait_weeks(p, r):
     if p["kind"] == "NHS":
         wk = np.exp(np.log(MEDIAN[p["key"]]) + 0.42 * r.normal())
-    elif r.random() < 0.11:
-        wk = np.exp(np.log(50.0) + 0.22 * r.normal())
+    elif r.random() < 0.16:
+        wk = np.exp(np.log(52.0) + 0.24 * r.normal())
     else:
         wk = np.exp(np.log(19.0 + 3.0 * p["sev"]) + 0.42 * r.normal())
     return float(min(wk, 108.0))
@@ -110,6 +110,12 @@ def make_waits():
                 P[pid] = y
         day += D(days=7)
 
+    # the triage service's surgical routings, with identities settled before any system writes a row
+    sur = pd.DataFrame([dict(token=x["token"], yob=x["yob"], sex=x["sex"], district=x["district"], gp=x["gp"],
+                             received=x["tri"], outcome="Surgical opinion - spinal",
+                             routed_to=ods_for(x["prov"], x["routed"]), routed_on=x["routed"], path=x["path"])
+                        for x in paths if x["route"] == "MSK triage" and x["tri"] >= dt.date(2023, 6, 1)])
+    sur = settle_keys(sur, paths)
     # what each provider's list holds at each month end, and the removals it recorded
     rows, rem = [], []
     rs = stream(9900)
@@ -139,16 +145,10 @@ def make_waits():
     ptl = pd.DataFrame(rows)
     removals = pd.DataFrame(rem)
 
-    # the triage service's log: every referral it received from June 2023, surgical or not
-    tri = []
     rt = stream(9950)
-    for x in paths:
-        if x["route"] == "MSK triage" and x["tri"] >= dt.date(2023, 6, 1):
-            tri.append(dict(token=x["token"], yob=x["yob"], sex=x["sex"], district=x["district"], gp=x["gp"],
-                            received=x["tri"], outcome="Surgical opinion - spinal", routed_to=ods_for(x["prov"], x["routed"]),
-                            routed_on=x["routed"], path=x["path"]))
-    n_non = int(0.9 * len(tri))
+    n_non = int(0.9 * len(sur))
     outs = ["Physiotherapy", "Physiotherapy", "Pain management", "Discharged to GP"]
+    tri = []
     for _ in range(n_non):
         dist = DISTRICTS[int(rt.integers(0, len(DISTRICTS)))]
         rec = dt.date(2023, 6, 1) + D(days=int(rt.integers(0, (SNAPSHOT - dt.date(2023, 6, 1)).days)))
@@ -156,6 +156,33 @@ def make_waits():
                         district=dist, gp=GP[dist][int(rt.integers(0, len(GP[dist])))], received=rec,
                         outcome=outs[int(rt.integers(0, 4))], routed_to="", routed_on=rec + D(days=int(rt.integers(14, 70))),
                         path=-1))
-    triage = pd.DataFrame(tri)
+    triage = pd.concat([sur, pd.DataFrame(tri)], ignore_index=True)
     paths_df = pd.DataFrame(paths)
     return dict(paths=paths_df, ptl=ptl, removals=removals, triage=triage)
+
+
+def settle_keys(triage, paths):
+    """A surgical routing is placed on a provider's list by birth year, sex, district, practice and the routing
+    date; where two routings to one site would share that key within 12 days, the later patient's practice is the
+    district's next one (both files carry the patient's practice, so they stay consistent)."""
+    P = {x["path"]: x for x in paths}
+    sur = triage[triage.outcome == "Surgical opinion - spinal"].sort_values(["routed_on", "path"])
+    seen = {}
+    for i, r in sur.iterrows():
+        key = (r.yob, r.sex, r.district, r.routed_to)
+        gp = r.gp
+        prac = GP[r.district]
+        for _ in range(len(prac)):
+            hits = [d for d in seen.get(key + (gp,), []) if abs((d - r.routed_on).days) <= 12]
+            if not hits:
+                break
+            gp = prac[(prac.index(gp) + 1) % len(prac)]
+        seen.setdefault(key + (gp,), []).append(r.routed_on)
+        if gp != r.gp:
+            triage.at[i, "gp"] = gp
+            x = P[r.path]
+            x["gp"] = gp
+            for y in paths:
+                if y.get("origin") == x["path"]:
+                    y["gp"] = gp
+    return triage
