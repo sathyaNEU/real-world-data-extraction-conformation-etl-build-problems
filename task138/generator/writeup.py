@@ -29,11 +29,11 @@ def main():
     a("## 1. Final Recommendation\n")
     a("**Breckwater must transfer %.1f MW off Dunraith in summer %s, %.1f MW in %s, %.1f MW in %s, %.1f MW in %s "
       "and %.1f MW in %s.** With the voltage cut taking %.1f per cent off at the planning peak, the planning peaks "
-      "are %s MW against the %.1f MW firm rating. Not the pilot's relief over every hour (%.1f per cent, %s MW in "
+      "are %s MW against the firm rating. Not the pilot's relief over every hour (%.1f per cent, %s MW in "
       "%s), which carries the night's voltage-sensitive load into the peak; not the relief at each day's peak hour "
       "(%.1f per cent, %.1f MW in %s), which carries mild days whose peak holds less air conditioning."
       % (tr[0], yrs[0], tr[1], yrs[1], tr[2], yrs[2], tr[3], yrs[3], tr[4], yrs[4], rel["golden"],
-         ", ".join(str(p) for p in pk[:-1]) + " and %d" % pk[-1], k["firm_mw"], rel["all_hours"],
+         ", ".join(str(p) for p in pk[:-1]) + " and %d" % pk[-1], rel["all_hours"],
          "%.1f" % r1[0], yrs[0], rel["daily_peak_hour"], r2[0], yrs[0]))
     a("")
     a("## 2. Critical Components\n")
@@ -68,7 +68,7 @@ def main():
     a("6. Ask A: multiplied each day's KWH in mdms_xfmr_daily_kwh_20260601_20260930.csv by METER_MULT in "
       "DUN_transformer_register_2026-10.xlsx from the transformer's METER_SET date (the LP-3 services that went "
       "onto CT metering in June read whole kWh before it) and counted June on the old feeder for every "
-      "transformer whose PROT_DEVICE lies beyond S-4471, S-6120 or S-1302 in the register's Devices sheet "
+      "transformer whose PROTECTIVE_DEVICE lies beyond S-4471, S-6120 or S-1302 in the register's Devices sheet "
       "(SO-2026-114_Dunraith.pdf): %s MWh." % ", ".join("%s %s" % (x, c(v)) for x, v in ea.items()))
     hd = f["hot_days"]
     a("7. Ask B: summed recorders 41-2207 and 41-2208 of MV90_DP0417_202606-202609.csv (the transformers' %.1f kV "
@@ -94,8 +94,8 @@ def main():
     a("4. Peak 15-minute demand of the feeders on the ten hottest days of summer 2026, MW to one decimal:")
     for d, v in sorted(hd.items()):
         a("   - %s: %.1f" % (d, v["peak_mw"]))
-    a("5. Chart sheet: the planning peak for each summer from %s to %s in columns against the %.1f MW firm rating "
-      "line, with the weather-normal peak before the voltage cut as a dashed line." % (yrs[0], yrs[-1], k["firm_mw"]))
+    a("5. Chart sheet: the planning peak for each summer from %s to %s in columns against the firm rating line, "
+      "with the weather-normal peak before the voltage cut as a dashed line." % (yrs[0], yrs[-1]))
     text = "\n".join(L) + "\n"
     assert "—" not in text
     open(os.path.join(TASK, "submission.md"), "w").write(text)

@@ -70,11 +70,11 @@ def feeder_loads(target, old_shift=True):
 def observations(target):
     """Airport observations; the export's clock is local standard time, an hour behind summer local time."""
     w = pd.read_csv(fpath(target, "mossford_ap_obs_2022-2026.csv"))
-    w = w.dropna(subset=["TMP_C"])
+    w = w.dropna(subset=["DRY_BULB_C"])
     lst = pd.to_datetime(w["DATE_LST"], format="%Y-%m-%dT%H:%M:%S")
     return pd.DataFrame({"lst": lst.values, "local": (lst + pd.Timedelta(hours=1)).values,
                          "utc": (lst + pd.Timedelta(hours=6)).values, "kind": w["REPORT_TYPE"].values,
-                         "f": w["TMP_C"].values * 9.0 / 5.0 + 32.0})
+                         "f": w["DRY_BULB_C"].values * 9.0 / 5.0 + 32.0})
 
 
 def daily_tmax(obs, clock="local", routine_only=False, whole_f=False, snap=None):
@@ -115,7 +115,7 @@ def weather_normal(target, filed, loads=None, obs=None, clock="local", whole_f=F
 def switch_events(target):
     lg = pd.read_csv(fpath(target, "VR_event_log_DUN_2025.csv"))
     lg = lg[lg.Event.isin(["CVR ON", "CVR OFF"])].copy()
-    lg["feeder"] = lg.Device.str.split(" ").str[0]
+    lg["feeder"] = lg.Equipment.str.split(" ").str[0]
     lg["t"] = pd.to_datetime(lg.EventTime)
     return lg.sort_values("t")
 
@@ -267,7 +267,7 @@ def feeder_energy(target, use_mult=True, mult_from_set=True, reassign=True, dept
     md["kwh"] = md.KWH * m
     md["feeder"] = md.FEEDER
     if reassign:
-        prot = dict(zip(tx.XFMR_ID, tx.PROT_DEVICE))
+        prot = dict(zip(tx.XFMR_ID, tx.PROTECTIVE_DEVICE))
         old = {}
         for sw, a, b in moved_sections(target):
             under = downstream(dev, sw, depth)

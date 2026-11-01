@@ -1,13 +1,12 @@
 # leak check, task138
 
-**Verdict: LEAK.** 15 files read, 34 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 33 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: record, published, bridge, golden, orrinsford, window, january, relation, design, survey, asserted, dropped, decisive, annual, discharge, method, change, station, efficiency, nothing, logger, sentence, section, upstream, gauges
 
-## 3 answer figures in the pack (LEAK 1, REVIEW 6)
-- **LEAK** `BEC_distribution_planning_criteria_rev4.pdf`: golden figure 104.0 appears: ...nicipal Airport 101 F Dunraith 2 x 75/100/125 MVA 104.0 Mossford Municipal Airport 101 F Lindell 1 x 20/2...
+## 3 answer figures in the pack (REVIEW 6)
 - **REVIEW** `BEC_2027_operating_plan.pdf`: golden figure 2.0 appears: ...a 120 V base (normal setting 123.5 V), bandwidth 2.0 V, line drop compensation off. 3.2 AMI bellwether...
 - **REVIEW** `BEC_distribution_planning_criteria_rev4.pdf`: golden figure 0.5 appears: ..., voltage settings, load control. Switching block 0.5 MW, the smallest load the cooperative plans to mo...
 - **REVIEW** `CVR_pilot_plan_Dunraith_2025.pdf`: golden figure 2.0 appears: ...bandcenter (120 V base) 123.5 V 119.2 V Bandwidth 2.0 V 2.0 V Time delay 45 s 45 s Line drop compensati...
@@ -20,10 +19,8 @@ Stump terms swept: record, published, bridge, golden, orrinsford, window, januar
 - **REVIEW** `BEC_distribution_planning_criteria_rev4.pdf`: 4 of 25 stump-paragraph terms appear (record, design, change, station); read whether the document names the move
 - **REVIEW** `WPC_Exhibit_A_delivery_points.pdf`: 3 of 25 stump-paragraph terms appear (record, january, change); read whether the document names the move
 
-## 8 column names (REVIEW 3)
-- **REVIEW** `DUN_transformer_register_2026-10.xlsx`: columns a generator names and an organisation does not: PROT_DEVICE
-- **REVIEW** `VR_event_log_DUN_2025.csv`: columns a generator names and an organisation does not: Device
-- **REVIEW** `mossford_ap_obs_2022-2026.csv`: columns a generator names and an organisation does not: TMP_C
+## 8 column names (REVIEW 1)
+- **REVIEW** `DUN_transformer_register_2026-10.xlsx`: columns a generator names and an organisation does not: PROTECTIVE_DEVICE
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

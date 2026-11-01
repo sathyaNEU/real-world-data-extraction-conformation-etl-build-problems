@@ -129,10 +129,10 @@ ok("CSV positive control: both historian exports read, %d complete hours" % len(
 # ----------------------------------------------------------------- temperatures (export in LST)
 tmax = {}
 for r in read_csv("mossford_ap_obs_2022-2026.csv"):
-    if not r["TMP_C"]:
+    if not r["DRY_BULB_C"]:
         continue
     t = parse(r["DATE_LST"], "%Y-%m-%dT%H:%M:%S") + dt.timedelta(hours=1)
-    fv = float(r["TMP_C"]) * 1.8 + 32.0
+    fv = float(r["DRY_BULB_C"]) * 1.8 + 32.0
     d = t.date()
     tmax[d] = max(tmax.get(d, -999.0), fv)
 
@@ -153,7 +153,7 @@ B = icpt + slope * DESIGN
 ev = {}
 for r in read_csv("VR_event_log_DUN_2025.csv"):
     if r["Event"] in ("CVR ON", "CVR OFF"):
-        ev.setdefault(r["Device"].split(" ")[0], []).append((parse(r["EventTime"], "%Y-%m-%d %H:%M:%S"),
+        ev.setdefault(r["Equipment"].split(" ")[0], []).append((parse(r["EventTime"], "%Y-%m-%d %H:%M:%S"),
                                                              r["Event"] == "CVR ON"))
 
 
@@ -204,7 +204,7 @@ for r in txr[1:]:
     x = r[col["XFMR_ID"]]
     mult[x] = int(r[col["METER_MULT"]])
     mset[x] = dt.datetime.strptime(r[col["METER_SET"]], "%Y-%m-%d").date()
-    prot[x] = r[col["PROT_DEVICE"]]
+    prot[x] = r[col["PROTECTIVE_DEVICE"]]
 dv = reg["Devices"]
 dcol = {v: k for k, v in dv[0].items()}
 kids = {}

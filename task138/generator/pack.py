@@ -109,7 +109,7 @@ def write_wx(path, wx):
         lst = ts - pd.Timedelta(hours=1)
         out.append([STATION, lst.strftime("%Y-%m-%dT%H:%M:%S"), kind, "" if c is None else "%.1f" % c,
                     "" if dc is None else "%.1f" % dc])
-    return IO.write_csv(path, ["STATION", "DATE_LST", "REPORT_TYPE", "TMP_C", "DEW_C"], out)
+    return IO.write_csv(path, ["STATION", "DATE_LST", "REPORT_TYPE", "DRY_BULB_C", "DEW_POINT_C"], out)
 
 
 # ------------------------------------------------------------------ the pilot's regulator controller log
@@ -146,7 +146,7 @@ def write_reglog(path, log):
             rows.append((tt + pd.Timedelta(minutes=int(rng.integers(4, 140))), "%s VR" % f, "COMM OK", "", "SCADA"))
     rows.sort(key=lambda r: (r[0], r[1], r[2]))
     out = [[ts.strftime("%Y-%m-%d %H:%M:%S"), dev, ev, val, src] for ts, dev, ev, val, src in rows]
-    return IO.write_csv(path, ["EventTime", "Device", "Event", "Bandcenter_V", "Source"], out)
+    return IO.write_csv(path, ["EventTime", "Equipment", "Event", "Bandcenter_V", "Source"], out)
 
 
 # ------------------------------------------------------------------ load forecast
@@ -209,7 +209,7 @@ def write_register(path, tx, dv):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Transformers"
-    ws.append(["XFMR_ID", "FEEDER", "PROT_DEVICE", "KVA", "PHASE", "RATE_CLASS", "METER_NO", "METER_MULT",
+    ws.append(["XFMR_ID", "FEEDER", "PROTECTIVE_DEVICE", "KVA", "PHASE", "RATE_CLASS", "METER_NO", "METER_MULT",
                "METER_SET"])
     for r in tx.sort_values("tx").itertuples():
         phase = "3PH" if r.kva >= 100 else "1PH"
