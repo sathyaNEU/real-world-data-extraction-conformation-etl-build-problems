@@ -1,31 +1,30 @@
 {
  "task": "task157",
- "status": "SHIPPED",
- "domain": "political-science-public-policy/election-polling-forecasting (architecture 2; world: an Arizona state elections division projecting a filed initiative petition from the statutory five per cent random sample)",
+ "status": "DESIGN",
+ "domain": "urban-regional-science/forecasting (architecture 3; world: the Grainford City Region Combined Authority forecasting each franchised bus route's punctuality during the 2027 Thornsby Bridge closure to name the routes its relief notice covers)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-27",
- "stump": "A competent solver projects the statutory five per cent sample by multiplying its valid lines by twenty, files 420,520 printing 420,000 at 109.3 per cent of the 384,924 required, reads the petition sufficient and puts the measure on the ballot; the step that lands them there is scaling a duplicate strike at the sample's own factor of twenty, when a duplicate is a property of a PAIR of lines and a five per cent sample catches a pair only with probability one in four hundred, so the golden projects 390,200, prints 390,000, and orders the examination of all 540,000 lines filed.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "A competent solver forecasts each route's closure punctuality from its own autumn 2026 AVL record, adds the traffic management plan's diversion minutes to route 41 and its corridor minutes to the Ring Road routes, and names route 41 alone for relief; the step that lands them there is treating every other route's departures as independent of route 41, when the duty schedule hands route 41's inbound drivers onto route 27 and route 58 departures at Merchant Row Interchange within a few minutes, so those departures inherit the diversion.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK at as-of 2028-08-04 (the one LEAK string in the report is its own legend line, checked)",
-  "reader": "read once at stage 4 on the pre-fix pack: question 1 nothing, question 6 an analytical choice, no ranking file, no answer figure. Its findings are closed in the fix pass; not re-read, because the documents that changed are the filing record's new Circulator registrations section and the rewritten prompt, both of which the re-judge reads literally."
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK, nearest driver 0.09 (task445 v1): overuse.org_family government_agency, repeat.deliverables png+xlsx against task144, repeat.question_form how-many against task464",
-  "surface": "exit 1 at the stage 3 gate, corrected: it BLOCKed people.full and people.last on Santa Cruz, which is one of Arizona's fifteen counties and not a persona. My DRAWN (task157) commit message claimed exit 0, which was wrong: I had read the exit status of a grep pipeline rather than of guard. Fixed in the screen itself (SKILLS commit e08d58c2, NOT_PERSON_PAIR), after which surface exits 0 with no BLOCK and the names it still reads are an office and a firm.",
-  "nearest": "9 pairs promoted of 297 in scope, all at surface 0.100 to 0.104 against a corpus 99th percentile of 0.100, and all promoted on card axes rather than mechanism: same decisive gap, same decision type or same context-artifact type against task134, task448, task179, task150 and others. To be adjudicated a line each in the design note before the ship. The screen reads this build as delivered 10-17, which is architecture 1's record, so its severities read one level high."
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC on the main call with FIX_NOW; pass 2 NOT_DETERMINISTIC with SEND_BACK, ask 2 and one ask 4 boundary only",
-  "disposition": "both closed; stage 4's pass and re-judge are spent, so no judge stands behind the second closure",
-  "report": "verdicts at /tmp/determinism-check-task157-20261027T103828 and -20261027T114357; the note's ## Ask sheet carries the closure and says plainly that no judge blessed it"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -42,27 +41,26 @@
    "repair": "design",
    "what_moved": "nothing shipped. The cause was measured and architecture 1 is spent: the decisive step is worth 0.58 of a 50,000 bin, the smallest rung gap, while the subgroup choice for the un-returned remainder is worth 0.90 bins and the sampling interval on the golden's own rate 0.31. Three repairs were built and measured and none closes it (a later return profile reaches 2.08 bins and leaves the rival family with 2,215 of headroom; positioning by the campaign size leaves about 8,500 a side; a coarser bin puts the default path in the golden's bucket)",
    "commit": "5826c528"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "architecture 2 (shipped 10-27) returned with the call landed and a determinism finding, as the author's Batch 5 sheet records it ('determinism, landed')",
+   "repair": "design",
+   "what_moved": "architecture 2 spent; re-rooted at stage 1 into another client domain, world, dataset and shell (architecture 3)",
+   "commit": ""
   }
  ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "wave": "wave 5 (new), seed FC28 (world, decision and quantity kept; the insurer-roster hiding place and any filed payout method not shipped; pitfall re-found from how last winter's seasonal recruits come back)",
- "build": {
-  "checks": "138 run, 0 failed",
-  "verify": "29 run, 0 failed (pandas, bundle only, no generator import)",
-  "rebuild": "byte-identical over two full builds (target, golden, figures.json, submission.md)",
-  "figures_check": "112 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (997 characters)",
-  "input_gates": "15 files, 4 formats, largest 38,080 rows, 2 distractors",
-  "call": "390,000 valid signatures to the nearest 5,000 (390,200 unrounded), 101.4 per cent of the 384,924 required, inside the band, so the examination of all 540,000 lines is ordered; default path 420,000 (420,520) and sufficient",
-  "ask_layer": "90 figures; the cracker keeps 16 (0.178 of the ask weight); pair ceiling 44.1 on the worst honest reading, mirror leakage 17.8 per cent",
-  "target_zip_sha256": "b3e74a82ebcc01899825dae53a97d352d249d6dd2b3bbea8f77a7b127774e77c"
- },
- "rule3": "PASS (stage 4 audit): P(one strong solver lands) about 0.10, P(both) about 0.02 to 0.04",
- "notes": "Shipped with two risks stated. One: the real statute prescribes a proportional projection, which is this ladder's rung 1, files 413,240 printing 415,000 and reads sufficient; nothing in the pack ships that formula, which both the leak reader and the judge's thread confirmed clause by clause, and the asking sentence asks what a full count would find, which is what keeps the decisive step analytical. The exposure is a domain expert who reaches for the statute from memory. Two: no judge stands behind the ask-side closure, because stage 4's pass and its one re-judge are both spent, so that closure rests on the filed wording, the measured alternatives, the free gates and the rubric freeze. The ask numbers are filed at their worst honest reading: pair ceiling 45.7 against a 60 build target and a 70 bar, the landing response 66.3 and the other held to 25.2, with 41.7 the pair on the cracker's own keep. The pair is what the bar measures and it clears the build target; the lander is over 60 and that is on the record rather than tuned away."
+ "wave": "Batch 5 wave 1 (oviya1301): rebuild from 2, the call landed, new world",
+ "draw": {
+  "guard_check": "WARN, no BLOCK (repeat.gate_g, overuse.gate_g, repeat.decision and repeat.question_form against task273)",
+  "registered": "2026-11-01",
+  "lineage": "v1 (driver guarantee qualifiers, spent at its second portal return), v2 (petition sample projection, spent at the portal with the call landed)"
+ }
 }
