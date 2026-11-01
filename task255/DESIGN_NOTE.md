@@ -22,7 +22,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   `guard.py names --geo NL --seed 255`: Floortje Brugman (audience research, the golden's author), Evie Hondeveld
   (sales, the bookings workbook), Daphne Riem (RVB data warehouse), Brent Velderman (screen operations, the register).
   As-of date of the fiction: Friday 13 November 2026.
-- **The call:** which packages are sold in Tier G in 2027. Golden: Overstappunten, Zuidtak and Oosttak (49, 48 and 47
+- **The call:** which packages are sold in Tier G in 2027. Golden: Overstappunten, Oosttak and Zuidtak (47, 47 and 46
   per cent); every other package standard tier. The call faces forward (the 2027 rate card's tiers) and is measured on
   a closed window, which the rate card itself fixes (3.2); the descriptive tag stands because the deciding quantity is
   the distribution of opportunities to see over a population, not a predicted value.
@@ -54,8 +54,8 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   operator's fare and ridership record, the planning model is how RVB schedules its timetable (run times, walks,
   frequencies, the gate inventory), and the rate card is the price list the decision amends.
 - **Shock:** the movement the step recovers reads as ordinary: Centraal's and Binnenstad's reach fall because riders
-  change elsewhere, not because anything anomalous happens; sorted by the line map's reach (Overstappunten 77,
-  Centraal 63, Binnenstad 56, Zuidtak 48, Oosttak 47) or by the gates alone (Zuidtak 41, Oosttak 39, Eindhaltes 36),
+  change elsewhere, not because anything anomalous happens; sorted by the line map's reach (Overstappunten 76,
+  Centraal 63, Binnenstad 56, Oosttak 47, Zuidtak 46) or by the gates alone (Zuidtak 41, Oosttak 40, Eindhaltes 35),
   by price or by screen count, the golden set is not an interval of any shipped statistic.
 - **Pins:** the WHAT is filed in rate card section 3 and Annex A in the concessionaire's own genre (the window, the
   regular rider, the passes, effective reach, the line); no filed sentence names the peak, the service pattern, a
@@ -76,7 +76,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   path between two recorded gates carries the frames.
 - **Layer 1:** (1) the RVB extract re-exported after the gate-firmware update of 19 October, so four stations carry
   two name spellings and their gates two code formats (the operator's export); (2) staff and service cards beside
-  passenger products (the card system); (3) 1,022 window journeys with no check-out, riders who forgot to tap out
+  passenger products (the card system); (3) 951 window journeys with no check-out, riders who forgot to tap out
   (the gates); (4) local clock times across the 25 October change from summer time (the extract); (5) the screen
   register kept as a log of hangings, moves and take-downs, with the supplier's replacement units of 3 to 5
   November under new tags (screen operations); (6) the player log in UTC (the content management system); (7) the
@@ -94,18 +94,20 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
   how trains ran at an hour; the deciding fact is a pattern in the durations.
 - **Not rule application:** no filed rule says where a rider changes trains; rate card 3.4 credits "the interchange
   passage of any station where the rider changes trains on the way" and leaves the route to the analyst. Enumerated
-  family (every construction a competent analyst reaches for): the gates only (Tier G Zuidtak alone, Centraal 15),
-  the line map (five packages, Centraal 63), every journey through Centraal credited (five packages, Centraal 69),
-  the peak pattern on every weekday hour (three packages, Centraal 28), the durations read (three packages, Centraal
-  33): a spread of 54 points on Centraal and three distinct tiers. Standing family (what the durations and the rules
-  leave defensible: the reading thresholds, the minute at Centraal three minutes either side, the pattern read for
-  every journey): Centraal 32.68 to 32.73, one rider, one tier. What rules the others out is loud: in the hours
-  trains run every three minutes outside the peak windows 100 per cent of north-east riders change and 0 per cent of
-  north-south riders do, and inside them the reverse.
+  family (every construction a competent analyst reaches for): the gates only (Tier G Zuidtak alone, Centraal 16),
+  the line map (five packages, Centraal 63), every journey through Centraal credited (five packages, Centraal 66),
+  the peak pattern on every weekday hour (three packages, Centraal 29), each journey read from its own duration
+  (three packages, Centraal 34): a spread of 50 points on Centraal and three distinct tiers. Standing family (what
+  the durations leave defensible once the step is taken: a cut anywhere in the empty band, the pattern read off the
+  clock at check-in, at Centraal or at check-out, the route by fewest changes, by time, with the halls' walks or the
+  expected waits): the same riders in every package, by construction. The line map is ruled out by no filed
+  sentence, only by the record, and loudly: the minutes a journey through Centraal took over its walks and runs leave
+  an empty band from 5.7 to 7.7 minutes, every north-south and west-east journey of the weekday peaks above it and
+  every north-east and west-south one below it.
 - **Analyst test:** a strong analyst who cleans the extract, applies every rate-card rule and assigns each journey to
   its line-map path, the field's way of placing the passes no gate records, files Tier G for Centraal, Binnenstad,
   Overstappunten, Oosttak and Zuidtak with Centraal at 63 per cent; only reading the durations moves Centraal and
-  Binnenstad to 33.
+  Binnenstad to 34 and 33.
 - **Estimand:** rate card 2027 (Spoorbeeld_tariefkaart_2027.pdf) section 3: a package is sold in Tier G when its
   effective reach in the audience window (5 October to 1 November 2026, the operator's OV-chipkaart metro journeys)
   is 40 per cent or more, effective reach being the share of regular riders (passenger cards with a journey in each
@@ -124,7 +126,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
 ## Default path
 
 1. Take the passenger cards of RVB_metro_ritten_20261001_20261104.csv with a journey checked in during each
-   calendar week from 5 October to 1 November 2026 (rate card 3.3): 1,949 regular riders.
+   calendar week from 5 October to 1 November 2026 (rate card 3.3): 1,901 regular riders.
 2. Map each journey's check-in and check-out gates to halls through the planning model's Gates sheet.
 3. Route each journey over the published lines by the fewest changes (the field's path assignment) and credit the
    interchange passage of every station where the route changes line: every north-east and west-south journey
@@ -133,7 +135,7 @@ per-occurrence retention) is kept below as `## Architecture 1 record`; its world
    against the 40 per cent line.
 
 Ends on: Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak, Centraal at 63 per cent.
-Golden: Tier G for Overstappunten, Zuidtak and Oosttak, Centraal at 33 per cent.
+Golden: Tier G for Overstappunten, Oosttak and Zuidtak, Centraal at 34 per cent.
 
 ## Stump sentence
 
@@ -141,7 +143,7 @@ The default path puts every change of trains where the line map puts it and file
 Overstappunten, Oosttak and Zuidtak, Centraal at 63 per cent; on weekday peaks the north and east branches run
 through Centraal into each other and the west and south likewise, so the big north-east and west-south commuter
 flows never use the interchange passage, which only each journey's duration against the network's timings shows,
-and Centraal and Binnenstad fall to 33 per cent.
+and Centraal and Binnenstad fall to 34 and 33 per cent.
 
 ## Readability screen
 
@@ -157,20 +159,20 @@ and Centraal and Binnenstad fall to 33 per cent.
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | a regular rider's four weeks | calendar weeks Monday to Sunday | seven-day blocks from 5 October | same call, same 1,949 riders | same call (the window starts on a Monday) |
+| SF1 | a regular rider's four weeks | calendar weeks Monday to Sunday | seven-day blocks from 5 October | same call, same 1,901 riders | same call (the window starts on a Monday) |
 | SF2 | the date a journey counts on | check-in | check-out | same call and figures | rate card 3.3, and same call |
 | SF3 | staff and service cards | left out | kept | same call, figures one point up | rate card 3.3 ("not a staff or service card"); RVB_productcodes.csv card_class |
 | SF4 | a journey without a check-out | its check-in hall only | dropped | same call and figures | rate card 3.4, and same call |
 | SF5 | "passes ... each time" | per place passed | once per journey | same call, three figures move | rate card 3.4 counts each hall or passage the journey takes the rider through |
 | SF6 | the hall a gate stands in | the Gates sheet | the stop alone | same call and figures | same call (no package lists one Centraal hall alone) |
-| SF7 | the route between two gates | fewest changes | fastest | same route for all 1,056 pairs | same call |
-| SF8 | the Centraal change off the peak | the line map | the duration alone at the passage walk | figures move | the data: in every hour the duration-only reading calls changes, more than 40 per cent of the same hour's straight trips came out faster than any change |
-| SF9 | the minute a rider reaches Centraal | walk, first wait and run from the check-in | three minutes either side, or the pattern read for every journey | same call and figures | same call |
-| SF10 | the line on the unrounded or the rounded reach | unrounded | rounded | same call | same call (every package 4.24 points or more from 40) |
+| SF7 | the route between two gates | fewest changes, then time | time alone; the journey's own hall walks added; the expected waits of the peak or the quiet hours added | same riders in every package | same call (the regular riders travel only station pairs every costing routes alike; asserted) |
+| SF8 | where a journey's own duration says it changed | above the empty band in the excesses | a cut at either edge of the band | same riders in every package | same call (no journey's excess falls in the 5.7 to 7.7 minute band; asserted) |
+| SF9 | the minute the service pattern is read at | each journey's own duration | the clock at check-in, at Centraal from either end, or at check-out | same riders in every package | same call (no regular rider's trip through Centraal spans a change of pattern; asserted) |
+| SF10 | the line on the unrounded or the rounded reach | unrounded | rounded | same call | same call (every package 5.18 points or more from 40) |
 | SF11 | the journeys' clock | local | an hour off after 25 October | same call and figures | same call |
-| SF12 | rounding a reach | half up | half to even | same figures | same call (every reach 0.18 of a point or more inside its bin) |
+| SF12 | rounding a reach | half up | half to even | same figures | same call (every reach 0.16 of a point or more inside its bin) |
 | SF13 | the player log's clock | UTC read in Ravelmond time | read as local | make-good moves | the column header event_time_utc; general terms 6.1 local time |
-| SF14 | when a taken-down screen goes dark | its player's last display report | the opening of the day the register gives | same make-good | same figures |
+| SF14 | when a taken-down screen goes dark | the day's opening | the start of the date the register gives | same make-good | same figures (its player was switched off the evening before) |
 | SF15 | part of an hour of make-good | counts as an hour | rounded to nearest | make-good moves | general terms 6.3 |
 | SF16 | booked screen-hours | the bookings workbook | opening hours times booked screens | same figures | same figures (they agree) |
 | SF17 | on sale on 1 January 2027 | hung by then and not taken down by then | none falls on the day | same counts | same counts |
@@ -178,21 +180,25 @@ and Centraal and Binnenstad fall to 33 per cent.
 | SF19 | legacy invoice amounts | split out the VAT | gross | revenue moves | the header bedrag_incl_btw; general terms 8.3 excluding VAT |
 | SF20 | the agency commission | each agency's contract rate | the rate card's standard 15 per cent | revenue moves | rate card section 2 and general terms 8.2 ("the rate in the agency's contract") |
 | SF21 | the VAT split | rounded to the cent | unrounded | same 10-euro figures | same figures |
-| SF22 | which player drives a screen during a re-cabling | the receiving player's display report | the register's entry | make-good moves | general terms 6.2 ("the media player it is connected to"); the display report |
+| SF22 | when a screen moved off a dead player connects to the receiving player | the receiving player's first report counting it among its displays | the register's entry (the work order's closing) | make-good moves | general terms 6.2 ("connected ... from the player's first report in the content management system that counts the screen among its displays") |
+| SF23 | the register's connection times | Ravelmond local time | read as UTC | same make-good | same figures; the header says connected_from_local |
+| SF24 | a player whose first status in the log is ONLINE | offline from before the log began | online until its first OFFLINE | make-good moves | the log's own events: an ONLINE report ends an offline spell |
+| SF25 | two open register rows at one position | one screen (the replacement unit) | two screens | counts move | both tags sit on one player output, and the player reported as many displays after the night's work as before it |
 
 ## Ladder
 
 | Rung | Construction | Tier G | Centraal | Binnenstad | Overstappunten |
 |---|---|---|---|---|---|
-| R0 | the gates only (halls of check-in and check-out) | Zuidtak | 15 | 17 | 0 |
-| R1 | the line map's changes (path assignment, the field's method) | Centraal, Binnenstad, Overstappunten, Oosttak, Zuidtak | 63 | 56 | 77 |
-| R1b | every journey through Centraal credited with the passage | the same five | 69 | 63 | 83 |
-| R2 | the peak pattern on every weekday hour | Overstappunten, Oosttak, Zuidtak | 28 | 31 | 45 |
-| G | each Centraal change read from the journey's duration | Overstappunten, Oosttak, Zuidtak | 33 | 33 | 49 |
+| R0 | the gates only (halls of check-in and check-out) | Zuidtak | 16 | 17 | 0 |
+| R1 | the line map's changes (path assignment, the field's method) | Centraal, Binnenstad, Overstappunten, Oosttak, Zuidtak | 63 | 56 | 76 |
+| R1b | every journey through Centraal credited with the passage | the same five | 66 | 59 | 80 |
+| R2 | the peak pattern on every weekday hour | Overstappunten, Oosttak, Zuidtak | 29 | 29 | 42 |
+| G | each Centraal journey read from its own duration | Overstappunten, Oosttak, Zuidtak | 34 | 33 | 47 |
 
 R2 lands the call with three wrong figures and is refuted by the shoulder hours (`checks.py` L5). Every rung is
-asserted on the cut pack and on the clean truth; the golden reproduces the world's own passes for every rider. The
-nearest package to the line under the golden is Eindhaltes at 35.76 (4.24 points).
+asserted on the cut pack and on the clean truth; the golden reproduces the world's own passes for every rider, and
+every classification and routing the record licenses gives the same riders in every package (SF7 to SF9). The
+nearest package to the line under the golden is Eindhaltes at 34.82 (5.18 points).
 
 ## Closure table
 
@@ -229,7 +235,7 @@ the golden once the reader establishes where riders changed trains, which 3.4 le
 show every convention either converges or is ruled out by a quoted sentence, and the routes converge (SF7). The
 line-map answer is not another reading of any sentence; it is the field's method applied to a network the journeys
 show was not running at the peaks. The asks read the same way: general terms 6.1 to 6.3 and 8.1 to 8.3 file the
-make-good and net revenue, and SF13 to SF22 close their conventions.
+make-good and net revenue, and SF13 to SF25 close their conventions.
 
 ## Oracles
 
@@ -249,20 +255,25 @@ billing systems and the statements); none feeds the chart.
 
 **Ask A, make-good owed per autumn booking (10 figures, whole hours).** Home: general terms 6.3, the first quarter of
 2027.
-- Primary device (D8, a recorded date for the event date): when a media player died the field engineers re-cabled
-  its screens to a working player at the same place a day or two later, and the register's Bekabeling sheet enters
-  the move when the work order is closed, one to six days after the job; only the receiving player's report of its
-  displays rising by the moved screens dates the move. Every booking carries one such failure, so every figure moves
-  by 43 hours or more.
-- Hazards: the player log in UTC across the 25 October change (6.1 local time); Wilgenhof's screens taken down on 19
-  October (6.2); the 0.5 per cent allowance and rounding up (6.3).
+- Primary device (D4, absence evidenced in the log's own first record): the players behind seven of the 5 October
+  bookings had been offline since late September, and the player log's export starts on 1 October, so each one's
+  first status there is ONLINE in the flight's first days; only reading that ONLINE as the end of an outage makes
+  those days dark (20 to 70 hours a screen).
+- Second device (D8, a recorded date for the event date): every booking had one player die and its screens re-cabled
+  to a working player a day or two later; the register enters the move when the work order is closed, one to six
+  days after the job, and terms 6.2 files that a screen connects from the receiving player's first report counting it
+  among its displays, so the reconstruction joins the register's moves to the player's display counts.
+- Hazards: the player log in UTC across the 25 October change (6.1 local time); Wilgenhof's player switched off the
+  evening before its screens came down (6.2); the 0.5 per cent allowance and rounding up (6.3).
 
 **Ask B, screens on sale on 1 January 2027 per package (9 counts).** Home: the 2027 inventory behind the rate card.
-- Primary device (D7, the true key elsewhere): the supplier's replacement units hung on 3 to 5 November at eight
-  halls and passages came in under new asset tags while the old tags' rows were never closed, so one position
-  carries two open rows; the position is the screen, and every package has a replaced screen.
-- Hazards: the status column as of 12 November against the planned December take-downs and hangings; moves that
-  left the old row open under the same tag; a screen held outside the packages (package "-").
+- Primary device (D7, the true key elsewhere): the supplier's replacement units, swapped at night from 2 to 4 November
+  at eight halls and passages, came in under new asset tags while the old units' rows and connections were never
+  closed, so one position carries two open rows; the position is the screen, as the cabling shows (both tags on one
+  player output) and the player log confirms (each player reported as many displays after the night's work as
+  before it). Every package has a replaced screen.
+- Hazards: the status column as of 12 November against the planned December take-downs and hangings; moved screens
+  (the same tag on a new row, the old row closed); a screen held outside the packages (package "-").
 
 **Ask C, net revenue from the autumn bookings per package (9 figures, nearest 10 euros).** Home: the revenue base
 the Tier G surcharge is priced on.
@@ -274,32 +285,29 @@ the Tier G surcharge is priced on.
   year's other invoices in both systems.
 
 Pin test: the asking sentences pin the unit (hours, counts, euros), the rounding, the date (1 January 2027) and the
-population (the autumn bookings); no pin names a re-cabling, a position, a tag or a statement date. The main
+population (the autumn bookings); no pin names an outage open at the log's start, a position, a tag or a statement
+date. Terms 6.2's sentence on when a screen connects files the WHAT of the re-cabling device, so the cracker takes
+that device; the open-start outages carry ask A. The main
 population carries zero device rows: the call reads the journeys, the planning model, the product list and the rate
 card, and no ask reads any of them (`checks.py` R2 and SEP).
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| A, every booking | dates each re-cabling by the register's entry | miss |
+| A, the seven 5 October bookings | builds offline spells from OFFLINE and ONLINE pairs only | miss |
 | B, every package | keeps each tag's latest row, so a replaced position counts twice | miss |
 | C, the seven agency packages | shares each statement's amount over its bookings | miss |
 
-Pair ceiling: 32.4 ((38 + 7 + 55 x 0.071) and (5 + 7 + 55 x 0.071), averaged)
-Mirror leakage: 7.1 per cent of ask weight
+Pair ceiling: 38.3 ((38 + 7 + 55 x 0.179) and (5 + 7 + 55 x 0.179), averaged)
+Mirror leakage: 17.9 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Build record
 
 - Generator: `generator/` (params, world, asks_world, pack, io_util, analysis, golden, checks, verify, ceiling,
-  writeup, build). World from SEED 25502, the commercial records from their own stream (salt 298); 2,232 habitual
-  riders drawn, 1,949 of them regular in the window. Deliverables: tier_g_2027.xlsx (four sheets) and
-  tier_g_2027.svg (the reach chart, titled with the call).
-- Free gates on the final cut (2026-11-01): checks.py 72 of 72; verify.py 7 of 7 blocks on its own code path
-  (pandas, its own PDF decoder, the peak windows found from the data); two builds byte-identical over 18 files,
-  target.zip 23cb43ec; figures_check.py 61 of 61; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS with no
-  WARN; leak.py --asof 2026-11-13 REVIEW (three lines, answered below); guard.py heart PASS; guard.py surface 11
-  pairs promoted for the author's adjudication, the nearest task254 (back to back on G7, surface 0.084); the
-  container audit clean on target/ and golden/; every shipped PDF read by pdftotext and by pypdf in strict mode.
+  writeup, build). World from SEED 25502, the commercial records from their own stream (salt 298) and the season's
+  operations from theirs (salt 187); 2,183 habitual riders drawn, 1,901 of them regular in the window.
+  Deliverables: tier_g_2027.xlsx (four sheets) and tier_g_2027.svg (the reach chart, titled with the call).
+- Free gates on the final cut after the round 1 repair: see `## Judge record`.
 
 ## Leak record
 
@@ -313,6 +321,32 @@ Measured by: generator/ceiling.py (run on the cut pack)
   forward-looking rows (the allow-list of `reduce-house-fixes` H16). Harmless.
 - The booking numbers (0411 to 0437) appear in the agency statements and in block 4 as identifiers; they are listed
   under `stated_inputs` in metadata.json.
+
+## Judge record
+
+- Round 1 (stage 4, main session): leak reader clean, question 6 analytical. Judge NOT_DETERMINISTIC, SEND_BACK, with
+  the call forced under every variant it ran (Gate F strong, G and H pass, H "analytical, borderline planted"; the
+  rate card's "where the rider changes trains" kept word for word as the estimand). Failures on component figures
+  and asks, all repaired in the generator:
+  1. Reach cells: the per-journey duration test the write-up describes gave Centraal 31, Binnenstad 32 and
+     Overstappunten 48 against the shipped 33, 33 and 49, and Zuidtak moved with the halls' walks in the route. The
+     golden is now that per-journey test, its cut read from the empty band in the record; the world gives every
+     regular rider's trip through Centraal a clean duration (M1 and M2 every 3 to 5 minutes, the Centraal passage 8.0
+     minutes), keeps every such trip wholly inside or outside a peak window, and lets regular riders travel only
+     station pairs that every costing routes alike. Each classification and routing gives the same riders in every
+     package (SF7 to SF9).
+  2. Make-good: terms 6.2 now files when a screen connects (the player's first report counting it among its
+     displays), so the register's work-order dates are a wrong basis; Wilgenhof's player is switched off the evening
+     before its screens come down, so the take-down's hour no longer moves a figure (SF14); the register's headers
+     carry their zone (SF23); every figure 0.21 of an hour or more inside its whole hour. With the re-cabling filed,
+     ask A rests on outages already open when the log begins (SF24).
+  3. Screens on sale: the replacement units now sit on the old units' player outputs, and the player log shows each
+     player's display count unchanged across the night's work (SF25).
+  4. The repeated asset tag was a moved screen whose old row was left open; every moved screen's old row is now closed
+     on the day it moved (B4).
+- Free gates on the repaired cut: checks.py 78 of 78; verify.py 7 of 7 on its own code path (it finds the empty band
+  from the data); two builds byte-identical over 18 files; figures_check.py, precut.py, voice-check.py, leak.py,
+  guard.py heart and surface as recorded in pipeline.json; ceiling.py pair 38.3, mirror 17.9.
 
 ## Architecture 1 record (spent 2026-11-01)
 
@@ -823,3 +857,16 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   and pptx+xlsx (task273), and png+xlsx sits over its corpus quota (21 per cent); the chart ships as an SVG.
 - The question as "whether we should sell any package in Tier G": the guard found the form in one of the last two
   prompts (task138); recast as a what-question.
+- Round 1's golden (duration read only in the three-minute hours, the clock pattern elsewhere): the per-journey test the
+  write-up stated gave other whole per cents for three packages, and the route with the halls' walks moved a fourth;
+  replaced by the per-journey test on a record whose every regular trip through Centraal reads cleanly.
+- Round 1's make-good dating left open by terms 6.2: two licensed sources (the register's entries and the display
+  reports) gave two sets of figures; 6.2 now files the second.
+- Round 1's take-down at a register date with no time: the start of the date added half an hour per screen; the
+  player now goes dark the evening before.
+- Round 1's swaps on 3 to 5 November with nothing to tell a replacement from an addition: the units now share their
+  output and the display counts show it; the swaps moved to 2 to 4 November, inside the player log.
+- Commuter times spread evenly from 07:00 and 16:00: trips that began before a pattern change and passed Centraal
+  after it read differently on the check-in clock; the commute is centred in the peaks and the few trips near a
+  change are moved clear of it.
+- 2,189 habitual riders: Overstappunten and Oosttak came out at the same rider count; 2,183 kept.

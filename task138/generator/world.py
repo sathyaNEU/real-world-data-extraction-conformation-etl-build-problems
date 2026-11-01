@@ -1,9 +1,9 @@
 """The world's clean truth for task138 architecture 3: Breckwater Electric Cooperative's Dunraith substation.
 
-Five summers of hourly feeder loads at the Dunraith substation (eight 12.47 kV feeders) driven by the Mossford
+Five summers of hourly feeder loads at the Dunraith substation (eight 24.9 kV feeders) driven by the Mossford
 airport's temperatures: a load that follows the hour of day and air conditioning whose duty rises with the
 temperature the buildings feel. In summer 2025 three feeders ran conservation voltage reduction week on, week off:
-a 3.0 per cent voltage cut lowers the voltage-sensitive load by about its own share and air-conditioner compressors
+a 3.5 per cent voltage cut lowers the voltage-sensitive load by about its own share and air-conditioner compressors
 (about constant power) hardly at all, so the cut's relief is largest at night and smallest on the hottest
 afternoons. Also drawn here: the members' transformer meters (summer 2026), the wholesale supplier's revenue meters
 at the substation (summer 2026), the July 2026 feeder reconfiguration, and the distractors.
@@ -31,13 +31,17 @@ def weather():
         days = pd.date_range("%d-06-01" % year, "%d-10-01" % year, freq="D")
         n = len(days)
         d = np.arange(n)
-        mean = 88.0 + 5.8 * np.sin(np.pi * (d + 12) / 138.0)
+        mean = 87.5 + 5.6 * np.sin(np.pi * (d + 12) / 138.0)
         an = np.zeros(n)
         for i in range(1, n):
-            an[i] = 0.72 * an[i - 1] + rng.normal(0, 4.4)
+            an[i] = 0.70 * an[i - 1] + rng.normal(0, 3.1)
         tx = mean + an
         if year == 2025:
-            tx = tx + 0.4
+            # the heat wave of late July and early August ran across a week with the voltage cut and the weeks
+            # either side without it
+            wave = np.asarray(((days >= pd.Timestamp("2025-07-24")) & (days <= pd.Timestamp("2025-08-06"))) |
+                              ((days >= pd.Timestamp("2025-08-21")) & (days <= pd.Timestamp("2025-08-30"))))
+            tx = np.where(wave, 100.4 + rng.normal(0, 0.9, n), tx - 1.0)
         tn = tx - 19.0 - rng.normal(0, 2.2, n)
         idx = summer_index(year)
         t = np.empty(len(idx))
@@ -60,7 +64,7 @@ def weather():
 
 # ------------------------------------------------------------------ loads
 OTHER_PROFILE = np.array([0.60, 0.56, 0.54, 0.53, 0.54, 0.58, 0.66, 0.74, 0.79, 0.82, 0.84, 0.85,
-                          0.86, 0.86, 0.87, 0.88, 0.90, 0.94, 0.99, 1.00, 0.96, 0.88, 0.78, 0.68])
+                          0.86, 0.88, 0.92, 0.96, 0.98, 0.99, 0.995, 1.00, 0.97, 0.89, 0.78, 0.68])
 WEEKEND = 0.93
 
 
@@ -70,7 +74,7 @@ def other_load(ts):
 
 
 def duty(t_eff):
-    return np.clip((t_eff - PR.DUTY_T0) / (PR.DUTY_T1 - PR.DUTY_T0), 0.0, 1.0)
+    return np.clip((t_eff - PR.DUTY_T0) / (PR.DUTY_T1 - PR.DUTY_T0), 0.0, 1.0) ** PR.DUTY_EXP
 
 
 def pilot_schedule():
@@ -84,7 +88,8 @@ def pilot_schedule():
         out.append((t, "ON" if k % 2 == 0 else "OFF"))
         t = t + pd.Timedelta(days=7)
         k += 1
-    out.append((end + pd.Timedelta(days=7) if out[-1][1] == "ON" else end, "OFF"))
+    if out[-1][1] == "ON":
+        out.append((out[-1][0] + pd.Timedelta(days=7), "OFF"))
     return out
 
 
@@ -122,12 +127,12 @@ def cvr_state(log, feeder, idx):
 
 
 def cvr_relief(other, ac):
-    """Share of a feeder's load the 3.0 per cent voltage cut removes in an hour."""
+    """Share of a feeder's load the 3.5 per cent voltage cut removes in an hour."""
     return PR.CVR_DV * (PR.CVR_OTHER * other + PR.CVR_AC * ac) / (other + ac)
 
 
 # the July 2026 reconfiguration: whole transformer groups moved between feeders (share of the substation's load)
-RECONFIG_DATE = pd.Timestamp("2026-07-01 06:00")
+RECONFIG_DATE = pd.Timestamp("2026-07-01 00:00")
 RECONFIG = [("DUN-4", "DUN-8", 0.0215), ("DUN-1", "DUN-3", 0.0128), ("DUN-6", "DUN-2", 0.0102)]
 
 
@@ -160,7 +165,10 @@ def loads(wx):
             sh = np.array([s[f] for s in shares])
             o = other * sh
             a = PR.AC_FULL * g * d * sh * PR.AC_WEIGHT[fi]
-            mw = (o + a) * (1 + rng.normal(0, PR.LOAD_NOISE, len(idx)))
+            # the load that does not follow the weather wanders more from hour to hour than air conditioning,
+            # which thousands of thermostats smooth
+            sd = PR.LOAD_NOISE * o / (o + a) + 0.0005
+            mw = (o + a) * (1 + rng.normal(0, 1.0, len(idx)) * sd)
             on = states[f]
             mw = np.where(on, mw * (1 - cvr_relief(o, a)), mw)
             out.append(pd.DataFrame({"local": idx, "feeder": f, "mw": mw, "other": o, "ac": a, "cvr": on}))
@@ -168,10 +176,11 @@ def loads(wx):
 
 
 def truth_relief_at_design():
-    """The voltage cut's relief at the planning peak: the substation's evening peak hour on a design day, every
-    feeder's air conditioning at full duty."""
-    o = PR.OTHER_PEAK * OTHER_PROFILE.max()
-    a = PR.AC_FULL * sum(s * w for s, w in zip(PR.SHARE, PR.AC_WEIGHT))
+    """The voltage cut's relief at the planning peak: the substation's evening peak hour (18:00) on a weekday whose
+    afternoon reaches the design temperature, the buildings feeling the afternoon's heat about two hours late."""
+    t_eff = PR.DESIGN_TEMP_F - 0.35
+    o = PR.OTHER_PEAK * OTHER_PROFILE[18]
+    a = PR.AC_FULL * float(duty(t_eff)) * sum(s * w for s, w in zip(PR.SHARE, PR.AC_WEIGHT))
     return cvr_relief(o, a)
 
 

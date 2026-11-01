@@ -132,16 +132,6 @@ def verify_main(target, fig):
     wk = W.groupby("card_id")["d"].apply(lambda s: len({x.isocalendar()[1] for x in s}))
     regular = set(wk[wk == 4].index)
 
-    def headway(day, m):
-        tag = "ma-vr" if day.weekday() < 5 else ("za" if day.weekday() == 5 else "zo")
-        for _, f in freq[(freq.line == "M1") & (freq.days == tag)].iterrows():
-            a, b = minutes(f["from"] + ":00"), minutes(f["to"] + ":00")
-            if b <= a:
-                b += 1440
-            if a <= m < b:
-                return 60.0 / f.trains_per_hour
-        return 10.0
-
     line = {"N": "M1", "S": "M1", "W": "M2", "E": "M2"}
     rows = []
     for x in W.itertuples():
@@ -168,15 +158,15 @@ def verify_main(target, fig):
         s = single(legs)
         if s:
             hist[int(over_runs(x, *s) * 10)] += 1
-    run, best, cur = 0, (0, 0), None
+    streak, best, cur = 0, (0, 0), None
     for b in range(20, 150):
         if hist[b] == 0:
-            cur = b if run == 0 else cur
-            run += 1
-            if run > best[0]:
-                best = (run, cur)
+            cur = b if streak == 0 else cur
+            streak += 1
+            if streak > best[0]:
+                best = (streak, cur)
         else:
-            run = 0
+            streak = 0
     cut = (best[1] + best[0] / 2.0) / 10.0
     say("an empty band in the minutes a journey through Centraal took over its runs", best[0] >= 15,
         "%.1f to %.1f minutes" % (best[1] / 10.0, (best[1] + best[0]) / 10.0))

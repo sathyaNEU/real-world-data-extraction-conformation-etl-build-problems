@@ -11,7 +11,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-ZIP_TIME = (2026, 11, 9, 9, 15, 0)
+ZIP_TIME = (2026, 10, 27, 8, 40, 0)
 
 
 def write_csv(path, header, rows, preamble=None, newline="\r\n"):

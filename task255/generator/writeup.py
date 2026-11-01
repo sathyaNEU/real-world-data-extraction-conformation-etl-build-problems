@@ -33,10 +33,10 @@ def main():
           "other package stays in the standard tier.** The nearest package below the line is %s at %d per cent. Not "
           "Centraal and Binnenstad: with every change of trains put where the line map puts it they reach %d and %d "
           "per cent, but on weekday peaks the north and east branches run through Centraal into each other, as do the "
-          "west and south, so the riders who change there are others than the line map shows and both packages "
-          "reach %d per cent."
+          "west and south, so the riders who change there are others than the line map shows, and they reach %d and "
+          "%d per cent."
           % (names, reach[tier[0]], reach[tier[1]], reach[tier[2]], near, reach[near], lm["Centraal"],
-             lm["Binnenstad"], reach["Centraal"]), ""]
+             lm["Binnenstad"], reach["Centraal"], reach["Binnenstad"]), ""]
     L += ["## 2. Critical Components", "",
           "1. The audience window holds **%s** regular riders (passenger cards with a metro journey in each of its "
           "calendar weeks)." % format(f["regular_riders"], ","),
@@ -44,8 +44,9 @@ def main():
           "on weekday peaks the changes fall on north-south and west-east journeys, not on north-east and west-south "
           "ones; at every other time riders change where the line map shows.",
           "3. Effective reach is **%d per cent** for %s, **%d per cent** for %s and **%d per cent** for %s, and "
-          "**%d per cent** for Centraal and for Binnenstad." % (reach[tier[0]], tier[0], reach[tier[1]], tier[1],
-                                                                reach[tier[2]], tier[2], reach["Centraal"]), ""]
+          "**%d per cent** for Centraal and **%d per cent** for Binnenstad." % (
+              reach[tier[0]], tier[0], reach[tier[1]], tier[1], reach[tier[2]], tier[2], reach["Centraal"],
+              reach["Binnenstad"]), ""]
     L += ["## 3. Step-by-Step Solution", "",
           "1. Kept the passenger cards (card class reiziger in RVB_productcodes.csv) of "
           "RVB_metro_ritten_20261001_20261104.csv with a journey checked in during each calendar week from 5 October "

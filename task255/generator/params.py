@@ -68,7 +68,7 @@ PACKAGES = {
 PACKAGE_ORDER = ["CEN", "BNS", "OVP", "NRD", "OST", "WST", "ZDT", "RNG", "EIN"]
 
 # ---------------------------------------------------------------- riders
-N_REGULAR = 2189
+N_REGULAR = 2183
 N_OCCASIONAL = 3200
 N_STAFF = 34
 HOME_W = {"N": 0.27, "S": 0.14, "W": 0.16, "E": 0.12, "P": 0.27, "X": 0.04}

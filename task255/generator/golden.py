@@ -51,7 +51,8 @@ def figures(c):
          "tier_line_pct": 40, "effective_frequency": 3, "headway_min": 3, "make_good_allowance_pct": 0.5,
          "agency_rates_pct": {a: round(100 * v, 1) for a, v in c["rates"].items()},
          "booking_package": {b["booking_ref"]: b["package"] for b in c["bookings"]},
-         "clauses_cited": "rate card 3.1, 3.2, 3.3, 3.4, 3.5; general terms 6.1, 6.2, 6.3, 8.2, 8.3"}
+         "clauses_cited": "rate card 3.1, 3.2, 3.3, 3.4, 3.5; general terms 6.1, 6.2, 6.3, 8.2, 8.3",
+         "replacement_nights": "2 to 4 November 2026"}
     return f
 
 

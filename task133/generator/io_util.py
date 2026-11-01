@@ -8,7 +8,7 @@ import zipfile
 
 import params as P
 
-FIXED_ZIP_DT = (2026, 10, 16, 9, 12, 0)
+FIXED_ZIP_DT = (2026, 10, 20, 8, 40, 0)
 
 
 def write_csv(path, header, rows, delimiter=","):
@@ -50,7 +50,7 @@ def core_props(title, creator, created, modified=None):
             '</cp:coreProperties>')
 
 
-def app_props(app="Microsoft Excel", company="Orari Bank Limited"):
+def app_props(app="Microsoft Excel", company="Matiri Forest Products Limited"):
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
             '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
             'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'

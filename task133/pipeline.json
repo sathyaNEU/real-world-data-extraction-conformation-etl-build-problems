@@ -1,25 +1,25 @@
 {
  "task": "task133",
- "status": "BUILD",
- "domain": "banking-credit-financial-risk",
+ "status": "DESIGN",
+ "domain": "urban-regional-science",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-01",
- "stump": "own sales fall read through the industries that pay each borrower (receipts matched to the NZBN register) against the field's own-division sector stress",
- "architecture": 3,
+ "stump": "a relaxed mass limit lifts each log truck load only until its bunks are full; the short grades gain a fraction of the six tonnes",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-01"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 (no LEAK; four REVIEW lines ruled harmless in the note's Leak review)",
+  "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-01 (repeat.gate_g only, the lane's objective; read against the cards on file that day)",
-  "nearest": "0.06 task120 v2 (lineage)"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
   "verdict": "",
@@ -34,7 +34,7 @@
    "commit": "RESHIPPED (task133): round 2 (this commit)"
   }
  ],
- "resume": "stage 4: the isolated leak reader and the determinism judge (main session)",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": {
@@ -56,26 +56,19 @@
    "target_zip_sha256": "1fb3303f0f3c7d34219c8de135dcad6e5c245a1e984407d20b5a1a22c91c2f5a",
    "fate": "landed on the portal (the survival-to-date conditioning was the field's reflex); re-rooted 2026-11-01 at the Batch 3 queue reset, one architecture per world: the Bellbird personal-loan ECL world is closed",
    "reports": "determinism_check_report*_arch2.md, leak_check_report_arch2.md, clone_check_report*_arch2.md"
+  },
+  {
+   "architecture": 3,
+   "drawn": "2026-11-01",
+   "target_zip_sha256": "d613bac0e35fc25acb1cb6227a31258f33a8202e5722f4d73247c787ec45188e",
+   "fate": "spent 2026-11-01 at stage 4: judge NOT_DETERMINISTIC, SOLUTION_WRONG, SEND_BACK (Gate H: 'decisive_step analytical only if the method is filed'; CR-ST-02 2.1 and 3.2 read word for word give each borrower its own division's change, NZD 10.0 million; the payer route an unfiled transmission convention); the leak reader's question 6 read the call as a stated rule plus fields read correctly; the asks rested on unfiled choices",
+   "reports": "leak_check_report_arch3.md (leak.py); the stage 4 judge and reader reports are held by the main session"
   }
  ],
  "draw": {
   "date": "2026-11-01",
   "card": ".claude/skills/fingerprint/cards/task133.json",
-  "guard_check": "WARN (repeat.gate_g, the lane's objective); structural NOTEs differentiated against task134 v3, task146, task156 v2, task165, task173 v1, task465 v2, task54",
-  "world": "Orari Bank Limited, a South Island regional bank (Timaru): the ICAAP severe-scenario 2027 credit loss on its business lending book; subdomain stress-testing-capital"
- },
- "gates": {
-  "date": "2026-11-01",
-  "generator_checks": "86 assertions, 0 failed",
-  "verify": "0 checks failed (independent reader: pandas, python-docx, openpyxl, raw PDF decoder; parameters from the shipped documents)",
-  "byte_identical_builds": "two builds in fresh interpreters byte-identical (20 target files, 2 goldens, target.zip)",
-  "figures_check": "PASS, 55 figures, 0 absent",
-  "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
-  "voice_check": "PASS (988 characters)",
-  "target_zip_sha256": "d613bac0e35fc25acb1cb6227a31258f33a8202e5722f4d73247c787ec45188e",
-  "pair_ceiling": "28.5 (43.5 if the cracker also finds one silent device); mirror leakage 0.0",
-  "guard_heart": "WARN (repeat.gate_g only)",
-  "guard_surface": "7 card-axis pairs promoted for adjudication (gap population, G14, quantity_figure: task134, task131, task465, task146, task165, task156, task54), each with a card differentiation line; surface similarity 0.080 to 0.100; no personas in the cut pack",
-  "leak_py": "REVIEW, no LEAK (--asof 2026-10-16)"
+  "guard_check": "WARN (repeat.gate_g and repeat.decision against task138 v3; first-name WARNs on older builds); structural NOTEs differentiated against task141, task142, task148, task173",
+  "world": "Matiri Forest Products Limited (Hawke's Bay): FY2028 log truck loads to Port Kowhai once the 50MAX route opens; urban-regional-science forecasting"
  }
 }

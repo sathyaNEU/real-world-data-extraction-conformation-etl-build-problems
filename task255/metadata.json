@@ -99,15 +99,15 @@
  },
  "largest_file": {
   "name": "RVB_metro_ritten_20261001_20261104.csv",
-  "rows": 112057
+  "rows": 110356
  },
  "row_counts": {
-  "RVB_metro_ritten_20261001_20261104.csv": 112057,
+  "RVB_metro_ritten_20261001_20261104.csv": 110356,
   "RVB_metronet_planningsmodel_2026.xlsx": 33,
   "RVB_productcodes.csv": 7,
   "billing_export_2026-10-15_2026-11-12.xlsx": 23,
   "boekingen_najaar_2026.xlsx": 10,
-  "cms_player_status_20261001_20261104.csv": 425,
+  "cms_player_status_20261001_20261104.csv": 431,
   "facturen_oud_systeem_2026.csv": 119,
   "schermregister_2026-11-12.xlsx": 155
  },
