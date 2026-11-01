@@ -241,7 +241,7 @@ def carry(e, PK, fallback="face", s=None, fp=0.0, how="nearest"):
     themselves while employed (any quarter on file); adults never answering for themselves get the fallback:
     their answered-for report as it stands (face), their cell's self-reported rate (mar), or the answered-for report
     corrected by the sensitivity s (corrected)."""
-    keys = PK[["SURVEY_QTR", "CASEID", "LINENO", "pid", "qi"]]
+    keys = PK[["SURVEY_QTR", "CASEID", "LINENO", "pid"]]
     e = e.merge(keys, on=["SURVEY_QTR", "CASEID", "LINENO"], how="left")
     own = PK[(PK["RESPLINE"] == PK["LINENO"]) & PK["LFSTAT"].isin([1, 2])][["pid", "qi", "MJH"]]
     own = own.rename(columns={"qi": "qo", "MJH": "mo"})
