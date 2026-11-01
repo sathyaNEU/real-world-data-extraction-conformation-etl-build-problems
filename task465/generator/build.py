@@ -44,16 +44,11 @@ def build(out, x=None, quiet=False):
     n["hvi"] = P.write_csv(f("hvi"), P.HVI_COLS, P.hvi_rows(x))
     n["liheap"] = P.write_csv(f("liheap"), P.APPS_COLS, P.apps_rows(x))
     P.estimates_workbook(f("estimates"), x)
-    DC.write_shs_codebook(f("shs_codebook"))
     DC.write_heas_notes(f("heas_methods"), n["heas"])
     DC.write_pilot_report(f("pilot_report"), x["screens"])
     DC.write_plan(f("plan"))
-    n["dict"] = DC.write_dictionary(f("dict"))
-    n["register"] = DC.write_register(f("register"), n)
     PP.normalize_ooxml(f("estimates"), "Population Estimates Unit", "Population Estimates Unit", "2026-02-24T15:10:00Z",
                        "2026-03-17T21:42:19Z", excel=True, company=W.DEMOGRAPHER)
-    PP.normalize_ooxml(f("shs_codebook"), "Center for Health Statistics", "Center for Health Statistics",
-                       "2026-04-02T13:30:00Z", "2026-05-11T19:06:44Z", excel=True, company=W.HEALTH_DEPT)
     PP.normalize_pdf(f("heas_methods"), b"D:20251120093000-06'00'", b"D:20251120093000-06'00'")
     PP.normalize_pdf(f("pilot_report"), b"D:20250926141500-05'00'", b"D:20250926141500-05'00'")
     PP.normalize_pdf(f("plan"), b"D:20261112163000-06'00'", b"D:20261112163000-06'00'")

@@ -208,17 +208,32 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     Ra, _ = M.routes(alt_n, p, q, tabs)
     check("SF4 service division: Kestrelmere's households under Central move Central and Southwest; the register "
           "holds one division per county and the plan staffs the register's divisions",
-          staffing(Ra["golden"]) != gst and "division register" in docs[W.FILES["plan"]])
+          staffing(Ra["golden"]) != gst and "division register" in docs[W.FILES["plan"]]
+          and "a household belongs to the division the register gives the county of its service premise"
+          in docs[W.FILES["plan"]])
     check("SF5 household: no person or adult weight ships beside the household weights",
           not any("ADULT_WT" in c or "PERSON" in c for h in heads.values() for c in h))
-    check("SF6 the equipment item: don't know and refused left out (counted as no is in R2 below)",
-          "Estimates of percentages exclude don't know (7) and refused (9) responses" in _codebook_notes(target))
-    nest = {k: b for k, _, b in W.INCCAT}
-    check("SF7 income band: the health survey's categories nest exactly in the demographer's bands",
-          [k for k in nest if nest[k] == 0] == [1, 2, 3] and [k for k in nest if nest[k] == 1] == [4, 5])
-    check("SF8 weights: WT_FINAL and HH_WT name the published estimates (the base weight is in R2 below)",
-          "The office's published estimates use WT_FINAL" in docs[W.FILES["heas_methods"]]
-          and "Use HH_WT for estimates of households" in _codebook_notes(target))
+    shs = B.rows(target, "shs")
+    N6, p6, q6, t6, td6 = B.conformed(target, dk_as_no=True)
+    R6, _ = M.routes(N6, p6, q6, t6, td6)
+    d6 = M.division_totals(R6["golden"])
+    check("SF6 the equipment item: the file carries Yes, No, Don't know and Refused; counting don't know and refused "
+          "as no moves graded division hundreds (the staffing holds), so the plan's annex files the department's "
+          "published percentages, which leave them out",
+          {r["MEDEQUIP"] for r in shs} == set(W.MEDEQUIP_LABEL.values())
+          and any(r100(d6[d]) != F["eligible"][d] for d in W.DIV_NAMES) and staffing(R6["golden"]) == gst
+          and "which leave out don't know and refused answers" in docs[W.FILES["plan"]],
+          [d for d in W.DIV_NAMES if r100(d6[d]) != F["eligible"][d]])
+    labs = {r["INCCAT"] for r in shs}
+    check("SF7 income band: the health survey's category labels nest exactly in the demographer's bands",
+          labs == set(W.INCCAT_LABEL.values())
+          and sorted(l for l in labs if B.INCCAT_BAND[l] == 0) == ["$10,000 to $14,999", "$15,000 to $24,999",
+                                                                  "Less than $10,000"]
+          and sorted(l for l in labs if B.INCCAT_BAND[l] == 1) == ["$25,000 to $34,999", "$35,000 to $49,999"])
+    check("SF8 weights: the energy survey's published estimates use the final weight and the health survey's file "
+          "carries one weight, the household weight (the base weight is in R2 below)",
+          "The office's published estimates use the final weight" in docs[W.FILES["heas_methods"]]
+          and [c for c in heads[W.FILES["shs"]] if "WT" in c] == ["HH_WT"])
     tot_w = {}
     for r in heas:
         tot_w[r["COUNTY"]] = tot_w.get(r["COUNTY"], 0) + float(r["WT_FINAL"])
@@ -294,6 +309,8 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
         check("Ask B stop, %s, misses every division" % label, all(v[d] != Bb[d] for d in W.DIV_NAMES),
               [v[d] - Bb[d] for d in W.DIV_NAMES])
     v = B.battery_households(target, clock="utc")
+    check("Ask B: the plan files the programme's dates as the operating day in Central Time",
+          "The programme's dates are the company's operating day in Central Time" in docs[W.FILES["plan"]])
     check("Ask B hazard H2: UTC dates move seven or more divisions", sum(v[d] != Bb[d] for d in W.DIV_NAMES) >= 7,
           [v[d] - Bb[d] for d in W.DIV_NAMES])
     ch = B.Chains(target)
@@ -369,8 +386,15 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("gates: %d files, %d formats, the largest file %d rows, %d distractors" % (
         len(files), len(fmts), big, len(meta["distractor_files"])),
         len(files) >= 10 and len(fmts) >= 3 and big >= 25000 and len(meta["distractor_files"]) >= 2)
-    check("gates: the register lists every shipped file but itself",
-          {r["FILE_NAME"] for r in B.rows(target, "register")} == set(files) - {W.FILES["register"]})
+    check("gates: no file describes the data (no dictionary, codebook, register, manifest, readme or notes file)",
+          not any(re.search(r"dictionar|codebook|register\.|manifest|readme|notes\.(csv|txt)|definition", f.lower())
+                  for f in files), files)
+    check("gates: no document names a data file's columns (leak.py sweep 12)",
+          all(sum(bool(re.search(r"\b%s\b" % re.escape(c), docs[d])) for h in heads.values() for c in h
+                  if "_" in c or c.isupper() and len(c) > 3) < 4 for d in docs),
+          {d: [c for h in heads.values() for c in h if (("_" in c or c.isupper() and len(c) > 3)
+                                                       and re.search(r"\b%s\b" % re.escape(c), docs[d]))]
+           for d in docs})
     text = ""
     for f in files:
         if f.endswith((".csv", ".txt")):
@@ -390,12 +414,6 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("realism: the divisions' eligible households are not round thousands",
           sum(v % 1000 == 0 for v in F["eligible"].values()) == 0)
     return not bad
-
-
-def _codebook_notes(target):
-    import openpyxl
-    ws = openpyxl.load_workbook(B.path(target, "shs_codebook"))["Notes"]
-    return " ".join(str(c.value) for row in ws.iter_rows() for c in row if c.value)
 
 
 def _no_carryover(target, ch):

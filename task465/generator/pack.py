@@ -65,8 +65,9 @@ def shs_rows(x):
     rows = []
     for k, i in enumerate(order):
         c = B["county"][i]
-        rows.append([2025000000 + int(ids[k]), int(W.FIPS[c]), W.PHD[c], int(B["cat"][i]), int(B["adults"][i]),
-                     int(B["children"][i]), int(B["age"][i]), int(B["genhlth"][i]), int(B["answer"][i]), weight(wb[i])])
+        rows.append([2025000000 + int(ids[k]), int(W.FIPS[c]), W.PHD[c], W.INCCAT_LABEL[int(B["cat"][i])],
+                     int(B["adults"][i]), int(B["children"][i]), W.AGEGRP_LABEL[int(B["age"][i])],
+                     W.GENHLTH_LABEL[int(B["genhlth"][i])], W.MEDEQUIP_LABEL[int(B["answer"][i])], weight(wb[i])])
     return rows
 
 

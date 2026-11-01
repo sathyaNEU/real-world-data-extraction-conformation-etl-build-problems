@@ -101,7 +101,13 @@
     "task262": "task262 corrects a slope for measurement error with a subsample's noise variance; here no slope or reliability enters: the count of households carrying two traits is fused from two surveys' rates and a pilot's within-cell association",
     "task54": "task54 multiplies an exposure integral over a re-sequenced plan with a recovered rule; here no rule is recovered and nothing is sequenced: two surveys' rates are fused with a pilot's association",
     "task134": "task134 v3 prices a raised allowance by each unit's chance of rebuilding past a cost step; here there is no option value: the count of households with two traits is fused from two surveys and a pilot",
-    "task146": "task146 reads a weekly count's step as admissions released from a pool the closing period built; here there is no time structure: the joint of two traits in each region and income band is fused from two surveys' rates and a pilot's association"
+    "task146": "task146 reads a weekly count's step as admissions released from a pool the closing period built; here there is no time structure: the joint of two traits in each region and income band is fused from two surveys' rates and a pilot's association",
+    "task267": "task267 weights a referral rule's capture rate back to a whole screened population from a reference test given by design to one group and a random fifth of the rest; here nothing is verified or weighted back: two surveys each measured one trait and a pilot shows the traits go together inside the cells they share",
+    "task273": "task273 moves a deferrable load into the low-demand hours only where a meter's model takes the central signal; here there is no load, schedule or device: the count of households with two traits is fused from two surveys' rates and a pilot's within-band association",
+    "task280": "task280 re-weights probes that the member's own activity silences to a continuous load record; here no measurement is missing on the loaded days: each survey measures its trait completely and the error is the joint built from their margins as if independent",
+    "task473": "task473 completes a count seen through observer-triggered tests by each level's detection share measured where everyone is tested; here nothing is detected or missed: two surveys each measured one trait and the pilot's association fixes their joint in every cell",
+    "task165": "task165 reads a service level's gain off units upgraded earlier, chosen because the old level already treated them; here nothing is upgraded or selected: two surveys each measured one trait of the same households and the pilot's within-band association builds their joint",
+    "task173": "task173 carries work-induced failures from a thin history into a window where most units are worked; here there is no time structure or intervention: the count of households with two traits is fused from two surveys' rates and a pilot's association"
   },
   "lineage": [
     {

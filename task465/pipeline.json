@@ -5,28 +5,35 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-11-01",
  "stump": "The default path aligns the two surveys and multiplies each division-and-band cell's burden share by its equipment share, treating the two traits as independent inside the cell, so it counts 8,200 eligible households where the fused table holds 13,300 and staffs 26 caseworkers where the programme needs 38; carrying the screening pilot's within-band association into each cell, with both surveys' shares kept, counts them.",
  "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-17",
-  "reader": "three rounds: rounds 1 and 2 filed the default path (26) and read the annex as a recipe (ruled the stump at work; annex reworded); round 3 after the estimation-domain pin"
+  "leak_py": "REVIEW (no LEAK; sweeps 1, 12 and 13 clean), 2026-11-01",
+  "reader": "re-check rounds 4 and 5: nothing quoted for questions 1 to 4, question 6 analytical; the annex read as the product ruled the stump at work"
  },
  "duplicate_check": {
-  "heart": "WARN (answered in the draw)",
-  "nearest": "surface: nine card-level pairs promoted for the author's read"
+  "heart": "BLOCK test.same_driver in-batch against task233 (registered 2026-10-16, before this card; ship-time WARN), inherited and recorded for the author; older-build BLOCKs (task165, task173, task267, task273, task280, task473, all registered later) cleared with differentiation lines",
+  "nearest": "surface: twelve card-level pairs promoted for the author's read (signature collisions and task466 back to back; no surface score above 0.101), no persona"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (re-judge after pass 1 FIX_NOW)",
-  "report": "determinism_check_report_pass2.md (FIX_NOW), determinism_check_report_pass3.md (APPROVE)"
+  "disposition": "APPROVE (pass 4, re-check 2026-11-01)",
+  "report": "determinism_check_report_pass4.md (its one fork, SF6, closed in the plan annex)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (in-house re-check under the new gates)",
+   "repair": "determinism",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-17",

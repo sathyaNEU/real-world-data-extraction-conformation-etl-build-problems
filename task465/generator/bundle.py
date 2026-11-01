@@ -30,7 +30,8 @@ def band_of_income(v):
     return 0 if v < 25000 else 1 if v < 50000 else 2 if v < 75000 else 3
 
 
-INCCAT_BAND = {k: b for k, _, b in W.INCCAT}
+INCCAT_BAND = {lab: b for _, lab, b in W.INCCAT}
+MEDEQUIP_CODE = {lab: k for k, lab in W.MEDEQUIP_LABEL.items()}
 
 
 def burden_shares(target, monthly_as_annual=False, weight="WT_FINAL", by="division"):
@@ -63,8 +64,8 @@ def equipment_shares(target, dk_as_no=False, by="division"):
         d = reg.get("%03d" % int(r["CNTYFIPS"]))
         if d is not None and by == "county":
             d = "%03d" % int(r["CNTYFIPS"])
-        b = INCCAT_BAND[int(r["INCCAT"])]
-        a = int(r["MEDEQUIP"])
+        b = INCCAT_BAND[r["INCCAT"]]
+        a = MEDEQUIP_CODE[r["MEDEQUIP"]]
         if d is None or b not in W.ELIGIBLE_BANDS or (a in (7, 9) and not dk_as_no):
             continue
         w = float(r["HH_WT"])

@@ -52,9 +52,9 @@ def write(fig_path, out_path):
     L.append("2. From %s, computed each household's annual home energy cost (ELEC_AMT times 12 where ELEC_BASIS is M, "
              "plus GAS_AMT and OTHER_AMT) and its band from HHINC, and took each division and band's WT_FINAL-weighted "
              "share with costs above 6 per cent of income." % F_["heas"])
-    L.append("3. From %s, nested INCCAT 1 to 3 and 4 to 5 into the two bands, matched CNTYFIPS to the register's "
-             "three-digit codes, and took each division and band's HH_WT-weighted share with MEDEQUIP 1 among answers 1 "
-             "and 2." % F_["shs"])
+    L.append("3. From %s, nested the INCCAT categories under $25,000 and from $25,000 to $49,999 into the two bands, "
+             "matched CNTYFIPS to the register's three-digit codes, and took each division and band's HH_WT-weighted "
+             "share with MEDEQUIP Yes among Yes and No." % F_["shs"])
     L.append("4. From %s, kept each address's latest complete screen, computed its burden from HH_INCOME, ELEC_12M and "
              "OTHER_FUELS_12M, and tabulated burden against MED_EQUIPMENT (Yes or No) in each band: odds ratios %.2f and "
              "%.2f." % (F_["pilot"], F["psi"]["0"], F["psi"]["1"]))

@@ -45,9 +45,11 @@ def shares(target):
     p = (h["hi"] * h["WT_FINAL"]).groupby([h["div"], h["band"]]).sum() / h.groupby(["div", "band"])["WT_FINAL"].sum()
     s = pd.read_csv(f(target, "shs_2025_household_file"))
     s["div"] = s["CNTYFIPS"].map(lambda v: div.get("%03d" % v))
-    s["band"] = s["INCCAT"].map(lambda c: 0 if c <= 3 else 1 if c <= 5 else 2)
-    s = s[s["div"].notna() & (s["band"] < 2) & s["MEDEQUIP"].isin([1, 2])]
-    s["eq"] = (s["MEDEQUIP"] == 1).astype(float)
+    lower = {"Less than $10,000", "$10,000 to $14,999", "$15,000 to $24,999"}
+    upper = {"$25,000 to $34,999", "$35,000 to $49,999"}
+    s["band"] = s["INCCAT"].map(lambda c: 0 if c in lower else 1 if c in upper else 2)
+    s = s[s["div"].notna() & (s["band"] < 2) & s["MEDEQUIP"].isin(["Yes", "No"])]
+    s["eq"] = (s["MEDEQUIP"] == "Yes").astype(float)
     q = (s["eq"] * s["HH_WT"]).groupby([s["div"], s["band"]]).sum() / s.groupby(["div", "band"])["HH_WT"].sum()
     e = pd.read_excel(f(target, "household_estimates_county_income_2025"), sheet_name="Households by income", header=3,
                       dtype={"FIPS": str})

@@ -1,19 +1,19 @@
 # leak check, task465
 
-**Verdict: REVIEW.** 15 files read, 42 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 42 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: surveys, survey, shares, traits, household, equipment, association, product, decisive, method, estimates, utility, county, independence, architecture, sample, measured, health, inside, default, fusion, conditional, matching, together, screens
+Stump terms swept: survey, surveys, shares, equipment, household, association, traits, decisive, default, estimates, independence, product, health, method, utility, fusion, conditional, measured, inside, county, burden, architecture, sample, record, sentence
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `hema_screening_pilot_report_2025.pdf`: golden figure 800 appears: ...Addresses and contact The billing system drew 10,800 active residential service addresses at random in...
 - **REVIEW** `hema_screening_pilot_report_2025.pdf`: golden figure 600 appears: ...resses at random in each of the two divisions, 21,600 in all. Each address was mailed the screener on M...
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `callowmere_hema_plan_2027_draft.pdf`: 5 of 25 stump-paragraph terms appear (survey, household, equipment, utility, health); read whether the document names the move
-- **REVIEW** `heas_2025_technical_notes.pdf`: 6 of 25 stump-paragraph terms appear (survey, household, estimates, utility, county, sample); read whether the document names the move
-- **REVIEW** `hema_screening_pilot_report_2025.pdf`: 3 of 25 stump-paragraph terms appear (household, equipment, screens); read whether the document names the move
+- **REVIEW** `callowmere_hema_plan_2027_draft.pdf`: 6 of 25 stump-paragraph terms appear (survey, equipment, household, health, utility, county); read whether the document names the move
+- **REVIEW** `heas_2025_technical_notes.pdf`: 8 of 25 stump-paragraph terms appear (survey, household, estimates, utility, county, burden); read whether the document names the move
+- **REVIEW** `hema_screening_pilot_report_2025.pdf`: 3 of 25 stump-paragraph terms appear (equipment, household, record); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 1)
 - **REVIEW** `hema_screening_pilot_report_2025.pdf`: names 3 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -22,6 +22,9 @@ Stump terms swept: surveys, survey, shares, traits, household, equipment, associ
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'how-many' at 30% of 196 prompts (cap 30%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -35,7 +38,6 @@ Stump terms swept: surveys, survey, shares, traits, household, equipment, associ
 
 ## 9 dates after the setting (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
@@ -227,3 +229,15 @@ What the text fixes: the caseload ratio and ceiling, the eligibility test, the c
   register's wording), spells starting and ending on the extract day (records keyed that morning), the demographer's
   published tens, a one-page plan citing its sources, a dictionary that defines its columns, the state files' 38
   counties against the territory's 30 (Layer 1).
+
+### Round 4 (re-check 2026-11-01, after the helper files left the pack)
+
+1. none (nearest: the plan's annex, read as a target the table agrees with, not a method). 2. none. 3. none (the technical notes read as the office's release document). 4. none. 5. Plan 4 (the caseload standard rounded up; a household's division from the register), plan 2 (the three conditions jointly), plan 5 (read literally as the households times the two published shares; the joint treatment left open), the technical notes (the final weight; M amounts times 12). 6. An analytical choice: how to combine the marginal shares into a joint count. Review lines: the pilot report's address counts, its two divisions' return table, the enrolment extract's division column and the prompt's question form, all harmless. Realism: none strong.
+
+Ruling: question 5's literal reading of the annex is the default path (26), the round 2 reading, ruled the stump at work (the annex fixes what the table agrees with, which the product and the fused table both satisfy); judge pass 4 reads Gate H analytical.
+
+### Round 5 (after the annex's published-percentage clause, judge pass 4's fork)
+
+1. none (nearest: the annex's "reproduces" check, read as steering toward the product of the published shares). 2. none (the two distractors score counties, not divisions). 3. none. 4. none. 5. As round 4, plus the annex's clause: the health survey's share over answered cases only. 6. An analytical choice: estimating the joint eligibility when no file holds the three conditions together. Review lines: the annex clause states the share's denominator convention (its population) and the three published sources; the pilot report's counts harmless. Realism: invented county names (the fiction's design), the pilot's return table tidy but acceptable, the prompt's "hundred." run into the reader's next output (no trailing newline, as shipped).
+
+Ruling: the annex steering toward the product is the stump at work, as in rounds 2 and 4: executing it files 26, and the decisive step is recognising the product is wrong when the pilot shows the traits go together. The published-percentage clause files the share's population, a WHAT, and names no fusion.

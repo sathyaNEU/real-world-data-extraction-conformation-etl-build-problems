@@ -29,6 +29,11 @@ ELIGIBLE_BANDS = [0, 1]
 INCCAT = [(1, "Less than $10,000", 0), (2, "$10,000 to $14,999", 0), (3, "$15,000 to $24,999", 0),
           (4, "$25,000 to $34,999", 1), (5, "$35,000 to $49,999", 1), (6, "$50,000 to $74,999", 2),
           (7, "$75,000 to $99,999", 3), (8, "$100,000 or more", 3)]
+# The health survey's household file carries its answers as the questionnaire's labels.
+MEDEQUIP_LABEL = {1: "Yes", 2: "No", 7: "Don't know", 9: "Refused"}
+GENHLTH_LABEL = {1: "Excellent", 2: "Very good", 3: "Good", 4: "Fair", 5: "Poor", 7: "Don't know", 9: "Refused"}
+AGEGRP_LABEL = {1: "18 to 24", 2: "25 to 34", 3: "35 to 44", 4: "45 to 54", 5: "55 to 64", 6: "65 or older"}
+INCCAT_LABEL = {k: lab for k, lab, _ in INCCAT}
 INCCAT_BOUNDS = {1: (6000, 9999), 2: (10000, 14999), 3: (15000, 24999), 4: (25000, 34999), 5: (35000, 49999),
                  6: (50000, 74999), 7: (75000, 99999), 8: (100000, 260000)}
 
@@ -92,7 +97,6 @@ FILES = {
     "heas": "heas_2025_household_puf.csv",
     "heas_methods": "heas_2025_technical_notes.pdf",
     "shs": "shs_2025_household_file.csv",
-    "shs_codebook": "shs_2025_household_codebook.xlsx",
     "pilot": "hema_screening_pilot_2025.csv",
     "pilot_report": "hema_screening_pilot_report_2025.pdf",
     "estimates": "household_estimates_county_income_2025.xlsx",
@@ -102,8 +106,6 @@ FILES = {
     "batteries": "battery_placement_work_orders_2026.csv",
     "hvi": "heat_vulnerability_index_county_2025.csv",
     "liheap": "energy_assistance_applications_2025.csv",
-    "dict": "data_dictionary.csv",
-    "register": "file_register.csv",
 }
 DISTRACTORS = ["hvi", "liheap"]
 GOLDEN = {"workbook": "hema_caseworkers_2027.xlsx", "table": "hema_eligible_households_2025.csv"}

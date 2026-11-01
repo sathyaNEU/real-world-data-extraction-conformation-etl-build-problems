@@ -59,6 +59,16 @@ years, sent back by the determinism judge on Gate H), and architecture 2 is draw
   method chosen here is the fusion of two surveys, a data-integration estimate the other builds do not make;
   `repeat.question_form` (how-many after task264): the decision is a count of caseworkers per division.
 
+## Survivor anatomy
+
+Actor: the deciding property, the share of each division-and-band cell's households carrying both high energy burden and the medical equipment, has no column in any file: the energy survey records burden, the health survey the equipment, the estimates the households, and no record or column stores a joint share or an association.
+Link: the property is read by tabulating the screening pilot's burden (from its income and 12-month cost columns) against its equipment answer inside each income band and carrying that within-band association into every division-and-band cell of two other surveys; no key joins a pilot screen to a survey household, and no sentence invites the cross-tabulation.
+Reflex: the field's first move for two surveys that share division and income band is the match on the shared variables under conditional independence, each cell's two shares multiplied, which sits at rung 0 and files the default path's Ends on, 26 caseworkers (asserted).
+Back-test: the textbook route validates: the independence table reproduces the demographer's households and both surveys' weighted shares in every cell, so the Commission's consistency check in the plan's annex, the only check the pack files, passes on the default path (asserted in R3a).
+Second use: measured failing in the strict test: with the decisive step deleted the pilot file and its report drop out of the default path; the pilot is the utility's test of its screener and mail workflow, and four lower rungs (the pilot's own shares, both conditional imputations and the dependence ratio) read it too, so opening it does not single out the fusion.
+Shock: the movement reads as ordinary: the fused table lifts every division by 24 to 46 per cent, the largest staffing change falls in Southwest, outside the pilot, the association is the equipment's own electricity use (the pilot's cost columns), and no division is the pack's outlier on any shipped statistic.
+Pins: the WHAT is filed in the plan (eligibility, the 2025 households of each division and band as a whole, the Commission's consistency check, a household's division from the register, the caseload standard); no filed sentence names independence, an association, an odds ratio, raking, fusion or the pilot as a source for the count (asserted in R3c), and the annex's check is satisfied by the default path as well as the golden.
+
 ## Default path
 
 1. Read the energy survey's household file: annual home energy costs (electricity times 12 where it was reported as a
@@ -155,11 +165,11 @@ break a survey's share in some cell and staff other wrong numbers.
 | SF2 | annual home energy costs | electricity (a typical monthly bill times 12 where so reported) plus utility gas plus other fuels | electricity alone; the monthly bill taken as the year's | electricity alone: fewer eligible, a different call; the monthly bill: same call (asserted, R2) | the plan's eligibility ("electricity, natural gas and other home heating fuels"); the technical notes' cost items |
 | SF3 | 2025 eligible households | the households of 2025: the 2025 surveys over the demographer's 1 July 2025 estimates | households projected to 2027 | not executable: no projection ships | the plan's annex ("the latest survey year") |
 | SF4 | service division | the division register's current map (Kestrelmere in Southwest) | Kestrelmere under Central, its division before 1 July 2026 | a different Central and Southwest | the plan's staffing section (the nine divisions of the company's division register); the register holds one division per county |
-| SF5 | household | the surveys' household and the demographer's household | persons or adults | same call: no person weight ships; the household weights reproduce the demographer's households | the codebook (HH_WT) and the technical notes (WT_FINAL) |
-| SF6 | someone relies on the equipment | the health survey's MEDEQUIP yes, among yes and no; don't know and refused left out | don't know and refused counted as no | same call (asserted, R2) | the codebook's estimation note |
-| SF7 | income band | the demographer's bands; the health survey's categories 1 to 3 under $25,000 and 4 to 5 from $25,000 to $49,999; the energy survey's dollars cut at $25,000 and $50,000 | none open | same call: the categories nest exactly (asserted) | the codebook's category labels |
-| SF8 | weights | the energy survey's WT_FINAL; the health survey's HH_WT | the energy survey's WT_BASE | same call (asserted, R2) | the technical notes and the codebook |
-| SF9 | households in a division and band | the demographer's county figures summed over the register's counties | the surveys' weighted totals | same call: the final weights reproduce the county figures (asserted) | the technical notes' and the codebook's calibration notes |
+| SF5 | household | the surveys' household and the demographer's household | persons or adults | same call: no person weight ships; the household weights reproduce the demographer's households | the health survey's file carries one weight, HH_WT; the technical notes (the final weight) |
+| SF6 | someone relies on the equipment | the health survey's MEDEQUIP Yes, among Yes and No; Don't know and Refused left out | Don't know and Refused counted as no | same staffing, but Southwest, North Metro and South Metro each on the next hundred down (asserted) | the plan's annex (the department's published percentages, which leave out don't know and refused answers) |
+| SF7 | income band | the demographer's bands; the health survey's category labels under $25,000 and from $25,000 to $49,999; the energy survey's dollars cut at $25,000 and $50,000 | none open | same call: the categories nest exactly (asserted) | the household file's own category labels |
+| SF8 | weights | the energy survey's WT_FINAL; the health survey's HH_WT | the energy survey's WT_BASE | same call (asserted, R2) | the technical notes (the published estimates use the final weight); HH_WT the health file's one weight |
+| SF9 | households in a division and band | the demographer's county figures summed over the register's counties | the surveys' weighted totals | same call: the final weights reproduce the county figures (asserted) | the technical notes' calibration note; same call |
 | SF10 | caseload standard | one caseworker for every 400 eligible households in a division, or part of that number (rounded up, division by division) | rounded to the nearest; the territory total over 400 | a different call | the plan's staffing sentence ("in a service division, or part of that number") |
 | SF11 | rounding path | caseworkers from the unrounded counts; households to the nearest hundred | caseworkers from the rounded counts | same call: every division 90 or more households from a step (asserted) | the prompt's rounding sentence |
 | SF12 | an address screened twice | its latest complete screen | both screens; the first | same call (asserted, R2) | the pilot report's screen rule |
@@ -253,8 +263,8 @@ distractors that confirm nothing.
 - **Ask A, each division's households on the medical baseline rate at the end of October 2026 (9 figures, whole
   households).** H18 home: the programme's current caseload beside each division's eligible households, a measure every
   division carries that the staffing does not turn on. Path: the enrolment extract (spell, account, prior account,
-  premise, service county, stored division, start and end dates), the division register and the data dictionary (three
-  files, nine columns). Primary device: D7, the true key elsewhere: a move inside the territory opens a new account with
+  premise, service county, stored division, start and end dates), the division register and the plan's staffing section (a
+  household belongs to the register's division of its premise's county; three files, nine columns). Primary device: D7, the true key elsewhere: a move inside the territory opens a new account with
   the rate transferred (the new spell names the old account), and the customer usually starts service at the new home
   before stopping it at the old one, so on 31 October some households have both accounts on the rate; counting spells
   or accounts counts them twice; every division has three or more (asserted). Hazard H1: the stored division of
@@ -267,7 +277,8 @@ distractors that confirm nothing.
 - **Ask B, each division's households given a backup battery from January to October 2026 (9 figures, whole
   households).** H18 home: the 2026 workload the caseworkers carried, beside the staffing. Path: the battery work orders
   (order, account, premise, service county, booked date, status, completion time in UTC, unit serial, removed serial),
-  the enrolment extract's prior accounts, the register and the dictionary (four files, ten columns). Primary device:
+  the enrolment extract's prior accounts, the register and the plan's services section (the
+  programme's dates are the operating day in Central Time; four files, ten columns). Primary device:
   D1, one household under two keys: a failed unit replaced at the same account (a second completed order, a new serial,
   the old one removed) and a unit re-installed after a move inside the territory (a second completed order under the
   new account, the same serial); counting orders counts both twice, counting accounts the relocations, counting
@@ -295,10 +306,12 @@ distractors that confirm nothing.
 
 - Mirror leakage: about 10 per cent of ask weight (a response on R0 keeps the two files; it misses every Ask A and Ask B
   figure on the same devices as the cracker).
-- Pair ceiling: 34.0 (planning weights 38 / 7 / 55 with the call, each division's eligible households and caseworkers,
-  the eighteen cells and the chart in the main block and r = 5; the ask weight over 20 criteria: A 9, B 9, the two
-  files 2; the cracker keeps the files, 2 of 20, 38 + 7 + 5.5 = 50.5; the mirror keeps r, instruction-following and the
-  files, 5 + 7 + 5.5 = 17.5; average 34.0), rerun from the generated rubric at ship.
+- Pair ceiling: 32.0 (planning weights 38 / 7 / 55, the main block over its 37 figures: the total, each division's
+  eligible households and caseworkers, the eighteen cells; the ask weight over 20 criteria: A 9, B 9, the two files 2;
+  the cracker keeps every main figure and the files, 38 + 7 + 5.5 = 50.5; the mirror keeps Northern's two caseworkers,
+  instruction-following and the files, 1.0 + 7 + 5.5 = 13.5; average 32.0).
+
+Measured by: generator/pair.py on the cut pack (cracker 50.5, mirror 13.5, mirror leakage 10.0 per cent).
 
 ## Layer 1 inventory
 
@@ -328,10 +341,10 @@ distractors that confirm nothing.
   leaves the default path on 26); not rule application (R3a: every filed rule executed with the shares multiplied on the
   clean truth files 26, and the independence table keeps every filed sentence; R3b: only the pilot's within-band
   association with both shares kept files 38).
-- **Gates.** 15 files in 3 formats (csv, pdf, xlsx); medical_baseline_enrolment_2026.csv at 38,848 rows; two distractors
-  (the heat vulnerability index and the energy assistance applications) the solution never reads; 88 generator checks; `verify.py`
-  (10 checks) from the bundle alone; two builds byte-identical; `figures_check.py`, `precut.py` (49) and `voice-check.py` exit 0;
-  `leak.py` REVIEW (no LEAK); guard heart WARN (answered in the draw); the containers clean (H1 audit). The surface
+- **Gates (re-check 2026-11-01).** 12 files in 3 formats (csv, pdf, xlsx); medical_baseline_enrolment_2026.csv at 38,848 rows; two distractors
+  (the heat vulnerability index and the energy assistance applications) the solution never reads; 100 generator checks; `verify.py`
+  (10 checks) from the bundle alone; two builds byte-identical; `figures_check.py` (108), `precut.py` (61, 0 WARN) and `voice-check.py` exit 0;
+  `leak.py` REVIEW (no LEAK, sweeps 1, 12 and 13 clean); guard heart BLOCK inherited (below); the containers clean (H1 audit). The surface
   screen promotes nine card-level pairs for the author's read, none on the pack's surface: task464 and task450 (the
   population gap), task136 (the capacity-report artifact), task233, task256 and task262 (the same-driver signature, each
   differentiated on the card), task134 and task146 (the same-puzzle signature, differentiated). The persona screen's
@@ -339,6 +352,17 @@ distractors that confirm nothing.
   divisions were renamed North Metro and South Metro so no division reads as a name, the dictionary's and register's
   column sets were renamed after the screen matched them to task453's and task501's, and "Upper Valley" became River
   Valley after the guard matched it to task233's invented names.
+
+- **Heart (re-check 2026-11-01).** BLOCK `test.same_driver` inside the batch against task233 (registered 2026-10-16,
+  the day before this card; the ship-time guard read WARN, and the card's task233 line stands): a differentiation line
+  does not clear an in-batch BLOCK and nothing this repair changed causes it, so it is recorded for the author, not
+  re-rooted. The older-build BLOCKs (task165, task173, task267, task273, task280, task473, each registered after this
+  card) cleared with six differentiation lines on the card, now NOTE. Surface: twelve card-level pairs promoted for
+  the author's read (the signature collisions above and task466 back to back), no surface score above 0.101, no persona.
+- **10/10 re-read on the repaired pack.** The decisive step is unchanged (the fusion beyond independence); the mess
+  that left with the helper files is still only Layer 1 (the health file's labels, the notes' A and M basis); the two
+  plan sentences and the annex's published-percentage clause file a WHAT (a household's division, the programme's
+  clock, the equipment share's population) and none names the fusion.
 
 ## Leak check
 
@@ -375,6 +399,17 @@ shares held on the golden's hundreds by the centring (C1). Re-judge DETERMINISTI
 residual note, a county-by-band fusion moving two graded hundreds with the staffing unchanged, is closed by the annex's
 estimation domain (SF15), a document-only change: every other shipped file but the work orders (record numbers
 redrawn) is byte-identical to the judged pack, and every graded figure, golden and the submission are unchanged.
+
+Re-check 2026-11-01 (the shipped cut reproduced byte for byte, 06bdab3d): `leak.py` LEAK on sweeps 1 (the data
+dictionary and the codebook), 12 (the technical notes naming 11 of the public-use file's 12 columns) and 13
+(`metadata.json` carrying the band edges); fixed as in `## Tried and rejected`, now REVIEW with the same harmless
+lines as above. Reader round 4 on the repaired pack: nothing quoted for questions 1 to 4; question 5 read the annex
+literally as the product (the round 2 reading, ruled the stump at work: the annex fixes what the table agrees with,
+which the product satisfies); question 6 analytical. Judge pass 4 (`determinism_check_report_pass4.md`):
+DETERMINISTIC, APPROVE, Gate H analytical; its one fork, the health survey's don't-know and refused answers moving
+three graded division hundreds once the codebook's estimation note left the pack, closed in the plan's annex as
+the department's published percentages (SF6), goldens and every graded figure unchanged; reader round 5 read the
+pack after that sentence.
 
 ## Tried and rejected
 
@@ -434,3 +469,14 @@ redrawn) is byte-identical to the judged pack, and every graded figure, golden a
   differed enough that each division's own odds ratio moved North Metro's $25,000 to $49,999 cell and total to the next
   hundred; the pilot was redrawn until its divisions agree within sampling error (3.32 to 3.62 against 3.49 and 3.47
   by band), and the call moved from 37 to 38 caseworkers.
+- The shipped cut's helper files under the new gates (2026-11-01 re-check): `data_dictionary.csv` and the health
+  survey's codebook were sweep 1 LEAKs, the energy survey's technical notes named 11 of the public-use file's 12
+  columns (sweep 12) and `metadata.json` carried the band edges (sweep 13); the dictionary, the codebook and the
+  folder's file register (a manifest in substance) left the pack, the health file carries its answers as the
+  questionnaire's labels, the notes describe the observables without naming a field, the two readings only the
+  dictionary carried are filed as WHATs in the plan (a household's division from the register; the programme's dates
+  on Central Time), and the prompt states the plan's two bands and drops the divisions' count. Main call, stump and
+  every graded figure unchanged.
+- Leaving the health survey's don't-know and refused answers to convergence once the codebook left the pack (SF6
+  "same call"): the staffing holds but counting them as no moves Southwest, North Metro and South Metro to the next
+  hundred down (judge pass 4); the convention is filed in the plan's annex as the department's published percentages.
