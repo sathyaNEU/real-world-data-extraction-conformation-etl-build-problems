@@ -41,22 +41,22 @@
 3. PB9 holds in every month.
 4. Pump electricity per megalitre the permit meters measured, whole kWh/ML:
    - PB1: Jul-Sep 2025 294, Oct-Dec 2025 293, Jan-Mar 2026 293, Apr-Jun 2026 296
-   - PB2: Jul-Sep 2025 301, Oct-Dec 2025 299, Jan-Mar 2026 299, Apr-Jun 2026 302
+   - PB2: Jul-Sep 2025 302, Oct-Dec 2025 300, Jan-Mar 2026 300, Apr-Jun 2026 303
    - PB3: Jul-Sep 2025 303, Oct-Dec 2025 305, Jan-Mar 2026 310, Apr-Jun 2026 316
-   - PB4: Jul-Sep 2025 336, Oct-Dec 2025 334, Jan-Mar 2026 331, Apr-Jun 2026 328
-   - PB5: Jul-Sep 2025 263, Oct-Dec 2025 262, Jan-Mar 2026 262, Apr-Jun 2026 264
-   - PB6: Jul-Sep 2025 254, Oct-Dec 2025 252, Jan-Mar 2026 252, Apr-Jun 2026 255
-   - PB7: Jul-Sep 2025 268, Oct-Dec 2025 267, Jan-Mar 2026 267, Apr-Jun 2026 268
-   - PB8: Jul-Sep 2025 342, Oct-Dec 2025 341, Jan-Mar 2026 341, Apr-Jun 2026 342
-5. Volume by bore as the permit meters measured it, ML to one decimal:
-   - PB1: Jul-Sep 2025 205.1, Oct-Dec 2025 323.1, Jan-Mar 2026 283.0, Apr-Jun 2026 140.0
-   - PB2: Jul-Sep 2025 155.5, Oct-Dec 2025 226.4, Jan-Mar 2026 229.6, Apr-Jun 2026 124.2
-   - PB3: Jul-Sep 2025 188.3, Oct-Dec 2025 296.9, Jan-Mar 2026 260.4, Apr-Jun 2026 146.6
-   - PB4: Jul-Sep 2025 168.0, Oct-Dec 2025 275.5, Jan-Mar 2026 232.1, Apr-Jun 2026 165.4
-   - PB5: Jul-Sep 2025 167.7, Oct-Dec 2025 279.0, Jan-Mar 2026 248.2, Apr-Jun 2026 130.3
-   - PB6: Jul-Sep 2025 153.6, Oct-Dec 2025 231.8, Jan-Mar 2026 181.5, Apr-Jun 2026 133.1
-   - PB7: Jul-Sep 2025 173.0, Oct-Dec 2025 284.9, Jan-Mar 2026 249.7, Apr-Jun 2026 152.5
-   - PB8: Jul-Sep 2025 162.6, Oct-Dec 2025 254.2, Jan-Mar 2026 242.1, Apr-Jun 2026 161.1
+   - PB4: Jul-Sep 2025 337, Oct-Dec 2025 335, Jan-Mar 2026 332, Apr-Jun 2026 329
+   - PB5: Jul-Sep 2025 273, Oct-Dec 2025 272, Jan-Mar 2026 272, Apr-Jun 2026 274
+   - PB6: Jul-Sep 2025 263, Oct-Dec 2025 261, Jan-Mar 2026 261, Apr-Jun 2026 264
+   - PB7: Jul-Sep 2025 264, Oct-Dec 2025 263, Jan-Mar 2026 263, Apr-Jun 2026 264
+   - PB8: Jul-Sep 2025 336, Oct-Dec 2025 335, Jan-Mar 2026 335, Apr-Jun 2026 336
+5. Volume by bore as the permit meters measured it, whole ML:
+   - PB1: Jul-Sep 2025 205, Oct-Dec 2025 323, Jan-Mar 2026 283, Apr-Jun 2026 140
+   - PB2: Jul-Sep 2025 155, Oct-Dec 2025 226, Jan-Mar 2026 229, Apr-Jun 2026 124
+   - PB3: Jul-Sep 2025 188, Oct-Dec 2025 296, Jan-Mar 2026 260, Apr-Jun 2026 146
+   - PB4: Jul-Sep 2025 168, Oct-Dec 2025 275, Jan-Mar 2026 232, Apr-Jun 2026 165
+   - PB5: Jul-Sep 2025 168, Oct-Dec 2025 279, Jan-Mar 2026 248, Apr-Jun 2026 130
+   - PB6: Jul-Sep 2025 154, Oct-Dec 2025 232, Jan-Mar 2026 182, Apr-Jun 2026 133
+   - PB7: Jul-Sep 2025 173, Oct-Dec 2025 284, Jan-Mar 2026 249, Apr-Jun 2026 152
+   - PB8: Jul-Sep 2025 163, Oct-Dec 2025 254, Jan-Mar 2026 242, Apr-Jun 2026 161
 
 ### borefield_plan_2026-27.pptx
 

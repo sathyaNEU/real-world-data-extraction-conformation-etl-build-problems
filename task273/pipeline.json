@@ -1,10 +1,10 @@
 {
  "task": "task273",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-01",
  "stump": "A competent analyst builds each bore's drought curve on its own record, carries it on MB1's 2019-20 levels at the planned takes, adds PB9 from its own test, and files that the plan holds, every bore above its minimum operating level in every month; the step that lands it there is reading each bore's level as its own take's alone, when PB9 will lower PB3 by 3.0 m at 4.40 ML/d, which only the dip PB9's constant-rate test left in PB3's daily log measures.",
  "architecture": 6,
@@ -14,16 +14,16 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-11-01)",
-  "reader": "nothing for questions 1 to 4; question 5 the golden's estimand; question 6 analytical; one realism note fixed (pump cover)"
+  "leak_py": "REVIEW ruled (2026-11-01)",
+  "reader": "nothing for questions 1 to 4; question 5 the golden's estimand; question 6 analytical; one realism note fixed"
  },
  "duplicate_check": {
-  "heart": "WARN (shell.repeat stale before re-register, repeat.gate_g)",
+  "heart": "WARN (repeat.gate_g, answered)",
   "nearest": "0.06 task464 v1"
  },
  "judge": {
-  "verdict": "round 1 DETERMINISTIC with SOLUTION_WRONG on supplementary 4",
-  "disposition": "FIX_NOW",
+  "verdict": "round 2 DETERMINISTIC on every graded figure",
+  "disposition": "optional pins declined (they name ask devices); convention sensitivities closed and asserted",
   "report": "task273/determinism_check_report.md"
  },
  "returned": [
@@ -46,9 +46,9 @@
    "commit": "DRAWN (task273) architecture 5"
   }
  ],
- "resume": "Stage 4: round 1's FIX_NOW (the shared-board electricity on days with no SCADA row) repaired in the generator and every free gate green on target.zip 0f504ad7; the re-judge runs on /tmp/determinism-check-task273-r2 (verdict.md); on APPROVE, ship.",
+ "resume": "Shipped 2026-11-01 (architecture 6, Forecasting): the 2026-27 bore plan fails at PB3 in February and March; target.zip 6f2266d7. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

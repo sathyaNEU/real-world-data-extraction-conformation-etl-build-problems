@@ -1,10 +1,10 @@
 # leak check, task273
 
-**Verdict: REVIEW.** 12 files read, 59 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 34 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, golden, record, method, register, decisive, footprint, sentence, family, reflex, correction, recorded, reader, reading, programme, production, nothing, shipped, forecast, reaches, screen, driver, records, logger, estimand
+Stump terms swept: architecture, golden, record, decisive, register, footprint, method, sentence, family, reader, reflex, correction, nothing, programme, recorded, production, shipped, forecast, reading, reaches, screen, driver, records, logger, estimand
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `SWS-03_site_water_supply_security_standard.pdf`: carries 17 of 21 distinctive words of the committed call: 'Do not adopt the 2026-27 summer bore plan as drafted: it fails the drought test at PB3, whose lowest pumping water level'
