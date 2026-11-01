@@ -1,0 +1,71 @@
+"""World parameters for task134 architecture 4: the Port of Fendmouth's maintenance dredging after the 2027 deepening."""
+import datetime as dt
+
+SEED = 134_2027
+EXPORT_DATE = dt.datetime(2027, 1, 18, 9, 20, 0)      # the in-fiction export date: every file's mtime
+ASOF = "2027-01-18"
+ZIP_DT = (2027, 1, 18, 9, 20, 0)
+
+ORG = "Fendmouth Borough Council"
+DEPT = "Harbour Department, Fendmouth Borough Council"
+PORT = "Port of Fendmouth"
+CONTRACTOR = "Dunmarsh Dredging Ltd"
+SURVEY_A = "Holmwood Hydrographic Ltd"
+SURVEY_B = "Seaward Geodata Ltd"
+LAB = "Aldern Analytical Ltd"
+DREDGER = "Fend Endeavour"
+HIRED = "Maasbank"
+PEOPLE = {"manager": "Harriet Thorpe", "harbour_master": "Damian Davies", "finance": "Graham Ellis",
+          "lab": "Zoe Dickinson", "contractor_pm": "Martyn Rogers", "dredge_master": "Garry Stephenson",
+          "surveyor_b": "Liam O'Brien"}
+
+CD_BELOW_ODN = 2.90          # chart datum lies 2.90 m below Ordnance Datum Newlyn at the port
+DEPTH_NOW = 12.3             # maintained depth of the channel and basin, 2016 to 2027
+DEPTH_NEW = 14.3             # from 1 October 2027
+SLOPE = 4.0                  # side slopes 1 in 4 (horizontal per vertical)
+
+# Centreline waypoints: chainage (km) and OSGB36 easting, northing (m). Reaches are straight between them.
+WAYPOINTS = [(0.00, 652400.0, 296100.0), (2.60, 649957.0, 296989.0), (5.10, 647466.0, 297207.0),
+             (7.70, 645215.0, 298507.0), (9.40, 643573.0, 298947.0), (10.20, 642800.0, 299154.0)]
+
+# The dredged parts. half: half the maintained width (m); nat: natural bed depth below CD on the north and south
+# margins; k: the infill coefficient (per year) of the relaxation law rate = k * (held depth - natural depth).
+PARTS = [
+    # code, name, ch0, ch1, half, nat_n, nat_s, k
+    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 8.04, 8.16, 0.1170),
+    ("FR", "Fend Roads", 2.60, 5.10, 90.0, 8.26, 8.34, 0.1130),
+    ("MR", "Middle Reach", 5.10, 7.70, 85.0, 6.33, 6.47, 0.1160),
+    ("IR", "Inner Reach", 7.70, 9.40, 80.0, 5.22, 5.38, 0.1140),
+    ("TB", "Turning Basin", 9.40, 10.20, 210.0, 4.80, 4.80, 0.1150),
+]
+REACHES = ["OC", "FR", "MR", "IR"]
+DEEPENED = ["OC", "FR", "MR", "IR", "TB"]
+
+# Berth pockets on the basin's north side (offset +210 to +250 m) and its west end; s in km along the last reach.
+BERTHS = [
+    # code, name, s0, s1, t0, t1, depth (None = not maintained), nat, k
+    ("NQ1", "North Quay Berth 1", 9.440, 9.680, 210.0, 250.0, 12.8, 3.90, 0.1160),
+    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 3.90, 0.1150),
+    ("NQ3", "North Quay Berth 3", 9.940, 10.180, 210.0, 250.0, 12.8, 3.90, 0.1160),
+    ("CT5", "Container Terminal Berth 5", 10.200, 10.255, -165.0, 165.0, 14.3, 4.40, 0.1140),
+]
+NQ2_LAST_DREDGED = dt.date(2019, 3, 22)
+NQ2_LAST_DEPTH = 12.95
+
+MARGIN = 300.0                # survey coverage beyond the maintained width (m)
+
+# Licence years run 1 October to 30 September; the record is 2016-17 to 2025-26.
+LY_FIRST, LY_LAST = 2016, 2025          # licence year y runs 1 Oct y to 30 Sep y+1
+MONTH_WEIGHTS = {10: 0.095, 11: 0.100, 12: 0.105, 1: 0.110, 2: 0.100, 3: 0.090, 4: 0.075, 5: 0.065, 6: 0.060,
+                 7: 0.060, 8: 0.065, 9: 0.075}
+STORM_SD = 0.030              # year-to-year storminess (common to every part)
+PART_SD = 0.015               # part-specific year-to-year noise
+
+# Survey programme: contractor A every April and October 2016 to April 2023, contractor B from October 2023.
+SURVEY_A_DATES = [dt.date(2016, 4, 12), dt.date(2016, 10, 18), dt.date(2017, 4, 11), dt.date(2017, 10, 10),
+                  dt.date(2018, 4, 17), dt.date(2018, 10, 16), dt.date(2019, 4, 9), dt.date(2019, 10, 15),
+                  dt.date(2020, 4, 21), dt.date(2020, 10, 13), dt.date(2021, 4, 13), dt.date(2021, 10, 19),
+                  dt.date(2022, 4, 12), dt.date(2022, 10, 11), dt.date(2023, 4, 18)]
+SURVEY_B_DATES = [dt.date(2023, 10, 17), dt.date(2024, 4, 16), dt.date(2024, 10, 15), dt.date(2025, 4, 15),
+                  dt.date(2025, 10, 14), dt.date(2026, 4, 14), dt.date(2026, 10, 13)]
+GRID_A, GRID_B = 50.0, 40.0
