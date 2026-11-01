@@ -1,18 +1,18 @@
 {
   "task": "task146",
-  "architecture": "v1",
-  "drawn": "2026-10-15",
-  "slot_note": "wave 3, new; numbered from seed FC17 (the jobless-claims nowcast published before the Thursday release), world, decision and quantity only",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a bank economics desk's call, published to clients before the unemployment insurance board's Thursday release, for a small country's national unadjusted initial claims in the first claims week of a quarter, the week whose Sunday effective date is the first to move every claim's base period forward",
+  "architecture": "v2",
+  "drawn": "2026-11-01",
+  "slot_note": "second root of task146 (batch 1 re-root, 2026-11-01): v1's claims-week refiling call retired by the batch audit (no survivor anatomy); a new client domain (banking-credit-financial-risk), world and dataset under the same objective",
+  "domain": "banking-credit-financial-risk",
+  "client_domain": "banking-credit-financial-risk",
+  "subdomain": "deposit-liquidity-behaviour",
+  "niche": "a mutual building society's treasury sizing the structural hedge on its instant-access savings from the balances still held one, two and three years on, when members move their savings to each new instant-access issue by closing one account and opening another",
   "objective": "forecasting",
-  "shape": "single-figure",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "The board will first report about 17,000 initial claims nationally for the claims week ended 10 October 2026.",
-  "answer_source": "task146/submission.md, ## 1. Final Recommendation (generator/figures.json call 17,000; the golden 16,895 from the shipped files)",
+  "shape": "07",
+  "decision_type": "dial_setting",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population",
     "time"
@@ -21,79 +21,90 @@
     "none"
   ],
   "generators": [
-    "G14",
-    "G6",
-    "G11",
+    "G4",
     "G13"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "other",
-  "stakeholder_role": "the senior economist on a bank's economics desk who writes the weekly unemployment claims preview the bank sends its clients before the department's Thursday release",
-  "role_family": "research_desk",
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the treasury's extract (pounds against pence, the 2025 product re-coding, month ends dated on the last business day) and reads the ALCO policy correctly estimates the run-off on cohorts of accounts open at each start date, the field's own method for non-maturity deposits, and files a stable balance about a fifth too low and a hedge run-off, because a member who moves to a new instant-access issue closes one account and opens another the same day at the same amount and the account cohort books the move as money gone.",
+  "domain_test": "The deciding quantity is the stable (core) balance of non-maturity deposits, the behavioural estimate that sizes a deposit-taker's structural hedge, read from the book's own run-off at the grain the money moves at; put into another field's nouns (a hospital's beds, a school's pupils) there is no hedge notional, no run-off ladder and no money moving between savings issues, so the deciding quantity stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "banking-credit-financial-risk/deposit-liquidity-behaviour/3",
+  "layer1": [
+    "pounds in the balance extract against pence in the account events",
+    "product codes re-keyed in the 2025 product rationalisation, one old code reused",
+    "month ends dated on the last business day of the month",
+    "account events stamped in UTC against local month ends",
+    "closed accounts carried at zero for one month before they drop out"
+  ],
+  "stakeholder_role": "the Society's treasurer",
+  "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "ic_open_data_by_industry_2023-2026.csv (the board's open-data cube: claims by claims week, region, industry division of the last employer and claim type, from the claims week of 1 January 2023)",
-    "rows": 189903,
-    "entity": "one claims week for one region, one industry division of the claimant's last employer and one claim type (new, additional or transitional), with the claims taken that week",
-    "grain": "claims week x region x industry division x claim type",
-    "source": "constructed (the unemployment insurance board's open-data extract, industry coded on the 2006 classification and on its 2023 revision)"
+    "file": "ia_month_end_balances_2021-2026.csv",
+    "rows": 0,
+    "entity": "one instant-access account at one month end",
+    "grain": "account x month",
+    "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "other",
-  "org_family": "financial_institution",
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "a fictional English-speaking country of about 9 million in eight regions (its unemployment insurance board, the bank, the employers and the people are fictional; personas on the New Zealand index)",
-    "currency": "XXX",
-    "org_type": "a bank's economics desk and the country's unemployment insurance department",
+    "geography": "England (a fictional mutual building society in the East Midlands)",
+    "currency": "GBP",
+    "org_type": "a building society's treasury and its board",
     "invented_names": [
-      "Unemployment Insurance Board",
-      "Rothwell Bank"
+      "Trentmoor Building Society",
+      "Trentmoor Easy Saver",
+      "Trentmoor Loyalty Saver"
     ],
     "people": [
-      "Stacey Baxter",
-      "Tia Hewitt",
-      "Nicola Pedersen",
-      "Timothy Laing"
+      "Hugh Clements",
+      "Liam Bowen",
+      "Jennifer Russell"
     ]
   },
   "deliverables": [
-    "ic_preview_2026-10-10.docx",
-    "ic_preview_2026-10-10.xlsx"
+    "structural_hedge_reset_2027.pdf",
+    "stable_balance_ladder_2026-11.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A step a weekly count takes each time a calendar period turns is not a fixed seasonal share of the count: it is released by the turn from a pool the closing period built, units refused at their first attempt because their qualifying record had not caught up and admitted once the period moves. The share that comes back differs several-fold between the pool's segments and, within the segments that come back at all, falls steeply with the time from the refusal to the turn, since units refused early have mostly moved on by then, steady within each across past turns; so the step is each segment's pool weighed by when within the period each unit was refused, at the segment's own rates. When the closing period's refusals in the segments that come back most fell late in the period, the segments' pools taken whole at their average rates understate the step, and so do the pool taken whole at the pooled rate and every seasonal forecast.",
-  "driver_concrete": "The week ended 10 October 2026 is the first claims week whose Sunday falls in the fourth quarter, and the board's rules let claimants found monetarily ineligible in July to September file again once the base period has moved. How many do depends on the region and on the month of the refusal: in Western, Coastal and Island, where the refused are mostly short-tenure seasonal workers, between two thirds and nine tenths of those refused in a quarter's last month file again in the first week and under one in five of those refused in its first two months, most of whom have found other work by the turn, while few come back elsewhere at any month, steady across the 50 past quarter turns. The third quarter's 26,035 ineligible determinations sit 40.1 per cent in those three regions, and 55.3 per cent of those three regions' came in September, as the winter season ended and builders and hotels let staff go, against about a third in a quarter's last month at a usual turn; so 5,000 to 6,000 claims are filed again and the week is about 17,000, where each region's quarter taken whole at its average share gives about 3,500 and 15,000.",
-  "stump": "Sizing the claims filed again in the first claims week of the fourth quarter region by region, each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 initial claims for the week ended 10 October 2026; the step that lands it there is weighing every refusal of the quarter alike, when past turns show that in Western, Coastal and Island between two thirds and nine tenths of those refused in a quarter's last month file again in the first week against under one in five of those refused in its first two months, and this quarter's refusals there came 55.3 per cent in September against about a third in a quarter's last month at a usual turn, so the week is about 17,000; the national determinations at the national rate and the seasonal step call about 13,000.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field, the board's technical notes (which file that a claimant found monetarily ineligible may file again once the base period has moved) and the program statistics correctly, and sizes the refiling region by region on each region's third-quarter ineligible determinations taken whole at the share its own past quarter turns show, calls about 15,000 (14,849; every region-aware timing-blind construction 13,767 to 15,807, a full bin or more off); the national determinations at the national rate, the seasonal step, the year-on-year ratio, a quarter-start term and a step scaled on the third quarter's claims call 12,000 to 14,000; only the step built region by region and month by month, each region's July, August and September determinations at the shares its own past turns sent back from each month of a quarter, calls about 17,000 (16,895; executed in checks.py on the clean truth and the pack).",
-  "domain_test": "The deciding quantity is how many of a closing quarter's refused claimants file again in the first claims week of the next quarter, an administrative effect that official time-series practice models as a regression effect with its own driver beside the seasonal component, on the components where their effects differ and with the driver measured at the grain the effect works on: here each region's closing-quarter monetarily ineligible determinations month by month, at that region's own shares for refusals made early or late in the quarter; with a hospital's admissions or a utility's megawatt-hours there is no base period, no monetary determination and no refused claimant filing again, so the quantity that decides the call has nothing to stand on.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:quarter-start-refiling-effect-sized-by-region-and-month-of-refusal-on-the-closing-quarter-ineligible-determinations",
-  "layer1": [
-    "the board's weekly initial claims by region in two claims-system layouts (the Benefit Records System's export to the claims week of 20 June 2021 with region codes, day-first dates and upper-case headings; the UI Claims System's from the claims week of 27 June 2021 with region names and ISO dates), both keyed by the claims week's Sunday",
-    "the latest week at its advance count beside revised counts and a first-reported column for every earlier week",
-    "the monthly program statistics workbook, one sheet per fiscal year (July to June) in two layouts (the legacy report blocks with sufficient and insufficient determinations, the current long table with monetarily eligible and ineligible), months assigned by the claims week's Sunday, determinations in units beside benefits paid in thousands of dollars, a few claims withdrawn before they are determined",
-    "public holidays and the summer shutdown moving claims between weeks; the fiscal year's end lifting the last claims week of June",
-    "layoff notices in Employer Services' email register to 30 June 2026 and on the Employer Portal from 1 July 2026, the portal's lodgement stamps in UTC, amended and withdrawn notices, multi-site notices, register dates and employer names typed by hand, case-note references typed in several forms",
-    "the open-data cube of claims by week, region, industry division and claim type, its weeks before the claims week of 4 January 2026 on the 2006 division codes and labelled by their Saturday",
-    "transitional claims in the cube and the program statistics beside new and additional claims",
-    "the desk's data log of where each file came from, the Employer Services files released for the desk's information request"
-  ],
+  "question_form": "how-much",
+  "driver": "The stable part of a stock held in containers is the money that stays, and a holder moves the money into a new container of the same kind by closing one and opening another on the same day at the same amount, so run-off measured container by container books every move as a loss and a new arrival, and only matching each closing payment to the opening it funded keeps the moved money in the stable part.",
+  "driver_concrete": "Instant-access members move their savings to each new issue by closing the old account and opening a new one the same day with the same amount, so account cohorts book the moves as run-off; linking each closing payment to the same-day opening deposit it funded keeps that money with the Society and raises the stable balance by about a fifth.",
+  "stump": "A competent solver estimates run-off on cohorts of accounts open at each start date, the field's own method, and sizes the 2027 hedge too low (a run-off), because a member's move to a new instant-access issue closes one account and opens another and the cohort books it as money gone; following each closing payment into the same-day opening it funded keeps that money and moves the hedge up.",
   "mechanism_source": "design_note",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "retired 2026-11-01 by the batch 1 audit before any portal result: designed before the survivor anatomy gate, its note carries no Actor, Link or Reflex line and precut.py fails it (no Measured by: line); the claims week's refiling pool sized region by region",
+      "driver": "A step a weekly count takes each time a calendar period turns is not a fixed seasonal share of the count: it is released by the turn from a pool the closing period built, units refused at their first attempt because their qualifying record had not caught up and admitted once the period moves. The share that comes back differs several-fold between the pool's segments and, within the segments that come back at all, falls steeply with the time from the refusal to the turn, since units refused early have mostly moved on by then, steady within each across past turns; so the step is each segment's pool weighed by when within the period each unit was refused, at the segment's own rates. When the closing period's refusals in the segments that come back most fell late in the period, the segments' pools taken whole at their average rates understate the step, and so do the pool taken whole at the pooled rate and every seasonal forecast."
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "docx+xlsx"
+    }
+  ],
   "differentiation": {
-    "task134": "task134 forecasts the homes a raised zoning allowance yields, each lot rebuilt once the best-paying building it permits is worth more than what stands, at the rate its kind of lot has shown, and its lineage carries an inflow a pool sends on a conversion hazard by time since entry; here nothing is priced and nothing converts by age through a survival curve: a calendar turn releases claims refused in the closing quarter all at once into one week, and how many of the refused are still out of work at the turn depends on the month of the quarter they were refused in, so the step is each region's three monthly ineligible determinations at the shares 50 past turns sent back from each month.",
-    "task54": "task54 multiplies a per-event loss borne by every unit in custody across a re-sequenced plan (an exposure integral at unchanged rates); here no custody, exposure or sequence: the forward week's count carries a refiling surge sized by the pool of claims the closing quarter refused.",
-    "task95": "task95's rate is a weighted average over two latent classes recovered by differencing two dated events on each unit across two registers; here nothing is latent or per unit: the segments are the board's regions, the pool is a closing quarter's refused claims released all at once by a calendar turn, and the step is a regression effect in an official weekly series estimated at each of 50 past turns.",
-    "task137": "task137 splits a repricing's behavioural share between two kinds of unit by how each was brought in; here there is no repricing or unit history: a calendar turn moves every claim's base period and the regions' refused pools come back at their own steady shares.",
-    "task448": "task448 completes a register from a second list whose capture differs by filing route; here no list is completed: a forecast week's count gains each region's refused claims from the closing quarter at that region's refiling share, measured on past quarter turns."
+    "task464": "task464 v1 fits each unit's response to an external driver and finds the units whose response changed partway through the record; task146 has no response model and no change point: the deciding quantity is the money a savings book keeps, and the step is linking each closing payment to the same-day opening it funded so a member's move between instant-access issues is not booked as run-off."
   },
-  "lineage": [],
-  "notes": "stump_strategy composition_mix: the refiling the technical notes file is sized region by region on each region's refused pool taken whole at its average share (or nationally, or carried as a seasonal share of the level), while its size is set by each region's refusals month by month at that region's own shares, which fall steeply from a quarter's last month to its first, and this quarter's refusals in the three regions that come back sit 55.3 per cent in its last month against about a third at a usual turn. Decisive G14 (the first week's yield conditioned on the segment and the month of refusal), G6 (the pool's regional and monthly mix moved), G11 (the pool is the claims that failed the monetary eligibility test), G13 (the week whose Sunday opens the quarter). No back-test organ, no filed method: the shares by region and month are inferred from the 50 past quarter turns, which reject one slope on the quarter whole in each region (F 77.3 on 16 and 344; Western, Coastal and Island 219, 529 and 387 on 2 and 43) and one month profile for every region (F 108.3 on 21 and 344); leave one turn out, 303 claims against 635 for the regions on the quarter whole and 880 for the national pool. Rule 3 repair 2026-10-16: the refiling filed in the technical notes so that no reading of a definition decides the call; strengthened the same day after the re-audit found regional sizing alone landed by both top responses: the month of refusal now sizes the share, no sentence names recency, timing or region. Furniture: forum customer_or_counterparty (the bank's clients receive the preview), forcing event other (the board's Thursday 08:30 release), organisation family financial_institution (a bank's economics desk). Context artifact other: the board's releases, statistics and technical notes; no stakeholder memo or model ships. Shipped 2026-10-16 on the realism pass's cut (target.zip e5e9d268): the fresh judge DETERMINISTIC and APPROVE with Gate H analytical on the strengthened cut f0b43f3f, the call, all 24 Ask A cells and all 14 Ask B changes reproduced; the two later cuts changed only the case notes and the desk's data log (no graded figure moved, freeze with nothing allowed); the strict rule 3 audits AT_RISK on semantics (fixed by the repair), PASS but weak (strengthened), PASS and strong; accepted risks the judge's partial landing route (July 2026's refiling ratio on September's refusals gives about 17,000) and the case notes' residual regularity.",
-  "registered": "2026-10-15T12:19:51Z"
+  "notes": "Axes redrawn at the post-registration check (2026-11-01): committee_or_panel and monitoring_export were held by task231 v2 and task145 v2, filed minutes earlier; the Board approves the hedge in this mutual (ALCO recommends), and the reset acts on the treasury's swap register, so the honest labels are board_of_directors and register.",
+  "registered": "2026-11-01T00:42:44Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "for",
+    "rounding opener": "balances",
+    "deliverable set": "pdf+xlsx"
+  }
 }
