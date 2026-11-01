@@ -18,6 +18,7 @@ LEDGER_NAMES = {"Limestone (quarry)": "limestone", "Limestone": "limestone", "Ra
                 "Fly ash (PFA)": "fly_ash", "PFA": "fly_ash", "Coal as fired": "coal", "Coal (fired)": "coal",
                 "SRF as fired": "srf", "SRF (fired)": "srf", "Clinker produced": "clinker", "Clinker made": "clinker",
                 "Raw meal silo stock, month end": "silo", "Meal silo closing stock": "silo",
+                "Filter dust to silo S7": "dust", "CKD bled (S7)": "dust",
                 "Clinker to cement mills": "clinker_out"}
 LAB_PREFIX = {"LS": "limestone", "SH": "shale", "SA": "sand", "FE": "iron_ore", "SL": "steel_slag", "FA": "fly_ash",
               "CO": "coal", "RF": "srf", "CK1": "clinker_K1", "CK2": "clinker_K2", "FD1": "dust_K1"}
@@ -178,37 +179,40 @@ def read_tests(target):
 def mercury(target, variant="golden"):
     led = read_ledger(target)
     lab = read_lab(target)
-    wb = read_weighbridge(target)
+    wb = read_weighbridge(target) if variant == "dust_shipped" else []
     res = {}
     for k in ("K1", "K2"):
         hg_in = hg_clk = hg_dust = 0.0
-        mats = sorted({it for (kk, it, m) in led if kk == k and it not in ("clinker", "clinker_out", "silo")})
+        mats = sorted({it for (kk, it, m) in led if kk == k and it not in ("clinker", "clinker_out", "silo", "dust")})
         per_mat = {}
         for mat in mats:
             tot = 0.0
             if variant == "annual_mean":
-                wet = [led[(k, mat, m)] for m in MONTHS]
-                moist = sum(float(lab[(mat, m)]["Moisture % (as received)"]) for m in MONTHS) / 12.0
+                q = [led[(k, mat, m)] for m in MONTHS]
                 hg = sum(float(lab[(mat, m)]["Hg mg/kg"]) for m in MONTHS) / 12.0
-                tot = sum(wet) * (1 - moist / 100.0) * hg / 1000.0
+                tot = sum(q) * hg / 1000.0
             else:
                 for m in MONTHS:
                     rec = lab[(mat, m)]
-                    wet = led[(k, mat, m)]
-                    dry = wet if variant == "wet" else wet * (1 - float(rec["Moisture % (as received)"]) / 100.0)
-                    tot += dry * float(rec["Hg mg/kg"]) / 1000.0
+                    q = led[(k, mat, m)]          # raw materials dry, fuels as fired: each on its composite's own basis
+                    if variant == "moisture_again":
+                        q = q * (1 - float(rec["Moisture % (as received)"]) / 100.0)
+                    tot += q * float(rec["Hg mg/kg"]) / 1000.0
             per_mat[mat] = tot
             hg_in += tot
         for m in MONTHS:
             hg_clk += led[(k, "clinker", m)] * float(lab[("clinker_" + k, m)]["Hg mg/kg"]) / 1000.0
         if k == "K1" and variant != "no_dust":
-            for d, t in wb:
-                hg_dust += t * float(lab[("dust_K1", d.month)]["Hg mg/kg"]) / 1000.0
+            if variant == "dust_shipped":
+                for d, t in wb:
+                    hg_dust += t * float(lab[("dust_K1", d.month)]["Hg mg/kg"]) / 1000.0
+            else:
+                for m in MONTHS:
+                    hg_dust += led[(k, "dust", m)] * float(lab[("dust_K1", m)]["Hg mg/kg"]) / 1000.0
         rel = hg_in - hg_clk - hg_dust
         if variant == "silo":
             meal_hg = sum(per_mat[mm] for mm in per_mat if mm not in ("coal", "srf")) * 1000.0 / \
-                sum(led[(k, mm, m)] * (1 - float(lab[(mm, m)]["Moisture % (as received)"]) / 100.0)
-                    for mm in per_mat if mm not in ("coal", "srf") for m in MONTHS)
+                sum(led[(k, mm, m)] for mm in per_mat if mm not in ("coal", "srf") for m in MONTHS)
             # the meal silo's stock fell over the year: the kiln drew meal ground the year before
             dstock = led[(k, "silo", 12)] - SILO_OPENING[k]
             rel += -dstock * meal_hg / 1000.0
@@ -220,23 +224,8 @@ SILO_OPENING = {"K1": 6100.0, "K2": 4300.0}   # opening stock in the 2025 ledger
 
 
 def feed_hours_from_journal(target):
-    ev = read_journal(target)
-    out = {}
-    for k in ("1", "2"):
-        on = None
-        last = None
-        tot = 0.0
-        for t, desc, state, start in ev:
-            if desc != "KILN %s FEED" % k:
-                continue
-            if on and last is not None:
-                tot += (t - last).total_seconds() / 3600.0
-            on = state == "ON"
-            last = t
-        if on:
-            tot += (dt.datetime(2027, 1, 1, tzinfo=UTC) - last).total_seconds() / 3600.0
-        out["K" + k] = tot
-    return out
+    q = ask_feed(target)
+    return {k: sum(v) for k, v in q.items()}
 
 
 def default_route(target):
@@ -277,7 +266,7 @@ def month_bounds():
     return out
 
 
-def direct_intervals(target, journal=None):
+def direct_intervals(target, journal=None, burner_trip_stops_feed=True, want="direct"):
     """Intervals in which each kiln was on feed while its raw mill was stopped, from the DCS journal."""
     ev = journal if journal is not None else read_journal(target)
     out = {}
@@ -288,11 +277,13 @@ def direct_intervals(target, journal=None):
         for t, desc, state, start in ev:
             if desc == "KILN %s FEED" % n:
                 feed_on = state == "ON"
+            elif desc == "KILN %s MAIN BURNER" % n and state == "TRIP" and burner_trip_stops_feed:
+                feed_on = False
             elif desc == "RAW MILL %s" % n:
                 mill_on = state in ("START", "RUNNING")
             else:
                 continue
-            direct = bool(feed_on) and (mill_on is False)
+            direct = bool(feed_on) and (mill_on is False) if want == "direct" else bool(feed_on)
             if direct and cur is None:
                 cur = t
             elif not direct and cur is not None:
@@ -313,11 +304,37 @@ def overlap_hours(iv, a, b):
     return tot
 
 
-def ask1(target):
-    iv = direct_intervals(target)
+def ask1(target, burner_trip_stops_feed=True):
+    iv = direct_intervals(target, burner_trip_stops_feed=burner_trip_stops_feed)
     qb, mb = quarter_bounds(), month_bounds()
     return {k: dict(quarters=[overlap_hours(iv[k], a, b) for a, b in qb],
                     months=[overlap_hours(iv[k], a, b) for a, b in mb]) for k in iv}
+
+
+def ask_feed(target, burner_trip_stops_feed=True):
+    """Hours each kiln was producing clinker (on feed), by local quarter, from the journal."""
+    iv = direct_intervals(target, burner_trip_stops_feed=burner_trip_stops_feed, want="feed")
+    return {k: [overlap_hours(iv[k], a, b) for a, b in quarter_bounds()] for k in iv}
+
+
+def ask_feed_historian(target, prorate_gap=True):
+    hdr, rows = read_historian(target)
+    data = {"K1": {}, "K2": {}}
+    for r in rows:
+        t = dt.datetime.strptime(r[0], "%Y-%m-%d %H:%M").replace(tzinfo=UTC)
+        data[r[1]][t] = float(r[2])
+    out = {}
+    for k, d in data.items():
+        qs = []
+        for a, b in quarter_bounds():
+            n_all = int((b - a).total_seconds() // 1800)
+            got = [f for t, f in d.items() if a <= t < b]
+            h = 0.5 * sum(1 for f in got if f > 0)
+            if prorate_gap and len(got) < n_all:
+                h = h * n_all / len(got)
+            qs.append(h)
+        out[k] = qs
+    return out
 
 
 def ask1_naive_dst(target):
@@ -369,7 +386,7 @@ def ask1_historian(target, prorate_gap=True):
 
 
 # ------------------------------------------------------------------------------------------------- ask 2
-def ask2(target, convert=True, use_logger=True, prorate=False):
+def ask2(target, convert=True, use_logger=True, prorate=False, logger_converted_again=False):
     hdr, rows = read_historian(target)
     seen = set()
     hist = {"K1": {}, "K2": {}}
@@ -393,7 +410,10 @@ def ask2(target, convert=True, use_logger=True, prorate=False):
     for r in lrows:
         end_local = dt.datetime.strptime(r[0], "%d/%m/%Y %H:%M").replace(tzinfo=TZ)
         start = end_local.astimezone(UTC) - dt.timedelta(minutes=30)
-        logger[stack[r[1]]][start] = float(r[2]) * float(r[4]) * 0.5 / 1e9
+        c = float(r[2])
+        if logger_converted_again:
+            c = c * (21.0 - float(r[3])) / 11.0
+        logger[stack[r[1]]][start] = c * float(r[4]) * 0.5 / 1e9
     year0 = dt.datetime(2026, 1, 1, tzinfo=UTC)
     allslots = [year0 + dt.timedelta(minutes=30 * i) for i in range(365 * 48)]
     for k in ("K1", "K2"):
@@ -439,7 +459,7 @@ def ask3(target, correct=True):
             if correct:
                 for mat in NONCARB[k]:
                     r2 = lab[(mat, m)]
-                    dry = led[(k, mat, m)] * (1 - float(r2["Moisture % (as received)"]) / 100.0)
+                    dry = led[(k, mat, m)]
                     co2 -= dry * (0.785 * float(r2["CaO %"]) + 1.092 * float(r2["MgO %"])) / 100.0
         out[k] = dict(co2=co2, clinker=clk, factor=co2 / clk)
     return out

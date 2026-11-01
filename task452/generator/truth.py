@@ -40,8 +40,8 @@ def build_truth():
             fuels = {}
             for f, ar in (("coal", coal), ("srf", srf)):
                 if ar > 0:
-                    fuels[f] = dict(ar=ar, dry=ar * (1 - lab[(f, m)]["moist"] / 100.0))
-            rows[m] = dict(meal=meal, clk=clk, mats=mats, fuels=fuels,
+                    fuels[f] = dict(ar=ar)
+            rows[m] = dict(meal=meal, clk=clk, mats=mats, fuels=fuels, bled=float(d["bleed"][sel].sum()),
                            feed_h=float(d["kiln_on"][sel].sum()) / 60.0)
         out["kiln"][k] = dict(rows=rows, mix=mix)
     _dust(out)
@@ -89,12 +89,11 @@ def _release(out):
             for mat, v in row["mats"].items():
                 hg_in += v["dry"] * lab[(mat, v["q"])]["hg"] / 1000.0      # t x mg/kg = g; /1000 = kg
             for f, v in row["fuels"].items():
-                hg_in += v["dry"] * lab[(f, m)]["hg"] / 1000.0
+                hg_in += v["ar"] * lab[(f, m)]["hg"] / 1000.0          # fuel mercury is reported as received
             hg_clk = row["clk"] * lab[("clinker_" + k, m)]["hg"] / 1000.0
             hg_dust = 0.0
             if k == "K1":
-                net = sum(t["net"] for t in out["dust"]["tickets"] if t["date"].month == m)
-                hg_dust = net * lab[("dust_K1", m)]["hg"] / 1000.0
+                hg_dust = row["bled"] * lab[("dust_K1", m)]["hg"] / 1000.0
             monthly[m] = dict(hg_in=hg_in, hg_clk=hg_clk, hg_dust=hg_dust)
             tot_in += hg_in
             tot_clk += hg_clk
@@ -105,9 +104,7 @@ def _release(out):
                       for row in kd["rows"].values()) / sum(row["meal"] for row in kd["rows"].values())
         silo_term = (W.KILNS[k]["silo0"] - float(w["silo"][-1])) * meal_hg / 1000.0
         dust_term = 0.0
-        if k == "K1":
-            dust_term = -(out["dust"]["s7_end"] - out["dust"]["s7_start"]) * lab[("dust_K1", 12)]["hg"] / 1000.0
-        release = tot_in - tot_clk - tot_dust + silo_term + dust_term
+        release = tot_in - tot_clk - tot_dust + silo_term
         kd["hg"] = dict(inputs=tot_in, clinker=tot_clk, dust=tot_dust, silo_term=silo_term, dust_term=dust_term,
                         release=release, monthly=monthly)
         # per-minute release: compound rate r_c, direct rate ratio_d x r_c, both scaled by feed

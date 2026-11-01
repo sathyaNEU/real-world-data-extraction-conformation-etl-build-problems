@@ -102,10 +102,6 @@ def write_historian(truth, target):
             row = [utc_str(t), k, "%.1f" % s["feed"][i], "%d" % s["run_snap"][i], "%.0f" % s["q_act"][i],
                    "%.2f" % s["o2"][i], "%.1f" % s["nox"][i], "%.1f" % s["so2"][i], "%.1f" % s["temp"][i]]
             rows.append(row)
-            if k == "K1" and dt.datetime(2026, 8, 4, 2, 0, tzinfo=W.UTC) <= t < dt.datetime(2026, 8, 4, 8, 0, tzinfo=W.UTC):
-                resend.append(list(row))
-        if t == dt.datetime(2026, 8, 4, 9, 30, tzinfo=W.UTC):
-            rows.extend(resend)          # the gateway re-sent the morning's K1 batch after the link came back
     C.write_csv(os.path.join(target, fn), header, rows)
     return fn
 
@@ -150,12 +146,19 @@ def write_journal(truth, target):
         n = k[1]
         on = d["kiln_on"]
         ch = np.flatnonzero(on[1:] != on[:-1]) + 1
+        s0 = d["planned"][0]
         for m in ch:
             t = W.T0 + dt.timedelta(minutes=int(m), seconds=int(r.integers(0, 60)))
-            ev.append((t, "KILN %s" % n, "KF.WF01", "KILN %s FEED" % n, "ON" if on[m] else "OFF"))
-            if not on[m]:
+            if on[m]:
+                ev.append((t, "KILN %s" % n, "KF.WF01", "KILN %s FEED" % n, "ON"))
+            elif abs(int(m) - s0) <= 1 or d["feed"][max(0, int(m) - 2)] == 0:
+                # the planned shutdown: feed stopped from the panel, burner off a few minutes later
+                ev.append((t, "KILN %s" % n, "KF.WF01", "KILN %s FEED" % n, "OFF"))
                 ev.append((t + dt.timedelta(seconds=int(r.integers(40, 300))), "KILN %s" % n, "BRN.MAIN",
                            "KILN %s MAIN BURNER" % n, "OFF"))
+            else:
+                # an unplanned stop: the burner trips and the interlock stops the feed with it
+                ev.append((t, "KILN %s" % n, "BRN.MAIN", "KILN %s MAIN BURNER" % n, "TRIP"))
         heat = d["heat"]
         hs = np.flatnonzero(heat[1:] & ~heat[:-1]) + 1
         for m in hs:
@@ -211,10 +214,10 @@ def write_ledger(truth, target):
     wb = Workbook()
     ws = wb.active
     ws.title = "H1 2026"
-    ws["A1"] = "%s - production and materials ledger 2026, January to June (tonnes as weighed)" % WORKS
+    ws["A1"] = "%s - production and materials ledger 2026, January to June (tonnes; raw materials dry, fuels as fired)" % WORKS
     ws["A1"].font = Font(bold=True)
-    ws["A2"] = "Raw materials at the raw mill weigh feeders; fuels at the kiln and calciner feeders as fired; clinker from the kiln output balance."
     hdr = ["Line", "Item", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "H1"]
+    ws.append([])
     ws.append([])
     ws.append(hdr)
     for c in ws[4]:
@@ -225,17 +228,20 @@ def write_ledger(truth, target):
         items = []
         for mat in W.MIX[k]:
             items.append((mat, "mat"))
-        items += [("coal", "fuel")] + ([("srf", "fuel")] if k == "K1" else []) + [("clinker", "clk"), ("silo", "silo")]
+        items += [("coal", "fuel")] + ([("srf", "fuel")] if k == "K1" else []) + [("clinker", "clk")]
+        items += ([("dust", "dust")] if k == "K1" else []) + [("silo", "silo")]
         for item, typ in items:
             vals = []
             for m in W.MONTHS:
                 row = kd["rows"][m]
                 if typ == "mat":
-                    v = row["mats"][item]["wet"]
+                    v = row["mats"][item]["dry"]
                 elif typ == "fuel":
                     v = row["fuels"][item]["ar"]
                 elif typ == "clk":
                     v = row["clk"]
+                elif typ == "dust":
+                    v = row["bled"]
                 else:
                     # meal silo stock at month end
                     d = truth["world"]["kilns"][k]
@@ -245,7 +251,7 @@ def write_ledger(truth, target):
                 vals.append(int(round(v)))
             led[(k, item)] = vals
     names_h1 = dict(MAT_LEDGER_H1, coal="Coal as fired", srf="SRF as fired", clinker="Clinker produced",
-                    silo="Raw meal silo stock, month end")
+                    dust="Filter dust to silo S7", silo="Raw meal silo stock, month end")
     for k in ("K1", "K2"):
         label = "Kiln %s" % k[1]
         for (kk, item), vals in led.items():
@@ -256,20 +262,21 @@ def write_ledger(truth, target):
     ws2 = wb.create_sheet("H2 2026")
     ws2["A1"] = "Production and materials ledger, July to December 2026"
     ws2["A1"].font = Font(bold=True)
-    ws2["A2"] = "From July the ledger is kept on the new MES template (item codes per the materials master)."
+    ws2.append([])
     ws2.append([])
     ws2.append(["Item", "Line", "Unit", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "H2 total"])
     for c in ws2[4]:
         c.font = Font(bold=True)
     names_h2 = dict(MAT_LEDGER_H2, coal="Coal (fired)", srf="SRF (fired)", clinker="Clinker made",
-                    silo="Meal silo closing stock")
-    order = ["clinker", "coal", "srf", "limestone", "shale", "fly_ash", "sand", "iron_ore", "steel_slag", "silo"]
+                    dust="CKD bled (S7)", silo="Meal silo closing stock")
+    order = ["clinker", "coal", "srf", "limestone", "shale", "fly_ash", "sand", "iron_ore", "steel_slag", "dust", "silo"]
     for item in order:
         for k in ("K1", "K2"):
             if (k, item) not in led:
                 continue
             vals = led[(k, item)][6:]
-            ws2.append([names_h2[item], "KL%s" % k[1], "t"] + vals + ([""] if item == "silo" else [sum(vals)]))
+            unit = "t dry" if item in W.MIX[k] else ("t as fired" if item in ("coal", "srf") else "t")
+            ws2.append([names_h2[item], "KL%s" % k[1], unit] + vals + ([""] if item == "silo" else [sum(vals)]))
             if item == "clinker":
                 d = truth["kiln"][k]["rows"]
                 r = np.random.default_rng(W.SEED + (11 if k == "K1" else 12))
@@ -292,8 +299,8 @@ def write_lab(truth, target):
     wb = Workbook()
     ws = wb.active
     ws.title = "Results"
-    hdr = ["Sample", "Description", "Line", "Period", "Moisture % (as received)", "Hg mg/kg", "CaO %", "SiO2 %",
-           "Al2O3 %", "Fe2O3 %", "MgO %", "SO3 %", "LOI %", "NCV GJ/t (as received)", "Ash %", "S %"]
+    hdr = ["Sample", "Description", "Line", "Period", "Basis", "Moisture % (as received)", "Hg mg/kg", "CaO %", "SiO2 %",
+           "Al2O3 %", "Fe2O3 %", "MgO %", "SO3 %", "LOI %", "NCV GJ/t", "Ash % (dry)", "S % (dry)"]
     ws.append(hdr)
     for c in ws[1]:
         c.font = Font(bold=True)
@@ -306,40 +313,27 @@ def write_lab(truth, target):
             v = lab[(mat, pm)]
             code = "%s-26%s" % (LAB_CODE[mat], ("Q%d" % (1 + (pm - 1) // 3)) if mat in W.QUARTERLY else "%02d" % pm)
             per = ("Q%d 2026" % (1 + (pm - 1) // 3)) if mat in W.QUARTERLY else "%s 2026" % mon_abbr[pm - 1]
-            rows.append([code, LAB_DESC[mat], line, per, v["moist"], v["hg"], v["cao"], v["sio2"], v["al2o3"],
+            rows.append([code, LAB_DESC[mat], line, per, "dry", v["moist"], v["hg"], v["cao"], v["sio2"], v["al2o3"],
                          v["fe2o3"], v["mgo"], v["so3"], v["loi"], None, None, None])
     for f in ("coal", "srf"):
         for pm in W.MONTHS:
             v = lab[(f, pm)]
             rows.append(["%s-26%02d" % (LAB_CODE[f], pm), LAB_DESC[f], "KL1/KL2" if f == "coal" else "KL1",
-                         "%s 2026" % mon_abbr[pm - 1], v["moist"], v["hg"], None, None, None, None, None, None, None,
+                         "%s 2026" % mon_abbr[pm - 1], "as received", v["moist"], v["hg"], None, None, None, None, None, None, None,
                          v["ncv"], v["ash"], v["s"]])
     for k in ("K1", "K2"):
         for pm in W.MONTHS:
             v = lab[("clinker_" + k, pm)]
             rows.append(["CK%s-26%02d" % (k[1], pm), "Clinker, kiln %s cooler discharge" % k[1], "KL%s" % k[1],
-                         "%s 2026" % mon_abbr[pm - 1], v["moist"], v["hg"], v["cao"], v["sio2"], v["al2o3"],
+                         "%s 2026" % mon_abbr[pm - 1], "dry", v["moist"], v["hg"], v["cao"], v["sio2"], v["al2o3"],
                          v["fe2o3"], v["mgo"], v["so3"], v["loi"], None, None, None])
     for pm in W.MONTHS:
         v = lab[("dust_K1", pm)]
         rows.append(["FD1-26%02d" % pm, "Filter dust, silo S7 (tanker samples)", "KL1", "%s 2026" % mon_abbr[pm - 1],
-                     v["moist"], v["hg"], v["cao"], None, None, None, None, None, v["loi"], None, None, None])
+                     "dry", v["moist"], v["hg"], v["cao"], None, None, None, None, None, v["loi"], None, None, None])
     for rr in rows:
         ws.append(rr)
     ws.column_dimensions["B"].width = 40
-    n = wb.create_sheet("Methods")
-    for line in [
-        "%s quality laboratory - composite analyses 2026" % WORKS,
-        "",
-        "Raw materials and fuels: monthly composite of the daily increments taken at the feeders (sand, iron ore and",
-        "slag: quarterly composite). Samples are dried at 105 C before analysis; every chemical result, mercury",
-        "included, is on the dry sample. Moisture is the loss on drying of the sample as received.",
-        "Clinker: monthly composite of the two-hourly cooler discharge samples.",
-        "Filter dust (S7): monthly composite of the sample taken from each tanker loaded at silo S7.",
-        "Mercury: cold vapour AAS after aqua regia digestion (contract laboratory), reporting limit 0.0005 mg/kg.",
-        "Major oxides: XRF on fused beads. NCV: bomb calorimeter, reported as received.",
-    ]:
-        n.append([line])
     C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2027, 1, 8, 11, 5), "QC Laboratory")
     return fn
 
@@ -381,7 +375,7 @@ def write_weighbridge(truth, target):
         if t["prod"].startswith("FILTER") and key in reprint_days and t["date"].day >= 10 and not reprint_days[key]:
             rows.append(list(row))          # ticket reprinted at the gatehouse
             reprint_days[key] = True
-        no += 1
+        no += int(r.integers(9, 140))
         if t["prod"].startswith("FILTER") and int(r.integers(0, 60)) == 0:
             # a tanker weighed on the wrong product code, the ticket voided and the load re-weighed
             v = list(row)
@@ -389,7 +383,7 @@ def write_weighbridge(truth, target):
             v[6] = "FILTER DUST KL1 - S7"
             v[11] = "VOID"
             rows.append(v)
-            no += 1
+            no += int(r.integers(3, 60))
     C.write_csv(os.path.join(target, fn), ["Ticket", "Date", "Time in", "Time out", "Haulier", "Vehicle", "Product",
                                           "Gross kg", "Tare kg", "Net kg", "Destination", "Status"], rows)
     return fn
@@ -610,8 +604,8 @@ def write_licence(target):
         ("5.7  The licensee shall submit to the Agency by 31 March 2027 a mercury reduction programme setting out the measures, if any, needed to meet condition 5.6.", "", 9),
         ("", "", 9),
         ("Condition 6  Reporting", "B", 10),
-        ("6.4  The annual environmental report shall state, for each emission point in Schedule C, the mass of each listed substance released to air in the calendar year, determined for every hour of the year.", "", 9),
-        ("6.5  Process carbon dioxide from the calcination of raw materials shall be reported for each kiln as the carbon dioxide released by the carbonates in its raw meal in making the clinker of the year, in tonnes, with the factor per tonne of clinker.", "", 9),
+        ("6.4  The annual environmental report shall state, for each emission point in Schedule C, the mass of each listed substance released to air in the calendar year, determined for every hour of the year, and for each kiln its hours of operation and its hours in direct operation.", "", 9),
+        ("6.5  Hours of operation: hours in which a kiln is producing clinker.", "", 9),
         ("", "", 9),
         ("Schedule B  Emission limit values, emission points A1-1 and A1-2 (reference conditions)", "B", 10),
         ("Dust 10 mg/Nm3 (daily average). Nitrogen oxides as NO2: 450 mg/Nm3 (daily average). Sulphur dioxide 400 mg/Nm3 (daily average). Mercury: 50 ug/Nm3 (mean of the sampling period). TOC 30 mg/Nm3.", "", 9),

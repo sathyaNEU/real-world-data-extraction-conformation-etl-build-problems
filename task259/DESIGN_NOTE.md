@@ -1,6 +1,375 @@
 # task259 design note
 
+Architecture 2, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 1 (the Tallyband pay bands) is kept below
+under `## Architecture 1 record`; its world is closed.
+
 ## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task259.json`, architecture v2, registered 2026-11-01 (architecture 1's
+  two loops in `lineage`, fate "re-rooted 2026-11-01 at the Batch 3 queue reset"). Survey Research & Official
+  Statistics, task type nonresponse-calibration-measurement-error-adjustment, objective Descriptive & Distribution
+  Analysis; shape 07 (a grid: eight workforce development areas, each certified or not, beside each area's survey
+  response and noncontact rates); decision designation_set; gap objective then population; generators G12, G3, G14;
+  Gate G method_or_model_selection; strategy classification_error; context artifact filed_standard; forum
+  minister_or_cabinet; org family research_or_statistics_office.
+
+- **Guard at the draw:** `guard.py recent`, `coverage`, `mechanisms --objective descriptive-distribution` and `slots`
+  on the mechanism nouns (proxy, panel, misclassification, sensitivity) and setting nouns (household survey, workforce
+  area). BLOCKs met and redrawn on the axis, never argued: ban.artifact published_series, ban.shape 14, the
+  same_puzzle and same_driver tests against population-and-G12 cards, ban.forum committee_or_panel, then the older
+  similarity rules against task270 v2 and task192 v3 (cleared with differentiation lines), then ban.org_family
+  government_agency against task264's fresh card (redrawn to research_or_statistics_office). The registered card's
+  re-check returns WARN only.
+
+- **Siblings read before choosing:** task255 (now a pharmacology adherence build; its metro reach tier world and
+  smart-card mechanism closed to this build), task281 (retinopathy AI operating points by camera mix), task133 (ICAAP
+  credit loss), task452 and task123 (ETL, drawing), task138 (levee raise), task273 (bore field). None is a household
+  survey, none corrects a second-hand report, none reads an error rate within units across rounds.
+
+- **Candidates written before choosing (stumping 1.1b: the field's method at rung 0 or 1, the decisive step a
+  precondition this dataset violates):**
+  1. River current meter ratings drifting between gaugings (hydrology): the field's rating-shift method is the step
+     itself; dropped.
+  2. Occupational noise doses from dosimeters worn part-shifts: the deciding exposure is a filed TWA computation, rule
+     application once filed; dropped.
+  3. Pharmacy stock-out days read from dispensing gaps: the stump was the censoring the field's own Kaplan-Meier
+     handles by reflex; dropped.
+  4. Test-equating with testlets (education): the decisive step was a choice of linking grouping (stumping 1.1c);
+     dropped.
+  5. A survey design effect hidden by clustering (variance): the decisive quantity would be a variance, not a level
+     the decision turns on; dropped.
+  6. Faecal immunochemical test persistence across screening rounds: a forecasting quantity in another lane; dropped.
+  7. Household survey proxy reporting with outcome-dependent absence, the error rate read within person across the
+     rotation panel: kept. The field's method (estimates with proxy answers as given, checked by the proxy-against-self
+     comparison) sits at rung 0 and 1; the precondition the dataset violates is that who is answered for is
+     independent of the status.
+
+- **Pairing:** Survey Research & Official Statistics / nonresponse-calibration-measurement-error-adjustment /
+  Descriptive & Distribution Analysis. The call is how a population is composed (each area's share of employed residents
+  holding more than one job), not why it moved, and the measurement adjustment is the task type's own work.
+
+- **Call and shape:** which of the state's workforce development areas the commissioner certifies for the 2027 portable
+  benefits pilot (designation_set, question form which). Criteria: eight areas certified or not, the certified set and
+  the statewide share on the rule's basis (10); eight response rates and eight noncontact rates (16); the memo's chart
+  and the two files (3 to 4). 29 or more.
+
+- **World:** the State of Tamarack, a fictional Mountain West state. Its Department of Labor and Industry runs the
+  quarterly Tamarack Household Employment Survey (HES) through its Labor Market Information Bureau; administrative rule
+  ARM 24.30.104 certifies pilot areas at 7.0 percent of employed residents holding more than one job, counted as the
+  residents would report it themselves, over the four quarters to 30 September 2026 on the final weights. Fiction
+  as-of date 23 October 2026 (the export stamp on every file).
+
+- **Data-native sentence:** in a household survey one member answers for every adult who is out when the interviewer
+  calls, and an adult with a second job is out more often, so the answered-for adults hold second jobs more often while
+  the member answering for them misses about half of those jobs; the two effects cancel in the cross-section, and only
+  the rotation panel, where the same adult answers for themselves in one quarter and is answered for in the next,
+  shows the miss.
+
+- **People** (`guard.py names --geo us --seed 259`): Mackenzie Parks (Chief, Labor Market Information Bureau, signs the
+  recommendation), Jason Holland (Commissioner of Labor and Industry), Kylie Taylor (Survey Operations, the technical
+  note's contact), Damon Mcbride (the release's contact).
+
+- **Pack (twelve files, four formats):** HES_PERSON_2025Q1_2026Q3.csv (200,667 adult-quarters, the spine);
+  HES_HOUSEHOLD_DISPOSITIONS_2025Q1_2026Q3.csv (156,161 rows, both CAPI systems); HES_CASEID_CROSSWALK_CAPI2026.csv;
+  HES_FRAME_MAINTENANCE_2024-07_2026-09.csv; HES_DISPOSITION_CODES.csv; HES_FINAL_WEIGHTS_2025Q4_2026Q3.xlsx (a sheet
+  per quarter and the 2026Q3 reissue); TDLI_WORKFORCE_AREAS_2026.xlsx (areas, county 59041's ZIP split);
+  TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx (the rule); HES_TECHNICAL_NOTE_2026-09.pdf;
+  HES_RELEASE_2026Q3_PRELIMINARY.pdf (statewide as-collected series, the context artifact); distractors
+  QCEW_WDA_SECTOR_2025.csv and LAUS_WDA_MONTHLY_2025-07_2026-09.csv, declared in metadata.json.
+
+## Survivor anatomy
+
+- **Actor:** the decisive property, how often the member answering for an absent adult carries a second job that adult
+  holds, has no column: each adult-quarter row carries MJH and the line of whoever answered (RESPLINE), and the miss
+  rate exists only as a relation between the same adult's rows in two quarters, one answered for and one self-answered.
+
+- **Link:** the decisive link is the same adult across quarters, one no key offers: case numbers were reissued at the CAPI 2026 change
+  (the crosswalk carries them back) and a new household at an address reuses line numbers (sex and age break the
+  chain); the comparison runs within person across survey rounds, which the field's proxy-bias check, answered-for
+  against self within one quarter, never asks for.
+
+- **Reflex:** below the decisive step, the field's method for the deciding quantity, the weighted share with answered-for answers as given and
+  validated by the proxy-against-self comparison within cells (or replaced by self-answered shares, or by imputation
+  from self-answering adults alike), sits at rungs 0 to 2 and certifies Silver Creek alone.
+
+- **Back-test:** the textbook route validates and hides the decisive miss: answered-for adults report second jobs at 1.018 times the self-reported
+  rate within cells of area, age, sex, hours and occupation (1.011 overall); the release's statewide 5.3 to 5.7 percent
+  reproduces from the records; the self-answered and imputed shares agree with the as-collected ones.
+
+- **Second use:** every file the decisive step reads has its own reason in the pack: the person file and the weights
+  are the survey's estimation files any route uses, and the crosswalk is the migration's own record that the asks'
+  disposition work also needs; deleting the decisive step leaves all three in the pack.
+
+- **Shock:** the decisive correction reads as ordinary movement (each area rises 0.5 to 2.1 points, the most where more adults are answered for),
+  and the golden set is not an interval of the as-collected sort (Timber Country, 5.94, sits above Northern Basin,
+  5.75) or of the answered-for-share sort (Southwest Lakes and High Plains sit among the certified areas); on the
+  self-answered sort it is the top four, a route that certifies Silver Creek alone.
+
+- **Pins:** nothing pins the decisive step; the WHAT is filed in the department's own genre, an administrative rule (ARM 24.30.102 and 24.30.104):
+  population, window, weights, threshold and the self-report basis; no filed sentence names the panel, the within-person
+  comparison, a sensitivity or a correction, and the technical note states only the survey's process (who answers).
+
+## Default path
+
+1. Read ARM 24.30.104: certify each area where at least 7.0 percent of employed residents hold more than one job, over
+   the four quarters to 30 September 2026, on the final weights, counted as the residents would report it themselves.
+2. Kept the employed records (LFSTAT 1 or 2) for 2025Q4 to 2026Q3 in HES_PERSON_2025Q1_2026Q3.csv and joined each to
+   its final weight (the 2026Q3 rev sheet for 2026Q3).
+3. Read in the technical note that the household member answering gives the information for adults not at home, so
+   answered-for records (RESPLINE other than LINENO) are not the residents' own answers.
+4. Ran the field's check: within cells of area, age group, sex, hours band and occupation, answered-for adults report
+   second jobs at 1.02 times the self-answered rate (1.01 overall), so the answered-for reports show no shortfall.
+5. Estimated each area three ways the check licenses: as collected (Silver Creek 7.59, Upper River 6.50, the rest
+   under 6.0), self-answered adults only (7.56, 6.45) and answered-for adults imputed from self-answering adults in
+   their cell (7.58, 6.34); every way, Silver Creek alone clears 7.0.
+
+Ends on: Silver Creek alone certified, the statewide share 5.5 percent.
+Golden: Northern Basin, Silver Creek, Upper River and Eastern Prairie certified, the statewide share 7 percent.
+
+## Stump sentence
+
+The decisive miss: the default path certifies Silver Creek alone with the state at 5.5 percent, because the cross-sectional check finds
+answered-for reports level with self-reports and the self-answered and imputed shares agree with the as-collected ones;
+the agreement is two effects cancelling, since adults out when the interviewer calls hold second jobs more often and the
+member answering for them carries only 56 percent of the second jobs those same adults report in the quarters they
+answer for themselves, so correcting every answered-for report lifts Northern Basin, Upper River and Eastern Prairie
+over 7.0 and the state to 7 percent.
+
+## Three rules
+
+- **Task type:** survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment (serves
+  Descriptive & Distribution Analysis): the measurement adjustment of a household survey's estimate of how a population
+  is composed.
+
+- **Domain test:** the deciding quantity is each workforce area's share of employed residents holding more than one job
+  on the resident's own reporting basis, which survey methodology estimates by treating answers given by another
+  household member as a measurement with error, checking them against residents' own answers within the same survey
+  round and correcting the estimate only where the two differ.
+
+- **Swap:** "certify the hospitals where 7 percent of discharged patients hold a carer, counted as the patients would
+  report it" stops reading the same: there is no household member answering because the patient is out, no
+  absence caused by the status itself, and no rotation panel that sees the same person answer both ways.
+
+- **Layer 1:** the CAPI 2026 change reissuing case numbers (the crosswalk) and renumbering disposition codes (the field
+  system); interview start times in UTC against Mountain time (the CAPI clock); workforce areas from counties with
+  county 59041 split by ZIP (the areas designation); hours heaped at 40 and "don't know" (-9) (the questionnaire);
+  weights in a sheet per quarter with a reissued 2026Q3 sheet (weighting); converted refusals logged twice and some
+  2026Q2 interviews keyed again into the old system (field operations); a new household reusing line numbers (the
+  roster). None is placed to be caught and none moves the call (asserted L1 to L9).
+
+- **Layer 2:** the decisive family is classification error under outcome-dependent selection into the error-prone mode: where the error rate
+  is read, across adults in one round (confounded by who is absent) or within the same adults across rounds.
+
+- **Decisive step:** recognising that who is answered for depends on the status itself, so the answered-for against
+  self comparison in one quarter confounds selection with reporting error, and reading the miss rate instead within the
+  same adults across adjacent quarters of the rotation panel (self in one, answered for in the other, net of jobs that
+  start or end between quarters), then correcting every answered-for report by it.
+
+- **Not semantics:** the decisive step is no reading: with every field read right (RESPLINE against LINENO, LFSTAT, MJH, the weights, the crosswalk, the
+  codes) the as-collected, self-answered and imputed routes all certify Silver Creek alone (asserted R3b); no field,
+  code, unit or definition flips the call.
+
+- **Not rule application:** the rule names the basis and no procedure, so executing every filed sentence leaves the
+  estimator open; the enumerated family (as collected, self-answered, cell imputation coarse and fine, carrying each
+  adult's own answer with three fallbacks, and the within-person corrections) certifies one, two or four areas, with
+  Northern Basin spanning 5.75 to 8.35; the standing family (16 reconstructions of the within-person sensitivity: raw,
+  persistence-adjusted, forward, backward, sandwich, two lags, per area in four forms, carry then correct, unweighted,
+  quarterly mean, either 2026Q3 issue, with or without the identity check) certifies the same four areas, sensitivity
+  0.540 to 0.566 and the state 6.88 to 7.05; what rules the easy routes out is silent, the panel's own pairs, with no
+  sentence in the pack saying it.
+
+- **Analyst test:** skipping the decisive step, a strong analyst who weights the survey correctly, reads RESPLINE against LINENO and applies the
+  rule's self-report basis keeps the self-answered residents or imputes the answered-for ones from self-answering
+  residents alike in age, sex, hours and occupation, sees the cross-sectional check pass, and certifies Silver Creek
+  alone with the state at 5.5 percent; the answered-for adults hold second jobs more often and the answers given for
+  them carry 56 percent of those jobs (asserted R3e on the generator's clean truth).
+
+- **Estimand:** ARM 24.30.104(1) to (3) with 24.30.102(1), (2) and (4) in
+  TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx: employed residents aged 16 or over living in housing units, each
+  counted once in each quarter their household was interviewed, the four quarters to 30 September 2026, the survey's
+  final weights, at least 7.0 percent, second jobs counted as the resident would report it themselves, areas as
+  designated on 1 July 2026.
+
+- **No decoy:** nothing is planted to be caught: no copied block, no withheld rule, no memo, draft or stakeholder figure;
+  the release reports the statewide as-collected series correctly and names its basis; the cross-sectional agreement is
+  the data's own structure, two real effects cancelling.
+
+- **No certified replay:** no certified or published figure carries the rule's basis; the release's statewide series is
+  as collected, and the method is not recovered by reproducing any shipped number.
+
+- **Lesson:** an error rate read across people is confounded whenever the error-prone mode is selected on the outcome,
+  and a panel lets it be read within the same people across rounds; no build on file teaches outcome-selected proxy
+  reporting (task270 v2 corrects reports members withhold at a cost, task192 v3 carries a validation batch's rates).
+
+## Readability screen
+
+| Rung | Column | Key | Sentence | Field method | Validation | Second use | Shock | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 as collected | MJH as given | none | rule (3) points past it | is the method | release reproduces | spine | none | readable |
+| R1 self-answered only | RESPLINE | none | technical note | standard fix | agrees with R0 | spine | none | readable |
+| R2 cell imputation | RESPLINE, cells | none | technical note | standard fix | cross-sectional check passes | spine | none | readable |
+| R3 carry own answer | none | crosswalk | none | panel habit | partial | crosswalk | none | readable |
+| R4 within-person sensitivity (decisive) | none | no shipped key, chain by sex and age | none | not asked by the check | the check says no error | every file has a use | not an interval | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | employed | LFSTAT 1 or 2 | at work only (1) | same call | same call (asserted) |
+| SF2 | holds more than one job | MJH 1 | MJH 1 among valid answers | same call | same call: MJH is 1 or 2 on every employed record |
+| SF3 | the four quarters | 2025Q4 to 2026Q3 | every quarter on file | other window | ARM 24.30.104(2), "four calendar quarters ending 30 September 2026" |
+| SF4 | counted once in each quarter | pooled adult-quarters | mean of quarterly shares | same call | same call (asserted, shares within 0.05) |
+| SF5 | final weights | 2026Q3 rev sheet | first issue; unweighted | same call | same call (asserted); the technical note says the reissue replaces the first issue |
+| SF6 | workforce development area | HES_AREA | county and ZIP on the 2026 designation | same call | same call (every record agrees, asserted) |
+| SF7 | at least 7.0 percent | 7.0 or more | over 7.0 | same call | same call: no member within 0.25 of the line |
+| SF8 | as the resident would report it themselves | every employed resident on their own basis | self-answered residents only; answered-for answers as given | wrong set | ARM 24.30.104(2) counts each employed resident; (3) excludes another member's answer as given |
+| SF9 | statewide share rounding | whole percent | one decimal | same whole percent | the prompt's rounding; every member rounds to 7 |
+| SF10 | housing unit in sample | FRAMEID once per quarter | a row per record | different rates | the technical note, "each housing unit in sample counted once in each quarter" |
+| SF11 | no one at home | codes 3 and 216 | every noninterview | different rates | HES_DISPOSITION_CODES.csv's NC group and the technical note's definition |
+| SF12 | the reference week | the survey's, one record per adult per quarter | a person's latest report | same call | ARM 24.30.102(1) and (2), "in the survey reference week" |
+| SF13 | the grouping of the sensitivity | pooled | per area (four forms) | same call | same call (asserted) |
+
+## Ladder
+
+| Rung | Route | Certified | Shares (02, 03, 05, 07; 08) |
+|---|---|---|---|
+| R0 | as collected, the field's estimate | Silver Creek | 5.75, 7.59, 6.50, 5.95; 5.94 |
+| R1 | self-answered adults only | Silver Creek | 6.50, 7.56, 6.45, 6.59; 5.73 |
+| R2 | answered-for adults imputed in cells | Silver Creek | 6.46, 7.58, 6.34, 6.64; 5.78 |
+| R3 | each adult's own answer carried from another quarter, as collected otherwise | Silver Creek, Upper River | 6.14, 8.46, 7.29, 6.50; 6.25 |
+| R3b | carried, imputed otherwise | Silver Creek | 6.40, 8.18, 6.81, 6.54; 6.16 |
+| golden | answered-for reports corrected by the within-person sensitivity (56 percent) | Northern Basin, Silver Creek, Upper River, Eastern Prairie | 7.81, 9.29, 8.34, 8.03; 6.46 |
+
+The statewide share: 5.5 as collected, 6.9 corrected (whole percent 7). About 53 percent of answered-for records have
+an own answer from another quarter; the other half never answer for themselves inside the panel, which is why carrying
+stops short. Golden-family ranges by area: 01 5.61 to 6.11, 02 7.29 to 8.35, 03 9.23 to 9.44, 04 4.20 to 4.54, 05 8.18
+to 8.51, 06 5.53 to 5.84, 07 7.98 to 8.57, 08 6.32 to 6.50.
+
+## Closure table
+
+| # | Axis | Reading chosen | Closure move |
+|---|---|---|---|
+| 1 | Population | employed residents 16+ in housing units, interviewed households | filed (ARM 24.30.102(1), 24.30.104(2)); C1 SF1 |
+| 2 | Unit of account | an employed resident in a quarter | filed (24.30.104(2)) |
+| 3 | Attribution window | 2025Q4 to 2026Q3 | filed (24.30.104(2)) |
+| 4 | As-of dating | the survey reference week of each quarter | filed (24.30.102(1), (2)) |
+| 5 | Version basis | the reissued 2026Q3 weights | C1 (SF5) |
+| 6 | Denominator | weighted employed residents of the area | filed (24.30.104(1)) |
+| 7 | Weighting | the final weights | filed (24.30.104(2)); C1 unweighted (SF5) |
+| 8 | Window length | four quarters | filed |
+| 9 | Boundary inclusivity | at least 7.0 | C1 (SF7) |
+| 10 | Rounding path | unrounded shares against 7.0; the statewide figure rounded once | C1 (SF7, SF9) |
+| 11 | Tie-break | none needed | C1 |
+| 12 | Maturity and censoring | quarters in hand; panels truncated at the window's ends | C1 (lags and directions, SF13) |
+| 13 | Order of operations | correct within area, then combine on the weights | C1 (quarterly mean SF4) |
+| 14 | Row order | not order-dependent | C1 |
+| 15 | Duplicate resolution | one record per adult per quarter | C1 (asserted SF12) |
+| 16 | Identity normalisation | case numbers carried back through the crosswalk; sex and age chain | C1 (L1, L2) |
+| 17 | Netting against gross | jobs starting or ending between quarters netted | C1 (raw and adjusted, SF13 family) |
+| 18 | Dimensional units | percent of employed residents | C1 |
+| 19 | Code and status semantics | LFSTAT, MJH, RESPLINE, disposition codes | the code list and the rule's definitions; never the stump |
+| 20 | Integerisation | none | C1 |
+| 21 | Clause scope | the rule's basis applies to every employed resident | filed (24.30.104(3)) |
+| 22 | Forward window contents | the 2027 pilot year rests on the four quarters to 30 September 2026 | filed (24.30.104(2), 24.30.105) |
+
+## Literal reader
+
+Executed word for word, ARM 24.30.104 asks for each area's share of every employed resident, each counted once a
+quarter, on the final weights, with second jobs as each resident would report them; for answered-for residents the
+pack holds no such report in that quarter, so the literal reader must estimate it, and the literal execution with the
+default's inputs (another member's answer taken as the resident's) does not comply with (3), while dropping the
+answered-for residents does not comply with (2). The estimate the data force is the within-person one: the panel's own
+pairs refute the premise of the self-answered and imputed routes (an adult's own second job is carried in only 56
+percent of their answered-for quarters, and adults answered for report second jobs themselves more often), and every
+reconstruction of that sensitivity lands the golden (asserted R3c, SF13). The asks' readings are filed in the technical
+note (statistic, population, unit, inclusion) and the code list.
+
+## Oracles
+
+- None ties only under the golden. The release ties to the as-collected series (the default), on its stated basis.
+
+- The cross-sectional check (answered-for against self within cells) ties the default; it is the field's validation,
+  not a planted figure.
+
+- The workbook's second sheet, county 59041's ZIP split, is a lookup that ties under every handling of the call.
+
+- For the asks, no control totals the eligible units; the frame log arbitrates only the units it deleted, and a
+  deletion restored as entered in error says so itself.
+
+## Ask sheet
+
+Two asks on the survey's quality over the same four quarters, both on files the call never reads (the dispositions,
+the frame log, the code list, the areas workbook).
+
+**Ask A, each area's household response rate (8 figures, percent to one decimal).** Home: the certification's account
+of the survey behind each area.
+
+- Primary device (D4, absence evidenced in a file no habitual join reaches): 414 unit-quarters the interviewer coded
+  no one home were already deleted from the frame as vacant or demolished before the visit; only rebuilding each unit's
+  frame status at its visit date from HES_FRAME_MAINTENANCE finds them, and leaving them in moves every area's rate by
+  0.31 to 0.51 points.
+
+- Second device (its over-cleaning half): 239 noncontact unit-quarters sit at units deleted in error and restored as
+  DELETED IN ERROR only after the visit; the frame read as it stood at the visit drops them and misses every area by
+  0.17 to 0.33.
+
+- Hazards: converted refusals logged as a refusal row and an interview row (the new system reissues them under a case
+  of their own), the old system's second record of some 2026Q2 interviews, two code lists, county 59041 by ZIP.
+
+**Ask B, each area's noncontact rate (8 figures, percent to one decimal).** Home: the same account; it moves with the
+same frame record in the numerator as well as the base (0.38 to 0.59 points under the codes, 0.19 to 0.39 under the
+frame as it stood). Hazards as Ask A, plus code 4 and 219 (other noninterview) against 3 and 216.
+
+Pin test: the asking sentences pin the statistic (response and noncontact rate), the unit (percent), the rounding and
+the window; the technical note files the inclusion (each housing unit once a quarter; eligible means occupied at the
+visit). No pin names the frame log, a deletion or a restore. The main population carries zero device rows (asserted
+L6, L7).
+
+| Ask row | The cracker (landed the call, ran the battery, executed every filed definition on the codes) | Verdict |
+|---|---|---|
+| A, eight response rates | counts no-one-home units the frame had deleted as vacant | miss |
+| B, eight noncontact rates | the same units in numerator and base | miss |
+| A and B, full includer | reads the frame as it stood at the visit and drops the restored-in-error units | miss |
+
+Pair ceiling: 28.5 ((38 + 7 + 55 x 0.0) and (5 + 7 + 55 x 0.0), averaged)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Layer 1 inventory
+
+| Mess | System that produces it | Neutral to the call |
+|---|---|---|
+| case numbers reissued at the CAPI 2026 change, with a crosswalk | the field system's migration | L1 (linking without it certifies the same areas) |
+| disposition codes renumbered (1 to 6 against 201 to 225) | the field system | asks only |
+| interview start times in UTC | the CAPI clock | L7, the call reads no times |
+| county 59041 split between two areas by ZIP | the areas designation | SF6 |
+| hours heaped at 40 and 20, "don't know" -9 | the questionnaire | L4 |
+| weights per quarter, 2026Q3 reissued | weighting, the demographer's revision | SF5, L3 |
+| converted refusals logged twice; old-system second records in 2026Q2 | field operations | L6, L9 |
+| a new household reusing line numbers | the household roster | L2 |
+
+
+## Leak sweep answers
+
+leak.py --asof 2026-10-23 on the final cut: verdict REVIEW, no LEAK; each REVIEW line answered.
+
+- HES_RELEASE_2026Q3_PRELIMINARY.pdf, 68.8: the release's 2026Q3 multiple jobholders in thousands, a different
+  quantity that happens to equal Eastern Prairie's response rate; harmless.
+- HES_RELEASE_2026Q3_PRELIMINARY.pdf, 5.5: the release's 2026Q1 as-collected share; the write-up's 5.5 is the
+  four-quarter as-collected figure, the default's own basis, published as such; harmless.
+- TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx, 7.0: the rule's threshold, the filed WHAT; harmless.
+- Design-note vocabulary in the technical note (adults, survey, person) and the rule (survey, report, person): the
+  survey's and the rule's ordinary nouns; neither document names a comparison, a panel pair or a correction.
+- Guard WARN repeat.question_form (whether, against task255 v3): the call is a gate per area ("does each area
+  qualify"), and the alternative (which) runs over the corpus quota at 36 percent; whether kept.
+
+## Architecture 1 record (re-rooted 2026-11-01)
+
+Shipped 2026-10-13 (loop 1, a software company's 2027 Data Engineer pay bands from a salary-sharing platform's
+respondent reports) with no portal result, and re-rooted on 2026-11-01 at the Batch 3 queue reset. Its note, kept for
+the record:
+
+### Architecture 1: Draw
 
 - **Card:** `cards/task259.json`, registered 2026-10-13. Survey Research & Official Statistics, task type
   nonresponse-calibration-measurement-error-adjustment (a salary survey's measurement adjustment), objective
@@ -60,7 +429,7 @@
 - **Forward facing:** the bands govern pay and postings from 1 April 2027, a window not yet open; the deciding
   quantity is the market as in effect on the benchmark date the policy names.
 
-## Default path
+### Architecture 1: Default path
 
 The pipeline a strong analyst builds from the prompt's words, the policy and the files' grain; every figure is the
 generator's, asserted in `generator/checks.py`.
@@ -80,7 +449,7 @@ generator's, asserted in `generator/checks.py`.
 Ends on: Data Engineer III midpoint $175,000
 Golden: Data Engineer III midpoint $170,000
 
-## Stump sentence
+### Architecture 1: Stump sentence
 
 A strong analyst matches Tallyband's respondents to Tarnwick's levels, sees the reports were filed over three years,
 carries each one to the benchmark date at the re-reporters' own pay growth between their two reports at the same level
@@ -91,7 +460,7 @@ per cent a year) files $166,000, because the platform's later filings come more 
 at every level; read within employers the level's pay rises 2.7 per cent a year, and the matched reports carried by
 that movement give $170,000; the analyst who leaves the reports as filed files $164,000.
 
-## Three rules
+### Architecture 1: Three rules
 
 - Task type: nonresponse-calibration-measurement-error-adjustment (Survey Research & Official Statistics): a salary
   survey's reports filed at different dates adjusted to one reference date before its percentiles are read, the
@@ -143,7 +512,7 @@ that movement give $170,000; the analyst who leaves the reports as filed files $
   across a pool whose members change between dates is not the rate at which any member moves; to carry a survey
   report to a reference date, read the movement at a fixed grade inside the same reporting units.
 
-## Readability screen
+### Architecture 1: Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear arithmetic | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -153,7 +522,7 @@ that movement give $170,000; the analyst who leaves the reports as filed files $
 | R3 each report aged by the level's movement across the pooled reports | no sentence names a movement | no column carries one | the careful analyst's correction once the people's growth is refused: a trend at a fixed level | none | clean | a trend fit, then every report re-aged | readable |
 | R4 (decisive) each report aged by the level's movement read within employers | no sentence names a movement, an employer mix, the platform's reach or a fixed panel | no column marks an employer's arrival or its pay; the employer column is the respondent's own text | not a reflex: the reflexes leave the reports as filed, use the people's growth or fit the pooled trend | no published index, prior band or matched-employer series to confirm it | clean | no: an intercept for each employer, then every report re-aged before the percentiles | silent |
 
-## Semantic fork table
+### Architecture 1: Semantic fork table
 
 | Id | Term or convention in the main ask or the main computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
@@ -172,7 +541,7 @@ that movement give $170,000; the analyst who leaves the reports as filed files $
 | SF13 | the employer a report belongs to | the employer name tidied to the crosswalk's | the name as the respondent typed it | same figures (asserted) | C1 |
 | SF14 | the reports the movement is read from | the matched reports | every family's US full-time reports, or the offers extract, each within employers | same call (asserted: 2.67 and 2.75 per cent) | C1 |
 
-## Ladder
+### Architecture 1: Ladder
 
 Generator figures (the Data Engineer III midpoint, dollars), asserted in `checks.py`.
 
@@ -202,7 +571,7 @@ Generator figures (the Data Engineer III midpoint, dollars), asserted in `checks
 - **Bins:** every graded point keeps a margin of $234 or more to its bin edge under every defensible estimator
   (SF9 to SF11, SF13, every percentile definition, rounding first); the call sits $447 inside its bin.
 
-## Closure table
+### Architecture 1: Closure table
 
 | # | Axis | Reading chosen | Closure move |
 |---|---|---|---|
@@ -229,7 +598,7 @@ Generator figures (the Data Engineer III midpoint, dollars), asserted in `checks
 | 21 | Scope of a stated clause | "market pay" is base pay of matched respondents | pinned (policy 4.1, 4.2) |
 | 22 | Forward window contents | the bands from 1 April 2027, set on the benchmark-date market | pinned (policy 4.3, 4.5) |
 
-## Literal reader
+### Architecture 1: Literal reader
 
 Filed estimand, from the prompt and the policy: for each Data Engineer level, the 25th percentile, median and 75th
 percentile of the base pay of every matched respondent (US, full time, focus data pipelines and platforms, level
@@ -245,7 +614,7 @@ any employer's reports filed at each date show. Every literal reading of the pol
 the reports are carried by the level's movement within employers (the fork table, SF1 to SF14); the easy answers come
 only from easier models of the same carry (none, the people's growth, the pooled drift), never from another reading.
 
-## Oracles
+### Architecture 1: Oracles
 
 - OEWS wages by state: another population (every industry, no levels), no figure about Tarnwick's levels; ties
   nothing on either path, declared a distractor.
@@ -258,7 +627,7 @@ only from easier models of the same carry (none, the people's growth, the pooled
   not use.
 - Nothing ties only under the golden for the main call.
 
-## Ask sheet
+### Architecture 1: Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
@@ -287,7 +656,7 @@ Mirror leakage: 0 per cent of the ask weight (the mirror, on R1, R2 or R3, misse
 as the cracker does).
 Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; the mirror at about 12).
 
-## Layer 1 inventory
+### Architecture 1: Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | Outcome (asserted) |
 |---|---|---|---|---|
@@ -300,7 +669,7 @@ Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; th
 | OEWS wages and the offers extract beside the platform | the OEWS layout; Tallyband | the two distractors | read for the call | never read by the golden (asserted) |
 | The HRIS's recorded zone, entered-ahead changes, leaves and contingent workers; the ATS's posting grain, status as of the export and hire-only close dates | the HRIS and the ATS | the ask files | as in the ask sheet | the call never reads them (asserted) |
 
-## Build record
+### Architecture 1: Build record
 
 - Stage 3: `python3 task259/generator/build.py` writes the pack (12 files, 4 formats; the Tallyband extract 35,851
   rows), the goldens, figures.json and metadata.json; 87 checks green (the three-rules block R1 to R3c on the clean
@@ -371,7 +740,7 @@ Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; th
   decisive step pass. Its optional point (close "employed" for workers on leave in Ask A) is declined as in loop 0:
   the leave rows are the ask's designed device and the readme files leave as a job state.
 
-## Pre-ship check
+### Architecture 1: Pre-ship check
 
 - **Rule 1, the domain:** the deciding quantity is a salary survey's market median for a job and level at a
   reference date, read from reports filed over three years; the field carries each report to the reference date by
@@ -435,3 +804,35 @@ Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; th
 - Movement at 3.0 per cent a year within employers: whole months and linear carrying spread Data Engineer III's
   quartiles over $480 and no common window held all three points; movement set to 2.7 per cent and III's spread given
   a slight lean.
+- Architecture 1 as a whole (the Tallyband pay bands, each report aged to the benchmark date by the level's movement
+  within employers): re-rooted 2026-11-01 at the Batch 3 queue reset; the salary-platform world is closed.
+- River current meter ratings drifting between gaugings: the field's rating-shift method is the decisive step itself,
+  a reflex at rung 0; dropped at the draw.
+- Occupational noise doses from part-shift dosimeters: the deciding exposure is a filed time-weighted computation, rule
+  application once filed; dropped at the draw.
+- Pharmacy stock-out days read from dispensing gaps: the stump was censoring the field's own survival estimate handles
+  by reflex; dropped at the draw.
+- Test equating with testlets: the decisive step was a choice of linking grouping (stumping 1.1c); dropped at the draw.
+- A survey design effect hidden by clustering: the decisive quantity would be a variance, not the level the call turns
+  on; dropped at the draw.
+- Faecal immunochemical test persistence across screening rounds: a forecasting quantity in another lane; dropped at
+  the draw.
+- A queue or critical-path capacity call for the survey's field force: an operations decision with no measurement
+  adjustment, the domain a backdrop; dropped at the draw.
+- A per-area multiple-jobholding table in the quarterly release: it ranks the areas on the decision question on the
+  as-collected basis (Gate G); the release carries statewide figures only.
+- Unemployment-insurance wage records counting workers with two or more employers as a distractor: an administrative
+  measure of the same status ranks the areas and would arbitrate or mislead; replaced by local area unemployment
+  statistics.
+- The person file's respondent line carrying the household respondent for every adult: present adults who answered for
+  themselves read as answered for; the line is now whoever answered that adult's questions.
+- The base sample (about 70,000 adult-quarters): the per-area sensitivity, a grouping the records license, moved
+  Northern Basin and Eastern Prairie across 7.0; the sample is three times larger and every per-area form certifies
+  the same four areas.
+- A golden set that was the top of the as-collected sort: one uniform inflation would have landed it; the areas now
+  differ in household make-up (single-adult share 10 to 66 percent) and in who is out at interview, so Timber Country
+  sits above Northern Basin as collected and below 7.0 corrected.
+- Outcome draws sharing a stream with presence and report draws: tuning prevalence moved the response rates; the
+  streams are split, and three areas' rates sat on a rounding edge until their streams were redrawn.
+- Deletions entered in error restored after the visit at 6 to 9 per area: too few to move a one-decimal rate; 25 to 36
+  per area kept.

@@ -1,0 +1,64 @@
+{
+ "carry_rung_certified": [
+  "Silver Creek",
+  "Upper River"
+ ],
+ "certified": [
+  "Northern Basin",
+  "Silver Creek",
+  "Upper River",
+  "Eastern Prairie"
+ ],
+ "codes": [
+  "24.30.104",
+  "59041",
+  "LFSTAT 1 or 2",
+  0,
+  1,
+  2026,
+  216,
+  3
+ ],
+ "false_report_pct": 0.2,
+ "noncontact_rate_pct": {
+  "Capital Region": 11.9,
+  "Eastern Prairie": 17.8,
+  "High Plains": 13.2,
+  "Northern Basin": 19.5,
+  "Silver Creek": 11.7,
+  "Southwest Lakes": 16.6,
+  "Timber Country": 5.8,
+  "Upper River": 13.4
+ },
+ "not_certified": [
+  "Capital Region",
+  "High Plains",
+  "Southwest Lakes",
+  "Timber Country"
+ ],
+ "response_rate_pct": {
+  "Capital Region": 76.6,
+  "Eastern Prairie": 68.8,
+  "High Plains": 74.3,
+  "Northern Basin": 67.5,
+  "Silver Creek": 76.1,
+  "Southwest Lakes": 69.7,
+  "Timber Country": 83.8,
+  "Upper River": 74.7
+ },
+ "sensitivity_pct": 56,
+ "sensitivity_raw_pct": 54.4,
+ "shares_pct": {
+  "Capital Region": 5.8,
+  "Eastern Prairie": 8.0,
+  "High Plains": 4.4,
+  "Northern Basin": 7.8,
+  "Silver Creek": 9.3,
+  "Southwest Lakes": 5.6,
+  "Timber Country": 6.5,
+  "Upper River": 8.3
+ },
+ "statewide_as_collected_pct": 5.5,
+ "statewide_pct": 7,
+ "threshold_pct": 7.0
+}

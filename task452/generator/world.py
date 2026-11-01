@@ -12,6 +12,7 @@ from zoneinfo import ZoneInfo
 import numpy as np
 
 SEED = 452
+TRIP_DRAW = 20      # which year of protection trips the raw mills had: a draw of the world, fixed by the tuning in build.py
 UTC = dt.timezone.utc
 TZ = ZoneInfo("Europe/Dublin")
 T0 = dt.datetime(2026, 1, 1, tzinfo=UTC)          # local midnight too: Irish winter time is UTC
@@ -21,10 +22,10 @@ MONTHS = list(range(1, 13))
 # ---- kiln lines -------------------------------------------------------------------------------------------------
 KILNS = {
     "K1": dict(feed=205.0, mill_cap=246.0, silo_cap=9000.0, silo0=6100.0, loi=0.355, nm3_per_t=2250.0,
-               shutdown=((1, 12, 6), (2, 6, 18)), n_stops=6, nox=392.0, so2=118.0, o2=8.55, ratio_d=7.0,
+               shutdown=((1, 12, 6), (2, 6, 18)), n_stops=6, nox=392.15, so2=118.0, o2=8.55, ratio_d=7.0,
                coal_per_clk=0.085, srf_per_clk=0.052, bleed_tph=1.25),
     "K2": dict(feed=140.0, mill_cap=176.0, silo_cap=6500.0, silo0=4300.0, loi=0.352, nm3_per_t=2320.0,
-               shutdown=((2, 16, 6), (3, 9, 18)), n_stops=5, nox=358.2, so2=96.0, o2=8.85, ratio_d=6.5,
+               shutdown=((2, 16, 6), (3, 9, 18)), n_stops=5, nox=358.04, so2=96.0, o2=8.85, ratio_d=6.5,
                coal_per_clk=0.128, srf_per_clk=0.0, bleed_tph=0.0),
 }
 
@@ -37,15 +38,15 @@ MIX = {
 COMP = {
     "limestone":  (0.0200, 3.1, 51.6, 4.1, 1.0, 0.5, 1.30, 0.10, 41.5),
     "shale":      (0.1300, 9.4, 4.2, 58.0, 18.5, 6.9, 2.40, 0.60, 7.5),
-    "sand":       (0.0080, 5.2, 0.6, 92.0, 3.1, 1.2, 0.20, 0.05, 1.2),
+    "sand":       (0.0050, 5.2, 0.6, 92.0, 3.1, 1.2, 0.20, 0.05, 1.2),
     "iron_ore":   (0.0450, 6.8, 2.1, 9.5, 3.2, 79.0, 0.80, 0.30, 3.0),
-    "steel_slag": (0.0040, 4.5, 42.0, 15.0, 4.5, 24.0, 8.10, 0.40, 1.8),
-    "fly_ash":    (0.4237, 0.6, 4.6, 52.0, 24.0, 8.5, 1.80, 0.80, 3.4),
+    "steel_slag": (0.0040, 4.5, 48.38, 15.0, 4.5, 24.0, 10.0, 0.40, 1.8),
+    "fly_ash":    (0.4207, 0.6, 4.86, 52.0, 24.0, 8.5, 1.80, 0.80, 3.4),
 }
-QUARTERLY = {"sand", "iron_ore", "steel_slag"}
-FUELS = {  # Hg mg/kg dry, moisture % ar, NCV GJ/t ar, ash % dry, S % dry
+QUARTERLY = {"sand", "steel_slag"}
+FUELS = {  # Hg mg/kg as received, moisture % ar, NCV GJ/t ar, ash % dry, S % dry
     "coal": (0.0850, 8.6, 26.10, 12.4, 0.95),
-    "srf":  (0.2200, 15.5, 18.40, 14.8, 0.28),
+    "srf":  (0.2139, 15.5, 18.40, 14.8, 0.28),
 }
 CLINKER = (0.00125, 0.2, 65.6, 21.4, 5.2, 3.3, 1.85, 1.05, 0.30)   # Hg, moist, CaO, SiO2, Al2O3, Fe2O3, MgO, SO3, LOI
 DUST_HG = 1.22          # mg/kg, K1 filter dust (the mercury the raw mill hands back is carried in it)
@@ -125,6 +126,10 @@ def simulate():
             stops.append((st, st + du))
         for a, b in stops:
             kiln_on[a:b] = False
+        # the first light-up after the annual shutdown trips once before the kiln settles
+        rs = s1 + (7 * 60 if k == "K1" else 9 * 60)
+        kiln_on[rs:rs + (5 * 60 if k == "K1" else 6 * 60)] = False
+        stops.append((rs, rs + (5 * 60 if k == "K1" else 6 * 60)))
         # burner heat-up: 10 h before every return to feed after a stop
         heat = np.zeros(NMIN, dtype=bool)
         starts = np.flatnonzero(kiln_on[1:] & ~kiln_on[:-1]) + 1
@@ -174,9 +179,10 @@ def simulate():
             forced_off[a:b] = True
             forced_on[b:b + 120] = True
         # trips: the mill stops on a protection and restarts after 20 to 90 minutes
+        rt = np.random.default_rng(SEED * 17 + TRIP_DRAW + (1 if k == "K1" else 2))
         trip_at = set()
         for _ in range(38):
-            t = int(r.integers(0, NMIN))
+            t = int(rt.integers(0, NMIN))
             trip_at.add(t)
         mill_rate = p["mill_cap"] * (1.0 + np.repeat(r.normal(0.0, 0.02, NMIN // 60 + 1), 60)[:NMIN])
         mill_on = np.zeros(NMIN, dtype=bool)
@@ -201,7 +207,7 @@ def simulate():
                     want_on = True
             if on and m in trip_at and not forced_on[m]:
                 want_on = False
-                trip_until = m + int(r.integers(20, 91))
+                trip_until = m + int(rt.integers(20, 91))
                 events.append((m, int(r.integers(0, 60)), "TRIP"))
                 on = False
             elif want_on != on:
@@ -233,6 +239,7 @@ def simulate():
         # --- filter dust bleed (K1) ----------------------------------------------------------------------
         bleed = np.where(kiln_feed_on, p["bleed_tph"] / 60.0, 0.0)
         world["kilns"][k] = dict(kiln_on=kiln_feed_on, heat=heat, feed=feed, mill_on=mill_on, mill_events=events,
+                                 planned=(s0, s1),
                                  silo=lev, clk=clk, meal=meal, coal=coal, srf=srf, rel_shape=rel_shape,
                                  bleed=bleed, stops=stops, bdown=bdown, loi_m=loi_m,
                                  month_factor=month_factor, starts=starts)

@@ -21,7 +21,7 @@ REV_FACTOR = 1.0637
 PARALLEL_END = datetime.date(2026, 5, 31)   # the old CAPI system stayed open for interviewers until this date
 REF = world.REF_QUARTERS
 # share of an occupied unit's noninterviews (other than refusals) that end with no one found at home, by area
-NO_ONE_HOME = {"01": 0.80, "02": 0.80, "03": 0.80, "04": 0.80, "05": 0.80, "06": 0.80, "07": 0.80, "08": 0.80}
+NO_ONE_HOME = {"01": 0.800, "02": 0.798, "03": 0.796, "04": 0.798, "05": 0.802, "06": 0.798, "07": 0.798, "08": 0.802}
 
 
 def agegroup(age):
@@ -101,8 +101,9 @@ def weights(W, ctl):
         for p in W["persons_q"]:
             if p["q"] == q:
                 cells.setdefault((p["area"], agegroup(p["age"]), p["sex"]), []).append(p)
+        grow = 1 + 0.0019 * (world.QUARTERS.index(q) - 2)     # the vintage's projection for the quarter
         for key, ps in cells.items():
-            f = ctl[key] / sum(hw[(p["aid"], q)] for p in ps)
+            f = round(ctl[key] * grow) / sum(hw[(p["aid"], q)] for p in ps)
             for p in ps:
                 out[(p["aid"], p["line"], q)] = hw[(p["aid"], q)] * f
     return out
@@ -167,6 +168,8 @@ def write_target(W, tdir):
             err_after.add((cp[k]["aid"], cp[k]["q"]))
     W["err_after"] = err_after
 
+    # how each noninterview ended is drawn per unit and quarter on its own stream
+    u_nc = np.random.default_rng(world.SEED + 77).random(size=(max(A) + 1, len(world.QUARTERS)))
     hrows = []
     W["copies"], W["reissues"], W["visit_date"], W["vac_nc"] = [], [], {}, []
     for h in W["hh_q"]:
@@ -224,7 +227,7 @@ def write_target(W, tdir):
         if h["outcome"] == "REFUSED":
             code = 213 if new else 2
         else:
-            code = (216 if new else 3) if (rng.random() < NO_ONE_HOME[h["area"]] or (aid, q) in err_after) else (219 if new else 4)
+            code = (216 if new else 3) if (u_nc[aid, qi] < NO_ONE_HOME[h["area"]] or (aid, q) in err_after) else (219 if new else 4)
         hrows.append(base + [code, d.isoformat(), "", "", intv, ""])
     hrows.sort(key=lambda r: (qidx(r[0]), r[2], r[8], str(r[7])))
     common.write_csv(os.path.join(tdir, "HES_HOUSEHOLD_DISPOSITIONS_2025Q1_2026Q3.csv"),
@@ -291,7 +294,7 @@ def write_target(W, tdir):
     # the rest of the frame's traffic, addresses never in sample
     cz = sorted({("59" + a["county"], a["zip"]) for a in W["addresses"]})
     used = set(sample_frames)
-    for k in range(2840):
+    for k in range(6100):
         while True:
             fid = "FR%08d" % int(rng.integers(10_000_000, 99_999_999))
             if fid not in used:
@@ -343,10 +346,10 @@ def write_target(W, tdir):
             if sheet.endswith("rev") and p["area"] == REV_AREA:
                 w = w * REV_FACTOR
             ws.append([case_id(ids, p["aid"], q, A[p["aid"]]["entry"]), p["line"], round(w, 2)])
-    common.xlsx_props(wb, "LMIB Survey Operations", "HES final weights")
+    common.xlsx_props(wb, "LMIB Survey Operations", "HES final weights", created=(2026, 10, 16, 11, 40))
     path = os.path.join(tdir, "HES_FINAL_WEIGHTS_2025Q4_2026Q3.xlsx")
     wb.save(path)
-    common.normalise_zip(path)
+    common.normalise_zip(path, "2026-10-16T17:52:00Z", "Microsoft Excel")
 
     # ---- workforce areas workbook ----
     wb = openpyxl.Workbook()
@@ -363,10 +366,10 @@ def write_target(W, tdir):
     ws2.append(["ZIP", "WDA"])
     for z in sorted(world.SPLIT_ZIPS_03 + world.SPLIT_ZIPS_07):
         ws2.append([z, "03" if z in world.SPLIT_ZIPS_03 else "07"])
-    common.xlsx_props(wb, "TDLI Workforce Programs", "Workforce development areas 2026")
+    common.xlsx_props(wb, "TDLI Workforce Programs", "Workforce development areas 2026", created=(2026, 6, 24, 15, 5))
     path = os.path.join(tdir, "TDLI_WORKFORCE_AREAS_2026.xlsx")
     wb.save(path)
-    common.normalise_zip(path)
+    common.normalise_zip(path, "2026-07-01T14:45:00Z", "Microsoft Excel")
 
     write_distractors(W, tdir, rng)
     docs.write_documents(W, tdir)

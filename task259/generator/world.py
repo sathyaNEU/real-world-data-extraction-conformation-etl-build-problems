@@ -34,7 +34,7 @@ FP_PROXY = 0.002         # chance the answering member reports a second job the 
 PERSIST = 0.97           # a second job held one quarter is still held the next with this chance
 AWAY_HOLD = 0.20         # extra chance an adult who holds a second job is out when the interviewer calls
 ALLOC_SCALE = 3.0        # sample size multiplier on the base allocation
-STREAM = {"01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0}   # per-area stream offsets
+STREAM = {"01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 3, "07": 0, "08": 0}   # per-area stream offsets
 
 
 def area_index():

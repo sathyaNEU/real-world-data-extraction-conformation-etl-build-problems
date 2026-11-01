@@ -441,3 +441,30 @@ def ask_rates(L, frame="golden", dedup=True, split041="zip", interview_proves=Tr
                       nc=float(100 * g["nc"].sum() / el), eligible=int(el),
                       interviewed=int((g["interviewed"] & g["eligible"]).sum()))
     return out
+
+
+# ---------------------------------------------------------------------------------------------- the figures
+def area_names(L):
+    return {str(r[0]): str(r[1]) for r in L["areas"]}
+
+
+def figures(L):
+    """Every graded figure and every rung, from target/ alone."""
+    M = main_call(L)
+    names = area_names(L)
+    gold = M["fam"]["golden"]
+    asks = ask_rates(L)
+    out = dict(
+        certified=designate(gold),
+        certified_names=[names[a] for a in designate(gold)],
+        share=gold,
+        statewide=M["state"]["golden"],
+        statewide_face=M["state"]["face"],
+        sensitivity=float(M["par"]["s_adj"]),
+        false_report=float(M["par"]["fp"]),
+        rr={a: asks[a]["rr"] for a in AREAS},
+        nc={a: asks[a]["nc"] for a in AREAS},
+        eligible={a: asks[a]["eligible"] for a in AREAS},
+        interviewed={a: asks[a]["interviewed"] for a in AREAS},
+        names=names)
+    return out, M

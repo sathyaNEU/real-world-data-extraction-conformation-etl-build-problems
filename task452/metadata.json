@@ -1,0 +1,96 @@
+{
+ "task": "task452",
+ "title": "Kilcarrow Works: mercury to air in 2026 against the annual load from 2028",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "domain": "Physical & Environmental Sciences",
+ "decision": "whether the works keeps under the annual mercury load from 2028 at its 2026 release, and the 2026 figures for its annual report",
+ "deliverables": [
+  "kiln_mercury_memo_2026.pdf",
+  "kiln_emissions_2026.xlsx"
+ ],
+ "distractor_files": [
+  "target/fuel_receipts_2026.csv",
+  "target/quarry_extraction_2026.csv",
+  "target/weighbridge_byproducts_2026.csv"
+ ],
+ "as_of": "2027-01-11",
+ "files": [
+  {
+   "path": "target/CEMS_logger_A1-1_A1-2_May2026.csv",
+   "content": "the stack analysers' own data logger export for May 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/DCS_event_journal_2026.txt",
+   "content": "the control system's alarm and event journal for 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/IEL-1186-03_conditions_consolidated_2026.pdf",
+   "content": "the installation's consolidated licence conditions after the 2026 review (extract)",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/PI_historian_K1K2_2026_30min.csv",
+   "content": "the plant historian's half-hour export for both kiln lines, calendar 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/QC_lab_composites_2026.xlsx",
+   "content": "the quality laboratory's composite analyses, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/fuel_receipts_2026.csv",
+   "content": "fuel receipts with the suppliers' certificate values, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/production_ledger_2026.xlsx",
+   "content": "the works' monthly production and materials ledger, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/quarry_extraction_2026.csv",
+   "content": "the quarry's daily haulage to the crusher, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/site_register_2026.xlsx",
+   "content": "the site's register of emission points and plant",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/stack_tests_Hg_2024-2026.pdf",
+   "content": "the accredited contractor's annual mercury test reports, 2024 to 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/weighbridge_byproducts_2026.csv",
+   "content": "the weighbridge's by-product dispatch tickets, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-11",
+   "licence": "CC0 1.0 (constructed for this task)"
+  }
+ ]
+}

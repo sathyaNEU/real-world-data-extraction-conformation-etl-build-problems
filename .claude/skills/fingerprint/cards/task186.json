@@ -1,101 +1,106 @@
 {
   "task": "task186",
-  "architecture": "v1",
-  "drawn": "2026-10-12",
-  "slot_note": "wave 2 of oviya13ya's Anomaly Detection lane, from seed AD09 (a regulator choosing which fuel brands to examine for levy pass-through); the world, decision and quantity are the seed's, the pitfall is re-found from the stations' margin record",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "anomaly-detection",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a provincial statistics bureau's fuel price monitor, finding station by station where a carbon levy rise was passed on in excess with the false discovery rate held, to choose the one brand the Fuel Price Commissioner's pre-levy inquiry examines",
+  "architecture": "v2",
+  "drawn": "2026-11-01",
+  "slot_note": "Anomaly Detection lane, re-rooted 2026-11-01 at the Batch 3 queue reset; the fuel-price pass-through world is closed and the slot moves to a fresh client domain (human factors) and world",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a regional airport's year-end recertification of its CT X-ray screening officers against its 80 per cent standard for detecting a prohibited item carried in a passenger's cabin bag, read from threat image projection records drawn from a fixed library whose objects recur",
   "objective": "anomaly-detection",
-  "shape": "01",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Tallis Petroleum: 30 per cent of its 92 examined stations found at the 5 per cent false discovery rate, no station of the other six brands",
-  "answer_source": "submission.md block 1; golden pass_through_inquiry_2027.docx",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "rule",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
-    "G17"
+    "G10",
+    "G14",
+    "G6"
   ],
-  "gate_g": "signal_vs_noise_or_hold",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "uncertainty_hold",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "the head of the Prices Division at the provincial statistics bureau, which runs the fuel price monitor and recommends to the Fuel Price Commissioner the brand for the pass-through inquiry ahead of the 1 January 2027 levy rise",
-  "role_family": "statistical_office_head",
+  "context_artifact": "other",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the threat image projection log, maps every operator login to its officer and reads the competency standard correctly takes each officer's hit rate over the twelve months' projections and withdraws only the part-time officers under 80 per cent, missing the full-time officers whose rates are carried over 80 per cent by threat objects they had already been shown.",
+  "domain_test": "The deciding quantity is each officer's probability of detecting a prohibited item a passenger carries, which human factors estimates from threat image projection; recognition memory of an object shown and confirmed after every projection lifts each later projection of it, so only first showings of an object measure detection of an unseen item, and with sensors or machines in place of officers nothing remembers an image and the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:recognition-of-recurring-test-objects-lifts-a-detection-proxy",
+  "layer1": [
+    "CT system event log stamped in UTC against a roster and a standard written in local time across daylight-saving changes",
+    "operator logins reissued when the international checkpoint's scanners were commissioned, so some officers carry two logins",
+    "threat image codes written with and without leading zeros between the event log and the library catalogue",
+    "a day of projection events resent by a lane's TIP server after a network outage",
+    "a scanner replaced on one lane, so the lane's machine serial changes part way through the year",
+    "category codes in the event log against category names in the library catalogue"
+  ],
+  "stakeholder_role": "the airport's screening training and standards lead, who prepares the year-end recertification list for the head of security screening",
+  "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "price_change_log_regular_2025-01-01_2026-11-15.csv",
-    "rows": 199123,
-    "entity": "one posted price change for regular gasoline at one retail station",
-    "grain": "station x posted price change (minute stamped)",
+    "file": "tip_events_2025-07-01_2026-11-30.csv",
+    "rows": 0,
+    "entity": "one threat image projection shown to one officer on one CT lane",
+    "grain": "projection",
     "source": "synthetic"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "research_or_statistics_office",
+  "forum": "line_manager_or_team",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Canada, a province's sixteen urban areas (fictional towns)",
-    "currency": "CAD",
-    "org_type": "provincial statistics bureau running the fuel price monitor for the Fuel Price Commissioner",
-    "invented_names": [
-      "Provincial Statistics Bureau",
-      "Office of the Fuel Price Commissioner",
-      "Fuel Price Transparency Act",
-      "Tallis Petroleum",
-      "Harbourline Fuels",
-      "Pellow Gas",
-      "Wexcombe Petroleum",
-      "Oxbury Fuels",
-      "Strathlowe Energy",
-      "Garrow Fuels"
-    ],
+    "geography": "Australia, New South Wales (a fictional regional coastal airport)",
+    "currency": "AUD",
+    "org_type": "regional airport operator running its own passenger screening",
+    "invented_names": [],
     "people": [
-      "Theodore Ellis",
-      "Kendra Andrews",
-      "Kristin Cline"
+      "Teresa Malone",
+      "Keith Keller"
     ]
   },
-  "deliverables": [
-    "pass_through_inquiry_2027.docx",
-    "inquiry_scope_2027.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "Each unit's change across an event is tested for exceeding what the event alone would leave, but the units' levels swing between periods in local cycles shared within each place for reasons unrelated to the event, so a test built on a unit's within-period variation finds most units in the places whose cycles happened to rise across the event; only a null built from the units' changes between periods without the event, or from their same-place peers, holds the error rate and leaves the one group whose units truly moved.",
-  "driver_concrete": "Each station's regular-gasoline margin change across the 1 January 2026 levy rise is tested against what full pass-through would leave, but every urban area's margins cycle over five to nine weeks, so a 28-day before-and-after change moves by up to about 1.4 cents a litre at any date; a t-test on the station's daily margins reads that as signal and finds nearly every Harbourline station, nearly all in the two areas whose cycles restored around the turn of the year, so the inquiry goes to Harbourline, while a null from the stations' changes at dates with no levy change, or from same-area competitors, holds the false discovery rate and leaves Tallis's company-run stations, which kept about 3 cents a litre more than the rise.",
-  "stump": "A competent solver tests each station's margin change against its own day-to-day variation, applies Benjamini-Hochberg at 5 per cent, finds nearly all of Harbourline's stations and opens the inquiry into Harbourline; the null that holds the error rate leaves only Tallis's company-run stations, about three in ten of Tallis's.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who rebuilds every station's daily margin from the minute log, applies the standard's windows and examined-station rule and tests each margin change against the station's day-to-day variation (a Welch t-test or a regression with robust errors) before Benjamini-Hochberg at 5 per cent finds most stations in two urban areas and sends the inquiry to Harbourline, not Tallis.",
-  "domain_test": "The deciding quantity is the number of a brand's stations whose retail margin rose by more than the levy, judged against the margin changes the retail price cycle produces anyway. Town-level cycles of undercutting and restoration run five to nine weeks, so a 28-day margin change moves by cents with nothing happening, and the reference distribution has to be built from the same stations in periods when the levy did not move, the price monitor's own construction. The cycle is what makes a within-station null the wrong instrument, and no other field's nouns bring one: with clinics and wait times there is no levy to net out, no rack price and no sawtooth, so the task does not survive the swap.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:empirical-null-for-shared-local-cycles",
-  "layer1": [
-    "minute-stamped price-change log in UTC against a local-time daily window across daylight-saving changes",
-    "terminal rack prices published per business day in dollars a litre, weekends carried",
-    "station register with brand and operating-model changes over time",
-    "station identifiers renumbered by the reporting system with a crosswalk",
-    "batches of price changes resubmitted after reporting outages"
-  ],
+  "driver": "A person's hit rate on test items drawn again and again from a fixed set, with the answer shown after each, rises with every earlier showing of the same item, so the rate over all showings measures recognition for the people shown the set most often; only the showings of items new to that person measure how they do on an item never seen before, and an item counts as seen once any of its several versions has been shown.",
+  "driver_concrete": "Each screening officer's threat image projection hit rate over the twelve months to 30 November 2026 rises with every earlier projection of the same threat object, because the CT library holds a fixed set of objects, each in several scans, and a full-time officer is shown hundreds of projections a year with feedback after each; the officers shown the library most often are carried over 80 per cent by recognition, and only first showings of an object new to the officer, counting any of its scans, measure detection of an item a passenger carries.",
+  "stump": "A competent solver computes each officer's threat image projection hit rate over the year, withdraws the part-time officers under 80 per cent and leaves the full-time officers whose rates sit in the low to mid 80s only because most of their projections showed objects they had already been shown and told were threats; on objects new to them they detect about seven in ten.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
     {
       "architecture": "v1",
-      "fate": "spent 2026-10-21 on measurement at stage 2, after the shipped pack failed Gate F in a blind read",
+      "fate": "spent 2026-10-21 on measurement at stage 2, after the shipped pack failed Gate F in a blind read; shipped 2026-10-13 with no portal result and re-rooted 2026-11-01 at the Batch 3 queue reset",
       "driver": "Each unit's change across an event is tested for exceeding what the event alone would leave, but the units' levels swing between periods in local cycles shared within each place for reasons unrelated to the event, so a test built on a unit's within-period variation finds most units in the places whose cycles happened to rise across the event; only a null built from the units' changes between periods without the event, or from their same-place peers, holds the error rate and leaves the one group whose units truly moved.",
-      "why": "The decisive step was the scale a one-dimensional per-unit statistic is read against, and that is arithmetic: the golden's 28 found stations are exactly the top 28 of 369 by the change in margin over the two windows, with a 1.2233 cent a litre gap to the 29th, so any cut in a 1.2233-wide window reproduces the found set and 7 of 15 data-free cuts file the call and all seven printed bins at a maximum difference of 0.0000 points. Three of those are the plainest outlier reflexes there are. corr(-log10 p, the change) is +0.9576 Pearson and +0.9837 Spearman, confirmed from the shipped bundle as well as the clean truth. The three dials that move the gap each trade Gate F against Gate C one for one, 0 of 16 cells passing both, and the restricted family that holds the filed false-discovery rate spreads exactly zero on six of the seven graded figures with 12 of 13 constructions filing the golden."
+      "why": "The decisive step was the scale a one-dimensional per-unit statistic is read against, and that is arithmetic: the golden's 28 found stations are exactly the top 28 of 369 by the change in margin over the two windows, with a 1.2233 cent a litre gap to the 29th, so any cut in a 1.2233-wide window reproduces the found set and 7 of 15 data-free cuts file the call and all seven printed bins at a maximum difference of 0.0000 points. Three of those are the plainest outlier reflexes there are. corr(-log10 p, the change) is +0.9576 Pearson and +0.9837 Spearman, confirmed from the shipped bundle as well as the clean truth. The three dials that move the gap each trade Gate F against Gate C one for one, 0 of 16 cells passing both, and the restricted family that holds the filed false-discovery rate spreads exactly zero on six of the seven graded figures with 12 of 13 constructions filing the golden.",
+      "world": "a provincial statistics bureau's fuel price monitor (Canada): which brand the 2027 levy pass-through inquiry examines, stations found at a 5 per cent false discovery rate",
+      "shell": {
+        "question_form": "which",
+        "opener": "send",
+        "deliverables": "docx+xlsx"
+      },
+      "people": [
+        "Theodore Ellis",
+        "Kendra Andrews",
+        "Kristin Cline"
+      ]
     }
   ],
-  "notes": "Pairing redrawn from general-statistics-data-science x anomaly-detection (ban.pairing against task185) to survey-research-official-statistics x anomaly-detection: the monitor sits in the provincial statistics bureau, and scoring each unit's change against an empirical reference of comparable changes is official statistics' own anomaly detection. Decisive generator G2 (the unit of independent evidence is a 28-day period change of an urban area's cycle, not a station-day), G17 supporting; G16 is banned against task185."
+  "notes": "Re-root at the Batch 3 queue reset: survey-research-official-statistics x anomaly-detection (fuel price pass-through, v1) moves to human-factors-ergonomics x anomaly-detection (never built). Axes drawn free of the live window at the draw: org utility_or_infrastructure (an airport operator running its own screening; professional_services, cooperative, manufacturer banned), forum line_manager_or_team (the head of security screening decides the list), forcing audit_or_inspection (the annual recertification of screening officers), role field_unit_lead (the screening training and standards lead), context artifact other (the CT TIP event export is a monitoring export, banned against task452; the stakeholder works from the TIP event log, the library catalogue and the login register together). Gap time first: the decisive structure is each officer's own history of showings of each object; pattern none with G10 decisive (an object recurring across its scans and across projections is one real-world item shown again).",
+  "registered": "2026-11-01T22:33:21Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "send",
+    "rounding opener": "give",
+    "deliverable set": "docx+xlsx"
+  }
 }

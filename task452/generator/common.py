@@ -8,10 +8,21 @@ TASK = os.path.dirname(HERE)
 FIXED_ZIP_TIME = (2027, 1, 6, 9, 0, 0)
 
 
-def normalise_zip(path, when=FIXED_ZIP_TIME):
-    """Rewrite an OOXML zip with fixed entry times so two builds are byte-identical."""
+def normalise_zip(path, when=FIXED_ZIP_TIME, stamp=None):
+    """Rewrite an OOXML zip with fixed entry times (and fixed core-property dates) so builds are byte-identical."""
+    import re
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    if stamp:
+        fixed = []
+        for name, data in items:
+            if name == "docProps/core.xml":
+                s = data.decode("utf-8")
+                s = re.sub(r"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", r"\g<1>%s\g<2>" % stamp, s)
+                s = re.sub(r"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", r"\g<1>%s\g<2>" % stamp, s)
+                data = s.encode("utf-8")
+            fixed.append((name, data))
+        items = fixed
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in items:
@@ -31,7 +42,7 @@ def save_workbook(wb, path, created, creator):
     wb.properties.modified = created
     wb.properties.title = None
     wb.save(path)
-    normalise_zip(path)
+    normalise_zip(path, stamp=created.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 
 def pdf_canvas_settings():

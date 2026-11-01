@@ -1,35 +1,22 @@
 {
  "task": "task160",
- "status": "SHIPPED",
- "domain": "healthcare-delivery-health-economics/patient-flow-beds-workforce-optimization",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics/utilization-access-demand-forecasting",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-18",
- "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 2,450 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by two weeks or more, puts its wave partly before the block; the North follows Central by about four weeks, and Central's spells began 9 to 17 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
- "architecture": 1,
- "loops": 2,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-18"
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-18 (no LEAK: the agreement's call words, design-note vocabulary, ranking and forward-date lines, each answered in the design note)",
-  "reader": "clean, Q6 analytical (round 2 on 5d7a4619, no timing word in any document); the targeted re-read of the joining lines on 54fb09ce clean (Q1, Q2 and Q4 none, Q6 analytical)"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-18 (repeat.question_form against task470, answered at the draw); surface exit 0, five card-level pairs answered in the design note",
-  "nearest": "task157 0.10 (driver)"
- },
- "judge": {
-  "verdict": "APPROVE",
-  "disposition": "DETERMINISTIC, no fix on 5d7a4619 (its North waves 594, 575, 601, 614 and 586; the left-out-winter error 3.0 days for Central against 5.3; the member table, the chart and Gates G and H reproduce); rule 3 recheck PASS, P(one) about 0.17, P(both) about 0.05",
-  "report": ""
- },
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 2,
+ "loops": 0,
+ "precut": {},
+ "leak": {},
+ "duplicate_check": {},
+ "judge": {},
  "returned": [],
- "resume": "",
+ "resume": "architecture 2 drawn 2026-11-01 (card registered, guard WARN only): design note, prompt and generator in progress",
  "approved": null,
- "delivered": "2026-10-18",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",

@@ -1,488 +1,264 @@
-"""task160 independent verifier: reads only the shipped bundle (no generator import) and recomputes the block, its
-components, the rivals the write-up names, both member columns and the chart's busiest week on its own code path,
-and reads back every format the pack ships with a positive control on the same path. It then reads the goldens and
-submission.md and checks they carry the same figures.
+"""The independent verifier: reads every shipped file back on its own code path (csv module, zipfile XML for the
+workbooks and the Word files, ASCII85 and Flate for the PDFs; no pandas, no openpyxl, nothing from analysis.py)
+and recomputes the call and every ask figure, then checks figures.json and the golden deliverables against them.
 
-    python3 verify.py <target folder>"""
+    python3 task160/generator/verify.py [target_dir golden_dir figures.json]"""
+import base64
 import csv
 import datetime as dt
 import json
+import math
 import os
 import re
-import statistics as st
 import sys
-from collections import Counter, defaultdict
+import zipfile
+from collections import defaultdict
 from zoneinfo import ZoneInfo
-
-import numpy as np
-import openpyxl
-from PIL import Image
-from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-T = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
-FIG = json.load(open(os.path.join(HERE, "figures.json")))
-ET = ZoneInfo("America/New_York")
-D = dt.date
-fails = 0
+ET, UTC = ZoneInfo("America/New_York"), ZoneInfo("UTC")
+NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
-def ok(label, cond, detail=""):
-    global fails
-    print("%s %s %s" % ("PASS" if cond else "FAIL", label, detail if not cond else ""))
-    if not cond:
-        fails += 1
+def rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        r = csv.reader(f)
+        head = next(r)
+        return [dict(zip(head, x)) for x in r]
 
 
-def path(pattern):
-    hits = [n for n in sorted(os.listdir(T)) if re.fullmatch(pattern, n)]
-    assert len(hits) == 1, (pattern, hits)
-    return os.path.join(T, hits[0])
-
-
-def pdf_text(p):
-    return "\n".join(pg.extract_text() for pg in PdfReader(p).pages)
-
-
-def r50(x):
-    return int(50 * round(x / 50.0))
-
-
-# ------------------------------------------------------------------------------------------------ roster (xlsx)
-wb = openpyxl.load_workbook(path(r"trhc_members_.*\.xlsx"), read_only=True, data_only=True)
-rows = [r for r in wb["Members"].iter_rows(values_only=True) if r and r[0]]
-ROS = [dict(zip(rows[0], r)) for r in rows[1:]]
-wb.close()
-ok("xlsx roster: 24 members, member numbers and facility ids unique",
-   len(ROS) == 24 and len({r["facility_id"] for r in ROS}) == 24 and len({str(r["member_no"]) for r in ROS}) == 24)
-FID_OF = {str(r["member_no"]): r["facility_id"] for r in ROS}
-REG = {r["facility_id"]: r["region"] for r in ROS}
-UNIT = {r["facility_id"]: r["surge_unit"] for r in ROS}
-NAME = {r["facility_id"]: r["hospital"] for r in ROS}
-CRS = {r["crestfield_site_code"]: r["facility_id"] for r in ROS}
-ISN = {r["inland_seas_facility"]: r["facility_id"] for r in ROS}
-ALL = sorted(REG)
-NORTH = [f for f in ALL if REG[f] == "North"]
-SOUTH = [f for f in ALL if REG[f] != "North"]
-SE = [f for f in ALL if REG[f] == "Southeast"]
-
-# ------------------------------------------------------------------------------------------------ the register (pdf)
-lines = [x.strip() for x in pdf_text(path(r"surge_plan_register_.*\.pdf")).splitlines()]
-GRID, units_ok = {}, True
-for r in ROS:
-    i = lines.index(r["hospital"])
-    units_ok &= lines[i + 1] == r["surge_unit"]
-    GRID[r["facility_id"]] = (int(lines[i + 2]), int(lines[i + 3]))
-ok("pdf register: every member's surge unit as the roster has it, staffing per level read (Talcott 10 and 24)",
-   units_ok and GRID["GA-0412"] == (10, 24) and all(b > a for a, b in GRID.values()))
-
-# ------------------------------------------------------------------------------------------------ the agreement (pdf)
-AG = " ".join(pdf_text(path(r"winter_pool_agreement_.*\.pdf")).split())
-ok("pdf agreement: clauses 1.2, 1.4, 3.1, 5.1, 5.2 and 6.2 read back",
-   "A Member is a hospital listed in Schedule A, from its Pool start date." in AG
-   and "A shift is one nurse for one scheduled shift, 07:00 to 19:00 or 19:00 to 07:00." in AG
-   and "The Pool funds the agency RN shifts that staff a Member's surge unit and start while the Member's surge plan is active." in AG
-   and "The January Block covers every Member's surge unit for the four weeks from the first Monday in January: "
-       "Monday 4 January to Sunday 31 January 2027." in AG and "rounded to the nearest 50 shifts" in AG
-   and "returned to the Member's account" in AG
-   and "A booked shift that the Member cancels less than six hours before it starts is billed at four hours" in AG)
-ok("pdf agreement: Schedule A lists all 24 roster hospitals", all(r["hospital"] in AG for r in ROS))
-RATES = " ".join(pdf_text(path(r"agency_rate_schedule_.*\.pdf")).split())
-ok("pdf rate schedule read back (Crestfield block rate 88.50)", "Block rate, per hour" in RATES and "88.50" in RATES)
-
-# ------------------------------------------------------------------------------------------------ capacity census (csv)
-CEN = defaultdict(dict)
-leg = {}
-with open(path(r"capacity_reports_legacy_.*\.csv"), newline="") as fh:
-    for x in csv.DictReader(fh):
-        k = (x["member_no"], x["report_date"])
-        if k in leg and leg[k]["submission"] == "R":
-            continue
-        leg[k] = x
-for (mno, rd), x in leg.items():
-    night = D.fromisoformat(rd) - dt.timedelta(days=1)
-    CEN[FID_OF[mno]][night] = {"": 0, "S1": 1, "S2": 2}[x["surge_status"].strip()]
-n_leg = sum(len(v) for v in CEN.values())
-with open(path(r"capacity_daily_.*\.csv"), newline="") as fh:
-    for x in csv.DictReader(fh):
-        d = D.fromisoformat(x["census_date"])
-        assert d not in CEN[x["facility_id"]]
-        CEN[x["facility_id"]][d] = int(x["surge_level"])
-span = (D(2026, 12, 20) - D(2021, 7, 1)).days + 1
-ok("csv capacity: both layouts stitch, every member every census night 1 July 2021 to 20 December 2026",
-   all(len(CEN[f]) == span and min(CEN[f]) == D(2021, 7, 1) and max(CEN[f]) == D(2026, 12, 20) for f in ALL)
-   and n_leg == 24 * ((D(2024, 6, 30) - D(2021, 7, 1)).days + 1))
-
-# ------------------------------------------------------------------------------------------------ declarations (csv)
-IV = defaultdict(list)
-with open(path(r"surge_declarations_.*\.csv"), newline="") as fh:
-    dec = sorted(csv.DictReader(fh), key=lambda x: (x["facility_id"], x["declared_at"]))
-cur = {}
-for x in dec:
-    t = dt.datetime.strptime(x["declared_at"], "%Y-%m-%d %H:%M")
-    f = x["facility_id"]
-    if f in cur:
-        IV[f].append((cur[f][0], t, cur[f][1]))
-        del cur[f]
-    if int(x["level_to"]) > 0:
-        cur[f] = (t, int(x["level_to"]))
-for f, (t, lv) in cur.items():
-    IV[f].append((t, dt.datetime(2100, 1, 1), lv))
-ok("csv declarations: times only at 06:45 and 14:45", all(x["declared_at"][-5:] in ("06:45", "14:45") for x in dec))
-
-
-def level(f, t):
-    for a, b, lv in IV[f]:
-        if a <= t < b:
-            return lv
-    return 0
-
-
-# ------------------------------------------------------------------------------------------------ the call
-CLOSED = [2022, 2023, 2024, 2025, 2026]
-
-
-def season(w):
-    return D(w - 1, 11, 1), D(w, 3, 31)
-
-
-def block_weeks(w):
-    d = D(w, 1, 1)
-    while d.weekday() != 0:
-        d += dt.timedelta(days=1)
-    return d, d + dt.timedelta(days=27)
-
-
-def draw(f, a, b):
-    return sum(GRID[f][lv - 1] for d, lv in CEN[f].items() if a <= d <= b and lv)
-
-
-def draw_by_shift(f, a, b):
-    n, d = 0, a
-    while d <= b:
-        for hh in (7, 19):
-            lv = level(f, dt.datetime.combine(d, dt.time(hh)))
-            n += GRID[f][lv - 1] // 2 if lv else 0
-        d += dt.timedelta(days=1)
-    return n
-
-
-def spells(f, a, b):
-    out, s = [], None
-    d = a
-    while d <= b:
-        lv = CEN[f].get(d, 0)
-        if lv and s is None:
-            s = d
-        if not lv and s is not None:
-            out.append((s, d - dt.timedelta(days=1)))
-            s = None
-        d += dt.timedelta(days=1)
-    if s is not None:
-        out.append((s, b))
+def xlsx_sheets(path):
+    """Every sheet as a list of rows of strings, read from the package XML."""
+    z = zipfile.ZipFile(path)
+    shared = []
+    if "xl/sharedStrings.xml" in z.namelist():
+        x = z.read("xl/sharedStrings.xml").decode("utf-8")
+        for si in re.findall(r"<si>(.*?)</si>", x, re.S):
+            shared.append("".join(re.findall(r"<t[^>]*>(.*?)</t>", si, re.S)))
+    wbx = z.read("xl/workbook.xml").decode("utf-8")
+    rels = z.read("xl/_rels/workbook.xml.rels").decode("utf-8")
+    rmap = dict(re.findall(r'Id="(rId\d+)"[^>]*Target="([^"]+)"', rels))
+    rmap.update({a: b for b, a in re.findall(r'Target="([^"]+)"[^>]*Id="(rId\d+)"', rels)})
+    out = {}
+    for name, rid in re.findall(r'<sheet[^>]*name="([^"]+)"[^>]*r:id="(rId\d+)"', wbx):
+        target = rmap[rid].lstrip("/")
+        target = target if target.startswith("xl/") else "xl/" + target
+        x = z.read(target).decode("utf-8")
+        table = []
+        for rx in re.findall(r"<row[^>]*>(.*?)</row>", x, re.S):
+            cells = {}
+            for ref, attrs, body in re.findall(r'<c r="([A-Z]+)\d+"([^>]*?)(?:/>|>(.*?)</c>)', rx, re.S):
+                v = re.search(r"<v>(.*?)</v>", body or "")
+                t = re.search(r't="(\w+)"', attrs)
+                if t and t.group(1) == "s" and v:
+                    val = shared[int(v.group(1))]
+                elif t and t.group(1) == "inlineStr":
+                    val = "".join(re.findall(r"<t[^>]*>(.*?)</t>", body or "", re.S))
+                else:
+                    val = v.group(1) if v else ""
+                cells[ref] = val
+            if cells:
+                n = max(col_index(k) for k in cells)
+                table.append([cells.get(col_name(i), "") for i in range(n + 1)])
+            else:
+                table.append([])
+        out[name.replace("&amp;", "&")] = table
     return out
 
 
-def centre(fids, w, upto=None):
-    a, b = season(w)
-    b = min(b, upto) if upto else b
-    mids = []
-    for f in fids:
-        sp = spells(f, a, b)
-        assert len(sp) == 1, (f, w, sp)
-        mids.append(sp[0][0].toordinal() + (sp[0][1] - sp[0][0]).days / 2.0)
-    return st.median(mids)
+def col_index(c):
+    n = 0
+    for ch in c:
+        n = n * 26 + ord(ch) - 64
+    return n - 1
 
 
-PULL = D(2026, 12, 20)
-waves = [sum(draw(f, *season(w)) for f in NORTH) for w in CLOSED]
-g = st.mean(waves)
-block = r50(g)
-ok("call: the North's mean per-wave draw at the register's staffing rounds to the block of 600",
-   block == 600 == FIG["block_shifts"] == FIG["north_expected_draw_block_weeks"], (waves, g))
-ok("bin: the golden at least a quarter bin inside its cell (edge distance from the figure)", 25 - abs(g - block) >= 12.5,
-   25 - abs(g - block))
-wv_s = [sum(draw_by_shift(f, *season(w)) for f in NORTH) for w in CLOSED]
-mid3 = sorted(waves)[1:4]
-ok("call: shift by shift at the declared times, the median wave, the last three and the middle three file 600",
-   r50(st.mean(wv_s)) == 600 and r50(st.median(waves)) == 600 and r50(st.mean(waves[-3:])) == 600
-   and r50(st.mean(mid3)) == 600, (wv_s, waves))
-jan = [sum(draw(f, *block_weeks(w)) for f in ALL) for w in CLOSED]
-ok("rival: the five closed Januaries' draws average about 2,450, per night and shift by shift",
-   r50(st.mean(jan)) == FIG["rival_calendar_januaries_averaged"] == 2450
-   and r50(st.mean(sum(draw_by_shift(f, *block_weeks(w)) for f in ALL) for w in CLOSED)) == 2450, jan)
-carry = [abs(jan[i] - jan[i + 1]) / jan[i + 1] for i in range(4)]
-carry_f = [abs(jan[i] - jan[i + 1]) / jan[i] for i in range(4)]
-ok("back-test: each January carried to the next winter missed it by two-fifths or more, either way it is scaled",
-   min(carry) >= 0.4 and min(carry_f) >= 0.4, (carry, carry_f))
-ok("the North's surge nights in no closed January block", all(sum(draw(f, *block_weeks(w)) for f in NORTH) == 0
-                                                              for w in CLOSED))
+def col_name(i):
+    s = ""
+    i += 1
+    while i:
+        i, r = divmod(i - 1, 26)
+        s = chr(65 + r) + s
+    return s
 
 
-def first(fids, w):
-    return min(spells(f, *season(w))[0][0].toordinal() for f in fids)
+def docx_text(path):
+    x = zipfile.ZipFile(path).read("word/document.xml").decode("utf-8")
+    return " ".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", x, re.S)).replace("&amp;", "&")
 
 
-CE = [f for f in ALL if REG[f] == "Central"]
-lag_ce = [centre(NORTH, w) - centre(CE, w) for w in CLOSED]
-lag_se = [centre(NORTH, w) - centre(SE, w) for w in CLOSED]
-lag_ce_f = [first(NORTH, w) - first(CE, w) for w in CLOSED]
-lag_se_f = [first(NORTH, w) - first(SE, w) for w in CLOSED]
-ok("timing: the North's waves about four weeks after Central's in every closed winter (24 to 35 days)",
-   all(24 <= x <= 35 for x in lag_ce) and FIG["north_lag_behind_central_days"] == [round(x, 2) for x in lag_ce], lag_ce)
-ok("timing: the Southeast's lead over the North moved by two weeks or more, centres and first nights; the lag behind "
-   "Central varied about half as much", min(max(lag_se) - min(lag_se), max(lag_se_f) - min(lag_se_f)) >= 14
-   and max(lag_ce) - min(lag_ce) < 0.6 * (max(lag_se) - min(lag_se))
-   and max(lag_ce_f) - min(lag_ce_f) < 0.6 * (max(lag_se_f) - min(lag_se_f)), (lag_se, lag_se_f, lag_ce, lag_ce_f))
-off = [centre(SE, w) - season(w)[0].toordinal() for w in CLOSED]
-off_f = [first(SE, w) - season(w)[0].toordinal() for w in CLOSED]
-ok("timing: the Southeast's own timing fell more than three weeks apart across the five winters, centres and first "
-   "nights",
-   min(max(off) - min(off), max(off_f) - min(off_f)) > 21 and max(off) - min(off) == FIG["southeast_centre_moved_days"],
-   (off, off_f))
+def pdf_text(path):
+    import zlib
+    data = open(path, "rb").read()
+    out = []
+    for m in re.finditer(rb"stream\r?\n(.*?)endstream", data, re.S):
+        raw = m.group(1).strip()
+        try:
+            if raw.endswith(b"~>"):
+                raw = base64.a85decode(raw[:-2].replace(b"\n", b"").replace(b"\r", b""))
+            raw = zlib.decompress(raw)
+        except Exception:
+            continue
+        for s in re.findall(rb"\((.*?)(?<!\\)\)\s*Tj", raw, re.S):
+            out.append(s.replace(rb"\(", b"(").replace(rb"\)", b")").decode("latin-1"))
+    return " ".join(out)
 
 
-def mae(v):
-    return st.mean(abs(st.mean(v[:i] + v[i + 1:]) - v[i]) for i in range(len(v)))
+def et_of_utc(s):
+    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC).astimezone(ET).replace(tzinfo=None)
 
 
-ok("back-test: left out one winter at a time, the lag behind Central misses by about half as much as the lag behind "
-   "the Southeast, centres and first nights", mae(lag_ce) < 0.65 * mae(lag_se) and mae(lag_ce_f) < 0.65 * mae(lag_se_f),
-   (mae(lag_ce), mae(lag_se), mae(lag_ce_f), mae(lag_se_f)))
+def nearest100(x):
+    return int(math.floor(x / 100.0 + 0.5)) * 100
 
 
-def loo_ols(ys, xs):
-    """Left out one winter at a time, the mean absolute error of an ordinary least squares fit of ys on xs (each a list
-    of regressors per winter, an intercept added), refitted on the other four winters."""
-    errs = []
-    for i in range(len(ys)):
-        X = np.array([[1.0] + list(x) for j, x in enumerate(xs) if j != i])
-        y = np.array([v for j, v in enumerate(ys) if j != i], float)
-        b = np.linalg.lstsq(X, y, rcond=None)[0]
-        errs.append(abs(float(np.array([1.0] + list(xs[i])) @ b) - ys[i]))
-    return st.mean(errs)
+def recompute(target):
+    f = {n: os.path.join(target, n) for n in os.listdir(target)}
+    find = lambda pre: [v for k, v in f.items() if os.path.basename(k).startswith(pre)][0]
+    reg = xlsx_sheets(find("QRMC_MedAlert_Rule_Register"))
+    old2code = {r[2]: r[0] for r in reg["Units"][1:] if len(r) >= 3 and r[0]}
+    units = [r[0] for r in reg["Units"][1:] if r and r[0]]
+    pilot = []
+    for r in reg["Rules"][1:]:
+        if len(r) > 5 and r[0] == "MSP26_DUP_OPIOID_PRN" and r[4] == "Live":
+            pilot = [u.strip() for u in r[5].split(",")]
+    going = [u for u in units if u not in pilot]
+    seen, hist = set(), []
+    for r in rows(find("QRMC_MedAlertHistory")):
+        key = tuple(r.values())
+        if key in seen:
+            continue
+        seen.add(key)
+        r["dept"] = old2code.get(r["department"], r["department"])
+        r["ts"] = dt.datetime.strptime(r["alert_dttm"], "%Y-%m-%d %H:%M:%S")
+        hist.append(r)
+    dup = [r for r in hist if r["dept"] in pilot and r["alert_rule_id"] == "MSP26_DUP_OPIOID_PRN"]
+    qt = [r for r in hist if r["dept"] in pilot and r["alert_rule_id"] == "MSP26_QT_COMBO"]
+    c = sum(r["user_action"] == "Order removed" for r in dup) / len(dup)
+    p = sum(r["user_action"] == "Overridden" for r in qt) / len(qt)
+    b0, b1 = dt.datetime(2026, 7, 6), dt.datetime(2026, 10, 26)
+    bg = rows(find("QRMC_MSP26_BackgroundLog"))
+    for r in bg:
+        r["ts"] = et_of_utc(r["eval_utc"])
+    removed = {r["order_id"] for r in hist if r["user_action"] == "Order removed"}
+    dup_o = {r["order_id"] for r in bg if r["rule_id"] == "MSP26_DUP_OPIOID_PRN" and r["ts"] < b1}
+    qt_o = {r["order_id"] for r in bg if r["rule_id"] == "MSP26_QT_COMBO" and r["ts"] < b1}
+    n_qt = sum(1 for r in bg if r["rule_id"] == "MSP26_QT_COMBO" and b0 <= r["ts"] < b1
+               and r["order_id"] not in removed)
+    pre = 0.0
+    for r in hist:
+        if (r["dept"] in going and b0 <= r["ts"] < b1 and r["user_action"] == "Overridden"
+                and r["alert_rule_id"] in ("DDI_SEVERE", "DRUG_ALLERGY", "MAX_DOSE")):
+            d = (r["order_id"] in dup_o) + (r["interacting_order_id"] in dup_o)
+            q = r["order_id"] in qt_o
+            pre += 1.0 - (1.0 - c) ** d * (p if q else 1.0)
+    adm_b = sum(int(r["admissions"]) for r in rows(find("QRMC_UnitCensus_Daily"))
+                if r["department"] in going and "2026-07-06" <= r["census_date"] <= "2026-10-25")
+    plan = xlsx_sheets(find("QRMC_FY2027_Inpatient_Volume_Plan"))["Weekly plan"]
+    base = dt.date(1899, 12, 30)
+    plan_adm = 0
+    for r in plan[1:]:
+        if len(r) < 3 or not r[0]:
+            continue
+        wk = base + dt.timedelta(days=int(float(r[0])))
+        if dt.date(2027, 1, 4) <= wk < dt.date(2027, 4, 5) and r[1] in going:
+            plan_adm += int(float(r[2]))
+    scale = plan_adm / adm_b
+    call = {"qt_add": p * n_qt * scale, "pre": pre * scale}
+    call["net"] = call["qt_add"] - call["pre"]
+    # asks
+    dept_of = {int(r["alert_id"]): r["dept"] for r in hist}
+    per_msg = defaultdict(int)
+    for r in hist:
+        if r["severity"] == "High" and r["user_action"] == "Overridden":
+            per_msg[(r["order_id"], r["alert_dttm"])] += 1
+    msg_of = {int(r["alert_id"]): (r["order_id"], r["alert_dttm"]) for r in hist}
+    hours = defaultdict(float)
+    signed = defaultdict(int)
+    q0, q1 = dt.datetime(2026, 7, 1), dt.datetime(2026, 10, 1)
+    for r in rows(find("CRV_QueueExport_QRMC")):
+        closed, claimed = et_of_utc(r["closed_utc"]), et_of_utc(r["claimed_utc"])
+        if not (q0 <= closed < q1):
+            continue
+        aid = int(r["alert_ref"])
+        hours[dept_of[aid]] += (closed - claimed).total_seconds() / 3600.0
+        if r["close_status"] == "Signed off":
+            h = closed.hour
+            sh = "day" if 7 <= h < 15 else ("evening" if 15 <= h < 23 else "night")
+            signed[(closed.strftime("%Y-%m"), sh)] += per_msg[msg_of[aid]]
+    figs = {"call_net_change": nearest100(call["net"]), "qt_reviews_added": nearest100(call["qt_add"]),
+            "current_reviews_removed": nearest100(call["pre"])}
+    for u in going:
+        figs["desk_hours_%s" % u] = int(math.floor(hours[u] + 0.5))
+    for (m, s), v in signed.items():
+        figs["signed_off_%s_%s" % (m, s)] = v
+    return figs, call, hours
 
 
-SE0 = [season(w)[0].toordinal() for w in CLOSED]
-n_c = [centre(NORTH, w) - s0 for w, s0 in zip(CLOSED, SE0)]
-n_f = [first(NORTH, w) - s0 for w, s0 in zip(CLOSED, SE0)]
-reg_c = loo_ols(n_c, [(centre(SE, w) - s0, centre(CE, w) - s0) for w, s0 in zip(CLOSED, SE0)])
-reg_f = loo_ols(n_f, [(first(SE, w) - s0, first(CE, w) - s0) for w, s0 in zip(CLOSED, SE0)])
-ok("back-test: left out one winter at a time, a regression of the North's timing on both southern regions' misses by "
-   "more than half as much again as the lag behind Central, centres and first nights",
-   mae(lag_ce) < 0.65 * reg_c and mae(lag_ce_f) < 0.65 * reg_f, (mae(lag_ce), reg_c, mae(lag_ce_f), reg_f))
-a27 = D(2026, 11, 1)
-st27 = {f: spells(f, a27, PULL) for f in SOUTH}
-s_on = [v[0][0] for v in st27.values()]
-ce_on = [st27[f][0][0] for f in CE]
-ok("this winter: one surge spell at each southern member, begun 18 November to 17 December; Central's 9 to 17 "
-   "December", all(len(v) == 1 for v in st27.values()) and min(s_on) == D(2026, 11, 18) and max(s_on) == D(2026, 12, 17)
-   and min(ce_on) == D(2026, 12, 9) and max(ce_on) == D(2026, 12, 17)
-   and FIG["south_spells_began"] == "18 November to 17 December 2026"
-   and FIG["central_spells_began"] == "9 to 17 December 2026", (min(s_on), max(s_on), min(ce_on), max(ce_on)))
-longest = {f: max((spells(f, *season(w))[0][1] - spells(f, *season(w))[0][0]).days + 1 for w in CLOSED) for f in ALL}
-ends = {f: st27[f][0][0] + dt.timedelta(days=longest[f] - 1) for f in SOUTH}
-ok("this winter: at each member's longest closed-winter spell every southern member stands down by 31 December",
-   max(ends.values()) == D(2026, 12, 31) and FIG["south_all_stand_down_by"] == "31 December 2026", max(ends.values()))
-b0, b1 = D(2027, 1, 4), D(2027, 1, 31)
+def main(argv):
+    target = argv[1] if len(argv) > 1 else os.path.join(TASK, "target")
+    golden = argv[2] if len(argv) > 2 else os.path.join(TASK, "golden")
+    fj = argv[3] if len(argv) > 3 else os.path.join(HERE, "figures.json")
+    bad = []
+    figs, call, hours = recompute(target)
+    want = json.load(open(fj))["figures"]
+    for k, v in want.items():
+        if figs.get(k) != v:
+            bad.append("figure %s: verifier %s, figures.json %s" % (k, figs.get(k), v))
+    for k in figs:
+        if k not in want:
+            bad.append("figure %s computed by the verifier but absent from figures.json" % k)
+    # every shipped file reads back
+    names = sorted(os.listdir(target))
+    for n in names:
+        p = os.path.join(target, n)
+        if n.endswith(".csv"):
+            assert len(rows(p)) > 0, n
+        elif n.endswith(".xlsx"):
+            assert xlsx_sheets(p), n
+        elif n.endswith(".docx"):
+            assert docx_text(p), n
+        elif n.endswith(".pdf"):
+            t = pdf_text(p)
+            if not t:
+                bad.append("PDF %s reads back empty" % n)
+    sched = pdf_text([os.path.join(target, n) for n in names if n.startswith("Corvane_QRMC_Service_Schedule")][0])
+    for phrase in ("4.3 Content changes", "One overridden alert is one review.", "from claiming it to signing it off"):
+        if phrase not in sched:
+            bad.append("schedule PDF does not read back the phrase %r" % phrase)
+    # golden deliverables carry the same figures
+    gb = xlsx_sheets(os.path.join(golden, "msp26_review_forecast_q1_2027.xlsx"))
+    fc = gb["Forecast"]
+    net_row = [r for r in fc if r and r[0] == "Net change in override reviews"][0]
+    if int(float(net_row[2])) != figs["call_net_change"]:
+        bad.append("workbook net change %s against %s" % (net_row[2], figs["call_net_change"]))
+    hrs = {r[0]: int(float(r[2])) for r in gb["Desk hours Q3 2026"][1:] if len(r) > 2 and r[0]}
+    for u, v in hrs.items():
+        if v != figs["desk_hours_%s" % u]:
+            bad.append("workbook desk hours %s %s against %s" % (u, v, figs["desk_hours_%s" % u]))
+    so = gb["Signed off by shift"]
+    mon = {"July 2026": "2026-07", "August 2026": "2026-08", "September 2026": "2026-09"}
+    for r in so[1:]:
+        if r and r[0] in mon:
+            for s, v in zip(("day", "evening", "night"), r[1:4]):
+                if int(float(v)) != figs["signed_off_%s_%s" % (mon[r[0]], s)]:
+                    bad.append("workbook signed off %s %s" % (r[0], s))
+    memo = docx_text(os.path.join(golden, "msp26_go_live_review_memo.docx"))
+    if "about %d more override reviews" % figs["call_net_change"] not in memo:
+        bad.append("memo does not carry the net change")
+    for k, v in (("qt", figs["qt_reviews_added"]), ("pre", figs["current_reviews_removed"])):
+        if str(v) not in memo:
+            bad.append("memo does not carry %s %s" % (k, v))
+    print("verify: call net %.1f (QT %.1f, removed %.1f), %d figures recomputed on the independent path"
+          % (call["net"], call["qt_add"], call["pre"], len(figs)))
+    if bad:
+        for b in bad:
+            print("  FAIL", b)
+        return 1
+    print("verify: PASS, every figure and every deliverable agrees")
+    return 0
 
 
-def typical(pred, anchor_of):
-    """The North's typical closed wave placed with its anchor at pred: first and last surge nights at the median
-    offsets of the five closed waves from their own anchor."""
-    f0 = st.median(first(NORTH, w) - anchor_of(w) for w in CLOSED)
-    f1 = st.median(max(spells(f, *season(w))[0][1].toordinal() for f in NORTH) - anchor_of(w) for w in CLOSED)
-    return pred + f0, pred + f1
-
-
-ce27 = centre(CE, 2027, upto=PULL)
-ce27_f = min(d.toordinal() for d in ce_on)
-spans = [typical(ce27 + agg(lag_ce), lambda w: centre(NORTH, w)) for agg in (st.mean, st.median)]
-spans += [typical(ce27_f + agg(lag_ce_f), lambda w: first(NORTH, w)) for agg in (st.mean, st.median)]
-ok("this winter: from Central's centre at the pull or its first surge night, at the closed winters' mean or median lag, "
-   "the North's typical wave falls inside the block weeks three days clear, in mid-January",
-   all(b0.toordinal() + 3 <= x0 and x1 <= b1.toordinal() - 3 for x0, x1 in spans),
-   [(str(D.fromordinal(int(round(a)))), str(D.fromordinal(int(round(b))))) for a, b in spans])
-ok("this winter: no North member in surge at the pull", all(not spells(f, a27, PULL) for f in NORTH))
-
-
-def shifted(fids, c27, cw, w):
-    k = int(round(c27 - cw))
-    return sum(draw(f, b0 - dt.timedelta(days=k), b1 - dt.timedelta(days=k)) for f in fids)
-
-
-al = st.mean(shifted(ALL, ce27, centre(CE, w), w) for w in CLOSED)
-pl = st.mean(shifted(NORTH, ce27 + st.mean(lag_ce), centre(NORTH, w), w) for w in CLOSED)
-plf = st.mean(shifted(NORTH, ce27_f + st.mean(lag_ce_f), first(NORTH, w), w) for w in CLOSED)
-ok("call: the whole census aligned on Central's centre, and the North placed at its lag by centre or first night, "
-   "file 600", r50(al) == 600 and r50(pl) == 600 and r50(plf) == 600, (al, pl, plf))
-se27 = centre(SE, 2027, upto=PULL)
-se27_f = min(st27[f][0][0].toordinal() for f in SE)
-se_t = [st.mean(shifted(NORTH, se27 + agg(lag_se), centre(NORTH, w), w) for w in CLOSED) for agg in (st.mean, st.median)]
-se_t += [st.mean(shifted(NORTH, se27_f + agg(lag_se_f), first(NORTH, w), w) for w in CLOSED) for agg in (st.mean, st.median)]
-ok("rival: timed from the Southeast, by centre or first night, the block misses the 600 by a full bin or more",
-   max(se_t) <= 525 and max(FIG["rival_north_timed_from_the_southeast"]) <= 525, se_t)
-ok("component: the sixteen southern members' expected draw over the block weeks is none",
-   FIG["south_expected_draw_block_weeks"] == 0 and max(ends.values()) < b0)
-
-# ------------------------------------------------------------------------------------------------ the asks
-LINES = []
-with open(path(r"crestfield_member_shifts_.*\.csv"), newline="") as fh:
-    cr = list(csv.DictReader(fh))
-by_ts = defaultdict(list)
-for x in cr:
-    by_ts[x["timesheet_no"]].append(x)
-def utc(v):
-    return dt.datetime.fromisoformat(v.replace("Z", "+00:00"))
-
-
-hours_ok, n_cxl = True, 0
-for ts, xs in by_ts.items():
-    xs.sort(key=lambda z: z["shift_start_utc"])
-    spanned = sum((utc(z["shift_end_utc"]) - utc(z["shift_start_utc"])).total_seconds() / 3600.0 for z in xs)
-    billed = sum(float(z["hours"]) for z in xs)
-    if billed < spanned - 0.01:
-        # a late cancellation: four hours billed on one line against the booked shift, no nurse on the unit
-        hours_ok &= len(xs) == 1 and abs(billed - 4.0) < 1e-9 and spanned in (11.0, 12.0, 13.0)
-        n_cxl += 1
-        continue
-    hours_ok &= abs(billed - spanned) < 1e-9 and spanned in (11.0, 12.0, 13.0)
-    t = utc(xs[0]["shift_start_utc"]).astimezone(ET).replace(tzinfo=None)
-    LINES.append((CRS[xs[0]["client_site"]], "C", t, xs[0]["unit"], xs[0]["bill_to"] == "TRHC POOL"))
-ok("csv Crestfield: every worked timesheet bills the hours it spans (12, or 11 and 13 across a clock change), nights on "
-   "two lines split at local midnight; every other timesheet is one four-hour late-cancellation line",
-   hours_ok and any(len(v) == 2 for v in by_ts.values()) and n_cxl > 0, n_cxl)
-night_ok, n_isn = True, 0
-for fn in (r"inland_seas_member_shifts_2025-26\.xlsx", r"inland_seas_member_shifts_2026-27\.xlsx"):
-    wb = openpyxl.load_workbook(path(fn), read_only=True, data_only=True)
-    for ws in wb.worksheets:
-        vals = [r for r in ws.iter_rows(values_only=True)]
-        hi_ = [i for i, r in enumerate(vals) if r and r[0] == "Facility"][0]
-        head = vals[hi_]
-        for r in vals[hi_ + 1:]:
-            if not r or not r[0]:
-                continue
-            x = dict(zip(head, r))
-            if ws.title == "Timesheet detail":
-                cin = dt.datetime.strptime(x["Clock in"], "%m/%d/%Y %H:%M")
-                if x["Shift"] == "N":
-                    night_ok &= cin.date() == x["Payroll date"].date() - dt.timedelta(days=1)
-                continue
-            pdate = x["Payroll date"].date()
-            t = (dt.datetime.combine(pdate - dt.timedelta(days=1), dt.time(19)) if x["Shift"] == "N"
-                 else dt.datetime.combine(pdate, dt.time(7)))
-            LINES.append((ISN[x["Facility"]], "I", t, x["Unit"], x["Bill to"] == "TRHC Pool"))
-            n_isn += 1
-    wb.close()
-ok("xlsx Inland Seas: every queried night clocked in the evening before its payroll date", night_ok)
-A, B, WK, BW = Counter(), Counter(), Counter(), Counter()
-W0 = D(2025, 11, 3)
-for f, ag, t, u, pool in LINES:
-    if not (D(2025, 11, 1) <= t.date() <= D(2026, 3, 31)):
-        continue
-    k = (t.date() - W0).days // 7
-    fund = u == UNIT[f] and level(f, t) > 0
-    if fund:
-        A[f] += 1
-        if 0 <= k < 21:
-            WK[(k, ag)] += 1
-    elif pool:
-        B[f] += 1
-    if pool and 0 <= k < 21:
-        BW[k] += 1
-ok("ask A: the shifts the pool funded at each of the 16 members", all(A[f] == FIG["funded_%s" % f] for f in SOUTH),
-   [(f, A[f]) for f in SOUTH])
-ok("ask B: the shifts billed to the pool it did not fund at each of the 16 members",
-   all(B[f] == FIG["billed_not_funded_%s" % f] for f in SOUTH), [(f, B[f]) for f in SOUTH])
-ok("asks: no figure nil and no North member in last winter's billing", all(A[f] > 0 and B[f] > 0 for f in SOUTH)
-   and not any(A[f] or B[f] for f in NORTH))
-ok("asks: the table's totals", sum(A[f] for f in SOUTH) == FIG["total_funded"]
-   and sum(B[f] for f in SOUTH) == FIG["total_billed_not_funded"])
-tot = Counter()
-for (k, ag), v in WK.items():
-    tot[k] += v
-kb = max(range(21), key=lambda k: (tot[k], -k))
-ok("ask C: the busiest week by shifts started, its funded total and the agency shifts starting that week billed to "
-   "the pool", tot[kb] == FIG["busiest_week_total"] and BW[kb] == FIG["busiest_week_billed_to_pool"]
-   and (W0 + dt.timedelta(days=7 * kb)).isoformat() == FIG["busiest_week"][:10]
-   and (W0 + dt.timedelta(days=7 * kb + 6)).isoformat() == FIG["busiest_week"][-10:], (kb, tot[kb], BW[kb]))
-ok("ask C: the busiest week clear of the next busiest", tot[kb] - max(tot[k] for k in range(21) if k != kb) >= 20,
-   sorted(tot.values())[-3:])
-
-# ------------------------------------------------------------------------------------------------ the other files
-ww = json.load(open(path(r"wastewater_results_.*\.json")))
-
-
-def ww_mean(reg, a, b):
-    v = [r["concentration_copies_per_l"] / r["pmmov_copies_per_l"] for r in ww["results"]
-         if r["sewershed_id"].startswith("WW-" + reg) and r["target"] == "Influenza A" and a <= r["sample_date"] <= b
-         and r["concentration_copies_per_l"] is not None]
-    return st.mean(v)
-
-
-ok("json wastewater: 19,000 results or more; the North's influenza flat at the pull while Central's has risen tenfold",
-   len(ww["results"]) >= 19000 and ww_mean("NO", "2026-12-04", "2026-12-17") / ww_mean("NO", "2026-09-01", "2026-10-15") < 1.3
-   and ww_mean("CE", "2026-12-04", "2026-12-17") / ww_mean("CE", "2026-09-01", "2026-10-15") > 10)
-wb = openpyxl.load_workbook(path(r"resp_admissions_outlook_.*\.xlsx"), read_only=True, data_only=True)
-otx = " ".join(str(c) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for c in r if c is not None)
-wb.close()
-ok("xlsx outlook read back (issued 18 December 2026)", "18 December 2026" in otx)
-wb = openpyxl.load_workbook(path(r"rn_workforce_survey_.*\.xlsx"), read_only=True, data_only=True)
-n_sv = sum(1 for ws in wb.worksheets for r in ws.iter_rows(values_only=True) if r and r[0])
-wb.close()
-ok("xlsx workforce survey read back (distractor)", n_sv > 100, n_sv)
-wb = openpyxl.load_workbook(path(r"january_block_orders_.*\.xlsx"), read_only=True, data_only=True)
-bo = [r for ws in wb.worksheets for r in ws.iter_rows(values_only=True) if r and r[0]]
-wb.close()
-bo_h = [dict(zip(bo[0], r)) for r in bo[1:]]
-ok("xlsx block orders: five filed Januaries, each after the first the last January's draw to the nearest 50, split "
-   "between the agencies, the 2026-27 row not yet filed",
-   len(bo_h) == 6 and all(bo_h[i]["block_shifts"] == r50(jan[i - 1]) for i in range(1, 5))
-   and all(x["crestfield_shifts"] + x["inland_seas_shifts"] == x["block_shifts"] for x in bo_h[:5])
-   and bo_h[5]["block_shifts"] is None, [x["block_shifts"] for x in bo_h])
-wb = openpyxl.load_workbook(path(r"data_dictionary\.xlsx"), read_only=True, data_only=True)
-dd = [r for ws in wb.worksheets for r in ws.iter_rows(values_only=True) if r and r[0]]
-wb.close()
-ok("xlsx dictionary read back: Inland Seas pays every shift under the day it ends, in both winters' files",
-   sum(1 for r in dd if r[1] == "Payroll date" and "the day the shift ends" in str(r[3])) == 2 and len(dd) > 20)
-with open(path(r"extract_manifest_.*\.csv"), newline="") as fh:
-    man = list(csv.DictReader(fh))
-ok("csv manifest names every other shipped file", {m["file"] for m in man} == set(os.listdir(T)) - {
-    os.path.basename(path(r"extract_manifest_.*\.csv"))})
-files = os.listdir(T)
-big = max(sum(1 for _ in open(os.path.join(T, f))) - 1 for f in files if f.endswith(".csv"))
-ok("input gates: 10 or more files, 3 or more formats, a file of 25,000 rows or more",
-   len(files) >= 10 and len({f.rsplit(".", 1)[1] for f in files}) >= 3 and big >= 25000, (len(files), big))
-
-# ------------------------------------------------------------------------------------------------ goldens and write-up
-GD = os.path.join(TASK, "golden")
-wb = openpyxl.load_workbook(os.path.join(GD, "winter_pool_block_jan2027.xlsx"), read_only=True, data_only=True)
-bl = [r for r in wb["Block"].iter_rows(values_only=True)]
-mem = [r for r in wb["Members 2025-26"].iter_rows(values_only=True) if r and r[0]]
-names = wb.sheetnames
-wb.close()
-ok("golden workbook: the block and its two components", bl[4][1] == 600 and bl[5][1] == 0 and bl[6][1] == 600
-   and names == ["Block", "Members 2025-26"], names)
-mrow = {r[1]: r for r in mem if r[1] in A or r[1] in SOUTH}
-ok("golden workbook: the member table equals the recomputed columns",
-   all(mrow[f][4] == A[f] and mrow[f][5] == B[f] for f in SOUTH) and len(mrow) == 16)
-im = Image.open(os.path.join(GD, "pool_shifts_winter_2025-26.png"))
-ok("golden chart: a rendered PNG", im.format == "PNG" and im.size[0] > 1000 and im.size[1] > 500, im.size)
-sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-ok("submission: the call, both rivals and every member line carry the recomputed figures",
-   "block-book 600 agency RN shifts" in sub and "average draw of about 2,450 shifts" in sub
-   and "timed from the Southeast, whose lead over the North moved by two weeks or more" in sub
-   and "began %s" % FIG["central_spells_began"][:-5] in sub
-   and all("(%s): %s funded, %s billed to the pool and not funded" % (f, "{:,}".format(A[f]), B[f]) in sub
-           for f in SOUTH) and "{:,} shifts funded".format(tot[kb]) in sub
-   and "billed to the pool: {:,}".format(BW[kb]) in sub)
-ok("submission: no figure in blocks 1 to 3 finer than 50 shifts beside the block (about 2,450 and about 600)",
-   not re.search(r"\b(?:59\d|59\d\.\d|2,4[0-9][0-9]\.\d|2,44\d)\b", sub.split("## 4.")[0]))
-ok("submission: no em or en dash", chr(0x2014) not in sub and chr(0x2013) not in sub)
-cited = set(re.findall(r"\b[\w.-]+\.(?:csv|xlsx|pdf|json|png)\b", sub))
-ok("submission: every file it names is shipped or a golden", bool(cited) and all(
-    c in os.listdir(T) or c in os.listdir(GD) for c in cited), sorted(cited))
-
-print("verify: %d failed" % fails)
-sys.exit(1 if fails else 0)
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

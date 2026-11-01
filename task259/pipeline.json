@@ -1,25 +1,25 @@
 {
  "task": "task259",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "the default path (answered-for reports as given, or self-answered shares, or cell imputation, all validated by the cross-sectional answered-for against self check at 1.02) certifies Silver Creek alone with the state at 5.5 percent; answered-for adults hold second jobs more often and the member answering carries only 56 percent of them, read within person across the rotation panel; corrected, Northern Basin, Silver Creek, Upper River and Eastern Prairie qualify and the state is at 7 percent",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-11-01, --asof 2026-10-23); every REVIEW answered in the design note",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN, no BLOCK (2026-11-01)",
+  "nearest": "task80 v1 lineage at 0.09"
  },
  "judge": {
   "verdict": "",
@@ -40,7 +40,7 @@
    "commit": ""
   }
  ],
- "resume": "architecture 2 drawn 2026-11-01 (card registered); next: design note, generator, gates",
+ "resume": "stage 3 complete 2026-11-01 (target.zip 82205e8a, every free gate green); next: stage 4, the leak reader and the determinism judge (main session)",
  "approved": null,
  "delivered": null,
  "portal": null,

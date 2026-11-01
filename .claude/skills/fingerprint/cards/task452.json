@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "At its 2026 release the works would not keep under the 85 kg annual mercury load from 2028: it released 151 kg (kiln 1 68 kg, kiln 2 83 kg), 66 kg over, so it needs carbon injection.",
+  "answer_source": "task452/submission.md, block 1; golden/kiln_mercury_memo_2026.pdf, first paragraph",
   "gap": [
     "objective",
     "population"
@@ -36,10 +36,10 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "kiln_dcs_hourly_2025_2026.csv",
-    "rows": 35040,
-    "entity": "one kiln-hour of the control system's historian export",
-    "grain": "kiln by hour",
+    "file": "PI_historian_K1K2_2026_30min.csv",
+    "rows": 34176,
+    "entity": "one kiln-half-hour of the plant historian's export (both kiln lines, UTC, a nine-day hole at the May server migration)",
+    "grain": "kiln by half-hour",
     "source": "synthetic (constructed in the layout of a cement plant historian export)"
   },
   "forum": "executive_team",
@@ -56,24 +56,28 @@
       "Charlie Redican"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "kiln_mercury_memo_2026.pdf",
+    "kiln_emissions_2026.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "A unit's yearly output of a volatile element is tested only in the operating state that holds most of it back inside the unit, while in a second state that recurs most days the unit lets the held amount go; carrying the tested rate over the operating hours keeps the year at the held-back level, and the year is fixed instead by conservation, what the unit took in through every input less what left it by its other exits.",
   "driver_concrete": "Each kiln's 2026 mercury to air: the annual stack tests are always run with the raw mill on, when the mill grinds the kiln gas's mercury into the raw meal and hands it back to the kiln, while for about a sixth of the kiln hours the mill stops for a full silo and the gas goes straight to the filter; the tested rate times the kiln hours keeps the year near the compound-mode level, and only the year's mercury in raw materials and fuels less what left in clinker and in the filter dust shipped off site gives the release.",
-  "stump": "A competent analyst converts each kiln's 2026 stack-test mercury to grams an hour and carries it over the kiln hours (or per tonne of clinker over the year's clinker) and files the works at about 57 kg, under the 2027 load, with no carbon injection; the step that lands it there is taking the tested rate for the year, when every test ran with the raw mill on and the year's release is the mercury the kilns took in less what left in clinker and in the filter dust shipped off site.",
+  "stump": "A competent analyst carries each stack's 2026 tested mercury rate over its kiln's hours on feed and files the works at 70 kg, under the 85 kg load, with no carbon injection; the step that lands it there is taking a rate every test measured with the raw mill running as the year's, when condition 5.6 counts the hours with the mill stopped too and the year's release is the mercury the kilns took in less what left in clinker and in the filter dust kiln 1 bled to silo S7: 68 kg and 83 kg, 151 kg, 66 kg over.",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms the historian, the laboratory composites, the weighbridge and the stack tests correctly and reads the licence condition takes the field's measurement route, each kiln's tested mercury rate at the licence reference conditions converted to grams an hour and carried over the year's kiln hours (or per tonne of clinker over the year's clinker), and files the works under the 2027 load with no abatement needed; the year's mercury balance puts it over.",
   "domain_test": "The deciding quantity is each kiln's mass of mercury released to air in the year, which an emissions inventory for a cement works estimates from periodic stack tests scaled to operating hours or production; the swap breaks because nothing outside a kiln system cycles a volatile element between a grinding mill and a kiln so that the measured state and the year's release part company.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:conservation-over-a-tested-rate",
   "layer1": [
-    "historian tag rename at the control system upgrade",
-    "historian timestamps in UTC against local laboratory and weighbridge days",
-    "laboratory composites on a dry basis against wet weigh-feeder tonnes",
-    "stack test concentrations at reference oxygen and dry gas",
-    "weighbridge gross and tare from a truck register",
-    "a re-sent historian batch after a network outage"
+    "ledger layout and item names change at July",
+    "laboratory composites on a dry basis for raw materials and as received for fuels, sand and slag by quarter",
+    "a clinker-to-cement-mills transfer row beside clinker made",
+    "historian timestamps in UTC with a nine-day hole at the server migration",
+    "journal in Irish local time with both clock changes logged",
+    "CEMS logger interval ends in local time, semicolon separated",
+    "weighbridge void tickets and reprints"
   ],
   "lineage": [
     {
@@ -133,11 +137,19 @@
   "differentiation": {
     "task452": "v1 corrected a sampled concentration by its relation to a recorded covariate on every interval; v2 weighted reference points by the strata they were drawn from; v3 has neither a covariate relation nor a sampling design: the tested rate is never modelled, and the year is fixed by conservation of the element through the unit, inputs less the other exits."
   },
-  "registered": "2026-11-01T21:33:33Z",
+  "registered": "2026-11-01T22:23:18Z",
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "pdf+xlsx"
+    }
+  ],
   "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "put",
-    "rounding opener": "give",
+    "question form": "whether",
+    "second-sentence opener": "for",
+    "rounding opener": "mercury",
     "deliverable set": "pdf+xlsx"
   }
 }

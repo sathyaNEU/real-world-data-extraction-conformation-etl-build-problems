@@ -1,18 +1,18 @@
 {
   "task": "task160",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "wave 6 (new), seed FC31: world, decision and quantity kept; the seed's surge-code mechanism is not the decisive step",
+  "architecture": "v2",
+  "drawn": "2026-11-01",
+  "slot_note": "Batch 3 re-root: fresh world (a remote pharmacy desk's override reviews at a hospital-wide alert package go-live); no seed furniture",
   "domain": "healthcare-delivery-health-economics",
-  "subdomain": "patient-flow-beds-workforce-optimization",
-  "client_domain": "healthcare-delivery-health-economics",
-  "niche": "a multi-state hospital cooperative block-booking the January 2027 agency nurse shifts its 24-hospital winter surge pool funds on surge days, when the respiratory wave reached its Southeast members (Georgia and South Carolina) in late November and its Central members (Tennessee, Kentucky and West Virginia) in mid-December, and the eight northern Michigan hospitals that join the pool this winter have met the wave about four weeks after Central in every winter on file while their lag behind the Southeast moved by weeks",
+  "subdomain": "utilization-access-demand-forecasting",
+  "niche": "a remote clinical pharmacy services firm forecasting the change in override reviews its desk will take from a regional hospital's adult wards in the first thirteen weeks after a medication safety alert package goes live on every ward, when the package's duplicate PRN opioid alert, answered by removing the new order about half the time on the pilot wards, takes away severe interaction alerts that today fire against those orders",
   "objective": "forecasting",
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "The pool should block-book 600 agency RN shifts for the four weeks from Monday 4 January to Sunday 31 January 2027.",
-  "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
+  "scoring_unit": "other",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
@@ -21,104 +21,97 @@
     "none"
   ],
   "generators": [
-    "G16",
-    "G13",
-    "G6"
+    "G3",
+    "G9",
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "forecast_method_backtest",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stakeholder_role": "the cooperative's winter pool manager, who files the January block with the two staffing agencies",
-  "role_family": "procurement_lead",
-  "scoring_unit": "other",
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read and every filed sentence applied, a strong analyst runs the package's background log as a silent-mode burden study: the QT combination alerts it logged on the wards going live, times the pilot wards' override share, scaled to the volume plan's admissions for the thirteen weeks, and files about 500 more reviews, carrying today's overridden interaction alerts forward unchanged.",
+  "domain_test": "The deciding quantity is the net change in pharmacist override reviews when clinical decision support content goes live, which pharmacy informatics estimates from background (silent) mode alert counts and pilot override rates; the decisive step is that a live interruptive duplicate-therapy alert removes orders and so removes the severe interaction alerts that fire against active orders, and with another field's nouns (help-desk tickets, a software prompt) there is no active-order interaction logic, no duplicate-therapy removal and no severity-gated review for the step to stand on.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a-live-duplicate-therapy-alert-removes-orders-that-later-interaction-alerts-fire-against",
+  "layer1": [
+    "department names changed format at the November 2025 EHR upgrade",
+    "quarterly extract chunks repeat their boundary day",
+    "background log stamped in UTC against local alert times",
+    "queue export in UTC over a padded date range",
+    "alert references zero-padded in the queue export",
+    "bed-level point of care in the queue against the alert's department",
+    "volume plan by planning week against a census by day"
+  ],
+  "stakeholder_role": "Corvane Remote Pharmacy's director of pharmacy operations, who staffs the override review desk and prices the change order for the go-live",
+  "role_family": "operations_director",
   "spine": {
-    "file": "capacity_reports_legacy_2021-07-02_2024-07-01.csv and capacity_daily_2024-07-01_2026-12-20.csv (the association's daily capacity reports, two layouts across the July 2024 system change)",
-    "rows": 48078,
-    "entity": "one member hospital's daily capacity report: its midnight census, staffed beds and declared surge level",
-    "grain": "hospital x day",
-    "source": "synthetic (constructed in the layout of a hospital cooperative's daily capacity reporting system, two layouts across a July 2024 system change)"
+    "file": "QRMC_MedAlertHistory_20250101-20261025.csv",
+    "rows": 0,
+    "entity": "medication alert",
+    "grain": "one row per alert fired at an order signing",
+    "source": "synthetic, built for this task"
   },
   "forum": "operations_desk",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "cooperative_or_member_body",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "professional_services",
   "world": {
-    "geography": "United States: Georgia and South Carolina, Tennessee, Kentucky and West Virginia, northern Michigan (a fictional multi-state hospital cooperative, member hospitals and staffing agencies; real regions and cities, every member in Eastern time)",
+    "geography": "United States (Pennsylvania, Lehigh Valley)",
     "currency": "USD",
-    "org_type": "a member-owned multi-state hospital cooperative running a winter agency-nurse surge pool for 24 member hospitals",
+    "org_type": "a remote clinical pharmacy services firm that reviews a regional hospital's overridden high-severity medication alerts",
     "invented_names": [
-      "Tri-Region Hospital Cooperative",
-      "Crestfield Medical Staffing",
-      "Inland Seas Nursing",
-      "Talcott Hospital",
-      "Tolliver General Hospital",
-      "Gilmartin Medical Center",
-      "Satterfield Medical Center",
-      "Haldane Community Hospital",
-      "Lattimore Memorial Hospital",
-      "Brennan Memorial Hospital",
-      "Kinard Hospital",
-      "Ruddock Hospital",
-      "Haverkamp Medical Center",
-      "Kastner Hospital",
-      "Ellery Medical Center",
-      "Brinkerhoff Memorial Hospital",
-      "Zielinski Memorial Hospital",
-      "Spurlock Memorial Hospital",
-      "Crumley Memorial Hospital",
-      "Ostrander Medical Center",
-      "Lindell Hospital",
-      "Alpena Lakeside Hospital",
-      "Callister Memorial Hospital",
-      "Clam Lake Community Hospital",
-      "Superior Shores Medical Center",
-      "Little Bay de Noc Hospital",
-      "Ashmun Bay Hospital"
+      "Corvane Remote Pharmacy",
+      "Quillfield Regional Medical Center"
     ],
     "people": [
-      "Brandon Williams",
-      "Linda Ashley",
-      "Shawn Whitaker"
+      "Chris Hernandez",
+      "Shawn Whitaker",
+      "Andrew Harvey"
     ]
   },
   "deliverables": [
-    "winter_pool_block_jan2027.xlsx",
-    "pool_shifts_winter_2025-26.png"
+    "msp26_review_forecast_q1_2027.xlsx",
+    "msp26_go_live_review_memo.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:regional-surge-waves-timed-by-propagation-lag-not-calendar",
-  "layer1": [
-    "the cooperative's capacity system replaced on 1 July 2024: the old export keyed by member number, dated by the morning report after each midnight census, coding surge as S1/S2 and carrying resubmissions beside their originals, against the new export keyed by state-prefixed facility id, dated by census night, coding surge as 1/2 and marking the last seven nights provisional",
-    "Crestfield's member shift report from its billing system: UTC times, its own client site codes, a night shift billed on two lines split at local midnight under one timesheet number, the hours as worked (eleven or thirteen across a clock change), and a booking the member cancelled after the cut-off billed at four hours on one line against the booked shift",
-    "Inland Seas' weekly member shift workbooks, one sheet a payroll week, each shift dated by its payroll day (a night paid on the day it ends, as the pool office's data dictionary records) and the members under short facility names; the queried timesheets carry the agency's order numbers and request references",
-    "declarations at the 06:45 bed huddle or the 14:45 bed meeting, so a surge plan's active span differs from its census nights by part of a day",
-    "two staffed-bed changes on file (a unit closed until March 2023, a unit opened in September 2025)",
-    "wastewater results twice weekly at the southern plants and weekly in the North, preliminary values later revised by the laboratory",
-    "the surge plan register as a PDF table: each member's surge unit, agency staffing per level and its plan's own revision history",
-    "the pool office's block book: each December's block split between the agencies by their surge unit slots, an agency confirming less than its share in some seasons",
-    "eight hospitals that join the pool in November 2026 with capacity reports on file since July 2021 and no pool billing"
-  ],
-  "driver": "A recurring wave reaches each group of units at a stable lag behind the group it spreads from, while its calendar timing and its lag behind the first group it reaches move from cycle to cycle, so a fixed forward window holds whichever groups' waves fall inside it this cycle; carrying what the same window held in past cycles, or timing a group from the first group the wave reaches, misses a group whose wave has always come after the window and this cycle falls wholly inside it.",
-  "driver_concrete": "The winter respiratory wave moves north through a hospital cooperative's three regions: in every winter on the capacity census it reaches the eight northern Michigan hospitals about four weeks after Central (Tennessee, Kentucky and West Virginia), while Central's gap behind the Southeast (Georgia and South Carolina) and the wave's calendar timing move by weeks; this winter the Southeast surged in late November and Central in mid-December, so the four weeks from Monday 4 January 2027 hold none of the sixteen southern hospitals' surge days and the whole of the North's, whose eight hospitals join the pool this winter and whose wave fell in February or March in every earlier winter; the block is the North's own per-wave surge-day draw at its surge plans' agency staffing, 600 shifts.",
-  "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 2,450 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by two weeks or more, puts its wave partly before the block; the North follows Central by about four weeks, and Central's spells began 9 to 17 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the capacity census's two layouts, reads the pool agreement and the surge plan register correctly and averages the closed winters' January block draws at the register's staffing files 2,450 shifts against the golden 600; the analyst who sees the early season and times the North from the Southeast, the region the wave reaches first, files 450 or less (400 aligning the whole census on the Southeast); only timing the North's wave by its lag behind Central puts its whole wave and none of the south's in the block weeks (executed in checks.py on the generator's clean truth and on the pack).",
-  "domain_test": "The deciding quantity is each region's January surge staffing demand, forecast the way health-system capacity planners forecast a winter surge: by where each region's respiratory wave falls in the window, timed from the region it follows by the lag past winters show, and turned into agency shifts through each hospital's surge unit staffing; with another field's nouns (megawatt-hours, crew hours) there is no epidemic moving north from region to region at a lag of weeks, no surge plan opening agency-staffed beds and no reason one region's whole demand should fall in a window it has never touched.",
+  "driver": "A planned upstream prompt makes a share of responders withdraw an input, and every later prompt that needs that input then never fires; counting the later prompts as the record holds them, or adding only the new prompts' own load, keeps prompts the withdrawals remove, and only tying each would-be upstream prompt to the later prompts on the same input and case, at the withdrawal rate the units already running the upstream prompt show, sizes the forward count.",
+  "driver_concrete": "Live, the package's duplicate PRN opioid alert leads prescribers to remove about 46 per cent of second PRN opioid orders (the pilot wards' answers), and every severe opioid and sedative interaction alert that would fire against a removed order, or on it, never reaches the desk; the background log's QT alerts at the pilot override share add about 500 reviews over the thirteen weeks, and tying each background duplicate-opioid row to today's overridden alerts on the same order or naming it as the interacting order takes away about 200, a net change of about 300.",
+  "stump": "The silent-mode route (the background log's QT combination alerts on the wards going live at the pilot wards' override share, scaled to the plan's admissions) files about 500 more reviews; the step that lands it there is reading the background log as the package's whole effect, when once live the duplicate PRN opioid alert removes about 46 per cent of second opioid orders and the severe interaction alerts that fire against them never reach the desk, a net change of about 300.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task142": "a purchasing alliance's quarter visit percentile built from admissions and lengths of stay; here the call is an expected draw whose window this winter holds a different region's whole wave, timed by a propagation lag, and no percentile or length-of-stay construction decides it",
-    "task157": "a returning cohort's wave read off its own leading edge at a timing ratio every earlier wave kept on the calendar; here the calendar timing moves every winter, the North's wave has not begun at the as-of and is timed from the region it follows by a stable lag (not the region the wave reaches first), and its size is each hospital's own per-wave draw",
-    "task127": "v3's motor bodily injury reserve restates paid development at the latest closed shares; here nothing develops: a respiratory wave reaches each region at a stable lag behind the region it spreads from, and the window's draw is whichever regions' waves fall in it this winter",
-    "task138": "v1 round 1 starts every replayed trace from the store each unit holds at the forecast date; here no store or replay decides it: the forward window holds a whole regional wave that has never fallen in it, timed by a lag",
-    "task446": "v2 carries a screen's error rates across years while its yield moves with the base rate; here no yield or error rate is carried: the window's content changes because the wave's timing moves and reaches each region at a stable lag",
-    "task145": "a forward count above a fixed line set by each unit's value at forward conversion factors; here no line or conversion decides it: the forward window holds a different region's wave this winter, timed from the region that leads it"
+    "task169": "a parole cohort's return rate when a filed change closes a processing route that had pre-empted another, so the record's remaining route understates the outcome; here a new upstream prompt is added, its acceptances withdraw orders that existing prompts fire against, and the new prompt's own background record overstates the added load, sized by tying each would-be prompt to the existing prompts on the same order",
+    "task304": "a placement's forward yield absorbed by a competing service and depleted by a first sweep; here nothing is absorbed or depleted: a planned prompt's live answers remove inputs that existing prompts fire against, at the rate the pilot units show"
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-18",
+      "niche": "a multi-state hospital cooperative block-booking the January 2027 agency nurse shifts its 24-hospital winter surge pool funds on surge days, when the respiratory wave reached its Southeast members (Georgia and South Carolina) in late November and its Central members (Tennessee, Kentucky and West Virginia) in mid-December, and the eight northern Michigan hospitals that join the pool this winter have met the wave about four weeks after Central in every winter on file while their lag behind the Southeast moved by weeks",
+      "driver": "A recurring wave reaches each group of units at a stable lag behind the group it spreads from, while its calendar timing and its lag behind the first group it reaches move from cycle to cycle, so a fixed forward window holds whichever groups' waves fall inside it this cycle; carrying what the same window held in past cycles, or timing a group from the first group the wave reaches, misses a group whose wave has always come after the window and this cycle falls wholly inside it.",
+      "stump": "Averaging the closed winters' January block draws, the sixteen southern members' surge nights in those four weeks at their surge plans' agency staffing with the North's none, files 2,450 shifts; the step that lands it there is reading January by the calendar when the respiratory wave's timing moves by weeks from winter to winter, and the analyst who times the North from the Southeast instead, whose lead over the North moved by two weeks or more, puts its wave partly before the block; the North follows Central by about four weeks, and Central's spells began 9 to 17 December, so this January holds the North's whole wave and none of the south's: 600 shifts.",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "generators": [
+        "G16",
+        "G13",
+        "G6"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-18 with no portal result (600 agency RN shifts for January 2027), redrawn as a fresh architecture at the author's instruction; one architecture per world, so the nurse surge-pool world is closed",
+      "shell": {
+        "question_form": "how-many",
+        "opener": "put",
+        "deliverables": "png+xlsx"
+      }
+    }
+  ],
   "notes": "",
-  "registered": "2026-10-18T00:47:12Z"
+  "registered": "2026-11-01T22:19:32Z"
 }

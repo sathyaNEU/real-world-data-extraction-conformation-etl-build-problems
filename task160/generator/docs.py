@@ -1,267 +1,240 @@
-"""task160 documents: the 2026-27 winter pool agreement, the surge plan register and the agencies' 2026-27 rate
-schedule. Their text is kept here as data so checks.py and verify.py can quote it."""
-from __future__ import annotations
-
+"""The governing documents and Quillfield's planning and register workbooks, in each organisation's own voice."""
 import datetime as dt
-import os
 
-from reportlab import rl_config
+import docx
+from docx.shared import Pt
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font
 
-rl_config.invariant = 1
-from reportlab.lib import colors                                                        # noqa: E402
-from reportlab.lib.pagesizes import letter                                              # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
-from reportlab.lib.units import mm                                                      # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                                # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                            # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+import io_util as IO
+import params as P
 
-import common as C          # noqa: E402
-import postprocess as PP    # noqa: E402
-import world as W           # noqa: E402
-
-FONT_DIR = "/usr/share/fonts/truetype/"
-for _n, _f in (("LibSerif", "liberation/LiberationSerif-Regular.ttf"), ("LibSerif-Bold", "liberation/LiberationSerif-Bold.ttf"),
-               ("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-INK = colors.HexColor("#1b1e24")
-GREY = colors.HexColor("#5a616d")
-ACCENT = colors.HexColor("#173f6b")
-RULE = colors.HexColor("#b7c0cc")
-HEAD = colors.HexColor("#e3e9f1")
-
-F_AGREEMENT = "winter_pool_agreement_2026-27.pdf"
-F_REGISTER = "surge_plan_register_2026-27.pdf"
-F_RATES = "agency_rate_schedule_2026-27.pdf"
-
-AGREEMENT_DATE = dt.date(2026, 9, 24)
-REGISTER_DATE = dt.date(2026, 11, 2)
-RATES_DATE = dt.date(2026, 10, 1)
+BOLD = Font(bold=True)
 
 
-def styles(font="Carlito", bold="Carlito-Bold", size=10.2):
-    return dict(
-        body=ParagraphStyle("b" + font, fontName=font, fontSize=size, leading=size * 1.33, textColor=INK, spaceAfter=4.5),
-        h1=ParagraphStyle("h1" + font, fontName=bold, fontSize=14.5, leading=18.0, textColor=ACCENT, spaceAfter=2),
-        sub=ParagraphStyle("s" + font, fontName=font, fontSize=8.8, leading=11.4, textColor=GREY, spaceAfter=9),
-        h2=ParagraphStyle("h2" + font, fontName=bold, fontSize=10.8, leading=13.8, textColor=ACCENT, spaceBefore=6,
-                          spaceAfter=2.5),
-        cell=ParagraphStyle("c" + font, fontName=font, fontSize=8.3, leading=10.0, textColor=INK),
-        cellr=ParagraphStyle("cr" + font, fontName=font, fontSize=8.3, leading=10.0, textColor=INK, alignment=2),
-        cellb=ParagraphStyle("cb" + font, fontName=bold, fontSize=8.3, leading=10.0, textColor=INK),
-        small=ParagraphStyle("sm" + font, fontName=font, fontSize=8.0, leading=10.2, textColor=GREY, spaceAfter=3))
+def _save_xlsx(wb, path, title, creator, company, created, modified):
+    wb.properties.creator = creator
+    wb.save(path)
+    IO.repack_ooxml(path, creator, creator, created, modified, title, company)
 
 
-def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=letter, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=19 * mm,
-                             bottomMargin=18 * mm, title=title, author=author, subject="", creator="", producer="")
+def write_plan(path, rows):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Weekly plan"
+    ws.append(["Week beginning", "Department", "Planned admissions", "Planned patient days"])
+    for c in ws[1]:
+        c.font = BOLD
+    for wk, code, pa, pd in rows:
+        ws.append([wk, code, pa, pd])
+        ws.cell(row=ws.max_row, column=1).number_format = "yyyy-mm-dd"
+    ws.column_dimensions["A"].width = 15
+    ws.column_dimensions["B"].width = 12
+    ws.column_dimensions["C"].width = 19
+    ws.column_dimensions["D"].width = 21
+    ws.freeze_panes = "A2"
+    b = wb.create_sheet("Basis")
+    for line in ["Quillfield Regional Medical Center, FY2027 inpatient volume plan (1 July 2026 to 30 June 2027)",
+                 "Prepared by Finance, Decision Support, 12 June 2026",
+                 "Adult inpatient units, planned admissions and patient days by planning week (weeks begin Monday).",
+                 "Basis: FY2026 admissions by department with the seasonal profile of FY2025 and FY2026; no service "
+                 "openings or closures assumed.",
+                 "Planned patient days are planned admissions times each department's FY2026 average length of stay."]:
+        b.append([line])
+    b.column_dimensions["A"].width = 110
+    _save_xlsx(wb, path, "FY2027 inpatient volume plan", "Decision Support", "Quillfield Regional Medical Center",
+               "2026-06-12T14:05:00Z", "2026-06-12T16:41:00Z")
+    return len(rows)
 
 
-def _footer(left, font="Carlito"):
-    def draw(canvas, doc):
-        canvas.saveState()
-        canvas.setFont(font, 7.6)
-        canvas.setFillColor(GREY)
-        canvas.drawString(22 * mm, 10 * mm, left)
-        canvas.drawRightString(letter[0] - 22 * mm, 10 * mm, "Page %d" % doc.page)
-        canvas.restoreState()
-    return draw
-
-
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-
-def _table(st, head, rows, widths, right=()):
-    data = [[Paragraph(esc(h), st["cellb"]) for h in head]]
+def write_interventions(path, rows):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Interventions"
+    ws.append(["Date", "Department", "Intervention", "Medication", "Outcome", "Minutes", "Pharmacist"])
+    for c in ws[1]:
+        c.font = BOLD
     for r in rows:
-        data.append([Paragraph(esc(str(x)), st["cellr"] if i in right else st["cell"]) for i, x in enumerate(r)])
-    t = Table(data, colWidths=[w * mm for w in widths], repeatRows=1)
-    t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), HEAD), ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE),
-                           ("LINEBELOW", (0, -1), (-1, -1), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2.1), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.1),
-                           ("LEFTPADDING", (0, 0), (-1, -1), 2.6), ("RIGHTPADDING", (0, 0), (-1, -1), 2.6)]))
-    return t
+        ws.append(r)
+        ws.cell(row=ws.max_row, column=1).number_format = "mm/dd/yyyy"
+    for col, wdt in zip("ABCDEFG", (12, 12, 34, 42, 14, 9, 11)):
+        ws.column_dimensions[col].width = wdt
+    _save_xlsx(wb, path, "Pharmacist interventions Q3 2026", "Pharmacy Clinical Services",
+               "Quillfield Regional Medical Center", "2026-10-05T13:12:00Z", "2026-10-05T13:30:00Z")
+    return len(rows)
 
 
-def pdf_stamp(d, hh=9, mi=0):
-    off = W.us_eastern_offset(dt.datetime.combine(d, dt.time(hh, mi)))
-    return ("D:%04d%02d%02d%02d%02d00%+03d'00'" % (d.year, d.month, d.day, hh, mi, off)).encode()
-
-
-# ---------------------------------------------------------------------------------------------------- the agreement
-AGREEMENT = [
-    ("1. Definitions", [
-        "1.1 The Pool season runs from 1 November 2026 to 31 March 2027.",
-        "1.2 A Member is a hospital listed in Schedule A, from its Pool start date.",
-        "1.3 A Member's surge unit is the unit its surge plan opens, as listed in the Cooperative's surge plan register.",
-        "1.4 A shift is one nurse for one scheduled shift, 07:00 to 19:00 or 19:00 to 07:00. Times in this agreement "
-        "are Eastern Time.",
-        "1.5 A Member's surge plan is active from the declaration of its activation to the declaration of its "
-        "stand-down, as entered in the Cooperative's capacity system at the 06:45 bed huddle or the 14:45 bed meeting.",
-    ]),
-    ("2. Supply and reporting", [
-        "2.1 On a surge request from a Member the Agencies supply registered nurses for the Member's surge unit at the "
-        "staffing in the surge plan register. Each Agency fills the slots Schedule A assigns it on each shift.",
-        "2.2 Each Agency reports to the Cooperative, each week, every shift its nurses work at a Member, whoever it "
-        "bills for the shift.",
-    ]),
-    ("3. What the Pool funds", [
-        "3.1 The Pool funds the agency RN shifts that staff a Member's surge unit and start while the Member's surge "
-        "plan is active.",
-        "3.2 Shifts on a Member's other units, and shifts on a surge unit that start while its plan is not active, are "
-        "the Member's.",
-    ]),
-    ("4. Rates", [
-        "4.1 The Agencies bill at the rates in their rate schedule for the season. Spot shifts are those outside the "
-        "Block and those beyond an Agency's share of it.",
-        "4.2 A booked shift that the Member cancels less than six hours before it starts is billed at four hours of "
-        "the Agency's rate.",
-    ]),
-    ("5. The January Block", [
-        "5.1 The January Block covers every Member's surge unit for the four weeks from the first Monday in January: "
-        "Monday 4 January to Sunday 31 January 2027.",
-        "5.2 The Cooperative files the Block with the Agencies by Tuesday 22 December 2026. The Block is set at the "
-        "Pool's expected draw over the Block weeks, rounded to the nearest 50 shifts. The Pool's draw is the shifts the "
-        "Pool funds under clause 3.1 that start in the Block weeks.",
-        "5.3 The Block is divided between the Agencies in proportion to the surge unit slots Schedule A assigns each. "
-        "An Agency's Block shifts left unused at the end of the Block weeks are charged at 60 per cent of its block "
-        "rate.",
-    ]),
-    ("6. Billing and settlement", [
-        "6.1 The Agencies bill the Pool for shifts booked against a Member's surge request and bill the Member for "
-        "other shifts.",
-        "6.2 The Cooperative settles each Agency's billing monthly against the declarations in the capacity system. An "
-        "agency shift billed to the Pool that the Pool does not fund is returned to the Member's account, and a shift "
-        "the Pool funds that was billed to a Member is charged to the Pool.",
-    ]),
-    ("7. Term", [
-        "7.1 This agreement governs the 2026-27 Pool season. It replaces the 2025-26 agreement, whose terms it repeats "
-        "but for Schedule A.",
-    ]),
+REGISTER = [
+    ("DDI_SEVERE", "Drug-drug interaction, severe", "High",
+     "An order is signed for a drug with a severe interaction with an order active for the patient; one alert for "
+     "each interacting active order", "Live", "All adult inpatient units", "2019-05-20", "Yes, when overridden"),
+    ("DRUG_ALLERGY", "Drug allergy or cross-sensitivity", "High",
+     "An order is signed for a drug the patient is recorded as allergic or cross-sensitive to", "Live",
+     "All adult inpatient units", "2019-05-20", "Yes, when overridden"),
+    ("MAX_DOSE", "Maximum dose exceeded", "High",
+     "An order is signed above the maximum single or daily dose for the drug", "Live", "All adult inpatient units",
+     "2019-05-20", "Yes, when overridden"),
+    ("DDI_MODERATE", "Drug-drug interaction, moderate", "Moderate",
+     "An order is signed for a drug with a moderate interaction with an order active for the patient", "Live",
+     "All adult inpatient units", "2019-05-20", "No"),
+    ("MSP26_DUP_OPIOID_PRN", "Duplicate PRN opioid therapy", "Moderate",
+     "A PRN opioid order is signed while another PRN opioid order is active for the patient", "Live",
+     "7W, 5E, 8N", "2024-09-09", "No"),
+    ("MSP26_DUP_OPIOID_PRN", "Duplicate PRN opioid therapy", "Moderate",
+     "A PRN opioid order is signed while another PRN opioid order is active for the patient", "Background",
+     "All other adult inpatient units", "2026-07-06", "No"),
+    ("MSP26_QT_COMBO", "QT-prolonging drug combination", "High",
+     "An order for a drug on the package's QT list is signed while another order for a drug on that list is active "
+     "for the patient; one alert for each such active order", "Live", "7W, 5E, 8N", "2024-09-09",
+     "Yes, when overridden"),
+    ("MSP26_QT_COMBO", "QT-prolonging drug combination", "High",
+     "An order for a drug on the package's QT list is signed while another order for a drug on that list is active "
+     "for the patient; one alert for each such active order", "Background", "All other adult inpatient units",
+     "2026-07-06", "Not displayed in background mode"),
 ]
 
 
-def schedule_a(hs):
-    rows = []
-    for h in hs:
-        start = "1 Nov 2026" if h["region"] == "NO" else "1 Nov 2021"
-        prim = C.AG_C if h["agency"] == "C" else C.AG_I
-        rows.append((h["name"], C.REGIONS[h["region"]], "%s, %s" % (h["city"], h["state"]), start, prim))
-    return rows
+def write_register(path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Rules"
+    ws.append(["Rule ID", "Rule name", "Severity", "Fires when", "Status", "Units", "Since",
+               "Sent to override review desk"])
+    for c in ws[1]:
+        c.font = BOLD
+    for r in REGISTER:
+        ws.append(list(r))
+    for row in ws.iter_rows(min_row=2):
+        row[3].alignment = Alignment(wrap_text=True, vertical="top")
+    for col, wdt in zip("ABCDEFGH", (24, 32, 10, 70, 12, 30, 12, 30)):
+        ws.column_dimensions[col].width = wdt
+    ws.append([])
+    ws.append(["Planned change: CR-2291, both MSP26 rules live on all adult inpatient units from 07:00 on "
+               "Monday 4 January 2027."])
+    ws.append(["All rules evaluate when an order is signed, against the orders active for the patient at that "
+               "moment."])
+    u = wb.create_sheet("Units")
+    u.append(["Department", "Unit name", "Department name before 9 November 2025"])
+    for c in u[1]:
+        c.font = BOLD
+    for code, name, *_ in P.UNITS:
+        u.append([code, name, "QRMC " + name.upper()])
+    for col, wdt in zip("ABC", (12, 40, 48)):
+        u.column_dimensions[col].width = wdt
+    _save_xlsx(wb, path, "Medication alert rule register", "Pharmacy Informatics",
+               "Quillfield Regional Medical Center", "2023-02-14T15:20:00Z", "2026-10-26T13:47:00Z")
+    return len(REGISTER)
 
 
-def write_agreement(out, hs):
-    st = styles()
-    path = os.path.join(out, F_AGREEMENT)
-    doc = _doc(path, "Winter Surge Staffing Pool Agreement 2026-27", C.PEOPLE["pool_manager"])
-    flow = [Paragraph("Winter Surge Staffing Pool Agreement 2026-27", st["h1"]),
-            Paragraph("Between the %s, the Members listed in Schedule A, %s LLC and %s, Inc. Approved by the Pool "
-                      "Members' meeting on 24 September 2026. Pool manager: %s." % (
-                          C.ORG, C.AG_C, C.AG_I, C.PEOPLE["pool_manager"]), st["sub"])]
-    for head, paras in AGREEMENT:
-        flow.append(Paragraph(head, st["h2"]))
-        for p in paras:
-            flow.append(Paragraph(esc(p), st["body"]))
-    flow.append(Paragraph("Schedule A. Members", st["h2"]))
-    flow.append(Paragraph(esc("Each surge unit slot on a shift is filled alternately by the Member's primary agency and "
-                              "the other Agency, the primary agency taking the first."), st["small"]))
-    flow.append(_table(st, ["Member", "Region", "City", "Pool start", "Primary agency"], schedule_a(hs),
-                       [52, 22, 38, 22, 38]))
-    foot = "TRHC Winter Surge Staffing Pool Agreement 2026-27"
-    doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(AGREEMENT_DATE, 16, 10), pdf_stamp(AGREEMENT_DATE, 16, 10))
+def write_release(path):
+    blocks = [
+        ("t", "Medication Safety Package MSP26, content release 2026.2"),
+        ("s", "Release notes for client pharmacy informatics teams. Halverson Clinical Content, March 2026."),
+        ("h", "1. What the package adds"),
+        ("p", "MSP26 adds two rules to the client's medication alert engine. Both are interruptive when live. The "
+              "client sets each rule's status by unit: off, background or live."),
+        ("table", [["Rule ID", "Rule", "Severity", "Fires when", "Prescriber options"],
+                   ["MSP26_DUP_OPIOID_PRN", "Duplicate PRN opioid therapy", "Moderate",
+                    "A PRN opioid order is signed while another PRN opioid order is active for the patient.",
+                    "Remove the new order; keep both orders (acknowledge)."],
+                   ["MSP26_QT_COMBO", "QT-prolonging drug combination", "High",
+                    "An order for a drug on the QT list is signed while another order for a drug on the list is "
+                    "active for the patient; one alert for each such active order.",
+                    "Remove the new order; override with a reason."]]),
+        ("h", "2. Drugs in scope"),
+        ("p", "PRN opioids: oxycodone, hydromorphone, morphine and hydrocodone combination products, PRN orders "
+              "only. QT list, this release: ondansetron, haloperidol, levofloxacin, azithromycin and quetiapine, "
+              "with further agents the client's formulary does not stock."),
+        ("h", "3. Evaluation"),
+        ("p", "MSP26 rules evaluate like every rule in the engine: when an order is signed, against the orders "
+              "active for the patient at that moment."),
+        ("h", "4. Background mode"),
+        ("p", "A rule in background mode evaluates exactly as it would live, and each alert it would have shown "
+              "is written to the background log with the order, the interacting order and the evaluation time "
+              "(UTC) instead of being displayed. Nothing is shown to the prescriber."),
+        ("h", "5. Upgrade notes"),
+        ("p", "Release 2026.2 replaces 2025.4. Rule logic for both rules is unchanged; the QT list adds two agents "
+              "outside most US formularies."),
+    ]
+    IO.write_pdf(path, "MSP26 content release 2026.2", "Halverson Clinical Content", "Halverson Content Publisher",
+                 blocks, "Halverson Clinical Content, MSP26 release notes 2026.2", "D:20260316100000-04'00'",
+                 "D:20260316100000-04'00'",
+                 widths={5: [92, 78, 44, 160, 116]})
 
 
-# ---------------------------------------------------------------------------------------------------- the register
-REGISTER_INTRO = [
-    "Every Member works to the Cooperative's model surge plan (revision 3, March 2021). A Member declares Level 1 "
-    "when its midnight census has been at or above 95 per cent of its staffed beds on two consecutive census nights, "
-    "and Level 2 at or above 101 per cent; it steps down from Level 2 when the census falls below 98 per cent and "
-    "stands down when it falls below 93 per cent. Declarations are made at the 06:45 bed huddle or the 14:45 bed "
-    "meeting and entered in the capacity system.",
-    "Agency staffing is the agency RN shifts a day the surge unit takes at each level, day and night shifts equal.",
-]
+def write_schedule(path):
+    blocks = [
+        ("t", "Schedule B: Override review service (revision 3)"),
+        ("s", "To the Remote Pharmacy Services Agreement between Corvane Remote Pharmacy, LLC and Quillfield "
+              "Regional Medical Center. Effective 1 July 2026; replaces revision 2."),
+        ("h", "1. Scope"),
+        ("p", "Corvane's override review desk reviews medication alert overrides for Quillfield's adult inpatient "
+              "units, as listed in Quillfield's medication alert rule register. The Emergency Department, "
+              "perioperative areas, Labor and Delivery and the Observation Unit are outside this schedule."),
+        ("h", "2. Reviews"),
+        ("p", "2.1 Every high-severity medication alert that a Quillfield prescriber overrides on an adult inpatient "
+              "unit is sent to the desk and reviewed by a Corvane pharmacist. One overridden alert is one review."),
+        ("p", "2.2 Alerts answered by removing or modifying the order, and alerts of moderate severity, are not "
+              "reviewed."),
+        ("h", "3. Desk hours, time and reporting"),
+        ("p", "3.1 The desk works three shifts, Eastern time: day 07:00 to 15:00, evening 15:00 to 23:00 and night "
+              "23:00 to 07:00. A review counts in the month and the shift in which a pharmacist signs it off."),
+        ("p", "3.2 Desk time is the time a pharmacist has a review open, from claiming it to signing it off or "
+              "returning it to the queue. Corvane reports reviews and desk time by the Quillfield department in "
+              "which the alert fired."),
+        ("h", "4. Volume basis, staffing and fees"),
+        ("p", "4.1 Corvane staffs the desk each quarter on a forecast of reviews built on Quillfield's inpatient "
+              "volume plan for that quarter."),
+        ("p", "4.2 Fees: USD 6.40 for each review; desk time is not billed separately."),
+        ("p", "4.3 Content changes. When Quillfield takes a change to its medication alert content, Corvane "
+              "re-forecasts the reviews for the first thirteen weeks the change is live on every unit it reaches: "
+              "the reviews those units will send with the change live, prescribers answering its alerts as they "
+              "have on any unit where it already runs, against the reviews the same units would send over the "
+              "same weeks without it. The change order prices the difference at the fee in 4.2."),
+        ("h", "5. Service level"),
+        ("p", "Each month, 90 per cent of reviews are signed off within 60 minutes of reaching the desk."),
+        ("h", "Signed"),
+        ("table", [["For Corvane Remote Pharmacy, LLC", "For Quillfield Regional Medical Center"],
+                   ["Chris Hernandez, Director of Pharmacy Operations, 18 June 2026",
+                    "Andrew Harvey, Chief Pharmacy Officer, 18 June 2026"]]),
+    ]
+    IO.write_pdf(path, "Schedule B override review service rev 3", "Corvane Remote Pharmacy",
+                 "Corvane Contracts", blocks, "Corvane Remote Pharmacy and Quillfield Regional Medical Center, "
+                 "Schedule B revision 3", "D:20260618151000-04'00'", "D:20260618151000-04'00'",
+                 widths={2: [240, 230]})
 
 
-HOLIDAYS = {dt.date(2021, 9, 6), dt.date(2021, 11, 25), dt.date(2021, 12, 24), dt.date(2022, 5, 30), dt.date(2022, 7, 4),
-            dt.date(2022, 9, 5), dt.date(2022, 11, 24), dt.date(2023, 5, 29), dt.date(2023, 7, 4), dt.date(2023, 9, 4),
-            dt.date(2023, 11, 23), dt.date(2024, 5, 27), dt.date(2024, 7, 4), dt.date(2024, 9, 2), dt.date(2024, 11, 28),
-            dt.date(2025, 5, 26), dt.date(2025, 7, 4), dt.date(2025, 9, 1), dt.date(2026, 9, 7)}
-
-
-def _workday(r, a, b):
-    """A working day drawn between a and b (Monday to Friday, the cooperative's holidays out)."""
-    while True:
-        d = a + dt.timedelta(days=int(r.integers(0, (b - a).days + 1)))
-        if d.weekday() < 5 and d not in HOLIDAYS:
-            return d
-
-
-def plan_history(hs):
-    """Each member's surge plan revisions as the pool office holds them: the plans of the founding members adopted in the
-    weeks before the first pool season and revised since when a member re-planned its surge unit, the North's plans
-    registered as each hospital joined in autumn 2026."""
-    r = W.rng(80)
-    out = {}
-    for h in hs:
-        if h["region"] == "NO":
-            out[h["facility_id"]] = (1, _workday(r, dt.date(2026, 9, 8), dt.date(2026, 10, 23)))
-            continue
-        dates = [_workday(r, dt.date(2021, 9, 13), dt.date(2021, 10, 22))]
-        for _ in range(int(r.choice([0, 0, 0, 1, 1, 1, 1, 2, 2, 3]))):
-            dates.append(_workday(r, dt.date(2022, 3, 1), dt.date(2025, 10, 31)))
-        out[h["facility_id"]] = (len(dates), max(dates))
-    return out
-
-
-def register_rows(hs):
-    hist = plan_history(hs)
-    rows = []
-    for h in hs:
-        rev, d = hist[h["facility_id"]]
-        rows.append((h["name"], h["surge_unit"], h["grid"][0], h["grid"][1], rev, "%d %s" % (d.day, d.strftime("%b %Y"))))
-    return rows
-
-
-def write_register(out, hs):
-    st = styles()
-    path = os.path.join(out, F_REGISTER)
-    doc = _doc(path, "Surge plan register 2026-27", C.PEOPLE["pool_manager"])
-    flow = [Paragraph("Surge plan register 2026-27", st["h1"]),
-            Paragraph("%s, Winter Surge Staffing Pool. Issued 2 November 2026." % C.ORG, st["sub"])]
-    for p in REGISTER_INTRO:
-        flow.append(Paragraph(esc(p), st["body"]))
-    flow.append(_table(st, ["Member", "Surge unit", "Agency RN shifts a day, Level 1", "Agency RN shifts a day, Level 2",
-                            "Plan rev.", "Revised"], register_rows(hs), [50, 33, 25, 25, 13, 22], right=(2, 3, 4)))
-    foot = "TRHC surge plan register 2026-27"
-    doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(REGISTER_DATE, 11, 30), pdf_stamp(REGISTER_DATE, 11, 30))
-
-
-# ---------------------------------------------------------------------------------------------------- the rates
-RATES = [
-    (C.AG_C, "88.50", "112.00", "53.10"),
-    (C.AG_I, "84.00", "107.50", "50.40"),
-]
-
-
-def write_rates(out):
-    st = styles()
-    path = os.path.join(out, F_RATES)
-    doc = _doc(path, "Agency rate schedule 2026-27", "Shawn Whitaker")
-    flow = [Paragraph("Agency rate schedule, Pool season 2026-27", st["h1"]),
-            Paragraph("%s, Finance. Issued 1 October 2026 for the season 1 November 2026 to 31 March 2027." % C.ORG,
-                      st["sub"]),
-            Paragraph(esc("Hourly rates for registered nurses on Members' surge units, billed per 12-hour shift. Rates "
-                          "include the Agencies' travel and lodging for nurses placed more than 60 miles from home."),
-                      st["body"]),
-            _table(st, ["Agency", "Block rate, per hour ($)", "Spot rate, per hour ($)", "Unused Block shift, per hour ($)"],
-                   RATES, [50, 36, 36, 42], right=(1, 2, 3)),
-            Spacer(1, 6),
-            Paragraph(esc("A shift a Member cancels less than six hours before it starts is billed at four hours of the "
-                          "applicable rate. Holiday premiums (Thanksgiving, Christmas Day, New Year's Day) add 50 per "
-                          "cent."), st["body"])]
-    foot = "TRHC Finance: agency rate schedule 2026-27"
-    doc.build(flow, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(RATES_DATE, 10, 40), pdf_stamp(RATES_DATE, 10, 40))
+def write_cr(path):
+    d = docx.Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    d.add_heading("Change Request CR-2291", level=1)
+    t = d.add_table(rows=0, cols=2)
+    t.style = "Table Grid"
+    for k, v in [("Title", "MSP26 medication safety package, hospital-wide go-live"),
+                 ("Requested by", "Shawn Whitaker, Pharmacy Informatics Manager, Quillfield Regional Medical Center"),
+                 ("Date", "21 October 2026"),
+                 ("To", "Corvane Remote Pharmacy, LLC (Chris Hernandez, Director of Pharmacy Operations)"),
+                 ("Approved", "Andrew Harvey, Chief Pharmacy Officer, 21 October 2026")]:
+        c = t.add_row().cells
+        c[0].text, c[1].text = k, v
+    d.add_heading("Change", level=2)
+    d.add_paragraph("Both MSP26 rules (MSP26_DUP_OPIOID_PRN, duplicate PRN opioid therapy, and MSP26_QT_COMBO, "
+                    "QT-prolonging drug combination) go live on every adult inpatient unit at 07:00 on Monday "
+                    "4 January 2027. The rules have run live on 7W, 5E and 8N since 9 September 2024 and in "
+                    "background mode on the other adult inpatient units since 6 July 2026.")
+    d.add_heading("Request to Corvane", level=2)
+    d.add_paragraph("Under Schedule B section 4.3, a re-forecast of override reviews for the thirteen weeks from "
+                    "Monday 4 January 2027 to Sunday 4 April 2027, and a change order, by 13 November 2026.")
+    d.add_heading("Attached", level=2)
+    for line in ["Medication alert history, 1 January 2025 to 25 October 2026 (Clarity extract, pulled by quarter)",
+                 "MSP26 background log, 6 July to 25 October 2026",
+                 "Unit census by day, 1 January 2025 to 25 October 2026",
+                 "FY2027 inpatient volume plan (Finance, Decision Support)",
+                 "Medication alert rule register as of 26 October 2026"]:
+        d.add_paragraph(line, style="List Bullet")
+    d.core_properties.author = "Shawn Whitaker"
+    d.save(path)
+    IO.repack_ooxml(path, "Shawn Whitaker", "Shawn Whitaker", "2026-10-21T13:02:00Z", "2026-10-26T14:15:00Z",
+                    "CR-2291 MSP26 hospital-wide go-live", "Quillfield Regional Medical Center")

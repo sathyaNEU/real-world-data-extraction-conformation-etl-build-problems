@@ -1,420 +1,353 @@
-"""task160 pack: every file the winter pool manager pulled on Monday 21 December 2026, written from the records."""
-from __future__ import annotations
-
-import csv
+"""Writes the bundle under target/ from the world: Quillfield's extracts as its EHR and finance teams export them,
+Corvane's queue export and location map, and the governing documents (docs.py)."""
 import datetime as dt
-import io
-import json
 import os
+from zoneinfo import ZoneInfo
 
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+import numpy as np
 
-import common as C
-import docs as DOC
-import postprocess as PP
-import records as R
+import docs
+import io_util as IO
+import params as P
 import world as W
 
-D = dt.date
+ET = ZoneInfo("America/New_York")
+UTC = ZoneInfo("UTC")
+UPGRADE = dt.datetime(2025, 11, 9, 0, 0)
+CHUNK_DAYS = [dt.date(2025, 3, 31), dt.date(2025, 6, 30), dt.date(2025, 9, 30), dt.date(2025, 12, 31),
+              dt.date(2026, 3, 31), dt.date(2026, 6, 30), dt.date(2026, 9, 30)]
 
-F_LEGACY = "capacity_reports_legacy_2021-07-02_2024-07-01.csv"
-F_DAILY = "capacity_daily_2024-07-01_2026-12-20.csv"
-F_DECL = "surge_declarations_2021-07-01_2026-12-20.csv"
-F_MEMBERS = "trhc_members_2026-27.xlsx"
-F_BLOCKS = "january_block_orders_2022-2026.xlsx"
-F_CRS = "crestfield_member_shifts_2025-11-01_2026-12-20.csv"
-F_ISN25 = "inland_seas_member_shifts_2025-26.xlsx"
-F_ISN26 = "inland_seas_member_shifts_2026-27.xlsx"
-F_WW = "wastewater_results_2021-09-06_2026-12-17.json"
-F_OUTLOOK = "resp_admissions_outlook_2026-12-18.xlsx"
-F_SURVEY = "rn_workforce_survey_2025q1_2026q3.xlsx"
-F_MANIFEST = "extract_manifest_2026-12-21.csv"
-F_DICT = "data_dictionary.xlsx"
-DISTRACTORS = [F_SURVEY, DOC.F_RATES]
-
-HEAD_FILL = PatternFill("solid", fgColor="DDE5EE")
-BOLD = Font(name="Calibri", bold=True, size=11)
-BODY = Font(name="Calibri", size=11)
-
-
-def _csv(path, head, rows):
-    buf = io.StringIO()
-    w = csv.writer(buf, lineterminator="\r\n")
-    w.writerow(head)
-    for r in rows:
-        w.writerow([x.isoformat() if isinstance(x, D) else x for x in r])
-    open(path, "w", encoding="utf-8", newline="").write(buf.getvalue())
-    return len(rows)
+FILES = {
+    "history": "QRMC_MedAlertHistory_20250101-20261025.csv",
+    "background": "QRMC_MSP26_BackgroundLog_20260706-20261025.csv",
+    "census": "QRMC_UnitCensus_Daily_20250101-20261025.csv",
+    "plan": "QRMC_FY2027_Inpatient_Volume_Plan.xlsx",
+    "register": "QRMC_MedAlert_Rule_Register_20261026.xlsx",
+    "release": "MSP26_Content_Release_Notes_v2026.2.pdf",
+    "schedule": "Corvane_QRMC_Service_Schedule_B_rev3.pdf",
+    "cr": "QRMC_CR-2291_MSP26_HospitalWide_GoLive.docx",
+    "queue": "CRV_QueueExport_QRMC_20260630-20261001.csv",
+    "pocmap": "CRV_PointOfCare_Map_QRMC.csv",
+    "pump": "QRMC_PumpGuardrail_Events_2026Q3.csv",
+    "interventions": "QRMC_RPh_Interventions_2026Q3.xlsx",
+}
+DISTRACTORS = ("pump", "interventions")
+UNIT_NAME = {u[0]: u[1] for u in P.UNITS}
+RULE_ORDER = {"DDI_SEVERE": 0, "DRUG_ALLERGY": 1, "MAX_DOSE": 2, "DDI_MODERATE": 3, "MSP26_DUP_OPIOID_PRN": 4,
+              "MSP26_QT_COMBO": 5}
+REASONS = ["Benefit outweighs risk", "Patient has tolerated combination", "Will monitor patient", "Dose appropriate",
+           "Comfort care", "Prescriber aware, see note", "Other (see comment)"]
+USER_TYPES = ["Physician", "Resident", "Nurse Practitioner", "Physician Assistant"]
 
 
-def _sheet(ws, head, rows, widths=None, start_row=1, fmt=None):
-    for j, h in enumerate(head):
-        c = ws.cell(row=start_row, column=j + 1, value=h)
-        c.font = BOLD
-        c.fill = HEAD_FILL
-    for i, r in enumerate(rows):
-        for j, v in enumerate(r):
-            c = ws.cell(row=start_row + 1 + i, column=j + 1, value=v)
-            c.font = BODY
-            if isinstance(v, D):
-                c.number_format = "m/d/yyyy"
-            elif fmt and j in fmt:
-                c.number_format = fmt[j]
-    for j, h in enumerate(head):
-        ws.column_dimensions[get_column_letter(j + 1)].width = (widths[j] if widths else max(10, len(h) + 2))
+def local_str(t):
+    """Wall-clock Eastern time as the EHR prints it; a time inside the spring-forward gap reads an hour on."""
+    d = W.tstamp(t)
+    aware = d.replace(tzinfo=ET)
+    if aware.astimezone(UTC).astimezone(ET).replace(tzinfo=None) != d:
+        d = d + dt.timedelta(hours=1)
+    return d.strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _save(wb, path, creator, last_by, created, modified):
-    wb.save(path)
-    PP.normalize_ooxml(path, creator, last_by, created, modified, excel=True, company=C.ORG)
+def to_utc(d):
+    return d.replace(tzinfo=ET).astimezone(UTC).replace(tzinfo=None)
 
 
-# ---------------------------------------------------------------------------------------------------- the roster
-def write_members(out, hs):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Members"
-    head = ["member_no", "facility_id", "hospital", "city", "state", "county", "region", "staffed_med_surg_beds",
-            "surge_unit", "pool_member_from", "crestfield_site_code", "inland_seas_facility"]
+def old_dept(code):
+    return "QRMC " + UNIT_NAME[code].upper()
+
+
+def relabel(w):
+    """Order, alert, background-event and encounter ids as Quillfield's systems issue them, in time order."""
+    rng = np.random.default_rng(P.SEED + 1)
+    L0 = W.tnum(P.LOG_START)
+    L1 = W.tnum(P.LOG_END + dt.timedelta(days=1))
+    orders = []
+    for e in w["encs"]:
+        for o in e.orders:
+            orders.append((o[3], o[0]))
+    orders.sort()
+    oid = {}
+    cur = 48210000
+    for _t, k in orders:
+        cur += int(rng.integers(3, 61))
+        oid[k] = cur
+    encs = sorted(w["encs"], key=lambda e: (e.adm, e.key))
+    csn = {}
+    cur = 1104882000
+    for e in encs:
+        cur += int(rng.integers(1, 10))
+        csn[e.key] = cur
+    alerts = []
+    for e in w["encs"]:
+        for r in w["rows"][e.key]:
+            if L0 <= r[3] < L1:
+                alerts.append((r[3], oid[r[0]], RULE_ORDER[r[1]], oid.get(r[2], 0), e.key, r))
+    alerts.sort(key=lambda a: a[:4])
+    aid = []
+    cur = 912400000
+    for a in alerts:
+        cur += int(rng.integers(1, 5))
+        aid.append(cur)
+    bgs = []
+    for e in w["encs"]:
+        for b in w["bg"][e.key]:
+            if b[3] < L1:
+                bgs.append((b[3], oid[b[0]], RULE_ORDER[b[1]], oid.get(b[2], 0), e.key, b))
+    bgs.sort(key=lambda a: a[:4])
+    bid = []
+    cur = 7700000
+    for _ in bgs:
+        cur += int(rng.integers(1, 4))
+        bid.append(cur)
+    enc_by = {e.key: e for e in w["encs"]}
+    drug_of = {}
+    for e in w["encs"]:
+        for o in e.orders:
+            drug_of[o[0]] = o[2]
+    return {"oid": oid, "csn": csn, "alerts": alerts, "aid": aid, "bgs": bgs, "bid": bid, "enc_by": enc_by,
+            "drug_of": drug_of}
+
+
+def history_rows(w, R):
+    rng = np.random.default_rng(P.SEED + 2)
     rows = []
-    for h in hs:
-        rows.append([h["member_no"], h["facility_id"], h["name"], h["city"], h["state"], h["county"],
-                     C.REGIONS[h["region"]], W.staffed_beds(h, C.CENSUS_END), h["surge_unit"],
-                     C.NORTH_JOIN if h["region"] == "NO" else C.POOL_START, R.CRS_SITE[h["facility_id"]],
-                     R.ISN_NAME[h["facility_id"]]])
-    _sheet(ws, head, rows, [11, 11, 30, 16, 7, 15, 12, 12, 18, 14, 14, 20])
-    ws.freeze_panes = "A2"
-    _save(wb, os.path.join(out, F_MEMBERS), C.PEOPLE["pool_manager"], C.PEOPLE["pool_manager"],
-          "2021-10-04T14:20:00Z", "2026-11-02T16:05:00Z")
-    return len(rows)
-
-
-# ---------------------------------------------------------------------------------------------------- block orders
-FIRST_BLOCK = 2250      # 2021-22, the pool's first block, set from the members' surge plans before any pool January
-FILED = {2022: D(2021, 12, 20), 2023: D(2022, 12, 19), 2024: D(2023, 12, 18), 2025: D(2024, 12, 20),
-         2026: D(2025, 12, 19)}
-
-
-def blocks(hs, truth):
-    """The blocks the pool filed: the first from the members' surge plans, each later one the pool's draw over the last
-    January's block weeks at the surge plans' staffing, rounded to the nearest 50 (the pool manager's practice)."""
+    for (t, o, _ro, pid, ek, r), a in zip(R["alerts"], R["aid"]):
+        e = R["enc_by"][ek]
+        stamp = local_str(t)
+        dept = e.unit if W.tstamp(t) >= UPGRADE else old_dept(e.unit)
+        rule = r[1]
+        name, sev = P.RULES[rule]
+        action = r[4]
+        reason = REASONS[int(rng.integers(len(REASONS)))] if action == "Overridden" else ""
+        utype = USER_TYPES[int(rng.integers(len(USER_TYPES)))]
+        rows.append([a, stamp, R["csn"][ek], dept, o, r[6], rule, name, sev, pid if pid else "",
+                     R["drug_of"][r[2]] if r[2] else "", action, reason, utype])
     out = []
-    for w in sorted(FILED):
-        if w == min(FILED):
-            blk = FIRST_BLOCK
-        else:
-            a, b = C.block_weeks(w - 1)
-            drew = sum(h["grid"][r["level"] - 1] for h in hs if h["region"] != "NO"
-                       for r in truth[h["facility_id"]] if a <= r["date"] <= b and r["level"])
-            blk = int(50 * round(drew / 50.0))
-        out.append((w, blk, FILED[w]))
+    for i, row in enumerate(rows):
+        out.append(row)
+        day = dt.date.fromisoformat(row[1][:10])
+        nxt = rows[i + 1][1][:10] if i + 1 < len(rows) else None
+        if day in CHUNK_DAYS and nxt != row[1][:10]:
+            # the next quarter's chunk was pulled from the boundary day again
+            j = i
+            while j >= 0 and rows[j][1][:10] == row[1][:10]:
+                j -= 1
+            out.extend(rows[j + 1:i + 1])
     return out
 
 
-def season_primary(hs, w):
-    """Each southern member's primary agency in the season's Schedule A. Crestfield, the pool's first agency, held the
-    first slot at every member in 2021-22; members moved their first slot to Inland Seas as their staffing contracts
-    came up for renewal, two or three a season in member-number order, the last of them for 2026-27."""
-    movers = [h["facility_id"] for h in hs if h["region"] != "NO" and h["agency"] == "I"]
-    moved = {2022: 0, 2023: 2, 2024: 4, 2025: 4, 2026: 6, 2027: len(movers)}[w]
-    return {h["facility_id"]: ("I" if h["facility_id"] in movers[:moved] else "C") if h["region"] != "NO" else h["agency"]
-            for h in hs}
+def background_rows(w, R):
+    rows = []
+    for (t, o, _ro, pid, ek, b), bid in zip(R["bgs"], R["bid"]):
+        e = R["enc_by"][ek]
+        utc = to_utc(dt.datetime.strptime(local_str(t), "%Y-%m-%d %H:%M:%S"))
+        rule = b[1]
+        name, sev = P.RULES[rule]
+        rows.append(["BG%08d" % bid, utc.strftime("%Y-%m-%dT%H:%M:%SZ"), R["csn"][ek], e.unit, o, b[5], rule, name,
+                     sev, pid if pid else "", R["drug_of"][b[2]] if b[2] else "", "Background - not displayed"])
+    return rows
 
 
-def block_split(hs, block, members, w):
-    """Each agency's share of the block in proportion to the surge unit slots the season's Schedule A gave it at Level 1
-    and 2; an agency that could not confirm its share confirmed what its roster allowed and the other took the rest."""
-    prim = season_primary(hs, w)
-    slots = {"C": 0, "I": 0}
-    for h in hs:
-        if h["facility_id"] not in members:
+def census_rows(w):
+    adm, dis = {}, {}
+    days = [P.LOG_START + dt.timedelta(days=i) for i in range((P.LOG_END - P.LOG_START).days + 1)]
+    mid = {(d, u[0]): 0 for d in days for u in P.UNITS}
+    for e in w["encs"]:
+        a, b = W.tday(e.adm), W.tday(e.dis)
+        adm[(a, e.unit)] = adm.get((a, e.unit), 0) + 1
+        dis[(b, e.unit)] = dis.get((b, e.unit), 0) + 1
+        d = a
+        while d < b:
+            if (d, e.unit) in mid:
+                mid[(d, e.unit)] += 1
+            d += dt.timedelta(days=1)
+    rows = []
+    for d in days:
+        for u in P.UNITS:
+            rows.append([d.isoformat(), u[0], adm.get((d, u[0]), 0), dis.get((d, u[0]), 0), mid[(d, u[0])]])
+    return rows
+
+
+def plan_rows():
+    rows = []
+    start = dt.date(2026, 6, 29)
+    for k in range(52):
+        wk = start + dt.timedelta(days=7 * k)
+        for (code, _n, _t, rate, los, _p) in P.UNITS:
+            f = sum(P.SEASON[(wk + dt.timedelta(days=i)).month] for i in range(7))
+            pa = int(round(rate * f))
+            rows.append([wk, code, pa, int(round(pa * los))])
+    return rows
+
+
+def shift_of(d):
+    h = d.hour
+    if 7 <= h < 15:
+        return "Day"
+    if 15 <= h < 23:
+        return "Evening"
+    return "Night"
+
+
+def queue_rows(hist):
+    """Corvane's desk: one task per message (an order's overridden high-severity alerts at one signing), sessions
+    from claim to sign-off or return, stamped in UTC by the queue platform."""
+    rng = np.random.default_rng(P.SEED + P.QUEUE_SALT)
+    t0 = dt.datetime(2026, 6, 30, 12, 0)
+    t1 = dt.datetime(2026, 10, 1, 0, 0)
+    seen = set()
+    msgs = {}
+    for r in hist:
+        key = tuple(r)
+        if key in seen:
             continue
-        for g in h["grid"]:
-            n = g // 2
-            first = prim[h["facility_id"]]
-            second = "I" if first == "C" else "C"
-            slots[first] += (n + 1) // 2
-            slots[second] += n // 2
-    slots["C"] += sum(1 for h in hs if h["facility_id"] in members)   # Crestfield's rapid-open skeleton slot
-    c = int(round(block * slots["C"] / float(slots["C"] + slots["I"])))
-    i = block - c
-    r = W.rng(61, w)
-    conf = {"C": min(1.0, r.uniform(0.86, 1.10)), "I": min(1.0, r.uniform(0.86, 1.10))}
-    if conf["I"] < 1.0:
-        short = int(i * conf["I"]) // 5 * 5
-        c, i = c + (i - short), short
-    elif conf["C"] < 1.0:
-        short = int(c * conf["C"]) // 5 * 5
-        c, i = short, i + (c - short)
-    return c, i
-
-
-def write_blocks(out, hs, truth):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Block orders"
-    head = ["pool_season", "block_first_day", "block_last_day", "block_shifts", "crestfield_shifts",
-            "inland_seas_shifts", "filed_on", "filed_by"]
-    south = {h["facility_id"] for h in hs if h["region"] != "NO"}
+        seen.add(key)
+        if r[8] != "High" or r[11] != "Overridden":
+            continue
+        d = dt.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S")
+        if not (t0 <= d < t1):
+            continue
+        msgs.setdefault((r[4], r[1]), []).append(r)
+    order = sorted(msgs.items(), key=lambda kv: (kv[0][1], min(x[0] for x in kv[1])))
+    pools = {"Day": ["RPH%04d" % n for n in (412, 418, 431, 447, 455, 460, 473, 488, 491, 502)],
+             "Evening": ["RPH%04d" % n for n in (415, 426, 439, 444, 468, 479, 497, 506)],
+             "Night": ["RPH%04d" % n for n in (421, 433, 452, 484, 499, 511)]}
+    wait_mean = {"Day": 9.0, "Evening": 12.0, "Night": 16.0}
     rows = []
-    for w, blk, filed in blocks(hs, truth):
-        a, b = C.block_weeks(w)
-        c, i = block_split(hs, blk, south, w)
-        rows.append(["%d-%02d" % (w - 1, w % 100), a, b, blk, c, i, filed, C.PEOPLE["pool_manager"]])
-    rows.append(["2026-27", C.BLOCK_2027[0], C.BLOCK_2027[1], None, None, None, None, None])
-    _sheet(ws, head, rows, [12, 15, 15, 13, 16, 17, 12, 16])
-    ws.freeze_panes = "A2"
-    _save(wb, os.path.join(out, F_BLOCKS), C.PEOPLE["pool_manager"], C.PEOPLE["pool_manager"],
-          "2021-12-20T15:40:00Z", "2025-12-19T21:12:00Z")
-    return len(rows)
+    tid = 3318000
+    for (_o, stamp), alerts in order:
+        tid += int(rng.integers(1, 7))
+        first = min(alerts, key=lambda x: x[0])
+        unit = first[3]
+        fired = dt.datetime.strptime(stamp, "%Y-%m-%d %H:%M:%S")
+        recv = fired + dt.timedelta(seconds=int(rng.integers(5, 46)))
+        sh = shift_of(recv)
+        claim = recv + dt.timedelta(minutes=0.5 + rng.exponential(wait_mean[sh]))
+        wing = unit
+        for when, a, b in P.DECANT:
+            if fired >= when:
+                if unit == a:
+                    wing = b
+                elif unit == b:
+                    wing = a
+        floor = "".join(ch for ch in unit if ch.isdigit())
+        poc = "QRMC^%s^%s%02d^%s" % (wing, floor, int(rng.integers(1, 33)), "AB"[int(rng.integers(2))])
+        n = len(alerts)
+        rx = rng.random()
+        if rx < P.P_RETURN:
+            m1 = float(np.clip(rng.lognormal(np.log(4.5), 0.5), 1.0, 30.0))
+            close1 = claim + dt.timedelta(minutes=m1)
+            reclaim = close1 + dt.timedelta(minutes=1.0 + rng.exponential(15.0))
+            m2 = float(np.clip(rng.lognormal(np.log(6.0) + 0.2 * (n - 1), 0.5), 1.5, 45.0))
+            close2 = reclaim + dt.timedelta(minutes=m2)
+            ph1 = pools[shift_of(claim)][int(rng.integers(len(pools[shift_of(claim)])))]
+            cand = [p for p in pools[shift_of(reclaim)] if p != ph1]
+            ph2 = cand[int(rng.integers(len(cand)))]
+            sess = [(claim, close1, "Returned to queue", m1, ph1),
+                    (reclaim, close2, "Signed off", (close2 - claim).total_seconds() / 60.0, ph2)]
+        else:
+            m = float(np.clip(rng.lognormal(np.log(7.0) + 0.25 * (n - 1), 0.5), 1.5, 60.0))
+            close = claim + dt.timedelta(minutes=m)
+            ph = pools[shift_of(claim)][int(rng.integers(len(pools[shift_of(claim)])))]
+            sess = [(claim, close, "Signed off", m, ph)]
+        for i, (c0, c1, status, hm, ph) in enumerate(sess):
+            c0s = c0.replace(microsecond=0)
+            c1s = c1.replace(microsecond=0)
+            rows.append(["T%07d" % tid, i + 1, "%010d" % first[0], poc,
+                         to_utc(recv).strftime("%Y-%m-%dT%H:%M:%SZ"), to_utc(c0s).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                         to_utc(c1s).strftime("%Y-%m-%dT%H:%M:%SZ"), status,
+                         "%.1f" % hm, ph, "QRMC"])
+    lo, hi = "2026-06-30T00:00:00Z", "2026-10-02T00:00:00Z"
+    return [r for r in rows if lo <= r[6] < hi]
 
 
-# ---------------------------------------------------------------------------------------------------- Inland Seas
-def write_inland_seas(out, hs, shifts, decl, s0, s1, fname, queried, created, modified):
-    head, weeks = R.inland_seas_weeks(hs, shifts, s0, s1)
-    wb = Workbook()
-    wb.remove(wb.active)
-    n = 0
-    for wk in sorted(weeks):
-        ws = wb.create_sheet("Wk %s" % wk.strftime("%m-%d-%y"))
-        ws.cell(row=1, column=1, value="Inland Seas Nursing, Inc.: member shift report to %s" % C.ORG).font = BOLD
-        ws.cell(row=2, column=1, value="Week %s to %s (payroll dates)" % (wk.strftime("%m/%d/%Y"),
-                                                                           (wk + dt.timedelta(days=6)).strftime("%m/%d/%Y")))
-        ws.cell(row=3, column=1, value="Run %s" % min(wk + dt.timedelta(days=8), C.AS_OF).strftime("%m/%d/%Y"))
-        _sheet(ws, head, weeks[wk], [22, 18, 10, 13, 7, 7, 10, 11, 18], start_row=5, fmt={5: "0.00"})
-        n += len(weeks[wk])
-    if queried:
-        qh, qr = R.inland_seas_queries(hs, shifts, decl, s0, s1)
-        ws = wb.create_sheet("Timesheet detail")
-        ws.cell(row=1, column=1, value="Timesheets queried by %s, %s to %s" % (
-            C.ORG_SHORT, s0.strftime("%m/%d/%Y"), s1.strftime("%m/%d/%Y"))).font = BOLD
-        _sheet(ws, qh, qr, [22, 18, 10, 17, 17, 13, 7, 12, 18], start_row=3)
-    _save(wb, os.path.join(out, fname), "Inland Seas Nursing", "Inland Seas Nursing", created, modified)
-    return n
+def pocmap_rows():
+    rows = [[u[0], u[1], "QRMC", "Adult inpatient", "2024-09-01"] for u in P.UNITS]
+    rows += [["ED", "Emergency Department", "QRMC", "Not reviewed by desk", "2024-09-01"],
+             ["PACU", "Post-Anesthesia Care Unit", "QRMC", "Not reviewed by desk", "2024-09-01"],
+             ["L&D", "Labor and Delivery", "QRMC", "Not reviewed by desk", "2024-09-01"],
+             ["OBS", "Observation Unit", "QRMC", "Not reviewed by desk", "2025-02-17"]]
+    return sorted(rows, key=lambda r: r[0])
 
 
-# ---------------------------------------------------------------------------------------------------- wastewater
-def write_wastewater(out, ww):
-    res = []
-    for x in sorted(ww, key=lambda z: (z["sample_date"], z["sewershed"], z["target"])):
-        base = {"sewershed_id": x["sewershed"], "community": x["city"], "sample_date": x["sample_date"].isoformat(),
-                "target": x["target"]}
-        res.append(dict(base, concentration_copies_per_l=round(x["conc"], 0), pmmov_copies_per_l=int(round(x["pmmov"], -5)),
-                        result_status="preliminary", posted=x["posted"].isoformat()))
-        if x["revised"] is not None:
-            res.append(dict(base, concentration_copies_per_l=round(x["revised"], 0),
-                            pmmov_copies_per_l=int(round(x["pmmov"], -5)), result_status="revised",
-                            posted=x["revised_posted"].isoformat()))
-    doc = {"programme": "%s respiratory wastewater surveillance" % C.ORG_SHORT,
-           "exported": "2026-12-21T06:52:00-05:00",
-           "laboratory_method": "RT-ddPCR on primary influent composites; PMMoV run on every sample",
-           "results": res}
-    open(os.path.join(out, F_WW), "w", encoding="utf-8").write(json.dumps(doc, indent=1, sort_keys=False) + "\n")
-    return len(res)
-
-
-# ---------------------------------------------------------------------------------------------------- outlook
-def write_outlook(out, ol):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Outlook"
-    head = ["region", "date", "expected_resp_admissions", "range_low", "range_high"]
-    rows = [[C.REGIONS[x["region"]], x["date"], round(x["expected"], 1), round(x["low"], 1), round(x["high"], 1)]
-            for x in ol]
-    _sheet(ws, head, rows, [17, 12, 24, 11, 11], fmt={2: "0.0", 3: "0.0", 4: "0.0"})
-    ws2 = wb.create_sheet("Notes")
-    notes = [
-        "Respiratory admissions outlook, issued Friday 18 December 2026 by the %s surveillance unit (%s)." % (
-            C.ORG_SHORT, C.PEOPLE["surveillance"]),
-        "Expected daily admissions with influenza, COVID-19 or RSV at the members in each region for the 14 days from "
-        "Saturday 19 December, from each region's admissions reported to 17 December and its wastewater results posted "
-        "to 17 December.",
-        "The range is the outlook's 80 per cent range.",
-        "Next issue: Friday 1 January 2027 is a holiday; the next outlook is issued Monday 4 January.",
-    ]
-    for i, t in enumerate(notes):
-        ws2.cell(row=i + 1, column=1, value=t).font = BODY
-    ws2.column_dimensions["A"].width = 120
-    _save(wb, os.path.join(out, F_OUTLOOK), C.PEOPLE["surveillance"], C.PEOPLE["surveillance"],
-          "2026-12-18T15:02:00Z", "2026-12-18T19:46:00Z")
-    return len(rows)
-
-
-# ---------------------------------------------------------------------------------------------------- survey
-def write_survey(out, hs):
-    r = W.rng(95)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "RN workforce"
-    head = ["quarter", "member_no", "hospital", "rn_fte_budgeted", "rn_fte_filled", "rn_vacancy_pct",
-            "agency_rn_hours_pct"]
+def pump_rows():
+    rng = np.random.default_rng(P.SEED + 4)
+    libs = ["Heparin 25,000 units/250 mL", "Insulin regular 100 units/100 mL", "Norepinephrine 4 mg/250 mL",
+            "Vancomycin 1.25 g/250 mL", "Potassium chloride 20 mEq/100 mL", "Morphine PCA 1 mg/mL",
+            "Hydromorphone PCA 0.2 mg/mL", "Magnesium sulfate 2 g/50 mL", "Propofol 10 mg/mL"]
     rows = []
-    for h in hs:
-        bud = round(h["beds"] * 1.62 + r.normal(0, 4), 1)
-        vac0 = 0.095 + r.normal(0, 0.02)
-        ag0 = 0.052 + r.normal(0, 0.012)
-        for k, q in enumerate(["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2", "2026Q3"]):
-            vac = max(0.02, vac0 - 0.0045 * k + r.normal(0, 0.006))
-            ag = max(0.008, ag0 - 0.0021 * k + r.normal(0, 0.004))
-            rows.append([q, h["member_no"], h["name"], bud, round(bud * (1 - vac), 1), round(100 * vac, 1),
-                         round(100 * ag, 1)])
-    _sheet(ws, head, rows, [9, 11, 30, 15, 13, 14, 18], fmt={3: "0.0", 4: "0.0", 5: "0.0", 6: "0.0"})
-    ws.freeze_panes = "A2"
-    _save(wb, os.path.join(out, F_SURVEY), "Shawn Whitaker", "Shawn Whitaker", "2025-04-21T13:10:00Z",
-          "2026-10-26T18:31:00Z")
-    return len(rows)
+    d = dt.datetime(2026, 7, 1)
+    while d < dt.datetime(2026, 10, 1):
+        d += dt.timedelta(minutes=float(rng.exponential(46.0)))
+        if d >= dt.datetime(2026, 10, 1):
+            break
+        u = P.UNITS[int(rng.integers(len(P.UNITS)))][0]
+        lib = libs[int(rng.integers(len(libs)))]
+        lt = ["Soft max", "Soft max", "Soft min", "Hard max"][int(rng.integers(4))]
+        resp = ("Reprogrammed" if lt == "Hard max" else
+                ["Overrode soft limit", "Reprogrammed", "Cancelled infusion"][int(rng.integers(3))])
+        rows.append([d.strftime("%m/%d/%Y %H:%M"), u, "PCU-%05d" % int(rng.integers(10000, 99999)),
+                     "ABCD"[int(rng.integers(4))], lib, lt, resp])
+    return rows
 
 
-# ---------------------------------------------------------------------------------------------------- dictionary
-DICTIONARY = [
-    (F_LEGACY, "member_no", "The cooperative's member number."),
-    (F_LEGACY, "report_date", "The date of the morning capacity report that carried the row."),
-    (F_LEGACY, "census_midnight", "Inpatients in the member's staffed medical and surgical beds at the midnight census."),
-    (F_LEGACY, "staffed_beds", "Medical and surgical beds the member could staff that night."),
-    (F_LEGACY, "surge_status", "The member's surge plan level at the midnight census: blank, S1 (Level 1) or S2 (Level 2)."),
-    (F_LEGACY, "resp_admits", "Admissions with influenza, COVID-19 or RSV in the 24 hours to the midnight census."),
-    (F_LEGACY, "submission", "O for the report as first submitted, R for a resubmission that replaces it."),
-    (F_DAILY, "facility_id", "The member's facility id in the capacity system."),
-    (F_DAILY, "census_date", "The census night."),
-    (F_DAILY, "inpatients_midnight", "Inpatients in the member's staffed medical and surgical beds at the midnight census."),
-    (F_DAILY, "surge_level", "The member's surge plan level at the midnight census: 0, 1 or 2."),
-    (F_DAILY, "resp_admissions", "Admissions with influenza, COVID-19 or RSV in the 24 hours to the midnight census."),
-    (F_DAILY, "record_status", "provisional until the member's report is final, seven days after the census night."),
-    (F_DECL, "declared_at", "Eastern Time of the declaration, at the 06:45 bed huddle or the 14:45 bed meeting."),
-    (F_DECL, "level_from", "The surge plan level before the declaration."),
-    (F_DECL, "level_to", "The surge plan level the declaration sets."),
-    (F_DECL, "request_no", "The surge request sent to both agencies when a pool member's plan is activated (SR-); "
-                           "before a member joined the pool, its own activation number in the capacity system (CAP-)."),
-    (F_CRS, "line_id", "Crestfield billing line."),
-    (F_CRS, "timesheet_no", "Crestfield timesheet the line is billed from."),
-    (F_CRS, "client_site", "Crestfield's code for the member (see the members workbook)."),
-    (F_CRS, "unit", "The unit the shift was worked on, as signed on the timesheet."),
-    (F_CRS, "shift_start_utc", "The line's start time, UTC."),
-    (F_CRS, "shift_end_utc", "The line's end time, UTC."),
-    (F_CRS, "hours", "Hours billed on the line."),
-    (F_CRS, "booking_type", "SURGE for a shift booked against a surge request, STAFF otherwise."),
-    (F_CRS, "bill_to", "TRHC POOL or FACILITY."),
-    (F_CRS, "request_ref", "The surge request the shift was booked against."),
-    (F_ISN25, "Facility", "Inland Seas' name for the member (see the members workbook)."),
-    (F_ISN25, "Unit", "The unit the shift was worked on, as signed on the timesheet."),
-    (F_ISN25, "Payroll date", "The date Inland Seas pays the shift under: the day the shift ends."),
-    (F_ISN25, "Shift", "D for 07:00 to 19:00, N for 19:00 to 07:00."),
-    (F_ISN25, "Booking", "Surge for a shift booked against a surge request, Staffing otherwise."),
-    (F_ISN25, "Bill to", "TRHC Pool or Facility."),
-    (F_ISN26, "Facility", "Inland Seas' name for the member (see the members workbook)."),
-    (F_ISN26, "Unit", "The unit the shift was worked on, as signed on the timesheet."),
-    (F_ISN26, "Payroll date", "The date Inland Seas pays the shift under: the day the shift ends."),
-    (F_ISN26, "Shift", "D for 07:00 to 19:00, N for 19:00 to 07:00."),
-    (F_ISN26, "Booking", "Surge for a shift booked against a surge request, Staffing otherwise."),
-    (F_ISN26, "Bill to", "TRHC Pool or Facility."),
-    (F_MEMBERS, "member_no", "The cooperative's member number (the legacy capacity system's key)."),
-    (F_MEMBERS, "facility_id", "The member's facility id in the capacity system from 1 July 2024."),
-    (F_MEMBERS, "staffed_med_surg_beds", "Medical and surgical beds the member can staff, as at 2 November 2026."),
-    (F_MEMBERS, "surge_unit", "The unit the member's surge plan opens."),
-    (F_MEMBERS, "pool_member_from", "First day of the member's first pool season. The eight northern members bought "
-                                    "agency nurses through their own regional contract until it ended on 31 October "
-                                    "2026, and joined the pool on 1 November 2026; all eight have reported to the "
-                                    "capacity system since July 2021."),
-    (F_MEMBERS, "crestfield_site_code", "Crestfield's client site code for the member."),
-    (F_MEMBERS, "inland_seas_facility", "Inland Seas' facility name for the member."),
-    (F_BLOCKS, "block_shifts", "The January block filed with the agencies, agency RN shifts."),
-    (F_BLOCKS, "crestfield_shifts", "Crestfield's share of the block."),
-    (F_BLOCKS, "inland_seas_shifts", "Inland Seas' share of the block."),
-    (F_BLOCKS, "filed_on", "The date the block was filed with the agencies."),
-]
+def intervention_rows():
+    rng = np.random.default_rng(P.SEED + 5)
+    kinds = ["Renal dose adjustment", "IV to PO conversion", "Therapeutic substitution", "Allergy clarification",
+             "Drug interaction management", "Duplicate order clarification", "Pharmacokinetic dosing",
+             "Medication reconciliation discrepancy"]
+    meds = sum((P.DRUGS[k] for k in ("OTH", "ACG", "QTP", "SED", "OPI")), [])
+    rows = []
+    d = dt.date(2026, 7, 1)
+    while d <= dt.date(2026, 9, 30):
+        for _ in range(int(rng.poisson(11))):
+            u = P.UNITS[int(rng.integers(len(P.UNITS)))][0]
+            rows.append([d, u, kinds[int(rng.integers(len(kinds)))], meds[int(rng.integers(len(meds)))],
+                         "Accepted" if rng.random() < 0.86 else "Not accepted", int(rng.integers(5, 41)),
+                         ["JKM", "RTP", "ALS", "DWH", "CEB", "MNV"][int(rng.integers(6))]])
+        d += dt.timedelta(days=1)
+    return rows
 
 
-FORMATS = {
-    "date": ("report_date", "census_date", "Payroll date", "pool_member_from", "filed_on"),
-    "date and time": ("declared_at", "shift_start_utc", "shift_end_utc"),
-    "whole number": ("census_midnight", "staffed_beds", "resp_admits", "inpatients_midnight", "surge_level",
-                     "resp_admissions", "level_from", "level_to", "staffed_med_surg_beds", "block_shifts",
-                     "crestfield_shifts", "inland_seas_shifts"),
-    "number, 2 decimals": ("hours",),
+HEAD = {
+    "history": ["alert_id", "alert_dttm", "pat_enc_csn_id", "department", "order_id", "medication", "alert_rule_id",
+                "alert_rule_name", "severity", "interacting_order_id", "interacting_medication", "user_action",
+                "override_reason", "user_type"],
+    "background": ["bg_event_id", "eval_utc", "pat_enc_csn_id", "department", "order_id", "medication", "rule_id",
+                   "rule_name", "severity", "interacting_order_id", "interacting_medication", "display_mode"],
+    "census": ["census_date", "department", "admissions", "discharges", "midnight_census"],
+    "queue": ["task_id", "session_no", "alert_ref", "poc_location", "msg_received_utc", "claimed_utc", "closed_utc",
+              "close_status", "handle_min", "pharmacist_id", "client_code"],
+    "pocmap": ["point_of_care", "location_name", "client_code", "review_scope", "effective_from"],
+    "pump": ["Event Time", "Care Area", "Pump Serial", "Channel", "Drug Library Entry", "Limit Type",
+             "Clinician Response"],
 }
 
 
-def field_format(field):
-    for k, v in FORMATS.items():
-        if field in v:
-            return k
-    return "text"
-
-
-def write_dictionary(out):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Field definitions"
-    ws.cell(row=1, column=1, value="TRHC pool office: fields in the files pulled for the 2026-27 January block").font = BOLD
-    _sheet(ws, ["file", "field", "format", "definition"], [[f, fl, field_format(fl), d] for f, fl, d in DICTIONARY],
-           [44, 22, 16, 100], start_row=3)
-    ws.freeze_panes = "A4"
-    _save(wb, os.path.join(out, F_DICT), C.PEOPLE["pool_manager"], C.PEOPLE["pool_manager"], "2022-01-10T14:00:00Z",
-          "2026-12-21T13:20:00Z")
-    return len(DICTIONARY)
-
-
-# ---------------------------------------------------------------------------------------------------- manifest
-MANIFEST = [
-    (F_LEGACY, "TRHC capacity system (legacy, retired 30 June 2024)", "census nights 1 July 2021 to 30 June 2024, each row dated by the next morning's report", "archive export"),
-    (F_DAILY, "TRHC capacity system", "census nights 1 July 2024 to 20 December 2026", "pulled 21 Dec 2026 06:40 ET"),
-    (F_DECL, "TRHC capacity system, surge declarations", "1 July 2021 to 20 December 2026", "pulled 21 Dec 2026 06:41 ET; legacy declarations migrated with the system"),
-    (F_MEMBERS, "TRHC pool office", "members and keys for the 2026-27 season", "as at 2 Nov 2026"),
-    (DOC.F_AGREEMENT, "TRHC pool office", "2026-27 season", "approved 24 Sep 2026"),
-    (DOC.F_REGISTER, "TRHC pool office", "2026-27 season", "issued 2 Nov 2026"),
-    (F_BLOCKS, "TRHC pool office", "January blocks filed 2021 to 2025", "the 2026-27 row is filed on 22 Dec 2026"),
-    (F_CRS, "Crestfield Medical Staffing member shift report", "shifts starting 1 Nov 2025 to 31 Mar 2026 and 1 Nov 2026 to the day shift of 20 Dec 2026", "received 21 Dec 2026"),
-    (F_ISN25, "Inland Seas Nursing member shift report", "payroll weeks 27 Oct 2025 to 5 Apr 2026", "received weekly"),
-    (F_ISN26, "Inland Seas Nursing member shift report", "payroll weeks 26 Oct to 20 Dec 2026", "received weekly; week of 14 Dec received 21 Dec"),
-    (F_WW, "TRHC surveillance unit", "samples 6 Sep 2021 to 17 Dec 2026", "exported 21 Dec 2026"),
-    (F_OUTLOOK, "TRHC surveillance unit", "19 Dec 2026 to 1 Jan 2027", "issued 18 Dec 2026"),
-    (F_SURVEY, "TRHC workforce survey", "2025 Q1 to 2026 Q3", "members' quarterly returns"),
-    (DOC.F_RATES, "TRHC finance", "2026-27 season", "issued 1 Oct 2026"),
-    (F_DICT, "TRHC pool office", "field definitions", "updated 21 Dec 2026"),
-]
-
-
-def write_manifest(out):
-    return _csv(os.path.join(out, F_MANIFEST), ["file", "source", "covers", "note"], [list(x) for x in MANIFEST])
-
-
-# ---------------------------------------------------------------------------------------------------- the pack
-def build_pack(out):
-    os.makedirs(out, exist_ok=True)
-    hs, wp, truth = W.simulate()
-    decl = W.declarations(hs, truth)
-    shifts = W.agency_shifts(hs, truth, decl)
+def build(target):
+    os.makedirs(target, exist_ok=True)
+    for fn in os.listdir(target):
+        os.remove(os.path.join(target, fn))
+    w = W.build_world()
+    R = relabel(w)
+    hist = history_rows(w, R)
     n = {}
-    h, rows = R.legacy_capacity(hs, truth)
-    n[F_LEGACY] = _csv(os.path.join(out, F_LEGACY), h, rows)
-    h, rows = R.new_capacity(hs, truth)
-    n[F_DAILY] = _csv(os.path.join(out, F_DAILY), h, rows)
-    h, rows = R.declaration_rows(hs, decl)
-    n[F_DECL] = _csv(os.path.join(out, F_DECL), h, rows)
-    h, rows = R.crestfield_lines(hs, shifts)
-    n[F_CRS] = _csv(os.path.join(out, F_CRS), h, rows)
-    n[F_MEMBERS] = write_members(out, hs)
-    n[F_BLOCKS] = write_blocks(out, hs, truth)
-    n[F_ISN25] = write_inland_seas(out, hs, shifts, decl, D(2025, 10, 27), D(2026, 4, 5), F_ISN25, True,
-                                   "2025-11-04T13:30:00Z", "2026-04-07T14:15:00Z")
-    n[F_ISN26] = write_inland_seas(out, hs, shifts, decl, D(2026, 10, 26), C.CENSUS_END, F_ISN26, False,
-                                   "2026-11-03T13:30:00Z", "2026-12-21T14:05:00Z")
-    n[F_WW] = write_wastewater(out, W.wastewater(hs, wp))
-    n[F_OUTLOOK] = write_outlook(out, W.outlook(hs, wp, truth))
-    n[F_SURVEY] = write_survey(out, hs)
-    DOC.write_agreement(out, hs)
-    DOC.write_register(out, hs)
-    DOC.write_rates(out)
-    n[F_DICT] = write_dictionary(out)
-    n[F_MANIFEST] = write_manifest(out)
-    return n
-
-
-if __name__ == "__main__":
-    import sys
-    o = sys.argv[1] if len(sys.argv) > 1 else C.TARGET
-    nn = build_pack(o)
-    for f in sorted(os.listdir(o)):
-        print("  %-52s %10d bytes %s" % (f, os.path.getsize(os.path.join(o, f)), ("%d rows" % nn[f]) if f in nn else ""))
+    n["history"] = IO.write_csv(os.path.join(target, FILES["history"]), HEAD["history"], hist)
+    n["background"] = IO.write_csv(os.path.join(target, FILES["background"]), HEAD["background"],
+                                   background_rows(w, R))
+    n["census"] = IO.write_csv(os.path.join(target, FILES["census"]), HEAD["census"], census_rows(w))
+    q = queue_rows(hist)
+    n["queue"] = IO.write_csv(os.path.join(target, FILES["queue"]), HEAD["queue"], q)
+    n["pocmap"] = IO.write_csv(os.path.join(target, FILES["pocmap"]), HEAD["pocmap"], pocmap_rows())
+    n["pump"] = IO.write_csv(os.path.join(target, FILES["pump"]), HEAD["pump"], pump_rows())
+    plan = plan_rows()
+    n["plan"] = docs.write_plan(os.path.join(target, FILES["plan"]), plan)
+    n["interventions"] = docs.write_interventions(os.path.join(target, FILES["interventions"]),
+                                                  intervention_rows())
+    n["register"] = docs.write_register(os.path.join(target, FILES["register"]))
+    docs.write_release(os.path.join(target, FILES["release"]))
+    docs.write_schedule(os.path.join(target, FILES["schedule"]))
+    docs.write_cr(os.path.join(target, FILES["cr"]))
+    n["release"] = n["schedule"] = n["cr"] = 0
+    return w, R, n

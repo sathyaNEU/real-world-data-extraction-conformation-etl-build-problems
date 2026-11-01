@@ -1,0 +1,101 @@
+{
+ "architecture": 2,
+ "as_of": "2026-10-23",
+ "decision": "which workforce development areas the Tamarack Department of Labor and Industry certifies for its 2027 portable benefits pilot under its pilot-area rule",
+ "deliverables": [
+  "pba_pilot_areas_2027.xlsx",
+  "pba_pilot_certification_2027.docx"
+ ],
+ "distractor_files": [
+  "LAUS_WDA_MONTHLY_2025-07_2026-09.csv",
+  "QCEW_WDA_SECTOR_2025.csv"
+ ],
+ "files": {
+  "HES_CASEID_CROSSWALK_CAPI2026.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "HES case number crosswalk written at the CAPI 2026 migration; synthetic"
+  },
+  "HES_DISPOSITION_CODES.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "HES disposition code list for both CAPI systems; synthetic"
+  },
+  "HES_FINAL_WEIGHTS_2025Q4_2026Q3.xlsx": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "HES final person weights by quarter, with the 2026Q3 reissue; synthetic"
+  },
+  "HES_FRAME_MAINTENANCE_2024-07_2026-09.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Tamarack master address file maintenance log; synthetic"
+  },
+  "HES_HOUSEHOLD_DISPOSITIONS_2025Q1_2026Q3.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "HES field operations disposition extract from the CAPI v3 and CAPI 2026 systems; synthetic"
+  },
+  "HES_PERSON_2025Q1_2026Q3.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Tamarack Household Employment Survey person-level estimation extract, 2025Q1 to 2026Q3; synthetic, built for this task"
+  },
+  "HES_RELEASE_2026Q3_PRELIMINARY.pdf": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "HES quarterly release, third quarter 2026, preliminary; synthetic"
+  },
+  "HES_TECHNICAL_NOTE_2026-09.pdf": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "HES technical note, September 2026; synthetic"
+  },
+  "LAUS_WDA_MONTHLY_2025-07_2026-09.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Local area unemployment statistics by workforce area, monthly; synthetic"
+  },
+  "QCEW_WDA_SECTOR_2025.csv": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Quarterly census of employment and wages, 2025 annual averages by workforce area and sector; synthetic"
+  },
+  "TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Tamarack Administrative Rules, portable benefits pilot chapter; synthetic"
+  },
+  "TDLI_WORKFORCE_AREAS_2026.xlsx": {
+   "date": "2026-10-23",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "TDLI workforce development area designations, 2026; synthetic"
+  }
+ },
+ "largest_file": {
+  "name": "HES_PERSON_2025Q1_2026Q3.csv",
+  "rows": 200667
+ },
+ "row_counts": {
+  "HES_CASEID_CROSSWALK_CAPI2026.csv": 16362,
+  "HES_DISPOSITION_CODES.csv": 13,
+  "HES_FRAME_MAINTENANCE_2024-07_2026-09.csv": 8139,
+  "HES_HOUSEHOLD_DISPOSITIONS_2025Q1_2026Q3.csv": 156160,
+  "HES_PERSON_2025Q1_2026Q3.csv": 200667,
+  "LAUS_WDA_MONTHLY_2025-07_2026-09.csv": 120,
+  "QCEW_WDA_SECTOR_2025.csv": 112
+ },
+ "task": "task259"
+}

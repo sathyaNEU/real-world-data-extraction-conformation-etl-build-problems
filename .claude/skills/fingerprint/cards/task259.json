@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "certify Northern Basin, Silver Creek, Upper River and Eastern Prairie; the state at 7 percent of employed residents holding more than one job on the residents' own reporting basis (5.5 as collected)",
+  "answer_source": "task259/generator/analysis.py figures(), reproduced by generator/verify.py on its own code path",
   "gap": [
     "objective",
     "population"
@@ -38,19 +38,21 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:proxy-response-sensitivity-read-within-person-across-panel-quarters",
   "layer1": [
-    "person line numbers re-keyed at the CAPI system migration, with a crosswalk",
+    "household case numbers reissued at the CAPI 2026 migration, with a crosswalk",
+    "disposition codes renumbered between the two CAPI systems",
     "interview start times in UTC against the state's Mountain time",
     "workforce areas recoded from counties with one county split by ZIP",
-    "hours heaped at 40 and 'don't know' codes",
-    "weights delivered in a separate file per quarter",
-    "a preliminary and a final release of 2026Q3 overlapping"
+    "hours heaped at 40 and 20 and 'don't know' codes",
+    "weights delivered in a sheet per quarter, with a reissued 2026Q3 sheet overlapping the first issue",
+    "converted refusals logged twice and some 2026Q2 interviews keyed again into the old system",
+    "a new household reusing the departed household's line numbers"
   ],
   "stakeholder_role": "chief of the labor market research office at the state labor department",
   "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
     "file": "HES_PERSON_2025Q1_2026Q3.csv",
-    "rows": 70000,
+    "rows": 200667,
     "entity": "one adult household member in one quarterly survey interview",
     "grain": "person x quarter",
     "source": "synthetic"
@@ -69,7 +71,8 @@
     "people": [
       "Mackenzie Parks",
       "Damon Mcbride",
-      "Kylie Taylor"
+      "Kylie Taylor",
+      "Jason Holland"
     ]
   },
   "deliverables": [
@@ -77,7 +80,7 @@
     "pba_pilot_certification_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "whether",
   "driver": "The decisive quantity is the share of a population holding a status on the basis each member would report for themselves, when members absent at the moment of measurement are reported by someone else who misses the status about half the time and holding the status is itself what makes members absent; the second-hand and first-hand reports show nearly the same share in the cross-section because the two effects offset, and only the same members' first-hand and second-hand reports in different rounds show how much the second-hand reports miss.",
   "driver_concrete": "Each workforce area's share of employed residents holding more than one job, counted as they would report it themselves: the survey answers for adults who are out at interview time through another household member, people with a second job are out at it more often, and the answering member reports a second job for only about half of those who hold one; that sensitivity is read from residents answering for themselves in one quarter and answered for in the next, and every answered-for report is corrected by it.",
   "stump": "A competent analyst who reads the act's self-report basis keeps the residents who answered for themselves and reweights them, or imputes the answered-for residents from self-reporters alike in age, sex, hours and occupation, and certifies too few areas; the answered-for residents hold second jobs more often because the second job keeps them out when the interviewer calls, and the household members answering for them report only about half of those jobs, which the cross-sectional comparison of proxy and self reports hides and only each resident's own answers across quarters reveal.",
@@ -122,7 +125,7 @@
       "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each carried to the reference date by how the level itself moves at a fixed grade inside the same reporting units; the reporters' own changes between two reports run faster because individuals also climb within the grade, and the trend across the pooled reports runs slower because the units reporting at later dates sit lower, so carrying by the paired changes overshoots and carrying by the pooled trend, or not at all, undershoots."
     }
   ],
-  "notes": "Architecture 2 drawn 2026-11-01 at the Batch 3 queue reset. Strategy classification_error: a proxy answer misclassifies a held second job as none; the correction's input is identified within person across the rotation panel.",
+  "notes": "Architecture 2 drawn 2026-11-01 at the Batch 3 queue reset. Strategy classification_error: an answered-for report misclassifies a held second job as none; the miss rate is identified within person across the rotation panel, and who is answered for depends on the status, so the cross-sectional check passes. Built 2026-11-01: four of eight areas certified against Silver Creek alone on the default path.",
   "lineage_shells": [],
   "registered": "2026-11-01T20:56:11Z",
   "shell": {
