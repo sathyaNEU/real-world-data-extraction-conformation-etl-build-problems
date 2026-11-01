@@ -1,520 +1,294 @@
-"""The world before any extract is cut: customs exchange rates by day, each gateway's inbound international
-shipments by month, the routing of every shipment, and the high-value check population of the twelve months to
-September 2026 shipment by shipment. Everything downstream (records, documents, the golden) reads from here."""
-from __future__ import annotations
-
+"""task145 architecture 2: the clean truth. Calendars, students, enrolment records, the absence days (scattered days
+and runs), course grades, behaviour incidents and suspensions, and who leaves. Nothing here ships as it stands;
+pack.py writes the network's own exports from it."""
 import datetime as dt
-import math
-from dataclasses import dataclass, field
-from zoneinfo import ZoneInfo
 
 import numpy as np
 
-import common as K
+import params as P
 
-# ---------------------------------------------------------------------------------------------------- rates by day
-FED_HOLIDAYS = set()
-for y in range(2021, 2028):
-    FED_HOLIDAYS |= {dt.date(y, 1, 1), dt.date(y, 7, 1), dt.date(y, 12, 25), dt.date(y, 12, 26)}
-    # Good Friday (computus), Victoria Day, Labour Day, Thanksgiving, Remembrance Day
-    a, b, c = y % 19, y // 100, y % 100
-    d, e = b // 4, b % 4
-    f = (b + 8) // 25
-    g = (b - f + 1) // 3
-    h = (19 * a + b - d - g + 15) % 30
-    i, k = c // 4, c % 4
-    l_ = (32 + 2 * e + 2 * i - h - k) % 7
-    m = (a + 11 * h + 22 * l_) // 451
-    month = (h + l_ - 7 * m + 114) // 31
-    day = ((h + l_ - 7 * m + 114) % 31) + 1
-    FED_HOLIDAYS.add(dt.date(y, month, day) - dt.timedelta(days=2))
-    v = dt.date(y, 5, 24)
-    while v.weekday() != 0:
-        v -= dt.timedelta(days=1)
-    FED_HOLIDAYS.add(v)
-    lab = dt.date(y, 9, 1)
-    while lab.weekday() != 0:
-        lab += dt.timedelta(days=1)
-    FED_HOLIDAYS.add(lab)
-    th = dt.date(y, 10, 1)
-    while th.weekday() != 0:
-        th += dt.timedelta(days=1)
-    FED_HOLIDAYS.add(th + dt.timedelta(days=7))
-    FED_HOLIDAYS.add(dt.date(y, 11, 11))
+D = dt.timedelta
+YEAR_LABELS = [y[0] for y in P.YEARS]
 
 
-def business_day(d):
-    return d.weekday() < 5 and d not in FED_HOLIDAYS
+def nth_weekday(y, m, wd, n):
+    d = dt.date(y, m, 1)
+    while d.weekday() != wd:
+        d += D(days=1)
+    return d + D(days=7 * (n - 1))
 
 
-def daily_rates():
-    """The customs exchange rate in force on each calendar day, by currency: one published each business day around
-    the month's average (a slow wander inside the month), carried over weekends and holidays."""
-    out = {c: {} for c in K.CURRENCIES}
-    for c in K.CURRENCIES:
-        r = K.rng("rates", c)
-        last = None
-        for i, (y, m) in enumerate(K.HIST_MONTHS):
-            n = K.days_in(y, m)
-            target = K.monthly_rate(c, i)
-            walk = np.cumsum(r.normal(0, 0.0016, n))
-            walk = walk - walk.mean()
-            for d0 in range(n):
-                day = dt.date(y, m, d0 + 1)
-                if c == "CAD":
-                    out[c][day] = 1.0
-                    continue
-                if business_day(day) or last is None:
-                    v = K.round_dp(target * math.exp(walk[d0]), K.RATE_DP[c])
-                    last = v
-                out[c][day] = last
-        # the first days of the plan's base carry into October 2026 for the pull
-        day = K.HIST_END + dt.timedelta(days=1)
-        while day <= dt.date(2026, 10, 9):
-            out[c][day] = out[c][K.HIST_END] if c != "CAD" else 1.0
-            day += dt.timedelta(days=1)
-    return out
+def last_weekday(y, m, wd):
+    d = dt.date(y, m + 1, 1) - D(days=1)
+    while d.weekday() != wd:
+        d -= D(days=1)
+    return d
 
 
-# ---------------------------------------------------------------------------------------------------- the routing
-def segment_formal_prob(g, seg, rate):
-    """Share of a segment's shipments routed to a formal entry at one rate (OGD shipments always): the goods priced in
-    the invoice currency cross the line with the rate, the goods priced in CAD hold their CAD value."""
-    lam = K.lcp_share(g, seg["cur"])
-    x = K.LINE_CAD / rate
-    if seg["kind"] == "ln":
-        mu, s = seg["p"]
-        p_inv = 1.0 - K.phi((math.log(x) - mu) / s)
-        p_cad = 1.0 - K.phi((math.log(K.LINE_CAD) - mu - math.log(K.ref_rate(seg["cur"]))) / s) if lam else 0.0
-    else:
-        tot = sum(w for _, w in seg["p"])
-        p_inv = sum(w for v, w in seg["p"] if v * rate > K.LINE_CAD) / tot
-        tc = sum(w for _, w in seg["cp"])
-        p_cad = sum(w for v, w in seg["cp"] if v > K.LINE_CAD) / tc
-    p_val = (1.0 - lam) * p_inv + lam * p_cad
-    return seg["ogd"] + (1.0 - seg["ogd"]) * p_val
+def holidays(first, last):
+    y0, y1 = first.year, last.year
+    h = {nth_weekday(y0, 9, 0, 1): "Labor Day"}
+    fb = nth_weekday(y0, 10, 0, 3)
+    h.update({fb: "Fall break", fb + D(days=1): "Fall break"})
+    tg = nth_weekday(y0, 11, 3, 4)
+    h.update({tg - D(days=1): "Thanksgiving break", tg: "Thanksgiving Day", tg + D(days=1): "Thanksgiving break"})
+    h[nth_weekday(y1, 1, 0, 3)] = "Martin Luther King Jr. Day"
+    h[nth_weekday(y1, 2, 0, 3)] = "Presidents' Day"
+    sb = nth_weekday(y1, 3, 0, 3)
+    h.update({sb + D(days=i): "Spring break" for i in range(5)})
+    h[last_weekday(y1, 5, 0)] = "Memorial Day"
+    return h
 
 
-def gateway_formal_share(g, rates_by_cur):
-    return sum(seg["share"] * segment_formal_prob(g, seg, rates_by_cur[seg["cur"]]) for seg in K.SEGMENTS[g])
-
-
-WEEKDAY_W = [1.14, 1.12, 1.10, 1.10, 1.08, 0.36, 0.10]
-
-
-@dataclass
-class Shipment:
-    waybill: str
-    gw: str
-    local: dt.datetime            # local release time at the gateway
-    utc: dt.datetime
-    cur: str
-    value: float                  # value for duty in the invoice currency
-    rate: float                   # customs rate of the date
-    vfd_cad: float
-    ogd: str                      # OGD program code, '' where none
-    hs: str
-    origin: str
-    importer: str
-    seg: int
-    route: str                    # FORMAL or CLVS
-    entry: str = ""
-    cad_priced: bool = False      # the truth, never shipped: the goods' price is set in CAD (the value in CAD holds)
-    price_cad: float = 0.0        # that CAD price
-
-
-@dataclass
-class World:
-    rates: dict = field(default_factory=dict)
-    volume: dict = field(default_factory=dict)        # (g, y, m) -> inbound international shipments
-    formal_hist: dict = field(default_factory=dict)   # (g, y, m) -> formal entries released in the month
-    ships: list = field(default_factory=list)         # the high-value check population, base year
-    prior: list = field(default_factory=list)         # the same, the year before the base
-    amended: list = field(default_factory=list)
-
-
-def monthly_volume():
-    out = {}
-    centre = K.HIST_MONTHS.index((2026, 3)) + 0.5
-    for g in K.GATEWAYS:
-        r = K.rng("volume", g)
-        for i, (y, m) in enumerate(K.HIST_MONTHS):
-            t = (i - centre) / 12.0
-            covid = 1.0
-            if (y, m) <= (2021, 6):
-                covid = 0.97
-            lvl = K.BASE_LEVEL[g] * (1 + K.TREND[g]) ** t * K.season(m) * covid
-            out[(g, y, m)] = int(round(lvl * math.exp(r.normal(0, 0.012))))
-    return out
-
-
-def day_weights(y, m):
-    n = K.days_in(y, m)
-    w = np.array([WEEKDAY_W[dt.date(y, m, d + 1).weekday()] *
-                  (0.25 if dt.date(y, m, d + 1) in FED_HOLIDAYS else 1.0) for d in range(n)])
-    return w / w.sum()
-
-
-def expected_formal(g, y, m, rates):
-    w = day_weights(y, m)
-    n = K.days_in(y, m)
-    tot = 0.0
-    for d in range(n):
-        day = dt.date(y, m, d + 1)
-        rb = {c: rates[c][day] for c in K.CURRENCIES}
-        tot += w[d] * gateway_formal_share(g, rb)
-    return tot
-
-
-# ---------------------------------------------------------------------------------------------------- goods and people
-HS = {
-    "US": [("8471.30.00.00", ""), ("8473.30.10.00", ""), ("8517.62.00.90", ""), ("8481.80.00.90", ""),
-           ("8483.40.90.00", ""), ("8708.99.99.90", ""), ("9018.90.90.90", ""), ("8504.40.90.90", ""),
-           ("9506.91.00.90", ""), ("8414.59.00.90", "")],
-    "EU": [("8516.71.00.00", ""), ("8711.60.00.00", ""), ("4202.21.00.00", ""), ("6110.11.00.00", ""),
-           ("9102.11.00.00", ""), ("8509.40.00.00", ""), ("9403.60.00.90", ""), ("6403.99.00.00", "")],
-    "GB": [("6109.10.00.10", ""), ("4202.22.00.00", ""), ("9506.31.00.00", ""), ("8518.30.00.00", "")],
-    "CN": [("8517.13.00.00", ""), ("8543.70.00.90", ""), ("8504.40.90.90", ""), ("9405.42.00.00", ""),
-           ("8528.52.00.00", ""), ("8471.60.00.90", "")],
-    "JP": [("9006.59.00.00", ""), ("8525.89.00.00", ""), ("9002.11.00.00", ""), ("8542.31.00.00", "")],
-    "AS": [("9006.59.00.00", ""), ("8525.89.00.00", ""), ("8471.30.00.00", ""), ("8528.52.00.00", "")],
+PD = {
+    "2023-24": {"CPP": ["2023-09-22", "2023-11-03", "2024-02-02", "2024-04-12"],
+                "RBA": ["2023-09-29", "2023-11-10", "2024-02-09", "2024-04-19"],
+                "MVH": ["2023-09-22", "2023-11-17", "2024-02-02", "2024-04-26"],
+                "SHC": ["2023-10-06", "2023-11-03", "2024-02-16", "2024-04-12"]},
+    "2024-25": {"CPP": ["2024-09-20", "2024-11-08", "2025-01-31", "2025-04-11"],
+                "RBA": ["2024-09-27", "2024-11-01", "2025-02-07", "2025-04-18"],
+                "MVH": ["2024-09-20", "2024-11-15", "2025-01-31", "2025-04-25"],
+                "SHC": ["2024-10-04", "2024-11-08", "2025-02-14", "2025-04-11"]},
+    "2025-26": {"CPP": ["2025-09-19", "2025-11-07", "2026-01-30", "2026-04-10"],
+                "RBA": ["2025-09-26", "2025-11-14", "2026-02-06", "2026-04-17"],
+                "MVH": ["2025-09-19", "2025-11-21", "2026-01-30", "2026-04-24"],
+                "SHC": ["2025-10-03", "2025-11-07", "2026-02-13", "2026-04-10"]},
+    "2026-27": {"CPP": ["2026-09-18", "2026-11-06", "2027-01-29", "2027-04-09"],
+                "RBA": ["2026-09-25", "2026-11-13", "2027-02-05", "2027-04-16"],
+                "MVH": ["2026-09-18", "2026-11-20", "2027-01-29", "2027-04-23"],
+                "SHC": ["2026-10-02", "2026-11-06", "2027-02-12", "2027-04-09"]},
 }
-OGD_GOODS = [("2101.11.00.00", "CFIA"), ("1905.90.90.00", "CFIA"), ("0901.21.00.00", "CFIA"),
-             ("3304.99.00.00", "HC-COS"), ("3004.90.00.99", "HC-DRUG"), ("2106.90.99.00", "HC-NHP"),
-             ("0602.90.00.00", "CFIA"), ("3808.94.90.00", "HC-PMRA"), ("9504.50.00.00", "HC-CPS"),
-             ("8517.62.00.90", "ISED-RE")]
-ORIGIN = {"US": [("US", 1.0)],
-          "EU": [("DE", 0.31), ("FR", 0.24), ("IT", 0.21), ("NL", 0.12), ("ES", 0.12)],
-          "GB": [("GB", 1.0)],
-          "CN": [("CN", 0.86), ("HK", 0.14)],
-          "JP": [("JP", 1.0)],
-          "AS": [("TW", 0.38), ("KR", 0.27), ("CN", 0.22), ("HK", 0.13)]}
+SNOW = {"2024-25": {"CPP": ["2025-02-12"], "RBA": ["2025-02-12"]},
+        "2026-27": {"MVH": ["2026-10-27"], "SHC": ["2026-10-27"]}}
 
 
-def importer_pool(g, r):
-    """Importers by gateway: business numbers (nine digits, the RM import account suffix) the clearance system bills
-    duties to; a few large accounts and a long tail."""
-    n = {"YYZ": 2600, "YUL": 1500, "YVR": 1700, "YYC": 900, "YWG": 1000}[g]
-    base = {"YYZ": 7, "YUL": 1, "YVR": 8, "YYC": 4, "YWG": 2}[g]
-    out = set()
-    while len(out) < n:
-        bn = "%d%08d" % (base, int(r.integers(0, 10 ** 8)))
-        out.add("%sRM%04d" % (bn, int(r.choice([1, 1, 1, 2, 3]))))
-    pool = sorted(out)
-    w = 1.0 / (np.arange(1, n + 1) ** 0.95)
-    return pool, w / w.sum()
-
-
-def waybill_check(digits9):
-    return str(int(digits9) % 7)
-
-
-def sample_lognorm_above(r, mu, s, lo, size):
-    """Values of a lognormal above lo (inverse cdf on the truncated tail)."""
-    from scipy.special import ndtri
-    if size == 0:
-        return np.zeros(0)
-    p0 = K.phi((math.log(lo) - mu) / s)
-    u = r.uniform(p0, 1.0, size)
-    return np.exp(mu + s * ndtri(np.clip(u, 1e-12, 1 - 1e-12)))
-
-
-def local_to_utc(g, t_local):
-    tz = ZoneInfo(K.TZ[g])
-    return t_local.replace(tzinfo=tz).astimezone(dt.timezone.utc).replace(tzinfo=None)
-
-
-RELEASE_HOURS = np.array([0.6, 0.4, 0.3, 0.3, 0.6, 1.4, 3.2, 5.0, 6.4, 7.0, 7.2, 7.0, 6.4, 6.6, 6.8, 6.6, 6.0, 5.2, 4.4,
-                          3.6, 2.8, 2.2, 1.6, 1.0])
-RELEASE_HOURS = RELEASE_HOURS / RELEASE_HOURS.sum()
-
-
-def cur_round(cur, x):
-    return np.round(x) if cur == "JPY" else np.round(x, 2)
-
-
-def invoice_of(price_cad, rate, cur):
-    """The invoice value of goods priced in CAD: the price converted at the day's rate, to the currency's unit."""
-    v = price_cad / rate
-    return float(K.round_dp(v, 0)) if cur == "JPY" else K.round_dp(v, 2)
-
-
-def off_line(vals, rr):
-    """Values moved two units of CAD clear of the line where they land within CAD 0.75 of it at the rate rr."""
-    near = np.abs(vals * rr - K.LINE_CAD) < 0.75
-    return np.where(near, vals + np.where(vals * rr >= K.LINE_CAD, 2.0, -2.0) / rr, vals)
-
-
-def catalogue(g, si, seg, rates, pool, pw, big):
-    """An importer's standing consignments in one segment: the same goods sent again and again at the same price.
-    Goods priced in the invoice currency keep their invoice value; goods priced in CAD keep their CAD price and are
-    invoiced at it converted at the day's rate. A background segment's values come from its own distribution above the
-    check's floor (at the two years' average rate for the invoice-currency prices: a consignment under the floor on a
-    day of a lower rate is released unchecked), clear of the line at the plan's rate; a price-point segment's from its
-    lists, most of them the gateway's large accounts. Both kinds of price recur at the same rate per consignment."""
-    r = K.rng("catalogue", g, si)
-    cur = seg["cur"]
-    lam = K.lcp_share(g, cur)
-    lane = seg["lane"]
-    ocs = ORIGIN[lane]
-
-    def items(vals, pp=False):
-        n = len(vals)
-        if pp:
-            # an importer's price-point goods are one line of goods under one tariff item
-            idx = [int(r.integers(0, len(big))) if r.random() < 0.7 else int(r.choice(len(pool), p=pw))
-                   for _ in range(n)]
-            imps = [pool[i] for i in idx]
-            hss = [HS[lane][(i * 7 + si) % len(HS[lane])][0] for i in idx]
-        else:
-            imps = [pool[i] for i in r.choice(len(pool), size=n, p=pw)]
-            hss = [HS[lane][i][0] for i in r.integers(0, len(HS[lane]), n)]
-        ors = [ocs[i][0] for i in r.choice(len(ocs), size=n, p=[x for _, x in ocs])]
-        w = 1.0 / (np.arange(1, n + 1) + 4.0) ** 0.55
-        w = w[r.permutation(n)]
-        return dict(vals=vals, imps=imps, hss=hss, ors=ors, w=w / w.sum())
-
-    out = {}
-    if seg["kind"] == "pp":
-        vol2 = sum(W_VOL_HINT[g][m] for m in range(12)) * 2.0 * seg["share"]
-        for key, plist, part in (("inv", seg["p"], 1.0 - lam), ("cad", seg["cp"], lam)):
-            if part <= 0:
-                continue
-            n = max(2, int(round(vol2 * part / K.REPEATS_PER_ITEM)))
-            pv = np.array([v for v, _ in plist], float)
-            pw_ = np.array([w_ for _, w_ in plist], float)
-            out[key] = items(r.choice(pv, size=n, p=pw_ / pw_.sum()), pp=True)
-        return out
-    days = [d for d in rates[cur] if K.PRIOR_START <= d <= K.BASE_END]
-    r_mean = sum(rates[cur][d] for d in days) / len(days)
-    mu, s_ = seg["p"]
-    vol2 = sum(W_VOL_HINT[g][m] for m in range(12)) * 2.0 * seg["share"] * (1 - seg["ogd"])
-    lo = K.CHECK_FLOOR_CAD / r_mean
-    mid = vol2 * (1 - lam) * (1.0 - K.phi((math.log(lo) - mu) / s_))
-    n = max(2, int(round(K.REPEAT_SHARE * mid / K.REPEATS_PER_ITEM)))
-    vals = cur_round(cur, sample_lognorm_above(r, mu, s_, lo, n))
-    vals = cur_round(cur, off_line(vals, K.PLAN_RATE[cur]))
-    out["inv"] = items(vals)
-    if lam:
-        muc = mu + math.log(K.ref_rate(cur))
-        mid = vol2 * lam * (1.0 - K.phi((math.log(K.CHECK_FLOOR_CAD) - muc) / s_))
-        n = max(2, int(round(K.REPEAT_SHARE * mid / K.REPEATS_PER_ITEM)))
-        pc = np.round(sample_lognorm_above(r, muc, s_, K.CHECK_FLOOR_CAD + 1.0, n), 2)
-        pc = np.round(off_line(pc, 1.0), 2)
-        out["cad"] = items(pc)
-    return out
-
-
-W_VOL_HINT = {}
-
-
-def _window(W, g, months_, r, pool, pw, big, cats, out, seen=None):
-    """Every shipment the high-value check covers (CAD 2,500 or more, or OGD) at gateway g over the months given.
-    seen: the year before's consignment keys (importer, tariff item, currency, and the invoice value or the CAD value);
-    a shipment of the base year that would repeat one on both (the same goods on a day of the same rate) is not drawn,
-    so a repeat consignment shows one price or the other."""
-    rates = W.rates
-    for (y, m) in months_:
-        vol = W.volume[(g, y, m)]
-        w = day_weights(y, m)
-        for d in range(K.days_in(y, m)):
-            day = dt.date(y, m, d + 1)
-            n_day = vol * w[d]
-            for si, seg in enumerate(K.SEGMENTS[g]):
-                cur = seg["cur"]
-                rate = rates[cur][day]
-                pr = K.PLAN_RATE[cur]
-                lo = K.CHECK_FLOOR_CAD / rate
-                lam = K.lcp_share(g, cur)
-                vals, ogds, rep, cadp = [], [], [], []
-                if seg["kind"] == "ln":
-                    mu, s = seg["p"]
-                    # goods priced in the invoice currency
-                    p_hv = 1.0 - K.phi((math.log(lo) - mu) / s)
-                    k = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * (1 - lam) * p_hv))
-                    k_rep = int(r.binomial(k, K.REPEAT_SHARE)) if k else 0
-                    fresh = cur_round(cur, sample_lognorm_above(r, mu, s, lo, k - k_rep))
-                    for rr in (rate, pr):
-                        fresh = cur_round(cur, off_line(fresh, rr))
-                    vals += list(fresh)
-                    ogds += [""] * len(fresh)
-                    rep += [-1] * len(fresh)
-                    cadp += [0.0] * len(fresh)
-                    if k_rep:
-                        c = cats[si]["inv"]
-                        for i in r.choice(len(c["vals"]), size=k_rep, p=c["w"]):
-                            v = float(c["vals"][i])
-                            if K.round_dp(v * rate, 2) == K.LINE_CAD:
-                                continue
-                            vals.append(v)
-                            ogds.append("")
-                            rep.append(int(i))
-                            cadp.append(0.0)
-                    # goods priced in CAD, invoiced at the price converted at the day's rate
-                    if lam:
-                        muc = mu + math.log(K.ref_rate(cur))
-                        p_hc = 1.0 - K.phi((math.log(K.CHECK_FLOOR_CAD + 1.0) - muc) / s)
-                        kc = int(r.poisson(n_day * seg["share"] * (1 - seg["ogd"]) * lam * p_hc))
-                        kc_rep = int(r.binomial(kc, K.REPEAT_SHARE)) if kc else 0
-                        pf = np.round(sample_lognorm_above(r, muc, s, K.CHECK_FLOOR_CAD + 1.0, kc - kc_rep), 2)
-                        pf = np.round(off_line(pf, 1.0), 2)
-                        for P in pf:
-                            vals.append(invoice_of(float(P), rate, cur))
-                            ogds.append("")
-                            rep.append(-1)
-                            cadp.append(float(P))
-                        if kc_rep:
-                            c = cats[si]["cad"]
-                            for i in r.choice(len(c["vals"]), size=kc_rep, p=c["w"]):
-                                P = float(c["vals"][i])
-                                vals.append(invoice_of(P, rate, cur))
-                                ogds.append("")
-                                rep.append(int(i))
-                                cadp.append(P)
-                    ko = int(r.poisson(n_day * seg["share"] * seg["ogd"]))
-                    omu, os_ = seg["ogd_ln"]
-                    ov = np.exp(r.normal(omu, os_, ko))
-                    vals += list(cur_round(cur, ov))
-                    ogds += ["OGD"] * ko
-                    rep += [-1] * ko
-                    cadp += [0.0] * ko
-                else:
-                    k = int(r.poisson(n_day * seg["share"]))
-                    kc = int(r.binomial(k, lam)) if (k and lam) else 0
-                    if k - kc:
-                        c = cats[si]["inv"]
-                        for i in r.choice(len(c["vals"]), size=k - kc, p=c["w"]):
-                            vals.append(float(c["vals"][i]))
-                            rep.append(int(i))
-                            cadp.append(0.0)
-                    if kc:
-                        c = cats[si]["cad"]
-                        for i in r.choice(len(c["vals"]), size=kc, p=c["w"]):
-                            P = float(c["vals"][i])
-                            vals.append(invoice_of(P, rate, cur))
-                            rep.append(int(i))
-                            cadp.append(P)
-                    ogds += [""] * k
-                if not vals:
-                    continue
-                vals = np.array(vals, float)
-                ogd_mask = np.array([o == "OGD" for o in ogds])
-                rep = np.array(rep)
-                cadp = np.array(cadp, float)
-                cads = np.array([K.round_dp(v * rate, 2) for v in vals])
-                keep = ogd_mask | (cads >= K.CHECK_FLOOR_CAD)
-                vals, cads, ogd_mask, rep, cadp = vals[keep], cads[keep], ogd_mask[keep], rep[keep], cadp[keep]
-                k = len(vals)
-                if k == 0:
-                    continue
-                hours = r.choice(24, size=k, p=RELEASE_HOURS)
-                mins = r.integers(0, 60, k)
-                secs = r.integers(0, 60, k)
-                lane = seg["lane"]
-                hs_i = r.integers(0, len(HS[lane]), k)
-                og_i = r.integers(0, len(OGD_GOODS), k)
-                ocs = ORIGIN[lane]
-                or_i = r.choice(len(ocs), size=k, p=[x for _, x in ocs])
-                imp_i = r.choice(len(pool), size=k, p=pw)
-                for j in range(k):
-                    t_local = dt.datetime(y, m, d + 1, int(hours[j]), int(mins[j]), int(secs[j]))
-                    lc = cadp[j] > 0
-                    if ogd_mask[j]:
-                        hs, prog = OGD_GOODS[int(og_i[j])]
-                        org, imp = ocs[int(or_i[j])][0], pool[int(imp_i[j])]
-                    elif rep[j] >= 0:
-                        c = cats[si]["cad" if lc else "inv"]
-                        hs, prog, org, imp = c["hss"][rep[j]], "", c["ors"][rep[j]], c["imps"][rep[j]]
+def calendars():
+    """cal[(year, school)] = instructional dates; kinds[(year, school)][date] = the day's kind for the shipped
+    calendar (instructional, a holiday, a non-student day, a weather closure)."""
+    cal, kinds = {}, {}
+    for label, first, fall_end, spring_start, last in P.YEARS:
+        hol = holidays(first, last)
+        for s in P.SCHOOLS:
+            pd = {dt.date.fromisoformat(x) for x in PD[label][s]}
+            snow = {dt.date.fromisoformat(x) for x in SNOW.get(label, {}).get(s, [])}
+            days, k = [], {}
+            d = first
+            while d <= last:
+                if d.weekday() < 5:
+                    if fall_end < d < spring_start:
+                        k[d] = "Winter break"
+                    elif d in hol:
+                        k[d] = hol[d]
+                    elif d in pd:
+                        k[d] = "Non-student day"
+                    elif d in snow:
+                        k[d] = "Weather closure"
                     else:
-                        hs, prog = HS[lane][int(hs_i[j])][0], ""
-                        org = ocs[int(or_i[j])][0]
-                        imp = pool[int(imp_i[j])]
-                    v, cad = float(vals[j]), float(cads[j])
-                    if lc and not prog and abs(K.round_dp(v * pr, 2) - K.LINE_CAD) < 0.75:
-                        continue
-                    if seen is not None and not prog and cur != "CAD" and (
-                            ((imp, hs, cur, v) in seen["inv"] and (imp, hs, cur, cad) in seen["cad"]) or
-                            ((imp, cur, v) in seen["inv"] and (imp, cur, cad) in seen["cad"])):
-                        continue
-                    route = "FORMAL" if (prog or cad > K.LINE_CAD) else "CLVS"
-                    out.append(Shipment(waybill="", gw=g, local=t_local, utc=local_to_utc(g, t_local),
-                                        cur=cur, value=v, rate=rate, vfd_cad=cad, ogd=prog, hs=hs, origin=org,
-                                        importer=imp, seg=si, route=route, cad_priced=bool(lc and not prog),
-                                        price_cad=float(cadp[j]) if lc else 0.0))
+                        k[d] = "Instructional"
+                        days.append(d)
+                d += D(days=1)
+            cal[(label, s)] = days
+            kinds[(label, s)] = k
+    return cal, kinds
 
 
-def consignment_keys(ships, g):
-    """The consignment keys of a year's shipments at gateway g, with the tariff item and without it."""
-    inv, cad = set(), set()
-    for s in ships:
-        if s.gw == g and not s.ogd and s.cur != "CAD":
-            inv |= {(s.importer, s.hs, s.cur, s.value), (s.importer, s.cur, s.value)}
-            cad |= {(s.importer, s.hs, s.cur, s.vfd_cad), (s.importer, s.cur, s.vfd_cad)}
-    return dict(inv=inv, cad=cad)
+FIRST = ["James", "Mia", "Noah", "Sofia", "Liam", "Emma", "Mateo", "Ava", "Elijah", "Isabella", "Lucas", "Camila",
+         "Ethan", "Luna", "Daniel", "Aria", "Diego", "Layla", "Henry", "Valeria", "Owen", "Nora", "Gabriel", "Elena",
+         "Isaac", "Ximena", "Wyatt", "Maya", "Julian", "Zoe", "Adrian", "Leah", "Andres", "Hazel", "Caleb", "Paisley",
+         "Josiah", "Natalia", "Miles", "Aubrey", "Ezra", "Brooklyn", "Jayden", "Savannah", "Isaiah", "Kinsley",
+         "Gianna", "Roman", "Alina", "Xavier", "Daisy", "Kai", "Esmeralda", "Jonah", "Ruby", "Elias", "Jade", "Damian",
+         "Iris", "Cristian", "Lyla", "Rosalie", "Emiliano", "Talia", "Dominic", "Serenity", "Yaretzi", "Joaquin",
+         "Amara", "Santiago", "Nevaeh", "Bryson", "Itzel", "Rowan", "Abril", "Tristan", "Jimena", "Uriel", "Lucia"]
+LAST = ["Garcia", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Rodriguez", "Sanchez", "Ramirez", "Torres", "Rivera",
+        "Gomez", "Diaz", "Cruz", "Morales", "Reyes", "Gutierrez", "Ortiz", "Chavez", "Ruiz", "Jimenez", "Mendoza",
+        "Alvarez", "Castillo", "Romero", "Herrera", "Medina", "Aguilar", "Vargas", "Castro", "Johnson", "Williams",
+        "Brown", "Jones", "Miller", "Davis", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
+        "Lee", "Thompson", "White", "Harris", "Clark", "Lewis", "Robinson", "Walker", "Young", "Allen", "King",
+        "Wright", "Scott", "Green", "Baker", "Adams", "Nelson", "Hill", "Campbell", "Mitchell", "Nguyen", "Tran",
+        "Pham", "Kim", "Patel", "Yazzie", "Begay", "Archuleta", "Valdez", "Trujillo", "Montoya", "Gallegos",
+        "Lucero", "Vigil", "Maestas", "Sandoval", "Salazar", "Espinoza", "Baca", "Duran", "Padilla", "Quintana"]
 
 
-def simulate():
-    W = World()
-    W.rates = daily_rates()
-    W.volume = monthly_volume()
-    rates = W.rates
-    # the history's formal entries before the extracts on file: every month from the routing at that month's rates
-    for g in K.GATEWAYS:
-        r = K.rng("formal_hist", g)
-        for (y, m) in K.HIST_MONTHS:
-            if (y, m) >= (K.PRIOR_START.year, K.PRIOR_START.month):
-                continue
-            lam = W.volume[(g, y, m)] * expected_formal(g, y, m, rates)
-            W.formal_hist[(g, y, m)] = int(r.poisson(lam))
-    # the two years on file shipment by shipment: the year before the base (the 2026 review's extracts) and the base
-    W.prior = []
-    for g in K.GATEWAYS:
-        W_VOL_HINT[g] = [W.volume[(g, y, m)] for (y, m) in K.BASE_MONTHS]
-        pool, pw = importer_pool(g, K.rng("importers", g))
-        big = pool[:12]
-        cats = {si: catalogue(g, si, seg, rates, pool, pw, big) for si, seg in enumerate(K.SEGMENTS[g])}
-        _window(W, g, K.PRIOR_MONTHS, K.rng("ships_prior", g), pool, pw, big, cats, W.prior)
-        _window(W, g, K.BASE_MONTHS, K.rng("ships", g), pool, pw, big, cats, W.ships,
-                seen=consignment_keys(W.prior, g))
-    # waybills: ten digits with a mod-7 check digit, in release order across the network
-    allships = sorted(W.prior + W.ships, key=lambda s: (s.utc, s.gw, s.value))
-    r = K.rng("waybills")
-    used = set()
-    for s in allships:
-        while True:
-            body = "%09d" % int(r.integers(100000000, 999999999))
-            if body not in used:
-                used.add(body)
-                break
-        s.waybill = body + waybill_check(body)
-    # formal entry transaction numbers: Larchwood's 5-digit account and a 9-digit sequence, in release order per desk
-    acct = "13947"
-    seq = {"YYZ": 103800000, "YUL": 303800000, "YVR": 503800000, "YYC": 603800000, "YWG": 703800000}
-    for s in allships:
-        if s.route == "FORMAL":
-            seq[s.gw] += 1 + int(r.random() < 0.02)
-            s.entry = acct + "%09d" % seq[s.gw]
-    W.ships.sort(key=lambda s: (s.utc, s.gw, s.value))
-    W.prior.sort(key=lambda s: (s.utc, s.gw, s.value))
-    # the gateway report counts the extracts' formal releases in the two years on file
-    for g in K.GATEWAYS:
-        cnt = {}
-        for s in W.prior + W.ships:
-            if s.gw == g and s.route == "FORMAL":
-                key = (s.local.year, s.local.month)
-                cnt[key] = cnt.get(key, 0) + 1
-        for (y, m) in K.PRIOR_MONTHS + K.BASE_MONTHS:
-            W.formal_hist[(g, y, m)] = cnt.get((y, m), 0)
-    # a few shipments amended after release (a corrected invoice), route unchanged at every rate on file
-    r = K.rng("amend")
-    cand = [s for s in W.ships if not s.ogd and s.local.date() < dt.date(2026, 6, 20)]
-    picks = r.choice(len(cand), size=14, replace=False)
-    for k in sorted(picks):
-        s = cand[k]
-        f = float(r.choice([0.97, 0.98, 1.02, 1.03]))
-        nv = round(s.value * f, 2)
-        ok = all(((nv * rr > K.LINE_CAD) == (s.value * rr > K.LINE_CAD)) and abs(nv * rr - K.LINE_CAD) > 0.75
-                 for rr in (s.rate, K.PLAN_RATE[s.cur])) and nv * s.rate >= K.CHECK_FLOOR_CAD
-        if ok:
-            W.amended.append((s, nv))
+class Student:
+    __slots__ = ("sid", "first", "last", "dob", "z", "a", "ill", "grade0", "year0")
+
+
+def build(seed=None):
+    rng = np.random.default_rng(P.SEED if seed is None else seed)
+    cal, kinds = calendars()
+    W = dict(cal=cal, kinds=kinds, students={}, years={})
+    seq = [4420000117]
+
+    def new_student(grade, label):
+        s = Student()
+        seq[0] += int(rng.integers(3, 41))
+        s.sid = "%010d" % seq[0]
+        s.first = FIRST[int(rng.integers(len(FIRST)))]
+        s.last = LAST[int(rng.integers(len(LAST)))]
+        by = int(label[:4]) - 14 - (grade - 9)
+        s.dob = dt.date(by, 1, 1) + D(days=int(rng.integers(0, 365)) + 243 * (rng.random() < 0.5))
+        s.z, s.a, s.ill = float(rng.normal()), float(rng.normal()), float(rng.gamma(P.ILL_K, 1.0 / P.ILL_K))
+        s.grade0, s.year0 = grade, label
+        W["students"][s.sid] = s
+        return s
+
+    roll = []
+    for sc in P.SCHOOLS:
+        n = int(2650 * P.SHARE[sc])
+        for g in P.GRADES:
+            for _ in range(int(n * {9: 0.29, 10: 0.26, 11: 0.24, 12: 0.21}[g])):
+                roll.append((new_student(g, "2023-24").sid, sc, g))
+    for yi, label in enumerate(YEAR_LABELS):
+        if yi > 0:
+            prev = W["years"][YEAR_LABELS[yi - 1]]
+            nxt = []
+            for sid, sc, g in roll:
+                r = prev[sid]
+                if r["out"] in ("grad", "left", "xfer_out"):
+                    continue
+                st = W["students"][sid]
+                st.z = 0.8 * st.z + 0.6 * float(rng.normal())
+                nxt.append((sid, r["school_end"], min(12, g + (0 if rng.random() < 0.04 else 1))))
+            for sc in P.SCHOOLS:
+                for _ in range(int(2650 * P.SHARE[sc] * 0.268)):
+                    nxt.append((new_student(9, label).sid, sc, 9))
+                for _ in range(int(2650 * P.SHARE[sc] * 0.035)):
+                    g = int(rng.choice([10, 11, 12], p=[0.45, 0.35, 0.20]))
+                    nxt.append((new_student(g, label).sid, sc, g))
+            roll = nxt
+        W["years"][label] = {}
+        simulate_year(W, rng, yi, roll)
     return W
+
+
+def semester(rng, st, days, texts, n_long=0):
+    """{date: (portion, code)} over the student's instructional days, and the runs placed (start, length)."""
+    n = len(days)
+    out, runs = {}, []
+    if n == 0:
+        return out, runs
+    p_sc = min(P.P_SC0 * np.exp(-0.45 * st.z) * st.ill * (P.TEXT_FACTOR if texts else 1.0), P.PSC_CAP)
+    lam = P.LAM0 * np.exp(-0.75 * st.z)
+    Ls = [(P.LONG_MIN + int(rng.geometric(P.LONG_P)) - 1, P.LONG_UX) for _ in range(n_long)]
+    Ls += [(P.RUN_MIN + int(rng.geometric(P.RUN_P)) - 1, 0.72) for _ in range(int(rng.poisson(lam)))]
+    for L, ux in Ls:
+        if L >= n - 4:
+            continue
+        for _try in range(6):
+            s0 = int(rng.integers(0, n - L))
+            if not any(days[i] in out for i in range(max(0, s0 - 1), min(n, s0 + L + 1))):
+                break
+        else:
+            continue
+        code = "UX" if rng.random() < ux else "EX"
+        for i in range(s0, s0 + L):
+            out[days[i]] = ("FULL", code)
+        runs.append((days[s0], L))
+    i = 0
+    while i < n:
+        if days[i] in out or rng.random() >= p_sc:
+            i += 1
+            continue
+        # an episode: a single day (often part of a day), or two to four whole days
+        u, v = rng.random(), rng.random()
+        k = 1 if u < 0.60 else (2 if u < 0.86 else (3 if u < 0.97 else 4))
+        code = "EX" if v < 0.55 else ("UX" if v < 0.90 else "MED")
+        for j in range(i, min(n, i + k)):
+            if days[j] in out:
+                break
+            if k == 1:
+                x = rng.random()
+                por = "FULL" if x < 0.58 else ("AM" if x < 0.80 else "PM")
+            else:
+                por = "FULL"
+            out[days[j]] = (por, code)
+        i += k + 1
+    return out, runs
+
+
+def fails(rng, st, nruns):
+    p = 1 / (1 + np.exp(-(-2.55 - 0.9 * st.a - 0.25 * st.z + 0.30 * nruns)))
+    return int(rng.binomial(7, p))
+
+
+def incidents(rng, st, days):
+    out = []
+    for _ in range(int(rng.poisson(0.33 * np.exp(-0.6 * st.z)))):
+        u = rng.random()
+        cons = "OSS" if u < 0.24 else ("ISS" if u < 0.55 else "DET")
+        n = int(rng.choice([1, 2, 3], p=[0.45, 0.35, 0.20])) if cons == "OSS" else (1 if cons == "ISS" else 0)
+        out.append((days[int(rng.integers(len(days)))], cons, n))
+    return sorted(out)
+
+
+def simulate_year(W, rng, yi, roll):
+    label, first, fall_end, spring_start, last = P.YEARS[yi]
+    cur = label == P.CUR
+    cal = W["cal"]
+    for sid, school, grade in roll:
+        st = W["students"][sid]
+        fall0 = [d for d in cal[(label, school)] if d <= fall_end]
+        entry = first
+        if st.year0 == label and st.grade0 != 9 and rng.random() < 0.55:
+            entry = fall0[int(rng.integers(3, 40))]
+        # the fall's enrolment records: (school, start, end); a move to another of the network's schools, or a
+        # withdrawal and return to the same school, opens a second record
+        recs = [[school, entry, None]]
+        u = rng.random()
+        if u < 0.014:
+            ix = [i for i, d in enumerate(fall0) if d > entry]
+            k = ix[int(rng.integers(15, len(ix) - 15))]
+            other = [x for x in P.SCHOOLS if x != school][int(rng.integers(3))]
+            nxt = next(d for d in cal[(label, other)] if d > fall0[k])
+            recs = [[school, entry, fall0[k]], [other, nxt, None]]
+        elif u < 0.024:
+            ix = [i for i, d in enumerate(fall0) if d > entry]
+            k = ix[int(rng.integers(10, len(ix) - 30))]
+            back = fall0[k + int(rng.integers(9, 22))]
+            recs = [[school, entry, fall0[k]], [school, back, None]]
+        fall_days = []          # (date, school) the student is enrolled on, in the fall
+        for sc, a, b in recs:
+            for d in cal[(label, sc)]:
+                if d <= fall_end and d >= a and (b is None or d <= b):
+                    fall_days.append((d, sc))
+        dates = [d for d, _ in fall_days]
+        disp = bool(cur and rng.random() < P.DISP_SHARE * P.DISP_SCHOOL[school] * np.exp(-P.DISP_Z * st.z) /
+                    np.exp(P.DISP_Z ** 2 / 2))
+        ab, runs = semester(rng, st, dates, cur, 1 + int(rng.random() < P.DISP_LAM) if disp else 0)
+        nf = fails(rng, st, len(runs))
+        inc = incidents(rng, st, dates)
+        day_absent = sum(1 for d, (por, c) in ab.items() if por != "PM")
+        rate = day_absent / max(1, len(dates))
+        rec = dict(school=school, grade=grade, recs=recs, fall_days=fall_days, fall_ab=ab, runs=runs, fails=nf, disp=disp,
+                   inc=inc, rate=rate, out=None, exit_day=None, school_end=recs[-1][0], spring_ab={}, spring_inc=[],
+                   spring_fails=0, p=None)
+        # a few leave in the fall
+        if rng.random() < 1 / (1 + np.exp(-(-4.9 - 0.7 * st.z))):
+            rec["out"] = "left"
+            ld = [d for d in dates if d > dates[0]]
+            rec["exit_day"] = ld[int(rng.integers(len(ld) // 3, len(ld)))] if ld else dates[-1]
+        else:
+            logit = (P.B0 + P.B_RUN * min(len(runs), 1) + P.B_RUN2 * max(0, min(len(runs), 3) - 1) + 0.40 * min(nf, 4) + 0.10 * min(len(inc), 4) + 0.3 * rate
+                     + {9: 0.15, 10: 0.10, 11: 0.0, 12: -0.55}[grade])
+            rec["p"] = 1 / (1 + np.exp(-logit))
+            if cur:
+                rec["out"] = "on_roll"
+            else:
+                sch = rec["school_end"]
+                spring = [d for d in cal[(label, sch)] if d >= spring_start]
+                if rng.random() < rec["p"]:
+                    rec["out"] = "left"
+                    rec["exit_day"] = spring[int(rng.integers(len(spring)))]
+                else:
+                    rec["out"] = "grad" if grade == 12 and rng.random() < 0.985 else "stay"
+                    if rec["out"] == "stay" and rng.random() < 0.035:
+                        rec["out"] = "xfer_out"
+                sp = [d for d in spring if rec["exit_day"] is None or d <= rec["exit_day"]]
+                rec["spring_ab"], _ = semester(rng, st, sp, False)
+                rec["spring_inc"] = incidents(rng, st, sp) if sp else []
+                rec["spring_fails"] = fails(rng, st, 0)
+                rec["spring_days"] = [(d, sch) for d in sp]
+        if rec["out"] == "left" and rec["exit_day"] is not None and rec["exit_day"] <= fall_end:
+            # trim the fall's records at the fall exit
+            rec["recs"][-1][2] = rec["exit_day"]
+        W["years"][label][sid] = rec

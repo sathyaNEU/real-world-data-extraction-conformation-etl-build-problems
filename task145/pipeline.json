@@ -1,12 +1,12 @@
 {
  "task": "task145",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "education-learning-sciences/learning-analytics-early-warning-models (client education-learning-sciences)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "A competent analyst prices each student on the network's early-warning indicators (chronic absence, course failures, behaviour incidents), validates them on the 2025-26 leavers and files about 95 expected leavers and the Bridge contract's first tier; the step that lands it there is counting missed days rather than unbroken runs of them, when the fall 2026 attendance texts cut the scattered days while week-long disappearances rose and leaving rides on the runs.",
+ "stump": "A competent analyst prices each student on the network's early-warning indicators (chronic absence, course failures, behaviour incidents), validates them on the 2025-26 leavers and files about 95 to 100 expected leavers and the Bridge contract's first tier (125 seats); the step that lands it there is counting missed days rather than unbroken runs of them, when the fall 2026 family texts cut the scattered days while week-long disappearances (families moving between addresses) rose and leaving rides on the runs, so about 156 leave and the second tier (195 seats) is needed.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design the default path, ladder, fork table and asks in task145/DESIGN_NOTE.md, then write task145/generator/ and pass precut.py",
+ "resume": "stage 3: the generator is written (params, world, pack, docs, analysis, golden, writeup, checks, verify, ceiling) and the prompt passes voice-check; build.py stops at postprocess.normalize_pdf's assertion on board_policy_JF-7_bridge_program.pdf (fix the PDF normaliser for the four pack PDFs docs.py writes), then run python3 task145/generator/build.py (two byte-identical builds, checks.py, verify.py), write the design note's stage-2 sections and pass precut.py, then figures_check, leak.py --asof 2026-12-21, guard.py heart and surface after a fresh pull, golden-realism and reduce-house-fixes, and the stage 4 hand-off (leak copy at scratchpad/leak-task145/, brief at scratchpad/task145_stage4_leak_brief.md)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -114,6 +114,10 @@
   {
    "date": "2026-11-01",
    "event": "DRAWN: architecture 2, education-learning-sciences / learning-analytics-early-warning-models x forecasting (Cedar Prairie Charter Schools' spring 2027 Bridge contract tier), card registered"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED mid-build: the world re-tuned so every defensible run threshold from five to ten days, every cell and model variant and every year subset files Tier 2 while every early-warning route files Tier 1; the asks re-sited onto devices the call never reads (one school a day under late-entered exits, a hearing officer's amendment under a re-coded behaviour)"
   }
  ]
 }
