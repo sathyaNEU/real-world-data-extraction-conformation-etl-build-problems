@@ -124,6 +124,7 @@ Lesson: a reference that enters a measuring system part-way along measures only 
 |---|---|---|---|---|---|
 | SF1 | the channels | the 16 filtered and final water sample points | the raw water points too | another list only if raw is counted | the prompt; WQ-DS-04 section 4 (treated water channels) |
 | SF2 | the fourth quarter of 2027 | 1 October to 31 December, New Zealand time | UTC dates | same call | WQ-DS-04 section 1; asserted |
+| SF29 | the laboratory's times | New Zealand time, the laboratory's and the sampler's own clocks (the export writes no zone; the historian's stamps carry theirs, `reading_end_utc`) | UTC | same call | C1, asserted: read as UTC the six, Holmedale's zero error and Calderwood's span error all stand, ask A's counts are unchanged, and every sample is collected inside the quarter either way |
 | SF3 | the readings | the channel's rows held with quality G, a reloaded slot's G row included | a reloaded slot's F row kept and its G row dropped | same call | section 3 (readings held with code G); asserted |
 | SF4 | the ammonia actually in the water | the water at the sample point at each reading's time, before the sample line | the water as it reaches the measuring cell; the laboratory's treated grabs | another list (the cell's water drops the line's loss); no quarter mean (most grabs below 0.030) | section 3 (the water at its sample point); the register's sample points (the taps) and the process summary (each point's own sample line to the analyser); section 6 (the limit) |
 | SF5 | more than 0.005 | strictly | at or beyond | same call | every licensed estimate 0.0019 or more from the line (asserted, 24 estimates) |
@@ -145,7 +146,7 @@ Lesson: a reference that enters a measuring system part-way along measures only 
 | SF16 | a sample's quarter (asks) | collected in the quarter, the 28 December round included though analysed on 5 January | analysed in the quarter | the asks only | section 7(b) (the quarter's samples) |
 | SF22 | a sample (asks) | a bottle: two rows with the same point, analysis stamp, result and release are one bottle logged twice | every row; one row per point and collection time | the asks only | the 7 December second logging carries the courier docket's one pickup time and shares each bottle's analysis, result and release; no two treated rows share a point and collection time (asserted) |
 | SF17 | the hours at the fixed dose (asks) | each gap between good filtered readings at the PLC, less the two-hour hold | the gap whole | the asks only | the process summary's dose control |
-| SF18 | not available to the dose control (asks) | the slots no filtered reading reached the PLC (the analyser's faults, its storm-night stops, the filtered port's lost signal) and its check cycles | every F row; the historian's lost hours too | the asks only | the process summary's dose control and telemetry (the PLC reads the analyser directly; the outstation keeps 72 hours and the historian fills failed polls from it); the dictionary |
+| SF18 | not available to the dose control (asks) | the slots no filtered reading reached the PLC (the analyser's faults, its storm-night stops, the filtered port's lost signal) and its check cycles | every F row; the historian's lost hours too | the asks only | the process summary's dose control and telemetry (the PLC reads the analyser directly; the outstation keeps 72 hours and the historian fills failed polls from it; a fault on the historian's own server leaves it with no record and the plants and their dose control run on, filed once there); asserted: the slots with no row at all are one 5.3-hour run at all eight plants on 17 November, and reading them as no reading at the PLC moves every plant by 3.5 hours or more |
 | SF20 | the unfilled runs (asks) | a run of unfilled F rows at every port, no check after it and the analyser's port sequence running on unbroken across it was the telemetry's; a port's own unfilled F rows, the other ports read between, never reached the PLC | any run no check followed the telemetry's; any run at every port the telemetry's | the asks only | the process summary (the historian polls the outstation, which reads the PLC; a fault stops the readings until a technician clears it) and the check procedure; asserted: every fault followed at once by the check, each filtered port's lost signal once with the other ports read between |
 | SF28 | a run after which the sequence starts again (asks) | the analyser stopped: its port sequence starts again at the raw water port, at slots the running sequence would not have reached, so it had been switched off and the PLC had no reading | the telemetry's, as a run with no check after it | the asks only | the register's port sequence and the readings' own sample points (a running sequencer keeps its order and its slots); asserted: each analyser's sequence restarts once, straight after its storm-night run, and nowhere else |
 | SF19 | a gap at the quarter's ends (asks) | within the quarter, New Zealand time | UTC | same figures | no fault within two days of either end (asserted) |
@@ -176,7 +177,7 @@ lost, no trips) the default path files its six and the decisive step alone the g
 | 1 | Population | the 16 treated channels | filed (register; WQ-DS-04 sections 2 and 4) |
 | 2 | Unit of account | a channel, one analyser reading one sample point | filed (section 2) |
 | 3 | Attribution window | the channel's readings held with code G in the quarter | filed (section 3) |
-| 4 | As-of dating | the historian's export of the quarter; the laboratory's export of 14 January 2028; the register as saved in January | filed |
+| 4 | As-of dating | the historian's export of the quarter; the laboratory's export of 14 January 2028; the register as saved in January | filed (metadata.json's provenance; the workbooks' own saved dates, asserted after the last event each records) |
 | 5 | Version basis | WQ-DS-04 issue 3 | filed |
 | 6 | Denominator | the channel's G readings | filed (section 3) |
 | 7 | Weighting | each G reading once | filed (section 3) |
@@ -191,7 +192,7 @@ lost, no trips) the default path files its six and the decisive step alone the g
 | 16 | Identity normalisation | sample points by the register's codes and the readings' own labels; October's treated samples through the notice | filed |
 | 17 | Netting against gross | none | not applicable |
 | 18 | Dimensional units | mg/L as N throughout | filed |
-| 19 | Code and status semantics | G, F and V (the dictionary); the below-limit results (section 6) | filed; never the stump |
+| 19 | Code and status semantics | G, F and V (the historian's own code table: Good, No reading, Verification check; WQ-DS-04 sections 3 and 5 for G and V); the below-limit results (section 6) | filed; never the stump; asserted through the verifier's reader (verify.py reads the rows by the table's labels) |
 | 20 | Integerisation | sample counts whole | filed |
 | 21 | Clause scope | section 4 for every treated channel; section 7 items (b) and (c) for every plant | filed |
 | 22 | Forward window contents | the flagged channels go on the technicians' list before the next quarter | filed (section 4) |
@@ -199,7 +200,7 @@ lost, no trips) the default path files its six and the decisive step alone the g
 ## Literal reader
 
 Executing the prompt and every filed sentence word for word (WQ-DS-04 sections 1 to 7, the register with its planned
-maintenance log, the dictionary, the process summary) leaves one open move, how the ammonia in the water at each sample
+maintenance log, the historian's quality codes, the process summary) leaves one open move, how the ammonia in the water at each sample
 point is estimated, and the data's structure forces it: the treated grabs are mostly below the 0.030 limit, so the
 water's level comes from the readings; a response at no lag to the two slots before is the analyser's own; a check at
 one level cannot give an error's form, which the raw grabs settle once the raw port's own carryover is out; and the
@@ -218,12 +219,13 @@ divided by 1 - k1 - k2, which the golden's step states.
 - The check workbook states readings and a pass against the 10 per cent band; every check passes.
 - The planned maintenance log states each visit's time, the work done and who did it; it names no effect on a reading.
 - The laboratory export states results and times and no holding-time verdict.
-- The process summary states the dose control and the telemetry; it names no fault, outage, trip or gap.
+- The process summary states the dose control and the telemetry, and what a fault on the historian's own server
+  leaves (no record, the plants running on); it names none of the quarter's faults, outages, trips or gaps.
 - The notice maps the treated points' codes; it names no sample.
 - No file lists the outstation changes, the lost signals, the storm-night trips or the second logging; the check
   procedure states the check after clearing a fault and the historian's check-port rows show where one was run.
-- The dictionary names the laboratory analyser's run record and no clock for it; the reception and release times
-  bracket it.
+- No file names the laboratory analyser's clock or its run record, and no file describes the data's files or
+  columns; the reception and release times bracket the clock.
 - The daily output and rainfall files (the distractors) carry no figure any route needs; the rainfall shows the two
   storm nights as wet days among others.
 
@@ -261,7 +263,8 @@ Devices, silent (no filed sentence points at any of them):
 Hazards: on ask A, October's treated samples under the old codes (the notice), the 28 December round analysed on 5
 January, two courier breakdowns, the raw samples out of scope; on ask B, the November outstation changes, the failed
 polls filled from the outstation (an F row with a G row beneath), the historian's own lost night of 17 November (no rows
-at all, stated in the dictionary), the check cycles inside the hold, the two-hour hold, the quarter in New Zealand time.
+at all; the process summary files what a fault on the historian's own server leaves), the check cycles inside the hold,
+the two-hour hold, the quarter in New Zealand time.
 
 | Path (from generator/pair.py) | Ask A | Ask B | Keeps |
 | --- | --- | --- | --- |
@@ -291,7 +294,7 @@ at all, stated in the dictionary), the check cycles inside the hold, the two-hou
 
 Pair ceiling: 35.4 ((51.9 + 18.9) / 2), the cracker keeping 2 of the 16 ask figures on the call and the mirror the same.
 Mirror leakage: 12.5 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack (target.zip af7016cf).
+Measured by: generator/pair.py on the cut pack (target.zip af7016cf; the same on the reshipped cut 50608886).
 
 ## Pre-ship check
 
@@ -331,6 +334,31 @@ Measured by: generator/pair.py on the cut pack (target.zip af7016cf).
   rises at the flushes, the regrowth time, asks A and B); Gate G analytical_non_defect, no surface-read dependency, no
   sole data defect (each borderline, live testing recommended); Gate H domain, layers and decisive step pass. Its two
   soft spots (ask A's analysis clock, ask B's PLC reading) are closed by the shipped records and are not the stump.
+
+- Reship under the new leak gate (2026-11-01, `leak.py --asof 2028-01-19`, the folder's assembly date in metadata.json
+  and make.py): LEAK on `water_services_data_dictionary.md` (sweep 1, a file named as a dictionary; sweep 12, 19 of the
+  data files' columns named, every one of the laboratory export's). It no longer ships: the pack is ten files in four
+  formats (CSV, EML, PDF, XLSX) with the historian's own code table `historian_quality_codes.csv` (G Good, F No
+  reading, V Verification check) in its place; seven files byte-identical to the judged pack, the process summary one
+  sentence longer (SF18), the register's saved date moved from 2 November 2027 to 10 January 2028 (after the December
+  visits it logs), metadata.json carrying the provenance and no mechanism. Free gates on target.zip 50608886: checks
+  149 passed, 0 FAIL; verify.py 0 failures; two consecutive builds byte-identical (md5 19b5e04d both times); freeze.py
+  determinism PASS; figures.json, the goldens and submission.md unchanged; figures_check 35 of 35; precut 61 checks,
+  0 FAIL, 8 WARN (the survivor anatomy section, absent on a shipped build); voice-check PASS (WARNs on the counts and
+  the shell quota); leak.py REVIEW with no LEAK, sweeps 1, 9, 12 and 13 clean; guard.py surface exit 0 (task251
+  promoted on the format set alone: formats 0.8 to 1.0 with the md file gone, surface 0.092 to 0.100, every other axis
+  0); pair ceiling 35.4 re-measured on the cut. Each REVIEW line ruled:
+  - sweep 3, WQ-DS-04: the standard's own estimand and return items (sections 3, 4 and 7) carry the call's nouns; it
+    names no channel, list or method; byte-identical to the judged pack.
+  - sweep 4, WQ-DS-04: the standard's vocabulary (readings, analyser, section, register, Calderwood and Holmedale in its
+    issue table); nothing on a line, a film, a flush's effect or an estimator; byte-identical.
+  - sweep 4, the process summary: the plant reference's own terms; its one new sentence says what a fault on the
+    historian's own server leaves (no record, the plants and their dose control running on), ask B's lost-night WHAT,
+    naming no night, no device and nothing about a line, a film or a flush.
+  - sweep 4, the prompt: the call's own nouns; the prompt unchanged.
+  - sweep 11, the counts: the 16 channels and eight plants sit in the call sentence, frozen in a leak reship
+    (freeze.py); SF1 files the population through it.
+  - sweep 11, the shell quota: a corpus-level WARN inside voice-check's PASS, on the unchanged prompt.
 
 ## Tried and rejected
 
@@ -428,3 +456,15 @@ Measured by: generator/pair.py on the cut pack (target.zip af7016cf).
   final port's 0.020, one cell), and the raw port corrected with those shares moves Holmedale's zero error by 0.012. The
   two-point read uses the analyser's pooled shares, as one cell implies; the per-channel route itself (its offsets with
   the line read) files the six.
+
+- 2026-11-01, re-check under the new leak gate: the pack shipped `water_services_data_dictionary.md` (the readings' and
+  the laboratory export's columns glossed, the quality codes, the fill and missing-slot notes, the laboratory's
+  clocks), a file describing the data (dataset-generation section 3; leak.py sweeps 1 and 12, LEAK). Replaced: it no
+  longer ships; the historian's own code table carries G, F and V (closure 19, read by label in verify.py), one
+  sentence in the process summary's telemetry paragraph says what a fault on the historian's own server leaves (SF18,
+  the round 1 judge's lost-night finding), the laboratory's times close by convergence (SF29), and the fill, the
+  bottle's time and the run record are left unstated (ask A's clock stays unfiled); provenance moved to metadata.json,
+  whose subdomain and origin had named the lower rungs' carryover, zero and span errors and ask A's clock; the
+  register's saved date now follows its December visits; checks.py's SF23 (architecture 1's lost-signal row, carried
+  here by SF20's second clause) is SF20, and SF1, SF13 (it split the prompt on a phrase the prompt no longer has) and
+  SF26's same list now assert on the pack.

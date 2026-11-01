@@ -11,10 +11,11 @@ import numpy as np
 import params as P
 import sim
 import solve as S
+from docs import HISTORIAN as HISTORIAN_SENTENCE
 
 FAILS = []
 MARGIN = 0.0015
-SFOF = {"pooled mixing (the golden)": "golden", "per-channel mixing": "SF21", "RAW corr": "SF7",
+SFOF = {"pooled mixing (the golden)": "golden", "per-channel mixing": "SF21", "RAW corr": "SF21",
         "raw lags 1.5 to 6 hours": "SF8 SF21", "raw lags 1 to 10 hours": "SF8 SF21",
         "raw lags every slot 2 to 6 hours": "SF8 SF21",
         "pooled mixing, raw lags 1.5 to 6 hours": "SF8", "pooled mixing, raw lags 1 to 10 hours": "SF8",
@@ -36,6 +37,53 @@ def ok(cond, what):
     print(("PASS  " if cond else "FAIL  ") + what)
     if not cond:
         FAILS.append(what)
+
+
+DOC_EXT = (".pdf", ".eml", ".md", ".txt", ".docx", ".rtf", ".html")
+
+
+def _text_of(path):
+    """every shipped document's text, one way: pypdf's page text for a pdf (the leak sweep's reader), the file itself
+    otherwise; every presence and absence assertion on a document reads it through here"""
+    if path.endswith(".pdf"):
+        import pypdf
+        return "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages)
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        return fh.read()
+
+
+def _has(text, sentence):
+    """a sentence found in a document's text, line breaks and runs of spaces read as one space"""
+    return " ".join(sentence.split()) in " ".join(text.split())
+
+
+def _find(pattern, text):
+    """a pattern searched in a document's text, case aside, line breaks read as spaces"""
+    return re.search(pattern, " ".join(text.split()), re.I)
+
+
+# the names a describing file or sheet goes by (the leak sweep's own lists, dataset-generation section 3)
+_DESCRIBE_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+    r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
+    r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|"
+    r"data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])", re.I)
+_DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                             r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
+
+
+def _describe_name(f):
+    return bool(_DESCRIBE_NAME.search(f.rsplit(".", 1)[0]))
+
+
+def _describe_sheet(s):
+    return bool(_DESCRIBE_SHEET.match(s.strip()))
+
+
+def _columns_named(text, data_cols):
+    """the data files' column names (four characters or more) a text carries verbatim, as whole tokens"""
+    cols = {c.strip() for v in data_cols.values() for c in v if len(c.strip()) >= 4}
+    return sorted(c for c in cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text))
 
 
 def _clean(W):
@@ -64,6 +112,24 @@ def _clean(W):
 
 def _world_visits(W):
     return {c: sorted(W[c]["flushes"]) for c in P.CODES}
+
+
+def _visits_as(target, tz):
+    """the planned maintenance log's monthly visits as slots, the log's times read in the zone given"""
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(target, "online_analyser_register.xlsx"), read_only=True)
+    out = {c: [] for c in P.CODES}
+    for r in list(wb["Planned maintenance"].iter_rows(values_only=True))[1:]:
+        if str(r[3]).startswith("Monthly planned maintenance"):
+            out[r[1].split("-")[1]].append(P.slot_of(r[0].replace(tzinfo=tz)))
+    return {c: sorted(v) for c, v in out.items()}
+
+
+def _lims_as_utc(L):
+    """the laboratory's times read as UTC: each wall time taken as a UTC instant and shown in New Zealand time"""
+    f = lambda t: t.replace(tzinfo=P.UTC).astimezone(P.NZ).replace(tzinfo=None)
+    return [dict(g, collected=f(g["collected"]), received=f(g["received"]), analysed=f(g["analysed"]),
+                 released=f(g["released"])) for g in L]
 
 
 def _line_terms(target, D, info, V):
@@ -142,6 +208,12 @@ def main(target):
     ok(names == GOLDEN, "the golden is the designed six")
     ok(all(V[c][-4:] == sorted(W[c]["flushes"]) for c in P.CODES), "SF26: the planned maintenance log's monthly "
        "visits, read in New Zealand time, are the flushes the world ran (September's the last before the quarter)")
+    ok(_visits_as(target, P.NZ) == V, "SF26 control: the log read through this file's own loader in New Zealand time "
+       "gives the golden's visits")
+    Vu = _visits_as(target, P.UTC)
+    off_u = S.offsets(target, S.CARRY, "corr", D, L, C, V=Vu)[0]
+    ok(S.flags(off_u) == G, "SF26: the log's visit times read as UTC file the same six (CAL-FI1 %+.4f, HOL-FI1 %+.4f)"
+       % (off_u[("CAL", "fil")], off_u[("HOL", "fil")]))
 
     LT = _line_terms(target, D, info, V)
     ok(min(abs(abs(v) - P.THRESH) for v in T.values()) >= 0.002, "every channel's true offset 0.002 or more from the line "
@@ -168,8 +240,16 @@ def main(target):
     m = min(abs(abs(v[k]) - P.THRESH) for v in fam.values() for k in v)
     ok(m >= MARGIN, "SF5: licensed family's margin to the line %.4f (>= %.4f)" % (m, MARGIN))
     # the fork table's remaining rows
-    ok(len(gold) == 16 and all(k[1] in ("fil", "fin") for k in gold), "SF1: the 16 channels are the filtered and final "
-       "water points")
+    import openpyxl as _ox1
+    _pts = list(_ox1.load_workbook(os.path.join(target, "online_analyser_register.xlsx"),
+                                   read_only=True)["Sample points"].iter_rows(values_only=True))[1:]
+    _treated = sorted(r[0] for r in _pts if r[2] in ("Filtered", "Final"))
+    _wq1 = _text_of(os.path.join(target, "WQ-DS-04_online_monitoring_data_standard.pdf"))
+    ok(len(gold) == 16 and sorted(S.name(k) for k in gold) == _treated and
+       _has(_wq1, "A treated water channel (filtered or final water)") and
+       len([r for r in _pts if r[2] == "Raw"]) == 8,
+       "SF1: the 16 channels are the register's filtered and final water points, the treated water channels WQ-DS-04 "
+       "section 4 flags (the eight raw water points outside it)")
     tr = [g for g in L if g["stream"] != "raw"]
     ok(sum(g["cens"] for g in tr) >= 0.6 * len(tr), "SF4: %d of %d treated grabs below the limit, so no quarter mean comes "
        "from them" % (sum(g["cens"] for g in tr), len(tr)))
@@ -182,10 +262,14 @@ def main(target):
         months = [float(np.mean(r[4:7])) for r in _rows if r[0] == P.tag(code)]
         ok(max(abs(mm - float(np.mean(C[code]))) for mm in months) <= 0.001, "SF9: %s's monthly check means within 0.001 "
            "of the quarter's" % P.NAME[code])
-    prompt = open(os.path.join(os.path.dirname(target.rstrip("/")), "prompt.txt")).read() if os.path.exists(
-        os.path.join(os.path.dirname(target.rstrip("/")), "prompt.txt")) else ""
-    ok("decimal" not in prompt.split("Give the hours")[0] if prompt else True, "SF13: the prompt grades no offset's "
-       "rounding (only the hours carry one)")
+    # SF13: the prompt (read from the task folder, so the check runs on every build) carries one rounding instruction,
+    # the hours'; no offset is graded to a rounding
+    prompt = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "prompt.txt")).read()
+    rnd = [s.strip() for s in re.split(r"(?<=[.?!])\s+", prompt.strip())
+           if re.search(r"\bdecimals?\b|significant|\bround(ed|ing)?\b", s, re.I)]
+    ok(len(prompt) > 200 and _has(prompt, "every channel's quarter offset against the 0.005 band") and
+       rnd == ["Hours to one decimal."], "SF13: the prompt's one rounding instruction is the hours' (%s), and the "
+       "chart's offsets carry none" % rnd)
     neg = sum(1 for g in L if g["analysed"] < g["received"])
     lo, hi = S.clock_bracket(L)
     ok(10 <= neg <= 16 and 50 <= lo < 60 < hi <= 70, "SF14: %d rows are stamped as analysed before reception logged "
@@ -308,6 +392,19 @@ def main(target):
     L_cur = [g for g in L if not (g["stream"] != "raw" and g["collected"] < dt.datetime(2027, 11, 1))]
     ok(S.flags(S.offsets(target, S.CARRY, "corr", D, L_cur, C, V=V)[0]) == G, "R2: Layer 1 item, October's treated samples left "
        "unmatched under the old codes, leaves the call unchanged")
+    # SF29: the laboratory's times carry no zone in the export; read as New Zealand time (the golden) or as UTC, the
+    # call and ask A converge
+    Lu = _lims_as_utc(L)
+    ok(all((u["collected"] - g["collected"]).total_seconds() == 13 * 3600 for g, u in zip(L, Lu)),
+       "SF29 control: read as UTC every laboratory time moves 13 hours (the quarter is all daylight time)")
+    off29, info29 = S.offsets(target, S.CARRY, "corr", D, Lu, C, V=V)
+    ok(S.flags(off29) == G and info29["HOL"]["kind"] == "zero" and info29["CAL"]["kind"] == "span",
+       "SF29: the laboratory's times read as UTC file the same six, Holmedale's shortfall still a zero error and "
+       "Calderwood's a span error")
+    q0, q1 = dt.datetime(2027, 10, 1), dt.datetime(2028, 1, 1)
+    ok(S.ask_a(target, Lu) == S.ask_a(target, L) and all(q0 <= g["collected"] < q1 for g in L + Lu),
+       "SF29: ask A's counts are the same with every laboratory time read as UTC, every sample collected inside the "
+       "quarter either way")
     # asks against the world
     A = S.ask_a(target, L)
     Aw = {c: 0 for c in P.CODES}
@@ -357,7 +454,7 @@ def main(target):
        "so missing it and counting the second logging never net: %s" % late_cl)
     for nm in ("nophase", "checked", "allport", "faults", "historian", "allF", "nohold"):
         alt = S.ask_b(target, D, nm)
-        ok(all(abs(alt[c] - B[c]) > 0.45 for c in P.CODES), "SF17 SF18 SF20 SF23 SF28: ask B path '%s' misses every "
+        ok(all(abs(alt[c] - B[c]) > 0.45 for c in P.CODES), "SF17 SF18 SF20 SF28: ask B path '%s' misses every "
            "plant by half an hour or more" % nm)
     # ask B's storm-night stops: each analyser off once, the polls returning no reading at every port, no check after,
     # and its sequence starting again at the raw water port in slots the running sequence would not have reached
@@ -423,16 +520,117 @@ def main(target):
         tel = S.telemetry(x, "checked")
         sig &= bool(all(np.all(tel[np.arange(f["a"], f["b"])][x["sl"][np.arange(f["a"], f["b"])] == f["port"]])
                         for f in fis))
-    ok(sig, "SF23: every plant's filtered port lost its signal to the PLC once (F rows at that port only, the other "
+    ok(sig, "SF20: every plant's filtered port lost its signal to the PLC once (F rows at that port only, the other "
        "ports read between them, no check within five hours), and the round 3 readers' rule reads each as the "
        "telemetry's")
-    # ask A's clock: not filed anywhere; the reception and release stamps bracket it
-    with open(os.path.join(target, "water_services_data_dictionary.md")) as fh:
-        dic = fh.read()
-    ok("standard time" not in dic and "run record" in dic, "SF14: the dictionary names the analyser's run record and "
-       "no clock for it")
+    # ask A's clock: not filed anywhere; the reception and release stamps bracket it. The absence is searched through
+    # the one text extractor this file uses for every document, with a sentence known to be there as its control
+    docs_text = {f: _text_of(os.path.join(target, f)) for f in sorted(os.listdir(target)) if f.endswith(DOC_EXT)}
+    ok(all(len(t) > 200 for t in docs_text.values()) and len(docs_text) == 3 and
+       _has(docs_text["WQ-DS-04_online_monitoring_data_standard.pdf"],
+            "Ammonia samples are analysed within 24 hours of collection."),
+       "SF14 control: the extractor reads all three documents (%s) and finds WQ-DS-04 section 6's holding-time "
+       "sentence" % ", ".join("%s %d chars" % (f, len(t)) for f, t in docs_text.items()))
+    clock = r"standard time|NZST|daylight|run record|instrument clock|\bclock\b"
+    ok(_find(r"ammonium standard", docs_text["WQ-DS-04_online_monitoring_data_standard.pdf"]),
+       "SF14 control: the search used below finds WQ-DS-04 section 5's 'ammonium standard'")
+    ok(not any(_find(clock, t) for t in docs_text.values()), "SF14: no shipped document names the laboratory "
+       "analyser's clock or its run record (%s)" % [f for f, t in docs_text.items() if _find(clock, t)])
     ok(S.ask_a(target, L, shift_h=0) != A and S.ask_a(target, L, shift_h=13) != A,
        "SF14: the count needs the stamps moved (as given and as UTC both differ)")
+    # SF18: the historian's lost night of 17 November (no rows at all). What a fault on the historian's own server
+    # leaves is filed once, in the process summary's telemetry paragraph; the slots it covers are read through pandas,
+    # as the verifier reads the export
+    import pandas as pd
+    proc = docs_text["water_treatment_process_summary_2027.pdf"]
+    ok(_has(proc, HISTORIAN_SENTENCE) and sum(len(re.findall(r"historian's own server", " ".join(t.split())))
+                                              for t in docs_text.values()) == 1,
+       "SF18: the process summary files once that a fault on the historian's own server leaves it with no record "
+       "and the plants and their dose control run on")
+    rd = pd.read_csv(os.path.join(target, "nh3_online_readings_2027Q4.csv"), dtype={"qc": str}, keep_default_na=False,
+                     na_values=[""])
+    rd["slot"] = ((pd.to_datetime(rd["reading_end_utc"], utc=True) - pd.Timestamp(P.T0)).dt.total_seconds()
+                  // 600).astype(int) - 1
+    missing = {c: sorted(set(range(P.NS)) - set(rd.loc[rd["site_code"] == c, "slot"])) for c in P.CODES}
+    a_, b_ = W[P.CODES[0]]["lost"]
+    night = P.slot_end(a_).astimezone(P.NZ)
+    ok(all(missing[c] == list(range(a_, b_)) for c in P.CODES) and night.date() == dt.date(2027, 11, 17),
+       "SF18: the slots with no row at all are one run, the same %.1f hours at all eight plants from %s New Zealand "
+       "time, and nowhere else" % ((b_ - a_) / 6, night.strftime("%d %b %H:%M")))
+    lostgap = {}
+    for c in P.CODES:
+        good_ = S.fil_good(D[c], "plc")
+        good_ = good_[D[c]["present"][good_]]       # a slot with no row read as no reading at the PLC
+        lostgap[c] = float(np.sum(np.clip(np.diff(good_) * P.SLOT_MIN / 60.0 - P.DOSE_HOLD_H, 0, None)))
+    ok(all(lostgap[c] - B[c] >= 3.0 for c in P.CODES), "SF18: reading those slots as no reading at the PLC moves "
+       "every plant's hours by 3.0 or more (the sentence decides it): %s" % {c: round(lostgap[c] - B[c], 1)
+                                                                              for c in P.CODES})
+    # closure 19: the codes. The historian's own code table labels each quality code; WQ-DS-04 files the G readings
+    # (section 3) and the V check readings (section 5); the labels read true in the export
+    qtab = pd.read_csv(os.path.join(target, "historian_quality_codes.csv"), dtype=str, keep_default_na=False)
+    lab_of = dict(zip(qtab["qc"], qtab["description"]))
+    ok(list(qtab.columns) == ["qc", "description"] and lab_of == {"G": "Good", "F": "No reading",
+                                                                  "V": "Verification check"}
+       and set(rd["qc"]) == set(lab_of), "closure 19: the historian's code table labels exactly the codes the "
+       "readings carry (%s)" % ", ".join("%s %s" % kv for kv in lab_of.items()))
+    chk_pt = rd["sample_point"].str.endswith("-CHK")
+    ok(rd.loc[rd["qc"] == "F", "nh3_n_mgl"].isna().all() and rd.loc[rd["qc"] != "F", "nh3_n_mgl"].notna().all()
+       and chk_pt[rd["qc"] == "V"].all() and not chk_pt[rd["qc"] == "G"].any(),
+       "closure 19: the labels read true in the export: no F row carries a value, every G and V row does, and the V "
+       "rows sit at the check ports")
+    wq = docs_text["WQ-DS-04_online_monitoring_data_standard.pdf"]
+    ok(_has(wq, "readings held in the historian with quality code G for the quarter") and
+       _has(wq, "The check's three readings are also held in the historian with quality code V."),
+       "closure 19: WQ-DS-04 sections 3 and 5 file the G readings and the V check readings")
+    # dataset-generation section 3: no shipped file or sheet describes the data, by name or by content
+    import openpyxl as _oxd
+    names = sorted(os.listdir(target))
+    sheets = [(f, s) for f in names if f.endswith(".xlsx") for s in _oxd.load_workbook(os.path.join(target, f),
+                                                                                         read_only=True).sheetnames]
+    ok(_describe_name("water_services_data_dictionary.md") and _describe_name("pack_manifest.csv") and
+       _describe_sheet("Notes"), "section 3 control: the name test below catches a data dictionary, a manifest and a "
+       "notes sheet")
+    ok(not [f for f in names if _describe_name(f)] and not [s for s in sheets if _describe_sheet(s[1])],
+       "section 3: no shipped file or sheet is named as a dictionary, readme, manifest, codebook, field notes, "
+       "definitions or notes (%d files; sheets %s)" % (len(names), ", ".join(s for _, s in sheets)))
+    data_cols = {}
+    for f in names:
+        if f.endswith(".csv"):
+            data_cols[f] = list(pd.read_csv(os.path.join(target, f), nrows=0).columns)
+        elif f.endswith(".xlsx"):
+            for ws_ in _oxd.load_workbook(os.path.join(target, f), read_only=True).worksheets:
+                data_cols["%s:%s" % (f, ws_.title)] = [str(v) for v in next(ws_.iter_rows(values_only=True)) if v]
+    ok(set(_columns_named(_text_of(os.path.join(target, "lims_ammonia_2027Q4.csv")).split("\n")[0], data_cols)) >=
+       {"sample_no", "lims_point", "collected", "received", "analysed", "released"},
+       "section 3 control: the column search below finds the laboratory export's own header in its first line")
+    named = {f: _columns_named(t, data_cols) for f, t in docs_text.items()}
+    ident = lambda c: "_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c)
+    most = {f: max(len(set(v) & set(cols)) for cols in data_cols.values()) for f, v in named.items()}
+    ok(all(not [c for c in v if ident(c)] for v in named.values()) and all(m < 5 for m in most.values()),
+       "section 3: no document names a data column as a field, nor five of one file's columns (%s)" %
+       "; ".join("%s: %s" % (f, ", ".join(v) or "none") for f, v in named.items()))
+    # document control dates: no workbook saved before an event it records, none after the folder's assembly
+    import zipfile as _zf
+    def _saved(f):
+        core = _zf.ZipFile(os.path.join(target, f)).read("docProps/core.xml").decode()
+        return dt.datetime.fromisoformat(re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+                                         .replace("Z", "+00:00"))
+    pm_ = list(_oxd.load_workbook(os.path.join(target, "online_analyser_register.xlsx"),
+                                  read_only=True)["Planned maintenance"].iter_rows(values_only=True))[1:]
+    ck_ = list(_oxd.load_workbook(os.path.join(target, "analyser_verification_2027Q4.xlsx"),
+                                  read_only=True)["Checks Q4 2027"].iter_rows(values_only=True))[1:]
+    last_visit = max(r[0] for r in pm_).replace(tzinfo=P.NZ)
+    last_check = max(r[2] for r in ck_).replace(tzinfo=P.NZ)
+    folder = dt.datetime(2028, 1, 19, 9, 12, tzinfo=P.UTC)
+    ok(last_visit < _saved("online_analyser_register.xlsx") < folder and
+       last_check < _saved("analyser_verification_2027Q4.xlsx") < folder,
+       "document dates: the register saved %s after its last visit (%s), the verification workbook %s after its last "
+       "check (%s), both before the folder's assembly" % (_saved("online_analyser_register.xlsx").date(),
+                                                          last_visit.date(), _saved("analyser_verification_2027Q4.xlsx")
+                                                          .date(), last_check.date()))
+    lims_last = max(max(g["received"], g["analysed"] + dt.timedelta(hours=1), g["released"]) for g in L)
+    ok(lims_last.date() <= dt.date(2028, 1, 14), "document dates: the laboratory export's last stamp (%s) is on or "
+       "before its export of 14 January 2028" % lims_last)
     vals = list(A.values())
     ok(max(vals.count(v) for v in vals) <= 2, "ask A: no value shared by more than two plants")
     vb = [round(v, 1) for v in B.values()]

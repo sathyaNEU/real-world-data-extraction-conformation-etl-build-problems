@@ -60,6 +60,13 @@ def main(target):
     f = lambda n: os.path.join(target, n)
     r = pd.read_csv(f("nh3_online_readings_2027Q4.csv"))
     r["slot"] = ((pd.to_datetime(r["reading_end_utc"], utc=True) - T0).dt.total_seconds() // 600).astype(int) - 1
+    # the historian's own code table labels its quality codes: the verifier reads the rows by label (the golden by code)
+    qcodes = pd.read_csv(f("historian_quality_codes.csv"), dtype=str, keep_default_na=False)
+    label = dict(zip(qcodes["qc"], qcodes["description"]))
+    unlabelled = sorted(set(r["qc"].unique()) - set(label))
+    if unlabelled:
+        fails.append(("quality codes without a label", unlabelled))
+    r["quality"] = r["qc"].map(label).fillna("")
     reg = pd.read_excel(f("online_analyser_register.xlsx"), sheet_name="Analysers")
     pts = pd.read_excel(f("online_analyser_register.xlsx"), sheet_name="Sample points")
     chk = pd.read_excel(f("analyser_verification_2027Q4.xlsx"), sheet_name="Checks Q4 2027")
@@ -80,8 +87,8 @@ def main(target):
         x = r[r["site_code"] == code]
         port, brk = ports(x, seq)
         port_of[code], brk_of[code] = port, brk
-        good = x[x["qc"] == "G"].drop_duplicates("slot", keep="last").set_index("slot")["nh3_n_mgl"]
-        ver = x[x["qc"] == "V"].set_index("slot")["nh3_n_mgl"]
+        good = x[x["quality"] == "Good"].drop_duplicates("slot", keep="last").set_index("slot")["nh3_n_mgl"]
+        ver = x[x["quality"] == "Verification check"].set_index("slot")["nh3_n_mgl"]
         s = pd.Series(np.nan, index=range(NS))
         s.loc[good.index] = good.values
         cell = s.copy()
@@ -194,20 +201,20 @@ def main(target):
         x = r[r["site_code"] == code]
         port, brk = port_of[code], set(brk_of[code])
         fi = [i for i in range(NS) if port[i] == "FI1"]
-        qc = x.groupby("slot")["qc"].agg(lambda q: "".join(sorted(q)))
-        lone = sorted(i for i, q in qc.items() if q == "F")
+        qc = x.groupby("slot")["quality"].agg(lambda q: "|".join(sorted(q)))
+        lone = sorted(i for i, q in qc.items() if q == "No reading")
         telem = set()
         run = []
         for i in lone + [None]:
             if run and (i is None or i - run[-1] > 3):
                 whole = run == list(range(run[0], run[-1] + 1))
                 after = range(run[-1] + 1, run[-1] + 4)
-                if whole and not any(qc.get(j, "") == "V" for j in after) and not any(j in brk for j in after):
+                if whole and not any(qc.get(j, "") == "Verification check" for j in after) and not any(j in brk for j in after):
                     telem |= set(range(run[0], run[-1] + 1))
                 run = []
             if i is not None:
                 run.append(i)
-        good = [i for i in fi if qc.get(i, "") not in ("F", "V") or i in telem]
+        good = [i for i in fi if qc.get(i, "") not in ("No reading", "Verification check") or i in telem]
         gaps = np.diff(good) * 10 / 60
         hrs = float(np.sum(np.clip(gaps - 2, 0, None)))
         if round(hrs, 1) != fig["ask_b"][names[code]]:

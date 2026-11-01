@@ -1,5 +1,6 @@
 """task252 documents: the council's online monitoring data standard WQ-DS-04 (pdf), the plants' process summary
-(pdf), the data dictionary (md) and the laboratory's notice of the new site codes (eml)."""
+(pdf) and the laboratory's notice of the new site codes (eml). No document describes the data's files or columns
+(dataset-generation section 3)."""
 import datetime as dt
 
 from reportlab.lib import colors
@@ -10,6 +11,10 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 import params as P
 import records as R
+
+# the process summary's one sentence on the historian's own server (SF18's closure): a flat fact about the plant
+HISTORIAN = ("The plants do not depend on the historian: a fault on the historian's own server leaves it with no record "
+             "for the time the fault lasts, and the plants and their dose control run on as normal.")
 
 
 def _styles():
@@ -150,47 +155,8 @@ def process(path, W):
                    "with the analyser's status in memory, which a restart clears. The historian at the operations centre "
                    "in Fernvale polls each outstation every ten minutes and holds the readings for reporting and for the "
                    "quarterly return; when a poll fails it marks the slot and fills it from the outstation's store once "
-                   "the link is back.", body)]
+                   "the link is back. " + HISTORIAN, body)]
     doc.build(s, onFirstPage=_footer("Process summary, July 2027"), onLaterPages=_footer("Process summary, July 2027"))
-
-
-def dictionary(path):
-    txt = """# Water Services data dictionary: online ammonia monitoring and laboratory results
-
-Kept by Water Quality Compliance. Revised 3 November 2027.
-
-## nh3_online_readings (historian export)
-
-| Column | Meaning |
-|---|---|
-| site_code | Plant code (ASH Ashcombe, BRN Brannock, CAL Calderwood, DUN Dunmere, ELS Elstow, FEN Fenwick, GAR Garrick, HOL Holmedale) |
-| analyser_tag | The plant's ammonia analyser, as in the online analyser register |
-| reading_end_utc | End of the ten-minute port slot the reading belongs to, UTC |
-| sample_point | Control system sample point code (register, Sample points sheet); `<plant>-CHK` is the analyser's check port |
-| nh3_n_mgl | Ammoniacal nitrogen, mg/L as N, three decimals; blank when there is no reading |
-| qc | G good; F no reading for the slot; V verification check reading through the check port |
-
-A failed poll that the historian later fills from the plant's outstation keeps its F row, and the reading it was
-filled with follows under the same time with qc G. A slot with no row at all is one the historian's own server
-failed to store; the plants ran normally.
-
-## lims_ammonia (laboratory export)
-
-| Column | Meaning |
-|---|---|
-| sample_no | Laboratory sample number |
-| lims_point | Laboratory sample point code (register, Sample points sheet) |
-| location | Sample point as the laboratory describes it |
-| collected | Date and time the sampler took the sample, New Zealand time, as written on the bottle |
-| received | Date and time the laboratory's reception logged the sample, New Zealand time |
-| analysed | Date and time of the ammonia analysis, from the laboratory's analyser run record |
-| released | Date and time the laboratory released the result to Water Services, New Zealand time |
-| determinand | Ammoniacal-N |
-| result | mg/L as N; `<0.030` is below the limit of detection |
-| units, lod | Units and limit of detection |
-"""
-    with open(path, "w", newline="\n") as fh:
-        fh.write(txt)
 
 
 def notice(path, W):

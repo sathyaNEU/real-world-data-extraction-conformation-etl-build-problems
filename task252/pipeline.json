@@ -1,20 +1,21 @@
 {
  "task": "task252",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-21",
+ "updated": "2026-11-01",
  "stump": "A competent solver fits each analyser's carryover from both slots before, reads Holmedale's check shortfall as a zero error and Calderwood's as a span error from the raw pairs, and flags BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1, leaving CAL-FI1 at about +0.001; the filtered sample lines at Calderwood and Holmedale lose ammonia to a biofilm each monthly line flush clears, which the readings' recovery after the flushes measures: with it HOL-FI1 sits inside the band and CAL-FI1 reads about 0.010 low.",
  "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-21"
+  "date": "2026-11-01",
+  "note": "exit 0 on the paper cracker's 35.4; the careful-solver measurement (56.0, Ask A whole) fails the two-fifths rule"
  },
  "leak": {
-  "leak_py": "REVIEW (5 lines, no LEAK)",
+  "leak_py": "REVIEW, no LEAK (--asof 2028-01-19, the reshipped cut 50608886, md5 19b5e04d, 2026-11-01); at ship REVIEW (5 lines, no LEAK)",
   "reader": "two scored readers on af7016cf, both missed the call (A filed five, B seven; neither read the flushes), asks 0 of 32, model score 12 each"
  },
  "duplicate_check": {
@@ -28,8 +29,16 @@
   "gate_h": "domain pass, layers pass, decisive_step analytical",
   "report": "determinism_check_report.md"
  },
- "returned": [],
- "resume": "SHIPPED 2026-10-21 (architecture 2) on target.zip af7016cf: both scored readers missed the call and every ask figure, judge DETERMINISTIC APPROVE. Waiting on the portal: APPROVED is SHIPPED_APPROVED; a landed call is /build task252 from 2; a determinism finding /fix-determinism; a rubric over 50 with the call held /fix-rubric.",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK water_services_data_dictionary.md: a file whose name says it describes the data (data_dictionary); LEAK water_services_data_dictionary.md: names 19 column(s) of the data files verbatim, 100% of lims_ammonia_2027Q4.csv)",
+   "repair": "leak",
+   "move": "The generator no longer writes water_services_data_dictionary.md (the readings' and the laboratory export's columns glossed, the quality codes, the fill and missing-slot notes, the laboratory's clocks). The pack stays at ten files in four formats (CSV, EML, PDF, XLSX): the historian's own quality code table, historian_quality_codes.csv (G Good, F No reading, V Verification check), a plain crosswalk, carries closure 19 with WQ-DS-04 sections 3 and 5, and verify.py now reads the readings by its labels while the golden reads the codes. One sentence was added to a governing document: the process summary's telemetry paragraph now ends \"The plants do not depend on the historian: a fault on the historian's own server leaves it with no record for the time the fault lasts, and the plants and their dose control run on as normal.\", the lost night's WHAT for ask B (SF18, the round 1 judge's finding), naming no night and no device; read the other way every plant's hours move by 3.5 or more (asserted). The laboratory's times, zoned only by the dictionary, close by convergence (new SF29: read as UTC the six, Holmedale's zero error and Calderwood's span error stand and ask A's counts are unchanged); the fill (the process summary's own fill sentence and the data carry it), the bottle's time and the run record are left unstated, ask A's clock stays unfiled. Provenance (what each file is, its keeper, what it covers, its export or issue date, its rows) moved to metadata.json through build.PROVENANCE, whose subdomain and origin no longer name the analysers' carryover, zero and span errors or the laboratory analyser's clock. The register's saved date moved from 2 November 2027 to 10 January 2028, after the December visits it logs (closure 4). checks.py: SF23 (architecture 1's lost-signal row, carried in this fork table by SF20) renamed SF20, the same-cycle raw variant relabelled SF21, SF1 and SF26's same list asserted on the pack, SF13 rewritten (it split the prompt on a phrase the prompt no longer has, so it failed on the shipped prompt), SF29, SF18's lost night and closure 19 asserted, and no shipped file or document describing the data by name or content, each with a positive control. Against the judged pack seven files are byte-identical; figures.json, the goldens, submission.md and every graded figure are unchanged.",
+   "commit": ""
+  }
+ ],
+ "resume": "ASK LAYER owed before any reship (measured 2026-11-01). The leak repair is done on 19b5e04d (the data dictionary no longer ships; the quality codes as a plain crosswalk; one WHAT sentence in the process summary's Telemetry paragraph; SF23 realigned; every fork row asserted). The judge thread on that cut: the main call forced (the six channels, 0.0034 clearance) with high stump power, but asks 2 and 3 NOT_DETERMINISTIC: the lab clock shift is not forced (late reception logging explains the stamps) and the storm-night stops rest on an unfiled inference. The careful-solver cracker lands Ask A (8 of 8; mirror leakage 50 per cent, Ask A whole; pair 56.0). A /fix-rubric pass found no device both forced for the judge and missed by the careful solver on the files the call reads (candidate tables in the agent's report and the design note). Next: re-site both asks onto ask-only records (a reception and courier log for the late-analysis ask; the PLC's own dose or event channel, kept silent, for the fixed-dose hours), measured with the careful solver and the judge's standard before data is cut; or re-root at stage 1.",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,
@@ -93,5 +102,6 @@
    "architecture": 2,
    "status": "SHIPPED 2026-10-21: readers missed the call (five and seven channels), asks 0 of 32, judge DETERMINISTIC APPROVE"
   }
- ]
+ ],
+ "target_zip_md5": "19b5e04d93d04f5e1930037b7605b7cc"
 }

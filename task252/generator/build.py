@@ -16,12 +16,12 @@ import sim
 
 FILES = dict(
     readings="nh3_online_readings_2027Q4.csv",
+    codes="historian_quality_codes.csv",
     lims="lims_ammonia_2027Q4.csv",
     checks="analyser_verification_2027Q4.xlsx",
     register="online_analyser_register.xlsx",
     standard="WQ-DS-04_online_monitoring_data_standard.pdf",
     process="water_treatment_process_summary_2027.pdf",
-    dictionary="water_services_data_dictionary.md",
     notice="Kowhai_Bay_new_site_codes_from_1_November.eml",
     output="plant_daily_output_2027Q4.csv",
     rainfall="catchment_rainfall_daily_2027Q4.csv",
@@ -29,6 +29,33 @@ FILES = dict(
 PACK = list(FILES)
 DISTRACTORS = ("output", "rainfall")
 CONTEXT = ("notice",)
+# the historian's own quality code table, as its system lists the codes the export carries: a plain crosswalk
+QUALITY_CODES = [("G", "Good"), ("F", "No reading"), ("V", "Verification check")]
+REGISTER_SAVED = "2028-01-10T22:14:00Z"     # after the December visits it logs, before any January visit was due
+# provenance for metadata.json (dataset-generation section 9): what each file is, who keeps it, what it covers and
+# when it was exported or issued; nothing under target/ describes the pack
+PROVENANCE = {
+    "readings": ("the quarter's online ammonia readings exported from the operations centre historian",
+                 "Water Services operations centre", "1 October to 31 December 2027", "2028-01-14"),
+    "codes": ("the historian's quality code table", "Water Services operations centre", "the historian's codes",
+              "2028-01-14"),
+    "lims": ("the contract laboratory's ammonia results export", "Kowhai Bay Analytical",
+             "samples collected 1 October to 31 December 2027", "2028-01-14"),
+    "checks": ("the monthly analyser verification workbook", "Water Services instrument and controls",
+               "October to December 2027", "2028-01-06"),
+    "register": ("the online analyser register", "Water Services instrument and controls",
+                 "the eight plants' ammonia analysers", REGISTER_SAVED[:10]),
+    "standard": ("the council's online water quality monitoring data standard, issue 3", "Water Quality Compliance",
+                 "in force from June 2027", "2027-06-02"),
+    "process": ("the water treatment plants' process summary", "Water Services operations", "2027",
+                "2027-07-19"),
+    "notice": ("the laboratory's email on new site codes", "Kowhai Bay Analytical", "from 1 November 2027",
+               "2027-10-28"),
+    "output": ("the plants' daily water supplied", "Water Services operations", "1 October to 31 December 2027",
+               "2028-01-14"),
+    "rainfall": ("daily rainfall at the catchment rain gauges", "Water Services operations",
+                 "1 October to 31 December 2027", "2028-01-14"),
+}
 
 
 def _csv(path, header, rows):
@@ -140,6 +167,7 @@ def run(target):
     F = {k: os.path.join(target, v) for k, v in FILES.items()}
     _csv(F["readings"], ["site_code", "analyser_tag", "reading_end_utc", "sample_point", "nh3_n_mgl", "qc"],
          R.readings(W))
+    _csv(F["codes"], ["qc", "description"], QUALITY_CODES)
     L = R.lims(W)
     cols = ["sample_no", "lims_point", "location", "collected", "received", "analysed", "released", "determinand",
             "result", "units", "lod"]
@@ -148,7 +176,6 @@ def run(target):
     register(F["register"], W)
     docs.standard(F["standard"])
     docs.process(F["process"], W)
-    docs.dictionary(F["dictionary"])
     docs.notice(F["notice"], W)
     rng = np.random.default_rng(P.SEED_DOCS)
     _csv(F["output"], ["date", "site_code", "plant", "supplied_ML"], R.output(W, rng))
@@ -156,7 +183,7 @@ def run(target):
     postprocess.scrub(F["standard"], "Microsoft Word 2019", "2027-06-02T09:14:00")
     postprocess.scrub(F["process"], "Microsoft Word 2019", "2027-07-19T15:41:00")
     for k, made, saved in (("checks", "2027-10-04T20:31:00Z", "2028-01-06T22:12:00Z"),
-                           ("register", "2023-02-14T03:05:00Z", "2027-11-02T01:48:00Z")):
+                           ("register", "2023-02-14T03:05:00Z", REGISTER_SAVED)):
         postprocess.scrub(F[k], P.ORG, saved[:10])
         postprocess.finish_office(F[k], made, saved, P.ORG)
     return W
