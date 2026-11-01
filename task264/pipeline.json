@@ -1,10 +1,10 @@
 {
  "task": "task264",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "descriptive-distribution",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-01",
  "stump": "The default (indirect standardisation on the returned 12-month questionnaires, or the non-answers imputed on the case-mix, on which they balance) places all 1,250 operations with seven providers, Ormsbrook 240 and Thistledene 170 among them; the non-answers are concentrated among patients readmitted as an emergency within 90 days of discharge (33 against 68 per cent return, change 17.5 points below expected), and filling each from the answerers at its provider who shared that status drops both below the 14.5 floor: five providers, 910 placed, 340 held.",
  "architecture": 3,
@@ -14,17 +14,17 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; sweep 4 policy and prompt vocabulary, sweep 6 capacity returns; each ruled harmless in the design note)",
-  "reader": "no leak; Q6 leaned rule application, settled by the judge's measurement"
+  "leak_py": "REVIEW ruled (2026-11-01, --asof 2026-10-06)",
+  "reader": "clean in both rounds; the round-1 rule-application reading resolved by the measurement; the reader's sections appended to task264/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family, repeat.gate_g, overuse.gate_g; no BLOCK)",
+  "heart": "WARN 2026-11-01 at the ship gate (overuse.org_family, repeat.gate_g, overuse.gate_g), no BLOCK",
   "nearest": "task239 0.09 driver; surface promotes task265 (0.090) and task263 (0.084), back to back by number"
  },
  "judge": {
-  "verdict": "round 1: main call forced (derive first); Gate F good; Gate G statistical_rigor, analytical_non_defect; Gate H pass",
-  "disposition": "ask-layer repair: supplementary item 4 (participation) answer_contradicts_files, the attachment of questionnaires without an NHS number unfiled; repaired in one pass, re-judge pending",
-  "report": "main session (stage 4, round 1)"
+  "verdict": "round 2 DETERMINISTIC, APPROVE (order kept; Gate F likely high; Gate G statistical_rigor / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE, no repair; round 1's participation fork closed by a filed WHAT and by construction",
+  "report": "task264/determinism_check_report.md"
  },
  "returned": [
   {
@@ -34,9 +34,9 @@
    "figures": "participation unchanged 81, 85, 84, 80, 81, 84, 84, 81, 81, 80 (alphabetical); NHS-link-only reading 75, 81, 78, 75, 75, 79, 80, 76, 74, 76; call and the other 19 figures unchanged"
   }
  ],
- "resume": "the re-judge (stage 4, round 2) on target.zip 44c981bc",
+ "resume": "Shipped 2026-11-01 (architecture 3, Descriptive): place 910 of the 1,250 additional 2027-28 operations with five providers and hold 340; target.zip 44c981bc. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -98,5 +98,8 @@
   "pair_ceiling": 33.8,
   "mirror_leakage": 0.0,
   "pair_if_cracker_matches_keyless": 59.8
+ },
+ "build": {
+  "target_zip": "44c981bc (14 members, each byte-identical to target/)"
  }
 }
