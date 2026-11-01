@@ -27,21 +27,22 @@ import world as WD         # noqa: E402
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 
-CONTENTS = [
-    ("definitions", "Quality assurance program: measures and definitions (effective 1 July 2025)."),
-    ("release", "Systems team: protocol software release 13.3, go-live note."),
-    ("reference", "Centre reference: trunk groups, ambulances, protocols and positions."),
-    ("takers", "Scheduling system: call-takers, with their CAD logins."),
-    ("roster", "Scheduling system: the shifts each call-taker worked, 18 August 2025 to 31 August 2026."),
-    ("calls", "CAD: medical calls answered, 1 September 2025 to 31 August 2026."),
-    ("epcr", "ePCR: the crews' patient care records for those calls."),
-    ("units", "CAD: ambulance assignments for those calls."),
-    ("che", "911 call handling equipment: call detail, every call on the centre's trunks."),
-    ("tcpr", "QA review log: cardiac arrest call reviews."),
-    ("casereview", "QA review log: protocol compliance case reviews."),
-    ("unithours", "EMS operations: ambulance staffed hours by day."),
-    ("dictionary", "Data dictionary for the files above."),
-]
+# provenance for metadata.json (dataset-generation section 9): the system or office that made each file and what it
+# covers. Nothing under target/ describes the pack (section 3), so no index, dictionary or manifest ships.
+PROVENANCE = {
+    "program": ("Quality assurance", "the quality assurance program's measures, effective 1 July 2025"),
+    "release": ("Systems team", "the protocol software release's go-live note, issued 20 February 2026"),
+    "reference": ("Quality assurance", "the centre's trunk groups, ambulances, protocols and positions"),
+    "takers": ("Scheduling system", "the centre's call-takers"),
+    "roster": ("Scheduling system", "shifts worked, 18 August 2025 to 31 August 2026"),
+    "calls": ("CAD", "medical calls answered, 1 September 2025 to 31 August 2026"),
+    "epcr": ("ePCR", "the crews' patient care records for those calls"),
+    "units": ("CAD", "ambulance assignments for those calls"),
+    "che": ("911 call handling equipment", "call detail, every call on the centre's trunks"),
+    "tcpr": ("QA review log", "cardiac arrest call reviews"),
+    "casereview": ("QA review log", "protocol compliance case reviews"),
+    "unithours": ("EMS operations", "ambulance staffed hours by day"),
+}
 
 
 def build(out, seed=K.SEED, keep=False):
@@ -58,15 +59,13 @@ def build(out, seed=K.SEED, keep=False):
         head, rows = fn()
         R.write_csv(p(key), head, rows)
         n[key] = len(rows)
-    DC.write_definitions(p("definitions"))
+    DC.write_program(p("program"))
     DC.write_release(p("release"))
     DC.write_reference(p("reference"))
-    DC.write_dictionary(p("dictionary"))
-    DC.write_index(p("index"), [(K.FILES[k], d) for k, d in CONTENTS])
     return dict(world=w if keep else None, counts=n)
 
 
-PDF_DATES = {"definitions": ("D:20250618101500-05'00'", "D:20250626153000-05'00'"),
+PDF_DATES = {"program": ("D:20250618101500-05'00'", "D:20250626153000-05'00'"),
              "release": ("D:20260219164000-06'00'", "D:20260220091200-06'00'")}
 OOXML = {"reference": (K.PEOPLE["qa"], K.PEOPLE["qa"], "2023-01-09T15:12:00Z", "2026-11-03T21:47:00Z",
                        "Centre reference", True)}
@@ -104,8 +103,10 @@ def metadata(fig, counts):
         "objective": "Root-Cause Analysis",
         "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
         "deliverables": list(K.DELIVERABLES),
-        "provenance": {name: {"source": src, "date": "2026-10-26", "licence": "CC0 1.0 (constructed for this task)"}
-                       for name in sorted(K.FILES.values())},
+        "as_of": K.ASSEMBLED.date().isoformat(),
+        "provenance": {K.FILES[k]: {"source": src, "system": PROVENANCE[k][0], "covers": PROVENANCE[k][1],
+                                    "date": "2026-10-26", "licence": "CC0 1.0 (constructed for this task)"}
+                       for k in sorted(K.FILES)},
         "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
         "answer": fig["call"]["cause"],
     }

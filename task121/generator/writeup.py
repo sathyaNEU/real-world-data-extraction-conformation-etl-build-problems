@@ -28,11 +28,11 @@ def text(fig):
            "**Analytical objective:** Root-Cause Analysis.", "",
            "## 1. Final Recommendation", "",
            "**The rise in under-triaged medical calls came from quick returns, shifts begun less than eleven hours "
-           "after the call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought in.**",
+           "after the call-taker's previous shift ended, which the rotation worked from March 2026 brought in.**",
            "From March 2026, %s per cent of the critical or emergent calls taken on those shifts were sent cold, "
            "against %s per cent on rested shifts, which ran at %s per cent before March. Not protocol release 13.3, "
            "which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls "
-           "rose from %s to %s per cent. Not the call mix, since the March to August rate at the earlier mix is %s "
+           "rose from %s to %s per cent. Not the protocol mix, since the March to August rate at the earlier mix is %s "
            "per cent." % (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"]),
                           f1(cp["rested_shifts_before"]), f1(s["veterans"][0]), f1(s["veterans"][1]),
                           f1(s["standardised_from_march"])), "",
@@ -79,7 +79,7 @@ def text(fig):
            (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"])), "",
            "## 4. Deliverable Answers", "", "### %s" % K.GOLDEN, "",
            "1. Cause: quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended "
-           "(the rotation worked from 2 March 2026), not protocol release 13.3.",
+           "(the rotation worked from March 2026), not protocol release 13.3.",
            "2. Under-triage rate: September 2025 to February 2026 %s%%; March to August 2026 %s%%." %
            (f1(r["before"]), f1(r["from_march"])),
            "3. 90th percentile call processing time, medical calls, seconds:"]

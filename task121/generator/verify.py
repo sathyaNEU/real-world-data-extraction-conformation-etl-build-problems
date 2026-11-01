@@ -25,6 +25,18 @@ def lt(s, fmt="%m/%d/%Y %H:%M:%S"):
     return dt.datetime.strptime(s, fmt)
 
 
+def utc(s):
+    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+
+
+def central(t):
+    """a UTC time on the centre's clock (US Central: daylight time from 02:00 on the second Sunday of March to 02:00
+    on the first Sunday of November)"""
+    cdt = dt.datetime(2025, 3, 9, 8) <= t < dt.datetime(2025, 11, 2, 7) or \
+        dt.datetime(2026, 3, 8, 8) <= t < dt.datetime(2026, 11, 1, 7)
+    return t - dt.timedelta(hours=5 if cdt else 6)
+
+
 def main(task):
     T = os.path.join(task, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
@@ -146,11 +158,9 @@ def main(task):
             continue
         if (r["trunk_group"], r["ani"], r["arrived_utc"]) in ends:
             continue
-        arr = dt.datetime.strptime(r["arrived_utc"], "%Y-%m-%dT%H:%M:%SZ")
-        ans = dt.datetime.strptime(r["answered_utc"], "%Y-%m-%dT%H:%M:%SZ")
-        cdt = dt.datetime(2025, 3, 9, 8) <= ans < dt.datetime(2025, 11, 2, 7) or \
-            dt.datetime(2026, 3, 8, 8) <= ans < dt.datetime(2026, 11, 1, 7)
-        loc = ans - dt.timedelta(hours=5 if cdt else 6)
+        arr = utc(r["arrived_utc"])
+        ans = utc(r["answered_utc"])
+        loc = central(ans)
         n, m = per.get((loc.year, loc.month), (0, 0))
         per[(loc.year, loc.month)] = (n + 1, m + ((ans - arr).total_seconds() <= 15))
     for ym in months:

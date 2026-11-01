@@ -5,8 +5,8 @@
 
 ## 1. Final Recommendation
 
-**The rise in under-triaged medical calls came from quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought in.**
-From March 2026, 31.1 per cent of the critical or emergent calls taken on those shifts were sent cold, against 10.7 per cent on rested shifts, which ran at 10.2 per cent before March. Not protocol release 13.3, which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls rose from 10.4 to 14.5 per cent. Not the call mix, since the March to August rate at the earlier mix is 14.7 per cent.
+**The rise in under-triaged medical calls came from quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended, which the rotation worked from March 2026 brought in.**
+From March 2026, 31.1 per cent of the critical or emergent calls taken on those shifts were sent cold, against 10.7 per cent on rested shifts, which ran at 10.2 per cent before March. Not protocol release 13.3, which the rested shifts ran on too while they held. Not the academy graduates, since the veterans' calls rose from 10.4 to 14.5 per cent. Not the protocol mix, since the March to August rate at the earlier mix is 14.7 per cent.
 
 ## 2. Critical Components
 
@@ -29,7 +29,7 @@ From March 2026, 31.1 per cent of the critical or emergent calls taken on those 
 
 ### under_triage_cause_2026.xlsx
 
-1. Cause: quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended (the rotation worked from 2 March 2026), not protocol release 13.3.
+1. Cause: quick returns, shifts begun less than eleven hours after the call-taker's previous shift ended (the rotation worked from March 2026), not protocol release 13.3.
 2. Under-triage rate: September 2025 to February 2026 10.5%; March to August 2026 14.8%.
 3. 90th percentile call processing time, medical calls, seconds:
    - September 2025: 121

@@ -77,8 +77,7 @@ STANDARD_ANSWER_SHARE = 90  # per cent of 911 calls
 MINSEC_REVIEWER = "QA7"     # keys review times as minutes and seconds without the colon
 
 FILES = {
-    "index": "qa_review_folder_index.txt",
-    "definitions": "qa_program_definitions_2025.pdf",
+    "program": "qa_program_measures_2025.pdf",
     "release": "protocol_software_release_13_3.pdf",
     "reference": "centre_reference.xlsx",
     "takers": "call_takers.csv",
@@ -90,7 +89,6 @@ FILES = {
     "tcpr": "tcpr_arrest_reviews_2025_2026.csv",
     "casereview": "protocol_case_reviews_2025_2026.csv",
     "unithours": "ems_unit_hours_2025_2026.csv",
-    "dictionary": "data_dictionary.csv",
 }
 DISTRACTORS = ("casereview", "unithours")
 GOLDEN = "under_triage_cause_2026.xlsx"

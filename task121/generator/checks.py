@@ -1,6 +1,8 @@
 """The generator's assertions for task121, run on every build: the three rules on the clean truth (R1 to R3), the
 semantic fork table (SF), the ladder and the golden's family, the asks' devices and their fairness, the separation of
-the asks from the call, and the realism sweep. Prints one line a check; returns 1 on any failure."""
+the asks from the call, the pack's hygiene (no file describes the data, the input gates, and each closure the producing
+systems now carry), and the realism sweep. Prints one line a check; returns 1 on any failure."""
+import calendar
 import collections
 import datetime as dt
 import os
@@ -16,6 +18,16 @@ import common as K
 import pack as P
 
 OUT = []
+
+# a file or sheet named as a description of the data (dataset-generation section 3; the names leak.py screens, with
+# an index and a contents list added)
+DESCRIBE = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+    r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
+    r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|definitions|"
+    r"schema|layouts?_notes|handling_notes|release_notes|index|contents|notes)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?|index|contents)$", re.I)
 
 
 def row(label, ok, detail=""):
@@ -236,6 +248,87 @@ def run(task, world, res):
     same = all(K.r1(G2[k]) == K.r1(G[k]) for k in ("before", "after", "qr_share_before", "qr_share_after", "after_qr",
                                                    "after_rested", "before_rested"))
     row("SEP the call's figures are the same with the split incidents taken out", same, "")
+    # ------------------------------------------------------------------ nothing describes the data (dataset-generation 3)
+    shipped = sorted(os.listdir(target))
+    retired = ("data_dictionary", "qa_program_definitions_2025", "qa_review_folder_index")
+    row("PACK control: the name screen flags every describing name the pack used to carry",
+        all(DESCRIBE.search(n) for n in retired), ", ".join(retired))
+    named = [f for f in shipped if DESCRIBE.search(os.path.splitext(f)[0])]
+    row("PACK no shipped file is named as a description of the data (dictionary, manifest, index, definitions)",
+        not named and set(shipped) == set(K.FILES.values()), ", ".join(named) or "%d files" % len(shipped))
+    row("PACK no text or markdown file ships", not [f for f in shipped if f.endswith((".txt", ".md"))], "")
+    import openpyxl
+    sheets = openpyxl.load_workbook(os.path.join(target, K.FILES["reference"]), read_only=True).sheetnames
+    row("PACK no sheet is named as notes, a dictionary or an index (control: the screen flags 'Data dictionary')",
+        DESCRIBE_SHEET.match("Data dictionary") and not [s for s in sheets if DESCRIBE_SHEET.match(s.strip())],
+        ", ".join(sheets))
+    texts = {k: _pdf_text(os.path.join(target, K.FILES[k])) for k in ("program", "release")}
+    own = {"program": "the cause is the change without which the measure would have stayed where it was",
+           "release": "goes live on every call-taking position at 06:00"}
+    row("PACK control: each document's own sentence is found in its extracted text",
+        all(len(texts[k]) > 500 and _has(texts[k], own[k]) for k in texts),
+        ", ".join("%s %d chars" % (k, len(v)) for k, v in texts.items()))
+    ident = sorted({c for cs in heads.values() for c in cs if "_" in c or re.search(r"\d", c)})
+    hits = sorted({c for k in texts for c in ident if _has(texts[k], c)})
+    row("PACK no document names a column of the data files (control: the search finds one in a header line)",
+        not hits and _has(",".join(heads["calls"]), "che_call_id"), ", ".join(hits) or "%d names screened" % len(ident))
+    exts = {os.path.splitext(f)[1] for f in shipped}
+    nrows = {k: len(d[k]) for k in heads}
+    row("INPUT 10 or more files, 3 or more formats, a 25,000-row file, two distractors shipped",
+        len(shipped) >= 10 and len(exts) >= 3 and max(nrows.values()) >= 25000 and len(K.DISTRACTORS) >= 2 and
+        all(K.FILES[k] in shipped for k in K.DISTRACTORS),
+        "%d files, %s, largest %d rows" % (len(shipped), " ".join(sorted(exts)), max(nrows.values())))
+    # ------------------------------------------------------------------ closures the dictionary and the index carried,
+    # now carried by the producing systems and the program, read through the verifier's own extractor
+    import verify as VF
+    vcalls = VF.rows(target, K.FILES["calls"])
+    vche = VF.rows(target, K.FILES["che"])
+    per_id = collections.Counter(r["call_id"] for r in vche)
+    che_by = {r["call_id"]: r for r in vche}
+    row("SF5 C1 every CAD answer time is the call detail's answered_utc on the centre's clock, so the CAD keeps local "
+        "time", all(VF.lt(c["call_answered"]) == VF.central(VF.utc(che_by[c["che_call_id"]]["answered_utc"]))
+                    for c in vcalls) and _has(texts["program"], "calendar months in local time (US Central)"),
+        "%d incidents" % len(vcalls))
+    triples = {(c["che_call_id"], c["call_answered"], c["call_taker"]) for c in vcalls}
+    row("ASKA grain: each che_call_id is one call_id of the call detail, and alone selects the verifier's calls",
+        all(per_id[c["che_call_id"]] == 1 for c in vcalls) and len({c["che_call_id"] for c in vcalls}) == len(triples)
+        < len(vcalls), "%d incidents, %d calls" % (len(vcalls), len(triples)))
+    vepcr = VF.rows(target, K.FILES["epcr"])
+    incs = {c["incident_no"] for c in vcalls}
+    vtk = VF.rows(target, K.FILES["takers"])
+    logins, emps = {t["cad_login"] for t in vtk}, {t["employee_no"] for t in vtk}
+    row("CLOSURE 16 C1 every ePCR number, dashed after its second digit, is a CAD incident; every CAD login and roster "
+        "employee is on the call-taker list once",
+        all(e["incident_number"].isdigit() and e["incident_number"][:2] + "-" + e["incident_number"][2:] in incs
+            for e in vepcr) and len(logins) == len(emps) == len(vtk) and
+        all(c["call_taker"] in logins for c in vcalls) and
+        all(r["employee_no"] in emps for r in VF.rows(target, K.FILES["roster"])) and
+        _has(texts["program"], "matched to the call by its incident number"), "%d patient records" % len(vepcr))
+    row("CLOSURE 19 C1 the CAD's COLD falls on exactly the determinants at level O, A, B or C (QA 2.1)",
+        all((c["response"] == "COLD") == (c["determinant"].split("-")[1] in K.LEVELS_COLD) for c in vcalls) and
+        _has(texts["program"], "cold at a determinant of level O, A, B or C"), "")
+    stamp = calendar.timegm(K.ASSEMBLED.timetuple())
+    row("CLOSURE 4 every shipped file is saved at the folder's assembly, 4 November 2026",
+        all(int(os.stat(os.path.join(target, f)).st_mtime) == stamp for f in shipped), "")
+    b_alt = AK.tcpr(target, from_answer=False)
+    moved_b = [ym for ym in K.MONTHS if b_alt[ym] != g["B"][ym]]
+    row("ASKB clock: QA 5.1 times review events from the recording's start, the verifier's reading; from the answer "
+        "instead the months move", _has(texts["program"], "the reviewer times each event from the start of the "
+                                                           "recording") and len(moved_b) >= 10,
+        "%d of 12 months move" % len(moved_b))
+    # ------------------------------------------------------------------ the golden's dates, as the roster shows them
+    ro = d["roster"].assign(s=P.local(d["roster"]["start"], False), e=P.local(d["roster"]["end"], False))
+    ro = ro.sort_values(["employee_no", "s"])
+    ro["rest"] = (ro["s"] - ro.groupby("employee_no")["e"].shift(1)).dt.total_seconds() / 3600.0
+    first_qr = ro.loc[(ro["s"] >= pd.Timestamp(K.SPLIT)) & (ro["rest"] < K.QUICK_RETURN_HOURS), "s"].min()
+    rr_ = ro[ro["worked_as"] == "Regular"].copy()
+    rr_["d"] = rr_["s"].dt.normalize()
+    rr_["run"] = (rr_["d"] - rr_.groupby("employee_no")["d"].shift(1)).dt.days.ne(1).cumsum()
+    runs = rr_.groupby("run").agg(start=("d", "min"), kinds=("shift", "nunique"))
+    mixed_from = runs.loc[runs["kinds"] > 1, "start"].min()
+    row("GOLDEN the Began row's dates: regular runs mixing two shift types first start 2 March 2026, the first quick "
+        "return from March on 4 March 2026", mixed_from == pd.Timestamp(K.ROTATION) and
+        first_qr.date() == dt.date(2026, 3, 4), "%s, %s" % (mixed_from.date(), first_qr))
     # ------------------------------------------------------------------ realism and containers
     cnt = d["calls"].assign(m=P.local(d["calls"]["call_answered"]).dt.to_period("M")).groupby("m").size()
     row("REAL monthly call counts all differ", cnt.nunique() == len(cnt), "")
@@ -249,11 +342,27 @@ def run(task, world, res):
     return 1 if bad else 0
 
 
+def _pdf_text(path):
+    """a shipped PDF's text as pypdf extracts it, the reader leak.py uses"""
+    import pypdf
+    return "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages)
+
+
+def _has(text, phrase):
+    """the phrase in the text as whole words, line breaks and runs of spaces read as one space"""
+    flat, want = " ".join(text.split()), " ".join(phrase.split())
+    return re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(want), flat) is not None
+
+
 def _no_dash(target):
     for f in os.listdir(target):
         p = os.path.join(target, f)
         if f.endswith((".csv", ".txt")):
             if re.search("[–—]", open(p, encoding="utf-8").read()):
+                return False
+        if f.endswith(".pdf"):
+            text = _pdf_text(p)
+            if not text or re.search("[–—]", text):
                 return False
     return True
 

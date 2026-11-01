@@ -31,7 +31,7 @@ def compute(target):
     fig = {
         "call": {"cause": "quick returns (shifts begun after under eleven hours' rest)", "began": "2026-03-02",
                  "statement": "The rise came from quick returns, shifts begun less than eleven hours after the "
-                              "call-taker's previous shift ended, which the rotation worked from 2 March 2026 brought "
+                              "call-taker's previous shift ended, which the rotation worked from March 2026 brought "
                               "in; not from protocol release 13.3."},
         "rates": {"before": K.r1(G["before"]), "from_march": K.r1(G["after"])},
         "components": {
@@ -71,7 +71,8 @@ def write_workbook(path, fig):
     ws["A1"].font = Font(bold=True, size=13, color="1F3A5F")
     ws.append([])
     ws.append(["Cause", fig["call"]["statement"]])
-    ws.append(["Began", "2 March 2026, the first block of the rotation that brought quick returns in"])
+    ws.append(["Began", "2 March 2026, the first runs of regular shifts mixing two shift types; the first quick return "
+                        "from March on 4 March 2026"])
     ws.append([])
     ws.append(["Under-triage rate", "Per cent of critical or emergent calls dispatched cold"])
     ws.append(["September 2025 to February 2026", fig["rates"]["before"]])
@@ -149,8 +150,8 @@ def write_chart(path, fig, res):
             label="Calls on shifts begun after 11 hours' rest or more")
     cut = dt.date(2026, 3, 2)
     ax.axvline(cut, color=ORANGE, linewidth=1.6, zorder=1)
-    ax.text(cut + dt.timedelta(days=3), 21.2, "2 March 2026: the new rotation\nbegins; quick returns start",
-            color=ORANGE, fontsize=8.6, va="top")
+    ax.text(cut + dt.timedelta(days=3), 21.2, "March 2026: the new rotation begins", color=ORANGE, fontsize=8.6,
+            va="top")
     ax.set_ylim(0, 22)
     ax.set_ylabel("Under-triage rate (%)", fontsize=9, color=INK2)
     ax.yaxis.grid(True, color=GRID, linewidth=0.8, zorder=0)

@@ -1,5 +1,6 @@
 {
  "answer": "quick returns (shifts begun after under eleven hours' rest)",
+ "as_of": "2026-11-04",
  "deliverables": [
   "under_triage_cause_2026.xlsx",
   "under_triage_2025_26.png"
@@ -12,74 +13,88 @@
  "objective": "Root-Cause Analysis",
  "provenance": {
   "cad_medical_calls_2025_2026.csv": {
+   "covers": "medical calls answered, 1 September 2025 to 31 August 2026",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "CAD"
   },
   "cad_unit_history_2025_2026.csv": {
+   "covers": "ambulance assignments for those calls",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "CAD"
   },
   "call_takers.csv": {
+   "covers": "the centre's call-takers",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "Scheduling system"
   },
   "centre_reference.xlsx": {
+   "covers": "the centre's trunk groups, ambulances, protocols and positions",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "Quality assurance"
   },
   "che_call_detail_2025_2026.csv": {
+   "covers": "call detail, every call on the centre's trunks",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
-  },
-  "data_dictionary.csv": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "911 call handling equipment"
   },
   "ems_unit_hours_2025_2026.csv": {
+   "covers": "ambulance staffed hours by day",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "EMS operations"
   },
   "epcr_patient_records_2025_2026.csv": {
+   "covers": "the crews' patient care records for those calls",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "ePCR"
   },
   "protocol_case_reviews_2025_2026.csv": {
+   "covers": "protocol compliance case reviews",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "QA review log"
   },
   "protocol_software_release_13_3.pdf": {
+   "covers": "the protocol software release's go-live note, issued 20 February 2026",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "Systems team"
   },
-  "qa_program_definitions_2025.pdf": {
+  "qa_program_measures_2025.pdf": {
+   "covers": "the quality assurance program's measures, effective 1 July 2025",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
-  },
-  "qa_review_folder_index.txt": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "Quality assurance"
   },
   "roster_shifts_worked_2025_2026.csv": {
+   "covers": "shifts worked, 18 August 2025 to 31 August 2026",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "Scheduling system"
   },
   "tcpr_arrest_reviews_2025_2026.csv": {
+   "covers": "cardiac arrest call reviews",
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records"
+   "source": "constructed by the task generator (seeded); Quellmont County, its centre, call-takers, patients and people are fictional; the records follow the forms of a US county 911 centre's CAD, scheduling system, 911 call handling equipment and quality review logs, and an ambulance service's patient care records",
+   "system": "QA review log"
   }
  },
  "rows": {

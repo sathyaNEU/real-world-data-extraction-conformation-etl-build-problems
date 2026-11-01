@@ -1,8 +1,7 @@
 """The pack's documents for task121: the quality assurance program's measures and definitions and the protocol software
-release note (PDF), the centre reference workbook (XLSX), the data dictionary (CSV) and the folder index (TXT)."""
+release note (PDF), and the centre reference workbook (XLSX). No file describes the data (dataset-generation section
+3): each export carries its own conventions and the program files what the centre itself defines."""
 from __future__ import annotations
-
-import csv
 
 from reportlab import rl_config
 
@@ -71,8 +70,13 @@ def _doc(path, title, author, subject, left, right):
                              subject=subject, creator=author, producer=author), _frame(left, right)
 
 
-# ------------------------------------------------------------------------------------------------ QA definitions
-def write_definitions(path):
+# ------------------------------------------------------------------------------------------------ QA program
+QA_5_1 = ("Every cardiac arrest call is reviewed from its recording, and the reviewer times each event from the start of "
+          "the recording. Time to first compression runs from the call being answered to the first chest compression "
+          "the call-taker coached.")
+
+
+def write_program(path):
     S = styles()
     title = "Quality Assurance Program: Measures and Definitions"
     doc, fr = _doc(path, title, K.PEOPLE["qa"], "Quality assurance", K.CENTRE, "QA program, effective 1 July 2025")
@@ -109,8 +113,7 @@ def write_definitions(path):
                             "or less) over the month's 911 calls answered. A call abandoned before it was answered is "
                             "reported on its own and is not in the share."),
           Paragraph("5. Telecommunicator CPR", S["h2"]),
-          _clause(S, "5.1", "Every cardiac arrest call is reviewed from its recording. Time to first compression runs "
-                            "from the call being answered to the first chest compression the call-taker coached."),
+          _clause(S, "5.1", QA_5_1),
           _clause(S, "5.2", "The program reports each month's median time to first compression over the arrests in "
                             "which the call-taker coached compressions, each arrest at its primary review. A second "
                             "review of the same call, for reviewer calibration, is not counted."),
@@ -149,115 +152,6 @@ def write_release(path):
           Paragraph("The vendor's support line is staffed for the first 72 hours after go-live. Report problems to "
                     "the systems team through the usual ticket queue.", S["body"])]
     doc.build(st, onFirstPage=fr, onLaterPages=fr)
-
-
-# ------------------------------------------------------------------------------------------------ dictionary
-DICTIONARY = [
-    ("takers", "employee_no", "The scheduling system's employee number."),
-    ("takers", "cad_login", "The login the call-taker uses on the CAD."),
-    ("takers", "emd_certified", "Date the call-taker was first certified in emergency medical dispatch."),
-    ("takers", "academy_class", "The centre's training academy class, where the call-taker came through it."),
-    ("takers", "status", "Employment status at the extract date."),
-    ("takers", "status_date", "Date of the status, where it changed in the period."),
-    ("roster", "employee_no", "The scheduling system's employee number."),
-    ("roster", "shift_date", "Date the shift started."),
-    ("roster", "shift", "Day (07:00 to 15:00), Evening (15:00 to 23:00) or Night (23:00 to 07:00)."),
-    ("roster", "start", "Scheduled start of the shift worked, local time."),
-    ("roster", "end", "Scheduled end of the shift worked, local time."),
-    ("roster", "worked_as", "Regular, Swap (worked in a colleague's place) or Overtime."),
-    ("calls", "incident_no", "The CAD incident number."),
-    ("calls", "call_answered", "Time the call was answered at the call-taker's position, local time, as the CAD "
-                               "takes it from the phone system."),
-    ("calls", "call_taker", "CAD login of the call-taker who answered and triaged the call."),
-    ("calls", "protocol", "Protocol the call was triaged on."),
-    ("calls", "chief_complaint", "The protocol's chief complaint."),
-    ("calls", "determinant", "Determinant code: protocol, level and suffix."),
-    ("calls", "response", "HOT or COLD, from the determinant level under the response plan."),
-    ("calls", "protocol_version", "Release of the protocol software the call was triaged on."),
-    ("calls", "unit", "The ambulance on the call."),
-    ("calls", "unit_assigned", "Time the ambulance on the call was assigned to it, local time."),
-    ("calls", "che_call_id", "The phone system's call identifier for the call the incident was opened from."),
-    ("epcr", "pcr_number", "Patient care record number."),
-    ("epcr", "incident_number", "The CAD incident number as the crew's tablet records it."),
-    ("epcr", "unit", "The ambulance whose crew wrote the record."),
-    ("epcr", "patient", "Patient number on the incident."),
-    ("epcr", "crew_acuity", "Acuity the crew assessed the patient at."),
-    ("epcr", "disposition", "What happened to the patient."),
-    ("epcr", "pcr_completed", "Time the crew completed the record, local time."),
-    ("units", "incident_no", "The CAD incident number."),
-    ("units", "unit", "Ambulance."),
-    ("units", "assigned", "Time the unit was assigned to the incident, local time."),
-    ("units", "enroute", "Time the unit reported en route, local time."),
-    ("units", "at_scene", "Time the unit reported at scene, local time."),
-    ("units", "cleared", "Time the unit cleared the incident or was taken off it, local time."),
-    ("units", "outcome", "Arrived, Diverted (taken off for a higher-priority call) or Cancelled (replaced by a "
-                         "closer unit)."),
-    ("che", "call_id", "The phone system's call identifier."),
-    ("che", "trunk_group", "Trunk group the call arrived on."),
-    ("che", "class_of_service", "Class of service delivered with the call."),
-    ("che", "ani", "Calling number delivered with the call, masked to its last four digits."),
-    ("che", "arrived_utc", "Time the call arrived, UTC."),
-    ("che", "answered_utc", "Time a position answered the call, UTC; blank when the caller hung up first."),
-    ("che", "released_utc", "Time the call was released, UTC."),
-    ("che", "position", "Position that answered the call."),
-    ("che", "abandoned", "Y when the caller hung up before the call was answered."),
-    ("tcpr", "review_id", "Review number."),
-    ("tcpr", "incident_no", "The CAD incident number of the arrest call."),
-    ("tcpr", "review_type", "Primary, or Calibration (a second review of the same call by another reviewer)."),
-    ("tcpr", "reviewer", "The reviewer's code."),
-    ("tcpr", "reviewed_on", "Date of the review."),
-    ("tcpr", "recording_started", "Time the logging recorder started the call's recording, local time."),
-    ("tcpr", "arrest_recognised_s", "Seconds into the recording at which the call-taker recognised the arrest."),
-    ("tcpr", "first_compression_s", "Seconds into the recording at which the first chest compression the "
-                                    "call-taker coached was given; blank when none was coached."),
-    ("tcpr", "no_tcpr_reason", "Why no compressions were coached, where none were."),
-    ("casereview", "case_id", "Case review number."),
-    ("casereview", "incident_no", "The CAD incident number reviewed."),
-    ("casereview", "call_taker", "CAD login of the call-taker."),
-    ("casereview", "reviewed_on", "Date of the review."),
-    ("casereview", "case_entry_pct", "Compliance score, case entry questions."),
-    ("casereview", "chief_complaint_pct", "Compliance score, chief complaint selection."),
-    ("casereview", "key_questions_pct", "Compliance score, key questions."),
-    ("casereview", "final_coding_pct", "Compliance score, final coding."),
-    ("casereview", "overall_pct", "Overall compliance score, the mean of the four."),
-    ("unithours", "service_date", "Date."),
-    ("unithours", "unit", "Ambulance."),
-    ("unithours", "staffed_hours", "Hours the unit was staffed and in service that day."),
-]
-SYSTEM = {"takers": "Scheduling system", "roster": "Scheduling system", "calls": "CAD", "epcr": "ePCR",
-          "units": "CAD", "che": "911 call handling equipment", "tcpr": "QA review log",
-          "casereview": "QA review log", "unithours": "EMS operations"}
-NUMERIC = {("roster", "worked_hours"): "decimal", ("tcpr", "arrest_recognised_s"): "integer",
-           ("tcpr", "first_compression_s"): "integer", ("epcr", "patient"): "integer",
-           ("unithours", "staffed_hours"): "decimal(4,1)"}
-DATETIME = {"call_answered", "unit_assigned", "pcr_completed", "assigned", "enroute", "at_scene", "cleared",
-            "arrived_utc", "answered_utc", "released_utc", "recording_started", "start", "end"}
-DATE = {"emd_certified", "status_date", "shift_date", "reviewed_on", "service_date"}
-
-
-def _dtype(k, fld):
-    if (k, fld) in NUMERIC:
-        return NUMERIC[(k, fld)]
-    if fld.endswith("_pct"):
-        return "integer"
-    if fld in DATETIME:
-        return "datetime"
-    if fld in DATE:
-        return "date"
-    return "text"
-
-
-def write_dictionary(path):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, lineterminator="\r\n")
-        w.writerow(["file_name", "field_name", "source_system", "data_type", "description"])
-        for k, fld, desc in DICTIONARY:
-            w.writerow([K.FILES[k], fld, SYSTEM[k], _dtype(k, fld), desc])
-        for sheet, desc in (("Trunk groups", "One row per trunk group the centre's calls arrive on."),
-                            ("Units", "One row per ambulance: type and station."),
-                            ("Protocols", "One row per protocol the centre triages medical calls on."),
-                            ("Positions", "One row per position that answers calls.")):
-            w.writerow([K.FILES["reference"], "sheet " + sheet, "Reference workbook", "sheet", desc])
 
 
 # ------------------------------------------------------------------------------------------------ reference workbook
@@ -303,14 +197,3 @@ def write_reference(path):
                                                              "Dispatch floor")])
     _style_sheet(wq)
     wb.save(path)
-
-
-def write_index(path, items):
-    out = ["%s: medical call under-triage review, files for the %s" % (K.CENTRE, K.COMMITTEE_NAME),
-           "Assembled %s by %s, Quality Assurance." % (K.ASSEMBLED.strftime("%B %d, %Y").replace(" 0", " "),
-                                                       K.PEOPLE["qa"]), ""]
-    for name, desc in items:
-        out.append(name)
-        out.append("    " + desc)
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write("\n".join(out) + "\n")
