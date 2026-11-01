@@ -455,7 +455,7 @@ def labor_hours(target, route="truth"):
         t = utc_ts(j["DOWN_UTC"] if j["DOWN_UTC"] is not None else j["RAISED_UTC"])
         d = dt.datetime.fromtimestamp(t, ET).date()
         if D0 <= d <= D1:
-            tot[where(tag[j["EQUIP_TAG"]], t)] += float(j["LABOUR_HRS"])
+            tot[where(tag[j["EQUIP_TAG"]], t)] += float(j["SRT_LABOUR_HRS"])
     if route == "ledger_only":
         return tot
     jobcrane = {j["JOB_NO"]: tag[j["EQUIP_TAG"]] for j in jobs(target)}

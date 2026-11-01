@@ -184,7 +184,7 @@ def main(target, golden):
         t = (j["DOWN_UTC"] or j["RAISED_UTC"]).replace(tzinfo=UTC).timestamp()
         d = dt.datetime.fromtimestamp(t, ET).date()
         if d0 <= d <= d1:
-            ask_b[place(crane, t)] += float(j["LABOUR_HRS"])
+            ask_b[place(crane, t)] += float(j["SRT_LABOUR_HRS"])
     sheet_rows = sheet(f("crane_maker_service_timesheets_fy2026.xlsx"), "Timesheets")
     # a CONTRACT line keyed from a service report of several days carries the report's hours on its first day
     report = defaultdict(list)

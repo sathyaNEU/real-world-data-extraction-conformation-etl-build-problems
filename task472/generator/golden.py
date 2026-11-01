@@ -244,7 +244,7 @@ def write_workbook(g, f, path):
                    "few minutes later, when the ship's reports leave the berth polygon, and were not used."),
         ("Clock change", "On 2 November 2025 the Authority TOS writes the 01:00 hour twice; its rows were read in "
                          "file order, the first occurrence first."),
-        ("As of", "Extracts pulled 2 to 6 October 2026 (export manifest)."),
+        ("As of", "Extracts pulled 2 to 6 October 2026."),
     ]
     ws4.append(["Item", "Basis"])
     for a, b in notes:

@@ -119,6 +119,6 @@
       "fate": "spent at stage 4 on 2026-10-20: both scored readers landed the call (score_reader exit 1 on each), reading rule 2.4's 'taken together, lengthened its stay alongside' as the slowest-crane counterfactual, the whole-hour terminal totals confirming it; re-rooted the same day"
     }
   ],
-  "notes": "Subdomain transportation-network under the house domain; the ETL task type is general-statistics-data-science/data-integration-record-linkage-entity-resolution (named in the design note's Task type line). Architecture 2 drawn 2026-10-20 after architecture 1 was spent at stage 4.",
+  "notes": "Subdomain transportation-network under the house domain; the ETL task type is general-statistics-data-science/data-integration-record-linkage-entity-resolution (named in the design note's Task type line). Architecture 2 drawn 2026-10-20 after architecture 1 was spent at stage 4. Re-checked 2026-11-01 under the new gates: the data dictionary and export manifest left the pack (leak.py sweeps 1 and 12), the asks' readings filed in the program rules 2.3, 3.8 and 3.9 and the SRT log's header, the prompt's candidate count dropped; call, stump and every graded figure unchanged.",
   "registered": "2026-10-20T10:06:28Z"
 }

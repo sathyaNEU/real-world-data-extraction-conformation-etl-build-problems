@@ -43,6 +43,9 @@ RULES = [
         "hours on the large-vessel calls of the last closed fiscal year.",
         "2.2 The Director of Terminal Equipment brings the placement to the Board with the order and with each "
         "terminal's berth hours saved.",
+        "2.3 With the placement the Director reports, terminal by terminal over the same fiscal year, the hours the "
+        "terminal's ship-to-shore cranes stood out of service for breakdowns and the maintenance labor hours spent on "
+        "the cranes there.",
     ]),
     ("3. Definitions", [
         "3.1 A call is one vessel's stay alongside one terminal's berths, from all fast to let go.",
@@ -57,6 +60,12 @@ RULES = [
         "been shorter had its cargo work taken four fifths of the time it took.",
         "3.7 A terminal's berth hours saved are the sum over its large-vessel calls of the fiscal year, added "
         "unrounded; the total is reported in whole hours.",
+        "3.8 A crane stands out of service for a breakdown while it is out of service on a work order or job recorded "
+        "as a breakdown. An order recorded as damage (a crane struck by a ship's gear, a vehicle or another crane) is "
+        "reported apart from the cranes' breakdowns, whatever code its downtime was booked under, and its repair is "
+        "crane maintenance like any other.",
+        "3.9 Maintenance labor hours are the hours worked maintaining and repairing the cranes, by the Authority's and "
+        "SRT's own staff and by contractors, the crane makers' field-service engineers among them.",
     ]),
     ("4. Records", [
         "4.1 The program uses the Authority's records as kept.",
@@ -221,232 +230,3 @@ def directions_text():
     for _, paras in DIRECTIONS:
         out.extend(paras)
     return out
-
-
-DICTIONARY = """TERNMOUTH PORT AUTHORITY - TERMINAL EQUIPMENT
-Data dictionary for the Terminal Equipment extracts pulled 5 and 6 October 2026
-Maintained by Vessel Operations (T. Abbott). Issue 8, 6 October 2026.
-
-Times: the Authority's terminal operating system, maintenance system and the pilot station's dispatch system
-record Eastern time (EST/EDT, the clock on the wall at the terminal). The SRT systems, the AIS pipeline and
-anything ending _UTC record UTC. The tide predictions carry their own time zone in their header.
-
----------------------------------------------------------------------------------------------------------------
-tos_crane_activity_2026.csv
-Authority terminal operating system, crane activity extract. Ore Dock, Pine Neck, Gannet Point and Halyard.
-One row per ship-to-shore crane, vessel visit and clock hour in which the crane made at least one container
-move. Hours run 23 June 2025 to 6 July 2026.
-  TERMINAL        ORD Ore Dock, PNC Pine Neck, GNP Gannet Point, HLY Halyard
-  VISIT_ID        vessel visit (see tos_vessel_visits_2026.csv)
-  CRANE_ID        crane number as painted on the crane (see sts_crane_register.csv)
-  HOUR_START      clock hour, Eastern time. On 2 November 2025 the 01:00 hour occurs twice and each
-                  occurrence has its own rows, the first occurrence first.
-  MOVES           container moves in the hour; a twin lift is one move
-  HATCH_COVERS    hatch covers lifted or landed in the hour (not counted in MOVES)
-  FIRST_MOVE      time of the crane's first container move on the visit within the hour
-  LAST_MOVE       time of the crane's last container move on the visit within the hour
-  BAY_FROM        lowest 40-foot bay the crane worked in the hour (even bay numbers, 02 at the bow)
-  BAY_TO          highest 40-foot bay the crane worked in the hour
-
-tos_vessel_visits_2026.csv
-Authority terminal operating system, vessel visits at the four harbor terminals, one row per visit.
-  VISIT_ID        terminal code, two-digit year of the visit's opening and a running number
-  BERTH           berth at the terminal
-  VESSEL_NAME     name of the ship on the visit as booked
-  IMO_NO          IMO ship identification number
-  LINE_OP         operating line
-  SERVICE         liner service code; FDR for feeder and ad hoc calls
-  IB_VOYAGE, OB_VOYAGE   inbound and outbound voyage numbers
-  ETA             planned arrival as booked, Eastern time
-  PHASE           visit phase in the system at the pull
-
-srt_tos_export_fy2026.xlsx
-SRT, the terminal operating system of Salt River Terminals, which ran Saltworks and Millrace before the Authority
-bought the two terminals in 2024 and still runs them. Sheet Calls: one row per vessel call. Sheet QC Hours: one row per quay crane, call and
-clock hour (UTC) in which the crane made at least one lift.
-  CALL_REF        terminal code, year and running number
-  BERTH           berth
-  VESSEL, LLOYDS, CALLSIGN   ship's name on the call, IMO number, call sign
-  OPERATOR, SERVICE, VOY      operating line, service, inbound/outbound voyage
-  ETA_UTC         planned arrival
-  QC              quay crane, by its SRT tag (see sts_crane_register.csv SRT_TAG)
-  HOUR_UTC        clock hour, UTC
-  LIFTS           container lifts in the hour; a twin lift is one lift
-  FIRST_LIFT_UTC, LAST_LIFT_UTC   first and last container lift of the crane on the call within the hour
-  BAYS            lowest and highest 40-foot bay the crane worked in the hour
-
-pilot_station_sailings_fy2026.csv
-Ternmouth Pilots' dispatch system, outbound jobs from the six container terminals' berths, sailings 20 June
-2025 to 9 July 2026. One row per sailing.
-  JOB_NO          pilot job number (two-digit year and a running number)
-  MOVE            OUT, a sailing from the berth to sea
-  VESSEL          ship's name as the dispatcher entered it
-  CALL_SIGN       ship's call sign as given by the agent
-  FROM_BERTH      berth the ship sailed from
-  TO              SEA
-  NOTICE_RECEIVED when the agent's notice that the ship was ready to sail reached the pilot station, Eastern time
-  SAILED          the ship's sailing time: when it let go from the berth, Eastern time
-  DRAFT_FWD, DRAFT_AFT   draft on sailing, feet and inches (41-06 is 41 feet 6 inches)
-  PILOT           pilot's initials
-  TUGS            tugs ordered
-
-salt_point_tide_predictions_2025_2026.txt
-The Authority's predicted times and heights of high and low water at Salt Point, 1 June 2025 to 31 July 2026,
-as published (tab separated after the header lines).
-
-vessel_register_extract_2026-10-05.json
-Authority vessel register, every ship on the register at the pull, with its current particulars.
-  imo, name, former_names (each with the last date it was carried), call_sign, mmsi, port_of_registry, teu_nominal
-  (nominal container capacity in TEU), loa_m (length overall), beam_m, summer_draft_m, dwt, built, operator
-
-sts_crane_register.csv
-Ship-to-shore crane register at 5 October 2026. One row per crane.
-  CRANE_ID        crane number
-  TERMINAL        ORD, PNC, GNP, HLY, SLT, MRW
-  ASSETNUM        asset number in the Authority's maintenance system
-  SRT_TAG   SRT equipment tag, Saltworks and Millrace cranes only
-  MAKE, MODEL, COMMISSIONED, OUTREACH_ROWS (container rows reached across a ship), SWL_T (safe working load)
-
-cmms_sts_work_orders_fy2026.csv
-Authority maintenance system, work orders on ship-to-shore cranes reported 1 June 2025 to 30 September 2026
-(Saltworks and Millrace cranes from 1 February 2026). One row per work order.
-  WONUM           work order number (one sequence for every asset class in the system)
-  ASSETNUM        asset number (see sts_crane_register.csv)
-  SITEID          TMH
-  WORKTYPE        BD breakdown, DMG damage (struck by a ship's gear, a vehicle or another crane; the
-                  repair is charged to the party responsible, and damage is reported apart from the
-                  cranes' breakdowns though its repair is crane maintenance like any other order's),
-                  CM corrective (crane kept in service),
-                  PM planned maintenance, INSP inspection. An order's type can be changed after it is
-                  raised; the extract shows the type at the pull.
-  WOPRIORITY      1 to 3
-  STATUS          COMP work complete, CLOSE closed and costed
-  PROBLEMCODE     SPRDR spreader, HOIST, TROL trolley, GANT gantry, ELEC electrical and controls, BOOM,
-                  CAB operator cab; planned work carries its job plan code
-  DESCRIPTION     free text
-  REPORTDATE      when the order was raised
-  OUT_OF_SERVICE  when the crane was first taken out of service on the order
-  RETURNED_TO_SERVICE  when the crane was last returned to service on the order
-  ACTSTART, ACTFINISH  first and last labor booked to the order
-  CLOSEDATE       when the order was closed
-  REPORTEDBY      user who raised the order
-  OUT_OF_SERVICE and RETURNED_TO_SERVICE are blank on orders that did not take the crane out of service.
-
-cmms_asset_status_history_fy2026.csv
-Authority maintenance system, running status changes of ship-to-shore cranes. One row per change.
-  ASSETNUM        asset number
-  ISRUNNING       0 the crane went out of service, 1 it returned to service
-  CHANGEDATE      time of the change
-  CODE            downtime code the change was booked under: BRKDWN unplanned, PLANNED, PROJECT
-  WONUM           work order the change was booked against; blank for project downtime
-  CHANGEBY        user
-
-cmms_labor_transactions_fy2026.csv
-Authority maintenance system, labor booked to work orders, work days 1 June 2025 to 30 September 2026, every
-asset class. One row per person, work order and work day.
-  LABTRANSID      transaction number
-  WONUM           work order
-  LABORCODE       employee number; CONTRACT for contractors' hours, keyed by the planner from the
-                  contractor's service report
-  CRAFT           MECH, ELEC, RIG rigger, WELD welder, CONTRACT
-  TRANSDATE       the work day
-  REGULARHRS      hours worked that day
-  PREMIUMPAYCODE  OT15 on a day paid at time and a half (the hours are in REGULARHRS)
-  ENTERDATE, ENTERBY   when and by whom the row was entered
-
-crane_maker_service_timesheets_fy2026.xlsx
-The crane makers' field-service engineers' timesheets for work at Ternmouth, work days 1 June 2025 to 30
-September 2026, as received by Terminal Equipment with each maker's monthly invoice. One row per engineer and
-work day.
-  SERVICE_CO      the crane maker's field service, or the service agent it appoints
-  SERVICE_REPORT  the maker's service report number
-  CUSTOMER_REF    the Authority's work order (or SRT job) the engineer worked under, as the engineer wrote it
-  CRANE           crane as the engineer wrote it
-  SITE            where the engineer worked
-  ENGINEER        engineer's name
-  WORK_DATE       work day
-  HOURS           hours worked on site that day
-
-srt_maintenance_jobs_2025-26.xlsx
-SRT maintenance log, Saltworks and Millrace cranes, jobs raised 1 June 2025 to 28 February 2026, when
-the log was closed. One row per job.
-  JOB_NO          job number
-  EQUIP_TAG       SRT equipment tag (see sts_crane_register.csv SRT_TAG)
-  JOB_CLASS       BRKDN breakdown, PLND planned, INSP inspection, DEFECT defect noted (crane kept working)
-  PRIORITY        P1 to P3
-  FAULT           free text
-  RAISED_UTC      when the job was raised
-  DOWN_UTC        when the crane was taken out of service (blank on DEFECT jobs)
-  UP_UTC          when the crane was released to operations
-  LABOUR_HRS      labor hours SRT's crews and resident contractors booked to the job; the crane makers'
-                  engineers were never booked in the log
-  STATUS, RAISED_BY
-
-ais_berth_segments_fy2026.csv
-Authority AIS berth pipeline. One row per stretch of AIS position reports from one ship stopped (under 0.5 knot)
-inside one berth or anchorage polygon. A stretch is closed at midnight UTC and wherever no report is received
-from the ship for more than 60 minutes; the next report opens a new stretch.
-  SEG_ID          stretch id
-  MMSI, SHIPNAME, CALLSIGN   as broadcast by the ship
-  ZONE            berth or anchorage polygon; ZONE_TYPE BERTH or ANCHORAGE
-  START_UTC, END_UTC   first and last report in the stretch
-  N_REPORTS       reports received in the stretch
-
-cmms_yard_equipment_work_orders_fy2026.csv
-Authority maintenance system, work orders on yard equipment (rubber-tyred gantries, straddle carriers, reach
-stackers, terminal tractors). Same columns as the crane orders.
-
-berth_windows_fy2027.csv
-Contracted berth windows for fiscal year 2027 by service, as agreed with the lines at 1 October 2026.
-  SERVICE, CARRIER, TERMINAL, BERTH, ARRIVAL_DAY, ARRIVAL_TIME (Eastern), WINDOW_HOURS, MAX_TEU,
-  ROTATION_WEEKS, EFFECTIVE_FROM
-"""
-
-
-def write_dictionary(path):
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write(DICTIONARY)
-
-
-MANIFEST_COLS = ["FILE", "SYSTEM", "OWNER", "PULLED", "COVERS", "ROWS", "CLOCK"]
-
-
-def manifest_rows(n):
-    f = P.FILES
-    return [
-        [f["tos"], "Authority TOS, crane activity report", "Vessel Operations", "2026-10-05 06:22",
-         "clock hours 2025-06-23 to 2026-07-06, harbor terminals", n["tos"], "Eastern"],
-        [f["visits"], "Authority TOS, vessel visits", "Vessel Operations", "2026-10-05 06:24",
-         "visits open 2025-06-20 to 2026-07-06, harbor terminals", n["visits"], "Eastern"],
-        [f["rvt"], "SRT TOS, calls and QC hours", "River Terminals", "2026-10-05 07:41",
-         "calls 2025-06-20 to 2026-07-06, Saltworks and Millrace", n["rvt"], "UTC"],
-        [f["pilot"], "Ternmouth Pilots dispatch, sailings", "Ternmouth Pilots", "2026-10-02 10:15",
-         "sailings 2025-06-20 to 2026-07-09, container berths", n["pilot"], "Eastern"],
-        [f["tides"], "Tide predictions, Salt Point", "Hydrographic Services", "2025-05-12 09:00",
-         "2025-06-01 to 2026-07-31", n["tides"], "LST"],
-        [f["vessels"], "Vessel register", "Vessel Operations", "2026-10-05 06:10", "ships on the register",
-         n["vessels"], ""],
-        [f["register"], "STS crane register", "Terminal Equipment", "2026-10-05 06:58", "cranes at 2026-10-05",
-         n["register"], ""],
-        [f["wo"], "Authority maintenance system, work orders (STS cranes)", "Terminal Equipment",
-         "2026-10-05 06:51", "orders reported 2025-06-01 to 2026-09-30", n["wo"], "Eastern"],
-        [f["status"], "Authority maintenance system, asset status history (STS cranes)", "Terminal Equipment",
-         "2026-10-05 06:53", "status changes 2025-06-01 to 2026-09-30", n["status"], "Eastern"],
-        [f["labor"], "Authority maintenance system, labor transactions", "Terminal Equipment",
-         "2026-10-05 06:56", "work days 2025-06-01 to 2026-09-30", n["labor"], "Eastern"],
-        [f["oem"], "Crane makers' service timesheets", "Terminal Equipment", "2026-10-05 08:20",
-         "work days 2025-06-01 to 2026-09-30", n["oem"], ""],
-        [f["jobs"], "SRT maintenance log", "River Terminals", "2026-10-05 07:44",
-         "jobs raised 2025-06-01 to 2026-02-28 (log closed)", n["jobs"], "UTC"],
-        [f["ais"], "AIS berth pipeline", "Vessel Operations", "2026-10-06 08:15",
-         "stretches opening 2025-06-20 to 2026-07-09 UTC", n["ais"], "UTC"],
-        [f["yard"], "Authority maintenance system, work orders (yard equipment)", "Terminal Equipment",
-         "2026-10-05 06:55", "orders reported 2025-06-01 to 2026-09-30", n["yard"], "Eastern"],
-        [f["windows"], "Commercial, berth window agreements", "Commercial", "2026-10-01 16:30",
-         "windows for fiscal year 2027", n["windows"], "Eastern"],
-        [f["rules"], "Crane Replacement Program placement rules", "Terminal Equipment", "", "Revision 3 with "
-         "Schedule A", "", ""],
-        [f["directions"], "Harbor Master's General Directions", "Office of the Harbor Master", "", "2025 edition",
-         "", ""],
-        [f["dictionary"], "Data dictionary", "Vessel Operations", "", "issue 8", "", ""],
-    ]

@@ -6,6 +6,7 @@ import csv
 import datetime as dt
 import json
 import os
+import re
 import shutil
 import tempfile
 from collections import Counter, defaultdict
@@ -77,6 +78,24 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
         at_open += W_ is not None and c.sail > c.ready
     ok("SF6", bad == 0 and at_open > 100, "every sailing is the first permitted time an hour or more after its notice "
                                           "(%d off); %d sailings held to a window" % (bad, at_open))
+    # SF16: the pilot station's clock is Eastern; read as UTC, the record's deep-draft river sailings leave the window
+    tw = {t: B.windows(target, t) for t in ("SLT", "MRW")}
+    inside = {False: 0, True: 0}
+    deep = 0
+    for r in B.rows_csv(B.p(target, "pilot")):
+        brt = r["FROM_BERTH"].rsplit(" ", 1)[0]
+        term = B.BERTH_TERM[brt]
+        if term not in tw:
+            continue
+        dr = max(int(v.split("-")[0]) * 12 + int(v.split("-")[1]) for v in (r["DRAFT_FWD"], r["DRAFT_AFT"]))
+        if dr < B.DEEP_IN:
+            continue
+        deep += 1
+        for as_utc in (False, True):
+            t = (B.utc_ts(dt.datetime.strptime(r["SAILED"], "%Y-%m-%d %H:%M")) if as_utc else B.et_ts(r["SAILED"]))
+            inside[as_utc] += B.earliest(t, tw[term]) == t
+    ok("SF16", inside[False] == deep and inside[True] < deep // 2, "the sailings' clock is Eastern: %d of %d deep-draft "
+       "river sailings inside their Salt Point window, %d read as UTC" % (inside[False], deep, inside[True]))
 
     # ------------------------------------------------------------------ the fork table
     teus = [v["teu_nominal"] for v in ves.values()]
@@ -306,13 +325,36 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
     r0_, r1_ = W.REPEAT
     big_rep = [c for c in calls if r0_ <= c["first"] < r1_ or r0_ <= c["last"] < r1_]
     ok("T2", not big_rep, "no large-vessel first or last move in the repeated hour")
-    # the registers know every file (H9), and the documents read the same to a strict and a lenient reader (H25)
-    man = {r["FILE"] for r in B.rows_csv(os.path.join(target, P.FILES["manifest"]))}
-    ok("H9a", man == set(files) - {P.FILES["manifest"]}, "the manifest lists every shipped file but itself")
-    dic = open(os.path.join(target, P.FILES["dictionary"]), encoding="utf-8").read()
-    data = [f for f in files if os.path.splitext(f)[1] in (".csv", ".xlsx", ".json", ".txt")
-            and f not in (P.FILES["dictionary"], P.FILES["manifest"])]
-    ok("H9b", all(f in dic for f in data), "the dictionary names every data file")
+    # no file describes the data (H9a); the readings a dictionary would have given are in the record (H9b to H9d),
+    # and the documents read the same to a strict and a lenient reader (H25)
+    describing = [f for f in files if any(w in f.lower() for w in ("dictionary", "manifest", "readme", "notes",
+                                                                    "guide", "glossary"))]
+    ok("H9a", not describing, "no dictionary, manifest, readme or notes file ships %s" % describing)
+    asset_, tag_ = B.crane_keys(target)
+    def spans(as_utc):
+        out = set()
+        for r in B.rows_csv(B.p(target, "wo")):
+            if r["OUT_OF_SERVICE"]:
+                a, b = (B.utc_ts(dt.datetime.strptime(r[c], "%Y-%m-%d %H:%M")) if as_utc else B.et_ts(r[c])
+                        for c in ("OUT_OF_SERVICE", "RETURNED_TO_SERVICE"))
+                out.add((asset_[r["ASSETNUM"]], a, b))
+        return out
+    srt = {(tag_[j["EQUIP_TAG"]], B.utc_ts(j["DOWN_UTC"]), B.utc_ts(j["UP_UTC"])) for j in B.jobs(target)
+           if j["DOWN_UTC"] is not None}
+    pe, pu = len(srt & spans(False)), len(srt & spans(True))
+    ok("H9b", pe >= 10 and pu == 0, "the maintenance system's clock is Eastern: February's stops held in both systems "
+       "pair to the minute only in Eastern time (%d pairs; %d read as UTC)" % (pe, pu))
+    vis = defaultdict(float)
+    for s in B.oem_sheet(target):
+        m = re.search(r"J\d\d-\d{5}", str(s["CUSTOMER_REF"]))
+        if m:
+            vis[m.group(0)] += float(s["HOURS"])
+    jl = {j["JOB_NO"]: float(j["SRT_LABOUR_HRS"]) for j in B.jobs(target)}
+    under = sum(1 for k, h in vis.items() if k in jl and jl[k] < h)
+    ok("H9c", under >= len(vis) // 2, "SRT's job hours hold no maker's engineer: %d of %d jobs a maker worked book fewer "
+       "SRT hours than the maker's timesheets" % (under, len(vis)))
+    ok("H9d", "SRT_LABOUR_HRS" in P.JOB_COLS and "LABOUR_HRS" not in P.JOB_COLS,
+       "the SRT log's labour column is headed as SRT's own hours")
     import re as _re
     import subprocess
     from pypdf import PdfReader
@@ -325,7 +367,9 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None, quiet=False):
                                     "draft is the vessel's deepest draft, forward or aft"],
             P.FILES["rules"]: ["in four fifths of the time the call's cargo work took",
                                "the hours by which the call would have been shorter",
-                               "from all fast to let go", "added unrounded"]}
+                               "from all fast to let go", "added unrounded",
+                               "whatever code its downtime was booked under",
+                               "the crane makers' field-service engineers among them"]}
     flat = lambda t: _re.sub(r"\s+", " ", t.replace("\u2019", "'"))
     for f, sentences in must.items():
         path = os.path.join(target, f)

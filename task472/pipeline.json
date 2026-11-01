@@ -5,31 +5,39 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-20",
+ "updated": "2026-11-01",
  "stump": "The default path credits every large-vessel call with a fifth of its cargo work and places the cranes at Saltworks, because it never asks whether a ship leaving a river berth could have sailed any earlier than its tide allowed; the saving is the change in the window the ship makes, nothing at Saltworks and a whole tide at Millrace.",
  "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-20"
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (9 lines, each answered in the design note)",
-  "reader": "six readers in three rounds, all missed the call (Saltworks 991); round 1 reader 1 kept the asks (exit 1, re-sited); rounds 2 and 3 exit 0 four times, 1 of 21 each"
+  "leak_py": "REVIEW (no LEAK; sweeps 1 and 12 cleared by removing data_dictionary.txt and export_manifest.csv; every REVIEW line answered in the design note)",
+  "reader": "2026-11-01 re-check reader: no decisive-step sentence, no ranking or helper file, every flagged file harmless; earlier rounds as before (six readers, all missed the call)"
  },
  "duplicate_check": {
-  "heart": "PASS",
-  "nearest": "task160 at 0.04; own lineage differentiated"
+  "heart": "PASS 2026-11-01 (shell.repeat against task465 cleared by the prompt reword)",
+  "nearest": "task472 v1 lineage at 0.16; task307 at 0.06"
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC FIX_NOW, pass 2 DETERMINISTIC FIX_NOW, both fixed",
-  "disposition": "FIX_NOW applied",
-  "report": "task472/determinism_check_report.md, task472/determinism_check_report_pass2.md"
+  "verdict": "pass 1 and pass 2 DETERMINISTIC FIX_NOW (fixed); pass 3 (2026-11-01 re-check) DETERMINISTIC, APPROVE",
+  "disposition": "APPROVE",
+  "report": "task472/determinism_check_report_pass3.md"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (re-check under the 11-01 gates)",
+   "repair": "leak and prompt gate",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-20",
  "portal": null,
- "source_note": "seed ET29 (AIS port-call dwell and vessel identity): world and decision kept; architecture 1 spent at stage 4 on 2026-10-20 (both scored readers landed the slowest-crane counterfactual); architecture 2 gates the berth time a faster cargo finish saves by the tidal window at the river bar"
+ "source_note": "seed ET29 (AIS port-call dwell and vessel identity): world and decision kept; architecture 1 spent at stage 4 on 2026-10-20 (both scored readers landed the slowest-crane counterfactual); architecture 2 gates the berth time a faster cargo finish saves by the tidal window at the river bar",
+ "freeze": "2026-11-01 freeze.py check --mode determinism: every main-call figure, figures.json key, Deliverable Answers number, stump and ladder unchanged; the one move the prompt call sentence, an ordered change (the candidate count dropped, voice-check count rule)"
 }

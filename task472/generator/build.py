@@ -37,8 +37,7 @@ AS_OF = {"tos": "2026-10-05 06:22", "visits": "2026-10-05 06:24", "rvt": "2026-1
          "register": "2026-10-05 06:58", "wo": "2026-10-05 06:51", "status": "2026-10-05 06:53",
          "labor": "2026-10-05 06:56", "oem": "2026-10-05 08:20", "jobs": "2026-10-05 07:44",
          "ais": "2026-10-06 08:15", "yard": "2026-10-05 06:55", "windows": "2026-10-01 16:30",
-         "rules": "2026-06-09 14:12", "directions": "2025-04-24 10:15", "dictionary": "2026-10-06 09:02",
-         "manifest": "2026-10-06 09:05"}
+         "rules": "2026-06-09 14:12", "directions": "2025-04-24 10:15"}
 
 
 def build(out, x=None, quiet=False):
@@ -94,8 +93,6 @@ def build(out, x=None, quiet=False):
     n["windows"] = P.write_csv(f("windows"), P.WINDOW_COLS, P.window_rows())
     DC.write_rules(f("rules"))
     DC.write_directions(f("directions"))
-    DC.write_dictionary(f("dictionary"))
-    n["manifest"] = P.write_csv(f("manifest"), DC.MANIFEST_COLS, DC.manifest_rows(n))
     for k, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), c, m)
     for k, (cr, lb, c0, m0, co) in OOXML.items():

@@ -20,17 +20,27 @@ runs) was spent at stage 4 the same day, both scored readers landing the call; i
   equal the register-terminal route exactly), so the asks hold on the measured readers with the relocation hazard
   carrying the last margin.
 - **Judge:** pass 1 DETERMINISTIC, FIX_NOW (damage under the BRKDWN code; contractor lines sharing a timesheet day),
-  fixed in the dictionary and the data; pass 2, the one re-judge, DETERMINISTIC, FIX_NOW (repeated person, order and
-  day ledger rows; whether SRT's job hours hold the makers' engineers; whether damage repairs are maintenance labor),
-  fixed in the data and two dictionary clauses, read by round 3. Gate G binding_constraint and other,
+  fixed in the data; pass 2, the one re-judge, DETERMINISTIC, FIX_NOW (repeated person, order and day ledger rows;
+  whether SRT's job hours hold the makers' engineers; whether damage repairs are maintenance labor), fixed in the data.
+  Those closures now stand in the pack without a dictionary: rules 3.8 (a breakdown is an order or job recorded as
+  one; damage reported apart whatever code its downtime was booked under, its repair maintenance like any other),
+  rules 3.9 (the labor of the Authority's and SRT's staff and of contractors, the makers' engineers among them), the
+  SRT log's SRT_LABOUR_HRS header with 16 of 19 maker-worked jobs booking fewer SRT hours than the maker's timesheets
+  (H9c), and the maintenance system's Eastern clock, the only one under which February's stops pair across the two
+  systems (H9b). Gate G binding_constraint and other,
   analytical_non_defect, no surface read, no sole defect; Gate H pass, flagged borderline (once the gating is seen
   the replay is execution), which is the design: no reader saw the gating.
-- **Free gates (2026-10-20):** checks.py 72 of 72, verify.py matches, two builds byte-identical, target.zip cut from
-  the final build (19 files), figures_check.py 63 of 63, precut.py 51 checks clean, voice-check PASS, guard.py heart
-  PASS (nearest 0.04), surface no personas, containers clean, generator/ceiling.py pair ceiling 28.5 with the cracker
-  and mirror on the round 1 readers' measured paths.
-- **leak.py REVIEW lines, each harmless:** 257 is a tide height in centimetres in the predictions; the rules and the
-  dictionary carry the call's words and the place names because they define the program and name the terminals;
+- **Re-check under the 11-01 gates:** the shipped cut failed leak.py (sweeps 1 and 12: data_dictionary.txt and
+  export_manifest.csv described the data) and the prompt stated the candidate set's size ("six container
+  terminals"). Both files leave the pack (17 files); the dictionary's readings are filed as above or ruled out by the
+  record (the sailings' Eastern clock, SF16; the TOS's, T2 and SF2); the prompt drops the count and is reworded at the
+  role level (shell whether, the, csv+xlsx; heart's shell.repeat against task465 cleared). Call, stump and every
+  graded figure frozen (freeze.py, the call sentence's move the one ordered change)); leak reader clean, judge pass 3 DETERMINISTIC and APPROVE.
+- **Free gates (2026-11-01):** checks.py 75 of 75, verify.py matches, two builds byte-identical, target.zip cut from
+  the final build (17 files), figures_check.py clean, precut.py clean, voice-check PASS, guard.py heart PASS,
+  surface no personas, generator/ceiling.py pair ceiling 28.5.
+- **leak.py REVIEW lines, each harmless:** 257 is a tide height in centimetres in the predictions; the rules
+  carry the call's words and the place names because they define the program and name the terminals;
   the timesheets and the rules' document control name terminals beside hours and revision numbers, never ranked on
   berth hours saved; the 2027 dates are the berth windows' effective dates, a declared distractor.
 
@@ -85,6 +95,16 @@ runs) was spent at stage 4 the same day, both scored readers landing the call; i
   (gap, G7, binding_constraint): no match in the last twelve; task92 differentiated on the card.
 - **Abstraction test:** nearest drivers stripped of nouns (task160's lagged wave, task167's allotment schedule, task99's
   phased start delay) carry no release window gating a counterfactual saving; none maps onto this driver.
+
+## Survivor anatomy
+
+Actor: whether a faster finish moves a call's sailing across a window has no column in any file; no field marks a held sailing, a window made or missed, or a wait, and the property is a relation between the call's cargo span (TOS or SRT), its notice and let-go (the pilot station), its draft and length, and tide predictions kept in another file and another clock.
+Link: a call reaches its sailing through vessel name history, call sign, terminal and time, with no shared key (the pilot station carries no IMO number or visit), and the sailing reaches its window through Salt Point's predictions in local standard time, at a place none of the berths is, by the directions' passage times.
+Reflex: the field's first reckoning of a crane productivity gain, berth time saved equal to the cargo time cut, sits at R0 and files Saltworks 991 against Pine Neck 804 (`Ends on:`).
+Back-test: the easy route validates: every call's cargo work sits inside its stay, the cut is four fifths of each span as rules 3.5 states, and the TOS and SRT spans reconcile to their visit and call lists; nothing contradicts a stay shorter by the cut until a sailing is replayed against its window.
+Second use: every file the replay reads has its own use: the pilot station's sailings give each call's let-go (rules 3.1) and the call table, the register the population (rules 3.2), the TOS and SRT files the cargo work and where each crane stood for both asks, and the predictions and directions are the port's own navigation record.
+Shock: Millrace is fifth on R0 and last on R1, its calls fewer than Pine Neck's or Saltworks', and its 887 is a sum of whole and empty tides over ordinary calls, never one outlier; the golden's order is not R0's or R1's order.
+Pins: the rules file the population, the year, the cut and the outcome (3.1 to 3.7) and the directions the port's sailing rules in their own genre (3.4, 8.1, 9.2, 9.3); no filed sentence names a counterfactual sailing, a readiness or a saving across a window, and the sentences added on 11-01 (rules 2.3, 3.8, 3.9) bear on the asks alone.
 
 ## Default path
 
@@ -169,6 +189,7 @@ Lesson: the time a faster process saves a system is the change in when the syste
 | SF13 | window edges | inclusive | exclusive | same call: no replayed readiness within a minute of an edge (asserted); the record sails ships at the very opening of a window | the directions 8.1 and 9.2 ("between") and the record |
 | SF14 | rounding | per terminal, summed unrounded and rounded once | each call rounded to two decimals, then summed | same call, same six figures (asserted) | rules 3.7 |
 | SF15 | the lead | the recommended terminal's whole-hour figure less the runner-up's | the unrounded difference rounded | same figure (asserted) | rules 3.7 |
+| SF16 | the sailings' clock | Eastern, the clock of the directions' local time | UTC | refuted: read as UTC, none of the 247 deep-draft river sailings falls inside its Salt Point window, against all 247 in Eastern (asserted) | the directions 1.2 and 9.2 and the record |
 
 ## Ladder
 
@@ -226,7 +247,7 @@ Figures from the built pack (`generator/bundle.py`), every position and margin a
 | 16 | Identity normalisation | IMO across the TOS and the register; sailings to calls by name history, call sign, berth and time | C4: every population call matches exactly one sailing (asserted) |
 | 17 | Netting | none: savings are not negative under the golden | asserted per call |
 | 18 | Dimensional units | feet and inches, metres, hours | units in the data and the directions (SF10, SF11) |
-| 19 | Code semantics | SRT's call status, the sailings' move code | dictionary semantics; none decides (asserted) |
+| 19 | Code semantics | SRT's call status, the sailings' move code | the codes as the data carry them; none decides (asserted) |
 | 20 | Integerisation | none | not applicable |
 | 21 | Clause scope | the Salt Point clause binds deep-draft river passages; the daylight clause harbor berthing and unberthing of 1,250 feet or more | filed scope (directions 8.1, 9.2) |
 | 22 | Forward window contents | retrospective call on a closed year | filed (rules 2); the reason in `## Draw` |
@@ -255,8 +276,8 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   sets beside the berth hours saved. Path: cmms_sts_work_orders_fy2026.csv (WONUM, ASSETNUM, WORKTYPE, STATUS),
   cmms_asset_status_history_fy2026.csv (ASSETNUM, ISRUNNING, CHANGEDATE, WONUM), srt_maintenance_jobs_2025-26.xlsx
   (EQUIP_TAG, JOB_CLASS, DOWN_UTC, UP_UTC), sts_crane_register.csv (CRANE_ID, ASSETNUM, SRT_TAG, TERMINAL),
-  tos_crane_activity_2026.csv and SRT's QC Hours sheet (crane, terminal, hour), the data dictionary: seven files,
-  sixteen columns.
+  tos_crane_activity_2026.csv and SRT's QC Hours sheet (crane, terminal, hour), the program rules 2.3 and 3.8: seven
+  files, sixteen columns.
   Primary device: D6, an event's quantity on every line it covers. A second fault found while a crane stood down for
   the first is raised as its own breakdown order and the crew books the crane out of service on that order too, inside
   the first stop or running on after it (two to four such pairs at every terminal, in both systems); the status history then
@@ -268,7 +289,7 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   year, Ore Dock to Pine Neck in November 2025, Halyard to Gannet Point in February 2026, Saltworks to Millrace in April
   2026; the register gives each crane's terminal at the extract and no history, which shows only in the calls each
   crane works); February 2026's parallel run (river breakdowns in the CMMS from 1 February while SRT kept logging them
-  to 28 February); reopened orders; orders re-typed DMG by the pull (the dictionary keeps damage apart from the
+  to 28 February); reopened orders; orders re-typed DMG by the pull (rules 3.8 keeps damage apart from the
   cranes' breakdowns); the orders' first-out and last-back times against the status history; the year cut in Eastern
   time against SRT's UTC.
   Stops (asserted, checks.py A2 to A10 and generator/ceiling.py): each order's periods added up, the stage 4 round 1
@@ -280,8 +301,8 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   cranes the order replaces, the board paper's second condition figure. Path: cmms_labor_transactions_fy2026.csv
   (WONUM, LABORCODE, TRANSDATE, REGULARHRS), cmms_sts_work_orders_fy2026.csv (WONUM, ASSETNUM),
   crane_maker_service_timesheets_fy2026.xlsx (work order, engineer, date, hours), srt_maintenance_jobs_2025-26.xlsx
-  (EQUIP_TAG, LABOUR_HRS, DOWN_UTC), sts_crane_register.csv, the TOS crane activity (where each crane stood), the data
-  dictionary: seven files, fifteen columns.
+  (EQUIP_TAG, SRT_LABOUR_HRS, DOWN_UTC), sts_crane_register.csv, the TOS crane activity (where each crane stood), the
+  program rules 2.3, 3.8 and 3.9: seven files, fifteen columns.
   Primary device: D6, a ledger at another grain than its name. The crane makers' field-service engineers sign a
   timesheet for every day of a visit; where the planner keyed a visit into the labour ledger it went in as one CONTRACT
   line on the order, dated the visit's first day, for the service report's hours, although the ledger is otherwise
@@ -342,3 +363,7 @@ golden. The easy answer comes from the easy method on the same literal estimand,
   relocations kept as a hazard: ask A onto a second breakdown order on a crane already down, ask B onto a visit keyed
   as one line for its total; the judge's two ask forks (damage under the BRKDWN code, contractor lines sharing a
   timesheet day) closed in the dictionary and the data.
+- The data dictionary and the export manifest as the asks' closures and the pack's clock notes (shipped 2026-10-20,
+  removed 2026-11-01): leak.py sweeps 1 and 12 (a file that names the data's columns describes the data); the
+  closures refiled as WHATs in rules 2.3, 3.8 and 3.9 and the SRT log's own header, the clocks ruled out by the
+  record (H9b, SF16), every graded figure unchanged.

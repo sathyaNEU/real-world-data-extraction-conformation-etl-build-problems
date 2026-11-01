@@ -29,8 +29,6 @@ FILES = dict(
     windows="berth_windows_fy2027.csv",
     rules="crane_replacement_program_rules.pdf",
     directions="harbor_masters_general_directions_2025.pdf",
-    dictionary="data_dictionary.txt",
-    manifest="export_manifest.csv",
 )
 TOS_FROM, TOS_TO = W.ts(2025, 6, 23), W.ts(2026, 7, 7)
 PILOT_FROM, PILOT_TO = W.ts(2025, 6, 20), W.ts(2026, 7, 10)
@@ -455,7 +453,7 @@ def oem_rows(x):
     return out
 
 
-JOB_COLS = ["JOB_NO", "EQUIP_TAG", "JOB_CLASS", "PRIORITY", "FAULT", "RAISED_UTC", "DOWN_UTC", "UP_UTC", "LABOUR_HRS",
+JOB_COLS = ["JOB_NO", "EQUIP_TAG", "JOB_CLASS", "PRIORITY", "FAULT", "RAISED_UTC", "DOWN_UTC", "UP_UTC", "SRT_LABOUR_HRS",
             "STATUS", "RAISED_BY"]
 LEGACY_FAULT = {"SPRDR": "Spreader", "HOIST": "Hoist", "TROL": "Trolley", "GANT": "Gantry", "ELEC": "Electrical",
                 "BOOM": "Boom", "CAB": "Cab/controls"}
