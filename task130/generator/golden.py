@@ -21,8 +21,8 @@ def r0(x):
 def summary(F):
     g = F["gold"]
     A = F["asks"]
-    tot = {k: sum(A[dd][k] for dd in W.DISTRICTS) for k in ("cases", "hours", "milestones", "usd")}
-    tot["rate"] = tot["cases"] * W.RATE_BASE / tot["hours"]
+    tot = dict(quarters=[sum(A[dd]["quarters"][q] for dd in W.DISTRICTS) for q in range(3)],
+               total=sum(A[dd]["total"] for dd in W.DISTRICTS))
     return dict(total=r0(g["total"]), rate=g["rate"], quarters=[r0(x) for x in g["quarters"]],
                 qrates=g["quarter_rates"], hours=g["hours"], qhours=g["quarter_hours"], clean=g["clean"],
                 tech=g["tech"], recorded=F["recorded"]["all"], recorded_crew=F["recorded"]["crew"],
@@ -81,35 +81,34 @@ def memo(path, F):
         "recognition award after 90 days without a recordable, and the programme ends on 31 December 2026. Read "
         "against each crew's own count, our case records show crews recording injuries at a steady rate for the "
         "first five weeks of a count and at well under half that rate in its last month, while the cases that keep "
-        "a worker off work, which cannot go unrecorded, come in at the same rate all through the count. In the "
+        "a worker off work, which cannot go unrecorded, come in at much the same rate all through the count. In the "
         "first 35 days of their counts, when an award is far off, crews recorded %.2f per 200,000 hours. That is "
         "the rate we have planned on for every crew in 2027, with the technicians at their own %.2f."
         % (S["recorded_crew"], S["tech"], S["naive"], S["clean"], S["tech"]))
-    d.add_heading("2026 to date (CS-4 section 4(c))", level=2)
-    d.add_paragraph("Pay periods from 5 January to 27 September 2026, Pinewater work only, recordables as the case "
-                    "records finally classify them, each case in the district of the injured employee's crew or "
-                    "team on the day.")
-    t2 = d.add_table(rows=6, cols=7)
+    d.add_heading("First-aid cases in 2026 to date (CS-4 section 4(c))", level=2)
+    d.add_paragraph("5 January to 27 September 2026, field employees on Pinewater work, each injury once as the case "
+                    "records finally classify it. A case the nurse line opened from a worker's call is the same "
+                    "injury as the supervisor's case for that worker in the days before the call, when there is one. "
+                    "Each injury is in the quarter of its injury date and the district of the worker's crew or team "
+                    "on that day.")
+    t2 = d.add_table(rows=6, cols=5)
     t2.style = "Table Grid"
-    h2 = ["District", "Recordable injuries", "Hours worked", "Recordable rate", "Crews' rate",
-          "Recognition awards", "Awards paid (USD)"]
+    h2 = ["District", "Q1 (from 5 January)", "Q2", "Q3 (to 27 September)", "5 January to 27 September"]
     for k, h in enumerate(h2):
-        _cell_text(t2.rows[0].cells[k], h, bold=True, size=8.5)
+        _cell_text(t2.rows[0].cells[k], h, bold=True, size=9)
     for i, dist in enumerate(W.DISTRICTS):
         a = S["asks"][dist]
-        vals = [dist, "%d" % a["cases"], "{:,}".format(r0(a["hours"])), "%.2f" % a["rate"], "%.2f" % a["crew_rate"],
-                "%d" % a["milestones"], "{:,}".format(r0(a["usd"]))]
+        vals = [dist] + ["%d" % v for v in a["quarters"]] + ["%d" % a["total"]]
         for k, v in enumerate(vals):
-            _cell_text(t2.rows[i + 1].cells[k], v, size=8.5, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
+            _cell_text(t2.rows[i + 1].cells[k], v, size=9, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
     y = S["ytd"]
-    vals = ["All districts", "%d" % y["cases"], "{:,}".format(r0(y["hours"])), "%.2f" % y["rate"], "",
-            "%d" % y["milestones"], "{:,}".format(r0(y["usd"]))]
+    vals = ["All districts"] + ["%d" % v for v in y["quarters"]] + ["%d" % y["total"]]
     for k, v in enumerate(vals):
-        _cell_text(t2.rows[5].cells[k], v, bold=True, size=8.5, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
+        _cell_text(t2.rows[5].cells[k], v, bold=True, size=9, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
     d.add_heading("What we are doing", level=2)
     d.add_paragraph("We are briefing every district safety coordinator on the end of HR-14 this month, so that "
                     "supervisors expect more recordables on the log from January and treat them as reporting, not "
-                    "as a loss of control. The quarterly forecast and the 2026 figures are in "
+                    "as a loss of control. The quarterly forecast and the 2026 first-aid cases are in "
                     "recordables_forecast_2027.xlsx, with the chart recordables_by_quarter_2027.png.")
     d.save(path)
     PP.normalize_docx(path, W.PEOPLE["director"], W.PEOPLE["director"], "2026-10-20T13:04:00Z", "2026-10-23T15:37:00Z",
@@ -152,18 +151,13 @@ def workbook(path, F):
     ws["A11"] = "Above the limit"
     ws["B11"] = "Yes" if S["rate"] > W.LIMIT else "No"
     ws2 = wb.create_sheet("2026 by district")
-    ws2["A1"] = "Pay periods 5 January to 27 September 2026, Pinewater work (CS-4 section 4(c))"
+    ws2["A1"] = "First-aid cases on Pinewater work, 5 January to 27 September 2026 (CS-4 section 4(c))"
     ws2["A1"].font = Font(bold=True, size=12)
-    rows = []
-    for dist in W.DISTRICTS:
-        a = S["asks"][dist]
-        rows.append([dist, a["cases"], r0(a["hours"]), round(a["rate"], 2), round(a["crew_rate"], 2), a["milestones"],
-                     r0(a["usd"])])
+    rows = [[dist] + list(S["asks"][dist]["quarters"]) + [S["asks"][dist]["total"]] for dist in W.DISTRICTS]
     y = S["ytd"]
-    rows.append(["All districts", y["cases"], r0(y["hours"]), round(y["rate"], 2), None, y["milestones"], r0(y["usd"])])
-    _table(ws2, 3, ["District", "Recordable injuries", "Hours worked", "Recordable rate", "Crews' recordable rate",
-                    "Recognition awards", "Awards paid (USD)"], rows, [14, 12, 14, 12, 14, 12, 14],
-           [None, "0", "#,##0", "0.00", "0.00", "0", "#,##0"])
+    rows.append(["All districts"] + list(y["quarters"]) + [y["total"]])
+    _table(ws2, 3, ["District", "Q1 (5 Jan to 31 Mar)", "Q2 (1 Apr to 30 Jun)", "Q3 (1 Jul to 27 Sep)",
+                    "5 Jan to 27 Sep"], rows, [14, 14, 14, 14, 14], [None, "0", "0", "0", "0"])
     ws3 = wb.create_sheet("Basis")
     ws3["A1"] = "Rates used for 2027 (recordables per 200,000 hours worked on Pinewater work, 2021 to 2026)"
     ws3["A1"].font = Font(bold=True, size=12)
@@ -183,8 +177,11 @@ def workbook(path, F):
         "recurrences linked to an earlier case are not new cases (29 CFR 1904.6).",
         "Hours worked are regular and overtime hours on Pinewater work; paid leave, holiday pay and mutual-aid hours "
         "are excluded, and prior-period adjustments are counted in the pay period they correct.",
-        "Each case is placed in the district of the injured employee's crew or team on the injury date.",
-        "Recognition awards are counted once per crew and milestone, net of payroll reversals; dollars are net.",
+        "Each crew's count runs from 11 January 2021 (HR-14 Revision 2) and restarts the day after a recordable "
+        "injury to any member or the day after its 90th day.",
+        "First-aid cases count each injury once: a nurse-line case is the injury of the supervisor's case for the "
+        "same worker dated up to three days before the call; each injury is placed in the district of the worker's "
+        "crew or team on its injury date.",
         "The 2027 hours are the work plan of 15 October 2026."], start=1):
         ws4.cell(row=i, column=1, value=t)
     ws4.column_dimensions["A"].width = 120

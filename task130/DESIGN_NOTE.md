@@ -25,11 +25,236 @@ new client domain, world and dataset under the same objective and number.
   until new stations remove the masking) the sentence a reviewer could write for both is the genus of every
   completeness repair ("a record short in part of a cycle, the cause removed forward"); the driving insight is not
   shared: here the thinning is the recorder's own choice under a reward, its phase is each recorder's own rolling
-  cycle reset by its own records and payouts, every event is exposed to it whatever its size, and the trap is the
+  cycle reset by its own records and its own completed counts, every event is exposed to it whatever its size, and the trap is the
   comparison with recorders the reward never covered. No approved build carries a reward-thinned record.
 - **Sources:** synthetic throughout. Rate definitions follow 29 CFR 1904 (OSHA recordkeeping: a recordable case,
   the 200,000-hour rate base); the client's contractor safety standard, the recognition programme and every record
   are fictional.
+
+## Survivor anatomy
+
+Actor: the deciding property is where each crew stood in its own 90-day recognition count on the day of each injury and each hour worked, and no file stores it: the case records hold the worker and the injury date, the assignment history the worker's crew for each span of days, the timesheet each crew's hours by pay period, and the count is a running relation across the three (days since 11 January 2021, the crew's last recordable injury or the end of its last completed count) that no column, code or sheet holds.
+
+Link: the signal is read through a comparison the field's recordable-rate route never asks for: each crew's recordables and hours set against its own position in its count, which needs every recordable placed on the injured worker's crew on the day (the assignment history, the crews recoded in March 2025 carried under their new codes) and every pay period's hours spread over its working days; no key, column or sentence crosses the injury record with the recognition count.
+
+Reflex: the field's method for the deciding quantity sits at rung 0 and files a wrong answer here: the OSHA recordable rate per 200,000 hours over the record, by unit type or pooled, carried onto the hours of the 2027 work plan, gives 176 recordables (2.46), and the trailing twelve months give 177 (2.48), both inside the 3.0 limit's 214.
+
+Back-test: the textbook route validates on the checks a safety analyst runs before trusting a rate: the recorded rate holds steady year on year (2.65, 2.44, 2.48, 2.43, 2.30 and 2.55 from 2021 to 2026), the technicians outside the programme record less than the crews (1.92 against 2.55), and the crews' days-away share of their recordables is no higher than the technicians' (26 against 30 per cent), so every under-reporting check the field knows clears the record; what separates the routes is a cut no step of the rate route makes, the record read by the day of each crew's own count.
+
+Second use: every file the decisive step reads sits in the pack for a reason of its own: the two case systems, the assignment history and the crew register carry every rung's recordables and the asks' first-aid cases by district, the timesheet every rung's hours, the work plan every rung's 2027 hours, CS-4 the estimand and the limit for every rung, the recognition programme the crews in and out of it (rung 1's comparison) and the notice the programme's end, which every rung reads as the reason 2027 is a new year; deleting the decisive step drops no file.
+
+Shock: the movement the step recovers reads as ordinary: the recorded rate sits at 2.3 to 2.7 every year, the technicians record less than the crews on lighter work, and no district, crew type, quarter or year stands out; sorted on any shipped statistic (by crew, type, district, month or year) nothing singles out the days late in a count, which no file carries.
+
+Pins: CS-4 files the WHAT in its own genre (section 4(a) and (b): the recordable injuries the contractor forecasts its field employees will record on Pinewater work in the 2027 contract year, total and by quarter, and the rate on the work plan's hours; 3.1 to 3.6 the definitions; "Pinewater does not prescribe the method"); HR-14 files its own rules (the award, the count, its start on 11 January 2021); no filed sentence names a day of the count, a window of it, a reporting rate, hiding or a reason the record might fall short (asserted on all three documents by leak.py's sweeps and read in `## Leak sweep`).
+
+## Default path
+
+1. From CS-4 sections 3 to 5: the recordable injuries Redbud's field employees (crews and technicians) will record on
+   Pinewater work in 2027, total and by quarter, and the rate on the 2027 work plan's hours against the limit of 3.0.
+2. Stack the legacy EHS log (to 31 May 2024) and the case management export, keep the new system's copy of each
+   migrated case and each case's latest revision, drop first aid, linked recurrences (29 CFR 1904.6) and mutual-aid
+   work, and place each recordable on the injured worker's crew or team on the injury date.
+3. Hours worked from the timesheet: regular plus overtime, prior-period adjustments in the period they correct,
+   paid leave, holiday pay and mutual-aid hours out: 68,729,007 crew hours and 11,440,680 technician hours from 11
+   January 2021 to 27 September 2026.
+4. The recorded rate: crews 877 recordables, 2.55 per 200,000 hours; technicians 110, 1.92; by unit type from 1.42
+   (meter services) to 3.41 (vegetation crews).
+5. Check the record for under-reporting the way the field does: the technicians, outside HR-14, record less than the
+   crews, and the crews' days-away share (26 per cent) is no higher than the technicians' (30 per cent), so the
+   recognition award shows no sign of thinning the log.
+6. Carry each unit type's rate onto its 2027 plan hours: 176 recordables, a rate of 2.46, inside the limit's 214.
+
+Ends on: 176 recordables in 2027, a rate of 2.46 per 200,000 hours, inside the 3.0 limit
+Golden: 255 recordables in 2027, a rate of 3.57 per 200,000 hours, over the 3.0 limit
+
+## Stump sentence
+
+Carrying the record's recordable rate onto the 2027 work plan files 176 recordables and a rate of 2.46, inside the
+3.0 limit, because every crew in HR-14 earns its award after 90 days without a recordable and leaves injuries it can
+hide off the log as its count nears the award: the crews record 3.85 and 3.84 per 200,000 hours in days 0 to 14 and
+15 to 34 of their counts and 1.38 and 1.01 in days 50 to 64 and 65 to 89, while the days-away cases nobody can hide
+come in at much the same rate throughout; with the programme ending on 31 December 2026, read at the 3.84 the crews
+record where an award is far off (the technicians at their own 1.92), the 2027 plan makes 255 recordables, a rate
+of 3.57, over the limit.
+
+## Three rules
+
+Task type: discrete-choice-limited-dependent-variable-modeling in economics-econometrics, which serves forecasting: the 2027 recordable count is forecast from a recorded count that a reporting choice under a pay incentive has thinned, the latent rate recovered where the choice exerts no pull and carried onto the hours the crews will work.
+
+Domain test: the deciding quantity is the latent injury rate behind a count the crews thin by choosing not to report as a clean-record reward nears, worked the way labour economics reads behaviour under an incentive scheme: the observed outcome is the product of the latent rate and the choice to report, the choice varies with the reward at stake, and the forecast needs the rate in the stretch of each crew's own count where reporting costs nothing; the call compares the forecast with the client's limit.
+
+Swap: "will the hospital's patient falls in 2027 keep it within the regulator's rate?" keeps the sentence's shape and loses its substance unless the hospital also paid each ward for every 90 falls-free days, and then the swap only proves the domain: the stump needs a reward that a unit earns by not recording, reset by its own records, which is labour economics' incentive problem and no other field's.
+
+Layer 1: two incident systems with the cases open at the 2024 migration in both, cases revised from first aid to medical treatment and from restricted work to days away, recurrences opened as cases of their own, the nurse line's interface opening a first-aid case of its own from each call beside the supervisor's report, a dated crew assignment history with workers moving between crews, thirty crews recoded at the March 2025 reorganisation, timesheet hours by pay period with paid leave, holiday pay and mutual-aid hours in their own columns, prior-period adjustments and in-system storm support on the rows of the district the crew worked in; nothing is planted and none of it moves the call (the construction is mess-neutral, asserted).
+
+Layer 2: the data's real structure under an incentive: a recorded count is what the units choose to record, so the rate it implies is the latent rate times a reporting share that changes with each unit's position in its own reward cycle, and a forecast for a year without the reward has to be read where the reward exerts no pull, not on the record's average.
+
+Decisive step: recognise that the crews' reporting falls away as each crew's own count nears its award, so rebuild every crew's count day by day from 11 January 2021 (restarting the day after a recordable to any member and after each 90th day), spread each pay period's hours over its working days, and read the crews' rate in days 0 to 34 of their counts, where the record and the days-away cases agree, onto every 2027 crew hour, with the technicians at their own recorded rate: 255 recordables, 3.57.
+
+Not semantics: every field, code and definition read correctly (the final classification, recurrences, mutual-aid work, the crew on the day, the recoded crews, hours worked as CS-4 defines them) still leaves the rate route at 176, because where each crew stood in its count is not a field: it is a relation the analyst has to see the forecast depends on and rebuild across the case records, the assignment history and the timesheet.
+
+Not rule application: no filed rule says the record falls short or names a stretch of the count to read, and CS-4 leaves the method to the contractor ("Pinewater does not prescribe the method"); executing CS-4 and HR-14 word for word with the field's rate files 176; the standing family (the early stretch read as days 0 to 19, 0 to 24, 0 to 29, 0 to 34 or 0 to 39, by crew type or pooled, from 2023 only, with counts started at each crew's first recordable, the recoded crews read as new) spreads 236 to 257, every member over the limit.
+
+Analyst test: a strong analyst who reads every field and rule correctly stacks the two case systems, keeps final classifications, drops recurrences and mutual-aid work, places each recordable on the worker's crew on the day, nets the hours CS-4 excludes and carries the 2021 to 2026 recorded rate onto the 2027 plan, files 176 recordables (2.46) inside the limit, and its two under-reporting checks (the technicians outside the programme, the days-away share) both clear the record; read at the rate the crews record early in their counts, 2027 makes 255 recordables, 3.57, and breaches it.
+
+Estimand: CS-4 section 4(a) and (b) files it: the number of recordable injuries (3.1, 29 CFR 1904.7, each case once as finally classified) Redbud's field employees (3.2, crews and technicians) will record on Pinewater work (3.3) in the 2027 contract year (1 January to 31 December), in total and for each calendar quarter, and the rate that number makes on the hours worked in Redbud's 2027 work plan (3.4, 3.5), against the limit of 3.0 (section 5); the notice files that HR-14 ends on 31 December 2026, so 2027 has no award.
+
+No decoy: nothing is planted to be caught: no memo, briefing or stakeholder states a rate, a forecast or a reason the record might be short; the notice states the programme's end and says nothing about reporting beyond its closing reminder; the good-catch reports and the subcontractors' returns are distractors named in metadata.json that rank nothing.
+
+No certified replay: no published or certified figure is reproduced: no file carries a rate by day of the count, a reporting share or a forecast, and the count is rebuilt from case dates, the assignment history and pay-period hours.
+
+Lesson: a recorded count that a unit is paid to keep low is the latent rate times the unit's choice to record, and the choice moves with the reward at stake, so a forecast for a period without the reward reads the units where the reward exerts no pull, not on the record's average; no build on file forecasts from a record thinned by its recorders' own clean-record reward.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the recorded rate by unit type, or pooled, or the trailing year, on the 2027 plan | CS-4 3.5 defines the rate | the case and hours columns | the OSHA rate carried forward | the year-on-year rates agree | the case-system stack, revisions, recurrences, mutual aid | one ratio on one plan | none | readable |
+| R1 the technicians outside HR-14 as the comparison | HR-14 section 1's table | the unit types | the treated-against-untreated reflex | the technicians record less: the record clears | none | one comparison | none | readable |
+| R2 the days-away share as the under-reporting test | none | the OSHA class | the severity-share reflex | the crews' share is no higher: the record clears | none | one share | none | readable |
+| R3 (decisive) each crew's count rebuilt day by day and the crews read in days 0 to 34 of their counts | silent: no sentence names a day of the count, a window, a reporting rate or hiding (asserted by the sweeps) | silent: no column holds a count, a cycle day or a reporting flag | silent: the field's rate takes the record as the injuries, and its two under-reporting checks clear it | silent: no file scores a reading of the count, and both of the field's checks pass on the record | silent: no duplicate, clock or key issue points at it | silent: a running count for every crew across three files, not a ratio | silent: the case systems, the assignment history, the timesheet, the plan and the three documents each serve every rung or the asks | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "recordable injury" | 29 CFR 1904.7, each case once as finally classified (CS-4 3.1) | first aid counted | 4,038 first-aid records against 996 recordables | CS-4 3.1: "First aid ... is not a recordable injury" (asserted) |
+| SF2 | "field employees" | crews and technicians (CS-4 3.2) | crews only | the forecast carries both (asserted) | CS-4 3.2: "whether in a crew or alone" |
+| SF3 | "Pinewater work" | mutual-aid work excluded (CS-4 3.3) | mutual-aid cases kept | 9 recordables: same call | CS-4 3.3 (asserted) |
+| SF4 | "hours worked" | regular and overtime, no paid leave, holiday pay or mutual aid (CS-4 3.4) | paid hours | a lower rate route; the golden's exposure is worked hours | CS-4 3.4 (asserted) |
+| SF5 | the 2027 hours | the work plan's 14,288,000 (CS-4 4(b)) | 2026 hours grown | none filed | CS-4 4(b): "the hours worked in the contractor's work plan" (asserted) |
+| SF6 | recurrences | not new cases (29 CFR 1904.6) | counted as cases and resets | 262.3: same call | CS-4 3.1 "counted once"; same call (asserted) |
+| SF7 | the contract year | calendar 2027 by calendar quarter | a fiscal year | none filed | CS-4 4: "1 January to 31 December" (asserted) |
+| SF8 | the stretch of the count read | days 0 to 34 | days 0 to 19, 0 to 24, 0 to 29, 0 to 39 | 257.2, 249.0, 251.3, 251.2: same call | same call (asserted for each) |
+| SF9 | crews pooled or by type | pooled | each crew type at its own early rate | 255.0: same call | same call (asserted) |
+| SF10 | exposure | each pay period's hours spread over its working days | the early share of recordables over the early share of hours, times the recorded rate | 255.0: same call | same call (asserted) |
+| SF11 | the years read | 2021 to 2026 | 2023 to 2026 only | 236.3: same call | same call (asserted) |
+| SF12 | the technicians' rate | their own recorded 1.92 | the crews' early rate on every hour | 274.5: same call | HR-14 section 1 (technicians are not in the programme); same call (asserted) |
+| SF13 | a recoded crew | one crew under two codes, its count carried over | a new crew from March 2025 | 253.1: same call | HR-14 section 4; same call (asserted) |
+| SF14 | the counts' start | 11 January 2021 for every crew (HR-14 section 3) | each crew's first recordable in the record | 253.1: same call | HR-14 section 3; same call (asserted) |
+| SF15 | quarters | each rounded separately | forced to the year's total | 60, 66, 67 and 62 add to 255 | same figures (asserted) |
+| SF16 | ask: a first-aid case | each injury once (CS-4 3.7), as the case record finally classifies it | each record a case, or one per worker and date | every cell moves | CS-4 3.7 and the export's `source` code (asserted) |
+| SF17 | ask: the window and quarters | 5 January to 27 September 2026, calendar quarters, by injury date | pay periods or posting dates | equals the truth | the prompt and CS-4 3.7 (asserted) |
+| SF18 | ask: a nurse-line case and the supervisor's case | the same injury when the supervisor's case is the worker's in the three days before the call | a one-day or two-day window | 1 and 3 of 16 cells kept | any window from three to seven days pairs the same cases (asserted) |
+| SF19 | ask: a nurse-line case with no supervisor's case | an injury of its own | dropped | equals the truth | every pairing unique, same body part and nature (asserted) |
+
+## Ladder
+
+| Rung | Route | 2027 recordables | Rate | Against the limit (214.3) |
+|---|---|---|---|---|
+| R0 | the recorded rate by unit type on the 2027 plan | 176.0 | 2.46 | inside |
+| R0b | the pooled recorded rate; the trailing twelve months | 175.9; 177.1 | 2.46; 2.48 | inside |
+| R1 | the technicians outside HR-14 (1.92) against the crews (2.55): no sign the award thins the log | 176.0 | 2.46 | inside |
+| R2 | the days-away share, crews 26 against technicians 30 per cent: no sign of under-reporting | 176.0 | 2.46 | inside |
+| Golden | each crew's count rebuilt day by day, the crews read in days 0 to 34 (3.84), the technicians at 1.92 | 255.0 | 3.57 | over |
+| Standing | days 0 to 19, 0 to 24, 0 to 29, 0 to 39; by crew type; 2023 on; counts from each crew's first recordable; recoded crews as new | 236.3 to 257.2 | 3.31 to 3.60 | over |
+
+Separation: the highest inside rung (177.1) sits 37 recordables (17 per cent) under the limit's 214.3; the lowest
+standing member (236.3) sits 22 over it (10 per cent). No route that reads the record as the injuries leaves the
+limit's side; every route that reads the crews where their counts exert no pull lands over it. The truth the
+simulation holds: the crews' true rate is 3.72 and the 2027 plan makes 247.5 recordables (3.46); 401 of the 1,278
+injuries crews had on Pinewater work from 2021 to 2026 (31.4 per cent) never reached the log.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | field employees, crews and technicians, on Pinewater work | filed: CS-4 3.2 and 3.3 (SF2, SF3) |
+| 2 Unit of account | a recordable case, counted once | filed: CS-4 3.1 (SF1, SF6) |
+| 3 Attribution window | calendar 2027 by quarter | filed: CS-4 4 (SF7) |
+| 4 As-of dating | the records to 27 September 2026 (the case export to 9 October) | filed: the extracts' own spans; C1 |
+| 5 Version basis | each case's latest revision | filed: CS-4 3.1 "as finally classifies it" |
+| 6 Denominator | hours worked as CS-4 defines them | filed: CS-4 3.4 (SF4) |
+| 7 Weighting | each hour and each recordable counts once | C1 |
+| 8 Window length | the whole record from 11 January 2021 | C2: from 2023 only gives the same call (SF11) |
+| 9 Boundary inclusivity | "above the limit": 3.57 against 3.0 | C1: same call either way |
+| 10 Rounding path | recordables to whole numbers, rates to two decimals, each figure rounded once | filed: the prompt (SF15) |
+| 11 Tie-break | no figure on a half | C1: asserted in checks.py |
+| 12 Maturity and censoring | cases revised after the cut are not in the record; none is needed | C1 |
+| 13 Order of operations | the counts, then the rates, then the plan | C1: the steps commute |
+| 14 Row order | none needed | C1 |
+| 15 Duplicate resolution | a migrated case once, in the new system; a recurrence not a new case | filed: CS-4 3.1; C1 (SF6) |
+| 16 Identity normalisation | a recoded crew carried under its new code | filed: HR-14 section 4 (SF13) |
+| 17 Netting against gross | prior-period adjustments in the period they correct | C1: same call |
+| 18 Dimensional units | hours and recordables per 200,000 hours | filed: CS-4 3.5 |
+| 19 Code and status semantics | FA, MT, RW and DA as 29 CFR 1904.7; the export's codes sheet | filed: the codes sheet |
+| 20 Integerisation | the forecast rounded to whole recordables | filed: the prompt |
+| 21 Clause scope | the limit applies to the plan's forecast rate | filed: CS-4 section 5 |
+| 22 Forward window contents | 2027 without HR-14: no award at stake for any crew | filed: the notice ("ends on 31 December 2026"); C2: every reading of the early stretch keeps the call (SF8 to SF14) |
+
+## Literal reader
+
+On paper and on the cut pack: the prompt asks how many recordable injuries Redbud's field employees will record on
+Pinewater work in 2027 and whether the rate they make on the 2027 work plan keeps Redbud within CS-4's 3.0. CS-4
+4(a) and (b) file the quantity and every term of it (3.1 to 3.5), the notice files that HR-14 ends on 31 December
+2026, and CS-4 leaves the method to the contractor. Executed word for word, the WHAT leaves open only how the 2027
+rate is estimated from the record, and the record forces it: read against each crew's own count, the crews record
+3.85 and 3.84 per 200,000 hours in its first five weeks and 1.38 and 1.01 in its last five, while the days-away cases
+come in at 0.69, 0.78 and 0.55 across the count; with no award at stake in 2027, every reading of the crews where
+their counts exert no pull lands over the limit (236 to 257). Every literal reading of a convention on the call
+(SF1 to SF15) gives the golden's call or is ruled out by a quotable sentence; every ask reading (SF16 to SF19) equals
+the world's own truth. Pass.
+
+## Oracles
+
+- The world's own truth: the injuries the simulation generated, recorded or not, give the crews' true rate of 3.72
+  and 247.5 recordables on the 2027 plan (3.46), over the limit; on the clean truth the easy route files 175.9,
+  inside it (asserted in checks.py, `dataset-generation` 7.1); the golden (255.0) sits 3 per cent above the truth.
+- The asks: every first-aid cell equals the world's own count of first-aid injuries on Pinewater work by district
+  and quarter, read on the records' own dates (16 of 16, asserted through the verifier's own pairing).
+- No shipped oracle: no file ties only under the golden reading; the good-catch reports and the subcontractors'
+  returns are distractors that rank nothing.
+
+## Ask sheet
+
+Pair ceiling: 28.5 (the cracker 45.0, the mirror 12.0, on the planning weights of 38, 7 and 55)
+Mirror leakage: 0.0 per cent of the ask weight
+Measured by: generator/ceiling.py, run on the cut pack
+
+One ask, sixteen graded cells: for each district, the first-aid cases its field employees had on Pinewater work from
+5 January to 27 September 2026 in each calendar quarter and in all (H18 home: `recordables_forecast_2027.xlsx`,
+sheet "2026 by district"). It reads rows the call never reads (every first-aid record, the nurse line's cases among
+them) and no device sits on a recordable, an hour or a count.
+
+| Ask | Primary device | Golden | The cracker's figures | Cracker |
+|---|---|---|---|---|
+| A, first-aid cases by district and quarter (12 cells) | D1: the nurse line's interface opens a first-aid case of its own from each call, dated the day of the call, beside the supervisor's case of the same injury; 58 per cent of calls come one to three days after the injury, so the duplicate check on worker and injury date pairs only the same-day calls, and the next-day ones stay two injuries (and a nurse-line case beside a recordable stays a first-aid case) | Blue Ridge 36, 44, 19; Piedmont 38, 34, 32; Lakes 45, 46, 30; Coastal 52, 51, 33 | every cell high by 3 to 16 | miss |
+| B, first-aid cases by district, 5 January to 27 September (4 cells) | D1, the same pairing summed over the window | 99, 104, 121, 136 | 125, 123, 140, 161 | miss |
+| Full includer (stress row): every nurse-line case paired with the supervisor's case of its worker in the three days before its call | the golden handling | 16 of 16 | the cracker's 0 of 16 | miss |
+
+The one-day pairing window keeps 1 of 16 cells and the two-day window 3 of 16 (stress rows); any window from three
+to seven days pairs the same cases (asserted). Hazards: case revisions (first aid to medical treatment, handled by
+the cracker), the migrated cases, recurrences, mutual-aid work, nurse-line calls after the window's end, the crew on
+the day for a technician or a worker who changed crews. Accepted risk: the layer stands on one device, so a response
+that pairs the nurse line's cases with a window of three days or more keeps every cell.
+
+## Build record
+
+- World seed 130624 (`generator/world.py`); `generator/sim.py` simulates every crew and technician day from 28
+  September 2020 to 27 September 2026 (HR-14 Revision 2 starts every count on 11 January 2021); `generator/pack.py`,
+  `docs.py` and `distract.py` cut the pack; `generator/make.py` builds it, writes the goldens, metadata.json and
+  figures.json, runs `checks.py` (65 assertions) and `verify.py` (an independent pandas recomputation of the forecast
+  and the sixteen first-aid cells, its own seven-day pairing), builds a second time into a scratch folder, compares
+  target/ and golden/ byte for byte, and cuts target.zip. Rebuild: `python3 task130/generator/make.py`.
+- Pack: 12 files in four formats (CSV, XLSX, PDF, DOCX); the timesheet is the largest file (152,804 rows);
+  distractors `good_catch_reports_2025-2026.csv` and `subcontractor_monthly_safety_2026.csv`, named in metadata.json;
+  every workbook, PDF and document carries its own created and modified stamps.
+- target.zip: 12 members, 1,850,230 bytes, sha256 325d048a28a5d9eec3ef0ef13e370214e64c415754c9d36fe456bd5a2d5f7bdf.
+- Gates on the final cut: precut.py exit 0 (61 checks, 0 WARN); figures_check.py PASS (80 figures); voice-check.py
+  PASS (659 characters); leak.py REVIEW, no LEAK (two lines, ruled below); `guard.py surface` exit 0 (four pairs
+  promoted on card axes or corpus-percentile surface alone: task166, task133, task196, task180, each answered by the
+  card's differentiation lines; people Samantha Galvan, Jerome Warren, Norma Hinton and Sergio Phillips, all on the
+  card); `guard.py heart` WARN (`three_rules.strategy_risk` only, answered by the analyst test; nearest card task149
+  at 0.10, differentiated).
+- Ceiling on the cut pack (`generator/ceiling.py`): the cracker and the mirror keep 0 of 16 ask cells; pair 28.5.
+
+## Leak sweep
+
+- Sweep 3, `pinewater_contractor_safety_standard_cs4.pdf` carries most of the call's distinctive words: harmless.
+  The standard is the governing document and defines every term the call uses (recordable injury, field employee,
+  Pinewater work, the rate per 200,000 hours, the 3.0 limit); it states no figure, no forecast and no method.
+- Sweep 9, `payroll_calendar_2021-2027.csv` carries pay periods after the setting: harmless. A payroll calendar is
+  published ahead for the year it covers; it holds period dates only, no hours, cases or outcomes.
 
 ## Tried and rejected
 
@@ -428,3 +653,11 @@ Architecture 6 draw (2026-10-31):
   hotel's duplicate bookings, a loyalty scheme's expiry bunching and an employer-change hazard: weighed and not
   taken (the field's simulation is the golden, a withheld pooling rule, a weak domain fit, composition, task134 v2's
   surge-filled clock and task179's other-body lift respectively).
+
+Architecture 6 (2026-11-01):
+
+- The CS-4 4(c) district table as the ask layer (each district's recordables, hours worked, recordable rate and crews' rate), with the timesheet row's work district and the case record's location as the devices: rejected at the ceiling, the careful solver who lands the call has already placed every case on the worker's crew on the day and executes CS-4 3.6 by mapping each crew to its register district, so both devices are readings it never makes and the honest cracker keeps every cell.
+- The HR-14 awards and their dollars by district: rejected, a group-by on the payroll export's crew and milestone columns with its reversal lines netted, kept whole by both sheets.
+- The payroll extract as the counts' anchors: dropped with the awards ask, since a file read by the decisive step alone announces it (readability test 7); every count now runs from HR-14 Revision 2's start on 11 January 2021, which the programme document files.
+- A payroll crew code that is the member's current crew (an awards device): rejected earlier in this architecture, it planted false anchors on the members' new crews and moved the call to 2.85.
+- Each recurrence's outcome and days carried onto its original case (29 CFR 1904.6) as the ask device: rejected, eight recurrences of 2026-window cases leave whole districts' cells unmoved.

@@ -1,7 +1,8 @@
 """Cut the evidence pack from the simulation: the two case systems, the crew assignments, the crew register, the
-timesheets by pay period, the recognition payouts, the payroll calendar and the 2027 work plan. Layer 1 is what
-Redbud's systems produce: a case system replaced in June 2024 with the open cases migrated, cases revised after
-entry, crews recoded at the March 2025 reorganisation, hours by type, payouts line by line."""
+timesheets by pay period, the payroll calendar and the 2027 work plan. Layer 1 is what Redbud's systems produce: a
+case system replaced in June 2024 with the open cases migrated, the nurse line's interface opening cases of its own
+beside the supervisors' reports, cases revised after entry, crews recoded at the March 2025 reorganisation, hours
+by type with prior-period adjustments."""
 import csv
 import datetime as dt
 import hashlib
@@ -21,7 +22,6 @@ FILES = {
     "assign": "crew_assignments_2020-2026.csv",
     "register": "crew_register_2026.xlsx",
     "hours": "timesheet_hours_by_pay_period_2021-2026.csv",
-    "payouts": "recognition_payouts_2021-2026.csv",
     "calendar": "payroll_calendar_2021-2027.csv",
     "plan": "work_plan_hours_2027.xlsx",
     "standard": "pinewater_contractor_safety_standard_cs4.pdf",
@@ -116,18 +116,43 @@ def derive(S):
             r["mutual_aid"] = False
             recur.append(r)
     cases = sorted(cases + recur, key=lambda c: (c["date"], c["emp"], c["time"]))
-    # awards the EHS office paid on a count that a later revision to medical treatment broke: payroll reverses them
-    reversals = []
+    # the nurse line (from the June 2024 cutover): a worker who calls it gets a case of its own, opened by the
+    # line's interface as first aid, dated the day of the call, with no time of injury; the supervisor's report,
+    # when there is one, is a separate case. Calls are kept clear of any other injury to the same worker within a
+    # week, so every nurse-line case belongs to one injury.
+    by_emp = {}
     for c in cases:
-        if c["unit"] != "crew" or c["recurrence_of"] is not None or c["first"] != "FA":
+        by_emp.setdefault(c["emp"], []).append(c)
+    lag_v = [k for k, _ in W.NURSE_LAG]
+    lag_p = [p for _, p in W.NURSE_LAG]
+    nurse = []
+    for c in cases:
+        if c["recurrence_of"] is not None or c["date"] < W.CUTOVER:
             continue
-        ms = c["date"] + dt.timedelta(days=W.MILESTONE - 1 - c["cycle_day"])
-        revised = c["entered"] + dt.timedelta(days=c["lag"])
-        if c["date"] < ms < revised and ms <= W.HIST1:
-            ci = c["ci"]
-            members = [sim.who(S["slots"][(ci, s)], ms) for s in range(crews[ci]["size"])]
-            reversals.append(dict(code=sim.crew_code(crews[ci], ms), date=ms, members=members, revised=revised))
-    return dict(cases=cases, reversals=reversals)
+        if any(x is not c and abs((x["date"] - c["date"]).days) <= 7 for x in by_emp[c["emp"]]):
+            continue
+        if rng.random() >= W.NURSE_CALL[c["cls"]]:
+            continue
+        lag = lag_v[int(rng.choice(len(lag_v), p=lag_p))]
+        when = c["date"] + dt.timedelta(days=lag)
+        if when > W.LOG1 or not any(a <= when <= b for a, b in spans.get(c["emp"], [])):
+            continue
+        if lag == 0:
+            job = c["job"]
+        elif c["mutual_aid"]:
+            job = c["job"]
+        else:
+            wo_n = int(rng.integers(400000, 999999))
+            job = c["job"].rsplit("-", 1)[0] + "-%06d" % wo_n
+        nurse.append(dict(c, date=when, time="", job=job, cls="FA", first="FA", lag=0, days_away=0, days_rw=0,
+                          entered=when, recurrence_of=None, source="Nurse line", nurse_of=c, nurse_lag=lag))
+        if c["cls"] == "FA" and rng.random() >= W.NURSE_ALSO_REPORTED:
+            c["nurse_only"] = True
+    for c in cases:
+        c.setdefault("source", "Supervisor")
+        c.setdefault("nurse_only", False)
+    cases = sorted(cases + nurse, key=lambda c: (c["date"], c["emp"], c["time"], c["source"]))
+    return dict(cases=cases)
 
 
 def write_cases(S, D, target):
@@ -136,6 +161,8 @@ def write_cases(S, D, target):
     year_seq = {}
     seq = 1180
     for c in D["cases"]:
+        if c.get("nurse_only"):
+            continue          # a first-aid injury the nurse line handled and no supervisor reported
         in_legacy = c["date"] < W.CUTOVER
         last_change = c["entered"] + dt.timedelta(days=c["lag"])
         migrated = in_legacy and c["date"] >= W.CUTOVER - dt.timedelta(days=24) and (
@@ -168,11 +195,13 @@ def write_cases(S, D, target):
                 revs = [(1, c["first"], c["entered"])]
                 if c["first"] != c["cls"]:
                     revs.append((2, c["cls"], last_change))
+            nl = c["source"] == "Nurse line"
             for r, cls, when in revs:
+                status = "Closed" if (nl or when < W.LOG1 - dt.timedelta(days=20)) else "Open"
                 new.append([c["case_id"], ref, c["emp"], c["date"].isoformat(), c["time"], c["job"], c["loc"], cls,
                             c["days_away"] if cls == "DA" else 0, c["days_rw"] if cls in ("RW", "DA") else 0,
-                            c["body"], c["nature"], r, when.isoformat(),
-                            "Closed" if when < W.LOG1 - dt.timedelta(days=20) else "Open", link])
+                            c["body"], c["nature"], r, when.isoformat(), status, link,
+                            c["source"]])
     head = ["case_no", "employee_no", "injury_date", "injury_time", "job_ref", "district", "classification",
             "days_away", "days_restricted", "body_part", "nature", "entered", "status", "revision", "recurrence_of"]
     with open(os.path.join(target, FILES["legacy"]), "w", newline="") as f:
@@ -185,13 +214,13 @@ def write_cases(S, D, target):
     ws.title = "Cases"
     hnew = ["case_id", "legacy_case_no", "employee_id", "injury_date", "injury_time", "job_reference", "district",
             "osha_class", "days_away", "days_job_transfer_restriction", "body_part", "nature_of_injury", "revision",
-            "revised_on", "case_status", "recurrence_of_case"]
+            "revised_on", "case_status", "recurrence_of_case", "source"]
     ws.append(hnew)
     for row in sorted(new, key=lambda r: (r[0], r[12])):
         ws.append([None if v == "" else v for v in row])
     for cell in ws[1]:
         cell.font = Font(bold=True)
-    widths = [12, 15, 12, 12, 11, 18, 12, 10, 10, 12, 14, 18, 9, 12, 11, 16]
+    widths = [12, 15, 12, 12, 11, 18, 12, 10, 10, 12, 14, 18, 9, 12, 11, 16, 12]
     for k, wdt in enumerate(widths):
         ws.column_dimensions[openpyxl.utils.get_column_letter(k + 1)].width = wdt
     ws.freeze_panes = "A2"
@@ -201,7 +230,10 @@ def write_cases(S, D, target):
                 ["DA", "Days away from work"],
                 ["revision", "1 is the case as first entered; a later revision replaces it"],
                 ["legacy_case_no", "the EHS log's case number, for cases open at the 1 June 2024 migration"],
-                ["recurrence_of_case", "the earlier case this one recurs from (the case or EHS log number)"]]:
+                ["recurrence_of_case", "the earlier case this one recurs from (the case or EHS log number)"],
+                ["source", "Supervisor: the EHS office's case from the supervisor's injury report, classified "
+                           "and revised by the EHS office; Nurse line: a case the 24-hour nurse line's interface "
+                           "opens from the worker's call, recorded as first aid and not revised"]]:
         cl.append(row)
     cl.column_dimensions["A"].width = 16
     cl.column_dimensions["B"].width = 70
@@ -300,43 +332,6 @@ def write_hours(S, target):
         w = csv.writer(f, lineterminator="\r\n")
         w.writerow(["pay_period_start", "pay_period_end", "unit_code", "district", "unit_type", "regular_hours",
                     "overtime_hours", "pto_hours", "holiday_hours", "mutual_aid_hours", "adjusts_pay_period"])
-        w.writerows(rows)
-    return len(rows)
-
-
-def current_crew(S):
-    """The crew on each employee's HR record when the payroll report was run: the crew held on 16 October 2026, or
-    for a leaver the last crew held. The payroll earnings report joins every line to it."""
-    last = {}
-    crews = S["crews"]
-    for (ci, s), tl in S["slots"].items():
-        for k, (start, emp) in enumerate(tl):
-            end = tl[k + 1][0] - dt.timedelta(days=1) if k + 1 < len(tl) else W.ASOF
-            if emp not in last or end > last[emp][0]:
-                last[emp] = (end, sim.crew_code(crews[ci], min(end, W.ASOF)))
-    return {e: v[1] for e, v in last.items()}
-
-
-def write_payouts(S, D, target):
-    rows = []
-    for m in S["milestones"]:
-        if m["date"] < W.HIST0 or m["date"] > W.HIST1:
-            continue
-        pd = pay_date(m["date"])
-        for emp in m["members"]:
-            rows.append([pd.isoformat(), emp, m["code"], "CREW90", m["date"].isoformat(), "%.2f" % W.BONUS])
-    for v in D["reversals"]:
-        pd, back = pay_date(v["date"]), pay_date(v["revised"])
-        if back <= pd:
-            back = pd + dt.timedelta(days=14)
-        for emp in v["members"]:
-            rows.append([pd.isoformat(), emp, v["code"], "CREW90", v["date"].isoformat(), "%.2f" % W.BONUS])
-            if back <= W.HIST1 + dt.timedelta(days=5):
-                rows.append([back.isoformat(), emp, v["code"], "CREW90", v["date"].isoformat(), "%.2f" % -W.BONUS])
-    rows.sort(key=lambda r: (r[0], r[2], r[1]))
-    with open(os.path.join(target, FILES["payouts"]), "w", newline="") as f:
-        w = csv.writer(f, lineterminator="\r\n")
-        w.writerow(["pay_date", "employee_id", "crew_code", "earning_code", "milestone_date", "amount_usd"])
         w.writerows(rows)
     return len(rows)
 

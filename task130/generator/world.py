@@ -4,10 +4,10 @@ crews make under them. Every name, record and figure is fictional."""
 import datetime as dt
 
 SEED = 130624
-BURN0 = dt.date(2020, 9, 28)       # the simulation starts here, so the crews' 90-day cycles are mixed by 2021
-HIST0 = dt.date(2021, 1, 11)       # first biweekly pay period in the extracts (Monday)
-PAYROLL_2026 = dt.date(2026, 1, 5)  # pay period 1 of the 2026 payroll year; period 19 ends 27 September 2026
-HIST1 = dt.date(2026, 9, 27)       # last day in the timesheet and payroll extracts (Sunday)
+BURN0 = dt.date(2020, 9, 28)       # the simulation starts here (staffing and turnover settle before the records)
+HIST0 = dt.date(2021, 1, 11)       # first biweekly pay period in the extracts (Monday); HR-14 Revision 2 starts
+#                                    every crew's count afresh on this day
+HIST1 = dt.date(2026, 9, 27)       # last day in the timesheet extract (Sunday): pay period 20 of payroll year 2026
 LOG1 = dt.date(2026, 10, 9)        # the case export's cut
 CUTOVER = dt.date(2024, 6, 1)      # the case management system replaces the legacy EHS log
 RENAME = dt.date(2025, 3, 2)       # the Lakes district takes over part of Piedmont, crews recoded
@@ -56,6 +56,14 @@ HIDE_FULL = 60
 P_REPORT_END = 0.15
 CASE_MIX = (("DA", 0.15), ("RW", 0.23), ("MT", 0.62))
 FIRST_AID_PER_RECORDABLE = 2.6     # first-aid cases logged per true recordable, never hidden
+
+# the 24-hour nurse line that came with the case management system: an injured worker who calls it gets a case
+# opened by the line's interface, always as first aid, dated the day of the call and never revised; the
+# supervisor's own report, when there is one, goes in as a separate case. A recordable injury always has the
+# supervisor's case; a first-aid injury the nurse line handled often has none.
+NURSE_CALL = {"FA": 0.50, "MT": 0.32, "RW": 0.22, "DA": 0.10}   # share of injuries whose worker calls the line
+NURSE_ALSO_REPORTED = 0.48         # share of nurse-line first-aid injuries the supervisor also reports
+NURSE_LAG = ((0, 0.42), (1, 0.40), (2, 0.11), (3, 0.07))       # days from the injury to the call
 
 # hours: a crew day is about 9.6 hours a member present; members take paid leave on about 4 per cent of days
 DAY_HOURS = 9.6

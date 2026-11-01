@@ -35,7 +35,6 @@ def build_target(target):
     c["assign"] = P.write_assignments(S, target)
     c["register"] = P.write_register(S, target)
     c["hours"] = P.write_hours(S, target)
-    c["payouts"] = P.write_payouts(S, D, target)
     c["calendar"] = P.write_calendar(target)
     c["plan"] = P.write_plan(S, target)
     docs.standard_pdf(os.path.join(target, P.FILES["standard"]))

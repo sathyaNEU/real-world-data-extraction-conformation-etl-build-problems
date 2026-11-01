@@ -188,6 +188,8 @@ def simulate():
             sup_today[a] = (crew_district(c, a) in sources and c["type"] in ("OH", "VEG", "UG")
                             and rng.random() < share)
         for d in days(W.BURN0, W.HIST1):
+            if d == W.HIST0:
+                cyc = d            # HR-14 Revision 2: every crew's count starts afresh on 11 January 2021
             code, dist = crew_code(c, d), crew_district(c, d)
             work_dist = dist
             for a, b, target, sources, share in W.SUPPORT:

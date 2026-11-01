@@ -1,6 +1,6 @@
 """Generator assertions: the input gates, the analyst test on the clean truth, the ladder's rungs and separations,
-every semantic fork row (SF1 to SF19) asserted as the same call or ruled out, the ask devices, and the rounding
-margins. run() returns the number of assertions that passed; any failure raises."""
+every semantic fork row (SF1 to SF19) asserted as the same call or ruled out, the ask device and its forcing, and
+the rounding margins. run() returns the number of assertions that passed; any failure raises."""
 import datetime as dt
 import os
 
@@ -86,9 +86,12 @@ def run(S, D, c, target, F, golden_dir):
     # SF12: the crews' early-count rate applied to the technicians too
     q_all = g["clean"] * (plan_crew + plan_tech) / K
     ok(q_all > limit_count, "SF12: the early-count rate on every hour is over the limit too")
-    # SF14: the counts started from the payroll report's crews as they stand
-    tot, rate, cl = AN.call_with_report_anchors(Dd, cs, H, Dd["plan"], F["recorded"]["tech"])
-    ok(abs(tot - g["total"]) < 1e-6, "SF14: the payroll report's crews start the same counts")
+    # SF14: the counts started at each crew's first recordable in the record instead of at the programme's start
+    first = AN.cycles(cs, Dd, H, origin="first")
+    q_first = (first["cnt"][:AN.CLEAN].sum() * K / first["exp"][:AN.CLEAN].sum() * plan_crew
+               + F["recorded"]["tech"] * plan_tech) / K
+    ok(q_first > limit_count, "SF14: counts started at each crew's first recordable still put 2027 over the limit "
+                              "(%.1f)" % q_first)
     # SF1, SF3, SF4, SF6: the definitions CS-4 files, each alternative reading a different call or the same call
     cs_fa = AN.attach(AN.new_cases(AN.cases(Dd)), Dd)
     n_fa = sum(1 for x in cs_fa if x["cls"] == "FA" and x["pinewater"])
@@ -105,33 +108,50 @@ def run(S, D, c, target, F, golden_dir):
     # SF13: the recoded crews' counts carry over (one crew under two codes)
     info, canon = AN.units(Dd)
     ok(len(canon) == 30, "SF13: thirty crews recoded at the March 2025 reorganisation")
-    # SF16 to SF19: the asks' conventions and their devices
+    newc = AN.cycles(cs, Dd, H, carry=False)
+    q_new = (newc["cnt"][:AN.CLEAN].sum() * K / newc["exp"][:AN.CLEAN].sum() * plan_crew
+             + F["recorded"]["tech"] * plan_tech) / K
+    ok(q_new > limit_count, "SF13: the recoded crews read as new crews still put 2027 over the limit (%.1f)" % q_new)
+    # SF16 to SF19: the asks' conventions and their device
     A = F["asks"]
-    lab = AN.asks(Dd, cs, H, case_location=True)
-    hrs_ts = AN.asks(Dd, cs, H, timesheet_district=True)
-    post = AN.asks(Dd, cs, H, posting_period=True)
-    ok(sum(lab[dd]["cases"] != A[dd]["cases"] for dd in W.DISTRICTS) >= 2,
-       "SF16: the case record's own district moves at least two districts' cases")
-    ok(all(abs(hrs_ts[dd]["hours"] - A[dd]["hours"]) > 500 for dd in W.DISTRICTS),
-       "SF16: the timesheet row's district moves every district's hours")
-    ok(sum(abs(post[dd]["hours"] - A[dd]["hours"]) > 0.5 for dd in W.DISTRICTS) >= 2,
-       "SF19: prior-period adjustments booked when posted move at least two districts' hours")
-    rep = AN.asks(Dd, cs, H, report_codes=True)
-    ok(all(rep[dd]["milestones"] == A[dd]["milestones"] for dd in W.DISTRICTS), "SF18: the report's crews are the earning crews")
-    gross = {}
-    for r in Dd["payouts"]:
-        if AN.ASK0 <= AN.d(r["milestone_date"]) <= AN.ASK1 and float(r["amount_usd"]) > 0:
-            gross[(r["crew_code"], r["milestone_date"])] = 1
-    ok(sum(A[dd]["milestones"] for dd in W.DISTRICTS) <= len(gross), "SF18: reversed awards are not counted")
-    ok(AN.ASK0 == dt.date(2026, 1, 5) and AN.ASK1 == dt.date(2026, 9, 27), "SF17: the window is pay periods 1 to 19")
+    every = AN.attach(AN.cases(Dd), Dd)
+    exact = AN.asks(Dd, every, None)
+    ok(all(exact[dd]["quarters"][q] != A[dd]["quarters"][q] for dd in W.DISTRICTS for q in range(3)),
+       "SF16: records grouped on worker and injury date move every district's first-aid cases in every quarter")
+    ok(all(exact[dd]["total"] != A[dd]["total"] for dd in W.DISTRICTS), "SF16: and every district's total")
+    for md in range(3, 8):
+        alt = AN.asks(Dd, every, md)
+        ok(all(alt[dd] == A[dd] for dd in W.DISTRICTS), "SF18: a %d-day window pairs the same cases" % md)
+    for md in (1, 2):
+        alt = AN.asks(Dd, every, md)
+        ok(sum(alt[dd]["quarters"][q] != A[dd]["quarters"][q] for dd in W.DISTRICTS for q in range(3)) >= 6,
+           "SF18: a %d-day window leaves half the cells or more off" % md)
+    sup = {}
+    for c in every:
+        if c["source"] != "Nurse line":
+            sup.setdefault(c["emp"], []).append(c)
+    n_nl = n_twin = 0
+    bad = []
+    for c in every:
+        if c["source"] != "Nurse line":
+            continue
+        n_nl += 1
+        near = [x for x in sup.get(c["emp"], []) if 0 <= (c["date"] - x["date"]).days <= 7]
+        if not (len(near) <= 1 and all((c["date"] - x["date"]).days <= 3 and x["body"] == c["body"]
+                                       and x["nature"] == c["nature"] for x in near)):
+            bad.append(c["case"])
+        n_twin += len(near)
+    ok(not bad, "SF19: every nurse-line case has at most one supervisor's case of its worker in the week before its "
+                "call, that one in the three days before and with the same body part and nature (%s)" % bad[:5])
+    ok(n_nl > 300 and 0.3 < n_twin / n_nl < 0.7, "SF19: %d nurse-line cases, %d of them twinned" % (n_nl, n_twin))
+    ok(AN.QUARTERS[0][0] == dt.date(2026, 1, 5) and AN.QUARTERS[2][1] == dt.date(2026, 9, 27),
+       "SF17: the window runs 5 January to 27 September 2026, pay periods 2 to 20 of payroll year 2026")
     # rounding margins: no graded figure on an exact half
     for x in [g["total"]] + g["quarters"]:
         ok(abs(abs(x - np.floor(x)) - 0.5) > 0.02, "no forecast on a half (%.4f)" % x)
-    for dd in W.DISTRICTS:
-        for k in ("rate", "crew_rate"):
-            v = A[dd][k] * 100
-            ok(abs(abs(v - np.floor(v)) - 0.5) > 0.01, "%s %s off the half-cent (%.5f)" % (dd, k, A[dd][k]))
-        ok(abs(abs(A[dd]["hours"] - np.floor(A[dd]["hours"])) - 0.5) > 0.02, "%s hours off the half hour" % dd)
+    for x in [g["rate"]] + g["quarter_rates"]:
+        v = x * 100
+        ok(abs(abs(v - np.floor(v)) - 0.5) > 0.01, "no rate on a half-hundredth (%.5f)" % x)
     ok(abs(g["rate"] - W.LIMIT) > 0.25, "the forecast rate sits clear of the limit")
     # SF2, SF5, SF7, SF15: the population, the plan and the year as CS-4 files them
     ok(plan_tech > 0 and plan_crew > 0, "SF2: the forecast carries crews and technicians")

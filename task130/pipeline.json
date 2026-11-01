@@ -3,24 +3,25 @@
  "status": "PAUSED",
  "domain": "economics-econometrics",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "A competent solver who reads the client's standard, the recognition notice and the 2027 hours plan correctly carries the recorded rate forward (2.43 per 200,000 hours, 174 recordables on the 2027 plan), or checks the bonus against the technicians it never covered and finds them lower (1.92 against the crews' 2.51), and files a 2027 plan inside the 3.0 limit; the crews leave hideable injuries off the record late in each 90-day count, and read at the rate they record in the first 35 days of their counts (3.67 for crews, the technicians at their own 1.92) the 2027 plan makes 244 recordables, a rate of 3.42.",
  "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on the final cut (--asof 2026-10-23), no LEAK: sweep 3 (CS-4 carries the call's terms) and sweep 9 (the payroll calendar's 2027 pay periods), both ruled harmless in the note's Leak sweep",
+  "reader": "pending: stage 4 from the main thread (brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task130_stage4_leak_brief.md)"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-31 (three_rules.strategy_risk only), registered 23:21:13Z",
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-11-01 (three_rules.strategy_risk only; nearest card task149 at 0.10, differentiated on the card)",
+  "surface": "exit 0 2026-11-01: four pairs promoted on card axes or corpus-percentile surface alone (task166, task133, task196, task180), each differentiated on the card; people Samantha Galvan, Jerome Warren, Norma Hinton, Sergio Phillips, all on the card"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2, the ask layer: the call side is built and green (make.py --once: 65 checks, verify match; 244 recordables, 3.42, R0 174 at 2.43), but the honest cracker (the careful solver who lands the call, runs the hygiene battery and executes CS-4 3.6) keeps the district asks (cases, hours, rates by the crew's district from the register; awards and dollars a payroll group-by); re-site the asks on rows the call never reads with reconstruction devices (the 2026 window's recordables with each recurrence's outcome and days carried on its original case, the original found through a legacy or migrated case number), rewrite ceiling.py to measure the honest cracker at 0 of N, then the design note's sections through precut.py, submission.md, make.py (two byte-identical builds and target.zip), every free gate on the final cut, guard.py heart on a fresh pull, and the stage 4 hand-off (leak copy, reader brief, PAUSED commit)",
+ "resume": "stage 4 from the main thread: rebuild with python3 task130/generator/make.py (target.zip sha256 325d048a28a5d9eec3ef0ef13e370214e64c415754c9d36fe456bd5a2d5f7bdf), then spawn the leak reader with the brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task130_stage4_leak_brief.md on the copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task130/ and the determinism judge beside it, both at medium effort; fix every finding in the generator in one pass, re-judge a FIX_NOW once, then stage 5 (every gate on the final cut, ledger row, SHIPPED commit with target.zip and golden/ added with git add -f)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -250,5 +251,26 @@
    },
    "fate": "spent at stage 4 on 2026-10-31: two determinism passes DETERMINISTIC, APPROVE, but the draw repeated task156 v2's decisive pattern G14, strategy forecast_method_backtest and organisation family local_government inside the three-build window; re-rooted rather than wait for the window or relabel"
   }
- ]
+ ],
+ "build": {
+  "seed": 130624,
+  "checks": 65,
+  "verify": "match (forecast 255.0, crews' early-count rate 3.843, technicians 1.923; the sixteen first-aid cells)",
+  "rebuild": "byte-identical (target/ and golden/)",
+  "command": "python3 task130/generator/make.py",
+  "figures_check": "PASS 80 of 80",
+  "precut": "PASS 61 checks, 0 WARN",
+  "voice_check": "PASS (659 characters)",
+  "call": "255 recordables in 2027, 3.57 per 200,000 hours on the 2027 work plan, over the 3.0 limit",
+  "default": "176 recordables, 2.46 (the recorded rate carried onto the plan)",
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0,
+  "target_zip": "12 members, 1850230 bytes",
+  "target_zip_sha256": "325d048a28a5d9eec3ef0ef13e370214e64c415754c9d36fe456bd5a2d5f7bdf"
+ },
+ "stage4": {
+  "leak_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task130/",
+  "leak_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task130_stage4_leak_brief.md",
+  "note": "target.zip and golden/ stay uncommitted; the main thread rebuilds them byte-identically with the command"
+ }
 }

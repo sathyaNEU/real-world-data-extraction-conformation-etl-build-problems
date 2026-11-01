@@ -7,20 +7,19 @@ import pack as P
 DISTRACTORS = ("nearmiss", "subs")
 SOURCES = {
     "legacy": "Redbud EHS case log (legacy system), January 2021 to 31 May 2024, one row per case revision",
-    "cases": "Redbud case management export, 1 June 2024 to 9 October 2026, with the cases migrated open",
+    "cases": "Redbud case management export, 1 June 2024 to 9 October 2026: the cases migrated open, the supervisors' reports and the nurse line's cases",
     "assign": "HR crew and team assignment history, September 2020 to September 2026",
     "register": "Crew and technician team register as of 29 September 2026, with the March 2025 recodes",
     "hours": "Payroll timesheet hours by unit and biweekly pay period, 11 January 2021 to 27 September 2026",
-    "payouts": "Payroll earnings lines under code CREW90 (HR-14 awards), pay dates January 2021 to 2 October 2026",
     "calendar": "Payroll calendar of biweekly pay periods, 2021 to 2027",
     "plan": "2027 work plan hours by district, unit type and quarter, from Pinewater's 2027 work release",
     "standard": "Pinewater EMC Contractor Safety Performance Standard CS-4, Revision 3 (effective 1 January 2026)",
-    "programme": "Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 1 March 2021)",
+    "programme": "Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 11 January 2021)",
     "notice": "Redbud notice of 2 October 2026 ending HR-14 on 31 December 2026",
     "nearmiss": "Field good-catch (near-miss) reports, January 2025 to September 2026",
     "subs": "Subcontractors' monthly safety returns, January to September 2026",
 }
-DATES = {"standard": "2025-12-08", "programme": "2021-02-24", "notice": "2026-10-02", "plan": "2026-10-15",
+DATES = {"standard": "2025-12-08", "programme": "2021-01-04", "notice": "2026-10-02", "plan": "2026-10-15",
          "register": "2026-09-29", "cases": "2026-10-12"}
 
 

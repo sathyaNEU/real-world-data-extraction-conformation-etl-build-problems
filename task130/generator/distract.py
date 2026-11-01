@@ -14,7 +14,7 @@ import world as W
 CATS = ["Hazard observed", "Equipment defect", "Traffic control", "Public contact", "Near miss", "Housekeeping",
         "Energised equipment", "Wildlife"]
 SUBS = [("Tallow Creek Tree Service", 61000), ("Harbison Boring Inc", 38500), ("Ridgeway Traffic Control", 22800),
-        ("Mossy Oak Excavating", 30500), ("Delmar Pole Testing", 12400), ("Sweetgum Hydro-Vac", 9800)]
+        ("Briarwood Excavating", 30500), ("Delmar Pole Testing", 12400), ("Sweetgum Hydro-Vac", 9800)]
 
 
 def _rng(*keys):

@@ -85,6 +85,9 @@ def standard_pdf(path):
           "the same employees, work and period."),
         P("3.6 <b>District.</b> The Pinewater operating district of the crew or technician team the employee belongs "
           "to on the day in question."),
+        P("3.7 <b>First-aid case.</b> A work-related injury to a field employee that needed first aid only (29 CFR "
+          "1904.7(b)(5)(ii)). Each injury is counted once, as the contractor's case record finally classifies it, "
+          "and in the period of its injury date."),
         P("4. The contract-year safety plan", "head"),
         P("By 15 November each year the contractor submits a safety plan for the next contract year (1 January to 31 "
           "December). The plan states:"),
@@ -92,9 +95,9 @@ def standard_pdf(path):
           "Pinewater work in the contract year, in total and for each calendar quarter;"),
         P("(b) the recordable rate that number makes on the hours worked in the contractor's work plan for the "
           "contract year, in total and for each quarter; and"),
-        P("(c) the contractor's recordable injuries and hours worked on Pinewater work in the current year, from the "
-          "first pay period beginning in January to the end of the last pay period closed before the plan is "
-          "prepared, by district, with the recordable rate they make."),
+        P("(c) the contractor's recordable injuries and first-aid cases on Pinewater work in the current year, from "
+          "the first pay period beginning in January to the end of the last pay period closed before the plan is "
+          "prepared, by district and calendar quarter."),
         P("The forecast is the contractor's own and is made on its own records. Pinewater does not prescribe the "
           "method; it reviews the plan against the contractor's records under section 7."),
         P("5. The limit", "head"),
@@ -126,8 +129,9 @@ def programme_pdf(path):
                              ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story = [
         P("HR-14 Crew Safety Recognition Programme", "title"),
-        P("Redbud Line Services. Revision 2, effective 1 March 2021. Owners: Samantha Galvan, Director of "
-          "Environment, Health and Safety, and Sergio Phillips, Payroll and Benefits Manager.", "small"),
+        P("Redbud Line Services. Revision 2, effective 11 January 2021; replaces Revision 1 (2018). Owners: "
+          "Samantha Galvan, Director of Environment, Health and Safety, and Sergio Phillips, Payroll and Benefits "
+          "Manager.", "small"),
         P("1. Who is in the programme", "head"),
         P("Members of Redbud field crews. Technicians who work alone are not in the programme."),
         tbl,
@@ -138,10 +142,11 @@ def programme_pdf(path):
           "first payroll after the pay period in which the 90th day falls, under earning code CREW90, to each member "
           "on the crew that day."),
         P("3. The count", "head"),
-        P("The count starts on the day after the crew's last recordable injury or the day after the last day of its "
-          "last award, whichever is later. Every calendar day counts, including weekends, holidays and days the crew "
-          "works off Pinewater's system. A recordable injury to any member restarts the count from the next day. A "
-          "first-aid case does not affect the count."),
+        P("Counts under Revision 1 closed on 10 January 2021, and every crew's count under this revision started on "
+          "11 January 2021. After that the count starts on the day after the crew's last recordable injury or the "
+          "day after the last day of its last award, whichever is later. Every calendar day counts, including "
+          "weekends, holidays and days the crew works off Pinewater's system. A recordable injury to any member "
+          "restarts the count from the next day. A first-aid case does not affect the count."),
         P("4. Crews that change", "head"),
         P("A member who joins a crew joins its count. When a crew is recoded at a reorganisation its count carries "
           "over under the new code."),
@@ -151,7 +156,7 @@ def programme_pdf(path):
     ]
     _build(path, "HR-14 Crew Safety Recognition Programme", "Redbud Line Services", story,
            "Redbud Line Services  |  HR-14 Crew Safety Recognition Programme, Revision 2",
-           b"D:20210211101500-05'00'", b"D:20210224163000-05'00'")
+           b"D:20201207101500-05'00'", b"D:20210104163000-05'00'")
 
 
 def notice_docx(path):

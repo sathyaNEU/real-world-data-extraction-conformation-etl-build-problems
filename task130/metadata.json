@@ -16,7 +16,7 @@
   "subcontractor_monthly_safety_2026.csv"
  ],
  "input_gates": {
-  "files": 13,
+  "files": 12,
   "formats": [
    "csv",
    "docx",
@@ -38,9 +38,9 @@
   {
    "path": "case_management_export_2024-2026.xlsx",
    "format": "xlsx",
-   "bytes": 136688,
-   "rows": 1887,
-   "source": "Constructed: Redbud case management export, 1 June 2024 to 9 October 2026, with the cases migrated open",
+   "bytes": 170990,
+   "rows": 2360,
+   "source": "Constructed: Redbud case management export, 1 June 2024 to 9 October 2026: the cases migrated open, the supervisors' reports and the nurse line's cases",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
@@ -65,17 +65,17 @@
   {
    "path": "crew_safety_recognition_programme.pdf",
    "format": "pdf",
-   "bytes": 3315,
+   "bytes": 3397,
    "rows": null,
-   "source": "Constructed: Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 1 March 2021)",
-   "date": "2021-02-24",
+   "source": "Constructed: Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 11 January 2021)",
+   "date": "2021-01-04",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
    "path": "ehs_case_log_2021-2024.csv",
    "format": "csv",
-   "bytes": 347408,
-   "rows": 2920,
+   "bytes": 345992,
+   "rows": 2908,
    "source": "Constructed: Redbud EHS case log (legacy system), January 2021 to 31 May 2024, one row per case revision",
    "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
@@ -101,19 +101,10 @@
   {
    "path": "pinewater_contractor_safety_standard_cs4.pdf",
    "format": "pdf",
-   "bytes": 4947,
+   "bytes": 5023,
    "rows": null,
    "source": "Constructed: Pinewater EMC Contractor Safety Performance Standard CS-4, Revision 3 (effective 1 January 2026)",
    "date": "2025-12-08",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "recognition_payouts_2021-2026.csv",
-   "format": "csv",
-   "bytes": 6435736,
-   "rows": 116310,
-   "source": "Constructed: Payroll earnings lines under code CREW90 (HR-14 awards), pay dates January 2021 to 2 October 2026",
-   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {

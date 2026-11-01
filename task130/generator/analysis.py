@@ -22,6 +22,10 @@ ASK0, ASK1 = dt.date(2026, 1, 5), dt.date(2026, 9, 27)
 CREW_TYPES = ("OH", "UG", "SUB", "VEG")
 TECH_TYPES = ("MTR", "LOC")
 CLEAN = 35            # cycle days 0 to 34: the stretch of each count before reporting falls away
+PROGRAMME_START = dt.date(2021, 1, 11)   # HR-14 Revision 2: every crew's count started on this day
+QUARTERS = ((ASK0, dt.date(2026, 3, 31)), (dt.date(2026, 4, 1), dt.date(2026, 6, 30)), (dt.date(2026, 7, 1), ASK1))
+MATCH_DAYS = 3        # a nurse-line call comes on the day of the injury or up to three days after it
+SEVERITY = {"FA": 0, "MT": 1, "RW": 2, "DA": 3}
 
 
 def d(s):
@@ -46,13 +50,12 @@ def load(target):
     head = next(it)
     register = [dict(zip(head, r)) for r in it]
     hours = list(csv.DictReader(open(p("hours"), newline="")))
-    payouts = list(csv.DictReader(open(p("payouts"), newline="")))
     ws = openpyxl.load_workbook(p("plan"), read_only=True)["2027 hours"]
     plan = {}
     for r in ws.iter_rows(min_row=5, values_only=True):
         if r[0] in W.DISTRICTS:
             plan[(r[0], r[1])] = [float(x) for x in r[2:6]]
-    return dict(legacy=legacy, new=new, assign=assign, register=register, hours=hours, payouts=payouts, plan=plan)
+    return dict(legacy=legacy, new=new, assign=assign, register=register, hours=hours, plan=plan)
 
 
 def cases(D):
@@ -67,12 +70,14 @@ def cases(D):
         k = ("L", r["case_no"])
         if k not in last or int(r["revision"]) > last[k]["rev"]:
             last[k] = dict(rev=int(r["revision"]), emp=r["employee_no"], date=mdy(r["injury_date"]),
-                           job=r["job_ref"], cls=CL[r["classification"]], recur=bool(r["recurrence_of"]), loc=r["district"])
+                           job=r["job_ref"], cls=CL[r["classification"]], recur=bool(r["recurrence_of"]), loc=r["district"],
+                           source="Supervisor", body=r["body_part"], nature=r["nature"])
     for r in D["new"]:
         k = ("N", r["case_id"])
         if k not in last or int(r["revision"]) > last[k]["rev"]:
             last[k] = dict(rev=int(r["revision"]), emp=r["employee_id"], date=d(str(r["injury_date"])[:10]),
-                           job=r["job_reference"], cls=r["osha_class"], recur=bool(r["recurrence_of_case"]), loc=r["district"])
+                           job=r["job_reference"], cls=r["osha_class"], recur=bool(r["recurrence_of_case"]), loc=r["district"],
+                           source=r["source"], body=r["body_part"], nature=r["nature_of_injury"])
     out = [dict(v, case=k[1]) for k, v in sorted(last.items())]
     for c in out:
         c["pinewater"] = not c["job"].startswith("MA-")
@@ -82,20 +87,6 @@ def cases(D):
 def new_cases(cs):
     """Recurrences (29 CFR 1904.6) are not new cases."""
     return [c for c in cs if not c["recur"]]
-
-
-def net_awards(D, at=None):
-    """Each award as payroll finally holds it: every line placed on the crew the member was on on the milestone date
-    (the payroll report carries the crew on the member's HR record when it was run), lines netted by crew, milestone
-    and member, an award kept when its net is positive. at=None groups on the report's own crew code instead."""
-    net = collections.defaultdict(float)
-    for r in D["payouts"]:
-        code = at(r["employee_id"], d(r["milestone_date"])) if at else r["crew_code"]
-        net[(code, r["milestone_date"], r["employee_id"])] += float(r["amount_usd"])
-    by = collections.defaultdict(float)
-    for (code, ms, emp), v in net.items():
-        by[(code, ms)] += v
-    return {k: v for k, v in by.items() if v > 0.005}
 
 
 def units(D):
@@ -158,26 +149,24 @@ def hours_by(D):
     return rows
 
 
-def cycles(cs, D, H):
-    """Each crew's position in its 90-day count, day by day, from its first anchor in the record (a recordable or
-    a paid award): days since the later of its last recordable injury and its last award. Returns, per cycle day,
-    the Pinewater hours worked (each pay period's hours spread over its working days) and the recordables."""
+def cycles(cs, D, H, origin="programme", carry=True):
+    """Each crew's position in its 90-day count, day by day: HR-14 Revision 2 started every count on 11 January 2021,
+    and a count restarts on the day after a recordable injury to any member and on the day after its 90th day.
+    Returns, per cycle day, the Pinewater hours worked (each pay period's hours spread over its working days) and the
+    recordables on Pinewater work."""
     info, canon = units(D)
+    key = "canon" if carry else "code"      # carry=False: a recoded crew read as a new crew (a stress reading)
     resets = collections.defaultdict(set)
     for c in cs:
         if c["crew"] and c["cls"] != "FA":
-            resets[c["canon"]].add(c["date"])
-    awards = collections.defaultdict(set)   # the awards paid, each on the crew that earned it, start the counts
-    for (code, ms) in net_awards(D, assignment_lookup(D)):
-        if code in info:
-            awards[canon.get(code, code)].add(d(ms))
+            resets[c[key]].add(c["date"])
     per_day = collections.defaultdict(dict)
     for h in H:
         if h["type"] not in CREW_TYPES or h["worked"] <= 0:
             continue
         wd = working_days(h["ps"])
         for day in wd:
-            per_day[h["canon"]][day] = per_day[h["canon"]].get(day, 0.0) + h["worked"] / len(wd)
+            per_day[h[key]][day] = per_day[h[key]].get(day, 0.0) + h["worked"] / len(wd)
     exp = np.zeros(W.MILESTONE)
     cnt = np.zeros(W.MILESTONE)
     cnt_cls = collections.defaultdict(lambda: np.zeros(W.MILESTONE))
@@ -186,30 +175,28 @@ def cycles(cs, D, H):
     pine = collections.defaultdict(list)
     for c in cs:
         if c["crew"] and c["cls"] != "FA" and c["pinewater"]:
-            pine[c["canon"]].append(c)
-    days_seen = 0
+            pine[c[key]].append(c)
     for crew in sorted(per_day):
-        anchors = sorted(resets[crew] | awards[crew])
-        if not anchors:
-            continue
         ctype = info[crew]["type"]
-        start = anchors[0] + ONE
-        ai = 1
+        start = PROGRAMME_START if carry else max(PROGRAMME_START, min(per_day[crew]))
+        if origin == "first":       # a stress reading: positions known only from the crew's first recordable
+            if not resets[crew]:
+                continue
+            start = min(resets[crew]) + ONE
         day = start
         last_day = max(per_day[crew])
-        rset, aset = resets[crew], awards[crew]
+        rset = resets[crew]
         pos = {}
         while day <= last_day:
             n = (day - start).days
             pos[day] = n
-            if day in rset or day in aset or n == W.MILESTONE - 1:
+            if day in rset or n == W.MILESTONE - 1:
                 start = day + ONE
             day += ONE
         for dd_, h in per_day[crew].items():
             if dd_ in pos:
                 exp[pos[dd_]] += h
                 by_type_exp[ctype][pos[dd_]] += h
-                days_seen += 1
         for c in pine[crew]:
             if c["date"] in pos:
                 cnt[pos[c["date"]]] += 1
@@ -237,60 +224,44 @@ def forecast(plan, crew_rate, tech_rate, by_type=None):
     return q, hq
 
 
-def asks(D, cs, H, report_codes=False, timesheet_district=False, posting_period=False, case_location=False):
-    """CS-4 4(c) for 5 January to 27 September 2026, district by district, with the crews' own rate and the
-    recognition awards earned in the same window. The flags price a response's handling: the payroll report's own
-    crew codes, the timesheet's district column, prior-period adjustments left in the pay period they were posted
-    in, the case record's location district."""
-    info, canon = units(D)
-    awards = net_awards(D, None if report_codes else assignment_lookup(D))
-    if case_location:
-        cs = [dict(c, district=c["loc"]) for c in cs]
-    if posting_period or timesheet_district:
-        H2 = []
-        for h, r in zip(H, D["hours"]):
-            h2 = dict(h)
-            if posting_period:
-                h2["ps"] = d(r["pay_period_start"])
-            if timesheet_district:
-                h2["district"] = r["district"]
-            H2.append(h2)
-        H = H2
-    A = {}
-    for dist in W.DISTRICTS:
-        n = sum(1 for c in cs if ASK0 <= c["date"] <= ASK1 and c["cls"] != "FA" and c["pinewater"]
-                and c["district"] == dist)
-        da = sum(1 for c in cs if ASK0 <= c["date"] <= ASK1 and c["cls"] == "DA" and c["pinewater"]
-                 and c["district"] == dist)
-        hrs = sum(h["worked"] for h in H if ASK0 <= h["ps"] and h["ps"] + dt.timedelta(days=13) <= ASK1
-                  and h["district"] == dist)
-        nc = sum(1 for c in cs if ASK0 <= c["date"] <= ASK1 and c["cls"] != "FA" and c["pinewater"]
-                 and c["district"] == dist and c["crew"])
-        hc = sum(h["worked"] for h in H if ASK0 <= h["ps"] and h["ps"] + dt.timedelta(days=13) <= ASK1
-                 and h["district"] == dist and h["type"] in CREW_TYPES)
-        aw = {k: v for k, v in awards.items()
-              if ASK0 <= d(k[1]) <= ASK1 and k[0] in info and info[k[0]]["district"] == dist}
-        A[dist] = dict(cases=n, days_away=da, hours=hrs, rate=n * K / hrs, crew_rate=nc * K / hc,
-                       milestones=len(aw), usd=sum(aw.values()))
-    return A
+def injuries(cs, match_days=MATCH_DAYS):
+    """One record per injury. A nurse-line case is the injury of the one supervisor's case of the same worker dated
+    up to match_days days before it, which classifies it; a nurse-line case with no such case is an injury of its
+    own. match_days=None groups the records on worker and injury date instead (the duplicate check a careful
+    solver runs), each group taking its most serious class."""
+    if match_days is None:
+        groups = collections.defaultdict(list)
+        for c in cs:
+            groups[(c["emp"], c["date"])].append(c)
+        out = []
+        for k in sorted(groups):
+            g = sorted(groups[k], key=lambda c: (-SEVERITY[c["cls"]], c["source"] == "Nurse line", c["case"]))
+            out.append(g[0])
+        return out
+    sup = collections.defaultdict(list)
+    for c in cs:
+        if c["source"] != "Nurse line":
+            sup[c["emp"]].append(c)
+    out = [c for c in cs if c["source"] != "Nurse line"]
+    for c in cs:
+        if c["source"] == "Nurse line":
+            if not any(0 <= (c["date"] - x["date"]).days <= match_days for x in sup[c["emp"]]):
+                out.append(c)
+    return out
 
 
-def call_with_report_anchors(D, cs, H, plan, tech_rate):
-    """The call when the counts are started from the payroll report's own crew codes (a solver who never places an
-    award on the crew that earned it)."""
-    info, canon = units(D)
-    saved = net_awards
-
-    def fake(Dx, at=None):
-        return saved(Dx, None)
-    globals()["net_awards"] = fake
-    try:
-        cyc = cycles(cs, D, H)
-    finally:
-        globals()["net_awards"] = saved
-    clean = cyc["cnt"][:CLEAN].sum() * K / cyc["exp"][:CLEAN].sum()
-    q, hq = forecast(plan, clean, tech_rate)
-    return float(q.sum()), float(q.sum() * K / hq.sum()), clean
+def asks(D, cs, match_days=MATCH_DAYS):
+    """CS-4 4(c)'s first-aid cases for 5 January to 27 September 2026: field employees on Pinewater work, each
+    injury once, in the quarter of its injury date and the district of the worker's crew or team on that day.
+    cs is every case record at its latest revision, recurrences included, each attached to its crew or team."""
+    T = {dist: [0, 0, 0] for dist in W.DISTRICTS}
+    for c in injuries(cs, match_days):
+        if c["cls"] != "FA" or not c["pinewater"] or c["recur"]:
+            continue
+        for q, (a, b) in enumerate(QUARTERS):
+            if a <= c["date"] <= b:
+                T[c["district"]][q] += 1
+    return {dist: dict(quarters=v, total=sum(v)) for dist, v in T.items()}
 
 
 def main(target):
@@ -333,7 +304,7 @@ def main(target):
                     / max(1, sum(1 for c in cs if c["crew"] and c["cls"] != "FA" and c["pinewater"])),
                     tech=sum(1 for c in cs if not c["crew"] and c["cls"] == "DA")
                     / max(1, sum(1 for c in cs if not c["crew"] and c["cls"] != "FA")))
-    A = asks(D, cs, H)
+    A = asks(D, attach(cases(D), D))
     return dict(gold=gold, windows=windows, r3=r3, r3_type=r3_type, by_type_clean=by_type_clean,
                 by_type_rec=by_type_rec, recorded=dict(crew=r_c, tech=r_t, all=r_a, n_crew=n_c, n_tech=n_t,
                                                        h_crew=h_c, h_tech=h_t),
