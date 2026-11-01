@@ -1,151 +1,167 @@
 {
- "task": "task255",
- "architecture": "v2",
- "drawn": "2026-11-01",
- "slot_note": "re-rooted 2026-11-01 at the Batch 3 queue reset (architecture 2): architecture 1's liability-pool retention landed on the portal; its world is closed, and the descriptive cell of actuarial-science-insurance (claims-frequency-severity) is spent for a stump in this slot (truncation and censoring, the open-file maturity and the coverage mixture here; task177's cell finding for frequency), so the number moves to marketing-consumer-research / media-reach-frequency-audience-measurement with the objective kept",
- "domain": "marketing-consumer-research",
- "subdomain": "media-reach-frequency-audience-measurement",
- "client_domain": "marketing-consumer-research",
- "niche": "a metro advertising concessionaire deciding which station screen packages carry the guaranteed-reach tier of its 2027 rate card from the operator's autumn smart-card journeys, where on weekday peaks the north branch's trains run through onto the east branch and the west branch's onto the south, so riders change trains at the central interchange on other journeys than the line map shows",
- "objective": "descriptive-distribution",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Tier G 2027: Overstappunten, Oosttak and Zuidtak (47, 47 and 46 per cent effective reach); every other package standard tier",
- "answer_source": "submission.md block 1; golden tier_g_2027.xlsx (sheet Tier G 2027)",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G7",
-  "G12",
-  "G2"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "monitoring_export",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who cleans the smart-card extract, applies every rate-card rule (the regular-rider definition, the four-week window, the halls and passages each package's screens hang in) and puts each journey's change of trains where the line map puts it, the field's way of placing the passes no gate records, files Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak with Centraal at 63 per cent; the line map is right off the peak and wrong at the weekday peaks, which only the journeys' own durations show, and Tier G is Overstappunten, Oosttak and Zuidtak with Centraal at 34.",
- "domain_test": "The call turns on each package's effective reach, the share of the rate card's regular riders with three or more opportunities to see over a four-week flight, built rider by rider from where each journey took them (the media field's frequency-distribution measure, read at an effective-frequency threshold); with another field's nouns there is no flight, no opportunity to see, no effective frequency and no tier sold on it.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:effective-reach-from-passes-placed-by-the-service-each-journey-actually-rode",
- "layer1": [
-  "smart-card extract cut in daily files re-exported after a gate-firmware update, with station names in two spellings and gate codes changed at four stations",
-  "staff and service cards in the extract beside passenger products",
-  "journeys with no check-out where a rider forgot to tap out",
-  "times in local clock time across the 25 October 2026 change from summer time",
-  "screen register kept as a log of hangings, re-hangings and take-downs with asset tags re-issued after a refurbishment",
-  "player health export in UTC from the content management system",
-  "billing system replaced mid-October with invoices renumbered and credit notes carrying the old numbers as a reference"
- ],
- "stakeholder_role": "head of audience research",
- "role_family": "research_desk",
- "scoring_unit": "other",
- "spine": {
-  "file": "RVB_metro_ritten_20261001_20261104.csv",
-  "rows": 110356,
-  "entity": "one smart-card journey on the metro, from check-in to check-out",
-  "grain": "journey",
-  "source": "synthetic (constructed operator extract, declared in metadata.json)"
- },
- "forum": "line_manager_or_team",
- "forcing_event": "launch_or_rollout",
- "org_family": "media_or_publishing",
- "world": {
-  "geography": "Netherlands (a fictional city, Ravelmond, and its three-line metro)",
-  "currency": "EUR",
-  "org_type": "metro advertising concessionaire",
-  "invented_names": [
-   "Ravelmond",
-   "Spoorbeeld Media",
-   "Ravelmondse Vervoerbedrijf",
-   "Metro Ravelmond",
-   "Windroos Media",
-   "Noordlicht Mediaplanning",
-   "Bureau Overdiep"
+  "task": "task255",
+  "architecture": "v3",
+  "drawn": "2026-11-01",
+  "slot_note": "re-rooted 2026-11-01 (architecture 3) after architecture 2's re-judge spent it (Gate G planted_defect_flip, H3 planted, reach figures unreproduced); the number keeps its Descriptive lane and moves to pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence, a domain and task type never drawn",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "medication-adherence-persistence",
+  "client_domain": "pharmacology-pharmacoepidemiology-safety",
+  "niche": "a Danish region's medicines unit choosing which general practices join its 2027 statin follow-up programme: the practices whose patients starting a statin in the second half of 2025 were persistent for a year less than six times in ten, persistence counted on the tablets each patient had at the dose they take, which the dispensing register records nowhere",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "submission.md block 1; golden workbook (sheet Persistens)",
+  "gap": [
+    "objective",
+    "time"
   ],
-  "people": [
-   "Floortje Brugman",
-   "Evie Hondeveld",
-   "Daphne Riem",
-   "Brent Velderman"
-  ]
- },
- "deliverables": [
-  "tier_g_2027.xlsx",
-  "tier_g_2027.svg"
- ],
- "opening_move": "question-first",
- "question_form": "what",
- "driver": "The decisive quantity is how many members of a population pass a set of points a given number of times over a period, when the record logs each member only where it enters and leaves and the points passed in between depend on how the service ran at that hour, which at the busiest hours differed from the published network; placing the in-between points from the published network credits passes to members who never made them and misses members who did, and only each journey's own duration against the network's timings shows which happened.",
- "driver_concrete": "Each package's effective reach counts the regular riders who passed its screens three or more times in the four autumn weeks; the halls come from the check-in and check-out gates, and the central interchange passage from the journeys that changed trains there, which at the weekday peaks are the north-south and west-east journeys (the north branch's trains run through to the east branch and the west's to the south) and off the peak the north-east and south-west ones, shown only by each journey's duration against the network's run and walking times.",
- "stump": "The default path places every change of trains where the line map puts it and credits the central interchange passage with the north-east and south-west commuters, filing Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak (Centraal 63 per cent); at the weekday peaks those commuters stay on through trains and the north-south and west-east commuters change instead, which only the journeys' durations show, so Centraal and Binnenstad fall to 34 and 33 per cent and Tier G is Overstappunten, Oosttak and Zuidtak.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task451": "task451 completes a period total not yet observed from how amounts arrive (a sender's delay and a handler's delay that collapsed); here nothing is incomplete or late: every journey is recorded in full, and the decisive step is placing the passes between its two gates by the service it actually rode",
-  "task135": "task135 estimates the variance of a weighted sum from components struck at different times of day; here the time of day decides which train service a journey rode and so where its rider passed, and the graded quantity is a count of riders over a frequency threshold, not a variance",
-  "task161": "task161 draws down stock built ahead of a cost step at each holder's use share; here no stock or drawdown exists: the decisive step reads, journey by journey, whether the rider changed trains at an interchange from the journey's own duration",
-  "task460": "task460 sets what a new zero-rate source removes from a system total by the units responding at the margin interval by interval; here the intervals are the operator's peak and off-peak service and the quantity is how many riders pass a set of points, read journey by journey",
-  "task255": "architecture 1 fitted an occurrence-severity tail through truncation, censoring and a coverage mixture; this architecture counts riders over an exposure-frequency threshold from journeys whose intermediate passes are placed by the service each journey rode, with no fitted distribution at all"
- },
- "lineage": [
-  {
-   "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
-   "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
-   "domain": "actuarial-science-insurance",
-   "objective": "descriptive-distribution",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "dial_setting",
-   "stump_strategy": "maturity_censoring",
-   "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
+  ],
+  "generators": [
+    "G1",
+    "G12",
+    "G2"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every dispensing correctly and applies every filed rule of the programme (the new-user window, the 365-day lookback, the 30-day grace, tablets carried forward from earlier dispensings) but times each dispensing's tablets by the WHO defined daily dose, the field's standard when the register holds no dose, files the wrong set of practices: the high-strength practices escape the programme because two daily doses in one tablet double their patients' covered days, while the programme description counts tablets at the dose each patient takes, which their own refill rhythm shows.",
+  "domain_test": "The call turns on each practice's twelve-month persistence among new statin users, the pharmacoepidemiology measure built patient by patient from dispensings turned into exposure periods (supply carried forward, a permissible gap) and read at a fixed horizon; with another field's nouns there is no dispensing, no tablet supply, no daily dose and no permissible gap.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:exposure-periods-at-each-patients-own-daily-dose-estimated-from-their-refill-rhythm",
+  "layer1": [
+    "the register's dispensing extract with parallel-imported products under their own names and product numbers beside the originals",
+    "dates written day-month-year in the older extract months and ISO in the newer",
+    "prescriptions from hospital departments beside general practice in the prescriber column",
+    "the pilot's conversation log kept by the pharmacies with cancellations entered later",
+    "quarterly pilot statements drawn up on each quarter's last day",
+    "patients whose personal number was replaced appear under a second pseudonym from the change",
+    "list sizes reported per quarter in the practice register"
+  ],
+  "stakeholder_role": "head of the regional medicines unit",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "ekspeditioner_statiner_202407_202612.csv",
+    "rows": 0,
+    "entity": "one dispensing of a statin product to a patient at a pharmacy",
+    "grain": "dispensing",
+    "source": "synthetic (constructed register extract, declared in metadata.json)"
   },
-  {
-   "architecture": "v1 (loop 1, shipped 10-14): the truncated and censored likelihood over every file, the open suits censored at the retention",
-   "fate": "FAILED_TO_STUMP 2026-10-26: both portal responses filed the golden (USD 4,000,000, 0.74 above it, the premium to the dollar); the deductible-and-retention likelihood is the field's reflex for a pool's loss run",
-   "domain": "actuarial-science-insurance",
-   "objective": "descriptive-distribution",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "dial_setting",
-   "stump_strategy": "maturity_censoring",
-   "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more."
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Denmark (a fictional region, Region Lindholt, its general practices and pharmacies)",
+    "currency": "DKK",
+    "org_type": "regional medicines unit",
+    "invented_names": [
+      "Region Lindholt",
+      "Lindholt"
+    ],
+    "people": [
+      "Hanne Overgaard",
+      "Laust Jessen",
+      "Britta Winther",
+      "Ester Poulsen"
+    ]
   },
-  {
-   "architecture": "v1 (loop 2, shipped 10-26): an intergovernmental liability pool's 2027 per-occurrence retention, ground-up severity fitted separately for law enforcement liability and the other coverage parts, each truncated at its deductible and censored at the retention",
-   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: the portal's responses filed the golden through the truncated and censored likelihood, the field's reflex for a pool's loss run; the liability pool world is closed and actuarial claims-frequency-severity is spent for a descriptive stump in this slot",
-   "domain": "actuarial-science-insurance",
-   "objective": "descriptive-distribution",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "dial_setting",
-   "stump_strategy": "other",
-   "driver": "The decisive quantity is the upper tail of a size distribution made of two kinds of item whose tails differ by far more than their bulk, with the expected number above a low anchor projected separately for each kind; the record identifies both tails once each kind is fitted on its own through the record's floor and ceiling, and the count above each high threshold is the sum of each kind's anchor times its own tail ratio, while one curve fitted to the pooled record is shaped by the short-tailed majority and puts the dial two steps too low."
+  "deliverables": [
+    "statinprogram_2027.xlsx",
+    "statinprogram_2027.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is the share of a population still supplied at a fixed horizon when each member's supply is recorded only as quantities handed out on dates, and how long a quantity lasts depends on each member's own rate of use, which no record states; timing every quantity by a standard rate credits members on a double rate with twice their real cover and members on a half rate with half, while each member's own handout rhythm shows their rate.",
+  "driver_concrete": "Each practice's twelve-month persistence counts its new statin users who never went more than 30 days without tablets in the year from their first dispensing, the tablets of each dispensing lasting at the number a day the patient takes; the dispensing register records packs, strengths and dates but no dose, and the WHO defined daily dose credits a patient on one 40 mg atorvastatin a day with two days per tablet, while the patient's own refill rhythm (98 tablets about every 98 days, or every 49) shows the dose.",
+  "stump": "The default path times each dispensing's tablets by the WHO defined daily dose and files a set that leaves out the practices prescribing high-strength tablets once a day, whose patients look covered for twice as long as they were; the programme description counts the tablets at the dose each patient takes, which only the patient's own refill rhythm shows.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task118": "task118 values a levy's welfare loss on the quantity a market reaches within the appraisal year, a response-speed choice; here nothing is priced or modelled as a response: each patient's own daily dose is read from the rhythm of their own dispensings to time their tablet supply",
+    "task198": "task198 recovers suppliers' entitlements from claims values capped at the lesser of ask and entitlement; here no value is capped or recovered: the quantity is days of tablet supply, timed at the dose each patient takes as the intervals between their own refills show",
+    "task270": "task270's eighth architecture finds members on a supplier's fixed delivery schedule whose supply record cannot show a shortfall; here every patient collects their own tablets, and the step is timing each dispensing at the patient's own dose instead of the WHO defined daily dose"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (loop 0): the likelihood of the record on a window whose every occurrence had closed",
+      "fate": "hardened at the author's request for a second layer (2026-10-13, before any portal result); kept as rung R3 of loop 1, where the suits past the retention stay open under the excess insurer's defence and the closed-file construction files $3.0 million",
+      "domain": "actuarial-science-insurance",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "dial_setting",
+      "stump_strategy": "maturity_censoring",
+      "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, so the fit has to carry each item's floor as truncation and the ceiling as censoring, both at the cost level the curve is fitted at; fitting the recorded sizes as a complete sample thins the tail and sets the dial two steps too low, and treating only the ceiling still leaves it a step and more short."
+    },
+    {
+      "architecture": "v1 (loop 1, shipped 10-14): the truncated and censored likelihood over every file, the open suits censored at the retention",
+      "fate": "FAILED_TO_STUMP 2026-10-26: both portal responses filed the golden (USD 4,000,000, 0.74 above it, the premium to the dollar); the deductible-and-retention likelihood is the field's reflex for a pool's loss run",
+      "domain": "actuarial-science-insurance",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "dial_setting",
+      "stump_strategy": "maturity_censoring",
+      "driver": "The decisive quantity is the upper tail of a size distribution whose items reach the record only above a floor that differs from item to item and are recorded only up to a ceiling that moved during the record, and whose largest items stay unfinished long after the small ones finish; the fit has to carry each item's floor as truncation and the ceiling as censoring at the fitted cost level over every item of the window, the unfinished ones included as the censored observations they are, because fitting only the finished items selects on size and thins the tail a step short, and fitting the recorded sizes as complete thins it more."
+    },
+    {
+      "architecture": "v1 (loop 2, shipped 10-26): an intergovernmental liability pool's 2027 per-occurrence retention, ground-up severity fitted separately for law enforcement liability and the other coverage parts, each truncated at its deductible and censored at the retention",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: the portal's responses filed the golden through the truncated and censored likelihood, the field's reflex for a pool's loss run; the liability pool world is closed and actuarial claims-frequency-severity is spent for a descriptive stump in this slot",
+      "domain": "actuarial-science-insurance",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "dial_setting",
+      "stump_strategy": "other",
+      "driver": "The decisive quantity is the upper tail of a size distribution made of two kinds of item whose tails differ by far more than their bulk, with the expected number above a low anchor projected separately for each kind; the record identifies both tails once each kind is fitted on its own through the record's floor and ceiling, and the count above each high threshold is the sum of each kind's anchor times its own tail ratio, while one curve fitted to the pooled record is shaped by the short-tailed majority and puts the dial two steps too low."
+    },
+    {
+      "architecture": "v2 (2026-11-01): a metro advertising concessionaire's 2027 guaranteed-reach tier, each screen package's effective reach from smart-card journeys, the Centraal changes read from journey durations under a weekday-peak through-running",
+      "fate": "spent 2026-11-01 at the re-judge (bbcaedf8): Gate G banned (planted_defect_flip, surface_read_rejection: the stump rejected the planning model's line map, and on clean data the call collapses to executing rate card 3), Gate H3 failed as planted (the peak through-running is written in no shipped file and recoverable only from ride durations), and three reach figures (Overstappunten, Centraal, Binnenstad) were not reproduced under any reading; the metro advertising world is closed",
+      "domain": "marketing-consumer-research",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "other",
+      "driver": "The decisive quantity is how many members of a population pass a set of points a given number of times over a period, when the record logs each member only where it enters and leaves and the points passed in between depend on how the service ran at that hour, which at the busiest hours differed from the published network; placing the in-between points from the published network credits passes to members who never made them and misses members who did, and only each journey's own duration against the network's timings shows which happened."
+    }
+  ],
+  "notes": "architecture 3 (2026-11-01): G1 (a unit-of-value swap: a tablet valued at the DDD instead of the patient's own dose) leads, G12 (dispensing dates record handouts, not days without tablets) and G2 (the patient, not the dispensing row, carries persistence) support it. The filed WHAT names the dose each patient takes, which the DDD default visibly substitutes, so the default is non-compliant on a literal reading; the analysis is estimating each patient's own rate from their dispensings.",
+  "registered": "2026-11-01T20:37:07Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "for",
+    "rounding opener": "reach",
+    "deliverable set": "svg+xlsx"
   }
- ],
- "notes": "architecture 2 (2026-11-01): stump_strategy other = passes placed by the service actually run (the line map against the timetable the journeys rode), not a reading of a field and not a grouping; G7 (the operating window: the weekday peak interworking) leads, G12 (a check-in and a check-out record nothing in between, so a blank between them is a non-answer, not an absence of passes) and G2 (the rider, not the card-journey row, carries the frequency) support it; forum line_manager_or_team: the 2027 rate card's tiers are set by the commercial director's team on the head of audience research's numbers; forcing event launch_or_rollout: the 2027 rate card goes to advertisers in December 2026; context artifact monitoring_export: the screen content system's player health export",
- "registered": "2026-11-01T17:30:46Z"
 }

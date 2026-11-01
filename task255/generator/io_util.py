@@ -1,5 +1,5 @@
-"""Writers that give byte-identical files on every run, each document carrying its own producer and dates,
-and the readers the analysis and the verifier share for the formats the pack ships."""
+"""Deterministic writers and readers for the pack: CSV, XLSX (repacked with fixed metadata), PDF (reportlab with the
+producer scrubbed), and a PDF text reader that decodes ASCII85 then Flate streams."""
 import base64
 import csv
 import io
@@ -7,33 +7,21 @@ import re
 import zipfile
 import zlib
 
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
-
-ZIP_TIME = (2026, 11, 13, 8, 20, 0)
+ZIP_TIME = (2027, 2, 12, 8, 40, 0)
 
 
-def write_csv(path, header, rows, delimiter=",", newline="\r\n", preamble=None):
-    buf = io.StringIO()
-    for line in preamble or []:
-        buf.write(line + newline)
-    w = csv.writer(buf, delimiter=delimiter, lineterminator=newline)
-    w.writerow(header)
-    for r in rows:
-        w.writerow(r)
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(buf.getvalue())
+def write_csv(path, header, rows, delimiter=","):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, delimiter=delimiter, lineterminator="\n")
+        w.writerow(header)
+        for r in rows:
+            w.writerow(r)
     return len(rows)
 
 
-def read_csv(path, delimiter=",", skip=0):
-    with open(path, encoding="utf-8", newline="") as f:
-        lines = f.read().splitlines()
-    rows = list(csv.reader(lines[skip:], delimiter=delimiter))
+def read_csv(path, delimiter=","):
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f, delimiter=delimiter))
     return rows[0], rows[1:]
 
 
@@ -58,7 +46,7 @@ def _app(company, application="Microsoft Excel"):
             % (application, company))
 
 
-def repack_xlsx(path, creator, modified_by, created, modified, title, company, application="Microsoft Excel"):
+def repack_ooxml(path, creator, modified_by, created, modified, title, company, application="Microsoft Excel"):
     src = zipfile.ZipFile(path)
     items = [(n, src.read(n)) for n in src.namelist()]
     src.close()
@@ -80,7 +68,7 @@ def repack_xlsx(path, creator, modified_by, created, modified, title, company, a
     open(path, "wb").write(out.getvalue())
 
 
-def write_xlsx(path, sheets, meta, widths=None):
+def write_xlsx(path, sheets, meta):
     """sheets: list of (name, header, rows, preamble_lines)."""
     from openpyxl import Workbook
     from openpyxl.styles import Font
@@ -96,49 +84,49 @@ def write_xlsx(path, sheets, meta, widths=None):
         for r in rows:
             ws.append(list(r))
         for i, h in enumerate(header):
-            col = ws.cell(row=1, column=i + 1).column_letter
+            col = ws.cell(row=ws.max_row, column=i + 1).column_letter
             ws.column_dimensions[col].width = max(10, min(46, len(str(h)) + 4))
     wb.save(path)
-    repack_xlsx(path, *meta)
+    repack_ooxml(path, *meta)
 
 
-def read_xlsx(path, sheet, header_row=None):
+def read_xlsx(path, sheet):
+    """(header, rows) of a sheet; the header is the first row whose cells are all filled strings."""
     from openpyxl import load_workbook
-    wb = load_workbook(path, data_only=True, read_only=True)
-    ws = wb[sheet]
+    ws = load_workbook(path, read_only=True, data_only=True)[sheet]
     rows = [list(r) for r in ws.iter_rows(values_only=True)]
-    wb.close()
-    if header_row is None:
-        header_row = 0
-        for i, r in enumerate(rows):
-            if r and sum(1 for c in r if c not in (None, "")) >= 2:
-                header_row = i
-                break
-    return [str(c) for c in rows[header_row] if c is not None], rows[header_row + 1:]
+    for i, r in enumerate(rows):
+        cells = [c for c in r if c is not None]
+        if len(cells) >= 2 and len(cells) == len([c for c in r if c is not None]) and all(isinstance(c, str) for c in r):
+            return [str(c) for c in r], [x for x in rows[i + 1:] if any(c is not None for c in x)]
+    return [], rows
 
 
-INK = colors.HexColor("#1d2731")
+def esc(s):
+    return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def _styles():
-    base = ParagraphStyle("p", fontName="Helvetica", fontSize=9.2, leading=12.6, textColor=INK, alignment=TA_LEFT,
-                          spaceAfter=5)
-    return {"t": ParagraphStyle("t", parent=base, fontName="Helvetica-Bold", fontSize=13.5, leading=17,
-                                spaceAfter=4),
-            "s": ParagraphStyle("s", parent=base, fontSize=8.0, leading=10.6, textColor=colors.HexColor("#4f5b62")),
-            "h": ParagraphStyle("h", parent=base, fontName="Helvetica-Bold", fontSize=10.2, leading=13.6,
-                                spaceBefore=6),
-            "p": base,
-            "cell": ParagraphStyle("cell", parent=base, fontSize=8.3, leading=10.6, spaceAfter=0),
-            "head": ParagraphStyle("head", parent=base, fontName="Helvetica-Bold", fontSize=8.3, leading=10.6,
-                                   spaceAfter=0)}
-
-
-def esc(x):
-    return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    from reportlab.lib import colors
+    from reportlab.lib.styles import ParagraphStyle
+    base = dict(fontName="Helvetica", fontSize=9.4, leading=12.6, textColor=colors.HexColor("#1d2327"))
+    return {
+        "t": ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=14, leading=18, spaceAfter=6,
+                            textColor=colors.HexColor("#14202a")),
+        "s": ParagraphStyle("s", fontName="Helvetica", fontSize=8.2, leading=11, spaceAfter=6,
+                            textColor=colors.HexColor("#56626b")),
+        "h": ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=10.6, leading=14, spaceBefore=6, spaceAfter=3),
+        "p": ParagraphStyle("p", spaceAfter=5, **base),
+        "head": ParagraphStyle("head", fontName="Helvetica-Bold", fontSize=8.4, leading=10.5),
+        "cell": ParagraphStyle("cell", fontName="Helvetica", fontSize=8.4, leading=10.5),
+    }
 
 
 def write_pdf(path, title, author, producer, blocks, footer, created, modified, colw=None):
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
     st = _styles()
 
     def page(canvas, d):
@@ -146,7 +134,7 @@ def write_pdf(path, title, author, producer, blocks, footer, created, modified, 
         canvas.setFont("Helvetica", 7.2)
         canvas.setFillColor(colors.HexColor("#5b666d"))
         canvas.drawString(20 * mm, 10 * mm, footer)
-        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Pagina %d" % d.page)
+        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
         canvas.restoreState()
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
                             bottomMargin=18 * mm, title=title, author=author, creator=producer, producer=producer,
@@ -164,23 +152,29 @@ def write_pdf(path, title, author, producer, blocks, footer, created, modified, 
                                    ("TOPPADDING", (0, 0), (-1, -1), 2)]))
             story += [t, Spacer(1, 6)]
         elif kind == "img":
-            from reportlab.platypus import Image
             story += [Image(val[0], width=val[1], height=val[2]), Spacer(1, 6)]
         else:
-            story.append(Paragraph(val, st[kind]))
+            story.append(Paragraph(esc(val), st[kind]))
     doc.build(story, onFirstPage=page, onLaterPages=page)
     scrub_pdf(path, created, modified)
 
 
 def scrub_pdf(path, created, modified):
     data = open(path, "rb").read()
-    for sig in (b"ReportLab Generated PDF document (opensource)",
-                b"ReportLab generated PDF document -- digest (opensource)",
-                b"ReportLab Generated PDF document http://www.reportlab.com", b"(unspecified)"):
-        data = data.replace(sig, b" " * len(sig))
-    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + created.encode() + b")", data)
-    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + modified.encode() + b")", data)
+    data = re.sub(rb"%ReportLab Generated PDF document[^\n]*\n", lambda m: b"%" + b" " * (len(m.group(0)) - 2) + b"\n",
+                  data)
+    data = re.sub(rb"/CreationDate \(D:[^)]*\)", lambda m: b"/CreationDate (" + created.encode().ljust(
+        len(m.group(0)) - 16, b" ")[:len(m.group(0)) - 16] + b")", data)
+    data = re.sub(rb"/ModDate \(D:[^)]*\)", lambda m: b"/ModDate (" + modified.encode().ljust(
+        len(m.group(0)) - 11, b" ")[:len(m.group(0)) - 11] + b")", data)
     open(path, "wb").write(data)
+
+
+def _unescape(s):
+    s = re.sub(rb"\\([0-7]{1,3})", lambda m: bytes([int(m.group(1), 8) & 0xFF]), s)
+    s = s.replace(rb"\(", b"(").replace(rb"\)", b")").replace(rb"\n", b"\n").replace(rb"\r", b"\r")
+    s = s.replace(rb"\t", b"\t").replace(b"\\\\", b"\\")
+    return s.decode("latin-1")
 
 
 def pdf_text(path):
@@ -199,27 +193,3 @@ def pdf_text(path):
         for s in re.findall(rb"\((.*?)(?<!\\)\)\s*Tj", txt, re.S):
             out.append(_unescape(s))
     return " ".join(out)
-
-
-def _unescape(s):
-    """A PDF literal string's escapes: \\ddd octal, \\n, \\r, \\t, \\(, \\), \\\\."""
-    out = bytearray()
-    i = 0
-    while i < len(s):
-        c = s[i]
-        if c == 0x5C and i + 1 < len(s):
-            n = s[i + 1]
-            if 0x30 <= n <= 0x37:
-                j = i + 1
-                k = j
-                while k < len(s) and k < j + 3 and 0x30 <= s[k] <= 0x37:
-                    k += 1
-                out.append(int(s[j:k], 8) & 0xFF)
-                i = k
-                continue
-            out.append({0x6E: 0x0A, 0x72: 0x0D, 0x74: 0x09}.get(n, n))
-            i += 2
-            continue
-        out.append(c)
-        i += 1
-    return bytes(out).decode("latin-1")

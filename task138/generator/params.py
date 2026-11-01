@@ -7,7 +7,7 @@ WEATHER_SEED = 2138301      # the Mossford airport's summers
 WEATHER_SEED_2026 = 2138527  # summer 2026 drawn on its own stream
 LOAD_SEED = 2138302         # feeder load noise
 MDMS_SEED = 2138303         # members' transformer meters
-GT_SEED = 2138335           # the wholesale supplier's revenue meters
+GT_SEED = 2138415           # the wholesale supplier's revenue meters
 OTHER_SEED = 2138305        # distractors
 
 AS_OF = "2026-10-27"        # the planning engineer's review for the 2027 construction work plan
@@ -29,7 +29,8 @@ DUTY_EXP = 1.5
 LAG_A, LAG_B = 2, 4         # hours: the buildings feel a mix of the air temperature two and four hours earlier
 DESIGN_LAG_DROP = 0.4       # deg F below the day's maximum at the evening peak (for the truth only)
 PEAK_HOUR = 19
-METER_FACTOR = 0.974551     # members' meters see the feeder energy less line and transformer losses
+# members' meters see each feeder's energy less its line and transformer losses (long rural feeders lose more)
+METER_FACTOR = [0.9781, 0.9752, 0.9726, 0.9684, 0.9711, 0.9772, 0.9667, 0.9738]
 GROWTH = 0.0095             # a year, the 2025 load forecast's rate for Dunraith
 LOAD_NOISE = 0.003
 

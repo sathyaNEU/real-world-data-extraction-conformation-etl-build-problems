@@ -146,11 +146,7 @@ def test_plan(path):
                  "D:20250516142000-05'00'", "D:20250516150400-05'00'")
 
 
-def switching_order(path, tx):
-    moved = tx[tx.moved].sort_values("tx")
-    att = [["Transformer", "From feeder", "To feeder", "kVA"]]
-    for r in moved.itertuples():
-        att.append([r.tx, r.feeder_built, r.feeder_now, str(int(r.kva))])
+def switching_order(path):
     b = [
         ("t", "Switching order SO-2026-114"),
         ("s", "%s. Dunraith feeder rebalancing. Written by Julie Gibbs, 18 June 2026. Approved by Peter Roman, "
@@ -167,15 +163,13 @@ def switching_order(path, tx):
                    ["5", "23:47", "TS-2219 (DUN-1 / DUN-3 tie)", "Close", "DUN-1 and DUN-3 paralleled"],
                    ["6", "23:52", "S-1302 (DUN-1)", "Open", "Section beyond S-1302 fed from DUN-3"],
                    ["7", "23:58", "", "Order complete, reported to dispatcher", ""]]),
-        ("h", "Attachment A. Distribution transformers transferred"),
-        ("table", att),
         ("h", "Closeout"),
-        ("p", "Order completed 30 June 2026 23:58 without outage. Normal open points now S-4471, S-6120 and S-1302. "
-              "GIS feeder attributes updated 8 July 2026."),
+        ("p", "Order completed 30 June 2026 23:58 without outage. Normal open points now S-4471, S-6120 and S-1302; "
+              "TS-2236, TS-2252 and TS-2219 normally closed."),
     ]
     IO.write_pdf(path, "SO-2026-114 Dunraith feeder rebalancing", "Julie Gibbs", COOP, b,
                  "SO-2026-114 | %s dispatch | completed 30 Jun 2026" % COOP,
-                 "D:20260618103000-05'00'", "D:20260708161500-05'00'")
+                 "D:20260618103000-05'00'", "D:20260701001500-05'00'")
 
 
 def delivery_points(path):
@@ -191,9 +185,7 @@ def delivery_points(path):
                    ["DP-0412 Carrow Creek", "41-1981", "Carrow Creek T2, 24.9 kV", ""],
                    ["DP-0417 Dunraith", "41-2207", "Dunraith T1, 24.9 kV low side", ""],
                    ["DP-0417 Dunraith", "41-2208", "Dunraith T2, 24.9 kV low side", ""],
-                   ["DP-0417 Dunraith", "41-2391", "Sedgefield Grain Co. terminal, 69 kV, tapped from the Dunraith "
-                                                   "69 kV bus", "Customer-owned 69/4.16 kV transformer. Billed with "
-                                                                "DP-0417 under Rider LL-1."],
+                   ["DP-0417 Dunraith", "41-2391", "Dunraith 69 kV, line terminal L3", "Rider LL-1"],
                    ["DP-0421 Ostby", "41-2455", "Ostby T1, 24.9 kV", ""],
                    ["DP-0421 Ostby", "41-2456", "Ostby T2, 24.9 kV", ""],
                    ["DP-0430 Lindell", "41-2610", "Lindell T1, 12.47 kV", "Mobile substation metered at 41-2611 "

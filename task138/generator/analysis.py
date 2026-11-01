@@ -42,7 +42,7 @@ class Filed:
         for row in wb["Substations"].iter_rows(values_only=True):
             if row[0] == "Dunraith":
                 self.growth = float(row[2]) / 100.0
-        tp = re.sub(r"\s+", " ", IO.pdf_text(fpath(target, "CVR_pilot_test_plan_2025.pdf")))
+        tp = re.sub(r"\s+", " ", IO.pdf_text(fpath(target, "CVR_pilot_plan_Dunraith_2025.pdf")))
         self.pilot = re.findall(r"DUN-\d", re.search(r"Pilot feeders: (.*?)\.", tp).group(1))
         self.comparison = [f for f in FEEDERS if f not in self.pilot]
         self.pilot_start = pd.Timestamp("2025-06-02 00:00")
@@ -68,16 +68,18 @@ def feeder_loads(target, old_shift=True):
 
 
 def observations(target):
+    """Airport observations; the export's clock is local standard time, an hour behind summer local time."""
     w = pd.read_csv(fpath(target, "mossford_ap_obs_2022-2026.csv"))
     w = w.dropna(subset=["TMP_C"])
-    utc = pd.to_datetime(w["DATE"], format="%Y-%m-%dT%H:%M:%S")
-    return pd.DataFrame({"utc": utc.values, "local": (utc - CDT).values, "kind": w["REPORT_TYPE"].values,
+    lst = pd.to_datetime(w["DATE_LST"], format="%Y-%m-%dT%H:%M:%S")
+    return pd.DataFrame({"lst": lst.values, "local": (lst + pd.Timedelta(hours=1)).values,
+                         "utc": (lst + pd.Timedelta(hours=6)).values, "kind": w["REPORT_TYPE"].values,
                          "f": w["TMP_C"].values * 9.0 / 5.0 + 32.0})
 
 
 def daily_tmax(obs, clock="local", routine_only=False, whole_f=False, snap=None):
     o = obs[obs.kind == "FM-15"] if routine_only else obs
-    t = o["local"] if clock == "local" else o["utc"]
+    t = o[clock]
     if snap == "round":
         t = t.dt.round("h")
     f = o["f"].round(0) if whole_f else o["f"]
@@ -222,39 +224,67 @@ def planning(B, r, filed, base_year=2024):
 
 
 # ------------------------------------------------------------------ ask A: members' energy by feeder
-def moved_transformers(target):
-    txt = re.sub(r"\s+", " ", IO.pdf_text(fpath(target, "SO-2026-114_Dunraith.pdf")))
-    return {t: (a, b) for t, a, b in re.findall(r"(T\d{6}) (DUN-\d) (DUN-\d)", txt)}
-
-
-def multipliers(target):
+def register(target):
     wb = openpyxl.load_workbook(fpath(target, "DUN_transformer_register_2026-10.xlsx"), read_only=True)
-    rows = list(wb["Transformers"].iter_rows(values_only=True))
-    h = rows[0]
-    i, j = h.index("XFMR_ID"), h.index("METER_MULT")
-    return {r[i]: int(r[j]) for r in rows[1:]}
+    t = list(wb["Transformers"].iter_rows(values_only=True))
+    d = list(wb["Devices"].iter_rows(values_only=True))
+    return pd.DataFrame(t[1:], columns=t[0]), pd.DataFrame(d[1:], columns=d[0])
 
 
-def feeder_energy(target, use_mult=True, reassign=True, prorate_june30=False):
+def moved_sections(target):
+    """(switch opened, from feeder, to feeder) for each section SO-2026-114 moved."""
+    txt = re.sub(r"\s+", " ", IO.pdf_text(fpath(target, "SO-2026-114_Dunraith.pdf")))
+    return re.findall(r"(S-\d+) \((DUN-\d)\) Open Section beyond S-\d+ fed from (DUN-\d)", txt)
+
+
+def downstream(dev, root, depth=None):
+    kids = {}
+    for d, u in zip(dev.DEVICE_ID, dev.UPSTREAM_DEVICE):
+        kids.setdefault(u, []).append(d)
+    out, todo = set(), [(root, 0)]
+    while todo:
+        x, k = todo.pop()
+        if depth is not None and k >= depth:
+            continue
+        for c in kids.get(x, []):
+            out.add(c)
+            todo.append((c, k + 1))
+    return out
+
+
+def feeder_energy(target, use_mult=True, mult_from_set=True, reassign=True, depth=None, prorate_june30=False):
+    """Each feeder's members' energy, June to September 2026, MWh: a transformer's daily kWh times its meter
+    multiplier from the day the present meter was set (whole kWh before), counted on the feeder that served it
+    that day (the sections the switching order moved belong to their old feeder until 30 June)."""
     md = pd.read_csv(fpath(target, "mdms_xfmr_daily_kwh_20260601_20260930.csv"))
     md["date"] = pd.to_datetime(md.READ_DATE, format="%m/%d/%Y")
-    mult = multipliers(target)
-    md["kwh"] = md.KWH * (md.XFMR_ID.map(mult) if use_mult else 1)
+    tx, dev = register(target)
+    mult = dict(zip(tx.XFMR_ID, tx.METER_MULT))
+    mset = dict(zip(tx.XFMR_ID, pd.to_datetime(tx.METER_SET)))
+    m = md.XFMR_ID.map(mult) if use_mult else pd.Series(1, index=md.index)
+    if use_mult and mult_from_set:
+        m = m.where(md.date >= md.XFMR_ID.map(mset), 1)
+    md["kwh"] = md.KWH * m
     md["feeder"] = md.FEEDER
     if reassign:
-        mv = moved_transformers(target)
+        prot = dict(zip(tx.XFMR_ID, tx.PROT_DEVICE))
+        old = {}
+        for sw, a, b in moved_sections(target):
+            under = downstream(dev, sw, depth)
+            for t, p in prot.items():
+                if p in under:
+                    old[t] = a
         before = md.date < pd.Timestamp("2026-07-01")
-        old = md.XFMR_ID.map(lambda t: mv[t][0] if t in mv else None)
-        md.loc[before & old.notna(), "feeder"] = old[before & old.notna()]
+        o = md.XFMR_ID.map(old)
+        md.loc[before & o.notna(), "feeder"] = o[before & o.notna()]
         if prorate_june30:
-            # the minutes after each section's switching on 30 June counted on the new feeder
             mins = {"DUN-4": 33, "DUN-6": 21, "DUN-1": 8}
-            j30 = (md.date == pd.Timestamp("2026-06-30")) & old.notna()
+            j30 = (md.date == pd.Timestamp("2026-06-30")) & o.notna()
             extra = md[j30].copy()
             frac = extra.feeder.map(mins) / 1440.0
             md.loc[j30, "kwh"] = md.loc[j30, "kwh"] * (1 - frac)
             extra["kwh"] = extra["kwh"] * frac
-            extra["feeder"] = extra.XFMR_ID.map(lambda t: mv[t][1])
+            extra["feeder"] = extra.FEEDER
             md = pd.concat([md, extra])
     return (md.groupby("feeder")["kwh"].sum() / 1000.0).reindex(FEEDERS)
 
@@ -267,10 +297,30 @@ def hottest_days(target, n=10, clock="local", obs=None):
     return tm.sort_values(ascending=False, kind="mergesort").head(n), tm.sort_values(ascending=False).iloc[n]
 
 
-def demand_peaks(target, days, meters=("41-2207", "41-2208"), clock="local", ending=True):
+def mv90(target, realign=True):
+    """The supplier's 15-minute kWh by recorder, each interval keyed by its local start. The T2 cabinet's
+    replacement recorder stamps intervals at their start: its first stamp repeats the old recorder's last one, and
+    from there on its stamps move up 15 minutes."""
     mv = pd.read_csv(fpath(target, "MV90_DP0417_202606-202609.csv"), dtype={"RECORDER": str})
+    mv["stamp"] = pd.to_datetime(mv.INTERVAL_END_UTC, format="%Y-%m-%d %H:%M")
+    mv["end"] = mv["stamp"]
+    if realign:
+        for rec, g in mv.groupby("RECORDER", sort=False):
+            dup = g.stamp.duplicated(keep="first")
+            if dup.any():
+                first = g.index[dup.values][0]
+                k = g.index[g.index >= first]
+                mv.loc[k, "end"] = mv.loc[k, "stamp"] + pd.Timedelta(minutes=15)
+    return mv
+
+
+def demand_peaks(target, days, meters=("41-2207", "41-2208"), clock="local", realign=True, dedupe=False,
+                 ending=True):
+    mv = mv90(target, realign)
     mv = mv[mv.RECORDER.isin(list(meters))]
-    end = pd.to_datetime(mv.INTERVAL_END_UTC, format="%Y-%m-%d %H:%M")
+    if dedupe:
+        mv = mv.drop_duplicates(["RECORDER", "stamp"], keep="first")
+    end = mv["end"]
     if clock == "local":
         end = end - CDT
     start = end - pd.Timedelta(minutes=15) if ending else end

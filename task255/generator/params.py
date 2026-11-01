@@ -1,84 +1,42 @@
-"""Fixed parameters of the Ravelmond world (architecture 2). Everything the generator draws comes from SEED."""
+"""Fixed parameters of the Region Lindholt world (architecture 3). Everything the generator draws comes from SEED."""
 import datetime as dt
 
-SEED = 25502
-ASKS_SALT = 298                             # the commercial records' own stream
-HEALTH_SALT = 187                           # the season's operations (failures, outages, swaps, player log)
+SEED = 25503
 TASK = "task255"
-AS_OF = dt.date(2026, 11, 13)            # the head of audience research's request date (fiction)
-WIN_START = dt.date(2026, 10, 5)          # Monday
-WIN_END = dt.date(2026, 11, 1)            # Sunday (inclusive)
-EXTRACT_START = dt.date(2026, 10, 1)      # the operator's extract starts and ends a few days either side
-EXTRACT_END = dt.date(2026, 11, 4)
-DST_END = dt.date(2026, 10, 25)           # CEST to CET at 03:00 local
-TIER_LINE = 40.0                          # Tier G: effective reach of 40.0 per cent or more
-EFFECTIVE_FREQ = 3                        # three passes or more
+AS_OF = dt.date(2027, 2, 12)               # the medicines unit's analysis date (fiction)
+EXTRACT_START = dt.date(2024, 7, 1)        # the register extract's first and last dispensing dates
+EXTRACT_END = dt.date(2026, 12, 31)
+COHORT_START = dt.date(2025, 7, 1)         # new users: first dispensing in the second half of 2025
+COHORT_END = dt.date(2025, 12, 31)
+LOOKBACK_DAYS = 365
+HORIZON_DAYS = 365
+GRACE_DAYS = 30
+PROGRAMME_LINE = 60.0                      # practices under 60 per cent persistent join the programme
 
-# ---------------------------------------------------------------- network
-# station code, name; branch letter; a station on two lines carries both
-STATIONS = [
-    # M1 north, terminus first
-    ("KVA", "Kievitsakker", "N"), ("WLH", "Wilgenhof", "N"), ("MZT", "Molenzicht", "N"),
-    ("BKW", "Boekweitstraat", "N"), ("LDO", "Lindeoord", "N"), ("TRV", "Torenveld", "N"),
-    ("RHB", "Raadhuisbrug", "N"),
-    ("CEN", "Centraal", "X"),
-    # M1 south
-    ("STP", "Stadspoort", "S"), ("GHP", "Gasthuisplein", "S"), ("RVP", "Ravelpark", "S"),
-    ("UNI", "Universiteit", "S"), ("ZDV", "Zuiderveld", "S"), ("ZHV", "Zuidhaven", "S"),
-    # M2 west, terminus first
-    ("WKD", "Westerkade", "W"), ("ZTP", "Zoutpannen", "W"), ("TWB", "Touwbaan", "W"),
-    ("VSW", "Visserswijk", "W"), ("HTM", "Houtmarkt", "W"), ("KST", "Kaaistraat", "W"),
-    # M2 east
-    ("WSK", "Wisselkwartier", "E"), ("KNO", "Kanaaloever", "E"), ("OSP", "Oosterpoort", "E"),
-    ("HDH", "Handelshaven", "E"), ("KCP", "Kenniscampus", "E"), ("OGD", "Oostergaarde", "E"),
-    ("OSE", "Oostereind", "E"),
-    # M3 only
-    ("ZDW", "Zuidwijk", "P"), ("TNS", "Tuinstede", "P"), ("SPL", "Sportlaan", "P"),
-    ("VLH", "Veldhuizen", "P"), ("PDZ", "Polderzicht", "P"), ("NOP", "Noordoostpunt", "P"),
+# products: (product number, name, ATC, strength mg, pack size); DDD per ATC in mg
+DDD_MG = {"C10AA01": 30.0, "C10AA03": 30.0, "C10AA05": 20.0, "C10AA07": 10.0}
+ATC_NAME = {"C10AA01": "simvastatin", "C10AA03": "pravastatin", "C10AA05": "atorvastatin", "C10AA07": "rosuvastatin"}
+
+# practices: code, name, town; habits: shares of the dose patterns among its patients, and its patients' propensity
+# to keep taking the tablets (the share persistent at a year)
+PRACTICES = [
+    # code   name                              town           N     H     H4    T     S     L    keep
+    ("041207", "Lægerne Torvegade",             "Lindholt",    .72, .12, .00, .04, .06, .06, .71),
+    ("041219", "Lægehuset Østergade",           "Lindholt",    .30, .54, .08, .02, .03, .03, .47),
+    ("041224", "Lægerne ved Åen",               "Lindholt",    .48, .08, .00, .04, .34, .06, .69),
+    ("041236", "Klinikken Bredgade",            "Lindholt",    .70, .12, .00, .06, .06, .06, .48),
+    ("041248", "Lægerne Skovvej",               "Hornslev",    .26, .50, .12, .04, .04, .04, .49),
+    ("041251", "Lægehuset Hornslev",            "Hornslev",    .46, .10, .00, .04, .34, .06, .71),
+    ("041263", "Lægerne i Vejlby",              "Vejlby",      .50, .10, .00, .04, .06, .30, .69),
+    ("041275", "Lægeklinikken Kirkebakken",     "Vejlby",      .36, .14, .00, .44, .02, .04, .49),
+    ("041282", "Lægerne Havnegade",             "Rødby Strand",.44, .10, .00, .04, .36, .06, .71),
+    ("041294", "Lægehuset Rødby Strand",        "Rødby Strand",.72, .12, .00, .04, .06, .06, .72),
+    ("041307", "Lægerne Møllevej",              "Ellerup",     .40, .16, .00, .38, .02, .04, .51),
+    ("041319", "Lægeklinikken Ellerup",         "Ellerup",     .50, .10, .00, .04, .04, .32, .71),
+    ("041322", "Lægerne Stationsvej",           "Tvede",       .28, .48, .14, .04, .02, .04, .51),
+    ("041334", "Lægehuset Tvede",               "Tvede",       .46, .08, .00, .04, .36, .06, .70),
+    ("041346", "Lægerne Søndergade",            "Lindholt",    .74, .12, .00, .04, .04, .06, .73),
+    ("041358", "Klinikken Vestervang",          "Lindholt",    .70, .12, .00, .06, .06, .06, .70),
 ]
-LINES = {
-    "M1": ["KVA", "WLH", "MZT", "BKW", "LDO", "TRV", "RHB", "CEN", "STP", "GHP", "RVP", "UNI", "ZDV", "ZHV"],
-    "M2": ["WKD", "ZTP", "TWB", "VSW", "HTM", "KST", "CEN", "WSK", "KNO", "OSP", "HDH", "KCP", "OGD", "OSE"],
-    "M3": ["ZDW", "TNS", "RVP", "SPL", "VLH", "HDH", "PDZ", "NOP"],
-}
-INTERCHANGES = {"CEN": ("M1", "M2"), "RVP": ("M1", "M3"), "HDH": ("M2", "M3")}
-PASSAGE_WALK = {"CEN": 8.0, "RVP": 9.0, "HDH": 8.0}      # minutes, platform to platform through the passage
-# (the M3 platforms at Ravelpark and Handelshaven lie across the square, so no two-change route is ever faster)
-
-# weekday frequency bands (start minute after midnight, end, headway minutes) for M1 and M2
-WEEKDAY_BANDS = [(345, 390, 5.0), (390, 600, 3.0), (600, 930, 4.0), (930, 1140, 3.0), (1140, 1320, 4.0),
-                 (1320, 1470, 5.0)]
-SAT_BANDS = [(390, 1470, 5.0)]
-SUN_BANDS = [(420, 1470, 5.0)]
-M3_HEADWAY = {"peak": 5.0, "day": 7.5, "weekend": 10.0, "late": 10.0}
-# the weekday peak service: trains passing Centraal in these windows run M1 north <-> M2 east and M2 west <-> M1 south
-INTERWORK = [(420, 570), (960, 1110)]
-
-PACKAGES = {
-    "CEN": ("Centraal", ["CEN-HN", "CEN-HZ", "CEN-OV"]),
-    "BNS": ("Binnenstad", ["CEN-OV", "RHB-H", "STP-H", "WSK-H"]),
-    "OVP": ("Overstappunten", ["CEN-OV", "RVP-OV", "HDH-OV"]),
-    "NRD": ("Noordtak", ["KVA-H", "WLH-H", "MZT-H", "BKW-H", "LDO-H", "TRV-H"]),
-    "OST": ("Oosttak", ["KNO-H", "OSP-H", "HDH-H", "HDH-OV", "KCP-H", "OGD-H", "OSE-H"]),
-    "WST": ("Westtak", ["WKD-H", "ZTP-H", "TWB-H", "VSW-H", "HTM-H"]),
-    "ZDT": ("Zuidtak", ["STP-H", "GHP-H", "RVP-H", "RVP-OV", "UNI-H", "ZDV-H", "ZHV-H"]),
-    "RNG": ("Ringlijn", ["ZDW-H", "TNS-H", "SPL-H", "VLH-H", "PDZ-H", "NOP-H"]),
-    "EIN": ("Eindhaltes", ["KVA-H", "ZHV-H", "WKD-H", "OSE-H", "ZDW-H", "NOP-H"]),
-}
-PACKAGE_ORDER = ["CEN", "BNS", "OVP", "NRD", "OST", "WST", "ZDT", "RNG", "EIN"]
-
-# ---------------------------------------------------------------- riders
-N_REGULAR = 2183
-N_OCCASIONAL = 3200
-N_STAFF = 34
-HOME_W = {"N": 0.27, "S": 0.14, "W": 0.16, "E": 0.12, "P": 0.27, "X": 0.04}
-# work branch given home branch
-WORK_W = {
-    "N": {"X": 0.12, "E": 0.64, "S": 0.02, "W": 0.03, "N": 0.16},
-    "S": {"X": 0.11, "W": 0.58, "E": 0.04, "N": 0.02, "P": 0.11, "S": 0.14},
-    "W": {"X": 0.11, "S": 0.63, "E": 0.02, "N": 0.03, "W": 0.18},
-    "E": {"X": 0.13, "N": 0.56, "S": 0.03, "W": 0.03, "P": 0.11, "E": 0.14},
-    "P": {"X": 0.12, "E": 0.37, "S": 0.40, "P": 0.06},
-    "X": {"E": 0.30, "S": 0.25, "N": 0.15, "W": 0.15, "P": 0.15},
-}
-PATTERN_W = {"peak": 0.88, "shift": 0.05, "mixed": 0.07}
+COHORT_SIZE = (55, 125)          # new users of the second half of 2025 per practice
+PREVALENT_PER_PRACTICE = (230, 420)

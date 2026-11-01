@@ -1,0 +1,118 @@
+{
+ "architecture": 3,
+ "as_of": "2026-10-27",
+ "decision": "how much load Breckwater Electric Cooperative must transfer off the Dunraith substation in each summer from 2027 to 2031 to keep its planning peak within the firm rating, with conservation voltage reduction on every feeder from June 2027",
+ "deliverables": [
+  "dunraith_planning.xlsx"
+ ],
+ "distractor_files": [
+  "OMS_outage_events_2026.csv",
+  "DUN_feeder_ties_2026.xlsx"
+ ],
+ "files": {
+  "BEC_2027_operating_plan.pdf": {
+   "date": "2026-09-22",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative 2027 Operating Plan, Board approved"
+  },
+  "BEC_distribution_planning_criteria_rev4.pdf": {
+   "date": "2024-02-27",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative Distribution Planning Criteria, revision 4"
+  },
+  "BEC_load_forecast_2025.xlsx": {
+   "date": "2025-06-24",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Hollis & Brandt Utility Consulting, BEC load forecast 2025"
+  },
+  "CVR_pilot_plan_Dunraith_2025.pdf": {
+   "date": "2025-05-16",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative CVR pilot test plan, Dunraith 2025"
+  },
+  "DUNRAITH_FDR_KW_2022-2023.csv": {
+   "date": "2024-03-18",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative SCADA historian (retired system), Dunraith feeder hourly kW, summers 2022 and 2023, exported 2024-03-18"
+  },
+  "DUN_feeder_ties_2026.xlsx": {
+   "date": "2026-08-03",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "distractor",
+   "source": "Breckwater Electric Cooperative Dunraith feeder ties to neighbouring substations"
+  },
+  "DUN_transformer_register_2026-10.xlsx": {
+   "date": "2026-10-09",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative GIS export, Dunraith transformers and protective devices"
+  },
+  "MV90_DP0417_202606-202609.csv": {
+   "date": "2026-10-14",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Westmarch G&T MV-90 interval export, delivery point DP-0417, June to September 2026"
+  },
+  "OMS_outage_events_2026.csv": {
+   "date": "2026-10-21",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "distractor",
+   "source": "Breckwater Electric Cooperative OMS outage events, Dunraith feeders, 2026"
+  },
+  "SO-2026-114_Dunraith.pdf": {
+   "date": "2026-07-01",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative switching order SO-2026-114"
+  },
+  "VR_event_log_DUN_2025.csv": {
+   "date": "2025-10-14",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Dunraith feeder regulator controller event log, May to October 2025"
+  },
+  "WPC_Exhibit_A_delivery_points.pdf": {
+   "date": "2023-12-05",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Wholesale Power Contract Exhibit A, delivery points and metering, revision 2024-1"
+  },
+  "dunraith_feeder_mw_2024-2026.csv": {
+   "date": "2026-10-06",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative SCADA historian, Dunraith feeder hourly MW, summers 2024 to 2026"
+  },
+  "mdms_xfmr_daily_kwh_20260601_20260930.csv": {
+   "date": "2026-10-12",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Breckwater Electric Cooperative meter data management system, transformer daily kWh, Dunraith, June to September 2026"
+  },
+  "mossford_ap_obs_2022-2026.csv": {
+   "date": "2026-10-06",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Mossford Municipal Airport ASOS routine and special observations, summers 2022 to 2026, climate data service export (local standard time)"
+  }
+ },
+ "largest_file": {
+  "name": "dunraith_feeder_mw_2024-2026.csv",
+  "rows": 70272
+ },
+ "row_counts": {
+  "DUNRAITH_FDR_KW_2022-2023.csv": 5856,
+  "MV90_DP0417_202606-202609.csv": 35136,
+  "OMS_outage_events_2026.csv": 119,
+  "VR_event_log_DUN_2025.csv": 117,
+  "dunraith_feeder_mw_2024-2026.csv": 70272,
+  "mdms_xfmr_daily_kwh_20260601_20260930.csv": 49166,
+  "mossford_ap_obs_2022-2026.csv": 15158
+ },
+ "task": "task138"
+}

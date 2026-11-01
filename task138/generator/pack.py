@@ -18,7 +18,7 @@ FILES = {
     "wx": "mossford_ap_obs_2022-2026.csv",
     "criteria": "BEC_distribution_planning_criteria_rev4.pdf",
     "opplan": "BEC_2027_operating_plan.pdf",
-    "testplan": "CVR_pilot_test_plan_2025.pdf",
+    "testplan": "CVR_pilot_plan_Dunraith_2025.pdf",
     "reglog": "VR_event_log_DUN_2025.csv",
     "forecast": "BEC_load_forecast_2025.xlsx",
     "mdms": "mdms_xfmr_daily_kwh_20260601_20260930.csv",
@@ -103,12 +103,13 @@ def obs_rows(wx):
 
 
 def write_wx(path, wx):
+    """The airport's observations as the climate data service exports them: local standard time all year."""
     out = []
     for ts, kind, c, dc in obs_rows(wx):
-        utc = ts - pd.Timedelta(hours=PR.UTC_OFFSET_H)
-        out.append([STATION, utc.strftime("%Y-%m-%dT%H:%M:%S"), kind, "" if c is None else "%.1f" % c,
+        lst = ts - pd.Timedelta(hours=1)
+        out.append([STATION, lst.strftime("%Y-%m-%dT%H:%M:%S"), kind, "" if c is None else "%.1f" % c,
                     "" if dc is None else "%.1f" % dc])
-    return IO.write_csv(path, ["STATION", "DATE", "REPORT_TYPE", "TMP_C", "DEW_C"], out)
+    return IO.write_csv(path, ["STATION", "DATE_LST", "REPORT_TYPE", "TMP_C", "DEW_C"], out)
 
 
 # ------------------------------------------------------------------ the pilot's regulator controller log
@@ -125,6 +126,10 @@ def write_reglog(path, log):
         rows.append((ts, "%s VR" % f, "CVR %s" % act, bc, "LOCAL" if late else "SCADA"))
     for (f, when) in W.MISSED:
         rows.append((pd.Timestamp(when), "%s VR" % f, "CMD NOT EXECUTED", "", "SCADA"))
+    # the spring maintenance leaves every regulator at the normal setting
+    for k, f in enumerate(PR.FEEDERS):
+        rows.append((pd.Timestamp("2025-05-12 09:00") + pd.Timedelta(minutes=37 * k), "%s VR" % f,
+                     "BANDCENTER CONFIRMED", "123.5", "LOCAL"))
     # the other regulators' routine events over the same months
     t = pd.Timestamp("2025-05-20 08:00")
     while t < pd.Timestamp("2025-10-10"):
@@ -198,19 +203,37 @@ CLASS_NAME = {"R-1": "R-1 Residential", "GS-1": "GS-1 General service", "IR-1": 
               "LP-3": "LP-3 Large power, CT metered"}
 
 
-def write_register(path, tx):
+def write_register(path, tx, dv):
+    """The GIS export: transformers with their tap fuse and meter, and the protective devices as built, each with
+    the feeder that energises it today and its normal state."""
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Transformers"
-    ws.append(["XFMR_ID", "FEEDER", "KVA", "PHASE", "RATE_CLASS", "METER_NO", "METER_MULT", "SET_YEAR"])
+    ws.append(["XFMR_ID", "FEEDER", "PROT_DEVICE", "KVA", "PHASE", "RATE_CLASS", "METER_NO", "METER_MULT",
+               "METER_SET"])
     for r in tx.sort_values("tx").itertuples():
         phase = "3PH" if r.kva >= 100 else "1PH"
-        ws.append([r.tx, r.feeder_now, int(r.kva), phase, CLASS_NAME[r.cls], r.meter, int(r.mult), int(r.set_year)])
-    for c, wd in zip("ABCDEFGH", (10, 8, 6, 7, 30, 11, 11, 9)):
+        ws.append([r.tx, r.feeder_now, r.fuse, int(r.kva), phase, CLASS_NAME[r.cls], r.meter, int(r.mult),
+                   r.meter_set.strftime("%Y-%m-%d")])
+    for c, wd in zip("ABCDEFGHI", (10, 8, 12, 6, 7, 30, 11, 11, 11)):
         ws.column_dimensions[c].width = wd
     for cell in ws[1]:
         cell.font = Font(bold=True)
     ws.freeze_panes = "A2"
+    wd_ = wb.create_sheet("Devices")
+    wd_.append(["DEVICE_ID", "TYPE", "FEEDER", "UPSTREAM_DEVICE", "NORMAL_STATE"])
+    moved_dev = {}
+    for a, b in W.RECONFIG_PAIRS:
+        for d in W.beyond(dv, W.MOVED_SWITCH[a]):
+            moved_dev[d] = b
+    for r in dv.itertuples():
+        state = "Open" if r.device in W.MOVED_SWITCH.values() else "Closed"
+        wd_.append([r.device, r.type, moved_dev.get(r.device, r.feeder_built), r.upstream, state])
+    for c, wdt in zip("ABCDE", (11, 10, 8, 20, 14)):
+        wd_.column_dimensions[c].width = wdt
+    for cell in wd_[1]:
+        cell.font = Font(bold=True)
+    wd_.freeze_panes = "A2"
     wb.save(path)
     IO.repack_ooxml(path, "GIS export", "Bailey Becker", "2026-10-09T13:12:00Z", "2026-10-09T13:20:00Z",
                     "Dunraith transformer register", "Breckwater Electric Cooperative")
@@ -269,13 +292,13 @@ def write_pack(S, out):
     n["reglog"] = write_reglog(p["reglog"], S["log"])
     write_forecast(p["forecast"])
     n["mdms"] = write_mdms(p["mdms"], S["mdms"], S["tx"])
-    write_register(p["register"], S["tx"])
+    write_register(p["register"], S["tx"], S["dv"])
     n["mv90"] = write_mv90(p["mv90"], S["gt"])
     n["outages"] = write_outages(p["outages"], S["outages"])
     write_ties(p["ties"])
     D.criteria(p["criteria"])
     D.operating_plan(p["opplan"])
     D.test_plan(p["testplan"])
-    D.switching_order(p["so"], S["tx"])
+    D.switching_order(p["so"])
     D.delivery_points(p["dpsched"])
     return n

@@ -1,31 +1,31 @@
 {
  "task": "task255",
- "status": "BUILD",
- "domain": "marketing-consumer-research / media-reach-frequency-audience-measurement",
+ "status": "DESIGN",
+ "domain": "pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-01",
- "stump": "The default path puts every change of trains where the line map puts it and files Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak (Centraal 63 per cent); on weekday peaks the north and east branches run through Centraal into each other and the west and south likewise, which only each journey's duration against the network's timings shows, so Tier G is Overstappunten, Oosttak and Zuidtak (Centraal 34).",
- "architecture": 2,
- "loops": 1,
+ "stump": "",
+ "architecture": 3,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-01"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 after the round 1 repair (--asof 2026-11-13; three lines answered in the note)",
-  "reader": "round 1 clean (main session)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-01 (repeat.gate_g against task125 v4, drawn 2026-10-31, now one of the last two draws after task133 and task138 re-registered; no BLOCK)",
-  "surface": "10 pairs promoted for adjudication 2026-11-01; nearest task254 back to back on G7",
-  "nearest": "task87 0.08"
+  "heart": "",
+  "surface": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "round 1: NOT_DETERMINISTIC (SEND_BACK); the call forced under every variant, Gates F, G, H pass",
-  "disposition": "repaired in the generator 2026-11-01: reach read per journey from its own duration on a record where every classification and routing gives the same riders; terms 6.2 files when a screen connects; take-down, register clock and swap evidence closed; the repeated tag explained; re-judge pending",
-  "report": "determinism_check_report.md (main session)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -45,9 +45,15 @@
    "portal": "architecture 1 re-rooted at the Batch 3 queue reset: the portal's responses filed the liability pool's retention through the truncated and censored likelihood, the field's reflex",
    "repair": "design: re-rooted to architecture 2 (marketing-consumer-research / media-reach-frequency-audience-measurement, a metro advertising concessionaire's 2027 guaranteed-reach tier)",
    "commit": "DRAWN (task255) architecture 2, by the main session"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: architecture 2 spent at the stage 4 re-judge (Gate G banned planted_defect_flip, H3 planted, three reach figures unreproduced)",
+   "repair": "design: re-rooted to architecture 3 (pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence, a Danish region's 2027 statin follow-up programme by general practice)",
+   "commit": "the main session commits"
   }
  ],
- "resume": "round 1 repaired 2026-11-01 (target.zip bbcaedf8, every free gate re-run on the final cut); next: the re-judge by the main session",
+ "resume": "architecture 3 drawn 2026-11-01 (card registered PASS); next: design note and generator",
  "approved": null,
  "delivered": null,
  "portal": null,
