@@ -92,8 +92,8 @@
       "driver": "not drawn"
     }
   ],
-  "notes": "Redrawn twice at stage 1 under the author's rule that a stuck build is unblocked, not parked: the OS09 seed's world could not carry an honest unbanned draw, and a resource adequacy design collided with task308 v3 at registration time.",
+  "notes": "Redrawn twice at stage 1 under the author's rule that a stuck build is unblocked, not parked: the OS09 seed's world could not carry an honest unbanned draw, and a resource adequacy design collided with task308 v3 at registration time. Architecture 1 spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the decisive step is rule application (R3a fails, generator/analyst_test.py); the survivor anatomy holds only Actor.",
   "client_domain": "urban-regional-science",
-  "architecture_spent": false,
+  "architecture_spent": true,
   "registered": "2026-10-27T13:18:43Z"
 }

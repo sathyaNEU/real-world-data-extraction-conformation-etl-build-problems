@@ -53,6 +53,25 @@
   against task308 v3: the call is a pick among four projects, so it asks which. Differentiation filed
   against task158 (`test.same_puzzle_older`).
 
+## Survivor anatomy
+
+Written at the 11-01 re-check from two measurements: generator/analyst_test.py on the clean truth and the column and
+sentence inventory of the shipped cut.
+Actor: holds; the deciding property (each build network's re-assigned link volumes) has no column, the only loaded
+network in the pack is the no-build one.
+Link: fails; no join or cross-entity comparison carries the step, the comparison (the opening-year no-build network
+against the network with the project coded in, both from the model) is named by guidance 2.1.
+Reflex: fails; the field's named method for a capacity project's vehicle-hours is a user-equilibrium re-assignment of
+the build network, which is the golden, not rung 0 or 1 (stumping 1.1b, the reflex collision).
+Back-test: fails; nothing in the pack validates the fixed-volume route, and 6.1's own convergence test refutes it
+(the no-build loads sit at a relative gap of 0.0079 to 0.1494 on the four build networks against the filed 0.000001).
+Second use: fails; the 2028 trip tables are read only by the decisive step (the fixed-volume route needs only the links
+and the loaded no-build file, the asks read the count files), so deleting the step drops the trip file.
+Shock: fails; the golden is the project link with the worst AM volume to capacity ratio (the Center Street Bridge, 1.34),
+the top of a sort on a shipped statistic.
+Pins: fails; documentation 6.1 files the method the stump rides on (user equilibrium, Wardrop's condition stated in
+full, the convergence gap) and guidance 2.1 files it on the coded network; together they are the work order.
+
 ## Default path
 
 The route a capable analyst takes with every file read and every filed rule executed:
@@ -105,16 +124,15 @@ queues at the Route 9 bridge, and misses the trips the Center Street lane draws 
 Not semantics: every field, unit and code can be read right (FTYPE 12's bridge curve, lanes per direction, vehicles
 against passenger-car equivalents) and the project links still be re-timed at fixed volumes, filing Route 9; the step is
 whether traffic moves, which no field states.
-Not rule application: guidance 2.1 files the estimand (the reduction in the region's peak-hour vehicle-hours with the
-project open, from the model on the coded network) and the documentation files the model's assignment as its general
-method; neither says that the loaded no-build volumes do not stand for the build network, and the fixed-volume route
-uses the same model's volume-delay functions on the same coded network; the route family spans Route 9 at about 196,500
-(fixed volumes, one all-or-nothing re-route) to Center Street at 323,000 (equilibrium, any convergence from three
-Frank-Wolfe iterations to a gap of 1e-12, either peak alone), so what decides is whether the solver re-solves the
-network.
-Analyst test: a strong analyst who reads every record and rule correctly re-times each project's links at the loaded
-no-build volumes through Table 4.2 and funds the Route 9 widening at about 196,500 vehicle-hours a year; the golden
-re-assigns the trips on each build network and funds the Center Street Bridge widening at 323,000 (Route 9 159,000).
+Not rule application: fails, measured at the 11-01 re-check (generator/analyst_test.py). Guidance 2.1 takes the
+build network's vehicle-hours from the current regional model on the coded network and documentation 6.1 files that
+model's assignment as user equilibrium to a relative gap below 0.000001; executed word for word they are the golden
+(Center Street 323,000), and the fixed-volume route reaches Route 9 only by breaking 6.1 (its build-network loads sit
+at a relative gap of 0.0079 to 0.1494). 6.1 files the HOW, so the decisive step is executing a stated procedure.
+Analyst test: fails, measured at the 11-01 re-check. With every filed rule applied (2.1, 6.1, 2.2, 3.1) the route is
+the equilibrium re-assignment and funds the Center Street Bridge widening, the golden; the fixed-volume route that funds
+Route 9 at about 196,500 is an analyst skipping 6.1, not one who read every rule and still went wrong (dataset-generation
+7.1 R3a). Architecture 1 is spent; 6.1 stays filed because the golden rests on it.
 Estimand: guidance 2.1 to 2.3 files the population (the region's 2028 AM and PM peak-hour trips as the tables give
 them), the outcome (total vehicle-hours on the network), the comparison (the opening-year no-build network against the
 network with the project coded in), the window (the two peak hours, annualised by 247 times 2.9) and the unit
@@ -302,3 +320,7 @@ Measured by: generator/pair.py on the cut pack.
   yield-by-record-age driver.
 - 2026-10-27: the planning time index ask (probe stamps marking the interval end as its silent device) dropped at
   stage 4: the judge read the stamp convention as an unfiled fork, and filing it hands the ask to every reader.
+- 2026-11-01: architecture 1 found spent at the re-check under the new gates: executing guidance 2.1 with documentation
+  6.1 (user equilibrium on the coded network) is the golden, so the analyst test fails and the decisive step is rule
+  application (generator/analyst_test.py); the survivor anatomy holds only Actor. Not re-rooted on the orchestrating
+  session's rule; the shipped pack stays at the portal, pending.

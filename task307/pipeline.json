@@ -5,7 +5,7 @@
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-11-01",
  "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
  "architecture": 1,
  "loops": 0,
@@ -27,12 +27,21 @@
   "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "Shipped; portal result pending. Watch item: Gate H borderline toward rule application (documentation 6.1 files user equilibrium).",
+ "resume": "Architecture 1 spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the analyst test fails and the decisive step is rule application; not re-rooted on the orchestrating session's rule. The shipped pack (549ae906) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (architecture 2) or leave the shipped version to the portal.",
  "approved": null,
  "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "zip": "549ae906954d0ec4"
+ "zip": "549ae906954d0ec4",
+ "architecture_spent": true,
+ "recheck_2026_11_01": {
+  "rebuild": "reproduces the shipped target.zip byte for byte (549ae906); generator 431 checks, verify green, pair ceiling 26.0; pyarrow and scipy installed into the container",
+  "analyst_test": "generator/analyst_test.py on the clean truth: fixed no-build volumes fund Route 9 (196,483) but only by breaking 6.1 (build-network loads at relative gap 0.0079 to 0.1494 against the filed 0.000001); every filed rule executed (2.1, 6.1, 2.2, 3.1) is the equilibrium route, Center Street 322,911: R3a fails",
+  "gate_h": "settled: rule application; 6.1 files the HOW (user equilibrium, Wardrop's condition, the gap), 2.1 makes it the work order",
+  "survivor_anatomy": "Actor holds; Link, Reflex, Back-test, Second use, Shock and Pins fail",
+  "gates_on_shipped_cut": "precut 61 checks 0 FAIL (8 anatomy WARNs before the lines were written, 0 after); voice-check PASS with WARNs (counts 'the four', 'the eight'; shell quota); leak.py REVIEW (sweep 12 REVIEW: documentation 4.1 names AB_LANES, BA_LANES, FTYPE; sweep 13 clean); guard.py heart WARN, surface exit 0; figures_check 72 of 72",
+  "repair": "none cut; nothing in target/, golden/, target.zip, the prompt or any graded figure moved"
+ }
 }
