@@ -1,369 +1,341 @@
 # task186 design note
 
+Architecture 2, drawn 2026-11-01 at the Batch 3 queue reset. The author had every queued task rebuilt as a fresh,
+unique architecture on what the approved builds share, so architecture 1 (the provincial fuel price monitor, shipped
+2026-10-13 with no portal result) was re-rooted. One architecture per world: the fuel-price pass-through world is
+closed, and the slot moves to another client domain (Human Factors & Ergonomics) and a new world, an airport's X-ray
+screening workforce. Architecture 1's record is under `## Architecture 1 record`.
+
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task186.json`, architecture v1, drawn 2026-10-12 from seed AD09 (a
-  regulator deciding which fuel brands to examine for levy pass-through). The world, the decision and the quantity are
-  the seed's; the seed's pitfall (the ownership flag is not who sets the price) is not used for the call, and the
-  pitfall is re-found from the stations' margin record.
-- **Pairing:** Survey Research & Official Statistics, anomaly detection (the task type serves Anomaly Detection &
-  Diagnostics). The monitor sits in the provincial statistics bureau, which runs the mandatory price-reporting scheme;
-  scoring each unit's period change against an empirical reference of comparable changes is official statistics' own
-  anomaly detection (as Hidiroglou-Berthelot scores period ratios against the spread of the other units' ratios).
-  Secondary domain Economics & Econometrics (retail fuel margins and levy pass-through). General Statistics & Data
-  Science x Anomaly Detection was the first draw and is blocked against task185 (`ban.pairing`).
-- **Niche:** the Provincial Statistics Bureau's Prices Division runs the fuel price monitor under the Fuel Price
-  Transparency Act and recommends to the Fuel Price Commissioner the one brand the Commissioner's pass-through inquiry
-  examines before each 1 January rise of the provincial carbon levy. The monitoring standard finds, station by
-  station, where the January 2026 rise was passed on in excess, with the false discovery rate across every examined
-  station held at 5 per cent, and the inquiry goes to the brand with the largest share of its examined stations found,
-  if that share is at least one in ten.
-- **Forcing and forum:** the 1 January 2027 levy rise; the inquiry notice is served before it
-  (`statutory_or_regulatory_filing`); the Commissioner decides (`regulator_or_inspector`); the organisation is a
-  statistics office (`research_or_statistics_office`); the stakeholder is the head of the Prices Division
-  (`statistical_office_head`).
-- **Call:** the brand the 2027 inquiry examines (or none), with each brand's share of examined stations found, to the
-  nearest ten per cent.
-- **Shape 01** (ranked list under a cap, each candidate): the inquiry is capped at one brand; each of the seven brands
-  carries its share found (7), its stations priced by the brand on 1 December 2026 (7) and its regular litres in each
-  month of the first quarter of 2026 (21); the call (1), a chart of the litres (4 parts), files and units (3). Criteria
-  arithmetic: 43.
-- **Strategy and mechanism:** `uncertainty_hold` family (signal against noise across many simultaneous tests); gap rule
-  then time (the filed false discovery rate entitles only a null that holds it, and the data's time structure, the
-  areas' price cycles, decides what that null is); decisive G2 (the unit of independent evidence is a 28-day period
-  change of an area's cycle, not a station-day), G17 supporting; Gate G `signal_vs_noise_or_hold`; calibration
-  `none` (the null comes from the record itself).
-- **Data-native sentence:** every urban area's regular-gasoline margins cycle over five to nine weeks as stations
-  undercut each other down and then restore together, so a 28-day before-and-after margin change carries the area's
-  cycle phase, which no station's own day-to-day variation shows; only the changes between periods when the levy did
-  not move (or the same-area competitors at the same dates) give the null that holds the error rate.
-- **Mechanisms read** (`guard.py mechanisms --objective anomaly-detection`, 18 builds): 25 and 28 a second-source
-  inflow and a reachable share; 33 forward yield cut by an intervention; 48 a two-sided grain; 54 exposure while in
-  custody; 68 a matched panel through identity successions; 76 a look-back class with zero conversion; 85 a unit's own
-  observation window; 103 a fan-out through authorisations; 104 a self-adapting scorer replayed at another setting;
-  119 waits a unit could shorten; 182 a lagged response to a shared driver; 183 repeat failers in parts; 125 a
-  recruitment filter's carried difference; 180 detection by the quiet hours; 181 crossings of moving units; 184 host
-  stand-down crowd-out; 185 a reading-dependent instrument conversion. None tests many units at once, none turns on
-  the null distribution of a period change under shared local cycles.
-- **Guard:** WARN `overuse.objective` (this is the Anomaly Detection lane). Nearest drivers at 0.06 (task121 v3, a
-  self-controlled exposure comparison for complaint attribution; task500 v2, a spillover through links): neither
-  tests many units against a null; the abstraction test maps neither onto this driver.
-- **Sources:** the seed (AD09) gives the world (a regulator's minute-stamped price log, a station register with an
-  ownership flag, closed levy changes) and the decision; its corpus-fit panel rule is not used. The client's official
-  statistics anomaly pattern (robust ratio tests against the cross-section, not raw z-scores) teaches that an anomaly
-  is judged against the spread of comparable changes; this build moves that to many simultaneous tests whose
-  theoretical null is wrong. The client's multiple-testing pattern (FDR on the whole family) is kept as a filed rule
-  and is not the stump. The client's two-layer example "comparing against the right group, not a simple before and
-  after" is the lesson, carried by the null rather than a control arm.
+1. **Card:** `.claude/skills/fingerprint/cards/task186.json`, architecture v2, registered 2026-11-01 at WARN with no
+   BLOCK (`shell.repeat` read the old prompt and clears with the new one; `driver.near` 0.13 against task190 arch 3,
+   probability-proportional-to-size sampling, a different mechanism; `overuse.gate_g`, method_or_model_selection is
+   the honest key for a step that decides which records measure the estimand). Architecture 1 moved into `lineage`
+   with its fate. Axes drawn free of the live window at the draw (the last three cards were then task452, task123 and
+   task160, which ban professional_services, cooperative_or_member_body and manufacturer, executive_team,
+   council_or_assembly and operations_desk, budget_or_appropriation, season_or_peak and launch_or_rollout,
+   compliance_or_audit, capacity_planner and operations_director, monitoring_export, register and operations_log,
+   and three strategies): organisation `utility_or_infrastructure` (an airport operator running its own passenger
+   screening), forum `line_manager_or_team` (the head of security screening decides the list), forcing event
+   `audit_or_inspection` (the annual recertification of screening officers), role `field_unit_lead` (the screening
+   training and standards lead), context artifact `other` (the stakeholder works from the CT system's projection
+   export, the library catalogue and the login register together; `monitoring_export`, the nearest label, is banned
+   against task452). Gap `time` first (the decisive structure is each officer's own history of showings of each
+   object), pattern none with G10 decisive (an object recurring across its scans and across projections is one
+   real-world item shown again), G14 and G6 supporting; the gap/pattern pair (population, E) and every population
+   pairing with method_or_model_selection were spent inside the batch.
+2. **Pairing:** Human Factors & Ergonomics / `safety-incident-error-analysis` / Anomaly Detection & Diagnostics, a
+   pairing never built. The deciding quantity is a human performance measure the field estimates: each X-ray
+   screening officer's probability of detecting a threat item, read from threat image projection (TIP), the tool
+   human factors uses to measure screener detection in live operation. Missed projections are the errors analysed;
+   the anomaly is an officer whose detection is genuinely below standard rather than an artefact of how the measure
+   was taken.
+3. **Niche:** the year-end recertification of a regional airport's CT X-ray screening officers, at the end of the
+   first full screening year on new CT scanners whose 3D TIP library is a fixed set of 360 threat objects, each in
+   three scans.
+4. **Call and shape:** who among the screening officers comes off X-ray duty at the January 2027 recertification
+   (`designation_set`, question form `who`), the officers whose detection performance over the screening year to 30
+   November 2026 is below the competency standard's 80 per cent. Shape 10, a scorecard of one measure checked against
+   its threshold for every endorsed officer; criteria: the ten officers coming off (10), recertifying the rest (1),
+   the call (1), the chart with its parts (5), the files (2), and two asks of 12 and 28 figures (40). About 59.
+5. **Strategy and mechanism:** `composition_mix` (an officer's hit rate over the year is a mixture of first and
+   repeat showings in proportions that differ by officer, and only one component measures the estimand), Gate G
+   `method_or_model_selection`, Layer 2 `estimand_identification`, pattern `own:recognition-of-recurring-test-
+   objects-lifts-a-detection-proxy`. Calibration `none`.
+6. **Data-native sentence:** the CT lanes' TIP library holds 360 threat objects, each in three scans, and a full-time
+   officer is shown about 740 projections in the year, each followed by the system telling them it was a threat, so
+   by the screening year about four in five of a full-time officer's projections show an object they have already
+   been shown; officers detect those 99.5 per cent of the time against 88.5 per cent for objects new to them, so the
+   year's raw hit rate measures recognition of the library for the officers shown it most, and only first showings of
+   an object, any of its scans counting, measure detection of an item a passenger carries.
+7. **Abstraction sentence** (the one sentence a reviewer holding this build and its nearest approved build would say
+   is the same): none writable. Against task281 (a validated sensitivity is a mixture over two capture devices
+   recovered from an equipment history): there the latent factor is a property of the record (which camera took the
+   image) and the transport is device by device; here no attribute of the record changes, the officer's own history
+   with each object changes what a hit means. Against task170 (a failure probability falling with each operator's own
+   count of attempts): there the practice is general and forecast forward; here the lift is specific to the item
+   shown and the call is a designation now. Against task196 (capture-recapture with a contaminated second channel):
+   no second source, no count of unrecorded events.
+8. **Four candidates, written before choosing** (the three set aside are in `## Tried and rejected`):
+   (a) TIP recognition of recurring library objects (chosen); (b) an epidemiology surveillance baseline aligned on
+   each area's school return; (c) interviewer falsification found through informative back-check non-response;
+   (d) signals passed at danger per approach at red reconstructed from consecutive trains' headways; (e) resistance
+   prevalence under cascade susceptibility testing.
+9. **People** from `guard.py names --geo Australia --locale en_AU --seed 186`: Teresa Malone (Head of Security
+   Screening, approves SCS-04 and keeps the officer register), Keith Keller (screening systems coordinator, keeps the
+   TIP library). Officers' names come from Faker en_AU on the build seed. Invented names: Silverwattle Coast Airport,
+   Kestrine Imaging (CT unit maker), the Kestrine CTX-6 unit, the Kestrine 3D TIP library.
+10. **Pack** (twelve files, four formats): the TIP event export, 1 July 2025 to 30 November 2026, UTC (CSV, 74,704
+    rows, the spine); the TIP library catalogue (XLSX: objects, images); the CT operator login register (CSV); the
+    screening officer register (XLSX); SCS-04 revision 6 (PDF, the governing WHAT); the lane roster for the screening
+    year (CSV, 31,616 rows); the payroll export of leave taken (CSV); the CT units' hourly image counts, UTC (CSV,
+    38,401 rows); the CT unit register (CSV); distractors declared in `metadata.json`: daily checkpoint queue times
+    (CSV), computer-based X-ray training sessions (CSV) and the TIP manager's projection settings (JSON).
+11. **Sources, one line each:**
+    - Threat image projection: CT and X-ray screening systems insert fictional threat images into real bag images at a
+      configured rate and record whether the screener marked each; after the decision the screener is shown the item.
+      Regulators and operators read a screener's detection from it.
+    - Recognition memory: an image or object seen once with confirmation is recognised far more reliably the next time
+      it is seen, which is why test libraries are built large and refreshed; a library small against the projection
+      volume measures recognition for heavy users.
+    - The client's two-layer standard: the analysis decides on correct data, every reported figure complete and
+      correct (the FINE-numbers test, the coordinator's task123 lesson, passed: nothing is missing from the TIP log).
+    - This lane's approved anatomy (task196, task236): the WHAT names the quantity in the organisation's words and the
+      field's method for it is the rung a precondition of this dataset breaks.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, whether the officer had already been shown the projected object, has no column in
+  any file: the TIP export holds a login, an image number and a result per projection; the library holds which object
+  each image shows; the property is a relation between an officer's earlier and later rows through the object behind
+  the image, across two files.
+- **Link:** the image number to object link sits in the library catalogue (three images per object, no object code in
+  the TIP export), the login to officer link in the login register (two login schemes before 1 March 2026); no key in
+  the TIP export offers the object, and no sentence invites asking whether an officer had seen it.
+- **Reflex:** the field's method, each officer's TIP hit rate over the assessment year against the standard (with
+  category balancing or the image-level first showing as refinements), is rung 0 and files three officers off: the
+  three casual officers whose raw rates are 76 to 78 per cent.
+- **Back-test:** the textbook route validates: the raw hit rate is stable and internally consistent (every officer's
+  rate in the first and second halves of the year agrees closely), rises through 2025 as a learning curve would after
+  new scanners, and ranks the casual officers new in 2025 lowest, which reads as expected.
+- **Second use:** the TIP export is the spine and the lane throughput ask's numerator check; the library catalogue
+  is where every image's object and category live, which every route needs to read categories; the login register
+  is needed to name any officer at all. Delete the decisive step and every file stays.
+- **Shock:** the six full-time officers the step adds sit inside the hit-rate spread (91 to 95 per cent against a
+  recertified range of 92 to 99.5), and the ten are not an interval of any shipped statistic's sort (hit rate,
+  projections, endorsement date, category-balanced rate, image-level first showings), asserted.
+- **Pins:** SCS-04 revision 6 files the WHAT (detection performance as the probability of detecting a prohibited item
+  carried in a passenger's cabin bag, the screening year in Sydney time, every officer endorsed on 30 November, below
+  80 per cent comes off); no filed sentence names repeats, first showings, objects, memory or the library's size.
 
 ## Default path
 
-1. Read the monitoring standard: the daily price (time-weighted, 06:00 to 22:00 local), the daily margin (price net of
-   the 5 per cent sales tax, less the levy in force and the terminal rack price), the margin change (the 28 days from
-   1 January 2026 against the 28 days before), the examined-station rule, findings at a 5 per cent false discovery
-   rate, and the inquiry rule (largest share of a brand's examined stations found, at least one in ten).
-2. Rebuild every station's daily regular price from the minute log (UTC stamps to local time, the June 2026
-   renumbering through the crosswalk), join the rack prices and the levy, and keep the stations examined.
-3. Test each examined station's margin change against its own day-to-day variation: a one-sided Welch t-test of the
-   28 daily margins after against the 28 before (a Mann-Whitney test or Newey-West errors give the same findings).
-4. Apply Benjamini-Hochberg at 5 per cent across every examined station and take each brand's share found.
+1. Read SCS-04 rev 6: detection performance over the screening year 1 December 2025 to 30 November 2026, every
+   officer endorsed on 30 November (the register's Current, 91 officers), below 80 per cent comes off X-ray duty.
+2. Conform the TIP export: drop the re-sent D3 day, move UTC to Sydney time, map OP1 and OP7 logins to staff numbers.
+3. Take each officer's TIP hit rate over the screening year's projections, the field's measure of a screener's
+   detection (checked by threat category, and against each image's first showing, which changes nothing).
+4. List the officers under 80 per cent.
 
-Ends on: Harbourline Fuels.
-Golden: Tallis Petroleum.
-
-On the built pack the default path finds 46 of Harbourline's 52 examined stations (88 per cent), Pellow Gas next at 70
-per cent and Tallis last of the seven at 40; the golden finds 28 of Tallis's 92 (30 per cent) and no station of the
-other six brands.
+Ends on: three officers off X-ray duty, SC17045, SC42948 and SC46133, every full-time officer recertified
+Golden: ten officers off X-ray duty, SC16884, SC17045, SC19116, SC19645, SC29369, SC42948, SC43647, SC46133, SC46282 and SC46312
 
 ## Stump sentence
 
-The default path tests each station's 28-day margin change against the station's own day-to-day variation, which
-cannot see that every area's margins cycle over five to nine weeks, so it finds nearly every station in the two areas
-whose cycles restored around the turn of the year and sends the inquiry to Harbourline Fuels; a null built from the
-stations' changes between periods when the levy did not move holds the false discovery rate and leaves only Tallis
-Petroleum's company-run stations, which kept about 3 cents a litre more than the rise.
+A competent analyst takes each officer's TIP hit rate over the screening year and withdraws three casual officers,
+SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is reading the hit
+rate as detection when four in five of a full-time officer's projections show an object they have already been shown
+and told was a threat, which officers detect 99.5 per cent of the time, so six full-time officers who detect only 56
+to 74 per cent of objects new to them clear 80 per cent on recognition.
 
 ## Three rules
 
-Rewritten at the stage-2 re-measurement of 2026-10-21, which refuses this architecture. Each line says what was
-measured on the generator's clean truth, not what the design intended. Three lines fail, and they are the three the
-client's check turns on.
-
-- Task type: survey-research-official-statistics / anomaly-detection, which serves anomaly-detection: the monitor
-  scores each unit's period change against the spread of comparable changes. The task type is right, and it is also
-  the problem, because that score is reached by a one-column outlier screen (see Not rule application).
-- Domain test: the deciding quantity, the number of a brand's stations whose retail margin rose by more than the levy
-  judged against what the town's own price cycle moves a 28-day margin anyway, is the field's own quantity, and this
-  line holds. Town-level cycles of undercutting and restoration run five to nine weeks (measured: every area's period
-  36 to 62 days, amplitude 2.45 to 3.05 cents a litre), so the cycle alone moves a station's 28-day margin by up to
-  1.4927 cents a litre, which is the largest change among the 341 stations the golden does not find. What fails is not
-  the quantity but the step the design calls decisive.
-- Swap: put clinics and wait times in place of stations and margins and the task no longer stands, because there is no
-  levy to net out of a margin, no rack price and no five-to-nine-week cycle of undercutting and restoration. This line
-  holds.
-- Layer 1: a minute-stamped price-change log in UTC read against a local-time daily window across daylight-saving
-  changes; station numbers renumbered by the reporting platform in June 2026 with a crosswalk; terminal rack prices
-  published per business day in dollars a litre, weekends and holidays carried; a register whose brand changes are
-  effective-dated; changes resubmitted after six intake outages. None is planted, each is asserted neutral for the
-  call, and this line holds.
-- Layer 2: the design files estimand_identification, the counterfactual movement of a station's margin without the
-  levy change. Measured, that counterfactual never has to be estimated to answer the call: the 28 stations the golden
-  finds are exactly the top 28 of 369 by the standard's own 28-day margin change, clear of the 29th by 1.2233 cents a
-  litre, so the layer that was meant to decide is decoration on every graded figure.
-- Decisive step: FAILS on measurement. The design's decisive step is the choice of reference distribution for many
-  simultaneous tests. On the clean truth 7 of 15 data-free cuts on the standard's own margin-change column file the
-  golden call and all seven printed bins, at a maximum absolute difference of 0.0000 percentage points and with an
-  identical found set; three of the seven are plain outlier reflexes (the cross-section's median plus three MAD, its
-  median plus 1.5 interquartile ranges, its mean plus two standard deviations). Choosing the null is therefore not the
-  step that decides the call: one group-by, one robust spread and one comparison decide it.
-- Not semantics: holds. Every field, unit and code (UTC stamps, the crosswalk, the rack's dollars a litre, the sales
-  tax, the levy in force, the register's brand on the day) is read the same on the easy route and the golden one, and a
-  reader who reads them all correctly and tests each station against its daily variation still files Harbourline.
-- Not rule application: FAILS on the measured spread, which is the half of this line that was never answered. The
-  standard files the margin, the windows, the false discovery rate and the inquiry rule and names no null, so the
-  design's old line was answered against the question "does a filed rule name the method". Asked the right question,
-  "is anything left to decide once every filed rule is read", the answer is nothing. Across the 13 licensed
-  reference-distribution constructions (the station's own 28-day changes at non-levy dates one-sided, two-sided, by a
-  normal approximation, before the change only, after it only, pooled over every station, pooled within each area; the
-  cross-section at the change by median and IQR, by median and MAD, by mean and SD; same-area competitors on MAD, IQR
-  and SD scale) the spread on six of the seven graded shares is exactly 0.0 percentage points, and 12 of the 13 file
-  Tallis at 30 per cent with every other brand at 0. The 13th, the cross-section's mean and standard deviation, finds
-  nothing. The Spearman correlation of the golden's own statistic with the plain margin-change column is +0.9837.
-- Analyst test: the easy route still ends wrong, and that is no longer enough. A strong analyst who rebuilds every
-  station's daily margin from the minute log, applies the standard's windows and examined-station rule and tests each
-  margin change against the station's day-to-day variation before Benjamini-Hochberg at 5 per cent finds 195 of 369
-  stations and sends the inquiry to Harbourline Fuels (88.5 per cent of its stations found, Tallis seventh of seven at
-  40.2 per cent). The same analyst reaching instead for the cross-section's robust spread, the reflex this task type is
-  named for, files the golden without ever asking what the counterfactual is, so the test separates two reflexes rather
-  than a reflex from an analysis.
-- Estimand: the monitoring standard's finding sentence (a station passed on more than the rise when its margin rose by
-  more across the change than it would have had the levy not changed), the false discovery rate across every examined
-  station held at 5 per cent, and the inquiry rule; filed literally in PM-04 and unchanged by this reading.
-- No decoy: holds. No memo, bulletin, briefing or stakeholder figure names a brand, a share or a finding; the bureau's
-  published weekly averages rank nothing on pass-through and are a distractor.
-- No certified replay: holds. No certified or published figure is reproduced to recover the method, and the reference
-  distribution comes from the record itself.
-- Lesson: none this architecture can teach. The intended lesson, that evidence for many units at once must be judged
-  against how much such changes move when nothing happened, is not what this data makes necessary: the quantity the
-  lesson corrects is separated by 1.2233 cents a litre, and any ordinary outlier rule on one column reaches the same 28
-  stations. The number is re-rooted at stage 1.
+- **Task type:** human-factors-ergonomics / safety-incident-error-analysis, which serves anomaly-detection: the
+  analysis of screening officers' missed threat items, separating a genuine detection deficit from an artefact of how
+  the measure was taken.
+- **Domain test:** the deciding quantity is each officer's probability of detecting a prohibited item a passenger
+  carries, which human factors estimates from threat image projection; recognition memory of an object shown and
+  confirmed after every projection lifts each later projection of it, so the estimate has to be read on what measures
+  detection of an unseen item.
+- **Swap:** "which transformers' protection relays fail to detect a fault, read from injected test faults drawn from a
+  fixed set" keeps the arithmetic and loses the step: a relay does not remember a test fault it has met, so its hit
+  rate on a repeated test is its hit rate on a new one; the sentence stops needing the decisive step.
+- **Layer 1:** the CT system stamps projections in UTC against a standard written in Sydney time across two daylight
+  saving changes; the international TIP server issued its own OP7 logins until the servers merged on 1 March 2026;
+  image numbers lost their leading zero on that server; D3's records for 17 February 2026 were re-sent after a network
+  outage; category codes in the export against category names in the catalogue; each written by the system named,
+  none placed to be caught, each neutral on the call (the R2 block in checks.py).
+- **Layer 2:** estimand identification, family `estimand_identification`: the measure in hand is a mixture of two
+  components in proportions that differ by officer, and the estimand is one of them; the call flips on reading
+  detection from the records that measure it.
+- **Decisive step:** reading each officer's detection on the projections of threat objects new to that officer, an
+  object counting as already shown once any of its three scans was projected to them since the CT lanes opened.
+- **Not semantics:** every field read correctly (the result codes, logins, image numbers, categories, dates and the
+  standard's terms) still leaves the easy route on three officers, because no field records whether the officer had
+  been shown the object, and the FINE-numbers test holds: the TIP log is complete and correct.
+- **Not rule application:** no filed rule or procedure names first showings, objects or memory; executing SCS-04 word
+  for word with the field's measure files three officers. The enumerated family (raw hit rate, category-balanced
+  rate, the last quarter alone, first showings of each image, first showings counted inside the year only, first
+  showings of each object, the same reweighted to the library's category mix, a logistic fit on prior showings read at
+  none) spans three to ten officers off; the standing family once the data are read (object-level first showings over
+  the whole log, raw, category-reweighted or fitted) spreads zero officers, with every officer coming off at most 74.2
+  per cent and every other at least 83.3 per cent under each form; what rules out the rest is loud only for a reader
+  who links images to objects: repeat showings detected 99.5 per cent, an image new to the officer but of an object
+  already shown 99.3, a new object 88.5.
+- **Analyst test:** a strong analyst who conforms the TIP export, maps every login and reads SCS-04 correctly takes
+  each officer's hit rate over the screening year and files three officers off X-ray duty, SC17045, SC42948 and
+  SC46133, every full-time officer recertified; R3a in checks.py runs it on the clean truth.
+- **Estimand:** SCS-04 revision 6 sections 3 and 4 (SCS-04_screening_officer_competency_standard_rev6.pdf):
+  detection performance is the probability that the officer detects a prohibited item carried in a passenger's cabin
+  bag at the X-ray screen of a CT lane, assessed over the officer's screening in the screening year 1 December to 30
+  November in Sydney time, for every officer holding an X-ray endorsement on 30 November, below 80 per cent comes off.
+- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure states a hit rate, a ranking or a
+  verdict; the TIP manager's settings file states a projection probability and no result; no block of records is
+  copied or withheld; the memory effect is how people recognise what they have been shown.
+- **No certified replay:** no certified or published detection figure exists in the pack to reproduce; the method is
+  not hidden behind a figure the solver backs out.
+- **Lesson:** a hit rate on a test drawn again and again from a fixed set with feedback measures recognition for the
+  people shown the set most; before reading it as detection, ask what each person had already been shown, and read the
+  measure on the items new to them. No build on file teaches memory contaminating a performance measure.
 
 ## Readability screen
 
-The six tests per rung (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear), verdict last.
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 each brand's average margin change | the standard defines the margin change | the log, the rack and the levy schedule | yes | no | no | one subtraction | readable |
-| R1 each station's change tested against its day-to-day variation, Benjamini-Hochberg at 5 per cent (the default path) | the standard files the false discovery rate | no | yes: a t-test per station | no | no | no | readable |
-| R2 robust (Newey-West) errors, a rank test, two-sided tests | no | no | yes | no | no | no | readable |
-| R3 (decisive) the null from the stations' 28-day changes when the levy did not move, from same-area competitors at the change, or from the bulk of the cross-section | no: the finding sentence is met on its face by a margin held flat without the change | no column carries a cycle, a phase or a reference change | no: the defaults (t-tests, robust errors, rank tests, stratifying by brand or area) each keep Harbourline | none ships | the battery is clean on every path | no: a reference distribution per station or per area, never a subtraction | silent |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 raw hit rate over the year | SCS-04 detection term | result column | the field's measure | none | none | yes | no | readable |
+| R1 category-balanced hit rate | none | category column | a known refinement | none | none | yes | no | readable |
+| R2 first showing of each image file | none | image_no column | a careful refinement | none | duplicate-image check | yes | no | readable |
+| R3 first showing of each object over the whole log (decisive) | no sentence names repeats, objects or memory | no object column in the TIP export; the object sits in the catalogue's image list | the field's measure takes every projection as a fresh test | no control scores it | no battery item links images to objects across an officer's history | one filter and a ratio, but only once the relation is seen | the catalogue and logins serve every route | silent |
 
 ## Semantic fork table
 
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | a station's daily price | the time-weighted average of its posted regular prices from 06:00 to 22:00 local time | the mean of the day's posted prices; the price in force at noon; the 24-hour average | same call, same shares (asserted) | the standard's daily-price sentence, and same call |
-| SF2 | the daily margin | the daily price net of the 5 per cent sales tax, less the levy in force and the day's rack price | the price with tax | same call, same shares (asserted) | the standard's margin sentence, and same call |
-| SF3 | the margin change | the mean daily margin over 1 to 28 January 2026 less the mean over 4 to 31 December 2025 | other window lengths | not executed | the standard's windows |
-| SF4 | an examined station | a station carrying one of the seven brands on the register on 1 January 2026 with a posted price on at least 20 of each 28 days | every registered station | same call (asserted) | the standard |
-| SF5 | passed on more than the rise | a one-sided finding (margin rose by more than full pass-through leaves) | a two-sided test | same call, same shares (asserted) | the finding sentence, and same call |
-| SF6 | the false discovery rate procedure | Benjamini-Hochberg at 5 per cent across every examined station | Storey's adaptive procedure; Benjamini-Yekutieli | Storey: same call, same shares (asserted); Benjamini-Yekutieli finds no station, its bar for 369 stations below the smallest p-value the stations' own changes can give | the standard names Benjamini-Hochberg |
-| SF7 | what full pass-through would leave | the margin's movement over a 28-day change when the levy does not move, measured from the stations' own changes at every date whose windows hold no levy change | the bulk of the stations' changes at the change (an empirical null, median with IQR or MAD); same-area competitors of other brands (MAD, IQR or SD scale); the stations' own changes before the change only, after it only, two-sided or by a normal approximation; the area-relative margin against its own changes | same call, same shares (asserted for every one) | same call |
-| SF8 | a station's brand | the brand on the register's brand history on 1 January 2026 | the brand today | same call (asserted) | the standard's examined-station sentence |
-| SF9 | the share | findings over the brand's examined stations | findings over every station the brand carries | not executed | the standard's inquiry sentence |
-| SF10 | the share's rounding | to the nearest ten per cent; no share within two points of a five-point edge (asserted) | whole per cent | same call | the prompt |
-| SF11 | the inquiry rule | the brand with the largest share, if that share is at least one in ten; no tie (asserted) | several brands | same call | the standard's inquiry sentence |
-| SF12 | rack price on a weekend or holiday | the previous business day's price carried | interpolated | same call (asserted) | the rack file's notes, and same call |
-| SF13 | the daily window across daylight saving | local time | UTC days | same call (asserted) | the standard says local time |
-| SF14 | a change resubmitted after an outage | one change per station and minute (exact repeats) | kept twice; the received time read as the effective time | same call, same shares (asserted for both) | same call |
-| SF15 | stations renumbered in June 2026 | one station across both numbers through the crosswalk | the numbers as two stations | same call (asserted: the change window is wholly under the old numbers) | the crosswalk, and same call |
+| Id | Term or convention | Readings | Ruled out by |
+|---|---|---|---|
+| SF1 | the screening year's dates | Sydney dates, UTC dates | SCS-04 section 3 (Sydney time throughout); same call either way (checks.py) |
+| SF2 | who is assessed | endorsed on 30 November, anyone who screened | SCS-04 section 4; the register's Current column (91) |
+| SF3 | what counts as already shown | the same image, any scan of the same object | the data: an image new to the officer of an object already shown is detected 99.3 per cent against 88.5 for a new object (checks.py) |
+| SF4 | how far back an earlier showing counts | the whole CT log, inside the year only, recent showings only | the data: the lift is 99.5 within 30 days and 99.3 after 120 days, and objects first shown before the year are recognised in it at 99.2 (checks.py) |
+| SF5 | category weighting | each first showing equally, the library's category mix | same ten officers (checks.py) |
+| SF6 | the estimator on first showings | the share detected, a logistic fit read at no prior showing | same ten officers (checks.py) |
+| SF7 | the re-sent D3 day | kept twice, once | same call (checks.py) |
+| SF8 | the currency population | endorsed for the whole month, endorsed at any point in it | SCS-04 section 5 (the whole of a calendar month) |
+| SF9 | X-ray time resolution | moment by moment, five-minute slots | identical counts (checks.py) |
+| SF10 | quarters | Sydney quarters from 1 December, UTC quarters | SCS-04 section 3; UTC moves figures (checks.py) |
+| SF11 | passenger bags | every image a unit counts, images while officers screen passengers | SCS-04 section 3 (bags passengers put through a lane); one rostered-time rule separates them (C1 in checks.py) |
+| SF12 | below 80 per cent | strictly below, at or below | no officer within 3.3 points of the line under any licensed form (checks.py) |
+| SF13 | an officer with few first showings | assessed, held over | every endorsed officer has 107 or more first showings in the year (checks.py) |
 
 ## Ladder
 
-Built figures (seed 186), each asserted by name in `generator/checks.py`.
+| Rung | Construction | Answer | Dies to |
+|---|---|---|---|
+| R0 | each officer's hit rate over the year's projections (the default path) | three casual officers off (SC17045, SC42948, SC46133) | repeat showings are detected 99.5 per cent against 88.5 for new objects |
+| R1 | the hit rate balanced across the four threat categories | the same three | the same lift, in every category |
+| R2 | each image's first showing to the officer | four casual officers off (adds SC16884, 0.776) | an image new to the officer but of an object already shown is detected 99.3 per cent |
+| R2b | first showings counted inside the screening year only | the same four | objects first shown before the year are recognised in it at 99.2 per cent |
+| R3 | each object's first showing over the whole CT log (golden) | ten officers off, six of them full-time | golden |
 
-| Rung | Construction | Inquiry | Harbourline | Pellow | Tallis | Others |
-|---|---|---|---|---|---|---|
-| R0 | each brand's average margin change, largest | Harbourline | +0.88 c/L | +0.42 | +0.70 | +0.23 to +0.36 |
-| R1, the default path | each station tested against its day-to-day variation (Welch), Benjamini-Hochberg 5 per cent | Harbourline | 88 per cent | 70 | 40 | 42 to 48 |
-| R2 | a rank test (Mann-Whitney), Newey-West errors (3, 7 or 14 lags), or the province's daily mean margin taken out first | Harbourline | 46 to 92 | 9 to 74 | 33 to 41 | 7 to 59 |
-| R2b | the cross-section scored on its plain standard deviation, or a placebo of one date in 28 | none | 0 | 0 | 0 | 0 |
-| R3, decisive | the null from the station's own changes when the levy did not move (or same-area competitors, or the bulk of the cross-section by median and spread) | Tallis | 0 | 0 | 30 | 0 |
-
-- **Kills, one fact each:** R0 by the standard (findings, not averages); R1 and R2 by the record's own changes at dates
-  with no levy change (at the first of each month away from the change the same test finds a median of 27 to 43 per
-  cent of each brand's stations, every one a false finding); R2b because neither can report a finding (the plain
-  standard deviation counts the 28 Tallis stations in its own scale and masks them; one date in 28 leaves 20 reference
-  changes, whose smallest p-value, 1 in 21, is above Benjamini-Hochberg's bar at every rank a finding could take); R3
-  stands.
-- **Why each is satisfying:** R1 is the textbook per-unit test under a filed false discovery rate; R2 answers the
-  autocorrelation worry with robust errors; both reconcile station by station.
-- **Separation:** on the default path Harbourline leads Pellow by 1.26 times and Tallis is last; on the rank test
-  Harbourline leads Pellow by 1.24, on every Newey-West variant by 1.6 or more, on the province-relative variant by
-  1.41 (Tallis second); on the golden Tallis's share is three times the rule's one in ten and no other brand has a
-  finding. Accepted against the fourth-or-fifth rule: Tallis is last on the default path (40 per cent, in the 40 per
-  cent bin with Wexcombe and Oxbury, every share off its golden bin), because most of its dealers trade in the five
-  towns whose cycles were falling at the change; it is second on R0 (Harbourline 1.26 times its average change), on the
-  province-relative variant (1.41 times its share) and on Newey-West at 3 lags (2.4 times), third or lower elsewhere.
-- **Robustness:** every null that holds the error rate files Tallis at 30 per cent and every other brand at 0, finding
-  28 or 29 Tallis stations: the stations' own changes at every date, before the change only, after it only, two-sided
-  or by a normal approximation; the bulk of the cross-section by median with IQR or MAD; same-area competitors of other
-  brands on MAD, IQR or SD; Storey's adaptive procedure. The write-up's components state the shares, not the count. Every
-  within-window test (Welch, Mann-Whitney, Newey-West at 3, 7 or 14 lags, the province-relative margin) sends the
-  inquiry to Harbourline.
+- Separation: R0 and R1 file three, R2 and R2b four, R3 ten; R3 differs from R0 in seven members (asserted by name).
+- Margins: every officer coming off at most 74.2 per cent under every licensed form (raw 74.22, category-reweighted
+  74.06, logistic 73.96); every other officer at least 83.3 per cent (83.54, 83.34, 83.5); the nearest any officer
+  sits to the line is 3.3 points. The masked full-time officers' raw rates run 91.0 to 95.0 per cent against a
+  recertified range of 91.9 to 99.5, so they sit inside it.
+- Pricing: the step moves seven of ten designations; the lift is 11 points of hit probability on a repeat; the
+  golden's per-officer first showings number 107 to 205 in the year, so the sampling error of a designated officer's
+  estimate is about 3 to 4 points, inside the 8-point gap around the line. The world's free parameters (library size
+  360, projection probability 1.3 per cent, the memory multiplier 0.12, competent officers 0.89 to 0.95 on unseen
+  items, deficient full-time officers 0.64 to 0.72) were set so that every officer clears the line by at least 3
+  points under each licensed form and the masked officers sit inside the recertified spread; the same structure held
+  over seeds 186 to 191 at the prototype (golden equal to the truth's deficient set in every seed).
 
 ## Closure table
 
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | stations carrying one of the seven brands on 1 January 2026 with posted prices on 20 or more days of each window | the standard's examined-station sentence |
-| 2 | Unit of account | the station for findings, the brand for shares | the standard |
-| 3 | Attribution window | 4 December 2025 to 28 January 2026 | the standard's windows |
-| 4 | As-of dating | the change examined is 1 January 2026; the extract runs to 15 November 2026 | the standard (the previous change) and the extract notes |
-| 5 | Version basis | changes resubmitted after outages are exact repeats | C1: same call (SF14) |
-| 6 | Denominator | the brand's examined stations | the standard's inquiry sentence |
-| 7 | Weighting | each station equally | the standard |
-| 8 | Window length | 28 days each side | the standard |
-| 9 | Boundary inclusivity | a finding at the 5 per cent false discovery rate; an inquiry at a share of one in ten or more | the standard |
-| 10 | Rounding path | shares rounded once, to the nearest ten per cent | the prompt (SF10) |
-| 11 | Tie-break | none needed | asserted: no tie at the top |
-| 12 | Maturity and censoring | the change closed ten months before the extract | none needed |
-| 13 | Order of operations | daily price, margin, change, finding, share, inquiry | the standard's order |
-| 14 | Row order | none affects a time-weighted price or a sum | C1 |
-| 15 | Duplicate resolution | exact repeats after outages | C1 (SF14) |
-| 16 | Identity normalisation | the June 2026 renumbering | the crosswalk (SF15) |
-| 17 | Netting | the levy in force netted out of the margin | the standard (SF2) |
-| 18 | Dimensional units | cents a litre in the log, dollars a litre in the rack file | units in the data and the rack notes |
-| 19 | Code and status semantics | brand codes, rack product codes | the brand register and the rack notes |
-| 20 | Integerisation | findings are counts | none needed |
-| 21 | Clause scope | the inquiry rule reads the previous change only | the standard's inquiry sentence |
-| 22 | Forward window contents | the 2027 inquiry examines the brand the 2026 change names | the standard |
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | every officer holding an X-ray endorsement on 30 November 2026 | filed (SCS-04 section 4); SF2 |
+| 2 Unit of account | the officer | filed |
+| 3 Attribution window | the screening year, 1 December 2025 to 30 November 2026 | filed (SCS-04 section 3); SF1 |
+| 4 As-of dating | each projection by its Sydney date | filed (Sydney time throughout); SF1 |
+| 5 Version basis | the TIP export, library release 1.0, the register as exported 1 December | one version shipped |
+| 6 Denominator | the officer's first showings in the year | forced by the data (SF3, SF4) |
+| 7 Weighting | each first showing equally | C1: category weighting files the same officers (SF5) |
+| 8 Window length | twelve months | filed |
+| 9 Boundary inclusivity | 1 December and 30 November inside | filed |
+| 10 Rounding path | detection compared with 80 per cent unrounded | C2: no officer within 3.3 points (SF12) |
+| 11 Tie-break | none needed | C2 (SF12) |
+| 12 Maturity and censoring | none: the log runs to 30 November and the year is closed | C1 |
+| 13 Order of operations | conform, link images to objects, order each officer's showings, read the year | C1 |
+| 14 Row order | by time within officer | C1: the export is time-ordered; ties at one second never share an object |
+| 15 Duplicate resolution | the re-sent D3 day is exact | neutral (SF7) |
+| 16 Identity normalisation | OP1 and OP7 logins to staff numbers; image numbers padded | the login register and the catalogue; neutral (R2) |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | per cent; hours; bags | filed |
+| 19 Code and status semantics | HIT and MISS; GUN, KNF, IED, OTH against category names | the export's own codes; the catalogue's names |
+| 20 Integerisation | counts of officers and bags | filed (whole officers, nearest thousand bags) |
+| 21 Clause scope | currency covers officers endorsed for the whole month; the annual assessment covers the endorsed on 30 November | filed (SCS-04 sections 4 and 5); SF8 |
+| 22 Forward window contents | X-ray duty from 1 January 2027 for the officers below standard | filed (SCS-04 section 4) |
 
 ## Literal reader
 
-Executing the standard word for word: the daily price, the margin, the windows, the examined stations, the false
-discovery rate and the inquiry rule are filed and execute to one set of numbers; the finding sentence asks whether a
-station's margin rose across the change by more than it would have had the levy not changed. The record shows every
-area's margins moving between 28-day periods by up to about 1.4 cents a litre with no levy change, so the literal
-counterfactual is that movement, measured from the stations' own changes at dates when the levy did not move or from
-same-area competitors at the change; a day-to-day standard error measures something else, and holding the false
-discovery rate at 5 per cent is impossible with it (the same procedure finds about three stations in ten at any date).
-Every null that holds the rate (SF7) finds the same stations within a share bin, so every literal reading lands on
-Tallis; the easy answer comes only from the easy null on the same estimand.
+Executed word for word, SCS-04 asks for each endorsed officer's probability of detecting a prohibited item carried in a
+passenger's cabin bag over the screening year and takes off X-ray duty every officer below 80 per cent. Nothing filed
+says how the probability is estimated. A literal reader who takes every projection as a fresh test files three
+officers; one who asks what each projection measures finds that an object already shown is recognised, that a
+passenger's item is never one the officer has been shown, and files the ten. Every licensed estimator on first showings
+files the same ten.
 
 ## Oracles
 
-- The record's own changes at dates with no levy change: they show the default path finding about three stations in
-  ten at any date and the golden's null finding none; no shipped figure states either, and the record is the same on
-  every path.
-- The bureau's weekly price bulletin (area average prices, a distractor): ranks nothing on pass-through and ties on
-  no path.
-- No published pass-through figure, finding or share ships.
+none: no control, published figure, certified rate or reconciliation column confirms either reading; the TIP manager's
+settings state a projection probability and nothing about results, and no file reports an officer's detection.
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling and its effect |
+|---|---|---|---|
+| UTC timestamps against a Sydney-time standard | the CT TIP manager | TIP export | the year read on UTC dates; the call unchanged (SF1) |
+| OP7 logins before the 1 March 2026 server merge | the international TIP server | TIP export, login register | OP7 rows unmatched and dropped; the call unchanged (R2) |
+| image numbers without a leading zero on the international server | the international TIP server | TIP export | rows unmatched to the catalogue and dropped; the call unchanged (R2) |
+| D3's 17 February 2026 records sent twice | the TIP manager's resend after an outage | TIP export | kept twice; the call unchanged (SF7) |
+| category codes against category names | the TIP manager and the library manager | TIP export, catalogue | read as different categories; only R1 moves |
+| roster times local, unit counts in UTC | the rostering system, the CT units | roster, unit counts | ask hazards only (SF10) |
 
 ## Ask sheet
 
-| Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
-|---|---|---|---|---|---|---|---|---|
-| C, each brand's share of examined stations found | 7, nearest ten per cent | the call's case, one result per candidate | the Commissioner sees why one brand and not the six others | none: the construction layer (the decisive null) | none | price log, rack prices, levy schedule, register, crosswalk, standard (6 files, 12 columns) | the default path's shares (every brand off its bin: Harbourline 100 against 0, Tallis about 50 against 30, the others 40 to 60 against 0); the answer | the monitor's own findings table |
-| V, litres of regular sold at the stations carrying each brand in January, February and March 2026 | 21, thousands of litres | the stakes of each candidate's case: the litres over which the 2026 rise was passed on | the inquiry notice states the brand's volume; the Commissioner weighs the cases | D7, survey reference numbers reissued: a number freed when a dealer closed between April and early June 2026 is given to a station that had traded all along but joined the frame from August, so the frame snapshot names the new holder (with a brand in every month) while the January to March returns belong to the closed station, which only the return's site address, the frame's joining date and the register's closed stations show (a dealer's return names its operator's business, never the brand) | revisions (the latest revision of a return supersedes); late returns processed in the next month (reference month against processing month); rebrandings effective on the first of a month (brand for the month) | survey returns, survey frame, register (stations, brand history), brand register, notes (5 files, 14 columns) | every revision summed by processing month on today's brands (every brand off); latest revision by reference month through today's frame (every brand off by the reissued stations' litres); returns dropped where the frame holder joined after the month (every brand off); the answer | a sales survey frame reuses freed reference numbers, and a monthly return carries the station's name as the operator typed it |
-| P, stations each brand prices itself on 1 December 2026 | 7, counts | the scope of an inquiry into each candidate: the stations whose pump prices the brand sets | the notice's information request goes to those stations | D3, two meanings one column apart: the register's ownership column says who owns a site, not who sets its price (commission agents are dealer-owned and brand-priced, company-owned dealer-run sites are dealer-priced); the November submission log shows the brand's pricing desk pushing its stations' prices through the API at the same minutes of the day (its push times) | API submissions from dealer groups and a POS vendor (the API channel is not the brand); stations moved from brand to dealer pricing in October; rebrandings (shared with V) | submission log, register, brand register, notes (4 files, 9 columns) | the ownership column (every brand off: 26, 14, 11, 9, 10, 6, 7 against 27, 15, 13, 10, 8, 9, 5); every station with an API submission (every brand two over: dealer groups and a vendor); company-owned stations with API submissions (five or more brands off); the answer | a price-reporting platform records each change's channel and minute, and a register records ownership, not pricing |
-| Chart, litres by brand and month | 4 named parts | the exhibit of V on the memo's second page | the Commissioner reads the stakes at a glance | inherits V's device | inherits V's hazards | V's path | V's stops on every bar | a regulator's standard exhibit |
+Two asks on records the call never reads (the roster, the payroll leave export, the units' hourly counts and the unit
+register), both owed by SCS-04's own reporting sections.
 
-- **Main population zero-counts:** no survey row, frame row, submission-log row or ownership value is read by the main
-  call; the 2026 rebrandings change no examined station's brand on 1 January 2026 (asserted); asserted by count in
-  `checks.py`.
-- **Hazard table:** rebrandings, read at today's brand, move V for the brands involved (Tallis, Wexcombe and Garrow in
-  every month, Pellow and Oxbury in January, asserted cell by cell) and P's 1 December counts; revisions and late
-  returns move V in every month they touch; the September and October changes of pricing (a Tallis commission agency
-  to a dealer, a Strathlowe company site leased to a dealer) move P's ownership stop; the dealer groups' and the
-  vendor's API submissions move P's channel stop for every brand.
-- **Referee:** none; the survey and the submission log tie to nothing the call reads.
+**Ask A, for each month from December 2025 to November 2026, how many endorsed officers fell short of the standard's
+20 hours of X-ray time (12 figures, whole officers).** Home: SCS-04 section 5, the monthly currency report.
+- Primary device (D6, cardinality): X-ray time is the officer's lane time divided by the officers working on the lane at
+  each moment, and the roster's rows on a lane-day start and finish at different times (late joiners, early leavers),
+  so the divisor changes inside a block; one divisor per roster block files 10, 7, 14, 7, 11, 11, 10, 10, 8, 8, 8, 8.
+- Second device (D4, absence in a file no habitual join reaches): an officer on Personal leave in the payroll export is
+  still on the roster and was not working, so they take none of the lane and their colleagues' shares rise; leaving
+  leave out files 17, 16, 20, 11, 16, 15, 15, 19, 15, 14, 12, 13 (eight months wrong).
+- Hazard: no division at all files zero every month.
+- Golden: 19, 17, 20, 14, 16, 17, 16, 17, 15, 15, 12, 16 (equal to the clean truth, asserted).
+- Pin test: the sentence pins the population (endorsed for the whole month), the unit and the standard's definition of
+  X-ray time; no pin names a block, a leave record or a divisor.
 
-| Ask figures | Cracker's path | Cracker's value | Verdict |
-|---|---|---|---|
-| C shares by brand | the golden's null | right | outside |
-| V litres by brand and month | latest revision, reference month, the frame's holder, brand for the month | every cell off by a closed dealer's litres, carried silently to the new holder's brand | miss |
-| P stations priced by the brand | the register's ownership column | 26, 14, 11, 9, 10, 6, 7 against 27, 15, 13, 10, 8, 9, 5 | miss |
-| Chart values | V's cracker path | every bar off | miss |
+**Ask B, the passenger bags each CT lane screened in each quarter of the screening year (28 figures, nearest
+thousand).** Home: SCS-04 section 6, the year-end throughput return.
+- Primary device (D7, the true key elsewhere): the units' counts are keyed by serial and the unit register keeps only
+  where each unit stands now, while KX6-0413 stood on D2 until 2 March 2026, KX6-0416 on D5 until 19 April and on each
+  lane for its two retrofit days, and KX6-0590 on D2 only from 5 March; placing units by the register misses 17 of 28.
+- Second device (D5, scope): after each unit's retrofit it counts its daily performance-test images in the hour before
+  the lane's first rostered start, which are not passenger bags; with every unit placed right and those counts kept, 12
+  of 28 figures are wrong.
+- Hazard: counts in UTC hours against Sydney quarters.
+- Golden: equal to the clean truth lane by lane and quarter by quarter (asserted), and to an independent exhaustive
+  placement in verify.py.
+- Pin test: the sentence pins the lanes, the quarters and passenger bags (SCS-04 section 3); no pin names a serial, a
+  retrofit or a test.
 
-Mirror leakage: about 6 per cent of the ask weight (the chart's title and axis parts; every share, litre and count
-misses on the default path).
-Pair ceiling: about 36 (the cracker at about 58 with the call, the shares and the chart's presence parts, the mirror at
-about 15).
+Main population zero-counts: the TIP export, the catalogue, the login register and the officer register carry no ask
+device row (asserted); the call reads none of the ask files (asserted from the code).
 
-## Build record
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, 8 of 12 months moved by personal leave | shares each lane among the officers rostered at each moment; the payroll leave export not joined | miss |
+| B, 12 June-to-November figures carrying pre-opening test counts | places every unit right and keeps every hourly count | miss |
 
-- Generator: `world.py`, `market.py`, `analysis.py`, `survey.py`, `records.py`, `docs.py`, `deliver.py`, `checks.py`,
-  `verify.py`, `metadata.py`, `build.py`, `postprocess.py`; `python3 task186/generator/build.py` builds the pack, the
-  goldens, `metadata.json` and `generator/figures.json`, runs the checks (1,289 assertions) and the verifier, rebuilds
-  into scratch for the byte comparison and cuts `target.zip`.
-- Pack: 14 files in 5 formats; the price-change log 199,123 rows; distractors the weekly price bulletin and the
-  Commissioner's price complaints register.
-- Mess neutrality (R2), each asserted to file Tallis at 30 per cent and every other brand at 0: the daily window read
-  in UTC; the received time read as the effective time with every outage repeat kept; old station numbers read as
-  stations of their own; the rack interpolated over unpublished days; today's brand for the brand at the change; the
-  margin with tax; the noon price, the mean posted price or the 24-hour average for the daily price.
-- Layer 1 inventory: the platform stores every change in UTC (log, submissions; misread as local, the window shifts
-  four or five hours); the platform renumbered stations on 8 June 2026 (log, register, crosswalk; misread, a station
-  splits in two); the terminal publishes on business days only (rack file; misread, weekends have no rack); the
-  platform re-sent queued changes after six intake outages (log, operations log; misread, a change counts twice); the
-  register dates every brand change (register; misread, a station takes today's brand). Survey revisions and late
-  returns, the reissued survey references and the register's ownership column sit on the asks' rows only.
+Pair ceiling: 52.6 ((38 + 7 + 55 x 0.500) and (5 + 7 + 55 x 0.375), averaged)
+Mirror leakage: 37.5 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
 
-## Judge record
+## Architecture 1 record (re-rooted 2026-11-01)
 
-- Pass 1 (stage 4): DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. The call (Tallis, 28 of 92, 30 per cent, every other brand
-  0) reproduced under every null the judge tried (own-history changes with or without the plus one, 2025-only or
-  2026-only dates, one or two-sided, a normal z, a robust cross-sectional z, Bonferroni); the naive t-test or a raw
-  margin-rise count names Harbourline, judged not defensible. All 21 litre cells and the seven scope counts
-  reproduced. Findings: a closed Wexcombe station's open brand row made a literal read examine 370 (fixed in the data:
-  the register ends a closed station's brand, the notes end a price at the closing day; 369 asserted on the literal
-  read); "every one a station Tallis prices itself" was false in November for a commission agency since passed to its
-  dealer (the component now states the shares; the memo says Tallis priced them at the change). Left open by design:
-  "prices itself" is read from the November push times, not the register's ownership column (the ask's device; the
-  register's About sheet defines site_ownership as who owns the site); the partial-month March station and the
-  reassigned references are the asks' Layer 1, resolved from the records. Gate G statistical_rigor,
-  analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical (the swap line rewritten to answer
-  the swap test from the fuel market's own cycles).
-- Pass 2 (the one re-judge): DETERMINISTIC, FIX_NOW on one prompt clause. 369 examined, 28 found, all Tallis, every
-  null variant the same (own-history dates before or after only, the plus one or not, a pooled null, an area-median
-  control); the naive routes name Harbourline (all its stations up; Welch 46 of 52). All 21 litre cells and the seven
-  scope counts reproduced, the push-time split exactly 0 or 1 per station. The clause: the litres ask did not say how a
-  station that opened or closed during a month counts (a Harbourline dealer closed on 16 March, a Wexcombe station
-  opened on 9 March); the prompt now says it counts in full under the brand it traded that month, the workbook notes
-  say the same, no figure moved. Gate G statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass,
-  decisive step analytical.
-
-## Pre-ship check
-
-- Call: the 2027 pass-through inquiry examines Tallis Petroleum: 30 per cent of its examined stations found (28 of 92),
-  no station of the other six brands; the stations found are Tallis's company-run sites and commission agents, which
-  Tallis priced itself at the change, in Hollinsby, Greyford, Duncarrow and Marrowby, at about 3 cents a litre above
-  full pass-through.
-- Default path: Welch per station with Benjamini-Hochberg ends on Harbourline at 88 per cent (Pellow 70, Tallis 40);
-  every within-window variant ends on Harbourline; the masked or powerless routes find no station; every null that
-  holds the error rate files the same call and shares (28 or 29 Tallis stations).
-- Gates: 1,289 checks with the R1 to R3c block, independent verifier from target/ alone, two byte-identical builds,
-  figures_check 52 figures, precut 49 checks, voice-check PASS, scrub clean (target and golden), leak.py REVIEW (no
-  LEAK), guard surface promotes task185 (back to back, a different domain and driver, the shared gap key only) and
-  task184 (two apart, decision type only), heart WARN (Anomaly Detection overuse only, nearest driver 0.06).
-- Deliverables: pass_through_inquiry_2027.docx (page 1 the call, the explanation, the findings table and the scope
-  paragraph; page 2 the chart of litres by brand and month), inquiry_scope_2027.xlsx (seven brands: stations priced by
-  the brand on 1 December 2026, litres in each month, notes); target.zip from the final rebuild, 14 files.
-- Leak: four isolated reads (the last on the prompt's month clause), no decisive-step sentence, no ranking file,
-  question 6 analytical; the complaints attractor, the batch of closures and the open brand row fixed on the way.
-- Judge: pass 1 DETERMINISTIC, SOLUTION_WRONG, FIX_NOW (369 against a literal 370, a false component claim), fixed in
-  the data and the write-up; pass 2 DETERMINISTIC, FIX_NOW on one prompt clause (the month rule for the litres), applied.
-- Card current: answer, spine rows 199,123, stump and driver at the built values.
-
-## Leak record
-
-- `leak.py --asof 2026-11-16`: REVIEW, no LEAK. Sweep 4: the extract notes carry 6 and the standard 11 of the stump
-  paragraph's terms, all the monitor's ordinary vocabulary (station, change, margin, register, standard, false
-  discovery); neither names a cycle, a reference period or a null (asserted silent in `checks.py`). Sweep 6: the survey
-  returns name four brands only as the registered owners filing for their company-run sites, beside litres; the
-  register names every brand in trading names beside dates; neither ranks anything on pass-through.
+A provincial statistics bureau's fuel price monitor (survey-research-official-statistics / anomaly-detection, Canada):
+which brand the Fuel Price Commissioner's inquiry examines before the 1 January 2027 carbon levy rise, each station's
+28-day margin change across the January 2026 rise tested for excess pass-through with the false discovery rate held at
+5 per cent. Golden Tallis Petroleum (30 per cent of its examined stations found); the default path, a within-window
+test of each station's margin change, filed Harbourline Fuels, whose areas' price cycles restored over the turn of the
+year. Shipped 2026-10-13 (pending review, no portal result). Measured spent on 2026-10-21 at stage 2: the decisive step
+was the scale a one-dimensional per-station statistic is read against, so the golden's 28 stations were the top 28 by
+the margin change and seven of fifteen data-free cuts filed the call; the three dials that move the gap each traded
+Gate F against Gate C one for one. Re-rooted 2026-11-01 at the Batch 3 queue reset.
 
 ## Tried and rejected
 
@@ -458,3 +430,34 @@ about 15).
 - **(2026-10-25, measured) Where ask V's 21 of 21 came from, and what is still owed.** The leak is ask V alone: asks C and P held at 0 of 14 together (the shares and found-counts ride the missed call, and the priced-by-brand counts held outright), while ask V's litres went 21 of 21. Four candidate replacements for its D7 primary were worked and refused, each for a stated reason: a dealership-grain return needing an allocation weight (no exact remedy, and allocation is not determinate); a multi-site dealership whose second station is off the frame (an unmatched join, which the hygiene battery runs); a four-weekly trading period against the calendar month (the apportionment is a method choice, so the ask stops being determinate); and a rejected-revision device evidenced by a control total (a control that ties only under the golden is ban 3, an oracle). **The one that survives screening is the sample-grossing device:** a monthly fuel sales survey is a stratified sample, the frame carries a stratum rather than a weight, and the stratum populations sit in the published bulletin, so the grossing factor has to be reconstructed as population over sample count before any figure appears. Its remedy is multi-purpose under readability test 7 (a bulletin states its coverage and a frame records its strata for reasons entirely their own), no hygiene sweep asks whether a file is a census, and it moves all 21 figures per brand and month. It needs the ask's wording loosened from "the fuel sales survey's litres" to "the litres", keeping all 21 figures, the unit and the rounding, because as worded the raw reported sum is the defensible reading and the ask must stay determinate.
 - **(2026-10-25, measured) Rubric pass 1 is measured INEFFECTIVE, and that is the useful result.** A fresh blind reader on the de-narrated pack scored **34 of 59, 57.6 per cent, identical to the first run**, with the call missed again on the same default-path shares. It found the primary unaided: it listed all eight reissued references by number (FS-17107, 22715, 33539, 38736, 41398, 42271, 42751, 47901), matched returns on `site_address` rather than `survey_reference`, and gave its own reason, that the references were reissued and the reporting name is the operator rather than the brand. It also handled the revisions (about 70 pairs in the quarter), the 1 February Pellow to Oxbury move at KEL-0158 and KEL-0170, and 58104's 16 March closure counted in full. So the narration was never what handed ask V over, and the real defect is structural: **noticing that eight references each serve two stations is the same act as deciding to join on the address, because the address is the only other identifier on the row.** Discovery and remedy collapse, and the hygiene battery does the discovering. Filed as `supplemental-stumping` 1.0. The narration stays cut, since it was ban 1 regardless, but pass 2 must replace the primary and the sample-grossing device is the one that separates discovery from remedy: learning that the frame is a sample does not tell you the grossing factor, which has to be rebuilt as stratum population over sampled count before any figure appears.
 - **(2026-10-25) The sample-grossing device is refused on determinism, and pass 2 stops here.** Worked through before any code: if the frame is a stratified sample carrying a stratum, with the stratum populations published in the bulletin so the factor is rebuilt as population over sampled count, then two estimators are both defensible on the shipped pack and give different answers. A Horvitz-Thompson grossing weights each sampled return by its own stratum's factor and sums by brand; a post-stratified grossing takes the mean litres of each brand's sampled stations within a stratum and multiplies by the count of all that brand's stations in it, **which the register supplies, because the register lists every station and its brand**. The ask would then not be determinate, which the asks must be whatever else they may turn on, and it is `stumping` 1.1c (the grouping dichotomy) reappearing inside the ask layer: the remedy is a choice among estimators, so the data either separate them, making the choice a reflex, or they do not, making the ask forked. Closing it by construction needs single-brand strata, which is a degenerate design. **The general lesson, worth more than the device: a remedy that is an ESTIMATOR cannot satisfy 1.0 and stay determinate at the same time; the remedy has to be a RECONSTRUCTION, a definition applied to records with one correct form**, which is what the lane's two lowest-leaking ask layers both are (a weekly profile fitted to interval-censored windows under its own fixed point, and a per-regulation delay attribution over flights that operated). The one reconstruction-shaped candidate left for this ask, the returns reporting year-to-date rather than monthly litres so the month is a difference of consecutive returns, with the work sitting in a missing month, a revision and a reference handed over mid-series, is recorded here for a later pass and not built now: it rewrites every litres value in the file, and this build already measures a pair near 43.7, under the 50 bar, with every gate green and its pack reproducing. Pass 1's cut stands, because the narration was ban 1 regardless.
+- (2026-11-01, Batch 3 re-root) Architecture 1, the fuel price pass-through monitor, re-rooted at the queue reset with no
+  portal result: its decisive step was a one-dimensional outlier scale (measured above), and the world is closed under
+  one architecture per world.
+- (2026-11-01, draw) An emergency-department surveillance baseline aligned on each area's school return, the field's
+  Farrington baseline taken on calendar weeks: the WHAT cannot file the expected count without naming the school clock
+  (rule application) or leaving it to "comparable weeks" (a fork), so the decisive step sits in the comparison, which
+  is WHAT.
+- (2026-11-01, draw) Interviewer falsification found through informative back-check non-response: fabricated interviews
+  are wrong records, so catching them is a planted defect (task125's ruling), and the estimator for the unreachable
+  share is a model of the verification.
+- (2026-11-01, draw) Signals passed at danger per approach at red, the red approaches rebuilt from consecutive trains'
+  headways: the exposure built from one unit meeting another's presence is task181 architecture 4's insight by the
+  abstraction test, and the opportunity population would have to be filed (WHAT).
+- (2026-11-01, draw) Resistance prevalence under cascade susceptibility testing (the second-line drug tested only on
+  isolates resistant to the first): the decisive step settles the denominator (WHAT), and the plainest count over all
+  isolates lands the golden, an inverted ladder.
+- (2026-11-01, draw) The probe card at gap population with pattern E: `test.same_puzzle_older` and
+  `test.same_driver_older` against twelve builds; and population with G10, G6, G14 or G2 decisive: `test.same_driver`
+  inside the batch. Redrawn to gap time with G10 decisive, the honest reading of a structure carried by each officer's
+  own history.
+- (2026-11-01, prototype) A library of 600 objects with competent officers from 0.87: the masked full-time officers'
+  raw rates sat below every recertified officer's (an interval at the bottom of the sort, the shock test failing) and a
+  competent casual officer came within one point of the line; the library cut to 360 objects, the memory multiplier to
+  0.12, competent officers raised to 0.89 and the deficient new hires made casual.
+- (2026-11-01, build) Bags drawn for lane slots with nobody rostered on: a lane with no officer is not screening, and the
+  counts sat outside the roster's hours; unstaffed slots now count nothing.
+- (2026-11-01, build) Performance-test images timed from the lane's scheduled opening: on days a lane's first block was
+  short the test fell inside rostered time; the test now runs before the first rostered start.
+- (2026-11-01, build) An edge-distance assertion on the lane-quarter bag counts: exact counts with one licensed handling
+  have no edge to clear; replaced by convergence assertions (every passenger bag inside rostered time, every test hour
+  before it).

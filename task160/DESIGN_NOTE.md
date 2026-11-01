@@ -201,7 +201,7 @@ the three.
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | a review | one overridden high-severity alert | one per order or message | same call (no order carries two QT alerts) | Schedule B 2.1, "One overridden alert is one review." |
+| SF1 | a review | one overridden high-severity alert | one queue task (an order's alerts at one signing) | 400 (395.0: tasks lost only when every alert they carry is lost) | Schedule B 2.1, "One overridden alert is one review", and 2.3, a task carries every alert overridden on its order at that signing and signing it off signs off each review |
 | SF2 | the 13 weeks | 4 January to 4 April 2027, plan weeks 4 January to 29 March | calendar quarter | same call | CR-2291 names the dates; the plan's weeks align |
 | SF3 | adult wards | all eighteen units; the pilot three change nothing | the fifteen going live only | same call | the register: the pilot units run the package live already |
 | SF4 | without the go-live | the package stays in background mode | the package off | same call | background mode displays nothing (bulletin section 4) |
@@ -290,16 +290,22 @@ reported by the Quillfield department in which the alert fired.
   who splits sessions at the edge files the same hours, asserted); zero-padded alert references; the platform's handle
   minutes, which on a re-claimed task run from the first claim (a stress row: summing them misses all fifteen).
 
-**Ask B, reviews signed off in each shift of each month, July to September 2026 (9 figures, whole reviews).** Home: the
-shift mix the added reviews are staffed into. Filed: Schedule B 2.1 (one overridden alert, one review) and 3.1 (shift
-hours, month and shift of sign-off).
-- Primary device (D6, a grain below the row): a queue task is one message, an order's alerts overridden at one signing,
-  and carries the first alert's reference only; 9 per cent of tasks carry two or more alerts, found only by counting
-  each task's order and signing in the history.
-- Hazards: UTC against Eastern shift hours (every cell moves); returned sessions, which are not sign-offs.
+**Ask B, reviews signed off for all of Quillfield's adult wards in each shift of each month, July to September 2026
+(9 figures, whole reviews).** Home: the shift mix the added reviews are staffed into. Filed: the prompt (all adult
+wards), Schedule B 2.1 (one overridden alert, one review), 2.3 (a queue task carries every high-severity alert
+overridden on its order at that signing, and signing it off signs off each review) and 3.1 (shift hours, month and
+shift of sign-off).
+- Primary device (D2, a label kept across a silent switch): Corvane moved the QRMC queue to its new platform at 06:00
+  on 3 August 2026, and the rows it wrote carry Eastern wall-clock times under the same `_utc` columns and the same UTC
+  marker; only reading each row's received stamp against its alert's local time in the history (four hours ahead, or
+  level) tells the two clocks apart, and reading every stamp as UTC misses every August and September cell.
+- Reconstruction (filed by 2.3, executed by any careful reader): each task carries the first alert's reference only,
+  and 9 per cent of tasks carry two or more alerts, counted from the task's order and signing in the history.
+- Hazards: returned sessions, which are not sign-offs; taking every stamp as Eastern misses every July cell.
 
-Pin test: the asking sentences and Schedule B pin the unit (one overridden alert), the shifts, the month of sign-off,
-desk time and the department; no pin names a decant, a wing, a message or a bundle. The call's row population (the
+Pin test: the asking sentences and Schedule B pin the scope (all adult wards), the unit (one overridden alert, a task
+signing off each alert it carries), the shifts, the month of sign-off, desk time and the department; no pin names a
+decant, a wing, a platform move or a clock. The call's row population (the
 history on the going-live units, the background log, the pilot rows, the census and the plan) carries zero device rows:
 the devices live in the queue export and the location map.
 
@@ -307,10 +313,10 @@ the devices live in the queue export and the location map.
 |---|---|---|
 | A, the ten decant wards | ward read off the point of care through Corvane's location map | miss |
 | A, every ward, handle minutes (stress row) | the platform's handle minutes summed | miss |
-| B, all nine month-shift cells | one review per signed-off task | miss |
+| B, the six August and September cells | every queue stamp read as the UTC its column names | miss |
 
-Pair ceiling: 40.0 ((38 + 7 + 55 x 5/24) and (5 + 7 + 55 x 5/24), averaged)
-Mirror leakage: 20.8 per cent of ask weight
+Pair ceiling: 46.8 ((38 + 7 + 55 x 8/24) and (5 + 7 + 55 x 8/24), averaged)
+Mirror leakage: 33.3 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Surface screen
@@ -475,3 +481,12 @@ world is closed. Its leak report is kept as `leak_check_report_arch1.md`.
   mix reads as a hospital's; the queue salt was rescanned for the ward hours' rounding margins.
 - The vendor bulletin's rule table first broke the rule ids and the severity words mid-word at the page width
   (`pdftotext -layout`); its columns were widened.
+- Judge round 1 (target.zip 2fd81ca5): main call, desk hours, Gates F, G (analytical_non_defect) and H reproduced;
+  FIX_NOW on Ask B only. A signed-off review was unfiled: a count of signed-off tasks gave 519/377/129, 463/391/117,
+  494/380/120 against the golden's 562/417/143, 504/415/130, 532/417/124, and the task reading puts the main call at
+  395.0 (400); Schedule B 2.3 now files that a task carries every alert overridden on its order at that signing and
+  that signing it off signs off each review, both readings asserted. The shift table's scope was open (the fifteen
+  going-live wards give 477/360/126, 428/354/111, 461/363/97): the prompt now says all adult wards. CR-2291 was dated
+  21 October and attached a register as of 26 October: redated 26 October. Filing 2.3 hands the bundle count to any
+  careful reader, so Ask B's primary device is now the queue platform's silent clock switch on 3 August (pair 46.8,
+  mirror 33.3).

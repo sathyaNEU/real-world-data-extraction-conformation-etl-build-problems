@@ -1,57 +1,48 @@
 {
  "task": "task186",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics / anomaly-detection (secondary economics-econometrics)",
+ "status": "BUILD",
+ "domain": "human-factors-ergonomics / safety-incident-error-analysis / anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "The default path tests each station's 28-day margin change against its own day-to-day variation, which cannot see that every area's margins cycle over five to nine weeks, so it finds nearly every station in the two areas whose cycles restored around the turn of the year and sends the inquiry to Harbourline Fuels; a null from the stations' changes between periods when the levy did not move holds the false discovery rate and leaves Tallis Petroleum's company-run stations.",
- "architecture": 1,
- "loops": 1,
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-01",
+ "stump": "A competent analyst takes each officer's TIP hit rate over the screening year and withdraws three casual officers, SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is reading the hit rate as detection when four in five of a full-time officer's projections show an object they have already been shown and told was a threat, which officers detect 99.5 per cent of the time, so six full-time officers who detect only 56 to 74 per cent of objects new to them clear 80 per cent on recognition.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-13"
+  "exit": null,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK)",
-  "reader": "wave 8 audit: call landed, 48 of 60 ask figures, Gate F failed"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (objective overuse only)",
-  "nearest": "task121 v3 0.06"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC, SOLUTION_WRONG (FIX_NOW, fixed); pass 2 DETERMINISTIC (FIX_NOW: one prompt clause, applied)",
-  "disposition": "FIX_NOW applied",
-  "report": "determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [
-  {
-   "date": "2026-10-13",
-   "portal": "author audit: 10/10 alignment",
-   "repair": "alignment",
-   "commit": ""
-  },
-  {
-   "date": "2026-10-21",
-   "portal": "wave 8 audit: call landed, 48 of 60 ask figures, Gate F failed",
-   "repair": "design",
-   "commit": ""
-  },
-  {
-   "date": "2026-10-25",
-   "portal": "in-house blind reader, not a portal result",
-   "repair": "rubric",
-   "commit": "pending",
-   "note": "ask V measured 21 of 21 by a blind reader; the pack's narration of its revision and reference-month handling removed; the sample-grossing primary designed and four alternatives refused"
-  }
- ],
- "resume": "/fix-rubric is PAUSED after pass 1, deliberately. Pass 1 (the extract notes' narration of ask V's revision and reference-month handling, cut) rebuilt clean and is committed, and a fresh blind reader measured it INEFFECTIVE at an identical 34 of 59, 57.6 per cent. Pass 2's sample-grossing device is REFUSED on determinism, in the note: the register lists every station's brand, so a Horvitz-Thompson and a post-stratified grossing are both defensible and differ, which is stumping 1.1c inside the ask layer. The general finding is that a remedy which is an ESTIMATOR cannot be both unreachable and determinate, so the remedy must be a RECONSTRUCTION. The one reconstruction-shaped candidate left (returns reporting year-to-date, so a month is a difference of consecutive returns, with the work in a missing month, a revision and a reference handed over mid-series) is recorded and NOT built, because it rewrites every litres value and this build already measures a pair near 43.7, under the 50 bar, with every gate green and the pack reproducing. State: SHIPPED, delivered 10-13, pending review, call HELD. STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call HELD (filed Harbourline against a golden of Tallis, landing cell for cell on the designed default path), asks 34 of 59 at 57.6 per cent, so the pair is near 43.7 and already under the 50 bar. Owed: /fix-rubric pass 2: replace ask V's primary with the sample-grossing device. Prior resume line follows. /fix-rubric pass 1 done and committed: the extract notes no longer narrate ask V's revision and reference-month handling, rebuild clean (1,289 assertions, verify OK, figures_check 51, voice-check PASS, leak.py REVIEW unchanged, freeze rubric PASS). MEASURED STATE: the call HOLDS (0 of 1, the reader filed Harbourline against a golden of Tallis and landed cell for cell on the designed default path, HBL 90 PEL 70 STL 50 GAR 50 OXB 40 TAL 40 WEX 40), asks 34 of 59 at 57.6 per cent, so the pair is near 43.7 and already under the 50 bar but over the 40 target. The whole leak is ask V, 21 of 21; asks C and P held at 0 of 14. PASS 2 OWED: replace ask V's D7 primary with the sample-grossing device (the frame carries a stratum, the stratum populations sit in the published bulletin, so the grossing factor is reconstructed as population over sample count), which needs the ask's wording loosened from 'the fuel sales survey's litres' to 'the litres' with all 21 figures, the unit and the rounding kept. Four alternatives are refused in the note with reasons. A round-2 reader is measuring the de-narrated pack now.",
+ "returned": [],
+ "resume": "Stages 0 to 3 of architecture 2 (airport X-ray screening recertification, threat image projection) run by a builder agent; stage 4 (leak reader and determinism judge, together, medium) is the main session's next action, then ship.",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": null,
  "portal": null,
- "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md",
- "alignment_pass": "design note and card: the domain claim rests on the retail price cycle; the \"setting survives\" concession deleted",
- "architecture_spent": true
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "previous_architectures": [
+  {
+   "architecture": 1,
+   "world": "provincial statistics bureau fuel price monitor, carbon levy pass-through tested with the false discovery rate",
+   "domain": "survey-research-official-statistics / anomaly-detection (secondary economics-econometrics)",
+   "delivered": "2026-10-13",
+   "portal": "none (pending review when re-rooted)",
+   "fate": "spent 2026-10-21 (one-dimensional outlier scale, call landable from data-free cuts); re-rooted 2026-11-01 at the Batch 3 queue reset",
+   "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md"
+  }
+ ]
 }

@@ -21,7 +21,7 @@
 4. For each of the 3410 overridden high-severity alerts on those units in the base period, the chance it no longer reaches the desk: its own order or its interacting order carries a background duplicate-opioid alert (each removed at 49 per cent), or its own order a QT alert (removed at 42 per cent); 230 reviews lost.
 5. Scaled by the volume plan's admissions for the 13 weeks from 4 January 2027 over the census admissions in the base period (8,287 over 9,765): 491 added, 195 lost, net 296, about 300.
 6. Desk hours: every queue session closing 1 July to 30 September 2026 Eastern, claim to close (returned sessions included), each given the department of the alert its alert_ref names in the alert history; the point of care follows the bed, and five pairs of wards exchanged wings between 20 July and 14 September.
-7. Signed-off reviews, all adult wards: each signed-off task counted as the overridden high-severity alerts on its order at that signing (Schedule B 2.3), by the month and shift of sign-off in Eastern time; each queue row's clock is read off its alert, UTC until the new queue platform took over on 3 August and Eastern after.
+7. Signed-off reviews, all adult wards: each signed-off task counted as the overridden high-severity alerts on its order at that signing, as Schedule B files a task, by the month and shift of sign-off in Eastern time; each queue row's clock is read off its alert, UTC until the new queue platform took over on 3 August and Eastern after.
 8. Recommended planning for about 300 more reviews in the 13 weeks.
 
 ## 4. Deliverable Answers
