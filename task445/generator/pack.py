@@ -23,7 +23,7 @@ FILES = {
     "stats25": "p2_question_statistics_2025.xlsx",
     "markers": "aeb_markers_2026.csv",
 }
-DISTRACTORS = ["predicted", "stats25"]
+DISTRACTORS = ["predicted", "stats25", "reviews"]
 
 
 def _csv(path, header, rows, crlf=False):
@@ -50,8 +50,12 @@ def marks_rows(world):
     base = dt.datetime(2026, 11, 9, 22, 0)
     for x in world["cands"]:
         code = old.get(x["centre"]) or x["centre"]
+        cand = x["no"]
+        if "prev_no" in x:
+            cand = x["prev_no"]
+            code = old.get(x["prev_centre"]) or x["prev_centre"]
         if x["absent"]:
-            rows.append(dict(cand=x["no"], centre=code, q="", mark="", credited="", event="", marker="",
+            rows.append(dict(cand=cand, centre=code, q="", mark="", credited="", event="", marker="",
                              when=base + dt.timedelta(days=float(rng.random() * 16)), status="ABSENT"))
             continue
         final = {q: x["senior"].get(q, m) for q, m in x["marks"].items()}
@@ -59,11 +63,11 @@ def marks_rows(world):
         for q, m in sorted(x["marks"].items()):
             mk = markers[int(rng.integers(0, len(markers)))]
             when = base + dt.timedelta(days=float(rng.random() * 14), minutes=float(rng.integers(0, 600)))
-            rows.append(dict(cand=x["no"], centre=code, q=q, mark=m, credited="Y" if q in best else "N",
+            rows.append(dict(cand=cand, centre=code, q=q, mark=m, credited="Y" if q in best else "N",
                              event="FIRST", marker=mk["id"], when=when, status="MARKED"))
             if q in x["senior"]:
                 sk = seniors[int(rng.integers(0, len(seniors)))]
-                rows.append(dict(cand=x["no"], centre=code, q=q, mark=x["senior"][q],
+                rows.append(dict(cand=cand, centre=code, q=q, mark=x["senior"][q],
                                  credited="Y" if q in best else "N", event="SENIOR", marker=sk["id"],
                                  when=when + dt.timedelta(days=float(1 + rng.random() * 3)), status="MARKED"))
     rows.sort(key=lambda r: (r["when"], r["cand"], r["q"]))

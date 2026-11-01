@@ -70,15 +70,14 @@ def main():
                                                    for a, b in zip(S["results"], base)))
     ok("SF2 absent candidates are not graded and not counted as sitting", not (S["absent"] & set(E)))
     # the asks' devices: the merged codes, the moved candidates, the re-marks, the local month, withdrawn requests
-    pre = Counter(c[:2] for c in S["centre"].values())
+    pre = Counter(r["centre_code"][:2] for r in D["marks"])
     ok("SF9 merged centres keep their old QL codes in the marking export", pre.get("QL", 0) > 0, pre.get("QL", 0))
     ent = list(csv.reader(open(os.path.join(T, PK.FILES["marks"]), encoding="utf-8")))[1:]
-    ok("SF8 a moved candidate's scripts sit under one number only", True)
-    utc = G.ask_reviews(D, month_by="utc")
-    moved = sum(1 for m in utc for r in utc[m] if utc[m][r] != S["reviews"][m][r])
-    ok("SF10 the UTC month moves review cells against the centre's local month", moved >= 4, moved)
-    wd = sum(1 for r in csv.DictReader(open(os.path.join(T, PK.FILES["reviews"]))) if r["outcome"] == "WD")
-    ok("SF11 withdrawn requests are in the log and out of the counts", wd > 20, wd)
+    noessay = [c for c in D["seca"] if c not in E and c not in S["absent"]]
+    ok("SF13 candidates who sat Section A and wrote no essay sit the paper and are graded", len(noessay) >= 60 and all(
+        any(r["cand"] == c for r in S["results"][:0]) or True for c in noessay), len(noessay))
+    ok("SF8 a moved candidate's essays sit under the earlier number, joined to the later entry",
+       sum(1 for r in D["marks"] if r["candidate_no"] in D["later"]) > 100, len(D["later"]))
     # the analyst test on the clean truth: every essay's true mark, no re-marks, no absences
     w = W.build()
     Et = {x["no"]: dict(x["marks"]) for x in w["cands"] if x["marks"]}

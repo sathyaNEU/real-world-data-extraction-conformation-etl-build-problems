@@ -1,17 +1,20 @@
 # leak check, task445
 
-**Verdict: REVIEW.** 10 files read, 49 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 32 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: register, golden, decisive, completion, september, december, window, change, earlier, summers, october, back-test, records, literal, reading, sentence, population, version, provisional, counts, device, type-pooled, closed, second, family
+Stump terms swept: decisive, september, december, golden, marking, section, register, demand, essays, family, option, choice, back-test, registered, comparison, sentence, choosers, device, change, type-pooled, architecture, export, different, completion, version
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `heat_resilience_fund_2027_terms.pdf`: golden figure 589 appears: ...eaths Hollinsgate E08000951 828 Ashwold E08000952 589 Thornley Vale E07000961 304 Brinmoor E07000962 38...
-- **REVIEW** `heat_resilience_fund_2027_terms.pdf`: carries 14 of 16 distinctive words of the committed call: 'Designate Ashwold, Thornley Vale and Calderholt for the 2027 heat resilience grants; Hollinsgate, Brinmoor and Moorbridg'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `aeb_code_of_practice_2026.pdf`: carries 10 of 14 distinctive words of the committed call: "Scale Question 6 of the 2026 History Paper 2: raise every candidate's mark on it by 2 marks before the best two essays a"
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `heat_resilience_fund_2027_terms.pdf`: 7 of 25 stump-paragraph terms appear (register, september, change, summers, october, records); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `aeb_code_of_practice_2026.pdf`: 7 of 25 stump-paragraph terms appear (marking, section, register, demand, option, choice); read whether the document names the move
+- **REVIEW** `history_awarding_minute_2026.pdf`: 3 of 25 stump-paragraph terms appear (section, essays, option); read whether the document names the move
+
+## 6 ranking artifacts (INFO 1)
+- **INFO** `aeb_centres_register.csv`: names 3 of 6 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -21,8 +24,6 @@ Stump terms swept: register, golden, decisive, completion, september, december, 
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
-
-## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 

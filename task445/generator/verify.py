@@ -28,6 +28,12 @@ region = dict(zip(cen.centre_code, cen.region_code))
 region.update({o: r for o, r in zip(cen.merged_from, cen.region_code) if o})
 tz = dict(zip(cen.centre_code, cen.time_zone))
 tz.update({o: z for o, z in zip(cen.merged_from, cen.time_zone) if o})
+ent = pd.read_excel(os.path.join(T, "asc_history_entries_2026.xlsx"), sheet_name="Entries", dtype=str)
+cur = ent[ent["Entry status"] == "ENTERED"]
+later = dict(zip(cur["Previous candidate number"].dropna(), cur.loc[cur["Previous candidate number"].notna(),
+                                                                       "Candidate number"]))
+entered = dict(zip(cur["Candidate number"], cur["Centre"]))
+m["candidate_no"] = m["candidate_no"].map(lambda c: later.get(c, c))
 live = m[m.script_status == "MARKED"].copy()
 live["rank"] = (live.marking_event == "SENIOR").astype(int)
 live = live.sort_values(["candidate_no", "question", "rank", "marked_utc"]).drop_duplicates(
@@ -42,6 +48,9 @@ same("demand to one decimal", {q: "%.1f" % v for q, v in dem.items()}, FIG["dema
 raise6 = int(np.floor(dem["6"] + 0.5)) if dem["6"] >= 1.5 else 0
 same("Question 6 raise (marks)", raise6, FIG["call"]["raise_marks"])
 same("candidates who wrote all three", int(len(three)), FIG["all_three_candidates"])
+absent = set(m.loc[m.script_status == "ABSENT", "candidate_no"])
+sitting = sorted((set(wide.index) | set(sa.candidate_no)) - absent)
+wide = wide.reindex(sitting)
 w2 = wide.copy()
 w2["B6"] = (w2["B6"] + raise6).clip(upper=25)
 best = w2.apply(lambda r: sum(sorted([v for v in r.values if not np.isnan(v)], reverse=True)[:2]), axis=1)
@@ -54,29 +63,12 @@ gr0 = (best0 + sa.set_index("candidate_no")["section_a_total"].reindex(best0.ind
     lambda x: next((g for g, b in cuts if x >= b), "U"))
 same("grades changed by the scaling", int((gr != gr0).sum()), FIG["grade_changed"])
 same("candidates graded", int(len(gr)), FIG["candidates_graded"])
-cand_centre = m.drop_duplicates("candidate_no").set_index("candidate_no")["centre_code"]
-reg = cand_centre.reindex(wide.index).map(region)
+reg = pd.Series({c: region[entered[c]] for c in wide.index})
 ask_a = {}
 for r in ["NT", "QT", "WA", "PC", "ID", "MS"]:
     sub = wide[reg == r]
     ask_a[r] = {"sat": int(len(sub)), "q4": int(sub["B4"].notna().sum()), "q5": int(sub["B5"].notna().sum()),
                 "q6": int(sub["B6"].notna().sum())}
 same("ask A, by region", ask_a, FIG["ask_a"])
-rv = pd.read_csv(os.path.join(T, "post_results_reviews_2025.csv"), dtype=str)
-rv = rv[(rv.component == "P2") & (rv.outcome != "WD")].copy()
-off = {"Australia/Darwin": 9.5, "Australia/Brisbane": 10, "Australia/Perth": 8, "Pacific/Fiji": 12,
-       "Pacific/Port_Moresby": 10, "Pacific/Efate": 11, "Pacific/Guadalcanal": 11, "Asia/Jakarta": 7, "Asia/Dili": 9,
-       "Asia/Kuala_Lumpur": 8, "Asia/Singapore": 8}
-rv["local"] = pd.to_datetime(rv.requested_utc.str.replace("Z", "")) + pd.to_timedelta(
-    rv.centre_code.map(tz).map(off), unit="h")
-rv["month"] = rv.local.dt.strftime("%Y-%m")
-rv["region"] = rv.centre_code.map(region)
-ask_b = {}
-for mo in ["2025-12", "2026-01", "2026-02"]:
-    ask_b[mo] = {}
-    for r in ["NT", "QT", "WA", "PC", "ID", "MS"]:
-        s = rv[(rv.month == mo) & (rv.region == r)]
-        ask_b[mo][r] = {"requests": int(len(s)), "grade_changes": int((s.outcome == "GC").sum())}
-same("ask B, by month and region", ask_b, FIG["ask_b"])
 print("verify: %d failures" % len(BAD))
 sys.exit(1 if BAD else 0)

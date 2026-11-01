@@ -54,30 +54,32 @@ def code_of_practice(path):
             "grades are awarded and how the board handles centres' requests for post-results reviews. It applies to "
             "every component of the Arafura Senior Certificate."]),
         ("2. Entries and centres", [
-            "2.1 A candidate sits a paper at the centre under whose code the candidate's script is marked. A "
-            "centre's region is the region the centres register gives it, under its current code or under the code "
-            "it held before a merger.",
+            "2.1 A candidate's centre for a paper is the centre that entered the candidate for it. A centre's "
+            "region is the region the centres register gives it, under its current code or under the code it held "
+            "before a merger.",
             "2.2 A candidate who is re-entered at another centre after entry keeps one entry and one result, under "
-            "the number of the later entry; the earlier entry is withdrawn.",
-            "2.3 A candidate who was absent from a paper has not sat it."]),
+            "the number and the centre of the later entry; the earlier entry is withdrawn.",
+            "2.3 A candidate present for a paper has sat it, whatever the candidate wrote; a candidate who was "
+            "absent has not."]),
         ("3. Marking and crediting", [
             "3.1 Every answer a candidate writes is marked. Where a senior examiner re-marks an answer, the senior "
             "examiner's mark stands.",
-            "3.2 Where a candidate answers more optional questions than the rubric asks for, every answer is marked "
-            "and the candidate is credited with the best answers the rubric allows."]),
+            "3.2 Where a candidate answers more optional questions than the paper's instructions ask for, every answer is "
+            "marked and the candidate is credited with the best answers the instructions allow."]),
         ("4. Optional questions", [
             "4.1 Optional questions on a paper are set to be equally demanding. After marking, Research and Standards "
             "reports to the executive on each optional question of every paper that offers a choice, before the "
             "paper's results are certified.",
             "4.2 An optional question is more demanding than the paper's other optional questions when the paper's "
-            "candidates would have earned fewer marks on it than on the others taken together, had each of them "
-            "answered every optional question on the paper. The difference is measured in marks.",
+            "candidates would have earned fewer marks on it than on the others taken together. The difference is "
+            "measured in marks.",
             "4.3 Where an optional question is more demanding by a mark and a half or more, every candidate's mark on "
             "it is raised by that difference, to the nearest whole mark and no higher than the question's maximum, "
             "before the best answers are credited under 3.2 and before the grade boundaries are applied. No optional "
             "question's marks are lowered."]),
         ("5. Grades", [
-            "5.1 A candidate's paper total is the candidate's Section A total and the marks of the credited answers.",
+            "5.1 A candidate's paper total is the candidate's Section A total and the marks of the credited answers; "
+            "a candidate who wrote no essay is credited with none.",
             "5.2 A candidate's grade for the paper is the highest grade whose boundary the paper total reaches. A "
             "total below the boundary for grade E is ungraded (U). The boundaries are those the Awarding Committee "
             "sets for the paper; they are not moved after an optional question is scaled."]),

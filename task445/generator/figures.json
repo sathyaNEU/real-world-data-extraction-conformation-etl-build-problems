@@ -2,120 +2,40 @@
  "all_three_candidates": 1422,
  "ask_a": {
   "ID": {
-   "q4": 3473,
-   "q5": 3480,
-   "q6": 1431,
-   "sat": 4091
+   "q4": 3439,
+   "q5": 3451,
+   "q6": 1413,
+   "sat": 4082
   },
   "MS": {
-   "q4": 4165,
-   "q5": 4158,
-   "q6": 1655,
-   "sat": 4879
+   "q4": 4136,
+   "q5": 4140,
+   "q6": 1656,
+   "sat": 4888
   },
   "NT": {
-   "q4": 2337,
-   "q5": 2293,
-   "q6": 947,
-   "sat": 2729
+   "q4": 2325,
+   "q5": 2283,
+   "q6": 939,
+   "sat": 2733
   },
   "PC": {
-   "q4": 4678,
-   "q5": 4636,
-   "q6": 1938,
-   "sat": 5497
+   "q4": 4640,
+   "q5": 4591,
+   "q6": 1924,
+   "sat": 5485
   },
   "QT": {
-   "q4": 6563,
-   "q5": 6468,
-   "q6": 2710,
-   "sat": 7688
+   "q4": 6521,
+   "q5": 6428,
+   "q6": 2699,
+   "sat": 7685
   },
   "WA": {
-   "q4": 4942,
-   "q5": 4929,
-   "q6": 2013,
-   "sat": 5813
-  }
- },
- "ask_b": {
-  "2025-12": {
-   "ID": {
-    "grade_changes": 7,
-    "requests": 71
-   },
-   "MS": {
-    "grade_changes": 6,
-    "requests": 83
-   },
-   "NT": {
-    "grade_changes": 3,
-    "requests": 53
-   },
-   "PC": {
-    "grade_changes": 9,
-    "requests": 75
-   },
-   "QT": {
-    "grade_changes": 12,
-    "requests": 115
-   },
-   "WA": {
-    "grade_changes": 11,
-    "requests": 109
-   }
-  },
-  "2026-01": {
-   "ID": {
-    "grade_changes": 9,
-    "requests": 43
-   },
-   "MS": {
-    "grade_changes": 7,
-    "requests": 61
-   },
-   "NT": {
-    "grade_changes": 3,
-    "requests": 23
-   },
-   "PC": {
-    "grade_changes": 10,
-    "requests": 48
-   },
-   "QT": {
-    "grade_changes": 14,
-    "requests": 94
-   },
-   "WA": {
-    "grade_changes": 5,
-    "requests": 68
-   }
-  },
-  "2026-02": {
-   "ID": {
-    "grade_changes": 2,
-    "requests": 15
-   },
-   "MS": {
-    "grade_changes": 1,
-    "requests": 18
-   },
-   "NT": {
-    "grade_changes": 1,
-    "requests": 12
-   },
-   "PC": {
-    "grade_changes": 1,
-    "requests": 28
-   },
-   "QT": {
-    "grade_changes": 6,
-    "requests": 42
-   },
-   "WA": {
-    "grade_changes": 4,
-    "requests": 28
-   }
+   "q4": 4926,
+   "q5": 4906,
+   "q6": 2009,
+   "sat": 5824
   }
  },
  "call": {
@@ -128,13 +48,17 @@
   "5": "-1.4",
   "6": "2.1"
  },
- "grade_changed": 1857,
+ "grade_changed": 1854,
  "grades": {
-  "A": 5775,
-  "B": 5966,
-  "C": 7407,
-  "D": 5937,
-  "E": 3566,
-  "U": 2046
+  "A": 5732,
+  "B": 5934,
+  "C": 7337,
+  "D": 5945,
+  "E": 3561,
+  "U": 2188
+ },
+ "stated": {
+  "line": "1.5",
+  "question_max": 25
  }
 }

@@ -42,18 +42,17 @@ def submission(fig, S, path):
              r6, gl, t(fig["candidates_graded"]), t(fig["grade_changed"])), "",
          "## 3. Step-by-Step Solution", "",
          "1. Conformed the marking export to one final mark per candidate and essay (a senior examiner's re-mark "
-         "stands, code 3.1), with absent candidates set aside (code 2.3).",
-         "2. Placed every script's centre in its region through the centres register, the merged Queensland centres "
-         "under the codes they held before the merger (code 2.1).",
-         "3. Took the candidates who wrote all three essays (each essay marked, code 3.2) and, for each question, "
+         "stands), absent candidates set aside.",
+         "2. Joined each essay booklet to its candidate's entry (a moved candidate's booklet keeps the earlier "
+         "number) and placed every candidate in the region of the centre that entered them, through the centres "
+         "register and the codes merged centres held before.",
+         "3. Took the candidates who wrote all three essays (each essay marked) and, for each question, "
          "averaged each candidate's mean mark on the other two less their mark on it: Question 6 over 1.5, Questions "
          "4 and 5 below zero.",
          "4. Raised every Question 6 mark by %d (its demand to the nearest whole mark, over 1.5, no mark above 25), "
          "credited each candidate's best two essays, added Section A and applied the committee's boundaries." % r6,
-         "5. Counted each region's candidates who sat and each optional question's answers, credited or not, from "
-         "the conformed marks.",
-         "6. Placed each 2025 review request in its centre's local month, Paper 2 only, withdrawn requests out, "
-         "grade changes by outcome GC (code 6.2 and 6.3).", "",
+         "5. Counted each region's candidates who sat (an essay marked or Section A scanned) and each optional "
+         "question's answers, credited or not, from the conformed marks.", "",
          "## 4. Deliverable Answers", "", "### p2_question_scaling_2026.docx", "",
          "1. Question 6 is scaled: every candidate's Question 6 mark is raised by %d marks." % r6,
          "2. Only Question 6 is more demanding than the other optional questions; Questions 4 and 5 are not.",
@@ -63,17 +62,11 @@ def submission(fig, S, path):
          "1. One row for each of the %s candidates who sat, Question 6 raised by %d, the best two essays credited, "
          "the paper total and the grade (the counts above)." % (t(fig["candidates_graded"]), r6), "",
          "### history_p2_entries_2026.xlsx", "",
-         "1. Candidates who sat Paper 2, and answers to Questions 4, 5 and 6, by region:"]
+         "1. Candidates who sat Paper 2, and answers to each optional question, by region:"]
     for r in G.REGIONS:
         e = fig["ask_a"][r]
         L.append("   - %s: sat %s; Question 4 %s, Question 5 %s, Question 6 %s" % (
             RNAME[r], t(e["sat"]), t(e["q4"]), t(e["q5"]), t(e["q6"])))
-    L.append("2. Paper 2 post-results reviews requested, and of them the reviews that changed a grade, by month and "
-             "region:")
-    for m in ["2025-12", "2026-01", "2026-02"]:
-        L.append("   - %s: %s" % (MNAME[m], "; ".join(
-            "%s %s and %s" % (RNAME[r], fig["ask_b"][m][r]["requests"], fig["ask_b"][m][r]["grade_changes"])
-            for r in G.REGIONS)))
     open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
 
 
@@ -92,7 +85,8 @@ SOURCES = {
 }
 WHY = {"predicted": "teachers' predictions say what a centre expected of a candidate, not what any essay demanded",
        "stats25": "the 2025 paper's questions are not the 2026 paper's, so its statistics say nothing about 2026's "
-                  "demand"}
+                  "demand",
+       "reviews": "last year's post-results reviews concern the 2025 results, not this paper's essays or entries"}
 
 
 def metadata(path):

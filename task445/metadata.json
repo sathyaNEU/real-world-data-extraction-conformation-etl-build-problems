@@ -61,7 +61,7 @@
   },
   {
    "name": "post_results_reviews_2025.csv",
-   "role": "evidence",
+   "role": "distractor",
    "source": "synthetic: the 2025 post-results review log, one row per component reviewed",
    "date": "2026-03-02",
    "license": "CC0 1.0 (synthetic, authored for this task)"
@@ -83,11 +83,13 @@
  ],
  "distractors": [
   "teacher_predicted_grades_2026.csv",
-  "p2_question_statistics_2025.xlsx"
+  "p2_question_statistics_2025.xlsx",
+  "post_results_reviews_2025.csv"
  ],
  "distractor_reasons": {
   "teacher_predicted_grades_2026.csv": "teachers' predictions say what a centre expected of a candidate, not what any essay demanded",
-  "p2_question_statistics_2025.xlsx": "the 2025 paper's questions are not the 2026 paper's, so its statistics say nothing about 2026's demand"
+  "p2_question_statistics_2025.xlsx": "the 2025 paper's questions are not the 2026 paper's, so its statistics say nothing about 2026's demand",
+  "post_results_reviews_2025.csv": "last year's post-results reviews concern the 2025 results, not this paper's essays or entries"
  },
  "stated_inputs": [
   "1.5",

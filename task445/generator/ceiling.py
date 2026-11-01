@@ -35,6 +35,20 @@ def mirror_entries(D):
     return {g: dict(sat=sat[g], **{"q" + q: ans[q][g] for q in G.QS}) for g in G.REGIONS}
 
 
+def cracker_entries(D):
+    """Every filed rule on the marking export as it stands: merged codes through the register, absent candidates
+    out, one answer per candidate and question, every essay counted; a candidate is a number in the export."""
+    E, centre, absent = G.essays(D, join=False)
+    sat = Counter()
+    ans = {q: Counter() for q in G.QS}
+    for c, m in E.items():
+        g = D["region"][centre[c]]
+        sat[g] += 1
+        for q in m:
+            ans[q][g] += 1
+    return {g: dict(sat=sat[g], **{"q" + q: ans[q][g] for q in G.QS}) for g in G.REGIONS}
+
+
 def mirror_reviews(D):
     rows = G._read(D["target"], "post_results_reviews_2025.csv")
     out = {"%d-%02d" % m: {g: dict(requests=0, grade_changes=0) for g in G.REGIONS} for m in G.MONTHS}
@@ -62,15 +76,16 @@ def main():
     S = G.solve(T)
     D = S["D"]
     ka, na = kept(S["entries"], mirror_entries(D))
-    kb, nb = kept(S["reviews"], mirror_reviews(D))
-    n = na + nb
-    crack = n
-    mirror = ka + kb
+    kc, _ = kept(S["entries"], cracker_entries(D))
+    kb = nb = 0
+    n = na
+    crack = kc
+    mirror = ka
     c = 38 + 7 + 55.0 * crack / n
     s = 5 + 7 + 55.0 * mirror / n
     zp = os.path.join(TASK, "target.zip")
     print("measured on target.zip %s" % hashlib.sha256(open(zp, "rb").read()).hexdigest()[:8])
-    print("ask A: mirror keeps %d of %d; ask B: mirror keeps %d of %d" % (ka, na, kb, nb))
+    print("ask A: cracker keeps %d of %d region rows, mirror keeps %d" % (kc, na, ka))
     print("cracker keeps %d of %d ask figures, scores %.1f with the call" % (crack, n, c))
     print("mirror keeps %d of %d, scores %.1f off it" % (mirror, n, s))
     print("Pair ceiling: %.1f" % ((c + s) / 2))

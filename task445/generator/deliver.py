@@ -59,15 +59,15 @@ def paper(S, path, png):
         "Questions 4 and 5 taken together, over the code's line of 1.5; Questions 4 and 5 were not more demanding "
         "than the others (%.1f and %.1f) and are not changed." % (r6, dem["6"], dem["4"], dem["5"]))
     d.add_paragraph(
-        "Section 4.2 asks what the paper's candidates would have earned on each question had each of them answered "
-        "every optional question. Candidates chose their two essays, and chose by the topics they knew: Question 6 "
+        "Section 4.2 asks what the paper's candidates would have earned on each question against the others. "
+        "Candidates chose their two essays, and chose by the topics they knew: Question 6 "
         "was answered by about a third of the candidates, and those who took it knew its topic. Their marks on it, "
         "whether compared with the other questions' marks, adjusted for Section A, or set beside their own other "
         "essay, carry that knowledge and put Question 6 about half a mark harder. The %s candidates who wrote all "
         "three essays chose nothing: every essay they wrote was marked, and the difference between each of their "
         "own three marks shows each question's demand with no choice in it. Their three essays were written in the "
-        "time for two, which lowers all three marks alike and leaves the differences unchanged, and the differences "
-        "are the same for candidates with low, middle and high Section A marks." % format(S["n_all_three"], ","))
+        "time for two, which lowers all three marks alike and leaves the differences unchanged, and the candidates "
+        "with low, middle and high Section A marks each put Question 6 over the line." % format(S["n_all_three"], ","))
     d.add_picture(png, width=Cm(15.5))
     d.add_paragraph("Grades after scaling (paper total, Section A and the two credited essays):")
     t = d.add_table(rows=2, cols=7)
@@ -109,17 +109,8 @@ def entries_xlsx(S, path):
     for r in G.REGIONS:
         e = S["entries"][r]
         ws.append([RNAME[r], e["sat"], e["q4"], e["q5"], e["q6"]])
-    ws2 = wb.create_sheet("Reviews 2025")
-    ws2.append(["Month", "Region", "Paper 2 reviews requested", "Of which changed a grade"])
-    for c in ws2[1]:
-        c.font = Font(bold=True)
-    for m in ["2025-12", "2026-01", "2026-02"]:
-        for r in G.REGIONS:
-            v = S["reviews"][m][r]
-            ws2.append([MNAME[m], RNAME[r], v["requests"], v["grade_changes"]])
-    for wsx, widths in ((ws, (30, 13, 13, 13, 13)), (ws2, (16, 30, 26, 24))):
-        for col, wd in zip("ABCDE", widths):
-            wsx.column_dimensions[col].width = wd
+    for col, wd in zip("ABCDE", (30, 13, 13, 13, 13)):
+        ws.column_dimensions[col].width = wd
     wb.save(path)
     PP.normalize_ooxml(path, "Melissa Chen", "Mary Deleon", "2026-12-02T22:40:00Z", "2026-12-03T06:12:00Z", excel=True)
 

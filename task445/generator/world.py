@@ -83,13 +83,15 @@ def build(seed=SEED):
     infr = rng.random(n) < (INFRINGE[0] + INFRINGE[1] * (a < -0.5))
     absent = rng.random(n) < 0.022
     order = np.argsort(-util, 1)
+    rng_ne = np.random.default_rng(seed + 3)
     for i, x in enumerate(cands):
         x["a"], x["t"] = float(a[i]), [float(v) for v in t[i]]
         x["section_a"] = int(sec_a[i])
         x["absent"] = bool(absent[i])
         x["infringer"] = bool(infr[i]) and not absent[i]
         chosen = [qs[j] for j in sorted(order[i, :2])] if not x["infringer"] else list(qs)
-        if absent[i]:
+        x["no_essay"] = (not absent[i]) and (not x["infringer"]) and rng_ne.random() < 0.006
+        if absent[i] or x["no_essay"]:
             chosen = []
         marks = {}
         for j, q in enumerate(qs):
