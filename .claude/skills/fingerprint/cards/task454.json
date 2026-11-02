@@ -1,81 +1,161 @@
 {
   "task": "task454",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
   "slot_note": "",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "niche": "a state Medicaid fee-for-service pharmacy program's maximum-allowable-cost list, extended by one drug class a year: twelve months of pharmacy claims integrated with the State's acquisition cost survey, which prices only the NDCs surveyed retail pharmacies buy, so the claims paid at WAC sit on the packages it leaves unpriced",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a state tourism commission's regional visitor infrastructure grants, awarded on each region's domestic visitor spending per resident as measured from a card scheme's research sample, where the scheme places every card at its statement postcode and the usual environment that defines a visitor has to be rebuilt from each card's own months of presence",
   "objective": "etl",
   "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Propose Anticonvulsants (C107) for the 1 July 2027 State MAC update: ingredient spread $43,000 over fills April 2026 to March 2027, 1.43 times Antipsychotics' $30,000.",
-  "answer_source": "task454/submission.md, Final Recommendation; golden smac_class_addition_2027-07.docx",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
   "pattern": [
-    "C"
+    "none"
   ],
   "generators": [
-    "G4"
+    "G11",
+    "G16",
+    "G6"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stakeholder_role": "the pharmacy benefit administrator's MAC pricing lead, proposing the class to the State's Medicaid pharmacy director",
-  "role_family": "procurement_lead",
-  "scoring_unit": "per settled transaction",
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who weights the scheme's research sample, maps statement and merchant postcodes to the tourism regions, divides by each region's estimated resident population and counts every card whose statement postcode lies outside a region as a visitor there awards the grants to a set holding the mining region and the university region, whose spending is lifted by rostered workers, students and people who moved there; the golden set holds neither once each card's usual environment is read from its own presence.",
+  "domain_test": "Tourism statistics' own analysis decides: a visitor is a person outside their usual environment, so the visitor spending the grants reward has to be rebuilt by placing each card's routine areas from its own pattern of presence before its spending is split into trips; put hospital catchments in place of regions and the trip, the usual environment and the visitor the fund rests on stop existing.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:usual-environment-rebuilt-from-each-card's-presence-not-its-statement-address",
+  "layer1": [
+    "statement and merchant postcodes straddling tourism-region boundaries, allocated through a concordance with population shares",
+    "the research sample's per-card weights differing by sampling stratum, beside the scheme's monthly totals by merchant region",
+    "merchant category codes regrouped into the commission's spending categories, with one code reclassified from July",
+    "statement postcodes that change during the year, carried month by month on the card file",
+    "estimated resident population by statistical area, a revised 2025 and a preliminary 2026 release side by side, carried to tourism regions through a correspondence"
+  ],
+  "stakeholder_role": "the commission's visitor economy research manager, preparing the grant ranking for the commission's board",
+  "role_family": "programme_officer",
+  "scoring_unit": "per boarded entity",
   "spine": {
-    "file": "pharmacy claims extract, transactions paid 1 April 2026 to 20 April 2027",
-    "rows": 229247,
-    "entity": "one pharmacy claim (a paid fill or its reversal)",
-    "grain": "claim",
-    "source": "synthetic (constructed in the layout of a Medicaid fee-for-service pharmacy claims extract)"
+    "file": "the card scheme's research sample, card-region-month rows for 2026",
+    "rows": 0,
+    "entity": "one sampled card's spending at one tourism region's merchants in one month",
+    "grain": "card x region x month",
+    "source": "synthetic (constructed in the layout of a card scheme's de-identified research sample extract)"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "professional_services",
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "government_agency",
   "world": {
-    "geography": "United States (an unnamed state's Medicaid fee-for-service pharmacy program)",
-    "currency": "USD",
-    "org_type": "pharmacy benefit administrator contracted to run the State's fee-for-service pharmacy claims and its maximum-allowable-cost list",
-    "invented_names": [],
+    "geography": "Australia (an unnamed state; the commission, its fund, its regions, the card scheme and its research sample are fictional; personas on the en_AU index)",
+    "currency": "AUD",
+    "org_type": "state tourism commission funding regional visitor infrastructure grants",
+    "invented_names": [
+      "Westhaven",
+      "Lyrebird Peninsula",
+      "Yallambee Valley",
+      "Pelican Coast",
+      "Spinifex Gorges",
+      "Gidgee Basin",
+      "Carisbrook Tablelands",
+      "Mulga Plains",
+      "Lower Wollomby",
+      "Tingle Ranges",
+      "Jabiru Coast",
+      "Port Kelburn",
+      "Regional Visitor Infrastructure Fund"
+    ],
     "people": [
-      "Sonya Burton",
-      "Todd Allen",
-      "Carrie Arellano",
-      "Jeff Strickland"
+      "Samantha Mooney",
+      "Tina Garza",
+      "Jose Gardner",
+      "William Gonzalez"
     ]
   },
-  "deliverables": [
-    "smac_class_addition_2027-07.docx",
-    "smac_candidate_classes_fy2026.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is a total of the differences between what was paid for units and what they cost, the cost observed only for the items a price survey covered; coverage is lowest for one presentation of each item, which costs a different amount per unit from the common presentation, so filling every uncovered item with the covered cost of the same item books that presentation at the common one's cost and misranks the groups, and only taking each uncovered item's cost from covered items of its own presentation recovers the totals.",
-  "driver_concrete": "The State AAC survey prices only the NDCs its surveyed retail pharmacies buy, so the claims paid at WAC sit mostly on hospital unit-dose cartons, which cost more per unit than the retail bottles of the same product; filling each unpriced NDC with its product's AAC books those cartons at the bottle's cost and swells the spread of the unit-dose-heavy classes, and only costing each unpriced NDC from priced NDCs of the same product and package type ranks the classes right.",
-  "stump": "The default path proposes Antipsychotics because it costs every unpriced NDC at its product's rate, which the retail bottles set, so the unit-dose cartons long-term care pharmacies dispense (86 per cent of the unpriced cost, 1.9 times the bottle per unit) are booked below cost; costing each unpriced NDC from the priced NDCs of the same product and package type proposes Anticonvulsants.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the NDCs, takes the AAC in effect on each fill date, leaves the dispensing fee out and fills every unpriced NDC with its product's AAC proposes atypical antipsychotics; the golden is anticonvulsants.",
-  "domain_test": "Data integration's own analysis decides: the claims that fail to link to the price survey are a selected subset (the unit-dose cartons the surveyed pharmacies do not buy), so their cost has to be filled conditioning on the variable that drives both the missed link and the cost; the generic fill, the product's average price, changes the call.",
+  "driver": "The decisive quantity is the spending of people outside the area they routinely live, work or study in, but each unit carries only a billing area that names where its statements go; units whose own record shows them present in another area week after week, through study terms, work rosters or a move, belong to that area whatever the billing area says, so counting every unit billed outside the area as an outsider books their routine spending as trips and lifts the areas that hold them, while reading each unit's routine areas from its own weeks of presence before splitting its spending leaves only the trips.",
+  "driver_concrete": "Card schemes place each card at its statement postcode, which for students, fly-in fly-out and drive-in drive-out workers and people who have moved is not where they routinely are; their everyday spending in the region they study in, work rosters in or now live in is booked as visitor spending there, so the mining region and the university region join the naive five, and only each card's usual environment read from its own months and days of presence in the scheme's research sample ranks the regions on spending by people on trips.",
+  "stump": "The default path awards the five grants to a set holding the mining region and the university region, because it counts every card whose statement postcode lies outside a region as a visitor there, so the everyday spending of rostered workers, students and people who moved there is booked as trips; reading each sampled card's usual environment from its own months and days of presence before splitting its spending awards a set without either.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Drawn 2026-10-13 from seed ET11 (Medicaid pharmacy spread against NADAC): the world, the decision (one class added to the MAC list) and the quantity (each class's ingredient spread) kept; the pitfall re-found in the data: missed links to the price survey are selected on package type.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
-  "layer1": [
-    "NDCs in three ten-digit hyphenated configurations in the drug file against eleven-digit NDCs in claims and rates",
-    "effective-dated AAC rates, several per NDC across the year",
-    "reversed claims and the dispensing fee inside the total paid",
-    "pricing units (each, millilitre, gram) against claim quantities in metric decimal units",
-    "drug classes assigned to products, not NDCs, through the State's class list"
-  ]
+  "differentiation": {
+    "task253": "task253 v3 counts units whose latent level lies below a line when the levels are seen through small noisy samples, so its work is how noise and shrinkage spread the estimates; here nothing is noisy at the card: each card's routine areas are read exactly from its own weeks of presence, and the work is deciding which spending is by people on trips at all.",
+    "task470": "task470 v2 reads whether a dwelling was lived in from the daily rise in its own meter over a heating load, a state the register's empties flag gets wrong; here the state is not use or non-use of a unit but where a person routinely is, read from which areas a card is present in week after week, and the record it overturns is a billing address, not a level or a status flag.",
+    "task306": "task306 v2 places an induced round of spending where a project's staff live to keep it inside an area; here no spending is induced or moved: the spending stays where it happened, and the decisive step is whether the person spending was on a trip.",
+    "task305": "task305 v1 counts short-stay occupants missing from a demand model's resident origins; here the people booked wrongly are residents counted as visitors, the opposite direction, and the record that places them is the card scheme's statement postcode.",
+    "task485": "task485 reads an arrival's chance of staying from its own earlier short stays under the same registration; here no stay is forecast: the presence each card shows in 2026 is observed whole, and only which areas are routine for it decides how its spending is split."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (a state Medicaid fee-for-service pharmacy program's SMAC class addition, general-statistics-data-science data integration)",
+      "drawn": "2026-10-13",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "niche": "a state Medicaid fee-for-service pharmacy program's maximum-allowable-cost list, extended by one drug class a year: twelve months of pharmacy claims integrated with the State's acquisition cost survey, which prices only the NDCs surveyed retail pharmacies buy, so the claims paid at WAC sit on the packages it leaves unpriced",
+      "objective": "etl",
+      "shape": "07",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G4"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "layer2_family": "field_method",
+      "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
+      "driver": "The decisive quantity is a total of the differences between what was paid for units and what they cost, the cost observed only for the items a price survey covered; coverage is lowest for one presentation of each item, which costs a different amount per unit from the common presentation, so filling every uncovered item with the covered cost of the same item books that presentation at the common one's cost and misranks the groups, and only taking each uncovered item's cost from covered items of its own presentation recovers the totals.",
+      "driver_concrete": "The State AAC survey prices only the NDCs its surveyed retail pharmacies buy, so the claims paid at WAC sit mostly on hospital unit-dose cartons, which cost more per unit than the retail bottles of the same product; filling each unpriced NDC with its product's AAC books those cartons at the bottle's cost and swells the spread of the unit-dose-heavy classes, and only costing each unpriced NDC from priced NDCs of the same product and package type ranks the classes right.",
+      "stump": "The default path proposes Antipsychotics because it costs every unpriced NDC at its product's rate, which the retail bottles set, so the unit-dose cartons long-term care pharmacies dispense (86 per cent of the unpriced cost, 1.9 times the bottle per unit) are booked below cost; costing each unpriced NDC from the priced NDCs of the same product and package type proposes Anticonvulsants.",
+      "forum": "customer_or_counterparty",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "professional_services",
+      "role_family": "procurement_lead",
+      "context_artifact": "published_series",
+      "world": {
+        "geography": "United States (an unnamed state's Medicaid fee-for-service pharmacy program)",
+        "currency": "USD",
+        "org_type": "pharmacy benefit administrator contracted to run the State's fee-for-service pharmacy claims and its maximum-allowable-cost list",
+        "invented_names": [],
+        "people": [
+          "Sonya Burton",
+          "Todd Allen",
+          "Carrie Arellano",
+          "Jeff Strickland"
+        ]
+      },
+      "deliverables": [
+        "smac_class_addition_2027-07.docx",
+        "smac_candidate_classes_fy2026.xlsx"
+      ],
+      "answer": "Propose Anticonvulsants (C107) for the 1 July 2027 State MAC update: ingredient spread $43,000 over fills April 2026 to March 2027, 1.43 times Antipsychotics' $30,000.",
+      "architecture_spent": true,
+      "fate": "delivered 2026-10-13 (stays on the portal as delivered); re-rooted 2026-11-02 after the in-house audit: one group-by of the claims extract by window ingredient cost paid ranked the golden's call and runner-up, and the FY2026 summary's own cost column agreed (Gate G); the record layout and the data delivery note described the data; the FY2026 ask measured spent under the careful-solver cracker (36 of 36, pair 76.1)",
+      "shell": null
+    }
+  ],
+  "architecture_spent": false,
+  "notes": "Architecture 2, re-root drawn 2026-11-02 in another client domain, world, dataset and shell (survey research and official statistics: card-scheme data for regional tourism statistics). Architecture 1 is in lineage, spent.",
+  "registered": "2026-11-02T12:59:23Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "round",
+    "deliverable set": "docx+xlsx"
+  }
 }

@@ -1,41 +1,46 @@
 {
  "task": "task454",
- "status": "PAUSED",
- "domain": "general-statistics-data-science",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-11-02",
- "stump": "The default path proposes Antipsychotics because it costs every unpriced NDC at its product's rate, which the retail bottles set, so the unit-dose cartons long-term care pharmacies dispense (86 per cent of the unpriced cost, 1.9 times the bottle per unit) are booked below cost; costing each unpriced NDC from the priced NDCs of the same product and package type proposes Anticonvulsants.",
- "architecture": 1,
+ "stump": "The default path awards the five grants to a set holding the mining region and the university region, because it counts every card whose statement postcode lies outside a region as a visitor there, so the everyday spending of rostered workers, students and people who moved there is booked as trips; reading each sampled card's usual environment from its own months and days of presence before splitting its spending awards a set without either.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-13"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) 2026-10-13 on the final build",
-  "reader": "2026-10-13, two passes: questions 1 to 4 none, question 5 as designed (the cost of a unit with no rate open), question 6 an analytical choice; realism tells fixed (layout pseudo-rows, one PDF frame for three organisations, class-blind managed care prices, the delivery note's scope sentence)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-13 (pattern reused against task449, Gate G against task452, objective and Gate G overuse, question form against task453), answered in the Draw",
-  "nearest": "0.08 (task93 v3)",
-  "note": "drawn 2026-10-13: guard WARN (pattern reused against task449, Gate G against task452, objective overuse, question form against task453), answered in the Draw",
-  "surface": "clean 2026-10-13 after renaming the record layout and sending the delivery note as a Word memo (the format set had matched task453's)"
+  "heart": "",
+  "nearest": "0.09 (task306 v2)",
+  "note": "drawn 2026-11-02: guard WARN (org family and objective overuse, Gate G and question form against task183, same_driver_older against task253 differentiated), answered in the Draw",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no (borderline)",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "findings": "step 4's unrounded spreads restated rounded; the unfiled cost of a unit with no rate kept (the design's HOW, closed by SF9)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "ask_audit_2026_11_02": "careful-solver cracker (generator/ceiling.py on the shipped target.zip, md5 0be2b3af3cdb77b996a272511fd82397): the FY2026 workbook kept 36 of 36 (D2 executed under the request letter's list, D8 filed in the data delivery note), pair 76.1 with the mirror on the cracker's ask path; no re-site and no full replacement passed both tests (design note, Tried and rejected); the ask layer is owed a new design, the pack unchanged",
- "resume": "RE-ROOT at stage 1, architecture 2 (in-house audit, 2026-11-02): (1) the main call is landed by one group-by of the claims extract ranking classes by window ingredient cost paid (Anticonvulsants $233,380 first, Antipsychotics second, the golden's call and runner-up), and the FY2026 summary's own cost column and the request letter's order agree, so the default path files the golden (Gate G); (2) two shipped files describe the data: corvane_extract_record_layout.csv is a column dictionary and corvane_data_delivery_note_2027-04-21.docx a file manifest that states the FY2026 ask's cut (leak.py now finds both); (3) the ask is spent (careful solver 36 of 36, pair 76.1, generator/ceiling.py). A new draw, dataset and generator.",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET11 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; its mechanisms (NDC formats, effective dates, the fee inside the total) are Layer 1 here"
+ "history": [
+  {
+   "architecture": 1,
+   "domain": "general-statistics-data-science",
+   "delivered": "2026-10-13",
+   "judge": "DETERMINISTIC, APPROVE (2026-10-13)",
+   "fate": "spent 2026-11-02 after the in-house audit (a group-by of the claims extract landed the call and the FY2026 summary agreed; two files described the data; the ask spent under the careful-solver cracker); stays on the portal as delivered",
+   "source_note": "seed ET11 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept; its mechanisms (NDC formats, effective dates, the fee inside the total) are Layer 1 here"
+  }
+ ]
 }
