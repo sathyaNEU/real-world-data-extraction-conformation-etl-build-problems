@@ -21,9 +21,8 @@ Friday 13 and Saturday 14 August are already full on the book, and a stay is sol
 3. Measured each rate code's release, the share of a full night's book its bookings later cancelled (the event rate on the past event weekends in sales_events_diary_2022-2027.xlsx, the other codes on the aligned festival Friday and Saturday): the concert nights' own bookings will give back about 20 rooms a night.
 4. Replayed each season's later bookings in booking order against the 2027 book realised at each night's past share (the event rate's rooms at that rate's own, the concert nights holding all but those 20 rooms), a booking taken only if every night of it has a room for all its rooms, and took the five seasons' mean; the full nights at 480 rooms less the event rate's no-shows.
 5. Summed each roster week's nights above 380 (HK-04's rooms above capacity): the closing week about 400, the concert week next at about 200; each night's own past pickup instead puts the concert week first at about 600.
-6. Counted the completed departure cleans and stayover services of each 2026 roster week in hk_task_log_2026-07-27_2026-08-30.csv by service date (re-cleans part of the service they repeat, do-not-disturb and refused rooms not serviced), each credited to who did it (the login's user, or the person a supervisor's note names), as Brennock's when that person is on Brennock's timesheet for the day in brennock_timesheets_weighhouse_summer_2026.xlsx (three logins the app now holds as crew belong to temps hr_housekeeping_staff_2027-06-28.xlsx shows taken on after the season), and the crew's overtime by the date worked in each line's reference in payroll_overtime_lines_2026-P14-P19.csv.
-7. For each day of the block, 10 to 16 August 2026, joined each block temp to the day badge reception issued that day (reception_day_badge_log_2026-08.csv), took the first entry and last exit from staff_access_events_2026-08.csv with the loading bay reader LB-02 read on its UTC clock, and billed the framework agreement's hours at its rate (Sunday at one and a quarter times), before VAT.
-8. Send Brennock's block to the closing week, Monday 23 to Sunday 29 August 2027.
+6. Counted the completed departure cleans and stayover services of each 2026 roster week in hk_task_log_2026-07-27_2026-08-30.csv by service date (re-cleans part of the service they repeat, do-not-disturb and refused rooms not serviced), each credited to who did it: the login's user or the person a supervisor's note names, except that the rooms a crew login closed on a day its own attendant has no event in staff_access_events_2026-08.csv and no day badge in reception_day_badge_log_2026-08.csv are the work of the one attendant who was in, whose own login went quiet before them and who left after them; as Brennock's when that person is on Brennock's timesheet for the day in brennock_timesheets_weighhouse_summer_2026.xlsx (three logins the app now holds as crew belong to temps hr_housekeeping_staff_2027-06-28.xlsx shows taken on after the season), and the overtime the crew worked by the date in each line's reference in payroll_overtime_lines_2026-P14-P19.csv, less the lines paid for a day their attendant was not in.
+7. Send Brennock's block to the closing week, Monday 23 to Sunday 29 August 2027.
 
 ## 4. Deliverable Answers
 
@@ -32,20 +31,11 @@ Friday 13 and Saturday 14 August are already full on the book, and a stay is sol
 1. Block week: Monday 23 to Sunday 29 August 2027, about 400 forecast room-nights above the crew's capacity.
 2. The week that would come next: Monday 9 to Sunday 15 August 2027, about 200 forecast room-nights above the crew's capacity.
 3. Last year's season by roster week, whole rooms and hours to the quarter hour:
-   - Monday 27 July to Sunday 2 August 2026: crew departure cleans 920, crew stayover services 1,100, Brennock departure cleans 184, Brennock stayover services 206, crew overtime 17.25 hours
-   - Monday 3 to Sunday 9 August 2026: crew departure cleans 796, crew stayover services 986, Brennock departure cleans 113, Brennock stayover services 166, crew overtime 20.75 hours
-   - Monday 10 to Sunday 16 August 2026: crew departure cleans 788, crew stayover services 1,336, Brennock departure cleans 341, Brennock stayover services 577, crew overtime 15.25 hours
-   - Monday 17 to Sunday 23 August 2026: crew departure cleans 929, crew stayover services 1,460, Brennock departure cleans 145, Brennock stayover services 249, crew overtime 11.25 hours
-   - Monday 24 to Sunday 30 August 2026: crew departure cleans 962, crew stayover services 1,574, Brennock departure cleans 187, Brennock stayover services 276, crew overtime 14.25 hours
-4. Last year's block week, the hours Brennock may bill for the block, to the quarter hour:
-   - Monday 10 August 2026: 59.25 hours
-   - Tuesday 11 August 2026: 59.50 hours
-   - Wednesday 12 August 2026: 55.75 hours
-   - Thursday 13 August 2026: 59.25 hours
-   - Friday 14 August 2026: 59.75 hours
-   - Saturday 15 August 2026: 59.75 hours
-   - Sunday 16 August 2026: 59.75 hours
-5. The week's charge before VAT: EUR 9,654.27.
+   - Monday 27 July to Sunday 2 August 2026: crew departure cleans 920, crew stayover services 1,100, Brennock departure cleans 184, Brennock stayover services 206, overtime the crew worked 17.25 hours
+   - Monday 3 to Sunday 9 August 2026: crew departure cleans 796, crew stayover services 986, Brennock departure cleans 113, Brennock stayover services 166, overtime the crew worked 20.75 hours
+   - Monday 10 to Sunday 16 August 2026: crew departure cleans 788, crew stayover services 1,336, Brennock departure cleans 341, Brennock stayover services 577, overtime the crew worked 15.25 hours
+   - Monday 17 to Sunday 23 August 2026: crew departure cleans 929, crew stayover services 1,460, Brennock departure cleans 145, Brennock stayover services 249, overtime the crew worked 11.25 hours
+   - Monday 24 to Sunday 30 August 2026: crew departure cleans 962, crew stayover services 1,574, Brennock departure cleans 187, Brennock stayover services 276, overtime the crew worked 14.25 hours
 
 ### housekeeping_block_2027.pdf
 

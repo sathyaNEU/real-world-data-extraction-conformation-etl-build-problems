@@ -1,7 +1,7 @@
 """The goldens, computed from the shipped pack: the executive housekeeper's block workbook (the block week and the next
-week with their forecast room-nights above the crew's capacity, last August's services and overtime by roster week,
-and the 2026 block's billable hours and charge by day) and the one-page note with the nightly forecast chart; and
-generator/figures.json, every figure the write-up states."""
+week with their forecast room-nights above the crew's capacity, and last season's services and the crew's overtime by
+roster week) and the one-page note with the nightly forecast chart; and generator/figures.json, every figure the
+write-up states."""
 from __future__ import annotations
 
 import datetime as dt
@@ -46,8 +46,7 @@ def compute(target):
     cm = C.components(V, L)
     se = C.precision(V)
     a = C.ask_a(target)
-    b = C.ask_b(target)
-    return dict(V=V, L=L, cm=cm, se=se, a=a, b=b, b_week_charge=C.week_charge(b),
+    return dict(V=V, L=L, cm=cm, se=se, a=a,
                 pick=L["pick"], runner=L["runner"],
                 pick_fig=K.round_to(L["gw"][L["pick"]], 100), runner_fig=K.round_to(L["gw"][L["runner"]], 100),
                 default_pick=C.top(L["default"])[0], default_fig=K.round_to(max(L["default"]), 100),
@@ -96,10 +95,6 @@ def figures(c):
              "brennock_departure_cleans": n0(c["a"][w]["brn_dep"]),
              "brennock_stayover_services": n0(c["a"][w]["brn_stay"]),
              "crew_overtime_hours": hrs(c["a"][w]["ot"])} for w, (m, s) in enumerate(weeks26)],
-        "ask_b_2026_block_billable_hours": [{"day": d.strftime("%A ") + "%d %s" % (d.day, d.strftime("%B %Y")),
-                                             "hours": hrs(v[0])} for d, v in sorted(c["b"].items())],
-        "ask_b_week": {"hours": hrs(sum(v[0] for v in c["b"].values())),
-                       "charge_before_vat_eur": "{:,.2f}".format(c["b_week_charge"])},
     }
 
 
@@ -185,8 +180,8 @@ def write_note(path, c, png):
                    "The full nights at 480 rooms less the event rate's no-shows.", DOC.SMALL),
          Spacer(1, 6),
          Paragraph("Room-nights above capacity are each night's occupied rooms above 380 summed over the week (HK-04 "
-                   "3.2), rounded to the nearest hundred once. Last season's services and overtime and the 2026 block's "
-                   "billing are in the workbook housekeeping_block_2027.xlsx.", DOC.SMALL)]
+                   "3.2), rounded to the nearest hundred once. Last season's services and overtime by roster week are "
+                   "in the workbook housekeeping_block_2027.xlsx.", DOC.SMALL)]
     doc = DOC._doc(path, "Brennock block 2027", K.PEOPLE["exec_hk"])
     f = DOC._footer("The Weighhouse Hotel  |  Housekeeping  |  Block confirmation note, 1 July 2027", "page ")
     doc.build(s, onFirstPage=f, onLaterPages=f)
@@ -229,8 +224,10 @@ def write_book(path, c):
     ws2 = wb.create_sheet("2026 services")
     ws2["A1"] = "Last year's season by roster week: departure cleans and stayover services, and the crew's overtime"
     ws2["A1"].font = Font(bold=True, size=12)
-    ws2["A2"] = ("Housekeeping app task log, 27/07/2026 to 30/08/2026, by the day the service was done (HK-04 2.4); "
-                 "Brennock's temps as on Brennock's timesheets for the day; overtime by the date worked.")
+    ws2["A2"] = ("Source: housekeeping app task log, 27/07/2026 to 30/08/2026, each service on the day it was done "
+                 "(HK-04 2.4) and credited to the attendant who did it; rooms finished on a crew tablet lent to an "
+                 "agency regular on its owner's day off are the regular's. Brennock's temps as on Brennock's timesheets "
+                 "for the day. Overtime by the date worked, for days the attendant was in.")
     ws2.append([])
     hdr = ["Roster week", "Crew departure cleans", "Crew stayover services", "Brennock departure cleans",
            "Brennock stayover services", "Crew overtime hours"]
@@ -263,53 +260,12 @@ def write_book(path, c):
         ws2.column_dimensions[col].width = 14
     ws2.freeze_panes = "B5"
 
-    ws3 = wb.create_sheet("2026 block billing")
-    ws3["A1"] = "Last year's block, 10 to 16 August 2026: the hours Brennock may bill for the block"
-    ws3["A1"].font = Font(bold=True, size=12)
-    ws3["A2"] = ("Framework agreement 4.1 to 4.3 on the staff access records (loading bay door LB-02 read on its UTC "
-                 "clock); the week's charge at 5.1, before VAT.")
-    ws3.append([])
-    ws3.append(["Day", "Block room attendants", "Billable hours", "Rate (EUR an hour)", "Brennock invoice hours"])
-    for cl in ws3[4]:
-        cl.font = bold
-        cl.fill = head
-        cl.alignment = Alignment(wrap_text=True, vertical="top")
-    ws3.row_dimensions[4].height = 30
-    inv = c.get("invoice", {})
-    th = 0.0
-    for d, (h, ch) in sorted(c["b"].items()):
-        n = c["block_n"][d]
-        ws3.append([d, n, h, 28.20 if d.weekday() == 6 else 22.56, inv.get(d, (None,))[0]])
-        r = ws3.max_row
-        ws3.cell(row=r, column=1).number_format = "ddd dd/mm/yyyy"
-        ws3.cell(row=r, column=3).number_format = "0.00"
-        ws3.cell(row=r, column=4).number_format = "0.00"
-        ws3.cell(row=r, column=5).number_format = "0.00"
-        th += h
-    ws3.append(["Week", None, th, None, sum(v[0] for v in inv.values()) if inv else None])
-    r = ws3.max_row
-    for col in range(1, 6):
-        ws3.cell(row=r, column=col).font = bold
-        ws3.cell(row=r, column=col).border = Border(top=thin)
-    ws3.cell(row=r, column=3).number_format = "0.00"
-    ws3.cell(row=r, column=5).number_format = "0.00"
-    ws3.append([])
-    ws3.append(["The week's charge before VAT (EUR)", None, c["b_week_charge"]])
-    ws3.cell(row=ws3.max_row, column=1).font = bold
-    ws3.cell(row=ws3.max_row, column=3).number_format = "#,##0.00"
-    ws3.cell(row=ws3.max_row, column=3).font = bold
-    ws3.column_dimensions["A"].width = 16
-    for col in "BCDE":
-        ws3.column_dimensions[col].width = 15
     wb.save(path)
 
 
 def main(target, golden, figures_path, Wd=None):
     os.makedirs(golden, exist_ok=True)
     c = compute(target)
-    ts = C.timesheets(target)
-    c["block_n"] = {d: sum(1 for r in ts if r["kind"] == "Block" and r["date"] == d) for d in c["b"]}
-    c["invoice"] = C.invoice_b(target)
     png = chart_png(c)
     write_note(os.path.join(golden, GOLD_NOTE), c, png)
     PP.normalize_pdf(os.path.join(golden, GOLD_NOTE), b"D:20270701102213+01'00'", b"D:20270701102213+01'00'")

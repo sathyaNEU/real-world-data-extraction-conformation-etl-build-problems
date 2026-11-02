@@ -653,12 +653,78 @@ def week_of(d):
     return None
 
 
+def doors(target, staff_only=False):
+    """Who was in the building on each day of the staff access export (from 1 August 2026): a staff or temp badge's
+    holder, or the person reception issued a day badge to that day, on any reader (the loading bay's controller keeps
+    UTC). Returns the set of (name, date) present and each (name, date)'s last exit, local time."""
+    Bg = pd.read_csv(os.path.join(target, BADGE_F), dtype=str, keep_default_na=False)
+    holder = {(r.date, r.badge): r.issued_to for r in Bg.itertuples()}
+    Ac = pd.read_csv(os.path.join(target, ACCESS_F), dtype=str, keep_default_na=False)
+    present, last_out = set(), {}
+    for r in Ac.itertuples():
+        t = dt.datetime.fromisoformat(r.event_time)
+        if r.reader == "LB-02":
+            t = K.utc_to_local(t)
+        d = t.date()
+        if r.holder.startswith("Day badge "):
+            if staff_only:
+                continue
+            who = holder.get((d.isoformat(), r.badge))
+        else:
+            who = r.holder
+        if who is None:
+            continue
+        present.add((who, d))
+        if r.direction == "OUT":
+            last_out[(who, d)] = max(last_out.get((who, d), t), t)
+    return present, last_out
+
+
+def lent_tablets(target, T=None, U=None, staff_only=False):
+    """Each crew login's day on the app while its own attendant was not in the building (a door record covers the
+    day), with the attendant who closed those rooms: the one in the building whose own login went quiet before the
+    first of them and who left after the last. {(login, date): (borrower, [task ids])}."""
+    T = T if T is not None else pd.read_csv(os.path.join(target, TASKS_F), dtype=str, keep_default_na=False)
+    U = U if U is not None else pd.read_csv(os.path.join(target, USERS_F), dtype=str, keep_default_na=False)
+    users = {r.login: r for r in U.itertuples()}
+    present, last_out = doors(target, staff_only=staff_only)
+    covered = {d for _, d in present}
+    own = {}
+    for r in T.itertuples():
+        u = users[r.user_login]
+        if u.user_group in ("Housekeeping Supervisors",) or r.closed_utc == "":
+            continue
+        own.setdefault((u.display_name, r.service_date), []).append(K.utc_to_local(
+            dt.datetime.fromisoformat(r.closed_utc)))
+    out = {}
+    for r in T.itertuples():
+        u = users[r.user_login]
+        d = dt.date.fromisoformat(r.service_date)
+        if u.user_group != "Housekeeping" or d not in covered or (u.display_name, d) in present:
+            continue
+        out.setdefault((r.user_login, d), []).append(r)
+    res = {}
+    for (lg, d), rows_ in out.items():
+        closes = [K.utc_to_local(dt.datetime.fromisoformat(x.closed_utc)) for x in rows_ if x.closed_utc]
+        t1, t2 = min(closes), max(closes)
+        cands = [n for (n, dd), ts in own.items() if dd == d.isoformat() and (n, d) in present and
+                 max(ts) < t1 and last_out.get((n, d), t1) >= t2]
+        res[(lg, d)] = (cands[0] if len(cands) == 1 else None, [x.task_id for x in rows_], cands)
+    if not staff_only:
+        assert all(v[0] is not None for v in res.values()), [(k, v[2]) for k, v in res.items() if v[0] is None]
+    return res
+
+
 def ask_a(target, mode="golden"):
-    """Each 2026 roster week's departure cleans and stayover services by the crew and by Brennock's temps, and the
-    crew's overtime hours. mode selects a stop for checks.py: golden; current_group (the user list's group as it
-    stands); login (the login's user, the notes unread); cracker (the login's current group, the notes unread, the
-    overtime by pay period end); recleans (re-cleans counted); created2026 (every login created in 2026 counted as
-    Brennock's); paid (the overtime by pay period end, the services as golden)."""
+    """Each 2026 roster week's departure cleans and stayover services done by the crew and by Brennock's temps, and the
+    overtime hours the crew worked. golden: each completed service credited to who did it (the login's attendant, the
+    person a supervisor's note names, or, on a day a crew login's own attendant was not in the building, the attendant
+    who closed her rooms on it), Brennock's when Brennock's timesheet carries that person that day or the login is
+    Brennock's own; the overtime lines by the date worked, for an attendant in the building that day. The stops:
+    careful (the cracker: every filed rule, the notes, the timesheets, the reference date and the battery, no door
+    record), current_group (the user list's group as it stands), login (the notes unread), paid (overtime by the pay
+    period), recleans (re-cleans counted), staffbadge (the doors read on staff and temp badges only), natural (the
+    group as it stands, the notes unread, overtime by the pay period, no door record)."""
     T = pd.read_csv(os.path.join(target, TASKS_F), dtype=str, keep_default_na=False)
     U = pd.read_csv(os.path.join(target, USERS_F), dtype=str, keep_default_na=False)
     users = {r.login: r for r in U.itertuples()}
@@ -669,12 +735,17 @@ def ask_a(target, mode="golden"):
     for r in U.itertuples():
         if r.login.startswith("block"):
             continue
-        f = r.display_name.split(" ")[0]
-        firsts.setdefault(f, set()).add(r.display_name)
+        firsts.setdefault(r.display_name.split(" ")[0], set()).add(r.display_name)
     for n in brn_names:
         firsts.setdefault(n.split(" ")[0], set()).add(n)
-    paid = mode in ("paid", "cracker")
-    mode = "golden" if mode == "paid" else mode
+    use_doors = mode not in ("careful", "natural")
+    notes = mode not in ("login", "natural")
+    by_group = mode in ("current_group", "natural")
+    paid = mode in ("paid", "natural")
+    lent = lent_tablets(target, T, U, staff_only=(mode == "staffbadge")) if use_doors else {}
+    lent_ids = {tid: b for (lg, d), (b, ids, _) in lent.items() for tid in ids}
+    present = doors(target, staff_only=(mode == "staffbadge"))[0] if use_doors else set()
+    covered = {d for _, d in present}
     keep = T["task_type"].isin(["Departure", "Stayover"]) & (T["status"] == "Completed")
     if mode == "recleans":
         keep = T["task_type"].isin(["Departure", "Stayover", "Re-clean"]) & (T["status"] == "Completed")
@@ -687,25 +758,24 @@ def ask_a(target, mode="golden"):
             continue
         u = users[r.user_login]
         person = u.display_name
-        if mode in ("golden", "current_group", "created2026", "recleans") and \
-                u.user_group == "Housekeeping Supervisors" and r.note:
+        if notes and u.user_group == "Housekeeping Supervisors" and r.note:
             hits = [f for f in firsts if re.search(r"\b%s\b" % re.escape(f), r.note)]
             assert len(hits) == 1, r.note
             names = firsts[hits[0]]
             assert len(names) == 1
             person = list(names)[0]
-        if mode in ("golden", "recleans"):
-            brn = (u.user_group == "Agency - Brennock" and person == u.display_name) or (person, d) in brn_on
-        elif mode in ("current_group", "login", "cracker"):
+        own_login = person == u.display_name
+        lent_to = r.task_id in lent_ids
+        if lent_to:
+            person, own_login = lent_ids[r.task_id], False
+        if lent_to and person is None:
+            brn = True            # an absent attendant's login with no one found: read as the agency's work
+        elif by_group:
             pu = [x for x in users.values() if x.display_name == person]
             grp = pu[0].user_group if pu else ("Agency - Brennock" if person in brn_names else "")
             brn = grp == "Agency - Brennock"
-        elif mode == "created2026":
-            pu = [x for x in users.values() if x.display_name == person]
-            brn = (pu and pu[0].created >= "2026-01-01" and pu[0].created < "2027-01-01") or \
-                (not pu and person in brn_names)
         else:
-            raise ValueError(mode)
+            brn = (u.user_group == "Agency - Brennock" and own_login) or (person, d) in brn_on
         ttype = r.task_type if r.task_type != "Re-clean" else par[r.parent_task_id]
         side = "brn" if brn else "crew"
         out[w]["%s_%s" % (side, "dep" if ttype == "Departure" else "stay")] += 1
@@ -717,67 +787,11 @@ def ask_a(target, mode="golden"):
             m = re.match(r"OT (\d\d)/(\d\d)/(\d\d) ([\d.]+)h$", r.reference)
             d = dt.date(2000 + int(m.group(3)), int(m.group(2)), int(m.group(1)))
             assert abs(float(m.group(4)) - float(r.hours)) < 1e-9
+        if use_doors and not paid:
+            sur, first = r.employee.split(", ", 1)
+            if d in covered and ("%s %s" % (first, sur), d) not in present:
+                continue          # paid on a day its attendant was not in the building: no hours worked
         w = week_of(d)
         if w is not None:
             out[w]["ot"] += float(r.hours)
-    return out
-
-
-# ---------------------------------------------------------------------------------------------------- Ask B
-def ask_b(target, mode="golden"):
-    """For each day of the 2026 block week, the hours Brennock may bill for the block under the framework agreement
-    (4.1 to 4.3) and the charge before VAT (5.1). mode: golden; local (the loading bay's times read as local);
-    nomin (4.3 not applied); nosunday (5.1's Sunday rate not applied); shifted (every access time moved an hour)."""
-    ts = timesheets(target)
-    block = [r for r in ts if r["kind"] == "Block"]
-    days = sorted({r["date"] for r in block})
-    Bg = pd.read_csv(os.path.join(target, BADGE_F), dtype=str, keep_default_na=False)
-    badge = {(r.date, r.issued_to): r.badge for r in Bg.itertuples()}
-    Ac = pd.read_csv(os.path.join(target, ACCESS_F), dtype=str, keep_default_na=False)
-    ev = {}
-    for r in Ac.itertuples():
-        t = dt.datetime.fromisoformat(r.event_time)
-        if r.reader == "LB-02" and mode not in ("local",):
-            t = K.utc_to_local(t)
-        if mode == "shifted":
-            t = t + dt.timedelta(hours=1) if r.reader != "LB-02" else t
-        ev.setdefault((t.date().isoformat(), r.badge), []).append((t, r.direction))
-    out = {}
-    for d in days:
-        hrs = 0.0
-        for r in [x for x in block if x["date"] == d]:
-            b = badge[(d.isoformat(), r["name"])]
-            e = sorted(ev[(d.isoformat(), b)])
-            ins = [t for t, k in e if k == "IN"]
-            outs = [t for t, k in e if k == "OUT"]
-            bs = dt.datetime.combine(d, dt.time.fromisoformat(r["start"]))
-            be = dt.datetime.combine(d, dt.time.fromisoformat(r["end"]))
-            s = max(bs, min(ins))
-            en = min(be, max(outs))
-            mins = max(0.0, (en - s).total_seconds() / 60.0)
-            h = np.floor(mins / 15.0 + 1e-9) / 4.0
-            if h > 6.0:
-                h -= 0.5
-            if mode != "nomin" and ins:
-                h = max(h, 4.0)
-            hrs += h
-        rate = 22.56 * (1.25 if (d.weekday() == 6 and mode != "nosunday") else 1.0)
-        out[d] = (float(hrs), K.round_dp(hrs * rate, 2))
-    return out
-
-
-def week_charge(b):
-    """The week's charge before VAT: each day's billable hours at its rate (framework agreement 5.1), to the cent."""
-    tot = sum(h * 22.56 * (1.25 if d.weekday() == 6 else 1.0) for d, (h, _) in b.items())
-    return K.round_dp(tot, 2)
-
-
-def invoice_b(target):
-    import pdfplumber
-    pdf = pdfplumber.open(os.path.join(target, "brennock_invoice_BHS-INV-2026-0833.pdf"))
-    text = "\n".join(p.extract_text() for p in pdf.pages)
-    out = {}
-    for m in re.finditer(r"\w{3} (\d\d)/(\d\d)/(\d{4}) (\d+) ([\d.]+) ([\d.]+) ([\d,]+\.\d\d)", text):
-        d = dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
-        out[d] = (float(m.group(5)), float(m.group(7).replace(",", "")))
     return out

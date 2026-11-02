@@ -5,30 +5,49 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-16",
+ "updated": "2026-11-02",
  "stump": "Forecasting each night's remaining bookings from its own past pickup at the same days before arrival puts the concert week (9 to 15 August) first with about 600 room-nights above the crew's 380 a night; the step that lands it there is treating each night's pickup as independent of the others, when a festival stay booked after the confirmation needs a room on every night of it and the two concert nights are already full, so the stays that make much of that week's pickup cannot be sold, the concert week falls to about 200 and the closing week (23 to 29 August, about 400) gets the block.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-16",
-  "checks": 49
+  "date": "2026-11-02",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-16, the shipped cut daaad09a): ten lines, each answered in the design note's ## Leak review",
-  "reader": "two rounds in task147/leak_check_report.md (## Solver's-eye read): round 1 (the stage 3 cut cd5abab, 5c3be492) clean, Q6 analytical, its 'come next' and rounding-order readings closed by SF8 and SF9; round 2 (the repaired cut c06e15f, daaad09a, the shipped pack) clean on Q1 to Q4, Q6 analytical, its literal 'book as it stands' route landing the concert week (the default) and its 'come next' reading closed by SF8"
+  "leak_py": "REVIEW, no LEAK (--asof 2027-07-01, d05e2f56)",
+  "reader": "two rounds in task147/leak_check_report.md (## Solver's-eye read): round 1 (the stage 3 cut cd5abab, 5c3be492) clean, Q6 analytical, its 'come next' and rounding-order readings closed by SF8 and SF9; round 2 (the repaired cut c06e15f, daaad09a, the shipped pack) clean on Q1 to Q4, Q6 analytical, its literal 'book as it stands' route landing the concert week (the default) and its 'come next' reading closed by SF8; a fresh read is owed on the re-check cut (the prompt's ask clause and the pack's documents changed; copy in the scratchpad's leak-task147-ask)",
+  "reship_reader": "2026-11-02, fresh copy of d05e2f56: no decisive-step sentence, nothing ranks the roster weeks, Q6 an analytical choice (forecasting each 2027 night's final occupancy from the partial book); it did not find the lent-tablet device; the supervisor notes and the payroll references it raised are the old devices, now hazards"
  },
  "duplicate_check": {
   "heart": "WARN repeat.question_form, answered",
-  "nearest": "driver 0.08 (task138 v1 lineage); surface 0.100, not promoted"
+  "nearest": "driver 0.08 (task138 v1 lineage); surface 0.100, not promoted",
+  "heart_2026_11_02": "BLOCK read against the dates: test.same_driver_older against task159, drawn 2026-10-17 after this build's 2026-10-16 draw (H27); surface exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (the re-judge on the repaired cut daaad09a), Gate H analytical",
+  "verdict": "DETERMINISTIC (pass 3, on d05e2f56)",
   "disposition": "APPROVE; the weeks replayed at 9, 66, 209, 140 and 411 and every ask cell reproduced (EUR 9,654.27); its wording finding fixed in the write-up and goldens (the stays that touched either night, 423; 155 if a stay must cover both); its optional LB-02 pin declined",
   "report": "task147/determinism_check_report.md (the re-judge); history: determinism_check_report_round1.md (the first judge on the stage 3 cut cd5abab, DETERMINISTIC with a FIX_NOW on 78 amendments dated after the extract, fixed at c06e15f)",
-  "stump_power": "strong"
+  "stump_power": "strong",
+  "pass3": "2026-11-02 on d05e2f5675e879ceae9dcc277575bd23: DETERMINISTIC, APPROVE (task147/determinism_check_report_pass3.md); the closing week first (about 413, 400 to the nearest hundred), the concert week second (211 to 226) under every stay-constrained variant, the per-night pickup's easy route filing the concert week first (550 to 620); all 25 cells of the 2026 table reproduced with one reading of who did each room and on which day (the lent logins credited to the one Brennock regular who was in, by the door record); the 1 August start of the access files closed by coverage; Gate G forecasting, analytical_non_defect; Gate H analytical; its optional wording note on step 6 applied ('the work of the one attendant who was in')"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK 1 file names pms_export_notes.txt, export_notes; LEAK 12 describing content pms_export_notes.txt, 21 column names, 100% of the extract's; LEAK 13 metadata.json title carries 480)",
+   "repair": "leak",
+   "move": "Stopped writing pms_export_notes.txt (the reservation extract's field list and its conventions) and folder_contents.csv (a manifest of every file's system, date, coverage and keeper): both described the data. Each convention the call's determinism needs is now carried by the producing file's own form, every closure asserted through csv and openpyxl as the verifier reads: the UTC zone by the extract's created_utc and cancelled_utc (SF10), the book's stamp by the extract's latest booking, 05:12:09 UTC, 06:12 local (SF4, the write-up's 06:12), a reservation's nights by the extract's nights column and the night audit (SF12), one row per room by the night audit's reconciliation (SF14), current dates by the amendment log's latest new values (SF11), the hotel's 480 rooms by the night audit's rooms available (SF7), and the status codes by a new Reservation status sheet in pms_code_lists.xlsx, a plain crosswalk (RES Reserved, INH In house, OUT Checked out, CXL Cancelled, NS No-show; SF13). Provenance (system, date taken or received, keeper) moved to metadata.json, whose title (it carried 480 and the full concert nights), subdomain (it narrated the replay) and prompt shape were cut to the decision. checks.py asserts no describing file by name, sheet or content. On the leak cut (md5 8a577514a0e99d5e7682e3755ad7a3cd) every figure stood: freeze --mode determinism PASS, figures.json unchanged.",
+   "commit": "RESHIPPED (task147)"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house ask audit under the careful-solver cracker (generator/ceiling.py on the leak cut: 33 of 33 ask figures kept, pair 83.5)",
+   "repair": "rubric",
+   "move": "generator/ceiling.py (new) ran the careful-solver cracker on the leak cut and it kept all 33 ask figures (pair 83.5): Brennock's timesheets and HR's start dates settled A1, the note column A2, each payroll line's reference A3, the door readers' hour profile B1. Ask A re-sited onto the lent tablets: on nine August days a Brennock regular's loan tablet dropped out and she finished her rooms on the signed-in tablet of a crew attendant off that day, whose door record is empty, and seven of those days' late finishes were paid to that attendant; the over-cleaning half is ten crew attendants on day badges from reception. Every Ask A figure is unchanged (who did each room is unchanged; only the tablets' logins moved). Ask B cut (no re-site passed both tests), with its invoice and the framework agreement; the prompt's ask sentence now reads 'with the overtime hours our crew worked' and drops the billing table and the euros, the call sentence unchanged. Measured: cracker 0 of 25, mirror leakage 8.0 per cent, pair 32.9 (58.2 with the device found alone), two careful responses on the call 49.4, the full includer 25 of 25.",
+   "target_zip_md5": "d05e2f5675e879ceae9dcc277575bd23",
+   "commit": "RESHIPPED (task147)"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-16",
@@ -38,16 +57,17 @@
  "portal_status_date": "",
  "wave": "wave 3 (new), seed FC18 (world, decision and quantity kept; pitfall re-found)",
  "gates": {
-  "checks": "141, 0 failed",
-  "verify": "agrees on its own replay (W5 408, W3 180, default W3 556; full nights releasing 19.4 and 20.5 rooms; Ask A 25 and Ask B 8 figures equal in the workbook)",
-  "rebuilds": "two byte-identical; the final rebuild cut the shipped target.zip again (daaad09a)",
-  "figures_check": "99 figures, 0 absent",
-  "precut": "49 checks, 0 FAIL, 0 WARN",
-  "voice_check": "exit 0 (932 characters)",
+  "checks": "145, 0 failed",
+  "verify": "agrees on its own replay (W5 408, W3 180, default W3 556; full nights releasing 19.4 and 20.5 rooms; last season's table, 25 figures, equal in the workbook; 9 lent crew logins, each with one borrower still in)",
+  "rebuilds": "two byte-identical; target.zip md5 d05e2f5675e879ceae9dcc277575bd23 (sha256 d63a1e46212add3f)",
+  "figures_check": "84 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 8 WARN (the Survivor anatomy section, which predates the build)",
+  "voice_check": "PASS (769 characters; WARN shell quota, the frozen call sentence's 'which')",
   "scrub": "target and golden clean",
-  "guard": "validate clean, heart WARN (repeat.question_form, answered), surface exit 0 (0 promoted; NOTE 'Monte Carlo' read as a persona from the domain tag)",
-  "freeze": "determinism mode against c06e15f: only the wording of the design note's ladder R1 row and rate-evidence bullet moved, every number equal",
-  "leak_py": "REVIEW, no LEAK"
+  "guard": "surface exit 0 on the 2026-11-01 re-check cut (NOTE 'Monte Carlo' read as a persona from the domain tag)",
+  "freeze": "rubric mode PASS against the pre-repair snapshot; determinism mode flags only the cut Ask B answers (the leak cut alone passed determinism mode)",
+  "leak_py": "REVIEW, no LEAK (eight lines, each ruled in the design note's ## Leak review)",
+  "ceiling": "generator/ceiling.py: cracker 0 of 25, mirror leakage 8.0, pair ceiling 58.2"
  },
  "rule3_audits": [
   {
@@ -61,8 +81,15 @@
  "accepted_risks": [
   "skipping the book's attrition (every room on the book staying, later bookings replayed against it as it stands) files 477 and 260: the call and the next week hold, both figures a bin up (asserted)",
   "the stay constraint on the concert week alone with additive pickup elsewhere puts the week after second (226 against 180), an inconsistent method; the thin margin on the next week's figure under it accepted (asserted)",
-  "the LB-02 reader's UTC clock unstated (Ask B's device, recoverable from the data); the re-judge's optional pin declined",
+  "the LB-02 reader's UTC clock unstated (hazard HA8 on the ask's door record since the 2026-11-01 re-check: presence on a day is unaffected and an hour profile recovers it); the re-judge's optional pin declined",
   "recovery of turned-away stays as shorter stays: 11 per cent in the history against the 59 per cent a tie needs (asserted)"
  ],
- "shipped_cut": "commit c06e15f, re-cut identically at ship; target.zip sha256 daaad09a10319e7ecdbe979f96eacfbaac96fe52a7414d846d5c67b9f651cdfb"
+ "shipped_cut": "re-cut at the 2026-11-01 re-check (leak and rubric repairs, commit pending); target.zip md5 d05e2f5675e879ceae9dcc277575bd23, sha256 d63a1e46212add3fa8e655d8610219ff0cbd5740d216ca9f9b65568b7b9b6aa6",
+ "ask_audit_2026_11_01": {
+  "before": "cracker 33 of 33 kept on the leak cut (pair 83.5; A1, A2, A3 and B1 spent)",
+  "after": "cracker 0 of 25 kept; mirror leakage 8.0 per cent; pair 32.9, 58.2 with the device found alone; two careful responses on the call 49.4",
+  "devices": "A-L lent tablets (primary), day-badge twins (over-cleaning half); A1, A2 and A3 kept as hazards HA5 to HA7; Ask B cut",
+  "measured_by": "generator/ceiling.py"
+ },
+ "target_zip_md5": "d05e2f5675e879ceae9dcc277575bd23"
 }

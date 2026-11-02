@@ -22,13 +22,13 @@ same bins.
 | Card | `.claude/skills/fingerprint/cards/task147.json`, architecture v1, registered 2026-10-16; `guard.py check` WARN (repeat.question_form, answered below), no BLOCK; nearest drivers 0.08 and under |
 | Domain / task type | `supply-chain-logistics` (house domain, the seed's: a hotel's room inventory is perishable stock and the block is staffing planned against the demand forecast for it) in client domain `general-statistics-data-science`, task type `resampling-simulation-monte-carlo-methods` (forecasting): the setting is another field's and the deciding statistical object is the resampled unit; the bookings still to come are simulated as whole stays, blocks of consecutive nights each accepted only if every night has a room, by replaying each past season's later bookings against this year's book (a historical simulation, the season the replicate, the stay the unit), not summed night by night, and the night-level summary changes the call |
 | Objective | Forecasting & Predictive Modeling: the occupied rooms of each night from Monday 26 July to Sunday 29 August 2027, a window not yet open at the decision (Thursday 1 July 2027, the Thursday five weeks before the festival's opening night) |
-| Shape | `other`: the pick, its room-nights above capacity, the runner-up and its figure, the critical components, the chart's named parts, and two ask tables on the 2026 season (about 50 criteria, `## Ask sheet`) |
+| Shape | `other`: the pick, its room-nights above capacity, the runner-up and its figure, the critical components, the chart's named parts, and one ask table on the 2026 season (about 40 criteria, `## Ask sheet`; a second table was cut at the 2026-11-01 re-check) |
 | Decision | `pick_one_of_n` over the five roster weeks, answer unit `named_option` (with its room-nights above the crew's 380 a night to the nearest hundred) |
 | Mechanism | gap objective (decisive: each night's occupied rooms are the right measure, and the constraint the night-level forecast never checks, that a stay needs a room every night, removes the natural pick) with population (the booking process's unit is the stay, not the room-night) and time (only the bookings after the confirmation date are blocked); pattern none; generators G8 (a stay through a full night cannot be sold: binary), G2, G13; Gate G `binding_constraint`; strategy `binding_constraint` |
 | Layer 2 family / pattern | `estimation_fit`; `general-statistics-data-science/resampling-simulation-monte-carlo-methods/1` (resample the independent unit, clusters or blocks, not rows): here the unit is the stay, a block of consecutive nights, and each night's remaining rooms decide whether a replayed stay is taken |
 | Furniture | forum `customer_or_counterparty` (the staffing agency receives the confirmation), forcing event `season_or_peak` (the festival season's roster), organisation family `hospitality_or_tourism`, role family `capacity_planner` (the executive housekeeper), context artifact `close_out_summary` (the night audit's daily statistics), calibration `none`, opening `question-first`, question form `which` |
 | Spine | `pms_reservations_extract_2027-07-01.csv`, the property management system's reservation extract on the confirmation morning: one row per room reserved for arrivals from 1 January 2022, cancelled and no-show rooms kept (constructed, 360,694 rooms reserved) |
-| Deliverables | `housekeeping_block_2027.xlsx` (the call, the runner-up, the two ask tables), `housekeeping_block_2027.pdf` (a one-page note with the week and the nightly forecast chart against the crew's 380) |
+| Deliverables | `housekeeping_block_2027.xlsx` (the call, the runner-up, the ask table), `housekeeping_block_2027.pdf` (a one-page note with the week and the nightly forecast chart against the crew's 380) |
 | People | drawn with `guard.py names --geo Ireland --seed 147`: Fergus Roddy (executive housekeeper, the requester; not in the prompt), Edel McCay (rooms division manager, owner of the housekeeping staffing standard), Naoise Meskill (Brennock Hospitality Staffing's account manager), Grainne McGuinn (HR and payroll administrator); room attendants, supervisors, temps, reception, reservations and visitors from the same tool on its en_IE, pl_PL, ro_RO and pt_BR pools (seeds 147, 1471, 1477), first names unique across the housekeeping people |
 
 **Guard.** `guard.py check` on the registered card: WARN `repeat.question_form` (`which` beside task462). Answered: the
@@ -82,6 +82,16 @@ filled Friday and Saturday nights weeks ahead since 2022, seven of them full fiv
 supplies regular temps all summer and day temps on busy days; the 2026 block went to the festival's first full week,
 10 to 16 August 2026.
 
+## Survivor anatomy
+
+Actor: the deciding property, that a stay needs a room on every night it spans, has no column: the extract holds each room's arrival and departure, the full nights are counts of rooms on the book, and nothing stores which later stays would run through the full Friday and Saturday.
+Link: the signal is a cross-unit comparison the night-level method never asks for: each past season's later bookings, grouped by booking reference and taken in booking order, replayed whole against this year's book night by night; no key, code or clause names a stay against a full night.
+Reflex: the field's named method, each night's own pickup at the same days before arrival (classical additive pickup), is rung R1 and files the concert week at about 600 (Ends on: 556), the closing week second.
+Back-test: the textbook route validates where a solver would check it: on the past Augusts at their comparable points (no night full) the night-level forecast's own back-test passes (mean errors 4.3, -2.5, -0.5, -12.1 and 9.6 rooms a night by season).
+Second use: every file the decisive step reads is in the pack for its own reason: the extract and its amendment log build every rung's book and pickup, the programme history aligns the seasons, HK-04 fixes the target, and the events diary dates the past event weekends the release rates and the back-test read.
+Shock: the movement reads as ordinary: two nights full five weeks out, as on seven past event weekends, and the golden week is the default path's runner-up, never the extreme of a shipped statistic.
+Pins: HK-04 files the WHAT (the roster week, the occupied rooms above 380 summed night by night, the book as it stands on the confirmation morning) and no filed sentence names a stay, a pickup, a replay or a full night refusing a later booking (the R3 strict block).
+
 ## Default path
 
 1. Read the reservation extract and build each night's rooms on the books at the extract (06:12 on Thursday 1 July 2027:
@@ -127,8 +137,8 @@ cannot be sold, the concert week falls to about 200 and the closing week (23 to 
   guest-count changes in its separate amendment log, the extract carrying current dates; rate, channel and market codes
   in a separate code list, the online agencies renamed in the 2025 channel review; the night audit's daily statistics one
   sheet per year in two layouts after the 2024 system upgrade; complimentary, house-use and day-use rows beside sold
-  rooms; the festival's dates in its own programme history; on the ask paths the housekeeping app's task log, its user
-  list and the HR list as they stand now, Brennock's timesheets and invoice, the staff access system's badge events and
+  rooms; the festival's dates in its own programme history; on the ask path the housekeeping app's task log, its user
+  list and the HR list as they stand now, Brennock's timesheets, the staff access system's badge events and
   reception's day-badge log, and the payroll overtime lines by pay period. Each is what these systems write; none moves
   the call (R2, asserted per item).
 - **Layer 2:** `estimation_fit`, resample the independent unit: the bookings still to come are blocks of nights, each
@@ -150,8 +160,10 @@ cannot be sold, the concert week falls to about 200 and the closing week (23 to 
   rooms occupied on its seven nights), 2.3 (an occupied room, complimentary and house-use rooms in, no-shows and day-use
   rooms out), 3.1 (the crew's 380 a day), 3.2 (rooms above capacity summed night by night), 4.1 (the block to the week
   with the most, forecast for the season) and 4.2 (confirmed on the Thursday five weeks before the opening night on the
-  book as it stands that morning); the PMS export notes (one row per room under a shared booking reference, times in UTC,
-  a reservation's nights, current dates, the hotel's 480 rooms). Executed word for word on the clean truth, together, they
+  book as it stands that morning); the PMS code list's status labels (RES Reserved, INH In house, OUT Checked out, CXL
+  Cancelled, NS No-show), the PMS's only words on the path, beside the files' own form (the time columns named for UTC,
+  the nights column, the night audit's 480 rooms available, the amendment log's old and new values; no file describes
+  the extract). Executed word for word on the clean truth, together, they
   fix the target and give no forecast: they carry no pickup, rate, history or method, never say how the remaining bookings
   arrive, and none says a stay needs a room every night or that a full night blocks its neighbours; the estimators they
   admit (night-level pickup, ratio, regression, rate-plan realisation or the seasonal average) all file the concert week.
@@ -178,8 +190,8 @@ cannot be sold, the concert week falls to about 200 and the closing week (23 to 
   argues a week, a figure or a method; the night audit statistics and the events diary are records of the past and of the
   calendar; the distractors (the competitor rate shop and the city tourism office's monthly occupancy survey) rank nothing.
 - **No certified replay:** nothing certified or published is reproduced; the remaining bookings' structure is estimated
-  from the raw reservation history, and no past forecast ships (the 2026 block's week appears only as the invoice's week,
-  a fact of that season).
+  from the raw reservation history, and no past forecast ships (the 2026 block's week appears only as the Block bookings
+  on Brennock's 2026 timesheets, a fact of that season).
 - **Lesson:** a forecast of a capacity-limited stock built from requests that span several units must be simulated on
   the requests, replayed whole against what is left, not unit by unit: a unit that is already full removes the later
   requests that need it, so its neighbours
@@ -212,17 +224,17 @@ Every row is asserted in `generator/checks.py`.
 | SF1 | "roster week" | Monday to Sunday, the five from 26 July to 29 August 2027 | Sunday to Saturday; the week of cleaning days | not the standard's week (the closing week would still lead, 453) | HK-04 2.1 and 2.2 (a roster week covers the rooms occupied on its seven nights, Monday night to Sunday night) |
 | SF2 | "occupied rooms" | every room with a guest overnight, complimentary and house-use rooms in, no-shows and day-use rooms out | sold rooms only | same call (asserted: W5 401, W3 177) | HK-04 2.3 |
 | SF3 | "room-nights above the crew's capacity" | each night's occupied rooms above 380, summed over the week's seven nights | the week's occupied room-nights less 2,660 | same call and runner-up (asserted: W5 408, W3 161 netted) | HK-04 3.2 |
-| SF4 | "the book as it stood this morning" | the extract, 06:12 on 1 July 2027 | the book at 00:00 on 1 July | same call (asserted: 411, 180) | the extract's stamp; HK-04 4.2 |
+| SF4 | "the book as it stood this morning" | the extract, 06:12 on 1 July 2027 | the book at 00:00 on 1 July | same call (asserted: 411, 180) | the extract itself: its latest booking 05:12:09 UTC, 06:12 local (asserted); HK-04 4.2 |
 | SF5 | the comparable point in past years | the Thursday five weeks before each year's opening night (the same days before arrival for every aligned night) | 1 July of each year | same call, same bins (asserted: 374 and 170) | HK-04 4.2 |
 | SF6 | the years the pickup is measured on | 2022 to 2026 | any four of them, the last three, the last two | same call, same bins (asserted: closing week 399 to 432, concert week 175 to 188) | none needed |
-| SF7 | the cap on a full night | 480 rooms less the event rate's no-shows (3.2 per cent) | 480 | same call (asserted: W3 211) | the hotel's 480 rooms (PMS notes) |
+| SF7 | the cap on a full night | 480 rooms less the event rate's no-shows (3.2 per cent) | 480 | same call (asserted: W3 211) | the night audit's rooms available, 480 every business date from 2024, and its 2022 and 2023 occupancy over 480 (asserted); no night of the book above 480 |
 | SF8 | "the week that would come next" | the roster week with the next most room-nights above capacity, on the same forecast | the calendar week after the block week (from Monday 30 August) | not a roster week of the season, so no figure of its own | HK-04 2.1 (the season's five roster weeks); the prompt ("with its own figure") |
 | SF9 | rounding | each week's figure from unrounded nightly forecasts, to the nearest hundred, once | per night | asserted one arithmetic (408 and 409, both 400) | the prompt's last sentence |
-| SF10 | booking and cancellation times | UTC in the extract, the cut at 06:12 local (05:12:44 UTC) | read as local | same call (asserted: 408, 180; 40 rooms move across the six cuts) | the PMS notes (times in UTC) |
-| SF11 | the past books' dates | as they stood at the comparable point (amendments after it undone) | the current dates | same call (asserted: 411, 181) | the amendment log |
-| SF12 | a reservation's nights | arrival to the night before departure | departure night included | not the hotel's count | the PMS notes |
-| SF13 | status codes | OUT and INH stayed; CXL and NS did not; RES on the book | NS counted occupied | the call and the next week hold (asserted: W5 463, W3 211), the closing week's figure a bin up | HK-04 2.3 ("No-show and day-use rooms are not.") |
-| SF14 | rooms booked together | one row per room, the booking reference shared | one room per booking reference | not the hotel's count: short of the night audit by 41 to 92 rooms on every past festival night (asserted) | the PMS notes |
+| SF10 | booking and cancellation times | UTC in the extract, the cut at 06:12 local (05:12:44 UTC) | read as local | same call (asserted: 408, 180; 40 rooms move across the six cuts) | the extract's own column names (created_utc, cancelled_utc; the dates carry no clock), asserted |
+| SF11 | the past books' dates | as they stood at the comparable point (amendments after it undone) | the current dates | same call (asserted: 411, 181) | the amendment log: its latest new value on every changed reservation is the extract's own date, so the extract holds current dates and the log the old ones (asserted) |
+| SF12 | a reservation's nights | arrival to the night before departure | departure night included | not the hotel's count | the extract's nights column (departure less arrival on every row) and the night audit, equal to the rooms that stayed from arrival to the night before departure (asserted) |
+| SF13 | status codes | OUT and INH stayed; CXL and NS did not; RES on the book | NS counted occupied | the call and the next week hold (asserted: W5 463, W3 211), the closing week's figure a bin up | HK-04 2.3 ("No-show and day-use rooms are not.") with the PMS code list's status sheet (NS No-show, a plain crosswalk; asserted) |
+| SF14 | rooms booked together | one row per room, the booking reference shared | one room per booking reference | not the hotel's count: short of the night audit by 41 to 92 rooms on every past festival night (asserted) | the night audit, which the rows reconcile to only one row a room (asserted); every confirmation number once |
 | SF15 | "forecast" | the expected occupied rooms of each night | a pessimistic or high case | same call (the golden matches the world's own expectation in both bins) | the prompt; HK-04 4.1 |
 | SF16 | the festival's alignment | each past night at the same weekday and position from the opening Friday (the same-numbered roster week) | the same calendar date | the call holds (asserted: W5 330, W3 169), the closing week's figure a bin down | HK-04 2.1 (roster weeks numbered 1 to 5 in every season); the programme history (the first Friday moves up to five days) |
 | SF17 | the rooms a full night will free, and their resale | each full night's book at its rate codes' own past release rates (the event rate from the past event weekends, every other code from the aligned festival Friday and Saturday), 19 and 20 rooms, offered to the later stays in booking order | no resale (the full nights closed); the full nights at 480; a pooled festival share (41 rooms cancelled a night, or 55 that did not stay) | same call and bins (asserted: W3 174, 211, 214 and 235 against the golden's 180; W5 408 under each) | the data: on the 14 full nights of the past event weekends the bookings released 135 rooms after the cut, the codes' own rates predicted 164 and the pooled shares 578 and 768 (asserted, C4); no sentence is filed |
@@ -314,14 +326,14 @@ Each row's assertion is in `checks.py`.
 | # | Axis | Reading | Closure |
 |---|---|---|---|
 | 1 | Population | every room occupied on each night 26 July to 29 August 2027, the stays not yet booked included | filed (HK-04 2.2, 2.3, 4.1); SF2 |
-| 2 | Unit of account | occupied rooms, each room of a multi-room booking counted | filed (PMS notes: one row per room); SF14 |
+| 2 | Unit of account | occupied rooms, each room of a multi-room booking counted | C1 in the data: the night audit reconciles to one row a room (SF14, asserted) |
 | 3 | Attribution window | a night belongs to the roster week holding its date | filed (HK-04 2.1, 2.2); SF1 |
-| 4 | As-of dating | the book at the extract, 06:12 on 1 July 2027; past books at each year's comparable point | the extract stamp; HK-04 4.2; SF4, SF5 |
+| 4 | As-of dating | the book at the extract, 06:12 on 1 July 2027; past books at each year's comparable point | the extract's latest booking (06:12 local, asserted); HK-04 4.2; SF4, SF5 |
 | 5 | Version basis | past reservations as they stood at the comparable point (later amendments undone) | the amendment log; SF11 asserted |
 | 6 | Denominator | none: rooms are counts | design |
 | 7 | Weighting | each past year once | C1 across subsets (SF6) |
 | 8 | Window length | five past Augusts | C1 (SF6) |
-| 9 | Boundary inclusivity | a reservation's nights run from arrival to the night before departure | filed (PMS notes); SF12 |
+| 9 | Boundary inclusivity | a reservation's nights run from arrival to the night before departure | the extract's nights column and the night audit (SF12, asserted) |
 | 10 | Rounding path | nightly forecasts unrounded, floored at 380 night by night, summed, rounded once to the nearest hundred | the prompt; SF9 |
 | 11 | Tie-break | none arises | the golden 2.27 times the runner-up (asserted, 228 room-nights) |
 | 12 | Maturity and censoring | past nights complete at the extract; 2027 nights forecast; the history's capacity censoring small | C1: the world's own expectation agrees (418 against 408) |
@@ -331,14 +343,14 @@ Each row's assertion is in `checks.py`.
 | 16 | Identity normalisation | channel codes renamed in 2025 (no bearing on the call) | asserted texture |
 | 17 | Netting against gross | occupied rooms are gross of nothing; no-shows not occupied | filed (HK-04 2.3); SF13 |
 | 18 | Dimensional units | rooms a night; room-nights a week | the prompt; HK-04 3.2 |
-| 19 | Code and status semantics | status (RES, INH, OUT, CXL, NS) and rate codes (BAR, BARBB, CORP, SAV14, ADV, ADVBB, EVT, GRP, COMP, HSE, DAY) | the PMS notes and the code list; never the stump |
+| 19 | Code and status semantics | status (RES, INH, OUT, CXL, NS) and rate codes (BAR, BARBB, CORP, SAV14, ADV, ADVBB, EVT, GRP, COMP, HSE, DAY) | the PMS code list, its status sheet a plain crosswalk (asserted); never the stump |
 | 20 | Integerisation | none before the final rounding | design |
 | 21 | Clause scope | HK-04 covers the festival season's roster weeks | filed |
 | 22 | Forward window contents | the season's nights: the August bank holiday on 2 August, the festival from 6 to 29 August, the concerts on 13 and 14 August, nothing else in the events diary | the events diary; the festival's programme history; the holiday list (asserted) |
 
 ## Literal reader
 
-Executing the prompt, HK-04 and the PMS export notes word for word fixes the target (the roster week, Monday to Sunday
+Executing the prompt, HK-04 and the PMS code list word for word fixes the target (the roster week, Monday to Sunday
 from 26 July to 29 August 2027, with the most occupied rooms above 380 summed night by night, forecast on the 1 July book)
 and every term but the forecast's method; every reading converges on the golden's call and bins or violates a quoted line
 (SF1 to SF18), and the easy answers come from easy methods on the same literal target (each night's own pickup, ratio or
@@ -360,112 +372,106 @@ regression; the seasonal average), never from another reading.
 
 **Main call's declared row population:** the reservation extract's rows with a night from 26 July 2022 to 29 August 2027
 in a festival season (the five past seasons and this one), the amendment log's rows for them, the code list, the
-festival's programme history, HK-04 and the PMS export notes. Device and hazard rows in it: 0 (asserted: the call reads no
-housekeeping, badge, timesheet, invoice or payroll file, and computed from the main files alone it is the golden).
-Neither ask is keyed to the call, its construction or its figures; they share no primary device.
+festival's programme history and HK-04. Device and hazard rows in it: 0 (asserted: the call reads no housekeeping,
+badge, door, timesheet or payroll file, and computed from the main files alone it is the golden). The ask is not keyed
+to the call, its construction or its figures.
 
-**Ask A. Last year's season by roster week: departure cleans and stayover services by the crew and by Brennock's temps,
-and the crew's overtime** (25 figures: 5 weeks x (crew departures, crew stayovers, Brennock departures, Brennock
-stayovers, crew overtime hours)).
+**Ask A. Last year's season by roster week: departure cleans and stayover services done by the crew and by Brennock's
+temps, and the overtime hours the crew worked** (25 figures: 5 weeks x (crew departures, crew stayovers, Brennock
+departures, Brennock stayovers, overtime hours the crew worked)).
 - H18 home: how each of last season's roster weeks was carried, the workbook's second table, a measure every candidate
   week carries (its 2026 counterpart) that the call does not turn on; in the executive housekeeper's words ("departure
-  cleans", "stayover services", "our crew", "Brennock's temps", "overtime").
+  cleans", "stayover services", "our own crew", "Brennock's temps", "the overtime hours our crew worked").
 - Construction: the housekeeping app's tasks of the 2026 season (27 July to 30 August 2026) completed as departure cleans
-  or stayover services by service date (a re-clean after a failed inspection part of the service it repeats, do-not-disturb
-  and refused stayovers not serviced, HK-04 2.4), credited to who did them (the login's user, or the person a supervisor's
-  note names) and to Brennock when that person is on Brennock's timesheet for the day; the crew's overtime hours from the
-  payroll lines, by the date worked in each line's reference.
+  or stayover services by service date (a re-clean part of the service it repeats, do-not-disturb and refused stayovers
+  not serviced, HK-04 2.4), each credited to who did it: the login's user, or the person a supervisor's note names, or,
+  on a day a crew login's own attendant was not in the building (no event on her staff badge and no day badge from
+  reception), the attendant who closed those rooms on it (in the building that day, her own login quiet before the
+  first of them, out after the last); Brennock's when that person is on Brennock's timesheet for the day or the login is
+  Brennock's own; the overtime lines by the date worked in each line's reference, less the lines paid for a day their
+  attendant was not in.
 - Golden: 27 July to 2 August 920, 1,100, 184, 206, 17.25 hours; 3 to 9 August 796, 986, 113, 166, 20.75; 10 to 16 August
-  788, 1,336, 341, 577, 15.25; 17 to 23 August 929, 1,460, 145, 249, 11.25; 24 to 30 August 962, 1,574, 187, 276, 14.25.
-- Primary device A1 (D2, an attribute at the wrong vintage, a type-2 row read current): three of Brennock's six regular
-  temps of summer 2026 worked under app logins IT issued them on 20 and 21 July 2026 and were later taken on by the hotel
-  (12 October 2026, 11 January 2027, 8 March 2027); their logins were moved to the in-house group and the HR list (both as
-  they stand in June 2027) shows them as room attendants with start dates after the season. Every roster week of 2026 has
-  their services, so reading the user list's group credits Brennock's work to the crew in all twenty service cells. Only
-  Brennock's 2026 timesheets and the HR start dates show who they were then. Benign twins: four crew hired in 2026 and six
-  summer contracts, logins created in 2026, on no Brennock timesheet.
-- Second device A2 (D7, the true key elsewhere): Brennock's day temps on busy days had no app login; the floor supervisor
-  logged their rooms under her own login with the temp in the task note ("Brennock - Ewa", "Nela (Brennock)", "agency -
-  Stella"); 139 such tasks, in the first, fourth and fifth weeks. Attribution by login credits them to the crew. Benign
-  twin: 54 tasks a supervisor closed for a crew member whose tablet was down ("Ruth's rooms, tablet down").
-- Third device A3 (D8, a settlement date for the event date): payroll posts overtime in the fortnightly pay period after
-  the one it was worked in, the date worked only in the line's reference ("OT 12/08/26 2.25h"); allocation by the pay
-  period end puts 4.25, 0, 18.75, 0 and 36 hours in the five weeks against 17.25, 20.75, 15.25, 11.25 and 14.25.
-- Hazards: HA1 re-cleans logged as a second task with the parent task referenced, closed by the same login (154); HA2
-  do-not-disturb and refused stayovers (276 and 162); HA4 the app's times in UTC beside a local service date (no service
-  crosses midnight).
-- Stops (measured, each asserted): S1 the user list's current group, all 20 service cells off (27 July week 999, 1,199,
-  105, 107); S2 attribution by login with the notes unread, all 20 off; S3 the cracker (S1 and S2 with every filed rule,
-  the battery and the overtime by pay period), all 25 off; S4 overtime by pay period, all 5 weeks off; S5 re-cleans
-  counted, every week's departures high (27 July week 941 and 189); S6 the over-clean (every login created in 2026 counted
-  as Brennock's), all 20 off (27 July week 651, 732, 453, 574).
-- Span: the task log, the app's user list, the HR list, Brennock's timesheets, the payroll overtime lines, HK-04's service
-  definitions (6 files); 15 columns.
-- Realism: an agency's regulars get logins and are later hired; a supervisor logs a day temp's rooms under her own login;
-  payroll pays overtime the period after it is approved.
+  788, 1,336, 341, 577, 15.25; 17 to 23 August 929, 1,460, 145, 249, 11.25; 24 to 30 August 962, 1,574, 187, 276, 14.25
+  (every figure equals the world's truth, who did each room and the hours the crew worked; asserted).
+- Primary device A-L (a reconstruction across two systems, one attendant's rooms under another attendant's key, the
+  held form of a specimen under two gateway keys): on nine days from 1 August (one in the first roster week, two in each
+  later one) a Brennock regular's loan tablet dropped out mid-morning and the floor supervisor handed her the tablet of a
+  crew attendant who was off that day, still signed in to her; the rest of the regular's rooms, 6 to 12 a day (71
+  completed services, 49 departures and 22 stayovers), carry the crew attendant's login. No field, note or code says so.
+  Only the door record shows it: that login's own attendant has no event on her staff badge and no day badge that day,
+  while exactly one attendant was in whose own login went quiet before the first of those rooms and who left after the
+  last, a regular on Brennock's timesheet for the day (asserted for all nine). On seven of the days the borrowed tablet
+  closed rooms after 16:00 and the app's late-finish claim was paid to the tablet's own attendant (seven payroll lines,
+  0.25 to 0.75 hours, in every roster week). Every figure moves: crew departures 6 to 14 high, crew stayovers 2 to 7
+  high, Brennock's the same low, overtime 0.50 to 1.00 hours high.
+- Over-cleaning half: ten crew attendants came in without their staff badge and signed in at reception for a day badge
+  (company The Weighhouse Hotel, two a roster week); their staff badges show nothing those days, their own logins worked
+  the whole day and five of them worked overtime. Reading the doors on staff badges alone counts them out and files every
+  figure wrong (S6).
+- Hazards, each executed by the careful solver and kept as stops: HA1 re-cleans logged as a second task referencing its
+  parent, on the tablet that closed it (154); HA2 do-not-disturb and refused stayovers; HA4 the app's times in UTC beside a
+  local service date (no service crosses midnight); HA5 three regulars later hired, their logins and the HR list now in
+  the hotel's group (Brennock's 2026 timesheets and HR's start dates after the season show who they were); HA6 the day
+  temps' rooms closed under a supervisor's login with the temp in the note (benign twin: a crew attendant's rooms when
+  her tablet was down); HA7 overtime paid in the period after it was worked, the date worked in the line's reference;
+  HA8 the loading bay reader's controller on UTC (an hour profile finds it; presence on the day is unaffected).
+- Stops (measured on the cut pack, each asserted): S1 the user list's group as it stands, 20 of 25 off; S2 the notes
+  unread, 12 off; S3 the cracker (every filed rule, the notes, Brennock's timesheets, HR's start dates, the reference
+  dates and the battery, each room to its login), all 25 off (27 July week 926, 1,102, 178, 204, 17.75); S4 overtime by
+  the pay period, 5 off; S5 re-cleans counted, 16 off; S6 the over-clean (the doors on staff and temp badges only), all 25
+  off; S7 the natural read (the group as it stands, notes unread, overtime by pay period), all 25 off.
+- Rival readings (asserted in `checks.py`): each room to its login's own attendant (S3) and the doors on staff badges
+  alone (S6) are ruled out by the door record, which shows the attendant out and the twin in; the lent rooms left out of
+  both sides is ruled out because the door record names one borrower for every lent login-day; the lent rooms credited
+  to the agency without naming the borrower files the golden (every borrower is a Brennock regular); the July days, before
+  the door record's first day, read by their logins under every reading (no lent day falls before 1 August).
+- Pin test: the asking sentence carries the WHAT (who did the services; the overtime the crew worked) and no handling;
+  HK-04 is the pack's only document and names no tablet, login, badge or door (asserted); nothing describes the door
+  record or the app.
+- Span: the task log, the app's user list, the HR list, Brennock's timesheets, the payroll overtime lines, the staff
+  access events, reception's day-badge log and HK-04's service definitions (8 files).
+- Realism: an agency's loan tablets drop off a hotel's wifi and a supervisor hands round a signed-in tablet from the
+  linen room; the app credits the tablet's user and claims her late finish; staff who forget their badge sign in at
+  reception for a day one; an agency's regulars get logins and are later hired; payroll pays overtime the period after.
 
-**Ask B. Last year's block week: the hours Brennock may bill for the block each day, and the week's charge before VAT**
-(8 figures: 7 days' hours and the week's charge).
-- H18 home: an audit trail of last season's block, the workbook's third table, the budget line for this year's; a
-  measure the call does not turn on.
-- Construction: the framework agreement's billing rules (4.1 the later of the booked start and the first entry to the
-  earlier of the booked end and the last exit, in whole quarter hours rounded down; 4.2 thirty minutes off a shift over six
-  hours; 4.3 at least four hours for a booked shift attended; 5.1 EUR 22.56 an hour, Sundays at one and a quarter), each
-  block temp's entries and exits from the staff access records, the temps known by reception's day-badge log (by date and
-  name), the block's temps and booked shifts from Brennock's timesheets.
-- Golden: 59.25, 59.50, 55.75, 59.25, 59.75, 59.75 and 59.75 hours from Monday 10 to Sunday 16 August 2026; the week's
-  charge EUR 9,654.27.
-- Primary device B1 (D8, a clock against a filed cutoff): the loading-bay reader LB-02, added to the access system in May
-  2026, exports its events in UTC while the staff entrance exports local time; nothing says so; two or three block temps
-  returning linen carts leave by the loading bay at the end of the shift on every day of the block week, so their last
-  exit reads an hour early and every day's hours and the week's charge come out low. Only a cross-file cut shows it (the
-  housekeeping app's last completions after the apparent exit) or the loading bay's exits clustering an hour before the
-  entrance's (median 15:10 against 16:10, asserted).
-- Hazards: HB1 day badges reissued from a pool every morning (22 badges, the busiest issued 10 times; a join on the badge
-  alone fans out); HB2 a temp sent home at 10:00 on the Wednesday (four hours billed); HB3 the Sunday rate; HB4 the break
-  deduction; HB5 rounding down to the quarter hour; HB6 Brennock's invoice billing the booked shifts (7.50 hours each).
-- Stops (measured, each asserted): S1 the access times as exported (B1 missed), every day off (56.75 to 57.75 hours on the
-  full days); S2 the invoice's booked hours (60.00 a day, EUR 9,813.60), all 8 off; S3 the cracker (S1 with every rule),
-  all 8 off; S4 the minimum missed, Wednesday and the charge off; S5 the Sunday rate missed, the charge off; the
-  over-correction (every reader moved an hour) all 7 days off.
-- Span: the access system's events, reception's day-badge log, Brennock's timesheets, Brennock's invoice and the framework
-  agreement (5 files); 12 columns.
-- Realism: a second door reader added later keeps its controller's default clock.
+**Ask B, cut at the 2026-11-01 re-check** (last year's block week: the hours Brennock may bill each day and the week's
+charge). Its device (the loading bay's UTC clock) and hazards (reissued day badges, the sent-home temp, the agreement's
+rules) were each performed by the careful solver (the hour profile, the join on the date and the holder, the filed
+rules), and no re-site on the door record passed both tests (`## Tried and rejected`). The invoice and the framework
+agreement no longer ship.
 
 **Hazard table**
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
-| HA1 re-cleans | the app logs a re-clean as a new task | Ask A departures and stayovers | 154 tasks counted twice when counted |
-| HA2 DND and refused | the app closes a stayover the guest declines | Ask A stayovers | 438 tasks when counted |
-| HA4 UTC task times | the app's database | Ask A | none (no service crosses midnight) |
-| HB1 reissued day badges | reception's badge pool | Ask B | fan-out when joined on the badge alone |
-| HB2 the sent-home temp | the hotel cancelled a shift on the day | Ask B Wednesday and the charge | 2 hours when missed |
-| HB3 to HB6 the rules and the invoice | the framework agreement; Brennock's billing | Ask B | each rule's own cells |
+| A-L lent tablets | a regular finishing her rooms on an absent attendant's signed-in tablet | every service cell and every overtime figure | 6 to 14 departures, 2 to 7 stayovers and 0.50 to 1.00 hours a week |
+| Day-badge twins | crew who forgot their staff badge | every figure under S6 | the twins' rooms and overtime |
+| HA1 re-cleans | the app logs a re-clean as a new task | departures and stayovers | 154 tasks counted twice when counted |
+| HA2 DND and refused | the app closes a stayover the guest declines | stayovers | 438 tasks when counted |
+| HA5 hired regulars | the user list and HR as they stand now | the service cells | all 20 under the group as it stands |
+| HA6 supervisor's notes | day temps without a login | the service cells | 12 cells when the notes are unread |
+| HA7 pay period | payroll pays the period after | the overtime figures | all 5 by pay period |
 
-**Referee.** For Ask A, Brennock's 2026 timesheets and the HR start dates give who was Brennock's that summer, and the
-task notes name the day temps; for Ask B, the housekeeping app's completions and the entrance's exits give each day's
-working time against the loading bay's apparent exits. Each is a source the golden reads, not a control: no file ties only
-under the golden, and no filed sentence says the loading bay's clock, the login moves or the supervisor's logging
+**Referee.** The door record (the staff access events with reception's day-badge log) is a source the golden reads, not
+a control: no file ties only under the golden, and no filed sentence names a tablet, a login's use, a badge or a door
 (asserted).
 
-| Ask figures | Cracker's path | Cracker's value | Verdict |
+| Ask figures | The cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
-| A services by week, crew and Brennock (20) | the user list's current group and the login, every filed definition, the battery (re-cleans, DND, refusals handled) | every cell off (27 July week 1,018, 1,216, 86, 90) | miss |
-| A crew overtime by week (5) | the payroll lines by pay period end | 4.25, 0, 18.75, 0, 36 against 17.25, 20.75, 15.25, 11.25, 14.25 | miss |
-| B hours by day (7) and the week's charge (1) | the access times as exported, every framework rule applied | every day off by about an hour per loading-bay leaver | miss |
+| A services by week, crew and Brennock (20) | each room to its login or the note's person, Brennock's by the timesheet for the day or the agency's own login, HR's start dates read, the battery (duplicates, anti-joins both ways, re-cleans, DND and refusals, the readers' hour profile) | every cell off (27 July week 926, 1,102, 178, 204) | miss |
+| A overtime the crew worked by week (5) | the payroll lines by the date in each line's reference | 17.75, 21.50, 15.75, 12.25, 15.00 against 17.25, 20.75, 15.25, 11.25, 14.25 | miss |
 | the note's chart | the cracker's nightly forecast drawn as the golden draws it | its parts carry the cracker's call only when the call lands | outside |
 
-Mirror leakage: about 8 per cent of the ask weight. The mirror is the most attractive wrong rung, R1 (night-level pickup,
-the concert week at about 600); it runs the same ask paths as the cracker, so it misses every Ask A and Ask B figure and
-keeps about three of the chart's five parts (the nights, the 380 line, the full nights marked; it highlights the concert
-week).
-Pair ceiling: 34 (the cracker about 52 with the call, its components, the instructions and the chart's parts; the mirror
-about 16 with the instructions, three of the chart's parts and the component it shares, the concert nights full on the
-book; it misses the call, the runner-up and both figures; 38 ask criteria). The most obvious device is A3 (the date
-worked sits in each payroll line's reference): cracked, the cracker keeps the five overtime figures and the pair is 38.
-A1 or B1 cracked alone keeps eight figures each (A1 the second and third weeks' services, A2 still moving the others; B1
-all of Ask B): pair 40. A2 cracked alone keeps nothing (A1 moves every service cell).
+The mirror is the most attractive wrong rung, R1 (night-level pickup, the concert week at about 600). It is scored on the
+cracker's own ask path (the ask does not depend on the call, so a top response off the call runs it as carefully) and on
+the natural read without the battery; both miss every figure.
+Mirror leakage: 8.0 per cent of the ask weight (the method credit only; no figure kept, on either reading).
+Pair ceiling: 58.2 (the worst row: the cracker finding the device alone, 100.0, against the mirror's 16.4; the measured
+pair is 32.9, the cracker 49.4 and the mirror 16.4; two careful responses both on the call 49.4 each; formula 38, 7 and
+55 over the 25 figures, 8 per cent method credit on a figure not kept, a response off the call keeping 5).
+Measured by: generator/ceiling.py, on the cut pack of the 2026-11-01 re-check (target.zip md5 recorded in pipeline.json),
+reading the files as shipped: every route's figures against figures.json, the cracker on the careful solver's path, the
+mirror on both readings, the full includer as the control (25 of 25 reproduced).
 
 ## Build record
 
@@ -521,23 +527,41 @@ PASS; the container audit clean on target and golden; `leak.py` REVIEW (no LEAK,
 exit 0 (0 promoted), `heart` WARN (answered), `validate` clean; `freeze.py check --mode determinism` against c06e15f:
 nothing moved but the wording of the ladder's R1 row and rate-evidence bullet (every number equal). Shipped.
 
+Re-check, 2026-11-01 (reshipped 2026-11-02). leak.py LEAK on the shipped cut: `pms_export_notes.txt` (a describing
+file by name, and its field list named all 16 of the extract's columns) and metadata.json (its title carried 480). One
+pass in the generator: the notes and the folder index no longer ship, every convention they carried is the producing
+file's own (the PMS code list gained a status sheet), the provenance is in metadata.json, and checks.py asserts no
+describing file and each moved closure. On that cut checks.py 145, 0 failed; verify agreeing; two builds
+byte-identical (target.zip md5 8a577514); `freeze.py --mode determinism` PASS; figures.json unchanged. Then the
+careful-solver cracker (`generator/ceiling.py`, new) kept 33 of 33 ask figures, pair 83.5: Ask A re-sited onto the
+lent tablets with every figure unchanged, Ask B cut with the invoice and the framework agreement, and the prompt's ask
+clause rewritten (the call sentence unchanged, 769 characters). Final cut: checks.py 145, 0 failed; verify agreeing
+(nine lent logins, one borrower each); two consecutive builds byte-identical (target.zip md5 d05e2f56 both times, 16
+files); ceiling.py cracker 0 of 25, mirror leakage 8.0, pair 32.9 (58.2 with the device found alone), two careful
+responses on the call 49.4; `freeze.py --mode rubric` PASS (determinism mode flags only the cut Ask B keys);
+`precut.py` exit 0 (61 checks, 0 WARN); `voice-check.py` PASS; `figures_check.py` 84 of 84; leak.py REVIEW, no LEAK
+(ruled below); `guard.py surface` recorded in pipeline.json. The leak reader and the determinism judge are owed on this
+cut: the prompt and the pack's documents changed.
+
 ## Leak review
 
-- Sweep 3, `pms_export_notes.txt` carries 480 ("The hotel has 480 rooms"): the hotel's size, a filed fact every route
-  reads (the full nights hold it), not an answer; the call's figures (400, 200) appear in no input. Harmless.
+The 2026-11-01 re-check cut (leak.py `--asof 2027-07-01`: REVIEW, no LEAK, eight lines), each ruled here:
 - Sweep 3, `HK-04_housekeeping_staffing_festival_season.pdf` shares 14 of 20 words with the committed call: it is the
   standard that defines the decision in the same vocabulary (the block, a Monday-to-Sunday roster week, room-nights above
   the crew's capacity, forecast); it names no week, date or figure of 2027 (the R3 strict block asserts it). Harmless.
-- Sweep 4, `HK-04_housekeeping_staffing_festival_season.pdf`, `brennock_framework_agreement_2025.pdf` and
-  `pms_export_notes.txt` share four to six words with the stump paragraph (nights, festival, confirmation, staffing,
-  booking, bookings, reservation, arrival, extract): the standard's definitions, the agreement's bookings and staffing,
-  and the export's field notes; none names a stay against a full night, a pickup, a release, a replay or a method (the R3 strict block asserts
-  it). Harmless.
+- Sweep 4, `HK-04_housekeeping_staffing_festival_season.pdf` shares four words with the stump paragraph (nights,
+  festival, confirmation, checks): the standard's own definitions; it names no stay against a full night, a pickup, a
+  release, a replay or a method (the R3 strict block asserts it). Harmless.
 - Sweep 9, dates after 1 July 2027 in the extract (future arrivals and departures on the book), the amendment log (378
   old and new arrival and departure values of 193 date changes, every change keyed before the extract, the latest at
   03:39:27 UTC on 1 July, asserted), the rate shop (the season's nights shopped), the festival's programme (the 2027
   edition) and the events diary (coming events): forward-looking records on the allow-list (H16); nothing dated after
   the extract was made after it, and no ask file holds a record after its own date (asserted). Harmless.
+- Sweep 11, the prompt's shell quota ('which', 'put', 'give' over their corpus caps): 'which' opens the frozen call
+  sentence (a pick of one roster week), and the re-check rewrote only the ask clause, keeping the shipped shell's 'put'
+  and 'give'; a corpus quota for the next draw, not a leak (voice-check PASS, no count the data hold). Harmless.
+- No longer swept: `pms_export_notes.txt` and `folder_contents.csv` (removed, `## Tried and rejected`), and the invoice
+  and the framework agreement (removed with Ask B).
 
 ## Pre-ship check
 
@@ -557,7 +581,7 @@ The 10/10 rules re-read against the built pack (the repaired cut, target.zip sha
     at 408 with the concert week next at 180;
   - nothing is planted: no file, column or sentence marks a stay through another night, ranks the weeks or states a
     figure of 2027.
-- **Rule 3, read literally:** the 12 HK-04 sentences, the 5 PMS export-note sentences and the prompt's question,
+- **Rule 3, read literally:** the 12 HK-04 sentences, the PMS code list's five status labels and the prompt's question,
   executed word for word, fix the target and give no forecast, and the estimators they admit file the concert week. The
   rule 3 audit PASS on cd5abab, its runner-up fork and domain-tag findings fixed in the stage 4 pass; the judge
   DETERMINISTIC on cd5abab, its FIX_NOW fixed; the re-judge on the repaired cut DETERMINISTIC and APPROVE, Gate H
@@ -578,9 +602,11 @@ The 10/10 rules re-read against the built pack (the repaired cut, target.zip sha
   - the stay constraint on the concert week alone with additive pickup elsewhere (the re-judge's fork 3, rung R2b's
     form) keeps the call (419) and puts the week after second (226 against 180): one week constrained and the next not,
     an inconsistent method; the thin margin on the next week's figure under it is accepted;
-  - the LB-02 reader's UTC clock stays unstated (Ask B's device; the data recovers it, the loading bay's exits an hour
-    before the entrance's); the re-judge's optional pin is declined.
-- **The asks:** unchanged since stage 3; both judges reproduced all 33 figures.
+  - the LB-02 reader's UTC clock stays unstated (hazard HA8 on the ask's door record since the 2026-11-01 re-check:
+    presence on a day is unaffected, and the loading bay's exits an hour before the entrance's recover it); the
+    re-judge's optional pin is declined.
+- **The asks:** at the 2026-11-01 re-check the careful-solver cracker kept all 33 figures; Ask A re-sited onto the lent
+  tablets (every one of its 25 figures unchanged), Ask B cut (no passing re-site); measured by `generator/ceiling.py`.
 
 ## Tried and rejected
 
@@ -659,3 +685,30 @@ The 10/10 rules re-read against the built pack (the repaired cut, target.zip sha
   holds hotel demand, and the nearest, Urban & Regional Science forecasting, was rejected at the draw as a backdrop; the
   golden was made the historical simulation the resampling tag names instead, its figures (408, 180) in the judge's bins
   (417, 215).
+- The PMS export notes (`pms_export_notes.txt`: the extract's taken time, grain, UTC times, nights, current dates, the
+  hotel's 480 rooms and a field list) and the folder index (`folder_contents.csv`: each file's system, date, coverage
+  and keeper), shipped to the 2026-11-01 re-check: both describe the data (dataset-generation section 3, H9; leak.py
+  LEAK). Dropped; each convention is now carried by the producing file's own form (the time columns named for UTC, the
+  nights column, the night audit's rooms available, the amendment log's old and new values, a status sheet in the PMS
+  code list) and the provenance moved to metadata.json, whose title, subdomain and shape were cut to the decision (the
+  old title carried 480 and the full concert nights; the old subdomain narrated the replay).
+- Ask A device A1 (three later-hired regulars read by the user list's current group): the careful solver takes who was
+  Brennock's each day from Brennock's own 2026 timesheets and reads HR's start dates after the season by their plain
+  meaning; spent at the 2026-11-01 re-check (the cracker kept every cell it moved), kept as hazard HA5.
+- Ask A device A2 (the day temps named in a supervisor's task note): the careful solver reads the note column for what it
+  says; spent, kept as hazard HA6.
+- Ask A device A3 (overtime by the pay period): the date worked sits in each line's reference, read by its plain
+  meaning; spent, kept as hazard HA7.
+- Ask B device B1 (the loading bay reader on UTC) with Ask B's hazards: an hour profile of the readers' exits finds the
+  clock (LB-02 at 15:10 against the entrance's 16:11), the badge join on the date and the holder handles the reissued
+  pool and the agreement's rules are executed as filed; spent. No re-site on the door record passed both tests (a day
+  badge handed on unlogged is a fork with a visitor who came back; a temp's second badge under another name or a
+  diminutive falls to a sequence check or a name match; a substitute on a booked shift reads 4.3 two ways); Ask B cut,
+  and its invoice and the framework agreement (whose 3.2 named the access system as the record of attendance, a pointer
+  at the new device's dimension) no longer ship.
+- Other Ask A re-sites weighed at the re-check: a namesake across the crew and the agency (HR's start date with the user
+  list's group lands it without the timesheets); a leaver's login recycled for a regular (an anti-join of Brennock's
+  timesheet days against the app finds her missing rooms); two overtime spells paid as lines identical in every field (an
+  exact duplicate to the battery, a fork for the judge); untyped re-cleans beside room-move doubles (the inspection
+  column hands it over). Kept: the lent tablet (A-L), which no battery item performs, because nothing joins a login-day
+  to the door record unless the solver thinks to.

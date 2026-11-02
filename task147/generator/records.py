@@ -1,7 +1,10 @@
 """The main-call files: the property management system's reservation extract of 06:12 on 1 July 2027 (one row per room
-reserved), its amendment log, its code lists and export notes, the night audit's daily statistics, the festival's
-programme history and the sales office's events diary. Everything is written from the world's accepted reservations;
-nothing is re-drawn here except the guest attributes the booking engine records (adults, children, country)."""
+reserved), its amendment log and its code lists, the night audit's daily statistics, the festival's programme history
+and the sales office's events diary. Everything is written from the world's accepted reservations; nothing is re-drawn
+here except the guest attributes the booking engine records (adults, children, country). No file describing the
+extract ships (dataset-generation section 3, house fix H9): each convention is carried by the producing file's own form
+(the zone in the time columns' names, the nights column, the night audit's rooms available, the amendment log's old and
+new values, the code list's status labels)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -16,7 +19,6 @@ import world as WD
 
 F_EXTRACT = "pms_reservations_extract_2027-07-01.csv"
 F_AMEND = "pms_amendment_log_2027-07-01.csv"
-F_NOTES = "pms_export_notes.txt"
 F_CODES = "pms_code_lists.xlsx"
 F_AUDIT = "night_audit_statistics_2022-2027.xlsx"
 F_FEST = "festival_programme_dates.json"
@@ -72,6 +74,8 @@ CHAN_OLD = {"GDS": "GDS", "CORP": "CORP", "WEB": "WEB", "PHONE": "VOICE", "OTA1"
             "OTA3": "IDS3", "GROUP": "TOUR", "HOUSE": "HOUSE"}
 CHAN_NEW = {"GDS": "GDS", "CORP": "CORP", "WEB": "WEB", "PHONE": "CRO", "OTA1": "OTAM", "OTA2": "OTAA",
             "OTA3": "WHSL", "GROUP": "GRPT", "HOUSE": "HOUSE"}
+STATUS_CODES = [("RES", "Reserved"), ("INH", "In house"), ("OUT", "Checked out"), ("CXL", "Cancelled"),
+                ("NS", "No-show")]
 MARKETS = [("COR", "Corporate transient"), ("LEI", "Leisure transient"), ("GRT", "Group tour"),
            ("CMP", "Complimentary"), ("HSE", "House use")]
 SEG_MARKET = {"BUS": "COR", "LEIS": "LEI", "FWK": "LEI", "FSH": "LEI", "EVT": "LEI", "GRP": "GRT", "COMP": "CMP",
@@ -470,46 +474,3 @@ def diary():
     rows += other
     rows.sort(key=lambda r: (r[0], r[2]))
     return rows
-
-
-# ---------------------------------------------------------------------------------------------------- notes
-NOTES_TEXT = """THE WEIGHHOUSE HOTEL - PROPERTY MANAGEMENT SYSTEM
-Reservation extract: notes on the export
-
-File:     pms_reservations_extract_2027-07-01.csv
-Taken:    01/07/2027 06:12 (after the night audit of 30/06/2027)
-Holds:    every reservation with an arrival date from 01/01/2022, cancelled and no-show reservations included
-Sort:     confirmation_no
-
-One row per room reserved. Rooms reserved together on one booking share the booking reference.
-Times (created_utc, cancelled_utc) are UTC. Arrival and departure are the hotel's local dates.
-A reservation's nights run from its arrival date to the night before its departure date. A day-use reservation has no night.
-The extract carries each reservation's current dates and guest count. Changes to them are in the amendment log
-(pms_amendment_log_2027-07-01.csv, one row per field changed, for the reservations in this extract).
-The hotel has 480 rooms.
-
-Fields
-confirmation_no   PMS confirmation number of the room reservation
-booking_ref       booking reference (shared by the rooms of one booking)
-created_utc       time the reservation was made
-arrival           arrival date
-departure         departure date
-nights            nights reserved (departure less arrival)
-adults, children  guests in the room
-rate_code         rate code (pms_code_lists.xlsx, sheet Rate codes)
-rate_eur          average nightly room rate, EUR, VAT included; 0.00 for complimentary and house use
-market            market segment (pms_code_lists.xlsx, sheet Market segments)
-channel           booking channel (pms_code_lists.xlsx, sheet Channel codes)
-status            RES reserved, INH in house, OUT checked out, CXL cancelled, NS no-show
-cancelled_utc     time the reservation was cancelled (CXL only)
-group_code        group or tour series code (rate code GRP)
-country           guest's country of residence (ISO 3166-1 alpha-2)
-
-Room numbers are assigned at check-in and are not in this extract.
-Channel codes were revised on 01/04/2025; reservations made before then keep the codes they were made under.
-"""
-
-
-def write_notes(path):
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write(NOTES_TEXT)

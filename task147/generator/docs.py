@@ -1,7 +1,6 @@
-"""The pack's documents: the rooms division's housekeeping staffing standard HK-04, the framework agreement with
-Brennock and Brennock's invoice for the 2026 block (PDF); the PMS code lists, the night audit statistics, the sales
-events diary, the HR staff list, Brennock's timesheets and the competitor rate shop (xlsx). The standards' text is
-kept here as data so that checks.py can quote it."""
+"""The pack's documents: the rooms division's housekeeping staffing standard HK-04 (PDF); the PMS code lists, the night
+audit statistics, the sales events diary, the HR staff list, Brennock's timesheets and the competitor rate shop (xlsx).
+The standard's text is kept here as data so that checks.py can quote it."""
 from __future__ import annotations
 
 import datetime as dt
@@ -161,89 +160,6 @@ def write_hk04(path):
     doc.build(s, onFirstPage=f, onLaterPages=f)
 
 
-# ---------------------------------------------------------------------------------------------------- agreement
-F_AGREEMENT = "brennock_framework_agreement_2025.pdf"
-AGREEMENT = [
-    ("1", "Term", None, ["This agreement runs from 1 April 2025 to 31 December 2027 and replaces the agreement of "
-                          "May 2022."]),
-    ("2", "Bookings", None, [
-        "2.1 The hotel books temporary room attendants by written order: regular placements for the season, day "
-        "bookings, and one block booking for one week of the festival season.",
-        "2.2 Every booking sets its booked shifts: the date, the booked start and the booked end of each shift.",
-        "2.3 A room attendant without a staff badge signs in at the hotel's reception for a day badge."]),
-    ("3", "Timesheets", None, [
-        "3.1 Brennock keeps a timesheet of every booked shift, signed off by the hotel's supervisor on duty.",
-        "3.2 Timesheets record the booked shifts. The record of attendance is the hotel's staff access system."]),
-    ("4", "Billable hours", "billable", [
-        "4.1 The billable time of a booked shift runs from the later of the booked start and the room attendant's "
-        "first entry that day to the earlier of the booked end and the room attendant's last exit that day, and is "
-        "counted in whole quarter hours, rounded down.",
-        "4.2 Thirty minutes' unpaid break is deducted from a shift of more than six hours of billable time.",
-        "4.3 A booked shift that the room attendant attends is billed at no less than four hours.",
-        "4.4 Time outside a booked shift is not billable unless the hotel has booked it in writing."]),
-    ("5", "Charges", "charges", [
-        "5.1 Billable hours are charged at EUR 22.56 an hour from 1 January 2026 (EUR 21.92 in 2025). Hours on "
-        "Sundays and public holidays are charged at one and a quarter times the hourly charge.",
-        "5.2 Charges exclude VAT, which is added at the standard rate.",
-        "5.3 Brennock invoices each week's shifts by the Wednesday after the week, by booking."]),
-    ("6", "Queries", None, [
-        "6.1 The hotel may withhold the part of an invoice that bills more than this agreement allows and pays the "
-        "balance within the agreed terms.",
-        "6.2 Payment is due 30 days from the invoice date."]),
-]
-
-
-def agreement_sentences(key):
-    for _, _, k, paras in AGREEMENT:
-        if k == key:
-            return list(paras)
-    raise KeyError(key)
-
-
-def write_agreement(path):
-    s = [Paragraph("Framework agreement for the supply of temporary housekeeping staff", AG_T),
-         Paragraph("between The Weighhouse Hotel Limited, Weighhouse Square, Callowfort (the hotel)<br/>and Brennock "
-                   "Hospitality Staffing Limited, Unit 4, Tannery Lane, Callowfort (Brennock)", AG_S)]
-    for num, head, _, paras in AGREEMENT:
-        s.append(Paragraph("%s. %s" % (num, head), AG_H))
-        for p in paras:
-            s.append(Paragraph(p.replace("&", "&amp;"), AG_BODY))
-    s.append(Spacer(1, 16))
-    s.append(Paragraph("Signed for the hotel: Edel McCay, Rooms Division Manager. Signed for Brennock: Naoise Meskill, "
-                       "Account Manager. 14 March 2025.", AG_BODY))
-    doc = _doc(path, "Framework agreement, temporary housekeeping staff", K.PEOPLE["agency"], margins=2.6)
-    f = _footer("Brennock Hospitality Staffing Ltd  |  Framework agreement WH-2025-03", "Page ", font="LibSerif")
-    doc.build(s, onFirstPage=f, onLaterPages=f)
-
-
-# ---------------------------------------------------------------------------------------------------- invoice
-F_INVOICE = "brennock_invoice_BHS-INV-2026-0833.pdf"
-
-
-def write_invoice(path, inv):
-    s = [Paragraph("Brennock Hospitality Staffing Ltd", ParagraphStyle("bn", parent=H1, textColor=AGENCY)),
-         Paragraph("Unit 4, Tannery Lane, Callowfort &middot; VAT no. IE3471185NH", H1S),
-         Paragraph("<b>Invoice %s</b>" % inv["no"], ParagraphStyle("ib", parent=BODY, fontSize=12, leading=15)),
-         Paragraph("Date: %s<br/>To: The Weighhouse Hotel Ltd, Accounts Payable, Weighhouse Square, Callowfort<br/>"
-                   "Your order: WH-PO-26-0417<br/>Booking: block booking, room attendants, Monday 10 August to Sunday 16 "
-                   "August 2026, booked shifts 08:00 to 16:00" % inv["date"].strftime("%d/%m/%Y"), BODY),
-         Spacer(1, 6)]
-    rows = [["Date", "Room attendants", "Hours", "Rate (EUR)", "Amount (EUR)"]]
-    for d, n, hrs, rate, amt in inv["lines"]:
-        rows.append([d.strftime("%a %d/%m/%Y"), str(n), "%.2f" % hrs, "%.2f" % rate, eur(amt)])
-    rows.append(["", "", "", "Net", eur(inv["net"])])
-    rows.append(["", "", "", "VAT 23%", eur(inv["vat"])])
-    rows.append(["", "", "", "Total", eur(inv["total"])])
-    s.append(_table(rows, [4.2 * cm, 3.0 * cm, 2.4 * cm, 2.6 * cm, 3.2 * cm], right=(1, 2, 3, 4), bold_last=True,
-                    head_bg=colors.HexColor("#e2eef1")))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Hours: booked shifts of 8.00 hours less 0.50 hours' break. Sunday at 1.25 times the rate. "
-                       "Payment 30 days from the invoice date by bank transfer to the account on your statement.", SMALL))
-    doc = _doc(path, "Invoice %s" % inv["no"], "Brennock Hospitality Staffing Ltd")
-    f = _footer("Brennock Hospitality Staffing Ltd, registered in Ireland no. 612904", "Page ")
-    doc.build(s, onFirstPage=f, onLaterPages=f)
-
-
 # ---------------------------------------------------------------------------------------------------- workbooks
 def _wb():
     import openpyxl
@@ -278,7 +194,12 @@ def write_codes(path):
     for m in R.MARKETS:
         ws3.append(list(m))
     _widths(ws3, [12, 30])
-    for w in (ws, ws2, ws3):
+    ws4 = wb.create_sheet("Reservation status")
+    ws4.append(["Status code", "Description"])
+    for c in R.STATUS_CODES:
+        ws4.append(list(c))
+    _widths(ws4, [12, 20])
+    for w in (ws, ws2, ws3, ws4):
         for c in w[1]:
             c.font = Font(bold=True)
         w.freeze_panes = "A2"

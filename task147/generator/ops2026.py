@@ -158,6 +158,70 @@ def largest_remainder(weights, total):
     return [int(v) for v in n]
 
 
+LEND_START = dt.date(2026, 8, 1)      # the staff access export runs from 1 August
+
+
+def lend_days():
+    """The days a regular's loan tablet dropped out and she finished on an absent attendant's tablet: one in the first
+    roster week (its 1 and 2 August) and two in each later one, the first of each week late enough to run past 16:00."""
+    r = K.rng("lend-days")
+    out = {}
+    for m, s in WEEKS:
+        days = [m + T(days=i) for i in range(7) if m + T(days=i) >= LEND_START]
+        n = 1 if len(days) < 7 else 2
+        pick = sorted(days[int(i)] for i in r.permutation(len(days))[:n])
+        for j, d in enumerate(pick):
+            out[d] = j == 0
+    return out
+
+
+def lend_today(d, straight, mines, on_c, crew, lent_days):
+    """{regular's name: spec} for the day: the regular (one with stayovers and departures still to do mid-morning) and
+    the crew attendant off today whose tablet she is handed."""
+    if d not in lent_days:
+        return {}
+    r = K.rng("lend", d.isoformat())
+    regs = [wi for wi, p in enumerate(straight) if p.kind == "reg"]
+    ok = [wi for wi in regs if sum(1 for j in mines[wi] if j[1] == "Stayover" and j[2] == "Completed") >= 3 and
+          sum(1 for j in mines[wi] if j[1] == "Departure") >= 3]
+    assert ok, d
+    R = straight[ok[int(r.integers(0, len(ok)))]]
+    on = {p.name for p in on_c}
+    off = [p for p in crew if p.name not in on and p.start <= d and (p.left is None or d <= p.left)]
+    X = off[int(r.integers(0, len(off)))]
+    return {R.name: dict(X=X, late=lent_days[d], u=float(r.uniform()), w=float(r.uniform()))}
+
+
+def fix_lend(spec, dry, t_dry, d):
+    """Where the tablet drops out (between 09:40 and 11:00, with at least her last stayover still to do) and how long
+    she waits for the borrowed one (15 to 35 minutes, or on a late day long enough to finish after 16:00)."""
+    t_fail = at(d, 9, 40) + T(minutes=80.0 * spec["u"])
+    stays = [k for k, tk in enumerate(dry) if tk.ttype == "Stayover" and tk.status == "Completed"]
+    k0 = next((k for k, tk in enumerate(dry) if tk.start >= t_fail), len(dry) - 1)
+    k0 = max(1, min(k0, stays[-2]))
+    wait = T(minutes=15.0 + 20.0 * spec["w"])
+    if spec["late"]:
+        target = at(d, 16, 0) + T(minutes=12.0 + 30.0 * spec["w"])
+        wait = max(T(minutes=20), target - dry[-1].end)
+    return dict(spec, k0=k0, wait=wait)
+
+
+def forgot_badges(worked, ot, lent):
+    """Crew attendants who came in without their staff badge and signed in at reception for a day badge: two a roster
+    week from 1 August, one of them on a day she worked overtime."""
+    r = K.rng("forgot")
+    otd = {(p.name, d) for p, d, _ in ot}
+    out = set()
+    for m, s in WEEKS:
+        cands = sorted({(p.name, d) for p, d, _ in worked if p.kind == "crew" and m <= d <= s and d >= LEND_START})
+        with_ot = [c for c in cands if c in otd]
+        pick = [with_ot[int(r.integers(0, len(with_ot)))]] if with_ot else []
+        rest = [c for c in cands if c not in pick]
+        pick.append(rest[int(r.integers(0, len(rest)))])
+        out |= set(pick)
+    return out
+
+
 def season(B):
     crew, regs, block, dayt = people()
     leave = leave_days(crew)
@@ -167,8 +231,56 @@ def season(B):
         for n in range(a, dep):
             by_night.setdefault(n, []).append((rm, conf, dep))
     tasks, ot, worked = [], [], []
+    lent, ot_lent = [], []
+    lent_days = lend_days()
     tid = 5204117
     day_pool = 0
+
+    def schedule(p, d, mine, n_ot, tablet, spec):
+        """One attendant's day on the app: each room's task in her order, the tablet she closes it on. spec, for a
+        regular lent a tablet: from task k0 on, after a wait, the rooms go on the absent attendant X's login."""
+        rr = K.rng("times", d.isoformat(), p.name)
+        t = at(d, 8, 0) + T(minutes=float(rr.uniform(0, 7)))
+        nominal = sum(43.0 if j[1] == "Departure" else (23.0 if j[2] == "Completed" else 2.0) for j in mine)
+        ot_nom = sum(43.0 if j[1] == "Departure" else 23.0 for j in mine[len(mine) - n_ot:]) if n_ot else 0.0
+        sc = min(1.0, 400.0 / max(1.0, nominal - ot_nom))
+        done_break = False
+        out = []
+        for k, (rm, ttype, status) in enumerate(mine):
+            in_ot = n_ot and k >= len(mine) - n_ot
+            if spec is not None and k == spec["k0"]:
+                t += spec["wait"]
+            if not done_break and t >= at(d, 12, 0):
+                t += T(minutes=30)
+                done_break = True
+            if in_ot and t < at(d, 16, 0):
+                t = at(d, 16, 0) + T(minutes=float(rr.uniform(1, 6)))
+            dur = (43.0 if ttype == "Departure" else 23.0) * (1.0 if in_ot else sc) if status == "Completed" \
+                else 2.0
+            dur *= float(rr.uniform(0.86, 1.14))
+            tk = Task()
+            tk.tid, tk.d, tk.room, tk.ttype, tk.status = 0, d, rm, ttype, status
+            tk.who = p
+            tk.start, tk.end = t, t + T(minutes=dur)
+            tk.created = at(d, 5, 30) + T(seconds=int(rr.integers(0, 50)))
+            tk.parent, tk.insp_by, tk.insp, tk.note = None, "", "", ""
+            sup = "itrojanek" if d.weekday() >= 5 else ("sbohan" if mine[0][0] < 500 else "mahern")
+            if p.kind == "day":
+                tk.login = sup
+                v = int(rr.integers(0, 4))
+                f = CA.first(p.name)
+                tk.note = ["Brennock - %s" % f, "Brennock temp %s" % f, "%s (Brennock)" % f,
+                           "agency - %s" % f][v]
+            elif tablet is p and tk.start >= at(d, 11, 30):
+                tk.login = sup
+                tk.note = "%s's rooms, tablet down" % CA.first(p.name)
+            elif spec is not None and k >= spec["k0"]:
+                tk.login = spec["X"].login
+            else:
+                tk.login = p.login
+            out.append(tk)
+            t = tk.end + T(minutes=float(rr.uniform(1, 3)))
+        return out, t
     for d in DAYS:
         r = K.rng("hkday", d.isoformat())
         night = K.di(d) - 1
@@ -243,51 +355,40 @@ def season(B):
         tablet = None
         if r.uniform() < 0.42 and on_c:
             tablet = on_c[int(r.integers(0, len(on_c)))]
-        for wi, p in enumerate(straight):
+        mines = []
+        for wi in range(len(straight)):
             mine = [visits[i] for i in range(len(visits)) if owner[i] == wi]
             mine.sort(key=lambda j: (0 if j[1] == "Stayover" else 1, j[0]))
-            rr = K.rng("times", d.isoformat(), p.name)
-            t = at(d, 8, 0) + T(minutes=float(rr.uniform(0, 7)))
+            mines.append(mine)
+        lend = lend_today(d, straight, mines, on_c, crew, lent_days)
+        for wi, p in enumerate(straight):
+            mine = mines[wi]
             n_ot = otl[wi] if wi < len(on_c) else 0
-            nominal = sum(43.0 if j[1] == "Departure" else (23.0 if j[2] == "Completed" else 2.0) for j in mine)
-            ot_nom = sum(43.0 if j[1] == "Departure" else 23.0 for j in mine[len(mine) - n_ot:]) if n_ot else 0.0
-            sc = min(1.0, 400.0 / max(1.0, nominal - ot_nom))
-            done_break = False
-            for k, (rm, ttype, status) in enumerate(mine):
-                in_ot = n_ot and k >= len(mine) - n_ot
-                if not done_break and t >= at(d, 12, 0):
-                    t += T(minutes=30)
-                    done_break = True
-                if in_ot and t < at(d, 16, 0):
-                    t = at(d, 16, 0) + T(minutes=float(rr.uniform(1, 6)))
-                dur = (43.0 if ttype == "Departure" else 23.0) * (1.0 if in_ot else sc) if status == "Completed" \
-                    else 2.0
-                dur *= float(rr.uniform(0.86, 1.14))
-                tk = Task()
-                tk.tid, tk.d, tk.room, tk.ttype, tk.status = tid, d, rm, ttype, status
+            spec = lend.get(p.name)
+            if spec is not None:
+                # the regular's loan tablet drops out mid-morning: the rest of her rooms go on the tablet of a crew
+                # attendant who is off today, still signed in to her (a dry run first fixes where and how long)
+                dry, t_dry = schedule(p, d, mine, n_ot, tablet, None)
+                spec = fix_lend(spec, dry, t_dry, d)
+            made, t = schedule(p, d, mine, n_ot, tablet, spec)
+            for tk in made:                  # creation order numbers the tasks (the inspections key on it)
+                tk.tid = tid
                 tid += 1
-                tk.who = p
-                tk.start, tk.end = t, t + T(minutes=dur)
-                tk.created = at(d, 5, 30) + T(seconds=int(rr.integers(0, 50)))
-                tk.parent, tk.insp_by, tk.insp, tk.note = None, "", "", ""
-                sup = "itrojanek" if d.weekday() >= 5 else ("sbohan" if mine[0][0] < 500 else "mahern")
-                if p.kind == "day":
-                    tk.login = sup
-                    v = int(rr.integers(0, 4))
-                    f = CA.first(p.name)
-                    tk.note = ["Brennock - %s" % f, "Brennock temp %s" % f, "%s (Brennock)" % f,
-                               "agency - %s" % f][v]
-                elif tablet is p and tk.start >= at(d, 11, 30):
-                    tk.login = sup
-                    tk.note = "%s's rooms, tablet down" % CA.first(p.name)
-                else:
-                    tk.login = p.login
-                tasks.append(tk)
-                t = tk.end + T(minutes=float(rr.uniform(1, 3)))
+            tasks.extend(made)
             if wi < len(on_c) and n_ot:
                 mins = (t - at(d, 16, 0)).total_seconds() / 60.0
                 hrs = max(0.25, math.ceil(max(mins, 1.0) / 15.0) / 4.0)
                 ot.append((p, d, hrs))
+            if spec is not None:
+                lent_tasks = [tk for tk in made if tk.login == spec["X"].login]
+                last = max(tk.end for tk in lent_tasks)
+                rec = dict(d=d, R=p, X=spec["X"], first=min(tk.start for tk in lent_tasks), last=last,
+                           n=len(lent_tasks), late=spec["late"])
+                if last > at(d, 16, 0):      # the app's late-finish claim on the tablet's own user
+                    mins = (last - at(d, 16, 0)).total_seconds() / 60.0
+                    rec["claim"] = max(0.25, math.ceil(max(mins, 1.0) / 15.0) / 4.0)
+                    ot_lent.append((spec["X"], d, rec["claim"]))
+                lent.append(rec)
             worked.append((p, d, mine))
         # cover overtime (public areas, linen room, late rooms for arrivals): approved like any other
         rc = K.rng("cover", d.isoformat())
@@ -335,7 +436,9 @@ def season(B):
                 p = cands[int(r2.integers(0, len(cands)))]
                 ot.append((p, d, float(r2.choice([0.75, 1.0, 1.25, 1.5, 2.0]))))
         d += T(days=1)
-    return dict(tasks=allt, ot=ot, worked=worked, crew=crew, regs=regs, block=block, day=dayt, leave=leave, occ=occ)
+    forgot = forgot_badges(worked, ot, lent)
+    return dict(tasks=allt, ot=ot, worked=worked, crew=crew, regs=regs, block=block, day=dayt, leave=leave, occ=occ,
+                lent=lent, ot_lent=ot_lent, forgot=forgot)
 
 
 # ---------------------------------------------------------------------------------------------------- truth
@@ -384,6 +487,9 @@ def access(S):
         task_end[k] = max(task_end.get(k, at(d, 15, 0)), at(d, 16, 0) + T(hours=h))
     truth_b = {}
     sent = None
+    forgot = S.get("forgot", set())
+    lent_r = {(x["R"].name, x["d"]) for x in S.get("lent", [])}
+    on_day_badge = lambda p, d: p.kind in ("block", "day") or (p.name, d) in forgot
     for d in days:
         r = K.rng("access", d.isoformat())
         # reception's day badges: handed out from the pool in the order people arrive
@@ -411,11 +517,13 @@ def access(S):
         vi = 0
         dayb = {}
         for ent, p in arrivals:
-            if p.kind in ("block", "day"):
+            if on_day_badge(p, d):
                 b = "V-%02d" % pool[vi % len(pool)]
                 vi += 1
                 dayb[p.name] = b
-                badges.append(dict(date=d, badge=b, name=p.name, company="Brennock Hospitality Staffing",
+                badges.append(dict(date=d, badge=b, name=p.name,
+                                   company="The Weighhouse Hotel" if p.kind == "crew" else
+                                   "Brennock Hospitality Staffing",
                                    issued=ent - T(minutes=int(K.rng("rec", d.isoformat(), p.name).integers(2, 9))),
                                    by=CA.login_of(CA.RECEPTION[(d.toordinal() + vi) % 3])))
         # contractors and visitors on day badges too
@@ -436,7 +544,7 @@ def access(S):
         for ent, p in arrivals:
             rr = K.rng("door2", d.isoformat(), p.name)
             badge = dayb.get(p.name) or staff_badge[p.name]
-            holder = ("Day badge %s" % badge) if p.kind in ("block", "day") else p.name
+            holder = ("Day badge %s" % badge) if on_day_badge(p, d) else p.name
             rows.append((ent, "SE-01", badge, holder, "IN"))
             last = task_end.get((p.name, d), at(d, 15, 30))
             if p.kind == "block" and d == SENT_HOME_DAY and sent is None and p.idx == 6:
@@ -454,6 +562,8 @@ def access(S):
             if p.kind == "block" and last < at(d, 15, 40) and rr.uniform() < 0.1:
                 end_floor = at(d, 15, int(rr.integers(46, 57)))
             use_lb = (p.name in lb_set) if p.kind == "block" else rr.uniform() < 0.18
+            if (p.name, d) in lent_r:
+                use_lb = False
             ex = end_floor + T(minutes=int(rr.integers(0, 14)), seconds=int(rr.integers(0, 60)))
             if use_lb:
                 if p.kind == "block":
@@ -594,7 +704,7 @@ def pay_period(d):
 
 def payroll_rows(S):
     rows = []
-    for p, d, h in S["ot"]:
+    for p, d, h in S["ot"] + S.get("ot_lent", []):
         k, s, e = pay_period(d)
         k2, s2, e2 = pay_period(e + T(days=1))
         payd = e2 + T(days=5)

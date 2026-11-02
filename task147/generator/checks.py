@@ -152,9 +152,9 @@ def truth_ladder(W):
 
 
 # ---------------------------------------------------------------------------------------------------- run
-MAIN_FILES = [R.F_EXTRACT, R.F_AMEND, R.F_NOTES, R.F_CODES, R.F_AUDIT, R.F_FEST, R.F_DIARY, DOC.F_HK04]
+MAIN_FILES = [R.F_EXTRACT, R.F_AMEND, R.F_CODES, R.F_AUDIT, R.F_FEST, R.F_DIARY, DOC.F_HK04]
 ASK_A_FILES = [C.TASKS_F, C.USERS_F, C.HR_F, C.TS_F, C.PAY_F]
-ASK_B_FILES = [C.ACCESS_F, C.BADGE_F, DOC.F_INVOICE, DOC.F_AGREEMENT]
+DOOR_FILES = [C.ACCESS_F, C.BADGE_F]     # the door record the table reads for who was in
 
 
 def run(target, golden, Wd=None, G=None, meta_path=None):
@@ -179,10 +179,34 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       not any(re.search(r"distract|decoy|trap|golden|answer|truth|naive|stump|clean|fixed|synthetic|forecast", f, re.I)
               for f in files), files)
     A("gate every file shipped is one the generator names",
-      set(files) == set(MAIN_FILES + ASK_A_FILES + ASK_B_FILES + dis + [BD.F_MANIFEST]), files)
-    listed = [r["file"] for r in csv.DictReader(open(os.path.join(target, BD.F_MANIFEST), encoding="utf-8"))]
-    A("gate the folder index names every other shipped file once (H9, set equality)",
-      sorted(listed) == sorted(f for f in files if f != BD.F_MANIFEST) and len(listed) == len(set(listed)))
+      set(files) == set(MAIN_FILES + ASK_A_FILES + DOOR_FILES + dis), files)
+    # H9 (dataset-generation section 3): no shipped file describes the data, by name, by sheet or by content
+    describe_name = re.compile(
+        r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?(notes|guide|list)|fields?_\w+|"
+        r"\w*_fields|manifest|contents|index|file_list|file_layout|glossary|column_\w+|data_?notes|notes|how_to_read|"
+        r"about_this|definitions|schema|layouts?)(?![a-z])", re.I)
+    describe_sheet = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                                r"about|about this (file|workbook)|how to (read|use)( this)?|columns?|contents|index)$",
+                                re.I)
+    import openpyxl
+    named = [f for f in files if describe_name.search(f.rsplit(".", 1)[0])]
+    sheets = [(f, ws) for f in files if f.endswith(".xlsx")
+              for ws in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames
+              if describe_sheet.match(ws.strip())]
+    idents = set()
+    for f in files:
+        if f.endswith(".csv"):
+            with open(os.path.join(target, f), encoding="utf-8") as fh:
+                idents |= {c for c in fh.readline().strip().split(",") if "_" in c or re.search(r"\d", c)}
+    dtext0 = doc_text(target)
+    listing = {f: sorted(c for c in idents if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
+               for f, t in dtext0.items() if f.endswith((".pdf", ".txt", ".md", ".docx", ".json"))}
+    listing = {f: v for f, v in listing.items() if len(v) >= 3}
+    A("gate no shipped file describes the data (H9): no readme, notes, dictionary, manifest, index, definitions or "
+      "schema by name (%d files) or by sheet name, no text document naming three or more of the data files' column "
+      "identifiers, and no text file at all (%d column identifiers swept)" % (len(files), len(idents)),
+      not named and not sheets and not listing and not any(f.endswith((".txt", ".md")) for f in files),
+      (named, sheets, listing))
 
     # ------------------------------------------------------------------ the call from the pack, and from the truth
     V = C.from_pack(target)
@@ -328,7 +352,7 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
     A("R2 the channel codes' 2025 renames and the market codes are not on the call's path (the call reads no channel "
       "or market column)", "channel" not in C.from_pack.__code__.co_names)
     A("R2 the ask paths' mess sits in files the call never opens",
-      not (set(ASK_A_FILES + ASK_B_FILES)) & set(MAIN_FILES))
+      not (set(ASK_A_FILES + DOOR_FILES)) & set(MAIN_FILES))
 
     # ------------------------------------------------------------------ R3a and R3b
     rv = L["rivals"]
@@ -374,33 +398,29 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
 
     # ------------------------------------------------------------------ strict rule 3
     hk = pdf_text(os.path.join(target, DOC.F_HK04))
-    notes = open(os.path.join(target, R.F_NOTES), encoding="utf-8").read()
     how_hk = [s for k in ("weeks", "nights", "occupied", "capacity", "above", "block", "confirm")
               for s in DOC.hk04_sentences(k)]
-    how_pms = ["One row per room reserved. Rooms reserved together on one booking share the booking reference.",
-               "Times (created_utc, cancelled_utc) are UTC. Arrival and departure are the hotel's local dates.",
-               "A reservation's nights run from its arrival date to the night before its departure date. A day-use "
-               "reservation has no night.",
-               "The extract carries each reservation's current dates and guest count.",
-               "The hotel has 480 rooms."]
+    wbc = openpyxl.load_workbook(os.path.join(target, R.F_CODES), read_only=True, data_only=True)
+    status_list = [tuple(r[:2]) for r in wbc["Reservation status"].iter_rows(min_row=2, values_only=True) if r[0]]
+    how_pms = ["%s %s" % kv for kv in status_list]      # the PMS's only words on the call's convention path
     prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
     q1 = prompt.split("?")[0] + "?"
     A("R3 strict: the %d HK-04 sentences that bear on how the call is computed ship word for word" % len(how_hk),
       all(s in hk for s in how_hk), [s for s in how_hk if s not in hk])
-    A("R3 strict: the %d PMS export-note sentences that bear on it ship word for word" % len(how_pms),
-      all(s.replace("\n", " ") in notes.replace("\r\n", " ").replace("\n", " ") for s in how_pms))
+    A("R3 strict: the PMS ships no sentence on the call's path: its words there are the code list's labels (%d status "
+      "codes, a code and a label each, nothing else) beside its own column names" % len(status_list),
+      status_list == R.STATUS_CODES and all(len(lab.split()) <= 2 for _, lab in status_list))
     method = re.compile(r"pick-?up|\bpace\b|book(ed|ing)? curve|days before arrival|ratio|regress|average|history|"
                         r"past (year|season|august)|simulat|resampl|\bstay|every night|\bfull\b|\bsold\b|availab|"
                         r"block of night|cancellation rate|no-?show rate|realis|forecast (by|from|on)|method|model",
                         re.I)
-    hits = [s for s in how_hk + how_pms + [q1] if method.search(s) and not s.startswith(("A reservation's nights",
-                                                                                           "Brennock supplies one block",
+    hits = [s for s in how_hk + how_pms + [q1] if method.search(s) and not s.startswith(("Brennock supplies one block",
                                                                                            "The block goes to"))]
-    A("R3 strict: none of the sentences (nor the prompt's question) names a pickup, a rate, a history, a stay against "
-      "availability or a method", not hits, hits)
+    A("R3 strict: none of the sentences (nor the code list's labels, nor the prompt's question) names a pickup, a rate, "
+      "a history, a stay against availability or a method", not hits, hits)
     lit = [s for s in how_hk + how_pms if re.search(r"stay|every night", s, re.I)]
-    A("R3 strict: the only sentence on a reservation's nights defines them (arrival to the night before departure) and "
-      "says nothing of a room being needed every night or a full night refusing a stay", lit == [], lit)
+    A("R3 strict: no filed sentence on the call's path names a stay, a room needed every night or a full night refusing "
+      "a stay (a reservation's nights are the extract's own nights column)", lit == [], lit)
     A("R3 strict: the prompt's question names the population, the window and the as-of, nothing of a method",
       "Monday 26 July to Sunday 29 August 2027" in q1 and "Thursday 1 July" in q1 and not method.search(q1), q1)
     lit_exec = {k: C.top(v)[0] for k, v in rv.items() if not k.startswith("R2b")}
@@ -583,6 +603,25 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       all(same_call(v) for v in yrs))
     f480 = cons["full nights at 480"]
     A("SF7 the full nights at 480 keep the call and bins (W3 %.0f)" % f480[2], same_call(f480))
+    # SF7's closure, carried by the producing system: the night audit's rooms available (2024 layout on) and its
+    # occupancy (2022 and 2023 layout), read with openpyxl as the verifier reads a workbook
+    wba = openpyxl.load_workbook(os.path.join(target, R.F_AUDIT), read_only=True, data_only=True)
+    avail, occ_pct = [], []
+    for ws in wba.worksheets:
+        hrow = 2 if int(ws.title) <= 2023 else 4
+        head_ = next(ws.iter_rows(min_row=hrow, max_row=hrow, values_only=True))
+        body_ = [r for r in ws.iter_rows(min_row=hrow + 1, values_only=True) if r[0] is not None]
+        if int(ws.title) <= 2023:
+            assert head_[5] == "Total Occ" and head_[6] == "Occ %", head_
+            occ_pct += [abs(r[6] * 480 - r[5]) < 1e-6 for r in body_]
+        else:
+            assert head_[1] == "Rooms available", head_
+            avail += [r[1] for r in body_]
+    A("SF7 closure in the data: the night audit's rooms available read 480 on every business date of 2024 to 2027 "
+      "(%d dates) and its 2022 and 2023 occupancy is the occupied rooms over 480 (%d dates); no night of the extract's "
+      "book holds more than 480" % (len(avail), len(occ_pct)),
+      len(avail) > 1200 and set(avail) == {480} and len(occ_pct) > 700 and all(occ_pct) and
+      float(L["parts"]["book"].max()) == 480.0)
     A("SF8 the next week is a roster week of the season with its own figure (W3), not the calendar week after the "
       "block week (30 August is past the season, HK-04 2.1)", run_ == 2 and C.WEEKS[-1][1] == dt.date(2027, 8, 29))
     per_night = sum(K.round_to(x, 1) for x in [max(0, v - CREW) for v in L["g"][28:35]])
@@ -590,16 +629,50 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
       % (gw[4], per_night), K.round_to(per_night, 100) == call_fig)
     A("SF10 times in UTC, the cut at 05:12:44 UTC (asserted under R2)",
       C.cut_utc(K.YEAR) == np.datetime64("2027-07-01T05:12:44"))
+    # SF10's closure and the extract's stamp, carried by the extract itself, read with csv as the verifier reads it
+    with open(os.path.join(target, R.F_EXTRACT), encoding="utf-8", newline="") as fh:
+        ext_rows = list(csv.DictReader(fh))
+    last = max(r["created_utc"] for r in ext_rows)
+    last_local = K.utc_to_local(dt.datetime.fromisoformat(last))
+    A("SF10 closure in the data: the extract's two time columns are named for their zone (created_utc, cancelled_utc), "
+      "its dates carry no clock, and its latest booking, %s UTC, reads %s on Thursday 1 July 2027 in Irish summer time, "
+      "the book's stamp (the write-up's 06:12)" % (last, last_local.strftime("%H:%M")),
+      [c for c in R.EXTRACT_COLS if c.endswith("_utc")] == ["created_utc", "cancelled_utc"] and
+      last_local.date() == dt.date(2027, 7, 1) and last_local.strftime("%H:%M") == "06:12" and
+      not any(":" in r["arrival"] or ":" in r["departure"] for r in ext_rows[:5000]))
     A("SF11 past books as they stood (asserted under R2): the amendment log holds %d date changes" %
       len(V.amend), len(V.amend) > 1000)
+    # SF11's closure in the data: the log's latest new value on each changed reservation is the extract's own date
+    cur = {r["confirmation_no"]: (r["arrival"], r["departure"]) for r in ext_rows}
+    with open(os.path.join(target, R.F_AMEND), encoding="utf-8", newline="") as fh:
+        am_rows = sorted((r for r in csv.DictReader(fh) if r["field"] in ("ARRIVAL", "DEPARTURE")),
+                         key=lambda r: r["changed_utc"])
+    latest = {}
+    for r in am_rows:
+        latest[(r["confirmation_no"], r["field"])] = r["new_value"]
+    agree_am = [cur[c][0 if f == "ARRIVAL" else 1] == v for (c, f), v in latest.items()]
+    A("SF11 closure in the data: on every reservation the amendment log changed (%d reservation-fields), its latest new "
+      "value is the extract's arrival or departure, so the extract carries the current dates and the log the old ones"
+      % len(agree_am), len(agree_am) > 1000 and all(agree_am))
+    nights_col = np.genfromtxt(os.path.join(target, R.F_EXTRACT), delimiter=",", skip_header=1, usecols=5, dtype=int)
     A("SF12 a reservation's nights run to the night before departure: no row's nights differ from departure less "
-      "arrival", bool(np.all((V.dep - V.arr) == np.genfromtxt(os.path.join(target, R.F_EXTRACT), delimiter=",",
-                                                               skip_header=1, usecols=5, dtype=int))))
+      "arrival (the extract's own nights column), and the night audit counts each room on its nights from arrival to "
+      "the night before departure (asserted under R2)", bool(np.all((V.dep - V.arr) == nights_col)))
     A("SF13 statuses: RES and INH on the book, OUT and INH stayed, CXL and NS not (asserted under R2)",
       set(np.unique(V.status)) == {"RES", "INH", "OUT", "CXL", "NS"})
+    labels = dict(status_list)
+    A("SF13 closure in the producing system: the PMS code list's status sheet labels every status the extract carries "
+      "(%s), NS as HK-04 2.3's No-show, and every cancelled row, and only those, carries a cancellation time" %
+      ", ".join("%s %s" % kv for kv in status_list),
+      set(np.unique(V.status)) <= set(labels) and labels.get("NS") == "No-show" and labels.get("CXL") == "Cancelled"
+      and labels.get("OUT") == "Checked out" and labels.get("INH") == "In house" and labels.get("RES") == "Reserved"
+      and "No-show and day-use rooms are not." in hk and
+      all((r["status"] == "CXL") == (r["cancelled_utc"] != "") for r in ext_rows))
     multi = Counter(V.ref)
     A("SF14 rooms booked together: one row per room under a shared booking reference (%d references carry two or "
-      "more rooms)" % sum(1 for v in multi.values() if v > 1), sum(1 for v in multi.values() if v > 1) > 1000)
+      "more rooms, every confirmation number once); the night audit closes the reading (asserted under R2: counting "
+      "booking references falls short of it on every past festival night)" % sum(1 for v in multi.values() if v > 1),
+      sum(1 for v in multi.values() if v > 1) > 1000 and len({r["confirmation_no"] for r in ext_rows}) == len(ext_rows))
     A("SF15 the forecast is the expected occupancy: the golden matches the world's own expectation in both bins "
       "(asserted above)", True)
     A("SF16 the festival's alignment from its programme history (asserted under R2); the programme history gives "
@@ -621,53 +694,116 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
        e["to"] >= dt.date(2027, 7, 26)] == [K.FESTIVAL, "%s, two concerts" % K.BAND] and
       dt.date(2027, 8, 2) in K.HOLIDAYS)
 
-    # ------------------------------------------------------------------ the asks
+    # ------------------------------------------------------------------ the ask (last season's table)
     S = Wd.S
     ta = O.truth_a(S)
     aa = C.ask_a(target)
-    A("Ask A every figure recomputes from the files and equals the truth (25 figures)",
-      all(aa[w][k] == ta["W%d" % (w + 1)][k] for w in range(5) for k in ("crew_dep", "crew_stay", "brn_dep", "brn_stay")) and
-      all(abs(aa[w]["ot"] - ta["W%d" % (w + 1)]["ot"]) < 1e-9 for w in range(5)))
     keys = ("crew_dep", "crew_stay", "brn_dep", "brn_stay")
-    for mode, lab in (("current_group", "S1 the user list's group as it stands"),
-                      ("cracker", "S3 the cracker (current group, login, every filed rule and the battery)"),
-                      ("created2026", "S6 every login created in 2026 counted as Brennock's")):
+    A("Ask A every figure recomputes from the files and equals the truth (25 figures: who did each room, the overtime "
+      "the crew worked)",
+      all(aa[w][k] == ta["W%d" % (w + 1)][k] for w in range(5) for k in keys) and
+      all(abs(aa[w]["ot"] - ta["W%d" % (w + 1)]["ot"]) < 1e-9 for w in range(5)))
+
+    def off(st):
+        return sum(st[w][k] != aa[w][k] for w in range(5) for k in keys) + \
+            sum(abs(st[w]["ot"] - aa[w]["ot"]) > 0.125 for w in range(5))
+    for mode, lab, need in (("careful", "S3 the cracker (every filed rule, the notes, Brennock's timesheets, HR, the "
+                                        "reference dates and the battery; each room to its login)", 25),
+                            ("natural", "S7 the natural read (the user list's group, notes unread, overtime by pay "
+                                        "period)", 25),
+                            ("staffbadge", "S6 the over-clean (the doors on staff and temp badges only)", 25),
+                            ("current_group", "S1 the user list's group as it stands", 20),
+                            ("login", "S2 the login's user with the notes unread", 10),
+                            ("recleans", "S5 re-cleans counted as services", 10),
+                            ("paid", "S4 overtime by the pay period it was paid in", 5)):
         st = C.ask_a(target, mode)
-        A("Ask A stop %s: all 20 service cells off" % lab, all(st[w][k] != aa[w][k] for w in range(5) for k in keys))
-    st = C.ask_a(target, "login")
-    off = sum(st[w][k] != aa[w][k] for w in range(5) for k in keys)
-    A("Ask A stop S2 the login's user with the notes unread: %d of 20 cells off" % off, off == 20)
-    st = C.ask_a(target, "recleans")
-    A("Ask A stop S5 re-cleans counted as services: every week's departures off",
-      all(st[w]["crew_dep"] + st[w]["brn_dep"] > aa[w]["crew_dep"] + aa[w]["brn_dep"] for w in range(5)))
-    st = C.ask_a(target, "paid")
-    A("Ask A stop S4 overtime by pay period end: all 5 weeks off (%s against %s)" % (
-        [st[w]["ot"] for w in range(5)], [aa[w]["ot"] for w in range(5)]),
-      all(abs(st[w]["ot"] - aa[w]["ot"]) > 0.2 for w in range(5)))
-    users = {r["login"]: r for r in csv.DictReader(open(os.path.join(target, C.USERS_F), encoding="utf-8"))}
+        A("Ask A stop %s: %d of 25 figures off" % (lab, off(st)), off(st) >= need)
+    # the device: crew tablets lent, still signed in, to a regular whose loan tablet dropped out
+    lt = C.lent_tablets(target)
+    regs = {b[0] for b in CA.BRENNOCK_REGULARS}
     ts = C.timesheets(target)
+    on_ts = {(r["name"], r["date"]) for r in ts}
+    truth_lent = {(x["X"].login, x["d"]): x["R"].name for x in S["lent"]}
+    A("Ask A device: on %d days a crew login closed rooms while its own attendant has no door record (no staff-badge "
+      "event, no day badge from reception), and each such login-day has exactly one attendant in the building whose "
+      "own login went quiet before its first room and who left after its last: a Brennock regular on that day's "
+      "timesheet (%s)" % (len(lt), "; ".join("%s %s %s" % (d.strftime("%d %b"), lg, v[0]) for (lg, d), v in
+                                              sorted(lt.items(), key=lambda kv: kv[0][1]))),
+      len(lt) >= 8 and {k: v[0] for k, v in lt.items()} == truth_lent and
+      all(len(v[2]) == 1 and v[0] in regs and (v[0], d) in on_ts for (lg, d), v in lt.items()))
+    weeks_lent = sorted({C.week_of(d) for (_, d) in lt})
+    tl = list(csv.DictReader(open(os.path.join(target, C.TASKS_F), encoding="utf-8")))
+    lent_rows = [r for r in tl if (r["user_login"], dt.date.fromisoformat(r["service_date"])) in lt and
+                 r["status"] == "Completed" and r["task_type"] in ("Departure", "Stayover")]
+    per_wk = {w: Counter(r["task_type"] for r in lent_rows if C.week_of(dt.date.fromisoformat(r["service_date"])) == w)
+              for w in range(5)}
+    A("Ask A device mass: every roster week holds a lent day, each week's lent rooms both departures and stayovers (%s)"
+      % "; ".join("W%d %d and %d" % (w + 1, per_wk[w]["Departure"], per_wk[w]["Stayover"]) for w in range(5)),
+      weeks_lent == [0, 1, 2, 3, 4] and all(per_wk[w]["Departure"] >= 1 and per_wk[w]["Stayover"] >= 1
+                                             for w in range(5)))
+    pay = list(csv.DictReader(open(os.path.join(target, C.PAY_F), encoding="utf-8")))
+    present, _ = C.doors(target)
+    covered = {d for _, d in present}
+
+    def worked_day(r):
+        dd_ = dt.date(2000 + int(r["reference"][9:11]), int(r["reference"][6:8]), int(r["reference"][3:5]))
+        sur, first = r["employee"].split(", ", 1)
+        return dd_, "%s %s" % (first, sur)
+    unworked = [r for r in pay if worked_day(r)[0] in covered and (worked_day(r)[1], worked_day(r)[0]) not in present]
+    A("Ask A device on the overtime: %d payroll lines pay a lent tablet's own attendant for the late finish on a day "
+      "she was not in (%s), one or more in every roster week, and every one is a lent day" % (
+          len(unworked), ", ".join("%s %s" % (r["employee"], r["reference"]) for r in unworked)),
+      len(unworked) == len(S["ot_lent"]) and
+      sorted({C.week_of(worked_day(r)[0]) for r in unworked}) == [0, 1, 2, 3, 4] and
+      all((CA.login_of(worked_day(r)[1]), worked_day(r)[0]) in lt for r in unworked))
+    bl = list(csv.DictReader(open(os.path.join(target, C.BADGE_F), encoding="utf-8")))
+    crew_names = {c[0] for c in CA.CREW_2026}
+    twins = sorted({(r["issued_to"], r["date"]) for r in bl if r["issued_to"] in crew_names})
+    staff_present, _ = C.doors(target, staff_only=True)
+    A("Ask A over-cleaning half: %d crew attendants came in on a day badge from reception (company The Weighhouse "
+      "Hotel) with no staff-badge event that day, their own logins working the whole day; the doors read on staff "
+      "badges alone count them out and file every figure wrong (S6)" % len(twins),
+      len(twins) >= 8 and all(r["company"] == "The Weighhouse Hotel" for r in bl if r["issued_to"] in crew_names) and
+      all((n, dt.date.fromisoformat(d)) in present and (n, dt.date.fromisoformat(d)) not in staff_present
+          for n, d in twins) and
+      all(any(r["user_login"] == CA.login_of(n) and r["service_date"] == d for r in tl) for n, d in twins))
+    A("Ask A the door join is one reading: no day badge is issued twice in a day, and every day badge's events fall on "
+      "its issue date", len({(r["date"], r["badge"]) for r in bl}) == len(bl))
+    # the rival readings a careful judge could take, each computed
+    T_ = __import__("pandas").read_csv(os.path.join(target, C.TASKS_F), dtype=str, keep_default_na=False)
+    dropped = C.ask_a(target)
+    for (lg, d), (b, ids, _) in lt.items():
+        for r in T_[T_["task_id"].isin(ids)].itertuples():
+            if r.status == "Completed" and r.task_type in ("Departure", "Stayover"):
+                dropped[C.week_of(d)]["brn_" + ("dep" if r.task_type == "Departure" else "stay")] -= 1
+    A("Ask A rival readings: the lent rooms credited to the agency without naming who did them file the golden (every "
+      "borrower is a Brennock regular); the login's own attendant (S3), the staff badges alone (S6) and the lent rooms "
+      "left out of both sides (Brennock %s against %s) are each ruled out by the door record, which names one borrower "
+      "for every lent login-day" % ([dropped[w]["brn_dep"] for w in range(5)], [aa[w]["brn_dep"] for w in range(5)]),
+      all(dropped[w]["brn_dep"] < aa[w]["brn_dep"] for w in range(5)) and all(len(v[2]) == 1 for v in lt.values()))
+    A("Ask A no lent day falls before the door record's first day (1 August 2026): the July rooms read by their logins",
+      all(x["d"] >= dt.date(2026, 8, 1) for x in S["lent"]) and min(covered) == dt.date(2026, 8, 1))
+    # the old devices, now hazards the careful solver executes
+    users = {r["login"]: r for r in csv.DictReader(open(os.path.join(target, C.USERS_F), encoding="utf-8"))}
     hr = {}
     wbh = openpyxl.load_workbook(os.path.join(target, C.HR_F), read_only=True)
     for row in wbh.worksheets[0].iter_rows(min_row=5, values_only=True):
         if row[0]:
             hr["%s %s" % (row[2], row[1])] = row[6].date()
     hires = [b[0] for b in CA.BRENNOCK_REGULARS if b[3]]
-    A("Ask A device A1: the three agency regulars later hired are crew in the user list and HR (start dates after the "
-      "season) and Brennock's on its 2026 timesheets",
+    A("Ask A hazard HA5 (a group read at the wrong vintage): the three agency regulars later hired are crew in the user "
+      "list and HR (start dates after the season) and Brennock's on its 2026 timesheets",
       all(users[CA.login_of(n)]["user_group"] == "Housekeeping" and hr[n] > dt.date(2026, 8, 30) and
           any(r["name"] == n and r["date"].year == 2026 for r in ts) for n in hires))
-    A("Ask A device A1 benign twins: crew hired in 2026 (logins created in 2026) are on no Brennock timesheet",
-      all(not any(r["name"] == p[0] for r in ts) for p in CA.CREW_2026 if p[2].year == 2026))
-    tl = list(csv.DictReader(open(os.path.join(target, C.TASKS_F), encoding="utf-8")))
-    sup = {CA.login_of(s[0]) for s in CA.SUPERVISORS}
+    sup = {CA.login_of(s_[0]) for s_ in CA.SUPERVISORS}
     supl = [r for r in tl if r["user_login"] in sup]
-    A("Ask A device A2: every task closed under a supervisor's login carries a note naming one person (%d tasks; %d "
-      "Brennock day temps, %d crew with a tablet down)" % (
+    A("Ask A hazard HA6 (the attendant in a note): every task closed under a supervisor's login carries a note naming "
+      "one person (%d tasks; %d Brennock day temps, %d crew with a tablet down)" % (
           len(supl), sum("tablet" not in r["note"] for r in supl), sum("tablet" in r["note"] for r in supl)),
       all(r["note"] for r in supl) and any("tablet" in r["note"] for r in supl) and
       any("tablet" not in r["note"] for r in supl))
-    pay = list(csv.DictReader(open(os.path.join(target, C.PAY_F), encoding="utf-8")))
-    A("Ask A device A3: every overtime line is paid in a pay period after the one the hours were worked in",
+    A("Ask A hazard HA7 (a pay date for a work date): every overtime line is paid in a pay period after the one the "
+      "hours were worked in",
       all(dt.date(2000 + int(r["reference"][9:11]), int(r["reference"][6:8]), int(r["reference"][3:5])) <
           dt.date.fromisoformat(r["period_start"]) for r in pay))
     A("Ask A hazards: re-cleans, do-not-disturb and refused stayovers are in the log (%d, %d, %d)" % (
@@ -677,56 +813,21 @@ def run(target, golden, Wd=None, G=None, meta_path=None):
                            sum(r["status"] == "Refused" for r in tl))))
     rc_ok = all(r["user_login"] == next(x for x in tl if x["task_id"] == r["parent_task_id"])["user_login"]
                 for r in tl if r["task_type"] == "Re-clean")
-    A("Ask A every re-clean is closed by the login that closed the service it repeats", rc_ok)
-    tb = O.truth_bk(Wd.truth_b)
-    bb = C.ask_b(target)
-    wc = C.week_charge(bb)
-    A("Ask B every figure recomputes from the files and equals the truth (7 days' hours and the week's charge, EUR "
-      "%.2f)" % wc, all(abs(bb[d][0] - tb[d][0]) < 1e-9 for d in O.BLOCK_DAYS) and
-      abs(wc - K.round_dp(sum(v[1] for v in tb.values()), 2)) < 0.005)
-    st = C.ask_b(target, "local")
-    A("Ask B stop S1 the loading bay's times read as local: all 7 days' hours and the week's charge off (EUR %.2f)" %
-      C.week_charge(st), all(st[d][0] != bb[d][0] for d in O.BLOCK_DAYS) and abs(C.week_charge(st) - wc) > 1)
-    inv = C.invoice_b(target)
-    A("Ask B stop S2 Brennock's invoice: all 7 days' hours and the week's charge off (EUR %.2f net)" % sum(
-        v[1] for v in inv.values()), all(inv[d][0] != bb[d][0] for d in O.BLOCK_DAYS) and
-      abs(sum(v[1] for v in inv.values()) - wc) > 1)
-    st = C.ask_b(target, "nomin")
-    A("Ask B stop S4 the four-hour minimum missed: Wednesday's hours and the week's charge off, the other days on",
-      [d for d in O.BLOCK_DAYS if st[d][0] != bb[d][0]] == [O.SENT_HOME_DAY] and abs(C.week_charge(st) - wc) > 1)
-    st = C.ask_b(target, "nosunday")
-    nos = K.round_dp(sum(v[1] for v in st.values()), 2)
-    A("Ask B stop S5 the Sunday rate missed: the week's charge off (EUR %.2f), every day's hours on" % nos,
-      all(st[d][0] == bb[d][0] for d in O.BLOCK_DAYS) and abs(nos - wc) > 1)
-    st = C.ask_b(target, "shifted")
-    A("Ask B over-correction (every access time moved an hour): all 7 days' hours off",
-      all(st[d][0] != bb[d][0] for d in O.BLOCK_DAYS))
-    acc = list(csv.DictReader(open(os.path.join(target, C.ACCESS_F), encoding="utf-8")))
-    lb = [dt.datetime.fromisoformat(r["event_time"]) for r in acc if r["reader"] == "LB-02" and
-          r["badge"].startswith("V-")]
-    se_ = [dt.datetime.fromisoformat(r["event_time"]) for r in acc if r["reader"] == "SE-02" and
-           r["badge"].startswith("V-") and dt.datetime.fromisoformat(r["event_time"]).hour >= 15]
-    A("Ask B device B1: the day badges' loading-bay exits sit an hour before the entrance's (median %s against %s), "
-      "and no filed sentence names a reader's clock" % (
-          sorted(x.time() for x in lb)[len(lb) // 2], sorted(x.time() for x in se_)[len(se_) // 2]),
-      dt.datetime.combine(dt.date(2000, 1, 1), sorted(x.time() for x in se_)[len(se_) // 2]) -
-      dt.datetime.combine(dt.date(2000, 1, 1), sorted(x.time() for x in lb)[len(lb) // 2]) > dt.timedelta(minutes=40)
-      and not any(re.search(r"\bUTC\b|time zone|clock", t) for f, t in dtext.items()
-                  if f in (C.ACCESS_F, C.BADGE_F, DOC.F_AGREEMENT, DOC.F_INVOICE)))
-    bl = list(csv.DictReader(open(os.path.join(target, C.BADGE_F), encoding="utf-8")))
-    reuse = Counter(r["badge"] for r in bl)
-    A("Ask B hazard HB1: day badges are reissued (%d badges, the busiest %d times), so a join on the badge alone fans "
-      "out" % (len(reuse), max(reuse.values())), max(reuse.values()) >= 5)
+    A("Ask A every re-clean is closed on the tablet that closed the service it repeats", rc_ok)
+    A("Ask A no filed sentence names a tablet, a login's use, a badge or a door: HK-04 is the pack's only document, "
+      "and the two ask-path workbooks carry headers and records only",
+      not re.search(r"tablet|log-?in|signed in|badge|door|access", hk, re.I) and
+      [f for f in files if f.endswith(".pdf")] == [DOC.F_HK04])
     A("Separation: the call computed with every ask file and distractor deleted is the golden (zero device rows in its "
       "population)", True)
     for f in dis:
         tmp = copy_only(target, [x for x in files if x != f])
         try:
             Ld = C.ladder(C.from_pack(tmp))
-            ok = np.allclose(Ld["gw"], gw) and C.ask_a(tmp) == aa and C.ask_b(tmp) == bb
+            ok = np.allclose(Ld["gw"], gw) and C.ask_a(tmp) == aa
         finally:
             shutil.rmtree(tmp)
-        A("distractor %s deleted: the call and both asks unchanged" % f, ok)
+        A("distractor %s deleted: the call and the ask unchanged" % f, ok)
 
     # ------------------------------------------------------------------ realism sweep
     A("realism no em or en dash in any shipped text", not any(DASH.search(t) for t in dtext.values()) and

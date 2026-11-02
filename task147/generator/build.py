@@ -1,6 +1,7 @@
 """Build task147: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
 generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch folder
-inside the task (removed after) compared byte for byte, then target.zip cut from the pack.
+inside the task (removed after) compared byte for byte, then target.zip cut from the pack. Every file's provenance
+(system, date, keeper) is written to metadata.json only; nothing under target/ describes the pack.
 
     python3 task147/generator/build.py              everything
     python3 task147/generator/build.py --out DIR    the pack only, into DIR"""
@@ -28,7 +29,6 @@ import world as WD          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 EXPORT_STAMP = dt.datetime(2027, 7, 1, 7, 41, tzinfo=dt.timezone.utc)      # 08:41 on 1 July at the desk
-F_MANIFEST = "folder_contents.csv"
 
 
 class World:
@@ -49,39 +49,6 @@ ACCESS_COLS = ["event_time", "reader", "badge", "holder", "direction"]
 BADGE_COLS = ["date", "badge", "issued_to", "company", "issued_at", "issued_by", "returned"]
 
 
-def manifest_rows():
-    return [
-        [R.F_EXTRACT, "Property management system", "2027-07-01", "Reservations with arrivals from 01/01/2022",
-         "Reservations"],
-        [R.F_AMEND, "Property management system", "2027-07-01", "Date and guest-count changes to those reservations",
-         "Reservations"],
-        [R.F_NOTES, "Property management system", "2027-07-01", "Notes on the reservation extract", "Reservations"],
-        [R.F_CODES, "Property management system", "2027-07-01", "Rate, channel and market codes", "Reservations"],
-        [R.F_AUDIT, "Night audit", "2027-07-01", "Daily statistics, 01/01/2022 to 30/06/2027", "Front office"],
-        [R.F_FEST, "Festival office", "2027-03-18", "Festival dates by edition, 2015 to 2027", "Sales office"],
-        [R.F_DIARY, "Sales office", "2027-06-29", "City events 2022 to 2027", "Sales office"],
-        [DOC.F_HK04, "Rooms Division standards", "2025-03-21", "Festival season staffing standard, issue 3",
-         "Rooms Division"],
-        [C.TASKS_F, "Housekeeping app", "2027-06-28", "Room tasks, 27/07/2026 to 30/08/2026", "Housekeeping"],
-        [C.USERS_F, "Housekeeping app", "2027-06-28", "App users and groups as at the export", "Housekeeping"],
-        [C.HR_F, "HR system", "2027-06-28", "Housekeeping staff as at 28/06/2027", "HR and Payroll"],
-        [C.TS_F, "Brennock Hospitality Staffing", "2026-09-08", "Timesheets, weeks ending 26/07/2026 to 06/09/2026",
-         "Housekeeping"],
-        [C.PAY_F, "Payroll", "2027-06-28", "Room attendants' overtime lines, pay periods 14 to 19 of 2026",
-         "HR and Payroll"],
-        [C.ACCESS_F, "Staff access system", "2027-06-29", "Badge events, staff entrance and loading bay, August 2026",
-         "Security"],
-        [C.BADGE_F, "Reception", "2027-06-29", "Day badges issued, August 2026", "Front office"],
-        [DOC.F_INVOICE, "Brennock Hospitality Staffing", "2026-08-19", "Invoice for the 2026 block", "Accounts"],
-        [DOC.F_AGREEMENT, "Brennock Hospitality Staffing", "2025-03-14", "Framework agreement, 2025 to 2027",
-         "Rooms Division"],
-        [DS.F_SHOP, "Rate shopping service", "2027-06-30", "Competitors' public rates, 26/07/2027 to 29/08/2027",
-         "Reservations"],
-        [DS.F_SURVEY, "Callowfort Tourism", "2027-02-12", "Monthly hotel occupancy survey, 2019 to 2026",
-         "Sales office"],
-    ]
-
-
 def build(out, quiet=False, Wd=None):
     if os.path.exists(out):
         shutil.rmtree(out)
@@ -92,7 +59,6 @@ def build(out, quiet=False, Wd=None):
     counts = {}
     counts[R.F_EXTRACT] = K.write_csv(p(R.F_EXTRACT), R.EXTRACT_COLS, R.extract_rows(B))
     counts[R.F_AMEND] = K.write_csv(p(R.F_AMEND), R.AMEND_COLS, R.amendment_rows(B))
-    R.write_notes(p(R.F_NOTES))
     DOC.write_codes(p(R.F_CODES))
     DOC.write_audit(p(R.F_AUDIT), Wd.audit)
     R.write_festival(p(R.F_FEST))
@@ -109,17 +75,12 @@ def build(out, quiet=False, Wd=None):
                                     [[x["date"].isoformat(), x["badge"], x["name"], x["company"],
                                       x["issued"].strftime("%H:%M"), x["by"], "Y"]
                                      for x in sorted(Wd.badges, key=lambda x: (x["date"], x["issued"], x["badge"]))])
-    DOC.write_invoice(p(DOC.F_INVOICE), O.invoice(S))
-    DOC.write_agreement(p(DOC.F_AGREEMENT))
     full = [K.dd(i) for i in range(K.di(K.season_nights(K.YEAR)[0]), K.di(K.season_nights(K.YEAR)[-1]) + 1)
             if Wd.W.booked[i] >= K.CAP]
     DOC.write_rateshop(p(DS.F_SHOP), DS.shop_rows(set(full)), DS.HOTELS)
     counts[DS.F_SURVEY] = K.write_csv(p(DS.F_SURVEY), DS.SURVEY_COLS, DS.survey_rows())
-    K.write_csv(p(F_MANIFEST), ["file", "system", "taken_or_received", "covers", "kept_by"], manifest_rows())
     P = K.PEOPLE
     PP.normalize_pdf(p(DOC.F_HK04), b"D:20250321101418+00'00'", b"D:20250321101418+00'00'")
-    PP.normalize_pdf(p(DOC.F_AGREEMENT), b"D:20250314154402+00'00'", b"D:20250314154402+00'00'")
-    PP.normalize_pdf(p(DOC.F_INVOICE), b"D:20260819093127+01'00'", b"D:20260819093127+01'00'")
     PP.normalize_ooxml(p(R.F_CODES), "PMS", CA.RES_AGENTS[0], "2027-07-01T05:13:02Z", "2027-07-01T05:13:02Z",
                        excel=True)
     PP.normalize_ooxml(p(R.F_AUDIT), "Night audit", "Georgina Eustace", "2022-01-02T03:41:10Z",

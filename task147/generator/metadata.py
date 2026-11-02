@@ -1,11 +1,12 @@
-"""Write task147/metadata.json from the built pack."""
+"""Write task147/metadata.json from the built pack: the decision, the deliverables, the distractors and each file's
+provenance (its system, its date taken or received, who keeps it), never the method, the link or the mechanism
+(dataset-generation section 9)."""
 import json
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as BD      # noqa: E402
 import calc as C        # noqa: E402
 import deliver as DL    # noqa: E402
 import distract as DS   # noqa: E402
@@ -17,7 +18,6 @@ SOURCES = {
     R.F_EXTRACT: "The Weighhouse Hotel property management system, reservation extract of 06:12 on 1 July 2027, one "
                  "row per room reserved for arrivals from 1 January 2022",
     R.F_AMEND: "The Weighhouse Hotel property management system, amendment log of date and guest-count changes",
-    R.F_NOTES: "The Weighhouse Hotel property management system, notes on the reservation extract",
     R.F_CODES: "The Weighhouse Hotel property management system, rate, channel and market code lists",
     R.F_AUDIT: "The Weighhouse Hotel night audit, daily statistics 1 January 2022 to 30 June 2027",
     R.F_FEST: "Callowfort Festival of Arts, programme history (festival dates by edition), 2015 to 2027",
@@ -33,11 +33,27 @@ SOURCES = {
     C.ACCESS_F: "The Weighhouse Hotel staff access system, badge events at the staff entrance and loading bay, August "
                 "2026",
     C.BADGE_F: "The Weighhouse Hotel reception, day badges issued, August 2026",
-    DOC.F_INVOICE: "Brennock Hospitality Staffing, invoice BHS-INV-2026-0833 for the 2026 block",
-    DOC.F_AGREEMENT: "Framework agreement between the Weighhouse Hotel and Brennock Hospitality Staffing, March 2025",
     DS.F_SHOP: "Rate shopping service, competitors' lowest public rates shopped on 30 June 2027",
     DS.F_SURVEY: "Callowfort Tourism, monthly hotel occupancy survey 2019 to 2026",
-    BD.F_MANIFEST: "The executive housekeeper's folder index for the 2027 block confirmation",
+}
+# file: (the system that made it, the date it was taken or received, who keeps it)
+PROVENANCE = {
+    R.F_EXTRACT: ("Property management system", "2027-07-01", "Reservations"),
+    R.F_AMEND: ("Property management system", "2027-07-01", "Reservations"),
+    R.F_CODES: ("Property management system", "2027-07-01", "Reservations"),
+    R.F_AUDIT: ("Night audit", "2027-07-01", "Front office"),
+    R.F_FEST: ("Festival office", "2027-03-18", "Sales office"),
+    R.F_DIARY: ("Sales office", "2027-06-29", "Sales office"),
+    DOC.F_HK04: ("Rooms Division standards", "2025-03-21", "Rooms Division"),
+    C.TASKS_F: ("Housekeeping app", "2027-06-28", "Housekeeping"),
+    C.USERS_F: ("Housekeeping app", "2027-06-28", "Housekeeping"),
+    C.HR_F: ("HR system", "2027-06-28", "HR and Payroll"),
+    C.TS_F: ("Brennock Hospitality Staffing", "2026-09-08", "Housekeeping"),
+    C.PAY_F: ("Payroll", "2027-06-28", "HR and Payroll"),
+    C.ACCESS_F: ("Staff access system", "2027-06-29", "Security"),
+    C.BADGE_F: ("Reception", "2027-06-29", "Front office"),
+    DS.F_SHOP: ("Rate shopping service", "2027-06-30", "Reservations"),
+    DS.F_SURVEY: ("Callowfort Tourism", "2027-02-12", "Sales office"),
 }
 DISTRACTORS = [DS.F_SHOP, DS.F_SURVEY]
 
@@ -53,25 +69,23 @@ def write(target, out_path):
     files = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
+        system, when, keeper = PROVENANCE[f]
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2027-07-01",
+                      "source": "Constructed: " + SOURCES[f], "system": system, "date": when, "kept_by": keeper,
                       "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task147",
         "title": "Which 2027 festival roster week gets the staffing agency's block of temporary room attendants at a "
-                 "480-room city hotel, forecast on the 1 July book with two concert nights already full",
+                 "city-centre hotel",
         "domain": "Supply Chain & Logistics",
         "client_domain": "General Statistics & Data Science",
-        "subdomain": "resampling-simulation-monte-carlo-methods (the bookings still to come simulated on the booking "
-                     "process's independent unit, the stay, a block of consecutive nights taken only if every night "
-                     "has a room: each past season's later bookings replayed whole against this year's book, the "
-                     "seasons the replicates)",
+        "subdomain": "resampling-simulation-monte-carlo-methods",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "pick one of five roster weeks with its forecast room-nights above capacity to the nearest "
-                        "hundred and the next week with its own figure, a one-page note with the nightly forecast "
-                        "chart, and two tables from August 2026 (services and overtime by roster week; the block's "
-                        "billable hours and charge by day)",
+        "prompt_shape": "one roster week of the 2027 festival season with its forecast room-nights above the crew's "
+                        "capacity to the nearest hundred and the next week with its own figure, a one-page note with "
+                        "a chart of each night's forecast, and a table from the 2026 season (services by the crew and "
+                        "by the agency's temps, and the overtime the crew worked, by roster week)",
         "as_of": "2027-07-01",
         "deliverables": [DL.GOLD_BOOK, DL.GOLD_NOTE],
         "distractor_files": DISTRACTORS,

@@ -1,8 +1,8 @@
 """The independent verifier: reads only the bundle (target/ and golden/) with the standard library and openpyxl, on
 its own code path (no generator module), and recomputes the call (each past season's later bookings replayed whole
 against the 2027 book, the full nights' rooms only those their own bookings release at each rate code's past rate),
-the next week, the default path, and every Ask A and Ask B figure, then compares them with the goldens and
-generator/figures.json."""
+the next week, the default path, and every figure of last season's table (each room to whoever did it, the door record
+showing when a crew login's own attendant was not in), then compares them with the goldens and generator/figures.json."""
 from __future__ import annotations
 
 import csv
@@ -244,62 +244,74 @@ def main(target, golden, figures_path=None):
               if not u["login"].startswith("block")}
     for r in sheet_rows:
         people.setdefault(r[1].split(" ")[0], r[1])
-    wk26 = season(2026)
-    ask_a = [dict(crew_dep=0, crew_stay=0, brn_dep=0, brn_stay=0, ot=0.0) for _ in range(5)]
-    with open(os.path.join(target, "hk_task_log_2026-07-27_2026-08-30.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            if r["status"] != "Completed" or r["task_type"] not in ("Departure", "Stayover"):
-                continue
-            d = dt.date.fromisoformat(r["service_date"])
-            w = (d - wk26[0]).days // 7
-            if not 0 <= w < 5:
-                continue
-            u = users[r["user_login"]]
-            who = u["display_name"]
-            if u["user_group"] == "Housekeeping Supervisors":
-                named = [people[f] for f in people if re.search(r"\b%s\b" % re.escape(f), r["note"])]
-                who = named[0]
-            agency = (who, r["service_date"]) in agency_days or (u["user_group"] == "Agency - Brennock" and
-                                                                  who == u["display_name"])
-            ask_a[w]["%s_%s" % ("brn" if agency else "crew", "dep" if r["task_type"] == "Departure" else "stay")] += 1
-    with open(os.path.join(target, "payroll_overtime_lines_2026-P14-P19.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            dd, mm, yy = r["reference"].split(" ")[1].split("/")
-            d = dt.date(2000 + int(yy), int(mm), int(dd))
-            w = (d - wk26[0]).days // 7
-            if 0 <= w < 5:
-                ask_a[w]["ot"] += float(r["hours"])
-    out["ask_a"] = ask_a
-
-    # ---------------------------------------------------------------- Ask B
-    block = [r for r in sheet_rows if r[2] == "Block"]
-    badge = {}
+    # the door record: who was in the building each day it covers, on any badge (a day badge through reception's log)
+    issued = {}
     with open(os.path.join(target, "reception_day_badge_log_2026-08.csv"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            badge[(r["date"], r["issued_to"])] = r["badge"]
-    events = defaultdict(list)
+            assert (r["date"], r["badge"]) not in issued, "a day badge issued twice in a day"
+            issued[(r["date"], r["badge"])] = r["issued_to"]
+    inside, last_exit = set(), {}
     with open(os.path.join(target, "staff_access_events_2026-08.csv"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             t = dt.datetime.fromisoformat(r["event_time"])
             if r["reader"] == "LB-02":      # the loading bay's controller keeps UTC: an hour behind in August
                 t += dt.timedelta(hours=1)
-            events[(t.date().isoformat(), r["badge"])].append((t, r["direction"]))
-    ask_b = {}
-    for d in sorted({r[3].date() for r in block}):
-        hours = 0.0
-        for r in [x for x in block if x[3].date() == d]:
-            ev = events[(d.isoformat(), badge[(d.isoformat(), r[1])])]
-            first_in = min(t for t, k in ev if k == "IN")
-            last_out = max(t for t, k in ev if k == "OUT")
-            s = max(first_in, dt.datetime.combine(d, dt.time.fromisoformat(r[4])))
-            e = min(last_out, dt.datetime.combine(d, dt.time.fromisoformat(r[5])))
-            q = int(max(0.0, (e - s).total_seconds()) // 900) / 4.0
-            if q > 6:
-                q -= 0.5
-            hours += max(q, 4.0)
-        rate = 22.56 * (1.25 if d.weekday() == 6 else 1.0)
-        ask_b[d.isoformat()] = (hours, math.floor(hours * rate * 100 + 0.5) / 100)
-    out["ask_b"] = ask_b
+            day_ = t.date().isoformat()
+            who = issued.get((day_, r["badge"])) if r["holder"].startswith("Day badge ") else r["holder"]
+            if who:
+                inside.add((who, day_))
+                if r["direction"] == "OUT":
+                    last_exit[(who, day_)] = max(last_exit.get((who, day_), t), t)
+    door_days = {day_ for _, day_ in inside}
+    with open(os.path.join(target, "hk_task_log_2026-07-27_2026-08-30.csv"), encoding="utf-8") as fh:
+        tasks = list(csv.DictReader(fh))
+    local = lambda s_: dt.datetime.fromisoformat(s_) + dt.timedelta(hours=1)      # the app's UTC, Irish summer time
+    closes, absent = defaultdict(list), defaultdict(list)
+    for r in tasks:
+        u = users[r["user_login"]]
+        if not r["closed_utc"] or u["user_group"] == "Housekeeping Supervisors":
+            continue
+        closes[(u["display_name"], r["service_date"])].append(local(r["closed_utc"]))
+        if u["user_group"] == "Housekeeping" and r["service_date"] in door_days and \
+                (u["display_name"], r["service_date"]) not in inside:
+            absent[(r["user_login"], r["service_date"])].append(local(r["closed_utc"]))
+    lent = {}
+    for (lg, day_), cl in absent.items():
+        cands = [n for (n, dd), own in closes.items() if dd == day_ and (n, dd) in inside and max(own) < min(cl) and
+                 last_exit.get((n, dd), min(cl)) >= max(cl)]
+        assert len(cands) == 1, (lg, day_, cands)
+        lent[(lg, day_)] = cands[0]
+    wk26 = season(2026)
+    ask_a = [dict(crew_dep=0, crew_stay=0, brn_dep=0, brn_stay=0, ot=0.0) for _ in range(5)]
+    for r in tasks:
+        if r["status"] != "Completed" or r["task_type"] not in ("Departure", "Stayover"):
+            continue
+        d = dt.date.fromisoformat(r["service_date"])
+        w = (d - wk26[0]).days // 7
+        if not 0 <= w < 5:
+            continue
+        u = users[r["user_login"]]
+        who = u["display_name"]
+        if u["user_group"] == "Housekeeping Supervisors":
+            named = [people[f] for f in people if re.search(r"\b%s\b" % re.escape(f), r["note"])]
+            who = named[0]
+        own = who == u["display_name"]
+        if (r["user_login"], r["service_date"]) in lent:
+            who, own = lent[(r["user_login"], r["service_date"])], False
+        agency = (who, r["service_date"]) in agency_days or (u["user_group"] == "Agency - Brennock" and own)
+        ask_a[w]["%s_%s" % ("brn" if agency else "crew", "dep" if r["task_type"] == "Departure" else "stay")] += 1
+    with open(os.path.join(target, "payroll_overtime_lines_2026-P14-P19.csv"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            dd, mm, yy = r["reference"].split(" ")[1].split("/")
+            d = dt.date(2000 + int(yy), int(mm), int(dd))
+            sur, first = r["employee"].split(", ", 1)
+            if d.isoformat() in door_days and ("%s %s" % (first, sur), d.isoformat()) not in inside:
+                continue                    # paid for a day its attendant was not in the building
+            w = (d - wk26[0]).days // 7
+            if 0 <= w < 5:
+                ask_a[w]["ot"] += float(r["hours"])
+    out["ask_a"] = ask_a
+    out["lent"] = lent
 
     # ---------------------------------------------------------------- compare with the goldens and figures.json
     fails = []
@@ -317,17 +329,6 @@ def main(target, golden, figures_path=None):
         want = [ask_a[w]["crew_dep"], ask_a[w]["crew_stay"], ask_a[w]["brn_dep"], ask_a[w]["brn_stay"], ask_a[w]["ot"]]
         if got[:4] != want[:4] or abs(got[4] - want[4]) > 1e-9:
             fails.append(("services week %d" % (w + 1), got, want))
-    ws3 = gb["2026 block billing"]
-    for i, (d, (h, ch)) in enumerate(sorted(ask_b.items())):
-        got = ws3.cell(row=5 + i, column=3).value
-        if abs(got - h) > 1e-9:
-            fails.append(("block day %s" % d, got, h))
-    week = math.floor(sum(h * 22.56 * (1.25 if dt.date.fromisoformat(d).weekday() == 6 else 1.0)
-                          for d, (h, _) in ask_b.items()) * 100 + 0.5) / 100
-    got = [r[2] for r in ws3.iter_rows(values_only=True) if r[0] == "The week's charge before VAT (EUR)"]
-    if not got or abs(got[0] - week) > 0.005:
-        fails.append(("week charge", got, week))
-    out["week_charge"] = week
     if figures_path and os.path.exists(figures_path):
         F = json.load(open(figures_path, encoding="utf-8"))
         if F["call"]["room_nights_above_capacity"] != "{:,}".format(out["pick_fig"]) or \
@@ -339,11 +340,11 @@ def main(target, golden, figures_path=None):
             print("VERIFY FAIL", f)
         raise SystemExit(1)
     print("verify.py: the call W%d (%.0f, about %d), next W%d (%.0f, about %d), the default W%d (%.0f, about %d); "
-          "full nights %s releasing %s rooms; Ask A 25 figures and Ask B 8 figures recomputed and equal in the "
-          "workbook" % (
+          "full nights %s releasing %s rooms; last season's table, 25 figures, recomputed and equal in the workbook "
+          "(%d crew logins used on a day their own attendant was out, each by one attendant still in)" % (
               out["pick"] + 1, gw[out["pick"]], out["pick_fig"], out["next"] + 1, gw[out["next"]], out["next_fig"],
               out["default_pick"] + 1, dw[out["default_pick"]], out["default_fig"], ", ".join(out["full"]),
-              " and ".join("%.1f" % x for x in out["freed"])))
+              " and ".join("%.1f" % x for x in out["freed"]), len(lent)))
     return out
 
 

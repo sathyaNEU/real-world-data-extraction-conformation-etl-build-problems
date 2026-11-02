@@ -74,39 +74,5 @@
       "brennock_stayover_services": "276",
       "crew_overtime_hours": "14.25"
     }
-  ],
-  "ask_b_2026_block_billable_hours": [
-    {
-      "day": "Monday 10 August 2026",
-      "hours": "59.25"
-    },
-    {
-      "day": "Tuesday 11 August 2026",
-      "hours": "59.50"
-    },
-    {
-      "day": "Wednesday 12 August 2026",
-      "hours": "55.75"
-    },
-    {
-      "day": "Thursday 13 August 2026",
-      "hours": "59.25"
-    },
-    {
-      "day": "Friday 14 August 2026",
-      "hours": "59.75"
-    },
-    {
-      "day": "Saturday 15 August 2026",
-      "hours": "59.75"
-    },
-    {
-      "day": "Sunday 16 August 2026",
-      "hours": "59.75"
-    }
-  ],
-  "ask_b_week": {
-    "hours": "413.00",
-    "charge_before_vat_eur": "9,654.27"
-  }
+  ]
 }

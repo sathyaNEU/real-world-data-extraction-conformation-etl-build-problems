@@ -1,11 +1,11 @@
 {
   "task": "task147",
-  "title": "Which 2027 festival roster week gets the staffing agency's block of temporary room attendants at a 480-room city hotel, forecast on the 1 July book with two concert nights already full",
+  "title": "Which 2027 festival roster week gets the staffing agency's block of temporary room attendants at a city-centre hotel",
   "domain": "Supply Chain & Logistics",
   "client_domain": "General Statistics & Data Science",
-  "subdomain": "resampling-simulation-monte-carlo-methods (the bookings still to come simulated on the booking process's independent unit, the stay, a block of consecutive nights taken only if every night has a room: each past season's later bookings replayed whole against this year's book, the seasons the replicates)",
+  "subdomain": "resampling-simulation-monte-carlo-methods",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "pick one of five roster weeks with its forecast room-nights above capacity to the nearest hundred and the next week with its own figure, a one-page note with the nightly forecast chart, and two tables from August 2026 (services and overtime by roster week; the block's billable hours and charge by day)",
+  "prompt_shape": "one roster week of the 2027 festival season with its forecast room-nights above the crew's capacity to the nearest hundred and the next week with its own figure, a one-page note with a chart of each night's forecast, and a table from the 2026 season (services by the crew and by the agency's temps, and the overtime the crew worked, by roster week)",
   "as_of": "2027-07-01",
   "deliverables": [
     "housekeeping_block_2027.xlsx",
@@ -19,12 +19,11 @@
     "380"
   ],
   "input_gates": {
-    "files": 20,
+    "files": 16,
     "formats": [
       "csv",
       "json",
       "pdf",
-      "txt",
       "xlsx"
     ],
     "largest_file": "pms_reservations_extract_2027-07-01.csv",
@@ -47,25 +46,9 @@
       "bytes": 35696,
       "rows": null,
       "source": "Constructed: The Weighhouse Hotel Rooms Division, standard HK-04 issue 3, housekeeping staffing for the festival season",
-      "date": "2027-07-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "brennock_framework_agreement_2025.pdf",
-      "format": "pdf",
-      "bytes": 45198,
-      "rows": null,
-      "source": "Constructed: Framework agreement between the Weighhouse Hotel and Brennock Hospitality Staffing, March 2025",
-      "date": "2027-07-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "brennock_invoice_BHS-INV-2026-0833.pdf",
-      "format": "pdf",
-      "bytes": 35311,
-      "rows": null,
-      "source": "Constructed: Brennock Hospitality Staffing, invoice BHS-INV-2026-0833 for the 2026 block",
-      "date": "2027-07-01",
+      "system": "Rooms Division standards",
+      "date": "2025-03-21",
+      "kept_by": "Rooms Division",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -74,7 +57,9 @@
       "bytes": 21904,
       "rows": null,
       "source": "Constructed: Brennock Hospitality Staffing, timesheet summaries for the Weighhouse, weeks ending 26 July to 6 September 2026",
-      "date": "2027-07-01",
+      "system": "Brennock Hospitality Staffing",
+      "date": "2026-09-08",
+      "kept_by": "Housekeeping",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -83,7 +68,9 @@
       "bytes": 2505,
       "rows": 96,
       "source": "Constructed: Callowfort Tourism, monthly hotel occupancy survey 2019 to 2026",
-      "date": "2027-07-01",
+      "system": "Callowfort Tourism",
+      "date": "2027-02-12",
+      "kept_by": "Sales office",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -92,7 +79,9 @@
       "bytes": 7885,
       "rows": null,
       "source": "Constructed: Rate shopping service, competitors' lowest public rates shopped on 30 June 2027",
-      "date": "2027-07-01",
+      "system": "Rate shopping service",
+      "date": "2027-06-30",
+      "kept_by": "Reservations",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -101,16 +90,9 @@
       "bytes": 3090,
       "rows": null,
       "source": "Constructed: Callowfort Festival of Arts, programme history (festival dates by edition), 2015 to 2027",
-      "date": "2027-07-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "folder_contents.csv",
-      "format": "csv",
-      "bytes": 2382,
-      "rows": 19,
-      "source": "Constructed: The executive housekeeper's folder index for the 2027 block confirmation",
-      "date": "2027-07-01",
+      "system": "Festival office",
+      "date": "2027-03-18",
+      "kept_by": "Sales office",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -119,16 +101,20 @@
       "bytes": 4601,
       "rows": 67,
       "source": "Constructed: The Weighhouse Hotel housekeeping app, user list as at 28 June 2027",
-      "date": "2027-07-01",
+      "system": "Housekeeping app",
+      "date": "2027-06-28",
+      "kept_by": "Housekeeping",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "hk_task_log_2026-07-27_2026-08-30.csv",
       "format": "csv",
-      "bytes": 1617951,
+      "bytes": 1617877,
       "rows": 13887,
       "source": "Constructed: The Weighhouse Hotel housekeeping app, task log 27 July to 30 August 2026",
-      "date": "2027-07-01",
+      "system": "Housekeeping app",
+      "date": "2027-06-28",
+      "kept_by": "Housekeeping",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -137,7 +123,9 @@
       "bytes": 8500,
       "rows": null,
       "source": "Constructed: The Weighhouse Hotel HR system, housekeeping staff list as at 28 June 2027",
-      "date": "2027-07-01",
+      "system": "HR system",
+      "date": "2027-06-28",
+      "kept_by": "HR and Payroll",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -146,16 +134,20 @@
       "bytes": 160121,
       "rows": null,
       "source": "Constructed: The Weighhouse Hotel night audit, daily statistics 1 January 2022 to 30 June 2027",
+      "system": "Night audit",
       "date": "2027-07-01",
+      "kept_by": "Front office",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "payroll_overtime_lines_2026-P14-P19.csv",
       "format": "csv",
-      "bytes": 8710,
-      "rows": 67,
+      "bytes": 9605,
+      "rows": 74,
       "source": "Constructed: The Weighhouse Hotel payroll, room attendants' overtime lines, pay periods 14 to 19 of 2026",
-      "date": "2027-07-01",
+      "system": "Payroll",
+      "date": "2027-06-28",
+      "kept_by": "HR and Payroll",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -164,25 +156,20 @@
       "bytes": 1139375,
       "rows": 17888,
       "source": "Constructed: The Weighhouse Hotel property management system, amendment log of date and guest-count changes",
+      "system": "Property management system",
       "date": "2027-07-01",
+      "kept_by": "Reservations",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "pms_code_lists.xlsx",
       "format": "xlsx",
-      "bytes": 9172,
+      "bytes": 10064,
       "rows": null,
       "source": "Constructed: The Weighhouse Hotel property management system, rate, channel and market code lists",
+      "system": "Property management system",
       "date": "2027-07-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "pms_export_notes.txt",
-      "format": "txt",
-      "bytes": 2067,
-      "rows": null,
-      "source": "Constructed: The Weighhouse Hotel property management system, notes on the reservation extract",
-      "date": "2027-07-01",
+      "kept_by": "Reservations",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -191,16 +178,20 @@
       "bytes": 34427006,
       "rows": 360694,
       "source": "Constructed: The Weighhouse Hotel property management system, reservation extract of 06:12 on 1 July 2027, one row per room reserved for arrivals from 1 January 2022",
+      "system": "Property management system",
       "date": "2027-07-01",
+      "kept_by": "Reservations",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "reception_day_badge_log_2026-08.csv",
       "format": "csv",
-      "bytes": 9864,
-      "rows": 138,
+      "bytes": 10559,
+      "rows": 148,
       "source": "Constructed: The Weighhouse Hotel reception, day badges issued, August 2026",
-      "date": "2027-07-01",
+      "system": "Reception",
+      "date": "2027-06-29",
+      "kept_by": "Front office",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -209,16 +200,20 @@
       "bytes": 7984,
       "rows": null,
       "source": "Constructed: The Weighhouse Hotel sales office, events diary 2022 to 2027",
-      "date": "2027-07-01",
+      "system": "Sales office",
+      "date": "2027-06-29",
+      "kept_by": "Sales office",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "staff_access_events_2026-08.csv",
       "format": "csv",
-      "bytes": 159519,
+      "bytes": 159453,
       "rows": 3034,
       "source": "Constructed: The Weighhouse Hotel staff access system, badge events at the staff entrance and loading bay, August 2026",
-      "date": "2027-07-01",
+      "system": "Staff access system",
+      "date": "2027-06-29",
+      "kept_by": "Security",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]
