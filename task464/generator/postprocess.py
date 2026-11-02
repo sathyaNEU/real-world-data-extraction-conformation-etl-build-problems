@@ -1,4 +1,4 @@
-"""task464 architecture 10: scrub the toolchain out of the containers and fix every embedded timestamp.
+"""task464 architecture 12: scrub the toolchain out of the containers and fix every embedded timestamp.
 
 reportlab stamps its name into each PDF's Producer and openpyxl its own into the workbook properties; both are writer
 signatures (leak.py sweep 10, reduce-house-fixes H1). The PDF fix is an equal-length, case-preserving replacement, so
@@ -13,17 +13,21 @@ import zipfile
 
 NEUTRAL_PDF = "docmaster"          # same length as "reportlab"
 SAVED = {
-    "losses_programme_2027-28_brief.pdf": "20261118101500",
-    "hv_conductor_data_EDS-02-0310.pdf": "20240903142000",
-    "iis_regulatory_return_rules_2025-26.pdf": "20260514093000",
-    "line_loss_factors_2025-26.pdf": "20250228120000",
-    "hv_network_model.xlsx": "2026-06-12T07:42:00Z",
-    "generator_hire_2025-26.xlsx": "2026-04-09T15:05:00Z",
-    "losses_programme_2027.xlsx": "2026-11-30T16:20:00Z",
+    "restart_pilot_brief_2026.pdf": "20260316112000",
+    "crm_send_calendar_2026.xlsx": "2026-11-12T15:05:00Z",
+    "sponsored_revenue_by_sector_2026.xlsx": "2026-11-06T09:40:00Z",
+    "jobseeker_email_plan_2027.docx": "2026-11-16T16:48:00Z",
+    "restart_series_2027.xlsx": "2026-11-24T17:10:00Z",
+    "restart_series_2027.docx": "2026-11-24T17:35:00Z",
 }
-AUTHOR = {"hv_network_model.xlsx": b"NMS export service",
-          "generator_hire_2025-26.xlsx": b"Generation team, Marchway Power Networks",
-          "losses_programme_2027.xlsx": b"Network losses strategy"}
+AUTHOR = {"crm_send_calendar_2026.xlsx": b"Glenn Taylor",
+          "sponsored_revenue_by_sector_2026.xlsx": b"Finance, Quaywork Ltd",
+          "jobseeker_email_plan_2027.docx": b"Marian Smith",
+          "restart_series_2027.xlsx": b"Glenn Taylor",
+          "restart_series_2027.docx": b"Glenn Taylor"}
+
+
+PRODUCER = b"Microsoft Word"
 
 
 def scrub_pdf(path):
@@ -31,12 +35,24 @@ def scrub_pdf(path):
     name = os.path.basename(path)
     stamp = SAVED[name].encode()
 
+    # the Producer literal takes the fiction's word processor; the surplus becomes whitespace after the literal
+    def prod(m):
+        old = m.group(0)
+        new = b"/Producer (" + PRODUCER + b")"
+        assert len(new) <= len(old)
+        return new + b" " * (len(old) - len(new))
+    nb = re.sub(rb"/Producer \((?:\\.|[^\\)])*\)", prod, b)
+    # the writer's comment lines keep their % marker; their text becomes spaces
+    nb = re.sub(rb"(?m)^%([^\r\n]*[Rr][Ee][Pp][Oo][Rr][Tt][Ll][Aa][Bb][^\r\n]*)$",
+                lambda m: b"%" + b" " * len(m.group(1)), nb)
+
     def rep(m):
         s = m.group(0).decode("latin-1")
         return "".join(n.upper() if ch.isupper() else n for ch, n in zip(s, NEUTRAL_PDF)).encode("latin-1")
-    nb = re.sub(rb"[Rr][Ee][Pp][Oo][Rr][Tt][Ll][Aa][Bb]", rep, b)
+    nb = re.sub(rb"[Rr][Ee][Pp][Oo][Rr][Tt][Ll][Aa][Bb]", rep, nb)
+    assert b"docmaster" not in nb.lower()
     nb = re.sub(rb"D:\d{14}", b"D:" + stamp, nb)
-    did = hashlib.md5(("mpn:" + name).encode()).hexdigest().encode()
+    did = hashlib.md5(("qw:" + name).encode()).hexdigest().encode()
     nb = re.sub(rb"/ID\s*\[\s*<([0-9a-fA-F]{32})>\s*<([0-9a-fA-F]{32})>\s*\]",
                 lambda m: b"/ID [<" + did + b"> <" + did + b">]", nb)
     assert len(nb) == len(b), (len(nb), len(b))
@@ -53,7 +69,7 @@ def scrub_xlsx(path):
     with zipfile.ZipFile(path) as z:
         names = z.namelist()
         data = {n: z.read(n) for n in names}
-    who = AUTHOR.get(name, b"Marchway Power Networks")
+    who = AUTHOR.get(name, b"Quaywork Ltd")
     for n in list(data):
         if n.startswith("docProps/") or n.endswith(".xml") or n.endswith(".rels"):
             t = data[n]
@@ -77,6 +93,44 @@ def scrub_xlsx(path):
     return True
 
 
+def scrub_docx(path):
+    name = os.path.basename(path)
+    stamp = SAVED[name].encode()
+    y, mo, d = (int(x) for x in stamp[:10].decode().split("-"))
+    hh, mm = int(stamp[11:13]), int(stamp[14:16])
+    with zipfile.ZipFile(path) as z:
+        names = z.namelist()
+        data = {n: z.read(n) for n in names}
+    who = AUTHOR.get(name, b"Quaywork Ltd")
+    for n in list(data):
+        if n.startswith("docProps/"):
+            t = data[n]
+            t = re.sub(rb"<Application>[^<]*</Application>", b"<Application>Microsoft Office Word</Application>", t)
+            t = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>16.0000</AppVersion>", t)
+            t = re.sub(rb"(<dc:creator[^>]*>)[^<]*(</dc:creator>)", rb"\g<1>" + who + rb"\g<2>", t)
+            t = re.sub(rb"(<cp:lastModifiedBy[^>]*>)[^<]*(</cp:lastModifiedBy>)", rb"\g<1>" + who + rb"\g<2>", t)
+            t = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", t)
+            t = re.sub(rb"<dc:description>[^<]*</dc:description>", b"<dc:description/>", t)
+            t = re.sub(rb"python-docx", b"", t)
+            if n == "docProps/app.xml" and "word/document.xml" in data:
+                body = re.sub(rb"<[^>]+>", b" ", data["word/document.xml"]).decode("utf-8", "ignore")
+                words = len(body.split())
+                chars = len("".join(body.split()))
+                t = re.sub(rb"<Words>\d+</Words>", b"<Words>%d</Words>" % words, t)
+                t = re.sub(rb"<Characters>\d+</Characters>", b"<Characters>%d</Characters>" % chars, t)
+                t = re.sub(rb"<TotalTime>\d+</TotalTime>", b"<TotalTime>%d</TotalTime>" % (40 + words % 50), t)
+            data[n] = t
+    tmp = path + ".tmp"
+    with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
+        for n in names:
+            zi = zipfile.ZipInfo(n, date_time=(y, mo, d, hh, mm, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o600 << 16
+            z.writestr(zi, data[n])
+    shutil.move(tmp, path)
+    return True
+
+
 def run(folder):
     out = []
     for n in sorted(os.listdir(folder)):
@@ -85,4 +139,6 @@ def run(folder):
             out.append((n, scrub_pdf(p)))
         elif n.endswith(".xlsx"):
             out.append((n, scrub_xlsx(p)))
+        elif n.endswith(".docx"):
+            out.append((n, scrub_docx(p)))
     return out

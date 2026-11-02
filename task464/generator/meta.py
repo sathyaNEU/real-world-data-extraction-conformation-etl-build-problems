@@ -1,88 +1,75 @@
-"""task464 architecture 10: metadata.json, written from the built pack so it never drifts from it."""
+"""task464 architecture 12: metadata.json, written from the built pack so it never drifts from it."""
 import json
 import os
+
 import world as W
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DNO = W.DNO
-DATA = "%s, network data lead's 2025/26 losses and interruptions extract" % DNO
+QW = W.BOARD_LTD
 
 FILES = [
-    ("lv_monitoring_2025-26.parquet", "spine",
-     "Half-hourly readings for 2025/26 from every secondary substation monitor at Copsewell Cross and Feltmoor primaries, "
-     "as the monitoring platform exports them.", DATA, "2026-06-12"),
-    ("hv_settlement_2025-26.csv", "operating extract",
-     "Half-hourly settlement data for 2025/26 for every HV-connected customer's import and export metering points at "
-     "the two primaries.", DATA, "2026-06-12"),
-    ("hv_network_model.xlsx", "operating extract",
-     "The network model's export for Copsewell Cross's 11 kV feeders: every section and node in the normal running "
-     "arrangement, normally-open points included.", "%s, network management system export" % DNO, "2026-06-12"),
-    ("secondary_substations.csv", "reference",
-     "The secondary substation register for the two primaries: site, circuit, transformer rating, monitor and network "
-     "node.", "%s, asset register" % DNO, "2026-06-12"),
-    ("hv_connections.csv", "reference",
-     "The HV connections register for the two primaries: agreement, customer, capacities, metering points and network "
-     "node.", "%s, connections register" % DNO, "2026-06-12"),
-    ("hv_conductor_data_EDS-02-0310.pdf", "reference",
-     "The engineering data sheet of 11 kV conductor resistances, reactances and ratings.", "%s, asset policy" % DNO,
-     "2024-09-03"),
-    ("losses_programme_2027-28_brief.pdf", "governing document",
-     "The losses strategy lead's paper to the investment review panel on the 2027/28 reconductoring project.",
-     "%s, network losses strategy" % DNO, "2026-11-18"),
-    ("interruptions_2023-2026.csv", "operating extract",
-     "The interruption log for Copsewell Cross's 11 kV circuits from April 2023 to March 2026: control-system HV incidents "
-     "and work-management LV jobs, one row per site per restoration step.", DATA, "2026-06-12"),
-    ("customers_by_substation_2023-2026.csv", "operating extract",
-     "Customers connected at each site on the Copsewell Cross circuits at each month end, April 2023 to March 2026.",
-     DATA, "2026-06-12"),
-    ("generator_hire_2025-26.xlsx", "operating extract",
-     "The generation team's hire and fuel log of mobile generators deployed in 2025/26.", "%s, generation team" % DNO,
-     "2026-04-09"),
-    ("iis_regulatory_return_rules_2025-26.pdf", "governing document",
-     "The network performance team's definitions for the 2025/26 interruptions return, with the accepted exceptional "
-     "event.", "%s, network performance" % DNO, "2026-05-14"),
-    ("copsewell_cross_scada_2025-26.csv", "distractor",
-     "Copsewell Cross primary's SCADA feeder-breaker metering for 2025/26: phase currents, MW and MVAr each half-hour.",
-     "%s, control room SCADA historian" % DNO, "2026-06-12"),
-    ("line_loss_factors_2025-26.pdf", "distractor",
-     "The published line loss factor statement for the licence area's 2025/26 settlement year.", DNO, "2025-02-28"),
+    ("sponsored_clicks_by_mailbox_daily.csv", "spine",
+     "Quaywork's data warehouse: sponsored clicks per day by mailbox group, audience and channel, with the "
+     "jobseekers in each audience, 1 January 2025 to 8 November 2026.", "%s, data warehouse extract" % QW, "2026-11-09"),
+    ("postvane_daily_by_domain_group.csv", "operating extract",
+     "Postvane's daily campaign statistics by domain group from the March 2025 migration: job alerts, the weekly "
+     "digest and the restart pilot's sends.", "%s, email platform export (Postvane)" % QW, "2026-11-09"),
+    ("inkrelay_export_2025-01-01_to_2025-03-16.csv", "operating extract",
+     "The previous email platform's daily statistics by ISP up to the migration.",
+     "%s, email platform export (Inkrelay)" % QW, "2025-03-17"),
+    ("postvane_clicks_restart_series_2026.csv", "operating extract",
+     "Postvane's click events on the six restart emails of 2026, timed in UTC.",
+     "%s, email platform export (Postvane)" % QW,
+     "2026-11-09"),
+    ("alert_restarts_pilot_pool_2026.csv", "operating extract",
+     "The alert system's restart log for the jobseekers in the 2026 restart pilot's pool, from 1 April 2026, on the "
+     "UK clock.",
+     "%s, alerts service log" % QW, "2026-11-09"),
+    ("restarted_jobseekers_sponsored_clicks.csv", "operating extract",
+     "The CRM team's pull of every sponsored click by jobseekers whose alerts a restart email's link restarted, "
+     "from the date of that send to 8 November 2026, on the UK clock.", "%s, CRM team" % QW, "2026-11-10"),
+    ("jobseeker_email_plan_2027.docx", "governing document",
+     "The 2027 jobseeker email plan, draft for the leadership team.", "%s, Jobseeker Engagement" % QW, "2026-11-16"),
+    ("restart_pilot_brief_2026.pdf", "governing document", "The restart pilot's design brief.",
+     "%s, CRM team" % QW, "2026-03-16"),
+    ("crm_send_calendar_2026.xlsx", "reference", "The CRM team's calendar of 2026 email sends.",
+     "%s, CRM team" % QW, "2026-11-12"),
+    ("crm_mailbox_domain_groups.csv", "reference",
+     "The CRM team's table of email domains by mailbox group in each system.", "%s, CRM team" % QW, "2026-02-03"),
+    ("sponsored_revenue_by_sector_2026.xlsx", "distractor",
+     "Finance's month-end view of sponsored clicks and revenue by job sector, January to October 2026.",
+     "%s, Finance" % QW, "2026-11-06"),
+    ("alerts_feedback_survey_2026-06.csv", "distractor",
+     "Responses to the June 2026 survey of jobseekers who paused or unsubscribed from alerts.",
+     "%s, Insight team" % QW, "2026-06-30"),
 ]
 
 
 def main():
-    from answers import FEEDER_ORDER
     f = json.load(open(os.path.join(BASE, "generator", "figures.json")))
     names = sorted(os.listdir(os.path.join(BASE, "target")))
     listed = sorted(n for n, *_ in FILES)
     assert names == listed, (names, listed)
     meta = {
         "task": "task464",
-        "domain": "energy-systems-utilities",
-        "subdomain": "asset-condition-maintenance",
+        "domain": "product-analytics",
+        "subdomain": "churn-propensity-uplift-modeling",
         "objective": "opportunity-sizing-decision",
-        "prompt_shape": "07",
-        "as_of": "2026-12-02",
-        "extract_to": "2026-03-31",
+        "prompt_shape": "09",
+        "as_of": W.ASOF.isoformat(),
+        "extract_to": W.END.isoformat(),
         "currency": "GBP",
-        "compiled_by": "%s, network losses strategy" % DNO,
-        "compiled_on": "2026-12-02",
-        "licence": ("Synthetic records compiled for %s's 2027/28 losses programme paper. Every file is constructed, "
-                    "describes no real network or customer, and is released for this task's use." % DNO),
+        "compiled_by": QW,
+        "compiled_on": "2026-11-24",
+        "licence": ("Synthetic records compiled for %s's 2027 jobseeker email plan. Every file is constructed, "
+                    "describes no real company or person, and is released for this task's use." % W.BOARD),
         "files": [{"path": "target/" + n, "role": role, "covers": cov, "source": src, "date": d,
                    "licence": "synthetic, constructed for this task, free to use"}
                   for n, role, cov, src, d in FILES],
-        "distractor_files": ["target/copsewell_cross_scada_2025-26.csv", "target/line_loss_factors_2025-26.pdf"],
-        "stated_inputs": ["64.80", "64.8", "11",
-                          "the brief's eight projects, their section IDs and replacement conductors, the year 1 April 2025 to "
-                          "31 March 2026 (UK time), 11 kV nominal, 20 C resistances and the losses value of GBP 64.80 per MWh "
-                          "(losses_programme_2027-28_brief.pdf)",
-                          "the 3-minute threshold, half weight for pre-arranged interruptions, the exclusions and the accepted "
-                          "storm (iis_regulatory_return_rules_2025-26.pdf)"],
-        "field_terms": ["technical losses", "I2R losses", "reconductoring", "embedded generation", "customer interruptions",
-                        "customer minutes lost"],
-        "deliverables": ["losses_programme_2027.xlsx", "losses_saving_2027.png", "iis_feeders_2025-26.csv"],
-        "portal": {"call": "the Copsewell Cross reconductoring project the 2027/28 losses programme funds",
-                   "answer": f["call"], "saving_mwh": f["projects"][f["call"]]["year_mwh"], "runner_up": f["runner_up"]},
+        "distractor_files": ["target/sponsored_revenue_by_sector_2026.xlsx", "target/alerts_feedback_survey_2026-06.csv"],
+        "deliverables": ["restart_series_2027.xlsx", "restart_series_2027.docx"],
+        "portal": {"call": "whether the restart-your-alerts email stays in the 2027 jobseeker email plan",
+                   "answer": "drop the series"},
     }
     json.dump(meta, open(os.path.join(BASE, "metadata.json"), "w"), indent=2)
     print("  metadata.json, %d files" % len(FILES))

@@ -1,57 +1,46 @@
 ## Tags
 
-**Domain:** Energy Systems & Utilities (asset condition and maintenance).
+**Domain:** Product Analytics (churn, propensity and uplift modelling).
 **Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**Fund the Kestle reconductoring from the 2027/28 losses programme.**
-Its replacement conductor would have removed 74.2 MWh of losses in 2025/26, worth GBP 4,800 at GBP 64.80 per MWh, 26.0 MWh more than Copsewell Town at 48.2 MWh, because the Hob Moor Solar Park's export runs back through Kestle's old overhead line to the Kestle Park estate near Copsewell Cross. Not Oxenford Lane, which leads only when every section is charged with the feeder-head current. Not Copsewell Town, whose replaced sections carry its whole load out of the primary but less current than the solar farm's export.
+**Drop the restart-your-alerts email from Quaywork's 2027 jobseeker email plan: its thirteen sends would cost about 300,000 sponsored clicks a year.** The pilot's sends brought back 100,000 clicks among the paused pool but cost 250,000 among jobseekers with alerts on at Google, Microsoft and Yahoo addresses. Not the holdout uplift carried forward, which counts only the paused pool and misses the clicks the sends cost everyone else.
 
 ## 2. Critical Components
 
-1. Kestle's project replaces **3.95 km** of route and removes **0.443 ohm** per phase.
-2. Kestle's replaced sections would have lost **74.2 MWh** less in 2025/26.
-3. Copsewell Town, the runner-up, would have saved **48.2 MWh**.
+1. The pilot's gain among the paused pool, mailed arm against the holdout, is **100,000** sponsored clicks.
+2. The pilot's loss among jobseekers with alerts on, at Google, Microsoft and Yahoo addresses, is **250,000** sponsored clicks.
+3. The pilot's net effect is **-150,000** sponsored clicks, and the 2027 series at the average send thirteen times is **-300,000** a year.
 
 ## 3. Step-by-Step Solution
 
-1. Built each feeder's normal running arrangement from the closed sections in hv_network_model.xlsx and placed every secondary substation (secondary_substations.csv, by site number) and HV customer (hv_connections.csv, by agreement) on its node.
-2. Took each substation's half-hourly kW and kVAr from lv_monitoring_2025-26.parquet, as kVA times power factor before its monitor's vendor change, and each HV customer's import less its export from hv_settlement_2025-26.csv, settlement periods placed on the UTC half-hours.
-3. Summed the flows of every connection beyond each section the brief lists to get the section's current each half-hour; Kestle's replaced sections carry the solar farm's export less the load beyond them.
-4. Took each replaced section's loss at that current on its existing and its replacement conductor, at 11 kV and the resistances of hv_conductor_data_EDS-02-0310.pdf, per the brief: Kestle saves 74.2 MWh and Copsewell Town 48.2 MWh.
-5. Valued each project's year at GBP 64.80 per MWh: GBP 4,800 for Kestle.
-6. Counted 2025/26 CI and CML per iis_regulatory_return_rules_2025-26.pdf from interruptions_2023-2026.csv, dropping the work-management LV jobs at sites already off in an HV incident, ending a site's minutes when generator_hire_2025-26.xlsx shows a generator connected there, leaving out sites a generator kept on supply through a planned outage, and dividing by customers_by_substation_2023-2026.csv at 31 March 2026: the feeders' figures below.
-7. Funded Kestle, with Copsewell Town the runner-up.
+1. Counted the 20 to 22 October 2026 reload in sponsored_clicks_by_mailbox_daily.csv once and summed app_ios and app_android into app.
+2. Compared restart_pilot_mailed with restart_pilot_holdout clicks per jobseeker over the six 28-day windows from 14 April 2026 (0.178 against 0.034): the mailed arm gained 111,788 clicks.
+3. Read each mailbox group's alerts_on clicks per jobseeker in the 14 days after each send against its own fortnight before: gmail, microsoft and yahoo_aol fall after every send, the other six groups do not.
+4. Measured gmail, microsoft and yahoo_aol on every channel over days 0 to 13 after each send against the other six groups' pooled rate, at each group's ratio on days 14 to 27 of the window: 255,348 clicks lost.
+5. Netted the two (-143,560 over the pilot), divided by six sends and multiplied by thirteen: -311,046 clicks a year in 2027.
+6. Left out each restart whose RS-26xx email had four or more links clicked by the subscriber inside ten seconds in postvane_clicks_restart_series_2026.csv (a gateway's pass, 13,256 of 46,756 logged restarts).
+7. Tied each logged-out app click in restarted_jobseekers_sponsored_clicks.csv to the one account its app_install_id carries there or in alert_restarts_pilot_pool_2026.csv, then counted restarters with a sponsored click, before or after restarting, dated in the 28 days starting on their send's date.
+8. The series stays only if it adds sponsored clicks (jobseeker_email_plan_2027.docx, section 5); it costs them, so it is dropped.
 
 ## 4. Deliverable Answers
 
-### losses_programme_2027.xlsx
+### restart_series_2027.xlsx
 
-1. Saving in 2025/26 in MWh to one decimal place, and its value at the losses value to the nearest GBP 100:
-   - Copsewell Town: 48.2 MWh, GBP 3,100
-   - Ashlade: 7.7 MWh, GBP 500
-   - Oxenford Lane: 8.9 MWh, GBP 600
-   - Kestle: 74.2 MWh, GBP 4,800
-   - Pennick Hill: 19.9 MWh, GBP 1,300
-   - Redburn: 22.6 MWh, GBP 1,500
-   - Stowmere: 17.5 MWh, GBP 1,100
-   - Ingle Road: 4.2 MWh, GBP 300
-2. Fund Kestle.
-3. Runner-up: Copsewell Town.
+1. Recommendation: drop the restart series; the 2027 series would cost 300,000 sponsored clicks a year.
+2. Gain among the paused pool over the pilot: 100,000 sponsored clicks.
+3. Loss among jobseekers with alerts on over the pilot: 250,000 sponsored clicks, at Google, Microsoft and Yahoo addresses.
+4. Net effect of the pilot: -150,000 sponsored clicks.
+5. Each pilot send's restarts by people and, of them, those who clicked a sponsored job in the 28 days starting on the send's date, before or after restarting:
+   - Send 1, 14 Apr 2026: 11,383 restarted, 6,180 clicked
+   - Send 2, 12 May 2026: 6,758 restarted, 3,607 clicked
+   - Send 3, 9 Jun 2026: 4,848 restarted, 2,631 clicked
+   - Send 4, 7 Jul 2026: 3,910 restarted, 2,180 clicked
+   - Send 5, 4 Aug 2026: 3,451 restarted, 1,865 clicked
+   - Send 6, 1 Sep 2026: 3,150 restarted, 1,701 clicked
 
-### losses_saving_2027.png
+### restart_series_2027.docx
 
-1. Bar chart of the eight projects' 2025/26 savings, each bar labelled with its MWh, Kestle highlighted.
-
-### iis_feeders_2025-26.csv
-
-1. 2025/26 customer interruptions per 100 customers and customer minutes lost per customer, one decimal place:
-   - Copsewell Town: CI 18.9, CML 45.8
-   - Ashlade: CI 138.7, CML 241.9
-   - Oxenford Lane: CI 29.4, CML 95.1
-   - Kestle: CI 105.1, CML 55.8
-   - Pennick Hill: CI 48.8, CML 81.4
-   - Redburn: CI 19.1, CML 30.2
-   - Stowmere: CI 251.0, CML 168.8
-   - Ingle Road: CI 45.5, CML 94.5
+1. The recommendation to drop the restart series, the 2027 series costing 300,000 sponsored clicks a year.
+2. One bar chart of each pilot send's restarts by people beside those who clicked a sponsored job in the 28 days starting on the send's date.

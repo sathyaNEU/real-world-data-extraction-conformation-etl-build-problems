@@ -21,8 +21,8 @@ step that is an estimate of a spillover the filed estimand never names.
 | Axes | forum `executive_team` (the leadership team signs the 2027 plan), forcing `budget_or_appropriation` (the 2027 email plan and budget), org `software_or_platform`, role `product_manager` (head of jobseeker engagement), context artifact `planning_thread` (the 2027 plan and its thread), calibration `pilot_log`, strategy `causal_design`, Gate G `decomposition_attribution`, gap objective then population, generators G1 then G6 |
 | Personas | Marian Smith, Glenn Taylor, Tracy Parkes (`guard.py names --geo england --seed 464`; Hayley Riley redrawn on a `people.first` WARN against task260; Katie Gill and Olivia Parker not reused) |
 | Deliverables | `restart_series_2027.xlsx` (the per-send funnel and the 2027 sizing) and `restart_series_2027.docx` (a one-page note with a chart), a set none of the lineage shells used |
-| Default path's answer | keep the series: the holdout uplift, about 19,000 sponsored clicks a send, carried to twelve sends, about 230,000 a year (generator to fix the figures) |
-| Golden | stop the series: each send cost the active jobseekers at Google, Microsoft and Yahoo addresses more sponsored clicks than it restored, a net loss of the order of 80,000 a year (generator to fix) |
+| Default path's answer | keep the series: the holdout uplift, 111,788 sponsored clicks over the pilot's six windows, carried to thirteen 2027 sends, +242,208 a year, +200,000 at the prompt's rounding |
+| Golden | drop the series: the pilot's sends cost the active jobseekers at Google, Microsoft and Yahoo addresses 255,348 sponsored clicks against the 111,788 they brought back, a net loss of 143,560 over the pilot and 311,046 a year in 2027, -300,000 at the prompt's rounding |
 | Nearest driver | `guard.py check`: task139 v2 (lineage) at 0.06, a pilot randomised only among units that had all received an opening contact; task302 at 0.05 (substitution within a group); no driver on file at 0.12 or more |
 | Guard verdict | WARN: `repeat.gate_g` against task183 v4 (registered the same day, a bank's lodged cash split by card trade; the label is the honest one here, the business's change in clicks split into the series' gain and its loss on the members it never mails, and the batch carries one other); `test.same_driver_older` differentiated against task118 v2, task184 v1 and task472 v1 (lines on the card) |
 
@@ -52,17 +52,376 @@ mailbox providers, nor junk filing, nor the alerts; the decisive step is an esti
 to the analyst. The step is not one of the five parts: population, outcome, window, unit and comparison are all
 filed and the step is how the without-send clicks of members outside the experiment are estimated.
 
-**The two ask records, named before registration (screened as code at stage 2 before any data is cut).** Record 1,
-the alert click events of one sample week: security gateways (Microsoft Safe Links, Mimecast) open every link in an
-alert in the second it is delivered, so a click on every link of an issue inside one second is no jobseeker, and a
-click count read at its plain meaning is wrong. Record 2, the employers' sponsored-job budget ledger: an employer's
-daily budget caps what it pays, clicks after the cap are delivered free, so revenue is not clicks times the price.
-Neither is a family on the brief's or today's banned lists.
+**The two ask records, named before registration and settled at stage 2.** Record 1, Postvane's click events on
+the restart emails beside the alert system's restart log: link-scanning gateways at university and business
+addresses open every link of an email in one burst, the restart link among them, so the alert system restarts alerts
+nobody asked for, and a restart count read at its plain meaning is wrong. Record 2 at the draw was the employers'
+budget ledger (daily caps make late clicks free); at stage 2 it failed lesson 8, since the cap field's plain meaning
+caps the bill and a cracker executes it, and without the field the uncapped reading is coherent, so it was replaced
+by the CRM's pull of the restarted jobseekers' sponsored clicks: an app click made logged out carries the device and
+no account, and only the same device's logged-in rows tie it to the jobseeker. Neither is a family on the brief's or
+today's banned lists (Tried and rejected).
 
 **Lesson 12 at the draw.** The golden imputes, per send, the active jobseekers' clicks that the junk filing
 removed; it is validated where it applies: the dip estimated on the first three sends predicts the last three
 sends' dips at each provider, and the providers that never filtered show no dip after any send (both asserted in
 `checks.py`).
+
+## Default path
+
+The pipeline a strong product analyst builds from the prompt's words and the files' grain, with the field's own
+method for the deciding quantity (the randomised holdout's uplift) in it:
+
+1. Read the 2027 plan and the pilot brief: the restart email went every four weeks from 14 April 2026 to the
+   jobseekers whose alerts were paused on 1 April 2026, a random tenth held out by account and never mailed; the
+   plan judges the series on the sponsored clicks Quaywork takes with it against without it, each send over the 28
+   days from it, and sizes 2027's thirteen sends at what one pilot send did on average.
+2. Load `sponsored_clicks_by_mailbox_daily.csv`, drop the warehouse reload's repeated rows for 20 to 22 October 2026,
+   add `app_ios` and `app_android` back into `app` from 1 October 2026, and check the arms: 775,239 mailed against 86,161
+   held out, a tenth held out in every mailbox group (9.9 to 10.2 per cent).
+3. Sum each pilot arm's sponsored clicks over the six 28-day windows (14 April to 28 September 2026), per member,
+   mailed against holdout: 0.178 against 0.034 per member, an uplift of 111,788 clicks over the pilot for the
+   mailed arm (111,796 with the arms stratified by mailbox group, randomisation holding).
+4. Check the guardrails the pilot logged in Postvane (hard bounces on the first send, unsubscribes and spam
+   complaints well inside the usual bands) and find nothing that argues against the series.
+5. Carry the pilot's clicks per send to the thirteen 2027 sends: 111,788 / 6 x 13.
+
+Ends on: keep the series, adding 242,208 sponsored clicks a year, +200,000 at the prompt's rounding.
+Golden: drop the series; the thirteen 2027 sends would cost 311,046 sponsored clicks a year, -300,000 at the
+prompt's rounding, because the pilot's sends cost the active jobseekers at Google, Microsoft and Yahoo addresses
+255,348 clicks against the 111,788 they brought back.
+
+**The data-native sentence.** Every restart send went from the same sending domain as the daily alerts, to a pool
+of addresses that had gone unread for months and held recycled spam traps, so three mailbox providers filed
+Quaywork's mail to everyone as junk for about a fortnight after each send; the pool's randomised holdout shares that
+standing, so the experiment's own comparison is blind to it, and the loss shows only in the active jobseekers'
+sponsored clicks read by mailbox group against the send dates.
+
+## Stump sentence
+
+A competent analyst reads the pilot's random tenth holdout, finds the restart email brought back 111,788 sponsored
+clicks over the pilot, carries it to the thirteen 2027 sends and recommends keeping the series for +242,208 clicks
+a year (+200,000 at the prompt's rounding); the step that lands it there is taking the holdout difference as the
+series' whole effect on Quaywork's sponsored clicks, when after each send the Google, Microsoft and Yahoo mailboxes
+filed the alerts of every active jobseeker there as junk for about a fortnight and those jobseekers made 255,348
+fewer sponsored clicks over the pilot, net of what they clicked on the site and app instead, so the series costs
+311,046 clicks a year and is dropped.
+
+## Three rules
+
+- Task type: product-analytics / churn-propensity-uplift-modeling, which serves Opportunity Sizing: the sized
+  opportunity is a re-engagement programme's net incremental sponsored clicks, from the paused pool through the
+  restarted jobseekers to the clicks the business takes with the programme against without it.
+- Domain test: the deciding quantity is the restart series' net incremental sponsored clicks, the randomised
+  holdout's uplift among the jobseekers it re-engages less the clicks lost among the jobseekers it never mails while
+  their mailbox providers file the job board's alerts as junk after each send; the field's own readout for a
+  re-engagement programme is the holdout's uplift scaled to the mailed population, and it is this dataset's shared
+  sending standing that breaks its no-interference precondition.
+- Swap: "each send cost the active jobseekers at three mailbox providers their alerts for a fortnight" with a
+  hospital's appointment letters or a utility's meter readings in place of a job board's alerts reads as nonsense:
+  there is no marketplace whose paid unit, the sponsored click, rides on one shared alert stream filed by the
+  receiving mailbox providers, and no holdout whose two arms share that stream.
+- Layer 1: the warehouse's reload of 20 to 22 October 2026 (each of those days twice), its app channel split into iOS
+  and Android from 1 October 2026, a missing warehouse day (17 August 2025), mailbox groups named three ways (the
+  warehouse's codes, Postvane's domain groups, Inkrelay's ISP labels), the March 2025 email platform migration
+  with another layout and no complaint counts before it, Postvane in UTC against the warehouse and alert system in
+  UK local time, Apple Mail Privacy Protection opens on nearly every Apple delivery; each produced by Quaywork's own
+  systems, nothing placed to be caught.
+- Layer 2: estimand_identification; the methodological choice that flips the call is estimating the series' effect
+  on the jobseekers outside the experiment (interference through a shared delivery standing), not only the holdout
+  difference inside it.
+- Decisive step: recognising that the holdout's two arms share Quaywork's standing with the mailbox providers, so
+  the experiment cannot see a cost the sends impose on every other recipient, and estimating that cost as a
+  difference in differences of the active jobseekers' sponsored clicks per head, mailbox group by group, in the
+  fortnight after each send against the groups whose mail was never filed.
+- Not semantics: every field read correctly (the warehouse's audiences, groups, channels and jobseekers, Postvane's
+  bounces and complaints, the plan's definitions) still leaves the holdout difference as the visible effect; nothing
+  in any column, code or definition says the active jobseekers' clicks fell, and the plan's measurement line names
+  only the business's clicks with and without the series.
+- Not rule application: no filed rule or procedure estimates the active jobseekers' loss; the plan files the
+  outcome (Quaywork's sponsored clicks with against without the series), the window (28 days from each send) and the
+  sizing (the average pilot send, thirteen times), and leaves the estimate open. Measured on the pack: the enumerated
+  family (the holdout difference alone; that plus a loss read on alert clicks only; plus a loss read on Google only;
+  plus a loss read by difference in differences or interrupted series on all channels) spans +242,208 to -604,572 a
+  year; the standing family (an all-channel loss for every group that dips, against the groups that do not, by
+  event window, full window or interrupted series, with any of the control sets) spans -290,598 to -324,592, all
+  inside the -300,000 bin, the holdout-only and alert-only members ruled out by the plan's own outcome (the business's
+  sponsored clicks, every channel); the ruling-out is loud only to an analyst who reads the active jobseekers'
+  clicks by mailbox group against the send dates.
+- Analyst test: a strong analyst who dedupes the reload, rejoins the app channels, reads the holdout correctly and
+  checks the guardrails files keep the series at +242,208 sponsored clicks a year (+200,000), the default path's
+  `Ends on:`, never reading the active jobseekers' clicks against the send dates.
+- Estimand: `jobseeker_email_plan_2027.docx`, section 5: "Every email programme is judged on the sponsored clicks
+  Quaywork takes with it against what it would have taken without it, counted as the click system records them for
+  billing. For the restart series those clicks are counted over the 28 days from each pilot send, the six sends as
+  they ran, and the 2027 series is sized at what one pilot send did on average, thirteen times."
+- No decoy: nothing is planted to be caught: no memo, readout, dashboard, deliverability score, inbox-placement
+  estimate or stakeholder figure states the series' effect or recommends keeping it; the pilot brief and the plan
+  describe the design and the measurement, never a result, and no shipped document states a junk-filing duration,
+  a recovery rate or a spam-trap rate.
+- No certified replay: no certified or published figure is reproduced to recover the method; the golden's loss is
+  an estimate from the warehouse's clicks, validated by its own back-test (the dips fitted on sends 1 to 3 predict
+  sends 4 to 6 by group) and by the six groups that never dip.
+- Lesson: an experiment's holdout measures only what happens inside the population it splits; when the treatment
+  shares a channel's standing with everyone else, its cost lands outside the test, and a model that gets this right
+  learns to look for interference outside the experiment before carrying an uplift to a decision; no build on file
+  carries a shared-sender spillover (`slots` and `mechanisms` above).
+
+## Survivor anatomy
+
+- Actor: the deciding property, each send's cost to the jobseekers it never mailed, has no column in any file: it
+  is a relation between the active audience's daily clicks by mailbox group and the restart send dates in another
+  file, read against the groups that did not dip.
+- Link: no key joins the restart sends to the active jobseekers' clicks; the comparison (each group's clicks per
+  head in the fortnight after a send against the six groups whose mail was never filed) is one the field's method
+  for the pilot (arm against arm) never asks for, and no sentence invites it.
+- Reflex: the field's named method for the deciding quantity, the randomised holdout's difference in clicks per
+  member scaled to the mailed arm, sits at rung 0 and files keep the series at +242,208 a year (`Ends on:`).
+- Back-test: the textbook route validates on the pack's own record: the uplift is the same per mailbox group and
+  the same with the arms stratified (111,788 against 111,796), the arms are balanced in every group, and the
+  guardrails Postvane logged for the restart sends (bounces, unsubscribes, complaints) sit inside the daily alerts'
+  own bands.
+- Second use: the warehouse file sits in the pack for the pilot readout itself (the arms' clicks), the mailbox
+  group is the CRM team's standard cut for every email report, Postvane's daily statistics carry the sends'
+  volumes and guardrails, and the restart log, click events and the CRM's pull carry the asks; delete the decisive
+  step and every file still has a reason.
+- Shock: the active jobseekers' loss reads as ordinary movement: the whole board's sponsored clicks dip about two
+  per cent for a fortnight after each send, inside the weekly cycle and the promotions' swing; sorted on any shipped
+  statistic, no send window is the record's largest anomaly, and the monthly figures by group fall by about the
+  same share every month of the pilot, so no month stands out.
+- Pins: the WHAT is filed once, in the 2027 plan's measurement line (the business's sponsored clicks with against
+  without the series, 28 days from each send, the average pilot send thirteen times); no sentence names the active
+  jobseekers, the mailbox providers, junk filing, the alerts as a channel at risk, a window for the dip or a
+  control.
+
+## Readability screen
+
+| Rung | What it reads | Test | Verdict |
+|---|---|---|---|
+| R0 the holdout uplift | arm against arm in the warehouse | the pilot brief's own measurement plan names it | readable |
+| R1 guardrails | Postvane's bounces, unsubscribes, complaints by send | healthy against the daily alerts' bands; nothing flags | readable |
+| R2 (decisive) the active jobseekers' loss by mailbox group against the send dates | warehouse `alerts_on` by group and day, Postvane's send dates | no column, no sentence, no file name points at it; the monthly cut hides it | silent |
+| R3 net of the site and app | the same jobseekers' website and app clicks in the windows | follows from the plan's outcome (every sponsored click) once R2 is taken | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | sponsored clicks | the warehouse's billed sponsored clicks, every channel | Postvane's unique clicks on alert links | another unit; the alternative counts link clicks, not sponsored clicks | the plan: "counted as the click system records them for billing"; Postvane counts link clicks (asserted: no Postvane column equals a warehouse total) |
+| SF2 | whose clicks the series is judged on | Quaywork's, every jobseeker's | the pilot pool's only | keep (+242,208) | the plan's measurement line: the clicks Quaywork takes with it against what it would have taken without it |
+| SF3 | each send counted over the 28 days from it | six windows, 14 April to 28 September 2026, tiling with no gap or overlap | calendar months | same call (asserted: the monthly reading files -300,000) | the plan: 28 days from each send |
+| SF4 | the 2027 sizing | the pilot's net over six windows, divided by six, times thirteen | the pilot's total; twelve sends | same call; the figure moves | the plan: thirteen sends, the average pilot send |
+| SF5 | the holdout comparison | per member, mailed against holdout, scaled to the mailed arm | stratified by mailbox group | same call (111,788 against 111,796) | C1, asserted |
+| SF6 | which groups lost clicks | the groups whose clicks per head fall after every send (Google, Microsoft, Yahoo) | all nine against each other | same call | C1: the six other groups move under 0.6 per cent, asserted |
+| SF7 | the control for the loss | the six groups that never dip, pooled | Apple alone; the four broadband groups; each group's own fortnight before | same call, -290,598 to -324,592, the -300,000 bin | C3, asserted over every variant |
+| SF8 | the window of the loss | days 0 to 13 after each send, the ratio read on days 14 to 27 | all 28 days on a pre-pilot ratio | same call (-319,609) | C1, asserted; the dip has gone by day 13 |
+| SF9 | net of the site and app | the same group's active jobseekers' sponsored clicks on every channel, the same days | alert clicks only | -604,572 a year | the plan's outcome counts every sponsored click; SF1 |
+| SF10 | the reload's repeated days | each day once | both copies | same call (the days lie after every window), asserted | the rows are exact copies (the battery) |
+| SF11 | the app split from October | iOS plus Android is the app | one of the two | same call (after every window), asserted | the channels sum to the app's level |
+| SF12 | keep or drop | kept only if the series adds sponsored clicks | kept if the pool's clicks rise | keep | the plan: the series stays if it adds sponsored clicks |
+| SF13 | the data's end | 8 November 2026; the pilot's windows close 28 September | censored windows | same call | every window closes six weeks before the data end |
+| SF14 | the arms' sizes | the warehouse's `jobseekers` for each arm and group, fixed from 1 April | the restart log's counts | same call | the warehouse is the arm's record; the log holds only restarters |
+| SF15 | ask 5's window | calendar days on the UK clock, the send's date and the 27 days after it (6,180; 3,607; 2,631; 2,180; 1,865; 1,701) | 28 x 24 hours from the 10:00 send (6,205; 3,623; 2,635; 2,192; 1,871; 1,710) | same call; ask 5 moves | the prompt: "on the send's date or in the 27 days after it" (asserted, and both readings computed through verify's readers) |
+| SF16 | ask 5's clicks against the restart | every sponsored click in the window, before or after the restart; the pull holds every one (no restarter clicks between the send's date and the restart day, clean truth) | clicks after the restart only (6,122; 3,575; 2,603; 2,162; 1,842; 1,687) | same call; ask 5 moves | the prompt: "whether before or after restarting" (asserted, both readings computed) |
+| SF17 | the clock of the restart log and the pull | UK time, as each header names it (`restarted_at_uk`, `clicked_at_uk`); Postvane's events UTC (`clicked_at_utc`) | either read as UTC (A2 6,176; 3,606; 2,627; 2,178; 1,864; 1,697; a time-matched burst rule finds no burst and A1 falls to the plain count) | same call; the asks move | the headers; the rival is impossible on the rows: every email restart logs the minute of the Postvane click that made it on the UK clock and would trail it by exactly an hour read as UTC (asserted over every one) |
+| SF18 | clicking a sponsored job | a sponsored click in the click system's record (the CRM pull) | the restart email's own links in Postvane's events | same call; ask 5 would move by the email's link clicks | the email links to six sector pages and no job (the plan, the brief, Postvane's link names; asserted) |
+
+## Ladder
+
+| Rung | Route | 2027 sponsored clicks a year | At the prompt's rounding | Named wrong because |
+|---|---|---|---|---|
+| R0 | the holdout uplift, carried | +242,208 | +200,000, keep | misses the cost outside the test |
+| R1 | R0 less a loss read on Google only | -71,282 | -100,000 | the other two groups dip after every send |
+| R2 | R0 less a loss read on alert clicks only | -604,572 | -600,000 | the plan's outcome counts the site and app clicks the same jobseekers made instead |
+| Golden | R0 less the all-channel loss for the three groups, against the six | -311,046 | -300,000, drop | the answer |
+
+Margins: R0 to the golden is a change of sign (keep against drop); R1 sits at 0.23 of the golden, R2 at 1.94 times
+it, every rung outside the golden's bin and outside the standing family's -290,598 to -324,592; the golden is
+bracketed by R1 and R2. Every rung is a complete, reconciling pipeline: R0 passes every check the pilot brief names.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | every jobseeker on Quaywork's books: the pool (mailed and held out) and the alerts_on audience | filed (the plan's measurement line), C1 |
+| 2 Unit of account | the sponsored click | filed (SF1) |
+| 3 Attribution window | the 28 days from each send, six windows tiling 14 April to 28 September; ask 5's window is the send's date and the 27 days after it, UK dates, every click before or after the restart | filed, no boundary rows matter (SF3); ask 5 filed in the prompt (SF15, SF16) |
+| 4 As-of dating | the warehouse's UK click dates | the extract's own label |
+| 5 Version basis | the warehouse as extracted on 9 November 2026 | one version shipped |
+| 6 Denominator | jobseekers per audience and group per day, as the warehouse states | the column, C1 |
+| 7 Weighting | per head, pooled across groups for the arms; summed by group for the loss | C1 (SF5) |
+| 8 Window length | the loss read on days 0 to 13, the ratio on 14 to 27 | C3 across 14, 28 and the interrupted series (SF7, SF8) |
+| 9 Boundary inclusivity | windows from the send day to day 27 inclusive | filed by "the 28 days from each pilot send"; nothing on the edge moves a bin |
+| 10 Rounding path | exact clicks to the end; the 2027 figure to the nearest 100,000, the pilot's to the nearest 50,000 | the prompt |
+| 11 Tie-break | none arises | not applicable, asserted |
+| 12 Maturity and censoring | every window closes before the data end | C1 (SF13) |
+| 13 Order of operations | dedupe and rejoin channels before any rate | C4 (SF10, SF11) |
+| 14 Row order | none matters | C1 |
+| 15 Duplicate resolution | the reload's exact copies counted once | battery, asserted |
+| 16 Identity normalisation | mailbox group by the warehouse's code | one system on the main path |
+| 17 Netting against gross | the loss nets the site and app clicks the same jobseekers made | filed outcome (SF9) |
+| 18 Dimensional units | clicks throughout | C1 |
+| 19 Code and status semantics | audiences and channels by their names | the warehouse's own labels, never the stump |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | the plan's measurement line covers every email programme | filed scope |
+| 22 Forward window contents | 2027's thirteen sends at the average pilot send | filed (SF4) |
+
+## Literal reader
+
+Executed word for word, the prompt asks whether the series stays and how many sponsored clicks a year its thirteen
+2027 sends would add or cost at the average pilot send; the plan files the outcome as Quaywork's sponsored clicks
+with against without the series, over the 28 days from each send. A literal reader must estimate Quaywork's clicks
+without the series for every jobseeker in each window: inside the pool the holdout supplies it; outside the pool
+the text is silent, and the readings are listed in the fork table: assuming the active jobseekers unchanged
+(R0's reading) is an assumption the data refute (their clicks per head fall after every send at three groups and at
+none of the other six), and every estimate that reads them files the -300,000 bin. Every write-up step passes the
+same test. The literal reader on the asks: "restarted their alerts themselves" excludes restarts no person made (a
+restart inside a burst clicking every link of the email in under two seconds), and "clicked a sponsored job on the
+send's date or in the 27 days after it, whether before or after restarting" counts the jobseeker's sponsored clicks on
+every channel dated in those 28 UK calendar days, the app's logged-out ones included where the device carries only
+that jobseeker; the window, the restart's timing and the clock are filed (SF15 to SF17), and both device readings are
+forced by the rows (Ask sheet).
+
+## Oracles
+
+None ships. No control ties only under the golden or only on the wrong reading: the six groups that never dip are
+data the golden reads as a comparison, and they agree with the default path too (it never reads them); the arms'
+balance, the stratified uplift and the guardrails tie under every reading. No document carries a result, a score,
+an inbox-placement estimate or a rate.
+
+## Ask sheet
+
+The asks are the restart funnel the 2027 plan needs whatever the call: each send's restarts by people and how many
+of them went on to click, on rows the main call never reads (the restart log, Postvane's click events on the restart
+emails, the CRM's pull of the restarted jobseekers' clicks). H18: each is a component of the series' case (the
+realisable pool), not a split of the committed figure; the main call reads only the warehouse.
+
+| Ask | Figures | Primary device and family | Files and columns | Stops (send 1) |
+|---|---|---|---|---|
+| A1 jobseekers who restarted their alerts themselves from each send | 6, exact | gateway bursts: a link-scanning gateway clicks every link of an email inside two seconds, the restart link among them, and the alert system restarts the alerts (one machine pass recorded as a person's restart) | `alert_restarts_pilot_pool_2026.csv` (account_id, route, link_campaign), `postvane_clicks_restart_series_2026.csv` (campaign_code, subscriber_key, link_name, clicked_at_utc) | plain 14,674; one-hour cut 9,821; golden 11,383 |
+| A2 of those, how many clicked a sponsored job on the send's date or in the 27 days after it, whether before or after restarting | 6, exact | logged-out app clicks: the click carries the device and no account; the same device's logged-in rows (or an app restart) tie it to the jobseeker (the true key in another field) | `restarted_jobseekers_sponsored_clicks.csv` (clicked_at_uk, account_id, app_install_id, channel), the restart log's app_install_id | account-only 6,085; golden 6,180 |
+
+Pin test: A1's sentence carries the unit (jobseekers), the source (the send's email) and the agent (themselves);
+the device sits in which rows are a person's act, a dimension no pin names. A2's sentence carries the window (the
+send's date and the 27 days after it, before or after restarting) and the act (a sponsored click, any channel); the
+device sits in which key is the jobseeker's.
+Rule 3: with every ask-only file deleted, the warehouse cannot yield either figure (it holds arms, not restarters).
+
+Main population zero-counts: no gateway burst and no logged-out click sits in the main call's rows (the warehouse
+carries billed sponsored clicks by audience; asserted by count from the shipped rows: no restart, burst or blank
+account appears in it).
+
+Hazards: the restart log's and the pull's UK clock against Postvane's UTC, each now named in its header
+(`restarted_at_uk`, `clicked_at_uk`, `clicked_at_utc`; read as UTC, the pull moves A2 by 1 to 4 a send and a
+time-matched burst rule finds no burst, SF17); re-paused gateway addresses re-scanned by a later send (moves A1's sends 5 and 6, counted under their own
+send); sandboxes that scan hours after delivery (move the one-hour cut, never the golden).
+
+Lesson 8, run over the device rows: A1, no filed rule defines a restart beyond the plan's "a jobseeker clicking
+restart my alerts"; a scanner's row is one of eleven clicks on every link of one email within two seconds, so the
+literal reading (a person restarted) is impossible; the threshold is an absolute split (every burst has all eleven
+links inside 1.6 seconds, no person clicks more than two links in an hour), asserted at 3 to 11 links and 1 to 60
+seconds. A2, no filed rule; a logged-out app click's device carries exactly one account anywhere in the pull and the
+restart log, so the literal reading (an unknown person) is impossible on these rows; no device carries two accounts
+(asserted).
+
+Cracker sheet:
+
+| Ask (the honest cracker: lands the call, every field by its plain meaning, every filed rule, the 1.1c battery) | Cracker's figures | Golden | Result |
+|---|---|---|---|
+| A1 sends 1 to 6 | 14,674; 9,245; 6,866; 5,416; 5,348; 5,207 | 11,383; 6,758; 4,848; 3,910; 3,451; 3,150 | miss |
+| A2 sends 1 to 6 | 6,085; 3,561; 2,608; 2,151; 1,850; 1,690 | 6,180; 3,607; 2,631; 2,180; 1,865; 1,701 | miss |
+| careful2 (one-hour cut, restart-log devices only), A1 and A2 | 9,821 to 2,819; 4,993 to 1,349 | as above | miss |
+
+The full includer (the call, every burst removed, every device stitched) reproduces figures.json by design and
+is the script's correctness check, not a scored response.
+
+Why the cracker misses: A1, the battery's duplicate and re-send checks see eleven distinct links, not repeated
+rows, and no field marks a gateway; the restart log's route is `email_link` either way. A2, the anti-join finds
+blank account ids with no crosswalk file, and the battery drops them as unattributable; stitching a device through
+the same file's logged-in rows is not a battery step.
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror stops at R0 and reads the asks as the cracker does).
+Pair ceiling: 29.0 (cracker 45.0 on the call with no ask kept, mirror 13.0 off it).
+Measured by: generator/ceiling.py, run on the cut pack.
+
+## Leak sweep rulings
+
+`leak.py task464 --asof 2026-11-16` on the final cut (target.zip d5ae2397): verdict REVIEW, no LEAK. The six LEAK
+lines of the first run were the send codes RS-2604 to RS-2609 read as golden figures from block 4; block 4 now names
+the sends by number and date. Three REVIEW lines remain, each harmless:
+- `jobseeker_email_plan_2027.docx` carries 11 of 14 words of the committed call: it is the decision's own governing
+  document and names the series, the plan and the thirteen sends; it states no outcome, figure or recommendation,
+  and section 4 describes how the series runs only "if it stays".
+- `jobseeker_email_plan_2027.docx` carries four stump terms (holdout, Postvane, standing, design): "held out" and
+  "no holdout" describe the pilot's and the 2027 series' design, Postvane is the email platform's contract line,
+  "standing" says how the series runs if it stays, and "design" points to the pilot brief; none names the
+  jobseekers outside the pool, the mailbox groups or a cost to them.
+- `restart_pilot_brief_2026.pdf` carries six stump terms (holdout, warehouse, Postvane, carries, standing, design):
+  the brief describes the pilot's design and names its sources (the alert system's log, the warehouse, Postvane's
+  campaign reports) without designating a measure; the email "carries" one button, and "standing" sits in the
+  brief's question; it names nothing about the jobseekers outside the pool, the mailbox groups or how a send could
+  reach them.
+Fixed before the cut: the restart log's and the CRM pull's device column renamed `app_install_id` (sweep 8 reads
+`device` as an author's word); the calendar's survey send dated inside the as-of; the brief's measurement paragraph
+no longer lists the warehouse's dimensions; the email platforms renamed Postvane and Inkrelay (the first draft's
+name sat two letters from a real email service, `reduce-house-fixes` H21). Fixed before stage 4: the plan's
+proposal to keep the series, the brief's arm-by-arm measurement line, section 5's "the pilot is the evidence" and
+section 6's "nothing else changes" rewritten neutral (`## Tried and rejected`, 2026-11-02); the brief's PDF
+properties no longer carry the PDF library's default "(unspecified)" creator and subject. Fixed at the stage 4
+FIX_NOW: the restart log's and the pull's timestamps name the UK clock in their headers, the email links to sector
+pages instead of jobs, and the June survey's free text no longer repeats; after the re-read, its comments in each
+respondent's own words.
+
+## Duplicate check
+
+- `guard.py heart task464` on the final cut: WARN, not BLOCK. `repeat.gate_g` against task183 v4, registered the same
+  day (a bank's lodged cash split by card trade): the label is the honest one here and the window artifact is
+  recorded with its date. Nearest driver and stump text 0.04 (task83, task139 v2): neither carries a cost imposed
+  outside a holdout through a shared delivery standing.
+- `guard.py check` on the updated card adds `repeat.question_form` (how-many against task163 v2): the prompt's
+  question is the series' fate with its size in clicks, and `voice-check.py` holds the form under its corpus cap.
+- On the final cut d5ae2397 heart adds `repeat.deliverables` (docx and xlsx against task183 v4, whose card took that
+  set the same day): a memo with its chart and a workbook are what a CRM analyst hands the leadership team for this
+  decision, and the format set is a component, not the driver.
+- `guard.py surface task464`: exit 0; personas in the pack are the card's three; one pair promoted for adjudication,
+  task167 at a surface score of 0.101 (a foundation's capital-call reserve: another world, decision and mechanism,
+  proximity in wording only), left to the author's `/clone-check`.
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is the restart series' net
+  incremental sponsored clicks, the randomised holdout's uplift among the paused pool less what the sends cost the
+  jobseekers outside the test (their sponsored clicks lost while Google, Microsoft and Yahoo filed their alerts after
+  each send, net of what they clicked on the site and app instead), estimated by mailbox group against the send dates,
+  the experimentation field's own read of interference beyond an experiment's units; with another field's nouns there
+  is no shared alert stream for one send to cost everyone else (judge: domain pass). Layers: the warehouse reload's
+  repeated days, the October app split, the missing warehouse day, Postvane's UTC daily statistics, the Inkrelay
+  layout before the migration and the clocks of the restart log and the pull are the systems' own records and decide
+  nothing on the call (layers pass). Three rules: no decoy and no shipped rate, score, duration or recommendation the
+  easy route can apply (the plan's section 4 runs the series only "if it stays", the brief names its sources only);
+  read correctly, every field still leaves the holdout uplift carried to thirteen sends at keep, +242,208 a year
+  (+200,000), and only the loss read on the active jobseekers by mailbox group against the send dates files drop at
+  -311,046 (-300,000) (decisive step analytical); every control set, window and the interrupted series land between
+  -290,598 and -324,592, all in the -300,000 bin.
+- **Stage 4.** Leak reader on cut 5e4ade6b: no leak (Q1 named a different, wrong step, Q2 to Q4 none, Q6 an
+  analytical choice); one tell, the survey's comments repeating 50 to 77 times each. Judge pass 11 on 5e4ade6b:
+  FIX_NOW, the call forced (drop, -311k under every defensible method), asks 1 to 4 and ask 5's restart counts
+  reproduced, Gate G analytical_non_defect, Gate H pass; ask 5's clicker counts forked on the window (calendar days
+  against 28 x 24 hours from the 10:00 send) and on clicks before the restart. Closed in one generator pass on cut
+  c4f99ad4: the prompt files the window and the restart's timing (SF15, SF16) and "the counts of jobseekers exact",
+  the restart log and the pull name the UK clock in their headers (SF17), the restart email links to sector pages,
+  not jobs (SF18); freeze.py determinism PASS. Judge pass 12 on c4f99ad4: DETERMINISTIC, APPROVE, every figure
+  reproduced, ask 5's clickers and the install tie included; Gate G analytical_non_defect, surface_read_dependency no;
+  Gate H pass. Leak re-read on c4f99ad4: no leak (Q1 to Q4 none, Q6 analytical); its one remark, a template family
+  left in the survey's comments, closed on the final cut d5ae2397 in the distractor only (every other file of the
+  pack byte-identical to c4f99ad4).
+- **Every gate re-run on the final cut d5ae2397** (2026-11-02): two builds byte-identical; freeze.py determinism
+  PASS against the snapshot of 5e4ade6b; checks 70 assertions 0 FAIL; verify 31 checks 0 FAIL; ceiling pair 29.0,
+  rows unchanged; precut 61 checks 0 FAIL; voice-check PASS (833 characters); figures_check 41 figures 0 absent;
+  leak.py REVIEW, no LEAK (the three lines ruled in `## Leak sweep rulings`); guard surface exit 0 (one pair promoted,
+  task167 at 0.101, another world and mechanism); guard heart WARN, not BLOCK (repeat.gate_g and
+  repeat.deliverables against task183 v4, repeat.question_form against task163 v2); guard validate 306 cards 0
+  invalid; scrub audit clean.
 
 ## Tried and rejected
 
@@ -701,6 +1060,14 @@ sends' dips at each provider, and the providers that never filtered show no dip 
 - **Architecture 11 spent at the judge, 2026-11-02.** The judge (cut 57f57e47) returned NOT_DETERMINISTIC, SEND_BACK. The main call was forced (LD2 GBP 727,224 from 148 claims reproduced), but its decisive step read as rule application (Gate H3). The fund terms filed the population as escapes "from the water supply of a flat on the programme's list, whichever flats the water damaged", which states the attribution the step turned on. The source repair was then picked by one join on block, stack and date of loss for all 391 claims, and the leak reader independently named the same sentence as the near-announcement. This is the fork-is-the-stump failure: the sentence that closed the damaged-flat against source-flat fork named what the decisive step recognised. The asks also forked: the storm claims' re-dating by make-safe is filed nowhere, so the bordereau read literally gives 6, 37, 10, 33, 12 and 55 claims and a fund of GBP 368,307; ten escape-of-water claims sat under the GBP 500 excess the wording says is not a claim; "under way" failed literally for 23 make-safes. Re-rooted at stage 1 into another world and dataset.
 
 - **Architecture 12 draw candidates dropped before registration, 2026-11-02, each set aside on paper or on the guard.** Bus priority carried through a level crossing's timetabled closures: task472 v2's driver in transport nouns (a release only inside windows a schedule fixes), `guard.py check` BLOCKed it on `test.same_puzzle_older` against task105 v1 and task460 and on the forum and org bans against task458 v2. A reminder before a monthly due date for payers on four-weekly pay: due date against payday is task177 v2's own driver by abstraction and task174's screened payday failures. A fisheries choke species: the binding quota is the field's textbook first move. A charged-off card portfolio's sale against keeping it, read through the past forward-flow sale's selection: the sale rule names the selection, and task127 set the world aside. Quant asynchronous closes in a Japan sleeve: weekly returns are a quant's reflex for cross-market correlation, and the sizing is weak as an opportunity. Stop consolidation priced by how often buses already skip a stop: the conditional average is a careful analyst's reflex; the dwell set by the slower of two door streams is task127's concurrent-step driver. A walking catchment read on slope-adjusted times: task170 measured the climb in its ninth cell and found the terrain layer a file with one purpose. A shared-sender standing at an online fashion retailer, judged on orders: the damage is an observational effect on orders whose estimate at any plausible scale carries more noise than the band figures can bear, the click route adds a conversion fork, and the band choice coincides with the industry's sunset rule of thumb; moved to a job board whose paid unit is the click, where the loss is read on millions of alerts and the call is a go or hold the rule of thumb cannot reach.
+
+- **Architecture 12 ask devices dropped at stage 2, 2026-11-02.** The employers' daily budget caps (clicks past an employer's cap delivered free, so revenue is not clicks times the price): the cap field's plain meaning caps the bill and the honest cracker executes it, and without the field the uncapped reading is coherent, so the device is either cracked or a fork (lesson 8); replaced by the logged-out app clicks of the CRM's pull. A sample week's alert clicks cleaned of gateway bursts: the warehouse already bills without them, so the ask was computable from the main call's file (rule 3), and it repeated the restart funnel's device family. Postvane's complaint and unsubscribe timing (a feedback-loop report dated on receipt): the campaign code on every row is read by its plain meaning. Re-pauses recorded by a weekly job and the one-click unsubscribes only Postvane holds: both a battery anti-join or too little mass. Any deliverability-flavoured ask (complaints, bounces or inbox placement by provider): its noun would invite the question the main call's step turns on.
+
+- **Architecture 12 documents made neutral before stage 4, 2026-11-02.** Four passages of the cut 22fbfbd2 answered or framed the decision for the default path. The plan's section 4, "The proposal for 2027", opened "Keep the series as a standing programme" (a shipped document filing keep, Gate G); the brief's measurement paragraph read "The pool's sponsored clicks, arm by arm, from the warehouse" and the plan's section 5 "For the restart series the pilot is the evidence", which together a literal reader can take as filing the arms' difference as the yield (Gate H, task183 v3's filed rate); and section 6's "nothing else changes" if the series goes can be read as the plan ruling out any effect beyond the pool. Rewritten: section 4 "The series in 2027", "If it stays, the series runs as a standing programme"; section 1 lists the series as piloted in 2026, not as a 2027 email; section 5 files only the WHAT (Quaywork's sponsored clicks with against without, the 28 days from each pilot send, the average send times thirteen); section 6 closes on "the rest of this plan is unchanged"; the brief's "Why" drops "and to sponsored jobs" and its measurement paragraph names sources only (restarts from the alert system's log, sponsored clicks from the warehouse). R3c now asserts both the keep phrasing and the arm-by-arm designation absent from every shipped document. The cut is now 5e4ade6b (the brief's PDF creator and subject also lose the library's "(unspecified)" default); figures.json, ceiling.py's rows and the call are unchanged.
+
+- **Architecture 12 stage 4 FIX_NOW closed, 2026-11-02.** The judge (cut 5e4ade6b) forced the call (drop, -311k under every defensible method) and reproduced every figure but ask 5's clickers, which forked on the window (calendar days against 28 x 24 hours from the 10:00 send) and on clicks before the restart. The prompt now files the window as "on the send's date or in the 27 days after it, whether before or after restarting" (SF15, SF16) and its rounding as "the counts of jobseekers exact". Lesson 5: the restart log and the pull carried no zone while Postvane's events say UTC, and read as UTC the pull moves ask 5 by 1 to 4 a send and a time-matched burst rule loses every burst, so the headers now name the UK clock (SF17). Found in the same pass: the restart email showed six sponsored jobs whose clicks Postvane logged but the click system never billed, so counting them moves ask 5 by about a fifth; the email now links to six sector pages and no job (SF18). The survey's comments, which repeated 50 to 77 times each, are drawn from the respondent's own words and repeat at most three times. No graded figure moved.
+
+- **The survey's slot-filled comments dropped at the leak re-read, 2026-11-02.** Comments drawn from templates with a role, a town or a number swapped in ("N searches meant N emails every morning") read as one writer; the June survey now draws each comment from short answers and elaborations in respondents' own words, no elaboration used more than twice and no comment repeated more than twice (asserted, numbers masked).
 
 ## Portal result and the diagnosis, 2026-10-27
 

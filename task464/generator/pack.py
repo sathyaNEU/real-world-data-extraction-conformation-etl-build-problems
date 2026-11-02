@@ -1,413 +1,308 @@
-"""task464 architecture 10: write the data files of the pack as each system exports them.
+"""task464 architecture 12: write the data files under target/ from the simulation.
 
-  copsewell_cross_scada_2025-26.csv          primary substation SCADA, feeder breakers, UK local time, half-hour ending
-  lv_monitoring_2025-26.parquet            secondary substation monitors (Copsewell Cross and Feltmoor), UTC period start
-  hv_settlement_2025-26.csv                half-hourly settlement data for HV-connected customers, settlement periods
-  hv_network_model.xlsx                    the network model: sections and nodes, normally-open points included
-  secondary_substations.csv                substation register
-  hv_connections.csv                       HV connections register
-  interruptions_2023-2026.csv              interruption log (control-system HV incidents and work-management LV jobs)
-  customers_by_substation_2023-2026.csv    customers connected at each substation at each month end
-  generator_hire_2025-26.xlsx              mobile generator hire and fuel log
+Every file is an export a real job board keeps for its own reasons: the warehouse's daily sponsored clicks by mailbox
+group (the CRM team's standard cut), the email platforms' daily campaign statistics (Postvane since the March 2025
+migration, Inkrelay before it), Postvane's click events for the restart emails, the alert system's restart log for
+the pilot's pool, the CRM's pull of the clicks restarted jobseekers made in the 28 days from their send, and two
+files the decision does not need (finance's sponsored revenue by sector, the June alerts survey).
 """
 import csv
 import datetime as dt
-import io
+import hashlib
 import os
+
 import numpy as np
-import pandas as pd
-import openpyxl
-from openpyxl.styles import Font, Alignment
-import pyarrow as pa
-import pyarrow.parquet as pq
+
 import world as W
-import sim as S
 
-OUT = None
-
-
-def path(name):
-    return os.path.join(OUT, name)
-
-
-def _r(tag):
-    return S.rng("pack:" + tag)
-
-
-# ---------------------------------------------------------------- the network's identifiers as each system writes them
-def site_text(site, r):
-    return ("SS %d" % site) if r.random() < 0.55 else str(site)
+WH_GROUP = ["gmail", "microsoft", "yahoo_aol", "apple", "bt", "sky", "virgin_media", "talktalk", "other"]
+SL_GROUP = ["Gmail", "Microsoft", "Yahoo/AOL", "Apple", "BT", "Sky", "Virgin Media", "TalkTalk", "Other"]
+PB_ISP = ["GMAIL", "HOTMAIL/OUTLOOK", "YAHOO", "ICLOUD", "BTINTERNET", "SKY", "VIRGINMEDIA", "TALKTALK", "OTHER"]
+RS_CODE = ["RS-2604", "RS-2605", "RS-2606", "RS-2607", "RS-2608", "RS-2609"]
+# the restart email's links: the restart button, six sector tiles that open the newest jobs near the jobseeker in
+# that sector (a search page, not a job), and the footer
+TILES = ["jobs_care", "jobs_driving", "jobs_warehouse", "jobs_retail", "jobs_admin", "jobs_hospitality"]
+LINKS = ["restart_alerts"] + TILES + ["manage_alerts", "privacy", "help", "unsubscribe_page"]
+APP_SPLIT = dt.date(2026, 10, 1)
+RELOAD = [dt.date(2026, 10, 20), dt.date(2026, 10, 21), dt.date(2026, 10, 22)]
+WH_GAP = dt.date(2025, 8, 17)
 
 
-def node_text(nid, r):
-    return nid if r.random() < 0.7 else nid[:2] + " " + nid[2:]
+def bst(d):
+    """True when a UK date falls in British Summer Time (last Sunday of March to last Sunday of October)."""
+    def last_sun(y, m):
+        x = dt.date(y, m, 31)
+        return x - dt.timedelta(days=(x.weekday() + 1) % 7)
+    return last_sun(d.year, 3) <= d < last_sun(d.year, 10)
 
 
-ENERGISED = {"Hob Moor Solar Park": dt.date(2023, 6, 28), "Crane Hill wind turbine": dt.date(2019, 11, 4),
-             "Ashlade Community Hospital": dt.date(2012, 3, 19)}
+def to_utc(day, minute):
+    """A UK local day and minute of day to a UTC datetime."""
+    t = dt.datetime(day.year, day.month, day.day) + dt.timedelta(minutes=int(minute))
+    return t - dt.timedelta(hours=1 if bst(t.date()) else 0)
 
 
-def hv_identity(w):
-    """Each HV customer's connection agreement reference and energisation date (the agreement is numbered in the year
-    the connection was offered, a year or two before it was energised)."""
-    r = _r("hv-identity")
-    out = {}
-    used = set()
-    for c in w["conns"] + w["neigh"]:
-        if c.kind != "H":
+def device_id(m):
+    h = hashlib.md5(("qw-device-%d" % m).encode()).hexdigest().upper()
+    return "%s-%s-%s" % (h[:8], h[8:12], h[12:16])
+
+
+def job_ref(rng):
+    return "QJ%07d" % int(rng.integers(1_000_000, 9_999_999))
+
+
+def write_csv(path, header, rows):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(header)
+        w.writerows(rows)
+    return len(rows)
+
+
+def warehouse(h, tgt):
+    days, a, pool = h["days"], h["active"], h["pool"]
+    idx = h["idx"]
+    prov, held = pool["prov"], pool["held"]
+    t0 = pool["t0"]
+    n_m = np.bincount(prov[~held], minlength=9)
+    n_h = np.bincount(prov[held], minlength=9)
+    # the pool's clicks by day, provider, arm and channel (the warehouse stitches app devices to accounts)
+    c = pool["clicks"]
+    T = len(days)
+    pc = np.zeros((2, T, 9, 3), dtype=int)
+    arm = held[c["m"]].astype(int)
+    np.add.at(pc, (arm, c["t"], prov[c["m"]], c["ch"]), 1)
+    rng = np.random.default_rng(W.SEED + 1)
+    rows = []
+    for t, d in enumerate(days):
+        if d == WH_GAP:
             continue
-        en = ENERGISED.get(c.name) or dt.date(int(r.integers(1998, 2016)), int(r.integers(1, 13)), int(r.integers(1, 28)))
-        yr = en.year - int(r.integers(1, 3))
-        while True:
-            num = int(r.integers(120, 2900))
-            if num not in used:
-                used.add(num)
-                break
-        out[c.key] = dict(agreement="CA-%d-%04d" % (yr, num), energised=en)
+        auds = [("alerts_on", None)] + ([("restart_pilot_mailed", 0), ("restart_pilot_holdout", 1)] if t >= t0 else [])
+        for aud, ai in auds:
+            for p in range(9):
+                if ai is None:
+                    js = int(a["jobseekers"][t, p])
+                    vals = [int(a["alert"][t, p]), int(a["website"][t, p]), int(a["app"][t, p])]
+                else:
+                    js = int(n_m[p] if ai == 0 else n_h[p])
+                    vals = [int(pc[ai, t, p, 0]), int(pc[ai, t, p, 1]), int(pc[ai, t, p, 2])]
+                base = [d.isoformat(), WH_GROUP[p], aud]
+                rows.append(base + ["alert_email", js, vals[0]])
+                rows.append(base + ["website", js, vals[1]])
+                if d >= APP_SPLIT:
+                    ios = int(rng.binomial(vals[2], 0.57))
+                    rows.append(base + ["app_ios", js, ios])
+                    rows.append(base + ["app_android", js, vals[2] - ios])
+                else:
+                    rows.append(base + ["app", js, vals[2]])
+        if d in RELOAD:
+            rows.extend([list(r) for r in rows[-(len(auds) * 9 * 3):]])
+    return write_csv(os.path.join(tgt, "sponsored_clicks_by_mailbox_daily.csv"),
+                     ["click_date", "mailbox_group", "audience", "channel", "jobseekers", "sponsored_clicks"], rows)
+
+
+def esp_daily(h, tgt):
+    """Postvane from 17 March 2025, Inkrelay before it: the daily alert email, the weekly digest, the six restart sends."""
+    days, a, pool, jt = h["days"], h["active"], h["pool"], h["jt"]
+    rng = np.random.default_rng(W.SEED + 2)
+    prov = pool["prov"]
+    # alert recipients: active jobseekers and restarted pool members, about 1.3 alert emails each
+    T = len(days)
+    delta = np.zeros((T + 1, 9))
+    for (m, d0, tod, route, k, sc) in pool["restarts"]:
+        delta[d0, prov[m]] += 1
+    for (m, d0) in pool["repauses"]:
+        delta[d0, prov[m]] -= 1
+    restored_n = np.cumsum(delta[:T], axis=0)
+    c = pool["clicks"]
+    pool_alert = np.zeros((T, 9))
+    sel = c["ch"] == 0
+    np.add.at(pool_alert, (c["t"][sel], prov[c["m"][sel]]), 1)
+    sl, pb = [], []
+    open_rate = np.array([0.24, 0.21, 0.19, 0.96, 0.18, 0.20, 0.19, 0.17, 0.22])
+    for t, d in enumerate(days):
+        js = a["jobseekers"][t] + restored_n[t]
+        sent = np.round(js * 1.31).astype(int)
+        clicks_s = a["alert"][t] + pool_alert[t]
+        for p in range(9):
+            s = int(sent[p])
+            hb = int(rng.binomial(s, 0.0004))
+            sb = int(rng.binomial(s, 0.0021))
+            dl = s - hb - sb
+            op = int(rng.binomial(dl, open_rate[p] * (1 - 0.5 * jt[t, p])))
+            ck = int(round(clicks_s[p] / 0.62 * rng.uniform(0.97, 1.03)))
+            un = int(rng.binomial(dl, 0.00011))
+            cp = int(rng.binomial(dl, 0.00004)) if p in (1, 2) else 0
+            if d < W.MIGRATION:
+                pb.append([d.strftime("%d/%m/%Y"), "Job alerts - daily", PB_ISP[p], s, hb + sb, op, ck, un])
+            else:
+                sl.append([d.isoformat(), "JA-DAILY", SL_GROUP[p], s, dl, hb, sb, op, ck, un, cp])
+        if d.weekday() == 6:
+            for p in range(9):
+                s = int(round(a["jobseekers"][t, p] * 0.83))
+                hb = int(rng.binomial(s, 0.0005)); sb = int(rng.binomial(s, 0.003)); dl = s - hb - sb
+                op = int(rng.binomial(dl, open_rate[p] * 0.9)); ck = int(rng.binomial(dl, 0.021))
+                un = int(rng.binomial(dl, 0.0004)); cp = int(rng.binomial(dl, 0.00006)) if p in (1, 2) else 0
+                if d < W.MIGRATION:
+                    pb.append([d.strftime("%d/%m/%Y"), "Weekly digest", PB_ISP[p], s, hb + sb, op, ck, un])
+                else:
+                    sl.append([d.isoformat(), "JA-DIGEST", SL_GROUP[p], s, dl, hb, sb, op, ck, un, cp])
+    # restart sends
+    stats = restart_send_stats(h)
+    for k, sd in enumerate(W.SENDS):
+        for p in range(9):
+            s, dl, hb, sb, op, ck, un, cp = stats[k][p]
+            sl.append([sd.isoformat(), RS_CODE[k], SL_GROUP[p], s, dl, hb, sb, op, ck, un, cp])
+    sl.sort(key=lambda r: (r[0], r[1], SL_GROUP.index(r[2])))
+    n1 = write_csv(os.path.join(tgt, "postvane_daily_by_domain_group.csv"),
+                   ["send_date_utc", "campaign_code", "domain_group", "sent", "delivered", "hard_bounces",
+                    "soft_bounces", "unique_opens", "unique_clicks", "unsubscribes", "spam_complaints"], sl)
+    n2 = write_csv(os.path.join(tgt, "inkrelay_export_2025-01-01_to_2025-03-16.csv"),
+                   ["Date", "Mailing", "ISP", "Sent", "Bounced", "Opened", "Clicked", "Unsubscribed"], pb)
+    return n1, n2
+
+
+def restart_send_stats(h):
+    """Per restart send and provider: sent, delivered, bounces, opens, unique clickers, unsubscribes, complaints."""
+    pool = h["pool"]
+    rng = np.random.default_rng(W.SEED + 3)
+    prov, held, dead = pool["prov"], pool["held"], pool["dead"]
+    n = pool["n"]
+    restarted_before = {}
+    out = []
+    # who was mailed at each send: not held out, not restarted and still running, not suppressed after a hard bounce
+    status = mailed_lists(h)
+    open_rate = np.array([0.13, 0.11, 0.10, 0.93, 0.09, 0.10, 0.10, 0.09, 0.12])
+    clickers = {}
+    for (m, k, mins, link) in pool["email_clicks"]:
+        clickers.setdefault(k, set()).add(m)
+    for (m, k, lag) in pool["scans"]:
+        clickers.setdefault(k, set()).add(m)
+    for k in range(6):
+        ml = status[k]
+        rows = []
+        for p in range(9):
+            sel = ml[prov[ml] == p]
+            s = int(sel.size)
+            hb = int(dead[sel].sum()) if k == 0 else int(rng.binomial(s, 0.0009))
+            sb = int(rng.binomial(s, 0.004))
+            dl = s - hb - sb
+            op = int(rng.binomial(dl, open_rate[p]))
+            ck = int(sum(1 for m in clickers.get(k, ()) if prov[m] == p))
+            un = int(rng.binomial(dl, 0.0016))
+            cp = int(rng.binomial(dl, 0.00045)) if p in (1, 2) else 0
+            rows.append((s, dl, hb, sb, op, ck, un, cp))
+        out.append(rows)
     return out
 
 
-def write_network(w):
-    r = _r("network")
-    names = {f["code"]: f["name"] for f in w["feeders"]}
-    brk = {f["code"]: f["breaker"] for f in w["feeders"]}
-    bykey = {c.key: c for c in w["conns"]}
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Sections"
-    hdr = ["Section ID", "Circuit", "From node", "To node", "Length (m)", "Conductor", "Construction", "Installed", "Normal state"]
-    ws.append(hdr)
-    yr = {}
-    rows = []
-    for s in w["sections"]:
-        code = W.CONDUCTORS[s.code]
-        old = ("PILC" in s.code) or s.code in ("OH-CU-0.04", "OH-CU-0.1", "OH-ACSR-50")
-        y = int(r.integers(1958, 1979)) if old else int(r.integers(1991, 2021))
-        if any(k == "S:Redburn Meadows" for k in s.down) and len(s.down) == 1:
-            y = 2025                                   # the new estate's spur
-        circ = "%s %s" % (brk[s.feeder], names[s.feeder].upper())
-        rows.append([s.id, circ, s.frm, s.to, s.metres, W.MODEL_CODE[s.code], "Underground cable" if code[1] == "UG" else "Overhead line",
-                     y, "Open" if getattr(s, "normally_open", False) else "Closed"])
-    order = list(range(len(rows)))
-    r.shuffle(order)
-    for i in sorted(order, key=lambda i: (rows[i][1], rows[i][0])):
-        ws.append(rows[i])
-    secmap = {s.id: s for s in w["sections"]}
-    ws2 = wb.create_sheet("Nodes")
-    ws2.append(["Node ID", "Circuit", "Node type", "Asset reference", "Description"])
-    for nid, n in w["nodes"].items():
-        circ = "%s %s" % (brk[n.feeder], names[n.feeder].upper())
-        ref, desc = "", ""
-        if n.kind == "Busbar":
-            desc = "Copsewell Cross 11kV board, %s" % brk[n.feeder]
-        elif getattr(n, "asset", None):
-            c = bykey[n.asset]
-            if c.kind == "S":
-                ref = site_text(c.site, r)
-                desc = c.name
-            else:
-                ref = w["hv"][c.key]["agreement"]
-                desc = c.name
-        elif n.kind == "RMU":
-            par = secmap.get(n.parent_section)
-            oh = par is not None and W.CONDUCTORS[par.code][1] == "OH"
-            if oh:
-                desc = ["Pole-mounted switch", "Pole-mounted recloser", "Pole-mounted switch", "Air break switch"][int(r.integers(0, 4))]
-            else:
-                desc = ["Ring main unit", "Ring main unit", "Section switch", "Ring main unit (remote control)"][int(r.integers(0, 4))]
-        rows2 = [nid, circ, n.kind if n.kind != "RMU" else "Switching point", ref, desc]
-        ws2.append(rows2)
-    for wsx in (ws, ws2):
-        for c in wsx[1]:
-            c.font = Font(bold=True)
-        wsx.freeze_panes = "A2"
-        for col, wd in zip("ABCDEFGHI", [12, 22, 11, 11, 11, 18, 18, 10, 13]):
-            wsx.column_dimensions[col].width = wd
-    wb.save(path("hv_network_model.xlsx"))
-    return len(rows)
-
-
-def write_registers(w):
-    r = _r("registers")
-    names = {f["code"]: f["name"] for f in w["feeders"]}
-    subs = [c for c in w["conns"] + w["neigh"] if c.kind == "S"]
-    monitor_ids = sorted(set(int(x) for x in r.choice(np.arange(10000, 99999), len(subs) + 10, replace=False)))
-    r.shuffle(monitor_ids)
-    mids = {}
-    with open(path("secondary_substations.csv"), "w", newline="") as fh:
-        wr = csv.writer(fh)
-        wr.writerow(["site_no", "site_name", "primary", "circuit", "transformer_kva", "monitor_id", "monitor_installed", "network_node"])
-        rows = []
-        for i, c in enumerate(subs):
-            mid = "LVM-%05d" % monitor_ids[i]
-            mids[c.key] = mid
-            prim = "COPSEWELL CROSS" if c.feeder != "LUD" else "FELTMOOR"
-            if c.feeder == "LUD":
-                j = [x[0] for x in W.NEIGHBOUR_SUBS].index(c.name)
-                circ = "Feltmoor Town" if j < 5 else ("Furnace Lane" if j < 10 else "Saltbrook")
-            else:
-                circ = names[c.feeder]
-            inst = dt.date(2024, 1, 15) + dt.timedelta(days=int(r.integers(0, 210)))
-            if c.name == "Redburn Meadows":            # the new estate's monitor went in with its substation
-                inst = W.REDBURN_MEADOWS_ENERGISED
-            node = node_text(c.host, r) if c.host else ""
-            rows.append([c.site, c.name, prim, circ, c.kva, mid, inst.strftime("%d/%m/%Y"), node])
-        rows.sort(key=lambda x: x[0])
-        for row in rows:
-            wr.writerow(row)
-    hv = [c for c in w["conns"] + w["neigh"] if c.kind == "H"]
-    with open(path("hv_connections.csv"), "w", newline="") as fh:
-        wr = csv.writer(fh)
-        wr.writerow(["agreement_ref", "customer", "primary", "circuit", "connection_type", "technology",
-                     "import_capacity_kva", "export_capacity_kw", "import_mpan", "export_mpan", "energised", "network_node"])
-        rows = []
-        for c in hv:
-            k = c.hvkind
-            tech = {"solar": "Solar PV", "wind": "Wind", "chp": "Gas CHP", "demand": ""}[k]
-            ctype = {"solar": "Generation", "wind": "Generation", "chp": "Demand and generation", "demand": "Demand"}[k]
-            imp_kva = {"solar": 60, "wind": 40, "chp": 1500, "demand": int(round(c.params.get("mean_kw", 400) * 1.9, -1))}[k]
-            exp_kw = {"solar": c.params.get("cap_kw", 0), "wind": c.params.get("cap_kw", 0), "chp": 1000, "demand": ""}[k]
-            prim = "COPSEWELL CROSS" if c.feeder != "LUD" else "FELTMOOR"
-            circ = names.get(c.feeder, "Feltmoor Town")
-            en = w["hv"][c.key]["energised"].isoformat()
-            rows.append([w["hv"][c.key]["agreement"], c.name, prim, circ, ctype, tech, imp_kva, exp_kw, "%s" % ("40%011d" % c.mpan_import),
-                         ("40%011d" % c.mpan_export) if c.mpan_export else "", en, c.host or ""])
-        rows.sort(key=lambda x: x[0])
-        for row in rows:
-            wr.writerow(row)
-    return mids
-
-
-# ---------------------------------------------------------------- half-hourly records
-def write_monitors(w, mids):
-    r = _r("monitors")
-    fl = w["flows"]
-    subs = [c for c in w["conns"] + w["neigh"] if c.kind == "S"]
-    ts = np.array([np.datetime64(t) for t in S.UTC], dtype="datetime64[s]")
-    cols = {"monitor_id": [], "site_no": [], "period_start_utc": [], "kw": [], "kvar": [], "kva": [], "pf": []}
-    recorded = {}
-    for c in subs:
-        p, q = fl[c.key]["p"], fl[c.key]["q"]
-        keep = np.ones(S.N, bool)
-        if c.name in W.MONITOR_SWAPS:
-            d0, days = W.MONITOR_SWAPS[c.name]
-            lo = np.datetime64(dt.datetime(d0.year, d0.month, d0.day, 9, 30))
-            keep &= ~((ts >= lo) & (ts < lo + np.timedelta64(days * 86400 + 4 * 3600, "s")))
-        if c.name == "Redburn Meadows":
-            keep &= S.LOCAL_DATE >= W.REDBURN_MEADOWS_ENERGISED
-        if c.key in w["onf"]:
-            keep &= w["onf"][c.key] > 0          # a monitor off supply for the whole half-hour records nothing
-        kw = np.round(p, 1)
-        kvar = np.round(q, 1)
-        vendor_a = (c.name in W.VENDOR_A_SUBS) & (S.LOCAL_DATE < W.VENDOR_A_UNTIL)
-        kva = np.round(np.sqrt(p ** 2 + q ** 2), 1)
-        pf = np.round(np.where(kva > 0, np.abs(p) / np.maximum(kva, 1e-9), 1.0), 3)
-        recorded[c.key] = dict(keep=keep, vendor_a=vendor_a, kw=kw, kvar=kvar, kva=kva, pf=pf)
-        idx = np.nonzero(keep)[0]
-        cols["monitor_id"].extend([mids[c.key]] * len(idx))
-        cols["site_no"].extend([c.site] * len(idx))
-        cols["period_start_utc"].append(ts[idx])
-        va = vendor_a[idx]
-        cols["kw"].append(np.where(va, np.nan, kw[idx]))
-        cols["kvar"].append(np.where(va, np.nan, kvar[idx]))
-        cols["kva"].append(np.where(va, kva[idx], np.nan))
-        cols["pf"].append(np.where(va, pf[idx], np.nan))
-    tbl = pa.table({
-        "monitor_id": pa.array(cols["monitor_id"], pa.string()),
-        "site_no": pa.array(cols["site_no"], pa.int32()),
-        "period_start_utc": pa.array(np.concatenate(cols["period_start_utc"]), pa.timestamp("s", tz="UTC")),
-        "kw": pa.array(np.concatenate(cols["kw"]), pa.float32()),
-        "kvar": pa.array(np.concatenate(cols["kvar"]), pa.float32()),
-        "kva": pa.array(np.concatenate(cols["kva"]), pa.float32()),
-        "pf": pa.array(np.concatenate(cols["pf"]), pa.float32()),
-    })
-    pq.write_table(tbl, path("lv_monitoring_2025-26.parquet"), compression="zstd", row_group_size=250000,
-                   use_dictionary=["monitor_id"], write_statistics=False)
-    return tbl.num_rows, recorded
-
-
-def settlement_periods():
-    """Each UTC half-hour's settlement date and period (1 to 48, 46 or 50 on the clock-change days)."""
-    sd, sp = [], []
-    cur, k = None, 0
-    for l in S.LOCAL:
-        d = l.date()
-        if d != cur:
-            cur, k = d, 0
-        k += 1
-        sd.append(d)
-        sp.append(k)
-    return sd, sp
-
-
-def write_settlement(w):
-    fl = w["flows"]
-    sd, sp = settlement_periods()
-    hv = [c for c in w["conns"] + w["neigh"] if c.kind == "H"]
-    rows = []
-    for c in hv:
-        d = fl[c.key]
-        imp = d["imp"] if d["imp"] is not None else np.clip(d["p"], 0, None)
-        exp = d["exp"] if d.get("exp") is not None else np.zeros(S.N)
-        qimp = d.get("qimp", np.clip(d["q"], 0, None))
-        qexp = d.get("qexp", np.zeros(S.N))
-        m_i = "40%011d" % c.mpan_import
-        for i in range(S.N):
-            rows.append((m_i, sd[i].strftime("%Y%m%d"), sp[i], round(float(imp[i]) * 0.5, 2), round(float(qimp[i] - qexp[i]) * 0.5, 2)))
-        if c.mpan_export:
-            m_e = "40%011d" % c.mpan_export
-            for i in range(S.N):
-                rows.append((m_e, sd[i].strftime("%Y%m%d"), sp[i], round(float(exp[i]) * 0.5, 2), 0.0))
-    rows.sort(key=lambda x: (x[1], x[2], x[0]))
-    with open(path("hv_settlement_2025-26.csv"), "w", newline="") as fh:
-        wr = csv.writer(fh)
-        wr.writerow(["mpan", "settlement_date", "settlement_period", "active_kwh", "reactive_kvarh"])
-        for row in rows:
-            wr.writerow(["%s" % row[0], row[1], row[2], "%.2f" % row[3], "%.2f" % row[4]])
-    return len(rows)
-
-
-def write_scada(w):
-    """Feeder breaker metering: amps per phase, MW and MVAr, averaged over the half-hour, stamped at its end in local time."""
-    r = _r("scada")
-    fl = w["flows"]
+def mailed_lists(h):
+    """The pool members each restart send went to (recomputed from the simulation's restart and re-pause events)."""
+    pool = h["pool"]
+    n = pool["n"]
+    held, dead = pool["held"], pool["dead"]
+    send_days = pool["send_days"]
+    on = np.zeros(n, bool)
+    ev = []
+    for (m, d, tod, route, k, sc) in pool["restarts"]:
+        ev.append((d, 0, m))
+    for (m, d) in pool["repauses"]:
+        ev.append((d, 1, m))
+    ev.sort()
     out = []
-    for f in w["feeders"]:
-        top = [s for s in w["sections"] if s.feeder == f["code"] and s.frm == f["bus"]][0]
-        P = sum(fl[k]["p"] for k in top.down)
-        Q = sum(fl[k]["q"] for k in top.down)
-        loss_kw = np.zeros(S.N)
-        for s in w["sections"]:
-            if s.feeder != f["code"] or getattr(s, "normally_open", False):
-                continue
-            Ps = sum(fl[k]["p"] for k in s.down)
-            Qs = sum(fl[k]["q"] for k in s.down)
-            loss_kw += (Ps ** 2 + Qs ** 2) * S.ohms(s) / (W.V_NOM_KV ** 2) / 1000.0
-        tx = 0.0
-        for k in top.down:
-            c = [c for c in w["conns"] if c.key == k][0]
-            if c.kind == "S":
-                tx = tx + 0.0016 * c.kva + 0.011 * (fl[k]["p"] ** 2 + fl[k]["q"] ** 2) / c.kva
-        Pm = (P + loss_kw + tx) * (1 + r.normal(0, 0.009)) * (1 + r.normal(0, 0.004, S.N))
-        Qm = (Q + 0.6 * loss_kw) * (1 + r.normal(0, 0.012)) * (1 + r.normal(0, 0.006, S.N))
-        Sm = np.sqrt(Pm ** 2 + Qm ** 2)
-        Iavg = Sm / (np.sqrt(3) * W.V_NOM_KV)
-        imb = r.normal(0, 0.025, 3)
-        imb -= imb.mean()
-        circ = "%s %s" % (f["breaker"], f["name"].upper())
-        for i in range(S.N):
-            end_local = S.LOCAL[i] + dt.timedelta(minutes=30)
-            out.append((end_local, S.UTC[i], circ, Iavg[i] * (1 + imb[0]), Iavg[i] * (1 + imb[1]), Iavg[i] * (1 + imb[2]),
-                        Pm[i] / 1000, Qm[i] / 1000))
-    out.sort(key=lambda x: (x[1], x[2]))
-    with open(path("copsewell_cross_scada_2025-26.csv"), "w", newline="") as fh:
-        wr = csv.writer(fh)
-        wr.writerow(["timestamp", "circuit", "ia_a", "ib_a", "ic_a", "mw", "mvar"])
-        for row in out:
-            wr.writerow([row[0].strftime("%d/%m/%Y %H:%M"), row[2], "%.1f" % row[3], "%.1f" % row[4], "%.1f" % row[5],
-                         "%.3f" % row[6], "%.3f" % row[7]])
-    return len(out)
+    i = 0
+    suppressed = np.zeros(n, bool)
+    for k, sd in enumerate(send_days):
+        while i < len(ev) and ev[i][0] < sd:
+            d, kind, m = ev[i]
+            on[m] = (kind == 0)
+            i += 1
+        ml = np.where((~held) & (~on) & (~suppressed))[0]
+        # restarts on the send day itself come from this send's own emails
+        out.append(ml)
+        if k == 0:
+            suppressed |= dead
+    return out
 
 
-# ---------------------------------------------------------------- the interruption record
-def write_reliability(w, rel):
-    r = _r("reliability")
-    conns = w["conns"]
-    site = {c.key: c.site for c in conns}
-    names = {f["code"]: f["name"] for f in w["feeders"]}
-    # customers at month end
-    months = sorted(next(iter(rel["counts"].values())).keys())
-    with open(path("customers_by_substation_2023-2026.csv"), "w", newline="") as fh:
-        wr = csv.writer(fh)
-        wr.writerow(["month_end", "site_no", "circuit", "connection", "customers"])
-        rows = []
-        for c in conns:
-            for m in months:
-                me = dt.date(m.year + (m.month == 12), m.month % 12 + 1, 1) - dt.timedelta(days=1)
-                n = rel["counts"][c.key][m]
-                if c.name == "Redburn Meadows" and n == 0:
-                    continue
-                rows.append((me, c.site, names[c.feeder], "LV" if c.kind == "S" else "HV", n))
-        rows.sort(key=lambda x: (x[0], x[1]))
-        for row in rows:
-            wr.writerow([row[0].isoformat(), row[1], row[2], row[3], row[4]])
-    # interruption log: one row per site per step, in UK local time to the minute (seconds on the transient records)
-    with open(path("interruptions_2023-2026.csv"), "w", newline="") as fh:
-        wr = csv.writer(fh)
-        wr.writerow(["reference", "circuit", "voltage", "category", "cause", "incident_start", "step", "step_time",
-                     "site_no", "customers_off", "customers_restored"])
-        nrow = 0
-        for inc in rel["incidents"]:
-            steps = sorted(inc.steps, key=lambda s: (s[0], -s[2], site.get(s[1], 0)))
-            times = sorted(set(s[0] for s in steps))
-            for (tm, kk, ch) in steps:
-                stepno = times.index(tm)
-                fmt = "%Y-%m-%d %H:%M:%S" if inc.cause.startswith("Transient") else "%Y-%m-%d %H:%M"
-                wr.writerow([inc.ref, inc.circuit, inc.voltage, inc.category, inc.cause, inc.start.strftime("%Y-%m-%d %H:%M"),
-                             stepno, tm.strftime(fmt), site[kk], ch if ch > 0 else "", -ch if ch < 0 else ""])
-                nrow += 1
-    # generator hire and fuel log: a cost record kept by the network's generation team
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Hire log"
-    ws.append(["Hire order", "Unit", "Rating (kVA)", "Site", "Site no", "Deployment job", "Cost code", "On hire",
-               "Connected", "Disconnected", "Off hire", "Fuel (litres)", "Charge (GBP)"])
-    subs = {c.key: c for c in conns}
-    classes = [200, 315, 500, 800, 1000]
-    units = {}
-    for i, u in enumerate(sorted(rel["gen_units"])):
-        units[u] = classes[[0, 1, 2, 2, 3, 3, 4, 1, 2, 3, 4, 2, 3, 4][i % 14]]
-    busy = {u: [] for u in units}
-    gens = [g for g in rel["gens"] if dt.datetime(2025, 4, 1) <= g["connected"] < dt.datetime(2026, 4, 1)]
-    gens.sort(key=lambda g: (g["connected"], subs[g["site"]].site))
-    ho = sorted(set(int(x) for x in r.choice(np.arange(70000, 99999), len(gens) + 5, replace=False)))
-    jobs = sorted(set(int(x) for x in r.choice(np.arange(5100000, 5999999), len(gens) + 5, replace=False)))
-    rate = {200: 165, 315: 220, 500: 305, 800: 410, 1000: 495}
-    for i, g in enumerate(gens):
-        c = subs[g["site"]]
-        need = 1.45 * c.mean_kw
-        cls = next((k for k in classes if k >= need), 1000)
-        onh = g["connected"] - dt.timedelta(minutes=int(r.integers(40, 150)))
-        offh = g["disconnected"] + dt.timedelta(minutes=int(r.integers(30, 240)))
-        free = [u for u in sorted(units) if units[u] >= cls and all(offh <= a or onh >= b for a, b in busy[u])]
-        free.sort(key=lambda u: (units[u], u))
-        unit = free[int(r.integers(0, min(2, len(free))))]
-        busy[unit].append((onh, offh))
-        kva = units[unit]
-        hours = (g["disconnected"] - g["connected"]).total_seconds() / 3600
-        fuel = int(round(hours * kva * 0.19 * (0.8 + 0.35 * r.random())))
-        days = max(1, (offh.date() - onh.date()).days + 1)
-        charge = round(days * rate[kva] + fuel * 1.21, 2)
-        ws.append(["GH%d" % ho[i], unit, kva, c.name, c.site, "WO%d" % jobs[i], "FLT-HV" if g["kind"] == "fault" else "PLN-HV",
-                   onh.strftime("%d/%m/%Y %H:%M"), g["connected"].strftime("%d/%m/%Y %H:%M"),
-                   g["disconnected"].strftime("%d/%m/%Y %H:%M"), offh.strftime("%d/%m/%Y %H:%M"), fuel, charge])
-    for cc in ws[1]:
-        cc.font = Font(bold=True)
-    ws.freeze_panes = "A2"
-    for col, wd in zip("ABCDEFGHIJKLM", [11, 8, 11, 26, 9, 13, 10, 17, 17, 17, 17, 12, 12]):
-        ws.column_dimensions[col].width = wd
-    ws2 = wb.create_sheet("Units")
-    ws2.append(["Unit", "Rating (kVA)", "Supplier", "Fuel"])
-    sup = ["Marchmont Plant", "Severnside Hire", "Fenwick Generators"]
-    for i, u in enumerate(sorted(units)):
-        ws2.append([u, units[u], sup[int(r.integers(0, 3))], "HVO" if r.random() < 0.8 else "Diesel"])
-    for cc in ws2[1]:
-        cc.font = Font(bold=True)
-    wb.save(path("generator_hire_2025-26.xlsx"))
-    return nrow, len(gens)
+def restart_clicks(h, tgt):
+    pool, days = h["pool"], h["days"]
+    rng = np.random.default_rng(W.SEED + 4)
+    acct, deliver = pool["acct"], pool["deliver"]
+    rows = []
+    for (m, k, lag) in pool["scans"]:
+        sd = W.SENDS[k]
+        t = to_utc(sd, 600 + int(deliver[m]) + lag) + dt.timedelta(seconds=int(rng.integers(0, 50)))
+        # a gateway follows most or all of the email's links in one pass, the restart link among them
+        others = [l for l in LINKS if l != "restart_alerts"]
+        nl = int(rng.integers(5, 11))
+        pick = ["restart_alerts"] + [others[x] for x in rng.choice(len(others), size=nl, replace=False)]
+        rng.shuffle(pick)
+        step = int(rng.integers(30, 220))
+        for j2, link in enumerate(pick):
+            rows.append([RS_CODE[k], int(acct[m]), link, t + dt.timedelta(milliseconds=j2 * step + int(rng.integers(0, 25)))])
+    for (m, k, mins, link) in pool["email_clicks"]:
+        sd = W.SENDS[k]
+        t = to_utc(sd, 600 + int(deliver[m]) + mins) + dt.timedelta(seconds=int(rng.integers(0, 60)))
+        name = "restart_alerts" if link == "restart" else TILES[int(rng.integers(1, 7)) - 1]
+        rows.append([RS_CODE[k], int(acct[m]), name, t])
+    rows.sort(key=lambda r: (r[3], r[1], r[2]))
+    out = []
+    for i, r in enumerate(rows):
+        ts = r[3].strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (r[3].microsecond // 1000)
+        out.append(["evt_%08d" % (1_200_000 + i * 7 + int(rng.integers(0, 7))), r[0], r[1], r[2], ts])
+    return write_csv(os.path.join(tgt, "postvane_clicks_restart_series_2026.csv"),
+                     ["event_id", "campaign_code", "subscriber_key", "link_name", "clicked_at_utc"], out)
 
 
-def write_all(w, rel, out):
-    global OUT
-    OUT = out
+def restart_log(h, tgt):
+    pool, days = h["pool"], h["days"]
+    acct, held = pool["acct"], pool["held"]
+    rows = []
+    for (m, d, tod, route, k, sc) in pool["restarts"]:
+        day = days[d]
+        ts = "%s %02d:%02d" % (day.isoformat(), (tod // 60) % 24, tod % 60)
+        rows.append([int(acct[m]), "holdout" if held[m] else "mailed", ts, route,
+                     device_id(m) if route == "app" else "", RS_CODE[k] if route == "email_link" else ""])
+    rows.sort(key=lambda r: (r[2], r[0]))
+    return write_csv(os.path.join(tgt, "alert_restarts_pilot_pool_2026.csv"),
+                     ["account_id", "pilot_arm", "restarted_at_uk", "route", "app_install_id", "link_campaign"], rows)
+
+
+def restarted_clicks(h, tgt):
+    """The CRM's pull: every sponsored click by the jobseekers whose alerts a restart email's link restarted, from the
+    date of the send whose link restarted them to 8 November 2026, on the UK clock. A paused jobseeker makes no
+    sponsored click, so the rows start on the restart day (checks.py asserts nothing in a send's window is missing)."""
+    pool, days, idx = h["pool"], h["days"], h["idx"]
+    rng = np.random.default_rng(W.SEED + 5)
+    acct = pool["acct"]
+    first = {}
+    for (m, d, tod, route, k, sc) in pool["restarts"]:
+        if route == "email_link" and not sc:
+            first[m] = min(first.get(m, 10 ** 9), d)
+    c = pool["clicks"]
+    rows = []
+    for i in range(c["m"].size):
+        m = int(c["m"][i])
+        t = int(c["t"][i])
+        if m not in first or t < first[m]:
+            continue
+        ch = ["alert_email", "website", "app"][int(c["ch"][i])]
+        li = bool(c["li"][i])
+        tod = int(rng.integers(360, 1410))
+        ts = "%s %02d:%02d:%02d" % (days[t].isoformat(), tod // 60, tod % 60, int(rng.integers(0, 60)))
+        rows.append([ts, int(acct[m]) if li else "", device_id(m) if ch == "app" else "", ch, job_ref(rng)])
+    rows.sort(key=lambda r: (r[0], str(r[1]), r[2]))
+    out = [["qc%09d" % (40_000_000 + i * 3 + int(rng.integers(0, 3)))] + r for i, r in enumerate(rows)]
+    return write_csv(os.path.join(tgt, "restarted_jobseekers_sponsored_clicks.csv"),
+                     ["click_id", "clicked_at_uk", "account_id", "app_install_id", "channel", "job_ref"], out)
+
+
+def write_all(h, tgt):
     st = {}
-    w["hv"] = hv_identity(w)
-    st["sections"] = write_network(w)
-    mids = write_registers(w)
-    st["monitor_rows"], rec = write_monitors(w, mids)
-    st["settlement_rows"] = write_settlement(w)
-    st["scada_rows"] = write_scada(w)
-    st["interruption_rows"], st["hires"] = write_reliability(w, rel)
-    w["recorded"] = rec
-    w["monitor_ids"] = mids
+    st["warehouse"] = warehouse(h, tgt)
+    st["esp"] = esp_daily(h, tgt)
+    st["restart_clicks"] = restart_clicks(h, tgt)
+    st["restart_log"] = restart_log(h, tgt)
+    st["restarted_clicks"] = restarted_clicks(h, tgt)
     return st

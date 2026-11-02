@@ -10,8 +10,8 @@
   "shape": "09",
   "decision_type": "go_hold_or_stop",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Drop the restart-your-alerts series from Quaywork's 2027 jobseeker email plan: its thirteen sends would cost about 300,000 sponsored clicks a year (-311,046)",
+  "answer_source": "submission.md block 1; generator/figures.json series_2027_clicks",
   "gap": [
     "objective",
     "population"
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who maps every address to its mailbox provider, removes scanner clicks and reads the pilot's random holdout correctly measures the restart email's uplift on the restored jobseekers' sponsored clicks, carries it to the twelve 2027 sends and files a gain of about two hundred thousand clicks a year, missing that each send cut the active jobseekers' clicks at three mailbox providers for about ten days.",
+  "analyst_test": "A strong analyst who dedupes the warehouse reload, rejoins the app channels, reads the pilot's random holdout correctly and checks the guardrails measures the restart email's uplift on the restored jobseekers' sponsored clicks (111,788 over the pilot), carries it to the thirteen 2027 sends and files keep the series at +242,208 a year, missing that each send cut the active jobseekers' clicks at three mailbox providers for about a fortnight.",
   "domain_test": "The deciding quantity is the series' net incremental sponsored clicks, the randomised holdout uplift among the jobseekers it re-engages less the clicks the job board loses while mailbox providers filter its daily alerts to everyone else after each send, an interference the experimentation field measures by provider against the send dates; put a hospital or a utility in its place and there is no marketplace whose paying clicks ride on one shared alert stream, so the call stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:interference-through-a-shared-sender-standing",
@@ -48,10 +48,10 @@
   "role_family": "product_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "alert_clicks_daily_by_provider_2025-2026.csv",
-    "rows": 0,
-    "entity": "one day's sponsored clicks for one mailbox provider, one channel and one jobseeker group",
-    "grain": "day x provider x channel x group",
+    "file": "sponsored_clicks_by_mailbox_daily.csv",
+    "rows": 31536,
+    "entity": "one day's sponsored clicks for one mailbox group, one audience and one channel, with the jobseekers in that audience",
+    "grain": "day x mailbox group x audience x channel",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -75,10 +75,10 @@
     "restart_series_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
+  "question_form": "how-many",
   "driver": "A programme's yield is measured by a randomised holdout inside the group it targets, but every message the organisation sends shares one standing with the services that deliver it, and the targeted group's stale addresses lower that standing for every recipient for some days after each send, so the regular messages to the members outside the test reach fewer of them and the business loses part of what they would have bought; the holdout cannot see it because both its arms share the standing, and only the outside members' purchases, read by delivering service against the send dates and net of what they bought by other routes, show what each send costs.",
   "driver_concrete": "Each monthly restart-your-alerts send to Quaywork's paused jobseekers hits recycled addresses at the Google, Microsoft and Yahoo mailboxes, which then file Quaywork's daily job alerts to every active jobseeker there as junk for about ten days, so the pilot's holdout uplift (restored jobseekers' sponsored clicks) has to be netted against the active jobseekers' sponsored clicks lost at those three providers in each send's window, read against the unaffected providers and net of the clicks they made on the site and app instead.",
-  "stump": "A competent analyst reads the pilot's random tenth holdout, measures about nineteen thousand extra sponsored clicks per send from the jobseekers the email restored, carries it to the twelve 2027 sends and recommends keeping the series for about 230,000 clicks a year; the step that lands it there is treating the holdout difference as the series' whole effect, when each send cost the active jobseekers at Google, Microsoft and Yahoo addresses more sponsored clicks than it restored, so the series loses the job board clicks and should stop.",
+  "stump": "A competent analyst reads the pilot's random tenth holdout, finds the restart email brought back 111,788 sponsored clicks over the pilot, carries it to the thirteen 2027 sends and recommends keeping the series for +242,208 clicks a year (+200,000 at the prompt's rounding); the step that lands it there is taking the holdout difference as the series' whole effect, when after each send the Google, Microsoft and Yahoo mailboxes filed the alerts of every active jobseeker there as junk for about a fortnight and those jobseekers made 255,348 fewer sponsored clicks over the pilot, net of what they clicked on the site and app instead, so the series costs 311,046 clicks a year and is dropped.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task118": "task118's second architecture discounts an item's measured gain by the share taken from items shown beside it on one display (diversion of demand); here nothing is diverted: the targeted sends degrade the delivery of every other message through the senders' shared standing with the mailbox providers, and the loss is read on the untargeted members by provider against the send dates.",
@@ -312,13 +312,13 @@
       "deliverable set": "pdf+xlsx"
     }
   ],
-  "notes": "Architecture 12 drawn 2026-11-02. Candidates set aside before this card are in the design note's Tried and rejected.",
+  "notes": "Architecture 12 drawn 2026-11-02. Candidates set aside before this card are in the design note's Tried and rejected. Stage 3 (2026-11-02): surface promoted one pair, task167 at 0.101 (a foundation's capital-call reserve; another world and mechanism, proximity only); heart WARN repeat.gate_g against task183 v4, registered the same day.",
   "client_domain": "product-analytics",
   "registered": "2026-11-02T17:16:45Z",
   "shell": {
-    "question form": "what",
-    "second-sentence opener": "book",
-    "rounding opener": "costs",
-    "deliverable set": "pdf+xlsx"
+    "question form": "how-many",
+    "second-sentence opener": "lay",
+    "rounding opener": "the",
+    "deliverable set": "docx+xlsx"
   }
 }

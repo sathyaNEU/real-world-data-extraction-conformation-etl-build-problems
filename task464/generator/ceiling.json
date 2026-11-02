@@ -1,68 +1,106 @@
 {
- "Lc": 0.556,
- "Ls": 0.056,
- "ask_criteria": 36,
- "cracker": {
-  "chart": 4,
-  "ci": 0,
-  "cml": 0,
-  "gbp": 8,
-  "mwh": 8
- },
- "cracker_iis": {
-  "Ashlade": [
-   233.8,
-   830.0
-  ],
-  "Copsewell Town": [
-   31.1,
-   105.8
-  ],
-  "Ingle Road": [
-   78.6,
-   225.5
-  ],
-  "Kestle": [
-   114.2,
-   225.9
-  ],
-  "Oxenford Lane": [
-   31.1,
-   102.4
-  ],
-  "Pennick Hill": [
-   96.8,
-   352.1
-  ],
-  "Redburn": [
-   40.3,
-   107.4
-  ],
-  "Stowmere": [
-   284.5,
-   354.2
-  ]
- },
- "cracker_score": 75.6,
- "device_asks": {
-  "ci": {
-   "cracker": 0,
-   "of": 8
-  },
-  "cml": {
-   "cracker": 0,
-   "of": 8
+  "pair": 29.0,
+  "mirror_leakage": 0.0,
+  "rows": {
+    "cracker": {
+      "route": "cracker",
+      "main": 38.0,
+      "call": "drop",
+      "net27": -311046,
+      "asks_kept": 0,
+      "ask_points": 0.0,
+      "total": 45.0,
+      "a1": [
+        14674,
+        9245,
+        6866,
+        5416,
+        5348,
+        5207
+      ],
+      "a2": [
+        6085,
+        3561,
+        2608,
+        2151,
+        1850,
+        1690
+      ]
+    },
+    "careful2": {
+      "route": "careful2",
+      "main": 38.0,
+      "call": "drop",
+      "net27": -311046,
+      "asks_kept": 0,
+      "ask_points": 0.0,
+      "total": 45.0,
+      "a1": [
+        9821,
+        5939,
+        4229,
+        3393,
+        3087,
+        2819
+      ],
+      "a2": [
+        4993,
+        2955,
+        2120,
+        1751,
+        1514,
+        1349
+      ]
+    },
+    "mirror": {
+      "route": "mirror",
+      "main": 6.0,
+      "call": "keep",
+      "net27": 242208,
+      "asks_kept": 0,
+      "ask_points": 0.0,
+      "total": 13.0,
+      "a1": [
+        14674,
+        9245,
+        6866,
+        5416,
+        5348,
+        5207
+      ],
+      "a2": [
+        6085,
+        3561,
+        2608,
+        2151,
+        1850,
+        1690
+      ]
+    },
+    "full_includer": {
+      "route": "full_includer",
+      "main": 38.0,
+      "call": "drop",
+      "net27": -311046,
+      "asks_kept": 12,
+      "ask_points": 55.0,
+      "total": 100.0,
+      "a1": [
+        11383,
+        6758,
+        4848,
+        3910,
+        3451,
+        3150
+      ],
+      "a2": [
+        6180,
+        3607,
+        2631,
+        2180,
+        1865,
+        1701
+      ]
+    }
   }
- },
- "mirror": {
-  "chart": 2,
-  "ci": 0,
-  "cml": 0,
-  "gbp": 0,
-  "mwh": 0
- },
- "mirror_leakage_pct": 5.6,
- "mirror_score": 15.1,
- "pack_md5": "bed2e5ed3fc46a1d1e1e51035a81327b",
- "pair_ceiling": 45.3
 }

@@ -1,446 +1,299 @@
-"""task464 architecture 10: every graded figure, computed from the cut pack under target/.
+"""task464 architecture 12: every graded figure, recomputed from the files under target/ alone.
 
-The call: each project's 2025/26 saving, the I2R losses its replaced sections would not have incurred on the new
-conductor, at each section's own half-hourly current, the net of every connection's metered flow beyond it. The asks:
-each feeder's 2025/26 CI and CML under the network's reporting definitions. figures.json carries every graded figure;
-ceiling.py and checks.py import the loaders and the routes from here.
+    python3 generator/answers.py            # prints the figures and writes generator/figures.json
+
+The main call: the restart series' effect on the sponsored clicks Quaywork takes, over the pilot's six 28-day
+windows, is the holdout uplift among the pool less the clicks the rest of the board lost while the mailbox providers
+filed its mail as junk after each send (read by mailbox group against the send dates, against the groups that never
+filed it, net of the clicks those jobseekers made on the site and app instead). The 2027 series is sized at what one
+pilot send did on average, thirteen times. The asks: each send's restarts by people, and how many of them clicked a
+sponsored job on the send's date or in the 27 days after it, whether before or after restarting.
 """
 import csv
 import datetime as dt
 import json
 import os
-import re
-import numpy as np
-import openpyxl
-import pyarrow.parquet as pq
-import world as W
+import sys
+from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = os.path.dirname(HERE)
-TGT = os.path.join(BASE, "target")
-NHH = W.NHH
-UTC0 = W.UTC0
-CODE_OF = {v: k for k, v in W.MODEL_CODE.items()}
-FEEDER_ORDER = [f["name"] for f in W.FEEDERS]
+sys.path.insert(0, HERE)
+import world as W  # noqa: E402
+
+GROUPS = ["gmail", "microsoft", "yahoo_aol", "apple", "bt", "sky", "virgin_media", "talktalk", "other"]
+RS = ["RS-2604", "RS-2605", "RS-2606", "RS-2607", "RS-2608", "RS-2609"]
+SENDS = list(W.SENDS)
+D = dt.timedelta
 
 
-def uk_offset(t):
-    def last_sunday(y, m):
-        d = dt.date(y, m, 31)
-        while d.weekday() != 6:
-            d -= dt.timedelta(days=1)
-        return dt.datetime(d.year, d.month, d.day, 1, 0)
-    return 1 if last_sunday(t.year, 3) <= t < last_sunday(t.year, 10) else 0
+def r_to(x, unit):
+    return int(unit * round(float(x) / unit))
 
 
-UTC = [UTC0 + dt.timedelta(minutes=30 * i) for i in range(NHH)]
-LOCAL = [t + dt.timedelta(hours=uk_offset(t)) for t in UTC]
-QUARTER = np.array([{4: 0, 5: 0, 6: 0, 7: 1, 8: 1, 9: 1, 10: 2, 11: 2, 12: 2, 1: 3, 2: 3, 3: 3}[l.month] for l in LOCAL])
+# ---------------------------------------------------------------------------------------------------------------
+# the warehouse's daily sponsored clicks
+# ---------------------------------------------------------------------------------------------------------------
+class Warehouse:
+    def __init__(self, tgt, dedupe=True):
+        seen = set()
+        self.clicks = defaultdict(float)       # (date, group, audience, channel3) -> clicks
+        self.js = {}                           # (date, group, audience) -> jobseekers
+        with open(os.path.join(tgt, "sponsored_clicks_by_mailbox_daily.csv"), newline="") as f:
+            for r in csv.DictReader(f):
+                key = tuple(r.values())
+                if dedupe and key in seen:
+                    continue                    # the warehouse reload of 3 to 5 May 2026 sent those days twice
+                seen.add(key)
+                d = dt.date.fromisoformat(r["click_date"])
+                ch = "app" if r["channel"].startswith("app") else r["channel"]
+                self.clicks[(d, r["mailbox_group"], r["audience"], ch)] += int(r["sponsored_clicks"])
+                self.js[(d, r["mailbox_group"], r["audience"])] = int(r["jobseekers"])
+        self.days = sorted({k[0] for k in self.js})
+
+    def total(self, d, g, aud, channels=("alert_email", "website", "app")):
+        return sum(self.clicks.get((d, g, aud, c), 0.0) for c in channels)
+
+    def n(self, d, g, aud):
+        return self.js.get((d, g, aud), 0)
 
 
-# ---------------------------------------------------------------- loaders
-def load_network(tgt=TGT):
-    wb = openpyxl.load_workbook(os.path.join(tgt, "hv_network_model.xlsx"), read_only=True)
-    secs = []
-    for row in list(wb["Sections"].iter_rows(values_only=True))[1:]:
-        sid, circ, frm, to, metres, cond, cons, inst, state = row
-        secs.append(dict(id=sid, circuit=circ, frm=frm, to=to, metres=float(metres), code=CODE_OF[cond], state=state))
-    nodes = {}
-    for row in list(wb["Nodes"].iter_rows(values_only=True))[1:]:
-        nid, circ, kind, ref, desc = row
-        nodes[nid] = dict(circuit=circ, kind=kind, ref=ref, desc=desc)
-    return secs, nodes
+def window_days(k, lo=0, hi=W.WINDOW):
+    return [SENDS[k] + D(days=i) for i in range(lo, hi)]
 
 
-def asset_of(ref):
-    """('S', site_no) for a substation reference written either way, ('H', agreement) for an HV customer."""
-    if ref is None or str(ref).strip() == "":
-        return None
-    s = str(ref).strip()
-    if s.startswith("CA-"):
-        return ("H", s)
-    m = re.fullmatch(r"(?:SS\s*)?(\d{6})", s)
-    return ("S", int(m.group(1)))
+def pilot_days():
+    return [d for k in range(6) for d in window_days(k)]
 
 
-def load_monitors(tgt=TGT):
-    """site_no -> (P kW, Q kVAr) arrays over the 17,520 UTC half-hours; NaN where the monitor holds no record."""
-    t = pq.read_table(os.path.join(tgt, "lv_monitoring_2025-26.parquet")).to_pandas()
-    idx = ((t["period_start_utc"].dt.tz_convert(None) - np.datetime64(UTC0)) / np.timedelta64(30, "m")).astype(int).to_numpy()
-    kw, kvar, kva, pf = (t[c].to_numpy(dtype=float) for c in ("kw", "kvar", "kva", "pf"))
-    va = np.isnan(kw)
-    P = np.where(va, kva * pf, kw)
-    Q = np.where(va, kva * np.sqrt(np.clip(1 - pf ** 2, 0, None)), kvar)
-    out = {}
-    site = t["site_no"].to_numpy()
-    for s in np.unique(site):
-        m = site == s
-        p, q = np.full(NHH, np.nan), np.full(NHH, np.nan)
-        p[idx[m]] = P[m]
-        q[idx[m]] = Q[m]
-        out[int(s)] = (p, q)
+def uplift(wh, stratified=False):
+    """The holdout uplift: the mailed arm's sponsored clicks per member over the six windows less the holdout's, times
+    the mailed arm."""
+    days = pilot_days()
+    if not stratified:
+        cm = sum(wh.total(d, g, "restart_pilot_mailed") for d in days for g in GROUPS)
+        ch = sum(wh.total(d, g, "restart_pilot_holdout") for d in days for g in GROUPS)
+        nm = sum(wh.n(SENDS[0], g, "restart_pilot_mailed") for g in GROUPS)
+        nh = sum(wh.n(SENDS[0], g, "restart_pilot_holdout") for g in GROUPS)
+        return (cm / nm - ch / nh) * nm
+    u = 0.0
+    for g in GROUPS:
+        cm = sum(wh.total(d, g, "restart_pilot_mailed") for d in days)
+        ch = sum(wh.total(d, g, "restart_pilot_holdout") for d in days)
+        nm, nh = wh.n(SENDS[0], g, "restart_pilot_mailed"), wh.n(SENDS[0], g, "restart_pilot_holdout")
+        u += (cm / nm - ch / nh) * nm
+    return u
+
+
+def rate(wh, d, g, channels=("alert_email", "website", "app")):
+    n = wh.n(d, g, "alerts_on")
+    return wh.total(d, g, "alerts_on", channels) / n if n else None
+
+
+def pooled_rate(wh, d, groups, channels=("alert_email", "website", "app")):
+    c = sum(wh.total(d, g, "alerts_on", channels) for g in groups)
+    n = sum(wh.n(d, g, "alerts_on") for g in groups)
+    return c / n if n else None
+
+
+def group_dip(wh, g, controls, channels=("alert_email", "website", "app"), mode="event"):
+    """The sponsored clicks group g's active jobseekers lost to each send, against the control groups' same days.
+
+    mode 'event': days 0 to 13 after each send, the group's ratio to the controls read on days 14 to 27 of the same
+    window; 'full': all 28 days, the ratio read on the 14 weeks before the first send; 'its': days 0 to 13 against
+    the group's own same-weekday rate in the 14 days before the send."""
+    out = []
+    for k in range(6):
+        ev = window_days(k, 0, 14)
+        if mode == "its":
+            prev = [SENDS[k] - D(days=i) for i in range(1, 15)]
+            loss = 0.0
+            for d in ev:
+                same = [x for x in prev if x.weekday() == d.weekday() and rate(wh, x, g, channels) is not None]
+                cf = sum(rate(wh, x, g, channels) for x in same) / len(same)
+                loss += (cf - rate(wh, d, g, channels)) * wh.n(d, g, "alerts_on")
+            out.append(loss)
+            continue
+        if mode == "event":
+            ref = window_days(k, 14, 28)
+            evd = ev
+        else:
+            ref = [SENDS[0] - D(days=i) for i in range(1, 99)]
+            evd = window_days(k)
+        ref = [d for d in ref if wh.n(d, g, "alerts_on")]
+        num = sum(wh.total(d, g, "alerts_on", channels) for d in ref) / sum(wh.n(d, g, "alerts_on") for d in ref)
+        den = sum(sum(wh.total(d, c, "alerts_on", channels) for c in controls) for d in ref) / \
+            sum(sum(wh.n(d, c, "alerts_on") for c in controls) for d in ref)
+        ratio = num / den
+        loss = 0.0
+        for d in evd:
+            loss += (pooled_rate(wh, d, controls, channels) * ratio - rate(wh, d, g, channels)) * wh.n(d, g, "alerts_on")
+        out.append(loss)
     return out
 
 
-def settlement_index(date_s, period):
-    d = dt.datetime.strptime(date_s, "%Y%m%d")
-    midnight_utc = d - dt.timedelta(hours=uk_offset(d - dt.timedelta(hours=1)))
-    t = midnight_utc + dt.timedelta(minutes=30 * (int(period) - 1))
-    return int((t - UTC0).total_seconds() // 1800)
+def affected_groups(wh):
+    """The groups whose active jobseekers dip after the sends: each group's sponsored clicks per jobseeker over days 0 to
+    13 after each send against its own same-weekday rate in the 14 days before; a group whose mail was never filed
+    reads within noise of zero, a filing group falls after every send."""
+    res = {}
+    for g in GROUPS:
+        loss = sum(group_dip(wh, g, None, mode="its"))
+        base = sum(wh.total(d, g, "alerts_on") for k in range(6) for d in window_days(k, 0, 14))
+        res[g] = loss / base
+    aff = [g for g in GROUPS if res[g] > 0.01]
+    return aff, res
 
 
-def load_settlement(tgt=TGT):
-    """mpan -> (kW, kVAr) average over each UTC half-hour."""
-    rows = {}
-    cache = {}
-    with open(os.path.join(tgt, "hv_settlement_2025-26.csv")) as fh:
-        rd = csv.reader(fh)
-        next(rd)
-        for mpan, d, sp, a, rq in rd:
-            k = (d, sp)
-            if k not in cache:
-                cache[k] = settlement_index(d, sp)
-            i = cache[k]
-            if mpan not in rows:
-                rows[mpan] = (np.zeros(NHH), np.zeros(NHH))
-            rows[mpan][0][i] = 2 * float(a)
-            rows[mpan][1][i] = 2 * float(rq)
-    return rows
+def damage(wh, mode="event", channels=("alert_email", "website", "app"), controls=None):
+    aff, _ = affected_groups(wh)
+    ctl = controls or [g for g in GROUPS if g not in aff]
+    per = {g: group_dip(wh, g, ctl, channels, mode) for g in aff}
+    return per, aff, ctl
 
 
-def load_registers(tgt=TGT):
-    subs = {}
-    with open(os.path.join(tgt, "secondary_substations.csv")) as fh:
-        for r in csv.DictReader(fh):
-            subs[int(r["site_no"])] = r
-    hv = {}
-    with open(os.path.join(tgt, "hv_connections.csv")) as fh:
-        for r in csv.DictReader(fh):
-            hv[r["agreement_ref"]] = r
-    return subs, hv
+# ---------------------------------------------------------------------------------------------------------------
+# the asks: the restart log, Postvane's click events and the CRM's pull of restarted jobseekers' clicks
+# ---------------------------------------------------------------------------------------------------------------
+def restart_rows(tgt):
+    with open(os.path.join(tgt, "alert_restarts_pilot_pool_2026.csv"), newline="") as f:
+        return list(csv.DictReader(f))
 
 
-def load(tgt=TGT):
-    secs, nodes = load_network(tgt)
-    subs, hv = load_registers(tgt)
-    return dict(secs=secs, nodes=nodes, subs=subs, hv=hv, mon=load_monitors(tgt), settle=load_settlement(tgt))
+def burst_keys(tgt, links_min=4, seconds=10):
+    """(campaign, subscriber) pairs whose restart email had nearly every link clicked inside a few seconds."""
+    ev = defaultdict(list)
+    with open(os.path.join(tgt, "postvane_clicks_restart_series_2026.csv"), newline="") as f:
+        for r in csv.DictReader(f):
+            t = dt.datetime.strptime(r["clicked_at_utc"][:19], "%Y-%m-%dT%H:%M:%S")
+            ev[(r["campaign_code"], r["subscriber_key"])].append((t, r["link_name"]))
+    out = set()
+    for key, lst in ev.items():
+        lst.sort()
+        for i in range(len(lst)):
+            j = i
+            links = set()
+            while j < len(lst) and (lst[j][0] - lst[i][0]).total_seconds() <= seconds:
+                links.add(lst[j][1])
+                j += 1
+            if len(links) >= links_min:
+                out.add(key)
+                break
+    return out, ev
 
 
-# ---------------------------------------------------------------- the network's topology and each section's flow
-def topology(pk):
-    closed = [s for s in pk["secs"] if s["state"] == "Closed"]
-    child = {}
-    for s in closed:
-        child.setdefault(s["frm"], []).append(s)
-    beyond = {}
-
-    def walk(n):
-        out = [n]
-        for s in child.get(n, []):
-            out += walk(s["to"])
-        return out
-    for s in closed:
-        beyond[s["id"]] = walk(s["to"])
-    return closed, beyond
-
-
-def connection_flows(pk, mode="net"):
-    """asset -> (P, Q) half-hourly at the connection.
-
-    mode net: monitors as recorded (a monitor with no record carries nothing) and each HV customer's import less its
-    export; imports: HV customers' imports only; monitors: secondary substations only; absadd: export added to import."""
-    out = {}
-    for site, (p, q) in pk["mon"].items():
-        out[("S", site)] = (np.nan_to_num(p), np.nan_to_num(q))
-    if mode == "monitors":
-        return out
-    for ag, r in pk["hv"].items():
-        if r["primary"] != "COPSEWELL CROSS":
+def restarts_by_send(tgt, handling="golden", seconds_after_delivery=None):
+    rows = restart_rows(tgt)
+    bursts, ev = burst_keys(tgt)
+    per = [set() for _ in range(6)]
+    for r in rows:
+        if r["route"] != "email_link" or r["link_campaign"] not in RS:
             continue
-        pi, qi = pk["settle"][r["import_mpan"]]
-        pe, qe = pk["settle"][r["export_mpan"]] if r["export_mpan"] else (np.zeros(NHH), np.zeros(NHH))
-        if mode == "net":
-            out[("H", ag)] = (pi - pe, qi - qe)
-        elif mode == "imports":
-            out[("H", ag)] = (pi, np.clip(qi, 0, None))
-        elif mode == "absadd":
-            out[("H", ag)] = (pi + pe, np.abs(qi) + np.abs(qe))
-    return out
-
-
-_PROJ = None
-
-
-def projects():
-    """feeder name -> (breaker, [section ids], new conductor code, route km, existing conductor), as the brief prints."""
-    global _PROJ
-    if _PROJ is None:
-        import sim
-        feeders, nodes, sections, conns, neigh = sim.build_network()
-        _PROJ = {}
-        for f in feeders:
-            secs = [s for s in sections if s.feeder == f["code"] and s.project]
-            _PROJ[f["name"]] = (f["breaker"], [s.id for s in secs], f["new"], sum(s.metres for s in secs) / 1000.0,
-                                "; ".join(sorted(set(W.CONDUCTORS[s.code][0] for s in secs))))
-    return _PROJ
-
-
-def section_saving_kwh(P, Q, sec, new):
-    dR = (W.CONDUCTORS[sec["code"]][2] - W.CONDUCTORS[new][2]) * sec["metres"] / 1000.0
-    return (P ** 2 + Q ** 2) * dR / (W.V_NOM_KV ** 2) / 1000.0 * 0.5
-
-
-def savings(pk, mode="net", proj=None, reduce=None):
-    """feeder -> half-hourly kWh saved, every section's own flow the sum of the connections beyond it."""
-    proj = proj or projects()
-    closed, beyond = topology(pk)
-    byid = {s["id"]: s for s in pk["secs"]}
-    fl = connection_flows(pk, mode)
-    out = {}
-    for name, (brk, ids, new, km, old) in proj.items():
-        tot = np.zeros(NHH)
-        for sid in ids:
-            P, Q = np.zeros(NHH), np.zeros(NHH)
-            for n in beyond[sid]:
-                a = asset_of(pk["nodes"][n]["ref"])
-                if a is not None and a in fl:
-                    P = P + fl[a][0]
-                    Q = Q + fl[a][1]
-            if reduce is not None:
-                P, Q = reduce(P), reduce(Q)
-            tot += section_saving_kwh(P, Q, byid[sid], new)
-        out[name] = tot
-    return out
-
-
-def summarise(hh):
-    """feeder -> dict(q=[MWh x4], year MWh) from half-hourly kWh."""
-    return {k: dict(q=[float(v[QUARTER == i].sum() / 1000) for i in range(4)], year=float(v.sum() / 1000)) for k, v in hh.items()}
-
-
-# ---------------------------------------------------------------- the routes a solver might take (ceiling.py, checks.py)
-def load_scada(tgt=TGT):
-    """circuit -> (mean phase current A, MW, MVAr) arrays in the file's row order, which is the UTC order."""
-    out = {}
-    with open(os.path.join(tgt, "copsewell_cross_scada_2025-26.csv")) as fh:
-        rd = csv.reader(fh)
-        next(rd)
-        for ts, circ, a, b, c, mw, mvar in rd:
-            out.setdefault(circ, []).append(((float(a) + float(b) + float(c)) / 3.0, float(mw), float(mvar)))
-    return {k: tuple(np.array(x) for x in zip(*v)) for k, v in out.items()}
-
-
-def routes(pk, tgt=TGT):
-    """feeder -> year MWh under each construction of a replaced section's current."""
-    proj = projects()
-    byid = {s["id"]: s for s in pk["secs"]}
-    closed, beyond = topology(pk)
-    sc = load_scada(tgt)
-    circ_of = {}
-    for name, (brk, ids, new, km, old) in proj.items():
-        circ_of[name] = "%s %s" % (brk, name.upper())
-    kva = {("S", int(k)): float(v["transformer_kva"]) for k, v in pk["subs"].items()}
-    hv_imp = {("H", k): float(v["import_capacity_kva"] or 0) for k, v in pk["hv"].items()}
-    hv_exp = {("H", k): float(v["export_capacity_kw"] or 0) for k, v in pk["hv"].items()}
-    out = {}
-
-    def share_route(cap):
-        res = {}
-        for name, (brk, ids, new, km, old) in proj.items():
-            I = sc[circ_of[name]][0]
-            top = [s for s in closed if s["circuit"] == circ_of[name] and pk["nodes"][s["frm"]]["kind"] == "Busbar"][0]
-            def capof(sid):
-                return sum(cap.get(asset_of(pk["nodes"][n]["ref"]), 0.0) for n in beyond[sid])
-            tot = capof(top["id"])
-            v = 0.0
-            for sid in ids:
-                sec = byid[sid]
-                dR = (W.CONDUCTORS[sec["code"]][2] - W.CONDUCTORS[new][2]) * sec["metres"] / 1000.0
-                v += (3 * (I * capof(sid) / tot) ** 2 * dR * 0.5 / 1000.0).sum() / 1000.0
-            res[name] = float(v)
-        return res
-    head = {}
-    head_s = {}
-    for name, (brk, ids, new, km, old) in proj.items():
-        I, mw, mvar = sc[circ_of[name]]
-        Is = np.sqrt(mw ** 2 + mvar ** 2) * 1000 / (np.sqrt(3) * W.V_NOM_KV)
-        a = b = 0.0
-        for sid in ids:
-            sec = byid[sid]
-            dR = (W.CONDUCTORS[sec["code"]][2] - W.CONDUCTORS[new][2]) * sec["metres"] / 1000.0
-            a += (3 * I ** 2 * dR * 0.5 / 1000.0).sum() / 1000.0
-            b += (3 * Is ** 2 * dR * 0.5 / 1000.0).sum() / 1000.0
-        head[name], head_s[name] = float(a), float(b)
-    out["head_current"] = head
-    out["head_mw_mvar"] = head_s
-    out["kva_share"] = share_route(kva)
-    out["kva_share_hv_import"] = share_route({**kva, **hv_imp})
-    out["kva_share_hv_all"] = share_route({**kva, **{k: hv_imp[k] + hv_exp[k] for k in hv_imp}})
-    for mode, lab in (("monitors", "monitors_only"), ("imports", "loads_only"), ("absadd", "export_added"), ("net", "net")):
-        out[lab] = {k: float(v.sum() / 1000) for k, v in savings(pk, mode, proj).items()}
-    out["net_active_only"] = {k: float(v.sum() / 1000) for k, v in
-                              savings(pk, "net", proj, reduce=None).items()}
-    pk2 = dict(pk)
-    pk2["mon"] = {s: (p, np.zeros_like(q)) for s, (p, q) in pk["mon"].items()}
-    pk2["settle"] = {m: (p, np.zeros_like(q)) for m, (p, q) in pk["settle"].items()}
-    out["net_active_only"] = {k: float(v.sum() / 1000) for k, v in savings(pk2, "net", proj).items()}
-    day = np.repeat(np.arange(NHH // 48), 48)
-
-    def daily(x):
-        return np.repeat(np.bincount(day, weights=x) / 48.0, 48)
-    out["net_daily_mean"] = {k: float(v.sum() / 1000) for k, v in savings(pk, "net", proj, reduce=daily).items()}
-    return out
-
-
-def winner(d):
-    o = sorted(d, key=lambda k: -d[k])
-    return o[0], o[1], d[o[0]] / d[o[1]]
-
-
-# ---------------------------------------------------------------- the interruption record
-def load_interruptions(tgt=TGT):
-    incs = {}
-    with open(os.path.join(tgt, "interruptions_2023-2026.csv")) as fh:
-        for r in csv.DictReader(fh):
-            i = incs.setdefault(r["reference"], dict(ref=r["reference"], circuit=r["circuit"], voltage=r["voltage"],
-                                                     category=r["category"], cause=r["cause"],
-                                                     start=dt.datetime.strptime(r["incident_start"], "%Y-%m-%d %H:%M"),
-                                                     steps=[]))
-            fmt = "%Y-%m-%d %H:%M:%S" if len(r["step_time"]) > 16 else "%Y-%m-%d %H:%M"
-            t = dt.datetime.strptime(r["step_time"], fmt)
-            n = int(r["customers_off"]) if r["customers_off"] else -int(r["customers_restored"])
-            i["steps"].append((t, int(r["site_no"]), n))
-    cust = {}
-    with open(os.path.join(tgt, "customers_by_substation_2023-2026.csv")) as fh:
-        for r in csv.DictReader(fh):
-            cust.setdefault(int(r["site_no"]), {})[r["month_end"]] = (int(r["customers"]), r["circuit"].replace(" (HV)", ""))
-    wb = openpyxl.load_workbook(os.path.join(tgt, "generator_hire_2025-26.xlsx"), read_only=True)
-    hires = []
-    for row in list(wb["Hire log"].iter_rows(values_only=True))[1:]:
-        hires.append(dict(site=int(row[4]), code=row[6], connected=dt.datetime.strptime(row[8], "%d/%m/%Y %H:%M"),
-                          disconnected=dt.datetime.strptime(row[9], "%d/%m/%Y %H:%M")))
-    return list(incs.values()), cust, hires
-
-
-STORM = (dt.datetime(2026, 1, 6, 15, 0), dt.datetime(2026, 1, 7, 23, 59))
-
-
-def interruption_measures(incs, cust, hires, storm_circuits, *, generators=True, dedupe=True, short_rule=True,
-                          prearranged_half=True, exceptional_rule=True, transmission_rule=True, denominator="2026-03-31"):
-    lo, hi = dt.datetime(2025, 4, 1), dt.datetime(2026, 4, 1)
-    site_circ = {s: v[max(v)][1] for s, v in cust.items()}
-    # each site's outage spans in the HV incidents (who was already off)
-    hv_off = {}
-    for inc in incs:
-        if inc["voltage"] == "LV":
+        k = RS.index(r["link_campaign"])
+        key = (r["link_campaign"], r["account_id"])
+        if handling == "golden" and key in bursts:
             continue
-        per = {}
-        for t, s, n in inc["steps"]:
-            per.setdefault(s, []).append((t, n))
-        for s, ev in per.items():
-            ev.sort()
-            on = [t for t, n in ev if n < 0][0]
-            hv_off.setdefault(s, []).append((ev[0][0], on))
-    ci, cml = {}, {}
-    for inc in incs:
-        if not (lo <= inc["start"] < hi):
-            continue
-        if transmission_rule and inc["voltage"] == "EHV":
-            continue
-        if exceptional_rule and STORM[0] <= inc["start"] <= STORM[1] and inc["circuit"] in storm_circuits:
-            continue
-        if dedupe and inc["voltage"] == "LV":
-            t0 = min(t for t, s, n in inc["steps"])
-            s0 = inc["steps"][0][1]
-            if any(a <= t0 < b for a, b in hv_off.get(s0, [])):
-                continue
-        w = 0.5 if (prearranged_half and inc["category"] == "Pre-arranged") else 1.0
-        per = {}
-        for t, s, n in inc["steps"]:
-            per.setdefault(s, []).append((t, n))
-        for s, ev in per.items():
-            ev.sort()
-            off_t, n = ev[0]
-            on_t = [t for t, x in ev if x < 0][0]
-            if generators:
-                held = False
-                for h in hires:
-                    if h["site"] != s:
-                        continue
-                    if h["connected"] <= off_t and h["disconnected"] >= on_t:
-                        held = True                       # kept on supply throughout: never lost it
-                    elif off_t <= h["connected"] < on_t:
-                        on_t = h["connected"]             # supply restored when the generator was connected
-                if held:
+        if handling == "fast" and seconds_after_delivery is not None:
+            # the over-cleaning reading: any restart click within a set time of the send's first delivery
+            first = ev.get(key)
+            if first:
+                rt = [t for (t, l) in first if l == "restart_alerts"]
+                t0 = dt.datetime(SENDS[k].year, SENDS[k].month, SENDS[k].day, 9, 0)
+                if rt and (min(rt) - t0).total_seconds() <= seconds_after_delivery:
                     continue
-            mins = (on_t - off_t).total_seconds() / 60.0
-            if short_rule and mins < 3:
-                continue
-            c = site_circ[s]
-            ci[c] = ci.get(c, 0.0) + w * n
-            cml[c] = cml.get(c, 0.0) + w * n * mins
-    den = {}
-    for s, v in cust.items():
-        if denominator in v:
-            c = v[denominator][1]
-            den[c] = den.get(c, 0) + v[denominator][0]
-    return {c: dict(ci=100.0 * ci.get(c, 0.0) / den[c], cml=cml.get(c, 0.0) / den[c], customers=den[c]) for c in FEEDER_ORDER}
+        per[k].add(r["account_id"])
+    return per
 
 
-def storm_circuits_from_pdf(tgt=TGT):
-    """The circuits the accepted exceptional event names, read from the definitions PDF."""
-    from pypdf import PdfReader
-    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(tgt, "iis_regulatory_return_rules_2025-26.pdf")).pages)
-    txt = re.sub(r"\s+", " ", txt)
-    return [n for n in FEEDER_ORDER if n in txt.split("Exceptional event accepted for 2025/26", 1)[1]]
+def clicked_within(tgt, per, stitch=True):
+    """Of each send's restarters, how many made a sponsored click, before or after restarting, on the send's date or
+    in the 27 days after it (UK dates, as the pull's clicked_at_uk carries them)."""
+    dev2acct = defaultdict(set)
+    rows = []
+    with open(os.path.join(tgt, "restarted_jobseekers_sponsored_clicks.csv"), newline="") as f:
+        for r in csv.DictReader(f):
+            rows.append(r)
+            if r["account_id"] and r["app_install_id"]:
+                dev2acct[r["app_install_id"]].add(r["account_id"])
+    for r in restart_rows(tgt):
+        if r["app_install_id"]:
+            dev2acct[r["app_install_id"]].add(r["account_id"])
+    days_by_acct = defaultdict(set)
+    for r in rows:
+        acct = r["account_id"]
+        if not acct and stitch and r["app_install_id"] and len(dev2acct.get(r["app_install_id"], ())) == 1:
+            acct = next(iter(dev2acct[r["app_install_id"]]))
+        if acct:
+            days_by_acct[acct].add(dt.date.fromisoformat(r["clicked_at_uk"][:10]))
+    out = []
+    for k in range(6):
+        lo, hi = SENDS[k], SENDS[k] + D(days=W.WINDOW - 1)
+        out.append(sum(1 for a in per[k] if any(lo <= d <= hi for d in days_by_acct.get(a, ()))))
+    return out
 
 
-# ---------------------------------------------------------------- the figures
-def figures(write=True, tgt=TGT):
-    pk = load(tgt)
-    proj = projects()
-    s = summarise(savings(pk, "net", proj))
-    order = sorted(s, key=lambda k: -s[k]["year"])
-    call, runner = order[0], order[1]
-    incs, cust, hires = load_interruptions(tgt)
-    sc = storm_circuits_from_pdf(tgt)
-    iis = interruption_measures(incs, cust, hires, sc)
-    rt = routes(pk, tgt)
-    rungs = {}
-    for lab, d in rt.items():
-        w0, w1, m = winner(d)
-        rungs[lab] = dict(winner=w0, second=w1, margin=round(m, 3), mwh={k: round(v, 1) for k, v in d.items()},
-                          kestle_rank=sorted(d, key=lambda k: -d[k]).index(call) + 1)
-    fig = dict(
-        rungs=rungs,
-        call=call, runner_up=runner,
-        gap_mwh=round(s[call]["year"], 1) - round(s[runner]["year"], 1),
-        losses_value_gbp_mwh=W.LOSSES_VALUE_GBP_MWH,
-        projects={k: dict(breaker=proj[k][0], sections=proj[k][1], new=proj[k][2], km=round(proj[k][3], 2), old=proj[k][4],
-                          new_desc=W.CONDUCTORS[proj[k][2]][0],
-                          year_mwh=round(s[k]["year"], 1),
-                          value_gbp=int(round(s[k]["year"] * W.LOSSES_VALUE_GBP_MWH, -2)),
-                          dR_ohm=round(sum((W.CONDUCTORS[x["code"]][2] - W.CONDUCTORS[proj[k][2]][2]) * x["metres"] / 1000.0
-                                           for x in pk["secs"] if x["id"] in proj[k][1]), 3),
-                          raw=dict(q=s[k]["q"], year=s[k]["year"]))
-                  for k in FEEDER_ORDER},
-        order=order,
-        iis={k: dict(ci=round(v["ci"], 1), cml=round(v["cml"], 1), customers=v["customers"],
-                     raw=dict(ci=v["ci"], cml=v["cml"])) for k, v in iis.items()},
-        storm_circuits=sc,
-        conventions=dict(gbp_rounding=100, ci_per_customers=100, v_kv=W.V_NOM_KV),
-    )
+# ---------------------------------------------------------------------------------------------------------------
+def figures(write=False, tgt=None):
+    tgt = tgt or os.path.join(BASE, "target")
+    wh = Warehouse(tgt)
+    U = uplift(wh)
+    per, aff, ctl = damage(wh, "event")
+    Dg = {g: sum(v) for g, v in per.items()}
+    Dt = sum(Dg.values())
+    net = U - Dt
+    f27 = net * W.SENDS_2027 / 6.0
+    per_send_net = [U / 6.0 - sum(per[g][k] for g in aff) for k in range(6)]
+    a1 = restarts_by_send(tgt, "golden")
+    a2 = clicked_within(tgt, a1, stitch=True)
+    logged = [len(s) for s in restarts_by_send(tgt, "plain")]
+    days = pilot_days()
+    nm = sum(wh.n(SENDS[0], g, "restart_pilot_mailed") for g in GROUPS)
+    nh = sum(wh.n(SENDS[0], g, "restart_pilot_holdout") for g in GROUPS)
+    cm = sum(wh.total(d, g, "restart_pilot_mailed") for d in days for g in GROUPS)
+    ch = sum(wh.total(d, g, "restart_pilot_holdout") for d in days for g in GROUPS)
+    fig = {
+        "call": "drop",
+        "series_2027_clicks": r_to(f27, 100000),
+        "series_2027_clicks_exact": round(f27, 1),
+        "pilot_net_clicks": r_to(net, 50000),
+        "pilot_net_exact": round(net, 1),
+        "pilot_uplift_clicks": r_to(U, 50000),
+        "pilot_uplift_exact": round(U, 1),
+        "pilot_loss_clicks": r_to(Dt, 50000),
+        "pilot_loss_exact": round(Dt, 1),
+        "affected_groups": aff,
+        "control_groups": ctl,
+        "loss_by_group_exact": {g: round(v, 1) for g, v in Dg.items()},
+        "per_send_net_exact": [round(x, 1) for x in per_send_net],
+        "default_2027_clicks": r_to(U * W.SENDS_2027 / 6.0, 100000),
+        "default_2027_exact": round(U * W.SENDS_2027 / 6.0, 1),
+        "restarted_by_people": [len(s) for s in a1],
+        "clicked_within_28_days": a2,
+        "restarts_logged_from_links": logged,
+        "gateway_restarts_removed": sum(logged) - sum(len(s) for s in a1),
+        "restarts_logged_total": sum(logged),
+        "mailed_arm": nm,
+        "holdout_arm": nh,
+        "mailed_clicks_per_jobseeker": round(cm / nm, 3),
+        "holdout_clicks_per_jobseeker": round(ch / nh, 3),
+        "pilot_uplift_int": int(round(U)),
+        "pilot_loss_int": int(round(Dt)),
+        "pilot_net_int": int(round(net)),
+        "per_send_net_int": int(round(net / 6.0)),
+        "series_2027_int": int(round(f27)),
+        "loss_by_group_int": {g: int(round(v)) for g, v in Dg.items()},
+        "sends_2027": W.SENDS_2027,
+        "window_days": W.WINDOW,
+        "burst_rule": {"links": 4, "seconds": 10},
+        "event_days": [0, 13, 14, 27],
+        "series_2027_cost_clicks": -r_to(f27, 100000),
+    }
     if write:
-        json.dump(fig, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+        json.dump(fig, open(os.path.join(HERE, "figures.json"), "w"), indent=2)
     return fig
 
 
 if __name__ == "__main__":
-    import sys
-    f = figures(write=False, tgt=sys.argv[1] if len(sys.argv) > 1 else TGT)
-    for k in f["order"]:
-        p = f["projects"][k]
-        print("%-14s %s  year %6.1f  GBP %d" % (k, p["q_mwh"], p["year_mwh"], p["value_gbp"]))
-    print("call", f["call"], "runner", f["runner_up"], "gap", f["gap_mwh"])
-    for k, v in f["iis"].items():
-        print("%-14s CI %6.1f  CML %6.1f  customers %d" % (k, v["ci"], v["cml"], v["customers"]))
+    f = figures(write=True)
+    for k, v in f.items():
+        print(k, v)

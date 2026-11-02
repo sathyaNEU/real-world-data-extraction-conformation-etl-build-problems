@@ -1,149 +1,123 @@
 {
   "task": "task464",
-  "domain": "energy-systems-utilities",
-  "subdomain": "asset-condition-maintenance",
+  "domain": "product-analytics",
+  "subdomain": "churn-propensity-uplift-modeling",
   "objective": "opportunity-sizing-decision",
-  "prompt_shape": "07",
-  "as_of": "2026-12-02",
-  "extract_to": "2026-03-31",
+  "prompt_shape": "09",
+  "as_of": "2026-11-16",
+  "extract_to": "2026-11-08",
   "currency": "GBP",
-  "compiled_by": "Marchway Power Networks, network losses strategy",
-  "compiled_on": "2026-12-02",
-  "licence": "Synthetic records compiled for Marchway Power Networks's 2027/28 losses programme paper. Every file is constructed, describes no real network or customer, and is released for this task's use.",
+  "compiled_by": "Quaywork Ltd",
+  "compiled_on": "2026-11-24",
+  "licence": "Synthetic records compiled for Quaywork's 2027 jobseeker email plan. Every file is constructed, describes no real company or person, and is released for this task's use.",
   "files": [
     {
-      "path": "target/lv_monitoring_2025-26.parquet",
+      "path": "target/sponsored_clicks_by_mailbox_daily.csv",
       "role": "spine",
-      "covers": "Half-hourly readings for 2025/26 from every secondary substation monitor at Copsewell Cross and Feltmoor primaries, as the monitoring platform exports them.",
-      "source": "Marchway Power Networks, network data lead's 2025/26 losses and interruptions extract",
-      "date": "2026-06-12",
+      "covers": "Quaywork's data warehouse: sponsored clicks per day by mailbox group, audience and channel, with the jobseekers in each audience, 1 January 2025 to 8 November 2026.",
+      "source": "Quaywork Ltd, data warehouse extract",
+      "date": "2026-11-09",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/hv_settlement_2025-26.csv",
+      "path": "target/postvane_daily_by_domain_group.csv",
       "role": "operating extract",
-      "covers": "Half-hourly settlement data for 2025/26 for every HV-connected customer's import and export metering points at the two primaries.",
-      "source": "Marchway Power Networks, network data lead's 2025/26 losses and interruptions extract",
-      "date": "2026-06-12",
+      "covers": "Postvane's daily campaign statistics by domain group from the March 2025 migration: job alerts, the weekly digest and the restart pilot's sends.",
+      "source": "Quaywork Ltd, email platform export (Postvane)",
+      "date": "2026-11-09",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/hv_network_model.xlsx",
+      "path": "target/inkrelay_export_2025-01-01_to_2025-03-16.csv",
       "role": "operating extract",
-      "covers": "The network model's export for Copsewell Cross's 11 kV feeders: every section and node in the normal running arrangement, normally-open points included.",
-      "source": "Marchway Power Networks, network management system export",
-      "date": "2026-06-12",
+      "covers": "The previous email platform's daily statistics by ISP up to the migration.",
+      "source": "Quaywork Ltd, email platform export (Inkrelay)",
+      "date": "2025-03-17",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/secondary_substations.csv",
-      "role": "reference",
-      "covers": "The secondary substation register for the two primaries: site, circuit, transformer rating, monitor and network node.",
-      "source": "Marchway Power Networks, asset register",
-      "date": "2026-06-12",
+      "path": "target/postvane_clicks_restart_series_2026.csv",
+      "role": "operating extract",
+      "covers": "Postvane's click events on the six restart emails of 2026, timed in UTC.",
+      "source": "Quaywork Ltd, email platform export (Postvane)",
+      "date": "2026-11-09",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/hv_connections.csv",
-      "role": "reference",
-      "covers": "The HV connections register for the two primaries: agreement, customer, capacities, metering points and network node.",
-      "source": "Marchway Power Networks, connections register",
-      "date": "2026-06-12",
+      "path": "target/alert_restarts_pilot_pool_2026.csv",
+      "role": "operating extract",
+      "covers": "The alert system's restart log for the jobseekers in the 2026 restart pilot's pool, from 1 April 2026, on the UK clock.",
+      "source": "Quaywork Ltd, alerts service log",
+      "date": "2026-11-09",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/hv_conductor_data_EDS-02-0310.pdf",
-      "role": "reference",
-      "covers": "The engineering data sheet of 11 kV conductor resistances, reactances and ratings.",
-      "source": "Marchway Power Networks, asset policy",
-      "date": "2024-09-03",
+      "path": "target/restarted_jobseekers_sponsored_clicks.csv",
+      "role": "operating extract",
+      "covers": "The CRM team's pull of every sponsored click by jobseekers whose alerts a restart email's link restarted, from the date of that send to 8 November 2026, on the UK clock.",
+      "source": "Quaywork Ltd, CRM team",
+      "date": "2026-11-10",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/losses_programme_2027-28_brief.pdf",
+      "path": "target/jobseeker_email_plan_2027.docx",
       "role": "governing document",
-      "covers": "The losses strategy lead's paper to the investment review panel on the 2027/28 reconductoring project.",
-      "source": "Marchway Power Networks, network losses strategy",
-      "date": "2026-11-18",
+      "covers": "The 2027 jobseeker email plan, draft for the leadership team.",
+      "source": "Quaywork Ltd, Jobseeker Engagement",
+      "date": "2026-11-16",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/interruptions_2023-2026.csv",
-      "role": "operating extract",
-      "covers": "The interruption log for Copsewell Cross's 11 kV circuits from April 2023 to March 2026: control-system HV incidents and work-management LV jobs, one row per site per restoration step.",
-      "source": "Marchway Power Networks, network data lead's 2025/26 losses and interruptions extract",
-      "date": "2026-06-12",
-      "licence": "synthetic, constructed for this task, free to use"
-    },
-    {
-      "path": "target/customers_by_substation_2023-2026.csv",
-      "role": "operating extract",
-      "covers": "Customers connected at each site on the Copsewell Cross circuits at each month end, April 2023 to March 2026.",
-      "source": "Marchway Power Networks, network data lead's 2025/26 losses and interruptions extract",
-      "date": "2026-06-12",
-      "licence": "synthetic, constructed for this task, free to use"
-    },
-    {
-      "path": "target/generator_hire_2025-26.xlsx",
-      "role": "operating extract",
-      "covers": "The generation team's hire and fuel log of mobile generators deployed in 2025/26.",
-      "source": "Marchway Power Networks, generation team",
-      "date": "2026-04-09",
-      "licence": "synthetic, constructed for this task, free to use"
-    },
-    {
-      "path": "target/iis_regulatory_return_rules_2025-26.pdf",
+      "path": "target/restart_pilot_brief_2026.pdf",
       "role": "governing document",
-      "covers": "The network performance team's definitions for the 2025/26 interruptions return, with the accepted exceptional event.",
-      "source": "Marchway Power Networks, network performance",
-      "date": "2026-05-14",
+      "covers": "The restart pilot's design brief.",
+      "source": "Quaywork Ltd, CRM team",
+      "date": "2026-03-16",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/copsewell_cross_scada_2025-26.csv",
-      "role": "distractor",
-      "covers": "Copsewell Cross primary's SCADA feeder-breaker metering for 2025/26: phase currents, MW and MVAr each half-hour.",
-      "source": "Marchway Power Networks, control room SCADA historian",
-      "date": "2026-06-12",
+      "path": "target/crm_send_calendar_2026.xlsx",
+      "role": "reference",
+      "covers": "The CRM team's calendar of 2026 email sends.",
+      "source": "Quaywork Ltd, CRM team",
+      "date": "2026-11-12",
       "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/line_loss_factors_2025-26.pdf",
+      "path": "target/crm_mailbox_domain_groups.csv",
+      "role": "reference",
+      "covers": "The CRM team's table of email domains by mailbox group in each system.",
+      "source": "Quaywork Ltd, CRM team",
+      "date": "2026-02-03",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/sponsored_revenue_by_sector_2026.xlsx",
       "role": "distractor",
-      "covers": "The published line loss factor statement for the licence area's 2025/26 settlement year.",
-      "source": "Marchway Power Networks",
-      "date": "2025-02-28",
+      "covers": "Finance's month-end view of sponsored clicks and revenue by job sector, January to October 2026.",
+      "source": "Quaywork Ltd, Finance",
+      "date": "2026-11-06",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/alerts_feedback_survey_2026-06.csv",
+      "role": "distractor",
+      "covers": "Responses to the June 2026 survey of jobseekers who paused or unsubscribed from alerts.",
+      "source": "Quaywork Ltd, Insight team",
+      "date": "2026-06-30",
       "licence": "synthetic, constructed for this task, free to use"
     }
   ],
   "distractor_files": [
-    "target/copsewell_cross_scada_2025-26.csv",
-    "target/line_loss_factors_2025-26.pdf"
-  ],
-  "stated_inputs": [
-    "64.80",
-    "64.8",
-    "11",
-    "the brief's eight projects, their section IDs and replacement conductors, the year 1 April 2025 to 31 March 2026 (UK time), 11 kV nominal, 20 C resistances and the losses value of GBP 64.80 per MWh (losses_programme_2027-28_brief.pdf)",
-    "the 3-minute threshold, half weight for pre-arranged interruptions, the exclusions and the accepted storm (iis_regulatory_return_rules_2025-26.pdf)"
-  ],
-  "field_terms": [
-    "technical losses",
-    "I2R losses",
-    "reconductoring",
-    "embedded generation",
-    "customer interruptions",
-    "customer minutes lost"
+    "target/sponsored_revenue_by_sector_2026.xlsx",
+    "target/alerts_feedback_survey_2026-06.csv"
   ],
   "deliverables": [
-    "losses_programme_2027.xlsx",
-    "losses_saving_2027.png",
-    "iis_feeders_2025-26.csv"
+    "restart_series_2027.xlsx",
+    "restart_series_2027.docx"
   ],
   "portal": {
-    "call": "the Copsewell Cross reconductoring project the 2027/28 losses programme funds",
-    "answer": "Kestle",
-    "saving_mwh": 74.2,
-    "runner_up": "Copsewell Town"
+    "call": "whether the restart-your-alerts email stays in the 2027 jobseeker email plan",
+    "answer": "drop the series"
   }
 }

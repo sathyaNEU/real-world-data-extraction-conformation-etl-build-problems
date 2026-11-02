@@ -1,36 +1,39 @@
 {
   "task": "task464",
-  "status": "DRAWING",
+  "status": "SHIPPED",
   "domain": "product-analytics/churn-propensity-uplift-modeling",
   "objective": "opportunity-sizing-decision",
-  "stage": 1,
-  "stage_name": "draw (architecture 12 registered)",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-02",
-  "stump": "A competent analyst reads the pilot's random tenth holdout, measures the sponsored clicks the restart email added among the jobseekers it restored, carries them to the twelve 2027 sends and keeps the series; the step that lands it there is treating the holdout difference as the series' whole effect, when each send cost the active jobseekers at Google, Microsoft and Yahoo addresses more sponsored clicks than it restored.",
+  "stump": "A competent analyst reads the pilot's random tenth holdout, finds the restart email brought back 111,788 sponsored clicks over the pilot, carries it to the thirteen 2027 sends and recommends keeping the series for +242,208 clicks a year (+200,000 at the prompt's rounding); the step that lands it there is taking the holdout difference as the series' whole effect, when after each send the Google, Microsoft and Yahoo mailboxes filed the alerts of every active jobseeker there as junk for about a fortnight and those jobseekers made 255,348 fewer sponsored clicks over the pilot, net of what they clicked on the site and app instead.",
   "architecture": 12,
   "loops": 0,
   "architecture_spent": "11, at stage 4 on the judge's Gate H3 SEND_BACK (2026-11-02). 10, re-rooted 2026-11-02 (main call held at the in-house judge; ask layer measured spent and unrepairable in that world; delivered version stays on the portal). 9, at the portal's second determinism return on the forecast's estimator. 8, at stage 4 on the judge's Gate H3 SEND_BACK. Earlier: 3 on the re-judge's Gate C; 4 refused across the IRT equating cell; 5 refused all six ETL cells; 6 refused twice on arithmetic; 7's two candidates refused. See DESIGN_NOTE.md, '## Tried and rejected'.",
   "precut": {
-    "exit": null,
-    "run": "",
-    "checks": 0,
+    "exit": 0,
+    "run": "2026-11-02",
+    "checks": 61,
     "fail": 0,
     "warn": 0
   },
   "leak": {
-    "script": "",
-    "asof": "",
-    "reader": null,
-    "copy": "scratchpad/leak-task464-build (prompt.txt and target/ from target.zip)"
+    "script": "REVIEW (3 lines ruled in the design note), no LEAK, --asof 2026-11-16, on target.zip d5ae2397",
+    "asof": "2026-11-16",
+    "reader": "5e4ade6b: no leak (Q1 named a different, wrong step, Q2 to Q4 none, Q6 analytical), one tell (the survey's comments repeating); c4f99ad4 re-read: no leak (Q1 to Q4 none, Q6 analytical), one remark (a template family left in the survey's comments), closed on d5ae2397 in the distractor only",
+    "copy": "scratchpad/leak-task464-build (prompt.txt and target/ from c4f99ad4, the cut the reader re-read)"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task139 v2 (lineage) 0.06"
+    "heart": "WARN",
+    "nearest": "task83 / task139 v2 at 0.04 (heart); task139 v2 at 0.06 (check)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "arch 12 pass 12 on cut c4f99ad4: DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass12.md (pass 11 on 5e4ade6b, FIX_NOW: determinism_check_report_pass11.md)",
+    "gate_g": "analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "pass",
+    "repair": "pass 11's FIX_NOW closed on c4f99ad4: the prompt files ask 5's window and the restart's timing (SF15, SF16) and 'the counts of jobseekers exact'; the restart log and the pull name the UK clock in their headers (SF17); the restart email links to six sector pages, not jobs (SF18); freeze.py determinism PASS"
   },
   "returned": [
     {
@@ -74,9 +77,9 @@
       "commit": ""
     }
   ],
-  "resume": "Architecture 12 (2026-11-02) is drawn and registered (card at WARN, answered in ## Draw). Next: stage 2 design (default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet with both devices screened as code against the honest cracker, prompt.txt), gate precut.py exit 0; then stage 3. The working tree's architecture 11 generator, golden and target files are replaced by architecture 12's.",
+  "resume": "SHIPPED 2026-11-02 (architecture 12, target.zip d5ae2397): pending the portal. A portal result routes per build-pipeline Returned tasks.",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-02",
   "portal": null,
   "source_note": "architecture 12 drawn 2026-11-02 after architecture 11 was spent at the judge: product-analytics / churn-propensity-uplift-modeling under Opportunity Sizing, a job board's restart-your-alerts series judged on the sponsored clicks it adds or costs, the series' loss on the active jobseekers read by mailbox provider against the send dates",
   "portal_status": "",
@@ -149,6 +152,22 @@
       "stump": "Booking each stack-day's escape-of-water claims to the highest flat that claimed funds LD3, the galvanised pipework blocks from the second floor up, at GBP 629,000; traced to the plumber's leak repair a floor above the claims in Pellow's repairs log, LD2, the 2017-19 kitchen refits, would have prevented GBP 727,000."
     }
   ],
-  "gates_stage3": {},
-  "answer": ""
+  "gates_stage3": {
+    "checks": "PASS 70 assertions, 0 FAIL",
+    "verify": "PASS 31 checks, 0 FAIL (positive controls: 28 x 24 hours, after-restart only and the UTC reading each move ask 5)",
+    "md5_twice": "d5ae2397ce625d3e941f0bd40d6385eb (two consecutive builds)",
+    "freeze": "freeze.py check --mode determinism PASS against the snapshot of 5e4ade6b",
+    "precut": "exit 0, 61 checks, 0 FAIL, 0 WARN (18 fork rows, each asserted)",
+    "voice_check": "PASS (833 characters)",
+    "figures_check": "PASS 41 figures in blocks 1 to 4, 0 absent",
+    "leak": "REVIEW (3 lines ruled), no LEAK, --asof 2026-11-16",
+    "ceiling": "pair 29.0 (cracker 45.0, mirror 13.0), mirror leakage 0.0, cracker asks kept 0 of 12; ceiling.json unchanged",
+    "surface": "exit 0 (one pair promoted for adjudication: task167 at 0.101, another world and mechanism)",
+    "heart": "WARN (repeat.gate_g and repeat.deliverables against task183 v4, repeat.question_form against task163 v2), not BLOCK",
+    "validate": "guard validate 306 cards, 0 invalid",
+    "container": "target and golden clean (scrub audit)",
+    "figures": "figures.json identical to cuts 22fbfbd2, 5e4ade6b and c4f99ad4; the call unchanged",
+    "final_cut": "d5ae2397 differs from the judged c4f99ad4 in alerts_feedback_survey_2026-06.csv's comment column only"
+  },
+  "answer": "Drop the restart-your-alerts series from the 2027 jobseeker email plan: its thirteen sends would cost about 300,000 sponsored clicks a year (-311,046; the pilot gained 111,788 among the paused pool and cost 255,348 among jobseekers with alerts on at Google, Microsoft and Yahoo addresses)"
 }

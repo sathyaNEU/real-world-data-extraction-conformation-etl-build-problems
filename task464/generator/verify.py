@@ -1,256 +1,218 @@
-"""task464 architecture 10: recompute every graded figure from target/ alone and check the goldens and the write-up.
+"""task464 architecture 12: the independent verifier. Reads only target/ and golden/, never the generator's state
+or answers.py, and recomputes every graded figure on its own (pandas) code path; then reads back every format the
+pack ships with a positive control on the same extractor.
 
-    python3 generator/verify.py
-
-Reads only the shipped bundle (the brief, the conductor data sheet and the reporting definitions are read as PDFs) and
-shares no code with answers.py. Each reader is checked against a positive control before its output is used.
+    python3 generator/verify.py      # exit 1 on any failure
 """
-import csv
-import datetime as dt
 import json
 import os
 import re
 import sys
+import zipfile
+
 import numpy as np
-import openpyxl
-import pyarrow.parquet as pq
-from pypdf import PdfReader
+import pandas as pd
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-T = os.path.join(BASE, "target")
-G = os.path.join(BASE, "golden")
-FAIL = []
-
-
-def ok(cond, msg):
-    print(("PASS  " if cond else "FAIL  ") + msg)
-    if not cond:
-        FAIL.append(msg)
+HERE = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.dirname(HERE)
+TGT = os.path.join(BASE, "target")
+GOLD = os.path.join(BASE, "golden")
+SENDS = pd.to_datetime(["2026-04-14", "2026-05-12", "2026-06-09", "2026-07-07", "2026-08-04", "2026-09-01"])
+RS = ["RS-2604", "RS-2605", "RS-2606", "RS-2607", "RS-2608", "RS-2609"]
+FAILS = []
 
 
-def pdf_text(name):
-    return re.sub(r"[ \t]+", " ", "\n".join(p.extract_text() for p in PdfReader(os.path.join(T, name)).pages))
+def check(name, ok, detail=""):
+    print("%s  %-58s %s" % ("PASS" if ok else "FAIL", name, detail))
+    if not ok:
+        FAILS.append(name)
 
 
-def utc_index(t_utc, start):
-    return int((t_utc - start).total_seconds() // 1800)
+def docx_text(path):
+    with zipfile.ZipFile(path) as z:
+        x = z.read("word/document.xml").decode("utf-8")
+    x = re.sub(r"</w:p>", "\n", x)
+    return re.sub(r"<[^>]+>", "", x)
 
 
-def bst(t):
-    """True when the UTC instant t falls in British Summer Time."""
-    def last_sun(y, m):
-        d = dt.date(y, m, 31)
-        while d.weekday() != 6:
-            d -= dt.timedelta(days=1)
-        return dt.datetime(d.year, d.month, d.day, 1)
-    return last_sun(t.year, 3) <= t < last_sun(t.year, 10)
+def pdf_text(path):
+    from pypdf import PdfReader
+    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
+
+
+def warehouse():
+    w = pd.read_csv(os.path.join(TGT, "sponsored_clicks_by_mailbox_daily.csv"))
+    n0 = len(w)
+    w = w.drop_duplicates()
+    w["channel"] = w["channel"].where(~w["channel"].str.startswith("app"), "app")
+    w["click_date"] = pd.to_datetime(w["click_date"])
+    clicks = w.groupby(["click_date", "mailbox_group", "audience"], as_index=False)["sponsored_clicks"].sum()
+    js = w.groupby(["click_date", "mailbox_group", "audience"], as_index=False)["jobseekers"].first()
+    t = clicks.merge(js, on=["click_date", "mailbox_group", "audience"])
+    return t, n0 - len(w)
+
+
+def pilot_mask(d):
+    m = np.zeros(len(d), bool)
+    for s in SENDS:
+        m |= (d >= s) & (d < s + pd.Timedelta(days=28))
+    return m
 
 
 def main():
-    # ---------------------------------------------------------------- the documents
-    cat = pdf_text("hv_conductor_data_EDS-02-0310.pdf")
-    lines = [l.strip() for l in cat.split("Conductors", 1)[1].split("Notes", 1)[0].splitlines() if l.strip()]
-    R20, DESC = {}, {}
-    i = 0
-    while i < len(lines):
-        if re.match(r"^(PILC|XLPE|OHL) ", lines[i]):
-            code = lines[i]
-            j = i + 1
-            desc = []
-            while not lines[j].startswith(("Cable,", "Overhead,")):
-                desc.append(lines[j])
-                j += 1
-            while not re.fullmatch(r"\d+\.\d+", lines[j]):
-                j += 1
-            R20[code] = float(lines[j])
-            DESC[code] = re.sub(r"\s+", " ", " ".join(desc))
-            i = j
-        i += 1
-    ok(len(R20) == 14 and R20.get("OHL 0.1 CU") == 0.276 and R20.get("PILC 0.3 CU") == 0.0915,
-       "conductor data sheet read: %d conductors, OHL 0.1 CU 0.276 and PILC 0.3 CU 0.0915 ohm/km at 20 C" % len(R20))
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    t, dup = warehouse()
+    check("warehouse reload rows dropped as exact copies", dup > 0, "%d rows" % dup)
+    pil = t[pilot_mask(t["click_date"].values)]
+    arms = pil[pil["audience"].str.startswith("restart_pilot")]
+    size = t[(t["click_date"] == SENDS[0]) & t["audience"].str.startswith("restart_pilot")].groupby("audience")["jobseekers"].sum()
+    cl = arms.groupby("audience")["sponsored_clicks"].sum()
+    nm, nh = size["restart_pilot_mailed"], size["restart_pilot_holdout"]
+    U = (cl["restart_pilot_mailed"] / nm - cl["restart_pilot_holdout"] / nh) * nm
+    check("pilot gain among the paused pool", abs(U - fig["pilot_uplift_exact"]) < 0.5, "%.1f" % U)
+    act = t[t["audience"] == "alerts_on"].pivot_table(index="click_date", columns="mailbox_group",
+                                                       values=["sponsored_clicks", "jobseekers"], aggfunc="sum")
+    C, N = act["sponsored_clicks"], act["jobseekers"]
+    R = C / N
+    # groups that fall after the sends: each against its own same-weekday rate in the 14 days before each send
+    share = {}
+    for g in C.columns:
+        loss = base = 0.0
+        for s in SENDS:
+            for i in range(14):
+                d = s + pd.Timedelta(days=i)
+                prev = [s - pd.Timedelta(days=j) for j in range(1, 15)]
+                same = [x for x in prev if x.weekday() == d.weekday() and x in R.index]
+                cf = R.loc[same, g].mean()
+                loss += (cf - R.loc[d, g]) * N.loc[d, g]
+                base += C.loc[d, g]
+        share[g] = loss / base
+    aff = sorted(g for g in share if share[g] > 0.01)
+    ctl = sorted(g for g in share if share[g] <= 0.01)
+    check("groups that fall after the sends", aff == sorted(fig["affected_groups"]), ", ".join(aff))
+    ctl_rate = C[ctl].sum(axis=1) / N[ctl].sum(axis=1)
+    D = 0.0
+    for g in aff:
+        for s in SENDS:
+            ev = pd.date_range(s, periods=14)
+            ref = pd.date_range(s + pd.Timedelta(days=14), periods=14)
+            ratio = (C.loc[ref, g].sum() / N.loc[ref, g].sum()) / (C.loc[ref, ctl].sum().sum() / N.loc[ref, ctl].sum().sum())
+            D += ((ctl_rate.loc[ev] * ratio - R.loc[ev, g]) * N.loc[ev, g]).sum()
+    check("pilot loss among jobseekers with alerts on", abs(D - fig["pilot_loss_exact"]) < 0.5, "%.1f" % D)
+    net = U - D
+    f27 = net / 6 * 13
+    check("2027 sizing", abs(f27 - fig["series_2027_clicks_exact"]) < 0.5, "%.1f" % f27)
+    check("2027 at the nearest 100,000", int(100000 * round(f27 / 100000)) == fig["series_2027_clicks"],
+          "%d" % int(100000 * round(f27 / 100000)))
+    for k, (v, unit) in {"pilot_uplift_clicks": (U, 50000), "pilot_loss_clicks": (D, 50000),
+                         "pilot_net_clicks": (net, 50000)}.items():
+        check("%s at the nearest %d" % (k, unit), int(unit * round(v / unit)) == fig[k], "%d" % int(unit * round(v / unit)))
+    check("call: drop", (f27 < 0) and fig["call"] == "drop")
 
-    brief = pdf_text("losses_programme_2027-28_brief.pdf")
-    proj_txt = brief.split("The projects", 1)[1].split("How each project is sized", 1)[0]
-    flat = re.sub(r"\s+", " ", proj_txt)
-    feeders = ["Copsewell Town", "Ashlade", "Oxenford Lane", "Kestle", "Pennick Hill", "Redburn", "Stowmere", "Ingle Road"]
-    pos = [(flat.index(" %s CB " % f), f) for f in feeders]
-    pos.sort()
-    PROJ = {}
-    for n, (p, f) in enumerate(pos):
-        chunk = flat[p:pos[n + 1][0]] if n + 1 < len(pos) else flat[p:]
-        ids = re.findall(r"HV-\d+", chunk)
-        tail = chunk.split(ids[-1], 1)[1]
-        new = [c for c, d in DESC.items() if tail.rstrip().endswith(d)]
-        PROJ[f] = (ids, new[0] if len(new) == 1 else None)
-    ok(len(PROJ) == 8 and all(v[1] for v in PROJ.values()) and len(PROJ["Kestle"][0]) == 3,
-       "brief's project table read: 8 projects, each replacement conductor matched to one data sheet entry")
-    m = re.search(r"losses value of GBP (\d+\.\d+) per\s*MWh", brief)
-    VALUE = float(m.group(1))
-    ok(VALUE == 64.80 and "11 kV nominal" in re.sub(r"\s+", " ", brief) and "20°C" in brief,
-       "brief's conventions read: GBP %.2f per MWh, 11 kV nominal, resistances at 20 C" % VALUE)
-
-    iis = re.sub(r"\s+", " ", pdf_text("iis_regulatory_return_rules_2025-26.pdf"))
-    ev = iis.split("Exceptional event accepted for 2025/26", 1)[1]
-    storm = [f for f in feeders if f in ev]
-    ok(storm == ["Oxenford Lane", "Kestle", "Stowmere"] and "3 minutes or longer" in iis and "half weight" in iis,
-       "reporting definitions read: storm circuits %s, 3-minute threshold, half weight for pre-arranged" % storm)
-    S0, S1 = dt.datetime(2026, 1, 6, 15, 0), dt.datetime(2026, 1, 7, 23, 59)
-
-    # ---------------------------------------------------------------- the network and its metering
-    wb = openpyxl.load_workbook(os.path.join(T, "hv_network_model.xlsx"), read_only=True)
-    secs = [dict(zip(["id", "circ", "a", "b", "m", "cond", "cons", "yr", "state"], r))
-            for r in list(wb["Sections"].iter_rows(values_only=True))[1:]]
-    nodes = {r[0]: r for r in list(wb["Nodes"].iter_rows(values_only=True))[1:]}
-    ok(sum(s["state"] == "Open" for s in secs) == 4 and all(s["cond"] in R20 for s in secs),
-       "network model read: %d sections, 4 normally open, every conductor in the data sheet" % len(secs))
-    down = {}
-    for s in secs:
-        if s["state"] == "Closed":
-            down.setdefault(s["a"], []).append(s["b"])
-
-    def beyond(node):
-        out, stack = [], [node]
-        while stack:
-            n = stack.pop()
-            out.append(n)
-            stack.extend(down.get(n, []))
-        return out
-
-    hvreg = {r["agreement_ref"]: r for r in csv.DictReader(open(os.path.join(T, "hv_connections.csv")))}
-    start = dt.datetime(2025, 3, 31, 23, 0)
-    N = 17520
-    tb = pq.read_table(os.path.join(T, "lv_monitoring_2025-26.parquet")).to_pydict()
-    mon = {}
-    for site, t, kw, kvar, kva, pf in zip(tb["site_no"], tb["period_start_utc"], tb["kw"], tb["kvar"], tb["kva"], tb["pf"]):
-        P, Q = mon.setdefault(site, (np.zeros(N), np.zeros(N)))
-        i = utc_index(t.replace(tzinfo=None), start)
-        if kw is None or (isinstance(kw, float) and np.isnan(kw)):
-            P[i], Q[i] = kva * pf, kva * (1 - pf * pf) ** 0.5
-        else:
-            P[i], Q[i] = kw, kvar
-    nreg = sum(1 for _ in csv.DictReader(open(os.path.join(T, "secondary_substations.csv"))))
-    ok(len(mon) == nreg and len(tb["site_no"]) > 1_000_000,
-       "monitoring read: %d monitors (every registered substation), %d rows" % (len(mon), len(tb["site_no"])))
-    st = {}
-    per_day = {}
-    for r in csv.DictReader(open(os.path.join(T, "hv_settlement_2025-26.csv"))):
-        d = dt.datetime.strptime(r["settlement_date"], "%Y%m%d")
-        per_day[d] = max(per_day.get(d, 0), int(r["settlement_period"]))
-        mid = d - dt.timedelta(hours=1 if bst(d - dt.timedelta(hours=1)) else 0)
-        i = utc_index(mid + dt.timedelta(minutes=30 * (int(r["settlement_period"]) - 1)), start)
-        A, Rq = st.setdefault(r["mpan"], (np.zeros(N), np.zeros(N)))
-        A[i] = 2 * float(r["active_kwh"])
-        Rq[i] = 2 * float(r["reactive_kvarh"])
-    ok(per_day[dt.datetime(2025, 10, 26)] == 50 and per_day[dt.datetime(2026, 3, 29)] == 46 and len(per_day) == 365,
-       "settlement periods: 50 on 26 October 2025, 46 on 29 March 2026, 365 settlement days")
-
-    def flow(node):
-        ref = nodes[node][3]
-        if ref is None:
-            return None
-        ref = str(ref)
-        if ref.startswith("CA-"):
-            h = hvreg[ref]
-            pi, qi = st[h["import_mpan"]]
-            if h["export_mpan"]:
-                pe, qe = st[h["export_mpan"]]
-                return pi - pe, qi - qe
-            return pi, qi
-        return mon.get(int(ref.replace("SS", "").strip()))
-
-    save = {}
-    for f, (ids, new) in PROJ.items():
-        tot = 0.0
-        for sid in ids:
-            s = [x for x in secs if x["id"] == sid][0]
-            P, Q = np.zeros(N), np.zeros(N)
-            for n in beyond(s["b"]):
-                fl = flow(n)
-                if fl is not None:
-                    P, Q = P + fl[0], Q + fl[1]
-            dR = (R20[s["cond"]] - R20[new]) * s["m"] / 1000
-            tot += float(((P ** 2 + Q ** 2) * dR / 121.0 / 1000 * 0.5).sum())
-        save[f] = tot / 1000
-    order = sorted(save, key=lambda k: -save[k])
-
-    # ---------------------------------------------------------------- the interruption measures
-    rows = list(csv.DictReader(open(os.path.join(T, "interruptions_2023-2026.csv"))))
-    cust = list(csv.DictReader(open(os.path.join(T, "customers_by_substation_2023-2026.csv"))))
-    circ = {int(r["site_no"]): r["circuit"].replace(" (HV)", "") for r in cust}
-    den = {}
-    for r in cust:
-        if r["month_end"] == "2026-03-31":
-            den[circ[int(r["site_no"])]] = den.get(circ[int(r["site_no"])], 0) + int(r["customers"])
-    hw = openpyxl.load_workbook(os.path.join(T, "generator_hire_2025-26.xlsx"), read_only=True)
-    hires = [(int(r[4]), dt.datetime.strptime(r[8], "%d/%m/%Y %H:%M"), dt.datetime.strptime(r[9], "%d/%m/%Y %H:%M"))
-             for r in list(hw["Hire log"].iter_rows(values_only=True))[1:]]
-    inc = {}
-    for r in rows:
-        t = dt.datetime.fromisoformat(r["step_time"])
-        inc.setdefault(r["reference"], dict(meta=r, ev={}))["ev"].setdefault(int(r["site_no"]), []).append(
-            (t, int(r["customers_off"] or 0) - int(r["customers_restored"] or 0)))
-    spans = {}
-    for ref, x in inc.items():
-        if x["meta"]["voltage"] != "LV":
-            for s, ev in x["ev"].items():
-                ev.sort()
-                spans.setdefault(s, []).append((ev[0][0], min(t for t, n in ev if n < 0)))
-    ci, cml = {f: 0.0 for f in feeders}, {f: 0.0 for f in feeders}
-    lo, hi = dt.datetime(2025, 4, 1), dt.datetime(2026, 4, 1)
-    dropped_dup = held = 0
-    for ref, x in inc.items():
-        m = x["meta"]
-        t0 = dt.datetime.fromisoformat(m["incident_start"])
-        if not (lo <= t0 < hi) or m["voltage"] == "EHV" or (S0 <= t0 <= S1 and m["circuit"] in storm):
+    # asks
+    rl = pd.read_csv(os.path.join(TGT, "alert_restarts_pilot_pool_2026.csv"), dtype=str)
+    ev = pd.read_csv(os.path.join(TGT, "postvane_clicks_restart_series_2026.csv"), dtype=str)
+    ev["t"] = pd.to_datetime(ev["clicked_at_utc"].str.slice(0, 23))
+    ev = ev.sort_values(["campaign_code", "subscriber_key", "t"])
+    bursts = set()
+    for (camp, sub), grp in ev.groupby(["campaign_code", "subscriber_key"], sort=False):
+        if len(grp) < 4:
             continue
-        if m["voltage"] == "LV":
-            s0 = next(iter(x["ev"]))
-            a = min(t for t, n in x["ev"][s0])
-            if any(p <= a < q for p, q in spans.get(s0, [])):
-                dropped_dup += 1
-                continue
-        w = 0.5 if m["category"] == "Pre-arranged" else 1.0
-        for s, ev in x["ev"].items():
-            ev.sort()
-            a, n = ev[0]
-            b = min(t for t, k in ev if k < 0)
-            g = [h for h in hires if h[0] == s and (h[1] <= a and h[2] >= b or a <= h[1] < b)]
-            if g and g[0][1] <= a:
-                held += 1
-                continue
-            if g:
-                b = g[0][1]
-            mins = (b - a).total_seconds() / 60
-            if mins < 3:
-                continue
-            ci[circ[s]] += w * n
-            cml[circ[s]] += w * n * mins
-    IIS = {f: (round(100 * ci[f] / den[f], 1), round(cml[f] / den[f], 1)) for f in feeders}
-    ok(dropped_dup > 0 and held > 0, "devices present: %d work-management jobs inside HV outages, %d sites held on generator"
-       % (dropped_dup, held))
+        ts = grp["t"].values
+        ln = grp["link_name"].values
+        j = 0
+        for i in range(len(ts)):
+            while ts[i] - ts[j] > np.timedelta64(10, "s"):
+                j += 1
+            if len(set(ln[j:i + 1])) >= 4:
+                bursts.add((camp, sub))
+                break
+    el = rl[(rl["route"] == "email_link") & rl["link_campaign"].isin(RS)]
+    people = el[[(c, a) not in bursts for c, a in zip(el["link_campaign"], el["account_id"])]]
+    a1 = [people.loc[people["link_campaign"] == c, "account_id"].nunique() for c in RS]
+    check("ask A1 restarts by people", a1 == fig["restarted_by_people"], str(a1))
+    ck = pd.read_csv(os.path.join(TGT, "restarted_jobseekers_sponsored_clicks.csv"), dtype=str)
+    pairs = pd.concat([ck.loc[ck["account_id"].notna() & ck["app_install_id"].notna(), ["app_install_id", "account_id"]],
+                       rl.loc[rl["app_install_id"].notna(), ["app_install_id", "account_id"]]]).drop_duplicates()
+    nacc = pairs.groupby("app_install_id")["account_id"].nunique()
+    check("no app device carries two jobseekers", int(nacc.max()) == 1, "max %d" % int(nacc.max()))
+    dev = pairs.drop_duplicates("app_install_id").set_index("app_install_id")["account_id"]
+    ck["who"] = ck["account_id"].fillna(ck["app_install_id"].map(dev))
+    check("every logged-out app click tied to a jobseeker", ck["who"].notna().all())
+    check("the pull and the restart log label their clock as UK time; Postvane's as UTC",
+          "clicked_at_uk" in ck.columns and "restarted_at_uk" in rl.columns and "clicked_at_utc" in ev.columns
+          and "clicked_at" not in ck.columns and "restarted_at" not in rl.columns)
+    ck["t"] = pd.to_datetime(ck["clicked_at_uk"])
+    ck["d"] = ck["t"].dt.normalize()
 
-    # ---------------------------------------------------------------- against figures.json, the goldens and the write-up
-    F = json.load(open(os.path.join(BASE, "generator", "figures.json")))
-    ok(order[0] == F["call"] and order[1] == F["runner_up"], "call %s, runner-up %s" % (order[0], order[1]))
-    for f in feeders:
-        ok(round(save[f], 1) == F["projects"][f]["year_mwh"], "%s saving %.1f MWh" % (f, save[f]))
-        ok(int(round(save[f] * VALUE, -2)) == F["projects"][f]["value_gbp"], "%s value GBP %d" % (f, round(save[f] * VALUE, -2)))
-        ok(IIS[f] == (F["iis"][f]["ci"], F["iis"][f]["cml"]), "%s CI %.1f CML %.1f" % (f, IIS[f][0], IIS[f][1]))
-    ok(round(save[order[0]], 1) - round(save[order[1]], 1) == F["gap_mwh"] or abs(round(save[order[0]] - save[order[1]], 1) - F["gap_mwh"]) < 1e-9,
-       "gap %.1f MWh" % F["gap_mwh"])
-    gw = openpyxl.load_workbook(os.path.join(G, "losses_programme_2027.xlsx"), read_only=True)
-    grows = [r for r in gw["Programme"].iter_rows(min_row=5, values_only=True) if r[1] in feeders]
-    ok(len(grows) == 8 and all(abs(r[7] - round(save[r[1]], 1)) < 1e-9 and r[8] == int(round(save[r[1]] * VALUE, -2)) for r in grows)
-       and [r[0] for r in grows if r[0]] == ["Fund", "Runner-up"] and grows[0][1] == order[0],
-       "golden workbook: eight rows agree, Fund and Runner-up marked")
-    gc = list(csv.DictReader(open(os.path.join(G, "iis_feeders_2025-26.csv"))))
-    ok(len(gc) == 8 and all((float(r["ci_per_100_customers"]), float(r["cml_per_customer"])) == IIS[r["feeder"]] for r in gc),
-       "golden CSV: eight feeders' CI and CML agree")
-    sub = open(os.path.join(BASE, "submission.md")).read()
-    ok(all("%s: %.1f MWh" % (f, round(save[f], 1)) in sub and "%s: CI %.1f, CML %.1f" % (f, *IIS[f]) in sub for f in feeders),
-       "submission.md block 4 carries every saving, CI and CML")
-    print("%s  verify: %d failures" % ("PASS" if not FAIL else "FAIL", len(FAIL)))
-    return 1 if FAIL else 0
+    def a2_count(inside):
+        out = []
+        for k, c in enumerate(RS):
+            who = set(people.loc[people["link_campaign"] == c, "account_id"])
+            w = ck[inside(k, ck) & ck["who"].isin(who)]
+            out.append(int(w["who"].nunique()))
+        return out
+    a2 = a2_count(lambda k, x: (x["d"] >= SENDS[k]) & (x["d"] <= SENDS[k] + pd.Timedelta(days=27)))
+    check("ask A2 clicked on the send's date or in the 27 days after it", a2 == fig["clicked_within_28_days"], str(a2))
+    # positive controls on the same readers: each rival reading the prompt and the headers close moves the figure
+    hrs = a2_count(lambda k, x: (x["t"] >= SENDS[k] + pd.Timedelta(hours=10)) &
+                   (x["t"] < SENDS[k] + pd.Timedelta(days=28, hours=10)))
+    check("control: 28 x 24 hours from the 10:00 send moves A2 (closed by the send's date and 27 days)",
+          hrs != a2, str(hrs))
+    rt = people.assign(rt=pd.to_datetime(people["restarted_at_uk"])).groupby(["link_campaign", "account_id"])["rt"].min()
+    post = []
+    for k, c in enumerate(RS):
+        who = rt.loc[c]
+        w = ck[(ck["d"] >= SENDS[k]) & (ck["d"] <= SENDS[k] + pd.Timedelta(days=27)) & ck["who"].isin(who.index)]
+        w = w[w["t"] >= w["who"].map(who)]
+        post.append(int(w["who"].nunique()))
+    check("control: clicks after the restart only moves A2 (closed by 'before or after restarting')", post != a2, str(post))
+    as_utc = ck["t"].dt.tz_localize("UTC").dt.tz_convert("Europe/London").dt.tz_localize(None).dt.normalize()
+    utc = a2_count(lambda k, x: (as_utc >= SENDS[k]) & (as_utc <= SENDS[k] + pd.Timedelta(days=27)))
+    check("control: clicked_at_uk read as UTC moves A2 (closed by the header's label)", utc != a2, str(utc))
+    rs = ev[ev["link_name"] == "restart_alerts"].copy()
+    rs["uk"] = rs["t"].dt.tz_localize("UTC").dt.tz_convert("Europe/London").dt.tz_localize(None).dt.floor("min")
+    first = rs.groupby(["campaign_code", "subscriber_key"])["uk"].min()
+    j = el.join(first, on=["link_campaign", "account_id"], how="inner")
+    gap = (pd.to_datetime(j["restarted_at_uk"]) - j["uk"]).dt.total_seconds() / 60
+    check("control: every email restart logs the minute of its Postvane restart click on the UK clock (60 min off as UTC)",
+          len(j) > 40000 and (gap == 0).all(), "%d rows, gaps %s" % (len(j), sorted(gap.unique())[:3]))
+    check("the restart email's links name no job (restart, six sector tiles, the footer)",
+          not ev["link_name"].str.match(r"job_?\d").any() and ev["link_name"].nunique() == 11,
+          ", ".join(sorted(ev["link_name"].unique())))
+
+    # every format read back, positive control on the same extractor
+    plan = docx_text(os.path.join(TGT, "jobseeker_email_plan_2027.docx"))
+    check("plan docx: measurement line present", "judged on the sponsored clicks Quaywork takes with it" in plan)
+    check("plan docx: thirteen sends and the 28-day count",
+          "the 2027 series is sized at what one pilot send did on average, thirteen times" in plan and
+          "those clicks are counted over the 28 days from each pilot send" in plan)
+    brief = pdf_text(os.path.join(TGT, "restart_pilot_brief_2026.pdf"))
+    check("pilot brief pdf: design text present", "Restart my alerts" in brief and "one digit in ten" in brief, "%d chars" % len(brief))
+    from openpyxl import load_workbook
+    cal = load_workbook(os.path.join(TGT, "crm_send_calendar_2026.xlsx"), read_only=True)
+    codes = [r[0] for r in cal["Sends 2026"].iter_rows(min_row=2, values_only=True)]
+    check("send calendar xlsx: the six restart sends", all(c in codes for c in RS), str(codes[:4]))
+    rev = load_workbook(os.path.join(TGT, "sponsored_revenue_by_sector_2026.xlsx"), read_only=True)
+    check("revenue xlsx readable", rev.sheetnames == ["Sponsored by sector"])
+    words = re.compile(r"\b(junk|spam folder|reputation|deliverability|inbox placement|spam trap|interference|"
+                       r"spillover|gateway|scanner|logged out|holdout uplift)\b", re.I)
+    for name, txt in [("plan", plan), ("brief", brief)]:
+        check("%s: none of the step's vocabulary" % name, not words.search(txt), (words.search(txt) or [""])[0])
+    # goldens
+    gx = load_workbook(os.path.join(GOLD, "restart_series_2027.xlsx"), read_only=True)
+    vals = [r for r in gx["Pilot sends"].iter_rows(min_row=2, max_row=7, values_only=True)]
+    check("golden workbook: restart counts", [v[4] for v in vals] == fig["restarted_by_people"] and
+          [v[5] for v in vals] == fig["clicked_within_28_days"])
+    sz = [r for r in gx["Sizing"].iter_rows(values_only=True)]
+    flat = [x for r in sz for x in r if isinstance(x, (int, float))]
+    check("golden workbook: 2027 figure at its rounding", fig["series_2027_clicks"] in flat)
+    note = docx_text(os.path.join(GOLD, "restart_series_2027.docx"))
+    check("golden note: recommendation and 2027 cost", "Drop the restart series" in note and "300,000" in note)
+    with zipfile.ZipFile(os.path.join(GOLD, "restart_series_2027.docx")) as z:
+        check("golden note: one chart", sum(1 for n in z.namelist() if n.startswith("word/media/")) == 1)
+    print("verify: %d failures" % len(FAILS))
+    return 1 if FAILS else 0
 
 
 if __name__ == "__main__":
