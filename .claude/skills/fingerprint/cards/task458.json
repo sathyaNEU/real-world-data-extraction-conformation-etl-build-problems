@@ -1,92 +1,87 @@
 {
   "task": "task458",
-  "architecture": "v2 (architecture 2, re-root 2026-11-02: a new world, dataset, generator and shell in another client domain; a city's 2027 performance-based meter rates, each metered zone's weekday midday occupancy assembled from the payment app's complete record of paid vehicles and the enforcement vehicles' plate reads of every parked vehicle)",
+  "architecture": "v3 (architecture 3, re-root 2026-11-02 into the accounting house domain on the coordinator's route: a homewares group's FY2026 consolidated stock provision, three subsidiaries' excess stock competing for one group clearance outlet's fixed store-week throughput)",
   "drawn": "2026-11-02",
-  "slot_note": "re-root of task458 (architecture 1, healthcare delivery, spent on its ask layer); no seed: a draw outside the seeds in General Statistics & Data Science, data integration, objective ETL",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "slot_note": "re-root of task458 (architecture 1 healthcare delivery, spent on its ask layer; architecture 2 general statistics data integration, spent at the judge); no seed: a draw outside the seeds in the accounting-audit-forensic house domain, client domain general-statistics-data-science (data integration), objective ETL",
+  "domain": "accounting-audit-forensic",
+  "subdomain": "general-ledger-close-consolidation",
   "client_domain": "general-statistics-data-science",
-  "niche": "a mid-size city's 2027 performance-based on-street meter rates, each meter zone's rate moved by its weekday 12:00 to 14:00 occupancy over the fall 2026 measurement period (8 September to 30 October), counting every parked vehicle, paid or not, which no system records: two pay-by-plate vendors record every paid vehicle minute by minute, the enforcement routes' cameras read every parked plate, but the neighbourhood routes run only mid-morning and mid-afternoon",
+  "niche": "a UK homewares and hardware importer-distributor group's FY2026 consolidated stock provision under IAS 2, conformed from three trading subsidiaries' stock registers and order books (UK, Ireland, Netherlands; three ERPs, sterling and euro, eaches and cases) and the records of the group's own clearance outlet chain and its jobbers, in the year a lost DIY customer and a failed lighting range left far more excess stock than the outlet's five stores can clear in 2027; the provision decides whether the accounts breach the bank's minimum net worth covenant",
   "objective": "etl",
-  "shape": "10",
-  "decision_type": "dial_setting",
-  "answer_unit": "currency",
-  "answer": "Raise Courthouse (D01) to 3.25, Union Depot (D05) to 2.50 and Eastbank (N05) to 2.00; lower Market Hall (D04) to 2.00 and Birch Hill (N02), Fernwood (N06) and Irvine Market (N09) to 1.00; hold the other eleven zones, from 1 January 2027.",
-  "answer_source": "task458/submission.md, block 1",
+  "shape": "03",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "objective"
   ],
   "pattern": [
-    "none"
+    "C"
   ],
   "generators": [
-    "G12",
-    "G3",
-    "G6"
+    "G8",
+    "G7",
+    "G3"
   ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "gate_g": "binding_constraint",
+  "calibration_form": "settled_transaction_ledger",
+  "stump_strategy": "binding_constraint",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms both vendors' sessions, the plate reads, the meter inventory, the bagged-meter permits and the holiday calendar correctly adds to the complete paid record the mean count of unpaid vehicles on each zone's enforcement runs, sees it confirmed by downtown's 12:30 run inside the window, and files Alder Row, Cascade Avenue and Hollis Street raised (95, 95 and 91 per cent) and Fernwood and Irvine Market held (71 and 71 per cent); the golden holds the three at 79 and lowers the two at 55 and 53.",
-  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is each zone's midday occupancy as a data-integration estimate that joins a complete minute-by-minute record of one part of the population (paid vehicles) to periodic censuses of all of it (the passes' plate reads), the unrecorded part entering through each unpaid vehicle's own sightings on both sides of the window; replacing it with a generic summary (paid occupancy, the passes' mean occupancy, a paid-to-total ratio or the passes' mean unpaid count) moves zones across the pricing thresholds.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:unrecorded-group-in-a-window-from-its-own-sightings-on-both-sides",
+  "analyst_test": "A strong analyst who conforms the three subsidiaries' stock registers (the item crosswalk, cases to eaches, euro to sterling at the year-end rate), measures each line's excess over its 2027 demand from the order history and values the excess at the recovery the outlet has achieved on everything transferred to it books about 4.3 million pounds and finds net worth above the bank's floor; the outlet's five stores clear a fixed value a store-week, so only about a third of the excess can go through them in 2027, the rest is jobbed at about a tenth of cost, the provision is about 5.9 million pounds and the floor is breached (figures fixed at build).",
+  "domain_test": "Inventory at the lower of cost and net realisable value (IAS 2): the deciding quantity is what the year-end stock will realise, which the field estimates as an excess-and-obsolescence reserve at a recovery rate; here the recovery is set by what the group's own clearance channel can physically sell in the realisation year, so the same words about a hospital's surplus equipment or a utility's spares lose the store-week throughput and the jobber floor that fix the realisable value.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:excess-stock-realised-through-a-shared-clearance-outlet-at-its-store-week-throughput",
   "layer1": [
-    "several sources for one picture: two pay-by-plate vendors' session exports either side of the 1 October 2026 change, the enforcement routes' plate reads, the meter inventory, the bagged-meter permits and the holiday calendar",
-    "layouts changing at the vendor switch: StallPay's local 12-hour times and zone codes against CurbTrack's UTC times and location numbers through a crosswalk",
-    "imperfect keys: camera misreads of confusable plate characters",
-    "an effective-dated inventory: a new Eastbank block face from 5 October, a Cascade Avenue face cut for a bike lane from 21 September",
-    "real coverage: Saturdays, holidays and days outside the period in every extract; bagged faces"
+    "several sources for one picture: three subsidiaries' stock registers and order books from three ERPs, the outlet's till and goods-in records, the jobbers' lot contracts and collection notes, the bank facility letter",
+    "imperfect keys: the Netherlands subsidiary's own item codes reached through a crosswalk with superseded group codes",
+    "units and currency: the Netherlands and Ireland registers hold some lines in cases, euro values at historical cost, the year-end rate filed once",
+    "real coverage: weeks a store was shut or under-stocked, the outlet's first stores opening part-way through 2022 and 2023, order books with cancellations and credit notes"
   ],
-  "stakeholder_role": "the city's parking program manager",
-  "role_family": "policy_adviser",
-  "scoring_unit": "per active unit per period",
+  "stakeholder_role": "the group's financial controller",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
   "spine": {
-    "file": "curb_sensor_pilot_feed_2026-09_10.csv",
-    "rows": 160303,
-    "entity": "one event from a pilot curb sensor (occupied, vacant or an hourly heartbeat) with its event and received times in UTC",
-    "grain": "sensor event",
-    "source": "synthetic (constructed for this task)",
-    "main_call_file": "lpr_enforcement_reads_2026-09-01_2026-10-31.csv, 87,119 plate reads; the two vendors' sessions, 159,658"
+    "file": "group order lines 2024-2026 (three subsidiaries)",
+    "rows": 0,
+    "entity": "one sales order line (a line, a quantity, a date, a customer)",
+    "grain": "order line",
+    "source": "synthetic (constructed for this task)"
   },
-  "forum": "council_or_assembly",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "local_government",
+  "forum": "committee_or_panel",
+  "forcing_event": "period_close",
+  "org_family": "other",
   "world": {
-    "geography": "United States, Oregon (a fictional mid-size city)",
-    "currency": "USD",
-    "org_type": "city transportation department's parking services division",
+    "geography": "United Kingdom, Ireland, Netherlands",
+    "currency": "GBP",
+    "org_type": "homewares and hardware importer-distributor group with its own clearance outlet chain",
     "invented_names": [
-      "City of Elsworth",
-      "Elsworth Performance Parking Program"
+      "Ashlund Home Group",
+      "Valuehall"
     ],
     "people": [
-      "Kelsey Solis",
-      "Andrew Ward"
+      "Caroline Burns",
+      "Liam Elliott"
     ]
   },
-  "deliverables": [
-    "elsworth_2027_meter_rates.docx",
-    "fall_2026_curb_occupancy.csv"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A quantity averaged over a window is assembled from a complete record of one part of a population and periodic counts of all of it taken only outside the window; the unrecorded part is not a fixed multiple of the recorded part, and the counts outside the window also catch members present only near the counting times, so scaling the record by the counts' ratio, or adding the counts' mean unrecorded number, misstates the window, and only the unrecorded members counted on both sides of the window, with no record of their own inside it, give the window's unrecorded part.",
-  "driver_concrete": "Each zone's weekday noon-to-2 occupancy joins two app vendors' minute-by-minute record of paid vehicles to the enforcement routes' plate reads of every parked vehicle, which in the neighbourhood districts come only mid-morning and mid-afternoon; there the unpaid vehicles at midday are disability placard holders parked all day, while the morning run also catches residents' overnight cars and the afternoon run school-run stops, so the window's unpaid vehicles are the plates read unpaid on both runs either side of it.",
-  "stump": "The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71); the neighbourhood runs come only mid-morning and mid-afternoon, when the unpaid vehicles include residents' overnight cars and school-run stops, so only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which holds the three at 79 per cent and lowers the two at 55 and 53.",
+  "question_form": "whether",
+  "driver": "A channel's recovery on what it is sent looks proportional in every year on record because its capacity grew in step with what it was sent; its throughput a site-week levels off whenever a site is well stocked, so the forward year, which sends it several times what its fixed sites can move, realises only that throughput at the channel's rate and the rest through a channel that recovers far less, while the proportional rate carried forward values the whole surplus as if the channel took it all.",
+  "driver_concrete": "Valuehall's clearance recovery on the stock the subsidiaries transferred to it has held near 42 per cent of cost every year because the group opened a store as each year's excess grew; each store's weekly clearance sales level off near a fixed value at cost whenever its clearance stock is deep, so with five stores and no sixth planned, 2027 can take only about a third of the excess the lost DIY programme and the failed lighting range left at the 2026 year-end, and the rest is jobbed at about a tenth of cost.",
+  "stump": "The default path values each line's excess over its 2027 demand at the recovery the outlet has achieved on everything sent to it and books about 4.3 million pounds, leaving net worth above the bank's floor; the outlet's five stores clear a fixed value a store-week when stocked, so only about a third of the excess can go through them in 2027 and the rest is jobbed at about a tenth of cost, which puts the provision at about 5.9 million pounds and net worth below the floor (figures fixed at build).",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task107": "task107's ETL architecture lost the months a payment feed never recorded and the scheme counts as nil; task458 v2 recovers which unpaid vehicles were parked through a window no read covers, from each vehicle's own reads on both sides of it, against a paid record that is complete.",
-    "task458": "architecture 1 counted members with a condition from claims censored by enrollment, each identified member over its own window's sensitivity measured on the full-year members; architecture 2 has no sensitivity, no reference group and no completion factor: the paid vehicles are recorded in full, and the unpaid vehicles in the window are the ones read on both of a day's passes, the rest of the passes' unpaid reads being people present only near the pass times.",
-    "task473": "task473 completes a count by one over a catch rate at each case's level of the trait, measured where every unit is tested; task458 v2 completes nothing by a rate: the window's unpaid vehicles are counted directly from their own reads on both sides of the window, and the trap is a ratio or a mean taken at the wrong times.",
-    "task275": "task275 rebuilds unobserved trips from a catch per hour of effort by ground; task458 v2 has no effort and no observer effect: the plate reads see every parked vehicle at their times, and the error is carrying the reads' unpaid mix at those times into a window they do not cover.",
-    "task120": "task120 subtracts a storage gain between midnights from production; task458 v2 has no storage and no balance: it adds to a complete paid record the unpaid stock present through the window, identified by reads on both sides of it."
+    "task456": "task456 sends a combined physical load above a control device's air capacity untreated, interval by interval, with the capacity filed in the device's own unit; task458 v3 has no interval load and no filed capacity: a year's surplus stock competes for a clearance channel whose throughput is read from its own stocked store-weeks, and the overflow is realised through a second, cheaper channel.",
+    "task472": "task472 credits a shortened job only where it brings a release forward to an earlier tidal window; task458 v3 has no schedule and no release window: the limit is a channel's yearly throughput that every subsidiary's surplus draws on at once.",
+    "task180": "task180 splits a shortfall between a release and meter drift read per litre since calibration; task458 v3 reads no drift and no usage exposure: the surplus is valued by how much of it one shared channel can physically sell, a cap the channel's own weeks show.",
+    "task458": "architecture 1 counted members with a condition from claims censored by enrollment; architecture 2 imputed unpaid vehicles in a window from reads either side; architecture 3 values a group's surplus stock through a clearance channel capped by its own store-week throughput, a binding constraint neither earlier architecture has.",
+    "task106": "task106 sizes each candidate supplier against a shared pool of spare return legs whose capacity is known and adds them up, double-booking the busiest corridor among candidates; task458 v3 has one surplus and one channel: the channel's capacity is filed nowhere and its own history hides it (the recovery rate held as stores opened in step with the surplus), so the step is reading the throughput off its stocked store-weeks, not allocating a known pool among competing candidates."
   },
   "lineage": [
     {
@@ -158,23 +153,87 @@
         "rounding opener": "round",
         "deliverable set": "csv+xlsx"
       }
+    },
+    {
+      "architecture": "v2 (a city's 2027 performance-based meter rates, each meter zone's weekday midday occupancy assembled from the payment apps' paid record and the enforcement routes' plate reads)",
+      "drawn": "2026-11-02",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "client_domain": "general-statistics-data-science",
+      "niche": "a mid-size city's 2027 performance-based on-street meter rates, each meter zone's rate moved by its weekday 12:00 to 14:00 occupancy over the fall 2026 measurement period (8 September to 30 October), counting every parked vehicle, paid or not, which no system records: two pay-by-plate vendors record every paid vehicle minute by minute, the enforcement routes' cameras read every parked plate, but the neighbourhood routes run only mid-morning and mid-afternoon",
+      "objective": "etl",
+      "shape": "10",
+      "decision_type": "dial_setting",
+      "answer_unit": "currency",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G3",
+        "G6"
+      ],
+      "gate_g": "etl_conformance",
+      "calibration_form": "none",
+      "stump_strategy": "population_selection",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:unrecorded-group-in-a-window-from-its-own-sightings-on-both-sides",
+      "context_artifact": "monitoring_export",
+      "role_family": "policy_adviser",
+      "forum": "council_or_assembly",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "local_government",
+      "world": {
+        "geography": "United States, Oregon (a fictional mid-size city)",
+        "currency": "USD",
+        "org_type": "city transportation department's parking services division",
+        "invented_names": [
+          "City of Elsworth",
+          "Elsworth Performance Parking Program"
+        ],
+        "people": [
+          "Kelsey Solis",
+          "Andrew Ward"
+        ]
+      },
+      "deliverables": [
+        "elsworth_2027_meter_rates.docx",
+        "fall_2026_curb_occupancy.csv"
+      ],
+      "answer": "Raise Courthouse (D01) to 3.25, Union Depot (D05) to 2.50 and Eastbank (N05) to 2.00; lower Market Hall (D04) to 2.00 and Birch Hill (N02), Fernwood (N06) and Irvine Market (N09) to 1.00; hold the other eleven zones, from 1 January 2027.",
+      "driver": "A quantity averaged over a window is assembled from a complete record of one part of a population and periodic counts of all of it taken only outside the window; the unrecorded part is not a fixed multiple of the recorded part, and the counts outside the window also catch members present only near the counting times, so scaling the record by the counts' ratio, or adding the counts' mean unrecorded number, misstates the window, and only the unrecorded members counted on both sides of the window, with no record of their own inside it, give the window's unrecorded part.",
+      "driver_concrete": "Each zone's weekday noon-to-2 occupancy joins two app vendors' minute-by-minute record of paid vehicles to the enforcement routes' plate reads of every parked vehicle, which in the neighbourhood districts come only mid-morning and mid-afternoon; there the unpaid vehicles at midday are disability placard holders parked all day, while the morning run also catches residents' overnight cars and the afternoon run school-run stops, so the window's unpaid vehicles are the plates read unpaid on both runs either side of it.",
+      "stump": "The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71); the neighbourhood runs come only mid-morning and mid-afternoon, when the unpaid vehicles include residents' overnight cars and school-run stops, so only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which holds the three at 79 per cent and lowers the two at 55 and 53.",
+      "analyst_test": "A strong analyst who conforms both vendors' sessions, the plate reads, the meter inventory, the bagged-meter permits and the holiday calendar correctly adds to the complete paid record the mean count of unpaid vehicles on each zone's enforcement runs, sees it confirmed by downtown's 12:30 run inside the window, and files Alder Row, Cascade Avenue and Hollis Street raised (95, 95 and 91 per cent) and Fernwood and Irvine Market held (71 and 71 per cent); the golden holds the three at 79 and lowers the two at 55 and 53.",
+      "domain_test": "General statistics, so the swap is of the method: the deciding quantity is each zone's midday occupancy as a data-integration estimate that joins a complete minute-by-minute record of one part of the population (paid vehicles) to periodic censuses of all of it (the passes' plate reads), the unrecorded part entering through each unpaid vehicle's own sightings on both sides of the window; replacing it with a generic summary (paid occupancy, the passes' mean occupancy, a paid-to-total ratio or the passes' mean unpaid count) moves zones across the pricing thresholds.",
+      "architecture_spent": true,
+      "fate": "spent 2026-11-02 at the stage 4 determinism judge (cut 950254e3), NOT_DETERMINISTIC, SEND_BACK on Gate H3: Rule 12.04 counted every parked vehicle whether or not it paid, but no shipped text forced how point-in-time enforcement reads become occupied minutes inside a window no neighbourhood run covered; the judge licensed the mean unpaid count on a zone's runs (Alder Row, Cascade Avenue and Hollis Street to raises, Fernwood and Irvine Market to holds) and read the golden's both-runs panel as an unfiled imputation; the only in-window record (downtown's 12:30 run) supported the simpler model, so the golden's method was argued, not validated by the data where it applied (the brief's lesson 12); the pilot-street asks forked too. Re-rooted into a new world, dataset, generator and shell.",
+      "shell": {
+        "question form": "what",
+        "second-sentence opener": "the",
+        "rounding opener": "occupancy",
+        "deliverable set": "csv+docx"
+      }
     }
   ],
+  "notes": "Re-root of task458 on 2026-11-02 (architecture 2 spent at the judge, see lineage). Personas drawn with guard.py names --geo 'United Kingdom' --seed 458. House domain accounting-audit-forensic naming client domain general-statistics-data-science; the analysis works the data-integration task type (three subsidiaries' registers, the outlet's tills and goods-in records and the jobbers' contracts conformed into one group stock valuation), the house domain being the honest label for a year-end consolidated stock provision. Ask records at the draw (screened as code at stage 2): the subsidiaries' purchase receipts against the group transfer-price list (the consolidated stock at group cost, the intercompany margin removed from the Irish and Dutch stock) and the jobbers' lot contracts with their collection notes (2026 jobber recovery by division, lots sold as mixed pallets at one price and collected over several loads). Axes redrawn at the draw: gap objective first BLOCKed test.same_puzzle_older and test.same_driver_older (the objective-C signature is spent in six and ten older builds); gap time is the honester first gap (the outlet's recovery was measured at volumes its stores could absorb, and the 2027 window holds a volume the history never had), objective kept second. The decision is whether the provision takes net worth below the bank's covenant floor (seek a waiver before the accounts are signed), go_hold_or_stop, with the provision itself as the call's critical component; question form whether.",
+  "registered": "2026-11-02T20:38:25Z",
   "lineage_shells": [
     {
       "question form": "which",
       "second-sentence opener": "put",
       "rounding opener": "round",
       "deliverable set": "csv+xlsx"
+    },
+    {
+      "question form": "what",
+      "second-sentence opener": "the",
+      "rounding opener": "occupancy",
+      "deliverable set": "csv+docx"
     }
-  ],
-  "architecture_spent": true,
-  "notes": "Re-root of task458 on 2026-11-02 (architecture 1 spent on its ask layer, see lineage). Personas drawn with guard.py names --geo 'United States' --seed 458. Client domain General Statistics & Data Science, task type data integration. Ask records at build: the curb-sensor pilot on four free two-hour streets (events and heartbeats), a system the call never reads; devices: sensors whose batteries died read as empty spaces (occupancy), and the magnetometer's four-hourly re-baselining read as departures (average stay).",
-  "registered": "2026-11-02T14:55:24Z",
-  "shell": {
-    "question form": "what",
-    "second-sentence opener": "the",
-    "rounding opener": "occupancy",
-    "deliverable set": "csv+docx"
-  }
+  ]
 }

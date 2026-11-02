@@ -1,37 +1,37 @@
 {
   "task": "task458",
-  "status": "PAUSED",
-  "domain": "general-statistics-data-science",
+  "status": "DESIGN",
+  "domain": "accounting-audit-forensic (house domain; client domain general-statistics-data-science, task type data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "re-root owed (architecture 2 spent at the judge)",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-02",
-  "stump": "The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71); only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which holds the three at 79 and lowers the two at 55 and 53.",
-  "architecture": 2,
+  "stump": "The default path values each line's excess over its 2027 demand at the recovery the group outlet has achieved on everything sent to it and books about 4.3 million pounds, leaving tangible net worth above the bank's floor; the outlet's five stores clear a fixed value a store-week when stocked, so only about a third of the excess can go through them in 2027 and the rest is jobbed at about a tenth of cost, which puts the provision at about 5.9 million pounds and net worth below the floor (figures fixed at build).",
+  "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-11-02"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK), 2026-11-02 on the final cut, each REVIEW ruled in the note",
+    "leak_py": "",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (overuse.objective; repeat.deliverables csv+docx against task454 v2, same-day build in flight; same_driver_older NOTE differentiated)",
-    "nearest": "0.06 task243; surface 0 promoted"
+    "heart": "",
+    "nearest": "check on the registered card 2026-11-02: PASS (NOTE test.same_driver_older differentiated against task456); nearest 0.06 task181 draft, 0.05 task252, 0.05 task196"
   },
   "judge": {
-    "verdict": "arch 2 pass 1 on cut 950254e3: NOT_DETERMINISTIC",
-    "disposition": "SEND_BACK: the unpaid-to-window imputation unfiled and not forced by the data (the mean-count reading moves five zones); the pilot-street conventions forked; Gate H3",
-    "report": "determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "RE-ROOT at stage 1, architecture 3 (2026-11-02): architecture 2 (a city's meter rates from midday occupancy, unpaid vehicles imputed from the enforcement runs either side of the window) is spent at the judge, SEND_BACK: the golden's imputation over a window no record covers was argued, not forced, and the mean-count reading was licensed (Tried and rejected, last line). Architecture 3 takes a new world, a new dataset, a new generator and a new shell, in another client domain, under the same objective (ETL) and number; its golden method must be validated by the data where it applies (a back-test on records that observe what the method imputes), never only argued. The working tree holds architecture 2's uncommitted build, which architecture 3 replaces.",
+  "resume": "stage 2 of architecture 3 (drawn and registered 2026-11-02): default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder (screened as code first on the clean truth), closure table, literal reader, oracles and the ask sheet with both ask devices screened as code against the honest cracker, then prompt.txt and precut.py; then the generator under task458/generator/.",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "no seed: a draw outside the seeds in General Statistics & Data Science (data integration), objective ETL, re-rooted from architecture 1 (seed ET15, healthcare delivery)",
+  "source_note": "no seed: a draw outside the seeds in the accounting-audit-forensic house domain (client domain general statistics, data integration), objective ETL, re-rooted from architecture 2 (general statistics data integration, a city's meter rates) and architecture 1 (healthcare delivery, a Medicaid plan's county designation)",
   "architecture_1": {
     "domain": "healthcare-delivery-health-economics",
     "stump": "The default path carries the prevalence the members enrolled all year show, eligibility group by group, to every member and files Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the farmworkers in Yakima's short seasonal spells have the conditions about half as often as the members who stay; counted for the months each identified member was enrolled (1 over the share of full-year members identified within the same number of months), Yakima meets all three standards and the five are designated.",
@@ -85,16 +85,45 @@
     "source_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly and weekly files); the decoy-era traps are not used; pairing in Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics (see ## Draw)",
     "fate": "spent 2026-11-02: main call sound, ask layer spent (careful-solver cracker 132 of 132, pair 81.8), no re-site, cut or replacement passed; re-rooted to architecture 2. The delivered version stays on the portal as delivered."
   },
-  "answer": "Raise D01 Courthouse to 3.25, D05 Union Depot to 2.50, N05 Eastbank to 2.00; lower D04 Market Hall to 2.00 and N02 Birch Hill, N06 Fernwood, N09 Irvine Market to 1.00; hold the other eleven, from 1 January 2027.",
-  "gates": {
-    "checks": "45 assertions, 0 failures",
-    "verify": "26 of 26 golden rows from target/ alone, 0 failures",
-    "rebuild": "two consecutive builds byte-identical (internal second build sha256 046ccd8b11192628); target.zip md5 950254e395d9d1265e94a2fab7f2ccc2 on both consecutive builds",
-    "figures_check": "exit 0 (141 figures)",
-    "voice_check": "PASS",
-    "surface": "exit 0",
-    "heart": "WARN",
-    "ceiling": "cracker 0 of 16, pair 28.5, mirror leakage 0.0; two careful responses each handling one device 72.5",
-    "leak_py": "REVIEW (no LEAK): sweeps 3, 4 and 6, each ruled in the note"
+  "architecture_2": {
+    "domain": "general-statistics-data-science",
+    "objective": "etl",
+    "stage": 1,
+    "stage_name": "re-root owed (architecture 2 spent at the judge)",
+    "stump": "The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71); only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which holds the three at 79 and lowers the two at 55 and 53.",
+    "architecture": 2,
+    "loops": 0,
+    "precut": {
+      "exit": 0,
+      "date": "2026-11-02"
+    },
+    "leak": {
+      "leak_py": "REVIEW (no LEAK), 2026-11-02 on the final cut, each REVIEW ruled in the note",
+      "reader": ""
+    },
+    "duplicate_check": {
+      "heart": "WARN (overuse.objective; repeat.deliverables csv+docx against task454 v2, same-day build in flight; same_driver_older NOTE differentiated)",
+      "nearest": "0.06 task243; surface 0 promoted"
+    },
+    "judge": {
+      "verdict": "arch 2 pass 1 on cut 950254e3: NOT_DETERMINISTIC",
+      "disposition": "SEND_BACK: the unpaid-to-window imputation unfiled and not forced by the data (the mean-count reading moves five zones); the pilot-street conventions forked; Gate H3",
+      "report": "determinism_check_report.md"
+    },
+    "returned": [],
+    "answer": "Raise D01 Courthouse to 3.25, D05 Union Depot to 2.50, N05 Eastbank to 2.00; lower D04 Market Hall to 2.00 and N02 Birch Hill, N06 Fernwood, N09 Irvine Market to 1.00; hold the other eleven, from 1 January 2027.",
+    "gates": {
+      "checks": "45 assertions, 0 failures",
+      "verify": "26 of 26 golden rows from target/ alone, 0 failures",
+      "rebuild": "two consecutive builds byte-identical (internal second build sha256 046ccd8b11192628); target.zip md5 950254e395d9d1265e94a2fab7f2ccc2 on both consecutive builds",
+      "figures_check": "exit 0 (141 figures)",
+      "voice_check": "PASS",
+      "surface": "exit 0",
+      "heart": "WARN",
+      "ceiling": "cracker 0 of 16, pair 28.5, mirror leakage 0.0; two careful responses each handling one device 72.5",
+      "leak_py": "REVIEW (no LEAK): sweeps 3, 4 and 6, each ruled in the note"
+    },
+    "source_note": "no seed: a draw outside the seeds in General Statistics & Data Science (data integration), objective ETL, re-rooted from architecture 1 (seed ET15, healthcare delivery)",
+    "fate": "spent 2026-11-02 at the stage 4 determinism judge (cut 950254e3), NOT_DETERMINISTIC, SEND_BACK, Gate H3: the golden's imputation of unpaid vehicles over a window no neighbourhood record covered was argued, not forced by the data, and the mean-count reading was licensed; re-rooted at stage 1 into architecture 3"
   }
 }

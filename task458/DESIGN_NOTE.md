@@ -1,8 +1,44 @@
 # task458 design note
 
-Architecture 2, drawn 2026-11-02 as a re-root (architecture 1, a Medicaid plan's county designation in healthcare delivery, sound on its main call but spent on its ask layer: see `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell in another client domain: the City of Elsworth (Oregon, fictional) Parking Services division's 2027 performance-based meter rates, each metered zone's rate moved by its weekday noon-to-2 p.m. occupancy over the fall 2026 measurement period, which no system records whole.
+Architecture 3, drawn 2026-11-02 as a re-root (architecture 2, a city's meter rates from midday occupancy in General Statistics & Data Science, spent at the stage 4 judge; architecture 1, a Medicaid plan's county designation in healthcare delivery, spent on its ask layer: see `## Architecture 2 record`, `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell, on the coordinator's route into the accounting house domain: Ashlund Home Group's FY2026 consolidated stock provision, and whether it takes the group's tangible net worth below its bank's covenant floor.
 
 ## Draw
+
+Ten-line summary (sent to the main thread at registration; figures are fixed at build):
+
+1. **Pairing:** house domain Accounting, Audit & Forensic Analytics (`accounting-audit-forensic`, subdomain `general-ledger-close-consolidation`), naming client domain General Statistics & Data Science and its task type `data-integration-record-linkage-entity-resolution`; objective Data Extraction & Conformation (ETL).
+2. **Niche:** a UK homewares and hardware importer-distributor group's FY2026 consolidated stock provision under IAS 2, conformed from three trading subsidiaries' stock registers and order books (UK, Ireland, Netherlands; three ERPs, sterling and euro, eaches and cases) and the records of the group's own clearance outlet chain (Valuehall, five stores) and its jobbers, in the year a lost DIY customer programme and a failed smart-lighting range left far more excess stock than the outlet can clear in 2027; the provision decides whether the audited accounts breach the bank's minimum tangible net worth covenant.
+3. **Default path against golden:** the default finds each line's stock beyond its 2027 demand and values that excess at the recovery Valuehall has achieved on everything the subsidiaries transferred to it (about 42 per cent of cost), books about £4.3m and finds net worth above the floor (no waiver needed); the golden caps what Valuehall can take in 2027 at its five stores' stocked store-week throughput, values the rest at the jobbers' recovery (about 9 per cent), books about £5.9m and finds net worth below the floor (ask the bank for a waiver before the accounts are signed).
+4. **Stump sentence:** under `## Stump sentence` once the ladder is measured; in one line, the outlet's recovery rate looks proportional to what it is sent only because a store opened each year the excess grew, and its stores' stocked weeks show the cap.
+5. **Shape:** 03, a bridge from the group's year-end stock at cost to the provision and the covenant headroom, each reconciling item by subsidiary and division; decision `go_hold_or_stop` with the provision as the call's critical component; question form `whether`.
+6. **Deliverables (provisional, fixed with the prompt):** a provision workbook (the bridge by subsidiary and division, the conformed line-level excess) and a one-page note to the audit committee.
+7. **Nearest driver (`guard.py mechanisms`, `check`):** 0.08 task252 v1 (a channel's mean error), 0.06 task181 draft, 0.06 task301 v1; none values a surplus through a channel capped by its own stocked throughput. NOTE `test.same_driver_older` (gap time, pattern C, Gate G binding_constraint) differentiated on the card against task456; task106 (the approved F3 build) differentiated too.
+8. **Guard:** PASS on the registered card (2026-11-02), the NOTE above only.
+9. **Ask records:** the subsidiaries' purchase receipts against the group transfer-price list (the consolidated stock at group cost, the intercompany margin removed from the Irish and Dutch stock) and the jobbers' lot contracts with their collection notes (the 2026 jobber recovery by division, lots sold as mixed pallets at one price and collected over several loads). Both devices are screened as code against the honest cracker at stage 2, before any data is cut.
+10. **Layer 1:** three ERPs (the Dutch subsidiary's own item codes through a crosswalk with superseded group codes, cases against eaches, euro at historical cost with the year-end rate filed once), Valuehall's till and goods-in records with shut and thinly stocked weeks and stores opening part-way through 2022 to 2025, order books with cancellations and credit notes.
+
+- **Card:** `.claude/skills/fingerprint/cards/task458.json`, architecture v3, registered 2026-11-02 and `check` re-run on the registered card (PASS, one NOTE). Architecture 2's identity is in the card's lineage with `architecture_spent` and its fate; architecture 1's stays there; both shells sit in `lineage_shells`.
+- **Axes redrawn at the draw, each to the honester label:** gap `objective` first BLOCKed `test.same_puzzle_older` and `test.same_driver_older` (the objective-and-C signature is spent in six and ten older builds), and `time` is the honester first gap anyway: the outlet's recovery was measured at volumes its stores could absorb, and the 2027 window holds a volume the record never saw (`objective` kept second). The call is the covenant verdict, `go_hold_or_stop`, with the provision as its critical component; `quantity_figure` with `how-much` also repeated task467, the last build. Forum `committee_or_panel` (the audit committee approves the provision and the covenant position), forcing event `period_close`, organisation `other` (wholesale importer-distributor; the vocabulary's retailer key is the wrong trade and is banned in the window besides), role `finance_controller`, context artifact `register`, calibration form `settled_transaction_ledger` (the outlet's and jobbers' settled sales of past years' excess). Personas Caroline Burns (group financial controller) and Liam Elliott (Valuehall operations) from `guard.py names --geo "United Kingdom" --seed 458`.
+- **Why this route:** every ETL cell measured closed for an honest unrepeated driver in this session (seasonal adjustment, census-register, emissions inventory: `## Tried and rejected`); on the coordinator's word the draw takes a house domain whose client domain carries the data-integration task type, in a world no ETL cell has used. The work is data integration (three subsidiaries' registers, order books and transfer records, the outlet's tills and goods-in records and the jobbers' contracts conformed into one group stock valuation); the house domain is the honest label because the decision is a year-end consolidated stock provision and the covenant it tests.
+- **The ETL move (guide-to-prompt section 1):** split a total between two causes, here between the two channels that will realise the excess: the forcing file, Valuehall's own till and goods-in records by store and week, pins a structure (the throughput a stocked store sells, and the store count through 2027). Reading every file correctly is not sufficient: the registers, order books and transfer records read right leave the analyst choosing how the excess will be realised, and the outlet's yearly recovery rate on what it was sent reads the same in every year on record.
+- **Shape and shell:** shape 03; question form `whether`; deliverable set and openers drawn with the prompt at stage 2 under the corpus quotas, none of architecture 1's (which, put, round, csv+xlsx) or architecture 2's (what, the, occupancy, csv+docx).
+- **World:** Ashlund Home Group (fictional), an East Midlands importer-distributor of own-brand homewares and hardware sourced from factories in China, Vietnam and India, selling to retailers, DIY chains and marketplaces through Ashlund Home Ltd (UK, sterling), Ashlund Home Ireland Ltd (Dublin, euro) and Ashlund Home BV (Tilburg, euro), each on its own ERP; five divisions (Kitchen and Dining, Storage and Laundry, Lighting and Electrical, Tools and Hardware, Garden and Outdoor). Valuehall Stores Ltd, a group company, runs five clearance stores in the East Midlands opened one a year from 2021; the subsidiaries transfer their surplus lines to it at cost, and what it cannot take goes to jobbers in mixed pallet lots. The group's revolving credit facility tests consolidated tangible net worth at each audited year-end against a floor. Forum: the audit committee, which approves the FY2026 provision and the covenant position before the auditors sign in February 2027.
+- **Data-native sentence:** Valuehall's stores sell what shoppers carry out of five buildings, not what the group sends them: when a store's clearance stock is deep its weekly sales level off at what its floor and footfall move, and the outlet's recovery on what it was sent held steady only because a store opened each year as the group's surplus grew; the surplus the lost DIY programme and the lighting range left at the 2026 year-end is about three times what five stores can sell in 2027.
+- **Abstraction sentence (stumping Part 6), and the approved builds it is not:** "a surplus is realised through a channel whose recovery looked proportional to what it was sent only because its capacity grew with the surplus; its own stocked periods show a fixed throughput, and the excess over it goes to a channel that recovers far less." task106 (approved) sizes each candidate against a known shared pool and adds them, a joint-allocation double-booking; no approved build reads a channel's capacity off its own stocked periods behind a rate that the capacity's growth kept steady.
+- **Lessons 7, 9, 10, 11, 12 and 13 at the draw:** no shipped document states a recovery rate, a provision rate, a capacity, an outlet budget or a provision for any line or division, and no draft provision or committee paper proposes a figure (9, 11; asserted in `checks.py`); the default path is the analyst's own model (a recovery rate measured on the outlet's history), refuted by the outlet's own stocked store-weeks (11, 12: the back-test is past years' excess and how the outlet and jobbers realised it, including 2023, when three stores were saturated); the filed WHAT (IAS 2's net realisable value, the provision's window and the covenant's definition) names no channel, capacity or rate (10); every assumption the golden makes (no sixth store, a steady store-week throughput, the jobbers' recovery, demand at its 2026 run rate) is asserted on the clean truth (7); every window and rounding the call depends on is filed in the owning document or the asking sentence (13).
+- **Sources, one line each:**
+  - `stumping/references/client/two-layer-task-design.md`, allocation_constraints (capacity and queueing): the outlet's store-weeks are the binding capacity, `own:excess-stock-realised-through-a-shared-clearance-outlet-at-its-store-week-throughput`.
+  - `stumping/references/strategies.md` F3 binding constraint (the metric is correct and is not what the decision is scored on; the limit is shared across candidates): the recovery rate is right on what the outlet took; the realisable value is capped by what it can take.
+  - `stumping/references/client/layer2-rigor-patterns.md`, data integration card 1 (propagate integration error into the estimate): the conformation of three ERPs' registers into group lines is Layer 1 here and is asserted neutral on the call.
+  - `dataset-generation/references/layer1-messiness.md`: several sources for one picture, imperfect keys, units and currencies, real coverage; none on the decisive step.
+
+## Architecture 2 record (spent 2026-11-02)
+
+Kept as history; nothing below binds architecture 3. The sections are demoted one level.
+
+Architecture 2, drawn 2026-11-02 as a re-root (architecture 1, a Medicaid plan's county designation in healthcare delivery, sound on its main call but spent on its ask layer: see `## Architecture 1 record` and `## Tried and rejected`). A new world, dataset, generator and shell in another client domain: the City of Elsworth (Oregon, fictional) Parking Services division's 2027 performance-based meter rates, each metered zone's rate moved by its weekday noon-to-2 p.m. occupancy over the fall 2026 measurement period, which no system records whole.
+
+### Draw
 
 Ten-line summary (sent to the main thread at registration; the lines below are the build as cut):
 
@@ -33,7 +69,7 @@ Ten-line summary (sent to the main thread at registration; the lines below are t
   - `dataset-generation/references/layer1-messiness.md`: several sources for one picture, layouts changing at a vendor switch, imperfect keys, real coverage; none on the decisive step.
 - **Leak REVIEW rulings:** recorded under `## Leak check` once `leak.py` has run on the final cut.
 
-## Default path
+### Default path
 
 The pipeline a strong analyst builds from the prompt's words and the files' grain, every field read right and Rule 12 executed:
 
@@ -47,11 +83,11 @@ The pipeline a strong analyst builds from the prompt's words and the files' grai
 - **Ends on:** raise six zones (Courthouse, Union Depot, Eastbank, Alder Row at 95 per cent, Cascade Avenue at 95, Hollis Street at 91, each to its rate plus 50 cents), lower two (Market Hall, Birch Hill), hold ten (Fernwood at 71, Irvine Market at 71 among them).
 - **Golden:** raise three (D01 Courthouse to 3.25, D05 Union Depot to 2.50, N05 Eastbank to 2.00), lower four (D04 Market Hall to 2.00, N02 Birch Hill to 1.00, N06 Fernwood to 1.00, N09 Irvine Market to 1.00), hold eleven; Alder Row 79, Cascade Avenue 79, Hollis Street 79, Fernwood 55, Irvine Market 53 per cent.
 
-## Stump sentence
+### Stump sentence
 
 The default path adds each zone's mean unpaid count on its enforcement runs to the complete paid record, a model downtown's in-window 12:30 run confirms, and so raises Alder Row, Cascade Avenue and Hollis Street (95, 95 and 91 per cent) and holds Fernwood and Irvine Market (71 and 71 per cent); but the neighbourhood runs come only mid-morning and mid-afternoon, when the unpaid vehicles include residents' cars left from the night and school-run stops, so only the vehicles read unpaid on both the last run before noon and the first after 2 p.m. were parked through the window, which puts the three at 79 per cent (hold) and the two at 55 and 53 (lower).
 
-## Three rules
+### Three rules
 
 - **Task type:** `data-integration-record-linkage-entity-resolution` (General Statistics & Data Science), which serves Data Extraction & Conformation: two vendors' session records and the routes' plate reads are integrated into one conformed table of zone occupancy, and the integration estimator is what decides.
 - **Domain test:** the deciding quantity is each zone's window occupancy estimated from a complete record of paid presence plus periodic counts of every vehicle; the field's own estimator is the count-based expansion (the paid record raised by the counts' all-to-paid ratio, or the counts' unpaid stock added), as parking occupancy studies do with survey counts.
@@ -67,7 +103,7 @@ The default path adds each zone's mean unpaid count on its enforcement runs to t
 - **No certified replay:** no certified or published occupancy exists in the pack, so no method is recovered by reproducing one; downtown's 12:30 run is a raw count the default path validates against, not a certified figure.
 - **Lesson:** a count of a population taken outside a window describes the population at that time; when the population turns over by time of day, the window's members are the ones present on both sides of it, found plate by plate, and no build on file teaches transferring a stock across a window by its members' presence on both sides.
 
-## Survivor anatomy
+### Survivor anatomy
 
 - **Actor:** the unpaid vehicle parked through the window has rows (its reads on each run) but no column says it stayed: the property is a relation between a plate's reads on two runs, stored nowhere.
 - **Link:** the signal is the same unpaid plate on the morning and the afternoon run of one zone-day, a within-file comparison across runs that no key offers (the read rows carry no vehicle or stay identifier) and no sentence invites.
@@ -77,7 +113,7 @@ The default path adds each zone's mean unpaid count on its enforcement runs to t
 - **Shock:** the golden's raise and lower sets are not an interval of any sort on a shipped statistic: by paid occupancy the bottom four hold Linden Square, not Fernwood, and the top three hold Kittredge, not Eastbank (R3d); the five districts the step moves are ordinary lunch and flat-profile zones.
 - **Pins:** the WHAT is filed in Rule 12 (the city's administrative rule, its genre) and no filed sentence names a run, a read, a session, an unpaid group or how midday unpaid vehicles are known (LK2); deleting any sentence of 12.03 to 12.05 unforces only what it files.
 
-## Readability screen
+### Readability screen
 
 | Rung | What reads it | Verdict |
 |---|---|---|
@@ -86,7 +122,7 @@ The default path adds each zone's mean unpaid count on its enforcement runs to t
 | 2 the mean unpaid count at the runs (default path) | nothing: downtown's 12:30 run confirms it | silent |
 | 3 (decisive) the plates read unpaid on both runs either side of the window | nothing in any file or sentence names it; only the runs' plates, compared across runs, show the turnover | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -103,7 +139,7 @@ The default path adds each zone's mean unpaid count on its enforcement runs to t
 | SF11 | the pilot's months | the measurement period's weekdays in September and in October | whole calendar months | figures move | the prompt's "each month of the measurement period" and Rule 12.03 |
 | SF12 | a pilot stay's day | the local date the stay began | the UTC date | figures move | the Z on every pilot time; positive control asserted |
 
-## Ladder
+### Ladder
 
 | Rung | Construction | Alder Row | Fernwood | Call |
 |---|---|---|---|---|
@@ -115,7 +151,7 @@ The default path adds each zone's mean unpaid count on its enforcement runs to t
 
 Gate F on the clean truth (R3b): 0 of 9 cheap routes land the call; every count-based route flips exactly the five districts with both overnight and school-run cars (R3c).
 
-## Closure table
+### Closure table
 
 | Axis | Reading here | Closure |
 |---|---|---|
@@ -142,15 +178,15 @@ Gate F on the clean truth (R3b): 0 of 9 cheap routes land the call; every count-
 | 21 Clause scope | 12.05's floor and ceiling | filed; no zone reaches either |
 | 22 Forward window contents | the 2027 rates need no forecast | filed: the rate moves by the 2026 measurement |
 
-## Literal reader
+### Literal reader
 
 Executed word for word on the cut pack: Rule 12.03 and 12.04 fix the period, the weekdays, the window, the in-service spaces and occupancy by every parked vehicle; the prompt fixes the units and rounding. Silent on how unpaid vehicles are known, and every licensed way of using the plate reads either lands the golden (the standing family, SF6 to SF9, 0.0 whole per cents apart) or is ruled out by the runs' own rows (the turnover of unpaid plates between runs, L7a). The pilot figures follow the prompt's period and weekday words and Rule 12.03; the device readings (silence as vacancy, a four-second blip as a departure) are each contradicted by the feed's own rows (a sensor that stopped heartbeating, a vacancy no car could make), so no literal reading of a field gives them (PA1, PB1, PB2).
 
-## Oracles
+### Oracles
 
 None shipped. No document states an occupancy, a factor, a share or a compliance rate; downtown's 12:30 run is a raw count the default path also passes; the golden memo and CSV never ship.
 
-## Ask sheet
+### Ask sheet
 
 Two device families on disjoint figure blocks of the pilot ask, on a system the call never reads (the free streets carry no meter, no session and no route; PS3), so with every pilot file deleted the main files yield no ask figure.
 
@@ -181,7 +217,7 @@ Two device families on disjoint figure blocks of the pilot ask, on a system the 
 - **Mirror leakage:** 0.0 per cent of ask weight.
 - **Measured by:** `generator/ceiling.py` on the cut pack (target/), figures.json as the key.
 
-## Leak check
+### Leak check
 
 `leak.py task458 --asof 2026-11-06 --quiet` on the final cut: REVIEW, no LEAK. Each REVIEW ruled:
 
@@ -193,7 +229,7 @@ Two device families on disjoint figure blocks of the pilot ask, on a system the 
 
 ## Architecture 1 record (spent 2026-11-02)
 
-Kept as history; nothing below binds architecture 2. The sections are demoted one level.
+Kept as history; nothing below binds the current architecture. The sections are demoted one level.
 
 Architecture 1, drawn 2026-10-15 from seed ET15 (behavioral-health workforce designation from NPPES monthly snapshots and weekly deltas). The seed's world, decision and quantity are kept: a Medicaid program designates counties for a behavioral-health prescriber pilot on workforce ratios, with the provider master rebuilt from the NPPES monthly file and its weekly incrementals. Its decoy-era traps (retired clinicians and mail-only addresses in the count) are Layer 1 here, and the pitfall is found in how the ratios' need populations are counted. Pass 2 (stage 4, 15 October): the first design's decisive step (the full-year prevalence standardized by eligibility group) was filed by the isolated leak reader, so the stump was re-centred on the seasonal members' own records; the first design's golden is now the default path.
 
@@ -398,3 +434,7 @@ None. No control, published figure or reconciliation column confirms any rung: t
 - Lower-flip districts on an afternoon profile (screen, 2 November): at the 3 p.m. peak the blocks were full, the school-run stops found no space, and the afternoon run's count landed Fernwood and Irvine Market; both now have flat profiles.
 - Straddling vehicles recorded on two adjacent sensors as the second pilot device (design, 2 November): a count-once rule the rows do not force (the family the judge sent back as unforced); the re-baselining blip replaces it, whose gap no car can make.
 - 2026-11-02, stage 4 (architecture 2 spent): the judge (cut 950254e3) returned NOT_DETERMINISTIC, SEND_BACK. Every golden figure reproduced (all 18 zones, the rates, the pilot streets), but Rule 12.04 counts a vehicle "whether or not that vehicle paid" and no shipped text says how point-in-time enforcement reads become occupied minutes inside a window no neighbourhood run covers. The judge licensed the mean unpaid count on a zone's runs, which moves Alder Row, Cascade Avenue and Hollis Street to raises and Fernwood and Irvine Market to holds, and read the golden's both-runs panel as an unfiled imputation (Gate H3). The design's own validation, downtown's in-window run, supported the mean-count model downtown and nothing inside the window tested the panel in the neighbourhoods, so the golden's imputation was argued, not forced by the data. The pilot-street asks forked too: the flicker merge, the silent sensors and which stays count. Re-rooted at stage 1 into another world and dataset.
+- 2026-11-02, architecture 2 as a whole (a city's meter rates from midday occupancy, spent at the stage 4 judge, NOT_DETERMINISTIC SEND_BACK on Gate H3): the golden's imputation of unpaid vehicles over a window no neighbourhood record covered was argued, not validated by the data where it applied, and the mean-count reading was licensed; one architecture per world, so the slot moves to a new world, dataset, generator and shell.
+- 2026-11-02, architecture 3 draw, seasonal-adjustment-official-time-series-production screened closed for an honest analytical ETL call (reported to the main thread): benchmarking and the step problem (task123, task482 and task465 on file: the current-year extrapolation is a fork, Denton's end ratio sits within tenths of pro-rata's, the ratio path is assumed; the back-tested ratio trend is the QNA's own bias adjustment, a named refinement; a panel-redraw sawtooth is a visible jump unlinked and a plain trend linked; a ratio varying by season or unit is task474 v1's spent driver), chain-linking overlaps (a convention filed or a fork; chain drift is task463; an overlap window's mix is task481), calendar and trading-day regressors (every calendar composition is task477's opportunity count; moving holidays spent by task162, task467, task135), outlier types at a break (task453 v1, task146, task467; a school-calendar seasonal break is task482 arch 12's reflex), concurrent against revised factors and revisions (task482 arch 12: rule application once vintages ship; Layer 1 by CLAUDE.md; completion spent), the seasonal filter itself (task464 Horn C: 0 of 7 settings), and on paper a collection gap imputed from an uninterrupted series, weather normalisation with a data-forced balance point, card- or registry-driven benchmark ratios, intercensal error-of-closure wedges, staggered VAT quarters and cohort-carried intercensal profiles, each dead on a named record or rule.
+- 2026-11-02, architecture 3 draw, census-register-administrative-data-quality and emissions-inventory screened closed on the coordinator's lifted bar (reported to the main thread): every input an inventory figure has and every register-quality quantity has a record (task464's 10-27 enumerations plus task453 v3 and task454 v2 since), and each candidate died on paper: abandoned-mine methane decline (the IPCC hyperbolic is the field's method; a cumulative-gas decline is task180's law; a flooding cut-off needs task154's groundwater world), tuned stack tests (task478 v6), feed-additive dose response (task478's input property), sub-threshold facilities by a truncated size fit, lease fleets at the lessor's address (task454), soil and wastewater N2O pulses (task452 v1), purge-cycle over-coverage (lesson 10, the silence family, task476's phase), stale industry codes by time since check (the classification family, 1.1c), the cancer registry's flow method (task448, task471), own-children birth completeness (task243), threshold bunching (the fit forks), coverage ratios carried from a census (the ratio-forecast fork), attainment completed by cohort (task453 v3).
+- 2026-11-02, architecture 3 draw, the house route into data integration screened before this card, each dead before a harness: a convex N2O response to field nitrogen (task229's Jensen gap), unconstrained demand behind stockouts (task18, task108, task168, task137), sticky contract prices passed through at renewals (task179's reset-month screen), appraisal-smoothed private fund marks rolled to the year-end (task308, task167, task128, task135: Geltner and Dimson are taken on sight), distributor returns from each holder's channel stock (task154's 11-02 screen, beside task161), learning curves in a contract's estimate at completion (task46, task132, task170, task174), salmon biomass shortfalls per handling event (task180's usage law in fish), counter coincidence losses and size-biased net sampling (task473's level-dependent catch), feed-implied biomass (task482 v12's load-per-head), first-expiry queues for dated stock (beside task467 v2's leaving order), state transitions over unequal inspection intervals (task301), stockpile density by pile height (a covariate one column away, 1.1c), mirror-trade freight by weight (a rate on the wrong exposure, beside the batch's trade world), stock write-downs by forward cover against age (the excess-and-obsolescence reserve is the textbook and lands the call), and pack-size price benchmarks (the comparison is WHAT).
