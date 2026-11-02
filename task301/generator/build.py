@@ -1,0 +1,163 @@
+"""Builds task301 end to end: the world, the pack under target/, the golden deliverables under golden/, metadata.json,
+generator/figures.json, submission.md and target.zip. `python3 build.py` builds twice into scratch folders, requires
+the two to be byte-identical, then installs the first into the task folder."""
+import hashlib
+import json
+import os
+import shutil
+import sys
+import tempfile
+import zipfile
+
+import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK_DIR = os.path.dirname(HERE)
+sys.path.insert(0, HERE)
+
+import golden  # noqa: E402
+import pack  # noqa: E402
+import params as P  # noqa: E402
+import register as RG  # noqa: E402
+import world  # noqa: E402
+import writeup  # noqa: E402
+
+ZIP_TIME = (2026, 11, 6, 9, 15, 0)
+DESCRIPTIONS = {
+    "households": "ECVV 2026 household file: one row per interviewed household, 2025 incomes, tenure, weight",
+    "persons": "ECVV 2026 person file: one row per member of an interviewed household, with 2025 personal incomes",
+    "fieldwork": "ECVV 2026 fieldwork cases: every issue of every sample dwelling with its result",
+    "register": "Complemento Familiar register extract of 2 November 2026: every claim, review and decision since 2022",
+    "incidents": "Complemento Familiar incidents recorded in 2025, by quarter",
+    "codes": "Municipality and province codes of the Comunidad de Valdemora",
+    "guidance": "Appraisal of the 2027 child poverty measures: the department's guidance of 15 October 2026",
+    "proposals": "Measures against child poverty for the 2027 budget: the department's proposals of 28 October 2026",
+    "rules": "Complemento Familiar Valdemorense: consolidated rules as in force on 1 October 2026",
+    "coverage": "Complemento Familiar: coverage report 2025 (16 March 2026)",
+    "results": "ECVV 2026: main results, published 24 September 2026",
+    "wave2025": "ECVV 2025 household file (2024 incomes) in the institute's earlier variable layout",
+    "municipal": "Small-area estimates of the at-risk-of-poverty rate by municipality, 2024",
+}
+LICENSE = "CC-BY-4.0 (original synthetic work)"
+
+
+def zip_dir(src, out):
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for fn in sorted(os.listdir(src)):
+            zi = zipfile.ZipInfo(fn, date_time=ZIP_TIME)
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            z.writestr(zi, open(os.path.join(src, fn), "rb").read())
+
+
+def metadata(target, counts):
+    files = []
+    for key, fn in pack.FILES.items():
+        path = os.path.join(target, fn)
+        entry = {"path": fn, "format": fn.rsplit(".", 1)[1], "bytes": os.path.getsize(path),
+                 "description": DESCRIPTIONS[key], "source": "Constructed (seeded generator, task301/generator)",
+                 "date": "2026-11-06", "license": LICENSE}
+        if key in counts:
+            entry["rows"] = counts[key]
+        files.append(entry)
+    largest = max(files, key=lambda f: f.get("rows", 0))
+    return {
+        "task": P.TASK,
+        "title": "Which child poverty measure a Spanish autonomous community's 2027 budget funds, sized by the children "
+                 "each brings above the poverty line in 2027 on the regional living conditions survey, with the "
+                 "Complemento Familiar's 2025 caseload and the survey's 2026 fieldwork by province",
+        "domain": "Economics & Econometrics",
+        "subdomain": "elasticity-welfare-policy-impact-estimation (a regional appraisal service sizing cash measures "
+                     "against child poverty by tax-benefit microsimulation on household survey microdata)",
+        "objective": "Opportunity Sizing & Decision Support",
+        "prompt_shape": "14: cuts per segment, the recommended measure's children by province with the Complemento's "
+                        "caseload by quarter and province and the survey's fieldwork by province",
+        "as_of": P.AS_OF.isoformat(),
+        "deliverables": ["cabinet_note_child_poverty_2027.pdf", "appraisal_annex_2027.xlsx"],
+        "distractor_files": [pack.FILES[k] for k in pack.DISTRACTORS],
+        "context_artifacts": [pack.FILES["coverage"], pack.FILES["results"]],
+        "stated_inputs": ["the figure each measure is appraised on and its definitions (appraisal guidance sections 2 "
+                          "and 3)", "the measures, their amounts, income tests and how families receive them "
+                          "(proposals table and notes)", "the Complemento's entitlement, payment and review rules "
+                          "(consolidated rules sections 2 to 9)"],
+        "field_terms": [],
+        "input_gates": {"files": len(files), "formats": sorted({f["format"] for f in files}),
+                        "largest_file": largest["path"], "largest_file_rows": largest["rows"]},
+        "sources": [{"files": "all files under target/",
+                     "origin": "generated by task301/generator/build.py (seeded, deterministic) around a fictional "
+                               "Spanish autonomous community, the Comunidad de Valdemora, its provinces, municipalities, "
+                               "statistics institute, survey households and a claimed child benefit with its register; "
+                               "every organisation, place, benefit and person is invented and no real dataset is "
+                               "reproduced. The modified OECD equivalence scale and the 60 per cent of median poverty "
+                               "threshold are the published Eurostat conventions.",
+                     "license": LICENSE}],
+        "created": "2026-11-02",
+        "generator": "task301/generator/build.py",
+        "files": files,
+    }
+
+
+def build_into(root):
+    target = os.path.join(root, "target")
+    gold = os.path.join(root, "golden")
+    scratch = os.path.join(root, "scratch")
+    for d in (target, gold, scratch):
+        os.makedirs(d, exist_ok=True)
+    W = world.build(P.SEED)
+    R = RG.build(np.random.default_rng(P.SEED + 77), W)
+    counts = pack.build_all(W, R, target, P.SEED)
+    import analysis
+    analysis._CACHE.clear()
+    F = golden.build(target, gold, scratch)
+    shutil.rmtree(scratch)
+    json.dump(metadata(target, counts), open(os.path.join(root, "metadata.json"), "w"), indent=1, ensure_ascii=False)
+    json.dump(writeup.figure_values(F), open(os.path.join(root, "figures.json"), "w"), indent=0, ensure_ascii=False)
+    writeup.write(F, os.path.join(root, "submission.md"))
+    zip_dir(target, os.path.join(root, "target.zip"))
+    return F
+
+
+def digest(root):
+    h = {}
+    for dp, dn, fns in os.walk(root):
+        for fn in fns:
+            p = os.path.join(dp, fn)
+            h[os.path.relpath(p, root)] = hashlib.sha256(open(p, "rb").read()).hexdigest()
+    return h
+
+
+def install(root):
+    for d in ("target", "golden"):
+        dst = os.path.join(TASK_DIR, d)
+        shutil.rmtree(dst, ignore_errors=True)
+        shutil.copytree(os.path.join(root, d), dst)
+    shutil.copy(os.path.join(root, "metadata.json"), os.path.join(TASK_DIR, "metadata.json"))
+    shutil.copy(os.path.join(root, "figures.json"), os.path.join(HERE, "figures.json"))
+    shutil.copy(os.path.join(root, "submission.md"), os.path.join(TASK_DIR, "submission.md"))
+    shutil.copy(os.path.join(root, "target.zip"), os.path.join(TASK_DIR, "target.zip"))
+    stamp = pack.STAMP.timestamp()
+    for fn in os.listdir(os.path.join(TASK_DIR, "target")):
+        os.utime(os.path.join(TASK_DIR, "target", fn), (stamp, stamp))
+
+
+def main():
+    base = tempfile.mkdtemp(prefix="t301_build_")
+    a, b = os.path.join(base, "a"), os.path.join(base, "b")
+    build_into(a)
+    import analysis
+    analysis._CACHE.clear()
+    build_into(b)
+    da, db = digest(a), digest(b)
+    diff = sorted(k for k in set(da) | set(db) if da.get(k) != db.get(k))
+    if diff:
+        print("NOT byte-identical: %s" % ", ".join(diff))
+        return 1
+    print("two builds byte-identical: %d files" % len(da))
+    install(a)
+    print("target.zip sha256 %s" % da["target.zip"])
+    shutil.rmtree(base)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
