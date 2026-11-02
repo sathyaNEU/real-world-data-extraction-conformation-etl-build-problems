@@ -1,43 +1,49 @@
 ## Tags
 
-**Domain:** Healthcare delivery and health economics (utilization, access and demand forecasting).
-**Analytical objective:** Forecasting and predictive modelling.
+**Domain:** Actuarial Science & Insurance (claims frequency and severity: a self-insured delivery fleet's collision claims for a year on a new route schedule, priced per kilometre on clock time and light).
+**Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Plan for 45,000 GP-referred visits at the community phlebotomy hub in 2027-28.**
-Underlying 2025-26 GP-referred demand was about 41,800 to 42,000 visits, about 2,600 to 2,800 more than the walk-in clinic saw or turned away, because practices with their own phlebotomy clinics kept patients in-house for eight weeks after the clinic's run-out weeks; grown 3.5 per cent a year for two years it is about 44,800 to 45,000. Not 42,500, from 2025-26's seen plus turned away (39,218 grown), which leaves out the patients the practices kept, or from a model of the previous week's run-outs or ten days of them, which sees only the start of the fall. Not 40,000, from the patients seen alone, which also leaves out the patients turned away.
+**The delivery trucks will make 350 collision claims in 2027: 150 from April to September and 200 in the other six months.**
+The 2027 schedule drives 23.3 per cent of its kilometres before sunrise or after sunset, against 7.6 per cent in the record, at about 2.6 times the daylight collision rate at the same clock time. Not 300, the record's rate per kilometre by time of day, which prices the small hours at the summer schedule's daylight rate.
 
 ## 2. Critical Components
 
-1. GP-referred visits seen in 2025-26: **37,853**.
-2. GP-referred patients turned away in 2025-26: **1,365**, on **56** of 253 clinic days the tickets ran out.
-3. How long the run-outs hold GP-referred arrivals down, the window the record's fit picks from one to twelve weeks: **eight weeks**.
-4. 2025-26 underlying GP-referred demand, with that window's run-outs taken out: **about 41,800 to 42,000**.
+1. Kilometres planned for 2027 driven before sunrise or after sunset (driver handbook Appendix C, UK clock time): **23.3 per cent**, against **7.6 per cent** of the kilometres driven October 2023 to September 2026
+2. A kilometre driven in the dark carries about **2.6 times** the collision rate of a daylight kilometre in the same clock band
 
 ## 3. Step-by-Step Solution
 
-1. Counted each clinic day's GP-form and hospital-form visits from walkin_tickets_legacy_2023-04_to_2024-11.csv (Outcome Seen) to 17 November 2024 and from the CHECKED_IN events in phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv (UTC read as UK time) from 18 November 2024: 37,853 GP-referred visits seen in 2025-26.
-2. Read both layouts of reception_turned_away_log.xlsx (the GP and hospital boxes of both shifts in the 2023-24 and 2024-25 sheets, one line per run-out day from 2025-26, month totals left out): 1,365 GP-form patients turned away on 56 clinic days in 2025-26.
-3. Took each Monday-to-Friday week's run-out share (its logged run-out days over its clinic days) and modelled each clinic day's GP-referred arrivals (seen plus turned away), April 2023 to September 2026, as Poisson in weekday, month, a linear trend, the day after a bank holiday and the mean share of the previous L weeks, L from one to twelve by AIC: eight weeks, every window of five weeks or fewer at least 60 worse, coefficient about -0.37 (standard error 0.026), the fall sitting with the practices whose phlebotomy_les_2025-26 is Y in gp_practices_catchment.csv.
-4. Took the GP-referred arrivals of every clinic day of 2025-26 with that effect removed: about 41,800 to 42,000 visits (the eight-week window and the nine-week window next to it in fit), grown 3.5 per cent a year for two years to about 44,800 to 45,000, 45,000 to the nearest 2,500.
-5. Named each 2025-26 hospital request's clinic code: forms issued before 16 March 2026 carry the old PAS's codes, which outpatient_clinic_codes.csv does not hold, and each old code is the new code whose forms issued in the second half of March 2026 fall on the same weekdays as the old code's, before the clinics changed their sessions in April (the register's clinic_days name all seven wrongly: none of the new codes they pick has late-March forms on its old code's weekdays, and under them the weekly visits jump at the switch, where under the late-March link they run on); then counted hospital-form visits by specialty and financial quarter of the visit date.
-6. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in gp_demand_2025-26.png.
+1. Read both Gridtrak exports (miles to kilometres, the overlap week once, UTC to UK clock time by the handbook's summer-time rule) with each truck's depot from fleet_register_2026-10.xlsx, to 30 September 2026.
+2. Took the trucks' claims from ravensby_fleet_claims_listing_2026-10-31.xlsx per the fund terms (cars, duplicates and withdrawn notifications out) to 30 September 2026: 840 claims.
+3. Spread each run's kilometres evenly over its clock hours and split them at its depot's sunrise and sunset from driver_handbook_2026.pdf Appendix C: 7.6 per cent of the record's kilometres in the dark.
+4. Fitted a Poisson rate per kilometre on clock band and light: a dark kilometre at 2.6 times a daylight one; the 04:00 to 07:00 dark kilometres of the May to August schedule had 48 claims against 37.6 expected by that model fitted without them and 23.2 at the 04:00 to 07:00 rate.
+5. Carried the rates onto every route and delivery day of route_schedule_2027.xlsx: 346.9 claims, 150.7 of them from April to September and 196.3 in the other six months.
+6. Counted each Brantwick invoice once in ap_ledger_brantwick_2023-10_2026-10.csv: identical lines (job, invoice date, description, net) are one invoice posted twice, except two identical ADAS calibration lines on a job for a truck the register shows with camera and radar, which are one per sensor; summed net by the truck's depot and the collision's incident date through brantwick_jobs_2023-10_2026-10.csv.
+7. Placed each other insurer's receipt in claims_recovery_account_2024-10_2026-10.csv on its collision: by our claim number where quoted, else on the one claim of that payer whose net repair cost, in full for a non-fault claim or at a quarter, a third, a half, two thirds or three quarters for a split one, equals the amount to the penny; summed by the collision's quarter.
+8. The fund should be set for 350 collision claims in 2027.
 
 ## 4. Deliverable Answers
 
-### hub_plan_2027-28.xlsx
+### claims_fund_2027.xlsx
 
-1. GP-referred blood-test visits to plan for at the hub in 2027-28: 45,000.
-2. Hospital-clinic visits to the walk-in clinic in 2025-26 by financial quarter of the visit, Q1 to Q4:
-   - Cardiology: 1,797, 389, 357, 397
-   - Diabetes and endocrinology: 632, 675, 3,280, 651
-   - Gastroenterology: 240, 257, 250, 286
-   - General medicine: 330, 320, 334, 323
-   - Haematology: 424, 437, 454, 495
-   - Renal medicine: 378, 361, 398, 440
-   - Rheumatology: 406, 376, 343, 2,192
+1. Collision claims in 2027: 350
+2. April to September: 150; January to March and October to December: 200
+3. Paid back by other insurers towards each quarter's collisions, received to 31 October 2026:
+   - January to March 2025 collisions: £73,000
+   - April to June 2025 collisions: £60,000
+   - July to September 2025 collisions: £43,200
+   - October to December 2025 collisions: £64,500
+   - January to March 2026 collisions: £58,000
+   - April to June 2026 collisions: £81,100
+4. Brantwick repair cost of each depot's collisions:
+   - Cramlington: £102,100 for January to June 2025 collisions, £133,000 for July to December 2025 collisions, £148,800 for January to June 2026 collisions
+   - Gateshead (Team Valley): £100,600 for January to June 2025 collisions, £105,800 for July to December 2025 collisions, £110,700 for January to June 2026 collisions
+   - Carlisle: £91,700 for January to June 2025 collisions, £127,400 for July to December 2025 collisions, £92,500 for January to June 2026 collisions
+   - Darlington: £89,600 for January to June 2025 collisions, £67,700 for July to December 2025 collisions, £114,800 for January to June 2026 collisions
 
-### gp_demand_2025-26.png
+### claims_note_2027.docx
 
-1. Stacked bars for each Monday-to-Friday week of 2025-26: GP-referred visits seen, turned away and kept in-house by the practices with their own phlebotomy clinics.
+1. One-page note to the board giving 350 claims for 2027, split between April to September and the other six months, with the reason (the new schedule's dark early hours from October to March)
+2. Chart of collision claims by month of incident, October 2023 to September 2026 in blue and the months of 2027 in orange as expected on the new schedule

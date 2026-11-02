@@ -11,7 +11,7 @@
  "shape": "02",
  "decision_type": "quantity_figure",
  "answer_unit": "count",
- "answer": "",
+ "answer": "350 collision claims in 2027 (150 from April to September, 200 in the other six months; 346.9 unrounded)",
  "answer_source": "task137/generator/figures.json claims_2027",
  "gap": [
   "objective",
@@ -33,27 +33,25 @@
  "validated_decoy": false,
  "context_artifact": "capacity_report",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who cleans the telematics journeys and the claims listing, converts both clocks and reads the 2027 schedule correctly prices the schedule's kilometres at the record's own collision rate per kilometre by hour of day and files about 300 claims (the 03:00-07:00 hours, run only in the May-to-August summer schedule, carry the record's lowest rate), and adding month or depot terms keeps it near 300, where the golden is about 400: from October to March every 2027 route spends its first three to four hours before sunrise, and the record's own winter evenings and dark summer-schedule starts show collisions per kilometre in darkness at about three times the daylight rate at the same hour; checks.py runs the default and the decisive step on the generator's clean truth and on the pack (design targets; the generator fixes the figures).",
+ "analyst_test": "A strong analyst who reads both Gridtrak exports (miles and UTC converted), cleans the claims listing (cars, duplicates and withdrawn notifications out) and reads the 2027 schedule and calendar correctly prices the schedule's kilometres at the record's own collision rate per kilometre by clock band (or hour, month or depot) and files 300 claims (281.9), the 04:00-07:00 hours looking the fleet's safest because the record drove them only on the May-to-August schedule, mostly in daylight; the golden rates each kilometre on the light it is driven in from the driver handbook's Appendix C and files 350 (346.9), 200 of them outside April to September where the clock route files 150.",
  "domain_test": "The deciding quantity is the fleet's collision frequency per kilometre under the driving conditions each kilometre is driven in, which motor claims-frequency work estimates from exposure (a Poisson rate on kilometres with the conditions as rating factors) and carries onto the next period's exposure; here the condition that decides is darkness, computed for every journey from its date, clock time and depot position against sunrise and sunset, and a noun swap breaks it: a hospital's falls per bed-night happen under lights that are on all night, and a call centre's errors per call keep no relation to where the sun is when the call is made.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:collision-exposure-priced-by-the-light-it-is-driven-in-not-the-clock-hour",
  "layer1": [
-  "the telematics platform's journey export in UTC against the claims listing's local collision times across both clock changes",
-  "journeys split when the ignition is off for more than ten minutes, and units swapped between vehicles (a vehicle's unit serial changes, its registration does not)",
-  "the claims listing holding duplicate notifications closed as merged, claims withdrawn as no incident, and the company cars on the same policy",
-  "registrations written with and without the space, and depot names as the platform and the claims handler each write them",
-  "repair invoices from the network bodyshops and the depots' own workshops in two layouts",
-  "receipts from other insurers quoting our claim number on some lines and only their own reference on others",
-  "the 2027 schedule as routes with a planned departure time and planned kilometres by weekday, with bank holiday exceptions"
+  "two Gridtrak day-summary export templates (miles then kilometres, dd/mm/yyyy times then ISO stamps, registrations without then with the space, an overlap week), every time in UTC, against the listing's UK clock incident times",
+  "the claims listing under a report header, with company cars on the same policy, second notifications closed as duplicates and withdrawn notifications, running a month past the telematics",
+  "depot names written three ways (the register, the platform's groups, the schedule's codes)",
+  "the accounts-payable ledger's site cost centres, net, VAT and gross, and the bodyshop feed's resent copies posted a week later beside genuine same-day calibration pairs",
+  "the recovery account's truncated payer narratives, references run together, salvage credits and month-end sweeps"
  ],
  "stakeholder_role": "the group's fleet risk and insurance manager, who buys the motor cover and runs the self-insured claims fund",
  "role_family": "procurement_lead",
  "scoring_unit": "per episode",
  "spine": {
-  "file": "telematics_journeys_2023-10_to_2026-09.csv",
-  "rows": 0,
-  "entity": "one vehicle journey from leaving its depot to returning",
-  "grain": "vehicle x journey",
+  "file": "gridtrak_day_summary_2025-03_2026-09.csv (with gridtrak_day_summary_2023-10_2025-03.csv)",
+  "rows": 119448,
+  "entity": "one truck's driving day, first ignition on to last ignition off, with its distance",
+  "grain": "vehicle x day",
   "source": "synthetic"
  },
  "forum": "board_of_directors",
@@ -67,7 +65,23 @@
    "Tarnfield Wholesale",
    "Northfold Local",
    "Brantwick Accident Repair",
-   "Ravensby Insurance"
+   "Ravensby Insurance",
+   "Gridtrak",
+   "Brackenholme Salvage",
+   "Aldwyn General Insurance",
+   "Bellmont Motor Underwriting",
+   "Coquet Mutual Insurance",
+   "Delamere Insurance",
+   "Elsdon Direct",
+   "Fenwick & Hart Insurance",
+   "Greyfriars Assurance",
+   "Halsall Motor",
+   "Ingleby Insurance Company",
+   "Kirkhaugh Insurance",
+   "Lowther General",
+   "Morrell Motor Insurance",
+   "Northallerton Mutual",
+   "Ottery Underwriting"
   ],
   "people": [
    "Jenna Cole",
@@ -83,8 +97,8 @@
  "opening_move": "question-first",
  "question_form": "how-many",
  "driver": "A unit's event rate per unit of exposure is set by whether each unit of exposure is taken in a physical condition that the clock tracks only in part, so a rate read by clock hour carries the record's own mix of the condition at that hour; a forward schedule that moves the exposure into hours the record ran only while the condition was absent keeps the clock-hour rate low, while the condition's own rate, measured in the record at other hours and seasons, carries the forward exposure far higher.",
- "driver_concrete": "The 2027 collisions are the schedule's 2027 kilometres priced at the record's collision rates per kilometre in daylight and in darkness at each hour band, darkness computed from each journey's date, time and depot against sunrise and sunset, the dark rate measured on the winter evenings' returns and the summer schedule's starts before sunrise; the clock-hour rate for the small hours comes only from the May-to-August summer schedule, almost all of it after sunrise, and so misses that from October to March every 2027 route runs its first three to four hours in the dark.",
- "stump": "A competent analyst prices the 2027 schedule's kilometres at the record's collision rate per kilometre by hour of day and files about 300 claims, the small hours looking the fleet's safest, where the golden is about 400; the step that lands it there is reading collision risk off the clock instead of off the light: the small hours' low rate is a daylight rate from the summer schedule, and from October to March every 2027 route spends its first three to four hours before sunrise, where the record's own winter evenings show collisions per kilometre at about three times the daylight rate at the same hour (design targets; the generator fixes the figures).",
+ "driver_concrete": "The 2027 collisions are the schedule's 2027 kilometres priced at the record's collision rates per kilometre in daylight and in darkness within each clock band, darkness read from each run's date, UTC times and depot against the driver handbook's Appendix C sunrise and sunset table and its summer-time rule; the dark rate is measured on the winter evenings' returns, December mornings and the summer schedule's earliest starts, and back-tested on the 04:00-07:00 dark kilometres of the May-to-August schedule (48 claims against 37.6 expected, the clock rates expecting 23.2 and 32.3).",
+ "stump": "A competent analyst prices the 2027 schedule's kilometres at the record's collision rate per kilometre by clock band and files 300 claims (281.9), the small hours looking the fleet's safest, where the golden is 350 (346.9); the step that lands it there is reading collision risk off the clock instead of off the light: the small hours' low rate is a daylight rate from the May-to-August schedule, and from October to March every 2027 route starts in the dark, up to five hours before sunrise in midwinter, where the record's own dark kilometres carry 2.59 times the daylight rate in the same clock band.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task204": "task204 recovers a ventilation rate by solving each room's unsteady balance across the timetable's windows; here no balance is solved and nothing is anomalous: the fleet's collision rate per kilometre is read by the light each kilometre is driven in, computed from each journey's date, time and depot against sunrise and sunset, and carried onto a 2027 schedule that moves the driving into winter darkness.",
@@ -321,7 +335,7 @@
    "deliverable set": "png+xlsx"
   }
  ],
- "notes": "Org family logistics_or_3pl: a delivered grocery wholesaler whose business is distribution to independent stores on its own fleet, the nearest family (other and retailer_or_ecommerce sit in the three-build window). Calibration none: the dark rate is measured on the record's own dark kilometres and validated on the dark summer-schedule starts. Context artifact capacity_report: the 2027 route schedule with planned departures and kilometres. Gap objective then time: the collision rate by clock hour is correctly measured and is not what the 2027 collisions are scored on, which is the rate by the light each kilometre is driven in; and the record's small hours were run only in summer daylight while the forward year runs them in winter darkness. Pattern none: G7 (when the driving physically happens relative to sunrise and sunset decides its rate), G6 (the forward exposure's mix of light and dark moves under an unchanged clock-hour mix), G14 (the collision rate conditioned on the light each kilometre is driven in). Strategy composition_mix: the rate is stable within light condition and hour band, and the 2027 schedule moves the exposure's light mix, which a rate by clock hour averages over the record's own mix; forecast_method_backtest, the nearer label for a clock-hour fit that validates year on year and fails forward, sits in the three-build window (task197 v2). Ask records named at the draw: (A) the receipts from other insurers, where the domain mechanic is subrogated recovery of the self-insured own-damage outlay at the other side's share of liability, remitted under the other insurer's own reference; (B) the bodyshop network's invoice feed, where the domain mechanic is a feed resend under fresh invoice numbers beside genuine same-day second invoices on one repair, each repair's authorised total fixing which lines are real; both screened as code against the careful-solver cracker before the pack is cut.",
+ "notes": "Org family logistics_or_3pl: a delivered grocery wholesaler whose business is distribution to independent stores on its own fleet, the nearest family (other and retailer_or_ecommerce sit in the three-build window). Calibration none: the dark rate is measured on the record's own dark kilometres and validated on the dark summer-schedule starts. Context artifact capacity_report: the 2027 route schedule with planned departures and kilometres. Gap objective then time: the collision rate by clock hour is correctly measured and is not what the 2027 collisions are scored on, which is the rate by the light each kilometre is driven in; and the record's small hours were run only in summer daylight while the forward year runs them in winter darkness. Pattern none: G7 (when the driving physically happens relative to sunrise and sunset decides its rate), G6 (the forward exposure's mix of light and dark moves under an unchanged clock-hour mix), G14 (the collision rate conditioned on the light each kilometre is driven in). Strategy composition_mix: the rate is stable within light condition and hour band, and the 2027 schedule moves the exposure's light mix, which a rate by clock hour averages over the record's own mix; forecast_method_backtest, the nearer label for a clock-hour fit that validates year on year and fails forward, sits in the three-build window (task197 v2). Ask records named at the draw and built: (A) the receipts from other insurers, where the domain mechanic is subrogated recovery of the net own-damage repair cost at the other side's share of liability (in full for a non-fault collision, at a quarter to three quarters for a split one), 89 of 171 receipts quoting only the payer's own reference, each matching one claim's cost times a share to the penny (D7); (B) the bodyshop feed's resend spells posted a week later under fresh AP numbers beside genuine identical ADAS calibration lines, one per sensor on trucks the register shows with camera and radar, a late radar certificate posting some a week later (D1); the engineer's authorisations were drafted and dropped as an oracle. generator/ceiling.py: the honest cracker keeps 0 of 14 ask figures, pair 28.5.",
  "registered": "2026-11-02T20:53:26Z",
  "shell": {
   "question form": "how-many",

@@ -1,378 +1,435 @@
-"""Generator assertions: the call, its standing family, the ladder, the careful frame, the fork table, the three rules on
-the clean truth, mess neutrality, the asks' devices and stops, separation, the input gates, the realism sweep and the
-documents read back with positive controls. Returns the number of failures."""
+"""Every assertion the build stands on, run on the cut pack and the generator's clean truth. Labels: R (the three
+rules), M (the main call), L (light labels and the back-test), A7 (lesson 7: assumptions the data could contradict),
+SF (semantic forks), K (clocks), D (ask devices), G (input gates, realism, leaks). Returns the number of failures."""
+import collections
 import datetime as dt
+import json
 import os
-import shutil
-import tempfile
+import re
+import zipfile
 
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
+from scipy import stats
 
-import build as B
-import docs as DC
+import analysis as AN
+import astro as A
+import pack as PK
 import params as P
+import seeds as SD
 import solve as S
-import world as WO
 
-BAD = []
-U = S.ROUND
+FAILS = []
 
 
-def check(name, ok, info=""):
-    print(("ok   " if ok else "FAIL ") + name + ((" :: " + str(info)) if info != "" else ""))
-    if not ok:
-        BAD.append(name)
+def ok(label, cond, detail=""):
+    print(("PASS " if cond else "FAIL ") + label + ((": " + str(detail)) if detail != "" else ""))
+    if not cond:
+        FAILS.append(label)
 
 
-def edge(x, u=U):
-    return u / 2.0 - abs(x - S.rnd(x, u))
+def b50(x):
+    return int(50 * round(x / 50 + 1e-9))
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    import re
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
+def b25(x):
+    return int(25 * round(x / 25 + 1e-9))
 
 
-def main(target, R=None):
-    del BAD[:]
-    D, ci, ev, g = S.solve(target)
-    ci.attrs["target"] = target
-    gold = g["plan_r"]
-    L, col = g["L"], g["col"]
-    check("call: the plan is 45,000 GP-referred visits", gold == 45000, round(g["plan"]))
-    check("call: at least 600 inside its 2,500 cell", edge(g["plan"]) >= 600, round(edge(g["plan"])))
-    aic = g["aic"]
-    gap5 = min(aic[l] - aic[L] for l in aic if l <= 5)
-    check("fit: the record's fit picks the world's own eight-week window", L == P.DETER_WEEKS,
-          {k: round(v - aic[L], 1) for k, v in aic.items()})
-    check("fit: every window of five weeks or fewer at least 50 worse in AIC", gap5 >= 50, round(gap5, 1))
-    # SF11: the write-up's AIC margin is a bound that holds on every sample its method implies, not one sample's figure
-    bound, gvar = S.window_gap_bound(D, target)
-    for k, (Lv, gv) in gvar.items():
-        check("SF11 on the %s the fit picks eight weeks and every window of five weeks or fewer is at least the stated %d "
-              "worse, with 2 to spare for an implementation's own fit" % (k, bound), Lv == P.DETER_WEEKS and gv >= bound + 2,
-              (Lv, round(gv, 1)))
-    check("SF11 the stated bound is the lowest margin over those samples floored to ten, and at least 50",
-          bound >= 50 and bound == int(10 * np.floor(min(v[1] for v in gvar.values()) / 10.0)), bound)
-    _here = os.path.dirname(os.path.abspath(__file__))
-    _fj = os.path.join(_here, "figures.json")
-    if os.path.exists(_fj):
-        import json as _json
-        with open(_fj) as _fh:
-            _stated = _json.load(_fh)["aic_gap_five_weeks_or_fewer"]
-        _sub = open(os.path.join(os.path.dirname(_here), "submission.md")).read()
-        check("SF11 figures.json and the write-up's step 3 carry that bound",
-              _stated == bound and ("every window of five weeks or fewer at least %d worse" % bound) in _sub, _stated)
-    fam = S.family(D, ci, L)
-    for k, v in fam.items():
-        check("family: %s prints 45,000, at least 300 inside the cell" % k, S.rnd(v) == gold and edge(v) >= 300, round(v))
-    geo = fam["a geometric decay over 26 weeks, its rate by AIC"]
-    check("family: the geometric decay, the top-edge soft spot, at least 250 below 46,250", 46250 - geo >= 250, round(46250 - geo))
-    more = S.family_more(D, target, L)
-    for k, v in more.items():
-        check("family: %s prints 45,000, at least 250 inside the cell" % k, S.rnd(v) == gold and edge(v) >= 250, round(v))
-    extra = S.family_extra(D, L)
-    for k, v in extra.items():
-        check("family (other exposure forms): %s prints 45,000, at least 250 inside" % k, S.rnd(v) == gold and edge(v) >= 250,
-              "%.0f, %.0f inside" % (v, edge(v)))
-    allfam = list(fam.values()) + list(more.values()) + list(extra.values())
-    check("family: %d specifications in one printed cell" % len(allfam), len({S.rnd(v) for v in allfam}) == 1,
-          "%.0f to %.0f, %.2f of the unit" % (min(allfam), max(allfam), (max(allfam) - min(allfam)) / U))
-    for k, (v, da) in S.reduced(D, L).items():
-        check("reduced controls ruled out by fit: %s costs at least 100 in AIC" % k, da >= 100, "%.0f, AIC +%.0f" % (v, da))
-    for k, (v, n, miss) in S.quiet(D, L).items():
-        check("quiet-period fit ruled out by support: %s holds no day in %d months of the year" % (k, len(miss)),
-              len(miss) >= 1, "%d days, months absent %s, %.0f" % (n, miss, v))
-    # what the probes' own return check sees on this pack: the day-lagged turned-away counts (recorded)
-    Dv = D.assign(g1=D.away_gp.shift(1).fillna(0), g2=D.away_gp.shift(2).fillna(0),
-                  a1=(D.away_gp + D.away_h).shift(1).fillna(0), a2=(D.away_gp + D.away_h).shift(2).fillna(0),
-                  tot=D.seen_gp + D.seen_h)
-    cl = Dv[Dv.ro == 0]
-    mg = sm.GLM(cl.seen_gp, S.calX(cl, ["g1", "g2"]), family=sm.families.Poisson()).fit()
-    mt = sm.GLM(cl.tot, S.calX(cl, ["a1", "a2"]), family=sm.families.Poisson()).fit()
-    check("visibility (recorded): the return check on GP-form visits, lag 1 and 2 days' GP turned away", True,
-          "t %.1f and %.1f" % (mg.params["g1"] / mg.bse["g1"], mg.params["g2"] / mg.bse["g2"]))
-    check("visibility (recorded): the return check on all visits", True,
-          "t %.1f and %.1f" % (mt.params["a1"] / mt.bse["a1"], mt.params["a2"] / mt.bse["a2"]))
-    lad = S.ladder(D, target, ci)
-    want = {"R0": 40000, "R1": 42500, "R2": 42500, "R3": 42500, "R4": 42500, "R5": 42500}
-    for k, v in lad.items():
-        far = abs(v - 45000) - U / 2.0
-        if k.startswith("R2 demand fitted"):
-            check("ladder: %s misses, at least 1,000 from the golden's cell (its own cell at the 41,250 edge)" % k[:2],
-                  S.rnd(v) != gold and far >= 1000, round(v))
+def margin(x, k):
+    """distance from x to the nearer edge of its rounding bin of width k"""
+    lo = (round(x / k + 1e-9) - 0.5) * k
+    return min(x - lo, lo + k - x)
+
+
+def routes(E, C, F):
+    out = {}
+    for name, cols in list(AN.MODELS_EASY.items()) + list(AN.MODELS_LIGHT.items()):
+        if "year" in cols:
             continue
-        check("ladder: %s prints %s" % (k, "{:,}".format(want[k[:2]])), S.rnd(v) == want[k[:2]], round(v))
-        check("ladder: %s at least %s from the golden's cell" % (k[:2], "1,000" if "reader" in k or "golden" in k else "900"),
-              far >= (1000 if ("reader" in k or "golden" in k) else 900), round(far))
-    for lab, kw in (("no month terms", dict(month=False)), ("with the day's hospital-form visits", dict(hosp=True)),
-                    ("Poisson", dict(poisson=True))):
-        v = S.lag_route(D, **kw)
-        check("ladder: the round 2 Opus reader's route, %s, at least 1,000 below the golden's cell" % lab, 43750 - v >= 1000, round(v))
-    for n, must in ((20, True), (30, True)):
-        v = S.lag_route(D, n=n)
-        check("ladder: the round 2 Opus reader's route with %d daily lags misses" % n, v < 43750, round(v))
-    v40 = S.lag_route(D, n=40)
-    check("ladder (recorded): with 40 daily lags, eight weeks of them, the route reaches the golden's cell", True, round(v40))
-    comp = lad["R2 the run-out days completed from the GP ticket-issue curve (the round 1 Opus reader)"]
-    careful = [lad["R1 seen plus GP-referred turned away (the default path; the round 1 Sonnet reader)"], comp,
-               lad["R5 ten daily lags of the kiosk's full days on open days (the round 2 Opus reader)"]]
-    check("check 2: the default and both Opus readers' careful routes agree in one cell and the decisive step alone moves "
-          "the call out", len({S.rnd(x) for x in careful}) == 1 and S.rnd(careful[0]) != gold, [round(x) for x in careful])
-    # fork table
-    fy = (D.fy == 2025).values
-    gp_coded = ci[(ci.request_type == "GP") & ci.request_org.notna() & (ci.request_org != "")]
-    pr = pd.read_csv(os.path.join(target, DC.FILES["practices"]), dtype=str)
-    blank = int(((ci.request_type == "GP") & (ci.request_org.isna() | (ci.request_org == ""))).sum())
-    D1 = D.copy()
-    lost = ci[(ci.request_type == "GP") & (ci.request_org.isna() | (ci.request_org == ""))].groupby("d").size()
-    D1["arr"] = D1.arr - D1.d.map(lost).fillna(0).astype(int)
-    v = S.deterred(D1)[0] * S.G2
-    check("SF1 GP-referred read as a practice code on the form instead of the kiosk's GP choice: 45,000 still",
-          S.rnd(v) == gold and 0 < blank, "%d forms without a barcode; %.0f" % (blank, v))
-    cal = (D.d >= dt.date(2025, 1, 1)) & (D.d <= dt.date(2025, 12, 31))
-    vcal = float((D.arr.values[cal.values] * np.exp(-g["b"] * D[col].values[cal.values])).sum()) * S.G2
-    check("SF2 2025-26 read as calendar 2025: the ICB letter and the annual report use financial years",
-          "2025-26, the last complete year" in pdf_text(os.path.join(target, DC.FILES["icb"])), round(vcal))
-    check("SF3 growth compounded or simple (1.07): 45,000 either way", S.rnd(g["base"] * 1.07) == gold, round(g["base"] * 1.07))
-    d2728 = len([d for d in WO.clinic_days(dt.date(2027, 4, 1), dt.date(2028, 3, 31))])
-    vwd = g["plan"] * d2728 / g["days"]
-    check("SF4 a working-day adjustment the prompt rules out would still print 45,000", S.rnd(vwd) == gold, "%d days, %.0f" % (d2728, vwd))
-    check("SF5 the turned away left out: 40,000, ruled out by a hub that never runs out of tickets",
-          S.rnd(lad["R0 GP-referred patients seen"]) == 40000)
-    leg = pd.read_csv(os.path.join(target, DC.FILES["legacy"]), dtype=str)
-    leg = leg[leg.Outcome == "Seen"].copy()
-    leg["d"] = pd.to_datetime(leg.Date, format="%d/%m/%Y").dt.date
-    dup = leg[(leg.d >= P.NEW_SYSTEM_LIVE) & (leg.Request == "GP form")].groupby("d").size()
-    D6 = D.copy()
-    D6["arr"] = D6.arr + D6.d.map(dup).fillna(0).astype(int)
-    v6 = S.deterred(D6)[0] * S.G2
-    ev_ci = ci[(ci.d <= P.OLD_SYSTEM_OFF) & (ci.request_type == "GP")].groupby("d").size()
-    check("SF6 the parallel-run fortnight counted twice: 45,000 still, and the two systems agree day by day",
-          S.rnd(v6) == gold and dup.reindex(ev_ci.index).fillna(-1).astype(int).equals(ev_ci.astype(int)), round(v6))
-    check("SF7 the hub's first weeks carry no run-out record: the window's share is nil from April 2027",
-          True, "the plan grows a never-ran-out base")
-    check("SF8 visits, not patients: the prompt asks for visits and the records carry no patient key",
-          "patient" not in "".join(c.lower() for c in ci.columns))
-    rep6 = pdf_text(os.path.join(target, DC.FILES["report"]))
-    csv_cols = [c.lower() for f in os.listdir(target) if f.endswith(".csv")
-                for c in pd.read_csv(os.path.join(target, f), nrows=1).columns]
-    check("SF9 every patient with a GP request is the hub's GP-referred demand set from 2025-26, not the practices' own "
-          "clinics' work: no file counts the practices' phlebotomy activity",
-          "Its activity plan is to be set from 2025-26" in rep6 and not any("activity" in c or "bled" in c for c in csv_cols))
-    check("SF10 the booked clinic at Brantmoor carries on as now, so its own booked patients stay out of the hub's figure",
-          "the booked clinic at %s carries on as now" % P.SATELLITE in rep6)
-    # three rules on the clean truth
-    if R is not None:
-        W = R["W"]
-        fyw = np.array([WO.fy(x) == 2025 for x in W["days"]])
-        arr_t = float((W["A"]["P"] + W["A"]["N"])[fyw].sum()) * S.G2
-        lat_t = float((W["lam"]["P"] + W["lam"]["N"])[fyw].sum()) * S.G2
-        und_t = float((W["A"]["P"] * np.exp(W["K"] * W["E"]) + W["A"]["N"])[fyw].sum()) * S.G2
-        check("R1 the field's raw material ships: daily referrals by request form, the turned-away record and practice codes",
-              len(D) > 800 and D.ro.sum() > 100 and gp_coded.request_org.isin(pr.practice_code).mean() > 0.95)
-        check("R1 no shipped column holds the deterrence or the suppressed demand",
-              not any(("suppress" in c.lower() or "deter" in c.lower() or "kept" in c.lower()) for f in os.listdir(target)
-                      if f.endswith(".csv") for c in pd.read_csv(os.path.join(target, f), nrows=1).columns))
-        check("R3a analyst test on the clean truth: every arrival grown files 42,500", S.rnd(arr_t) == 42500, round(arr_t))
-        check("R3b the decisive step alone on the clean truth: arrivals with the practices' in-housing undone file 45,000",
-              S.rnd(und_t) == 45000, round(und_t))
-        check("R3b the generator's latent demand files 45,000 too", S.rnd(lat_t) == 45000, round(lat_t))
-        check("R3c no plant: no daily count repeats a block of days", not any(
-            (D.seen_gp.values[i:i + 5] == D.seen_gp.values[j:j + 5]).all() for i in range(0, len(D) - 5, 5)
-            for j in range(i + 5, min(i + 60, len(D) - 5), 5)))
-    # R2: each mess item mishandled leaves the call
-    D7 = D.copy()
-    tt = int((pd.read_csv(os.path.join(target, DC.FILES["legacy"]), dtype=str).Outcome == "Test ticket").sum())
-    check("R2 test tickets kept as visits: 45,000 still (no test ticket carries a GP form)", tt > 0 and S.rnd(g["plan"]) == gold, tt)
-    utc_d = pd.to_datetime(ci.event_utc, utc=True).dt.date
-    check("R2 event times left in UTC: every check-in falls on the same UK date", (utc_d.values == ci.d.values).all())
-    log = S.load_log(target)
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(target, DC.FILES["log"]), data_only=True)
-    textdates = []
-    for ws in wb.worksheets[2:]:
-        for row in ws.iter_rows(values_only=True):
-            if isinstance(row[0], str) and row[0][:2].isdigit():
-                textdates.append(dt.datetime.strptime(row[0], "%d/%m/%Y").date())
-    D8 = D.copy()
-    for d in textdates:
-        D8.loc[D8.d == d, "arr"] -= D8.loc[D8.d == d, "away_gp"]
-        D8.loc[D8.d == d, "ro"] = 0
-    v8 = S.deterred(D8)[0] * S.G2
-    check("R2 the log's typed-in dates dropped: 45,000 still", 0 < len(textdates) and S.rnd(v8) == gold, "%d rows, %.0f" % (len(textdates), v8))
-    check("R2 the practice merger and the clinic codes do not touch the call (it reads the kiosk's GP choice)", True)
-    Dk = D.copy()
-    Dk["ro"] = np.maximum(Dk.ro, Dk.full)
-    shk = Dk.groupby("wk").ro.agg(["sum", "size"])
-    shk = (shk["sum"] / shk["size"]).to_dict()
-    for j in range(1, S.LAGS + 1):
-        Dk["w%d" % j] = [shk.get(w - dt.timedelta(7 * j), 0.0) for w in Dk.wk]
-    for l in range(1, 13):
-        Dk["s%d" % l] = Dk[["w%d" % j for j in range(1, l + 1)]].mean(axis=1)
-    gk = S.golden(Dk)
-    check("R2 the days the kiosk filled with nobody turned away read as run-outs: 45,000 still",
-          gk["plan_r"] == gold and int((Dk.ro[fy] > D.ro[fy]).sum()) > 0,
-          "%d days in 2025-26, %d weeks, %.0f" % (int((Dk.ro[fy] > D.ro[fy]).sum()), gk["L"], gk["plan"]))
-    # asks
-    hosp, code_spec = S.ask_hosp(ci, target)
-    truth_old = {s[3]: s[0] for s in P.SPECIALTIES}
-    check("ask A: every old clinic code links to one new code through the March 2026 issues, and to its own specialty",
-          all(code_spec.get(c) == sp for c, sp in truth_old.items()), code_spec)
-    wkr, wk_spec = S.ask_hosp_weekday_route(ci, target)
-    check("ask A: the careful route (old codes' request weekdays against the register's clinic days) names every old code "
-          "and names each one wrongly", all(wk_spec.get(c) not in (None, sp) for c, sp in truth_old.items()), wk_spec)
-    same = sum(int(wkr[sp][q] == hosp[sp][q]) for sp in hosp for q in hosp[sp])
-    check("ask A: the careful route misses all 28 cells", same == 0, "%d of 28" % same)
-    reg = pd.read_csv(os.path.join(target, DC.FILES["clinics"]), dtype=str)
-    check("ask A: the register holds only the new PAS's codes, none of the old ones",
-          not set(reg.clinic_code) & set(truth_old), sorted(reg.clinic_code))
-    hh = ci[ci.request_type == "HOSP"].copy()
-    hh["rd"] = pd.to_datetime(hh.request_date).dt.date
-    newc = set(reg.clinic_code)
-    check("ask A: new codes first appear on forms issued from 16 March 2026, old codes last before it",
-          hh[hh.request_org.isin(newc)].rd.min() >= P.PAS_LIVE and hh[~hh.request_org.isin(newc)].rd.max() < P.PAS_LIVE)
-    h = ci[(ci.request_type == "HOSP") & (ci.d >= S.FY0) & (ci.d <= S.FY1)]
-    check("ask A: the 28 cells total the 2025-26 hospital-form visits", sum(sum(q.values()) for q in hosp.values()) == len(h))
-    # SF12: the old codes named through the register's clinic_days, refuted by the late-March issues and the switch
-    late = hh[(hh.rd >= P.PAS_LIVE) & (hh.rd < S.TEMPLATES)]
-    late_wd = {c: frozenset(x.weekday() for x in late[late.request_org == c].rd) for c in newc}
-    old_wd = {c: frozenset(x.weekday() for x in hh[hh.request_org == c].rd) for c in truth_old}
-    code_of = dict(zip(reg.specialty, reg.clinic_code))
-    check("SF12 positive control: each new code the late-March link picks has its 16 to 31 March 2026 forms on exactly its "
-          "old code's weekdays", all(late_wd[code_of[code_spec[c]]] == old_wd[c] for c in truth_old))
-    miss12 = {c: (sorted(old_wd[c]), code_of[wk_spec[c]], sorted(late_wd[code_of[wk_spec[c]]])) for c in truth_old
-              if late_wd[code_of[wk_spec[c]]] == old_wd[c]}
-    check("SF12 the register's clinic_days reading fails the late-March match: none of the new codes it picks has its "
-          "16 to 31 March 2026 forms on its old code's weekdays", not miss12, miss12)
-    hh["wk"] = [d - dt.timedelta(d.weekday()) for d in hh.d]
-    sw = [P.PAS_LIVE - dt.timedelta(7), P.PAS_LIVE, P.PAS_LIVE + dt.timedelta(7)]
+        q, y, _ = AN.forecast(E, C, F, cols)
+        out[name] = (y, [float(q.get(i, 0)) for i in (1, 2, 3, 4)])
+    q, y = AN.cell_forecast(E, C, F, ["month", "band"], ["band"])
+    out["month by band cells"] = (y, [float(q.get(i, 0)) for i in (1, 2, 3, 4)])
+    q, y = AN.cell_forecast(E, C, F, ["band", "dark"], ["band"])
+    out["band by light cells (light)"] = (y, [float(q.get(i, 0)) for i in (1, 2, 3, 4)])
+    return out
 
-    def switch_break(old_to_spec):
-        m = dict(zip(reg.clinic_code, reg.specialty))
-        m.update(old_to_spec)
-        x = hh[hh.wk.isin(sw)]
-        t = x.groupby([x.wk, x.request_org.map(m)]).size().unstack(fill_value=0)
-        return int((abs(t.loc[sw[1]] - t.loc[sw[0]]) + abs(t.loc[sw[2]] - t.loc[sw[1]])).sum())
-    b_gold, b_reg = switch_break(code_spec), switch_break(wk_spec)
-    check("SF12 the weekly visits run on across the switch under the late-March link and jump under the register's reading "
-          "(specialties' week-on-week moves through the fortnight both codes run, at least twice as large)",
-          b_reg >= 2 * b_gold, (b_gold, b_reg))
-    # the rubric repair's scope (fix-rubric step 4): the ask-side cut of the sickness ask left every file the call reads
-    # byte-identical to the shipped pack (target.zip 8f5c6aa2) and every main-call figure where it was
-    import hashlib as _hl
-    shipped = {
-        "legacy": "e4702be456835e0bdb46f8868c1fa6b9bc0a6288b7777b795b0526841a906025",
-        "events": "2030dc9f0eb48f3831b585e16b1812a61fdb9a34be4b6e4569ebdbc1aa7f970f",
-        "log": "375b24eae54127b155bc13ff60c2fe7ac31f911c0f2eff924179490dae95e4ec",
-        "roster": "b890cea47bed9519ffbc16f5e44eeb838e3c3b0c52f923cab6f5e4b671170fb4",
-        "kiosk": "448d009a9cb8a4bfc15088b89fc7578db5d0d7437faa0f0a760b76f52bcef80e",
-        "practices": "9798d444c2591440036d592ab1af4260062bff73f920c7ebdc39fbef7df718c9",
-        "report": "81d59c980d2e81e8cd1b77baf0c5489848c6c2b826eb2cb388796645612df5b0",
-        "icb": "e7fb6723f096c1d3f49aefad8d8b0c731e45f8cc6a292ccb5cbc2f89f24f07bd",
-        "bh": "7177c0f65ba886fa10f5df234cb8bd9d77eb55a2e5d7d22b1e678200cf26ccce",
-    }
-    moved = [DC.FILES[k] for k, h in shipped.items()
-             if _hl.sha256(open(os.path.join(target, DC.FILES[k]), "rb").read()).hexdigest() != h]
-    check("scope: every file the call reads (and the e-roster the standing family's covariate reads) is byte-identical "
-          "to the shipped pack", not moved, moved)
-    main_ref = {"plan_visits_2027_28": 45000, "plan_unrounded": 44760, "base_2025_26": 41784, "kept_in_house_2025_26": 2566,
-                "window_weeks": 8, "window_runner_up_weeks": 9, "base_2025_26_runner_up": 41990,
-                "aic_gap_five_weeks_or_fewer": 60, "base_2025_26_low": 41800, "base_2025_26_high": 42000,
-                "kept_in_house_low": 2600, "kept_in_house_high": 2800, "plan_unrounded_low": 44800,
-                "plan_unrounded_high": 45000, "coef_about": -0.37, "gp_seen_2025_26": 37853, "gp_turned_away_2025_26": 1365,
-                "gp_arrivals_2025_26": 39218, "run_out_days_2025_26": 56, "clinic_days_2025_26": 253,
-                "coef_window_share": -0.374, "coef_se": 0.026, "growth_pct": 3.5, "growth_years": 2, "rounding_unit": 2500,
-                "default_path_plan": 42500, "default_path_unrounded": 42011, "seen_only_plan": 40000,
-                "seen_only_unrounded": 40549, "weekly_weeks": 53}
-    _fjs = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")
-    if os.path.exists(_fjs):
-        import json as _js
-        with open(_fjs) as _fh:
-            _F = _js.load(_fh)
-        diff = {k: (v, _F.get(k)) for k, v in main_ref.items() if _F.get(k) != v}
-        check("scope: every main-call figure in figures.json is the shipped value", not diff, diff)
-        check("scope: figures.json holds the call's figures and the one ask, nothing of the cut sickness ask",
-              set(_F) == set(main_ref) | {"hospital_visits_2025_26"}, sorted(set(_F) ^ (set(main_ref) | {"hospital_visits_2025_26"})))
-    gpc = ci[ci.request_type == "GP"]
-    clinic_like = gpc.request_org.fillna("").str.match(r"^(HG-C\d\d|[A-Z]{3}\d\d[A-Z])$")
-    check("separation by count: no GP-form check-in carries a hospital clinic code, old or new (the device rows sit on "
-          "hospital forms only)", int(clinic_like.sum()) == 0, int(clinic_like.sum()))
-    import re as _re
-    import zipfile as _zf
-    for k in ("log", "hub"):
-        with _zf.ZipFile(os.path.join(target, DC.FILES[k])) as z:
-            co = _re.search(rb"<Company>([^<]*)</Company>", z.read("docProps/app.xml")).group(1).decode()
-        check("%s: the Company property is the hospital the files are from" % DC.FILES[k], co == P.HOSPITAL, co)
-    rep4 = pdf_text(os.path.join(target, DC.FILES["report"]))
-    check("doc: the report's activity table carries 2025-26's GP seen and turned away, and the hub's estimand",
-          "{:,}".format(g["seen_gp"]) in rep4 and "{:,}".format(g["away_gp"]) in rep4
-          and "takes every patient with a GP request" in rep4 and "does not run out of tickets" in rep4
-          and "Its activity plan is to be set from 2025-26" in rep4)
-    # separation
-    D9 = D.copy()
-    check("separation: the call reads no hospital-form row and no roster row (hospital codes scrambled, the call unchanged)",
-          S.rnd(S.deterred(D9)[0] * S.G2) == gold)
-    # input gates
+
+def text_of(target):
+    """Every shipped file's text, for the leak and wording sweeps."""
+    import pdfplumber
+    from openpyxl import load_workbook
+    out = {}
+    for f in sorted(os.listdir(target)):
+        p = os.path.join(target, f)
+        if f.endswith(".pdf"):
+            with pdfplumber.open(p) as pdf:
+                out[f] = "\n".join((pg.extract_text() or "") for pg in pdf.pages)
+        elif f.endswith(".xlsx"):
+            wb = load_workbook(p, read_only=True)
+            out[f] = "\n".join(" ".join(str(v) for v in r if v is not None) for ws in wb.worksheets
+                               for r in ws.iter_rows(values_only=True)) + "\n" + " ".join(wb.sheetnames)
+        else:
+            out[f] = open(p, encoding="utf-8").read()
+    return out
+
+
+def main(target, W, F, X):
+    FAILS.clear()
+    E, C, Fx = X["E"], X["C"], X["F"]
+    M = X["M"]
+    # ------------------------------------------------------------------ M: the call and the ladder on the pack
+    R = routes(E, C, Fx)
+    easy = {k: v for k, v in R.items() if "light" not in k}
+    fam = {k: v for k, v in R.items() if "light" in k}
+    g = R["clock band and light (golden)"]
+    ok("M1 golden year 350 (unrounded %.1f)" % g[0], b50(g[0]) == 350 == F["claims_2027"])
+    sw = lambda q: (q[1] + q[2], q[0] + q[3])      # April to September; the other six months
+    ok("M1 golden April to September 150 and the other six months 200 (%.1f, %.1f)" % sw(g[1]),
+       (b50(sw(g[1])[0]), b50(sw(g[1])[1])) == (150, 200) ==
+       (F["claims_2027_apr_sep"], F["claims_2027_other_months"]))
+    for k, (y, q) in easy.items():
+        ok("M2 easy route '%s' files a wrong year (%s)" % (k, b50(y)), b50(y) != 350, round(y, 1))
+    ok("M2 Gate F: cheap routes reaching 350 on the pack = 0", sum(b50(y) == 350 for y, _ in easy.values()) == 0)
+    for k, (y, q) in fam.items():
+        ok("M3 standing member '%s' year in 350 with margin >= 10" % k, b50(y) == 350 and margin(y, 50) >= 10, round(y, 1))
+        ok("M3 standing member '%s' April to September and the other months in the golden's bins, margin >= 7" % k,
+           (b50(sw(q)[0]), b50(sw(q)[1])) == (150, 200) and min(margin(x, 50) for x in sw(q)) >= 7,
+           [round(x, 1) for x in sw(q)])
+    ok("M4 easy routes all on 300 (the default path's figure)", all(b50(y) == 300 for y, _ in easy.values()),
+       sorted(round(y, 1) for y, _ in easy.values()))
+    ok("M4 easy routes file the other six months at 150, not 200", all(b50(sw(q)[1]) == 150 for _, q in easy.values()),
+       sorted(round(sw(q)[1], 1) for _, q in easy.values()))
+    # SF20: the measured family, three constructions of light by nine models, on the year and the two seasons
+    runs_l, T_l, row_l = X["X"]["runs"], X["X"]["T"], X["X"]["row_of"]
+    plan_l = [(d, dep, a, a + dur, km) for d in X["X"]["days"] for dep, a, dur, km in X["X"]["routes"]]
+    claims_l = [(cc["date"], cc["depot"], cc["h"]) for cc in X["X"]["TC"] if cc["date"] <= S.REC_END]
+    Eh = AN.exposure_hourmid(runs_l, T_l, row_l, S.bst)
+    Fh = AN.exposure_hourmid(plan_l, T_l, row_l, S.bst)
+    Ch = AN.claim_frame_hourmid(claims_l, T_l, row_l, S.bst)
+    cut2 = dt.date(2024, 10, 1)
+    cons = {"exact split": (AN.with_am(E), AN.with_am(C), AN.with_am(Fx)),
+            "hour-midpoint light": (Eh, Ch, Fh),
+            "last two years": (AN.with_am(E[E.date >= cut2]), AN.with_am(C[C.date >= cut2]), AN.with_am(Fx))}
+    table, q4s = [], []
+    for cn, (e, cc_, f) in cons.items():
+        for mn, cols in AN.FAMILY.items():
+            q, y, _ = AN.forecast(e, cc_, f, cols)
+            qq = [float(q.get(i, 0)) for i in (1, 2, 3, 4)]
+            table.append((cn, mn, y, qq))
+        q, y = AN.cell_forecast(e, cc_, f, ["band", "dark"], ["band"])
+        table.append((cn, "band by light cells", y, [float(q.get(i, 0)) for i in (1, 2, 3, 4)]))
+    print("     SF20 family table: construction | model | year | Q1 Q2 Q3 Q4 | Apr-Sep | other months")
+    for cn, mn, y, qq in table:
+        print("     %s | %s | %.1f | %s | %.1f | %.1f" % (cn, mn, y, " ".join("%.1f" % v for v in qq), qq[1] + qq[2],
+                                                      qq[0] + qq[3]))
+    ok("SF20 every member of the measured family (%d) files 350 for the year, 150 for April to September and 200 for the "
+       "other six months" % len(table), all(b50(y) == 350 and b50(qq[1] + qq[2]) == 150 and b50(qq[0] + qq[3]) == 200
+                                            for _, _, y, qq in table))
+    ok("SF20 the family's nearest edges: year %.1f, April to September %.1f, other months %.1f" % (
+        min(margin(y, 50) for _, _, y, _ in table), min(margin(qq[1] + qq[2], 50) for _, _, _, qq in table),
+        min(margin(qq[0] + qq[3], 50) for _, _, _, qq in table)),
+       min(margin(y, 50) for _, _, y, _ in table) >= 5 and min(margin(qq[0] + qq[3], 50) for *_, qq in table) >= 5)
+    crossing = [(cn, mn, round(qq[3], 1)) for cn, mn, y, qq in table if b25(qq[3]) != 100 or b25(qq[0]) != 100]
+    ok("SF20 quarters at the nearest 25 would not hold: %d members cross a quarter's edge %s" % (len(crossing),
+       crossing[:3]), len(crossing) >= 1)
+    # clean truth: the same ladder on the generator's world (exact times and durations)
+    Et, Ct, Ft = SD.frames(W)
+    Rt = routes(Et, Ct, Ft)
+    ok("R2 analyst test on the clean truth: clock-band route files 300, golden 350",
+       b50(Rt["by clock band"][0]) == 300 and b50(Rt["clock band and light (golden)"][0]) == 350,
+       (round(Rt["by clock band"][0], 1), round(Rt["clock band and light (golden)"][0], 1)))
+    ok("R2 clean truth: every easy route off 350, every light member on 350",
+       all(b50(y) != 350 for k, (y, _) in Rt.items() if "light" not in k) and
+       all(b50(y) == 350 for k, (y, _) in Rt.items() if "light" in k))
+    # ------------------------------------------------------------------ L: light from shipped records alone
+    T, rows = S.sun_table(target)
+    ok("L1 handbook Appendix C parses to the world's table exactly (%d cells)" % len(T), T == A.TABLE)
+    ok("L1 table rows are the world's rows", [(a, b) for a, b in rows] ==
+       [((a.month, a.day), (b.month, b.day)) for _, a, b in A.ROWS])
+    ok("L1 the handbook's clock rule equals the world's on every day 2023 to 2027",
+       all(S.bst(d) == A.bst_offset(d) for d in (dt.date(2023, 1, 1) + dt.timedelta(days=i) for i in range(1826))
+           if d.weekday() < 6))
+    routes27, days27 = X["X"]["routes"], X["X"]["days"]
+    plan = [(d, dep, a, a + dur, km) for d in days27 for dep, a, dur, km in routes27]
+    Ftruth = AN.exposure(plan, A.TABLE, A.row_of, A.bst_offset)
+    Fship = AN.exposure(plan, T, S.row_finder(rows), S.bst)
+    same = (len(Ftruth) == len(Fship) and (Ftruth.dark.values == Fship.dark.values).all() and
+            np.allclose(Ftruth.km.values, Fship.km.values))
+    ok("L2 every 2027 route-hour's dark or light label is recovered from shipped data alone (%d route-hour pieces, "
+       "%d route-days)" % (len(Fship), len(plan)), same)
+    ok("L2 the 2027 delivery days are the calendar's Yes days and the world's plan days",
+       sorted(days27) == sorted(__import__("world").plan_2027()), len(days27))
+    dark27 = float(Fx[Fx.dark == 1].km.sum() / Fx.km.sum())
+    darkrec = float(E[E.dark == 1].km.sum() / E.km.sum())
+    ok("L3 the 2027 schedule drives more of its km in the dark than the record (%.3f against %.3f)" % (dark27, darkrec),
+       dark27 > 1.5 * darkrec)
+    bt = X["BT"]
+    p_light = 2 * min(stats.poisson.cdf(bt["obs"], bt["light"]), stats.poisson.sf(bt["obs"] - 1, bt["light"]))
+    ok("L4 back-test: the record's 04:00-07:00 dark km sit in the summer schedule's months", set(bt["months"]) <= {5, 6, 7, 8},
+       bt["months"])
+    ok("L4 back-test: the light model fitted without them predicts their claims (obs %d, expected %.1f, two-sided p %.3f)"
+       % (bt["obs"], bt["light"], p_light), p_light > 0.05)
+    ok("L4 back-test: the 04:00-07:00 clock rate does not (expected %.1f, P(X>=obs) %.2e)" % (bt["band"],
+       stats.poisson.sf(bt["obs"] - 1, bt["band"])), stats.poisson.sf(bt["obs"] - 1, bt["band"]) < 0.001)
+    ok("L4 back-test: each clock hour's rate does not (expected %.1f, P(X>=obs) %.2e)" % (bt["hour"],
+       stats.poisson.sf(bt["obs"] - 1, bt["hour"])), stats.poisson.sf(bt["obs"] - 1, bt["hour"]) < 0.01)
+    ok("L4 back-test figures are the ones the golden prints", F["backtest"]["claims"] == bt["obs"])
+    cut = dt.date(2025, 10, 1)
+    qh, yh, _ = AN.forecast(E[E.date < cut], C[C.date < cut], E[E.date >= cut], ["band"])
+    nh = int((C.date >= cut).sum())
+    ph = 2 * min(stats.poisson.cdf(nh, yh), stats.poisson.sf(nh - 1, yh))
+    ok("L5 the textbook check passes the easy route: the clock-band rate fitted to September 2025 predicts the next "
+       "twelve months (%.1f against %d, p %.2f)" % (yh, nh, ph), ph > 0.2)
+    # ------------------------------------------------------------------ A7: assumptions the golden makes
+    for big, lab in ((["band", "dark", "month"], "no month or season effect beyond darkness"),
+                     (["band", "dark", "year"], "no year-on-year trend"),
+                     (["hour", "dark"], "clock band carries the time of day (no hour effect within bands)"),
+                     (["band", "dark", "dark_am"], "the same darkness multiplier morning and evening")):
+        lr, df, p = AN.lr_test(E, C, ["band", "dark"], big)
+        ok("A7 %s (LR %.2f on %d df, p %.3f)" % (lab, lr, df, p), p > 0.05)
+    lr, df, p = AN.lr_test(E, C, ["band"], ["band", "dark"])
+    ok("A7 darkness is needed over the clock band (LR %.1f, p %.1e)" % (lr, p), p < 1e-6)
+    lr, df, p = AN.lr_test(E, C, ["month", "band"], ["month", "band", "dark"])
+    ok("A7 darkness is needed over month and clock band (LR %.1f, p %.1e)" % (lr, p), p < 1e-6)
+    lr, df, p = AN.lr_test(E, C, ["band", "dark"], ["band", "dark", "depot"])
+    ok("A7 a depot term, whatever its test (LR %.2f, p %.3f), leaves the call: same call" % (lr, p),
+       b50(R["depot, clock band and light"][0]) == 350)
+    G = AN.cells(E, C, AN.FINEST)
+    G = G[G.km > 0]
+    mfit = AN.fit_on(G, ["band", "dark"])
+    disp = mfit.pearson_chi2 / mfit.df_resid
+    ok("A7 Poisson dispersion near 1 at the finest grain (%.3f)" % disp, 0.8 < disp < 1.25)
+    rk = collections.defaultdict(list)
+    for r in W["runs"]:
+        if r["date"] <= P.REC_END:
+            rk[r["route"]].append(r["journeys"][0][2])
+    ratio = [np.mean(v) / rr["km"] for rr in W["routes"] for k, v in rk.items() if k == rr["route"]]
+    ok("A7 each route's recorded km average its planned km (ratio %.3f to %.3f)" % (min(ratio), max(ratio)),
+       0.97 < min(ratio) and max(ratio) < 1.03)
+    # ------------------------------------------------------------------ SF: semantic forks, each closed or same call
+    L, REG = X["X"]["L"], X["X"]["REG"]
+    TC = X["X"]["TC"]
+
+    def refit(claims):
+        Cc = AN.claim_frame([(c[0], c[1], c[2]) for c in claims], T, S.row_finder(rows), S.bst)
+        q, y, _ = AN.forecast(E, Cc, Fx, ["band", "dark"])
+        return y
+    base_claims = [(c["date"], c["depot"], c["h"]) for c in TC if c["date"] <= S.REC_END]
+    cars = [x for x in L if x["Vehicle"] == "Car" and x["Incident date"] <= S.REC_END]
+    dups = [x for x in L if (str(x["Status"]).startswith("Closed") or x["Status"] == "Withdrawn")
+            and x["Incident date"] <= S.REC_END]
+    ok("SF1 company cars excluded by the fund terms; counting them is the same call (%d car claims)" % len(cars),
+       b50(F["claims_2027_unrounded"] * (len(base_claims) + len(cars)) / len(base_claims)) == 350)
+    extra = [(x["Incident date"], REG[S.norm_reg(x["Registration"])]["depot"],
+              int(str(x["Incident time (UK)"])[:2]) + int(str(x["Incident time (UK)"])[3:]) / 60) for x in dups]
+    ok("SF2 duplicates and withdrawn notifications excluded by the terms; counting them is the same call (%d rows)" %
+       len(dups), b50(refit(base_claims + extra)) == 350)
+    octo = [(c["date"], c["depot"], c["h"]) for c in TC]
+    ok("SF3 claims to 31 Oct 2026 against km to 30 Sep: same call (%d October claims)" % (len(octo) - len(base_claims)),
+       b50(refit(octo)) == 350)
+    E2 = pd.concat([E, E[(E.date >= PK.TELE_B_START) & (E.date <= PK.TELE_A_END)]])
+    q, y, _ = AN.forecast(E2, C, Fx, ["band", "dark"])
+    ok("SF4 the two telematics exports' overlap week counted twice: same call", b50(y) == 350, round(y, 1))
+    bh = {dt.date.fromisoformat(e["date"]) for e in PK.bank_holidays()}
+    Fnb = Fx[~Fx.date.isin(bh)]
+    q, y, _ = AN.forecast(E, C, Fnb, ["band", "dark"])
+    ok("SF5 2027 bank holidays dropped from the delivery days: same call", b50(y) == 350, round(y, 1))
+    ok("SF6 the terms count spares' collisions with the route trucks' (one fleet, one exposure)",
+       "route truck or a depot spare" in text_of(target)[PK.FILES["terms"]].replace("\n", " "))
+    # K: clocks
+    runs_local_wrong = [(d, dep, a - S.bst(d), b - S.bst(d), km) for d, dep, a, b, km in X["X"]["runs"]]
+    Ew = AN.exposure(runs_local_wrong, T, S.row_finder(rows), S.bst)
+    q, yw, _ = AN.forecast(Ew, C, Fx, ["band", "dark"])
+    heads2 = [open(os.path.join(target, PK.FILES[k]), encoding="utf-8").readline() for k in ("tele_a", "tele_b")]
+    ok("SF7 telematics clocks are labelled UTC in both exports' headers (rival: read as UK clock time files %.1f, %d)" %
+       (yw, b50(yw)), "(UTC)" in heads2[0] and "_utc" in heads2[1] and b50(yw) != 350)
+    # incident against notification for the 2027 quarters: shift each month's expectation by the notification lags
+    mon = F["claims_2027_months_unrounded"]
+    qn = collections.Counter()
+    for m in range(1, 13):
+        ndays = (dt.date(2027 + (m == 12), m % 12 + 1, 1) - dt.date(2027, m, 1)).days
+        for lag, pr in P.NOTIFY_LAG:
+            late = min(1.0, lag / ndays)          # share of the month's collisions notified in the next month
+            qn[(m - 1) // 3 + 1] += mon["%02d" % m] * pr * (1 - late)
+            if m < 12:
+                qn[m // 3 + 1] += mon["%02d" % m] * pr * late
+    ok("SF8 the seasons by notification date rather than incident date: same call",
+       (b50(qn[2] + qn[3]), b50(qn[1] + qn[4])) == (150, 200), (round(qn[2] + qn[3], 1), round(qn[1] + qn[4], 1)))
+    ok("SF8 the terms file the quarter by incident date in UK clock time",
+       "by its incident date in UK clock time" in text_of(target)[PK.FILES["terms"]].replace("\n", " "))
+    ok("SF9 the listing's time column names its clock", "Incident time (UK)" in [str(x) for x in L[0].keys()])
+    TXT = text_of(target)
+    hb = TXT[PK.FILES["handbook"]].replace("\n", " ")
+    ok("SF10 the handbook's lighting rule runs from sunset to sunrise and Appendix C gives both at each depot",
+       "from sunset to sunrise" in hb and "Appendix C" in hb)
+    from openpyxl import load_workbook
+    cal = {(r[0].date() if hasattr(r[0], "date") else r[0]): r[3] for r in
+           load_workbook(os.path.join(target, PK.FILES["schedule"]), read_only=True)["Calendar 2027"].iter_rows(
+               min_row=2, values_only=True)}
+    ok("SF11 the 2027 calendar: no deliveries on 1 January, the new schedule's first day 2 January",
+       cal[dt.date(2027, 1, 1)] == "No" and cal[dt.date(2027, 1, 2)] == "Yes")
+    qq = [F["claims_2027_apr_sep"], F["claims_2027_other_months"]]
+    ok("SF12 the rounded seasons sum to the rounded year (%s)" % qq, sum(qq) == F["claims_2027"])
+    # ------------------------------------------------------------------ D: the ask devices
+    K = X["K"]
+    ok("D0 the asks' figures equal the generator's truth (B1)", all(
+        abs(F["repair_cost_unrounded"]["%s %s" % k] - v) < 0.01 for k, v in truth_b1(W).items()))
+    ok("D0 the asks' figures equal the generator's truth (A1)", all(
+        abs(F["recoveries_unrounded"][k] - v) < 0.01 for k, v in truth_a1(W).items()))
+    ok("D1 every receipt without our claim number matches exactly one claim (payer, share, net outlay): %d of %d" %
+       (K["n_matched"], K["n_receipts"]), not K["unmatched"] and K["n_matched"] > 40)
+    cop = [x for x in W["invoices"] if x["copy"]]
+    ok("D2 resent copies only inside the bodyshop feed's three spells (%d copies)" % len(cop),
+       all(any(a <= x["sent"] - dt.timedelta(days=7) <= b for a, b in P.DOUBLE_SEND) for x in cop))
+    fit = {v["reg"]: v["adas"] for v in W["vehicles"]}
+    pairs = collections.Counter((x["job"]) for x in W["invoices"] if x["desc"] == "ADAS calibration" and not x["copy"])
+    ok("D2 two genuine calibrations only on camera-and-radar trucks",
+       all(fit[W["claims"][j_claim(W, j)]["reg"]] == "Camera and radar" for j, n in pairs.items() if n == 2))
+    ok("D2 never two calibrations on a camera-only truck's job outside the spells",
+       all(n == 1 for j, n in pairs.items() if fit[W["claims"][j_claim(W, j)]["reg"]] == "Camera"))
+    import shutil
+    import tempfile
+    tmp = tempfile.mkdtemp()
+    for f in os.listdir(target):
+        if f not in (PK.FILES["ap"], PK.FILES["jobs"], PK.FILES["bank"]):
+            shutil.copy(os.path.join(target, f), tmp)
+    E3, C3, F3, _ = S.frames(tmp)
+    y3 = S.main_call(E3, C3, F3)["year"]
+    shutil.rmtree(tmp)
+    ok("D3 the main call reads no ask-only file: with the AP ledger, the jobs and the recovery account deleted it files "
+       "the same figure (%.1f)" % y3, abs(y3 - F["claims_2027_unrounded"]) < 0.05)
+    # ask-side conventions
+    REG2 = X["X"]["REG"]
+    CI = S.claim_index(L, REG2)
+    J = S.jobs(target)
+    AP = S.ap(target)
+    lines = S.genuine_lines(AP, J, CI, REG2)
+    OUT = S.outlays(lines, J, CI)
+    res, _ = S.recoveries(S.bank(target), L, CI, OUT)
+    own = {x["Claim no."]: x for x in L}
+    byrec = collections.Counter()
+    for d, amt, no, how in res:
+        byrec[S.quarter(d)] += amt
+    diff = sum(int(100 * round(byrec[q] / 100)) != F["recoveries_by_collision_quarter"][q] for q in S.QS)
+    terms = TXT[PK.FILES["terms"]].replace("\n", " ")
+    ok("SF13 recoveries by the collision's quarter (terms); the receipt's own quarter moves %d of 6 figures" % diff,
+       "credited to the quarter of that collision" in terms and diff >= 4)
+    salv = [x for x in S.bank(target) if x["Description"].startswith(PK.SALVAGE)]
+    ok("SF14 the salvage agent's credits (%d) are not another insurer's and stay out" % len(salv),
+       len(salv) > 0 and PK.SALVAGE.split()[0] not in S.insurer_crosswalk(L) and "another party's insurer" in terms)
+    gross = collections.Counter()
+    for x in lines:
+        c = CI[J[x["Supplier Ref"]]["Claim Ref"]]
+        per = S.period(c["Incident date"])
+        if per:
+            gross["%s %s" % (REG2[S.norm_reg(c["Registration"])]["depot"], per)] += float(x["Gross"])
+    ok("SF15 repair cost net of VAT (terms); gross moves every figure", "net of VAT" in terms and
+       all(int(100 * round(gross[k] / 100)) != v for k, v in F["repair_cost_by_depot"].items()))
+    sites = collections.defaultdict(set)
+    for j in J.values():
+        c = CI[j["Claim Ref"]]
+        sites[j["Site"]].add(REG2[S.norm_reg(c["Registration"])]["depot"])
+    ok("SF16 the depot is the truck's (register), not the bodyshop site: Washington repairs both %s" %
+       sorted(sites["Washington"]), sites["Washington"] == {"CRA", "GAT"})
+    tl = collections.Counter()
+    for x in lines:
+        if x["Description"] == "Inspection and storage":
+            c = CI[J[x["Supplier Ref"]]["Claim Ref"]]
+            per = S.period(c["Incident date"])
+            if per:
+                tl["%s %s" % (REG2[S.norm_reg(c["Registration"])]["depot"], per)] += float(x["Net"])
+    ok("SF17 a total loss's inspection and storage is repair cost (terms); leaving it out moves %d figures" %
+       sum(1 for k in tl if int(100 * round((F["repair_cost_unrounded"][k] - tl[k]) / 100)) != F["repair_cost_by_depot"][k]),
+       "inspecting and storing it when it is a total loss" in terms and len(tl) >= 2)
+    byinv = collections.Counter()
+    for x in lines:
+        c = CI[J[x["Supplier Ref"]]["Claim Ref"]]
+        d = dt.datetime.strptime(x["Invoice Date"], "%d/%m/%Y").date()
+        per = S.period(d)
+        if per:
+            byinv["%s %s" % (REG2[S.norm_reg(c["Registration"])]["depot"], per)] += float(x["Net"])
+    nd = sum(int(100 * round(byinv[k] / 100)) != v for k, v in F["repair_cost_by_depot"].items())
+    ok("SF18 the period is the collision's incident date (terms, the collision's repair); the invoice date moves %d of 8"
+       % nd, nd >= 4)
+    carregs = {S.norm_reg(c["reg"]) for c in W["cars"]}
+    ok("SF19 no Brantwick job or recovery receipt belongs to a company car", all(
+        S.norm_reg(CI[j["Claim Ref"]]["Registration"]) not in carregs for j in J.values()) and all(
+        S.norm_reg(own[no]["Registration"]) not in carregs for _, _, no, _ in res))
+    # ------------------------------------------------------------------ G: input gates, realism, leaks
     files = sorted(os.listdir(target))
     fmts = {f.rsplit(".", 1)[1] for f in files}
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
-    check("gates: ten or more files", len(files) >= 10, len(files))
-    check("gates: three or more formats", len(fmts) >= 3, sorted(fmts))
-    check("gates: a file of 25,000 rows or more", big >= 25000, big)
-    check("gates: two or more distractors named", len(DC.DISTRACTORS) >= 2, DC.DISTRACTORS)
-    tmp = tempfile.mkdtemp()
+    ok("G1 10 or more files (%d)" % len(files), len(files) >= 10)
+    ok("G1 3 or more formats (%s)" % sorted(fmts), len(fmts) >= 3)
+    nrows = {f: sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv")}
+    ok("G1 a file of 25,000 rows or more (%s)" % max(nrows.values()), max(nrows.values()) >= 25000)
+    meta = json.load(open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "metadata.json")))
+    ok("G1 two or more distractors named in metadata.json", len(meta["distractor_files"]) >= 2 and
+       all(d in files for d in meta["distractor_files"]))
+    ok("G1 metadata.json gives source, date and licence for every file", sorted(x["path"] for x in meta["files"]) == files
+       and all(x.get("source") and x.get("date") and x.get("license") for x in meta["files"]))
+    TX = TXT
+    bad_names = [f for f in files if re.search(r"readme|dictionary|codebook|manifest|notes|definitions|schema", f, re.I)]
+    ok("G2 no file describing the data, by name", not bad_names, bad_names)
+    allx = "\n".join(TX.values())
+    ok("G2 no sheet describing the data", not re.search(r"\b(Notes|README|Data dictionary|Definitions|Field guide)\b",
+                                                         " ".join(TX[f] for f in files if f.endswith(".xlsx"))))
+    for f in (PK.FILES["handbook"], PK.FILES["terms"]):
+        t = TX[f].lower()
+        ok("G3 %s names no darkness risk, rate or method" % f,
+           not re.search(r"dark|night|collision rate|per km|per kilomet|risk of|more likely|safer|danger", t))
+    ok("G3 no shipped document states or proposes a 2027 claims figure",
+       not re.search(r"\b\d{2,3} (collision )?claims\b", TX[PK.FILES["terms"]] + TX[PK.FILES["handbook"]]))
+    from openpyxl import load_workbook
+    xh = []
     for f in files:
-        if f not in [DC.FILES[k] for k in DC.DISTRACTORS]:
-            shutil.copy(os.path.join(target, f), tmp)
-    Dx, cix, evx, gx = S.solve(tmp)
-    check("gates: the golden is unchanged with every distractor deleted (the e-roster among them)", gx["plan_r"] == gold and abs(gx["plan"] - g["plan"]) < 1e-6)
-    shutil.rmtree(tmp)
-    # documents read back, positive controls on the same extractor
-    rep = pdf_text(os.path.join(target, DC.FILES["report"]))
-    check("doc: the annual report reads back (positive control)", "hours rostered to the substantive team" in rep, len(rep))
-    check("doc: the annual report names no practice keeping patients in-house", "in-house" not in rep and "own clinic" not in rep)
-    check("doc: the annual report no longer narrates the long-term absences", "long-term" not in rep and "long term" not in rep)
-    import re as _re
-    import subprocess as _sp
-    from pypdf import PdfReader as _PR
-    from pdfminer.high_level import extract_text as _pm
-    for key, must in (("report", "hours rostered to the substantive team"), ("icb", "GP direct access phlebotomy")):
-        pth = os.path.join(target, DC.FILES[key])
-        norm = lambda s: _re.sub(r"\s+", " ", s).strip()
-        lenient = norm(" ".join(p.extract_text() for p in _PR(pth).pages))
-        strict = norm(" ".join(p.extract_text() for p in _PR(pth, strict=True).pages))
-        miner = norm(_pm(pth))
-        popp = norm(_sp.run(["pdftotext", pth, "-"], capture_output=True, text=True).stdout) if shutil.which("pdftotext") else must
-        check("doc (H25): %s reads the same strict and lenient, and pdfminer and pdftotext find the decisive sentence" % key,
-              strict == lenient and must in miner and must in popp and must in strict)
-    icb = pdf_text(os.path.join(target, DC.FILES["icb"]))
-    check("doc: the ICB letter carries 3.5% for GP direct access phlebotomy (positive control)", "GP direct access phlebotomy 3.5%" in icb)
-    # no shipped file describes the data (dataset-generation section 3)
-    describing = ("dictionary", "readme", "manifest", "codebook", "definition", "field_notes", "fieldnotes",
-                  "file_list", "filelist", "schema", "export_notes", "extract_notes", "data_notes")
-    check("pack: no shipped file describes the data, by name",
-          not any(w in f.lower().replace("-", "_").replace(" ", "_") for f in os.listdir(target) for w in describing),
-          sorted(os.listdir(target)))
-    # closure axis 19 (code and status semantics) homed in the report and the systems' own labels
-    check("axis 19: the annual report's activity note reads back (positive control): seen by the request form the patient brought",
-          "Seen are completed visits from the queue system, by the request form the patient brought" in rep)
-    evt = pd.read_csv(os.path.join(target, DC.FILES["events"]), dtype=str, usecols=["visit_ref", "event_type"])
-    check("axis 19 C1: every checked-in visit is completed, so check-ins and completed visits count the same",
-          set(evt.visit_ref[evt.event_type == "CHECKED_IN"]) == set(evt.visit_ref[evt.event_type == "COMPLETED"]))
-    legt = pd.read_csv(os.path.join(target, DC.FILES["legacy"]), dtype=str)
-    check("axis 19: the request forms are the systems' own labels (GP form, Hospital form; GP, HOSP) and no test ticket "
-          "carries one", set(legt.Request.dropna()) == {"GP form", "Hospital form"}
-          and set(ci.request_type.dropna()) == {"GP", "HOSP"} and legt[legt.Outcome == "Test ticket"].Request.isna().all())
-    # realism sweep
-    wk = D[D.fy == 2025].groupby("wk").seen_gp.sum()
-    check("realism: no two weeks of 2025-26 carry the same GP-referred count three times", wk.value_counts().max() < 3)
-    check("realism: no round headline totals", all(x % 100 != 0 for x in (g["seen_gp"], g["away_gp"])))
-    check("realism: no specialty's four quarters repeat a hospital-visit count",
-          all(len(set(q.values())) == 4 for q in hosp.values()), [sp for sp, q in hosp.items() if len(set(q.values())) < 4])
-    check("realism: no record after the pull", D.d.max() <= P.REC_END and pd.to_datetime(ci.event_utc).max().date() <= P.REC_END)
-    print("%d checks, %d failed" % (len([1]) and 0 or 0, len(BAD)) if False else "%d failed" % len(BAD))
-    return len(BAD)
+        if f.endswith(".xlsx"):
+            for ws in load_workbook(os.path.join(target, f), read_only=True).worksheets:
+                for r in ws.iter_rows(max_row=6, values_only=True):
+                    xh += [str(v).lower() for v in r if v is not None]
+    ok("G3 no workbook header names light, dark or sun", not any(re.search(r"\b(dark|daylight|light|sunrise|sunset|sunlight)\b", h)
+                                                                   for h in xh if len(h) < 40))
+    heads = [open(os.path.join(target, f), encoding="utf-8").readline().lower() for f in files if f.endswith(".csv")]
+    ok("G3 no CSV header names light, dark or sun", not any(re.search(r"dark|light|sun", h) for h in heads))
+    mc = list(F["record_claims_by_month"].values())
+    ok("G4 realism: monthly claims vary (no repeated block, %d distinct of %d)" % (len(set(mc)), len(mc)),
+       len(set(mc)) >= 12 and max(mc) > min(mc) + 8)
+    ok("G4 realism: no round headline totals", F["claims_2027_unrounded"] % 10 != 0 and
+       all(v % 100 != 0 for v in F["recoveries_unrounded"].values()))
+    for f in files:
+        b = open(os.path.join(target, f), "rb").read()
+        ok("G5 %s carries no toolchain signature" % f, not re.search(rb"ReportLab|openpyxl|python-docx|matplotlib", b, re.I))
+    people = set(P.PEOPLE.values())
+    names_in = set(re.findall(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b", TX[PK.FILES["terms"]] + TX[PK.FILES["handbook"]]))
+    ok("G6 personas are the card's people", {n for n in names_in if n in people} <= people)
+    ok("G7 no em or en dash in any shipped text", chr(0x2014) not in allx and chr(0x2013) not in allx)
+    ok("G8 no date after the pack's as-of in any record (2027 schedule, calendar and holidays apart)",
+       max(x["Notified"] for x in L) <= P.AS_OF)
+    print("checks: %d failures" % len(FAILS))
+    return len(FAILS)
+
+
+def j_claim(W, job):
+    for j in W["jobs"]:
+        if j["job"] == job:
+            return j["claim"]
+
+
+def truth_b1(W):
+    t = collections.defaultdict(float)
+    for x in W["invoices"]:
+        c = W["claims"][x["claim"]]
+        if x["copy"] or not (P.ASK_FROM <= c["date"] <= P.ASK_TO):
+            continue
+        t[(c["depot"], S.period(c["date"]))] += x["net"]
+    return t
+
+
+def truth_a1(W):
+    t = collections.defaultdict(float)
+    for r in W["receipts"]:
+        c = W["claims"][r["claim"]]
+        if P.ASK_FROM <= c["date"] <= P.ASK_TO:
+            t["%dQ%d" % (c["date"].year, (c["date"].month - 1) // 3 + 1)] += r["amount"]
+    return t

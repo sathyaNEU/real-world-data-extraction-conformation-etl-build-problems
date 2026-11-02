@@ -1,78 +1,78 @@
-"""submission.md, every figure from figures.json."""
+"""submission.md from figures.json: tags, the call, the components, at most eight steps, the deliverable answers."""
+import golden as GD
+
+QN = {"2025Q1": "January to March 2025", "2025Q2": "April to June 2025", "2025Q3": "July to September 2025",
+      "2025Q4": "October to December 2025", "2026Q1": "January to March 2026", "2026Q2": "April to June 2026"}
 
 
-def n(x):
-    return "{:,}".format(x)
-
-
-WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
-        11: "eleven", 12: "twelve"}
-
-
-def band(F, k):
-    return "%s to %s" % (n(F[k + "_low"]), n(F[k + "_high"]))
+def money(x):
+    return "£{:,}".format(x)
 
 
 def write(path, F):
-    h = F["hospital_visits_2025_26"]
+    bt = F["backtest"]
+    rc = F["repair_cost_by_depot"]
+    a = F["recoveries_by_collision_quarter"]
     L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Healthcare delivery and health economics (utilization, access and demand forecasting).")
-    L.append("**Analytical objective:** Forecasting and predictive modelling.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**Plan for %s GP-referred visits at the community phlebotomy hub in 2027-28.**" % n(F["plan_visits_2027_28"]))
-    L.append("Underlying 2025-26 GP-referred demand was about %s visits, about %s more than the walk-in clinic saw "
-             "or turned away, because practices with their own phlebotomy clinics kept patients in-house for %s weeks "
-             "after the clinic's run-out weeks; grown 3.5 per cent a year for two years it is about %s. Not %s, from "
-             "2025-26's seen plus turned away (%s grown), which leaves out the patients the practices kept, or from a "
-             "model of the previous week's run-outs or ten days of them, which sees only the start of the fall. Not %s, "
-             "from the patients seen alone, which also leaves out the patients turned away.\n"
-             % (band(F, "base_2025_26"), band(F, "kept_in_house"), WORD[F["window_weeks"]], band(F, "plan_unrounded"),
-                n(F["default_path_plan"]), n(F["gp_arrivals_2025_26"]), n(F["seen_only_plan"])))
-    L.append("## 2. Critical Components\n")
-    L.append("1. GP-referred visits seen in 2025-26: **%s**." % n(F["gp_seen_2025_26"]))
-    L.append("2. GP-referred patients turned away in 2025-26: **%s**, on **%s** of %s clinic days the tickets ran out."
-             % (n(F["gp_turned_away_2025_26"]), F["run_out_days_2025_26"], F["clinic_days_2025_26"]))
-    L.append("3. How long the run-outs hold GP-referred arrivals down, the window the record's fit picks from one to "
-             "twelve weeks: **%s weeks**." % WORD[F["window_weeks"]])
-    L.append("4. 2025-26 underlying GP-referred demand, with that window's run-outs taken out: **about %s**.\n"
-             % band(F, "base_2025_26"))
-    L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Counted each clinic day's GP-form and hospital-form visits from walkin_tickets_legacy_2023-04_to_2024-11.csv "
-             "(Outcome Seen) to 17 November 2024 and from the CHECKED_IN events in phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv "
-             "(UTC read as UK time) from 18 November 2024: %s GP-referred visits seen in 2025-26." % n(F["gp_seen_2025_26"]))
-    L.append("2. Read both layouts of reception_turned_away_log.xlsx (the GP and hospital boxes of both shifts in the 2023-24 and 2024-25 sheets, "
-             "one line per run-out day from 2025-26, month totals left out): %s GP-form patients turned away on %s "
-             "clinic days in 2025-26." % (n(F["gp_turned_away_2025_26"]), F["run_out_days_2025_26"]))
-    L.append("3. Took each Monday-to-Friday week's run-out share (its logged run-out days over its clinic days) and "
-             "modelled each clinic day's GP-referred arrivals (seen plus turned away), April 2023 to September 2026, as "
-             "Poisson in weekday, month, a linear trend, the day after a bank holiday and the mean share of the previous "
-             "L weeks, L from one to twelve by AIC: %s weeks, every window of five weeks or fewer at least %d worse, "
-             "coefficient about %.2f (standard error %.3f), the fall sitting with the practices whose "
-             "phlebotomy_les_2025-26 is Y in gp_practices_catchment.csv."
-             % (WORD[F["window_weeks"]], F["aic_gap_five_weeks_or_fewer"], F["coef_about"], F["coef_se"]))
-    L.append("4. Took the GP-referred arrivals of every clinic day of 2025-26 with that effect removed: about %s visits "
-             "(the %s-week window and the %s-week window next to it in fit), grown 3.5 per cent a year for two years to "
-             "about %s, %s to the nearest 2,500."
-             % (band(F, "base_2025_26"), WORD[F["window_weeks"]], WORD[F["window_runner_up_weeks"]],
-                band(F, "plan_unrounded"), n(F["plan_visits_2027_28"])))
-    L.append("5. Named each 2025-26 hospital request's clinic code: forms issued before 16 March 2026 carry the old PAS's "
-             "codes, which outpatient_clinic_codes.csv does not hold, and each old code is the new code whose forms issued "
-             "in the second half of March 2026 fall on the same weekdays as the old code's, before the clinics changed "
-             "their sessions in April (the register's clinic_days name all seven wrongly: none of the new codes they pick has "
-             "late-March forms on its old code's weekdays, and under them the weekly visits jump at the switch, where under "
-             "the late-March link they run on); then counted hospital-form visits by specialty and financial quarter of "
-             "the visit date.")
-    L.append("6. Charted each Monday-to-Friday week of 2025-26, GP-referred visits seen, turned away and kept in-house, in "
-             "gp_demand_2025-26.png.\n")
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### hub_plan_2027-28.xlsx\n")
-    L.append("1. GP-referred blood-test visits to plan for at the hub in 2027-28: %s." % n(F["plan_visits_2027_28"]))
-    L.append("2. Hospital-clinic visits to the walk-in clinic in 2025-26 by financial quarter of the visit, Q1 to Q4:")
-    for sp, q in h.items():
-        L.append("   - %s: %s, %s, %s, %s" % (sp, n(q["Q1"]), n(q["Q2"]), n(q["Q3"]), n(q["Q4"])))
-    L.append("\n### gp_demand_2025-26.png\n")
-    L.append("1. Stacked bars for each Monday-to-Friday week of 2025-26: GP-referred visits seen, turned away and kept "
-             "in-house by the practices with their own phlebotomy clinics.")
-    with open(path, "w") as fh:
-        fh.write("\n".join(L) + "\n")
+    L += ["## Tags", "",
+          "**Domain:** Actuarial Science & Insurance (claims frequency and severity: a self-insured delivery fleet's "
+          "collision claims for a year on a new route schedule, priced per kilometre on clock time and light).",
+          "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
+    L += ["## 1. Final Recommendation", "",
+          "**The delivery trucks will make %d collision claims in 2027: %d from April to September and %d in the other "
+          "six months.**" % (F["claims_2027"], F["claims_2027_apr_sep"], F["claims_2027_other_months"]),
+          "The 2027 schedule drives %.1f per cent of its kilometres before sunrise or after sunset, against %.1f per cent "
+          "in the record, at about %.1f times the daylight collision rate at the same clock time. Not %d, the record's "
+          "rate per kilometre by time of day, which prices the small hours at the summer schedule's daylight rate." % (
+              F["dark_km_share_2027_pct"], F["dark_km_share_record_pct"], F["dark_multiplier_1dp"],
+              F["default_path_2027"]), ""]
+    L += ["## 2. Critical Components", "",
+          "1. Kilometres planned for 2027 driven before sunrise or after sunset (driver handbook Appendix C, UK clock "
+          "time): **%.1f per cent**, against **%.1f per cent** of the kilometres driven October 2023 to September 2026" % (
+              F["dark_km_share_2027_pct"], F["dark_km_share_record_pct"]),
+          "2. A kilometre driven in the dark carries about **%.1f times** the collision rate of a daylight kilometre in "
+          "the same clock band" % F["dark_multiplier_1dp"], ""]
+    L += ["## 3. Step-by-Step Solution", "",
+          "1. Read both Gridtrak exports (miles to kilometres, the overlap week once, UTC to UK clock time by the "
+          "handbook's summer-time rule) with each truck's depot from fleet_register_2026-10.xlsx, to 30 September 2026.",
+          "2. Took the trucks' claims from ravensby_fleet_claims_listing_2026-10-31.xlsx per the fund terms (cars, "
+          "duplicates and withdrawn notifications out) to 30 September 2026: %d claims." % F["claims_in_record"],
+          "3. Spread each run's kilometres evenly over its clock hours and split them at its depot's sunrise and sunset "
+          "from driver_handbook_2026.pdf Appendix C: %.1f per cent of the record's kilometres in the dark." % (
+              F["dark_km_share_record_pct"]),
+          "4. Fitted a Poisson rate per kilometre on clock band and light: a dark kilometre at %.1f times a daylight one; "
+          "the 04:00 to 07:00 dark kilometres of the May to August schedule had %d claims against %.1f expected by "
+          "that model "
+          "fitted without them and %.1f at the 04:00 to 07:00 rate." % (
+              F["dark_multiplier_1dp"], bt["claims"], bt["expected_light_model"], bt["expected_band_rate"]),
+          "5. Carried the rates onto every route and delivery day of route_schedule_2027.xlsx: %.1f claims, %.1f of them "
+          "from April to September and %.1f in the other six months." % (F["claims_2027_unrounded"],
+                                                                        F["claims_2027_apr_sep_unrounded"],
+                                                                        F["claims_2027_other_months_unrounded"]),
+          "6. Counted each Brantwick invoice once in ap_ledger_brantwick_2023-10_2026-10.csv: identical lines (job, "
+          "invoice date, description, net) are one invoice posted twice, except two identical ADAS calibration lines on "
+          "a job for a truck the register shows with camera and radar, which are one per sensor; summed net by the "
+          "truck's depot and the collision's incident date through brantwick_jobs_2023-10_2026-10.csv.",
+          "7. Placed each other insurer's receipt in claims_recovery_account_2024-10_2026-10.csv on its collision: by our "
+          "claim number where quoted, else on the one claim of that payer whose net repair cost, in full for a "
+          "non-fault claim or at a quarter, a third, a half, two thirds or three quarters for a split one, equals the "
+          "amount to the penny; summed by the collision's quarter.",
+          "8. The fund should be set for %d collision claims in 2027." % F["claims_2027"], ""]
+    L += ["## 4. Deliverable Answers", "", "### %s" % GD.XLSX, "",
+          "1. Collision claims in 2027: %d" % F["claims_2027"],
+          "2. April to September: %d; January to March and October to December: %d" % (
+              F["claims_2027_apr_sep"], F["claims_2027_other_months"]),
+          "3. Paid back by other insurers towards each quarter's collisions, received to 31 October 2026:"]
+    for k in ("2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"):
+        L.append("   - %s collisions: %s" % (QN[k], money(a[k])))
+    L.append("4. Brantwick repair cost of each depot's collisions:")
+    for code, name in GD.DEPOTS:
+        L.append("   - %s: %s for January to June 2025 collisions, %s for July to December 2025 collisions, %s for "
+                 "January to June 2026 collisions" % (name, money(rc["%s 2025H1" % code]), money(rc["%s 2025H2" % code]),
+                                                      money(rc["%s 2026H1" % code])))
+    L += ["", "### %s" % GD.DOCX, "",
+          "1. One-page note to the board giving %d claims for 2027, split between April to September and the other six "
+          "months, with the reason (the new schedule's dark early hours from October to March)" % F["claims_2027"],
+          "2. Chart of collision claims by month of incident, October 2023 to September 2026 in blue and the months of "
+          "2027 in orange as expected on the new schedule", ""]
+    open(path, "w", encoding="utf-8").write("\n".join(L))

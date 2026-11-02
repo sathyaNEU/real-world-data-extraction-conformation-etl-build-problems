@@ -1,516 +1,401 @@
-"""The golden and every rung, computed from the shipped files alone."""
+"""The golden computation, reading only the pack: the 2027 claims from a Poisson rate per kilometre on the clock band and
+the light each kilometre was driven in (the handbook's Appendix C), carried onto the 2027 schedule; what other insurers
+paid back towards each quarter's collisions; and the bodyshop repair cost of each depot's collisions."""
+import collections
+import csv
 import datetime as dt
+import json
 import os
-import warnings
+import re
 
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
+import pdfplumber
+from openpyxl import load_workbook
 
-warnings.filterwarnings("ignore")
-import docs as DC
-import params as P
+import analysis as AN
 
-F = DC.FILES
-G2 = (1 + P.GROWTH) ** 2
-ROUND = 2500
-FY0, FY1 = dt.date(2025, 4, 1), dt.date(2026, 3, 31)
-TEMPLATES = dt.date(2026, 4, 1)
-WINDOWS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12)
-LAGS = 26
-
-
-def rnd(x, u=ROUND):
-    return int(round(x / float(u)) * u)
+MON = {m: i for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)}
+DEPOT_OF_NAME = {"cramlington": "CRA", "team valley": "GAT", "gateshead": "GAT", "carlisle": "CAR", "darlington": "DAR"}
+HANDBOOK_COLS = ["CRA", "GAT", "CAR", "DAR"]       # Cramlington, Team Valley, Carlisle, Darlington, as printed
+REC_END = dt.date(2026, 9, 30)
+QS = ["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"]
+PERIODS = ["2025H1", "2025H2", "2026H1"]
+SUMMER = (4, 5, 6, 7, 8, 9)          # April to September; the other six months are January to March and October to December
+SHARES = [0.75, 2 / 3, 0.5, 1 / 3, 0.25]
 
 
-def load_seen(target):
-    leg = pd.read_csv(os.path.join(target, F["legacy"]), dtype=str)
-    leg = leg[leg.Outcome == "Seen"].copy()
-    leg["d"] = pd.to_datetime(leg.Date, format="%d/%m/%Y").dt.date
-    leg = leg[leg.d < P.NEW_SYSTEM_LIVE]
-    leg["g"] = np.where(leg.Request == "GP form", "GP", "HOSP")
-    ev = pd.read_csv(os.path.join(target, F["events"]), dtype=str)
-    ci = ev[ev.event_type == "CHECKED_IN"].copy()
-    ci["d"] = pd.to_datetime(ci.event_utc, utc=True).dt.tz_convert("Europe/London").dt.date
-    ci["g"] = ci.request_type
-    s1 = leg.groupby(["d", "g"]).size().unstack(fill_value=0)
-    s2 = ci.groupby(["d", "g"]).size().unstack(fill_value=0)
-    return pd.concat([s1, s2]).fillna(0).astype(int), ci, ev
+def find(target, pat):
+    m = [f for f in os.listdir(target) if re.search(pat, f)]
+    assert len(m) == 1, (pat, m)
+    return os.path.join(target, m[0])
 
 
-def load_log(target):
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(target, F["log"]), data_only=True)
-    out = {}
-    for ws in wb.worksheets:
-        hdr = None
-        for row in ws.iter_rows(values_only=True):
-            if row and row[0] == "Date":
-                hdr = row
-                continue
-            if hdr is None or not row or row[0] is None:
-                continue
-            d = row[0]
-            if isinstance(d, str):
-                try:
-                    d = dt.datetime.strptime(d.strip(), "%d/%m/%Y")
-                except ValueError:
-                    continue
-            if isinstance(d, dt.datetime):
-                d = d.date()
-            if not isinstance(d, dt.date):
-                continue
-            if "GP form AM" in hdr:
-                gp = (row[3] or 0) + (row[4] or 0)
-                h = (row[5] or 0) + (row[6] or 0)
-                if gp + h > 0:
-                    out[d] = (gp, h)
-            else:
-                out[d] = (row[2] or 0, row[3] or 0)
-    return out
+def norm_reg(r):
+    return re.sub(r"\s+", "", str(r)).upper()
 
 
-def daily(target):
-    seen, ci, ev = load_seen(target)
-    log = load_log(target)
-    D = pd.DataFrame({"d": seen.index, "seen_gp": seen["GP"].values, "seen_h": seen["HOSP"].values})
-    D["away_gp"] = [log.get(d, (0, 0))[0] for d in D.d]
-    D["away_h"] = [log.get(d, (0, 0))[1] for d in D.d]
-    D["ro"] = [1 if d in log else 0 for d in D.d]
-    D["arr"] = D.seen_gp + D.away_gp
-    D["wd"] = [d.weekday() for d in D.d]
-    D["mo"] = [d.month for d in D.d]
-    D["t"] = [(d - P.START).days / 365.25 for d in D.d]
-    gaps = [1] + [(D.d.iloc[i] - D.d.iloc[i - 1]).days for i in range(1, len(D))]
-    D["pbh"] = [1 if g not in (1, 3) else 0 for g in gaps]
-    D["wk"] = [d - dt.timedelta(d.weekday()) for d in D.d]
-    D["fy"] = [d.year - (d.month < 4) for d in D.d]
-    # the kiosk's allocation: a day whose check-ins reached it had nothing left to issue
-    k = pd.read_csv(os.path.join(target, F["kiosk"]), dtype=str)
-    cap = dict(zip(pd.to_datetime(k.Date, format="%d/%m/%Y").dt.date, k.Tickets.astype(int)))
-    D["full"] = [int(a + b >= cap.get(d, 10 ** 6)) for d, a, b in zip(D.d, D.seen_gp, D.seen_h)]
-    # each earlier calendar week's run-out share (its logged run-out days over its clinic days), and their means
-    wk = D.groupby("wk").ro.agg(["sum", "size"])
-    share = (wk["sum"] / wk["size"]).to_dict()
-    for j in range(1, LAGS + 1):
-        D["w%d" % j] = [share.get(w - dt.timedelta(7 * j), 0.0) for w in D.wk]
-    for L in range(1, 13):
-        D["s%d" % L] = D[["w%d" % j for j in range(1, L + 1)]].mean(axis=1)
-    D["p1"], D["p2"] = D.s1, D.s2
-    ro = D.ro.values
-    for W in (5, 10, 20, 40):
-        D["r%d" % W] = [ro[max(0, i - W):i].mean() if i > 0 else 0 for i in range(len(ro))]
-    return D.reset_index(drop=True), ci, ev
+def depot_code(name):
+    n = str(name).lower()
+    for k, v in DEPOT_OF_NAME.items():
+        if n.startswith(k):
+            return v
+    raise KeyError(name)
 
 
-def calX(D, extra=(), month=True, trend=True):
-    Z = pd.get_dummies(D[["wd", "mo"] if month else ["wd"]].astype(str), drop_first=True).astype(float)
-    if trend:
-        Z["t"] = D.t.values
-    Z["pbh"] = D.pbh.values
-    for c in extra:
-        Z[c] = D[c].values
-    return sm.add_constant(Z, has_constant="add")
+# ---------------------------------------------------------------- the handbook: sunrise, sunset and the clock rule
+def last_sunday(y, m):
+    d = dt.date(y, m, 31)
+    while d.weekday() != 6:
+        d -= dt.timedelta(days=1)
+    return d
 
 
-def window(D, y="arr"):
-    """The run-out window the record's fit picks: the mean run-out share of the previous L calendar weeks, L from one
-    to twelve, by AIC."""
-    aic = {L: sm.GLM(D[y], calX(D, ["s%d" % L]), family=sm.families.Poisson()).fit().aic for L in WINDOWS}
-    return min(aic, key=aic.get), aic
+def bst(d):
+    """1 while British Summer Time is in force on a delivery day (Monday to Saturday), else 0."""
+    return 1 if last_sunday(d.year, 3) <= d < last_sunday(d.year, 10) else 0
 
 
-def after_bank_holiday(D, target):
-    """The day after a bank holiday read off bank_holidays_england.json: the clinic day whose last weekday before it was a
-    bank holiday."""
-    import json
-    with open(os.path.join(target, F["bh"])) as fh:
-        hol = {dt.date.fromisoformat(e["date"]) for e in json.load(fh)["england-and-wales"]["events"]}
+def sun_table(target):
+    """{(depot, row): (sunrise min GMT, sunset min GMT)} and the rows' (first month-day, last month-day)."""
+    txt = ""
+    with pdfplumber.open(find(target, r"handbook.*\.pdf$")) as pdf:
+        for p in pdf.pages:
+            txt += (p.extract_text() or "") + "\n"
+    pat = re.compile(r"^(\d{1,2}) ([A-Z][a-z]{2})(?: to (\d{1,2}) ([A-Z][a-z]{2}))?((?: \d\d:\d\d){8})$")
+    T, rows = {}, []
+    for line in txt.splitlines():
+        m = pat.match(line.strip())
+        if not m:
+            continue
+        a = (MON[m.group(2)], int(m.group(1)))
+        b = (MON[m.group(4)], int(m.group(3))) if m.group(3) else a
+        k = len(rows)
+        rows.append((a, b))
+        t = [int(x[:2]) * 60 + int(x[3:]) for x in m.group(5).split()]
+        for j, code in enumerate(HANDBOOK_COLS):
+            T[(code, k)] = (t[2 * j], t[2 * j + 1])
+    return T, rows
+
+
+def row_finder(rows):
+    def row_of(d):
+        md = (d.month, d.day) if not (d.month == 2 and d.day == 29) else (2, 28)
+        for k, (a, b) in enumerate(rows):
+            if a <= md <= b:
+                return k
+        raise KeyError(d)
+    return row_of
+
+
+# ---------------------------------------------------------------- the records
+def register(target):
+    wb = load_workbook(find(target, r"fleet_register.*\.xlsx$"), read_only=True)
+    ws = wb["Trucks"]
+    it = ws.iter_rows(values_only=True)
+    head = list(next(it))
+    reg = {}
+    for r in it:
+        x = dict(zip(head, r))
+        reg[norm_reg(x["Registration"])] = {"depot": depot_code(x["Depot"]), "sensors": x["Forward sensors"]}
+    return reg
+
+
+def telematics(target, REG):
+    runs = {}
+    with open(find(target, r"gridtrak.*2023-10.*\.csv$"), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            d = dt.datetime.strptime(x["Date"], "%d/%m/%Y").date()
+            on = int(x["First Ignition On (UTC)"][:2]) * 60 + int(x["First Ignition On (UTC)"][3:])
+            off = int(x["Last Ignition Off (UTC)"][:2]) * 60 + int(x["Last Ignition Off (UTC)"][3:])
+            runs[(norm_reg(x["Vehicle"]), d)] = (on, off, float(x["Distance (mi)"]) * 1.609344)
+    with open(find(target, r"gridtrak.*2026-09.*\.csv$"), encoding="utf-8") as fh:
+        for x in csv.DictReader(fh):
+            d = dt.date.fromisoformat(x["day_utc"])
+            a = dt.datetime.strptime(x["ignition_on_utc"], "%Y-%m-%dT%H:%M:%SZ")
+            b = dt.datetime.strptime(x["ignition_off_utc"], "%Y-%m-%dT%H:%M:%SZ")
+            runs[(norm_reg(x["registration"]), d)] = (a.hour * 60 + a.minute, b.hour * 60 + b.minute, float(x["distance_km"]))
     out = []
-    for d in D.d:
-        x = d - dt.timedelta(1)
-        while x.weekday() >= 5:
-            x -= dt.timedelta(1)
-        out.append(int(x in hol))
+    for (reg, d), (on, off, km) in sorted(runs.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+        h = bst(d)
+        out.append((d, REG[reg]["depot"], on / 60.0 + h, off / 60.0 + h, km))
     return out
 
 
-def window_gap_bound(D, target):
-    """How much worse in AIC every window of five weeks or fewer fits than the window the fit picks, on every sample the
-    write-up's method implies: the whole record (weeks before it carrying no run-out share) or the days whose twelve
-    previous weeks all lie in the record, with the day after a bank holiday read off the record's closures or off the
-    bank holidays file, L from one to twelve. The bound stated is the lowest margin floored to ten."""
-    fw = D.wk.min()
-    common = np.array([(w - fw).days >= 7 * 12 for w in D.wk])
-    bhf = after_bank_holiday(D, target)
-    out = {}
-    for sname, mask in (("whole record", np.ones(len(D), bool)), ("common sample", common)):
-        for pname, pb in (("the record's closures", None), ("the bank holidays file", bhf)):
-            X = D.copy()
-            if pb is not None:
-                X["pbh"] = pb
-            X = X[mask].reset_index(drop=True)
-            aic = {l: sm.GLM(X.arr, calX(X, ["s%d" % l]), family=sm.families.Poisson()).fit().aic for l in range(1, 13)}
-            L = min(aic, key=aic.get)
-            out["%s, the day after a bank holiday from %s" % (sname, pname)] = (L, float(min(aic[l] - aic[L] for l in aic if l <= 5)))
-    low = min(v[1] for v in out.values())
-    return int(10 * np.floor(low / 10.0)), out
-
-
-def deterred(D, col=None, fam=None, y="arr"):
-    col = col or "s%d" % window(D, y)[0]
-    fam = fam or sm.families.Poisson()
-    m = sm.GLM(D[y], calX(D, [col]), family=fam).fit()
-    b = m.params[col]
-    fy = (D.fy == 2025).values
-    base = float((D[y].values[fy] * np.exp(-b * D[col].values[fy])).sum())
-    return base, float(b), float(m.bse[col]), float(m.aic)
-
-
-def golden(D):
-    L, aic = window(D)
-    col = "s%d" % L
-    base, b, se, a = deterred(D, col)
-    fy = (D.fy == 2025).values
-    return {"base": base, "b": b, "se": se, "aic": aic, "L": L, "col": col, "plan": base * G2, "plan_r": rnd(base * G2),
-            "seen_gp": int(D.seen_gp[fy].sum()), "away_gp": int(D.away_gp[fy].sum()),
-            "kept": base - float(D.arr[fy].sum()), "ro_days": int(D.ro[fy].sum()), "days": int(fy.sum())}
-
-
-def _undo(D, X, cols):
-    m = sm.GLM(D.arr, X, family=sm.families.Poisson()).fit()
-    fy = (D.fy == 2025).values
-    eta = sum(m.params[c] * D[c].values for c in cols)
-    return float((D.arr.values[fy] * np.exp(-eta[fy])).sum()), float(m.aic)
-
-
-def distributed(D, n=10):
-    """Each of the previous n weeks' run-out shares with its own coefficient."""
-    cols = ["w%d" % j for j in range(1, n + 1)]
-    return _undo(D, calX(D, cols), cols)
-
-
-def kernel(D, weights):
-    Q = D.copy()
-    w = np.asarray(weights, float) / np.sum(weights)
-    Q["kx"] = sum(w[j - 1] * Q["w%d" % j].values for j in range(1, len(w) + 1))
-    return _undo(Q, calX(Q, ["kx"]), ["kx"])
-
-
-def geometric(D):
-    """A geometric decay over the previous 26 weeks, its rate chosen by AIC."""
-    fits = {round(r, 2): kernel(D, [r ** (j - 1) for j in range(1, LAGS + 1)]) for r in np.arange(0.60, 0.981, 0.02)}
-    r = min(fits, key=lambda k: fits[k][1])
-    return fits[r][0], r, fits[r][1]
-
-
-def linear(D):
-    """A linearly declining weight over the previous n weeks, n chosen by AIC."""
-    fits = {n: kernel(D, [n - j + 1 for j in range(1, n + 1)]) for n in range(4, 25)}
-    n = min(fits, key=lambda k: fits[k][1])
-    return fits[n][0], n, fits[n][1]
-
-
-def weekly_totals(D, col):
-    W = D.groupby("wk").agg(arr=("arr", "sum"), n=("d", "size"), x=(col, "first"), fy=("fy", "first"),
-                            mo=("mo", "first"), t=("t", "mean")).reset_index()
-    Z = pd.get_dummies(W[["mo"]].astype(str), drop_first=True).astype(float)
-    Z["t"] = W.t.values
-    Z["x"] = W.x.values
-    b = sm.GLM(W.arr, sm.add_constant(Z), family=sm.families.Poisson(), offset=np.log(W.n)).fit().params["x"]
-    fw = (W.fy == 2025).values
-    return float((W.arr.values[fw] * np.exp(-b * W.x.values[fw])).sum())
-
-
-def family(D, ci, L):
-    """Every reasonable implementation of the decisive step, at the window the record's fit picks."""
-    col = "s%d" % L
-    fy = (D.fy == 2025).values
-    out = {}
-    out["the chosen window's share, negative binomial"] = deterred(D, col, sm.families.NegativeBinomial(alpha=0.01))[0] * G2
-    for l in (L - 1, L + 1):
-        out["the mean run-out share of the previous %d weeks" % l] = deterred(D, "s%d" % l)[0] * G2
-    out["the run-out share of the previous 40 clinic days"] = deterred(D, "r40")[0] * G2
-    out["ten weekly lags of the run-out share, each its own coefficient"] = distributed(D, 10)[0] * G2
-    out["twelve weekly lags of the run-out share, each its own coefficient"] = distributed(D, 12)[0] * G2
-    out["weekly totals on the chosen window's share"] = weekly_totals(D, col) * G2
-    out["a geometric decay over 26 weeks, its rate by AIC"] = geometric(D)[0] * G2
-    out["a linear decay, its length by AIC"] = linear(D)[0] * G2
-    # instrument: the window's hospital-clinic arrivals for the window's run-out share
-    wh = D.assign(ah=D.seen_h + D.away_h).groupby("wk").ah.mean()
-    D2 = D.copy()
-    D2["ph"] = [np.mean([wh.get(w - dt.timedelta(7 * j), np.nan) for j in range(1, L + 1)]) for w in D2.wk]
-    M = D2.dropna(subset=["ph"])
-    Zm = calX(M, ["ph"])
-    biv = sm.GLM(M.arr, Zm, family=sm.families.Poisson()).fit().params["ph"] / sm.OLS(M[col], Zm).fit().params["ph"]
-    out["the chosen window's share instrumented by its hospital-clinic arrivals"] = float((D.arr.values[fy] * np.exp(-biv * D[col].values[fy])).sum()) * G2
-    out["practices with a clinic against practices without, the chosen window"] = _did(D, ci, col) * G2
+def listing(target):
+    wb = load_workbook(find(target, r"claims_listing.*\.xlsx$"), read_only=True)
+    ws = wb.worksheets[0]
+    rows = list(ws.iter_rows(values_only=True))
+    k = next(i for i, r in enumerate(rows) if r and r[0] == "Claim no.")
+    head = list(rows[k])
+    out = []
+    for r in rows[k + 1:]:
+        if not r or not r[0]:
+            continue
+        x = dict(zip(head, r))
+        for c in ("Notified", "Incident date"):
+            if isinstance(x[c], dt.datetime):
+                x[c] = x[c].date()
+        out.append(x)
     return out
 
 
-def family_more(D, target, L):
-    """The window's other specifications a judge or a careful solver might fit: added covariates, other estimators,
-    other fitting spans, and the quiet-period fits that leave out the days a run-out could have reached."""
-    col = "s%d" % L
-    fy = (D.fy == 2025).values
-    out = {}
-    Q = D.copy()
-    Q["vac"] = [1 if P.VACANCY[0] <= d <= P.VACANCY[1] else 0 for d in Q.d]
-    r = roster(target)
-    on = r[(r.Absence.isna() | (r.Absence == "")) & (r.Hours > 0)].groupby("d").size()
-    Q["heads"] = Q.d.map(on).fillna(0).values
-    Q["H"] = (Q.seen_h + Q.away_h).values / 100.0
-    Q["Hwk"] = Q.groupby("wk").H.transform("mean").values
-
-    def undo(extra, M=None):
-        M = Q if M is None else M
-        m = sm.GLM(M.arr, calX(M, [col] + extra), family=sm.families.Poisson()).fit()
-        return float((Q.arr.values[fy] * np.exp(-m.params[col] * Q[col].values[fy])).sum()) * G2
-    for lab, ex in (("with a vacancy dummy", ["vac"]), ("with the phlebotomists on the floor", ["heads"]),
-                    ("with the day's hospital-form arrivals", ["H"]), ("with the week's hospital-form arrivals", ["Hwk"]),
-                    ("with the previous week's share as well", ["s1"])):
-        out["the chosen window, " + lab] = undo(ex)
-    out["the chosen window, fitted from April 2024"] = undo([], Q[Q.fy >= 2024])
-    out["the chosen window, fitted on the new system's days"] = undo([], Q[Q.d >= P.NEW_SYSTEM_LIVE])
-    m = sm.GLM(Q.arr, calX(Q, [col]), family=sm.families.Poisson()).fit()
-    X0 = calX(Q, [col]).copy()
-    X0[col] = 0
-    out["the chosen window, the fitted mean at a share of nil"] = float(m.predict(X0)[fy].sum()) * G2
-    b = sm.OLS(np.log(Q.arr.clip(lower=1)), calX(Q, [col])).fit().params[col]
-    out["the chosen window, least squares on log arrivals"] = float((Q.arr.values[fy] * np.exp(-b * Q[col].values[fy])).sum()) * G2
-    b = sm.OLS(Q.arr, calX(Q, [col])).fit().params[col]
-    out["the chosen window, least squares on arrivals"] = float((Q.arr.values[fy] - b * Q[col].values[fy]).sum()) * G2
+def truck_claims(L, REG):
+    """The fund's claims: trucks on the register, duplicates and withdrawn notifications out."""
+    out = []
+    for x in L:
+        st = str(x["Status"])
+        if st.startswith("Closed - duplicate") or st == "Withdrawn":
+            continue
+        reg = norm_reg(x["Registration"])
+        if reg not in REG:
+            continue
+        hh, mm = str(x["Incident time (UK)"]).split(":")
+        out.append({"no": x["Claim no."], "date": x["Incident date"], "depot": REG[reg]["depot"], "reg": reg,
+                    "h": int(hh) + int(mm) / 60.0, "fault": x["Fault"], "tp": x["Third-party insurer"] or ""})
     return out
 
 
-def quiet(D, L):
-    """Quiet-period fits: calendar terms fitted on the days the window leaves untouched, predicted for every 2025-26 day;
-    with the months those days never reach."""
-    fy = (D.fy == 2025).values
-    out = {}
-    for lab, mask in (("days whose previous %d weeks did not run out" % L, D["s%d" % L].values == 0),
-                      ("days whose previous four weeks did not run out", D.s4.values == 0)):
-        mm = sm.GLM(D.arr[mask], calX(D)[mask], family=sm.families.Poisson()).fit()
-        missing = sorted(set(range(1, 13)) - set(D.mo[mask]))
-        out["quiet-period fit on " + lab] = (float(mm.predict(calX(D))[fy].sum()) * G2, int(mask.sum()), missing)
-    return out
+def schedule(target):
+    wb = load_workbook(find(target, r"route_schedule_2027\.xlsx$"), read_only=True)
+    it = wb["Routes"].iter_rows(values_only=True)
+    head = list(next(it))
+    routes = []
+    for r in it:
+        x = dict(zip(head, r))
+        dep = str(x["Departs from 2 Jan 2027"])
+        hh, mm = str(x["Planned day (h:mm)"]).split(":")
+        routes.append((x["Depot"], int(dep[:2]) + int(dep[3:5]) / 60.0, int(hh) + int(mm) / 60.0, float(x["Planned km"])))
+    it = wb["Calendar 2027"].iter_rows(values_only=True)
+    head = list(next(it))
+    days = []
+    for r in it:
+        x = dict(zip(head, r))
+        if x["Deliveries"] == "Yes":
+            d = x["Date"].date() if isinstance(x["Date"], dt.datetime) else x["Date"]
+            days.append(d)
+    return routes, days
 
 
-def family_extra(D, L):
-    """Other exposure forms of the window's run-outs, and fits with fewer calendar controls."""
-    col = "s%d" % L
-    fy = (D.fy == 2025).values
-    Q = D.copy()
-    wk = Q.groupby("wk").agg(ro=("ro", "sum"), away=("away_gp", "sum"), awayh=("away_h", "sum"))
-    back = lambda c: np.array([np.mean([wk[c].get(w - dt.timedelta(7 * j), 0) for j in range(1, L + 1)]) for w in Q.wk], dtype=float)
-    Q["cntL"] = back("ro")
-    Q["awayL"] = back("away") / 100.0
-    Q["awayallL"] = (back("away") + back("awayh")) / 100.0
-    Q["anyL"] = np.mean([(Q["w%d" % j].values > 0) for j in range(1, L + 1)], axis=0)
-    Q["s0"] = Q.groupby("wk").ro.transform("mean")
-    out = {}
-
-    def undo(c, X):
-        return _undo(Q, X, [c])[0] * G2
-    for lab, c in (("the window's run-out days", "cntL"), ("the window's GP-form patients turned away", "awayL"),
-                   ("the window's patients turned away", "awayallL"), ("the window's weeks with any run-out", "anyL")):
-        out[lab] = undo(c, calX(Q, [c]))
-    out["the window's share with the same week's share as a control"] = undo(col, calX(Q, [col, "s0"]))
-    return out
+# ---------------------------------------------------------------- the main call
+def frames(target):
+    REG = register(target)
+    T, rows = sun_table(target)
+    row_of = row_finder(rows)
+    runs = [r for r in telematics(target, REG) if r[0] <= REC_END]
+    L = listing(target)
+    TC = truck_claims(L, REG)
+    claims = [(c["date"], c["depot"], c["h"]) for c in TC if c["date"] <= REC_END]
+    routes, days = schedule(target)
+    plan = [(d, dep, a, a + dur, km) for d in days for dep, a, dur, km in routes]
+    E = AN.exposure(runs, T, row_of, bst)
+    C = AN.claim_frame(claims, T, row_of, bst)
+    F = AN.exposure(plan, T, row_of, bst)
+    return E, C, F, {"REG": REG, "T": T, "rows": rows, "row_of": row_of, "L": L, "TC": TC, "routes": routes,
+                     "days": days, "runs": runs}
 
 
-def reduced(D, L):
-    """Fits that drop the calendar terms the record's fit keeps (AIC against the golden's model)."""
-    col = "s%d" % L
-    full = sm.GLM(D.arr, calX(D, [col]), family=sm.families.Poisson()).fit().aic
-    out = {}
-    for lab, X in (("no trend", calX(D, [col], trend=False)), ("no month terms", calX(D, [col], month=False)),
-                   ("weekday terms only", sm.add_constant(pd.get_dummies(D[["wd"]].astype(str), drop_first=True).astype(float).assign(**{col: D[col].values})))):
-        v, a = _undo(D, X, [col])
-        out[lab] = (v * G2, a - full)
-    return out
+def main_call(E, C, F):
+    m, names = AN.poisson_fit(E, C, ["band", "dark"])
+    q = AN.predict(m, names, F, ["band", "dark"], by="quarter")
+    mo = AN.predict(m, names, F, ["band", "dark"], by="month")
+    rates = AN.cells(E, C, ["band", "dark"])
+    rates["fitted_per_100k_km"] = [float(np.exp(m.params["const"] + m.params.get("band_%d" % b, 0.0)
+                                                 + (m.params["dark_1"] if dk else 0.0)) * 1e5)
+                                   for b, dk in zip(rates.band, rates.dark)]
+    return {"quarters": {int(k): float(v) for k, v in q.items()}, "months": {int(k): float(v) for k, v in mo.items()},
+            "year": float(q.sum()), "dark_mult": float(np.exp(m.params["dark_1"])), "rates": rates, "model": m}
 
 
-def _did(D, ci, col):
-    target = ci.attrs["target"]
-    pr = pd.read_csv(os.path.join(target, F["practices"]), dtype=str)
-    own = dict(zip(pr.practice_code, pr["phlebotomy_les_2025-26"] == "Y"))
-    g = ci[ci.request_type == "GP"].copy()
-    g["own"] = g.request_org.map(own)
-    g = g.dropna(subset=["own"])
-    cnt = g.groupby(["d", "own"]).size().unstack(fill_value=0)
-    Q = D[D.d >= P.NEW_SYSTEM_LIVE].copy().set_index("d")
-    Q["yP"] = cnt.get(True, pd.Series(dtype=float)).reindex(Q.index).fillna(0)
-    Q["yN"] = cnt.get(False, pd.Series(dtype=float)).reindex(Q.index).fillna(0)
-    Q = Q.reset_index()
-    QQ = pd.concat([Q.assign(y=Q.yP, grp=1), Q.assign(y=Q.yN, grp=0)])
-    Z = calX(QQ)
-    Z["grp"] = QQ.grp.values
-    Z["gx"] = QQ.grp.values * QQ[col].values
-    Z["x"] = QQ[col].values
-    m = sm.GLM(QQ.y, Z, family=sm.families.Poisson()).fit()
-    fy = (Q.fy == 2025).values
-    # practices with a clinic, scaled from the coded GP arrivals to all GP arrivals of the day
-    share_p = (Q.yP / (Q.yP + Q.yN).replace(0, np.nan)).fillna(0).values
-    arr = D[D.d >= P.NEW_SYSTEM_LIVE].arr.values
-    supp = (arr[fy] * share_p[fy] * (np.exp(-m.params["gx"] * Q[col].values[fy]) - 1)).sum()
-    D25 = D[D.fy == 2025]
-    _did.coef = (float(m.params["gx"]), float(m.params["x"]))
-    return float(D25.arr.sum() + supp)
+def backtest(E, C):
+    """The record's own test of the light model where it extrapolates: the 04:00 to 07:00 kilometres driven in the dark
+    (the May to August schedule's earliest starts), predicted by the band-and-light model fitted without them, by the
+    04:00 to 07:00 rate and by each clock hour's rate."""
+    import statsmodels.api as sm
+    tE = (E.band == 1) & (E.dark == 1)
+    tC = (C.band == 1) & (C.dark == 1)
+    m, names = AN.poisson_fit(E[~tE], C[~tC], ["band", "dark"])
+    km = float(E[tE].km.sum())
+    Xp = sm.add_constant(pd.get_dummies(pd.DataFrame({"band": ["1"], "dark": ["1"]}), drop_first=False).astype(float),
+                         has_constant="add").reindex(columns=names, fill_value=0.0)
+    light = float(m.predict(Xp, offset=np.log([km]))[0])
+    band = float(AN.cell_rates(E, C, ["band"]).loc[1] * km)
+    rh = AN.cell_rates(E, C, ["hour"])
+    hour = float(sum(rh.loc[h] * E[tE & (E.hour == h)].km.sum() for h in sorted(E[tE].hour.unique())))
+    return {"km": km, "share": km / float(E.km.sum()), "obs": int(tC.sum()), "light": light, "band": band, "hour": hour,
+            "months": sorted(int(x) for x in E[tE].groupby("month").km.sum().loc[lambda s: s > 1000].index)}
 
 
-def lag_route(D, n=10, month=True, hosp=False, poisson=False):
-    """The round 2 Opus reader's route: GP-referred visits on the days the kiosk did not fill, on weekday, financial
-    year and calendar month terms and n daily lags of the days it filled, predicted for every 2025-26 day with no
-    run-outs."""
-    Q = D.copy()
-    f = Q.full.values
-    lags = []
-    for j in range(1, n + 1):
-        Q["l%d" % j] = np.r_[np.zeros(j), f[:-j]]
-        lags.append("l%d" % j)
-    Z = pd.get_dummies(Q[["wd", "mo", "fy"] if month else ["wd", "fy"]].astype(str), drop_first=True).astype(float)
-    for c in lags + (["seen_h"] if hosp else []):
-        Z[c] = Q[c].values
-    Z = sm.add_constant(Z, has_constant="add")
-    op = f == 0
-    fit = (sm.GLM(Q.seen_gp[op], Z[op], family=sm.families.Poisson()) if poisson else sm.OLS(Q.seen_gp[op], Z[op])).fit()
-    Z0 = Z.copy()
-    Z0[lags] = 0
-    fy = (Q.fy == 2025).values
-    return float(fit.predict(Z0)[fy].sum()) * G2
-
-
-def ladder(D, target, ci):
-    fy = (D.fy == 2025).values
-    r = {}
-    r["R0 GP-referred patients seen"] = float(D.seen_gp[fy].sum()) * G2
-    r["R1 seen plus GP-referred turned away (the default path; the round 1 Sonnet reader)"] = float(D.arr[fy].sum()) * G2
-    r["R2 the run-out days completed from the GP ticket-issue curve (the round 1 Opus reader)"] = completion(D, target, ci)
-    clean = D.ro == 0
-    m = sm.GLM(D.arr[clean], calX(D)[clean], family=sm.families.Poisson()).fit()
-    r["R2 demand fitted on the days that did not run out"] = float(m.predict(calX(D))[fy].sum()) * G2
-    L = window(D)[0]
-    D2 = D.assign(all_arr=D.arr + D.seen_h + D.away_h)
-    m = sm.GLM(D2.all_arr, calX(D2, ["s%d" % L]), family=sm.families.Poisson()).fit()
-    r["R3 all walk-in arrivals modelled together with the window's run-outs"] = float((D.arr.values[fy] * np.exp(-m.params["s%d" % L] * D["s%d" % L].values[fy])).sum()) * G2
-    r["R4 the previous calendar week's run-out share (the round 2 golden)"] = deterred(D, "s1")[0] * G2
-    r["R4 the run-out share of the previous ten clinic days"] = deterred(D, "r10")[0] * G2
-    r["R5 ten daily lags of the kiosk's full days on open days (the round 2 Opus reader)"] = lag_route(D)
-    return r
-
-
-def completion(D, target, ci):
-    """The round 1 Opus reader's route: each day the kiosk filled completed from the share of a day's GP-referred
-    arrivals that comes before its last ticket, read off the GP-form ticket-issue times of the days it did not fill."""
-    leg = pd.read_csv(os.path.join(target, F["legacy"]), dtype=str)
-    leg = leg[(leg.Outcome == "Seen") & (leg.Request == "GP form")].copy()
-    leg["d"] = pd.to_datetime(leg.Date, format="%d/%m/%Y").dt.date
-    leg = leg[leg.d < P.NEW_SYSTEM_LIVE]
-    leg["m"] = [int(x[:2]) * 60 + int(x[3:5]) for x in leg.Issued]
-    g = ci[ci.request_type == "GP"]
-    lt = pd.to_datetime(g.event_utc, utc=True).dt.tz_convert("Europe/London")
-    c2 = pd.DataFrame({"d": g.d.values, "m": (lt.dt.hour * 60 + lt.dt.minute).values})
-    tk = pd.concat([leg[["d", "m"]], c2])
-    full = set(D.d[D.full == 1])
-    clean = tk[~tk.d.isin(full)]
-    grid = np.arange(420, 901)
-    cdf = np.searchsorted(np.sort(clean.m.values), grid, side="right") / len(clean)
-    # the day's last ticket of either form
-    leg_all = pd.read_csv(os.path.join(target, F["legacy"]), dtype=str)
-    leg_all = leg_all[leg_all.Outcome == "Seen"].copy()
-    leg_all["d"] = pd.to_datetime(leg_all.Date, format="%d/%m/%Y").dt.date
-    leg_all = leg_all[leg_all.d < P.NEW_SYSTEM_LIVE]
-    leg_all["m"] = [int(x[:2]) * 60 + int(x[3:5]) for x in leg_all.Issued]
-    la = pd.to_datetime(ci.event_utc, utc=True).dt.tz_convert("Europe/London")
-    last = pd.concat([leg_all[["d", "m"]], pd.DataFrame({"d": ci.d.values, "m": (la.dt.hour * 60 + la.dt.minute).values})]).groupby("d").m.max()
-    est = []
-    for row in D.itertuples():
-        if row.full:
-            f = cdf[min(max(int(last[row.d]) - 420, 0), len(grid) - 1)]
-            est.append(row.seen_gp / max(f, 0.05))
-        else:
-            est.append(row.seen_gp)
-    fy = (D.fy == 2025).values
-    return float(np.array(est)[fy].sum()) * G2
-
-
-def _register(target):
-    reg = pd.read_csv(os.path.join(target, F["clinics"]), dtype=str)
-    dn = {"Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4}
-    days_of = {r.clinic_code: frozenset(dn[x.strip()] for x in r.clinic_days.split(",")) for r in reg.itertuples()}
-    return dict(zip(reg.clinic_code, reg.specialty)), days_of
-
-
-def _hosp(ci):
-    h = ci[ci.request_type == "HOSP"].copy()
-    h["rd"] = pd.to_datetime(h.request_date).dt.date
-    return h
-
-
-def _table(h, spec_of, names):
-    y = h[(h.d >= FY0) & (h.d <= FY1)].copy()
-    y["spec"] = y.request_org.map(spec_of)
-    y["q"] = [quarter(d) for d in y.d]
-    tab = y.groupby(["spec", "q"]).size().unstack(fill_value=0)
-    return {sp: {q: int(tab.loc[sp, q]) if (sp in tab.index and q in tab.columns) else 0 for q in ("Q1", "Q2", "Q3", "Q4")}
-            for sp in sorted(names)}
-
-
-def ask_hosp(ci, target):
-    """Hospital-clinic visits in 2025-26 by specialty and financial quarter of the visit. Forms issued before the new PAS
-    carry the old clinic codes, which the register does not hold; each old code is the new code issued on the same
-    clinic weekdays in the last fortnight of March 2026, before the clinics moved to their 2026-27 templates on 1 April."""
-    new_spec, days_of = _register(target)
-    h = _hosp(ci)
-    old_codes = sorted(set(h.request_org) - set(new_spec))
-    wk_old = {c: frozenset(x.weekday() for x in h[h.request_org == c].rd) for c in old_codes}
-    march = h[(h.rd < TEMPLATES) & h.request_org.isin(list(new_spec))]
-    wk_new = {c: frozenset(x.weekday() for x in march[march.request_org == c].rd) for c in new_spec}
-    link = {}
-    for c in old_codes:
-        m = [n for n, w in wk_new.items() if w == wk_old[c]]
-        link[c] = m[0] if len(m) == 1 else None
-    spec_of = dict(new_spec)
-    spec_of.update({c: new_spec[n] for c, n in link.items() if n})
-    return _table(h, spec_of, new_spec.values()), {c: spec_of.get(c) for c in old_codes}
-
-
-def ask_hosp_weekday_route(ci, target):
-    """The careful route: each old code named by matching the weekdays its 2025-26 requests were issued on to the
-    register's clinic days."""
-    new_spec, days_of = _register(target)
-    h = _hosp(ci)
-    old_codes = sorted(set(h.request_org) - set(new_spec))
-    spec_of = dict(new_spec)
-    for c in old_codes:
-        w = frozenset(x.weekday() for x in h[(h.request_org == c) & (h.rd < TEMPLATES)].rd)
-        m = [n for n, dd in days_of.items() if dd == w]
-        if len(m) == 1:
-            spec_of[c] = new_spec[m[0]]
-    return _table(h, spec_of, new_spec.values()), {c: spec_of.get(c) for c in old_codes}
-
-
+# ---------------------------------------------------------------- the asks
 def quarter(d):
-    return "Q%d" % (((d.month - 4) % 12) // 3 + 1)
+    return "%dQ%d" % (d.year, (d.month - 1) // 3 + 1)
 
 
-def roster(target):
-    r = pd.read_csv(os.path.join(target, F["roster"]), dtype={"Employee no": str})
-    r["d"] = pd.to_datetime(r["Roster date"]).dt.date
-    return r
+def period(d):
+    if d.year == 2025:
+        return "2025H1" if d.month <= 6 else "2025H2"
+    return "2026H1" if (d.year == 2026 and d.month <= 6) else None
 
 
-def weekly(D, b, col):
-    y = D[D.fy == 2025].copy()
-    y["kept"] = y.arr * (np.exp(-b * y[col]) - 1)
-    w = y.groupby("wk").agg(seen=("seen_gp", "sum"), away=("away_gp", "sum"), kept=("kept", "sum")).reset_index()
-    return w
+def claim_index(L, REG):
+    """Every listing number (a duplicate's resolved to the claim it duplicates) to the claim's own row."""
+    own = {x["Claim no."]: x for x in L}
+    out = {}
+    for no, x in own.items():
+        st = str(x["Status"])
+        if st.startswith("Closed - duplicate of "):
+            out[no] = own[st.split()[-1]]
+        else:
+            out[no] = x
+    return out
 
 
-def solve(target):
-    D, ci, ev = daily(target)
-    ci.attrs["target"] = target
-    g = golden(D)
-    return D, ci, ev, g
+def jobs(target):
+    with open(find(target, r"brantwick_jobs.*\.csv$"), encoding="utf-8") as fh:
+        return {x["Job No"]: x for x in csv.DictReader(fh)}
+
+
+def ap(target):
+    with open(find(target, r"ap_ledger.*\.csv$"), encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
+def genuine_lines(AP, J, CI, REG):
+    """Each invoice counted once: identical lines (job, invoice date, description, net) are one invoice posted more than
+    once, except that a truck fitted with camera and radar has each sensor calibrated, so up to two identical ADAS
+    calibration lines on its job are two invoices."""
+    seen = collections.Counter()
+    out = []
+    for x in sorted(AP, key=lambda x: (dt.datetime.strptime(x["Posting Date"], "%d/%m/%Y"), x["Doc No"])):
+        k = (x["Supplier Ref"], x["Invoice Date"], x["Description"], x["Net"])
+        lim = 1
+        if x["Description"] == "ADAS calibration":
+            reg = norm_reg(CI[J[x["Supplier Ref"]]["Claim Ref"]]["Registration"])
+            lim = 2 if REG[reg]["sensors"] == "Camera and radar" else 1
+        if seen[k] >= lim:
+            continue
+        seen[k] += 1
+        out.append(x)
+    return out
+
+
+def outlays(lines, J, CI):
+    o = collections.defaultdict(float)
+    for x in lines:
+        o[CI[J[x["Supplier Ref"]]["Claim Ref"]]["Claim no."]] += float(x["Net"])
+    return {k: round(v, 2) for k, v in o.items()}
+
+
+def repair_costs(lines, J, CI, REG):
+    t = {(d, p): 0.0 for d in ["CRA", "GAT", "CAR", "DAR"] for p in PERIODS}
+    for x in lines:
+        c = CI[J[x["Supplier Ref"]]["Claim Ref"]]
+        p = period(c["Incident date"])
+        reg = norm_reg(c["Registration"])
+        if p and reg in REG:
+            t[(REG[reg]["depot"], p)] += float(x["Net"])
+    return t
+
+
+def bank(target):
+    with open(find(target, r"recovery_account.*\.csv$"), encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
+def insurer_crosswalk(L):
+    names = sorted({x["Third-party insurer"] for x in L if x["Third-party insurer"]})
+    return {n.split()[0].upper(): n for n in names}
+
+
+def recoveries(B, L, CI, OUT):
+    xw = insurer_crosswalk(L)
+    own = {x["Claim no."]: x for x in L}
+    res, unmatched = [], []
+    for x in B:
+        if x["Type"] != "BAC" or not x["Paid in"]:
+            continue
+        desc = x["Description"]
+        payer = xw.get(desc.split()[0])
+        if payer is None:
+            continue                      # not another insurer (the salvage agent)
+        d = dt.datetime.strptime(x["Date"], "%d/%m/%Y").date()
+        amt = round(float(x["Paid in"]), 2)
+        m = re.search(r"\b(RVM\d{6})\b", desc)
+        if m:
+            res.append((d, amt, CI[m.group(1)]["Claim no."], "quoted"))
+            continue
+        cands = []
+        for no, c in own.items():
+            if c["Third-party insurer"] != payer or c["Fault"] not in ("Non-fault", "Split") or no not in OUT:
+                continue
+            if c["Incident date"] >= d:
+                continue
+            shares = [1.0] if c["Fault"] == "Non-fault" else SHARES
+            if any(abs(round(OUT[no] * s + 1e-9, 2) - amt) < 0.005 for s in shares):
+                cands.append(no)
+        if len(cands) == 1:
+            res.append((d, amt, cands[0], "matched"))
+        else:
+            unmatched.append((d, amt, payer, cands))
+    return res, unmatched
+
+
+def asks(target, REG, L):
+    J = jobs(target)
+    CI = claim_index(L, REG)
+    AP = ap(target)
+    lines = genuine_lines(AP, J, CI, REG)
+    OUT = outlays(lines, J, CI)
+    RC = repair_costs(lines, J, CI, REG)
+    B = bank(target)
+    res, unmatched = recoveries(B, L, CI, OUT)
+    own = {x["Claim no."]: x for x in L}
+    A1 = {q: 0.0 for q in QS}
+    for d, amt, no, how in res:
+        q = quarter(own[no]["Incident date"])
+        if q in A1:
+            A1[q] += amt
+    return {"A1": A1, "B1": RC, "n_receipts": len(res), "n_matched": sum(1 for r in res if r[3] == "matched"),
+            "unmatched": unmatched, "n_lines": len(lines), "n_ap": len(AP)}
+
+
+def r50(x, k):
+    return int(k * round(x / k + 1e-9))
+
+
+def compute(target):
+    E, C, F, X = frames(target)
+    M = main_call(E, C, F)
+    BT = backtest(E, C)
+    K = asks(target, X["REG"], X["L"])
+    # the chart's record: truck claims by incident month, October 2023 to September 2026
+    cm = collections.Counter((c["date"].year, c["date"].month) for c in X["TC"] if c["date"] <= REC_END)
+    months = []
+    y, m = 2023, 10
+    while (y, m) <= (2026, 9):
+        months.append(("%d-%02d" % (y, m), cm.get((y, m), 0)))
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    F_out = {
+        "claims_2027": r50(M["year"], 50), "claims_2027_unrounded": round(M["year"], 1),
+        "claims_2027_apr_sep": r50(sum(v for k, v in M["months"].items() if k in SUMMER), 50),
+        "claims_2027_other_months": r50(sum(v for k, v in M["months"].items() if k not in SUMMER), 50),
+        "claims_2027_apr_sep_unrounded": round(sum(v for k, v in M["months"].items() if k in SUMMER), 1),
+        "claims_2027_other_months_unrounded": round(sum(v for k, v in M["months"].items() if k not in SUMMER), 1),
+        "claims_2027_months_unrounded": {"%02d" % k: round(v, 1) for k, v in sorted(M["months"].items())},
+        "dark_multiplier": round(M["dark_mult"], 2),
+        "recoveries_by_collision_quarter": {q: r50(v, 100) for q, v in K["A1"].items()},
+        "recoveries_unrounded": {q: round(v, 2) for q, v in K["A1"].items()},
+        "repair_cost_by_depot": {"%s %s" % k: r50(v, 100) for k, v in sorted(K["B1"].items())},
+        "repair_cost_unrounded": {"%s %s" % k: round(v, 2) for k, v in sorted(K["B1"].items())},
+        "record_claims_by_month": dict(months),
+    }
+    qb, yb, _ = AN.forecast(E, C, F, ["band"])
+    F_out["default_path_2027"] = r50(yb, 50)
+    F_out["default_path_2027_unrounded"] = round(yb, 1)
+    F_out["dark_km_share_2027_pct"] = round(100 * float(F[F.dark == 1].km.sum() / F.km.sum()), 1)
+    F_out["dark_km_share_record_pct"] = round(100 * float(E[E.dark == 1].km.sum() / E.km.sum()), 1)
+    F_out["claims_in_record"] = int(len(C))
+    F_out["dark_multiplier_1dp"] = round(M["dark_mult"], 1)
+    F_out["backtest"] = {"km": round(BT["km"]), "claims": BT["obs"], "expected_light_model": round(BT["light"], 1),
+                         "expected_band_rate": round(BT["band"], 1), "expected_hour_rate": round(BT["hour"], 1)}
+    return F_out, {"E": E, "C": C, "F": F, "X": X, "M": M, "K": K, "BT": BT}

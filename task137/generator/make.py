@@ -1,9 +1,9 @@
-"""Build the pack, compute every owed figure from it, write the goldens, figures.json, submission.md and metadata.json,
-run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run the independent
-verifier on it.
+"""Build the pack from the seeded world, compute every owed figure from the pack, write the goldens, figures.json,
+submission.md and metadata.json, run the checks, rebuild into a scratch folder and require byte-identical output, cut
+target.zip, run the independent verifier on it and print the ceiling.
 
-    python3 task137/generator/make.py            (full: two builds, the zip, the verifier)
-    python3 task137/generator/make.py --once     (one build, no zip)
+    python3 task137/generator/make.py            (full: two builds, the zip, the verifier, the ceiling)
+    python3 task137/generator/make.py --once     (one build and the checks, no zip)
 """
 import datetime as dt
 import hashlib
@@ -12,65 +12,88 @@ import os
 import shutil
 import sys
 import tempfile
+import warnings
 import zipfile
 
+warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as B
-import figs as FG
 import golden as GD
+import pack as PK
 import params as P
+import solve as SV
 import writeup as WU
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 10, 2, 15, 50, 0)          # the afternoon the hub planning folder was put together
+STAMP = (2026, 11, 2, 16, 40, 0)
+
+SOURCES = {
+    "tele_a": "Gridtrak telematics day summary, the platform's old export template: one row per truck per day driven, "
+              "first ignition on and last ignition off in UTC, distance in miles",
+    "tele_b": "Gridtrak telematics day summary, the new export template from the reporting week of 24 March 2025: one "
+              "row per truck per day driven, ignition times in UTC, distance in km",
+    "listing": "Ravensby Insurance plc motor fleet claims listing for the policy, as at 31 October 2026 (trucks and "
+               "company cars)",
+    "register": "Tarnfield fleet register (trucks with depot, use and forward sensors; company cars)",
+    "schedule": "The 2027 route schedule approved by the board, with the current departures and the 2027 delivery "
+                "calendar",
+    "stores": "Northfold Local stores' delivery windows from 2 January 2027 (store operations)",
+    "handbook": "Tarnfield driver handbook, 2026 edition (four pages of procedure and Appendix C, sunrise and sunset "
+                "at the depots in GMT)",
+    "terms": "Board-approved motor claims fund terms for the 2027 fund year",
+    "jobs": "Brantwick Accident Repair job list for Tarnfield's trucks",
+    "ap": "Tarnfield accounts-payable ledger lines for supplier BRA014 (Brantwick), weekly Tuesday imports",
+    "bank": "Claims recovery bank account export, 1 October 2024 to 31 October 2026",
+    "bh": "England and Wales bank holidays 2023 to 2027 in the gov.uk bank-holidays.json format",
+}
 
 
 def metadata(target):
     files = []
-    for k in B.PACK:
-        f = B.FILES[k]
+    for k, f in PK.FILES.items():
         p = os.path.join(target, f)
         rows = (sum(1 for _ in open(p, encoding="utf-8")) - 1) if f.endswith(".csv") else None
+        if k == "bh":
+            src, lic = ("Dates of the bank holidays in England and Wales as published by the UK Government (gov.uk/"
+                        "bank-holidays), retyped in that feed's format for 2023 to 2027"), "Open Government Licence v3.0"
+        elif k == "handbook":
+            src, lic = ("Constructed (seeded generator); Appendix C sunrise and sunset computed with the NOAA solar "
+                        "position equations at each depot's coordinates; British Summer Time rule of the Summer Time "
+                        "Order 2002"), "CC0-1.0 (original work); NOAA equations public domain"
+        else:
+            src, lic = "Constructed (seeded generator, task137/generator/make.py)", "CC0-1.0 (original work)"
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator)", "date": P.AS_OF.isoformat(),
-                      "license": "CC0-1.0 (original work)"})
+                      "description": SOURCES[k], "source": src, "date": P.AS_OF.isoformat(), "license": lic})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task137",
-        "title": "How many GP-referred blood-test visits a trust's new community phlebotomy hub should plan for in "
-                 "2027-28, from a walk-in clinic that ran out of tickets, with the clinic's hospital-clinic visits by "
-                 "specialty",
-        "domain": "Healthcare Delivery & Health Economics",
-        "subdomain": "utilization-access-demand-forecasting (latent demand: the GP-referred demand a walk-in clinic "
-                     "never sees because practices with their own phlebotomy clinics keep patients in-house after it "
-                     "has been running out)",
+        "title": "How many collision claims a wholesaler's delivery fleet will make in 2027 on a new route schedule that "
+                 "starts every route before dawn all year, with the recoveries other insurers paid and the bodyshop's "
+                 "repair costs",
+        "domain": "Actuarial Science & Insurance",
+        "subdomain": "claims-frequency-severity",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "other: one planning figure at the nearest 2,500, a weekly chart of 2025-26 GP-referred demand, "
-                        "and one ask on the hospital clinics' visits by specialty and quarter",
+        "prompt_shape": "02: the 2027 claims and each 2027 quarter's, with a monthly chart; asks on recoveries by "
+                        "collision quarter and repair cost by depot and period",
         "as_of": P.AS_OF.isoformat(),
-        "deliverables": [GD.XLSX, GD.PNG],
-        "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
-        "context_artifacts": [B.FILES[k] for k in B.CONTEXT],
-        "stated_inputs": ["the hub takes every patient with a GP request from 1 April 2027 and is staffed never to "
-                          "run out of tickets (prompt, annual report section 6)",
-                          "underlying demand grows 3.5 per cent a year for two years from 2025-26, with no working-day "
-                          "adjustment (prompt; ICB planning assumptions)"],
-        "field_terms": [],
+        "deliverables": [GD.XLSX, GD.DOCX],
+        "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],
+        "context_artifacts": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "generated by task137/generator/make.py (seeded, deterministic) around a fictional NHS "
-                               "trust's walk-in phlebotomy clinic: twelve referring GP practices (seven running their "
-                               "own phlebotomy clinics), seven hospital outpatient specialties with their recall "
-                               "programmes, a seven-post phlebotomy team with sickness, leave, a vacancy and bank cover, "
-                               "a daily ticket allocation, the patients turned away when the tickets ran out, two queue "
-                               "systems and a clinic code reallocation; every organisation, practice, code and person "
-                               "is invented, and no real dataset is reproduced.",
-                     "date": P.AS_OF.isoformat(), "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-26",
+        "sources": [{"files": "every file under target/ except the bank-holiday feed",
+                     "origin": "generated by task137/generator/make.py (seeded, deterministic) around a fictional "
+                               "delivered grocery wholesaler in North East England and Cumbria: four depots, about 250 "
+                               "store routes on 7.5-tonne trucks, three years of telematics, collisions drawn per "
+                               "kilometre from clock time and light, the insurer's claims listing, the bodyshop's jobs "
+                               "and invoices, other insurers' recoveries and the 2027 schedule; every company, person, "
+                               "registration and reference is invented and no real dataset is reproduced",
+                     "date": P.AS_OF.isoformat(), "license": "CC0-1.0 (original work)"},
+                    {"files": PK.FILES["bh"], "origin": "UK Government bank holidays (gov.uk/bank-holidays.json)",
+                     "date": P.AS_OF.isoformat(), "license": "Open Government Licence v3.0"}],
+        "created": P.AS_OF.isoformat(),
         "generator": "task137/generator/make.py",
         "files": files,
     }
@@ -102,47 +125,48 @@ def cut_zip():
 
 def fresh(folder):
     if os.path.isdir(folder):
-        for f in os.listdir(folder):
-            os.remove(os.path.join(folder, f))
+        shutil.rmtree(folder)
     os.makedirs(folder, exist_ok=True)
+
+
+def one(target, golden):
+    W = PK.build(target)
+    stamp(target)
+    F, X = SV.compute(target)
+    F = json.loads(json.dumps(F))
+    GD.write(golden, F, X)
+    stamp(golden)
+    return W, F, X
 
 
 def main(second=True, checks=True):
     fresh(TARGET)
-    R = B.build(TARGET)
-    stamp(TARGET)
     fresh(GOLDEN)
-    F, X = FG.compute(TARGET)
-    F = json.loads(json.dumps(F))
+    W, F, X = one(TARGET, GOLDEN)
     with open(os.path.join(HERE, "figures.json"), "w") as fh:
         json.dump(F, fh, indent=1, ensure_ascii=False)
         fh.write("\n")
-    GD.write(GOLDEN, F, X)
-    stamp(GOLDEN)
     WU.write(os.path.join(TASK, "submission.md"), F)
     metadata(TARGET)
     if checks:
         import checks as C
-        assert not C.main(TARGET, R)
+        assert not C.main(TARGET, W, F, X), "checks failed"
     if second:
         tmp = tempfile.mkdtemp()
         t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
-        B.build(t2)
-        stamp(t2)
-        F2, X2 = FG.compute(t2)
-        F2 = json.loads(json.dumps(F2))
-        GD.write(g2, F2, X2)
-        stamp(g2)
+        os.makedirs(t2)
+        os.makedirs(g2)
+        _, F2, _ = one(t2, g2)
         d1, d2 = digest(TARGET), digest(t2)
         assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]
         dg1, dg2 = digest(GOLDEN), digest(g2)
         assert dg1 == dg2, [f for f in dg1 if dg1[f] != dg2.get(f)]
-        assert F == F2
+        assert F == json.loads(json.dumps(F2))
         shutil.rmtree(tmp)
         zp = cut_zip()
-        print("byte-identical; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
+        print("byte-identical rebuild; target.zip md5", hashlib.md5(open(zp, "rb").read()).hexdigest())
         import verify as V
-        assert not V.main(zp)
+        assert not V.main(zp), "verify failed"
         import ceiling as CL
         CL.score(TARGET)
     return F

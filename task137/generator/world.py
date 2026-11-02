@@ -1,133 +1,215 @@
-"""The world at day grain, before any record is written: latent demand by referrer group and practice, the clinic's
-staffing and ticket allocation, which days ran out, and who was turned away. Practices with their own phlebotomy
-clinic book their patients in-house for weeks after the walk-in clinic has kept running out: each week's run-out share
-holds their referrals down for the eight weeks that follow."""
+"""The seeded world before any file is written: routes, runs, journeys, collisions, claims, repairs, recoveries and the
+2027 schedule. The darkness that drives the collisions is the handbook table's (astro.TABLE)."""
 import datetime as dt
+import math
+
 import numpy as np
+
+import astro as A
 import params as P
 
-WD = np.array([1.21, 1.05, 1.00, 0.96, 0.85])
-MON = np.array([1.05, 1.04, 1.02, 1.00, 1.00, 0.96, 0.92, 0.85, 0.97, 1.03, 1.05, 0.89])
+DAY0 = dt.date(2000, 1, 1)
 
 
-def clinic_days(a=P.START, b=P.END):
-    out, d = [], a
-    while d <= b:
-        if d.weekday() < 5 and d not in P.BH:
+def daynum(d):
+    return (d - DAY0).days
+
+
+def working_days(start, end):
+    out, d = [], start
+    while d <= end:
+        if d.weekday() < 6 and (d.month, d.day) not in P.NO_RUN_DAYS:
             out.append(d)
-        d += dt.timedelta(1)
+        d += dt.timedelta(days=1)
     return out
 
 
-def fy(d):
-    return d.year - (d.month < 4)
+def band_of(h):
+    for i in range(len(P.BAND_EDGES) - 1):
+        if P.BAND_EDGES[i] <= h < P.BAND_EDGES[i + 1]:
+            return i
+    return len(P.BAND_EDGES) - 2
 
 
-def simulate(seed=P.SEED, K=P.K_DETER, dseed=P.DEMAND_SEED, weeks=P.DETER_WEEKS):
-    rs = np.random.default_rng([seed, 1])     # staffing
-    rd = np.random.default_rng([dseed, 2])    # demand
-    days = clinic_days()
-    n = len(days)
-    t = np.array([(x - P.START).days / 365.25 for x in days])
-    cal = np.array([WD[x.weekday()] * MON[x.month - 1] for x in days]) * (1 + P.GROWTH) ** t
-    pbh = np.zeros(n, bool)
-    for i in range(1, n):
-        if (days[i] - days[i - 1]).days not in (1, 3):
-            pbh[i] = True
-    cal[pbh] *= 1.17
-    lam = {g: P.BASE_DAILY * s * cal for g, s in P.SHARES.items()}
-    # hospital programmes add visits on their specialty's clinic weekdays and the day after
-    spec_days = {s[0]: s[1] for s in P.SPECIALTIES}
-    prog = np.zeros(n)
-    prog_spec = [dict() for _ in range(n)]
-    for sp, a, b, v in P.PROGRAMMES:
-        for i, x in enumerate(days):
-            if a <= x <= b:
-                w = 1.0 if x.weekday() in spec_days[sp] else 0.55
-                add = v * w * WD[x.weekday()] / 1.03
-                prog[i] += add
-                prog_spec[i][sp] = prog_spec[i].get(sp, 0.0) + add
-    lamH2 = lam["H"] + prog
-    # staffing: short sickness, long-term sickness, annual leave, the vacancy and bank cover
-    status = np.full((n, P.POSTS), "CLIN", dtype=object)
-    for p in range(P.POSTS):
-        i = 0
-        while i < n:
-            if rs.random() < 0.0010:
-                L = int(rs.choice([3, 5, 5, 8, 10]))
-                status[i:i + L, p] = "SICK"
-                i += L
-            else:
-                if rs.random() < 0.010:
-                    status[i, p] = "SICK"
-                i += 1
-    lts = np.zeros((n, P.POSTS), bool)
-    for p, a, b in P.LONG_TERM_SICK:
-        for i, x in enumerate(days):
-            if a <= x <= b:
-                status[i, p] = "SICK"
-                lts[i, p] = True
-    for i, x in enumerate(days):
-        pal = 0.07 if x.month in (7, 8) else (0.04 if x.month in (4, 10, 12, 2) else 0.022)
-        for p in range(P.POSTS):
-            if status[i, p] == "CLIN" and rs.random() < pal:
-                status[i, p] = "AL"
-    vac = np.array([P.VACANCY[0] <= x <= P.VACANCY[1] for x in days])
-    status[vac, P.POSTS - 1] = "VAC"
-    worked = (status == "CLIN").sum(axis=1)
-    nlts = lts.sum(axis=1)
-    short = P.POSTS - worked - vac.astype(int) - nlts
-    # the bank office backfills the vacant line and long-term sickness lines on most days
-    vbank = np.array([(1 if (vac[i] and rs.random() < 0.85) else 0) + sum(1 for _ in range(int(nlts[i])) if rs.random() < 0.9)
-                      for i in range(n)])
-    obank = np.array([min(s, rs.binomial(s, 0.5)) if s >= 1 else 0 for s in short])
-    bank = vbank + obank
-    adj = rs.choice([0, 0, 0, 0, 5, -5], size=n)
-    alloc = (worked * P.PER_HEAD + bank * P.BANK_HEAD + adj).astype(int)
-    # demand, run-outs and the turned away
-    wk = np.array([x - dt.timedelta(x.weekday()) for x in days])
-    A = {g: np.zeros(n, int) for g in "PNH"}
-    seen = {g: np.zeros(n, int) for g in "PNH"}
-    away = {g: np.zeros(n, int) for g in "PNH"}
-    ro = np.zeros(n, bool)
-    E = np.zeros(n)
-    wk_ro = {}
-    for i in range(n):
-        sh = [wk_ro.get(wk[i] - dt.timedelta(7 * k), (0, 0)) for k in range(1, weeks + 1)]
-        E[i] = sum(r / c if c else 0.0 for r, c in sh) / weeks
-        mus = {"P": lam["P"][i] * np.exp(-K * E[i]), "N": lam["N"][i], "H": lamH2[i]}
-        for g in "PNH":
-            A[g][i] = int(rd.poisson(rd.gamma(P.SHAPE, mus[g] / P.SHAPE)))
-        tot = A["P"][i] + A["N"][i] + A["H"][i]
-        if tot > alloc[i]:
-            ro[i] = True
-            ex = tot - alloc[i]
-            w = np.array([A["P"][i], A["N"][i], A["H"][i] * 1.3], float)
-            aw = rd.multinomial(ex, w / w.sum())
-            cap = np.array([A["P"][i], A["N"][i], A["H"][i]])
-            aw = np.minimum(aw, cap)
-            j = 0
-            while aw.sum() < ex:
-                if aw[j % 3] < cap[j % 3]:
-                    aw[j % 3] += 1
-                j += 1
-            for k, g in enumerate("PNH"):
-                away[g][i] = int(aw[k])
-                seen[g][i] = A[g][i] - int(aw[k])
-        else:
-            for g in "PNH":
-                seen[g][i] = A[g][i]
-        r0, c0 = wk_ro.get(wk[i], (0, 0))
-        wk_ro[wk[i]] = (r0 + int(ro[i]), c0 + 1)
-    return dict(days=days, n=n, t=t, pbh=pbh, lam=lam, lamH2=lamH2, prog=prog, prog_spec=prog_spec, status=status,
-                lts=lts, vac=vac, bank=bank, vbank=vbank, worked=worked, alloc=alloc, wk=wk, A=A, seen=seen, away=away,
-                ro=ro, E=E, K=K)
-
-
-def truth(W):
-    """Latent GP-referred demand by financial year: what a clinic that never ran out would have seen."""
-    out = {}
-    for i, x in enumerate(W["days"]):
-        f = fy(x)
-        out[f] = out.get(f, 0.0) + W["lam"]["P"][i] + W["lam"]["N"][i]
+def segments(date, depot, t0_local, t1_local):
+    """Split a stretch of driving [t0, t1) in local clock hours on date at depot into pieces with one traffic band and
+    one light state. Returns [(start local h, end local h, band, dark)]."""
+    off = A.bst_offset(date)
+    rise, sett = A.TABLE[(depot, A.row_of(date))]
+    rise_l, sett_l = rise / 60.0 + off, sett / 60.0 + off
+    cuts = sorted({t0_local, t1_local} | {x for x in P.BAND_EDGES if t0_local < x < t1_local}
+                  | {x for x in (rise_l, sett_l) if t0_local < x < t1_local})
+    out = []
+    for a, b in zip(cuts[:-1], cuts[1:]):
+        m = (a + b) / 2
+        dark = 1 if (m < rise_l or m > sett_l) else 0
+        out.append((a, b, band_of(m % 24), dark))
     return out
+
+
+def simulate(seed=P.SEED):
+    rng = np.random.default_rng([seed, 1])
+    W = {"seed": seed}
+    # vehicles and routes
+    vehicles, routes = [], []
+    letters = "ABCDEFGHJKLMNOPRSTUVWXYZ"
+    area = {"CRA": ["NA", "NB", "NC", "ND", "NE", "NG"], "GAT": ["NH", "NJ", "NK", "NL", "NM", "NO"],
+            "CAR": ["PU", "PV", "PW", "PX", "PY"], "DAR": ["NU", "NV", "NW", "NX", "NY"]}
+    ages = ["19", "69", "20", "70", "21", "71", "22", "72", "23", "73"]
+    used = set()
+
+    def new_reg(depot, age=None):
+        while True:
+            r = "%s%s %s" % (rng.choice(area[depot]), age or rng.choice(ages), "".join(rng.choice(list(letters), 3)))
+            if r not in used:
+                used.add(r)
+                return r
+    fleet_no = 4100
+    for code, name, site, pc, lat, lon, n in P.DEPOTS:
+        n_spare = max(3, int(round(n * P.SPARE_SHARE)))
+        for i in range(n):
+            fleet_no += int(rng.integers(1, 4))
+            reg = new_reg(code)
+            v = {"reg": reg, "fleet_no": "T%d" % fleet_no, "depot": code, "spare": i >= n - n_spare,
+                 "from": P.REC_START - dt.timedelta(days=int(rng.integers(60, 1500))), "to": None}
+            vehicles.append(v)
+            if not v["spare"]:
+                std = round(float(rng.uniform(*P.STD_DEP)) * 4) / 4
+                summ = round(float(rng.uniform(*P.SUM_DEP)) * 4) / 4
+                plan = round(float(rng.uniform(*P.PLAN_DEP)) * 4) / 4
+                dur = float(rng.uniform(*P.DUR_H))
+                kmh = float(rng.uniform(*P.KM_PER_H))
+                routes.append({"route": "%s%02d" % (code, len(routes) % 100 + 1), "depot": code, "home": reg,
+                               "std": std, "summer": summ, "plan": plan, "dur": dur, "km": round(dur * kmh)})
+    # unique route ids per depot
+    k = {}
+    for r in routes:
+        k[r["depot"]] = k.get(r["depot"], 0) + 1
+        r["route"] = "%s-%03d" % (r["depot"], 100 + 7 * k[r["depot"]] + int(rng.integers(0, 6)))
+    W["vehicles"], W["routes"] = vehicles, routes
+    days = working_days(P.REC_START, P.LISTING_AS_AT)      # driven to the listing date; the telematics ship to REC_END
+    W["days"] = days
+    rate = np.array(P.TRAFFIC) * P.BASE_PER_KM
+    # runs, journeys, collisions (vehicle assignment later)
+    runs = []
+    for d in days:
+        summer = d.month in P.SUMMER_MONTHS
+        for r in routes:
+            dep = (r["summer"] if summer else r["std"]) + rng.normal(0, 0.17)
+            dur = r["dur"] + rng.normal(0, 0.40)
+            km = r["km"] * (1 + rng.normal(0, 0.05))
+            a, b = dep, dep + dur
+            lam, segs = 0.0, []
+            for x, y, band, dark in segments(d, r["depot"], a, b):
+                l = rate[band] * (P.DARK_MULT if dark else 1.0) * km * (y - x) / (b - a)
+                segs.append((x, y, l))
+                lam += l
+            n = rng.poisson(lam)
+            hits = []
+            for _ in range(n):
+                u = rng.uniform(0, lam)
+                acc = 0.0
+                for x, y, l in segs:
+                    if u <= acc + l:
+                        hits.append(x + (u - acc) / l * (y - x))
+                        break
+                    acc += l
+            # the platform's day summary: journeys between ignition-off stops of over ten minutes, and idle minutes
+            nj = int(rng.choice([1, 2, 2, 3, 3, 4]))
+            runs.append({"date": d, "route": r["route"], "depot": r["depot"], "home": r["home"],
+                         "journeys": [(a, b, km, sorted(hits))], "nj": nj,
+                         "drive_min": int(round(dur * 60 * rng.uniform(0.72, 0.84)))})
+    W["runs"] = runs
+    assign(W, rng)
+    return W
+
+
+def assign(W, rng):
+    """Chronological pass: each route runs on its home truck unless that truck is off the road, then on a depot spare;
+    a collision with own damage sends the truck to the bodyshop; a written-off truck is replaced."""
+    vehicles = {v["reg"]: v for v in W["vehicles"]}
+    off = {reg: [] for reg in vehicles}            # [(first day off, last day off)]
+    spares = {code: [v["reg"] for v in W["vehicles"] if v["spare"] and v["depot"] == code] for code, *_ in P.DEPOTS}
+    route_home = {r["route"]: r["home"] for r in W["routes"]}
+    claims, repl = [], []
+
+    def is_off(reg, d):
+        return any(a <= d <= b for a, b in off[reg][-3:]) or (vehicles[reg]["to"] is not None and d > vehicles[reg]["to"])
+
+    by_day = {}
+    for run in W["runs"]:
+        by_day.setdefault(run["date"], []).append(run)
+    for d in W["days"]:
+        busy = set()
+        for run in by_day[d]:
+            reg = route_home[run["route"]]
+            if is_off(reg, d):
+                pool = [s for s in spares[run["depot"]] if s not in busy and not is_off(s, d)]
+                reg = pool[0] if pool else reg
+            busy.add(reg)
+            run["reg"] = reg
+            for a, b, kmj, hits in run["journeys"]:
+                for h in hits:
+                    c = collision(W, rng, d, run, reg, h)
+                    claims.append(c)
+                    if c["od"]:
+                        if c["write_off"]:
+                            vehicles[reg]["to"] = d
+                            off[reg].append((d, d + dt.timedelta(days=3650)))
+                            code = run["depot"]
+                            nv = {"reg": None, "fleet_no": None, "depot": code, "spare": vehicles[reg]["spare"],
+                                  "from": d + dt.timedelta(days=int(rng.integers(21, 49))), "to": None}
+                            repl.append((reg, nv))
+                        else:
+                            delay = 0 if c["towed"] else int(rng.integers(1, 9))
+                            a0 = d + dt.timedelta(days=delay)
+                            b0 = a0 + dt.timedelta(days=int(rng.integers(3, 15)))
+                            off[reg].append((a0, b0))
+                            c["shop_in"], c["shop_out"] = a0, b0
+        # replacements arrive
+        for old, nv in list(repl):
+            if nv["reg"] is None and nv["from"] <= d:
+                letters = "ABCDEFGHJKLMNOPRSTUVWXYZ"
+                age = "24" if nv["from"] < dt.date(2025, 3, 1) else ("74" if nv["from"] < dt.date(2025, 9, 1) else
+                                                                     ("25" if nv["from"] < dt.date(2026, 3, 1) else "75"))
+                reg = old[:2] + age + " " + "".join(rng.choice(list(letters), 3))
+                nv["reg"] = reg
+                nv["fleet_no"] = vehicles[old]["fleet_no"] + "R"
+                vehicles[reg] = nv
+                off[reg] = []
+                W["vehicles"].append(nv)
+                for r in W["routes"]:
+                    if r["home"] == old:
+                        r["home"] = reg
+                        route_home[r["route"]] = reg
+                for code in spares:
+                    if old in spares[code]:
+                        spares[code] = [reg if x == old else x for x in spares[code]]
+                repl.remove((old, nv))
+    W["claims"] = claims
+    W["off"] = off
+
+
+def collision(W, rng, d, run, reg, h_local):
+    lia = rng.choice([x for x, _ in P.LIABILITY], p=[p for _, p in P.LIABILITY])
+    share = None
+    if lia == "shared":
+        share = [s for s, _ in P.SHARES][int(rng.choice(len(P.SHARES), p=[p for _, p in P.SHARES]))]
+    od = bool(rng.random() < P.P_OD) or lia == "no_tp"
+    tppd = lia != "no_tp" and bool(rng.random() < (P.P_TPPD / 0.92))
+    tpi = lia != "no_tp" and bool(rng.random() < (P.P_TPI / 0.92))
+    if lia != "no_tp" and not (tppd or tpi or od):
+        tppd = True
+    tp_ins = None
+    if lia != "no_tp":
+        tp_ins = P.TP_INSURERS[int(rng.choice(len(P.TP_INSURERS), p=P.TP_WEIGHTS))]
+    hh = h_local % 24
+    return {"date": d, "time_h": hh, "depot": run["depot"], "route": run["route"], "reg": reg, "liability": lia,
+            "share": share, "od": od, "tppd": tppd, "tpi": tpi, "tp_insurer": tp_ins,
+            "write_off": od and bool(rng.random() < P.P_WRITE_OFF), "towed": bool(rng.random() < 0.35),
+            "shop_in": None, "shop_out": None}
+
+
+def plan_2027():
+    """The 2027 schedule's route-days, from each route's planned departure, duration and kilometres."""
+    return working_days(dt.date(P.FUND_YEAR, 1, 1), dt.date(P.FUND_YEAR, 12, 31))

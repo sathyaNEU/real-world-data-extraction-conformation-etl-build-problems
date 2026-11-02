@@ -1,178 +1,217 @@
-"""Independent verifier: reads only target.zip, on its own code path (csv module, openpyxl, its own IRLS Poisson fit), and
-recomputes the call and every ask figure against figures.json. Returns the number of failures."""
-import csv
+"""Independent verifier: recompute every graded figure from target.zip with its own readers (pdftotext for the handbook,
+pandas for the records), its own exposure split and its own Poisson fit, and compare with figures.json.
+
+    python3 task137/generator/verify.py [path/to/target.zip]
+"""
+import collections
 import datetime as dt
 import io
 import json
+import math
 import os
 import re
+import subprocess
 import sys
+import tempfile
 import zipfile
-from zoneinfo import ZoneInfo
 
 import numpy as np
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BAD = []
+ZIP = os.path.join(os.path.dirname(HERE), "target.zip")
+MON = dict(Jan=1, Feb=2, Mar=3, Apr=4, May=5, Jun=6, Jul=7, Aug=8, Sep=9, Oct=10, Nov=11, Dec=12)
 
 
-def ok(name, cond, info=""):
-    print(("ok   " if cond else "FAIL ") + name + ((" :: " + str(info)) if info != "" else ""))
-    if not cond:
-        BAD.append(name)
+def lastsun(y, m):
+    d = dt.date(y, m, 31)
+    return d - dt.timedelta(days=(d.weekday() + 1) % 7)
 
 
-def rows(z, name):
-    with z.open(name) as fh:
-        return list(csv.DictReader(io.TextIOWrapper(fh, encoding="utf-8")))
+def summer(d):
+    return int(lastsun(d.year, 3) <= d < lastsun(d.year, 10))
 
 
-def irls_poisson(X, y, iters=60):
-    b = np.zeros(X.shape[1])
-    b[0] = np.log(y.mean())
-    for _ in range(iters):
-        eta = X @ b
-        mu = np.exp(eta)
-        z = eta + (y - mu) / mu
-        WX = X * mu[:, None]
-        b_new = np.linalg.solve(X.T @ WX, WX.T @ z)
-        if np.max(np.abs(b_new - b)) < 1e-10:
-            b = b_new
-            break
-        b = b_new
-    return b
+def band(h):
+    return sum(h >= e for e in (4, 7, 9, 15, 19, 22))
 
 
-def main(zp):
-    del BAD[:]
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    z = zipfile.ZipFile(zp)
-    names = z.namelist()
-    LON = ZoneInfo("Europe/London")
-    leg = [r for r in rows(z, "walkin_tickets_legacy_2023-04_to_2024-11.csv") if r["Outcome"] == "Seen"]
-    ev = rows(z, "phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv")
-    cut = dt.date(2024, 11, 18)
-    seen = {}
-    for r in leg:
-        d = dt.datetime.strptime(r["Date"], "%d/%m/%Y").date()
-        if d < cut:
-            k = (d, "GP" if r["Request"] == "GP form" else "HOSP")
-            seen[k] = seen.get(k, 0) + 1
-    hosp = []
-    for r in ev:
-        if r["event_type"] != "CHECKED_IN":
+def main(zp=ZIP):
+    fails = []
+    tmp = tempfile.mkdtemp()
+    with zipfile.ZipFile(zp) as z:
+        z.extractall(tmp)
+    names = os.listdir(tmp)
+    root = os.path.join(tmp, names[0]) if len(names) == 1 and os.path.isdir(os.path.join(tmp, names[0])) else tmp
+
+    def f(pat):
+        return os.path.join(root, [x for x in os.listdir(root) if re.search(pat, x)][0])
+    # handbook table by pdftotext
+    txt = subprocess.run(["pdftotext", "-layout", f(r"handbook"), "-"], capture_output=True, text=True).stdout
+    sun, blocks = {}, []
+    for line in txt.splitlines():
+        m = re.match(r"\s*(\d+) (\w{3})(?: to (\d+) (\w{3}))?\s+((?:\d\d:\d\d\s*){8})$", line)
+        if m:
+            a = (MON[m.group(2)], int(m.group(1)))
+            b = (MON[m.group(4)], int(m.group(3))) if m.group(3) else a
+            t = [int(x[:2]) * 60 + int(x[3:]) for x in m.group(5).split()]
+            for j, dep in enumerate(["CRA", "GAT", "CAR", "DAR"]):
+                sun[(dep, len(blocks))] = (t[2 * j] / 60.0, t[2 * j + 1] / 60.0)
+            blocks.append((a, b))
+
+    def blk(d):
+        md = (2, 28) if (d.month, d.day) == (2, 29) else (d.month, d.day)
+        return next(k for k, (a, b) in enumerate(blocks) if a <= md <= b)
+    # register
+    reg = pd.read_excel(f(r"fleet_register"), sheet_name="Trucks")
+    dmap = {"Cra": "CRA", "Gat": "GAT", "Car": "CAR", "Dar": "DAR"}
+    reg["key"] = reg["Registration"].str.replace(" ", "").str.upper()
+    depot = dict(zip(reg.key, reg["Depot"].str[:3].map(dmap)))
+    sensors = dict(zip(reg.key, reg["Forward sensors"]))
+    # telematics
+    a = pd.read_csv(f(r"gridtrak.*2023-10"), dtype=str)
+    b = pd.read_csv(f(r"gridtrak.*2026-09"), dtype=str)
+    ra = pd.DataFrame({"key": a["Vehicle"].str.upper(), "day": pd.to_datetime(a["Date"], format="%d/%m/%Y").dt.date,
+                       "on": a["First Ignition On (UTC)"].map(lambda s: int(s[:2]) * 60 + int(s[3:])),
+                       "off": a["Last Ignition Off (UTC)"].map(lambda s: int(s[:2]) * 60 + int(s[3:])),
+                       "km": a["Distance (mi)"].astype(float) * 1.609344})
+    rb = pd.DataFrame({"key": b["registration"].str.replace(" ", "").str.upper(), "day": pd.to_datetime(b["day_utc"]).dt.date,
+                       "on": b["ignition_on_utc"].str[11:13].astype(int) * 60 + b["ignition_on_utc"].str[14:16].astype(int),
+                       "off": b["ignition_off_utc"].str[11:13].astype(int) * 60 + b["ignition_off_utc"].str[14:16].astype(int),
+                       "km": b["distance_km"].astype(float)})
+    runs = pd.concat([ra[~ra.day.isin(set(rb.day))], rb])
+    runs = runs[runs.day <= dt.date(2026, 9, 30)]
+
+    def split(day, dep, a0, b0, km):
+        off = summer(day)
+        rise, sett = sun[(dep, blk(day))]
+        rise, sett = rise + off, sett + off
+        pts = sorted(set([a0, b0] + [float(h) for h in range(math.floor(a0) + 1, math.ceil(b0))] +
+                         [x for x in (rise, sett) if a0 < x < b0]))
+        out = []
+        for x, y in zip(pts[:-1], pts[1:]):
+            mid = (x + y) / 2
+            out.append((band(int(mid)), int(mid < rise or mid > sett), km * (y - x) / (b0 - a0), day.month, (day.month - 1) // 3 + 1))
+        return out
+    expo = collections.defaultdict(float)
+    for r in runs.itertuples():
+        off = summer(r.day)
+        for bd, dk, km, _, _ in split(r.day, depot[r.key], r.on / 60 + off, r.off / 60 + off, r.km):
+            expo[(bd, dk)] += km
+    # claims
+    lst = pd.read_excel(f(r"claims_listing"), header=4)
+    lst = lst[lst["Claim no."].astype(str).str.startswith("RVM")]
+    tr = lst[(lst["Vehicle"] == "HGV 7.5t") & ~lst["Status"].astype(str).str.startswith("Closed") & (lst["Status"] != "Withdrawn")]
+    tr = tr[pd.to_datetime(tr["Incident date"]).dt.date <= dt.date(2026, 9, 30)]
+    cnt = collections.Counter()
+    for r in tr.itertuples():
+        d = pd.Timestamp(r[3]).date()
+        hh = int(str(r[4])[:2]) + int(str(r[4])[3:5]) / 60
+        k = r[5].replace(" ", "").upper()
+        rise, sett = sun[(depot[k], blk(d))]
+        off = summer(d)
+        cnt[(band(int(hh)), int(hh < rise + off or hh > sett + off))] += 1
+    # Poisson log-linear fit on the band x light table by IRLS
+    cells = sorted(expo)
+    y = np.array([cnt.get(c, 0) for c in cells], float)
+    lk = np.log(np.array([expo[c] for c in cells]))
+    bands = sorted({c[0] for c in cells})
+    Xm = np.array([[1.0] + [1.0 if c[0] == bb else 0.0 for bb in bands[1:]] + [float(c[1])] for c in cells])
+    beta = np.zeros(Xm.shape[1])
+    beta[0] = math.log(y.sum() / np.exp(lk).sum())
+    for _ in range(50):
+        mu = np.exp(Xm @ beta + lk)
+        beta = beta + np.linalg.solve(Xm.T @ (Xm * mu[:, None]), Xm.T @ (y - mu))
+
+    def rate(bd, dk):
+        v = beta[0] + (beta[1 + bands.index(bd) - 1] if bd != bands[0] else 0.0) + beta[-1] * dk
+        return math.exp(v)
+    # the 2027 schedule
+    rt = pd.read_excel(f(r"route_schedule"), sheet_name="Routes")
+    cal = pd.read_excel(f(r"route_schedule"), sheet_name="Calendar 2027")
+    days = [pd.Timestamp(x).date() for x in cal.loc[cal["Deliveries"] == "Yes", "Date"]]
+    qs = collections.defaultdict(float)
+    ss = collections.defaultdict(float)
+    for r in rt.itertuples():
+        a0 = int(str(r[6])[:2]) + int(str(r[6])[3:5]) / 60
+        dur = int(str(r[7]).split(":")[0]) + int(str(r[7]).split(":")[1]) / 60
+        for d in days:
+            for bd, dk, km, mo, q in split(d, r[2], a0, a0 + dur, float(r[8])):
+                qs[q] += km * rate(bd, dk)
+                ss["apr_sep" if 4 <= mo <= 9 else "other"] += km * rate(bd, dk)
+    year = sum(qs.values())
+    # the asks
+    jobs = pd.read_csv(f(r"brantwick_jobs"), dtype=str).set_index("Job No")
+    apl = pd.read_csv(f(r"ap_ledger"), dtype=str)
+    status = dict(zip(lst["Claim no."], lst["Status"].astype(str)))
+    own = {k: (v.split()[-1] if v.startswith("Closed - duplicate of") else k) for k, v in status.items()}
+    row = lst.set_index("Claim no.")
+    grp = apl.groupby(["Supplier Ref", "Invoice Date", "Description", "Net"]).size()
+    outlay = collections.defaultdict(float)
+    for (job, idate, desc, net), n in grp.items():
+        cl = own[jobs.loc[job, "Claim Ref"]]
+        k = str(row.loc[cl, "Registration"]).replace(" ", "").upper()
+        cap = 2 if (desc == "ADAS calibration" and sensors[k] == "Camera and radar") else 1
+        outlay[cl] += min(n, cap) * float(net)
+    b1 = collections.defaultdict(float)
+    for cl, v in outlay.items():
+        d = pd.Timestamp(row.loc[cl, "Incident date"]).date()
+        k = str(row.loc[cl, "Registration"]).replace(" ", "").upper()
+        per = (("2025H1" if d.month <= 6 else "2025H2") if d.year == 2025 else
+               ("2026H1" if d.year == 2026 and d.month <= 6 else None))
+        if per:
+            b1["%s %s" % (depot[k], per)] += v
+    bank = pd.read_csv(f(r"recovery_account"), dtype=str)
+    ins = sorted(set(lst["Third-party insurer"].dropna()))
+    first = {i.split()[0].upper(): i for i in ins}
+    a1 = collections.defaultdict(float)
+    for r in bank[bank["Type"] == "BAC"].itertuples():
+        payer = first.get(r.Description.split()[0])
+        if not payer:
             continue
-        d = dt.datetime.strptime(r["event_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=ZoneInfo("UTC")).astimezone(LON).date()
-        seen[(d, r["request_type"])] = seen.get((d, r["request_type"]), 0) + 1
-        if r["request_type"] == "HOSP":
-            hosp.append((d, r["request_org"], dt.date.fromisoformat(r["request_date"])))
-    from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(z.read("reception_turned_away_log.xlsx")), data_only=True)
-    away = {}
-    for ws in wb.worksheets:
-        layout = None
-        for row in ws.iter_rows(values_only=True):
-            if row and row[0] == "Date":
-                layout = "A" if row[3] == "GP form AM" else "B"
+        d = pd.to_datetime(r.Date, format="%d/%m/%Y").date()
+        amt = float(r._4)
+        m = re.search(r"RVM\d{6}", r.Description)
+        if m:
+            cl = own[m.group(0)]
+        else:
+            hits = []
+            for cl2, x in row.iterrows():
+                if x["Third-party insurer"] != payer or x["Fault"] not in ("Non-fault", "Split") or cl2 not in outlay:
+                    continue
+                if pd.Timestamp(x["Incident date"]).date() >= d:
+                    continue
+                sh = [1.0] if x["Fault"] == "Non-fault" else [0.75, 2 / 3, 0.5, 1 / 3, 0.25]
+                if any(abs(round(outlay[cl2] * s + 1e-9, 2) - amt) < 0.005 for s in sh):
+                    hits.append(cl2)
+            if len(hits) != 1:
+                fails.append("receipt %s %s matched %d claims" % (r.Date, r.Description, len(hits)))
                 continue
-            if layout is None or not row:
-                continue
-            d = row[0]
-            if isinstance(d, str) and re.fullmatch(r"\d{2}/\d{2}/\d{4}", d.strip()):
-                d = dt.datetime.strptime(d.strip(), "%d/%m/%Y")
-            if not isinstance(d, (dt.date, dt.datetime)):
-                continue
-            d = d.date() if isinstance(d, dt.datetime) else d
-            if layout == "A":
-                gp, h = (row[3] or 0) + (row[4] or 0), (row[5] or 0) + (row[6] or 0)
-                if gp + h:
-                    away[d] = (gp, h)
-            else:
-                away[d] = (row[2] or 0, row[3] or 0)
-    days = sorted({d for d, _ in seen})
-    gp = np.array([seen.get((d, "GP"), 0) for d in days], float)
-    agp = np.array([away.get(d, (0, 0))[0] for d in days], float)
-    ro = np.array([1.0 if d in away else 0.0 for d in days])
-    arr = gp + agp
-    wkday = {}
-    for d, r in zip(days, ro):
-        w = d - dt.timedelta(d.weekday())
-        a, b = wkday.get(w, (0, 0))
-        wkday[w] = (a + r, b + 1)
-    wsh = {w: a / b for w, (a, b) in wkday.items()}
+            cl = hits[0]
+        d0 = pd.Timestamp(row.loc[cl, "Incident date"]).date()
+        q = "%dQ%d" % (d0.year, (d0.month - 1) // 3 + 1)
+        a1[q] += amt
+    F = json.load(open(os.path.join(HERE, "figures.json")))
 
-    def window_share(L):
-        return np.array([sum(wsh.get(d - dt.timedelta(d.weekday() + 7 * j), 0.0) for j in range(1, L + 1)) / L for d in days])
-    cols = [np.ones(len(days))]
-    for k in range(1, 5):
-        cols.append(np.array([1.0 if d.weekday() == k else 0.0 for d in days]))
-    for m in range(2, 13):
-        cols.append(np.array([1.0 if d.month == m else 0.0 for d in days]))
-    cols.append(np.array([(d - dt.date(2023, 4, 3)).days / 365.25 for d in days]))
-    cols.append(np.array([1.0] + [1.0 if (days[i] - days[i - 1]).days not in (1, 3) else 0.0 for i in range(1, len(days))]) * 0 +
-                np.array([0.0] + [1.0 if (days[i] - days[i - 1]).days not in (1, 3) else 0.0 for i in range(1, len(days))]))
-    # the run-out window: the mean share of the previous L weeks, L from one to twelve, the lowest AIC
-    from math import lgamma
-    lgy = sum(lgamma(y + 1) for y in arr)
-    fits = {}
-    for L in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12):
-        sh = window_share(L)
-        X = np.column_stack(cols + [sh])
-        bb = irls_poisson(X, arr)
-        mu = np.exp(X @ bb)
-        fits[L] = (2 * X.shape[1] - 2 * (float((arr * np.log(mu) - mu).sum()) - lgy), bb, sh)
-    L = min(fits, key=lambda k: fits[k][0])
-    b, share = fits[L][1], fits[L][2]
-    ok("call: the fit picks the %d-week window" % F["window_weeks"], L == F["window_weeks"], {k: round(v[0] - fits[L][0], 1) for k, v in fits.items()})
-    fy = np.array([dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31) for d in days])
-    base = float((arr[fy] * np.exp(-b[-1] * share[fy])).sum())
-    plan = base * 1.035 ** 2
-    ok("call: the plan rounds to %s" % F["plan_visits_2027_28"], int(round(plan / 2500.0) * 2500) == F["plan_visits_2027_28"], round(plan))
-    ok("call: unrounded plan within one visit", abs(plan - F["plan_unrounded"]) <= 1.0, round(plan, 2))
-    ok("call: base within one visit", abs(base - F["base_2025_26"]) <= 1.0, round(base, 2))
-    ok("component: GP-referred seen", int(gp[fy].sum()) == F["gp_seen_2025_26"], int(gp[fy].sum()))
-    ok("component: GP-referred turned away", int(agp[fy].sum()) == F["gp_turned_away_2025_26"], int(agp[fy].sum()))
-    ok("component: run-out days", int(ro[fy].sum()) == F["run_out_days_2025_26"], int(ro[fy].sum()))
-    ok("coefficient", abs(b[-1] - F["coef_window_share"]) < 0.0006, round(b[-1], 4))
-    ok("default path", int(round(arr[fy].sum() * 1.035 ** 2 / 2500.0) * 2500) == F["default_path_plan"])
-    # ask A, own route: each new code's issue weekdays before the April templates link it to the old code with the
-    # same weekdays; every 2025-26 visit then takes its specialty from the register
-    reg = rows(z, "outpatient_clinic_codes.csv")
-    newmap = {r["clinic_code"]: r["specialty"] for r in reg}
-    early = {}
-    oldw = {}
-    for d, code, rd in hosp:
-        if code in newmap and rd < dt.date(2026, 4, 1):
-            early.setdefault(code, set()).add(rd.weekday())
-        elif code not in newmap:
-            oldw.setdefault(code, set()).add(rd.weekday())
-    oldmap = {}
-    for c, w in oldw.items():
-        hit = [n for n, e in early.items() if e == w]
-        ok("ask A: old code %s links to one new code" % c, len(hit) == 1, hit)
-        oldmap[c] = newmap[hit[0]] if len(hit) == 1 else None
-    tab = {}
-    for d, code, rd in hosp:
-        if dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31):
-            sp = newmap.get(code) or oldmap.get(code)
-            q = "Q%d" % (((d.month - 4) % 12) // 3 + 1)
-            tab[(sp, q)] = tab.get((sp, q), 0) + 1
-    miss = [(sp, q) for sp, qq in F["hospital_visits_2025_26"].items() for q, v in qq.items() if tab.get((sp, q), 0) != v]
-    ok("ask A: all 28 cells", not miss, miss[:3])
-    # every format read back
-    from pypdf import PdfReader
-    rep = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read("phlebotomy_annual_report_2025-26.pdf"))).pages))
-    icb = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read("icb_pathology_planning_assumptions_2026-27.pdf"))).pages))
-    ok("pdf: the report's sickness definition reads back", "hours rostered to the substantive team" in rep)
-    ok("pdf: the ICB's 3.5% reads back", "GP direct access phlebotomy 3.5%" in icb)
-    bh = json.loads(z.read("bank_holidays_england.json"))
-    ok("json: bank holidays read back", len(bh["england-and-wales"]["events"]) > 30)
-    wbh = load_workbook(io.BytesIO(z.read("community_hub_session_plan_2027.xlsx")))
-    ok("xlsx: the hub plan reads back", wbh.active.max_row > 5)
-    ok("zip: twelve files", len(names) == 12, len(names))
-    print("verify: %d failed" % len(BAD))
-    return len(BAD)
+    def chk(lab, cond, det=""):
+        print(("PASS " if cond else "FAIL ") + lab + (": %s" % det if det != "" else ""))
+        if not cond:
+            fails.append(lab)
+    chk("V1 2027 claims %.1f against %.1f" % (year, F["claims_2027_unrounded"]), abs(year - F["claims_2027_unrounded"]) < 0.5
+        and int(50 * round(year / 50)) == F["claims_2027"])
+    for k in ("apr_sep", "other_months"):
+        val = ss["apr_sep" if k == "apr_sep" else "other"]
+        chk("V2 2027 %s %.1f" % (k, val), int(50 * round(val / 50)) == F["claims_2027_%s" % k]
+            and abs(val - F["claims_2027_%s_unrounded" % k]) < 0.5)
+    for k, v in F["recoveries_unrounded"].items():
+        chk("V3 recoveries %s %.2f" % (k, a1[k]), abs(a1[k] - v) < 0.01 and int(100 * round(a1[k] / 100)) ==
+            F["recoveries_by_collision_quarter"][k])
+    for k, v in F["repair_cost_unrounded"].items():
+        chk("V4 repair cost %s %.2f" % (k, b1[k]), abs(b1[k] - v) < 0.01 and int(100 * round(b1[k] / 100)) ==
+            F["repair_cost_by_depot"][k])
+    print("verify: %d failures" % len(fails))
+    return len(fails)
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1]))
+    sys.exit(1 if main(sys.argv[1] if len(sys.argv) > 1 else ZIP) else 0)

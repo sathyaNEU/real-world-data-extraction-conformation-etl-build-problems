@@ -1,360 +1,137 @@
-"""Writers for every shipped file."""
-import calendar
-import csv
+"""The two documents: the driver handbook (its lighting section and Appendix C, the depots' sunrise and sunset) and the
+board's claims fund terms for 2027 (the governing document)."""
 import datetime as dt
-import io
-import json
-import os
-from zoneinfo import ZoneInfo
 
-import numpy as np
+from reportlab import rl_config
+rl_config.invariant = 1
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
+import astro as A
+import common as CM
 import params as P
-import records as RC
 
-LON, UTC = ZoneInfo("Europe/London"), ZoneInfo("UTC")
-FILES = {
-    "legacy": "walkin_tickets_legacy_2023-04_to_2024-11.csv",
-    "events": "phlebotomy_queue_events_2024-11-18_to_2026-09-30.csv",
-    "log": "reception_turned_away_log.xlsx",
-    "roster": "eroster_phlebotomy_2023-04_to_2026-09.csv",
-    "kiosk": "kiosk_ticket_allocations_2023-04_to_2026-09.csv",
-    "practices": "gp_practices_catchment.csv",
-    "clinics": "outpatient_clinic_codes.csv",
-    "report": "phlebotomy_annual_report_2025-26.pdf",
-    "icb": "icb_pathology_planning_assumptions_2026-27.pdf",
-    "bh": "bank_holidays_england.json",
-    "survey": "phlebotomy_patient_survey_2025.csv",
-    "hub": "community_hub_session_plan_2027.xlsx",
-}
-PACK = list(FILES)
-DISTRACTORS = ["roster", "survey", "hub"]
-CONTEXT = ["report", "icb"]
+SS = getSampleStyleSheet()
+BODY = ParagraphStyle("b", parent=SS["BodyText"], fontName="Helvetica", fontSize=9.5, leading=12.6, spaceAfter=4)
+H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Helvetica-Bold", fontSize=15, spaceAfter=4)
+H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Helvetica-Bold", fontSize=11, spaceBefore=8, spaceAfter=3)
+SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10, textColor=colors.HexColor("#444444"))
+LI = ParagraphStyle("li", parent=BODY, leftIndent=12, bulletIndent=2)
 
 
-def save_xlsx(wb, path, when=dt.datetime(2026, 10, 2, 9, 12), author=None):
-    """Save a workbook with fixed document properties and fixed zip entry times, so a rebuild is byte-identical."""
-    import zipfile
-    wb.properties.created = when
-    wb.properties.modified = when
-    if author:
-        wb.properties.creator = author
-        wb.properties.lastModifiedBy = author
-    tmp = path + ".tmp"
-    wb.save(tmp)
-    with zipfile.ZipFile(tmp) as zin, zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zout:
-        for info in zin.infolist():
-            zi = zipfile.ZipInfo(info.filename, date_time=(when.year, when.month, when.day, when.hour, when.minute, 0))
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.external_attr = 0o644 << 16
-            data = zin.read(info.filename)
-            if info.filename == "docProps/app.xml":
-                data = (b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.'
-                        b'openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats'
-                        b'.org/officeDocument/2006/docPropsVTypes"><Application>Microsoft Excel</Application><DocSecurity>0'
-                        b'</DocSecurity><ScaleCrop>false</ScaleCrop><Company>' + P.HOSPITAL.encode() + b'</Company>'
-                        b'<LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false'
-                        b'</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>')
-            if info.filename == "docProps/core.xml":
-                import re
-                stamp = when.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
-                data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + stamp + rb"\g<2>", data)
-            zout.writestr(zi, data)
-    os.remove(tmp)
+def _doc(path, title, author):
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=16 * mm,
+                             bottomMargin=16 * mm, title=title, author=author, creator="Microsoft Word",
+                             producer="Microsoft Word for Microsoft 365", subject="", keywords="")
 
 
-def hms(m):
-    s = int(round(m * 60))
-    return "%02d:%02d:%02d" % (s // 3600, (s % 3600) // 60, s % 60)
+def _hm(m):
+    return "%02d:%02d" % (m // 60, m % 60)
 
 
-def utc(d, m):
-    x = dt.datetime(d.year, d.month, d.day, tzinfo=LON) + dt.timedelta(minutes=float(m))
-    return x.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def write_csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(header)
-        w.writerows(rows)
-
-
-def legacy(target, V, rng):
+def sun_table_rows():
+    """Appendix C as printed: one row per seven-day block, sunrise and sunset in GMT at each depot."""
     rows = []
-    by_day = {}
-    for v in V:
-        if v[0] <= P.OLD_SYSTEM_OFF:
-            by_day.setdefault(v[0], []).append(v)
-    for d in sorted(by_day):
-        a = f = 0
-        lst = sorted(by_day[d], key=lambda v: v[6])
-        for v in lst:
-            dd, g, sp, prac, org, issued, m, called, recall, done, bay, fasting = v
-            if fasting:
-                f += 1
-                tk = "F%03d" % f
-            else:
-                a += 1
-                tk = "A%03d" % a
-            key = m + (rng.uniform(0.2, 2.8) if dd >= P.NEW_SYSTEM_LIVE else 0.0)
-            shown_call = recall if recall is not None else called
-            desk = str(bay) if not str(bay).startswith("B") else "B"
-            rows.append(["HGH Outpatients", d.strftime("%d/%m/%Y"), tk, hms(key), hms(max(shown_call, key + 0.1)), desk,
-                         "Hospital form" if g == "H" else "GP form", "Fasting blood test" if fasting else "Blood test", "Seen"])
-        if rng.random() < 0.025:
-            rows.append(["HGH Outpatients", d.strftime("%d/%m/%Y"), "Z001", "07:01:12", "07:01:40", "1", "", "Test", "Test ticket"])
-    write_csv(os.path.join(target, FILES["legacy"]),
-              ["Site", "Date", "Ticket", "Issued", "Called", "Desk", "Request", "Service", "Outcome"], rows)
-    return len(rows)
+    for k, a, b in A.ROWS:
+        lab = ("%d %s" % (a.day, a.strftime("%b"))) if a == b else ("%d %s to %d %s" % (a.day, a.strftime("%b"), b.day,
+                                                                                       b.strftime("%b")))
+        r = [lab]
+        for code, *_ in P.DEPOTS:
+            rise, sett = A.TABLE[(code, k)]
+            r += [_hm(rise), _hm(sett)]
+        rows.append(r)
+    return rows
 
 
-def events(target, V, rng):
-    rows, eid, vid = [], 50200000, 1048000
-    for v in V:
-        dd, g, sp, prac, org, issued, m, called, recall, done, bay, fasting = v
-        if dd < P.NEW_SYSTEM_LIVE:
-            continue
-        vid += 1
-        ref = "PV%08d" % vid
-        blank = (g != "H") and rng.random() < 0.006
-        rtype = "HOSP" if g == "H" else "GP"
-        eid += 1
-        rows.append([eid, ref, "CHECKED_IN", utc(dd, m), "", rtype, "" if blank else org,
-                     "" if blank else issued.isoformat(), "WALK_IN_FASTING" if fasting else "WALK_IN"])
-        eid += 1
-        bayname = "Bay %s" % bay
-        rows.append([eid, ref, "CALLED", utc(dd, called), bayname, "", "", "", ""])
-        if recall is not None:
-            eid += 1
-            rows.append([eid, ref, "CALLED", utc(dd, recall), bayname, "", "", "", ""])
-        eid += 1
-        rows.append([eid, ref, "COMPLETED", utc(dd, done), bayname, "", "", "", ""])
-    write_csv(os.path.join(target, FILES["events"]),
-              ["event_id", "visit_ref", "event_type", "event_utc", "bay", "request_type", "request_org", "request_date",
-               "pathway"], rows)
-    return len(rows)
+def handbook(path):
+    when = dt.datetime(2026, 3, 9, 10, 20)
+    S = [Paragraph("%s<br/>Driver handbook" % P.COMPANY, H1),
+         Paragraph("2026 edition. Issued by %s, Transport Director, for every driver at Cramlington, Team Valley, Carlisle "
+                   "and Darlington. Keep it in the cab with the vehicle's claims card." % P.PEOPLE["transport_director"],
+                   SMALL),
+         Paragraph("1. Before you drive", H2),
+         Paragraph("Do the walkround check on the vehicle you are taking out before the first drop and record it on the "
+                   "Gridtrak tablet: lights and indicators, tyres and wheel nuts, mirrors and cameras, the tail-lift and "
+                   "its warning lights, load security and the fridge unit. A defect that makes the vehicle unroadworthy "
+                   "means it does not leave the yard; tell the shift manager, who will give you the depot's spare.", BODY),
+         Paragraph("2. Hours", H2),
+         Paragraph("Our 7.5-tonne trucks are in scope of the EU and AETR rules as retained in Great Britain: no more than "
+                   "4 hours 30 minutes driving without a 45-minute break, 9 hours driving a day (10 hours twice a week) "
+                   "and the daily and weekly rests the tachograph records. Store routes are planned within these limits; "
+                   "if a delay puts a break at risk, phone the depot rather than pressing on.", BODY),
+         Paragraph("3. Lights", H2),
+         Paragraph("Use dipped headlights from sunset to sunrise and whenever visibility is seriously reduced, and use "
+                   "sidelights with them, as the Highway Code requires. Keep the lights, reflectors and number plate "
+                   "clean. Appendix C gives sunrise and sunset at each depot through the year.", BODY),
+         Paragraph("4. If you are involved in a collision", H2)]
+    for t in ["Stop as soon as it is safe, switch on the hazard lights and put on your high-visibility vest. If anyone is "
+              "hurt, call 999 first.",
+              "Exchange names, addresses and registration numbers with anyone involved and take the other driver's "
+              "insurer if you can. Do not admit fault or discuss blame.",
+              "Take photographs on the tablet of the scene, both vehicles and any damage, and note the time.",
+              "Phone %s's 24-hour claims line on the number on the claims card before the end of your shift. The "
+              "claims handler records the date and time of the incident as you give them, and gives you a claim number "
+              "to pass to the depot." % P.INSURER,
+              "Tell your shift manager before you go home. If the truck needs repair, the workshop books it into %s, "
+              "whose engineer inspects it under the claim number." % P.BODYSHOP]:
+        S.append(Paragraph(t, LI, bulletText="•"))
+    S += [Paragraph("5. Reversing and store yards", H2),
+          Paragraph("Use the reversing camera and, where a store has one, the banksman. Never reverse into a store yard or "
+                    "service road without checking it on foot first if you cannot see the whole of it.", BODY),
+          PageBreak(),
+          Paragraph("Appendix C. Sunrise and sunset at our depots", H2),
+          Paragraph("Times are Greenwich Mean Time (GMT), for the middle day of each block. While British Summer Time is in "
+                    "force, from 01:00 GMT on the last Sunday in March to 01:00 GMT on the last Sunday in October, add one "
+                    "hour to read them on the clock. The times move by no more than a minute or two from one year to the "
+                    "next; 29 February goes with the block for 28 February.", SMALL),
+          Spacer(1, 3)]
+    head = [["", "Cramlington", "", "Team Valley", "", "Carlisle", "", "Darlington", ""],
+            ["Dates", "Sunrise", "Sunset", "Sunrise", "Sunset", "Sunrise", "Sunset", "Sunrise", "Sunset"]]
+    t = Table(head + sun_table_rows(), colWidths=[34 * mm] + [17 * mm] * 8, repeatRows=2)
+    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 7.4), ("FONT", (0, 0), (-1, 1), "Helvetica-Bold", 7.4),
+                           ("SPAN", (1, 0), (2, 0)), ("SPAN", (3, 0), (4, 0)), ("SPAN", (5, 0), (6, 0)),
+                           ("SPAN", (7, 0), (8, 0)), ("ALIGN", (1, 0), (-1, -1), "CENTER"),
+                           ("LINEBELOW", (0, 1), (-1, 1), 0.6, colors.black),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 0.6), ("TOPPADDING", (0, 0), (-1, -1), 0.6),
+                           ("ROWBACKGROUNDS", (0, 2), (-1, -1), [colors.white, colors.HexColor("#F2F2F2")])]))
+    S.append(t)
+    _doc(path, "Driver handbook 2026", P.PEOPLE["transport_director"]).build(S)
+    CM.clean_pdf(path, when)
 
 
-def gone_text(m, style):
-    h, mi = int(m // 60), int(m % 60)
-    if style == 0:
-        return "%02d:%02d" % (h, mi)
-    if style == 1:
-        return "%d.%02d" % (h, mi)
-    return "%d:%02d%s" % (h if h <= 12 else h - 12, mi, "am" if h < 12 else "pm")
-
-
-def reception_log(target, W, V, AW, rng):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    gone = {}
-    for v in V:
-        gone[v[0]] = max(gone.get(v[0], 0), v[6])
-    turned = {}
-    for d, g, m in AW:
-        key = "H" if g == "H" else "G"
-        half = "AM" if m < 750 else "PM"
-        turned.setdefault(d, {"G": {"AM": 0, "PM": 0}, "H": {"AM": 0, "PM": 0}})[key][half] += 1
-    wb = Workbook()
-    wb.remove(wb.active)
-    days = [d for d in W["days"] if d <= P.REC_END]
-    for fy in (2023, 2024, 2025, 2026):
-        ws = wb.create_sheet("%d-%s" % (fy, str(fy + 1)[2:]))
-        ws.append(["Phlebotomy reception: patients turned away after the day's tickets had gone (PALS monthly return)"])
-        ws["A1"].font = Font(bold=True)
-        fdays = [d for d in days if (d.year - (d.month < 4)) == fy]
-        if fy <= 2024:
-            ws.append(["One line per clinic day. Leave the boxes blank if nobody was turned away. AM is the morning "
-                       "receptionist's shift (to 12:30). Totals to %s by the 3rd." % P.PEOPLE["reception"]])
-            ws.append([])
-            ws.append(["Date", "Day", "Tickets gone at", "GP form AM", "GP form PM", "Hospital form AM",
-                       "Hospital form PM", "Comments"])
-            cur, tot = None, [0, 0, 0, 0]
-            for d in fdays:
-                if cur is not None and d.month != cur.month:
-                    ws.append(["Total %s" % cur.strftime("%B %Y"), None, None] + [x or None for x in tot] + [None])
-                    ws.append([])
-                    tot = [0, 0, 0, 0]
-                cur = d
-                if d in turned:
-                    t = turned[d]
-                    vals = [t["G"]["AM"], t["G"]["PM"], t["H"]["AM"], t["H"]["PM"]]
-                    com = None
-                    if (vals[1] or vals[3]) and rng.random() < 0.18:
-                        vals = [vals[0] + vals[1], 0, vals[2] + vals[3], 0]
-                        com = "inc PM"
-                    tot = [a + b for a, b in zip(tot, vals)]
-                    ws.append([d, d.strftime("%a"), gone_text(gone[d], int(rng.choice([0, 0, 1, 2])))] +
-                              [x if x else None for x in vals] + [com])
-                else:
-                    ws.append([d, d.strftime("%a"), None, None, None, None, None, None])
-            if cur is not None:
-                ws.append(["Total %s" % cur.strftime("%B %Y"), None, None] + [x or None for x in tot] + [None])
-        else:
-            ws.append(["From April 2025 log only the days the tickets ran out, one line per day."])
-            ws.append([])
-            ws.append(["Date", "Tickets gone", "GP forms turned away", "Hospital forms turned away", "Initials"])
-            for d in fdays:
-                if d in turned:
-                    t = turned[d]
-                    dv = d if rng.random() > 0.03 else d.strftime("%d/%m/%Y")
-                    ws.append([dv, gone_text(gone[d], int(rng.choice([0, 0, 0, 1]))), t["G"]["AM"] + t["G"]["PM"],
-                               t["H"]["AM"] + t["H"]["PM"], str(rng.choice(["RR", "CD", "RW", "RR", "CD"]))])
-        for row in ws.iter_rows(min_row=1):
-            for cell in row:
-                if isinstance(cell.value, dt.date):
-                    cell.number_format = "DD/MM/YYYY"
-    path = os.path.join(target, FILES["log"])
-    save_xlsx(wb, path, dt.datetime(2026, 10, 1, 16, 48), P.PEOPLE["reception"])
-    return turned
-
-
-EMP = ["20441735", "20495208", "20611843", "20730512", "20884271", "21006734", "21139068"]
-GRADES = ["Senior Phlebotomist Band 3"] + ["Phlebotomist Band 2"] * 6
-BANKPOOL = ["B-38812", "B-40157", "B-41930", "B-42288"]
-
-
-def eroster(target, W, rng):
-    rows = []
-    days = W["days"]
-    n = sum(1 for d in days if d <= P.REC_END)
-    st = W["status"]
-    # once a holder's sickness passes five clinic days the e-roster unassigns the line until the holder returns
-    unassigned = np.zeros((n, P.POSTS), bool)
-    for p in range(P.POSTS):
-        i = 0
-        while i < n:
-            if st[i, p] == "SICK":
-                j = i
-                while j < n and st[j, p] == "SICK":
-                    j += 1
-                if j - i > P.UNASSIGN_AFTER:
-                    unassigned[i + P.UNASSIGN_AFTER:j, p] = True
-                i = j
-            else:
-                i += 1
-    for i in range(n):
-        d = days[i]
-        for p in range(P.POSTS):
-            s = st[i, p]
-            if s == "VAC" or unassigned[i, p]:
-                rows.append([d.isoformat(), "", GRADES[p], "CLIN 07:30-15:30", "", "Y", "7.50"])
-                continue
-            emp = P.VACANCY_SUCCESSOR if (p == P.POSTS - 1 and d > P.VACANCY[1]) else EMP[p]
-            absn = {"CLIN": "", "SICK": "Sickness", "AL": "Annual leave"}[s]
-            rows.append([d.isoformat(), emp, GRADES[p], "CLIN 07:30-15:30", absn, "N", "7.50"])
-        for k in range(int(W["bank"][i])):
-            rows.append([d.isoformat(), BANKPOOL[(i + k) % len(BANKPOOL)] if rng.random() < 0.9 else str(rng.choice(BANKPOOL)),
-                         "Bank Phlebotomist", "BANK 07:30-15:30", "", "N", "7.50"])
-    write_csv(os.path.join(target, FILES["roster"]),
-              ["Roster date", "Employee no", "Assignment", "Shift", "Absence", "Vacant line", "Hours"], rows)
-    return len(rows)
-
-
-def kiosk(target, W, rng):
-    rows = []
-    for i, d in enumerate(W["days"]):
-        if d > P.REC_END:
-            break
-        rows.append([d.strftime("%d/%m/%Y"), "07:%02d" % int(rng.integers(2, 14)), int(W["alloc"][i]),
-                     str(rng.choice(["RD", "RD", "RD", "JP", "SM"]))])
-    write_csv(os.path.join(target, FILES["kiosk"]), ["Date", "Set at", "Tickets", "Set by"], rows)
-
-
-def practices(target):
-    rows = []
-    for code, name, size, g, own in P.PRACTICES:
-        sizes = [round(size * (1 + g) ** k) for k in range(4)]
-        note = ""
-        if code == P.MERGED_FROM:
-            note = "Merged into Fellside Health Centre (K91031) on 1 October 2025; list closed at the merger"
-            sizes[3] = ""
-        if code == P.MERGED_INTO:
-            cv = [x for x in P.PRACTICES if x[0] == P.MERGED_FROM][0]
-            sizes[3] = sizes[3] + round(cv[2] * (1 + cv[3]) ** 3)
-            note = "Includes Castle View Medical Centre's patients from 1 October 2025"
-        rows.append([code, name] + sizes + ["Y" if own else "N", note])
-    write_csv(os.path.join(target, FILES["practices"]),
-              ["practice_code", "practice_name", "list_size_2023-04", "list_size_2024-04", "list_size_2025-04",
-               "list_size_2026-04", "phlebotomy_les_2025-26", "notes"], rows)
-
-
-DAYN = ["Mon", "Tue", "Wed", "Thu", "Fri"]
-
-
-def clinics(target):
-    rows = []
-    loc = {"Cardiology": "Outpatients block C", "Diabetes and endocrinology": "Diabetes Centre",
-           "Gastroenterology": "Outpatients block C", "General medicine": "Outpatients block A",
-           "Haematology": "Haematology Day Unit", "Renal medicine": "Renal Unit", "Rheumatology": "Outpatients block B"}
-    for name, (code, wds) in sorted(P.NEW_CLINIC.items(), key=lambda kv: kv[1][0]):
-        rows.append([code, "%s outpatient clinic" % name, name, ", ".join(DAYN[x] for x in wds), loc[name]])
-    write_csv(os.path.join(target, FILES["clinics"]),
-              ["clinic_code", "clinic_name", "specialty", "clinic_days", "location"], rows)
-
-
-def bank_holidays(target):
-    titles = {(1, 1): "New Year's Day", (12, 25): "Christmas Day", (12, 26): "Boxing Day"}
-    ev = []
-    for y, m, d in P.BANK_HOLIDAYS:
-        x = dt.date(y, m, d)
-        if (m, d) in titles:
-            t = titles[(m, d)]
-        elif m == 12 or (m == 1):
-            t = "Substitute day" if m == 12 else "New Year's Day"
-        elif m in (3, 4) and x.weekday() == 4:
-            t = "Good Friday"
-        elif m in (3, 4) and x.weekday() == 0:
-            t = "Easter Monday"
-        elif m == 5 and x.day <= 7:
-            t = "Early May bank holiday"
-        elif m == 5 and x.day == 8:
-            t = "Bank holiday for the coronation of King Charles III"
-        elif m == 5:
-            t = "Spring bank holiday"
-        else:
-            t = "Summer bank holiday"
-        ev.append({"title": t, "date": x.isoformat(), "notes": "Substitute day" if t == "Substitute day" else "",
-                   "bunting": True})
-    doc = {"england-and-wales": {"division": "england-and-wales", "events": ev}}
-    with open(os.path.join(target, FILES["bh"]), "w") as fh:
-        json.dump(doc, fh, indent=1)
-        fh.write("\n")
-
-
-def survey(target, rng):
-    rows = []
-    bands = ["Under 15 minutes", "15 to 30 minutes", "30 to 45 minutes", "45 to 60 minutes", "Over an hour"]
-    for k in range(412):
-        rows.append([3100 + k, "2025-06", str(rng.choice(["GP request", "Hospital clinic request"], p=[0.74, 0.26])),
-                     bands[int(rng.choice(5, p=[0.12, 0.22, 0.25, 0.23, 0.18]))],
-                     int(rng.choice([1, 2, 3, 4, 5], p=[0.04, 0.07, 0.11, 0.38, 0.40])),
-                     str(rng.choice(["Yes", "No", "Not sure"], p=[0.71, 0.12, 0.17]))])
-    write_csv(os.path.join(target, FILES["survey"]),
-              ["response_id", "survey_month", "request_type", "time_waited", "rating_1_to_5", "would_recommend"], rows)
-
-
-def hub_plan(target):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Sessions"
-    ws.append(["Kingsmead Health Village community phlebotomy hub: draft session plan from April 2027 (Outpatients "
-               "business office)"])
-    ws["A1"].font = Font(bold=True)
-    ws.append(["Day", "Opens", "Closes", "Chairs", "Booked slots per chair", "Walk-in tickets per chair",
-               "Phlebotomists rostered"])
-    for d, o, c, ch, b, w, ph in [("Monday", "07:30", "16:00", 10, 16, 26, 10), ("Tuesday", "07:30", "16:00", 9, 16, 24, 9),
-                                   ("Wednesday", "07:30", "16:00", 9, 16, 24, 9), ("Thursday", "07:30", "18:30", 9, 20, 24, 10),
-                                   ("Friday", "07:30", "15:00", 8, 14, 22, 8)]:
-        ws.append([d, o, c, ch, b, w, ph])
-    ws.append([])
-    ws.append(["Walk-in tickets are not capped: the senior phlebotomist adds bank chairs on the day."])
-    ws2 = wb.create_sheet("Staffing")
-    ws2.append(["Role", "Band", "WTE", "Funding"])
-    for r in [("Hub lead phlebotomist", 4, 1.0, "Recurrent"), ("Senior phlebotomist", 3, 2.0, "Recurrent"),
-              ("Phlebotomist", 2, 9.6, "Recurrent"), ("Receptionist", 2, 2.0, "Recurrent"),
-              ("Bank phlebotomist", 2, 1.5, "Non-recurrent")]:
-        ws2.append(list(r))
-    save_xlsx(wb, os.path.join(target, FILES["hub"]), dt.datetime(2026, 9, 24, 11, 3), P.PEOPLE["outpatients"])
+def terms(path):
+    when = dt.datetime(2026, 10, 15, 9, 5)
+    S = [Paragraph("%s<br/>Motor claims fund: terms for the 2027 fund year" % P.COMPANY, H1),
+         Paragraph("Approved by the board of directors on 14 October 2026. Prepared by %s, Risk and Insurance Manager, "
+                   "with %s, Finance Director." % (P.PEOPLE["risk_manager"], P.PEOPLE["finance_director"]), SMALL),
+         Paragraph("1. Purpose", H2),
+         Paragraph("%s carries the cost of repairing its own delivery trucks itself and insures its liability to third "
+                   "parties with %s under motor fleet policy MF22190046. The board sets the motor claims fund for each "
+                   "fund year from the number of claims the delivery trucks are expected to make in that year and what "
+                   "those claims cost. The Risk and Insurance Manager prepares the estimate each October and the Finance "
+                   "Director reviews it before it goes to the board." % (P.COMPANY, P.INSURER), BODY),
+         Paragraph("2. Claims", H2),
+         Paragraph("A claim is a collision involving one of the delivery trucks on the fleet register, whether a route "
+                   "truck or a depot spare, that is notified to %s under the policy. A notification closed as a duplicate "
+                   "of another notification, or withdrawn, is not a claim. The company cars are insured under the same "
+                   "policy but are outside the fund." % P.INSURER, BODY),
+         Paragraph("3. Fund year and quarters", H2),
+         Paragraph("A claim belongs to the fund year and to the quarter in which the collision happened, by its incident "
+                   "date in UK clock time, whenever it is notified. The 2027 fund year runs from 1 January to 31 December "
+                   "2027, in calendar quarters.", BODY),
+         Paragraph("4. The 2027 route schedule", H2),
+         Paragraph("From 2 January 2027 every store route runs to the 2027 route schedule approved by the board with these "
+                   "terms, on the delivery days of its 2027 calendar. The 2027 fund is set for that schedule.", BODY),
+         Paragraph("5. Repair costs and recoveries", H2),
+         Paragraph("All amounts are net of VAT, which the company recovers. The repair cost of a collision is what %s "
+                   "invoices the company for repairing the truck, or for inspecting and storing it when it is a total "
+                   "loss. Money another party's insurer pays towards the repair of a collision is credited to the quarter "
+                   "of that collision." % P.BODYSHOP, BODY),
+         Paragraph("6. Review", H2),
+         Paragraph("The Finance Director reviews the fund against the claims listing at each quarter end and reports to the "
+                   "board in the following month.", BODY)]
+    _doc(path, "Motor claims fund terms 2027", P.PEOPLE["risk_manager"]).build(S)
+    CM.clean_pdf(path, when)

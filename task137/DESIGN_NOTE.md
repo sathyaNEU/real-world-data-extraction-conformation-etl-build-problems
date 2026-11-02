@@ -25,14 +25,15 @@ claims its 7.5-tonne delivery fleet will make in 2027 once a new schedule sends 
 2. **Pairing.** Actuarial Science & Insurance, task type `claims-frequency-severity` (serves Forecasting and
    Descriptive), objective Forecasting & Predictive Modeling: the call is a count of claims in a year not yet begun.
    The first draw of this slot in the client domain; no architecture of the lineage used it.
-3. **Shape.** 02, a forecast across periods: the 2027 claims and each 2027 quarter's, with the asks' figures beside
+3. **Shape.** 02, a forecast across periods: the 2027 claims and its two seasons' (stage 4 moved the split from quarters),
+   with the asks' figures beside
    them (the criteria arithmetic is in `## Ladder` and `## Ask sheet`).
 4. **Strategy and mechanism.** `composition_mix`, generators G7 (when the driving physically happens against sunrise and
    sunset decides its rate), G6 (the forward exposure's light mix moves under a clock-hour mix the record already ran),
    G14 (the collision rate conditioned on the light each kilometre is driven in). Gate G `forecasting`.
 5. **Data-native sentence.** The fleet ran its small-hours departures only on the May-to-August summer schedule, so
-   every early-morning kilometre in the record was driven after sunrise and the record's driving in darkness happened on
-   winter evenings' returns and at the summer schedule's first and last weeks; the 2027 schedule runs the small-hours
+   most early-morning kilometres in the record were driven after sunrise and the record's driving in darkness happened on
+   winter evenings' returns, December mornings and the summer schedule's earliest starts; the 2027 schedule runs the small-hours
    departures all year.
 6. **Abstraction sentence.** "A rate per unit of exposure is stationary only once each unit is placed in a physical
    condition the clock tracks only by season, and a schedule that moves the exposure into hours the record ran only
@@ -48,8 +49,10 @@ claims its 7.5-tonne delivery fleet will make in 2027 once a new schedule sends 
    layout; task121 v3 (dead) clock-hour matching to attribute events; none prices exposure by solar light.
 8. **Slots read, both screens, before the first harness.** Setting nouns (darkness, sunrise, daylight, twilight, clock
    change): task182's architecture 8 screen rejected an hour-of-week profile in darkness-relative time as exact
-   arithmetic on a shipped sunset table that settles the estimand's own clock; here no sunset table ships, the estimand
-   (claims in 2027) has no clock to settle, and the light condition is the exposure model's HOW; task138, task248,
+   arithmetic on a shipped sunset table that settles the estimand's own clock; here the sunrise and sunset table ships as
+   the driver handbook's lighting appendix (darkness must come from shipped records), the estimand (claims in 2027 by
+   incident date) has its clock filed in the fund terms, and the light condition is the exposure model's HOW, which no
+   filed sentence links to collisions; task138, task248,
    task119, task125 and task472 carry daylight saving only as Layer 1. Mechanism and world nouns (fleet, telematics,
    collision, motor insurer): task174's telematics onboarding score and task268's development by notifying route
    (spent as one join away) are other mechanisms; task165 and task153 use telematics as a spine for other quantities.
@@ -63,12 +66,351 @@ claims its 7.5-tonne delivery fleet will make in 2027 once a new schedule sends 
     side's share of liability, contributory negligence splitting a collision 50:50 or 75:25, remitted under the paying
     insurer's own reference on many lines. (B) The bodyshop network's invoice feed: the domain mechanic is a feed
     resend under fresh invoice numbers beside genuine same-day second invoices on one repair (a supplementary after
-    strip-down), each repair's authorised total fixing which lines are real. Both are screened against the
+    strip-down), the fleet register's forward sensors (a camera, or a camera and a radar) fixing how many
+    calibrations one repair can carry; the engineer's authorisations were drafted and dropped as an oracle. Both are screened against the
     careful-solver cracker as code before the pack is cut (`## Ask sheet`).
 11. **Sources.** Synthetic world on real geography and real rules: sunrise and sunset by the NOAA solar position
     equations at each depot's latitude and longitude; British Summer Time from the last Sunday of March to the last
     Sunday of October; England's bank holidays 2023 to 2027; UK motor claims practice (own damage, third-party property
     and injury, subrogated recovery at a liability split). People drawn with `guard.py names --geo GB --seed 137`.
+
+## Three rules
+
+- **Task type:** claims-frequency-severity (Actuarial Science & Insurance), which serves Forecasting: the expected number
+  of claims a portfolio makes over a future exposure period, here the delivery trucks' collision claims in 2027.
+- **Domain test:** the deciding quantity is the claim frequency per kilometre of exposure by rating factor, worked as the
+  field works frequency: claims counted against the kilometres that produced them, rated on the factors the record
+  supports, and carried onto the 2027 schedule's planned kilometres.
+- **Swap:** "a hospital's patient falls in 2027 per occupied bed-day on a new night-shift rota": falls per bed-day would
+  carry staffing, not sunrise, and the light each unit of exposure is spent in, the depot's latitude and the summer-time
+  rule stop meaning anything; the call is a motor fleet's exposure priced by road light.
+- **Layer 1:** two Gridtrak export templates (miles then kilometres, dd/mm/yyyy times then ISO stamps, registrations
+  without then with the space, an overlap week, all in UTC), the insurer's listing in UK clock time under a report header
+  with company cars, second notifications closed as duplicates and withdrawn notifications, October 2026 claims beyond
+  the telematics' 30 September end, a register keyed by depot names the platform spells as groups, the bank's truncated
+  payer narratives; each is what the producing system writes and none moves the call (SF1 to SF7).
+- **Layer 2:** composition of exposure (the 2027 schedule moves the light mix of the kilometres under clock hours the
+  record already drove); the choice that flips the call is whether a kilometre is rated on the clock or on the light.
+- **Decisive step:** rating each kilometre on whether it was driven before sunrise or after sunset at its depot (Appendix
+  C, by date row, with the summer-time rule), alongside the clock band, because the record drove the small hours only on
+  the May to August schedule, mostly in daylight, and the 2027 schedule drives them all winter in the dark.
+- **Not semantics:** every field read correctly (UTC converted, miles converted, cars and duplicates out, the right depot
+  for each truck) still leaves the clock-band frequency model on 281.9, filed 300, because the small hours' low rate is a
+  correctly measured daylight rate.
+- **Not rule application:** no filed rule names a rating factor, a light condition or a model; the fund terms fix only
+  what is counted. Enumerated family (overall, clock band, clock hour, month and band, depot and band, month by band
+  cells, and the six light members) spans 281.0 to 360.6; the standing family after the data rule out the clock-only
+  members (darkness LR 70.3 on one degree of freedom over the clock band, the back-test below) spans 334.0 to 368.1 over
+  27 members (three constructions of light by nine models, SF20), all
+  inside 350; the ruling-out is quiet, a likelihood ratio and a back-test nobody is told to run.
+- **Analyst test:** a strong analyst who converts every clock, cleans the listing and fits collisions per kilometre by
+  clock band (or hour, month or depot) files 300 (281.9 unrounded), the small hours looking the fleet's safest.
+- **Estimand:** the fund terms (claims_fund_terms_2027.pdf sections 2 to 4): collisions of the delivery trucks on the
+  register, route or spare, notified to Ravensby, duplicates and withdrawn notifications out, cars out, in the fund year
+  and quarter of the incident date in UK clock time, for the 2027 route schedule and its delivery calendar.
+- **No decoy:** nothing is planted: no memo, forecast, rate, factor, prior figure or stakeholder view of 2027 claims ships;
+  the handbook's lighting appendix is the drivers' lighting rule and the schedule is the board's plan.
+- **No certified replay:** no certified or published figure ties only under the golden; the method is not recovered by
+  reproducing anything, it is chosen by the record's own fit and back-test.
+- **Lesson:** a frequency rated on the clock is stationary only while the clock tracks the condition that drives the
+  rate; when a plan moves exposure into hours the record drove only in another light, rate the exposure on the condition,
+  and test the model where the record already observed that condition. No build on file prices exposure by solar light.
+
+## Survivor anatomy
+
+- **Actor:** the light each kilometre is driven in has no column in any file: it is a relation between a run's UTC
+  ignition times, the date's summer-time rule, the truck's depot from the register and the handbook's sunrise and sunset
+  row.
+- **Link:** kilometres reach light only through a drivers' lighting appendix, joined on depot and seven-day date row
+  after the clock is converted; no key, column or sentence pairs kilometres or claims with it.
+- **Reflex:** the field's frequency model rated on time of day (band or hour, with month or depot) sits at rung 1 and
+  files 300 here.
+- **Back-test:** the textbook check passes the easy route: the clock-band rate fitted to September 2025 predicts the next
+  twelve months at 281.0 against 278 observed (p 0.89), because the record's schedule never changed.
+- **Second use:** every file the step reads is in the pack for its own reason: the handbook for drivers (checks, hours,
+  lights, the collision procedure), the telematics and listing for any frequency model, the register for depots and the
+  asks' sensors, the schedule for the 2027 plan.
+- **Shock:** nothing in the pack reads as an anomaly: the small hours carry the record's lowest observed rate, monthly
+  claims move from 15 to 36 with no trend, and the schedule change is the plan the prompt names.
+- **Pins:** the fund terms file the population, the fund year and quarter by incident date in UK clock time, the 2027
+  schedule and calendar, VAT and the recoveries' quarter; no filed sentence names the clock band, the light, a rating
+  factor or a model, and deleting any of them leaves the light step exactly as hard.
+
+## Default path
+
+1. Read both Gridtrak day-summary exports to 30 September 2026 (miles to kilometres, UTC to UK clock time), each truck's
+   depot from the register.
+2. Took the listing's truck claims, cars, duplicates and withdrawn notifications out, to the same date: 840 claims.
+3. Spread each run's kilometres over its clock hours and fitted collisions per kilometre by clock band (a Poisson
+   frequency on kilometres; hour, month or depot terms give the same answer).
+4. Priced every route and delivery day of the 2027 schedule at those rates: 281.9 claims.
+
+Ends on: 300 claims (281.9 unrounded; April to September 150, the other six months 150)
+
+Golden: 350 claims (346.9 unrounded; April to September 150, the other six months 200)
+
+## Stump sentence
+
+A competent analyst prices the 2027 schedule's kilometres at the record's collision rate per kilometre by clock band and
+files 300 claims (281.9), the small hours looking the fleet's safest, where the golden is 350 (346.9); the step that lands
+it there is reading collision risk off the clock instead of off the light: the small hours' low rate is a daylight rate
+from the May to August schedule, and from October to March every 2027 route starts in the dark, up to five hours
+before sunrise in midwinter, where the record's own dark kilometres, on winter evenings, December mornings and the
+summer schedule's earliest starts, carry 2.59 times the daylight rate in the same clock band.
+
+Data-native sentence: the fleet ran its small-hours departures only on the May to August summer schedule, so the record's
+early kilometres were driven mostly after sunrise and its dark kilometres came from winter returns, December mornings and
+the summer schedule's earliest starts; the 2027 schedule runs the small-hours departures all year.
+
+## Readability screen
+
+Six tests per rung (`stumping` 2.1): 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear.
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 overall collisions per kilometre (281.0) | no | no | yes: the frequency per unit of exposure | no | no | yes | readable |
+| R1 the default path, by clock band or clock hour (281.9, 283.4) | no | yes: ignition times give the hour | yes: time of day is the fleet rating factor | yes: the time holdout passes it (281.0 against 278) | no | yes | readable |
+| R1b month and clock band, month by band cells (283.5, 283.1) | no | yes | yes: seasonality | no | no | yes | readable |
+| R1c depot and clock band (281.8) | no | yes: the register's depot | yes: territory | no | no | yes | readable |
+| R2 (decisive) clock band and light from Appendix C (346.9; the light family 334.0 to 368.1) | no: no sentence links light, sunrise or darkness to collisions or rates | no: no column holds light; it is a relation between UTC times, the summer-time rule, the depot and a drivers' lighting table | no: the reflex rates on the clock, and the record's early hours look safest | no: no rate, factor or forecast ships | no: nothing in the files is wrong | no: a per-run split at hour edges, sunrise and sunset, then the fit and the 2027 pricing | silent |
+
+## Semantic fork table
+
+Every row is asserted in `generator/checks.py` under its id.
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | collision claims (population) | the trucks' claims | company cars counted | 350 | fund terms 2; same call |
+| SF2 | a claim | one per collision | duplicates and withdrawn notifications counted | 350 | fund terms 2; same call |
+| SF3 | the record's window | claims to 30 September with the kilometres | claims to 31 October | 350 | same call |
+| SF4 | the two exports | the overlap week once | counted twice | 350 | same call |
+| SF5 | 2027 delivery days | the calendar's Yes days, bank holidays included | bank holidays dropped | 350 (339.1) | the 2027 calendar; same call |
+| SF6 | the fleet | route trucks and depot spares | spares out | 350 | fund terms 2 |
+| SF7 | telematics clock | UTC, converted by the summer-time rule | read as UK clock time (285.8) | 300 | both export headers label UTC |
+| SF8 | the 2027 seasons | the incident date in UK clock time | the notification date | 350; seasons unchanged | fund terms 3; same call |
+| SF9 | the incident time | UK clock time | UTC | 350 | the listing header "Incident time (UK)" |
+| SF10 | darkness | before sunrise or after sunset at the depot, Appendix C | civil twilight or another table | not computable from the pack | the handbook's lighting rule and Appendix C |
+| SF11 | "the new schedule starts in January" | every 2027 delivery day from 2 January | 1 January counted | 350 | the calendar: 1 January no deliveries |
+| SF12 | rounding | year and seasons to 50 | seasons forced to sum | 350 = 150 + 200 | the prompt; they sum |
+| SF13 | recoveries' quarter | the collision's quarter | the receipt's quarter | ask figures move | fund terms 5 |
+| SF14 | other insurers | third parties' insurers | the salvage agent's credits counted | ask figures move | fund terms 5 ("another party's insurer") |
+| SF15 | money | net of VAT | gross | ask figures move | fund terms 5 |
+| SF16 | a depot's collisions | the truck's depot on the register | the bodyshop site or cost centre | ask figures move | the register; Washington repairs two depots |
+| SF17 | repair cost | repairs and a total loss's inspection and storage | repairs only | ask figures move | fund terms 5 |
+| SF18 | the asks' periods | the collision's incident date | the invoice or posting date | ask figures move | fund terms 3 and 5 |
+| SF19 | the asks' population | the trucks | cars | same figures | no car is repaired at Brantwick or recovered into the account |
+| SF20 | the 2027 split (the unit) | April to September and the other six months, to 50 | calendar quarters to 25 | a member crosses: month, hour and light puts Q4 at 87.4; morning and evening multipliers and band by light cells on the last two years put it at 114.0 and 114.1 | the prompt's unit; every member of the 27 holds (table below) |
+
+SF20, measured on the cut pack (`checks.py` prints the full table): three constructions of light (the exact split at
+sunrise and sunset; each clock hour labelled by its midpoint for kilometres and claims alike; the last two years only) by
+nine models (light only; band and light; hour and light; month, band and light; depot, band and light; band and light
+with separate morning and evening multipliers; light only with them; month, hour and light; band by light cells).
+
+| Construction | Year | April to September | Other six months | Q4 (the quarter that crossed) |
+|---|---|---|---|---|
+| exact split | 337.6 to 363.5 | 150.1 to 154.1 | 187.5 to 209.4 | 87.7 to 109.0 |
+| hour-midpoint light, claims and kilometres alike | 337.3 to 347.8 | 149.5 to 152.7 | 186.7 to 196.5 | 87.4 to 102.0 |
+| last two years | 334.0 to 368.1 | 146.2 to 153.1 | 187.8 to 217.9 | 88.9 to 114.1 |
+| filed bins | 350 (325 to 375) | 150 (125 to 175) | 200 (175 to 225) | 100 (87.5 to 112.5) |
+
+Nearest edges over the 27: the year 6.9, April to September 20.9, the other six months 7.1. Two constructions sit outside
+the family and are recorded, not filed: the saturated hour by light cells (a dark hour with no claims gives a zero rate;
+323.8 on the last two years, the judge's 323, rejected by the judge) and kilometres labelled by the hour's midpoint while
+claims keep their exact times (numerator and denominator counted by different rules: up to 381.5 with separate morning
+and evening multipliers or band by light cells).
+
+## Ladder
+
+| Rung | Route | 2027 claims | Filed | April to September, other six months |
+|---|---|---|---|---|
+| R0 | overall rate per kilometre | 281.0 | 300 | 150, 150 |
+| R1 (default path) | clock band | 281.9 | 300 | 150, 150 (142.3, 139.6) |
+| R1 | clock hour | 283.4 | 300 | 150, 150 |
+| R1b | month and clock band; month by band cells | 283.5; 283.1 | 300 | 150, 150 |
+| R1c | depot and clock band | 281.8 | 300 | 150, 150 |
+| R2 (golden) | clock band and light | 346.9 | 350 | 150, 200 (150.7, 196.3) |
+| R2 family | the 27 of SF20 | 334.0 to 368.1 | 350 | 150, 200; nearest edges 20.9 and 7.1 |
+
+Shape 02 arithmetic: the year and its two seasons (3), the six recovery quarters (6), the twelve depot half-years (12),
+the chart's named parts (record months, 2027 months, axis and legend: about 4) and the two files: 27.
+
+Clean truth (the generator's world, exact times): clock band 284.8, golden 353.6; every clock route off 350 and every
+light member on it (checks R2). Gate F: cheap routes reaching 350 on the pack, 0 of 6.
+
+## Closure table
+
+Each row's assertion is in `checks.py`.
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | the delivery trucks' collisions notified to Ravensby, route trucks and spares, members not yet observed included (2027) | fund terms 2; SF1, SF2, SF6 |
+| 2 | Unit of account | one claim per collision | fund terms 2; SF2 |
+| 3 | Attribution window | the fund year and quarter of the incident date | fund terms 3; SF8 |
+| 4 | As-of dating | listing as at 31 October 2026, telematics to 30 September 2026, schedule approved 14 October 2026 | file headers; SF3 |
+| 5 | Version basis | one listing, one register, one schedule | asserted |
+| 6 | Denominator | kilometres driven | design; the Poisson frequency on kilometres (HOW, forced by the fit) |
+| 7 | Weighting | every kilometre counts once | design |
+| 8 | Window length | the whole record, October 2023 to September 2026 | C1: no year term (LR p 0.80), time holdout |
+| 9 | Boundary inclusivity | a kilometre at a sunrise or sunset edge split at the minute | C1: pieces split exactly |
+| 10 | Rounding path | unrounded expectation, rounded once per figure | the prompt; SF12 |
+| 11 | Tie-break | none arises | margins asserted over the 27-member family (year 6.9, seasons 20.9 and 7.1) |
+| 12 | Maturity and censoring | late notifications to 31 October cover the record to 30 September | SF3 |
+| 13 | Order of operations | clock conversion, split, fit, carry | design |
+| 14 | Row order | none matters | sums |
+| 15 | Duplicate resolution | the listing's duplicates out; the overlap week once | SF2, SF4 |
+| 16 | Identity normalisation | registrations with and without the space; depot names and groups | the register; asserted by the verifier's own reader |
+| 17 | Netting against gross | claims counted gross of recoveries | fund terms 1 and 2 |
+| 18 | Dimensional units | miles converted to kilometres | the export header "Distance (mi)" |
+| 19 | Code and status semantics | "Closed - duplicate of", "Withdrawn", "Car" | the listing's own values; fund terms 2; never the stump |
+| 20 | Integerisation | none: expectations, rounded to 50 and 25 | the prompt |
+| 21 | Clause scope | the terms cover the trucks and the 2027 fund year | fund terms 1 and 2 |
+| 22 | Forward window contents | every route of the 2027 schedule on every delivery day of its calendar | fund terms 4; SF5, SF11 |
+
+## Literal reader
+
+The prompt and the fund terms executed word for word file 350 under every reading the pack leaves: the population,
+window, unit and clock are filed (SF1 to SF12), the 2027 exposure is the schedule's routes on the calendar's delivery
+days, and the method is left open and forced by the data, which reject every clock-only model (darkness LR 70.3 over the
+clock band, 67.6 over month and band) and accept the light model's back-test where the record drove 04:00 to 07:00 in
+the dark (48 claims against 37.6 expected, p 0.12; the clock rates expect 23.2 and 32.3). The golden's assumptions are
+each tested in `checks.py` (A7): no month effect beyond darkness (p 0.54), no trend (p 0.80), no hour effect within bands
+(p 0.55), one darkness multiplier morning and evening (p 0.23), a depot term at p 0.03 that leaves every figure in its
+bin, Poisson dispersion 0.91, planned kilometres equal to the routes' recorded mean (0.995 to 1.004). The asks' literal
+readings are closed by the terms (SF13 to SF19); their devices are found only by internal inconsistency (`## Ask sheet`).
+
+## Oracles
+
+No shipped artifact states, ranks or forecasts 2027 claims, a collision rate, a rating factor or a model output; the
+handbook's appendix is a lighting table and the terms file no number of claims (asserted G3). No control total ties only
+under an ask's golden: the engineer's authorisations, which summed exactly to the genuine invoices, were dropped for that
+reason; the register's forward sensors are a vehicle attribute, and the receipts' amounts tie to a repair cost times a
+liability share only after the reconstruction the ask needs.
+
+## Ask sheet
+
+Two ask blocks, on records the call never reads (the AP ledger, the bodyshop's job list and the recovery account), each
+with its own primary from a different family. With the three ask-only files deleted the call files the same 346.9 (D3).
+
+**Ask A, recoveries by the collision's quarter (6 figures), D7 the true key elsewhere.** 89 of the 171 receipts from other
+insurers quote only the payer's own reference; each is the other side's share of one collision's net repair cost, paid
+in full for a non-fault collision and at a quarter, a third, a half, two thirds or three quarters for a split one, and
+exactly one claim of that payer matches each amount to the penny (D1). Over-cleaning half: matching on the full repair
+cost alone places only the non-fault orphans. Shared hazard: the repair cost itself rides on ask B's device.
+
+| Reading | A1 figures kept of 6 | Why it fails |
+|---|---|---|
+| orphans left out (no claim number) | 0 | the receipt reads as unattributable; a quarter to a half of each quarter's money goes missing |
+| orphans by the receipt's own quarter | 0 | the payment lag is 38 to 190 days |
+| payer and amount equal to the repair cost, else left out or the receipt's quarter | 0 | split collisions are paid a share |
+| shares inferred from amounts on an exact-duplicate repair cost | 2 | the over-cleaned cost moves every two-sensor repair by 185 |
+| golden: our number, else the one claim matching payer, share and net cost | 6 | |
+
+**Ask B, Brantwick repair cost by depot and half-year (12 figures), D1 replay.** In three spells the bodyshop's feed sent each
+invoice twice and AP posted the copy a week later under a fresh document number (210 copies, every line of the spell,
+accident repairs included, which a job carries once); beside them sit genuine identical ADAS calibration lines, one per
+sensor on the 148 repairs of trucks the register shows with camera and radar, 79 of them sent days after the first because
+the radar certificate comes back late, many into the next weekly import. Over-cleaning half: an exact-duplicate pass deletes every second
+calibration; a one-import-earlier twin rule deletes the late ones. A camera-only truck never carries two calibrations
+outside the spells (D2), so the reading is forced by the register.
+
+| Reading | B1 figures kept of 12 | Why it fails |
+|---|---|---|
+| every AP line | 0 | the copies add 10,000 to 47,900 a cell |
+| exact duplicates dropped | 0 | every second calibration goes: 185 to 1,480 a cell |
+| a line with a twin one import earlier dropped | 0 | late radar calibrations go: 185 to 740 a cell |
+| twins paired one for one across imports | 2 | outside the spells the late radar calibration is consumed as a copy (two cells hold none) |
+| golden: each invoice once, two calibrations on a camera-and-radar truck | 12 | |
+
+Hazards: the payers' bank names truncated (both asks' joins), the bodyshop site serving two depots (B), receipts for 2024
+collisions inside 2025 (A), the salvage agent's credits (A), gross beside net (both).
+
+| Ask figures | Cracker's path | Cracker's value | Verdict |
+|---|---|---|---|
+| A recoveries by collision quarter (6) | the hygiene battery's anti-join, orphans placed by payer and amount equal to the exact-deduplicated repair cost, else by receipt date or left out | every quarter off by 2,100 to 40,000 | miss |
+| B repair cost by depot and half-year (12) | exact duplicates and re-sent lines dropped, summed by the truck's depot and incident date | every cell low by 185 to 1,480 | miss |
+| the chart | the cracker's own forecast months beside the record | the record and its months | outside |
+
+Measured by: generator/ceiling.py on the cut pack (the honest cracker lands the call and runs the battery; the mirror
+keeps every line and leaves orphans out; routes beyond the battery printed; the full includer reproduces figures.json).
+
+Mirror leakage: 0.0 per cent of the ask weight (the mirror keeps no ask figure).
+
+Pair ceiling: 28.5 (cracker on the call 45.0 with no ask figure, mirror off it 12.0); two careful responses on the call
+45.0 each; a cracker on the call with the best route beyond the battery (an import-pairing resend rule and shares
+inferred from amounts, 6 of 18) 63.3.
+
+## Layer 1 inventory
+
+Every item is what its producing system writes; none moves the call (SF1 to SF7, asserted).
+- Gridtrak: the export template changed in March 2025 (miles to kilometres, date formats, registration spacing, group
+  names), one reporting week in both exports, every time in UTC.
+- Ravensby listing: a four-line report header, company cars on the same policy, second notifications closed as
+  duplicates (a few bodyshop jobs quote the second number), withdrawn notifications, claims to 31 October beyond the
+  telematics' 30 September.
+- Fleet register: depot names that differ from the platform's groups and the schedule's codes; write-offs and their
+  replacements.
+- AP ledger and jobs: dd/mm/yyyy dates, site cost centres, net, VAT and gross; recovery account: truncated payer names,
+  references run together, salvage credits and month-end sweeps.
+
+## Stage 3 gates
+
+Re-run on the final cut after the stage 4 watch item, 2026-11-02 (target.zip md5 90f3dba97187bcf182764a196ae51bbb, seed
+13; the pack did not move, the prompt, write-up and goldens did):
+- `generator/make.py`, twice: checks 0 failures (the M, R2, L1 to L5, A7, SF1 to SF20, D0 to D3 and G1 to G8 blocks);
+  byte-identical rebuild; verify 0 failures; ceiling as in `## Ask sheet`.
+- `precut.py task137 --quiet`: PASS task137: 61 checks, 0 FAIL, 0 WARN.
+- `voice-check.py task137`: PASS.
+- `figures_check.py task137 --quiet`: PASS task137: 42 figures in blocks 1 to 4, 0 absent from generator/figures.json.
+- `leak.py task137 --asof 2026-11-02 --quiet`: REVIEW, no LEAK; each line ruled:
+  - sweep 3, 43,200 in the old Gridtrak export: a run's 18:43 ignition-off time beside its 200.2 miles; no figure.
+  - sweep 3, the fund terms carry the call's words: the terms define the estimand (delivery trucks, collision claims,
+    the fund year and its quarters) and state no number of claims (G3).
+  - sweep 4, the handbook's record, records and sunrise: "record it on the Gridtrak tablet", the claims handler
+    "records the date and time", and the lighting rule with Appendix C, the shipped darkness carrier; no sentence
+    relates light to collisions, risk or rates (G3).
+  - sweep 9, dates after 2 November 2026 in the bank-holiday feed and the 2027 calendar: both are forward-looking
+    records the organisation holds before the year starts (the gov.uk feed publishes 2027; the board's 2027 plan).
+- `guard.py surface task137`: exit 0; promoted pairs task139 (the same domain and objective two apart: its exposure
+  clock is accumulated use, here the exposure is unchanged and the rating factor is the light), task135 (G7 two back),
+  task204 (gap, pattern and decision type: the NOTE already differentiated on the card, a room's unsteady ventilation
+  balance), task147, task179 and task154 (surface vocabulary in the corpus top 1 per cent); the people NOTE "Carlisle
+  Darlington" is two place names in the handbook's table header.
+- `guard.py heart task137`: HEART VERDICT: PASS (NOTEs against task204 and task121, differentiated on the card).
+- `freeze.py snapshot task137`: 10 main-call figures (7 figures.json keys), 2 ask files, the call sentence frozen.
+- Input gates: 12 files, 4 formats (csv, json, pdf, xlsx), gridtrak_day_summary_2025-03_2026-09.csv at 119,448 rows,
+  two distractors (store_delivery_windows_2027.xlsx, bank-holidays-england-and-wales.json), metadata.json with source,
+  date and licence for every file.
+- House fixes: PDFs read by pdfplumber, pdftotext and pypdf in strict mode; container metadata clean in target and
+  golden (scrub audit); goldens through golden-realism (finding titles, source line, a terms footnote, a notes sheet,
+  the chart on the validated two-slot palette), the note one page.
+
+## Pre-ship check
+
+The 10/10 rules read again against the cut after stage 4 (the leak reader clean, its question 6 an analytical choice;
+the judge DETERMINISTIC, APPROVE, Gate G method_or_model_selection, Gate H PASS).
+- Domain: the deciding quantity is the fleet's collision frequency per kilometre by the light each kilometre is driven
+  in, carried onto the 2027 schedule's exposure, which is how claims-frequency work prices a portfolio's next year; the
+  swap to a hospital's falls per bed-day breaks it (sunrise, latitude and the summer-time rule stop meaning anything).
+- Two layers: the mess (two Gridtrak templates in UTC, miles then kilometres, the listing's cars, duplicates and
+  withdrawn notifications, the overlap week, the October claims past the telematics) is what the systems write and stays
+  neutral (SF1 to SF7); the analysis decides: every clock route files 300, every light-aware member of the 27 files 350
+  (M2 to M4, SF20).
+- Rule 3: nothing is planted, no field reading decides the call, and no filed sentence names light, a rating factor or a
+  model (G3); the decisive step is analytical, a rating factor the record's own fit and back-test choose (A7, L4).
+- The watch item: the judge's quarters were thin, and the measured family put three members across a quarter's edge
+  (SF20), so the 2027 split moved to the unit the family holds, April to September and the other six months to the
+  nearest 50 (nearest edges 20.9 and 7.1 over 27 members), with the repair-cost ask regrained to depot by half-year to
+  keep the rubric at 27; no method was filed and the world was not re-centred. The prompt changed, so the reader and the
+  judge run once more.
+- Stage 4, final (2026-11-02): the leak re-read on the season-split prompt is clean (Q1 to Q4 none, Q6 an analytical
+  choice, the handbook's sunrise appendix read as a driving rule, not a risk statement); the re-judge on the unchanged
+  pack (target.zip 90f3dba9) is DETERMINISTIC, APPROVE (determinism_check_report_pass8.md): every daylight-aware model
+  files 350, split 150 and 200, the clock routes 300; all 12 depot half-year costs and six quarterly recoveries
+  reproduce; Gate G analytical_non_defect, Gate H pass. Its watch items stand recorded: the ledger-duplicate and ADAS
+  pair convention (derivable, penny-certified), the seven repair jobs on duplicate-closed notifications (counted, the
+  ask says collisions), one half-up penny match (Ingleby, Q3 2025), stump power moderate.
+- Every gate re-run on the final cut 90f3dba9 (2026-11-02): precut 61 checks 0 FAIL; voice-check PASS; figures_check 42
+  figures 0 absent; leak.py REVIEW, no LEAK (every line ruled in the note); guard surface exit 0; guard heart PASS.
 
 ## Tried and rejected
 
@@ -408,3 +750,21 @@ claims its 7.5-tonne delivery fleet will make in 2027 once a new schedule sends 
   dark (prototype `proto2.py` to `proto4.py`: the record's dark kilometres were 4 to 5 per cent, the dark rate's own
   noise spread the golden family by up to 15 per cent, and the overall per-kilometre rate landed within 5 per cent of
   the golden on most seeds because the darkness only moved from evening rush to quiet mornings).
+- The engineer's staged authorisations as ask B's forcing record (2026-11-02, before any data was cut): they summed
+  exactly to the genuine invoices, a control that ties only under the golden and a reconciliation the careful solver's
+  battery runs, so they were an oracle; dropped, and the register's forward sensors (camera, or camera and radar) force
+  the genuine calibration pairs instead.
+- Ask B forced by the resend spells alone (copies paired one for one inside spells found by their share of week-old
+  twins): the spells' first and last imports fall under any threshold (two cells kept copies worth 2,716 and 5,942), and
+  outside the spells a late radar calibration is indistinguishable from a copy; the sensors close both.
+- Darkness from an external formula (the NOAA equations at the depots' coordinates): replaced by the driver handbook's
+  Appendix C (sunrise and sunset in GMT by seven-day row, with the summer-time rule), so every 2027 route-hour's light is
+  recovered from shipped records alone (asserted, L2).
+- The asks over the whole of 2026: repairs and recoveries of autumn 2026 collisions are incomplete at the pack date;
+  the asks run to June 2026.
+- The 2027 claims by calendar quarter to the nearest 25 (stage 4 watch item, 2026-11-02): the judge found the split thin
+  (Q1 3.1 above 87.5; a pooled-hour light-only variant at Q4 112.8). Measured over 27 members (three constructions of
+  light by nine models), month, hour and light puts Q4 at 87.4 and separate morning and evening multipliers or band by
+  light cells on the last two years put it at 114.0 and 114.1, so the quarters would not hold; the split moved to April
+  to September and the other six months at the nearest 50 (every member holds, nearest edges 20.9 and 7.1) and the
+  repair-cost ask to depot by half-year (12 figures, the honest cracker still misses all), keeping the rubric at 27.
