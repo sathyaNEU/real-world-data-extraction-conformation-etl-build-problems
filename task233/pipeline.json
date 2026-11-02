@@ -1,10 +1,10 @@
 {
  "task": "task233",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check: leak reader clean; its realism finding fixed in the generator; determinism judge next",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "The field's QA measure, each region's share of back-checked prices agreeing with the Field Quality Team's re-collection, files ten regions wrong (seven compliant regions under corrective action, three corrective regions on credits, $7,049); the officers re-collected the far regions' prices four to six days after the visits, and only netting each back-check's chance of a genuine price change over its own delay (the visit log's dates through the outlet register against each item class's monthly change frequency in the price database) gives corrective action for Halbrook North, Tamsin Bay, Fenwick and Westholm, a credit for Belmont Valley ($1,775) and nine compliant regions.",
  "architecture": 3,
@@ -14,23 +14,22 @@
   "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-02 on target.zip edd35bde, --asof 2026-10-16: no LEAK, four REVIEW lines ruled harmless in the note (the standard's and Schedule 4's own nouns, the outlet register's region names, the 2026 calendar's later dates)",
-  "reader": "clean on target.zip 62987245 on every question (question 6 an analytical choice, no decoy); one realism finding (independent outlets' names disagreeing with their kind, the register sorted by code within region) fixed in the generator: names drawn from each kind on their own stream, register in outlet-code order, Z11 to Z13 asserted; only the register and the schedule changed, figures.json, the write-up and the goldens byte-identical"
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-10-16)",
+  "reader": "clean on every question (question 6 analytical); its realism finding on the outlet register fixed before the judge; appended to task233/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "PASS 2026-11-02 (NOTE test.same_puzzle_older vs task270 v9 lineage, differentiated on the card)",
-  "surface": "9 pairs promoted for the author's adjudication at surface 0.090 to 0.102 (task234, task231 same pairing two apart, task270, task265, task458, task480, task450, task479, task178); personas in the pack: Joanne MacDonald, Lucia Morrison",
-  "nearest": "0.07 task229 v2 lineage"
+  "heart": "PASS 2026-11-02 at the ship gate",
+  "nearest": "surface promoted nine pairs at 0.09 to 0.10, task231 among them (same domain and objective two numbers away); differentiation lines on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC, APPROVE (order kept; Gate F moderate to good; Gate G statistical_rigor / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; step 8 reworded on the write-up only",
+  "report": "task233/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 in the main session: run the determinism judge on target.zip edd35bde; fix every finding in the generator in one pass, rebuild, re-run every gate, then ship",
+ "resume": "Shipped 2026-11-02 (architecture 3, Data Quality Monitoring): four regions to corrective action and Belmont Valley on a $1,775 service credit; target.zip edd35bde. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

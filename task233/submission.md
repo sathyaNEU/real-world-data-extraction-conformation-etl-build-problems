@@ -22,7 +22,7 @@
 5. Gave each back-check its chance of no shelf-price change, (1 minus that frequency) to the power delay/30.4, and estimated each region's accuracy as its agreeing back-checks over the sum of those chances.
 6. Applied section 4 and pcsa_schedule4_collection_fees.pdf: Belmont Valley service credit of $1,775, Halbrook North, Tamsin Bay, Fenwick and Westholm corrective action, the other regions compliant.
 7. Timeliness and missed visits: took the scheduled visits in tallis_collection_schedule_2026q3.csv, followed each Lifeline Chemists branch closed on 31 July to the CareMed Pharmacy outlet in the register at the same address (its quotes continue there in the price database), and counted a visit completed when every visit row with prices for the outlet in the month fell from the index day to the fourth working day after it in nso_collection_calendar_2026.csv (17 August a holiday); a schedule row with no visit row is a missed visit.
-8. Replacement acceptance: took the quarter's replacement rows (status R or 30) from the price database, gave each decision in commodity_replacement_decisions_2026.xlsx to the latest replacement of its quote visited before the decision date, and counted a replacement accepted when its latest Comparable or Not comparable decision is Comparable.
+8. Replacement acceptance: took the quarter's replacement rows (status R or 30) from the price database, kept one row per replacement where a quote was exported twice for the same visit, gave each decision in commodity_replacement_decisions_2026.xlsx to the latest replacement of its quote visited before the decision date, and counted a replacement accepted when its latest Comparable or Not comparable decision is Comparable.
 
 ## 4. Deliverable Answers
 
