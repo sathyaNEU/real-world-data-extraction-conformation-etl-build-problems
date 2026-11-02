@@ -29,7 +29,7 @@ def chart_png(F):
     names = sorted(F["junctions"], key=lambda n: -F["benefit"][n])
     vals = [F["benefit"][n] for n in names]
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "svg.hashsalt": "task304"})
-    fig, ax = plt.subplots(figsize=(6.6, 3.1), dpi=200)
+    fig, ax = plt.subplots(figsize=(6.6, 2.75), dpi=200)
     colors = [ACCENT if n == F["call"] else MUTED for n in names]
     bars = ax.bar(range(len(names)), vals, color=colors, width=0.62)
     for b_, v in zip(bars, vals):
@@ -111,7 +111,7 @@ def bid_docx(path, F):
                 c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
     _para(doc, "Source: the county's validated collision record 2021 to 2025 and junction inventory; factors from the "
                "fund's guidance, Table 2.", 8.5, color=GREY, space_after=8)
-    doc.add_picture(io.BytesIO(chart_png(F)), width=Mm(162))
+    doc.add_picture(io.BytesIO(chart_png(F)), width=Mm(150))
     _para(doc, "Figure 1. Injury collisions a roundabout would prevent each year at each listed junction.", 8.5, color=GREY,
           space_after=10)
     _para(doc, "3. How the expected collisions were estimated", 12, bold=True, space_after=4)
