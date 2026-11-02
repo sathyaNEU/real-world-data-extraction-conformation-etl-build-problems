@@ -468,6 +468,10 @@ DEPLOYMENTS = [
     ("20184457", "PP-29", 1.0, dt.datetime(2026, 5, 31, 12, 30), dt.datetime(2026, 9, 11, 15, 15)),
 ]
 PEAK_DOY = 207.0
+# each logger's reading error against a reference thermometer, inside the +/-0.53 C a pendant logger is specified to
+CALIBRATION = {"20184452": -0.30, "20184402": 0.00, "20184470": -0.04, "20184441": -0.31, "20184421": 0.00,
+               "20184409": 0.18, "20184533": 0.02, "20184438": 0.03, "20184457": -0.05, "20184417": 0.07,
+               "20184425": -0.12}
 
 
 def water_temps():
@@ -508,7 +512,7 @@ def water_temps():
     series = {}
     for serial, (clock, start, stop) in SERIALS.items():
         gg = K.rng_for("logger", serial)
-        off = gg.normal(0, 0.06)
+        off = CALIBRATION.get(serial, 0.0)
         deps = [x for x in DEPLOYMENTS if x[0] == serial]
         recs = []
         t = start
