@@ -100,7 +100,7 @@ def run(target):
     d = AN.load_admin(target)
     bt, bp = title_maps(d)
     cr_call = AN.main_call(target, "simple")
-    ca, cb, cc = asks_with(target, lambda dd, it: cracker_work(dd, it, bt, bp), "title_majority")
+    ca, cb, cc = asks_with(target, lambda dd, it: cracker_work(dd, it, bt, bp), "invoice_majority")
     mi_call = AN.main_call(target, "km_fac")
     ma, mb, mc = asks_with(target, _no_chain, "ignore_busy")
     cr = score(cr_call, ca, cb, cc, gold)

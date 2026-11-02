@@ -269,6 +269,7 @@ def build(seed=P.SEED):
             tid += 1
     W.titles = titles
     biblio(W, rb)
+    retitle(W, random.Random(seed * 7 + 6))
 
     # ---------------------------------------------------------------- licences
     lic = []
@@ -347,7 +348,7 @@ def build(seed=P.SEED):
     tby = {t["id"]: t for t in titles}
     for L in lic:
         t = tby[L.title]
-        L.ordered_by = t["cross"] if (t["cross"] and ro.random() < 0.45) else t["school"]
+        L.ordered_by = t["cross"] if (t["cross"] and ro.random() < 0.6) else t["school"]
 
     # ---------------------------------------------------------------- requests
     reqs = {t["id"]: [] for t in titles}
@@ -410,6 +411,7 @@ def biblio(W, rb):
                 return i
 
     used_titles = set()
+    W.used_titles = used_titles
 
     def title_string(school):
         for _ in range(200):
@@ -475,6 +477,26 @@ def biblio(W, rb):
             W.package_extra.append(dict(package=pname, publisher=pub, title=title_string(school),
                                         e_isbn=new_isbn("9781" + str(rb.randint(0, 9))),
                                         edition=rb.choice([1, 2, 3, 4]), year=rb.randint(2015, 2025)))
+
+
+def retitle(W, rr):
+    """editions published under another title: an earlier edition some lists still cite, or the newer print
+    edition, carries its own title (drawn after the bibliographic layer so nothing else moves)"""
+    def fresh(school):
+        for _ in range(400):
+            s = rr.choice(TITLE_FORMS).format(d=rr.choice(DISCIPLINE_WORDS[school]))
+            if s not in W.used_titles:
+                W.used_titles.add(s)
+                return s
+        return None
+    for t in W.titles:
+        for key, p in (("prev", 0.5), ("next", 0.4)):
+            e = t.get(key)
+            if e is None:
+                continue
+            e["title"] = t["title"]
+            if rr.random() < p:
+                e["title"] = fresh(t["school"]) or t["title"]
 
 
 def readers(L):

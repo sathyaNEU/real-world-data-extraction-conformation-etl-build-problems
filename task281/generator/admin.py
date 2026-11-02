@@ -86,11 +86,11 @@ def build(W, seed=P.SEED):
                         preceded_by=t["prev"]["mms"] if t["prev"] else "", publisher=t["publisher"]))
         if t["prev"]:
             p = t["prev"]
-            cat.append(dict(mms=p["mms"], title=t["title"], edition=p["edition"], year=p["year"], isbn=p["p_isbn"],
+            cat.append(dict(mms=p["mms"], title=p["title"], edition=p["edition"], year=p["year"], isbn=p["p_isbn"],
                             rtype="Book (print)", platform="", linked="", preceded_by="", publisher=t["publisher"]))
         if t.get("next"):
             x = t["next"]
-            cat.append(dict(mms=x["mms"], title=t["title"], edition=x["edition"], year=x["year"], isbn=x["p_isbn"],
+            cat.append(dict(mms=x["mms"], title=x["title"], edition=x["edition"], year=x["year"], isbn=x["p_isbn"],
                             rtype="Book (print)", platform="", linked="", preceded_by=t["mms_print"],
                             publisher=t["publisher"]))
     for b in W.print_only:
@@ -211,19 +211,22 @@ def _ord_short(n):
 def _item(ra, c, t, imp):
     """a reading-list item citing a platform title: the print or e-book ISBN, an earlier edition's, or a newer
     print edition the course leader has moved to"""
+    title = t["title"]
     if t.get("next") and c["sem"] in ("S26", "A26") and ra.random() < 0.55:
         isbn = t["next"]["p_isbn"]
         ed = t["next"]["edition"]
+        title = t["next"]["title"]
         if ra.random() < 0.2:
             isbn = WD.isbn10_from13(isbn)
     elif t["prev"] and ra.random() < 0.4:
         isbn = t["prev"]["p_isbn"]
         ed = t["prev"]["edition"]
+        title = t["prev"]["title"]
         if ra.random() < 0.2:
             isbn = WD.isbn10_from13(isbn)
     else:
         u = ra.random()
         isbn = t["p_isbn"] if u < 0.55 else (WD.isbn10_from13(t["p_isbn"]) if u < 0.68 else t["e_isbn"])
         ed = t["edition"]
-    return dict(course=c["code"], sem=c["sem"], title=_cite_title(ra, t["title"], ed), edition=ed,
+    return dict(course=c["code"], sem=c["sem"], title=_cite_title(ra, title, ed), edition=ed,
                 isbn=_style(ra, isbn), importance=imp, work=t["work"], kind="title", title_id=t["id"])

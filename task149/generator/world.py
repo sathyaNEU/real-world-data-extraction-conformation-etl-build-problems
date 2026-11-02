@@ -120,12 +120,14 @@ def _schedule(rng, dev, days):
 
 
 def _absent(rng, dev, d):
+    """Leave and sickness from the device's own stream, so the rest of the world does not move with the rate."""
+    u = rng.random()
     if d in P.BANK_HOLIDAYS_2027 and dev.regime in ("hybrid_a", "hybrid_b", "hybrid_c", "fixed5", "parttime"):
         return True
-    p = 0.09
+    p = P.ABSENCE.get(dev.dest, 0.09)
     if dev.parent and d in P.MIDTERM_2027:
         p += 0.35
-    return rng.random() < p
+    return u < p
 
 
 def _errands(rng, dev, d, busy, n_max=2, long_ok=False):
@@ -198,7 +200,8 @@ def build_panel(rng):
     for i, dev in enumerate(devices):
         dev.did = hashlib.sha1(("rmp114-%d" % i).encode()).hexdigest()[:16]
 
-    for dev in devices:
+    for idx, dev in enumerate(devices):
+        arng = np.random.default_rng([P.SEED, 991, idx])
         if dev.kind in ("worker", "outside"):
             if dev.kind == "outside":
                 dev.travel = 55 + int(rng.integers(0, 20))
@@ -206,15 +209,16 @@ def build_panel(rng):
             shifts = _schedule(rng, dev, sim_days) if dev.kind == "worker" else [
                 (d, 470 + 55 + rng.normal(0, 8), 470 + 55 + rng.uniform(480, 540), "day")
                 for d in sim_days if d.weekday() < 5]
-            worked = set()
+            scheduled = set()
             for d, s, e, kind in shifts:
-                if _absent(rng, dev, d):
+                r, a = rng.random(), rng.uniform(485, 530)
+                ecell, edur = str(rng.choice(P.LOCAL_CELLS)), rng.uniform(24, 50)
+                scheduled.add(d)
+                if _absent(arng, dev, d):
                     continue
                 dev.acts.append((dev.work_cell, _t(d, s), _t(d, e), "work"))
-                worked.add(d)
-                if s - dev.travel > 630 and rng.random() < 0.5:
-                    a = rng.uniform(485, 530)
-                    dev.acts.append((str(rng.choice(P.LOCAL_CELLS)), _t(d, a), _t(d, a + rng.uniform(24, 50)), "errand"))
+                if s - dev.travel > 630 and r < 0.5:
+                    dev.acts.append((ecell, _t(d, a), _t(d, a + edur), "errand"))
             for d in sim_days:
                 busy = []
                 for c, s, e, tag in dev.acts:
@@ -222,7 +226,7 @@ def build_panel(rng):
                         a = (s - _t(d, 0)).total_seconds() / 60
                         b = (e - _t(d, 0)).total_seconds() / 60
                         busy.append((a - dev.travel - 10, b + dev.travel + 10))
-                dev.acts += _errands(rng, dev, d, busy, n_max=2 if d not in worked else 1)
+                dev.acts += _errands(rng, dev, d, busy, n_max=2 if d not in scheduled else 1)
         elif dev.kind == "nofixed":
             for d in sim_days:
                 if d.weekday() < 5 and rng.random() > 0.10:
@@ -242,12 +246,28 @@ def build_panel(rng):
             clean.append(a)
             last_end = a[2]
         dev.acts = clean
+        if dev.kind == "worker" and dev.dest in P.ARRIVE_CELLS:
+            prng = np.random.default_rng([P.SEED, 992, idx])
+            q = P.ARRIVE_P.get(dev.dest, 0.0)
+            out, prev_end = [], None
+            for a in dev.acts:
+                if a[3] == "work":
+                    u, gap, dur = prng.random(), prng.uniform(3, 8), prng.uniform(20, 34)
+                    end = a[1] - dt.timedelta(minutes=float(gap))
+                    start = end - dt.timedelta(minutes=float(dur))
+                    if u < q and (prev_end is None or start > prev_end + dt.timedelta(minutes=40)):
+                        out.append((P.ARRIVE_CELLS[dev.dest], start, end, "arrive"))
+                out.append(a)
+                prev_end = a[2]
+            dev.acts = out
 
     # SIM replacements: a device reissued under a new identifier part-way through the weeks.
     extra = []
+    served = {c for c, _n, _p, _t, s in P.DEST if s > 0}
     for dev in devices:
-        if rng.random() < 0.04:
-            cut = P.PANEL_START + int(rng.integers(12, 70)) * DAY
+        draw, cut_day = rng.random(), int(rng.integers(20, 50))
+        if draw < 0.04 and not (dev.kind == "worker" and dev.dest in served):
+            cut = P.PANEL_START + cut_day * DAY
             twin = Device(hashlib.sha1(("rmp114-sim-%s" % dev.did).encode()).hexdigest()[:16], dev.home, dev.kind,
                           dev.dest, dev.regime)
             twin.work_cell, twin.travel, twin.parent = dev.work_cell, dev.travel, dev.parent
@@ -267,7 +287,7 @@ def home_stays(dev):
     for i in range(len(acts) - 1):
         a, b = acts[i], acts[i + 1]
         tr_back = dev.travel if a[3] == "work" else 10
-        tr_out = dev.travel if b[3] == "work" else 10
+        tr_out = dev.travel if b[3] == "work" else (max(5, dev.travel - 25) if b[3] == "arrive" else 10)
         s = a[2] + dt.timedelta(minutes=tr_back)
         e = b[1] - dt.timedelta(minutes=tr_out)
         if (e - s).total_seconds() >= 20 * 60:

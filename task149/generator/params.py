@@ -72,8 +72,14 @@ STRADDLE = {"KH309": [("KW03", 0.58), ("KW04", 0.42)]}
 LOCAL_CELLS = ["RG01", "RG02", "RG04", "RG05", "RG06", "RG08", "RG09", "BM701"]
 OUTSIDE_CELLS = ["XO001", "XO002"]
 SAMPLE = 0.09  # panel devices per resident commuter, about
-DEP_SHIFT = {"KW01": 1, "KW02": 9, "KW04": -11, "KW05": 27, "KW09": 1}  # minutes added to every shift of a destination's workers (set by tuning)
+DEP_SHIFT = {}  # minutes added to every shift of a destination's workers (set by tuning)
 GATE_SEED = 19
+# Leave and sickness on scheduled days, by workplace zone (set by tuning, inside 6 to 12 per cent).
+ABSENCE = {}
+# Stays in the workplace zone on the way in (car parks, a security gate, a transport hub) and how often a journey makes one.
+ARRIVE_CELLS = {"KW01": "KC105", "KW02": "KD205", "KW03": "KH305", "KW04": "KU405", "KW05": "CB505", "KW06": "RC605",
+                "KW09": "LS905"}
+ARRIVE_P = {"KW01": 0.30, "KW02": 0.35, "KW03": 0.55, "KW04": 0.45, "KW05": 0.60, "KW06": 0.30, "KW09": 0.25}
 
 # Existing stations on the Ardnagree line and their 2019 base and 2027 standing (ordinary weekday entries).
 STATIONS = [

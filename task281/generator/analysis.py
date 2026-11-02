@@ -462,11 +462,12 @@ def ask_c(target, variant="golden", trace=None):
         left = d.status.get(r["lic"], 40) if r["date"] < rec_start else 40
         if variant == "no_status":
             left = 40
-        c = dict(lic=r["lic"], date=r["date"], left=left, otype=r["otype"], lapsed=None, held=None,
+        c = dict(lic=r["lic"], date=r["date"], left=left, otype=r["otype"], lapsed=None, held=None, po=r["po"],
                  fac=d.fund_fac[r["fund"]] if r["fund"] else None)
         if r["otype"] != "Renewal" or variant == "renewal_dates":
             c["held"] = dt.datetime(r["date"].year, r["date"].month, r["date"].day, tzinfo=UK).astimezone(UTC)
         lics[r["platform"]].append(c)
+    inv_fund = {ln["po"]: ln["fund"] for ln in d.inv}
     loans_by_title = collections.defaultdict(list)
     for l in d.loans:
         if l["start"] < cutoff:
@@ -503,12 +504,14 @@ def ask_c(target, variant="golden", trace=None):
                             if variant != "renewal_dates":
                                 r["held"] = c["lapsed"]
                             break
-        if variant == "title_majority":
+        if variant in ("title_majority", "invoice_majority"):
             own = collections.Counter(c["fac"] for c in cps if c["otype"] != "Renewal")
             top = own.most_common(1)[0][0]
             for c in cps:
                 if c["otype"] == "Renewal":
                     c["fac"] = top
+                    if variant == "invoice_majority" and c["po"] in inv_fund:
+                        c["fac"] = d.fund_fac[inv_fund[c["po"]]]
     out = collections.Counter()
     for plat, cps in lics.items():
         for c in cps:
