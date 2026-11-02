@@ -228,7 +228,7 @@ axis (102 against 0 on R0) is many times Larapinta's carried advantage (66 again
 each title's average induct hours (R2) names Kewdale at 156, a figure outside every bin, because Kewdale's rotation
 loaders average 1.4 hours a shift as a title while about half of them do none. The pricing sequence: (1) the residue
 the filed WHAT leaves is each worker's places, a method, not a knob; (2) the move is worth 102 workers on the golden
-hub against a ceiling of 104 signed on to induct there; (3) the one-group-by routes (distinct badges at induct, station
+hub against a ceiling of 106 signed on to induct there; (3) the one-group-by routes (distinct badges at induct, station
 hours, headcount) name Eastern Creek or Wingfield; (4) no fitted parameter: every worker's hours are sums of recorded
 sessions, so the estimate's standard error is the record's own; (5) the lever (rotation) is not the ranked quantity's
 noise; (6) no change call; (7) no subset prints the hidden quantity; (8) the reflex sweep as code (checks.py R3a, L1 to
