@@ -129,6 +129,19 @@ def main():
     pre = win[(win["prior_obj"] > 0) & (win["prior_obj_win"] == 0)]
     check("SF4 objects first shown before the window are recognised in it like any repeat",
           pre["hit"].mean() - M["pooled_hit_first"] >= 0.08, "pre-window repeats %.4f" % pre["hit"].mean())
+    import golden as GD
+    ev = GD.evidence(T)
+    check("write-up bound: objects first shown before the window are detected over 99 per cent when shown again, "
+          "over every officer and over the endorsed alone", ev["pre_window_min"] > 0.99, "min %.4f" % ev["pre_window_min"])
+    check("write-up figure: an orientation new to the officer whose object was shown before is detected like a repeat",
+          abs(ev["other_orientation"] - M["pooled_hit_repeat"]) <= 0.01, "%.4f" % ev["other_orientation"])
+    figp = os.path.join(HERE, "figures.json")
+    if os.path.exists(figp):
+        fj = json.load(open(figp))
+        check("write-up figures: the evidence rates in figures.json equal their recomputation",
+              fj["pooled_other_orientation_pct"] == round(100 * ev["other_orientation"], 1)
+              and fj["pre_window_repeat_floor_pct"] <= 100 * ev["pre_window_min"],
+              "%s, %s" % (fj["pooled_other_orientation_pct"], fj["pre_window_repeat_floor_pct"]))
 
     # ------------------------------------------------------------------ shock: the answer is no interval of a sort
     reg = T["register"].set_index("staff_no")

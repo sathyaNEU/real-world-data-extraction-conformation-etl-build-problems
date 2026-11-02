@@ -183,16 +183,16 @@ def write_lab(W, out):
                           ("Nickel", "mg/kg")):
             key = {"Dry solids": "DS", "Cadmium": "Cd", "Mercury": "Hg", "Lead": "Pb", "Copper": "Cu", "Zinc": "Zn",
                    "Arsenic": "As", "Chromium": "Cr", "Nickel": "Ni"}[det]
-            v = x["vals"][key]
+            v = x["rep"][key]
             if det == "Dry solids":
                 txt = "%.1f" % v
             elif det in ("Cadmium", "Mercury"):
                 if det == "Mercury" and b2:
-                    txt, unit = "%.0f" % (v * 1000.0), "ug/kg"
+                    txt, unit = "%.0f" % round(v * 1000.0), "ug/kg"
                 else:
                     txt = "%.3f" % v
             else:
-                txt = "%.1f" % v
+                txt = "%.2f" % v
             rows.append([str(lab_no), x["ref"], received, det, txt, unit, "dry weight" if det != "Dry solids" else "as received"])
     write_csv(os.path.join(out, LAB), ["lab_no", "client_ref", "received", "determinand", "result", "units", "basis"], rows)
     return len(rows)

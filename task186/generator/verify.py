@@ -82,15 +82,20 @@ def main():
             continue
         seen_rows.add(key)
         t = dt.datetime.strptime(r["event_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
-        events.append((login[r["operator_login"]], t, obj[r["image_no"].zfill(6)], r["result"] == "HIT"))
+        events.append((login[r["operator_login"]], t, obj[r["image_no"].zfill(6)], r["result"] == "HIT",
+                       r["image_no"].zfill(6)))
     events.sort()
     w0, w1 = dt.date(2025, 12, 1), dt.date(2026, 11, 30)
     tally = defaultdict(lambda: [0, 0, 0, 0])
     shown = defaultdict(set)
-    for s, t, o, hit in events:
+    shown_img = defaultdict(set)
+    shown_win = defaultdict(set)
+    other = [0, 0]
+    pre = defaultdict(lambda: [0, 0])
+    for s, t, o, hit, img in events:
         d = t.astimezone(SYD).date()
         first = o not in shown[s]
-        shown[s].add(o)
+        img_first = img not in shown_img[s]
         if w0 <= d <= w1:
             v = tally[s]
             v[0] += 1
@@ -98,6 +103,15 @@ def main():
             if first:
                 v[2] += 1
                 v[3] += hit
+            elif img_first:
+                other[0] += 1
+                other[1] += hit
+            if not first and o not in shown_win[s]:
+                pre[s][0] += 1
+                pre[s][1] += hit
+            shown_win[s].add(o)
+        shown[s].add(o)
+        shown_img[s].add(img)
     off = sorted(s for s in current if tally[s][3] / tally[s][2] < 0.80)
     raw = sorted(s for s in current if tally[s][1] / tally[s][0] < 0.80)
     fig = json.load(open(os.path.join(HERE, "figures.json")))
@@ -107,6 +121,12 @@ def main():
         all(abs(100 * tally[x["staff_no"]][3] / tally[x["staff_no"]][2] - x["detection_pct"]) < 0.051
             for x in fig["call_off"]), "first showings")
     say("call: the raw hit rate route files a different list", raw != off and set(raw) < set(off), str(raw))
+    pre_all = sum(v[1] for v in pre.values()) / sum(v[0] for v in pre.values())
+    pre_end = sum(pre[s][1] for s in current) / sum(pre[s][0] for s in current)
+    say("write-up: a new orientation of an object already shown recomputes to one decimal",
+        round(100 * other[1] / other[0], 1) == fig["pooled_other_orientation_pct"], "%.2f" % (100 * other[1] / other[0]))
+    say("write-up: objects first shown before December are detected over the stated floor when shown again",
+        min(pre_all, pre_end) * 100 > fig["pre_window_repeat_floor_pct"], "%.2f %.2f" % (100 * pre_all, 100 * pre_end))
     gl = list(csv.DictReader(open(os.path.join(GOLD, "recertification_2027.csv"), encoding="utf-8")))
     say("golden list: every endorsed officer once", sorted(r["staff_no"] for r in gl) == sorted(current), str(len(gl)))
     say("golden list: the officers marked off are the recomputed ones",

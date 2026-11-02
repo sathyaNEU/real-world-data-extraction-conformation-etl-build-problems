@@ -209,10 +209,95 @@ def make():
             z = np.where(quay, np.nan, z)
             surveys.append(dict(contractor=contractor, date=d, E=E, N=N, s=s, t=t, cls=cls, depth=z))
     W.surveys = surveys
-    make_loads(W, rng)
-    make_sampling(W, rng)
     make_distractors(W, rng)
+    tune_asks(W)
     return W
+
+
+def ask_a_truth(W):
+    out = {}
+    for r in W.loads:
+        tl = r["t_dump"] + dt.timedelta(hours=uk_offset_hours(r["t_dump"]))
+        if not (dt.datetime(2025, 10, 1) <= tl < dt.datetime(2026, 10, 1)):
+            continue
+        q = {10: 1, 11: 1, 12: 1, 1: 2, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4}[tl.month]
+        camp = 2026 if (tl.year, tl.month) >= (2026, 4) else 2025
+        wet = r["tds_true"] / W.ds_summary[(camp, r["area"])]
+        out[(r["site"], q)] = out.get((r["site"], q), 0.0) + wet
+    return out
+
+
+def ask_b_truth(W):
+    groups = {}
+    byref = {x["ref"]: x for x in W.samples}
+    for x in W.samples:
+        if x["qa"] or x["part"] not in P.DEEPENED:
+            continue
+        v = {k: x["rep"][k] for k in ("Cd", "Hg", "Pb", "Cu")}
+        dup = [q for q in W.samples if q["qa"] and q["primary"] == x["ref"]]
+        if dup:
+            v = {k: 0.5 * (v[k] + dup[0]["rep"][k]) for k in v}
+        groups.setdefault(x["part"], []).append(v)
+    return {(p, k): float(np.mean([v[k] for v in vs])) for p, vs in groups.items() for k in ("Cd", "Hg", "Pb", "Cu")}
+
+
+def edge_distance(v, unit):
+    r = v - round(v / unit) * unit
+    return unit / 2.0 - abs(r)
+
+
+def tune_asks(W):
+    """The ask layers' own random streams, then each ask figure moved clear of its rounding edge by one measurement:
+    a placement total within 200 t of the 500 t line has one ordinary load's dry solids re-read, and a metal mean
+    within 0.0015 of the 0.005 line has one sample's reported value moved by one reporting step."""
+    make_loads(W, np.random.default_rng(P.SEED + 1000))
+    make_sampling(W, np.random.default_rng(P.SEED + 2000))
+    W.nudges = []
+    for _ in range(60):
+        a = ask_a_truth(W)
+        bad = [(k, v) for k, v in sorted(a.items()) if edge_distance(v, 1000.0) < 200.0]
+        if not bad:
+            break
+        (site, q), v = bad[0]
+        r_off = v - round(v / 1000.0) * 1000.0
+        shift = (450.0 - r_off) if r_off >= 0 else (-450.0 - r_off)      # aim 450 t inside the centre
+        shift = -r_off if abs(r_off) > 400 else shift
+        target = round(v / 1000.0) * 1000.0 + (0 if abs(r_off) > 400 else (r_off / abs(r_off) * 0.0 if r_off else 0.0))
+        # move the figure towards its bin centre: re-read one Fend Endeavour load outside the revision window
+        cands = []
+        for r in W.loads:
+            tl = r["t_dump"] + dt.timedelta(hours=uk_offset_hours(r["t_dump"]))
+            if not (dt.datetime(2025, 10, 1) <= tl < dt.datetime(2026, 10, 1)) or r["vessel"] != P.DREDGER or r.get("fault"):
+                continue
+            qq = {10: 1, 11: 1, 12: 1, 1: 2, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4}[tl.month]
+            if r["site"] == site and qq == q:
+                cands.append(r)
+        r = cands[len(cands) // 2]
+        camp = 2026 if (r["t_dump"].year, r["t_dump"].month) >= (2026, 4) else 2025
+        f = W.ds_summary[(camp, r["area"])]
+        centre = round(v / 1000.0) * 1000.0
+        dwet = (centre + (260.0 if v < centre else -260.0)) - v      # well inside the present bin, off its centre
+        dtds = round(dwet * f)
+        r["tds_true"] += dtds
+        r["tds_logged"] = r["tds_true"]
+        W.nudges.append(("load", r["load_ref"], dtds))
+    else:
+        raise SystemExit("placements not clear of their edges")
+    for _ in range(200):
+        b = ask_b_truth(W)
+        bad = [(k, v) for k, v in sorted(b.items()) if edge_distance(v, 0.01) < 0.0015]
+        if not bad:
+            break
+        (part, det), v = bad[0]
+        step = 0.001 if det in ("Cd", "Hg") else 0.01
+        prim = [x for x in W.samples if not x["qa"] and x["part"] == part and not any(q["qa"] and q["primary"] == x["ref"] for q in W.samples)]
+        x = prim[0]
+        n = len([s for s in W.samples if not s["qa"] and s["part"] == part])
+        r = v - round(v / 0.01) * 0.01
+        x["rep"][det] = round(x["rep"][det] + (step if r < 0 else -step) * max(1, int(round(0.004 * n / step))), 3)
+        W.nudges.append(("sample", x["ref"], det))
+    else:
+        raise SystemExit("metal means not clear of their edges")
 
 
 def ddm_to_deg(d, m):
@@ -307,6 +392,17 @@ def make_loads(W, rng):
             r["fault"] = faulty
         key = (a, r["t_load"].year, r["t_load"].month)
         tds_month[key] = tds_month.get(key, 0.0) + (r["tds_true"])
+    # loads working through midnight at the quarter ends (dumps in the last hour of the day in UTC, the next day local)
+    for (y, m, d, n) in ((2025, 9, 30, 2), (2026, 3, 31, 2), (2026, 6, 30, 2), (2026, 9, 30, 1)):
+        cand = [r for r in loads if r["t_load"].date() == dt.date(y, m, d) and r["vessel"] == P.DREDGER]
+        if len(cand) < n:
+            base = [r for r in loads if abs((r["t_load"].date() - dt.date(y, m, d)).days) <= 3 and r["vessel"] == P.DREDGER]
+            cand = (cand + base)[:n]
+        for i, r in enumerate(cand[:n]):
+            dump = dt.datetime(y, m, d, 23, 12 + 21 * i)
+            r["t_load"] = dump - dt.timedelta(minutes=125 if r["site"] == "WD" else 80)
+            r["t_dump"] = dump
+    loads.sort(key=lambda r: r["t_load"])
     # contractor's day-trip references (local calendar day, in loading order) for the Fend Endeavour
     seq = {}
     for i, r in enumerate(loads):
@@ -323,6 +419,14 @@ def make_loads(W, rng):
         r["load_ref"] = "DDL-%02d%02d-%05d" % (ly % 100, (ly + 1) % 100, counters[ly])
     W.loads = loads
     W.tds_month = tds_month
+
+
+def reported(vals):
+    """Values as the laboratory reports them: cadmium and mercury to 0.001 mg/kg, the other metals to 0.01, dry solids 0.1 per cent."""
+    out = {}
+    for k, v in vals.items():
+        out[k] = round(v, 3) if k in ("Cd", "Hg") else (round(v, 1) if k == "DS" else round(v, 2))
+    return out
 
 
 def make_sampling(W, rng):
@@ -376,7 +480,7 @@ def make_sampling(W, rng):
         rho_b = P.RHO_W + rho_d * (1 - P.RHO_W / P.RHO_S)
         vals["DS"] = 100.0 * rho_d / rho_b
         samples.append(dict(ref="FEN26-%s" % st["station"], station=st["station"], qa=False, t=t, E=round(float(E), 1),
-                            N=round(float(N), 1), s=s_act, part=part_act, vals=vals))
+                            N=round(float(N), 1), s=s_act, part=part_act, vals=vals, rep=reported(vals)))
     # field duplicates
     dup_of = {"FEN26-QA1": "FEN26-OC-03", "FEN26-QA2": "FEN26-MR-02", "FEN26-QA3": "FEN26-IR-03", "FEN26-QA4": "FEN26-TB-03"}
     byref = {x["ref"]: x for x in samples}
@@ -385,7 +489,7 @@ def make_sampling(W, rng):
         v = {k: x * float(np.exp(0.05 * rng.standard_normal())) for k, x in p["vals"].items()}
         samples.append(dict(ref=qa, station="QA", qa=True, primary=prim, t=p["t"] + dt.timedelta(minutes=int(rng.integers(2, 6))),
                             E=round(p["E"] + float(rng.uniform(-4, 4)), 1), N=round(p["N"] + float(rng.uniform(-4, 4)), 1),
-                            s=p["s"], part=p["part"], vals=v))
+                            s=p["s"], part=p["part"], vals=v, rep=reported(v)))
     W.samples = samples
     W.dup_of = dup_of
     # area dry-solids fractions by campaign (as reported, by the area each sample was actually taken in)

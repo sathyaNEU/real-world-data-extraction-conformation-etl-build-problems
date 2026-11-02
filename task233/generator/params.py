@@ -38,8 +38,8 @@ REGIONS = [
 
 # Field Quality Team circuit: calendar days after the index day on which the team re-collects
 # in each region (moved to the next working day when it falls on a weekend or holiday)
-FQT_OFFSET = {"CR01": 1, "CR02": 1, "CR03": 2, "CR04": 9, "CR05": 6, "CR06": 10, "CR07": 6,
-              "CR08": 9, "CR09": 8, "CR10": 7, "CR11": 10, "CR12": 7, "CR13": 9, "CR14": 10}
+FQT_OFFSET = {"CR01": 2, "CR02": 3, "CR03": 2, "CR04": 6, "CR05": 6, "CR06": 6, "CR07": 6,
+              "CR08": 6, "CR09": 6, "CR10": 6, "CR11": 7, "CR12": 6, "CR13": 6, "CR14": 7}
 FQT_MULTIPLES = 4            # outlets re-collected per region per month
 FQT_INDEPENDENTS = 5
 FQT_DRAW_DAYS = 4            # the team re-collects at outlets visited in the window's first four working days
@@ -96,4 +96,4 @@ LATE_VISIT = 0.045           # outlet-months first visited after the collection 
 VISIT_WEIGHTS = {"M": [0.10, 0.15, 0.25, 0.30, 0.20], "I": [0.30, 0.25, 0.20, 0.15, 0.10]}
 SPLIT_VISIT = 0.06           # large supermarket outlet-months collected over two visits
 FQT_NOT_FOUND = 0.012        # back-checked items the team could not find on the day
-FQT_TRIES = 12               # candidate draws of each month's back-check sample (generator only)
+FQT_TRIES = 20               # candidate draws of each month's back-check sample (generator only)

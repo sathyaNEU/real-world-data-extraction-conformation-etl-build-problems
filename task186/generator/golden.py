@@ -1,6 +1,7 @@
 """The golden deliverables, computed from target/ through analysis.py: the recertification list (CSV) and the
 screening-year review (PDF) with the detection chart, the currency counts and the lane throughput."""
 import json
+import math
 import os
 import re
 
@@ -40,6 +41,18 @@ OFF_C, ON_C, RAW_C, INK_C = "#c4402f", "#2a78d6", "#9aa3aa", "#2b2b2b"
 
 def word(n):
     return WORDS.get(n, str(n))
+
+
+def evidence(T):
+    """The rates that decide what is new to an officer, over every officer and over the endorsed alone."""
+    tip = A.tip_events(T)
+    win = tip[tip["in_window"]]
+    fi = win[win["prior_img"] == 0]
+    pop = set(A.population(T))
+    pre = []
+    for w in (win, win[win["staff_no"].isin(pop)]):
+        pre.append(float(w.loc[(w["prior_obj"] > 0) & (w["prior_obj_win"] == 0), "hit"].mean()))
+    return {"other_orientation": float(fi.loc[fi["prior_obj"] > 0, "hit"].mean()), "pre_window_min": min(pre)}
 
 
 def chart(tab, off, path):
@@ -89,6 +102,7 @@ def write_all(target, golden, gen):
     os.makedirs(golden, exist_ok=True)
     os.makedirs(gen, exist_ok=True)
     T, M, asks_a, asks_b, pop_a = results(target)
+    ev = evidence(T)
     tab = M["table"].copy()
     off = set(M["golden"])
     release = json.load(open(os.path.join(target, "tip_projection_settings.json")))["library_release"]
@@ -151,19 +165,19 @@ def write_all(target, golden, gen):
                   "holding an X-ray endorsement on 30 November 2026, %d in all, is recertified for 2027."
                   % (word(len(off)).capitalize(), len(tab) - len(off)), st["p"]),
         t0, Spacer(1, 2),
-        Paragraph("Projections from each CT lane's opening to 30 November 2025 count only to decide whether an "
-                  "object had already been shown to the officer.", st["c"]),
-        Paragraph("Detection performance is read on the projections of threat objects the officer had not been shown "
-                  "before on the CT lanes, an object counting as shown once any of its three orientations had been "
-                  "projected to the officer. The screen shows the officer the threat after every projection, and "
-                  "projections of an object already shown were detected %.1f per cent of the time against %.1f per "
-                  "cent for objects new to the officer. The library is small against the projections a full-time "
-                  "officer sees in a year, so most of their projections in the screening year were of objects "
-                  "already shown and their raw hit rate mostly measures recognition of the library. %s of the "
-                  "officers coming off clear 80 per cent on the raw hit rate, %s of them full-time; the %s casual "
-                  "officers under 80 per cent on it are under on new objects too."
-                  % (100 * M["pooled_hit_repeat"], 100 * M["pooled_hit_first"], word(len(masked)).capitalize(),
-                     word(n_ft), word(len(raw_off))), st["p"]),
+        Paragraph("Projections from 1 July 2025 to 30 November 2025 count only to decide whether an object had "
+                  "already been shown to the officer.", st["c"]),
+        Paragraph("Detection performance is read on each officer's first showing of each threat object over the CT "
+                  "history from 1 July 2025, an object counting as shown once any of its orientations had been "
+                  "projected to the officer. In the screening year first showings were detected %.1f per cent of the "
+                  "time against %.1f per cent for repeat showings of an object, and an orientation new to the officer "
+                  "whose object had already been shown was detected %.1f per cent of the time. Most of a full-time "
+                  "officer's projections in the screening year were of objects already shown, so the raw hit rate "
+                  "mostly reflects repeat showings. %s of the officers coming off clear 80 per cent on the raw hit "
+                  "rate, %s of them full-time; the %s casual officers under 80 per cent on it are under on new "
+                  "objects too."
+                  % (100 * M["pooled_hit_first"], 100 * M["pooled_hit_repeat"], 100 * ev["other_orientation"],
+                     word(len(masked)).capitalize(), word(n_ft), word(len(raw_off))), st["p"]),
         Image(png, width=174 * mm, height=80.2 * mm),
         Paragraph("Source: threat image projection records, 1 July 2025 to 30 November 2026, joined to TIP library "
                   "release %s and the CT operator logins; officers from the officer register at 30 November 2026."
@@ -181,7 +195,8 @@ def write_all(target, golden, gen):
                   t1, Spacer(1, 3),
                   Paragraph("Source: lane roster and payroll leave records. An officer's X-ray time on a lane is the "
                             "time worked there divided by the officers working the lane at each moment (SCS-04 "
-                            "section 3); an officer on personal leave on a rostered day did not work.", st["c"])]),
+                            "section 3); an officer on personal leave on a rostered day records no projection that day "
+                            "and did not work.", st["c"])]),
               Paragraph("3. Throughput", st["h"]),
               Paragraph("Passenger bags each CT lane screened in each quarter of the screening year, to the nearest "
                         "thousand, for the year-end return to the security committee (SCS-04 section 6).", st["p"])]
@@ -192,9 +207,10 @@ def write_all(target, golden, gen):
     t2.setStyle(tstyle)
     story += [t2, Spacer(1, 3),
               Paragraph("Source: CT units' hourly image counts, each unit placed on the lane it stood on that day "
-                        "(the replacement of D2's unit in March 2026 and the spare unit's cover for each lane's "
-                        "retrofit included). Counts before a lane's first rostered start are the retrofitted units' "
-                        "daily performance tests and are left out. Quarters in Sydney time.", st["c"])]
+                        "(D2's unit replaced in March 2026, and the spare unit's two days on each lane from June to "
+                        "September, included). Images counted before a lane's first rostered start, when no projection "
+                        "is recorded on the lane, are not passenger bags and are left out. Quarters in Sydney time.",
+                        st["c"])]
 
     def page(canvas, d):
         canvas.saveState()
@@ -235,6 +251,8 @@ def write_all(target, golden, gen):
         "recertified_count": int(len(tab) - len(off)),
         "masked_ft_count": int(sum(1 for r in masked.itertuples() if r.employment == "Full-time")),
         "raw_off_count": len(M["r0"]),
+        "pooled_other_orientation_pct": round(100 * ev["other_orientation"], 1),
+        "pre_window_repeat_floor_pct": int(math.floor(100 * ev["pre_window_min"])),
         "pooled_first_raw": round(float(M["pooled_hit_first"]), 5),
         "pooled_repeat_raw": round(float(M["pooled_hit_repeat"]), 5),
     }

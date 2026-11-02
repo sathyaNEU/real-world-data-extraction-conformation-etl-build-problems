@@ -61,3 +61,20 @@ TITLES = {
 
 ABSENCE = 0.07          # chance an employee is off (leave or sick) on a rostered shift
 AGENCY_SHOW = 0.80      # chance a labour-hire operative on a hub's call list works a given shift
+
+# ---- ask A: the PPE vending supplier's machines (July to September 2026)
+VEND_START = dt.date(2026, 7, 1)
+VEND_END = dt.date(2026, 9, 30)
+PAIRS_PER_WORKER_SHIFT = 0.36
+RANGE_CHANGE_DAYS = (dt.date(2026, 8, 3), dt.date(2026, 8, 7))   # EP-01 moves from one pair to a pack of five
+EP_PACK_AFTER = 5
+# machine swaps between hubs: (date the machine leaves, days offline, (hub_a, hub_b))
+RELOCATIONS = [
+    (dt.date(2026, 8, 14), ("ECR", "WFD")), (dt.date(2026, 8, 14), ("LAR", "BFD")), (dt.date(2026, 8, 14), ("TRU", "KEW")),
+    (dt.date(2026, 9, 9), ("ECR", "KEW")), (dt.date(2026, 9, 9), ("LAR", "WFD")), (dt.date(2026, 9, 9), ("TRU", "BFD")),
+]
+
+# ---- ask B: audiometry (the program enrols the induct titles and team leaders)
+AUDIO_YEAR = 2026
+STS_DB = 10.0           # average worsening at 2, 3 and 4 kHz in either ear
+RETEST_DAYS = 30

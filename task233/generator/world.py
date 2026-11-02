@@ -246,15 +246,34 @@ class World:
         q = self.quotes[qid]
         return 1.0 - math.exp(-self.hazard(q["group"], q["stratum"]) * max(0, d1 - d0))
 
+    def change_frequency(self):
+        """month-on-month share of recorded prices that moved, by item group and stratum, from the
+        collector's own records (the quantity an analyst reads off the price database)"""
+        cmp, chg = {}, {}
+        by_q = {}
+        for r in self.records:
+            by_q.setdefault(r["qid"], {})[(r["y"], r["m"])] = r
+        for qid, d in by_q.items():
+            q = self.quotes[qid]
+            k = (q["group"], q["stratum"])
+            for a, b in zip(self.months[:-1], self.months[1:]):
+                ra, rb = d.get(a), d.get(b)
+                if ra is None or rb is None or ra["price"] is None or rb["price"] is None or rb["status"] != "P":
+                    continue
+                cmp[k] = cmp.get(k, 0) + 1
+                chg[k] = chg.get(k, 0) + (abs(ra["price"] - rb["price"]) > 0.004)
+        return {k: chg[k] / cmp[k] for k in cmp}
+
     def _backchecks(self):
         self.backchecks = []
         qs_by_outlet = {}
         for q in self.quotes:
             qs_by_outlet.setdefault(q["oid"], []).append(q)
-        for (y, m) in P.QUARTER:
-            for ri, r in enumerate(self.regions):
+        for ri, r in enumerate(self.regions):
+            cands = []
+            for (y, m) in P.QUARTER:
                 fd = fqt_date(r["code"], y, m)
-                best = None
+                month_c = []
                 for attempt in range(P.FQT_TRIES):
                     rng = np.random.default_rng([P.SEED, 7, y, m, ri, attempt])
                     rows, dev = [], 0.0
@@ -284,9 +303,25 @@ class World:
                                 rows.append(dict(qid=q["qid"], oid=o["oid"], region=r["code"], y=y, m=m,
                                                  fqt=fd, vday=rec["vday"], rec_price=rec["price"],
                                                  fqt_price=fp, err=rec["err"], changed=ch, expected=ex))
-                    if best is None or abs(dev) < best[0]:
-                        best = (abs(dev), rows)
-                self.backchecks.extend(best[1])
+                    month_c.append((dev, rows))
+                cands.append(month_c)
+            # the region's error rate over every price recorded in the quarter (truth)
+            pop = [x for x in self.records if self.quotes[x["qid"]]["region"] == r["code"]
+                   and (x["y"], x["m"]) in P.QUARTER and x["price"] is not None]
+            prate = sum(x["err"] is not None for x in pop) / len(pop)
+            stats = [[(c[0], sum(1 for x in c[1] if x["fqt_price"] is not None),
+                       sum(1 for x in c[1] if x["fqt_price"] is not None and x["err"] is not None)) for c in mc]
+                     for mc in cands]
+            best = None
+            for ia, a in enumerate(stats[0]):
+                for ib, b in enumerate(stats[1]):
+                    for ic, c in enumerate(stats[2]):
+                        n = a[1] + b[1] + c[1]
+                        dev = abs(a[0] + b[0] + c[0]) + abs(a[2] + b[2] + c[2] - n * prate)
+                        if best is None or dev < best[0] - 1e-12:
+                            best = (dev, (ia, ib, ic))
+            ia, ib, ic = best[1]
+            self.backchecks.extend(cands[0][ia][1] + cands[1][ib][1] + cands[2][ic][1])
 
 
 def _norm(u):

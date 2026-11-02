@@ -1,35 +1,34 @@
 {
  "task": "task271",
- "status": "SHIPPED",
- "domain": "quantitative-finance",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-27",
- "stump": "A competent analyst averages each venue's 60-second adverse move over every 2026 fill and keeps only Delvenne lit and Quintrell SI off the platform's list (1.67 and 1.73 basis points), passing Ardenwick mid and Thursgate mid (0.48 and -0.44), because the algorithms ping those midpoint books in each order's opening seconds and the same order's next fills push the mid the desk's way inside the minute; on the fills no desk execution in the share followed within the minute, the platform's lone-order case, the two midpoint books meet 3.01 and 1.89 and fail the test too.",
- "architecture": 5,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27",
-  "checks": 52
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (6 lines, ruled harmless in the note's build record)",
-  "reader": "three rounds (93bbb64c, d6135883, 7718f1c7): no decisive-step sentence, no ranking or helping file, the deciding step analytical; the realism tells fixed (share names, 1 January 2027, the plan's table)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "check_at_draw": "PASS 2026-10-27 before and after registration",
-  "heart": "WARN (repeat.question_form against task273 v3, answered at the draw)",
-  "surface": "clean"
+  "check_at_draw": "WARN 2026-11-01 before and after registration (overuse.gate_g, repeat.decision; shell.repeat read off the old prompt)",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW on the workbook's trade date, pinned)",
-  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Shipped 2026-10-27; awaiting the portal. A send-back is fixed in the generator and reshipped on the regular checks (CLAUDE.md, the STOP block).",
+ "resume": "Architecture 6 drawn and registered 2026-11-01 (Batch 3 re-root): design note, generator and pack to build; no git in this run (the main session commits).",
  "architectures": [
   {
    "architecture": 1,
@@ -58,15 +57,20 @@
   {
    "architecture": 5,
    "drawn": "2026-10-27",
-   "fate": "shipped 2026-10-27"
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-27 at 7718f1c7, no portal result)"
+  },
+  {
+   "architecture": 6,
+   "drawn": "2026-11-01",
+   "fate": "in build"
   }
  ],
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "DA21 (world and decision shape only: a nonprofit health plan's 2027 programme for part of its book; its design set aside, Tried and rejected)",
- "target_zip": "7718f1c7 (sha256)"
+ "seed": "none (architecture 6 draws its world, decision and quantity new; DA21's health-plan world set aside at architecture 1)",
+ "target_zip": ""
 }

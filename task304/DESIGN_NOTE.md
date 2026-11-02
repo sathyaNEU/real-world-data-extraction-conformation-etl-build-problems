@@ -1,4 +1,330 @@
-# task304: where the charity's 2027 find-and-treat van works, and the people it starts on hepatitis C treatment there
+# task304: which sortation hub gets Brolga Parcel Network's 2027 induct-line enclosure, sized by the workers it brings below the 85 dB(A) exposure standard
+
+Opportunity Sizing & Decision Support. Architecture 4, re-rooted 2026-11-01 at the Batch 3 queue reset: the
+find-and-treat world of architectures 2 and 3 and the building society of architecture 1 are closed, and their records
+sit below (`## Architecture 3 record`, and the card's lineage). Everything above that record is architecture 4.
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task304.json`, architecture v4, registered 2026-11-01T23:35:51Z, guard
+  WARN only. Epidemiology & Public Health / `health-burden-impact-modeling`, which serves Opportunity Sizing: the
+  burden an exposure control removes, sized pool (workers at or above the exposure standard) to realisable (the
+  workers one hub's enclosure brings below it). Shape 07 (a grid: every hub's pool and realisable), decision
+  `pick_one_of_n`, gap objective then population, decisive generator G14 (conditioned yield) with G3 and G6, Gate G
+  `method_or_model_selection`, strategy `grain_or_unit`, Layer 2 family `field_method`
+  (`own:similar-exposure-group-broken-by-informal-rotation`).
+- **Axes redrawn at the draw:** the first draft carried G3 decisive, `population_selection`, `committee_or_panel` and
+  `purchase_order_or_contract`. G3 was held by task160 inside the window (ban.pattern), and the population gap with
+  G3, G14, G6 or G2 repeated a structural triple in the last twelve; G14 (the enclosure's yield read worker by worker,
+  the job title's exposure being the unconditioned group rate) is as honest as G3 and is decisive, G3 second.
+  task475 v2 registered `population_selection` and `committee_or_panel` at 23:34Z, so the strategy is `grain_or_unit`
+  (the default's unit of exposure assessment is the job title, the decision's is the worker) and the forum is the
+  state WHS regulator, to whom the carrier's enforceable undertaking answers: the 2027 control's site is filed in the
+  undertaking's schedule, so that is where the call is put, and the forcing event is that schedule
+  (`statutory_or_regulatory_filing`). WARNs answered: `three_rules.strategy_risk` (grain_or_unit: the analyst test
+  below runs on fully read fields and filed rules and still files the wrong hub; the step is a reconstruction of each
+  worker's induct hours, not a reading), `overuse.gate_g` (two defensible exposure-assessment methods, job-based and
+  individual, the undertaking's per-worker definition pinning the second: the honest label), `repeat.question_form`
+  (how many: the call is sized by a count of workers). NOTE lines differentiated against task308 (correlated outages).
+- **World:** Brolga Parcel Network Pty Ltd, a fictional national parcel carrier with six sortation hubs in industrial
+  suburbs (Larapinta, Brisbane; Eastern Creek, Sydney; Truganina, Melbourne; Wingfield, Adelaide; Kewdale, Perth;
+  Beresfield, Newcastle). After an improvement notice the carrier gave the state WHS regulator an enforceable
+  undertaking on noise; its 2027 schedule commits one engineering control, an acoustic enclosure of one hub's induct
+  line to the supplier's design, at the hub where it brings the most workers from at or above the 85 dB(A) exposure
+  standard to below it. Personas (`guard.py names --geo au --locale en_AU --seed 304`): Melissa Hayes, hearing
+  conservation program lead (the deck's author); Dennis Simmons, automation engineer who pulls the sorter control
+  system's operator session export; Brent Roberts, national WHS manager. As-of date of the fiction: Friday 27
+  November 2026 (the session export was pulled 16 November).
+- **The call:** which hub gets the enclosure, sized by the workers it brings below the standard. Golden: Kewdale,
+  about 102 workers (pool 102, all brought below); the runner-up Truganina at 69. Forward facing: the 2027 control is
+  sized on the reference weeks' pattern of work, as the schedule files.
+- **Shape arithmetic:** six hubs times two figures (pool, brought below) 12; the hub, the runner-up and its figure 3;
+  the chart's parts (one bar per hub, the chosen hub marked, the value labels, the axis title) 4; ask A, earplug pairs
+  issued at each hub in each of July, August and September 2026, 18; ask B, each hub's workers with a standard
+  threshold shift confirmed in 2026, 6; the two files 2. 45 gradable criteria, 24 of them asks.
+- **Data-native sentence:** a parcel hub's induct line is the loudest place on the floor and its stations are staffed
+  by whoever the team leader signs on, so the hours at induct are shared out by informal rotation (half shifts with
+  the loaders at Kewdale, a sorter relieving each inductor for an hour at Truganina, a morning rotation at Eastern
+  Creek, fifteen-minute break buddies at Wingfield, labour-hire operatives on the evening second half at Beresfield),
+  and because noise exposure averages energy, not decibels, an hour at induct moves a floor worker across 85 dB(A)
+  while the job title records none of it; only the sorter control system's operator sessions, joined to people
+  through the badge register, show each worker's hours.
+- **Abstraction sentence:** "a per-person exposure that energy-averages the time each person spends in places of
+  different intensity is assigned from the role the person holds, when an informal rotation spreads the loud place's
+  hours across roles, so the count of persons over a limit before and after the loud place is treated comes only from
+  each person's own hours, read from an operational log through a dated register". Against the nearest approved
+  builds it cannot be written as theirs: task253 counts units past a floor by summing probabilities (estimation
+  uncertainty), task114 creates demand from two parties at one site, task281 (judge-approved) carries a pooled rate
+  device by device; and against task255 (a per-member dosing rate read from refill rhythm) the shared phrase "a
+  per-person quantity read from the person's own records" is the passing anatomy, not the driver: there the record
+  holds every handout and the rate is a timing, here the deciding quantity is an energy average over a time
+  allocation the job title misstates, with a threshold that makes the misallocation flip people both ways.
+- **Sources:** every file is constructed by the seeded generator in the formats the organisation's systems export
+  (provenance in `metadata.json`); the regulatory frame (the WHS exposure standard, AS/NZS 1269.1's measurement and
+  assessment) is real and named only in the documents' own voice.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, each worker's induct hours per shift in the reference weeks, has no column: the
+  HR list holds a job title, the time and attendance export a shift, the session export a badge, a station and two
+  UTC times, the badge register a holder by date; the hours are a relation between session rows, people and shifts.
+- **Link:** the signal is read through a link no key offers and no sentence invites: each session's badge placed in
+  the badge register by date to a payroll or labour-hire number, summed per person over the reference weeks' shifts
+  (local dates from UTC times in four time zones) and divided by the shifts the time and attendance export and the
+  labour-hire timesheets show the person worked; the field's job-based strategy never asks for it.
+- **Reflex:** the field's method for a workforce's exposure, AS/NZS 1269.1's job-based strategy (each job title a
+  similar exposure group at its zone's level for the shift: Inductors at the induct area for seven hours, everyone
+  else on the floor), sits at rung 0 and files Larapinta at 66 workers brought below with Kewdale at none.
+- **Back-test:** the textbook route validates: each hub's inductors and relief inductors at seven hours account for
+  the hours its induct stations were signed on within the fifteen-minute break cover (station-hours by hub and shift
+  from the session export), the survey's zone levels are the ones the job-based figures use, and the HR headcount by
+  title reconciles to the time and attendance export; the rotation shows only person by person.
+- **Second use:** every file the decisive step reads is in the pack for its own reason: the session export is the
+  sorter control system's operator record, which the job-based route itself needs to place labour-hire operatives
+  (who carry no job title) and which the supplier's design report cites as the stations-staffed basis of each
+  enclosure; the badge register is site security's, and ask B places a worker at a hub by it; time and attendance and
+  the labour-hire timesheets define who worked in the reference weeks for every route.
+- **Shock:** the movement the step recovers reads as ordinary work organisation (rotations for manual-handling relief,
+  break cover, labour-hire evening halves), not as an anomaly; sorted on headcount, induct station-hours, loudest
+  line, distinct badges signed on to induct, the job-based pool or the job-based count brought below, Kewdale is first
+  on none of them (Eastern Creek leads headcount, station-hours, loudness, distinct badges and the pool).
+- **Pins:** the WHAT is filed in the undertaking's Schedule 2 in the carrier's own genre (the reference weeks, the
+  workers, the exposure as each worker's LAeq,8h over the shifts they worked with breaks in the amenities, the 85
+  dB(A) standard, the enclosure's predicted level with every other place unchanged, the placement rule); no filed
+  sentence names a session, a badge, a rotation, a job title or an exposure group, and deleting any sentence unfixes
+  the population, window, unit or comparison, never the step.
+
+## Default path
+
+1. Take every employee who worked a shift in the reference weeks (12 October to 8 November 2026) from the time and
+   attendance export, with their job title from the HR list, and every labour-hire operative from the agencies'
+   timesheets.
+2. Group them as AS/NZS 1269.1's job-based strategy does: the induct titles (Inductor, Induction Operator, Sorter -
+   Induct and the relief inductor titles) are the induct exposure group at the induct area's level for the seven
+   working hours of the shift, every other title the floor group at the sort and dock floor's level, the hour of
+   breaks in the amenities; a labour-hire operative the session export shows at an induct station joins the induct
+   group.
+3. Compute each group's LAeq,8h from the 2026 survey's zone levels before and after the enclosure (the supplier's
+   predicted induct level), count the workers at or above 85 dB(A) and those brought below, and take the hub with the
+   most brought below.
+
+- **Ends on:** Larapinta, 66 workers brought below (Kewdale none, its inductors at 85.9 dB(A) after the enclosure).
+- **Golden:** Kewdale, 102 workers brought below.
+
+## Stump sentence
+
+A competent analyst assesses exposure by job title, AS/NZS 1269.1's job-based strategy (every inductor at the induct
+area for the shift, every other title on the floor), and files Larapinta at 66 workers brought below 85 dB(A) with
+Kewdale at none (the `Ends on:` answer); the step that lands it there is giving each worker their title's hours when
+the induct hours are shared out by rotation: at Kewdale the inductors and the loaders of the rotation split every
+shift half and half, so about 102 workers sit near 91 dB(A) before the enclosure and near 84 after it, which only each
+worker's own sessions, joined to people through the badge register, show.
+
+## Three rules
+
+- **Task type:** health-burden-impact-modeling (Epidemiology & Public Health), serving Opportunity Sizing & Decision
+  Support: an exposure control's impact sized as the workforce exposure burden it removes, pool to realisable.
+- **Domain test:** the call turns on each worker's daily personal noise exposure, LAeq,8h, the energy average of the
+  A-weighted levels of the places they worked over the shift, set against the 85 dB(A) exposure standard before and
+  after one zone is treated, the occupational exposure assessment AS/NZS 1269.1 describes; with another field's nouns
+  there is no energy average on a logarithmic scale, no exposure standard and no treated zone.
+- **Swap:** "which depot gets the new canteen, sized by the staff whose average daily meal spend drops below a
+  threshold" keeps a count over a threshold but loses the call: spend adds linearly, so a group average divides it
+  correctly, whereas an hour at a 95 dB(A) line carries more sound energy than seven hours on an 82 dB(A) floor, and
+  that non-linearity is why the job-title average misplaces people.
+- **Layer 1:** (1) the sorter control system's session export in UTC with each hub in its own zone (Brisbane +10,
+  Sydney, Melbourne and Newcastle +11 after 4 October, Adelaide +10:30, Perth +8), night shifts across midnight (the
+  sorter control system); (2) station codes in three vendors' formats (IND-07, S1-I07, INDUCT 7) and the stations
+  register mapping them (engineering); (3) automatic log-offs ten minutes after an operator walks away (the sorter
+  control system); (4) badges reissued after loss, labour-hire day badges and contractors' test sessions (site
+  security); (5) job titles worded differently at each hub (HR); (6) labour-hire timesheets in two agencies' layouts
+  keyed by agency worker number (the agencies); (7) the noise survey's tables in a PDF with each hub's own zone names
+  (the consultant). Nothing is placed to be caught; each item is asserted neutral to the call (R2.1 to R2.7).
+- **Layer 2:** estimation that fits the exposure's structure: the job-based strategy presumes every member of a
+  similar exposure group spends the group's hours at the group's place; informal rotation violates it, and because
+  LAeq,8h averages energy, the violation moves people across the standard, so each worker's own exposure has to be
+  estimated from their own hours.
+- **Decisive step:** building each worker's induct hours from the stations they were signed on to, through the badge
+  register, and their exposure from those hours, instead of assigning the job title's exposure group.
+- **Not semantics:** every field read correctly (titles, stations, badges, UTC times, levels, the undertaking's
+  definitions) still leaves the job-based strategy on Larapinta, because no field holds a worker's induct hours and
+  the job-based strategy reads every field it uses correctly; the deciding fact is a relation across sessions, badges
+  and shifts.
+- **Not rule application:** Schedule 2 defines the exposure and the standard and leaves how to know each worker's
+  places to the analyst; no filed rule names the session export, a badge, a rotation or an exposure group. Enumerated
+  family (every construction a competent analyst reaches for): job-based by title (Larapinta 66), the pool instead of
+  the count brought below (Eastern Creek 84 by title, 114 by person), everyone signed on to induct at the induct
+  group's hours (Wingfield 111), each title's average induct hours from the sessions (Kewdale at an inflated 156),
+  each worker's own hours (Kewdale 102): four distinct calls and a spread of 156 against 102 on the golden hub's
+  figure. Standing family (each worker's own hours, under every licensed convention: the automatic log-off's ten
+  minutes kept or trimmed, sessions placed by local or UTC date, shifts from the roster or from days signed on,
+  energy or arithmetic averaging over shifts): Kewdale 102 every time, spread 0 workers, asserted (SF5 to SF9). The
+  ruling-out is loud: no worker within 0.9 dB of 85 under any member of the standing family.
+- **Analyst test:** a strong analyst who reads every field and rule correctly and assesses by job title, the
+  field's job-based strategy, files Larapinta (66 workers brought below, Kewdale none); only each worker's own hours
+  from the sessions file Kewdale (102). Executed in checks.py R3a and R3b on the clean truth and the cut pack.
+- **Estimand:** the undertaking's Schedule 2 (noise_enforceable_undertaking_schedule_2027.pdf, 2.1 to 2.6): every
+  employee and labour-hire operative who worked a shift at the hub that began 12 October to 8 November 2026; each
+  worker's exposure their LAeq,8h over those shifts, the places they worked during each shift and the amenities for
+  its hour of breaks, energy-averaged; at or above the standard at 85 dB(A) or more; after the enclosure with the
+  induct area at the supplier's predicted level and every other place unchanged; the hub with the most workers
+  brought from at or above to below.
+- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure argues for a hub; the consultant's
+  survey reports zone levels and no exposure group's figure; the supplier's report predicts levels and prices, not
+  workers; no shipped artifact ranks the hubs on the decision quantity.
+- **No certified replay:** no shipped figure certifies an exposure or a count; nothing is recovered by reproducing a
+  published number.
+- **Lesson:** a similar exposure group is only as good as its homogeneity; on a logarithmic energy average an hour at
+  the loud place outweighs a day on the floor, so where rotation shares the loud hours out, the job title's exposure
+  misplaces workers on both sides of a limit, and the operational record of who was signed on where is the record of
+  exposure. No build on file reconstructs individual exposure from an operations log against a group-based
+  assessment.
+
+## Readability screen
+
+| Rung | 1 filed | 2 schema | 3 reflex | 4 control | 5 hygiene | 6 linear | 7 organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R-1 the pool, not the count brought below | the prompt asks for both | no | ranking where exposure is worst | no | no | no | no | readable |
+| R0 job-based exposure groups by title | no | job titles in the HR list | yes, the field's strategy | station-hours reconcile | no | no | no | readable |
+| R1 everyone signed on to induct in the induct group | no | the session export | a regrouping by activity | no | no | no | no | readable |
+| R2 each title's average induct hours | no | sessions by title | the job-based strategy with measured durations | no | no | no | no | readable |
+| G each worker's own induct hours (decisive) | Schedule 2 names the worker's own exposure, no sentence says how to know their places | no column holds a worker's hours | the reflex lands on R0 | no control certifies a worker's exposure | the battery never sums a person's sessions against their shifts | an energy average over a time allocation, with a threshold, is not one ratio | the session export ships as the sorter's operator record, used by R0 for labour hire | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the reference weeks | shifts that began 12 October to 8 November 2026, local date | sessions by UTC date | same counts | Schedule 2.2; asserted same counts |
+| SF2 | a worker | every employee and labour-hire operative who worked a shift in the reference weeks | employees only; contractors in | same call, figures move without labour hire | Schedule 2.2 (employees and labour-hire operatives); contractors work no shift |
+| SF3 | a worker's hub | the hub of the shifts they worked | none worked at two hubs | same | asserted: every worker's shifts are at one hub |
+| SF4 | the places a worker worked | the induct area while signed on to an induct station, the floor for the rest of the seven working hours | the job title's place | Larapinta (R0) | Schedule 2.3 (the places they worked during each shift); the sessions are where they worked |
+| SF5 | an automatic log-off's last ten minutes | kept as signed on | trimmed | same counts | asserted same counts |
+| SF6 | the shifts a worker worked | the roster's and timesheets' worked shifts | days with a session | same counts | Schedule 2.3; asserted same counts |
+| SF7 | averaging over shifts | energy average of daily LAeq,8h | arithmetic mean of daily levels; the median shift | same counts | Schedule 2.3 (energy-averaged); asserted same counts |
+| SF8 | the hour of breaks | in the amenities at its level | on the floor | same counts | Schedule 2.3 (breaks in the amenities); asserted same counts |
+| SF9 | at or above | 85.0 dB(A) or more | above 85 | same counts | no worker within 0.9 dB of 85, asserted |
+| SF10 | after the enclosure | induct area at the supplier's predicted level, every other place unchanged | the floor a decibel lower too | same call | Schedule 2.5 |
+| SF11 | the place levels | the 2026 survey's zone LAeq | the survey's highest position | same call | Schedule 2.3 (its LAeq in the 2026 survey) |
+| SF12 | the hub chosen | most workers brought below | most at or above; largest share | Eastern Creek (pool) | Schedule 2.1 |
+| SF13 | earplug pairs issued at a hub | vends from the machines standing at the hub at the time, in pairs | machines' current site; vends counted as units | figures move | the asking sentence (issued at each hub, pairs); the service visits and the range change |
+| SF14 | the month of a vend | the hub's local time | UTC | same figures | the asking sentence (local time); asserted same bins |
+| SF15 | a confirmed threshold shift | Schedule 3: 10 dB average at 2, 3 and 4 kHz in either ear against the reference, repeated by a retest within 30 days | the provider's flag; any single test | figures move | Schedule 3.1 and 3.2 |
+| SF16 | the reference audiogram | the worker's reference at the test date, rebuilt from their first test and each confirmed retest | the provider's current reference | figures move | Schedule 3.3 (a confirmed retest is the reference from its date) |
+| SF17 | the hub of a confirmed shift | the hub the worker belonged to at the retest date | the HR list's current hub | figures move | Schedule 3.4 |
+
+## Ladder
+
+| Rung | Construction | Winner | LAR | ECR | TRU | WFD | KEW | BFD |
+|---|---|---|---|---|---|---|---|---|
+| R-1 | job-based pool (at or above, by title) | Eastern Creek 84 | 66 | 84 | 51 | 39 | 54 | 46 |
+| R0 | job-based count brought below (the field's method) | Larapinta 66 | 66 | 0 | 51 | 39 | 0 | 46 |
+| R1 | everyone signed on to induct in the induct group | Wingfield 111 | 72 | 0 | 69 | 111 | 0 | 52 |
+| G | each worker's own hours | Kewdale 102 | 66 | 30 | 69 | 39 | 102 | 49 |
+
+Margins: R-1 1.27x (Eastern Creek over Larapinta), R0 1.29x (Larapinta over Truganina), R1 1.54x (Wingfield over
+Larapinta), G 1.48x (Kewdale over Truganina). Position: Kewdale is fifth on R0 (tied last) and on R1, third on R-1;
+every correction walks one way and only the decisive move reverses Kewdale. Dominance: Kewdale's edge on the decisive
+axis (102 against 0 on R0) is many times Larapinta's carried advantage (66 against 69 under G). Non-standing family:
+each title's average induct hours (R2) names Kewdale at 156, a figure outside every bin, because Kewdale's rotation
+loaders average 1.6 hours a shift as a title while about half of them do none. The pricing sequence: (1) the residue
+the filed WHAT leaves is each worker's places, a method, not a knob; (2) the move is worth 102 workers on the golden
+hub against a ceiling of 104 signed on to induct there; (3) the one-group-by routes (distinct badges at induct, station
+hours, headcount) name Eastern Creek or Wingfield; (4) no fitted parameter: every worker's hours are sums of recorded
+sessions, so the estimate's standard error is the record's own; (5) the lever (rotation) is not the ranked quantity's
+noise; (6) no change call; (7) no subset prints the hidden quantity; (8) the reflex sweep as code (checks.py R3a, L1 to
+L6) lands every reflex off Kewdale.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | employees and labour-hire operatives with a shift in the reference weeks | filed (Schedule 2.2); SF2 |
+| 2 Unit of account | the worker | filed (Schedule 2.1, 2.3) |
+| 3 Attribution window | shifts that began 12 October to 8 November 2026 | filed (2.2); SF1 asserted |
+| 4 As-of dating | the session export of 16 November, the HR list of 13 November | C1, one export of each |
+| 5 Version basis | the 2026 survey; the design report revision 2 | filed (2.3, 2.5) |
+| 6 Denominator | the shifts a worker worked | filed (2.3); SF6 asserted |
+| 7 Weighting | each worker once | filed (2.1) |
+| 8 Window length | four weeks | filed (2.2) |
+| 9 Boundary inclusivity | 85 dB(A) or more | filed (2.4); SF9, nothing within 0.9 dB |
+| 10 Rounding path | whole workers, counted after each exposure | C1 |
+| 11 Tie-break | none needed | C1, Kewdale 1.48x clear |
+| 12 Maturity and censoring | every reference shift is in the export | C1 |
+| 13 Order of operations | sessions, people, shifts, exposure, count | C1 |
+| 14 Row order | irrelevant | C1, sums |
+| 15 Duplicate resolution | no duplicated session in the reference weeks | C1, asserted |
+| 16 Identity normalisation | badges to people through the badge register by date | C1, every reference-week session places to one person (asserted) |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | hours, dB(A), workers | units in the headers |
+| 19 Code and status semantics | station codes to the induct line; T&A statuses | the stations register; WORKED only |
+| 20 Integerisation | whole workers | C1 |
+| 21 Clause scope | Schedule 2 for the call, Schedule 3 for ask B | filed |
+| 22 Forward window contents | the 2027 control sized on the reference weeks' work | filed (2.1, 2.5) |
+
+## Literal reader
+
+Executed word for word: the prompt asks how many workers the enclosure brings below the standard at each hub and
+which hub gets it; Schedule 2.1 to 2.6 fix the workers, the window, the exposure as each worker's LAeq,8h over the
+places they worked, the standard, the after-state and the placement rule. Every literal reading gives the golden once
+the reader establishes the places each worker worked, which the session export records: SF1 to SF12 show every
+convention converges or is ruled out by a quoted sentence. The job-based answer is not another reading of any
+sentence; it is the field's strategy applied where its precondition, that a job title's members share its places,
+fails in the record. The asks read the same way: the asking sentence fixes pairs, the hub where the vend happened and
+local time, and Schedule 3 fixes the threshold shift, its confirmation, its reference and its hub (SF13 to SF17).
+
+## Oracles
+
+- The job-based route reconciles each hub's induct station-hours within the break cover (a check that passes for the
+  easy route, not an oracle for the golden).
+- No shipped control certifies a worker's exposure, a count or a hub; the survey reports zone levels only.
+- Asks: the service visits record each restock's unit and site, which agree with the telemetry's offline gaps on every
+  move and with the range change on every machine; the provider's current reference is dated after the tests it
+  supersedes, an inconsistency a grader can confirm.
+
+## Ask sheet
+
+Two asks, both on files and periods the call never reads (the PPE vending supplier's telemetry, service visits and
+asset list for July to September; the audiometry provider's tests and reference audiograms with the HR transfer
+history), neither feeding the chart.
+
+**Ask A, earplug pairs issued at each hub in each of July, August and September 2026 (18 figures, nearest ten).**
+Home: the hearing program's protector supply, a measure every hub carries that the call does not turn on.
+- Primary device 1 (D2, a label stored before a silent switch): on the supplier's range change (one dated service
+  visit per machine, 3 to 7 August) product code EP-01 moved from a single pair to a pack of five pairs; the asset
+  list's product sheet shows only the current pack, so July's EP-01 vends read at five pairs are five times too many.
+  Only the service visits (restocks loaded in pairs before, packs after) show the switch.
+- Primary device 2 (D7, a record kept against the current holder): six machines were relocated between hubs in a
+  fleet rotation (14 August and 9 September); the asset list carries each machine's current site, so August's and
+  September's vends from moved machines go to the wrong hub. The telemetry's offline gap in transit and the first
+  commissioning restock at the new site date each move. The two devices' figure blocks are disjoint (July; August
+  and September).
+- Hazards: the telemetry in UTC (SF14, asserted inert at the nearest ten), earmuff vends (EM-01) beside earplugs,
+  test vends after restocks (recorded as vends by the technician, kept: issued is issued).
+
+**Ask B, each hub's workers with a standard threshold shift confirmed in 2026 (6 figures, whole counts).** Home: the
+hearing program's audiometric outcome, a measure every hub carries. A construction ask on a filed rule (Schedule 3),
+kept by a careful reader: the provider's current reference is the confirming retest for workers re-referenced in
+2026 (dated after the annual test it would judge), a retest within 30 days confirms, and the worker's hub at the
+retest comes from the HR transfer history.
+
+Pin test: the asking sentences pin the unit (pairs, workers), the grain (hub by month, hub), the population and the
+clock (local time); no pin names a range change, a relocation, a reference or a transfer. The main population carries
+zero device rows: no vending or audiometry file is read by the call, and the reference weeks' session, badge and
+shift rows carry no ask device (asserted in checks.py A0).
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, every hub and month (range change in July, relocations in August and September) | reads EP-01 at the product sheet's five pairs and every machine at its current site | miss |
+
+Ask B is kept by the cracker and counted in the leakage below.
+
+Pair ceiling: 42.3 ((38 + 7 + 55 x 0.25) and (5 + 7 + 55 x 0.25), averaged)
+Mirror leakage: 25.0 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Architecture 3 record (re-rooted 2026-11-01 at the Batch 3 queue reset)
+
+### task304: where the charity's 2027 find-and-treat van works, and the people it starts on hepatitis C treatment there
 
 Wave 6, Opportunity Sizing & Decision Support. Architecture 3, re-rooted 2026-10-28 at stage 1 after architecture 2
 came back from the portal FAILED_TO_STUMP (both responses on the golden). The world, the charity, its people and the four
@@ -11,9 +337,9 @@ the card's lineage and in `
   needle exchanges closed by PH-12 and the pilot pharmacies' 0.025 yield, the hostels by 737 of the 905 residents already
   tested in 2026). Its housekeeping notes answered: this note's deliverable name and the card's answer.
 
-## Tried and rejected`.
+### Tried and rejected`.
 
-## Draw
+### Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task304.json`, v3, registered 2026-10-28T04:31Z. Guard WARN after
   differentiation lines against task128 v3 (test.same_puzzle_older), task98 v1 (test.same_driver_older) and task141 (a
@@ -55,7 +381,7 @@ the card's lineage and in `
   chart (its parts), and the clinics' confirmed cures by half-year (10). Deliverables `van_2027_trustee_paper.docx`,
   `clinic_cures_2024-25.xlsx`.
 
-## Default path
+### Default path
 
 1. From the van's tablet export take each setting's 2026 funnel: the share of people offered who took a test, the
    people found (RNA detected) per test, and, from the treatment register, the share of people found who started
@@ -71,7 +397,7 @@ the card's lineage and in `
 - **Ends on:** the needle exchange pharmacies' new registrants, about 130 people started.
 - **Golden:** Fenwold Recovery's new entrants, about 70 people started (111.3 found, 68.7 started).
 
-## Stump sentence
+### Stump sentence
 
 A competent analyst carries the van's 2026 yields per test to each setting's 2027 pool and files the needle exchange
 pharmacies' new registrants at about 130 starts (the `Ends on:` answer); the step that lands it there is treating 2026
@@ -79,7 +405,7 @@ as 2027 in two places: pharmacist test and treat reaches every needle exchange p
 pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.168 elsewhere, and 737 of the hostels'
 905 residents were tested by the van in 2026, so the hostel lists are not 2027's pool of infections.
 
-## Three rules
+### Three rules
 
 - **Task type:** screening-diagnostic-policy-evaluation (Epidemiology & Public Health), serving Opportunity Sizing &
   Decision Support: a screening programme placed and sized by its yield, pool to realisable (people met, tested,
@@ -136,7 +462,7 @@ pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.1
   a pilot (task130, task144, task175) or an analog regime (task141); none taught depletion by the programme's own
   first round.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear | 7 dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
@@ -145,7 +471,7 @@ pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.1
 | R2 the hostels' first round: the residents the van tested in 2026 carry only new infections in 2027 (decisive) | none: no sentence says the hostels were swept or what 2027's pool holds; the plan takes the 30 September residents as January's | no tested column on the lists; the network pseudonym is on every person-level file | not among the opponent's reflexes (pool to visible attributes, trend, shrink, stratify, analog, back-test): the monthly hostel yield is flat because the van moved hostel by hostel | none: no second round anywhere in the pack | no: no sweep joins a resident list to a test log | no: a person-level join, a split and two rates | no: the lists ship because a hostel's pool is its residents | silent |
 | B alone (side route) | none | as R2 | as R2 | none | no | no | no | readable |
 
-## Semantic fork table
+### Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -170,7 +496,7 @@ pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.1
 | SF19 | a person | one van contact per person per setting | not computed | not computed | asserted |
 | SF20 | the tablet's clock | UTC, converted to local dates | UTC dates | same printed figures | the column recorded_at_utc; asserted (R2c) |
 
-## Ladder
+### Ladder
 
 | Rung | Correction | AP | HH | DS | NSP | Named | Margin |
 |---|---|---|---|---|---|---|---|
@@ -186,7 +512,7 @@ starts (8 printed units), the first round moves the hostels 107.8 to 40.5 (7 pri
 shipped record (checks.py): raw 2026 starts, starts per rota day, found per test, starts per test and the default path
 all land off the call; arrivals alone for every setting with the rollout lands it only against plan section 5.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading chosen | Closure move |
 |---|---|---|---|
@@ -213,7 +539,7 @@ all land off the call; arrivals alone for every setting with the rollout lands i
 | 21 | Scope of a stated clause | "own rates there in 2026": acceptance and start share, per setting | pinned (plan 4); SF16 |
 | 22 | Forward window contents | twelve months' arrivals month for month; the rollout from 1 April | pinned (plan 5, PH-12); SF10, SF12 |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, the prompt and the plan fix the setting by people started in 2027 over the 30 September
 residents and twelve months' arrivals at each setting's own 2026 acceptance and start share, the pathway fixes a cure,
@@ -222,14 +548,14 @@ with both corrections files Fenwold Recovery's new entrants at the same printed 
 asserted), and the easy route reaches its wrong answer by an easy method on the same literal estimand, never by
 another reading.
 
-## Oracles
+### Oracles
 
 none: no shipped control ranks the settings or ties only under the golden. The hostels' returns count residents and
 arrivals and say nothing of testing; the pharmacy list carries no test-and-treat column; the register's pharmacist
 courses show where pharmacists prescribe, not what the van finds there; the homeless health clinic's results give a
 new-infection rate that moves no printed figure (SF14).
 
-## Ask sheet
+### Ask sheet
 
 - **Ask A (10 figures):** confirmed cures among courses that ended in each half-year, October 2024 to September 2025,
   at each of the five clinics. H18 home: the downstream audit of the starts the van feeds (a start is worth funding
@@ -270,7 +596,7 @@ new-infection rate that moves no printed figure (SF14).
 - **Pair ceiling:** 28.5 (cracker on the call 45.0, mirror off it 12.0); both responses on the call 45.0.
 - **Mirror leakage:** 0.0 per cent.
 
-## Pre-ship check
+### Pre-ship check
 
 Stage 3 gates on target.zip 6ccd2099 (2026-10-28): checks.py 109 assertions (input gates, R1, R3a to R3c, the cheap
 routes, SF1 to SF20, R2a to R2h, the distractors deleted, every printed figure 3.7 or more from its bin edge, the ask's
@@ -449,3 +775,20 @@ task122, task136 and task264 on corpus-top-percent surface similarity, and task1
   is handed is a record a solver reads; the decisive step has to be about a pool no file shows. Spent; re-rooted to
   architecture 3 in the same world: two independent corrections to the 2027 pool the van will meet.
 
+- Architecture 3 as shipped (2026-10-28, a determinism return reported afterwards): re-rooted 2026-11-01 at the Batch 3
+  queue reset with the find-and-treat world closed (one architecture per world); its card identity is lineage v3.
+- Architecture 4 draw, candidates dropped before a card was registered (2026-11-01), one clause each: a nursery fluoride
+  varnish programme sized by each child's applications on the dental team's visit days (an attendance overlap a reader
+  computes once it looks, and co-presence sits close to task114); an inpatient tobacco treatment service sized from a
+  point-prevalence census reweighted to admissions (the census's inverse-stay weights fork the flow estimate, and stock
+  against flow is architecture 3's first-round depletion in other nouns); a high-intensity-user service sized on next
+  year's attendances (regression to the mean is a reflex once seen, and the per-department replay is a grouping
+  choice); winter gritting routes sized by collisions on freezing surfaces read through a thermal map (the map is a
+  dedicated organ, readable); offload nurses sized by concurrent ambulance waits (a filed nurse capacity makes the
+  replay rule application); CPE admission screening sized by bay-mates' exposure (the transmission model's family
+  reopens Gate C).
+- First architecture 4 world (2026-11-01, before any file was cut): short induct teams were covered by a handful of
+  floor loaders, who sat within 0.1 to 0.3 dB of 85 dB(A) at Eastern Creek, Larapinta and Beresfield, because on a
+  96.6 dB(A) line one cover shift in twenty puts a floor worker at 85.4; spares raised, short teams covered from the
+  rotation group first and otherwise by the floor loader who has covered least, and every worker now clears 85 by 0.9
+  dB or more under every licensed convention.

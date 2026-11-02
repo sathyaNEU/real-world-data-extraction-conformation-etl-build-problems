@@ -3,9 +3,9 @@
  "status": "BUILD",
  "domain": "human-factors-ergonomics / safety-incident-error-analysis / anomaly-detection",
  "objective": "anomaly-detection",
- "stage": 3,
- "stage_name": "build",
- "updated": "2026-11-01",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-02",
  "stump": "A competent analyst takes each officer's TIP hit rate over the screening year and withdraws three casual officers, SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is reading the hit rate as detection when four in five of a full-time officer's projections show an object they have already been shown and told was a threat, which officers detect 99.5 per cent of the time, so six full-time officers who detect only 56 to 74 per cent of objects new to them clear 80 per cent on recognition.",
  "architecture": 2,
  "loops": 0,
@@ -15,19 +15,19 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK; one sweep-4 line on SCS-04, ruled harmless in the design note), asof 2026-12-02",
-  "reader": ""
+  "reader": "no leak; question 6 analytical; minor note: the projection settings JSON carries one probability and one category list on every lane (left as is, target/ kept byte-identical)"
  },
  "duplicate_check": {
   "heart": "WARN (driver.near 0.13 task190 arch 3 lineage; people.first older builds; no BLOCK), 2026-11-01",
   "nearest": "task190 (3, lineage) 0.13 driver; surface promoted task462 0.101, task172 0.100, task271 0.100 (differentiation lines on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "DETERMINISTIC; SOLUTION_WRONG in wording only (Gate F high, Gate G statistical_rigor / analytical_non_defect, Gate H pass; three Gate C notes resolved by evidence)",
+  "disposition": "FIX_NOW applied 2026-11-02 in writeup.py and golden.py only; re-judge owed",
   "report": ""
  },
  "returned": [],
- "resume": "Stage 3 complete for architecture 2 (airport X-ray screening recertification on threat image projection, fiction as-of 2026-12-02). Next: stage 4 in the main session, the leak reader and the determinism judge spawned together at medium; fix every finding in the generator in one pass, re-run the free gates, then ship.",
+ "resume": "Re-judge (determinism judge, medium) on target.zip b4586dea after the 2026-11-02 wording FIX_NOW; the leak reader need not re-run (no document under target/ and no prompt sentence changed). Then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -57,5 +57,15 @@
   "guard_check": "WARN, no BLOCK",
   "guard_heart": "WARN, no BLOCK",
   "guard_surface": "exit 0, three surface pairs promoted for author adjudication, people WARN only"
- }
+ },
+ "rounds": [
+  {
+   "date": "2026-11-02",
+   "source": "stage 4 judge FIX_NOW (wording)",
+   "fix": "write-up and goldens only: feedback wording no file records removed; 'retrofit' replaced by what the unit register and counts show (KX6-0416 the register's spare, the two days each lane's own unit counted nothing); critical component 2 and step 3 state the exact definition (each officer's first showing of each threat object, any orientation counting, over the CT history from 1 July 2025) with the deciding rates (88.5 first, 99.5 repeat, 99.3 new orientation of a shown object, over 99 for objects first shown before December); steps 5 and 6 cite the TIP export's silence on leave days and before rostered starts; nothing added to the prompt or any filed document",
+   "graded_figures_moved": "none (call, components, 12 currency and 28 throughput figures unchanged; two evidence keys added to figures.json)",
+   "target_zip_sha256_prefix": "b4586dea (target/ byte-identical)",
+   "gates": "checks 72/0, verify 14/14, two builds byte-identical, figures_check 54/0, precut 61/0/0, voice-check PASS, leak.py REVIEW unchanged"
+  }
+ ]
 }

@@ -174,8 +174,10 @@
  "others_at_least_pct": 83,
  "pooled_first_pct": 88.5,
  "pooled_first_raw": 0.88492,
+ "pooled_other_orientation_pct": 99.3,
  "pooled_repeat_pct": 99.5,
  "pooled_repeat_raw": 0.99496,
+ "pre_window_repeat_floor_pct": 99,
  "raw_off_count": 3,
  "recertified_count": 81,
  "standard_pct": 80

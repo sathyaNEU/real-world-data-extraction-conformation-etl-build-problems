@@ -1,99 +1,96 @@
 {
   "task": "task271",
-  "architecture": "v5 (Fenmarsh Wealth's 2027 venue list: which of the central dealing desk's eight execution venues the wealth platform's dealing orders, each sent whole to one venue from 4 January 2027, must not use under the order execution policy's adverse-move test, each venue's move in the minute after a fill read from the desk's 2026 fills, which sat inside parent orders sliced into child orders)",
-  "drawn": "2026-10-27",
-  "slot_note": "re-rooted in a fresh world on 2026-10-27 at the architecture 5 draw; architecture 4 moved to lineage; no seed lends anything to architecture 5, whose world, decision and quantity are drawn new",
-  "domain": "quantitative-finance",
-  "subdomain": "market-microstructure-execution-cost",
-  "client_domain": "quantitative-finance",
-  "niche": "a UK asset manager's venue list for its wealth platform's in-house dealing orders, each venue's adverse move in the minute after a fill read from a year of the central desk's algorithmic fills",
+  "architecture": "v6 (Pelloran Plateau Fisheries Society's 2027 stocking tiers: which of its lakes go into the high-use catchable tier on 2026 open-water angler-hours per hectare, the creel survey's flight counts read against each lake's own hour-by-hour presence from the ramp interviews)",
+  "drawn": "2026-11-01",
+  "slot_note": "re-rooted in a fresh world on 2026-11-01 at the Batch 3 queue reset; architecture 5 moved to lineage; no seed lends anything to architecture 6, whose world, decision and quantity are drawn new",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "sample-design-allocation-weighting",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a lake-stocking society's creel survey: each stocked lake's open-water angler-hours per hectare, expanded from aerial boat and shore counts flown at route-fixed hours and read against the hours anglers actually fish each lake, for the 2027 catchable-trout tier",
   "objective": "descriptive-distribution",
-  "shape": "10",
+  "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Keep Ardenwick mid, Delvenne lit, Thursgate mid and Quintrell SI off the platform's venue list (3, 2, 2 and 2 basis points); Wexcombe, Ardenwick lit, Delvenne Midpoint and Brindock SI stay on (0, 1, 1 and 0)",
+  "answer": "",
   "answer_source": "task271/submission.md",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
-    "E"
+    "none"
   ],
   "generators": [
-    "G14",
-    "G3"
+    "G7",
+    "G14"
   ],
-  "gate_g": "decomposition_attribution",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": true,
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds the 2026 fills from the cost provider's export correctly (one row per execution, the brokers' busts out, the closing auction out, Thursgate's two segment codes joined) and averages each venue's 60-second adverse move over every fill keeps off Delvenne lit and Quintrell SI, because the averages of Ardenwick mid and Thursgate mid, the midpoint books the algorithms ping in each order's opening seconds, sit at 0.48 and -0.44 basis points against the policy's 1.5; those fills were followed within the minute by the same order's next fills, which pushed the mid the desk's way, and the platform's orders, each sent whole and filled in one execution, carry no such following trades, so read on the fills no desk execution in the share followed within the minute the two midpoint books meet 3.01 and 1.89 and fail the test too.",
-  "domain_test": "The deciding quantity is each venue's adverse selection, the move of the mid against the order in the minute after a fill, which execution analysis measures by markouts and separates from the trader's own price impact with an impact model; replacing it with the raw markout average, or carrying it to another field's nouns (wards for venues), loses the separation of a counterparty's information from the measuring desk's own continuing trading that decides the call.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:venue-markouts-net-of-the-desks-own-continuing-trading",
+  "analyst_test": "A strong analyst who turns every flight count into anglers correctly (boats times the lake's anglers per boat from the interviews, plus shore anglers) and expands it the creel survey's standard way, the mean count times the 17-hour fishing day by weekday and weekend day, puts the general-regulation family lakes into the high-use tier and leaves the fly-only lakes out, because the flights see every lake only between about 09:40 and 17:10, the family lakes' busiest hours and the fly-only lakes' quietest; read against each lake's own hour-by-hour presence from the ramp interviews' start and end times, the fly-only lakes clear 500 angler-hours per hectare and the family lakes fall under it.",
+  "domain_test": "The call turns on each lake's season angler-hours, the creel survey's effort estimate made by expanding instantaneous angler counts to the fishing day and the season, the survey statistician's time-location design; replaced by a count of visits, a catch total or the fish stocked, nothing that decides the tier is left to estimate, and with no counted hours standing for a whole fishing day the step that moves the tier has nothing to act on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:route-fixed-instantaneous-counts-expanded-by-each-lake-hour-by-hour-presence",
   "layer1": [
-    "two brokers' fill files in their own layouts (one in pence with UTC times, one in pounds with London local times across the BST change)",
-    "venue codes in one broker's file and venue names in the other, with a venue's code changed mid-year",
-    "busted and corrected executions as reversal rows",
-    "drop-copy duplicates of the same execution in both brokers' files",
-    "the transaction cost provider's reference IDs against the brokers' execution IDs",
-    "closing auction fills with no continuous mid after them",
-    "a share consolidation moving prices and quantities mid-year",
-    "trading days with an early close"
+    "flight counts keyed by the floatplane operator's lake numbers while the society's register uses its own lake codes and names (two lakes renamed in 2025)",
+    "the operator's flight log in UTC beside counts and interviews in Pacific daylight time",
+    "ramp interview forms keyed in twice by two summer staff, with duplicated parties",
+    "reported start times heaped on the hour and half hour, some given as hours fished",
+    "catch rows one per fish with species codes that changed in July",
+    "the hatchery's stocking ledger in kilograms by truck load, fish per kilogram on a separate sample sheet",
+    "lake areas in acres in the 1990s survey sheets and hectares in the register",
+    "skipped lakes on cloudy flights coded as blanks"
   ],
-  "stakeholder_role": "head of dealing, preparing the venue list paper for the wealth board",
-  "role_family": "operations_director",
-  "scoring_unit": "per settled transaction",
+  "stakeholder_role": "the society's stocking program manager, who takes the 2027 stocking plan to the board",
+  "role_family": "programme_officer",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "hessenby_tca_executions_2026-01-02_to_2026-10-30.csv",
-    "rows": 172960,
-    "entity": "one execution as the transaction cost provider recorded it, with the consolidated mid at the execution and 1, 5, 30, 60 and 300 seconds after",
-    "grain": "execution",
+    "file": "ramp_interviews_2026.csv",
+    "rows": 0,
+    "entity": "one angling party interviewed as it left a lake at the ramp or the access road",
+    "grain": "party x trip",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "financial_institution",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "United Kingdom",
-    "currency": "GBP",
-    "org_type": "asset manager with a wealth platform for retail clients",
+    "geography": "Canada, British Columbia (a fictional interior plateau)",
+    "currency": "CAD",
+    "org_type": "non-profit lake-stocking society with its own hatchery",
     "invented_names": [
-      "Fenmarsh Investment Management",
-      "Fenmarsh Wealth",
-      "Wexcombe Stock Exchange",
-      "Ardenwick MTF",
-      "Delvenne MTF",
-      "Thursgate MTF",
-      "Brindock Securities",
-      "Quintrell Markets",
-      "Ashlowe Securities",
-      "Pemberwick & Co",
-      "Hessenby Analytics",
-      "Gresmere Stockbrokers"
+      "Pelloran Plateau Fisheries Society",
+      "Pelloran Plateau",
+      "Quillet Creek Hatchery",
+      "Vellacott Air"
     ],
     "people": [
-      "Owen Porter",
-      "Declan Davies",
-      "Oliver Hamilton"
+      "Katrina Newman",
+      "Luis Thomas",
+      "Robin Fields"
     ]
   },
   "deliverables": [
-    "venue_list_board_paper_2027.pdf",
-    "venue_review_2027.xlsx"
+    "stocking_tiers_2027.xlsx",
+    "stocking_board_note_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is how far a measured level moves against an actor in a fixed window after each of its events at each channel, for events that will stand alone, read from a record whose events mostly sat inside sequences of the same actor's events, each later event pushing the level the actor's way inside the earlier events' windows; channels used at the start of the sequences look benign on the raw average, and only the events with none of the actor's own events in their window, or each move net of the actor's following volume, carry to the lone events the decision governs.",
-  "driver_concrete": "Each of Fenmarsh's eight execution venues' average adverse move in the 60 seconds after a fill, as the wealth platform's 2027 dealing orders (each sent whole to one venue and filled in one execution) would meet it, read from the central dealing desk's 2026 fills, most of which sat inside parent orders sliced into child orders whose later fills pushed the mid the desk's way inside the earlier fills' minute; the midpoint books the algorithms ping in each order's opening seconds (Ardenwick mid and Thursgate mid) look benign on the every-fill average and exceed the policy's 1.5 basis points only when read on fills no desk execution in the share followed within the minute, or net of the desk's following volume.",
-  "stump": "A competent analyst averages each venue's 60-second adverse move over every 2026 fill and keeps only Delvenne lit and Quintrell SI off the platform's list (1.67 and 1.73 basis points), passing Ardenwick mid and Thursgate mid (0.48 and -0.44), because the algorithms ping those midpoint books in each order's opening seconds and the same order's next fills push the mid the desk's way inside the minute; on the fills no desk execution in the share followed within the minute, the platform's lone-order case, the two midpoint books meet 3.01 and 1.89 and fail the test too.",
+  "question_form": "where",
+  "driver": "The decisive quantity is a day's total presence at each unit, seen only as head-counts taken at set hours that an observer's circuit fixes for each unit, while presence follows each unit's own hour-by-hour pattern that only the start and end times of completed visits show; multiplying each count by the length of the day carries the counted hour's presence to every hour, overstating units whose visitors come at the counted hours and understating units whose visitors come at hours no count sees.",
+  "driver_concrete": "Each Pelloran Plateau lake's 2026 open-water angler-hours per hectare, the anglers fishing it in each hour from 05:00 to 22:00 summed over the season, estimated from the survey flights' boat and shore counts (made between about 09:40 and 17:10 in route order) and the ramp interviews, whose start and end times show the fly-only lakes fished at dawn and dusk and the family lakes through the middle of the day.",
+  "stump": "A competent analyst expands every flight count the creel survey's standard way (the mean count times the 17-hour fishing day, by day type) and puts the general-regulation family lakes into the high-use tier while leaving the fly-only lakes out, because the flights pass every lake between about 09:40 and 17:10, the family lakes' busiest hours and the fly-only lakes' quietest; read hour by hour from the interviewed parties' start and end times, the fly-only lakes' dawn and evening anglers carry them over 500 angler-hours per hectare and the family lakes fall under it.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task451": "task451 completes each unit's period total from how amounts arrive after a handler's delay changed; this build observes nothing late: complete head-counts taken at route-fixed hours are expanded to the whole fishing day by each lake's own hour-by-hour presence from completed trips.",
+    "task135": "task135 recovers a long-horizon variance from components struck at different times of day through lead and lag covariances; this build sums presence over the hours of one day from counts at fixed hours, each count scaled by the share of the day's anglers present at its hour, with no variance and no pricing.",
+    "task161": "task161 draws a stock build down at each holder's steady share of use; this build has no stock and no drawdown: a day's angler-hours are read from counts at fixed hours and each lake's own presence profile, and the season total per hectare is set against a tier line.",
+    "task460": "task460 weights interval-by-interval marginal changes by a new source's operating profile to price what that source displaces; this build weights nothing at a margin: it expands instantaneous counts to the day by the hour-by-hour presence completed trips show and grades each lake's season use per hectare."
+  },
   "lineage": [
     {
       "domain": "healthcare-delivery-health-economics",
@@ -218,8 +215,32 @@
       "driver_concrete": "Each of three candidate townships' non-weather water claims per 1,000 house-years from the frequency model that best predicts Halverstead Mutual's 2025 claims when fitted on 2023 and 2024 (the mutual's Frequency Model Standard), where homes in the Tamswold County Water Authority's Valley zone (fed straight from the Ostrander Ridge Tank, 96 to 126 psi at the services) claim at 2.31 times the Upper zone: the zone, set for each home by placing its parcel point in the authority's zone map, wins the test, and each township's homes are charged the refitted foundation and zone rates, not the characteristics on the assessor roll or the experience of the book's nearest township.",
       "stump": "A competent analyst back-tests models on the homes' recorded characteristics, keeps foundation alone on 2025, carries it to each township's assessor roll and names Brookmere (18 claims per 1,000 house-years), whose slab-built homes look safest; only a model carrying the water authority's supply zone, which wins the 2025 test outright (3,169.4 against 3,252.4) and finds 2,192 of Brookmere's 2,584 homes in the high-pressure Valley zone, names Dorrance Hill (21).",
       "fate": "spent 2026-10-26 at stage 4 round 1: both scored readers searched standard 3's five characteristics and filed Brookmere, the judge NOT_DETERMINISTIC and SEND_BACK on the unfiled candidate set (filing the zone names the step), and both readers took all ten ask figures"
+    },
+    {
+      "architecture": "v5 (Fenmarsh Wealth's 2027 venue list: which of the central dealing desk's eight execution venues the wealth platform's whole orders must not use under the order execution policy's 60-second adverse-move test, read from the desk's 2026 algorithmic fills)",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-27, no portal result; the venue-list world is closed with it)",
+      "driver": "The decisive quantity is how far a measured level moves against an actor in a fixed window after each of its events at each channel, for events that will stand alone, read from a record whose events mostly sat inside sequences of the same actor's events, each later event pushing the level the actor's way inside the earlier events' windows; channels used at the start of the sequences look benign on the raw average, and only the events with none of the actor's own events in their window, or each move net of the actor's following volume, carry to the lone events the decision governs.",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "designation_set",
+      "stump_strategy": "causal_design",
+      "subdomain": "market-microstructure-execution-cost",
+      "domain": "quantitative-finance"
     }
   ],
-  "notes": "Architecture 5 drawn 2026-10-27 in a fresh world; architecture 4 moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task118 v2, task157 v2, task204): forum committee_or_panel to board_of_directors (the wealth subsidiary's board approves its order execution policy and venue list before dealing moves in-house), forcing event launch_or_rollout to cutover_or_migration (the platform's client dealing moves from a third-party broker to the central desk on 4 January 2027, the honest clock), role operations_director to research_desk (the requester runs execution research), context artifact filed_standard to monitoring_export (the stakeholder's working file is the transaction cost provider's export), strategy decomposition_attribution and causal_design (both banned in the window) to population_selection (which 2026 fills stand for the platform's lone orders, the scope of the evidence). Gate G stays decomposition_attribution: the post-fill move is correctly recorded and the decision turns on assigning it to the counterparty or to the desk's own continuing trading. Re-checked after the pull on 2026-10-27: task273 v3 and task141 v4, registered earlier the same morning by other sessions and pushed after this card's first check, entered the window, and task141 v4 carries research_desk and population_selection (ban.role, ban.strategy). Both redrawn to the honester remaining labels: the requester is the head of dealing, who owns the router's venue lists (operations_director), with the head of execution research doing the analysis; and the strategy is causal_design (interference: the desk's own following trades in the same stock move the measured outcome of each earlier fill, so the venue's effect on a lone order is read on a comparison that holds them out). The question form 'which' repeats task273 v3 (WARN): the board names a set of venues.",
-  "registered": "2026-10-27T09:11:28Z"
+  "lineage_shells": [],
+  "notes": "Architecture 6 drawn 2026-11-01 at the Batch 3 queue reset in a new world, a new domain and a new shell (question form where, the deliverable pair xlsx and pptx); architecture 5 (Fenmarsh's venue list) moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task233, task134 v2, task485 v5): the forcing event season_or_peak to statutory_or_regulatory_filing (the society files its 2027 stocking application, each lake's tier and numbers, with the province by 1 December 2026; season_or_peak is banned by task485 v5 and the filing is what fixes the date), the deliverable pair pptx+xlsx (task485 v5) to docx+xlsx, the persona Edwin Weiss (people.first against task246) to Luis Thomas (Daniel Cline also warned on people.first).",
+  "registered": "2026-11-01T23:58:51Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "pdf+xlsx"
+  }
 }
