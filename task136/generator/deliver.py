@@ -1,6 +1,6 @@
 """The golden deliverables: feeder_upgrade_2029.xlsx (the call, the forecast by feeder, the Solar Streets estimate, the
-DER Register figures by feeder) and yarrabin_pv_vs_hosting_2029.png, plus generator/figures.json, every figure computed
-from the shipped pack (calc.py)."""
+energy each feeder head sent back to the zone substation over winter 2026) and yarrabin_pv_vs_hosting_2029.png, plus
+generator/figures.json, every figure computed from the shipped pack (calc.py)."""
 from __future__ import annotations
 
 import json
@@ -41,7 +41,8 @@ def compute(target):
         cp = sum(C.n_between(C.suburb_first(L, s, "received_date"), op, end) for s in comp)
         cq = sum(C.n_between(C.suburb_first(L, s, "received_date"), op - pd.DateOffset(months=12), op) for s in comp)
         ratios[x["key"]] = dict(comp=comp, post=cp, pre=cq, end=(end - pd.Timedelta(days=1)).date())
-    asks = dict(sites=C.ask_d(L), first=C.ask_a(L), storage=C.ask_b(L), inverter=C.ask_c(L))
+    factors, fit_rms = C.bay_factors(L)
+    asks = dict(winter=C.reverse_flow(L), factors=factors, fit_rms=fit_rms)
     return dict(L=L, base=base, camps=camps, pools=pools, fc=fc, default=default, reflex=reflex, prepost=prepost,
                 rate=C.rate_of(camps), gross=C.rate_of(camps, "systems"), se=C.ratio_se(camps), ratios=ratios,
                 asks=asks, openings=ops)
@@ -93,9 +94,12 @@ def figures(c):
         "default_path": path_block(c["default"]),
         "reflex_path": path_block(c["reflex"]),
         "prepost_path": path_block(c["prepost"]),
-        "der": {f: {"active_sites": a["sites"][f], "first_lodged_fy2025_26": a["first"][f],
-                    "inverter_kw": "{:,}".format(ten(a["inverter"][f])),
-                    "storage_kwh": "{:,}".format(ten(a["storage"][f]))} for f in K.FEEDERS},
+        "reverse_flow": {f: {"june_mwh": "{:,}".format(ten(a["winter"][f][0])),
+                             "july_mwh": "{:,}".format(ten(a["winter"][f][1])),
+                             "august_mwh": "{:,}".format(ten(a["winter"][f][2])),
+                             "largest_mw": "%.1f" % r1(a["winter"][f][3]),
+                             "bay_factor": "%.2f" % round(a["factors"][f], 2)}
+                         for f in K.FEEDERS},
     }
     return out
 
@@ -271,25 +275,33 @@ def write_book(path, c, figs):
         "after the window (not yet treated). Expected without campaign = suburb's first applications in the 12 months "
         "before x comparison suburbs' window / 12-month ratio.")).font = Font(size=9, italic=True)
 
-    d = wb.create_sheet("DER Register")
-    d["A1"] = "Active DER Register sites by feeder, extract as at 31 August 2026"
+    d = wb.create_sheet("Reverse flow")
+    tops = sorted(K.FEEDERS, key=lambda fd: -sum(c["asks"]["winter"][fd][:3]))[:2]
+    assert all(min(c["asks"]["winter"][fd][:3]) > 0 for fd in K.FEEDERS)
+    d["A1"] = ("Every Yarrabin feeder sent energy back to the zone substation in each month of winter 2026, %s and %s "
+               "the most" % tuple(tops))
     d["A1"].font = Font(bold=True, size=11)
-    _head(d, 3, ["Feeder", "Active sites", "Sites first lodged in FY2025-26", "Inverter capacity (kW)",
-                 "Battery storage (kWh)"], [9, 12, 15, 14, 14])
+    _head(d, 3, ["Feeder", "June (MWh)", "July (MWh)", "August (MWh)", "Largest half-hour reverse flow (MW)",
+                 "Historian factor"], [9, 12, 12, 12, 16, 11])
     for i, fd in enumerate(K.FEEDERS, 4):
-        vals = [fd, figs["der"][fd]["active_sites"], figs["der"][fd]["first_lodged_fy2025_26"],
-                ten(c["asks"]["inverter"][fd]), ten(c["asks"]["storage"][fd])]
+        rf = figs["reverse_flow"][fd]
+        vals = [fd, ten(c["asks"]["winter"][fd][0]), ten(c["asks"]["winter"][fd][1]), ten(c["asks"]["winter"][fd][2]),
+                r1(c["asks"]["winter"][fd][3]), float(rf["bay_factor"])]
         for j, v in enumerate(vals, 1):
             cc = d.cell(row=i, column=j, value=v)
-            if j >= 2:
+            if 2 <= j <= 4:
                 cc.number_format = "#,##0"
-    d["A13"] = ("A site is the premises' NMI (ten characters; a builder's temporary supply NMI read at the NMI that "
-                "replaced it), placed on the feeder the network model shows supplying it at 31 August 2026. First "
-                "lodged: the earliest registration of any AC connection at the site, decommissioned ones included.")
-    d["A14"] = ("Inverter capacity: two-inverter connections lodged on the installer portal before July 2024 carry the "
-                "connection's total on each inverter row and are counted once. Battery storage: Sungrow SBR stacks "
-                "carry the stack's total on each module row and are counted once; other modular batteries are "
-                "lodged module by module and summed. Rounded to the nearest 10 kW and 10 kWh.")
+            elif j == 5:
+                cc.number_format = "0.0"
+            elif j == 6:
+                cc.number_format = "0.00"
+    d["A13"] = ("Feeder-head SCADA historian values (half-hour MW, by the half hour's start, Queensland time), each "
+                "multiplied by its bay's factor: each bus section's 22 kV check meter equals its four feeder heads at "
+                "these factors, half hour by half hour, to within the two systems' measurement error (least squares, "
+                "residual %.3f MW rms on T1 and %.3f MW on T2). Reverse flow is the flow from the feeder back into the "
+                "22 kV bus." % (
+                    c["asks"]["fit_rms"]["T1"], c["asks"]["fit_rms"]["T2"]))
+    d["A14"] = "Energy summed half hour by half hour and rounded to the nearest 10 MWh; the largest half hour to 0.1 MW."
     for cell in ("A13", "A14"):
         d[cell].font = Font(size=9, italic=True)
     d.freeze_panes = "B4"
@@ -310,10 +322,11 @@ def write_book(path, c, figs):
         ("Past campaigns", "Council Solar Streets summary 2018 to 2024 for sign-up dates; systems from program "
                            "references in the connection register, which match the council's systems installed. What each "
                            "campaign added is read against suburbs whose campaign had not yet run over the same months."),
-        ("DER Register", "Extract as at 31 August 2026, AC connections and devices at NMIs on the Yarrabin feeders; "
-                         "the NMI re-allocation log for builders' temporary supply NMIs."),
-        ("Rounding", "Carried unrounded and rounded once: MW to one decimal (clause 7.1); inverter capacity to the "
-                     "nearest 10 kW and battery storage to the nearest 10 kWh."),
+        ("Reverse flow", "Yarrabin zone substation SCADA historian, feeder heads, 1 June to 31 August 2026, against "
+                         "the two 22 kV transformer check meters from the metering database (kWh in each half hour "
+                         "ending)."),
+        ("Rounding", "Carried unrounded and rounded once: MW to one decimal (clause 7.1); energy sent back to the "
+                     "nearest 10 MWh."),
     ]
     for i, (k, v) in enumerate(lines, 3):
         n_.cell(row=i, column=1, value=k).font = Font(bold=True, size=10)

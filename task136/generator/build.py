@@ -21,6 +21,7 @@ import common as K         # noqa: E402
 import docs as DOC         # noqa: E402
 import postprocess as PP   # noqa: E402
 import records as R        # noqa: E402
+import scada as SC         # noqa: E402
 import world as WD         # noqa: E402
 
 TASK = os.path.dirname(HERE)
@@ -128,7 +129,12 @@ def build(out, quiet=False, W=None):
     W.hca = hca_table(W, base["base"], golden_add)
     DOC.write_hca(p(K.HCA), W.hca)
     DOC.write_npp(p(K.NPP))
-    DOC.write_peak(p(K.PEAK), peak_table())
+    peaks = peak_table()
+    DOC.write_peak(p(K.PEAK), peaks)
+    # the asks' records: the winter at Yarrabin zone substation, settled on its own streams (nothing above moves)
+    W.winter = SC.winter(W, W.hca, peaks)
+    counts[K.SCADA] = K.write_csv(p(K.SCADA), SC.SCADA_COLS, SC.scada_rows(W.winter))
+    counts[K.CHECK_METERS] = K.write_csv(p(K.CHECK_METERS), SC.METER_COLS, SC.meter_rows(W.winter))
     PP.normalize_ooxml(p(K.PROGRAM_LOG), K.PEOPLE["council"], K.PEOPLE["council"], "2019-02-11T23:12:40Z",
                        "2025-03-03T05:31:17Z", excel=True, company=K.COUNCIL)
     PP.normalize_ooxml(p(K.PEAK), K.PEOPLE["planning"], K.PEOPLE["planning"], "2026-04-29T22:05:31Z",

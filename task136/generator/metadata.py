@@ -23,6 +23,10 @@ SOURCES = {
     K.REALLOC: "NMI re-allocation log for Yarrabin premises since 1 July 2019",
     K.PEAK: "Feeder summer peak demand forecast 2027 to 2031 (Distribution Annual Planning Report working file)",
     K.REBATE: "Queensland home battery rebate approvals for Merindah addresses, FY2025-26",
+    K.SCADA: "Yarrabin zone substation SCADA historian export: each 22 kV feeder head's half-hour average MW, 1 June to "
+             "31 August 2026",
+    K.CHECK_METERS: "Metering database interval export for Yarrabin zone substation's two 22 kV transformer check meters "
+                    "(kWh imported and exported in each half hour), 1 June to 31 August 2026",
 }
 
 
@@ -51,9 +55,9 @@ def write(target, out_path):
                      "solar bulk-buy campaigns, at a Queensland distribution network)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, how much "
-                        "each 2026 bulk-buy raises its feeder's PV by 31 August 2029, the chart, and four per-feeder DER "
-                        "Register figures (active sites, sites first lodged in FY2025-26, inverter capacity, battery "
-                        "storage)",
+                        "each 2026 bulk-buy raises its feeder's PV by 31 August 2029, the chart, and per feeder the energy "
+                        "it sent back to the zone substation in each of June, July and August 2026 and its largest "
+                        "half-hour reverse flow",
         "as_of": "2026-10-12",
         "deliverables": [K.GOLD_BOOK, K.GOLD_CHART],
         "distractor_files": list(K.DISTRACTORS),

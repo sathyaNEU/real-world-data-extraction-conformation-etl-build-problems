@@ -153,7 +153,22 @@ DER = "der_register_extract_yarrabin_20260901.csv"
 REALLOC = "nmi_reallocations_2019-2026.csv"
 PEAK = "feeder_peak_demand_forecast_2027-31.xlsx"
 REBATE = "home_battery_rebate_approvals_fy2025-26.csv"
-DISTRACTORS = [PEAK, REBATE]
+SCADA = "yarrabin_zs_feeder_heads_scada_jun-aug2026.csv"
+CHECK_METERS = "yarrabin_zs_22kv_check_meters_jun-aug2026.csv"
+# The asks read the winter's feeder-head SCADA and the zone substation's 22 kV check meters; the DER Register extract
+# and the re-allocation log now sit in the pack unread by the solution, beside the peak forecast and the rebates.
+DISTRACTORS = [PEAK, REBATE, DER, REALLOC]
+
+# Winter 2026 at Yarrabin zone substation (the asks): the two 22 kV bus sections, each fed by its own transformer with
+# the bus tie open; each feeder bay's metering CT ratio as the SCADA historian still scales it and as installed at the
+# May 2026 feeder protection renewal (the historian's tags were carried over from the old RTU points with their old
+# scaling, so each feeder head is archived at its old ratio over its new one). Generator-only: nothing in the pack
+# states a ratio, a renewal or a scale.
+WINTER = (dt.date(2026, 6, 1), dt.date(2026, 8, 31))
+BUS = {"T1": FEEDERS[:4], "T2": FEEDERS[4:]}
+BAY_CT = {"YRB21": (400, 500), "YRB22": (500, 800), "YRB23": (500, 600), "YRB24": (400, 600),
+          "YRB25": (400, 600), "YRB26": (500, 600), "YRB27": (500, 800), "YRB28": (400, 500)}
+BAY_FACTOR = {f: BAY_CT[f][1] / float(BAY_CT[f][0]) for f in FEEDERS}
 
 # Provenance of each file (source system, the date it was extracted or issued, its owner): written to metadata.json
 # only, never under target/ (dataset-generation sections 3 and 9); checks.py asserts no extract runs past its date
@@ -171,6 +186,8 @@ PROVENANCE = {
     NPP: ("Mirrabee Energy Network Planning", "2026-03-02", "planning"),
     HCA: ("Buchanan Power Engineering", "2026-07-24", "consultant"),
     PEAK: ("Mirrabee Energy Network Planning", "2026-05-12", "planning"),
+    SCADA: ("SCADA historian (Yarrabin zone substation)", "2026-09-01", "planning"),
+    CHECK_METERS: ("Metering database (zone substation check meters)", "2026-09-01", "planning"),
 }
 
 # Golden deliverables

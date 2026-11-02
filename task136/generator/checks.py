@@ -4,7 +4,7 @@ the same figures; the ladder and every rival route (installed systems per home l
 owner-occupied house, per first application, an average campaign, each suburb's own before and after, every other
 suburb as the comparison, the hazard of the houses left, a two-way fixed-effects regression, fitted models on the
 obvious covariates, assumed shares of additional households); the three-rules block on the clean truth (R1 to R3c);
-every semantic fork row (SF1 to SF29); the closure axes; the four asks' stops, hazards and devices; the distractors,
+every semantic fork row (SF1 to SF31); the closure axes; the asks' forcing, routes and constructions; the distractors,
 the input gates and the realism sweep. Run by build.py on the built pack; raises on the first failure and prints the
 count of assertions passed."""
 from __future__ import annotations
@@ -675,7 +675,7 @@ def run(target, golden, W=None, meta_path=None):
         SF_SEEN["SF20 added per %s cv" % b] = round(rb["cv"], 3)
     # SF26 how much PV a bulk-buy adds: its systems at the feeder's FY2025-26 average new inverter, in MW (the prompt's
     # "megawatts to one decimal"; NPP-114 4.3 sizes every system not connected at the base date), never a count
-    ok("Give megawatts to one decimal" in prompt_txt and "Systems a forecast counts that are not connected at the base "
+    ok("with every megawatt figure to one decimal" in prompt_txt and "Systems a forecast counts that are not connected at the base "
        "date are taken at the average inverter capacity" in npp, "SF26 the unit and the sizing sentences")
     ok(all(abs(fc["add_mw"][n] * 1000.0 - fc["lift"][n] * fc["avgkw"][p["feeder"]]) < 1e-9 for n, p in pools.items()),
        "SF26 a bulk-buy's MW is not its systems at the feeder's average")
@@ -746,126 +746,162 @@ def run(target, golden, W=None, meta_path=None):
     for c in camps:
         ok(pd.Timestamp(c["opening"]) == pd.Timestamp(K.CAMP[c["key"]]["open"]), "closure 4: %s opening" % c["key"])
 
-    # ---------------------------------------------------------------- the asks
-    asks = {"D sites": (C.ask_d, ("stamp", "connections", "no_map", "raw"), False),
-            "A first lodged": (C.ask_a, ("active_first", "no_map", "raw"), False),
-            "B storage": (C.ask_b, ("once", "rows", "stamp", "no_map"), True),
-            "C inverter": (C.ask_c, ("once", "rows", "dedupe", "stamp", "no_map"), True)}
-    primary = {"D sites": ("stamp",), "A first lodged": ("active_first",), "B storage": ("once", "rows"),
-               "C inverter": ("once", "rows", "dedupe")}
-    gold_asks = {}
-    for name, (fn, modes, tens) in asks.items():
-        g = fn(L)
-        gold_asks[name] = g
-        key = ten if tens else (lambda x: x)
-        for m in modes:
-            v = fn(L, m)
-            hits = sum(key(v[f]) == key(g[f]) for f in K.FEEDERS)
-            if m in primary[name]:
-                ok(hits == 0, "ask %s primary stop %s lands %d feeders" % (name, m, hits))
-            else:
-                ok(hits <= 5, "ask %s hazard %s lands %d feeders" % (name, m, hits))
-            SF_SEEN["ask %s %s misses" % (name, m)] = 8 - hits
-        if tens:
-            for f in K.FEEDERS:
-                ok(bin_room(g[f], 10) >= 0.07, "ask %s %s %.2f too near a rounding edge" % (name, f, g[f]))
-        ok(max(collections.Counter(g.values()).values()) <= 2, "ask %s: three feeders share a figure" % name)
-    ok(all(C.ask_a(L, "stamp")[f] == gold_asks["A first lodged"][f] for f in K.FEEDERS),
-       "ask A: the feeder stamp moves a site first lodged after the last transfer")
-    # SF27 the feeder that supplies a DER site: the network model's, never the extract's stamp (the prompt's "it
-    # supplies"; the network model's feeder is the feeder supplying the NMI at 31 August 2026, the extract's is only
-    # "added by Mirrabee's extraction"); SF28 a site first lodged: the earliest lodgement at the site, decommissioned
-    # connections included (the prompt counts sites, "how many of them"; the register dates each AC connection)
-    ok("how many active DER Register sites it supplies" in prompt_txt and "how many of them were first lodged" in prompt_txt,
-       "SF27 and SF28 the prompt's wording")
-    # SF27: NPP-114 3.1 places each NMI on its feeder by the network model at the base date (read through the same
-    # pypdf extraction as the verifier; the control is the clause's own text); SF28: the DER extract's own columns and
-    # labels date each AC connection and keep a replaced one (no dictionary ships, nothing describes a device)
-    ok("The network model at the base date places each NMI on its feeder." in npp and K.NETWORK.endswith("20260831.csv"),
-       "SF27 NPP-114 3.1's network model sentence, or the network model's date in its name")
-    ok({"registered_date", "ac_connection_status", "feeder"} <= set(L["der"].columns) and
-       set(L["der"].ac_connection_status) == {"Active", "Decommissioned"}, "SF28 the DER extract's own columns and labels")
-    st_ = C.ask_d(L, "stamp")
-    ok(sum(st_[f] != gold_asks["D sites"][f] for f in K.FEEDERS) == 8, "SF27 the stamp lands a feeder")
-    af_ = C.ask_a(L, "active_first")
-    ok(sum(af_[f] != gold_asks["A first lodged"][f] for f in K.FEEDERS) == 8, "SF28 active-only lands a feeder")
-    SF_SEEN["SF27 the extract's feeder"] = st_
-    SF_SEEN["SF28 active connections only"] = af_
+    # ---------------------------------------------------------------- the asks: winter 2026 at Yarrabin zone
+    # substation, each feeder head's SCADA historian against its bus section's 22 kV transformer check meter (the call
+    # reads neither file)
+    ok({"scada", "meters", "section"} <= set(L), "the winter files are missing from the pack")
+    hw, mw = L["scada"], L["meters"]
+    ok(hw.shape == (4416, 8) and mw.shape == (4416, 2) and hw.index.equals(mw.index), "the winter's half hours")
+    ok(hw.index.min() == pd.Timestamp(K.WINTER[0]) and hw.index.max() == pd.Timestamp(K.WINTER[1]) + pd.Timedelta(hours=23, minutes=30),
+       "the winter's window")
+    ok(L["section"] == {f: t for t, fs in K.BUS.items() for f in fs}, "the bus sections read from the tags")
+
+    def wgraded(fx):
+        return {f: (ten(fx[f][0]), ten(fx[f][1]), ten(fx[f][2]), r1(fx[f][3])) for f in K.FEEDERS}
+
+    kfit, rms = C.bay_factors(L)
+    ok(all(abs(kfit[f] - K.BAY_FACTOR[f]) < 0.002 for f in K.FEEDERS), "the fit misses a bay's factor: %s" % kfit)
+    ok(max(rms.values()) < 0.02, "the per-feeder fit leaves %s MW" % rms)
+    # the forcing, as numbers: each bus section's meter is its four feeder heads at their own factors to within the
+    # two systems' measurement error; one factor per section leaves a residual seven times larger or more over the window
+    # and four times or more in every half hour of the day, and the meter read one half hour off its interval end fails
+    # the fit
+    for t, fs in K.BUS.items():
+        x, y = hw[fs].sum(axis=1), mw[t]
+        ks = float((x * y).sum() / (x * x).sum())
+        r_sec = float(np.sqrt(np.mean(((y - ks * x) - (y - ks * x).mean()) ** 2)))
+        ok(r_sec >= 7 * rms[t] and r_sec > 0.05, "SF27 one factor on %s leaves %.4f MW against %.4f" % (t, r_sec, rms[t]))
+        SF_SEEN["SF27 residual %s (per feeder, one factor)" % t] = (round(rms[t], 4), round(r_sec, 4))
+        # and in every half hour of the day: each fitted with its intercept, one factor leaves four times the per-bay
+        # fit's residual or more in each of the 48 half hours, so no window of the day rescues a section factor
+        slot = np.asarray(hw.index.hour * 2 + hw.index.minute // 30)
+        A1 = np.column_stack([x.values, np.ones(len(x))])
+        r1_ = y.values - A1 @ np.linalg.lstsq(A1, y.values, rcond=None)[0]
+        Ag = np.column_stack([hw[fs].values, np.ones(len(x))])
+        rg_ = y.values - Ag @ np.linalg.lstsq(Ag, y.values, rcond=None)[0]
+        worst = min(float(np.sqrt(np.mean(r1_[slot == h] ** 2)) / np.sqrt(np.mean(rg_[slot == h] ** 2))) for h in range(48))
+        ok(worst >= 4.0, "SF27 one factor on %s comes within %.1f times the per-bay residual in a half hour of the day"
+           % (t, worst))
+        SF_SEEN["SF27 one factor on %s, smallest ratio to the per-bay residual in a half hour of the day" % t] = round(worst, 1)
+    k_mis, rms_mis = C.bay_factors(L, shift=-1)
+    ok(min(rms_mis.values()) > 0.3 and min(k_mis.values()) < 1.0, "SF28 the meter read a half hour off fits: %s" % rms_mis)
+    SF_SEEN["SF28 the meter one half hour off"] = {t: round(v, 3) for t, v in rms_mis.items()}
+    # no bay sits on a pooled factor: one factor to both meters, or one per bus section
+    tot_x, tot_y = hw.sum(axis=1), mw.sum(axis=1)
+    k_one = float((tot_x * tot_y).sum() / (tot_x * tot_x).sum())
+    for f in K.FEEDERS:
+        ok(abs(K.BAY_FACTOR[f] / k_one - 1) >= 0.05, "%s's factor %.3f within 5 per cent of one factor %.3f" % (f, K.BAY_FACTOR[f], k_one))
+    for t, fs in K.BUS.items():
+        x, y = hw[fs].sum(axis=1), mw[t]
+        for k_sec in (float((x * y).sum() / (x * x).sum()), float(y.sum() / x.sum())):
+            for f in fs:
+                ok(abs(K.BAY_FACTOR[f] / k_sec - 1) >= 0.05, "%s's factor %.3f within 5 per cent of %s's section factor %.3f"
+                   % (f, K.BAY_FACTOR[f], t, k_sec))
+        SF_SEEN["%s meter's energy above its four feeder heads (per cent)" % t] = round(100 * (float(y.sum() / x.sum()) - 1), 1)
+    gold_w = C.reverse_flow(L)
+    gw = wgraded(gold_w)
+    # SF27: every defensible construction of the decomposition lands every figure (each bay's factor as the nearest
+    # quotient of two CT ratios, both meters pooled over the eight feeder heads, no intercept)
+    for how in ("exact", "pooled", "no_intercept"):
+        ok(wgraded(C.reverse_flow(L, how)) == gw, "SF27 the %s decomposition moves a figure" % how)
+    ok(all(abs(C.nearest_ct_quotient(kfit[f]) - K.BAY_FACTOR[f]) < 1e-9 for f in K.FEEDERS), "SF27 a fitted factor's quotient")
+    # every careful route misses every one of the 32 figures: the historian as recorded, one factor fitted to both meters,
+    # one factor per bus section (the pro-rata repair of a control that does not tie), each section's metered reverse
+    # energy shared by the historian's reverse energy or by connected capacity, and the meter read one half hour off
+    for how in ("recorded", "one_factor", "section", "totals", "share", "pv_share", "misaligned"):
+        v = wgraded(C.reverse_flow(L, how))
+        hits = [(f, i) for f in K.FEEDERS for i in range(4) if v[f][i] == gw[f][i]]
+        ok(not hits, "the %s route lands %s" % (how, hits))
+        SF_SEEN["ask route %s keeps" % how] = 32 - sum(1 for f in K.FEEDERS for i in range(4) if v[f][i] != gw[f][i])
+    for f in K.FEEDERS:
+        for i in range(3):
+            ok(gold_w[f][i] >= 120 and bin_room(gold_w[f][i], 10) >= 0.1, "%s month %d %.2f MWh small or near an edge"
+               % (f, i + 6, gold_w[f][i]))
+        ok(bin_room(gold_w[f][3], 0.1) >= 0.12, "%s largest half hour %.4f near an edge" % (f, gold_w[f][3]))
+    ok(max(collections.Counter(v for f in K.FEEDERS for v in gw[f][:3]).values()) <= 3, "four monthly figures alike")
+    # SF28: Queensland time by the half hour's start; the historian's label read as the half hour's end moves no figure
+    # (no reverse flow at midnight), and reading the meters at their interval end is the alignment the fit forces
+    shifted = C.winter_figures((hw * pd.Series(kfit)).set_axis(hw.index - pd.Timedelta(minutes=30)))
+    ok(wgraded(shifted) == gw, "SF28 the historian's label read as the end moves a figure")
+    # SF28: the clock is Queensland time by the historian's own hour profile (every feeder's reverse flow peaks in the half
+    # hours starting 11:30 or 12:00 by its labels, local solar noon) and by the meters' local stamps, which the fit
+    # aligns only in the same clock
+    prof = (-hw).clip(lower=0.0).groupby(hw.index.hour * 2 + hw.index.minute // 30).mean()
+    ok(all(23 <= int(prof[f].idxmax()) <= 24 for f in K.FEEDERS), "SF28 a feeder's reverse flow peaks outside midday")
+    k_utc, rms_utc = C.bay_factors(fresh(L, scada=hw.set_axis(hw.index + pd.Timedelta(hours=10))))
+    ok(min(rms_utc.values()) > 0.3, "SF28 the historian read in UTC still fits the meters: %s" % rms_utc)
+    SF_SEEN["SF28 the historian read in UTC against the meters"] = {t: round(v, 3) for t, v in rms_utc.items()}
+    # SF30: "any energy it sent back" is the reverse flow summed half hour by half hour; each feeder's month carries
+    # far more forward energy than reverse, so its net is no figure the sentence can mean
+    flow = hw * pd.Series(kfit)
+    for f in K.FEEDERS:
+        net_m = flow[f].groupby(flow.index.month).sum() * 0.5
+        ok(all(net_m[m] > 0 for m in C.MONTHS), "SF30 %s sends more back than it draws in a month" % f)
+    # SF31: the largest half-hour reverse flow is the largest half-hour average (the historian holds nothing finer)
+    ok(all(abs(gold_w[f][3] - float((-flow[f]).max())) < 1e-9 for f in K.FEEDERS), "SF31 the largest half hour")
+    ok("any energy it sent back to the zone substation in each of June, July and August 2026 to the nearest 10 MWh" in prompt_txt
+       and "its largest half-hour reverse flow over those months, with every megawatt figure to one decimal" in prompt_txt,
+       "SF27 to SF31 the prompt's wording")
+    # nothing in the pack names the device: no document speaks of a CT, a ratio, a scale, the historian, a renewal or
+    # a check meter, and no column carries a ratio or a scale
+    for name, txt in (("NPP-114", npp), ("the letter", letter), ("the assessment", hca_txt)):
+        low_ = txt.lower()
+        for w in ("current transformer", "ct ratio", "ratio", "ratios", "scaling", "scale factor", "historian", "renewal",
+                  "relay", "relays", "check meter", "multiplier"):
+            ok(not re.search(r"\b%s\b" % re.escape(w), low_), "%s names %r" % (name, w))
+    ok(list(pd.read_csv(os.path.join(target, K.SCADA), nrows=1).columns) == ["interval_start_aest", "tag", "value"]
+       and list(pd.read_csv(os.path.join(target, K.CHECK_METERS), nrows=1).columns) ==
+       ["meter_id", "interval_end_aest", "import_kwh", "export_kwh"], "the winter files' columns")
+    # each meter register accumulates its own direction: a half hour the section's flow reverses within carries both,
+    # and the rest one; no register runs negative
+    mreg = pd.read_csv(os.path.join(target, K.CHECK_METERS))
+    both_ = int(((mreg.import_kwh > 0) & (mreg.export_kwh > 0)).sum())
+    ok(0.01 * len(mreg) < both_ < 0.15 * len(mreg) and (mreg.import_kwh >= 0).all() and (mreg.export_kwh >= 0).all()
+       and not ((mreg.import_kwh == 0) & (mreg.export_kwh == 0)).any(), "the meters' two registers: %d rows carry both" % both_)
+    SF_SEEN["meter half hours carrying both registers"] = both_
     if figs:
         for f in K.FEEDERS:
-            d = figs["der"][f]
-            ok((d["active_sites"], d["first_lodged_fy2025_26"], int(d["inverter_kw"].replace(",", "")),
-                int(d["storage_kwh"].replace(",", ""))) == (gold_asks["D sites"][f], gold_asks["A first lodged"][f],
-                                                             ten(gold_asks["C inverter"][f]), ten(gold_asks["B storage"][f])),
-               "figures.json DER row %s" % f)
-    # the asks' answers against the world
-    if W is not None:
-        tsites, tfirst = collections.Counter(), collections.Counter()
-        tinv, tbat = collections.defaultdict(float), collections.defaultdict(float)
-        by_site = collections.defaultdict(list)
-        for s in W.der_systems:
-            by_site[s["perm"]].append(s)
-        nmi_by = {n["nmi"]: n for n in W.nmis}
-        for perm, ss in by_site.items():
-            act_s = [s for s in ss if s["status"] == "Active"]
-            if not act_s or perm not in nmi_by:
-                continue
-            f = nmi_by[perm]["feeder"]
-            tsites[f] += 1
-            if K.LAST_FY[0] <= min(s["registered"] for s in ss) <= K.LAST_FY[1]:
-                tfirst[f] += 1
-            for s in act_s:
-                tinv[f] += s["kw"]
-                tbat[f] += s["storage"]
-        ok(all(tsites[f] == gold_asks["D sites"][f] for f in K.FEEDERS), "ask D against the world")
-        ok(all(tfirst[f] == gold_asks["A first lodged"][f] for f in K.FEEDERS), "ask A against the world")
-        ok(all(abs(tinv[f] - gold_asks["C inverter"][f]) < 1e-6 for f in K.FEEDERS), "ask C against the world")
-        ok(all(abs(tbat[f] - gold_asks["B storage"][f]) < 1e-6 for f in K.FEEDERS), "ask B against the world")
-    der = L["der"]
-    act = der[der.ac_connection_status == "Active"]
-    keys = C.der_keys(L)
-    keys = keys.assign(net=keys.key.map(L["feeder"]))
-    act_k = keys[keys.ac_connection_status == "Active"]
-    moved = act_k[act_k.net.notna() & (act_k.net != act_k.feeder)]
-    ok(set(moved.net) | set(moved.feeder) == set(K.FEEDERS), "ask D stamp device misses a feeder: %s"
-       % sorted(set(moved.net) | set(moved.feeder)))
-    SF_SEEN["ask D stamp rows"] = (len(moved), moved.ac_connection_id.nunique())
-    bat = act[act.device_type == "Battery"]
-    sbr = act_k[(act_k.device_type == "Battery") & act_k.model.isin(C.SYSTEM_LODGED)]
-    ok(set(sbr.net.dropna()) == set(K.FEEDERS), "ask B: a feeder without a Sungrow SBR stack")
-    modular = bat[bat.model.isin(["Battery-Box Premium HVS", "Lynx Home U"])]
-    ok(len(modular) > 0, "ask B: no module-by-module battery")
-    inv = act[act.device_type == "Inverter"].assign(kw=lambda d: d.rated_power_kw.astype(float))
-    g_inv = inv.groupby("ac_connection_id").agg(n=("kw", "size"), kw=("kw", "first"), model=("model", "first"),
-                                                reg=("registered_date", "first"), nmi=("nmi", "first"))
-    duals = g_inv[g_inv.n > 1].assign(plate=lambda d: d.model.map(C.nameplate))
-    old_d = duals[duals.reg < K.iso(K.PORTAL_SWITCH)]
-    new_d = duals[duals.reg >= K.iso(K.PORTAL_SWITCH)]
-    ok(old_d.plate.notna().all() and new_d.plate.notna().all(), "ask C: a two-inverter connection without a nameplate")
-    ok((abs(old_d.kw - old_d.plate * old_d.n) < 0.011).all() and (abs(new_d.kw - new_d.plate) < 0.011).all(),
-       "ask C: a two-inverter row's rating against its nameplate")
-    ok(len(old_d) >= 40 and len(new_d) >= 8, "ask C devices %d old, %d new two-inverter connections" % (len(old_d), len(new_d)))
-    SF_SEEN["ask C duals"] = (len(old_d), len(new_d))
-    # the referee: the register's own figures for each NMI agree with the golden handling, never with the stops
-    remap = dict(zip(L["realloc"].old_nmi, L["realloc"].new_nmi))
-    live = reg[reg.status.isin(C.CONNECTED) & (reg.connection_date <= pd.Timestamp(K.BASE)) &
-               (reg.removal_date.isna() | (reg.removal_date > pd.Timestamp(K.BASE)))]
-    last = live.sort_values(["nmi", "connection_date", "application_type"]).groupby("nmi").tail(1).set_index("nmi")
-    bt = bat.assign(kwh=bat.storage_capacity_kwh.astype(float), key=keys.loc[bat.index, "key"])
-    per = bt.groupby("ac_connection_id").agg(k=("kwh", "size"), v=("kwh", "first"), s=("kwh", "sum"),
-                                             model=("model", "first"), key=("key", "first"))
-    per = per.assign(app=per.key.map(last.battery_kwh).replace("", np.nan).astype(float)).dropna(subset=["app"])
-    sb, ot = per[per.model.isin(C.SYSTEM_LODGED)], per[~per.model.isin(C.SYSTEM_LODGED)]
-    ok(len(sb) >= 20 and (abs(sb.v - sb.app) < 0.011).mean() >= 0.9 and (abs(sb.s - sb.app) < 0.011).mean() <= 0.05,
-       "ask B referee: SBR rows against the register's battery_kwh")
-    ok((abs(ot.s - ot.app) < 0.011).mean() >= 0.9, "ask B referee: module rows against the register's battery_kwh")
-    gi = g_inv.assign(key=g_inv.nmi.map(C.norm_nmi).map(lambda x: remap.get(x, x)))
-    gi = gi.assign(app=gi.key.map(last.kw)).dropna(subset=["app"])
-    od, nd = gi[(gi.n > 1) & (gi.reg < K.iso(K.PORTAL_SWITCH))], gi[(gi.n > 1) & (gi.reg >= K.iso(K.PORTAL_SWITCH))]
-    ok((abs(od.kw - od.app) < 0.011).mean() >= 0.8 and (abs(nd.kw * nd.n - nd.app) < 0.011).mean() >= 0.8,
-       "ask C referee: two-inverter rows against the register's inverter_kw_ac")
-    # zero device rows in the main call's population: the call ignores the DER extract and the re-allocation log
-    ok(graded(C.forecast(fresh(L, der=L["der"].iloc[0:0], realloc=L["realloc"].iloc[0:0]), base=base, camps=camps, pools=pools)) == golden_tuple(), "R2: the call reads an ask file")
+            d = figs["reverse_flow"][f]
+            ok((int(d["june_mwh"].replace(",", "")), int(d["july_mwh"].replace(",", "")),
+                int(d["august_mwh"].replace(",", "")), float(d["largest_mw"])) == gw[f], "figures.json reverse flow %s" % f)
+            ok(abs(float(d["bay_factor"]) - K.BAY_FACTOR[f]) < 0.006, "figures.json bay factor %s" % f)
+    # the asks' answers against the world: the historian is each flow at its bay's factor, the meters each section's sum,
+    # and the golden the true flows' figures
+    if W is not None and getattr(W, "winter", None):
+        import scada as SC
+        wt = W.winter
+        ok(np.abs(hw.values - wt["hist"]).max() < 5e-4, "the historian against the world")
+        kv_ = np.array([K.BAY_FACTOR[f] for f in K.FEEDERS])
+        rel = np.abs(hw.values * kv_ - wt["true"]) / np.maximum(np.abs(wt["true"]), 0.5)
+        ok(float(np.median(rel)) < 0.0015 and float(rel.max()) < 0.01, "the historian is not each flow at its bay's factor")
+        ok(not np.allclose(hw.values * kv_, wt["true"], atol=1e-3), "the historian agrees with the flows to its rounding")
+        for t, fs in K.BUS.items():
+            idx = [K.FEEDERS.index(f) for f in fs]
+            dev = np.abs(mw[t].values - wt["true"][:, idx].sum(axis=1))
+            ok(float(dev.max()) < 0.06 and float(dev.max()) > 0.001, "the %s meter against its feeders: %.4f" % (t, float(dev.max())))
+        wtruth = SC.figures(wt["true"])
+        ok(all(abs(wtruth[f][i] - gold_w[f][i]) < 1.0 for f in K.FEEDERS for i in range(3)) and
+           all(abs(wtruth[f][3] - gold_w[f][3]) < 0.04 for f in K.FEEDERS), "the golden against the world's flows")
+        ok(wgraded(wtruth) == gw, "a golden figure rounds apart from the world's own flows: %s" %
+           [(f, i) for f in K.FEEDERS for i in range(4) if wgraded(wtruth)[f][i] != gw[f][i]])
+        # each feeder's winter midday load (the flow plus its PV's output) sits above the assessment's spring minimum,
+        # and every feeder carries connected PV all winter
+        load = (wt["true"] + wt["pv"]).reshape(-1, 48, len(K.FEEDERS))
+        min26 = {m.group(1): float(m.group(4)) for m in re.finditer(
+            r"(YRB2\d) ([\d.]+) ([\d,]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)", hca_txt)}
+        for fi, f in enumerate(K.FEEDERS):
+            ok(float(np.median(load[:, 24:26, fi])) > min26[f], "%s winter midday load below the spring minimum" % f)
+        ok(wt["caps"].min() > 0, "a feeder without PV in the winter")
+    # zero device rows in the main call's population: deleting either winter file leaves the call
+    for gone in (K.SCADA, K.CHECK_METERS):
+        tmp = tempfile.mkdtemp(dir=os.path.dirname(os.path.abspath(target)), suffix=".tmp")
+        try:
+            for f in os.listdir(target):
+                if f != gone:
+                    os.symlink(os.path.abspath(os.path.join(target, f)), os.path.join(tmp, f))
+            ok(graded(C.forecast(C.load(tmp))) == golden_tuple(), "R2: the call reads %s" % gone)
+        finally:
+            shutil.rmtree(tmp)
     ok(not reg.nmi.isin(set(L["realloc"].old_nmi)).any(), "a replaced NMI in the connection register")
 
     # ---------------------------------------------------------------- distractors: deleting each moves nothing graded
@@ -878,8 +914,7 @@ def run(target, golden, W=None, meta_path=None):
                     os.symlink(os.path.abspath(os.path.join(target, f)), os.path.join(tmp, f))
             L3 = C.load(tmp)
             ok(graded(C.forecast(L3)) == golden_tuple(), "deleting %s moves the call" % gone)
-            ok(C.ask_d(L3) == gold_asks["D sites"] and C.ask_a(L3) == gold_asks["A first lodged"] and
-               C.ask_b(L3) == gold_asks["B storage"] and C.ask_c(L3) == gold_asks["C inverter"], "deleting %s moves an ask" % gone)
+            ok(wgraded(C.reverse_flow(L3)) == gw, "deleting %s moves an ask" % gone)
         finally:
             shutil.rmtree(tmp)
 
@@ -923,8 +958,11 @@ def run(target, golden, W=None, meta_path=None):
     if meta_path:
         mf = {x["path"]: x for x in json.load(open(meta_path))["files"]}
         ok(all(mf[f_]["extracted_or_issued"] == K.PROVENANCE[f_][1] for f_ in files), "metadata.json's provenance dates")
+    der = L["der"]
     ok(der.registered_date.max() <= K.iso(K.BASE) and der.status_date.max() <= K.iso(K.BASE),
        "the DER extract runs past 31 August 2026")
+    ok(str(hw.index.max().date()) <= K.iso(K.BASE) and str((mw.index.max() + pd.Timedelta(minutes=30)).date()) <= "2026-09-01",
+       "the winter files run past their extract")
 
     # ---------------------------------------------------------------- realism sweep
     counts = [c["systems"] for c in camps]

@@ -4,7 +4,7 @@
   "domain": "Energy Systems & Utilities",
   "subdomain": "load-forecasting (rooftop PV forecast to an augmentation's design point, with two council solar bulk-buy campaigns, at a Queensland distribution network)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, how much each 2026 bulk-buy raises its feeder's PV by 31 August 2029, the chart, and four per-feeder DER Register figures (active sites, sites first lodged in FY2025-26, inverter capacity, battery storage)",
+  "prompt_shape": "other: the feeder, its rooftop PV above hosting capacity, the runner-up and gap, how much each 2026 bulk-buy raises its feeder's PV by 31 August 2029, the chart, and per feeder the energy it sent back to the zone substation in each of June, July and August 2026 and its largest half-hour reverse flow",
   "as_of": "2026-10-12",
   "deliverables": [
     "feeder_upgrade_2029.xlsx",
@@ -12,10 +12,12 @@
   ],
   "distractor_files": [
     "feeder_peak_demand_forecast_2027-31.xlsx",
-    "home_battery_rebate_approvals_fy2025-26.csv"
+    "home_battery_rebate_approvals_fy2025-26.csv",
+    "der_register_extract_yarrabin_20260901.csv",
+    "nmi_reallocations_2019-2026.csv"
   ],
   "input_gates": {
-    "files": 13,
+    "files": 15,
     "formats": [
       "csv",
       "pdf",
@@ -188,6 +190,30 @@
       "source_system": "Buchanan Power Engineering",
       "extracted_or_issued": "2026-07-24",
       "owner": "Tammy Buchanan",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yarrabin_zs_22kv_check_meters_jun-aug2026.csv",
+      "format": "csv",
+      "bytes": 392902,
+      "rows": 8832,
+      "source": "Constructed: Metering database interval export for Yarrabin zone substation's two 22 kV transformer check meters (kWh imported and exported in each half hour), 1 June to 31 August 2026",
+      "source_system": "Metering database (zone substation check meters)",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Ian Fletcher",
+      "date": "2026-10-12",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "yarrabin_zs_feeder_heads_scada_jun-aug2026.csv",
+      "format": "csv",
+      "bytes": 1561826,
+      "rows": 35328,
+      "source": "Constructed: Yarrabin zone substation SCADA historian export: each 22 kV feeder head's half-hour average MW, 1 June to 31 August 2026",
+      "source_system": "SCADA historian (Yarrabin zone substation)",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Ian Fletcher",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }

@@ -171,54 +171,62 @@
   "bindarra_waters_mw": "2.4",
   "wattleview_mw": "1.0"
  },
- "der": {
+ "reverse_flow": {
   "YRB21": {
-   "active_sites": 3443,
-   "first_lodged_fy2025_26": 98,
-   "inverter_kw": "19,280",
-   "storage_kwh": "3,260"
+   "june_mwh": "1,030",
+   "july_mwh": "980",
+   "august_mwh": "1,140",
+   "largest_mw": "12.0",
+   "bay_factor": "1.25"
   },
   "YRB22": {
-   "active_sites": 3194,
-   "first_lodged_fy2025_26": 177,
-   "inverter_kw": "18,950",
-   "storage_kwh": "2,780"
+   "june_mwh": "850",
+   "july_mwh": "810",
+   "august_mwh": "960",
+   "largest_mw": "10.8",
+   "bay_factor": "1.60"
   },
   "YRB23": {
-   "active_sites": 2128,
-   "first_lodged_fy2025_26": 91,
-   "inverter_kw": "12,350",
-   "storage_kwh": "2,000"
+   "june_mwh": "280",
+   "july_mwh": "280",
+   "august_mwh": "340",
+   "largest_mw": "5.4",
+   "bay_factor": "1.20"
   },
   "YRB24": {
-   "active_sites": 2783,
-   "first_lodged_fy2025_26": 255,
-   "inverter_kw": "18,110",
-   "storage_kwh": "2,560"
+   "june_mwh": "660",
+   "july_mwh": "620",
+   "august_mwh": "750",
+   "largest_mw": "9.2",
+   "bay_factor": "1.50"
   },
   "YRB25": {
-   "active_sites": 3680,
-   "first_lodged_fy2025_26": 204,
-   "inverter_kw": "21,770",
-   "storage_kwh": "3,080"
+   "june_mwh": "870",
+   "july_mwh": "820",
+   "august_mwh": "980",
+   "largest_mw": "11.2",
+   "bay_factor": "1.50"
   },
   "YRB26": {
-   "active_sites": 2180,
-   "first_lodged_fy2025_26": 75,
-   "inverter_kw": "12,200",
-   "storage_kwh": "2,280"
+   "june_mwh": "220",
+   "july_mwh": "210",
+   "august_mwh": "260",
+   "largest_mw": "4.5",
+   "bay_factor": "1.20"
   },
   "YRB27": {
-   "active_sites": 1838,
-   "first_lodged_fy2025_26": 158,
-   "inverter_kw": "11,800",
-   "storage_kwh": "1,560"
+   "june_mwh": "130",
+   "july_mwh": "150",
+   "august_mwh": "190",
+   "largest_mw": "3.7",
+   "bay_factor": "1.60"
   },
   "YRB28": {
-   "active_sites": 2927,
-   "first_lodged_fy2025_26": 159,
-   "inverter_kw": "16,980",
-   "storage_kwh": "2,510"
+   "june_mwh": "710",
+   "july_mwh": "670",
+   "august_mwh": "820",
+   "largest_mw": "9.0",
+   "bay_factor": "1.25"
   }
  }
 }

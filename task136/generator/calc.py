@@ -26,8 +26,11 @@ def load(target, partial=False):
     net = pd.read_csv(p(K.NETWORK), dtype=str, keep_default_na=False)
     xref = pd.read_csv(p(K.XREF), dtype=str, keep_default_na=False)
     rates = pd.read_csv(p(K.RATES), dtype=str, keep_default_na=False)
-    der = pd.read_csv(p(K.DER), dtype=str, keep_default_na=False)
-    realloc = pd.read_csv(p(K.REALLOC), dtype=str, keep_default_na=False)
+    # the DER Register extract and the re-allocation log are distractors: read when they ship, empty when deleted
+    der = (pd.read_csv(p(K.DER), dtype=str, keep_default_na=False) if os.path.exists(p(K.DER)) else
+           pd.DataFrame(columns=["ac_connection_id", "nmi", "registered_date", "status_date", "ac_connection_status"]))
+    realloc = (pd.read_csv(p(K.REALLOC), dtype=str, keep_default_na=False) if os.path.exists(p(K.REALLOC)) else
+               pd.DataFrame(columns=["old_nmi", "new_nmi", "effective_date", "reason"]))
     for c in ("received_date", "approved_date", "status_date", "connection_date", "removal_date"):
         reg[c] = D(reg[c])
     leg_kw = {r.legacy_application_no: float(r.inverter_kw_ac_each) * int(r.inverter_count) for r in leg.itertuples()}
@@ -44,8 +47,11 @@ def load(target, partial=False):
     reg["feeder"] = reg.nmi.map(feeder)
     log = program_log(p(K.PROGRAM_LOG))
     hca = {} if partial else hosting_capacity(target)
-    return dict(reg=reg, leg=leg, net=net, xref=xref, rates=rates, der=der, realloc=realloc, feeder=feeder, log=log,
-                hca=hca, letter=letter_counts(target))
+    out = dict(reg=reg, leg=leg, net=net, xref=xref, rates=rates, der=der, realloc=realloc, feeder=feeder, log=log,
+               hca=hca, letter=letter_counts(target))
+    if os.path.exists(p(K.SCADA)) and os.path.exists(p(K.CHECK_METERS)):
+        out.update(winter_frames(target))
+    return out
 
 
 def program_log(path):
@@ -384,127 +390,117 @@ def forecast(L, measure="net", basis="pool", estimator="pooled", hc_case="hc29",
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# the asks
+# the asks: the winter at Yarrabin zone substation (the feeder-head SCADA historian and the 22 kV check meters)
 
-def norm_nmi(s):
-    s = s.strip()
-    return s[:10] if len(s) == 11 else s
+MONTHS = (6, 7, 8)
 
 
-def live_nmis(reg, date=K.BASE):
-    d = pd.Timestamp(date)
-    live = reg[reg.status.isin(CONNECTED) & (reg.connection_date <= d) & (reg.removal_date.isna() | (reg.removal_date > d))]
-    return set(live.nmi)
+def winter_frames(target):
+    """The historian's feeder heads (MW, one column per feeder in K.FEEDERS order, one row per half hour by its start in
+    Queensland time), the bus section each feeder hangs on (from its tag) and each bus section's flow through its
+    transformer's check meter (MW: the half hour's import into the bus less its export back, the meter's interval end
+    moved to the half hour's start)."""
+    h = pd.read_csv(os.path.join(target, K.SCADA), dtype=str, keep_default_na=False)
+    h = h.assign(feeder="YRB" + h.tag.str.extract(r"FDR(\d\d)", expand=False),
+                 section="T" + h.tag.str.extract(r"\.B(\d)\.", expand=False))
+    hw = h.pivot(index="interval_start_aest", columns="feeder", values="value").astype(float)[K.FEEDERS]
+    hw.index = pd.to_datetime(hw.index, format="%Y-%m-%d %H:%M")
+    hw = hw.sort_index()
+    section = h.drop_duplicates("feeder").set_index("feeder").section.to_dict()
+    m = pd.read_csv(os.path.join(target, K.CHECK_METERS), dtype=str, keep_default_na=False)
+    m = m.assign(start=pd.to_datetime(m.interval_end_aest, format="%Y-%m-%d %H:%M") - pd.Timedelta(minutes=30),
+                 mw=(m.import_kwh.astype(float) - m.export_kwh.astype(float)) / 500.0,
+                 back=m.export_kwh.astype(float) / 500.0,
+                 section=m.meter_id.str.extract(r"-(T\d)-", expand=False))
+    mw = m.pivot(index="start", columns="section", values="mw").sort_index()
+    back = m.pivot(index="start", columns="section", values="back").sort_index()
+    return dict(scada=hw, section=section, meters=mw, meter_export=back)
 
 
-def der_keys(L, mode="golden"):
-    """The DER extract with each row's site key: golden reads the NMI at ten characters and an NMI the re-allocation
-    log replaced at its replacement; norm only the first; raw neither."""
-    der, realloc = L["der"], L["realloc"]
-    mp = dict(zip(realloc.old_nmi, realloc.new_nmi))
-    if mode == "raw":
-        key = der.nmi
-    elif mode == "norm":
-        key = der.nmi.map(norm_nmi)
-    else:
-        key = der.nmi.map(norm_nmi).map(lambda x: mp.get(x, x))
-    return der.assign(key=key.values, reg=pd.to_datetime(der.registered_date))
+def bay_factors(L, pooled=False, intercept=True, shift=0):
+    """Each feeder head's factor on the historian: least squares of each bus section's check-meter flow on its own
+    feeder heads (with an intercept), or of both meters' total on all eight (pooled). shift moves the meter by whole
+    half hours against the historian (0: the meter's interval end read as the half hour it closes). Returns the
+    factors and the rms residual of each fit."""
+    hw, mw = L["scada"], L["meters"]
+    meters = mw.shift(shift) if shift else mw
+    j = hw.join(meters, how="inner").dropna()
+    groups = {"all": list(K.FEEDERS)} if pooled else {t: [f for f in K.FEEDERS if L["section"][f] == t]
+                                                      for t in sorted(set(L["section"].values()))}
+    k, rms = {}, {}
+    for t, fs in groups.items():
+        y = j[list(mw.columns)].sum(axis=1).values if pooled else j[t].values
+        A = j[fs].values
+        if intercept:
+            A = np.column_stack([A, np.ones(len(A))])
+        sol = np.linalg.lstsq(A, y, rcond=None)[0]
+        res = y - A @ sol
+        rms[t] = float(np.sqrt(np.mean((res - res.mean()) ** 2)))
+        for i, f in enumerate(fs):
+            k[f] = float(sol[i])
+    return k, rms
 
 
-def active_rows(L, key_mode="golden", how="network"):
-    """The active connections' device rows, each with the feeder its site is counted on: network, the feeder the
-    network model says supplies the site (a site no feeder supplies drops out); stamp, the extract's own feeder
-    column on the row."""
-    der = der_keys(L, key_mode)
-    act = der[der.ac_connection_status == "Active"]
-    fd = act.feeder if how == "stamp" else act.key.map(L["feeder"])
-    return act.assign(fd=fd.values).dropna(subset=["fd"])
+def winter_figures(flow):
+    """Per feeder: the energy its head sent back to the zone substation in June, July and August 2026 (MWh, the
+    reverse flow summed half hour by half hour) and its largest half-hour reverse flow (MW)."""
+    rev = (-flow).clip(lower=0.0)
+    out = {}
+    for f in K.FEEDERS:
+        by_month = rev[f].groupby(rev.index.month).sum() * 0.5
+        out[f] = tuple(float(by_month.get(m, 0.0)) for m in MONTHS) + (float(rev[f].max()),)
+    return out
 
 
-def ask_d(L, mode="golden"):
-    """Per feeder: the active DER Register sites it supplies (a site is the premises' NMI with at least one active AC
-    connection). stamp: placed by the extract's feeder column; connections: active AC connections counted; no_map: NMIs
-    read at ten characters only; raw: NMIs as lodged and the extract's feeder."""
-    key_mode = {"raw": "raw", "no_map": "norm"}.get(mode, "golden")
-    act = active_rows(L, key_mode, "stamp" if mode in ("stamp", "raw") else "network")
-    if mode == "connections":
-        c = act.groupby("fd").ac_connection_id.nunique()
-    else:
-        c = act.groupby("fd").key.nunique()
-    return {f: int(c.get(f, 0)) for f in K.FEEDERS}
+def reverse_flow(L, how="golden"):
+    """The asks' figures under a route. golden: each feeder head at its own factor fitted to its bus section's check
+    meter (bay_factors); recorded: the historian as archived; one_factor: one factor fitted to both meters; section:
+    one factor per bus section fitted to its meter; totals: one factor per bus section as the ratio of its meter's
+    energy to its feeder heads' (the pro-rata repair under which the totals tie exactly); share: each bus section's
+    export register shared among its feeders by the historian's reverse energy that month, the largest half hour at
+    the section factor; pv_share: the
+    same shared by each feeder's connected capacity at the base date; pooled, no_intercept, misaligned (the meter read
+    one half hour early) and exact (each bay's factor as the ratio of two CT ratios, rounded from the fit): the
+    decomposition's other constructions."""
+    hw, mw = L["scada"], L["meters"]
+    if how in ("golden", "pooled", "no_intercept", "misaligned", "exact"):
+        k, _ = bay_factors(L, pooled=how == "pooled", intercept=how != "no_intercept",
+                           shift=-1 if how == "misaligned" else 0)
+        if how == "exact":
+            k = {f: nearest_ct_quotient(v) for f, v in k.items()}
+        return winter_figures(hw * pd.Series(k))
+    if how == "recorded":
+        return winter_figures(hw)
+    if how == "one_factor":
+        x, y = hw.sum(axis=1), mw.sum(axis=1).reindex(hw.index)
+        return winter_figures(hw * float((x * y).sum() / (x * x).sum()))
+    sec_k = {}
+    for t in sorted(set(L["section"].values())):
+        fs = [f for f in K.FEEDERS if L["section"][f] == t]
+        x, y = hw[fs].sum(axis=1), mw[t].reindex(hw.index)
+        kk = float(y.sum() / x.sum()) if how == "totals" else float((x * y).sum() / (x * x).sum())
+        for f in fs:
+            sec_k[f] = kk
+    scaled = hw * pd.Series(sec_k)
+    if how in ("section", "totals"):
+        return winter_figures(scaled)
+    if how in ("share", "pv_share"):
+        rec = winter_figures(hw)
+        cap = connected_kw(L["reg"], K.BASE) if how == "pv_share" else None
+        out = {f: list(winter_figures(scaled)[f]) for f in K.FEEDERS}
+        for t in sorted(set(L["section"].values())):
+            fs = [f for f in K.FEEDERS if L["section"][f] == t]
+            rev = L["meter_export"][t]
+            for i, m in enumerate(MONTHS):
+                tot = float(rev[rev.index.month == m].sum() * 0.5)
+                w = np.array([rec[f][i] if cap is None else cap.get(f, 0.0) for f in fs], float)
+                for f, wf in zip(fs, w / w.sum()):
+                    out[f][i] = tot * wf
+        return {f: tuple(v) for f, v in out.items()}
+    raise KeyError(how)
 
 
-def ask_a(L, mode="golden"):
-    """Per feeder: how many of the active DER Register sites it supplies were first lodged in FY2025-26.
-
-    golden: a site's first lodgement is the earliest registration of any of its AC connections, decommissioned ones
-    included. active_first: only the active connections' registrations. no_map: NMIs read at ten characters but not
-    through the re-allocation log. stamp: the extract's feeder column. raw: NMIs as lodged and the extract's feeder."""
-    key_mode = {"raw": "raw", "no_map": "norm"}.get(mode, "golden")
-    der = der_keys(L, key_mode)
-    act = active_rows(L, key_mode, "stamp" if mode in ("stamp", "raw") else "network")
-    first = (act if mode == "active_first" else der).groupby("key").reg.min()
-    site_fd = act.groupby("key").fd.first()
-    f0 = first.reindex(site_fd.index)
-    new = site_fd[(f0 >= pd.Timestamp(K.LAST_FY[0])) & (f0 <= pd.Timestamp(K.LAST_FY[1]))]
-    c = new.value_counts()
-    return {f: int(c.get(f, 0)) for f in K.FEEDERS}
-
-
-SYSTEM_LODGED = {"SBR HV battery"}       # products whose devices each carry the system's total
-
-
-def connection_storage(bat, how="golden"):
-    """kWh per active battery AC connection. golden: a modular product's module rows summed, except a product whose
-    devices each carry the system's total, which counts once; once: one row per connection; rows: every row."""
-    g = bat.groupby("ac_connection_id")
-    first = g.kwh.first()
-    total = g.kwh.sum()
-    model = g.model.first()
-    if how == "once":
-        return first
-    if how == "rows":
-        return total
-    return pd.Series(np.where(model.isin(SYSTEM_LODGED), first, total), index=first.index)
-
-
-def ask_b(L, mode="golden"):
-    """Per feeder: the battery storage at the active DER Register sites it supplies (kWh)."""
-    act = active_rows(L, "norm" if mode == "no_map" else "golden", "stamp" if mode == "stamp" else "network")
-    bat = act[act.device_type == "Battery"].assign(kwh=lambda d: d.storage_capacity_kwh.astype(float))
-    st = connection_storage(bat, {"once": "once", "rows": "rows"}.get(mode, "golden"))
-    fd = bat.groupby("ac_connection_id").fd.first()
-    s = st.groupby(fd).sum()
-    return {f: float(s.get(f, 0.0)) for f in K.FEEDERS}
-
-
-def nameplate(model):
-    m = re.search(r"(\d+\.\d)$", str(model))
-    return float(m.group(1)) if m else None
-
-
-def connection_inverter_kw(inv, how="golden"):
-    """kW per active AC connection's inverters. golden: each inverter's rating summed, except where an inverter row
-    carries the whole connection (its rating is the inverter's nameplate times the inverter rows), which counts
-    once; once: one row per connection; rows: every row summed; dedupe: identical rows dropped, then summed."""
-    if how == "dedupe":
-        inv = inv.drop_duplicates()
-    g = inv.groupby("ac_connection_id")
-    first, total, n = g.kw.first(), g.kw.sum(), g.kw.size()
-    plate = g.model.first().map(nameplate)
-    if how == "once":
-        return first
-    if how in ("rows", "dedupe"):
-        return total
-    whole = (n > 1) & plate.notna() & ((first - plate * n).abs() < 0.011)
-    return pd.Series(np.where(whole, first, total), index=first.index)
-
-
-def ask_c(L, mode="golden"):
-    """Per feeder: the inverter capacity at the active DER Register sites it supplies (kW)."""
-    act = active_rows(L, "norm" if mode == "no_map" else "golden", "stamp" if mode == "stamp" else "network")
-    inv = act[act.device_type == "Inverter"].assign(kw=lambda d: d.rated_power_kw.astype(float))
-    kw = connection_inverter_kw(inv, {"once": "once", "rows": "rows", "dedupe": "dedupe"}.get(mode, "golden"))
-    fd = inv.groupby("ac_connection_id").fd.first()
-    s = kw.groupby(fd).sum()
-    return {f: float(s.get(f, 0.0)) for f in K.FEEDERS}
+def nearest_ct_quotient(v):
+    """The quotient of two standard CT primary ratings nearest a fitted factor."""
+    ratings = (200, 300, 400, 500, 600, 800, 1000, 1200)
+    return min((b / float(a) for a in ratings for b in ratings), key=lambda q: abs(q - v))

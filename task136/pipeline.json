@@ -1,11 +1,11 @@
 {
  "task": "task136",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "stump": "A competent solver builds NPP-114's base forecast, takes each 2026 bulk-buy's impact as the systems it will install at the council's participation rate per home letterboxed and files YRB24 at about 4.2 MW over hosting capacity; per owner-occupied house still without PV it files YRB24 at 3.9, and each suburb's own before and after files YRB24 at 2.4; the step that lands all three there is counting a campaign's installed systems, or its suburb's rise over its own past, as what it adds, when more than half of the households the past campaigns signed up would have gone solar within three years anyway and uptake rose across the zone over the same years: read against the suburbs whose campaign had not yet run, the seven added 4.09 systems per 100 owner-occupied houses without PV, Bindarra Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.",
  "architecture": 1,
  "loops": 0,
@@ -104,9 +104,18 @@
    "repair": "leak",
    "move": "The generator no longer writes data_dictionary.xlsx or export_manifest.csv; the other 13 files, the goldens and figures.json are byte-identical to the judged pack. The manifest's provenance (source system, extracted or issued date, owner) moved to metadata.json through common.PROVENANCE, which checks.py also uses to assert no extract runs past its date. No sentence was added to any document: the fork rows that cited the dictionary or manifest now rest on NPP-114 (2.2 for SF2, 3.1 for SF6 and SF27) and on the producing systems' own columns and labels (SF3 the legacy number and equipment table, SF24 the Withdrawn label with no connection, SF28 registered_date and Active/Decommissioned, closure 19 the rates roll's code descriptions), each asserted; the asks' devices stay unstated. checks.py asserts no shipped file or sheet describes the data, positive-controlled on the two old names. Gates: checks 476, verify 97, two builds byte-identical, freeze determinism PASS, figures_check 70 figures 0 absent, voice-check PASS, leak.py REVIEW with no LEAK, guard surface exit 0. precut's older FAIL (no 'Measured by:' line) is closed by generator/ceiling.py, which measures the ask layer on the cut pack the way the Ask sheet's cracker sheet describes it (cracker 0 of 32 ask figures, mirror leakage 8.0 per cent, pair 33.4 measured and 39.7 at the worst single crack, the full includer 32 of 32 and 58.7); the Ask sheet names it, precut exit 0.",
    "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "in-house honest-cracker audit 2026-11-01: the careful solver kept 32 of 32 ask figures (Asks 1 to 4 spent)",
+   "repair": "rubric",
+   "moved": "the four DER Register asks retired; the ask re-sited onto two new files, the winter feeder-head SCADA historian and the two 22 kV check meters (per feeder, the energy sent back to the zone substation in June, July and August 2026 and the largest half-hour reverse flow, 32 figures; D3, each bay archived at its own CT scale, forced only by the per-feeder decomposition of each bus section's meter); the DER extract and the re-allocation log kept as distractors, byte-identical; the main call, its rows, the ladder, the stump and every main-side figure frozen (freeze rubric PASS)",
+   "target_zip_md5": "1bb928fd43a8a219e82f72aee9e5e1b6",
+   "previous_md5": "bd4c13ada66610115ca1f88998616de5",
+   "commit": ""
   }
  ],
- "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 32 of 32 against the recorded 0 of 32, SPENT on Asks 1 to 4, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
@@ -115,24 +124,29 @@
  "portal_status_date": "",
  "wave": "wave 2 (new), seed FC07",
  "precut": {
-  "exit": 0,
-  "date": "2026-10-15"
+  "exit": 1,
+  "date": "2026-11-02",
+  "note": "61 checks, 1 FAIL: the prompt gate's 'Which of the eight' on the frozen call sentence, a FAIL only while status is PAUSED (a WARN under SHIPPED; 0 FAIL simulated)"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-15 on the shipped pack (--asof 2026-10-12), no LEAK, sweep 11 clean; the same five lines (NPP-114 carries the call's words; NPP-114, the letter and the assessment share ordinary nouns with the stump paragraph, 'network' entering sweep 4 from the design note; device_type), each answered in the design note's Build record and the report's Solver's-eye read",
-  "reader": "2026-10-15 round 3: clean on Q1 to Q4, Q6 analytical; its natural route take-up on eligible owner-occupied houses, the textbook route the design sets up to fail; every REVIEW line harmless; its ask readings (the feeder source, 'first lodged', the battery kWh source, sites as NMIs) governed by the literal reading per the judge"
+  "leak_py": "REVIEW, no LEAK on 1bb928fd (--asof 2026-10-12; the same ruled lines)",
+  "reader": "2026-10-15 round 3: clean on Q1 to Q4, Q6 analytical; its natural route take-up on eligible owner-occupied houses, the textbook route the design sets up to fail; every REVIEW line harmless; its ask readings (the feeder source, 'first lodged', the battery kWh source, sites as NMIs) governed by the literal reading per the judge",
+  "reader_2026_11_02": "ask-rework read on 1bb928fd: questions 2 to 4 none, question 1 none (NPP-114 files the procedure; no sentence names the step); question 6 read the procedure as mostly rule application with an analytical uptake estimate, settled by the judge (gate_h); on the new ask no document or column relates the historian's flows to the true flows (the device silent); it noted the feeder heads' sign convention and the two files' interval labels (start against end), which the judge found leave one reading"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-15 (people.first, Julie against task139, answered under Guard); no BLOCK",
   "nearest": "0.16 this slot's round-2 lineage (driver, differentiated), 0.06 task142 and task94 v3; heart text nearest 0.04; surface exit 0, one pair promoted (task450, surface proximity, retired, differentiated on the card); personas Ian Fletcher, Julie Cochran, Tammy Buchanan",
-  "heart_2026_11_01": "BLOCK read as H27 artifacts, recorded with the dates: ban.role against task448 and ban.forcing_event against task449 (both drawn 2026-10-12 like task136 and, unstamped, after it in task-number order; heart places this unstamped card after every card of its day), test.same_driver_older against task485 v4 (drawn 2026-10-26, after this build). No finding about task136; surface exit 0."
+  "heart_2026_11_01": "BLOCK read as H27 artifacts, recorded with the dates: ban.role against task448 and ban.forcing_event against task449 (both drawn 2026-10-12 like task136 and, unstamped, after it in task-number order; heart places this unstamped card after every card of its day), test.same_driver_older against task485 v4 (drawn 2026-10-26, after this build). No finding about task136; surface exit 0.",
+  "heart_2026_11_02": "BLOCK read against the dates: ban.role against task448 and ban.forcing_event against task449, both drawn 2026-10-12, the day of this build's own draw, and test.same_driver_older against task485 v4, drawn 2026-10-26 (H27); surface exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
+  "verdict": "DETERMINISTIC (pass 4)",
   "disposition": "APPROVE",
-  "report": "task136/determinism_check_report_pass3.md",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical (settles the reship leak reader's rule-application reading)"
+  "report": "task136/determinism_check_report_pass4.md",
+  "pass3": "DETERMINISTIC, APPROVE (task136/determinism_check_report_pass3.md, the leak reship's cut)",
+  "pass4": "DETERMINISTIC, APPROVE on 1bb928fd: every graded figure reproduced, the 32 reverse-flow figures included; the new ask has exactly one reading of each feeder's true flow (the check meters fit the historian only at the per-bay factors, rmse about 0.011 MW against 4.4 to 4.8 at factor 1) and of every month and half-hour boundary; the one soft spot on the main call is the gross against the net bulk-buy uplift (gross puts YRB24 on top), read as the net effect by 'raise its feeder's PV' and NPP-114 4.1's 'impact', and not to be pinned (it is the stump)",
+  "gate_g": "method_or_model_selection with etl_conformance on ask 6, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical; the reship leak reader's question 6 read the procedure as rule application, and the judge, recomputing, found the call decided by the bulk-buys' net uplift against a control group (the gross reading files YRB24), which settles the split"
  },
  "gates": {
   "checks": "483 assertions (the three-rules block R1 to R3c, 33 constructions, one sigma, every rival route the audit measured)",
@@ -150,7 +164,7 @@
   "verdict": "PASS 2026-10-15 (re-audit of round 3, scratchpad/rule3/task136_r3.md): planted none, semantics pass, rule application pass, analyst test yes, Layer 1 does not carry the stump",
   "accepted_risks": "stump strength about one of the top two; both could land if both build a never-treated difference-in-differences (the never-treated comparison sits inside the corridor); the untreated suburbs' counts rise very smoothly (design note, Accepted risks)"
  },
- "target_zip_md5": "bd4c13ada66610115ca1f88998616de5",
+ "target_zip_md5": "1bb928fd43a8a219e82f72aee9e5e1b6",
  "ask_audit_2026_11_01": {
   "verdict": "SPENT on Asks 1 to 4",
   "careful_cracker_keeps": "32 of 32 against the recorded 0 of 32",
@@ -158,5 +172,25 @@
   "why": "Ask 1 the network model's feeder the cracker already executes for the call; Ask 2 'first lodged' as the earliest registered_date; Ask 3 the model field's nameplate; Ask 4 the register's battery_kwh as referee",
   "probe": "scratchpad audit_cracker/task136/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
   "status_before": "SHIPPED"
+ },
+ "ask_audit_2026_11_02": {
+  "verdict": "REWORKED: one ask, 32 figures, D3 (a scale set per source and date) forced only by a reconciliation across two systems at two grains",
+  "careful_cracker_keeps": "0 of 32 under every careful repair (one factor per bus section fitted or as the ratio of its totals, one for both meters, the export register shared by reverse energy or by connected capacity, the historian as recorded, the meter one half hour off)",
+  "single_crack": "the per-feeder decomposition of each section's meter, 32 of 32, pair 58.7 (58.2 on 38, 7, 55)",
+  "pair": "33.4 measured; two careful responses on the call 49.4 each; mirror leakage 8.0 per cent",
+  "measured_by": "generator/ceiling.py on target.zip md5 1bb928fd43a8a219e82f72aee9e5e1b6"
+ },
+ "gates_2026_11_02": {
+  "checks": "583 assertions",
+  "verify": "123 checks from the bundle alone",
+  "rebuild": "two consecutive builds byte-identical, target.zip md5 1bb928fd43a8a219e82f72aee9e5e1b6 (sha256 bb602e7446feab79)",
+  "freeze": "rubric PASS (ask file feeder_upgrade_2029.xlsx, 72 ask figures moved); determinism flags only the 32 retired der.* keys and the workbook's Deliverable Answers block",
+  "figures_check": "74 figures, 0 absent",
+  "precut": "61 checks, 1 FAIL (the PAUSED-status prompt gate)",
+  "voice_check": "FAIL on the frozen 'Which of the eight' while PAUSED; 0 FAIL under SHIPPED (2 WARN: that line and the shell quota)",
+  "leak_py": "REVIEW --asof 2026-10-12, no LEAK; the round 3 lines only",
+  "container": "the cut pack and the goldens clean",
+  "guard": "surface exit 0; heart BLOCK on ban.role (task448), ban.forcing_event (task449), test.same_driver_older (task485 v4), H27 artifacts",
+  "pack": "15 files: the 13 of the 2026-11-01 pack byte-identical, the SCADA historian and the check meters added; the chart byte-identical"
  }
 }

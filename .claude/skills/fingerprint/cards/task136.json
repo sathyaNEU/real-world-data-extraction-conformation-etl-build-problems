@@ -128,6 +128,7 @@
     "NMIs keyed by the distributor, properties keyed by the council's property number, joined only through the GIS NMI-to-property cross-reference with dual-occupancy NMIs and abolished NMIs of rebuilt houses",
     "inverter rating in kW AC beside panel capacity in kWp, rows migrated from the pre-2019 system with the inverter in a separate equipment table",
     "the council's bulk-buy log in its own workbook layout (title block, wrapped headers, footnotes, a program terms sheet)",
-    "a national DER Register extract at device grain on the ask paths: checksum NMIs from the newer installer portal, builders' systems under temporary supply NMIs with the re-allocation log, decommissioned connections, the feeder stamped at lodgement, per-product battery lodgement and the older portal's per-inverter field"
+    "a national DER Register extract at device grain, now a distractor: checksum NMIs from the newer installer portal, builders' systems under temporary supply NMIs with the re-allocation log, decommissioned connections, the feeder stamped at lodgement, per-product battery lodgement and the older portal's per-inverter field",
+    "a zone substation's SCADA historian of half-hour feeder-head flows beside the 22 kV bus-section check meters in kWh by interval end, import and export registers, local standard time"
   ]
 }

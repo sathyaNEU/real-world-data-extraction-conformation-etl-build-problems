@@ -37,13 +37,13 @@ that recovers a rule, and no record blesses the wrong method.
 | Card | `.claude/skills/fingerprint/cards/task136.json`, architecture v1 at round 3 (rounds 1 and 2 in `lineage`); `guard.py` results under Guard and Build record |
 | Domain / task type | energy-systems-utilities / load-forecasting (a client domain): a distributor's forecast of rooftop PV on each feeder at the design point of an augmentation is the DER half of its demand forecast |
 | Objective | Forecasting & Predictive Modeling: the rooftop PV connected on each feeder at 31 August 2029, a window not yet open, against the spring 2029 minimum-demand hosting capacity |
-| Shape | other: the call and its six components (the feeder, its PV over hosting capacity, the runner-up, its excess, the gap, how much each 2026 bulk-buy raises its feeder's PV by the design point), the chart's named parts, and four per-feeder DER Register figures on rows the call never reads (32 figures); about 40 criteria, arithmetic in `## Ask sheet` |
+| Shape | other: the call and its six components (the feeder, its PV over hosting capacity, the runner-up, its excess, the gap, how much each 2026 bulk-buy raises its feeder's PV by the design point), the chart's named parts, and per feeder the energy it sent back to Yarrabin zone substation in each of June, July and August 2026 and its largest half-hour reverse flow, from records the call never reads (32 figures); about 40 criteria, arithmetic in `## Ask sheet` |
 | Decision | `pick_one_of_n`, answer unit `named_option` (with its MW figure): which feeder gets the one augmentation |
 | Mechanism | gap time then population; pattern none; generators G9 (what a campaign leaves on the feeder at the design point against what it installed), G16 (the comparison the records support), G13 (the impact at the design point, after the pulled-forward installs would have come anyway); Gate G `method_or_model_selection`; strategy `population_selection` (which installed systems are the campaign's own: its participants are selected on imminent adoption) |
 | Layer 2 family / pattern | `estimand_identification`; `own:bulk-buy-net-uplift-against-not-yet-treated-suburbs` (a program's addition at a horizon read against the areas whose program had not yet run, over the same calendar months) |
 | Furniture | forum `line_manager_or_team` (NPP-114 section 6 assigns the one augmentation when the capital works program is compiled; no forum named anywhere), forcing event `budget_or_appropriation`, organisation family `utility_or_infrastructure`, role family `research_desk`, context artifact `capacity_report` (the 2026 hosting capacity assessment), calibration `none`, opening `question-first`, question form `which` |
 | Spine | `eg_connection_applications_20260901.csv`, the embedded generation connection register: one row per micro EG connection application at an NMI, new systems and alterations, 2009 to 31 August 2026 (27,854 rows); constructed |
-| Deliverables | `feeder_upgrade_2029.xlsx` (the call, the forecast by feeder, the Solar Streets estimate, the DER Register figures), `yarrabin_pv_vs_hosting_2029.png` (one bar per feeder for its PV at 31 August 2029, its hosting capacity marked) |
+| Deliverables | `feeder_upgrade_2029.xlsx` (the call, the forecast by feeder, the Solar Streets estimate, the winter's reverse flow by feeder), `yarrabin_pv_vs_hosting_2029.png` (one bar per feeder for its PV at 31 August 2029, its hosting capacity marked) |
 | People | drawn with `guard.py names --geo Australia --seed 136`: Wanda Thornton (DER forecasting analyst, the requester), Ian Fletcher (Manager Network Planning, owner of NPP-114; replaced Christopher Sheppard at round 2), Julie Cochran (council sustainability programs officer), Bryan Nichols (connections lead), Linda Ruiz (GIS analyst), Nicole Rocha (customer team leader), Tammy Buchanan (consulting engineer); none in the prompt |
 
 **Guard.** `guard.py check` on the round-3 card: WARN, no BLOCK. `people.first`: Julie (Julie Cochran, drawn for this
@@ -96,6 +96,16 @@ augmentation, assigned by NPP-114 section 6. As-of dates: the connection registe
 Register extract at 31 August 2026 (run 1 September 2026); the council's letter of 14 August 2026; the hand-off 12
 October 2026.
 
+## Survivor anatomy
+
+Actor: what a past bulk-buy added by the end of its window has no column in any file: it is built per campaign from every owner-occupied house's first application (the register through the cross-reference and the rates roll) against the suburbs whose campaign had not yet run over the same months, and nothing stores a campaign's addition, a share or a pulled-forward install.
+Link: the counterfactual is read through a cross-unit comparison no key offers and no sentence invites: each campaign suburb's year before scaled by the not-yet-treated suburbs' change over the same calendar months; no field, code or clause names a comparison suburb, a window or an estimator.
+Reflex: the forecaster's generic moves sit at rungs 0 to 2 and file YRB24: installed systems per home letterboxed (4.2 MW, the default path's `Ends on`), per owner-occupied house without PV (3.9) and each suburb's own before and after (2.4 to 2.6).
+Back-test: the easy route validates where a solver checks it: the council's systems installed equal the register's program-coded connections for every campaign and its homes letterboxed equal the network model's residential NMIs in each suburb (asserted), so the installed count reconciles as history and nothing in the pack refutes it as an addition.
+Second use: every file the decisive step reads sits in the pack for its own reason: the register builds connected capacity and the trend, the rates roll and the cross-reference give the program terms' owner-occupied houses (rung 1's pool as well), the council's summary gives the openings and installed counts (rung 0), the letter the 2026 openings and drops.
+Shock: the movement the step recovers reads as the campaigns' own explained effect, a lull in each campaign suburb's other first applications for two years after its opening; YRB27 is the default path's runner-up (1.19 MW over before any campaign) and sits at no end of any column the assessment ships (hosting capacity, customers, route length, minimum demand), and no file states an excess or ranks the feeders.
+Pins: NPP-114 4.1 files the WHAT (the impact on the feeder's connected capacity at the design point) and the prompt asks how much each bulk-buy will raise its feeder's PV by that date; no filed sentence names a comparison, a counterfactual, a pulled-forward install, a window or an estimator (asserted on NPP-114 and the prompt).
+
 ## Default path
 
 1. Read NPP-114. From the connection register take each NMI's latest connected configuration (an alteration carries
@@ -139,10 +149,10 @@ Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.
   withdrawn, under-assessment and approved-not-connected applications; removals), 2019 migrated rows whose inverters
   sit in a legacy equipment table, the feeder recorded at application after five load transfers (2023 to 2025), the
   rates roll keyed by property number and joined to NMIs only through the GIS cross-reference (dual-occupancy NMIs,
-  abolished NMIs of rebuilt houses), the council's workbook in its own layout; on the ask paths a device-grain DER
-  Register extract (checksum NMIs from the newer portal, builders' temporary NMIs and the re-allocation log,
-  decommissioned connections, the feeder stamped at lodgement, per-product battery lodgement, the older portal's
-  per-inverter field). Each is what these systems produce; read by the filed rules and the systems' own columns and
+  abolished NMIs of rebuilt houses), the council's workbook in its own layout; on the ask path the zone substation's
+  SCADA historian beside its two 22 kV check meters (a half hour labelled by its start in one and by its end in the
+  other, import and export as two registers, each feeder bay archived at its own scale). Each is what these systems
+  produce; read by the filed rules and the systems' own columns and
   labels each gives back the world's own figures (R2, asserted), and none decides the call.
 - **Layer 2:** `estimand_identification`, staggered adoption: the counterfactual for a past campaign suburb is what
   its houses would have lodged over the same months without the campaign, read from the suburbs whose campaign had
@@ -195,8 +205,9 @@ Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.
 - **Clean-data test (asserted, R3a).** On the world's own records, before any file is written, installed systems per
   letterbox file YRB24 at 4.2 MW and per house without PV YRB24 at 3.9; the campaigns' true additions per house
   without PV file YRB27 at 1.9 with every golden figure (R3b).
-- **Deletion test.** Delete the distractors, the DER Register extract and the re-allocation log: the call recomputes
-  unchanged (asserted) and the default path is still wrong.
+- **Deletion test.** Delete the distractors (the peak forecast, the rebate approvals, the DER Register extract and
+  the re-allocation log) or either winter file: the call recomputes unchanged (asserted) and the default path is still
+  wrong.
 - **Lens swap.** The default and the golden are two estimates of one quantity (what a campaign adds by the design
   point) on the same rows, not one population at one moment under two lenses.
 - **No artifact ranks or prices the decision.** The council's log reports what each campaign did; the assessment
@@ -251,14 +262,16 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF24 | a withdrawn application | not a first application: nothing was connected under it | any status counted | same call (YRB27 at 1.8), figures move | the register's own status label: no Withdrawn row carries a connection, a removal or an inverter capacity (asserted; no dictionary ships) |
 | SF25 | the two campaigns whose window the base date cuts (BNR23, PBG24) | kept, at their shorter windows | dropped | converges (asserted) | the records converge |
 | SF26 | "how much each bulk-buy will raise its feeder's PV" | its systems at the feeder's FY2025-26 average new inverter, in MW | a count of systems | the prompt gives megawatts to one decimal; NPP-114 4.3 sizes each system | the prompt and NPP-114 4.3, asserted |
-| SF27 | the feeder a DER site is on (asks 1 to 4) | the network model's feeder for the site's NMI | the DER extract's `feeder` (stamped at lodgement; 491 active connections at 431 sites differ) | the call unread; Ask 1 YRB27 1,933 and YRB23 2,336 (all 8 off) | the prompt's "sites it supplies" and NPP-114 3.1 ("The network model at the base date places each NMI on its feeder.", asserted); nothing describes the extract's `feeder` (no dictionary ships); the round-3 judge reproduced every DER cell on this literal reading |
-| SF28 | "first lodged" (ask 2) | the site's earliest `registered_date` over every AC connection at it, decommissioned included | the earliest of the active connections only | the call unread; YRB27 170, YRB26 108 (all 8 off) | the prompt counts sites ("how many of them"); the DER extract's own `registered_date` per AC connection and its `ac_connection_status` labels (Active, Decommissioned) keep a replaced one (asserted; no dictionary ships); the round-3 judge: the literal reading is the golden (active connections only adds 12 to 53 sites a feeder) |
+| SF27 | the flow at a feeder head (the ask) | its historian value times its bay's own factor, fitted by least squares to its bus section's check meter half hour by half hour (rms 0.011 MW, the two systems' measurement error) | the historian as recorded; one factor per bus section, fitted or as the ratio of its totals, or for both meters (the pro-rata repairs); each section's export register shared by the historian's reverse energy or by connected capacity | the call unread; each misses all 32 figures (YRB27 June 83 and 114 MWh against 130) | the records: each section's meter equals its four feeder heads at their own factors to within the two systems' measurement error (0.011 MW rms), and no single factor fits (0.08 to 0.11 MW rms, seven to ten times that over the window and four times or more in every half hour of the day); every construction of the fit (the factors as CT quotients, both meters pooled, no intercept) files every figure (asserted) |
+| SF28 | the half hours' clock and labels (the ask) | Queensland time; the historian's half hour by its start, the meter's by its end | the meter's label read as the half hour's start; the historian's read as its end | the meter one half hour off fails the fit (rms 3.6 to 3.8 MW, negative factors) and misses all 32; the historian's label read as the end moves no figure | the files' own column names (`interval_start_aest`, `interval_end_aest`) and the records: the fit refuses the misalignment, and the historian's hour profile (reverse flow peaking in the half hours starting 11:30 and 12:00 by its labels) confirms Queensland time, under which no reverse flow sits on a month's midnight boundary (asserted) |
 | SF29 | a house with two NMIs | the earlier first application | the later | converges: no house in a campaign suburb has two NMIs (asserted) | the records converge |
+| SF30 | "any energy it sent back" (the ask) | the reverse flow (from the feeder into the 22 kV bus) summed half hour by half hour | each month's net energy through the feeder head | the net runs forward on every feeder in every month, so it is no energy sent back | the prompt's "sent back"; asserted |
+| SF31 | "its largest half-hour reverse flow" (the ask) | the largest half-hour average reverse flow over the three months | an instantaneous peak | none: the historian holds half-hour averages only | the prompt's "half-hour"; asserted |
 
 The stump is none of these rows: a careful reader reads every one the same way, and the default path reads them all
 correctly. SF15 to SF18 and SF20 are the decisive estimate's constructions and bases, listed so that each is either
-shown to converge or priced and refused by the records. SF27 and SF28 are the asks' own terms (each ask's primary
-device, `supplemental-stumping`); the call reads neither.
+shown to converge or priced and refused by the records. SF27, SF28, SF30 and SF31 are the ask's own terms (SF27
+carries its primary device, `supplemental-stumping`); the call reads none of them.
 
 ## Ladder
 
@@ -355,181 +368,142 @@ or converges.
   control on the installed count, true under every estimate (none confirms what a campaign added).
 - **The council's homes letterboxed** and the letter's drops: R0's denominator; they tie under every estimate.
 - **The hosting capacity assessment**: hosting capacity and minimum demand only; no connected capacity, excess or rank.
-- **The DER Register extract and the re-allocation log** (the asks' path): no rung reads them. None ties only under
-  the golden.
+- **The winter files** (the ask's path): no rung reads them. The check meters referee the historian half hour by half
+  hour and hand over no feeder's level; their totals tie under the pro-rata repair as well, so none ties only under the
+  golden. The DER Register extract and the re-allocation log ship as distractors.
 
 ## Ask sheet
 
 **Main call's declared row population:** every row of `eg_connection_applications_20260901.csv`,
 `nmi_network_model_20260831.csv`, `nmi_property_xref_2026.csv`, `merindah_rates_roll_2026-27.csv` and
 `legacy_inverter_equipment.csv`, the council's program summary and letter, NPP-114 and the hosting capacity assessment.
-Device and hazard rows in it: 0. The four asks read `der_register_extract_yarrabin_20260901.csv` and
-`nmi_reallocations_2019-2026.csv`, which no rung of the call reads, and the network model for placement (device-free);
-the call is asserted unchanged with both ask files emptied, and the connection register carries no replaced or
-eleven-character NMI. Each ask is a measure every feeder carries (its DER on the national register) that the call does
-not turn on; none is keyed to the call, its construction or its figures; no two share a primary device. No sentence in
-the pack adjudicates a device, and no file describes a field (no dictionary or manifest ships). Round 3 left the
-asks' wording, files, devices and code unchanged; the regenerated world moved their figures, and every stop below is
-re-measured on the round-3 pack.
+Device and hazard rows in it: 0. The ask reads `yarrabin_zs_feeder_heads_scada_jun-aug2026.csv` and
+`yarrabin_zs_22kv_check_meters_jun-aug2026.csv`, which no rung of the call reads (the call is asserted unchanged with
+either deleted). The DER Register extract and the re-allocation log, the round 1 to 3 asks' files, now ship as
+distractors beside the peak forecast and the rebate approvals, byte-identical. The ask is a measure every feeder carries
+that the call does not turn on, keyed to no candidate, construction or figure of the call. No sentence in the pack names a
+CT, a ratio, a scale, a renewal, the historian or a check meter (asserted on every document), and no file describes a
+field.
 
-**Ask 1. For every feeder, how many active DER Register sites it supplies** (8 counts; `calc.ask_d`).
-- H18 home: the market register's count of DER sites on each feeder, beside the distributor's own forecast; a measure
-  every feeder carries that the call never reads.
-- Golden: YRB21 3,443; YRB22 3,194; YRB23 2,128; YRB24 2,783; YRB25 3,680; YRB26 2,180; YRB27 1,838; YRB28 2,927.
-- Construction: a site is the premises' NMI (ten characters; a builder's temporary supply NMI read at the NMI that
-  replaced it in the re-allocation log) with at least one active AC connection, placed on the feeder the network model
-  shows supplying it at 31 August 2026 ("it supplies"; the network model's `feeder`: "Feeder supplying the NMI at 31
-  August 2026"). An abolished NMI no feeder supplies drops out.
-- Primary device (D2, a label stored before a silent switch): Mirrabee's extraction stamps each AC connection with
-  the feeder its NMI was on when the connection was lodged; five load transfers (2023 to 2025) moved streets between
-  feeders, so 491 active connections at 431 sites carry a feeder that no longer supplies them, and every feeder gains or
-  loses some. No shipped file describes the extract's `feeder`. The tell is the register's
-  `feeder_at_application` against the network model for the same NMIs, a cross-file cut.
-- Hazards: H1 checksum NMIs (5,628 of 30,921 rows, at 3,678 connections, lodged through the newer portal with eleven
-  characters); H2 temporary NMIs (70 rows at 61 connections lodged against a builder's supply); H3 several active
-  connections at one site (an installer who left the old connection active after an alteration, beside a battery's own
-  connection); H5 abolished NMIs (24 active connections at NMIs no feeder supplies).
-- Path (5 files, 9 columns): the DER extract (`ac_connection_id`, `nmi`, `ac_connection_status`, `feeder`), the
-  re-allocation log (`old_nmi`, `new_nmi`), the network model (`nmi`, `feeder`).
-- Stops (measured, each off the golden on all 8): the extract's own feeder, YRB27 1,933 and YRB23 2,336; active AC
-  connections counted, YRB26 2,335; NMIs not carried through the re-allocation log, YRB27 1,831 and YRB24 2,778; NMIs as
-  lodged with the extract's feeder, YRB25 3,798.
-- Lazy delta: the natural pipeline (filter Active, count distinct NMIs by the extract's feeder) misses 8 of 8.
-- Realism: a distributor filters the national register to one zone substation by the feeder in its NMI history at
-  each lodgement; a later load transfer leaves the stamp behind.
-
-**Ask 2. How many of those sites were first lodged in FY2025-26** (8 counts; `calc.ask_a`).
-- H18 home: the new DER sites on each feeder over the last financial year, the market register's view of the growth
-  the trend carries.
-- Golden: YRB21 98; YRB22 177; YRB23 91; YRB24 255; YRB25 204; YRB26 75; YRB27 158; YRB28 159.
-- Construction: a site's first lodgement is the earliest `registered_date` of any AC connection at the site,
-  decommissioned connections included; counted where it falls in 1 July 2025 to 30 June 2026.
-- Primary device (D8, an anchor on the current record, not the first): an alteration lodges a new AC connection and the
-  old one is decommissioned (2,800 decommissioned connections), so a site's active connection is often younger than
-  the site; read off the active connections, every altered site counts as new. The tell is the decommissioned rows at
-  the same NMI, which a pipeline filtering Active first never keeps.
-- Over-cleaning half: none needed; the feeder stamp does not move this ask (every connection lodged after the last
-  transfer is stamped right, asserted), so the stamp's repair earns nothing here.
-- Hazards: H1 (an old connection under ten characters and its replacement under eleven read as two sites), H2.
-- Path (5 files, 8 columns): the DER extract (`ac_connection_id`, `nmi`, `ac_connection_status`, `registered_date`),
-  the re-allocation log, the network model.
-- Stops: the active connections' own registration, YRB27 170, YRB26 108 (all 8 off); NMIs as lodged, YRB22 248 (all 8
-  off); not carried through the re-allocation log, YRB22 170 (5 of 8 off).
-- Lazy delta: the natural read misses 8 of 8.
-- Realism: the DER Register keeps a replaced connection as Decommissioned beside its replacement; a register of AC
-  connections dates each connection, never the site.
-
-**Ask 3. The inverter capacity at those sites** (8 figures, kW to the nearest 10; `calc.ask_c`).
-- H18 home: the market register's installed inverter capacity on each feeder, the reconciliation partner of NPP-114's
-  connected capacity.
-- Golden: YRB21 19,280; YRB22 18,950; YRB23 12,350; YRB24 18,110; YRB25 21,770; YRB26 12,200; YRB27 11,800; YRB28
-  16,980 kW.
-- Construction: each active AC connection's inverter ratings summed, except a two-inverter connection lodged on the
-  older installer portal (before July 2024), whose every inverter row carries the connection's total (its rating is
-  the model's nameplate times its rows), counted once.
-- Primary device (D3, a field's meaning set by the portal's date): the older portal asked one rating per inverter and
-  installers entered the connection's total there; 373 active two-inverter connections carry it, beside 261 newer ones
-  rated per inverter. Summing rows doubles the old ones; the duplicate sweep (identical rows dropped) halves the new
-  ones. The tell is the model name's rating (`Primo 5.0` on a 10.00 kW row) and the register's `inverter_kw_ac`, each in
-  another column or file.
-- Hazards: H2, H4 the feeder stamp (all 8), H3 (an old connection left active counts, both are active).
-- Path (6 files, 11 columns): the DER extract (`ac_connection_id`, `nmi`, `device_type`, `model`, `rated_power_kw`,
-  `ac_connection_status`, `registered_date`), the re-allocation log, the network model, the connection register
-  (`inverter_kw_ac`, the referee).
-- Stops: rows summed, YRB22 19,580 (all 8 off); duplicate rows dropped or one row per connection, YRB22 18,740 (all 8
-  off); the extract's feeder, YRB25 22,130 (all 8 off); not carried through the re-allocation log, YRB27 11,740 (all 8
-  off).
-- Lazy delta: the natural sum misses 8 of 8; the hygiene repair misses 8 of 8.
-- Realism: a portal form with one rating field per inverter, filled with the system's total until the form changed,
-  is ordinary.
-
-**Ask 4. The battery storage at those sites** (8 figures, kWh to the nearest 10; `calc.ask_b`).
-- H18 home: storage that can absorb a feeder's midday PV, reported beside each feeder's PV.
-- Golden: YRB21 3,260; YRB22 2,780; YRB23 2,000; YRB24 2,560; YRB25 3,080; YRB26 2,280; YRB27 1,560; YRB28 2,510 kWh.
-- Construction: per active battery AC connection, the module rows summed, except a Sungrow SBR stack, whose installer
-  app lodges one device per module each carrying the stack's total, counted once.
-- Primary device (D6, an event's quantity on every line it covers, per product): BYD and GoodWe stacks lodge one row
-  per module at the module's size; Sungrow SBR stacks (272 of 1,679 active battery connections) one row per module at
-  the stack's total. Summing rows multiplies every SBR stack by its modules; one row per connection, or dropping the
-  duplicate rows, drops every other stack's modules. The tell is an SBR site summing to several times the register's
-  `battery_kwh` for the NMI.
-- Hazards: H2 (3 of 8), H4 (8 of 8), H5.
-- Path (6 files, 10 columns): the DER extract (`ac_connection_id`, `nmi`, `device_type`, `model`,
-  `storage_capacity_kwh`, `ac_connection_status`), the re-allocation log, the network model, the connection register
-  (`battery_kwh`, the referee).
-- Stops: rows summed, YRB27 2,440 (all 8 off); one row per connection or duplicate rows dropped, YRB27 1,120 (all 8
-  off); the extract's feeder, YRB22 2,720 (all 8 off); not carried through the re-allocation log, YRB27 1,530 (3 of 8
-  off).
-- Lazy delta: the natural sum misses 8 of 8; the hygiene repair misses 8 of 8.
-- Realism: installer commissioning apps differ by brand in how they lodge a modular battery; a register holds what each
-  app sends.
+**Ask 1. For every feeder, the energy it sent back to the zone substation in each of June, July and August 2026 (MWh to
+the nearest 10) and its largest half-hour reverse flow over those months (MW to one decimal)** (32 figures: 24 monthly
+energies and 8 largest half hours; `calc.reverse_flow`).
+- H18 home: the midday surplus each feeder already pushes back into Yarrabin zone substation this winter, the evidence
+  beside the augmentation call that its PV has outrun its load; a measure every feeder carries that the call never
+  reads. Use: the Manager Network Planning shows it with the call.
+- Golden: YRB21 1,030, 980 and 1,140 MWh, 12.0 MW; YRB22 850, 810, 960, 10.8; YRB23 280, 280, 340, 5.4; YRB24 660, 620,
+  750, 9.2; YRB25 870, 820, 980, 11.2; YRB26 220, 210, 260, 4.5; YRB27 130, 150, 190, 3.7; YRB28 710, 670, 820, 9.0
+  (every figure equals the world's own flows to its rounding, asserted).
+- Construction: each feeder head's half-hour flow is its historian value times its bay's factor, the factor fitted by
+  least squares of its bus section's check-meter flow (import less export, each interval end closing its half hour) on
+  the section's four feeder heads; the reverse flow (from the feeder back into the 22 kV bus) is summed half hour by half
+  hour in each calendar month in Queensland time, and its largest half hour taken.
+- Primary device (D3, a scale set per source and date, forced only by a reconciliation across two systems at two grains:
+  the brief's unit or grain change across two systems): the May 2026 feeder protection renewal changed each bay's
+  metering CT, and the historian's tags kept their old CT scaling, so each feeder head is archived at its own fraction of
+  its flow (old ratio over new: 1/1.25 on YRB21 and YRB28, 1/1.6 on YRB22 and YRB27, 1/1.2 on YRB23 and YRB26, 1/1.5 on
+  YRB24 and YRB25). The window opens after the renewal, so no series steps, and every value is a plausible feeder flow (the
+  historian as recorded reads 62 to 84 per cent of each figure). Nothing in the pack states a ratio or a renewal. Only
+  the check meters (another system, energy in kWh by bus section) force each factor: each section's meter equals its
+  four feeder heads at those factors, half hour by half hour, to within the two systems' measurement error (rms 0.011
+  MW; the fitted factors within 0.1 per cent of the CT quotients), while one factor per section leaves 0.08 to 0.11 MW,
+  seven to ten times that over the window and four times or more in every half hour of the day. The link is a relationship between values (a section's
+  energy against a weighted sum of four feeder flows); no key, code or value is shared between the two files.
+- Over-cleaning half: the careful solver's reconciliation finds each section's meter carrying 35.9 and 36.6 per cent
+  more energy than its four feeder heads and repairs the control pro rata, one factor per bus section (the ratio of its
+  totals, 1.36 and 1.37, under which the totals tie exactly, or fitted to its meter, 1.37 on each) or one for both:
+  every feeder then moves the wrong way, the 1.2 and 1.25 bays over-corrected and the 1.5 and 1.6 bays under (all 32
+  off on each; no bay within 5 per cent of any section or pooled factor, asserted).
+- Hazards (each executed by the careful solver, kept as texture): the meters label a half hour by its end and the
+  historian by its start (read one half hour off, the fit fails at 3.6 to 3.8 MW rms with negative factors, so the
+  alignment is forced); import and export as two registers (both carry energy in a half hour the section's flow
+  reverses within; import less export is the half hour's energy); each tag's bus section; reverse flow as the flow below
+  zero.
+- Path (2 files, 7 columns): the historian (`interval_start_aest`, `tag`, `value`) and the check meters (`meter_id`,
+  `interval_end_aest`, `import_kwh`, `export_kwh`); the share stops add the connection register and the network model.
+- Stops (measured on the cut pack, each asserted to miss every one of the 32): the historian as recorded (YRB27 June 83
+  MWh against 130); one factor per bus section (YRB27 June 114, YRB21 June 1,128 against 1,030); one factor per bus
+  section as the ratio of its totals; one factor for both meters; each section's export register shared by the
+  historian's reverse energy; the same shared by connected capacity; the meter one half hour off.
+- Rival constructions of the golden (each asserted to file every figure): the fitted factors or their nearest CT
+  quotients; both meters pooled over the eight feeder heads; the fit without an intercept; the historian's label read as
+  the half hour's end.
+- Lazy delta: the natural pipeline (the historian's negative values summed by month) misses 32 of 32; the reconciled,
+  pro-rata repair misses 32 of 32.
+- Pin test: the asking sentence pins the quantity (the energy sent back, the largest half-hour reverse flow), the point
+  (each feeder's flow into the zone substation), the window (each of June, July and August 2026), the unit and the
+  rounding; the device sits in the one dimension no pin reaches, how the historian's numbers relate to the flow they
+  record. Filing the WHAT more tightly (the half hours, the months in Queensland time) moves no device row.
+- Realism: a protection renewal that re-points a historian's tags to new relays and keeps the tags' old scaling is a
+  common SCADA archive fault; the control room reads the relays directly and sees nothing wrong, and Network Planning
+  pulls the archive months later. The check meters are the zone substation's energy-accounting meters on each
+  transformer's 22 kV side, and the station services take their supply from the local network, not the bus. Each system
+  measures with its own error (every feeder head a gain within 0.04 per cent and 0.08 per cent random error in each
+  half-hour average, each meter a gain within 0.02 per cent and 0.03 per cent random error), so the two never agree
+  exactly, and each meter register accumulates its own direction, so a half hour the section's flow reverses within
+  carries both.
+- Second primary: none. The single crack (the per-feeder decomposition) keeps 32 of 32 and its pair is 58.7, under 60.
 
 **Hazard table**
 
-| Hazard | Root cause | Asks moved (measured) |
+| Hazard | Root cause | Moves |
 |---|---|---|
-| H1 checksum NMIs | the newer installer portal lodges the NMI with its checksum digit | sites, first lodged, inverter, storage (as lodged: all 8 on each) |
-| H2 temporary NMIs | builders' systems lodged against the temporary supply | sites 8, first lodged 5, inverter 8, storage 3 |
-| H3 several active connections at a site | an installer left the old connection active; a battery's own connection | sites (counted by connection, all 8) |
-| H4 the feeder stamped at lodgement | load transfers after lodgement | sites (primary), inverter 8, storage 8; first lodged 0 |
-| H5 abolished NMIs | knock-down rebuilds; the DER record left active | sites, inverter, storage (with H4) |
+| each bay archived at its own scale (primary) | the historian's tags kept the old CT scaling at the May 2026 renewal | all 32 figures (the historian as recorded 16 to 38 per cent low) |
+| a half hour's end against its start | the metering database labels a half hour by its end, the historian by its start | the fit (refused one half hour off); no figure |
+| import and export | the check meter's two registers, both carrying energy in a half hour the flow reverses within | the fit's sign; no figure |
+| bus sections | each transformer feeds four feeders, the bus tie open | the per-section fit; the pooled fit converges |
 
-**One reading of "at those sites".** The capacity and storage are the DER Register's own records for its active
-connections at those sites (the register the sites are counted on); the connection register describes the same
-systems on another population (approved installations not yet connected, removals the DER Register still shows
-active, old connections an installer left active), so its totals at the same NMIs differ and serve only as the
-referee below.
+**Referee.** Each bus section's check meter is the one referee: it arbitrates the designed disagreement half hour by half
+hour and hands over no feeder's level (it measures four feeders at once). Its totals tie under the pro-rata repair as
+well (a ratio of totals makes them tie exactly), so it is no control that ties only under the golden; only the half-hour
+pattern separates the bays' factors.
 
-**Referee.** The connection register's `battery_kwh` and `inverter_kw_ac` for an NMI arbitrate the per-row conventions
-(SBR rows against the NMI's battery, asserted for 90 per cent or more of matched stacks; old-portal rows against the
-NMI's inverter capacity) without handing over a level: the register's totals at the DER sites differ from the golden
-(asserted through the stops).
-
-**The cracker sheet.** Measured on the cut pack by `generator/ceiling.py`. The cracker filed YRB27 at 1.9 MW, ran the
-hygiene battery (NMI formats normalised, unmatched NMIs resolved through the re-allocation log, exact duplicates,
-fan-out, counts that tie), executed every filed rule and took each ask on its natural read:
+**The cracker sheet.** Measured on the cut pack by `generator/ceiling.py`. The cracker is the careful solver: it filed
+YRB27 at 1.9 MW, read every field by its plain meaning (the historian's half hours by their start, each tag's bus
+section, the meters' interval ends, import against export), ran the hygiene battery (duplicate and re-sent rows, the
+clock from the hour profile, the meter's half hour aligned to the historian's) and tied each bus section's totals to
+its check meter, repairing the control pro rata:
 
 | Ask figures | The cracker's path | What keeps it wrong | Kept (ceiling.py) | Cracker result |
 |---|---|---|---|---|
-| Ask 1, 8 site counts | active connections, NMIs normalised and re-allocated, distinct sites by the extract's feeder | the feeder stamped at lodgement moved 431 sites (YRB27 1,933 against 1,838) | 0 of 8 | miss |
-| Ask 2, 8 counts | the active connections' registration dates by site | the site's first lodgement sits on a decommissioned connection (YRB27 170 against 158) | 0 of 8 | miss |
-| Ask 3, 8 capacities | inverter rows summed after dropping exact duplicate rows | the newer portal's per-inverter rows are halved; summing instead doubles the older portal's; the stamp moves every feeder too (YRB27 12,236 against 11,800) | 0 of 8 | miss |
-| Ask 4, 8 storage totals | battery rows summed after dropping exact duplicate rows | every modular stack loses its modules; summing instead multiplies the SBR stacks; the stamp moves every feeder too (YRB27 1,165 against 1,560) | 0 of 8 | miss |
+| Ask 1, 24 monthly energies | each section's historian total tied to its meter and repaired by one factor per section | each bay's own scale: the pooled factor 1.37 over-corrects the 1.2 and 1.25 bays and under-corrects the 1.5 and 1.6 bays (YRB27 June 114 against 130) | 0 of 24 | miss |
+| Ask 1, 8 largest half hours | the same | the same (YRB21 13.1 against 12.0 MW, YRB27 3.1 against 3.7) | 0 of 8 | miss |
+| the cracker's other repairs (each section's factor as the ratio of its totals; one factor for both meters; the section's export register shared by the historian's reverse energy or by connected capacity; the historian as recorded) | as named | the same scale, never read per bay | 0 of 32 on each | miss |
 | Chart (recommendation block) | the bars from the forecast | carried by the main call, scored with it | not ask weight | outside |
 
 The mirror sheet: the best response off the call (the default path, YRB24 at 4.2 MW, its runner-up YRB27 not the
-golden's) on its own natural read, the pipeline without the hygiene battery (NMIs as lodged, the extract's feeder,
-every device row summed), keeps 0 of 32 (Ask 1 YRB25 3,798 against 3,680; Ask 4 YRB27 2,499 against 1,560); on the
-cracker's ask path it keeps 0 of 32 as well. No ask couples to the call.
+golden's) on its natural read, the historian's negative values summed as recorded, keeps 0 of 32 (YRB27 June 83 against
+130); on the cracker's ask path it keeps 0 of 32 as well. No ask couples to the call.
 
 Mirror leakage: 8.0 per cent of ask weight (`ceiling.py`: no ask figure kept; the 8 per cent is the sheet's method
-credit on the ask paths).
+credit).
 
 **Pair arithmetic** (`ceiling.py`, the sheet's planning weights). 36 recommendation (the feeder, its excess, the
 runner-up and its excess, the gap, the two bulk-buys, the chart's named parts), 9 instruction following, 55 asks over
-32 figures (1.72 each), a method credit of 8 per cent on every figure not kept, a response off the call keeping 4 of
-the 36 (the files and the chart's structure; no wrong route files the golden's runner-up with its figure, asserted).
-Measured: C = 49.4, S = 17.4, a pair of 33.4. One device found: the stamp (sites placed by the network model's
-feeder, NPP-114 3.1) keeps Ask 1's 8 figures, pair 39.7; dating each site from every AC connection keeps Ask 2's 8,
-pair 39.7; the older-portal or the SBR convention alone keeps nothing, the stamp still moving Asks 3 and 4. Two
-devices found: at worst 16 of 32, pair 46.0. The full includer, all four devices handled (the script's control, which
-gives back `figures.json` exactly), keeps 32 of 32, pair 58.7: no ask carries a second primary under rule 2. On the
-comparable 38, 7 and 55 the measured pair is 32.9 and the worst single crack 39.2. Both top responses on the call with
-no device found: 49.4. A response that lands the feeder by assuming a round share of the installed systems additional
-(a third, two fifths, a half) keeps the feeder and at most the runner-up's name: about 12 of the 36.
+32 figures (1.72 each), a method credit of 8 per cent on every figure not kept, a response off the call keeping 4 of the
+36. Measured: C = 49.4, S = 17.4, a pair of 33.4; the cracker's best other repair 0 of 32 (pair 33.4); the mirror on the
+cracker's path 0 of 32 (pair 33.4); the single crack, the per-feeder decomposition, 32 of 32 (pair 58.7). Two careful
+responses both on the call, neither finding the device: 49.4 each. On the comparable 38, 7 and 55 the measured pair is
+32.9 and the single crack 58.2. The full includer (the script's control, which gives back `figures.json` exactly) keeps
+32 of 32.
 
-Pair ceiling: 39.7 (`ceiling.py`: the worst of the measured pair, 33.4, and each single crack)
+Pair ceiling: 58.7 (`ceiling.py`: the worst of the measured pair, the cracker's other repairs, the mirror on the
+cracker's path and the single crack, on either weighting)
 
-Measured by: `generator/ceiling.py` on the cut pack (`target.zip` md5 bd4c13ada66610115ca1f88998616de5)
+Measured by: `generator/ceiling.py` on the cut pack (`target.zip` md5 1bb928fd43a8a219e82f72aee9e5e1b6)
 
 ## Prompt
 
-`prompt.txt`, rewritten at round 3 and gated by `voice-check.py` (in `precut.py`, 869 characters): the round-2
-binding "forecasting rooftop PV as NPP-114 sets out" is gone, and "how much PV each bulk-buy will add" is now "how
-much each bulk-buy will raise its feeder's PV by that date" (the estimand, with the design point); the call as a
-question with its forcing facts (the FY2027-28 program, the council's spring 2026 bulk-buys), the workbook's figures
-(the excess at 31 August 2029, the runner-up and the gap), the four per-feeder DER Register figures ("how many of
-them", zero a grammatical answer, H23), the chart's named parts and the rounding once at the close.
+`prompt.txt`, rewritten at round 3 and gated by `voice-check.py` (in `precut.py`): the round-2 binding "forecasting
+rooftop PV as NPP-114 sets out" is gone, and "how much PV each bulk-buy will add" is now "how much each bulk-buy will
+raise its feeder's PV by that date" (the estimand, with the design point); the call as a question with its forcing facts
+(the FY2027-28 program, the council's spring 2026 bulk-buys), the workbook's figures (the excess at 31 August 2029, the
+runner-up and the gap) and the chart's named parts. The ask sentence, rewritten at the 2026-11-02 rubric rework (810
+characters in all), comes last and carries its own units and rounding: "For every feeder, also give any energy it sent
+back to the zone substation in each of June, July and August 2026 to the nearest 10 MWh and its largest half-hour reverse
+flow over those months, with every megawatt figure to one decimal" (the closing clause also gives the call's megawatts,
+so rounding is stated once, at the close; "any energy" keeps "none" a grammatical answer, so the sentence presupposes no
+reverse flow the analysis has not found, H23). The first question sentence is unchanged word for word.
 
 ## Build record
 
@@ -568,7 +542,7 @@ Stage 3 of round 3, built 2026-10-15 by `python3 task136/generator/build.py` (pa
   systems on 15,349 houses or 4.09 per 100, all 32 DER cells); Gate G `method_or_model_selection`,
   `analytical_non_defect`, no surface-read dependency, no sole data defect; Gate H domain, layers and decisive step
   analytical. Its optional prompt pin is declined (SF19, Tried and rejected); its two literal-reading notes are filed
-  (SF5: the trend on the network model's feeder at the base date; SF27 and SF28: the DER asks on the literal reading).
+  (SF5: the trend on the network model's feeder at the base date; SF27 and SF28, as they stood then: the DER asks on the literal reading; both ids now carry the winter ask's rows).
   Leak reader round 3: Q1 to Q4 clean, Q6 analytical, every REVIEW line harmless (`leak_check_report.md`, Solver's-eye
   read). Nothing under `target/` moved after either read.
 - **Reship 2026-11-01 (the leak gate's describing-file rule).** `data_dictionary.xlsx` and `export_manifest.csv` no
@@ -584,6 +558,22 @@ Stage 3 of round 3, built 2026-10-15 by `python3 task136/generator/build.py` (pa
   shared nouns in NPP-114, the letter and the assessment, and `device_type` as ruled above; the prompt's "Which of the
   eight" is the decision's candidate set as the assessment's scope names it, not a count the analyst must find; the
   shell quota is a corpus effect on an unchanged prompt.
+- **Rubric rework 2026-11-02 (the ask layer, `/fix-rubric` scope).** The four DER Register asks are retired (the careful
+  solver kept 32 of 32); the ask is now each feeder's energy sent back to the zone substation in June, July and August
+  2026 and its largest half-hour reverse flow (Ask sheet), read from two new files, the feeder-head SCADA historian
+  (35,328 rows) and the two 22 kV check meters (8,832 rows). The DER extract and the re-allocation log stay as
+  distractors and, with the other 11 files, are byte-identical to the 2026-11-01 pack; the chart is byte-identical and
+  the workbook's DER Register sheet is now its Reverse flow sheet. The call, its rows, the ladder, the stump and every
+  main-side figure are unchanged: `freeze.py --mode rubric` PASS; `--mode determinism` flags only the 32 retired
+  `der.*` keys and the workbook's Deliverable Answers block. Gates on the final cut (`target.zip` md5
+  1bb928fd43a8a219e82f72aee9e5e1b6): `checks.py` 583 assertions, `verify.py` 123 checks, two builds byte-identical,
+  `figures_check.py` 74 figures 0 absent, `precut.py` 61 checks with 1 FAIL and `voice-check.py` FAIL, both the prompt
+  gate's "Which of the eight" on the frozen call sentence (a FAIL while `status` is PAUSED, a WARN once it is SHIPPED;
+  0 FAIL under SHIPPED), `leak.py --asof 2026-10-12` REVIEW with no LEAK (the lines ruled above), container audit
+  clean, `guard.py surface` exit 0. `heart` BLOCKs on `ban.role` (task448), `ban.forcing_event` (task449) and
+  `test.same_driver_older` (task485 v4), cards registered after this draw (`reduce-house-fixes` H27). `ceiling.py`:
+  cracker 0 of 32 under every careful repair, mirror leakage 8.0 per cent, pair 33.4, single crack 58.7, two careful
+  responses on the call 49.4 each. Stage 4 (the leak reader and the judge) is owed on the reworked ask layer.
 
 ## Pre-ship check
 
@@ -596,8 +586,8 @@ Stage 3 of round 3, built 2026-10-15 by `python3 task136/generator/build.py` (pa
 2. Real work, nothing planted: the connection register at application grain (alterations, withdrawn and
    approved-not-connected applications, removals, 2019 migrated rows with a legacy equipment table), the feeder at
    application after five load transfers, the rates roll joined to NMIs only through the GIS cross-reference, the
-   council's workbook in its own layout, and on the ask paths the DER Register extract at device grain; each what these
-   systems produce, read by the filed rules to the world's own figures (R2, asserted), none deciding the call. The
+   council's workbook in its own layout, and on the ask path the zone substation's SCADA historian and check meters; each
+   what these systems produce, read by the filed rules to the world's own figures (R2, asserted), none deciding the call. The
    post-opening dip is the campaigns' own harvest, visible in the register, not a doctored block (the re-audit).
 3. The flip is analysis: the counterfactual for a past campaign (its installed systems, its own before and after, or
    the suburbs whose campaign had not yet run over the same months); every field, code and rule is read the same on
@@ -827,3 +817,13 @@ stump's determinism:
   NPP-114 3.1 and the extracts' own columns, codes and labels for every fork row they closed; no sentence added to a
   document, and the asks' devices stay unstated.
 - The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 32 of 32 against the recorded 0 of 32, SPENT on Asks 1 to 4, pair 58.7 (84.0 with the mirror on the honest route); the reason in one line: Ask 1 the network model's feeder the cracker already executes for the call; Ask 2 'first lodged' as the earliest registered_date; Ask 3 the model field's nameplate; Ask 4 the register's battery_kwh as referee. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.
+
+- The four DER Register asks of rounds 1 to 3 (sites, first lodged, inverter capacity, storage), retired at the 2026-11-02 rubric rework: the careful solver performed every device and kept 32 of 32 (the feeder stamp by NPP-114 3.1's network-model placement, which it already runs for the call; the first lodgement by the earliest `registered_date`, read plainly; the older portal's totals by the model's nameplate; the SBR stacks by the register's `battery_kwh` as referee). No re-site on the DER extract passed the careful solver, since the connection register referees every DER capacity and storage figure; the ask moved to new records (the winter's feeder-head historian and check meters), and the extract and the re-allocation log ship unchanged as distractors.
+- The replacement families screened before the winter ask (each failing a test): a large EG agreement restating a site's capacity (thin, and a site's duplicate rows invite "sum or latest", settled by the DER equipment in a few lines); transformer tap numbers per maker (the ask's noun invites "which tap is the lowest"); a temporary load transfer seen only as equal-and-opposite feeder steps (an inference a second explanation fits, a fork); embedded-network children placed by their parent's approved capacity (a subset sum the rows do not force); phase identification from meter clusters (a battery item, a phase field re-derived from a finer key); DER without an approval found by anti-join (a battery item); state battery rebates matched to DER batteries (a household under two records, and a declared distractor); and the two families this batch's other reworks take (a re-keyed contract linked by timing, an absence evidenced in another log).
+- Settling the winter by reseeding its streams until every figure cleared its rounding edge: about two thousand draws would have been needed (32 figures each clear of an edge); replaced by targeted load moves inside each feeder's own midday reverse-flow half hours that month (five moves, never on the day of its largest half hour), which change no other figure.
+- The station services on the 22 kV bus (about 0.03 MW on T1): the fit without an intercept then moved four of the 32 figures across a bin, a second construction of the device; the station takes its supply from the local network, so every construction of the fit (intercept or none, pooled or by section, fitted factors or their CT quotients) files every figure.
+- The historian exported in UTC: the months read in UTC move the first-of-month morning reverse flow across the boundary and two of the 32 figures with it (YRB21 and YRB22 in July, measured on the shipped flows), a second reading; the historian now exports Queensland time (no daylight saving) by the half hour's start, and its own hour profile (reverse flow peaking in the half hours starting 11:30 and 12:00 by its labels, local solar noon) and the meter's fit both fix that clock.
+- Each feeder's winter evening peak at one fixed share of its summer forecast: the peak forecast (a distractor) would then have given each bay's factor to within its noise; each feeder's winter peak takes its own share (0.70 to 0.90) and its midday load its own multiple of the assessment's spring minimum (0.85 to 1.15 of twice it).
+- Bay factors of 2.0 (a bay archived at half its flow, the first prototype): such a feeder's winter evening read implausibly low against its customers; the factors are 1.2 to 1.6, each at least 5 per cent from either pooled factor, so the pro-rata repair lands no bay.
+- The historian and the check meters agreeing to their rounding at every half hour (the first build of the winter files): two measuring systems never agree exactly, the matching-bounds tell; each system now measures with its own gain and random error, the per-feeder fit leaving 0.011 MW rms against 0.08 to 0.11 MW for one factor per section, and the measurement error is held small enough that the fitted factors and their CT quotients file the same figures. The constant quality column each file first carried (every value Good, every interval A) is gone, and each file's clock is in its own column name (`interval_start_aest`, `interval_end_aest`).
+- The check meters' import and export registers never both carrying energy in a half hour (the first cut of the winter files, found at the house-fix pass): a meter accumulates each direction, so a half hour the section's flow reverses within carries both; each register now integrates a flow running through its half hour in two straight segments, import less export unchanged to the meter's resolution, so no fit, figure or route moved (356 of the 8,832 meter half hours carry both, asserted between 1 and 15 per cent).

@@ -2,7 +2,8 @@
 from the generator, and recomputes on its own code path (csv, openpyxl, pypdf; no pandas): the base forecast, what each
 of the seven campaigns added against suburbs whose campaign had not yet run (and against never-treated suburbs), the
 2026 campaigns, every feeder's excess, the call, the default path, the textbook transfer and each suburb's own before
-and after, and the four DER Register figures by feeder.
+and after, and per feeder the energy its head sent back to the zone substation in June, July and August 2026 and its
+largest half-hour reverse flow (each feeder head's SCADA value at the factor its bus section's check meter fits).
 Exits non-zero on any disagreement with the golden.
 
     python3 task136/generator/verify.py [target] [golden]"""
@@ -26,7 +27,6 @@ LAST_FY = FYS[-1]
 LIVE = {"Connected", "Removed"}
 OPEN_2026 = dt.date(2026, 9, 1)         # the council's letter: sign-ups open 1 September 2026
 SUBURBS_2026 = ("Bindarra Waters", "Wattleview")
-PORTAL = dt.date(2024, 7, 1)
 
 FAIL = []
 PASSED = [0]
@@ -114,8 +114,8 @@ def read(target):
     B["hc29"], B["hc26"] = {}, {}
     for m in re.finditer(r"(YRB2\d) [\d.]+ [\d,]+ ([-\d.]+) ([-\d.]+) ([\d.]+) ([\d.]+)", text):
         B["hc26"][m.group(1)], B["hc29"][m.group(1)] = float(m.group(4)), float(m.group(5))
-    B["der"] = rows(one(target, "der_register_extract_"))
-    B["realloc"] = {r["old_nmi"]: r["new_nmi"] for r in rows(one(target, "nmi_reallocations_"))}
+    B["scada"] = rows(one(target, "yarrabin_zs_feeder_heads_scada_"))
+    B["meters"] = rows(one(target, "yarrabin_zs_22kv_check_meters_"))
     B["npp"] = pdf(one(target, "NPP-114"))
     return B
 
@@ -274,55 +274,72 @@ def forecast(B, base, avg, pl, lift):
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# the DER Register figures by feeder
+# winter 2026 at the zone substation: each feeder head against its bus section's 22 kV check meter
 
-def site_key(B, nmi):
-    k = nmi.strip()
-    if len(k) == 11:
-        k = k[:10]
-    return B["realloc"].get(k, k)
+def solve(a, b):
+    """Gaussian elimination with partial pivoting."""
+    n = len(b)
+    m = [row[:] + [b[i]] for i, row in enumerate(a)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(m[r][c]))
+        m[c], m[p] = m[p], m[c]
+        for r in range(n):
+            if r != c and m[r][c]:
+                f = m[r][c] / m[c][c]
+                m[r] = [x - f * y for x, y in zip(m[r], m[c])]
+    return [m[i][n] / m[i][i] for i in range(n)]
 
 
-def der_figures(B):
-    """Per feeder: active sites (an NMI with an active AC connection, placed by the network model), the sites whose
-    first AC connection of any status was lodged in FY2025-26, the active connections' inverter capacity (a
-    two-inverter connection from the older portal carries the connection's total on each row) and their battery
-    storage (a Sungrow SBR stack carries the stack's total on each module row)."""
-    conns = {}
-    for r in B["der"]:
-        c = conns.setdefault(r["ac_connection_id"], dict(key=site_key(B, r["nmi"]), status=r["ac_connection_status"],
-                                                         reg=day(r["registered_date"]), inv=[], bat=[]))
-        if r["device_type"] == "Inverter":
-            c["inv"].append((r["model"], float(r["rated_power_kw"])))
-        else:
-            c["bat"].append((r["model"], float(r["storage_capacity_kwh"])))
-    first = {}
-    for c in conns.values():
-        if c["key"] not in first or c["reg"] < first[c["key"]]:
-            first[c["key"]] = c["reg"]
-    sites, new, inv, bat = Counter(), Counter(), defaultdict(float), defaultdict(float)
-    seen = set()
-    for c in conns.values():
-        if c["status"] != "Active" or c["key"] not in B["feeder"]:
-            continue
-        f = B["feeder"][c["key"]]
-        if c["key"] not in seen:
-            seen.add(c["key"])
-            sites[f] += 1
-            if LAST_FY[0] <= first[c["key"]] <= LAST_FY[1]:
-                new[f] += 1
-        rated = [kw for _, kw in c["inv"]]
-        m = re.search(r"(\d+\.\d)$", c["inv"][0][0]) if c["inv"] else None
-        if len(rated) > 1 and m and abs(rated[0] - float(m.group(1)) * len(rated)) < 0.011:
-            inv[f] += rated[0]
-        else:
-            inv[f] += sum(rated)
-        if c["bat"]:
-            if c["bat"][0][0] == "SBR HV battery":
-                bat[f] += c["bat"][0][1]
-            else:
-                bat[f] += sum(k for _, k in c["bat"])
-    return sites, new, inv, bat
+def winter(B):
+    """Each feeder head's half-hour flow from the historian (by the half hour's start), each bus section's metered flow
+    (import less export, the meter's interval end read as the half hour it closes), each bay's factor by least squares
+    of its section's meter on the section's feeder heads with an intercept, and per feeder the energy sent back in each
+    winter month and the largest half hour, at its factor and as the historian recorded it."""
+    hist, sec = defaultdict(dict), {}
+    for r in B["scada"]:
+        m = re.search(r"\.B(\d)\.FDR(\d\d)\.", r["tag"])
+        f = "YRB" + m.group(2)
+        sec[f] = "T" + m.group(1)
+        hist[f][r["interval_start_aest"]] = float(r["value"])
+    meter = defaultdict(dict)
+    for r in B["meters"]:
+        t = re.search(r"-(T\d)-", r["meter_id"]).group(1)
+        start = dt.datetime.strptime(r["interval_end_aest"], "%Y-%m-%d %H:%M") - dt.timedelta(minutes=30)
+        meter[t][start.strftime("%Y-%m-%d %H:%M")] = (float(r["import_kwh"]) - float(r["export_kwh"])) / 500.0
+    feeders = sorted(hist)
+    times = sorted(hist[feeders[0]])
+    factors, rms = {}, {}
+    for t in sorted(set(sec.values())):
+        fs = [f for f in feeders if sec[f] == t]
+        n = len(fs) + 1
+        ata = [[0.0] * n for _ in range(n)]
+        aty = [0.0] * n
+        for ts in times:
+            row = [hist[f][ts] for f in fs] + [1.0]
+            y = meter[t][ts]
+            for i in range(n):
+                aty[i] += row[i] * y
+                for j in range(n):
+                    ata[i][j] += row[i] * row[j]
+        sol = solve(ata, aty)
+        res = [meter[t][ts] - sum(sol[i] * hist[f][ts] for i, f in enumerate(fs)) - sol[-1] for ts in times]
+        mu = sum(res) / len(res)
+        rms[t] = (sum((x - mu) ** 2 for x in res) / len(res)) ** 0.5
+        for i, f in enumerate(fs):
+            factors[f] = sol[i]
+
+    def figures(scale):
+        out = {}
+        for f in feeders:
+            months, mx = Counter(), 0.0
+            for ts in times:
+                v = -hist[f][ts] * scale[f]
+                if v > 0:
+                    months[int(ts[5:7])] += v * 0.5
+                    mx = max(mx, v)
+            out[f] = (months[6], months[7], months[8], mx)
+        return out
+    return factors, rms, figures(factors), figures({f: 1.0 for f in feeders}), sec
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -335,9 +352,9 @@ def golden_book(golden):
     ws = wb["Forecast"]
     for i in range(4, 12):
         fcs[ws.cell(row=i, column=1).value] = [ws.cell(row=i, column=j).value for j in range(2, 11)]
-    ws = wb["DER Register"]
-    der = {ws.cell(row=i, column=1).value: tuple(ws.cell(row=i, column=j).value for j in range(2, 6)) for i in range(4, 12)}
-    return call, fcs, der
+    ws = wb["Reverse flow"]
+    rev = {ws.cell(row=i, column=1).value: tuple(ws.cell(row=i, column=j).value for j in range(2, 7)) for i in range(4, 12)}
+    return call, fcs, rev
 
 
 def main(target, golden):
@@ -414,14 +431,20 @@ def main(target, golden):
     _, e5, o5, _ = forecast(dict(B, hc29=B["hc26"]), base, avg, pl, lift)
     check(o5[0] != w or abs(e5[w] - ex[w]) > 0.05, "the 2026 case gives the 2029 figures")
 
-    # the DER Register figures
-    sites, new, inv, bat = der_figures(B)
+    # winter 2026: each feeder head at the factor its bus section's check meter fits
+    factors, rms, wf, rec, sec = winter(B)
+    check(sec == {f: ("T1" if f in feeders[:4] else "T2") for f in feeders}, "bus sections %s" % sec)
+    check(max(rms.values()) < 0.02, "the fit leaves %s MW" % rms)
     for f in feeders:
-        want = (sites[f], new[f], half_up(inv[f], 10), half_up(bat[f], 10))
-        check(tuple(der_g[f]) == want, "%s DER Register row golden %s, verifier %s" % (f, der_g[f], want))
-        for x, name in ((inv[f], "inverter"), (bat[f], "storage")):
+        got = der_g[f]
+        want = (half_up(wf[f][0], 10), half_up(wf[f][1], 10), half_up(wf[f][2], 10), one_dp(wf[f][3]))
+        check(all(abs(a - b) < 1e-9 for a, b in zip(got[:4], want)), "%s reverse flow golden %s, verifier %s" % (f, got[:4], want))
+        check(abs(got[4] - factors[f]) < 0.006, "%s factor golden %s, verifier %.4f" % (f, got[4], factors[f]))
+        miss = (half_up(rec[f][0], 10), half_up(rec[f][1], 10), half_up(rec[f][2], 10), one_dp(rec[f][3]))
+        check(all(abs(a - b) > 1e-9 for a, b in zip(miss, want)), "%s: the historian as recorded lands %s" % (f, miss))
+        for x in wf[f][:3]:
             k = x / 10
-            check(abs((k - int(k)) - 0.5) >= 0.07, "%s %s %.2f near a rounding edge" % (f, name, x))
+            check(abs((k - int(k)) - 0.5) >= 0.07 and x >= 120, "%s %.2f MWh small or near a rounding edge" % (f, x))
     check(os.path.getsize(os.path.join(golden, "yarrabin_pv_vs_hosting_2029.png")) > 20000, "the chart")
 
     if FAIL:
