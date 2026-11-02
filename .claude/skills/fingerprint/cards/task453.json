@@ -1,115 +1,140 @@
 {
- "task": "task453",
- "architecture": "v2",
- "drawn": "2026-10-14",
- "slot_note": "v2 re-rooted 2026-10-14 inside ETL with the number kept: v1 (a placement step removed before seasonal adjustment) stays readable as a dated step, and its hardening was a method fork; v2 stays in official time-series production and restates a labour force survey's published rate across a questionnaire redesign phased in through a rotating panel.",
- "domain": "survey-research-official-statistics",
- "subdomain": "seasonal-adjustment-official-time-series-production",
- "niche": "restating a labour force survey's published unemployment rate across a questionnaire redesign phased in through incoming rotation groups, to restate a statutory trigger",
- "objective": "etl",
- "shape": "other",
- "decision_type": "dial_setting",
- "answer_unit": "rate_or_share",
- "answer": "Restate the Regional Employment Support Act's trigger at 6.5 per cent, which designates Eastern Ranges, Western Coast, River Delta and Highlands for 2027.",
- "answer_source": "task453/submission.md, Final Recommendation; golden trigger_restatement_determination_2027.pdf",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G6",
-  "G13",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "parallel_run_overlap",
- "stump_strategy": "causal_design",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "published_series",
- "stakeholder_role": "head of labour market methodology at a national statistics office, who drafts the Government Statistician's restatement of the statutory trigger",
- "role_family": "statistical_office_head",
- "scoring_unit": "other",
- "spine": {
-  "file": "lfs_cai2014_estimation_cells_2022-01_2025-11.csv",
-  "rows": 72090,
-  "entity": "one rotation group's weighted persons (thousands) in one labour force status, region, sex and age group in one month, on the previous questionnaire",
-  "grain": "month x region x rotation group x sex x age group x labour force status",
-  "source": "synthetic (constructed in the layout of a statistics office's labour force survey estimation cells)"
- },
- "forum": "other",
- "forcing_event": "cutover_or_migration",
- "org_family": "research_or_statistics_office",
- "world": {
-  "geography": "a fictional English-speaking country of about 45 million (its national statistics office, nine regions on the 2025 classification, no real agency named; personas drawn on the New Zealand index)",
-  "currency": "NZD",
-  "org_type": "national statistics office; the labour ministry's regional employment support scheme",
-  "invented_names": [],
-  "people": [
-   "Jared Elliott",
-   "Debra O'Brien",
-   "Gabrielle Esson"
-  ]
- },
- "deliverables": [
-  "trigger_restatement_determination_2027.pdf",
-  "regional_unemployment_redesigned_basis_2024-2026.csv"
- ],
- "opening_move": "question-first",
- "question_form": "whether",
- "driver": "The size of a change in how a rotating panel is measured has to be read from the months in which only the units newest to the panel received the new measurement, while every unit's answers drift with how many times it has been asked, so the two arms' difference carries that drift; and the change acts differently on a unit's first answer than on its later ones, so the change in the published figure, which averages every occasion equally, is the mean of the per-occasion effects, each read against the same occasion before the change, which neither the arms' difference nor one effect with the occasion held fixed returns.",
- "driver_concrete": "The redesigned questionnaire went only to dwellings entering the sample from July 2025, so in each phase-in month (July to November 2025) its arm is dwellings on their first interviews and the previous arm dwellings on their last, and first interviews always read high (rotation-group bias); its dependent interviewing works only from a dwelling's second interview, so the change in the published rate, which averages the six rotation groups, is the mean of the six month-in-sample effects, each read against the same month in sample before July 2025.",
- "stump": "A competent analyst takes the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the previous one in July to November 2025 (+1.2 points, a trigger of 7.2 per cent designating River Delta and Highlands), or as one effect with month in sample, month and region held fixed (+0.3 to +0.4, 6.3 or 6.4), or as the continuing dwellings' effect (+0.7, 6.7); only the mean of the six month-in-sample effects (+0.5) restates the trigger at 6.5 per cent, designating Eastern Ranges, Western Coast, River Delta and Highlands.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms both collection systems' exports and the rotation schedule correctly and reads the Act's section 9 takes the redesign's effect as the gap between the rotation groups on the redesigned questionnaire and those still on the previous one in July to November 2025, +1.2 points, and restates the 6.0 per cent trigger at 7.2, designating River Delta and Highlands; holding month in sample fixed with one effect gives +0.3 to +0.4 and 6.3 or 6.4, and neither is the 6.5 the six month-in-sample effects average to.",
- "domain_test": "The deciding quantity is the redesign's effect on the published unemployment rate, read the way a statistics office reads a questionnaire change phased in through a rotating panel: each month-in-sample group on the new questionnaire against the same month in sample before the change, rotation-group bias and the second-interview start of dependent interviewing built in; with hospital or grid nouns there is no rotation group, month in sample, first-interview bias or dependent interviewing, and the task stops parsing.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task453": "v1 removed a dated placement step as a level shift before estimating seasonal factors; v2 has no seasonal adjustment and no dated step: the break is read inside the phase-in, within month in sample, and averaged over the six interviews",
-  "task125": "task125 diagnoses an aggregate distortion that builds as filtered intakes rotate through a panel; here the panel's own first-interview bias confounds a phase-in comparison and the redesign acts differently from the second interview, so the break is read within month in sample and averaged over the six",
-  "task450": "task450 links two test forms through the items both groups answered and screens drifting items; here no common items exist: two questionnaires are compared through a rotating panel's months in sample, and the effect differs by interview"
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "shipped 2026-10-13 (judge pass 1 DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (the January 2026 placement step removed as a level shift before the seasonal factors) is a dated step an event study finds, and the hardening that would have hidden it (the canneries' 2021 to 2023 reclassification) was judged NOT_DETERMINISTIC, SEND_BACK, as a fork between direct and indirect adjustment, and reverted.",
-   "domain": "survey-research-official-statistics",
-   "subdomain": "seasonal-adjustment-official-time-series-production",
-   "objective": "etl",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
+  "task": "task453",
+  "architecture": "v3",
+  "drawn": "2026-11-02",
+  "slot_note": "ETL lane, architecture 3: a re-root at stage 1 of architecture 2 (a labour force survey's unemployment rate restated across a questionnaire redesign phased in through rotation groups), whose main call held but whose ask layer could not be repaired inside that world's records; new world (crematoria mercury from dental amalgam), new dataset, new generator and new shell, chosen so the ask layer rides crematoria operations records the call never reads",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a provincial crematoria mercury fund certifying whether its 2026 scheme year met the regulation's 55 per cent abatement share and designating which unabated crematoria must fit abatement by 2028, each cremation's mercury read from the decedent's dental amalgam by birth cohort across the national adult oral health survey's 1996, 2006 and 2016 waves",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "golden (filled at ship)",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G16",
-    "G6"
-   ],
-   "gate_g": "etl_conformance",
-   "decision_type": "designation_set",
-   "stump_strategy": "population_selection",
-   "driver": "The decisive quantity compares two periods that both lie after a documented change in where the source places what it counts, so the change looks irrelevant, but the seasonal pattern used to adjust them is estimated from a history spanning it, and an adjustment that does not first remove the change as a level shift lets it leak into the seasonal factors and moves the latest period most where the change was largest, in either direction.",
-   "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the workplace placement the revenue agency's statistics have used since January 2026, when jobs that had sat at employers' account addresses (head offices in Wickmoor and Saltmere) moved to their mines, mills, plants, hospitals and stores; a default seasonal adjustment estimates the seasonal pattern across that step, pulling the quarter down in the regions that gained (Kestrow North, Varrenby Shore) and up in the Capital, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run."
+  ],
+  "generators": [
+    "G6",
+    "G13",
+    "G14"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the province's cremation permits, every crematorium's abatement commissioning dates and the oral health survey's three waves correctly, and reads the regulation, estimates each 2026 cremation's mercury from the 2016 survey's amalgam teeth at the decedent's age at death (the inventory's age-based method), or carries each cohort from 2016 along that same age profile, which returns identical figures, and so files the abated share and the designations that the age profile gives, not those each decedent's cohort carried along its own change between the 2006 and 2016 waves gives.",
+  "domain_test": "The deciding quantity is the mercury in the dental amalgam of each person cremated, estimated the way an emissions inventory builds a cremation source from a national oral health survey: each decedent's amalgam read from their birth cohort and carried along that cohort's own change between the survey's waves to the year of death; with hospital-waste or landfill nouns there is no amalgam carried by a birth cohort, no survey wave and no ageing within a cohort, and the share and the designations stop parsing.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:cohort-carried-amalgam-read-along-the-cohort-across-survey-waves",
+  "layer1": [
+    "the survey's three waves published as PDF tables whose layouts change by wave (age bands, sex splits and the top band differ)",
+    "the province's cremation permits keyed by permit number with age at death in completed years and a crematorium code that changed when two operators merged",
+    "each crematorium's abatement plant commissioned on its own date, some during the scheme year, so a crematorium is abated for only part of 2026",
+    "operators' own registers, cremator controller logs and abatement plant logs in their own layouts and clocks (for the asks)",
+    "distractors: post-abatement stack test reports and the province's deaths by place of occurrence"
+  ],
+  "stakeholder_role": "the Fund's technical secretary, who compiles the annual mercury return and the designation proposal for the trustees",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "provincial cremation permits 2026",
+    "rows": 0,
+    "entity": "one cremation permit issued and used in 2026",
+    "grain": "cremation",
+    "source": "synthetic"
+  },
+  "forum": "trustees_or_governors",
+  "forcing_event": "period_close",
+  "org_family": "nonprofit_or_charity",
+  "world": {
+    "geography": "Canada (an unnamed province; the Fund, its regulation, the crematoria and the survey are fictional; personas on the en_CA index)",
+    "currency": "CAD",
+    "org_type": "a statutory not-for-profit crematoria mercury fund and its member crematoria, municipal and private",
+    "invented_names": [],
+    "people": [
+      "Heidi Bond",
+      "Casey Hodges",
+      "Alison Pena"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is a per-member property carried by each member's birth cohort and measured only in repeated cross-sections of the living population taken years before the period the decision reads; one cross-section's age profile runs across cohorts, so applying it at each member's age in that period, or carrying each cohort forward along that same profile, returns earlier cohorts' values, and only each cohort's own change between the cross-sections carries it to the period, which reorders the units whose members differ in age.",
+  "driver_concrete": "Each 2026 cremation releases the mercury in the dental amalgam of the person cremated, which follows the person's birth cohort (those born from the mid-1940s to the late 1950s carry the most amalgam, earlier cohorts lost their teeth, later ones grew up with fluoride), and the national adult oral health survey measured cohorts only in 1996, 2006 and 2016; applying the 2016 survey's age profile at each decedent's age at death, or ageing each cohort along that profile, gives the 2016 values of older cohorts and overweights crematoria whose decedents died in their sixties, so the abated share and the designation order are read from each decedent's cohort carried from 2016 along its own change since 2006.",
+  "stump": "A competent analyst applies the 2016 survey's amalgam at each decedent's age at death (or ages each cohort along that profile, which returns the same figures) and files the abated share and the designations that profile gives; counting cremations files another; only each decedent's cohort carried from 2016 along its own change since 2006 gives the golden share and designations.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task480": "task480 reads each vehicle's current-year mileage from one lifetime cumulative total, whose average over a vehicle's life overstates a yearly increment that falls with age; task453 has no per-unit record at all: a property each person carries from their birth cohort is measured only in survey cross-sections years earlier, and the cross-section's age profile runs across cohorts, so it is re-keyed to each decedent's cohort and aged along that cohort's own change between waves",
+    "task453": "v2 restated a survey's published rate across a questionnaire redesign read within month in sample; v1 removed a dated placement step before seasonal factors; v3 has no change in measurement, no phase-in and no seasonal adjustment: an emissions inventory reads each cremation's mercury from a cohort-carried property measured in earlier survey waves"
+  },
+  "lineage": [
+    {
+      "architecture": "v2",
+      "fate": "shipped 2026-10-14 (judge DETERMINISTIC, APPROVE; delivered, pending review) and reshipped 2026-11-01 under the leak gate; its main call held at the judge (Gate H decisive step analytical), but its ask layer measured spent on 2026-11-01 (the honest careful-solver cracker keeps 10 of 10: a dwelling is the sample reference plus its entry month) and could not be repaired inside the world's records (2026-11-02: the re-site and the full household-roster replacement both measured spent, since every survey mechanic the records turn on is filed for the call and the unfiled ones are identities a member-repeat check recovers); re-rooted 2026-11-02 to a new world, dataset, generator and shell.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "objective": "etl",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "dial_setting",
+      "stump_strategy": "causal_design",
+      "driver": "The size of a change in how a rotating panel is measured has to be read from the months in which only the units newest to the panel received the new measurement, while every unit's answers drift with how many times it has been asked, so the two arms' difference carries that drift; and the change acts differently on a unit's first answer than on its later ones, so the change in the published figure, which averages every occasion equally, is the mean of the per-occasion effects, each read against the same occasion before the change, which neither the arms' difference nor one effect with the occasion held fixed returns.",
+      "driver_concrete": "The redesigned questionnaire went only to dwellings entering the sample from July 2025, so in each phase-in month (July to November 2025) its arm is dwellings on their first interviews and the previous arm dwellings on their last, and first interviews always read high (rotation-group bias); its dependent interviewing works only from a dwelling's second interview, so the change in the published rate, which averages the six rotation groups, is the mean of the six month-in-sample effects, each read against the same month in sample before July 2025.",
+      "shell": "whether / Put ... in / determination PDF and a restated-series CSV"
+    },
+    {
+      "architecture": "v1",
+      "fate": "shipped 2026-10-13 (judge pass 1 DETERMINISTIC, APPROVE) and re-rooted 2026-10-14 at the author's request for a stronger stump: the decisive step (the January 2026 placement step removed as a level shift before the seasonal factors) is a dated step an event study finds, and the hardening that would have hidden it (the canneries' 2021 to 2023 reclassification) was judged NOT_DETERMINISTIC, SEND_BACK, as a fork between direct and indirect adjustment, and reverted.",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "objective": "etl",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G6"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "designation_set",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity compares two periods that both lie after a documented change in where the source places what it counts, so the change looks irrelevant, but the seasonal pattern used to adjust them is estimated from a history spanning it, and an adjustment that does not first remove the change as a level shift lets it leak into the seasonal factors and moves the latest period most where the change was largest, in either direction.",
+      "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the workplace placement the revenue agency's statistics have used since January 2026, when jobs that had sat at employers' account addresses (head offices in Wickmoor and Saltmere) moved to their mines, mills, plants, hospitals and stores; a default seasonal adjustment estimates the seasonal pattern across that step, pulling the quarter down in the regions that gained (Kestrow North, Varrenby Shore) and up in the Capital, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run."
+    }
+  ],
+  "notes": "Re-rooted 2026-11-02 (architecture 3). The ETL move is re-keying a survey's age-by-wave tables onto the decedents' birth cohorts and ageing them along each cohort's own trajectory; reading the tables correctly is not sufficient because the easy re-key (age at death, or ageing along one wave's profile) is algebraically the same cross-section. The decision reads a closed year (2026) because the regulation tests each scheme year after it closes; the designation it triggers is forward (abatement by 2028). Guard at the draw: WARN overuse.domain (physical-environmental-sciences in 5 of the last 12; emissions-inventory is the only task type that serves ETL for a cremation source) and WARN shell.repeat read off architecture 2's prompt.txt still on disk (the architecture 3 prompt redraws the shell). Pattern none with G6 decisive: the cohorts shifted under the survey's age profile.",
+  "registered": "2026-11-02T09:08:49Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "csv+pdf"
   }
- ],
- "notes": "Re-rooted 2026-10-14 (architecture 2). Strategy causal_design (F9: the naive arm difference is not the effect, a contaminated comparison arm); the overlap of the two questionnaires inside each phase-in month is the parallel_run_overlap organ. Gap time first: month in sample is a clock (rotation-group bias by time since a household entered the panel), and the evidence (phase-in arms dominated by first interviews) differs from the steady state the trigger bets on.",
- "client_domain": "survey-research-official-statistics",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:rotation-group-bias-in-a-phased-questionnaire-redesign",
- "layer1": [
-  "two collection systems' exports in different layouts and units (CAI 2014's long file of weighted persons in thousands by status code, ICS's wide file of weighted persons)",
-  "region codes renumbered in the 2025 classification review: CAI 2014's months to December 2024 on the 2019 codes, joined through the office's concordance",
-  "sex and age coded differently in each export (1 and 2 against M and F, age groups 1 to 5 against bands)",
-  "rotation groups labelled by letter, with each dwelling's month in sample given only by the replacement schedule in the methodology note",
-  "the release workbook's header blocks, footnotes and phase-in markers",
-  "the fieldwork log keyed by a sample reference that survives the replacement of its dwelling (the ask)",
-  "distractors: the response-rate workbook, the population benchmarks and the projected 2027 seasonal factors"
- ],
- "registered": "2026-10-14T13:23:21Z"
 }
