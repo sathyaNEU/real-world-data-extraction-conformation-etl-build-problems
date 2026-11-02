@@ -1,12 +1,240 @@
 # task483 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 1, drawn 2026-10-23 from seed ET40 (the
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` first.
+
+The number was re-tasked by the author on 2026-11-01 from Data Extraction & Conformation (ETL) to Opportunity Sizing &
+Decision Support, retirement not taken, after architecture 1 (the College Scorecard-style workforce value designation)
+came back on the portal's determinism block of 10-28 and the 11-01 draw found no ETL ground left. `START_HERE.md` is
+not edited: the range fixes which objective a number belongs to and nothing else, and the card and the ledger carry
+the real objective.
+
+Architecture 2, drawn 2026-11-02 (Opportunity Sizing & Decision Support; Pharmacology, Pharmacoepidemiology &
+Safety): Hollinbrook Health Federation, a GP federation owned by its member practices in an English county area,
+places the two stewardship pharmacists of its 2027-28 UTI pathway in two of its primary care networks for the year.
+Each pharmacist works with one network's practices to move first courses for uncomplicated lower urinary tract
+infection in women aged 16 to 64 off other antibiotics and onto the federation's first-line nitrofurantoin. The
+pathway specification places them where that move stops the most first courses meeting an organism the laboratory
+reports resistant to the drug given, priced on the networks' 2026 first courses.
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task483.json` (architecture v2; architecture v1 in `lineage` with its
+  fate and its prompt shell in `lineage_shells`), filed 2026-11-02; `guard.py validate` 306 cards, 0 invalid. `guard.py
+  check` on the registered card: WARN only without task202 v6, PASS with it. The warnings answered: `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection in task190 and in five of the
+  last twelve): the honest mechanism, since the call turns on which estimate of a drug's resistance the data entitle,
+  and the FINE-numbers move is new (a culture sent because a course failed, not a covariate, a band or a fit);
+  `test.same_driver_older` against task308 v3 (objective, G14, method_or_model_selection) answered by the card's
+  differentiation (task308 conditions availability on the hours priced; here the record itself is made by the outcome).
+- **Axes drawn against the window** (task232, task190 and task456 live at the draw; task202 v6 registered on its own
+  branch at 00:23Z on 11-02 and is treated as in the window): forum line_manager_or_team (the federation's clinical
+  director places the pharmacists; committee_or_panel, executive_team, funder_or_donor and trustees_or_governors are in
+  the window, and no committee decides a placement inside a contract the federation already holds); forcing event
+  launch_or_rollout (the pathway's 2027-28 year starts on 1 April 2027); organisation cooperative_or_member_body (a GP
+  federation is owned by its member practices). Redrawn after task202 v6 filed programme_officer and filed_standard:
+  role compliance_or_audit (the federation's antimicrobial stewardship lead audits antibiotic prescribing against the
+  federation's guideline, which is the work this placement rests on, so the family is the honest one rather than a
+  passing one) and context artifact register (the federation's member practice register, its own master list of
+  practices, codes and networks with the 2026 merger, over which the placement is laid; the pathway specification
+  stays the governing document of `Pins:`); question form where (a placement asks where the pharmacists go, and
+  which repeats task202's form). The registered card re-checked with task202 v6 in place: PASS. The structural signature was redrawn before
+  filing: population first with G14 repeats task445 inside the batch and population with G6 repeats nine older builds,
+  while the honest reading of the gap is objective (gap 3: the laboratory's resistance rates are correct for the
+  cultures it receives and are not the rate the placement is scored on), population second.
+- **Pairing:** Pharmacology, Pharmacoepidemiology & Safety, task type `benefit-risk-assessment`, which serves
+  Opportunity Sizing & Decision Support: the coverage side of an empiric antibiotic's benefit-risk (the first courses a
+  drug gives against an organism it cannot treat) sized network by network as the mismatched first courses the
+  pathway would stop, pool (each network's 2026 first courses on other drugs) to realisable (the mismatches that moving
+  them to nitrofurantoin removes). The never-built pairing pharmacology by Opportunity Sizing; no antibiotic or
+  antimicrobial resistance build is on file in any objective.
+- **The decision and the quantity:** which two networks get the 2027-28 pharmacists (a slate of two under a cap of two).
+  For each network: its 2026 first courses for uncomplicated lower UTI in women aged 16 to 64 on each antibiotic other
+  than nitrofurantoin, and the mismatched first courses that moving them would have stopped (each course's chance of
+  meeting a resistant organism, less nitrofurantoin's). Forward facing: the placement is for April 2027 to March 2028;
+  the 2026 courses are the specification's planning basis, filed.
+- **Shape:** `01`, a ranked list under a cap: each network's off-guideline first courses by drug and its mismatched
+  courses stopped, the two named, the runner-up and the gap; the asks on records the call never reads (fixed at
+  stage 2); the chart's named parts; the files.
+- **Strategy:** `population_selection` (the evidence the coverage is read on is a sample selected by the outcome);
+  Gate G `method_or_model_selection`; gap objective then population; pattern none; generators G14 (conditioned yield:
+  the laboratory's rate is conditioned on how a culture came to be sent), G6 (the cultured infections' composition),
+  G9. Layer 2 family `estimand_identification` (selection on the outcome), pattern `own:empiric coverage read on the
+  cultures taken before any course, not on every culture the laboratory receives`. No calibration organ.
+- **World:** Hollinbrook Health Federation (member practices in seven primary care networks: Kesterby, Ashwell Vale,
+  Morrow Cross, Tamsey, Stanbridge North, Upper Lode and Brackenholt; two Stanbridge North practices merge under one
+  code in 2026), the county's pathology network laboratory, the ICB that commissions the pathway. People from
+  `guard.py names --geo "United Kingdom" --seed 483`: Josephine James (the federation's antimicrobial stewardship lead)
+  and Andrew Gibson (the laboratory's consultant microbiologist). They author documents; neither appears in the prompt.
+- **Forcing fact:** the pharmacists start on 1 April 2027 and stay in their networks for the year.
+- **Data-native sentence:** a GP sends a urine culture after a first course fails far more often than at a first
+  consultation, so the laboratory's isolates are drawn mostly from the infections the federation's current first
+  courses failed on, and one culture reports the organism against every drug at once; nitrofurantoin's and
+  trimethoprim's failed courses therefore send the laboratory the organisms resistant to them (Proteus, Klebsiella,
+  the resistant E. coli) and few of the Staphylococcus saprophyticus first infections that pivmecillinam cannot treat,
+  and only the cultures sent before any UTI antibiotic in the episode sample the infections a first course meets.
+- **Abstraction sentence:** a choice's failure share among the cases a first choice treats is read from records made
+  mostly after a first choice has failed, so the current choices' own failures fill the record with the cases they
+  fail on and shrink every alternative's apparent gain; read on the records made before any choice was given, the
+  comparison reverses. Against the nearest approved and delivered builds: task269 v5 samples audit occasions on a
+  common cause of the outcome (shift staffing) and repairs it by modelling compliance on that cause; task128 reads an
+  effect on the days an operating constraint assigned it; task303 removes a shared loss logged at every sibling unit;
+  task264 weights intercept respondents by their visit frequency. None has a record made by the outcome it measures,
+  and the sentence cannot be written against any of them.
+- **The WHAT screen.** Population: each network's 2026 first courses for uncomplicated lower UTI in women aged 16 to 64
+  on an antibiotic other than nitrofurantoin (filed). Outcome: the course meets an organism the laboratory reports
+  resistant to the drug (filed). Unit: a first course. Window: calendar 2026 courses; the 2024 to 2026 cultures.
+  Comparison: the same course on nitrofurantoin. The decisive step settles none of them: it is which cultures estimate
+  the chance a first course meets a resistant organism, a method the WHAT leaves to the analyst.
+- **Same-puzzle and same-driver tests:** (objective, G14, ranked_slate_under_cap) and (objective, G14,
+  method_or_model_selection) against the last twelve builds, lineage included: none; task308 v3 (older) differentiated
+  on the card.
+- **Sources, one line each:**
+  - NICE NG109 (lower UTI, antimicrobial prescribing): nitrofurantoin first choice for non-pregnant women; send a urine
+    culture when symptoms do not improve or recur after treatment, not routinely at a first presentation under 65;
+  - CLSI M39 (cumulative antibiograms): first isolate per patient per period, the standard construction for empiric
+    guidance;
+  - urinary isolates from routine laboratory data over-represent treatment failures and complicated infections, so
+    surveillance resistance runs above the resistance of uncomplicated community infections;
+  - pivmecillinam has no useful activity against Staphylococcus saprophyticus or enterococci; Proteus mirabilis is
+    intrinsically resistant to nitrofurantoin; EUCAST expert rules report intrinsic resistance as resistant.
+
+## Default path
+
+1. Read the pathway specification: the pharmacists go to the two networks whose 2026 first courses on antibiotics other
+   than nitrofurantoin would have met the most organisms resistant to the drug given beyond what the same courses on
+   nitrofurantoin would have met.
+2. Conform the GP issue extract: the six UTI antibiotics under their brand, generic and strength names, women aged 16
+   to 64, first courses as the specification defines them, the merged Stanbridge North practices under their network.
+3. Count each network's 2026 first courses by drug.
+4. Build the federation's community urine antibiogram from the laboratory export the way CLSI M39 builds one: women
+   aged 16 to 64, first isolate per woman per organism a year, every organism, each drug's resistant share, expert-rule
+   resistance counted as resistant.
+5. Price each off-guideline course at its drug's resistance less nitrofurantoin's, sum by network, take the two
+   largest.
+
+Ends on: Kesterby and Ashwell Vale, whose off-guideline courses are mostly trimethoprim; nitrofurantoin reads about 12
+per cent, so moving pivmecillinam, cefalexin or co-amoxiclav courses to it looks worth nothing or less.
+
+Golden: Morrow Cross and Tamsey. Read on the cultures sent at a first consultation (no UTI antibiotic in the episode
+before the specimen), nitrofurantoin is about 6 per cent and pivmecillinam about 11, so their pivmecillinam and
+co-amoxiclav courses stop the most mismatched first courses. Figures are set at the build.
+
+## Stump sentence
+
+The default path prices each off-guideline first course at its drug's resistance in the federation's 2024 to 2026
+community urine cultures from women aged 16 to 64, first isolate per woman a year, where nitrofurantoin reads about 12
+per cent because a culture follows most failed courses and nitrofurantoin's failures send the laboratory the organisms
+resistant to it, so moving pivmecillinam, cefalexin and co-amoxiclav courses to nitrofurantoin looks worthless and the
+pharmacists go to Kesterby and Ashwell Vale for their trimethoprim; read on the cultures taken at a first
+consultation, nitrofurantoin is about 6 per cent against pivmecillinam's 11, and Morrow Cross and Tamsey stop the most
+mismatched first courses.
+
+## Three rules
+
+Task type: benefit-risk-assessment (Pharmacology, Pharmacoepidemiology & Safety), which serves Opportunity Sizing &
+Decision Support: the coverage side of an empiric antibiotic's benefit-risk, sized as the mismatched first courses the
+pathway would stop in each network, from the pool of its 2026 first courses on other drugs to what moving them to
+nitrofurantoin removes.
+
+Domain test: the quantity that decides is each drug's chance of meeting an organism the laboratory reports resistant
+among the infections a first course treats, the empiric-coverage estimate antimicrobial stewardship builds first-line
+choices on from laboratory susceptibility results, and the field's own construction of it (the cumulative antibiogram,
+first isolate per patient a year) is the easy route that lands wrong here.
+
+Swap: "which two branches should the debt advisers sit in, each loan product priced at its default share among the
+accounts the collections team opened" stops making sense at once: a collections file is opened only after a default,
+so it holds no record made before anything failed, and it reports one product's outcome; a urine culture reports the
+organism against every drug at once, so the current drug's failures move every alternative's rate through the
+organisms they send, and a presentation culture exists only because primary care sometimes cultures a first infection.
+
+Layer 1: the pathology network's export in the laboratory's own organism and antibiotic codes, susceptibilities as S, I
+and R with the expert-rule R for intrinsic resistance, mixed growth and no significant growth results, a specimen
+received twice; the GP issue extract with brand, generic, strength and modified-release names, acute and repeat
+issues, quantities and durations, and two Stanbridge North practices merged under one code in 2026; collection,
+receipt and report dates against issue dates. Each is how those systems write records; none is placed to be caught.
+
+Layer 2: estimand identification under selection on the outcome: the laboratory's isolates are a sample selected by
+treatment failure, so the drugs' resistance in it is conditioned on how each culture came to be sent, and the
+methodological choice that flips the call is reading each drug's coverage on the cultures sent before any course.
+
+Decisive step: estimating each drug's chance of meeting a resistant organism among the infections a first course treats
+from the urine cultures taken at a first consultation, before any UTI antibiotic in the episode, instead of from every
+community culture the laboratory reported, as a cumulative antibiogram is built.
+
+Not semantics: with every organism code, susceptibility entry, date and drug name read correctly, the cumulative
+antibiogram still gives the cultured isolates' rates; no field, code or definition marks a culture as sent at a first
+consultation or after a failed course, which takes the culture's place in the woman's prescribing history.
+
+Not rule application: no filed rule, standard or procedure says which cultures estimate a first course's chance of
+meeting a resistant organism; the specification files the outcome, the courses and the pricing, and executing every
+filed rule on the laboratory's cultures as they come files Kesterby and Ashwell Vale. Measured on the draw harness
+(scratch, three seeds): the enumerated family (all cultures, CLSI first isolate by woman and year, E. coli only,
+women 16 to 64 only, the cultures before any course) spreads nitrofurantoin's rate from about 6 to 13 per cent and
+names three different slates; the standing family (the estimates on cultures taken before any course, with or without
+standardising by first or repeat episode, windows of 14 to 60 days) spreads it under one point and names one slate.
+Re-measured on the generator's clean truth at stage 2.
+
+Analyst test: the strong analyst prices each off-guideline drug at its resistance in the federation's community urine
+cultures from women aged 16 to 64, first isolate per woman a year, and files Kesterby and Ashwell Vale (the default
+path's `Ends on:`), while the cultures taken at a first consultation file Morrow Cross and Tamsey.
+
+Estimand: filed in `uti_pathway_specification_2027-28.pdf` (sections 3 and 4): each network's first courses for
+uncomplicated lower UTI in women aged 16 to 64 issued in calendar 2026 with an antibiotic other than nitrofurantoin,
+each counted as mismatched when the woman's infection carries an organism the laboratory reports resistant to the drug
+issued, less the same chance on nitrofurantoin; the pharmacists go to the two networks with the most mismatched courses
+stopped.
+
+No decoy: nothing is planted to be caught: the cultures sent after a failed course are there because GPs culture
+failures as NICE advises; no antibiogram report, memo, draft, briefing or stakeholder figure ships to carry the wrong
+answer, and no document ranks the networks.
+
+No certified replay: no published resistance rate, certified count or closed placement is in the pack to reproduce;
+the method is not recovered from any figure.
+
+Lesson: a laboratory's resistance rates describe the infections it is sent, and a drug's own failures send it the
+organisms resistant to it while one culture reports every drug, so the current first courses' failures distort every
+alternative's rate as well; the coverage a first course gets is read on the cultures taken before anything was given.
+No build on file covers antimicrobial resistance or evidence made by the outcome it measures.
+
+## Survivor anatomy
+
+Actor: the deciding property (whether a culture was sent at a first consultation or after a course failed) is a column
+in neither the laboratory export nor the issue extract; it is the culture's place in the woman's prescribing history, a
+relation between a specimen's collection date and her UTI antibiotic issues across two files.
+
+Link: the signal is read through a cross-file comparison the field's method never asks for (a cumulative antibiogram
+de-duplicates isolates and never looks at prescriptions); the pseudonymised NHS number is shared, but no clause names
+the comparison and nothing invites it.
+
+Reflex: the field's named construction for empiric coverage, the CLSI M39 cumulative antibiogram (first isolate per
+patient a year), sits at rung 1 and files the default slate; the obvious population filters (women 16 to 64, community
+requests, E. coli only) stay on it.
+
+Back-test: the textbook route validates: the antibiogram's rates hold steady across 2024, 2025 and 2026 and across the
+networks, because the culturing practice and the drug mix behind them did not change, so no trend or cross-section
+refutes it.
+
+Second use: the issue extract carries the pool (each network's 2026 courses by drug) and the asks; the laboratory export
+carries any coverage figure and the asks; deleting the decisive step leaves both files in the pack.
+
+Shock: the movement the step recovers reads as ordinary: nitrofurantoin's laboratory rate sits inside the range English
+laboratories publish for urinary coliforms, and the golden slate is not the top two networks on any shipped statistic
+(asserted at the build: not by off-guideline courses, by trimethoprim, by pivmecillinam or by any one drug).
+
+Pins: the WHAT is filed in the federation's pathway specification, a service specification in the organisation's own
+genre (the outcome, the courses, the pricing and the placement rule); no filed sentence names which cultures, the first
+consultation, the prescribing history, the antibiogram or a window for the cultures.
+
+## Architecture 1 record (spent 2026-10-28)
+
+Architecture 1 (Data Extraction & Conformation; Survey Research & Official Statistics, census-register-administrative-data-quality) shipped 2026-10-23 and came back on the portal's determinism block of 2026-10-28; the fork was the stump, so no closure shipped (its `## Tried and rejected` lines). Its built state (generator, reports, prompt, write-up, goldens and target.zip) is at commit 16515cc and left the task tree with the architecture 2 draw. Its design as it stood:
+
+Architecture 1, drawn 2026-10-23 from seed ET40 (the
 world, the decision and the quantity kept, the pitfall found again from the data under the 10/10 rules): a state
 workforce board deciding whether a multi-campus community college system keeps its workforce-value designation for the
 2027-28 grant year, which needs at least 75 per cent of the system's completers in programs that pass the board's
 tests.
 
-## Draw
+### Draw (architecture 1)
 
 - **Card:** `.claude/skills/fingerprint/cards/task483.json` (architecture v1), registered 2026-10-23 after a pull,
   `check` re-run on the filed card: WARN only (strategy risk answered under `## Three rules`; government_agency
@@ -99,7 +327,7 @@ tests.
   distributions where the default averages their half points, the other dates a job's start or exit from that job's own
   pay in the quarter that holds the day the standard reads.
 
-## Default path
+### Default path (architecture 1)
 
 1. Read the board's Workforce Value Designation Standard: a credit program passes on its completers' median earnings
    in the third full calendar year after the award year, every campus and both award years taken as one group, at or
@@ -123,7 +351,7 @@ Golden: the designation lapses, 71 per cent (1,021 of 1,441): Medical Assisting'
 under the benchmark, and the Commercial Driver License program's day-180 share is 63 per cent, under 70; each
 correction alone leaves the share at 77 or 78 per cent.
 
-## Stump sentence
+### Stump sentence (architecture 1)
 
 The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term
 completer as working on day 180 whenever any employer paid them in the quarter holding that day, and keeps the
@@ -134,7 +362,7 @@ first carrier weeks before day 180 and started at the next weeks after it, still
 so the jobs dated from their own pay put the CDL share at 63 per cent; with both the designation lapses at 71 per cent,
 and either correction alone leaves it at 77 or 78.
 
-## Three rules
+### Three rules (architecture 1)
 
 Task type: census-register-administrative-data-quality (Survey Research & Official Statistics), a task type serving
 Data Extraction & Conformation (ETL): an outcomes release of campus-by-cohort cells and a set of employer-quarter wage
@@ -213,7 +441,7 @@ day inside a reporting period is read from a record's partial amount against a f
 first (no pooled-median screen in any slot note), and the nearest teach allocating a period's total by an indicator
 (task123) or starting an onset from a seasonal profile (task476), not dating a job from its own partial pay.
 
-## Readability screen
+### Readability screen (architecture 1)
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -230,7 +458,7 @@ plausible median for every program; nothing in the pack computes a pooled distri
 grant's records date nothing but sections, every wage row is a well-formed quarter's pay, and the default path's
 counts reconcile (every completer with pay in the quarter is counted once).
 
-## Semantic fork table
+### Semantic fork table (architecture 1)
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -254,7 +482,7 @@ counts reconcile (every completer with pay in the quarter is counted once).
 | SF18 | ask B's principal | every subsidized and unsubsidized dollar the completer borrowed at the college in any award year: each disbursement before July 2024, returns netted, and each 2024-25 loan's amount once; the median and the total over the program's completers who borrowed | the rows summed as exported; one amount per loan in every year; the 2024-25 award year alone; the parent PLUS loans | ask figures only | the asking sentence ("all the Direct Subsidized and Unsubsidized Loan principal they borrowed at the college") and the cost of attendance's annual limits and installments: two rows of a 2024-25 subsidized loan summed run past the subsidized annual limit for over a thousand borrowers, one row never does; asserted |
 | SF19 | rounding | each figure from its unrounded value, rounded once, halves up | per line or per cell | same call, same figures | asserted: no graded figure within a tenth of a rounding unit of an edge |
 
-## Ladder
+### Ladder (architecture 1)
 
 Measured on the cut pack and asserted in `checks.py` (the share of the 1,441 completers of tested programs in passing
 programs; the line is 75).
@@ -276,7 +504,7 @@ the CDL program, 87). Margins: the golden 4.15 points under the line, each one-h
 default 8.83 over; every rung's share is fixed by whole-program pass and fail sets, so no rung sits within a completer
 of the line.
 
-## Closure table
+### Closure table (architecture 1)
 
 | Axis | Reading | Move |
 |---|---|---|
@@ -303,7 +531,7 @@ of the line.
 | 21 Clause scope | the earnings test for credit programs, the placement test for clock-hour programs | filed (2.2); SF15 |
 | 22 Forward window contents | the designation governs 2027-28; the call rests on closed records | not live: the standard's tests read closed records |
 
-## Literal reader
+### Literal reader (architecture 1)
 
 Executed word for word, the prompt and standard sections 3 to 5 ask for each credit program's median earnings with
 every campus and both award years taken as one group, among completers the release counts with earnings, and for each
@@ -316,7 +544,7 @@ graded figures (every interpolation through the released percentiles files one w
 files the same call or is ruled out by a quoted sentence. The golden is the literal estimand's estimate, not a reading
 of a term.
 
-## Oracles
+### Oracles (architecture 1)
 
 None ties only under the golden. No file publishes a program's pooled median, a pooled share at the benchmark or any
 completer's start or exit date; the release's percentiles and the wage amounts are the data the golden is built from,
@@ -326,7 +554,7 @@ are one participant's schedule (the referee that separates the readings of a ses
 program's total); the loan export carries no column of a loan's amount beside its disbursements' amounts, and no file
 states a completer's principal.
 
-## Ask sheet
+### Ask sheet (architecture 1)
 
 Two asks, both on files the call never reads: the college's attendance export for the grant's participants (ask A);
 the college's Direct Loan disbursements and its cost-of-attendance statement (ask B). Zero device rows sit in the
@@ -379,7 +607,7 @@ Mirror leakage: 0.0 per cent of ask weight.
 
 Measured by: generator/ceiling.py on the cut pack.
 
-## Pre-ship check
+### Pre-ship check (architecture 1)
 
 1. Domain: administrative employment statistics' own estimates from an outcomes release and employer-quarter wage
    records, a program's median earnings as the half point of its cells' released distributions pooled by completers
@@ -416,6 +644,7 @@ Measured by: generator/ceiling.py on the cut pack.
    quarter itself).
 
 ## Tried and rejected
+
 
 - The seed's earnings-premium test alone, the pooled median rebuilt from each cell's quartiles (P25, P50, P75): on
   realistic skewed cells of 10 to 70 completers eight licensed reconstructions (log-normal and log-logistic through the
@@ -485,3 +714,8 @@ Measured by: generator/ceiling.py on the cut pack.
 - Re-root screens of 2026-11-01, emissions inventory (open since task482 left the window), each dead before a harness: a vapour recovery unit's capacity binding on flash surges at tank batteries, the overflow summed hour by hour (the abstraction is task162's device replayed reading by reading, approved, with task156's overflows beside it); truck switch loading, distillate loaded into compartments that last carried gasoline displacing gasoline vapour (AP-42 5.2's equation takes P of the liquid loaded, so the literal standard files the default and the golden needs a correction it does not ask for, task482 architecture 15's withheld-rule lesson; filed physically the sentence names the step, and the previous cargo is one lag of a shipped column); start emissions by the preceding downtime (a permit's or maker's start definitions make it a stated rule, a fitted curve a covariate carry); pile wind erosion by inter-disturbance period (AP-42 13.2.5 files it); utilities' mutual consumption solved as a fixed point (task190's M1 measured reciprocal and direct allocation naming one unit 30 of 30; a CHP loop forks on the allocation method; a stated recursive definition is rule application); consumption-based grid factors by flow tracing (the exporter's mix forks between generation and availability, and the recursive definition is rule application); roof landings, manual gauging puffs, liquids unloading by accumulation and blowdowns by line pressure (filed AP-42 or Subpart W equations, task487's hatches); a service tank's sulfur through an emission control area changeover (the ship's fuel system decides the mixing model, a fork, in a port world); cooling-tower drift, stormwater buildup and washoff, pesticide emission potentials (filed models, forks, or task454's within-type costing).
 - Re-root screens of 2026-11-01, payment claims, IRT equating and record linkage, each dead before a harness: deductible seasonality carried to the year (task482 v13's run-out), stockpiling before a formulary change (task463), a global obstetric fee spread over the pregnancy (task123), crossover lesser-of pricing, retroactive contract rates and provider-level recoupments (stated rules, or task482 architecture 11's screen), emergency visits on inpatient claims (a code reading), incident cases by lookback (task458); a disrupted test prorated against pattern-scored (task482 architecture 10's rescoring screen), superscoring's best of k (screened there), mode effects from schools that randomised mode (task445's and task474's unselected comparison), opt-outs (the 95 per cent participation rule), nominal against effective composite weights (a semantic fork); Fellegi-Sunter dependence among household members (card 2, set aside at task486), staggered measurement changes read by event study (task482 architecture 11's coding screen, the reflex), weighted least squares data reconciliation (filed it is rule application, unfiled a fork), historian deadband time weighting and logger clock drift (task486 architecture 3: fails the swap, spent), sampling-phase aliasing (task251's one-weekday counts, task249's set-aside), suppressed-cell and Frechet bounds (task465, task475; the independence product sits inside the bounds, so they never flip it), late filers imputed by an honest back-test and production allocated between well tests (no structural core, or a decline-model fork).
 - The 2026-11-01 draw is therefore not filed: no mechanism outside task464's driver map, task482's and this note's screened lists, the slots' notes and the approved builds' abstractions survived, and none was registered. Unblocking is the author's call (`CLAUDE.md`, retirement and a ban waiver): a waiver for survey research x ETL against task456 v3, moving the number to another objective, or one of the borderline designs above shipped at its stated Gate H risk (switch loading is the least weak: physically large, unscreened, and pincered between the literal AP-42 reading and a pin that names the step).
+- The number re-tasked by the author on 2026-11-01 from Data Extraction & Conformation (ETL) to Opportunity Sizing & Decision Support, retirement not taken, after architecture 1 came back on the 10-28 determinism block and the 11-01 draw found no ETL ground left; architecture 2 is drawn as an Opportunity Sizing build in a never-built pairing (pharmacology by Opportunity Sizing). START_HERE.md is not edited: the range fixes which objective a number belongs to and nothing else, and the card and the ledger carry the real objective.
+- Architecture 2 draw screens of 2026-11-02, each dead before a harness on its slot-note or card record: marketing by Opportunity Sizing (a conjoint launch weighted by volume or distribution, latent classes the fit statistics reveal, a near-twin plan, a pilot calibration, the in-market population by contract timing: task174, task178, task301 and task309 notes; intercept respondents weighted by visit frequency: task264); pharmacology benefit-risk (the initiation bleeding spike on a one-year horizon, warfarin switchers as a covariate, a trial's 18-month delay with competing deaths: task301); collections (an existing-customer match on a bought portfolio: task301; a dialler's capacity days: task128); business operations through healthcare delivery (a fused wait: task127; a shared pool: task106; bursty queues: task178 and task198; a theatre list replay: task301); accounting through actuarial ground (a retention's truncated and censored severity: task255; credibility, development and on-levelling are the cards' named methods); economics left to task277's draw.
+- Further 2026-11-02 screens, dead on the rules or the record: peak coincidence of a group's demand (task196, task164); a rate read against the observation effort behind it (task199); a renewal process restarting a wear curve (task132); a halo of complementary items lost with a delisted one (task302's world turned over); a share of a fixed pot under a filed formula (rule application); a radiopharmacy generator's decay through the week (the decay correction is the field's first move); rent arrears read at a snapshot of each tenant's monthly benefit cycle (a phase of a balance, time semantics, and an estimand that would have to name the step); a stewardship campaign's switches recognised as same-week bursts across a practice's patients (task303's simultaneity signature).
+- The empiric first-line choice itself as the call (keep nitrofurantoin or move the first line to pivmecillinam or trimethoprim), set aside at the draw: the call is then the sign of one difference between two drugs' resistance, a Descriptive retag, while the pathway's placement in two networks makes the sized opportunity (the mismatched first courses each network's move stops) decide.
+- An estimand naming the infections at a first presentation (or a 28-day window for the cultures), set aside at the draw: the sentence would name the step and make linking the cultures to the prescriptions an executed rule (task445 v2); the specification files the outcome, the courses and the pricing only, and which cultures estimate a first course's chance stays the analyst's.
