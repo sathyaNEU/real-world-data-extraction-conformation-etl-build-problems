@@ -1,25 +1,25 @@
 {
  "task": "task271",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "survey-research-official-statistics",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-01",
- "stump": "",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-02",
+ "stump": "The plain expansion (each flight count times the 17-hour angling day by stratum, each lake's own anglers per boat) files Galloran, Nockell and Farrowdale for the 2027 high-use tier and leaves Ellerdine, Quorrin, Ravensky and Inverkeld out; read against each lake's own hour-by-hour presence from the access interviews, the four fly-only lakes clear 500 angler-hours per hectare and the three general lakes fall under it.",
  "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-02 (no LEAK; the policy's 500 line, two governing documents naming survey terms, the protocol naming what clerks record)",
   "reader": ""
  },
  "duplicate_check": {
   "check_at_draw": "WARN 2026-11-01 before and after registration (overuse.gate_g, repeat.decision; shell.repeat read off the old prompt)",
-  "heart": "",
+  "heart": "WARN 2026-11-02 (overuse.gate_g, repeat.decision; no BLOCK)",
   "surface": ""
  },
  "judge": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 6 drawn and registered 2026-11-01 (Batch 3 re-root): design note, generator and pack to build; no git in this run (the main session commits).",
+ "resume": "Architecture 6 built 2026-11-02 with every free gate green on the final cut; stage 4 (the isolated leak reader and the determinism judge) is the main session's; no git in this run (the main session commits).",
  "architectures": [
   {
    "architecture": 1,
@@ -62,7 +62,7 @@
   {
    "architecture": 6,
    "drawn": "2026-11-01",
-   "fate": "in build"
+   "fate": "built 2026-11-02 (stage 3 complete, awaiting stage 4)"
   }
  ],
  "approved": null,

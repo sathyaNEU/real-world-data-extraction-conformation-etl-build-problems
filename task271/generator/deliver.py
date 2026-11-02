@@ -195,8 +195,9 @@ def write_note(path, M, f):
         "of the 05:00 to 22:00 day. Each count was divided by that lake's share for the hour it was made, then "
         "averaged by survey day and raised to the season by weekday and weekend day in each month.")
     doc.add_paragraph(
-        "What this changes. Multiplying each count by the 17-hour day would have put %s in the tier and left %s out. "
-        "Their anglers are on the water at dawn and in the evening, hours no flight sees." %
+        "What this changes. Multiplying each count by the 17-hour day would have put %s in the tier and left %s out: "
+        "the fly-only lakes' anglers are on the water at dawn and in the evening, hours no flight sees, while the "
+        "general lakes' anglers are out in the hours the flights cover." %
         (", ".join(out[:-1]) + " and " + out[-1], ", ".join(came[:-1]) + " and " + came[-1]))
     doc.add_picture(io.BytesIO(chart_png(f)), width=Cm(16.5))
     doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
