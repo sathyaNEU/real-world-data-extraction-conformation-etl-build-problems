@@ -249,6 +249,12 @@ def gold_room(md):
             mem = [ids[k]]
             if b.loc[ids[k], "gross"] < 300 and k + 1 < len(ids):
                 mem.append(ids[k + 1])
+            elif b.loc[ids[k], "gross"] < 300 and k > 0 and len(ids) > 1:
+                prev = b.loc[ids[k - 1], "lot"]          # last on the manifest: melted with the bar before it
+                b.loc[ids[k], "lot"] = prev
+                lot -= 1
+                k += 1
+                continue
             for m_ in mem:
                 b.loc[m_, "lot"] = lot
             k += len(mem)

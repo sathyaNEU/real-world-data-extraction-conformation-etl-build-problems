@@ -492,12 +492,21 @@ def simulate_title(W, t, rng, holds, loans):
         rn.remaining = [P.METER_LOANS]
         rn.remaining0 = [P.METER_LOANS]
         rn.lapsed_at = [None]
+        rn.created_at = time
         return rn
 
-    def meter_loan():
-        for L in lics:
-            if L.model != "1U-M":
-                continue
+    def held_since(L):
+        if L.order_type == "Renewal":
+            return L.created_at
+        if L.bought <= P.RECORD_START.date():
+            return P.RECORD_START - dt.timedelta(days=1)
+        return dt.datetime(L.bought.year, L.bought.month, L.bought.day, 9, 0, tzinfo=UTC)
+
+    def meter_loan(time):
+        """count a loan against the earliest-purchased 40-loan licence held at the time that has loans left"""
+        cands = sorted([L for L in lics if L.model == "1U-M" and held_since(L) <= time],
+                       key=lambda L: (held_since(L), L.lic_id))
+        for L in cands:
             for i, r in enumerate(L.remaining):
                 if L.lapsed_at[i] is None and r and r > 0:
                     L.remaining[i] = r - 1
@@ -510,7 +519,7 @@ def simulate_title(W, t, rng, holds, loans):
         ret = due
         if rng.random() < P.P_EARLY_RETURN:
             ret = time + dt.timedelta(seconds=int(days * 86400 * rng.uniform(0.25, 0.9)))
-        m = meter_loan()
+        m = meter_loan(time)
         loan = Loan(loan_id="", title=t["id"], student=stu, start=time, days=days, due=due, returned=ret,
                     hold=hold, meter=(m[0].lic_id, m[1]) if m else None)
         loans.append(loan)

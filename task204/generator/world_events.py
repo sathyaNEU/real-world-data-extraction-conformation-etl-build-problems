@@ -116,7 +116,7 @@ class Events:
                 return False
         return self.clear_of_runs(d, code, t)
 
-    def clear_of_runs(self, d, code, t, tol_min=7):
+    def clear_of_runs(self, d, code, t, tol_min=5.5):
         """No train (either direction) leaving `code` near t also leaves a G1 station near a G1 offence that day."""
         g1 = [e for e in self.events if e["group"] == "G1" and e["date"] == d]
         if not g1:
@@ -147,8 +147,8 @@ class Events:
             uy = next(e for e in run["events"] if e["station"] == "UY")
             ok = False
             for _ in range(400):
-                ev = uy["t_event"] + dt.timedelta(seconds=int(r.integers(-180, 181)))
-                if self.clear_of_trips(run["date"], "CB", ev, 7):
+                ev = uy["t_event"] + dt.timedelta(seconds=int(r.integers(-150, 151)))
+                if self.clear_of_trips(run["date"], "CB", ev, 6):
                     ok = True
                     break
             if not ok:

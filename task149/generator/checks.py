@@ -134,7 +134,7 @@ def main():
     check("SF15 ask B: arrival is the start of the workplace stay in Irish time, the window 07:30 to 09:30 inclusive",
           all(int(round(100 * R["arrivals"][z])) == v for z, v in F["arrival_share"].items()), "")
     check("SF16 zone boardings to the nearest 10 and the total to the nearest 100 from the same exact figures",
-          sum(R["boardings"].values()) == gold, "")
+          abs(sum(R["boardings"].values()) - gold) < 1e-6, "")
 
     # ---------------- bin edges for every graded figure
     for z, v in F["zone_boardings"].items():
@@ -200,9 +200,10 @@ def main():
     names = set(re.findall(r"(?:Prepared by|Author:|Contact:) ([A-Z][a-z]+ [A-Z][a-zA-Z]+)", text))
     check("realism: the only personas are the card's drawn people", names <= people, ", ".join(sorted(names)))
     labels = set()
-    for f in ("census2022_pow_rathgarvan_catchment.xlsx",):
-        z = zipfile.ZipFile(os.path.join(TARGET, f))
-        labels |= set(re.findall(r"<t[^>]*>(.*?)</t>", z.read("xl/sharedStrings.xml").decode()))
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(TARGET, "census2022_pow_rathgarvan_catchment.xlsx"), read_only=True)
+    for row in wb["Final release"].iter_rows(values_only=True):
+        labels |= {str(c) for c in row if c is not None}
     reg_names = {r["station_name"] for r in D["register"]}
     import golden as GD
     check("realism: every zone label the golden prints appears in a shipped file",

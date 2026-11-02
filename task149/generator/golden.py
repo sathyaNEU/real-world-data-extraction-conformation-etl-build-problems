@@ -60,6 +60,8 @@ def figures(R):
         "pooled_weekday_share_pct": round(100 * R["f_pooled"], 1),
         "gap_to_threshold": int(round(R["threshold"] - R["golden"])),
         "census_commuters_served": sum(R["census"][z] for z in zones),
+        "conventions": {"rounding_steps": [10, 100], "panel_first_day": 6, "share_table": 2,
+                        "panel_last_day": 26, "arrival_window": ["07:30", "09:30"]},
     }
     return f
 

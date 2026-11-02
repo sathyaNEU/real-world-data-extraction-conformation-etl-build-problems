@@ -179,7 +179,7 @@ def build(target, o):
             lag = int(rng.integers(8, 95)) if t < golive else int(rng.integers(30, 160))
             newpos.append({"site": idm["newsite"][m], "txn": "T%d" % txn_n,
                            "ts": (t + dt.timedelta(seconds=lag)).replace(tzinfo=CHI).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
-                           "pump": int(s["hose"][0]), "hose": "ABCD".index(s["hose"][1]) + 1,
+                           "pump": int(s["hose"][0]), "hose": "ABCDEF".index(s["hose"][1]) + 1,
                            "grade": rev_grade[(m, prod)], "gal": round(s["gal_reg"], 3), "ppg": PRICE[prod],
                            "amt": amt, "tender": "CARD" if tender == "CARD" else ("ACCT" if tender == "SLIP ACCT" else "CASH")})
     write_csv(os.path.join(target, "dock_sales_legacy_2026.csv"),

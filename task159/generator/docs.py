@@ -71,8 +71,6 @@ def grid_control(path):
     for name, x, y, rl in mons:
         e, n = W.mine_to_utm(x, y)
         lines.append("  %-9s %10.3f  %11.3f  %9.3f  %12.3f  %13.3f  %8.3f" % (name, x, y, rl, e, n, rl - 1000.0))
-    lines += ["", "Block models, pit designs and dig plans are kept in KMG. The blast-hole drills log collars in",
-              "UTM from the rigs' GNSS; drill-and-blast and the laboratory carry them as logged."]
     with open(path, "w", encoding="utf-8", newline="\r\n") as f:
         f.write("\n".join(lines) + "\n")
 

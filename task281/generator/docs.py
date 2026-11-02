@@ -87,13 +87,13 @@ def fund_terms(path):
     old_names = {"AH": "Arts and Humanities", "SS": "Social Sciences", "BS": "Ardmuir Business School", "LW": "Law",
                  "EN": "Engineering", "PS": "Physical Sciences", "LS": "Life Sciences", "MD": "Medicine and Dentistry",
                  "NH": "Nursing and Health Sciences"}
-    rows = [["Fund code", "Faculty", "In use"]]
+    rows = [["Fund code", "Faculty", "In use", "Faculty from 1 August 2026"]]
     for o in ["AH", "SS", "BS", "LW", "EN", "PS", "LS", "MD", "NH"]:
-        rows.append(["CT-" + o, old_names[o], "to 31 July 2026"])
+        rows.append(["CT-" + o, old_names[o], "to 31 July 2026", names[WD.new_faculty(o)]])
     for code, name, olds in P.FACULTIES:
-        rows.append(["CT-" + code, name, "from 1 August 2026"])
-    rows.append(["CT-CORE", "Course texts bought centrally (publisher packages)", "throughout"])
-    s.append(_table(rows, [26 * mm, 96 * mm, 48 * mm]))
+        rows.append(["CT-" + code, name, "from 1 August 2026", name])
+    rows.append(["CT-CORE", Paragraph("Course texts bought centrally (publisher packages)", SMALL), "throughout", ""])
+    s.append(_table(rows, [22 * mm, 64 * mm, 34 * mm, 50 * mm]))
     _doc(path, "Course Texts Fund 2027: terms", "Ardmuir University Court", s)
 
 

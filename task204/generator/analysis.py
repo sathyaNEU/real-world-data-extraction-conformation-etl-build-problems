@@ -347,6 +347,26 @@ def golden_series(offs, gtfs, tol_min=3.0, dmax=1000.0, days=28, cache=None):
     return list(merged.values()), sorted(set(runs))
 
 
+def simultaneity(series, offs, minutes=3.0):
+    """Offences of one series that fell within `minutes` of another series' offence at a different station."""
+    sets = [{id(o) for o in c} for c in series]
+    which = {}
+    for k, c in enumerate(series):
+        for o in c:
+            which[id(o)] = k
+    plat = [o for c in series for o in c if o["station"] and o["loc"] == "LRT PLATFORM"]
+    pairs = set()
+    for a in plat:
+        for b in plat:
+            if which[id(a)] < which[id(b)] and a["station"] != b["station"]:
+                if abs((a["t"] - b["t"]).total_seconds()) <= minutes * 60:
+                    pairs.add((which[id(a)], which[id(b)], a["t"].date()))
+    out = defaultdict(set)
+    for ka, kb, d in pairs:
+        out[(ka, kb)].add(d)
+    return {k: sorted(v) for k, v in out.items()}
+
+
 def team_table(series, polys26):
     out = []
     for c in series:
@@ -434,6 +454,7 @@ def run_all(target):
         "ask_b": ask_b(target, codes),
         "ask_c": ask_c(gtfs, cache=cache),
     }
+    res["simultaneous"] = simultaneity(gold, offs)
     r1 = sorted({d for t in res["rung0"] for d in t["districts"]}, key=lambda s: int(s[1:]))
     res["rung1"] = [{"districts": [d], "n": sum(1 for t in res["rung0"] for o in t["ids"]
                                                 if d in t["districts"])} for d in r1]

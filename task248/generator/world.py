@@ -80,11 +80,13 @@ def simulate(seed=P.SEED):
 
     # ---- dock sales, per marina, per day ----
     hose_ids = {}
+    tank_idx = {}
     for tid, t in tanks.items():
         disp = {"AH": 2, "BP": 3, "CF": 2, "DH": 2, "EB": 3, "FL": 3, "GC": 3, "HS": 2}[t.marina]
+        ti = tank_idx.get(t.marina, 0); tank_idx[t.marina] = ti + 1
         hose_ids[tid] = []
         for k in range(len(t.hose_err)):
-            hose_ids[tid].append("%d%s" % (1 + (k % disp), "ABCD"[k // disp + (1 if t.product == "DSL" else 0)]))
+            hose_ids[tid].append("%d%s" % (1 + (k % disp), "ABCDEF"[2 * ti + k // disp]))
     by_marina = {}
     for tid, t in tanks.items():
         by_marina.setdefault(t.marina, []).append(tid)
@@ -159,7 +161,8 @@ def simulate(seed=P.SEED):
     import heapq
     for tid, t in tanks.items():
         m = t.marina
-        net = float(vol(0.62 * t.D, t.D, t.Lt))
+        seasonal = not P.MARINAS[m][2]
+        net = float(vol((0.30 if seasonal else 0.62) * t.D, t.D, t.Lt))
         T = ground_temp(local(days[0]))
         seq = int(rng.integers(40000, 90000))
         t_cur = local(days[0], 0.0)
@@ -179,6 +182,7 @@ def simulate(seed=P.SEED):
             heapq.heappush(q, (when, 1, "S", (g, k)))
         pending = False
         dstate = None
+        daily = {}
         while q:
             when, _, kind, payload = heapq.heappop(q)
             dt_h = max((when - t_cur).total_seconds() / 3600.0, 0.0)
@@ -192,6 +196,7 @@ def simulate(seed=P.SEED):
                 if g_true <= 0.5:
                     continue
                 net -= g_true * (1 - t.beta * (T - 60.0))
+                daily[when.date()] = daily.get(when.date(), 0.0) + g_true
                 reg = round(g_true * (1 + t.hose_err[k]), 3)
                 out["sales"].append({"tank": tid, "marina": m, "local": when, "hose": hose_ids[tid][k],
                                      "product": t.product, "gal_true": g_true, "gal_reg": reg})
@@ -241,10 +246,13 @@ def simulate(seed=P.SEED):
                                         "T": round(T_meas, 1), "gross": round(gr, 1), "tc": round(netc, 1),
                                         "water": round(max(0.0, rng.normal(wmean, 0.05)), 2),
                                         "net_true": net, "h_true": h_true, "T_true": T})
-                if when.hour == 6 and not pending and when < local(dt.date(2026, 12, 29), 0):
+                no_order = seasonal and (when.date() >= dt.date(2026, 9, 15) or when.date() < dt.date(2026, 3, 1))
+                if when.hour == 6 and not pending and not no_order and when < local(dt.date(2026, 12, 29), 0):
                     reorder_net = t.chart_gal(t.reorder_h)
-                    if netc < reorder_net + float(rng.uniform(-60, 160)):
-                        lag = 1 if when.weekday() < 4 else (7 - when.weekday())
+                    lag = 1 if when.weekday() < 4 else (7 - when.weekday())
+                    recent = [daily.get(when.date() - dt.timedelta(days=j), 0.0) for j in range(1, 8)]
+                    draw = (sum(recent) / 7.0) * (lag + 0.25)
+                    if netc - draw < reorder_net + float(rng.uniform(-80, 80)):
                         dd = when.date() + dt.timedelta(days=lag)
                         heapq.heappush(q, (local(dd, float(rng.uniform(8.3, 13.2))), 0, "DS", None))
                         pending = True
