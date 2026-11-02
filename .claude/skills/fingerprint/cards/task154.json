@@ -1,16 +1,16 @@
 {
   "task": "task154",
-  "architecture": "v2 (architecture 2, re-root 2026-11-02: a new world, dataset and shell)",
+  "architecture": "v3 (architecture 3, re-root 2026-11-02: a new world, dataset and shell, after architecture 2's SEND_BACK)",
   "drawn": "2026-11-02",
-  "slot_note": "Re-rooted at stage 1 from the FC25 seed's economics world (architecture 1 spent, lineage below). Architecture 2 keeps nothing of that world: a Kansas intrastate gas transmission operator files its 2027-2031 integrity plan for a 1974 line after the line's first high-resolution in-line inspection, and the decisive step is re-found in how an external corrosion pit grows on a cathodically protected pipe.",
-  "domain": "energy-systems-utilities",
-  "subdomain": "asset-condition-maintenance",
-  "client_domain": "energy-systems-utilities",
-  "niche": "an intrastate gas transmission operator's 2027-2031 integrity plan for a 1974 coal-tar-coated line after its first high-resolution magnetic flux leakage inspection: how many external corrosion anomalies the plan must excavate and repair before they reach 80 per cent of wall, and in which plan year each falls due",
+  "slot_note": "Re-rooted at stage 1 a second time: architecture 1 (the FC25 seed's economics world, a bank desk's advance GDP call) and architecture 2 (a Kansas gas transmission dig plan, energy systems and utilities) are spent, lineage below. Architecture 3 keeps nothing of either world: an English spring water bottler applies to renew and raise its groundwater abstraction licence for a new bottling line, and the decisive step is re-found in how a confined aquifer cut by a fault responds over a licence term to a borehole that a three-day test saw only as an unbounded aquifer.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "hydrology-flood-frequency",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a spring water bottler's licence renewal and variation for a new bottling line: the largest daily groundwater abstraction from its confined sandstone borehole whose predicted drawdown at each neighbouring licensed borehole stays within that borehole's available drawdown at the 2039 common end date, under the licensing team's derogation test",
   "objective": "forecasting",
-  "shape": "02",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
+  "shape": "13",
+  "decision_type": "dial_setting",
+  "answer_unit": "rate_or_share",
   "answer": "",
   "answer_source": "",
   "gap": [
@@ -20,80 +20,79 @@
     "none"
   ],
   "generators": [
-    "G7",
-    "G13"
+    "G13",
+    "G16"
   ],
-  "gate_g": "forecasting",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "physical_verification",
-  "stump_strategy": "other",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who aligns the in-line inspection to the line's stationing, keeps the external metal-loss anomalies the integrity plan covers, reads the cathodic protection surveys, the rectifier inspections and the remediation programme correctly and grows each anomaly at its full-life rate (its 2025 depth over the years since the line was commissioned in 1974, the integrity engineer's standard rate when one inspection exists) files a handful of digs for 2027-2031 against the golden's several dozen, because the line was protected until each rectifier zone's potentials fell short of the criterion, so every active pit has grown only over the years since its zone's protection failed and keeps growing at that pace until its zone is restored.",
-  "domain_test": "The deciding quantity is each external corrosion anomaly's depth at the end of the plan period, the corrosion growth projection pipeline integrity management makes after an in-line inspection, and it turns on the physics of cathodic protection: a pit on a protected pipe grows only while the pipe-to-soil potential at it fails the criterion; with a hospital's nouns there is no wall being lost, no protection record and no repair depth, so the task stops reading.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:corrosion growth dated by the protection record",
+  "analyst_test": "A strong analyst who reads the pre-application letter's derogation test correctly, fits the field's Theis solution to the 2014 constant-rate test (a clean fit at every observation borehole) and superposes the existing and applied quantities to 31 March 2039 files about 2,300 cubic metres a day as the largest quantity, with Kilnbrook Nurseries limiting it and 1,800 passing; the golden, in which the Coldharbour Fault closes the aquifer to the east so every protected borehole also feels Borehole 2's image across it, files 1,300 with Lower Hay Farm limiting and 1,800 failing there.",
+  "domain_test": "The deciding quantity is the drawdown a groundwater abstraction causes at neighbouring licensed boreholes over a licence term, the hydrologist's forecast behind every licence variation, and it turns on the aquifer's geometry and the physics of radial flow to a well (a confined sandstone the fault juxtaposes against mudstone, so the cone that reaches the fault deepens on the near side as if a second well pumped beyond it); with a hospital's or a retailer's nouns there is no aquifer, no cone of depression and nothing for a barrier to reflect, so the task stops reading.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:aquifer barrier felt only over the licence horizon, not in the pumping test",
   "layer1": [
-    "the in-line inspection's odometer distances against the operator's engineering stationing, aligned through the above-ground markers both carry",
-    "two cathodic protection survey contractors' layouts, the later one recording potentials as positive millivolt magnitudes",
-    "test posts added and renumbered in a 2018 survey upgrade",
-    "wall thickness changing at road and river crossings, depths reported as per cent of each joint's own nominal wall",
-    "inches and mils in the inspection and field reports against millimetres in the contractor's dig sheets",
-    "dig verification reports as a scanned PDF",
-    "rectifier inspection readings taken every two months by field technicians, some visits late"
+    "the 2014 constant-rate test's loggers in two makes (pressure in kPa against water level in metres above the sensor), each borehole's dip datum its own casing top, logger clocks on GMT against the field sheets' local time",
+    "the observation boreholes' monthly dips since 2015 as depth below casing top, a casing raised on one borehole in 2020 and resurveyed",
+    "the regional observation borehole's daily levels in metres above ordnance datum, gaps at logger swaps",
+    "borehole coordinates as national grid references in the survey and as eastings and northings in the logs",
+    "the borehole logs in drillers' lithology words against the geological map's formation names",
+    "abstraction telemetry every 15 minutes in UTC with a totaliser that rolls over, the site engineer's weekly meter readings and the annual returns in licence years April to March",
+    "bottling line production in the plant system's runs and pack sizes, line water sub-meters, bulk tanker sales on the haulier's tickets"
   ],
-  "stakeholder_role": "the integrity engineer who files the operator's 2027-2031 integrity management plan with the state pipeline safety office",
+  "stakeholder_role": "the bottler's water resources lead who prepares its licence renewal and variation for the licensing team",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "northline_ili_2025_pipe_tally.csv",
-    "rows": 42000,
-    "entity": "one feature the May 2025 magnetic flux leakage tool reported on the Northline (a girth weld, a metal-loss anomaly, a valve, a tee, a marker or a casing end)",
-    "grain": "feature x odometer position",
+    "file": "bh2_test_2014_loggers.csv",
+    "rows": 0,
+    "entity": "one logger reading in the June 2014 constant-rate test and its recovery (the pumping borehole and three observation boreholes)",
+    "grain": "borehole x minute",
     "source": "synthetic"
   },
   "forum": "regulator_or_inspector",
   "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "utility_or_infrastructure",
+  "org_family": "agriculture_or_food_producer",
   "world": {
-    "geography": "United States, Kansas (a fictional intrastate natural gas transmission operator and its 1974 line)",
-    "currency": "USD",
-    "org_type": "an intrastate natural gas transmission operator",
+    "geography": "England, the West Midlands (a fictional spring water bottler and village in a real county setting)",
+    "currency": "GBP",
+    "org_type": "a spring water bottler with its own licensed borehole",
     "invented_names": [
-      "Bluestem Gas Transmission",
-      "Northline",
-      "Cottonwood Junction",
-      "Saline River crossing"
+      "Brackenholt Spring Water",
+      "Coldharbour Fault",
+      "Lower Hay Farm",
+      "Kilnbrook Nurseries",
+      "Hollin Bank Golf Club",
+      "Windle Cross"
     ],
     "people": [
-      "Kathryn Griffin",
-      "Brandi Williams",
-      "Nicholas Guerra"
+      "Francis Mason",
+      "Dominic Schofield",
+      "Wendy Hodgson"
     ]
   },
   "deliverables": [
-    "northline_dig_plan_2027_2031.xlsx",
-    "northline_integrity_plan_memo.docx"
+    "bh2_licence_variation_note.pdf",
+    "bh2_returns_check.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A size that grows only while a protecting condition fails, read once, is its rate times the time the condition has failed at it, and that time runs from the moment a second record shows the condition first failing, not from the unit's installation; spreading the size over the unit's whole age slows every growing unit severalfold, so the forward count of units that reach a limit inside the window is a small fraction of the count their growth since the failure gives, and the units that once failed and were restored do not grow at all.",
-  "driver_concrete": "Each external corrosion pit on the Northline grew only while its rectifier zone's instant-off potentials read short of minus 850 millivolts, which the rectifier inspections and the annual test post surveys date zone by zone, so its growth rate is its May 2025 depth over the time since its zone's protection failed, running on until the remediation programme restores the zone and never in the zones restored before the inspection; spreading the depth over the 50.6 years since commissioning, the full-life rate, files a handful of digs for 2027-2031.",
-  "stump": "Growing each external anomaly at its full-life rate, its May 2025 depth over the years since the Northline was commissioned in 1974, files a handful of 2027-2031 digs against several dozen, because each active pit grew only over the years since its rectifier zone's protection first failed the criterion and keeps that pace until the zone is restored.",
+  "question_form": "how-much",
+  "driver": "A response measured over a short disturbance in what behaves as an unbounded medium is carried over a horizon hundreds of times longer, but the medium is closed on one side by a barrier the short test never reached; over the long horizon every point also carries the response of a mirror source beyond the barrier, close to doubling it nearest the barrier and moving which constraint binds, and only the barrier's mapped trace, a record from across it that stays flat where the unbounded model expects a response, and the long record's own excess show it.",
+  "driver_concrete": "Borehole 2's 2014 constant-rate test fits Theis cleanly at every observation borehole because in 72 hours its cone never reached the Coldharbour Fault two kilometres east, which throws the Sherwood Sandstone against Mercia Mudstone; over the derogation test's 24 years the cone is held by the fault, so each protected borehole's drawdown is Borehole 2's own plus that of its image across the fault (Lower Hay Farm, half a kilometre from the fault, nearly double), which the observation boreholes' dips since 2015 (deeper than the test's Theis predicts) and the regional borehole beyond the fault (no response at all) bear out.",
+  "stump": "Projecting the field's Theis solution fitted to the 2014 constant-rate test over the derogation test's 24 years files about 2,300 cubic metres a day as the largest quantity, Kilnbrook Nurseries limiting it and the new line's 1,800 passing everywhere, because the 72-hour test never reached the Coldharbour Fault: over the licence term the fault closes the aquifer to the east, every protected borehole carries Borehole 2's image across it as well, and Lower Hay Farm's drawdown at 1,800 is about 10.5 metres against its 7.8, so the largest quantity that passes is 1,300.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task162": "task162 replays a pressure-reducing valve hour by hour, its effect acting only in the hours the inlet runs above the setting; here nothing is replayed through a device: each pit's past growth rate is dated from the protection record and projected forward, the size over the time since a dated failure",
-    "task476": "task476 dates each leak's unrecorded start within its survey interval from a seasonal profile of start dates in odour reports to size an emitting duration (an ETL conformance of an inventory); here each zone's protection failure is a dated event in its own rectifier and survey record, and the quantity is a growth rate carried forward to a repair depth",
-    "task132": "task132's replacement restarts a wear curve over a forward horizon; here no unit is replaced: a pit's growth starts when protection fails and stops when it is restored",
-    "task46": "task46 reads a burden on cumulative service exposure from a movement log for a cohort crossing a step; here the exposure is the time a protection criterion failed at each pit, dated by a separate record, and the forward quantity is a depth reaching a limit",
-    "task161": "task161 burns a bought-ahead stock at each holder's own share of its use, a stock drawn down; here nothing is drawn down: a pit's depth is its own rate times the time its zone's protection has failed, and the forward step carries that rate to a repair depth",
-    "task170": "task170 v1 moves units at the first noisy scheduled measurement over a fixed level; here the measurement (the in-line inspection depth) is taken as reported and the decisive step dates each pit's growing period from a separate protection record",
-    "task259": "task259 carries reports filed at earlier dates to a reference date by the level's movement inside reporting units; here no report is carried to a date: one inspection's depth is divided by the time since a dated protection failure to give a rate",
-    "task87": "task87 caps a delivered count by an exclusivity between items in one time slot; here nothing is capped or exclusive: the window is the span a protection criterion failed",
-    "task105": "task105 v1 loses a class of commitments agreed a season before an outlet opens; here no agreement lead or opening date matters: each pit grows only while its zone's potentials fail the criterion",
-    "task229": "task229 biases a published daily value by a convex conversion of a cycled input and v3 overstates a gated stream's capture; here no conversion or capture curve is read: a growth rate is dated from the protection record"
+    "task174": "task174 v2 recovers each member's within-session gain from stopping records broken by overnight breaks; here nothing is learned or forgotten: an aquifer's response to one borehole, fitted cleanly on a three-day test, is carried over 24 years in which a fault the test never reached holds and deepens the cone",
+    "task178": "task178's harbour trestle deck (architecture 1) builds a period's crossings from a deterministic component already known for that period; here no component is known ahead: the long-horizon response gains a mirror source across a barrier that only the map, a record beyond it and the long record's own excess show",
+    "task461": "task461 extends a short target record through a correlated long auxiliary record's proportional relation; here no record is extended by a correlate: the model fitted to the short test is replaced over the horizon by one closed at the fault, and the long record serves only to refute the unbounded model",
+    "task229": "task229 v2 corrects a checked-unit rate for checks that see units just before resetting them, and v3 a convex conversion of a cycled input; here nothing is checked, reset or converted: a cone of depression reaches a barrier only after the test that measured the aquifer had ended",
+    "task242": "task242 corrects a detector whose chance of registering an event fades with the time since it happened; here nothing is detected or fades: the response grows over the horizon as a mirror source beyond a barrier adds to it",
+    "task476": "task476 v2 dates each leak's unrecorded start within its inspection interval from a seasonal start profile; here no start is dated: the moment the cone meets the barrier follows from the aquifer's own diffusivity and the fault's distance, and it falls after the test and inside the licence term",
+    "task501": "task501 v4 reads a who-passes-to-whom matrix's eigenvalue under one season's contact regime rather than pooled days; here no matrix or regime is pooled: a short test's unbounded fit is carried over a long horizon in which a barrier nearly doubles the response near it"
   },
   "lineage": [
     {
@@ -148,6 +147,48 @@
       "forum": "operations_desk",
       "forcing_event": "other",
       "org_family": "financial_institution"
+    },
+    {
+      "architecture": "v2 (architecture 2, a Kansas gas transmission operator's 2027-2031 dig plan for its 1974 Northline)",
+      "fate": "spent 2026-11-02 at stage 4: the single re-judge after the field-check FIX_NOW (cut 2320312b, determinism_check_report_pass2.md) returned NOT_DETERMINISTIC, SEND_BACK, underspecified_objective on the main call; every golden figure reproduced, but no shipped file forced the growth-rate basis: the never-failed zones carried old external metal loss up to 29 per cent, so a rate with that background taken off first was as defensible and moved the count from 34 to 29, 24 or 17 and could flip the call; filing the basis would have filed the method, and a rate read from one inspection leaves the method space open",
+      "domain": "energy-systems-utilities",
+      "subdomain": "asset-condition-maintenance",
+      "objective": "forecasting",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "stump_strategy": "other",
+      "generators": [
+        "G7",
+        "G13"
+      ],
+      "driver": "A size that grows only while a protecting condition fails, read once, is its rate times the time the condition has failed at it, and that time runs from the moment a second record shows the condition first failing, not from the unit's installation; spreading the size over the unit's whole age slows every growing unit severalfold, so the forward count of units that reach a limit inside the window is a small fraction of the count their growth since the failure gives, and the units that once failed and were restored do not grow at all.",
+      "driver_concrete": "Each external corrosion pit on the Northline grew only while its rectifier zone was below the protection criterion, which the rectifiers' daily monitoring readings and the technicians' inspections date zone by zone, so its growth rate is its May 2025 depth over the days since its zone's rectifier output fell, running on until the capital plan's project restores the zone and never in the zones at criterion at the run.",
+      "stump": "Growing each external anomaly at its full-life rate, its May 2025 depth over the years since the Northline went into service in October 1974, files the 24 funded digs as enough with 0 needed in any plan year, because each pit in a rectifier zone still below the protection criterion grew only since that zone's rectifier output fell (R-5 on 9 July 2016, R-7 on 12 August 2019) and keeps that pace until the capital plan restores the zone, so the plan needs 4, 9, 11, 6 and 4 digs, 34 in all.",
+      "world": {
+        "geography": "United States, Kansas (a fictional intrastate natural gas transmission operator and its 1974 line)",
+        "currency": "USD",
+        "org_type": "an intrastate natural gas transmission operator",
+        "invented_names": [
+          "Bluestem Gas Transmission",
+          "Northline",
+          "Cottonwood Junction",
+          "Saline River crossing"
+        ],
+        "people": [
+          "Kathryn Griffin",
+          "Brandi Williams",
+          "Nicholas Guerra"
+        ]
+      },
+      "forum": "regulator_or_inspector",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "utility_or_infrastructure"
     }
   ],
   "lineage_shells": [
@@ -156,14 +197,20 @@
       "second-sentence opener": "lead",
       "rounding opener": "give",
       "deliverable set": "pdf+xlsx"
+    },
+    {
+      "question form": "how-many",
+      "second-sentence opener": "list",
+      "rounding opener": "mileposts",
+      "deliverable set": "docx+xlsx"
     }
   ],
+  "notes": "Strategy forecast_method_backtest, the honest label: the natural fit (Theis on the 72-hour test) is right in sample and wrong over the decision's horizon, and the honest history that refutes it is the observation boreholes' own dips since 2015 and the regional borehole beyond the fault; no back-test is filed and no organ is built for it. Gate G method_or_model_selection: two defensible aquifer models (unbounded and closed by the fault), the right one pinned by the long record and the geology, never by a filed sentence. G13 first (the horizon mismatch between a three-day test and a 24-year assessment), G16 second. Calibration physical_verification: the monthly dips at the observation boreholes and the regulator's daily levels beyond the fault. Context artifact filed_standard: the licensing team's pre-application letter files the derogation test's WHAT (the protected boreholes and their available drawdowns, the rest levels of April 2015, the end date, the quantities and their dates) and names no aquifer model. Role compliance_or_audit (the water resources lead preparing a regulatory application), forum regulator_or_inspector, forcing event statutory_or_regulatory_filing, org family agriculture_or_food_producer: none among the last three live registrations (task190, task232, task146); operations_director avoided (task190).",
+  "registered": "2026-11-02T08:33:17Z",
   "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "schedule",
-    "rounding opener": "depths",
-    "deliverable set": "docx+xlsx"
-  },
-  "notes": "Stump strategy 'other' (named): exposure dating, a degradation that accrues only in the periods its protection fails, the start of each unit's growing period dated by a second record. None of the vocabulary's families is this move: maturity_censoring is periods not yet developed, time_semantics is calendars, as-of and effective dating, binding_constraint is a limit. Gate G forecasting: the correctly read 2025 snapshot does not pin the 2031 depths; the full-life rate is the field's own rate for one inspection. G7 first (honest, kept against the guard's suggestion to redraw it): the pit corrodes only inside its zone's window of failed protection; G13: the growth window is not the asset's age. The older same-puzzle and same-driver signatures (time, G7) are answered by one differentiation line each, all six builds' drivers read and none of them dates a growing period from a protection record. Calibration physical_verification: the 2025 dig verifications (laser-scanned field depths) confirm the tool's sizing, which a solver checks before trusting the depths. Forum regulator_or_inspector (the plan is filed with the state pipeline safety office), forcing event statutory_or_regulatory_filing (the plan's filing date), org family utility_or_infrastructure: none among the last three registrations (task146, task232, task190).",
-  "registered": "2026-11-02T05:13:16Z"
+    "question form": "how-much",
+    "second-sentence opener": "our",
+    "rounding opener": "quantities",
+    "deliverable set": "csv+pdf"
+  }
 }
