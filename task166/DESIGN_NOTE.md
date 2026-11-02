@@ -16,24 +16,24 @@ sits at the bottom of the ladder and files a wrong answer; the decisive step is 
 |---|---|
 | Card | `cards/task166.json` v4, registered 2026-11-01T22:03:36Z at WARN; v1, v2 and v3 in its lineage with their fates; `lineage_shells` holds v3's shell read off its shipped prompt and v1's and v2's deliverable sets |
 | Pairing | accounting-audit-forensic (house) / revenue-receivables, client domain actuarial-science-insurance through its task type reserving-development-triangles, Forecasting & Predictive Modeling |
-| World | Marrowgate Books Ltd, an independent London trade publisher (literary, crime, commercial and children's imprints) selling on sale-or-return through a third-party distributor to a national bookshop chain, an online retailer, wholesalers, a supermarket supplier, independent shops and export accounts; financial year to 31 October |
-| Call | how much Marrowgate should hold as its returns allowance at the 31 October 2026 year end against trade sales invoiced to that date: the credit it expects to give for copies already invoiced that accounts will send back under the terms of trade |
-| Shape | other: the allowance (one figure) and its critical components (the hardback part and the part already authorised), then three asks on the returns-processing records the call never reads (the copies the distributor received back and the credit raised, by channel and quarter of FY2026; the authorised returns not yet received at the year end, by channel, copies and credit; the share of received copies scrapped as unsaleable, by channel and format); criteria arithmetic in `## Ask sheet` |
+| World | Marrowgate Books Ltd, an independent London trade publisher (literary, crime, commercial and children's imprints) selling on sale-or-return through its distributor, Tallowmere Book Distribution, to a national bookshop chain, online retailers, wholesalers, a supermarket supplier, independent shops and export accounts; financial year to 31 October |
+| Call | how much Marrowgate should hold as its returns allowance at the 31 October 2026 year end against trade sales invoiced to that date, and how much of it is for hardbacks: the credit it expects to give for copies already invoiced that accounts will send back under the terms of trade |
+| Shape | other: the allowance and its hardback part (2 graded figures, to the nearest £250,000), then two asks on the distributor's returns records the call never reads: the copies of Marrowgate titles received back in each quarter of FY2026 by channel (24 cells) and the share of those copies written off by the year end by channel (6) and by format (3); 35 graded figures and the two files |
 | Decision type, unit | quantity_figure, currency (GBP) |
-| Strategy | composition_mix: the 2026 autumn hardback cohort's mix on a property no column names (the months from a hardback's publication to its own paperback's) differs from every cohort the development was measured on |
-| Gap, pattern, generators | time then population; E (the returns of a hardback's remaining shop stock conditioned on its paperback's on-sale date); G14, G13 (the paperback falls inside the run-off the history's hardbacks never exercised), G6 |
+| Strategy | composition_mix: the autumn 2026 hardback cohort differs from every cohort the development was measured on in a property no column names, the months from a hardback's publication to its own paperback's |
+| Gap, pattern, generators | time then population; E (a hardback's remaining shop stock comes back on its paperback's on-sale date); G14, G13 (the paperback falls inside the returns window the history's hardbacks rarely exercised), G6 |
 | Gate G | forecasting |
-| Layer 2 | field_method, `own:hardback-run-off-conditioned-on-its-paperback-date` (the client card `actuarial-science-insurance/reserving-development-triangles/1` warns that a chain ladder assumes a stable development pattern; here nothing in the triangles shows the change, which sits in the forthcoming paperbacks) |
+| Layer 2 | field_method, `own:hardback-returns-conditioned-on-its-paperback-date` (the client card `actuarial-science-insurance/reserving-development-triangles/1` warns that a development method assumes a stable pattern; here no triangle shows the change, which sits in the forthcoming paperbacks) |
 | Forum, forcing event, org, role | auditor (the year-end audit of the allowance); period_close (the 31 October 2026 year end); media_or_publishing; finance_controller (Group Financial Controller) |
-| Context artifact, calibration | published_series (the trade's weekly consumer sales panel beside the ledger); none |
+| Context artifact, calibration | published_series (the trade's weekly UK consumer sales panel beside the ledger); none |
 | People | Hilary Singh (Group Financial Controller), Marc Hudson (Head of Sales Operations), Jade Hewitt (the distributor's returns manager), from `guard.py names --geo "United Kingdom" --seed 166`; none appears in the prompt |
-| Deliverables | `returns_allowance_FY2026.xlsx` (the allowance, its parts and the three asks' tables) and `returns_allowance_note.pdf` (a one-page note: the allowance, its authorised part, how it was built) |
+| Deliverables | `returns_allowance_FY2026.xlsx` (the allowance, its parts and workings, the two asks' tables) and `returns_allowance_note.pdf` (one page: the allowance, its hardback part, how it was built) |
 | Shell | how-much / build / pdf+xlsx, against v3's how-many / send / docx+xlsx and v1's and v2's which questions with pptx+xlsx and png+xlsx |
-| Seed | none: drawn without a seed |
+| Seed | none: drawn without a seed; world `s110` of the generator's sweep (`common.WORLD`), chosen on the back-test, the bin placement and the separation, recorded below |
 
 **The guard's answers.** `guard.py check` on the registered card: WARN, no BLOCK.
 - overuse.objective, repeat.gate_g and overuse.gate_g (forecasting, task273 v5 and task157 v3): the number belongs to the
-  Forecasting lane and the allowance is a forecast of copies still to come back; Gate G forecasting is that objective's
+  Forecasting lane and the allowance is a forecast of credit still to come; Gate G forecasting is that objective's
   natural mechanism, and neither neighbour shares the world, the decision or the driver.
 - test.same_puzzle_older and test.same_driver_older (time, E, quantity_figure and forecasting): differentiated on the card
   line by line against task117, task137's lineage, task171's lineage, task37, task44, task481, task97 and task155; each
@@ -48,80 +48,248 @@ sits at the bottom of the ladder and files a wrong answer; the decisive step is 
 - Nearest drivers 0.05 to 0.07 (task43's lineage: a pooled effect carried onto a cohort with another mix of a moderator;
   task146; task137 v2; task157 v1; task173 v1). The closest in kind is task43's: a correct pooled quantity carried onto a
   forward cohort whose mix on a property differs; there the moderator was a behaviour in a pilot, here it is a date on
-  another record (the paperback's) that only a title-and-contributor link reaches.
-- `guard.py slots` on the setting's words (publisher, returns, hardcover, paperback, bookstore, ISBN, imprint,
-  sale-or-return, returns reserve, right of return) and on the mechanism's (successor, edition, supersede, the candidate
-  driver sentence) found no slot note with this world or this mechanism.
+  another record (the paperback's) that only a title-and-contributor match reaches.
 
 **Abstraction sentence** (what a reviewer holding this build and its nearest approved build would say is the same): a
-run-off measured on past cohorts is carried onto a cohort whose successor products arrive sooner. No approved build says
-it: task132 restarts a wear curve when an item is replaced (the successor resets a hazard; here it ends the predecessor's
-sales and sends its stock back), task107 lifts a rate at a fixed anniversary, task175 reads a lot's chance off its
-street's fill and task124 a verified share within a kind of main.
+returns pattern measured on past cohorts is carried onto a cohort whose successor products arrive sooner. No approved
+build says it: task132 restarts a wear curve when an item is replaced (the successor resets a hazard; here it ends the
+predecessor's sales and sends its stock back), task107 lifts a rate at a fixed anniversary, task175 reads a lot's chance
+off its street's fill and task124 a verified share within a kind of main.
 
 **Data-native sentence.** A bookshop keeps a hardback face-out until the paperback of the same book arrives, then sends
 what it has left back for credit, so a hardback's returns are set by when its own paperback goes on sale; Marrowgate's
-returns history ran its hardbacks off with paperbacks about a year behind them, while the autumn 2026 list's paperbacks,
-listed on the title master as forthcoming titles under their own ISBNs and often retitled, are due four to five months
-after publication.
+returns history ran its hardbacks off with paperbacks about a year behind them (17 of the 253 hardbacks published from
+August 2021 to October 2025 had a paperback within eight months), while 23 of the 26 autumn 2026 hardbacks have their
+paperbacks listed on the title master as forthcoming titles four to five months after publication, under their own
+ISBNs and often retitled.
 
 **A line per source.**
-- The client card `reserving-development-triangles` 1 (changing settlement speed distorts paid development; a chain ladder
-  assumes a stable development pattern) supplies the precondition; the card's own fix (a disposal-rate adjustment read off
+- The client card `reserving-development-triangles` 1 (changing settlement speed distorts paid development; a development
+  method assumes a stable pattern) supplies the precondition; the card's own fix (a disposal-rate adjustment read off
   closed counts) is not this build's step, because no triangle here shows the change.
-- `stumping` 1.1b: the field's development of returns by format, channel and months since invoice is rung 0 and rung 1
-  and files the wrong allowance; the decisive step is that the autumn 2026 hardbacks violate its precondition.
+- `stumping` 1.1b: the field's development of returns by format, channel and weeks since invoice is rung 0 and rung 1 and
+  files the wrong allowance; the decisive step is that the autumn 2026 hardbacks violate its precondition.
 - `stumping` 1.4, the survivor anatomy: the deciding property (months from a hardback to its own paperback) has no column;
-  it is read through a title-and-contributor link between a sold hardback and a forthcoming paperback, which no key offers.
+  it is read through a title-and-contributor match between a sold hardback and a forthcoming paperback, which no key
+  offers.
 - The portal's three landings on this slot (`## Tried and rejected`): each was the field's named correction found because
   something announced it (a cover metric, a stack's rate, a removals surge with a key on every row); here nothing is loud:
-  the autumn list's subscription orders, shipments and early sales are ordinary and the forthcoming paperbacks are ordinary
-  catalogue rows.
+  the autumn list's subscription copies sit inside the earlier autumns' range and its forthcoming paperbacks are ordinary
+  catalogue rows among the season's forthcoming titles.
 - Industry practice (no source shipped): sale-or-return is the UK trade's standard term, and a hardback's sales fall away
   when its paperback is published; publishers schedule paperbacks six to twelve months after the hardback.
 
 ## Three rules
 
-- Task type: actuarial-science-insurance / reserving-development-triangles, which serves Forecasting: the allowance is a run-off reserve, the credit still to be given on copies already invoiced, developed by months since invoice.
-- Domain test: the quantity that decides the call is the expected credit for copies already invoiced that will come back under sale-or-return, which a reserving analysis develops from the returns triangle by format, channel and months since invoice; the hardbacks' development turns on when each hardback's own paperback goes on sale.
+- Task type: actuarial-science-insurance / reserving-development-triangles, which serves Forecasting: the allowance is a reserve for credit still to be given on copies already invoiced, developed by weeks since invoice from the returns history.
+- Domain test: the quantity that decides the call is the expected credit for copies already invoiced that will come back under sale-or-return, which a reserving analysis develops from the returns triangle by format, channel and weeks since invoice (a chain ladder on returned shares, the field's method); the hardbacks' development turns on when each hardback's own paperback goes on sale.
 - Swap: "how much should a hospital trust hold against readmissions of patients already discharged": a discharged patient has no successor edition whose publication sends the predecessor back, so the paperback dates that decide this call stop meaning anything.
-- Layer 1: the organisation's own systems produce every mess item: the 2023 ERP migration with legacy six-digit account codes crosswalked on the account master, ISBN-13 with and without hyphens across ledger, distributor and panel, the chain's branch returns consolidated through its returns hub, strip returns (covers only) from the supermarket supplier, credit notes raised after the distributor's receipt, the October financial year against calendar quarters and the distributor's week numbers, paperbacks retitled or subtitled against their hardbacks with contributor names in two formats, a consumer panel that covers UK retail and not export, subscription orders invoiced ahead of publication, damaged-in-transit claims credited beside returns; nothing placed to be caught.
-- Layer 2: field method and its precondition: a development pattern measured on cohorts whose paperbacks came about a year after the hardback does not carry a cohort whose paperbacks come four to five months after it; conditioning each hardback's run-off on its own paperback's on-sale date flips the allowance.
-- Decisive step: recognising that a hardback's remaining shop stock comes back once its own paperback goes on sale, linking each hardback still in its returns window to its paperback on the title master (title and contributor, the paperback often retitled, under its own ISBN), and developing the hardbacks by the time to their paperback, which the record shows in the hardbacks whose paperbacks came early.
-- Not semantics: every field reads plainly (an invoice, a credit quoting it, a format, a publication date, a forthcoming title) and reading all of it correctly still leaves every development on the history's pattern, because the deciding quantity, each hardback's time to its own paperback, is in no field and has to be built by linking two catalogue rows no key joins.
-- Not rule application: no filed rule says a paperback sends its hardback back or links the two editions; executing the terms of trade (18 months from invoice, credit at the invoiced terms) and every development on the record gives the careful history's figure; the enumerated family's spread and the standing family's are measured at stage 3 on the clean truth and written into `## Ladder` (the draw's paper estimate: about £3.8 million for every development that skips the step, about £4.5 million for every construction that takes it).
-- Analyst test: with every channel, migrated account code, credit and strip return read correctly, the easy route develops returns by format, channel and months since invoice on the five-year record (a trailing return rate, or a chain ladder on the returns triangle, both back-testing within a few per cent on the 2024 and 2025 year ends) and holds about £3.8 million; it never ties a forthcoming paperback to its hardback, so the autumn 2026 hardbacks run off on a history whose paperbacks came about a year later.
-- Estimand: the terms of trade (`marrowgate_terms_of_trade_2024.pdf`) file the WHAT: a trade account may return copies for credit with the distributor's authorisation within 18 months of the invoice that supplied them, quoting it, credited at the net price on that invoice; the allowance is the credit Marrowgate expects to give for copies invoiced on or before 31 October 2026 that come back under those terms.
-- No decoy: nothing is planted: the autumn list's paperback dates are the publisher's own publishing schedule on its title master, no memo, model or file argues for the history's figure or ranks anything, and the distractors are declared in `metadata.json`.
-- No certified replay: no certified or published figure is reproduced to recover a method: no prior allowance computation or audited working ships, and the development and its conditioning are estimated from the invoices and the credits that quote them.
-- Lesson: a reserving analyst learns to ask what ends a cohort's run-off before carrying its history forward: where a successor product sends a predecessor's stock back, the successor's date is the development clock, and a schedule that brings it forward moves the reserve where no triangle shows it; no build on file conditions a run-off on a successor edition's date found by linking catalogue rows.
+- Layer 1: the organisation's own systems produce every mess item: the February 2023 ledger system change (legacy six-digit account numbers crosswalked on the account master, ISBNs hyphenated on the older lines), titles first catalogued in the old bibliographic system (contributor written surname-first, formats coded HB, TPB and PB), the distributor's own consignor references against Marrowgate's account codes, its exports starting November 2024, one day's export sent twice, hub and depot consignments booked carton by carton, other publishers' copies in a client's parcel, copies sent beyond an authorisation, a delivery booked in a second time, hurts re-inspected in two sessions or recounted after a query, the re-inspection workbook gaining an inspector column from August 2026, the panel's Saturday week ending and the October financial year against calendar quarters; nothing is placed to be caught, and none of it moves the call.
+- Layer 2: the field's method and its precondition: a returns pattern measured on hardbacks whose paperbacks came about a year later does not carry a cohort whose paperbacks come four to five months later; giving those hardbacks their own pattern, read off the earlier hardbacks with a paperback that close, moves the allowance from £1.25 million to £1.75 million.
+- Decisive step: recognising that a hardback's remaining shop stock comes back once its own paperback goes on sale, finding each hardback's paperback on the title master by title and contributor (often retitled, under its own ISBN, the contributor written two ways), and giving the hardbacks whose paperback comes within eight months their own returns pattern from the earlier hardbacks with a paperback that close.
+- Not semantics: every field reads plainly (an invoice line, a credit quoting it, a format, a publication date, a forthcoming status) and reading all of it correctly still leaves every development on the history's pattern, because the deciding quantity, each hardback's months to its own paperback, is in no field and is built only by matching two catalogue rows no key joins.
+- Not rule application: no filed rule says a paperback sends its hardback back or ties the two editions; executing the terms of trade (returns quote invoices three to twelve months old, matched earliest first, credited at the matched invoice's net price, lapsing after 60 days) and the policy's definition gives the history's figure; measured on the pack, the enumerated family without the step (18 developments: format or format and channel, maturity 400 to 450 days, all years or the last two or three) spans £1,295,941 to £1,363,118, all £1.25 million, and the standing family with the step (60: threshold 6 to 10 months, with or without channel, maturity 400 to 450 days, all years or three) spans £1,743,388 to £1,809,287, all £1.75 million; the ruling-out is quiet, a date on another catalogue row.
+- Analyst test: with every channel, migrated account number, credit and transit claim read correctly, the easy route develops returns by format, channel and weeks since invoice on the five-year record (or takes a trailing twelve months' rate), back-tests it within 3.4 and 1.2 per cent at the 2024 and 2025 year ends and holds £1.25 million (computed £1,358,042); it never ties a forthcoming paperback to its hardback, so the autumn 2026 hardbacks are developed on a history whose paperbacks came about a year later.
+- Estimand: the accounting policies (`marrowgate_accounting_policies_FY2026.pdf`) define the allowance as the credit the company expects to give, under its terms of trade, for copies invoiced on or before the balance sheet date that will be returned, transit claims no part of it; the terms of trade (`marrowgate_terms_of_trade_2024.pdf`) file who may return what (sale-or-return accounts, copies invoiced three to twelve months before the authorisation, matched earliest first, credited at the matched invoice's net price, lapsing after 60 days); the prompt fixes the date (31 October 2026), the unit (pounds) and the hardback part.
+- No decoy: nothing is planted: the autumn list's paperback dates are the publisher's own schedule on its title master, no memo, model or file argues for the history's figure or ranks anything, the print orders and stock on hand are declared distractors in `metadata.json`, and the panel is a published series beside the ledger.
+- No certified replay: no certified or published figure is reproduced to recover a method: no prior allowance, audited working or reserve file ships, and the development and its split are estimated from the invoices and the credits that quote them.
+- Lesson: a reserving analyst learns to ask what ends a cohort's returns before carrying its history forward: where a successor product sends a predecessor's stock back, the successor's date sets the pattern, and a schedule that brings it forward moves the reserve where no triangle shows it; no build on file conditions a reserve on a successor edition's date found by matching catalogue rows.
 
 ## Survivor anatomy
 
 - Actor: the hardback still in its returns window has rows (its invoices, the credits quoting them, its panel sales); the deciding property, the months from its publication to its own paperback's, has no column in any file: the title master lists the paperback as its own ISBN with its own publication date and often a changed title, and nothing on either row names the other.
-- Link: the signal is read through a link no key offers: a hardback joined to its paperback by title and contributor across the title master's published and forthcoming rows (a subtitle added or dropped, the contributor written surname-first on one and in full on the other), a comparison the field's development of returns never asks for.
-- Reflex: the field's method for the deciding quantity, the development of returns by format, channel and months since invoice (a trailing return rate or a chain ladder on the triangle), sits at rung 0 and rung 1 and files about £3.8 million, `Ends on:`, not the golden.
-- Back-test: the textbook route validates: the same development fitted at 31 October 2024 and 31 October 2025 predicts the following year's credits on the copies then invoiced within a few per cent, because every cohort it was measured on had its paperbacks about a year behind.
-- Second use: every file the decisive step reads sits in the pack for its own reason: the title master gives every route its formats, prices and publication dates; the invoices and credits are the development's own records; the consumer panel is the sell-through every stock-based route reads; none drops out when the step is deleted.
-- Shock: the movement the step recovers reads as ordinary: the autumn 2026 list's subscription orders, shipments and first weeks' sales sit inside the history's range, and its forthcoming paperbacks are ordinary catalogue rows among the season's forthcoming titles; no file's largest movement is the step.
-- Pins: the WHAT is filed in the terms of trade (who may return, within how long of which invoice, at what credit) and no filed sentence names a paperback, a successor edition, a publication schedule or a development clock.
+- Link: the signal is read through a match no key offers: a hardback joined to its paperback by title and contributor across the title master's published and forthcoming rows (a subtitle added, an article dropped, an ampersand, the contributor written surname-first on the older rows); an exact join finds 234 of the 550 pairs and only 8 of the 23 autumn 2026 quick paperbacks, and the field's development of returns never asks for the comparison.
+- Reflex: the field's method for the deciding quantity, the development of returns by format, channel and weeks since invoice (or a trailing twelve months' rate), sits at rung 0 and rung 1 and files £1.25 million (computed £1,358,042 and £1,254,879), `Ends on:`, not the golden.
+- Back-test: the textbook route validates: the same development struck at 31 October 2024 and 31 October 2025 comes within 3.4 and 1.2 per cent of the credits that followed on the copies then open, because every cohort it was measured on had its paperbacks about a year behind.
+- Second use: every file the decisive step reads sits in the pack for its own reason: the title master gives every route its formats and publication dates, the ledger is the development's own record; the step reads no file the default path does not already read, and none drops out when the step is deleted.
+- Shock: the movement the step recovers reads as ordinary: the autumn 2026 hardbacks' subscription copies (279,219) sit inside the earlier autumns' range (128,783 to 437,756) and their forthcoming paperbacks are ordinary catalogue rows among the season's forthcoming titles; no file's largest movement is the step.
+- Pins: the WHAT is filed in the accounting policies and the terms of trade (what the allowance is, who may return what, within how long of which invoice, at what credit) and no filed sentence names a paperback, a successor edition, a publication schedule or a development clock.
 
 ## Default path
 
-1. Read the terms of trade: returns within 18 months of the invoice quoted, credited at its net price; the allowance covers copies invoiced on or before 31 October 2026.
-2. Load the sales ledger's invoice lines and credit lines (FY2022 to FY2026), map the legacy account codes through the account master's crosswalk, normalise ISBNs, attach format and imprint from the title master and channel from the account master; keep returns credits (reason RET), leave damaged-in-transit claims aside.
-3. Tie each credit to the invoice it quotes and build the returns triangle by invoice month and months since invoice, by format and channel, in copies and credit value.
-4. Develop it the field's way: a chain ladder on cumulative returned shares (or a trailing return rate by format and channel with the lag profile), select factors on the last three years, take each open invoice line's expected further returns within its 18 months.
-5. Back-test the method at 31 October 2024 and 2025 against the credits that followed: within a few per cent.
-6. Sum over open invoice lines at net price.
+1. Read the policy and the terms: the allowance is the credit to come for copies invoiced on or before 31 October 2026; a return quotes an invoice three to twelve months old, matched earliest first, credited at that invoice's net price.
+2. Load the sales ledger's invoice and credit lines (FY2022 to FY2026), map the legacy account numbers through the account master, strip ISBN hyphens, attach format from the title master (HB, TPB and PB mapped) and channel and terms from the account master; keep sale-or-return accounts and returns credits, leave transit claims aside.
+3. Tie each returns credit to the invoice it quotes and build the triangle of returned copies by weeks since invoice, by format and channel, on invoices from November 2021 at least 425 days old.
+4. Develop it the field's way: each invoice line of the last twelve months takes the share of copies still to come after its age, at its own net price (a chain ladder on cumulative returned shares, or a trailing twelve months' rate phased by the lag profile).
+5. Back-test the method at 31 October 2024 and 2025 against the credits that followed: within 3.4 and 1.2 per cent.
+6. Sum over open invoice lines and round.
 
-Ends on: about £3.8 million (the stage 3 build measures it on the clean truth and writes it here)
+Ends on: £1.25 million (computed £1,358,042; hardbacks £631,889)
 
-Golden: about £4.5 million (the stage 3 build measures it on the clean truth and writes it here)
+Golden: £1.75 million (computed £1,801,556; hardbacks £1.0 million, computed £1,075,403)
 
 ## Stump sentence
 
-The default path develops returns by format, channel and months since invoice from the five-year record, a trailing rate or a chain ladder that back-tests within a few per cent on the 2024 and 2025 year ends, and holds about £3.8 million; the step that lands it there is running the autumn 2026 hardbacks off on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs, are due four to five months after publication instead of about a year, so the stock shops kept to sell through the spring comes back once each paperback is out and the allowance is about £4.5 million.
+The default path develops returns by format, channel and weeks since invoice on the five-year record, back-tests within 3.4 and 1.2 per cent at the 2024 and 2025 year ends and holds £1.25 million (computed £1,358,042); the step that lands it there is developing the autumn 2026 hardbacks on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs and often retitled, are due four to five months after publication instead of about a year, so the stock shops kept to sell through the spring comes back once each paperback is out and the allowance is £1.75 million.
+
+## Readability screen
+
+Tests: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 second use. The reflex row is
+enumerated from the field's vocabulary for the deciding quantity (a returns reserve): trailing return rate, chain ladder
+on returned shares, development by segment, Bornhuetter-Ferguson on sell-through, a back-tested selection among them.
+
+| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 trailing twelve months' rate by format and channel, £1,254,879 | silent | silent | fires (the auditor's first check) | silent | silent | silent | silent | readable |
+| 1 development by format, channel and weeks since invoice, £1,358,042 | silent | silent | fires (the field's method) | the back-test confirms it | silent | silent | silent | readable |
+| 2 the paperback split on an exact title and contributor join, £1,481,409 | silent | silent | silent | silent | silent | silent | silent | silent |
+| 3 (decisive) the hardbacks developed by their own paperback's date, matched by normalised title and contributor, £1,801,556 | silent: no clause names a paperback, an edition or a schedule | silent: no column names another edition | silent: no reserving reflex conditions a cohort on a successor's date | silent: the back-test passes the rung below | silent: nothing in the battery matches catalogue rows | silent: a match, a new segment and its own pattern from the analogs, not one ratio | silent: the title master and ledger are every route's files | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "returns allowance" | credit for returns only | transit claims kept in the development | £1,801,753, same call | the policy: transit claims form no part of the allowance; asserted inert |
+| SF2 | "trade sales" | sale-or-return accounts' invoices | firm-sale accounts kept in | £1,798,924, same call | the terms, section 4 (firm sale may not return); asserted inert |
+| SF3 | "invoiced up to that date" | invoices of the twelve months to 31 October 2026 open | invoices up to 16 months old kept open | £1,819,683, same call | the terms (three to twelve months); asserted inert |
+| SF4 | credit value | each open line's own net price | the segment's average net price | £1,787,701, same call | the terms (the matched invoice's net price); asserted inert |
+| SF5 | development unit | weeks since invoice | months since invoice | £1,743,547, hardbacks £1,064,899, same call | same call, asserted |
+| SF6 | which hardbacks are early | paperback within 8 months | any threshold from 6 to 11 months | £1,801,556 at every threshold | no paperback falls between 5.4 and 11.3 months; asserted |
+| SF7 | "hardbacks" | format Hardback, legacy code HB included | current label only | legacy titles would drop out of the triangle | the title master's own codes; asserted |
+| SF8 | rounding | nearest £250,000 from the computed figure | rounding parts first | £1.75 million either way (40,000 or more from both edges) | the prompt; asserted |
+| SF9 | "each quarter of the year to 31 October 2026" | financial-year quarters, November to January first | calendar quarters | different cells | the prompt's year to 31 October and the policy's financial year; asserted |
+| SF10 | "written off" | graded unsaleable on receipt plus hurts pulped at re-inspection by the year end | graded unsaleable only | every share lower | the policy: pulped copies are written off; asserted |
+| SF11 | "copies of our titles" | ISBNs on Marrowgate's title master | every row the distributor booked | other publishers' copies counted | the prompt's "our titles"; asserted |
+| SF12 | a receipt's channel | the channel of the authorisation's account | the consignor reference read as an account | unmapped rows | the consignor references are the distributor's own, the authorisation names the account; asserted |
+| SF13 | copies sent beyond an authorisation | received (held for collection) | capped at the authorised copies | 6 of 24 cells right | the terms: such copies are held for collection, so they came in; asserted |
+| SF14 | "how much of it is for hardbacks" | the allowance on hardback invoice lines | the hardbacks' share of open net value | another figure | the prompt's "of it"; asserted |
+| SF15 | how the credit still to come is estimated | each open line's share still to come after its age, at its own net price | expected ultimate share less the credits already given on the same invoices | £1,917,690, the £2.0 million bin | the record: struck at 31 October 2025 that estimator overshoots the credits that followed by 14.2 per cent against 0.2 per cent for the golden's (2024: 1.1 against 0.6), because a cohort running below the pattern does not catch up; asserted |
+| SF16 | a tote's pulped copies in whole copies | shared in proportion to hurts | whole copies by largest remainder within each tote | the same share in every cell (Online 10.1514 against 10.1501) | same call, asserted; rounding each line on its own breaks the tote's pulped total |
+
+## Ladder
+
+| Rung | Route | Allowance | Hardbacks | Graded |
+|---|---|---|---|---|
+| 0 | trailing twelve months' returns rate by format and channel, phased by the lag | £1,254,879 | £601,308 | £1.25 million |
+| 1 | development by format, channel and weeks since invoice (the field's method; 18 variants £1,295,941 to £1,363,118) | £1,358,042 | £631,889 | £1.25 million |
+| 2 | rung 1 with the hardbacks split by their paperback on an exact title and contributor join (8 of 23 autumn 2026 paperbacks found) | £1,481,409 | £755,256 | £1.50 million |
+| 3 | the golden: the split on the normalised match (60 variants £1,743,388 to £1,809,287; hardbacks £1,047,196 to £1,092,910) | £1,801,556 | £1,075,403 | £1.75 million, hardbacks £1.0 million |
+
+The credit realised on the clean world after the year end on copies invoiced to it is £1,722,405 (also £1.75 million).
+Golden over rung 1: 1.327. Gate F on the clean truth: of the cheap routes (the trailing rate, development by format and
+channel, by format alone, by months), none lands the call (`checks.py` R3c); every route that lands it takes the step.
+The back-test (rung 1 at the 2024 and 2025 year ends, -3.4 and -1.2 per cent) validates the rung below the golden.
+
+## Closure table
+
+| Axis | Reading here | Move |
+|---|---|---|
+| 1 Population | sale-or-return invoice lines dated on or before 31 October 2026 still within a return's reach | filed: the policy and the terms; SF2, SF3 asserted inert |
+| 2 Unit of account | pounds of credit; copies for the asks | the prompt names both |
+| 3 Attribution window | an invoice line belongs to its invoice date; a receipt to its received date | C1: nothing graded sits on a boundary (SF9) |
+| 4 As-of dating | 31 October 2026, records to 30 October | filed in the prompt; the credits after it are the future |
+| 5 Version basis | one ledger, one title master as at 30 October 2026 | C1, one version shipped |
+| 6 Denominator | copies invoiced on mature invoices, by segment | the field's method; SF5 asserted inert |
+| 7 Weighting | copies, pooled within segment | C3 corridor: format or format and channel, same bin (R3b) |
+| 8 Window length | invoices from November 2021, maturity 400 to 450 days, all years or three | C3 corridor: every variant in the bin (R3b) |
+| 9 Boundary inclusivity | on or before 31 October 2026 | C1: the year end is a Saturday, nothing invoiced on it |
+| 10 Rounding path | round the computed total once | filed in the prompt; SF8 |
+| 11 Tie-break | none needed | C1 |
+| 12 Maturity and censoring | only invoices at least 400 days old build the pattern | C3 corridor (R3b) |
+| 13 Order of operations | segment, develop, then sum | C1: additive |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | the receipts' second bookings and the re-sent day (asks only) | the asks' devices; the call reads no duplicate |
+| 16 Identity normalisation | legacy account numbers, hyphenated ISBNs, retitled paperbacks | the account master's crosswalk; the normalised match is the decisive step's own work, asserted complete and exact (F) |
+| 17 Netting against gross | returns credits only | SF1 |
+| 18 Dimensional units | pounds, copies | C1 |
+| 19 Code and status semantics | HB, TPB, PB and the current labels; RET against DIT | SF7, SF1 |
+| 20 Integerisation | copies whole, money to the pound | C1 |
+| 21 Clause scope | the 2024 terms govern returns authorised from 1 March 2024; the sale-or-return section unchanged since 2019 | filed in the terms |
+| 22 Forward window contents | the credits still to come on copies invoiced to the year end | the forthcoming paperbacks on the title master are the shipped driver for the uncovered span |
+
+## Literal reader
+
+Read word for word, the policy's estimand (the credit expected under the terms for copies invoiced on or before the
+balance sheet date that will be returned) and the terms (sale-or-return accounts, invoices three to twelve months old,
+earliest first, the matched invoice's net price) leave one open question, how the credit still to come is estimated; the
+literal reader's every development of the record (18 without the step, 60 with it) prints £1.25 million or £1.75 million,
+and nothing filed chooses between them: the data do, because the hardbacks whose paperbacks come within eight months come
+back on another pattern and the autumn 2026 list is almost all of them. No reading of a term moves the call (SF1 to SF8 and
+SF14 inert or ruled out by a quoted sentence); the asks' terms (SF9 to SF13) are each closed by the prompt, the policy or
+the terms.
+
+## Oracles
+
+None arbitrates the call. The back-test confirms the rung below the golden (both year ends within 3.4 per cent), the
+panel's sell-through agrees with every route, and no file holds a prior allowance, a reserve or the realised credit after
+the year end. On the asks, one byte-clean referee exists by design and hands over no level: the ledger credits each
+authorisation line once, so a reader reconciling receipts to credits sees that some lines were booked beyond what was
+credited, which second bookings and copies sent beyond an authorisation both produce; it separates neither from the
+other, and no control ties only under the golden.
+
+## Ask sheet
+
+**Ask A, copies of our titles received back by channel and FY2026 quarter (24 cells, whole copies).** Primary D1: a
+delivery booked in a second time by another goods-in clerk (83 in the export, every channel and quarter but three
+Supermarket cells), each a line-for-line repeat that takes its authorisation lines past their authorised copies by exactly
+the copies repeated; its over-cleaning half is genuine: hub and depot consignments booked carton by carton under their own
+references, many cartons of one title alike in copies and some alike in every grade, and parcels split across days. A
+second primary D5: copies sent beyond an authorisation, booked as received and held (the terms say so), so capping at the
+authorised copies over-corrects. Hazards: other publishers' ISBNs in a client's parcel (D5) and one day's export sent
+twice (D1, the battery's). The repair is a reconstruction across two systems: which repeated reference is a second
+booking is read from the authorisation file's copies, not from the receipts.
+
+**Ask C, the share of those copies written off by the year end, by channel (6) and by format (3), one decimal.** Primary
+D6: a tote's pulped copies are recorded once per tote and must be shared among the deliveries whose hurts went into it,
+in proportion to those hurts (the receipts give each delivery line its tote). Primary D1/D2 from another family: a big
+tote worked in two sessions (rows adding to the tote's hurts) against a tote recounted after a query (each row the full
+quantity, the later standing), told apart only by comparing the rows with the hurts the clean deliveries put into the tote.
+Shared hazards: Ask A's second bookings (they double a tote's hurts and the denominator) and other publishers' copies.
+
+| Ask | Cracker (duplicates out, our titles, every filed rule, the battery) | Mirror (the most attractive wrong rung) | Full includer | Cracker verdict |
+|---|---|---|---|---|
+| A received, 24 cells | 3 of 24 (second bookings kept) | 0 of 24 (duplicates out only) | 12 of 24 (every repeated delivery dropped, grades included) | miss |
+| C written off by channel, 6 | 0 of 6 (last re-inspection row per tote) | 0 of 6 (graded unsaleable only) | 4 of 6 | miss |
+| C written off by format, 3 | 0 of 3 | 0 of 3 | 1 of 3 | miss |
+
+Other routes measured on the cut pack: every row kept 0 of 24; a repeated authorisation line and quantity dropped 11; with
+grades 11; capped at the authorised copies 6; the ledger's returns credits read as receipts 4; re-inspection rows summed 0
+of 9; a tote's pulped copies on every line of it 0 of 9; second bookings kept 0 of 9.
+
+Pair ceiling: 29.1 (the cracker on the call keeps 5.2 of 57 ask points, 48.2 in all; the mirror off the call keeps none, 10.0; a full includer on the call keeps 29.4, 72.4 in all, and with the mirror the pair is 41.2)
+
+Mirror leakage: 0.0 per cent of the ask weight (no cell of either ask under the mirror's route)
+
+Measured by: generator/ceiling.py on the cut pack (sha256 recorded in its output; it prints the cracker, the mirror and the full includer), its routes asserted in generator/checks.py
+
+## Layer 1 inventory
+
+| Mess | The system that produces it | Touches |
+|---|---|---|
+| Legacy six-digit account numbers on ledger lines before 6 February 2023 | the ledger system change; the account master keeps the old number beside the new code | the call's channel join |
+| ISBNs hyphenated on the older ledger lines and on the distributor's files | the old ledger and Tallowmere's exports format ISBNs; the new ledger and the panel do not | every join |
+| Contributor surname-first and formats HB, TPB, PB on titles first catalogued before 2023 | the old bibliographic system | the call's format and the step's match |
+| Paperbacks retitled or subtitled against their hardbacks | the publisher's own titling | the step's match |
+| Consignor references | Tallowmere's own account references | the asks' channel join |
+| Distributor exports from November 2024 | Tallowmere's retention for client extracts | the asks |
+| One day's export sent twice | Tallowmere's export job | Ask A, Ask C |
+| Carton-by-carton booking of hub and depot consignments | Tallowmere goods-in | Ask A |
+| Other publishers' copies in a parcel | shops packing returns | Ask A, Ask C |
+| Copies sent beyond an authorisation, held | shops packing returns | Ask A |
+| Second bookings of a delivery | two goods-in clerks | Ask A, Ask C |
+| Re-inspection in sessions or recounted | Tallowmere's hurts bench | Ask C |
+| Inspector column from August 2026 | the re-inspection workbook's layout | none |
+| Panel weeks ending Saturday | the panel's own calendar | none graded |
+| October financial year | Marrowgate's year end | Ask A's quarters |
+
+
+## Stage 4 rulings
+
+- leak.py sweep 12 (REVIEW): the terms of trade and the accounting policies use words the data files also carry
+  (received, re-inspected, restocked, pulped, terms, title) in their own sentences; the leak reader read both as the
+  organisation's own records. Harmless.
+- leak.py sweep 13 (LEAK, fixed): the licence string's version number matched the hardback part's "1.0"; the licence is now
+  written without it.
+- Leak reader, invoice numbers beginning SI26 on 2021 invoices: a running sequence. Harmless.
+- Leak reader question 5, "will be returned" read as excluding copies already credited: the golden's estimand. Harmless.
+- leak.py sweep 4 (REVIEW): the terms of trade carry "months", "credit" and "invoice", the words of its own return window and
+  credit price; it names no paperback, edition or schedule. Harmless.
+- leak.py sweep 9 (REVIEW, run with the as-of date): the title master's forthcoming editions are dated after 31 October 2026,
+  the forward-looking catalogue rows every route reads, each with status Forthcoming (asserted in `checks.py`). Harmless.
+- Determinism judge, pass 1: DETERMINISTIC, APPROVE, Gate H analytical; its one flagged residual, expected ultimate less
+  credits already given (about £1.92 million), closed by the record as SF15, and the golden's own back-test added to the
+  write-up as step 5 (no graded figure moved). Its note that Online's written-off share is 10.1501, just above the 10.15
+  edge, is exact under the filed handling and under whole-copy allocation by largest remainder (SF16).
 
 ## Tried and rejected
 
@@ -537,3 +705,13 @@ The default path develops returns by format, channel and months since invoice fr
   field reading;
   a school district's kindergarten intake fed by younger siblings of current pupils: the same abstraction as architecture
   3, next period's arrivals generated by a linked population's earlier events.
+- 2026-11-01, v4 world s54 (the first world drawn for this architecture): the development without the step back-tested
+  11 and 10 per cent short at the 2024 and 2025 year ends, because its autumn lists carried quick paperbacks into the
+  back-test windows, so the Back-test line was false; set aside for s110 (-3.4 and -1.2 per cent), chosen from a sweep of
+  70 worlds on the back-test, the bin placement and the separation.
+- 2026-11-01, v4 ask device, second bookings under their own number range (D99...) and only beside genuine parcel
+  splits: the number range marked them, and dropping every repeated line kept 18 of 24 cells; replaced by second bookings
+  numbered in the day's sequence, carton-by-carton hub booking as the genuine repeats, and copies sent beyond an
+  authorisation as the second primary.
+- 2026-11-01, v4 retitling more paperbacks in the world's edition draw: it moved the price stream and put the hardback part
+  on its bin's edge (1,126,294 against 1,125,000); the extra retitling moved to the title master's own stream instead.

@@ -1,153 +1,67 @@
 {
- "call": {
-  "region": "Southwest",
-  "second": "Texas & Gulf",
-  "figure": 607.5,
-  "figure_rounded": 600
+ "allowance_gbp": {
+  "value": 1750000,
+  "computed": 1801555.61,
+  "rounding": "nearest 250,000"
  },
- "components": {
-  "removals_apr_sep_2026": 6483,
-  "removals_apr_sep_2026_rounded": 6500,
-  "removals_2025_monthly": 267.0,
-  "removals_ratio": 4.05,
-  "removals_ratio_rounded": 4,
-  "founder_led_2027": 403.7,
-  "founder_led_2027_rounded": 400,
-  "organic_2027": 203.8,
-  "organic_2027_rounded": 200,
-  "organic_2027_low": 150,
-  "organic_2027_high": 200,
-  "lag_median_months": 11,
-  "lag_median_months_by_days": 10.9,
-  "lag_median_whole_months": 10,
-  "lag_median_days": 333,
-  "founder_share_2025_pct": 43
+ "allowance_hardback_gbp": {
+  "value": 1000000,
+  "computed": 1075402.9,
+  "rounding": "nearest 250,000"
  },
- "forecast": {
-  "Southwest": {
-   "organic": 203.8,
-   "founder_led": 403.7,
-   "total": 607.5
-  },
-  "Southeast": {
-   "organic": 209.9,
-   "founder_led": 153.1,
-   "total": 363.0
-  },
-  "Texas & Gulf": {
-   "organic": 293.1,
-   "founder_led": 191.2,
-   "total": 484.3
-  },
-  "Midwest": {
-   "organic": 168.7,
-   "founder_led": 149.6,
-   "total": 318.3
-  },
-  "Northeast": {
-   "organic": 135.8,
-   "founder_led": 130.7,
-   "total": 266.5
-  },
-  "Pacific": {
-   "organic": 181.7,
-   "founder_led": 136.2,
-   "total": 318.0
-  }
+ "received_copies": {
+  "Chain|Q1": 46357,
+  "Chain|Q2": 124658,
+  "Chain|Q3": 63697,
+  "Chain|Q4": 68018,
+  "Online|Q1": 7506,
+  "Online|Q2": 22416,
+  "Online|Q3": 6114,
+  "Online|Q4": 4776,
+  "Wholesale|Q1": 35111,
+  "Wholesale|Q2": 29378,
+  "Wholesale|Q3": 20804,
+  "Wholesale|Q4": 25643,
+  "Supermarket|Q1": 2306,
+  "Supermarket|Q2": 5494,
+  "Supermarket|Q3": 4368,
+  "Supermarket|Q4": 7121,
+  "Independent|Q1": 4049,
+  "Independent|Q2": 4217,
+  "Independent|Q3": 2866,
+  "Independent|Q4": 2971,
+  "Export|Q1": 3195,
+  "Export|Q2": 7521,
+  "Export|Q3": 2657,
+  "Export|Q4": 3740
  },
- "hours": {
-  "West Q1 one-to-one": 316.25,
-  "West Q1 group": 58.0,
-  "West Q2 one-to-one": 379.5,
-  "West Q2 group": 56.0,
-  "West Q3 one-to-one": 461.25,
-  "West Q3 group": 61.5,
-  "West Q4 one-to-one": 405.75,
-  "West Q4 group": 61.5,
-  "Central Q1 one-to-one": 418.5,
-  "Central Q1 group": 60.0,
-  "Central Q2 one-to-one": 438.25,
-  "Central Q2 group": 59.5,
-  "Central Q3 one-to-one": 378.25,
-  "Central Q3 group": 60.5,
-  "Central Q4 one-to-one": 403.0,
-  "Central Q4 group": 45.5,
-  "East Q1 one-to-one": 290.0,
-  "East Q1 group": 54.0,
-  "East Q2 one-to-one": 325.75,
-  "East Q2 group": 57.0,
-  "East Q3 one-to-one": 396.0,
-  "East Q3 group": 59.5,
-  "East Q4 one-to-one": 302.5,
-  "East Q4 group": 52.0
+ "written_off_share_channel_pct": {
+  "Chain": 5.7,
+  "Online": 10.2,
+  "Wholesale": 6.8,
+  "Supermarket": 12.0,
+  "Independent": 4.6,
+  "Export": 8.8
  },
- "cohort_counts": {
-  "Southwest Core": 114,
-  "Southwest Pro": 138,
-  "Southwest Enterprise": 51,
-  "Southeast Core": 114,
-  "Southeast Pro": 133,
-  "Southeast Enterprise": 41,
-  "Texas & Gulf Core": 154,
-  "Texas & Gulf Pro": 162,
-  "Texas & Gulf Enterprise": 72,
-  "Midwest Core": 111,
-  "Midwest Pro": 109,
-  "Midwest Enterprise": 44,
-  "Northeast Core": 88,
-  "Northeast Pro": 86,
-  "Northeast Enterprise": 48,
-  "Pacific Core": 110,
-  "Pacific Pro": 120,
-  "Pacific Enterprise": 49
+ "written_off_share_format_pct": {
+  "Hardback": 6.5,
+  "Trade paperback": 7.2,
+  "Paperback": 6.6
  },
- "cohort_acv_k": {
-  "Southwest Core": 569.8,
-  "Southwest Pro": 1449.7,
-  "Southwest Enterprise": 1379.5,
-  "Southeast Core": 578.9,
-  "Southeast Pro": 1380.1,
-  "Southeast Enterprise": 1117.9,
-  "Texas & Gulf Core": 802.5,
-  "Texas & Gulf Pro": 1693.1,
-  "Texas & Gulf Enterprise": 1970.3,
-  "Midwest Core": 570.9,
-  "Midwest Pro": 1105.6,
-  "Midwest Enterprise": 1185.2,
-  "Northeast Core": 428.8,
-  "Northeast Pro": 873.4,
-  "Northeast Enterprise": 1283.4,
-  "Pacific Core": 566.1,
-  "Pacific Pro": 1280.1,
-  "Pacific Enterprise": 1306.4
- },
- "cohort_acv_usd": {
-  "Southwest Core": 569816.4,
-  "Southwest Pro": 1449696.6,
-  "Southwest Enterprise": 1379508.0,
-  "Southeast Core": 578913.0,
-  "Southeast Pro": 1380061.8,
-  "Southeast Enterprise": 1117897.2,
-  "Texas & Gulf Core": 802524.6,
-  "Texas & Gulf Pro": 1693087.2,
-  "Texas & Gulf Enterprise": 1970316.0,
-  "Midwest Core": 570889.8,
-  "Midwest Pro": 1105590.6,
-  "Midwest Enterprise": 1185198.0,
-  "Northeast Core": 428803.2,
-  "Northeast Pro": 873397.2,
-  "Northeast Enterprise": 1283430.0,
-  "Pacific Core": 566109.6,
-  "Pacific Pro": 1280071.8,
-  "Pacific Enterprise": 1306374.0
- },
- "cohort_n": 1744,
  "steps": {
-  "new_2025": 1744,
-  "links": 4451,
-  "yield_per_100_removals": 5.7,
-  "same_region_pct": 88,
-  "partner_bookings": 2003,
-  "offer_starts": 36
+  "allowance_gbp_millions": 1.75,
+  "allowance_hardback_gbp_millions": 1.0,
+  "paperback_within_months": 8,
+  "maturity_days": 425,
+  "received_total_copies": 504983,
+  "written_off_share_all_pct": 6.6,
+  "as_of": "31 October 2026",
+  "back_test_year_ends": "31 October 2024 and 31 October 2025",
+  "financial_year": "1 November 2025 to 31 October 2026",
+  "extract_from": "1 November 2021",
+  "back_test": {
+   "31 October 2024": "0.6% below",
+   "31 October 2025": "0.2% above"
+  }
  }
 }

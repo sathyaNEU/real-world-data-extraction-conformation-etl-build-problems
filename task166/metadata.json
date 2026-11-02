@@ -1,188 +1,141 @@
 {
   "task": "task166",
-  "title": "Which of a construction software company's six regional sales teams adds the most new paying customers in 2027, when two in five new customers are founded by project staff who left existing customers and one region's customers released a surge of them in 2026",
-  "domain": "Product Analytics",
-  "client_domain": "Product Analytics",
-  "house_domain": "product-analytics",
-  "subdomain": "feature-adoption-diffusion-modeling (each region's 2027 new paying customers: organic acquisition plus the customers founded by users who left paying customers)",
+  "title": "How much a London trade publisher should hold as its returns allowance at its 31 October 2026 year end against sale-or-return trade sales invoiced to that date",
+  "domain": "Actuarial Science & Insurance",
+  "client_domain": "Actuarial Science & Insurance",
+  "house_domain": "accounting-audit-forensic",
+  "subdomain": "reserving-development-triangles (the year-end returns allowance on sale-or-return book sales)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed pick of one of six regional sales teams with its 2027 new paying customers to the nearest 200 and the region second, specialist hours by onboarding pod, quarter of 2025 and session kind (24), the 2025 new customers by region and starting plan (18) and the annual contract value they signed on each plan on the terms in force on the first paid invoice date (18)",
-  "as_of": "2026-10-01",
+  "prompt_shape": "the year-end returns allowance and its hardback part in pounds, the copies received back by channel and quarter of the financial year, and the share of those copies written off by channel and by format",
+  "as_of": "2026-10-31",
   "deliverables": [
-    "onboarding_pod_2027.docx",
-    "onboarding_staffing_2025.xlsx"
+    "returns_allowance_FY2026.xlsx",
+    "returns_allowance_note.pdf"
   ],
   "distractor_files": [
-    "board_deck_2023-03_customer_growth.pdf",
-    "onboarding_csat_responses_2024-2026.csv"
+    "print_orders_FY2025-FY2026.csv",
+    "tallowmere_stock_on_hand_2026-10-30.csv"
   ],
-  "field_terms": [],
-  "stated_inputs": [],
   "input_gates": {
-    "files": 16,
+    "files": 11,
     "formats": [
       "csv",
-      "docx",
       "pdf",
+      "sqlite",
       "xlsx"
     ],
-    "largest_file": "product_user_directory_2026-10-01.csv",
-    "largest_file_rows": 256204
+    "largest_file": "marrowgate_sales_ledger_FY2022-FY2026.sqlite",
+    "largest_file_rows": 342911
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional construction project-management software company, in the layouts of a legacy billing system, a subscription register, a CRM, a product user directory, an onboarding tool, a scheduling tool, a survey tool, office workbooks and PDF documents; the companies, people, phone numbers and partners are constructed, and no real organisation's records or person is depicted.",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work)"
+      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional London trade publisher and its distributor, in the layouts of a sales ledger extract, a title master, an account master, a distributor's returns exports, a consumer sales panel extract and PDF documents; the companies, people, titles and ISBNs are constructed, and no real organisation's records or person is depicted.",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work)"
     }
   ],
-  "created": "2026-10-26",
+  "created": "2026-11-01",
   "generator": "task166/generator/build.py",
   "files": [
     {
-      "path": "billing_legacy_subscriptions_2015-2023.csv",
-      "format": "csv",
-      "bytes": 922955,
-      "rows": 8246,
-      "source": "Constructed: Plinthwise legacy billing system, every subscription with a first invoice from January 2015 to February 2023",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "path": "marrowgate_accounting_policies_FY2026.pdf",
+      "format": "pdf",
+      "bytes": 2958,
+      "rows": null,
+      "source": "Constructed: Marrowgate Books accounting policies (extract), draft for the FY2026 audit, September 2026",
+      "date": "2026-09-15",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "billing_subscription_register_2022-12_2026-09.xlsx",
+      "path": "marrowgate_sales_ledger_FY2022-FY2026.sqlite",
+      "format": "sqlite",
+      "bytes": 32407552,
+      "rows": 342911,
+      "source": "Constructed: Marrowgate Books sales ledger, invoice lines and credit lines from 1 November 2021 to 30 October 2026 (SQLite extract)",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
+    },
+    {
+      "path": "marrowgate_terms_of_trade_2024.pdf",
+      "format": "pdf",
+      "bytes": 3500,
+      "rows": null,
+      "source": "Constructed: Marrowgate Books terms of trade for bookselling customers, effective 1 March 2024",
+      "date": "2024-03-01",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
+    },
+    {
+      "path": "print_orders_FY2025-FY2026.csv",
+      "format": "csv",
+      "bytes": 29828,
+      "rows": 451,
+      "source": "Constructed: Marrowgate Books production, print orders placed from 1 November 2024",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
+    },
+    {
+      "path": "tallowmere_hurts_reinspection_FY2026.xlsx",
       "format": "xlsx",
-      "bytes": 1668779,
-      "rows": 26904,
-      "source": "Constructed: Plinthwise subscription register, subscriptions with a service period from 1 December 2022 and the amendments recorded from that date",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 107648,
+      "rows": 2746,
+      "source": "Constructed: Tallowmere Book Distribution, re-inspection of hurt returns, a sheet a month from November 2025",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "board_deck_2023-03_customer_growth.pdf",
-      "format": "pdf",
-      "bytes": 41455,
-      "rows": null,
-      "source": "Constructed: Plinthwise board materials, FY2023 board deck customer growth pages (14 March 2023)",
-      "date": "2023-03-14",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "crm_accounts_2026-10-01.csv",
+      "path": "tallowmere_returns_authorisations_FY2025-FY2026.csv",
       "format": "csv",
-      "bytes": 1776368,
-      "rows": 14107,
-      "source": "Constructed: Plinthwise CRM, customer, former customer and partner accounts at 1 October 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 552228,
+      "rows": 11352,
+      "source": "Constructed: Tallowmere Book Distribution, returns authorisations issued for Marrowgate accounts from 1 November 2024",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "data_dictionary.pdf",
-      "format": "pdf",
-      "bytes": 47557,
-      "rows": null,
-      "source": "Constructed: Plinthwise Revenue Analytics, field definitions of the files pulled 1 October 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest.csv",
+      "path": "tallowmere_returns_received_FY2025-FY2026.csv",
       "format": "csv",
-      "bytes": 2256,
-      "rows": 16,
-      "source": "Constructed: Plinthwise Revenue Analytics, list of the files pulled 1 October 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 2605009,
+      "rows": 36525,
+      "source": "Constructed: Tallowmere Book Distribution, returns received for Marrowgate from 1 November 2024, one row per delivery line",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "fy2028_planning_basis.pdf",
-      "format": "pdf",
-      "bytes": 41899,
-      "rows": null,
-      "source": "Constructed: Plinthwise FP&A, FY2028 planning basis v1.0 (2 October 2026)",
-      "date": "2026-10-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "path": "tallowmere_stock_on_hand_2026-10-30.csv",
+      "format": "csv",
+      "bytes": 60147,
+      "rows": 2040,
+      "source": "Constructed: Tallowmere Book Distribution, Marrowgate stock on hand at close of business 30 October 2026",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "marketing_spend_FY2020-FY2028.xlsx",
+      "path": "title_master_2026-10-30.xlsx",
       "format": "xlsx",
-      "bytes": 73374,
-      "rows": 2854,
-      "source": "Constructed: Plinthwise Marketing Operations, programme spend actuals February 2019 to September 2026 and the plan October 2026 to January 2028",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 121155,
+      "rows": 2343,
+      "source": "Constructed: Marrowgate Books title master at 30 October 2026, published and forthcoming editions",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "memo_2027_onboarding_pod.docx",
-      "format": "docx",
-      "bytes": 10017,
-      "rows": null,
-      "source": "Constructed: Plinthwise Customer Onboarding, the VP's request of 20 October 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "onboarding_cases_2024-01_2026-09.csv",
+      "path": "trade_accounts_2026-10-30.csv",
       "format": "csv",
-      "bytes": 680907,
-      "rows": 5504,
-      "source": "Constructed: Plinthwise onboarding tool, onboarding cases opened January 2024 to September 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 2702,
+      "rows": 46,
+      "source": "Constructed: Marrowgate Books trade account master at 30 October 2026, with the account numbers used before the 2023 system change",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     },
     {
-      "path": "onboarding_csat_responses_2024-2026.csv",
+      "path": "uk_consumer_sales_panel_weekly_FY2025-FY2026.csv",
       "format": "csv",
-      "bytes": 136298,
-      "rows": 3143,
-      "source": "Constructed: Plinthwise survey tool, post-onboarding survey responses 2024 to 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "onboarding_sessions_2024-01_2026-09.csv",
-      "format": "csv",
-      "bytes": 2465754,
-      "rows": 24292,
-      "source": "Constructed: Plinthwise scheduling tool, onboarding session bookings January 2024 to September 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "onboarding_team_roster_2026-10-01.csv",
-      "format": "csv",
-      "bytes": 1350,
-      "rows": 15,
-      "source": "Constructed: Plinthwise People Operations, the onboarding team roster at 1 October 2026: each specialist's pod assignments with their first and last days, and the specialists who left it since 2024",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "product_catalog_2026-07-01.csv",
-      "format": "csv",
-      "bytes": 207,
-      "rows": 3,
-      "source": "Constructed: Plinthwise billing platform, the product catalog in force from 1 July 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "product_user_directory_2026-10-01.csv",
-      "format": "csv",
-      "bytes": 43302397,
-      "rows": 256204,
-      "source": "Constructed: Plinthwise product user directory, every user account on every workspace to 30 September 2026",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "sales_territories_2024-03.csv",
-      "format": "csv",
-      "bytes": 1013,
-      "rows": 30,
-      "source": "Constructed: Plinthwise Sales Operations, the sales territory map from 1 March 2024 and the map before it",
-      "date": "2026-10-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
+      "bytes": 4496547,
+      "rows": 163296,
+      "source": "Constructed: Weekly UK consumer sales panel, Marrowgate ISBNs, weeks ending 2 November 2024 to 31 October 2026",
+      "date": "2026-10-30",
+      "license": "CC0 public domain dedication (original work, constructed for this task)"
     }
   ]
 }

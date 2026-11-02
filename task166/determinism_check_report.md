@@ -1,59 +1,62 @@
-# determinism-check report, task166, 2026-10-26 (round 2)
+# determinism-check report, task166, 2026-11-02
 
 ## Verdict
-NOT_DETERMINISTIC (underspecified_objective, ask 1 of onboarding_staffing_2025.xlsx only). The main call, ask 2 and ask 3 are deterministic. The critical-component figures carry SOLUTION_WRONG-class drift (the call and buckets are unaffected).
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-Southwest at about 600 with Texas & Gulf second reproduces and survives every variant the judge ran (Southwest 575 to 665 against Texas & Gulf 430 to 505). The round 1 nearest-100 problem is closed at the nearest 200. Ask 1 (24 pod-hour cells) reproduces to the cent only under two unfiled readings: (1) "group" = the Field app training and Office hours templates, and (2) a specialist counts in the pod serving most of their sessions that month. Each literal alternative gives different cells. Asks 2 and 3 (36 values) reproduce exactly.
+One isolated judge thread (sonnet, medium) recomputed every committed answer from a fresh unzip of target.zip and reproduced them. The main call lands on 1.80M (filed 1.75M) with hardbacks 1.075M (filed 1.0M); asks 3 to 5 reproduce exactly (504,983 copies, the 24 channel-by-quarter cells, every write-off share). The decisive segment, hardbacks whose own paperback follows within 8 months, is cleanly separated in the data (matched gaps 126 to 161 days against 350 to 427 days, nothing between), so any cut-off from about 5 to 11 months gives the same segment. The terms of trade and policy PDFs file every rule the golden uses.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| New paying customers 2025 | 1,744 (SW 303, SE 288, TX 388, MW 264, NE 222, Pac 279) | identical | Yes |
-| Asks 2 and 3 (18 counts, 18 values) | as filed | identical | Yes, all 36 |
-| Ask 1 (24 cells) | as filed | identical only under the two unfiled readings | Conditional |
-| Leaver-founded share | about 2 in 5 | 756 of 1,733 = 44% | Yes |
-| Median lag | 333 d (10 to 11 months) | 333 d | Yes |
-| Founders billing in region left | 88% | 88.5% | Yes |
-| Founders per 100 removals | 5.6 | 5.6 to 5.9 | Yes |
-| Founders, all years | 4,451 | about 4,000 to 4,050 | No (about 10% low) |
-| SW removals Apr to Sep 2026 | about 6,500 | 5,715 (6,337 with closure-tagged) | Ratio 4.07x yes, count no |
-| SW 2027 total | 403.8 + 203.8 = 607.6 | about 575 to 585 | Same bucket (600), digits no |
-| TX 2027 | 484.4 | about 475 | Same bucket (400) |
+| Allowance | 1,750,000 | 1,801,556 (rounds to 1.75M) | yes |
+| Hardback part | 1,000,000 | 1,075,403 (rounds to 1.0M) | yes |
+| Copies received in window | 504,983 | 504,983 | yes |
+| 24 channel-by-quarter cells | filed grid | identical | yes |
+| Channel write-off shares | 5.7 / 10.2 / 6.8 / 12.0 / 4.6 / 8.8 | 5.665 / 10.150 / 6.770 / 11.955 / 4.564 / 8.792 | yes |
+| Format shares | 6.5 / 7.2 / 6.6 | 6.539 / 7.169 / 6.596 | yes |
+| Hardbacks within 8 months of paperback | segment | 51 of 605 (550 matched) | yes |
+
+Online 10.1501 sits a hair above the 10.15 boundary but is exact from the files.
 
 ## Competing answers that survived
-1. Group vs one-to-one never defined (session_type is only "the session template"). Golden: Field app training and Office hours = group (West Q1 323.00 / 47.00). Reading "more than one booking at same host and start" gives 332.00 / 38.00 (Q3 468.50 / 59.00). Reading "attendees above 1" gives 118.25 / 251.75. Closing rule: none shipped.
-2. Pod membership by month not filed. Roster is one pod per specialist at 1 Oct 2026. Roster pod gives West one-to-one Q1 333.50, Q3 358.25, group Q4 34.50 against golden 323.00, 459.50, 47.50 (Frances Russell, Mark Simmons, Melissa Hansen moved). Assigning by the case customer's region gives West Q1 320.25. Closing rule: none shipped.
-No fork on the main call. Quarter assignment (UTC vs Mountain) is robust; co-host rows and (host, start) are determinate.
+- Easy route (one hardback curve by format and channel): 1.358M / 0.632M, filed 1.25M / 0.75M. It does not survive: the data show the close segment developing at 0.54 ultimate for Chain against 0.21 for general hardbacks.
+- Expected ultimate less credits already given: about 1.92M / 1.14M (bins 2.0M / 1.25M). The thread flagged this as the one residual method fork. Since the verdict it is closed in the design note as fork-table row SF15, asserted in generator/checks.py: struck at 31 October 2025 that estimator overshoots the credits that followed by 14.2 per cent against 0.2 per cent for the golden's construction (2024: 1.1 against 0.6). The record refutes it. This closure is cited from the coordinator and the design note; the thread did not see it and I did not re-run checks.py.
+- Line-level clipped variant: 2.23M, unsound method. Restocking value netted off: contradicted by the terms ("whatever its condition").
+- Pattern and chain-ladder variants (format-only, pooled channels, maturity 400 to 500 days, quarter-cohort chain ladder): all round to the golden except the easy-route family. Margin to the rounding line is about 4 per cent on both figures, thin but not contested (every valid variant stays in band).
+- Known limit: the 51 close hardbacks are mostly autumn 2026 titles with little mature history, so the segment curve rests on the earlier close-paperback hardbacks.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10+ | 16 | Yes |
-| Formats | 3+ | csv, xlsx, pdf, docx | Yes |
-| Large file | 25,000+ rows | user directory 256,204; sessions 24,292; register 24,119 | Yes |
-| Distractors in metadata.json, none named by file | 2+ | board_deck_2023-03 PDF and onboarding_csat_responses CSV declared; file names do not label them | Yes |
-| Distractors unused yet weighable, ruled out by shipped fact | yes | judge found both unused; deck on old map and FY counts, CSAT scores onboarding; neither reproduces a graded quantity as the answer | Yes |
-| Deliverables | 1 to 3, all in golden | 2 (docx, xlsx), both in golden/ | Yes |
-| Asks unit and rounding | stated | nearest 200, two decimals, thousands to one decimal, whole counts, all in prompt | Yes |
-| Prompt shape, 25+ criteria | yes | shape identified; 1 call + 1 figure + runner-up + 24 + 18 + 18 gradable figures (about 63) | Yes (not scored by a generated rubric here) |
-| Not LLM generated; goldens real | yes | judge saw no generation language; messy-system realism good; golden-realism not re-run | Yes |
+| Files | 10 or more | 11 | yes |
+| Formats | 3 or more | 4 (sqlite, csv, xlsx, pdf) | yes |
+| Large file | 25,000 rows or large DB | sqlite ledger 342,911 rows, 32 MB | yes |
+| Distractors | 2 or more in metadata.json, none labelled by file name | print_orders and stock_on_hand named; UK consumer panel is a third, unnamed, unused | yes |
+| Distractor quality | unused, weighs, ruled out by a shipped fact, none reproduces a graded quantity | judge found all three plausible and unused; the stump never depends on them | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, pdf), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 24-cell grid, channel and format shares, nearest 250,000, one decimal | yes |
+| Prompt shape and 25 or more criteria | identifiable, 25 or more | shape identifiable (every cell and share is graded); the criteria count is generated downstream and I did not count it | not verified |
+| Not LLM-looking, goldens realistic | yes | judge found mixed date formats, legacy ids, hyphenated ISBNs, system-like; golden realism not independently reviewed by me | yes (pack) |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and metadata (read after the verdict): declared stump is the leaver-to-founder channel found only by linking each new workspace's first user to removals elsewhere; distractors are the 2023 board deck and CSAT file; the note's Three rules claim no decoy, not semantics, not rule application. Match. Neither declared distractor is named as the surface read that carries the task, so they are not too load-bearing. No mismatch. Card fields were not separately opened beyond the note and metadata.
-Gate H: domain pass, layers pass, decisive_step analytical (lead-lag forecast of new-logo acquisition, right-censoring corrected). Matches the design note. The thread did not describe the decisive step as a standard method applied with no judgment; it required discovering a latent relationship and estimating the censored rate, so I record no lenient-class flag.
+Thread: mechanism method_or_model_selection, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: Forecasting, analytical stump (develop the autumn 2026 hardbacks on their own paperback-timing pattern, not the history's). These agree (the note's forecasting/reserving is the thread's segment-development method selection). Neither names a declared distractor as the surface read: the thread's easy route is the general hardback curve, not print orders or stock on hand. No planted defect carries the main call; the duplicated-delivery rule is an ask-level element only. Gate G passes.
 
 ## Stump power (Gate F)
-High. Every own-history, trend, season and spend model, and the board-deck and CRM Sales Region shortcuts, file Texas & Gulf (about 480 vs Southwest about 380, both 400). Southwest requires discovering the link, fitting a censoring-corrected rate and pushing the 2026 spike through the lag. A solver skipping the censoring correction lands near 505, on the bucket edge. The Seats line in the planning basis points toward removals; the thread judged a strong model's chance of missing it as substantial but not certain. Hold that language. Note the stump bears on the main call only; the main thread weighs this with the scored readers.
+Moderate to good. The easy route (one hardback curve by channel, or a trailing rate) back-tests well at 2024 and 2025 and files 1.25M / 0.75M, one band low on both figures. Finding the segment needs a fuzzy contributor-and-title match on the title master that no file hints at, and the effect is invisible without it because the close hardbacks are mostly new. One caution for the main thread: the thread did not class the decisive step analytical merely because chain ladder is the field's method; it reached the golden by finding a driver the data had to settle (the match), so this is not a landable textbook route. Argue the ladder against the design note's rungs as usual.
+
+submission.md step 5 now states the golden construction's own back-test (0.6% below at 31 October 2024, 0.2% above at 2025, figures in generator/figures.json, figures_check 65 of 65). Added after the verdict; it moves no graded figure or pack file.
+
+## Gate H
+`domain: pass`, `layers: pass`, `decisive_step: analytical`. Swap test fails to carry over (a discharged patient has no successor edition; the deciding quantity is a returns development by age and segment, the reserving analyst's own estimate). Layer 1: format codes, legacy account numbers, hyphenated ISBNs, date formats, a re-sent export, repeated deliveries, surname-first names. Layer 2: segment the development pattern on the paperback timing and project remaining returns by age. Easy route: one hardback curve gives 1.36M / 0.63M, filed 1.25M / 0.75M, against the golden 1.75M / 1.0M. Design note's `## Three rules` (No decoy, Not semantics, Not rule application) matches the thread's reading. Sub-point for the main thread: the title match is a data-join step, but it builds the estimand's segmentation rather than deciding by reading a field, and the 18-versus-60 development families in the note show the step, not rule execution, moves the answer.
 
 ## Findings, ranked
-1. Ask 1 group vs one-to-one undefined (underspecified_objective). Cells of 24 differ by reading.
-2. Ask 1 pod membership by month unfiled (roster is a single current pod).
-3. Critical components and step 3 to 5 figures (6,500; 4,451; 403.8, 203.8, 607.6; 484.4) do not reproduce to the digit (about 5 to 10% off, same buckets). Regenerate from the exact build or soften to "about".
-4. Likeliest second-grader dispute: SKU renumbering (100 Pro, 200 Enterprise, 300 Core before the 2026-07-01 catalog) is unstated but forced by contract value vs list and seat price; the thread judged it forced, not a fork. A catalog-literal solver swaps plans. Not a finding against determinism, but watch it.
-5. Cross-batch fingerprint not performed by the thread.
+1. None failing. Hygiene PASS (11 files, 4 formats, nothing exclusion-level).
+2. Residual SF15 fork closed by the record (see above); optional: none required.
+3. Margin about 4 per cent to the 250k rounding line on both main figures; robust across variants.
+4. Rubric 25-criteria count not checked by me.
 
 ## Next action for the author
-In the generator, file the WHAT in the shipped pack, leaving the main call and the billing, CRM, user, marketing and planning files byte-identical. Add to data_dictionary.pdf which templates are one-to-one (Kickoff, Admin setup, Go-live review) and which are group (Field app training, Office hours), with a pod-history table (pod, from, to) in the roster or one dictionary line stating the pod a specialist worked in is the pod whose regions most of their sessions served that month. Then regenerate the critical-component and step figures from the exact rebuild, and re-run checks.py, verify.py and figures_check.
+Proceed to ship; re-run the free gates on the final cut as stage 5 requires.

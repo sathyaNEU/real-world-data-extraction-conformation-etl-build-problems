@@ -1,32 +1,36 @@
 {
  "task": "task166",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "accounting-audit-forensic (client domain actuarial-science-insurance)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-01",
- "stump": "The default path develops returns by format, channel and months since invoice from the five-year record, a trailing rate or a chain ladder that back-tests within a few per cent on the 2024 and 2025 year ends, and holds about £3.8 million; the step that lands it there is running the autumn 2026 hardbacks off on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs, are due four to five months after publication instead of about a year, so the stock shops kept to sell through the spring comes back once each paperback is out and the allowance is about £4.5 million (provisional at the draw).",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-02",
+ "stump": "The default path develops returns by format, channel and weeks since invoice on the five-year record, back-tests within 3.4 and 1.2 per cent at the 2024 and 2025 year ends and holds GBP 1.25 million (computed 1,358,042); the step that lands it there is developing the autumn 2026 hardbacks on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs and often retitled, are due four to five months after publication instead of about a year, so the allowance is GBP 1.75 million (computed 1,801,556; hardbacks GBP 1.0 million).",
  "architecture": 4,
  "loops": 0,
  "card_registered": "2026-11-01T22:03:36Z",
  "guard": "check WARN on the registered card, no BLOCK: overuse.objective, repeat.gate_g and overuse.gate_g (forecasting, task273 v5, task157 v3); test.same_puzzle_older, test.same_driver_older and test.own_lineage differentiated on the card; ban.artifact cleared by redrawing the context artifact to published_series; nearest driver 0.07 (task43 lineage)",
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01",
+  "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (2026-11-02, final cut, --asof 2026-10-31): sweep 4 the terms carry months, credit and invoice; sweep 9 the title master's forthcoming editions; sweep 12 the terms and the policies use data words in their own sentences; all ruled harmless",
+  "reader": "clean (2026-11-01, sonnet, medium, prompt and target only): Q1 to Q4 none; Q5 the policy estimand and the terms execute to the golden estimand; Q6 an analytical choice (projecting returns still to come on open invoices); both PDFs the organisation's own records"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (2026-11-01 after the pull: overuse.objective, repeat.gate_g, overuse.gate_g, people.first; nearest driver 0.07, task43 lineage; no BLOCK)",
+  "surface": "exit 0, no promotion for task166",
+  "nearest": "task43 (iteration A, transport, lineage) 0.07"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass 1, 2026-11-02)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "note": "residual fork (expected ultimate less credits already given, about 1.92M) closed by the record as SF15: it overshoots the 31 October 2025 back-test by 14.2 per cent against 0.2 per cent"
  },
  "returned": [
   {
@@ -213,5 +217,21 @@
   },
   "domain": "product-analytics",
   "portal": "2026-10-31 (the author's Batch 5 sheet): the call landed on the version shipped 10-27 (the Southwest at about 600, the golden)"
+ },
+ "build": {
+  "checks": "75 assertions, 0 failed",
+  "verify": "35 graded figures, 0 differ",
+  "rebuild": "target, golden and figures byte-identical",
+  "figures_check": "65 figures in blocks 1 to 4, 0 absent",
+  "target_zip_sha256": "71e8f19f61b9f3137e3471e6b7ea583c73f918c544b401b57a873c1a6ce33dd9",
+  "world": "s110",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "ledger_rows": 342911
+ },
+ "shipped": {
+  "date": "2026-11-02",
+  "call": "hold a returns allowance of GBP 1.75 million at 31 October 2026, GBP 1.0 million of it for hardbacks",
+  "default_path": "GBP 1.25 million (computed 1,358,042) on the development of the history without the paperback split",
+  "target_zip_sha256": "71e8f19f61b9f3137e3471e6b7ea583c73f918c544b401b57a873c1a6ce33dd9"
  }
 }

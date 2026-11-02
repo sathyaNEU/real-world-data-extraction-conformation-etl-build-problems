@@ -1,218 +1,218 @@
 {
-  "task": "task166",
-  "architecture": "v4",
-  "drawn": "2026-11-01",
-  "slot_note": "re-root after the portal landed architecture 3 (shipped 2026-10-27; the author's Batch 5 sheet of 2026-10-31 records the call as landed) and architectures 1 and 2 before it, each the field's named method executed by reflex; the new draw moves to another world (a UK trade publisher's year-end returns allowance), dataset and prompt shell under the same objective and number, away from task144's axes (product-analytics, feature-adoption-diffusion-modeling, software_or_platform), with the field's development method at the bottom of the ladder and the decisive step the precondition this book violates",
-  "domain": "accounting-audit-forensic",
-  "subdomain": "revenue-receivables",
-  "client_domain": "actuarial-science-insurance",
-  "niche": "a UK trade publisher's year-end sale-or-return allowance on copies already invoiced, when its autumn 2026 hardbacks have their paperbacks scheduled four to five months after publication against about a year for the hardbacks its returns history ran off",
-  "objective": "forecasting",
-  "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "(provisional at the draw) hold a returns allowance of about £4.5 million at 31 October 2026, against about £3.8 million on every development of the returns history",
-  "answer_source": "task166/DESIGN_NOTE.md ## Draw (provisional); submission.md block 1 at ship",
-  "gap": [
+ "task": "task166",
+ "architecture": "v4",
+ "drawn": "2026-11-01",
+ "slot_note": "re-root after the portal landed architecture 3 (shipped 2026-10-27; the author's Batch 5 sheet of 2026-10-31 records the call as landed) and architectures 1 and 2 before it, each the field's named method executed by reflex; the new draw moves to another world (a UK trade publisher's year-end returns allowance), dataset and prompt shell under the same objective and number, away from task144's axes (product-analytics, feature-adoption-diffusion-modeling, software_or_platform), with the field's development method at the bottom of the ladder and the decisive step the precondition this book violates",
+ "domain": "accounting-audit-forensic",
+ "subdomain": "revenue-receivables",
+ "client_domain": "actuarial-science-insurance",
+ "niche": "a UK trade publisher's year-end sale-or-return allowance on copies already invoiced, when its autumn 2026 hardbacks have their paperbacks scheduled four to five months after publication against about a year for the hardbacks its returns history ran off",
+ "objective": "forecasting",
+ "shape": "other",
+ "decision_type": "quantity_figure",
+ "answer_unit": "currency",
+ "answer": "hold a returns allowance of £1.75 million at 31 October 2026 (computed £1,801,556), of which £1.0 million for hardbacks (computed £1,075,403), against £1.25 million (computed £1,358,042) on the development of the returns history without the split",
+ "answer_source": "task166/submission.md block 1; generator/figures.json",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "E"
+ ],
+ "generators": [
+  "G14",
+  "G13",
+  "G6"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stump_class": "analytical",
+ "analyst_test": "With every channel, migrated account number, credit and transit claim read correctly, the easy route develops returns by format, channel and weeks since invoice on the five-year record (or takes a trailing twelve months' rate), back-tests it within 3.4 and 1.2 per cent at the 2024 and 2025 year ends and holds £1.25 million (computed £1,358,042); it never ties a forthcoming paperback to its hardback, so the autumn 2026 hardbacks are developed on a history whose paperbacks came about a year later.",
+ "domain_test": "The deciding quantity is the expected credit for copies already invoiced that shops will send back under sale-or-return, which a reserving analysis develops from the returns triangle by format, channel and weeks since invoice; a hardback's returns turn on when its own paperback goes on sale, so the swap to readmissions of discharged patients loses the successor edition that decides the call.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:hardback-run-off-conditioned-on-its-paperback-date",
+ "layer1": [
+  "the February 2023 ledger system change: six-digit legacy account numbers beside the new codes, crosswalked on the account master",
+  "ISBNs hyphenated on the older ledger lines and on the distributor's files, plain on the newer lines and the panel",
+  "titles first catalogued in the old bibliographic system: contributor written surname-first, formats coded HB, TPB and PB",
+  "paperbacks retitled or subtitled against their hardbacks",
+  "the distributor's own consignor references against Marrowgate's account codes",
+  "distributor exports starting November 2024; one day's export sent twice",
+  "hub and depot consignments booked carton by carton under their own references",
+  "other publishers' copies in a client's parcel; copies sent beyond an authorisation, held for collection",
+  "a delivery booked in a second time by another goods-in clerk",
+  "hurts re-inspected in two sessions or recounted after a query; the re-inspection workbook gaining an inspector column from August 2026",
+  "the panel's Saturday week ending; the October financial year against calendar quarters"
+ ],
+ "stakeholder_role": "Group Financial Controller",
+ "role_family": "finance_controller",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "marrowgate_sales_ledger_FY2022-FY2026.sqlite (invoice_lines, credit_lines)",
+  "rows": 342911,
+  "entity": "one ISBN on one invoice to one trade account",
+  "grain": "invoice line (invoice x ISBN)",
+  "source": "synthetic (constructed in the layout of a trade publisher's sales ledger export)"
+ },
+ "forum": "auditor",
+ "forcing_event": "period_close",
+ "org_family": "media_or_publishing",
+ "world": {
+  "geography": "United Kingdom",
+  "currency": "GBP",
+  "org_type": "independent trade publisher with its own imprints",
+  "invented_names": [
+   "Marrowgate Books"
+  ],
+  "people": [
+   "Hilary Singh",
+   "Marc Hudson",
+   "Jade Hewitt"
+  ]
+ },
+ "deliverables": [
+  "returns_allowance_FY2026.xlsx",
+  "returns_allowance_note.pdf"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "Leftover stock of a unit comes back once a successor version of the same work goes on sale, and the share that comes back grows the sooner the successor follows, so a run-off measured on cohorts whose successors followed late, which back-tests well, understates a cohort whose successors are scheduled early, a schedule held only as the successors' own forthcoming records with no key back to the units they replace.",
+ "driver_concrete": "Marrowgate's autumn 2026 hardbacks have their paperbacks listed as forthcoming titles, under their own ISBNs and often retitled, four to five months after publication, against about a year for the hardbacks in its returns history, so the shop stock kept to sell through the spring comes back once each paperback is out; the allowance at 31 October 2026 is about £4.5 million against the £3.8 million every development of the returns history gives.",
+ "stump": "The default path develops returns by format, channel and weeks since invoice on the five-year record, back-tests within 3.4 and 1.2 per cent at the 2024 and 2025 year ends and holds £1.25 million (computed £1,358,042); the step that lands it there is developing the autumn 2026 hardbacks on the history's pattern, when their paperbacks, listed on the title master as forthcoming titles under their own ISBNs and often retitled, are due four to five months after publication instead of about a year, so the allowance is £1.75 million.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task117": "task117 replays closed operations under per-unit draw caps reached through a dated join; here nothing is capped or replayed: a hardback's leftover shop stock comes back when its own paperback goes on sale, a successor held only as a forthcoming record with no key back, and the history's paperbacks came about a year after publication",
+  "task137": "task137's lineage priced a one-off repricing by the gap a unit locked in (and its two kinds of unit); here no price moves: a hardback's run-off is conditioned on when its successor edition goes on sale, which the forthcoming list sets four to five months out for the autumn 2026 hardbacks against a year in the history",
+  "task171": "task171's lineage priced take-up on each unit's own saving and a collected share on the payer's renewal date; here the yield is the share of a hardback's leftover shop stock that comes back, conditioned on a successor edition's on-sale date that sits in another record with no key back",
+  "task37": "task37 conditioned a conversion on a linked entity's authorisation under a rule recovered from a closed roll; here no rule is recovered and nothing converts: the run-off of copies already invoiced is conditioned on the on-sale date of each title's own successor edition",
+  "task44": "task44 split a pilot's pooled gain by a behavioural moderator measured over a prior window; here no pilot or moderator: a run-off reserve on copies already sold in is conditioned on a successor edition's scheduled date, which no development of the record carries",
+  "task481": "task481 restates a count onto a new classification by conversion rates from a dual-coded window; here nothing is reclassified: the expected returns on copies already invoiced turn on when each hardback's own paperback goes on sale",
+  "task97": "task97 conditions a unit's need on the cumulative history of the place it occupies through a retired system; here the condition is forward, a successor edition's on-sale date on the forthcoming list, and the history it is missing from is every earlier cohort's later paperbacks",
+  "task155": "task155 conditions take-up on whether a task carries straight on from scheduled work at the same place; here the conditioned yield is leftover stock coming back to a publisher once a successor edition is on sale, scheduled sooner than any in the record",
+  "task166": "v1 conditioned a balloon loan's extension on its refinance cover at the planning rate, a borrower's own option under a rate path; v4 has no option and no rate: a hardback's leftover shop stock comes back when its own paperback goes on sale, a successor held only as a forthcoming record under another ISBN"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-18",
+   "fate": "spent: portal round 1 (2026-10-25) landed by both responses, each designating fixed-rate commercial real estate at the golden $150 million; conditioning each balloon's extension on refinance cover at the planning rate is a reflex for the portal's models, so the slot re-roots",
+   "domain": "banking-credit-financial-risk",
+   "subdomain": "stress-testing-capital",
+   "objective": "forecasting",
+   "gap": [
     "time",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "E"
-  ],
-  "generators": [
+   ],
+   "generators": [
     "G14",
     "G13",
     "G6"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stump_class": "analytical",
-  "analyst_test": "With every channel, migrated account code, credit and strip return read correctly, the easy route develops returns by format, channel and months since invoice on the five-year record (a trailing return rate, or a chain-ladder on the returns triangle, both back-testing within a few per cent on the 2024 and 2025 year ends) and holds about £3.8 million; it never ties a forthcoming paperback to its hardback, so the autumn 2026 hardbacks run off on a history whose paperbacks came about a year later.",
-  "domain_test": "The deciding quantity is the expected credit for copies already invoiced that shops will send back under sale-or-return, which a reserving analysis develops by format, channel and months since sale; a hardback's run-off turns on when its own paperback goes on sale, and with a hospital's or a utility's nouns there is no successor edition that sends its predecessor's stock back, so the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:hardback-run-off-conditioned-on-its-paperback-date",
-  "layer1": [
-    "the 2023 ERP migration: six-digit legacy account codes beside the new codes, crosswalked on the account master",
-    "ISBN-13 with and without hyphens across the ledger, the distributor and the consumer panel",
-    "credits raised at the account's discount in force on the credit date, not the invoice's",
-    "the chain's branch returns consolidated through its returns hub under the hub's authorisation",
-    "strip returns (covers only) from the supermarket supplier for mass-market paperbacks",
-    "credit notes raised days to weeks after the distributor's receipt date",
-    "the financial year to 31 October against calendar quarters and the distributor's own week numbers",
-    "paperbacks retitled or subtitled against their hardbacks, contributor names in two formats",
-    "the consumer panel covers UK retail only, not export",
-    "pre-publication subscription orders invoiced ahead of the publication date",
-    "damaged-in-transit claims credited with a reason code beside returns"
-  ],
-  "stakeholder_role": "Group Financial Controller",
-  "role_family": "finance_controller",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "sales_ledger_FY2022-FY2026.sqlite (invoice_lines)",
-    "rows": 0,
-    "entity": "one ISBN on one invoice to one trade account",
-    "grain": "invoice line (invoice x ISBN)",
-    "source": "synthetic (constructed in the layout of a trade publisher's sales ledger export)"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "composition_mix",
+   "layer2_pattern": "own:balloon-maturities-extended-by-refinance-cover",
+   "forum": "committee_or_panel",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "financial_institution",
+   "driver": "Two parts of a stock answer the same forward terms in opposite directions: one, whose units hold rates the terms now beat, leaves faster than its own past, while the other, whose units fall due inside the window, keeps every due unit whose own earnings no longer cover the terms it would have to roll onto, at a share read from past due dates by that cover; the part with the most exposure over the window is found only when both answers are projected, because the schedule, a recent share or a price gap leaves the second part running off and names a third part that is neither.",
+   "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $2.6 billion of balloons falling due from December 2026 through 2027, nearly all written in the push of December 2021 to April 2022 at the credit box's full proceeds on pro forma rents, half of them interest only; over nine-tenths of that principal is expected to take the bank's one extension (36 months, a tenth paid down, the rest at the posted rate on 25-year amortization) because those properties' latest reviewed income no longer covers a new 25-year loan of the balloon at the planning cycle's 6.95 per cent, the cover below which (about 1.09) the bank's record of maturities since 2015 shows loans extending; the CRE pool's +200 bp loss averaged over the swap's first year is then $150 million, the largest of the five, while every route that repays the balloons when due, at the recent extension share, by rate gap, by property type, by the note-rate DSCR, by in-place cover or by the watch list designates the agency MBS.",
+   "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate take the bank's one 36-month extension, and over nine-tenths of the 2027 wall's principal is such loans."
   },
-  "forum": "auditor",
-  "forcing_event": "period_close",
-  "org_family": "media_or_publishing",
-  "world": {
-    "geography": "United Kingdom",
-    "currency": "GBP",
-    "org_type": "independent trade publisher with its own imprints",
-    "invented_names": [
-      "Marrowgate Books"
-    ],
-    "people": [
-      "Hilary Singh",
-      "Marc Hudson",
-      "Jade Hewitt"
-    ]
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-25",
+   "fate": "spent: portal round 1 on architecture 2 (2026-10-26) landed by both responses, each opening the pilot in Muskegon and the North at about $40 million with the Lakeshore second; the whole-stack refinance incentive chosen over the own-rate and first-only curves on fit and back-test is a reflex for the portal's models, so the slot re-roots",
+   "domain": "banking-credit-financial-risk",
+   "subdomain": "deposit-liquidity-behaviour",
+   "objective": "forecasting",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
+    "G14",
+    "G6"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "composition_mix",
+   "layer2_pattern": "own:junior-lien-payoffs-set-by-the-whole-stacks-blended-refinance-incentive",
+   "forum": "committee_or_panel",
+   "forcing_event": "launch_or_rollout",
+   "org_family": "financial_institution",
+   "driver": "A junior unit leaves when the whole stack it belongs to is replaced or sold, and the holder replaces the stack when its blended price, each layer weighted by its size, rises above the price of one new senior unit; read off the junior's own price, or off the senior's alone, the exits validate on a record where a stack with a high-priced layer was high-priced throughout, and they miss a forward book whose largest juniors sit on small, cheap seniors, which lock nothing because they are small.",
+   "driver_concrete": "Muskegon and the north's 1,460 equity taps of 2023 to 2026 ($70,000 to $112,000 at 8.1 to 9.4 per cent) sit behind first mortgages opened from 2010 to 2015 at 3.5 to 4.75 per cent with $65,000 to $125,000 left, so the debt on each house carries a blended rate of about 6.3 to 6.6 per cent: quiet while the posted 30-year rate held at 6.6 to 7.3 per cent through 2024 to 2026, and in the money from February 2027 as the planning cycle's base case takes it from 6.45 to 5.20 per cent; the region's members then pay off about $40 million of fixed-rate home equity principal in 2027, where the own-rate S-curve names Grand Rapids (about $60 million), the first mortgage's own incentive names the Lakeshore and the trailing payoffs name Kalamazoo and Battle Creek.",
+   "stump": "A strong solver fits the home equity payoffs on each loan's own note rate against the posted home equity rate, a curve the 2019 to 2026 payoffs support, and names Grand Rapids at about $60 million, or reads the lock-in off each first mortgage's own rate and names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the north's large 2024 to 2026 taps sit behind small seasoned firsts at 3.5 to 4.75 per cent, so its stacks blend near 6.5 per cent and come into the money as the planning path falls, and it pays off about $40 million."
   },
-  "deliverables": [
-    "returns_allowance_FY2026.xlsx",
-    "returns_allowance_note.pdf"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "Leftover stock of a unit comes back once a successor version of the same work goes on sale, and the share that comes back grows the sooner the successor follows, so a run-off measured on cohorts whose successors followed late, which back-tests well, understates a cohort whose successors are scheduled early, a schedule held only as the successors' own forthcoming records with no key back to the units they replace.",
-  "driver_concrete": "Marrowgate's autumn 2026 hardbacks have their paperbacks listed as forthcoming titles, under their own ISBNs and often retitled, four to five months after publication, against about a year for the hardbacks in its returns history, so the shop stock kept to sell through the spring comes back once each paperback is out; the allowance at 31 October 2026 is about £4.5 million against the £3.8 million every development of the returns history gives.",
-  "stump": "The default path develops returns by format, channel and months since invoice from the five-year record (a trailing return rate or a chain-ladder on the returns triangle, back-tested on the 2024 and 2025 year ends) and holds about £3.8 million; the step that lands it there is running the autumn 2026 hardbacks off on the history's pattern, when their paperbacks, listed as forthcoming titles under their own ISBNs, are due four to five months after publication rather than a year, so the stock shops kept for the spring comes back and the allowance is about £4.5 million.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task117": "task117 replays closed operations under per-unit draw caps reached through a dated join; here nothing is capped or replayed: a hardback's leftover shop stock comes back when its own paperback goes on sale, a successor held only as a forthcoming record with no key back, and the history's paperbacks came about a year after publication",
-    "task137": "task137's lineage priced a one-off repricing by the gap a unit locked in (and its two kinds of unit); here no price moves: a hardback's run-off is conditioned on when its successor edition goes on sale, which the forthcoming list sets four to five months out for the autumn 2026 hardbacks against a year in the history",
-    "task171": "task171's lineage priced take-up on each unit's own saving and a collected share on the payer's renewal date; here the yield is the share of a hardback's leftover shop stock that comes back, conditioned on a successor edition's on-sale date that sits in another record with no key back",
-    "task37": "task37 conditioned a conversion on a linked entity's authorisation under a rule recovered from a closed roll; here no rule is recovered and nothing converts: the run-off of copies already invoiced is conditioned on the on-sale date of each title's own successor edition",
-    "task44": "task44 split a pilot's pooled gain by a behavioural moderator measured over a prior window; here no pilot or moderator: a run-off reserve on copies already sold in is conditioned on a successor edition's scheduled date, which no development of the record carries",
-    "task481": "task481 restates a count onto a new classification by conversion rates from a dual-coded window; here nothing is reclassified: the expected returns on copies already invoiced turn on when each hardback's own paperback goes on sale",
-    "task97": "task97 conditions a unit's need on the cumulative history of the place it occupies through a retired system; here the condition is forward, a successor edition's on-sale date on the forthcoming list, and the history it is missing from is every earlier cohort's later paperbacks",
-    "task155": "task155 conditions take-up on whether a task carries straight on from scheduled work at the same place; here the conditioned yield is leftover stock coming back to a publisher once a successor edition is on sale, scheduled sooner than any in the record",
-    "task166": "v1 conditioned a balloon loan's extension on its refinance cover at the planning rate, a borrower's own option under a rate path; v4 has no option and no rate: a hardback's leftover shop stock comes back when its own paperback goes on sale, a successor held only as a forthcoming record under another ISBN"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-18",
-      "fate": "spent: portal round 1 (2026-10-25) landed by both responses, each designating fixed-rate commercial real estate at the golden $150 million; conditioning each balloon's extension on refinance cover at the planning rate is a reflex for the portal's models, so the slot re-roots",
-      "domain": "banking-credit-financial-risk",
-      "subdomain": "stress-testing-capital",
-      "objective": "forecasting",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "generators": [
-        "G14",
-        "G13",
-        "G6"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "composition_mix",
-      "layer2_pattern": "own:balloon-maturities-extended-by-refinance-cover",
-      "forum": "committee_or_panel",
-      "forcing_event": "purchase_order_or_contract",
-      "org_family": "financial_institution",
-      "driver": "Two parts of a stock answer the same forward terms in opposite directions: one, whose units hold rates the terms now beat, leaves faster than its own past, while the other, whose units fall due inside the window, keeps every due unit whose own earnings no longer cover the terms it would have to roll onto, at a share read from past due dates by that cover; the part with the most exposure over the window is found only when both answers are projected, because the schedule, a recent share or a price gap leaves the second part running off and names a third part that is neither.",
-      "driver_concrete": "Carrick Valley's fixed-rate CRE pool holds about $2.6 billion of balloons falling due from December 2026 through 2027, nearly all written in the push of December 2021 to April 2022 at the credit box's full proceeds on pro forma rents, half of them interest only; over nine-tenths of that principal is expected to take the bank's one extension (36 months, a tenth paid down, the rest at the posted rate on 25-year amortization) because those properties' latest reviewed income no longer covers a new 25-year loan of the balloon at the planning cycle's 6.95 per cent, the cover below which (about 1.09) the bank's record of maturities since 2015 shows loans extending; the CRE pool's +200 bp loss averaged over the swap's first year is then $150 million, the largest of the five, while every route that repays the balloons when due, at the recent extension share, by rate gap, by property type, by the note-rate DSCR, by in-place cover or by the watch list designates the agency MBS.",
-      "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate take the bank's one 36-month extension, and over nine-tenths of the 2027 wall's principal is such loans."
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-25",
-      "fate": "spent: portal round 1 on architecture 2 (2026-10-26) landed by both responses, each opening the pilot in Muskegon and the North at about $40 million with the Lakeshore second; the whole-stack refinance incentive chosen over the own-rate and first-only curves on fit and back-test is a reflex for the portal's models, so the slot re-roots",
-      "domain": "banking-credit-financial-risk",
-      "subdomain": "deposit-liquidity-behaviour",
-      "objective": "forecasting",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "generators": [
-        "G14",
-        "G6"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "composition_mix",
-      "layer2_pattern": "own:junior-lien-payoffs-set-by-the-whole-stacks-blended-refinance-incentive",
-      "forum": "committee_or_panel",
-      "forcing_event": "launch_or_rollout",
-      "org_family": "financial_institution",
-      "driver": "A junior unit leaves when the whole stack it belongs to is replaced or sold, and the holder replaces the stack when its blended price, each layer weighted by its size, rises above the price of one new senior unit; read off the junior's own price, or off the senior's alone, the exits validate on a record where a stack with a high-priced layer was high-priced throughout, and they miss a forward book whose largest juniors sit on small, cheap seniors, which lock nothing because they are small.",
-      "driver_concrete": "Muskegon and the north's 1,460 equity taps of 2023 to 2026 ($70,000 to $112,000 at 8.1 to 9.4 per cent) sit behind first mortgages opened from 2010 to 2015 at 3.5 to 4.75 per cent with $65,000 to $125,000 left, so the debt on each house carries a blended rate of about 6.3 to 6.6 per cent: quiet while the posted 30-year rate held at 6.6 to 7.3 per cent through 2024 to 2026, and in the money from February 2027 as the planning cycle's base case takes it from 6.45 to 5.20 per cent; the region's members then pay off about $40 million of fixed-rate home equity principal in 2027, where the own-rate S-curve names Grand Rapids (about $60 million), the first mortgage's own incentive names the Lakeshore and the trailing payoffs name Kalamazoo and Battle Creek.",
-      "stump": "A strong solver fits the home equity payoffs on each loan's own note rate against the posted home equity rate, a curve the 2019 to 2026 payoffs support, and names Grand Rapids at about $60 million, or reads the lock-in off each first mortgage's own rate and names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the north's large 2024 to 2026 taps sit behind small seasoned firsts at 3.5 to 4.75 per cent, so its stacks blend near 6.5 per cent and come into the money as the planning path falls, and it pays off about $40 million."
-    },
-    {
-      "architecture": "v3",
-      "drawn": "2026-10-26",
-      "domain": "product-analytics",
-      "subdomain": "feature-adoption-diffusion-modeling",
-      "objective": "forecasting",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G13",
-        "G14"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "other",
-      "layer2_pattern": "own:peer-pipeline-through-departing-users",
-      "forum": "other",
-      "forcing_event": "budget_or_appropriation",
-      "org_family": "software_or_platform",
-      "driver": "Next period's new members include organisations founded by people who left an existing member for one not yet served, at a yield and a lag that linking the records shows; a forecast from each group's own arrival history, trend, season and spend misses a recent surge of departures from one group's members, which arrives as new members through the following year.",
-      "driver_concrete": "About two in five of Plinthwise's new paying customers are founded by someone who left a paying customer for a contractor not yet on the software, a median of 11 months later and close to nine times in ten in the same region; between April and September 2026 the Southwest's customers removed about four times their usual number of users, so the Southwest adds about 600 new paying customers in 2027 (to the nearest 200) against about 480 for Texas & Gulf, which leads every forecast on the regions' own history.",
-      "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
-      "fate": "spent: the portal's responses landed the call on the version shipped 2026-10-27 (the author's Batch 5 sheet, 2026-10-31: the Southwest at about 600 new paying customers, the golden); linking each new workspace's founder to the users who left paying customers, through the one mobile key the determinism repair put on every directory row, and the Southwest's 2026 surge of removals (about four times usual) were read by reflex, so the slot re-roots into another world, dataset and shell"
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "how-many",
-      "second-sentence opener": "send",
-      "rounding opener": "round",
-      "deliverable set": "docx+xlsx"
-    },
-    {
-      "question form": "which",
-      "second-sentence opener": "put",
-      "rounding opener": "give",
-      "deliverable set": "png+xlsx"
-    },
-    {
-      "question form": "which",
-      "second-sentence opener": "put",
-      "rounding opener": "give",
-      "deliverable set": "pptx+xlsx"
-    }
-  ],
-  "notes": "stump_strategy composition_mix: the 2026 autumn hardback cohort's mix on a property no column names (months from a hardback's publication to its own paperback's) differs from every cohort the development was measured on. forum auditor: the year-end audit of the allowance. client_domain actuarial-science-insurance: the allowance is a run-off reserve developed by the reserving task type (reserving-development-triangles, which serves forecasting); the house subdomain revenue-receivables is the variable consideration on trade receivables. lineage_shells: v3's shell read off its shipped prompt; v1's and v2's recorded from their deliverable sets (pptx+xlsx, png+xlsx) with their which questions. context_artifact published_series: the trade's weekly consumer sales panel the finance team reads beside its ledger (filed_standard, register and operations_log are held by the last three builds).",
-  "registered": "2026-11-01T22:03:36Z",
-  "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "build",
-    "rounding opener": "all",
-    "deliverable set": "pdf+xlsx"
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-26",
+   "domain": "product-analytics",
+   "subdomain": "feature-adoption-diffusion-modeling",
+   "objective": "forecasting",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G13",
+    "G14"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "other",
+   "layer2_pattern": "own:peer-pipeline-through-departing-users",
+   "forum": "other",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "software_or_platform",
+   "driver": "Next period's new members include organisations founded by people who left an existing member for one not yet served, at a yield and a lag that linking the records shows; a forecast from each group's own arrival history, trend, season and spend misses a recent surge of departures from one group's members, which arrives as new members through the following year.",
+   "driver_concrete": "About two in five of Plinthwise's new paying customers are founded by someone who left a paying customer for a contractor not yet on the software, a median of 11 months later and close to nine times in ten in the same region; between April and September 2026 the Southwest's customers removed about four times their usual number of users, so the Southwest adds about 600 new paying customers in 2027 (to the nearest 200) against about 480 for Texas & Gulf, which leads every forecast on the regions' own history.",
+   "stump": "The default path stitches the two billing systems, counts new paying customers by the memo's rules on the 2024 map, fits each region's own trend, season and marketing spend by back-test, finds the referral lead source small and flat, and names Texas & Gulf at about 500 with the Southwest second; the step that lands it there is forecasting the Southwest from its own arrivals, when about two in five new customers are founded by people who left paying customers a median of 11 months earlier, and the Southwest's customers removed about four times their usual number of users between April and September 2026, who found new customers through 2027 and put the Southwest first at about 600.",
+   "fate": "spent: the portal's responses landed the call on the version shipped 2026-10-27 (the author's Batch 5 sheet, 2026-10-31: the Southwest at about 600 new paying customers, the golden); linking each new workspace's founder to the users who left paying customers, through the one mobile key the determinism repair put on every directory row, and the Southwest's 2026 surge of removals (about four times usual) were read by reflex, so the slot re-roots into another world, dataset and shell"
   }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "how-many",
+   "second-sentence opener": "send",
+   "rounding opener": "round",
+   "deliverable set": "docx+xlsx"
+  },
+  {
+   "question form": "which",
+   "second-sentence opener": "put",
+   "rounding opener": "give",
+   "deliverable set": "png+xlsx"
+  },
+  {
+   "question form": "which",
+   "second-sentence opener": "put",
+   "rounding opener": "give",
+   "deliverable set": "pptx+xlsx"
+  }
+ ],
+ "notes": "stump_strategy composition_mix: the 2026 autumn hardback cohort's mix on a property no column names (months from a hardback's publication to its own paperback's) differs from every cohort the development was measured on. forum auditor: the year-end audit of the allowance. client_domain actuarial-science-insurance: the allowance is a run-off reserve developed by the reserving task type (reserving-development-triangles, which serves forecasting); the house subdomain revenue-receivables is the variable consideration on trade receivables. lineage_shells: v3's shell read off its shipped prompt; v1's and v2's recorded from their deliverable sets (pptx+xlsx, png+xlsx) with their which questions. context_artifact published_series: the trade's weekly consumer sales panel the finance team reads beside its ledger (filed_standard, register and operations_log are held by the last three builds).",
+ "registered": "2026-11-01T22:03:36Z",
+ "shell": {
+  "question form": "how-much",
+  "second-sentence opener": "build",
+  "rounding opener": "copies",
+  "deliverable set": "pdf+xlsx"
+ }
 }

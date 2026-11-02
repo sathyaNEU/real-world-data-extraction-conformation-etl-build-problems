@@ -1,325 +1,419 @@
-"""The goldens, computed from the shipped pack alone (calc.py on target/): onboarding_pod_2027.docx, the decision memo
-to the VP Customer Onboarding with its chart, and onboarding_staffing_2025.xlsx, the staffing figures; and figures.json, every
-number the write-up states.
-
-    python3 deliver.py <target_dir> <golden_dir> <figures.json>"""
+"""The golden deliverables, computed from the shipped pack alone (calc.py): returns_allowance_FY2026.xlsx and the one-page
+returns_allowance_note.pdf, plus generator/figures.json, every graded figure with its rounding."""
 from __future__ import annotations
 
 import datetime as dt
-import io
 import json
 import os
 import sys
-import warnings
 
 import numpy as np
 
-warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import calc as C          # noqa: E402
-import common as K        # noqa: E402
-import postprocess as PP  # noqa: E402
+import calc as C            # noqa: E402
+import common as K          # noqa: E402
+import postprocess as PP    # noqa: E402
 
-F_MEMO = "onboarding_pod_2027.docx"
-F_BOOK = "onboarding_staffing_2025.xlsx"
-PLANS = ("Core", "Pro", "Enterprise")
-
-
-def r100(x):
-    return int(round(x / 100.0)) * 100
+F_XLSX = "returns_allowance_FY2026.xlsx"
+F_PDF = "returns_allowance_note.pdf"
+STEP = 250000
+QUARTERS = {1: "Q1 Nov-Jan", 2: "Q2 Feb-Apr", 3: "Q3 May-Jul", 4: "Q4 Aug-Oct"}
+QUICK = "paperback within %g months" % 8.0
 
 
-def r200(x):
-    return int(round(x / 200.0)) * 200
+def r250(x):
+    return int(STEP * np.floor(x / STEP + 0.5))
 
 
-KINDS = ("one-to-one", "group")
+def compute(target):
+    P = C.Pack(target)
+    T = C.dnum(C.YE)
+    seg = C.make_quick_seg(P, 8.0, True)
+    total, parts, curves = C.development(P, T, seg)
+    by_fmt = C.allowance_by_format(parts)
+    inv = P.inv[P.inv.terms == "SOR"].copy()
+    inv["seg"] = seg(inv)
+    op = inv[(inv.day <= T) & (inv.day > T - 365)].copy()
+    op["a"] = np.clip((T - op.day) // 7, 0, 70)
+    op["rem"] = [curves[k][70] - curves[k][a] for k, a in zip(op.seg, op.a)]
+    op["exp_copies"] = op.qty * op.rem
+    op["exp_value"] = op.exp_copies * op.net_value / op.qty
+    lines = []
+    for k, g in op.groupby("seg"):
+        f, ch = k.split("|")[0], k.split("|")[1]
+        sub = "Hardback, " + QUICK if k.endswith(QUICK) else f
+        lines.append(dict(seg=k, fmt=f, sub=sub, channel=ch, copies=int(g.qty.sum()), net=float(g.net_value.sum()),
+                          exp_copies=float(g.exp_copies.sum()), exp_value=float(g.exp_value.sum()),
+                          ult=float(curves[k][70])))
+    L = C.link_editions(P.titles)
+    quick = L[L.months <= 8.0]
+    quick_open = quick[quick.isbn_hb.isin(op.isbn)]
+    bt = {}
+    for y in (2024, 2025):
+        Ty = C.dnum(dt.date(y, 10, 31))
+        est, _, _ = C.development(P, Ty, C.make_quick_seg(P, 8.0, True))
+        po = C.open_population(P, Ty)
+        f = P.cr[(P.cr.day > Ty) & (P.cr.reason_code == "RET") & P.cr.against_invoice.isin(po.invoice_no)]
+        bt[y] = (float(est), float(f.net_value.sum()))
+    _, _, gen = C.development(P, T, C.seg_fmt_channel)
+    q = op[op.seg.str.endswith(QUICK)]
+    base = q.fmt + "|" + q.channel
+    q_gen = float(sum(nv * (gen[b][70] - gen[b][a]) for a, nv, b in zip(q.a, q.net_value, base)))
+    q_gold = float(q.exp_value.sum())
+    rec, dropped = C.receipts_clean(P)
+    recv = C.ask_received(P, rec)
+    ch_share, fm_share, raw = C.ask_scrapped(P, rec)
+    wo = written_off_table(P, rec)
+    fy = rec[rec.date.map(C.in_fy2026)]
+    wo_all = sum(r[5] for r in wo["channel"]) / sum(r[1] for r in wo["channel"])
+    return dict(P=P, total=float(total), by_fmt=by_fmt, lines=lines, curves=curves, quick=quick_open, bt=bt,
+                recv=recv, ch_share=ch_share, fm_share=fm_share, raw=raw, wo=wo, q_gold=q_gold, q_gen=q_gen,
+                recv_total=int(fy.qty_received.sum()), wo_all=round(100 * wo_all, 1))
 
 
-def partner_bookings(T, D):
-    import csv
-    typ = {r["Account ID"]: r["Type"] for r in D["crm"]}
-    return sum(1 for r in csv.DictReader(open(os.path.join(T, C.F["sessions"]))) if typ.get(r["crm_account_id"]) == "Partner")
+def written_off_table(P, rec):
+    f = rec[rec.date.map(C.in_fy2026)].copy()
+    fin = C.reinspection_final(P, rec).set_index("tote")
+    hurts = rec[rec.hurts_tote != ""].groupby("hurts_tote").grade_hurt.sum()
+    pul = []
+    for t, h in zip(f.hurts_tote, f.grade_hurt):
+        if t and t in fin.index and hurts.get(t, 0):
+            pul.append(float(fin.loc[t, "pulped"]) * h / hurts[t])
+        else:
+            pul.append(0.0)
+    f["pulped"] = pul
+    out = {}
+    for key, col, order in (("channel", "channel", C.CHANNELS), ("format", "fmt", C.FORMATS)):
+        rows = []
+        for v in order:
+            g = f[f[col] == v]
+            q, u, p = int(g.qty_received.sum()), int(g.grade_unsaleable.sum()), float(g.pulped.sum())
+            rows.append((v, q, u, int(g.grade_hurt.sum()), p, u + p, round(100.0 * (u + p) / q, 1) if q else None))
+        out[key] = rows
+    return out
 
 
-def compute(T):
-    D = C.load(T)
-    sp = C.spend(T)
-    Y = C.directory(D)
-    g, info = C.golden_routes(D, Y, sp)
-    order = [int(i) for i in np.argsort(-g)]
-    win, second = order[0], order[1]
-    dep = Y["dep"]
-    sw_wave = sum(dep[win].get(t, 0) for t in range(87, 93))
-    sw_25 = sum(dep[win].get(t, 0) for t in range(72, 84)) / 12.0
-    lags = [l["lag"] for l in Y["links"] if l["land_t"] <= 92]
-    hours = C.ask_pod_hours(T, "golden", D)
-    coh = C.ask_cohort(T, "golden", D)
-    lag_days = [l["days"] for l in Y["links"] if l["land_t"] <= 92]
-    share25 = float(Y["founders"][:, 48 + 72:48 + 84].sum() / D["new"][:, 48 + 72:48 + 84].sum())
-    # the usual intake across the golden family and the round 1 judge's constructions on the mobile link
-    orgs = [C.golden_routes(D, Y, sp, *f)[1]["org"][win] for f in C.FAMILY]
-    orgs += [C.judge_route(D, Y, sp, lf, os_, rt, ls, parts=True)[1][win] for lf in (-48, 48) for os_ in (1, 24, 48)
-             for rt in ("pooled", "mature") for ls in (0, -1)]
-    fig = dict(
-        call=dict(region=C.REG[win], second=C.REG[second], figure=round(float(g[win]), 1), figure_rounded=r200(g[win])),
-        components=dict(removals_apr_sep_2026=int(sw_wave), removals_apr_sep_2026_rounded=int(round(sw_wave, -2)),
-                        removals_2025_monthly=round(sw_25, 1), removals_ratio=round(sw_wave / 6.0 / sw_25, 2),
-                        removals_ratio_rounded=int(round(sw_wave / 6.0 / sw_25)),
-                        founder_led_2027=round(float(info["champ"][win]), 1), founder_led_2027_rounded=r100(info["champ"][win]),
-                        organic_2027=round(float(info["org"][win]), 1), organic_2027_rounded=r100(info["org"][win]),
-                        organic_2027_low=int(round(float(min(orgs)), -1)), organic_2027_high=int(round(float(max(orgs)), -1)),
-                        lag_median_months=int(np.median(lags)), lag_median_months_by_days=round(float(np.median(lag_days)) / 30.4375, 1),
-                        lag_median_whole_months=int(np.median([d_ // 30.4375 for d_ in lag_days])),
-                        lag_median_days=int(np.median(lag_days)),
-                        founder_share_2025_pct=int(round(100 * share25))),
-        forecast={C.REG[r]: dict(organic=round(float(info["org"][r]), 1), founder_led=round(float(info["champ"][r]), 1),
-                                 total=round(float(g[r]), 1)) for r in range(6)},
-        hours={"%s Q%d %s" % (p, q, k): round(hours.get((p, q, k), 0.0), 2) for p in C.PODS for q in range(1, 5) for k in KINDS},
-        cohort_counts={"%s %s" % (r, p): int(coh["counts"].get((r, p), 0)) for r in C.REG for p in PLANS},
-        cohort_acv_k={"%s %s" % (r, p): round(coh["acv"].get((r, p), 0.0) / 1000.0, 1) for r in C.REG for p in PLANS},
-        cohort_acv_usd={"%s %s" % (r, p): round(coh["acv"].get((r, p), 0.0), 2) for r in C.REG for p in PLANS},
-        cohort_n=int(coh["n"]),
-        steps=dict(new_2025=int(D["new"][:, 48 + 72:48 + 84].sum()), links=int(len(Y["links"])),
-                   yield_per_100_removals=round(float(np.mean(info["p"])) * 100, 1),
-                   same_region_pct=int(round(100 * float(np.mean([l["dest"] == l["origin"] for l in Y["links"]])))),
-                   partner_bookings=partner_bookings(T, D), offer_starts=offer_starts(T, D)),
-    )
-    return fig
+# ----------------------------------------------------------------------------------------------------------------
+# The workbook
 
 
-def offer_starts(T, D):
-    """the 2025 starts whose first-year price fits a plan other than the one their SKU names"""
-    A = C.amendments(T)
-    launch, _ = C.launch_order_map(D, A, T)
-    fit = C.price_plans(T)
-    return sum(1 for e in C.cohort_2025(D) for t in [C.start_terms(e, A)] if launch[t[0]] not in fit(t[1], t[2]))
-
-
-def chart_png(fig):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    from matplotlib import font_manager
-    for f in ("/usr/share/fonts/truetype/crosextra/Carlito-Regular.ttf", "/usr/share/fonts/truetype/crosextra/Carlito-Bold.ttf"):
-        if os.path.exists(f):
-            font_manager.fontManager.addfont(f)
-    plt.rcParams.update({"font.family": "Carlito", "font.size": 9.5, "svg.hashsalt": "task166", "axes.edgecolor": "#c3c2b7"})
-    ink, ink2, muted = "#0b0b0b", "#52514e", "#898781"
-    usual_c, founded_c = "#2a78d6", "#eb6834"
-    regs = sorted(C.REG, key=lambda r: fig["forecast"][r]["total"])
-    usual = [fig["forecast"][r]["organic"] for r in regs]
-    founded = [fig["forecast"][r]["founder_led"] for r in regs]
-    total = [a + b for a, b in zip(usual, founded)]
-    win = fig["call"]["region"]
-    comp = fig["components"]
-    f, ax = plt.subplots(figsize=(5.8, 2.75), dpi=200)
-    ax.barh(regs, usual, color=usual_c, height=0.56, edgecolor="white", linewidth=1.2, label="Usual intake")
-    ax.barh(regs, founded, left=usual, color=founded_c, height=0.56, edgecolor="white", linewidth=1.2,
-            label="Founded by people who left paying customers")
-    y = regs.index(win)
-    ax.text(usual[y] / 2, y, "about %d" % comp["organic_2027_rounded"], va="center", ha="center", fontsize=8.5, color="white")
-    ax.text(usual[y] + founded[y] / 2, y, "about %d" % comp["founder_led_2027_rounded"], va="center", ha="center", fontsize=8.5,
-            color="white")
-    ax.text(total[y] + 8, y, "about %d" % fig["call"]["figure_rounded"], va="center", fontsize=9.5, color=ink, fontweight="bold")
-    ax.set_xlim(0, max(total) * 1.18)
-    ax.set_xlabel("Expected new paying customers, calendar 2027", color=ink2)
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.tick_params(axis="y", length=0, labelcolor=ink)
-    ax.tick_params(axis="x", labelcolor=muted, color="#c3c2b7")
-    for t in ax.get_yticklabels():
-        if t.get_text() == win:
-            t.set_fontweight("bold")
-    ax.grid(axis="x", color="#e1e0d9", linewidth=0.8)
-    ax.set_axisbelow(True)
-    ax.legend(loc="lower right", frameon=False, fontsize=8, labelcolor=ink2, handlelength=1.2, borderaxespad=0.2)
-    ax.set_title("Leavers' new companies put the %s first in 2027" % win, loc="left", fontsize=10.5, fontweight="bold", color=ink)
-    f.text(0.01, 0.01, "Source: billing exports, CRM and user directory of 1 October 2026; FY2028 planning basis.", fontsize=7.2,
-           color=ink2)
-    f.tight_layout(rect=(0, 0.05, 1, 1))
-    buf = io.BytesIO()
-    f.savefig(buf, format="png", metadata={"Software": None})
-    plt.close(f)
-    return buf.getvalue()
-
-
-def write_memo(path, fig):
-    import docx
-    from docx.shared import Inches, Pt, RGBColor
-    c, comp = fig["call"], fig["components"]
-    d = docx.Document()
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    st.paragraph_format.space_after = Pt(6)
-    sec = d.sections[0]
-    sec.left_margin = sec.right_margin = Inches(0.95)
-    sec.top_margin = Inches(0.75)
-    sec.bottom_margin = Inches(0.7)
-    foot = sec.footer.paragraphs[0]
-    foot.text = "Plinthwise Revenue Analytics  |  Internal"
-    foot.runs[0].font.size = Pt(8)
-    foot.runs[0].font.color.rgb = RGBColor(0x5d, 0x64, 0x6c)
-    for line in ("To: %s, VP Customer Onboarding" % K.PEOPLE["vp"], "From: Revenue Analytics", "Date: 23 October 2026",
-                 "Re: Where the 2027 onboarding pod goes"):
-        p = d.add_paragraph(line)
-        p.paragraph_format.space_after = Pt(0)
-    h = d.add_paragraph()
-    h.paragraph_format.space_before = Pt(10)
-    run = h.add_run("Put the 2027 onboarding pod with the %s team" % c["region"])
-    run.bold = True
-    run.font.size = Pt(13)
-    run.font.color.rgb = RGBColor(0x2c, 0x4a, 0x6e)
-    d.add_paragraph(
-        "The %s is expected to add about %d new paying customers in calendar 2027, more than any other region, and %s comes "
-        "second. The pod should sit with the %s team for the year." % (c["region"], c["figure_rounded"], c["second"], c["region"]))
-    d.add_paragraph(
-        "The %s does not lead on its own history. Fitted on each region's past new customers, trend, season and marketing "
-        "plan, the forecast puts %s first and the %s second. What changes the order is where new customers come from: about "
-        "two in five of our 2025 new customers were set up by someone who had used Plinthwise at a paying customer, left, "
-        "and brought it to a contractor that was not yet one. The new company's first paid invoice comes a median of %d to "
-        "%d months after they leave." % (c["region"], c["second"], c["region"], comp["lag_median_whole_months"],
-                                         comp["lag_median_months"]))
-    d.add_paragraph(
-        "Between April and September 2026 the %s's paying customers removed about %s users from their workspaces, about four "
-        "times the region's 2025 monthly pace. Most were project managers, superintendents and engineers, and about half came "
-        "from the region's largest contractors. At the rate past leavers have founded new customers, and counting each new "
-        "company where it bills (close to nine in ten stay in the region they left), they account for about %d of the %s's 2027 new "
-        "customers, beside about %d from its usual intake."
-        % (c["region"], "{:,}".format(comp["removals_apr_sep_2026_rounded"]), comp["founder_led_2027_rounded"], c["region"],
-           comp["organic_2027_rounded"]))
-    d.add_paragraph(
-        "The forecast is on FP&A's FY2028 planning basis: marketing spend at Marketing Operations' plan, and users removed from "
-        "paying customers' workspaces at each region's 2025 monthly average from October 2026. That is the cautious case for "
-        "the %s: at the spring and summer pace its lead would widen, and with no removals at all after September it would "
-        "still lead." % c["region"])
-    d.add_paragraph().add_run().add_picture(io.BytesIO(chart_png(fig)), width=Inches(5.6))
-    p = d.add_paragraph()
-    r_ = p.add_run("New paying customers as your memo of 20 October counts them: a first paid invoice, or a return more than "
-                   "12 months after cancelling, dated in 2027, each company once at its parent, with voided invoices out; "
-                   "the region is the parent company's billing state on the March 2024 map. The 2027 figure is rounded to "
-                   "the nearest 200 and its parts to the nearest 100.")
-    r_.italic = True
-    r_.font.size = Pt(8.5)
-    d.add_paragraph("The pods' specialist hours and the 2025 customers by starting plan are in onboarding_staffing_2025.xlsx.")
-    d.core_properties.author = "Revenue Analytics"
-    d.save(path)
-    PP.normalize_docx(path, "Revenue Analytics", "Revenue Analytics", "2026-10-22T21:10:00Z", "2026-10-23T16:42:00Z", 4, 96,
-                      seed=1661, title="Where the 2027 onboarding pod goes", company=K.COMPANY_LEGAL)
-
-
-def write_book(path, fig):
-    import openpyxl
+def write_xlsx(path, R):
+    from openpyxl import Workbook
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-    wb = openpyxl.Workbook()
-    bold = Font(bold=True)
-    head = PatternFill("solid", fgColor="DCE3EA")
-    thin = Side(style="thin", color="9AA3AB")
+    from openpyxl.utils import get_column_letter
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Specialist hours 2025"
-    ws.append(["Hours of specialist time each pod's specialists spent in sessions held with customers, 2025"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append([])
-    ws.append(["Pod", "Sessions", "Q1", "Q2", "Q3", "Q4", "2025"])
-    for c in ws[3]:
+    ws.title = "Allowance"
+    bold = Font(name="Calibri", bold=True)
+    head = Font(name="Calibri", bold=True, size=13)
+    grey = PatternFill("solid", fgColor="E7E6E6")
+    thin = Side(style="thin", color="999999")
+    money = '#,##0;(#,##0);"-"'
+    ws["A1"] = "Marrowgate Books Ltd: returns allowance at 31 October 2026"
+    ws["A1"].font = head
+    ws["A2"] = ("Trade sales on sale or return invoiced to 31 October 2026; ledger and title master as at 30 October 2026. "
+                "For the FY2026 audit file, Finance, 1 November 2026.")
+    ws["A4"], ws["B4"] = "Allowance (nearest 250,000)", r250(R["total"])
+    ws["A5"], ws["B5"] = "of which hardbacks (nearest 250,000)", r250(R["by_fmt"]["Hardback"])
+    ws["A6"], ws["B6"] = "Allowance as computed", round(R["total"])
+    for r in (4, 5, 6):
+        ws.cell(r, 1).font = bold
+        ws.cell(r, 2).number_format = money
+    ws["B4"].font = bold
+    hdr = ["Segment", "Open copies", "Open net value", "Further returns (copies)", "Allowance", "Share of allowance"]
+    r0 = 8
+    for j, h in enumerate(hdr, 1):
+        c = ws.cell(r0, j, h)
         c.font = bold
-        c.fill = head
-    for p in C.PODS:
-        for k in KINDS:
-            vals = [fig["hours"]["%s Q%d %s" % (p, q, k)] for q in range(1, 5)]
-            ws.append([p, k.capitalize(), *vals, round(sum(vals), 2)])
-    tot = [round(sum(fig["hours"]["%s Q%d %s" % (p, q, k)] for p in C.PODS for k in KINDS), 2) for q in range(1, 5)]
-    ws.append(["All pods", "", *tot, round(sum(tot), 2)])
-    for c in ws[ws.max_row]:
+        c.fill = grey
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    agg = {}
+    for x in R["lines"]:
+        a = agg.setdefault(x["sub"], [0, 0.0, 0.0, 0.0])
+        a[0] += x["copies"]
+        a[1] += x["net"]
+        a[2] += x["exp_copies"]
+        a[3] += x["exp_value"]
+    order = ["Hardback, " + QUICK, "Hardback", "Trade paperback", "Paperback"]
+    names = {"Hardback, " + QUICK: "Hardbacks, paperback due within 8 months", "Hardback": "Hardbacks, other",
+             "Trade paperback": "Trade paperbacks", "Paperback": "Paperbacks"}
+    r = r0 + 1
+    for k in order:
+        if k not in agg:
+            continue
+        a = agg[k]
+        ws.cell(r, 1, names[k])
+        ws.cell(r, 2, a[0]).number_format = "#,##0"
+        ws.cell(r, 3, round(a[1])).number_format = money
+        ws.cell(r, 4, round(a[2])).number_format = "#,##0"
+        ws.cell(r, 5, round(a[3])).number_format = money
+        ws.cell(r, 6, a[3] / R["total"]).number_format = "0.0%"
+        r += 1
+    ws.cell(r, 1, "Total").font = bold
+    for j, v in ((2, sum(a[0] for a in agg.values())), (3, round(sum(a[1] for a in agg.values()))),
+                 (4, round(sum(a[2] for a in agg.values()))), (5, round(R["total"]))):
+        c = ws.cell(r, j, v)
         c.font = bold
+        c.number_format = "#,##0" if j in (2, 4) else money
         c.border = Border(top=thin)
-    ws.append([])
-    ws.append(["Each specialist's time in a session counts once: the bookings of a field app training or an office hour share "
-               "one host and start, and a second host on a booking is that specialist's own hour. A session is held when at "
-               "least one of its bookings was completed. Quarter by the session's date. Group sessions are the field app "
-               "trainings and office hours."])
-    ws.append(["Each session counts for the pod its host was in on the session's date, from the roster's pod assignments; a "
-               "session a specialist covered for another pod counts for the host's own pod. A specialist still listed on a "
-               "colleague's booking that falls wholly inside a session of their own spent no time on it; the colleague, free "
-               "at the time, held it."])
-    ws.append(["Source: onboarding_sessions_2024-01_2026-09.csv, onboarding_cases_2024-01_2026-09.csv, "
-               "onboarding_team_roster_2026-10-01.csv, CRM accounts."])
-    for col, w in zip("ABCDEFG", [12, 12, 9, 9, 9, 9, 10]):
-        ws.column_dimensions[col].width = w
-    for row in ws.iter_rows(min_row=4, max_row=10, min_col=3, max_col=7):
-        for c in row:
-            c.number_format = "#,##0.00"
-            c.alignment = Alignment(horizontal="right")
-    ws.freeze_panes = "C4"
-    ws2 = wb.create_sheet("2025 new customers")
-    ws2.append(["New paying customers of 2025 by the plan they started on, and the annual contract value they signed on it"])
-    ws2["A1"].font = Font(bold=True, size=12)
-    ws2.append([])
-    ws2.append(["Region", "Core", "Pro", "Enterprise", "All plans", "Core ACV ($K)", "Pro ACV ($K)", "Enterprise ACV ($K)"])
-    for c in ws2[3]:
+    ws.cell(r, 6, 1.0).number_format = "0.0%"
+    r += 2
+    notes = [
+        "Basis: copies invoiced to sale-or-return accounts in the twelve months to 31 October 2026, the only copies a return can still quote.",
+        "Further returns are each invoice line's copies times the share of copies credited as returns after that line's age, read off the returns "
+        "development of invoices from November 2021 at least 425 days old at the year end, by format and channel.",
+        "Hardbacks whose own paperback is published within 8 months of them are developed on the earlier hardbacks with a paperback that close, "
+        "linked on the title master by title and contributor; credit at each line's own net price.",
+    ]
+    for t in notes:
+        ws.cell(r, 1, t).alignment = Alignment(wrap_text=False)
+        r += 1
+    ws.column_dimensions["A"].width = 44
+    for j in range(2, 7):
+        ws.column_dimensions[get_column_letter(j)].width = 16
+
+    # by channel
+    ws2 = wb.create_sheet("By channel")
+    hdr = ["Format", "Channel", "Open copies", "Open net value", "Returned share to date (mature)", "Further returns (copies)", "Allowance"]
+    for j, h in enumerate(hdr, 1):
+        c = ws2.cell(1, j, h)
         c.font = bold
-        c.fill = head
-    for r in C.REG:
-        n = [fig["cohort_counts"]["%s %s" % (r, p)] for p in PLANS]
-        v = [fig["cohort_acv_k"]["%s %s" % (r, p)] for p in PLANS]
-        ws2.append([r, *n, sum(n), *v])
-    n_all = [sum(fig["cohort_counts"]["%s %s" % (r, p)] for r in C.REG) for p in PLANS]
-    v_all = [round(sum(fig["cohort_acv_usd"]["%s %s" % (r, p)] for r in C.REG) / 1000.0, 1) for p in PLANS]
-    ws2.append(["All regions", *n_all, sum(n_all), *v_all])
-    for c in ws2[ws2.max_row]:
+        c.fill = grey
+    rr = 2
+    for x in sorted(R["lines"], key=lambda x: (order.index(x["sub"]), C.CHANNELS.index(x["channel"]))):
+        ws2.cell(rr, 1, names[x["sub"]])
+        ws2.cell(rr, 2, x["channel"])
+        ws2.cell(rr, 3, x["copies"]).number_format = "#,##0"
+        ws2.cell(rr, 4, round(x["net"])).number_format = money
+        ws2.cell(rr, 5, x["ult"]).number_format = "0.0%"
+        ws2.cell(rr, 6, round(x["exp_copies"])).number_format = "#,##0"
+        ws2.cell(rr, 7, round(x["exp_value"])).number_format = money
+        rr += 1
+    for j, w in enumerate([40, 13, 13, 15, 16, 16, 14], 1):
+        ws2.column_dimensions[get_column_letter(j)].width = w
+    ws2.freeze_panes = "A2"
+
+    # development
+    ws3 = wb.create_sheet("Development")
+    keys = sorted(R["curves"], key=lambda k: (order.index("Hardback, " + QUICK if k.endswith(QUICK) else k.split("|")[0]),
+                                              C.CHANNELS.index(k.split("|")[1])))
+    ws3.cell(1, 1, "Cumulative share of invoiced copies credited as returns, by weeks from invoice (invoices 1 Nov 2021 to 1 Sep 2025)").font = bold
+    ws3.cell(2, 1, "Weeks").font = bold
+    for j, k in enumerate(keys, 2):
+        lab = k.replace("|" + QUICK, ", pb within 8m").replace("|", " / ")
+        c = ws3.cell(2, j, lab)
         c.font = bold
-        c.border = Border(top=thin)
-    ws2.append([])
-    ws2.append(["Counted as the 20 October memo counts new paying customers. Plan and ACV in force on the first paid "
-                "invoice date: the register's terms today taken back through every amendment effective after that date, a "
-                "day's amendments in the order their terms either side chain (a change effective on the first invoice date is "
-                "part of the starting terms)."])
-    ws2.append(["Plans by SKU as sold: before the catalog of 1 July 2026 the SKUs ran in launch order (PLW-100 Pro, PLW-200 "
-                "Enterprise, PLW-300 Core), as the subscriptions' list prices and seats show; the July 2026 catalog "
-                "renumbered them in price order. Each customer counts on the plan its SKU names: the PLW-100 subscriptions "
-                "first invoiced at Core's list price for their seats are Pro, and each that reached its first anniversary "
-                "moved to Pro's price that day."])
-    ws2.append(["Source: subscription register (Subscriptions and Amendments), product catalog, legacy billing, CRM."])
-    for col, w in zip("ABCDEFGH", [16, 8, 8, 11, 10, 13, 13, 18]):
-        ws2.column_dimensions[col].width = w
-    for row in ws2.iter_rows(min_row=4, max_row=10, min_col=2, max_col=5):
-        for c in row:
-            c.number_format = "#,##0"
-    for row in ws2.iter_rows(min_row=4, max_row=10, min_col=6, max_col=8):
-        for c in row:
-            c.number_format = "#,##0.0"
-    ws2.freeze_panes = "B4"
-    ws3 = wb.create_sheet("Notes")
-    for line in ["Prepared by Revenue Analytics for the VP Customer Onboarding, 23 October 2026.",
-                 "Exports as pulled on 1 October 2026; activity to 30 September 2026.",
-                 "Regions: the sales territory map in effect from 1 March 2024 (Tennessee in Midwest).",
-                 "Hours to two decimals; contract value in thousands of dollars to one decimal; the 2027 figure to the nearest 200."]:
-        ws3.append([line])
-    ws3.column_dimensions["A"].width = 90
-    for w_ in (ws, ws2):
-        w_.page_setup.orientation = "landscape"
-        w_.page_setup.fitToWidth = 1
-        w_.page_setup.fitToHeight = 0
-        w_.sheet_properties.pageSetUpPr.fitToPage = True
-        w_.print_title_rows = "3:3"
-    for w_ in wb.worksheets:
-        w_.sheet_view.showGridLines = w_.title != "Notes"
+        c.alignment = Alignment(wrap_text=True)
+        ws3.column_dimensions[get_column_letter(j)].width = 13
+    for i, wk in enumerate(list(range(0, 66, 4)) + [70], 3):
+        ws3.cell(i, 1, wk)
+        for j, k in enumerate(keys, 2):
+            ws3.cell(i, j, float(R["curves"][k][wk])).number_format = "0.0%"
+    ws3.freeze_panes = "B3"
+
+    # linked hardbacks
+    ws4 = wb.create_sheet("Paperback links")
+    hdr = ["Hardback ISBN", "Hardback title", "Hardback published", "Paperback ISBN", "Paperback title", "Paperback due", "Months"]
+    for j, h in enumerate(hdr, 1):
+        c = ws4.cell(1, j, h)
+        c.font = bold
+        c.fill = grey
+    q = R["quick"].sort_values(["pub_hb", "isbn_hb"])
+    for i, x in enumerate(q.itertuples(), 2):
+        ws4.cell(i, 1, x.isbn_hb)
+        ws4.cell(i, 2, x.title_hb)
+        ws4.cell(i, 3, x.pub_hb).number_format = "dd/mm/yyyy"
+        ws4.cell(i, 4, x.isbn_pb)
+        ws4.cell(i, 5, x.title_pb)
+        ws4.cell(i, 6, x.pub_pb).number_format = "dd/mm/yyyy"
+        ws4.cell(i, 7, round(float(x.months), 1)).number_format = "0.0"
+    for j, w in enumerate([16, 38, 12, 16, 44, 12, 8], 1):
+        ws4.column_dimensions[get_column_letter(j)].width = w
+    ws4.freeze_panes = "A2"
+
+    # back-test
+    ws5 = wb.create_sheet("Back-test")
+    hdr = ["Year end", "Allowance on the same basis", "Returns credited afterwards on the copies then open", "Difference"]
+    for j, h in enumerate(hdr, 1):
+        c = ws5.cell(1, j, h)
+        c.font = bold
+        c.fill = grey
+    for i, (y, (e, a)) in enumerate(sorted(R["bt"].items()), 2):
+        ws5.cell(i, 1, dt.date(y, 10, 31)).number_format = "dd/mm/yyyy"
+        ws5.cell(i, 2, round(e)).number_format = money
+        ws5.cell(i, 3, round(a)).number_format = money
+        ws5.cell(i, 4, e / a - 1).number_format = "0.0%"
+    for j, w in enumerate([12, 26, 44, 12], 1):
+        ws5.column_dimensions[get_column_letter(j)].width = w
+
+    # returns received
+    ws6 = wb.create_sheet("Returns received")
+    ws6.cell(1, 1, "Copies of Marrowgate titles received back at Tallowmere, FY2026 (1 November 2025 to 31 October 2026)").font = bold
+    hdr = ["Channel"] + [QUARTERS[q] for q in (1, 2, 3, 4)] + ["FY2026"]
+    for j, h in enumerate(hdr, 1):
+        c = ws6.cell(2, j, h)
+        c.font = bold
+        c.fill = grey
+    for i, ch in enumerate(C.CHANNELS, 3):
+        ws6.cell(i, 1, ch)
+        for j, qq in enumerate((1, 2, 3, 4), 2):
+            ws6.cell(i, j, R["recv"][(ch, qq)]).number_format = "#,##0"
+        ws6.cell(i, 6, sum(R["recv"][(ch, qq)] for qq in (1, 2, 3, 4))).number_format = "#,##0"
+    i = 3 + len(C.CHANNELS)
+    ws6.cell(i, 1, "Total").font = bold
+    for j, qq in enumerate((1, 2, 3, 4), 2):
+        c = ws6.cell(i, j, sum(R["recv"][(ch, qq)] for ch in C.CHANNELS))
+        c.number_format = "#,##0"
+        c.font = bold
+    c = ws6.cell(i, 6, sum(R["recv"].values()))
+    c.number_format = "#,##0"
+    c.font = bold
+    ws6.column_dimensions["A"].width = 14
+    for j in range(2, 7):
+        ws6.column_dimensions[get_column_letter(j)].width = 13
+
+    # written off
+    ws7 = wb.create_sheet("Written off")
+    ws7.cell(1, 1, "Copies received back in FY2026 and written off by 31 October 2026: graded unsaleable on receipt, or hurt and pulped at re-inspection").font = bold
+    hdr = ["", "Copies received", "Graded unsaleable", "Graded hurt", "Hurts pulped by 31 Oct 2026", "Written off", "Share written off"]
+    rr = 3
+    for key, lab in (("channel", "Channel"), ("format", "Format")):
+        for j, h in enumerate([lab] + hdr[1:], 1):
+            c = ws7.cell(rr, j, h)
+            c.font = bold
+            c.fill = grey
+        rr += 1
+        for v, q, u, h, p, w, s in R["wo"][key]:
+            ws7.cell(rr, 1, v)
+            ws7.cell(rr, 2, q).number_format = "#,##0"
+            ws7.cell(rr, 3, u).number_format = "#,##0"
+            ws7.cell(rr, 4, h).number_format = "#,##0"
+            ws7.cell(rr, 5, round(p, 1)).number_format = "#,##0.0"
+            ws7.cell(rr, 6, round(w, 1)).number_format = "#,##0.0"
+            ws7.cell(rr, 7, s / 100.0).number_format = "0.0%"
+            rr += 1
+        rr += 1
+    ws7.cell(rr, 1, "A tote's pulped copies are shared among the deliveries whose hurts went into it, in proportion to those hurts.")
+    ws7.column_dimensions["A"].width = 16
+    for j in range(2, 8):
+        ws7.column_dimensions[get_column_letter(j)].width = 15
     wb.save(path)
-    PP.normalize_ooxml(path, "Revenue Analytics", "Revenue Analytics", "2026-10-22T20:05:00Z", "2026-10-23T16:30:00Z",
-                       excel=True, company=K.COMPANY_LEGAL)
 
 
-def main(target, golden, figpath):
+# ----------------------------------------------------------------------------------------------------------------
+# The note
+
+
+def write_pdf(path, R):
+    from reportlab import rl_config
+    rl_config.invariant = 1
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    body = ParagraphStyle("b", fontName="Helvetica", fontSize=9.6, leading=13, spaceAfter=6)
+    title = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=13, leading=16, spaceAfter=2)
+    small = ParagraphStyle("s", fontName="Helvetica", fontSize=8.2, leading=10.5, textColor=colors.HexColor("#444444"))
+    tot, hb = R["total"], R["by_fmt"]["Hardback"]
+    agg = {}
+    for x in R["lines"]:
+        agg[x["sub"]] = agg.get(x["sub"], 0.0) + x["exp_value"]
+    bt = R["bt"]
+    memo = Table([["To", "FY2026 year-end audit file"], ["From", "%s, Group Financial Controller" % K.PEOPLE["controller"]],
+                  ["Date", "1 November 2026"], ["Subject", "Returns allowance at 31 October 2026"]], colWidths=[20 * mm, 120 * mm])
+    memo.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.6), ("FONT", (0, 0), (0, -1), "Helvetica-Bold", 8.6),
+                              ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5), ("TOPPADDING", (0, 0), (-1, -1), 1.5),
+                              ("LEFTPADDING", (0, 0), (-1, -1), 0), ("LINEBELOW", (0, -1), (-1, -1), 0.5, colors.grey)]))
+    s = [Paragraph("Hold £%s million against returns at 31 October 2026" % ("%.2f" % (r250(tot) / 1e6)), title),
+         Spacer(1, 4), memo, Spacer(1, 8),
+         Paragraph("<b>Allowance: £%s</b> (to the nearest £250,000; computed £%s), of which hardbacks £%s "
+                   "(computed £%s)." % ("{:,}".format(r250(tot)), "{:,}".format(round(tot)), "{:,}".format(r250(hb)),
+                                             "{:,}".format(round(hb))), body),
+         Paragraph("The allowance is the credit we expect to give for copies invoiced on or before 31 October 2026 that will "
+                   "come back under our terms of trade. A return can only quote an invoice three to twelve months old, so the "
+                   "copies at stake are those invoiced on sale or return in the twelve months to the year end.", body),
+         Paragraph("We developed the returns by format and channel: for invoices from November 2021 that are at least 425 days "
+                   "old, the share of invoiced copies credited as returns by weeks since the invoice; each open invoice line "
+                   "takes the share still to come after its age, at its own net price.", body),
+         Paragraph("A hardback's remaining shop stock comes back once its own paperback is out. Most of the autumn 2026 "
+                   "hardbacks have their paperbacks due four to five months after publication, against about a year for the "
+                   "hardbacks the history mostly holds. We matched each hardback to its paperback on the title master by title "
+                   "and contributor (the paperback carries its own ISBN and is often retitled) and developed the hardbacks "
+                   "whose paperback comes within 8 months on the earlier hardbacks with a paperback that close. Their open "
+                   "invoices carry £%s of the allowance; on the general hardback pattern the same copies would carry "
+                   "£%s." % ("{:,}".format(int(round(R["q_gold"], -3))), "{:,}".format(int(round(R["q_gen"], -3)))), body),
+         Paragraph("Struck the same way at 31 October 2024 and 2025, the allowance came to %s and %s the returns credited "
+                   "afterwards on the copies then open." % (_vs(bt[2024]), _vs(bt[2025])), body),
+         Spacer(1, 4)]
+    names = [("Hardback, " + QUICK, "Hardbacks, paperback due within 8 months"), ("Hardback", "Hardbacks, other"),
+             ("Trade paperback", "Trade paperbacks"), ("Paperback", "Paperbacks")]
+    data = [["Segment", "Allowance (£)"]] + [[n, "{:,}".format(int(round(agg.get(k, 0.0))))] for k, n in names if k in agg]
+    data.append(["Total", "{:,}".format(int(round(tot)))])
+    t = Table(data, colWidths=[95 * mm, 40 * mm])
+    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 9), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 9),
+                           ("FONT", (0, -1), (-1, -1), "Helvetica-Bold", 9), ("ALIGN", (1, 0), (1, -1), "RIGHT"),
+                           ("LINEABOVE", (0, -1), (-1, -1), 0.5, colors.grey), ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.grey)]))
+    s.append(t)
+    s.append(Paragraph("Source: sales ledger invoice and credit lines and the title master, both as at 30 October 2026; "
+                       "sale-or-return accounts only.", small))
+    s.append(Spacer(1, 8))
+    s.append(Paragraph("Claims for damage or shortage in transit are credited against revenue when agreed and form no part of "
+                       "the allowance (accounting policies, Revenue); they are left out of the returns development. Workings, the "
+                       "returns received in FY2026 and the copies written off are in returns_allowance_FY2026.xlsx.", small))
+
+    def footer(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(20 * mm, 10 * mm, "Marrowgate Books Ltd  |  Finance  |  FY2026 year end")
+        canvas.drawRightString(190 * mm, 10 * mm, "Page 1 of 1")
+        canvas.restoreState()
+    d = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm, bottomMargin=18 * mm,
+                          title="Returns allowance at 31 October 2026", author=K.PEOPLE["controller"], subject="Returns allowance",
+                          creator="Microsoft Word", producer="Microsoft Word")
+    d.build(s, onFirstPage=footer, onLaterPages=footer)
+
+
+def figures(R):
+    out = {"allowance_gbp": {"value": r250(R["total"]), "computed": round(R["total"], 2), "rounding": "nearest 250,000"},
+           "allowance_hardback_gbp": {"value": r250(R["by_fmt"]["Hardback"]), "computed": round(R["by_fmt"]["Hardback"], 2),
+                                      "rounding": "nearest 250,000"},
+           "received_copies": {"%s|Q%d" % k: v for k, v in sorted(R["recv"].items(), key=lambda kv: (C.CHANNELS.index(kv[0][0]), kv[0][1]))},
+           "written_off_share_channel_pct": R["ch_share"], "written_off_share_format_pct": R["fm_share"],
+           "steps": {"allowance_gbp_millions": r250(R["total"]) / 1e6,
+                     "allowance_hardback_gbp_millions": r250(R["by_fmt"]["Hardback"]) / 1e6,
+                     "paperback_within_months": 8, "maturity_days": 425,
+                     "received_total_copies": R["recv_total"], "written_off_share_all_pct": R["wo_all"],
+                     "as_of": "31 October 2026", "back_test_year_ends": "31 October 2024 and 31 October 2025",
+                     "financial_year": "1 November 2025 to 31 October 2026", "extract_from": "1 November 2021",
+                     "back_test": {"31 October 2024": _vs(R["bt"][2024]), "31 October 2025": _vs(R["bt"][2025])}}}
+    return out
+
+
+def _vs(pair):
+    e, a = pair
+    d = 100 * (e / a - 1)
+    return "%.1f%% %s" % (abs(d), "below" if d < 0 else "above")
+
+
+def main(target, golden, fig_path):
     os.makedirs(golden, exist_ok=True)
-    fig = compute(target)
-    write_memo(os.path.join(golden, F_MEMO), fig)
-    write_book(os.path.join(golden, F_BOOK), fig)
-    with open(figpath, "w") as fh:
-        json.dump(fig, fh, indent=1, sort_keys=False)
+    R = compute(target)
+    xp, pp = os.path.join(golden, F_XLSX), os.path.join(golden, F_PDF)
+    write_xlsx(xp, R)
+    PP.normalize_ooxml(xp, K.PEOPLE["controller"], K.PEOPLE["controller"], "2026-11-01T10:12:00Z", "2026-11-01T16:48:00Z",
+                       excel=True, company=K.COMPANY)
+    write_pdf(pp, R)
+    PP.normalize_pdf(pp, b"D:20261101170500+00'00'", b"D:20261101170500+00'00'")
+    with open(fig_path, "w") as fh:
+        json.dump(figures(R), fh, indent=1)
         fh.write("\n")
-    return fig
+    return R
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3])
+    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
+    g = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(HERE), "golden")
+    main(t, g, os.path.join(HERE, "figures.json"))
