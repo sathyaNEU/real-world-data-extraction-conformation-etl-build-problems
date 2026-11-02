@@ -27,11 +27,11 @@ def write(F, path):
          "**Analytical objective:** Opportunity Sizing & Decision Support.", ""]
     L += ["## 1. Final Recommendation", "",
           "**Fund measure A, the Prestación Infancia Directa: it brings %s children above the poverty line in 2027 "
-          "(Valdemora %s, Las Cuencas %s, Sierra del Alba %s).**" % (n(F["A_r"]), n(p["81"]), n(p["82"]), n(p["83"])),
+          "(Valmesura %s, Las Cuencas %s, Sierra del Alba %s).**" % (n(F["A_r"]), n(p["81"]), n(p["82"]), n(p["83"])),
           "Not C, the Complemento's higher limit, which leads only if its newly entitled families were paid all year; "
           "not B or D, new payments families must claim; not E, which tops up families mostly far below the line.", ""]
     L += ["## 2. Critical Components", "",
-          "1. Measure A brings **%s** children above the line in 2027: Valdemora **%s**, Las Cuencas **%s**, Sierra "
+          "1. Measure A brings **%s** children above the line in 2027: Valmesura **%s**, Las Cuencas **%s**, Sierra "
           "del Alba **%s**." % (n(F["A_r"]), n(p["81"]), n(p["82"]), n(p["83"])),
           "2. Measure C would bring **%s** children above the line if every family it covers were paid all of 2027, "
           "but its payments received in 2027 bring fewer than **%s**." % (n(F["R0_r"]["C"]), n(F["rival_bound"])),
@@ -64,7 +64,7 @@ def write(F, path):
           "defines them: the fieldwork figures in the annex.", ""]
     L += ["## 4. Deliverable Answers", "", "### cabinet_note_child_poverty_2027.pdf", "",
           "1. Recommends measure A, the Prestación Infancia Directa: %s children above the poverty line in 2027, "
-          "Valdemora %s, Las Cuencas %s, Sierra del Alba %s." % (n(F["A_r"]), n(p["81"]), n(p["82"]), n(p["83"])),
+          "Valmesura %s, Las Cuencas %s, Sierra del Alba %s." % (n(F["A_r"]), n(p["81"]), n(p["82"]), n(p["83"])),
           "2. Bar chart on page 1 comparing the measures' children above the line with a full year of payments and "
           "with the payments received in 2027, A highest in 2027.", "",
           "### appraisal_annex_2027.xlsx", "",

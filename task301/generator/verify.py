@@ -252,8 +252,8 @@ def main():
         awards["case_number"].map(revocation_dates) > pd.Timestamp("2025-12-31")))
     awards = awards[stood]
     golden_wb = xlsx_rows(os.path.join(GOLD, "appraisal_annex_2027.xlsx"), "Complemento 2025")
-    gw = {r[0]: r[1:5] for r in golden_wb if r and r[0] in ("Valdemora", "Las Cuencas", "Sierra del Alba")}
-    names = {"81": "Valdemora", "82": "Las Cuencas", "83": "Sierra del Alba"}
+    gw = {r[0]: r[1:5] for r in golden_wb if r and r[0] in ("Valmesura", "Las Cuencas", "Sierra del Alba")}
+    names = {"81": "Valmesura", "82": "Las Cuencas", "83": "Sierra del Alba"}
     all_ok = True
     for j, (y, mth) in enumerate(((2025, 3), (2025, 6), (2025, 9), (2025, 12))):
         t = y * 12 + mth - 1

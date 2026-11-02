@@ -128,6 +128,7 @@ def load(target):
     D["cooktops"] = [dict(zip(hdr, r)) for r in rows]
     D["nem12"] = read_nem12(P(find("nem12_QUAYLIGHT")))
     D["pq"] = read_pq(P(find("QES_PQ_hourly_V")))
+    D["pq_max"] = read_pq_max(P(find("QES_PQ_hourly_V")))
     with open(P(find("QES_PQ_events"))) as f:
         D["events"] = json.load(f)["events"]
     with open(P(find("QES_register_reads"))) as f:
@@ -167,6 +168,17 @@ def read_pq(path):
     for k in series:
         series[k].sort()
     return series
+
+
+def read_pq_max(path):
+    """{(meter_serial, element, hour start UTC): the hour's highest voltage}."""
+    out = {}
+    with open(path) as f:
+        r = csv.reader(f)
+        next(r)
+        for s, el, t, va, vmin, vmax, n in r:
+            out[(s, el, t)] = float(vmax)
+    return out
 
 
 # ------------------------------------------------------------------------------------------------- frames
@@ -320,20 +332,25 @@ def rungs(D, units=None, M=None, sims=20000, seed=7):
 
 
 # --------------------------------------------------------------------------------------------------- asks
-def ask_july_use(D, units):
-    """Each riser's apartments' July 2026 use (MWh): the energy each meter registered over July, from the
-    actual register reads (through the exchange log where a meter was changed) and, where the 1 August read
-    is an estimate, from the meter's own July interval data, every register."""
-    reads, rtype = {}, {}
+def midnight_reads(D):
+    """{(meter_serial, register, date): (reading, read type)} for the reads taken at midnight."""
+    out = {}
     for r in D["reads"]:
-        k = (r["meter_serial"], r["register"], r["read_local"][:10])
-        reads[k] = float(r["reading_kwh"])
-        rtype[k] = r["read_type"]
+        if r["read_local"][11:] == "00:00":
+            out[(r["meter_serial"], r["register"], r["read_local"][:10])] = (float(r["reading_kwh"]), r["read_type"])
+    return out
+
+
+def ask_july_use(D, units):
+    """Each riser's apartments' July 2026 use (MWh): the energy each meter registered over July on both registers,
+    from the midnight register reads of 1 July and 1 August (through the exchange log where a meter was changed)
+    and, where the midnight 1 August read is an estimate, from the meter's own July interval data."""
+    reads = midnight_reads(D)
     ex = {e["nmi"]: e for e in D["exchanges"]}
     per_unit = {}
     for u, x in units.items():
         regs = [g for g in ("E1", "E2") if (x["serial"], g, "2026-08-01") in reads]
-        if any(rtype[(x["serial"], g, "2026-08-01")] != "A" for g in regs):
+        if any(reads[(x["serial"], g, "2026-08-01")][1] != "A" for g in regs):
             recs = D["nem12"][x["nmi"]]
             per_unit[u] = sum(r["vals"].sum() for d in recs for r in recs[d])
             continue
@@ -341,10 +358,10 @@ def ask_july_use(D, units):
         for reg in regs:
             if x["nmi"] in ex:
                 e = ex[x["nmi"]]
-                use += (float(e["old_final_%s_kwh" % reg]) - reads[(e["old_meter_serial"], reg, "2026-07-01")]) + \
-                       (reads[(e["new_meter_serial"], reg, "2026-08-01")] - float(e["new_initial_%s_kwh" % reg]))
+                use += (float(e["old_final_%s_kwh" % reg]) - reads[(e["old_meter_serial"], reg, "2026-07-01")][0]) + \
+                       (reads[(e["new_meter_serial"], reg, "2026-08-01")][0] - float(e["new_initial_%s_kwh" % reg]))
             else:
-                use += reads[(x["serial"], reg, "2026-08-01")] - reads[(x["serial"], reg, "2026-07-01")]
+                use += reads[(x["serial"], reg, "2026-08-01")][0] - reads[(x["serial"], reg, "2026-07-01")][0]
         per_unit[u] = use
     out = {}
     for r in D["risers"]:
@@ -367,21 +384,47 @@ def parse_unit(txt):
     return None
 
 
-def true_space(a, D, space_unit):
-    """The car space an application means.  A B2 number written before the March 2025 re-marking is an old
-    number; an owner of an apartment who wrote a B2 number that is not one of the apartment's spaces, where
-    the re-marked number is, wrote the old number."""
+def parse_lot(txt):
+    """The lot an owner writing from another address gives (Lot 214, 3/45 Hyde St, ...); None otherwise."""
+    m = re.match(r"Lot (\d+), ", txt.strip())
+    return int(m.group(1)) if m else None
+
+
+def applicant_spaces(a, D, units):
+    """The accessory car spaces of the applicant's lot, by the unit written or the lot given; None for the
+    committee's own applications."""
+    w = a["Unit or owner address"]
+    if "(for the OC)" in w:
+        return None
+    u = parse_unit(w)
+    if u is not None:
+        return set(units[u]["spaces"])
+    lot = parse_lot(w)
+    if lot is not None:
+        row = [r for r in D["lots"] if int(r["Lot"]) == lot][0]
+        return {s_.strip() for s_ in row["Accessory car spaces"].split(",") if s_.strip()}
+    return None
+
+
+def candidate_spaces(a, D):
+    """The car spaces an application's written number can mean: before the March 2025 re-marking only the old
+    numbering existed; after it, a B2 or B3 number may be new or an owner's old one."""
     sp = a["Car space"].strip()
     if sp[:3] not in ("B2-", "B3-"):
-        return sp
-    lodged = datetime.strptime(a["Lodged"], "%d/%m/%Y")
-    if lodged < datetime(2025, 3, 15):
-        return D["remark"][sp]
-    u = parse_unit(a["Unit or owner address"])
-    if u is not None and "(for the OC)" not in a["Unit or owner address"] and space_unit.get(sp) != u \
-            and space_unit.get(D["remark"].get(sp)) == u:
-        return D["remark"][sp]
-    return sp
+        return [sp]
+    if datetime.strptime(a["Lodged"], "%d/%m/%Y") < datetime(2025, 3, 15):
+        return [D["remark"][sp]]
+    return [sp, D["remark"][sp]] if D["remark"][sp] != sp else [sp]
+
+
+def true_space(a, D, units):
+    """The car space an application means: the candidate that is one of the applicant's own spaces."""
+    cands = candidate_spaces(a, D)
+    own = applicant_spaces(a, D, units)
+    if own is None or len(cands) == 1:
+        return cands[0]
+    mine = [c for c in cands if c in own]
+    return mine[0] if len(mine) == 1 else cands[0]
 
 
 def ask_requests(D, units):
@@ -392,7 +435,7 @@ def ask_requests(D, units):
             space_unit[s_] = u
     reqs = {}
     for a in D["apps"]:
-        reqs.setdefault(true_space(a, D, space_unit), []).append(a)
+        reqs.setdefault(true_space(a, D, units), []).append(a)
     out = {r["riser"]: 0 for r in D["risers"]}
     for sp in reqs:
         if sp in space_unit:
@@ -400,14 +443,32 @@ def ask_requests(D, units):
     return out, reqs
 
 
+def excursion_record(e, D):
+    """A record is a time the meter recorded its supply outside the limits only if the meter's own hourly maxima
+    go above the upper limit in an hour the record covers (records outside the hourly export are kept)."""
+    s = datetime.strptime(e["start_utc"], "%Y-%m-%dT%H:%M:%SZ")
+    t = datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ")
+    h = s.replace(minute=0, second=0)
+    seen = False
+    while h < t:
+        v = D["pq_max"].get((e["meter_serial"], e["element"], h.strftime("%Y-%m-%dT%H:%M:%SZ")))
+        if v is not None:
+            seen = True
+            if v > 253.0:
+                return True
+        h += timedelta(hours=1)
+    return not seen
+
+
 def ask_voltage(D, units):
     """Each riser's share of its apartments' time in the week of 13 to 19 July (market time) outside the limits:
-    per apartment, the union of its meter's swell records over every element, clipped to the week."""
+    per apartment, the union of its meter's excursion records over every element, clipped to the week; a record
+    in hours when the meter's own hourly maxima stay inside the limits records no time outside them."""
     ser_unit = {x["serial"]: u for u, x in units.items()}
     iv = {}
     for e in D["events"]:
         u = ser_unit.get(e["meter_serial"])
-        if u is None:
+        if u is None or not excursion_record(e, D):
             continue
         s = datetime.strptime(e["start_utc"], "%Y-%m-%dT%H:%M:%SZ")
         t = datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ")

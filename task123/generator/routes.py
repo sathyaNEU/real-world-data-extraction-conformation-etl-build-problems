@@ -29,25 +29,68 @@ def a_dedup(D, units):
     return by_riser(D, units, per, 1 / 1000.0)
 
 
-def _register_use(D, x):
-    reads = {(r["meter_serial"], r["register"], r["read_local"][:10]): float(r["reading_kwh"]) for r in D["reads"]}
+def _day_reads(D):
+    """{(meter_serial, register, date): [(time, reading, read type)]}, in time order."""
+    out = {}
+    for r in D["reads"]:
+        out.setdefault((r["meter_serial"], r["register"], r["read_local"][:10]), []).append(
+            (r["read_local"][11:], float(r["reading_kwh"]), r["read_type"]))
+    for k in out:
+        out[k].sort()
+    return out
+
+
+def _pick(lst, how):
+    """One read of a day: 'careful' keeps the midnight read unless it is an estimate and an actual read of the
+    same day exists (an estimate dropped where its actual exists); 'given' keeps the midnight read as given."""
+    if how == "given":
+        return lst[0][1]
+    if lst[0][2] == "A":
+        return lst[0][1]
+    act = [v for t, v, q in lst if q == "A"]
+    return act[0] if act else lst[0][1]
+
+
+def _register_use(D, x, how="careful", regs=("E1", "E2")):
+    reads = _day_reads(D)
     ex = {e["nmi"]: e for e in D["exchanges"]}
     use = 0.0
-    for reg in ("E1", "E2"):
+    for reg in regs:
         if x["nmi"] in ex:
             e = ex[x["nmi"]]
             if (e["old_meter_serial"], reg, "2026-07-01") in reads:
-                use += float(e["old_final_%s_kwh" % reg]) - reads[(e["old_meter_serial"], reg, "2026-07-01")] + \
-                       reads[(e["new_meter_serial"], reg, "2026-08-01")] - float(e["new_initial_%s_kwh" % reg])
+                use += float(e["old_final_%s_kwh" % reg]) - _pick(reads[(e["old_meter_serial"], reg, "2026-07-01")], how) + \
+                       _pick(reads[(e["new_meter_serial"], reg, "2026-08-01")], how) - float(e["new_initial_%s_kwh" % reg])
         elif (x["serial"], reg, "2026-07-01") in reads:
-            use += reads[(x["serial"], reg, "2026-08-01")] - reads[(x["serial"], reg, "2026-07-01")]
+            use += _pick(reads[(x["serial"], reg, "2026-08-01")], how) - _pick(reads[(x["serial"], reg, "2026-07-01")], how)
     return use
 
 
 def a_cracker(D, units):
-    """The careful route under the filed definition: every register's movement over July from the read file,
-    through the exchange log where a meter was changed, each read taken as the file gives it."""
-    per = {u: _register_use(D, x) for u, x in units.items()}
+    """The careful route under the filed definition and the export's legend: every register's movement over July
+    from the read file, through the exchange log where a meter was changed, the estimated midnight 1 August read
+    replaced by the meter's actual read later that day."""
+    per = {u: _register_use(D, x, "careful") for u, x in units.items()}
+    return by_riser(D, units, per, 1 / 1000.0)
+
+
+def a_estimates_as_given(D, units):
+    """Every midnight read taken as the file gives it, estimates included."""
+    per = {u: _register_use(D, x, "given") for u, x in units.items()}
+    return by_riser(D, units, per, 1 / 1000.0)
+
+
+def a_general_only(D, units):
+    """The golden handling on the general supply register alone (the controlled load left out)."""
+    per = {}
+    for u, x in units.items():
+        reads = _day_reads(D)
+        k = (x["serial"], "E1", "2026-08-01")
+        if reads[k][0][2] == "E":
+            recs = D["nem12"][x["nmi"]]
+            per[u] = sum(r["vals"].sum() for d in recs for r in recs[d] if r["sfx"] == "E1")
+        else:
+            per[u] = _register_use(D, x, "given", regs=("E1",))
     return by_riser(D, units, per, 1 / 1000.0)
 
 
@@ -138,11 +181,24 @@ def c_sum_utc(D, units):
     return _share(D, units, secs)
 
 
+def _union(lst):
+    lst.sort()
+    tot, (cs, ce) = 0.0, lst[0]
+    for s, t in lst[1:]:
+        if s <= ce:
+            ce = max(ce, t)
+        else:
+            tot += (ce - cs).total_seconds()
+            cs, ce = s, t
+    return tot + (ce - cs).total_seconds()
+
+
 def c_cracker(D, units):
-    """The careful route: near-repeats (same meter and element, start within ten seconds) removed, every record
-    clipped to the market-time week, durations summed element by element."""
+    """The careful route under the filed sentences: near repeats (same meter and element, start within ten
+    seconds) removed, every record clipped to the market-time week, each apartment's records joined into spans
+    across its elements (a three-phase supply is outside while any phase is)."""
     seen = {}
-    secs = {}
+    iv = {}
     for u, e, s, t in sorted(_events(D, units), key=lambda z: (z[1]["meter_serial"], z[1]["element"], z[2])):
         key = (e["meter_serial"], e["element"])
         if key in seen and abs((s - seen[key]).total_seconds()) <= 10:
@@ -150,8 +206,34 @@ def c_cracker(D, units):
         seen[key] = s
         s2, t2 = max(s, WEEK_UTC[0]), min(t, WEEK_UTC[1])
         if t2 > s2:
+            iv.setdefault(u, []).append((s2, t2))
+    return _share(D, units, {u: _union(lst) for u, lst in iv.items()})
+
+
+def c_elements_summed(D, units):
+    """Records clipped to the market-time week and summed element by element (a three-phase supply's phases
+    counted one after another)."""
+    secs = {}
+    for u, e, s, t in _events(D, units):
+        s2, t2 = max(s, WEEK_UTC[0]), min(t, WEEK_UTC[1])
+        if t2 > s2:
             secs[u] = secs.get(u, 0.0) + (t2 - s2).total_seconds()
     return _share(D, units, secs)
+
+
+def c_shifted_back(D, units):
+    """Every record in hours when the meter's own hourly maxima stay inside the limits moved back ten hours
+    (the stored log's market-time clock read as UTC), then each apartment's records joined into spans."""
+    from analysis import excursion_record
+    from datetime import timedelta
+    iv = {}
+    for u, e, s, t in _events(D, units):
+        if not excursion_record(e, D):
+            s, t = s - timedelta(hours=10), t - timedelta(hours=10)
+        s2, t2 = max(s, WEEK_UTC[0]), min(t, WEEK_UTC[1])
+        if t2 > s2:
+            iv.setdefault(u, []).append((s2, t2))
+    return _share(D, units, {u: _union(lst) for u, lst in iv.items()})
 
 
 def c_union_utc(D, units):

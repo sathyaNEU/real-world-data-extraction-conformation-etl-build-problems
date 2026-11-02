@@ -1,4 +1,4 @@
-# task301: the Comunidad de Valdemora's 2027 child poverty measure
+# task301: the Comunidad de Valmesura's 2027 child poverty measure
 
 Architecture 3, drawn 2026-11-02 under the Batch 3 queue reset. The fiction's date is 6 November 2026; the
 Complemento register was pulled on 2 November 2026 and nothing in the pack is later than the as-of date.
@@ -14,9 +14,9 @@ Complemento register was pulled on 2 November 2026 and nothing in the pack is la
 - **Shape 14** (cuts of a distribution per segment): the call, the region and its three provinces; ask 1 is four
   quarter-end months by three provinces, ask 2 three survey cuts by three provinces. Criteria: call 1, region 1,
   provinces 3, ask 1 12, ask 2 9, the chart's named parts 3, the files 2: 31.
-- **World.** The Comunidad de Valdemora, a fictional Spanish autonomous community (provinces 81 Valdemora, 82 Las
+- **World.** The Comunidad de Valmesura, a fictional Spanish autonomous community (provinces 81 Valmesura, 82 Las
   Cuencas, 83 Sierra del Alba), its Consejería de Derechos Sociales y Familias and statistics institute (IEV). The
-  Complemento Familiar Valdemorense is a claimed child benefit that opened on 1 October 2022 with a limit of 7,200
+  Complemento Familiar Valmesurense is a claimed child benefit that opened on 1 October 2022 with a limit of 7,200
   of computable income per equivalent adult, raised to 8,400 from 1 April 2024. The 2027 proposals: A, an automatic
   payment through the regional tax agency to families who filed a 2025 return under 28,000 gross; B, a new claimed
   child payment below the poverty line; C, the Complemento's limit raised to 10,800; D, a claimed rent supplement;
@@ -88,7 +88,7 @@ Complemento register was pulled on 2 November 2026 and nothing in the pack is la
 6. Recommend the largest.
 
 Ends on: measure C (Complemento Familiar: higher limit), about 13,200 children
-Golden: measure A (Prestación Infancia Directa), 3,700 children (Valdemora 1,100, Las Cuencas 1,400, Sierra del Alba 1,200)
+Golden: measure A (Prestación Infancia Directa), 3,700 children (Valmesura 1,100, Las Cuencas 1,400, Sierra del Alba 1,200)
 
 ## Stump sentence
 
@@ -158,7 +158,7 @@ Measured on the cut pack (children brought above the line in 2027; A, E automati
   year 4,771; the full-year count at the coverage rate times 0.50 (6,620) or 0.75 (9,930).
 - Misspecified and landing A for the wrong reason: every initial claim since the launch as one curve normalised to
   every claim to date (C 1,985), which counts the widening's and later families' claims in the launch's base.
-- Graded: the call and A's figures only (region 3,695 printed 3,700, edge 45; Valdemora 1,094 printed 1,100, edge
+- Graded: the call and A's figures only (region 3,695 printed 3,700, edge 45; Valmesura 1,094 printed 1,100, edge
   44; Las Cuencas 1,424 printed 1,400, edge 26; Sierra del Alba 1,178 printed 1,200, edge 28). A is automatic, so no
   construction of the claimed measures moves them; the runner-up is not graded (B, C and D sit within 15 per cent of
   each other on R3).
@@ -195,7 +195,7 @@ Measured on the cut pack (children brought above the line in 2027; A, E automati
 Executing the prompt, the guidance, the proposals and the rules word for word, the population, the outcome (3.5), the
 window (calendar 2027), the unit, the income definitions and the payment clause are all filed; what families a
 claimed measure newly entitles receive during 2027 is left to the data, and every construction that estimates C's
-newly entitled families' claims from the April 2024 widening files measure A at 3,700 children (Valdemora 1,100, Las
+newly entitled families' claims from the April 2024 widening files measure A at 3,700 children (Valmesura 1,100, Las
 Cuencas 1,400, Sierra del Alba 1,200). A reading that credits a claimed measure with a full year breaks 3.5's
 "payments that the household receives during 2027"; a reading that takes the launch's pace or an even spread
 violates no sentence and files C, which is the stump, not a fork (the readings agree on every term).

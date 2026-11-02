@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, natural, building, notice, infill, beside, architecture, method, certificates, forecasting, dredged, quantity, depths, decisive, nothing, feasibility, permits, target, in-situ, surveys, sentence, rezoning, permit, housing, window
+Stump terms swept: record, natural, building, notice, infill, beside, architecture, method, certificates, forecasting, dredged, quantity, depths, decisive, nothing, feasibility, permits, target, in-situ, surveys, sentence, rezoning, permit, housing, asserted
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `deepening_2027_maintenance_planning_basis.docx`: carries 4 of 5 distinctive words of the committed call: 'Year 1 of the 2027-30 maintenance contract should be tendered at 1,750,000 m3 in situ.'

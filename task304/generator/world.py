@@ -79,9 +79,17 @@ class World:
                     "C%d" % int(rng.integers(101, 399)), MINOR_NAMES[int(rng.integers(0, len(MINOR_NAMES)))])
             minor = MINOR_NAMES[int(rng.integers(0, len(MINOR_NAMES)))]
             name = "%s / %s" % (road[1], minor)
-            while name in used:
+            tries = 0
+            while (name in used or minor == road[1]) and tries < 200:
                 minor = MINOR_NAMES[int(rng.integers(0, len(MINOR_NAMES)))]
                 name = "%s / %s" % (road[1], minor)
+                tries += 1
+            if name in used:
+                name = "%s (%s) / %s" % (road[1], road[0], minor)
+                k2 = 2
+                while name in used:
+                    name = "%s (%s) / %s %d" % (road[1], road[0], minor, k2)
+                    k2 += 1
             used.add(name)
             ctrl = {"RB": "RBT", "MR": "RBT", "SIG": "SIG"}.get(lay, "STOP" if rng.random() < 0.12 else "GW")
             growth = np.cumprod(np.r_[1.0, 1 + rng.normal(0.007, 0.010, len(P.YEARS) - 1)])
@@ -183,7 +191,10 @@ class World:
             rr = A_ROADS + B_ROADS
             road1 = rr[int(rng.integers(0, len(rr)))][0] if rng.random() < 0.7 else "U"
             road2 = ""
-            jd, jc = 0, 0
+            jd = int(rng.choice([0, 3, 6, 8, 9], p=[0.56, 0.24, 0.08, 0.07, 0.05]))
+            jc = 0 if jd == 0 else int(rng.choice([4, 3, 2], p=[0.86, 0.06, 0.08]))
+            if jd:
+                road2 = "U" if rng.random() < 0.7 else "C%d" % int(rng.integers(101, 399))
             speed = int(rng.choice([20, 30, 30, 30, 40, 50, 60, 60, 70]))
         vehicles = int(rng.choice([1, 2, 3, 4], p=[0.28, 0.5, 0.17, 0.05]))
         cas = 1 + int(rng.poisson(0.32))
@@ -207,10 +218,11 @@ class World:
             hour = int(rng.choice(np.arange(24), p=HOUR_P))
             minute = int(rng.integers(0, 60))
             rr = A_ROADS + B_ROADS
-            if rng.random() < 0.12:
+            if rng.random() < 0.09:
                 road = "A4600" if rng.random() < 0.7 else "A6510"
                 e = int(rng.integers(452000, 486000)) if road == "A4600" else int(rng.integers(441000, 470000))
             else:
+                rr = [r for r in rr if r[0] not in TRUNK]
                 road = rr[int(rng.integers(0, len(rr)))][0] if rng.random() < 0.72 else "U"
                 e = int(rng.integers(441000, 485000))
             nn = int(rng.integers(291000, 329000))

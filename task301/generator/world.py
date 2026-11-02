@@ -20,7 +20,7 @@ TAIL = ["", "", "", " de Arce", " del Campo", " de la Sierra", " de Abajo", " de
 def municipalities(rng):
     """Municipalities with INE-style codes, population shares within province and the fieldwork and benefits
     office that serves them. The last few municipalities of Sierra del Alba are served from Las Cuencas, and the
-    last few of Las Cuencas from Valdemora (the offices nearest by road)."""
+    last few of Las Cuencas from Valmesura (the offices nearest by road)."""
     out = []
     used = set()
     counts = {"81": 31, "82": 26, "83": 21}
@@ -37,7 +37,7 @@ def municipalities(rng):
                 code = "%s%03d" % (pc, int(code[2:]) + 1)
             used.add(code)
             if i == 0:
-                name = {"81": "Valdemora", "82": "Cuenca del Arlés", "83": "Albadía"}[pc]
+                name = {"81": "Valmesura", "82": "Cuenca del Arlés", "83": "Albadía"}[pc]
             else:
                 while True:
                     name = rng.choice(PREFIX) + rng.choice(SUFFIX) + rng.choice(TAIL)

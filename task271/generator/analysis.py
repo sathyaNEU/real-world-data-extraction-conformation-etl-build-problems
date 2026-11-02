@@ -126,6 +126,87 @@ def season_estimate(cts, area, apb, shares=None, combine="mean", interp=False, b
     return tot / area
 
 
+def presence_share(rows, t, how, sh=None):
+    """the share of a lake's interviewed angler-hours a count at clock time t stands for, read six ways: the hour bin
+    the count falls in, the bin of the nearest whole hour, interpolated between bin midpoints or bin starts, the hour
+    centred on the count, or the presence at the count's minute"""
+    if how in ("bin", "nearest", "interp_mid", "interp_start"):
+        sh = hour_shares(rows) if sh is None else sh
+        if how == "bin":
+            return float(sh[int(math.floor(t)) - int(K.DAY_OPEN)])
+        if how == "nearest":
+            i = min(max(int(math.floor(t + 0.5)) - int(K.DAY_OPEN), 0), len(HOURS) - 1)
+            return float(sh[i])
+        xs = np.array(HOURS) + (0.5 if how == "interp_mid" else 0.0)
+        return float(np.interp(t, xs, sh))
+    den = sum(r["size"] * (r["end"] - r["start"]) for r in rows)
+    if how == "centred":
+        lo, hi = t - 0.5, t + 0.5
+        return sum(r["size"] * max(0.0, min(r["end"], hi) - max(r["start"], lo)) for r in rows) / den
+    return sum(r["size"] for r in rows if r["start"] <= t < r["end"]) / den          # "minute"
+
+
+def expand(cts, area, apb, share_of, combine="mean"):
+    byday = {}
+    for c in cts:
+        byday.setdefault(c["date"], []).append((c["boats"] * apb + c["shore"], share_of(c)))
+    tot = 0.0
+    for key, days in strata_days().items():
+        vals = []
+        for d in days:
+            if d not in byday:
+                continue
+            if combine == "mean":
+                vals.append(float(np.mean([n / s for n, s in byday[d]])))
+            else:
+                vals.append(sum(n for n, s in byday[d]) / sum(s for n, s in byday[d]))
+        tot += len(days) * float(np.mean(vals))
+    return tot / area
+
+
+READINGS = ("bin", "nearest", "interp_mid", "interp_start", "centred", "minute")
+
+
+def presence_family(target):
+    """every reading of each count against the lake's (or its regulation class's) interviewed presence: six ways of
+    reading the count's hour, the lake's or the class's profile and anglers per boat, the mean of a survey day's count
+    estimates or the ratio of its sums, plus shares weighted by parties and shares taken by day type"""
+    reg = register(target)
+    cts = counts(target, reg)
+    iv = interviews(target, reg)
+    by = {c: [r for r in iv if r["lake"] == c] for c in reg}
+    cb = {c: [x for x in cts if x["lake"] == c] for c in reg}
+    crow = {}
+    for c in reg:
+        crow.setdefault(reg[c]["reg"], []).extend(by[c])
+    out = {}
+    for c in reg:
+        rows_own, rows_cls = by[c], crow[reg[c]["reg"]]
+        fam = {}
+        for prof, rows in (("lake", rows_own), ("class", rows_cls)):
+            sh = hour_shares(rows)
+            for apbn, apb in (("lake", anglers_per_boat(rows_own)), ("class", anglers_per_boat(rows_cls))):
+                for how in READINGS:
+                    cache = {}
+
+                    def share_of(x, rows=rows, how=how, sh=sh, cache=cache):
+                        k = round(x["t"], 6)
+                        if k not in cache:
+                            cache[k] = presence_share(rows, x["t"], how, sh)
+                        return cache[k]
+                    for comb in ("mean", "ratio"):
+                        fam[(prof, apbn, how, comb)] = expand(cb[c], reg[c]["area"], apb, share_of, comb)
+        apb = anglers_per_boat(rows_own)
+        shp = hour_shares(rows_own, weight="parties")
+        fam[("lake", "lake", "bin, parties", "mean")] = expand(cb[c], reg[c]["area"], apb,
+                                                               lambda x: float(shp[int(math.floor(x["t"])) - 5]))
+        shd = {k: hour_shares([r for r in rows_own if K.day_type(r["date"]) == k]) for k in ("weekday", "weekend")}
+        fam[("lake", "lake", "bin, day type", "mean")] = expand(
+            cb[c], reg[c]["area"], apb, lambda x: float(shd[K.day_type(x["date"])][int(math.floor(x["t"])) - 5]))
+        out[c] = fam
+    return out
+
+
 def main_call(target):
     reg = register(target)
     cts = counts(target, reg)
@@ -246,7 +327,7 @@ def releases(target, how="latest", raceways="golden", split="nets", doa=True):
         nets = sum(x["nets"] for x in recs)
         for x in recs:
             share = x["nets"] / nets if split == "nets" else 1.0 / len(recs)
-            fish[x["lakeCode"]] = fish.get(x["lakeCode"], 0.0) + t["load"] * share * f - (x["doa"] if doa else 0)
+            fish[x["lakeCode"]] = fish.get(x["lakeCode"], 0.0) + t["load"] * share * f - (x["doaFish"] if doa else 0)
     return fish
 
 

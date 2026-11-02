@@ -6,7 +6,7 @@ import io_util as IO
 import params as P
 
 DEPT = "Consejería de Derechos Sociales y Familias"
-IEV = "Instituto de Estadística de Valdemora"
+IEV = "Instituto de Estadística de Valmesura"
 
 
 def euro(x, nd=0):
@@ -65,7 +65,7 @@ def proposals(path, line, costs):
              "Families with children whose household gross income on their 2025 personal income tax returns was "
              "below %s" % euro(P.A_INCOME_LIMIT),
              "%s a month per child" % euro(P.A_RATE),
-             "Paid automatically from January 2027 by the Agencia Tributaria de Valdemora into the account on the "
+             "Paid automatically from January 2027 by the Agencia Tributaria de Valmesura into the account on the "
              "family's 2025 return; no application. Families who filed no 2025 return are not reached in 2027.",
              "%.1f" % costs["A"]],
             ["B. Ayuda a la Crianza",
@@ -126,14 +126,14 @@ def proposals(path, line, costs):
 
 def rules(path):
     blocks = [
-        ("title", "Complemento Familiar Valdemorense: rules"),
+        ("title", "Complemento Familiar Valmesurense: rules"),
         ("sub", "Consolidated text as in force on 1 October 2026 (Decree 118/2022, as amended). %s. English working "
                 "version." % DEPT),
         ("h", "1. Purpose"),
         ("p", "The Complemento Familiar supports families with children on low incomes who live in the Comunidad de "
-              "Valdemora."),
+              "Valmesura."),
         ("h", "2. Who is entitled"),
-        ("p", "2.1 A family is entitled when at least one child under 18 lives with it in the Comunidad de Valdemora "
+        ("p", "2.1 A family is entitled when at least one child under 18 lives with it in the Comunidad de Valmesura "
               "and its computable income per equivalent adult is below €8,400 a year."),
         ("p", "2.2 A family is the claimant, the claimant's spouse or partner and the children who live with them."),
         ("h", "3. Computable income"),
@@ -144,7 +144,7 @@ def rules(path):
         ("h", "4. Amount"),
         ("p", "€100 a month for each child under 18."),
         ("h", "5. Claims and decisions"),
-        ("p", "5.1 Families claim on the department's portal or at any of its provincial offices in Valdemora, "
+        ("p", "5.1 Families claim on the department's portal or at any of its provincial offices in Valmesura, "
               "Cuenca del Arlés and Albadía."),
         ("p", "5.2 A provincial office decides each claim. A refusal may be appealed within one month of the "
               "decision."),
@@ -168,7 +168,7 @@ def rules(path):
               "equivalent adult and €90 a month per child. Order SOC/41/2024 raised the limit to €8,400 from 1 April "
               "2024. The amount rose to €95 from 1 January 2024 and to €100 from 1 July 2025."),
     ]
-    IO.write_pdf(path, "Complemento Familiar Valdemorense: rules", DEPT, "Secretaría General Técnica", blocks,
+    IO.write_pdf(path, "Complemento Familiar Valmesurense: rules", DEPT, "Secretaría General Técnica", blocks,
                  "%s - Complemento Familiar, consolidated rules" % DEPT, "D:20261001090000+02'00'",
                  "D:20261001090000+02'00'")
 
@@ -200,13 +200,13 @@ def coverage(path, take_up, shares_by_kids):
 
 
 def results(path, med25, thr25, rates):
-    """rates: dict of (province name or 'Comunidad de Valdemora') -> (all, children, 18-64, 65+) in per cent."""
+    """rates: dict of (province name or 'Comunidad de Valmesura') -> (all, children, 18-64, 65+) in per cent."""
     rows = [["", "All persons", "Children under 18", "Aged 18 to 64", "Aged 65 and over"]]
-    for k in ["Comunidad de Valdemora"] + [n for _, n in P.PROVINCES]:
+    for k in ["Comunidad de Valmesura"] + [n for _, n in P.PROVINCES]:
         r = rates[k]
         rows.append([k] + ["%.1f" % x for x in r])
     blocks = [
-        ("title", "Encuesta de Condiciones de Vida de Valdemora 2026: main results"),
+        ("title", "Encuesta de Condiciones de Vida de Valmesura 2026: main results"),
         ("sub", "%s. Published 24 September 2026. English summary. This summary reports incomes and poverty in "
                 "2025; it does not appraise policy measures." % IEV),
         ("h", "Incomes in 2025"),
@@ -226,5 +226,5 @@ def results(path, med25, thr25, rates):
         ("p", "Results are weighted to the region's population. Incomes are disposable incomes after tax and social "
               "contributions, including benefits, equivalised on the modified OECD scale."),
     ]
-    IO.write_pdf(path, "ECVV 2026: main results", IEV, "Instituto de Estadística de Valdemora", blocks,
+    IO.write_pdf(path, "ECVV 2026: main results", IEV, "Instituto de Estadística de Valmesura", blocks,
                  "%s - ECVV 2026 main results" % IEV, "D:20260924100000+02'00'", "D:20260924100000+02'00'")

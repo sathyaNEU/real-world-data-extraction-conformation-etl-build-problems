@@ -3,8 +3,8 @@
  "status": "BUILD",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 3,
- "stage_name": "build complete; stage 4 (leak reader and determinism judge) next",
+ "stage": 4,
+ "stage_name": "check: leak reader clean; its realism finding fixed in the generator; determinism judge next",
  "updated": "2026-11-02",
  "stump": "The field's QA measure, each region's share of back-checked prices agreeing with the Field Quality Team's re-collection, files ten regions wrong (seven compliant regions under corrective action, three corrective regions on credits, $7,049); the officers re-collected the far regions' prices four to six days after the visits, and only netting each back-check's chance of a genuine price change over its own delay (the visit log's dates through the outlet register against each item class's monthly change frequency in the price database) gives corrective action for Halbrook North, Tamsin Bay, Fenwick and Westholm, a credit for Belmont Valley ($1,775) and nine compliant regions.",
  "architecture": 3,
@@ -14,8 +14,8 @@
   "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-02 on target.zip 62987245, --asof 2026-10-16: no LEAK, four REVIEW lines ruled harmless in the note (the standard's and Schedule 4's own nouns, the outlet register's region names, the 2026 calendar's later dates); the visit log's device column renamed handheld_id",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-02 on target.zip edd35bde, --asof 2026-10-16: no LEAK, four REVIEW lines ruled harmless in the note (the standard's and Schedule 4's own nouns, the outlet register's region names, the 2026 calendar's later dates)",
+  "reader": "clean on target.zip 62987245 on every question (question 6 an analytical choice, no decoy); one realism finding (independent outlets' names disagreeing with their kind, the register sorted by code within region) fixed in the generator: names drawn from each kind on their own stream, register in outlet-code order, Z11 to Z13 asserted; only the register and the schedule changed, figures.json, the write-up and the goldens byte-identical"
  },
  "duplicate_check": {
   "heart": "PASS 2026-11-02 (NOTE test.same_puzzle_older vs task270 v9 lineage, differentiated on the card)",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4 in the main session: spawn the leak reader and the determinism judge together (medium); fix every finding in the generator in one pass, rebuild, re-run every gate, then ship",
+ "resume": "stage 4 in the main session: run the determinism judge on target.zip edd35bde; fix every finding in the generator in one pass, rebuild, re-run every gate, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -50,8 +50,8 @@
  ],
  "gates": {
   "date": "2026-11-02",
-  "target_zip_sha256": "62987245e5c62c8c",
-  "generator_checks": "73 assertions, 0 failed",
+  "target_zip_sha256": "edd35bded4374eb6",
+  "generator_checks": "77 assertions, 0 failed",
   "verify": "0 failed",
   "byte_identical": "two builds byte-identical over 17 files",
   "figures_check": "50 figures in blocks 1 to 4, 0 absent",

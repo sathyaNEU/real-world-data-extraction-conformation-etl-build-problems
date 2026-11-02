@@ -1,5 +1,5 @@
 """Fixed parameters of the task301 world (architecture 3): a fictional Spanish autonomous community, the
-Comunidad de Valdemora, choosing which child poverty measure its 2027 budget funds."""
+Comunidad de Valmesura, choosing which child poverty measure its 2027 budget funds."""
 import datetime as dt
 
 TASK = "task301"
@@ -16,7 +16,7 @@ CHILD_BORN_FROM = 2009                # children: born 2009 or later
 AGE_BASE_YEAR = 2026                  # a member's age on 1 January 2027 is 2026 less the birth year
 
 # provinces (codes outside the real INE range)
-PROVINCES = [("81", "Valdemora"), ("82", "Las Cuencas"), ("83", "Sierra del Alba")]
+PROVINCES = [("81", "Valmesura"), ("82", "Las Cuencas"), ("83", "Sierra del Alba")]
 PROV_SHARE = [0.46, 0.33, 0.21]
 
 # the Complemento Familiar (existing claimed benefit)

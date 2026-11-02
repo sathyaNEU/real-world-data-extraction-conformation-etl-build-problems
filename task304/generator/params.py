@@ -41,7 +41,7 @@ CANDIDATES = [
 ]
 
 # Collisions away from junctions and at junction types the record keeps, per year (validated record)
-LINK_COLLISIONS = 1980                    # non-junction injury collisions a year, about
+LINK_COLLISIONS = 2400                    # non-junction injury collisions a year, about
 SEVERITY_SHARE = (0.016, 0.205, 0.779)    # fatal, serious, slight
 
 # 2026 provisional data (the annex asks)

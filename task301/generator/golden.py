@@ -7,7 +7,7 @@ import io_util as IO
 
 MEASURES = [("A", "Prestación Infancia Directa"), ("B", "Ayuda a la Crianza"), ("C", "Complemento Familiar: higher limit"),
             ("D", "Suplemento de Alquiler con Hijos"), ("E", "Complemento Familiar: higher amount")]
-PROVS = [("81", "Valdemora"), ("82", "Las Cuencas"), ("83", "Sierra del Alba")]
+PROVS = [("81", "Valmesura"), ("82", "Las Cuencas"), ("83", "Sierra del Alba")]
 MONTHS = [((2025, 3), "March 2025"), ((2025, 6), "June 2025"), ((2025, 9), "September 2025"),
           ((2025, 12), "December 2025")]
 RIVAL_BOUND = 3000
@@ -79,7 +79,7 @@ def write_workbook(F, path):
         c = ws.cell(row=r, column=2, value=F["A_prov_r"][pc])
         c.number_format = "#,##0"
         r += 1
-    ws.cell(row=r, column=1, value="Comunidad de Valdemora").font = bold
+    ws.cell(row=r, column=1, value="Comunidad de Valmesura").font = bold
     c = ws.cell(row=r, column=2, value=F["A_r"])
     c.number_format = "#,##0"
     c.font = bold
@@ -99,7 +99,7 @@ def write_workbook(F, path):
             c = ws.cell(row=r, column=j, value=F["families"][ym].get(pc, 0))
             c.number_format = "#,##0"
         r += 1
-    ws.cell(row=r, column=1, value="Comunidad de Valdemora").font = bold
+    ws.cell(row=r, column=1, value="Comunidad de Valmesura").font = bold
     for j, (ym, _) in enumerate(MONTHS, start=2):
         c = ws.cell(row=r, column=j, value=F["families_region"][ym])
         c.number_format = "#,##0"
@@ -123,7 +123,7 @@ def write_workbook(F, path):
         ws.cell(row=r, column=4, value=rate).number_format = "0.0"
         r += 1
     el, co, rate = F["fieldwork_region"]
-    ws.cell(row=r, column=1, value="Comunidad de Valdemora").font = bold
+    ws.cell(row=r, column=1, value="Comunidad de Valmesura").font = bold
     for j, v, f in ((2, el, "#,##0"), (3, co, "#,##0"), (4, rate, "0.0")):
         c = ws.cell(row=r, column=j, value=v)
         c.number_format = f
@@ -212,7 +212,7 @@ def write_note(F, path, png):
         ("h", "Recommendation"),
         ("p", "Fund measure A, the Prestación Infancia Directa. Paid by the regional tax agency from January 2027 to "
               "families who filed a 2025 return with gross income under €%s, it brings %s children above the "
-              "poverty line in 2027: %s in Valdemora, %s in Las Cuencas and %s in Sierra del Alba."
+              "poverty line in 2027: %s in Valmesura, %s in Las Cuencas and %s in Sierra del Alba."
               % (fmt(F["A_limit"]), fmt(F["A_r"]), fmt(p["81"]), fmt(p["82"]), fmt(p["83"]))),
         ("img", (png, 170 * mm, 84 * mm)),
         ("small", "Children whose household is below the line of €%s a year per equivalent adult without the "

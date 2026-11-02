@@ -182,9 +182,9 @@ def write_flight_log(path, X):
             if f["aborted"]:
                 rem = "Fog over plateau, RTB"
             elif len(f["blocks"]) > 1 and leg == 1:
-                rem = "Smoke, shut down at Pillory L. dock to wait"
+                rem = "Smoke over east lakes, shut down at Pillory L. dock to wait"
             elif len(f["blocks"]) > 1 and leg == 2:
-                rem = "Resumed count loop"
+                rem = "Smoke not lifting, back to base"
             ws.append([f["flight"], off.date().isoformat(), f["reg"], leg, off.strftime("%H:%M"), to.strftime("%H:%M"),
                        ld.strftime("%H:%M"), on.strftime("%H:%M"), pilots[f["reg"]][int(g.integers(0, len(pilots[f["reg"]])))],
                        "PPFS-" + f["loop"], rem])
@@ -228,7 +228,7 @@ def write_drop_tallies(path, X):
     for t in X["hatchery"]:
         for dr in t["drops"]:
             hh = 9.5 + g.uniform(0, 5.5)
-            out.append({"tripId": t["trip"], "lakeCode": dr["lake"], "nets": dr["nets"], "doa": dr["doa"],
+            out.append({"tripId": t["trip"], "lakeCode": dr["lake"], "nets": dr["nets"], "doaFish": dr["doa"],
                         "releasedAt": "%sT%s:00-07:00" % (t["date"].isoformat(), K.hm(hh)),
                         "waterTempC": round(float(g.normal(14 if t["date"].month < 7 else 18.5, 1.6)), 1),
                         "crew": "QC drop crew"})

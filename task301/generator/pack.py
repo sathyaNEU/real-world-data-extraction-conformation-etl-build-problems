@@ -265,7 +265,7 @@ def write_municipal(W, rng, target):
                   [("2024", ["Municipality code", "Municipality", "Population 1 Jan 2024", "At-risk-of-poverty rate (%)",
                              "Coefficient of variation (%)", "95% interval, lower", "95% interval, upper"], rows,
                     ["Small-area estimates of the at-risk-of-poverty rate, 2024 (experimental statistics)",
-                     "Instituto de Estadística de Valdemora. Model-based estimates; not comparable with survey "
+                     "Instituto de Estadística de Valmesura. Model-based estimates; not comparable with survey "
                      "direct estimates.", ""])],
                   ("IEV", "IEV", "2025-12-10T09:00:00Z", "2025-12-10T09:00:00Z",
                    "Municipal poverty estimates 2024", docs.IEV))
@@ -318,7 +318,7 @@ def results_figures(W):
     line_med = W["median25"]
     thr = 0.6 * line_med
     rates = {}
-    groups = [("Comunidad de Valdemora", None)] + [(n, p) for p, n in P.PROVINCES]
+    groups = [("Comunidad de Valmesura", None)] + [(n, p) for p, n in P.PROVINCES]
     for name, pc in groups:
         acc = {"all": [0.0, 0.0], "c": [0.0, 0.0], "w": [0.0, 0.0], "o": [0.0, 0.0]}
         for h in W["hh"]:

@@ -196,7 +196,7 @@ def main(target):
         ds = [x for x in drops if x["tripId"] == tid]
         nets = sum(x["nets"] for x in ds)
         for x in ds:
-            fish[x["lakeCode"]] = fish.get(x["lakeCode"], 0.0) + t["load"] * x["nets"] / nets * fpk - x["doa"]
+            fish[x["lakeCode"]] = fish.get(x["lakeCode"], 0.0) + t["load"] * x["nets"] / nets * fpk - x["doaFish"]
     rel = {reg[c]["name"]: int(math.floor(v / 100 + 0.5) * 100) for c, v in fish.items()}
     ok("JSON drop tallies + XLSX trip sheets: releases recomputed match figures.json", rel == fig["releases_alive"])
 

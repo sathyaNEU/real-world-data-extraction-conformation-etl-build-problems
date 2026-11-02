@@ -22,7 +22,7 @@ FILES = {
     "coverage": "complemento_familiar_coverage_2025.pdf",
     "results": "ecvv2026_main_results.pdf",
 }
-PROV_NAMES = {"81": "Valdemora", "82": "Las Cuencas", "83": "Sierra del Alba"}
+PROV_NAMES = {"81": "Valmesura", "82": "Las Cuencas", "83": "Sierra del Alba"}
 _CACHE = {}
 
 

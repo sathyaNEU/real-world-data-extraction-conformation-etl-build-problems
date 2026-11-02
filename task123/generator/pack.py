@@ -174,30 +174,32 @@ def events(W):
 
 
 def resent(W, evs):
-    """Concentrators that dropped for a day or two in the week of 13 July re-sent their meters' stored event logs
-    when they came back; the meters' clocks had drifted while they were offline, so each re-sent record's times
-    differ from the original's by up to a couple of minutes, and the head-end filed them as new events."""
+    """The head-end's firmware push rebooted some concentrators early in the morning; each re-sent its meters'
+    stored event logs from its last good upload around midnight.  The stored log keeps the meter's own clock,
+    which runs on market time, and the head-end filed those times as UTC, so each re-sent record sits ten hours
+    after the excursion it repeats, opened a little later and closed a little earlier on the stored log's
+    one-second debounce, with the stored log's one-minute extreme; the head-end filed them as new events.
+    The re-sent records fall in daylight hours when the meters' own hourly maxima are inside the limits."""
     rng = np.random.default_rng(Wd.SEED + 131)
     apts = W["apts"]
-    zones = [("A", 18, 21, datetime(2026, 7, 14, 10, 0), datetime(2026, 7, 16, 18, 0)),
-             ("C", 6, 9, datetime(2026, 7, 14, 10, 0), datetime(2026, 7, 16, 18, 0)),
-             ("A", 6, 9, datetime(2026, 7, 16, 12, 0), datetime(2026, 7, 18, 9, 0)),
-             ("B", 14, 17, datetime(2026, 7, 12, 20, 0), datetime(2026, 7, 14, 6, 0)),
-             ("C", 14, 17, datetime(2026, 7, 17, 15, 0), datetime(2026, 7, 19, 8, 0)),
-             ("B", 2, 5, datetime(2026, 7, 18, 12, 0), datetime(2026, 7, 19, 13, 0))]
+    # concentrator (tower, first floor, last floor) and the market-time date of the morning it rebooted
+    zones = [("A", 2, 3, 15), ("A", 8, 9, 16), ("A", 12, 13, 19), ("A", 14, 15, 15), ("A", 20, 21, 16), ("A", 22, 23, 19),
+             ("B", 4, 5, 16), ("B", 6, 7, 19), ("B", 10, 11, 15), ("B", 16, 17, 16), ("B", 18, 19, 19),
+             ("C", 2, 3, 19), ("C", 6, 7, 15), ("C", 10, 11, 16), ("C", 16, 17, 19), ("C", 24, 25, 15)]
     extra = []
     for e in evs:
         a = apts[e["i"]]
-        for tw, f0, f1, lo, hi in zones:
-            if a["tower"] == tw and f0 <= a["floor"] <= f1 and lo <= e["start"] <= hi:
-                drift = int(rng.integers(25, 130)) * (1 if rng.random() < 0.7 else -1)
+        for tw, f0, f1, day in zones:
+            lo = datetime(2026, 7, day - 1, 14, 0) - timedelta(minutes=25)       # last good upload, 23:35 market time
+            hi = datetime(2026, 7, day - 1, 22, 0)                              # reboot, 08:00 market time
+            if a["tower"] == tw and f0 <= a["floor"] <= f1 and lo <= e["start"] < hi:
                 c = dict(e)
-                c["start"] = e["start"] + timedelta(seconds=drift)
-                c["end"] = e["end"] + timedelta(seconds=drift + int(rng.integers(-3, 4)))
-                if c["end"] <= c["start"]:
-                    c["end"] = c["start"] + timedelta(seconds=30)
+                c["start"] = e["start"] + timedelta(hours=10, seconds=int(rng.integers(4, 40)))
+                c["end"] = e["end"] + timedelta(hours=10) - timedelta(seconds=int(rng.integers(4, 40)))
+                c["vpk"] = e["vpk"] - float(rng.uniform(0.4, 1.6))
                 c["resent"] = True
-                extra.append(c)
+                if (c["end"] - c["start"]).total_seconds() >= 60:
+                    extra.append(c)
                 break
     return extra
 

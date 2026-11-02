@@ -557,13 +557,17 @@ def charter(fl):
         if f["aborted"]:
             blocks = [(dep - 0.18, dep + 0.27)]
         else:
-            last = max(t for t, c in f["lakes"].values())
             off = dep - 0.16 + g.normal(0, 0.02)
-            on = last + 0.38 + g.normal(0, 0.04)
             if d in SMOKE_DAYS and f["loop"] == "PM":
-                mid = off + (on - off) * 0.48
-                blocks = [(off, mid), (mid + 0.62 + g.normal(0, 0.05), on + 0.62)]
+                # smoke hid the east lakes: after the last lake it could count the aircraft put down at the Pillory
+                # Lake dock to wait, and when the smoke did not lift it flew back to the float base
+                last = max(t for t, c in f["lakes"].values() if c)
+                on1 = last + 0.30 + g.normal(0, 0.03)
+                off2 = on1 + 0.55 + g.normal(0, 0.05)
+                blocks = [(off, on1), (off2, off2 + 0.42 + g.normal(0, 0.03))]
             else:
+                last = max(t for t, c in f["lakes"].values())
+                on = last + 0.38 + g.normal(0, 0.04)
                 blocks = [(off, on)]
         reg = "C-GVAK" if dt.date(2026, 7, 6) <= d <= dt.date(2026, 7, 24) else "C-FVAB"
         out.append({"flight": "VA%d" % fno, "date": d, "loop": f["loop"], "reg": reg, "blocks": blocks,

@@ -5,12 +5,12 @@
 
 ## 1. Final Recommendation
 
-**Fund measure A, the Prestación Infancia Directa: it brings 3,700 children above the poverty line in 2027 (Valdemora 1,100, Las Cuencas 1,400, Sierra del Alba 1,200).**
+**Fund measure A, the Prestación Infancia Directa: it brings 3,700 children above the poverty line in 2027 (Valmesura 1,100, Las Cuencas 1,400, Sierra del Alba 1,200).**
 Not C, the Complemento's higher limit, which leads only if its newly entitled families were paid all year; not B or D, new payments families must claim; not E, which tops up families mostly far below the line.
 
 ## 2. Critical Components
 
-1. Measure A brings **3,700** children above the line in 2027: Valdemora **1,100**, Las Cuencas **1,400**, Sierra del Alba **1,200**.
+1. Measure A brings **3,700** children above the line in 2027: Valmesura **1,100**, Las Cuencas **1,400**, Sierra del Alba **1,200**.
 2. Measure C would bring **18,400** children above the line if every family it covers were paid all of 2027, but its payments received in 2027 bring fewer than **3,000**.
 3. Measures B and D also stay under **3,000** in 2027, and E brings **300**.
 
@@ -28,17 +28,17 @@ Not C, the Complemento's higher limit, which leads only if its newly entitled fa
 
 ### cabinet_note_child_poverty_2027.pdf
 
-1. Recommends measure A, the Prestación Infancia Directa: 3,700 children above the poverty line in 2027, Valdemora 1,100, Las Cuencas 1,400, Sierra del Alba 1,200.
+1. Recommends measure A, the Prestación Infancia Directa: 3,700 children above the poverty line in 2027, Valmesura 1,100, Las Cuencas 1,400, Sierra del Alba 1,200.
 2. Bar chart on page 1 comparing the measures' children above the line with a full year of payments and with the payments received in 2027, A highest in 2027.
 
 ### appraisal_annex_2027.xlsx
 
 1. Families the Complemento Familiar was paying, as its decisions stood at 31 December 2025, by the province each family lived in that month (families):
-   - March 2025: Valdemora 5,622; Las Cuencas 5,055; Sierra del Alba 3,797
-   - June 2025: Valdemora 6,031; Las Cuencas 5,412; Sierra del Alba 4,123
-   - September 2025: Valdemora 6,363; Las Cuencas 5,683; Sierra del Alba 4,381
-   - December 2025: Valdemora 6,668; Las Cuencas 5,939; Sierra del Alba 4,583
+   - March 2025: Valmesura 5,622; Las Cuencas 5,055; Sierra del Alba 3,797
+   - June 2025: Valmesura 6,031; Las Cuencas 5,412; Sierra del Alba 4,123
+   - September 2025: Valmesura 6,363; Las Cuencas 5,683; Sierra del Alba 4,381
+   - December 2025: Valmesura 6,668; Las Cuencas 5,939; Sierra del Alba 4,583
 2. ECVV 2026 eligible sample dwellings, complete interviews and response rate (per cent) by province:
-   - Valdemora: 7,132; 5,172; 72.5
+   - Valmesura: 7,132; 5,172; 72.5
    - Las Cuencas: 5,317; 3,961; 74.5
    - Sierra del Alba: 3,672; 2,834; 77.2
