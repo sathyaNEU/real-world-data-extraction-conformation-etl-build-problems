@@ -233,7 +233,7 @@ by about a quarter.
 | SF13 | the berth pockets | together, Berths 1, 3 and 5 | separately | the basis ("for the berth pockets together") |
 | SF14 | rounding | parts to 20,000, the total to 50,000 | none | the prompt; every standing member inside every bin (asserted) |
 | SF15 | the disposal site of a load | where it was placed, by its dump position in the licence's site corners | the log's route column | the licence 5.3 ("the quantity placed at each disposal site") |
-| SF16 | the quarter | the local date of placement | UTC | the licence 5.3 |
+| SF16 | the quarter | the date of placement in UK civil time | UTC | the licence 5.3, which names the clock (GMT, or BST while in force), and 5.4 (the month taken the same way) |
 | SF17 | wet tonnes | dry solids over the area's fraction from the latest campaign completed before the month | the 2026 fraction throughout | the licence 5.4 |
 | SF18 | the hired dredger's dry solids | the licence's formula from hopper volume and mixture density | its loads left out | the licence 5.4 |
 | SF19 | the revised dry solids | the revision replaces the logged value | the logged value | the revision's own column, dry_solids_t_revised; the licence 5.4 ("dry solids placed") |
@@ -241,6 +241,8 @@ by about a quarter.
 | SF21 | a field duplicate | averaged with its primary before the means | dropped, or counted as a sample | the licence 5.5 |
 | SF22 | mercury units | micrograms per kilogram converted | read as mg/kg | the lab's units column |
 | SF23 | the asks' rounding | placements to the nearest 1,000 t, means to two decimals in mg/kg dry weight | none | the prompt; every ask figure clear of its rounding edge (asserted) |
+| SF24 | a survey cell's part | the centreline segment nearest the cell, its chainage within the part's range and its offset square to that segment | the rectangle square to each part's own segment, or the nearest segment with the distance to it as the offset: natural beds within 0.03 m, totals 1,749,482 to 1,750,626, same call and parts | asserted; component 1 stated to 0.1 m (Fend Roads 8.2 to 8.3) and the rule named in step 3 |
+| SF25 | the dry-solids fraction for April to September 2026 | the area summary's 2026 value, the licence 5.5 mean of the laboratory's values printed to three decimals | the 5.5 mean recomputed at full precision: every placement total in the same bin, the largest gap 29 t against edges of 415 t or more | asserted per cell; no area mean within 0.0001 of a rounding midpoint |
 
 ## Ladder
 
@@ -299,8 +301,10 @@ sentence names a method, and every licensed reading of the conventions (SF5 to S
 components, the tightest component 3,499 m3 inside its bin and the total 6,367 inside its edge. One construction is not a
 reading: a band that starts at the channel edge and stops at 100 or 200 m keeps the batter, the cut's own slope, which the
 surveys show 1.6 to 5.0 m deeper than the bed beyond over the first 20 m outside each width, and files 1,800,000 (both
-asserted as a mishandling); the natural bed is the bed the dredging has not cut. The ask readings are closed by the
-licence (SF15 to SF21) and the lab's units (SF22).
+asserted as a mishandling); the natural bed is the bed the dredging has not cut. A cell's part is read four ways (SF24),
+all within 0.03 m and the same call, so component 1 is stated to 0.1 m and step 3 names the golden's rule. The ask
+readings are closed by the licence (SF15 to SF21, the clock named in 5.3), the lab's units (SF22) and the area summary's
+agreement with its 5.5 recomputation (SF25).
 
 ## Oracles
 
@@ -321,8 +325,11 @@ licence (SF15 to SF21) and the lab's units (SF22).
   position in the licence's site corners, a reconstruction across two files. Second device A2 (D2 with a D7 key): the
   Fend Endeavour's dry solids for 7 January to 27 March 2026 were revised in a file keyed by the dredge master's trip
   references (vessel, local date, trip of the day), which the log never carries; it moves the two January to March
-  figures. Hazards: dumps in the last UTC hour of 30 September 2025, 31 March and 30 June 2026 (local dates the next
-  day), the hired dredger's dry solids from the licence formula, and the campaign rule for the dry-solids fraction.
+  figures. Hazards: dumps in the last UTC hour of 30 September 2025, 31 March and 30 June 2026 (UK civil dates the next
+  day, the clock named in licence 5.3), the hired dredger's dry solids from the licence formula, and the campaign rule
+  for the dry-solids fraction (the 2026 area summary is the licence 5.5 mean printed to three decimals; every total keeps
+  its bin under the full-precision recomputation, SF25). The campaigns' dry-solids levels, not any load, are the free
+  parameter that holds each total 415 t or more inside its bin.
   Pin test: the asking sentence carries the measure, the sites, the quarter and the licence year; the licence carries
   the basis; the devices sit in which loads reached which site and which key carries the revision.
 - Ask B, each reach's and the basin's mean cadmium, mercury, lead and copper in the 2026 samples (20 figures, mg/kg dry
@@ -360,6 +367,8 @@ renamed to the licensing authority's own reference form, marine_licence_L2021-00
   today's widths and depths, and each area's dry-solids fraction by campaign; none ranks the parts on the year 1
   quantity, and the certificates are the raw record the field's method reads (R1); harmless.
 - The present depth 12.3 m and the conversion 2.90 m are filed inputs the notice states, listed under stated_inputs.
+- Stage 4 round 1 changed two shipped documents (licence 5.3 and 5.4 name UK civil time; the sampling workbook's 2026
+  area summary is now the 5.5 mean), so the isolated reader reads the pack again.
 
 ## Architecture 3 record
 
@@ -834,3 +843,4 @@ The stage 4 judge returned DETERMINISTIC and APPROVE, with every figure reproduc
 - Architecture 4 build, the quarter-boundary clock hazard measured nil on the first cut (no dump fell in the last UTC hour of a quarter end); loads working through midnight at the quarter ends were added, as a round-the-clock dredger works.
 - Architecture 4 build, three relocated stations left the Outer Channel's four means to the cracker; a fourth (OC-05 into Fend Roads) and a field-duplicate spread of 8 per cent took the cracker from 6 to 4 of 20.
 - Architecture 4 build, the first infill coefficients put Fend Roads, Middle Reach and the basin within 3,000 m3 of their bin edges under the slope-band and least-squares variants; the coefficients were moved to 0.1095 to 0.1183 so every standing member sits inside every bin.
+- Architecture 4, stage 4 round 1: placement totals held off their edges by re-reading one load's dry solids (240 to 490 t clear) and a 2026 area summary that counted the QA duplicates as samples rather than averaging them with their primaries (licence 5.5): the judge's 5.5 recomputation moved all four April to September cells by 1,000 t; replaced by the 5.5 summary and the campaigns' dry-solids levels as the tuned parameter, no load re-read.

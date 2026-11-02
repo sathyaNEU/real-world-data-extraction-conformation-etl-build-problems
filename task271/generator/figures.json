@@ -142,6 +142,7 @@
   "day_close": "22:00",
   "day_open": "05:00",
   "line_c": 20,
+  "logger_depth_m": 1,
   "release_rounding": 100,
   "threshold": 500
  },
@@ -266,6 +267,10 @@
   "Tessaly Lake": "high use",
   "Thornhollow Lake": "standard"
  },
+ "utc_loggers": [
+  "20184409",
+  "20184421"
+ ],
  "warm_days": {
   "Brackwater Lake": 57,
   "Corriemore Lake": 19,

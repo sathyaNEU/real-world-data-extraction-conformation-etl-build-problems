@@ -43,6 +43,12 @@ def compute(target):
     stocked = sorted(c for c, v in reg.items() if v["access"] != "walk-in")
     rel = A.releases(target)
     warm, _ = A.warm_days(target)
+    import csv as _csv
+    raw = {}
+    for r in _csv.DictReader(open(os.path.join(target, "lake_temperature_loggers_2026.csv"))):
+        raw.setdefault(r["Logger SN"], []).append((A.dt.datetime.strptime(r["Date Time"], "%Y-%m-%d %H:%M"),
+                                                   float(r["Temp (C)"])))
+    utc = sorted(s for s, o in A.logger_clock_offsets(raw).items() if o == -7)
     name = {c: reg[c]["name"] for c in reg}
     lakes = M["lakes"]
     high = [c for c in stocked if lakes[c]["golden"] >= K.THRESHOLD]
@@ -68,7 +74,8 @@ def compute(target):
         "releases_alive": {name[c]: r100(rel[c]) for c in sorted(rel)},
         "warm_days": {name[c]: warm[c] for c in sorted(warm)},
         "constants": {"threshold": K.THRESHOLD, "day_open": "05:00", "day_close": "22:00", "angling_day_hours": 17,
-                      "line_c": 20, "release_rounding": 100},
+                      "line_c": 20, "release_rounding": 100, "logger_depth_m": 1},
+        "utc_loggers": utc,
     }
     return M, f
 

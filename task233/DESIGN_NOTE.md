@@ -63,7 +63,7 @@ clear two first-name WARNs. The honest labels: the call is a scorecard of one me
 - Reflex: the field's QA measure for collection accuracy, the share of back-checked prices that agree with the re-collection, sits at rung 0 and files ten regions wrong (seven compliant regions under corrective action, three corrective regions on credits, a $7,049 credit).
 - Back-test: the textbook route validates: in the three Halbrook regions the officers re-collect within a day (mean delay 0.6 to 1.1 days), so agreement and accuracy agree there; each region's agreement is steady across the three months; and nothing in the pack reports an accuracy that could contradict it.
 - Second use: every file the decisive step reads has its own job: the visit log carries the timeliness ask, the price database the index and the replacement ask, the register the crosswalk and the outlet types, the back-check register the accuracy measure itself; delete the decisive step and every file stays in the pack.
-- Shock: the movement reads as ordinary: the far regions' collectors look about one and a half points less accurate than the capital's, a familiar rural pattern; sorted on agreement, delay, back-check count or region size the flagged set is not an interval (on agreement Harlow Plains, compliant, sits between the four lowest and Halbrook North, asserted C13).
+- Shock: the movement reads as ordinary: the far regions' collectors look about one and a half points less accurate than the capital's, a familiar rural pattern; sorted on agreement, delay, back-check count or region size the flagged set is not an interval (on agreement Wexcombe Plains, compliant, sits between the four lowest and Halbrook North, asserted C13).
 - Pins: PCQS v3.0 files the WHAT in the division's own genre (the quarter, every price recorded at the region's outlets, the price on offer at the time the collector recorded it, items not found left out, the bands unrounded, the credit on Schedule 4's fee); no filed sentence names a delay, a re-collection date, a price change, a frequency or a hazard; deleting 3.1's time clause unfixes the estimand, it never hands over the step.
 
 ## Default path
@@ -75,18 +75,18 @@ clear two first-name WARNs. The honest labels: the call is a scorecard of one me
    September columns reordered) and keep the 6,125 prices the officer found.
 3. Take the field's QA measure of collection accuracy, the share of each region's back-checked prices whose collector
    price equals the FQT price: Halbrook Central 98.92, Halbrook North 97.18, Halbrook South 98.78, Eastwick Coast 97.52,
-   Belmont Valley 92.84, Harlow Plains 97.14, Tamsin Bay 95.09, Greywater 97.37, Ardmore Uplands 97.35, Fenwick 94.90,
+   Belmont Valley 92.84, Wexcombe Plains 97.14, Tamsin Bay 95.09, Greywater 97.37, Ardmore Uplands 97.35, Fenwick 94.90,
    Corran Peninsula 97.32, Westholm 94.95, Rookby Downs 97.49, Northreach 97.23.
 4. Apply section 4 and pcsa_schedule4_collection_fees.pdf.
 
-Ends on: corrective action for Halbrook North, Eastwick Coast, Harlow Plains, Greywater, Ardmore Uplands, Corran Peninsula, Rookby Downs and Northreach; service credit for Belmont Valley, Tamsin Bay, Fenwick and Westholm; a $7,049 credit.
+Ends on: corrective action for Halbrook North, Eastwick Coast, Wexcombe Plains, Greywater, Ardmore Uplands, Corran Peninsula, Rookby Downs and Northreach; service credit for Belmont Valley, Tamsin Bay, Fenwick and Westholm; a $7,049 credit.
 
 Golden: corrective action for Halbrook North, Tamsin Bay, Fenwick and Westholm; service credit for Belmont Valley; the other nine compliant; a $1,775 credit.
 
 ## Stump sentence
 
 A competent solver takes each region's accuracy as the share of its back-checked prices that agree with the officer's
-re-collection and files corrective action for Eastwick Coast, Harlow Plains, Greywater, Ardmore Uplands, Corran
+re-collection and files corrective action for Eastwick Coast, Wexcombe Plains, Greywater, Ardmore Uplands, Corran
 Peninsula, Rookby Downs and Northreach and service credits for Tamsin Bay, Fenwick and Westholm, a $7,049 credit; the
 step that lands it there is counting every disagreement as a collector's error when the officers re-collected the far
 regions' prices four to six days after the visits and a share of those prices, set by each item's frequency of price
@@ -102,7 +102,7 @@ change and each re-collection's delay, had genuinely changed in between.
 - Decisive step: recognising that a re-collection made days after the visit disagrees with a correctly recorded price whenever the outlet changed that price in between, and netting each back-check's chance of such a change, from its delay and its item class's daily hazard of a price change read off the price database's month-on-month changes, before setting accuracy against the bands.
 - Not semantics: every field read correctly (both prices, the re-collection date, the found flag, the visit times, the status codes, the crosswalk) still leaves the easy route on the raw agreement, and on the clean truth's records the agreement files the same ten regions wrong (R3a).
 - Not rule application: no filed rule says how the price at the time of recording is estimated from a later re-collection, and executing PCQS 3.1 to section 4 on the agreement files the default; the enumerated family (raw agreement, agreement with fruit and vegetables set aside, quote-by-quote persistence in four readings, netting by class, item, outlet type, region or pooled frequency, exponential or linear in the delay, three frequency windows, visit-day or index-day delays, calendar or consistent working days, expected changes subtracted from the disagreements, a common daily rate fitted to agreement against delay, a frequency netted of the collectors' own errors) spans outcome vectors from ten regions wrong to none; the standing family (every netting member) spreads zero on the outcomes and the credit, its nearest figure 0.46 points from a band edge against the golden's 0.61; the ruling-out is quiet, reached only by reading the visit log and the price database against the register.
-- Analyst test: a strong analyst who reads the standard and every file correctly takes each region's accuracy as the share of its back-checked prices that agree with the officer's re-collection and files ten regions wrong: Eastwick Coast, Harlow Plains, Greywater, Ardmore Uplands, Corran Peninsula, Rookby Downs and Northreach under corrective action, Tamsin Bay, Fenwick and Westholm on service credits, a $7,049 credit.
+- Analyst test: a strong analyst who reads the standard and every file correctly takes each region's accuracy as the share of its back-checked prices that agree with the officer's re-collection and files ten regions wrong: Eastwick Coast, Wexcombe Plains, Greywater, Ardmore Uplands, Corran Peninsula, Rookby Downs and Northreach under corrective action, Tamsin Bay, Fenwick and Westholm on service credits, a $7,049 credit.
 - Estimand: PCQS v3.0 sections 3.1, 3.3 and 4 (pcqs_price_collection_quality_standard_v3.pdf): the population is every price recorded by the contractor's collectors at the region's outlets in July to September 2026, the outcome whether it was the price on offer at the time the collector recorded it, estimated from the back-checks (3.2) with items not found left out, compared unrounded with 98.0 and 95.5, the credit 4 per cent of the region's Schedule 4 fee.
 - No decoy: nothing is planted: no memo, earlier assessment, draft or stakeholder figure states an accuracy or an outcome; the contractor's return reports activity counts only; the back-check register is the team's own record, with no block copied or withheld.
 - No certified replay: no published or certified accuracy, outcome or credit exists in the pack to reproduce; the method is not hidden behind a figure the solver backs out.
@@ -150,7 +150,7 @@ change and each re-collection's delay, had genuinely changed in between.
   regions is 1.54 to 2.14 points (golden minus agreement), against a standing-family spread of at most 1.06 on any
   region (C12).
 - Golden estimates: Halbrook Central 99.18, Halbrook North 97.39, Halbrook South 99.18, Eastwick Coast 99.29, Belmont
-  Valley 94.33, Harlow Plains 99.28, Tamsin Bay 96.68, Greywater 99.49, Ardmore Uplands 99.11, Fenwick 96.56, Corran
+  Valley 94.33, Wexcombe Plains 99.28, Tamsin Bay 96.68, Greywater 99.49, Ardmore Uplands 99.11, Fenwick 96.56, Corran
   Peninsula 99.39, Westholm 96.49, Rookby Downs 99.18, Northreach 99.33; the generator's truth over every price
   recorded in the quarter names the same outcomes (C11).
 - Pricing sequence. (1) The residue the filed WHAT leaves is a method (how a later re-collection estimates the price at
@@ -319,6 +319,6 @@ SEND_BACK (underspecified_objective), report `determinism_check_report_arch1.md`
   (Fenwick); the band moved to 95.5 with Schedule 4's credit unchanged, every standing member at least 0.46 from an
   edge and the error-netted reading 0.20.
 - 2026-11-02 build: with the errors re-cut, the five non-compliant regions were the five lowest on raw agreement (an
-  interval, the Shock test failed); Halbrook North's kept-price rate lowered one step so Harlow Plains sits between.
+  interval, the Shock test failed); Halbrook North's kept-price rate lowered one step so Wexcombe Plains sits between.
 - 2026-11-02 build: accuracy stated to the whole per cent in the write-up (Westholm 96.49, its standing family 96.06 to
   97.03 across the 96.5 rounding line): the components now state band membership, the unit the decision is made in.

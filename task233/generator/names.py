@@ -8,7 +8,7 @@ LOCALITIES = {
     "CR03": ["Southmead", "Clayton Park", "Riverside East"],
     "CR04": ["Eastwick", "Pellin Bay", "Sandhaven"],
     "CR05": ["Belmont", "Oakridge", "Linton Falls"],
-    "CR06": ["Harlow", "Wexcombe", "Dunmore"],
+    "CR06": ["Wexcombe", "Ashgrove", "Dunmore"],
     "CR07": ["Tamsin", "Port Avery", "Kelso Point"],
     "CR08": ["Greywater", "Ashcott", "Millbrook"],
     "CR09": ["Ardmore", "Glenhallow", "Crickwood"],

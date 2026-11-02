@@ -239,6 +239,64 @@ def main(tdir):
         placed[(site, q)] = placed.get((site, q), 0.0) + tds / f
     for (site, q), v in sorted(placed.items()):
         ok("placements %s Q%d recompute at the nearest 1,000 t" % (site, q), "{:,}".format(int(round(v / 1000.0)) * 1000) == figs["answer.placed.%s.Q%d" % (site, q)], "%.0f" % v)
+    # the same placements with the 2026 fractions recomputed by licence 5.5 from the laboratory's dry solids at full
+    # precision: each sample in the area it was taken in (reaches by the centreline, berths by the notice's corners),
+    # each QA duplicate averaged with the primary nearest to it in position and time
+    berth_poly = {}
+    for l in nl:
+        m = re.match(r"(North Quay Berth \d|Container Terminal Berth 5): ([\d ;]+)\.", l)
+        if m:
+            berth_poly[m.group(1)] = [tuple(float(x) for x in p.split()) for p in m.group(2).split(";")]
+
+    def in_poly(poly, e, n):
+        c = False
+        for (x1, y1), (x2, y2) in zip(poly, poly[1:] + poly[:1]):
+            if (y1 > n) != (y2 > n) and e < (x2 - x1) * (n - y1) / (y2 - y1) + x1:
+                c = not c
+        return c
+    ds = {r["client_ref"]: float(r["result"]) for r in csv.DictReader(open(os.path.join(tdir, "aldern_results_FEN26.csv")))
+          if r["determinand"] == "Dry solids"}
+    flog = [r for r in samp["Field log 2026"][1:] if r and r[0]]
+
+    def tm(r):
+        h, mi = str(r[3]).split(":")
+        return float(r[2]) * 1440 + int(h) * 60 + int(mi)
+    fprim = [r for r in flog if r[1] != "QA"]
+    fpair = {}
+    for d in [r for r in flog if r[1] == "QA"]:
+        p = min(fprim, key=lambda p: math.hypot(p[4] - d[4], p[5] - d[5]) + abs(tm(p) - tm(d)))
+        fpair[p[0]] = d[0]
+    dsg = {}
+    for p in fprim:
+        s, t = line.place(p[4], p[5])
+        area = None
+        for nm in names:
+            c0, c1, half, d = parts[nm]
+            if c0 <= s <= c1 and abs(t) <= half:
+                area = nm
+                break
+        if area is None:
+            area = [k for k, poly in berth_poly.items() if in_poly(poly, p[4], p[5])][0]
+        v = ds[p[0]] if p[0] not in fpair else 0.5 * (ds[p[0]] + ds[fpair[p[0]]])
+        dsg.setdefault(area, []).append(v)
+    full = {a: sum(v) / len(v) / 100.0 for a, v in dsg.items()}
+    frac_b = [(c, a, full[a] if c.year == 2026 else f) for c, a, f in frac]
+    ok("the 2026 area summary prints the 5.5 recomputation to three decimals",
+       all(abs(round(full[a], 3) - f) < 1e-9 for c, a, f in frac if c.year == 2026), str({a: round(v, 5) for a, v in full.items()}))
+    placed_b = {}
+    for r in loads:
+        tl = local(dt.datetime.strptime(r["dump_start_utc"], "%Y-%m-%dT%H:%M:00Z"))
+        if not (dt.datetime(2025, 10, 1) <= tl < dt.datetime(2026, 10, 1)):
+            continue
+        la, lo = float(r["dump_lat"]), float(r["dump_lon"])
+        site = [k for k, v in boxes.items() if min(p[0] for p in v) <= la <= max(p[0] for p in v) and min(p[1] for p in v) <= lo <= max(p[1] for p in v)][0]
+        tds = rev.get(r.get("trip"), float(r["dry_solids_t"])) if r["dry_solids_t"] else float(r["hopper_m3"]) * 2.65 * (float(r["mixture_density_t_m3"]) - 1.025) / 1.625
+        f = max((c, fr) for c, a, fr in frac_b if a == code[r["area"]] and c < dt.date(tl.year, tl.month, 1))[1]
+        q = (tl.month - 10) // 3 + 1 if tl.month >= 10 else (tl.month - 1) // 3 + 2
+        placed_b[(site, q)] = placed_b.get((site, q), 0.0) + tds / f
+    for (site, q), v in sorted(placed_b.items()):
+        ok("placements %s Q%d with the 5.5 recomputation keep the same 1,000 t bin" % (site, q),
+           "{:,}".format(int(round(v / 1000.0)) * 1000) == figs["answer.placed.%s.Q%d" % (site, q)], "%.0f" % v)
 
     # ask B
     field = [r for r in samp["Field log 2026"][1:] if r and r[0]]

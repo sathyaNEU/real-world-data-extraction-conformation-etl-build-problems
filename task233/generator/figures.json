@@ -4,7 +4,7 @@
    "Halbrook Central",
    "Halbrook South",
    "Eastwick Coast",
-   "Harlow Plains",
+   "Wexcombe Plains",
    "Greywater",
    "Ardmore Uplands",
    "Corran Peninsula",
@@ -77,7 +77,7 @@
   "CR06": {
    "missed_visits": 0,
    "outcome": "Compliant",
-   "region": "Harlow Plains",
+   "region": "Wexcombe Plains",
    "replacement_acceptance": "60.0",
    "timeliness": "97.0"
   },

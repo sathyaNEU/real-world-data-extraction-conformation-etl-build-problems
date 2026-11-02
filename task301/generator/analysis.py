@@ -201,52 +201,81 @@ def paces(target, F):
     gi = granted_initial(reg)
     single = collections.Counter(r["case"] for r in reg)
     rise = F["rise_date"]
-    widen = [r["claim"] for r in gi if F["cfv_old_limit"] <= r["inc"] < F["cfv_limit"] and r["claim"] >= rise]
+    r0 = (rise.year, rise.month)
+    widen_rows = [r for r in gi if F["cfv_old_limit"] <= r["inc"] < F["cfv_limit"] and r["claim"] >= rise]
+    widen = [r["claim"] for r in widen_rows]
     last_month = (2026, 10)
-    n24 = mi(last_month) - mi((rise.year, rise.month)) + 1
-    c24, n_w = pace(widen, (rise.year, rise.month), n24)
+    n24 = mi(last_month) - mi(r0) + 1
+    c24, n_w = pace(widen, r0, n24)
+    c24_30, _ = pace(widen, r0, n24 - 1)
     launch = [r["claim"] for r in gi if r["claim"] < rise and r["inc"] < F["cfv_old_limit"]]
-    c22, n_l = pace(launch, (2022, 10), mi((2024, 3)) - mi((2022, 10)) + 1)
+    c22, n_l = pace(launch, (2022, 10), mi(r0) - mi((2022, 10)))
+    c22_12, _ = pace(launch, (2022, 10), 12)
     c22all, _ = pace([r["claim"] for r in gi], (2022, 10), mi(last_month) - mi((2022, 10)) + 1)
     lag = collections.Counter(mi(r["first"]) - mi((r["claim"].year, r["claim"].month)) for r in gi
                               if single[r["case"]] == 1 and r["first"] is not None)
     nl = sum(lag.values())
     lagd = [(k, v / nl) for k, v in sorted(lag.items())]
-    return {"widening": c24, "n_widening": n_w, "launch": c22, "n_launch": n_l, "launch_all": c22all, "lag": lagd}
+    # the same widening cohort dated by its first month paid (the decision lag folded into the curve)
+    fp = [dt.date(r["first"][0], r["first"][1], 1) for r in widen_rows if r["first"] is not None]
+    c24_paid, _ = pace(fp, (r0[0], r0[1] + 1), n24 - 1)
+    return {"widening": c24, "n_widening": n_w, "widening_30": c24_30, "widening_paid": c24_paid,
+            "launch": c22, "n_launch": n_l, "launch_12": c22_12, "launch_all": c22all, "lag": lagd}
 
 
-def first_year(H, F, m, curve, lag, T, mode="pace"):
-    """Expected children a claimed measure brings above the line in 2027 when its eventual claimants (share T of
-    the families it covers) claim month by month along curve, each paid from the month after the claim plus the
-    decision lag; mode 'lag' puts every claim in January, 'even' spreads them evenly over the year, 'full' pays a
-    full year."""
+def months_received(curve, lag, mode="pace"):
+    """Distribution of the months a measure pays in 2027 to its eventual claimants: claims made month by month
+    along curve (mode 'pace'), all in January ('once'), evenly through the year ('even'), or with the curve
+    already dated by first month paid ('paid'); each claim paid from the month after its decision."""
+    d = collections.Counter()
+    prev = 0.0
+    for month in range(1, 13):
+        if mode == "once":
+            share = 1.0 if month == 1 else 0.0
+        elif mode == "even":
+            share = 1.0 / 12.0
+        else:
+            share = curve[month - 1] - prev
+            prev = curve[month - 1]
+        if share <= 0:
+            continue
+        if mode == "paid":
+            d[13 - month] += share
+            continue
+        for k, pk in lag:
+            d[max(0, 13 - month - k)] += share * pk
+    d[0] += max(0.0, 1.0 - sum(d.values()))
+    return d
+
+
+def first_year(H, F, m, curve, lag, T, mode="pace", how="expect"):
+    """Children a claimed measure brings above the line in 2027 when its eventual claimants (share T of the families
+    it covers) claim along curve. how: 'expect' takes each household's chance of being lifted over its claim month
+    and decision lag; 'avg' gives every claimant the average months paid; 'exppay' gives every covered household
+    its expected payment; 'linear' scales the full-year count by the expected share of the year paid; 'fullyear'
+    counts every claimant paid in 2027 as receiving the whole year (not the payments received)."""
     f = pays(F)[m]
+    d = months_received(curve, lag, mode)
+    paid = 1.0 - d.get(0, 0.0)
+    em = sum(n * q for n, q in d.items())
+    mbar = em / paid if paid else 0.0
+    line = F["line"]
     tot = 0.0
     for h in H:
         x = f(h)
         if not x:
             continue
-        if mode == "full":
-            if lifted(h, F["line"], x):
-                tot += h["w"] * h["kids"] * T
-            continue
-        mon = x / 12.0
-        pr, prev = 0.0, 0.0
-        for month in range(1, 13):
-            if mode == "lag":
-                share = 1.0 if month == 1 else 0.0
-            elif mode == "even":
-                share = 1.0 / 12.0
-            else:
-                share = curve[month - 1] - prev
-                prev = curve[month - 1]
-            if share <= 0:
-                continue
-            for k, pk in lag:
-                n = 12 - (month + k) + 1
-                if n > 0 and lifted(h, F["line"], mon * n):
-                    pr += share * pk
-        tot += h["w"] * h["kids"] * T * pr
+        wk = h["w"] * h["kids"]
+        if how == "expect":
+            tot += wk * T * sum(q for n, q in d.items() if n and lifted(h, line, x / 12.0 * n))
+        elif how == "avg":
+            tot += wk * T * paid if lifted(h, line, x / 12.0 * mbar) else 0.0
+        elif how == "exppay":
+            tot += wk if lifted(h, line, x * T * em / 12.0) else 0.0
+        elif how == "linear":
+            tot += wk * T * em / 12.0 if lifted(h, line, x) else 0.0
+        elif how == "fullyear":
+            tot += wk * T * paid if lifted(h, line, x) else 0.0
     return tot
 
 
@@ -257,35 +286,63 @@ def ladder(target):
     H = survey(target, F)
     PC = paces(target, F)
     T = F["take_up"]
+    LAG = PC["lag"]
     S = {m: static(H, F, m) for m in ("A", "B", "C", "D", "E")}
-    R1 = {m: (T * S[m] if m in CLAIMED else S[m]) for m in S}
-    R1b = {m: (first_year(H, F, m, None, PC["lag"], T, "lag") if m in CLAIMED else S[m]) for m in S}
-    cur = {"B": PC["launch"], "C": PC["widening"], "D": PC["launch"]}
-    R2 = {m: (first_year(H, F, m, cur[m], PC["lag"], T) if m in CLAIMED else S[m]) for m in S}
-    variants = {}
-    for name, curves, Tv, mode in (
-            ("widening pace for every claimed measure", {m: PC["widening"] for m in CLAIMED}, T, "pace"),
-            ("launch pace for every claimed measure", {m: PC["launch"] for m in CLAIMED}, T, "pace"),
-            ("all initial claims since launch as the pace", {m: PC["launch_all"] for m in CLAIMED}, T, "pace"),
-            ("claims spread evenly through 2027", {m: None for m in CLAIMED}, T, "even"),
-            ("eventual share from the widening cohort itself", cur, None, "pace")):
-        v = {}
+
+    def run(curves, Tm=T, mode="pace", how="expect", modes=None):
+        out = {}
         for m in S:
             if m in AUTOMATIC:
-                v[m] = S[m]
-                continue
-            Tm = Tv
-            if Tm is None:
-                # the widening cohort's claims through October 2026 against the survey's weighted families then in
-                # the widened band (computable income between the old and new limits)
-                band = sum(h["w"] for h in H if h["kids"] and F["cfv_old_limit"] <= h["comp_eq"] < F["cfv_limit"])
-                Tm = min(0.95, PC["n_widening"] / band)
-            v[m] = first_year(H, F, m, curves[m], PC["lag"], Tm, mode)
-        variants[name] = v
-    # linear phasing of the full-year count (generic first-year factors)
-    for fac in (0.5, 0.75):
-        variants["full-year count at take-up times %.2f" % fac] = {m: (R1[m] * fac if m in CLAIMED else S[m]) for m in S}
-    out = {"F": F, "H": H, "paces": PC, "T": T, "R0": S, "R1": R1, "R1b": R1b, "R2": R2, "variants": variants,
+                out[m] = S[m]
+            else:
+                mm = (modes or {}).get(m, mode)
+                out[m] = first_year(H, F, m, curves.get(m) if curves else None, LAG,
+                                    Tm[m] if isinstance(Tm, dict) else Tm, mm, how)
+        return out
+
+    gold = {"B": PC["launch"], "C": PC["widening"], "D": PC["launch"]}
+    R0 = S
+    R1 = {m: (T * S[m] if m in CLAIMED else S[m]) for m in S}
+    R1b = run(None, mode="once")
+    R2 = run({m: PC["launch"] for m in CLAIMED})
+    R2e = run(None, mode="even")
+    R3 = run(gold)
+    band = sum(h["w"] for h in H if h["kids"] and F["cfv_old_limit"] <= h["comp_eq"] < F["cfv_limit"])
+    t_w = min(0.95, PC["n_widening"] / band)
+    licensed = {
+        "golden: each household's chance over claim month and lag": R3,
+        "every claimant given the average months paid": run(gold, how="avg"),
+        "every covered household given its expected payment": run(gold, how="exppay"),
+        "full-year count scaled by the expected share of the year paid": run(gold, how="linear"),
+        "widening pace for every claimed measure": run({m: PC["widening"] for m in CLAIMED}),
+        "launch pace normalised to its first twelve months for B and D": run(dict(gold, B=PC["launch_12"],
+                                                                                  D=PC["launch_12"])),
+        "widening pace through September 2026 only": run(dict(gold, C=PC["widening_30"])),
+        "widening cohort dated by first month paid": run(dict(gold, C=PC["widening_paid"]),
+                                                         modes={"C": "paid"}),
+        "every entitled family claims eventually": run(gold, Tm=1.0),
+        "eventual share from the widening cohort itself": run(gold, Tm=t_w),
+    }
+    wrong = {
+        "R0 every covered family paid all year": R0,
+        "R1 all-year payments at the coverage rate": R1,
+        "R1b every claim in January, paid after its decision": R1b,
+        "R2 claims at the launch's pace": R2,
+        "R2 claims spread evenly through 2027": R2e,
+        "launch pace, average months paid": run({m: PC["launch"] for m in CLAIMED}, how="avg"),
+        "launch pace, expected payment": run({m: PC["launch"] for m in CLAIMED}, how="exppay"),
+        "launch pace, linear share of the year": run({m: PC["launch"] for m in CLAIMED}, how="linear"),
+        "even spread, expected payment": run(None, mode="even", how="exppay"),
+        "golden paces, claimants counted as paid all year": run(gold, how="fullyear"),
+        "full-year count at the coverage rate times 0.50": {m: (R1[m] * 0.5 if m in CLAIMED else S[m]) for m in S},
+        "full-year count at the coverage rate times 0.75": {m: (R1[m] * 0.75 if m in CLAIMED else S[m]) for m in S},
+    }
+    misspecified = {
+        "all initial claims since launch, normalised to every claim to date": run({m: PC["launch_all"]
+                                                                                  for m in CLAIMED}),
+    }
+    out = {"F": F, "H": H, "paces": PC, "T": T, "R0": R0, "R1": R1, "R1b": R1b, "R2": R2, "R2e": R2e, "R3": R3,
+           "licensed": licensed, "wrong": wrong, "misspecified": misspecified,
            "A_by_prov": static(H, F, "A", by_prov=True)}
     _CACHE[("lad", target)] = out
     return out
@@ -384,8 +441,8 @@ def round_to(x, unit):
 
 def golden(target):
     L = ladder(target)
-    R2 = L["R2"]
-    call = max(R2, key=lambda m: R2[m])
+    R3 = L["R3"]
+    call = max(R3, key=lambda m: R3[m])
     A_tot = L["R0"]["A"]
     G = {"call": call, "A_total": A_tot, "A_total_r": round_to(A_tot, 100),
          "A_by_prov": {pc: L["A_by_prov"].get(pc, 0.0) for pc in PROV_NAMES},

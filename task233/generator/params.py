@@ -25,7 +25,7 @@ REGIONS = [
     ("CR03", "Halbrook South", "Halbrook Sth", 0, 11, 16),
     ("CR04", "Eastwick Coast", "Eastwick", 1, 9, 14),
     ("CR05", "Belmont Valley", "Belmont", 1, 8, 15),
-    ("CR06", "Harlow Plains", "Harlow", 1, 9, 13),
+    ("CR06", "Wexcombe Plains", "Wexcombe", 1, 9, 13),
     ("CR07", "Tamsin Bay", "Tamsin Bay", 2, 8, 14),
     ("CR08", "Greywater", "Greywater", 2, 9, 15),
     ("CR09", "Ardmore Uplands", "Ardmore", 2, 7, 13),

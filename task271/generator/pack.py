@@ -228,9 +228,9 @@ def write_drop_tallies(path, X):
     for t in X["hatchery"]:
         for dr in t["drops"]:
             hh = 9.5 + g.uniform(0, 5.5)
-            out.append({"trip_id": t["trip"], "lake_code": dr["lake"], "nets": dr["nets"], "doa": dr["doa"],
-                        "released": "%sT%s:00" % (t["date"].isoformat(), K.hm(hh)),
-                        "water_temp_c": round(float(g.normal(14 if t["date"].month < 7 else 18.5, 1.6)), 1),
+            out.append({"tripId": t["trip"], "lakeCode": dr["lake"], "nets": dr["nets"], "doa": dr["doa"],
+                        "releasedAt": "%sT%s:00-07:00" % (t["date"].isoformat(), K.hm(hh)),
+                        "waterTempC": round(float(g.normal(14 if t["date"].month < 7 else 18.5, 1.6)), 1),
                         "crew": "QC drop crew"})
     with open(path, "w", encoding="utf-8") as f:
         json.dump({"export": "drop-tally", "app_version": "3.4.1", "exported": "2026-09-02T08:15:00-07:00",
@@ -272,7 +272,7 @@ def logger_rows(X):
     return rows
 
 
-LOGGER_COLS = ["logger_serial", "site", "depth_m", "date_time", "temp_c"]
+LOGGER_COLS = ["Logger SN", "Site", "Depth (m)", "Date Time", "Temp (C)"]
 DEPLOY_COLS = ["logger_serial", "lake_code", "depth_m", "deployed", "retrieved"]
 
 

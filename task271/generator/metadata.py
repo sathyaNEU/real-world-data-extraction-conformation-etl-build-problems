@@ -60,9 +60,9 @@ def write(task_dir):
                      "open-water angler-hours per hectare from aerial counts flown at route-fixed hours and the "
                      "access interviews' start and finish times)",
         "objective": "Descriptive & Distribution Analysis",
-        "prompt_shape": "a tier for every lake that takes catchables against the policy's 500 angler-hours per hectare "
-                        "line with a bar chart, and two tables (catchables released alive into each lake in 2026, "
-                        "nearest 100; July and August days above 20 C at 1 m for each lake with a logger there)",
+        "prompt_shape": "a tier for every lake that takes catchables against the allocation policy's high-use line with "
+                        "a bar chart, and two per-lake tables (the catchables each lake received alive in 2026; the "
+                        "July and August warm days at each lake's 1 m logger)",
         "as_of": "2026-10-26",
         "deliverables": ["stocking_tiers_2027.xlsx", "stocking_board_note_2027.docx"],
         "distractor_files": DISTRACTORS,

@@ -193,10 +193,10 @@ def main(target):
     for tid, t in trips.items():
         rw = t["rw"] if t["tank"] else cw[t["rw"]]
         fpk = max((s for s in samp if s[1] == rw and s[0] <= t["date"]), key=lambda s: s[0])[2]
-        ds = [x for x in drops if x["trip_id"] == tid]
+        ds = [x for x in drops if x["tripId"] == tid]
         nets = sum(x["nets"] for x in ds)
         for x in ds:
-            fish[x["lake_code"]] = fish.get(x["lake_code"], 0.0) + t["load"] * x["nets"] / nets * fpk - x["doa"]
+            fish[x["lakeCode"]] = fish.get(x["lakeCode"], 0.0) + t["load"] * x["nets"] / nets * fpk - x["doa"]
     rel = {reg[c]["name"]: int(math.floor(v / 100 + 0.5) * 100) for c, v in fish.items()}
     ok("JSON drop tallies + XLSX trip sheets: releases recomputed match figures.json", rel == fig["releases_alive"])
 
@@ -208,8 +208,8 @@ def main(target):
                     dt.datetime.strptime(r["retrieved"], "%Y-%m-%d %H:%M") if r["retrieved"] else None))
     raw = {}
     for r in csv.DictReader(open(os.path.join(target, "lake_temperature_loggers_2026.csv"))):
-        raw.setdefault(r["logger_serial"], []).append((dt.datetime.strptime(r["date_time"], "%Y-%m-%d %H:%M"),
-                                                       float(r["temp_c"])))
+        raw.setdefault(r["Logger SN"], []).append((dt.datetime.strptime(r["Date Time"], "%Y-%m-%d %H:%M"),
+                                                   float(r["Temp (C)"])))
     sums = {}
     for s, recs in raw.items():
         hours = [0.0] * 24

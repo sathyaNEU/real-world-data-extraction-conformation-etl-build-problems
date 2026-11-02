@@ -237,7 +237,7 @@ def releases(target, how="latest", raceways="golden", split="nets", doa=True):
     drops = json.load(open(os.path.join(target, "quillet_creek_drop_tallies_2026.json")))["records"]
     by_trip = {}
     for x in drops:
-        by_trip.setdefault(x["trip_id"], []).append(x)
+        by_trip.setdefault(x["tripId"], []).append(x)
     fish = {}
     for tid, t in trips.items():
         rw = raceway_of_trip(t, cw, switch, raceways)
@@ -246,7 +246,7 @@ def releases(target, how="latest", raceways="golden", split="nets", doa=True):
         nets = sum(x["nets"] for x in recs)
         for x in recs:
             share = x["nets"] / nets if split == "nets" else 1.0 / len(recs)
-            fish[x["lake_code"]] = fish.get(x["lake_code"], 0.0) + t["load"] * share * f - (x["doa"] if doa else 0)
+            fish[x["lakeCode"]] = fish.get(x["lakeCode"], 0.0) + t["load"] * share * f - (x["doa"] if doa else 0)
     return fish
 
 
@@ -283,9 +283,9 @@ def warm_days(target, start=dt.date(2026, 7, 1), end=dt.date(2026, 8, 31), line=
     raw = {}
     site = {}
     for r in read_csv(os.path.join(target, "lake_temperature_loggers_2026.csv")):
-        raw.setdefault(r["logger_serial"], []).append((dt.datetime.strptime(r["date_time"], "%Y-%m-%d %H:%M"),
-                                                       float(r["temp_c"])))
-        site[r["logger_serial"]] = (r["site"], float(r["depth_m"]))
+        raw.setdefault(r["Logger SN"], []).append((dt.datetime.strptime(r["Date Time"], "%Y-%m-%d %H:%M"),
+                                                   float(r["Temp (C)"])))
+        site[r["Logger SN"]] = (r["Site"], float(r["Depth (m)"]))
     reg = register(target)
     by_name = {v["name"].replace(" Lake", ""): c for c, v in reg.items()}
     off = logger_clock_offsets(raw)

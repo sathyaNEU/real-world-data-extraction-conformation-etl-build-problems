@@ -19,7 +19,8 @@
  },
  "duplicate_check": {
   "heart": "PASS (2026-11-02)",
-  "nearest": "task474 v7 stump at 0.07; task488 ledger row at 0.04 (shares the estimator, not the driver)"
+  "nearest": "task474 v7 stump at 0.07; task488 ledger row at 0.04 (shares the estimator, not the driver)",
+  "surface": "1 promoted for adjudication (2026-11-02): task474 back to back, education x ETL on consecutive numbers; the two format-only pairs cleared once the minutes became a Word document"
  },
  "judge": {
   "verdict": "",

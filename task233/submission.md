@@ -34,7 +34,7 @@
    - CR03 Halbrook South: Compliant, timeliness 95.1, missed visits 2, replacement acceptance 80.0
    - CR04 Eastwick Coast: Compliant, timeliness 92.8, missed visits 0, replacement acceptance 62.5
    - CR05 Belmont Valley: Service credit, timeliness 92.8, missed visits 1, replacement acceptance 76.9
-   - CR06 Harlow Plains: Compliant, timeliness 97.0, missed visits 0, replacement acceptance 60.0
+   - CR06 Wexcombe Plains: Compliant, timeliness 97.0, missed visits 0, replacement acceptance 60.0
    - CR07 Tamsin Bay: Corrective action, timeliness 95.5, missed visits 1, replacement acceptance 88.9
    - CR08 Greywater: Compliant, timeliness 95.8, missed visits 0, replacement acceptance 46.2
    - CR09 Ardmore Uplands: Compliant, timeliness 95.0, missed visits 0, replacement acceptance 42.9

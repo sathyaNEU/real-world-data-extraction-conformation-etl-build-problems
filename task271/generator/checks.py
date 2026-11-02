@@ -364,9 +364,9 @@ check("SF25 every trip between the renumbering and the template change emptied f
 w_gold, means = A.warm_days(TARGET)
 w_per, means_per = A.warm_days(TARGET, combine="perlogger")
 check("SF26 days are Pacific-time days: the two loggers launched on UTC are found by their warmest hour",
-      A.logger_clock_offsets({s: [(dt.datetime.strptime(r["date_time"], "%Y-%m-%d %H:%M"), float(r["temp_c"]))
+      A.logger_clock_offsets({s: [(dt.datetime.strptime(r["Date Time"], "%Y-%m-%d %H:%M"), float(r["Temp (C)"]))
                                   for r in csv.DictReader(open(os.path.join(TARGET, "lake_temperature_loggers_2026.csv")))
-                                  if r["logger_serial"] == s] for s in ("20184409", "20184421", "20184402")})
+                                  if r["Logger SN"] == s] for s in ("20184409", "20184421", "20184402")})
       == {"20184409": -7, "20184421": -7, "20184402": 0})
 check("SF27 a lake-day averaged over all readings or over each logger's mean gives the same counts", w_gold == w_per)
 gap = min(min(abs(v - 20) for v in means.values()), min(abs(v - 20) for v in means_per.values()))
@@ -427,7 +427,7 @@ miss = sum(1 for r in raw_iv if not r["started"]) / len(raw_iv)
 check("Z some parties give hours fished instead of a start", 0.04 < miss < 0.15, "%.3f" % miss)
 fin = [r["finished"] for r in raw_iv]
 check("Z finish times are the tablet's clock (not heaped)", len(set(fin)) > 400)
-temps = [float(r["temp_c"]) for r in csv.DictReader(open(os.path.join(TARGET, "lake_temperature_loggers_2026.csv")))]
+temps = [float(r["Temp (C)"]) for r in csv.DictReader(open(os.path.join(TARGET, "lake_temperature_loggers_2026.csv")))]
 check("Z logger readings within a lake's physical range", 5 < min(temps) and max(temps) < 34,
       "%.1f to %.1f" % (min(temps), max(temps)))
 dates = []

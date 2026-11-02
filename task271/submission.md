@@ -16,7 +16,7 @@
 
 ## 3. Step-by-Step Solution
 
-1. Matched survey_flight_counts_2026.csv (Vellacott numbers) and creel_interviews_2026.csv (tablet names) to lake_register_2026.xlsx, dropped the loops and lakes entered with no count, and took a start of finish less hours fished where an interview gives no start.
+1. Matched survey_flight_counts_2026.csv (Vellacott numbers) and creel_interviews_2026.csv (tablet names) to lake_register_2026.xlsx, left out the loop and the lakes entered with no count, and where an interview gives no start took the finish less the hours fished.
 2. Turned each count into anglers: boats times the lake's mean party size among boat parties, plus shore anglers.
 3. For each lake, shared every interviewed party's anglers over the hours of 05:00 to 22:00 it fished and took each hour's share of the lake's interviewed angler-hours.
 4. Divided each count by its lake's share for the hour of the count, averaged the counts of each survey day, took the mean survey day in each month's weekday and weekend strata, multiplied by the stratum's days and summed over 15 May to 31 August.

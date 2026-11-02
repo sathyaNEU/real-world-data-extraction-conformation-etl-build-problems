@@ -134,11 +134,13 @@ def fieldwork(rng, munis):
         seen.add(d["ref"])
     rng.shuffle(dwellings)
     cases = []
-    out_p = [0.645, 0.009, 0.143, 0.097, 0.020, 0.050, 0.023, 0.013]
+    out_p = {"81": [0.630, 0.010, 0.150, 0.110, 0.019, 0.047, 0.021, 0.013],     # the capital's flats: more no-contact
+             "82": [0.648, 0.009, 0.142, 0.094, 0.020, 0.052, 0.022, 0.013],
+             "83": [0.665, 0.008, 0.132, 0.080, 0.021, 0.056, 0.025, 0.013]}    # villages: more empty dwellings
     codes = [11, 12, 21, 22, 23, 31, 32, 33]
     interviewers = {o: ["%s%02d" % (o[0], i) for i in range(1, 19)] for o in ("VAL", "CUE", "SIE")}
     for d in dwellings:
-        o1 = int(rng.choice(codes, p=out_p))
+        o1 = int(rng.choice(codes, p=out_p[d["prov"]]))
         iv = str(rng.choice(interviewers[d["office"]]))
         start = dt.date(2026, 2, 2) + dt.timedelta(days=int(rng.integers(0, 120)))
         visits = 1 if o1 in (11, 12) and rng.random() < 0.55 else int(rng.integers(1, 6))

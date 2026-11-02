@@ -41,8 +41,9 @@ def guidance(path, line):
               "the household receives during 2027 are added."),
         ("p", "3.6 Counts of children are grossed up with the ECVV 2026 household weight; every member of a "
               "household carries its household's weight."),
-        ("p", "3.7 Where a measure's eligibility turns on income per equivalent adult, the scale and ages of 3.2 "
-              "apply."),
+        ("p", "3.7 Where a measure's eligibility turns on income per equivalent adult, the appraisal applies the "
+              "test to the household: its 2025 disposable income in the ECVV 2026, less any Complemento Familiar it "
+              "received in 2025, divided by its equivalent adults under 3.2."),
         ("p", "3.8 The measures' payments are counted as additional income. The Ministry has confirmed that no "
               "national benefit is reduced by them, and none of the regional benefits is reduced by another."),
         ("h", "4. What the cabinet receives"),
@@ -112,6 +113,8 @@ def proposals(path, line, costs):
         ("p", "D. Families renting their home carry the highest housing costs; the supplement is paid per child and "
               "follows the same income test as B."),
         ("p", "E. A higher amount for the families the Complemento already reaches."),
+        ("p", "In every measure a child is a member of the family born in 2009 or later, as in the appraisal "
+              "guidance."),
         ("p", "Computable income per equivalent adult is defined in the Complemento Familiar's rules. The 2027 "
               "poverty line is the one in the department's appraisal guidance of 15 October 2026 (%s a year for "
               "each equivalent adult)." % euro(line)),

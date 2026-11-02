@@ -58,8 +58,8 @@ def write(f, path):
     a("")
     a("## 3. Step-by-Step Solution\n")
     a("1. Matched survey_flight_counts_2026.csv (Vellacott numbers) and creel_interviews_2026.csv (tablet names) to "
-      "lake_register_2026.xlsx, dropped the loops and lakes entered with no count, and took a start of finish less "
-      "hours fished where an interview gives no start.")
+      "lake_register_2026.xlsx, left out the loop and the lakes entered with no count, and where an interview gives no "
+      "start took the finish less the hours fished.")
     a("2. Turned each count into anglers: boats times the lake's mean party size among boat parties, plus shore "
       "anglers.")
     a("3. For each lake, shared every interviewed party's anglers over the hours of 05:00 to 22:00 it fished and "
@@ -73,8 +73,8 @@ def write(f, path):
       "sheet raceway numbers before the tank temperature column began as the old numbers "
       "(quillet_creek_raceway_numbers.csv), shared between drops by the drop crew's nets, less the dead at the drop.")
     a("7. Warm days: assigned each logger reading to the deployment its serial was in at that moment "
-      "(logger_deployments_2026.csv), put loggers 20184409 and 20184421 from UTC onto Pacific time, and counted the "
-      "July and August days whose 1 m readings averaged above 20 C.")
+      "(logger_deployments_2026.csv), put loggers %s and %s from UTC onto Pacific time, and counted the "
+      "July and August days whose 1 m readings averaged above 20 C." % tuple(f["utc_loggers"]))
     a("8. Recommended the ten lakes above for the high-use tier.")
     a("")
     a("## 4. Deliverable Answers\n")
