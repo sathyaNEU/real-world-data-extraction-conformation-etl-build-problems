@@ -283,9 +283,10 @@ def main(target, golden_dir=None):
     check("B6 separation: the main call reads no ambulatory sample", not late_used, "")
 
     # ------------------------------------------------------------ realism sweep
-    counts = [len(v) for v in recs.values()]
-    check("S1 recording lengths vary (no identical segment counts across recordings)",
-          len(set(counts)) > 0.8 * len(counts), "%d distinct of %d" % (len(set(counts)), len(counts)))
+    secs = [sum(g["dur"] for g in v) for v in recs.values()]
+    starts = [min(g["start"] for g in v) for v in recs.values()]
+    check("S1 every recording starts at its own time and runs its own length (no copied recording)",
+          len(set(secs)) == len(secs) and len(set(starts)) == len(starts), "%d recordings" % len(secs))
     people = set(re.findall(r"(Hilde Lemmens|Kim Huysmans|Freddy Wouters|Tanghe)", plan_text(target)))
     check("S2 named people come from the card's persona list", people <= {"Hilde Lemmens", "Kim Huysmans", "Tanghe",
                                                                            "Freddy Wouters"}, ",".join(sorted(people)))

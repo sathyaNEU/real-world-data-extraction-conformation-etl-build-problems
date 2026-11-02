@@ -67,7 +67,12 @@ def pdf_strings(path):
         hdr = data[max(0, m.start() - 300):m.start()]
         try:
             if b"ASCII85Decode" in hdr:
-                raw = base64.a85decode(raw.strip(), adobe=raw.strip().startswith(b"<~"))
+                body = raw.strip()
+                if body.endswith(b"~>"):
+                    body = body[:-2]
+                if body.startswith(b"<~"):
+                    body = body[2:]
+                raw = base64.a85decode(body)
             if b"FlateDecode" in hdr:
                 raw = zlib.decompress(raw)
         except Exception:

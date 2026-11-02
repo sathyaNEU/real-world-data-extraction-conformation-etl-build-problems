@@ -1,25 +1,25 @@
 {
  "task": "task248",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-02",
- "stump": "",
+ "stump": "The delivery check against the bills of lading files 2 tanks (CF-2, GC-1) because each delivery spans reorder to near full, where a probe offset misstates little; the sales intervals alone file 9 (dock meter error read as chart error, GC-1 dropped); only the intervals' half-range shape anchored on the deliveries' proportional part files the 6 (BP-2, CF-2, DH-1, FL-1, GC-1, HS-2).",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK), 2026-11-02, target.zip 07e6a187; REVIEW lines ruled in DESIGN_NOTE.md ## Leak check",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (no BLOCK) 2026-11-02: repeat.gate_g and repeat.decision vs task238 v2, repeat.question_form vs task304 v5",
+  "nearest": "task168 stump 0.04"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4: the main session spawns the leak reader and the determinism judge on target.zip 07e6a187; fix findings in generator/ and rebuild with generator/build.py",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -43,5 +43,20 @@
    "fate": "re-rooted 2026-11-02 at the Batch 3 queue reset (no portal result)",
    "stump": "Restoring each sample's shed load with the paired study's single decay rate over the plant's travel time (or reading the samples on PMMoV-normalised concentrations) files the published 30 alert episodes, every plant as published, because a restoration constant over the year cancels against each plant's own baseline; only the decay rate as a function of the water's temperature, at each composite's own inlet temperature over the travel time, files 26 (Ardenmouth South, Ardenmouth East, Tarnbrook, Cleaveland Flat and Saltmarsh Point one fewer, Ardenmouth West one more)."
   }
- ]
+ ],
+ "gates_final_cut": {
+  "target_zip_sha256_8": "07e6a187",
+  "generator_checks": "66 assertions, 0 failed",
+  "verify": "0 failures",
+  "byte_identical_builds": "two builds byte-identical over 20 files",
+  "figures_check": "PASS, 50 figures, 0 absent",
+  "precut": "exit 0, 61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "guard_heart": "WARN, no BLOCK",
+  "pair_ceiling": 51.2,
+  "mirror_leakage_pct": 28.9,
+  "cracker_misses_every_ask": true,
+  "as_of": "2027-01-12"
+ }
 }

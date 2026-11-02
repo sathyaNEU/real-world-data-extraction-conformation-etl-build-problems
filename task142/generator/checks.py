@@ -93,8 +93,6 @@ def main():
        if x["teldatum"].endswith("2022")} == {4} and all(x["leerlingnummer"].startswith("KW") for x in T["roll"]
                                                          if x["teldatum"].endswith("2023")))
     ok("R2d households left the district during the intakes", sum(1 for x in T["brp"] if x["datum_vertrek"]) > 500)
-    noadd = A.main_call(TARGET, A.load(TARGET, main_only=True))
-    ok("R2e the link ignoring additions gives the same call (SF12)", True, "")
 
     # ---------------------------------------------------------------- R3: the three rules on the clean truth
     proc = A.pdf_text(os.path.join(TARGET, P.FILES["procedure"]))

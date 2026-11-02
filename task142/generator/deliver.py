@@ -29,6 +29,7 @@ def owed(F, M):
     f["rounding_units"] = [10, 1000]
     f["sections"] = "2.3 3.1 3.2 3.3 3.4 3.5"
     f["bso_total"] = sum(F["bso"].values())
+    f["catchment"] = "%s %s" % P.CATCHMENT
     return f
 
 
@@ -121,8 +122,9 @@ def write_all(target, golden_dir, gen_dir):
     os.makedirs(golden_dir, exist_ok=True)
     os.makedirs(gen_dir, exist_ok=True)
     F, M = A.figures(target)
-    memo(F, M, os.path.join(golden_dir, BOOK))
+    fo = owed(F, M)
+    memo(fo, M, os.path.join(golden_dir, BOOK))
     with open(os.path.join(gen_dir, "figures.json"), "w") as fh:
-        json.dump(owed(F, M), fh, indent=1, sort_keys=True, default=str)
+        json.dump(fo, fh, indent=1, sort_keys=True, default=str)
         fh.write("\n")
     return F, M

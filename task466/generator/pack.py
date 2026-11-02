@@ -78,7 +78,7 @@ def write_scada(t, target):
               "AT-101 O2 (%)", "AT-101 CO2 (%)", "PT-101 header vacuum (inWC)", "FT-201 GEN1 fuel (Nm3/h)",
               "FT-202 GEN2 fuel (Nm3/h)", "FT-301 flare gas (m3/h)", "TT-301 flare temp (F)"]
     pre = ["# Breck Hollow LFG plant historian - hourly averages",
-           "# Export: 2027-01-04 08:12 UTC by tlhays (Leyland Renewable Gas)",
+           "# Export: 2027-01-04 08:12 UTC by rossc (Leyland Renewable Gas)",
            "# Interval: 1 h, labelled at interval start"]
     C.write_csv(os.path.join(target, fn), header, rows, preamble=pre)
     return fn
@@ -99,7 +99,7 @@ def write_outage_log(t, target):
     for c in ws[3]:
         c.font = Font(bold=True)
     r = W.rng(210)
-    initials = ["TLH", "JL", "TLH", "RMK", "JL"]
+    initials = ["CR", "JG", "CR", "CR", "JG"]
     notes = {"Utility power failure": ["Co-op feeder outage", "Supply lost, restored by co-op", "Lightning, feeder 4"],
              "Blower trip - high bearing temperature": ["Reset, bearing temp normal", "Changed to standby blower"],
              "Condensate knockout high level - plant ESD": ["Drained KO pot, pump reset", "Float switch cleaned"],
@@ -180,7 +180,7 @@ def write_event_log(t, target):
     fn = "BH_engine_plant_events_2026.txt"
     a, b = R.quarter_minutes(2026, 0)[0], R.quarter_minutes(2026, 3)[1]
     lines = ["BRECK HOLLOW ENERGY PLANT  -  EVENT LOG EXPORT  -  2026-01-01 00:00 TO 2026-12-31 23:59 (SITE TIME)",
-             "EXPORTED 2027-01-04 08:40 BY TLHAYS",
+             "EXPORTED 2027-01-04 08:40 BY ROSSC",
              "",
              "DATE        TIME      UNIT  EVENT                 TEXT"]
     for m, tag, code, text in t["events"]:
@@ -235,8 +235,8 @@ def write_operator_reports(t, target):
         blocks.append(("Plant availability (gas system) %.1f%%. Flare: standby duty as required." % avail, "", 9))
         blocks.append(("", "", 9))
         prev_visit = visit
-    blocks.append(("Leyland Renewable Gas - Tina Hays, plant manager", "", 9))
-    C.text_pdf(os.path.join(target, fn), "Monthly operating reports 2026", blocks, author="Tina Hays")
+    blocks.append(("Leyland Renewable Gas - Cole Ross, plant manager", "", 9))
+    C.text_pdf(os.path.join(target, fn), "Monthly operating reports 2026", blocks, author="Cole Ross")
     return fn
 
 
@@ -258,7 +258,7 @@ def write_sem(t, target):
             c.font = Font(bold=True)
         for row in sorted(wk["rows"], key=lambda x: x["t"]):
             ws.append([row["t"].strftime("%Y-%m-%d"), row["t"].strftime("%H:%M:%S"), row["label"],
-                       round(row["x"], 1), round(row["y"], 1), round(row["ppm_logged"], 0), 3, "JL"])
+                       round(row["x"], 1), round(row["y"], 1), round(row["ppm_logged"], 0), 3, "JG"])
     ws = wb.create_sheet("Re-monitoring")
     ws.append(["Breck Hollow - re-monitoring of marked exceedance locations after repair. Position by handheld GPS (WGS84) as found on the day."])
     ws["A1"].font = Font(bold=True)

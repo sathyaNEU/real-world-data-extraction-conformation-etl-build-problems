@@ -71,7 +71,7 @@ def write_brief(res, path):
     g = res["call"]
     c = canvas.Canvas(path, pagesize=letter, invariant=1)
     c.setTitle("Breck Hollow methane charge 2026")
-    c.setAuthor("Heidi Dillon")
+    c.setAuthor("Bianca Erickson")
     c.setCreator("")
     y = 262 * mm
     L = 18 * mm
@@ -86,7 +86,7 @@ def write_brief(res, path):
 
     para("Quarrow Valley Regional Solid Waste Authority", 11, True, after=0.6)
     para("Environmental Compliance", 9, after=2.4)
-    para("To: Finance Committee     From: Heidi Dillon, Environmental Compliance     Date: 15 January 2027", 9)
+    para("To: Finance Committee     From: Bianca Erickson, Environmental Compliance     Date: 15 January 2027", 9)
     para("Breck Hollow's 2026 methane return falls in Tier 2: carry $118,000 in the 2027 budget", 10.5, True)
     para("Breck Hollow Landfill released about %d tonnes of methane in 2026, %d t above the Tier 2 threshold of the "
          "state's closed landfill methane charge and %d t below Tier 3. The charge is $118,000, which the Department "

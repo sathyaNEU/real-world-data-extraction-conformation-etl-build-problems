@@ -61,7 +61,8 @@ def chart_png(res):
                 va="center", ha="left", fontsize=7.6, color=INK)
     ax.set_yticks(range(len(vals)))
     ax.set_yticklabels(labels, fontsize=7.4)
-    ax.set_xlim(0, max(vals) * 1.42)
+    ax.set_xlim(0, max(vals) * 1.78)
+    ax.set_xticks([x for x in range(0, int(max(vals)) + 2)])
     ax.xaxis.set_major_formatter(FuncFormatter(lambda x, p: "%.0f" % x if x else "0"))
     ax.set_xlabel("2027 allocation (USD millions)", fontsize=8)
     ax.grid(axis="x", color=GRID, linewidth=0.6)
@@ -101,7 +102,8 @@ def write_board_pdf(res, path):
 
     memo = Table([["To", "Board of Directors"], ["From", "%s, Director of Provider Contracting and Payment" % AUTHOR],
                   ["Date", "16 October 2026, for the meeting of 28 October 2026"],
-                  ["Subject", "2027 in-home support allocations under Schedule B"]], colWidths=[0.8 * inch, 5.7 * inch])
+                  ["Subject", "2027 in-home support allocations under Schedule B"]], colWidths=[0.8 * inch, 5.7 * inch],
+                 hAlign="LEFT")
     memo.setStyle(TableStyle([("FONT", (0, 0), (0, -1), "Helvetica-Bold", 8.6), ("FONT", (1, 0), (1, -1), "Helvetica", 8.6),
                               ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor(INK)), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5),
                               ("LINEBELOW", (0, -1), (-1, -1), 0.6, colors.HexColor(INK))]))
@@ -124,7 +126,7 @@ def write_board_pdf(res, path):
     for r, a in zip(rg, ag):
         rows.append([r, a, "{:,}".format(res["counts"][r]), "{:,}".format(res["alloc"][r])])
     rows.append(["Total", "", "{:,}".format(res["covered"]), "{:,}".format(sum(res["alloc"].values()))])
-    t = Table(rows, colWidths=[1.15 * inch, 2.95 * inch, 1.05 * inch, 1.35 * inch])
+    t = Table(rows, colWidths=[1.15 * inch, 2.95 * inch, 1.05 * inch, 1.35 * inch], hAlign="LEFT")
     t.setStyle(tstyle())
     story += [Spacer(1, 2), t,
               Paragraph("Allocation: the 2027 Budget times the Region's Covered Members over all Covered Members, rounded "
@@ -142,14 +144,15 @@ def write_board_pdf(res, path):
     for a in ag:
         vrows.append([a] + ["{:,}".format(res["visits"][(a, q)]) for q in (1, 2, 3, 4)] +
                      ["{:,}".format(res["visits_total"][a]), "%.1f" % res["minutes"][a]])
-    vt = Table(vrows, colWidths=[2.75 * inch, 0.55 * inch, 0.55 * inch, 0.55 * inch, 0.55 * inch, 0.65 * inch, 0.9 * inch])
+    vt = Table(vrows, colWidths=[2.75 * inch, 0.55 * inch, 0.55 * inch, 0.55 * inch, 0.55 * inch, 0.65 * inch, 0.9 * inch],
+               hAlign="LEFT")
     vt.setStyle(tstyle(1, total=False))
     story += [vt, Paragraph("Visits by calendar quarter of the date of service; average length from arrival to departure. "
                             "Source: in-home support claims for 2025, agencies by the provider directory.", small)]
     srows = [["Region of the rendering practice", "Plan-paid spend (USD thousands)"]]
     for r in rg:
         srows.append([r, "{:,.1f}".format(res["spend_k"][r])])
-    st = Table(srows, colWidths=[2.75 * inch, 2.0 * inch])
+    st = Table(srows, colWidths=[2.75 * inch, 2.0 * inch], hAlign="LEFT")
     st.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.2), ("FONT", (0, 1), (-1, -1), "Helvetica", 8.2),
                             ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor(INK)), ("ALIGN", (1, 0), (1, -1), "RIGHT"),
                             ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5), ("TOPPADDING", (0, 0), (-1, -1), 2.5)]))

@@ -33,15 +33,13 @@ def main():
     L.append("**Rathgarvan will carry about %s commuter boardings on an average ordinary weekday in 2029 (to the nearest "
              "100), below the %s that justifies the full scheme, so build the reduced scheme.** A boarding is a journey "
              "to work made on the day, and the catchment's census commuters do not go in every weekday: the panel "
-             "shows the Docklands commuters going in on %s days a week, the hospital's on %s and Carrigboy's on %s. "
-             "Counting each census commuter as a boarding every weekday gives about %s and the full scheme.\n"
-             % (fmt(F["total_boardings"]), fmt(F["threshold"]), "%.1f" % F["zone_days_per_week"]["KW02"],
-                "%.1f" % F["zone_days_per_week"]["KW03"], "%.1f" % F["zone_days_per_week"]["KW05"],
-                fmt(F["census_daily_route_rounded"])))
+             "shows the Docklands commuters going in on fewer than half of ordinary weekdays and the hospital's and "
+             "Carrigboy's on fewer than three in five. Counting each census commuter as a boarding every weekday gives "
+             "about %s and the full scheme.\n"
+             % (fmt(F["total_boardings"]), fmt(F["threshold"]), fmt(F["census_daily_route_rounded"])))
     L.append("## 2. Critical Components\n")
-    L.append("1. Weekday commuter boardings in 2029: **%s** (to the nearest 100; %s before rounding), %s below the "
-             "full-scheme threshold of %s." % (fmt(F["total_boardings"]), "%.1f" % F["total_boardings_exact"],
-                                                fmt(F["gap_to_threshold"]), fmt(F["threshold"])))
+    L.append("1. Weekday commuter boardings in 2029: **%s** (to the nearest 100), about %s below the full-scheme "
+             "threshold of %s." % (fmt(F["total_boardings"]), fmt(F["gap_to_threshold_rounded"]), fmt(F["threshold"])))
     L.append("2. Scope: **reduced scheme**.")
     L.append("3. Boardings by workplace zone (nearest 10): " + "; ".join(
         "%s %s" % (ZN[k], fmt(F["zone_boardings"][k])) for k in z) + ".\n")
@@ -53,11 +51,11 @@ def main():
     L.append("3. Each device's usual workplace: the zone (cell lookup, largest area share) of most of its stays of four "
              "hours or more away from its home cell, where it has at least three; each identifier over its own first "
              "to last day.")
-    L.append("4. Share of ordinary weekdays each zone's commuters travel there (commuting days over observed days): "
-             + "; ".join("%s %s per cent" % (k, "%.1f" % F["zone_weekday_share"][k]) for k in sorted(F["zone_weekday_share"]))
-             + ".")
-    L.append("5. Boardings per zone = census commuters x station share (refresh Table 2) x that share; summed, %s; "
-             "against the threshold of %s, the reduced scheme." % ("%.1f" % F["total_boardings_exact"], fmt(F["threshold"])))
+    L.append("4. Share of ordinary weekdays each zone's commuters travel there (commuting days over observed days, per "
+             "zone): the zones span %d to %d per cent." % tuple(F["zone_weekday_share_range_pct"]))
+    L.append("5. Boardings per zone = census commuters x station share (refresh Table 2) x that share; the zones "
+             "summed, then rounded once to the nearest 100, give %s; against the threshold of %s, the reduced scheme."
+             % (fmt(F["total_boardings"]), fmt(F["threshold"])))
     L.append("6. Arrival shares: on each commuting day, the first stay in any cell of the commuter's workplace zone "
              "(car park, gate or hub stays included), Irish time, from 07:30 up to and including 09:30, over the zone's "
              "commuting days on ordinary weekdays.")

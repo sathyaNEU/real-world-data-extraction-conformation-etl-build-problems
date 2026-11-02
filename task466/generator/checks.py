@@ -514,7 +514,7 @@ check("realism engine low-gas trips do not all share the outage log's stop minut
 flr = [xx for xx in ev if xx["unit"] == "FLR" and xx["code"] == "FLARE START"]
 check("realism the flare relights at a believable rate (anti-short-cycle), not every minute", 40 <= len(flr) <= 400,
       "%d ignitions in 2026" % len(flr))
-people = ["Heidi Dillon", "Tina Hays", "Jeffrey Lamb"]
+people = ["Bianca Erickson", "Cole Ross", "Jaime Galloway"]
 card = json.load(open(os.path.join(TASK, "..", ".claude", "skills", "fingerprint", "cards", "task466.json")))
 check("realism every persona is the card's", sorted(people) == sorted(card["world"]["people"]), "")
 

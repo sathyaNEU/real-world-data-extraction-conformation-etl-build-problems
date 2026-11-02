@@ -314,6 +314,21 @@ Mirror leakage: 28.9 per cent of ask weight (measured by `generator/ceiling.py` 
 Pair ceiling: 51.2 (measured by `generator/ceiling.py` on the cut pack).
 Measured by: generator/ceiling.py
 
+## Leak check
+
+`leak.py --asof 2027-01-12` on the final cut (target.zip 07e6a187): REVIEW, no LEAK. Each REVIEW line ruled here; the
+isolated reader is the main session's stage 4.
+
+- Sweep 4, `FS-3_fuel_systems_standard.pdf` (5 stump terms): harmless. The standard's own clauses carry them (the
+  monthly inventory reconciliation, the bill of lading as the delivered quantity, the temperature coefficients, the
+  register heights in 3.4); `generator/checks.py` asserts it names no estimator, interval, meter error or anchor.
+- Sweep 6, `atg_deliveries_2026.csv`, `atg_inventory_2026.csv`, `dock_sales_legacy_2026.csv`,
+  `monthly_closeouts_2026.xlsx`, `tank_register.xlsx` (the eight marina names beside numbers): harmless. The names are
+  the marinas every record belongs to; no file ranks tanks or marinas on chart error, and the close-outs are the
+  monthly tests every tank passes.
+- Sweep 8, `temp_f`, `start_temp_f`, `end_temp_f`, `product_temp_f`: harmless. Product temperature in degrees F as the
+  gauge and the distributor export it; the sweep reads `temp` as temporary.
+
 ## Architecture 1 record
 
 A regional public health service's wastewater surveillance of SARS-CoV-2 at 24 treatment plants (epidemiology-public-health, disease-surveillance-outbreak-anomaly-detection), shipped 2026-10-18 with no portal result (judge DETERMINISTIC on 4733488b, `determinism_check_report_arch1.md`; leak reader `leak_check_report_arch1.md`) and re-rooted 2026-11-02 at the Batch 3 queue reset: one architecture per world, so the wastewater world is closed. Its note as it stood, headings demoted.

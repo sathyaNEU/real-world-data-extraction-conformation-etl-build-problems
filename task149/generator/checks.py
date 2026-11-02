@@ -233,6 +233,16 @@ def main():
     check("realism: the golden files exist", all(os.path.exists(os.path.join(GOLDEN, f)) for f in (GD.BOOK, GD.MEMO)),
           "")
 
+    # ---------------- the write-up states nothing the honest family splits on
+    sub = open(os.path.join(TASK, "submission.md")).read() if os.path.exists(os.path.join(TASK, "submission.md")) else ""
+    lo, hi = F["zone_weekday_share_range_pct"]
+    check("write-up: the zones' weekday shares are stated as the span over every licensed filter (%d to %d per cent)"
+          % (lo, hi), ("span %d to %d per cent" % (lo, hi)) in sub, "")
+    check("write-up: no unrounded total and no one-decimal zone share in the write-up",
+          "%.1f" % gold not in sub and not re.search(r"KW\d\d \d+\.\d per cent", sub), "")
+    check("write-up: the total and the gap are stated at the nearest 100 only",
+          "**1,300** (to the nearest 100), about 100 below" in sub and F["gap_to_threshold_rounded"] == 100, "")
+
     fails = [r for r in RESULTS if not r[1]]
     for name, ok, detail in RESULTS:
         print("%-4s %s%s" % ("PASS" if ok else "FAIL", name, ("  [" + detail + "]") if detail else ""))

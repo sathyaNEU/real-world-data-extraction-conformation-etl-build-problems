@@ -52,8 +52,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "atg_inventory_2026.csv: the marinas' automatic tank gauges' inventory and delivery reports for every tank, 2026",
-    "rows": 0,
+    "file": "atg_inventory_2026.csv: the marinas' automatic tank gauges' two-hourly inventory reports for every tank, 2026",
+    "rows": 83728,
     "entity": "one gauge reading of one tank",
     "grain": "tank x reading",
     "source": "synthetic"

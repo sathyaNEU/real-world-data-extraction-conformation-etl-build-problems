@@ -38,17 +38,28 @@ def pct(x):
     return int(round(100 * x))
 
 
+def share_range(R, zones):
+    """The span of the zones' shares of ordinary weekdays travelled, over every licensed workplace and commuting-day
+    filter, in whole per cents: the one statement of the shares that no filter splits on."""
+    cs = {z: R["census"][z] * R["shares"][z] for z in zones}
+    vals = [R["freq"][z] for z in zones]
+    for k, v in R["variants"].items():
+        if k == "with_midterm":
+            continue
+        vals += [v["rows"][z] / cs[z] for z in zones]
+    return [int(100 * min(vals) + 0.5), int(100 * max(vals) + 0.5)]
+
+
 def figures(R):
     zones = [z for z in sorted(R["shares"]) if R["shares"][z] > 0]
     b_zones = [z for z in sorted(R["shares"]) if R["shares"][z] >= 0.10]
     f = {
-        "total_boardings": r100(R["golden"]), "total_boardings_exact": round(R["golden"], 1),
+        "total_boardings": r100(R["golden"]),
         "scope": "reduced scheme", "threshold": R["threshold"],
         "zone_boardings": {z: r10(R["boardings"][z]) for z in zones},
         "zone_commuters": {z: R["census"][z] for z in zones},
         "zone_share": {z: R["shares"][z] for z in zones},
-        "zone_weekday_share": {z: round(100 * R["freq"][z], 1) for z in zones},
-        "zone_days_per_week": {z: round(5 * R["freq"][z], 2) for z in zones},
+        "zone_weekday_share_range_pct": share_range(R, zones),
         "arrival_share": {z: pct(R["arrivals"][z]) for z in b_zones},
         "station_ratio": {s: pct(R["station_ratios"][s]) for s in ORDER},
         "station_means_2027": {s: int(round(R["station_means"][s][0])) for s in ORDER},
@@ -58,7 +69,7 @@ def figures(R):
         "pooled_route": round(R["pooled_route"], 1), "network_route": round(R["network_route"], 1),
         "lisnagry_route": round(R["lisnagry_route"], 1), "network_ratio_pct": round(100 * R["network_ratio"], 1),
         "pooled_weekday_share_pct": round(100 * R["f_pooled"], 1),
-        "gap_to_threshold": int(round(R["threshold"] - R["golden"])),
+        "gap_to_threshold_rounded": r100(R["threshold"] - R["golden"]),
         "census_commuters_served": sum(R["census"][z] for z in zones),
         "conventions": {"rounding_steps": [10, 100], "panel_first_day": 6, "share_table": 2,
                         "panel_last_day": 26, "arrival_window": ["07:30", "09:30"]},

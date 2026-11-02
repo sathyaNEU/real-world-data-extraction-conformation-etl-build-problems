@@ -36,6 +36,9 @@ def fix_zip(path, created=b"2026-10-31T09:00:00Z", modified=b"2026-10-31T09:12:0
             # the workbook library stamps the save time; the producing system's export carries its own
             data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>" + modified + rb"\g<2>", data)
             data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>" + created + rb"\g<2>", data)
+        if name == "docProps/app.xml":
+            data = re.sub(rb"(<Application>)[^<]*(</Application>)", rb"\g<1>Microsoft Excel\g<2>", data)
+            data = re.sub(rb"(<AppVersion>)[^<]*(</AppVersion>)", rb"\g<1>16.0300\g<2>", data)
         fixed.append((name, data))
     entries = fixed
     tmp = path + ".tmp"

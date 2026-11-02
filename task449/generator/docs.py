@@ -206,7 +206,8 @@ def write_employer_terms(tgt):
     st.append(Paragraph("1. Employer accounts", h2))
     st.append(Paragraph(
         "To post a job you need a Workshore employer account. Each account has an employer number, which appears on "
-        "every posting and on every vacancy Workshore Employer Services manages for you. Posting is free.", body))
+        "every posting and on every vacancy Workshore Employer Services manages for you. An employer with more than "
+        "one location can hold an account for each. Posting is free.", body))
     st.append(Paragraph("2. Postings you publish yourself", h2))
     st.append(Paragraph(
         "You can publish a posting yourself from your employer account. A posting stays on the board for 42 days "
