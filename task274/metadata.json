@@ -1,0 +1,180 @@
+{
+  "task": "task274",
+  "title": "Pretrial diversion pilot: the 2027 agreement",
+  "domain": "Criminology & Justice",
+  "task_type": "intervention-policing-policy-evaluation",
+  "objective": "Experiment & Causal Analysis",
+  "deliverables": [
+    "diversion_renewal_memo_2027.docx",
+    "conviction_by_arm_2027.png"
+  ],
+  "distractors": [
+    "district_court_annual_statistics_fy2025.pdf",
+    "county_jail_population_2025_2026.csv"
+  ],
+  "files": [
+    {
+      "path": "board_resolution_2025_31.pdf",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "cms_case_charges.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "cms_docket_events_2026.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "county_jail_population_2025_2026.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "district_court_annual_statistics_fy2025.pdf",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "diversion_lottery_draws_2025_2026.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "legacy_case_charges.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "legacy_docket_events_2025_2026.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "legacy_event_codes.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-01.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-02.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-03.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-04.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-05.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-06.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-07.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/NCJS_Larkmoor_Participants_2026-08.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Aug2025.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Dec2025.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Jan2026.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Jul2025.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Nov2025.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Oct2025.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_reports/Nethercote_Monthly_Report_Sep2025.xlsx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "nethercote_services_agreement_2025.pdf",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "penal_code_conversion_table_2026.csv",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    },
+    {
+      "path": "pretrial_diversion_policy_pdu_2026_01.docx",
+      "source": "synthetic: generated for this task by task274/generator/build.py",
+      "date": "2026-11-02",
+      "license": "CC0-1.0"
+    }
+  ],
+  "notes": "Every person, organization, place and record is fictional."
+}

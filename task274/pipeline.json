@@ -1,35 +1,38 @@
 {
   "task": "task274",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "criminology-justice/intervention-policing-policy-evaluation",
   "objective": "experiment-causal",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-02",
-  "stump": "A competent analyst reads the share convicted in the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, by lottery result and renews Nethercote's contract at full scale on a cut of about 27 to 30 points; offered defendants still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only each pending offered case completed through its programme month's chance of termination and the conviction rate terminated cases reach files a cut of about 20 points, renewal at the pilot's scale.",
+  "stump": "A competent analyst analyses the lottery as randomised, reads each arm's cumulative incidence of conviction at the longest follow-up and renews at full scale on a cut of 31 points (the recorded shares give 36); the offer defers its own outcome, since a participant is convicted only after the program terminates them and a terminated case is then tried on the stipulated record months later, and the program terminates almost a quarter of those who reach its final review, so only completing every open offered case through the program's month-by-month termination chance, the final review included, and the conviction rate terminated cases reach files a cut of 18 points and renewal at the pilot's scale.",
   "architecture": 3,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-02"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW 2026-11-02 on the final cut (no LEAK): the resolution lists all three tiers; generic vocabulary in the resolution and agreement; an offense title read as a boolean; scheduled program end dates past the export date; each ruled in the design note",
+    "reader": "pass 1: no decisive-step sentence, no ranking or describing file, no answer figure; Q6 rule-application concern settled by measurement (R3a, R3b); realism tells fixed. Re-read after the resolution edit: nothing names the decisive step (the nearest sentence is the filed WHAT), Q6 an analytical choice, the restitution flag is SF20; no fix"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task172 v2 0.09"
+    "heart": "WARN 2026-11-02 on the final cut (question form against task456 in the local window, pushed out by the siblings registered before this card); nearest task266 v1 stump 0.07, task172 v2 driver 0.07",
+    "surface": "303 builds screened, 0 promoted, nearest 0.040",
+    "nearest": "task172 v2 0.07"
   },
   "judge": {
-    "verdict": null,
-    "disposition": null,
-    "report": ""
+    "verdict": "pass 1: DETERMINISTIC (thread APPROVE), judge agent FIX_NOW on the estimand wording, repaired at authority; pass 2: DETERMINISTIC",
+    "disposition": "APPROVE (pass 2); residual reading of the cohort ending on the cut closed by the data as SF23 (17.36, same call)",
+    "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+    "gate_h": "domain pass, layers pass, decisive_step analytical",
+    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
   },
   "returned": [],
   "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-02",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -49,10 +52,20 @@
     {
       "architecture": 3,
       "drawn": "2026-11-02",
-      "fate": null,
+      "fate": "shipped 2026-11-02, pending the portal",
       "objective": "experiment-causal",
       "note": "drawn 2026-11-02, re-registered 00:52:16Z after the sibling check (context artifact, deliverables, question form and four personas redrawn)"
     }
   ],
-  "retask": "2026-11-01, the author: objective moved from descriptive-distribution to experiment-causal (retirement not taken); START_HERE.md not edited, the range fixes which objective a number belongs to and nothing else"
+  "retask": "2026-11-01, the author: objective moved from descriptive-distribution to experiment-causal (retirement not taken); START_HERE.md not edited, the range fixes which objective a number belongs to and nothing else",
+  "gates": {
+    "checks": "98 of 98",
+    "verify": "0 problems",
+    "rebuild": "byte-identical (two rebuilds, identical to the judged pack)",
+    "figures_check": "exit 0, 51 figures",
+    "precut": "exit 0, 61 checks",
+    "voice_check": "exit 0",
+    "ceiling": "pair 28.5, mirror 0.0",
+    "container_audit": "clean on target and golden"
+  }
 }

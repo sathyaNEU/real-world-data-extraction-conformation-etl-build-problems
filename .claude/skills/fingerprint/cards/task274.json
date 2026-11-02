@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "renew_replace_lapse",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "renew the agreement for 2027 at the pilot's scale (a cut of 18 percentage points)",
+  "answer_source": "submission.md block 1; generator/figures.json",
   "gap": [
     "time"
   ],
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the docket and reads the board's renewal resolution compares, by lottery result, the share convicted on the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, and files a cut of about 27 to 30 points that renews the contract at full scale; offered cases still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only completing each pending offered case through its programme month's failure chance and the conviction rate terminated cases reach files about 20 points, renewal at the pilot's scale.",
+  "analyst_test": "A strong analyst who reads every field and the Board's resolution correctly analyses the lottery as randomised and reads each arm's cumulative incidence of conviction at the longest follow-up, a cut of 31 points that renews at full scale (the recorded shares, 36 points, file the same tier); open offered cases convict only after terminations the program has not yet made, so only completing them through the program's month-by-month termination chance, its final review included, and the terminated cases' own conviction rate files 18 points and renewal at the pilot's scale.",
   "domain_test": "The deciding quantity is the diversion lottery's effect on the share of eligible defendants eventually convicted in the referred case, read the way criminal justice evaluation reads a diversion offer (everyone offered against everyone not offered) through the stages pre-plea diversion creates; with another field's nouns the deferred prosecution, the termination that returns a case to the trial calendar and the conviction that follows it stop making sense.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:a lottery's effect on an outcome the offered arm reaches only by failing a fixed-length deferral, completed through the deferral's own month-by-month failure hazard and the outcome rate failed cases reach",
@@ -47,11 +47,11 @@
   "role_family": "policy_adviser",
   "scoring_unit": "per resolved case",
   "spine": {
-    "file": "docket_events (two extracts)",
-    "rows": 0,
+    "file": "legacy_docket_events_2025_2026.csv and cms_docket_events_2026.csv (the court's two docket extracts, overlapping after the cutover)",
+    "rows": 102749,
     "entity": "one event on one criminal case (filing, hearing, diversion entry, termination, completion, disposition)",
     "grain": "case x event",
-    "source": "synthetic"
+    "source": "synthetic (constructed in the layout of a county district court's legacy docket extract and its successor case management system's event export)"
   },
   "forum": "council_or_assembly",
   "forcing_event": "purchase_order_or_contract",
@@ -83,8 +83,8 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "A lottery's effect on a final outcome that offered units reach only by failing a fixed-length deferral stage, after which the outcome follows on a slow calendar, so at the cut most offered units are still inside the stage; the outcome as recorded, a cumulative incidence read to the longest follow-up, or the failures so far taken as final each count pending units as non-outcomes, and only each pending unit's chance of failing in its remaining stage months, from the stage's own month-by-month hazard, times the outcome rate failed units reach gives the effect.",
-  "driver_concrete": "Each offered defendant still in the programme on 31 August 2026 completed through the provider's termination hazard by programme month to month twelve and the conviction rate terminated cases reach back on the trial calendar, which is higher than for cases never diverted, giving a cut of about 20 points and renewal at the pilot's scale rather than full scale.",
-  "stump": "A competent analyst reads the share convicted by the cut, or the cumulative incidence at the longest follow-up, and renews at full scale on a cut of about 27 to 30 points; offered cases still inside their twelve months fail at the provider's month-by-month rate and terminated cases convict more often than cases never diverted, so only each pending case completed through its programme month's failure chance and the terminated cases' own conviction rate files about 20 points and renewal at the pilot's scale.",
+  "driver_concrete": "Each offered defendant whose case is open on 31 August 2026 completed through the program's termination chance by program month to the end of the twelve-month term, the final review included (23 per cent of those who reach it), and the conviction rate terminated cases reach on the stipulated record (91 per cent against 56 for cases never offered), giving a cut of 18 points and renewal at the pilot's scale rather than the 31 points the arms' recorded curves give.",
+  "stump": "A competent analyst analyses the lottery as randomised, reads each arm's cumulative incidence of conviction at the longest follow-up and renews at full scale on a cut of 31 points (the recorded shares give 36); the offer defers its own outcome, since a participant is convicted only after the program terminates them and a terminated case is then tried on the stipulated record months later, and the program terminates almost a quarter of those who reach its final review, so only completing every open offered case through the program's month-by-month termination chance, the final review included, and the conviction rate terminated cases reach files a cut of 18 points and renewal at the pilot's scale.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task133": "task133 conditions a filed cumulative default curve on each loan's survival to date to price a forward loss allowance; this reads a lottery's effect, the offered arm completed through the deferral stage's own month-by-month termination hazard rebuilt from the provider's monthly records and the conviction rate terminated cases reach back on the trial calendar, with no filed curve and a contrast against the arm never offered"
