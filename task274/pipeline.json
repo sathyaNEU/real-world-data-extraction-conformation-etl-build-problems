@@ -1,57 +1,58 @@
 {
- "task": "task274",
- "status": "DESIGN",
- "domain": "criminology-justice/intervention-policing-policy-evaluation",
- "objective": "experiment-causal",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-02",
- "stump": "A competent analyst reads the share convicted in the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, by lottery result and renews Nethercote's contract at full scale on a cut of about 27 to 30 points; offered defendants still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only each pending offered case completed through its programme month's chance of termination and the conviction rate terminated cases reach files a cut of about 20 points, renewal at the pilot's scale.",
- "architecture": 3,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "task172 v2 0.09"
- },
- "judge": {
-  "verdict": null,
-  "disposition": null,
-  "report": ""
- },
- "returned": [],
- "resume": "",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
- "architectures": [
-  {
-   "architecture": 1,
-   "drawn": "2026-10-23",
-   "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
+  "task": "task274",
+  "status": "DESIGN",
+  "domain": "criminology-justice/intervention-policing-policy-evaluation",
+  "objective": "experiment-causal",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-11-02",
+  "stump": "A competent analyst reads the share convicted in the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, by lottery result and renews Nethercote's contract at full scale on a cut of about 27 to 30 points; offered defendants still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only each pending offered case completed through its programme month's chance of termination and the conviction rate terminated cases reach files a cut of about 20 points, renewal at the pilot's scale.",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
   },
-  {
-   "architecture": 2,
-   "drawn": "2026-10-23",
-   "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
+  "leak": {
+    "leak_py": "",
+    "reader": ""
   },
-  {
-   "architecture": 3,
-   "drawn": "2026-11-02",
-   "fate": null,
-   "objective": "experiment-causal"
-  }
- ],
- "retask": "2026-11-01, the author: objective moved from descriptive-distribution to experiment-causal (retirement not taken); START_HERE.md not edited, the range fixes which objective a number belongs to and nothing else"
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task172 v2 0.09"
+  },
+  "judge": {
+    "verdict": null,
+    "disposition": null,
+    "report": ""
+  },
+  "returned": [],
+  "resume": "",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
+  "architectures": [
+    {
+      "architecture": 1,
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
+    },
+    {
+      "architecture": 2,
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
+    },
+    {
+      "architecture": 3,
+      "drawn": "2026-11-02",
+      "fate": null,
+      "objective": "experiment-causal",
+      "note": "drawn 2026-11-02, re-registered 00:52:16Z after the sibling check (context artifact, deliverables, question form and four personas redrawn)"
+    }
+  ],
+  "retask": "2026-11-01, the author: objective moved from descriptive-distribution to experiment-causal (retirement not taken); START_HERE.md not edited, the range fixes which objective a number belongs to and nothing else"
 }

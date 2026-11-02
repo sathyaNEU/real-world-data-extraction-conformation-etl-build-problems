@@ -29,7 +29,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who cleans the docket and reads the board's renewal resolution compares, by lottery result, the share convicted on the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, and files a cut of about 27 to 30 points that renews the contract at full scale; offered cases still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only completing each pending offered case through its programme month's failure chance and the conviction rate terminated cases reach files about 20 points, renewal at the pilot's scale.",
   "domain_test": "The deciding quantity is the diversion lottery's effect on the share of eligible defendants eventually convicted in the referred case, read the way criminal justice evaluation reads a diversion offer (everyone offered against everyone not offered) through the stages pre-plea diversion creates; with another field's nouns the deferred prosecution, the termination that returns a case to the trial calendar and the conviction that follows it stop making sense.",
@@ -69,19 +69,19 @@
       "Strandham"
     ],
     "people": [
-      "Kendra Dennis",
-      "Alexis Camacho",
-      "Christopher Riggs",
+      "Savannah Jordan",
+      "Roy Goodwin",
+      "Melanie Nielsen",
       "Anita Aguilar",
-      "Tara Gilbert"
+      "Natalie Hansen"
     ]
   },
   "deliverables": [
-    "diversion_renewal_2027.pdf",
-    "diversion_pilot_tables.xlsx"
+    "diversion_renewal_memo_2027.docx",
+    "conviction_by_arm_2027.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "what",
   "driver": "A lottery's effect on a final outcome that offered units reach only by failing a fixed-length deferral stage, after which the outcome follows on a slow calendar, so at the cut most offered units are still inside the stage; the outcome as recorded, a cumulative incidence read to the longest follow-up, or the failures so far taken as final each count pending units as non-outcomes, and only each pending unit's chance of failing in its remaining stage months, from the stage's own month-by-month hazard, times the outcome rate failed units reach gives the effect.",
   "driver_concrete": "Each offered defendant still in the programme on 31 August 2026 completed through the provider's termination hazard by programme month to month twelve and the conviction rate terminated cases reach back on the trial calendar, which is higher than for cases never diverted, giving a cut of about 20 points and renewal at the pilot's scale rather than full scale.",
   "stump": "A competent analyst reads the share convicted by the cut, or the cumulative incidence at the longest follow-up, and renews at full scale on a cut of about 27 to 30 points; offered cases still inside their twelve months fail at the provider's month-by-month rate and terminated cases convict more often than cases never diverted, so only each pending case completed through its programme month's failure chance and the terminated cases' own conviction rate files about 20 points and renewal at the pilot's scale.",
@@ -143,11 +143,5 @@
     }
   ],
   "notes": "Architecture 3 after the 2026-11-01 re-tasking to experiment-causal.",
-  "registered": "2026-11-02T00:46:45Z",
-  "shell": {
-    "question form": "which",
-    "second-sentence opener": "the",
-    "rounding opener": "put",
-    "deliverable set": "xlsx"
-  }
+  "registered": "2026-11-02T00:52:16Z"
 }
