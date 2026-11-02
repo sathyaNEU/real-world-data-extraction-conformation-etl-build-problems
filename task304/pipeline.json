@@ -1,25 +1,27 @@
 {
  "task": "task304",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "epidemiology-public-health",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-01",
- "stump": "",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-02",
+ "stump": "Assessing exposure by job title (AS/NZS 1269.1's job-based strategy) files Larapinta at 66 workers brought below 85 dB(A) with Kewdale at none; each worker's own induct hours, from the induct stations' operator sessions joined to people through the badge register, file Kewdale at 102 (Truganina 69), because Kewdale's induct work is shared between its inductors and the loaders of its rotation.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02",
+  "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-02 on d1946edf, no LEAK; six lines (sweeps 3 and 4 on the three PDFs) ruled harmless in the note's Build record",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-11-02 (three_rules.strategy_risk, overuse.gate_g, repeat.question_form; task308 differentiated)",
+  "nearest": "0.06 task310",
+  "surface": "2026-11-02: no hard tell; three pairs promoted on card axes for the author's adjudicated clone check (task302 and task306: gap objective and pick_one_of_n, two numbers apart; task308: gap, G14, Gate G and decision type, differentiated on the card)"
  },
  "judge": {
   "verdict": "",
@@ -40,7 +42,7 @@
    "commit": ""
   }
  ],
- "resume": "",
+ "resume": "stage 4 (main session): the leak reader and the determinism judge on target.zip d1946edf; every finding fixed in the generator, then stage 5",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
@@ -91,5 +93,21 @@
   "stump": "A competent analyst carries the van's 2026 yields per test to each setting's 2027 pool and files the needle exchange pharmacies' new registrants at about 130 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test and treat reaches every needle exchange pharmacy on 1 April 2027, where the three pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.168 elsewhere, and 737 of the hostels' 905 residents were tested by the van in 2026.",
   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (a determinism return reported on architecture 3; the find-and-treat world is closed)",
   "reports": "determinism_check_report_arch3.md, leak_check_report_arch3.md"
+ },
+ "target_zip": "d1946edf",
+ "as_of": "2026-11-27",
+ "gates_final_cut": {
+  "date": "2026-11-02",
+  "target_zip": "d1946edf",
+  "checks": "74 of 74",
+  "verify": "14 of 14",
+  "rebuilds": "two byte-identical",
+  "figures_check": "46 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "heart": "WARN",
+  "surface": "3 promoted on card axes, no hard tell",
+  "pair_ceiling": "45.2 (mirror leakage 25.0 per cent, generator/ceiling.py)"
  }
 }

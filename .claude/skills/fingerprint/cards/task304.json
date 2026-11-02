@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Kewdale, 102 workers brought from at or above 85 dB(A) to below it (runner-up Truganina 69; the job-based default files Larapinta 66 with Kewdale at none)",
+  "answer_source": "task304/submission.md and task304/generator/figures.json",
   "gap": [
     "objective",
     "population"
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and rule correctly assesses exposure by job title, each title at its zone's level for the shift as the job-based strategy of AS/NZS 1269.1 does, and files Larapinta with about 57 workers brought below 85 dB(A) and Kewdale at none, where each worker's own induct hours, summed from the induct stations' log-on sessions through the badge register, file Kewdale at about 80.",
+  "analyst_test": "A strong analyst who reads every field and rule correctly assesses exposure by job title, each title at its zone's level for the shift as the job-based strategy of AS/NZS 1269.1 does, and files Larapinta with 66 workers brought below 85 dB(A) and Kewdale at none, where each worker's own induct hours, summed from the induct stations' log-on sessions through the badge register, file Kewdale at 102.",
   "domain_test": "The call turns on each worker's daily noise exposure, LAeq,8h, the energy average of the A-weighted levels of the places they worked over the shift, set against the 85 dB(A) exposure standard before and after one hub's induct area is treated; with another field's nouns in there is no logarithmic energy average over a shift, no exposure standard and no treated zone, so nothing decides.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:similar-exposure-group-broken-by-informal-rotation",
@@ -49,8 +49,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "units served",
   "spine": {
-    "file": "induct_logons_2026.csv",
-    "rows": 0,
+    "file": "wcs_operator_sessions_export_20261116.csv",
+    "rows": 44128,
     "entity": "one row is one operator session on an induct station",
     "grain": "badge x station x session",
     "source": "constructed (seeded generator)"
@@ -78,8 +78,8 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is how many members of each group sit above a limit on a per-person exposure that is an energy average of the levels of the places each spent the shift in; the field's method gives every member the level of the place their role names, but the loud place's hours are shared out among members by an informal rotation that no role record shows, so the role-based exposure misplaces members on both sides of the limit before and after that place is treated, and only each member's own hours, summed from a log of where their badge was signed on and joined to people through a dated register of badge holders, counts who crosses.",
-  "driver_concrete": "Each worker's LAeq,8h is built from their own induct hours, summed from the induct stations' log-on sessions and joined to people through the badge register, not from their job title's zone; at Kewdale the inductors and forty loaders split every shift's induct work half and half, so about eighty workers sit near 91.6 dB(A) before the enclosure and near 84.2 after it, where the job-title assessment puts forty inductors at 94.4 and 85.9 and brings none below the standard.",
-  "stump": "A competent analyst assesses each worker by job title at the zone that title names for the shift (the job-based strategy), files Larapinta at about 57 workers brought below 85 dB(A) and puts Kewdale last at none; the step that lands it there is giving every worker their title's induct hours when Kewdale's induct hours are shared half and half between its inductors and forty loaders, which only each worker's own log-on sessions show.",
+  "driver_concrete": "Each worker's LAeq,8h is built from their own induct hours, summed from the induct stations' log-on sessions and joined to people through the badge register, not from their job title's zone; at Kewdale the 54 inductors and 48 rotation loaders share the induct work at about 2.8 hours a shift each, so 102 workers sit near 90.7 dB(A) before the enclosure and near 83.7 after it, where the job-title assessment puts the inductors at 94.3 and 85.8 and brings none below the standard.",
+  "stump": "A competent analyst assesses each worker by job title at the zone that title names for the shift (AS/NZS 1269.1's job-based strategy), files Larapinta at 66 workers brought below 85 dB(A) and puts Kewdale at none; the step that lands it there is giving every worker their title's induct hours when Kewdale's induct work is shared between its 54 inductors and 48 of its loaders at about 2.8 hours a shift each, which only each worker's own log-on sessions, joined to people through the badge register, show.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task308": "task308 values an added unit on the shortfall it would have removed when units of its kind failed together from one cause; here each worker's noise exposure is rebuilt from their own induct hours read through a badge register, and the enclosure's yield is a count of people crossing an exposure standard"
@@ -186,8 +186,16 @@
   "registered": "2026-11-01T23:35:51Z",
   "shell": {
     "question form": "how-many",
-    "second-sentence opener": "in",
-    "rounding opener": "round",
-    "deliverable set": "docx+xlsx"
-  }
+    "second-sentence opener": "our",
+    "rounding opener": "worker",
+    "deliverable set": "csv+pptx"
+  },
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "in",
+      "rounding opener": "round",
+      "deliverable set": "docx+xlsx"
+    }
+  ]
 }

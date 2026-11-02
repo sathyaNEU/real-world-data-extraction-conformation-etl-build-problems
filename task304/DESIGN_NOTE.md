@@ -324,6 +324,44 @@ of fourteen main-side figures the job-based route happens to print right at Lara
 Mirror leakage: 25.0 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 18 to the cracker, ask B 6 of 6)
 
+## Build record
+
+- **Pack:** 17 files in four formats (8 csv, 5 xlsx, 3 pdf, 1 json); the bulk file is
+  wcs_operator_sessions_export_20261116.csv at 44,128 sessions; distractors boundary_noise_complaints_2026.csv and
+  sort_volumes_daily_2026.csv, named in `metadata.json`. The fiction's as-of date is 27 November 2026.
+- **Measured on the cut pack (truth equals pack):** pools and counts brought below as the Ladder table's G row;
+  Kewdale 102 (all 102 of its pool: 48 Inductors, 6 Relief Inductors and 48 loaders of the half-shift rotation, median
+  2.8 induct hours a shift, median LAeq,8h 90.7 dB(A) before and 83.7 after); the job-based route puts Kewdale's induct
+  titles at 94.3 and 85.8 and brings none below. Ask A and ask B as block 4 of `submission.md`.
+- **Gates on the final cut (2026-11-02):** generator checks 74 of 74; verify 14 of 14; two byte-identical builds,
+  target.zip d1946edf; figures_check 46 figures, 0 absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (780
+  characters); leak.py REVIEW, no LEAK (ruled below); guard heart WARN (strategy_risk, overuse.gate_g and
+  repeat.question_form, answered at the draw; nearest driver 0.06); guard surface: no hard tell (no shared file, seed table or invented name; personas Brent Roberts and Melissa
+  Hayes, the card's), three pairs promoted on card axes for the author's adjudicated clone check: task302 and
+  task306 (gap objective and `pick_one_of_n`, two numbers apart) and task308 (gap, G14, Gate G and decision type,
+  differentiated on the card: there an added unit is valued on correlated outages, here each worker's exposure is
+  rebuilt from their own induct sessions).
+- **House-fix pass:** the deck's container is its own (three widescreen slides, no writer description); each PDF is
+  stamped on its own issue date (survey 30 September, design report 22 October, undertaking 6 November); the station
+  register was created before its last save; target.zip holds the files at its top level; audiometry falls on working
+  days and the provider's client list is dated 6 November, after its last test (2 November); the write-up's clause
+  citations are read from the schedule. Asserted in checks.py Z7 to Z10; no graded figure moved (ask B's six counts
+  are the same before and after the working-day move).
+
+**leak.py REVIEW lines, ruled:**
+- Sweep 3 on the three PDFs (four or five of the call's six words: Brolga, 2027, induct line, enclosure, Kewdale):
+  each document is about the carrier's induct lines and lists every hub (the survey's results by hub, the design
+  report's levels and prices by hub; the undertaking names no hub); none ranks hubs, counts workers or recommends one.
+  Harmless.
+- Sweep 4 on the design report (kewdale, control, export, session, twelve, larapinta): hub names in its table, the
+  twelve-week fabrication, and the design basis citing the operator session export as the record of the stations in
+  use, the source of its station counts, which says nothing of people, hours or rotation; deleting the clause leaves
+  every rung where it is. Harmless.
+- Sweep 4 on the undertaking (control, average, shifts, labour-hire, energy): clauses 2.2 and 2.3, the filed WHAT
+  (the workers; exposure energy-averaged over the shifts worked), naming no session, badge, title or group. Harmless.
+- Sweep 4 on the survey (kewdale, average, shifts, larapinta, energy): hub names and its definition of an area's LAeq
+  as an energy average over the production periods sampled. Harmless.
+
 ## Architecture 3 record (re-rooted 2026-11-01 at the Batch 3 queue reset)
 
 ### task304: where the charity's 2027 find-and-treat van works, and the people it starts on hepatitis C treatment there
