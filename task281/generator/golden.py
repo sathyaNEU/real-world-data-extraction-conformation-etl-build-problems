@@ -151,7 +151,7 @@ def write_xlsx(F, path):
     wb.properties.modified = dt.datetime(2026, 11, 2, 10, 0, 0)
     wb.properties.title = "Course Texts Fund 2027"
     wb.save(path)
-    IO.fix_zip(path)
+    IO.fix_zip(path, created=b"2026-11-02T09:40:00Z", modified=b"2026-11-02T11:05:00Z")
 
 
 def write_all(target, golden_dir):

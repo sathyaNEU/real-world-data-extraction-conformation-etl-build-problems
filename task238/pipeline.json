@@ -10,16 +10,17 @@
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2027-01-15; one LEAK, 'rung up' in the standard's s.2.1, fixed in docs.py; every REVIEW line ruled in DESIGN_NOTE ## Leak sweep)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS 2026-11-02 (NOTE test.same_driver_older, differentiated on the card against task268 v3 and task453 v2)",
+  "surface": "",
+  "nearest": "task470 driver 0.09"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: spawn the isolated leak reader and the determinism judge together on the final cut",
+ "resume": "stage 4: spawn the isolated leak reader and the determinism judge together on the final cut (target.zip d8345726)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -45,5 +46,11 @@
     "report": "determinism_check_report.md"
    }
   }
- ]
+ ],
+ "build": {
+  "target_zip_sha256": "d8345726",
+  "gates_2026-11-02": "checks.py 94/94; verify.py 0 failures; two builds byte-identical over 19 files; figures_check 112/112; precut 61 checks 0 FAIL 0 WARN; voice-check PASS; leak.py REVIEW (no LEAK); guard heart PASS",
+  "pair_ceiling": "34.3 (cracker on the call 50.2, mirror off 18.4; mirror leakage 11.9 per cent; full includer against the mirror 59.2)",
+  "asof": "2027-01-15"
+ }
 }
