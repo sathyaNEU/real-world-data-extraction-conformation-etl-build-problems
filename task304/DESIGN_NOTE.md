@@ -409,13 +409,14 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 3 of 9 to the crac
 **leak.py REVIEW lines, ruled:**
 - Sweep 3 on the screening note (all five of the call's distinctive words): it lists all six junctions alphabetically
   with nodes, districts, layouts and roads, and names the county; no count, rate or rank. Harmless.
-- Sweep 4 on the guidance (record, traffic, junctions, control, average, expected, crossroads): clauses 3.2 and 3.3
+- Sweep 4 on the guidance (record, traffic, junctions, crossroads, average, control, and two more): clauses 3.2 and 3.3
   (the filed WHAT: expected annual injury collisions as the junction stands at its 2026 traffic, the long-run yearly
   average with its own layout and traffic, its recorded count evidence and not the average, the validated record for
   2021 to 2025) and Table 2's factors; it names no model, comparison group, weighting or blend. Harmless: the stage 4
   judge asked for exactly this quantity to be filed.
-- Sweep 4 on the screening note (record, junctions, control, crossroads): what was screened and the screening's own
-  rule (twelve or more in 2021 to 2025), the fact the bid's list rests on. Harmless.
+- Sweep 4 on the screening note (record, traffic, junctions, crossroads, control, network): what was screened, the
+  screening's own rule (twelve or more in 2021 to 2025), the fact the bid's list rests on, and the memo's sender (the
+  county's network management team, its traffic data officer). Harmless.
 - Sweep 6 on the inventory (six of the seven answer-set names beside numbers): traffic estimates by year for every one
   of the network's nodes, not a ranking on the benefit. Harmless.
 

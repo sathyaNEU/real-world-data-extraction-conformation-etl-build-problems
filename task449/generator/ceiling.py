@@ -8,10 +8,11 @@ the golden's. Routes:
   referral route   the careful route through the referral logs: every hire on either platform at the start date its
                    referral records, the referral date on the record that shows the hire, a job ending before day 90
                    read from the job_end reports
-  reports route    the starts read from the job_start reports at the referral's employer (both channels, did_not_start
-                   honoured), the separations from the job_end reports, the referral date on the hire's own record
+  reports route    the starts read from the job_start reports at the posting's employer account (by its number, or
+                   its operating or legal name as typed), the separations from the job_end reports at that account,
+                   the referral date on the hire's own record
   ROE route        the reports route with separations from the Records of Employment instead (latest versions,
-                   matched on the employer's business number)
+                   matched on the account's business number)
   full includer    every device found and handled: the golden
 
     python3 task449/generator/ceiling.py
@@ -29,8 +30,8 @@ import golden as G       # noqa: E402
 TGT = os.path.join(os.path.dirname(HERE), "target")
 ROUTES = {
     "referral": dict(start_route="referral", sep_sources=("reports",), carry="record"),
-    "reports": dict(start_route="golden", sep_sources=("reports",), carry="record"),
-    "roe": dict(start_route="golden", sep_sources=("roe",), carry="record"),
+    "reports": dict(start_route="account", sep_sources=("reports",), carry="record"),
+    "roe": dict(start_route="account", sep_sources=("roe",), carry="record"),
     "full": dict(),
 }
 

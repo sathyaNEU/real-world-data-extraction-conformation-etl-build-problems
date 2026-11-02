@@ -90,12 +90,14 @@ def write_board_pdf(res, path):
     title = ParagraphStyle("t", parent=base, fontName="Helvetica-Bold", fontSize=13, leading=16.5, spaceAfter=6)
     rg, ag = res["regions"], res["agencies"]
 
-    def tstyle(ncol, right_from=2):
-        return TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.2), ("FONT", (0, 1), (-1, -1), "Helvetica", 8.2),
-                           ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor(INK)),
-                           ("LINEABOVE", (0, -1), (-1, -1), 0.4, colors.HexColor(INK2)),
-                           ("ALIGN", (right_from, 0), (-1, -1), "RIGHT"), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5), ("TOPPADDING", (0, 0), (-1, -1), 2.5)])
+    def tstyle(right_from=2, total=True):
+        cmds = [("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.2), ("FONT", (0, 1), (-1, -1), "Helvetica", 8.2),
+                ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor(INK)),
+                ("ALIGN", (right_from, 0), (-1, -1), "RIGHT"), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5), ("TOPPADDING", (0, 0), (-1, -1), 2.5)]
+        if total:
+            cmds += [("LINEABOVE", (0, -1), (-1, -1), 0.4, colors.HexColor(INK2)), ("FONT", (0, -1), (-1, -1), "Helvetica-Bold", 8.2)]
+        return TableStyle(cmds)
 
     memo = Table([["To", "Board of Directors"], ["From", "%s, Director of Provider Contracting and Payment" % AUTHOR],
                   ["Date", "16 October 2026, for the meeting of 28 October 2026"],
@@ -104,8 +106,7 @@ def write_board_pdf(res, path):
                               ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor(INK)), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5),
                               ("LINEBELOW", (0, -1), (-1, -1), 0.6, colors.HexColor(INK))]))
     story = [Paragraph("PINYON VALLEY HEALTH PLAN  |  BOARD PAPER, AGENDA ITEM 6", small), memo, Spacer(1, 8),
-             Paragraph("Maricopa's agency takes USD {:,} of the 2027 budget, and the three high-country agencies "
-                       "together take USD {:,}".format(res["alloc"][rg[3]], sum(res["alloc"][r] for r in rg[:3])), title),
+             Paragraph("The 2027 in-home support budget follows where Covered Members lived in 2025", title),
              Paragraph("Schedule B divides the 2027 Budget of USD {:,} among the Agencies in proportion to the Covered "
                        "Members counted in each Region. {:,} Senior Choice members were enrolled on every day of 2025 and "
                        "were 75 or over on 31 December 2025. Each is counted once, in the Region where the Plan's 2025 "
@@ -124,7 +125,7 @@ def write_board_pdf(res, path):
         rows.append([r, a, "{:,}".format(res["counts"][r]), "{:,}".format(res["alloc"][r])])
     rows.append(["Total", "", "{:,}".format(res["covered"]), "{:,}".format(sum(res["alloc"].values()))])
     t = Table(rows, colWidths=[1.15 * inch, 2.95 * inch, 1.05 * inch, 1.35 * inch])
-    t.setStyle(tstyle(4))
+    t.setStyle(tstyle())
     story += [Spacer(1, 2), t,
               Paragraph("Allocation: the 2027 Budget times the Region's Covered Members over all Covered Members, rounded "
                         "to the nearest dollar (Schedule B, B.5). Source: membership snapshot of 2 January 2026; medical "
@@ -142,8 +143,7 @@ def write_board_pdf(res, path):
         vrows.append([a] + ["{:,}".format(res["visits"][(a, q)]) for q in (1, 2, 3, 4)] +
                      ["{:,}".format(res["visits_total"][a]), "%.1f" % res["minutes"][a]])
     vt = Table(vrows, colWidths=[2.75 * inch, 0.55 * inch, 0.55 * inch, 0.55 * inch, 0.55 * inch, 0.65 * inch, 0.9 * inch])
-    vt.setStyle(TableStyle(tstyle(7, 1).getCommands()[:-0 or None]))
-    vt.setStyle(TableStyle([("LINEABOVE", (0, -1), (-1, -1), 0, colors.white)]))
+    vt.setStyle(tstyle(1, total=False))
     story += [vt, Paragraph("Visits by calendar quarter of the date of service; average length from arrival to departure. "
                             "Source: in-home support claims for 2025, agencies by the provider directory.", small)]
     srows = [["Region of the rendering practice", "Plan-paid spend (USD thousands)"]]

@@ -1,142 +1,145 @@
 {
-  "task": "task466",
-  "architecture": "v2",
-  "drawn": "2026-11-02",
-  "slot_note": "",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "emissions-inventory",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a regional solid waste authority's 2026 methane return for its closed landfill under the state's closed-landfill methane charge, the waste's methane generation estimated from the gas plant's hourly capture record, its outage log and the collection efficiency the state's rule files",
-  "objective": "etl",
-  "shape": "other",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time",
-    "objective"
+ "task": "task466",
+ "architecture": "v2",
+ "drawn": "2026-11-02",
+ "slot_note": "",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "emissions-inventory",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "a regional solid waste authority's 2026 methane return for its closed landfill under the state's closed-landfill methane charge, the waste's methane generation estimated from the gas plant's hourly capture record, its outage log and the collection efficiency the state's rule files",
+ "objective": "etl",
+ "shape": "other",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Tier 2: the 2027 budget carries the USD 118,000 Tier 2 charge",
+ "answer_source": "golden release 409.2 t (410 t at the nearest 10) between the 375 t and 450 t thresholds; generation 3,585.6 t (3,600 at the nearest 100) from the steady capture; captured 3,166 t",
+ "gap": [
+  "time",
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G12",
+  "G3"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms the gas plant's hourly capture, the outage log and the rule's collection efficiency correctly takes the field's capture-based estimate with its downtime correction (the year's captured methane over the collection efficiency times the share of hours the blowers ran), files 478 t released and Tier 3 of the charge with a corrective action plan, where netting the methane the waste held through each outage and gave up to the wells after the restart puts the release at 410 t and Tier 2.",
+ "domain_test": "Emissions inventory of landfill methane: the year's release is the waste's generation less what the gas system captured and destroyed less what the cover oxidised, with generation estimated from the capture record at the filed collection efficiency; a noun swap breaks it because only a gas-generating waste mass under a collection system holds what it makes while the blowers are down and gives it up to the wells after the restart.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:capture-based generation net of the gas recovered after each collection outage",
+ "layer1": [
+  "the gas plant historian's hourly export stamped in UTC (hours labelled at interval start) against the rule's local calendar year",
+  "the blower outage log kept by the contractor's operators in site local time across the clock changes, to the minute, with free-text causes and initials",
+  "partial outage hours carried as fractional blower run hours, split across two duty columns that alternate by month",
+  "blank analyser readings in hours with no flow",
+  "the engine plant's controller event log in site time across the clock changes, with controller codes and no stop line when a power failure takes the controllers down",
+  "the flare meter in m3/h on its own reference with a low-flow cut-off, beside the plant meters in normal cubic metres",
+  "the engine operator's monthly reports as PDF text, hour meters read at service visits rather than month ends",
+  "walkover logger exports in site grid feet against a re-monitoring record kept by handheld GPS in WGS84, under its own running number",
+  "a weighbridge archive in short tons from the years the landfill was open"
+ ],
+ "stakeholder_role": "the authority's environmental compliance manager, who files the landfill's methane return with the state and budgets the charge",
+ "role_family": "compliance_or_audit",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "BH_gas_plant_hourly_2024-2026.csv",
+  "rows": 26376,
+  "entity": "one hour's record at the landfill gas plant: blower run hours (two duty columns), landfill gas flow at normal conditions, methane, oxygen and carbon dioxide per cent, header vacuum, fuel to each engine, flare meter flow and flare temperature",
+  "grain": "plant x hour",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "utility_or_infrastructure",
+ "world": {
+  "geography": "an unnamed Midwestern state of the United States (the authority, its closed landfill, the gas plant contractor, the electric cooperative and the state's closed-landfill methane charge are fictional; personas on the en_US index)",
+  "currency": "USD",
+  "org_type": "a regional solid waste authority of three counties owning a closed municipal landfill and its gas plant",
+  "invented_names": [
+   "Quarrow Valley Regional Solid Waste Authority",
+   "Breck Hollow Landfill",
+   "Leyland Renewable Gas",
+   "Quarrow Rural Electric Cooperative"
   ],
-  "pattern": [
+  "people": [
+   "Heidi Dillon",
+   "Tina Hays",
+   "Jeffrey Lamb"
+  ]
+ },
+ "deliverables": [
+  "breck_hollow_methane_return_2026.xlsx",
+  "breck_hollow_charge_brief_2026.pdf"
+ ],
+ "opening_move": "question-first",
+ "question_form": "what",
+ "driver": "The decisive quantity is a source's yearly output inferred from what a collector took in, divided by the collector's filed efficiency; the standard route scales the year's intake up by the share of hours the collector ran, but after each stop the collector takes in, on top of the source's current output, part of what the source made during the stop, so the scaled intake counts that part a second time, and the output is read from the intake in the hours clear of the stops and of the recovery after each restart.",
+ "driver_concrete": "Breck Hollow's 2026 methane generation is the gas plant's steady hourly capture (outside the blower outages and the elevated capture after each restart) divided by the rule's 0.90 collection efficiency over every hour of the year; the field's downtime correction (the year's captured methane over the collection efficiency times the share of hours the blowers ran) counts the methane the waste held during each outage and gave up to the wells after the restart a second time, 478 t against 410 t.",
+ "stump": "The default path divides the year's captured methane (3,166 t) by the 0.90 collection efficiency and by the share of hours the blowers ran (0.9608) and files 478 t of methane released, Tier 3 with a corrective action plan, where the capture in the hours after each of the 38 restarts includes methane the waste generated during the outage (66 t over the year); reading generation from the steady hours puts the release at 410 t and Tier 2.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task452": "task452 v3 tests a kiln's mercury in one operating state and fixes the year by conservation of the element through the kiln line (inputs less the other exits); here nothing is balanced and no test misses a state: the capture record is complete and continuous, and the decisive step is that the downtime-scaled capture counts twice the methane the waste mass held during each blower outage and gave up to the wells in the hours after the restart, read as the excess of post-restart capture over the steady capture around it",
+  "task273": "task273 reads a neighbour's drawdown from the dip a test left in another bore's log; here no unit affects another and no test is read: one collector's own record carries both the steady capture and, after each of its own restarts, gas held over from the stop"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-17",
+   "domain": "general-statistics-data-science",
+   "subdomain": "data-integration-record-linkage-entity-resolution",
+   "objective": "etl",
+   "niche": "a small town water department's 2027 emergency interconnect reservation, sized to the river's 50-year 7-day low flow fitted to the gauge's record and to the town's nineteenth and early twentieth century water-works reports, which record each year only whether pumping was suspended for low water",
+   "shape": "13",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G10",
+   ],
+   "generators": [
+    "G17",
     "G12",
-    "G3"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the gas plant's hourly capture, the outage log and the rule's collection efficiency correctly takes the field's capture-based estimate with its downtime correction (the year's captured methane over the collection efficiency times the share of hours the blowers ran), files about 500 t released and the top tier of the charge, where netting the gas the waste held through each outage and gave up after the restart puts the release near 380 t and the middle tier.",
-  "domain_test": "Emissions inventory of landfill methane: the year's release is the waste's generation less what the gas system captured and destroyed less what the cover oxidised, with generation estimated from the capture record at the filed collection efficiency; a noun swap breaks it because only a gas-generating waste mass under a collection system holds what it makes while the blowers are down and gives it up to the wells after the restart.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:capture-based generation net of the gas recovered after each collection outage",
-  "layer1": [
-    "gas plant SCADA export in UTC at normal conditions (0 C, 1 atm) with communication gaps and a mid-2025 tag rename",
-    "outage log kept in local time across the clock changes, free-text causes, restarts logged by the contractor's operators",
-    "engine operator's monthly reports as PDF tables with engine hours and electricity",
-    "utility's half-hourly export meter data in kWh against the operator's MWh",
-    "wellfield monitoring exports from a portable analyser with wells renumbered after the 2024 wellfield expansion",
-    "weighbridge archive in two layouts with tons against tonnes"
-  ],
-  "stakeholder_role": "the authority's environmental compliance manager, who files the landfill's methane return with the state and budgets the charge",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "breck_hollow_gas_plant_hourly_2024-2026.csv",
-    "rows": 26304,
-    "entity": "one hour's record at the landfill gas plant: blower status, landfill gas flow at normal conditions, methane and oxygen per cent, flows to each engine and to the flare",
-    "grain": "plant x hour",
-    "source": "synthetic"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "utility_or_infrastructure",
-  "world": {
-    "geography": "an unnamed Midwestern state of the United States (the authority, its closed landfill, the gas plant contractor, the electric cooperative and the state's closed-landfill methane charge are fictional; personas on the en_US index)",
-    "currency": "USD",
-    "org_type": "a regional solid waste authority of three counties owning a closed municipal landfill and its gas plant",
-    "invented_names": [
-      "Quarrow Valley Regional Solid Waste Authority",
-      "Breck Hollow Landfill",
-      "Leyland Renewable Gas",
-      "Sauk Prairie Electric Cooperative"
-    ],
-    "people": [
-      "Heidi Dillon",
-      "Tina Hays",
-      "Jeffrey Lamb"
-    ]
-  },
-  "deliverables": [
-    "breck_hollow_methane_return_2026.xlsx",
-    "breck_hollow_charge_brief_2026.pdf"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is a source's yearly output inferred from what a collector took in, divided by the collector's filed efficiency; the standard route scales the year's intake up by the share of hours the collector ran, but after each stop the collector takes in, on top of the source's current output, part of what the source made during the stop, so the scaled intake counts that part a second time, and the output is read from the intake in the hours clear of the stops and of the recovery after each restart.",
-  "driver_concrete": "Breck Hollow's 2026 methane generation is the gas plant's steady hourly capture (outside the blower outages and the elevated capture after each restart) divided by the rule's 0.90 collection efficiency over every hour of the year; the field's downtime correction (the year's captured methane over the collection efficiency times the share of hours the blowers ran) counts the methane the waste held during each outage and gave up to the wells after the restart a second time.",
-  "stump": "The default path divides the year's captured methane by the 0.90 collection efficiency and by the share of hours the blowers ran, and files about 500 t of methane released, the top tier of the charge with a corrective plan, where the capture in the day after each restart includes methane the waste generated during the outage; netting that recovery puts the release near 380 t and the middle tier.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task452": "task452 v3 tests a kiln's mercury in one operating state and fixes the year by conservation of the element through the kiln line (inputs less the other exits); here nothing is balanced and no test misses a state: the capture record is complete and continuous, and the decisive step is that the downtime-scaled capture counts twice the methane the waste mass held during each blower outage and gave up to the wells in the hours after the restart, read as the excess of post-restart capture over the steady capture around it",
-    "task273": "task273 reads a neighbour's drawdown from the dip a test left in another bore's log; here no unit affects another and no test is read: one collector's own record carries both the steady capture and, after each of its own restarts, gas held over from the stop"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-17",
-      "domain": "general-statistics-data-science",
-      "subdomain": "data-integration-record-linkage-entity-resolution",
-      "objective": "etl",
-      "niche": "a small town water department's 2027 emergency interconnect reservation, sized to the river's 50-year 7-day low flow fitted to the gauge's record and to the town's nineteenth and early twentieth century water-works reports, which record each year only whether pumping was suspended for low water",
-      "shape": "13",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G17",
-        "G12",
-        "G16"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "dial_setting",
-      "stump_strategy": "other",
-      "driver": "The decisive quantity is a low quantile of a yearly extreme fitted to two records of the same process: a recent record measures each year's extreme, and a long earlier record says for each year only whether the extreme fell below one fixed level; every year of the earlier record is a censored observation, a year that stayed above the level as informative as one that fell below it, so entering the below-level years as values at the level, or as the only informative years, or leaving the earlier record out, each misplaces the quantile, and only a likelihood with both kinds of censored year places it.",
-      "driver_concrete": "Quillfield's 50-year 7-day low flow at the intake comes from the regional-skew log-Pearson Type III fitted by maximum likelihood to the State Hydrologic Survey gauge's approved climatic-year minima since 1951 and to the water-works reports since 1894, each report year entered as its measured lowest seven-day flow (pumping suspended) or as a seven-day low flow above the 3.09 cfs suspension flow (no suspension), not the measured years alone, the silent years at the suspension flow, or the gauge alone.",
-      "stump": "The default path fits the regional-skew log-Pearson Type III to the gauge's 74 annual minima and the 14 report years with a measured flow, leaving out the 40 report years without a stoppage because they carry no flow, and lands on a 50-year 7-day low flow of 1.31 cfs and a 0.4 MGD reservation (a 0.38 MGD shortfall), where entering each silent year as a 7-day low flow above the 3.09 cfs suspension flow gives 1.55 cfs and 0.3 MGD.",
-      "answer": "Reserve 0.3 MGD (three 0.1 MGD blocks) of firm capacity on the Castlewick interconnect for 2027: the Varrow River's 50-year 7-day low flow of 1.55 cfs lets the permit take 0.68 MGD, 0.23 MGD short of the 0.91 MGD Stage 2 demand.",
-      "forum": "council_or_assembly",
-      "forcing_event": "vote_or_meeting",
-      "org_family": "local_government",
-      "world": "a town water department; an unnamed New England state of the United States (the town, its river, the neighbouring city, the mill and the state hydrologic survey's gauge are fictional; personas on the en_US index)",
-      "fate": "shipped 2026-10-17 with no portal result; re-rooted 2026-11-02 at the Batch 3 queue reset (one architecture per world: the town water world is closed)"
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "how-much",
-      "second-sentence opener": "put",
-      "rounding opener": "give",
-      "deliverable set": "pdf+csv"
-    }
-  ],
-  "notes": "Re-rooted 2026-11-02 at the Batch 3 queue reset. Client domain moved from general-statistics-data-science (task123 holds data-integration) to physical-environmental-sciences / emissions-inventory, the ETL task type whose live sibling (task452, shipped 2026-11-01) sits furthest back in draw order; survey-research-official-statistics x ETL is held by task484 and task449 in the window, healthcare-delivery x ETL by task485, education x ETL by task475. Strategy other: a capture-based generation estimate whose downtime correction double-counts the gas a waste mass holds during a collection outage and releases to the wells after the restart; decisive generator G10 (one real-world quantity, the held gas, counted twice), framed by G12 (zero capture in an outage is not zero generation) and G3 (the capture record's hour is not the generation's hour). Gate G decomposition_attribution: the capture in the hours after each restart splits between that hour's generation and the recovered outage gas.",
-  "registered": "2026-11-02T02:45:54Z",
-  "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "put",
-    "rounding opener": "give",
-    "deliverable set": "csv+pdf"
+    "G16"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "dial_setting",
+   "stump_strategy": "other",
+   "driver": "The decisive quantity is a low quantile of a yearly extreme fitted to two records of the same process: a recent record measures each year's extreme, and a long earlier record says for each year only whether the extreme fell below one fixed level; every year of the earlier record is a censored observation, a year that stayed above the level as informative as one that fell below it, so entering the below-level years as values at the level, or as the only informative years, or leaving the earlier record out, each misplaces the quantile, and only a likelihood with both kinds of censored year places it.",
+   "driver_concrete": "Quillfield's 50-year 7-day low flow at the intake comes from the regional-skew log-Pearson Type III fitted by maximum likelihood to the State Hydrologic Survey gauge's approved climatic-year minima since 1951 and to the water-works reports since 1894, each report year entered as its measured lowest seven-day flow (pumping suspended) or as a seven-day low flow above the 3.09 cfs suspension flow (no suspension), not the measured years alone, the silent years at the suspension flow, or the gauge alone.",
+   "stump": "The default path fits the regional-skew log-Pearson Type III to the gauge's 74 annual minima and the 14 report years with a measured flow, leaving out the 40 report years without a stoppage because they carry no flow, and lands on a 50-year 7-day low flow of 1.31 cfs and a 0.4 MGD reservation (a 0.38 MGD shortfall), where entering each silent year as a 7-day low flow above the 3.09 cfs suspension flow gives 1.55 cfs and 0.3 MGD.",
+   "answer": "Reserve 0.3 MGD (three 0.1 MGD blocks) of firm capacity on the Castlewick interconnect for 2027: the Varrow River's 50-year 7-day low flow of 1.55 cfs lets the permit take 0.68 MGD, 0.23 MGD short of the 0.91 MGD Stage 2 demand.",
+   "forum": "council_or_assembly",
+   "forcing_event": "vote_or_meeting",
+   "org_family": "local_government",
+   "world": "a town water department; an unnamed New England state of the United States (the town, its river, the neighbouring city, the mill and the state hydrologic survey's gauge are fictional; personas on the en_US index)",
+   "fate": "shipped 2026-10-17 with no portal result; re-rooted 2026-11-02 at the Batch 3 queue reset (one architecture per world: the town water world is closed)"
   }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "how-much",
+   "second-sentence opener": "put",
+   "rounding opener": "give",
+   "deliverable set": "pdf+csv"
+  }
+ ],
+ "notes": "Re-rooted 2026-11-02 at the Batch 3 queue reset. Client domain moved from general-statistics-data-science (task123 holds data-integration) to physical-environmental-sciences / emissions-inventory, the ETL task type whose live sibling (task452, shipped 2026-11-01) sits furthest back in draw order; survey-research-official-statistics x ETL is held by task484 and task449 in the window, healthcare-delivery x ETL by task485, education x ETL by task475. Strategy other: a capture-based generation estimate whose downtime correction double-counts the gas a waste mass holds during a collection outage and releases to the wells after the restart; decisive generator G10 (one real-world quantity, the held gas, counted twice), framed by G12 (zero capture in an outage is not zero generation) and G3 (the capture record's hour is not the generation's hour). Gate G decomposition_attribution: the capture in the hours after each restart splits between that hour's generation and the recovered outage gas.",
+ "registered": "2026-11-02T02:45:54Z",
+ "shell": {
+  "question form": "what",
+  "second-sentence opener": "send",
+  "rounding opener": "generated",
+  "deliverable set": "pdf+xlsx"
+ }
 }

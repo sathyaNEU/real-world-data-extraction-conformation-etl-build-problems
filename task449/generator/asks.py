@@ -6,8 +6,9 @@ their start (ask 2), and the average number of days from their referral to their
 
 Golden handling: a referral's job is its posting's (the old platform's posting number, or the new platform's job id
 traced to its legacy posting through the board's migration records); a hire started on the first job_start report
-for that client at that employer on or after the referral (a consultant report by employer number, a portal report by
-the employer's operating or legal name as typed, compared without case or spacing), and did not start when a
+for that client at that employer on or after the referral (the employer is the business: a consultant report by any
+employer number under the posting employer's business number, a portal report by the operating or legal name of any
+of that business's accounts as typed, compared without case or spacing), and did not start when a
 consultant recorded it so; a start was not retained when a job_end report or a Record of Employment (the latest
 version of each, the employer read from the business number) shows the job ending before the 90th day; the referral
 date of a referral carried to the new platform at go-live is the old platform's.
@@ -94,6 +95,10 @@ def load(tgt, cache=None):
     e = pd.read_csv(os.path.join(tgt, "workshore_employer_accounts.csv"), dtype=str)
     c["emp_names"] = {r.employer_number: {norm_name(r.legal_name), norm_name(r.operating_name)} for r in e.itertuples()}
     c["emp_bn"] = dict(zip(e["employer_number"], e["business_number"]))
+    bn_names = defaultdict(set)
+    for r in e.itertuples():
+        bn_names[r.business_number] |= {norm_name(r.legal_name), norm_name(r.operating_name)}
+    c["bn_names"] = dict(bn_names)
     # job reports
     jr = []
     with open(os.path.join(tgt, "workshore_client_job_reports_2025-04_2026-11.jsonl"), encoding="utf-8") as f:
@@ -144,15 +149,22 @@ def hires(c):
     return out
 
 
-def report_matches(c, client, emp, kind, names=True):
+def report_matches(c, client, emp, kind, match="business"):
+    """Dates of a client's reports of one kind at an employer. match 'business': any account under the employer's
+    business number, by number or by name; 'account': the posting's own account, by number or name; 'number': by
+    employer number only."""
     out = []
-    nm = c["emp_names"].get(emp, set())
+    bn = c["emp_bn"].get(emp)
+    if match == "business":
+        nm = c["bn_names"].get(bn, set())
+    else:
+        nm = c["emp_names"].get(emp, set())
     for r in c["reports"].get(client, []):
         if r["event"] != kind:
             continue
         if "employer_no" in r:
-            ok = r["employer_no"] == emp
-        elif not names:
+            ok = (c["emp_bn"].get(r["employer_no"]) == bn) if match == "business" else (r["employer_no"] == emp)
+        elif match == "number":
             ok = False
         else:
             ok = norm_name(r["employer_name"]) in nm
@@ -164,10 +176,12 @@ def report_matches(c, client, emp, kind, names=True):
 def starts(c, route="golden", carry="original"):
     """The starts that count, one per hire: (client, emp, start date, referral date).
 
-    route 'golden' reads the job reports (both channels); 'referral' takes every hire at the start date its referral
-    records; 'consultant_only' reads only the reports that carry an employer number. carry 'original' dates a referral
+    route 'golden' reads the job reports at the employer's business (any of its accounts, by number or name);
+    'account' reads them at the posting's own account only; 'number' reads only the reports that carry an employer
+    number; 'referral' takes every hire at the start date its referral records. carry 'original' dates a referral
     carried at go-live from the old platform, 'record' from the record that shows the hire."""
     out = []
+    match = {"golden": "business", "account": "account", "number": "number"}.get(route)
     for h in hires(c):
         if h["occ"] not in c["sched"]:
             continue
@@ -176,17 +190,17 @@ def starts(c, route="golden", carry="original"):
             if h["planned"] is not None:
                 out.append((h["client"], h["emp"], h["planned"], ref))
             continue
-        names = route != "consultant_only"
-        st = [d for d in report_matches(c, h["client"], h["emp"], "job_start", names=names) if d >= h["ref"]]
+        st = [d for d in report_matches(c, h["client"], h["emp"], "job_start", match) if d >= h["ref"]]
         if st:
             out.append((h["client"], h["emp"], st[0], ref))
     return out
 
 
-def separated_before(c, client, emp, start, sources=("reports", "roe"), roe_versions="latest", roe_key="employer"):
+def separated_before(c, client, emp, start, sources=("reports", "roe"), roe_versions="latest", roe_key="employer",
+                     match="business"):
     limit = start + dt.timedelta(days=RETAIN_DAYS - 1)
     if "reports" in sources:
-        for d in report_matches(c, client, emp, "job_end"):
+        for d in report_matches(c, client, emp, "job_end", match):
             if start <= d <= limit:
                 return True
     if "roe" in sources:
@@ -214,6 +228,8 @@ def compute(tgt, cache=None, start_route="golden", sep_sources=("reports", "roe"
             roe_key="employer", carry="original"):
     c = load(tgt, cache)
     st = starts(c, start_route, carry)
+    match = "account" if start_route in ("account", "referral") else ("number" if start_route == "number" else
+                                                                       "business")
     n = [0] * 4
     kept = [0] * 4
     days = [[] for _ in range(4)]
@@ -223,7 +239,7 @@ def compute(tgt, cache=None, start_route="golden", sep_sources=("reports", "roe"
             continue
         n[q] += 1
         days[q].append((s - r).days)
-        if not separated_before(c, cl, e, s, sep_sources, roe_versions, roe_key):
+        if not separated_before(c, cl, e, s, sep_sources, roe_versions, roe_key, match):
             kept[q] += 1
     avg = [sum(x) / len(x) if x else float("nan") for x in days]
     return {"starts": n, "retained": kept, "avg_days": avg}
@@ -240,7 +256,8 @@ if __name__ == "__main__":
     g = golden(tgt, cache)
     print("golden", g)
     for name, kw in [("referral route", dict(start_route="referral", sep_sources=("reports",), carry="record")),
-                     ("consultant only", dict(start_route="consultant_only")),
+                     ("account route", dict(start_route="account", sep_sources=("reports",), carry="record")),
+                     ("number only", dict(start_route="number")),
                      ("reports-only separations", dict(sep_sources=("reports",))),
                      ("roe-only separations", dict(sep_sources=("roe",))),
                      ("roe originals", dict(roe_versions="all")),
