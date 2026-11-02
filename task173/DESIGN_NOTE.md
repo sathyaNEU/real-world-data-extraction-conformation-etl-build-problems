@@ -13,14 +13,14 @@ on every Energy probe at this draw, and a ban is redrawn, never waited out (`CLA
 | Card | `.claude/skills/fingerprint/cards/task173.json`, architecture v4 (v1 to v3 in `lineage`, v3 spent at stage 4) |
 | Domain / task type | `healthcare-delivery-health-economics`, task type `utilization-access-demand-forecasting` (serves Forecasting): the deciding quantity is the count of emergency admissions with gallstone disease a two-hospital acute trust will have in a plan year, demand that hospital planning forecasts per head of the projected population |
 | Objective | Forecasting & Predictive Modeling: emergency gallstone admissions in financial year 2027/28 (1 April 2027 to 31 March 2028), a window not yet open; the records run to 31 October 2026 |
-| Shape | `02`, a forecast across periods: the call (the 2027/28 count, nearest 50), the monthly profile by hospital (24 figures, the plan's upload rows), critical components, and the asks (designed at stage 2 in `supplemental-stumping`); about 45 criteria planned |
-| Spine | `pas_general_surgery_episodes_2021_2026.csv`, one row per finished consultant episode in general surgery at either hospital, April 2021 to October 2026 (about 130,000 rows), with the monthly admitted PTL snapshots (about 90,000 rows), the theatre case log and the e-referral extract |
-| Deliverables | `gallstone_emergency_plan_2027_28.xlsx` (the forecast, its working, the chart, the ask tables) and `gallstone_emergency_profile_2027_28.csv` (the plan's monthly activity rows by hospital, in the ICB upload layout) |
+| Shape | `single-figure` (changed from `02` at stage 2: a 24-row monthly profile phased off the call would have been an inheriting ask the cracker banks whole, `supplemental-stumping` A5): the call (nearest 50), its three components, and two decoupled asks of eight cells each, about 25 criteria |
+| Spine | `pas_inpatient_episodes_2021_2026.csv`, one row per finished consultant episode of every spell with a general surgery or gastroenterology episode at either hospital, April 2021 to October 2026 (54,764 rows), with the month-end admitted PTL snapshots (`admitted_ptl_snapshots_2021_2026.parquet`, 121,480 rows) and the e-Referral Service extract |
+| Deliverables | `gallstone_nel_plan_2027_28.xlsx` (the plan figure, its build, the history and the plan-year list) and `rtt_baseline_general_surgery_2025_26.csv` (the waiting list lines' 2025/26 baseline by quarter end and hospital) |
 | Decision | `quantity_figure`, answer unit `count`: the planned activity for the 2027/28 non-elective line "emergency admissions, gallstone disease" in the Trust's operational plan, approved by the Trust Board and submitted to NHS England |
 | Mechanism | gap time (decisive: the plan year sits after the elective centre drains the list, a list state the record never held, and the list's emergency admissions accrue per month spent waiting) with population (who generates the plan year's emergencies); pattern none; generators G5 (decisive: the need for a cholecystectomy is met electively or surfaces as an emergency, and the plan year meets far more of it electively), G7 (the elective centre's sessions are pinned in the capacity plan), G6 (the emergency population's mix of listed and first-presenting patients shifts); Gate G `forecasting`; strategy `decomposition_attribution` (the emergency series is two components with different drivers, and only the list component follows the plan) |
 | Layer 2 family / pattern | `estimation_fit` (a decomposition the data's structure forces); `own:elective-queue-overflow-in-emergency-demand`; the client's utilization card 2 (age-specific rates on the projected population) is the default path's method |
 | Furniture | forum `board_of_directors` (the Trust Board approves the operational plan), forcing event `statutory_or_regulatory_filing` (the 2027/28 operational plan submission to NHS England through the ICB), organisation `hospital_or_health_provider`, role `capacity_planner` (head of capacity and demand planning), context artifact `capacity_report` (the 2027/28 elective capacity plan), calibration `none` |
-| World | Marlstead and Fennick Hospitals NHS Trust, a fictional English acute trust of two hospitals (Marlstead General Hospital in the city, Fennick Hospital in the market town) serving about 560,000 people across Marlstead and Coldvale districts; Fennick Hospital moved from its own PAS to the Trust EPR in 2023; the Wyecross Elective Centre, four day-case theatres on the Fennick site, opens on 11 January 2027. All fictional; the field's method is real |
+| World | Marlstead and Fennick Hospitals NHS Trust, a fictional English acute trust of two hospitals (Marlstead General Hospital in the city, Fennick Hospital in the market town) serving about 425,000 people across Marlstead and Coldvale districts; Fennick Hospital moved from its own PAS to the Trust EPR in 2023; the Wyecross Elective Centre, four day-case theatres on the Fennick site, opens on 11 January 2027. All fictional; the field's method is real |
 | People | `guard.py names --geo uk --seed 173`: Alison Morgan (the planner, the golden workbook's author, in no pack file) and Gordon Wallis drawn; Kirsty Elliott dropped on a `people.last` WARN |
 
 **Guard (registered card, 2026-11-02T02:10:57Z).** `guard.py check` on the registered card: WARN only, no BLOCK.
@@ -39,9 +39,9 @@ granted that the rate per head does not depend on the hospital's own elective ca
 patients waiting for a cholecystectomy are admitted as emergencies while they wait, so part of the emergency series is
 the elective list's own overflow, and a plan year that follows a large change in the list breaks the rate per head.
 
-**Data-native sentence.** In this trust the cholecystectomy waiting list has run at about 1,300 patients and a
-fifteen-month wait since 2022, and while they wait about one listed patient in forty a month comes back through the
-emergency department with biliary colic, cholecystitis, cholangitis or gallstone pancreatitis, so nearly half the
+**Data-native sentence.** In this trust the cholecystectomy waiting list has run at about 960 patients and a
+year's wait since 2022, and while they wait about one listed patient in fifty a month comes back through the
+emergency department with biliary colic, cholecystitis, cholangitis or gallstone pancreatitis, so about two fifths of the
 emergency gallstone series is the list's overflow; the Wyecross Elective Centre drains the list in the first half of
 2027, before the plan year begins, which a rate per head carried on the population cannot see, and the overflow shows
 only when each emergency spell is laid against the PTL snapshot in force on its admission date.
@@ -98,21 +98,20 @@ emergency demand in it (`stumping` 1.1b; the client's utilization card 2).
 5. Read the elective capacity plan for the asks: the Wyecross Elective Centre adds general surgery day-case lists from
    January 2027; it is elective capacity and changes nothing in the emergency line.
 
-Ends on: about 850 emergency gallstone admissions for 2027/28 (the measured figure is written here at stage 3).
+Ends on: 600 emergency gallstone admissions for 2027/28 (measured 611.4 on the cut pack; 613.1 on two rate years).
 
-Golden: about 600: about 470 first presentations (the same age-sex rates, read on the spells of patients not on the
-list) and about 130 admissions of patients waiting for a cholecystectomy, at the list's measured monthly rate carried on
-the patient-months the capacity plan leaves on the list in 2027/28.
+Golden: 400 (central expectation 407.7): 359.9 admissions of patients not on the list (the same age-sex rates, read on
+their spells) and 47.8 admissions of patients waiting for a cholecystectomy, at the list's measured 0.0211 a
+patient-month carried on the 2,270 patient-months the capacity plan leaves on the list in 2027/28.
 
 ## Stump sentence
 
 A competent planner who rebuilds spells from episodes across the 2023 migration, applies the plan's gallstone code list
 and carries the FY2024/25 to FY2026/27 age-sex-specific emergency admission rates on the 2022-based population
-projections, a method that back-tests within 3 per cent, files about 850 emergency gallstone admissions for 2027/28;
-the step that lands it there is reading the rate per head as one process, when about 45 per cent of the record's
-admissions were patients already on the cholecystectomy waiting list, admitted at about 2.4 per cent a month while they
-waited, and the Wyecross Elective Centre cuts that list from about 1,300 to about 300 before the plan year begins, so
-the plan year carries about 600.
+projections, a method that back-tests within 3.4 per cent, files 600 emergency gallstone admissions for 2027/28; the
+step that lands it there is reading the rate per head as one process, when about 41 per cent of the record's admissions
+were patients already on the cholecystectomy waiting list, admitted at 0.0211 a patient-month while they waited, and
+the Wyecross Elective Centre cuts that list from about 960 to about 190 by the plan year, so the plan year carries 400.
 
 ## Three rules
 
@@ -143,30 +142,31 @@ the plan year carries about 600.
   reading each spell against the PTL snapshot in force on its admission date, measuring the listed patients' emergency
   admission hazard per patient-month on the list, and carrying that part on the patient-months the elective capacity
   plan leaves on the list in 2027/28, while the first presentations alone take the rates per head.
-- Not semantics: every field, code, unit and definition read correctly (episodes rolled to spells, the migration
-  crosswalk applied, the codes normalised, the admission methods mapped, the financial year cut) still leaves the easy
-  route on about 850, because no field, code or flag on a spell says the patient was on the waiting list; that is a
-  relation between a spell's admission date and a PTL pathway's listing and removal dates in another system.
-- Not rule application: no filed rule or procedure performs the step: the activity definitions file what is counted,
-  the access policy files the order lists are worked in, the capacity plan files the sessions, and none says anything
-  about emergency admissions of listed patients, so executing every stated rule files about 850. The enumerated family
-  (age-sex rates over two or three years, a linear trend, seasonal exponential smoothing, rates on the 2018-based or
-  2022-based projections, and the list-linked routes with a pooled, priority-specific or wait-banded hazard) spans the
-  prototype's 746 to 878 on the rate and trend routes against 528 to 582 on the pooled list-linked route over six seeds;
-  the standing family's spread (every route that links the spells to the list and carries the list's planned
-  patient-months, under each hazard form and each first-presentation basis) is measured on the generator's clean truth
-  at stage 3 and asserted in `generator/checks.py` to sit inside the golden's band of 50; nothing in the record rules the
-  easy routes out, because the list held near 1,300 from 2022, so the series never moved with it.
+- Not semantics: every field, code, unit and definition read correctly (episodes rolled to spells, the Fennick number
+  map applied, the codes normalised, the admission methods read, the financial year cut) still leaves the easy route on
+  600, because no field, code or flag on a spell says the patient was on the waiting list; that is a relation between a
+  spell's admission date and a PTL pathway's month-end presence in another system.
+- Not rule application: no filed rule or procedure performs the step: the activity definitions file what is counted and
+  the basis (the central expectation, consistent with the Trust's 2027/28 plans), the capacity plan files the sessions
+  and the planned month-end lists, and none says anything about emergency admissions of listed patients, so executing
+  every stated rule files 600. The enumerated family (age-sex rates over two or three years on the 2022-based mid-2027
+  or mid-2027/28 population, linear trends on the monthly series, the list-linked routes) spans 598 to 613 on the
+  routes that do not link the spells to the list against 397 to 417 on the 68 that do (hazard windows of two to five
+  years, four first-presentation bases, two target mid-years, month-end or averaged patient-months, three trend fits and
+  the share-scaling route), measured on the cut pack and asserted in `generator/checks.py` (SF8 to SF11); the standing
+  family is the 68, 20 wide inside the 400 bin, and nothing in the record rules the easy routes out, because the list
+  held near 960 from 2022, so the series never moved with it.
 - Analyst test: a strong analyst who rebuilds spells from episodes across the 2023 migration, applies the code list and
-  carries the FY2024/25 to FY2026/27 age-sex-specific rates on the 2022-based projections, the planning method that
-  back-tests within 3 per cent on FY2024/25 and FY2025/26, files about 850 for 2027/28 (the default path's `Ends on:`),
-  against about 600.
-- Estimand: the 2027/28 activity definitions (`operational_plan_activity_definitions_2027_28.pdf`, the line "NEL-GS-07
+  carries the FY2024/25 to FY2026/27 age-sex rates on the 2022-based projections, the planning method that back-tests
+  at +3.4 and +2.3 per cent on FY2024/25 and FY2025/26, files 600 for 2027/28 (the default path's `Ends on:`), against
+  400; `checks.py` runs it on the clean truth (412.0 expected, the default 1.48 times it).
+- Estimand: the 2027/28 activity definitions (`operational_plan_2027_28_activity_lines.pdf`, the line "NEL-GS-07
   Emergency admissions, gallstone disease") fix the population (provider spells at Marlstead General Hospital or Fennick
   Hospital, any age, any residence), the outcome (an emergency admission method with the first finished consultant
   episode's primary diagnosis in K80, K81, K83.0 or K85.1), the window (admission date 1 April 2027 to 31 March 2028),
-  the unit (a spell, counted once) and the figure planned (the central expectation, not a percentile), and file
-  forecasts against the Trust's own capacity plan as written.
+  the unit (a spell, counted once) and the figure planned (the central expectation, not a percentile), and section 1
+  files the basis ("consistently with the services, capacity and pathways set out in the Trust's 2027/28 plans as
+  approved, including the elective capacity plan").
 - No decoy: nothing is planted to be caught: no copied block of records, no hidden rule, no memo, draft, briefing or
   stakeholder figure carries the wrong answer; the capacity plan is the Trust's real plan and says nothing about
   emergency admissions, and the access policy is the Trust's real policy.
@@ -186,13 +186,13 @@ the plan year carries about 600.
   of population, and nothing invites laying the emergency spells against the elective PTL; the shared hospital number
   is only usable once Fennick's pre-2023 numbers are crosswalked, and no sentence in any file joins the two.
 - Reflex: the field's named method for emergency demand, age-sex-specific admission rates carried on the projected
-  population (the NHS planning method; the client's utilization card 2), sits at rung 0 and files about 850; the trend
-  and seasonal-smoothing routes at rung 1 file about 840 to 880.
-- Back-test: the textbook route validates: the FY2023/24 rates file FY2024/25 within 3 per cent and the FY2024/25 rates
-  file FY2025/26 within 3 per cent, because the list held near 1,300 throughout and the series never moved with it.
-- Second use: every file the decisive step reads has its own use: the PTL snapshots the RTT asks, the capacity plan the
-  elective asks and the plan year's sessions, the theatre log the index cholecystectomy ask and the record of sessions,
-  the episodes the default path itself; delete the decisive step and every file stays.
+  population (the NHS planning method; the client's utilization card 2), sits at rung 0 and files 600 (611.4); the trend
+  routes at rung 1 file the same bin.
+- Back-test: the textbook route validates: the FY2023/24 rates file FY2024/25 at +3.4 per cent and the FY2024/25 rates
+  file FY2025/26 at +2.3 per cent, because the list held near 960 throughout and the series never moved with it.
+- Second use: every file the decisive step reads has its own use: the PTL snapshots both asks, the capacity plan the
+  plan basis the activity definitions name for every line, the episodes the default path itself; delete the decisive
+  step and every file stays.
 - Shock: the movement the step recovers reads as ordinary: the list's conversions are steady from 2022 to 2026, the
   emergency series is flat with ageing growth, and the elective centre is the plan's own good news for electives; no
   unit appears only in the later period and no statistic sorts to the golden.
@@ -200,7 +200,194 @@ the plan year carries about 600.
   basis ("against the Trust's own capacity plan as written"); no filed sentence names the waiting list, a hazard, a
   link or a grouping, and deleting each filed sentence leaves the call forced by the data.
 
+## Readability screen
+
+Seven tests per rung (`stumping` 2.1): 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear,
+7 lone file. The reflex row is enumerated from the planning field's own vocabulary for emergency demand (rates per
+head on projections, trend, seasonal smoothing, a judgmental service-change adjustment), not from the rungs below.
+
+| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 age-sex rates per head on the 2022-based projections (600) | the planning method, no clause forces it | population tables | the field's reflex | back-tests at +3.4 and +2.3 per cent | | | | readable |
+| R1 linear trend or seasonal smoothing on the monthly spells (600) | | | a reflex | back-tests | | | | readable |
+| R2 a judgmental cut for Wyecross shortening waits (about 550 to 580) | the capacity plan names the centre | | a planner's service-change adjustment | | | a percentage | | readable |
+| R3 (decisive) each spell laid against the PTL month-end list, the listed patients' admissions per patient-month carried on the plan's month-end lists (400) | no sentence names listed patients' admissions, a hazard or a link; the definitions and the plan are silent on it | no column or flag on a spell marks a listed patient; the join is a patient number and two dates across systems, through the Fennick map before 2023 | the field's demand method never asks for the elective list | no control or corpus scores it; the back-test passes the rates | the battery dedups and maps numbers, it never joins emergency spells to the elective PTL | the arithmetic after the link is a ratio, but the link has no column and nothing in the default path reaches it | the PTL is read by both asks, the plan by every line's basis | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternatives and the call under each | Ruled out by |
+|---|---|---|---|---|
+| SF1 | emergency admission | methods 21 to 2D and the EPR's Emergency methods, SDEC and other included | SDEC left out: a smaller base, another bin | definitions 2, NEL-ALL-01 "codes 21 to 2D" |
+| SF2 | gallstone disease | first finished consultant episode's primary diagnosis | any episode's diagnosis: elective cholecystectomy spells and later episodes swell the count | definitions 2, NEL-GS-07 "first finished consultant episode" |
+| SF3 | the code list | K80, K81 any fourth character, K83.0, K85.1, read through dot and suffix forms | strict string match: same count (asserted) | same call |
+| SF4 | 2027/28 | admission date 1 April 2027 to 31 March 2028 | discharge date | definitions 1 and 2 "month of the admission date" |
+| SF5 | residence | any residence | residents only, out-of-area added by share: 401.5 | same call; definitions 1 "whatever the patient's place of residence" |
+| SF6 | the figure planned | central expectation | a prudent or contract figure | definitions 1 "the expected number, not a prudent, stretch or contract figure" |
+| SF7 | plan basis | with the services and capacity in the 2027/28 plans | the list held at its record size: 612.4 | definitions 1 "consistently with ... the elective capacity plan" |
+| SF8 | 2026 population | the 2022-based projection | estimates where they exist | same call (asserted in the 68-route family) |
+| SF9 | planned patient-months | month-end lists, April 2027 to March 2028 | averaged opening and closing lists | same call (asserted) |
+| SF10 | hazard window | April 2022 to October 2026 | two to four years | same call (asserted) |
+| SF11 | first-presentation basis | FY2024/25 to FY2026/27 rates on mid-2027 | two or four years, mid-2027/28, linear trends, share scaling | same call (asserted) |
+| SF12 | rounding | the central expectation to the nearest 50 | the components rounded first | definitions 1 "nearest 50" and same call |
+| SF13 | on the list at admission | a pathway added before admission on the month-end list of the admission month or the one before | the pathway's interval from date added to last month end: 407.7 | same call (asserted) |
+| SF14 | Fennick numbers before the migration | through the shipped map | unmapped: 404.9 | same call (asserted) |
+| SF15 | waits of 52 weeks or more from referral | 364 days or more from the date the Trust received the referral, at the month end | weeks from the decision to admit | definitions 4, RTT-GS-03 |
+| SF16 | quarter end | the last calendar day of June, September, December and March | the last snapshot in the quarter (the same file rows) | definitions 4 "Month ends are the last calendar day" |
+| SF18 | a moved patient's wait | waits at the receiving hospital, from the referral that began it | the Fennick row kept, or the reset clock | access policy 6, definitions 4 RTT-GS-03 |
+| SF17 | hernia repairs waited for | one count per operation a patient waits for at the hospital, T20.2, T20.4, T24.1 | one per patient | definitions 4, RTT-GS-02 "one count for each operation" |
+
+## Ladder
+
+| Rung | Route | 2027/28 | Bin (nearest 50) |
+|---|---|---|---|
+| R0 | age-sex rates on all spells, three years, mid-2027 | 611.4 | 600 |
+| R0b | the same on two years | 613.1 | 600 |
+| R1 | linear trend on the monthly spells | about 600 | 600 |
+| SF7 | list-linked, list held at its record size | 612.4 | 600 |
+| R3 | list-linked, plan list (golden) | 407.7 | 400 |
+| R3 family | 68 licensed routes | 397.4 to 417.1 | 400 |
+
+Bin test: the decisive worth (611.4 against 407.7, 203.7, about four bins) against the standing family's spread (19.7)
+and the record's sampling interval on the golden (about plus or minus 12 at one standard error on 1,500 non-listed spells
+and 650 listed ones): the worth is ten times the spread. The golden sits 22.6 from the lower edge and 17.3 from the
+upper; the truth on the clean simulation is 412.0. Pricing sequence: the plan year's first presentations 359.9, the
+hazard 0.0211, the plan's 2,270 patient-months, the listed admissions 47.8.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | spells at the two hospitals, any age or residence, the plan year's not yet observed | filed, definitions 1 and 2 (SF5) |
+| 2 Unit of account | a provider spell counted once | filed, NEL-ALL-01 |
+| 3 Attribution window | admission month | filed (SF4) |
+| 4 As-of dating | the PTL's month-end snapshot | C1 (SF13) |
+| 5 Version basis | definitions version 1.2, plan approved 22 October 2026 | one version shipped of each |
+| 6 Denominator | two-district population; patient-months on the list | C1 (SF5, SF9) |
+| 7 Weighting | pooled hazard over sites and priorities | C1: site hazards 0.0217 and 0.0203, the forward list both sites |
+| 8 Window length | rate and hazard years | C3 (SF10, SF11) |
+| 9 Boundary inclusivity | added before admission; waits of 364 days or more | filed (SF15) and C1 |
+| 10 Rounding path | central expectation to the nearest 50 | filed (SF12) |
+| 11 Tie-break | none arises | n/a, asserted no figure on a rounding edge |
+| 12 Maturity and censoring | FY2026/27 April to October annualised | C1 (SF11) |
+| 13 Order of operations | split, then rates and hazard | C4: unsplit rates file 600 |
+| 14 Row order | none matters | C1 |
+| 15 Duplicate resolution | a pathway renumbered at the migration kept by patient, operation and date added | C1 (SF14) |
+| 16 Identity normalisation | the Fennick number map | shipped crosswalk (SF14) |
+| 17 Netting against gross | none | n/a |
+| 18 Dimensional units | admissions, patient-months | units in the data |
+| 19 Code and status semantics | admission methods, ICD-10 forms | filed (SF1, SF3) |
+| 20 Integerisation | the call to the nearest 50; counts whole | filed |
+| 21 Clause scope | NEL-GS-07 and RTT-GS-02, 03 | filed |
+| 22 Forward window contents | the planned month-end lists, April 2027 to March 2028 | shipped driver, capacity plan section 3 (SF7, SF9) |
+
+## Literal reader
+
+Executed on the cut pack: the prompt, definitions 1 to 4 and the capacity plan read word for word give the line's
+spells, the central expectation, the plan basis and the plan's month-end lists; every licensed reading of the open
+conventions (SF3, SF5, SF8 to SF11, SF13, SF14) prints 400, and the readings that differ (SDEC out, any episode, a
+prudent figure, the list held at its record size) each break a quoted sentence. The easy answer, 600, comes from an
+easy method on the same literal estimand.
+
+## Oracles
+
+None ships: no published or certified figure for the line, no control total for a listed share, no record of the list's
+emergency admissions. The back-test validates the easy route (anatomy). For the asks, the e-RS extract is the one
+byte-clean referee of the clock and only for pathways carrying a UBRN; no RTT return, validated count or removal file
+ships.
+
+## Ask sheet
+
+**Ask A, waits of 52 weeks or more from referral at each 2025/26 quarter end by hospital (8 cells, whole numbers).**
+Primary D2 (a label stored before a silent switch): Fennick's EPR build since the April 2023 migration stores a
+referred pathway's clock as its first outpatient appointment, not the date the referral reached the Trust; the e-RS
+extract's referral date for the pathway's UBRN is the clock, and only a cross-file comparison shows the gap. Second
+primary D1/D7 (one wait under two keys), disjoint block at Marlstead: an operation cancelled on the day closes the
+pathway and the EPR opens another, with no UBRN and the cancellation date as both date added and clock; the wait runs
+from the first pathway's referral, found by chaining the same patient and operation across the snapshots. Shared hazard:
+Ask B's moved rows.
+
+**Ask B, hernia repairs waited for at each 2025/26 quarter end by hospital (8 cells, whole numbers).** Primary D1/D5:
+patients moved from Fennick to Marlstead's lists in 2025/26 keep a Fennick row for 25 to 100 days until validation; the
+Fennick row of a pathway Marlstead added later is out. Over-cleaning half: patients listed for two repairs, inguinal
+and umbilical or both sides under T20.2, are two operations, so one row per patient and operation deletes real waits.
+
+| Ask | Cracker (call landed, the battery: one row per patient and operation, every filed rule) | Mirror (the PTL as shipped) | Full includer (e-RS referral dates, one row per patient and operation) | Cracker verdict |
+|---|---|---|---|---|
+| A 52-week waits, 8 cells | 0 of 8 | 0 of 8 | 0 of 8 | miss |
+| B hernia repairs, 8 cells | 0 of 8 | 4 of 8 (Marlstead) | 0 of 8 | miss |
+
+Other routes on the cut pack (PTL digest 80c92ae0481fd371): date added as the clock 0 and 4; e-RS dates with moved rows
+out 0 and 8; re-listings chained with e-RS dates and one row per patient and operation 1 and 0; one hernia row per
+patient 0 and 0.
+
+Pair ceiling: 35.4 (the cracker on the call keeps none of the ask weight, 45.0 in all; the mirror off the call keeps a
+quarter, 25.8; the full includer on the call 45.0)
+
+Mirror leakage: 25.0 per cent of the ask weight (Ask B's Marlstead cells)
+
+Measured by: generator/ceiling.py on the cut pack (the PTL digest in its output), its golden asserted equal to
+`calc.ask_tables` and to the simulation's truth in generator/checks.py
+
+## Layer 1 inventory
+
+| Mess | The system that produces it | Touches |
+|---|---|---|
+| Episodes, several per spell | the PAS and EPR | the call, none decisive |
+| Fennick PAS numbers before 17 April 2023, the map | the migration | the call's link (SF14) |
+| Two-digit admission methods before the migration, EPR text after | the two systems | the call (SF1) |
+| ICD-10 without the dot and with suffixes | the coding systems | the call (SF3) |
+| Pathway numbers renumbered at the migration | the migration | both asks, the call's link |
+| Fennick's clock stored as the first appointment | the EPR build | Ask A |
+| A cancelled operation re-listed on a new pathway | the EPR | Ask A |
+| Moved patients' Fennick rows left open | list validation lag | Ask B, Ask A |
+| Financial years against mid-year populations | the planning calendar | the call |
+
+## Stage 4 rulings
+
+- leak.py sweep 1 (LEAK, fixed): the activity definitions file was named for definitions; it ships as
+  `operational_plan_2027_28_activity_lines.pdf`, its genre's own name (the plan's activity lines).
+- leak.py sweep 10 (LEAK, fixed): the three PDFs carried the writing library's header comment and its fixed date; the
+  generator blanks the comment at equal length and stamps each document's own approval date; the producer and creator
+  are the Trust; the container audit is clean.
+- leak.py sweep 9 (REVIEW, then fixed): episode end and procedure dates after 31 October 2026 on spells still open at
+  the record's end are blank, and theatre cases after it dropped; the PTL's 124 later dates are booked TCI dates, the
+  only column carrying any (checked), which a real list holds. Harmless.
+- leak.py sweep 3 (REVIEW): a planned hernia list in the capacity plan's table equals one Ask B cell by coincidence, and
+  the activity lines share the call sentence's words because they define the line; the reader ruled both harmless.
+- leak.py sweep 4 (REVIEW, ruled here as the command directs): the access policy, capacity plan and activity lines use
+  the words elective, hospital, capacity, centre, admission, method, spells and cholecystectomy in their own sentences;
+  none names listed patients' emergency admissions, a link or a hazard. Harmless.
+- leak.py sweep 13 (REVIEW, fixed): the metadata title named the elective centre; it now says what the task decides.
+- Leak reader question 6: an analytical choice; unprompted it guessed that the planned list fall "presumably cuts the
+  emergency admissions that come from long waits". The reader named the direction, not the measurement: no file states
+  a listed patient's admission rate, and the figure needs the spells laid against the PTL month by month. Recorded as
+  the build's main Gate F exposure: a response that applies a judgmental cut files whatever its cut sets (a cut of a
+  third would be needed to reach the 400 bin from 611.4), and only the linked measurement lands 400.
+- Determinism judge, round 1 (isolated thread, sonnet, medium): main call forced (every variant 390 to 418, 400), Gate G
+  analytical_non_defect, Gate H analytical; SEND_BACK on the asks: the capacity plan's "patients stay on the list of the
+  hospital that added them" read against dropping a moved patient's Fennick row (three readings, 739/461 against
+  708/492 against 739/492 at 30 June 2025), and the re-listing clock only inferable. Closed by WHAT sentences in the
+  Trust's own voice: the access policy files that a patient who accepts a transfer "moves to the receiving hospital's
+  list and waits there", the plan's sentence is scoped to Wyecross bookings, and RTT-GS-03 measures from "the referral
+  that began the patient's wait for the operation"; no graded figure moved. The not-listed component (359.9, 343 to
+  370 across rate bases) left the graded blocks; the total holds at 400.
+- Determinism judge, round 2: main call and 15 of 16 ask cells forced; FIX_NOW on one chain, a re-listed pathway later
+  moved to Marlstead, which the golden gave the reset clock against the filed definition; the golden now carries the
+  first pathway's referral through a move as through a re-listing (Marlstead 52-week count at 31 March 2026, 790 to 791),
+  asserted against the simulation's truth in `checks.py`.
+- Leak reader realism tells (tidy ID sequences, ECDS text with little variety, a short capacity plan): presentation
+  only, no figure or reading moved; left as built.
+
 ## Tried and rejected
+
+- Stage 2, a 24-row monthly profile by hospital as the shape's repeated unit: phased off the call it is an inheriting
+  ask the cracker banks whole; dropped, the shape is `single-figure` with two decoupled asks.
+- Stage 2, a catchment of 560,000: the 68-route family spread 537 to 581, wider than a 50 bin; the catchment is 425,000
+  (family 397 to 417), and the plan's booking lead (a change after the record ends only) centres it.
+- Stage 2, seed 1732027 at the smaller catchment: its last seven record months ran 2.4 standard deviations low and the
+  family spread 318 to 452; twelve seeds scanned, seed 20 kept for a record with ordinary noise.
+- Stage 2, re-listed pathways booked within 28 days: they moved Marlstead's 52-week cells by 2; the EPR resets the date
+  added, so re-listed patients rejoin the queue and the device moves each Marlstead cell by 33 to 46.
 
 - Lazy abandonment in the 2026 simulation (a customer's patience checked only when an expert came free): it pushed a
   retry before the clock and one expert served two customers at once; abandonment and the queue's close are now events

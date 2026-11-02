@@ -1,176 +1,176 @@
 {
-  "task": "task173",
-  "architecture": "v4",
-  "drawn": "2026-11-02",
-  "slot_note": "architecture 4 of a reopened number: v3 (water service leaks carried to 2027 through AMI meter exchanges) spent at stage 4 on Gate F; Energy x Forecasting was barred by ban.pairing against task273 at this draw, so the build moved to Healthcare Delivery under the same objective and number",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "utilization-access-demand-forecasting",
-  "client_domain": "healthcare-delivery-health-economics",
-  "niche": "an English two-hospital acute trust's 2027/28 operational plan line for emergency admissions with gallstone disease, the year its new elective surgical centre drains a cholecystectomy waiting list that has run at about thirteen hundred patients since 2022",
-  "objective": "forecasting",
-  "shape": "02",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task173",
+ "architecture": "v4",
+ "drawn": "2026-11-02",
+ "slot_note": "architecture 4 of a reopened number: v3 (water service leaks carried to 2027 through AMI meter exchanges) spent at stage 4 on Gate F; Energy x Forecasting was barred by ban.pairing against task273 at this draw, so the build moved to Healthcare Delivery under the same objective and number",
+ "domain": "healthcare-delivery-health-economics",
+ "subdomain": "utilization-access-demand-forecasting",
+ "client_domain": "healthcare-delivery-health-economics",
+ "niche": "an English two-hospital acute trust's 2027/28 operational plan line for emergency admissions with gallstone disease, the year its new elective surgical centre drains a cholecystectomy waiting list that has run at about thirteen hundred patients since 2022",
+ "objective": "forecasting",
+ "shape": "single-figure",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "400 emergency admissions with gallstone disease on NEL-GS-07 for 2027/28 (central expectation 407.7, 47.8 of them patients waiting for a cholecystectomy)",
+ "answer_source": "task173/submission.md block 1; generator/figures.json",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G5",
+  "G7",
+  "G6"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "capacity_report",
+ "stump_class": "analytical",
+ "analyst_test": "Rebuilding spells across the 2023 migration, applying the code list and carrying the FY2024/25 to FY2026/27 age-sex rates on the 2022-based projections (back-testing at +3.4 and +2.3 per cent) files 600 against 400.",
+ "domain_test": "The deciding quantity is the expected count of emergency admissions for gallstone disease in 2027/28, which hospital demand planning forecasts as age-sex-specific rates on the projected population and which here is the sum of first presentations and of admissions of patients already waiting for a cholecystectomy, a clinical hazard of untreated symptomatic gallstones carried on the list's planned size; in another field's nouns there is no elective list with clinical priorities and RTT clocks, no coded emergency spell and no inflamed gallbladder that brings an untreated patient back.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:elective-queue-overflow-in-emergency-demand",
+ "layer1": [
+  "episode-level PAS extract with several finished consultant episodes per spell",
+  "a 2023 migration of Fennick Hospital from its PAS to the trust EPR with a second hospital number series and a crosswalk",
+  "ICD-10 codes written with and without the dot and with fifth-character and asterisk suffixes",
+  "monthly PTL snapshots carrying re-listed pathways and repeated rows",
+  "financial years April to March against mid-year population projections",
+  "theatre times in local clock time across the BST changes",
+  "e-referral clock starts against PAS decision-to-admit dates",
+  "admission method codes in the old two-digit and the EPR text forms"
+ ],
+ "stakeholder_role": "head of capacity and demand planning at an English acute NHS trust, preparing the 2027/28 operational plan's non-elective activity lines",
+ "role_family": "capacity_planner",
+ "scoring_unit": "per episode",
+ "spine": {
+  "file": "pas_inpatient_episodes_2021_2026.csv",
+  "rows": 54764,
+  "entity": "one finished consultant episode of a spell with a general surgery or gastroenterology episode at either hospital",
+  "grain": "episode",
+  "source": "synthetic (constructed in the layout of an NHS PAS and EPR episode extract)"
+ },
+ "forum": "board_of_directors",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "hospital_or_health_provider",
+ "world": {
+  "geography": "England (a fictional city and market town)",
+  "currency": "GBP",
+  "org_type": "NHS acute hospitals trust with two hospitals and a new elective surgical centre",
+  "invented_names": [
+   "Marlstead",
+   "Fennick",
+   "Marlstead and Fennick Hospitals NHS Trust",
+   "Marlstead General Hospital",
+   "Fennick Hospital",
+   "Wyecross Elective Centre",
+   "Coldvale"
+  ],
+  "people": [
+   "Alison Morgan",
+   "Gordon Wallis"
+  ]
+ },
+ "deliverables": [
+  "gallstone_nel_plan_2027_28.xlsx",
+  "rtt_baseline_general_surgery_2025_26.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "what",
+ "driver": "Part of an outcome series is generated by units waiting in a second queue, which convert to the outcome at a steady monthly hazard until they are served, so the series' rate per head of population carries the queue's overflow at the queue's historical size, and a forward plan that drains the queue before the window removes most of that component; the forecast has to split the series by linking each outcome to the queue's own records and carry the queue's part on the queue's planned size.",
+ "driver_concrete": "Each emergency gallstone spell laid against the month-end cholecystectomy PTL (patient number through the Fennick map, a pathway added before the admission on the list that month or the month before); the listed patients' admissions per patient-month (0.0211) carried on the capacity plan's month-end lists for 2027/28 (2,270 patient-months), the rest on age-sex rates per head.",
+ "stump": "A competent planner carries the FY2024/25 to FY2026/27 age-sex-specific emergency gallstone admission rates on the 2022-based population projections and files 600 for 2027/28, because it never lays the emergency spells against the cholecystectomy waiting list, where about 41 per cent of them were patients already listed, admitted at 0.0211 a patient-month while they waited, whose admissions fall away once the Wyecross Elective Centre cuts the list from about 960 to about 190, which puts 2027/28 at 400.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task137": "task137 v4 recovers demand a capacity-limited service turned away to referrers who served it themselves; task173 adds no unmet demand, it splits an emergency series into first presentations and conversions of patients waiting in the elective queue, read by linking each spell to the queue, and carries the second part on the queue's planned size",
+  "task156": "task156 v1 reads a volunteer tier's capacity off its shortfall periods to size a paid tier; task173 has no tier capacity to read, the waiting patients are a population at risk whose monthly hazard generates another service's admissions",
+  "task111": "task111 v2 names which closed-quarter cause still operates once a returning provider takes the late-day overflow; task173 forecasts a count whose hidden component is the elective list's own conversions, sized by patient-months on the list under the elective centre's plan, not a ranking of causes",
+  "task86": "task86 v2 runs an earlier scheduled draw on a shared pool forward member by member before the decision's own draw; task173 has no draw on a pool, the queue's members generate the outcome at a hazard while they wait and the plan drains the queue"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-18",
+   "fate": "abandoned unregistered on 2026-10-22 (the guard's window blocked it three days; the author chose a fresh draw), then the number was retired after two redraw cells died on code, and reopened by the author on 2026-10-23",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G14",
+    "G6",
+    "G16"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "The forward load on a pooled service desk is set by how often a case comes back, which is set by who took its first contact and how long they had been on the desk, so a coming bench far from the record's mix of first-contact takers needs the comeback chance conditioned on each opener's group and tenure."
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-23",
+   "fate": "spent 2026-10-23 at stage 4 on Gate F (zip be677673): a blind reader fitted each combined plant's river lift and well per service and landed the call; the next two cells (psychology decision-making, human reliability) died at stage 1 with no card",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G2",
+    "G5",
+    "G14",
+    "G6"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "A group cut for the first time replaces the lost volume from a second source that shares one meter with the first, so its added draw is the volume times the second source's own cost per unit less the first's, a pair each unit yields only when its metered total is fitted to its own two recorded volumes; reading the meter as one source, or carrying the cost per unit measured on the units cut before, whose second source costs several times as much, misstates the draw several fold.",
+   "domain": "energy-systems-utilities",
+   "subdomain": "load-forecasting",
+   "stump_strategy": "decomposition_attribution"
+  },
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-23",
+   "fate": "spent 2026-10-23 at stage 4 on Gate F (zip c3223db0): blind reader A joined the CIS meter sets to the leak repairs and the AMI schedule and landed 3,000; the AMI schedule's one use was the decisive step, so it was joined on sight",
+   "gap": [
     "time",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G5",
+   ],
+   "generators": [
+    "G2",
     "G7",
     "G6"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who rebuilds hospital spells from the finished consultant episodes across the 2023 Fennick record migration, applies the plan's gallstone code list and carries the FY2024/25 to FY2026/27 age-sex-specific emergency admission rates on the 2022-based population projections, the NHS planning method that back-tests within 3 per cent on FY2024/25 and FY2025/26, files about 850 emergency gallstone admissions for 2027/28 against about 600.",
-  "domain_test": "The deciding quantity is the expected count of emergency admissions for gallstone disease in 2027/28, which hospital demand planning forecasts as age-sex-specific rates on the projected population and which here is the sum of first presentations and of admissions of patients already waiting for a cholecystectomy, a clinical hazard of untreated symptomatic gallstones carried on the list's planned size; in another field's nouns there is no elective list with clinical priorities and RTT clocks, no coded emergency spell and no inflamed gallbladder that brings an untreated patient back.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:elective-queue-overflow-in-emergency-demand",
-  "layer1": [
-    "episode-level PAS extract with several finished consultant episodes per spell",
-    "a 2023 migration of Fennick Hospital from its PAS to the trust EPR with a second hospital number series and a crosswalk",
-    "ICD-10 codes written with and without the dot and with fifth-character and asterisk suffixes",
-    "monthly PTL snapshots carrying re-listed pathways and repeated rows",
-    "financial years April to March against mid-year population projections",
-    "theatre times in local clock time across the BST changes",
-    "e-referral clock starts against PAS decision-to-admit dates",
-    "admission method codes in the old two-digit and the EPR text forms"
-  ],
-  "stakeholder_role": "head of capacity and demand planning at an English acute NHS trust, preparing the 2027/28 operational plan's non-elective activity lines",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per episode",
-  "spine": {
-    "file": "pas_general_surgery_episodes_2021_2026.csv",
-    "rows": 0,
-    "entity": "one finished consultant episode in general surgery at either hospital",
-    "grain": "episode",
-    "source": "synthetic (constructed in the layout of an NHS PAS episode extract)"
-  },
-  "forum": "board_of_directors",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "hospital_or_health_provider",
-  "world": {
-    "geography": "England (a fictional city and market town)",
-    "currency": "GBP",
-    "org_type": "NHS acute hospitals trust with two hospitals and a new elective surgical centre",
-    "invented_names": [
-      "Marlstead",
-      "Fennick",
-      "Marlstead and Fennick Hospitals NHS Trust",
-      "Marlstead General Hospital",
-      "Fennick Hospital",
-      "Wyecross Elective Centre",
-      "Coldvale"
-    ],
-    "people": [
-      "Alison Morgan",
-      "Gordon Wallis"
-    ]
-  },
-  "deliverables": [
-    "gallstone_emergency_plan_2027_28.xlsx",
-    "gallstone_emergency_profile_2027_28.csv"
-  ],
-  "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "Part of an outcome series is generated by units waiting in a second queue, which convert to the outcome at a steady monthly hazard until they are served, so the series' rate per head of population carries the queue's overflow at the queue's historical size, and a forward plan that drains the queue before the window removes most of that component; the forecast has to split the series by linking each outcome to the queue's own records and carry the queue's part on the queue's planned size.",
-  "driver_concrete": "About 45 per cent of the Trust's emergency gallstone admissions since 2022 were patients already on the cholecystectomy waiting list, admitted at about 2.4 per cent a month while they wait; the Wyecross Elective Centre opens in January 2027 and cuts the list from about 1,300 to about 300 by the summer, so the age-sex rates carried on the population keep a waiting-list share that the plan year will not have.",
-  "stump": "A competent planner carries the age-sex-specific emergency gallstone admission rates of FY2024/25 to FY2026/27 on the 2022-based population projections and files about 850 for 2027/28, because it never links the emergency spells to the cholecystectomy waiting list, where about 45 per cent of them were patients already listed whose admissions fall away once the elective centre clears the list, which puts 2027/28 at about 600.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task137": "task137 v4 recovers demand a capacity-limited service turned away to referrers who served it themselves; task173 adds no unmet demand, it splits an emergency series into first presentations and conversions of patients waiting in the elective queue, read by linking each spell to the queue, and carries the second part on the queue's planned size",
-    "task156": "task156 v1 reads a volunteer tier's capacity off its shortfall periods to size a paid tier; task173 has no tier capacity to read, the waiting patients are a population at risk whose monthly hazard generates another service's admissions",
-    "task111": "task111 v2 names which closed-quarter cause still operates once a returning provider takes the late-day overflow; task173 forecasts a count whose hidden component is the elective list's own conversions, sized by patient-months on the list under the elective centre's plan, not a ranking of causes",
-    "task86": "task86 v2 runs an earlier scheduled draw on a shared pool forward member by member before the decision's own draw; task173 has no draw on a pool, the queue's members generate the outcome at a hazard while they wait and the plan drains the queue"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-18",
-      "fate": "abandoned unregistered on 2026-10-22 (the guard's window blocked it three days; the author chose a fresh draw), then the number was retired after two redraw cells died on code, and reopened by the author on 2026-10-23",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G6",
-        "G16"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "driver": "The forward load on a pooled service desk is set by how often a case comes back, which is set by who took its first contact and how long they had been on the desk, so a coming bench far from the record's mix of first-contact takers needs the comeback chance conditioned on each opener's group and tenure."
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-23",
-      "fate": "spent 2026-10-23 at stage 4 on Gate F (zip be677673): a blind reader fitted each combined plant's river lift and well per service and landed the call; the next two cells (psychology decision-making, human reliability) died at stage 1 with no card",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G2",
-        "G5",
-        "G14",
-        "G6"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "driver": "A group cut for the first time replaces the lost volume from a second source that shares one meter with the first, so its added draw is the volume times the second source's own cost per unit less the first's, a pair each unit yields only when its metered total is fitted to its own two recorded volumes; reading the meter as one source, or carrying the cost per unit measured on the units cut before, whose second source costs several times as much, misstates the draw several fold.",
-      "domain": "energy-systems-utilities",
-      "subdomain": "load-forecasting",
-      "stump_strategy": "decomposition_attribution"
-    },
-    {
-      "architecture": "v3",
-      "drawn": "2026-10-23",
-      "fate": "spent 2026-10-23 at stage 4 on Gate F (zip c3223db0): blind reader A joined the CIS meter sets to the leak repairs and the AMI schedule and landed 3,000; the AMI schedule's one use was the decisive step, so it was joined on sight",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G2",
-        "G7",
-        "G6"
-      ],
-      "gate_g": "forecasting",
-      "decision_type": "quantity_figure",
-      "driver": "Work done on a unit raises the chance that a part attached to it fails in the weeks that follow, and the record spreads such work thinly across every year, so a failure rate read per unit-year carries only the thin history's share of work-induced failures into a window in which most units are worked on at once; the window's failures are each unit's own rate plus each scheduled visit's induced chance, read from the history's visits on each unit's own record.",
-      "domain": "energy-systems-utilities",
-      "subdomain": "asset-condition-maintenance",
-      "stump_strategy": "causal_design"
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "how-many",
-      "second-sentence opener": "that",
-      "rounding opener": "give",
-      "deliverable set": "png+xlsx"
-    }
-  ],
-  "notes": "Architecture 4 of a reopened number. Coding: decisive gap time (the plan year sits after the elective centre's drain, a list state the record never held; the conversions are a monthly hazard over time spent waiting), population second (who generates the 2027/28 emergencies). G5 decisive (the need for a cholecystectomy is met electively or surfaces as an emergency), G7 (the elective centre's sessions are pinned in the capacity plan), G6 (the emergency population's mix of listed and first-presenting patients shifts). stump_strategy decomposition_attribution: the emergency series is the sum of two components with different drivers and only the queue component follows the forward plan. validated_decoy false: no certified or published figure is shipped; the planning method back-tests on the stable 2022-2026 list because the list was stable, which is the survivor anatomy's Back-test line, not a record built to bless it.",
-  "registered": "2026-11-02T02:10:57Z"
+   ],
+   "gate_g": "forecasting",
+   "decision_type": "quantity_figure",
+   "driver": "Work done on a unit raises the chance that a part attached to it fails in the weeks that follow, and the record spreads such work thinly across every year, so a failure rate read per unit-year carries only the thin history's share of work-induced failures into a window in which most units are worked on at once; the window's failures are each unit's own rate plus each scheduled visit's induced chance, read from the history's visits on each unit's own record.",
+   "domain": "energy-systems-utilities",
+   "subdomain": "asset-condition-maintenance",
+   "stump_strategy": "causal_design"
+  }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "how-many",
+   "second-sentence opener": "that",
+   "rounding opener": "give",
+   "deliverable set": "png+xlsx"
+  }
+ ],
+ "notes": "Architecture 4 of a reopened number. Coding: decisive gap time (the plan year sits after the elective centre's drain, a list state the record never held; the conversions are a monthly hazard over time spent waiting), population second (who generates the 2027/28 emergencies). G5 decisive (the need for a cholecystectomy is met electively or surfaces as an emergency), G7 (the elective centre's sessions are pinned in the capacity plan), G6 (the emergency population's mix of listed and first-presenting patients shifts). stump_strategy decomposition_attribution: the emergency series is the sum of two components with different drivers and only the queue component follows the forward plan. validated_decoy false: no certified or published figure is shipped; the planning method back-tests on the stable 2022-2026 list because the list was stable, which is the survivor anatomy's Back-test line, not a record built to bless it.",
+ "registered": "2026-11-02T02:10:57Z"
 }

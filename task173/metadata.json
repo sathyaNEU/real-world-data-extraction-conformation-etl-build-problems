@@ -1,0 +1,140 @@
+{
+ "task": "task173",
+ "title": "The 2027/28 operational plan figure for emergency admissions with gallstone disease at a two-hospital NHS trust, with its general surgery waiting list baseline",
+ "domain": "Healthcare Delivery & Health Economics",
+ "client_domain": "Healthcare Delivery & Health Economics",
+ "subdomain": "utilization-access-demand-forecasting",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "the 2027/28 plan figure to the nearest 50 with its build, and the general surgery waiting list baseline at each 2025/26 quarter end by hospital (waits of 52 weeks or more from referral, hernia repairs waited for)",
+ "as_of": "2026-10-31",
+ "deliverables": [
+  "gallstone_nel_plan_2027_28.xlsx",
+  "rtt_baseline_general_surgery_2025_26.csv"
+ ],
+ "distractor_files": [
+  "ecds_abdominal_pain_attendances_2023_2026.csv",
+  "theatre_case_log_2024_2026.csv"
+ ],
+ "input_gates": {
+  "files": 11,
+  "formats": [
+   "csv",
+   "parquet",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "admitted_ptl_snapshots_2021_2026.parquet",
+  "largest_file_rows": 121480
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task173/generator/build.py (seeded, deterministic) around a fictional English acute trust, in the layouts of a PAS episode extract, a patient tracking list, an e-Referral Service extract, an ECDS extract, a theatre case log, population tables and the Trust's own PDF documents; the trust, hospitals, districts, people and numbers are constructed, and no real organisation's records or person is depicted.",
+   "date": "2026-11-01",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  }
+ ],
+ "created": "2026-11-02",
+ "generator": "task173/generator/build.py",
+ "files": [
+  {
+   "path": "admitted_ptl_snapshots_2021_2026.parquet",
+   "format": "parquet",
+   "bytes": 1029523,
+   "rows": 121480,
+   "source": "Constructed: month-end snapshots of the general surgery admitted patient tracking list, both hospitals, April 2021 to October 2026",
+   "date": "2026-11-01",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "ecds_abdominal_pain_attendances_2023_2026.csv",
+   "format": "csv",
+   "bytes": 2969834,
+   "rows": 29102,
+   "source": "Constructed: emergency department attendances with abdominal pain, both hospitals, April 2023 to October 2026 (ECDS extract)",
+   "date": "2026-11-01",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "elective_access_policy_v6.pdf",
+   "format": "pdf",
+   "bytes": 2837,
+   "rows": null,
+   "source": "Constructed: the Trust's elective access policy, version 6.0",
+   "date": "2025-06-26",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "elective_capacity_plan_2027_28_general_surgery.pdf",
+   "format": "pdf",
+   "bytes": 4270,
+   "rows": null,
+   "source": "Constructed: the Trust's 2027/28 elective capacity plan for general surgery, approved 22 October 2026",
+   "date": "2026-10-22",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "ers_referrals_general_surgery_2019_2026.csv",
+   "format": "csv",
+   "bytes": 974765,
+   "rows": 10985,
+   "source": "Constructed: e-Referral Service referrals received by the Trust's general surgery services",
+   "date": "2026-11-01",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "fennick_pas_to_epr_number_map.csv",
+   "format": "csv",
+   "bytes": 116540,
+   "rows": 6853,
+   "source": "Constructed: Fennick Hospital PAS numbers and the Trust EPR hospital numbers given at the April 2023 migration",
+   "date": "2023-04-17",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "operational_plan_2027_28_activity_lines.pdf",
+   "format": "pdf",
+   "bytes": 3719,
+   "rows": null,
+   "source": "Constructed: the Trust's 2027/28 operational plan activity line definitions, version 1.2",
+   "date": "2026-10-07",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "pas_inpatient_episodes_2021_2026.csv",
+   "format": "csv",
+   "bytes": 6622867,
+   "rows": 54764,
+   "source": "Constructed: finished consultant episodes of every provider spell with an episode in general surgery or gastroenterology at Marlstead General Hospital and Fennick Hospital, April 2021 to October 2026 (PAS and EPR extract)",
+   "date": "2026-11-01",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "population_mid_year_estimates_2018_2025.xlsx",
+   "format": "xlsx",
+   "bytes": 9703,
+   "rows": 32,
+   "source": "Constructed: mid-year population estimates, Marlstead and Coldvale districts, by sex and five-year age band",
+   "date": "2026-06-25",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "population_projections_2022_based.xlsx",
+   "format": "xlsx",
+   "bytes": 11030,
+   "rows": 44,
+   "source": "Constructed: 2022-based subnational population projections, Marlstead and Coldvale districts, by sex and five-year age band",
+   "date": "2025-06-24",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  },
+  {
+   "path": "theatre_case_log_2024_2026.csv",
+   "format": "csv",
+   "bytes": 345165,
+   "rows": 3991,
+   "source": "Constructed: general surgery theatre case log, both hospitals, April 2024 to October 2026",
+   "date": "2026-11-01",
+   "license": "CC0 public domain dedication (original work, constructed for this task)"
+  }
+ ]
+}

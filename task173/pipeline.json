@@ -1,42 +1,42 @@
 {
  "task": "task173",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics / utilization-access-demand-forecasting",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-02",
- "stump": "A competent planner carries the FY2024/25 to FY2026/27 age-sex-specific emergency gallstone admission rates on the 2022-based population projections and files about 850 for 2027/28, because it never lays the emergency spells against the cholecystectomy waiting list, where about 45 per cent of them were patients already listed, admitted at about 2.4 per cent a month while they waited, whose admissions fall away once the Wyecross Elective Centre clears the list before the plan year, which puts 2027/28 at about 600.",
+ "stump": "A competent planner carries the FY2024/25 to FY2026/27 age-sex-specific emergency gallstone admission rates on the 2022-based projections and files 600 for 2027/28, because it never lays the emergency spells against the cholecystectomy waiting list, where about 41 per cent of them were patients already listed, admitted at 0.0211 a patient-month while they waited; the Wyecross Elective Centre cuts the list from about 960 to about 190, which puts 2027/28 at 400.",
  "architecture": 4,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (every line ruled harmless, DESIGN_NOTE.md Stage 4 rulings)",
+  "reader": "no leak; question 6 analytical"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (no BLOCK)",
+  "nearest": "0.12 task148 (v2)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (round 3, after a SEND_BACK and a FIX_NOW on the asks)",
+  "report": "task173/determinism_check_report.md"
  },
  "returned": [],
  "wave": "Batch 5 wave 9 (resume: new draw)",
- "resume": "Architecture 4 drawn 2026-11-02 (card v4 registered, DRAWN committed). Next: stage 2 design (readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt), then the generator at stage 3; precut sits at exit 1 until generator/checks.py and the ceiling script exist.",
+ "resume": "Shipped 2026-11-02; awaiting the portal.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "target_zip_md5": "",
+ "target_zip_md5": "0f65fa9c642eeb689b137e82cec26755",
  "figures_call_keys": [
   "call.gallstone_emergency_2027_28"
  ],
