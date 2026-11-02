@@ -1,181 +1,213 @@
 {
- "task": "task138",
- "architecture": 3,
- "drawn": "2026-11-01",
- "slot_note": "Batch 3 forecasting slot (numbered from seed FC09); v1's irrigation-district world and v2's levee and flood-frequency world are closed, identities in lineage. v3 moves to another client domain (energy-systems-utilities / load-forecasting): a cooperative's substation planning peak with conservation voltage reduction on every feeder.",
- "domain": "energy-systems-utilities",
- "subdomain": "load-forecasting",
- "client_domain": "energy-systems-utilities",
- "niche": "a member-owned electric cooperative's 2027 to 2031 summer planning peaks at one distribution substation once conservation voltage reduction runs on all its feeders, and the load it must transfer each summer to stay within the substation's firm rating, the voltage cut's effect read from a 2025 week-on, week-off pilot on three feeders",
- "objective": "forecasting",
- "shape": "02",
- "decision_type": "quantity_figure",
- "answer_unit": "count",
- "answer": "Transfer 1.0, 2.0, 3.0, 4.0 and 5.0 MW off Dunraith in summers 2027 to 2031 (planning peaks 105 to 109 MW against the 104.0 MW firm rating, with conservation voltage reduction taking 1.1 per cent off at the planning peak).",
- "answer_source": "submission.md, 1. Final Recommendation",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G8",
-  "G14"
- ],
- "gate_g": "forecasting",
- "calibration_form": "pilot_log",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "operations_log",
- "stump_class": "analytical",
- "analyst_test": "A strong planner who cleans the data and reads every rule fits the planning criteria's weather line to five summers (102.9 MW at 101 F, 2024 level), grows it to 2027, sees that the 2027 operating plan runs the 3.5 per cent voltage cut on every feeder and takes the pilot's effect the easy way, the pilot feeders against the comparison feeders over every pilot hour (2.4 per cent) or at each day's peak hour (1.5 per cent); the 2027 planning peak then falls to about 103.4 or 104.3 MW and the transfers come out 0, 0.5, 1.5, 2.5 and 3.5 MW (or 0.5 to 4.5 MW), where the cut takes 1.1 per cent off on the hottest afternoons, the conditions of the planning peak, and the transfers are 1.0, 2.0, 3.0, 4.0 and 5.0 MW.",
- "domain_test": "The deciding quantity is a substation's summer planning peak, a distribution planner's weather-normalised forecast of the hourly load at the design temperature, here with conservation voltage reduction running: how far a voltage cut lowers load depends on what the load is made of, and on the hottest afternoons air-conditioner compressors, which draw about constant power whatever the voltage, carry most of it; a swap to another field's nouns loses the voltage-dependence of the load that sets the answer.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:voltage-reduction-effect-at-design-conditions",
- "layer1": [
-  "airport observations in local standard time and Celsius against the historian's daylight time",
-  "historian layout changed across years (kW, hour-ending, one column a feeder, then MW, hour-beginning, long)",
-  "pilot switches made late or missed in the regulator log",
-  "overnight Bad hours in the historian",
-  "special observations between routine reports",
-  "tables inside PDFs",
-  "revenue meter interval-ending UTC stamps",
-  "meter multipliers held in another system"
- ],
- "stakeholder_role": "system planning engineer",
- "role_family": "capacity_planner",
- "scoring_unit": "other",
- "spine": {
-  "file": "dunraith_feeder_mw_2024-2026.csv",
-  "rows": 70272,
-  "entity": "one feeder-hour load reading from the cooperative's SCADA historian",
-  "grain": "feeder x hour",
-  "source": "constructed (the cooperative's SCADA historian, with the retired historian's 2022 and 2023 export beside it)"
- },
- "forum": "executive_team",
- "forcing_event": "budget_or_appropriation",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "United States (a fictional Plains state)",
-  "currency": "USD",
-  "org_type": "a member-owned electric distribution cooperative",
-  "invented_names": [],
-  "people": [
-   "Julie Gibbs",
-   "Peter Roman",
-   "Desiree Thompson",
-   "Bailey Becker",
-   "Sherry Nixon"
-  ]
- },
- "deliverables": [
-  "dunraith_planning.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "how-much",
- "driver": "An operating change's relief on a planning peak is the relief it gives under the peak's own conditions; measured in a trial switched week on, week off against unswitched peers, the relief shrinks as the load's make-up turns toward the parts the change cannot reduce, so the trial's average relief, carried to the peak, overstates it and the forward peak comes out low.",
- "driver_concrete": "Conservation voltage reduction lowers a feeder's load by its voltage-sensitive part; on the hottest afternoons constant-power air-conditioner compressors carry most of Dunraith's load, so the 2025 pilot's relief over every hour (2.4 per cent) or at each day's peak hour (1.5 per cent) overstates the 1.1 per cent the 3.5 per cent cut gives at the 101 F planning peak, which the pilot feeders show against the unswitched feeders only on the pilot's afternoons at 99 F or more.",
- "stump": "A competent planner applies the pilot's average voltage-cut relief (2.4 per cent, or 1.5 per cent at each day's peak hour) to the weather-normal peak and files transfers of 0, 0.5, 1.5, 2.5 and 3.5 MW for 2027 to 2031 (or 0.5 to 4.5 MW), when the relief at the planning peak's own conditions, read from the pilot feeders against the comparison feeders on the hottest afternoons, is 1.1 per cent and the transfers are 1.0, 2.0, 3.0, 4.0 and 5.0 MW.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task164": "task164 adds a joining intermittent load at the moments a shared peak is set; here no load joins: an operating change on every existing feeder lowers load by a share that falls as the load turns to constant-power air conditioning, read from a switched pilot against unswitched feeders on the hottest afternoons.",
-  "task173": "task173 rejected adding back load that large customers shed against a coincident-peak charge; here nothing is shed or added back: the voltage cut's relief at the planning peak is measured from a week-on, week-off pilot against comparison feeders at the peak's own temperatures.",
-  "task138": "The slot's architectures v1 (an irrigation order's root-zone start state) and v2 (a flood record restored through a second gauge) share no world, file or mechanism with v3: a voltage-reduction effect estimated at the planning peak's conditions from a switched pilot."
- },
- "lineage": [
-  {
-   "domain": "physical-environmental-sciences",
-   "objective": "forecasting",
-   "gap": [
-    "time"
-   ],
-   "pattern": [
+  "task": "task138",
+  "architecture": "v4 (re-root 2026-11-02 after architecture 3 was blocked at guard.py heart)",
+  "drawn": "2026-11-02",
+  "slot_note": "Batch 3 forecasting slot (numbered from seed FC09); v1's irrigation-district world, v2's levee and flood-frequency world and v3's electric-cooperative world are closed, identities in lineage. v4 moves to another client domain (biomedical-clinical-research / dose-response-pk-pd-modeling): a clinical-stage biotech's concentration-QTc dose assessment from its first-in-human studies.",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "dose-response-pk-pd-modeling",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "a clinical-stage biotech choosing the highest candidate Phase 3 dose of an M3-selective antimuscarinic that can go forward without a dedicated QT study, from the concentration-QTc relationship in its single and multiple ascending dose studies, the drug's placebo-adjusted QT prolongation predicted at each dose's high clinical exposure (steady state with a strong CYP3A inhibitor) against the 10 ms bound, when the drug also raises heart rate",
+  "objective": "forecasting",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
     "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "quantity_figure",
-   "driver": "A forward requirement replayed over past driver traces has to start every trace from the store each unit actually holds at the forecast date, rebuilt from each unit's own last recorded replenishment and the observed drawdown since; starting every trace full, letting each trace inherit the store its own past year left, or rebuilding the store from the model's replenishment rule instead of the record each understates it, because most units were last replenished weeks before the rule would have replenished them and the interval since was dry.",
-   "stump_strategy": "time_semantics",
-   "generators": [
+  ],
+  "generators": [
     "G16",
-    "G3"
-   ],
-   "architecture": "v1 round 1",
-   "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the start-state fork and the stump the same gap (no filed sentence fixed the 1 February state; the judge's DETERMINISTIC was conditional on it), the decisive step visible (the 64,887-row orders file the one large non-distractor file the default path never read, Table 1's November to January coefficients, the weather to 31 January 2027; the judge and the reader both found it unprompted) and Ask A's meter chaining crackable through the shop log's registers; never on the portal"
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stump_class": "analytical",
+  "analyst_test": "A strong pharmacometrician who cleans the data and reads every rule fits the plan's pre-specified concentration-QTc mixed model to the change in Fridericia-corrected QT, keeps Fridericia because the drug's heart-rate rise stays under 10 bpm, and files 100 mg (upper bound about 8 ms at its high clinical exposure), when these subjects' drug-free QT shortens with RR at an exponent near 0.40 rather than one third, so Fridericia hides about 3 ms of the drug's prolongation as its heart rate rises and, read with the subjects' own QT-RR relation, 100 mg's upper bound is about 11.5 ms and the highest dose clearing 10 ms is 50 mg.",
+  "domain_test": "The deciding quantity is the drug's concentration-dependent prolongation of cardiac repolarisation predicted at the high clinical exposure, which clinical pharmacology estimates with a concentration-QTc mixed model on heart-rate-corrected QT; QT shortens as the heart speeds up, so when the drug itself raises heart rate the correction has to fit these subjects' own QT-RR relation, and a swap to another field's nouns loses the physiological rate dependence that sets the answer.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:rate-correction-fitted-to-the-subjects",
+  "layer1": [
+    "ECG core-lab transfers in two layouts (wide replicates in ms for the single-dose study, long replicates with heart rate in bpm for the multiple-dose study)",
+    "core-lab screening numbers against the clinic's randomisation numbers",
+    "nominal against actual ECG and sampling times",
+    "replicates flagged unreadable",
+    "bioanalytical results below the limit of quantification as text, and re-assayed samples",
+    "Holter recorder clock in UTC against the clinic's local time across the daylight-saving change",
+    "tables inside PDFs"
+  ],
+  "stakeholder_role": "head of clinical pharmacology",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "holter_5min_segments_BRV317-101-102.csv",
+    "rows": 0,
+    "entity": "one subject's 5-minute Holter segment (median-beat intervals, heart rate and ectopy count)",
+    "grain": "subject x 5-minute segment",
+    "source": "synthetic"
   },
-  {
-   "domain": "physical-environmental-sciences",
-   "objective": "forecasting",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "quantity_figure",
-   "driver": "A forward requirement replayed over past driver traces starts every trace from the store each unit holds at the forecast date, and that store has to be rebuilt by running each unit's recorded replenishments through the season from the last time the record shows it full, because units run at a working deficit are replenished by about what they used and never return to full: taking each unit's last recorded replenishment as a refill, starting every trace full or spinning the model up on its own refill rule each leaves out the deficit the operation carried into the off-season.",
-   "stump_strategy": "other",
-   "generators": [
-    "G3",
-    "G16"
-   ],
-   "architecture": "v1 round 2",
-   "fate": "superseded 2026-10-15 at round 3: the rule 3 audit (VERDICT FAIL, rule application) found the start state the procedure's own daily balance (WOP 3.1 to 3.3) executed on the 2026 delivery record at Table 4's efficiency, which the table defined as the share of delivered water the root zone receives, so the filed sentences executed word for word gave the golden (215,000) with nothing left to estimate; that route is now round 3's default path; never on the portal"
+  "forum": "regulator_or_inspector",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "Belgium (Flanders)",
+    "currency": "EUR",
+    "org_type": "clinical-stage biotech (a Ghent sponsor and an Antwerp phase 1 unit)",
+    "invented_names": [],
+    "people": [
+      "Michaël Tanghe",
+      "Hilde Lemmens",
+      "Kim Huysmans",
+      "Freddy Wouters"
+    ]
   },
-  {
-   "domain": "physical-environmental-sciences",
-   "subdomain": "hydrology-flood-frequency",
-   "objective": "forecasting",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "quantity_figure",
-   "driver": "A forward requirement replayed over past driver traces starts from each unit's store at the forecast date, rebuilt by running each unit's recorded inputs through the balance at the share of each input that reaches the store; the design share is not the record's, and only the monitored units' readings through the input season identify the record's share, because at the forecast date every monitored unit's store is the same under any share: carrying the design share, the monitored units' end-point readings, their offset or their share of capacity to the unmonitored units misstates the units replenished late in the season, on which the order turns.",
-   "stump_strategy": "other",
-   "generators": [
-    "G3",
-    "G13"
-   ],
-   "architecture": "v1 round 3 (Kestrel Bend Irrigation District, the 2027 order from the Tolan Valley Project)",
-   "world": "United States, California (San Joaquin Valley): an irrigation district's season order",
-   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 10-15 (212,000 acre-feet), no portal result; the irrigation-district world is closed (one architecture per world)"
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A treatment's effect on a measure that is normalised for a covariate the treatment itself moves carries whatever share of the covariate's movement the standard normalisation's fixed exponent fails to remove for these units, so the effect read through the standard normalisation, and checked only where the covariate barely varies, understates it; the units' own relation between measure and covariate, fitted on their untreated recordings across the covariate's range, removes the leak.",
+  "driver_concrete": "BRV-317 raises heart rate by about 7 bpm at 100 mg's high clinical exposure and these subjects' drug-free QT shortens with RR at an exponent near 0.40, so the concentration-QTc model on Fridericia-corrected QT puts 100 mg's upper bound near 8 ms, while the drug's heart-rate-independent prolongation, read with each subject's own QT-RR relation from the drug-free Day -1 recordings, puts it near 11.5 ms and the highest dose clearing 10 ms is 50 mg.",
+  "stump": "A competent pharmacometrician fits the pre-specified concentration-QTc model to the change in Fridericia-corrected QT, keeps Fridericia because the heart-rate effect stays under 10 bpm, and files 100 mg; the step that lands there is trusting Fridericia's exponent for subjects whose drug-free QT-RR relation is steeper, so the drug's heart-rate rise hides about 3 ms of prolongation at 100 mg's high clinical exposure and the highest dose clearing 10 ms is 50 mg.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task190": "task190 bounds a ratio's error by where a stratified sample enumerated its units completely; here no sampling error decides: a treatment moves the covariate a fixed-exponent normalisation is built on, and the units' own measure-covariate relation, fitted on their untreated recordings, removes the share the fixed exponent leaves in.",
+    "task195": "task195 judges a paired difference of two screens by the paired uncertainty rather than two separate intervals; here the decisive step is a point estimate, not an interval: the fixed-exponent normalisation leaks the treatment's own covariate movement into the effect, and refitting the units' own relation removes it before any interval is formed.",
+    "task228": "task228 builds a variance at the randomised unit or separates comparators' shared error; here nothing turns on a variance or a comparator: the effect's level is biased because the treatment moves the normalising covariate and the standard exponent misfits these units.",
+    "task478": "task478 carries an output rate that rises with a supplier-recorded input property across the period between spot tests; here no input varies between tests: the treatment itself moves the covariate a fixed-exponent normalisation is meant to remove, and the units' untreated recordings give the exponent that does remove it."
   },
-  {
-   "domain": "physical-environmental-sciences",
-   "subdomain": "hydrology-flood-frequency",
-   "objective": "forecasting",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "dial_setting",
-   "driver": "A forward design value is fitted to a record whose large events were partly absorbed by a storage that has since been removed, so the record's upper tail understates the forward one; the present behaviour shows only in the few large events since the removal, and carrying a longer unaffected upstream record through that present relation restores a series the design value can be fitted to.",
-   "stump_strategy": "other",
-   "generators": [
-    "G16",
-    "G6"
-   ],
-   "architecture": "v2 (Orrinsford levee, 2026-11-01)",
-   "fate": "spent 2026-11-01: the re-judge (derive-first) returned NOT_DETERMINISTIC, SEND_BACK on Gate H3: read word for word, LS-02 s.3 (one annual peak for every water year since 1962) and s.8 (the published records) send the fit to the published Orrinsford peaks, 95,000 cfs and no raise; s.2's 'as they stand' was not read as requiring a reconstructed record, so the easy route obeyed the filed rule; the levee and flood-frequency world is closed"
-  }
- ],
- "lineage_shells": [],
- "notes": "Architecture v3 drawn 2026-11-01 after v2 was spent on the re-judge's Gate H3. stump_strategy other: an operating change's effect on a peak estimated at the peak's own conditions from a switched trial against unswitched peers (not selection, composition, censoring or a time convention). Built 2026-11-01; the default is an easier method on correct data (the trial's average effect) inside the filed WHAT (criteria 3.3, the change's effect on the load at the planning peak).",
- "shell": null,
- "registered": "2026-11-01T19:49:38Z"
+  "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "objective": "forecasting",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward requirement replayed over past driver traces has to start every trace from the store each unit actually holds at the forecast date, rebuilt from each unit's own last recorded replenishment and the observed drawdown since; starting every trace full, letting each trace inherit the store its own past year left, or rebuilding the store from the model's replenishment rule instead of the record each understates it, because most units were last replenished weeks before the rule would have replenished them and the interval since was dry.",
+      "stump_strategy": "time_semantics",
+      "generators": [
+        "G16",
+        "G3"
+      ],
+      "architecture": "v1 round 1",
+      "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the start-state fork and the stump the same gap (no filed sentence fixed the 1 February state; the judge's DETERMINISTIC was conditional on it), the decisive step visible (the 64,887-row orders file the one large non-distractor file the default path never read, Table 1's November to January coefficients, the weather to 31 January 2027; the judge and the reader both found it unprompted) and Ask A's meter chaining crackable through the shop log's registers; never on the portal"
+    },
+    {
+      "domain": "physical-environmental-sciences",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward requirement replayed over past driver traces starts every trace from the store each unit holds at the forecast date, and that store has to be rebuilt by running each unit's recorded replenishments through the season from the last time the record shows it full, because units run at a working deficit are replenished by about what they used and never return to full: taking each unit's last recorded replenishment as a refill, starting every trace full or spinning the model up on its own refill rule each leaves out the deficit the operation carried into the off-season.",
+      "stump_strategy": "other",
+      "generators": [
+        "G3",
+        "G16"
+      ],
+      "architecture": "v1 round 2",
+      "fate": "superseded 2026-10-15 at round 3: the rule 3 audit (VERDICT FAIL, rule application) found the start state the procedure's own daily balance (WOP 3.1 to 3.3) executed on the 2026 delivery record at Table 4's efficiency, which the table defined as the share of delivered water the root zone receives, so the filed sentences executed word for word gave the golden (215,000) with nothing left to estimate; that route is now round 3's default path; never on the portal"
+    },
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward requirement replayed over past driver traces starts from each unit's store at the forecast date, rebuilt by running each unit's recorded inputs through the balance at the share of each input that reaches the store; the design share is not the record's, and only the monitored units' readings through the input season identify the record's share, because at the forecast date every monitored unit's store is the same under any share: carrying the design share, the monitored units' end-point readings, their offset or their share of capacity to the unmonitored units misstates the units replenished late in the season, on which the order turns.",
+      "stump_strategy": "other",
+      "generators": [
+        "G3",
+        "G13"
+      ],
+      "architecture": "v1 round 3 (Kestrel Bend Irrigation District, the 2027 order from the Tolan Valley Project)",
+      "world": "United States, California (San Joaquin Valley): an irrigation district's season order",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 10-15 (212,000 acre-feet), no portal result; the irrigation-district world is closed (one architecture per world)"
+    },
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "dial_setting",
+      "driver": "A forward design value is fitted to a record whose large events were partly absorbed by a storage that has since been removed, so the record's upper tail understates the forward one; the present behaviour shows only in the few large events since the removal, and carrying a longer unaffected upstream record through that present relation restores a series the design value can be fitted to.",
+      "stump_strategy": "other",
+      "generators": [
+        "G16",
+        "G6"
+      ],
+      "architecture": "v2 (Orrinsford levee, 2026-11-01)",
+      "fate": "spent 2026-11-01: the re-judge (derive-first) returned NOT_DETERMINISTIC, SEND_BACK on Gate H3: read word for word, LS-02 s.3 (one annual peak for every water year since 1962) and s.8 (the published records) send the fit to the published Orrinsford peaks, 95,000 cfs and no raise; s.2's 'as they stand' was not read as requiring a reconstructed record, so the easy route obeyed the filed rule; the levee and flood-frequency world is closed"
+    },
+    {
+      "domain": "energy-systems-utilities",
+      "subdomain": "load-forecasting",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "An operating change's relief on a planning peak is the relief it gives under the peak's own conditions; measured in a trial switched week on, week off against unswitched peers, the relief shrinks as the load's make-up turns toward the parts the change cannot reduce, so the trial's average relief, carried to the peak, overstates it and the forward peak comes out low.",
+      "stump_strategy": "other",
+      "generators": [
+        "G8",
+        "G14"
+      ],
+      "architecture": "v3 (Breckwater Electric Cooperative, the Dunraith substation transfers for 2027 to 2031)",
+      "world": "United States, a fictional Plains state: a member-owned electric distribution cooperative's substation planning peak with conservation voltage reduction",
+      "fate": "judge APPROVE and leak reader clean, blocked at guard.py heart (pairing energy plus forecasting, role capacity_planner, artifact operations_log, forum executive_team) with no author waiver; re-rooted 2026-11-02"
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-much",
+      "second-sentence opener": "work",
+      "rounding opener": "transfers",
+      "deliverable set": "xlsx"
+    },
+    {
+      "question form": "whether",
+      "second-sentence opener": "alongside",
+      "rounding opener": "raise",
+      "deliverable set": "pdf+xlsx"
+    }
+  ],
+  "notes": "Architecture v4 drawn 2026-11-02 after v3 (judge APPROVE, leak reader clean) was blocked at guard.py heart on window bans with no author waiver. stump_strategy other: a measurement normalisation's exponent re-estimated from the units' untreated recordings because the treatment moves the normalising covariate (not selection, composition, censoring or a time convention).",
+  "shell": null,
+  "registered": "2026-11-02T02:17:09Z"
 }

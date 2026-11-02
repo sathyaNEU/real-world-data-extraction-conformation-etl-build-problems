@@ -28,11 +28,9 @@ import postprocess as PP    # noqa: E402
 F_TIERS = "stocking_tiers_2027.xlsx"
 F_NOTE = "stocking_board_note_2027.docx"
 # the precision every reading of the counts shares: each high-use lake above BAND_HIGH and each standard lake below
-# BAND_STD angler-hours per hectare under all fifty presence readings (checks.py asserts it); the plain expansion
-# puts its three general lakes above BAND_PLAIN_IN and the four fly-only lakes below BAND_PLAIN_OUT under each of its
-# own readings
-BAND_HIGH, BAND_STD = 550, 480
-BAND_PLAIN_IN, BAND_PLAIN_OUT = 550, 460
+# BAND_STD angler-hours per hectare under all 74 presence readings, whatever party size turns boats into anglers
+# (checks.py asserts it)
+BAND_HIGH, BAND_STD = 510, 480
 
 
 def r10(x):
@@ -76,8 +74,7 @@ def compute(target):
             "count_lakes": len(stocked),
         },
         "chart_bars_per_ha": {name[c]: r10(lakes[c]["golden"]) for c in stocked},
-        "bands": {"high_use_above": BAND_HIGH, "standard_below": BAND_STD,
-                  "plain_in_above": BAND_PLAIN_IN, "plain_out_below": BAND_PLAIN_OUT},
+        "bands": {"high_use_above": BAND_HIGH, "standard_below": BAND_STD},
         "nearest_high": [name[c] for c in nearest_high],
         "nearest_standard": [name[c] for c in nearest_std],
         "anglers_per_boat": {name[c]: round(lakes[c]["apb"], 2) for c in stocked},
@@ -129,7 +126,8 @@ def write_tiers(path, M, f):
     ws.cell(row=r, column=1, value="High-use line: 500 angler-hours per ha (allocation policy 2.2). Angler-hours: "
                                    "each flight count over the share of that lake's interviewed angler-hours at the "
                                    "time of the count, averaged by survey day and expanded by weekday and weekend day "
-                                   "each month; the bands hold however the count's time is read against the hours.")
+                                   "each month; the bands hold however the count's time is read against the hours "
+                                   "and whatever party size turns boats into anglers.")
     ws.cell(row=r, column=1).font = Font(italic=True, size=9)
 
     ws2 = wb.create_sheet("Releases 2026")

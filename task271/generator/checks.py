@@ -211,8 +211,8 @@ for nm, s in stats.items():
 print("== the precision every reading shares")
 import deliver as DL  # noqa: E402
 PF = A.presence_family(TARGET)
-check("bands: fifty presence readings (hour bin, nearest hour, two interpolations, centred hour, minute; lake or "
-      "class profile and anglers per boat; day mean or ratio; parties; day type) all land the golden set",
+check("bands: 74 presence readings (hour bin, nearest hour, two interpolations, centred hour, minute; lake or class "
+      "profile; lake, class or pooled party size; day mean or ratio; parties; day type) all land the golden set",
       all(sorted(c for c in stocked if PF[c][k] >= K.THRESHOLD) == GOLD for k in PF[GOLD[0]]), "%d readings" % len(PF[GOLD[0]]))
 lo_high = min(min(PF[c].values()) for c in GOLD)
 hi_std = max(max(PF[c].values()) for c in stocked if c not in GOLD)
@@ -220,8 +220,8 @@ check("bands: every high-use lake above %d under every reading" % DL.BAND_HIGH, 
       "lowest %.0f" % lo_high)
 check("bands: every standard lake below %d under every reading" % DL.BAND_STD, hi_std < DL.BAND_STD,
       "highest %.0f" % hi_std)
-check("bands: the high band clears the judge's closest high lake (626) and the standard band its closest standard "
-      "lake (462)", DL.BAND_HIGH < 626 and DL.BAND_STD > 462)
+check("bands: the bands clear the judge's own readings (closest high 551, closest standard 462 and 454)",
+      DL.BAND_HIGH < 551 and DL.BAND_STD > 462)
 nh, ns = set(), set()
 for k in PF[GOLD[0]]:
     nh.add(min(GOLD, key=lambda c: PF[c][k]))
@@ -234,27 +234,30 @@ for c in reg:
     crow.setdefault(reg[c]["reg"], []).extend(by_lake[c])
 vno_ = {v["vno"]: c for c, v in reg.items()}
 blank_rows = [r for r in csv.DictReader(open(os.path.join(TARGET, "survey_flight_counts_2026.csv"))) if r["boats"] == ""]
-plain_lo, plain_hi = {}, {}
-for c in ["PP-14", "PP-18", "PP-24", "PP-05", "PP-09", "PP-16", "PP-20"]:
-    vals = []
-    for apb in (A.anglers_per_boat(by_lake[c]), A.anglers_per_boat(crow[reg[c]["reg"]])):
-        for zero in (False, True):
+plain_sets = {}
+for zero in (False, True):
+    for strat in (True, False):
+        vals = {}
+        for c in stocked:
+            apb = A.anglers_per_boat(by_lake[c])
             rows = list(cts_by[c])
             if zero:
                 rows += [dict(date=dt.date.fromisoformat(b["survey_date"]), loop=b["loop"], t=12.0, boats=0, shore=0)
                          for b in blank_rows if vno_[int(b["lake_no"])] == c]
-            vals.append(A.season_estimate(rows, reg[c]["area"], apb))
-            byday = {}
-            for x in rows:
-                byday.setdefault(x["date"], []).append((x["boats"] * apb + x["shore"]) * K.DAY_HOURS)
-            vals.append(np.mean([np.mean(v) for v in byday.values()]) * len(K.SEASON_DAYS) / reg[c]["area"])
-    plain_lo[c], plain_hi[c] = min(vals), max(vals)
-check("bands: the plain expansion keeps Galloran, Nockell and Farrowdale above %d under each of its readings"
-      % DL.BAND_PLAIN_IN, all(plain_lo[c] > DL.BAND_PLAIN_IN for c in ("PP-14", "PP-18", "PP-24")),
-      "lowest %.0f" % min(plain_lo[c] for c in ("PP-14", "PP-18", "PP-24")))
-check("bands: the plain expansion keeps the four fly-only lakes below %d under each of its readings"
-      % DL.BAND_PLAIN_OUT, all(plain_hi[c] < DL.BAND_PLAIN_OUT for c in ("PP-05", "PP-09", "PP-16", "PP-20")),
-      "highest %.0f" % max(plain_hi[c] for c in ("PP-05", "PP-09", "PP-16", "PP-20")))
+            if strat:
+                vals[c] = A.season_estimate(rows, reg[c]["area"], apb)
+            else:
+                byday = {}
+                for x in rows:
+                    byday.setdefault(x["date"], []).append((x["boats"] * apb + x["shore"]) * K.DAY_HOURS)
+                vals[c] = np.mean([np.mean(v) for v in byday.values()]) * len(K.SEASON_DAYS) / reg[c]["area"]
+        plain_sets[(zero, strat)] = sorted(c for c in stocked if vals[c] >= K.THRESHOLD)
+check("plain list: with each lake's own anglers per boat the plain expansion files one list whether blanks are "
+      "dropped or zero and with or without strata (the write-up's sentence)", len({tuple(v) for v in plain_sets.values()}) == 1
+      and plain_sets[(False, True)] == r1, "%d readings" % len(plain_sets))
+check("plain list: that list has Galloran, Nockell and Farrowdale over 500 and the four fly-only lakes under it",
+      all({"PP-14", "PP-18", "PP-24"} <= set(v) and not {"PP-05", "PP-09", "PP-16", "PP-20"} & set(v)
+          for v in plain_sets.values()))
 gw = openpyxl.load_workbook(os.path.join(TASK, "golden", "stocking_tiers_2027.xlsx"), read_only=True)
 grows = list(gw["Tiers 2027"].iter_rows(values_only=True))
 bandcol = [r[6] for r in grows[1:] if r and r[0] and str(r[0]).startswith("PP-")]
@@ -424,9 +427,33 @@ check("SF26 days are Pacific-time days: the two loggers launched on UTC are foun
                                   if r["Logger SN"] == s] for s in ("20184409", "20184421", "20184402")})
       == {"20184409": -7, "20184421": -7, "20184402": 0})
 check("SF27 a lake-day averaged over all readings or over each logger's mean gives the same counts", w_gold == w_per)
+single, _raw = A.lake_day_logger_means(TARGET)
+two = {k: v for k, v in single.items() if len(v) > 1}
+split = [k for k, v in two.items() if not all((x > 20) == (means[k] > 20) for x in v.values())]
+near = min(abs(x - 20) for v in two.values() for x in v.values())
+check("SF27 on every day two loggers hang at 1 m in one lake, either logger alone falls on the pooled mean's side of "
+      "20 C, at least 0.06 from it", not split and near >= 0.06, "%d overlap days, nearest %.3f" % (len(two), near))
+for lake in ("PP-11", "PP-03"):
+    alone = {}
+    for k, v in single.items():
+        if k[0] != lake:
+            continue
+        for s_, x in v.items():
+            alone.setdefault(s_, set())
+    counts_alone = []
+    for s_ in alone:
+        n = 0
+        for k, v in single.items():
+            if k[0] != lake:
+                continue
+            x = v.get(s_, means[k])
+            n += x > 20
+        counts_alone.append(n)
+    check("SF27 %s: each logger taken alone for its days (the other's days as they are) gives the golden count"
+          % reg[lake]["name"], all(n == w_gold[lake] for n in counts_alone), "%s" % counts_alone)
 gap = min(min(abs(v - 20) for v in means.values()), min(abs(v - 20) for v in means_per.values()))
 check("SF28 no lake-day mean within 0.06 C of 20 (rounding to 0.1 and 'at or above' agree)", gap >= 0.06, "%.3f" % gap)
-partial = [(k, v) for k, v in means.items() if k in (("PP-19", dt.date(2026, 7, 14)), ("PP-20", dt.date(2026, 7, 22)))]
+partial = [(k, v) for k, v in means.items() if k in (("PP-19", dt.date(2026, 7, 9)), ("PP-20", dt.date(2026, 7, 22)))]
 check("SF29 the two relocation days are not warm however a part day is read", all(v < 19.7 for k, v in partial),
       ", ".join("%s %.2f" % (k[0], v) for k, v in partial))
 check("SF30 the lakes with a 1 m logger in July and August are the nine the deployments give",

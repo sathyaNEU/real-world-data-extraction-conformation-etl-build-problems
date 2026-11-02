@@ -38,7 +38,7 @@
    "date": "2026-10-16",
    "license": "synthetic, CC0",
    "role": "evidence",
-   "source": "Netbeheer Rivierenland Gas, monthly telemetry reads of the Weidehaven boiler-room gas meters, 2025-26; synthetic, built for this task"
+   "source": "Gasnet Lekstede, monthly telemetry reads of the Weidehaven boiler-room gas meters, 2025-26; synthetic, built for this task"
   },
   "hydraulische_toets_os_west_2026-10-09.pdf": {
    "date": "2026-10-16",
@@ -50,7 +50,7 @@
    "date": "2026-10-16",
    "license": "synthetic, CC0",
    "role": "evidence",
-   "source": "Netbeheer Rivierenland Gas, connection and meter master data for the Weidehaven boiler rooms, 1 October 2026; synthetic, built for this task"
+   "source": "Gasnet Lekstede, connection and meter master data for the Weidehaven boiler rooms, 1 October 2026; synthetic, built for this task"
   },
   "os_west_scada_uurwaarden_2025-10_2026-09.csv": {
    "date": "2026-10-16",

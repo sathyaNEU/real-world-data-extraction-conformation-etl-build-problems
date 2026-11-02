@@ -6,18 +6,16 @@ import zipfile
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.pagesizes import letter as A4
+from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-ZIP_TIME = (2026, 10, 27, 8, 40, 0)
+ZIP_TIME = (2027, 12, 6, 9, 40, 0)
 
 
-def write_csv(path, header, rows, preamble=None, newline="\r\n"):
+def write_csv(path, header, rows, newline="\r\n"):
     buf = io.StringIO()
-    for line in preamble or []:
-        buf.write(line + newline)
     w = csv.writer(buf, lineterminator=newline)
     w.writerow(header)
     for r in rows:
@@ -27,12 +25,7 @@ def write_csv(path, header, rows, preamble=None, newline="\r\n"):
     return len(rows)
 
 
-def _x(v):
-    return str(v).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-
 def _core(creator, modified_by, created, modified, title):
-    creator, modified_by, title = _x(creator), _x(modified_by), _x(title)
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
             '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
             'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
@@ -43,13 +36,11 @@ def _core(creator, modified_by, created, modified, title):
             % (title, creator, modified_by, created, modified))
 
 
-APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".pptx": ("Microsoft Office PowerPoint", "16.0000"),
-       ".docx": ("Microsoft Office Word", "16.0000")}
+APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000")}
 
 
 def _app(ext, company):
     name, ver = APP[ext]
-    company = _x(company)
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
             '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
             'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
@@ -73,6 +64,8 @@ def repack_ooxml(path, creator, modified_by, created, modified, title, company, 
                 data = _core(creator, modified_by, created, modified, title).encode()
             elif n == "docProps/app.xml":
                 data = _app(ext, company).encode()
+            elif n == "docProps/custom.xml":
+                continue
             zi = zipfile.ZipInfo(n, date_time=stamp)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
@@ -83,8 +76,8 @@ def repack_ooxml(path, creator, modified_by, created, modified, title, company, 
     open(path, "wb").write(out.getvalue())
 
 
-INK = colors.HexColor("#1f2a30")
-RULE = colors.HexColor("#7d8b93")
+INK = colors.HexColor("#1d2b33")
+RULE = colors.HexColor("#7f8c94")
 
 
 def _styles():
@@ -96,8 +89,8 @@ def _styles():
             "h": ParagraphStyle("h", parent=base, fontName="Helvetica-Bold", fontSize=10.2, leading=13.6,
                                 spaceBefore=6),
             "p": base,
-            "cell": ParagraphStyle("cell", parent=base, fontSize=8.5, leading=10.8, spaceAfter=0),
-            "head": ParagraphStyle("head", parent=base, fontName="Helvetica-Bold", fontSize=8.5, leading=10.8,
+            "cell": ParagraphStyle("cell", parent=base, fontSize=8.4, leading=10.6, spaceAfter=0),
+            "head": ParagraphStyle("head", parent=base, fontName="Helvetica-Bold", fontSize=8.4, leading=10.6,
                                    spaceAfter=0)}
 
 
@@ -106,7 +99,7 @@ def esc(x):
 
 
 def write_pdf(path, title, author, producer, blocks, footer, created, modified, widths=None):
-    """created and modified as PDF dates, e.g. D:20250314101500+13'00'."""
+    """created and modified as PDF dates, e.g. D:20271201101500Z."""
     st = _styles()
 
     def page(canvas, d):
@@ -125,9 +118,9 @@ def write_pdf(path, title, author, producer, blocks, footer, created, modified, 
         if kind == "table":
             ncol = max(len(r) for r in val)
             w = widths.get(ncol) if widths else None
-            cw = w or ([46 * mm, width - 46 * mm] if ncol == 2 else [width / ncol] * ncol)
+            cw = w or ([52 * mm, width - 52 * mm] if ncol == 2 else [width / ncol] * ncol)
             data = [[Paragraph(esc(c), st["head"] if i == 0 else st["cell"]) for c in r] for i, r in enumerate(val)]
-            t = Table(data, colWidths=cw, hAlign="LEFT")
+            t = Table(data, colWidths=cw, hAlign="LEFT", repeatRows=1)
             t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
                                    ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
             story += [t, Spacer(1, 6)]
@@ -144,20 +137,20 @@ def write_pdf(path, title, author, producer, blocks, footer, created, modified, 
 
 
 def pdf_text(path):
-    """The generator's read of a shipped PDF: every text string drawn on its pages, in order."""
+    """Every text string drawn on a shipped PDF's pages, in order (ASCII85 then Flate decoded)."""
     import base64
     import zlib
     data = open(path, "rb").read()
     out = []
-    for m in re.finditer(rb"stream\s*\n(.*?)endstream", data, re.S):
+    for m in re.finditer(rb"stream\r?\n(.*?)endstream", data, re.S):
         raw = m.group(1).strip()
         txt = raw
         try:
             if raw.endswith(b"~>"):
-                raw = base64.a85decode(raw[:-2])
+                raw = base64.a85decode(raw[:-2] if not raw.startswith(b"<~") else raw[2:-2])
             txt = zlib.decompress(raw)
         except Exception:
             pass
         for s in re.findall(rb"\((.*?)(?<!\\)\)\s*Tj", txt, re.S):
-            out.append(s.replace(rb"\(", b"(").replace(rb"\)", b")").decode("latin-1"))
+            out.append(s.replace(rb"\(", b"(").replace(rb"\)", b")").replace(rb"\\", b"\\").decode("latin-1"))
     return " ".join(out)

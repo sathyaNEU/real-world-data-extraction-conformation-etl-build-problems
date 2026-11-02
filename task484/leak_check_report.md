@@ -9,7 +9,7 @@ Stump terms swept: architecture, propane, survey, appliance, heating, season, re
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `network_operations_log_2025.docx`: 3 of 25 stump-paragraph terms appear (survey, counters, detector); read whether the document names the move
 - **REVIEW** `traffic_estimate_terms_2025.pdf`: 4 of 25 stump-paragraph terms appear (record, counters, register, vehicle); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "traffic_network_2025.xlsx should hold each permanent counter's average daily heavy goods vehicles in 2025, and the vehicles the detectors recorded in 2025 on each approach to the Western Avenue / Fenwick Road and Ring Ro"
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "For the noise model's other inputs, traffic_network_2025.xlsx should hold each permanent counter's average daily heavy goods vehicles in 2025 and the vehicles the detectors recorded in 2025 on each approach to the Wester"
 
 ## 6 ranking artifacts (REVIEW 5, INFO 1)
 - **REVIEW** `count_points_2025.xlsx`: names 29 of 38 answer-set candidates beside numbers; confirm it does not rank them on the decision question

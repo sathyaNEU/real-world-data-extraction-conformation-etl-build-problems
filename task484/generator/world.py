@@ -234,7 +234,7 @@ def build_world():
         kind = "commuter" if setting == "urban" else "interurban"
         var = {"sat": rng.normal(0, 0.012), "sun": rng.normal(0, 0.012)}
         q = series(kind, aadf, var, loc_sd=0.018)
-        s12 = share12(kind, 0.005)
+        s12 = share12(kind, 0.005) * (1.0 + rng.normal(0.0, 0.011))
         hgv = rng.uniform(0.042, 0.074) if rclass == "A" else rng.uniform(0.036, 0.058)
         W.atcs.append({"name": name, "road_class": rclass, "setting": setting, "kind": kind, "q24": q,
                        "q12": q * s12, "installed": inst, "hgv_share": hgv,
@@ -245,7 +245,7 @@ def build_world():
     W.sections = []
     for (name, rclass, setting, kind, aadf, fr, to, length, end_j, lanes) in SECTIONS:
         q = series(kind, aadf)
-        s12 = share12(kind)
+        s12 = share12(kind) * (1.0 + rng.normal(0.0, 0.009))
         W.sections.append({"name": name, "road_class": rclass, "setting": setting, "kind": kind,
                            "base": aadf, "from": fr, "to": to, "length": length, "end_j": end_j,
                            "lanes": lanes, "q24": q, "q12": q * s12,
@@ -315,7 +315,7 @@ def make_detectors(W):
                 m = m / m.mean()
                 e = rng.normal(0.0, 0.03, len(DAYS))
                 a24 = aadf * m * (1.0 + W.delta) * (1.0 + e)
-                a12 = a24 * np.array([r12(kind, d) for d in DAYS]) * (1.0 + rng.normal(0.0, 0.006, len(DAYS)))
+                a12 = a24 * np.array([r12(kind, d) for d in DAYS]) * (1.0 + rng.normal(0.0, 0.011)) * (1.0 + rng.normal(0.0, 0.006, len(DAYS)))
                 own = None
             if lanes == 1:
                 shares = [rng.uniform(0.968, 0.992)]
@@ -485,10 +485,16 @@ def families(W, s, si, di, base_mult=1.0):
         if len(ch) == 2:
             for c in ch:
                 own["G1 lane %d alone" % c["lane"]] = est.own_exact_day(c12, di, c["obs24"], c["obs12"], c["avail"])
+        # the counters' 24/12 ratio is a licensed form only where the section's own 07:00-19:00 share agrees with theirs
+        full = av >= 100
+        own_share = float(np.nansum(d12[full]) / np.nansum(d24[full]))
+        shares = [float(np.nansum(a[1]) / np.nansum(a[0])) for a in grp]
+        if min(shares) - 0.01 <= own_share <= max(shares) + 0.01:
+            own["G5 counters' 24/12 with the own detector's year"] = est.own_group_2412(c12, di, d24, d12, av, grp)
     return c12, tm, own
 
 
-def ok_day(W, s, si, di, base_mult):
+def ok_day(W, s, si, di, base_mult, strict_controls=True):
     if s["end_j"]:
         ch = lane_arrays(W, s["name"])
         if any(c["avail"][di] < 100 for c in ch):
@@ -517,7 +523,7 @@ def ok_day(W, s, si, di, base_mult):
             if ("in" if b > 3.0 else "out") != want_d or abs(b - 3.0) < 0.08:
                 return False
             if s["name"] in CONTROLS:
-                if round(b, 1) != gb or est.edge(b) < 0.01:
+                if strict_controls and (round(b, 1) != gb or est.edge(b) < 0.01):
                     return False
             elif abs(b - g) < 0.2:
                 return False
@@ -533,10 +539,13 @@ def choose_count_days(W):
         order = list(pool)
         rng.shuffle(order)
         found = None
-        for bm in (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016):
-            for d in order:
-                if ok_day(W, s, si, DIDX[d], bm):
-                    found = (d, bm)
+        for strict in (True, False):
+            for bm in (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016, 0.98, 1.02, 0.976, 1.024):
+                for d in order:
+                    if ok_day(W, s, si, DIDX[d], bm, strict):
+                        found = (d, bm)
+                        break
+                if found:
                     break
             if found:
                 break

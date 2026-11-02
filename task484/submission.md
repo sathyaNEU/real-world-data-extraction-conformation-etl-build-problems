@@ -11,7 +11,7 @@
 
 1. Over the line on their own detectors: Brookfield Way 3.4 million; Hollins Lane 3.2 million; Infirmary Road 3.2 million.
 2. Under it on their own detectors: College Road 2.5 million; Grange Road 2.7 million; Castlegate Road 2.6 million.
-3. The other sections over 3.0 million: Ashfield Road 3.8; Holloway Hill 3.4; Kingsway 4.3; Priory Road 3.4; Station Street 3.6; Wharf Street 5.0.
+3. The other sections over 3.0 million: Ashfield Road 3.8; Holloway Hill 3.5; Kingsway 4.2; Priory Road 3.3; Station Street 3.6; Wharf Street 4.7.
 
 ## 3. Step-by-Step Solution
 
@@ -33,20 +33,20 @@
    - Brookfield Way (count point 828200, 0.62 km): 3.4, yes
    - Castlegate Road (count point 476623, 0.95 km): 2.6, no
    - College Road (count point 542938, 0.58 km): 2.5, no
-   - Cradock Lane (count point 438496, 1.37 km): 2.3, no
+   - Cradock Lane (count point 438496, 1.37 km): 2.4, no
    - Grange Road (count point 778164, 0.74 km): 2.7, no
    - Hollins Lane (count point 440787, 0.81 km): 3.2, yes
-   - Holloway Hill (count point 352234, 1.48 km): 3.4, yes
+   - Holloway Hill (count point 352234, 1.48 km): 3.5, yes
    - Infirmary Road (count point 929104, 0.47 km): 3.2, yes
-   - Kingsway (count point 477800, 0.69 km): 4.3, yes
-   - Lower Heath Road (count point 699061, 1.92 km): 1.5, no
+   - Kingsway (count point 477800, 0.69 km): 4.2, yes
+   - Lower Heath Road (count point 699061, 1.92 km): 1.4, no
    - Mill Lane (count point 410389, 0.88 km): 2.6, no
-   - Oakhill Road (count point 578667, 0.79 km): 2.0, no
-   - Priory Road (count point 705957, 0.66 km): 3.4, yes
-   - Sandy Lane (count point 528367, 0.57 km): 2.4, no
+   - Oakhill Road (count point 578667, 0.79 km): 1.9, no
+   - Priory Road (count point 705957, 0.66 km): 3.3, yes
+   - Sandy Lane (count point 528367, 0.57 km): 2.5, no
    - Station Street (count point 424332, 0.52 km): 3.6, yes
-   - Tanhouse Lane (count point 526023, 0.84 km): 2.5, no
-   - Wharf Street (count point 979192, 0.41 km): 5.0, yes
+   - Tanhouse Lane (count point 526023, 0.84 km): 2.7, no
+   - Wharf Street (count point 979192, 0.41 km): 4.7, yes
 
 ### section_traffic_2025.png
 
@@ -55,23 +55,23 @@
 ### traffic_network_2025.xlsx
 
 1. Counters, heavy goods vehicles a day in 2025:
-   - WRA291 (Pelham Lane): 350
-   - WRA302 (Lea Road): 640
-   - WRA472 (Coventry Road): 780
-   - WRA508 (Stafford Road): 1060
-   - WRA661 (Birmingham Road): 1380
-   - WRA689 (Northgate Road): 850
-   - WRA754 (Ashby Road): 400
-   - WRA756 (Western Avenue): 1590
-   - WRA843 (Lichgate Road): 440
-   - WRA872 (Ring Road North): 1740
-   - WRA898 (Fenwick Road): 1120
+   - WRA291 (Pelham Lane): 320
+   - WRA302 (Lea Road): 500
+   - WRA472 (Coventry Road): 880
+   - WRA508 (Stafford Road): 910
+   - WRA661 (Birmingham Road): 1370
+   - WRA689 (Northgate Road): 750
+   - WRA754 (Ashby Road): 450
+   - WRA756 (Western Avenue): 1200
+   - WRA843 (Lichgate Road): 410
+   - WRA872 (Ring Road North): 1700
+   - WRA898 (Fenwick Road): 980
 2. Vehicles recorded on each approach in 2025, thousands:
-   - Ring Road / Tanyard Lane, Ring Road EB: 4,373
-   - Ring Road / Tanyard Lane, Ring Road WB: 3,217
-   - Ring Road / Tanyard Lane, Tanyard Lane NB: 1,396
-   - Ring Road / Tanyard Lane, Tanyard Lane SB: 1,680
-   - Western Avenue / Fenwick Road, Fenwick Road EB: 2,715
-   - Western Avenue / Fenwick Road, Fenwick Road WB: 1,893
-   - Western Avenue / Fenwick Road, Western Avenue NB: 3,875
-   - Western Avenue / Fenwick Road, Western Avenue SB: 4,979
+   - Ring Road / Tanyard Lane, Ring Road EB: 4,349
+   - Ring Road / Tanyard Lane, Ring Road WB: 3,253
+   - Ring Road / Tanyard Lane, Tanyard Lane NB: 1,399
+   - Ring Road / Tanyard Lane, Tanyard Lane SB: 1,674
+   - Western Avenue / Fenwick Road, Fenwick Road EB: 2,674
+   - Western Avenue / Fenwick Road, Fenwick Road WB: 1,861
+   - Western Avenue / Fenwick Road, Western Avenue NB: 3,886
+   - Western Avenue / Fenwick Road, Western Avenue SB: 4,974

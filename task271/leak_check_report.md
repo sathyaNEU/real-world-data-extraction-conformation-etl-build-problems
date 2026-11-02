@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, architecture, anglers, dropped, reflex, reader, golden, record, readers, candidate, nothing, family, health, hospital, effort, member, screens, spread, estimate, design, selection, decisive, pooled, profile, scored
+Stump terms swept: survey, architecture, anglers, dropped, reader, reflex, golden, record, readers, candidate, expansion, nothing, family, health, hospital, effort, member, screens, spread, pooled, estimate, design, selection, decisive, profile
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `catchable_allocation_policy_2026.pdf`: golden figure 500 appears: ...er for a stocking year when anglers fished it for 500 or more angler-hours per hectare of its surface a...

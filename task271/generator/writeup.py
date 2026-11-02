@@ -38,9 +38,10 @@ def write(f, path):
     a("**Put %s into the 2027 high-use tier; every other lake that takes catchables stays standard.** Each of the "
       "ten was fished for more than 500 angler-hours per hectare from 15 May to 31 August 2026 once each flight count "
       "is read against the hours that lake's own anglers fish, and it stays above %d however a count's time is read "
-      "against those hours; the standard lakes stay below %d. Depending on that reading, the high-use lake nearest the "
-      "line is %s, and the standard lake nearest it %s. Not the plain expansion's list: each count times the 17-hour day puts %s in and "
-      "leaves %s out, because the flights pass every lake between about 09:30 and 17:00, the general lakes' busy "
+      "against those hours and whatever party size turns its boats into anglers; the standard lakes stay below %d. "
+      "Depending on that reading, the high-use lake nearest the line is %s, and the standard lake nearest it %s. Not "
+      "the plain expansion's list: with each lake's own anglers per boat, each count times the 17-hour day puts %s in "
+      "and leaves %s out, because the flights pass every lake between about 09:30 and 17:00, the general lakes' busy "
       "hours and the fly-only lakes' quiet ones."
       % (listing(hi), b["high_use_above"], b["standard_below"], listing_or(nh), listing_or(ns), listing(out),
          listing(came)))
@@ -53,11 +54,12 @@ def write(f, path):
       "(boats times the lake's own anglers per boat, plus shore anglers), averaged by survey day and expanded by "
       "weekday and weekend day in each month, then divided by the register's area.")
     a("3. %s come in above %d angler-hours per hectare and %s fall below %d, whether a count's time is read by its "
-      "hour, the nearest hour, interpolated, over the hour around it or at its minute, and with each lake's own "
-      "hours or its regulation class's." % (listing(came), b["high_use_above"], listing(out), b["standard_below"]))
-    a("4. The plain expansion puts %s above %d and leaves %s below %d, however the boats are turned into anglers and "
-      "the blank counts are read; spreading the counts by the survey's pooled hourly profile leaves that list "
-      "unchanged." % (listing(out), b["plain_in_above"], listing(came), b["plain_out_below"]))
+      "hour, the nearest hour, interpolated, over the hour around it or at its minute, with each lake's own hours or "
+      "its regulation class's, and with the lake's own, its class's or one shared party size."
+      % (listing(came), b["high_use_above"], listing(out), b["standard_below"]))
+    a("4. With each lake's own anglers per boat, the plain expansion puts %s over 500 and leaves %s under it, whether "
+      "the blank counts are left out or read as zero and with or without the strata; spreading the counts by the "
+      "survey's pooled hourly profile leaves that list unchanged." % (listing(out), listing(came)))
     a("")
     a("## 3. Step-by-Step Solution\n")
     a("1. Matched survey_flight_counts_2026.csv (Vellacott numbers) and creel_interviews_2026.csv (tablet names) to "
@@ -71,8 +73,9 @@ def write(f, path):
       "took the mean survey day in each month's weekday and weekend strata, multiplied by the stratum's days and "
       "summed over 15 May to 31 August.")
     a("5. Divided by the register's surface area and set each lake that takes catchables against 500 "
-      "(catchable_allocation_policy_2026.pdf, 2.2 and 2.3); every other reading of a count's time against the hours "
-      "keeps each high-use lake above %d and each standard lake below %d." % (b["high_use_above"], b["standard_below"]))
+      "(catchable_allocation_policy_2026.pdf, 2.2 and 2.3); every other reading of a count's time against the hours, "
+      "and any party size, keeps each high-use lake above %d and each standard lake below %d."
+      % (b["high_use_above"], b["standard_below"]))
     a("6. Releases: each trip's net load at its raceway's latest Monday sample count (fish per kg), reading trip "
       "sheet raceway numbers before the tank temperature column began as the old numbers "
       "(quillet_creek_raceway_numbers.csv), shared between drops by the drop crew's nets, less the dead fish counted "
@@ -87,7 +90,7 @@ def write(f, path):
     a("1. High-use tier for 2027: %s." % listing(hi))
     a("2. Standard: %s." % listing(f["call"]["standard"]))
     a("3. Angler-hours per hectare, 2026 open-water season: every high-use lake above %d and every standard lake "
-      "below %d." % (b["high_use_above"], b["standard_below"]))
+      "below %d, under every reading of the counts against the lakes' hours." % (b["high_use_above"], b["standard_below"]))
     a("4. Catchable rainbow trout released alive in 2026, nearest 100:")
     for n, v in sorted(f["releases_alive"].items()):
         a("   - %s: %s" % (short(n), "{:,}".format(v)))

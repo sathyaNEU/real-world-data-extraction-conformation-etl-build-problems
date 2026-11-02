@@ -48,9 +48,7 @@
   "Thornhollow Lake": 47.9
  },
  "bands": {
-  "high_use_above": 550,
-  "plain_in_above": 550,
-  "plain_out_below": 460,
+  "high_use_above": 510,
   "standard_below": 480
  },
  "call": {
@@ -131,13 +129,15 @@
  "nearest_high": [
   "Ravensky Lake",
   "Kesterway Lake",
-  "Ellerdine Lake",
-  "Brackwater Lake"
+  "Brackwater Lake",
+  "Ellerdine Lake"
  ],
  "nearest_standard": [
   "Galloran Lake",
+  "Farrowdale Lake",
   "Nockell Lake",
-  "Farrowdale Lake"
+  "Kelloran Lake",
+  "Bufflehead Lake"
  ],
  "parties_interviewed": {
   "Brackwater Lake": 141,

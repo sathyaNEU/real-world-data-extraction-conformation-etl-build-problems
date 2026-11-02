@@ -159,9 +159,17 @@ def sections(P):
                 for dd in dets:
                     x = P["utc"][dd]
                     r["own"]["G1 lane %s alone" % P["detectors"][dd]["lane"]] = est.own_exact_day(c12, di, x["d24"], x["d12"], x["av"])
-            # rungs that read the detectors wrongly
-            r["raw_detector"] = float(np.nanmean(d24[av >= 100]))
+            # the counters' 24/12 with the own detector's year: licensed where the section's own 07:00-19:00 share
+            # agrees with the counters', a rung where the section's record refutes it
             r["own_group_2412"] = est.own_group_2412(c12, di, d24, d12, av, grp)
+            full = av >= 100
+            r["own_share"] = float(np.nansum(d12[full]) / np.nansum(d24[full]))
+            shares = [float(np.nansum(a[1]) / np.nansum(a[0])) for a in grp]
+            r["share_range"] = (min(shares), max(shares))
+            if min(shares) - 0.01 <= r["own_share"] <= max(shares) + 0.01:
+                r["own"]["G5 counters' 24/12 with the own detector's year"] = r["own_group_2412"]
+            # a rung that reads the detectors wrongly
+            r["raw_detector"] = float(np.nanmean(d24[av >= 100]))
         r["gold_aadf"] = r["own"]["G1 counted day, full days"] if dets else r["tmg"]["T1 same-day, ratio of sums"]
         r["default_aadf"] = r["tmg"]["T1 same-day, ratio of sums"]
         out.append(r)

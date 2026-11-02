@@ -74,7 +74,7 @@ append-only `## Tried and rejected` closes the note.
   annual flow from its single weekdays with its group's same-day ratio, leave-one-out, largest error 7.0 per cent
   against a 10 per cent target.
 - **Second use:** every file the decisive step reads has its own reason: the detector summaries and the UTC asset
-  register carry ask B (the approaches at the two junctions renewed in 2025), the counts and the count register
+  register carry ask B (the noise model's corrections at the two signals renewed in 2025), the counts and the count register
   carry the supply's own fields, and the counter export carries ask A and the sections with no detector.
 - **Shock:** the six sections the step moves are ordinary: their counts (5,384 to 8,647 vehicles in 12 hours) sit
   inside the others' range on ordinary neutral weekdays, and sorted on count, length, class or the default figure
@@ -229,7 +229,7 @@ reading of a sentence moves the set; the easy answer comes from an easier method
 ## Ask sheet
 
 **Ask A: each permanent counter's average daily heavy goods vehicles in 2025 (11 figures, nearest 10).** Use: the
-noise model's heavy vehicle inputs are calibrated on the counters. H18: a component of the round's supply on rows
+noise model's heavy vehicle inputs are calibrated on the counters, part of the round's supply. H18: a component of the round's supply on rows
 the call never reads (the class channels; the call reads the all-vehicle columns). Primary device (D2, a label
 stored before a silent switch): every counter got a TX-200 outstation in March to June 2025 (the site list's
 installed date and the log), but the outstations kept the legacy class output until the firmware push of
@@ -240,8 +240,8 @@ push is in the log without its effect. Stops: current table all year 244 to 1,30
 1,433; legacy table all year; golden 350 to 1,740.
 
 **Ask B: the vehicles the detectors recorded in 2025 on each approach to the Western Avenue / Fenwick Road and Ring
-Road / Tanyard Lane junctions (8 figures, thousands).** Use: the signal renewal review. H18: a reconciliation on
-detectors no counted section uses (S1). Primary device (D7, codes reissued): both controllers were replaced in 2025
+Road / Tanyard Lane junctions (8 figures, thousands).** Use: the noise model's corrections at those two renewed
+signals, part of the round's supply. H18: a component of the supply on detectors no counted section uses (S1). Primary device (D7, codes reissued): both controllers were replaced in 2025
 and the detectors re-terminated, so before the renewal each channel number carried another lane; the register
 holds the current assignment only. The repair groups the pre-renewal channels into approaches by their day-to-day
 co-movement and matches each group to the current approach on level, weekend shares and 07:00 to 19:00 share

@@ -23,12 +23,12 @@
   "surface": "2026-11-02: 9 pairs promoted for adjudication, surface similarity at most 0.101 (task272 back to back on G7 and designation_set; card same-driver signatures against task460, task135, task451 and task161); differentiation lines on the card for task451, task135, task161, task460, task272, task193 and task186"
  },
  "judge": {
-  "verdict": "DETERMINISTIC, FIX_NOW (2026-11-02, on 8131c7cd)",
-  "disposition": "fixed in one pass 2026-11-02: per-lake angler-hours per hectare dropped from the write-up and workbook for bands every one of fifty readings shares (high use above 550, standard below 480, nearest lakes named as sets); the drop tallies key the dead at the drop in fish (doaFish); the smoke-day afternoon loops land at the Pillory dock after the last counted lake, so every count sits inside an airborne leg and the smoke-hidden lakes carry no time over them; call and graded ask figures unchanged; re-judge pending",
+  "verdict": "DETERMINISTIC (round 2, 2026-11-02, on 9ec2a0b9): one SOLUTION_WRONG and one graded-cell fork to close",
+  "disposition": "round 2 fixed 2026-11-02: the bands hold under 74 readings including one shared party size (high use above 510, standard below 480), the plain expansion stated as its list under each lake's own anglers per boat for every blank and strata reading; the paired Brackwater logger moves to Kelloran on 9 July, so no overlap day sits near 20 C under either logger (Brackwater 57 under every choice, the UTC device kept); call and every graded figure unchanged; last judge pass pending",
   "report": ""
  },
  "returned": [],
- "resume": "Stage 4 FIX_NOW applied 2026-11-02 (target.zip 9ec2a0b9); the judge re-judges once; no git in this run (the main session commits).",
+ "resume": "Re-judge round 2 fixes applied 2026-11-02 (target.zip 1bb0af6b); one last judge pass is the main session's; no git in this run (the main session commits).",
  "architectures": [
   {
    "architecture": 1,
@@ -72,5 +72,5 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "none (architecture 6 draws its world, decision and quantity new; DA21's health-plan world set aside at architecture 1)",
- "target_zip": "9ec2a0b9676a8a48dee3d4cff530dc9d874525e58b9689d42488ea07e21d2a5e"
+ "target_zip": "1bb0af6bb316e04ae01f21f160a95b07a142da30d0df749fdbbd335501c26bb7"
 }

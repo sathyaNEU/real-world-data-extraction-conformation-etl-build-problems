@@ -11,7 +11,7 @@
  "shape": "15",
  "decision_type": "conformed_dataset",
  "answer_unit": "dataset",
- "answer": "Provisional at the draw: the sections over three million vehicles in 2025 are the retail park, leisure park and hospital access roads with the commuter sections over the line, while the school, industrial estate and campus roads stay under it; the conformed file carries every counted section's 2025 traffic (figures set by the generator)",
+ "answer": "Nine of the sections counted in 2025 carried more than three million vehicles and go into the noise mapping contract's scope: Ashfield Road 3.8, Brookfield Way 3.4, Hollins Lane 3.2, Holloway Hill 3.4, Infirmary Road 3.2, Kingsway 4.3, Priory Road 3.4, Station Street 3.6 and Wharf Street 5.0 million; Grange Road 2.7, College Road 2.5 and Castlegate Road 2.6 stay under.",
  "answer_source": "golden/noise_round_sections_2025.csv",
  "gap": [
   "time"
@@ -51,7 +51,7 @@
  "scoring_unit": "other",
  "spine": {
   "file": "utc_detector_daily_2025.csv",
-  "rows": 40000,
+  "rows": 37230,
   "entity": "one urban traffic control detector's flow on one day, in the 07:00 to 19:00 window and over the whole day, with the day's availability",
   "grain": "detector x day",
   "source": "synthetic"
@@ -82,15 +82,20 @@
  },
  "deliverables": [
   "noise_round_sections_2025.csv",
-  "section_traffic_2025.png"
+  "section_traffic_2025.png",
+  "traffic_network_2025.xlsx"
  ],
  "opening_move": "question-first",
  "question_form": "how-many",
  "driver": "The decisive quantity is each unit's ratio of its whole-period mean to the single short window in which it was measured; the standard method borrows that ratio from a pooled group of continuous recorders whose weekly and seasonal rhythm many units do not share, while a continuous recorder in a separate system sits on the unit itself but sees only part of its flow at another grain, so the unit's own ratio is read by pairing that recorder's value in the measured window with the measurement and carrying the recorder's whole-period mean through the pair.",
  "driver_concrete": "Each counted road section's 2025 traffic is its 12-hour manual count times the section's own expansion factor; the borough's permanent counters sit on commuter roads, so their factors misstate sections ending at a retail park, a leisure park, a hospital, a school, an industrial estate or a campus, whose own year is recorded only by the signal detectors on one approach lane at the junction the section ends at, joinable only by junction and arm names and usable only through the counted day both recorded.",
- "stump": "The textbook expansion with same-day factors from the permanent counters files a set over three million vehicles that includes the school, industrial estate and campus roads and omits the retail park, leisure park and hospital roads; reading the detectors' annual mean as the section's flow drops every signalised section under the line, and taking the nearest detector by distance puts some sections on the cross street's rhythm.",
+ "stump": "The textbook expansion with the permanent counters' same-day factors files 8 sections over three million, College Road (3.1) and Grange Road (3.3) in and Brookfield Way (2.6), Hollins Lane (2.0) and Infirmary Road (2.6) out; reading the approach detectors' mean day as the section's flow drops every signalised section under the line (4 sections), the nearest junction's whole detected flow files another nine, and the own approach with the counters' 24/12 ratio files 7.",
  "mechanism_source": "own: the short-count expansion of official traffic statistics, with the section's own factor recovered from an urban traffic control detector on one approach lane through the counted day",
- "differentiation": {},
+ "differentiation": {
+  "task251": "There each permanent station's counting error is read from pairs of stations on one stream; here no counter errs: a short count is taken to its year by the section's own approach detectors, which see one lane and give the year only through the day both recorded.",
+  "task470": "There a unit's use in a window is read from the daily rhythm in its own meter's level; here the rhythm is a road section's week and year, carried to a short count by the ratio of a partial-grain recorder's mean day to its counted-day reading.",
+  "task307": "There the decisive quantity is network-wide time saved after re-routing; here it is each counted section's annual traffic against a mapping threshold, and no flow re-assigns."
+ },
  "lineage": [
   {
    "version": "v1",
@@ -138,7 +143,7 @@
    "objective": "etl"
   }
  ],
- "notes": "",
+ "notes": "Architecture 4 built 2026-11-02: free gates green on the final cut; stage 4 (leak reader, judge) with the main session.",
  "architecture_spent": false,
  "registered": "2026-11-02T01:33:54Z"
 }

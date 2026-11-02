@@ -97,6 +97,8 @@ def main(target=TARGET):
     gas = cracker_gas(T, M["loads"])
     h1, h2 = cracker_heat(T)
     figs = score(F, gas, h1, h2)
+    if not figs:
+        raise SystemExit("ceiling: no ask figure was scored, so no verdict is printed")
     kept = sum(1 for _, hit in figs if hit) / len(figs)
     cracker = CALL_POINTS + ASK_WEIGHT * kept
     mirror = OFF_POINTS + ASK_WEIGHT * kept          # the asks are decoupled: the mirror handles them the same way

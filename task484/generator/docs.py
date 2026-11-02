@@ -69,7 +69,7 @@ def terms_note(out):
     ]
     pdf(os.path.join(out, "traffic_estimate_terms_2025.pdf"),
         "Traffic estimates: terms and counting programme",
-        "Wrenford Borough Council, Transport Data and Monitoring. Edition 2025.2, issued 3 February 2026. Owner: Irene Griffiths, "
+        "Wrenford Borough Council, Transport Data and Monitoring. Edition 2025.2, issued 12 January 2026. Owner: Irene Griffiths, "
         "Head of Transport Data and Monitoring.", blocks, "Irene Griffiths")
 
 
@@ -220,8 +220,8 @@ def streetworks(W, out):
     rng = np.random.default_rng([WD.SEED, 131])
     streets = [s["name"] for s in W.sections] + ["Ring Road", "Western Avenue", "Coventry Road", "Birmingham Road", "Market Way",
                                                    "Canal Street", "Lea Road", "Northgate Road", "Ashby Road", "Fenwick Road"]
-    promoters = ["Severn Valley Water", "Midland Gas Networks", "Openreach", "Western Power Networks", "Wrenford BC Highways",
-                 "Virgin Media O2", "CityFibre"]
+    promoters = ["Ashby Water Services", "Mercia Gas Distribution", "Midland Telecom Networks", "Westgrid Electricity",
+                 "Wrenford BC Highways", "Heath Fibre"]
     tm = ["give and take", "two-way signals", "lane closure", "footway only", "multi-way signals", "road closure"]
     count_days = {s["name"]: W.count_day[s["name"]] for s in W.sections}
     rows = []

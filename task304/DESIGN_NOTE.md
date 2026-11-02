@@ -1,10 +1,342 @@
-# task304: which sortation hub gets Brolga Parcel Network's 2027 induct-line enclosure, sized by the workers it brings below the 85 dB(A) exposure standard
+# task304: which junction on Ardleshire's 2026 screening list takes the roundabout in the county's 2027 Junction Safety Fund bid, sized by the injury collisions a year it would prevent
+
+Opportunity Sizing & Decision Support. Architecture 5, re-rooted 2026-11-02 after architecture 4 was spent at stage 4
+(SEND_BACK: Gate H3 rule application, Gate F too easy). The parcel-hub noise world of architecture 4, the find-and-treat
+world of architectures 2 and 3 and the building society of architecture 1 are closed; their records sit below and in the
+card's lineage. Everything above `## Architecture 4 record` is architecture 5.
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task304.json`, architecture v5, registered 2026-11-02T01:41:08Z, guard WARN
+  only (rechecked on the registered card as the last act of the draw). Urban & Regional Science /
+  `municipal-service-demand-resource-allocation`, which serves Opportunity Sizing: a capital scheme placed where the
+  service demand it removes is largest, sized pool (each listed junction's expected injury collisions a year) to
+  realisable (the collisions a roundabout prevents). Shape 01 (the listed junctions ranked by benefit under a cap of one
+  scheme), decision `pick_one_of_n`, gap time then population, decisive generator G17 (statistical rigour on a screened
+  set) with G13, Gate G `signal_vs_noise_or_hold`, strategy `causal_design` (regression to the mean), Layer 2 family
+  `estimation_fit` (`own:sites-screened-on-recent-counts-regress-to-their-traffic-model`).
+- **Candidates written before choosing (four dropped, one kept):**
+  1. Kept: a county's road safety term consultant choosing which junction on the 2026 screening list takes the
+     roundabout in the 2027 Junction Safety Fund bid, the benefit read from each junction's expected collisions.
+  2. Dropped: an anticoagulation service placing its 2027 DOAC switching pharmacist by patients under 65 per cent time
+     in therapeutic range, the decisive step time-weighting INR results that out-of-range results make more frequent.
+     Rosendaal interpolation is the reflex once a filed sentence says "days", so no standard route a strong analyst
+     takes files the wrong clinic, and the only wrong route (the share of tests) is ruled out by the filed words.
+  3. Dropped: a food maker's 2027 launch slot sized by first-year buying households from a concept test calibrated on
+     its own past launches. The calibration cells fork across defensible groupings, and filing the comparison (own
+     launches) leaves assembly, architecture 4's failure.
+  4. Dropped: an insurer's lower excess option sized by the claims it would newly pay, fitted below the current excess
+     by a truncated likelihood. The extrapolation below the truncation point turns on the severity family (lognormal,
+     gamma, Pareto), a Gate C fork no WHAT closes without filing the method.
+  5. Dropped: a heat-pump tranche sized from each building's own heating balance point. Energy and opportunity sizing
+     are spent six times, and task464's architecture 1 (a response model fitted on each unit's record) sits next to it.
+- **Axes redrawn at the draw:** shape 07 (task271 in the last two) to 01; pattern A with gap time and `pick_one_of_n`
+  (a structural triple spent in five builds) to none with G17 decisive, the honest name for the step (statistical
+  rigour on a screened set); org `local_government` (task134) and then `government_agency` (task485) to
+  `professional_services`, the consultancy holding the county's road safety engineering term contract, which is who
+  does this analysis for a shire county. WARNs answered: `repeat.question_form` (which: the decision is a pick) and
+  `repeat.deliverables` (docx and xlsx: a bid document and its annex workbook are the fund's own genre). The card
+  carries a differentiation line against task479 (credibility weighting of small employers' records against a pool):
+  here every candidate was listed for a high recent count, so the bias runs one way across the whole list, the
+  reference is a traffic-and-layout model fitted to the network's own junctions, and the model alone is itself a wrong
+  rung.
+- **World:** Ardleshire, a fictional English shire county in three districts (Ardle Vale, Brindham, Kestermoor). Its
+  road safety engineering term consultant, Halberd Transport Planning, screened the principal road network in October
+  2026 and listed six give-way or stop-controlled junctions with twelve or more injury collisions in the validated
+  2021 to 2025 record; the national Junction Safety Fund pays for one roundabout per authority in 2027 to 2028 at the
+  listed junction with the largest benefit. Personas (`guard.py names --geo gb --locale en_GB --seed 304`): Alison
+  Hartley, Halberd's road safety lead (the screening note, the bid); Cheryl Gregory, the fund's programme manager (the
+  guidance); Neil Ingram, the county's traffic data officer (pulls the extracts; appears in no file). As-of date of the
+  fiction: Friday 4 December 2026 (the bid closes 29 January 2027).
+- **The call:** which listed junction takes the roundabout, sized by the injury collisions a year it would prevent.
+  Golden: Mill Lane Crossroads, 1.3 a year (expected 2.7 a year as it stands); the runner-up Tollgate Crossroads at
+  1.1. Forward facing: the benefit is the collisions the 2027 scheme would prevent in the years after it opens.
+- **Shape arithmetic:** six listed junctions' benefits 6; the junction and the runner-up 2; the chart's parts (a bar
+  per junction, the chosen bar marked, value labels, the axis title) 4; ask A, injury collisions by quarter and
+  severity, 9; ask B, casualties by quarter and road user, 12; the two files 2. 35 gradable criteria, 21 of them asks.
+- **Data-native sentence:** a county's junction screening lists the junctions whose last five years were worst, and
+  a five-year count at a junction is a few collisions drawn from its long-run rate, so the junctions at the top of a
+  screening are partly the unlucky ones; a lightly trafficked crossroads that drew 22 injury collisions in five years
+  will draw far fewer in the next five, while the busiest junction on the list sits well below what its traffic
+  predicts, and only each junction's own record weighed against a performance function fitted to the county's
+  1,436 comparable junctions, by how far those junctions spread beyond chance, estimates what each can be expected
+  to have.
+- **Abstraction sentence:** "each candidate's long-run count of events at its present exposure, when the candidates
+  were listed because their recent counts were high, so a listed unit's recent count carries the luck that listed it;
+  ranking on the record favours the luckiest, ranking on an exposure model fitted to comparable units ignores what each
+  unit's record shows, and only the record weighed against the model by the units' spread beyond chance estimates the
+  long-run count". Against the nearest drivers it cannot be written as theirs: task479 weighs small units' noisy
+  records against a pool level (no selection, no exposure model, no wrong model-only rung); task183 carries each
+  cable section's own failure history forward (the opposite move: there the pool-shrunk route was the trap);
+  task464 v1 fits a response model on each unit's own record across a change in how units respond.
+- **Sources:** every file is constructed by the seeded generator in the formats the county's and the police force's
+  systems export (provenance in `metadata.json`); the field's practice (police-reported injury collisions, the 30-day
+  definition of killed, crash modification factors, safety performance functions) is real and named only in the
+  documents' own voice.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, each listed junction's long-run injury collision rate at its 2026 traffic, has
+  no column: the record holds collisions with a node link, the inventory a layout, a control and traffic by year, the
+  screening note a list; the rate is a model of 1,436 junctions' counts combined with one junction's five years.
+- **Link:** the signal is read through a link no key offers and no sentence invites: every give-way and
+  stop-controlled junction's yearly counts (zero years included, pre-2019 records through their former node numbers)
+  joined to its traffic by year, a negative binomial fit whose overdispersion sets how much each listed junction's
+  record is believed; the screening never asks for the junctions it did not list.
+- **Reflex:** the field's habitual method for a cluster site, its injury collisions over the screening window taken as
+  its expected collisions (the crash-history practice of a site screening), sits at rung 0 and files Saxby Cross at 2.1
+  prevented a year with Mill Lane Crossroads second at 1.7.
+- **Back-test:** the textbook route validates: the screening rule run on the record reproduces the list exactly, every
+  listed junction's count ties to the record, and carrying each count to 2026 traffic changes no rank; nothing checks
+  what a listed junction will have next.
+- **Second use:** every file the decisive step reads is in the pack for its own reason: the inventory is the network
+  management register (the factor's layout, the 2026 traffic the fund names, the register's section nodes for the
+  annex); the validated record is the county's collision database (the screening ran on it); the screening note is
+  the list the fund names.
+- **Shock:** the move reads as ordinary statistics on the record (a count model of the county's junctions), not an
+  anomaly; sorted on the 2021 to 2025 count, collisions per vehicle, traffic, the model's prediction or the listed
+  order, Mill Lane Crossroads is first on none of them (Saxby Cross leads the count and the rate, Tollgate
+  Crossroads the traffic and the model).
+- **Pins:** the WHAT is filed in the fund's guidance in its own genre (the benefit as expected annual injury
+  collisions as the junction stands at its 2026 traffic, times one less the Table 2 factor; the validated record
+  2021 to 2025; the listed junctions); no filed sentence names a performance function, a weighting, chance or
+  selection, and deleting any sentence unfixes the quantity, the window or the factor, never the step.
+
+## Default path
+
+1. Take the junctions listed in the 2026 screening note and each one's injury collisions in the validated record for
+   2021 to 2025, through its node in the county's collision system.
+2. Treat each junction's five-year count divided by five as its expected injury collisions a year, the junction as it
+   stands, carrying it to 2026 traffic in proportion where traffic moved.
+3. Multiply by one less the fund's factor for the junction's layout and take the junction with the largest benefit.
+
+- **Ends on:** Saxby Cross, 2.1 injury collisions prevented a year (Mill Lane Crossroads 1.7, Tollgate Crossroads 1.2).
+- **Golden:** Mill Lane Crossroads, 1.3 injury collisions prevented a year.
+
+## Stump sentence
+
+A competent analyst takes each listed junction's 2021 to 2025 injury collisions as its expected annual count, the
+cluster-site practice, and files Saxby Cross at 2.1 injury collisions prevented a year (the `Ends on:` answer); the
+step that lands it there is reading a recent count as the long-run count at junctions listed because their recent
+counts were high: Saxby Cross carries 3,740 vehicles a day on its major road and the county's performance function
+predicts 0.4 collisions a year there, so most of its 22 were chance, while Mill Lane Crossroads keeps both a high
+record and high traffic, which only the record weighed against the model fitted to the county's 1,436 comparable
+junctions shows.
+
+## Three rules
+
+- **Task type:** municipal-service-demand-resource-allocation (Urban & Regional Science), serving Opportunity Sizing &
+  Decision Support: a scheme placed where the demand it removes is largest, sized pool to realisable.
+- **Domain test:** the call turns on each junction's expected injury collisions a year at its present traffic and the
+  share of them a roundabout removes (a crash modification factor), the quantities road safety engineering appraises
+  a junction scheme in; with another field's nouns there is no traffic exposure by junction layout, no crash
+  modification factor and no screening of sites on their collision counts.
+- **Swap:** "which ward gets the new stroke nurse, sized by the admissions a year she would prevent" keeps a pick by
+  expected counts but loses the call: the swap has no exposure variable that predicts a site's rate (no traffic
+  volume by arm), and no screening rule that listed the sites on their counts.
+- **Layer 1:** (1) the record's police references in two formats either side of a 2020 force system change, OSGB
+  eastings and northings, severity coded 1 to 3 (the force's systems); (2) pre-2019 records carrying the former node
+  numbers of the 2019 inventory recode (the collision system); (3) collisions at junctions off the inventory with a
+  junction detail and no node, and link collisions with road numbers only (the collision system); (4) the inventory's
+  traffic in wide yearly columns and layout and control codes on a codes sheet (network management); (5) the 2026
+  provisional data in two systems either side of the force's June migration, an old-system CSV and a new-system JSON
+  (the force); (6) the register's road sections between inventory nodes (network management). Nothing is placed to be
+  caught; each item is asserted neutral to the call (R2.1 to R2.7).
+- **Layer 2:** estimation that fits the record's structure: the listed junctions were selected on the count being
+  used to estimate them, so their counts are biased up by the luck that listed them; the expected count is estimated by
+  weighing each junction's own count against a performance function fitted to the county's comparable junctions, with
+  the weight set by how far those junctions spread beyond chance (the fitted overdispersion).
+- **Decisive step:** fitting the negative binomial performance function to every give-way and stop-controlled junction
+  and combining each listed junction's record with its prediction by empirical Bayes, instead of reading its record as
+  its expectation or reading the model alone.
+- **Not semantics:** every field read correctly (nodes, former nodes, layouts, traffic, severities, the guidance's
+  definitions) still leaves the cluster-site route on Saxby Cross, because the deciding quantity is in no field: it is
+  a property of a fitted model and the selection that made the list.
+- **Not rule application:** the guidance defines the benefit as expected annual injury collisions times one less the
+  factor and leaves how to estimate a junction's expectation to the analyst; no filed sentence names a model, a
+  weighting, selection or chance. Enumerated family (every construction a competent analyst reaches for): the
+  five-year count (Saxby Cross 2.1), the count carried to 2026 traffic (Saxby Cross 2.0), collisions per million
+  entering vehicles (Saxby Cross), the performance function alone (Tollgate Crossroads 0.8), the record weighed against
+  the function (Mill Lane Crossroads 1.3): three distinct calls. Standing family (the weighing under every licensed
+  convention: year terms or none, the 2026 level at the window's average or 2025's, overdispersion by likelihood or by
+  moments, staggered junctions pooled with T junctions or apart, layouts fitted apart): Mill Lane Crossroads every time,
+  every listed junction's benefit at the same one-decimal value, asserted (R3d, R3e).
+- **Analyst test:** a strong analyst who reads every field and rule correctly and takes each listed junction's record
+  as its expectation, the cluster-site practice, files Saxby Cross (2.1 a year); one who corrects with the
+  performance function alone files Tollgate Crossroads; only the record weighed against the function files Mill Lane
+  Crossroads (1.3). Executed in checks.py R3a to R3c on the cut pack and the clean truth.
+- **Estimand:** the fund's guidance (junction_safety_fund_guidance_2027.pdf, clauses 3.1 to 3.4 and Table 2): one
+  roundabout at one listed give-way or stop-controlled junction; its benefit the junction's expected annual injury
+  collisions as it stands at its 2026 traffic times one less the factor for its layout (0.52 crossroads, 0.70 T or
+  staggered); expectations estimated from the validated record for 2021 to 2025; the junction with the largest benefit.
+- **No decoy:** nothing is planted: no memo, draft or stakeholder figure argues for a junction; the screening note
+  lists the junctions alphabetically without counts; no shipped artifact ranks the junctions on the benefit.
+- **No certified replay:** no shipped figure certifies an expected count, a model or a benefit; nothing is recovered by
+  reproducing a published number.
+- **Lesson:** a site's recent count estimates its long-run count only when the site was not chosen for that count;
+  once a screening has chosen it, the count carries the luck that chose it, and neither the count nor a model of its
+  neighbours alone is the estimate: the site's record has to be weighed against the model by how much of the network's
+  spread is real. This differs from the dropped high-intensity-user design (`## Tried and rejected`), where seeing the
+  regression to the mean gave the answer: here the natural reaction to seeing it (use the model) is a wrong rung of its
+  own.
+
+## Readability screen
+
+| Rung | 1 filed | 2 schema | 3 reflex | 4 control | 5 hygiene | 6 linear | 7 organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R-1 collisions per million entering vehicles | no | traffic and counts | a rate ranking | no | no | yes, one ratio | no | readable |
+| R0 the five-year count as the expectation | the fund asks for expected collisions | node links in the record | yes, the cluster-site practice | the screening rule reproduces the list | no | yes | no | readable |
+| R0' the count carried to 2026 traffic | the fund names 2026 traffic | the inventory's yearly traffic | a proportional adjustment | no | no | yes | no | readable |
+| R1 the performance function alone | no | the inventory | the reaction to regression to the mean | no | no | no | no | readable |
+| G the record weighed against the function (decisive) | the guidance names the expectation and no sentence says how | no column holds an expectation or a weight | the reflex lands on R0 and the reaction on R1 | no control certifies an expected count | the battery never fits the unlisted junctions | a weight from a fitted overdispersion is not one ratio | the inventory and record ship for the screening and the factor | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the listed junctions | the screening note's six | the rule rerun on the record | same six | asserted equal |
+| SF2 | injury collisions | every police-reported injury collision, all severities | killed or seriously injured only | figures move | clause 3.2 (injury collisions) |
+| SF3 | the record | the validated record 2021 to 2025 | 2016 to 2025 | same call, figures move | clause 3.3 |
+| SF4 | as it stands | the junction's present layout and control | a design change | same | the inventory; asserted |
+| SF5 | its 2026 traffic | the inventory's 2026 traffic columns | 2025 traffic | same call | clause 3.2 (2026 traffic) |
+| SF6 | the year level carried to 2026 | the window's average year level | 2025's level; no year terms | same figures | asserted (R3e) |
+| SF7 | a junction's collisions | those the county's system links to its node | every collision within 20 metres | same counts | asserted |
+| SF8 | the factor | the inventory layout's factor (0.52 crossroads, 0.70 T or staggered) | none | same | Table 2 |
+| SF9 | rounding path | one decimal of the unrounded benefit | the rounded expectation times the factor | same values | asserted |
+| SF10 | the benefit | expected annual collisions times one less the factor | the factor applied as the share prevented | figures move | clause 3.2 |
+| SF11 | the comparable junctions | the inventory's give-way and stop-controlled T, staggered and crossroads junctions | every layout with its own terms | same call | asserted (R2.7) |
+| SF12 | the quarter of a collision | its date | the date the force received it | figures move | the asking sentence (collisions in each quarter) |
+| SF13 | severity | A1's 30-day definition, the most severely injured casualty | the police record as submitted | figures move | guidance A1 |
+| SF14 | the county's roads | sections the register gives the county, between its nodes | every road with a trunk section left out whole | figures move | guidance A1 and the register |
+| SF15 | road user | A2's four groups (motorcycles of any size; cars with taxis and private hire) | e-scooters with cyclists; vans with cars | figures move | guidance A2 |
+| SF16 | the casualties | the casualties of the A1 collisions | every casualty in the extracts | figures move | guidance A2 (those collisions) |
+
+## Ladder
+
+| Rung | Construction | Winner | Mill Lane | Tollgate | Church St | Saxby | Coppice Way | Fen Lane |
+|---|---|---|---|---|---|---|---|---|
+| R0 | five-year count as the expectation, prevented a year | Saxby Cross 2.1 | 1.73 | 1.15 | 1.34 | 2.11 | 0.72 | 0.78 |
+| R0' | the count carried to 2026 traffic | Saxby Cross 2.0 | 1.74 | 1.18 | 1.36 | 2.05 | 0.72 | 0.82 |
+| R1 | the performance function alone | Tollgate Crossroads 0.8 | 0.60 | 0.85 | 0.41 | 0.18 | 0.26 | 0.16 |
+| G | the record weighed against the function | Mill Lane Crossroads 1.3 | 1.31 | 1.08 | 0.91 | 0.81 | 0.50 | 0.42 |
+
+Margins: R0 1.22x (Saxby Cross over Mill Lane Crossroads), R0' 1.18x, R1 1.40x (Tollgate Crossroads over Mill Lane
+Crossroads), G 1.21x (Mill Lane Crossroads over Tollgate Crossroads); collisions per million entering vehicles also file
+Saxby Cross (3.86x). Position: Mill Lane Crossroads is second on R0 and on R1 and first only on G. The overdispersion is
+0.26 on 1,436 junctions over five years, so the weight on each listed junction's prediction runs from 0.31 (Tollgate
+Crossroads, the busiest) to 0.66 (Saxby Cross, the quietest). On the clean truth (each junction's true long-run rate)
+the largest benefit is also at Mill Lane Crossroads (R3c'). The pricing sequence: (1) the residue the filed WHAT leaves
+is how to estimate an expectation, a method, not a knob; (2) the move is worth the whole call: Saxby Cross falls from
+2.1 to 0.8; (3) the one-number routes (count, rate, traffic, prediction) name Saxby Cross or Tollgate Crossroads;
+(4) the fitted parameters are the function's coefficients and overdispersion, each estimated on 7,180 junction-years;
+(5) the lever (selection on the count) is the screening's own rule; (6) no change call; (7) no subset prints the
+expectation; (8) the reflex sweep as code (checks.py R3a to R3c) lands every reflex off Mill Lane Crossroads.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | the six listed junctions; the comparable junctions for the function | filed (clause 3.4, the note); SF1, SF11 |
+| 2 Unit of account | the junction-year | filed (clause 3.2, a year) |
+| 3 Attribution window | collisions dated 2021 to 2025 | filed (clause 3.3); SF3 |
+| 4 As-of dating | the validated record extract of 14 October 2026 | C1, one extract |
+| 5 Version basis | the validated record, not the provisional | filed (clause 3.3) |
+| 6 Denominator | per year | filed (clause 3.2) |
+| 7 Weighting | every junction-year once | C1 |
+| 8 Window length | five years | filed (clause 3.3) |
+| 9 Boundary inclusivity | 12 or more in the screening | the note; SF1 |
+| 10 Rounding path | one decimal of the unrounded benefit | SF9, asserted |
+| 11 Tie-break | none needed | C1, 1.21x clear |
+| 12 Maturity and censoring | the validated years are closed | C1 |
+| 13 Order of operations | counts, function, weighing, 2026 traffic, factor | C1, asserted invariant to the year level (SF6) |
+| 14 Row order | irrelevant | C1, sums |
+| 15 Duplicate resolution | no duplicate record in the validated years | C1, references unique (R2.2) |
+| 16 Identity normalisation | former node numbers to current ones | C1 (R2.1) |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | collisions a year; vehicles a day | units in the headers and the guidance |
+| 19 Code and status semantics | layout and control codes; severity 1 to 3 | the codes sheet; SF2 |
+| 20 Integerisation | none on the main call | not applicable |
+| 21 Clause scope | clause 3 for the call, Annex A for the asks | filed |
+| 22 Forward window contents | the scheme's years after opening, at 2026 traffic | filed (clause 3.2) |
+
+## Literal reader
+
+Executed word for word: the prompt asks which listed junction takes the roundabout and the collisions a year a
+roundabout would prevent at each; clause 3.2 defines the benefit as the junction's expected annual injury collisions
+as it stands at its 2026 traffic times one less its Table 2 factor, clause 3.3 says the expectation is estimated from
+the validated record for 2021 to 2025, and clause 3.4 names the screening's list. A literal reader must estimate an
+expectation; the five-year count is not one for a junction the screening listed on that count (the note states the
+rule: twelve or more in 2021 to 2025), and the function alone is not the junction's own expectation. SF1 to SF11 show
+every convention converges or is ruled out by a quoted sentence. The asks read the same way: the asking sentences fix
+the quarters, the severities and the road user groups, and Annex A fixes the 30-day definition, the county's roads and
+the groups (SF12 to SF16).
+
+## Oracles
+
+- The screening rule rerun on the record reproduces the list (a check that passes for every route, not an oracle).
+- No shipped control certifies an expected count, a model or a benefit.
+- Asks: the old system's collision counts reconcile with its casualty and vehicle files under every handling; the new
+  system's records each carry their own casualties; the unit's notifications reconcile with deaths in the record only
+  after matching (an inconsistency a grader can confirm).
+
+## Ask sheet
+
+Two asks, both on files and periods the call never reads (the force's 2026 provisional collisions, casualties and
+vehicles in two systems, the fatal collision unit's notifications and the register's sections), neither feeding the
+chart.
+
+**Ask A, the county's injury collisions in each quarter of 2026 to September by severity (9 figures, whole counts).**
+Home: the fund's Annex A table A1, the county's current casualty picture behind the bid.
+- Primary device 1 (D1, the same records under two key schemes where the copy is not exact): the force moved to a new
+  collision system on 1 June 2026, and every earlier collision amended after go-live came across under a new
+  reference with its corrections (time, refined grid reference, a reclassified severity), its old record left in the
+  old system's extract. Fatal and serious files stay open longest, so 97 re-sends fall in the first two quarters; a
+  response that de-duplicates on the reference counts each twice. The pair is found only by date, road, time and place.
+- Primary device 2 (D7, the true key elsewhere): A1's 30-day definition makes a casualty who dies within 30 days
+  killed; the fatal collision unit's notifications carry the collision date, road, approximate time and the casualty's
+  sex and age but no reference, nine deaths came after the police record was made, two came after 30 days and one is
+  on a trunk road.
+- Primary device 3 (D5, out-of-scope rows known by structure): the register gives the A4600 west of its Brindham East
+  node and the whole A6510 to the strategic road network and the A4600 east of that node to the county since 2019; the
+  sections are between inventory nodes, so the split is placed only by reading the nodes' eastings in the inventory.
+  A response that leaves out every road with a trunk section drops the county's own A4600 collisions in every quarter.
+- Hazards: the old system's receipt dates beside the collision dates; severity text against codes; the JSON's local
+  time offsets.
+
+**Ask B, the casualties of those collisions in each quarter by road user (12 figures, whole counts).** Home: A2, the
+road users the county's casualties come from. Primary device (D6, a quantity at another grain): the new system records
+a casualty's class and the vehicle they were in, not a casualty type, so a road user comes from the casualty's vehicle
+in the same record (a pedestrian from the class); the old system's casualty type text does it for the first five
+months. Devices 1 and 3 above are shared hazards (each re-send's casualties appear twice; the county's A4600 casualties
+drop out).
+
+Pin test: the asking sentences pin the unit (collisions, casualties), the grain (quarter by severity, quarter by road
+user) and the period; Annex A pins the 30-day definition, the county's roads and the groups; no pin names a migration,
+a re-send, a notification match or a section split. The main population carries zero device rows: the call reads only
+the validated record and the inventory, and neither holds a 2026 collision (asserted in checks.py A6 and R2.6).
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, every quarter and severity (re-sends in Q1 and Q2, the county's A4600 in Q3) | de-duplicates on the reference and leaves out every road with a trunk section | miss |
+| B, quarter by road user except Q2 pedal cyclists (re-sent casualties in Q1 and Q2, the county's A4600 in Q3) | the same handling | miss |
+
+The cracker keeps ask B's pedal cyclists in the second quarter, where no re-sent or A4600 casualty falls; that one of
+twelve cells is counted in the leakage below.
+
+Pair ceiling: 28.6 (the cracker 38 + 7 + 55 x 0.048 = 47.6; the mirror 0 + 7 + 55 x 0.048 = 9.6, the cluster-site
+route printing none of the six benefits; averaged)
+Mirror leakage: 4.8 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 9 to the cracker, ask B 1 of 12)
+
+## Architecture 4 record (spent 2026-11-02 at stage 4)
+
+### task304: which sortation hub gets Brolga Parcel Network's 2027 induct-line enclosure, sized by the workers it brings below the 85 dB(A) exposure standard
 
 Opportunity Sizing & Decision Support. Architecture 4, re-rooted 2026-11-01 at the Batch 3 queue reset: the
 find-and-treat world of architectures 2 and 3 and the building society of architecture 1 are closed, and their records
 sit below (`## Architecture 3 record`, and the card's lineage). Everything above that record is architecture 4.
 
-## Draw
+### Draw
 
 - **Card:** `.claude/skills/fingerprint/cards/task304.json`, architecture v4, registered 2026-11-01T23:35:51Z, guard
   WARN only. Epidemiology & Public Health / `health-burden-impact-modeling`, which serves Opportunity Sizing: the
@@ -63,7 +395,7 @@ sit below (`## Architecture 3 record`, and the card's lineage). Everything above
   (provenance in `metadata.json`); the regulatory frame (the WHS exposure standard, AS/NZS 1269.1's measurement and
   assessment) is real and named only in the documents' own voice.
 
-## Survivor anatomy
+### Survivor anatomy
 
 - **Actor:** the deciding property, each worker's induct hours per shift in the reference weeks, has no column: the
   HR list holds a job title, the time and attendance export a shift, the session export a badge, a station and two
@@ -94,7 +426,7 @@ sit below (`## Architecture 3 record`, and the card's lineage). Everything above
   sentence names a session, a badge, a rotation, a job title or an exposure group, and deleting any sentence unfixes
   the population, window, unit or comparison, never the step.
 
-## Default path
+### Default path
 
 1. Take every employee who worked a shift in the reference weeks (12 October to 8 November 2026) from the time and
    attendance export, with their job title from the HR list, and every labour-hire operative from the agencies'
@@ -111,7 +443,7 @@ sit below (`## Architecture 3 record`, and the card's lineage). Everything above
 - **Ends on:** Larapinta, 66 workers brought below (Kewdale none, its inductors at 85.8 dB(A) after the enclosure).
 - **Golden:** Kewdale, 102 workers brought below.
 
-## Stump sentence
+### Stump sentence
 
 A competent analyst assesses exposure by job title, AS/NZS 1269.1's job-based strategy (every inductor at the induct
 area for the shift, every other title on the floor), and files Larapinta at 66 workers brought below 85 dB(A) with
@@ -120,7 +452,7 @@ the induct hours are shared out by rotation: at Kewdale the inductors and the lo
 shift half and half, so about 102 workers sit near 91 dB(A) before the enclosure and near 84 after it, which only each
 worker's own sessions, joined to people through the badge register, show.
 
-## Three rules
+### Three rules
 
 - **Task type:** health-burden-impact-modeling (Epidemiology & Public Health), serving Opportunity Sizing & Decision
   Support: an exposure control's impact sized as the workforce exposure burden it removes, pool to realisable.
@@ -181,7 +513,7 @@ worker's own sessions, joined to people through the badge register, show.
   exposure. No build on file reconstructs individual exposure from an operations log against a group-based
   assessment.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed | 2 schema | 3 reflex | 4 control | 5 hygiene | 6 linear | 7 organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
@@ -191,7 +523,7 @@ worker's own sessions, joined to people through the badge register, show.
 | R2 each title's average induct hours | no | sessions by title | the job-based strategy with measured durations | no | no | no | no | readable |
 | G each worker's own induct hours (decisive) | Schedule 2 names the worker's own exposure, no sentence says how to know their places | no column holds a worker's hours | the reflex lands on R0 | no control certifies a worker's exposure | the battery never sums a person's sessions against their shifts | an energy average over a time allocation, with a threshold, is not one ratio | the session export ships as the sorter's operator record, used by R0 for labour hire | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -213,7 +545,7 @@ worker's own sessions, joined to people through the badge register, show.
 | SF16 | the reference audiogram | the worker's reference at the test date, rebuilt from their first test and each confirmed retest | the provider's current reference | figures move | Schedule 3.3 (a confirmed retest is the reference from its date) |
 | SF17 | the hub of a confirmed shift | the hub the worker belonged to at the retest date | the HR list's current hub | figures move | Schedule 3.4 |
 
-## Ladder
+### Ladder
 
 | Rung | Construction | Winner | LAR | ECR | TRU | WFD | KEW | BFD |
 |---|---|---|---|---|---|---|---|---|
@@ -235,7 +567,7 @@ sessions, so the estimate's standard error is the record's own; (5) the lever (r
 noise; (6) no change call; (7) no subset prints the hidden quantity; (8) the reflex sweep as code (checks.py R3a, L1 to
 L6) lands every reflex off Kewdale.
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Move |
 |---|---|---|
@@ -262,7 +594,7 @@ L6) lands every reflex off Kewdale.
 | 21 Clause scope | Schedule 2 for the call, Schedule 3 for ask B | filed |
 | 22 Forward window contents | the 2027 control sized on the reference weeks' work | filed (2.1, 2.5) |
 
-## Literal reader
+### Literal reader
 
 Executed word for word: the prompt asks how many workers the enclosure brings below the standard at each hub and
 which hub gets it; Schedule 2.1 to 2.6 fix the workers, the window, the exposure as each worker's LAeq,8h over the
@@ -273,7 +605,7 @@ sentence; it is the field's strategy applied where its precondition, that a job 
 fails in the record. The asks read the same way: the asking sentence fixes pairs, the hub where the vend happened and
 local time, and Schedule 3 fixes the threshold shift, its confirmation, its reference and its hub (SF13 to SF17).
 
-## Oracles
+### Oracles
 
 - The job-based route reconciles each hub's induct station-hours within the break cover (a check that passes for the
   easy route, not an oracle for the golden).
@@ -282,7 +614,7 @@ local time, and Schedule 3 fixes the threshold shift, its confirmation, its refe
   move and with the range change on every machine; the provider's current reference is dated after the tests it
   supersedes, an inconsistency a grader can confirm.
 
-## Ask sheet
+### Ask sheet
 
 Two asks, both on files and periods the call never reads (the PPE vending supplier's telemetry, service visits and
 asset list for July to September; the audiometry provider's tests and reference audiograms with the HR transfer
@@ -324,7 +656,7 @@ of fourteen main-side figures the job-based route happens to print right at Lara
 Mirror leakage: 25.0 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 18 to the cracker, ask B 6 of 6)
 
-## Build record
+### Build record
 
 - **Pack:** 17 files in four formats (8 csv, 5 xlsx, 3 pdf, 1 json); the bulk file is
   wcs_operator_sessions_export_20261116.csv at 44,128 sessions; distractors boundary_noise_complaints_2026.csv and
@@ -832,3 +1164,22 @@ task122, task136 and task264 on corpus-top-percent surface similarity, and task1
   96.6 dB(A) line one cover shift in twenty puts a floor worker at 85.4; spares raised, short teams covered from the
   rotation group first and otherwise by the floor loader who has covered least, and every worker now clears 85 by 0.9
   dB or more under every licensed convention.
+- Architecture 4 (2026-11-02, spent at stage 4 on target.zip d1946edf): the undertaking's Schedule 2 filed the
+  exposure computation (the places each worker worked during each shift, energy-averaged over the shifts, breaks in the
+  amenities), so a reader who joined the files and read clauses 2.1 to 2.5 correctly got Kewdale 102: the judge sent it
+  back on Gate H3 (rule application) and Gate F (every session-based method landed; the difficulty was assembly, Layer
+  1), and the leak reader's question 6 read it the same way. The parcel-hub noise world is closed.
+- Architecture 5 draw, dropped candidates (2026-11-02): DOAC switching by time in therapeutic range (Rosendaal is the
+  reflex once a sentence says days); a launch slot sized by a concept test calibrated on past launches (cell forks, and
+  a filed comparison leaves assembly); a lower excess sized below the truncation point (the severity family forks the
+  layer); heat pumps by each building's balance point (energy and opportunity sizing spent, task464 v1 adjacent).
+- Architecture 5, regression to the mean kept although a high-intensity-user design was dropped on it at the
+  architecture 4 draw: there seeing the regression gave the answer, here the natural reaction to seeing it (use the
+  traffic model) is a wrong rung of its own (Tollgate Crossroads), so the weighing is the step.
+- First architecture 5 tuning (2026-11-02): with the listed junctions' traffic first drawn, the layouts-fitted-apart
+  member of the standing family put Tollgate Crossroads on the other side of a one-decimal edge (1.042 against 1.065 for
+  the rest), and the 2026 year level taken from a noisy 2025 year term moved every figure by up to 13 per cent; the
+  network's 2022 to 2025 junction totals were held level, the 2026 level filed as the window's average, and each listed
+  junction's traffic retuned inside its range until every licensed member prints the same figure. The pre-2021 fit and
+  the total-entering form stay outside the family, the first by clause 3.3's window and the second by the record's
+  likelihood (lower by more than 10).

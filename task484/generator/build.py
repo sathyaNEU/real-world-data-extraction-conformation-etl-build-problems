@@ -29,7 +29,7 @@ PRODUCERS = {
     "count_points_2025.xlsx": ("Wrenford Borough Council", "2026-01-15"),
     "expansion_factor_review_2025.xlsx": ("Wrenford Borough Council", "2026-02-10"),
     "network_operations_log_2025.docx": ("Wrenford Borough Council", "2026-01-09"),
-    "traffic_estimate_terms_2025.pdf": ("Wrenford Borough Council", "2026-02-03"),
+    "traffic_estimate_terms_2025.pdf": ("Wrenford Borough Council", "2026-01-12"),
     "noise_mapping_2026_scope.pdf": ("Wrenford Borough Council", "2026-01-26"),
     "traffic_network_2025.xlsx": ("Wrenford Borough Council", "2026-03-23"),
 }

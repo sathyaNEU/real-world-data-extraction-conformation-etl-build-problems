@@ -29,8 +29,8 @@ SOURCES = {
     "hydraulic": "Stadswarmte Lekstede Network Planning, hydraulic test OS West 2026-27, 9 October 2026",
     "procedure": "Stadswarmte Lekstede Network Planning, capacity test for new connections CT-03 v3",
     "scope": "Woonstichting Weidehaven and Stadswarmte Lekstede, scope of works aardgasvrij 2027-2028, v1.2",
-    "gasreads": "Netbeheer Rivierenland Gas, monthly telemetry reads of the Weidehaven boiler-room gas meters, 2025-26",
-    "gasmaster": "Netbeheer Rivierenland Gas, connection and meter master data for the Weidehaven boiler rooms, 1 October 2026",
+    "gasreads": "Gasnet Lekstede, monthly telemetry reads of the Weidehaven boiler-room gas meters, 2025-26",
+    "gasmaster": "Gasnet Lekstede, connection and meter master data for the Weidehaven boiler rooms, 1 October 2026",
     "tariff": "Stadswarmte Lekstede, heat tariff sheet 2026",
     "legacy": "Stadswarmte Lekstede drive-by reading system, monthly heat meter reads, October 2024 to September 2025",
 }

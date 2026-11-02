@@ -1,134 +1,145 @@
 {
-  "task": "task142",
-  "architecture": "v2 (re-root at the Batch 3 queue reset, drawn 2026-11-02)",
-  "drawn": "2026-11-02",
-  "slot_note": "re-rooted at the Batch 3 queue reset: architecture 1 (Ironbark Health Alliance's Hospital in the Home overflow block, healthcare-delivery utilization-access-demand-forecasting, shipped 2026-10-15, no portal result) is closed with its world; task160 holds that pairing in this batch, so the slot moves to Energy Systems & Utilities with a new world, dataset, generator and shell, objective kept (Forecasting)",
-  "domain": "energy-systems-utilities",
-  "subdomain": "load-forecasting",
-  "client_domain": "energy-systems-utilities",
-  "niche": "a Dutch city's district heating company deciding in which heating season its west network's pump station first runs short on a design day once a housing corporation's 1970s flats leave their block gas boilers for the heat network in six phases across 2027 and 2028, each block's design-day circulation flow its design heat load over the temperature drop that connections heated by the same kind of installation make on cold days",
-  "objective": "forecasting",
-  "shape": "06",
-  "decision_type": "date_or_period",
-  "answer_unit": "date_or_period",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective",
-    "population"
+ "task": "task142",
+ "architecture": "v2 (re-root at the Batch 3 queue reset, drawn 2026-11-02)",
+ "drawn": "2026-11-02",
+ "slot_note": "re-rooted at the Batch 3 queue reset: architecture 1 (Ironbark Health Alliance's Hospital in the Home overflow block, healthcare-delivery utilization-access-demand-forecasting, shipped 2026-10-15, no portal result) is closed with its world; task160 holds that pairing in this batch, so the slot moves to Energy Systems & Utilities with a new world, dataset, generator and shell, objective kept (Forecasting)",
+ "domain": "energy-systems-utilities",
+ "subdomain": "load-forecasting",
+ "client_domain": "energy-systems-utilities",
+ "niche": "a Dutch city's district heating company deciding in which heating season its west network's pump station first runs short on a design day once a housing corporation's 1970s flats leave their block gas boilers for the heat network in six phases across 2027 and 2028, each block's design-day circulation flow its design heat load over the temperature drop that connections heated by the same kind of installation make on cold days",
+ "objective": "forecasting",
+ "shape": "06",
+ "decision_type": "date_or_period",
+ "answer_unit": "date_or_period",
+ "answer": "2028-29 heating season (phases 1 to 6 need about 200 m3/h of design-day flow against 167 available at OS West, short by about 30; 2027-28 holds at about 150)",
+ "answer_source": "generator/figures.json (call, flow_2027_28, flow_2028_29, shortfall_2028_29)",
+ "gap": [
+  "objective",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G1",
+  "G6"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "capacity_report",
+ "stump_class": "analytical",
+ "analyst_test": "A strong planner who reads the capacity procedure, the hydraulic test, the rev2 heat-load study and the meter data correctly carries each converting block's design heat load into design-day flow at the network's 40 K design drop, the network's metered cold-day drop (38.8 K) or the drop of the network's pre-1985 buildings (31 to 42 K) and files none (the west station stays inside its 167 m3/h through 2028-29), when the blocks keep original radiators whose like connections run at about 24 K on cold days and put the station short in the 2028-29 season.",
+ "domain_test": "The deciding quantity is each connecting building's design-day circulation flow, its heat load over the supply-return temperature drop its installation makes, which a district heating planner sizes pumps on (flow equals load over 1.16 kWh per cubic metre per kelvin times the drop); with another field's nouns there is no supply and return temperature, no installation whose drop sets the flow, and no pump sized on that flow.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:design-day-flow-at-the-cold-day-drop-of-like-installations",
+ "layer1": [
+  "two reading systems: the drive-by system's monthly heat meter registers in GJ (older meters) or MWh until each meter's summer 2025 migration, the AMR feed's daily kWh and registers after; older meters exchanged for refurbished AMR meters at migration, newer ones fitted with a module",
+  "AMR days in UTC against the weather station's local days, and gas telemetry stamped in local time with its UTC offset across the clock changes",
+  "meter exchanges under one connection (summer 2026), the register's meter history mapping serials to connection numbers by date with the placement and removal readings",
+  "AMR communication gaps (rows absent, the first day back without a daily consumption) and temperature-log faults flagged G, all on days above 0 C",
+  "weather station daily means in tenths of a degree Celsius",
+  "the corporation's complex codes, the consultant's object names and WH codes, and the grid operator's EANs and boiler-room descriptions as three key systems",
+  "the consultant's concept (March 2026) and revision 2 (September 2026) heat-load studies overlapping",
+  "the grid operator's EAN re-registrations at a capacity change and its 2025-26 meter replacement programme, one resent telemetry read"
+ ],
+ "stakeholder_role": "the heat company's network capacity planner, who advises the executive team on the west pump station",
+ "role_family": "capacity_planner",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "amr_warmtemeters_west_2025-10-01_2026-09-30.csv",
+  "rows": 42417,
+  "entity": "one heat meter's reading for one UTC day",
+  "grain": "meter x day",
+  "source": "synthetic"
+ },
+ "forum": "executive_team",
+ "forcing_event": "season_or_peak",
+ "org_family": "utility_or_infrastructure",
+ "world": {
+  "geography": "Netherlands (a fictional city, its municipal heat company, a housing corporation and a 1970s neighbourhood; all names invented)",
+  "currency": "EUR",
+  "org_type": "municipal district heating company",
+  "invented_names": [
+   "Stadswarmte Lekstede",
+   "Warmtenet West",
+   "OS West",
+   "Woonstichting Weidehaven",
+   "Hoogland & Brak bouwfysica",
+   "Gasnet Lekstede",
+   "Lekstede",
+   "Vogelbuurt"
   ],
-  "pattern": [
+  "people": [
+   "Elif Meeusen",
+   "Maurits Weijland",
+   "Stella Gnodde"
+  ]
+ },
+ "deliverables": [
+  "os_west_debiet_2027-2029.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "when",
+ "driver": "A newcomer's draw on a shared carrier is its load over the drop it makes in the carrier, and the drop belongs to the equipment behind it, which the units already on the carrier show only as two regimes in their own readings that no field labels; carrying the newcomers at the carrier's design drop, its measured average or the average of similar-looking units finds room that is not there.",
+ "driver_concrete": "Each converting block's design-day flow is its design heat load over 1.163 times the supply-return drop that the network's connections with original radiator systems make on days at or below 0 C (about 24 K, readable only as the high-return regime in the heat meters), not the network's 40 K design drop, its metered cold-day drop of 38.8 K or the pre-1985 buildings' 31 to 42 K, so OS West runs short in the 2028-29 season instead of never; a textbook 90/70 radiator drop of 20 K files 2027-28.",
+ "stump": "A competent planner converts each block's design heat load into flow at the network's 40 K design drop, its metered cold-day drop or the pre-1985 buildings' drop and files that OS West never runs short through 2028-29; the step that lands it there is carrying blocks that keep their original radiators at a drop those radiators cannot make, when the network's own radiator connections, recognisable only by their high returns, run at about 24 K on cold days and put the station short in 2028-29.",
+ "mechanism_source": "design_note",
+ "differentiation": {},
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-15",
+   "niche": "a purchasing alliance of five Victorian public health services booking a private nursing provider's January to March 2027 Hospital in the Home overflow block, each member topped up in the alliance agreement's order to its 90th-percentile HITH visit requirement above its in-house nurses' capacity, when two members open a bone and joint infection at home pathway whose courses run for weeks",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "utilization-access-demand-forecasting",
+   "objective": "forecasting",
+   "shape": "05",
+   "decision_type": "allocation_to_total",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G1",
+   ],
+   "generators": [
+    "G2",
+    "G13",
     "G6"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "capacity_report",
-  "stump_class": "analytical",
-  "analyst_test": "A strong planner who reads the capacity procedure, the hydraulic study and the meter data correctly carries each converting block's design heat load into circulation flow at the connection conditions' 40 K drop, the network's measured cold-day average drop or the average drop of the network's pre-1985 buildings, and files that the west station first runs short in the 2028-29 season or never, when the blocks keep original two-pipe radiators whose like connections run at about 22 K on cold days and put the station short in the 2027-28 season.",
-  "domain_test": "The deciding quantity is each connecting building's design-day circulation flow, its heat load over the supply-return temperature drop its installation makes, which a district heating planner sizes pumps on (flow equals load over 1.16 kWh per cubic metre per kelvin times the drop); with another field's nouns there is no supply and return temperature, no installation whose drop sets the flow, and no pump sized on that flow.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:design-day-flow-at-the-cold-day-drop-of-like-installations",
-  "layer1": [
-    "heat meter readings from two reading systems, the legacy walk-by monthly cumulative registers in GJ and MWh until each connection moved to the daily AMR feed in kWh during 2025-26, overlapping on the migration day",
-    "AMR timestamps in UTC against the heat company's local reading days, across the October and March clock changes",
-    "meter exchanges under the same connection, the register mapping meter serials to connection numbers by date",
-    "AMR communication gaps left blank, and estimated days flagged by the reading system",
-    "weather station daily means in tenths of a degree Celsius in the station's own export layout",
-    "the housing corporation's block codes against the heat company's connection numbers and street addresses",
-    "the consultant's preliminary and revised design heat loads for the converting blocks, both filed",
-    "connection register building years and floor areas typed from application forms, with addresses abbreviated"
-  ],
-  "stakeholder_role": "the heat company's network capacity planner, who advises the executive team on the west pump station",
-  "role_family": "capacity_planner",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "amr_warmtemeters_west_2025-10-01_2026-09-30.csv",
-    "rows": 0,
-    "entity": "one heat meter's reading for one day",
-    "grain": "meter x day",
-    "source": "synthetic"
-  },
-  "forum": "executive_team",
-  "forcing_event": "season_or_peak",
-  "org_family": "utility_or_infrastructure",
-  "world": {
-    "geography": "Netherlands (a fictional city, its municipal heat company, a housing corporation and a 1970s neighbourhood; all names invented)",
-    "currency": "EUR",
-    "org_type": "municipal district heating company",
-    "invented_names": [],
-    "people": [
-      "Elif Meeusen",
-      "Maurits Weijland",
-      "Stella Gnodde"
-    ]
-  },
-  "deliverables": [],
-  "opening_move": "question-first",
-  "question_form": "when",
-  "driver": "A newcomer's draw on a shared carrier is its load over the drop it makes in the carrier, and the drop belongs to the equipment behind it, which the units already on the carrier show only as two regimes in their own readings that no field labels; carrying the newcomers at the carrier's design drop, its measured average or the average of similar-looking units finds room that is not there.",
-  "driver_concrete": "Each converting block's design-day flow is its design heat load over the supply-return drop that the network's connections with original radiator systems make on cold days (about 22 K, readable only as the high-return regime in the heat meters), not the connection conditions' 40 K, the network's flow-weighted cold-day average or the pre-1985 buildings' average, so the west station runs short in the 2027-28 season instead of 2028-29 or never.",
-  "stump": "A competent planner converts each block's design heat load into flow at the connection conditions' 40 K drop, the network's measured cold-day average or the pre-1985 buildings' average and files that the west station runs short in 2028-29 or never; the step that lands it there is carrying blocks that keep original two-pipe radiators at a drop those radiators cannot make, when the network's own radiator-heated connections, recognisable only by their high returns, run at about 22 K on cold days and put the station short in 2027-28.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-15",
-      "niche": "a purchasing alliance of five Victorian public health services booking a private nursing provider's January to March 2027 Hospital in the Home overflow block, each member topped up in the alliance agreement's order to its 90th-percentile HITH visit requirement above its in-house nurses' capacity, when two members open a bone and joint infection at home pathway whose courses run for weeks",
-      "domain": "healthcare-delivery-health-economics",
-      "subdomain": "utilization-access-demand-forecasting",
-      "objective": "forecasting",
-      "shape": "05",
-      "decision_type": "allocation_to_total",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G2",
-        "G13",
-        "G6"
-      ],
-      "gate_g": "forecasting",
-      "stump_strategy": "other",
-      "driver": "The upper percentile of a period's total is set by how many of the units that generate it arrive and how long each one runs, so it has to be built from those units and their durations counted inside the window; treating the counted rows, or the weeks or months they fall in, as independent draws, or carrying a site's own past spread onto a planned mix that adds long-running units, understates it and misplaces every capped top-up.",
-      "driver_concrete": "Each member's January to March 2027 HITH visits are the home days of patients admitted at random, each stream's stay set by its course (weeks for a bone and joint infection, days for cellulitis), so the 90th-percentile requirement is built from the plan's admissions by stream and the stays on file counted inside the quarter; a Poisson margin on the planned visits, or the spread of past weeks, months or quarters carried onto the plan, understates it, most at the two members opening the bone and joint infection pathway, and books the block in the wrong lots.",
-      "stump": "A competent solver takes each member's planned visits as its expected requirement, adds the 90th-percentile margin of a Poisson count (or the spread of its past monthly visits) and books small lots spread across all five members; the step that lands it there is treating visits as independent counts when they arrive in admissions whose stays run from days to weeks, so the quarter's spread is the admissions' and their stays': built from them, the two pathway members need several lots each and the block runs out before the last member in the order.",
-      "answer": "Northgate Health books 300 visits, Riverbend Health 250, Westmere Health 225, Kingsdale Health 75 and Hillcrest Health none: the 850-visit block runs out at Kingsdale",
-      "forum": "operations_desk",
-      "forcing_event": "launch_or_rollout",
-      "org_family": "cooperative_or_member_body",
-      "role_family": "programme_officer",
-      "context_artifact": "capacity_report",
-      "world": "Australia, Victoria: Ironbark Health Alliance, Bellbird Home Nursing (Hospital in the Home overflow block)",
-      "shell": {
-        "question form": "how-many",
-        "second-sentence opener": "put",
-        "rounding opener": "give",
-        "deliverable set": "png+xlsx"
-      },
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-15 with no portal result; one architecture per world, so the Hospital in the Home world is closed and the slot moves to another client domain"
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "how-many",
-      "second-sentence opener": "put",
-      "rounding opener": "give",
-      "deliverable set": "png+xlsx"
-    }
-  ],
-  "notes": "stump_strategy composition_mix: the network's cold-day drop is a mixture over two installation regimes no field names, and the converting blocks are all in the high-return regime; G1 marks the unit swap the decision turns on (the blocks are specified in kW and the pumps are limited in cubic metres an hour, the conversion running through each block's own drop), G6 the composition. Gate G forecasting: the station's capacity is filed; what decides is the forecast flow. People drawn with guard.py names --geo Netherlands --locale nl_NL --seed 142.",
-  "registered": "2026-11-02T01:07:16Z"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "other",
+   "driver": "The upper percentile of a period's total is set by how many of the units that generate it arrive and how long each one runs, so it has to be built from those units and their durations counted inside the window; treating the counted rows, or the weeks or months they fall in, as independent draws, or carrying a site's own past spread onto a planned mix that adds long-running units, understates it and misplaces every capped top-up.",
+   "driver_concrete": "Each member's January to March 2027 HITH visits are the home days of patients admitted at random, each stream's stay set by its course (weeks for a bone and joint infection, days for cellulitis), so the 90th-percentile requirement is built from the plan's admissions by stream and the stays on file counted inside the quarter; a Poisson margin on the planned visits, or the spread of past weeks, months or quarters carried onto the plan, understates it, most at the two members opening the bone and joint infection pathway, and books the block in the wrong lots.",
+   "stump": "A competent solver takes each member's planned visits as its expected requirement, adds the 90th-percentile margin of a Poisson count (or the spread of its past monthly visits) and books small lots spread across all five members; the step that lands it there is treating visits as independent counts when they arrive in admissions whose stays run from days to weeks, so the quarter's spread is the admissions' and their stays': built from them, the two pathway members need several lots each and the block runs out before the last member in the order.",
+   "answer": "Northgate Health books 300 visits, Riverbend Health 250, Westmere Health 225, Kingsdale Health 75 and Hillcrest Health none: the 850-visit block runs out at Kingsdale",
+   "forum": "operations_desk",
+   "forcing_event": "launch_or_rollout",
+   "org_family": "cooperative_or_member_body",
+   "role_family": "programme_officer",
+   "context_artifact": "capacity_report",
+   "world": "Australia, Victoria: Ironbark Health Alliance, Bellbird Home Nursing (Hospital in the Home overflow block)",
+   "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "png+xlsx"
+   },
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-15 with no portal result; one architecture per world, so the Hospital in the Home world is closed and the slot moves to another client domain"
+  }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "how-many",
+   "second-sentence opener": "put",
+   "rounding opener": "give",
+   "deliverable set": "png+xlsx"
+  }
+ ],
+ "notes": "stump_strategy composition_mix: the network's cold-day drop is a mixture over installation regimes no field names, and the converting blocks all keep the high-return regime's installation; G1 marks the unit swap the decision turns on (the blocks are specified in kW and the station is limited in m3/h, the conversion running through the drop of the blocks' own installation), G6 the composition. Gate G forecasting: the station's available flow is filed; what decides is the forecast flow. People drawn with guard.py names --geo Netherlands --locale nl_NL --seed 142.",
+ "registered": "2026-11-02T01:07:16Z"
 }

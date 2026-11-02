@@ -1,17 +1,17 @@
 {
   "task": "task281",
-  "architecture": "v3",
-  "drawn": "2026-11-01",
+  "architecture": "v4 (re-root 2026-11-02 after architecture 3's heart BLOCK: Ardmuir University Library's 2027 Course Texts Fund split across faculties by the hold-weeks beyond two that students faced on one-user e-textbook licences, a cancelled hold's wait read from the queue's own order)",
+  "drawn": "2026-11-02",
   "slot_note": "",
   "domain": "general-statistics-data-science",
-  "subdomain": "robustness-analysis",
-  "niche": "a community health center network's diabetic retinopathy screening AI: the operating point each clinic runs in 2027, the least sensitive at which the AI catches 85 per cent of referable retinopathy among that clinic's own screenings, carried from a local validation study whose images carry no camera field, within the reading center's overread capacity",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "niche": "a university library's one-user course e-textbook licences: each faculty's share of a new 2027 Course Texts Fund set by the weeks beyond the second that its students' spring 2026 holds waited, or would have waited had the student kept the hold, for a copy, when students give up on long queues and buy the book",
   "objective": "descriptive-distribution",
-  "shape": "07",
-  "decision_type": "dial_setting",
-  "answer_unit": "named_option",
-  "answer": "Standard at Orrin Falls, Pellsbury, Quarry Hill, Sallow Creek, Thistlebrook, Wendmere and Yarrowby; High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane; 7,076 referrals against Pellam's 7,500",
-  "answer_source": "task281/generator/figures.json (points, referrals_total), computed from target/ by analysis.py; verified on its own path by verify.py",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "objective",
     "population"
@@ -20,69 +20,105 @@
     "none"
   ],
   "generators": [
-    "G6",
-    "G14",
-    "G3"
+    "G9",
+    "G12"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "composition_mix",
+  "calibration_form": "none",
+  "stump_strategy": "informative_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "none",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the governance standard and every file correctly carries the local validation study's sensitivity at each operating point to the clinics pooled, clinic by clinic for the pilot clinics, or reweighted to each clinic's recorded patient mix and image quality, finds every clinic clearing 85 per cent at the vendor's standard point and files the standard point at all twelve clinics, against the golden's more sensitive points at five.",
-  "domain_test": "The deciding quantity is the AI's sensitivity under each clinic's own capture conditions at each operating point, the robustness field's performance under the shift that matters, read from a validation study against an adjudicated reference; a label-shift or subgroup transport makes each operating point's sensitivity one number at every clinic, and with another field's nouns there is no classifier, no capture device and no validation corpus whose device mix the clinics depart from.",
+  "analyst_test": "A strong analyst who reads the fund's terms and every file correctly sums each faculty's hold-weeks beyond the second from the holds that were offered a copy, or completes the cancelled holds with a Kaplan-Meier curve that treats each cancellation as censoring, and files a split that short-changes the faculties whose students abandon long queues, against the golden's split.",
+  "domain_test": "The deciding quantity is each faculty's expected wait beyond two weeks over every hold its students placed, a waiting-time distribution censored by cancellations that are themselves driven by the wait, the general-statistics censored-data estimate; replace it with the waits of the holds that were served or with a censoring-blind survival curve and the split changes, so the method, not a backdrop, decides.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "general-statistics-data-science/robustness-analysis/1",
+  "layer2_pattern": "own:informative-cancellation-queue-order",
   "layer1": [
-    "the vendor portal's result export stamps captures and releases in UTC while the cameras and the EHR keep local Pacific time, the DST change inside the year",
-    "clinic names spelled one way in the EHR department list, another in the vendor portal, another in the asset register and another in the reading center's log",
-    "the biomedical engineering location history typed by hand, camera serials with and without the maker's prefix",
-    "the validation study's export with site letters and M/D/YYYY dates, two graders' levels and an adjudication flag",
-    "the reading center opens a second case under the same referral order when it asks for new photographs",
-    "merged charts leave retired MRNs on outside reports indexed before the merge",
-    "patients screened at a clinic other than their home clinic"
+    "the lending platform stamps holds and loans in UTC while the library management system and the reading-list tool keep UK local time, the clocks changing inside the semester",
+    "titles keyed by the platform's own ID in the holds and loans exports, by ISBN in the licence register and by the catalogue's record number in the reading lists",
+    "the 1 August 2026 restructure that merged two faculties, so spring holds carry the old faculty codes and the fund is split across the new ones",
+    "the student feed is a snapshot taken after graduation, so students who left in June appear only in the historical enrolment extract",
+    "two holds exports with overlapping dates (the March download and the October download)",
+    "a hold whose copy was offered but not collected inside the platform's collection window shows as expired, not fulfilled",
+    "licence orders carrying several copies on one line, renewals as new lines, and metered licences that lapse after a set number of loans"
   ],
-  "stakeholder_role": "director of quality and clinical AI, a community health center network",
-  "role_family": "compliance_or_audit",
+  "stakeholder_role": "head of collections and content, a university library",
+  "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "retina_ai_results_2025-10_2026-09.csv",
-    "rows": 26997,
-    "entity": "one autonomous AI screening result",
-    "grain": "patient x screening visit",
-    "source": "synthetic (constructed vendor portal export)"
+    "file": "lend_holds_export_20261031.csv",
+    "rows": 0,
+    "entity": "one hold placed on a one-user course e-textbook",
+    "grain": "hold",
+    "source": "synthetic (constructed lending-platform export)"
   },
-  "forum": "executive_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "hospital_or_health_provider",
+  "forum": "auditor",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United States (Oregon)",
-    "currency": "USD",
-    "org_type": "community health center network (a federally qualified health center with twelve primary care clinics)",
-    "invented_names": [],
+    "geography": "United Kingdom (Scotland; the university, its city, its faculties and its lending platform are fictional)",
+    "currency": "GBP",
+    "org_type": "a research university library",
+    "invented_names": [
+      "Ardmuir University",
+      "Ardmuir",
+      "Shelfmark Lend"
+    ],
     "people": [
-      "Natalie Mckinney",
-      "Noah Odonnell",
-      "Christy Francis"
+      "Kathleen Forster",
+      "Jemma Boyle",
+      "William Howarth"
     ]
   },
   "deliverables": [
-    "ai_operating_points_2027.xlsx",
-    "operating_points_2027_leadership.pptx"
+    "course_texts_fund_2027.csv",
+    "course_texts_fund_2027.xlsx",
+    "course_texts_fund_2027_memo.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is a classifier's hit rate on the positive class at each of several sites and each of a few decision thresholds, known only from a validation batch read against a reference standard; the batch's items were captured on two kinds of device whose hit rates differ widely at every threshold, in a mix that leaves every site's and every recorded subgroup's rate near the pooled one, and the device behind each item is in no column, recovered only by placing each item's site and date in a dated register of where each device stood, so each site's threshold is set on hit rates carried device by device at the share of its own items each device captured, not pooled, not site by site and not by any recorded subgroup.",
-  "driver_concrete": "Each clinic's 2027 operating point is the least sensitive of the vendor's points at which the AI's sensitivity for referable diabetic retinopathy among the clinic's reference-year screenings reaches 85 per cent, that sensitivity being the local validation study's sensitivity on each retinal camera model at the point (the model behind each validation image recovered by placing its clinic and capture date in the biomedical engineering register's placements) weighted by the share of the clinic's screenings each model captured; pooled, pilot by pilot or reweighted to any recorded subgroup, the standard point clears 85 per cent everywhere.",
-  "stump": "A competent analyst carries the local validation study's sensitivity at each operating point to every clinic, pooled, pilot by pilot or reweighted to each clinic's patient mix, and sets all twelve clinics at the vendor's standard point; the study's images came from two camera models whose sensitivities differ by about thirty points at that point in a mix that hides it, and only each model's sensitivity, the model behind each image recovered from the camera register's placement dates and carried by each clinic's own camera mix, moves five clinics to more sensitive points.",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is how long every member who joined a first-come-first-served queue waited, or would have waited, to be served, when members leave the queue more often the further back they stand; the served members' waits and a survival curve that treats each departure as uninformative both understate it, and only the service time of the first member behind each leaver who was served, read from the queue's own order, gives the wait the leaver faced, which summed past a threshold over each group splits a fixed total.",
+  "driver_concrete": "Each faculty's share of the 2027 Course Texts Fund is its students' share of the weeks beyond the second that their spring 2026 holds on one-user e-textbook licences waited, or would have waited had the student kept the hold, for a copy; a cancelled hold's wait is the time the platform offered a copy to the first hold placed after it on the same title that was offered one, because copies go to holds in the order placed and students cancel more the further down the queue they stand, so neither the fulfilled holds alone nor a Kaplan-Meier curve with cancellations censored gives it.",
+  "stump": "A competent analyst sums each faculty's hold-weeks beyond the second from the holds the platform fulfilled, or completes the cancelled holds with a Kaplan-Meier curve that treats a cancellation as uninformative censoring, and files a split that gives too little to the faculties whose students cancel long holds and buy the book; only each cancelled hold's turn, read from the first later hold on the same title that was offered a copy, gives the waits the fund is split on.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task181": "task181 v6 lays a shared upstream resource's excess outcome risk on the units it served and removes it case by case; task281 removes nothing from any unit: it carries a classifier's hit rate measured on a validation batch to each site by the capture device behind each item, recovered through a dated placement register, because the sites ran the devices in different proportions."
+    "task148": "task148 v2 forecasts a 911 late shift's answer rate under Erlang A, estimating the patience that drains the queue from waits the answer censors; task281 measures no patience and forecasts no staffing: it reads the wait each cancelled hold would have faced from the service time of the first later hold on the same title, a reconstruction from the queue's own order of the waits that informative cancellations hide."
   },
   "lineage": [
+    {
+      "architecture": "v3",
+      "drawn": "2026-11-01",
+      "subdomain": "robustness-analysis",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G14",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "decision_type": "dial_setting",
+      "driver": "The decisive quantity is a classifier's hit rate on the positive class at each of several sites and each of a few decision thresholds, known only from a validation batch read against a reference standard; the batch's items were captured on two kinds of device whose hit rates differ widely at every threshold, in a mix that leaves every site's and every recorded subgroup's rate near the pooled one, and the device behind each item is in no column, recovered only by placing each item's site and date in a dated register of where each device stood, so each site's threshold is set on hit rates carried device by device at the share of its own items each device captured, not pooled, not site by site and not by any recorded subgroup.",
+      "driver_concrete": "Each clinic's 2027 operating point is the least sensitive of the vendor's points at which the AI's sensitivity for referable diabetic retinopathy among the clinic's reference-year screenings reaches 85 per cent, that sensitivity being the local validation study's sensitivity on each retinal camera model at the point (the model behind each validation image recovered by placing its clinic and capture date in the biomedical engineering register's placements) weighted by the share of the clinic's screenings each model captured; pooled, pilot by pilot or reweighted to any recorded subgroup, the standard point clears 85 per cent everywhere.",
+      "stump": "A competent analyst carries the local validation study's sensitivity at each operating point to every clinic, pooled, pilot by pilot or reweighted to each clinic's patient mix, and sets all twelve clinics at the vendor's standard point; the study's images came from two camera models whose sensitivities differ by about thirty points at that point in a mix that hides it, and only each model's sensitivity, the model behind each image recovered from the camera register's placement dates and carried by each clinic's own camera mix, moves five clinics to more sensitive points.",
+      "world": "a community health center network's diabetic retinopathy screening AI (Corrowan Valley Community Health, Oregon)",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "return",
+        "rounding opener": "give",
+        "deliverable set": "png+xlsx"
+      },
+      "fate": "judge APPROVE and leak reader clean, blocked at guard.py heart (strategy composition_mix, artifact filed_standard, role compliance_or_audit, shape 07, forum executive_team) with no author waiver; re-rooted 2026-11-02"
+    },
     {
       "architecture": "v2",
       "drawn": "2026-10-28",
@@ -137,12 +173,20 @@
       "fate": "spent 2026-10-27 at the portal: both top responses landed the call (59 of 60, one returned) by rating the relief positions at the July 2025 entry classes' first-year off-post share, the Director's memo having named the July 2027 entry classes; the world screened for a new step the same day and set aside, the axes then banned (government_agency, budget_or_appropriation, research_desk, filed_standard)"
     }
   ],
-  "notes": "Architecture 3, re-rooted 2026-11-01 at the Batch 3 queue reset into general-statistics-data-science / robustness-analysis (a task type never drawn on any objective), Descriptive & Distribution Analysis kept. Strategy composition_mix: the decisive step carries a measured hit rate by a latent capture device whose mix differs between the validation corpus and each clinic. Drawn after the window moved at 17:20Z (task138 v2 filed, task125 v4 out): at 17:05Z the window held composition_mix (task125 v4) and the draw was not filed then; gap objective first (the validation study's sensitivity is correct for its own images and is not what the decision is scored on, each clinic's own), pattern none with G6 decisive. Shape and shell redrawn before filing when task255 v2 filed at 17:30Z with shape 10, a designation, a which-question and xlsx plus pdf, and task138 v2 held shape 04: the decision is the operating point each clinic runs (a grid of clinics against the vendor's points, a floor at every clinic and the reading center's capacity as the two gates), which is the decision the vendor's per-site configuration really asks the network to make. Forum redrawn 2026-11-01 to executive_team (the network's Executive Leadership Team sets each clinic's point; the Chief Medical Officer receives the precision and the quarterly reviews) after task273 v6 shipped with committee_or_panel inside this card's window.",
-  "registered": "2026-11-01T17:35:40Z",
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "return",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "notes": "Architecture 4, re-rooted 2026-11-02 after architecture 3 (judge APPROVE, leak reader clean) was blocked at guard.py heart on window bans with no author waiver. New world (a Scottish research university library's course e-textbook lending), new task type (missing-data-censoring-measurement-error), objective kept (Descriptive & Distribution Analysis). Strategy informative_censoring: a hold's wait is observed only until the student cancels, and students cancel more the further back in the queue they stand, so the cancellation window carries information about the wait inside it; no live card near the end of the draw order holds the strategy (latest task191, 2026-10-31). Forcing event incident_or_complaint: the University Court upheld the Students' Association's complaint about e-textbook waits and created the fund, its split due with the complaint's resolution.",
+  "registered": "2026-11-02T02:21:39Z",
   "shell": {
     "question form": "how-many",
-    "second-sentence opener": "return",
-    "rounding opener": "give",
-    "deliverable set": "png+xlsx"
+    "second-sentence opener": "the",
+    "rounding opener": "counts",
+    "deliverable set": "pptx+xlsx"
   }
 }

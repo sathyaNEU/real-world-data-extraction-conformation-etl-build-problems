@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**OS West first runs short of design-day flow in the 2028-29 heating season.** The blocks connected by 1 October 2028 need about 200 m3/h against the 167 m3/h available, short by about 30 m3/h, while the 2027-28 blocks fit at about 150 m3/h. Neither season runs short only at the network's 40 K design drop, its 38.8 K metered drop or the 31.1 to 35.8 K of its pre-1985 buildings, drops the blocks' original radiators do not make; 2027-28 is short only at a textbook radiator drop of 20 K.
+**OS West first runs short of design-day flow in the 2028-29 heating season.** The blocks connected by 1 October 2028 need about 200 m3/h against the 167 m3/h available, short by about 30 m3/h, while the 2027-28 blocks fit at about 150 m3/h. Not that the station holds in both seasons, which carries the blocks at the network's 40 K design drop, its 38.8 K metered drop or the 31.1 to 41.6 K of its pre-1985 buildings, drops their original radiators do not make. Not 2027-28, which carries them at a textbook radiator drop of 20 K.
 
 ## 2. Critical Components
 

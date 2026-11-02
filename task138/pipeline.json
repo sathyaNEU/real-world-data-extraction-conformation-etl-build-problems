@@ -1,33 +1,33 @@
 {
  "task": "task138",
- "status": "BUILD",
- "domain": "energy-systems-utilities/load-forecasting (client domain energy-systems-utilities; world: a member-owned electric cooperative's substation planning peaks with conservation voltage reduction on every feeder from 2027)",
+ "status": "DESIGN",
+ "domain": "biomedical-clinical-research/dose-response-pk-pd-modeling (client domain biomedical-clinical-research; world: a Ghent biotech's concentration-QTc dose assessment for an M3-selective antimuscarinic from its first-in-human single and multiple ascending dose studies at an Antwerp phase 1 unit)",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-11-01",
- "stump": "transfers of 1.0, 2.0, 3.0, 4.0 and 5.0 MW off Dunraith in summers 2027 to 2031, the voltage cut's relief read at the planning peak's conditions (1.1 per cent on the pilot's afternoons at 99 F or more) where the default takes the pilot's all-hours effect (2.4 per cent) and files 0, 0.5, 1.5, 2.5 and 3.5 MW",
- "architecture": 3,
- "loops": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "",
+ "architecture": 4,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-11-01"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), --asof 2026-10-27; lines answered in the design note's Leak review",
-  "reader": "round 2: clean"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "BLOCK on the guard window only: ban.pairing, ban.role and ban.artifact against task273 v6 (registered 01:51Z), ban.forum against task125 v4 and task281 v3; the card passed guard.py check at its registration (19:49Z) and the window moved when builds between re-registered; driver similarity 0.07 at most (task117)",
-  "nearest": "task117 0.07"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE at the re-judge (order kept; main call and both asks reproduced; Gates F, G, H pass)",
-  "disposition": "one cosmetic fix applied 2026-11-01: critical component 2 states the relief as 1.14 MW in 2027 (two decimals, as computed), the workbook's relief column to 0.01 MW; no other figure moved",
-  "report": "relayed by the coordinator"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "ship (stage 5, main session) once the author decides the guard window BLOCK",
+ "resume": "stage 2: prototype the ladder margins, write the design note's v4 sections, then precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -36,9 +36,9 @@
  "portal_status_date": "",
  "wave": "wave 2 (new), seed FC09",
  "draw": {
-  "date": "2026-11-01",
-  "card": ".claude/skills/fingerprint/cards/task138.json (architecture v3, registered 2026-11-01T19:49:38Z)",
-  "guard_check": "PASS on the registered card (redrawn: decisive generator G14, G7, G6 banned against task133, task255, task281; context artifact filed_standard and forum committee_or_panel banned against task281; personas redrawn off people.first WARNs)"
+  "date": "2026-11-02",
+  "card": ".claude/skills/fingerprint/cards/task138.json (architecture v4, registered 2026-11-02T02:17:09Z)",
+  "guard_check": "WARN only at registration (repeat.gate_g against task248; same_puzzle and same_driver older signatures differentiated against task190, task195, task228, task478)"
  },
  "architecture_1": {
   "world": "Kestrel Bend Irrigation District, the 2027 season order from the Tolan Valley Project (California)",
@@ -54,59 +54,70 @@
   "answer": "raise the crown 2 ft (design discharge 110,000 cfs)",
   "fate": "spent 2026-11-01: the re-judge (derive-first) returned NOT_DETERMINISTIC, SEND_BACK on Gate H3: LS-02 s.3 and s.8 read word for word send the fit to the published Orrinsford peaks (95,000 cfs, no raise); s.2's 'as they stand' was not read as requiring a reconstructed record; reports kept with the _arch2 suffix"
  },
- "build": {
-  "date": "2026-11-01",
-  "target_zip": "8bf93e16",
-  "target_zip_sha256": "8bf93e162d68b58237893bc65538a0dd3d430e35c45522f5b19de41852b7ce39",
-  "gates": {
-   "generator_checks": "77 of 77",
-   "verify": "17 of 17 on its own readers (every graded figure and the recorders' tie)",
-   "byte_identical": "two builds byte-identical over 18 files",
-   "figures_check": "115 of 115",
-   "precut": "61 checks, 0 FAIL, 0 WARN",
-   "voice_check": "PASS (949 characters)",
-   "leak_py": "REVIEW, no LEAK",
-   "guard_heart": "BLOCK (window bans, the author's decision)",
-   "ceiling": "pair 28.5, mirror leakage 0.0 per cent"
+ "architecture_3": {
+  "world": "Breckwater Electric Cooperative, the Dunraith substation transfers for summers 2027 to 2031 with conservation voltage reduction (fictional Plains state)",
+  "built": "2026-11-01 (target.zip 8bf93e16 after the round-1 repair)",
+  "answer": "transfer 1.0, 2.0, 3.0, 4.0 and 5.0 MW in summers 2027 to 2031",
+  "judge": "DETERMINISTIC, APPROVE at the re-judge (order kept; main call and both asks reproduced; Gates F, G, H pass)",
+  "leak": {
+   "leak_py": "REVIEW (no LEAK), --asof 2026-10-27; lines answered in the design note's Leak review",
+   "reader": "round 2: clean"
   },
-  "as_of": "2026-10-27",
-  "answer": "transfer 1.0, 2.0, 3.0, 4.0 and 5.0 MW in summers 2027 to 2031; planning peaks 105 to 109 MW"
- },
- "round_1": {
-  "date": "2026-11-01",
-  "fixes": [
-   "write-up wording: DATE_LST, hours beginning 16:00 to 20:00, 41-2208's repeated stamp and the tie that decides its move",
-   "ask A: SO-2026-114 opens the three switches at 00:00 on 1 July (day boundary, filed); no daily reading split (SF18)",
-   "ask B: each recorder reads its own bus with its own scatter, T2 carried both buses while T1 was out 15-16 Sep; the 41-2208 realignment decided by the tie to the historian's feeder total (scatter 0.10 per cent against 1.5; SF24)",
-   "CVR filed as standing practice every year from 1 June 2027 (operating plan 3.1; SF15)",
-   "time zone: UTC less 4 to UTC less 7 give the same ten figures (SF23)",
-   "realism: irregular spring regulator confirmations; working tie capacities and conductor limits"
-  ],
-  "ask_figures": {
-   "A_mwh": {
-    "DUN-1": 16600,
-    "DUN-2": 16210,
-    "DUN-3": 17670,
-    "DUN-4": 11150,
-    "DUN-5": 16980,
-    "DUN-6": 8990,
-    "DUN-7": 14810,
-    "DUN-8": 15850
+  "fate": "judge APPROVE and leak reader clean, blocked at guard.py heart (pairing energy plus forecasting, role capacity_planner, artifact operations_log, forum executive_team) with no author waiver; re-rooted 2026-11-02; reports kept with the _arch3 suffix",
+  "build": {
+   "date": "2026-11-01",
+   "target_zip": "8bf93e16",
+   "target_zip_sha256": "8bf93e162d68b58237893bc65538a0dd3d430e35c45522f5b19de41852b7ce39",
+   "gates": {
+    "generator_checks": "77 of 77",
+    "verify": "17 of 17 on its own readers (every graded figure and the recorders' tie)",
+    "byte_identical": "two builds byte-identical over 18 files",
+    "figures_check": "115 of 115",
+    "precut": "61 checks, 0 FAIL, 0 WARN",
+    "voice_check": "PASS (949 characters)",
+    "leak_py": "REVIEW, no LEAK",
+    "guard_heart": "BLOCK (window bans, the author's decision)",
+    "ceiling": "pair 28.5, mirror leakage 0.0 per cent"
    },
-   "A_tightest_margin_mwh": "1.17 (golden), 1.20 (paralleled minutes pro-rated)",
-   "B_mw": {
-    "2026-08-09": 112.9,
-    "2026-08-08": 101.2,
-    "2026-08-06": 101.6,
-    "2026-06-15": 98.2,
-    "2026-08-28": 97.9,
-    "2026-06-26": 96.2,
-    "2026-09-28": 95.5,
-    "2026-06-14": 94.4,
-    "2026-07-18": 90.9,
-    "2026-08-05": 92.8
-   },
-   "B_tightest_margin_mw": "0.014 under every offset UTC less 4 to 7"
+   "as_of": "2026-10-27",
+   "answer": "transfer 1.0, 2.0, 3.0, 4.0 and 5.0 MW in summers 2027 to 2031; planning peaks 105 to 109 MW"
+  },
+  "round_1": {
+   "date": "2026-11-01",
+   "fixes": [
+    "write-up wording: DATE_LST, hours beginning 16:00 to 20:00, 41-2208's repeated stamp and the tie that decides its move",
+    "ask A: SO-2026-114 opens the three switches at 00:00 on 1 July (day boundary, filed); no daily reading split (SF18)",
+    "ask B: each recorder reads its own bus with its own scatter, T2 carried both buses while T1 was out 15-16 Sep; the 41-2208 realignment decided by the tie to the historian's feeder total (scatter 0.10 per cent against 1.5; SF24)",
+    "CVR filed as standing practice every year from 1 June 2027 (operating plan 3.1; SF15)",
+    "time zone: UTC less 4 to UTC less 7 give the same ten figures (SF23)",
+    "realism: irregular spring regulator confirmations; working tie capacities and conductor limits"
+   ],
+   "ask_figures": {
+    "A_mwh": {
+     "DUN-1": 16600,
+     "DUN-2": 16210,
+     "DUN-3": 17670,
+     "DUN-4": 11150,
+     "DUN-5": 16980,
+     "DUN-6": 8990,
+     "DUN-7": 14810,
+     "DUN-8": 15850
+    },
+    "A_tightest_margin_mwh": "1.17 (golden), 1.20 (paralleled minutes pro-rated)",
+    "B_mw": {
+     "2026-08-09": 112.9,
+     "2026-08-08": 101.2,
+     "2026-08-06": 101.6,
+     "2026-06-15": 98.2,
+     "2026-08-28": 97.9,
+     "2026-06-26": 96.2,
+     "2026-09-28": 95.5,
+     "2026-06-14": 94.4,
+     "2026-07-18": 90.9,
+     "2026-08-05": 92.8
+    },
+    "B_tightest_margin_mw": "0.014 under every offset UTC less 4 to 7"
+   }
   }
  }
 }

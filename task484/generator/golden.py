@@ -72,7 +72,8 @@ def chart(G, path):
     cols = ["#b5462f" if s["over"] else "#7d8b99" for s in secs]
     ax.barh(y, [s["annual"] for s in secs], color=cols, height=0.66)
     ax.axvline(3.0, color="#222222", lw=1.1, ls="--")
-    ax.text(3.02, len(secs) - 0.4, "3.0 million vehicle passages", fontsize=8, va="top")
+    ax.text(3.03, -1.05, "3.0 million vehicle passages", fontsize=8, va="center")
+    ax.set_ylim(-1.5, len(secs) - 0.4)
     ax.set_yticks(y)
     ax.set_yticklabels(["%s (%d)" % (s["road"], s["cp"]) for s in secs], fontsize=8)
     for yi, s in zip(y, secs):

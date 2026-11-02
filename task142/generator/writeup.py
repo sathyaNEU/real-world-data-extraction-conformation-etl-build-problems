@@ -28,7 +28,7 @@ def main():
 
 ## 1. Final Recommendation
 
-**OS West first runs short of design-day flow in the 2028-29 heating season.** The blocks connected by 1 October 2028 need about {f6} m3/h against the {H} m3/h available, short by about {sh} m3/h, while the 2027-28 blocks fit at about {f3} m3/h. Neither season runs short only at the network's {r0} K design drop, its {r1} K metered drop or the {r2lo} to {r2hi} K of its pre-1985 buildings, drops the blocks' original radiators do not make; 2027-28 is short only at a textbook radiator drop of {tb} K.
+**OS West first runs short of design-day flow in the 2028-29 heating season.** The blocks connected by 1 October 2028 need about {f6} m3/h against the {H} m3/h available, short by about {sh} m3/h, while the 2027-28 blocks fit at about {f3} m3/h. Not that the station holds in both seasons, which carries the blocks at the network's {r0} K design drop, its {r1} K metered drop or the {r2lo} to {r2hi} K of its pre-1985 buildings, drops their original radiators do not make. Not 2027-28, which carries them at a textbook radiator drop of {tb} K.
 
 ## 2. Critical Components
 
@@ -75,7 +75,7 @@ def main():
    - Utility: {hu} in the 2024-25 gas year, {cu} in 2025-26
 """.format(
         f3=f["flow_2027_28"], f6=f["flow_2028_29"], sh=f["shortfall_2028_29"], H=H, r0=f["design_drop"],
-        r1=f["net_flow"], r2lo=f["pre_res_harm"], r2hi=f["pre_mean"], tb=f["textbook_drop"],
+        r1=f["net_flow"], r2lo=f["pre_res_harm"], r2hi=f["rung_drops"]["r2_pre_hi"], tb=f["textbook_drop"],
         rl=f["return_like_lo"], rh=f["return_like_hi"], oh=f["return_other_hi"], d0=f["drop_K_rounded"], d=f["drop_K"],
         n=f["like_n"], ka=c(f["KA_kW"]), kab=c(f["KAB_kW"]), cp=f["cp"], cold=f["cold_days"],
         f3x=f["flow_2027_28_exact"], f6x=f["flow_2028_29_exact"], shx=f["shortfall_exact"],

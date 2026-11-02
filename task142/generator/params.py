@@ -16,7 +16,7 @@ NETWORK = "Warmtenet West"
 STATION = "OS West"
 CORP = "Woonstichting Weidehaven"
 CONSULT = "Hoogland & Brak bouwfysica"
-GRIDOP = "Netbeheer Rivierenland Gas"   # gas grid operator (invented)
+GRIDOP = "Gasnet Lekstede"   # gas grid operator (invented)
 CITY = "Lekstede"
 
 PEOPLE = {

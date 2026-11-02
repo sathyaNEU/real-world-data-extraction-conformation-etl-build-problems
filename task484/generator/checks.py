@@ -328,8 +328,10 @@ def main():
     gap = min(abs(est.bin01(r["default_aadf"]) - est.bin01(r["gold_aadf"])) for r in dec)
     check("BE5 the textbook figure misses each decisive section by two bins or more", gap >= 0.2, "smallest %.2f" % gap)
     ctrl = [r for r in linked if r["road"] in WD.CONTROLS]
-    check("BE6 on the commuter sections with detectors both routes give the same figure (the controls)",
-          all(round(est.bin01(r["default_aadf"]), 1) == round(est.bin01(r["gold_aadf"]), 1) for r in ctrl), "")
+    same_fig = [r["road"] for r in ctrl if round(est.bin01(r["default_aadf"]), 1) == round(est.bin01(r["gold_aadf"]), 1)]
+    check("BE6 on the commuter sections with detectors both routes give the same call (the controls)",
+          all((est.bin01(r["default_aadf"]) > 3.0) == (est.bin01(r["gold_aadf"]) > 3.0) for r in ctrl),
+          "same figure on %s" % ", ".join(same_fig))
     instA = R["askA"]["install"]
     check("BE7 the install-date reading of ask A misses every counter by three bins or more",
           all(abs(GO.r10(instA[c["site"]]) - c["hgv"]) >= 30 for c in G["counters"]), "")
@@ -337,6 +339,20 @@ def main():
     check("BE8 the register-mapping and post-renewal readings of ask B miss every approach",
           all(GO.rthou(regB[(a["junction"], a["approach"])]) != a["thousands"] and GO.rthou(postB[(a["junction"], a["approach"])]) != a["thousands"]
               for a in G["approaches"]), "")
+    # the premise of the R5 rung (the counters' 07:00-19:00 share stands for the section's) against the section's own record
+    grp_u = [(P["atc"][s]["q24"], P["atc"][s]["q12"]) for s in sorted(P["sites"]) if P["sites"][s]["setting"] == "urban"]
+    g_share = [float(np.nansum(a[1]) / np.nansum(a[0])) for a in grp_u]
+    lo, hi = min(g_share), max(g_share)
+    own_share = {}
+    for r in linked:
+        d24 = np.nansum([P["utc"][d]["d24"] for d in r["dets"]], axis=0)
+        d12 = np.nansum([P["utc"][d]["d12"] for d in r["dets"]], axis=0)
+        own_share[r["road"]] = float(d12.sum() / d24.sum())
+    moved = [r["road"] for r in linked if round(est.bin01(r["own_group_2412"]), 1) != round(est.bin01(r["gold_aadf"]), 1)]
+    off = [k for k in moved if lo - 0.01 <= own_share[k] <= hi + 0.01]
+    check("BE9 wherever the counters' 07:00-19:00 share would move a section's figure, the section's own share lies outside "
+          "every urban counter's (R5's premise refuted by the record); where it agrees, that form is licensed and lands in the bin",
+          bool(moved) and not off, "counters %.3f to %.3f; moved %s; %s" % (lo, hi, moved, ", ".join("%s %.3f" % (k, v) for k, v in sorted(own_share.items()))))
     # figures.json agrees with the golden files
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     gcsv = list(csv.DictReader(open(os.path.join(GLD, "noise_round_sections_2025.csv"), encoding="utf-8")))

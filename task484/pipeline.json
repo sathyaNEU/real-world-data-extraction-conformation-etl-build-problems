@@ -1,17 +1,17 @@
 {
  "task": "task484",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-02",
  "architecture": 4,
  "loops": 0,
- "stump": "The textbook short-count expansion (same-day factors from the borough's permanent counters on commuter roads) puts the school, industrial estate and campus sections over three million vehicles and leaves the retail park, leisure park and hospital sections under it; each section's own expansion factor is recorded only by the signal detectors on one approach lane at its junction and is read through the counted day both recorded.",
+ "stump": "The textbook expansion with the permanent counters' same-day factors files 8 sections over three million (College Road and Grange Road in; Brookfield Way, Hollins Lane and Infirmary Road out); each section's own year is on the signal detectors of its own approach, which see one lane and give that year only through the day the count and the detectors both recorded: 9 sections.",
  "source_note": "Batch 3 re-root (2026-11-02): architecture 3 (wood combustion inventory, physical-environmental-sciences) closed with its world; architecture 4 drawn in survey-research-official-statistics / seasonal-adjustment-official-time-series-production",
  "returned": [],
- "resume": "stage 2: write DESIGN_NOTE.md for architecture 4 and pass precut.py, then build the generator",
+ "resume": "stage 4: the main session spawns the isolated leak reader and the determinism judge on zip 7dbd273e835ef1a7; fix any finding in the generator and rebuild",
  "history": {
   "architecture_3": {
    "status": "SHIPPED",
@@ -67,5 +67,25 @@
     "call": "Valley Floor South, East Bench and West Bench exceeded their 2025-26 allotments and share the 2026-27 changeout fund, USD 155,000 each; Valley Floor North and Upper Valley did not."
    }
   }
+ },
+ "precut": {
+  "result": "PASS",
+  "checks": 61,
+  "fail": 0,
+  "warn": 0,
+  "pair_ceiling": 33.6,
+  "mirror_leakage": 0.0,
+  "date": "2026-11-02"
+ },
+ "gates": {
+  "generator_checks": "72 of 72",
+  "verify": "8 of 8",
+  "byte_identical": "two builds, 13 target and 3 golden files",
+  "figures_check": "90 figures, 0 absent",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK (asof 2026-03-23)",
+  "heart": "WARN (strategy risk, objective use), no BLOCK",
+  "surface": "pending",
+  "zip": "7dbd273e835ef1a7"
  }
 }

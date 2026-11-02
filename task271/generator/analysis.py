@@ -169,8 +169,9 @@ READINGS = ("bin", "nearest", "interp_mid", "interp_start", "centred", "minute")
 
 def presence_family(target):
     """every reading of each count against the lake's (or its regulation class's) interviewed presence: six ways of
-    reading the count's hour, the lake's or the class's profile and anglers per boat, the mean of a survey day's count
-    estimates or the ratio of its sums, plus shares weighted by parties and shares taken by day type"""
+    reading the count's hour, the lake's or the class's profile, the lake's, the class's or one pooled party size for
+    boats, the mean of a survey day's count estimates or the ratio of its sums, plus shares weighted by parties and
+    shares taken by day type"""
     reg = register(target)
     cts = counts(target, reg)
     iv = interviews(target, reg)
@@ -179,13 +180,15 @@ def presence_family(target):
     crow = {}
     for c in reg:
         crow.setdefault(reg[c]["reg"], []).extend(by[c])
+    pooled_apb = anglers_per_boat(iv)
     out = {}
     for c in reg:
         rows_own, rows_cls = by[c], crow[reg[c]["reg"]]
         fam = {}
         for prof, rows in (("lake", rows_own), ("class", rows_cls)):
             sh = hour_shares(rows)
-            for apbn, apb in (("lake", anglers_per_boat(rows_own)), ("class", anglers_per_boat(rows_cls))):
+            for apbn, apb in (("lake", anglers_per_boat(rows_own)), ("class", anglers_per_boat(rows_cls)),
+                              ("pooled", pooled_apb)):
                 for how in READINGS:
                     cache = {}
 
@@ -406,6 +409,27 @@ def warm_days(target, start=dt.date(2026, 7, 1), end=dt.date(2026, 8, 31), line=
                 k += 1
         out[c] = k
     return out, means
+
+
+def lake_day_logger_means(target, start=dt.date(2026, 7, 1), end=dt.date(2026, 8, 31)):
+    """each logger's own mean for each lake-day at 1 m in the window, with every reading placed by the deployment its
+    serial was in and read in Pacific time: the means a reader would take from one logger alone"""
+    dep = _deployments(target)
+    raw = {}
+    for r in read_csv(os.path.join(target, "lake_temperature_loggers_2026.csv")):
+        raw.setdefault(r["Logger SN"], []).append((dt.datetime.strptime(r["Date Time"], "%Y-%m-%d %H:%M"),
+                                                   float(r["Temp (C)"])))
+    off = logger_clock_offsets(raw)
+    per = {}
+    for s, recs in raw.items():
+        for t, v in recs:
+            tl = t + dt.timedelta(hours=off[s])
+            for d in dep:
+                if d["serial"] == s and d["a"] <= tl and (d["b"] is None or tl <= d["b"]):
+                    if d["depth"] < 2 and start <= tl.date() <= end:
+                        per.setdefault((d["lake"], tl.date()), {}).setdefault(s, []).append(v)
+                    break
+    return {k: {s: float(np.mean(v)) for s, v in m.items()} for k, m in per.items()}, per
 
 
 def run(target):
