@@ -191,7 +191,7 @@ def main():
        "; ".join("%d %s vs %s" % (k, mine[k], gold.get(k)) for k in mine if mine[k] != gold.get(k)))
 
     # ask A: the switch day from the log, confirmed in the data
-    m = re.search(r"(\d\d)/(\d\d)/(\d{4}) ATC network Firmware 4\.2\.1", log)
+    m = re.search(r"(\d\d)/(\d\d)/(\d{4}) ATC network Firmware 5\.1\.3", log)
     sw = dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
     flips = []
     for s in sorted(atc):
