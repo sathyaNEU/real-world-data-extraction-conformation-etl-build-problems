@@ -41,7 +41,8 @@ IMG_EXT = {".png", ".jpg", ".jpeg", ".svg"}
 DESCRIBE_NAME = re.compile(
     r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|list|descriptions?)|"
     r"\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|"
-    r"export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])",
+    r"export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes|"
+    r"record_layouts?|data_layouts?|extract_layouts?|file_specs?|field_specs?|column_specs?|data_delivery(_notes?)?|delivery_manifest)(?![a-z])",
     re.I,
 )
 DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
@@ -483,6 +484,37 @@ def sweep_columns(files, rep):
                 rep.add("8 column names", "REVIEW", f["rel"], "Python-style nulls or booleans (nan/None/True/False) in the first rows")
 
 
+# A table whose own header is a dictionary's (a field-name column beside a definition or type column) lists the data's
+# fields whatever its name: task454 shipped corvane_extract_record_layout.csv (file_name, column_name, data_type,
+# definition), which the document-only content rule never read. A plain code crosswalk (element, code, label) maps codes
+# to labels and stays legal, so a label column alone does not make a dictionary.
+DICT_FIELD_HEAD = re.compile(r"^(column|column_?name|field|field_?name|variable|variable_?name|attribute|data_?element)s?$", re.I)
+DICT_DEF_HEAD = re.compile(r"^(definition|description|meaning|data_?type|type|format|field_?description|column_?description)s?$", re.I)
+
+
+def sweep_describing_tables(files, rep):
+    """A tabular file whose header is a dictionary's (dataset-generation section 3), and a document that names most of
+    the pack's other files (a manifest or file list, whatever its name)."""
+    names = {f["rel"].name for f in files}
+    for f in files:
+        if f["ext"] in (".csv", ".tsv", ".xlsx"):
+            head = [c.strip().strip('"') for c in columns_of(f["path"], f["text"] or "")]
+            if any(DICT_FIELD_HEAD.match(c) for c in head) and any(DICT_DEF_HEAD.match(c) for c in head):
+                rep.add("12 describing content", "LEAK", f["rel"],
+                        "a table whose header is a data dictionary's (%s): a file that lists the data's fields and what they "
+                        "mean describes the data whatever its name (dataset-generation section 3)" % ", ".join(head[:6]))
+        if f["ext"] in (".md", ".txt", ".docx", ".pdf", ".rtf", ".html", ".eml", ".csv", ".xlsx"):
+            text = f["text"] or ""
+            others = sorted(n for n in names if n != f["rel"].name and n in text)
+            if len(others) >= 4:
+                share = len(others) / max(1, len(names) - 1)
+                lv = "LEAK" if share >= 0.6 and f["ext"] != ".eml" else "REVIEW"
+                rep.add("12 describing content", lv, f["rel"],
+                        "names %d of the pack's other %d files (%s): a file list or delivery manifest describes the data "
+                        "whatever its name (dataset-generation section 3); an email's own attachment list is a reader's call"
+                        % (len(others), len(names) - 1, ", ".join(others[:4])))
+
+
 def sweep_describing_content(files, rep):
     """A document that lists the data's columns is a dictionary whatever its name. The approved packs' helper
     documents that stated field meanings were named by every leak reader as the most helper-like file, and the one
@@ -707,6 +739,7 @@ def main():
     sweep_hidden(files, rep)
     sweep_columns(files, rep)
     sweep_describing_content(files, rep)
+    sweep_describing_tables(files, rep)
     sweep_dates(files, rep, a.asof, prompt_text)
     sweep_metadata(target, rep)
     sweep_prompt(prompt_text, rep, task.name, legacy_prompt)
