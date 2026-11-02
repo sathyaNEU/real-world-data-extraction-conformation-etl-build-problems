@@ -33,10 +33,22 @@ def write_csv(path, header, rows):
             w.writerow(r)
 
 
-def normalise_zip(path):
-    """Rewrite an Office file with fixed entry times and order so rebuilds are byte-identical."""
+def normalise_zip(path, modified=None):
+    """Rewrite an Office file with fixed entry times and order so rebuilds are byte-identical. openpyxl stamps
+    dcterms:modified with the clock at save time, so the stamp is set back to the document's own date."""
+    import re
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    fixed = []
+    for name, data in items:
+        if name == "docProps/core.xml":
+            txt = data.decode("utf-8")
+            m = re.search(r"<dcterms:created[^>]*>([^<]+)</dcterms:created>", txt)
+            stamp = modified or (m.group(1) if m else "2026-05-15T09:00:00Z")
+            txt = re.sub(r"(<dcterms:modified[^>]*>)[^<]+(</dcterms:modified>)", r"\g<1>%s\g<2>" % stamp, txt)
+            data = txt.encode("utf-8")
+        fixed.append((name, data))
+    items = fixed
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in items:

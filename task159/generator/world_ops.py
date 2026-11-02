@@ -138,7 +138,30 @@ def ball_mill_stops():
     st = pd.DataFrame(keep).sort_values("start").reset_index(drop=True)
     # guard overlaps once more
     st = st[st["start"] >= st["end"].shift(1).fillna(dt.datetime(2022, 1, 1))].reset_index(drop=True)
+    # a breakdown runs on a little longer where a quarter's running time would sit on a half hour
+    for _ in range(6):
+        moved = False
+        for a, b in QUARTERS:
+            h = run_hours(st, a, b)
+            if 0.30 <= h % 1.0 <= 0.70:
+                cand = st[(st["kind"] == "TRIP") & (st["start"] > a + dt.timedelta(days=3)) &
+                          (st["end"] < b - dt.timedelta(days=3))]
+                if not len(cand):
+                    continue
+                i = cand.index[-1]
+                nxt = st["start"].iloc[i + 1] if i + 1 < len(st) else b
+                if st.loc[i, "end"] + dt.timedelta(minutes=50) < nxt:
+                    st.loc[i, "end"] = st.loc[i, "end"] + dt.timedelta(minutes=24)
+                    moved = True
+        if not moved:
+            break
     return st, outages
+
+
+QUARTERS = [(dt.datetime(2025, 1, 1), dt.datetime(2025, 4, 1)), (dt.datetime(2025, 4, 1), dt.datetime(2025, 7, 1)),
+            (dt.datetime(2025, 7, 1), dt.datetime(2025, 10, 1)), (dt.datetime(2025, 10, 1), dt.datetime(2026, 1, 1)),
+            (dt.datetime(2026, 1, 1), dt.datetime(2026, 4, 1)), (dt.datetime(2026, 4, 1), dt.datetime(2026, 7, 1)),
+            (dt.datetime(2026, 7, 1), dt.datetime(2026, 10, 1))]
 
 
 def run_hours(stops, a, b):

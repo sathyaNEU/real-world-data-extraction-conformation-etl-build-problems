@@ -86,6 +86,7 @@ def build_postings(emps, vac, rng):
         p["pub_minute"] = int(rng.integers(7 * 60 + 30, 18 * 60))
         p["end_minute"] = 5 if p["end_kind"] == "EXPIRED" else int(rng.integers(8 * 60, 19 * 60))
         p["ren_minutes"] = [int(rng.integers(8 * 60, 21 * 60)) for _ in p["renewals"]]
+        p["ren_lead"] = [int(rng.integers(0, 3)) for _ in p["renewals"]]
         if v["start"] < mig:
             while True:
                 n = "WS%02d%05d" % (W.i2d(v["start"]).year % 100, int(rng.integers(0, 100000)))
@@ -173,8 +174,8 @@ def write_activity(posts, tgt):
     for p in posts:
         evs = []
         evs.append((p["start"], p["pub_minute"], "PUBLISHED"))
-        for r, m in zip(p["renewals"], p["ren_minutes"]):
-            evs.append((r, m, "RENEWED"))
+        for r, m, u in zip(p["renewals"], p["ren_minutes"], p["ren_lead"]):
+            evs.append((r - 1 - u, m, "RENEWED"))      # renewed in the term's last days; the new term starts at r
         if p["listing_end"] <= ext:
             kind = {"REMOVED": "REMOVED", "EXPIRED": "EXPIRED", "CLOSED": "CLOSED_ES"}[p["end_kind"]]
             evs.append((p["listing_end"], p["end_minute"], kind))

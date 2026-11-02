@@ -159,12 +159,13 @@ def simulate(seed=P.SEED):
 
     # ---- per tank time loop (one time-ordered event queue) ----
     import heapq
-    for tid, t in tanks.items():
+    for idx, (tid, t) in enumerate(tanks.items()):
         m = t.marina
+        rng_t = np.random.default_rng([seed, 31, idx])
         seasonal = not P.MARINAS[m][2]
         net = float(vol((0.30 if seasonal else 0.62) * t.D, t.D, t.Lt))
         T = ground_temp(local(days[0]))
-        seq = int(rng.integers(40000, 90000))
+        seq = int(rng_t.integers(40000, 90000))
         t_cur = local(days[0], 0.0)
         tau_h = 70.0
         q = []
@@ -203,21 +204,21 @@ def simulate(seed=P.SEED):
             elif kind == "DS":
                 gross_now = net * (1 + t.beta * (T - 60.0))
                 h0 = t.h_of_gross(gross_now)
-                h_to = float(rng.uniform(*P.DELIVER_TO)) * t.D
+                h_to = float(rng_t.uniform(*P.DELIVER_TO)) * t.D
                 target_net = float(vol(h_to, t.D, t.Lt)) * (1 - t.beta * (T - 60.0))
                 del_net = max(round((target_net - net) / 50.0) * 50.0, 1500.0)
-                Tdel = float(ground_temp(when) + rng.normal(0.8, 1.2))
-                true_net = del_net * (1 + rng.normal(0, 0.0007 * P.NOISE))
-                dur = float(rng.uniform(0.40, 0.85))
-                T_meas0 = T + rng.normal(0, 0.06 * P.NOISE)
-                hread0 = h0 + t.delta + rng.normal(0, 0.004 * P.NOISE)
+                Tdel = float(ground_temp(when) + rng_t.normal(0.8, 1.2))
+                true_net = del_net * (1 + rng_t.normal(0, 0.0007 * P.NOISE))
+                dur = float(rng_t.uniform(0.40, 0.85))
+                T_meas0 = T + rng_t.normal(0, 0.06 * P.NOISE)
+                hread0 = h0 + t.delta + rng_t.normal(0, 0.004 * P.NOISE)
                 gr0 = t.chart_gal(hread0)
                 V_old = net
                 net += true_net
                 T = (V_old * T + true_net * Tdel) / (V_old + true_net)
                 dstate = {"tank": tid, "marina": m, "start": when, "h0": round(hread0, 3), "g0": round(gr0, 1),
                           "n0": round(gr0 * (1 - t.beta * (T_meas0 - 60.0)), 1), "T0": round(T_meas0, 1)}
-                out["bols"].append({"tank": tid, "marina": m, "local": when - dt.timedelta(minutes=int(rng.integers(8, 25))),
+                out["bols"].append({"tank": tid, "marina": m, "local": when - dt.timedelta(minutes=int(rng_t.integers(8, 25))),
                                     "product": t.product, "net": int(round(del_net)),
                                     "gross": int(round(del_net * (1 + t.beta * (Tdel - 60.0)))),
                                     "temp": round(Tdel, 1), "true_net": true_net})
@@ -225,8 +226,8 @@ def simulate(seed=P.SEED):
             elif kind == "DE":
                 gross_end = net * (1 + t.beta * (T - 60.0))
                 h1 = t.h_of_gross(gross_end)
-                T_meas1 = T + rng.normal(0, 0.06 * P.NOISE)
-                hread1 = h1 + t.delta + rng.normal(0, 0.004 * P.NOISE)
+                T_meas1 = T + rng_t.normal(0, 0.06 * P.NOISE)
+                hread1 = h1 + t.delta + rng_t.normal(0, 0.004 * P.NOISE)
                 gr1 = t.chart_gal(hread1)
                 dstate.update({"end": when, "h1": round(hread1, 3), "g1": round(gr1, 1),
                                "n1": round(gr1 * (1 - t.beta * (T_meas1 - 60.0)), 1), "T1": round(T_meas1, 1)})
@@ -236,15 +237,15 @@ def simulate(seed=P.SEED):
             else:   # reading
                 gross_true = net * (1 + t.beta * (T - 60.0))
                 h_true = t.h_of_gross(gross_true)
-                T_meas = T + rng.normal(0, 0.05 * P.NOISE)
-                hread = h_true + t.delta + rng.normal(0, 0.004 * P.NOISE)
+                T_meas = T + rng_t.normal(0, 0.05 * P.NOISE)
+                hread = h_true + t.delta + rng_t.normal(0, 0.004 * P.NOISE)
                 gr = t.chart_gal(hread)
                 netc = gr * (1 - t.beta * (T_meas - 60.0))
                 seq += 1
                 wmean = 0.55 if tid in ("CF-1", "GC-3") else 0.18
                 out["readings"].append({"tank": tid, "marina": m, "local": when, "seq": seq, "h": round(hread, 3),
                                         "T": round(T_meas, 1), "gross": round(gr, 1), "tc": round(netc, 1),
-                                        "water": round(max(0.0, rng.normal(wmean, 0.05)), 2),
+                                        "water": round(max(0.0, rng_t.normal(wmean, 0.05)), 2),
                                         "net_true": net, "h_true": h_true, "T_true": T})
                 no_order = seasonal and (when.date() >= dt.date(2026, 9, 15) or when.date() < dt.date(2026, 3, 1))
                 if when.hour == 6 and not pending and not no_order and when < local(dt.date(2026, 12, 29), 0):
@@ -252,9 +253,10 @@ def simulate(seed=P.SEED):
                     lag = 1 if when.weekday() < 4 else (7 - when.weekday())
                     recent = [daily.get(when.date() - dt.timedelta(days=j), 0.0) for j in range(1, 8)]
                     draw = (sum(recent) / 7.0) * (lag + 0.25)
-                    if netc - draw < reorder_net + float(rng.uniform(-80, 80)):
+                    arrive_net = t.chart_gal(t.reorder_h - float(rng_t.uniform(1.5, 4.0)))
+                    if netc - draw < arrive_net:
                         dd = when.date() + dt.timedelta(days=lag)
-                        heapq.heappush(q, (local(dd, float(rng.uniform(8.3, 13.2))), 0, "DS", None))
+                        heapq.heappush(q, (local(dd, float(rng_t.uniform(8.3, 13.2))), 0, "DS", None))
                         pending = True
         out["true_closing"][tid] = net
 

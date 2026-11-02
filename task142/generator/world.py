@@ -195,7 +195,7 @@ def connections(rng):
             c["u"] = float(rng.uniform(0.70, 0.88))
             c["lam"] = float(rng.uniform(0.18, 0.5))
             c["dhw"] = {"HT": 0.05, "REN": 0.045, "LT": 0.075, "UTIL": 0.02}[reg]
-            c["tb"] = {"HT": 17.0, "REN": 16.0, "LT": 15.0, "UTIL": 16.5}[reg]
+            c["tb"] = {"HT": 17.0, "REN": 16.0, "LT": P.TB_LT, "UTIL": P.TB_UTIL}[reg]
             out.append(c)
     order = rng.permutation(len(out))
     out = [out[i] for i in order]
@@ -424,8 +424,9 @@ def weather_2425(rng):
     while d <= D(2025, 9, 30):
         doy = d.timetuple().tm_yday
         a = 0.78 * a + rng.normal(0, 1.85)
-        late = 2.0 * math.sin(math.pi * ((d - D(2025, 9, 17)).days + 1) / 15) if D(2025, 9, 17) <= d <= D(2025, 9, 30) else 0.0
-        out[d] = 11.0 - 7.2 * math.cos(2 * math.pi * (doy - 22) / 365.25) + a + late
+        late = P.W2425_LATE * math.sin(math.pi * ((d - D(2025, 9, 17)).days + 1) / 15) \
+            if D(2025, 9, 17) <= d <= D(2025, 9, 30) else 0.0
+        out[d] = P.W2425_BASE - 7.2 * math.cos(2 * math.pi * (doy - 22) / 365.25) + a + late
         d += TD(days=1)
     return out
 
@@ -470,6 +471,7 @@ def legacy_and_open(rng, conns, wx):
                 base_ += frac * cons[day]
             return base_
         ser = c["serial_legacy"]
+        c["cons_oct1_2024"] = cons[D(2024, 10, 1)] if c["aansluitdatum"] < D(2024, 10, 1) else 0.0
         if c["aansluitdatum"] < D(2024, 10, 1):
             reads.append([ser, D(2024, 10, 1), fmt(reg_at(D(2024, 10, 1), 0.42)), unit, "J"])
             c["leg_annual_kwh"] = reg_at(D(2024, 10, 1), 0.42)
