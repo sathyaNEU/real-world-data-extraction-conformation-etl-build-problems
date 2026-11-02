@@ -1,86 +1,98 @@
 {
- "task": "task266",
- "status": "DESIGN",
- "domain": "biomedical-clinical-research",
- "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-02",
- "stump": "A competent solver reads each case's latency from first exposure to diagnosis, admits each case to the risk set only from the fund's start on 1 July 2004 (delayed entry) and files a 55-year horizon; the step that lands it there is treating the register as seeing every latency after the fund began, when it also cannot see the latencies that end after 30 June 2026, which for workers first exposed in the 1970s and 1980s are their long ones, and the estimate that conditions each case on its two-sided window puts nine in ten by 60 years.",
- "architecture": 2,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "guard.py check at the draw: task89 0.08, task265 0.08"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [
-  {
-   "date": "2026-11-01",
-   "portal": "none: in-house re-check under the new leak gate (LEAK sweep 1: export_manifest.csv and registrar_extract_notes_2027-05.pdf named as describing files; LEAK sweep 12: registrar_extract_notes_2027-05.pdf names 22 columns of the data files, 83% of program_of_record_history.csv); then the stage-4 determinism judge on that cut (79d75971): NOT_DETERMINISTIC on ask 2 (FTE) only, FIX_NOW, the credit-hour source a competing reading and the cross-campus class called live on ask 3",
-   "repair": "leak, then determinism",
-   "move": "The registrar's extract notes PDF and the export manifest CSV no longer ship, and IR's 'About these files' sheet is dropped from the entering-student workbook. Provenance (each file's contents, office, date and size, IR's freeze dates) moved to metadata.json's provenance. What the call's determinism took from the notes is carried by the producing system or converges: the admissions extract exports admit_type_desc and exit_reason_desc beside its codes (Graduated, Transferred Out, Withdrawn, Deceased; SF6, axis 19), an admission with no exit term has no exit reason (axis 12, asserted), the exit term is the extract's own column with its dating convergent (SF7, asserted), readmissions rest on policy 3.2 and the Readmit label (axis 2), term codes on the term calendar. For the asks the registration extract names its credit column course_credit_hours (the grain the notes stated) and exports reg_status_desc, and the schedule writes Status as Active or Cancelled; no ask device (linked sections' credit, the program's vintage, what a V room is) is filed anywhere. Policy 6 drops 'and documents each extract'. checks.py gains the no-describing-file assertions (by name and by sheet) and positive controls for each moved closure. Every graded figure, figures.json and the call unchanged (freeze PASS); cracker 0 of 18. Determinism pass on the judge's FIX_NOW: policy 4.1 adds 'The credit hours of a registration are those its section carries in the term's section schedule.' and 4.2's class becomes 'two or more sections scheduled to meet together, at one campus or across campuses, which count as one class'; verify.py reads both back from the shipped policy before computing the asks and checks.py asserts the read-back, that the registration column and the golden differ in all nine programs, and that the policy names no device word. No graded figure moved (freeze PASS, figures.json unchanged). Measured by the new generator/ceiling.py on the cut pack: the cracker keeps 9 of 18 (Ask A's nine, now rule application; Ask B none), mirror 0, pair ceiling 48.1, worst single crack 59.9; the cracker keeps an ask row, so the ask layer is owed to /fix-rubric (precut fails 'cracker misses every ask' on Ask A's row).",
-   "commit": ""
-  },
-  {
-   "date": "2026-11-01",
-   "portal": "none: in-house measurement standing in for a portal result (generator/ceiling.py on the determinism-fixed cut 543365d5: the cracker kept Ask A's nine FTE figures once policy 4.1 filed the credit-hour source; Ask B's cross-campus-only merging kept all nine)",
-   "repair": "rubric",
-   "move": "Main side frozen (freeze snapshot after the determinism fix; the call's files byte-identical to the judged cut, asserted). Ask A's new primary (D5, out-of-scope rows known only by structure): the program history, drawn from the curriculum rows, carries applications to the limited-enrolment programs (Nursing, Medical Assisting, the HVAC-R apprenticeship cohort) as admission rows with no end term beside 181 continuing students' open programs (none in IR's entering files), so the battery's latest-row reading puts every applicant in the program applied to and every program's FTE misses (5.2 to 75.2 FTE); the over-cleaning half is 46 predecessor rows a change, readmission or second program left open, so the earliest-row and drop-both readings miss too; the registrations' program agrees with the golden for all 227 students with two programs in effect (forcing, asserted), and the history gains change_reason_desc beside its codes. Ask B: each program's eight-week halves moved to two campuses (video classrooms where open), so merging only cross-campus sections misses all nine; merging only V-room sections keeps eight, a measured single crack. No graded figure moved (block 4 redrafted from figures.json, unchanged; figures.json gains and moves stops only); no document text changed. ceiling.py on the cut pack: cracker 0 of 18, mirror leakage 0.0 per cent, pair ceiling 36.4, worst single crack 48.1.",
-   "commit": ""
-  },
-  {
-   "date": "2026-11-01",
-   "portal": "none: in-house determinism judge pass 6 on 78dca29c, NOT_DETERMINISTIC, FIX_NOW (fork 1: the nine shares at one decimal under the 2023-class, college-wide and ratio estimators; fork 2: 229 students with two or three program-of-record rows in effect for fall 2026, Ask A's FTE; fork 3: the record at the end of the spring term read by its recorded dates drops the spring 2027 degrees and files eight programs)",
-   "repair": "determinism",
-   "move": "Policy 3.3 gains two clauses: the record at the end of the spring term is read 'the degrees conferred for that term included' (fork 3, the strict recorded-date reading's eight asserted and ruled out), and the estimate is 'made from that record for the program's three classes taken together, each student counting in full for every term in which the record follows the student' (fork 1): every estimate the sentence admits (pooled cumulative incidence, class by class with pooled rates beyond, expected completions from the pooled rates, endings out of the risk set before the term's degrees, pooled transition matrices) files the golden's shares to the last digit, and each rival outside it (conditional landing or ratio scaling from the program's or the college's fall 2023 class, each class on its own, the actuarial half-exposure) moves a share at one decimal and keeps the six, all asserted; both clauses read back through the checks' and the verifier's PDF extractors. Fork 2 closed by the data alone: the applications to the limited-enrolment programs are now closed the term before the term applied for (never in effect) and the 46 open predecessor rows are restored to their ends, so every registered student has one program of record in effect (C1, asserted) and the golden is the literal read; the device holds against the version rule as an as-of join (each student's latest row begun by fall 2026, end terms unread: every program off by 1.3 to 14.0 per cent) and falls to a reader of the end terms. No graded figure moved; the call's files are byte-identical but the policy (3.3 only, now two pages). ceiling.py on the cut pack: cracker 0 of 18, mirror 0, pair ceiling 36.4, worst single crack 48.1 (reading the end terms, or keying Ask B on the weeks in common). Pass 6b (the coordinator's re-measure with the cracker as the careful solver): on the same cut the careful cracker keeps 18 of 18 ask figures (Ask A by reading the history's end terms, Ask B by reading 4.2 as one meeting in the weeks the sections share), mirror 0, pair 59.0 and 59.9; no Ask A device survived both tests (forced by the data alone and missed by the careful read), so the pass stopped with the pack unchanged and the ask layer goes back to the main thread.",
-   "commit": ""
-  }
- ],
- "resume": "Stage 2 (design) of architecture 2: the card is registered (v2, 2026-11-02T08:16:02Z) and the design note carries ## Draw; next the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and ask sheet, then the generator and precut.py.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "architecture_1": {
-  "world": "Quenlow County Community College (sociology-demography / event-history-life-course-analysis)",
-  "fate": "spent 2026-11-01 on its ask layer; delivered 2026-10-17 and stays on the portal as delivered (pending)",
-  "delivered": "2026-10-17",
-  "reshipped": "2026-10-18: asks re-cut in the wave 3 audit (the cracker hit all eighteen after the pass-1 fix filed each device); call frozen",
-  "target_zip_md5": "9deca6a54538d585d8fa2ca5d3cd62ba",
-  "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
+  "task": "task266",
+  "status": "SHIPPED",
+  "domain": "biomedical-clinical-research",
+  "objective": "descriptive-distribution",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-02",
+  "stump": "A competent solver reads each case's latency from first exposure to diagnosis, admits each case to the risk set only from the fund's start on 1 July 2004 (delayed entry) and files a 55-year horizon; the step that lands it there is treating the register as seeing every latency after the fund began, when it also cannot see the latencies that end after 30 June 2026, which for workers first exposed in the 1970s and 1980s are their long ones, and the estimate that conditions each case on its two-sided window puts nine in ten by 60 years.",
+  "architecture": 2,
+  "loops": 0,
   "precut": {
-   "exit": 0,
-   "date": "2026-10-17"
-  },
-  "judge": {
-   "verdict": "pass 3 DETERMINISTIC (pass 1 NOT_DETERMINISTIC, FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 after the wave 3 ask re-cut); pass 4 after Ask B's second device NOT_DETERMINISTIC, SEND_BACK by the thread, every graded figure reproduced",
-   "disposition": "pass 3 APPROVE; pass 4 adjudicated in the main thread: the leavers' risk-set timing does not reproduce (the same shares to the last digit under either timing, asserted R2/SF7), Ask A's credit-hour source stays as pass 3 ruled it (closed by the registrar's definitions) and goes to the author as an open risk",
-   "report": "task266/determinism_check_report_pass3.md, task266/determinism_check_report_pass4.md"
+    "exit": 0,
+    "date": "2026-11-02"
   },
   "leak": {
-   "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note and the report's Solver's-eye read; wave 3 second pass (data only): REVIEW, the same two documents, harmless",
-   "reader": "round 1: Q6 read the first form of 3.3 as a stated rule (degrees to date over entrants), a main-call fork, fixed in 3.3; round 2: Q1 none, Q2 none, Q4 none, Q6 an analytical choice (the estimate for the students whose ninth term is still to come); realism residue fixed (the outlook widened to 41 occupations); round 3 (wave 3 ask re-cut): Q1 none, Q2 none, Q4 none, Q6 an analytical choice; the asks' new devices unfound"
+    "leak_py": "REVIEW (2026-11-02, --asof 2027-02-12): five lines (sweeps 3, 4 and 12 on the annual report, the terms and the visit schedule), each ruled harmless in the design note's Build record",
+    "reader": "round 1 on cut 52745e77: no leak (Q1 to Q4 none, Q6 an analytical choice), realism tells fixed at the generator; round 2 on cut 5d9bbda0: no leak (Q1 to Q4 none, Q6 the data structure, an analytical choice)"
   },
   "duplicate_check": {
-   "heart": "PASS at stage 3; BLOCK at ship on G17, register and vote_or_meeting against task466, whose card was re-keyed to them after this card was filed; shipped under the author's override (2026-10-17, in session), recorded on the card",
-   "nearest": "task134 ledger 0.09; task265 0.08",
-   "surface": "task265 and task448 promoted, answered on the card; persona sweep: Early Childhood is the program's name"
+    "heart": "WARN (2026-11-02): overuse.org_family; repeat.gate_g against task190 v11 (method_or_model_selection); test.same_driver_older differentiated",
+    "nearest": "task89 0.08, task265 0.08 (driver); task265 0.07 (heart text)",
+    "surface": "exit 0 (final cut, prompt as shipped); personas Caitlin Holland; promoted pairs for the author's adjudication, all at surface 0.09 to 0.10 on generic card keys: task265 and task267 (the biomedical-clinical-research and descriptive-distribution pairing, back to back by number), task264, task270, task304, task473, task121, task450 (gap population), task154 (dial_setting), task480 (close_out_summary), task234, task237, task501 (surface only)"
   },
-  "seed": "DA16 worked at the draw and set aside (lending serves no Descriptive task type; its stumps composition_mix or maturity_censoring); the slot draws a new world, a community college's program review"
- }
+  "judge": {
+    "verdict": "pass 1 on cut 52745e77: NOT_DETERMINISTIC on ask 2 only (year length), FIX_NOW; pass 2 on cut 5d9bbda0: DETERMINISTIC",
+    "disposition": "APPROVE (pass 2); Gate G method_or_model_selection, analytical_non_defect; Gate H analytical",
+    "report": "determinism_check_report.md, determinism_check_report_pass2.md"
+  },
+  "returned": [
+    {
+      "date": "2026-11-01",
+      "portal": "none: in-house re-check under the new leak gate (LEAK sweep 1: export_manifest.csv and registrar_extract_notes_2027-05.pdf named as describing files; LEAK sweep 12: registrar_extract_notes_2027-05.pdf names 22 columns of the data files, 83% of program_of_record_history.csv); then the stage-4 determinism judge on that cut (79d75971): NOT_DETERMINISTIC on ask 2 (FTE) only, FIX_NOW, the credit-hour source a competing reading and the cross-campus class called live on ask 3",
+      "repair": "leak, then determinism",
+      "move": "The registrar's extract notes PDF and the export manifest CSV no longer ship, and IR's 'About these files' sheet is dropped from the entering-student workbook. Provenance (each file's contents, office, date and size, IR's freeze dates) moved to metadata.json's provenance. What the call's determinism took from the notes is carried by the producing system or converges: the admissions extract exports admit_type_desc and exit_reason_desc beside its codes (Graduated, Transferred Out, Withdrawn, Deceased; SF6, axis 19), an admission with no exit term has no exit reason (axis 12, asserted), the exit term is the extract's own column with its dating convergent (SF7, asserted), readmissions rest on policy 3.2 and the Readmit label (axis 2), term codes on the term calendar. For the asks the registration extract names its credit column course_credit_hours (the grain the notes stated) and exports reg_status_desc, and the schedule writes Status as Active or Cancelled; no ask device (linked sections' credit, the program's vintage, what a V room is) is filed anywhere. Policy 6 drops 'and documents each extract'. checks.py gains the no-describing-file assertions (by name and by sheet) and positive controls for each moved closure. Every graded figure, figures.json and the call unchanged (freeze PASS); cracker 0 of 18. Determinism pass on the judge's FIX_NOW: policy 4.1 adds 'The credit hours of a registration are those its section carries in the term's section schedule.' and 4.2's class becomes 'two or more sections scheduled to meet together, at one campus or across campuses, which count as one class'; verify.py reads both back from the shipped policy before computing the asks and checks.py asserts the read-back, that the registration column and the golden differ in all nine programs, and that the policy names no device word. No graded figure moved (freeze PASS, figures.json unchanged). Measured by the new generator/ceiling.py on the cut pack: the cracker keeps 9 of 18 (Ask A's nine, now rule application; Ask B none), mirror 0, pair ceiling 48.1, worst single crack 59.9; the cracker keeps an ask row, so the ask layer is owed to /fix-rubric (precut fails 'cracker misses every ask' on Ask A's row).",
+      "commit": ""
+    },
+    {
+      "date": "2026-11-01",
+      "portal": "none: in-house measurement standing in for a portal result (generator/ceiling.py on the determinism-fixed cut 543365d5: the cracker kept Ask A's nine FTE figures once policy 4.1 filed the credit-hour source; Ask B's cross-campus-only merging kept all nine)",
+      "repair": "rubric",
+      "move": "Main side frozen (freeze snapshot after the determinism fix; the call's files byte-identical to the judged cut, asserted). Ask A's new primary (D5, out-of-scope rows known only by structure): the program history, drawn from the curriculum rows, carries applications to the limited-enrolment programs (Nursing, Medical Assisting, the HVAC-R apprenticeship cohort) as admission rows with no end term beside 181 continuing students' open programs (none in IR's entering files), so the battery's latest-row reading puts every applicant in the program applied to and every program's FTE misses (5.2 to 75.2 FTE); the over-cleaning half is 46 predecessor rows a change, readmission or second program left open, so the earliest-row and drop-both readings miss too; the registrations' program agrees with the golden for all 227 students with two programs in effect (forcing, asserted), and the history gains change_reason_desc beside its codes. Ask B: each program's eight-week halves moved to two campuses (video classrooms where open), so merging only cross-campus sections misses all nine; merging only V-room sections keeps eight, a measured single crack. No graded figure moved (block 4 redrafted from figures.json, unchanged; figures.json gains and moves stops only); no document text changed. ceiling.py on the cut pack: cracker 0 of 18, mirror leakage 0.0 per cent, pair ceiling 36.4, worst single crack 48.1.",
+      "commit": ""
+    },
+    {
+      "date": "2026-11-01",
+      "portal": "none: in-house determinism judge pass 6 on 78dca29c, NOT_DETERMINISTIC, FIX_NOW (fork 1: the nine shares at one decimal under the 2023-class, college-wide and ratio estimators; fork 2: 229 students with two or three program-of-record rows in effect for fall 2026, Ask A's FTE; fork 3: the record at the end of the spring term read by its recorded dates drops the spring 2027 degrees and files eight programs)",
+      "repair": "determinism",
+      "move": "Policy 3.3 gains two clauses: the record at the end of the spring term is read 'the degrees conferred for that term included' (fork 3, the strict recorded-date reading's eight asserted and ruled out), and the estimate is 'made from that record for the program's three classes taken together, each student counting in full for every term in which the record follows the student' (fork 1): every estimate the sentence admits (pooled cumulative incidence, class by class with pooled rates beyond, expected completions from the pooled rates, endings out of the risk set before the term's degrees, pooled transition matrices) files the golden's shares to the last digit, and each rival outside it (conditional landing or ratio scaling from the program's or the college's fall 2023 class, each class on its own, the actuarial half-exposure) moves a share at one decimal and keeps the six, all asserted; both clauses read back through the checks' and the verifier's PDF extractors. Fork 2 closed by the data alone: the applications to the limited-enrolment programs are now closed the term before the term applied for (never in effect) and the 46 open predecessor rows are restored to their ends, so every registered student has one program of record in effect (C1, asserted) and the golden is the literal read; the device holds against the version rule as an as-of join (each student's latest row begun by fall 2026, end terms unread: every program off by 1.3 to 14.0 per cent) and falls to a reader of the end terms. No graded figure moved; the call's files are byte-identical but the policy (3.3 only, now two pages). ceiling.py on the cut pack: cracker 0 of 18, mirror 0, pair ceiling 36.4, worst single crack 48.1 (reading the end terms, or keying Ask B on the weeks in common). Pass 6b (the coordinator's re-measure with the cracker as the careful solver): on the same cut the careful cracker keeps 18 of 18 ask figures (Ask A by reading the history's end terms, Ask B by reading 4.2 as one meeting in the weeks the sections share), mirror 0, pair 59.0 and 59.9; no Ask A device survived both tests (forced by the data alone and missed by the careful read), so the pass stopped with the pack unchanged and the ask layer goes back to the main thread.",
+      "commit": ""
+    }
+  ],
+  "resume": "",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "architecture_1": {
+    "world": "Quenlow County Community College (sociology-demography / event-history-life-course-analysis)",
+    "fate": "spent 2026-11-01 on its ask layer; delivered 2026-10-17 and stays on the portal as delivered (pending)",
+    "delivered": "2026-10-17",
+    "reshipped": "2026-10-18: asks re-cut in the wave 3 audit (the cracker hit all eighteen after the pass-1 fix filed each device); call frozen",
+    "target_zip_md5": "9deca6a54538d585d8fa2ca5d3cd62ba",
+    "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
+    "precut": {
+      "exit": 0,
+      "date": "2026-10-17"
+    },
+    "judge": {
+      "verdict": "pass 3 DETERMINISTIC (pass 1 NOT_DETERMINISTIC, FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 after the wave 3 ask re-cut); pass 4 after Ask B's second device NOT_DETERMINISTIC, SEND_BACK by the thread, every graded figure reproduced",
+      "disposition": "pass 3 APPROVE; pass 4 adjudicated in the main thread: the leavers' risk-set timing does not reproduce (the same shares to the last digit under either timing, asserted R2/SF7), Ask A's credit-hour source stays as pass 3 ruled it (closed by the registrar's definitions) and goes to the author as an open risk",
+      "report": "task266/determinism_check_report_pass3.md, task266/determinism_check_report_pass4.md"
+    },
+    "leak": {
+      "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note and the report's Solver's-eye read; wave 3 second pass (data only): REVIEW, the same two documents, harmless",
+      "reader": "round 1: Q6 read the first form of 3.3 as a stated rule (degrees to date over entrants), a main-call fork, fixed in 3.3; round 2: Q1 none, Q2 none, Q4 none, Q6 an analytical choice (the estimate for the students whose ninth term is still to come); realism residue fixed (the outlook widened to 41 occupations); round 3 (wave 3 ask re-cut): Q1 none, Q2 none, Q4 none, Q6 an analytical choice; the asks' new devices unfound"
+    },
+    "duplicate_check": {
+      "heart": "PASS at stage 3; BLOCK at ship on G17, register and vote_or_meeting against task466, whose card was re-keyed to them after this card was filed; shipped under the author's override (2026-10-17, in session), recorded on the card",
+      "nearest": "task134 ledger 0.09; task265 0.08",
+      "surface": "task265 and task448 promoted, answered on the card; persona sweep: Early Childhood is the program's name"
+    },
+    "seed": "DA16 worked at the draw and set aside (lending serves no Descriptive task type; its stumps composition_mix or maturity_censoring); the slot draws a new world, a community college's program review"
+  },
+  "target_zip_md5": "5d9bbda0dcfe626eecaf9dc7ca728043",
+  "gates_stage3": {
+    "checks": "290 assertions, 0 failed",
+    "verify": "0 failed",
+    "rebuild": "byte-identical; target.zip md5 52745e77108ea8f87ddd3e35fc894c91 on two consecutive builds",
+    "precut": "61 checks, 0 FAIL, 0 WARN",
+    "voice_check": "PASS",
+    "figures_check": "79 figures, 0 absent",
+    "ceiling": "cracker 0 of 20, mirror 0 of 20, pair 28.5, two careful on the call 45.0, full includer reproduces figures.json"
+  },
+  "shipped": "2026-11-02"
 }

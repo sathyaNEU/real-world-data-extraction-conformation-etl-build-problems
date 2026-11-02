@@ -1,374 +1,333 @@
-"""The goldens for task266: program_completion_review_2027.xlsx (each program's three-year completion share and whether
-it enters review, its fall 2026 FTE and its classes under ten students, the completion curves, the notes) and
-completion_review_board_paper_2027.pdf (the board paper with the recommendation and the chart), plus
-generator/figures.json and the task's metadata.json. Every figure comes from analysis.py run on the shipped pack."""
+"""The golden deliverables: review_horizon_workbook_2027.xlsx (the settings, the members by setting, the unit's
+reviews by town) and review_horizon_board_paper_2027.docx (the recommendation to the Board with the coverage chart),
+plus generator/figures.json and metadata.json."""
+import datetime as dt
 import json
 import os
 import shutil
 import tempfile
 
 import matplotlib
-
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt                          # noqa: E402
-import numpy as np                                       # noqa: E402
-from openpyxl import Workbook                            # noqa: E402
+import matplotlib.pyplot as plt          # noqa: E402
+from openpyxl import Workbook            # noqa: E402
 from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
 
-import analysis as A                                     # noqa: E402
-import ceiling as CE                                     # noqa: E402
-import common as K                                       # noqa: E402
-import docs as D                                         # noqa: E402
-import postprocess as PP                                 # noqa: E402
+import analysis as A                     # noqa: E402
+import common as K                       # noqa: E402
+import postprocess as PP                 # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DELIVERABLES = ["program_completion_review_2027.xlsx", "completion_review_board_paper_2027.pdf"]
-INV = {v: k for k, v in K.SIS.items()}
+CHART = "share_by_years_after_first_exposure.png"
 
 
 def r1(x):
-    return float("%.1f" % (np.floor(x * 10 + 0.5) / 10))
+    """A share as a per cent to one decimal, rounded half up on the exact value."""
+    return float("%.1f" % (round(x * 1000 + 1e-9) / 10.0))
 
 
-def results(target):
-    R, pk, ent = A.call(target)
-    progs = [K.SIS[p] for p in K.CODES]
-    inrev = [p for p in progs if R[p]["golden"] < K.FLOOR]
-    a = A.ask_a(target)
-    b = A.ask_b(target)
-    stops_a = dict(natural=A.ask_a(target, credits="row", program="row", census="status"),
-                   row_credits=A.ask_a(target, credits="row"),
-                   row_credits_once=A.ask_a(target, credits="row_once"),
-                   extract_program=A.ask_a(target, program="row"),
-                   late_adds_kept=A.ask_a(target, census="status"),
-                   withdrawals_dropped=A.ask_a(target, census="all_dates"),
-                   history_latest_row_begun=A.ask_a(target, program="asof"))
-    stops_b = dict(natural=A.ask_b(target, enrol="export", group="none"),
-                   census_uncombined=A.ask_b(target, group="none"),
-                   meeting=A.ask_b(target, group="meeting"),
-                   text=A.ask_b(target, group="text"),
-                   room=A.ask_b(target, group="room"),
-                   late_adds_kept=A.ask_b(target, enrol="status", group="meeting"),
-                   across_campuses_only=CE.across_campuses(target),
-                   video_rooms_only=CE.video_rooms(target))
-    secs = A.rows_xlsx(os.path.join(target, K.FILES["schedule"]), "Fall 2026 sections")
-    regs = A.rows_csv(os.path.join(target, K.FILES["registrations"]))
-    n = {}
-    for r in A.census_rows(regs, A.day(pk.census[K.FALL26]), "date"):
-        n[r["crn"]] = n.get(r["crn"], 0) + 1
-    nur_clinical = sum(1 for s in secs if s["Subj"] == "NUR" and s["Type"] == "CLN" and s["Status"] == "Active"
-                       and n.get(str(s["CRN"]), 0) < K.SMALL)
-    return dict(R=R, progs=progs, inrev=inrev, a=a, b=b, stops_a=stops_a, stops_b=stops_b, ent=ent,
-                nur_clinical=nur_clinical, pk=pk)
+def results(target, T):
+    sched = T["unit"]
+    m = A.main_call(target)
+    o = dict(main=m)
+    o["share"] = {H: r1(m["golden"][H]) for H in K.SETTINGS}
+    o["call"] = m["golden_setting"]
+    o["runner_up"] = K.SETTINGS[K.SETTINGS.index(o["call"]) - 1]
+    o["reviews"] = A.ask_reviews(target, sched)
+    o["members"], o["members_seen"], o["members_list"] = A.ask_members(target, sched)
+    o["natural_reviews"] = A.ask_reviews(target, sched, handle_swaps=False, handle_blanks=False)
+    o["natural_members"], _, _ = A.ask_members(target, sched, handle_blanks=False)
+    return o
 
 
-# ---------------------------------------------------------------------------------------------- the scorecard
-def _head(ws, head, widths, fill="22465F"):
-    ws.append(head)
-    for cell in ws[ws.max_row]:
-        cell.font = Font(bold=True, color="FFFFFF")
-        cell.fill = PatternFill("solid", fgColor=fill)
-        cell.alignment = Alignment(wrap_text=True, vertical="center")
-    for i, w in enumerate(widths):
-        ws.column_dimensions[chr(65 + i)].width = w
-    ws.row_dimensions[ws.max_row].height = 44
+def _head(ws, row, head, widths):
+    for j, h in enumerate(head, 1):
+        c = ws.cell(row=row, column=j, value=h)
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="2E4A62")
+        c.alignment = Alignment(wrap_text=True, vertical="center")
+        ws.column_dimensions[c.column_letter].width = widths[j - 1]
 
 
-def write_scorecard(path, res):
-    R = res["R"]
+def workbook(path, o):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Scorecard"
-    ws.append(["Program review 2027: three-year completion and the fall 2026 profile"])
-    ws["A1"].font = Font(bold=True, size=13)
-    ws.append(["Entering students of fall 2023, 2024 and 2025 followed to the end of spring 2027; review floor 30.0 per "
-               "cent (Board Policy 3.12, 3.4)."])
-    ws["A2"].font = Font(italic=True, color="5B646B")
-    ws.append([None])
-    _head(ws, ["Program", "Award", "Program code", "Entering students, fall 2023 to 2025",
-               "Three-year completion share (%)", "Enters review", "FTE at the fall 2026 census",
-               "Classes under ten students, fall 2026"], [44, 7, 12, 14, 14, 9, 13, 14])
-    ws.freeze_panes = "B5"
-    first = ws.max_row + 1
-    for p in res["progs"]:
-        code = INV[p]
-        ws.append([K.NAME[code], K.AWARD[code], p, R[p]["n"], r1(R[p]["golden"]),
-                   "Yes" if p in res["inrev"] else "No", r1(res["a"][p]), res["b"][p]])
-        row = ws.max_row
-        ws.cell(row, 4).number_format = "#,##0"
-        ws.cell(row, 5).number_format = "0.0"
-        ws.cell(row, 7).number_format = "#,##0.0"
-        for c in (4, 5, 7, 8):
-            ws.cell(row, c).alignment = Alignment(horizontal="right")
-        ws.cell(row, 6).alignment = Alignment(horizontal="center")
-        if p in res["inrev"]:
-            ws.cell(row, 6).font = Font(bold=True, color="9C2B1E")
-    last = ws.max_row
-    ws.append(["All nine programs", None, None, "=SUM(D%d:D%d)" % (first, last), None,
-               "=COUNTIF(F%d:F%d,\"Yes\")" % (first, last), "=SUM(G%d:G%d)" % (first, last),
-               "=SUM(H%d:H%d)" % (first, last)])
-    row = ws.max_row
-    for c in range(1, 9):
-        ws.cell(row, c).font = Font(bold=True)
-    ws.cell(row, 4).number_format = "#,##0"
-    ws.cell(row, 7).number_format = "#,##0.0"
-    ws.append([None])
-    ws.append(["Students who died (%d) are removed from the classes. FTE and classes are the review profile of Policy "
-               "3.12, section 4." % sum(R[p]["deaths"] for p in res["progs"])])
-    ws.cell(ws.max_row, 1).font = Font(italic=True, color="5B646B")
-    ws.append(["%d of Nursing's %d classes under ten are clinical groups, which take at most eight students each." % (
-        res["nur_clinical"], res["b"][K.SIS["NUR"]])])
-    ws.cell(ws.max_row, 1).font = Font(italic=True, color="5B646B")
-    ws.print_title_rows = "4:4"
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
-
-    ws2 = wb.create_sheet("Completion by term")
-    _head(ws2, ["Term since entry"] + [K.SHORTNAME[INV[p]] for p in res["progs"]], [12] + [11] * 9)
-    ws2.freeze_panes = "B2"
-    for t in range(K.WINDOW):
-        ws2.append([t + 1] + [r1(R[p]["curve"][t]) for p in res["progs"]])
-        for c in range(2, 11):
-            ws2.cell(ws2.max_row, c).number_format = "0.0"
-    ws2.append([None])
-    ws2.append(["Share of the program's entering students who had earned an associate degree by the end of each term, "
-                "per cent; term 1 is the fall term of entry and summer terms count."])
-    ws2.cell(ws2.max_row, 1).font = Font(italic=True, color="5B646B")
-
-    ws3 = wb.create_sheet("Notes")
-    ws3.column_dimensions["A"].width = 118
-    notes = [
-        "Notes",
-        None,
-        "Entering students: the Office of Institutional Research's fall entering-student files for fall 2023, 2024 "
-        "and 2025 (fall 2023 on its legacy student numbers, carried to the current system through the 2024 "
-        "conversion map), each student in the program entered.",
-        "Outcome: an associate degree from the college, in any program, under the admission recorded at entry, by the "
-        "end of the ninth term counting the fall of entry (Policy 3.12, 3.1 and 3.2).",
-        "Each admission's ending and its term come from the registrar's admissions extract of 28 May 2027: a degree "
-        "(GR), a transfer out (TO) or a withdrawal (WD); admissions with no exit were open at the end of spring 2027.",
-        "Estimate: for each program, term by term, the share of the admissions still open at the start of the term "
-        "that ended in a degree in that term, times the share of the class still open; transfers out and withdrawals "
-        "end an admission without the degree, and open admissions count until the end of spring 2027 (the "
-        "cumulative incidence of the degree, with transfer out and withdrawal as the other endings).",
-        "The fall 2024 class is observed to its eighth term and the fall 2025 class to its fifth; their later terms "
-        "use the rates of the classes observed in those terms.",
-        "FTE: credit hours registered at the fall 2026 census (registrations in place on 8 September 2026, later "
-        "withdrawals included and registrations added after that date not), each at its section's credit hours in "
-        "the fall 2026 schedule (laboratory, shop and clinical sections carry none, and English Composition I and "
-        "College Algebra ran at three), by each student's program of record in effect for fall 2026, divided by 15. "
-        "An application to a limited-enrolment program sits in the program history from the term applied for, closed "
-        "the term before: it never took effect.",
-        "Classes under ten students: sections of each program's own subjects that ran in fall 2026, sections taught "
-        "together at one meeting (interactive video between campuses, the second campus's section meeting from the "
-        "second week to the last day of classes) counted as one class with their students added; the accelerated "
-        "sections one instructor teaches at one time in the first and second eight weeks, at two campuses, are two "
-        "classes; census registrations as above.",
-        "Shares are rounded to one decimal place from the unrounded estimate; the floor is applied to the unrounded "
-        "share.",
-        "Prepared by %s, Director of Institutional Research, 4 June 2027." % K.PEOPLE["ir"],
-    ]
-    for line in notes:
-        ws3.append([line])
-        ws3.cell(ws3.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
-    ws3["A1"].font = Font(bold=True, size=12)
+    ws.title = "Horizon"
+    ws["A1"] = "Review horizon for the 2027-2031 term: share of the workforce's mesotheliomas by setting"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = ("Fund register as closed for 2025-26 (diagnoses 1 July 2004 to 30 June 2026), workers first exposed "
+                "before 1 January 1986; each case weighted for the years its own exposure date let the register see it.")
+    _head(ws, 4, ["Setting (years after first exposure)", "Share diagnosed within the setting (%)",
+                  "Nine in ten reached", "Recommended"], [22, 22, 14, 13])
+    for i, H in enumerate(K.SETTINGS):
+        vals = [H, o["share"][H], "Yes" if o["share"][H] >= 90.0 else "No", "Recommended" if H == o["call"] else None]
+        for j, v in enumerate(vals, 1):
+            c = ws.cell(row=5 + i, column=j, value=v)
+            if j == 2:
+                c.number_format = "0.0"
+    ws.cell(row=13, column=1, value="Register cases in the estimate").font = Font(italic=True)
+    ws.cell(row=13, column=2, value=o["main"]["n"])
+    b = wb.create_sheet("Members by setting")
+    b["A1"] = "Members reviewed in 2025-26 who would still be inside each setting on 1 July 2027"
+    b["A1"].font = Font(bold=True, size=12)
+    _head(b, 3, ["Setting (years after first exposure)", "Members still inside the setting"], [22, 20])
+    for i, H in enumerate(K.ASK_SETTINGS):
+        b.cell(row=4 + i, column=1, value=H)
+        b.cell(row=4 + i, column=2, value=o["members"][H]).number_format = "#,##0"
+    b.cell(row=11, column=1, value="Members reviewed in 2025-26").font = Font(italic=True)
+    b.cell(row=11, column=2, value=o["members_seen"]).number_format = "#,##0"
+    b.freeze_panes = "A4"
+    ws.freeze_panes = "A5"
+    c = wb.create_sheet("Unit reviews 2025-26")
+    c["A1"] = "Mobile Review Unit: reviews held in each circuit town, 1 July 2025 to 30 June 2026"
+    c["A1"].font = Font(bold=True, size=12)
+    _head(c, 3, ["Town", "Reviews held"], [18, 14])
+    for i, t in enumerate(sorted(K.CIRCUIT)):
+        c.cell(row=4 + i, column=1, value=t)
+        c.cell(row=4 + i, column=2, value=o["reviews"][t])
+    c.cell(row=4 + len(K.CIRCUIT), column=1, value="All towns").font = Font(bold=True)
+    tot = c.cell(row=4 + len(K.CIRCUIT), column=2, value=sum(o["reviews"][t] for t in K.CIRCUIT))
+    tot.font = Font(bold=True)
+    tot.number_format = "#,##0"
+    c.freeze_panes = "A4"
+    n = wb.create_sheet("Notes")
+    n.column_dimensions["A"].width = 110
+    notes = ["Prepared 12 February 2027 for the Board meeting of 25 February 2027 (item 6).",
+             "Horizon: program terms 2027-2031, clause 4. Shares are of every mesothelioma among workers first exposed to "
+             "asbestos at work before 1 January 1986, whenever diagnosed (4.2), years at 365.25 days (4.3), no curve "
+             "shape assumed (4.4). The setting is read from the unrounded shares; shares shown to one decimal.",
+             "Register as closed for 2025-26 (diagnoses 1 July 2004 to 30 June 2026), both case systems. Household, "
+             "environmental and unexposed cases, and workers first exposed in 1986 or later, are outside the workforce (2.1).",
+             "Members by setting: members with a review in 2025-26, counted once, inside a setting when fewer years than "
+             "the setting have passed since first exposure on 1 July 2027 (3.2).",
+             "Unit reviews: each booking reviewed on a Mobile Review Unit day, placed in the town the unit worked that "
+             "day. Blank attendance rows count as reviews only on the days the unit's X-ray exposure counter shows "
+             "them reviewed (the tablet's offline weeks in September 2025 and April 2026)."]
+    for i, t in enumerate(notes, 1):
+        cell = n.cell(row=i, column=1, value=t)
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
     wb.save(path)
-    PP.COMPANY = K.COLLEGE
-    PP.normalize_ooxml(path, K.PEOPLE["ir"], K.PEOPLE["ir"], "2027-06-01T13:12:40Z", "2027-06-04T15:47:18Z",
-                       excel=True)
 
 
-# ---------------------------------------------------------------------------------------------- the chart
-def chart(path, res):
-    R = res["R"]
-    fig, ax = plt.subplots(figsize=(7.2, 3.9), dpi=200)
-    x = np.arange(0, K.WINDOW + 1)
-    rev_col = ["#9c2b1e", "#c4512f", "#d9822b", "#b5654a", "#7d3c2f", "#e0a05a"]
-    ok_col = ["#22465f", "#3d6fa3", "#5c8a64"]
-    i_r = i_o = 0
-    ends = []
-    for p in res["progs"]:
-        y = [0.0] + list(R[p]["curve"])
-        if p in res["inrev"]:
-            col, i_r = rev_col[i_r], i_r + 1
-            ls = "-"
-        else:
-            col, i_o = ok_col[i_o], i_o + 1
-            ls = "-"
-        ax.step(x, y, where="post", color=col, lw=1.6 if p in res["inrev"] else 1.9, ls=ls)
-        ends.append([y[-1], K.SHORTNAME[INV[p]], col])
-    ax.axhline(K.FLOOR, color="#1d2326", lw=1.1, ls=(0, (2, 2)))
-    ax.text(0.15, K.FLOOR + .7, "Review floor, 30.0%", fontsize=7.5, color="#1d2326")
-    ends.sort()
-    placed = []
-    for v, name, col in ends:
-        yv = v
-        for q in placed:
-            if abs(yv - q) < 1.9:
-                yv = q + 1.9
-        placed.append(yv)
-        ax.text(9.12, yv, "%s %.1f" % (name, r1(v)), fontsize=6.6, color=col, va="center")
-    ax.set_xlim(0, 11.6)
-    ax.set_ylim(0, 46)
-    ax.set_xticks(range(0, 10))
-    ax.set_xlabel("Terms since entry (the fall of entry is term 1; summer terms count)", fontsize=8)
-    ax.set_ylabel("Entering students with an associate degree (%)", fontsize=8)
+def chart(path, o):
+    x, f = o["main"]["curve"]
+    import numpy as np
+    xs = np.concatenate([[20 * K.YEAR], x, [86 * K.YEAR]]) / K.YEAR
+    ys = np.concatenate([[0.0], np.cumsum(f), [1.0]]) * 100
+    fig, ax = plt.subplots(figsize=(7.0, 3.5), dpi=150)
+    ax.step(xs, ys, where="post", color="#1f5a7a", lw=1.7)
+    ax.axhline(90, color="#7a2e1f", lw=.9, ls=":")
+    ax.text(21, 91.3, "Nine in ten (program terms 4.2)", fontsize=7, color="#7a2e1f")
+    for H in K.SETTINGS:
+        ax.plot([H, H], [0, o["share"][H]], color="#9aa5ad", lw=.6, ls="--")
+        ax.plot(H, o["share"][H], "o", ms=3.6, color="#1f5a7a" if H != o["call"] else "#7a2e1f")
+        ax.text(H + .5, o["share"][H] - 5.5 if H < 60 else o["share"][H] - 7.5, "%.1f%%" % o["share"][H], fontsize=6.6,
+                color="#1d2326", fontweight="bold" if H == o["call"] else "normal")
+    ax.set_xlim(20, 80)
+    ax.set_ylim(0, 102)
+    ax.set_xticks(range(20, 81, 5))
+    ax.set_xlabel("Years after first exposure to asbestos at work", fontsize=8)
+    ax.set_ylabel("Mesotheliomas diagnosed (cumulative %)", fontsize=8)
     ax.tick_params(labelsize=7.5)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    ax.set_title("Six programs end their three years below the floor", fontsize=9.5, loc="left", color="#1d2326")
-    fig.tight_layout()
+    ax.set_title("Nine in ten of the workforce's mesotheliomas are diagnosed by %d years" % o["call"], fontsize=8.8,
+                 loc="left")
+    ax.grid(color="#e8ecee", lw=.6)
+    ax.set_axisbelow(True)
+    for s_ in ("top", "right"):
+        ax.spines[s_].set_visible(False)
+    fig.subplots_adjust(left=.08, right=.97, top=.9, bottom=.14)
     fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
 
 
-# ---------------------------------------------------------------------------------------------- the board paper
-def write_paper(path, res, png):
-    from reportlab.lib import colors
-    from reportlab.lib.units import mm
-    from reportlab.platypus import Image, Paragraph, Spacer
-    R = res["R"]
-    S = D.styles("Sans", colors.HexColor("#22465f"))
-    doc = D._doc(path, "Academic program review 2027: three-year completion", K.COLLEGE)
-    names = [K.NAME[INV[p]] for p in res["inrev"]]
-    keep = [K.NAME[INV[p]] for p in res["progs"] if p not in res["inrev"]]
-    st = [Paragraph("Six of nine associate-degree programs enter review in 2027", S["h1"]),
-          Paragraph("Board of Trustees, regular meeting of 17 June 2027, agenda item 7.2: Academic program review "
-                    "(Board Policy 3.12). From %s, Director of Institutional Research; through %s, Vice President "
-                    "for Academic Affairs. 4 June 2027." % (K.PEOPLE["ir"], K.PEOPLE["vpaa"]), S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    st.append(Paragraph("Recommendation", S["h2"]))
-    rev = [K.NAME[INV[p]] for p in res["inrev"]]
-    shares = ["%.1f" % r1(R[p]["golden"]) for p in res["inrev"]]
-    out = [(K.SHORTNAME[INV[p]], "%.1f" % r1(R[p]["golden"])) for p in res["progs"] if p not in res["inrev"]]
-    P("That the board place six programs in review from 2027-28: %s and %s. Their three-year completion shares, %s "
-      "and %s per cent, are below the policy's floor of 30 per cent of entering students earning an associate degree "
-      "within three years. %s (%s per cent), %s (%s) and %s (%s) stay out of review." % (
-          ", ".join(rev[:-1]), rev[-1], ", ".join(shares[:-1]), shares[-1], out[0][0], out[0][1], out[1][0],
-          out[1][1], out[2][0], out[2][1]))
-    rows = [["Program", "Entering students", "Three-year completion (%)", "Review", "FTE, fall 2026",
-             "Classes under ten"]]
-    for p in res["progs"]:
-        rows.append([K.NAME[INV[p]] if INV[p] != "HVR" else "HVAC-R Technology", "{:,}".format(R[p]["n"]),
-                     "%.1f" % r1(R[p]["golden"]), "Yes" if p in res["inrev"] else "No",
-                     "{:,.1f}".format(r1(res["a"][p])), str(res["b"][p])])
-    st.append(D._table(S, rows, [62, 24, 30, 15, 24, 22], right=(1, 2, 4, 5)))
-    st.append(Paragraph("Sources: IR fall entering-student files; registrar's admissions extract, conferrals, "
-                        "fall 2026 registrations, schedule and program history, 28 May 2027.", S["meta"]))
-    st.append(Image(png, width=172 * mm, height=172 * mm * 3.9 / 7.2))
-    st.append(Spacer(1, 4))
-    st.append(Paragraph("How the share is measured", S["h2"]))
-    P("The policy counts every student who entered in fall 2023, 2024 or 2025, including the two classes still inside "
-      "their three years. Each admission ends with a degree, a transfer to another institution or a withdrawal, or "
-      "is still open. For each program we take, term by term, the share of the admissions still open that ended in a "
-      "degree in that term, weighted by the share of the class still open; a student who transferred out or "
-      "withdrew has ended the admission without the college's degree, and only the admissions still open at the end "
-      "of spring 2027 are carried forward on the rates of the classes observed in the later terms. Treating "
-      "transfers and withdrawals as students whose outcome is still unknown would credit each of them with a share "
-      "of a degree they can no longer earn here: it puts every program except Early Childhood Education above the "
-      "floor, the transfer-oriented programs at %s per cent." % (
-          " to ".join("%.0f" % v for v in (min(R[p]["op"] for p in res["progs"] if INV[p] in K.TRANSFER),
-                                            max(R[p]["op"] for p in res["progs"] if INV[p] in K.TRANSFER)))))
-    P("The fall 2023 class, the only one whose three years have closed, is not the measure: the guided-pathways "
-      "advising begun in fall 2024 has cut first-year withdrawals, and on that class alone Criminal Justice "
-      "(%.1f per cent) would also enter review." % r1(R[K.SIS["CJ"]]["closed2023"]))
-    st.append(Paragraph("Review profile", S["h2"]))
-    P("FTE counts the credit hours registered at the fall 2026 census by each program's students, every section at "
-      "the credit hours it carried in fall 2026, divided by 15. Classes under ten counts the program's own sections "
-      "that ran in fall 2026 with fewer than ten students at the census, sections taught together over interactive "
-      "video counted once and the accelerated eight-week sections counted separately. %d of Nursing's %d are "
-      "clinical groups, which take at most eight students each." % (res["nur_clinical"], res["b"][K.SIS["NUR"]]))
-    st.append(Paragraph("Notes. Students who died (%d) are removed from the classes. Shares are rounded to one "
-                        "decimal place; the floor applies to the unrounded share. The workbook "
-                        "program_completion_review_2027.xlsx has each program's share by term." % sum(
-                            R[p]["deaths"] for p in res["progs"]), S["meta"]))
-    doc.build(st, onFirstPage=D._frame("Board of Trustees, 17 June 2027", "Agenda item 7.2", "Sans"),
-              onLaterPages=D._frame("Board of Trustees, 17 June 2027", "Agenda item 7.2", "Sans"))
-    PP.normalize_pdf(path, b"D:20270604101522-04'00'", b"D:20270604154831-04'00'")
+def paper(path, o, png):
+    import docx
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Mm, Pt, RGBColor
+    GREY = RGBColor(0x5B, 0x64, 0x6B)
+    doc = docx.Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(9.5)
+    sec = doc.sections[0]
+    sec.page_width, sec.page_height = Mm(210), Mm(297)
+    sec.left_margin = sec.right_margin = Mm(18)
+    sec.top_margin, sec.bottom_margin = Mm(13), Mm(12)
+    fp = sec.footer.paragraphs[0]
+    fp.text = "Board paper 2027/06  |  Prepared by the Review Program  |  Page "
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    run = fp.add_run()
+    for tag, txt in (("begin", None), (None, "PAGE"), ("end", None)):
+        if tag:
+            el = OxmlElement("w:fldChar")
+            el.set(qn("w:fldCharType"), tag)
+        else:
+            el = OxmlElement("w:instrText")
+            el.set(qn("xml:space"), "preserve")
+            el.text = txt
+        run._r.append(el)
+    for r_ in fp.runs:
+        r_.font.size = Pt(7.5)
+        r_.font.color.rgb = GREY
+    hp = sec.header.paragraphs[0]
+    hp.text = "%s | Board meeting of 25 February 2027 | Item 6 (for decision)" % K.FUND
+    hp.runs[0].font.size = Pt(7.5)
+    hp.runs[0].font.color.rgb = GREY
+
+    def para(text="", size=None, bold=False, color=None, after=3, before=0):
+        p = doc.add_paragraph()
+        if text:
+            r = p.add_run(text)
+            r.bold = bold
+            if size:
+                r.font.size = Pt(size)
+            if color:
+                r.font.color.rgb = color
+        p.paragraph_format.space_after = Pt(after)
+        p.paragraph_format.space_before = Pt(before)
+        return p
+
+    for k, v in (("To", "The Board"), ("From", "%s, Manager, Review Program" % K.PEOPLE["manager"]),
+                 ("Date", "12 February 2027"),
+                 ("Subject", "Review Program horizon for the term from 1 July 2027 (program terms, clause 4)")):
+        p = para(after=0)
+        r = p.add_run("%s:\t" % k)
+        r.bold = True
+        p.add_run(v)
+    sh = o["share"]
+    para("Set the horizon at %d years after first exposure" % o["call"], 13, bold=True, before=8, after=4)
+    p = para(after=4)
+    p.add_run("Recommendation: that the Board set the Program's horizon for 2027-2031 at %d years after first "
+              "exposure. On the register, %.1f%% of the workforce's mesotheliomas are diagnosed within %d years, "
+              "against %.1f%% within %d years, so %d is the shortest five-year step that reaches the nine in ten "
+              "that clause 4.2 asks for." % (o["call"], sh[o["call"]], o["call"], sh[o["runner_up"]],
+                                             o["runner_up"], o["call"])).bold = True
+    tb = doc.add_table(rows=1, cols=3)
+    tb.style = "Light List"
+    for i, t in enumerate(["Setting (years after first exposure)", "Mesotheliomas diagnosed within it",
+                           "Members reviewed in 2025-26 still inside it on 1 July 2027"]):
+        tb.rows[0].cells[i].text = t
+    for H in K.SETTINGS:
+        cells = tb.add_row().cells
+        cells[0].text = "%d%s" % (H, "  (recommended)" if H == o["call"] else "")
+        cells[1].text = "%.1f%%" % sh[H]
+        cells[2].text = "{:,}".format(o["members"][H]) if H in o["members"] else "-"
+        for i in (1, 2):
+            cells[i].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for row in tb.rows:
+        for i, w in enumerate((58, 52, 64)):
+            row.cells[i].width = Mm(w)
+    para("Source: Fund mesothelioma register as closed for 2025-26, %s cases among workers first exposed before "
+         "1 January 1986; members and bookings from the Program's booking system." % "{:,}".format(o["main"]["n"]),
+         7.5, color=GREY, before=2, after=0)
+    para("Household, environmental and unexposed cases on the register, and workers first exposed in 1986 or later, "
+         "are outside the workforce (clause 2.1). The setting is read from the unrounded shares.", 7.5, color=GREY,
+         after=6)
+    para("How the shares were read", 10.5, bold=True, before=2, after=2)
+    para("The register only holds a mesothelioma diagnosed between 1 July 2004 and 30 June 2026. So each worker's "
+         "latency can only reach it inside a window that their first exposure fixes: a worker first exposed in "
+         "1950 appears only if diagnosed 54 to 76 years later, one first exposed in 1980 only at 24 to 46 years. "
+         "Taken as they stand, the register's latencies miss the short latencies of the early workforce (diagnosed "
+         "before the Fund began) and the long latencies of the 1970s and 1980s workforce, which are still to come; "
+         "most of the workforce started in the 1970s, so the second gap is the bigger one. Read straight off the "
+         "register, %.1f%% of cases fall within 55 years; admitting cases only from the Fund's start gives %.1f%%. Both put the horizon at 55 years." % (r1(o["main"]["empirical"][55]),
+                                                                               r1(o["main"]["delayed"][55])), after=3)
+    para("The shares above weight every case by the chance that its own window catches a latency, estimating the "
+         "latency curve and those chances together (the nonparametric maximum likelihood estimate for data seen "
+         "between two dates; no curve shape is assumed, per clause 4.4). Years after first exposure run from the "
+         "first day of the earliest period of work the exposure assessment marks as exposed to the day of "
+         "diagnosis, at 365.25 days a year (clause 4.3).", after=4)
+    doc.add_picture(png, width=Mm(170))
+    doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para("For the term's costing", 10.5, bold=True, before=4, after=2)
+    rv = o["reviews"]
+    top = sorted(K.CIRCUIT, key=lambda t: -rv[t])
+    para("Of the members reviewed in 2025-26, %s would still be inside a %d-year horizon on 1 July 2027 (%s inside "
+         "%d years). The Mobile Review Unit held {:,} reviews across its fourteen circuit towns in 2025-26, from %d "
+         "at %s to %d at %s; the workbook has every town.".format(sum(rv[t] for t in K.CIRCUIT))
+         % ("{:,}".format(o["members"][o["call"]]), o["call"], "{:,}".format(o["members"][o["runner_up"]]),
+            o["runner_up"], rv[top[0]], top[0], rv[top[-1]], top[-1]), after=3)
+    para("Attachments: review_horizon_workbook_2027.xlsx (settings, members by setting, unit reviews by town).", 7.5,
+         color=GREY, after=0)
+    doc.save(path)
 
 
-# ---------------------------------------------------------------------------------------------- figures.json
-def figures(res):
-    R = res["R"]
-    rung_keys = ["golden", "op", "op_exits_first", "crude", "complete", "closed2023", "half_wd", "half_to", "strat",
-                 "person", "redate", "dc_compete", "dc_censor", "final", "own"]
+def figures(o):
+    m = o["main"]
     return dict(
-        call=dict(in_review=[K.NAME[INV[p]] for p in res["inrev"]], count=len(res["inrev"]),
-                  share={K.NAME[INV[p]]: r1(R[p]["golden"]) for p in res["progs"]},
-                  unrounded={K.NAME[INV[p]]: R[p]["golden"] for p in res["progs"]}),
-        entrants={K.NAME[INV[p]]: R[p]["n"] for p in res["progs"]},
-        deaths=sum(R[p]["deaths"] for p in res["progs"]),
-        rungs={k: {K.NAME[INV[p]]: R[p][k] for p in res["progs"]} for k in rung_keys},
-        rung_lists={k: [K.NAME[INV[p]] for p in res["progs"] if R[p][k] < K.FLOOR] for k in rung_keys},
-        curves={K.NAME[INV[p]]: [r1(v) for v in R[p]["curve"]] for p in res["progs"]},
-        ask_a={K.NAME[INV[p]]: r1(res["a"][p]) for p in res["progs"]},
-        ask_a_unrounded={K.NAME[INV[p]]: res["a"][p] for p in res["progs"]},
-        ask_a_stops={k: {K.NAME[INV[p]]: r1(v[p]) for p in res["progs"]} for k, v in res["stops_a"].items()},
-        ask_b={K.NAME[INV[p]]: res["b"][p] for p in res["progs"]},
-        ask_b_stops={k: {K.NAME[INV[p]]: v[p] for p in res["progs"]} for k, v in res["stops_b"].items()},
-        floor=K.FLOOR, fte_hours=K.FTE_HOURS, small=K.SMALL, window_terms=K.WINDOW,
-        entering_in_files=len(res["ent"]), entering_total=sum(R[p]["n"] for p in res["progs"]),
-        observed_terms={str(c): res["pk"].idx(K.fall(c), K.LAST) for c in K.CLASSES},
-        nur_clinical=res["nur_clinical"],
-        rival_text={"op_transfer_low": int(np.floor(min(R[p]["op"] for p in res["progs"] if INV[p] in K.TRANSFER) + .5)),
-                    "op_transfer_high": int(np.floor(max(R[p]["op"] for p in res["progs"] if INV[p] in K.TRANSFER) + .5)),
-                    "cj_2023": r1(R[K.SIS["CJ"]]["closed2023"])},
-    )
+        call=o["call"], runner_up=o["runner_up"], cover=90.0, settings=K.SETTINGS,
+        share={str(H): o["share"][H] for H in K.SETTINGS},
+        rungs={k: {str(H): r1(m[k][H]) for H in K.SETTINGS} for k in ("empirical", "delayed", "reverse", "golden")},
+        rung_settings={k: m[k + "_setting"] for k in ("empirical", "delayed", "reverse", "golden")},
+        cases_in_estimate=m["n"], register_cases=len(A.load_cases(os.path.join(os.path.dirname(HERE), "target"))),
+        clauses=["2.1", "2.2", "3.2", "4.1", "4.2", "4.3", "4.4"], midday_window=[t.replace(":", ".") for t in A.MIDDAY],
+        members={str(H): o["members"][H] for H in K.ASK_SETTINGS}, members_reviewed=o["members_seen"],
+        reviews={t: o["reviews"][t] for t in sorted(K.CIRCUIT)}, reviews_total=sum(o["reviews"][t] for t in K.CIRCUIT),
+        natural=dict(reviews={t: o["natural_reviews"][t] for t in sorted(K.CIRCUIT)},
+                     members={str(H): o["natural_members"][H] for H in K.ASK_SETTINGS}),
+        register_window=["2004-07-01", "2026-06-30"], cohort_before="1986-01-01", year_days=365.25,
+        term_start="2027-07-01", fy=["2025-07-01", "2026-06-30"])
 
 
-def provenance(n):
-    """What each shipped file is, who keeps it, its date and size: the record that travels beside the pack."""
-    F = K.FILES
-    reg, ir, aa = "Office of the Registrar", "Office of Institutional Research", "Academic Affairs"
-    made = ("constructed for this task by a seeded generator; %s, its campuses, offices, students and people are "
-            "fictional; the records follow the forms of a US community college's student information system, "
-            "institutional research files and board policy" % K.COLLEGE)
-    rows = [
-        ("policy", "Board Policy 3.12, Academic Program Review, revised 10 June 2025", aa, "2025-06-11",
-         "%d page%s" % (n["policy_pages"], "" if n["policy_pages"] == 1 else "s")),
-        ("cohorts", "Fall entering-student files for fall 2023, fall 2024 and fall 2025, frozen after each census "
-         "(21 September 2023, 18 September 2024 and 19 September 2025)", ir, "2025-09-19", "%d rows, 3 sheets" % n["cohorts"]),
-        ("admissions", "Admissions with an admit term from fall 2023 to spring 2027, with exits", reg, "2027-05-28",
-         "%d rows" % n["admissions"]),
-        ("conferrals", "Associate degrees conferred, December 2023 to May 2027", reg, "2027-05-28",
-         "%d rows" % n["conferrals"]),
-        ("idmap", "Student-number map from the 2024 student-system conversion (pipe-delimited)", reg, "2024-08-03",
-         "%d rows" % n["idmap"]),
-        ("terms", "Term calendar with current and legacy term codes", reg, "2026-11-30", "%d rows" % n["terms"]),
-        ("registrations", "Fall 2026 registrations, every status", reg, "2027-05-28", "%d rows" % n["registrations"]),
-        ("history", "Program-of-record history, periods in effect from fall 2023 to spring 2027", reg, "2027-05-28",
-         "%d rows" % n["history"]),
-        ("schedule", "Fall 2026 section schedule", reg, "2027-05-28", "%d rows" % n["schedule"]),
-        ("register", "Program register, 2026-27, with the course subjects each program owns", aa, "2026-08-14",
-         "%d programs, 2 sheets" % n["register"]),
-        ("success", "Course success rates by subject, fall 2021 to spring 2026", ir, "2026-06-12",
-         "%d rows" % n["success"]),
-        ("outlook", "Occupational outlook for the college's service area, 2024 to 2034 (Workforce Development "
-         "planning extract)", "Workforce Development", "2026-02-20", "%d rows" % n["outlook"]),
-    ]
-    return {"target/" + F[k]: {"covers": what, "prepared_by": who, "date": when, "size": size, "source": made,
-                               "licence": "CC0 1.0 (constructed for this task)"}
-            for k, what, who, when, size in rows}
+PROV = ("constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, "
+        "program, people, places and workplaces are fictional; the records follow the forms of an Australian state "
+        "dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs")
+
+
+def metadata(target, n):
+    cover = {
+        "register": ("Mesothelioma register, cases notified from 1 January 2013, as closed for 2025-26", "Registrar",
+                     "2026-09-30", "%d rows" % n["register"]),
+        "legacy": ("Mesothelioma register, cases notified 1 July 2004 to 31 December 2012 (first case system)",
+                   "Registrar", "2013-02-15", "%d rows" % n["legacy"]),
+        "histories": ("Occupational histories of every register case as interviewed and assessed", "Exposure assessment unit",
+                      "2026-09-30", "%d rows" % n["histories"]),
+        "terms": ("Former Asbestos Workers Review Program terms 2027-2031", "Board", "2026-11-27", "2 pages"),
+        "report": ("Annual Report 2025-26", "The Fund", "2026-10-21", "2 pages"),
+        "members": ("Review Program members at 30 June 2026", "Review Program", "2026-06-30", "%d rows" % n["members"]),
+        "appointments": ("Review bookings, 1 July 2023 to 30 June 2026", "Review Program", "2026-07-03",
+                         "%d rows" % n["appointments"]),
+        "schedule": ("Mobile Review Unit visit schedule 2025-26 as published", "Review Program", "2025-06-16", "1 page"),
+        "card": ("Fleet card statement for the Mobile Review Unit, 2025-26", "Fleet Services", "2026-07-06",
+                 "%d rows" % n["card"]),
+        "qa": ("Mobile Review Unit X-ray daily QA and exposure counter log, 2025-26", "Medical imaging (unit)", "2026-06-30",
+               "%d rows, 2 sheets" % n["qa"]),
+        "roads": ("Review sites and road distance table from the travel policy", "Finance", "2025-05-26",
+                  "%d places" % n["roads"]),
+        "registry": ("State Cancer Registry, mesothelioma new cases by year and sex, 1982-2024", "State Cancer Registry",
+                     "2025-11-04", "%d years" % n["registry"]),
+        "workplaces": ("Register of workplaces where asbestos was used", "Exposure assessment unit", "2024-08-12",
+                       "%d rows" % n["workplaces"]),
+    }
+    prov = {}
+    for k, (cov, by, date, size) in cover.items():
+        prov["target/" + K.FILES[k]] = dict(covers=cov, prepared_by=by, date=date, size=size, source=PROV,
+                                             licence="CC0 1.0 (constructed for this task)")
+    return {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS], "deliverables": K.DELIVERABLES,
+            "as_of": K.ASOF.isoformat(), "stated_inputs": ["2027", "2025-26", "40", "70"], "provenance": prov}
 
 
 def write(target, golden, T):
-    res = results(target)
-    if os.path.exists(golden):
-        shutil.rmtree(golden)
-    os.makedirs(golden)
-    write_scorecard(os.path.join(golden, DELIVERABLES[0]), res)
+    os.makedirs(golden, exist_ok=True)
+    for f in os.listdir(golden):
+        os.remove(os.path.join(golden, f))
+    o = results(target, T)
+    xp = os.path.join(golden, K.DELIVERABLES[1])
+    workbook(xp, o)
     tmp = tempfile.mkdtemp()
-    png = os.path.join(tmp, "completion_chart.png")
-    chart(png, res)
-    write_paper(os.path.join(golden, DELIVERABLES[1]), res, png)
+    png = os.path.join(tmp, CHART)
+    chart(png, o)
+    dp = os.path.join(golden, K.DELIVERABLES[0])
+    paper(dp, o, png)
     shutil.rmtree(tmp)
-    F = figures(res)
-    json.dump(F, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
-    meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
-            "deliverables": DELIVERABLES,
-            "stated_inputs": ["30", "2023", "2024", "2025", "2026", "2027"],
-            "as_of": "2027-05-28",
-            "provenance": provenance(T["n"])}
-    json.dump(meta, open(os.path.join(os.path.dirname(HERE), "metadata.json"), "w"), indent=1)
-    T["res"] = res
-    return res
+    PP.COMPANY = K.FUND
+    PP.normalize_ooxml(xp, K.PEOPLE["manager"], K.PEOPLE["manager"], "2027-02-08T22:14:37Z", "2027-02-12T03:41:15Z",
+                       excel=True)
+    PP.normalize_ooxml(dp, K.PEOPLE["manager"], K.PEOPLE["manager"], "2027-02-09T23:11:05Z", "2027-02-12T04:02:44Z",
+                       title="Review Program horizon for the term from 1 July 2027")
+    Fj = figures(o)
+    json.dump(Fj, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+    json.dump(metadata(target, T["n"]), open(os.path.join(os.path.dirname(target), "metadata.json"), "w"), indent=2)
+    T["o"] = o
+    return o, Fj

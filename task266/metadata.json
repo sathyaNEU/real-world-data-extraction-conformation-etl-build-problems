@@ -1,117 +1,123 @@
 {
- "distractor_files": [
-  "target/course_success_rates_fa2021-sp2026.xlsx",
-  "target/service_area_occupational_outlook_2024-2034.csv"
- ],
- "deliverables": [
-  "program_completion_review_2027.xlsx",
-  "completion_review_board_paper_2027.pdf"
- ],
- "stated_inputs": [
-  "30",
-  "2023",
-  "2024",
-  "2025",
-  "2026",
-  "2027"
- ],
- "as_of": "2027-05-28",
- "provenance": {
-  "target/policy_3-12_program_review.pdf": {
-   "covers": "Board Policy 3.12, Academic Program Review, revised 10 June 2025",
-   "prepared_by": "Academic Affairs",
-   "date": "2025-06-11",
-   "size": "2 pages",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/ir_fall_entering_students_2023-2025.xlsx": {
-   "covers": "Fall entering-student files for fall 2023, fall 2024 and fall 2025, frozen after each census (21 September 2023, 18 September 2024 and 19 September 2025)",
-   "prepared_by": "Office of Institutional Research",
-   "date": "2025-09-19",
-   "size": "5292 rows, 3 sheets",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/sis_admissions_exits_202410-202720.csv": {
-   "covers": "Admissions with an admit term from fall 2023 to spring 2027, with exits",
-   "prepared_by": "Office of the Registrar",
-   "date": "2027-05-28",
-   "size": "13796 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/associate_degree_conferrals_2023-12_to_2027-05.csv": {
-   "covers": "Associate degrees conferred, December 2023 to May 2027",
-   "prepared_by": "Office of the Registrar",
-   "date": "2027-05-28",
-   "size": "2851 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/sis_conversion_student_id_map_2024.txt": {
-   "covers": "Student-number map from the 2024 student-system conversion (pipe-delimited)",
-   "prepared_by": "Office of the Registrar",
-   "date": "2024-08-03",
-   "size": "16978 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/term_calendar_2018-2027.xlsx": {
-   "covers": "Term calendar with current and legacy term codes",
-   "prepared_by": "Office of the Registrar",
-   "date": "2026-11-30",
-   "size": "27 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/fall2026_census_registrations.csv": {
-   "covers": "Fall 2026 registrations, every status",
-   "prepared_by": "Office of the Registrar",
-   "date": "2027-05-28",
-   "size": "28117 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/program_of_record_history.csv": {
-   "covers": "Program-of-record history, periods in effect from fall 2023 to spring 2027",
-   "prepared_by": "Office of the Registrar",
-   "date": "2027-05-28",
-   "size": "18048 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/fall2026_section_schedule.xlsx": {
-   "covers": "Fall 2026 section schedule",
-   "prepared_by": "Office of the Registrar",
-   "date": "2027-05-28",
-   "size": "1274 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/program_register_2026-27.xlsx": {
-   "covers": "Program register, 2026-27, with the course subjects each program owns",
-   "prepared_by": "Academic Affairs",
-   "date": "2026-08-14",
-   "size": "16 programs, 2 sheets",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/course_success_rates_fa2021-sp2026.xlsx": {
-   "covers": "Course success rates by subject, fall 2021 to spring 2026",
-   "prepared_by": "Office of Institutional Research",
-   "date": "2026-06-12",
-   "size": "230 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
-  },
-  "target/service_area_occupational_outlook_2024-2034.csv": {
-   "covers": "Occupational outlook for the college's service area, 2024 to 2034 (Workforce Development planning extract)",
-   "prepared_by": "Workforce Development",
-   "date": "2026-02-20",
-   "size": "41 rows",
-   "source": "constructed for this task by a seeded generator; Quenlow County Community College, its campuses, offices, students and people are fictional; the records follow the forms of a US community college's student information system, institutional research files and board policy",
-   "licence": "CC0 1.0 (constructed for this task)"
+  "distractor_files": [
+    "target/state_cancer_registry_mesothelioma_1982-2024.xlsx",
+    "target/asbestos_workplace_register_2024.csv"
+  ],
+  "deliverables": [
+    "review_horizon_board_paper_2027.docx",
+    "review_horizon_workbook_2027.xlsx"
+  ],
+  "as_of": "2027-02-12",
+  "stated_inputs": [
+    "2027",
+    "2025-26",
+    "40",
+    "70"
+  ],
+  "provenance": {
+    "target/ddcf_mesothelioma_register_2013-2026.csv": {
+      "covers": "Mesothelioma register, cases notified from 1 January 2013, as closed for 2025-26",
+      "prepared_by": "Registrar",
+      "date": "2026-09-30",
+      "size": "4052 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/ddcf_mesothelioma_register_2004-2012_legacy.xlsx": {
+      "covers": "Mesothelioma register, cases notified 1 July 2004 to 31 December 2012 (first case system)",
+      "prepared_by": "Registrar",
+      "date": "2013-02-15",
+      "size": "2335 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/ddcf_occupational_histories_2026-09-30.csv": {
+      "covers": "Occupational histories of every register case as interviewed and assessed",
+      "prepared_by": "Exposure assessment unit",
+      "date": "2026-09-30",
+      "size": "48839 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/review_program_terms_2027-2031.pdf": {
+      "covers": "Former Asbestos Workers Review Program terms 2027-2031",
+      "prepared_by": "Board",
+      "date": "2026-11-27",
+      "size": "2 pages",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/ddcf_annual_report_2025-26.pdf": {
+      "covers": "Annual Report 2025-26",
+      "prepared_by": "The Fund",
+      "date": "2026-10-21",
+      "size": "2 pages",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/review_program_members_2026-06-30.csv": {
+      "covers": "Review Program members at 30 June 2026",
+      "prepared_by": "Review Program",
+      "date": "2026-06-30",
+      "size": "9860 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/review_appointments_2023-07_to_2026-06.csv": {
+      "covers": "Review bookings, 1 July 2023 to 30 June 2026",
+      "prepared_by": "Review Program",
+      "date": "2026-07-03",
+      "size": "27450 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/mobile_review_unit_visit_schedule_2025-26.pdf": {
+      "covers": "Mobile Review Unit visit schedule 2025-26 as published",
+      "prepared_by": "Review Program",
+      "date": "2025-06-16",
+      "size": "1 page",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/mobile_review_unit_card_statement_2025-26.xlsx": {
+      "covers": "Fleet card statement for the Mobile Review Unit, 2025-26",
+      "prepared_by": "Fleet Services",
+      "date": "2026-07-06",
+      "size": "281 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/mobile_review_unit_xray_qa_log_2025-26.xlsx": {
+      "covers": "Mobile Review Unit X-ray daily QA and exposure counter log, 2025-26",
+      "prepared_by": "Medical imaging (unit)",
+      "date": "2026-06-30",
+      "size": "78 rows, 2 sheets",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/review_sites_road_distances.xlsx": {
+      "covers": "Review sites and road distance table from the travel policy",
+      "prepared_by": "Finance",
+      "date": "2025-05-26",
+      "size": "29 places",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/state_cancer_registry_mesothelioma_1982-2024.xlsx": {
+      "covers": "State Cancer Registry, mesothelioma new cases by year and sex, 1982-2024",
+      "prepared_by": "State Cancer Registry",
+      "date": "2025-11-04",
+      "size": "43 years",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    },
+    "target/asbestos_workplace_register_2024.csv": {
+      "covers": "Register of workplaces where asbestos was used",
+      "prepared_by": "Exposure assessment unit",
+      "date": "2024-08-12",
+      "size": "412 rows",
+      "source": "constructed for this task by a seeded generator; the Dust Diseases Compensation Fund, its act, register, program, people, places and workplaces are fictional; the records follow the forms of an Australian state dust-diseases scheme's case register, interview records, booking system and fleet and equipment logs",
+      "licence": "CC0 1.0 (constructed for this task)"
+    }
   }
- }
 }

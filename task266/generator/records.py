@@ -1,441 +1,278 @@
-"""The college's exports, written from the clean truth: IR's fall entering-student files, the student system's
-admissions and exits, the associate degree conferrals, the 2024 conversion's student-number map, the term calendar,
-the fall 2026 census registrations, the program-of-record history, the fall 2026 section schedule, the program
-register, IR's course success rates and the workforce office's occupational outlook."""
+"""The pack's data files, each in its producing system's own layout."""
 import csv
 import datetime as dt
-from collections import defaultdict
 
 import numpy as np
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 
 import common as K
-import population as PO
-import term26 as T26
 import world as W
 
-R_SEED = 26613
-CONVERTED_HISTORY = dt.date(2024, 6, 22)
-CONVERTED_ON = dt.date(2024, 7, 13)
-CONVERTED_RELOAD = dt.date(2024, 8, 3)
+LEG_EXPO = {"Occupational": "OCC", "Domestic": "DOM", "Environmental": "ENV", "No exposure identified": "NIL"}
 
 
-def rng_for(*keys):
-    return np.random.default_rng([R_SEED] + [int(k) for k in keys])
+def _d(x):
+    return W.day(x)
 
 
-def _head(ws, header, widths, fill="1F4E79"):
-    ws.append(header)
-    for c in ws[ws.max_row]:
+def _iso(x):
+    return "" if x is None else _d(x).isoformat()
+
+
+def _csv(path, head, rows):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f, lineterminator="\r\n")
+        w.writerow(head)
+        for r in rows:
+            w.writerow(r)
+    return len(rows)
+
+
+def _head(ws, row, values, widths=None, fill="1F3B57"):
+    for j, v in enumerate(values, 1):
+        c = ws.cell(row=row, column=j, value=None if v == "" else v)
         c.font = Font(bold=True, color="FFFFFF")
         c.fill = PatternFill("solid", fgColor=fill)
-        c.alignment = Alignment(wrap_text=True, vertical="center")
-    for i, w in enumerate(widths):
-        ws.column_dimensions[chr(65 + i) if i < 26 else "A" + chr(65 + i - 26)].width = w
-    ws.freeze_panes = "A%d" % (ws.max_row + 1)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    if widths:
+        for j, wd in enumerate(widths, 1):
+            ws.column_dimensions[ws.cell(row=row, column=j).column_letter].width = wd
 
 
-def _csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh)
-        w.writerow(header)
-        w.writerows(rows)
-    return len(rows)
-
-
-# ---------------------------------------------------------------------------------------------- IR's entering files
-def attributes(T):
-    """Age at the fall census, Pell and census credits for each entering student."""
-    for i, r in enumerate(T["entering"]):
-        rng = rng_for(1, i)
-        if r["tr_in"]:
-            age = int(rng.choice([19, 20, 21, 22, 23, 24, 26, 28, 31, 35, 41], p=[.08, .16, .16, .13, .1, .08, .08, .07,
-                                                                                     .06, .05, .03]))
-        elif rng.random() < (.62 if not r["pt"] else .34):
-            age = int(rng.choice([17, 18, 19], p=[.04, .78, .18]))
-        else:
-            age = int(rng.integers(19, 47))
-        r["age"] = age
-        r["credits"] = int(rng.choice([12, 13, 14, 15, 15, 16, 16, 17])) if not r["pt"] else \
-            int(rng.choice([3, 4, 6, 6, 7, 8, 9, 9, 10, 11]))
-
-
-def write_cohorts(path, T):
-    attributes(T)
-    wb = Workbook()
-    first = True
-    n = 0
-    for cls in K.CLASSES:
-        rows = sorted((r for r in T["entering"] if r["cls"] == cls),
-                      key=lambda r: (r["lid"] if cls == 2023 else r["sid"]))
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        if cls == 2023:
-            ws.title = "Fall 2023"
-            _head(ws, ["ID", "Term", "Prog", "Camp", "Type", "Load", "Age", "Pell", "Cr"],
-                  [10, 8, 10, 6, 6, 6, 6, 6, 5], fill="44546A")
-            for r in rows:
-                ws.append([int(r["lid"]), "2023FA", K.LEGACY[r["prog"]], K.LEGACY_CAMPUS[r["campus"]],
-                           "T" if r["tr_in"] else "F", "P" if r["pt"] else "F", r["age"], "Y" if r["pell"] else None,
-                           r["credits"]])
-        else:
-            ws.title = "Fall %d" % cls
-            _head(ws, ["Student ID", "Cohort Term", "Program Code", "Campus", "Entry Type", "Attendance",
-                       "Age at Census", "Pell", "Census Credits"], [12, 11, 13, 9, 12, 12, 9, 6, 9])
-            for r in rows:
-                ws.append([r["sid"], K.fall(cls), K.SIS[r["prog"]], r["campus"],
-                           "Transfer" if r["tr_in"] else "First-time", "Part-time" if r["pt"] else "Full-time",
-                           r["age"], "Y" if r["pell"] else "N", r["credits"]])
-        n += len(rows)
-    wb.save(path)
-    return n
-
-
-# ---------------------------------------------------------------------------------------------- the student system
-# the student system's own code labels, exported beside each code
-ADMIT_DESC = {"N": "New", "T": "Transfer In", "R": "Readmit", "S": "Second Program", "D": "Dual Enrollment",
-              "V": "Visiting/Non-Degree"}
-EXIT_DESC = {"GR": "Graduated", "TO": "Transferred Out", "WD": "Withdrawn", "DC": "Deceased"}
-SEC_STATUS = {"A": "Active", "X": "Cancelled"}
-REG_DESC = {"RE": "Registered", "RW": "Web Registered", "WC": "Withdrawn (W)", "DD": "Dropped", "DW": "Web Dropped"}
-def write_admissions(path, T):
+# ------------------------------------------------------------------------------------------ the register
+def write_register(path, T):
     rows = []
-    for a in T["adm"]:
-        if not ("202410" <= a["admit"] <= K.LAST):
+    for c in T["register"]:
+        if _d(c["notified"]) <= K.LEGACY_END:
             continue
-        prog = K.SIS[a["prog"]] if a["prog"] in K.SIS else a["prog"]
-        when = a.get("changed") or a.get("recorded")
-        rows.append([a["sid"], a["admit"], a["type"], ADMIT_DESC[a["type"]], prog,
-                     a["campus"] if a["campus"] in K.CAMPUS else "QNL", a["exit"] or "", a["reason"] or "",
-                     EXIT_DESC.get(a["reason"], ""), when.isoformat() if when else ""])
-    rows.sort(key=lambda r: (r[1], r[0]))
-    return _csv(path, ["student_id", "admit_term", "admit_type", "admit_type_desc", "program_code", "campus",
-                       "exit_term", "exit_reason", "exit_reason_desc", "exit_recorded_on"], rows)
+        rows.append([c["ref"], c["notif_no"], _iso(c["notified"]), c["sex"], _iso(c["dob"]), _iso(c["D"]), c["site"],
+                     c["histology"], c["basis"], c["hospital"], c["category"], _iso(c["interview"]),
+                     "Deceased" if c["death"] is not None else "Living", _iso(c["death"]), c["claim"]])
+    return _csv(path, ["fund_ref", "notification_no", "notified", "sex", "date_of_birth", "date_of_diagnosis",
+                       "primary_site", "histology", "basis_of_diagnosis", "diagnosing_hospital", "exposure_category",
+                       "interview_date", "vital_status_2026_09_30", "date_of_death", "claim_status"], rows)
 
 
-def conferrals(T):
-    out = []
-    for a in T["adm"]:
-        if a["reason"] == "GR" and not a["cert"] and a["prog"] in K.CODES and a["exit"] >= "202410":
-            prog = PO.program_at(a, a["exit"])
-            out.append(dict(sid=a["sid"], award=K.AWARD[prog], prog=K.SIS[prog], date=K.TERM[a["exit"]]["confer"],
-                            term=a["exit"]))
-    out.sort(key=lambda c: (c["date"], c["sid"], c["prog"]))
-    return out
-
-
-def write_conferrals(path, T):
-    T["conferrals"] = conferrals(T)
-    rows = [[c["sid"], c["award"], c["prog"], c["date"].isoformat(), c["term"]] for c in T["conferrals"]]
-    return _csv(path, ["student_id", "award", "program_code", "conferral_date", "term_code"], rows)
-
-
-def write_idmap(path, T):
-    rng = rng_for(3)
-    rows = []
-    last = {}
-    for a in T["adm"]:
-        if a["sid"] in T["legacy_of"]:
-            t = min(a["exit"] or "202430", "202430") if a["admit"] <= "202430" else "202430"
-            last[a["sid"]] = max(last.get(a["sid"], "0"), t)
-    leg = {c["code"]: c["legacy"] for c in K.TERMS if c["legacy"]}
-    for sid, lid in sorted(T["legacy_of"].items()):
-        code = last.get(sid, "202430")
-        code = code if code in leg else "202430"
-        rows.append((lid, sid, leg[code]))
-    early = [c["legacy"] for c in K.TERMS if c["legacy"] and c["code"] <= "202320"]
-    for sid, lid in T["converted_only"]:
-        rows.append((lid, sid, early[int(rng.integers(len(early)))]))
-    rows.sort()
-    order = [c["legacy"] for c in K.TERMS if c["legacy"]]
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write("LEGACY_ID|NEW_ID|CONVERTED_ON|LAST_LEGACY_TERM\r\n")
-        for lid, sid, t in rows:
-            # records last active before fall 2022 went across in the June history load, active students at the July
-            # cutover, and a few were reloaded in August after the reconciliation
-            on = CONVERTED_HISTORY if order.index(t) < order.index("2022FA") else CONVERTED_ON
-            if rng.random() < .014:
-                on = CONVERTED_RELOAD
-            fh.write("%s|%s|%s|%s\r\n" % (lid, sid, on.strftime("%Y%m%d"), t))
-    return len(rows)
-
-
-def write_terms(path):
+def write_legacy(path, T):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Terms"
-    _head(ws, ["Term code", "Legacy term code", "Term", "First day", "Census date", "Last day", "Conferral date"],
-          [11, 12, 13, 12, 12, 12, 13])
+    ws.title = "Register"
+    ws["A1"] = "%s - mesothelioma register (case system 1)" % K.FUND
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = "Cases notified 1 July 2004 to 31 December 2012. Export of 15 February 2013, when case system 1 was closed."
+    head = ["Ref", "Notif No", "Notified", "Sex", "DOB", "Date diagnosed", "Site", "Histology", "Basis", "Hospital",
+            "Exposure", "Interviewed", "Died", "Claim"]
+    _head(ws, 4, head, [13, 11, 12, 5, 12, 13, 12, 22, 20, 28, 9, 12, 12, 15])
+    r = 5
     n = 0
-    for t in K.TERMS:
-        if t["code"] < "201910":
+    for c in T["register"]:
+        if _d(c["notified"]) > K.LEGACY_END:
             continue
-        ws.append([t["code"], t["legacy"] or None, K.term_name(t["code"]), t["start"], t["census"], t["end"],
-                   t["confer"]])
-        for c in range(4, 8):
-            ws.cell(ws.max_row, c).number_format = "yyyy-mm-dd"
+        died = K.fmt_legacy(_d(c["death"])) if c["death"] is not None and _d(c["death"]) <= dt.date(2013, 2, 15) else ""
+        vals = [c["ref"], c["notif_no"], K.fmt_legacy(_d(c["notified"])), c["sex"][0], K.fmt_legacy(_d(c["dob"])),
+                K.fmt_legacy(_d(c["D"])), c["site"], c["histology"], c["basis"], c["hospital"],
+                LEG_EXPO[c["category"]], K.fmt_legacy(_d(c["interview"])), died, c["claim"]]
+        for j, v in enumerate(vals, 1):
+            ws.cell(row=r, column=j, value=None if v == "" else v)
+        r += 1
         n += 1
+    ws.freeze_panes = "A5"
     wb.save(path)
     return n
 
 
-# ---------------------------------------------------------------------------------------------- history and fall 2026
-def history(T):
-    """The program-of-record rows in effect at any time from fall 2023 to spring 2027."""
-    rng = rng_for(4)
-    out = []
-    reason = {"N": "ADM", "T": "ADM", "R": "RDM", "S": "SEC", "D": "ADM", "V": "ADM"}
-    for a in T["adm"]:
-        prog0 = K.SIS.get(a["prog"], a["prog"])
-        spans = [(a["admit"], prog0, reason[a["type"]])] + [(c, K.SIS.get(p, p), "CHG") for c, p in a["switches"]]
-        for k, (eff, prog, why) in enumerate(spans):
-            end = K.nth(spans[k + 1][0], -1) if k + 1 < len(spans) else (a["exit"] or "")
-            if end and end < "202410":
-                continue
-            t = K.TERM[eff]
-            on = (t["start"] - dt.timedelta(days=int(rng.integers(3, 40)))) if why != "CHG" else \
-                (t["census"] - dt.timedelta(days=int(rng.integers(2, 60))))
-            out.append(dict(sid=a["sid"], prog=prog, eff=eff, end=end, why=why, on=on))
-    out.sort(key=lambda h: (h["sid"], h["eff"], h["prog"]))
-    return out
+def write_histories(path, T):
+    """Every register case's occupational history as its interview recorded it. Interviews on the first system
+    (cases notified to 2012) were migrated in January 2013 with their workplace and occupation as written."""
+    rows = []
+    for c in T["register"]:
+        legacy = _d(c["notified"]) <= K.LEGACY_END
+        order = list(c["spells"])
+        for k, s in enumerate(order, 1):
+            end = "" if s["end"] >= c["D"] - 30 else (K.fmt_legacy(_d(s["end"])) if legacy else _iso(s["end"]))
+            start = K.fmt_legacy(_d(s["start"])) if legacy else _iso(s["start"])
+            rows.append([c["hist_ref"], k, s["employer"], s["workplace"] if legacy else "",
+                         "" if legacy else s["wp_code"], s["occ"][1], "" if legacy else s["occ"][0], start, end,
+                         ("Yes" if s["exposed"] else "No") if legacy else ("Y" if s["exposed"] else "N"),
+                         "Interview 2004-2012" if legacy else "Exposure assessment",
+                         K.fmt_legacy(_d(c["interview"])) if legacy else _iso(c["interview"])])
+    return _csv(path, ["case_ref", "job_no", "employer", "workplace", "workplace_code", "occupation", "anzsco_code",
+                       "started", "ended", "asbestos_exposure", "source", "interview_date"], rows)
 
 
-def current_program(H):
-    cur = {}
-    for h in H:
-        cur[h["sid"]] = h["prog"]
-    return cur
+WP_KINDS = [("%s Power Station", "Power generation"), ("%s District Hospital (boiler house)", "Health services"),
+            ("%s High School", "Education buildings"), ("%s Railway Depot", "Rail transport"),
+            ("%s Council Works Depot", "Local government"), ("%s Butter Factory", "Food manufacturing"),
+            ("%s Brickworks", "Building products"), ("%s Sawmill", "Timber"), ("%s Woolstore", "Storage"),
+            ("%s Water Treatment Plant", "Water and sewerage"), ("%s Telephone Exchange", "Communications"),
+            ("%s Courthouse", "Public buildings"), ("%s Showground grandstand", "Public buildings"),
+            ("%s Abattoir", "Meat processing"), ("%s Gasworks", "Gas supply"), ("%s Post Office", "Public buildings")]
+WP_FIRMS = ["Hadley & Sons Engineering", "Meredith Insulation Co.", "Tasker Building Supplies", "Corlett Bros. Plumbing",
+            "Westgate Asbestos Products", "Southern Boiler Co.", "R. J. Penhall & Co.", "Ironside Fabrications",
+            "Lomax Brake Services", "Pacific Lagging Contractors", "Crossley Electrical", "Dunmore Constructions",
+            "Highfield Roofing", "Albion Pipe & Fittings", "Kingsway Motors (workshop)", "Garnet Ship Repairs"]
 
 
-CHANGE_DESC = {"ADM": "Admission", "RDM": "Readmission", "SEC": "Second Program", "CHG": "Change of Program"}
-# applications to the limited-enrolment programs (nursing, medical assisting and the HVAC-R apprenticeship cohort) by
-# continuing students, by the program the student is in at the census, and how often
-APPLY = {"GS": {"NUR": .12, "MA": .03, "HVR": .02}, "BIO": {"NUR": .15, "MA": .03}, "PSY": {"NUR": .06, "MA": .02},
-         "MA": {"NUR": .12}, "ECE": {"NUR": .04, "MA": .03}, "BUS": {"NUR": .02, "MA": .02, "HVR": .03},
-         "CJ": {"NUR": .03, "HVR": .04}, "CERT.PHLB": {"NUR": .25, "MA": .15}, "CERT.HVTC": {"HVR": .35},
-         "CERT.WELD": {"HVR": .10}, "HVR": {"NUR": .03}}
-LIMITED = {K.SIS["NUR"], K.SIS["MA"], K.SIS["HVR"]}
-
-
-def covers(h, term):
-    return h["eff"] <= term and (not h["end"] or h["end"] >= term)
-
-
-def curriculum(T, H):
-    """The rows the registrar's program history extract carries, drawn from the student record's curriculum rows: the
-    programs of record H, and for students outside the review's entering classes the curriculum rows of applications to
-    the limited-enrolment programs, admitted or not. An application row begins with the term applied for and was closed
-    when the application was decided, before that term: its end term is the term before its effective term, so it was
-    never in effect. Its own random stream, so nothing else in the pack moves."""
-    F = T["fall26"]
-    entering = {r["sid"] for r in T["entering"]}
-    rows = [dict(h) for h in H]
-    by = defaultdict(list)
-    for h in rows:
-        by[h["sid"]].append(h)
-    rng = rng_for(12)
-    apps = []
-    applied = {}
-    for s in F["students"]:
-        sid, a = s["sid"], s["adm"]
-        if sid in entering or a["type"] in ("D", "V") or a["admit"] > "202620":
+def write_workplaces(path, T):
+    """The Fund's register of workplaces where asbestos was used or suspected (a distractor: no answer reads it)."""
+    rng = np.random.default_rng([K.SEED, 9])
+    used = set(T["workplace_codes"].values())
+    rows = []
+    for name, code in T["workplace_codes"].items():
+        exposed = name in W.EMPLOYERS_EXPOSED
+        ind = ("Power generation" if "Power" in name else "Asbestos cement manufacture" if "Cement" in name or "Fibro" in name
+               else "Shipbuilding and repair" if "Ship" in name or "dockyard" in name else "Construction and trades"
+               if exposed else "Not an asbestos workplace")
+        rows.append([code, name, ind, int(rng.integers(1938, 1966)) if exposed else "",
+                     int(rng.integers(1978, 1990)) if exposed else "", "Confirmed" if exposed else "Not listed"])
+    places = list(K.CITIES) + list(K.CIRCUIT) + list(K.WAYPOINTS)
+    seen = {r[1] for r in rows}
+    while len(rows) < 412:
+        if rng.random() < 0.8:
+            fmt, ind = WP_KINDS[int(rng.integers(len(WP_KINDS)))]
+            name = fmt % places[int(rng.integers(len(places)))]
+        else:
+            name = "%s, %s" % (WP_FIRMS[int(rng.integers(len(WP_FIRMS)))], places[int(rng.integers(len(places)))])
+            ind = "Construction and trades"
+        if name in seen:
             continue
-        if any(c > K.FALL26 for c, p in a["switches"]) or s["prog"] not in APPLY:
-            continue
-        cov = [h for h in by[sid] if covers(h, K.FALL26)]
-        if len(cov) != 1:
-            continue
-        u, acc, target = rng.random(), 0.0, None
-        for p in sorted(APPLY[s["prog"]]):
-            acc += APPLY[s["prog"]][p]
-            if u < acc:
-                target = p
+        seen.add(name)
+        while True:
+            code = "WP%04d" % int(rng.integers(1000, 9999))
+            if code not in used:
+                used.add(code)
                 break
-        terms = [t for t in ("202610", "202620", K.FALL26) if t > cov[0]["eff"]]
-        if target is None or not terms:
-            continue
-        w = np.array([{"202610": .25, "202620": .15, K.FALL26: .6}[t] for t in terms])
-        term = terms[int(rng.choice(len(terms), p=w / w.sum()))]
-        on = K.TERM[term]["start"] - dt.timedelta(days=int(rng.integers(95, 240)))
-        apps.append(dict(sid=sid, prog=K.SIS[target], eff=term, end=K.nth(term, -1), why="ADM", on=on))
-        applied[sid] = K.SIS[target]
-    # the applications of the students admitted to the limited-enrolment program they applied to
-    for h in sorted(rows, key=lambda h: (h["sid"], h["eff"], h["prog"])):
-        if (h["sid"] not in entering and h["why"] in ("CHG", "SEC") and h["prog"] in LIMITED
-                and "202520" <= h["eff"] <= K.FALL26 and rng.random() < .8):
-            on = K.TERM[h["eff"]]["start"] - dt.timedelta(days=int(rng.integers(95, 240)))
-            apps.append(dict(sid=h["sid"], prog=h["prog"], eff=h["eff"], end=K.nth(h["eff"], -1), why="ADM", on=on))
-    T["applied"] = applied
-    out = rows + apps
-    out.sort(key=lambda h: (h["sid"], h["eff"], h["prog"]))
-    return out
+        status = str(rng.choice(["Confirmed", "Probable", "Suspected", "Not confirmed"], p=[0.46, 0.27, 0.17, 0.10]))
+        y0 = int(rng.integers(1930, 1972))
+        y1 = min(int(y0 + rng.integers(6, 45)), 2003)
+        rows.append([code, name, ind, y0 if status != "Not confirmed" else "", y1 if status != "Not confirmed" else "",
+                     status])
+    rows.sort(key=lambda r: r[0])
+    return _csv(path, ["workplace_code", "workplace_name", "industry", "asbestos_use_from", "asbestos_use_to",
+                       "listing"], rows)
 
 
-def write_history(path, T):
-    H = history(T)
-    T["history"] = H
-    rows = [[h["sid"], h["prog"], h["eff"], h["end"], h["why"], CHANGE_DESC[h["why"]], h["on"].isoformat()]
-            for h in curriculum(T, H)]
-    return _csv(path, ["student_id", "program_code", "effective_term", "end_term", "change_reason",
-                       "change_reason_desc", "entered_on"], rows)
-
-
-def write_registrations(path, T):
-    F = T["fall26"]
-    secs = {s["crn"]: s for s in F["sections"]}
-    cur = current_program(T["history"])
+# ------------------------------------------------------------------------------------------ the program
+def write_members(path, T):
     rows = []
-    for r in F["rows"]:
-        s = secs[r["crn"]]
-        rows.append([K.FALL26, r["sid"], r["crn"], s["subj"], s["num"], s["sec"],
-                     T26.REVISED.get(s["course"], T26.COURSES[s["course"]][1]),
-                     r["status"], REG_DESC[r["status"]], r["date"].isoformat(), s["campus"], cur.get(r["sid"], "")])
-    rows.sort(key=lambda x: (x[1], x[2], x[9]))
-    return _csv(path, ["term_code", "student_id", "crn", "subject", "course_number", "section", "course_credit_hours",
-                       "reg_status", "reg_status_desc", "status_date", "campus", "program_code"], rows)
+    for m in T["members"]:
+        rows.append([m["no"], m["sex"], _d(m["dob"]).year, _iso(m["E"]), m["town"], _iso(m["enrolled"]), m["status"],
+                     _iso(m["status_date"])])
+    return _csv(path, ["member_no", "sex", "year_of_birth", "first_exposure", "home_locality", "enrolled",
+                       "status", "status_date"], rows)
 
 
-def write_schedule(path, T):
-    F = T["fall26"]
-    exp = {}
-    for r in F["rows"]:
-        if r["status"] in ("RE", "RW"):
-            exp[r["crn"]] = exp.get(r["crn"], 0) + 1
-    secs = sorted(F["sections"], key=lambda s: (s["subj"], s["num"], s["sec"] or "", s["crn"]))
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Fall 2026 sections"
-    _head(ws, ["CRN", "Subj", "Crse", "Sec", "Title", "Type", "Link", "Camp", "Start Date", "End Date", "Room", "Days",
-               "Begin", "End", "Instructor", "Cr Hrs", "Max", "Enrl", "Status"],
-          [7, 6, 6, 5, 34, 6, 7, 6, 11, 11, 12, 6, 7, 7, 10, 7, 6, 6, 10])
-    for s in secs:
-        online = s["kind"] == "ONL"
-        days = "TBA" if online else s["slot"][0]
-        begin = None if online else s["slot"][1]
-        end = None if online else s["slot"][2]
-        kind = "LEC" if s["kind"] in ("LEC", "ONL") else s["kind"]
-        first, last = s.get("dates") or T26.PART[s["part"]]
-        ws.append([int(s["crn"]), s["subj"], s["num"], s["sec"], s["title"], kind, int(s["link"]) if s["link"] else None,
-                   s["campus"], first, last, s["room"] if s["status"] == "A" else None, days, begin, end,
-                   s["inst"] if s["status"] == "A" else None, s["credits"], s["cap"],
-                   exp.get(s["crn"], 0) if s["status"] == "A" else 0, SEC_STATUS[s["status"]]])
-        for c in (9, 10):
-            ws.cell(ws.max_row, c).number_format = "mm/dd/yyyy"
-    wb.save(path)
-    return len(secs)
-
-
-# ---------------------------------------------------------------------------------------------- context and distractors
-FIRST = {"GS": 1971, "BIO": 1988, "BUS": 1969, "PSY": 1994, "MA": 2003, "ECE": 1991, "CJ": 1977, "HVR": 2009,
-         "NUR": 1974}
-CREDITS = {"GS": 60, "BIO": 62, "BUS": 61, "PSY": 60, "MA": 64, "ECE": 63, "CJ": 61, "HVR": 66, "NUR": 68}
-SUBJECT_NAMES = {"IDS": "Interdisciplinary Studies", "BIO": "Biology", "BUS": "Business", "ACC": "Accounting",
-                 "PSY": "Psychology", "MDA": "Medical Assisting", "ECE": "Early Childhood Education",
-                 "CRJ": "Criminal Justice", "HVR": "Heating, Ventilation, Air Conditioning and Refrigeration",
-                 "NUR": "Nursing", "WLD": "Welding", "CHE": "Chemistry", "PHY": "Physics", "ENG": "English",
-                 "MAT": "Mathematics", "HIS": "History", "SOC": "Sociology", "COM": "Communication",
-                 "CIS": "Computer Information Systems", "ART": "Art", "PHI": "Philosophy", "ECO": "Economics",
-                 "SPA": "Spanish"}
-
-
-def write_register(path):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Programs"
-    _head(ws, ["Program code", "Legacy code", "Program", "Award", "CIP", "Campuses", "First offered", "Credits"],
-          [12, 11, 52, 11, 9, 16, 12, 9])
-    camp = {"NUR": "QNL, TRV", "HVR": "QNL, TRV, HOL"}
-    for p in K.CODES:
-        ws.append([K.SIS[p], K.LEGACY[p], K.NAME[p], {"AA": "AA", "AS": "AS", "AAS": "AAS"}[K.AWARD[p]], K.CIP[p],
-                   camp.get(p, "QNL, TRV, HOL"), FIRST[p], CREDITS[p]])
-    for code, leg, name, award, cip in K.OTHER:
-        ws.append([code, leg, name, award, cip or None, "QNL, TRV, HOL" if code != "CERT.WELD" else "QNL, TRV",
-                   {"CERT.PHLB": 2012, "CERT.HVTC": 2010, "CERT.CDAP": 2015, "CERT.WELD": 2018, "CERT.ACCT": 1998,
-                    "DE.HSDE": 2006, "ND.NDEG": 1969}[code],
-                   {"CERT.PHLB": 16, "CERT.HVTC": 30, "CERT.CDAP": 18, "CERT.WELD": 32, "CERT.ACCT": 30}.get(code)])
-    ws2 = wb.create_sheet("Subjects")
-    _head(ws2, ["Subject", "Subject name", "Program code"], [9, 52, 18])
-    owner = {s: K.SIS[p] for p in K.CODES for s in K.OWNS[p]}
-    owner.update({"WLD": "CERT.WELD"})
-    for subj in sorted(SUBJECT_NAMES):
-        ws2.append([subj, SUBJECT_NAMES[subj], owner.get(subj, "General Education")])
-    wb.save(path)
-    return len(K.CODES) + len(K.OTHER)
-
-
-def write_success(path):
-    rng = rng_for(7)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Success by subject"
-    _head(ws, ["Term code", "Subject", "Enrollments", "Successful (A, B, C, P)", "Success rate"], [10, 9, 12, 14, 12])
-    base = {s: float(rng.uniform(.58, .84)) for s in sorted(SUBJECT_NAMES)}
-    terms = [t["code"] for t in K.TERMS if "202210" <= t["code"] <= "202620" and t["season"] != "SU"]
-    n = 0
-    for t in terms:
-        for s in sorted(SUBJECT_NAMES):
-            size = {"ENG": 1700, "MAT": 1400, "PSY": 1500, "BIO": 1350, "IDS": 600, "BUS": 700, "ACC": 380,
-                    "NUR": 420, "CRJ": 450, "ECE": 520, "MDA": 330, "HVR": 210, "CHE": 300, "PHY": 90, "WLD": 120,
-                    "SOC": 380, "HIS": 300, "COM": 260, "CIS": 330, "ART": 150, "PHI": 110, "ECO": 140, "SPA": 120}[s]
-            e = int(size * (1 if t.endswith("10") else .88) * rng.uniform(.9, 1.1))
-            k = int(round(e * min(.95, max(.4, base[s] + rng.normal(0, .025)))))
-            ws.append([t, s, e, k, k / e])
-            ws.cell(ws.max_row, 5).number_format = "0.0%"
-            n += 1
-    wb.save(path)
-    return n
-
-
-OUTLOOK = [("29-1141", "Registered Nurses", "AAS.NURS", 3480, 3712, 214, 49.10),
-           ("31-9092", "Medical Assistants", "AAS.MEDA", 1105, 1268, 162, 19.74),
-           ("31-9097", "Phlebotomists", "CERT.PHLB", 296, 327, 41, 20.52),
-           ("49-9021", "Heating, Air Conditioning, and Refrigeration Mechanics and Installers", "AAS.HVAC", 642, 701,
-            74, 27.86),
-           ("25-2011", "Preschool Teachers, Except Special Education", "AAS.ECED", 718, 744, 96, 16.41),
-           ("39-9011", "Childcare Workers", "AAS.ECED; CERT.CDAP", 1622, 1580, 268, 14.12),
-           ("33-3051", "Police and Sheriff's Patrol Officers", "AAS.CRJU", 865, 872, 61, 33.86),
-           ("33-3012", "Correctional Officers and Jailers", "AAS.CRJU", 744, 701, 63, 24.95),
-           ("21-1093", "Social and Human Service Assistants", "AA.PSYC", 912, 1003, 118, 18.83),
-           ("29-2053", "Psychiatric Technicians", "AA.PSYC", 214, 229, 26, 18.20),
-           ("19-4021", "Biological Technicians", "AS.BIOL", 188, 204, 21, 23.37),
-           ("43-3031", "Bookkeeping, Accounting, and Auditing Clerks", "AS.BUSA; CERT.ACCT", 1290, 1162, 141, 21.18),
-           ("43-1011", "First-Line Supervisors of Office and Administrative Support Workers", "AS.BUSA", 1034, 1027,
-            104, 29.60),
-           ("51-4121", "Welders, Cutters, Solderers, and Brazers", "CERT.WELD", 571, 598, 66, 23.15),
-           ("43-6013", "Medical Secretaries and Administrative Assistants", "AAS.MEDA", 830, 902, 103, 19.02),
-           ("29-2061", "Licensed Practical and Licensed Vocational Nurses", "", 1186, 1214, 118, 28.43),
-           ("31-1131", "Nursing Assistants", "", 2954, 3087, 412, 18.06),
-           ("29-2042", "Emergency Medical Technicians", "", 402, 431, 47, 19.88),
-           ("29-2034", "Radiologic Technologists and Technicians", "", 318, 337, 22, 33.12),
-           ("29-2052", "Pharmacy Technicians", "", 611, 640, 71, 18.47),
-           ("31-9091", "Dental Assistants", "", 447, 471, 61, 21.36),
-           ("53-3032", "Heavy and Tractor-Trailer Truck Drivers", "", 3315, 3398, 402, 25.71),
-           ("47-2111", "Electricians", "", 1044, 1101, 119, 29.95),
-           ("47-2152", "Plumbers, Pipefitters, and Steamfitters", "", 812, 840, 88, 30.12),
-           ("49-3023", "Automotive Service Technicians and Mechanics", "", 1158, 1139, 117, 22.40),
-           ("51-4041", "Machinists", "", 734, 705, 79, 23.18),
-           ("51-2090", "Miscellaneous Assemblers and Fabricators", "", 2205, 2136, 271, 18.64),
-           ("15-1232", "Computer User Support Specialists", "", 628, 667, 54, 26.05),
-           ("15-1244", "Network and Computer Systems Administrators", "", 263, 271, 18, 41.27),
-           ("43-4051", "Customer Service Representatives", "", 2876, 2701, 384, 18.22),
-           ("41-2031", "Retail Salespersons", "", 4512, 4398, 662, 14.86),
-           ("43-9061", "Office Clerks, General", "", 3020, 2911, 336, 17.95),
-           ("11-9111", "Medical and Health Services Managers", "", 389, 451, 39, 50.86),
-           ("21-1018", "Substance Abuse, Behavioral Disorder, and Mental Health Counselors", "", 431, 487, 52, 23.94),
-           ("25-9045", "Teaching Assistants, Except Postsecondary", "", 1356, 1372, 157, 15.73),
-           ("33-9032", "Security Guards", "", 1092, 1110, 155, 16.21),
-           ("35-1012", "First-Line Supervisors of Food Preparation and Serving Workers", "", 1381, 1426, 197, 18.12),
-           ("37-2011", "Janitors and Cleaners, Except Maids and Housekeeping Cleaners", "", 2649, 2721, 331, 15.48),
-           ("39-9021", "Personal Care Aides", "", 3907, 4413, 610, 14.32),
-           ("13-2011", "Accountants and Auditors", "", 1214, 1262, 104, 36.80),
-           ("23-2011", "Paralegals and Legal Assistants", "", 296, 314, 33, 25.62)]
-
-
-def write_outlook(path):
+def write_appointments(path, T):
     rows = []
-    for soc, title, progs, e24, e34, openings, wage in sorted(OUTLOOK):
-        rows.append([soc, title, progs, e24, e34, e34 - e24, "%.1f" % (100 * (e34 - e24) / e24), openings,
-                     "%.2f" % wage])
-    return _csv(path, ["soc_code", "occupation", "related_programs", "employment_2024", "employment_2034", "change",
-                       "percent_change", "annual_openings", "median_hourly_wage_2024"], rows)
+    for r in T["bookings"]:
+        rows.append([r["id"], r["member"], r["site"], r["date"].isoformat(), r["time"], r["review"],
+                     r["booked"].isoformat(), r["status"]])
+    return _csv(path, ["booking_id", "member_no", "site", "appointment_date", "appointment_time", "review",
+                       "booked_on", "attendance"], rows)
+
+
+def write_card(path, T):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Transactions"
+    ws["A1"] = "Fleet card statement - Mobile Review Unit (vehicle MRU-1)"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = "Card ending 4417. Statement period 1 July 2025 to 30 June 2026."
+    _head(ws, 4, ["Date", "Time", "Merchant", "Location", "Category", "Litres", "Odometer", "Amount (AUD)"],
+          [12, 7, 34, 18, 14, 9, 10, 13])
+    r = 5
+    for c in T["card"]:
+        vals = [c["t"].date().isoformat(), c["t"].strftime("%H:%M"), c["merchant"], c["location"], c["category"],
+                c["litres"], c["odo"], c["amount"]]
+        for j, v in enumerate(vals, 1):
+            ws.cell(row=r, column=j, value=None if v == "" else v)
+        r += 1
+    ws.freeze_panes = "A5"
+    wb.save(path)
+    return len(T["card"])
+
+
+def write_qa(path, T):
+    wb = Workbook()
+    a = wb.active
+    a.title = "Jul-Dec 2025"
+    a["A1"] = "MRU-1 X-ray unit: daily QA and exposure counter"
+    a["A1"].font = Font(bold=True)
+    _head(a, 3, ["Date", "Operator", "Counter start", "Counter end", "Constancy exposures", "Remarks"],
+          [12, 9, 13, 13, 12, 34])
+    b = wb.create_sheet("Jan-Jun 2026")
+    b["A1"] = "MRU-1 X-ray QA log (template rev. 2, from January 2026)"
+    b["A1"].font = Font(bold=True)
+    _head(b, 3, ["Date", "Radiographer", "Exposure count (start)", "Exposure count (end)", "QC exposures", "Comments"],
+          [12, 12, 18, 18, 12, 34])
+    rng = np.random.default_rng([K.SEED, 6])
+    remarks = ["Constancy within limits", "Constancy OK", "Constancy OK, kV and mAs in tolerance", "Detector calibration done",
+               "Gain calibration after move", "Warm-up exposures after cold start (tube cold overnight)",
+               "Collimator light field checked against marks", "Grid alignment checked", "Lead aprons inspected, one tagged",
+               "Exposure index drifting high, rechecked after cal, OK", "Dose meter batteries replaced",
+               "Mains at venue, no generator", "Ran on generator all day", "Air-con fault in the morning, room 27 C",
+               "Detector cover cleaned", "Spirometer calibration syringe check passed", "Bucky tray sticking, freed",
+               "Quarterly physics check due next visit", "Pressure in the cabin door seal low, reported to fleet"]
+    ra, rb = 4, 4
+    for k, q in enumerate(T["qa"]):
+        r = rng.random()
+        note = "" if r < 0.34 else remarks[int(rng.integers(len(remarks)))]
+        if q["date"] < dt.date(2026, 1, 1):
+            ws, row = a, ra
+            ra += 1
+            vals = [q["date"].strftime("%d/%m/%Y"), q["op"], q["start"], q["end"], q["tests"], note]
+        else:
+            ws, row = b, rb
+            rb += 1
+            vals = [q["date"].isoformat(), q["op"], q["start"], q["end"], q["tests"], note]
+        for j, v in enumerate(vals, 1):
+            ws.cell(row=row, column=j, value=None if v == "" else v)
+    wb.save(path)
+    return len(T["qa"])
+
+
+def write_roads(path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Road km"
+    places = list(K.CITIES) + list(K.CIRCUIT) + list(K.WAYPOINTS) + list(K.LOCALITIES)
+    ws["A1"] = "Review sites and localities: road distances (km), from the travel reimbursement table"
+    ws["A1"].font = Font(bold=True)
+    _head(ws, 3, ["From \\ To"] + places, [18] + [9] * len(places))
+    for i, a in enumerate(places):
+        ws.cell(row=4 + i, column=1, value=a).font = Font(bold=True)
+        for j, b in enumerate(places):
+            ws.cell(row=4 + i, column=2 + j, value=K.road_km(a, b))
+    s2 = wb.create_sheet("Sites")
+    _head(s2, 1, ["Site code", "Site", "Locality"], [10, 40, 18])
+    rr = 2
+    for code, (town, name) in K.CLINIC_SITES.items():
+        for j, v in enumerate([code, name, town], 1):
+            s2.cell(row=rr, column=j, value=v)
+        rr += 1
+    for j, v in enumerate([K.UNIT_SITE, "Mobile Review Unit (circuit as scheduled)", K.UNIT_BASE + " (base)"], 1):
+        s2.cell(row=rr, column=j, value=v)
+    wb.save(path)
+    return len(places)
+
+
+def write_registry(path):
+    """The State Cancer Registry's published counts of mesothelioma by year of diagnosis and sex (a distractor)."""
+    rng = np.random.default_rng([K.SEED, 8])
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Table 7.3"
+    ws["A1"] = "Table 7.3 Mesothelioma (ICD-10 C45), new cases by year of diagnosis and sex, 1982-2024"
+    ws["A1"].font = Font(bold=True)
+    ws["A2"] = "%s, Cancer in the State 2024 (published November 2025)" % K.REGISTRY
+    _head(ws, 4, ["Year", "Males", "Females", "Persons"], [8, 9, 9, 9])
+    for i, y in enumerate(range(1982, 2025)):
+        lvl = 60 + 210 / (1 + np.exp(-(y - 1998) / 5.5)) - 0.9 * max(0, y - 2014) ** 1.3
+        m = int(round(lvl * 0.86 + rng.normal(0, 7)))
+        f = int(round(lvl * 0.14 + rng.normal(0, 3)))
+        for j, v in enumerate([y, m, f, m + f], 1):
+            ws.cell(row=5 + i, column=j, value=v)
+    ws.cell(row=5 + 43 + 1, column=1, value="Counts for 2023 and 2024 are preliminary and may rise as late notifications arrive.")
+    wb.save(path)
+    return 43

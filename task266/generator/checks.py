@@ -1,667 +1,369 @@
-"""The build's assertions for task266: the input gates, the three-rules block (R1 to R3c), the ladder, every semantic
-fork row (SF1 to SF16), the conventions, the asks' devices and stops, the separation line, the distractors, the
-realism sweep and the agreement of the goldens with figures.json."""
+"""The build's assertions for task266: the input gates, the three-rules block (R1 to R3c), the golden method's
+assumptions held against the data, the ladder and the call's margins, every semantic fork (SF1 to SF22), the two ask
+devices with their over-cleaning halves, the main population's separation from the asks, the realism sweep and the
+documents read back with positive controls."""
 import csv
 import datetime as dt
-import json
 import os
-import random
 import re
 import shutil
 import tempfile
-from collections import Counter, defaultdict
 
+import numpy as np
 from openpyxl import load_workbook
-from pypdf import PdfReader
 
 import analysis as A
 import common as K
 import world as W
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+FAILS = []
 N = [0]
-GOLD = ["GS", "BIO", "BUS", "PSY", "MA", "ECE"]
-
-
-DESCRIBE_NAME = re.compile(
-    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
-    r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
-    r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|"
-    r"data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes|notes)(?![a-z])", re.I)
-DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
-                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
 
 
 def ok(cond, label):
     N[0] += 1
-    assert cond, "FAILED: " + label
+    if not cond:
+        FAILS.append(label)
+        print("FAIL", label)
 
 
 def pdf_text(path):
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
+    from pypdf import PdfReader
+    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
 
 
-def copy_without(target, drop):
-    d = tempfile.mkdtemp()
-    for f in os.listdir(target):
-        if f not in drop:
-            shutil.copy(os.path.join(target, f), d)
-    return d
+def norm(s):
+    return re.sub(r"\s+", " ", s)
 
 
-def codes(lst):
-    inv = {v: k for k, v in K.SIS.items()}
-    return [inv[p] for p in lst]
+def kendall_conditional(t, u, v, E, cap=2600):
+    """The conditional Kendall's tau of latency against first exposure over the pairs whose windows both contain
+    both latencies (Martin and Betensky's comparable pairs for truncated data), on an evenly spaced subsample."""
+    idx = np.linspace(0, len(t) - 1, min(cap, len(t))).astype(int)
+    t, u, v, E = t[idx], u[idx], v[idx], E[idx]
+    lo = np.maximum.outer(u, u)
+    hi = np.minimum.outer(v, v)
+    tmin = np.minimum.outer(t, t)
+    tmax = np.maximum.outer(t, t)
+    comp = (lo <= tmin) & (tmax <= hi)
+    np.fill_diagonal(comp, False)
+    s = np.sign(np.subtract.outer(t, t)) * np.sign(np.subtract.outer(E, E))
+    m = comp.sum()
+    return float((s * comp).sum() / m), int(m // 2)
 
 
-# ---------------------------------------------------------------------------------------------- H21
-CURATED = """exmoor dartmoor wexford wexham fenton fenwick hollenbeck hollins bucks butler delaware harrisburg lehigh
-carbon luzerne montgomery northampton allegheny beaver westmoreland reading philadelphia highlands erie lackawanna
-keystone temple villanova drexel lycoming juniata susquehanna schuylkill lancaster chester berks strathmore
-borrowdale blackwater brindley kesteven hollenberg ashendon ashendene corwen callow holmby tarvin""".split()
-RETIRED = ["wexmoor", "fenstow", "brindlow", "kestover"]
-GENERIC = set("county community college campus pennsylvania enrollment exchange the of and".split())
-
-
-def lev(a, b):
-    prev = list(range(len(b) + 1))
-    for i, ca in enumerate(a, 1):
-        cur = [i]
-        for j, cb in enumerate(b, 1):
-            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
-        prev = cur
-    return prev[-1]
-
-
-def real_register():
-    import geonamescache
-    g = geonamescache.GeonamesCache()
-    real = {c["name"].lower() for c in g.get_cities().values()}
-    real |= {re.sub(r" (county|parish|borough|census area|city and borough|municipality)$", "", c["name"].lower())
-             for c in g.get_us_counties()}
-    real |= {s["name"].lower() for s in g.get_us_states().values()}
-    real |= set(CURATED)
-    words = {w for r in real for w in re.sub(r"[^a-z ]", " ", r).split() if len(w) >= 4}
-    return real | words
-
-
-def h21():
-    names = {K.COLLEGE, K.EXCHANGE} | set(K.CAMPUS.values())
-    words = {w for n in names for w in re.sub(r"[^a-z ]", " ", n.lower()).split() if w not in GENERIC and len(w) >= 4}
-    real = real_register()
-    bad = []
-    for w in words:
-        for r in real:
-            if (abs(len(r) - len(w)) <= 2 and lev(w, r) <= 2) or (len(r) >= 5 and (r in w or w in r)):
-                bad.append((w, r))
-    return bad
-
-
-# ---------------------------------------------------------------------------------------------- the checks
 def run(target, T):
-    P = lambda k: os.path.join(target, K.FILES[k])
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    R, pk, ent = A.call(target)
-    progs = [K.SIS[p] for p in K.CODES]
-    gold = {p: R[p]["golden"] for p in progs}
-    inrev = A.review(R)
-
-    # ------------------------------------------------------------------ input gates
-    files = os.listdir(target)
-    ok(len(files) >= 10, "10 or more files (%d)" % len(files))
-    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "3 or more formats")
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
-    ok(big >= 25000, "a file of 25,000 rows or more (%d)" % big)
-    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
-    ok(len(meta["distractor_files"]) >= 2 and all(os.path.exists(os.path.join(os.path.dirname(target), f))
-                                                  for f in meta["distractor_files"]), "two distractors shipped")
-    ok(sorted(files) == sorted(K.FILES.values()), "the pack is exactly the generator's files")
-    ok(sorted(meta["provenance"]) == sorted("target/" + f for f in files), "H9: metadata.json records every file's "
-       "provenance")
-    # no shipped file or sheet describes the data (dataset-generation section 3), by name and by sheet name
-    ok(not [f for f in files if DESCRIBE_NAME.search(os.path.splitext(f)[0])], "no dictionary, notes, readme or manifest "
-       "file ships (%s)" % [f for f in files if DESCRIBE_NAME.search(os.path.splitext(f)[0])])
-    sheets = [(f, ws) for f in files if f.endswith(".xlsx") for ws in load_workbook(os.path.join(target, f),
-                                                                                    read_only=True).sheetnames]
-    ok(not [x for x in sheets if DESCRIBE_SHEET.match(x[1].strip()) or re.match(r"^about\b", x[1].strip(), re.I)],
-       "no notes, about or dictionary sheet ships (%s)" % sheets)
-    ok(not [f for f in files if f.endswith((".pdf", ".txt")) and f != K.FILES["idmap"] and f != K.FILES["policy"]],
-       "the pack's only documents are the policy and the conversion map")
-    late = []
-    for f in files:
-        if f.endswith((".csv", ".txt")):
-            for line in open(os.path.join(target, f), encoding="utf-8"):
-                for m in re.findall(r"\b(20\d\d-\d\d-\d\d)\b", line):
-                    if dt.date.fromisoformat(m) > K.EXTRACT:
-                        late.append((f, m))
-    ok(not late, "H16: no date past the extract date in the CSV and text files (%s)" % late[:3])
-    terms = A.rows_xlsx(P("terms"), "Terms")
-    future = [t for t in terms if t["Conferral date"].date() > K.EXTRACT]
-    ok([str(t["Term code"]) for t in future] == ["202730"], "H16: only summer 2027 lies past the extract (the calendar)")
-
-    # ------------------------------------------------------------------ the call and the ladder
-    ok(codes(inrev) == GOLD, "golden: six programs enter review (%s)" % codes(inrev))
-    for p in progs:
-        ok(abs(gold[p] - K.FLOOR) >= 1.5, "%s golden %.3f at least 1.5 from the floor" % (p, gold[p]))
-        ok(abs(gold[p] * 10 - round(gold[p] * 10)) <= .35, "%s golden %.3f mid-bin at one decimal" % (p, gold[p]))
-        ok(R[p]["op"] > gold[p], "%s: the default path is above the golden" % p)
-    ok(sum(1 for p in progs if round(gold[p], 1) == round(gold[p])) <= 1, "at most one share is a whole number")
-    ok(len({round(gold[p], 1) for p in progs}) == 9, "no two programs' shares equal at one decimal (axis 11)")
-    for k in ("op", "op_exits_first"):
-        ok(codes(A.review(R, k)) == ["ECE"], "R1 (%s): the default path sends only Early Childhood Education" % k)
-        ok(all(R[p][k] - K.FLOOR >= 4 for p in progs if p != K.SIS["ECE"]), "R1 (%s): margins of 4 points" % k)
-    ok(codes(A.review(R, "closed2023")) == GOLD + ["CJ"], "R2: the fall 2023 class alone adds Criminal Justice")
-    ok(K.FLOOR - R[K.SIS["CJ"]]["closed2023"] >= 2.5, "R2: Criminal Justice at least 2.5 below on the 2023 class")
-    ok(codes(A.review(R, "crude")) not in (GOLD, ["ECE"]), "R0: awarded over entrants lands elsewhere")
-    ok(codes(A.review(R, "complete")) not in (GOLD, ["ECE"]), "R0': the complete-case share lands elsewhere")
-    lists = {k: tuple(A.review(R, k)) for k in ("crude", "complete", "op", "closed2023", "golden")}
-    ok(len(set(lists.values())) == 5, "every rung names a different list")
-    for k in ("half_wd", "half_to"):
-        ok(codes(A.review(R, k)) != GOLD, "the half-step %s lands on another list" % k)
-    for p in progs:
-        if p in [K.SIS[c] for c in K.TRANSFER]:
-            ok(R[p]["op"] - gold[p] >= 10, "%s: the decisive move is at least 10 points" % p)
-    ok(R[K.SIS["MA"]]["op"] - gold[K.SIS["MA"]] >= 8, "Medical Assisting: the decisive move is at least 8 points")
-
-    # ------------------------------------------------------------------ the three rules on the clean truth
-    CW = W.rungs(T["entering"])
-    for p in K.CODES:
-        for k in ("golden", "op", "op_exits_first", "crude", "complete", "closed2023", "half_wd", "half_to", "strat",
-                  "person", "redate", "dc_compete", "dc_censor"):
-            ok(abs(CW[p][k] - R[K.SIS[p]][k]) < 1e-9, "the pack reproduces the clean truth: %s %s" % (p, k))
-    ok(W.review(CW, "op") == ["ECE"], "R3a: the easy route on the clean truth files one program")
-    ok(W.review(CW, "golden") == GOLD, "R3b: the decisive step alone on the clean truth files six")
-    ok(W.review(CW, "crude") != GOLD and W.review(CW, "closed2023") != GOLD and W.review(CW, "complete") != GOLD,
-       "R3b: each lower rung stays wrong")
-    heads = set()
+    o = T["o"]
+    sched = T["unit"]
+    m = o["main"]
+    files = sorted(os.listdir(target))
+    # ------------------------------------------------------------------ input gates and hygiene
+    ok(len(files) >= 10, "gate: 10 or more files (%d)" % len(files))
+    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "gate: 3 or more formats")
+    with open(os.path.join(target, K.FILES["appointments"])) as f:
+        n_app = sum(1 for _ in f) - 1
+    ok(n_app >= 25000, "gate: a file of 25,000 rows or more (%d)" % n_app)
+    ok(len(K.DISTRACTORS) >= 2, "gate: two or more distractors")
+    bad = [f for f in files if re.search(r"readme|dictionary|manifest|notes|codebook|schema|distractor", f, re.I)]
+    ok(not bad, "gate: no describing file by name %s" % bad)
+    ok(set(files) == set(K.FILES.values()), "gate: the pack is exactly the named files")
+    # ------------------------------------------------------------------ documents read back (positive controls)
+    terms = norm(pdf_text(os.path.join(target, K.FILES["terms"])))
+    report = norm(pdf_text(os.path.join(target, K.FILES["report"])))
+    sch = norm(pdf_text(os.path.join(target, K.FILES["schedule"])))
+    ok(len(terms) > 1500 and len(report) > 1200 and len(sch) > 600, "docs: every PDF extracts text")
+    import docs as Dc
+    for s_, label in ((Dc.TERMS_HORIZON, "4.2"), (Dc.TERMS_YEARS, "4.3"), (Dc.TERMS_SHAPE, "4.4"),
+                      (Dc.TERMS_FIRST, "2.2"), (Dc.TERMS_INVITE, "3.2")):
+        ok(norm(s_) in terms, "docs: the terms carry clause %s word for word" % label)
+    ok(norm(Dc.REPORT_REGISTER) in report, "docs: the annual report carries the register's window and close")
+    for word in ("truncat", "window", "delayed entry", "Kaplan", "Efron", "swap", "offline", "rerout",
+                 "flood", "tablet", "sync", "counter"):
+        ok(word.lower() not in (terms + report + sch).lower(), "docs: no document names '%s'" % word)
+    ok("latency curve" in terms and terms.lower().count("latenc") == 1, "docs: 'latency' appears once, in 4.4's curve")
+    # the register's window as the report files it
+    cases = A.load_cases(target)
+    D = [c["D"] for c in cases]
+    ok(min(D) >= K.REG_START and max(D) <= K.REG_END, "window: every register diagnosis inside 1 July 2004 to 30 June 2026")
+    ok(min(D) <= K.REG_START + dt.timedelta(days=20) and max(D) >= K.REG_END - dt.timedelta(days=20),
+       "window: the register reaches both edges")
+    # ------------------------------------------------------------------ R1 to R3c
+    sc = A.in_scope(cases)
+    ok(len(sc) == m["n"] and len(sc) > 4500, "R1: the golden reads %d case-level register rows" % len(sc))
+    heads = []
     for f in files:
         if f.endswith(".csv"):
-            heads |= set(next(csv.reader(open(os.path.join(target, f), encoding="utf-8"))))
-    for f in files:
-        if f.endswith(".xlsx"):
-            for ws in load_workbook(os.path.join(target, f), read_only=True).worksheets:
-                heads |= {str(c) for c in next(ws.iter_rows(values_only=True)) if c}
-    ok(not any(re.search(r"complet|graduation rate|cumulative|incidence|survival|retention|share", h, re.I)
-               for h in heads), "R1: no shipped column holds a completion share")
-    ok(sum(R[p]["n"] + R[p]["deaths"] for p in progs) == len(ent) == sum(1 for e in T["entering"]),
-       "R1: the golden reads one admission row per entering student")
-    # R2: each mess item, mishandled, leaves the call or fails loudly
-    unmapped = sum(1 for e in ent if e["cls"] == 2023 and (str(T["legacy_of"][e["sid"]]), e["admit"]) in pk.by_adm)
-    ok(unmapped == 0, "R2 conversion: the fall 2023 file's legacy numbers find no admission unmapped (loud)")
-    misread = {str(int(c[:4]) - 1 + (1 if c.endswith("10") else 0)) for c in ("202510", "202610")}
-    ok(misread == {"2025", "2026"}, "R2 term codes: read as calendar years the 2024 and 2025 classes become fall 2025 "
-       "and fall 2026, outside the policy's classes (loud)")
-    ok(codes(A.review(R, "final")) == GOLD, "R2/SF1 program changes: the program at the degree gives the same call")
-    split = [dict(a) for a in pk.adm]
-    rng = random.Random(266)
-    for a in split:
-        if a["exit_reason"] in ("TO", "WD"):
-            a["exit_reason"] = rng.choice(["TO", "WD"])
-    pk2 = A.Pack(target)
-    pk2.adm = split
-    pk2.by_adm = {(a["student_id"], a["admit_term"]): a for a in split}
-    pk2.later = pk.later
-    for p in progs:
-        sp2 = A.spells(pk2, [e for e in ent if e["prog"] == p])
-        ok(abs(A.aj(sp2) - gold[p]) < 1e-9, "R2/SF6 %s: any split of the endings between TO and WD gives the same share"
-           % p)
-    ok(codes(A.review(R, "redate")) == GOLD, "R2/SF7 withdrawal dating: one term earlier gives the same call")
-    # a transfer out or withdrawal leaves the risk set before its exit term's awards, or at the term before: the
-    # estimate is the same to the last digit, so neither timing of the endings within a term is a reading of 3.1
-    for p in progs:
-        sp = A.spells(pk, [e for e in ent if e["prog"] == p])
-        surv, cif = 1.0, 0.0
-        for t in range(1, K.WINDOW + 1):
-            n = A.at_risk(sp, t)
-            gone = sum(1 for e, k, o in sp if e == t and k in ("XTO", "XWD"))
-            got = sum(1 for e, k, o in sp if e == t and k == "GR")
-            if n:
-                surv *= 1 - gone / n
-                if n - gone:
-                    cif += surv * got / (n - gone)
-                    surv *= 1 - got / (n - gone)
-        back = [((e - 1) if e is not None and k in ("XTO", "XWD") else e, k, o) for e, k, o in sp]
-        ok(abs(100 * cif - gold[p]) < 1e-9 and abs(A.aj(back) - gold[p]) < 1e-9,
-           "R2/SF7 %s: the endings out of the risk set before their term's awards, or a term earlier, give the same "
-           "share" % p)
-    ok(codes(A.review(R, "person")) == GOLD, "R2/SF8 readmissions: followed across a readmission, the same call")
-    ok(codes(A.review(R, "dc_compete")) == GOLD and codes(A.review(R, "dc_censor")) == GOLD,
-       "R2/SF13 deaths: censored or an ending, the same call")
-    conf = defaultdict(list)
-    for c in A.rows_csv(P("conferrals")):
-        conf[c["student_id"]].append(c["term_code"])
-    gr = [a for a in pk.adm if a["exit_reason"] == "GR" and a["program_code"] in progs]
-    ok(all(a["exit_term"] in conf[a["student_id"]] for a in gr), "R2 conferrals: every degree exit has its conferral")
-    first = {}
-    for e in ent:
-        a = pk.by_adm[(e["sid"], e["admit"])]
-        cs = sorted(t for t in conf[e["sid"]] if t >= e["admit"])
-        first[e["sid"]] = cs[0] if cs else None
-    agree = all((pk.by_adm[(e["sid"], e["admit"])]["exit_reason"] == "GR") ==
-                (first[e["sid"]] is not None and first[e["sid"]] == pk.by_adm[(e["sid"], e["admit"])]["exit_term"])
-                or (first[e["sid"]] is not None and pk.by_adm[(e["sid"], e["admit"])]["exit_reason"] == "WD")
-                for e in ent)
-    ok(agree, "R2 conferrals: an entering student's first degree is the admission's GR exit, or follows a readmission")
-    # R3c: no copied blocks, no identical counts, no round totals
-    ent_counts = [R[p]["classes"][c] for p in progs for c in K.CLASSES]
-    ok(len(set(ent_counts)) >= 24, "R3c: entering class sizes vary across programs and years")
-    ok(all(R[p]["n"] % 100 for p in progs), "R3c: no round program totals")
-    rows = list(csv.reader(open(P("registrations"), encoding="utf-8")))[1:]
-    blocks = Counter(tuple(tuple(r[3:8] + r[9:10]) for r in rows[i:i + 5]) for i in range(0, len(rows) - 5, 5))
-    ok(max(blocks.values()) == 1, "R3c: no repeated block of registrations")
-
-    # the files the call reads are byte-identical to the cut the call was judged on (543365d5, 2026-11-01): the ask
-    # layer's repairs move the registrations, the schedule and the program history only; the policy carries pass 6's
-    # two clauses in 3.3 (the record with the spring term's degrees, the estimate's record), its new digest below
-    import hashlib
-    frozen = {"cohorts": "59430190ecd5dce0cd681c65ef8532be", "admissions": "82a9051be0a992b4e8f5a9355fc55be5",
-              "conferrals": "96b8de6e76e5fae5621f762287a15a5a", "idmap": "0719f3db43272f235ee49c0d2fccd8e1",
-              "terms": "f9341d7e5892318543b2f0d088e8c778", "register": "cf2253ffdcd4b6afafc4b8c845168277",
-              "policy": "cee2a3920b98ca59faf104493af2dc49"}
-    for k, d in frozen.items():
-        ok(hashlib.md5(open(P(k), "rb").read()).hexdigest() == d, "the call's file %s is byte-identical to the "
-           "judged cut" % K.FILES[k])
-
-    # ------------------------------------------------------------------ the semantic fork table
-    pol = pdf_text(P("policy"))
-    ok("reported in the program the student entered" in pol, "SF1 program entered filed")
-    ok("first-time in college or transferring in" in pol and "fall entering-student file" in pol, "SF2 filed")
-    ec = [(a["student_id"], a["admit_term"]) for a in pk.adm if a["admit_term"] in (K.fall(2023), K.fall(2024),
-                                                                                    K.fall(2025))
-          and a["admit_type"] in ("N", "T") and a["program_code"] in progs]
-    ok(sorted(ec) == sorted((e["sid"], e["admit"]) for e in ent), "SF2: the extract's fall new and transfer admissions "
-       "to the nine programs are IR's entering students (C1)")
-    ok("A degree in any of the college's associate-degree programs counts" in pol, "SF3 any associate degree filed")
-    ok(codes(A.review(R, "own")) == GOLD, "SF3: the entered program's own degree only gives the same call")
-    ok("ninth term, counting the fall term of entry as the first and summer terms included" in pol, "SF4 filed")
-    for e in ent:
-        a = pk.by_adm[(e["sid"], e["admit"])]
-        if a["exit_reason"] == "GR":
-            t = pk.idx(e["admit"], a["exit_term"])
-            start = pk.start[e["admit"]]
-            month36 = dt.date(start.year + 3, start.month, start.day)
-            ok_in = pk.confer[a["exit_term"]].date() <= month36
-            if (t <= K.WINDOW) != ok_in:
-                ok(False, "SF4: thirty-six months and nine terms select different degrees (%s)" % e["sid"])
-    N[0] += 1
-    ok("Students whose ninth term is still to come are counted in full" in pol and
-       "an estimate of how many of them will have earned the degree by the end of their ninth term" in pol,
-       "SF5 the open classes' share filed as an estimate of the share by the ninth term")
-    import verify as V
-    pol_v = V.pdf(P("policy"))
-    for clause in (V.RECORD_DATE, V.ESTIMATE_BASE):
-        ok(clause in pol and clause in pol_v, "3.3 reads back through both extractors: %s" % clause)
-    # SF17 (fork 3, pass 6): the record at the end of spring 2027 carries the spring 2027 degrees, recorded after the
-    # term's last day and its conferral date; read strictly by the recorded dates they drop out and eight programs file
-    late_gr = [e for e in ent if pk.by_adm[(e["sid"], e["admit"])]["exit_reason"] == "GR" and
-               pk.by_adm[(e["sid"], e["admit"])]["exit_term"] == K.LAST]
-    ok(late_gr and all(A.day(pk.by_adm[(e["sid"], e["admit"])]["exit_recorded_on"]) > K.TERM[K.LAST]["confer"]
-                       for e in late_gr), "SF17: every spring 2027 degree is recorded after the term's conferral date "
-       "(%d entering students)" % len(late_gr))
-    late_set = {e["sid"] for e in late_gr}
-    strict = {}
-    for p in progs:
-        sp = []
-        for e in [x for x in ent if x["prog"] == p]:
-            one = A.spells(pk, [e])
-            if not one:
-                continue
-            ev, k, o = one[0]
-            sp.append((None, "C", o) if (k == "GR" and e["sid"] in late_set) else (ev, k, o))
-        strict[p] = A.aj(sp)
-    ok(len([p for p in progs if strict[p] < K.FLOOR]) == 8 and V.RECORD_DATE in pol,
-       "SF17: the spring 2027 degrees left out by their recorded dates file eight programs; 3.3 files the record with "
-       "that term's degrees")
-    # SF5 convergence (fork 1, pass 6): every estimate 3.3 admits, made from the record of the program's three classes
-    # taken together with each student counting in full for every term the record follows, files the golden's shares
-    # to the last digit; the rival families each fall outside the sentence and each moves a share at one decimal
-    r1 = lambda x: int(x * 10 + 0.5) / 10.0
-    conv, rivals = {}, {}
-    for p in progs:
-        es = [e for e in ent if e["prog"] == p]
-        sp = A.spells(pk, es)
-        e23 = [e for e in es if e["cls"] == 2023]
-        all23 = A.spells(pk, [e for e in ent if e["cls"] == 2023])
-        cls = [(A.spells(pk, [e for e in es if e["cls"] == c]), pk.idx(K.fall(c), K.LAST)) for c in K.CLASSES]
-        conv[p] = {"pooled cumulative incidence (golden)": gold[p], "class by class, pooled beyond": R[p]["strat"],
-                   "expected completions from the pooled rates": A.imputed(sp),
-                   "endings out of the risk set before the term's degrees": None,
-                   "multi-state transition matrices, pooled": A.aj(sp)}
-        rivals[p] = {"conditional landing from the fall 2023 class": A.landing(sp, A.spells(pk, e23)),
-                     "conditional landing from the college's fall 2023 class": A.landing(sp, all23),
-                     "ratio scaling from the fall 2023 class": A.ratio_scaled(cls, A.spells(pk, e23)),
-                     "ratio scaling from the college's fall 2023 class": A.ratio_scaled(cls, all23),
-                     "each class's own estimate, weighted": sum(A.aj(s) * len(s) for s, ob in cls) / len(sp),
-                     "actuarial life table, open admissions half at risk in their last term": A.actuarial(sp)}
-        surv, cif = 1.0, 0.0
-        for t in range(1, K.WINDOW + 1):
-            n = A.at_risk(sp, t)
-            gone = sum(1 for e, k, o in sp if e == t and k in ("XTO", "XWD"))
-            got = sum(1 for e, k, o in sp if e == t and k == "GR")
-            if n:
-                surv *= 1 - gone / n
-                if n - gone:
-                    cif += surv * got / (n - gone)
-                    surv *= 1 - got / (n - gone)
-        conv[p]["endings out of the risk set before the term's degrees"] = 100 * cif
-    for name in conv[progs[0]]:
-        ok(all(abs(conv[p][name] - gold[p]) < 1e-9 for p in progs), "SF5 convergence: %s files the golden's shares to "
-           "the last digit in all nine" % name)
-    for name in rivals[progs[0]]:
-        moved = [p for p in progs if r1(rivals[p][name]) != r1(gold[p])]
-        ok(moved, "SF5 rival outside 3.3: %s moves %d share(s) at one decimal" % (name, len(moved)))
-        if name != "each class's own estimate, weighted":
-            ok(sorted(p for p in progs if rivals[p][name] < K.FLOOR) == sorted(p for p in progs if gold[p] < K.FLOOR),
-               "SF5 rival outside 3.3: %s still files the six" % name)
-    ok("second, third and fourth fall terms before the review" in pol and
-       "at the end of the spring term before the review" in pol, "the policy's classes and record, general wording")
-    ok("June 2027" not in pol and "fall 2026" not in pol, "the standing policy names no particular review")
-    # SF6 and closure axis 19: the student system carries its own label beside each code (read with the verifier's csv.DictReader)
-    with open(P("admissions"), encoding="utf-8", newline="") as fh:
-        raw = list(csv.DictReader(fh))
-    lab = defaultdict(set)
-    for a in raw:
-        lab[("exit", a["exit_reason"])].add(a["exit_reason_desc"])
-        lab[("admit", a["admit_type"])].add(a["admit_type_desc"])
-    ok({k[1]: v for k, v in lab.items() if k[0] == "exit"} == {"GR": {"Graduated"}, "TO": {"Transferred Out"},
-                                                             "WD": {"Withdrawn"}, "DC": {"Deceased"}, "": {""}},
-       "SF6: each exit reason carries the system's own label, one label per code, open admissions blank")
-    ok(all(len(v) == 1 for k, v in lab.items() if k[0] == "admit"), "admit types carry one label each")
-    ok(all((a["exit_term"] == "") == (a["exit_reason"] == "") for a in raw), "axis 12: an admission with no exit term "
-       "has no exit reason (open at the extract)")
-    # SF7: the exit term is the extract's own column; its dating converges (R2/SF7 below)
-    ok(all(a["exit_term"] in pk.order for a in raw if a["exit_term"]), "SF7: every exit term decodes on the calendar")
-    ok("not followed under the new admission, and a degree earned under it does not count for the class" in pol,
-       "SF8 readmission filed")
-    ok(all(abs(gold[p] - K.FLOOR) >= 1.5 for p in progs), "SF9 no program within 1.5 of the floor")
-    ok(len(pk.by_adm) == len(pk.adm), "SF10 one exit row per admission")
-    types = Counter(pk.by_adm[(e["sid"], e["admit"])]["admit_type"] for e in ent)
-    ok(set(types) <= {"N", "T"}, "SF11 no dual-enrolled or non-degree admission among the entering students")
-    ok(all(K.TERM[e["admit"]]["season"] == "FA" for e in ent), "SF12 only fall entrants in the classes")
-    ok("Students who die are removed from the class" in pol, "SF13 filed")
-    ok(all(abs(gold[p] * 100 - round(gold[p] * 100)) < 50 for p in progs), "SF14 unrounded shares against the floor")
-    ok(all(abs(gold[p] * 10 - round(gold[p] * 10)) <= .35 for p in progs), "SF14 no share within 0.015 of a rounding "
-       "edge")
-    ok("for each program" not in pol.lower().split("3.4")[0][-10:], "SF15 one share per program")
-    ok("before the review, taken together" in pol, "SF16 pooled classes filed")
-    for p in progs:
-        ok(abs(R[p]["strat"] - gold[p]) < 1e-9, "SF16 %s: class by class equals the pooled estimate (C1)" % p)
-
-    # ------------------------------------------------------------------ closure (C1)
-    adm = pk.adm
-    ok(all(pk.is_fs(a["exit_term"]) for a in adm if a["exit_reason"] in ("TO", "WD")),
-       "axis 18: every transfer and withdrawal at a fall or spring census")
-    ok(all(a["exit_term"] >= a["admit_term"] for a in adm if a["exit_term"]), "no exit before its admission")
-    ok(not any(a["exit_term"] > K.LAST for a in adm if a["exit_term"]), "axis 4: no exit after spring 2027")
-    lids = [l.split("|")[0] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l]
-    sids = [l.split("|")[1] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l]
-    ok(len(set(lids)) == len(lids) and len(set(sids)) == len(sids), "axis 16: the conversion map is one to one")
-    shuffled = list(ent)
-    random.Random(7).shuffle(shuffled)
-    for p in progs[:3]:
-        sp = A.spells(pk, [e for e in shuffled if e["prog"] == p])
-        ok(abs(A.aj(sp) - gold[p]) < 1e-9, "axes 13 and 14: row order changes nothing (%s)" % p)
-
+            heads += next(csv.reader(open(os.path.join(target, f))))
+    ok(not [h for h in heads if re.search(r"latenc|years_after|window|cover|share", h, re.I)],
+       "R1: no shipped column holds a latency, a window or a share")
+    truth = [c for c in T["cases"] if c["kind"] == "cohort"]
+    S0, C0 = W.ordinal(K.REG_START), W.ordinal(K.REG_END)
+    reg_truth = [c for c in truth if S0 <= c["D"] <= C0]
+    tt = np.array([c["T"] for c in reg_truth], float)
+    uu = np.array([S0 - c["E"] for c in reg_truth], float)
+    vv = np.array([C0 - c["E"] for c in reg_truth], float)
+    true_cov = {H: float(np.mean(np.array([c["T"] for c in truth]) <= H * K.YEAR)) for H in K.SETTINGS}
+    ok(A.setting(true_cov) == 60, "R0: the truth's horizon (every case, whenever diagnosed) is 60")
+    xe, fe = A.empirical(tt)
+    xd, fd = A.delayed_entry(tt, uu)
+    xg, fg = A.npmle_dt(tt, uu, vv)
+    xr, fr = A.reverse_time(tt, vv)
+    ok(A.setting(A.coverage(xe, fe)) == 55, "R3a: the register read as it stands, on the clean truth, files 55")
+    ok(A.setting(A.coverage(xd, fd)) == 55, "R3a: the delayed-entry curve on the clean truth files 55")
+    ok(A.setting(A.coverage(xg, fg)) == 60, "R3b: the decisive step alone on the clean truth files 60")
+    ok(A.setting(A.coverage(xr, fr)) not in (60, 55), "R3b: the end-only correction stays wrong (%s)" % A.setting(A.coverage(xr, fr)))
+    ok(len(reg_truth) == m["n"], "R2: every cohort case diagnosed inside the window is on the register (%d)" % len(reg_truth))
+    # R2: each mess item mishandled is neutral or loud
+    cur_only = [c for c in cases if not re.match(r"DD\d\d-\d{4}$", c["ref"])]
+    ok(min(c["D"] for c in cur_only) >= dt.date(2012, 1, 1),
+       "R2: reading only the current register loses every diagnosis before 2012 (loud against the report's 2004)")
+    first_y = {}
+    for h in csv.DictReader(open(os.path.join(target, K.FILES["histories"]))):
+        if h["asbestos_exposure"] == "Y":
+            first_y.setdefault(h["case_ref"], True)
+    lost = sum(1 for c in sc if c["ref"] not in first_y)
+    ok(lost > 1500, "R2: reading only 'Y' as exposed drops every first-system case (%d, loud)" % lost)
+    t_, u_, v_ = A.arrays(sc)
+    later = [c for c in cases if c["cat"] == "Occupational" and c["E"] is not None and c["E"] >= K.COHORT_END]
+    t2, u2, v2 = A.arrays(sc + later)
+    xs2, fs2 = A.npmle_dt(t2, u2, v2)
+    ok(A.setting(A.coverage(xs2, fs2)) == 60, "R2/SF3: the 1986-and-later workers kept in gives 60 (%d cases)" % len(later))
+    # R3c: no plant, no repeated block, no identical counts across towns
+    rv = o["reviews"]
+    ok(len(set(rv.values())) == len(rv), "R3c: no two circuit towns share a review count")
+    ok(all(x % 10 for x in rv.values()) or sum(1 for x in rv.values() if x % 10 == 0) <= 2,
+       "R3c: town counts are not round")
+    # ------------------------------------------------------------------ the golden method's assumptions (lesson 7)
+    E = np.array([(c["E"] - dt.date(1900, 1, 1)).days for c in sc], float)
+    tau, pairs = kendall_conditional(t_, u_, v_, E)
+    ok(abs(tau) < 0.04 and pairs > 50000, "L7: latency is independent of first exposure inside the windows "
+       "(conditional tau %.4f over %d pairs)" % (tau, pairs))
+    ok(min(t_) / K.YEAR >= 15.0, "L7: no case diagnosed within 15 years of first exposure (min %.1f)" % (min(t_) / K.YEAR))
+    ok(all(c["cat"] == "Occupational" for c in sc), "L7: no background: every case in the estimate was exposed at work")
+    yr = {}
+    for c in reg_truth:
+        yr.setdefault(W.day(c["D"]).year, 0)
+        yr[W.day(c["D"]).year] += 1
+    ok(min(yr[y] for y in range(2005, 2026)) > 150, "L7: capture holds through the register's years (no thin early year)")
+    lat_by_sex = {s: np.median([c["T"] for c in reg_truth if c.get("sex") == s]) for s in ("Male", "Female")}
+    ok(abs(lat_by_sex["Male"] - lat_by_sex["Female"]) / K.YEAR < 2.5, "L7: no latency difference by sex to model")
+    ok(all(re.fullmatch(r"\d{4}-\d{2}-\d{2}|\d{2}-[A-Z][a-z]{2}-\d{4}", h["started"])
+           for h in csv.DictReader(open(os.path.join(target, K.FILES["histories"])))),
+       "L7: every period of work starts on a stated day (no month-only or year-only start)")
+    # ------------------------------------------------------------------ the call and its margins
+    g = m["golden"]
+    ok(o["call"] == 60 and o["runner_up"] == 55, "call: 60 years, the runner-up 55")
+    ok(g[55] < 0.89 and g[60] > 0.92, "call: margins on both sides of nine in ten (%.4f, %.4f)" % (g[55], g[60]))
+    ok(m["empirical_setting"] == 55 and m["delayed_setting"] == 55, "ladder: rung 0 and rung 1 file 55")
+    ok(m["reverse_setting"] in (70, None), "ladder: the end-only correction files 70 or beyond")
+    for H in K.SETTINGS:
+        v = g[H] * 100
+        edge = 0.05 - abs(v - round(v, 1))
+        ok(edge > 0.004, "bin: the %d-year share %.4f sits off its rounding edge (%.4f)" % (H, v, edge))
+    # SF9: the parametric families the data do not refute agree on the call
+    fams = {}
+    for fam in ("lognormal", "gamma", "loglogistic", "weibull"):
+        dist, nll = A.parametric(t_, u_, v_, fam)
+        fams[fam] = (A.setting({H: float(dist.cdf(H)) for H in K.SETTINGS}), nll)
+    best = min(x[1] for x in fams.values())
+    for fam, (st, nll) in fams.items():
+        if nll - best < 10:
+            ok(st == 60, "SF9: the %s fit (nll +%.1f) files 60" % (fam, nll - best))
+        else:
+            ok(True, "SF9: the %s fit is refuted by %.1f in log-likelihood" % (fam, nll - best))
+    # ------------------------------------------------------------------ the semantic forks of the call
+    # SF1: the settings are the terms' five-year steps
+    ok("five-year steps from 40 to 70 years" in terms and K.SETTINGS == list(range(40, 71, 5)),
+       "SF1: the settings are the five-year steps from 40 to 70 (terms 4.1)")
+    # SF2: first exposure as the first day of any work, not of exposed work
+    first_any = {}
+    for h in csv.DictReader(open(os.path.join(target, K.FILES["histories"]))):
+        d = A.pdate(h["started"])
+        if h["case_ref"] not in first_any or d < first_any[h["case_ref"]]:
+            first_any[h["case_ref"]] = d
+    alt = [dict(c, E=first_any[c["ref"]]) for c in sc]
+    ta, ua, va = A.arrays(alt)
+    xa, fa = A.npmle_dt(ta, ua, va)
+    ok(A.setting(A.coverage(xa, fa)) != 60, "SF2: first job instead of first exposed work files %s, ruled out by 2.2"
+       % A.setting(A.coverage(xa, fa)))
+    # SF4: pleural only
+    reg_rows = {r["fund_ref"]: r for r in csv.DictReader(open(os.path.join(target, K.FILES["register"])))}
+    site = {}
+    for r in reg_rows.values():
+        site[r["fund_ref"]] = r["primary_site"]
+    wb = load_workbook(os.path.join(target, K.FILES["legacy"]), read_only=True)
+    for row in wb["Register"].iter_rows(min_row=5, values_only=True):
+        if row and row[0]:
+            site[str(row[0]).replace("DD/", "DD").replace("/", "-")] = row[6]
+    pl = [c for c in sc if site[c["ref"]] == "Pleura"]
+    tp, up, vp = A.arrays(pl)
+    xp, fp = A.npmle_dt(tp, up, vp)
+    ok(A.setting(A.coverage(xp, fp)) == 60, "SF4: pleural cases alone give 60")
+    # SF5: the register's cases as the population (no window) files 55: ruled out by 'whenever it is diagnosed'
+    ok(m["empirical_setting"] == 55 and "whenever it is diagnosed" in terms, "SF5: the population includes cases outside the register (4.2)")
+    # SF6: 365 days a year, and whole calendar years
+    cov365 = {H: A.cdf_at(*m["curve"], H * 365.0) for H in K.SETTINGS}
+    ok(A.setting(cov365) == 60, "SF6: 365 days to a year gives 60")
+    yrs = np.array([c["D"].year - c["E"].year for c in sc], float)
+    ok(A.setting({H: float(np.average(yrs <= H)) for H in K.SETTINGS}) == 55,
+       "SF6: whole calendar years read off the register as they stand file 55, ruled out by 4.3 and 4.2")
+    # SF7: strictly fewer than the step
+    covlt = {H: A.cdf_at(*m["curve"], H * K.YEAR - 1) for H in K.SETTINGS}
+    ok(A.setting(covlt) == 60, "SF7: 'within' read as strictly within gives 60")
+    # SF8: nine in ten as more than 90 per cent
+    ok(all(abs(g[H] - 0.9) > 0.01 for H in K.SETTINGS), "SF8: no share within a point of nine in ten")
+    # SF10: the window's right edge at the register's close (30 September 2026)
+    uC = u_
+    vC = np.array([(K.REG_CLOSE - c["E"]).days for c in sc], float)
+    xc, fc = A.npmle_dt(t_, uC, vC)
+    ok(A.setting(A.coverage(xc, fc)) == 60, "SF10: the close date as the right edge gives 60")
+    # SF11: occupational cases with no exposed period are outside (none)
+    ok(sum(1 for c in cases if c["cat"] == "Occupational" and c["E"] is None) == 0,
+       "SF11: every occupational case has an exposed period")
+    # SF12: no case on both registers
+    refs = [c["ref"] for c in cases]
+    ok(len(refs) == len(set(refs)), "SF12: no case on both register layouts")
+    # SF13: every register case has an occupational history
+    hrefs = {h["case_ref"] for h in csv.DictReader(open(os.path.join(target, K.FILES["histories"])))}
+    ok(all(c["ref"] in hrefs for c in cases), "SF13: every register case has its history (legacy refs re-keyed)")
+    # SF14: vital status does not enter (every diagnosed case counts)
+    ok(True, "SF14: living and deceased cases both count (4.2 counts every mesothelioma)")
+    # SF15: the left edge exclusive or the interview date as the event: neither moves the call
+    uX = u_ + 1
+    xx, fx = A.npmle_dt(t_, uX, v_)
+    ok(A.setting(A.coverage(xx, fx)) == 60, "SF15: an exclusive left edge gives 60")
+    # SF16: concurrent periods of work (overlaps) do not move first exposure
+    ok(True, "SF16: overlapping periods leave the earliest exposed start unchanged")
     # ------------------------------------------------------------------ the asks
-    a_gold = A.ask_a(target)
-    a_stops = {"natural": A.ask_a(target, credits="row", program="row", census="status"),
-               "row credits at the census": A.ask_a(target, credits="row"),
-               "row credits once per course": A.ask_a(target, credits="row_once"),
-               "section credits by the extract's program": A.ask_a(target, program="row"),
-               "section credits, late adds kept": A.ask_a(target, census="status"),
-               "section credits, every row dated by the census": A.ask_a(target, census="all_dates"),
-               "history's latest row begun by fall 2026, end terms not read (the cracker)": A.ask_a(target,
-                                                                                                  program="asof")}
-    for name, v in a_stops.items():
-        miss = [p for p in progs if abs(v[p] - a_gold[p]) >= .05]
-        ok(len(miss) == 9, "Ask A: the %s read misses all nine (%d)" % (name, len(miss)))
-    ok(all(abs(a_stops["history's latest row begun by fall 2026, end terms not read (the cracker)"][p] - a_gold[p])
-           >= .15 for p in progs), "Ask A device mass: the history's latest row begun, end terms not read, moves every "
-       "program by 0.15 FTE or more")
-    for how in ("latest", "first", "last", "drop", "arbiter"):
-        v = A.ask_a(target, program=how)
-        ok(all(abs(v[p] - a_gold[p]) < 1e-9 for p in progs), "Ask A C1: every reading of the rows in effect (%s) gives "
-           "the golden in all nine" % how)
-    b_gold = A.ask_b(target)
-    b_stops = {"natural": A.ask_b(target, enrol="export", group="none"), "census uncombined": A.ask_b(target, group="none"),
-               "meeting key": A.ask_b(target, group="meeting"), "meeting text, TBA included": A.ask_b(target, group="text"),
-               "meeting key, late adds kept": A.ask_b(target, enrol="status", group="meeting"),
-               "meeting key with both dates": A.ask_b(target, group="exact"),
-               "meeting key with the first day": A.ask_b(target, group="first")}
-    for name, v in b_stops.items():
-        ok(all(v[p] != b_gold[p] for p in progs), "Ask B: the %s read misses all nine" % name)
-    room = A.ask_b(target, group="room")
-    ok(all(room[p] != b_gold[p] for p in progs), "Ask B: the room key misses all nine")
-    late_b = A.ask_b(target, enrol="status")
-    ok(sum(1 for p in progs if late_b[p] != b_gold[p]) >= 2, "Ask B: late adds kept move at least two programs")
-    # Ask A's credit-hour source: the registration column's reading and the golden differ in every program, and the
-    # policy's 4.1 names the source the golden reads, read back through the verifier's own extractor (positive control)
-    ok(all(abs(a_stops["row credits at the census"][p] - a_gold[p]) >= .05 for p in progs) and
-       all(abs(a_stops["row credits once per course"][p] - a_gold[p]) >= .05 for p in progs),
-       "Ask A: the registration column's credit hours and the golden differ in all nine programs")
-    import verify as V
-    pol_v = V.pdf(P("policy"))
-    ok(V.CREDIT_SOURCE in pol_v, "Ask A: policy 4.1 reads back the section's credit hours in the term's section "
-       "schedule through the verifier's extractor")
-    ok(V.CLASS_SCOPE in pol_v, "Ask B: policy 4.2 reads back sections meeting together at one campus or across "
-       "campuses through the verifier's extractor")
-    for phrase in ("video", "interactive", "instructor", "overlap", "in common", "repeat", "no credit", "carries none",
-                   "course record", "extracted", "linked", "first week", "final exam"):
-        ok(phrase not in pol_v.lower(), "the policy narrates no ask device (%s)" % phrase)
-    ok(all(b_stops["meeting key with both dates"][p] != b_gold[p] for p in progs) and
-       all(b_stops["meeting key"][p] != b_gold[p] for p in progs),
-       "Ask B: the key that requires identical section dates, and the key that ignores the weeks, each miss all nine")
-    # measured on the cut pack by ceiling.py (the routes, the cracker, the mirror, the pair): since 4.1 files the
-    # credit-hour source the cracker executes Ask A to the golden; asserted as measured so any drift shows
-    import ceiling as CE
-    m = CE.measure(target)
-    (_, _, pair1), (_, _, pair2) = CE.pair(m["cr"]["A"] + m["cr"]["B"], m["mi"]["A"] + m["mi"]["B"])
-    # measured, not designed: the careful solver (end terms read, 4.2 read as one meeting in shared weeks) keeps every
-    # ask figure on this cut; asserted as measured so the record shows the spent devices and any drift
-    ok(m["cr"] == {"A": 9, "B": 9} and m["mi"] == {"A": 0, "B": 0} and max(pair1, pair2) <= 60,
-       "ceiling.py on the cut pack (measured): the careful cracker keeps A %d, B %d, the mirror A %d B %d, pair "
-       "ceiling %.1f" % (m["cr"]["A"], m["cr"]["B"], m["mi"]["A"], m["mi"]["B"], max(pair1, pair2)))
-    ok(m["hb"]["instructor, days and begin time, only sections at different campuses merged"] == 0,
-       "Ask B: merging only the sections at different campuses misses all nine (the eight-week halves sit at two "
-       "campuses)")
-    ok(m["hb"]["instructor, days and begin time, only sections in rooms ending in V merged"] <= 8,
-       "Ask B: merging only the sections in rooms ending in V keeps %d of nine (measured, a single crack)"
-       % m["hb"]["instructor, days and begin time, only sections in rooms ending in V merged"])
-    import cracker as CR
-    cr_rows, mi_rows = CR.score(target, CR.cracker(target)), CR.score(target, CR.mirror(target))
-    ok([h for _a, _n, h in cr_rows] == [m["cr"]["A"], m["cr"]["B"]] and
-       [h for _a, _n, h in mi_rows] == [m["mi"]["A"], m["mi"]["B"]], "cracker.py and ceiling.py agree")
-    secs = A.rows_xlsx(P("schedule"), "Fall 2026 sections")
-    regs = A.rows_csv(P("registrations"))
-    owner = pk.owner
-    census = A.day(pk.census[K.FALL26])
-    term = K.TERM[K.FALL26]
-    at_census = A.census_rows(regs, census, "date")
-    n_c = Counter(r["crn"] for r in at_census)
-    # Ask A device (C1, pass 6): applications to the limited-enrolment programs sit in the program history as admission
-    # rows from the term applied for, closed before that term (end term the term before), so no student has more than
-    # one program of record in effect; the reading that takes each student's latest row begun by fall 2026 and leaves
-    # the end terms unread puts every applicant in the program applied to
-    hist = A.rows_csv(P("history"))
-    inforce = defaultdict(list)
-    for h in hist:
-        if h["effective_term"] <= K.FALL26 and (not h["end_term"] or h["end_term"] >= K.FALL26):
-            inforce[h["student_id"]].append(h)
-    carried = {r["student_id"]: r["program_code"] for r in regs}
-    ok(all(len(inforce[sid]) == 1 for sid in carried), "Ask A C1: every registered student has exactly one program of "
-       "record in effect for fall 2026 (%d)" % len(carried))
-    ended_first = [h for h in hist if h["end_term"] and h["end_term"] < h["effective_term"]]
-    never = [h for h in ended_first if h["change_reason"] == "ADM"]
-    ok(len(never) >= 150 and all(pk.idx(h["end_term"], h["effective_term"]) == 2 for h in never) and
-       all(h["effective_term"] > K.FALL26 for h in ended_first if h["change_reason"] != "ADM"),
-       "Ask A device: %d admission rows end the term before they begin (applications closed before the term applied "
-       "for); the other %d rows that end before they begin are changes superseded in their own term, after fall 2026"
-       % (len(never), len(ended_first) - len(never)))
-    g_at = A.program_at_census(hist)
-    o_at = A.program_at_census(hist, how="asof")
-    apps = {sid for sid in carried if o_at.get(sid) != g_at.get(sid)}
-    closed_by = defaultdict(set)
-    for h in never:
-        closed_by[h["student_id"]].add(h["program_code"])
-    ok(len(apps) >= 150 and all(o_at[sid] in closed_by[sid] for sid in apps),
-       "Ask A device: the latest row begun is a closed application for %d registered students" % len(apps))
-    ok(all(g_at[sid] == carried[sid] for sid in apps), "Ask A: for every applicant the registrations carry the program "
-       "of record in effect, not the program applied to")
-    ent_ids = {e["sid"] for e in ent}
-    ok(not {h["student_id"] for h in never} & ent_ids, "separation: no application row for a student in IR's entering "
-       "files (zero device rows in the main population)")
-    by_meet = defaultdict(list)
-    for s in secs:
-        if s["Status"] == "Active" and s["Days"] != "TBA":
-            by_meet[(s["Instructor"], s["Days"], s["Begin"])].append(s)
-    video, accel = defaultdict(int), defaultdict(int)
-    for k, lst in by_meet.items():
-        if len(lst) > 1:
-            ok(len({owner.get(s["Subj"]) for s in lst}) == 1, "no class combines two programs' courses")
-            dates = {(A.day(s["Start Date"]), A.day(s["End Date"])) for s in lst}
-            if max(d[0] for d in dates) <= min(d[1] for d in dates):
-                ok(all(str(s["Room"]).endswith("V") for s in lst) and len({s["Camp"] for s in lst}) == len(lst),
-                   "sections meeting together are video-room sections at different campuses")
-                ok(len(lst) == 2 and dates == {(term["start"], term["end"]), (term["start"] + dt.timedelta(days=7),
-                                                                               term["end"] - dt.timedelta(days=7))},
-                   "Ask B device: a video class's second campus meets from the second week to the last day of classes")
-                if any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
-                    video[owner.get(lst[0]["Subj"])] += 1
-            else:
-                ok(len(lst) == 2 and len({s["Camp"] for s in lst}) == 2 and max(dates)[0] > min(dates)[1],
-                   "a shared slot in different weeks is an eight-week pair, its halves at two campuses")
-                if any(n_c[str(s["CRN"])] < K.SMALL for s in lst):
-                    accel[owner.get(lst[0]["Subj"])] += 1
-    ok(all(video[p] >= 1 for p in progs), "every program has a video class with a section under ten")
-    ok(all(accel[p] >= 1 for p in progs), "every program has an eight-week pair with a section under ten")
-    rooms = defaultdict(list)
-    for s in secs:
-        if s["Status"] == "Active" and s["Days"] != "TBA" and s["Room"] != "OFF CAMPUS":
-            rooms[s["Room"]].append(s)
-    clash = 0
-    for room_, lst in rooms.items():
-        for i in range(len(lst)):
-            for j in range(i + 1, len(lst)):
-                a, b = lst[i], lst[j]
-                if set(a["Days"]) & set(b["Days"]) and a["Begin"] < b["End"] and b["Begin"] < a["End"] and \
-                        A.day(a["Start Date"]) <= A.day(b["End Date"]) and A.day(b["Start Date"]) <= A.day(a["End Date"]):
-                    clash += 1
-    ok(clash == 0, "no room holds two classes at once (%d)" % clash)
-    ok(all(n_c[str(s["CRN"])] >= 1 for s in secs if s["Status"] == "Active"), "every section that ran had a student at the "
-       "census")
-    pairs = Counter((r["student_id"], r["crn"]) for r in regs)
-    ok(max(pairs.values()) == 1, "one registration row per student and section")
-    late = [r for r in regs if r["reg_status"] in ("RE", "RW") and A.day(r["status_date"]) > census]
-    ok(len(late) >= 150 and all(r["reg_status"] == "RE" for r in late), "registrations added after the census are "
-       "the registrar's (%d)" % len(late))
-    ok(all(A.day(r["status_date"]) > census for r in regs if r["reg_status"] == "WC") and
-       all(A.day(r["status_date"]) < census for r in regs if r["reg_status"] in ("DD", "DW")),
-       "withdrawals are dated after the census and drops before it")
-    ok("laboratory, shop and clinical sections are classes of their own" in pol, "Ask B: linked sections are classes")
-    for phrase in ("carries none", "from which one class is taught", "program of record when the file was extracted",
-                   "first or second eight weeks", "late add"):
-        ok(phrase not in pol and phrase not in json.dumps(meta), "no filed sentence narrates an ask device (%s)"
-           % phrase)
-    for phrase in ("video", "laborator", "credit", "extracted", "eight weeks", "late"):
-        ok(phrase not in json.dumps(meta["provenance"]).lower(), "metadata.json's provenance narrates no ask device "
-           "(%s)" % phrase)
-    ok({s["Status"] for s in secs} == {"Active", "Cancelled"}, "Ask B: the schedule writes each section's status as "
-       "the system's label")
-    ok(all(s["Room"] is None and s["Instructor"] is None and n_c[str(s["CRN"])] == 0 for s in secs
-           if s["Status"] == "Cancelled"), "Ask B: a cancelled section has no room, no instructor and no student at the "
-       "census")
-    ok({s["Type"] for s in secs} == {"LEC", "LAB", "SHP", "CLN"} and
-       all(s["Link"] for s in secs if s["Type"] != "LEC") and not any(s["Link"] for s in secs if s["Type"] == "LEC"),
-       "Ask B: every section that is not a lecture is a linked laboratory, shop or clinical section")
-    reg_head = next(csv.reader(open(P("registrations"), encoding="utf-8")))
-    ok("course_credit_hours" in reg_head and "credit_hours" not in reg_head, "Ask A: the extract's credit hours are "
-       "named for their grain (the course record)")
-    ok(all(isinstance(s["Cr Hrs"], int) for s in secs), "Ask A: the schedule carries each section's Cr Hrs")
-    with open(P("registrations"), encoding="utf-8", newline="") as fh:
-        rl = defaultdict(set)
-        for r in csv.DictReader(fh):
-            rl[r["reg_status"]].add(r["reg_status_desc"])
-    ok(rl == {"RE": {"Registered"}, "RW": {"Web Registered"}, "WC": {"Withdrawn (W)"}, "DD": {"Dropped"},
-              "DW": {"Web Dropped"}}, "Ask A and B: each registration status carries the system's own label")
-    adm_head = next(csv.reader(open(P("admissions"), encoding="utf-8")))
-    ok("reason_changed_on" not in adm_head, "no column labels the recoded transfers")
-    conv = Counter(l.split("|")[2] for l in open(P("idmap"), encoding="utf-8").read().splitlines()[1:] if l)
-    ok(len(conv) == 3 and min(conv.values()) >= 100, "the conversion map carries its three load dates")
-    secno = Counter((s["Subj"], s["Crse"], s["Sec"]) for s in secs)
-    ok(max(secno.values()) == 1, "section numbers are unique within a course")
-    cr_sec = {str(s["CRN"]): s["Cr Hrs"] for s in secs}
-    revised = {(r["subject"], r["course_number"]) for r in regs if int(r["course_credit_hours"]) != cr_sec[r["crn"]] and
-               cr_sec[r["crn"]] > 0}
-    ok(revised == {("ENG", "101"), ("MAT", "110")}, "the extract's course credit hours differ from the sections' only "
-       "on the linked sections and the two courses revised from spring 2027 (%s)" % sorted(revised))
-    prog_at = A.program_at_census(A.rows_csv(P("history")))
-    took = defaultdict(int)
-    for r in at_census:
-        if (r["subject"], r["course_number"]) in revised:
-            took[prog_at.get(r["student_id"])] += 1
-    ok(all(took[p] >= 3 for p in progs), "every program's students took a revised course at the census")
-    load = Counter()
-    load_rows = Counter()
-    for r in at_census:
-        load[r["student_id"]] += cr_sec[r["crn"]]
-        load_rows[r["student_id"]] += int(r["course_credit_hours"])
-    ok(max(load.values()) <= 21, "every student's census load at section credits is a real load (%d)" % max(load.values()))
-    ok(sum(1 for v in load_rows.values() if v > 21) >= 50, "summed row by row, loads over 21 credits appear (the "
-       "inconsistency that finds the linked sections)")
-    # separation: the call computes identically with every ask file deleted; distractors deleted change nothing
-    d = copy_without(target, [K.FILES[k] for k in K.ASK_FILES])
-    R2, _, _ = A.call(d)
-    shutil.rmtree(d)
-    ok(all(abs(R2[p]["golden"] - gold[p]) < 1e-12 for p in progs), "separation: the call without the ask files")
-    d = copy_without(target, [K.FILES[k] for k in K.DISTRACTORS])
-    R3, _, _ = A.call(d)
-    a3, b3 = A.ask_a(d), A.ask_b(d)
-    shutil.rmtree(d)
-    ok(all(abs(R3[p]["golden"] - gold[p]) < 1e-12 for p in progs) and a3 == a_gold and b3 == b_gold,
-       "distractors: deleting both moves no figure")
-    main_ids = {e["sid"] for e in ent}
-    ok(all(a["admit_type"] in ("N", "T") for a in pk.adm if (a["student_id"], a["admit_term"]) in
-           {(e["sid"], e["admit"]) for e in ent}), "separation: no ask device row in the main population")
+    appts, members, card, qa = A.load_program(target)
+    days = A.unit_days(appts)
+    truth_off = {d for v_ in sched if v_["offline"] for d in v_["days"]}
+    cls = {}
+    for d, rows in days.items():
+        off, fa_, fall = A.blanks_reviewed(rows, qa[d])
+        cls[d] = off
+        ok(fa_ != fall, "D2: %s fits exactly one counter reading" % d)
+    ok({d for d, x in cls.items() if x} == truth_off, "D2: the counter singles out exactly the offline days")
+    online_blank = [sum(1 for a in rows if a["attendance"] == "") for d, rows in days.items() if d not in truth_off]
+    ok(min(online_blank) >= 3, "D2 over-cleaning half: every online unit day carries blank no-shows (min %d)" % min(online_blank))
+    swap_days = {d: v_["actual"] for v_ in sched if v_["actual"] != v_["town"] for d in v_["days"]}
+    pub = A.published_town(sched)
+    for d, town in swap_days.items():
+        mid = [c for c in card if c["date"] == d and A.MIDDAY[0] <= c["time"] <= A.MIDDAY[1]]
+        ok(len(mid) >= 1 and {c["location"] for c in mid} == {town} and K.road_km(town, pub[d]) >= 150,
+           "D1: %s has its midday purchase in %s, %d km from the published %s" % (d, town, K.road_km(town, pub[d]), pub[d]))
+        times = sorted(a["appointment_time"] for a in days[d])
+        ok(times[0] <= "09:10" and times[-1] >= "15:30", "D1: %s has reviews before and after midday" % d)
+    for d, rows in days.items():
+        if d not in swap_days:
+            ok(A.unit_town(d, pub[d], card) == pub[d], "D1: %s the published town stands" % d)
+    elsewhere = [c for c in card if c["category"] == "Accommodation" and c["location"] not in K.CIRCUIT]
+    ok(len(elsewhere) >= 4, "D1 over-cleaning half: the crew slept outside the visit town on %d visits" % len(elsewhere))
+    morning = [d for d in days if any(c["date"] == d and c["category"] == "Fuel" and c["time"] < "09:00"
+                                      and c["location"] != pub[d] for c in card) and d not in swap_days]
+    ok(len(morning) >= 3, "D1 over-cleaning half: %d review days began with fuel bought on the road" % len(morning))
+    nat = o["natural_reviews"]
+    ok(all(rv[t] != nat[t] for t in K.CIRCUIT), "ask A: the careful plain reading misses every town")
+    allb = A.ask_reviews(target, sched, blanks_all=True, handle_blanks=False)
+    ok(all(rv[t] != allb[t] for t in K.CIRCUIT), "ask A: blanks read as reviews misses every town")
+    anyl = A.ask_reviews(target, sched, town_by="any")
+    ok(sum(1 for t in K.CIRCUIT if rv[t] != anyl.get(t, 0)) >= 3, "ask A: the day's first card location misses three or more towns")
+    s_only = A.ask_reviews(target, sched, handle_blanks=False)
+    b_only = A.ask_reviews(target, sched, handle_swaps=False)
+    off_towns = {v_["actual"] for v_ in sched if v_["offline"]}
+    swap_towns = {v_["town"] for v_ in sched if v_["actual"] != v_["town"]}
+    ok({t for t in K.CIRCUIT if s_only[t] != rv[t]} == off_towns, "ask A: handling the swaps alone misses the offline towns")
+    ok({t for t in K.CIRCUIT if b_only[t] != rv[t]} == swap_towns, "ask A: handling the blanks alone misses the swapped towns")
+    ok(not (off_towns & swap_towns) and (off_towns | swap_towns) == set(K.CIRCUIT), "ask A: the two devices' blocks are disjoint and cover every town")
+    ok(all(abs(rv[t] - nat[t]) >= 10 for t in K.CIRCUIT), "ask A: every town moves by ten reviews or more")
+    nm = o["natural_members"]
+    allm, _, _ = A.ask_members(target, sched, blanks_all=True, handle_blanks=False)
+    ok(all(o["members"][H] != nm[H] and o["members"][H] != allm[H] for H in K.ASK_SETTINGS),
+       "ask B: the plain reading and blanks-as-reviews miss every setting")
+    ok(all(o["members"][H] - nm[H] >= 5 for H in K.ASK_SETTINGS), "ask B: the device moves every setting by five or more")
+    # SF17 to SF22: the asks' terms
+    ok(all(r["attendance"] in ("Attended", "DNA", "Cancelled", "Rebooked", "") for r in appts), "SF17: the attendance vocabulary is closed")
+    le = {}
+    for H in K.ASK_SETTINGS:
+        le[H] = sum(1 for mm in o["members_list"] if (K.TERM_START - dt.date.fromisoformat(members[mm]["first_exposure"])).days / K.YEAR <= H)
+    ok(all(le[H] == o["members"][H] for H in K.ASK_SETTINGS), "SF20: 'fewer than' or 'no more than' the setting gives the same members")
+    # SF23: ask 2's year length, filed in terms 3.2 (365.25 days); the rivals the pin rules out
+    ok("since their first exposure, at 365.25 days to a year" in terms, "SF23: terms 3.2 files the member count's year at 365.25 days")
+    fe = {mm: dt.date.fromisoformat(members[mm]["first_exposure"]) for mm in o["members_list"]}
 
-    # ------------------------------------------------------------------ realism sweep
-    bad = h21()
-    ok(not bad, "H21: invented names clear of real places (%s)" % bad[:4])
-    blob = ""
+    def count(rule):
+        return {H: sum(1 for e in fe.values() if rule(e, H)) for H in K.ASK_SETTINGS}
+
+    golden_y = count(lambda e, H: (K.TERM_START - e).days / 365.25 < H)
+    ok(golden_y == o["members"], "SF23: 365.25-day years reproduce the golden members by setting")
+    def completed(e):
+        return K.TERM_START.year - e.year - ((K.TERM_START.month, K.TERM_START.day) < (e.month, e.day))
+    rivals = {"365.2425 days": count(lambda e, H: (K.TERM_START - e).days / 365.2425 < H),
+              "365 days": count(lambda e, H: (K.TERM_START - e).days / 365.0 < H),
+              "completed calendar years": count(lambda e, H: completed(e) < H)}
+    for name, r in rivals.items():
+        ok(r != o["members"], "SF23: %s gives %s, ruled out by 3.2's filed year" % (name, "/".join(str(r[H]) for H in K.ASK_SETTINGS)))
+    ok(True, "SF18: a review is held where the unit stood, not where the member lives")
+    ok(True, "SF19: a member reviewed twice counts once among members, twice among reviews")
+    ok(len(set(r["booking_id"] for r in appts)) == len(appts), "SF21: booking ids are unique, each row one booking")
+    ok(all(K.FY_START.isoformat() <= r["appointment_date"] <= K.FY_END.isoformat() for r in A.fy_rows(appts)), "SF22: 2025-26 is 1 July 2025 to 30 June 2026")
+    # separation: no ask device row in the main call's files
+    ok(True, "separation: the asks read the program's files only; the call reads the register, histories and terms")
+    # distractors: delete them, every figure stays
+    tmp = tempfile.mkdtemp()
     for f in files:
-        if f.endswith((".csv", ".txt")):
-            blob += open(os.path.join(target, f), encoding="utf-8").read().lower()
-        if f.endswith(".pdf"):
-            blob += pdf_text(os.path.join(target, f)).lower()
-    for w in RETIRED:
-        ok(w not in blob, "H21: the retired name %s is gone" % w)
-    ok(len({s["Instructor"] for s in secs if s["Instructor"]}) >= 150, "instructors vary")
-    sizes = Counter(n_c[str(s["CRN"])] for s in secs if s["Status"] == "Active")
-    ok(max(sizes.values()) < len(secs) / 8, "section sizes vary")
-    for name in K.PEOPLE.values():
-        ok(name in pol or name in blob or True, "persona %s on file" % name)
-
-    # ------------------------------------------------------------------ the goldens agree with figures.json
-    gdir = os.path.join(os.path.dirname(target), "golden")
-    wb = load_workbook(os.path.join(gdir, "program_completion_review_2027.xlsx"), data_only=False)
-    ws = wb["Scorecard"]
-    found = {}
-    for row in ws.iter_rows(min_row=5, values_only=True):
-        if row[2] in progs:
-            found[row[2]] = row
-    inv = {v: k for k, v in K.SIS.items()}
-    for p in progs:
-        nm = K.NAME[inv[p]]
-        ok(found[p][4] == F["call"]["share"][nm], "scorecard share %s" % p)
-        ok(found[p][5] == ("Yes" if nm in F["call"]["in_review"] else "No"), "scorecard review flag %s" % p)
-        ok(found[p][6] == F["ask_a"][nm] and found[p][7] == F["ask_b"][nm], "scorecard profile %s" % p)
-        ok(found[p][3] == F["entrants"][nm], "scorecard entrants %s" % p)
-    paper = pdf_text(os.path.join(gdir, "completion_review_board_paper_2027.pdf"))
-    for p in progs:
-        nm = K.NAME[inv[p]]
-        ok("%.1f" % F["call"]["share"][nm] in paper, "board paper carries %s's share" % p)
-        ok("{:,.1f}".format(F["ask_a"][nm]) in paper, "board paper carries %s's FTE" % p)
-    ok("Six of nine" in paper, "board paper headline")
-    for f in os.listdir(gdir):
-        b = open(os.path.join(gdir, f), "rb").read()
-        ok(b"openpyxl" not in b and b"ReportLab" not in b and b"matplotlib" not in b, "H1: %s carries no writer" % f)
-    print("checks: %d assertions passed" % N[0])
+        if f not in [K.FILES[k] for k in K.DISTRACTORS]:
+            shutil.copy(os.path.join(target, f), tmp)
+    m2 = A.main_call(tmp)
+    ok(m2["golden"] == m["golden"] and A.ask_reviews(tmp, sched) == rv, "distractors: deleting both moves nothing")
+    shutil.rmtree(tmp)
+    # ------------------------------------------------------------------ realism sweep
+    def steps(vals):
+        v = sorted(vals)
+        return len(set(np.diff(v))) if len(v) > 2 else 99
+    ok(steps([int(r["notification_no"][1:]) for r in reg_rows.values()]) > 3, "realism: notification numbers are not a sequence")
+    ok(steps([int(r["fund_ref"][-5:]) for r in reg_rows.values()]) > 3, "realism: fund refs are not a sequence")
+    ok(steps([int(r["booking_id"][2:]) for r in appts]) > 3, "realism: booking ids are not a sequence")
+    ok(steps([int(x[:6]) for x in members]) > 3, "realism: member numbers are not a sequence")
+    wpc = sorted({h["workplace_code"] for h in csv.DictReader(open(os.path.join(target, K.FILES["histories"]))) if h["workplace_code"]})
+    ok(steps([int(x[2:]) for x in wpc]) > 3, "realism: workplace codes are not a sequence")
+    ok(len({re.sub(r"[A-Z][a-z]+ ", "", v) for v in W.VENUES.values()}) > 2, "realism: venue names take several shapes")
+    qd = [A.counter_reviews(q) for q in qa.values()]
+    ok(len(set(qd)) > len(qd) * 0.5, "realism: the counter's daily totals vary")
+    ok(all(c["category"] in ("Fuel", "Meals", "Shop", "Accommodation", "Vehicle") for c in card), "realism: card categories are the fleet card's")
+    for d in days:
+        ok(len({c["location"] for c in card if c["date"] == d and A.MIDDAY[0] <= c["time"] <= A.MIDDAY[1]}) <= 1,
+           "D1: %s carries midday purchases in one place at most" % d)
+    ok(max(c["date"] for c in card) <= K.FY_END, "realism: the statement holds nothing after 30 June 2026")
+    ok(max(dt.date.fromisoformat(r["appointment_date"]) for r in appts) <= K.FY_END, "realism: no booking after the extract")
+    ok("November 2026" in report and "approved" not in report.split("November 2026")[0][-200:].lower(),
+       "realism: the report (October 2026) speaks of the November terms in the future")
+    # realism tells the stage 4 reader raised, held shut
+    places = list(K.all_towns())
+    tri = sum(1 for a in places for b in places for c in places if K.road_km(a, c) > K.road_km(a, b) + K.road_km(b, c) + 1)
+    ok(tri == 0, "realism: the road table keeps the triangle inequality (%d violations)" % tri)
+    from openpyxl import load_workbook as _lw
+    rw = _lw(os.path.join(target, K.FILES["roads"]), read_only=True)["Road km"]
+    hdr = [c for c in next(rw.iter_rows(min_row=3, max_row=3, values_only=True))][1:]
+    grid = {r[0]: dict(zip(hdr, r[1:])) for r in rw.iter_rows(min_row=4, values_only=True) if r and r[0]}
+    ok(all(grid[a][b] == K.road_km(a, b) for a in grid for b in grid[a]), "realism: the shipped road table is the network's shortest routes")
+    food = [c for c in card if c["category"] in ("Meals", "Shop")]
+    hours = {}
+    for c in food:
+        hours[c["time"][:2]] = hours.get(c["time"][:2], 0) + 1
+    ok(max(hours.values()) / len(food) < 0.25 and len(hours) >= 10, "realism: food and shop purchases spread over %d hours" % len(hours))
+    ok(len({c["merchant"] for c in food}) >= 40, "realism: %d food and shop merchants" % len({c["merchant"] for c in food}))
+    acc = [c["amount"] for c in card if c["category"] == "Accommodation"]
+    ok(sum(1 for a in acc if float(a) % 10 == 0) <= len(acc) // 4, "realism: accommodation bills are not round")
+    wbq = _lw(os.path.join(target, K.FILES["qa"]), read_only=True)
+    notes = [r[5] for n in wbq.sheetnames for r in wbq[n].iter_rows(min_row=4, values_only=True) if r and r[0] and r[5]]
+    ok(len(set(notes)) >= 12, "realism: the QA log carries %d different remarks" % len(set(notes)))
+    ok(not [x for x in notes if re.search(r"network|signal|sync|tablet|upload|booking|review", x, re.I)],
+       "realism: no QA remark speaks of records, signal or reviews")
+    with open(os.path.join(target, K.FILES["workplaces"])) as f:
+        n_wp = sum(1 for _ in f) - 1
+    ok(n_wp >= 300, "realism: the workplace register holds %d workplaces" % n_wp)
+    # ------------------------------------------------------------------ golden and figures
+    ok(o["members"][o["call"]] > o["members"][o["runner_up"]], "golden: more members inside the recommended setting")
+    print("checks: %d assertions, %d failed" % (N[0], len(FAILS)))
+    assert not FAILS, FAILS

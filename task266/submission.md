@@ -1,64 +1,66 @@
 ## Tags
 
-**Domain:** Sociology & Demography, event history and life course analysis (how many of Quenlow County Community College's nine associate-degree programs go into review in June 2027, by each program's three-year completion share for its fall 2023, 2024 and 2025 entering students, estimated as the cumulative incidence of the degree with transfer out and withdrawal as competing endings and the admissions still open censored).
-**Analytical objective:** Descriptive & Distribution Analysis (how each program's entering students are distributed across the ways their admission ends, and when, over the nine terms after entry).
+**Domain:** Biomedical & Clinical Research, survival and time-to-event analysis.
+**Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Six of the nine programs go into review in June 2027: General Studies, Biological Sciences, Business Administration, Psychology, Medical Assisting and Early Childhood Education.**
-Their three-year completion shares are 20.9, 24.9, 22.2, 25.9, 26.2 and 19.5 per cent, below the policy's 30 per cent floor, while Criminal Justice (32.5), HVAC-R Technology (44.4) and Nursing (36.7) are above it. Not one program, Early Childhood Education alone, from one minus a Kaplan-Meier curve of the time to the degree, which censors students who transferred out or withdrew as if they could still earn it and puts the transfer-oriented programs at 35 to 41 per cent. Not seven with Criminal Justice (26.8 per cent), from the fall 2023 class alone, which leaves out the two classes the policy includes. Not eight, from the degrees earned within nine terms so far over all entrants, which counts the students still enrolled as non-completers.
+**Set the Former Asbestos Workers Review Program's horizon at 60 years after first exposure for the term from 1 July 2027.**
+93.3% of the workforce's mesotheliomas are diagnosed within 60 years against 85.1% within 55, so 60 is the shortest five-year step that reaches nine in ten. Not 55 from the register's latencies as they stand (92.7% within 55) or from a curve that admits each case only from 1 July 2004 (95.9%): both read the long latencies of the 1970s and 1980s workforce, which the register closed at 30 June 2026 cannot hold yet, as latencies that do not happen.
 
 ## 2. Critical Components
 
-1. General Studies **20.9 per cent**, Biological Sciences **24.9 per cent**, Business Administration **22.2 per cent** and Psychology **25.9 per cent** of entering students with an associate degree within nine terms, transfer out and withdrawal ending the admission without it
-2. Medical Assisting **26.2 per cent** and Early Childhood Education **19.5 per cent**
-3. Criminal Justice **32.5 per cent**, HVAC-R Technology **44.4 per cent** and Nursing **36.7 per cent**
+1. Register cases in the estimate (occupational, first exposed before 1 January 1986): **5,271**
+2. Share of the workforce's mesotheliomas diagnosed within 55 years: **85.1%**
+3. Share diagnosed within 60 years: **93.3%**
 
 ## 3. Step-by-Step Solution
 
-1. Stacked the three sheets of ir_fall_entering_students_2023-2025.xlsx (5,292 students) on the current system's numbers, program codes and term codes, fall 2023's legacy ones carried through sis_conversion_student_id_map_2024.txt, program_register_2026-27.xlsx and term_calendar_2018-2027.xlsx, each student in the program entered (the policy, section 3).
-2. Took each student's admission at entry from sis_admissions_exits_202410-202720.csv: the exit term and reason (GR degree, TO transfer out, WD withdrawal) or no exit for an admission still open at the end of spring 2027, and removed the 5 students who died (DC).
-3. Counted terms from the fall of entry (term 1, summer terms included) to the exit term; the fall 2024 class is observed to its eighth term and the fall 2025 class to its fifth.
-4. Estimated each program's cumulative incidence of the degree to the ninth term, term by term the degrees over the admissions still open times the share still open, with TO and WD as competing endings and open admissions censored after spring 2027: General Studies 20.9, Biological Sciences 24.9, Business Administration 22.2, Psychology 25.9, Medical Assisting 26.2, Early Childhood Education 19.5, Criminal Justice 32.5, HVAC-R Technology 44.4 and Nursing 36.7 per cent.
-5. Sent the programs below 30 per cent into review (the policy, section 3): six.
-6. Summed each fall2026_census_registrations.csv row in place at the census (RE and RW dated on or before the 8 September 2026 census in term_calendar_2018-2027.xlsx, and WC) at its section's Cr Hrs in fall2026_section_schedule.xlsx, by the student's program of record in effect for fall 2026 in program_of_record_history.csv (the row whose period covers the term; an application row that ends the term before it begins never took effect), and divided by 15 (the policy, section 4).
-7. Counted each program's classes from the active sections of the subjects the register's Subjects sheet gives it, sections with one instructor, days and start time in weeks they have in common taken as one class with their census registrations added, and kept those under ten (the policy, section 4).
+1. Stacked ddcf_mesothelioma_register_2013-2026.csv and ddcf_mesothelioma_register_2004-2012_legacy.xlsx, reading the first system's refs DD/05/0213 as the histories' DD05-0213 and its codes OCC, DOM, ENV and NIL as the current words: 6,387 cases.
+2. Took each case's first exposure from ddcf_occupational_histories_2026-09-30.csv as the earliest start of a period of work marked exposed (Y or Yes), per terms 2.2, and kept the occupational cases first exposed before 1 January 1986 per terms 2.1: 5,271 cases.
+3. Measured each case's years from first exposure to diagnosis at 365.25 days (terms 4.3) and its window, the years its first exposure leaves between the register's start and its 2025-26 close as ddcf_annual_report_2025-26.pdf states them.
+4. Estimated the distribution over every case whenever diagnosed (terms 4.2) by the nonparametric maximum likelihood estimate for doubly truncated data (Efron and Petrosian), no shape assumed (terms 4.4): 85.1% within 55 years and 93.3% within 60, so 60 is the shortest step at nine in ten.
+5. Placed each Mobile Review Unit (site MRU) day of 2025-26 in review_appointments_2023-07_to_2026-06.csv in the town of the unit's midday purchase on mobile_review_unit_card_statement_2025-26.xlsx (11.30 to 14.00), which moves the four published visit pairs the unit worked the other way round, and in the published town where the day has none.
+6. Counted a blank attendance row as a review on the unit days where mobile_review_unit_xray_qa_log_2025-26.xlsx (counter end less start less QC exposures, two exposures a review) fits the Attended and blank rows together rather than the Attended rows alone; blank rows on every other day are no-shows: 1,923 reviews across the circuit towns.
+7. Took the distinct members with a review in 2025-26 on those readings (7,570) and counted those with fewer years than each setting since their first exposure in review_program_members_2026-06-30.csv on 1 July 2027 (terms 3.2).
+8. Recommended setting the horizon at 60 years after first exposure.
 
 ## 4. Deliverable Answers
 
-### program_completion_review_2027.xlsx
+### review_horizon_board_paper_2027.docx
 
-1. Each program's three-year completion share and whether it goes into review:
-   - General Studies: 20.9 per cent, goes into review
-   - Biological Sciences: 24.9 per cent, goes into review
-   - Business Administration: 22.2 per cent, goes into review
-   - Psychology: 25.9 per cent, goes into review
-   - Medical Assisting: 26.2 per cent, goes into review
-   - Early Childhood Education: 19.5 per cent, goes into review
-   - Criminal Justice: 32.5 per cent, stays out of review
-   - Heating, Ventilation, Air Conditioning and Refrigeration Technology (HVAC-R): 44.4 per cent, stays out of review
-   - Nursing: 36.7 per cent, stays out of review
-2. Each program's full-time-equivalent enrolment at the fall 2026 census:
-   - General Studies: 1,148.8
-   - Biological Sciences: 352.5
-   - Business Administration: 525.2
-   - Psychology: 399.4
-   - Medical Assisting: 381.5
-   - Early Childhood Education: 341.0
-   - Criminal Justice: 391.2
-   - HVAC-R Technology: 272.3
-   - Nursing: 533.1
-3. Each program's classes of its own courses that ran in fall 2026 with fewer than ten students at the census:
-   - General Studies: 2
-   - Biological Sciences: 15
-   - Business Administration: 7
-   - Psychology: 7
-   - Medical Assisting: 10
-   - Early Childhood Education: 5
-   - Criminal Justice: 8
-   - HVAC-R Technology: 21
-   - Nursing: 79
+1. Recommendation: set the Program's horizon at 60 years after first exposure for the term from 1 July 2027.
+2. Chart of the share of the workforce's mesotheliomas diagnosed by years after first exposure, each setting from 40 to 70 marked with its share, the nine-in-ten line drawn and the 60-year setting highlighted, under "How the shares were read".
 
-### completion_review_board_paper_2027.pdf
+### review_horizon_workbook_2027.xlsx
 
-1. The board paper recommending the six programs for review, with a step chart of each program's share of entering students holding an associate degree by term over the nine terms after entry and the 30 per cent floor marked as a dotted line.
+1. Share of the workforce's mesotheliomas diagnosed within each setting, per cent to one decimal:
+   - 40 years: 32.1%
+   - 45 years: 53.9%
+   - 50 years: 72.4%
+   - 55 years: 85.1%
+   - 60 years: 93.3%
+   - 65 years: 97.4%
+   - 70 years: 99.1%
+2. Members reviewed in 2025-26 with fewer years than the setting since first exposure on 1 July 2027:
+   - 45 years: 355
+   - 50 years: 1,457
+   - 55 years: 3,272
+   - 60 years: 5,286
+   - 65 years: 6,685
+   - 70 years: 7,340
+3. Reviews the Mobile Review Unit held in each town in 2025-26:
+   - Brinalong: 327
+   - Corrinbar: 399
+   - Dorrabee: 128
+   - Fenalong: 93
+   - Garrock: 84
+   - Haskesford: 71
+   - Kellowie: 116
+   - Lathardine: 64
+   - Ostlebury: 78
+   - Pellandra: 109
+   - Quillerton: 193
+   - Strathowie: 127
+   - Tarramore: 79
+   - Wennobank: 55

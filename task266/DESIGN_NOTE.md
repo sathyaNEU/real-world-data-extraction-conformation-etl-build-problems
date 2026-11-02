@@ -17,6 +17,202 @@ Architecture 2, drawn 2026-11-02, a re-root at stage 1 of architecture 1 (Quenlo
 11. Uniqueness screens, run before any harness: `guard.py mechanisms --objective descriptive-distribution` (every Descriptive driver and lineage read; the nearest by mechanism is task265, left truncation of a cohort registry, whose delayed-entry curve is this build's rung 1); `guard.py slots` on the mechanism's nouns (doubly truncated, double truncation, Efron, Lynden-Bell, case-only, right truncation, reverse-time, inclusion window, register window): no build or slot screen holds both edges of a case register (task179 holds a reverse-time estimator for a serial interval, task471 v1 a right edge in a trip survey, task176 and task133 left truncation); on the setting's nouns (asbestos, mesothelioma, latency, latent claims, compensation scheme, exposure cohort): no build on the disease or the fund (task480's asbestos-cement pipe length is an unrelated network inventory).
 12. Sources, one line each: the client's survival analysis example (time to an event with the data's real structure handled); the two-layer reference's `estimation_fit` family (censoring and truncation); Efron and Petrosian's nonparametric methods for doubly truncated data; task265 (the left edge alone, a cohort registry with non-cases), task179 (the right edge alone), task471 v1 (a right edge on trip replies): each one edge, none a case-only register cut on both.
 
+## Default path
+
+1. Stack the register's two layouts: the current case system's CSV (cases notified from 1 January 2013) and the first system's workbook (notified 1 July 2004 to 31 December 2012), its refs re-keyed from DD/05/0213 to the histories' DD05-0213, its letter codes (OCC, DOM, ENV, NIL) read as the current system's words. 6,387 cases.
+2. From the occupational histories take each case's first exposure as the first day of its earliest period of work marked exposed (Y on the current rows, Yes on the migrated ones), and keep the occupational cases first exposed before 1 January 1986 (program terms 2.1 and 2.2): 5,271 cases.
+3. Each case's years after first exposure: days from first exposure to diagnosis over 365.25 (terms 4.3).
+4. Rung 0: the share of the register's cases within each setting: 40 years 29.4 per cent, 45 57.7, 50 80.5, 55 92.7, 60 97.9; nine in ten first reached at 55.
+5. Rung 1, the field's own correction for a register that began after its cohort's exposure: the product-limit curve with delayed entry, each case at risk only from its own latency on 1 July 2004 (the left edge), deaths irrelevant because every case is an event: 40 years 43.3, 45 68.7, 50 87.2, 55 95.9, 60 99.0; nine in ten at 55.
+
+Ends on: 55 years (the delayed-entry curve, 95.9 per cent of cases within 55 years; rung 0 files 55 too)
+Golden: 60 years (the doubly truncated nonparametric estimate: 85.1 per cent within 55, 93.3 within 60)
+
+## Stump sentence
+
+A competent solver reads each case's latency from first exposure to diagnosis, admits each case to the risk set only from the Fund's start on 1 July 2004 (delayed entry) and files a 55-year horizon, because its product-limit curve passes nine in ten by 55 (95.9 per cent); the step that lands it there is treating the register as seeing every latency after the Fund began, when it also cannot see the latencies that end after 30 June 2026, which for the workers first exposed in the 1970s and 1980s are their long ones, and the estimate that conditions each case on its own two-sided window puts 85.1 per cent within 55 years and nine in ten (93.3) within 60.
+
+## Three rules
+
+Task type: survival-time-to-event-analysis (Biomedical & Clinical Research), which serves Descriptive & Distribution Analysis: the call describes the distribution of the years between first asbestos exposure and a mesothelioma diagnosis and reads a setting off it, predicting no value.
+Domain test: the deciding quantity is the induction-period distribution of mesothelioma (years from first asbestos exposure at work to diagnosis) over every case the pre-1986 workforce produces, the distribution of an event's timing that a survival analyst estimates from a case register, worked the way the task type works it; the register's selection by diagnosis date is what the analysis has to handle.
+Swap: "set the review horizon at the shortest five-year step by which nine in ten of the workforce's mesotheliomas are diagnosed" with a school's nouns ("the age by which nine in ten pupils have left") stops making sense: a school's roll holds every pupil from entry, nothing keeps a pupil off it for the age at which they leave, and there is no induction period between an exposure and a disease for a register's opening and closing dates to cut.
+Layer 1: the register in two layouts across the Fund's January 2013 change of case system (re-keyed refs, letter codes against words, dd-Mon-yyyy text dates), interviews migrated with workplace names on the first system's rows and workplace codes and ANZSCO codes on the current ones, exposure flags Yes and No against Y and N, concurrent and overlapping periods of work, the later workforce and the household, environmental and unexposed cases on the same register; the program's files: two QA log templates, a fleet card statement's merchants and localities, bookings closed as Rebooked or Cancelled. Each item is what the producing system writes; none is placed to be caught.
+Layer 2: estimation_fit (censoring and truncation): the register sees a case only if its diagnosis fell between 1 July 2004 and 30 June 2026, so the methodological choice that flips the call is an estimate that conditions each case on both edges of its own observation window.
+Decisive step: conditioning each case on its two-sided window, the nonparametric maximum likelihood estimate for doubly truncated data (Efron and Petrosian), which weights each case by the chance its own window catches a latency and so counts the long latencies of the 1970s and 1980s workforce that the register cannot show yet.
+Not semantics: every field read correctly (the diagnosis dates, the exposure flags in both vocabularies, the register's start and its 2025-26 close, 365.25-day years) leaves the solver with the register's latencies as they stand (55) or the delayed-entry curve (55); no field, code, unit or definition carries the truncation, which is a property of when the register looked, not of what a column means.
+Not rule application: the terms file the WHAT (every mesothelioma of the workforce whenever diagnosed, 365.25-day years, steps of five from 40 to 70, no assumed shape) and no rule says how to estimate from the register; the enumerated family (register as it stands, delayed entry, reverse time, doubly truncated nonparametric, doubly truncated lognormal, gamma, log-logistic and Weibull) spreads from 55 to beyond 70 (three settings: 55, 60, 70); the standing family after the terms (the nonparametric constructions a register calls for: as it stands 55, delayed entry 55, reverse time 70, both edges 60) still spreads three settings; what rules out all but one is the register's two binding edges, read through every case's own first exposure and named in no file.
+Analyst test: a strong analyst who derives each case's first exposure from the histories, keeps the workers first exposed before 1986 and admits each case to the risk set only from the Fund's start on 1 July 2004 (the delayed-entry product-limit curve the survival field fits to a register that began after its cohort's exposure) reads 95.9 per cent of cases within 55 years and files 55 years; the delayed-entry risk set reads the long latencies still to come for the 1970s and 1980s workforce as latencies that do not happen.
+Estimand: program terms 4.1 to 4.4 in review_program_terms_2027-2031.pdf: population every mesothelioma (pleural, peritoneal or pericardial) among workers first exposed to asbestos at work in the State before 1 January 1986, whenever diagnosed (members not yet observed included, on both sides of the register's years); outcome years from the first day of the earliest exposed period of work to the day of diagnosis at 365.25 days; unit the case; comparison the shortest five-year step from 40 to 70 within which at least nine in ten are diagnosed, read without assuming a shape.
+No decoy: nothing is planted to be caught: no memo, draft, briefing, prior review, published latency or stakeholder figure ships; the annual report states the register's start and close as facts about the register; the State Cancer Registry's counts and the workplace register are named distractors that carry no latency and rank no setting.
+No certified replay: no certified or published figure is reproduced and no shipped figure ties under any reading; the method is reached from the register's own sampling, and the terms name no method beyond "without assuming a shape".
+Lesson: a register that holds a case only when its event falls inside the register's calendar years cuts every case's delay on both sides at points its own origin fixes, and neither the delayed-entry curve nor the reverse-time curve is right; no build on file teaches both edges at once (task265 the left edge in a cohort registry with non-cases, task179 the right edge of a serial interval, task471 v1 a right edge on trip replies).
+
+## Survivor anatomy
+
+Actor: the deciding property is each case's two-sided window (its latency on 1 July 2004 and on 30 June 2026), a relation between the case's own first exposure in the histories and the register's dates in the annual report; no column in any file holds a window, a latency or an inclusion chance.
+Link: the right edge acts through each case's first exposure against a date no file pairs with it (the 2025-26 close), so the latencies a case could not yet show are read through a relation no key offers; no sentence invites the long-latency gap, and the field's method for a late-starting register (delayed entry) never asks for it.
+Reflex: the field's correction for a register that began after its cohort's exposure, delayed entry (the product-limit curve with each case at risk from its 1 July 2004 latency), sits at rung 1 and files 55 years (95.9 per cent within 55); rung 0, the register's latencies as they stand, files 55 (92.7).
+Back-test: the textbook route validates: the delayed-entry curve reproduces the register's own latencies inside the years the register covers (every case sits in its risk set, none outside the window), the register's year-by-year counts are smooth and complete from 2004-05, and nothing in the pack observes a latency after 30 June 2026 that could refute it.
+Second use: every file the decisive step reads is read by rung 0 for its own reason (the register and the histories for any latency at all, the annual report for the register's start, the terms for the estimand); deleting the decisive step from the design drops no file, column or organ.
+Shock: the movement the step recovers reads as ordinary: the register's latencies shorten with each later first-exposure decade (1950s cases older at diagnosis), which reads as heavier post-war exposure shortening the induction period, an explanation the field itself offers; the 1970s workforce is the pack's bulk, not an anomaly.
+Pins: the WHAT sits in the Board's program terms (4.1 steps, 4.2 nine in ten of every mesothelioma whenever diagnosed, 4.3 365.25-day years, 4.4 no assumed shape), and no filed sentence names a window, an edge, truncation, a risk set, a weight or a method; the report's register sentence states the start and the close as facts of the register.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the register's latencies as they stand (55) | no | the histories' dates and the register's diagnoses | the first count anyone makes | no | no | yes, one share | no | readable |
+| R1 delayed entry at 1 July 2004 (55) | the report's "since the Fund began on 1 July 2004" sends a survival analyst to the left edge | no | yes, the field's correction for a late-starting register | no | no | no | no | readable |
+| R2 reverse time at 30 June 2026 (70 or beyond) | the close sentence, read alone | no | yes, the right-truncation estimator for incubation data | no | no | no | no | readable |
+| R3 (decisive) both edges at once, the doubly truncated nonparametric estimate (60) | no: "whenever it is diagnosed" names the population, no sentence names a window, an edge or truncation | no: no column holds a window or an inclusion chance | no: the opponent's default for a register is delayed entry, and the both-edge estimate is the step after it | no: no control or corpus scores any rung | no: selection by diagnosis date is no battery item | no: an iterative estimate over every case's window | no: every file it reads, rung 0 reads | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the settings | five-year steps from 40 to 70 years after first exposure | any year | the setting is a step | terms 4.1 "in five-year steps from 40 to 70 years" |
+| SF2 | first exposure | first day of the earliest period of work assessed exposed | first day of any work | beyond 70 (89.7 per cent at 70) | terms 2.2 |
+| SF3 | the workforce | first exposed at work before 1 January 1986 | every occupational case | 60 | same call (asserted) |
+| SF4 | mesotheliomas | pleural, peritoneal and pericardial | pleural only | 60 | same call; terms 4.2 |
+| SF5 | the population | every mesothelioma of the workforce, whenever diagnosed | the register's cases as they stand | 55 | terms 4.2 "whenever it is diagnosed" |
+| SF6 | years | days over 365.25 | days over 365; whole calendar years off the register | 60; 55 | same call; terms 4.3 |
+| SF7 | within a step | diagnosed no later than its number of years | strictly fewer | 60 | same call (asserted) |
+| SF8 | nine in ten | at least 90 per cent | more than 90 per cent | 60 | same call: no share within a point of 90 |
+| SF9 | the estimate | without assuming a shape | doubly truncated lognormal, gamma, log-logistic, Weibull | 60 each (Weibull refuted by 68.8 in log-likelihood) | same call; terms 4.4 |
+| SF10 | the register's right edge | diagnoses to 30 June 2026 | the close on 30 September 2026 | 60 | same call; the report |
+| SF11 | occupational cases with no exposed period | none on the register | excluded or kept | 60 | same call: none exist (asserted) |
+| SF12 | a case on both layouts | none | deduplicate | 60 | same call: no ref on both (asserted) |
+| SF13 | the first system's refs | re-keyed DD/05/0213 to DD05-0213 | unmatched | loud: every first-system case without a history | the histories' refs (asserted) |
+| SF14 | vital status | every diagnosed case counts | living cases only | not a reading of 4.2 | terms 4.2 "every mesothelioma" |
+| SF15 | the left edge | diagnoses from 1 July 2004 inclusive | exclusive | 60 | same call (asserted) |
+| SF16 | concurrent periods | the earliest exposed start | the first listed | 60 | same call: jobs listed in date order |
+| SF17 | attendance | Attended, DNA, Cancelled, Rebooked or blank as the booking system writes them | a further code | none | the vocabulary is closed (asserted) |
+| SF18 | a town's reviews | where the unit stood that day | the member's home | another ask | the asking sentence: reviews the unit held in each town |
+| SF19 | reviews and members | reviews count each booking reviewed; members count once | members as reviews | another ask | the asking sentences |
+| SF20 | inside a setting on 1 July 2027 | fewer years than the setting since first exposure | no more than the setting | same figures | terms 3.2 "fewer than"; no member on a step's exact day (asserted) |
+| SF21 | a booking row | one booking | a row per review | same figures | booking ids unique (asserted) |
+| SF22 | 2025-26 | 1 July 2025 to 30 June 2026 | the calendar year | another window | terms 3.1 "a program year runs from 1 July to 30 June" |
+| SF23 | a member's years since first exposure on 1 July 2027 | days over 365.25 | days over 365.2425; days over 365; completed calendar years | 354 at 45 (365.2425); 348 / 1,443 / 3,253 / 5,276 / 6,679 / 7,334 (365 days); 354 / 1,455 / 3,271 at 45, 50, 55 (completed years) | terms 3.2 "at 365.25 days to a year" (filed after the stage 4 judge's FIX_NOW) |
+
+## Ladder
+
+| Rung | Construction | 40 | 45 | 50 | 55 | 60 | 65 | 70 | Setting |
+|---|---|---|---|---|---|---|---|---|---|
+| R0 | the register's latencies as they stand | 29.4 | 57.7 | 80.5 | 92.7 | 97.9 | 99.4 | 99.9 | 55 |
+| R1 | delayed entry from 1 July 2004 | 43.3 | 68.7 | 87.2 | 95.9 | 99.0 | 99.7 | 99.9 | 55 |
+| R2 | reverse time from 30 June 2026 | 16.5 | 32.9 | 48.3 | 60.9 | 72.8 | 84.6 | 92.8 | 70 |
+| R3 | both edges, nonparametric (golden) | 32.1 | 53.9 | 72.4 | 85.1 | 93.3 | 97.4 | 99.1 | 60 |
+| truth | every one of the 8,600 cases, whenever diagnosed | 32.6 | 54.5 | 73.0 | 85.5 | 93.1 | 96.9 | 98.6 | 60 |
+
+- Margins: the golden's 55-year share sits 4.9 points under nine in ten (4.8 bootstrap standard errors of 1.02) and its 60-year share 3.3 points over (4.2 standard errors of 0.80); 40 of 40 resamples set 60.
+- Position: rung 0 and rung 1 file the same wrong setting (55) from opposite errors (rung 0 loses short latencies of the early workforce and long latencies of the late one; rung 1 restores the first loss only), rung 2 overshoots to 70; no single-edge correction lands.
+- Worth against the bin: the decisive step moves the ninetieth percentile from 51.3 years (delayed entry) to 57.6 (1.26 five-year bins); the standing both-edge family spreads 56.9 (gamma) to 59.1 (log-logistic), 0.45 bins; the estimate's 95 per cent sampling interval is about 1.2 years, 0.24 bins; 1.26 exceeds 0.69.
+- Pricing sequence: (1) the residue the WHAT leaves is the method of reading every case's latency from a window, a method and not a knob; (2) the move needed is 10.8 points off the 55-year share (95.9 to 85.1), against the 38.7 per cent of the workforce's 8,600 cases the register cannot hold yet or never held; (3) the one-group-by route (the register's share within 55 years) files 55 and is not affine in any shipped column; (4) the step estimates a whole-population curve, standard errors 1.02 and 0.80 points at the two deciding steps; (5) the verdict is one setting, 4.2 to 4.8 standard errors from both boundaries; (6) and (7) do not apply (no change call, nothing capped or suppressed); (8) the reflex sweep is the rung table above plus the parametric family, run as code, and latency is drawn independent of first exposure (conditional tau -0.017 over 2.1 million comparable pairs).
+- Dominance: the register's 2026 close binds on 3,248 cases first exposed 1970 to 1985 (their windows end 41 to 56 years after exposure), while the 2004 start binds hardest on the 215 cases first exposed before 1957; the right edge carries the move.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | every mesothelioma of the pre-1986 workforce, whenever diagnosed | filed literally in 4.2 with the unobserved members stated; SF3, SF5 |
+| 2 Unit of account | the case | 4.2 counts mesotheliomas; SF14 |
+| 3 Attribution window | none on diagnosis: every case counts, before, inside or after the register's years | 4.2 "whenever it is diagnosed" |
+| 4 As-of dating | the register as closed for 2025-26 (diagnoses to 30 June 2026) | the report's register sentence; SF10 same call at the close date |
+| 5 Version basis | the current case system and the first system's migrated rows, one case each | SF12, SF13 asserted |
+| 6 Denominator | the workforce's mesotheliomas (the distribution sums to one) | 4.2 "nine in ten of the mesotheliomas" |
+| 7 Weighting | each case weighted for its own window's chance | the decisive step (the method, forced by the register's sampling) |
+| 8 Window length | no rate window | not applicable, asserted by construction |
+| 9 Boundary inclusivity | within a step is no later than its years; inside a setting on 1 July 2027 is fewer years | 4.3 and 3.2 filed; SF7 and SF20 same figures |
+| 10 Rounding path | shares to one decimal at the end; the setting from unrounded shares | the prompt's rounding sentence; no share within a point of 90 (SF8) |
+| 11 Tie-break | none (one setting first reaches nine in ten) | C1 |
+| 12 Maturity and censoring | cases still to come are in the population | 4.2 filed; the method handles them (the stump, not a fork) |
+| 13 Order of operations | in-scope filter, latency, estimate, setting | C1: the filter and the latency commute |
+| 14 Row order | none | C1, the estimate is order-free |
+| 15 Duplicate resolution | no case on both layouts; booking ids unique | SF12, SF21 asserted |
+| 16 Identity normalisation | the first system's refs re-keyed | SF13 asserted; loud if missed |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | days, years at 365.25 | 4.3 filed; SF6 same call |
+| 19 Code and status semantics | exposure Y/Yes, letter codes OCC to NIL, attendance codes | the systems' own words; SF17; never the stump |
+| 20 Integerisation | the setting is a five-year step | 4.1 filed; SF1 |
+| 21 Clause scope | 4.2 to 4.4 govern the horizon, 3.2 the invitations | filed clause by clause |
+| 22 Forward window contents | the cases still to come are estimated from the register's windows, no driver file | the decisive step itself; truth asserted at 60 |
+
+## Literal reader
+
+Executing the prompt and terms 2.1, 2.2, 3.2 and 4.1 to 4.4 word for word: "every mesothelioma among the Program's workforce, whenever it is diagnosed" names cases the register cannot hold, so the literal estimand is the distribution of every case's years after first exposure, read from a register that holds diagnoses from 1 July 2004 to 30 June 2026 (the report) without assuming a shape (4.4); the register's sampling forces the both-edge nonparametric estimate, which files 60 (asserted). Every differing reading of a term either gives 60 (SF3, SF4, SF6, SF7, SF8, SF9, SF10, SF15) or violates a quotable sentence (SF2 by 2.2, SF5 by 4.2); the easy answers come from easy methods on the same literal estimand (rung 0 and rung 1, 55), never from another reading.
+
+## Oracles
+
+none: no shipped figure ties under the golden or under a wrong reading. The annual report's figures (claims, payments, members, visits) feed no graded figure; the cancer registry's counts carry no exposure dates; the QA counter and the fleet card are operating records that confirm one reading of a unit day without stating any graded count.
+
+## Ask sheet
+
+Two asks, both for the term's costing, both on the program's own files, which the call never reads (the call reads the register, the histories, the annual report and the terms). 20 graded figures.
+
+- **Ask A, the Mobile Review Unit's 2025-26 reviews in each circuit town** (14 figures, whole counts). H18 home: the unit's circuit is a cost input of every setting (each setting's members are reviewed on the same circuit); rows outside the main population.
+- **Ask B, for each setting from 45 to 70 years, the members reviewed in 2025-26 with fewer years than it since first exposure on 1 July 2027** (6 figures, whole counts). H18 home: a measure every candidate setting carries that the call does not turn on (the members each setting would keep inviting).
+
+**Device 1 (D7, the true key elsewhere; linked by presence and route): the unit's swapped visits.** Four pairs of published visits were worked the other way round (Corrinbar and Quillerton in July 2025, Brinalong and Tarramore in August, Garrock and Kellowie in October, Dorrabee and Lathardine in February and March 2026), the bookings moved in place to the other visit's days and the published schedule left as issued. The booking system keys the unit's bookings to the site MRU and a date, so a plain reading puts each day in the published town. The unit's fleet card makes a midday purchase (11.35 to 13.55: a bakery, a cafe, a pub lunch, the town's IGA) in the town it stood in on every swapped day, 157 to 288 km by road from the published town while its list ran from 8.30 to 4.10: the published town is impossible on those days and on no other, and on every unit day the midday purchases sit in one place. Over-cleaning half: on five visits the crew slept outside the visit town (Saltbush Flat, Pellandra Beach, Kellowie Heights, Ostlebury Point, Fenalong Bridge), breakfast and dinner bought there, and on four the unit left base before dawn, fuelling at Hawksmere or on the road at Sallow Creek, and opened at 11.30, so a day put in the town of its first card purchase or its motel misses towns that were never swapped. No field, comment or code says a visit moved; the schedule's dates and towns are the published plan.
+
+**Device 2 (blanks missing not at random; linked by physics, the X-ray counter): the unit's offline stretches.** From 8 to 26 September 2025 and 13 April to 1 May 2026 the unit's tablet worked without a signal; its check-ins replayed later with no attendance status (199 reviews left blank) while the no-shows were closed as DNA from the paper list. Everywhere else a blank is a no-show the list was never closed on (250 blank rows on the unit's other days, and at three of the five clinics). The unit's X-ray QA log reads the exposure counter at the start and end of each working day: two views a review, the day's QC shots and a few retakes; on each unit day the counter fits the Attended rows alone or the Attended and blank rows together, never both (asserted day by day). Over-cleaning half: reading every blank as a review overcounts every town and every setting.
+
+| Rival reading (a careful judge's) | Ask A towns kept | Ask B settings kept | Verdict |
+|---|---|---|---|
+| the unit's midday purchase for the town and the counter for the blanks | 14 | 6 | the golden |
+| the published town and Attended only (plain) | 0 | 0 | ruled out: the published town is impossible on the swapped days, and the counter refuses Attended alone on the offline days |
+| blanks read as reviews | 0 | 0 | ruled out: the counter refuses it on every online day |
+| the town of the day's first card purchase | 2 | 0 | ruled out: a morning's fuel on the road and a motel out of town move days the unit spent in the published town |
+| the midday purchases, blanks left | 8 | 0 | ruled out by the counter |
+| the counter, published towns | 6 | 6 | ruled out by the midday purchases |
+
+| Ask | Cracker (lands the call, reads every field plainly, runs the battery: duplicates, orphan keys, the QA days against the booking days, clocks, the Rebooked sequence, the QA remarks) | Verdict |
+|---|---|---|
+| A, reviews by town | the published schedule's town for each MRU date, Attended rows: 0 of 14 | miss |
+| B, members by setting | distinct members with an Attended review, fewer years than the setting on 1 July 2027: 0 of 6 | miss |
+
+| Ask | Mirror (stops at the default rung, 55 years) | Mirror keeps |
+|---|---|---|
+| A | as the cracker | 0 of 14 |
+| B | as the cracker | 0 of 6 |
+
+- Lesson 8 (each filed rule and plain meaning over the device rows): the schedule's town on a swapped day is contradicted by a midday purchase 157 km or more away inside the working day; a blank read as no review is contradicted by the day's counter, and a blank read as a review on any other day is contradicted the same way; no filed rule speaks to either.
+- Pin test: the asking sentences pin the population (the unit's reviews; the members reviewed in 2025-26), the grain (each circuit town; each setting from 45 to 70), the date (1 July 2027) and the units (whole counts); the devices sit in what the pins leave open, which town a day belongs to and which blank rows are reviews.
+- Span: appointments, schedule, card statement, road distances, QA log, members and terms (seven files, fourteen columns on the golden's path).
+- Separation: zero device rows in the call's files (the register, the histories, the report and the terms carry no booking, card or QA row), asserted by construction and by the distractor-style deletion run.
+
+Pair ceiling: 28.5 on the cut pack (target.zip md5 5d9bbda0; weights 38 / 7 / 55; the cracker keeps the call and none of the 20 ask figures, 45.0; the mirror keeps none, 12.0); two careful responses on the call 45.0 each; a response that lands the call and the counter half keeps 12 of 20, 78.0.
+Mirror leakage: 0.0 per cent of ask weight (the mirror reads the asks as the cracker does).
+Measured by: generator/ceiling.py
+
+## Build record
+
+- Generator: `common` (dates, settings, towns and the road network), `world` (the cases, the histories, the members, the bookings, the unit's year as it happened), `records` (the data files in their systems' layouts), `docs` (the terms, the annual report, the visit schedule), `analysis` (every estimator and the asks), `checks` (the assertions), `verify` (the independent verifier), `ceiling` (the honest ask layer), `deliver` (the goldens, figures.json and metadata.json), `build`, and `postprocess` (the containers, kept from architecture 1).
+- Seed 277, chosen from a scan of fifteen for the call's margins (4.9 and 3.3 points), rounding-edge clearance (0.013) and distinct town counts; seeds 266 to 276 and 278 to 280 each failed one of those three.
+- Pack: 13 files (5 CSV, 5 XLSX, 3 PDF); the bookings 27,450 rows, the occupational histories 48,839 rows, the workplace register 412 rows; distractors (metadata.json): the State Cancer Registry's counts and the workplace register, both deletion-tested.
+- Layer 1 inventory, each written by its own system: the register in two layouts (the first case system's workbook export of 15 February 2013, the current system's CSV); interviews migrated with names on first-system rows and codes on current rows; Yes and No against Y and N; concurrent periods of work; the later workforce and the household, environmental and no-exposure cases on the register; two QA log templates; the fleet card's merchants and localities; Rebooked and Cancelled bookings.
+- Leak sweep REVIEW lines, each harmless: sweep 3 (annual report and terms): the Program's name, "horizon", "years after first exposure" and the term's start are the decision's own vocabulary in the documents that govern and report it, and no document states any setting but the filed range from 40 to 70; sweep 4 (annual report): register, mesothelioma, family, system and report are the register's facts (interviews with the family, the case system), naming no window, edge or method; sweep 4 (terms): register, latency (4.4's latency curve), diagnosis, mesothelioma, exposed and whenever (4.2's population) are the filed WHAT, naming no edge, window, truncation or method; sweep 12 (visit schedule): the Program's published schedule names the fourteen circuit towns, which also head the road-distance table's columns, and is the organisation's own record of dates, towns and venues.
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is the induction-period
+  distribution of the pre-1986 workforce's mesotheliomas, estimated from a case register that sees a diagnosis only
+  between 1 July 2004 and 30 June 2026; with a school's or a fleet's nouns the two-sided window has nothing to attach
+  to (both judge passes: domain pass). Layers: the register's two case systems, the migrated interviews, the mixed
+  exposure codes, the fleet card and the QA log are the systems' own records and decide nothing on the call; the
+  truncation decides it (both passes: layers pass). Three rules: no decoy, no certified figure and no filed method
+  ship; read correctly, every field still gives 55 by the register's latencies or by delayed entry, and only the
+  estimate conditioned on both edges gives 60 (pass 2: decisive step analytical).
+- **Stage 4.** Leak reader on cut 52745e77: no leak (Q1 to Q4 none, Q6 an analytical choice); its realism tells (a
+  road table breaking the triangle inequality on 814 triples, a uniform card pattern with round motel bills, three QA
+  remarks, a thin workplace register) fixed at the generator. Judge pass 1: NOT_DETERMINISTIC on ask 2's year length
+  only, FIX_NOW; closed as a WHAT in terms 3.2 (365.25 days, SF23), the golden unmoved. Leak re-read on cut 5d9bbda0:
+  no leak. Judge pass 2: DETERMINISTIC, APPROVE, every graded figure reproduced, Gate G analytical_non_defect, Gate H
+  analytical. Nothing names the device: no document files what a review held is, nor the card or the counter.
+- **Every gate re-run on the final cut 5d9bbda0** (2026-11-02): precut 61 checks 0 FAIL; voice-check PASS;
+  figures_check 79 figures 0 absent; leak.py REVIEW, no LEAK (the five lines ruled in the Build record); guard surface
+  exit 0; guard heart WARN (overuse.org_family; repeat.gate_g against task190 v11); guard validate 306 cards 0 invalid.
+
 ## Architecture 1 record (spent 2026-11-01)
 
 Architecture 1, drawn 2026-10-17 (wave 3, Descriptive lane, sathay3012). Seed DA16's forced-sale world was worked at the draw and set aside (`## Tried and rejected`); the slot draws a new world in the same objective. Quenlow County Community College, a public community college in Pennsylvania with three campuses (Quenlow, Tarvelly and Hollenby), reviews its associate-degree programs each June. Its Program Review Policy sends a program into review (an improvement plan, and a sunset vote two years later if it does not recover) when fewer than 30 per cent of its entering students earn an associate degree within three years of entering. The share is reported for the students who entered in fall 2023, fall 2024 and fall 2025, including those still enrolled, from the student record as it stands after the spring 2027 term. The board of trustees votes the review list at its June 2027 meeting. The call is forward facing: two of the three entering classes are still inside their three years at the extract, and the review it starts runs from 2027-28.
@@ -258,3 +454,10 @@ Measured by: `generator/ceiling.py` on the cut pack (`target.zip`, md5 9deca6a54
 - Architecture 1 (Quenlow County Community College: each program's three-year completion as the cumulative incidence of the degree with transfer and withdrawal competing), spent on its ask layer on 2026-11-01: with the honest careful-solver cracker both asks were executable (18 of 18 ask figures kept; two careful responses on the call reach 86.5). The delivered cut stays on the portal as delivered (pending); re-rooted at stage 1 on 2026-11-02 into a new world, dataset, generator and shell, one architecture per world.
 - Architecture 2 draw screens (2026-11-02), each dead before any code: a duration distribution read from a stock of open spells or a waiting list's incomplete waits (length bias, task182's driver and the screens in task264, task268, task272 and task274); left truncation alone (task265) and right truncation alone (task179's reverse time); net survival by Pohar Perme against Ederer II (an estimator grouping a careful solver repairs by age group on sight, stumping 1.1c); censored medical costs by Lin's partition (inverse probability of censoring weights are a reflex); spectrum and verification bias in a test's accuracy (task267, and a mix effect); capture-recapture across protest reports (heterogeneous catchability repaired by stratifying, task253's screen); usual intake from repeated recalls (task253's latent count past a line); aerial methane surveys with wind-dependent detection (the vendor's detection curve filed is a sentence that invites the link, unfiled it forks); practice effects in cognitive decline (task270's lineage).
 - The cohort mixed like the first prototype (first exposures peaking in the early 1960s), set aside at the draw on 2026-11-02: the register's two edges cancel in the empirical distribution of its latencies, which lands within a year of the doubly truncated estimate at the ninetieth percentile, so the default path would file the golden's setting; the generator draws a cohort whose first exposures peak in the early 1970s with a smaller post-war group, where the 2026 close dominates and the empirical, delayed-entry and reverse-time readings each file a different wrong setting.
+- The register's exposure category "None identified", renamed "No exposure identified" at stage 3 (2026-11-02): leak.py sweep 8 read the word None as a Python null; the category's meaning is unchanged.
+- Notifications drawn up to 85 days after diagnosis and interviews up to 58 days after notification, cut at stage 3 (2026-11-02): cases diagnosed in June 2026 would have carried interview dates after the register's 30 September close, and late-December 2012 notifications interviews after the first system's export; notifications now fall within 60 days and interviews within 30, and the first system's export is dated 15 February 2013.
+- Waypoint names Erskine Gap, Coldridge and Thornby Flat, renamed at stage 3 (2026-11-02) to Ferngate Gap, Bellwether Ridge and Thornbush Flat: each carried a real place's distinctive word (H21); no figure moved.
+- Occupations drawn apart from employers (a sales assistant at a bank's branch, a boilermaker at a brake shop), replaced at stage 3 (2026-11-02) by each employer's own trades; the main call's inputs (first exposures and diagnoses) are drawn before the histories' details, so no figure moved.
+- The prompt's second sentence opening "The Board sets it" and its rounding sentence "Shares are per cents to one decimal place", reworded at stage 3 (2026-11-02): guard.py surface promoted a pair with task58 on the shared phrase "The Board" and one with task231 on the shared rounding construction; neither pair is promoted on the reworded prompt.
+- Stage 4 on cut 52745e77 (2026-11-02): the determinism judge found ask 2's year length unfiled (NOT_DETERMINISTIC, FIX_NOW; the main call, ask 1 and ask 3 forced and reproduced): 365.2425 days, 365 days and completed calendar years each move ask 2's figures. Closed as a WHAT in the governing document that owns it, terms 3.2 "at 365.25 days to a year" (SF23, asserted with the three rivals); what a review held is was left unfiled, as the judge found it forced by the QA log and the clinics' DNA-against-blank convention, and filing it would name the device.
+- Stage 4 leak reader's realism tells on cut 52745e77 (no leak; question 6 an analytical choice), each fixed at the generator: the road table drawn pair by pair broke the triangle inequality 814 times (now a road network of every pair within 320 km and each place's three nearest, distances the shortest routes, asserted); the fleet card bought the same lunch and dinner at the same hours every visit day with round motel bills (now breakfasts, lunches, afternoon errands and dinners at varied hours and merchants, motel bills of two room rates with extras); the QA log carried three remarks (now a technician's range from its own random stream, none about records or signal); the workplace register held 35 rows (now 412). The morning runs' fuel stops moved to the routes the new network travels. freeze.py check --mode rubric: PASS, nothing on the ask side moved (no graded figure in any block changed; the files that moved are the terms, the road table, the card statement, the QA log and the workplace register).

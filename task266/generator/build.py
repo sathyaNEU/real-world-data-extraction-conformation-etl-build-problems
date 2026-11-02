@@ -19,57 +19,64 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as K         # noqa: E402
 import docs as D           # noqa: E402
-import population as PO    # noqa: E402
 import postprocess as PP   # noqa: E402
 import records as R        # noqa: E402
-import term26 as T26       # noqa: E402
 import world as W          # noqa: E402
 
 TASK = os.path.dirname(HERE)
-EXPORT = dt.datetime(2027, 5, 28, 16, 42)               # the registrar's extracts for the June 2027 review, EDT
-MTIME = calendar.timegm((EXPORT + dt.timedelta(hours=4)).timetuple())
+EXPORT = dt.datetime(2027, 2, 11, 15, 26)     # the pack as put together for the board paper, AEDT
+MTIME = calendar.timegm((EXPORT - dt.timedelta(hours=11)).timetuple())
 
 
-def world(seed=W.SEED):
-    T = PO.build(seed)
-    PO.stamp(T, seed)
-    T26.build(T, seed)
-    return T
+def report_figures(T):
+    import numpy as np
+    rng = np.random.default_rng([K.SEED, 7])
+    m = sum(1 for x in T["members"] if x["status"] == "Active")
+    return dict(lodged=(int(rng.integers(780, 840)), int(rng.integers(800, 870))),
+                accepted=(int(rng.integers(560, 610)), int(rng.integers(575, 630))),
+                lump=("%.1f" % rng.uniform(88, 94), "%.1f" % rng.uniform(92, 99)),
+                care=("%.1f" % rng.uniform(41, 46), "%.1f" % rng.uniform(44, 50)),
+                recov=("%.1f" % rng.uniform(52, 57), "%.1f" % rng.uniform(54, 61)),
+                members="{:,}".format(m), visits=len(T["unit"]),
+                levy="%.1f" % rng.uniform(212, 228), invest="%.1f" % rng.uniform(61, 74),
+                liab="{:,}".format(int(rng.integers(2140, 2390))))
 
 
-def build(out, seed=W.SEED):
+def world(seed=K.SEED):
+    return W.build(seed)
+
+
+def build(out, seed=K.SEED):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
     T = world(seed)
     n = {}
-    n["cohorts"] = R.write_cohorts(p("cohorts"), T)
-    n["admissions"] = R.write_admissions(p("admissions"), T)
-    n["conferrals"] = R.write_conferrals(p("conferrals"), T)
-    n["idmap"] = R.write_idmap(p("idmap"), T)
-    n["terms"] = R.write_terms(p("terms"))
-    n["history"] = R.write_history(p("history"), T)
-    n["registrations"] = R.write_registrations(p("registrations"), T)
-    n["schedule"] = R.write_schedule(p("schedule"), T)
-    n["register"] = R.write_register(p("register"))
-    n["success"] = R.write_success(p("success"))
-    n["outlook"] = R.write_outlook(p("outlook"))
-    D.write_policy(p("policy"))
-    from pypdf import PdfReader
-    n["policy_pages"] = len(PdfReader(p("policy")).pages)
-    PP.COMPANY = K.COLLEGE
-    PP.normalize_ooxml(p("cohorts"), K.PEOPLE["ir"], K.PEOPLE["ir"], "2023-09-21T14:12:07Z", "2025-09-19T19:03:44Z",
+    n["register"] = R.write_register(p("register"), T)
+    n["legacy"] = R.write_legacy(p("legacy"), T)
+    n["histories"] = R.write_histories(p("histories"), T)
+    n["members"] = R.write_members(p("members"), T)
+    n["appointments"] = R.write_appointments(p("appointments"), T)
+    n["card"] = R.write_card(p("card"), T)
+    n["qa"] = R.write_qa(p("qa"), T)
+    n["roads"] = R.write_roads(p("roads"))
+    n["registry"] = R.write_registry(p("registry"))
+    n["workplaces"] = R.write_workplaces(p("workplaces"), T)
+    D.write_terms(p("terms"))
+    D.write_report(p("report"), report_figures(T))
+    D.write_schedule(p("schedule"), T["unit"])
+    PP.COMPANY = K.FUND
+    PP.normalize_ooxml(p("legacy"), "Case system 1", "Case system 1", "2013-02-15T04:12:40Z", "2013-02-15T04:12:40Z",
                        excel=True)
-    PP.normalize_ooxml(p("terms"), "Office of the Registrar", "Office of the Registrar", "2019-03-04T15:20:11Z",
-                       "2026-11-30T16:48:02Z", excel=True)
-    PP.normalize_ooxml(p("schedule"), "Office of the Registrar", "Office of the Registrar", "2027-05-28T20:31:45Z",
-                       "2027-05-28T20:31:45Z", excel=True)
-    PP.normalize_ooxml(p("register"), "Academic Affairs", "Academic Affairs", "2019-06-03T13:40:28Z",
-                       "2026-08-14T18:22:51Z", excel=True)
-    PP.normalize_ooxml(p("success"), K.PEOPLE["ir"], K.PEOPLE["ir"], "2022-06-27T15:02:39Z", "2026-06-12T13:55:20Z",
+    PP.normalize_ooxml(p("card"), "Fleet Services", "Fleet Services", "2026-07-06T00:41:19Z", "2026-07-06T00:41:19Z",
                        excel=True)
-    PP.normalize_pdf(p("policy"), b"D:20250610143115-04'00'", b"D:20250611090412-04'00'")
+    PP.normalize_ooxml(p("qa"), "J Marchetti", "T Szabo", "2025-07-10T22:15:03Z", "2026-06-30T06:48:51Z", excel=True)
+    PP.normalize_ooxml(p("roads"), "Finance", "Finance", "2024-03-18T03:22:10Z", "2025-05-26T01:05:44Z", excel=True)
+    PP.normalize_ooxml(p("registry"), K.REGISTRY, K.REGISTRY, "2025-11-03T23:40:02Z", "2025-11-04T02:11:37Z", excel=True)
+    PP.normalize_pdf(p("terms"), b"D:20261127153014+11'00'", b"D:20261128090212+11'00'")
+    PP.normalize_pdf(p("report"), b"D:20261014101551+11'00'", b"D:20261021164433+11'00'")
+    PP.normalize_pdf(p("schedule"), b"D:20250612141022+10'00'", b"D:20250616093045+10'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     T["n"] = n
@@ -88,7 +95,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out")
     ap.add_argument("--golden", action="store_true")
-    ap.add_argument("--seed", type=int, default=W.SEED)
+    ap.add_argument("--seed", type=int, default=K.SEED)
     a = ap.parse_args()
     if a.out:
         build(a.out, a.seed)

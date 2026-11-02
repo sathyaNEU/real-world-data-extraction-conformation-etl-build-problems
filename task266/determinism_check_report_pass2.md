@@ -1,57 +1,55 @@
-# determinism-check report (pass 2), task266, 2026-10-17
+# determinism-check report (pass 2), task266, 2026-11-02
 
 ## Verdict
-DETERMINISTIC
+DETERMINISTIC (no SOLUTION_WRONG)
 **Disposition:** APPROVE
-**Stumping type:** mechanism: statistical_rigor (competing-risks cumulative incidence), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Stumping type:** mechanism: method_or_model_selection (statistical_rigor), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One isolated sonnet thread (fresh unzip at /tmp/determinism-check-task266-1792249757/target/, no pass 1 report seen) recomputed every graded figure from the bundle. All reproduced. The policy files the population (three fall classes, entry program, deaths removed), the window (nine terms, summers included), the floor (30) and that the open classes are estimated. The registrar notes close the admission on transfer out and withdrawal and fix the census rule (RE, RW, WC) and the V-room combined-class rule. The estimator is left open, but the Aalen-Johansen, the imputation form and the TO/WD timing variants give identical values. Every estimator giving a different list breaks a filed rule. The pass 1 forks (open-class estimand SF5 and four ask forks) did not recur.
+Single re-judge after pass 1's FIX_NOW (ask 2 year length). Terms 3.2 now files "at 365.25 days to a year", which closes the fork; the member counts reproduce at 355 / 1,457 / 3,272 / 5,286 / 6,685 / 7,340. The main call is forced: terms 4.2, 4.4, the annual report's window (1 Jul 2004 to 30 Jun 2026) and the histories give one doubly truncated curve, 85.1% at 55 and 93.3% at 60, so the horizon is 60. Ask 3 (1,923 reviews, 14 towns) and 7,570 distinct members reproduce. Verdict thread: /tmp/determinism-check-task266-1793613603/verdict.md (one pass, no retry).
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Completion share GS / Bio / Bus / Psy / MA / ECE / CJ / HVAC / Nursing | 20.9 / 24.9 / 22.2 / 25.9 / 26.2 / 19.5 / 32.5 / 44.4 / 36.7 | 20.92 / 24.88 / 22.23 / 25.87 / 26.23 / 19.47 / 32.52 / 44.43 / 36.72 | yes (ir xlsx, sis admissions, id map, register, term calendar) |
-| Programs below 30 | 6 | 6 | yes |
-| FTE, same order | 1164.1 / 358.0 / 531.7 / 404.0 / 386.6 / 343.6 / 397.1 / 274.5 / 538.3 | identical | yes (census registrations, section schedule Cr Hrs, program_of_record_history) |
-| Classes under ten, same order | 1 / 13 / 5 / 5 / 9 / 3 / 3 / 13 / 78 | identical | yes (schedule, census, register Subjects sheet) |
-| Cohort size | 5,292 (5 deaths removed) | 1,691 + 1,752 + 1,849 = 5,292; 5 DC | yes |
+| Stacked cases | 6,387 | 4,052 + 2,335 = 6,387, no duplicate refs | yes |
+| Occupational, first exposed before 1986 | 5,271 | 5,271 | yes |
+| Shares 40..70 | 32.1/53.9/72.4/85.1/93.3/97.4/99.1 | identical (EP NPMLE, 365.25) | yes |
+| Ask 2 members 45..70 | 355/1,457/3,272/5,286/6,685/7,340 | identical | yes |
+| Reviews per town / total | 14 towns, 1,923 | identical | yes |
+| Distinct members reviewed | 7,570 | 7,570 | yes |
 
 ## Competing answers that survived
-None. Alternatives and why each is closed:
-- 1 minus KM with TO and WD censored gives 1 program (ECE only): closed by the "from the college" outcome and the registrar notes.
-- Fall 2023 class alone gives 7 (CJ 26.8): closed by "taken together".
-- Raw degrees over all entrants gives 8 (CJ 26.7, Nursing 27.6): closed by policy 3.3 requiring an estimate.
-- Own-cohort hazards, with fall 2023 hazards beyond the observed window, give CJ 31.5. Same side of the floor, nothing flips. This is the closest variant to the line.
-- Not combining V-room sections, or using schedule Enrl: closed by policy 4.3 and the registrar notes.
-- Narrative nit (non-blocking): the "eight" quoted for the raw route holds only with exits after term 9 excluded (Nursing 27.6). Counting all GR regardless of term gives Nursing 30.04.
+None that the shipped files leave open. Second readings and their figures:
+- Estimator: naive 92.7% at 55 (files 55); left-truncation only 95.9% at 55; right-truncation only files 70. These are wrong methods, not readings of the estimand.
+- Window end 30 Sep 2026: shares 32.8/54.9/73.4/85.9/93.7/97.6/99.2, call still 60. The annual report's sentence (diagnoses held to 30 June 2026) closes it. Judge flags it as the one place a careful solver can split on a printed figure.
+- Year length 365 days: shares move at most 0.1; ask 2 365 days gives 348/1,443/3,253/5,276/6,679/7,334 (design note SF23); closed by terms 3.2.
+- Town: published schedule gives Brinalong 215, Quillerton 291, Tarramore 191; contradicted on 24 days by card purchases and attendee homes.
+- Review held: Attended only 1,724; Attended plus every MRU blank 2,173; QA images/2 on all days 1,948. The QA log fits only the golden rule (16 outage days vs 62 others).
+- Members: fixed-site blanks counted 7,805 (362/1,501/3,378/5,452/6,899/7,566); Attended only 7,371 (345/1,420/3,181/5,144/6,511/7,146); all blanks 8,055 (370/1,556/3,496/5,631/7,126/7,810).
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 14 (13 plus manifest) | yes |
-| Formats | 3 or more | 4 (csv 6, xlsx 5, pdf 2, txt 1) | yes |
-| Large file | 25,000 rows or more | census registrations 28,135 rows | yes |
-| Distractors in metadata.json | 2 or more, none named in a file | course_success_rates, service_area_occupational_outlook; neither is labelled a distractor in its file name | yes |
-| Distractors unused yet weighable | yes | Both unused by the solution, per the thread. Neither answers a graded quantity (success rates and occupational outlook are not completion share, FTE or class counts). | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, pdf), both in submission.md section 4 | yes |
-| Asks multi-dimensional with unit and rounding | yes | Three asks, each over nine programs. One-decimal rounding is in the prompt, and the counts are integers. | yes |
-| Prompt shape and 25 or more criteria | yes | Program-by-program grid, nine programs times three measures plus the list, call and chart, about 30 gradable cells. The rubric itself is not in the folder (not verified). | yes (inferred) |
-| Reads as real work product, not LLM generated | yes | Thread found no authoring language and no temporal incoherence. Goldens not re-read by me. | yes |
+| Files / formats | 10+ / 3+ | 13 / pdf, csv, xlsx | yes |
+| Large file | 25,000+ rows | 48,839 (histories), 27,450 (appointments) | yes |
+| Distractors | 2+ in metadata.json, none labelled by file name | state cancer registry, workplace register 2024; names do not label them | yes |
+| Distractors weigh but do not answer | yes | judge: carry no latency, rank no setting | yes |
+| Deliverables | 1 to 3 | 2 (docx, xlsx), all in golden | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | yes | yes |
+| Prompt | one paragraph, under 1,000 chars | 772 chars | yes |
+| Rubric 25+ criteria | 25+ | not checkable here (generated downstream); shape of 7 shares, 6 counts, 14 towns plus call supports it | not verified |
+| Reads as real work product / not LLM | yes | judge found no provenance disclosure; golden-realism not re-run here | yes (judge) |
 
 ## Gate G reconciliation
-Thread: mechanism statistical_rigor, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card, design note and pipeline.json: stump_class analytical, decisive step Aalen-Johansen cumulative incidence in place of 1 minus KM, with no decoy shipped. The distractors are not named as the surface read. Match. Gate G passes, and the difficulty survives deleting every wrong number because the pack contains none.
+Thread: mechanism method_or_model_selection, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note and metadata: declared distractors are the two named files; the note's No decoy line names them as carrying no latency. The thread names the naive and one-sided latency curves as the surface read, not a distractor. No mismatch, no too-load-bearing distractor.
 
-## Stump power (Gate F)
-Moderate. 1 minus KM is the natural reflex and lands on one program, with the four transfer-oriented programs at 35 to 41. The raw-share route lands on eight and the fall-2023-only route on seven. Policy 3.3 ("estimate") and the registrar notes steer strong models toward competing risks, so expect some runs to land on the call. The asks add silent traps: Cr Hrs absent for lab, shop and clinical sections, the census program taken from the history file (900 rows differ from the extract), WC counting, V-room pairing and cancelled sections.
+## Gate H / stump power (Gate F)
+Thread: domain pass, layers pass, decisive_step analytical (doubly truncated latency estimation, the field's own method; easy routes file 55 or 70). This agrees with the note's Three rules (No decoy, Not semantics, Not rule application) and its ladder (as it stands 55, delayed entry 55, reverse time 70, both edges 60). The note says no filed sentence names the window, truncation or estimator. Caveat for the main thread: the doubly truncated NPMLE is a textbook route, and the judge reached it by applying the method with the window read from the annual report, so a strong solver can land the call (stumping 1.3). Weigh this against the note's ladder; the judge rates stump power good.
 
 ## Findings, ranked
-1. No blocking finding.
-2. The prompt's "go into review" list and the "taken together" and "estimate" wording close the pass 1 forks as filed.
-3. Non-blocking: the "eight" wording in the recommendation's rejected-route sentence is true only when exits after term 9 are excluded. Consider adding "within nine terms" for exactness.
-
-## Gate H reconciliation
-Thread: domain pass, layers pass, decisive_step analytical. Design note `## Three rules`: Domain test (event history, competing exits), Layer 1 (2024 system conversion, readmissions, WD-to-TO lag), Layer 2 (estimand_identification, competing risks), analyst test ending on the one-program default, with No decoy, Not semantics and Not rule application each present. Match.
+1. None blocking.
+2. Optional: shares move 0.4 to 1.0 points if a solver takes 30 Sep 2026 as the window end; ask 1 could name the window in the workbook note.
+3. Optional: Sites sheet label "circuit as scheduled" is mildly contrary to the card evidence; the data overrides it by a wide margin, left as realistic mess.
 
 ## Next action for the author
-Proceed to stage 5: ship. Optionally patch the "eight" nit wording in the recommendation block in the same rebuild.
+Proceed to ship; no rerun of the judge is needed.
