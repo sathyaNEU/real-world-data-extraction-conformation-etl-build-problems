@@ -27,10 +27,10 @@ REMITTED = {"2025Q2": dt.date(2025, 9, 19), "2025Q3": dt.date(2025, 12, 19), "20
 CAL_Q = ["2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"]
 
 # participating employer accounts: old group code, new group code, name, members, age profile
-ACCOUNTS = [("STA", "100", "SEB01", "State Agencies", 14820, 44.0),
-            ("HED", "200", "SEB02", "Higher Education", 9140, 38.5),
-            ("LOC", "300", "SEB03", "Local Government", 6390, 46.5),
-            ("RET", "400", "SEB04", "Non-Medicare Retirees", 3610, 60.5)]
+ACCOUNTS = [("STA", "100", "SEB01", "State Agencies", 27410, 44.0),
+            ("HED", "200", "SEB02", "Higher Education", 16930, 38.5),
+            ("LOC", "300", "SEB03", "Local Government", 11820, 46.5),
+            ("RET", "400", "SEB04", "Non-Medicare Retirees", 6690, 60.5)]
 ACC = [a[0] for a in ACCOUNTS]
 
 PBM = "Halcroft Pharmacy Solutions"
@@ -67,7 +67,7 @@ PRODUCTS = [
     ("SGL_B", "M4", "SGLT2", "Daplexa", "dapagliflozin 10 mg tablet", "30 tablets", 30, "EA", 30.0, 595.80, 0.40, "R"),
     ("SGL_C", "M5", "SGLT2", "Canivo", "canagliflozin 300 mg tablet", "30 tablets", 30, "EA", 30.0, 568.90, 0.33, "R"),
     ("INS_A", "M1", "BASAL", "Glarvia", "insulin glargine 100 units/mL pen", "5 pens", 15, "ML", 15.0, 390.20, 0.72, "R"),
-    ("INS_B", "M3", "BASAL", "Deglutra", "insulin degludec 100 units/mL pen", "5 pens", 15, "ML", 15.0, 359.40, 0.47, "R"),
+    ("INS_B", "M3", "BASAL", "Deglutra", "insulin degludec 100 units/mL pen", "5 pens", 15, "ML", 15.0, 359.40, 0.50, "R"),
     ("INS_C", "M6", "BASAL", "insulin glargine-qmrt", "insulin glargine-qmrt 100 units/mL pen", "5 pens", 15, "ML",
      15.0, 267.10, 0.20, "R"),
     ("DOA_A", "M5", "DOAC", "Apiqor", "apixaban 5 mg tablet", "60 tablets", 60, "EA", 60.0, 585.60, 0.35, "R"),
@@ -77,9 +77,9 @@ PRODUCTS = [
     ("ICS_B", "M6", "ICS", "Vilaro", "fluticasone furoate 100 mcg/vilanterol 25 mcg inhaler", "1 inhaler, 30 doses",
      1, "EA", 1.0, 389.30, 0.35, "R"),
     ("ICS_C", "M8", "ICS", "Saltiva", "fluticasone propionate 250 mcg/salmeterol 50 mcg inhaler", "1 inhaler, 60 doses",
-     1, "EA", 1.0, 338.70, 0.20, "R"),
-    ("ADA_A", "M8", "ADA", "Adalvane", "adalimumab 40 mg/0.4 mL pen", "2 pens", 2, "EA", 2.0, 6852.00, 0.43, "S"),
-    ("ADA_B", "M3", "ADA", "Advelis", "adalimumab-cstl 40 mg/0.4 mL pen", "2 pens", 2, "EA", 2.0, 5684.00, 0.38, "S"),
+     1, "EA", 1.0, 329.60, 0.20, "R"),
+    ("ADA_A", "M8", "ADA", "Adalvane", "adalimumab 40 mg/0.4 mL pen", "2 pens", 2, "EA", 2.0, 6852.00, 0.47, "S"),
+    ("ADA_B", "M3", "ADA", "Advelis", "adalimumab-cstl 40 mg/0.4 mL pen", "2 pens", 2, "EA", 2.0, 5684.00, 0.47, "S"),
     ("ADA_C", "M9", "ADA", "adalimumab-kvrn", "adalimumab-kvrn 40 mg/0.4 mL pen", "2 pens", 2, "EA", 2.0, 1205.00,
      0.02, "S"),
     # products outside the reviewed classes, paid for under the same manufacturer agreements
@@ -92,7 +92,7 @@ PRODUCTS = [
     ("MIG_1", "M6", "MIG", "Migrelta", "galcanezumab 120 mg/mL pen", "1 pen", 1, "EA", 1.0, 781.20, 0.44, "R"),
     ("ONC_2", "M7", "ONC", "Ostralix", "palbociclib 125 mg tablet", "21 tablets", 21, "EA", 21.0, 16680.00, 0.01, "S"),
     ("PSO_1", "M9", "PSO", "Risenta", "risankizumab 150 mg/mL pen", "1 pen", 1, "EA", 1.0, 7390.00, 0.18, "S"),
-    ("AST_1", "M3", "AST", "Benrova", "benralizumab 30 mg/mL pen", "1 pen", 1, "EA", 1.0, 3640.00, 0.12, "S"),
+    ("AST_1", "M10", "AST", "Benrova", "benralizumab 30 mg/mL pen", "1 pen", 1, "EA", 1.0, 3640.00, 0.12, "S"),
 ]
 # the tail of other brands in the extract, from manufacturers with no product in a reviewed class
 OTHER = [
@@ -112,31 +112,36 @@ OTHER = [
 
 # 30-day supplies per 1,000 members a month, by class and account (STA, HED, LOC, RET)
 CLASS_RATE = {"GLP1": (18.0, 11.0, 16.0, 21.0), "SGLT2": (13.0, 8.0, 12.0, 24.0), "BASAL": (7.0, 4.0, 7.0, 16.0),
-              "DOAC": (6.0, 3.0, 6.0, 22.0), "ICS": (11.0, 10.0, 10.0, 13.0), "ADA": (0.9, 0.7, 0.8, 1.0),
+              "DOAC": (6.0, 3.0, 6.0, 22.0), "ICS": (11.0, 10.0, 10.0, 13.0), "ADA": (2.6, 2.1, 2.4, 2.9),
               "ONC": None}
-SHARE = {"GLP_A": (.40, .46, .38, .33), "GLP_B": (.36, .30, .37, .40), "GLP_C": (.24, .24, .25, .27),
-         "SGL_A": (.44, .40, .46, .48), "SGL_B": (.35, .38, .33, .30), "SGL_C": (.21, .22, .21, .22),
-         "INS_A": (.46, .41, .47, .52), "INS_B": (.31, .36, .30, .27), "INS_C": (.23, .23, .23, .21),
-         "DOA_A": (.62, .58, .63, .66), "DOA_B": (.38, .42, .37, .34),
-         "ICS_A": (.40, .44, .41, .36), "ICS_B": (.33, .30, .34, .37), "ICS_C": (.27, .26, .25, .27),
-         "ADA_A": (.52, .47, .55, .58), "ADA_B": (.30, .33, .28, .26), "ADA_C": (.18, .20, .17, .16)}
+# within-class shares by account: the accounts' members differ in age, in the prescribers they see (the university
+# health system in Higher Education, the county clinics in Local Government) and in how long they have been on a drug
+SHARE = {"GLP_A": (.52, .30, .44, .22), "GLP_B": (.22, .44, .31, .48), "GLP_C": (.26, .26, .25, .30),
+         "SGL_A": (.30, .52, .36, .58), "SGL_B": (.46, .26, .40, .22), "SGL_C": (.24, .22, .24, .20),
+         "INS_A": (.34, .56, .40, .60), "INS_B": (.42, .20, .37, .22), "INS_C": (.24, .24, .23, .18),
+         "DOA_A": (.70, .46, .60, .64), "DOA_B": (.30, .54, .40, .36),
+         "ICS_A": (.30, .54, .44, .31), "ICS_B": (.44, .22, .30, .38), "ICS_C": (.26, .24, .26, .31),
+         "ADA_A": (.64, .38, .47, .66), "ADA_B": (.14, .44, .36, .18), "ADA_C": (.22, .18, .17, .16)}
 # share drift through the year, by fiscal quarter (new starts on Velantro, the biosimilar switch in adalimumab, ...)
-DRIFT = {"GLP_A": (-.06, -.02, .03, .06), "GLP_B": (.04, .01, -.02, -.04), "ADA_A": (.10, .03, -.05, -.10),
-         "ADA_C": (-.10, -.03, .06, .11), "ICS_A": (-.02, .04, .03, -.05), "INS_C": (-.05, -.01, .02, .05),
-         "SGL_C": (.03, .0, -.01, -.03), "DOA_B": (.04, .01, -.02, -.03), "INS_B": (.02, .03, -.02, -.03),
-         "GLP_C": (.02, .0, -.01, -.02), "SGL_B": (-.03, .0, .02, .03)}
-SEASON = {"ICS": (0.84, 1.06, 1.16, 0.94)}
+DRIFT = {"GLP_A": (-.14, -.05, .06, .13), "GLP_B": (.10, .03, -.04, -.09), "ADA_A": (.16, .05, -.07, -.14),
+         "ADA_C": (-.22, -.08, .12, .24), "ADA_B": (-.06, .10, .02, -.06), "ICS_A": (-.10, .08, .10, -.08),
+         "INS_C": (-.12, -.04, .05, .12), "SGL_C": (.08, .02, -.03, -.07), "DOA_B": (.09, .03, -.04, -.08),
+         "INS_B": (.07, .06, -.05, -.08), "GLP_C": (-.04, .07, .03, -.06), "SGL_B": (-.08, -.02, .04, .07),
+         "SGL_A": (.03, -.06, -.02, .05), "INS_A": (-.02, -.05, .02, .04), "ICS_B": (.06, -.07, -.06, .07),
+         "ICS_C": (.04, -.02, -.03, .01), "DOA_A": (-.04, -.01, .02, .04)}
+SEASON = {"ICS": (0.80, 1.07, 1.19, 0.94)}
 # products outside the reviewed classes: 30-day supplies per 1,000 members a month by account, and a quarterly trend
-OUT_RATE = {"ONC_1": (0.62, 0.30, 0.55, 1.05), "MS_1": (0.30, 0.27, 0.29, 0.18), "HIV_1": (0.88, 0.78, 0.80, 0.52),
-            "HCV_1": (0.62, 0.45, 0.58, 0.90), "MIG_1": (5.4, 6.3, 5.0, 3.1), "ONC_2": (0.18, 0.10, 0.17, 0.30),
-            "PSO_1": (0.13, 0.11, 0.12, 0.09), "AST_1": (1.05, 0.98, 0.94, 1.12)}
-OUT_TREND = {"ONC_1": (0.86, 0.97, 1.06, 1.14), "MIG_1": (0.90, 0.97, 1.04, 1.09), "HCV_1": (1.25, 1.05, 0.90, 0.80),
-             "PSO_1": (0.92, 0.98, 1.03, 1.07), "AST_1": (1.08, 1.02, 0.97, 0.93)}
+OUT_RATE = {"ONC_1": (0.30, 0.16, 0.72, 1.35), "MS_1": (0.52, 0.18, 0.21, 0.09), "HIV_1": (0.72, 1.75, 0.66, 0.42),
+            "HCV_1": (0.40, 0.30, 0.95, 0.70), "MIG_1": (6.4, 4.1, 5.0, 2.4), "ONC_2": (0.10, 0.06, 0.24, 0.40),
+            "PSO_1": (0.08, 0.20, 0.10, 0.07), "AST_1": (1.55, 0.60, 0.85, 1.30)}
+OUT_TREND = {"ONC_1": (0.74, 0.92, 1.10, 1.24), "MIG_1": (0.82, 0.95, 1.06, 1.17), "HCV_1": (1.35, 1.10, 0.86, 0.70),
+             "PSO_1": (0.84, 0.96, 1.05, 1.15), "AST_1": (1.16, 1.04, 0.95, 0.85), "MS_1": (0.90, 0.98, 1.03, 1.09),
+             "HIV_1": (1.06, 1.02, 0.98, 0.94), "ONC_2": (0.80, 0.95, 1.08, 1.17)}
 OTHER_RATE = (52.0, 47.0, 50.0, 41.0)     # 30-day supplies per 1,000 members a month, the whole tail
 
-# brand ingredient cost terms (AWP = WAC x 1.2): AWP less 18% retail, 21% mail, 16% specialty
+# brand ingredient cost terms (AWP = WAC x 1.2): AWP less 18%, specialty drugs AWP less 16%, at every network pharmacy
 AWP_FACTOR = 1.2
-DISCOUNT = {"RETAIL": 0.18, "MAIL": 0.21, "SPECIALTY": 0.16}
+DISCOUNT = {"RETAIL": 0.18, "SPECIALTY": 0.16}
 FEE = {"RETAIL30": 1.25, "RETAIL90": 0.75, "MAIL": 0.0, "SPECIALTY": 0.0}
 GUARANTEE = {"RETAIL30": 236.0, "RETAIL90": 642.0, "MAIL": 668.0, "SPECIALTY": 1170.0}   # Exhibit C, per brand claim
 
@@ -250,6 +255,7 @@ def build():
     w.persons = _people(rng, w)
     w.pharmacies = _pharmacies(rng)
     w.claims = _claims(rng, w)
+    _tune(w)
     w.statements = _statements(rng, w)
     return w
 
@@ -281,12 +287,9 @@ def _pharmacies(rng):
     out.append(dict(npi=npi(), name="Halcroft Specialty Pharmacy - Southeast", channel="SPECIALTY", c340b=False,
                     since=dt.date(2021, 7, 1)))
     # hospital outpatient pharmacies: retail until 1 March 2026, then the specialty network
-    for nm, c3 in (("University Medical Center Outpatient Pharmacy", True), ("St. Brigid Health Outpatient Pharmacy", False),
-                   ("Mercy Ridge Hospital Pharmacy", True)):
+    for nm, c3 in (("University Medical Center Outpatient Pharmacy", False), ("St. Brigid Health Outpatient Pharmacy", False),
+                   ("Mercy Ridge Hospital Pharmacy", False)):
         out.append(dict(npi=npi(), name=nm, channel="SPECIALTY", c340b=c3, since=NETWORK_MOVE, before="RETAIL"))
-    # two community health center pharmacies registered as 340B covered entities, retail network
-    for nm in ("Eastside Community Health Pharmacy", "Lincoln Family Health Center Pharmacy"):
-        out.append(dict(npi=npi(), name=nm, channel="RETAIL", c340b=True, since=dt.date(2019, 1, 1)))
     return out
 
 
@@ -359,9 +362,7 @@ def _claims(rng, w):
                     ph_user = mail[0]
                 else:
                     rr = rng.random()
-                    if rr < 0.022:
-                        ph_user = c340[int(rng.integers(0, len(c340)))]
-                    elif rr < 0.040 and p["cls"] in ("GLP1", "BASAL", "DOAC", "ICS", "HCV", "AST", "MIG"):
+                    if rr < 0.018 and p["cls"] in ("GLP1", "BASAL", "DOAC", "ICS", "HCV", "AST", "MIG"):
                         ph_user = hosp[int(rng.integers(0, len(hosp)))]
                     else:
                         ph_user = retail[int(rng.integers(0, len(retail)))]
@@ -402,31 +403,48 @@ def _claims(rng, w):
     # paid dates, reversals and late payment
     for c in claims:
         c["paid"] = c["d"] + dt.timedelta(days=int(rng.choice([0, 0, 0, 1, 1, 2, 3])))
+        sq = calq(c["d"])
+        late_ok = sq != "2026Q2"          # a June 2026 claim paid or reversed after 14 August waits for a later statement
         r = rng.random()
         c["rev"] = None
-        if r < 0.034:
+        late_ok = late_ok and c["hab"] != "SPECIALTY"     # specialty claims adjudicate in real time
+        if rng.random() < 0.0016 and late_ok:
+            lo, hi = CUTOFF[sq] + dt.timedelta(days=1), CUTOFF[_next_q(sq)] - dt.timedelta(days=12)
+            c["paid"] = lo + dt.timedelta(days=int(rng.integers(0, max(1, (hi - lo).days))))   # paid after the cut-off
+        if r < 0.0340:
             c["rev"] = c["paid"] + dt.timedelta(days=int(rng.choice([0, 1, 2, 5, 9, 16])))
-        elif r < 0.040:
-            c["rev"] = c["paid"] + dt.timedelta(days=int(rng.integers(50, 110)))    # reversed after the invoice cut-off
-        if rng.random() < 0.0085:
-            c["paid"] = c["d"] + dt.timedelta(days=int(rng.integers(70, 120)))         # paid late
+            if c["rev"] > CUTOFF[sq] and not late_ok:
+                c["rev"] = None
+        elif r < 0.0355 and late_ok:
+            inv = sq if c["paid"] <= CUTOFF[sq] else _next_q(sq)
+            if inv != "2026Q2":
+                lo, hi = CUTOFF[inv] + dt.timedelta(days=1), CUTOFF[_next_q(inv)] - dt.timedelta(days=5)
+                c["rev"] = lo + dt.timedelta(days=int(rng.integers(0, max(1, (hi - lo).days))))   # reversed after it
         if c["paid"] > PAID_THROUGH:
-            c["paid"] = None                                                            # not yet paid at the extract
-        if c["rev"] and (c["paid"] is None or c["rev"] > PAID_THROUGH):
+            c["paid"] = None
+        if c["rev"] and (c["paid"] is None or c["rev"] > PAID_THROUGH or c["rev"] < c["paid"]):
             c["rev"] = None
         c["no"] = new_claim_no()
         c["rev_no"] = new_claim_no() if c["rev"] else None
     claims = [c for c in claims if c["paid"] is not None and FY_START <= c["d"] <= FY_END]
-    # pricing
+    for c in claims:
+        c["compound"] = bool(w.products[c["key"]]["cls"] in ("OTH",) and rng.random() < 0.004)
+    _price(w, claims)
+    return claims
+
+
+def _price(w, claims):
     for c in claims:
         p = w.products[c["key"]]
         ch = channel_on(c["ph"], c["d"])
-        disc = DISCOUNT["SPECIALTY" if ch == "SPECIALTY" else ("MAIL" if ch == "MAIL" else "RETAIL")]
+        disc = DISCOUNT["SPECIALTY" if p["prof"] == "S" else "RETAIL"]      # the brand rate is set per product
         unit_wac = p["wac_pkg"] / p["units"]
         c["ingr"] = round(unit_wac * AWP_FACTOR * (1 - disc) * c["qty"], 2)
+        if c.get("compound"):
+            c["ingr"] = round(c["ingr"] * 1.06 + 18.50, 2)
         c["chan"] = ch
         fee_key = "SPECIALTY" if ch == "SPECIALTY" else ("MAIL" if ch == "MAIL" else ("RETAIL90" if c["ds"] >= 84 else "RETAIL30"))
-        c["fee"] = FEE[fee_key]
+        c["fee"] = FEE[fee_key] + (12.0 if c.get("compound") else 0.0)
         c["fee_key"] = fee_key
         thirty = c["qty"] / p["per30"]
         if p["cls"] == "BASAL":
@@ -437,9 +455,37 @@ def _claims(rng, w):
             pay = (40.0 if c["ds"] < 84 else 100.0)
         c["pay"] = min(round(pay, 2), round(c["ingr"] + c["fee"], 2))
         c["plan"] = round(c["ingr"] + c["fee"] - c["pay"], 2)
-        c["eligible"] = not c["ph"]["c340b"]
+        c["eligible"] = not c["ph"]["c340b"] and not c.get("compound")
         c["rebate"] = round(p["rebate_unit"] * c["qty"], 2) if c["eligible"] else 0.0
-    return claims
+
+
+def net30(w, key, claims):
+    """A product's net cost per 30-day supply on the clean truth: ingredient cost less rebates over 30-day supplies."""
+    p = w.products[key]
+    ing = reb = units = 0.0
+    for c in claims:
+        if c["key"] == key and not c["rev"]:
+            ing += c["ingr"]
+            reb += c["rebate"]
+            units += c["qty"] / p["per30"]
+    return (ing - reb) / units
+
+
+def _tune(w):
+    """Set each reviewed product's list price so its fiscal 2026 net cost per 30-day supply sits within a dollar of the
+    middle of its ten-dollar band, never on it; net cost is proportional to list price, so one pass lands it, then the
+    claims are re-priced."""
+    trng = np.random.default_rng(SEED + 7)
+    for key, p in w.products.items():
+        if p["cls"] not in REVIEWED:
+            continue
+        v = net30(w, key, w.claims)
+        off = float(trng.uniform(0.15, 1.0)) * (1 if trng.random() < 0.5 else -1)
+        target = round(v / 10.0) * 10.0 + off
+        p["wac_pkg"] = round(p["wac_pkg"] * target / v, 2)
+        p["rebate_pkg"] = round(p["wac_pkg"] * p["rshare"], 2)
+        p["rebate_unit"] = p["rebate_pkg"] / p["units"]
+    _price(w, w.claims)
 
 
 def _month_weights(target, kind):
@@ -464,21 +510,16 @@ def _statements(rng, w):
             continue
         sq = calq(c["d"])
         m = w.products[c["key"]]["mfr"]
-        # the claim's rebate is earned when it is invoiced
         inv_q = sq if c["paid"] <= CUTOFF[sq] else _next_q(sq)
         kind = "CUR" if inv_q == sq else "PPA"
+        if c["rev"] and c["rev"] <= CUTOFF[inv_q]:
+            continue                                   # paid and reversed inside one invoice run: never invoiced
         by.setdefault((inv_q, kind, sq, m, c["acc"]), 0.0)
         by[(inv_q, kind, sq, m, c["acc"])] += c["rebate"]
         if c["rev"]:
-            rq = sq if (kind == "CUR" and c["rev"] <= CUTOFF[sq]) else None
-            if rq is None:
-                rev_inv = _next_q(sq) if c["rev"] <= CUTOFF.get(_next_q(sq), dt.date(2099, 1, 1)) else _next_q(_next_q(sq))
-                if kind == "PPA" and c["rev"] <= CUTOFF[_next_q(sq)]:
-                    rev_inv = _next_q(sq)
-                by.setdefault((rev_inv, "PPA", sq, m, c["acc"]), 0.0)
-                by[(rev_inv, "PPA", sq, m, c["acc"])] -= c["rebate"]
-            else:
-                by[(inv_q, kind, sq, m, c["acc"])] -= c["rebate"]
+            rq = _next_q(inv_q)
+            by.setdefault((rq, "PPA", sq, m, c["acc"]), 0.0)
+            by[(rq, "PPA", sq, m, c["acc"])] -= c["rebate"]
     for k, v in by.items():
         lines.append(dict(stmt=k[0], kind=k[1], svc=k[2], mfr=k[3], acc=k[4], amount=round(v, 2)))
     # FY2025 claims (outside the extract): the April to June 2025 statement and late adjustments on the next one
@@ -492,9 +533,9 @@ def _statements(rng, w):
             fy25[(m, acc)] = base * float(rng.uniform(0.93, 0.99))
             lines.append(dict(stmt="2025Q2", kind="CUR", svc="2025Q2", mfr=m, acc=acc, amount=round(fy25[(m, acc)], 2)))
             lines.append(dict(stmt="2025Q2", kind="PPA", svc="2025Q1", mfr=m, acc=acc,
-                              amount=round(fy25[(m, acc)] * float(rng.uniform(-0.004, 0.012)), 2)))
+                              amount=round(fy25[(m, acc)] * float(rng.uniform(-0.002, 0.004)), 2)))
             lines.append(dict(stmt="2025Q3", kind="PPA", svc="2025Q2", mfr=m, acc=acc,
-                              amount=round(fy25[(m, acc)] * float(rng.uniform(-0.003, 0.014)), 2)))
+                              amount=round(fy25[(m, acc)] * float(rng.uniform(-0.002, 0.004)), 2)))
     lines = [l for l in lines if l["stmt"] in CAL_Q and abs(l["amount"]) >= 0.005]
     return lines
 

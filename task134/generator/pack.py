@@ -174,8 +174,9 @@ def write_lab(W, out):
     rows = []
     batch1 = {"OC", "FR", "MR"}
     lab_no = 26031100
-    for x in sorted(W.samples, key=lambda x: x["ref"]):
-        lab_no += 7
+    gaps = np.random.default_rng(P.SEED + 3000).integers(1, 9, size=len(W.samples))   # other clients' samples between ours
+    for i, x in enumerate(sorted(W.samples, key=lambda x: x["ref"])):
+        lab_no += int(gaps[i])
         b2 = (x["part"] not in batch1) if not x["qa"] else (x["primary"].split("-")[1] not in batch1)
         received = "19/03/2026" if b2 else "16/03/2026"
         for det, unit in (("Dry solids", "%"), ("Cadmium", "mg/kg"), ("Mercury", "mg/kg"), ("Lead", "mg/kg"),

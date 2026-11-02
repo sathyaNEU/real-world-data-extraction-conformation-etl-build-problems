@@ -1,8 +1,355 @@
-# task134: Calderbrook, net new homes from the 2027 transit-oriented area order
+# task134 design note: Port of Fendmouth, maintenance dredging for the first contract year after the 2027 deepening
+
+Private, never ships. Architecture 4, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 3 (the Calderbrook
+transit-oriented housing target, urban-regional-science) shipped on 2026-10-14 with no portal result; its world is closed
+(one architecture per world) and its note is kept below as `## Architecture 3 record`. Architectures 1 and 2 are in the
+card's `lineage`, `pipeline.json` and `## Tried and rejected`. The lessons this draw applies, from the batch's judges: the
+default is an easier method on correct data inside a filed WHAT that names what it leaves out (here, the depth the parts
+will be held at), never a shipped artifact the truth contradicts; the decisive fact is in the data, not in residuals
+against a reference; every reported figure is complete and correct and the easy route still files the wrong answer
+(the FINE-numbers test); and every licensed construction is measured and asserted inside every graded bin.
+
+## Draw
+
+- Pairing: Physical & Environmental Sciences (`physical-environmental-sciences`), task type `hydrology-flood-frequency`
+  (F), objective Forecasting & Predictive Modeling. The call faces forward: the in-situ maintenance dredging the Port of
+  Fendmouth's channel, turning basin and berth pockets will need from 1 October 2027 to 30 September 2028, the first year
+  of the 2027-2030 maintenance contract and the first with the channel and basin held at 14.3 m below chart datum.
+- Shape `single-figure`: the call (1) with its six components, the four reaches, the turning basin and the berth pockets
+  together (6); the asks, the wet tonnes placed at each of the two disposal sites in each quarter of the licence year
+  2025-26 (8) and each reach's and the basin's 2026 mean cadmium, mercury, lead and copper (20); the chart's named parts
+  (4); the two files (2): 41 criteria, none stacked.
+- World: the Port of Fendmouth, run by Fendmouth Borough Council's Harbour Department as the statutory harbour authority
+  on the fictional Fend Estuary on the English east coast. A 10.2 km approach channel in four reaches (Outer Channel,
+  Fend Roads, Middle Reach, Inner Reach) and a turning basin, all maintained at 12.3 m below chart datum, with North Quay
+  Berths 1 and 3 at 12.8 m, Container Terminal Berth 5 at 14.3 m and North Quay Berth 2 out of maintenance since April
+  2019. Maintenance by Dunmarsh Dredging Ltd's trailing suction hopper dredger Fend Endeavour, with a hired dredger,
+  Maasbank, for five weeks in late 2025; disposal at Fend Spit (closed December to February) and Wenning Deep; surveys
+  by Holmwood Hydrographic Ltd to April 2023 and Seaward Geodata Ltd since; sediment analysis by Aldern Analytical Ltd.
+  The capital deepening runs May to September 2027 under a separate contract; the 2027-2030 maintenance contract goes to
+  tender in February 2027 and is awarded by the council's Cabinet in April. GBP.
+- Candidates written before choosing (fates in `## Tried and rejected`): (1) this draw; (2) an optional time-of-use
+  tariff's revenue loss from customers choosing it on their own bill savings (economics, discrete choice); (3) HIV
+  diagnoses after a testing push drawing down the undiagnosed pool (epidemiology, infectious disease); (4) home sellers'
+  sale rates under loss aversion against their own purchase prices (psychology, decision-making); (5) a defined-benefit
+  scheme's dependants' pensions starting on 2027 deaths (actuarial, mortality); (6) dredged material returning to the
+  channel from a near disposal site (physical-environmental hydrology); (7) the same harbour with an earlier deepening
+  in the record as the analog.
+- Card: `.claude/skills/fingerprint/cards/task134.json`, architecture v4, registered 2026-11-01T23:45:18Z at PASS;
+  architecture 3 moved into `lineage` with its fate. Forum, forcing event, shape and context artifact were redrawn at
+  the draw after task304 and task475 registered and banned regulator_or_inspector, statutory_or_regulatory_filing,
+  shape 14 and filed_standard: the contract tender is the honest forcing event (its year 1 quantity is the call), the
+  council's Cabinet awards it (council_or_assembly), the call is one figure with its components, and the hydrographic
+  surveys are the stakeholder's monitoring export. `check` re-run on the registered card as the last act of the draw
+  (window task475, task304, task233): PASS. The structural NOTE against task154 is differentiated on the card.
+- Personas from `guard.py names --geo "United Kingdom" --locale en_GB --seed 134`: Harriet Thorpe (Dredging and
+  Hydrography Manager), Damian Davies (Harbour Master), Graham Ellis (Procurement), Zoe Dickinson (laboratory), Martyn
+  Rogers (contractor), Garry Stephenson (dredge master), Liam O'Brien (survey contractor); Pamela, Danielle, Edward,
+  Duncan, Debra, Ruth, Samuel and Sarah dropped on people.first WARNs.
+- Data-native sentence: in this dataset a dredged part's yearly infill is fixed by how far its held bed sits below the
+  natural bed beside it, and that natural bed is written only in the survey cells beyond each maintained width, which
+  the surveys carry for slope monitoring; the certificates hold each part's volume at today's depth, every reach and the
+  basin have been held at 12.3 m throughout the record, and no file states a natural bed, a depth below it or how the
+  infill would change with depth.
+- The abstraction sentence, tested against the nearest builds on file. Against task175 (approved), "a take-up measured
+  on units served earlier, conditioned on a state of their surroundings, is carried to new units in another state":
+  not writable, since no part is treated earlier, the default carries each part's own record or scales it by its own
+  depth, and the deciding level is a fixed natural bed, not a neighbours' state that treatment changes. Against task165,
+  "a gain measured on units upgraded earlier, conditioned on what the old level already treated": not writable for the
+  same reason. Against task156, "a load scaling with how much of a network lies below a fluctuating level, replayed day
+  by day": not writable, since the level here is fixed, nothing is replayed, and the rate scales with a distance moved by
+  a design change. Against task273 (superposition of neighbours' draws) and task133 (a second limit binding once the
+  first is raised): no common sentence.
+- The insight each forecasting build on file spends (`guard.py mechanisms --objective forecasting`, read in full):
+  defect and withheld-rule architectures (task18 to task30, task37, task47, task75, task78, task97, task115), not
+  drawable; maturity and censoring (task31, task59, task91, task99, task130, task168, task174); binding constraints
+  (task32, task64, task79, task94, task133, task140, task147, task159, task177); time semantics (task35, task55, task102,
+  task107, task117, task170, task176); method selection and back-test (task46, task89, task144, task145, task149,
+  task156, task158, task167, task501); grain (task16, task60, task67, task77, task108, task139, task143, task153,
+  task164); population and identity (task22, task98, task132, task141, task150); causal (task88, task160, task163,
+  task171, task173, task178); composition and conditioned yield (task20, task95, task124, task146, task155, task165,
+  task175, task446); decomposition (task152, task154, task169, task273); other (task135, task137, task138, task142,
+  task148, task151, task157, task161, task162, task166, task172, task179); this slot's own lineage (competing exits; a
+  hazard by time since entry; a capital-limit step; feasibility at the best-paying building). What they leave: no build
+  forecasts a rate set by a held level's distance below an equilibrium level read from the untouched ground beside the
+  unit, moved by a design change of the held level.
+- Sources read, and how this build differs: `two-layer-task-design.md` (the five families; this is field_method, the
+  domain having no client cards); the hydrology screens in task178's, task170's and task156's notes (flood frequency,
+  ratings, naturalising, aggrading channels, transfers to unrecorded places): none touches the infill of a dredged
+  trench, and task170's law (a transfer to an unrecorded place lands on the field's own forms) is met here by reading the
+  natural bed in-sample, the forecast's depths below it (6.0 to 9.6 m) lying inside the record's range (4.0 m in Fend
+  Roads to 9.9 m at Berth 5, and Berth 2's relaxation from 9.0 m down to 3.8 m); task156 (infiltration per kilometre of
+  sewer below the water table), the nearest hydrology driver, differentiated above.
+- Prompt shape and criteria arithmetic: the call (1), six components (6), ask A eight placements (8), ask B twenty means
+  (20), the chart (4), the files (2): 41. Shell: how-much, second sentence opening on the tender, rounding opening on the
+  part volumes, svg plus xlsx (voice-check PASS, no quota WARN).
+
+## Survivor anatomy
+
+- Actor: the deciding property, how far each part's held bed sits below the natural bed beside it, has no column: the
+  certificates hold in-situ volume by area and month, the notice holds each part's maintained depth and width, and the
+  natural bed is a population of survey soundings beyond each maintained width, found only by placing every cell
+  against the notice's centreline.
+- Link: the survey cells carry OSGB coordinates and no area; the natural bed beside a part is read by projecting each
+  cell onto the centreline (chainage and offset), keeping the cells beyond the maintained width, and comparing that level
+  with the part's own certificates, a cross-file comparison the field's maintenance-volume method never asks for.
+- Reflex: the field's method for a maintenance quantity, the record's average volume carried forward, and its usual
+  deepening adjustments (the held depth's ratio, the trench's trapping efficiency) sit at rungs 0 to 2 and file
+  1,300,000, 1,500,000 and 1,400,000 cubic metres against the golden 1,750,000.
+- Back-test: the textbook route validates: every reach and the basin have been held at 12.3 m since before the record
+  and their yearly volumes stay within a few per cent of their means, so carrying the mean back-tests inside a bin in
+  every year; nothing in the volumes says how they would move with depth.
+- Second use: the surveys are the harbour master's depth record behind the notice and their margins are surveyed for
+  slope monitoring; the certificates are the contractor's payment record; the load log, the revision, the sampling
+  workbook and the lab results serve the disposal returns and the sampling plan (the asks); the decisive step reads no
+  file the pack would not carry without it.
+- Shock: nothing moves in the record: each part's volume is flat from year to year, the parts differ by their areas and
+  natural beds, which read as ordinary geography, and Berth 2's shoaling is the documented consequence of its closure;
+  the golden is no interval of any sort on a shipped statistic.
+- Pins: the WHAT sits in the maintenance planning basis ("Year 1 quantity": the in-situ volume, as the certificates
+  measure it, that will settle in the maintained areas between 1 October 2027 and 30 September 2028 with the reaches
+  and basin held at 14.3 m and the berths as now, through a year of average conditions as the licence years 2016-17 to
+  2025-26 averaged them) and in the notice (the maintained areas); no filed sentence names a natural bed, a depth below
+  it, how infill answers to depth or how a deepening is scaled.
+
+## Default path
+
+The pipeline a strong analyst builds unsteered from the prompt's words, the files' grain and the maintenance planner's
+habit (the record carried forward, adjusted for the deeper channel). Figures measured on the built pack
+(`generator/analysis.py`, asserted in `generator/checks.py`).
+
+1. Read the planning basis and the notice: the four reaches and the turning basin go from 12.3 to 14.3 m below chart
+   datum on 1 October 2027; the berth pockets keep their depths; North Quay Berth 2 stays out of maintenance.
+2. Map the certificates' 2021 area codes through their crosswalk, take the re-issued October 2024 Middle Reach
+   certificate in place of the original, and average each area's in-situ volume over October 2016 to September 2026:
+   1,291,401 cubic metres a year (the reaches and basin 1,250,785, the berth pockets 40,616).
+3. Scale each deepened part's average by the deeper hold, 14.3 over 12.3 (a sixth more depth over each square metre).
+4. Add the berth pockets at their averages and sum.
+
+Ends on: about 1,500,000 cubic metres (1,494,781 unrounded).
+Golden: 1,750,000 cubic metres (1,750,626 unrounded): Outer Channel 380,000, Fend Roads 300,000, Middle Reach 400,000,
+Inner Reach 280,000, Turning Basin 360,000, berth pockets 40,000; each deepened part's 2016-17 to 2025-26 average times
+(14.3 less h) over (12.3 less h), h the natural bed in the survey cells beyond its maintained width (8.09, 8.27, 6.44,
+5.34 and 4.75 m).
+
+The other natural routes land off the golden too (`## Ladder`): the record carried (1,300,000), the trench's trapping
+efficiency on the same natural beds (1,400,000) and one line of infill per square metre on held depth across the parts
+and berths (2,300,000).
+
+## Stump sentence
+
+A strong analyst averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened reaches and basin
+by the ratio of their held depths, 14.3 over 12.3, filing about 1,500,000 cubic metres (1,494,781) against 1,750,000;
+the step that lands it there is reading a part's infill as proportional to its depth, when it is proportional to how
+far its held bed sits below the natural bed beside it, which the survey cells beyond the maintained widths put at 4.0
+to 7.6 metres, so two more metres raise the Outer Channel's and Fend Roads' infill by about half and the inner parts'
+by about a quarter.
+
+## Three rules
+
+- Task type: physical-environmental-sciences, hydrology-flood-frequency, which serves Forecasting & Predictive Modeling:
+  the sediment a dredged estuary channel will gather in a coming year once it is held deeper, the hydrology and sediment
+  budget of an estuary's maintained channel.
+- Domain test: the deciding quantity is the sediment each dredged part of the estuary channel will gather once held two
+  metres deeper, which harbour hydrographers estimate from the part's maintenance record carried forward and from the
+  dredged trench's trapping efficiency; with another field's nouns the chart datum, the maintained depth, the natural bed
+  beside the channel and the infill of a dredged trench have nothing to attach to.
+- Swap: "how much maintenance dredging will the deepened channel need" read as "how many admissions will the enlarged
+  ward need" has no chart datum, no bed held below a natural bed, no trench to infill and no survey margin to read the
+  natural level from, so the analysis stops making sense.
+- Layer 1: two survey contractors (depths below chart datum, positive down, on a 50 m grid to April 2023 with -99.99 at
+  quay-face cells; elevations to Ordnance Datum Newlyn, negative down, on a 40 m grid after, chart datum 2.90 m below ODN
+  in the notice); certificates laid out by the council's financial year with the contractor's 2021 area codes and one
+  re-issued certificate; the load log in UTC under the contractor's codes, the hired dredger logging hopper volume and
+  mixture density, a loading-monitor revision keyed by the dredge master's trip references; sampling stations moved from
+  their planned positions, field duplicates under their own references, one laboratory batch reporting mercury in
+  micrograms per kilogram. Each is written by the system that holds it and none decides the call (asserted, R2).
+- Layer 2: field_method, the estuary's own sediment response: a dredged part relaxes toward the natural bed beside it,
+  so its infill is proportional to its held depth below that bed, and a deepening adds a fixed two metres to a base that
+  differs from part to part.
+- Decisive step: recognising that a dredged part gathers sediment in proportion to how far its bed is held below the
+  natural bed beside it, reading that natural bed from the survey cells beyond each maintained width, and raising each
+  part's own record by two metres over its present depth below that bed.
+- Not semantics: every field can be read right (depth below chart datum, the ODN conversion, in-situ volume, the area
+  codes, the maintained depths) and the analyst still scales by depth or carries the record, because no field states a
+  natural bed or a depth below it: the margin cells are ordinary soundings beside the channel.
+- Not rule application: no filed rule says how infill answers to depth; the basis fixes the window, the depths and the
+  measure, and the notice the areas. The enumerated family spans 1,291,401 (the record carried) to 2,321,573 (one line
+  of infill per square metre on held depth), with the depth ratio at 1,494,781 and the trapping efficiency at 1,413,699;
+  the standing family (the natural bed from margin cells beyond 0, 25, 50 or 100 m of the maintained width, by mean or
+  median, from either contractor's surveys or both; the certificates on licence or financial years; the re-issue in place
+  of the original or beside it; each part's own coefficient, one coefficient through the origin or by least squares, or
+  the fitted power 0.99) spans 1,736,964 to 1,767,770, inside one 50,000 bin; what rules the rest out is the data: each
+  part's yearly infill per square metre is proportional to its depth below the natural bed (0.110 to 0.118 a year per
+  metre), which neither the depth ratio nor a trapping efficiency reproduces, and Berth 2 has relaxed toward its natural
+  bed at the same coefficient since 2019.
+- Analyst test: a strong analyst who reads the surveys, the certificates, the notice and the planning basis correctly
+  averages each part's 2016-17 to 2025-26 in-situ volume and scales the deepened parts by 14.3 over 12.3, filing about
+  1,500,000 cubic metres (1,494,781), because a part's infill is set by its depth below the natural bed beside it, which
+  the depth ratio ignores.
+- Estimand: deepening_2027_maintenance_planning_basis.docx, "Year 1 quantity": the in-situ volume, as the contractor's
+  monthly certificates measure it, that will settle in the maintained areas between 1 October 2027 and 30 September
+  2028, the four reaches and the turning basin held at 14.3 m below chart datum and the berth pockets at their present
+  maintained depths, through a year of average conditions as the licence years 2016-17 to 2025-26 averaged them,
+  reported for each reach, the basin and the berth pockets together, and in total; the areas are those of
+  notice_to_mariners_03-2026.pdf.
+- No decoy: nothing is planted: no file states a forecast, an uplift, a natural bed level or a trapping efficiency; the
+  certificates, surveys, notice, licence and basis are true as written; no memo, draft or voice argues a method.
+- No certified replay: the method is not recovered by reproducing certified or published figures; no control total ties
+  only under the golden and no document carries a graded figure.
+- Lesson: a dredged channel's maintenance is not a property of its area or its depth but of its departure from the bed
+  the estuary would leave there, read from the untouched ground beside it; a model learns to carry a design change
+  through the mechanism the record shows rather than scale the record. No build on file reads a rate off a held level's
+  distance below an equilibrium read beside the unit (guard nearest 0.07).
+
+## Readability screen
+
+| Rung | Answer | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| R0 the record carried | 1,300,000 | no | the certificates | yes, the planner's habit | no | no | yes | no | readable |
+| R1 the held depth's ratio (default path) | 1,500,000 | the basis's depths | the notice | yes | no | no | yes | no | readable |
+| R2 trapping efficiency on the natural beds | 1,400,000 | no | no | yes, the trench formula | no | no | no | no | readable |
+| R3 one line of infill on held depth | 2,300,000 | no | the notice | yes, a regression | no | no | no | no | readable |
+| Golden: each part raised by two metres over its depth below the natural bed beside it (decisive) | 1,750,000 | no sentence names a natural bed | no column: margin soundings placed against the centreline | no: the reflex is the record and the trench formula | no control | no | no: the ratio needs a level no figure reports | no: margins are surveyed for slope monitoring | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
+|---|---|---|---|---|
+| SF1 | maintenance dredging, the year 1 quantity | in-situ volume that will settle in the maintained areas | dry solids or wet tonnes: another unit | the basis ("in situ volume ... as the contractor's monthly certificates measure it") |
+| SF2 | the window | 1 October 2027 to 30 September 2028 | calendar 2028: same call in an average year | the prompt and the basis |
+| SF3 | the depths held | reaches and basin at 14.3 m, berth pockets as now | berths deepened: another call | the basis ("The berth pockets keep their present maintained depths") |
+| SF4 | North Quay Berth 2 | outside maintenance, nil | its 2016 to 2019 volume carried | the basis and the notice |
+| SF5 | average conditions | the licence years 2016-17 to 2025-26 | the financial years 2016-17 to 2025-26: same call | the basis; asserted |
+| SF6 | the record's measure | the certificates' in-situ volume | dry solids over a density: not the basis's measure | the basis |
+| SF7 | the re-issued October 2024 certificate | the re-issue replaces the original | both summed: same call | asserted |
+| SF8 | the 2021 area codes | the crosswalk sheet | the codes' own order: the same mapping | asserted |
+| SF9 | the natural bed beside a part | margin cells 50 to 300 m beyond the maintained width, mean | 0, 25 or 100 m, median: same call | asserted (every band and statistic) |
+| SF10 | the second contractor's datum | elevations converted, chart datum 2.90 m below ODN | the first contractor's surveys alone, or the second's alone: same call | the notice; asserted |
+| SF11 | the infill coefficient | each part's own | one coefficient through the origin or by least squares, the fitted power: same call | asserted |
+| SF12 | the depth held now | 12.3 m, the notice | the surveys' in-channel mean: same call | asserted |
+| SF13 | the berth pockets | together, Berths 1, 3 and 5 | separately | the basis ("for the berth pockets together") |
+| SF14 | rounding | parts to 20,000, the total to 50,000 | none | the prompt; every standing member inside every bin (asserted) |
+| SF15 | the disposal site of a load | where it was placed, by its dump position in the licence's site corners | the log's route column | the licence 5.3 ("the quantity placed at each disposal site") |
+| SF16 | the quarter | the local date of placement | UTC | the licence 5.3 |
+| SF17 | wet tonnes | dry solids over the area's fraction from the latest campaign completed before the month | the 2026 fraction throughout | the licence 5.4 |
+| SF18 | the hired dredger's dry solids | the licence's formula from hopper volume and mixture density | its loads left out | the licence 5.4 |
+| SF19 | the revised dry solids | the revision replaces the logged value | the logged value | the revision's own column, dry_solids_t_revised; the licence 5.4 ("dry solids placed") |
+| SF20 | a sample's area | where it was actually taken | the plan's area | the licence 5.5 |
+| SF21 | a field duplicate | averaged with its primary before the means | dropped, or counted as a sample | the licence 5.5 |
+| SF22 | mercury units | micrograms per kilogram converted | read as mg/kg | the lab's units column |
+
+## Ladder
+
+| Rung | Construction | Total | Graded (50,000) | Reaches and basin (each to 20,000) |
+|---|---|---|---|---|
+| R0 | the record carried | 1,291,401 | 1,300,000 | 260,000; 200,000; 300,000; 220,000; 280,000 |
+| R1 | the held depth's ratio, 14.3 over 12.3 (default path) | 1,494,781 | 1,500,000 | 300,000; 240,000; 340,000; 260,000; 320,000 |
+| R2 | trapping efficiency 1 less (h/H) to the 2.5, on the natural beds | 1,413,699 | 1,400,000 | below the golden in every part |
+| R3 | one line of yearly infill per square metre on held depth (slope 0.255) | 2,321,573 | 2,300,000 | above the golden in every part |
+| Golden | each part raised by two metres over its depth below the natural bed | 1,750,626 | 1,750,000 | 380,000; 300,000; 400,000; 280,000; 360,000 |
+
+The nearest wrong total is R1, 14.6 per cent under the golden; every rung misses every deepened part's bin. Pricing on
+the clean truth: the residue the WHAT leaves is how infill answers to a deeper hold, a method, not a knob; the decisive
+step is worth 255,845 against R1 (5.1 bins of 50,000), while the standing family spans 30,806 (0.6 of a bin) and the
+record's own sampling (ten licence years, storminess sd 3 per cent) moves the total about 1 per cent; the one-group-by
+route (average by area, times 14.3 over 12.3) is R1; no shipped column proxies the depth below the natural bed (the
+coefficient per part ranges 0.110 to 0.118 against depths below the natural bed of 4.0 to 7.6 m); the answer is
+bracketed (R0 to R2 under, R3 over).
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | the maintained areas: four reaches, the basin, Berths 1, 3 and 5 | the basis and the notice; Berth 2 nil (SF4) |
+| 2 Unit of account | in-situ cubic metres | the basis (SF1) |
+| 3 Attribution window | 1 October 2027 to 30 September 2028; the record October 2016 to September 2026 | the basis (SF2, SF5) |
+| 4 As-of dating | the notice of 3 February 2026 for today's areas and depths | the notice |
+| 5 Version basis | the re-issued certificate; Variation 2 of the licence | C1 (SF7) |
+| 6 Denominator | none: a volume | not applicable |
+| 7 Weighting | each licence year once | the basis; financial years same call (asserted) |
+| 8 Window length | ten licence years | the basis |
+| 9 Boundary inclusivity | months October 2016 to September 2026 inclusive | the certificates are monthly; nothing on an edge |
+| 10 Rounding path | unrounded parts summed, rounded once each | the prompt; asserted |
+| 11 Tie-break | none | not applicable |
+| 12 Maturity and censoring | none: every month certified | not applicable |
+| 13 Order of operations | each part's mean, then its scaling, then the sum | the basis's per-part reporting; the sum of scaled parts equals any order (asserted) |
+| 14 Row order | sums | C1 |
+| 15 Duplicate resolution | the re-issue replaces the original | C1 (SF7) |
+| 16 Identity normalisation | the 2021 codes through the crosswalk | C1 (SF8) |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | depths in metres below chart datum after the ODN conversion; in-situ cubic metres | the notice; the files' headers (SF10) |
+| 19 Code and status semantics | area codes; Berth 2 not maintained | the crosswalk; the notice; never the stump |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | the 14.3 m hold applies to the reaches and basin only | the basis (SF3) |
+| 22 Forward window contents | the record's areas at the new depths through an average year | the basis; the record's coefficient and natural beds |
+
+## Literal reader
+
+A reader executing the planning basis word for word computes the in-situ volume that will settle in each maintained
+area between 1 October 2027 and 30 September 2028 with the reaches and basin held at 14.3 m, through a year of average
+conditions as 2016-17 to 2025-26 averaged them. The record carried forward is the volume that settled at 12.3 m, so it
+does not answer the clause as written; the depth ratio and the trapping efficiency are easier methods on the same
+estimand that the record refutes, since the parts' yearly infill per square metre is proportional to each part's depth
+below the natural bed beside it and Berth 2 has relaxed toward its natural bed at the same coefficient. No filed
+sentence names a method, and every licensed reading of the conventions (SF5 to SF12) files 1,750,000 and the same six
+components, the tightest component 3,550 m3 inside its bin and the total 17,230 inside its edge. The ask readings are
+closed by the licence (SF15 to SF21) and the lab's units (SF22).
+
+## Oracles
+
+- The tide gauge, the river flows and the vessel arrivals (distractors): none states an infill, a natural bed or a
+  quantity, and none ties to a graded figure; the river flow is uncorrelated with the yearly infill (asserted).
+- The notice: today's depths and areas, true as stated. The licence: the disposal rules, true as stated. The basis: the
+  WHAT, with no figure of the call.
+- The certificates' dry solids: tie to the load log's dry solids month by month from October 2023 (the returns' basis,
+  not an oracle of the call); no document states a graded figure (asserted, R3c).
+
+## Ask sheet
+
+- Ask A, the wet tonnes placed at each licensed disposal site in each quarter of the licence year to 30 September 2026
+  (8 figures, nearest 1,000 t). H18 home: the disposal returns the licence variation is argued from, decoupled from the
+  call (the call reads in-situ volumes, never the load log). Primary A1 (D7, the true key elsewhere): the log's route
+  column names each area's usual site, while 40 per cent of the year's loads went to the other site (Fend Spit closed
+  December to February under licence 5.1, weather days either way); the site is recovered only by placing each dump
+  position in the licence's site corners, a reconstruction across two files. Second device A2 (D2 with a D7 key): the
+  Fend Endeavour's dry solids for 7 January to 27 March 2026 were revised in a file keyed by the dredge master's trip
+  references (vessel, local date, trip of the day), which the log never carries; it moves the two January to March
+  figures. Hazards: dumps in the last UTC hour of 30 September 2025, 31 March and 30 June 2026 (local dates the next
+  day), the hired dredger's dry solids from the licence formula, and the campaign rule for the dry-solids fraction.
+  Pin test: the asking sentence carries the measure, the sites, the quarter and the licence year; the licence carries
+  the basis; the devices sit in which loads reached which site and which key carries the revision.
+- Ask B, each reach's and the basin's mean cadmium, mercury, lead and copper in the 2026 samples (20 figures, mg/kg dry
+  weight to two decimals). H18 home: the licence's sampling plan, decoupled from the call. Primary B1 (D7): four stations
+  were sampled 260 to 330 m from their planned positions, each in the neighbouring part; the area is recovered only by
+  placing each sample's position against the notice's centreline and widths. Second device B2 (D1): four field
+  duplicates sit under QA references with no station, matched to their primary only by position and time, and averaged
+  with it before the means (licence 5.5). Hazard: the second batch's mercury in micrograms per kilogram.
+  Pin test: the licence files the area as where the sample was taken and the duplicate rule; the devices sit in which
+  rows belong to which area and which record is one sample.
+- The chart: placements_2025-26.svg, the licence year's wet tonnes by month and site (ask A's construction).
+- Separation: the call reads the certificates, the surveys, the notice and the basis; the asks read the load log, the
+  revision, the licence, the sampling workbook and the lab results; zero device rows in the call's files (asserted), and
+  deleting every ask file leaves the call (asserted).
+- Pair ceiling: 36.4 (cracker C 52.9 keeping 4 of 28 ask figures, mirror S 19.9; 49.1 with the full includer, who finds
+  both primaries and misses the second devices)
+- Mirror leakage: 14.3 per cent of ask weight (the mirror handles the asks as the cracker does)
+- Measured by: generator/ceiling.py on the cut pack
+
+| Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
+|---|---|---|---|---|
+| A placements by site and quarter (8) | the log's route column, every filed rule applied | A1 dump positions, A2 the revision's key | 0 of 8 | miss |
+| B metal means by area (20) | the station plan's areas, duplicates dropped, units converted | B1 sampled positions, B2 duplicates by position and time | 4 of 20 | miss |
+
+## Architecture 3 record
+
+The Calderbrook transit-oriented housing target (urban-regional-science, land-use-spatial-development-modeling), shipped 2026-10-14 with no portal result and re-rooted 2026-11-01 at the Batch 3 queue reset (one architecture per world: the transit-oriented housing-target world is closed). Its note as it stood, headings demoted.
+
+### task134: Calderbrook, net new homes from the 2027 transit-oriented area order
 
 Private, never ships. Architecture 3 of 3, the slot's last, re-rooted on 2026-10-14. Architecture 2 (Strathallan's council-funded care home residents) shipped its round 1 on 2026-10-12, was judged compliant but weak by the 10/10 audit of 2026-10-14, and its round 2 redesign (the 5 April 2027 capital-limit step) was sent back the same day by the determinism judge: a decisive step sized from one past event with 8 conversions left the golden 3 residents from its rounding edges and the pull-forward construction one bespoke choice among several. Architecture 1 (Ocotillo County's reentry navigators) was spent at hardening loop 1. Both are in the card's `lineage`, `pipeline.json` and `## Tried and rejected`. If architecture 3 is spent, the number is retired.
 
-## Draw
+### Draw
 
 | Axis | Value |
 |---|---|
@@ -53,7 +400,7 @@ What they leave: no build on file forecasts what a rezoning yields, and none con
 
 **Prompt shape and criteria arithmetic.** The call: the five-year total and its five annual figures (6). Ask A: the homes completed on the order's lots by station area and year, 2022 to 2026 (20). Ask B: the homes standing on the order's lots at the 2026 roll by station area and distance tier (12). The chart: one stacked bar a year 2022 to 2026, a segment per station area, each segment labelled (4). Instruction following: the two files and the rounding (2 to 3). About 45 criteria, none stacked; the asks are set out in `## Ask sheet`.
 
-## Default path
+### Default path
 
 The pipeline a strong analyst builds unsteered, from the prompt's words, the files' grain and planning's textbook for a rezoning's housing (zoned capacity at the take-up a comparable rezoning has shown). Figures measured on the built pack (`generator/estimators.py`, asserted in `checks.py`).
 
@@ -69,11 +416,11 @@ The pipeline a strong analyst builds unsteered, from the prompt's words, the fil
 
 The other natural routes also land off the golden (five-year totals against 13,005; `## Ladder`): the take-up on best-building capacity (15,991 flat, 14,844 declining); a redevelopment logit on the visible attributes with homes at the allowance (14,598 or 21,203) or at the best building (10,587 or 15,430); feasibility at the building type the order's FAR names, concrete in the 4.0 and 5.0 bands (6,667); feasibility at the best building with homes at the allowance (16,104); one pooled rate (20,718); rates by kind on every upzoned lot without feasibility (6,378); the permit trend (3,714).
 
-## Stump sentence
+### Stump sentence
 
 A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031 (4,078 a year), against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.
 
-## Three rules
+### Three rules
 
 - **Task type:** urban-regional-science / land-use-spatial-development-modeling, which serves Forecasting & Predictive Modeling in the taxonomy; the call is the net new homes building permits will add on the order's lots in each year 2027 to 2031.
 - **Domain test:** the deciding quantity is the housing a rezoning will produce, which urban land economics estimates lot by lot from development feasibility (the residual land value of the best-paying permitted building, from sale values and construction costs, against the assessed value of the existing use) and the observed redevelopment rate of sites once feasible.
@@ -89,7 +436,7 @@ A strong solver takes each transit-area lot's capacity under the order (lot area
 - **No certified replay:** no forecast, target, published realisation or certified count ships, so the method is not recovered by reproducing certified figures; the only past counts are the solver's own from the permit record, and they refute the capacity routes in-sample (rebuilds come only where the best-paying building outbid the existing use).
 - **Lesson:** a rezoning's yield is decided lot by lot by whether the building that pays best outbids what stands there and, if so, by the pace lots of that kind keep, and past a construction-method cost step an extra allowance adds nothing; no build on file forecasts a rezoning's yield or conditions a yield on development economics (nearest driver on file at 0.06).
 
-## Readability screen
+### Readability screen
 
 Six tests per rung: 1 a filed sentence names it or makes the solver ask; 2 schema (a column, key or marker); 3 a reflex
 of the opponent; 4 a control or corpus scores it; 5 the hygiene battery finds it; 6 linear (one subtraction, ratio or
@@ -111,7 +458,7 @@ reads the record against that, which no rule, column or control asks for. The on
 for the 4.0 and 5.0 FAR bands, the City Centre's towers at 5.5 FAR, points the wrong way: towers pay there and not at
 the four stations.
 
-## Semantic fork table
+### Semantic fork table
 
 One row per term of the main ask and per convention the main computation needs. `checks.py` asserts each row.
 
@@ -145,7 +492,7 @@ The stump is none of these rows: every row is read the same way by a careful rea
 all correctly. Capacity at a take-up against yield at the best-paying building is not a reading of any term: both are
 estimates of the same filed estimand, and only one is generated by how lots are actually rebuilt.
 
-## Ladder
+### Ladder
 
 Built pack, `generator/estimators.py`; `checks.py` asserts every line. Ratios are to the golden total, 13,005.4.
 
@@ -181,7 +528,7 @@ Built pack, `generator/estimators.py`; `checks.py` asserts every line. Ratios ar
   (57 per cent of the golden); every Layer 1 item is neutral to the call (R2 block).
 - **Worth on the graded figures.** The default moves the total and all five yearly figures.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading and move |
 |---|---|---|
@@ -208,7 +555,7 @@ Built pack, `generator/estimators.py`; `checks.py` asserts every line. Ratios ar
 | 21 | Clause scope | the order applies to Schedule A from 1 January 2027; the city's zoning where higher (SF6) |
 | 22 | Forward window contents | the order's FAR and the 2026 values and costs carry the window; no lot changes zoning inside it (methodology 2.5) |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, the prompt, the order (sections 1 to 6 and Schedule A) and the methodology (sections 2.1 to
 2.6) define the call as the net new homes that building permits issued in each calendar year 2027 to 2031 will add on
@@ -221,7 +568,7 @@ townhouse rezoning's capacity took up nothing; the corridors' houses and commerc
 Pass on paper and on the built pack: checks.py and the independent verifier (verify.py, its own code path from the
 zip, reading each zone as the roll records it) both execute it to 13,000.
 
-## Oracles
+### Oracles
 
 None ships. No file states a forecast, a target, a take-up or realisation rate, a feasibility count, a redevelopment
 rate or a past ministry estimate; the reference tables carry values, costs, unit sizes and efficiencies only, and the
@@ -231,7 +578,7 @@ refutes the capacity rungs in-sample rather than confirming any. The occupancy r
 rental market survey) carry demand and rents, which no rung reads and which bind nothing: projected household growth
 in the station areas exceeds every rung's yield.
 
-## Ask sheet
+### Ask sheet
 
 **Main call's declared row population:** the roll's house, commercial and rental folios for 2014 to 2026; building
 permits for new construction; the folio history; the order and Schedule A; the methodology; the reference tables.
@@ -320,7 +667,7 @@ r of about 4 (the files and the method's credit) and the same 3.2: S = 4 + 7 + 3
 
 Pair ceiling: 30.2 (the pair's average, (46.2 + 14.2) / 2, rerun from the generated rubric at stage 4).
 
-## Leak review
+### Leak review
 
 `leak.py task134 --asof 2026-12-31`: REVIEW, no LEAK. Each REVIEW line:
 - Sweep 3, the order's bands and densities (200, 400, 800 m; 5.0, 4.0, 3.0) in the order and the extract notes: the order's own facts, which the call reads as inputs; harmless.
@@ -330,11 +677,11 @@ Pair ceiling: 30.2 (the pair's average, (46.2 + 14.2) / 2, rerun from the genera
 - Sweep 9, the folder index's dates in January 2027: the dates the branch received the extracts (the work is prepared on 15 January 2027 from records to 31 December 2026); harmless.
 - Stage 4 reader (architecture 3): Q1 to Q5 nothing quoted; Q6 an analytical choice, no decoy. Its three readings are SF19 to SF21 (asserted). The reference tables' homes-in-a-building recipe, which the reader called a mild helper, is the branch's standing unit-size table and states no use; harmless. The mixed file times (minor realism) are the extracts' own save times, each on or before 15 January 2027 (asserted); harmless.
 
-## Determinism
+### Determinism
 
 The stage 4 judge returned DETERMINISTIC and APPROVE, with every figure reproduced (`determinism_check_report_arch3.md`). Its two soft spots are SF22 and SF23, both asserted. Both optional wording notes are declined because each would change a document under `target/` and remove a designed ask device: whether the occupancy record's units are per building or per permit (Ask A's device), and what a missing floor area means for a strata lot (Ask B's device).
 
-## Pre-ship check (client two-layer standard)
+### Pre-ship check (client two-layer standard)
 
 1. Domain: urban land economics' forecast of a rezoning's housing yield. Lot by lot, the residual land value of the best-paying permitted building is set against the assessed value of the existing use, and feasible lots are rebuilt at the observed rate for their kind. Swap in another field's nouns (licences against a quota) and there is no residual value, no wood-frame to concrete cost step and no existing use to outbid, so the task empties.
 2. Layer 1: the 2019 roll layout change, zone codes renamed in 2020, acres among square feet, strata plans retiring and creating folios, permits in square feet then square metres, superseded, cancelled and expired permits, demolitions on two permits, interim and final occupancies, and Schedule A as at 30 June 2026 against the roll's October 2025 records. All of it is what a roll, a permit system and an order produce. None of it is planted and each item is asserted neutral to the call. The judge confirmed it is authentic and unplanted.
@@ -453,3 +800,17 @@ The stage 4 judge returned DETERMINISTIC and APPROVE, with every figure reproduc
 - Architecture 3 build, suites and laneway houses at 0.75 per cent a year on the station areas' houses: read as rebuilds they took 9 per cent of the houses out of the risk set and moved the call 4.9 per cent (an R2 failure); 0.15 per cent a year in the station areas (0.75 on townhouse lots), now 1.0 per cent.
 - Architecture 3 build, revisions on 3 per cent of permits and lapsed applications on 2.5: counting every permit for new construction as a rebuild moved the call 2.6 per cent; 1.0 and 0.8 per cent, now 0.7.
 - Architecture 3 build, 16,000 square foot commercial lots: the record's permits ran to 13,500 homes a year, beyond any suburban city; 12,000 square feet (7,500 in the City Centre) and a city of about 640,000, the record now 10,700 homes in 2014 falling to 4,900 in 2026.
+
+- Architecture 3 (the Calderbrook transit-oriented housing target, urban-regional-science): shipped 2026-10-14 with no portal result; re-rooted 2026-11-01 at the Batch 3 queue reset under one architecture per world, so its world, dataset and shell are closed.
+- Architecture 4 draw, an optional time-of-use tariff's revenue loss from customers choosing it on their own bill savings (economics, discrete choice): selection on gains is task163's and task136's abstraction, the take-up logit on the saving is the card's reflex, and the world sits beside energy load builds.
+- Architecture 4 draw, HIV diagnoses after a testing push drawing down the undiagnosed pool (epidemiology): a WHAT of "diagnoses in 2027" is met by the trend as written, so the literal reader passes the default (H3) and the method stays open between trend and back-calculation (Gate C).
+- Architecture 4 draw, home sellers' sale rates under loss aversion against their own purchase prices (psychology): a hidden covariate whose distribution has shifted is the composition family (task95, task137), and composition_mix was banned in the window.
+- Architecture 4 draw, a defined-benefit scheme's dependants' pensions starting on 2027 deaths (actuarial): once the WHAT names the dependants' pensions the rest is a count over linked records, rule application.
+- Architecture 4 screens dead in other slots' notes, read before any code: reinsurance retention restated as-if in a net triangle (task174, task255 architecture 1); fleet fuel from each vehicle's odometer miles (task480, task139); a stock's breakage against a flow's redemption rate (task274's note, task182); frost nights under cold-air pooling (task170, task156); a longer-shift roster's fatigue (task171); a site closure's diversion by distance decay (task174, task171).
+- Architecture 4 draw, dredged material returning to the channel from a near disposal site: identification by a distributed lag of infill on disposal is confounded by dredging following shoaling, and the decomposition reads as task169's two routes, one closed.
+- Architecture 4 draw, the same harbour with an earlier deepening in the record as the analog: under the relaxation law the same deepening adds the same volume, so the additive analog is a cheap route that lands the call, and carrying an earlier-treated unit's response is task175's and task165's abstraction; the record now holds no deepening, and the law is read across the parts and from Berth 2's relaxation.
+- Architecture 4 build, the first laboratory output carried lead and copper to 0.1 mg/kg: means of four samples fell on multiples of 0.025, half of them exactly on a two-decimal edge; the laboratory now reports those metals to 0.01 mg/kg and cadmium and mercury to 0.001.
+- Architecture 4 build, a search over the ask layers' sub-seeds for every figure clear of its rounding edge (40 tries) found none (a joint chance near one in a hundred thousand); replaced by re-reading one ordinary measurement per near-edge figure, a load's dry solids or a sample's value by one reporting step.
+- Architecture 4 build, the quarter-boundary clock hazard measured nil on the first cut (no dump fell in the last UTC hour of a quarter end); loads working through midnight at the quarter ends were added, as a round-the-clock dredger works.
+- Architecture 4 build, three relocated stations left the Outer Channel's four means to the cracker; a fourth (OC-05 into Fend Roads) and a field-duplicate spread of 8 per cent took the cracker from 6 to 4 of 20.
+- Architecture 4 build, the first infill coefficients put Fend Roads, Middle Reach and the basin within 3,000 m3 of their bin edges under the slope-band and least-squares variants; the coefficients were moved inside 0.110 to 0.118 so every standing member sits inside every bin.

@@ -415,7 +415,8 @@ def make_loads(W, rng):
     counters = {}
     for r in loads:
         ly = licence_year(r["t_load"].year, r["t_load"].month)
-        counters[ly] = counters.get(ly, 0) + 1
+        # aborted loadings (a pump trip, a broken drag-head) take a number and are never dumped
+        counters[ly] = counters.get(ly, 0) + (2 if rng.random() < 0.025 else 1)
         r["load_ref"] = "DDL-%02d%02d-%05d" % (ly % 100, (ly + 1) % 100, counters[ly])
     W.loads = loads
     W.tds_month = tds_month
@@ -449,7 +450,7 @@ def make_sampling(W, rng):
         stations.append(dict(station="%s-01" % code, part=code, s=s, t=t, E=round(E, 1), N=round(N, 1)))
     W.stations = stations
     # 2026 positions: three stations moved off obstructions into the neighbouring part
-    moved = {"FR-05": 5.28, "IR-01": 7.56, "TB-01": 9.33}
+    moved = {"OC-05": 2.68, "FR-05": 5.28, "IR-01": 7.56, "TB-01": 9.33}
     W.moved = moved
 
     def conc(s, kind):
@@ -486,7 +487,7 @@ def make_sampling(W, rng):
     byref = {x["ref"]: x for x in samples}
     for qa, prim in dup_of.items():
         p = byref[prim]
-        v = {k: x * float(np.exp(0.05 * rng.standard_normal())) for k, x in p["vals"].items()}
+        v = {k: x * float(np.exp(0.08 * rng.standard_normal())) for k, x in p["vals"].items()}
         samples.append(dict(ref=qa, station="QA", qa=True, primary=prim, t=p["t"] + dt.timedelta(minutes=int(rng.integers(2, 6))),
                             E=round(p["E"] + float(rng.uniform(-4, 4)), 1), N=round(p["N"] + float(rng.uniform(-4, 4)), 1),
                             s=p["s"], part=p["part"], vals=v, rep=reported(v)))

@@ -1,191 +1,259 @@
 {
- "task": "task123",
- "architecture": "v3 (architecture 3, re-root at the Batch 3 queue reset)",
- "drawn": "2026-11-01",
- "slot_note": "own draw; no seed (task123 has no START_HERE seed)",
- "domain": "survey-research-official-statistics",
- "subdomain": "seasonal-adjustment-official-time-series-production",
- "niche": "a coastal union of comuni choosing which member comuni receive its 2027 peak-month services co-financing, each comune's August 2026 guest nights conformed from the region's monthly accommodation survey, whose missing establishment returns are filled at the occupancy the reporting establishments ran, and the quarterly tourist-tax declarations each comune's tax office totals",
- "objective": "etl",
- "shape": "other",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Sant'Elvira a Mare (61.3), Capo Ferrino (36.9) and Marina di Cervessa (31.4 guest nights per resident in August 2026) qualify; the filled-and-benchmarked default leaves Marina di Cervessa at 28.6",
- "answer_source": "golden/",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G18",
-  "G2",
-  "G3",
-  "G19"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who fills each missing August return at the occupancy its stratum's reporting establishments ran, as official accommodation statistics do, and then benchmarks each comune's July to September to the nights its establishments declared for the tourist tax by spreading the quarter's shortfall over the three months in proportion, designates fewer comuni than the August nights give, because the shortfall is the error of the filled returns and the filled returns are the busiest establishments' Augusts.",
- "domain_test": "The deciding quantity is each comune's August guest nights, an official tourism statistic produced from a monthly establishment survey whose missing returns are imputed and which is benchmarked to a complete administrative count of the same nights over a longer period, the way official monthly series are benchmarked to their period totals; with a clinical trial's nouns there is no monthly establishment return, no filled return and no quarterly declaration counting the same nights, and the task stops reading.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:benchmark-shortfall-placed-in-the-filled-returns",
- "layer1": [
-  "the region's survey platform migration in May 2026 re-keying every establishment code (a crosswalk ships)",
-  "late corrected returns superseding earlier submissions",
-  "each comune's tax office exporting its quarterly declarations in its own layout (csv with decimal commas, xlsx, a pdf table)",
-  "two comuni merged on 1 January 2026",
-  "seasonal establishments filing closed returns in the months they are shut",
-  "residence coded by ISTAT country codes before the migration and ISO codes after"
- ],
- "stakeholder_role": "the union's peak services planning office",
- "role_family": "capacity_planner",
- "scoring_unit": "other",
- "spine": {
-  "file": "mov_clienti_strutture_LV12_2025-07_2026-09_estr20261117.csv",
-  "rows": 83242,
-  "entity": "one establishment's monthly return of arrivals and nights for one guest-residence group",
-  "grain": "establishment x month x residence group",
-  "source": "synthetic"
- },
- "forum": "council_or_assembly",
- "forcing_event": "season_or_peak",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "Italy, a fictional coastal union of comuni in an invented region (comuni, union and region all invented)",
-  "currency": "EUR",
-  "org_type": "union of comuni (inter-municipal association running shared peak-season services)",
-  "invented_names": [],
-  "people": [
-   "Goffredo Canil",
-   "Mariano Govoni",
-   "Martino Zamengo"
-  ]
- },
- "deliverables": [
-  "august_2026_guest_nights.xlsx",
-  "peak_cofinancing_2027_note.pdf"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "A unit's months are counted where its return arrived and estimated where it did not, and its quarter is known complete from a second record that counts the same thing; the quarter's shortfall against that record is the estimate's error and sits in the month that was estimated, the unit's fullest, so spreading the shortfall over the quarter in proportion leaves the peak month short and only the estimated month takes it.",
- "driver_concrete": "Each comune's August 2026 nights are its establishments' reported August returns plus the returns the union fills at the reporting establishments' occupancy, raised by the whole gap between the comune's July to September survey nights and the nights its establishments declared for the tourist tax that quarter, because the establishments that skipped a return skipped August, their busiest month, and every reported month agrees with the declarations wherever every establishment reported.",
- "stump": "A competent analyst fills the missing August returns at the stratum's occupancy, benchmarks each comune's July to September to its declared tourist-tax nights by spreading the shortfall over the three months in proportion, and designates the comuni that series puts over 30 nights a resident; the step that lands it there is spreading the gap, when the gap is the error of the filled August returns, and putting it all in August carries more comuni over the line.",
- "mechanism_source": "design_note",
- "differentiation": {},
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "built and solved in-house four times (rounds 1 to 4 on 2026-10-09 at 93.8, 80.2, 86.0 and 91.7, the main call landed in every round: the replay executed each rung as a routine step); three hardening loops spent; retired by the author on 2026-10-11",
-   "domain": "nonprofit-grant-making",
-   "subdomain": "grantee-financial-health",
-   "objective": "etl",
-   "shape": "05",
-   "decision_type": "allocation_to_total",
-   "gap": [
-    "time",
-    "rule",
+  "task": "task123",
+  "architecture": "v4 (architecture 4, re-root after architecture 3 was spent at stage 4 on 2026-11-01)",
+  "drawn": "2026-11-02",
+  "slot_note": "own draw; no seed (task123 has no START_HERE seed)",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Melbourne residential owners corporation's 2027 electrification works: which of its apartment risers need re-phasing or a larger rising main before the approved EV chargers and induction cooktop conversions are energised, each riser's busiest phase built from its apartments' July 2026 evening demand on the phase each single-phase supply is wired to, a link no register holds and the embedded network meters' hourly voltages resolve",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "golden/",
+  "gap": [
+    "objective",
     "population"
-   ],
-   "pattern": [
-    "B"
-   ],
-   "generators": [
-    "G4",
-    "G11",
-    "G12",
-    "G13",
-    "G16",
-    "G19"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "time_semantics",
-   "niche": "a philanthropic trust's stabilisation offers to grantees whose income is falling, scored on twelve months of income built from the grantees' quarterly portal returns and their filed annual returns, run in-house for the first time after the bureau that computed six March rounds left",
-   "driver": "A trailing four-period total at a cut-off runs only over periods whose year is closed by an annual filing on record at that cut-off, each period in the year its own record names, and only units holding a contract in force on the cut-off day are scored; a unit's contract can lapse between terms while the register still carries it from its first start to the renewed term's end, and because no unit was ever between terms at a published cut-off, scope read from the register's dates reproduces every published result, but at the first cut-off that finds a unit between terms that scope scores it on a true fall, offers it and re-splits the fixed pool with it in.",
-   "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine."
-  },
-  {
-   "domain": "survey-research-official-statistics",
-   "subdomain": "seasonal-adjustment-official-time-series-production",
-   "objective": "etl",
-   "shape": "05",
-   "decision_type": "allocation_to_total",
-   "gap": [
-    "time",
-    "population"
-   ],
-   "pattern": [
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G4",
+  ],
+  "generators": [
+    "G8",
     "G2",
-    "G14",
     "G19"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "time_semantics",
-   "niche": "calendarizing three gas utilities' cycle-read and bimonthly-read residential sales into the calendar-month county series a heating assistance administrator files under the state's energy data standard, which sets the 2026-27 grant split",
-   "driver": "A total each unit records over its own reading interval, one period or two long, is split onto fixed calendar periods by how fast it ran inside the interval, which a sample of units measured every day shows running well below the neighbouring periods' rate early in one period and far above it late in the same period, so splitting by elapsed days gives that period its neighbours' average rate and misallocates every straddling interval by where its reading dates fall, while scaling the daily-measured sample up instead carries its members' smaller size.",
-   "stump": "A competent solver nets the cancel and rebill lines, maps premises to counties, takes Pine Harbor's AMI accounts from their calendar-month bills, prorates every other bill's therms across the months it covers by days of service and files Ottercreek at $1,135,000 and Brennock at $2,465,000 (the region's January at 11,190,000 therms) against the golden $1,230,000 and $2,380,000, because use inside a bill follows the weather: the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap colder, and day-proration treats every day of a bill as burning the same gas.",
-   "world": {
-    "geography": "United States, Michigan (fictional nonprofit, three gas utilities and a twelve-county northern region, all invented)",
-    "currency": "USD",
-    "org_type": "statewide nonprofit administering the state's heating assistance grant for the community action agencies, producing the calendar-month county gas series under the state's energy data standard",
-    "invented_names": [
-     "Kestrel Valley Gas",
-     "Northbank Natural Gas",
-     "Pine Harbor Energy",
-     "Northern Heat Assistance Grant",
-     "Ridgeline Home Energy Fund",
-     "Northline Utility Services",
-     "Home Heat Assistance Plan",
-     "Winter Care Plan"
-    ],
-    "people": [
-     "Regina Fowler",
-     "Douglas Tyler",
-     "Matthew Solis",
-     "Alison Pacheco"
-    ]
-   },
-   "deliverables": [
-    "jan2026_county_gas_series.csv",
-    "heating_grant_split_2026_27.xlsx",
-    "heating_grant_split_2026_27.png"
-   ],
-   "question_form": "how-much",
-   "forum": "funder_or_donor",
-   "forcing_event": "launch_or_rollout",
-   "org_family": "nonprofit_or_charity",
-   "role_family": "research_desk",
-   "context_artifact": "planning_thread",
-   "calibration_form": "none",
-   "layer2_pattern": "own:calendar-month-use-from-read-intervals-by-a-measured-daily-shape",
-   "spine": {
-    "file": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
-    "rows": 1062385,
-    "entity": "one AMI gas meter's daily consumption on one gas day while a residential account is on it",
-    "grain": "meter x gas day",
+  ],
+  "gate_g": "binding_constraint",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the embedded network's July 2026 interval data to the risers through the lot schedule, adds every approved charger and cooktop conversion at the standard's after-diversity demand and, finding no record of the phase any apartment is wired to, carries each single-phase apartment as balanced over the three phases, the planning convention for unknown phasing, puts every riser's busiest phase at a third of its total and designates only the risers whose total is over the line, missing the risers whose apartments bunch on one phase.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is each riser's busiest-phase demand, a data-integration estimate built on a link between every apartment's meter record and the phase it draws from, which no key or register provides and which the records themselves resolve because meters sharing a phase move together hour by hour; replacing that link with the balanced allocation, an installer's rotation or a simulated chance of bunching (generic summaries) changes the designated risers.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:busiest-phase-limit-under-unrecorded-phase-membership",
+  "layer1": [
+    "the embedded network operator's two exports in different layouts and clocks (a wide half-hourly billing file in local time, a long hourly power-quality file in UTC)",
+    "meters keyed by lot number while the switchboard schedule and the applications use apartment numbers (the plan of subdivision schedule is the crosswalk)",
+    "risers relabelled at the 2019 main switchboard upgrade (old labels in the meter register)",
+    "charger applications filed against car spaces, with later amendments and withdrawals in a separate log",
+    "the rising-main ratings in a scanned PDF switchboard schedule table",
+    "a few three-phase penthouse supplies among the single-phase apartments"
+  ],
+  "stakeholder_role": "the owners corporation's facilities manager, who runs the complex's building services and brings the 2027 electrification works schedule to the committee",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "QES_PQ_hourly_V_20260713_20260719.csv",
+    "rows": 73248,
+    "entity": "one child meter's average voltage over one hour",
+    "grain": "meter x hour",
     "source": "synthetic"
-   },
-   "architecture": "v2",
-   "fate": "shipped 2026-10-12 (portal determinism return on the straddling-bill split outside one utility territory, repaired and reshipped the same day) and re-rooted 2026-11-01 at the Batch 3 queue reset"
-  }
- ],
- "notes": "re-rooted from architecture 2 (gas-utility calendarization, world closed); the old determinism and leak reports are kept in the task folder with an _arch2 suffix",
- "registered": "2026-11-01T21:53:02Z",
- "shell": {
-  "question form": "how-much",
-  "second-sentence opener": "give",
-  "rounding opener": "round",
-  "deliverable set": "csv+png+xlsx"
- }
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "Australia, Melbourne (an invented 2004 three-tower residential complex, its owners corporation and its invented embedded network operator)",
+    "currency": "AUD",
+    "org_type": "owners corporation of a residential strata complex that owns its embedded electricity network",
+    "invented_names": [],
+    "people": [
+      "Kayla Hunt",
+      "Alan Herrera"
+    ]
+  },
+  "deliverables": [
+    "riser_capacity_2027.xlsx",
+    "riser_phase_loading_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the peak of the busiest of each parent unit's three sub-groups, every member drawing on exactly one sub-group that no record names; members on one sub-group share that sub-group's swings, so each member's sub-group is read from how its own measured level moves with the other members' over the week, and spreading each member's draw evenly over the three, assigning members in the installer's rotation or pricing the chance of a bunching by simulation each misses the parents whose members bunch on one sub-group, which breach the per-sub-group limit while their total stays inside three times it.",
+  "driver_concrete": "Each riser's 2027 busiest phase is its apartments' July 2026 weekday evening demand on that phase plus the approved chargers and cooktop conversions of the apartments on it, and a riser goes in the works package when that phase exceeds 80 per cent of the rising main's per-phase rating; no register records which phase an apartment's single-phase supply is wired to, the balanced allocation of the engineers' planning convention puts every riser's busiest phase at a third of its total, and the embedded network meters' hourly voltages, which sag together for the apartments sharing a phase whenever any of them draws, sort each riser's apartments into its three phases and show the risers whose apartments bunch on one phase.",
+  "stump": "A competent analyst conforms the interval data, adds the approved loads at the standard's diversity and carries every apartment balanced across the phases because no record gives its phase, designating only the risers whose total is over three times the per-phase line; the step that lands it there is the balanced allocation, when each apartment draws on one phase and the meters' voltages show which.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task147": "147 loses requests whose run of consecutive units crosses a full one; here nothing is lost or queued: a per-phase rating binds and the decisive step reads which of three phases each member draws on from how the members' voltages move together",
+    "task159": "159 builds a backlog from services arriving with too little room; here there is no queue or backlog: the busiest of three fixed sub-groups breaches its own limit, and the step recovers each member's unrecorded sub-group from co-movement",
+    "task270": "270 v10 credits free servers with the reach of where they actually stood from a location record; here nothing moves: each apartment is fixed on one phase that no record names, read from voltage co-movement, not from a location log"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "built and solved in-house four times (rounds 1 to 4 on 2026-10-09 at 93.8, 80.2, 86.0 and 91.7, the main call landed in every round: the replay executed each rung as a routine step); three hardening loops spent; retired by the author on 2026-10-11",
+      "domain": "nonprofit-grant-making",
+      "subdomain": "grantee-financial-health",
+      "objective": "etl",
+      "shape": "05",
+      "decision_type": "allocation_to_total",
+      "gap": [
+        "time",
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "B"
+      ],
+      "generators": [
+        "G4",
+        "G11",
+        "G12",
+        "G13",
+        "G16",
+        "G19"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "time_semantics",
+      "niche": "a philanthropic trust's stabilisation offers to grantees whose income is falling, scored on twelve months of income built from the grantees' quarterly portal returns and their filed annual returns, run in-house for the first time after the bureau that computed six March rounds left",
+      "driver": "A trailing four-period total at a cut-off runs only over periods whose year is closed by an annual filing on record at that cut-off, each period in the year its own record names, and only units holding a contract in force on the cut-off day are scored; a unit's contract can lapse between terms while the register still carries it from its first start to the renewed term's end, and because no unit was ever between terms at a published cut-off, scope read from the register's dates reproduces every published result, but at the first cut-off that finds a unit between terms that scope scores it on a true fall, offers it and re-splits the fixed pool with it in.",
+      "stump": "A competent solver rebuilds the screen as held at the 30 September census, collapses the dual-grant returns, builds each grantee's twelve months from the identity on the register as held with every quarter in the year its own return runs within, gives back all 821 published rows, every offer and every rate, reads rule 4.1 against rule 2's census list and drops the 17 grantees whose year to 31 March 2026 has no annual return on the register, and strikes the offers at 34.79 cents on 10 names, because it takes scope from the grants register's start and end dates (start of the grant, end of its current term), which keep Ilam After School Care Society in, so it scores its true 13.62 per cent fall over the twelve months to June 2026 and offers it, when the Variations sheet shows that its term ended on 31 July 2026 and its renewal runs from 1 November 2026, nothing paid for August to October, so it held no operating grant in force at the census (rule 3.1), and the answer scores 132 grantees and strikes 42.55 cents on nine."
+    },
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "objective": "etl",
+      "shape": "05",
+      "decision_type": "allocation_to_total",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G2",
+        "G14",
+        "G19"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "time_semantics",
+      "niche": "calendarizing three gas utilities' cycle-read and bimonthly-read residential sales into the calendar-month county series a heating assistance administrator files under the state's energy data standard, which sets the 2026-27 grant split",
+      "driver": "A total each unit records over its own reading interval, one period or two long, is split onto fixed calendar periods by how fast it ran inside the interval, which a sample of units measured every day shows running well below the neighbouring periods' rate early in one period and far above it late in the same period, so splitting by elapsed days gives that period its neighbours' average rate and misallocates every straddling interval by where its reading dates fall, while scaling the daily-measured sample up instead carries its members' smaller size.",
+      "stump": "A competent solver nets the cancel and rebill lines, maps premises to counties, takes Pine Harbor's AMI accounts from their calendar-month bills, prorates every other bill's therms across the months it covers by days of service and files Ottercreek at $1,135,000 and Brennock at $2,465,000 (the region's January at 11,190,000 therms) against the golden $1,230,000 and $2,380,000, because use inside a bill follows the weather: the first eighteen days of January were milder than the December and February days billed with them and the 19 to 31 January cold snap colder, and day-proration treats every day of a bill as burning the same gas.",
+      "world": {
+        "geography": "United States, Michigan (fictional nonprofit, three gas utilities and a twelve-county northern region, all invented)",
+        "currency": "USD",
+        "org_type": "statewide nonprofit administering the state's heating assistance grant for the community action agencies, producing the calendar-month county gas series under the state's energy data standard",
+        "invented_names": [
+          "Kestrel Valley Gas",
+          "Northbank Natural Gas",
+          "Pine Harbor Energy",
+          "Northern Heat Assistance Grant",
+          "Ridgeline Home Energy Fund",
+          "Northline Utility Services",
+          "Home Heat Assistance Plan",
+          "Winter Care Plan"
+        ],
+        "people": [
+          "Regina Fowler",
+          "Douglas Tyler",
+          "Matthew Solis",
+          "Alison Pacheco"
+        ]
+      },
+      "deliverables": [
+        "jan2026_county_gas_series.csv",
+        "heating_grant_split_2026_27.xlsx",
+        "heating_grant_split_2026_27.png"
+      ],
+      "question_form": "how-much",
+      "forum": "funder_or_donor",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "nonprofit_or_charity",
+      "role_family": "research_desk",
+      "context_artifact": "planning_thread",
+      "calibration_form": "none",
+      "layer2_pattern": "own:calendar-month-use-from-read-intervals-by-a-measured-daily-shape",
+      "spine": {
+        "file": "PHE_MDMS_DAILY_RES_20251006_20260414.parquet",
+        "rows": 1062385,
+        "entity": "one AMI gas meter's daily consumption on one gas day while a residential account is on it",
+        "grain": "meter x gas day",
+        "source": "synthetic"
+      },
+      "architecture": "v2",
+      "fate": "shipped 2026-10-12 (portal determinism return on the straddling-bill split outside one utility territory, repaired and reshipped the same day) and re-rooted 2026-11-01 at the Batch 3 queue reset"
+    },
+    {
+      "domain": "survey-research-official-statistics",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "objective": "etl",
+      "shape": "other",
+      "decision_type": "designation_set",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G18",
+        "G2",
+        "G3",
+        "G19"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "niche": "a coastal union of comuni choosing which member comuni receive its 2027 peak-month services co-financing, each comune's August 2026 guest nights conformed from the region's monthly accommodation survey, whose missing establishment returns are filled at the occupancy the reporting establishments ran, and the quarterly tourist-tax declarations each comune's tax office totals",
+      "driver": "A unit's months are counted where its return arrived and estimated where it did not, and its quarter is known complete from a second record that counts the same thing; the quarter's shortfall against that record is the estimate's error and sits in the month that was estimated, the unit's fullest, so spreading the shortfall over the quarter in proportion leaves the peak month short and only the estimated month takes it.",
+      "stump": "A competent analyst fills the missing August returns at the stratum's occupancy, benchmarks each comune's July to September to its declared tourist-tax nights by spreading the shortfall over the three months in proportion, and designates the comuni that series puts over 30 nights a resident; the step that lands it there is spreading the gap, when the gap is the error of the filled August returns, and putting it all in August carries more comuni over the line.",
+      "world": {
+        "geography": "Italy, a fictional coastal union of comuni in an invented region (comuni, union and region all invented)",
+        "currency": "EUR",
+        "org_type": "union of comuni (inter-municipal association running shared peak-season services)",
+        "invented_names": [],
+        "people": [
+          "Goffredo Canil",
+          "Mariano Govoni",
+          "Martino Zamengo"
+        ]
+      },
+      "deliverables": [
+        "august_2026_guest_nights.xlsx",
+        "peak_cofinancing_2027_note.pdf"
+      ],
+      "question_form": "which",
+      "forum": "council_or_assembly",
+      "forcing_event": "season_or_peak",
+      "org_family": "cooperative_or_member_body",
+      "role_family": "capacity_planner",
+      "context_artifact": "register",
+      "calibration_form": "none",
+      "layer2_pattern": "own:benchmark-shortfall-placed-in-the-filled-returns",
+      "spine": {
+        "file": "mov_clienti_strutture_LV12_2025-07_2026-09_estr20261117.csv",
+        "rows": 83242,
+        "entity": "one establishment's monthly return of arrivals and nights for one guest-residence group",
+        "grain": "establishment x month x residence group",
+        "source": "synthetic"
+      },
+      "architecture": "v3",
+      "fate": "spent 2026-11-01 at stage 4 (target.zip 9bb485be): the determinism judge returned NOT_DETERMINISTIC and SEND_BACK; Gate G banned (mechanism planted_defect_flip, stumping family surface_read_rejection, surface-read dependency yes, sole data defect yes: the misleading read is the August survey total, which omits 194 reporting establishments, and with a complete survey the task collapses to a sum over population); Gate H decisive_step planted (a coverage gap built in to flip the answer, not a choice of comparison or estimand); asks 4 to 6 open (CIR codes in neither register nor crosswalk, 'net' and 'type' undefined with RETTIFICA rows read as retroactive, the late-filing rule unfiled); the comuni tourism world is closed",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "set out",
+        "deliverable set": "pdf+xlsx"
+      }
+    }
+  ],
+  "architecture_spent": false,
+  "notes": "re-rooted from architecture 3 (comuni tourism, world closed) to a new client domain (general statistics, data integration); the architecture 3 leak report is kept in the task folder with an _arch3 suffix; stump_strategy binding_constraint because the per-phase limit binds while the riser total is inside its rating, and the decisive move is recovering the unrecorded phase membership that makes it bind",
+  "lineage_shells": [
+    {
+      "question form": "how-much",
+      "second-sentence opener": "give",
+      "rounding opener": "round",
+      "deliverable set": "csv+png+xlsx"
+    }
+  ],
+  "registered": "2026-11-02T00:02:45Z"
 }

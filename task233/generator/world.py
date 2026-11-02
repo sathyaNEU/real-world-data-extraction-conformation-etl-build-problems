@@ -1,6 +1,7 @@
 """The clean truth for task233 architecture 3: outlets, quotes, daily shelf-price paths, the
-contractor's monthly collection with each collector's recording, and the Field Quality Team's
-third-quarter back-checks. Nothing here is written to target/; pack.py writes the exports."""
+contractor's monthly collection with each collector's recording, the Field Quality Team's
+third-quarter back-checks, the contractor's quarterly schedule and the commodity team's
+replacement reviews. Nothing here is written to target/; pack.py writes the exports."""
 import bisect
 import datetime as dt
 import math
@@ -9,20 +10,17 @@ import numpy as np
 
 import params as P
 from items import ITEMS, KIND_ITEMS
+from names import LOCALITIES, STREETS, SHOP_NAMES
 
 ITEM = {c: dict(code=c, group=g, desc=d, unit=u, base=b) for c, g, d, u, b in ITEMS}
 
 
-def stream(k):
-    return np.random.default_rng([P.SEED, k])
+def stream(*k):
+    return np.random.default_rng([P.SEED, *k])
 
 
 def day(d):
     return (d - P.PATH_START).days
-
-
-def date_of(n):
-    return P.PATH_START + dt.timedelta(days=int(n))
 
 
 def is_workday(d):
@@ -32,6 +30,15 @@ def is_workday(d):
 def next_workday(d):
     while not is_workday(d):
         d += dt.timedelta(days=1)
+    return d
+
+
+def add_workdays(d, k):
+    n = 0
+    while n < k:
+        d += dt.timedelta(days=1)
+        if is_workday(d):
+            n += 1
     return d
 
 
@@ -52,23 +59,12 @@ def window(y, m):
     return out
 
 
-def after_window(y, m, k):
-    """the k-th working day after the window closes"""
-    d = window(y, m)[-1]
-    n = 0
-    while n < k:
-        d += dt.timedelta(days=1)
-        if is_workday(d):
-            n += 1
-    return d
-
-
 def fqt_date(region, y, m):
     return next_workday(index_day(y, m) + dt.timedelta(days=P.FQT_OFFSET[region]))
 
 
 def snap(p):
-    """a shelf price on the retail grid: x.x9 under 20 dollars, x.99 or x.49 above"""
+    """a shelf price on the retail grid: x.x9 under 20 dollars, x.49 or x.99 under 60, x.99 above"""
     if p < 20:
         return max(0.49, math.floor(p * 10) / 10 + 0.09)
     if p < 60:
@@ -87,6 +83,7 @@ class World:
         self._visits()
         self._collection()
         self._backchecks()
+        self._reviews()
 
     # outlets -------------------------------------------------------------------------------
     def _outlets(self):
@@ -96,17 +93,64 @@ class World:
         pm = np.array([P.KINDS[k][1] for k in kinds_m]); pm /= pm.sum()
         pi = np.array([P.KINDS[k][1] for k in kinds_i]); pi /= pi.sum()
         self.outlets = []
-        codes = rng.choice(np.arange(10000, 99999), size=600, replace=False)
-        tnums = rng.choice(np.arange(1000, 9999), size=600, replace=False)
-        n = 0
+        codes = rng.choice(np.arange(10000, 99999), size=700, replace=False)
+        tnums = rng.choice(np.arange(1000, 9999), size=700, replace=False)
+        shop_order = rng.permutation(len(SHOP_NAMES))
+        n = shop = 0
         for r in self.regions:
+            locs = LOCALITIES[r["code"]]
+            region_outlets = []
             for stratum, count, kinds, probs in (("M", r["nm"], kinds_m, pm), ("I", r["ni"], kinds_i, pi)):
                 for j in range(count):
                     kind = kinds[rng.choice(len(kinds), p=probs)]
-                    self.outlets.append(dict(oid=n, nso_code="OT%05d" % codes[n], tnum="T%04d" % tnums[n],
-                                             region=r["code"], stratum=stratum, kind=kind,
-                                             factor=float(np.exp(rng.normal(0.0, 0.05)) * (1.12 if kind == "convenience" else 1.0))))
-                    n += 1
+                    region_outlets.append(dict(stratum=stratum, kind=kind))
+            # every region carries at least one branch of the pharmacy chain sold in August
+            if not any(o["kind"] == "pharmacy_chain" for o in region_outlets):
+                last_m = [i for i, o in enumerate(region_outlets) if o["stratum"] == "M"][-1]
+                region_outlets[last_m]["kind"] = "pharmacy_chain"
+            lifeline_done = False
+            for o in region_outlets:
+                kind = o["kind"]
+                loc = locs[int(rng.integers(0, len(locs)))]
+                street = STREETS[int(rng.integers(0, len(STREETS)))]
+                number = int(rng.integers(1, 420))
+                if kind in P.CHAINS:
+                    if kind == "pharmacy_chain" and not lifeline_done:
+                        chain = "Lifeline Chemists"
+                        lifeline_done = True
+                    else:
+                        chain = P.CHAINS[kind][int(rng.integers(0, len(P.CHAINS[kind])))]
+                    name = "%s %s" % (chain, loc)
+                else:
+                    chain = ""
+                    name = SHOP_NAMES[shop_order[shop % len(SHOP_NAMES)]] % dict(loc=loc)
+                    shop += 1
+                self.outlets.append(dict(
+                    oid=n, nso_code="OT%05d" % codes[n], tnum="T%04d" % tnums[n], region=r["code"],
+                    stratum=o["stratum"], kind=kind, chain=chain, name=name, locality=loc,
+                    address="%d %s, %s" % (number, street, loc),
+                    factor=float(np.exp(rng.normal(0.0, 0.05)) * (1.12 if kind == "convenience" else 1.0)),
+                    successor=None, predecessor=None,
+                    added=dt.date(2019 + int(rng.integers(0, 6)), int(rng.integers(1, 13)), 1), removed=None))
+                n += 1
+        # the August sale of Lifeline Chemists' branches to CareMed Pharmacy: same store, new outlet
+        for o in [x for x in self.outlets if x["chain"] == "Lifeline Chemists"]:
+            succ = dict(o)
+            succ.update(oid=n, nso_code="OT%05d" % codes[n], tnum="T%04d" % tnums[n], chain="CareMed Pharmacy",
+                        name="CareMed Pharmacy %s" % o["locality"], successor=None, predecessor=o["oid"],
+                        added=P.REBRAND_DATE, removed=None)
+            o["successor"] = n
+            o["removed"] = P.REBRAND_DATE - dt.timedelta(days=1)
+            self.outlets.append(succ)
+            n += 1
+        self.base_outlets = [o for o in self.outlets if o["predecessor"] is None]
+
+    def outlet_for(self, oid, y, m):
+        """the outlet a quote sits at in a month (a sold branch's successor from the sale on)"""
+        o = self.outlets[oid]
+        if o["successor"] is not None and dt.date(y, m, 1) >= P.REBRAND_DATE:
+            return self.outlets[o["successor"]]
+        return o
 
     # quotes ----------------------------------------------------------------------------------
     def _quotes(self):
@@ -114,16 +158,16 @@ class World:
         self.quotes = []
         qcodes = rng.choice(np.arange(100000, 999999), size=8000, replace=False)
         n = 0
-        for o in self.outlets:
+        for o in self.base_outlets:
             kind = P.KINDS[o["kind"]]
             pool = KIND_ITEMS.get(o["kind"]) or [c for c, it in ITEM.items() if it["group"] in kind[3]]
-            k = int(rng.integers(kind[2][0], kind[2][1] + 1))
-            k = min(k, len(pool))
+            k = min(int(rng.integers(kind[2][0], kind[2][1] + 1)), len(pool))
             chosen = sorted(rng.choice(pool, size=k, replace=False).tolist())
             for c in chosen:
                 self.quotes.append(dict(qid=n, quote_id="%06d" % qcodes[n], oid=o["oid"], item=c,
                                         group=ITEM[c]["group"], stratum=o["stratum"], region=o["region"]))
                 n += 1
+        self.qid_of = {q["quote_id"]: q["qid"] for q in self.quotes}
 
     # daily shelf prices ----------------------------------------------------------------------
     def hazard(self, group, stratum):
@@ -133,8 +177,7 @@ class World:
     def _paths(self):
         rng = stream(3)
         span = day(P.PATH_END) + 1
-        self.path_days = []
-        self.path_prices = []
+        self.path_days, self.path_prices = [], []
         for q in self.quotes:
             o = self.outlets[q["oid"]]
             base = ITEM[q["item"]]["base"] * o["factor"] * float(np.exp(rng.normal(0.0, 0.07)))
@@ -144,8 +187,7 @@ class World:
             ev = sorted(set(int(x) for x in rng.integers(1, span, size=nev)))
             days_, prices = [0], [p]
             for d in ev:
-                mult = float(np.exp(rng.normal(0.012, 0.055)))
-                newp = snap(prices[-1] * mult)
+                newp = snap(prices[-1] * float(np.exp(rng.normal(0.012, 0.055))))
                 if abs(newp - prices[-1]) < 0.005:
                     newp = snap(prices[-1] * (1.08 if rng.random() < 0.7 else 0.92))
                 if abs(newp - prices[-1]) < 0.005:
@@ -160,7 +202,6 @@ class World:
         return self.path_prices[qid][i]
 
     def changed_between(self, qid, d0, d1):
-        """whether the shelf price moved after day d0 and on or before day d1"""
         dd = self.path_days[qid]
         return bisect.bisect_right(dd, d1) - bisect.bisect_right(dd, d0) > 0
 
@@ -171,39 +212,44 @@ class World:
         self.vis_index = {}
         for (y, m) in self.months:
             win = window(y, m)
-            for o in self.outlets:
-                u_late, u_day, u_k, u_split = rng.random(4)
+            for o in self.base_outlets:
+                u_miss, u_late, u_day, u_k, u_split = rng.random(5)
                 wts = np.array(P.VISIT_WEIGHTS[o["stratum"]])
-                if u_late < P.LATE_VISIT:
-                    vday = after_window(y, m, 1 + int(u_k * 3))
+                if u_miss < P.MISSED_VISIT:
+                    v = dict(oid=o["oid"], y=y, m=m, days=[], win=win)
                 else:
-                    vday = win[int(np.searchsorted(np.cumsum(wts), u_day * wts.sum()))]
-                vdays = [vday]
-                if o["kind"] == "supermarket" and u_split < P.SPLIT_VISIT:
-                    vdays.append(next_workday(vday + dt.timedelta(days=1)))
-                v = dict(oid=o["oid"], y=y, m=m, days=vdays, win=win)
+                    if u_late < P.LATE_VISIT:
+                        vday = add_workdays(win[-1], 1 + int(u_k * 3))
+                    else:
+                        vday = win[int(np.searchsorted(np.cumsum(wts), u_day * wts.sum()))]
+                    vdays = [vday]
+                    if o["kind"] == "supermarket" and u_split < P.SPLIT_VISIT:
+                        vdays.append(next_workday(vday + dt.timedelta(days=1)))
+                    v = dict(oid=o["oid"], y=y, m=m, days=vdays, win=win)
                 self.visits.append(v)
                 self.vis_index[(o["oid"], y, m)] = v
 
     # monthly collection ----------------------------------------------------------------------
     def _collection(self):
         rng = stream(6)
-        self.records = []      # quote-month records
-        last = {}              # qid -> (recorded price, true price at the time) for the pre-fill
-        rescale = {}           # qid -> factor applied after a variety replacement
+        self.records = []
+        last, rescale = {}, {}
         for (y, m) in self.months:
             for q in self.quotes:
                 v = self.vis_index[(q["oid"], y, m)]
-                u = rng.random(8)
+                u = rng.random(9)
+                if not v["days"]:
+                    continue
                 vd = v["days"][0] if len(v["days"]) == 1 else v["days"][int(u[0] < 0.5)]
                 sc = self.err_scale.get(q["region"], 1.0)
                 key, size, stale = (x * sc for x in P.ERRORS[q["region"]])
-                rec = dict(qid=q["qid"], y=y, m=m, vday=vd, status="P", price=None, true=None, err=None)
+                rec = dict(qid=q["qid"], y=y, m=m, vday=vd, status="P", price=None, true=None, err=None,
+                           scale=rescale.get(q["qid"], 1.0), variety_no=int(u[8] * 1000))
                 if u[1] < P.STATUS_UNAVAILABLE:
                     rec["status"] = "U"
                     self.records.append(rec)
                     continue
-                if u[1] < P.STATUS_UNAVAILABLE + P.STATUS_REPLACED:
+                if u[1] < P.STATUS_UNAVAILABLE + P.STATUS_REPLACED or (q["quote_id"], y, m) in P.FORCED_REPLACEMENTS:
                     rec["status"] = "R"
                     rescale[q["qid"]] = rescale.get(q["qid"], 1.0) * float(np.exp(0.12 * _norm(u[2])))
                 f = rescale.get(q["qid"], 1.0)
@@ -222,7 +268,6 @@ class World:
                 rec["price"], rec["err"] = round(price, 2), err
                 last[q["qid"]] = (rec["price"], tp)
                 self.records.append(rec)
-        self.rescale = rescale
         self.rec_index = {(r["qid"], r["y"], r["m"]): r for r in self.records}
 
     @staticmethod
@@ -246,24 +291,6 @@ class World:
         q = self.quotes[qid]
         return 1.0 - math.exp(-self.hazard(q["group"], q["stratum"]) * max(0, d1 - d0))
 
-    def change_frequency(self):
-        """month-on-month share of recorded prices that moved, by item group and stratum, from the
-        collector's own records (the quantity an analyst reads off the price database)"""
-        cmp, chg = {}, {}
-        by_q = {}
-        for r in self.records:
-            by_q.setdefault(r["qid"], {})[(r["y"], r["m"])] = r
-        for qid, d in by_q.items():
-            q = self.quotes[qid]
-            k = (q["group"], q["stratum"])
-            for a, b in zip(self.months[:-1], self.months[1:]):
-                ra, rb = d.get(a), d.get(b)
-                if ra is None or rb is None or ra["price"] is None or rb["price"] is None or rb["status"] != "P":
-                    continue
-                cmp[k] = cmp.get(k, 0) + 1
-                chg[k] = chg.get(k, 0) + (abs(ra["price"] - rb["price"]) > 0.004)
-        return {k: chg[k] / cmp[k] for k in cmp}
-
     def _backchecks(self):
         self.backchecks = []
         qs_by_outlet = {}
@@ -279,8 +306,8 @@ class World:
                     rows, dev = [], 0.0
                     for stratum, k in (("M", P.FQT_MULTIPLES), ("I", P.FQT_INDEPENDENTS)):
                         elig = []
-                        for o in self.outlets:
-                            if o["region"] != r["code"] or o["stratum"] != stratum:
+                        for o in self.base_outlets:
+                            if o["region"] != r["code"] or o["stratum"] != stratum or o["chain"] == "Lifeline Chemists":
                                 continue
                             v = self.vis_index[(o["oid"], y, m)]
                             if len(v["days"]) == 1 and v["days"][0] in v["win"][:P.FQT_DRAW_DAYS] and v["days"][0] <= fd:
@@ -289,8 +316,8 @@ class World:
                         for j in sorted(pick.tolist()):
                             o = elig[j]
                             for q in qs_by_outlet[o["oid"]]:
-                                rec = self.rec_index[(q["qid"], y, m)]
-                                if rec["status"] == "U":
+                                rec = self.rec_index.get((q["qid"], y, m))
+                                if rec is None or rec["status"] == "U":
                                     continue
                                 found = rng.random() > P.FQT_NOT_FOUND
                                 f = rec["scale"]
@@ -305,7 +332,6 @@ class World:
                                                  fqt_price=fp, err=rec["err"], changed=ch, expected=ex))
                     month_c.append((dev, rows))
                 cands.append(month_c)
-            # the region's error rate over every price recorded in the quarter (truth)
             pop = [x for x in self.records if self.quotes[x["qid"]]["region"] == r["code"]
                    and (x["y"], x["m"]) in P.QUARTER and x["price"] is not None]
             prate = sum(x["err"] is not None for x in pop) / len(pop)
@@ -322,6 +348,30 @@ class World:
                             best = (dev, (ia, ib, ic))
             ia, ib, ic = best[1]
             self.backchecks.extend(cands[0][ia][1] + cands[1][ib][1] + cands[2][ic][1])
+
+    # replacement reviews ---------------------------------------------------------------------
+    def _reviews(self):
+        """the commodity team's decisions on the variety replacements collectors made from June on"""
+        rng = stream(8)
+        self.reviews = []
+        reps = [r for r in self.records if r["status"] == "R" and (r["y"], r["m"]) >= (2026, 6)]
+        for r in sorted(reps, key=lambda x: (x["vday"], x["qid"])):
+            u = rng.random(7)
+            first = add_workdays(r["vday"], 2 + int(u[0] * 9))
+            final_date = first
+            if u[1] < P.REVIEW_QUERY:
+                self.reviews.append(dict(qid=r["qid"], y=r["y"], m=r["m"], decision="Query to contractor", date=first, final=False))
+                final_date = add_workdays(first, 3 + int(u[2] * 8))
+            dec = "Comparable" if u[3] < P.REVIEW_COMPARABLE else "Not comparable"
+            if final_date > P.EXTRACT_DATE:
+                continue
+            self.reviews.append(dict(qid=r["qid"], y=r["y"], m=r["m"], decision=dec, date=final_date, final=True))
+            if u[4] < P.REVIEW_RECHECK:
+                chk = add_workdays(final_date, 2 + int(u[5] * 6))
+                if chk <= P.EXTRACT_DATE:
+                    dec2 = dec if u[6] < 0.6 else ("Not comparable" if dec == "Comparable" else "Comparable")
+                    self.reviews[-1]["final"] = False
+                    self.reviews.append(dict(qid=r["qid"], y=r["y"], m=r["m"], decision=dec2, date=chk, final=True))
 
 
 def _norm(u):
@@ -345,4 +395,5 @@ def _norm(u):
 
 if __name__ == "__main__":
     w = World()
-    print(len(w.outlets), "outlets", len(w.quotes), "quotes", len(w.records), "records", len(w.backchecks), "back-checks")
+    print(len(w.outlets), "outlets", len(w.quotes), "quotes", len(w.records), "records",
+          len(w.backchecks), "back-checks", len(w.reviews), "reviews")

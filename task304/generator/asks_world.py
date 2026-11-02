@@ -23,7 +23,8 @@ def days(a, b):
 
 # ------------------------------------------------------------------ ask A
 class Vending:
-    def __init__(self, world, seed=P.SEED + 11):
+    def __init__(self, world, seed=None):
+        seed = P.VEND_SEED if seed is None else seed
         self.rng = rng = np.random.default_rng(seed)
         self.world = world
         codes = [h["code"] for h in P.HUBS]
@@ -47,12 +48,12 @@ class Vending:
             by_hub[m["hub0"]].append(m["machine"])
         timeline = defaultdict(list)    # machine -> [(from_date, hub or None)]
         for m in self.machines:
-            timeline[m["machine"]].append((P.VEND_START, m["hub0"]))
+            timeline[m["machine"]].append((P.VEND_START - dt.timedelta(days=30), m["hub0"]))
         for leave, (a, b) in P.RELOCATIONS:
             ma = [x for x in by_hub[a]][0 if leave.month == 8 else 1]
             mb = [x for x in by_hub[b]][0 if leave.month == 8 else 1]
-            gap_a = int(rng.integers(2, 5))
-            gap_b = int(rng.integers(2, 5))
+            gap_a = int(rng.integers(1, 4))      # leaves on a Saturday, commissioned at the new hub one to three days later
+            gap_b = int(rng.integers(1, 4))
             for mach, src, dst, gap in ((ma, a, b, gap_a), (mb, b, a, gap_b)):
                 arrive = leave + dt.timedelta(days=gap)
                 timeline[mach].append((leave, None))
@@ -65,10 +66,8 @@ class Vending:
         for mach, tl in timeline.items():
             self.current[mach] = [h for d, h in tl if h][-1]
         self.range_change = {}
-        lo, hi = P.RANGE_CHANGE_DAYS
-        span = (hi - lo).days
         for m in self.machines:
-            self.range_change[m["machine"]] = lo + dt.timedelta(days=int(rng.integers(0, span + 1)))
+            self.range_change[m["machine"]] = P.RANGE_CHANGE_SUNDAYS[int(rng.integers(0, 2))]
         self.vends = []
         self.visits = []
         self._simulate()
@@ -89,8 +88,10 @@ class Vending:
             if p["kind"] in ("EMP", "LH"):
                 heads[p["hub"]] += 1
         tz_shift = {h["code"]: h for h in P.HUBS}
-        for d in days(P.VEND_START, P.VEND_END):
-            weekday = d.weekday() < 5
+        slots = {"AM": [5.3, 7.0, 9.4], "PM": [13.2, 15.0, 17.4], "NT": [21.3, 23.0, 25.4]}
+        for d in days(P.VEND_START - dt.timedelta(days=2), P.VEND_END + dt.timedelta(days=2)):
+            if d.weekday() >= 5:            # the hubs sort Monday to Friday; the Friday night shift ends Saturday 05:00
+                continue
             for m in self.machines:
                 mach = m["machine"]
                 hub = self.site(mach, d)
@@ -100,15 +101,16 @@ class Vending:
                 standing = [x for x in self.machines if self.site(x["machine"], d) == hub]
                 wsum = sum(x["share"] for x in standing)
                 frac = m["share"] / wsum
-                demand_pairs = heads[hub] * 0.9 * P.PAIRS_PER_WORKER_SHIFT * frac * (1.0 if weekday else 0.06)
+                demand_pairs = heads[hub] * 0.9 * P.PAIRS_PER_WORKER_SHIFT * frac
                 after = d >= self.range_change[mach]
                 per_vend = P.EP_PACK_AFTER if after else 1
                 n_ep = int(rng.poisson(demand_pairs / per_vend))
-                n_em = int(rng.poisson(heads[hub] * 0.012 * frac * (1.0 if weekday else 0.06)))
+                n_em = int(rng.poisson(heads[hub] * 0.012 * frac))
                 for prod, n in (("EP-01", n_ep), ("EM-01", n_em)):
                     for _ in range(n):
-                        shift_h = float(rng.choice([5.4, 7.0, 9.5, 13.3, 15.0, 17.5, 21.4, 23.0, 1.5]))
-                        minute = shift_h * 60 + float(rng.uniform(0, 75))
+                        sh = str(rng.choice(["AM", "PM", "NT"]))
+                        shift_h = float(rng.choice(slots[sh]))
+                        minute = shift_h * 60 + float(rng.uniform(0, 80))
                         local = dt.datetime(d.year, d.month, d.day) + dt.timedelta(minutes=minute)
                         self.vends.append(dict(machine=mach, hub=hub, local=local, product=prod, qty=1,
                                                pairs=(per_vend if prod == "EP-01" else 0)))
@@ -117,8 +119,8 @@ class Vending:
             mach = m["machine"]
             for start, hub in self.timeline[mach]:
                 pass
-            d = P.VEND_START + dt.timedelta(days=int(rng.integers(0, 6)))
-            while d <= P.VEND_END:
+            d = P.VEND_START - dt.timedelta(days=int(rng.integers(1, 8)))
+            while d <= P.VEND_END + dt.timedelta(days=2):
                 hub = self.site(mach, d)
                 if hub is not None and d.weekday() < 5:
                     after = d >= self.range_change[mach]

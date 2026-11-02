@@ -32,7 +32,7 @@ WAYPOINTS = [(0.00, 652400.0, 296100.0), (2.60, 649957.0, 296989.0), (5.10, 6474
 # margins; k: the infill coefficient (per year) of the relaxation law rate = k * (held depth - natural depth).
 PARTS = [
     # code, name, ch0, ch1, half, nat_n, nat_s, k
-    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 8.04, 8.16, 0.11750),
+    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 8.04, 8.16, 0.11810),
     ("FR", "Fend Roads", 2.60, 5.10, 90.0, 8.26, 8.34, 0.11101),
     ("MR", "Middle Reach", 5.10, 7.70, 85.0, 6.33, 6.47, 0.11296),
     ("IR", "Inner Reach", 7.70, 9.40, 80.0, 5.22, 5.38, 0.11282),
