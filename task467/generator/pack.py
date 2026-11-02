@@ -75,7 +75,11 @@ def drop_2026(x, month):
     return out.sort_values("rid", kind="stable")
 
 
-def table(df, names, utc=False, fee_name=None):
+def table(df, names, utc=False, fee_name=None, local_zone=False):
+    """The records as one Parquet table. utc: meter times in UTC, written with the zone (firmware 8.1, the 2026 files);
+    local_zone: meter times in local time written with the local zone (the version 3 annual file); otherwise local
+    time with no zone (the version 2 annual file). The repeated autumn hour is read as daylight time and a time in the
+    spring gap moves to the hour after it."""
     pu, do = zones_cols(df)
     df = df.assign(pu=pu, do=do)
     cols, arrays = [], []
@@ -88,6 +92,9 @@ def table(df, names, utc=False, fee_name=None):
             if utc:
                 loc = loc.dt.tz_localize(W.TZ, ambiguous="NaT", nonexistent="shift_forward").dt.tz_convert("UTC")
                 arr = pa.array(loc, type=pa.timestamp("us", tz="UTC"))
+            elif local_zone:
+                loc = loc.dt.tz_localize(W.TZ, ambiguous=np.ones(len(loc), dtype=bool), nonexistent="shift_forward")
+                arr = pa.array(loc, type=pa.timestamp("us", tz=str(W.TZ)))
             else:
                 arr = pa.array(loc, type=pa.timestamp("us"))
         elif k in INTS:
@@ -115,8 +122,8 @@ def write_parquet(path, tbl):
     return tbl.num_rows
 
 
-def write_annual(path, df, names):
-    return write_parquet(path, table(df, names))
+def write_annual(path, df, names, local_zone=False):
+    return write_parquet(path, table(df, names, local_zone=local_zone))
 
 
 def write_drop(path, df, month):

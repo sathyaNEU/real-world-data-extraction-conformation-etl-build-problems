@@ -35,7 +35,7 @@ D = dt.date.fromisoformat
 POST26 = (D("2025-01-01"), D("2026-08-31"))                      # 2025 with 2026 to date
 M25 = ["2025-%02d" % m for m in range(1, 13)]
 M26 = ["2026-%02d" % m for m in range(1, 9)]
-DASH = re.compile("[–—]")
+DASH = re.compile("[\u2013\u2014]")
 
 
 # ---------------------------------------------------------------- helpers
@@ -331,13 +331,25 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("SF5 measurement windows: %d window pairs restate to %.0f to %.0f, every one %d, %d per cent and $6.50" % (
         len(wr), min(r["q"] for r in wr.values()), max(r["q"] for r in wr.values()), g["q1000"], g["pct"]),
           all(same(r) for r in wr.values()), {k: round(r["q"], 1) for k, r in wr.items()})
+    import verify as VF
     tz = {f: str(pq.ParquetFile(os.path.join(target, f)).schema_arrow.field(
         "meter_on" if "meter_on" in pq.ParquetFile(os.path.join(target, f)).schema_arrow.names else "pickup_datetime").type)
           for f in files if f.endswith(".parquet")}
-    check("SF6 day convention: the by-law reckons days, months and years in Velmont local time; the annual files "
-          "carry local time without a zone, the 2026 files UTC with it; the share with 2026 added is the same in UTC "
-          "and local days", all(("UTC" in v) == ("2026-" in f) for f, v in tz.items()) and r_utc["pct"] == r26["pct"]
-          and "Days, months and years are reckoned in Velmont local time" in bylaw, tz)
+    v25 = VF.read_trips(B.path(target, "trips2025"), {})
+    u24 = B._read(B.path(target, "trips2024"))
+    for k in ("meter_on", "meter_off"):
+        u24[k] = u24[k].dt.tz_localize("UTC").dt.tz_convert(W.TZ).dt.tz_localize(None)
+    r_u24 = solve(merge([arch, tcounts(B.drop_voids(u24)), tcounts(t25)]), amount)
+    sur24 = (M.round_to(6.50 * r_u24["q"] - amount, 10000), M.round_to(amount - 6.25 * r_u24["q"], 10000))
+    check("SF6 day convention: the by-law reckons days, months and years in Velmont local time; the 2025 annual file "
+          "writes its meter times with the local zone and the 2026 files with UTC, so the files state their clocks "
+          "(the verifier's reader counts %d 2025 pickups); the 2024 file's unzoned times read as UTC give %d, %d per "
+          "cent, $%.2f and the same surplus and shortfall (C1); the share with 2026 added is the same in UTC and "
+          "local days" % (int((v25["pu_zone"] == 1).sum()), r_u24["q1000"], r_u24["pct"], r_u24["fee"]),
+          tz[W.FILES["trips2025"]] == "timestamp[us, tz=America/Toronto]" and "tz=" not in tz[W.FILES["trips2024"]]
+          and all(tz[W.FILES[k]] == "timestamp[us, tz=UTC]" for k in W.DROP_KEYS)
+          and int((v25["pu_zone"] == 1).sum()) == g["rec"] and same(r_u24) and sur24 == (10000, 10000)
+          and r_utc["pct"] == r26["pct"] and "Days, months and years are reckoned in Velmont local time" in bylaw, tz)
     near = round(amount / g["q"] / 0.25) * 0.25
     near_v = [round(amount / v / 0.25) * 0.25 for v in [g["q"]] + [r["q"] for r in wr.values()]]
     check("SF7 rounding: the nearest 25 cents gives $%.2f on every window (the same call); by-law s.4 files the lowest "
@@ -362,8 +374,28 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     note = docs[W.FILES["notice"]]
     check("SF11 the budget year's arrangement: the notice returns the rank to the forecourt on 1 January 2027, so all "
           "of 2027 loads there", "Friday 1 January 2027" in note and "taxi holding lot (P7)" in note)
-    check("SF12 the 2024 file's voided trips: the reversal dropped and the original kept, the call stays ($%.2f)" %
-          r_vo["fee"], same(r_vo))
+    v24 = VF.read_trips(B.path(target, "trips2024"), {"pickup_datetime": "meter_on", "dropoff_datetime": "meter_off",
+                                                       "pickup_zone": "pu_zone", "dropoff_zone": "do_zone",
+                                                       "total_amount": "total", "fare_amount": "fare"})
+    net24 = VF.net_voids(v24)
+    rev24 = v24[v24["total"] < 0]
+    mirror = rev24[["vehicle_id", "meter_on", "meter_off", "pu_zone", "do_zone"]].assign(t=-rev24["total"].round(2)).merge(
+        v24[v24["total"] > 0][["vehicle_id", "meter_on", "meter_off", "pu_zone", "do_zone"]].assign(
+            t=v24[v24["total"] > 0]["total"].round(2)), on=["vehicle_id", "meter_on", "meter_off", "pu_zone", "do_zone", "t"])
+    check("SF12 the 2024 file's voided trips: the reversal dropped and the original kept, the call stays ($%.2f); "
+          "closure 19's home is the rows: each of the %d negative-amount rows mirrors exactly one record on licence, "
+          "times, zones and amounts, and the verifier's reader nets both out (%d rows less)" % (
+              r_vo["fee"], len(rev24), len(v24) - len(net24)),
+          same(r_vo) and len(mirror) == len(rev24) and len(v24) - len(net24) == 2 * len(rev24))
+    on25 = v25["meter_on"].dt.normalize()
+    late25 = sum(int((VF.read_trips(B.path(target, k), {})["meter_on"] < pd.Timestamp("2026-01-01")).sum())
+                 for k in W.DROP_KEYS)
+    check("closure 4: FP-07 4.4's final annual file is the pack's only 2025 trip file: it holds trips on all %d days of "
+          "2025 and none outside it, no reversal row, and the 2026 files hold %d trips begun in 2025 (the verifier's "
+          "reader)" % (on25.nunique(), late25),
+          on25.min() == pd.Timestamp("2025-01-01") and on25.max() == pd.Timestamp("2025-12-31") and
+          on25.nunique() == 365 and int((v25["total"] < 0).sum()) == 0 and late25 == 0 and
+          [f for f in files if "2025" in f and f.endswith(".parquet")] == [W.FILES["trips2025"]])
     check("SF13 the 2023 archive against trip records: without it the call stays ($%.2f)" % r_na["fee"], same(r_na))
 
     # ------------------------------------------------------------------ the ladder
@@ -588,9 +620,20 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("H18 the ledger is the memo's series at billing grain: its monthly totals equal the chart's pickups in every "
           "month from January 2025 to August 2026, and 2025's sum is the recorded %d" % g["rec"],
           all(mon[m] == int(lt[m]) for m in M25 + M26) and int(lt[M25].sum()) == g["rec"])
-    idx = [r["file_name"] for r in csv.DictReader(open(B.path(target, "index"), encoding="utf-8"))]
-    check("H9 the folder list names every shipped file but itself, once", sorted(idx) == sorted(
-        f for f in files if f != W.FILES["index"]) and len(idx) == len(set(idx)))
+    describe = re.compile(r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+                          r"\w*_fields|manifest|contents|extract_contents|file_list|file_layout|glossary|schema|"
+                          r"definitions|data_?notes|column_(notes|descriptions?)|how_to_read|about_this|export_notes|"
+                          r"extract_notes|release_notes|index)(?![a-z])", re.I)
+    fields = sorted({c for v in cols.values() for c in v if "_" in c})
+    named = {f: [c for c in fields if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t)]
+             for f, t in docs.items()}
+    check("no shipped file describes the data (dataset-generation section 3): no dictionary, notes, manifest, readme "
+          "or file list by name, no file listing the others, and no document naming any of the data files' %d field "
+          "names; provenance is in metadata.json only (%d rows, one a file)" % (len(fields), len(meta["provenance"])),
+          not [f for f in files if describe.search(f.rsplit(".", 1)[0])] and not any(named.values()) and
+          not any(sum(g_ in open(os.path.join(target, f), encoding="utf-8").read() for g_ in files if g_ != f) >= 3
+                  for f in files if f.endswith(".csv")) and
+          sorted(r["file"] for r in meta["provenance"]) == files, {f: v for f, v in named.items() if v})
     tree = [os.path.relpath(os.path.join(r, f), TASK) for r, _, fs in os.walk(TASK) for f in fs]
     check("H11 one submission.md and one prompt.txt under the task, no superseded copy or snapshot",
           sum(os.path.basename(t) == "submission.md" for t in tree) == 1 and
@@ -624,16 +667,17 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     people = set(re.findall(r"\b(?:Olivia|Joseph|Johnny|Jo|Ms\.|Mr\.) [A-Z][a-z]+", " ".join(docs.values()) + memo))
     check("realism: every person named comes from guard.py names (%s)" % sorted(people),
           people <= PERSONAS and set(W.PEOPLE.values()) == PERSONAS and "Joseph Heath" in note and
-          "Johnny Houston" in docs[W.FILES["dictionary"]] and "Olivia White" in memo)
+          "Olivia White" in memo)
     import docs as DC
-    asof = {W.FILES[k]: d for k, src, d, desc in DC.INDEX}
+    asof = {W.FILES[k]: d for k, src, d, desc in DC.PROVENANCE}
     mt = {f: dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(target, f))).date().isoformat() for f in files}
-    check("realism: every file's saved date is its index date (the folder list's own date otherwise), none after %s" %
-          W.AS_OF, all(mt[f] == asof.get(f, mt[f]) and mt[f] <= W.AS_OF for f in files),
-          {f: (mt[f], asof.get(f)) for f in files if mt[f] != asof.get(f, mt[f])})
+    check("realism: every file's saved date is its provenance date in metadata.json, none after %s" %
+          W.AS_OF, all(f in asof and mt[f] == asof[f] and mt[f] <= W.AS_OF for f in files) and
+          all(r["date"] == asof[r["file"]] for r in meta["provenance"]),
+          {f: (mt[f], asof.get(f)) for f in files if mt[f] != asof.get(f)})
     pdfd = {f: re.search(rb"/CreationDate \(D:(\d{8})", open(os.path.join(target, f), "rb").read()) for f in files
             if f.endswith(".pdf")}
-    check("realism: every PDF's creation date is on or before its index date",
+    check("realism: every PDF's creation date is on or before its provenance date",
           all(m and m.group(1).decode() <= asof[f].replace("-", "") for f, m in pdfd.items()),
           {f: m.group(1) if m else None for f, m in pdfd.items()})
     last = {k: d26raw[d26raw["drop"] == k]["meter_on"].max().date().isoformat() for k in W.DROP_KEYS}

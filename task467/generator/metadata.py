@@ -1,9 +1,11 @@
-"""metadata.json: the task's identity, its files, the distractors, the input gates and the sources."""
+"""metadata.json: the task's identity, its files, the distractors, the input gates, the sources and each shipped file's
+provenance (its source, date, what it covers and its rows; no file under target/ lists or describes the others)."""
 import json
 import os
 
 import pyarrow.parquet as pq
 
+import docs as DC
 import world as W
 
 F = W.FILES
@@ -33,10 +35,8 @@ def write(target, out_path, counts=None):
                  "at the fee and the shortfall 25 cents below it, a chart of the monthly pickups and drop-offs, and "
                  "each brokerage's monthly pickups and fees owed from January 2025 to August 2026",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "seasonal-adjustment-official-time-series-production (the Authority's official monthly series of "
-                     "airport taxi pickups and drop-offs, conformed from the Vehicle-for-Hire Office's annual files, "
-                     "monthly drops and daily archive, and restated across a temporary taxi rank that began the day "
-                     "the Airport Line opened)",
+        "subdomain": "seasonal-adjustment-official-time-series-production (an airport authority's taxi pickup counts "
+                     "conformed from a city regulator's trip records to budget next year's per-trip fee)",
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "07: grid of cells: each brokerage's fee-liable pickups and fees owed in each month from "
                         "January 2025 to August 2026 (six brokerages by twenty months), beside the 2027 fee with the "
@@ -51,13 +51,16 @@ def write(target, out_path, counts=None):
             {"files": "all files under target/",
              "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts "
                        "of a municipal vehicle-for-hire regulator's taxi trip records (annual files, monthly Parquet "
-                       "drops, a daily origin-destination archive, zone, brokerage and affiliation registers and a data "
-                       "dictionary), an airport authority's fees by-law, finance policy, program budget, rank notice, "
-                       "passenger statistics and ground access survey, and a transit agency's service bulletin; the "
+                       "drops, a daily origin-destination archive, zone, brokerage and affiliation registers), an "
+                       "airport authority's fees by-law, finance policy, program budget, rank notice, passenger "
+                       "statistics and ground access survey, and a transit agency's service bulletin; the "
                        "province is unnamed and the city, its airport, agencies, brokerages and people are fictional",
              "date": W.AS_OF,
              "license": "original work for this task; no third-party data"}],
+        "provenance": [{"file": W.FILES[k], "source": src, "date": d, "covers": desc, "rows": rows[W.FILES[k]]}
+                       for k, src, d, desc in DC.PROVENANCE],
     }
+    assert sorted(r["file"] for r in meta["provenance"]) == files, "every shipped file has one provenance row"
     with open(out_path, "w", encoding="utf-8") as fh:
         json.dump(meta, fh, indent=1)
         fh.write("\n")

@@ -123,7 +123,6 @@ FILES = {
     "zones": "vfh_taxi_zones.csv",
     "brokerages": "vfh_brokerages.csv",
     "affiliations": "vfh_vehicle_affiliations.csv",
-    "dictionary": "vfh_trip_records_data_dictionary.pdf",
     "bylaw": "vaa_ground_transportation_fees_bylaw_gt3.pdf",
     "policy": "vaa_finance_policy_fp07_user_fee_revenue.pdf",
     "budget": "vaa_2027_ground_transportation_budget.xlsx",
@@ -131,7 +130,6 @@ FILES = {
     "bulletin": "velmont_transit_airport_line_service_bulletin.pdf",
     "passengers": "vaa_passenger_statistics_2023_2026.xlsx",
     "survey": "vaa_ground_access_survey_2023.pdf",
-    "index": "folder_contents.csv",
 }
 DROP_KEYS = ["drop%02d" % m for m in range(1, 9)]
 GOLDEN = {"memo": "velmont_2027_taxi_pickup_fee.docx", "ledger": "velmont_taxi_fee_ledger_2025_2026.csv"}

@@ -3,7 +3,7 @@
  "architecture": 1,
  "title": "What taxi pickup fee Velmont Airport Authority should set for 2027 under its cost-recovery by-law, with 2025's fee-liable pickups restated to the forecourt rank that returns in 2027; with the surplus at the fee and the shortfall 25 cents below it, a chart of the monthly pickups and drop-offs, and each brokerage's monthly pickups and fees owed from January 2025 to August 2026",
  "domain": "Survey Research & Official Statistics",
- "subdomain": "seasonal-adjustment-official-time-series-production (the Authority's official monthly series of airport taxi pickups and drop-offs, conformed from the Vehicle-for-Hire Office's annual files, monthly drops and daily archive, and restated across a temporary taxi rank that began the day the Airport Line opened)",
+ "subdomain": "seasonal-adjustment-official-time-series-production (an airport authority's taxi pickup counts conformed from a city regulator's trip records to budget next year's per-trip fee)",
  "objective": "Data Extraction & Conformation (ETL)",
  "prompt_shape": "07: grid of cells: each brokerage's fee-liable pickups and fees owed in each month from January 2025 to August 2026 (six brokerages by twenty months), beside the 2027 fee with the recorded and restated base year, the rank's share, the surplus and shortfall either side of the fee and a chart",
  "as_of": "2026-10-16",
@@ -24,7 +24,7 @@
   "1 January"
  ],
  "input_gates": {
-  "files": 23,
+  "files": 21,
   "formats": [
    "csv",
    "parquet",
@@ -37,9 +37,158 @@
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts of a municipal vehicle-for-hire regulator's taxi trip records (annual files, monthly Parquet drops, a daily origin-destination archive, zone, brokerage and affiliation registers and a data dictionary), an airport authority's fees by-law, finance policy, program budget, rank notice, passenger statistics and ground access survey, and a transit agency's service bulletin; the province is unnamed and the city, its airport, agencies, brokerages and people are fictional",
+   "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts of a municipal vehicle-for-hire regulator's taxi trip records (annual files, monthly Parquet drops, a daily origin-destination archive, zone, brokerage and affiliation registers), an airport authority's fees by-law, finance policy, program budget, rank notice, passenger statistics and ground access survey, and a transit agency's service bulletin; the province is unnamed and the city, its airport, agencies, brokerages and people are fictional",
    "date": "2026-10-16",
    "license": "original work for this task; no third-party data"
+  }
+ ],
+ "provenance": [
+  {
+   "file": "vfh_taxi_trips_airport_2024.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2025-02-03",
+   "covers": "Annual file 2024, airport extract (trips with a pickup or drop-off in zone 1).",
+   "rows": 169753
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2025.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-02-06",
+   "covers": "Annual file 2025, airport extract.",
+   "rows": 138055
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-01.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-03-06",
+   "covers": "Monthly file January 2026, airport extract.",
+   "rows": 10652
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-02.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-04-07",
+   "covers": "Monthly file February 2026, airport extract.",
+   "rows": 9350
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-03.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-05-08",
+   "covers": "Monthly file March 2026, airport extract.",
+   "rows": 12309
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-04.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-06-05",
+   "covers": "Monthly file April 2026, airport extract.",
+   "rows": 12192
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-05.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-07-07",
+   "covers": "Monthly file May 2026, airport extract.",
+   "rows": 12455
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-06.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-08-06",
+   "covers": "Monthly file June 2026, airport extract.",
+   "rows": 12390
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-07.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-09-04",
+   "covers": "Monthly file July 2026, airport extract.",
+   "rows": 14305
+  },
+  {
+   "file": "vfh_taxi_trips_airport_2026-08.parquet",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-10-02",
+   "covers": "Monthly file August 2026, airport extract.",
+   "rows": 13300
+  },
+  {
+   "file": "vfh_od_daily_archive_2023.csv",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2024-03-15",
+   "covers": "Daily origin-destination archive 2023 for trips with a pickup or drop-off in zone 1.",
+   "rows": 23785
+  },
+  {
+   "file": "vfh_taxi_zones.csv",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2019-06-01",
+   "covers": "Taxi zone list (zone map 2019).",
+   "rows": 38
+  },
+  {
+   "file": "vfh_brokerages.csv",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-10-09",
+   "covers": "Licensed taxi brokerages.",
+   "rows": 6
+  },
+  {
+   "file": "vfh_vehicle_affiliations.csv",
+   "source": "City of Velmont Vehicle-for-Hire Office",
+   "date": "2026-10-09",
+   "covers": "Taxi licences and the brokerage each was affiliated with, by effective date.",
+   "rows": 340
+  },
+  {
+   "file": "vaa_ground_transportation_fees_bylaw_gt3.pdf",
+   "source": "Velmont Airport Authority",
+   "date": "2026-01-02",
+   "covers": "Ground Transportation Fees By-law GT-3, consolidated.",
+   "rows": null
+  },
+  {
+   "file": "vaa_finance_policy_fp07_user_fee_revenue.pdf",
+   "source": "Velmont Airport Authority",
+   "date": "2023-06-14",
+   "covers": "Finance Policy FP-07: Budgeting user-fee revenue.",
+   "rows": null
+  },
+  {
+   "file": "vaa_2027_ground_transportation_budget.xlsx",
+   "source": "Velmont Airport Authority",
+   "date": "2026-10-14",
+   "covers": "Ground Transportation Program budget 2027, draft.",
+   "rows": null
+  },
+  {
+   "file": "vaa_notice_gt-2024-11_temporary_taxi_rank.pdf",
+   "source": "Velmont Airport Authority",
+   "date": "2026-08-14",
+   "covers": "Ground Transportation Notice GT-2024-11, revision 2.",
+   "rows": null
+  },
+  {
+   "file": "velmont_transit_airport_line_service_bulletin.pdf",
+   "source": "Velmont Transit",
+   "date": "2024-10-21",
+   "covers": "Service Bulletin 2024-19: the Airport Line.",
+   "rows": null
+  },
+  {
+   "file": "vaa_passenger_statistics_2023_2026.xlsx",
+   "source": "Velmont Airport Authority",
+   "date": "2026-09-22",
+   "covers": "Passengers and aircraft movements, monthly.",
+   "rows": null
+  },
+  {
+   "file": "vaa_ground_access_survey_2023.pdf",
+   "source": "Velmont Airport Authority",
+   "date": "2024-02-26",
+   "covers": "Ground access survey, October 2023.",
+   "rows": null
   }
  ]
 }

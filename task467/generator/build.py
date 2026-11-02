@@ -24,10 +24,10 @@ import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
 EASTERN = dt.timezone(dt.timedelta(hours=-4))
-STAMP = dt.datetime(2026, 10, 16, 15, 20, tzinfo=EASTERN)      # the folder as the finance manager assembled it
+STAMP = dt.datetime(2026, 10, 16, 15, 20, tzinfo=EASTERN)      # the folder as the finance manager assembled it (a file
+                                                               # with no provenance date)
 
 PDF_STAMPS = {
-    "dictionary": b"D:20260209104237-05'00'",
     "bylaw": b"D:20260102091514-05'00'",
     "policy": b"D:20230614153052-04'00'",
     "notice": b"D:20260814112009-04'00'",
@@ -46,14 +46,13 @@ def build(out, x=None, quiet=False):
     x = x or S.everything()
     n = {}
     n["trips2024"] = P.write_annual(f("trips2024"), P.file_2024(x), P.V2)
-    n["trips2025"] = P.write_annual(f("trips2025"), P.file_2025(x), P.V3)
+    n["trips2025"] = P.write_annual(f("trips2025"), P.file_2025(x), P.V3, local_zone=True)
     for m in range(1, 9):
         n["drop%02d" % m] = P.write_drop(f("drop%02d" % m), P.drop_2026(x, m), m)
     n["archive"] = P.write_csv(f("archive"), P.ARCHIVE_COLS, P.archive_rows(x))
     n["zones"] = P.write_csv(f("zones"), P.ZONE_COLS, P.zone_rows())
     n["brokerages"] = P.write_csv(f("brokerages"), P.BROKERAGE_COLS, P.brokerage_rows())
     n["affiliations"] = P.write_csv(f("affiliations"), P.AFFIL_COLS, P.affiliation_rows(x))
-    DC.write_dictionary(f("dictionary"))
     DC.write_bylaw(f("bylaw"))
     DC.write_policy(f("policy"))
     DC.write_notice(f("notice"))
@@ -62,14 +61,13 @@ def build(out, x=None, quiet=False):
     DC.write_budget(f("budget"))
     DC.write_passengers(f("passengers"))
     n["passengers"] = len(DC.passenger_rows())
-    DC.write_index(f("index"), n)
     for k, stamp in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), stamp, stamp)
     PP.normalize_ooxml(f("budget"), W.PEOPLE["finance"], W.PEOPLE["finance"], "2026-09-08T14:12:00Z",
                        "2026-10-14T19:41:27Z", excel=True, company=W.AUTHORITY)
     PP.normalize_ooxml(f("passengers"), "Airport Operations", "Airport Operations", "2023-02-06T13:05:00Z",
                        "2026-09-22T15:18:09Z", excel=True, company=W.AUTHORITY)
-    asof = {k: d for k, src, d, desc in __import__("docs").INDEX}
+    asof = {k: d for k, src, d, desc in DC.PROVENANCE}
     for i, k in enumerate(W.FILES):
         if k in asof:
             y, m, d = (int(v) for v in asof[k].split("-"))

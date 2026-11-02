@@ -92,10 +92,9 @@ def main(target, golden):
     names_v2 = {"pickup_datetime": "meter_on", "dropoff_datetime": "meter_off", "pickup_zone": "pu_zone",
                 "dropoff_zone": "do_zone", "passenger_count": "passengers", "trip_distance_km": "distance_km",
                 "fare_amount": "fare", "tip_amount": "tip", "total_amount": "total", "store_and_fwd_flag": "sf_flag"}
-    dic = text(find(target, r"data_dictionary\.pdf$")[0])
-    for a, b in names_v2.items():
-        assert "%s %s" % (a, b) in dic, (a, b)
-    y24 = net_voids(read_trips(find(target, r"airport_2024\.parquet$")[0], names_v2))
+    assert not [f for f in os.listdir(target) if re.search(r"dictionar|readme|manifest|codebook|contents|schema|"
+                                                           r"glossary|definitions|field_?notes|file_list", f, re.I)]
+    y24 =net_voids(read_trips(find(target, r"airport_2024\.parquet$")[0], names_v2))
     y25 = net_voids(read_trips(find(target, r"airport_2025\.parquet$")[0], names_v2))
     drops = pd.concat([read_trips(p, names_v2) for p in find(target, r"airport_2026-\d\d\.parquet$")], ignore_index=True)
     y26 = drop_resent(net_voids(drops))

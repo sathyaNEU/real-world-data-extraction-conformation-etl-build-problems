@@ -163,6 +163,24 @@ No certified replay: no published or certified figure reproduces only under one 
 
 Lesson: a temporary change and a permanent one that begin the same day are separated against a comparison series only within the components the permanent one acts on, because the comparison series can carry those components in a very different mix and hide the temporary change almost entirely in the aggregate; no build on file restates a series across coincident breaks or reads an intervention against a comparison series whose component mix differs.
 
+## Survivor anatomy
+
+Written 2026-11-02 at the reship, after the build shipped; each line is a test answered on the cut pack.
+
+Actor: the deciding property has no column in any file: no field marks a station zone or the Airport Line's footprint (the zone list carries zone_id, zone_name and district only), and the two directions' different shares of the station zones are a relation between rows of the trip files that nothing stores.
+
+Link: the signal is read through a link no key offers: the bulletin's four city station names (Central, Midtown, University, Commerce Park) matched to the zone list's zone names, a cross-file match no key or clause names, then pickups against drop-offs within those zones and within the rest.
+
+Reflex: the field's named methods for an intervention sit at rungs 0 and 1 and file wrong fees: the series' own break files $5.75 (the default path's Ends on) and the obvious control, all pickups against all drop-offs, files $7.00.
+
+Back-test: the easy route validates: a placebo move inside the pre-move year (4 May 2024, six months either side) gives the aggregate comparison a 1.0 per cent effect, inside the monthly ratio's 2.6 per cent spread, so the $7.00 route passes the check a solver gives it.
+
+Second use: every file the decisive step reads sits in the pack for its own reason: the trip files and the 2023 archive are the series itself, the zone list codes every trip, and the bulletin dates the line's opening, which rung 1 reads; with the decisive step deleted each of them still ships.
+
+Shock: the movement the step recovers, the rank's 11 per cent, is the same in every zone and reads as ordinary; the pack's visible anomaly is the line's fall in the four station zones' drop-offs (sorting zones on their drop-off change puts them first), which the bulletin already names and which is the confound the step controls, not its answer.
+
+Pins: the WHAT is filed in the Authority's by-law (the fee-liable pickup, local reckoning, the lowest 25-cent step) and FP-07 (the base year, the restatement to the budget year's taxi loading arrangement, no growth); no filed sentence names a comparison series, a zone grouping or the strata the decisive step rides on.
+
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
@@ -180,7 +198,7 @@ Lesson: a temporary change and a permanent one that begin the same day are separ
 | SF3 | taxi loading arrangement | the location and operation of the taxi rank and holding lot | any change touching taxi trips, the Airport Line included | $5.75 (the line restated away) | FP-07 4.2 defines the term; the line is Velmont Transit's service |
 | SF4 | restated | the pickups 2025 would have had under the budget year's arrangement | 2025's pickups grossed up by the uplift share of the rank's return | same call (the two are one restatement; asserted) | FP-07 4.3 |
 | SF5 | measurement windows | the twelve months before 4 November 2024 against 2025 | calendar January to October 2024; November 2024 to October 2025; 2026 to date added | same call and the same whole-per-cent share on each (asserted) | C1: the within-zone ratio of pickups to drop-offs is stable on every window |
-| SF6 | month and day convention | local time, a trip placed by its meter start | UTC dates | same call (the 2024 and 2025 files are local; the 2026 drops are off the main path; the share with 2026 added is unchanged under either convention; asserted) | by-law s.2: days, months and years are reckoned in Velmont local time; the dictionary: annual files in local time |
+| SF6 | month and day convention | local time, a trip placed by its meter start | UTC dates | same call (the 2024 and 2025 files are local; the 2026 drops are off the main path; the share with 2026 added is unchanged under either convention; asserted) | by-law s.2: days, months and years are reckoned in Velmont local time; the files state their own clocks: the 2025 annual file writes its meter times with the local zone (America/Toronto) and the 2026 files with UTC; the 2024 file's unzoned times read as UTC file the same 84,000, 11 per cent, $6.50 and the same surplus and shortfall (C1); checks.py SF6, through the verifier's reader |
 | SF7 | rounding of the fee | the lowest multiple of 25 cents at which the restated pickups at the fee are not less than the amount | the nearest 25 cents | same call ($6.50 on every window; asserted) | By-law s.4 "the lowest multiple of $0.25 at which" |
 | SF8 | the amount to recover | the 2027 budget's line assigned to the taxi pickup fee | the program's gross cost | a higher fee | By-law s.4 "the amount the year's Ground Transportation Program budget assigns to the taxi pickup fee"; the budget's line of that name |
 | SF9 | no traffic growth | the restated 2025 pickups are 2027's budgeted pickups | 2025 grown at the passenger trend to 2027 | $6.25 | FP-07 4.2 "No traffic growth is assumed" |
@@ -232,7 +250,7 @@ Lesson: a temporary change and a permanent one that begin the same day are separ
 | 1 | Population | 2025's fee-liable pickups: trips beginning in zone 1, voided trips out (by-law s.2); the 2025 file holds no voided trip (C1) |
 | 2 | Unit of account | the trip; the fee in dollars a pickup (by-law s.2, s.4) |
 | 3 | Attribution window | calendar 2025 by local meter start; trips straddling midnight on 31 December counted by start (C1: no bin moves) |
-| 4 | As-of dating | the Office's final 2025 annual file (generated February 2026) |
+| 4 | As-of dating | the Office's final 2025 annual file (FP-07 4.4), the pack's only 2025 trip file: every day of 2025 and none outside it, no reversal row, no 2025 trip in the 2026 files (dated 6 February 2026 in the pack; checks.py closure 4, through the verifier's reader) |
 | 5 | Version basis | the final annual files for 2024 and 2025; the provisional 2026 drops stay off the main path (asserted) |
 | 6 | Denominator | the restated pickups under the fee (by-law s.4) |
 | 7 | Weighting | each stratum's counterfactual on its own drop-offs, summed; the zone-level sum and either stratum's share agree (C1, asserted, and recomputed in verify.py); groupings that put zones the line serves with zones it does not (the zone list's districts $6.75, Central's zone alone $6.75) leave the line inside a group, which the zone-level drop-offs show (the four station zones fell about a third, no other zone's fell; asserted) |
@@ -247,7 +265,7 @@ Lesson: a temporary change and a permanent one that begin the same day are separ
 | 16 | Identity normalisation | zone ids stable 2023 to 2026; the bulletin's stations map to zone names one to one |
 | 17 | Netting | the program's other revenues netted inside the budget's own line (the amount assigned to the fee) |
 | 18 | Dimensional units | trips and dollars; no conversion on the main path |
-| 19 | Code and status semantics | zone 1 the airport; reversal rows by negated amounts (2024); dictionary semantics, never the stump |
+| 19 | Code and status semantics | zone 1 the airport (by-law s.2, the zone list); a reversal is the row that mirrors one record with every amount negated, and both go (by-law s.2; the rows carry it: each of the 2024 file's reversals mirrors exactly one record, and either handling files the same call, SF12, asserted through the verifier's reader); never the stump |
 | 20 | Integerisation | whole trips; the fee in 25-cent steps |
 | 21 | Clause scope | FP-07 4.2 and 4.3 apply to the budget year 2027 and its base year 2025 |
 | 22 | Forward window contents | 2027's arrangement filed: the forecourt rank from 1 January 2027 (notice), the line in service, no growth (FP-07) |
@@ -293,7 +311,7 @@ or formula reads to another fee.
 - **Ask B, for each brokerage and each month from January to August 2026, the fee-liable pickups and the fees owed
   (whole trips; dollars and cents at $6.75).** H18 home: the current year's billing basis under the 2026 fee, the same
   ledger carried forward from the provisional drops. Use: the 2026 months the memo's chart plots, at the grain the Authority bills;
-  the ledger's monthly totals are the chart's pickups in every month (asserted, H18). Path: the eight 2026 monthly drops, the dictionary, the brokerage register, the by-law: four
+  the ledger's monthly totals are the chart's pickups in every month (asserted, H18). Path: the eight 2026 monthly drops, the affiliation register, the brokerage register, the by-law: four
   file kinds, eleven columns. Primary device: D1, a replay under fresh ids: from firmware 8.1 a Corvane unit that
   loses its connection re-sends its unacknowledged trips once it reconnects, days later, and the Office's intake gives
   each copy a new record number; the unit writes a trip it sends from memory with its meter times to the minute, so
@@ -322,18 +340,23 @@ or formula reads to another fee.
   drops June to August fees for a response reading the column by its old name.
 - **Referee:** none; no total in the asks' files ties under one handling only.
 
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, each brokerage's 2025 monthly fee-liable pickups and fees owed | groups the 2025 file by its brokerage column and bills the scheduled fee; every vehicle that moved brokerage at the renewal is booked to its later brokerage | miss |
-| B, each brokerage's 2026 monthly fee-liable pickups and fees owed | concatenates the drops, converts UTC, removes void pairs and exact duplicates; the re-sent copies survive every key check | miss |
+**The honest re-measure (2026-11-02, the careful-solver cracker on the cut pack).** The sheet shipped with two narrowed
+crackers: Ask A's grouped the 2025 file by its own brokerage column, skipping by-law s.3(2) as worded with the
+register's effective dates, and Ask B's dropped exact duplicates only, skipping the near-exact check that finds the
+copies. Run as the careful solver, the cracker keeps every ask figure, so both asks are spent; the rework stopped (the
+last two lines of `## Tried and rejected` hold the candidate table).
 
-- Mirror leakage: 7.7 per cent of ask weight (a response on R1 keeps the two files and misses every Ask A and Ask B
-  figure on the same devices as the cracker).
-- Pair ceiling: 32.6 (planning weights 38 / 7 / 55 with the call, the recorded and restated base, the share, the
-  surplus and shortfall and the chart in the main block and r = 5; the ask weight over 26
-  criteria: Ask A 12 (each brokerage's 2025 pickups and fees), Ask B 12 (each brokerage's 2026 pickups and fees), the
-  two files 2; the cracker keeps the files, 38 + 7 + 4.2 = 49.2; the mirror keeps r, instruction-following and the
-  files, 5 + 7 + 4.2 = 16.2; average 32.7), rerun from the generated rubric at ship.
+| Ask | Cracker (the careful solver: lands the call, runs the whole battery, executes every filed rule as worded) | Verdict |
+|---|---|---|
+| A, each brokerage's 2025 monthly fee-liable pickups and fees owed | by-law s.3(2) through the register's effective dates (the trip's start day), Schedule A's fee for the trip's year whatever the meter charged (s.3(1), s.3(3)): 144 of 144 figures | kept |
+| B, each brokerage's 2026 monthly fee-liable pickups and fees owed | the meter times read in local time, each record placed by its meter start, the 315 reversals with the records they mirror out, 58 exact and 1,683 near-exact duplicates (one licence, zones, fare and total, start and stop minute) out, Airport_Fee matched, the fee in force, the register's brokerage (the files' own on every pickup): 96 of 96 | kept |
+
+- Mirror leakage: 100.0 per cent of ask weight (the asks are decoupled from the call, so the response on R0 reads the
+  ledger as the cracker does and keeps all 26 ask criteria).
+- Pair ceiling: 83.5 (38 / 7 / 55 over the sheet's 26 ask criteria, r = 5: the cracker 100.0, the mirror 67.0; 82.5 with
+  r = 3; two careful responses on the call 100.0 each).
+- Measured by: generator/ceiling.py (on target.zip md5 4bc57ac524f1a47d809272f5bca911e6; the full includer, golden.py's
+  route, reproduces figures.json; the shipped sheet's two crackers, printed beside it, keep A 0 of 144 and B 0 of 96).
 
 ## Pre-ship check
 
@@ -357,6 +380,13 @@ or formula reads to another fee.
   `voice-check.py` exit 0; `leak.py` REVIEW (no LEAK); guard heart WARN (answered in the draw, shape and strategy
   redrawn after task238); the surface screen promotes nothing (nearest task453 at 0.100); the containers clean (H1
   audit, pack and goldens).
+- **Reship gates (2026-11-02, the leak repair's cut).** 21 files in 4 formats (the dictionary and the folder list no
+  longer ship); 76 generator checks and `verify.py` pass; two consecutive builds byte-identical (target.zip md5
+  4bc57ac524f1a47d809272f5bca911e6 twice); `freeze.py check --mode determinism` PASS; figures.json, the goldens and
+  submission.md unchanged; `figures_check.py` (280 figures) and `voice-check.py` PASS; `leak.py` REVIEW, no LEAK;
+  `guard.py surface` exit 0 (task453 promoted at 0.100 on the cards' gap, decision type and pairing, the same 0.100 as
+  at ship, a corpus-percentile effect); `precut.py` FAILs on the ask sheet's honest pair ceiling, mirror leakage and
+  cracker rows, the ask layer owed.
 
 ## Leak check
 
@@ -400,6 +430,19 @@ the non-station zones' drop-offs with no growth control, 81,578 and $6.75) is cl
 falls once growth is controlled; its optional prompt line was not taken. Step 7 of the write-up now cites by-law s.3
 for billing each trip once at the year's fee, no figure moving.
 
+Re-check, 2026-11-02 (the reship cut, target.zip md5 4bc57ac524f1a47d809272f5bca911e6): `leak.py --asof 2026-10-16`
+REVIEW, no LEAK; the shipped cut's LEAK (`vfh_trip_records_data_dictionary.pdf`, by its name) went with the file.
+Each REVIEW line ruled:
+- Schedule A's 2025 fee ($5.75) in the by-law: as at ship, the fee the ledger bills 2025 at; no document sets or
+  proposes a 2027 fee. Harmless.
+- FP-07 (seven stump-paragraph terms) and the transit bulletin (four, its own word "bulletin" among them): each
+  describes its own subject and names no comparison series, zone grouping or split of the fall. Harmless.
+- The prompt's shell quota (the rounding opener 'give' at 44 per cent of 196 prompts): a corpus quota on the shipped
+  prompt, unchanged here; voice-check passes it as a WARN, left to the main thread's prompt pass.
+The describing-content sweep (12) and the task-metadata sweep (13) are now clean: no document names a data field, and
+metadata.json's subdomain no longer narrates the Airport Line's opening. The leak reader owes a re-read of the cut (two
+files dropped and metadata.json changed; no document's text changed).
+
 ## Tried and rejected
 
 - 2026-10-17, at the draw: a moving-holiday stump (Eid al-Fitr, Lunar New Year or Easter falling in a new month of
@@ -430,3 +473,40 @@ for billing each trip once at the year's fee, no figure moving.
 - 2026-10-17, at the stage-3 heart check: shape 04 (a table of every 25-cent fee from $5.50 to $7.25) and the
   causal_design label: task238, registered 23 minutes earlier in another lane, holds both; the table left the prompt
   and the memo (shape 07, the ledger grid) and the strategy is labelled by the decisive move (composition_mix).
+- 2026-11-02, at the reship (the in-house re-check under the new leak gate, LEAK `vfh_trip_records_data_dictionary.pdf`):
+  the shipped pack carried the Office's data dictionary (the field list, the version 2 to 3 names, the void,
+  late-record and file-cycle notes, the clocks, and the contact line that was the pack's only mention of Johnny
+  Houston) and folder_contents.csv (every file's source, date, description and rows), two files that describe the
+  data; neither ships now. Provenance went to metadata.json; the annual files' clock to the files themselves (the 2025
+  file's meter times written with the local zone; the 2024 file's unzoned times, read as UTC, file the same call and
+  figures, C1); the void and late-record conventions to the rows (SF6, SF12, closures 4 and 19, each asserted through
+  the verifier's reader); the version 2 names to themselves (R2's union by position). No document's text changed and
+  no graded figure moved.
+- 2026-11-02, the honest-cracker audit: both asks are spent. The careful solver (generator/ceiling.py on the cut pack)
+  executes by-law s.3(2) through the register's effective dates and lands Ask A's stale brokerage label (144 of 144),
+  and its near-exact duplicate check (one licence, zones, fare and total, start and stop minute) lands Ask B's re-sent
+  copies (96 of 96): pair 83.5, mirror leakage 100 per cent. The shipped sheet's 0 of 240 came from two narrowed
+  crackers (the file's own brokerage column; exact duplicates only). Ask A cannot be re-sited: it is computed over the
+  call's own population (2025's fee-liable pickups), so its only device room is the brokerage attribution, which s.3(2)
+  makes rule application.
+- 2026-11-02, the ask rework stopped at step 5 with no device passing both tests. The candidate table (candidate;
+  forced for the judge?; missed by the careful solver?; verdict), each measured on the world in scratch, nothing in the
+  pack changed: (X) re-site in the 2026 drops, a Corvane unit that loses its licence pairing after a power cycle in the
+  holding lot reports under its own serial for two to six days, linked to its licence by timing; no (a median of 9
+  other licences, at least 6, are silent through each of 47 runs, and 9 of 47 runs have another licence that also fits
+  a tight lot-wait bracket: a restart read from timing); yes; fork. (X2) the same unit linked by a meter trip counter
+  or the odometer; yes; no (a sequence check or the field's plain meaning finds it, as task228's counter continuation
+  fell to a told reader); spent. (X3) a meter reboot splitting one trip into two records; partly (a short zone 1 trip
+  then a hotel pickup explains the pair too); no (the same-licence overlap check); spent. (D) the full replacement on a
+  new ask-only record, the Authority's rank dispatch log (its own cab numbers, no licence) with flat-fare loads the
+  meters never recorded, the ledger cut to 2026; yes (a Loaded dispatch whose cab's licence starts no airport pickup
+  within four minutes); no (the battery's re-keyed match by time recovers the cab-to-licence pairing for 220 of 220
+  cabs and all 262 off-meter loads with no false hit, 48 of 48 brokerage-months); spent. (D2) brokerage receivables with
+  a re-keyed payer; yes; no (cash application by amount); spent. (D3) the rank contractor's per-load invoice, parties
+  against taxis; yes; no (collapse by cab and minute); spent. task247's form (a clean, wrong join through a
+  current-state register after a silent re-key) has no home here: billing runs through an effective-dated register
+  and a filed rule, so a re-key on the 2026 rows leaves orphans, a mismatch s.3(2) settles, or a device on the call's
+  own 2025 rows. On the house count (the call 1, the critical components 3, the surplus 1, the shortfall 1, the chart
+  1, Ask A 12, Ask B 12, the two files 2: 33 criteria), cutting Ask A leaves 21 with Ask B spent besides, and cutting
+  both leaves 8, each under 25. Owed: a new ask layer on records this world would hold, screened as code against the
+  careful solver before any data is cut, or a re-root.

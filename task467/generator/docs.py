@@ -1,6 +1,7 @@
-"""The pack's documents: the Office's data dictionary, the Authority's fees by-law and finance policy, its temporary
-rank notice, Velmont Transit's Airport Line bulletin, the 2027 program budget workbook, the airport's passenger
-statistics and its 2023 ground access survey (the last two distractors), and the folder's contents list."""
+"""The pack's documents: the Authority's fees by-law and finance policy, its temporary rank notice, Velmont Transit's
+Airport Line bulletin, the 2027 program budget workbook, the airport's passenger statistics and its 2023 ground access
+survey (the last two distractors); and PROVENANCE, each shipped file's source and date, which goes to metadata.json and
+the files' saved dates (no file in the pack lists or describes the others)."""
 import datetime as dt
 
 from reportlab import rl_config
@@ -93,71 +94,6 @@ def ca_date(d):
     if isinstance(d, str):
         d = dt.date.fromisoformat(d)
     return str(d.day) + d.strftime(" %B %Y")
-
-
-# ---------------------------------------------------------------- the Office's data dictionary
-V3_FIELDS = [
-    ("record_id", "integer", "The Office's record number, given to each record when it is received."),
-    ("vendor_id", "integer", "Taximeter vendor: 1 Orlan Metering, 2 Corvane Systems."),
-    ("vehicle_id", "text", "Taxi licence (plate) number."),
-    ("brokerage_id", "integer", "The vehicle's licensed brokerage (see the brokerage register)."),
-    ("meter_on", "timestamp", "Date and time the taximeter was engaged."),
-    ("meter_off", "timestamp", "Date and time the taximeter was disengaged."),
-    ("pu_zone", "integer", "Taxi zone where the meter was engaged (zone map 2019, see the zone list)."),
-    ("do_zone", "integer", "Taxi zone where the meter was disengaged."),
-    ("passengers", "integer", "Number of passengers, entered by the driver."),
-    ("distance_km", "decimal", "Metered distance in kilometres."),
-    ("fare", "decimal", "Metered fare (flag, distance and waiting time), dollars."),
-    ("airport_fee", "decimal", "Airport pickup fee charged on the meter, dollars."),
-    ("tip", "decimal", "Tip paid by card, dollars. Cash tips are not recorded."),
-    ("total", "decimal", "Total charged: fare, airport pickup fee and tip, dollars."),
-    ("payment_type", "integer", "1 card, 2 cash, 3 account."),
-    ("sf_flag", "text", "Y when the meter held the record in memory and sent it later; N otherwise."),
-]
-V2_NAMES = ["record_id", "vendor_id", "vehicle_id", "brokerage_id", "pickup_datetime", "dropoff_datetime",
-            "pickup_zone", "dropoff_zone", "passenger_count", "trip_distance_km", "fare_amount", "airport_fee",
-            "tip_amount", "total_amount", "payment_type", "store_and_fwd_flag"]
-
-
-def write_dictionary(path):
-    h1, h1s, h2 = styles(TEAL)
-    d, frame = _doc(path, "Taxi trip records: data dictionary", W.OFFICE, W.OFFICE + "  |  Taxi trip records, version 3.1")
-    s = [Paragraph("Taxi trip records: data dictionary", h1),
-         Paragraph("Version 3.1, February 2026. %s" % W.OFFICE, h1s),
-         Paragraph("About the records", h2),
-         Paragraph("Every licensed taxi's taximeter sends a record of each trip to the Office. The Office publishes the "
-                   "records monthly as Parquet, about five weeks after a month ends; each monthly file holds the "
-                   "records the Office received that month. After a year closes the Office builds an annual file of "
-                   "the year's trips, which replaces the year's monthly files. Records of a closed year that arrive "
-                   "after its last monthly file are added to its annual file, not to the next year's monthly files.",
-                   BODY),
-         Paragraph("The Velmont Airport Authority receives an extract of the trips with a pickup or a drop-off in "
-                   "zone 1 (Velmont International Airport) under data sharing agreement DSA-2019-04. Records "
-                   "before 2024 are kept as a daily origin-destination archive (trips by date, pickup zone and "
-                   "drop-off zone; voided trips not counted).", BODY),
-         Paragraph("When a driver voids a trip, the meter sends the trip and later a reversal record carrying "
-                   "the same vehicle, times and zones with every amount negated.", BODY),
-         Paragraph("Fields (version 3)", h2),
-         _table([["Field", "Type", "Description"]] + [list(r) for r in V3_FIELDS], [1.25 * inch, 0.8 * inch, 4.6 * inch]),
-         Spacer(1, 8),
-         Paragraph("Version 2 field names (annual files to 2024)", h2),
-         _table([["Version 2", "Version 3"]] + [[a, b] for a, b in zip(V2_NAMES, [f[0] for f in V3_FIELDS])],
-                [2.2 * inch, 2.2 * inch]),
-         Paragraph("Changes", h2),
-         _table([["Version", "Date", "Change"],
-                 ["3.1", "February 2026", "Annual file 2025, in version 3 field names and local time. Voided trips "
-                  "and their reversals are no longer included in annual files."],
-                 ["3.0", "January 2026", "Taximeter firmware 8.1: fields renamed (above); meter_on and meter_off are "
-                  "recorded in Coordinated Universal Time and written with the time zone. Earlier files carry local "
-                  "time (Eastern)."],
-                 ["2.4", "January 2025", "Rate order 2025-01: flag $4.25, $2.02 a kilometre, waiting time $0.64 a "
-                  "minute."],
-                 ["2.3", "March 2023", "Airport extract under DSA-2019-04 moved from monthly CSV to Parquet."]],
-                [0.7 * inch, 1.1 * inch, 4.85 * inch]),
-         Spacer(1, 10),
-         Paragraph("Questions to %s, Open Data Coordinator, Vehicle-for-Hire Office." % W.PEOPLE["opendata"], SMALL)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-    return len(V3_FIELDS)
 
 
 # ---------------------------------------------------------------- the Authority's by-law and policy
@@ -419,8 +355,8 @@ def write_survey(path):
     d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-# ---------------------------------------------------------------- the folder's contents
-INDEX = [
+# ---------------------------------------------------------------- provenance (metadata.json, saved dates)
+PROVENANCE = [
     ("trips2024", "City of Velmont Vehicle-for-Hire Office", "2025-02-03",
      "Annual file 2024, airport extract (trips with a pickup or drop-off in zone 1)."),
     ("trips2025", "City of Velmont Vehicle-for-Hire Office", "2026-02-06",
@@ -435,7 +371,6 @@ INDEX = [
     ("brokerages", "City of Velmont Vehicle-for-Hire Office", "2026-10-09", "Licensed taxi brokerages."),
     ("affiliations", "City of Velmont Vehicle-for-Hire Office", "2026-10-09",
      "Taxi licences and the brokerage each was affiliated with, by effective date."),
-    ("dictionary", "City of Velmont Vehicle-for-Hire Office", "2026-02-09", "Taxi trip records: data dictionary, v3.1."),
     ("bylaw", "Velmont Airport Authority", "2026-01-02", "Ground Transportation Fees By-law GT-3, consolidated."),
     ("policy", "Velmont Airport Authority", "2023-06-14", "Finance Policy FP-07: Budgeting user-fee revenue."),
     ("budget", "Velmont Airport Authority", "2026-10-14", "Ground Transportation Program budget 2027, draft."),
@@ -445,11 +380,3 @@ INDEX = [
     ("survey", "Velmont Airport Authority", "2024-02-26", "Ground access survey, October 2023."),
 ]
 
-
-def write_index(path, counts):
-    import pack as P
-    rows = []
-    for k, src, asof, desc in INDEX:
-        n = counts.get(k, "")
-        rows.append([W.FILES[k], src, asof, desc, n])
-    return P.write_csv(path, ["file_name", "source", "as_of", "description", "rows"], rows)
