@@ -301,6 +301,28 @@ def blocks(rng):
     return out
 
 
+def heat_loss_split(blks, seed):
+    """The rev2 study's components of each block's design heat loss (NEN-EN 12831): the ventilation share follows the
+    block's storeys (stack effect), its type and its label (air-tightness of the original facades), the heating-up
+    allowance follows the night setback the consultant found in each boiler room (none, 2, 3 or 4 K). Drawn from its
+    own stream after the loads are fixed, so every block's total, and every flow, stays as it was."""
+    rng = np.random.default_rng(seed + 4000)
+    for b in blks:
+        if b["type"] == "galerijflat":
+            st = int(np.clip(round(b["dwellings"] / rng.integers(11, 17)), 4, 9))
+        else:
+            st = int(rng.choice([3, 4, 4, 5]))
+        sb = int(rng.choice([0, 2, 3, 4], p=[0.2, 0.3, 0.3, 0.2]))
+        v = 0.245 + 0.012 * (st - 4) + (0.02 if b["label"] == "F" else 0.0) + \
+            (0.015 if b["type"] == "galerijflat" else 0.0) + float(rng.normal(0, 0.02))
+        v = float(np.clip(v, 0.20, 0.38))
+        h = 0.0 if sb == 0 else max(0.0, {2: 0.05, 3: 0.08, 4: 0.11}[sb] + float(rng.normal(0, 0.008)))
+        ve = int(round(b["load"] * v))
+        op = int(round(b["load"] * h))
+        b["storeys"], b["setback_K"] = st, sb
+        b["split"] = (b["load"] - ve - op, ve, op)
+
+
 # ------------------------------------------------------------------------------------------------- exports (truth as the systems record it)
 def amr_export(rng, wx, conns, amr):
     """Rows the AMR head-end exports: one per meter serial per UTC day, registers at the end of the UTC day.
@@ -821,6 +843,7 @@ def build(seed=P.SEED):
     fam = families(rows, conns, wx)
     committed, per = committed_flow(conns, rows, wx)
     H, dl = tune(blks, fam, int(round(committed)))
+    heat_loss_split(blks, seed)
     gas_reads, gas_master, gscale = tune_gas(blks, wx, seed)
     sc, E, V, loss = scada(np.random.default_rng(seed + 3000), wx, conns, amr)
     w = {"wx": wx, "conns": conns, "amr": amr, "blocks": blks, "legacy": legacy, "amr_rows": rows, "fam": fam,

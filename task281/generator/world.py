@@ -60,15 +60,15 @@ SCHOOLS = [
 
 # titles a school owns that other schools' courses also list (owner: (probability, [(school, weight)]))
 CROSS = {
-    "ECON": (0.42, [("ACFN", 3), ("MGMT", 3), ("POLI", 1)]),
-    "MATH": (0.40, [("ACFN", 2), ("ENGN", 2), ("COMP", 1), ("ECON", 1)]),
-    "PSYC": (0.38, [("NURS", 3), ("AHPR", 2), ("MKTG", 2), ("EDUC", 1)]),
-    "SOCI": (0.36, [("CRIM", 2), ("NURS", 2), ("LAWS", 1), ("POLI", 1)]),
-    "POLI": (0.30, [("LAWS", 3), ("ECON", 1)]),
-    "BIOL": (0.38, [("MEDI", 3), ("DENT", 1), ("BMSC", 1)]),
-    "BMSC": (0.40, [("MEDI", 3), ("DENT", 2), ("NURS", 1)]),
+    "ECON": (0.60, [("ACFN", 3), ("MGMT", 3), ("POLI", 1)]),
+    "MATH": (0.52, [("ACFN", 2), ("ENGN", 2), ("COMP", 1), ("ECON", 1)]),
+    "PSYC": (0.50, [("NURS", 3), ("AHPR", 2), ("MKTG", 2), ("EDUC", 1)]),
+    "SOCI": (0.50, [("CRIM", 2), ("NURS", 2), ("LAWS", 1), ("POLI", 1)]),
+    "POLI": (0.45, [("LAWS", 3), ("ECON", 1)]),
+    "BIOL": (0.55, [("MEDI", 3), ("DENT", 1), ("BMSC", 1)]),
+    "BMSC": (0.55, [("MEDI", 3), ("DENT", 2), ("NURS", 1)]),
     "CHEM": (0.25, [("MEDI", 2), ("BIOL", 1), ("DENT", 1)]),
-    "PHIL": (0.28, [("LAWS", 2), ("POLI", 1)]),
+    "PHIL": (0.40, [("LAWS", 2), ("POLI", 1)]),
     "HIST": (0.20, [("POLI", 1), ("LAWS", 1)]),
     "SPEX": (0.25, [("AHPR", 2), ("NURS", 1)]),
 }
@@ -450,10 +450,15 @@ def biblio(W, rb):
                                         edition=rb.choice([1, 2, 3, 4]), year=rb.randint(2015, 2025)))
 
 
+def readers(L):
+    """readers a licence line lets borrow at once"""
+    return L.copies * 3 if L.model == "3U" else L.copies
+
+
 def simulate_title(W, t, rng, holds, loans):
     beh = P.BEHAVIOUR[W.school_old[t["school"]]]
     lics = sorted(W.lic_by_title.get(t["id"], []), key=lambda L: (L.bought, L.lic_id))
-    capacity = sum(L.copies for L in lics if L.bought <= P.RECORD_START.date())
+    capacity = sum(readers(L) for L in lics if L.bought <= P.RECORD_START.date())
     pending_lic = [L for L in lics if L.bought > P.RECORD_START.date()]
     in_use = 0
     queue = []
@@ -588,7 +593,7 @@ def simulate_title(W, t, rng, holds, loans):
                 W.licences.append(rn)
             offer_heads(time)
         elif kind == "lic":
-            capacity += payload.copies * (3 if payload.model == "3U" else 1)
+            capacity += readers(payload)
             offer_heads(time)
         elif kind == "email":
             for i, h in enumerate(list(queue)):

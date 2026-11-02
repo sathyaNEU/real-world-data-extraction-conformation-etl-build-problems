@@ -46,15 +46,15 @@ BEHAVIOUR = {
     # on a long queue (buy or borrow the book elsewhere); base: daily cancel probability of any waiting hold
     "AH": dict(demand=0.95, copies=1.00, imp=0.10, base=0.004),
     "SS": dict(demand=1.00, copies=1.05, imp=0.14, base=0.004),
-    "BS": dict(demand=1.05, copies=1.10, imp=0.55, base=0.005),
-    "LW": dict(demand=1.10, copies=0.95, imp=0.62, base=0.005),
+    "BS": dict(demand=1.05, copies=1.10, imp=0.70, base=0.005),
+    "LW": dict(demand=1.10, copies=0.95, imp=0.72, base=0.005),
     "EN": dict(demand=1.00, copies=1.10, imp=0.22, base=0.004),
     "PS": dict(demand=0.95, copies=1.05, imp=0.18, base=0.004),
     "LS": dict(demand=1.00, copies=1.00, imp=0.20, base=0.004),
-    "MD": dict(demand=1.10, copies=1.15, imp=0.58, base=0.005),
-    "NH": dict(demand=1.00, copies=0.95, imp=0.40, base=0.005),
+    "MD": dict(demand=1.10, copies=1.15, imp=0.70, base=0.005),
+    "NH": dict(demand=1.00, copies=0.95, imp=0.52, base=0.005),
 }
-IMPATIENT_PLACE = 0.45    # chance an impatient student cancels on placing, per shown week of wait beyond the first
+IMPATIENT_PLACE = 0.60    # chance an impatient student cancels on placing, per shown week of wait beyond the first
 IMPATIENT_EMAIL = 0.12    # the same at each Monday holds email
 
 OFFER_HOURS = 48
@@ -64,4 +64,4 @@ P_EARLY_RETURN = 0.24
 METER_LOANS = 40
 
 DEMAND_SCALE = 10.0
-CROSS_SHARE = 0.5
+CROSS_SHARE = 0.58

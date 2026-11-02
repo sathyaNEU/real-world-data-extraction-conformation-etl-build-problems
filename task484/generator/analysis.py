@@ -27,6 +27,14 @@ def norm(road):
     return " ".join(w)
 
 
+def approach_road(approach):
+    """The register enters each arm as its road and the side it comes in from (N, S, E or W)."""
+    w = str(approach).split()
+    if w and w[-1] in ("N", "S", "E", "W"):
+        w = w[:-1]
+    return norm(" ".join(w))
+
+
 def read_csv(path):
     with open(path, encoding="utf-8", newline="") as f:
         return list(csv.reader(f))
@@ -115,7 +123,7 @@ def link_section(P, cp):
         return None, []
     assert len(hits) == 1, (cp, hits)
     ref = hits[0]
-    dets = sorted(d for d, x in P["detectors"].items() if x["junction_ref"] == ref and norm(x["approach"]) == road)
+    dets = sorted(d for d, x in P["detectors"].items() if x["junction_ref"] == ref and approach_road(x["approach"]) == road)
     return ref, dets
 
 
@@ -305,8 +313,7 @@ def remap(P, ref, sw):
 
     arms = {}
     for d in dets:
-        x = P["detectors"][d]
-        arms.setdefault((norm(x["approach"]), x["heading"]), []).append(d)
+        arms.setdefault(P["detectors"][d]["approach"], []).append(d)
     sizes = sorted(len(v) for v in arms.values())
     R = {d: resid(d, pre) for d in dets}
     corr = {(a, b): float(np.corrcoef(R[a], R[b])[0, 1]) for a in dets for b in dets if a < b}
@@ -349,9 +356,8 @@ def approach_flows(P, how):
         dets = sorted(d for d, x in P["detectors"].items() if x["junction_ref"] == ref)
         arms = {}
         for d in dets:
-            x = P["detectors"][d]
-            arms.setdefault((norm(x["approach"]).title(), x["heading"]), []).append(d)
-        for (road, head), ds in sorted(arms.items()):
+            arms.setdefault(P["detectors"][d]["approach"], []).append(d)
+        for appr, ds in sorted(arms.items()):
             series = np.zeros(365)
             for d in ds:
                 if how == "remap":
@@ -363,7 +369,7 @@ def approach_flows(P, how):
                 series = series + v
             if how == "post":
                 series[:DIDX[sw]] = np.nan
-            out[(name, "%s %s" % (road, head))] = float(np.nansum(series))
+            out[(name, appr)] = float(np.nansum(series))
     return out
 
 

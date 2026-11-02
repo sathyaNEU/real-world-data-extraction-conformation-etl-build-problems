@@ -347,6 +347,19 @@ def main():
        not any("—" in open(os.path.join(TARGET, f), encoding="utf-8").read() for f in files if f.endswith(".csv"))
        and "—" not in open(os.path.join(TASK, "submission.md")).read(), "")
 
+    rv = T["rev2"]
+    sums = all(int(r["transmissie_kw"]) + int(r["ventilatie_kw"]) + int(r["opwarmtoeslag_kw"]) ==
+               int(r["ontwerpwarmteverlies_kw"]) for r in rv)
+    truth_loads = {b["code"]: b["load"] for b in w["blocks"]}
+    same_tot = all(int(r["ontwerpwarmteverlies_kw"]) == truth_loads[str(r["complex"]).replace("WH", "")] for r in rv)
+    vr = [int(r["ventilatie_kw"]) / int(r["transmissie_kw"]) for r in rv]
+    hr = [int(r["opwarmtoeslag_kw"]) / int(r["transmissie_kw"]) for r in rv]
+    ok("S10 rev2 components sum to each block's design heat loss, the totals unchanged",
+       sums and same_tot and KA == 4240 and KAB == 5533, "%d rows, %d and %d kW" % (len(rv), KA, KAB))
+    ok("S11 rev2 components vary block by block (ventilation and heating-up shares of transmission)",
+       max(vr) - min(vr) >= 0.15 and max(hr) - min(hr) >= 0.10 and
+       len({(round(a, 3), round(b, 3)) for a, b in zip(vr, hr)}) == len(rv),
+       "ventilation %.3f to %.3f, heating-up %.3f to %.3f of transmission" % (min(vr), max(vr), min(hr), max(hr)))
     print("%d checks, %d failed" % (N[0], len(FAIL)))
     return 1 if FAIL else 0
 

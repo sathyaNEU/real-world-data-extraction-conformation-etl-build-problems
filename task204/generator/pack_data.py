@@ -74,7 +74,7 @@ def rms_rows(world):
                      "offence": e["offence"], "loc": e["loc"], "station": e["station"], "x": e["x"], "y": e["y"],
                      "mo": MO_DESC[e["mo"]], "sus": e["suspects"], "alo": e["age_low"], "ahi": e["age_high"],
                      "sex": e["sex"], "weapon": e["weapon"], "prop": prop,
-                     "value": int(rng.integers(26, 165)) * 10, "phone": True})
+                     "value": int(rng.integers(26, 165)) * 10, "phone": True, "ev": e})
     for o in world.other:
         span = 0 if o["offence"] in ("ROB-PERS", "THFT-PERS", "ASLT-1", "ASLT-2", "DIST", "ROB-COM", "DRUG-POSS",
                                      "TRAF-CRIM", "UTTER") else int(rng.integers(0, 14 * 60))
@@ -84,14 +84,17 @@ def rms_rows(world):
                      "t_to": o["t_occ"] + dt.timedelta(minutes=span), "offence": o["offence"], "loc": o["loc"],
                      "station": o["station"], "x": o["x"], "y": o["y"], "mo": "", "sus": o["suspects"],
                      "alo": "", "ahi": "", "sex": "", "weapon": o["weapon"], "prop": o["property"], "value": val,
-                     "phone": False})
+                     "phone": False, "ev": None})
     recs.sort(key=lambda r: (r["t_rep"], r["x"]))
     out = []
+    index = {}
     seq = {2025: 10417, 2026: 9862}
     for r in recs:
         yr = r["t_rep"].year
         seq[yr] += int(rng.integers(1, 6))
         occ = "CP%02d-%06d" % (yr % 100, seq[yr])
+        if r["ev"] is not None:
+            index[id(r["ev"])] = occ
         layout = P.D25 if r["t_from"].year == 2025 else P.D26
         dist = N.district_of(r["x"], r["y"], layout)
         if r["station"]:
@@ -105,7 +108,7 @@ def rms_rows(world):
                     r["loc"], loc_txt, int(round(r["x"])), int(round(r["y"])), dist, r["mo"], sus,
                     r["alo"], r["ahi"], r["sex"], r["weapon"], r["prop"], r["value"],
                     "OPEN" if rng.random() < 0.83 else ("CLEARED-CHARGE" if rng.random() < 0.7 else "CLEARED-OTHER")])
-    return out
+    return out, index
 
 
 RMS_HEADER = ["occurrence_no", "reported_local", "occurred_from_local", "occurred_to_local", "offence_code",

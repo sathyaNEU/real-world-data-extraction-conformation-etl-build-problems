@@ -148,14 +148,24 @@ def write_pack(W, out):
         ws.append(["WRN" + W.refs[j["id"]], name, j["control"], round(lat, 6), round(lon, 6), inst, upd])
     ws2 = wb.create_sheet("Detectors")
     ws2.append(["detector", "junction_ref", "channel", "arm", "approach", "heading", "lane", "loop_type", "position", "commissioned"])
+    # each arm is entered once in the register as its road and the side of the junction it comes in from; the
+    # street type is abbreviated on most arms, the same way on every lane of one arm
+    arng = np.random.default_rng([WD.SEED, 137])
+    side = {"NB": "S", "SB": "N", "EB": "W", "WB": "E"}
+    arm_name = {}
+    for c in sorted(W.detectors, key=lambda c: (c["junction"], c["arm"], c["lane"])):
+        key = (c["junction"], c["arm"])
+        if key not in arm_name:
+            arm_name[key] = "%s %s" % (utc_name(c["road"], arng), side[c["heading"]])
+    W.arm_name = arm_name
     for c in sorted(W.detectors, key=lambda c: c["id"]):
         jsw = WD.REFURBISHED.get(c["junction"])
         if jsw is not None:
             com = jsw
         else:
             com = dt.date(int(jrng.integers(2009, 2024)), int(jrng.integers(1, 13)), int(jrng.integers(1, 28)))
-        ws2.append([c["id"], "WRN" + W.refs[c["junction"]], c["channel"], c["arm"], utc_name(c["road"], jrng), c["heading"],
-                    c["lane"], "inductive loop", "stop line", com])
+        ws2.append([c["id"], "WRN" + W.refs[c["junction"]], c["channel"], c["arm"], arm_name[(c["junction"], c["arm"])],
+                    c["heading"], c["lane"], "inductive loop", "stop line", com])
     for wsx in (ws, ws2):
         for row in wsx.iter_rows(min_row=2):
             for cell in row:

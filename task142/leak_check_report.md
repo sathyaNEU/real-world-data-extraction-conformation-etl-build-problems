@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: network, visits, member, regime, carries, design, spread, capacity, window, admissions, metered, history, quarter, decisive, percentile, connection, forecasting, return, requirement, installation, booking, members, stream, alliance, nothing
+Stump terms swept: network, visits, member, regime, carries, design, spread, capacity, window, admissions, metered, history, quarter, decisive, percentile, connection, forecasting, return, requirement, installation, cold-day, booking, members, stream, alliance
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `stadswarmte_tarievenblad_2026.pdf`: golden figure 100 appears: ...ude VAT. Kleinverbruik (contracted capacity up to 100 kW) Component Unit Amount (EUR) Vastrecht per co...

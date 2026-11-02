@@ -288,8 +288,11 @@ Measured by: generator/ceiling.py (run on the cut pack)
   asks equal to the clean truth with their device mass, separation, input gates, realism, leaks, rounding edges);
   verify.py 12 of 12 on its own code path; two builds byte-identical; figures_check 50 of 50; precut clean;
   voice-check PASS; metadata audit clean; guard check and heart PASS.
-- leak.py REVIEW lines are answered as before: the rules' own vocabulary (claims, decisions, history) and the prompt's
-  ask 1 as-of pin carry no pace or cohort word.
+- leak.py REVIEW, five design-note-vocabulary lines, all harmless: the guidance (measure, claimed, record, survey:
+  the measures it appraises, 3.9's claim requirement, the department's benefit records, the ECVV), the coverage report
+  (claimed, coverage, survey: its own subject), the rules (claims, history, decision: sections 5 and 9), the survey's
+  results (measure, register, survey: the dwelling register its sample is drawn from) and the prompt's ask 1 as-of pin;
+  none names a pace, a cohort or the April 2024 band's claims.
 - guard.py surface promotes five pairs for the author's adjudication: task302 (economics-econometrics with
   opportunity sizing, back to back, a supermarket's automated ordering, other task type, world, gap and pattern), and
   task230, task131, task446 and task183 on the time, G14 and forecasting signature that the card's differentiation

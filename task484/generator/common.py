@@ -21,21 +21,74 @@ def write_csv(path, header, rows):
             w.writerow(["" if v is None else v for v in r])
 
 
-def normalise_zip(path, stamp):
+DROP_PARTS = ("docProps/thumbnail.jpeg", "word/stylesWithEffects.xml")
+
+
+def _app_xml(kind, titles):
+    """docProps/app.xml as the producing Office application writes it."""
+    ns = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
+          '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+          'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">')
+    if kind == "xlsx":
+        parts = "".join("<vt:lpstr>%s</vt:lpstr>" % t for t in titles)
+        return (ns + "<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>"
+                "<HeadingPairs><vt:vector size=\"2\" baseType=\"variant\"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant>"
+                "<vt:variant><vt:i4>%d</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size=\"%d\" "
+                "baseType=\"lpstr\">%s</vt:vector></TitlesOfParts><Company>Wrenford Borough Council</Company>"
+                "<LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged>"
+                "<AppVersion>16.0300</AppVersion></Properties>" % (len(titles), len(titles), parts))
+    words, chars, pages, lines, paras = titles
+    return (ns + "<Template>Normal.dotm</Template><TotalTime>%d</TotalTime><Pages>%d</Pages><Words>%d</Words>"
+            "<Characters>%d</Characters><Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity>"
+            "<Lines>%d</Lines><Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop><Company>Wrenford Borough Council</Company>"
+            "<LinksUpToDate>false</LinksUpToDate><CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc>"
+            "<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0000</AppVersion></Properties>"
+            % (14 + words // 90, pages, words, chars, lines, paras, chars + words))
+
+
+def finalise_ooxml(path, when, author, kind, titles):
+    """Repack an OOXML file as the producing application leaves it: its own app.xml, the author and the
+    document's own date in core.xml, no writer-template parts (thumbnail, stylesWithEffects, template customXml),
+    every entry dated at the document's own date."""
+    stamp = when.strftime("%Y-%m-%dT%H:%M:%SZ")
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
-    out = []
+    keep = []
     for name, data in items:
-        if name == "docProps/core.xml":
-            s = data.decode("utf-8")
-            s = re.sub(r"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", r"\g<1>%s\g<2>" % stamp, s)
-            s = re.sub(r"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", r"\g<1>%s\g<2>" % stamp, s)
-            data = s.encode("utf-8")
-        out.append((name, data))
+        if name in DROP_PARTS or name.startswith("customXml/"):
+            continue
+        if name == "docProps/app.xml":
+            data = _app_xml(kind, titles).encode("utf-8")
+        elif name == "docProps/core.xml":
+            t = data.decode("utf-8")
+            t = re.sub(r"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", r"\g<1>%s\g<2>" % stamp, t)
+            t = re.sub(r"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", r"\g<1>%s\g<2>" % stamp, t)
+            t = re.sub(r"(<dc:creator[^>]*>)[^<]*(</dc:creator>)", r"\g<1>%s\g<2>" % author, t)
+            t = re.sub(r"(<cp:lastModifiedBy[^>]*>)[^<]*(</cp:lastModifiedBy>)", r"\g<1>%s\g<2>" % author, t)
+            data = t.encode("utf-8")
+        elif name == "[Content_Types].xml":
+            t = data.decode("utf-8")
+            t = re.sub(r'<Override PartName="/word/stylesWithEffects\.xml"[^>]*/>', "", t)
+            t = re.sub(r'<Override PartName="/docProps/thumbnail\.jpeg"[^>]*/>', "", t)
+            t = re.sub(r'<Override PartName="/customXml/[^"]*"[^>]*/>', "", t)
+            t = re.sub(r'<Default Extension="jpeg"[^>]*/>', "", t)
+            data = t.encode("utf-8")
+        elif name == "_rels/.rels":
+            t = data.decode("utf-8")
+            t = re.sub(r'<Relationship [^>]*Target="docProps/thumbnail\.jpeg"[^>]*/>', "", t)
+            data = t.encode("utf-8")
+        elif name == "word/_rels/document.xml.rels":
+            t = data.decode("utf-8")
+            t = re.sub(r'<Relationship [^>]*Target="stylesWithEffects\.xml"[^>]*/>', "", t)
+            t = re.sub(r'<Relationship [^>]*Target="\.\./customXml/[^"]*"[^>]*/>', "", t)
+            data = t.encode("utf-8")
+        keep.append((name, data))
+    keep.sort(key=lambda x: (x[0] != "[Content_Types].xml", x[0] != "_rels/.rels", x[0].startswith("docProps/"), x[0]))
+    dtime = (when.year, when.month, when.day, when.hour, when.minute, when.second - when.second % 2)
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        for name, data in out:
-            zi = zipfile.ZipInfo(name, date_time=ZIP_TIME)
+        for name, data in keep:
+            zi = zipfile.ZipInfo(name, date_time=dtime)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o600 << 16
             z.writestr(zi, data)
@@ -48,8 +101,9 @@ def save_workbook(wb, path, when, creator):
     wb.properties.lastModifiedBy = creator
     wb.properties.created = when
     wb.properties.modified = when
+    titles = list(wb.sheetnames)
     wb.save(path)
-    normalise_zip(path, when.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    finalise_ooxml(path, when, creator, "xlsx", titles)
 
 
 def save_docx(doc, path, when, author):
@@ -58,9 +112,16 @@ def save_docx(doc, path, when, author):
     cp.last_modified_by = author
     cp.created = when
     cp.modified = when
-    cp.revision = 1
+    cp.revision = 3
+    text = "\n".join(p.text for p in doc.paragraphs)
+    for t in doc.tables:
+        for row in t.rows:
+            text += "\n" + " ".join(c.text for c in row.cells)
+    words = len(text.split())
+    chars = len(text.replace(" ", "").replace("\n", ""))
+    lines = max(1, text.count("\n") + 1)
     doc.save(path)
-    normalise_zip(path, when.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    finalise_ooxml(path, when, author, "docx", (words, chars, max(1, words // 420 + 1), lines, lines))
 
 
 def pdf_invariant():

@@ -209,20 +209,17 @@ def revised(path, w):
     ws.append(["Warmteverliesberekening NEN-EN 12831, Weidehaven aardgasvrij 2027-2028"])
     ws.append(["Revisie 2, 18-09-2026. Ontwerpbuitentemperatuur -10 C. %s, %s" % (P.CONSULT, P.PEOPLE["consult"])])
     ws.append([])
-    ws.append(["object", "complex", "woningen", "gbo_m2", "transmissie_kw", "ventilatie_kw", "opwarmtoeslag_kw",
-               "ontwerpwarmteverlies_kw"])
+    ws.append(["object", "complex", "woningen", "bouwlagen", "gbo_m2", "nachtverlaging_K", "transmissie_kw",
+               "ventilatie_kw", "opwarmtoeslag_kw", "ontwerpwarmteverlies_kw"])
     for cell in ws[4]:
         cell.font = Font(bold=True)
     ws["A1"].font = Font(bold=True, size=12)
     order = sorted(w["blocks"], key=lambda b: (b["street"], b["from"]))
     for b in order:
-        tot = b["load"]
-        tr = int(round(tot * 0.58))
-        ve = int(round(tot * 0.31))
-        op = tot - tr - ve
-        ws.append(["%s %d-%d" % (b["street"], b["from"], b["to"]), "WH%s" % b["code"], b["dwellings"], b["gfa"], tr, ve,
-                   op, tot])
-    for i, wdt in enumerate([24, 9, 9, 9, 14, 13, 16, 22]):
+        tr, ve, op = b["split"]
+        ws.append(["%s %d-%d" % (b["street"], b["from"], b["to"]), "WH%s" % b["code"], b["dwellings"], b["storeys"],
+                   b["gfa"], b["setback_K"], tr, ve, op, b["load"]])
+    for i, wdt in enumerate([24, 9, 9, 10, 9, 16, 14, 13, 16, 22]):
         ws.column_dimensions[chr(65 + i)].width = wdt
     xlsx_props(wb, P.PEOPLE["consult"], "Warmteverliesberekening rev2", dt.datetime(2026, 9, 18, 11, 20))
     wb.save(path)

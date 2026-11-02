@@ -127,20 +127,33 @@ def simulate(seed=P.SEED):
     for tid in tanks:
         sales_by_tank[tid].sort()
 
-    # ---- modem outages per marina (lost beyond the 48 h buffer) ----
+    # ---- the systems' own events, drawn first (they shape what the consoles log) ----
+    rng2 = np.random.default_rng(seed + 7)
     for m in P.MARINAS:
         outs = []
-        for _ in range(int(rng.integers(3, 7))):
-            start = local(dt.date(2026, 1, 1) + dt.timedelta(days=int(rng.integers(5, 355))), float(rng.uniform(0, 24)))
-            dur_h = float(rng.choice([6, 14, 30, 60, 90, 120, 150])) + float(rng.uniform(0, 10))
-            outs.append((start, start + dt.timedelta(hours=dur_h)))
+        for _ in range(int(rng2.integers(3, 7))):
+            start = local(dt.date(2026, 1, 1) + dt.timedelta(days=int(rng2.integers(5, 355))), float(rng2.uniform(0, 24)))
+            dur_h = float(rng2.choice([6, 14, 30, 60, 90, 120, 150])) + float(rng2.uniform(0, 10))
+            outs.append((start.replace(microsecond=0), (start + dt.timedelta(hours=dur_h)).replace(microsecond=0)))
         out["outages"][m] = sorted(outs)
-
-    # probe faults (tank-specific: no readings from the probe)
-    faults = [("DH-2", local(dt.date(2026, 1, 9), 3.5), local(dt.date(2026, 1, 14), 15.0)),
-              ("EB-3", local(dt.date(2026, 8, 18), 11.0), local(dt.date(2026, 8, 19), 19.0)),
-              ("GC-2", local(dt.date(2026, 3, 2), 8.0), local(dt.date(2026, 3, 5), 10.5))]
-    out["probe_faults"] = faults
+    out["probe_faults"] = [("DH-2", local(dt.date(2026, 1, 9), 3.5), local(dt.date(2026, 1, 14), 15.0)),
+                           ("EB-3", local(dt.date(2026, 8, 18), 11.0), local(dt.date(2026, 8, 19), 19.0)),
+                           ("GC-2", local(dt.date(2026, 3, 2), 8.0), local(dt.date(2026, 3, 5), 10.5))]
+    resets = {}
+    for m, days_to_tech in P.CLOCK_RESETS.items():
+        cut = local(P.STORM_DAY, 1.5 + float(rng2.uniform(0, 5))).replace(microsecond=0)
+        restore = (cut + dt.timedelta(hours=float(rng2.uniform(6, 20)))).replace(microsecond=0)
+        tech = (restore + dt.timedelta(days=days_to_tech, hours=float(rng2.uniform(-3, 5)))).replace(microsecond=0)
+        resets[m] = (cut, restore, tech)
+    out["resets"] = resets
+    swap_m, swap_day = P.CONSOLE_SWAP
+    out["swap_at"] = local(swap_day, 11.0)
+    # pumps are off while the power is cut
+    for tid in sales_by_tank:
+        m = tanks[tid].marina
+        if m in resets:
+            c0, c1, _ = resets[m]
+            sales_by_tank[tid] = [s for s in sales_by_tank[tid] if not (c0 <= s[0] < c1)]
 
     # ---- per tank time loop (one time-ordered event queue) ----
     import heapq
@@ -152,8 +165,16 @@ def simulate(seed=P.SEED):
         t_cur = local(days[0], 0.0)
         tau_h = 70.0
         q = []
-        for i in range(365 * 12):
-            heapq.heappush(q, (local(days[0], 0.0) + dt.timedelta(hours=2 * i), 2, "R", None))
+        sched = [local(days[0], 0.0) + dt.timedelta(hours=2 * i) for i in range(365 * 12)]
+        if m in resets:
+            c0, c1, c2 = resets[m]
+            sched = [x for x in sched if not (c0 <= x < c2)]
+            k = 1
+            while c1 + dt.timedelta(hours=2 * k) < c2:
+                sched.append(c1 + dt.timedelta(hours=2 * k)); k += 1
+            sched.sort()
+        for x in sched:
+            heapq.heappush(q, (x, 2, "R", None))
         for (when, g, k) in sales_by_tank[tid]:
             heapq.heappush(q, (when, 1, "S", (g, k)))
         pending = False
@@ -230,18 +251,8 @@ def simulate(seed=P.SEED):
         out["true_closing"][tid] = net
 
     # ---- the systems' own events: what reaches the exports ----
-    rng2 = np.random.default_rng(seed + 7)
-    # storm power cuts and clock resets: (cut start, restore, tech re-set) per marina
-    resets = {}
-    for m, days_to_tech in P.CLOCK_RESETS.items():
-        cut = local(P.STORM_DAY, 1.5 + float(rng2.uniform(0, 5)))
-        restore = cut + dt.timedelta(hours=float(rng2.uniform(6, 20)))
-        tech = restore + dt.timedelta(days=days_to_tech, hours=float(rng2.uniform(-3, 5)))
-        resets[m] = (cut, restore, tech)
-    out["resets"] = resets
-    swap_m, swap_day = P.CONSOLE_SWAP
-    swap_at = local(swap_day, 11.0)
-    out["swap_at"] = swap_at
+    rng2 = np.random.default_rng(seed + 11)
+    swap_at = out["swap_at"]
 
     def in_any(t_, spans):
         return any(a <= t_ < b for a, b in spans)

@@ -173,6 +173,8 @@ The full includer (old EANs through the master data, the master data's closing a
 - Sweep 4, the prompt's deliverable sentence: harmless, the prompt's own terms (design-day flow, connected, available flow).
 - Sweep 9, weidehaven_aardgasvrij_fasering_2027-2028.xlsx (15 dates after the as-of): harmless, the schedule's planned connection dates, forward-looking by genre.
 
+Stage 4 leak reader on b35cf51b (run by the main session): clean on every question; question 6 analytical (the drop blocks with unchanged radiators will make in service; CT-03 3.2 names the quantity, not the value; nothing points to which connections they resemble). One realism finding, fixed in the generator: the rev2 study's components sat at one ratio in every row (ventilation 0.53 of transmission, heating-up 0.19); each block's ventilation share now follows its storeys, type and label and its heating-up allowance the night setback found in its boiler room (two new columns, bouwlagen and nachtverlaging_K), every block's total and so every flow, phase sum and graded figure unchanged (checks.py S10 and S11: ventilation 0.30 to 0.60 and heating-up 0.00 to 0.21 of transmission).
+
 ## Architecture 1 record
 
 Private, never ships. A new build (wave 3), numbered from seed FC13. The seed (contract technician visits split across
