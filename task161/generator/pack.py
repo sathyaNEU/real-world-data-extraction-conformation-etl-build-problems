@@ -3,10 +3,10 @@
 The folder is the capacity planner's on Monday 7 December 2026: the legacy WMS1 daily inventory to its
 retirement, the new WMS's nightly inventory, outbound and inbound exports and its pallet-level export
 at the close of 6 December, the client master and the site list, customer service's December booking
-tracker, the transload partner's delivery manifest, the two ports' monthly container statistics, the
-space planning policy, the park's block offer, the customs broker's advisories, the export dictionary
-and the export manifest, and two working files the solution never reads (the fiscal-period capacity
-report and the H1 2027 dock labour plan).
+tracker, the transload partner's record of its deliveries, the two ports' monthly container statistics,
+the space planning policy, the park's block offer and the customs broker's advisories, and two working
+files the solution never reads (the fiscal-period capacity report and the H1 2027 dock labour plan).
+No file describes the others: provenance sits in metadata.json outside the pack.
 """
 from __future__ import annotations
 
@@ -33,19 +33,17 @@ F_LPN = "wms_lpn_inventory_20261207T0800Z.csv"
 F_CLIENTS = "client_master_2026-12.xlsx"
 F_SITES = "site_list.csv"
 F_TRACKER = "dec2026_inbound_booking_tracker.xlsx"
-F_AVILA = "avila_delivery_manifest_2024-03_2026-12.xlsx"
+F_AVILA = "avila_deliveries_2024-03_2026-12.xlsx"
 F_POLA = "pola_container_stats_2026.csv"
 F_POLB = "polb_teu_stats_2026.csv"
 F_POLICY = "space_planning_policy_rev4.pdf"
 F_OFFER = "ridley-ames_bldg-b_overflow_blocks_2026-11-19.pdf"
 F_ADVISORIES = "yv_client_advisories_2019-2026.pdf"
-F_DICT = "wms_export_dictionary_v3.pdf"
-F_MANIFEST = "export_manifest.csv"
 F_CAPACITY = "capacity_report_fy2026_p12.xlsx"
 F_LABOR = "dock_labor_plan_h1_2027.xlsx"
 DISTRACTORS = [F_CAPACITY, F_LABOR, F_LPN]
 ALL_FILES = [F_LEGACY, F_NIGHTLY, F_OUTBOUND, F_RECEIPTS, F_LPN, F_CLIENTS, F_SITES, F_TRACKER, F_AVILA, F_POLA,
-             F_POLB, F_POLICY, F_OFFER, F_ADVISORIES, F_DICT, F_MANIFEST, F_CAPACITY, F_LABOR]
+             F_POLB, F_POLICY, F_OFFER, F_ADVISORIES, F_CAPACITY, F_LABOR]
 
 FILE_STAMPS = {
     F_LEGACY: dt.datetime(2022, 10, 3, 15, 40), F_NIGHTLY: dt.datetime(2026, 12, 7, 16, 5),
@@ -55,8 +53,7 @@ FILE_STAMPS = {
     F_AVILA: dt.datetime(2026, 12, 7, 1, 15), F_POLA: dt.datetime(2026, 12, 4, 19, 22),
     F_POLB: dt.datetime(2026, 12, 4, 19, 26), F_POLICY: dt.datetime(2026, 3, 2, 16, 34),
     F_OFFER: dt.datetime(2026, 11, 19, 22, 22), F_ADVISORIES: dt.datetime(2026, 12, 3, 18, 15),
-    F_DICT: dt.datetime(2026, 11, 2, 19, 30), F_CAPACITY: dt.datetime(2026, 12, 2, 19, 5),
-    F_LABOR: dt.datetime(2026, 11, 30, 22, 16), F_MANIFEST: dt.datetime(2026, 12, 7, 16, 20),
+    F_CAPACITY: dt.datetime(2026, 12, 2, 19, 5), F_LABOR: dt.datetime(2026, 11, 30, 22, 16),
 }
 
 SITES = [b[0] for b in W.BUILDINGS]
@@ -229,9 +226,10 @@ def _widths(ws, widths):
         ws.column_dimensions[get_column_letter(k)].width = w
 
 
-def _finish(path, wb, creator, last_by, created, modified, title, company=None):
+def _finish(path, wb, creator, last_by, created, modified, title, company=None, uid_seed=None):
     wb.save(path)
-    PP.normalize_ooxml(path, creator, last_by, created, modified, title=title, excel=True, company=company)
+    PP.normalize_ooxml(path, creator, last_by, created, modified, title=title, excel=True, company=company,
+                       uid_seed=uid_seed)
 
 
 def write_clients(path):
@@ -333,8 +331,10 @@ def write_avila(path, manifest):
         r += 1
     ws.freeze_panes = "A5"
     _widths(ws, [13, 12, 14, 9, 8, 52, 24, 12])
+    # the workbook's internal ids keep the seed they shipped with (its name before the 2026-11-01 rename), so the
+    # rename moves no byte of a file the call reads
     _finish(path, wb, "Avila Dispatch", "Avila Dispatch", "2024-03-04T15:20:00Z", "2026-12-07T01:15:00Z",
-            "Delivery manifest", company=W.TRANSLOAD)
+            "Delivery manifest", company=W.TRANSLOAD, uid_seed="avila_delivery_manifest_2024-03_2026-12.xlsx")
 
 
 # ----------------------------------------------------------------------------------- the ports
@@ -478,44 +478,6 @@ def write_labor(path, T, receipts):
     return rows
 
 
-# ----------------------------------------------------------------------------------- the export manifest
-
-def manifest_rows(counts):
-    pulled = "2026-12-07T16:05:00Z"
-    return [
-        (F_LEGACY, "WMS1 (legacy)", "daily inventory by client: opening, received, shipped, closing pallets",
-         "2019-04-01 to 2022-09-30", "2022-10-03T15:40:00Z", counts[F_LEGACY]),
-        (F_NIGHTLY, "WMS", "nightly inventory run: pallets on hand by site and client", "closes of 2022-09-12 to 2026-12-06",
-         pulled, counts[F_NIGHTLY]),
-        (F_OUTBOUND, "WMS", "outbound loads and pallets shipped by client and day", "2022-09-12 to 2026-12-06", pulled,
-         counts[F_OUTBOUND]),
-        (F_RECEIPTS, "WMS", "inbound receipts with equipment", "2022-09-12 to 2026-12-06", pulled, counts[F_RECEIPTS]),
-        (F_LPN, "WMS", "pallet-level inventory by warehouse location", "close of 2026-12-06", pulled, counts[F_LPN]),
-        (F_CLIENTS, "WMS client master", "clients, legacy codes, contracts, home buildings", "as of 2026-12-07", pulled,
-         counts[F_CLIENTS]),
-        (F_SITES, "Facilities", "sites, rack positions, dock doors, yard spots", "as of 2026-12-07", pulled,
-         counts[F_SITES]),
-        (F_TRACKER, "Customer service", "booking notices for December arrivals", "arrivals due 2026-12-07 to 2026-12-31",
-         "2026-12-07T02:40:00Z", counts[F_TRACKER]),
-        (F_AVILA, "Avila Transload Services", "trailer deliveries with the ocean containers each carried",
-         "2024-03-04 to 2026-12-06", "2026-12-07T01:15:00Z", counts[F_AVILA]),
-        (F_POLA, "Port of Los Angeles website", "container statistics (TEU), monthly", "January to October 2026",
-         "2026-12-04T19:22:00Z", counts[F_POLA]),
-        (F_POLB, "Port of Long Beach website", "TEU statistics, monthly", "January to October 2026",
-         "2026-12-04T19:26:00Z", counts[F_POLB]),
-        (F_POLICY, "Operations", "space planning policy, revision 4", "effective 2026-03-02", "", ""),
-        (F_OFFER, "Ridley-Ames Industrial Properties", "block offer, Tamarind Avenue Logistics Park Building B",
-         "dated 2026-11-19", "", ""),
-        (F_ADVISORIES, "Yamamoto & Vance Customs Brokers", "client advisories on additional duties, 2019 to 2026",
-         "printed 2026-12-03", "", ""),
-        (F_DICT, "Information Systems", "WMS exports: field dictionary, version 3", "dated 2026-11-02", "", ""),
-        (F_CAPACITY, "Capacity planning", "capacity report, fiscal 2026 periods 1 to 12", "2025-12-01 to 2026-11-30",
-         "2026-12-02T19:05:00Z", counts[F_CAPACITY]),
-        (F_LABOR, "Operations", "dock labor plan, January to June 2027 (draft)", "2027-01 to 2027-06",
-         "2026-11-30T22:16:00Z", counts[F_LABOR]),
-    ]
-
-
 # ----------------------------------------------------------------------------------- everything
 
 def write_all(out, Wd):
@@ -553,10 +515,6 @@ def write_all(out, Wd):
     D.write_policy(os.path.join(out, F_POLICY))
     D.write_offer(os.path.join(out, F_OFFER))
     D.write_advisories(os.path.join(out, F_ADVISORIES))
-    D.write_dictionary(os.path.join(out, F_DICT))
     counts[F_CAPACITY] = len(write_capacity(os.path.join(out, F_CAPACITY), nightly))
     counts[F_LABOR] = len(write_labor(os.path.join(out, F_LABOR), T, Wd["receipts"]))
-    write_csv(os.path.join(out, F_MANIFEST), ["file", "source", "contents", "covers", "pulled_utc", "rows"],
-              manifest_rows(counts))
-    counts[F_MANIFEST] = len(ALL_FILES) - 1
     return counts

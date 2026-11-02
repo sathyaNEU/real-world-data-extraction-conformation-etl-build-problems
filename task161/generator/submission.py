@@ -46,8 +46,8 @@ def text(F):
     out.append("## 3. Step-by-Step Solution\n")
     out.append("1. Stacked wms1_inv_daily_20190401-20220930.txt to the close of 11 September 2022 (Sundays carrying "
                "Saturday's close, legacy codes mapped through client_master_2026-12.xlsx, ROSALESB and ROSALESK as "
-               "PD2063) with wms_inventory_nightly_20220913_20261207.csv summed over sites (each run holding the close "
-               "of the day before it, per wms_export_dictionary_v3.pdf) and wms_outbound_daily_20220912_20261206.csv: "
+               "PD2063) with wms_inventory_nightly_20220913_20261207.csv summed over sites (each run's UTC stamp is "
+               "midnight Pacific, so it holds the close of the day before it) and wms_outbound_daily_20220912_20261206.csv: "
                "%s pallets on hand at the close of 6 December." % n(k["on_hand_6dec"]))
     out.append("2. Took each account's normal stock as the space policy defines it, its cover times the mean of its "
                "shipments in the month and the month after, the cover being its median over its months from July 2023 "

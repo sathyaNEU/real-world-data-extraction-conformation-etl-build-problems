@@ -5,7 +5,7 @@ A2: for each month of 2026 to October, the TEU of the import containers whose fr
     book from the two ports, and that TEU as a share of the two ports' loaded import TEU.
 
 Inputs are plain records, so the same code runs on the generator's data and on files read back from
-target/ (golden.py, verify.py, cracker.py).
+target/ (deliver.py and checks.py; verify.py and ceiling.py read the pack with their own code).
 """
 import datetime as dt
 import numpy as np

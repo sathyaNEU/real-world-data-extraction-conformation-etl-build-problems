@@ -288,11 +288,12 @@ def excel_dialect(items, key, app_version="16.0300", company=None):
     return [(nm, parts[nm]) for nm in order]
 
 
-def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
+def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None,
+                   uid_seed=None):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
     stamp Office writes, so two builds of the same content are byte-identical. excel=True also rewrites a
-    workbook's parts in Excel's own dialect (excel_dialect)."""
+    workbook's parts in Excel's own dialect (excel_dialect), its internal ids seeded by the file name or uid_seed."""
     ext = path[path.rfind("."):]
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
@@ -318,7 +319,7 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]
         if excel:
-            out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
+            out = excel_dialect(out, key=uid_seed or path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
     with zipfile.ZipFile(path, "w") as z:
         for name, data in out:
             zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))

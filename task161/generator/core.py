@@ -1,7 +1,7 @@
 """task161 core: one call that builds the whole world in memory (truth, records, notices, ports).
 
-pack.py writes target/ from this; golden.py, verify.py and cracker.py read target/ back. Before the
-pack is cut, cracker.py can run on this directly.
+pack.py writes target/ from this; deliver.py, checks.py and verify.py read target/ back, and ceiling.py
+measures the ask layer on the cut pack outside the build.
 """
 import datetime as dt
 import numpy as np

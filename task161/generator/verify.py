@@ -120,7 +120,7 @@ class Pack:
         rc["ts"] = pd.to_datetime(rc["received_at_utc"], utc=True)
         rc["d"] = local_date(rc["received_at_utc"])
         self.rc = rc.sort_values("ts", kind="mergesort")
-        mf = pd.read_excel(f("avila_delivery_manifest_2024-03_2026-12.xlsx"), sheet_name="Deliveries", header=3)
+        mf = pd.read_excel(f("avila_deliveries_2024-03_2026-12.xlsx"), sheet_name="Deliveries", header=3)
         self.mf = mf
         self.notices = self._notices()
 
@@ -448,11 +448,13 @@ def main(target, golden):
     F = json.load(open(os.path.join(HERE, "figures.json")))
     pol = pdf(os.path.join(target, "space_planning_policy_rev4.pdf"))
     off = pdf(os.path.join(target, "ridley-ames_bldg-b_overflow_blocks_2026-11-19.pdf"))
-    dic = pdf(os.path.join(target, "wms_export_dictionary_v3.pdf"))
     ok("V0", "40,000 rack positions" in pol and "at least three quarters of its position-months" in pol and
        "mean of each day's closing stock in the month" in pol and "$1,100,000 per block for the term" in off and
-       "Blocks are let whole and for the whole term" in off and "close of the business day just ended" in dic,
-       "pdftotext reads the policy's sections 3 and 4, the offer and the dictionary's run line (positive control)")
+       "Blocks are let whole and for the whole term" in off and
+       not any(re.search(r"(?<![a-z])(manifest|dictionar(y|ies)|read_?me|codebook|field_?notes|definitions)(?![a-z])",
+                         os.path.splitext(x)[0], re.I) for x in os.listdir(target)),
+       "pdftotext reads the policy's sections 3 and 4 and the offer (positive control); no shipped file is named as "
+       "a description of the data (%d files)" % len(os.listdir(target)))
     pk = Pack(target)
     ok("V1", pk.steps == [dt.date(2019, 9, 1), dt.date(2025, 4, 5), dt.date(2025, 8, 7)] and
        pk.future == [dt.date(2027, 1, 1)] and pk.last == dt.date(2026, 12, 6),

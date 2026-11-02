@@ -205,8 +205,8 @@ def write_workbook(path, B, g, parts, F, inp, teu, share):
     ws["A1"] = "Import containers whose freight reached us from the two ports, January to October 2026"
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = ("Containers received direct and the containers each Avila transload trailer carried, one count per box "
-                "per arrival; TEU per the WMS dictionary; months on Pacific dates. Ports: Los Angeles loaded imports and "
-                "Long Beach inbound loaded.")
+                "per arrival, in the month it arrived; TEU by length (a 45-foot box 2.25); months on Pacific dates. "
+                "Ports: Los Angeles loaded imports and Long Beach inbound loaded.")
     header(ws, 4, ["Month", "Our TEU", "Los Angeles loaded imports (TEU)", "Long Beach inbound loaded (TEU)",
                    "Our share of the two ports (%)"])
     r = 5
@@ -247,8 +247,9 @@ def write_workbook(path, B, g, parts, F, inp, teu, share):
                        "its size or the next advisory; episodes weighted by their shipments."),
         ("Port TEU", "Containers received direct (receipts of one container number within three days are one box; "
                      "the same number months later is a new import) and the containers in each Avila transload "
-                     "trailer (Avila's delivery manifest); domestic transfers carry no port container. TEU per the "
-                     "WMS export dictionary; months on Pacific dates."),
+                     "trailer (Avila's delivery manifest); domestic transfers carry no port container. Each box in "
+                     "the month it arrived, a box received over two shifts at its first receipt; TEU by length, a "
+                     "45-foot box 2.25; months on Pacific dates."),
     ]
     ws["A1"] = "Notes"
     ws["A1"].font = Font(bold=True, size=12)

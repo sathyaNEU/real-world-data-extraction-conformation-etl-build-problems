@@ -5,24 +5,36 @@ import os
 import pack as P
 
 SOURCES = {
-    P.F_LEGACY: "Pellerin Distribution Services, legacy WMS1 daily inventory by client, 2019-04-01 to 2022-09-30",
-    P.F_NIGHTLY: "Pellerin Distribution Services, WMS nightly inventory run by site and client",
-    P.F_OUTBOUND: "Pellerin Distribution Services, WMS outbound loads and pallets by client and day",
-    P.F_RECEIPTS: "Pellerin Distribution Services, WMS inbound receipts with equipment",
-    P.F_LPN: "Pellerin Distribution Services, WMS pallet-level inventory at the close of 2026-12-06",
-    P.F_CLIENTS: "Pellerin Distribution Services, client master",
-    P.F_SITES: "Pellerin Distribution Services, site list",
-    P.F_TRACKER: "Pellerin Distribution Services customer service, December 2026 inbound booking tracker",
-    P.F_AVILA: "Avila Transload Services, delivery manifest of trailers and the containers each carried",
-    P.F_POLA: "monthly container statistics for 2026 in the layout of the Port of Los Angeles's public release",
-    P.F_POLB: "monthly TEU statistics for 2026 in the layout of the Port of Long Beach's public release",
-    P.F_POLICY: "Pellerin Distribution Services, space planning policy, revision 4",
-    P.F_OFFER: "Ridley-Ames Industrial Properties, block offer for Tamarind Avenue Logistics Park Building B",
-    P.F_ADVISORIES: "Yamamoto & Vance Customs Brokers, client advisories on additional duties, 2019 to 2026",
-    P.F_DICT: "Pellerin Distribution Services, WMS exports field dictionary, version 3",
-    P.F_MANIFEST: "Pellerin Distribution Services, export manifest of the planning folder",
-    P.F_CAPACITY: "Pellerin Distribution Services, capacity report, fiscal 2026 periods 1 to 12",
-    P.F_LABOR: "Pellerin Distribution Services, dock labor plan, January to June 2027 (draft)",
+    P.F_LEGACY: ("Pellerin Distribution Services, legacy WMS1 daily inventory by client (pipe-delimited export)",
+                 "business days 2019-04-01 to 2022-09-30"),
+    P.F_NIGHTLY: ("Pellerin Distribution Services, WMS nightly inventory run by site and client",
+                  "runs of 2022-09-13 to 2026-12-07"),
+    P.F_OUTBOUND: ("Pellerin Distribution Services, WMS outbound loads and pallets by client and day",
+                   "ship dates 2022-09-12 to 2026-12-06"),
+    P.F_RECEIPTS: ("Pellerin Distribution Services, WMS inbound receipts with equipment",
+                   "receipts of 2022-09-12 to 2026-12-06"),
+    P.F_LPN: ("Pellerin Distribution Services, WMS pallet-level inventory by warehouse location",
+              "the run of 2026-12-07T08:00Z"),
+    P.F_CLIENTS: ("Pellerin Distribution Services, WMS client master", "as of 2026-12-07"),
+    P.F_SITES: ("Pellerin Distribution Services facilities, site list", "as of 2026-12-07"),
+    P.F_TRACKER: ("Pellerin Distribution Services customer service, December 2026 inbound booking tracker",
+                  "arrivals due 2026-12-07 to 2026-12-31"),
+    P.F_AVILA: ("Avila Transload Services, record of the trailers it delivered to Pellerin and the ocean containers "
+                "each carried", "deliveries of 2024-03-04 to 2026-12-06"),
+    P.F_POLA: ("monthly container statistics in the layout of the Port of Los Angeles's public release",
+               "January to October 2026"),
+    P.F_POLB: ("monthly TEU statistics in the layout of the Port of Long Beach's public release",
+               "January to October 2026"),
+    P.F_POLICY: ("Pellerin Distribution Services operations, space planning policy OPS-07, revision 4",
+                 "effective 2026-03-02"),
+    P.F_OFFER: ("Ridley-Ames Industrial Properties, block offer for Tamarind Avenue Logistics Park Building B",
+                "letter of 2026-11-19"),
+    P.F_ADVISORIES: ("Yamamoto & Vance Customs Brokers, client advisories on additional duties",
+                     "advisories of 2019 to 2026, printed 2026-12-03"),
+    P.F_CAPACITY: ("Pellerin Distribution Services capacity planning, capacity report, fiscal 2026 periods 1 to 12",
+                   "2025-12-01 to 2026-11-30"),
+    P.F_LABOR: ("Pellerin Distribution Services operations, dock labor plan, January to June 2027 (draft)",
+                "2027-01 to 2027-06"),
 }
 AS_OF = "2026-12-07"
 
@@ -45,8 +57,10 @@ def write(target, out_path):
     out = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
+        src, covers = SOURCES[f]
         out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                    "source": "Constructed: " + SOURCES[f], "date": AS_OF,
+                    "source": "Constructed: " + src, "covers": covers,
+                    "date": P.FILE_STAMPS[f].date().isoformat(),
                     "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
     meta = {
@@ -55,12 +69,11 @@ def write(target, out_path):
                  "June 2027 after customers front-loaded ahead of a duty increase",
         "domain": "Supply Chain & Logistics",
         "client_domain": "Urban & Regional Science",
-        "subdomain": "fulfillment-warehousing (a forecast of a 3PL's monthly pallet positions after a pull-forward of "
-                     "imports, each account's bought-ahead stock netted against its own forecast shipments at the "
-                     "share of them its own earlier rushes burned, checked against the book's earlier duty steps)",
+        "subdomain": "fulfillment-warehousing (an import 3PL's commitment to overflow storage blocks for January to "
+                     "June 2027 after its customers front-loaded imports ahead of a duty increase)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a count of overflow blocks read off a six-month forecast of positions by the space policy's "
-                        "block test, with ten months of import TEU and port share (twenty figures, charted)",
+        "prompt_shape": "a count of overflow blocks to take for a half-year term, with the import TEU and port share "
+                        "of January to October 2026 (twenty figures, charted)",
         "as_of": AS_OF,
         "deliverables": ["overflow_blocks_h1_2027.xlsx", "port_share_2026.pdf"],
         "distractor_files": list(P.DISTRACTORS),

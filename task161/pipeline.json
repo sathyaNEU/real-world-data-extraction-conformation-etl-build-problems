@@ -1,21 +1,22 @@
 {
  "task": "task161",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "supply-chain-logistics",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-11-02",
  "stump": "A strong solver who stacks the two WMS exports, projects December from the booking notices and fades the book's excess at the 0.87-month half-life the 2019 and 2025 rushes showed leaves overflow only in January and takes no block (zero); the excess is stock each account burns at a steady share of its own shipments, five seasonal accounts hold most of it and ship at their first-half low through June, so the first two blocks stay full through June (two blocks).",
  "architecture": 1,
  "loops": 2,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-18",
-  "checks": 50
+  "exit": 1,
+  "date": "2026-11-02",
+  "checks": 61,
+  "fails": "pair ceiling 83.5 (ceiling 60) and the cracker keeps the port ask, on the honest ask sheet (generator/ceiling.py); every other check passes"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 (no LEAK): the offer carries the call's words; the policy (eight stump terms with 3.4) and the advisories carry stump terms but name no method; dates after the as-of only in forward-looking records; each answered in ## Leak sweep",
+  "leak_py": "REVIEW 2026-11-02 on 37200385, no LEAK (the dictionary and the export manifest gone, Avila's workbook renamed; sweeps 12 and 13 clean; each REVIEW line ruled in ## Leak sweep); at ship: REVIEW 2026-10-18 (no LEAK): the offer carries the call's words; the policy (eight stump terms with 3.4) and the advisories carry stump terms but name no method; dates after the as-of only in forward-looking records; each answered in ## Leak sweep",
   "reader": "round 1 on 594bac98: no leak (Q1 nothing quoted, no ranking file, Q6 an analytical choice); forks found on the asks (ports unnamed, the TEU numerator's source and month, outside the racks), closed in round 1 fixes; round 2 on 302b69d3: no leak; the targeted re-read of 7eb676e6 clean (Q1 none: 3.4 gives only the level of normal stock; Q6 analytical; its one moderate tell, 3.4 reading as written for the analysis, left)"
  },
  "duplicate_check": {
@@ -28,8 +29,17 @@
   "disposition": "FIX_NOW twice, closed: round 1 (J1 to J4) in one generator pass, round 2's pins (normal stock in space policy 3.4, the split-receipt month in the dictionary, the book-burn clause dropped) on 7eb676e6 with every graded figure byte-identical, the targeted re-read clean; rule 3 recheck PASS, P(both) about 0.045, separation PASS",
   "report": "relayed by the main session (round 1: write-up figures on episode-fit conventions, the off-rack ask's two readings, hygiene, the 2019 back-test; round 2: the cover convention, the split-receipt month, the book-burn clause)"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK: avila_delivery_manifest_2024-03_2026-12.xlsx, export_manifest.csv and wms_export_dictionary_v3.pdf, files whose names say they describe the data; wms_export_dictionary_v3.pdf names 20 columns of the data files, 100% of wms_inbound_receipts_20220912_20261206.csv)",
+   "repair": "leak",
+   "move": "Stopped shipping the two files that described the data and renamed the third, a genuine operating record caught only by its name. wms_export_dictionary_v3.pdf (the exports' columns with the run stamp, the parallel run, the sites, the two ports, the TEU table and the split-receipt month) and export_manifest.csv (each file's system, contents, span, pull time and rows) no longer ship; per-file provenance (issuer, coverage, each file's own date, rows) moved to metadata.json, whose subdomain and prompt shape no longer narrate the method. Avila's delivery record ships as avila_deliveries_2024-03_2026-12.xlsx, byte-identical (its internal ids keep their seed), so all 16 shipped files are byte-identical to the shipped cut's. The readings the dictionary closed are closed without a filed sentence: the run stamp (SF7, closure 4), the parallel run (closure 5), the sites and the two ports (A7) converge in the data, C1 asserted; the codes are the systems' own labels (closure 19); the port ask's two genuine forks are closed by WHAT in its asking sentence ('each in the month it arrived', A8; 'a 45-foot container counting 2.25', A9; prompt 683 characters, the call sentence unchanged); no ask device is filed. checks.py gains S12 (no file describing the data by name, sheet or content) and re-homes SF7, A7, A8 and A9 with positive controls; A3 and cracker.py are retired. Every graded figure and figures.json unchanged (freeze determinism PASS). The careful-solver ceiling (generator/ceiling.py, new) finds the port ask spent (cracker 20 of 20, pair ceiling 83.5) and the ask rework stopped with no device passing both tests, so precut FAILs on the honest ask sheet and the ask layer is owed before delivery.",
+   "md5": "2911288b96233755c264c2cb48ac6749 to 37200385be9ef9a8a68d12d60bdd816c",
+   "commit": ""
+  }
+ ],
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the leak repair is done (zip 37200385, freeze determinism PASS, every gate green but precut, which FAILs on the honest ask sheet), the careful solver keeps 20 of 20 port figures against the recorded 0 of 20 (pair ceiling 83.5), and the ask rework stopped: no device passes both tests inside the frozen scope or on a natural ask-only record (the candidate table is the design note's last Tried and rejected line). Next, the author's call: the port ask moved onto new ask-only records under a new asking sentence, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root.",
  "approved": null,
  "delivered": "2026-10-18",
  "portal": null,
@@ -37,15 +47,15 @@
  "portal_status": "",
  "portal_status_date": "",
  "build": {
-  "checks_py": "86 run, 0 failed (R1a to R3c, L1 to L10, B1 to B4, SF1 to SF13, A2a to A8, G1 to G3.3, S1 to S17, P1 to P3, F1 to F3)",
+  "checks_py": "88 run, 0 failed on 37200385 (R1a to R3c, L1 to L10, B1 to B4, SF1 to SF13, A2a to A9, CL5, CL16, CL19, G1 to G3.3, S1 to S17, P1 to P3, F1 to F3; SF7 and A7 C1, CL5, CL16 and CL19 the closures moved onto the producing systems, A8 and A9 the prompt's WHAT, S12 no describing file, A3 retired with cracker.py)",
   "verify_py": "green on its own code path (pandas and pdftotext): the call and block uses, the overflow by month, the default path (0.87 months, 0 blocks), each account's own monthly fall (1 block), the flat holds (3), the leave-one-out back-test (burn 2,421 against fade 4,536, ahead on 3 of 3), the shipments bound, A2",
-  "rebuilds": "two builds byte-identical (18 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip)",
-  "target_zip_sha256": "7eb676e6afa1b773b5d51fd6264127eec604e9a719bf573cf0363d3cba80c5b8",
+  "rebuilds": "two consecutive builds byte-identical (16 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip md5 37200385 twice)",
+  "target_zip_sha256": "bf311594dee37dfa1f683f4a785ed2b956421a9badcf988c7eba4ed397ec6d78",
   "figures_check": "exit 0, 42 figures",
-  "input_gates": "18 files, 4 formats (csv, pdf, txt, xlsx), largest 93,160 rows, 3 distractors in metadata.json",
+  "input_gates": "16 files, 4 formats (csv, pdf, txt, xlsx), largest 93,160 rows, 3 distractors in metadata.json",
   "golden_realism": "pass done: finding titles, notes sheet, rounding note, front-loading months marked; off-rack sheet removed with the ask",
   "house_fixes": "container audit clean (target and golden); manifest set equality; forward dates on the allow-list; per-file in-world dates; client names near real firms renamed (H21)",
-  "cracker": "pair ceiling 35.1 (C1 or C2 with the mirror), mirror leakage 12.0 per cent"
+  "cracker": "careful-solver generator/ceiling.py on 37200385: cracker 20 of 20 ask figures (25 of 25 criteria), pair ceiling 83.5 (59.3 with the mirror on its natural read), mirror leakage 12.0 per cent; the 35.1 recorded at ship was cracker.py's narrowed cracker"
  },
  "wave": "wave 6 (new), seed FC32 (world, decision and quantity kept; the seed's error band, option date and booking notices for the half-year not used)",
  "answer": "take 2 of the 6 blocks (B-1 and B-2), $2,200,000; default path 0 blocks",
@@ -56,5 +66,15 @@
  "round2": {
   "audit": "rule 3 PASS; P(both) about 0.045; separation PASS; realism notes low, left (they would move graded figures)",
   "fixes": "space policy 3.4 files an account's normal stock as its cover times the mean of its shipments in the month and the month after (SF13: the same month's shipments 1, a centred three months 1, the next month 3, a flat median stock 1); the dictionary counts a container received in several pieces once, in the month of its first receipt (WMS) or delivery (Avila), as the golden dates each visit (A8: dated at the last piece, 7 of 10 months' TEU move); the book-burn clause dropped from the recommendation, the critical components and step 2 cite the policy's normal stock; figures.json, block 4 of submission.md and both goldens byte-identical to ff395fb; target files changed: space_planning_policy_rev4.pdf, wms_export_dictionary_v3.pdf (metadata.json carries their new sizes)"
+ },
+ "target_zip_md5": "37200385be9ef9a8a68d12d60bdd816c",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on the port ask (A2, the build's one ask)",
+  "careful_cracker_keeps": "20 of 20 figures (25 of 25 criteria) against the recorded 0 of 20",
+  "pair": "83.5 with the mirror on the careful ask route (59.3 with the mirror on its natural read; 100.0 for two careful responses on the call)",
+  "why": "the repeated box numbers split 3,212 within 3 days against 2,895 at 74 days or more with none between, so the battery's pairing of a box's receipts recovers every arrival at any window of 4 to 73 days, and Avila's record says what it lists, so its containers join through the trailers (3,322 of 3,997; the 675 others DC01, DC07 and DC12 transfers); the recorded C1 and C2 collapsed every repeat and C1 counted no Avila trailer",
+  "probe": "generator/ceiling.py (on the cut pack, its own csv and openpyxl reads for the ask, the bundle-only read.book for the calls; the full includer reproduces figures.json)",
+  "rework": "stopped 2026-11-01: no device passes both tests; the candidate table is the design note's last Tried and rejected line",
+  "status_before": "SHIPPED"
  }
 }

@@ -1,7 +1,9 @@
 """task161 checks: every assertion the build stands on, run on the cut pack (target/) and on the generator's
 clean truth. Labels: R1 to R3c the client's three rules executed (dataset-generation 7.1), L the ladder and
-the call's margins, SF1 to SF12 the semantic fork table, A the asks, G the input gates, S the realism sweep,
-P the pins and the counter-pin sweep, F the figures.
+the call's margins, SF1 to SF13 the semantic fork table, A the asks, CL the closures carried by the producing
+systems, G the input gates, S the realism sweep,
+P the pins and the counter-pin sweep, F the figures. The ask layer's ceiling is measured outside the build by
+generator/ceiling.py on the cut pack; nothing here scores it.
 
     python3 checks.py            # builds the world and reads target/ (run build.py first)
 """
@@ -26,7 +28,6 @@ import numpy as np   # noqa: E402
 
 import asks          # noqa: E402
 import calc          # noqa: E402
-import cracker       # noqa: E402
 import docs as D     # noqa: E402
 import pack as PK    # noqa: E402
 import read          # noqa: E402
@@ -36,6 +37,15 @@ import world as W    # noqa: E402
 
 AS_OF = dt.date(2026, 12, 7)
 SEASONAL = ["PD2047", "PD2052", "PD2058", "PD2102", "PD2108"]
+TASK = os.path.dirname(HERE)
+# leak.py's name screen (dataset-generation section 3): a file named as a description of the data
+DESCRIBE_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+    r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
+    r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|"
+    r"definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
 PID = {c: W.ACCOUNT_NAMES[c][1] for c in W.ACCOUNTS}
 
 
@@ -365,7 +375,8 @@ def run(target, golden_dir, Bt=None):
 
     # ------------------------------------------------------------------ SF: the semantic fork table
     txt = doc_texts(target)
-    pol, off, adv, dic = txt[PK.F_POLICY], txt[PK.F_OFFER], txt[PK.F_ADVISORIES], txt[PK.F_DICT]
+    pol, off, adv = txt[PK.F_POLICY], txt[PK.F_OFFER], txt[PK.F_ADVISORIES]
+    prompt = re.sub(r"\s+", " ", open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read())
     S.ok("SF1", "Blocks are let whole and for the whole term" in off and "whole, and for the whole term" in pol,
          "a block is taken for the whole term: the offer and policy 4.1")
     r = calc.golden(B, opt={"rack": 39740})
@@ -381,9 +392,16 @@ def run(target, golden_dir, Bt=None):
     S.ok("SF6", "in our racks or outside them" in pol, "racked pallets only would file 0; policy 3.1 counts every "
          "pallet in our racks or outside them")
     r = calc.golden(B, opt={"close_shift": -1})
-    S.ok("SF7", r["blocks"] == 2 and "holds the balances at the close of the business day just ended" in dic,
-         "the close read from the run stamped 6 December (the close of 5 December): %d; the dictionary's run line" %
-         r["blocks"])
+    import pandas as pd
+    ng = pd.read_csv(os.path.join(target, PK.F_NIGHTLY))
+    by_stamp = ng.groupby("snapshot_utc")["on_hand_pallets"].sum()
+    s6, s7 = int(by_stamp["2026-12-06T08:00:00Z"]), int(by_stamp["2026-12-07T08:00:00Z"])
+    hours = sorted(set(ng["snapshot_utc"].str[11:13]))
+    S.ok("SF7", r["blocks"] == 2 and s6 == s7 == F_figs()["components"]["on_hand_6dec"] and hours == ["07", "08"],
+         "C1, nothing filed: the close of 6 December read from the run stamped 6 December (the close of 5 December) "
+         "files %d blocks, and both runs hold %d pallets for the as-of close (a Sunday, no receipts or shipments), "
+         "the figure the write-up states; every run starts at %sZ, midnight Pacific (pandas read)" %
+         (r["blocks"], s7, " or ".join(hours)))
     r = calc.golden(B, opt={"dec_rest": "last_year"})
     import openpyxl
     wb = openpyxl.load_workbook(os.path.join(target, PK.F_TRACKER), read_only=True)
@@ -439,12 +457,6 @@ def run(target, golden_dir, Bt=None):
     S.ok("A2c", all(v[0] <= 1 and v[1] <= 1 for k, v in res.items() if "UTC" not in k and "45ft" not in k) and
          res["visits, manifest, UTC months"][0] <= 6 and res["visits, manifest, 45ft at 2 TEU"][0] == 0,
          "every stop misses (TEU hits, share hits of ten): %s" % res)
-    cr, _, _ = cracker.score(inp)
-    p1 = (cr["C1"]["score"] + cr["M"]["score"]) / 2
-    p2 = (cr["C2"]["score"] + cr["M"]["score"]) / 2
-    S.ok("A3", max(p1, p2) <= 40.0 and cr["M"]["kept"] < 0.35 and cr["C1"]["teu"] == 0 and cr["C1"]["share"] == 0,
-         "cracker sheet on the pack: pair ceiling C1 with the mirror %.1f, C2 with the mirror %.1f; mirror leakage "
-         "%.1f per cent" % (p1, p2, 100 * cr["M"]["kept"]))
     pairs = {}
     for r in Wd["receipts"]:
         if r.get("part"):
@@ -483,14 +495,51 @@ def run(target, golden_dir, Bt=None):
         last_[cn] = ((d_.year, d_.month), d_)
     lastT = {k: int(round(teu[k] + delta[k])) for k in teu}
     moved = {"%d-%02d" % k: lastT[k] - gT[k] for k in teu if lastT[k] != gT[k]}
-    S.ok("A8", "counted once, in the month of its first receipt (WMS) or delivery (Avila)" in dic and gold == (10, 10)
-         and len(moved) >= 1, "the dictionary files a box received in pieces as counted once, in its first "
-         "receipt's month, which is how the golden dates each visit; dated at its last piece instead, %d of ten months' "
-         "TEU move: %s" % (len(moved), moved))
+    S.ok("A8", "each in the month it arrived" in prompt and gold == (10, 10) and len(moved) >= 1,
+         "the prompt's asking sentence dates each container in the month it arrived (a box devanned over two shifts "
+         "arrived on its first receipt's day), which is how the golden dates each visit; nothing filed in the pack; "
+         "dated at its last piece instead, %d of ten months' TEU move: %s" % (len(moved), moved))
     import pack as _pk
-    S.ok("A7", all(m["port"] == _pk.TERMINAL_PORT[m["terminal"]] for m in inp["manifest"]) and
-         "Port of Los Angeles and the Port of Long Beach" in dic,
-         "the manifest's port column matches each pickup terminal, and the dictionary names the two ports")
+    import pandas as pd
+    av = pd.read_excel(os.path.join(target, PK.F_AVILA), sheet_name="Deliveries", header=3)     # verify.py's read
+    ports = sorted(set(av["Port"].dropna()))
+    S.ok("A7", all(_pk.TERMINAL_PORT[t] == q for t, q in zip(av["Pickup Terminal"], av["Port"])) and
+         ports == ["Long Beach", "Los Angeles"] and sorted(inp["LA"]) == asks.MONTHS_2026 == sorted(inp["LB"]),
+         "C1, nothing filed: the two ports are the two whose releases ship, and Avila's port column holds only them "
+         "(%s), each matching its pickup terminal (pandas read)" % ports)
+    # the closures that moved off the dropped dictionary onto the producing systems, read as verify.py reads them
+    lg = pd.read_csv(os.path.join(target, PK.F_LEGACY), sep="|")
+    cm = pd.read_excel(os.path.join(target, PK.F_CLIENTS), sheet_name="Clients")
+    codes = {c.strip() for v in cm["Legacy code(s)"].dropna() for c in str(v).split(",") if c.strip()}
+    S.ok("CL16", set(lg["CLIENT"]) <= codes and len(codes) == len(set(lg["CLIENT"])),
+         "closure 16, the system's own crosswalk: every one of the WMS1 export's %d client codes sits in the client "
+         "master's legacy codes column, and the column names no other (pandas read)" % len(set(lg["CLIENT"])))
+    lg["d"] = pd.to_datetime(lg["BUS_DT"], format="%m/%d/%Y").dt.date
+    leg = {(k, d): v for (k, d), v in lg.assign(k=lg["CLIENT"].map(
+        {c.strip(): (r["Client ID"] if isinstance(r["Client ID"], str) else c.strip())
+         for _, r in cm.iterrows() for c in str(r["Legacy code(s)"]).split(",") if c.strip()}))
+        .groupby(["k", "d"])["CLOSE_PLT"].sum().items()}
+    ng["d"] = (pd.to_datetime(ng["snapshot_utc"], utc=True).dt.tz_convert("America/Los_Angeles").dt.date -
+               dt.timedelta(days=1))
+    new = {(k, d): v for (k, d), v in ng.groupby(["client_id", "d"])["on_hand_pallets"].sum().items()}
+    par = [kd for kd in leg if dt.date(2022, 9, 12) <= kd[1] <= dt.date(2022, 9, 30)]
+    S.ok("CL5", len(par) > 100 and all(leg[kd] == new.get(kd) for kd in par),
+         "closure 5, C1 in the data: on all %d account-days of the parallel run the WMS1 close equals the nightly run's "
+         "(pandas read), so either system's day gives the same stock" % len(par))
+    rc = pd.read_csv(os.path.join(target, PK.F_RECEIPTS))
+    sl = pd.read_csv(os.path.join(target, PK.F_SITES))
+    lp = pd.read_csv(os.path.join(target, PK.F_LPN))
+    S.ok("CL19", set(rc["equipment_type"]) == {"22G1", "42G1", "45G1", "L5G1", "53DV"} and
+         set(ng["site_id"]) <= set(sl["site_id"]) and set(lp["location_type"]) == {"RACK", "FLOOR", "STAGE"},
+         "closure 19, the systems' own labels: the receipts carry ISO 6346 size-type codes and 53DV only, every "
+         "nightly site is on the site list, the pallet extract's location types are RACK, FLOOR and STAGE "
+         "(pandas read); none decides the call")
+    h45 = asks.a2_rows(inp["receipts"], inp["manifest"], inp["LA"], inp["LB"], inp["to_local"], dedup="visit",
+                       trailers="manifest", teu45=2.0)[0]
+    moved45 = sum(1 for k in asks.MONTHS_2026 if int(round(h45[k])) != gT[k])
+    S.ok("A9", "a 45-foot container counting 2.25" in prompt and asks.TEU["L5G1"] == 2.25 and moved45 >= 8,
+         "the prompt's rounding sentence counts a 45-foot container as 2.25 TEU, the golden's table; nothing filed "
+         "in the pack; at 2 TEU instead %d of ten months' TEU move" % moved45)
 
     # ------------------------------------------------------------------ G: the input gates
     meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
@@ -600,11 +649,22 @@ def run(target, golden_dir, Bt=None):
     S.ok("S10", len(set(rd.values())) > 60 and max(rd.values()) < 3 * np.median(list(rd.values())),
          "receipts per day vary (%d distinct daily counts)" % len(set(rd.values())))
 
-    man = []
-    with open(os.path.join(target, PK.F_MANIFEST), newline="") as fh:
-        man = [r["file"] for r in csv.DictReader(fh)]
-    S.ok("S12", sorted(man) == sorted(f for f in files if f != PK.F_MANIFEST),
-         "the export manifest lists every shipped file but itself (%d)" % len(man))
+    named = [f for f in files if DESCRIBE_NAME.search(os.path.splitext(f)[0])]
+    sheets = []
+    for f in files:
+        if f.endswith(".xlsx"):
+            import openpyxl as _o
+            sheets += ["%s:%s" % (f, s) for s in _o.load_workbook(os.path.join(target, f), read_only=True).sheetnames
+                       if DESCRIBE_SHEET.match(s.strip())]
+    idents = {h for f, hs in hdr.items() if not f.endswith(".xlsx") for h in hs if "_" in h or re.search(r"\d", h)}
+    listing = {f: sorted(h for h in idents if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(h), t))
+               for f, t in txt.items()}
+    S.ok("S12", not named and not sheets and all(len(v) <= 2 for v in listing.values()) and
+         sorted(files) == sorted(PK.ALL_FILES),
+         "no shipped file describes the data (dataset-generation section 3): no file or sheet named as a dictionary, "
+         "manifest, readme or notes (%d files: %s), and no document names more than two of the exports' column "
+         "identifiers (%s); provenance sits in metadata.json" % (len(files), named or "none",
+                                                                {f[:20]: len(v) for f, v in listing.items()}))
     late = set()
     iso = re.compile(rb"20\d\d-\d\d-\d\d")
     for f in files:
@@ -620,7 +680,7 @@ def run(target, golden_dir, Bt=None):
                     if any(isinstance(v, dt.datetime) and v.date() > AS_OF for v in row):
                         late.add(f)
                         break
-    allow = {PK.F_TRACKER, PK.F_MANIFEST, PK.F_SITES}
+    allow = {PK.F_TRACKER, PK.F_SITES}
     S.ok("S13", late <= allow, "dates after the as-of sit only in forward-looking records (the December arrivals, "
          "the sublease's end): %s" % sorted(late))
     gstamps = []
@@ -639,10 +699,8 @@ def run(target, golden_dir, Bt=None):
 
     # ------------------------------------------------------------------ P: pins once, counter-pins none
     pins = {"in our racks or outside them": PK.F_POLICY, "at least three quarters of its position-months": PK.F_POLICY,
-            "holds the balances at the close of the business day just ended": PK.F_DICT,
-            "L5G1 2.25": PK.F_DICT, "Blocks are let whole and for the whole term": PK.F_OFFER,
-            "the mean of its shipments in that month and the month after": PK.F_POLICY,
-            "counted once, in the month of its first receipt": PK.F_DICT}
+            "Blocks are let whole and for the whole term": PK.F_OFFER,
+            "the mean of its shipments in that month and the month after": PK.F_POLICY}
     where = {p: [f for f, t in txt.items() if p in t] for p in pins}
     S.ok("P1", all(where[p] == [f] for p, f in pins.items()),
          "each load-bearing sentence sits in exactly one file: %s" % where)

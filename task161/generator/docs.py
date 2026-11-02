@@ -1,6 +1,6 @@
-"""task161 documents: the space planning policy, the park's block offer, the customs broker's advisories
-and the WMS export dictionary. The text is held here as data so checks.py can quote it and execute
-every filed sentence, and verify.py reads the shipped PDFs back on its own extractor."""
+"""task161 documents: the space planning policy, the park's block offer and the customs broker's advisories.
+The text is held here as data so checks.py can quote it and execute every filed sentence, and verify.py reads
+the shipped PDFs back on its own extractor. No document describes the data files (dataset-generation section 3)."""
 from __future__ import annotations
 
 import re
@@ -247,90 +247,12 @@ def write_advisories(path):
     PP.normalize_pdf(path, b"D:20261203101544-08'00'", b"D:20261203101544-08'00'")
 
 
-# ----------------------------------------------------------------------------------- the export dictionary
-
-DICT_TITLE = "WMS exports: field dictionary"
-DICT_SUB = "Version 3, 2 November 2026 | Jerome Lam, WMS Systems Lead"
-DICT_GENERAL = [
-    "Stamps ending in Z are UTC. Business dates are Pacific dates. Pallet counts are whole pallets (one license "
-    "plate number, LPN, per pallet).",
-    "Each nightly inventory run starts at midnight Pacific and holds the balances at the close of the business day "
-    "just ended; snapshot_utc is the run's start in UTC (07:00Z under daylight time, 08:00Z otherwise).",
-    "The legacy WMS1 system was retired at the close of 30 September 2022. Both systems ran from the close of "
-    "12 September 2022 to the close of 30 September 2022, and the legacy client codes map to client ids in the "
-    "client master.",
-    "A site is one of the four buildings (CAR1, RDZ1, WIL1, CMP1) with its docks and its yard, or the Dominguez "
-    "sublease (DHS1) while it is let. A pallet on a site is either in a warehouse location (a rack position, a floor "
-    "lane or a dock staging lane) or in a storage trailer parked in the site's yard.",
-    "Ocean containers reach us by dray from the container terminals of the Port of Los Angeles and the Port of Long "
-    "Beach.",
-]
-DICT = [
-    ("wms1_inv_daily_20190401-20220930.txt (legacy WMS1, pipe-delimited)", [
-        ("BUS_DT", "business date, MM/DD/YYYY; one row per client per business day, Monday to Saturday"),
-        ("CLIENT", "legacy client code"),
-        ("OPEN_PLT, RCVD_PLT, SHIP_PLT, CLOSE_PLT", "pallets at the opening, received, shipped and at the close"),
-    ]),
-    ("wms_inventory_nightly_20220913_20261207.csv", [
-        ("snapshot_utc", "the run's start, UTC"),
-        ("site_id", "CAR1, RDZ1, WIL1, CMP1 (the four buildings) and DHS1 (the Dominguez sublease, while let)"),
-        ("client_id", "client id"),
-        ("on_hand_pallets", "pallets on hand for the client at the site at the close, in its warehouse locations and "
-                            "in storage trailers in its yard"),
-    ]),
-    ("wms_outbound_daily_20220912_20261206.csv", [
-        ("ship_date", "business date the loads shipped"),
-        ("client_id", "client id"),
-        ("loads", "outbound loads (bills of lading)"),
-        ("pallets_shipped", "pallets shipped"),
-    ]),
-    ("wms_inbound_receipts_20220912_20261206.csv", [
-        ("receipt_no", "receipt number"),
-        ("received_at_utc", "time the receipt was confirmed, UTC"),
-        ("site_id, client_id", "receiving building and client"),
-        ("equipment_id", "container number (ISO 6346) or trailer number"),
-        ("equipment_type", "ISO 6346 size-type code for a container (22G1 20ft, 42G1 40ft, 45G1 40ft high cube, L5G1 "
-                           "45ft high cube) or 53DV for a 53ft dry van trailer. TEU: 22G1 1, 42G1 and 45G1 2, L5G1 2.25. "
-                           "A container received in several pieces is counted once, in the month of its first receipt "
-                           "(WMS) or delivery (Avila)."),
-        ("pallets", "pallets received on the receipt"),
-    ]),
-    ("wms_lpn_inventory_20261207T0800Z.csv", [
-        ("coverage", "one row per pallet in a warehouse location; pallets in yard storage trailers are held in the "
-                     "yard system and are not in this extract"),
-        ("snapshot_utc", "the run's start, UTC"),
-        ("site_id, location_id", "site and warehouse location"),
-        ("location_type", "RACK (rack position), FLOOR (floor lane), STAGE (dock staging lane)"),
-        ("client_id, lpn", "client id; the pallet's SSCC-18 label"),
-        ("item, cases, received_date", "item number, cases on the pallet, business date the pallet was received"),
-    ]),
-]
-
-
-def write_dictionary(path):
-    st = styles("Carlito", "Carlito-Bold", PDS, 10.2)
-    s = [Paragraph(esc("Pellerin Distribution Services, Inc. | Information Systems"), st["sub"]),
-         Paragraph(esc(DICT_TITLE), st["h1"]), Paragraph(esc(DICT_SUB), st["sub"]),
-         Paragraph(esc("General"), st["h2"])]
-    s += [Paragraph(esc(p), st["body"]) for p in DICT_GENERAL]
-    for title, fields in DICT:
-        s.append(KeepTogether([Paragraph(esc(title), st["h2"]),
-                               grid([("Field", "Meaning")] + list(fields), [1.9, 4.8], st)]))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph(esc("Questions about the exports: WMS support desk, extension 4410."), st["small"]))
-    doc = _doc(path, "WMS exports: field dictionary, version 3", "Jerome Lam")
-    f = _footer("Pellerin Distribution Services | WMS exports: field dictionary | v3", "Carlito")
-    doc.build(s, onFirstPage=f, onLaterPages=f)
-    PP.normalize_pdf(path, b"D:20261102113029-08'00'", b"D:20261102113029-08'00'")
-
-
 # ----------------------------------------------------------------------------------- helpers for checks
 
 def all_text():
-    """Every sentence the four documents ship, for the counter-pin and leak sweeps."""
+    """Every sentence the three documents ship, for the counter-pin and leak sweeps."""
     out = [POLICY_TITLE, POLICY_SUB] + [p for _, ps in POLICY for p in ps]
     out += OFFER + [t for _, _, t in ADVISORIES] + [h for _, h, _ in ADVISORIES]
-    out += DICT_GENERAL + [m for _, fs in DICT for _, m in fs]
     return out
 
 

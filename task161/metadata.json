@@ -3,9 +3,9 @@
   "title": "How many overflow blocks an import 3PL beside the San Pedro Bay ports should take for January to June 2027 after customers front-loaded ahead of a duty increase",
   "domain": "Supply Chain & Logistics",
   "client_domain": "Urban & Regional Science",
-  "subdomain": "fulfillment-warehousing (a forecast of a 3PL's monthly pallet positions after a pull-forward of imports, each account's bought-ahead stock netted against its own forecast shipments at the share of them its own earlier rushes burned, checked against the book's earlier duty steps)",
+  "subdomain": "fulfillment-warehousing (an import 3PL's commitment to overflow storage blocks for January to June 2027 after its customers front-loaded imports ahead of a duty increase)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a count of overflow blocks read off a six-month forecast of positions by the space policy's block test, with ten months of import TEU and port share (twenty figures, charted)",
+  "prompt_shape": "a count of overflow blocks to take for a half-year term, with the import TEU and port share of January to October 2026 (twenty figures, charted)",
   "as_of": "2026-12-07",
   "deliverables": [
     "overflow_blocks_h1_2027.xlsx",
@@ -26,7 +26,7 @@
     "1100000"
   ],
   "input_gates": {
-    "files": 18,
+    "files": 16,
     "formats": [
       "csv",
       "pdf",
@@ -48,11 +48,12 @@
   "generator": "task161/generator/build.py",
   "files": [
     {
-      "path": "avila_delivery_manifest_2024-03_2026-12.xlsx",
+      "path": "avila_deliveries_2024-03_2026-12.xlsx",
       "format": "xlsx",
       "bytes": 182463,
       "rows": 3867,
-      "source": "Constructed: Avila Transload Services, delivery manifest of trailers and the containers each carried",
+      "source": "Constructed: Avila Transload Services, record of the trailers it delivered to Pellerin and the ocean containers each carried",
+      "covers": "deliveries of 2024-03-04 to 2026-12-06",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -61,8 +62,9 @@
       "format": "xlsx",
       "bytes": 8531,
       "rows": 54,
-      "source": "Constructed: Pellerin Distribution Services, capacity report, fiscal 2026 periods 1 to 12",
-      "date": "2026-12-07",
+      "source": "Constructed: Pellerin Distribution Services capacity planning, capacity report, fiscal 2026 periods 1 to 12",
+      "covers": "2025-12-01 to 2026-11-30",
+      "date": "2026-12-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -70,7 +72,8 @@
       "format": "xlsx",
       "bytes": 7361,
       "rows": 16,
-      "source": "Constructed: Pellerin Distribution Services, client master",
+      "source": "Constructed: Pellerin Distribution Services, WMS client master",
+      "covers": "as of 2026-12-07",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -80,6 +83,7 @@
       "bytes": 20193,
       "rows": 245,
       "source": "Constructed: Pellerin Distribution Services customer service, December 2026 inbound booking tracker",
+      "covers": "arrivals due 2026-12-07 to 2026-12-31",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -88,17 +92,9 @@
       "format": "xlsx",
       "bytes": 7261,
       "rows": 28,
-      "source": "Constructed: Pellerin Distribution Services, dock labor plan, January to June 2027 (draft)",
-      "date": "2026-12-07",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 2448,
-      "rows": 17,
-      "source": "Constructed: Pellerin Distribution Services, export manifest of the planning folder",
-      "date": "2026-12-07",
+      "source": "Constructed: Pellerin Distribution Services operations, dock labor plan, January to June 2027 (draft)",
+      "covers": "2027-01 to 2027-06",
+      "date": "2026-11-30",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -106,8 +102,9 @@
       "format": "csv",
       "bytes": 764,
       "rows": 11,
-      "source": "Constructed: monthly container statistics for 2026 in the layout of the Port of Los Angeles's public release",
-      "date": "2026-12-07",
+      "source": "Constructed: monthly container statistics in the layout of the Port of Los Angeles's public release",
+      "covers": "January to October 2026",
+      "date": "2026-12-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -115,8 +112,9 @@
       "format": "csv",
       "bytes": 507,
       "rows": 10,
-      "source": "Constructed: monthly TEU statistics for 2026 in the layout of the Port of Long Beach's public release",
-      "date": "2026-12-07",
+      "source": "Constructed: monthly TEU statistics in the layout of the Port of Long Beach's public release",
+      "covers": "January to October 2026",
+      "date": "2026-12-04",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -125,7 +123,8 @@
       "bytes": 45721,
       "rows": null,
       "source": "Constructed: Ridley-Ames Industrial Properties, block offer for Tamarind Avenue Logistics Park Building B",
-      "date": "2026-12-07",
+      "covers": "letter of 2026-11-19",
+      "date": "2026-11-19",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -133,7 +132,8 @@
       "format": "csv",
       "bytes": 473,
       "rows": 5,
-      "source": "Constructed: Pellerin Distribution Services, site list",
+      "source": "Constructed: Pellerin Distribution Services facilities, site list",
+      "covers": "as of 2026-12-07",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -142,8 +142,9 @@
       "format": "pdf",
       "bytes": 43874,
       "rows": null,
-      "source": "Constructed: Pellerin Distribution Services, space planning policy, revision 4",
-      "date": "2026-12-07",
+      "source": "Constructed: Pellerin Distribution Services operations, space planning policy OPS-07, revision 4",
+      "covers": "effective 2026-03-02",
+      "date": "2026-03-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -151,17 +152,9 @@
       "format": "txt",
       "bytes": 593927,
       "rows": 16271,
-      "source": "Constructed: Pellerin Distribution Services, legacy WMS1 daily inventory by client, 2019-04-01 to 2022-09-30",
-      "date": "2026-12-07",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "wms_export_dictionary_v3.pdf",
-      "format": "pdf",
-      "bytes": 37595,
-      "rows": null,
-      "source": "Constructed: Pellerin Distribution Services, WMS exports field dictionary, version 3",
-      "date": "2026-12-07",
+      "source": "Constructed: Pellerin Distribution Services, legacy WMS1 daily inventory by client (pipe-delimited export)",
+      "covers": "business days 2019-04-01 to 2022-09-30",
+      "date": "2022-10-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -170,6 +163,7 @@
       "bytes": 4507592,
       "rows": 70581,
       "source": "Constructed: Pellerin Distribution Services, WMS inbound receipts with equipment",
+      "covers": "receipts of 2022-09-12 to 2026-12-06",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -179,6 +173,7 @@
       "bytes": 3460885,
       "rows": 93160,
       "source": "Constructed: Pellerin Distribution Services, WMS nightly inventory run by site and client",
+      "covers": "runs of 2022-09-13 to 2026-12-07",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -187,7 +182,8 @@
       "format": "csv",
       "bytes": 4768557,
       "rows": 49230,
-      "source": "Constructed: Pellerin Distribution Services, WMS pallet-level inventory at the close of 2026-12-06",
+      "source": "Constructed: Pellerin Distribution Services, WMS pallet-level inventory by warehouse location",
+      "covers": "the run of 2026-12-07T08:00Z",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -197,6 +193,7 @@
       "bytes": 439738,
       "rows": 18952,
       "source": "Constructed: Pellerin Distribution Services, WMS outbound loads and pallets by client and day",
+      "covers": "ship dates 2022-09-12 to 2026-12-06",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -205,8 +202,9 @@
       "format": "pdf",
       "bytes": 42006,
       "rows": null,
-      "source": "Constructed: Yamamoto & Vance Customs Brokers, client advisories on additional duties, 2019 to 2026",
-      "date": "2026-12-07",
+      "source": "Constructed: Yamamoto & Vance Customs Brokers, client advisories on additional duties",
+      "covers": "advisories of 2019 to 2026, printed 2026-12-03",
+      "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]
