@@ -1,97 +1,93 @@
 {
   "task": "task274",
-  "architecture": "v2",
-  "drawn": "2026-10-23",
-  "slot_note": "seed DA24 (quantity only: a count on a distribution read against a fixed limit); architecture 2 re-rooted after architecture 1 was spent at stage 4",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-  "niche": "a health district examination survey's 2025 wave, used to choose the counties where the district's 2027 vitamin D programme opens first (more than 30 per cent of adults below 20 ng/mL on the reference method's scale), when one accuracy check measured the laboratory's immunoassay under one calibration and the survey's December re-assays of stored duplicate aliquots, run under one later calibration, are the only link from it to every other calibration of the year",
-  "objective": "descriptive-distribution",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
+  "architecture": "v3",
+  "drawn": "2026-11-02",
+  "slot_note": "re-tasked by the author on 2026-11-01 from descriptive-distribution to experiment-causal (retirement not taken); architecture 3 drawn 2026-11-02 in a new world, domain and dataset",
+  "domain": "criminology-justice",
+  "subdomain": "intervention-policing-policy-evaluation",
+  "niche": "Larkmoor County's pre-plea diversion pilot, offered by monthly lottery from June 2025 because the provider had places for half the eligible defendants, read at the 31 August 2026 cut for the provider's 2027 contract renewal, when most offered defendants are still inside the twelve-month programme and a terminated case goes back to the trial calendar for months",
+  "objective": "experiment-causal",
+  "shape": "other",
+  "decision_type": "renew_replace_lapse",
+  "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population"
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G4",
-    "G2"
+    "G9",
+    "G13",
+    "G12"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "composition_mix",
+  "gate_g": "forecasting",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names a wrong set of counties: the immunoassay's bias is set at each calibration, the calibrator lot changed three times on its own dates and routine recalibrations moved it again, so the check speaks only for the calibration it ran under and each county's results sit under calibrations whose shifts differ from their reagent lot's pooled average; dividing every result by the check's bias files another wrong set.",
-  "domain_test": "The deciding quantity is a population prevalence from survey biomarker measurements standardised to a reference measurement procedure the way a survey laboratory standardises an immunoassay: each result's bias is the bias of the calibration it was measured under, carried from the one accuracy-based check to every calibration of the year by re-assays of stored duplicate aliquots in one run and read on the reference scale at the clinical cut-off; with a questionnaire score or a meter in place of the assay there is no calibration, no stored duplicate and no reference procedure to carry, and the task stops making sense.",
+  "analyst_test": "A strong analyst who cleans the docket and reads the board's renewal resolution compares, by lottery result, the share convicted on the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, and files a cut of about 27 to 30 points that renews the contract at full scale; offered cases still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only completing each pending offered case through its programme month's failure chance and the conviction rate terminated cases reach files about 20 points, renewal at the pilot's scale.",
+  "domain_test": "The deciding quantity is the diversion lottery's effect on the share of eligible defendants eventually convicted in the referred case, read the way criminal justice evaluation reads a diversion offer (everyone offered against everyone not offered) through the stages pre-plea diversion creates; with another field's nouns the deferred prosecution, the termination that returns a case to the trial calendar and the conviction that follows it stop making sense.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a reference bias measured under one calibration, carried to every calibration of the year by re-assays of stored duplicates in one run, read per calibration rather than pooled by reagent lot",
+  "layer2_pattern": "own:a lottery's effect on an outcome the offered arm reaches only by failing a fixed-length deferral, completed through the deferral's own month-by-month failure hazard and the outcome rate failed cases reach",
   "layer1": [
-    "laboratory results in local time against a run log in UTC across daylight saving",
-    "results below and above the reportable range as text",
-    "re-assay records under the respondent's specimen identifier",
-    "amended results and recollected specimens",
-    "survey weights in a separate file keyed on respondent",
-    "the accuracy check's table inside a PDF report"
+    "two docket extracts across the March 2026 case management cutover, with renamed event codes and a changed date format",
+    "the provider's monthly participant reports as workbooks with a header block, keyed on its own participant number with the court reference typed several ways",
+    "charge codes renumbered at the 1 January 2026 statute recodification",
+    "clerk re-entries duplicating docket events",
+    "e-filing timestamps in UTC against the provider's local dates",
+    "cases transferred between court divisions mid-case"
   ],
-  "stakeholder_role": "chief statistician, regional center for health statistics",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
+  "stakeholder_role": "criminal justice planner, county administrator's office",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per resolved case",
   "spine": {
-    "file": "mhnes_2025_specimen_tracking.csv",
-    "rows": 111459,
-    "entity": "one event on one vial (collected, processed, frozen, shipped, received, accessioned, assayed, stored, pulled, thawed, returned)",
-    "grain": "vial x event",
+    "file": "docket_events (two extracts)",
+    "rows": 0,
+    "entity": "one event on one criminal case (filing, hearing, diversion entry, termination, completion, disposition)",
+    "grain": "case x event",
     "source": "synthetic"
   },
   "forum": "council_or_assembly",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "research_or_statistics_office",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "local_government",
   "world": {
-    "geography": "United States (the health district, its survey, laboratory and people are fictional)",
+    "geography": "United States (the county, its courts, the provider and the people are fictional)",
     "currency": "USD",
-    "org_type": "regional health district's center for health statistics, which runs the health and nutrition examination survey, and its contracted hospital laboratory",
+    "org_type": "county prosecutor's office and the nonprofit that runs its diversion programme under contract",
     "invented_names": [
-      "Merrivane Health District",
-      "Merrivane Health and Nutrition Examination Survey",
-      "Wexmoor County",
-      "Corvale County",
-      "Lassiter County",
-      "Ulverne County",
-      "Vellance County",
-      "Quennel County",
-      "Yarrowmere County",
-      "Inskeep County"
+      "Larkmoor County",
+      "Nethercote Community Justice Services",
+      "Larkmoor City",
+      "Bramwick",
+      "Wendmoor",
+      "Strandham"
     ],
     "people": [
-      "Tanya Greene",
-      "Bernard Weaver",
-      "Kaylee Lyons",
-      "Kathryn Serrano",
-      "Anne Harrington"
+      "Kendra Dennis",
+      "Alexis Camacho",
+      "Christopher Riggs",
+      "Anita Aguilar",
+      "Tara Gilbert"
     ]
   },
   "deliverables": [
-    "vitamin_d_status_2025.xlsx"
+    "diversion_renewal_2027.pdf",
+    "diversion_pilot_tables.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is which groups of a weighted population have more than a share below a line on a reference scale, when one check measured the instrument's bias under one calibration and a random subsample was measured again in one later run; the bias is set at each calibration, which changes more often than the labelled batch, so shifts pooled by batch leave the groups measured under calibrations far from their batch's average on the wrong side of the line, and only each reading's own calibration's shift, anchored at the calibration the check ran under, names the set.",
-  "driver_concrete": "Which of eight counties had more than 30 per cent of adults with 2025 examination serum 25-hydroxyvitamin D below 20 ng/mL on the reference measurement procedure's scale: each result divided by the bias of the calibration it was measured under, that calibration's shift read from the December re-assays of stored duplicate aliquots of results measured under it and anchored at the calibration the October accuracy check ran under; not the reported results, not the check's bias on every result, not the re-assay shifts pooled by reagent lot and analyzer.",
-  "stump": "A competent analyst pools the December re-assays by reagent lot and analyzer, adds the October accuracy check for the lot and analyzer it measured and names the wrong counties, or divides every result by the check's bias and names fewer; the calibrator lot changed on its own dates and every recalibration moved the assay's bias, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
+  "driver": "A lottery's effect on a final outcome that offered units reach only by failing a fixed-length deferral stage, after which the outcome follows on a slow calendar, so at the cut most offered units are still inside the stage; the outcome as recorded, a cumulative incidence read to the longest follow-up, or the failures so far taken as final each count pending units as non-outcomes, and only each pending unit's chance of failing in its remaining stage months, from the stage's own month-by-month hazard, times the outcome rate failed units reach gives the effect.",
+  "driver_concrete": "Each offered defendant still in the programme on 31 August 2026 completed through the provider's termination hazard by programme month to month twelve and the conviction rate terminated cases reach back on the trial calendar, which is higher than for cases never diverted, giving a cut of about 20 points and renewal at the pilot's scale rather than full scale.",
+  "stump": "A competent analyst reads the share convicted by the cut, or the cumulative incidence at the longest follow-up, and renews at full scale on a cut of about 27 to 30 points; offered cases still inside their twelve months fail at the provider's month-by-month rate and terminated cases convict more often than cases never diverted, so only each pending case completed through its programme month's failure chance and the terminated cases' own conviction rate files about 20 points and renewal at the pilot's scale.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task274": "architecture 1 rebuilt survivors forward from additions through a fitted survivor curve to recover unrecorded ages; this carries a measured instrument bias to every calibration through paired measurements of the same specimens, with no curve, no ages and no survival",
-    "task243": "task243 recovers the share of a population's exits a register records from a growth balance between two counts disturbed by migration; this standardises a laboratory measurement to a reference scale per calibration through re-assays of the same specimens, with no balance, no exits and no migration",
-    "task450": "task450 links two forms through shared items answered by different groups and screens the drifting items; here the same specimens are measured twice, so no group difference is separated and nothing is screened, and the decisive move is the grain of the correction, each calibration rather than the labelled reagent lot"
+    "task133": "task133 conditions a filed cumulative default curve on each loan's survival to date to price a forward loss allowance; this reads a lottery's effect, the offered arm completed through the deferral stage's own month-by-month termination hazard rebuilt from the provider's monthly records and the conviction rate terminated cases reach back on the trial calendar, with no filed curve and a contrast against the arm never offered"
   },
   "lineage": [
     {
@@ -118,9 +114,40 @@
       "org_family": "cooperative_or_member_body",
       "subdomain": "missing-data-censoring-measurement-error",
       "domain": "general-statistics-data-science"
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-23 at stage 4 on Gate F: both isolated scored readers placed every result under its analyzer's last calibration from the UTC event log, took each calibration's ratio from the December re-assays anchored at the October check and committed the golden four counties; the slot's objective was then exhausted and on 2026-11-01 the author re-tasked the number to experiment-causal",
+      "driver": "The decisive quantity is which groups of a weighted population have more than a share below a line on a reference scale, when one check measured the instrument's bias under one calibration and a random subsample was measured again in one later run; the bias is set at each calibration, which changes more often than the labelled batch, so shifts pooled by batch leave the groups measured under calibrations far from their batch's average on the wrong side of the line, and only each reading's own calibration's shift, anchored at the calibration the check ran under, names the set.",
+      "driver_concrete": "Which of eight counties had more than 30 per cent of adults with 2025 examination serum 25-hydroxyvitamin D below 20 ng/mL on the reference measurement procedure's scale: each result divided by the bias of the calibration it was measured under, that calibration's shift read from the December re-assays of stored duplicate aliquots of results measured under it and anchored at the calibration the October accuracy check ran under; not the reported results, not the check's bias on every result, not the re-assay shifts pooled by reagent lot and analyzer.",
+      "stump": "A competent analyst pools the December re-assays by reagent lot and analyzer, adds the October accuracy check for the lot and analyzer it measured and names the wrong counties, or divides every result by the check's bias and names fewer; the calibrator lot changed on its own dates and every recalibration moved the assay's bias, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
+      "niche": "a health district examination survey's 2025 wave, used to choose the counties where the district's 2027 vitamin D programme opens first (more than 30 per cent of adults below 20 ng/mL on the reference method's scale), when one accuracy check measured the laboratory's immunoassay under one calibration and the survey's December re-assays of stored duplicate aliquots, run under one later calibration, are the only link from it to every other calibration of the year",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G2"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "forum": "council_or_assembly",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "research_or_statistics_office",
+      "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+      "domain": "survey-research-official-statistics",
+      "objective": "descriptive-distribution"
     }
   ],
-  "architecture_spent": true,
-  "notes": "Re-rooted 2026-10-23 after architecture 1 was spent at stage 4 (Gate F). Drawn from seed DA24's quantity only (a count on a distribution read against a fixed limit); world redrawn. Architecture 2 was first filed as a county-wide count corrected per reagent lot and analyzer (f2830db8); at stage 2 the count proved to need only the average bias, and per lot and analyzer pooling is the reflex a reader takes with re-assays in hand, so the call became a county designation and the decisive grain the calibration. Axes redrawn on re-registration: strategy decomposition_attribution (banned on task177 v3) to composition_mix, the honest family once the move is each county's own mix of calibrations against its reagent lot's pooled mix; context artifact filed_standard (task177 v3) to close_out_summary, the wave's fieldwork close-out that ships; forcing event launch_or_rollout (task178 v3) to vote_or_meeting, the board's vote on the programme's first counties. WARNs answered in the design note's Draw. Two draws refused before this one: an engine-hours warranty risk set (the integration lever 0.92 to 1.07 of mean imputation) and a chain of lot verifications (estimator spread 900 to 5,600 on 18,000). Architecture 2 spent 2026-10-23 at stage 4 on Gate F: both isolated scored readers built the per-calibration bridge from the December re-assays, anchored the October check at its own calibration and committed the golden four counties (asks 0 of 32 each). Architecture 3 not drawn: no candidate cleared the re-root screens (the design note's last Tried and rejected line), so the number retired 2026-10-23; this card keeps architecture 2's identity, with architecture 1 in its lineage.",
-  "registered": "2026-10-23T09:16:16Z"
+  "notes": "Architecture 3 after the 2026-11-01 re-tasking to experiment-causal.",
+  "registered": "2026-11-02T00:46:45Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "the",
+    "rounding opener": "put",
+    "deliverable set": "xlsx"
+  }
 }

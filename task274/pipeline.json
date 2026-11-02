@@ -1,36 +1,33 @@
 {
  "task": "task274",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
- "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
+ "status": "DESIGN",
+ "domain": "criminology-justice/intervention-policing-policy-evaluation",
+ "objective": "experiment-causal",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "A competent analyst reads the share convicted in the referred case by the 31 August 2026 cut, or the cumulative incidence of conviction at the longest follow-up, by lottery result and renews Nethercote's contract at full scale on a cut of about 27 to 30 points; offered defendants still inside their twelve months fail at the provider's month-by-month rate and a terminated case convicts more often than a case never diverted, so only each pending offered case completed through its programme month's chance of termination and the conviction rate terminated cases reach files a cut of about 20 points, renewal at the pilot's scale.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23",
-  "checks": 51,
-  "fail": 0,
-  "warn": 0
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (6 lines: county names in the plan; world vocabulary in five documents; none names the move)",
-  "reader": "a2r1 and a2r2 (architecture 2) both landed the call: each result under its own calibration's ratio from the December re-assays, anchored at the October check's calibration; asks held (0 of 32 figures each)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK)",
-  "nearest": "task478 v5 0.10"
+  "heart": "",
+  "nearest": "task172 v2 0.09"
  },
  "judge": {
   "verdict": null,
   "disposition": null,
-  "report": "none: the judge thread (run a2r1) was stopped once both scored readers had landed the call, which spends the architecture whatever the verdict"
+  "report": ""
  },
  "returned": [],
- "resume": "PAUSED 2026-11-01 at the draw of architecture 3. Reopened 2026-10-25 at the author's direction to re-root in a fresh world; the second re-root pass on 2026-11-01 ran guard.py recent, coverage and mechanisms --objective descriptive-distribution, and slots on every candidate's mechanism and setting nouns, read the sibling slots' notes and resume lines, and found no candidate that clears them: each was spent in another slot or on a card, landed by the field's method as a reflex, priced by a model of the measurement or an open form, an instrument artefact (Layer 1), unidentified, a WHAT, a reading or a stated rule, or banned in the window (DESIGN_NOTE.md's last Tried and rejected line lists each with its record). No card was registered and the v2 card keeps architecture_spent. Next action, the author's call: retire the number, move it to another objective, or name ground to draw from. A session resuming the draw reads both architecture-3 lines first and starts only from ground neither lists, with guard.py check run on the registered card as the last act of stage 1.",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -38,14 +35,6 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
- "build": {
-  "seed": 893,
-  "checks_failed": 0,
-  "verify": "PASS",
-  "byte_identical": true,
-  "figures_check": "50 of 50",
-  "cracker": "0 of 32, pair ceiling 28.5"
- },
  "architectures": [
   {
    "architecture": 1,
@@ -59,8 +48,10 @@
   },
   {
    "architecture": 3,
-   "drawn": null,
-   "fate": "not drawn 2026-10-23, and not drawn again 2026-11-01: a second re-root pass screened about seventy more candidates and none cleared the screens, the window and the three rules (DESIGN_NOTE.md, the last two Tried and rejected lines); no card was registered"
+   "drawn": "2026-11-02",
+   "fate": null,
+   "objective": "experiment-causal"
   }
- ]
+ ],
+ "retask": "2026-11-01, the author: objective moved from descriptive-distribution to experiment-causal (retirement not taken); START_HERE.md not edited, the range fixes which objective a number belongs to and nothing else"
 }
