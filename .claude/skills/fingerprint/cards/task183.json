@@ -1,101 +1,144 @@
 {
   "task": "task183",
-  "architecture": "v1",
-  "drawn": "2026-10-11",
-  "slot_note": "Seed AD06 (a hospital network rebuilding a retired surge trigger from a settled activation ledger) used as idea material only: its decisive step was a withheld rule recovered from settled figures. Re-rooted inside the same objective (Anomaly Detection & Diagnostics) on an electric utility's underground cable network, where the decisive step is analytical.",
+  "architecture": "v2 (architecture 2, re-root 2026-11-02: a new world, dataset and shell; a Nebraska city electric department's January 2027 patrol of Feeder 14, the line recloser's 2026 trips relocated through the main line's segment impedances)",
+  "drawn": "2026-11-02",
+  "slot_note": "Re-root of the anomaly-detection slot. Architecture 1 (an investor-owned utility's underground cable failures) is spent on measurement and stays delivered on the portal. Architecture 2 moves to a new world (a city-owned electric department's overhead rural feeder), a new dataset and a new shell; the decisive step moves off any count of rows by key onto a per-trip relocation forced by the GIS segment impedances.",
   "domain": "energy-systems-utilities",
   "subdomain": "grid-reliability-outage-analysis",
   "client_domain": "energy-systems-utilities",
-  "niche": "an electric distribution utility's underground cable program naming the one feeder whose worst sections it replaces in 2027, by the cable failures each feeder's in-service sections will have next year, when a first failure seldom recurs and a section that has failed twice keeps failing",
+  "niche": "a city-owned electric department locating what kept tripping its longest rural feeder's line recloser through 2026, for the one main-line section its January 2027 patrol walks, when the recloser's own fault locator carries the first conductor's impedance over a main line whose conductor changes partway out",
   "objective": "anomaly-detection",
-  "shape": "01",
+  "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Quarry Hill 21 will have the most failures of the cable itself in 2027, so it is the feeder for the 2027 cable program.",
-  "answer_source": "task183/submission.md block 1; task183/golden/cable_program_2027.xlsx and feeder_failures_2027.png, written by the generator from target/ and recomputed by verify.py; generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "rule"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G6",
-    "G13"
+    "G2",
+    "G16",
+    "G3"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "grain_or_unit",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "the distribution asset management group that names the feeder for the 2027 underground cable replacement program in the utility's reliability plan",
-  "role_family": "research_desk",
-  "scoring_unit": "per active unit per period",
+  "context_artifact": "filed_model",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field correctly maps the recloser's own fault-locator distances, which agree with every crew-found fault location on file to within a tenth of a mile, onto the main-line sections and sends the patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault.",
+  "domain_test": "Protection engineering's fault location by apparent impedance decides the call: a fault's distance follows from its current and the cumulative impedance of the line between the source and the fault, which stops being proportional to distance where the conductor changes; with another field's nouns there is no impedance, conductor or fault current and the task does not read the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:fault location on a non-uniform line",
+  "layer1": [
+    "a recloser event export in local time across the November daylight-saving change, against the AMI head-end's UTC",
+    "fault currents in amperes in the event export and kiloamperes in the protection study",
+    "GIS segment lengths in feet against the patrol's miles and the study's miles",
+    "conductor carried by ACSR code name in the GIS and by size in the construction standards' impedance table, which sits inside a PDF",
+    "pole tags renumbered in the 2023 GIS conversion, the old tags still on older work orders"
+  ],
+  "stakeholder_role": "the electric department's system engineering group, which writes the January patrol order",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
   "spine": {
-    "file": "ug_cable_fault_work_orders_2012_2026.csv",
-    "rows": 1055,
-    "entity": "one cable fault repair: a work order closing one failure on one underground cable section",
-    "grain": "failure x section",
+    "file": "ami_meter_events_2026.csv",
+    "rows": 0,
+    "entity": "one AMI meter event (power off, power on or momentary interruption) at one service meter",
+    "grain": "meter x event",
     "source": "synthetic"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "utility_or_infrastructure",
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
   "world": {
-    "geography": "United States, Pennsylvania (fictional utility, district and places)",
+    "geography": "United States, Nebraska (a fictional city, its electric department, substation, feeder and places)",
     "currency": "USD",
-    "org_type": "an investor-owned electric distribution utility's underground network district with eight cable-heavy feeders",
+    "org_type": "a city-owned electric distribution department with long rural feeders",
     "invented_names": [
-      "Tamsin Valley Electric",
-      "Harrow Road substation",
-      "Mill Lane substation",
-      "Quarry Hill substation",
-      "Sutter Park substation",
-      "Harrow Road 12",
-      "Harrow Road 14",
-      "Mill Lane 3",
-      "Mill Lane 7",
-      "Quarry Hill 21",
-      "Quarry Hill 22",
-      "Sutter Park 5",
-      "Sutter Park 9"
+      "Pawnee Ridge",
+      "Pawnee Ridge Electric Department",
+      "Westside Substation",
+      "Feeder 14",
+      "R1407"
     ],
     "people": [
-      "Samantha Werner",
-      "Jeffrey Roth",
-      "Charles Weber"
+      "Debbie Kline",
+      "Lisa Lawson"
     ]
   },
   "deliverables": [
-    "cable_program_2027.xlsx",
-    "feeder_failures_2027.png"
+    "patrol_order_jan2027.docx",
+    "lateral_outages_2026.csv",
+    "section_repairs_2026.csv"
   ],
   "opening_move": "question-first",
-  "driver": "When a unit's coming events arise in its parts and a part that has already failed more than once keeps failing at many times the rate of a part with one or no failures, both the unit's trailing event rate and any rate built from its parts' visible attributes miss that the forward count is driven by the current mix of its parts' own failure histories; only a forecast that carries each part's prior failures forward names the unit with the most events ahead.",
-  "driver_concrete": "Each of Tamsin Valley Electric's eight underground feeders is scored on the cable failures (insulation, splice, termination) its in-service sections will have in 2027: Mill Lane 7 had the most such failures in the last five years, but nearly all were first failures on different sections, which seldom fail again, while Quarry Hill 21, whose cable runs under a state highway and has been spliced rather than replaced, now carries 17 in-service sections that have each failed twice or more and fail again at about a third to a half a year, so only a forecast built on each section's own failure count names Quarry Hill 21.",
-  "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keeps only cable-condition failures, drops dig-ins and replaced sections and reads every field correctly still forecasts 2027 from each feeder's recent failure rate, or from failure rates by insulation type and age, and names Mill Lane 7 or Sutter Park 5, because only a forecast that carries each section's own failure history forward shows that Quarry Hill 21's twice-failed sections will fail most.",
-  "domain_test": "What decides the call is distribution cable reliability engineering's condition reading of underground sections, where a first failure is often a one-off splice or termination defect while a second failure marks insulation degraded by water treeing that keeps failing (the reason utilities replace a section at its second failure); with another field's nouns there is no splice, no water treeing and no repair-against-replacement history behind the recurrence, so the task does not read the same.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "sociology-demography/event-history-life-course-analysis/3",
-  "layer1": [
-    "an outage management export at device-operation grain, with staged restorations as several rows per outage",
-    "multi-feeder outages (a substation breaker) carried as one row per feeder, with the outage's total customer minutes repeated on each row",
-    "an outage management system migration in March 2026: legacy rows in local prevailing time, new rows in UTC, the reliability year defined in local time",
-    "the customer system's feeder label stored at account set-up, before a June 2026 lateral transfer between feeders that only the dated connectivity model records",
-    "a GIS cable register where a replaced section is retired and its replacement carries a new section id with a predecessor pointer",
-    "work orders with a coded cause and a free-text crew note, dig-ins coded as third-party damage"
-  ],
+  "question_form": "where",
+  "driver": "A device records where each event arose by a calculation that assumes the line is uniform along its whole length, every check on file falls in the stretch where it is, and beyond a change in the line's make-up the calculation overshoots, so the place the events cluster in the device's record is not where they arise; only re-deriving each event's position from its raw measurement through the line's actual make-up, segment by segment, finds it.",
+  "driver_concrete": "Each 2026 two-phase trip of Feeder 14's line recloser R1407 is relocated from its fault current through the GIS segment impedances (336.4 ACSR to the conductor change, 1/0 ACSR beyond), not read from the recloser's own fault locator, which carries the 336.4 impedance over the whole main line and so places the wind-day cluster about two miles too far out, while every crew-found fault on file lies on the 336.4 stretch where the setting is exact.",
+  "stump": "A competent solver maps the recloser's fault-locator distances onto the main-line sections and sends the January patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault; the step that lands it there is trusting a single-impedance locator, validated only on faults inside its first conductor, on a main line whose conductor changes partway out.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task132": "task132 sums a wear-out rate by item age over a horizon and turns on renewal (a failed item is replaced and restarts its curve); here age is a visible attribute whose rate model is a wrong rung, and the decisive state is each section's own count of prior failures, with replacement only removing a section from the pool",
-    "task46": "task46 measures age on the wrong clock (register age against service exposure); here no clock is wrong, and the forward rate turns on the section's failure history, not its exposure"
+    "task186": "task186 tests each fuel station's price change across an event against its own changes in quiet periods under shared local cycles (a noise model for a change); task183 tests no change: each recorded trip's position is re-derived from its fault current through the main line's segment impedances, because the recloser's locator assumes one conductor for the whole line"
   },
-  "lineage": [],
-  "notes": "Anomaly Detection & Diagnostics: the network's failure monitoring has to separate the feeder whose cable is heading into a run of repeat failures from feeders whose recent counts are first failures that seldom recur. The prompt files the estimand (cable-condition failures on the sections in service at 30 September 2026, calendar 2027, per feeder) and names no method; the design forces the method because the closed record shows a second failure is followed by a third far more often than a first by a second. stump_strategy composition_mix: a feeder's forward count is the mix of its sections' failure states, and the state that decides is derived (failures per section), not a column. Pattern E with G14 decisive (the pooled rate does not apply to the pool of twice-failed sections), G6 for the replaced sections leaving the pool, G13 for the 2027 window. No calibration corpus, no decoy document, no stakeholder belief. Personas drawn with guard.py names (en_US, seed 183) and checked against task180's six names on the committed cache (no overlap)."
+  "lineage": [
+    {
+      "architecture": "v1 (Tamsin Valley Electric's underground cable program: which of eight feeders fails most in 2027, from each section's own failure history)",
+      "drawn": "2026-10-11",
+      "fate": "spent 2026-10-22 on measurement at the rework, never by a portal result (delivered 2026-10-12, pending review, left as delivered): the decisive step is reachable by one group-by on section_id, which names the call at an infinite lead in 300 of 300 swept world settings, and the designed forecast is linear in the in-service stock counts (regression on the twice-failed count alone R-squared 0.8180); re-rooted 2026-11-02 to architecture 2 in a new world, dataset and shell",
+      "domain": "energy-systems-utilities",
+      "subdomain": "grid-reliability-outage-analysis",
+      "objective": "anomaly-detection",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G6",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "composition_mix",
+      "forum": "regulator_or_inspector",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "utility_or_infrastructure",
+      "niche": "an electric distribution utility's underground cable program naming the one feeder whose worst sections it replaces in 2027, by the cable failures each feeder's in-service sections will have next year, when a first failure seldom recurs and a section that has failed twice keeps failing",
+      "driver": "When a unit's coming events arise in its parts and a part that has already failed more than once keeps failing at many times the rate of a part with one or no failures, both the unit's trailing event rate and any rate built from its parts' visible attributes miss that the forward count is driven by the current mix of its parts' own failure histories; only a forecast that carries each part's prior failures forward names the unit with the most events ahead.",
+      "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
+      "why": "The correcting quantity was one per class (four pooled rates by prior-failure count), forced from the same file at the same grain as the main file, so a count of rows by section_id carried it; the re-root needs a correcting quantity one per case, forced by a second file at a finer grain, with no group-by on any shipped key reaching the call.",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "put",
+        "rounding opener": "give",
+        "deliverable set": "png+xlsx"
+      }
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "notes": "Anomaly Detection & Diagnostics: separating where a recurring fault really is from where a device's record places it. The prompt asks where the patrol should look; no method is named. The physics forces the relocation (the apparent impedance of a fault is the cumulative impedance of the line to it, filed in the GIS and the construction standards), and the record's own locator is refuted only by recomputing it, a check no sentence asks for. Gap rule: no filed sentence says how a fault is located; G2 decisive (the locator works at the line grain, the answer needs the segment grain), G16 (the method the line's structure entitles), G3 (the recorded location against the fault's). Personas drawn with guard.py names (en_US, seed 183): Debbie Kline and Lisa Lawson, not the v1 personas.",
+  "registered": "2026-11-02T08:25:18Z",
+  "shell": {
+    "question form": "where",
+    "second-sentence opener": "name",
+    "rounding opener": "miles",
+    "deliverable set": "csv+csv+docx"
+  }
 }
