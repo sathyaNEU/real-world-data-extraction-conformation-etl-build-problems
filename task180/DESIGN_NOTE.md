@@ -1,416 +1,99 @@
-# task180 design note (architecture 4)
+# task180 design note (architecture 5)
 
-Seed AD03, objective Anomaly Detection & Diagnostics, re-rooted a fourth time on the author's rule (no retiring).
-Architecture 1 (revenue protection, the screen grain) was spent at in-house round 1, architecture 2 (a transformer
-inspection slate, main-tank acetylene attributed to its source) at judge pass 2, architecture 3 (pharmacovigilance
-signal refinement, channelling against a self-controlled comparison) at hardening loop 1 under the literal-determinism
-rule; their records are the lines of the Tried and rejected section, and their files are gone from the folder. Carried
-forward from all three: the decisive separation sits far above the noise of every lens a reviewer can bring, every
-graded figure is stated with its window and method, and nothing in the pack files the comparison that decides.
+Seed AD03, objective Anomaly Detection & Diagnostics, re-rooted a fifth time on the author's rule (no retiring).
+Architectures 1 to 4 (revenue protection, a transformer inspection slate, pharmacovigilance channelling, an
+induced-seismicity traffic-light outlook) are spent; their records are the lines of `## Tried and rejected` and the
+card's lineage, and their files have left the folder. Architecture 4 stays on the portal as delivered on 2026-10-12.
+Carried forward from all four: the decisive step is an estimate with an estimation step inside it, never a selection
+or a single group-by; the field's own method sits at the bottom of the ladder; nothing in the pack files the
+comparison that decides.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task180.json` (v4), registered 2026-10-12. `guard.py check`: WARN
-  repeat.gate_g only (forecasting in the last two builds, task124 and task181), answered in the card's notes: the
-  forecast here is pinned once the 2026 record's detection is modelled, with no change to the generating process. A
-  first card (strategy population_selection, pattern E) was blocked against task124 (ban.strategy and
-  test.same_driver); the move is a property of the recording process, so the honest labels are strategy `other`
-  (detection completeness on a daily noise cycle) and pattern `none`, with the G-codes carrying it.
-- **Pairing:** Physical & Environmental Sciences, task type `environmental-monitoring-exceedance` (AD), objective
-  Anomaly Detection & Diagnostics. The anomaly is a geothermal plant whose induced seismicity will run over the mining
-  authority's traffic-light amber in 2027; the diagnosis is that its quiet 2026 record is an artifact of daytime
-  noise at its town stations, not a quiet reservoir.
-- **Stakeholder and forum:** the state survey's seismological service (org `research_or_statistics_office`), which
-  runs the plants' monitoring networks and reports the traffic-light counts quarterly; its induced-seismicity lead
-  (role `research_desk`) tells the mining authority (forum `regulator_or_inspector`) before the 2027 operating plans
-  are approved which plants the new networks will locate over amber. Forcing event `cutover_or_migration`: from
-  1 January 2027 the monitoring ordinance requires borehole stations at every plant. People (guard.py names, de_DE,
-  seed 180): Gundula Atzler, Eugen Scheel, Amalie Mende, Arndt Ernst.
-- **Shape 07 (grid of cells):** plant by quarter of 2027, each cell an expected count of located earthquakes of ML
-  1.0 or more within 5 km of an injection well and its place against amber (5 plants x 4 quarters = 20 cells), with
-  the call (which plants, which quarters) on top; the asks add the annex's 45 figures (5 plants x 3 quarters of 2026 x 3
-  measures).
-- **Gap and generators:** gap population (the catalogue is not the earthquakes), then time (the 2027 network records
-  what the 2026 one missed). G12 (absence against record of absence: a daytime hour with no small events is a
-  non-answer), G14 (the detection yield conditioned on the hour), G16 (which completeness method the record
-  supports), G13 (the horizon: the network the forecast is counted on). Gate G `forecasting`.
-- **Data-native sentence:** the 2026 networks record an earthquake only when it rises above the ground noise at the
-  stations around the plant, and in town that noise follows the working day, so the town plant's small events reach
-  the catalogue mostly in the night hours while its magnitude-frequency curve still looks complete on the usual test.
-- **World (built; the generator asserts every figure named here):** five deep geothermal district-heating doublets in
-  the southern Bavarian Molasse basin, each reinjecting cooled brine into the Upper Jurassic carbonate at 3 to 4 km.
-  Injection follows heat demand (winter quarters high, summer low) and the filed 2027 operating plans repeat each
-  plant's 2026 quarterly volumes. Traffic-light scheme (the authority's, 2024): amber when the plant's network locates
-  more than 120 earthquakes of ML 1.0 or more with an epicentre within 5 km of an injection well's open hole in a
-  calendar quarter (local time); red on peak ground velocity of 5 mm/s (never reached). Monitoring ordinance (2026): from
-  1 January 2027 at least three borehole stations within 5 km, the network designed to locate every earthquake of ML 0.6
-  or more within 5 km. Magnitudes follow Gutenberg-Richter with b 1.22 to 1.27 at the rural plants and 1.45 at
-  Pfeilbrunn.
-  - **Pfeilbrunn (the town plant):** four stations in the town (school basement, waterworks, fire station, building
-    yard); true rate of earthquakes of ML 1.0 or more about 220 in a winter quarter. The 2026 network records every
-    earthquake above ML 0.6 from 23:30 to 05:00, half of them near ML 1.3 in the shoulder hours, 1.95 on working days and
-    1.7 at weekends; 442 of its 658 located earthquakes of ML 1.0 or more fall in the 5.5 quiet hours. Its catalogue's
-    maximum-curvature completeness reads ML 0.4 like every plant's and its b-value above 0.6 reads 1.12 (rural 1.21 to
-    1.29).
-  - **Moorstetten (two injection wells, the busiest located catalogue):** 92 in the first quarter of 2026; golden 85.
-  - **Lanzenried:** LZR5 replaced LZR4 nearer the well on 15 July 2025; before it the network recorded about a third of
-    its earthquakes of ML 1.0 or more (half at ML 1.45), so its located counts more than double from 2025 to 2026 and
-    year-on-year growth puts it over (rung 1: 178 and 204).
-  - **Wendelsried and Ottenmoos:** 45 to 47 in a winter quarter; each with a quarry nine kilometres or more from its open
-    hole whose blasts the review types explosions.
-
-- **Build gates (2026-10-12).** `guard.py heart`: WARN only. repeat.gate_g is answered on the card (the forecast is
-  pinned once the 2026 record's detection is modelled; task124's and task181's turned on a changed generating process).
-  repeat.deliverables (docx and xlsx, as task120): the outlook goes to the authority as a signed memo with its chart, and
-  the annex as the workbook its plan approval takes, the two products section 7.2 of the scheme names. `guard.py
-  surface`: the task181 pairing on a shared extract-notes file name is cleared by naming the data office's note in its
-  own idiom (`datenabgabe_ampel_2026-10-12.md`); the shared gap (population) and decision type (designation_set) are
-  honest card values, the patterns differ (task181 D, task180 none) and the drivers sit at 0.05.
-- **leak.py (2026-10-12): REVIEW, no LEAK.** 0.6 in the ordinance and 120 in the scheme and bulletin are the filed
-  design completeness and amber line (stated inputs). The bulletin and scheme share the call's words because they are
-  the traffic-light scheme's own documents; neither forecasts 2027, and the bulletin's table is the located counts of
-  2025 Q4 to 2026 Q3 (the default path's input, labelled as such). The design-note terms in the notes, ordinance, plans,
-  bulletin and scheme are plant names and the scheme's vocabulary; none names hours, noise or completeness by hour.
-  The prompt's annex sentence carries "automatic", "located" and "recording" because those are the annex's measures.
-## Default path
-
-1. Take the survey's reviewed catalogue, 1 January 2023 to 30 September 2026, event type earthquake, ML 1.0 or more,
-   epicentre within 5 km of an injection well's open hole (open holes from the well register).
-2. Count each plant's events in each calendar quarter, local time.
-3. Carry each quarter's count into the same quarter of 2027, the operating plans repeating 2026's volumes (for the
-   fourth quarter, 2025's).
-4. Compare each cell with amber's 120.
-
-Ends on: no plant over amber in any quarter of 2027 (Moorstetten highest at 92 in the first quarter; Pfeilbrunn at 62 and 77 in the first and fourth).
-Golden: Pfeilbrunn over amber in the first and fourth quarters of 2027 (about 223 and 206), no other plant in any quarter.
-
-## Stump sentence
-
-A competent solver counts each plant's earthquakes of ML 1.0 or more within 5 km of its injection well in the reviewed
-catalogue quarter by quarter, carries the counts into 2027 on the repeated operating plans and files that no plant goes
-over amber (Moorstetten highest at 92, Pfeilbrunn at 62 and 77); the step that lands it there is reading the 2026
-catalogue as complete at ML 1.0 when Pfeilbrunn's town stations lose most daytime earthquakes, so Pfeilbrunn's true
-rate, recovered from its quiet night hours (442 of its 658 located earthquakes fall in 5.5 hours), is 28.0 per 100,000
-m3 injected against 9.6 on its whole-day record, about 223 and 206 in the winter quarters of 2027, which the borehole
-stations will locate from January.
-
-## Three rules
-
-Rewritten 2026-10-21 against the measured screens of the stage-2 repair pass. Points that pass say so; the point
-the build dies on says so too, with its number, rather than being worded to clear the gate. Screens 1 and 3 pass
-on their corrected criteria; the build dies on screen 2, whose failure the dial measurement then shows no magnitude
-can buy out.
-
-- **Task type:** `environmental-monitoring-exceedance`, the Physical & Environmental Sciences task type the taxonomy
-  gives to Anomaly Detection & Diagnostics: a monitored quantity carried to a regulator's threshold, with the
-  diagnosis of why the monitoring record understates it. Passes.
-- **Domain test:** the decisive analysis is the seismologist's own: the completeness of an earthquake catalogue by
-  place and hour, and the Gutenberg-Richter rate it supports above the counting magnitude; with another field's nouns
-  there is no magnitude-frequency law, no detection threshold set by ambient ground noise and nothing to recover from
-  the quiet hours. Passes.
-- **Swap:** "will the new borehole networks put any of our five geothermal plants over the traffic-light amber in
-  2027" reads, with hospitals for plants and admissions for earthquakes, as a count against a threshold and nothing
-  else: no magnitude-frequency law fixes the rate below the counting level, no ambient noise sets a detection
-  threshold that follows the working day, and there are no quiet hours a rate can be recovered from, so the
-  deciding quantity disappears. Passes.
-- **Layer 1:** origin times in UTC against a rule counted in local calendar quarters across the daylight-saving
-  changes; the event database's origin table holding the real-time locator's several solutions per event and the
-  analysts' review origins under one id scheme; the federal agency's catalogue duplicating the larger events under its
-  own ids and magnitudes; quarry blasts typed explosions; station epochs and location codes changed at the 2026
-  digitiser exchange and at LZR4's retirement; the operators' monthly reports filed by the month submitted from January
-  2026, December 2025 filed twice; a second injection well reporting under its drilling name; hourly telemetry that ties
-  to the metered volumes only to a few parts per thousand. Each is something these systems produce, and none decides the
-  call.
-- **Layer 2:** the shortcut is to take the located events as the earthquakes; the expert tests the catalogue's
-  completeness by hour as well as by magnitude before using it as a rate, and recovers the true rate where the network
-  is blind part of the day.
-- **Decisive step:** take Pfeilbrunn's rate of earthquakes above the counting magnitude from the 5.5 hours its town
-  stations hear everything above ML 0.6, rather than from its whole-day record, because its network's sensitivity
-  follows the working day while the rural networks' does not.
-- **Not semantics:** reading every field, code, unit and definition correctly (UTC origin times against local
-  quarters, the open-hole section against the wellhead, the reviewed catalogue's ML against the origin table's and the
-  federal agency's, the reported volumes of scheme 6.2 against the hourly telemetry) still leaves the whole-day
-  located count as the rate, which files no plant over amber. Nothing in the pack defines a complete catalogue, names
-  an hour or mentions ground noise, and every one of the ten semantic forks is asserted to give the same call.
-  Passes.
-- **Not rule application:** no filed rule or procedure performs the step, and the family the filed rules leave open is
-  not degenerate: over six constructions a seismologist would use once the incompleteness is recognised (the window's
-  count over its share of the clock, over the volume injected inside it, over the flat-profile plants' observed
-  window share, a non-parametric transfer from the magnitudes recorded at every hour, hour-by-hour completeness with
-  the blind hours imputed, and a detection function fitted separately on the window, the shoulder and the working
-  day) Pfeilbrunn's first 2027 quarter runs 143 to 238, a spread of **95.1 printed units** on a figure printed to
-  whole earthquakes, with every one of the six filing the same call. So this point passes. **The build dies on
-  screen 2 instead, and the reason is arithmetic rather than rule application:** once the catalogue is
-  grouped by local hour, the designed construction is an exact identity in that one group-by (correlation
-  +1.00000000, maximum absolute difference 0.000e+00 printed units over eight world redraws and twenty cells), the
-  count form of it needs no volume file at all, and the entry price of that group-by is pinned to the ladder's own
-  separation by the identity recorded in Tried and rejected (the dominance the decisive step buys equals the
-  window's observed share of located earthquakes over its share of the clock, to 4.441e-16).
-- **Analyst test:** a strong analyst who reads the counting rule and the reviewed catalogue correctly counts each
-  plant's events of ML 1.0 or more per quarter, confirms completeness with the maximum-curvature test (ML 0.4 at
-  every plant, and the goodness-of-fit and b-value-stability tests read 0.3 and 0.4, so every magnitude-domain test
-  agrees), scales by the planned injection and files that no plant goes over amber in any quarter of 2027,
-  Moorstetten highest at 92, Pfeilbrunn at 62 and 77; wrong, because Pfeilbrunn's completeness changes with the hour
-  of the day. Executed on the clean truth, the whole magnitude-domain workflow returns 9.56 per 100,000 cubic metres
-  against the truth's 27.52 and files that answer, and a pooled Ogata-Katsura fit returns the same 9.56 (its fitted
-  detection magnitude 0.368 with a spread of 0.122, against a working-day truth of 1.95). Passes.
-- **Estimand:** each plant's count of earthquakes of ML 1.0 or more with an epicentre within 5 km of an injection
-  well's open-hole section in a calendar quarter of 2027 in local time, counted on networks the ordinance designs to
-  locate every earthquake of ML 0.6 or more within 5 km, at the injected volumes the filed operating plans carry:
-  the counting rule, the zone, the magnitude and the local quarter in `tls_scheme_2024.pdf` sections 2 and 3, the
-  2027 network's design completeness in `monitoring_ordinance_2026.pdf` section 3, the volumes in
-  `operating_plans_2027.pdf`. Earthquakes the 2026 networks did not record are in the population; the ordinance's
-  design sentence is what puts them there.
-- **No decoy:** nothing is planted to be caught. The bulletin is a correct, labelled record of the counts the 2026
-  networks located and is the default path's own input; the federal catalogue starts at magnitude 2.0 and is blind to
-  the earthquakes the call turns on; the two distractors are a groundwater series and a field-visit sheet; no memo,
-  draft, briefing or stakeholder figure argues for a plant or for a method, and the hourly telemetry is asserted to
-  show Pfeilbrunn injecting more by day than in its quiet hours, so no file carries the wrong explanation either.
-  Passes.
-- **No certified replay:** no certified or published figure pins the method. The only published counts are the
-  bulletin's located counts, which the default path reproduces; the night rate is estimated from the record and
-  appears in no document. Passes.
-- **Lesson:** a recording process whose sensitivity follows the working day leaves a unit's catalogue reading
-  complete on every magnitude-domain test while it misses most of the day, and a forward change to the instruments
-  turns that gap into the count. The measured objection to the build is not that the lesson is wrong but that the
-  gap which teaches it is the same number as the signal that gives it away, so the lesson cannot be taught at a
-  price a solver will not pay.
-
-## Readability screen
-
-Each rung is the move a solver makes to leave the rung below; the decisive rung has to be silent on all six tests.
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 1, year-on-year growth (Lanzenried over) | no | the inventory's epochs show LZR5 replacing LZR4 on 15 July 2025 | yes, a trend is a forecaster's first refinement | no | no | yes, one ratio | readable |
-| 2, rate per volume on the record complete by maximum curvature, Lanzenried from July 2025 | no | no | yes, the seismologist's first catalogue check | no | no | no | readable |
-| 3, completeness by the hour of the day at Pfeilbrunn (decisive) | no: no document names ground noise, hours or Pfeilbrunn's completeness; the ordinance states only the 2027 network's design | no: no column marks day, night or detection; the hour comes from converting UTC origin times | no: counting, trend, volume scaling, maximum curvature and the b-value all land on no plant or on Lanzenried | no: the bulletin agrees with the located counts, the federal catalogue is blind below 2.0 | no: keys unique, no duplicates, every join matches | no: the night rate scaled to the day needs the insight that the day is masked | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternatives | Call under each | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | earthquake | event type earthquake in the reviewed catalogue | every located event, explosions included | same call | the scheme (3.2) counts earthquakes; every explosion lies 8 km or more from an open hole (asserted) |
-| SF2 | within 5 km of the injection well | epicentral distance to the open-hole section in the well register | the wellhead; the open hole's midpoint | same call | the scheme (2.1) names the open hole; both alternatives asserted to give the same call |
-| SF3 | calendar quarter | local time | UTC | same call | the scheme (3.1) says local time; UTC quarters asserted to give the same call |
-| SF4 | ML 1.0 or more | the reviewed catalogue's ML | the origin table's ML; the federal catalogue's magnitude | not run on the call | the scheme (3.2) counts the reviewed catalogue; the federal catalogue starts at 2.0 (asserted) |
-| SF5 | the count the borehole networks will locate | every earthquake of ML 1.0 or more within 5 km, the ordinance designing the 2027 networks to locate every one of ML 0.6 or more | the count the 2026 networks located | the default, no plant | the ordinance's design sentence (§ 3); the stump is not this reading (the default path accepts the 2027 network locates every event and takes the 2026 record for every event) |
-| SF6 | 2027 injection | the filed 2027 operating plans, each quarter at its 2026 volume, the fourth at 2025's | a trend in volumes | same call | the authority's plans note (asserted plan volumes) |
-| SF7 | over amber | more than 120 in a quarter | 120 or more | same call | no golden cell within 3 of 120 (nearest 85 and 206, asserted) |
-| SF8 | the record a rate is taken from | 2023 to 2026 | 2026 only; 2025 to 2026; 2024 to 2026 | same call | each window asserted, also with the night-hour estimator on every plant |
-| SF9 | the forecast count | the expected count | the median count | same call | asserted |
-| SF10 | Pfeilbrunn's quiet hours | 23:30 to 05:00 local | 00:00 to 04:00; 00:30 to 04:30; 23:00 to 05:00; 22:00 to 06:00; 01:00 to 05:00 | same call | each window asserted |
-
-## Ladder
-
-Built values; the generator asserts each rung's answer by name.
-
-| Rung | Construction | Names | Pfeilbrunn Q1, Q4 | Nearest other cell |
-|---|---|---|---|---|
-| 0, default | each plant's located earthquakes of ML 1.0 or more within 5 km per local quarter, carried into the same 2027 quarter | no plant | 62, 77 | Moorstetten 92 |
-| 1 | the same, grown at each quarter's latest year-on-year rate | Lanzenried in the first and fourth quarters (178 and 204) | 51, 78 | Lanzenried 178 |
-| 2 | each plant's rate per 100,000 m3 injected (the reported volumes, scheme 6.2) over the record complete by maximum curvature (ML 0.4), Lanzenried's from August 2025, every hour | no plant | 76, 70 | Moorstetten 85 |
-| 3, decisive | Pfeilbrunn's rate from 23:30 to 05:00 scaled to the day; every other plant complete at every hour | Pfeilbrunn in the first and fourth quarters | 223, 206 | Moorstetten 85 |
-
-- **Position:** on rung 0 Pfeilbrunn is third in the first quarter (Moorstetten 92, Lanzenried 73, Pfeilbrunn 62) and
-  level with Lanzenried at 77 in the fourth; it leads no intermediate rung (asserted: never alone at the top of rung 0).
-- **Margins:** Pfeilbrunn's winter cells 1.7 times amber or more (206 against 120); every other golden cell 0.71 of
-  amber or less (85); rung 1's Lanzenried 1.48 times amber; rung 0's nearest cell 0.77 of amber.
-- **Dominance:** the decisive move multiplies Pfeilbrunn's rate by 2.9 (28.0 against 9.6 per 100,000 m3); its
-  single-quarter night estimates sit over amber in every winter quarter of the record and under it in every summer one
-  (asserted quarter by quarter).
-- **Grid:** three moves (growth, Lanzenried's network change, completeness by hour), eight cells, asserted cell by cell:
-  Pfeilbrunn is over in exactly the four cells with completeness by hour; Lanzenried is over only in the two cells with
-  growth on its post-July-2025 rate; Moorstetten, Wendelsried and Ottenmoos are under in every cell (highest 91). No
-  cell without completeness by hour names Pfeilbrunn, and the night-hour estimator applied to every plant names no
-  second plant on any window.
-- **Worth:** on the graded set only the decisive move brings Pfeilbrunn in; growth brings Lanzenried in, and the
-  network change is what keeps growth from being a correction.
-
-## Closure table
-
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | every earthquake of ML 1.0 or more within 5 km in 2027, the ones the 2026 networks missed included | filed: the ordinance's design completeness (ML 0.6); the estimand executes literally |
-| 2 | Unit of account | one earthquake | C1: the reviewed catalogue has one row per event (asserted); the scheme counts earthquakes |
-| 3 | Attribution window | calendar quarter, local time | filed in the scheme; C1 for the call (quarter-end events move no cell across 40, asserted) |
-| 4 | As-of dating | the reviewed catalogue and origin table to 30 September 2026 as extracted on 12 October 2026; the plans as filed in September 2026 | filed in the extract notes and the plans note |
-| 5 | Version basis | reviewed locations and magnitudes | filed in the scheme (3.2); the origin table's automatic and review origins are the ask's |
-| 6 | Denominator | none in the estimand (a count); rate per injected volume is method, the volume as the scheme's 6.2 defines it | C3: same call with or without volume scaling, on reported or telemetry volumes; every rate convention on the whole record keeps each cell within 8 per cent (asserted) |
-| 7 | Weighting | none | not applicable to a count |
-| 8 | Window length | the record a rate is taken from | C1: 2026 only, 2025 to 2026, 2024 to 2026 and 2023 to 2026 give the same set (asserted, SF8) |
-| 9 | Boundary inclusivity | more than 120 | filed; C1: no golden cell within 3 of 120 (asserted) |
-| 10 | Rounding path | whole earthquakes; expected counts shown to whole numbers | filed in the prompt; the set is graded, the counts at "about" |
-| 11 | Tie-break | none | no two cells tie at the line |
-| 12 | Maturity and censoring | the record complete to 30 September 2026 in time; detection censoring at Q is the decisive method | C1 in time; the method is forced by the record (Literal reader) |
-| 13 | Order of operations | filter (type, distance, magnitude) then count by quarter | commuting steps (asserted) |
-| 14 | Row order | none | C1 over permutations (asserted) |
-| 15 | Duplicate resolution | the reviewed catalogue has one row per event; the origin table's several origins per event and the federal duplicates are other files | C1 (asserted unique event ids) |
-| 16 | Identity normalisation | plant, well and open hole through the plant and well registers | filed ids, consistent (asserted) |
-| 17 | Netting | none | not applicable |
-| 18 | Dimensional units | ML, km, UTC origin times against local quarters | units in the dictionary |
-| 19 | Code semantics | event types earthquake and explosion | dictionary semantics; never the stump |
-| 20 | Integerisation | counts are integers | C1 by construction |
-| 21 | Clause scope | amber per plant per quarter; red not reached | filed in the scheme |
-| 22 | Forward window contents | 2027 injection, network and seismic response | the filed operating plans and ordinance; the response from the record |
-
-## Literal reader
-
-Executing the prompt, the 2024 scheme and the 2026 ordinance word for word: a plant is over amber in a 2027 quarter
-when its network locates more than 120 earthquakes of ML 1.0 or more with an epicentre within 5 km of an injection
-well's open hole; from January the ordinance designs every network to locate each earthquake of ML 0.6 or more within
-5 km, so the count is every such earthquake that occurs; the operating plans repeat each quarter's 2026 volume (the
-fourth quarter's 2025 volume); so the quantity is each plant's expected count of such earthquakes per quarter under
-those volumes. The record gives that rate directly where it is complete at every hour (Moorstetten, Wendelsried,
-Ottenmoos, and Lanzenried from 15 July 2025) and at Pfeilbrunn only through the hours its stations are quiet, where its
-earthquakes arrive at the rate the other plants show around the clock. Every literal reading (SF1 to SF10) returns
-Pfeilbrunn over amber in the first and fourth quarters of 2027 and no other cell; the default path's answer comes from
-the same literal estimand by an easy method, never from another reading.
-
-## Oracles
-
-- The survey's bulletin for the third quarter of 2026: the located counts of the fourth quarter of 2025 to the third of
-  2026, every plant green; a correct, labelled record of located counts that ties with the default path because it is
-  that path's input, and says nothing about the rate the networks missed. Not an oracle.
-- The federal agency's catalogue (2.0 and over): blind to the small earthquakes the call turns on; ties under every
-  basis.
-- The hourly telemetry: each plant's injected volume on every path; Pfeilbrunn injects more by day than in the quiet
-  hours (asserted), so injection cannot explain its daytime deficit.
-- The origin table: the real-time locator works on the same stations and misses Pfeilbrunn's day as the review does;
-  ties under every basis.
-- None ties only under the golden.
-
-## Ask sheet
-
-The main call's declared row population: the reviewed catalogue's earthquakes within 5 km of each plant's open hole,
-1 January 2023 to 30 September 2026, with the operators' reported volumes (the scheme's 6.2 definition, which the
-judge's first pass read as governing the forecast's volume), the 2027 operating plans and the ordinance. The ask 1
-device therefore sits on the main path's volume input: read as labelled, the 2026 sheet moves no cell across 120
-(asserted, the call unchanged) while it moves the 2026-based cells, so a response that misses the filing month loses
-chart cells as well as ask 1; the hourly telemetry gives the same cells within 1.4 per cent. The ask 2 and ask 3 devices
-(the event database's origin table, the station inventory's epochs against the availability log) stay off the main
-path.
-Each ask is one of the measures the scheme's annex (7.2) carries for every plant and quarter of the year to date, on
-which the call does not turn (H18 home 1); no ask is keyed to the call or its construction, and the three share no
-primary family and no file path. No sentence in the pack adjudicates a device.
-
-**Ask 1. Each plant's injected volume in each of the first three quarters of 2026 (15 figures, cubic metres to the
-nearest hundred).**
-- Use: the authority reads each plant's injection beside its counts and the 2027 plans.
-- Construction: the operators' monthly metered reports for each plant's injection wells (scheme 6.2), summed over the
-  months of the quarter.
-- Primary device (D2, a label stored before a silent switch): from January 2026 the reports come through the
-  authority's portal, whose export files each report under the month it was submitted, the month after the one it
-  reports; the 2026 sheet keeps the `month` column of the earlier sheets and nothing says the meaning changed. Only
-  internal inconsistencies find it: the received dates sit in the filed month instead of the month after it, December
-  2025 appears again as 2026-01 with the same volumes, a row filed 2026-10 carries September, and the hourly telemetry
-  matches each row a month earlier. Every figure moves 5 to 50 per cent.
-- Hazard (D7, the true key in a history): Moorstetten's second injection well reports under its drilling name
-  MST-Th4a, mapped in the well register's remarks; a join on current well ids drops 42 per cent of Moorstetten's volume.
-- Span (5 files, 10 columns): reports, plant register, well register, telemetry, scheme.
-- Ladder (asserted): as labelled (the cracker, every figure off); shifted without the October filings (every third
-  quarter off); joined on current ids (Moorstetten low); golden. Fair: the shift reproduces the meters exactly (asserted
-  against the simulation's readings).
-
-**Ask 2. Earthquakes of ML 1.0 or more within 5 km that the automatic system located, each plant and quarter (15 whole
-numbers).**
-- Use: what the authority's real-time view held, beside the reviewed record.
-- Construction: the origin table's origins authored by the real-time locator (scautoloc), grouped into events by origin
-  time, each event at the last origin the locator computed, counted where that origin's epicentre is within 5 km and
-  its ML 1.0 or more, by local quarter.
-- Primary device (D6, a log read as a roster): the table holds every origin of every event, the locator's two to four
-  solutions for about two events in five and the analysts' review origin for every reviewed event, under one id scheme
-  with nothing naming the event; counted as rows every figure is high, and grouped into events at the latest origin it
-  returns the review's solution.
-- Over-cleaning half: second shocks 9 to 30 seconds after an earthquake at the same spot; grouping at a minute merges
-  them. Any grouping window from 0.8 to 8.5 seconds, with or without a distance of 3 km or more, gives the golden
-  (asserted).
-- Reading pin: the final, first and any-qualifying origin each move all 15 figures, so the scheme's 7.2 counts each
-  earthquake "at the system's final automatic solution"; it names no table, author or grouping.
-- Hazard (D8): origin times UTC, quarters local.
-- Span (3 files, 9 columns): origin table, well register, scheme.
-- Ladder (asserted): every locator origin counted (the cracker, every figure high); every origin in the table counted;
-  each event's latest origin (the analysts', 13 or more figures off); each event's first origin; grouped at a minute;
-  golden. Honest weight: an origin table is not an event list to a seismologist, so this is the ask a careful response
-  is likeliest to see through; the review origins are what keep a response that groups the origins off the figure.
-
-**Ask 3. Hours each plant's network had fewer than four stations recording, each quarter (15 figures, one decimal).**
-- Use: the scheme's validity condition (5.1); the authority reads these hours beside each quarter's count.
-- Construction: each station's vertical-channel epochs (inventory) less its vertical-channel gaps (availability log),
-  then the time fewer than four of the plant's network stations (plant register) were recording, by local quarter.
-- Primary device (D4, absence evidenced in a file no habitual join reaches): at each 2026 digitiser exchange (one
-  station per network per quarter) the old epoch ends after the power-down and the new one starts two to five hours
-  later; the availability log covers gaps inside epochs only, so the hours between the epochs appear nowhere but in the
-  inventory. Every figure moves by the exchange hole.
-- Hazards: the crew's visit sheet in local time with arrival and departure, wider than the downtime (over-cleaning:
-  added as downtime it overstates every figure, read as UTC or as local time); horizontal-only gaps when the masses are
-  recentred (scheme 5.2 counts the vertical channel); LZR4's retirement in July 2025 (the plant register's network).
-- Span (4 files, 9 columns): inventory, availability log, plant register, scheme.
-- Ladder (asserted): vertical gaps only (the cracker, every figure low); the visits added as UTC or as local time
-  (every figure high); gaps on any channel (high); golden.
-
-**The cracker sheet.** The cracker landed Pfeilbrunn in the winter quarters, ran the hygiene battery (keys unique, no
-exact duplicates, every join matched) and executed every filed rule (the scheme's counting rule and local quarters,
-the reported volumes of 6.2, the vertical channel of 5.2):
-
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask 1, injected volume (15) | the 2026 sheet's injection rows summed over the quarter's three months as labelled | each row is filed a month after the month it reports, so every quarter holds the wrong three months | miss |
-| Ask 2, automatic counts (15) | the locator's origins within 5 km and of ML 1.0 or more counted by local quarter | an event has one to four origins, every figure high | miss |
-| Ask 3, hours under four stations (15) | each network station recording except in its vertical-channel gaps | the exchange holes between epochs are in no gap row, every figure low | miss |
-| Chart (rec block, not an ask) | each plant's expected 2027 count per quarter with the amber line | carried by the main call, scored with the recommendation | outside |
-
-The mirror sheet (the same response stopped at no plant) differs from the cracker sheet only on the recommendation
-criteria and the chart, so no ask is coupled to the call.
-
-Mirror leakage: 8 per cent of the ask weight (method credit on the ask paths, no figure).
-
-**Pair arithmetic.** Planning weights 38 recommendation, 7 instruction following, 55 asks over 45 figures. With r = 5
-(the recommendation criteria a wrong call keeps: the counting rule, the local quarters) and each top response keeping
-about 8 per cent of the ask weight: C = 38 + 7 + 4.4 = 49.4 for the cracker, S = 5 + 7 + 4.4 = 16.4 for the mirror.
-
-Pair ceiling: 32.9
-
-## Pins
-
-- The counting rule, the local quarters and amber's 120: the 2024 traffic-light scheme, once.
-- The 2027 network's design completeness (ML 0.6 within 5 km): the 2026 ordinance, once.
-- The 2027 operating plans (each quarter at its 2026 volume, the fourth at 2025's): the authority's plans note, once.
-- Ask pins, each once and never in a file the call reads as rows: the reported volumes as the injected volume (scheme
-  6.2), the vertical channel as recording (scheme 5.2), the annex's measures and the final automatic solution (scheme
-  7.2). No sentence adjudicates a device: each pin fixes a reading, never how a row is filed, grouped or dated.
-
-## Stopping rule
-
-Two portal solves of the call by different routes re-root the decisive step; two determinism repairs that each turn
-the hour-of-day completeness into a reading re-root the difficulty; a solve that lands the call from a filed sentence
-sends the sentence out of the pack and the build back to design.
-
-## Pre-ship check
-
-1. Domain: the task is a state survey's induced-seismicity forecast for a mining authority's traffic-light scheme; the
-   quantity that decides is each plant's rate of earthquakes above the counting magnitude, which the field estimates
-   from a catalogue only where it is complete, and another field's nouns break it (no magnitude-frequency law, no
-   detection threshold set by ground noise, nothing to recover from the quiet hours).
-2. Real work, nothing planted: a reviewed catalogue in UTC against local quarters, an event database's origin table
-   with the locator's solutions and the review origins, hourly telemetry beside monthly metered reports from a portal
-   that files by submission month, a station inventory with its epochs beside an availability log, a crew's visit
-   sheet in local time; each from the survey's or the operators' own systems.
-3. The flip is a method choice: the rate of a plant whose network is deaf by day is taken from the hours it hears
-   everything; every rule in the pack (the zone, the counting magnitude, local quarters, amber's 120, the 2027 design
-   completeness) is read the same on both paths.
-4. The analyst test holds: located counts carried forward name no plant (Moorstetten 92 highest), year-on-year growth
-   names Lanzenried, the rate per volume on the record complete by maximum curvature names no plant; only the
-   completeness by hour names Pfeilbrunn, and nothing in the pack says hours.
-5. One defensible method: the scheme and ordinance fix the estimand; the record forces the method (442 of Pfeilbrunn's
-   658 located earthquakes in 5.5 hours, the rural plants flat by hour), and every window, quiet-hour definition,
-   zone reading and estimator asserted puts Pfeilbrunn alone over, in the first and fourth quarters.
-6. No decoy: the bulletin is a correct, labelled record of the located counts; no memo, draft or voice argues for a
-   plant or a method.
-7. Nothing hidden and recovered: no certified figure pins the method; the night rate is estimated on the record.
-8. A new lesson: a recording process whose sensitivity follows the working day leaves a unit's catalogue looking
-   complete on every magnitude test while it misses most of the day, and a forward change to the instruments turns that
-   gap into the count (`guard.py heart` WARN only, nearest driver task181 at 0.05).
+- **Card.** `.claude/skills/fingerprint/cards/task180.json`, architecture v5, registered 2026-11-02. `guard.py check`
+  on the registered card: WARN, no BLOCK. WARN `repeat.decision` (designation_set after task190 v11): the decision unit
+  is the tank system and the January work order covers a set of them, which is what the decision is. NOTE
+  `test.same_puzzle_older` (task470 v2) and `test.same_driver_older` (task107 v2, task121 v4) carry differentiation
+  lines on the card; each is a different insight (a dwelling's use read from the rhythm in its own meter; a comparison
+  arm contaminated by reassigned practitioners; a satisfaction fall weighed on the conditions each response met).
+  Nearest driver 0.08 (task273 v3). The axis bans read at the draw (last three live cards task154, task190, task232)
+  were cleared on every axis: shape 01 (02 and 10 banned), forum `line_manager_or_team`, forcing
+  `purchase_order_or_contract`, org `cooperative_or_member_body`, role `finance_controller`, strategy
+  `decomposition_attribution`, context `register`, calibration `none`.
+- **Pairing.** Physical & Environmental Sciences, task type `environmental-monitoring-exceedance` (serves AD),
+  objective Anomaly Detection & Diagnostics. The anomaly is an underground tank system releasing petroleum to the
+  ground; the artefact it has to be told from is dispenser meters that deliver more than they register as they wear,
+  because both make a tank's book shortfall rise in step with the litres it sells.
+- **Niche.** A prairie retail co-operative (Tamarack Prairie Co-operative, fictional) runs twelve gas bars in
+  east-central Saskatchewan and western Manitoba and four unattended cardlocks. Its release detection standard sends a
+  tank system (the tank and its underground pressurised line) to the contractor's precision tightness test, and
+  reports it to the province as a suspected release, when the product it lost to the ground over the quarter averages
+  more than 0.75 litres an hour. The controller's office reconciles the fuel books; the January 2027 work order is cut
+  from October to December 2026.
+- **Shape 01** (a ranked list against a line): every gas bar tank system's October to December loss to the ground in
+  litres an hour, in or out against 0.75, the first system below the line; the slate's chart; the ask layer on the
+  cardlocks' drops. Arithmetic, to be closed at stage 2: 36 systems give the named set, two named figures, the first
+  below the line and its figure (5), the chart's parts (5), the deliverables (2), and the cardlock drop table
+  (carrier by month and cardlock, 20 or more figures), over 30 criteria.
+- **Decision.** `designation_set`: which tank systems go on the January 2027 tightness-testing work order. Forward
+  facing: the systems are tested and reported in January 2027 for a release still running; the quarter is the
+  latest closed monitoring period the standard reads.
+- **Strategy.** `decomposition_attribution`, Gate G `decomposition_attribution`: a book shortfall that moves with sales
+  is split between the meters' over-delivery (product that left through a nozzle) and a release (product that left
+  the pressurised line while its pump ran). Gap objective then time; generators G3 (the meter's record against what
+  the nozzle delivered), G7 (a pressurised line loses product only while its pump runs), G13 (each meter's error is
+  read at the window from its use since calibration, not at the calibration). Layer 2 family `estimation_fit`, own
+  pattern `sales-linked-shortfall-split-by-meter-wear-since-calibration`.
+- **The decisive step, an estimate.** Each tank system's expected meter over-delivery in October to December, from
+  the litres its meters have passed since their last calibration at a drift rate per litre read across every tank
+  system's 2025 and 2026 quarters (the slope of each tank-quarter's sales-linked shortfall against its meters' litres
+  since calibration), taken out of its quarter's shortfall; what is left is product lost to the ground. Two systems
+  calibrated in the same February week show the same sales-linked loss (about 0.37 per cent of sales): the Foam Lake
+  truck stop's diesel, whose meters have passed about 1.2 million litres each since, and the Canora regular, whose
+  meters have passed about a quarter of that. One is worn meters; the other is a line releasing about 1.1 litres an
+  hour.
+- **Default path's answer against the golden.** Statistical inventory reconciliation, the field's release detection
+  method, files only the Ituna regular (a 1984 steel tank losing about 1.2 litres an hour whatever it sells); the
+  golden files the Ituna regular and the Canora regular. Total shortfall per hour files four systems (Ituna, Canora,
+  Kamsack regular, Foam Lake diesel); a drift law in months since calibration files three (Ituna, Canora, Foam Lake
+  diesel).
+- **Data-native sentence.** Every litre a dispenser delivers beyond its reading is a litre the book counts as lost,
+  and a pressurised line that leaks only while its submersible pump runs loses product in step with sales in exactly
+  the same way, so the tank books alone cannot tell worn meters from a release; what separates them is how far each
+  tank's meters have been used since the service contractor last calibrated them, at the drift per litre the
+  co-op's own two years of tank books show.
+- **Abstraction sentence, tested against the approved builds.** "A loss proportional to a unit's throughput is
+  measurement drift only up to what the device's throughput since its last adjustment explains; the excess is a real
+  loss that operates only while the unit runs." Not writable against task132 (a replacement restarts a wear curve, so
+  a spares forecast must not age a replaced item past its failure): there the reset item IS the forecast quantity;
+  here the drift is the artefact and the decisive quantity is what is left after it. Not writable against task162
+  (pressures replayed through valve settings), task120 (production less storage gain), task303 (tickets every
+  sibling opened in the same minute), task236, task275, task196 or task182. The driver screen's nearest is 0.08.
+- **Uniqueness reads.** `guard.py recent`, `coverage`, `mechanisms --objective anomaly-detection` (35 builds, every
+  driver and lineage driver read) and `slots` on the mechanism nouns (meter calibration, line leak, inventory
+  reconciliation, wetstock, prover, tightness, dispenser) and the setting nouns (underground storage tank, gasoline,
+  fuel station, carcass, curtailment, nacelle): no slot screened this world or mechanism. Neighbouring slots' resume
+  lines read: task182 (the AD lane's fourteen task types all carry cards; the open direction it named, a capitation
+  encounter file, is not this one), task279 (wind-farm fatality estimators set aside as a named-estimator fork),
+  task251 (a wear clock in cumulative load landed by readers in its v2: here the wear law is only the estimation
+  inside the step, reached after the confound is seen), task154 (a corrosion dig plan, the calibration axis it holds
+  is why no meter inspection results ship here).
+- **What each spent driver on the objective teaches this draw**, one line per family (from `mechanisms`): detection
+  completeness by hour (task180 v4, the reflex group-by), capture channels with dependence (task196), coding lag
+  (task194), grouped tests (task188), non-detects with lab limits (task189), length bias from snapshots (task182),
+  saturating indicators (task184), paired-difference uncertainty (task195), validation batches (task192), a shared
+  upstream resource (task181), local cycles within a place (task186), a capped response over a spread (task187),
+  filing volumes (task199), a unit's own response to a shared signal (task197), an unsteady balance across sessions
+  (task204), scheduled occasions moved (task125), exposure-time with reporting delay (task201): none splits a
+  throughput-proportional loss between drift and a real escape.
+- **People** (`guard.py names --geo "Canada, Saskatchewan" --seed 180`): Leah Haynes (controller), Roy Turner
+  (petroleum manager), Antonio Schwartz (the service contractor's technician), Timothy Dudley (the cardlock route
+  driver). No persona appears in the prompt.
+- **Sources, one line each.** `fingerprint` (the re-root, the card, the bans, the slots); `guide-to-prompt` (the
+  pairing, the shape, the prompt rules); `stumping` (1.1 the three rules, 1.1b the field's method at the bottom, 1.1j a
+  decisive step that is a reconstruction or a forced estimate, 1.2 the WHAT screen, 1.4 the survivor anatomy, 1.6a the
+  shape that held); `supplemental-stumping` (the ask layer off the call's rows, devices linked by the world's own
+  mechanics); the main thread's brief (estimation inside the decisive step; device families closed this batch).
 
 ## Tried and rejected
 
@@ -853,3 +536,21 @@ sends the sentence out of the pack and the build back to design.
   is the shape Gate F is graded on.
 - **(2026-10-25, measured) A blind reader landed the call and took 42.9 per cent of the ask figures.** One isolated Sonnet reader at medium effort, holding only a fresh unzip of `target.zip`, `prompt.txt` and the flat `figures.json` key list, filed **Pfeilbrunn over amber in Q1 and Q4 2027** against the golden Pfeilbrunn Q1 and Q4, missing `quarters_over_amber` only on the label format (it wrote `Q1, Q4` where the golden spells the plant into each member), and took **36 of 84 ask figures**. It reached the decisive step by the field's own first diagnostic: it compared hour-of-day counts across the five plants, found Pfeilbrunn's reviewed catalogue sees ML 1.0 and above only between local 00:00 and 05:00 while the other four are flat, called the bulletin's 62 an undercount, and scaled the quiet-hour rate up by injected volume. It also found the one-month label shift in the 2026 injection sheet and checked it against the hourly telemetry unprompted. The organ here is multi-purpose (a catalogue carries timestamps for every reason an organisation has), so readability test 7 passes and **test 3 is what fires**: detection incompleteness read off an hour-of-day histogram is the domain's standard completeness check, not a step a competent analyst skips.
   **Corrected 2026-10-25:** this row was first measured with a `score_reader.py` that tried a first-three-words text match before any numeric compare, so every figure the generator files as a string scored as text and a golden "0" matched a reader's 90, 50 and 40 alike. The figures above are the re-score after that was fixed; the call verdict is unchanged.
+
+- **Architecture 4 re-rooted to architecture 5 (2026-11-02).** The seismic world is spent (one architecture per
+  world): its decisive construction was one group-by on the local hour, identical to the cheapest route, and the card
+  BLOCKed on four axes at heart. Architecture 5 moves to a new world (a prairie retail co-operative's underground fuel
+  tank release detection), a new dataset, a new generator and a new shell (architecture 4's which | answer |
+  docx+xlsx is in the card's lineage_shells). Draws weighed for architecture 5 and not taken, each with the screen it
+  died on: a landfill's interwell background contaminated in the irrigation season (the decisive step is an exclusion
+  over a second source, which stumping 1.1 records as having no safe filing, and its abstraction sits on task182 v2);
+  vapour intrusion carried into the heating season by each home's winter radon test (the winter radon file exists only
+  for the decisive step, a dedicated organ, and the ask layer had no mechanics to stand on); a tailings facility's
+  water balance with consolidation water (the balance terms fork and the method would have to be filed); wind-farm
+  carcass-search fatality estimates (task279 set aside the estimator family as a fork); river dissolved oxygen read at
+  midday against its dawn minimum (the diel amplitude has to be transported between sites, a fitted fork, and the
+  abstraction sits near architecture 4's hour-of-day record); geochemical background with pXRF regression dilution
+  (task262 holds the reliability-ratio family, and EPA 6200's site calibration hands the correction over); a
+  tank-system draw separating line leaks from meter error with the weights and measures inspection results (the
+  inspections are physical verification, which `ban.calibration` holds against task154, so the meters' state is read
+  from the service contractor's calibration dates and the tank books instead, and no inspection results ship).
