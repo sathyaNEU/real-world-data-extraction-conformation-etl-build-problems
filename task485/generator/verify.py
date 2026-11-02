@@ -296,7 +296,7 @@ def main():
     gsh = [r for r in gw["Rebate guarantee"][3:7]]
     ok("golden workbook: the guarantee table", all(
         r[5] == figs["guar.FQ%d.guarantee" % i] and r[6] == figs["guar.FQ%d.remitted" % i] and
-        (r[7] == figs["guar.FQ%d.shortfall" % i] if figs["guar.FQ%d.shortfall" % i] else r[7] == "None")
+        r[7] == figs["guar.FQ%d.shortfall" % i]
         for i, r in enumerate(gsh, 1)))
     msh = gw["Members"]
     ok("golden workbook: the members table", all(

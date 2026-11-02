@@ -66,10 +66,13 @@ def workbook(path, pk, g, gq, mem):
     ws.title = "Net cost FY2026"
     bold = Font(bold=True)
     thin = Side(style="thin", color="999999")
-    ws.append(["2027 preferred drug list: fiscal 2026 net cost per 30-day supply (claims filled 1 July 2025 to 30 June "
-               "2026, rebates remitted through the April to June 2026 statement)"])
+    prefs = [g["picks"][c]["pick"] for c in pk.classes]
+    ws.append(["%s and %s have the lowest fiscal 2026 net cost per 30-day supply in their classes" %
+               (", ".join(prefs[:-1]), prefs[-1])])
+    ws.append(["Claims filled 1 July 2025 to 30 June 2026; rebates remitted through the April to June 2026 statement "
+               "(policy EB-RX-04, sections 3 and 4)"])
     ws["A1"].font = Font(bold=True, size=12)
-    ws.append([])
+    ws["A2"].font = Font(italic=True, size=9, color="555555")
     hdr = ["Class", "Product", "Manufacturer", "30-day supplies", "Ingredient cost paid (USD)",
            "Manufacturer rebates (USD)", "Net cost per 30-day supply (USD)", "2027 status"]
     ws.append(hdr)
@@ -81,14 +84,14 @@ def workbook(path, pk, g, gq, mem):
     for c, bs in pk.classes.items():
         for b in sorted(bs, key=lambda x: g["net"][x]):
             pref = g["picks"][c]["pick"] == b
-            ws.append([c, b, pk.labeler_of[b], round(pk.u30[b], 1), round(pk.ingr[b], 2), round(g["rebates"][b], 2),
+            ws.append([c, b, pk.labeler_of[b], int(round(pk.u30[b])), round(pk.ingr[b], 2), round(g["rebates"][b], 2),
                        r10(g["net"][b]), "Preferred" if pref else "Non-preferred"])
             if pref:
                 for cell in ws[ws.max_row]:
                     cell.fill = fill
     for row in ws.iter_rows(min_row=4, min_col=4, max_col=4):
         for cell in row:
-            cell.number_format = "#,##0.0"
+            cell.number_format = "#,##0"
     for row in ws.iter_rows(min_row=4, min_col=5, max_col=6):
         for cell in row:
             cell.number_format = "#,##0.00"
@@ -97,7 +100,12 @@ def workbook(path, pk, g, gq, mem):
             cell.number_format = "#,##0"
     for i, wd in enumerate([40, 22, 32, 14, 20, 20, 18, 14], 1):
         ws.column_dimensions[get_column_letter(i)].width = wd
-    ws.freeze_panes = "A4"
+    ws.freeze_panes = "C4"
+    ws.print_title_rows = "3:3"
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
     last = ws.max_row + 2
     ws.cell(row=last, column=1, value="Rebates are each manufacturer's remittances for fiscal 2026 claims (current "
             "quarter and prior period lines, by quarter of service and plan account) attributed to its products by "
@@ -118,13 +126,14 @@ def workbook(path, pk, g, gq, mem):
     for k, v in gq.items():
         s2.append([QLAB[k]] + [v["n"][ch] for ch in A.CHANNELS] +
                   [int(round(v["guarantee"])), int(round(v["remitted"])),
-                   int(round(v["shortfall"])) if v["shortfall"] > 0 else "None"])
+                   int(round(v["shortfall"]))])
     for row in s2.iter_rows(min_row=4, min_col=2, max_col=8):
         for cell in row:
             if isinstance(cell.value, (int, float)):
                 cell.number_format = "#,##0"
     for i, wd in enumerate([16, 15, 15, 13, 12, 18, 22, 15], 1):
         s2.column_dimensions[get_column_letter(i)].width = wd
+    s2.freeze_panes = "B4"
     s2.cell(row=10, column=1, value="Channel is the dispensing pharmacy's network on the date of service. The three "
             "hospital outpatient pharmacies the October 2026 network file lists as specialty billed on retail terms "
             "until 1 May 2026 and are retail before that date.")
@@ -140,12 +149,38 @@ def workbook(path, pk, g, gq, mem):
         cell.border = Border(bottom=thin)
     for c in pk.classes:
         s3.append([c] + [mem[(c, a)] for a in A.ACC_ORDER])
+    for row in s3.iter_rows(min_row=4, min_col=2, max_col=5):
+        for cell in row:
+            cell.number_format = "#,##0"
     for i, wd in enumerate([42, 16, 18, 18, 22], 1):
         s3.column_dimensions[get_column_letter(i)].width = wd
+    s3.freeze_panes = "B4"
     s3.cell(row=11, column=1, value="A member counted once per class and account; claims before 1 January 2026 carry "
             "the old cardholder numbers and person codes, matched to the new roster through the subscriber's legacy "
             "cardholder number and the member's birth date and gender.")
     s3.cell(row=11, column=1).font = Font(italic=True, size=9)
+
+    s4 = wb.create_sheet("Notes")
+    notes = [
+        ("Prepared", "Maria Burgess, Office of Employee Benefits, 19 October 2026, for the Pharmacy and Therapeutics "
+                     "Committee meeting of 21 October 2026"),
+        ("Claims", "pbm_paid_claims_fy2026.csv, pulled 9 October 2026, paid through 30 September 2026; reversed claims "
+                   "removed (policy EB-RX-04, 3.4)"),
+        ("Rebates", "rebate remittance statements remitted 19 September 2025 to 18 September 2026; lines for service "
+                    "before 1 July 2025 left out"),
+        ("30-day supply", "quantity listed in the clinical review of 12 October 2026 (policy 4.1)"),
+        ("Net cost", "ingredient cost paid before member cost sharing and without dispensing fees, less the "
+                     "manufacturer's rebates on the product's claims, per 30-day supply (policy 3.2)"),
+        ("Guarantee", "Exhibit C, C.4 and C.5: brand claims net of reversals, compound claims out, by the pharmacy's "
+                      "network on the date of service; a shortfall is owed quarter by quarter"),
+        ("Members", "member roster of 9 October 2026; a reversed claim does not count as paid"),
+        ("Rounding", "net cost to the nearest 10 dollars; guarantee amounts to the nearest dollar"),
+    ]
+    for k, v in notes:
+        s4.append([k, v])
+        s4.cell(row=s4.max_row, column=1).font = bold
+    s4.column_dimensions["A"].width = 16
+    s4.column_dimensions["B"].width = 110
     wb.save(path)
 
 
@@ -164,7 +199,7 @@ def slides(path, pk, g):
         tf = tb.text_frame
         tf.word_wrap = True
         tf.text = text
-        tf.paragraphs[0].runs[0].font.size = Pt(26)
+        tf.paragraphs[0].runs[0].font.size = Pt(24)
         tf.paragraphs[0].runs[0].font.bold = True
         if sub:
             p2 = tf.add_paragraph()
@@ -174,8 +209,10 @@ def slides(path, pk, g):
 
     s1 = prs.slides.add_slide(blank)
     changes = [c for c, v in g["picks"].items()]
-    title(s1, "2027 preferred drug list: the recommended preferred product in each class",
-          "Lowest fiscal 2026 net cost per 30-day supply after manufacturer rebates (policy EB-RX-04, section 3)")
+    prefs = [v["pick"] for v in g["picks"].values()]
+    title(s1, "Prefer %s and %s in 2027" % (", ".join(prefs[:-1]), prefs[-1]),
+          "Each has its class's lowest fiscal 2026 net cost per 30-day supply after manufacturer rebates "
+          "(policy EB-RX-04, section 3)")
     rows = len(pk.classes) + 1
     tbl = s1.shapes.add_table(rows, 4, Inches(0.6), Inches(1.7), Inches(12.1), Inches(4.6)).table
     for j, h in enumerate(["Class", "Preferred product", "Net cost per 30-day supply", "Next lowest"]):
@@ -197,8 +234,8 @@ def slides(path, pk, g):
     tbl.columns[3].width = Inches(2.9)
 
     s2 = prs.slides.add_slide(blank)
-    title(s2, "Fiscal 2026 net cost per 30-day supply of every product compared",
-          "The preferred product is the lowest bar in each class; adalimumab products are on their own scale")
+    title(s2, "Net of rebates, the preferred product is the lowest bar in every class",
+          "Fiscal 2026 net cost per 30-day supply of every product compared; adalimumab products on their own scale")
     short = {"GLP-1 receptor agonists": "GLP-1 RAs", "SGLT2 inhibitors": "SGLT2 inhibitors",
              "Long-acting insulins": "Long-acting insulins", "Direct oral anticoagulants": "Oral anticoagulants",
              "Inhaled corticosteroid and LABA combinations": "ICS/LABA inhalers", "Adalimumab products": "Adalimumab"}
@@ -222,6 +259,8 @@ def slides(path, pk, g):
     ch.category_axis.tick_labels.font.size = Pt(9)
     ch.category_axis.reverse_order = True
     ch.value_axis.tick_labels.font.size = Pt(9)
+    ch.value_axis.tick_labels.number_format = '"$"#,##0'
+    ch.value_axis.tick_labels.number_format_is_linked = False
     ch.value_axis.has_major_gridlines = False
     pts = plot.series[0].points
     k = 0
@@ -249,6 +288,8 @@ def slides(path, pk, g):
     c2.category_axis.tick_labels.font.size = Pt(9)
     c2.category_axis.reverse_order = True
     c2.value_axis.tick_labels.font.size = Pt(8)
+    c2.value_axis.tick_labels.number_format = '"$"#,##0'
+    c2.value_axis.tick_labels.number_format_is_linked = False
     c2.value_axis.has_major_gridlines = False
     for i, b in enumerate(ada):
         pt = p2.series[0].points[i]
@@ -259,6 +300,12 @@ def slides(path, pk, g):
     note.text = "Green: preferred for 2027. Net cost is the ingredient cost paid on the product's fiscal 2026 " \
                 "claims, before member cost sharing, less its manufacturer's rebates on those claims, per 30-day supply."
     note.paragraphs[0].runs[0].font.size = Pt(10)
+    for i, sl in enumerate(prs.slides, 1):
+        foot = sl.shapes.add_textbox(Inches(0.6), Inches(7.02), Inches(12.1), Inches(0.35)).text_frame
+        foot.text = "Source: Halcroft Pharmacy Solutions paid claims and rebate remittances for fiscal 2026 service; " \
+                    "Office of Employee Benefits, 19 October 2026" + " " * 6 + str(i)
+        foot.paragraphs[0].runs[0].font.size = Pt(9)
+        foot.paragraphs[0].runs[0].font.color.rgb = RGBColor(0x75, 0x75, 0x75)
     prs.save(path)
 
 

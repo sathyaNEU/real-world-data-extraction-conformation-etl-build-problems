@@ -444,7 +444,8 @@ def build_nov_entries(w, seed):
             fam = pick(rng, ANGLO_FAMILY)
             changed = True
         given = p["given"]
-        if " " in given and p["group"] in ("anglo", "med", "other") and rng.random() < 0.4:
+        # the portal pre-fills a member's account from the membership database, which keeps a preferred first name
+        if " " in given and p["group"] in ("anglo", "med", "other") and rng.random() < 0.4 and p["member_no"]:
             given = given.split()[0]
         if rng.random() < 0.04:
             fam = fam.upper()
