@@ -1,10 +1,10 @@
 {
  "task": "task134",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "a dredged part fills in proportion to how far its bed is held below the natural bed beside it, read from the survey cells beyond the maintained widths; two more metres raise each part's record by two metres over that depth, not by the held-depth ratio 14.3 over 12.3",
  "architecture": 4,
@@ -16,22 +16,22 @@
   "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW ruled (2026-11-02, --asof 2027-01-18), no LEAK; each REVIEW line answered in the design note ## Leak review",
-  "reader": "rounds 1 and 2 clean (main session); round 2's repair changed data only, no document text"
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2027-01-18)",
+  "reader": "clean in both rounds (round 2 after the licence and workbook changed); question 6 analytical each round; appended to task134/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "PASS 2026-11-02 (NOTE same_puzzle_older, differentiated against task154 on the card)",
-  "nearest": "surface: task133 (back to back), task166 and task154 promoted for adjudication; surface 0.08 to 0.10; the task154 collision is differentiated on the card"
+  "heart": "PASS 2026-11-02 at the ship gate",
+  "nearest": "surface promoted task133, task166 and task154; differentiation lines on the card"
  },
  "judge": {
-  "verdict": "round 1 on 456d4b72: DETERMINISTIC, FIX_NOW (small), fixed on 890c87d8; round 2 on 890c87d8: DETERMINISTIC, Gate F strong, G and H pass, two residuals",
-  "disposition": "round 2 residuals fixed in the generator 2026-11-02 on target.zip dc8dc926: one infill coefficient across the parts and berths within a natural spread under one per cent (0.1129 to 0.1142), each part's natural bed set so its golden sits about 8,500 m3 inside its bin, the berths on the basin's bed and Berth 2's relaxation reading the same coefficient fitted either way; every part lands in its bin under 18 model forms, the tightest 5,769 m3 inside (asserted per part and per model); the revision export carries what it revises, its basis, issuer and issue date; the call 1,750,000 and the six part bins unchanged; R3 moves from 2,300,000 to 2,200,000 (not graded)",
-  "report": ""
+  "verdict": "round 3 DETERMINISTIC, APPROVE (order kept; Gate F moderate to high; Gate G forecasting / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; rounds 1 and 2 FIX_NOW repairs on the asks and on the parts' model-form robustness, the call unchanged throughout",
+  "report": "task134/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 final judge pass on target.zip dc8dc926 by the main session; any finding fixed in the generator and every gate re-run, then ship (ledger row, card current, SHIPPED commit)",
+ "resume": "Shipped 2026-11-02 (architecture 4, Forecasting): tender year 1 of the 2027-30 maintenance dredging contract at 1,750,000 m3 in situ; target.zip dc8dc926. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
