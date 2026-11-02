@@ -1,64 +1,63 @@
-> Architecture 2's report. It was taken on the 2027 adolescent literacy grants pack, which no longer
-> exists: architecture 3 is a fresh world and a new bundle. Stage 4's judge run on the current pack is
-> what counts for this build.
-
-# determinism-check report, task464, 2026-10-17
+# determinism-check report, task464 (architecture 11), 2026-11-02
 
 ## Verdict
-NOT_DETERMINISTIC (competing_defensible_answer on the first property left out, its gap and four of the twelve $5,000 amounts; governing label margin_or_boundary_fragility, with underspecified_objective on the unfiled step-change method). Not SOLUTION_WRONG: the same twelve members came out in the judge's run.
+NOT_DETERMINISTIC (main call LD2 is forced and reproduces; supplementary asks 5 and 6, the fund and the storm table, are not forced by the shipped files)
 **Disposition:** SEND_BACK
-**Stumping type:** mechanism: forecasting (structural-break-aware normal-year projection), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Stumping type:** mechanism: etl_conformance (cross-system source attribution), stumping_family: analytical_non_defect (main call; judge's Gate H3 reads the decisive step as rule_application), surface_read_dependency: no for the main call, yes for the storm table, sole_data_defect: no
 
 ## Why
-The cycle rules say only that the 2027 penalty is "estimated from the property's own records" at the 1991-2020 normal. The golden needs a step search (BIC gain over 30, 6 spans a side, 6 per cent difference) and a refit after the last break, and none of that is in the prompt, the rules or the data dictionary; it exists only in SOLUTION_STEPS. The answer moves with reasonable choices: where the post-step window starts (the step falls inside a billing span) and whether electricity, which steps up on the same dates, is refit. Under those choices the first left out can be 461 Tallman Street ($70,990, electricity honoured) instead of 633 Lattermore Place ($68,577), and the $1,000 gap and four ask-1 amounts change. The 12th-to-13th margin ($7k) is inside the estimation freedom. Wrong-reason stump: a correct analysis can miss the golden.
+Fund terms and policy wording say a claim counts on Pennant's bordereau and belongs to the year of its date of loss. Read literally, the bordereau gives the storms 6, 37, 10, 33, 12 and 55 claims and a fund of GBP 368,307. The golden (16, 27, 18, 25, 29, 38 claims; fund GBP 344,143) re-dates 35 bordereau claims by a make-safe job in the repairs log. No shipped file states that rule, and nothing marks the "broker's sheets" the solution cites. Label: answer_contradicts_files (asks 5 and 6). Separately, the main call is forced but its decisive step is read by the judge as rule application (Gate H3 fails).
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Normal HDD / CDD (lindqvist_field_daily, base 65 F) | 4,735 / 1,048 | 4,735.4 / 1,048.1 | yes |
-| Energy record rows | 16,124 | 16,124 (14,740 bills + 1,384 deliveries) | yes |
-| Ask 4 penalties and counts by type | MF 2,508,379 / 46; Mixed 591,784 / 10; Hotel 94,657 / 2; Office 42,848 / 1 | identical | yes |
-| Ask 5 emissions and site energy by type | MF 112,776 t, 1,678,848; Mixed 31,951, 456,003; Hotel 7,887, 119,295; Office 12,292, 165,192 | identical (thin rounding margins: hotel 7,886.51, office 12,291.52, MF 1,678,847.53) | yes |
-| Whole-record fit slate | 173 Orrin, 429 Quillen, 461 Tallman in; 137 Ashlar, 843 Merrow out | same | yes |
-| 137 Ashlar (12th) / 633 Lattermore (13th) | $75,000 / $70,000, gap $7,000 | $75,494 / $68,577, gap $6.9k | yes |
-| 34 Thornwick | $160,000 | $169k | no |
-| 62 Merrow | $150,000 | $163k | no |
-| 151 Orrin | $90,000 | $120k | no |
-| 937 Haddon | $80,000 | $84k | no |
-| First left out | 633 Lattermore | 461 Tallman ($70,990) if electricity is refit | no (fork) |
+| Window claims / cost (escape of water) | 391 / 2,037,000 | 391 / 2,037,426 | yes |
+| Flat-supply vs riser cost | 1,833,000 | 360 claims 1,832,732 (31 riser claims 204,695) | yes |
+| LD1 prevented | 356,000 / 62 | 356,467 / 62 | yes |
+| LD2 prevented | 727,000 / 148 | 727,224 / 148 | yes |
+| LD3 prevented | 471,000 / 97 | 471,080 / 97 | yes |
+| LD4 prevented | 348,000 / 68 | 347,795 / 68 | yes |
+| LD5 prevented | 411,000 / 77 | 411,407 / 77 | yes |
+| Fit cost LD1..LD5 | 179 / 112 / 255 / 238 / 230k | 178,798 / 112,181 / 254,763 / 237,916 / 229,824 | yes (under the golden kit reading) |
+| Fund | 344,000 | 344,143 (30% x 1,147,144) | only under the golden storm dating |
+| Storm claims | 16/27/18/25/29/38 | bordereau dates: 6/37/10/33/12/55 | no under the literal reading |
+| Storm cost | 34/70/72/69/72/97k | bordereau dates: 11/92/36/105/26/142k | no under the literal reading |
 
 ## Competing answers that survived
-- Step method: a step search implemented as filed flags dozens of series, not three; ask-1 differs on four of twelve rows and 151 Orrin vs 758 Fenwright flips. Shipped rule closing it: none.
-- Post-step window start: 429 Quillen gas gives 1,609 / 1,580 / 1,526 / 1,454 / 1,466 t by first post-step span (about $40k swing; 15 Dec start ties 633 Lattermore at $68,600). 461 Tallman gas gives 1,542 t (22 Jan) or 1,334 t (20 Feb), about $57k. Shipped rule: none.
-- Electricity refit with the heating fuel: 461 Tallman electricity runs about 1.35 times its fit Jan-Apr 2026. Honoured, first left out is 461 Tallman; not refit, 633 Lattermore. Shipped rule: none.
-- Energy-record CSV: decimals for quantity and mmbtu, fuel sort order (alphabetical vs Table 1) and bill sort date (start vs end) unfiled (lower weight).
+1. Storm dating (asks 5 and 6): bordereau recorded date gives 6/37/10/33/12/55 claims and a fund of GBP 368,307. The golden re-dates 35 consecutive refs (PCS-312887 to 312904 and 312896; 313857 to 313864; 315420 to 315436) by their make-safe job. No filed sentence closes it. The golden rule "storm under way when raised" fails literally for 23 of 153 make-safes (raised 0.1 to 3.6 hours after the last gust hour); strictly "under way" gives 13/21/15/22/23/36 with 23 claims unassigned. The golden counts hold only under "latest storm to have started", which is unstated.
+2. Fitting cost: ignoring post-register heating jobs gives LD1 197,542, LD2 116,669, LD3 291,120. The rule is stated only as "when it is fitted". Omitting the extra sensor for 2-bathroom flats gives LD1 178,068 and LD4 235,842 (both change at the 1,000 rounding).
+3. Sub-excess claims: 10 escape-of-water claims in the window (7 on LD2) have incurred below the GBP 500 excess, and the wording says such a loss "is not a claim". Excluding them gives 381 / 2,034,621 and LD2 141 / 725,578 (claim count 141, not 148). Ranking unchanged; low risk, but a literal reader can take it.
+4. Runner-up by prevented cost is the natural reading; by prevented cost per pound fitted it would be LD1 (1.99). The prompt does not say.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10+ | 16 | yes |
-| Formats | 3+ | csv, xlsx, pdf | yes |
-| Large file | 25,000+ rows | 52,094 (daily weather) | yes |
-| Distractors | 2+ in metadata.json, none labelled in file names | energy_grades_2025.csv, grid_marginal_emissions_hourly_2025.csv; file names are neutral | yes |
-| Distractor weight and ruling out | unused, relevant, ruled out by a shipped fact | not load-bearing in the judge's run (judge surface read was the whole-record fit); not separately audited | yes (as judged) |
-| Deliverables | 1 to 3, all in golden | 2, both present in golden/ | yes |
-| Asks multi-dimensional with unit and rounding | yes | yes (nearest $5,000, $1,000, whole dollars, tonnes, million Btu) | yes |
-| Prompt shape and 25+ criteria | identifiable, 25+ | shape 01 (ranked list under a cap); rubric count not generated at this stage | shape yes, count not checked |
-| Reads as real work product | yes | judge found no authoring leakage or incoherence | yes |
+| Files | 10 or more | 15 | yes |
+| Formats | 3 or more | csv, pdf, xlsx | yes |
+| Large file | 25,000 or more rows | repairs log 58,841 rows | yes |
+| Distractors in metadata, none labelled in a file name | 2 or more | epc_register, rent_roll named in distractor_files; names carry no label | yes |
+| Distractors unused yet weighable | required | judge: epc, rent roll and preliminary listing; none answers a graded quantity | yes |
+| Deliverables | 1 to 3 | 2 (xlsx, pdf) | yes |
+| Asks state unit and rounding | required | yes in prompt | yes |
+| Rubric 25 or more criteria | 25+ | not generated here; pipeline records 36 ask criteria | not verified by me |
+| Reads as real, not LLM | required | judge saw no authoring language | yes |
 
 ## Gate G reconciliation
-Judge: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_class analytical; the declared stump is the whole-record fit that files 429 Quillen, 461 Tallman and 173 Orrin in place of 758 Fenwright, 843 Merrow and 137 Ashlar. This matches the judge's easy route (the judge confirmed the whole-record slate). Neither declared distractor carried the task. Mismatch is in the estimand, not the family: the design note's Not rule application line says "nothing states how a property's 2027 is estimated", which is exactly the open fork the judge found. Gate G: PASS (no shipped artifact ranks the candidates wrongly; stump is not a planted defect).
-Gate H: domain pass, layers pass, decisive_step analytical. Matches the card's domain_test and analyst_test.
+Judge: mechanism etl_conformance, family analytical_non_defect, surface_read_dependency no for the call and yes for the storm table, sole_data_defect no. The judge's naive reading (credit the damaged flat) gives LD3 at 109 claims / 581,954, so the surface read is the wrong answer the design intends; it does not name the declared distractors (epc, rent roll) as carrying the task. No Gate G finding on the distractors. Note: the judge says the storm table rests on a planted wrong date (the bordereau date), which the design note describes as a device in the asks (A2 and A3); the asks are free of rule 3, but the unfiled re-dating makes them indeterminate, not merely hard.
+
+## Gate H reconciliation
+Judge: domain pass, layers pass, decisive_step rule_application (H3 fails). Design note and card: stump_class analytical, Layer 2 decomposition attribution, "Not rule application: no filed rule says how a claim is traced to its escape". Mismatch on the decisive step. The judge reads the fund terms as filing the estimand (escapes from the supply of a flat on the list, whichever flats the water damaged), so the join through the repairs log is the execution of a stated population, and a strong analyst who read the terms would not credit the damaged flat. This is the finding most likely to predict a send-back.
 
 ## Stump power (Gate F)
-Moderate. A model with no step test files the wrong slate, but a model that finds the steps can still miss the golden, so the stump is partly a wrong-reason stump.
+Moderate. The terms ("whichever flats the water damaged", "would have damaged no flat at all") nearly name the trap, so a strong model looks for the source flat and then needs the stack-and-date join, legacy address mapping, kit rules and storm re-dating. The model most likely to fail is on the asks through unfiled rules, which is the fork above rather than analysis.
 
 ## Findings, ranked
-1. Step-change method and post-step window start are unfiled; the answer moves by up to $40-57k per stepped series against a $7k 12th/13th margin.
-2. Electricity step on the same dates is not addressed; honouring it changes the first left out.
-3. Four of twelve ask-1 amounts (34 Thornwick, 62 Merrow, 151 Orrin, 937 Haddon) are not stable under a literal run of the filed search, and 151 Orrin / 758 Fenwright order flips.
-4. Energy-record CSV decimals and sort conventions unfiled.
-5. Hygiene passes; asks 4 and 5 reproduce exactly.
+1. Storm-dating fork (asks 5 and 6): golden depends on an unfiled re-dating rule; literal reading gives different storm counts, costs and fund.
+2. Gate H3: the main call's decisive step is rule application per the judge; disagrees with the note's Three rules.
+3. Fitting-cost reading rests on "when it is fitted" for the heating-job supply change (and the sensor rule); at least two rounded figures move.
+4. Sub-excess rows can change the graded claim counts (LD2 141 vs 148).
+5. Runner-up basis (prevented cost vs per pound fitted) is not stated.
+6. Minor: premium workbook Total rows are uncached formulas.
 
 ## Next action for the author
-Close the fork with the WHAT, not the HOW: file in the prompt or rules that each property's estimate uses only its bills since its last change in how it runs, with a dated change log or works dates in the files for the stepped properties, and say whether electricity is refit; then widen the 12th/13th margin (stepped properties' post-step penalties at least about $25k under the 13th under any reasonable window), move ask-1 amounts off $5,000 boundaries, pin CSV decimals and sort order, and rebuild. Run /fix-determinism with this report; the judge's Fix section is at /tmp/determinism-check-task464-025216/verdict.md.
+Re-root or rebuild: file in the fund terms or policy wording which record dates a storm claim and which storm a claim belongs to, or drop the storm and fund asks; resolve the sub-excess rows; file the supply-when-fitted convention; then redesign the main call so its decisive step is analysis (for example a back-test or validated projection of prevented cost) rather than a stated population executed through a join. The main-call figures above reproduce and stand as the clean-data reference.

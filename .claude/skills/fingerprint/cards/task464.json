@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Fund LD2, the 2017-19 void-turnover kitchen refits: GBP 727,000 of escape-of-water claims prevented (148 claims) over 2023-24 to 2025-26; runner-up LD3, the galvanised pipework blocks, GBP 471,000.",
+  "answer_source": "task464/submission.md, generator/figures.json",
   "gap": [
     "population"
   ],
@@ -31,25 +31,25 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the claims bordereau and the programme lists correctly sums the escape-of-water claims each programme's flats made and funds the repeat-claimant programme, and even grouping each day's claims in a stack and booking them to the highest flat that claimed funds the galvanised-tower programme, because the refitted flats' under-floor escapes leave no claim of their own; only the landlord's repairs log, where the plumber stopped each escape, shows they started there.",
+  "analyst_test": "A strong analyst who reads the claims listings, the register and the fund terms correctly groups each stack-day's escape-of-water claims under the highest flat that claimed (or books each claim to its own flat) and funds LD3, the galvanised pipework blocks from the second floor up, at GBP 629,000, because the refitted flats' under-floor escapes leave their own flats without a claim; only the repairs log's leak repairs, a floor above the claims, show the escapes started in the refits.",
   "domain_test": "The deciding quantity is the escape-of-water claims cost a leak-detection programme removes, which property insurers estimate from the claims experience of the risks the devices are fitted to; what decides it is how an escape of water travels through a block of flats, starting in one flat, running down into the flats beneath and being claimed where it lands, so a flat's claims experience measures the water that arrived there, and only where the escape was stopped says where it began; with a road's or a school's nouns there is no escape claimed in the flat beneath, no detector that stops only its own flat's supply and no repairs log locating the source.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:escape-of-water loss booked to the flat where the escape started",
   "layer1": [
-    "the insurer's claims bordereau in two layouts (the 2024 claims-system migration renamed and reordered its columns) with a preliminary and a revised March 2026 bordereau overlapping",
-    "flat references written two ways: the insurer's schedule as block code and flat number, the landlord's register and repairs log as building name and door number",
-    "floors numbered per building (ground, lower ground, mezzanine), so floor order comes from the register, not the door number",
-    "the repairs log's 2024 system change: old job codes and trade letters before, trade categories and a UTC timestamp after",
-    "policy years 1 April to 31 March against the repairs log's calendar months",
-    "incurred, paid and outstanding figures on every bordereau row, with reserves revised between releases",
-    "claims below the per-claim excess never reaching the bordereau"
+    "Brenmoor's two claims systems: the legacy final extract of 30 June 2024 (its own layout and the landlord's building and door in a risk address) and the new listing, the claims open at the July 2024 migration carried across under new references",
+    "a preliminary and a revised March 2026 listing overlapping",
+    "flat references two ways: Brenmoor's block code and flat number, Pellow's building and door number",
+    "floors labelled per block (lower ground, ground, mezzanine), so floor order comes from the blocks file, not the door number",
+    "Pellow's November 2024 repairs-system change: trade letters, job codes and local time before; trade names, categories and UTC after",
+    "policy years 1 April to 31 March against calendar dates",
+    "losses under the per-claim excess never reaching a listing"
   ],
   "stakeholder_role": "the insurer's portfolio underwriter for the landlord's account, who sets the risk-improvement grant at the April 2027 renewal",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "repairs_log_2023-2026.csv",
-    "rows": 0,
+    "file": "repairs_log_2020-04_to_2026-03.csv",
+    "rows": 58841,
     "entity": "one repair job the landlord raised",
     "grain": "job",
     "source": "synthetic"
@@ -79,7 +79,7 @@
   "question_form": "what",
   "driver": "The decisive quantity is what fitting a preventer to a set of units removes from a loss that each event records at every unit it damages, when an event that starts at one unit runs on into the units beneath it and often leaves its own unit without a record; the loss records show where damage arrived, not where events began, so the units that record the most are the ones beneath the sources, and only a second system's record of where each event was stopped, matched to the losses by place and day, shows which units start them.",
   "driver_concrete": "Each programme is sized as the escape-of-water claims cost of the escapes that started in its flats over the three policy years; the 2017 to 2019 void-turnover refits put integrated washing machines in floor-level cupboards whose leaks run under the floor and come through the ceiling below, so those flats rarely claim while the flats beneath them claim again and again, and only the plumber's leak repair in the landlord's repairs log, matched to the claims by building, stack and day, shows the escapes started in the refitted flats.",
-  "stump": "A competent analyst sums the escape-of-water claims each programme's flats made and funds the repeat-claimant programme, booking every claim to the flat that made it; grouping each day's claims in a stack under the highest flat that claimed funds the galvanised-tower programme; but the refitted flats' floor-cupboard leaks run under the floor and are claimed only in the flats beneath, and booked to the flat where the landlord's plumber stopped each escape, the refitted-flat programme would have prevented the most.",
+  "stump": "A competent analyst books each escape-of-water claim to the flat that made it, or groups each block, stack and day's claims under the highest flat that claimed, and funds LD3, the galvanised pipework blocks from the second floor up (GBP 582,000 or 629,000); but the 2017-19 refits' floor-cupboard washing machines leak under the floor into the flat below while the refitted flat rarely claims, so only the plumber's leak repair in Pellow's repairs log, a floor above the claims on the same day, shows those escapes started in the refitted flats, and traced there LD2 would have prevented GBP 727,000 against LD3's 471,000.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task464": "architecture 10 rebuilt a flow magnitude (each section's current as the net of every load and generator beyond it, squared for its loss); here no flow is rebuilt and nothing is squared: each recorded loss is a discrete escape's damage, and the step locates the unit where the escape began from a second system's record of where it was stopped, moving whole claims from the units that recorded them to the unit that caused them.",
@@ -88,7 +88,7 @@
     "task121": "task121's second architecture follows each unit's reference through a second party's report to an identifier on a different entity; here no reference, identifier or second party links anything: the claims and the repair share only a building, a stack and a day, and the origin is fixed by water running downward, the repair being the highest point of the escape."
   },
   "notes": "gate_g decomposition_attribution and stump_strategy decomposition_attribution: every escape-of-water claim is correctly recorded at the flat that suffered the damage, and the decision needs it booked to the flat where the escape started (record against operation, G3; one escape under several claims, G10). Shape 01: each shortlisted programme carries its prevented cost and claims, the pick and the runner-up. context_artifact operations_log: the landlord's repairs log the decisive step reads. Forum customer_or_counterparty: the insurer puts the funded programme in the renewal terms it offers the landlord. scoring_unit other: GBP of claims prevented.",
-  "architecture_spent": false,
+  "architecture_spent": true,
   "lineage": [
     {
       "architecture": "v10 (Copsewell Cross losses reconductoring, energy-systems-utilities asset-condition-maintenance, Opportunity Sizing)",
