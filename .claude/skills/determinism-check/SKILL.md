@@ -296,6 +296,18 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   sums (each version rule, void and reversal reading). task482's 2025 measures sat 0.19 and 0.28 cents
   above a cent's edge, a judge's reversal reading landed them under it, and two graded thresholds moved a
   cent; grade such a figure at a unit the chain cannot cross, or move the intermediate mid-bin.
+- **A day window counts one way.** "Within N days of" an event forks between calendar days with the event's
+  date as the first day and N times 24 hours from its timestamp, and, where a second event sits inside the window,
+  between counting before or after it. task464's twelfth architecture graded each send's restarters who clicked
+  "within 28 days of the send" exactly, and the judge's three readings gave three sets of counts (6,180 against
+  6,205 and 6,163 on the first send). File the count in the asking sentence or the governing document as WHAT ("on
+  the send's date or in the 27 days after it, whether before or after restarting"), carry every clock it touches in
+  the producing system's own label, and assert in checks.py that each rival reading prints a different figure.
+- **A rounding rule has a half-way case.** Exact halves arise wherever a filed rate meets round amounts: task183's
+  fourth architecture priced an agency fee at 0.065 per cent of each lodgement, round-euro lodgements left an exact
+  half cent on 46 of them, and half-up, half-even and float rounding moved 10 to 12 of the twelve monthly fees by a
+  cent or more. File the half-way rule beside the rounding it qualifies ("rounded to the nearest cent, a half cent
+  rounding up") in the document that owns the rate, and assert that half-even prints a different figure.
 - **A free parameter in the decisive estimate holds at every value a reader can defend.** Where the decisive
   step carries a share, rate or weight the pack does not fix, the call holds from the naive value a literal
   reader reaches first (a clock share, an even split, the pooled figure) to the field's own; otherwise a shipped
