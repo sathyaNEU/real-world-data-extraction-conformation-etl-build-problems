@@ -1,0 +1,99 @@
+{
+  "task": "task277",
+  "architecture": "v1",
+  "drawn": "2026-11-02",
+  "slot_note": "architecture 1 in forecasting: the author re-tasked the number from Descriptive & Distribution Analysis on 2026-11-01 (the objective exhausted, retirement not taken); no earlier architecture was ever drawn",
+  "domain": "business-operations-analytics",
+  "subdomain": "service-operations-sla",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a Venlo contract-logistics site's pick accuracy for one personal-care brand in February and March 2027: how many order lines will fail pack-out verification each month, and whether the client's 99.80 per cent KPI holds, when the brand's Daily range ships in inner packs of four instead of six from the January receipts while its trade customers keep ordering in sixes",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the two WMS export layouts, converts the pack-out exception log from UTC, joins exceptions to lines and carries the 2026 failure rate by channel, SKU, quantity, zone and picker tenure (or the 2025 Pro range pack change's measured effect) onto the client's February and March line plan files about 0.14 per cent of lines and a kept KPI; the call is wrong because count errors come from mixed picks, lines that need whole inner packs plus loose units, a relation between the quantity ordered and the SKU's current inner pack that no column holds, and the new four-unit inners turn the trade customers' six-unit lots into mixed picks, so the site fails about 0.25 per cent and misses the KPI.",
+  "domain_test": "The forecast is a human error probability per pick built the human-reliability way, from the task's subtasks and the condition that shapes each (taking whole inner packs, or opening one and counting loose units on top of whole packs), carried to the opportunities the plan creates; with another field's nouns (megawatt-hours, hospital visits) there is no inner pack, no loose count and no picker, so the task stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:mixed-inner-and-loose-picks-drive-count-errors",
+  "layer1": [
+    "pick confirmations in two WMS export layouts across the June 2026 upgrade (local time and the old location code before, UTC and the new code after)",
+    "pack-out exceptions logged in UTC by the verification stations against order number and line number, not the WMS line id",
+    "an effective-dated item master whose inner and case pack sizes change by receipt date",
+    "the client's line plan by its own article numbers with a cross-reference to the WMS SKU",
+    "trade and webshop orders on one pick log with channel codes renamed in 2026",
+    "picker ids from the labour management system against WMS user ids"
+  ],
+  "stakeholder_role": "the site's operations planning manager, who signs the February and March accuracy forecast the client's quarterly review receives",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "pick_confirmations_2025-2026.parquet",
+    "rows": 0,
+    "entity": "one order line picked and confirmed at the Venlo site",
+    "grain": "order line",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "logistics_or_3pl",
+  "world": {
+    "geography": "Netherlands, Venlo (Limburg)",
+    "currency": "EUR",
+    "org_type": "a contract logistics provider running a multi-channel fulfilment site for one personal-care brand owner",
+    "invented_names": [
+      "Kroonvaart Fulfilment",
+      "Siersma Care"
+    ],
+    "people": [
+      "Romy Friehus",
+      "Lex Suijker",
+      "Nienke Gemen"
+    ]
+  },
+  "deliverables": [
+    "venlo_accuracy_forecast_feb_mar_2027.xlsx",
+    "siersma_pick_accuracy_q1_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is a per-line error chance that jumps when the quantity ordered needs whole packs plus loose units, a relation between the quantity and the item's current pack size that no column holds; in the record such mixed lines fall mostly in a few ranges and one channel, so channel, item, quantity and past-change rates all stand in for the relation, and a pack-size change that makes the other channel's routine quantities mixed raises errors none of those rates see.",
+  "driver_concrete": "Each February and March 2027 line's chance of failing pack-out verification is the 2025-26 rate for a mixed pick (a quantity above the SKU's inner pack that is not a whole number of inners) or for a whole or loose pick, read from the exceptions against each line's quantity and the inner in force on its pick date; Siersma's Daily range moves from inners of six to inners of four from the January receipts while trade lots stay at six and eighteen, so mixed picks rise from about a tenth to about two fifths of trade lines and the site fails about 0.25 per cent of lines and misses 99.80, while every channel, SKU, quantity or past-change rate files about 0.14 to 0.19 per cent and keeps it.",
+  "stump": "A competent analyst carries the 2026 failure rate by channel, SKU and quantity (or the 2025 Pro pack change's measured effect) onto the client's February and March line plan and files about 0.14 per cent of lines and a kept 99.80 per cent KPI; the step that lands it there is reading count errors as a property of the item or the order size, when they come from picks that mix whole inner packs with loose units, which the Daily range's new four-unit inners force on every six-unit trade lot.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task167": "task167 recovers which of two unnamed draw schedules each unit follows and carries the young book into its second year; here no unit has a schedule: a pick's error chance is set by its quantity against the SKU's inner pack in force that day, and the forward change is the pack size, not the units' age.",
+    "task170": "task170 reads a per-attempt failure off each operator's own count of attempts; here no worker history decides: the chance belongs to the pick itself, a quantity that needs whole inner packs plus loose units, and the January pack change creates such picks on lines whose quantities never move.",
+    "task177": "task177 reads a member's failure as a team state or an intervention's timing against each unit's own decision; here the outcome is one picker's count slip on one line, and the conditioning relation is arithmetic between the ordered quantity and the SKU's current inner pack.",
+    "task31": "task31 splits an in-year lag on a prior approval held with the same counterparty, recovered through a multi-file join; here nothing is approved or censored: every line's pick type follows from its quantity and the inner pack the item master dates to its pick day.",
+    "task44": "task44 decomposes a pilot's pooled gain into opposite effects split by a behavioural moderator; here there is no pilot or treatment: the pick-type rates are measured on every line of the 2025-26 record and carried to a plan whose quantities meet a new pack size.",
+    "task56": "task56 restores a population that is billed but absent from the event streams; here every line is on the pick log and in the plan, and what changes is the error chance of lines whose quantities stop being whole numbers of the new inner pack.",
+    "task57": "task57's measures reproduce their own year by identity so only a held-out year separates them; here the per-line rates are not in question, the record holds mixed, whole and loose picks side by side, and the miss is carrying channel or item rates to lines whose pick type the pack change alters.",
+    "task76": "task76 nets a forward count of a class defined by a per-unit look-back over failed contacts with zero conversion; here no class is netted out: lines move from whole-pack to mixed picks and their error chance rises about twelvefold.",
+    "task124": "task124 prices unexamined units within the kind of group they were laid down in, against samples drawn toward flagged groups; here no sample is selected: the pack-out check verifies every line, and the conditioning state is created afresh by a dated pack-size change.",
+    "task305": "task305 reads a forced choice's response from members an existing limit already forces; here no choice or limit is involved: the record's mixed picks come from other ranges' pack sizes, and the decisive step is computing which planned trade lines the four-unit inners turn into mixed picks."
+  },
+  "lineage": [],
+  "notes": "Architecture 1 in Forecasting & Predictive Modeling after the author's 2026-11-01 re-task of the number; client domain Human Factors & Ergonomics (human-reliability-assessment serves Forecasting) under the house domain Business & Operations Analytics, a never-built pairing. Axes redrawn before registration against the siblings' 2026-11-02 cards: forcing_event launch_or_rollout (task483) to vote_or_meeting, the client's quarterly business review in December that receives the forecast, the honest forcing fact since the pack change is data in the pack, not the occasion; context_artifact capacity_report (task274) to close_out_summary, the site's monthly service close-out the planning manager reports to the client, which is the file the role works from. WARNs answered in the design note: repeat.gate_g (task274) and repeat.decision; deliverables drawn as xlsx+png after pdf+xlsx (task202) and pptx+xlsx (task232) repeated a recent set: the call is a count per month carried with its KPI verdict, the client's own monitoring unit.",
+  "registered": "2026-11-02T01:17:20Z"
+}
