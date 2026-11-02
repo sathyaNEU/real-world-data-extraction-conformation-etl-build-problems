@@ -1,7 +1,21 @@
 # task475 design note
 
 Status lives in `pipeline.json`; this note holds the design. Architecture 2, drawn 2026-11-01 at the Batch 3 queue
-reset; architecture 1 is summarised under `## Architecture 1 record` and its world is closed.
+reset; architecture 1 is summarised under `## Leak review
+
+`leak.py --asof 2026-12-01` on the final cut: REVIEW, no LEAK; each line answered.
+
+- Sweep 3, the regulations and the minutes carry most words of the committed call: they are the rules the call executes
+  and May's results meeting; neither states a November move, difficulty or pass count (checks.py R3c).
+- Sweep 4, the regulations (8 terms), the question paper (3) and the minutes (7): the regulations must say "a choice of
+  questions", "the average of the paper's optional questions" and "mark of record" to file the WHAT; the minutes' hits
+  are "multiple choice paper", "the meeting closed" and "no member declared". No document relates a choice to a mark.
+- Sweep 9, corporate_accounts.csv's agreement end dates (30 June 2027): forward-looking terms of a live agreement, the
+  file's own allow-listed kind of date.
+- Sweep 12, the regulations name "Sydney", "accredited", "mark", "paper", "papers" and "questions": ordinary words of
+  the institute's own rules (Sydney time, accreditation), not a description of any file.
+
+## Architecture 1 record` and its world is closed.
 
 ## Draw
 
@@ -19,7 +33,8 @@ reset; architecture 1 is summarised under `## Architecture 1 record` and its wor
    the new e-marking platform; the May 2026 sitting's marks were migrated into it from the legacy system.
 4. **Objective and facing:** ETL. The decision faces forward (the committee approves results not yet issued, on 10
    December 2026); the estimand is retrospective by nature, the difficulty each question proved at a sitting already
-   held, because results are always conformed after the sitting they score.
+   held, because results are always conformed after the sitting they score. The fiction stands at 1 December 2026
+   (the paper's date; the extracts were pulled on 30 November), the as-of date `leak.py` runs at.
 5. **Shape 14** (cuts of a distribution, each cut per segment): the eight moves (8), the number passing and the
    results file's rows (3), the bar chart's parts (3), each centre's withdrawals, absentees and May sitters (6 by 3,
    18), the reviews' answer and refund (2), the files (2): 36 criteria, none stacked.
@@ -55,7 +70,13 @@ reset; architecture 1 is summarised under `## Architecture 1 record` and its wor
     card leads with G6 and `conformed_dataset`.
 11. **Abstraction test** against the nearest drivers (task479 v4 at 0.05: a unit's level from its answers through a
     known response model; task186 v2 at 0.04: a person's hit rate on items drawn again and again): both estimate a
-    person; this build estimates the items, and the step is that the persons answering each item selected it.
+    person; this build estimates the items, and the step is that the persons answering each item selected it. Against
+    the same task type's builds `guard.py heart` lists: task488 (shipped, pending review) also ends on items and persons
+    estimated together, but its driver is a calibration read against standings computed from the items' own ratings
+    after adaptive delivery, a circularity; here no standing is shipped, the default is the plain question mean and the
+    driver is the candidates' own choice of questions, so the shared piece is the field's standard estimator, not the
+    trap. task249 v6 compares a candidate across items as its default and turns on a shared time budget; task474 v7
+    carries a standard across a change of paper through candidates who sat both. None carries examinee choice.
 12. **Data-native sentence:** the November paper's new fire safety question was answered by 321 candidates who
     averaged 13.5 on their other answers and 10.1 on it, and the plain consent conditions question by 481 who averaged
     8.9 elsewhere and 12.1 on it; the export holds every candidate's part marks on the five questions each chose, so

@@ -105,7 +105,7 @@ def build(rng, W):
     # inflow: families newly entitled month by month (a birth, a fall in income)
     for t in range(1, LAST_T + 1):
         limit = P.CFV_LIMIT_OLD if t < RISE_T else P.CFV_LIMIT
-        n_in = int(rng.poisson(0.0036 * (n_low + (n_band if t >= RISE_T else 0))))
+        n_in = int(rng.poisson(0.0062 * (n_low + (n_band if t >= RISE_T else 0))))
         pool = low if t < RISE_T else low + band
         for h in sample(pool, n_in):
             inc = min(limit - 1, h["assessed"] * float(np.exp(rng.normal(0, 0.05))))
@@ -144,13 +144,16 @@ def build(rng, W):
             continue
         cd = claim_day(ct)
         dd = decide(cd)
-        if tm(dd) > LAST_T:
+        if dd > P.REGISTER_PULL:
+            awards.append(dict(ex=expediente(cd.year), fid=f["fid"], tipo="I", claim=cd, dec=None, res="P",
+                               ejercicio=cd.year - (1 if cd.month >= 7 else 2), inc=f["inc"], kids=f["kids"],
+                               muni=f["muni"], first=None, last=None, rate=None))
             continue
         year = cd.year
         first = tm(dd) + 1
         f["claimed"] = True
         # the life of the award: reviews every twelve months, exits
-        exit_hazard = 0.0055
+        exit_hazard = 0.0034
         end_t = None
         start = first
         tipo = "I"
@@ -177,7 +180,7 @@ def build(rng, W):
                                    last=None, rate=rate_at(start)))
                 break
             # annual review: notice early in the month before, decision in the review month
-            inc = inc * float(np.exp(rng.normal(0.02, 0.07)))
+            inc = inc * float(np.exp(rng.normal(0.0, 0.06)))
             limit = P.CFV_LIMIT_OLD if review < RISE_T else P.CFV_LIMIT
             rclaim = month_start(review - 1) + dt.timedelta(days=int(rng.integers(0, 10)))
             rdec = month_start(review) + dt.timedelta(days=int(rng.integers(0, min(25, days_in(review)))))
@@ -224,3 +227,79 @@ def build(rng, W):
                            ejercicio=cd.year - (1 if cd.month >= 7 else 2), inc=None, kids=h["kids"],
                            muni=place(h), first=None, last=None, rate=None))
     return {"fams": fams, "awards": awards, "incidents": incidents}
+
+
+def add_appeals_and_incidents(rng, R, W):
+    """Appeals against 2025 refusals (a second decision on the same claim), and the 2025 incident log: suspensions
+    at the year's reviews (lifted with the suspended months paid, or the award extinguished), births, children
+    reaching eighteen, and changes of address."""
+    aw = R["awards"]
+    munis = W["munis"]
+    by_prov = {}
+    for m in munis:
+        by_prov.setdefault(m["prov"], []).append(m)
+    y25 = (dt.date(2025, 1, 1), dt.date(2025, 12, 31))
+    extra = []
+    for a in aw:
+        if a["res"] == "D" and a["dec"] is not None and y25[0] <= a["dec"] <= dt.date(2025, 10, 20):
+            if rng.random() < 0.13:
+                adec = a["dec"] + dt.timedelta(days=int(rng.integers(32, 72)))
+                granted = rng.random() < 0.56
+                b = dict(a)
+                b["dec"] = adec
+                b["res"] = "C" if granted else "D"
+                b["appeal"] = True
+                if granted:
+                    b["first"] = t_of(adec.year, adec.month) + 1
+                    b["last"] = None
+                    b["rate"] = [r for (yy, mm), r in P.CFV_RATES if t_of(yy, mm) <= b["first"]][-1]
+                extra.append(b)
+    aw.extend(extra)
+    inc_rows = []
+    # suspensions at 2025 reviews: renewals (R or T) whose first month falls in 2025
+    t25a, t25b = t_of(2025, 1), t_of(2025, 12)
+    for a in aw:
+        if a["tipo"] in ("R", "T") and a["res"] == "C" and a.get("first") is not None and t25a <= a["first"] <= t25b \
+                and not a.get("appeal"):
+            if rng.random() < 0.075:
+                sus_day = month_start(a["first"])
+                inc_rows.append({"fid": a["fid"], "ex": a["ex"], "date": sus_day, "type": "SUS", "dato": ""})
+                gap = int(rng.choice([1, 2, 3, 4], p=[0.40, 0.30, 0.18, 0.12]))
+                lift_t = a["first"] + gap
+                if gap <= 3:
+                    lift_day = month_start(lift_t) + dt.timedelta(days=int(rng.integers(0, 20)))
+                    a["dec"] = lift_day             # the renewal is decided once the documents arrive
+                    a["suspended_to"] = lift_t
+                    if lift_day <= dt.date(2025, 12, 31):
+                        inc_rows.append({"fid": a["fid"], "ex": a["ex"], "date": lift_day, "type": "LEV",
+                                         "dato": str(gap)})
+                else:
+                    ext_day = month_start(a["first"] + 3) + dt.timedelta(days=int(rng.integers(0, 15)))
+                    a["res"] = "X"                  # extinguished: never paid
+                    a["ext_day"] = ext_day
+                    if ext_day <= dt.date(2025, 12, 31):
+                        inc_rows.append({"fid": a["fid"], "ex": a["ex"], "date": ext_day, "type": "EXT", "dato": ""})
+    # births, eighteenth birthdays and moves among families with an award open in 2025
+    open25 = {}
+    for a in aw:
+        if a["res"] == "C" and a.get("first") is not None and a["first"] <= t25b and (a["last"] is None or a["last"] >= t25a):
+            open25[a["fid"]] = a
+    for fid in sorted(open25):
+        a = open25[fid]
+        day = lambda: dt.date(2025, int(rng.integers(1, 13)), int(rng.integers(1, 29)))
+        if rng.random() < 0.045:
+            inc_rows.append({"fid": fid, "ex": a["ex"], "date": day(), "type": "NAC", "dato": "+1"})
+        if rng.random() < 0.055:
+            inc_rows.append({"fid": fid, "ex": a["ex"], "date": day(), "type": "MAY", "dato": "-1"})
+        if rng.random() < 0.034:
+            prov = a["muni"][:2]
+            if rng.random() < 0.30:
+                prov = str(rng.choice([p for p, _ in P.PROVINCES if p != prov]))
+            ms = by_prov[prov]
+            sh = np.array([m["share"] for m in ms])
+            new = ms[int(rng.choice(len(ms), p=sh / sh.sum()))]["code"]
+            if new != a["muni"]:
+                inc_rows.append({"fid": fid, "ex": a["ex"], "date": day(), "type": "DOM", "dato": new})
+    inc_rows.sort(key=lambda r: (r["date"], r["fid"], r["type"]))
+    R["incidents"] = inc_rows
+    return R

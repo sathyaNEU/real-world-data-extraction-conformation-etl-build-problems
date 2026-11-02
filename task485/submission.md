@@ -57,10 +57,10 @@ Net cost per 30-day supply, fiscal 2026:
    - Inhaled corticosteroid and LABA combinations: Brezara
    - Adalimumab products: adalimumab-kvrn
 3. Rebate guarantee by fiscal 2026 quarter (brand claims by channel, guarantee, rebates remitted for the quarter's claims, shortfall):
-   - Jul-Sep 2025: retail under 84 days 9,484 claims, retail 84 days or more 654, mail order 839, specialty 572; guarantee $3,476,679; remitted $3,648,387; no shortfall
-   - Oct-Dec 2025: retail under 84 days 9,570 claims, retail 84 days or more 659, mail order 792, specialty 535; guarantee $3,419,630; remitted $3,589,228; no shortfall
-   - Jan-Mar 2026: retail under 84 days 9,653 claims, retail 84 days or more 685, mail order 818, specialty 466; guarantee $3,373,898; remitted $3,453,527; no shortfall
-   - Apr-Jun 2026: retail under 84 days 9,573 claims, retail 84 days or more 652, mail order 798, specialty 610; guarantee $3,519,558; remitted $3,469,210; shortfall $50,348
+   - Jul-Sep 2025: retail under 84 days 9,484 claims, retail 84 days or more 654, mail order 839, specialty 572; guarantee $3,476,679; remitted $3,648,595; no shortfall
+   - Oct-Dec 2025: retail under 84 days 9,570 claims, retail 84 days or more 659, mail order 792, specialty 535; guarantee $3,419,630; remitted $3,589,431; no shortfall
+   - Jan-Mar 2026: retail under 84 days 9,653 claims, retail 84 days or more 685, mail order 818, specialty 466; guarantee $3,373,898; remitted $3,453,709; no shortfall
+   - Apr-Jun 2026: retail under 84 days 9,573 claims, retail 84 days or more 652, mail order 798, specialty 610; guarantee $3,519,558; remitted $3,469,407; shortfall $50,151
 4. Members with a paid claim in each reviewed class, by employer account:
    - GLP-1 receptor agonists: State Agencies 533, Higher Education 201, Local Government 203, Non-Medicare Retirees 151
    - SGLT2 inhibitors: State Agencies 386, Higher Education 147, Local Government 152, Non-Medicare Retirees 175

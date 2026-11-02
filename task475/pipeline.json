@@ -1,25 +1,25 @@
 {
  "task": "task475",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-01",
- "stump": "",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-02",
+ "stump": "The default path sets each question's mean mark among its answerers against the paper's mean, moves Question 6 by +1 and Question 8 by -1 and files 422 passes of 714; only each question read on the same candidates across the questions they chose gives Question 6 +3, Question 8 -3 and 401 passes.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-11-02, --asof 2026-12-01; every line answered in the note's ## Leak review)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS (2026-11-02)",
+  "nearest": "task474 v7 stump at 0.07; task488 ledger row at 0.04 (shares the estimator, not the driver)"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4: the isolated leak reader and the determinism judge (main session); every free gate green on the final cut, target.zip ac1b3bec",
  "approved": null,
  "delivered": null,
  "portal": null,

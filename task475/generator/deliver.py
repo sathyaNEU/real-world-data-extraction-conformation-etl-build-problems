@@ -204,9 +204,8 @@ def committee_paper(P, M, f, path):
         rows.append([q, title, f["answered"][q], signed(f["moves"][q])])
     para("Table 1. Moves for the optional questions", bold=True, size=9.5, space=2)
     table(rows, [1.8, 9.6, 2.3, 2.6])
-    para("Source: e-marking export, marks of record at 30 November 2026. %d candidates answered four questions; their "
-         "answers are in the fit and in the results." % f["four_answer"], size=8.5, italic=True, color="52514E",
-         space=6)
+    para("Source: e-marking export, marks of record at 30 November 2026. The %d candidates who answered four questions "
+         "are in the fit and in the results." % f["four_answer"], size=8.5, italic=True, color="52514E", space=6)
     png = chart_png(f)
     doc.add_picture(io.BytesIO(png), width=Cm(15.5))
     zero = "none" if f["held_at_0"] == 0 else "%d" % f["held_at_0"]
@@ -214,8 +213,8 @@ def committee_paper(P, M, f, path):
          "%s at zero, and neither limit changes any result." % (f["held_at_20"], zero), space=8)
 
     para("3. Results", bold=True, size=11.5, space=2)
-    para("%d candidates pass and %d fail. Scripts on 48 or 49 after the moves go to a senior examiner under "
-         "regulation 15 before results are issued." % (f["passed"], f["failed"]), space=8)
+    para("Of the %d candidates who sat, %d pass and %d fail. Scripts on 48 or 49 after the moves go to a senior "
+         "examiner under regulation 15 before results are issued." % (f["sat"], f["passed"], f["failed"]), space=8)
 
     para("4. Withdrawals, absences and May sitters by centre", bold=True, size=11.5, space=2)
     para("Withdrawals are dated by the time each request reached the portal (regulation 17.1), not by the day it "
@@ -235,7 +234,7 @@ def committee_paper(P, M, f, path):
          color="52514E", space=8)
 
     para("5. May 2026 reviews", bold=True, size=11.5, space=2)
-    para("%d May results changed on review, each from fail to pass. The review fees to refund come to AUD %s: the "
+    para("Of the May results, %d changed on review, each from fail to pass. The review fees to refund come to AUD %s: the "
          "fees for those %d reviews and for the %d requests received after the closing date, which were declined "
          "(regulation 19.4). Fees billed to member firm accounts are refunded at the firm's agreed rate." %
          (f["reviews_changed"], "{:,}".format(f["refund_aud"]), f["reviews_changed"], f["reviews_declined"]))

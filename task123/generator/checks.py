@@ -149,6 +149,13 @@ def run(W, target, E):
        "least gap %.3f" % min(seps))
 
     # ------------------------------------------------------------------------------------- semantic forks
+    std_flat = " ".join(D["std_text"].split())
+    ok("SF1 every apartment sits on exactly one of the schedule's rising mains",
+       len(D["risers"]) == 18 and all(sum(1 for r in D["risers"] if r["riser"][0] == x["tower"] and r["lo"] <= x["floor"] <= r["hi"]) == 1 for x in U.values()), "")
+    ok("SF2 demand is twice the half-hour kWh (the standard's own sentence ships)",
+       "half-hourly demand being twice its metered kWh in the half-hour" in std_flat, "")
+    ok("SF4 market time and Melbourne local time coincide in July (daylight saving runs October to April)",
+       datetime(2026, 7, 13) > datetime(2026, 4, 5) and datetime(2026, 7, 17) < datetime(2026, 10, 4), "")
     # SF3 window shifted a half-hour either way
     for s_ in (-1, 1):
         Ms = A.evening_matrix(D, U, shift=s_)

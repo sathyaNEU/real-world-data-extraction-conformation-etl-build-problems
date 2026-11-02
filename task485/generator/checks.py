@@ -382,6 +382,8 @@ def main():
     check("ask B device: the roster links only subscribers to their old cardholder number",
           all(r["relationship_code"] == "E" for r in roster if r["legacy_cardholder_id"]) and
           sum(1 for r in roster if r["legacy_cardholder_id"]) > 20000)
+    twins = sum(1 for rows_ in fam_rows.values() if len({(r["birth_date"], r["gender"]) for r in rows_}) < len(rows_))
+    check("ask B fair: within every family birth date and gender name one member, so the match is unique", twins == 0)
     mem = pk.members()
 
     def crack(c):

@@ -278,103 +278,200 @@ def interviews(trips, idays):
 
 
 # ------------------------------------------------------------------------------------------------- hatchery (ask)
-RACEWAYS_OLD = ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8"]
-RENUMBER = {"R1": 5, "R2": 6, "R3": 7, "R4": 8, "R5": 1, "R6": 2, "R7": 3, "R8": 4}
+# Raceways are numbered 1 to 8; when the new headbox came into use on 22 June 2026 the hatchery renumbered them from the
+# intake end, so the old raceway n became raceway 9 - n. The world keeps each batch under its 2026 (new) number.
+def old_number(rw_new):
+    return 9 - rw_new
 
 
-def raceway_fpk(rw_new, d):
-    """fish per kilogram in each (new-numbered) raceway on a day: each batch grows at its own pace"""
-    start = {1: 3.55, 2: 3.15, 3: 2.80, 4: 4.10, 5: 2.55, 6: 3.85, 7: 2.95, 8: 3.40}[rw_new]
-    growth = {1: 0.0040, 2: 0.0036, 3: 0.0031, 4: 0.0046, 5: 0.0028, 6: 0.0043, 7: 0.0033, 8: 0.0038}[rw_new]
-    return start * math.exp(-growth * (d - dt.date(2026, 5, 1)).days)
+FPK0 = {1: 4.30, 2: 2.55, 3: 3.80, 4: 2.70, 5: 3.70, 6: 2.60, 7: 3.45, 8: 2.75}       # fish per kg on 4 May
+GROWTH = {1: .0036, 2: .0026, 3: .0033, 4: .0028, 5: .0034, 6: .0027, 7: .0031, 8: .0029}
+ONHAND0 = {1: 30400, 2: 27100, 3: 33800, 4: 26300, 5: 31900, 6: 28800, 7: 29500, 8: 27700}
+SAMPLE_DAY0 = dt.date(2026, 5, 4)
 
 
-def hatchery_trips():
-    """release trips: each truck load from one raceway, to one lake or split between two"""
-    g = K.rng_for("hatchery")
-    stocked = [L[0] for L in LAKES]
-    trips = []
-    tno = 2601
-    days = [K.SEASON_START - dt.timedelta(days=12) + dt.timedelta(days=i) for i in range(0, 120)]
-    plan = []
-    for code in stocked:
-        n = 2 + int(g.integers(0, 3))
-        plan += [code] * n
-    g.shuffle(plan)
-    cur = 0
-    for d in days:
-        if d.weekday() >= 5 or d > dt.date(2026, 8, 28):
-            continue
-        if cur >= len(plan):
-            break
-        for truck in ("T1", "T2"):
-            if cur >= len(plan) or g.random() < 0.35:
-                continue
-            rw_new = int(g.integers(1, 9))
-            old = [k for k, v in RENUMBER.items() if v == rw_new][0]
-            load = float(np.round(g.uniform(260, 520), 1))
-            split = g.random() < 0.3 and cur + 1 < len(plan) and plan[cur] != plan[cur + 1]
-            dests = [plan[cur], plan[cur + 1]] if split else [plan[cur]]
-            cur += len(dests)
-            nets_total = int(load / 9.5 + g.integers(-2, 3))
-            if split:
-                n1 = int(round(nets_total * g.uniform(0.35, 0.65)))
-                nets = [n1, nets_total - n1]
-            else:
-                nets = [nets_total]
-            fpk = raceway_fpk(rw_new, d)
-            drops = []
-            for dest, nn in zip(dests, nets):
-                fish = load * nn / nets_total * fpk
-                hot = d.month in (7, 8)
-                doa = int(g.poisson(fish * (0.012 if hot else 0.004)))
-                drops.append({"lake": dest, "nets": nn, "doa": doa, "fish": fish})
-            trips.append({"trip": "QC-%d" % tno, "date": d, "truck": truck, "rw_new": rw_new, "rw_old": old,
-                          "load": load, "nets_total": nets_total, "drops": drops})
-            tno += 1
-    return trips
+def fpk_true(rw_new, d):
+    return FPK0[rw_new] * math.exp(-GROWTH[rw_new] * (d - SAMPLE_DAY0).days)
 
 
-def raceway_samples(trips):
-    """the morning sample of every raceway a truck loads from, and a routine weekly sample of each raceway"""
-    g = K.rng_for("samples")
+def _truck_days(a, b):
     out = []
-    keyset = set()
-    for t in trips:
-        keyset.add((t["date"], t["rw_new"]))
-    for d in [K.SEASON_START - dt.timedelta(days=14) + dt.timedelta(days=i) for i in range(0, 125)]:
-        if d.weekday() == 0:
-            for rw in range(1, 9):
-                keyset.add((d, rw))
-    for d, rw in sorted(keyset):
-        fpk = raceway_fpk(rw, d)
-        grams = float(np.round(g.uniform(2400, 3600), 0))
-        n = int(round(fpk * grams / 1000 * math.exp(g.normal(0, 0.012))))
-        out.append({"date": d, "rw_new": rw, "grams": grams, "count": n})
+    d = a
+    while d <= b:
+        if d.weekday() in (1, 2, 3, 4):        # trucks run Tuesday to Friday; Monday is sampling day
+            out.append(d)
+        d += dt.timedelta(days=1)
     return out
 
 
+EARLY = _truck_days(dt.date(2026, 5, 5), dt.date(2026, 6, 19))
+MID = _truck_days(dt.date(2026, 6, 23), dt.date(2026, 8, 14))
+LATE = _truck_days(dt.date(2026, 8, 18), dt.date(2026, 8, 28))
+
+
+def hatchery_plan():
+    """each stocked lake's releases for 2026: two to four, one of them in the summer top-up"""
+    g = K.rng_for("plan")
+    rel = []
+    for L in LAKES:
+        if L[7] == "walk-in":
+            continue
+        k = 2 + int(g.integers(0, 3))
+        periods = ["mid"] + [["early", "mid", "late"][int(np.searchsorted([0.5, 0.8, 1.0], g.random()))]
+                             for _ in range(k - 1)]
+        for p in periods:
+            pool = {"early": EARLY, "mid": MID, "late": LATE}[p]
+            rel.append((pool[int(g.integers(0, len(pool)))], L[0]))
+    rel.sort()
+    return rel
+
+
+LOAD_PLAN = {}    # planned net loads (kg) by trip, where the plan set them
+
+
+def hatchery_trips():
+    """release trips: each truck load from one raceway, to one lake or split between two; loads are the hatchery's
+    planned net loads, kept in the plan file so the season can be replayed"""
+    g = K.rng_for("hatchery")
+    rel = hatchery_plan()
+    onhand = dict(ONHAND0)
+    last = SAMPLE_DAY0
+    trips = []
+    busy = {}
+    i = 0
+    tno = 2601
+    while i < len(rel):
+        d, lake = rel[i]
+        split = (i + 1 < len(rel) and rel[i + 1][1] != lake and (rel[i + 1][0] - d).days <= 6 and g.random() < 0.34)
+        dests = [lake, rel[i + 1][1]] if split else [lake]
+        i += 2 if split else 1
+        while busy.get(d, 0) >= 2 or d.weekday() not in (1, 2, 3, 4):
+            d += dt.timedelta(days=1)
+        truck = "T1" if busy.get(d, 0) == 0 else "T2"
+        busy[d] = busy.get(d, 0) + 1
+        trips.append({"trip": "QC-%d" % tno, "date": d, "truck": truck, "dests": dests})
+        tno += 1
+    trips.sort(key=lambda t: (t["date"], t["truck"]))
+    out = []
+    for t in trips:
+        d = t["date"]
+        # mortality since the last trip day
+        for k in onhand:
+            onhand[k] *= math.exp(-0.0006 * (d - last).days)
+        last = d
+        rw = int(g.integers(1, 9))
+        load = float(np.round(g.uniform(300, 520), 1))
+        if t["trip"] in LOAD_PLAN:
+            load = LOAD_PLAN[t["trip"]]
+        nets_total = int(round(load / 9.5 + g.integers(-2, 3)))
+        if len(t["dests"]) == 2:
+            n1 = int(round(nets_total * g.uniform(0.35, 0.65)))
+            nets = [n1, nets_total - n1]
+        else:
+            nets = [nets_total]
+        onhand[rw] -= load * fpk_true(rw, d)
+        hot = d.month in (7, 8)
+        drops = []
+        for dest, nn in zip(t["dests"], nets):
+            drops.append({"lake": dest, "nets": nn, "doa_u": float(g.random()), "hot": hot})
+        out.append({"trip": t["trip"], "date": d, "truck": t["truck"], "rw_new": rw, "load": load,
+                    "nets_total": nets_total, "drops": drops, "tank_temp": round(float(g.normal(11.5, 0.8)), 1)})
+    return out
+
+
+def raceway_samples(trips):
+    """Monday's sample count of every raceway, with the inventory's fish on hand after the week's loads"""
+    g = K.rng_for("samples")
+    out = []
+    onhand = {k: float(v) for k, v in ONHAND0.items()}
+    loads = {}
+    for t in trips:
+        loads.setdefault(t["date"], []).append(t)
+    d = SAMPLE_DAY0
+    prev = d
+    while d <= dt.date(2026, 8, 31):
+        # apply the loads and mortality since the previous Monday
+        x = prev
+        while x < d:
+            for k in onhand:
+                onhand[k] *= math.exp(-0.0006)
+            for t in loads.get(x, []):
+                onhand[t["rw_new"]] -= t["load"] * fpk_true(t["rw_new"], x)
+            x += dt.timedelta(days=1)
+        for rw in range(1, 9):
+            grams = float(np.round(g.uniform(2400, 3600), 0))
+            n = int(round(fpk_true(rw, d) * grams / 1000 * math.exp(g.normal(0, 0.012))))
+            out.append({"date": d, "rw_new": rw, "grams": grams, "count": n, "onhand": int(round(onhand[rw], -1))})
+        prev = d
+        d += dt.timedelta(days=7)
+    return out
+
+
+def fish_per_kg(samples, rw_new, d):
+    """the hatchery's own figure for a load: its raceway's latest Monday sample on or before the loading day"""
+    best = None
+    for s in samples:
+        if s["rw_new"] == rw_new and s["date"] <= d and (best is None or s["date"] > best["date"]):
+            best = s
+    return best["count"] / (best["grams"] / 1000.0)
+
+
+def settle_drops(trips, samples):
+    """dead fish counted at each drop, from the fish the hatchery's figure puts in the drop"""
+    for t in trips:
+        fpk = fish_per_kg(samples, t["rw_new"], t["date"])
+        for dr in t["drops"]:
+            fish = t["load"] * dr["nets"] / t["nets_total"] * fpk
+            rate = 0.011 if dr["hot"] else 0.004
+            # a Poisson draw by inversion of the drop's own uniform, so a load change moves only its own count
+            lam = fish * rate
+            k, p, c = 0, math.exp(-lam), math.exp(-lam)
+            while c < dr["doa_u"] and k < 400:
+                k += 1
+                p *= lam / k
+                c += p
+            dr["doa"] = k
+            dr["fish"] = fish
+    return trips
+
+
 # ------------------------------------------------------------------------------------------------- loggers (ask)
-LOGGERS = [
-    # serial, lake code, depth (m), first reading, last reading (local), clock the logger was launched on
-    ("20184402", "PP-03", 1.0, dt.datetime(2026, 5, 27, 14, 0), dt.datetime(2026, 8, 6, 11, 45), "local"),
-    ("20184560", "PP-03", 1.0, dt.datetime(2026, 8, 3, 15, 30), dt.datetime(2026, 9, 9, 10, 15), "local"),
-    ("20184409", "PP-11", 1.0, dt.datetime(2026, 5, 28, 11, 0), dt.datetime(2026, 9, 9, 13, 30), "utc"),
-    ("20184533", "PP-11", 3.0, dt.datetime(2026, 5, 28, 11, 15), dt.datetime(2026, 7, 12, 8, 30), "local"),
-    ("20184417", "PP-19", 1.0, dt.datetime(2026, 5, 29, 10, 30), dt.datetime(2026, 7, 12, 12, 30), "local"),
-    ("20184533", "PP-19", 1.0, dt.datetime(2026, 7, 12, 12, 45), dt.datetime(2026, 9, 10, 9, 45), "local"),
-    ("20184421", "PP-09", 1.0, dt.datetime(2026, 5, 29, 13, 45), dt.datetime(2026, 9, 10, 12, 0), "utc"),
-    ("20184425", "PP-09", 3.0, dt.datetime(2026, 5, 29, 14, 0), dt.datetime(2026, 9, 10, 12, 15), "local"),
-    ("20184438", "PP-26", 1.0, dt.datetime(2026, 5, 27, 16, 15), dt.datetime(2026, 9, 9, 15, 0), "local"),
-    ("20184441", "PP-07", 1.0, dt.datetime(2026, 5, 28, 15, 30), dt.datetime(2026, 9, 9, 11, 30), "local"),
-    ("20184446", "PP-20", 1.0, dt.datetime(2026, 5, 30, 10, 45), dt.datetime(2026, 9, 11, 10, 0), "local"),
-    ("20184452", "PP-02", 1.0, dt.datetime(2026, 5, 30, 13, 15), dt.datetime(2026, 9, 11, 13, 45), "local"),
-    ("20184457", "PP-29", 1.0, dt.datetime(2026, 5, 31, 12, 30), dt.datetime(2026, 9, 11, 15, 15), "local"),
+# each logger: the clock it was launched on, when it started logging (in the office) and when it was stopped at download
+SERIALS = {
+    "20184402": ("local", dt.datetime(2026, 5, 27, 8, 40), dt.datetime(2026, 9, 10, 9, 20)),
+    "20184470": ("local", dt.datetime(2026, 5, 27, 8, 55), dt.datetime(2026, 9, 11, 15, 30)),
+    "20184409": ("utc", dt.datetime(2026, 5, 28, 7, 30), dt.datetime(2026, 9, 10, 9, 40)),
+    "20184533": ("local", dt.datetime(2026, 5, 28, 7, 35), dt.datetime(2026, 9, 10, 15, 10)),
+    "20184417": ("local", dt.datetime(2026, 5, 29, 7, 50), dt.datetime(2026, 6, 3, 2, 15)),    # battery failed
+    "20184421": ("utc", dt.datetime(2026, 5, 29, 8, 0), dt.datetime(2026, 9, 11, 9, 0)),
+    "20184425": ("local", dt.datetime(2026, 5, 29, 8, 5), dt.datetime(2026, 9, 11, 9, 5)),
+    "20184438": ("local", dt.datetime(2026, 5, 27, 9, 10), dt.datetime(2026, 9, 10, 9, 30)),
+    "20184441": ("local", dt.datetime(2026, 5, 28, 8, 20), dt.datetime(2026, 9, 10, 9, 45)),
+    "20184452": ("local", dt.datetime(2026, 5, 30, 8, 15), dt.datetime(2026, 9, 12, 10, 5)),
+    "20184457": ("local", dt.datetime(2026, 5, 31, 8, 25), dt.datetime(2026, 9, 12, 10, 15)),
+}
+# deployments: serial, lake, depth (m), into the water, out of the water (None: not recovered)
+DEPLOYMENTS = [
+    ("20184402", "PP-03", 1.0, dt.datetime(2026, 5, 27, 14, 0), dt.datetime(2026, 9, 9, 10, 15)),
+    ("20184470", "PP-03", 1.0, dt.datetime(2026, 5, 27, 14, 10), dt.datetime(2026, 7, 22, 9, 10)),
+    ("20184470", "PP-20", 1.0, dt.datetime(2026, 7, 22, 13, 20), dt.datetime(2026, 9, 11, 10, 0)),
+    ("20184409", "PP-11", 1.0, dt.datetime(2026, 5, 28, 11, 0), dt.datetime(2026, 9, 9, 13, 30)),
+    ("20184533", "PP-11", 1.0, dt.datetime(2026, 5, 28, 11, 15), dt.datetime(2026, 7, 14, 8, 30)),
+    ("20184533", "PP-19", 1.0, dt.datetime(2026, 7, 14, 12, 45), dt.datetime(2026, 9, 10, 9, 45)),
+    ("20184417", "PP-19", 1.0, dt.datetime(2026, 5, 29, 10, 30), dt.datetime(2026, 7, 14, 12, 30)),
+    ("20184421", "PP-09", 1.0, dt.datetime(2026, 5, 29, 13, 45), dt.datetime(2026, 9, 10, 12, 0)),
+    ("20184425", "PP-09", 3.0, dt.datetime(2026, 5, 29, 14, 0), dt.datetime(2026, 9, 10, 12, 15)),
+    ("20184438", "PP-26", 1.0, dt.datetime(2026, 5, 27, 16, 15), dt.datetime(2026, 9, 9, 15, 0)),
+    ("20184441", "PP-07", 1.0, dt.datetime(2026, 5, 28, 15, 30), dt.datetime(2026, 9, 9, 11, 30)),
+    ("20184446", "PP-20", 1.0, dt.datetime(2026, 5, 30, 10, 45), None),
+    ("20184452", "PP-02", 1.0, dt.datetime(2026, 5, 30, 13, 15), dt.datetime(2026, 9, 11, 13, 45)),
+    ("20184457", "PP-29", 1.0, dt.datetime(2026, 5, 31, 12, 30), dt.datetime(2026, 9, 11, 15, 15)),
 ]
+PEAK_DOY = 207.0
 
 
 def water_temps():
-    """15-minute water temperature at each deployment, from each lake's own season curve and the plateau's weather"""
+    """15-minute readings of every logger from launch to download: lake water while deployed, air otherwise"""
     g = K.rng_for("water")
     elev = {L[0]: L[6] for L in LAKES}
     anomaly = {}
@@ -384,7 +481,6 @@ def water_temps():
         anomaly[d] = a
 
     def anom(t):
-        # the weather anomaly moves smoothly, noon to noon
         x = (t - dt.datetime(2026, 5, 20, 12, 0)).total_seconds() / 86400.0
         i = int(math.floor(x))
         f = x - i
@@ -395,22 +491,37 @@ def water_temps():
     for L in LAKES:
         gl = K.rng_for("lakepeak", L[0])
         lake_peak[L[0]] = 21.55 - (elev[L[0]] - 1150) * 0.0105 + gl.normal(0, 0.2)
+
+    def water(code, depth, t, off, gg):
+        doy = t.timetuple().tm_yday + t.hour / 24.0 + t.minute / 1440.0
+        seasonal = max(lake_peak[code] - 9.5 * ((doy - PEAK_DOY) / 62.0) ** 2, 9.0)
+        diurnal = (0.55 if depth < 2 else 0.12) * math.cos(2 * math.pi * ((t.hour + t.minute / 60.0) - 17.0) / 24.0)
+        deep = 0.0 if depth < 2 else -(2.4 + 0.8 * max(0.0, (doy - 160) / 60.0))
+        return seasonal + diurnal + deep + anom(t) * (0.9 if depth < 2 else 0.4) + off + gg.normal(0, 0.05)
+
+    def air(t, gg):
+        h = t.hour + t.minute / 60.0
+        if 8.0 <= h <= 18.0:
+            return 23.5 + 3.5 * math.sin(math.pi * (h - 8.0) / 10.0) + gg.normal(0, 0.6)    # truck and dock
+        return 21.4 + gg.normal(0, 0.3)                                                      # office
+
     series = {}
-    for serial, code, depth, dep, ret, clock in LOGGERS:
-        gg = K.rng_for("logger", serial, code)
-        offset = gg.normal(0, 0.06)
-        peak = lake_peak[code]
+    for serial, (clock, start, stop) in SERIALS.items():
+        gg = K.rng_for("logger", serial)
+        off = gg.normal(0, 0.06)
+        deps = [x for x in DEPLOYMENTS if x[0] == serial]
         recs = []
-        t = dep
-        while t <= ret:
-            doy = t.timetuple().tm_yday + t.hour / 24.0 + t.minute / 1440.0
-            seasonal = max(peak - 9.5 * ((doy - 216.0) / 62.0) ** 2, 9.0)
-            diurnal = (0.55 if depth < 2 else 0.12) * math.cos(2 * math.pi * ((t.hour + t.minute / 60.0) - 17.0) / 24.0)
-            deep = 0.0 if depth < 2 else -(2.4 + 0.8 * max(0.0, (doy - 160) / 60.0))
-            v = seasonal + diurnal + deep + anom(t) * (0.9 if depth < 2 else 0.4) + offset + gg.normal(0, 0.05)
-            recs.append((t, round(v, 2)))
+        t = start
+        while t <= stop:
+            where = None
+            for s, code, depth, a0, b0 in deps:
+                if a0 <= t and (b0 is None or t <= b0):
+                    where = (code, depth)
+                    break
+            v = water(where[0], where[1], t, off, gg) if where else air(t, gg)
+            recs.append((t, round(v, 2), where))
             t += dt.timedelta(minutes=15)
-        series[(serial, code, dep)] = recs
+        series[serial] = recs
     return series
 
 
@@ -463,6 +574,7 @@ def simulate():
     iv = interviews(trips, idays)
     ht = hatchery_trips()
     samples = raceway_samples(ht)
+    settle_drops(ht, samples)
     temps = water_temps()
     ch = charter(fl)
     return {"trips": trips, "truth": truth_hours(trips), "survey_days": sd, "flights": fl, "counts": counts,

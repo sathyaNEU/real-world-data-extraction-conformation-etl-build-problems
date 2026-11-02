@@ -253,7 +253,7 @@ def main():
     ok("DOCX read back: Table 1 moves", [int(t1["Q%d" % (j + 1)]) for j in range(8)] == moves)
     ok("DOCX read back: the recommendation's pass count", "%d of the %d candidates who sat" % (n_pass, len(cands)) in body)
     ok("DOCX read back: Table 2 by centre", all(t2[nm] == cen[c] for c, nm in order))
-    ok("DOCX read back: the reviews paragraph", ("%d May results changed on review" % changed) in body and
+    ok("DOCX read back: the reviews paragraph", ("Of the May results, %d changed on review" % changed) in body and
        ("AUD {:,}".format(int(np.floor(refund + 0.5)))) in body)
     ok("DOCX read back: the chart is embedded", len(d.inline_shapes) == 1)
 

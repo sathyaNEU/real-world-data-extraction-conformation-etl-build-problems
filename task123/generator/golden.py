@@ -106,7 +106,7 @@ def chart(E, path):
     ax.spines["right"].set_visible(False)
     ax.tick_params(labelsize=8.5)
     fig.tight_layout()
-    fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None, "Title": None})
+    fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None})
     plt.close(fig)
 
 
