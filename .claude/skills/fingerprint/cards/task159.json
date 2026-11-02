@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "150,000 oz of gold in the ore mined in 2027 (ore 2,800,000 t on grade control), against 130,000 on the plan's model ounces times the reconciliation reports' 0.50 g/t factor",
+  "answer_source": "submission.md (Final Recommendation and Critical Components); generator/figures.json budget_oz, ore_t_100k",
   "gap": [
     "objective",
     "population"
@@ -51,7 +51,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "gc_assays_lims_export_20261105.csv",
-    "rows": 0,
+    "rows": 61077,
     "entity": "one blast-hole sample assay or quality-control insertion",
     "grain": "sample",
     "source": "synthetic"
@@ -74,7 +74,10 @@
       "Heidi Nichols"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "kelvanna_2027_budget_gold.xlsx",
+    "lg_stockpile_2023-2026.svg"
+  ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "Units are kept when a finer measurement taken at selection reads at or above a threshold, while the forecast's only reading of the forward units is an estimate that is right on average for each unit but varies less than that finer measurement; above a threshold set above the middle of the distribution the finer measurement keeps more units and more of the quantity than the estimate's own distribution shows, by more the higher the threshold, so a kept-to-estimated factor measured at the record's threshold understates the forward one, and only the record's paired estimates and finer readings, re-cut at the forward threshold on both sides, size what the forward threshold keeps.",

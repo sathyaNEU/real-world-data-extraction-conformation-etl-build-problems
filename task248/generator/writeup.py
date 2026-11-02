@@ -38,6 +38,7 @@ def figures(res, pk):
         "call": {"count": len(listed), "listed": listed,
                  "pairs": {t: res["tanks"][t]["gold_pair"] for t in listed}},
         "limit_gal": 25,
+        "filed": {"fs3_recharting_section": 3.4, "reference_temperature_f": 60},
         "unlisted_count": len(pk.reg) - len(listed),
         "capacities_gal": {t: int(pk.reg[t]["cap"]) for t in listed},
         "rungs": {"monthly_reconciliation": res["R0_list"], "delivery_check": res["R1_list"],

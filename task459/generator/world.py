@@ -14,7 +14,8 @@ SEED = 4592026
 YEAR_START = dt.date(2025, 1, 1)
 YEAR_END = dt.date(2025, 12, 31)
 NDAYS = 365
-EXTRACT_DATE = dt.date(2026, 10, 9)
+EXTRACT_DATE = dt.date(2026, 1, 2)      # the year-end membership snapshot
+DIRECTORY_DATE = dt.date(2026, 10, 1)
 BUDGET_2027 = 14_630_000
 
 
@@ -295,7 +296,8 @@ def build_pharmacies():
     for r in REGION_CODES:
         zs = zips_in(r)
         for i in range(nper[r]):
-            z, city, county, _ = zs[(i * 3 + 1) % len(zs)]
+            zw = np.array([x[3] for x in zs], float)
+            z, city, county, _ = zs[int(rng.choice(len(zs), p=zw / zw.sum()))]
             if rng.random() < 0.6:
                 name = "%s #%d" % (chains[rng.integers(0, len(chains))], 100 + int(rng.integers(0, 880)))
             else:
@@ -374,8 +376,8 @@ def build_members(provs_by_region):
         m.away = None
         m.away_zip = None
         m.timeline = np.full(NDAYS, REGION_CODES.index(home), dtype=np.int8)
-        m.addr_hist = [(dt.date(2009 + int(rng.integers(0, 15)), 1, 1) + dt.timedelta(days=int(rng.integers(0, 330))), m.home_zip, "ENR")]
         m.enroll = [(dt.date(2015 + int(rng.integers(0, 9)), 1 + int(rng.integers(0, 12)), 1), None)]
+        m.addr_hist = [(m.enroll[0][0], m.home_zip, "ENR")]
         m.pcp = assign_pcp(home)
         m.pcp_hist = [(m.enroll[0][0], m.pcp)]
         m.mail_order = rng.random() < 0.18
@@ -488,6 +490,7 @@ def build_members(provs_by_region):
             start = dt.date(2025, 2 + int(rng.integers(0, 10)), 1)
             m.enroll = [(start, None)]
             m.pcp_hist = [(start, m.pcp)]
+            m.addr_hist = [(start, m.home_zip, "ENR")]
         elif r < 0.75:
             m.dod = dt.date(2025, 1, 1) + dt.timedelta(days=int(rng.integers(20, 350)))
             m.enroll = [(m.enroll[0][0], m.dod)]
@@ -496,27 +499,7 @@ def build_members(provs_by_region):
             m.enroll = [(m.enroll[0][0], end)]
         members.append(m)
 
-    # A few counted members change address in 2026 (after the year the count reads).
-    for m in members:
-        if m.kind in ("stay", "young") and rng.random() < 0.012:
-            to = REGION_CODES[rng.choice(7)]
-            if to != m.home:
-                when = dt.date(2026, 1, 15) + dt.timedelta(days=int(rng.integers(0, 230)))
-                m.moves2026 = (when, pick_zip(rng, to))
-                m.addr_hist.append((when, m.moves2026[1], "MBR"))
-
-    # 2026 events among members enrolled all of 2025: deaths and disenrollments before the October 2026 extract.
-    rng2 = stream("members_2026")
-    for m in members:
-        if m.kind == "partial":
-            continue
-        r = rng2.random()
-        if r < 0.031:
-            m.dod = dt.date(2026, 1, 3) + dt.timedelta(days=int(rng2.integers(0, 270)))
-            m.enroll = [(m.enroll[0][0], m.dod)]
-        elif r < 0.046:
-            end = dt.date(2026, 1 + int(rng2.integers(0, 8)), 28)
-            m.enroll = [(m.enroll[0][0], end)]
+    rng2 = stream("members_gaps")
     # A handful of 75+ stayers left the plan for a month or two in 2025 and came back (not enrolled every day).
     stayers = [m for m in members if m.kind == "stay" and m.dod is None and m.enroll[-1][1] is None]
     for i in rng2.choice(len(stayers), size=34, replace=False):

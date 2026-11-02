@@ -12,7 +12,7 @@ import world as W
 AUTH = "Quarrow Valley Regional Solid Waste Authority"
 SITE = "Breck Hollow Landfill"
 OPER = "Leyland Renewable Gas"
-COOP = "Sauk Prairie Electric Cooperative"
+COOP = "Quarrow Rural Electric Cooperative"
 DEQ = "State Department of Environmental Quality"
 
 
@@ -339,7 +339,7 @@ def write_site_register(target):
     ws["B1"].font = Font(bold=True)
     ws.column_dimensions["A"].width = 44
     ws.column_dimensions["B"].width = 70
-    C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2025, 3, 20, 9, 0), AUTH)
+    C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2025, 2, 11, 10, 15), AUTH)
     return fn
 
 
@@ -359,7 +359,7 @@ def write_well_register(t, target):
         ws.append([pt["label"].replace("WB-", ""), "vertical" if k < 58 else "horizontal",
                    "Z%d" % (1 + int(pt["x"] // 400) % 6), round(pt["x"], 1), round(pt["y"], 1),
                    int(r.uniform(38, 96)), int(r.uniform(12, 25)), "2018" if k < 30 else "2019"])
-    C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2025, 3, 20, 9, 0), AUTH)
+    C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2025, 3, 4, 14, 40), AUTH)
     return fn
 
 

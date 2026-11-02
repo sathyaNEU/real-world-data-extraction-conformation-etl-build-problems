@@ -24,9 +24,8 @@ def write(path, F):
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. %s's expected injury collisions a year as it stands, at its 2026 traffic: **%.1f**." % (best, F["call_expected"]))
-    L.append("2. %s's benefit (crossroads factor %.2f): **%.1f** injury collisions prevented a year." % (best, F["cmf"][best], F["call_benefit"]))
-    L.append("3. %s, the runner-up: **%.1f** a year." % (ru, F["runner_up_benefit"]))
+    L.append("1. %s's benefit (crossroads factor %.2f): **%.1f** injury collisions prevented a year." % (best, F["cmf"][best], F["call_benefit"]))
+    L.append("2. %s, the runner-up: **%.1f** a year." % (ru, F["runner_up_benefit"]))
     L.append("")
     L.append("## 3. Step-by-Step Solution")
     L.append("")
@@ -40,7 +39,8 @@ def write(path, F):
              "traffic, layout and year terms): overdispersion %.2f." % F["overdispersion"])
     L.append("4. Combined each listed junction's own 2021 to 2025 count with its predicted count by empirical Bayes (weight "
              "1 / (1 + overdispersion x predicted five-year count) on the prediction) and carried the result to the "
-             "junction's 2026 traffic at the window's average year level: %s %.1f a year." % (best, F["call_expected"]))
+             "junction's 2026 traffic at the window's average year level: each listed junction's expected injury "
+             "collisions a year as it stands.")
     L.append("5. Multiplied by one less the crash modification factor for each layout in Table 2 of "
              "junction_safety_fund_guidance_2027.pdf: %s %.1f prevented a year, %s %.1f." % (best, F["call_benefit"], ru,
                                                                                            F["runner_up_benefit"]))

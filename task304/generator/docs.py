@@ -88,7 +88,7 @@ def guidance(out):
 
 def screening(out, pack):
     path = os.path.join(out, "network_screening_2026.pdf")
-    d = _doc(path, "Ardleshire junction screening 2026", "Halberd Transport Planning", "Road safety term contract, task 26-14")
+    d = _doc(path, "Ardleshire junction screening 2026", "Ardleshire County Council", "Network management: junction screening 2026")
     cands = sorted(pack.W.candidates(), key=lambda j: j["name"])
     rows = [["Junction", "Node", "District", "Layout", "Roads"]]
     lay = {"X": "Crossroads", "T": "T junction", "ST": "Staggered"}
@@ -96,8 +96,9 @@ def screening(out, pack):
         rows.append([j["name"], j["node"], j["district"], lay[j["layout"]],
                      "%s %s / %s" % (j["road"], j["road_name"], j["minor"])])
     s = [Paragraph("Ardleshire County Council: junction screening 2026", H1),
-         Paragraph("Halberd Transport Planning for Ardleshire County Council, road safety engineering term contract, "
-                   "task 26-14. Alison Hartley, 9 October 2026.", SMALL), Spacer(1, 4),
+         Paragraph("Ardleshire County Council, Highways and Transport, network management. From Neil Ingram, traffic "
+                   "data officer, to Alison Hartley, Halberd Transport Planning (road safety engineering term contract), "
+                   "9 October 2026.", SMALL), Spacer(1, 4),
          Paragraph("1. What was screened", H2),
          Paragraph("Every junction on the county's principal road network that is controlled by give-way or stop lines, "
                    "using the county's validated collision record for 2021 to 2025 and the junction inventory. Roundabouts "

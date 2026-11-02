@@ -372,6 +372,12 @@ def golden(target):
         "Bazett": run_cqtc(D, "B", ch=ch),
         "Framingham": run_cqtc(D, "Fram", ch=ch),
     }
+    fam = {}
+    for m in ("hour", "half_hour", "two_hour", "three_hour", "harmonic1", "harmonic2"):
+        fam[m] = G if m == "hour" else run_cqtc(D, "own", ex[m], ch=ch)
+    F["fam"] = dict(ub50_lo=min(r["ubs"][50] for r in fam.values()), ub50_hi=max(r["ubs"][50] for r in fam.values()),
+                    ub100_lo=min(r["ubs"][100] for r in fam.values()), ub100_hi=max(r["ubs"][100] for r in fam.values()),
+                    calls=sorted({r["call"] for r in fam.values()}))
     F["ask_a"] = ask_a(D)[0]
     F["ask_b"] = ask_b(D, recs, owner, pairing)[0]
     return F

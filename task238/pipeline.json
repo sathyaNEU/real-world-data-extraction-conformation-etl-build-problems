@@ -19,7 +19,7 @@
  },
  "duplicate_check": {
   "heart": "PASS 2026-11-02 (NOTE test.same_driver_older, differentiated on the card against task268 v3 and task453 v2)",
-  "surface": "",
+  "surface": "two pairs promoted for adjudication (2026-11-02): task456 (surface 0.101, same decision type designation_set; an ICU surge compact's latent-class count from three feeds, another world and mechanism) and task453 (the card-level same-driver signature gap time, G6, method_or_model_selection, differentiated on the card); the task470 shared-rounding construction cleared by rewording the prompt's rounding sentence; not adjudicated",
   "nearest": "task470 driver 0.09"
  },
  "judge": {
@@ -49,7 +49,7 @@
  ],
  "build": {
   "target_zip_sha256": "d8345726",
-  "gates_2026-11-02": "checks.py 94/94; verify.py 0 failures; two builds byte-identical over 19 files; figures_check 112/112; precut 61 checks 0 FAIL 0 WARN; voice-check PASS; leak.py REVIEW (no LEAK); guard heart PASS",
+  "gates_2026-11-02": "checks.py 94/94; verify.py 0 failures; two builds byte-identical over 19 files; figures_check 112/112; precut 61 checks 0 FAIL 0 WARN; voice-check PASS; leak.py REVIEW (no LEAK); guard heart PASS; guard surface exit 0 (2 pairs promoted)",
   "pair_ceiling": "34.3 (cracker on the call 50.2, mirror off 18.4; mirror leakage 11.9 per cent; full includer against the mirror 59.2)",
   "asof": "2027-01-15"
  }

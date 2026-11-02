@@ -111,9 +111,9 @@ def accommodation(path, w):
         ("p", "%s (BRIN 21KW) is a public primary school in Molenwijk, %s. It serves the postcode areas 3841 "
               "(Molenwijk) and 3842 (Rietveld)." % (P.SCHOOL, P.DISTRICT)),
         ("h", "2. Buildings"),
-        ("table", [["Building", "Address", "Classrooms", "Gross floor area (m2)", "Built"],
-                   ["Hoofdgebouw", "Molenwiek 2", "12", "2,184", "1979, renovated 2014"],
-                   ["Dependance", "Molenwiek 4", "8", "1,322", "1996"]]),
+        ("table", [["Building", "Address", "Classrooms", "Gross floor area (m2)", "Built", "Gas connection (EAN)"],
+                   ["Hoofdgebouw", "Molenwiek 2", "12", "2,184", "1979, renovated 2014", w["gas_ean_current_main"]],
+                   ["Dependance", "Molenwiek 4", "8", "1,322", "1996", w["gas_ean_current_annex"]]]),
         ("p", "The dependance also houses the after-school care (BSO) of %s." % P.PROVIDER),
         ("h", "3. Capacity"),
         ("p", "Under the municipal accommodation ordinance the two buildings give the school a capacity of <b>%d "

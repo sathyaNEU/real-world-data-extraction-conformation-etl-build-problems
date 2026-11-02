@@ -271,7 +271,7 @@ def surface_walkovers(p):
         walk = dict(q=q, days=days, rows=rows, true=true, exc=set(int(i) for i in exc), pts=allpts,
                     offx=offx, offy=offy)
         walks.append(walk)
-    # the third quarter's drift: points read on day 1 between the 07:30 check and the failed 12:00 check
+    # the third quarter's drift: points read on day 1 between the morning check and the failed midday check
     w3 = walks[2]
     d1 = dt.datetime(2026, 9, 15, 12, 0, tzinfo=C.TZ)
     morning = [row for row in w3["rows"] if row["t"].date() == d1.date() and row["t"] < d1]
@@ -366,26 +366,31 @@ def surface_walkovers(p):
 
 
 def calibration_log(walks):
-    """The analyser's zero and span checks on each walkover day: 07:30, 12:00 and 15:30 local."""
+    """The analyser's zero and span checks on each walkover day: before the first point, at the midday break and
+    after the last point. A failed check is followed by a recalibration and a passing check before walking resumes."""
     r = W.rng(90)
     rows = []
     for wk in walks:
         for d in wk["days"]:
-            for hh, mm in ((7, 30), (12, 0), (15, 30)):
-                t = dt.datetime(d[0], d[1], d[2], hh, mm, tzinfo=C.TZ)
+            day = dt.date(*d)
+            pts = [row["t"] for row in wk["rows"] if row["t"].date() == day]
+            first, last = min(pts), max(pts)
+            morning = first - dt.timedelta(minutes=int(r.integers(6, 21)))
+            midday = dt.datetime(d[0], d[1], d[2], 11, 56, tzinfo=C.TZ) + dt.timedelta(minutes=int(r.integers(0, 15)))
+            end = last + dt.timedelta(minutes=int(r.integers(6, 26)))
+            for t in (morning, midday, end):
                 span_ref = 500.0
                 read = span_ref * (1 + r.normal(0, 0.012))
                 ok = True
-                if wk["q"] == 3 and d == (2026, 9, 15) and hh == 12:
+                if wk["q"] == 3 and d == (2026, 9, 15) and t is midday:
                     read = span_ref * 1.22
                     ok = False
                 rows.append(dict(t=t, zero=round(float(r.uniform(-0.6, 0.9)), 1), span_ref=span_ref,
                                  span_read=round(float(read), 1), result="PASS" if ok else "FAIL"))
                 if not ok:
-                    t2 = t + dt.timedelta(minutes=50)
+                    t2 = t + dt.timedelta(minutes=int(r.integers(12, 21)))
                     rows.append(dict(t=t2, zero=0.2, span_ref=span_ref, span_read=round(span_ref * 1.004, 1),
                                      result="PASS", note="recalibrated"))
-        # the day after a failure the walker re-walks the void points (afternoon, day 2)
     rows.sort(key=lambda x: x["t"])
     return rows
 

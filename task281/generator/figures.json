@@ -55,6 +55,16 @@
  },
  "metered_total": 9759,
  "offered": "25,647",
+ "references": [
+  "2027",
+  "100",
+  "10",
+  "2.2",
+  "2.3",
+  "3.2",
+  "3.4",
+  "1"
+ ],
  "rules": {
   "cap_days": 84,
   "cap_weeks": 10,
@@ -64,16 +74,15 @@
   "offer_hours": 48
  },
  "spend": {
-  "Ardmuir Business School": 22100,
-  "Arts and Humanities": 9800,
-  "Health Sciences": 11600,
-  "Law": 11300,
-  "Life Sciences": 5400,
-  "Medicine and Dentistry": 12500,
-  "Science and Engineering": 20200,
-  "Social Sciences": 25300
+  "Ardmuir Business School": 22140,
+  "Arts and Humanities": 9810,
+  "Health Sciences": 11630,
+  "Law": 11320,
+  "Life Sciences": 5380,
+  "Medicine and Dentistry": 12540,
+  "Science and Engineering": 20210,
+  "Social Sciences": 25270
  },
- "spend_total": "118,300",
  "uncovered": {
   "Ardmuir Business School": 27,
   "Arts and Humanities": 24,

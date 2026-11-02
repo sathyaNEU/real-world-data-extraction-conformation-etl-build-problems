@@ -20,7 +20,7 @@ PROVIDER = "Kinderopvang Het Klavertje"
 GRIDOP = "Gasnet Veenstreek"
 
 PEOPLE = {
-    "planner": "Annemijn Verhaar",   # beleidsmedewerker huisvesting, SPOV
+    "planner": "Jayda Tins",         # beleidsmedewerker huisvesting, SPOV
     "head": "Raf Romijn",            # directeur De Kwikstaart
     "provider": "Norah Bresé",  # locatiemanager, the childcare provider
 }

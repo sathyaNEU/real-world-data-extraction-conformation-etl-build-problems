@@ -82,7 +82,7 @@ def utc_to_local(ts):
     return t - dt.timedelta(hours=5)
 
 
-def read_events(tgt):
+def read_events(tgt, utc_dates=False):
     o = pd.read_csv(os.path.join(tgt, "workshore_board_events_2025-10-01_2026-02-01.csv"), dtype=str)
     kind_old = {"PUBLISHED": "PUBLISHED", "RENEWED": "RENEWED", "REMOVED_BY_EMPLOYER": "REMOVED",
                 "EXPIRED": "EXPIRED", "CLOSED_ES": "CLOSED"}
@@ -103,7 +103,8 @@ def read_events(tgt):
     for r in recs:
         if r["type"] == "migrated":
             continue
-        rows.append((legacy.get(r["job_id"], r["job_id"]), utc_to_local(r["ts"]).date(), kind_new[r["type"]],
+        when = (dt.datetime.strptime(r["ts"], "%Y-%m-%dT%H:%M:%SZ") if utc_dates else utc_to_local(r["ts"])).date()
+        rows.append((legacy.get(r["job_id"], r["job_id"]), when, kind_new[r["type"]],
                      r.get("noc"), {"self_service": "S", "employer_services": "E"}.get(r.get("source"))))
     ev = pd.DataFrame(rows, columns=["pid", "date", "kind", "occ", "channel"])
     return ev
@@ -148,10 +149,11 @@ def naics_sector(naics_code, naics_groups):
     raise KeyError(naics_code)
 
 
-def read_jobseekers(tgt):
+def read_jobseekers(tgt, run="latest"):
     j = pd.read_csv(os.path.join(tgt, "workshore_registered_jobseekers_schedule_a.csv"), dtype=str)
     j["run"] = pd.to_datetime(j["run_date"])
-    j = j.sort_values("run").drop_duplicates(["month_end", "noc_2021"], keep="last")
+    j = j.sort_values("run", kind="mergesort").drop_duplicates(["month_end", "noc_2021"],
+                                                               keep="last" if run == "latest" else "first")
     return {(r.noc_2021, dt.date.fromisoformat(r.month_end)): int(r.registered_jobseekers) for r in j.itertuples()}
 
 
@@ -317,7 +319,7 @@ def posting_weight(row, d, evby, tabs, mode, term_end="next", age_shift=0):
 
 
 def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None, term_end="next", age_shift=0,
-            grouping="occ", bench="sector"):
+            grouping="occ", bench="sector", utc_dates=False, count="positions", june_run="latest", ratio="sums"):
     c = cache if cache is not None else {}
     if "snap" not in c:
         c["snap"] = read_snapshots(tgt)
@@ -328,10 +330,17 @@ def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None, term_en
         c["js"] = read_jobseekers(tgt)
         c["sched"] = schedule_a(tgt)
         c["sector_of"] = {r.employer_number: naics_sector(r.naics_2017, c["naics"]) for r in c["emp"].itertuples()}
-    snap, evby, qevs, js, sched = c["snap"], c["evby"], c["qevs"], c["js"], c["sched"]
-    key = ("durs", dur_source)
+    if utc_dates and "ev_utc" not in c:
+        c["ev_utc"] = read_events(tgt, utc_dates=True)
+        c["evby_utc"] = next_events(c["ev_utc"])
+    if june_run != "latest" and "js_first" not in c:
+        c["js_first"] = read_jobseekers(tgt, run="first")
+    snap, qevs, sched = c["snap"], c["qevs"], c["sched"]
+    evby = c["evby_utc"] if utc_dates else c["evby"]
+    js = c["js_first"] if june_run != "latest" else c["js"]
+    key = ("durs", dur_source, utc_dates)
     if key not in c:
-        c[key] = es_durations(snap, c["ev"], dur_source, tgt)
+        c[key] = es_durations(snap, c["ev_utc"] if utc_dates else c["ev"], dur_source, tgt)
     durs = c[key]
     tabs = survival_tables(durs, "km" if surv == "km" else "weibull", pooled=(mode == "pooled"), grouping=grouping)
     V = defaultdict(float)
@@ -343,8 +352,9 @@ def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None, term_en
         for row in live.itertuples(index=False):
             w = posting_weight(row, d, evby, tabs, "gold" if mode == "pooled" else mode, term_end, age_shift)
             sec = c["sector_of"][row.employer]
-            wsec[sec] += w * row.positions
-            wocc[(row.occ, sec)] += w * row.positions
+            npos = row.positions if count == "positions" else 1
+            wsec[sec] += w * npos
+            wocc[(row.occ, sec)] += w * npos
         vd = defaultdict(float)
         tot_w = sum(wsec.values())
         tot_q = sum(qevs[(s_, d)] for s_ in set(k[0] for k in qevs))
@@ -359,7 +369,10 @@ def compute(tgt, mode="gold", surv="km", dur_source="board", cache=None, term_en
         for occ, x in vd.items():
             V[occ] += x
     J = {o: sum(js[(o, d)] for d in REF_DATES) for o in sched}
-    R = {o: (J[o] / V[o] if V[o] > 0 else float("inf")) for o in sched}
+    if ratio == "mean":
+        R = {o: sum(js[(o, d)] / per_date[d][o] for d in REF_DATES) / len(REF_DATES) for o in sched}
+    else:
+        R = {o: (J[o] / V[o] if V[o] > 0 else float("inf")) for o in sched}
     listed = sorted(o for o in sched if R[o] <= THRESHOLD)
     return {"V": dict(V), "J": J, "R": R, "listed": listed, "per_date": per_date}
 

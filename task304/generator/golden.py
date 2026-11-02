@@ -84,13 +84,12 @@ def bid_docx(path, F):
     _para(doc, "%s: a roundabout would prevent %.1f injury collisions a year" % (best, F["call_benefit"]), 17, bold=True,
           space_after=8)
     _para(doc, "1. The junction and the scheme", 12, bold=True, space_after=4)
-    _para(doc, "The county bids for a roundabout at %s (node %s), the %s of %s. As it stands, at its 2026 traffic, the "
-               "junction can be expected to have %.1f injury collisions a year; with the fund's crash modification factor "
-               "for a %s of %.2f, a roundabout would prevent %.1f a year, more than at any other junction the 2026 "
-               "screening listed. %s comes next at %.1f a year." % (
+    _para(doc, "The county bids for a roundabout at %s (node %s), the %s of %s. Applying the fund's crash modification "
+               "factor for a %s, %.2f, to the injury collisions the junction can be expected to have as it stands, at its "
+               "2026 traffic, a roundabout would prevent %.1f a year, more than at any other junction the 2026 screening "
+               "listed. %s comes next at %.1f a year." % (
                    best, F["nodes"][best], LAYOUT[F["layout"][best]].lower(), F["roads"][best].replace(" / ", " and "),
-                   F["call_expected"], LAYOUT[F["layout"][best]].lower(), F["cmf"][best], F["call_benefit"], ru,
-                   F["runner_up_benefit"]))
+                   LAYOUT[F["layout"][best]].lower(), F["cmf"][best], F["call_benefit"], ru, F["runner_up_benefit"]))
     _para(doc, "2. Every listed junction's benefit", 12, bold=True, space_after=4)
     names = sorted(F["junctions"], key=lambda n: -F["benefit"][n])
     t = doc.add_table(rows=1 + len(names), cols=4)

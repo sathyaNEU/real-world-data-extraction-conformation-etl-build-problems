@@ -26,9 +26,9 @@ ND = 365
 
 F = {
     "schedule": "SC_2027_IHS_Agreement_Schedule_B.pdf",
-    "members": "sc_member_extract_20261009.csv",
-    "addr": "sc_member_address_history_20261009.csv",
-    "enroll": "sc_enrollment_spans_20261009.csv",
+    "members": "sc_member_extract_20260102.csv",
+    "addr": "sc_member_address_history_20260102.csv",
+    "enroll": "sc_enrollment_spans_20260102.csv",
     "medical": "med_claims_svc2025_paid_thru_20260630.csv",
     "pbm": "pbm_claims_2025_PVHP.txt",
     "visits": "ihs_visit_claims_2025.csv",

@@ -1,8 +1,166 @@
 # task142 design note
 
-Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset. Architecture 1 (Ironbark Health Alliance's January to March 2027 Hospital in the Home overflow block, healthcare-delivery / utilization-access-demand-forecasting) shipped 2026-10-15 with no portal result and is closed with its world (one architecture per world); task160 holds that pairing in this batch, so the slot moves to Energy Systems & Utilities with a new world, dataset, generator and shell. The old architecture sits in the card's `lineage` and in its record below. The objective is kept: Forecasting & Predictive Modeling.
+Architecture 3, drawn 2026-11-02. Architecture 2 (Stadswarmte Lekstede's OS West design-day flow, energy-systems-utilities / load-forecasting) was spent at stage 4: two judges in a row found its comparison group identifiable only by its outcome (connections with high cold-day returns used to estimate the cold-day drop), and its world is closed with it. Architecture 1 (the Hospital in the Home overflow block) closed at the Batch 3 queue reset. Both sit in the card's `lineage` and in their records below. Energy, healthcare and the physical sciences are banned by the last three builds, so the slot moves to Sociology & Demography; the objective is kept (Forecasting & Predictive Modeling).
 
 ## Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task142.json`, architecture v3, registered 2026-11-02 at WARN (repeat.gate_g against task178), after redrawing the role (capacity_planner banned against task204) and the decisive pattern (G14 repeated task159's driver triple); the card carries a differentiation line for task306 v3 (lineage, same_driver_older on objective, G6 and forecasting).
+2. Pairing: Sociology & Demography / `population-estimation-demographic-projection` / Forecasting & Predictive Modeling. The forecast quantity is a school's roll at the next three 1 October counts, a cohort projection: the pupils already on the roll age through eight groups and each child of the catchment enters at an estimated rate.
+3. Niche: Stichting Primair Onderwijs Veenhaven must file its accommodation request for De Kwikstaart by 31 January 2027. The school serves Molenwijk and Rietveld, an estate whose young families moved in from 2017 to 2019: their first children entered from 2023 to 2025 and their second children reach four from 2027.
+4. Forward facing: the counts of 1 October 2027, 2028 and 2029 are open windows; the call is the first count at which the forecast roll exceeds the buildings' capacity, or none.
+5. Shape 02 (forecast across periods). Criteria: the call (1), the capacity test (1), the two entry shares by circumstance (2), each coming count's children and children with a brother or sister on the roll (6), the three forecast counts (3), the chart's parts (4), the file (1), the gas per school year (3), the after-school-care attendances per weekday (5) = 26.
+6. Decision type `date_or_period`, question form whether. Forum `trustees_or_governors` (the board's supervisory council approves the request); forcing event `statutory_or_regulatory_filing` (the municipality's 31 January deadline); organisation `university_or_school`; role `operations_director`.
+7. Deliverable: `kwikstaart_leerlingenprognose_2027-2029.docx`, a two-page memo with the forecast table, a column chart of the three counts against the capacity, the entry shares and the request's two building figures.
+8. People, drawn with `guard.py names --geo Netherlands --locale nl_NL --seed 142`: Jayda Tins (beleidsmedewerker huisvesting), Raf Romijn (the school's director), Norah Bresé (the childcare provider's location manager). None appears in the prompt.
+9. Candidates written before the choice: A (taken) the school roll with each entrant counted at the share of children in its sibling circumstance, membership found by joining the household register to the roll; B a deposit book's outflow traced through payouts (the deposit cell is retired in task170 and task133's notes, and task137 spent maturity reinvestment as a device); C an airport baggage sorter's design hour from per-airline bags per passenger (the ratio is one join away from a flight key, readable); D a bus fleet's battery capacity from charging sessions (a measured rate filed as the quantity, then executed); E a claims fund by event-level resampling (a grouping choice between claim-level and event-level draws, the 1.1c dichotomy); F the district heating world in a new city (closed with architecture 2).
+10. Screens before the draw: `guard.py recent` (energy, healthcare, physical sciences, gaps time and population, layer families estimation_fit and estimand_identification banned by the last three), `coverage`, `mechanisms --objective forecasting` and `slots` on deposit, rollover, sibling, school roll and cohort: no build on file forecasts a school roll or uses a sibling circumstance.
+11. Abstraction test against the nearest drivers: task306 v3 costs storms at what like storms cost, a severity question; task255 reads each patient's dose from the rhythm of their refills; this build counts newcomers at an entry rate conditioned on a related member already inside, the relation read across two registers that share no key, with no rate or severity of the unit itself.
+12. Data-native sentence: Rietveld's families arrived together in 2017 to 2019, so their first children reached De Kwikstaart as a wave of only children in 2023 to 2025 and their second children reach four from 2027 with an older brother or sister already on the roll; in the last five intakes 71 of 755 catchment children had one (69 entered), in the coming three cohorts 149 of 435 do, and children without one enter at 43 per cent.
+13. The newest lesson's test (comparison group identifiable from something other than the outcome): delete every child's own entry and the circumstance can still be named for every child, from the household register and the older sibling's place on the roll.
+
+## Survivor anatomy
+
+- Actor: the deciding property is each child's circumstance (a brother or sister from the same household on the school's roll at the child's first count), and no file has a column for it: the register holds persons, households and addresses, the roll holds pupils by birth date and address, and the circumstance is a relation between a register row and a roll row of another child.
+- Link: the relation is read through a join no key offers: the register's persons to the roll's pupils by birth date, postcode and house number with the addition typed two ways, then within the register's household; PV-2 names the circumstance and no file lists who is in it.
+- Reflex: the field's method for a school's intake (its share of the catchment's four-year-olds over recent intakes, pooled, by neighbourhood or on its trend) sits at rungs 0 to 2 and files none through 2029-30.
+- Back-test: the textbook route validates: the pooled share reproduces each of the last five intakes within its spread (45 to 52 per cent), its trend is flat, and the neighbourhood shares reproduce the last intakes by neighbourhood.
+- Second use: the register is read by every rung (the catchment's children by age) and carries the district profile's figures; the roll is read by every rung (the shares) and carries the counts in the accommodation plan; the plan carries the capacity and the gas connections; the request carries both asks' definitions; delete the decisive step and every file keeps its job.
+- Shock: nothing moves; the coming cohorts are no larger than the last five, no neighbourhood's share changes, and the children with a sibling on the roll are not a sort of any shipped column.
+- Pins: PV-2 sections 2 and 3 file the WHAT (the count, the catchment, the intake, the household, the circumstance as the comparison, the five intakes taken together, the out-of-catchment average, the test against the plan's capacity); no filed sentence lists the children in a circumstance or gives a share.
+
+## Default path
+
+1. Read PV-2 and the accommodation plan: capacity 604 pupils; catchment 3841 and 3842; the last five intakes are the counts of 2022 to 2026.
+2. From the register and the roll take each intake's catchment children (living there on 1 October of their count, turned four in the twelve months to it) and those who entered: 362 of 755, 48 per cent.
+3. Forecast the coming entrants the field's way: the 435 catchment children who first count in 2027 to 2029 at the pooled 48 per cent (or by neighbourhood, or on the share's trend), plus 3.2 out-of-catchment entrants a year and the 2026 roll ageing through group 8.
+4. Forecast pupils: 492, 542 and 571 against 604.
+5. Apply 3.5: no count exceeds the capacity.
+
+Ends on: none: De Kwikstaart stays within its 604 places at every count through 2029-30
+
+Golden: 2029-30 count (630 pupils against 604; 510 at 2027-28 and 580 at 2028-29)
+
+## Stump sentence
+
+The default path counts every coming entrant at the school's pooled 48 per cent of the last five intakes, by neighbourhood or on its trend, and files none: the school stays within its 604 places through 2029-30; but a child with a brother or sister from the same household on the roll enters at 97 per cent against 43, the coming cohorts hold 149 such children in 435 against 71 in 755 before, and counted in their circumstance the roll reaches 630 at the 2029-30 count.
+
+## Three rules
+
+- Task type: sociology-demography / population-estimation-demographic-projection, which serves Forecasting & Predictive Modeling in the taxonomy: a cohort projection of a population (a school roll) over the next three reference dates.
+- Domain test: the deciding quantity is the expected intake of each coming school year, each child of the catchment counted at the entry rate of the last intakes' children in the same circumstance, aged into the roll beside the pupils already on it, the demographer's cohort-component projection of a school population.
+- Swap: "a hospital's maternity ward fills as the district's births arrive" keeps arrivals and a capacity but loses what decides it: there is no cohort that first counts at four and ages through eight groups, and no household whose older child already inside draws the younger one in.
+- Layer 1: dates in two formats, postcodes with and without the space, house-number additions typed two ways, residence periods for households that left the district, a pupil administration replaced in August 2023 (new pupil numbers), the grid operator's EAN re-registration and meter exchanges, the childcare provider's family rows and its location re-coded at a merger; each produced by the system named, none placed to be caught.
+- Layer 2: a cohort projection under a composition shift: the methodological choice is to count each coming entrant at the entry rate of its own circumstance, read from the household register joined to the roll, rather than at the school's pooled share of past cohorts.
+- Decisive step: recognising that the school's past share is a mixture over children with and without a brother or sister on the roll, whose mix the coming cohorts change, and reconstructing each coming child's circumstance from the household and the older sibling's group before counting it at its circumstance's share.
+- Not semantics: every field read correctly (both date formats, the additions, the residence periods, the pupil-number change) still leaves the circumstance in no column; with the clean truth's sibling links in hand the default route still files none (checks.py R3b).
+- Not rule application: PV-2 names the circumstance and no filed rule lists its members, joins the register to the roll or gives a share (R3c); executing PV-2 with a pooled, neighbourhood or trend share files none. Enumerated family: the pooled share, the mean of the yearly shares, the shares by neighbourhood, the share's trend, every child entering, the circumstance shares (taken together or year by year, the link by birth date and postcode with or without the house number): none, none, none, none, 2028-29, 2029-30. Standing family once the circumstance is reconstructed: every circumstance member files 2029-30 (630 at the 2029-30 count, 26 over), spread zero on the call; the ruling-out is loud only to a reader who joins the households to the roll (69 of 71 against 293 of 684).
+- Analyst test: a strong planner who reads PV-2 and the plan and forecasts the entrants at the school's pooled share of the last five intakes, by neighbourhood or on its trend, files none (the school stays within its 604 places through 2029-30), against the golden's 2029-30.
+- Estimand: PV-2 sections 2 and 3 (spov_procedure_leerlingenprognose_v2.pdf): the forecast pupils at the counts of 1 October 2027 to 2029 (the 2026 roll not yet past group 8, each catchment child living there on 1 October 2026 at the share of the last five intakes' children in its circumstance taken together, the out-of-catchment average), compared with the capacity in the accommodation plan.
+- No decoy: nothing is planted: no memo, briefing or stakeholder figure argues a share; the district profile is a declared distractor (population by age); no block of records is copied or withheld.
+- No certified replay: no published or certified forecast of the school's roll exists in the pack to reproduce.
+- Lesson: a pooled rate over a population is a mixture over the circumstances its members were in; before carrying it to coming cohorts, find the circumstance that moves the rate, reconstruct it for every coming member from the records that hold it, and count each member at its own circumstance's rate. No build on file teaches a school roll or a sibling-conditioned entry rate.
+
+## Readability screen
+
+| Rung | What the reader does | Test that could fire | Verdict |
+|---|---|---|---|
+| 0 pooled share | counts every coming child at 48 per cent | the field's reflex (the school's share method) | readable |
+| 1 by neighbourhood | counts Molenwijk and Rietveld children at their own shares | the neighbourhood is a register column | readable |
+| 2 trend | extends the share's five-year trend | a forecaster's reflex | readable |
+| side everyone | counts every catchment child as an entrant | a ceiling, no data read | readable |
+| 3 circumstance (decisive) | joins the register's households to the roll and counts each coming child at its circumstance's share | PV-2 names the circumstance, but no column, key or filed sentence says which children are in it; the join needs birth date and address with additions typed two ways, and nothing sorts these children together | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a count | the pupils on the roll on 1 October | pupils enrolled at any time in the year | same call | PV-2 2.1 |
+| SF2 | the intake of a count | children who turned four in the twelve months to that 1 October | the calendar year of the fourth birthday | figures differ | PV-2 2.3 |
+| SF3 | the share | over the five intakes together | the mean of the five yearly shares | same call | PV-2 3.2; same call |
+| SF4 | the circumstance | a brother or sister from the same household on the roll at the child's first count | a sibling ever at the school, or anywhere | figures differ | PV-2 3.2 |
+| SF5 | a coming count's circumstance | a brother or sister on the 2026 roll not yet past group 8 at that count | also siblings who would enter in 2027 or 2028 | same call | PV-2 3.2 |
+| SF6 | the children of an intake | living in the catchment on that 1 October | living there now | figures differ | PV-2 3.3 |
+| SF7 | the catchment | postcode areas 3841 and 3842 | the whole district | figures differ | the accommodation plan section 1 and PV-2 2.2 |
+| SF8 | out-of-catchment entrants | their five-intake average for each count | none | same call | PV-2 3.4 |
+| SF9 | pupils on the 2026 roll | stay until group 8 | a leaving rate | same call | PV-2 3.1 |
+| SF10 | the test | unrounded forecast against 604 | the forecast rounded to ten | same call | PV-2 3.5; same call |
+| SF11 | the household | the register's huishoudnummer | the address | same call | PV-2 2.4; same call |
+| SF12 | linking the register to the roll | birth date, postcode, house number and addition | birth date and postcode only | same call | same call (asserted) |
+| SF13 | the gas school year | the registers at 06:00 on 1 August | calendar months by UTC | same graded figures | the request section 2 |
+| SF14 | the gas use | both buildings together | the main building | figures differ | the request section 2 |
+| SF15 | the after-school care in the dependance | the locations at Molenwiek 4 | every location code | figures differ | the request section 2 and the provider's location sheet |
+| SF16 | an attendance | one pupil on one day | one family row | figures differ | the request section 2 |
+
+## Ladder
+
+| Rung | Route | Pupils 2027-28 | 2028-29 | 2029-30 | Call |
+|---|---|---|---|---|---|
+| 0 | pooled share of the last five intakes (48 per cent) | 492.2 | 542.4 | 571.2 | none |
+| 1 | shares by neighbourhood | 492.4 | 542.6 | 574.2 | none |
+| 2 | the share's trend | 487.4 | 531.4 | 553.1 | none |
+| 2b | the mean of the yearly shares | 491.3 | 540.6 | 568.6 | none |
+| side | every catchment child enters | 568.2 | 695.4 | 797.6 | 2028-29 |
+| golden | each child at its circumstance's share (97 and 43 per cent) | 511.9 | 580.1 | 629.9 | 2029-30 |
+
+Capacity 604. Margins: the golden exceeds the capacity by 26 at the 2029-30 count and stays 24 under it at 2028-29; every default rung stays 30 or more under it at 2029-30.
+
+## Closure table
+
+| Axis | Name | Reading here | Move |
+|---|---|---|---|
+| 1 | Population | catchment children living there on 1 October 2026 who first count in 2027 to 2029 | filed, PV-2 3.2 and 3.3 |
+| 2 | Unit of account | the child at its first count | filed, PV-2 2.3 |
+| 3 | Attribution window | the last five intakes (2022 to 2026) | filed, PV-2 3.2 |
+| 4 | As-of dating | the register and the roll at 1 October 2026 | filed, PV-2 3.2 |
+| 5 | Version basis | the roll at each count as the school recorded it | C1 across the pupil-number change |
+| 6 | Denominator | children of each intake living in the catchment | filed, PV-2 3.3 |
+| 7 | Weighting | the five intakes taken together | filed, PV-2 3.2 (SF3) |
+| 8 | Window length | five intakes | filed |
+| 9 | Boundary inclusivity | a child turning four on 1 October counts that year | filed, PV-2 2.3 |
+| 10 | Rounding path | unrounded forecast against the capacity | C1 (SF10) |
+| 11 | Tie-break | none needed | C1: no count within 20 of the capacity |
+| 12 | Maturity and censoring | none: every intake complete at its count | asserted |
+| 13 | Order of operations | circumstance first, then shares, then the roll | C4: pooling first is rung 0 |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | one register row per person and address | C1 |
+| 16 | Identity normalisation | additions typed two ways, postcodes with or without the space | C1 (SF12) |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | pupils, per cents, m3, attendances | stated in the prompt |
+| 19 | Code and status semantics | groups 1 to 8, the register's household | filed, PV-2 2.4 |
+| 20 | Integerisation | expected entrants fractional, forecast compared unrounded | C1 |
+| 21 | Clause scope | PV-2 3 per count | filed |
+| 22 | Forward window contents | the three counts after 2026 | filed, PV-2 1 |
+
+## Literal reader
+
+Executed word for word, PV-2 3.2 counts each coming child at the share of the last five intakes' children in the same circumstance, the circumstance being whether a brother or sister from the same household is on the roll at the child's first count. Run with each easy route's inputs it does not comply: the pooled share mixes both circumstances, the neighbourhood share is another grouping, and the trend extends the mixture. Which children are in each circumstance is in no file and is reconstructed by joining the register's households to the roll; every term and convention is a row in the fork table and every row gives the golden or violates a quoted sentence.
+
+## Oracles
+
+None. No file holds a share by circumstance, a forecast roll or a list of children with a sibling on the roll; the accommodation plan's counts and the district profile reconcile under every rung.
+
+## Ask sheet
+
+The asks sit on files the call never reads: the grid operator's telemetry and master data, the childcare provider's attendance and location sheet. Ask 1: the two buildings' gas use in each of the last three school years (3 figures). Ask 2: De Kwikstaart pupils' attendances at the after-school care in the dependance on each weekday in October 2026 (5 figures).
+
+- Pair ceiling: 28.5 (cracker 45.0 on the call with 0 of 8 ask figures, mirror 12.0 with 0 of 8).
+- Mirror leakage: 0.0 per cent of the ask weight.
+- Measured by: generator/ceiling.py on the cut pack.
+
+| Ask | Primary device | Hazards | Cracker's handling | Cracker |
+|---|---|---|---|---|
+| Ask 1 gas by school year | the dependance's connection re-registered under a new EAN in January 2025, the plan listing only the current EANs, the old EAN reachable through the master data's description; meters exchanged in November 2023 and February 2026 with their closing and opening readings only in the master data | local timestamps with offsets, one resent read | takes the plan's EANs, de-duplicates, differences each serial's first and last read in the school year | miss |
+| Ask 2 after-school care by weekday | before the 12 October merger part of the provider's families used the Molenwijk location (Korenmolen 59), not the dependance, and after it the dependance's code is BSO-MLW2; the provider books one row per family carrying the number of children | other schools' families at the same locations | keeps De Kwikstaart families from the contracts, sums the children, over every location code | miss |
+
+The full includer keeps all eight. Zero device rows sit in the call's population: no gas or after-school-care row is read by the call (checks.py M).
+
+## Architecture 2 record
+
+Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset. Architecture 1 (Ironbark Health Alliance's January to March 2027 Hospital in the Home overflow block, healthcare-delivery / utilization-access-demand-forecasting) shipped 2026-10-15 with no portal result and is closed with its world (one architecture per world); task160 holds that pairing in this batch, so the slot moves to Energy Systems & Utilities with a new world, dataset, generator and shell. The old architecture sits in the card's `lineage` and in its record below. The objective is kept: Forecasting & Predictive Modeling.
+
+Spent at stage 4 on 2026-11-02 (judge rounds 2 and 3 on 313a7c32 and f6146df1: the comparison group was identifiable only by its outcome, the cold-day returns used to estimate the cold-day drop); re-rooted 2026-11-02.
+
+### Draw
 
 1. Card: `.claude/skills/fingerprint/cards/task142.json`, architecture v2, registered 2026-11-02 at WARN (repeat.gate_g against task301: both file `forecasting`; task301 is another world and another driver, and the Gate G class is the only shared axis), then checked again as the draw's last act after the sibling builders' cards landed.
 2. Pairing: Energy Systems & Utilities / `load-forecasting` / Forecasting & Predictive Modeling. The forecast quantity is each connecting block's design-day circulation flow once it is on the network, a value no file holds: the block's design heat load is filed, the drop its heating installation will make on the network is not, and the call turns on estimating it from the network's own metered connections.
@@ -25,7 +183,7 @@ Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset. Architecture 1 (Iro
 11. Abstraction test against the nearest drivers on the objective and the surface screen's promoted pairs: task281 carries a validated rate to sites by a latent device mix recovered from dated placements; task167 v2 matches a young grant book to the units whose first-year draws looked like its own and reads their schedule at later ages, so its newcomers carry their own record and the quantity is a schedule over ages; this build's newcomers have no record at all (the blocks are unmetered, their installation is known only from the works), and the quantity is a physical drop read from the metered connections whose cold-day returns form the high-return regime, converted through the kW to m3/h swap the station is limited in. Neither the same-puzzle test (task140 differs on decision type) nor the same-driver test (task140 differs on Gate G) holds against any card; the surface screen's six promoted pairs (task140 two numbers apart on gap, G1 and a capacity report; task134, task133, task149, task167 and task261 on surface similarity at 0.10) carry differentiation lines on the card for the author's adjudication.
 12. Data-native sentence: Warmtenet West's pre-1985 blocks were connected either on their original radiators or after a renovation that changed their emitters, nothing in the register records which, and on the 36 days at or below 0 C the first kind return at 63.7 to 66.3 C while every other connection returns at 33.8 to 54.7 C; the Weidehaven blocks keep their original radiators, so the drop the network's own data put on them is the high-return regime's 24 K, not the network's 39.7 K or the pre-1985 buildings' 33 to 42 K.
 
-## Survivor anatomy
+### Survivor anatomy
 
 - Actor: the deciding property is each existing connection's installation regime (original radiators or renovated emitters), and no file has a column for it: the register carries build year, category, object name, wijk, contracted capacity and connection date, the heat meters carry energy, volume and temperatures; the regime exists only as the cluster a connection's cold-day returns fall in, and the converting blocks have no meter at all.
 - Link: CT-03 3.2 files the comparison by installation kind (connections in service with the same kind of heating installation), and no key offers its members: the blocks are unmetered and specified in kilowatts, the scope says they keep original two-pipe radiators sized for 90/70, and which connections in service run that kind is visible only as the high-return regime in their own cold-day readings (build year, wijk, street family, category, size and connection year each hold both kinds).
@@ -35,7 +193,7 @@ Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset. Architecture 1 (Iro
 - Shock: nothing moves; the like installations read as ordinary connections (no surcharge, no status, no complaint, energy per contracted kilowatt inside the network's spread), they sit at the top of a cold-day return sort that no question asks for, and the call's answer (a season) is not an interval of any sort of any shipped column.
 - Pins: procedure CT-03 v3 sections 3.2 to 3.4 file the WHAT (design-day flow is the design heat load over 1.163 times the drop between supply and return at the connection on days with a daily mean of 0 C or lower; a connection not yet in service is expected to make the drop that connections in service with the same kind of heating installation make; the most recent heat-load study; the season test against the hydraulic test's available flow for the connections connected by 1 October), and the scope files the blocks' installation (original two-pipe radiators sized for 90/70); no filed sentence names which connections share it, a return temperature, a build year or a threshold.
 
-## Default path
+### Default path
 
 1. Read procedure CT-03 v3 sections 3.2 to 3.4 and the hydraulic test: OS West has 168 m3/h of design-day flow available for connections from 1 October 2026; the network's design basis is 90/50 C.
 2. Take each block's design heat load from the rev2 heat-load study (the most recent, 3.4): phases 1 to 3 total 4,240 kW, phases 1 to 6 total 5,533 kW.
@@ -47,11 +205,11 @@ Ends on: none: the west station stays inside its available design-day flow throu
 
 Golden: 2028-29 heating season (phases 1 to 6 need about 200 m3/h against 168, short by about 30; 2027-28 holds at about 150)
 
-## Stump sentence
+### Stump sentence
 
 The default path carries the blocks at the network's 40 K design drop, its metered cold-day drop of 39.7 K or the 33 to 42 K of its pre-1985 buildings and files none: the station stays inside its 168 m3/h through 2028-29; but the blocks keep their original radiators, and the network's own original-radiator connections, recognisable only as the regime whose cold-day returns sit at 64 to 66 C, make about 24 K, which puts the blocks connected by 2028-29 at about 200 m3/h and the station short in that season.
 
-## Three rules
+### Three rules
 
 - Task type: energy-systems-utilities / load-forecasting, which serves Forecasting & Predictive Modeling in the taxonomy: the peak hydraulic load a network will carry once committed connections come on, estimated from the network's metered history.
 - Domain test: the deciding quantity is each connecting block's design-day circulation flow, its design heat load over 1.163 kWh per cubic metre per kelvin times the supply-return drop its heating installation makes at design conditions, the flow a district heating planner sizes the station's pumps and exchangers on.
@@ -67,7 +225,7 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 - No certified replay: no published or certified drop or flow for the blocks exists anywhere in the pack; the method is not recovered by reproducing a figure.
 - Lesson: a newcomer's draw on a shared carrier belongs to the equipment behind it; before carrying it at the carrier's design or average value, find the units already on the carrier that share that equipment, recognised from the structure of their own readings, and read the parameter there. No build on file teaches a heat network's drop or an unmetered unit's parameter estimated from a regime in its peers' readings.
 
-## Readability screen
+### Readability screen
 
 | Rung | What the reader does | Test that could fire | Verdict |
 |---|---|---|---|
@@ -77,7 +235,7 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 | side design drop | carries the blocks at the 20 K their radiators were sized for (90/70, the scope and rev2) | a filed design value read as the drop in service | readable |
 | 3 like installations (decisive) | reads from the cold-day returns which connections in service run the blocks' kind of installation, carries the blocks at their drop, about 24 K | CT-03 3.2 names the comparison by installation kind, but no column, key or filed sentence says which connections run original 90/70 radiators; build year points to a mixed group, and nothing sorts the like connections together but a return sort nobody is asked for | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -100,7 +258,7 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 | SF17 | the same kind of heating installation | connections in service on original two-pipe radiators sized for 90/70, found as the high-return group | the pre-1985 buildings, the network, the radiators' 90/70 sizing | none or 2027-28 | CT-03 3.2 and the scope: the pre-1985 group holds renovated blocks, the network every kind, and 90/70 is a sizing, not the drop the connections in service make |
 | SF18 | the heat ask's population | every residential and every utility connection in the register, each from its connection date | like-for-like (connections in service both years) | figures differ (+5,000 against +8,000) | the prompt (every connection we have) and the hydraulic test section 5 (over every connection in the register) |
 
-## Ladder
+### Ladder
 
 | Rung | Route | Drop (K) | Phases 1-3, 2027-28 (m3/h) | Phases 1-6, 2028-29 (m3/h) | Call |
 |---|---|---|---|---|---|
@@ -112,7 +270,7 @@ The default path carries the blocks at the network's 40 K design drop, its meter
 
 Available design-day flow 168 m3/h (capacity 1,112 less committed 944). Margins: the golden's 2027-28 flow sits 9 per cent or more under the available flow under every member, its 2028-29 flow 16 per cent or more over it; rung 2's 2028-29 flow sits 15 per cent or more under it; the textbook regime's 2027-28 flow sits 8 per cent over it. Graded figures under the golden family: phase flows 45, 50, 55, 20, 15 and 10 m3/h (nearest 5), 2027-28 150 and 2028-29 200 (nearest 10), shortfall 30 (nearest 10), the drop about 24 K; every member inside every bin (checks.py G and SF6).
 
-## Closure table
+### Closure table
 
 | Axis | Name | Reading here | Move |
 |---|---|---|---|
@@ -139,15 +297,15 @@ Available design-day flow 168 m3/h (capacity 1,112 less committed 944). Margins:
 | 21 | Clause scope | 3.2 per connection, 3.3 per season | filed |
 | 22 | Forward window contents | the schedule's phase dates and rev2 loads | filed, CT-03 3.3 and 3.4 |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, CT-03 3.2 asks for the drop that connections in service with the same kind of heating installation make at the connection on days at or below 0 C, and the scope names the blocks' kind (original two-pipe radiators sized for 90/70). Run with each easy route's inputs it does not comply: the 90/50 design basis and the 90/70 sizing are design values, not a drop connections in service make; the network's metered drop is every kind of installation; the pre-1985 drop holds blocks renovated onto other emitters, which the readings show as a second regime. Which connections in service run the blocks' kind is in no file and is read from their cold-day returns, the estimate the sentence leaves to the analyst. Every term and convention is a row in the fork table and every row gives the golden or violates a quoted sentence. Every write-up step names the file and clause it executes.
 
-## Oracles
+### Oracles
 
 None. No file holds a drop or a flow for the blocks; the hydraulic test's committed flow reconciles under every rung (it is an identity over the existing connections), the station's metered flow equals the connections' metered volumes on every day, and the concept study is superseded by rule. No control ties only under the golden.
 
-## Ask sheet
+### Ask sheet
 
 The asks sit on files the call never reads (the grid operator's gas telemetry and master data, the drive-by reads of 2024-25) and on the heat meters' registers outside the call's cold days. Ask 1: each phase's boiler-room gas from 1 October 2025 to 1 October 2026 (6 figures). Ask 2: the heat the residential and utility connections took in the 2024-25 gas year and the change to 2025-26 (4 figures).
 
@@ -163,7 +321,7 @@ The asks sit on files the call never reads (the grid operator's gas telemetry an
 
 The full includer (old EANs through the master data, the master data's closing and opening registers, the AMR opening register through the meter history) keeps all ten. Zero device rows sit in the call's population: no gas or drive-by row is read by the call, and no gap, exchange or estimated row falls on a day at or below 0 C (checks.py M).
 
-## Leak review
+### Leak review
 
 `leak.py --asof 2026-10-16` on the final cut: no LEAK; seven REVIEW lines, each ruled here (the available flow, capacity, committed flow, 1.163 and the design basis are declared `stated_inputs`).
 - Sweep 3, stadswarmte_tarievenblad_2026.pdf (100): harmless, the tariff's 100 kW class boundary; the write-up's 100 is a rounding unit.
@@ -788,3 +946,16 @@ targeted re-read's and the re-judge's.
   the AMR gaps lands within a whole per cent, so the device bit only a reader who summed blanks.
 - 2026-11-02, design: a shared boiler room split between phases dropped from Ask 1: the split needs an allocation key
   the records do not force (dwellings, floor area or load), a fork, not a device.
+- 2026-11-02, re-root: architecture 2 (district heating design-day flow) spent at stage 4: judge rounds 2 and 3 found the
+  like-installation group identifiable only by its outcome (high cold-day returns used to estimate the cold-day drop);
+  the world is closed and energy is banned by the last three builds.
+- 2026-11-02, draw: a deposit book's maturity outflow traced through payouts dropped: the deposit cell is retired in
+  task170's and task133's notes and task137 spent maturity reinvestment as an ask device.
+- 2026-11-02, draw: an airport baggage sorter's design hour from per-airline bags per passenger dropped: the ratio is one
+  join from a flight key, readable.
+- 2026-11-02, draw: a bus fleet's usable battery capacity from charging sessions dropped: filing the measured capacity as
+  the quantity leaves its computation to execute.
+- 2026-11-02, draw: a claims fund's tail by event-level resampling dropped: the choice between claim-level and
+  event-level draws is a grouping choice (stumping 1.1c).
+- 2026-11-02, draw: G14 as the decisive pattern repeated task159's driver triple (objective, G14, forecasting), and the
+  capacity_planner role was banned against task204; redrawn to G6 decisive and operations_director.

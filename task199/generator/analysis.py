@@ -344,23 +344,32 @@ def ask_salary(target, by_period=True, distinct=True, include_casual=False):
 
 
 # ---------------------------------------------------------------- ask C: VAT paid by tax period
-def ask_vat(target, by_period=True, first=(2025, 10), last=(2026, 8)):
+def ask_vat(target, by_period=True, first=(2025, 10), last=(2026, 8), drop_unposted=True):
+    """VAT paid through the KRA gateway for the tax periods first..last. A gateway submission inside the
+    statements' window that never reached the customer's statement was not paid (KRA rejected the slip)."""
     pin2cif = {}
     with open(os.path.join(target, "customer_master_extract_20261016.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             pin2cif[r["KRA_PIN"].replace(" ", "").upper()] = r["CIF"]
+    debited = set()
+    for p in load(target)["stmts"]:
+        mt = re.search(r"PRN (\d{16})", p["narr"])
+        if mt and p["amount"] < 0:
+            debited.add(mt.group(1))
     out = defaultdict(float)
     with open(os.path.join(target, "kra_gateway_payments_2025-09_2026-10.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             if r["TAX_HEAD"] != "VAT":
                 continue
             cif = pin2cif.get(r["TAXPAYER_PIN"].replace(" ", "").upper(), "?")
+            pd_ = dt.date.fromisoformat(r["PAYMENT_DATE"])
+            if drop_unposted and YEAR_START <= pd_ <= YEAR_END and r["PRN"] not in debited:
+                continue
             if by_period:
                 p = dt.date.fromisoformat(r["TAX_PERIOD_FROM"])
                 if not ((first[0], first[1]) <= (p.year, p.month) <= (last[0], last[1])):
                     continue
             else:
-                pd_ = dt.date.fromisoformat(r["PAYMENT_DATE"])
                 if not (YEAR_START <= pd_ <= YEAR_END):
                     continue
             out[cif] += float(r["AMOUNT_PAID"])

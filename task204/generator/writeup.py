@@ -66,8 +66,8 @@ def main():
              "occurred_from_local, from the gtfs/ feed with frequencies.txt expanded and calendar_dates.txt applied: "
              "%d trips each carry two or three offences at different stations and join the Ridgeview, Ashford Road, "
              "Millbrook and Union Yards series into one group of %d." % (f["eastline_trips"], e["n"]))
-    L.append("4. Kept Cobb Street apart: no trip carries one of its offences with another, and %s of its offences fell "
-             "within three minutes of an Eastline group offence at Union Yards." % WORDS[f["simultaneous_evenings"]])
+    L.append("4. Kept Cobb Street apart: no trip carries one of its offences with another, and on %s evenings one of its "
+             "offences fell within three minutes of an Eastline group offence at Union Yards." % WORDS[f["simultaneous_evenings"]])
     L.append("5. Took each group's ground from its offences' coordinates in patrol_districts_2026.geojson (OPS-41 "
              "section 4): %s teams." % WORDS[f["n_teams"]])
     L.append("6. 2025 comparison: put each 2025 RMS offence in its 2026 district by coordinates, read each transit "

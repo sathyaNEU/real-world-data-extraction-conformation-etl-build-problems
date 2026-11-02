@@ -168,9 +168,9 @@ def write_program_guide(tgt):
         "30 days, and that the employer is actively seeking to fill from outside the organisation. This is the "
         "definition the Quarterly Employer Vacancy Survey uses. Vacancies are counted in positions.", body))
     st.append(Paragraph(
-        "<b>An occupation's vacancies</b> on a reference date are its vacancies with all employers in Laurentide, "
-        "advertised on the Workshore Job Board or not. The survey's estimates of vacancies by industry sector are the "
-        "Province's official totals.", body))
+        "<b>An occupation's vacancies</b> on a reference date are its vacancies with all employers in Laurentide, in "
+        "every industry sector, advertised on the Workshore Job Board or not. The survey's estimate of each industry "
+        "sector's vacancies is the Province's official total for that sector.", body))
     st.append(Paragraph(
         "<b>Registered jobseeker.</b> A Workshore client who is registered as looking for work on the reference date. "
         "A client whose registration is on hold (for training, illness or leave) is not counted. Each client is "

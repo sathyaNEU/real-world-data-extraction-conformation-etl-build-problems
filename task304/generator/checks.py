@@ -287,8 +287,10 @@ def main():
     steps = {b - a for a, b in zip(nodes_sorted, nodes_sorted[1:])}
     check("G5 node numbers and references do not advance in a fixed step", len(steps) > 3)
     docs_txt = pdf_text(os.path.join(TARGET, "junction_safety_fund_guidance_2027.pdf")) + scr
-    check("G6 the personas in the documents are the card's (Cheryl Gregory, Alison Hartley)",
-          "Cheryl Gregory" in docs_txt and "Alison Hartley" in docs_txt)
+    check("G6 the personas in the documents are the card's (Cheryl Gregory, Neil Ingram, Alison Hartley); the screening "
+          "list reaches the bid's author as the county network team's memo",
+          all(p in docs_txt for p in ("Cheryl Gregory", "Neil Ingram", "Alison Hartley"))
+          and re.search(r"From Neil Ingram, traffic data officer, to Alison Hartley", scr) is not None)
     stamps = []
     for f in files:
         if f.endswith(".pdf"):
@@ -310,8 +312,23 @@ def main():
     worst = min(edge(gold[n]) for n in gold)
     check("B1 every graded benefit sits at least 0.008 from its one-decimal rounding edge", worst >= 0.008,
           str({n: round(gold[n], 3) for n in gold}))
-    check("B2 the call's expected annual collisions sit at least 0.01 from their rounding edge (%.3f)" % figs[[n for n in figs if names[n] == best][0]]["expected"],
-          edge(figs[[n for n in figs if names[n] == best][0]]["expected"]) >= 0.01)
+    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
+    block2 = sub.split("## 2. Critical Components")[1].split("## 3.")[0]
+    stated = [float(x) for x in re.findall(r"\*\*(\d+\.\d)\*\*", block2)]
+    ru = F["runner_up"]
+    order_held = all(sorted(d, key=lambda n: -d[n]["benefit"])[:2] == [best, ru] for d in famx.values())
+    exp_all = [d[best]["expected"] for d in famx.values()]
+    import docx as _docx
+    bid = os.path.join(TASK, "golden", "junction_bid_2027.docx")
+    bid_txt = "\n".join(p.text for p in _docx.Document(bid).paragraphs) if os.path.exists(bid) else ""
+    check("B2 the critical components state only figures every licensed fit prints (%s %.1f, the runner-up %s %.1f, "
+          "second under every fit); no expected-collisions figure is stated in the write-up or the bid, since the fits "
+          "spread the call's expectation across a rounding edge (%.3f to %.3f)" % (best, r1(gold[best]), ru, r1(gold[ru]),
+                                                                                min(exp_all), max(exp_all)),
+          stated == [r1(gold[best]), r1(gold[ru])] and order_held and "expected" not in block2.lower()
+          and all(r1(d[best]["benefit"]) == r1(gold[best]) and r1(d[ru]["benefit"]) == r1(gold[ru]) for d in famx.values())
+          and not re.search(r"expected[^.]*%s" % re.escape("%.1f" % r1(exp_all[0])), sub + bid_txt)
+          and not re.search(r"\b%s a year" % re.escape("%.1f" % r1(exp_all[0])), sub + bid_txt))
     check("B3 figures.json carries the benefit, call and annex figures the write-up states",
           F["call"] == best and F["benefit"] == {n: r1(v) for n, v in gold.items()} and F["ask_a"]["Q1"]["Fatal"] == ga[(1, 1)])
 

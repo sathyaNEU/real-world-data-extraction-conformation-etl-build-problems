@@ -19,6 +19,10 @@
   }
  },
  "limit_gal": 25,
+ "filed": {
+  "fs3_recharting_section": 3.4,
+  "reference_temperature_f": 60
+ },
  "unlisted_count": 14,
  "capacities_gal": {
   "BP-2": 10000,

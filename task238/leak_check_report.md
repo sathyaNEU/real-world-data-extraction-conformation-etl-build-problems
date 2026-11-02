@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: checks, changeover, thursday, effect, printer, window, random, audits, labels, sentence, population, decisive, difference, completes, weekly, report, monitoring, moments, printed, online, telephone, checked, analyst, carries, changed
+Stump terms swept: checks, changeover, thursday, effect, printer, window, random, audits, labels, sentence, population, decisive, difference, completes, weekly, report, carries, monitoring, moments, printed, online, telephone, checked, analyst, changed
 
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `PI-2_price_integrity_standard_rev3.pdf`: 5 of 25 stump-paragraph terms appear (thursday, effect, weekly, report, carries); read whether the document names the move

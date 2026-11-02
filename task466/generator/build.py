@@ -31,8 +31,8 @@ PRODUCERS = {  # each document's issuing body and its own date
     "Leyland_BH_monthly_operating_reports_2026.pdf": ("Leyland Renewable Gas", "2027-01-06"),
     "BH_gas_plant_outage_log_2024-2026.xlsx": ("Leyland Renewable Gas", "2027-01-05"),
     "BH_surface_emissions_monitoring_2026.xlsx": ("Quarrow Valley Regional Solid Waste Authority", "2027-01-12"),
-    "BH_site_register_2025.xlsx": ("Quarrow Valley Regional Solid Waste Authority", "2025-03-20"),
-    "BH_well_register_2025.xlsx": ("Quarrow Valley Regional Solid Waste Authority", "2025-03-20"),
+    "BH_site_register_2025.xlsx": ("Quarrow Valley Regional Solid Waste Authority", "2025-02-11"),
+    "BH_well_register_2025.xlsx": ("Quarrow Valley Regional Solid Waste Authority", "2025-03-04"),
     "breck_hollow_charge_brief_2026.pdf": ("Quarrow Valley RSWA", "2027-01-15"),
     "breck_hollow_methane_return_2026.xlsx": ("Quarrow Valley Regional Solid Waste Authority", "2027-01-15"),
 }

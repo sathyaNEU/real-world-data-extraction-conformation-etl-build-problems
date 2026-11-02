@@ -50,15 +50,15 @@
    - Life Sciences: 3,419 holds; 9,400 hold-weeks; £14,600
    - Medicine and Dentistry: 4,384 holds; 9,900 hold-weeks; £15,400
    - Health Sciences: 3,656 holds; 7,000 hold-weeks; £10,900
-2. Course text spend on invoice lines dated 1 January to 31 October 2026, to the nearest £100:
-   - Arts and Humanities: £9,800
-   - Social Sciences: £25,300
-   - Ardmuir Business School: £22,100
-   - Law: £11,300
-   - Science and Engineering: £20,200
-   - Life Sciences: £5,400
-   - Medicine and Dentistry: £12,500
-   - Health Sciences: £11,600
+2. Course text spend on invoice lines dated 1 January to 31 October 2026, to the nearest £10:
+   - Arts and Humanities: £9,810
+   - Social Sciences: £25,270
+   - Ardmuir Business School: £22,140
+   - Law: £11,320
+   - Science and Engineering: £20,210
+   - Life Sciences: £5,380
+   - Medicine and Dentistry: £12,540
+   - Health Sciences: £11,630
 3. Essential spring 2026 reading-list items the Library could not lend as an e-book on 12 January 2026:
    - Arts and Humanities: 24
    - Social Sciences: 27

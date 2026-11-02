@@ -19,7 +19,7 @@ on the same side of the filed threshold for every tank.
 | Domain / task type | physical-environmental-sciences / sensor-calibration-measurement (serves DQ): an automatic tank gauge is a sensor whose chart is its calibration, and the release detection it feeds protects the reservoirs and the groundwater. Moved off epidemiology-public-health, whose data-quality cell holds five surveillance-feed worlds |
 | Objective | Data Quality Monitoring & Alerting. The object is the health of each tank's gauge data (the chart that turns a probe height into gallons); the call is a monitoring decision taken before a cutover: which tanks are re-charted over the winter so the wetstock monitoring service does not alarm on chart error from its first day. Retag test: not Anomaly Detection (no event is separated from an artifact, every tank carries some chart error and the call grades its size against a filed limit), not Forecasting (no future value is predicted; the misstatement is a standing property of each tank read from the closed season) |
 | World | Highbank Marinas, a marina management group running eight marinas with fuel docks on two fictional Corps of Engineers reservoirs in south-central Kentucky (Central time). Twenty underground tanks (ethanol-free REC-90 gasoline, E10 gasoline and diesel; 6,000 to 12,000 gallons, horizontal cylinders), each with a magnetostrictive probe on its marina's tank gauge console; dock sales on the marinas' point-of-sale system (replaced in mid-November); deliveries by one fuel distributor on bills of lading in gross and net gallons |
-| The call | How many tanks, and which, go on the winter re-charting list, under Fuel Systems Standard FS-3 section 3.4: a chart is redone when it misstates the change in stock between any two of the tank's reorder, half-full and maximum fill heights (the register) by more than 25 gallons, read from the 2026 boating season (1 April to 31 October) |
+| The call | How many tanks, and which, go on the winter re-charting list, under Fuel Systems Standard FS-3 section 3.4: a chart is redone when it misstates the change in stock between any two of the tank's reorder, half-full and normal fill heights (the register) by more than 25 gallons, read from the 2026 boating season (1 April to 31 October) |
 | As-of | Tuesday 12 January 2027; the calibration contractor's winter programme is booked by 29 January; the service starts on 1 April 2027 |
 | Shape | other: the list (each tank named), its count, each listed tank's largest misstatement and the heights it lies between, a chart of each listed tank's two half-range misstatements, and three asks (feed readiness per tank, the leak-test record per marina, dock gallons by marina and product); well over 25 criteria. Decision designation_set, answer set_of_items, question form how-many (which is over its corpus quota) |
 | Strategy | other: a conversion error that varies with level, identified by combining two observation designs that each see a different part of it. Gap time (sub-cycle intervals against complete fill-and-draw cycles) then objective; pattern none; G3 decisive (the gauge's record against the gallons the operation actually moved), G16, G2; Gate G method_or_model_selection; calibration counterparty_acknowledgement (the distributor's net gallons on each bill of lading); context artifact filed_standard (FS-3); Layer 2 family estimation_fit, pattern `own:gauge-chart-error-shape-from-sub-cycle-intervals-scale-from-deliveries` |
@@ -84,13 +84,13 @@ on the same side of the filed threshold for every tank.
 ## Default path
 
 1. Read FS-3 section 3.4 and the tank register (twenty tanks, each with its chart number, reorder height, half-full
-   height and maximum fill height).
+   height and normal fill height).
 2. Take each tank's monthly reconciliation for the 2026 season (the marinas' close-out sheets, or rebuilt from the
    gauge export, the dock sales and the bills of lading): every tank sits inside 1 per cent of throughput plus 130
    gallons, so no chart shows a problem on the monthly test.
 3. Check each chart the way the trade does, against its deliveries: pair each gauged delivery in the season with its
    bill of lading, take the gauge's net rise less the bill's net gallons, and express each tank's mean discrepancy
-   per gallon delivered over its working range from reorder to maximum fill.
+   per gallon delivered over its working range from reorder to normal fill.
 4. List the tanks whose delivery-based misstatement passes 25 gallons.
 Ends on: 2 tanks (CF-2 and GC-1, the two charts drawn for the wrong tank length).
 Golden: 6 tanks (BP-2, CF-2, DH-1, FL-1, GC-1, HS-2).
@@ -99,11 +99,11 @@ Golden: 6 tanks (BP-2, CF-2, DH-1, FL-1, GC-1, HS-2).
 
 The default path files 2 tanks (CF-2 and GC-1) because it checks each chart against its deliveries, and a delivery
 runs from about the reorder height to about full, where a probe offset or a settled tank misstates almost nothing at
-either end, so the four offset charts (BP-2, DH-1, FL-1, HS-2), each misstating 40 to 60 gallons across a half of its
-range, pass; reading the half-ranges from the dock sales between readings alone files 9 tanks, because inside those
-intervals a dock meter's small error is indistinguishable from a chart drawn for the wrong tank, so three tanks with
-fast or slow meters and one with a small offset come in and GC-1, whose chart error its meter offsets, drops out;
-only the intervals' half-range shape with the proportional part anchored by the deliveries files the 6.
+either end, so the four offset charts (BP-2, DH-1, FL-1, HS-2), each misstating 40 to 60 gallons across the lower half
+of its range, pass; reading the half-ranges from the dock sales between readings alone files 9 tanks, because inside
+those intervals a dock meter's small error is indistinguishable from a chart drawn for the wrong tank, so four tanks
+with fast or slow dock meters (DH-2, EB-1, EB-2, HS-1) come in and GC-1, whose chart error its meter offsets, drops
+out; only the intervals' half-range shape with the proportional part anchored by the deliveries files the 6.
 
 ## Three rules
 
@@ -116,12 +116,16 @@ only the intervals' half-range shape with the proportional part anchored by the 
 - **Swap:** "how many of our wards need their bed charts redone before the new monitoring service, judged on the
   misstatement between three heights" reads as nonsense: no cylinder geometry, no gallons moved between two gauge
   readings, no delivered quantity on an independent document.
-- **Layer 1:** the gauge export in UTC beside dock sales in Central local time across both clock changes; the dock
-  point-of-sale replaced in mid-November with a cut-over week in both exports; one marina's hoses re-piped to another
-  tank at a dated refit in May; bills of lading in gross and net gallons at 60 F against the gauge's gross and
-  temperature-compensated volumes; delivery reports the console opens and closes itself while dock sales run; charts
-  as quarter-inch tables under register chart numbers; winter weeks with docks closed. Each is produced by the
-  systems named, and none decides the call (`generator/checks.py` R3c).
+- **Layer 1:** the leak-test log stamped in UTC beside the gauge export and the legacy dock sales in Central local
+  time; the dock point-of-sale replaced on 16 November after a shadow week in both exports under different transaction
+  numbers, the new export in UTC with card sales stamped at the next morning's batch settlement; the 24 January ice
+  storm resetting five older consoles' clocks to their 2016 factory date until a technician set them; Dellwood
+  Harbor's console replaced on 17 February with its two tanks numbered the other way round; the monitoring network's
+  September outage, each console's 48-hour buffer and the monitor's re-polled test results; Ashby Hollow and Gilliam
+  Creek moving their E10 hoses onto REC-90 on 1 December under the same grade code; bills of lading in gross and net
+  gallons at 60 F against the gauge's gross and temperature-compensated volumes; charts as quarter-inch tables under
+  register chart numbers; winter weeks with docks closed. Each is produced by the system named, every season delivery
+  lands before the docks open, and none decides the call (`generator/checks.py`, the R2 mess and separation lines).
 - **Layer 2:** estimation_fit: the decisive choice is the observation design that identifies each part of the chart
   error, the shape from sub-cycle intervals and the proportional part from deliveries, against the cycle-level
   reconciliation and the delivery check that each see only one part or none.
@@ -134,16 +138,18 @@ only the intervals' half-range shape with the proportional part anchored by the 
   the gross against net gallons conventions move no tank across 25 gallons (asserted).
 - **Not rule application:** no filed rule or procedure says to read the intervals, to anchor them on the deliveries or
   that a dock meter's error aliases a chart's; executing FS-3 and every other filed sentence leaves the estimator
-  open, and the enumerated family (monthly reconciliation, delivery check, intervals alone, intervals with a free
-  meter term, intervals anchored by deliveries, a two-component geometric fit) spreads from 0 to 9 tanks while the
-  standing family (the anchored constructions the data leave defensible) files the same 6 tanks, each at least 12
-  gallons from the limit (measured in `generator/checks.py`, the loudness being the deliveries' disagreement with the
-  intervals' full range on four tanks).
+  open. The enumerated family (monthly reconciliation, delivery check as a ratio or per delivery, intervals alone,
+  delivery full range with unanchored halves, intervals anchored by deliveries at 3-inch or 6-inch knots, delivery
+  endpoints as readings, exact and first-order geometric fits, cycle sub-totals) spreads from 0 to 9 tanks; the
+  standing family (the anchored constructions the data leave defensible) files the same 6 tanks and the same heights,
+  every listed tank at 40.3 gallons or more and every unlisted tank at 9.9 or less (15 gallons clear of the limit both
+  ways, `generator/checks.py`), the loudness being the deliveries' disagreement with the intervals' full range on five
+  tanks.
 - **Analyst test:** a strong analyst who reads the register, the gauge export, the dock sales and the bills of lading
   correctly checks each chart against its deliveries, the trade's chart check, and files 2 tanks (CF-2 and GC-1),
   passing every offset chart because its deliveries span both ends of the range where the offset misstates little.
 - **Estimand:** FS-3 section 3.4 (`target/FS-3_fuel_systems_standard.pdf`): every tank on the register; the gallons
-  its chart's change between any two of its reorder, half-full and maximum fill heights differs from the gallons that
+  its chart's change between any two of its reorder, half-full and normal fill heights differs from the gallons that
   actually went into or out of the tank between them; read from the 2026 season, 1 April to 31 October; a tank is
   re-charted when any of the three exceeds 25 gallons.
 - **No decoy:** nothing is planted: no copied block, hidden rule, memo, draft, briefing or stakeholder figure carries
@@ -170,35 +176,36 @@ only the intervals' half-range shape with the proportional part anchored by the 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | "misstates the change in stock between two heights" | chart change between the heights less the gallons that actually moved | chart volume at one height against a strapping of the tank | no strapping ships; same 6 | FS-3 3.4 defines it on the gallons that went in or out |
-| SF2 | the three heights | the register's reorder, half-full and maximum fill heights | heights read off the chart table's percentage rows | same 6 | FS-3 3.4 names the register |
-| SF3 | the window | 1 April to 31 October 2026, local | the calendar year | same 6 (asserted) | FS-3 3.4 names the season |
-| SF4 | gross against net gallons | sales intervals gross to gross, deliveries net to net | everything gross, or everything net | same 6, every listed figure in its 10-gallon bin (asserted) | same call |
-| SF5 | the day and time base | readings and sales on one clock (UTC to Central) | sales windowed on the raw UTC stamp | same 6 (asserted) | same call |
-| SF6 | a delivery with dock sales running | the gauge's rise plus the gallons sold during it | the rise alone | same 6 (asserted) | same call; FS-3 5 counts sales during a delivery |
-| SF7 | the re-piped hoses | each hose to the tank the piping record gives on the sale's date | the current map for the whole season | same 6 (asserted) | the piping record dates the refit |
-| SF8 | "largest misstatement" | the largest of the three in absolute gallons | the signed largest | same 6, same figures | FS-3 3.4 states the limit on the size |
-| SF9 | rounding | each listed misstatement to the nearest 10 gallons | truncation | every listed figure clear of its bin edges (asserted) | the prompt's rounding sentence |
-| SF10 | the construction of the half-range figure | any estimator taking the anchored step (cycle sub-totals, interval fit with knots at 6 or 12 inches, two-component geometric fit) | intervals without the anchor | anchored: same 6 under each; unanchored is R2 | same call within the anchored family (asserted) |
+| SF2 | the three heights | the register's reorder, half-full and normal fill heights | heights read off the chart table's percentage rows | same 6 | FS-3 3.4 names the register |
+| SF3 | the window | 1 April to 31 October 2026, local | the whole legacy-covered boating year, 1 March to 15 November | same 6 (asserted) | FS-3 3.4 names the season |
+| SF4 | gross against net gallons | sales intervals and deliveries net at 60 F | everything gross | same 6 (asserted) | same call |
+| SF5 | the day and time base | the gauge export and the legacy dock sales share Central local time | a UTC conversion applied to either | same 6 (asserted); no conversion sits on the call's path | same call |
+| SF6 | a delivery with dock sales running | every season delivery lands before the docks open | the rise plus any sales during it | same 6 (asserted) | same call |
+| SF7 | the hoses | each hose to the tank the piping record gives (one row per hose, no re-piping in the season) | none | same 6 (asserted) | the piping record |
+| SF8 | "largest misstatement" | the largest of the three in absolute gallons | the signed largest | a signed reading drops GC-1 | FS-3 3.4 states the limit on the size ("by more than 25 gallons") |
+| SF9 | rounding | dock gallons to the nearest gallon after an exact sum of the registered gallons; no per-tank misstatement graded | truncation | every dock-gallon figure clear of its rounding edge by more than 0.005 gallon (asserted) | the prompt's rounding sentence |
+| SF10 | the construction of the half-range figure | any estimator taking the anchored step (3-inch or 6-inch knots, delivery endpoints as readings, exact or first-order geometric fit, cycle sub-totals) | intervals without the anchor | anchored: same 6 and same heights under each; unanchored is R2 | same call within the anchored family (asserted) |
 
 ## Ladder
 
 | Rung | Construction | Set | Dies to |
 |---|---|---|---|
 | R0 | monthly over/short against 1 per cent of throughput plus 130 gallons | none | FS-3 3.4 asks for the misstatement between heights, which a whole month nets away |
-| R1 | delivery check: gauged rise against bill of lading, carried over the working range | 2: CF-2, GC-1 | the half-full height is never a delivery's start or end, and an offset error is small at both ends |
-| R2 | half-ranges from the dock sales between readings, no anchor | 9: AH-1, BP-2, CF-2, DH-1, DH-2, EB-2, FL-1, HS-1, HS-2 | the intervals' full range disagrees with the deliveries' on AH-1, EB-2, HS-1 and GC-1: the dock meters' error sits in it |
-| R2' | delivery full range with unanchored sales half-ranges | 7: BP-2, CF-2, DH-1, DH-2, FL-1, GC-1, HS-2 | the half-ranges still carry DH-2's meter error |
+| R1 | delivery check: gauged rise against bill of lading, carried over the working range (ratio or mean per delivery) | 2: CF-2, GC-1 | the half-full height is never a delivery's start or end, and an offset error is small at both ends |
+| R2 | half-ranges from the dock sales between readings, no anchor | 9: BP-2, CF-2, DH-1, DH-2, EB-1, EB-2, FL-1, HS-1, HS-2 | the intervals' full range disagrees with the deliveries' on DH-2, EB-1, EB-2, HS-1 and GC-1: the dock meters' error sits in it |
+| R2' | delivery full range with unanchored sales half-ranges | 7: BP-2, CF-2, DH-1, EB-1, FL-1, GC-1, HS-2 | the half-ranges still carry EB-1's meter error |
 | R3 | half-ranges and full range from the intervals with the proportional part anchored by the deliveries | 6: BP-2, CF-2, DH-1, FL-1, GC-1, HS-2 | golden |
 
-Design targets (the build replaces each with its measured value): every listed tank's largest misstatement 40 to 65
-gallons and every unlisted tank's 13 or under under every anchored construction; each wrong rung's false entries at
-27 gallons or more under that rung and each of its misses under 22. Pricing sequence: (1) the residue the WHAT leaves
-is the observation design, a method; (2) the move is worth the four offset tanks' 40 to 60 gallons against a delivery
-signal under 15; (3) the one-group-by route (mean delivery discrepancy per tank) is R1 and files 2; (4) the standard
-error of a half-range figure is about 2 gallons over a season's eight to twelve draw-downs; (5) the lever is a bias,
-not a variance; (6) no history series; (7) no subset prints the error exactly (every interval carries meter error,
-every delivery the bill's noise); (8) the reflex sweep (monthly, delivery, intervals with and without a meter term,
-geometric fit) runs as code in `generator/analysis.py`.
+Measured on the cut pack (`generator/analysis.py`, asserted in `generator/checks.py`): the listed tanks' largest
+misstatements run 41.9 (GC-1) to 56.1 (BP-2) on the golden construction and 40.3 to 59.6 across the anchored family;
+the unlisted tanks' at most 9.9 (EB-1). The delivery check's two tanks sit at 45.6 and 46.1 gallons (52.7 and 52.8 per
+delivery) and every other tank at 7.3 or less (8.5 per delivery). R2's false entries sit at 30.5 or more and its miss
+(GC-1) at 13.8; R2' adds EB-1 at 33.5 with every other tank at 18.9 or less. Pricing sequence: (1) the residue the
+WHAT leaves is the observation design, a method; (2) the move is worth the four offset tanks' 40 to 60 gallons against
+a delivery signal under 8; (3) the one-group-by route (mean delivery discrepancy per tank) is R1 and files 2; (4) the
+standard error of a half-range figure is a few gallons over a season's draw-downs; (5) the lever is a bias, not a
+variance; (6) no history series; (7) no subset prints the error exactly (every interval carries meter error, every
+delivery the bill's noise); (8) the reflex sweep runs as code in `generator/analysis.py`.
 
 ## Closure table
 
@@ -212,18 +219,18 @@ geometric fit) runs as code in `generator/analysis.py`.
 | 6 | Denominator | none (a gallon difference, not a rate) | not applicable, asserted inert |
 | 7 | Weighting | none | not applicable |
 | 8 | Window length | one season | filed |
-| 9 | Boundary inclusivity | "more than 25 gallons" | C1, nothing within 12 gallons of 25 |
-| 10 | Rounding path | the figure rounded once, after the estimate | filed in the prompt; C1 across estimators |
+| 9 | Boundary inclusivity | "more than 25 gallons" | C1, nothing within 15 gallons of 25 on any anchored construction |
+| 10 | Rounding path | no per-tank figure is graded (the list, the count and each tank's heights); dock gallons rounded once after an exact sum | filed in the prompt |
 | 11 | Tie-break | not needed | C1 |
 | 12 | Maturity and censoring | none | every interval closed |
 | 13 | Order of operations | anchor then read the halves, or jointly | C1 (asserted, same figures) |
 | 14 | Row order | none | sums and fits invariant to order |
-| 15 | Duplicate resolution | the point-of-sale cut-over week (outside the season) | ask-only; season rows carry none |
+| 15 | Duplicate resolution | the point-of-sale shadow week and the re-polled test results (outside the call's files) | ask-only; season rows carry none (asserted) |
 | 16 | Identity normalisation | console tank numbers against register tank IDs | the console's tank setup export names each tank's product and chart |
-| 17 | Netting against gross | sales during a delivery | SF6; C1 |
-| 18 | Dimensional units | gallons, inches, gross and net | SF4; units in each export's legend |
-| 19 | Code and status semantics | delivery and inventory record types | the export's legend; never the stump |
-| 20 | Integerisation | the 10-gallon rounding | SF9 |
+| 17 | Netting against gross | sales during a delivery: none, every season delivery lands before the docks open | SF6; C1 |
+| 18 | Dimensional units | gallons, inches, gross and net | SF4; each export's column names carry its unit |
+| 19 | Code and status semantics | leak-test results and point-of-sale tender codes | ask-only; never the call's step |
+| 20 | Integerisation | dock gallons to the nearest gallon | SF9 |
 | 21 | Clause scope | 3.4 applies to every tank going onto the service | filed |
 | 22 | Forward window contents | the winter programme and the 1 April start | the onboarding letter dates the start; nothing forward is estimated |
 
@@ -249,64 +256,62 @@ every reading that takes both files the 6 (asserted in `generator/checks.py`).
 ## Ask sheet
 
 The main call's declared row population: the 2026 season's (1 April to 31 October, local) gauge inventory and
-delivery records, dock sales and bills of lading, the register's heights and chart numbers, the charts and the
-piping record. Every ask device sits outside it (off-season rows or an ask-only file); `generator/checks.py` asserts
-the zero-counts from the shipped rows.
+delivery records, legacy dock sales and bills of lading, the register's heights and chart numbers, the charts and the
+piping record. Every ask device sits outside it (January rows, the leak-test log, the new point-of-sale export);
+`generator/checks.py` asserts the zero-counts from the shipped rows.
 
 **A1, feed readiness (H18: the onboarding letter's readiness requirement, a qualifier of the cutover).** For each
-tank, the days of 2026 (local calendar days, as the onboarding letter defines a day) on which its gauge sent no
+tank, the days of 2026 (local calendar days, as the onboarding letter counts them) on which its gauge sent no
 inventory reading. 20 figures, whole days. Files: `atg_inventory_2026.csv`, `atg_tank_setup.csv`, the register, the
-onboarding letter. Primary device (D8 with a sequence reconstruction): the January ice storm's power cuts reset the
-clocks of the older consoles at five marinas to their factory date; each console kept logging, its readings carrying
-the console's running sequence number, until the technician's visit re-set the clock two to nine days later; those
-readings are stamped 2016 and are re-dated by the sequence chain, so the days are not missing. Second device (D7):
-Dellwood Harbor's console was replaced on 17 February and the new console numbers its two tanks the other way round;
-the tank setup export gives each console's tanks by product and chart number, and the old probe's January fault days
-belong to the register tank the old numbering names. Hazard: UTC stamps against local days at outage edges. Stops:
-drop the 2016 rows (each reset marina's tanks two to nine days high); key tanks by console number all year (Dellwood's
-two tanks swapped in January); count UTC days (several tanks one day off); the answer.
+onboarding letter. Primary device (D8 with a sequence reconstruction): the 24 January ice storm reset the clocks of
+the older consoles at five marinas to their 2016 factory date; each console kept logging under its running record
+sequence until the technician set the clock two to eight days later, so those days are not missing once the 2016
+stamps are re-dated along the sequence. Second device (D7): Dellwood Harbor's console was replaced on 17 February and
+numbers its two tanks the other way round; the setup export dates each console's tanks, and the old probe's January
+fault days belong to the tank the old numbering names. Stops: drop the 2016 rows (every reset marina's tanks two to
+eight days high); key tanks by the current setup all year (Dellwood's two tanks swapped); the answer.
 
 **A2, the release-detection record (H18: the 2026 monthly test record the service takes over, an audit trail of the
 cutover).** For each marina, the tank-months of 2026 without a passing 0.2 gallon-per-hour test. 8 figures, whole
-tank-months. Files: `atg_leak_tests_2026.csv`, `atg_tank_setup.csv`, the register, FS-3 section 6. Primary device
-(D1, identity by the console's test number): after each modem outage the remote monitor re-polls the console and logs
-the console's last test result again, with the poll's time and its own row number but the console's test number and
-leak rate unchanged; a reprint printed in the next month makes a month without a test look passed. Hazards: the reset
-consoles' tests stamped 2016 (re-dated by the test numbers), Dellwood's renumbered tanks. Stops: count every PASS row
-(the reprints fill gap months); drop the 2016 rows (the reset weeks' tests lost); the answer.
+tank-months. Files: `atg_leak_tests_2026.csv`, `atg_tank_setup.csv`, the register, FS-3 section 6.1. Primary device
+(D1, identity by the console's test number): after each outage the remote monitor re-polls the console and logs each
+tank's last passing result again at the poll's time with its own row number but the console's test number unchanged,
+and the September network outage lost the originals, so a test that ran in September is logged only in October.
+Hazards: the reset consoles' tests stamped 2016, Dellwood's renumbered tanks, the log's UTC stamps against FS-3's
+local month. Stops: count every PASS row in its logged month; collapse the re-polls but date each test by its logged
+time; months in UTC; the answer.
 
 **A3, the sales input's annual trail (H18: the trail of the dock sales the reconciliation consumes, to the year's
 total by product, which the onboarding form asks).** For each marina, the 2026 dock gallons by product, to the
-nearest gallon. 18 figures. Files: `dock_sales_legacy_2026.csv`, `dock_sales_2026-11-09_2026-12-31.jsonl`,
-`pos_product_setup.csv`. Primary device (D2, version): the new point-of-sale ran in shadow from 9 to 15 November
-beside the legacy system and its shadow export captured card sales only; that week the legacy export is the complete
-version and the new export's card rows repeat it with other transaction numbers and stamps. Second device (D5,
-scope): at go-live on 16 November each marina's pumps were proved with test volumes returned to the tank, recorded by
-the new system as zero-price sales. Hazard: the new export's UTC stamps put New Year's Eve evening sales into 2027.
-Stops: keep both exports whole (the shadow week's card sales twice); drop the legacy week (its cash sales lost);
-count the proving volumes as sold; the answer.
+nearest gallon. 19 figures. Files: `dock_sales_legacy_2026.csv`, `dock_sales_2026-11-09_2026-12-31.jsonl`,
+`pos_grades.csv`. Primary device (D2, version): the new point-of-sale ran in shadow from 9 November beside the legacy
+system, its shadow export capturing card sales only under other transaction numbers. Second device (D8): the new
+system stamps a card sale at the next morning's batch settlement in UTC, which moves New Year's Eve and go-live edge
+sales. Third device (D2, a label before a silent switch): Ashby Hollow and Gilliam Creek moved their E10 hoses onto
+REC-90 on 1 December under the same grade code, and `pos_grades.csv` as held at export lists that code as REC-90;
+each row's price per gallon gives its product. Stops: keep both exports whole; drop the legacy rows from the shadow
+start; read the stamps as sale times; read the grade table as published; the answer.
 
-Main population zero-counts (asserted): season rows with a 2016 stamp 0; season rows from a shadow export 0; season
-zero-price proving rows 0; season reprinted test rows not applicable (ask-only file); season inventory rows keyed by
-the pre-February numbering 0.
+Main population zero-counts (asserted): season inventory rows with a 2016 stamp 0; season rows in the new
+point-of-sale export 0; leak-test rows read by the call 0; season inventory rows keyed by the pre-February numbering 0.
 
 | Hazard | Asks moved | Per-ask delta |
 |---|---|---|
-| UTC against local time | A1, A2, A3 | measured in `generator/ceiling.py` |
-| the January clock resets | A1, A2 | measured |
+| the January clock resets | A1, A2 | measured in `generator/ceiling.py` |
 | Dellwood's console replacement | A1, A2 | measured |
+| UTC against local time | A2, A3 | measured |
 
 Referee: none arbitrates a designed disagreement; every control ties under every handling.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Its stop | Kept |
 |---|---|---|---|
 | A1 feed readiness | drops the 2016 rows as out of range | 2016 rows dropped | miss |
-| A2 leak-test record | counts each PASS row in its month | reprints counted | miss |
-| A3 dock gallons | dedupes the shadow week by matching pairs, keeps the proving volumes as sales | proving volumes kept | miss |
-| full includer | finds the resets, reprints and shadow week but keys Dellwood by console number and counts proving volumes | partial | miss |
+| A2 leak-test record | collapses the re-polls on the test number, dates each test by its logged time | re-polled tests in the poll's month | miss |
+| A3 dock gallons | matches the shadow week pair by pair, reads the stamps as written and the grade table as published | settlement dates and grade table | miss |
+| full includer | finds the resets, re-polls and shadow week but keys tanks by the current setup and reads the settlement stamps as sale times | partial | miss |
 
-Mirror leakage: 34.0 per cent of ask weight (design target; `generator/ceiling.py` measures it on the cut pack).
-Pair ceiling: 52.0 (design target; replaced by the measured value).
+Mirror leakage: 28.9 per cent of ask weight (measured by `generator/ceiling.py` on the cut pack).
+Pair ceiling: 51.2 (measured by `generator/ceiling.py` on the cut pack).
 Measured by: generator/ceiling.py
 
 ## Architecture 1 record
@@ -751,3 +756,15 @@ wave), the register's tidy populations.
   and fills to the overfill alarm's margin does.
 - 2026-11-02, architecture 2, the weights-and-measures dock meter test records: a second anchor that makes the
   decisive step a lookup, and an ask on them teaches the rung; not shipped.
+- 2026-11-02, architecture 2, orders placed on the seven-day average with Monday-to-Saturday delivery: arrivals ran to
+  the pump cut-off after weekends, so the delivery check saw part of the offset charts' range (DH-1 at 21.8 gallons per
+  delivery, 3 under the limit); the marinas now order on each kind of day's fortnight average for next-morning
+  delivery, the morning that brings the truck closest to the arrival level, and every offset tank's mean delivery
+  discrepancy sits under 6 gallons.
+- 2026-11-02, architecture 2, DH-1's offset reversed to read high: its gauge then overstated the stock, its orders came
+  late, its deliveries started near the cut-off and the delivery check filed it (34.6 gallons per delivery).
+- 2026-11-02, architecture 2, DH-2 with a 0.45-inch offset beside its slow meter: the exact geometric fit read it at
+  17.9 gallons, 7 under the limit; its offset is now -0.15 inch and its meter 0.40 per cent slow, so it stays on the
+  unanchored rung (31.8) and off the mixed one (18.5).
+- 2026-11-02, architecture 2, AH-1's dock meter at 0.50 per cent fast: the unanchored rung read it at 28.5 gallons, 3.5
+  over the limit, a knife edge; its meter is now 0.30 per cent fast and the rung leaves it out (15.5).

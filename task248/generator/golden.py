@@ -144,3 +144,5 @@ def write(golden_dir, res, pk):
     os.makedirs(golden_dir, exist_ok=True)
     write_list(os.path.join(golden_dir, "recharting_list_2027.csv"), res, pk)
     write_pdf(os.path.join(golden_dir, "cutover_readiness_2027.pdf"), res, pk)
+    import make
+    make.scrub(golden_dir, {"cutover_readiness_2027.pdf": "2027-01-12"})

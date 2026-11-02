@@ -34,15 +34,16 @@ def pos_grades_current():
     return tab
 
 
-def normalize_zip(path):
+def normalize_zip(path, modified="2027-01-11T16:30:00Z"):
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
     fixed = []
     for name, data in items:
         if name == "docProps/core.xml":
-            # the writer stamps the save time; the workbook's own date is the export's
+            # the writer stamps the save time; the workbook keeps its own last save
             data = re.sub(rb"<dcterms:modified([^>]*)>[^<]*</dcterms:modified>",
-                          rb"<dcterms:modified\1>2027-01-11T16:30:00Z</dcterms:modified>", data)
+                          lambda m: b"<dcterms:modified" + m.group(1) + b">" + modified.encode() + b"</dcterms:modified>",
+                          data)
         fixed.append((name, data))
     items = fixed
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
@@ -53,19 +54,24 @@ def normalize_zip(path):
             z.writestr(zi, data)
 
 
-def _wb():
+# each workbook's own history: when it was first saved and when it was last saved before the export
+WB_DATES = {"register": (dt.datetime(2021, 3, 9, 14, 12, 0), "2027-01-11T15:58:00Z"),
+            "piping": (dt.datetime(2024, 2, 12, 10, 41, 0), "2026-06-02T13:20:00Z"),
+            "closeouts": (dt.datetime(2026, 4, 30, 16, 5, 0), "2026-11-06T09:47:00Z")}
+
+
+def _wb(kind):
     from openpyxl import Workbook
     wb = Workbook()
     wb.properties.creator = "Highbank Marinas"
     wb.properties.lastModifiedBy = "Highbank Marinas"
-    wb.properties.created = dt.datetime(2026, 3, 2, 9, 0, 0)
-    wb.properties.modified = dt.datetime(2027, 1, 11, 16, 30, 0)
+    wb.properties.created = WB_DATES[kind][0]
     return wb
 
 
 def write_register(target, o):
     from openpyxl.styles import Font
-    wb = _wb()
+    wb = _wb("register")
     ws = wb.active
     ws.title = "Register"
     ws["A1"] = "Highbank Marinas - underground storage tank register"
@@ -97,12 +103,12 @@ def write_register(target, o):
         ws.column_dimensions[col].width = w
     path = os.path.join(target, "tank_register.xlsx")
     wb.save(path)
-    normalize_zip(path)
+    normalize_zip(path, WB_DATES["register"][1])
 
 
 def write_piping(target, o):
     from openpyxl.styles import Font
-    wb = _wb()
+    wb = _wb("piping")
     ws = wb.active
     ws.title = "Dock piping"
     ws["A1"] = "Fuel dock piping by marina (dispenser hose to tank), as built"
@@ -117,13 +123,13 @@ def write_piping(target, o):
             ws.append([P.MARINAS[t.marina][0], int(h[0]), h, P.PRODUCTS[t.product], tid])
     path = os.path.join(target, "dock_piping.xlsx")
     wb.save(path)
-    normalize_zip(path)
+    normalize_zip(path, WB_DATES["piping"][1])
 
 
 def write_closeouts(target, o):
     """the marinas' own monthly inventory reconciliations for the season (gross dock gallons as sold)"""
     from openpyxl.styles import Font
-    wb = _wb()
+    wb = _wb("closeouts")
     first = True
     S0 = dt.datetime(2026, 4, 1)
     for m in P.MARINAS:
@@ -157,7 +163,7 @@ def write_closeouts(target, o):
                            round(allowed), "PASS" if abs(os_) <= allowed else "FAIL"])
     path = os.path.join(target, "monthly_closeouts_2026.xlsx")
     wb.save(path)
-    normalize_zip(path)
+    normalize_zip(path, WB_DATES["closeouts"][1])
 
 
 def _pdf(path, title, author, blocks):

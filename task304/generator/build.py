@@ -25,7 +25,7 @@ PROVENANCE = {
     "junction_inventory_2026.xlsx": ("Ardleshire County Council network management, junction inventory 2026", "principal road network nodes with their layout codes and yearly vehicle volume estimates, 2016 to 2026"),
     "road_network_register_2026.csv": ("Ardleshire County Council network register", "classified roads and sections with their highway authority"),
     "junction_safety_fund_guidance_2027.pdf": ("Junction Safety Fund programme team, bid guidance 15 September 2026", "the 2027 fund: eligibility, the benefit, crash modification factors and the supporting tables"),
-    "network_screening_2026.pdf": ("Halberd Transport Planning for Ardleshire County Council, junction screening note 9 October 2026", "the junctions listed for treatment study"),
+    "network_screening_2026.pdf": ("Ardleshire County Council network management, junction screening memo to the road safety engineering term consultant, 9 October 2026", "the junctions listed for treatment study"),
     "police_collisions_2026_jan_may.csv": ("Ardleshire Police collision system (to 31 May 2026), provisional extract", "injury collisions January to May 2026"),
     "police_casualties_2026_jan_may.csv": ("Ardleshire Police collision system (to 31 May 2026), provisional extract", "casualties of those collisions"),
     "police_vehicles_2026_jan_may.csv": ("Ardleshire Police collision system (to 31 May 2026), provisional extract", "vehicles in those collisions"),

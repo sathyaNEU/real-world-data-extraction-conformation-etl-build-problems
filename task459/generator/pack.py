@@ -19,9 +19,9 @@ PAID_THROUGH = dt.date(2026, 6, 30)
 
 FILES = {
     "schedule": "SC_2027_IHS_Agreement_Schedule_B.pdf",
-    "members": "sc_member_extract_20261009.csv",
-    "addr": "sc_member_address_history_20261009.csv",
-    "enroll": "sc_enrollment_spans_20261009.csv",
+    "members": "sc_member_extract_20260102.csv",
+    "addr": "sc_member_address_history_20260102.csv",
+    "enroll": "sc_enrollment_spans_20260102.csv",
     "medical": "med_claims_svc2025_paid_thru_20260630.csv",
     "pbm": "pbm_claims_2025_PVHP.txt",
     "visits": "ihs_visit_claims_2025.csv",
@@ -33,8 +33,8 @@ FILES = {
 }
 DISTRACTORS = ["population", "adequacy"]
 STAMPS = {  # each file's in-fiction export time (also the file's mtime)
-    "schedule": dt.datetime(2026, 9, 22, 15, 10), "members": dt.datetime(2026, 10, 9, 6, 2),
-    "addr": dt.datetime(2026, 10, 9, 6, 4), "enroll": dt.datetime(2026, 10, 9, 6, 3),
+    "schedule": dt.datetime(2026, 9, 22, 15, 10), "members": dt.datetime(2026, 1, 2, 5, 52),
+    "addr": dt.datetime(2026, 1, 2, 5, 54), "enroll": dt.datetime(2026, 1, 2, 5, 53),
     "medical": dt.datetime(2026, 7, 2, 4, 47), "pbm": dt.datetime(2026, 3, 4, 2, 15),
     "visits": dt.datetime(2026, 4, 6, 9, 31), "directory": dt.datetime(2026, 10, 1, 7, 55),
     "moves": dt.datetime(2026, 1, 12, 11, 20), "pharmacies": dt.datetime(2026, 1, 9, 8, 40),
@@ -217,7 +217,7 @@ def build_visits(wd, visits):
 
 
 def build_members(wd):
-    """The member extract as of 9 October 2026, the address history and the enrollment spans."""
+    """The year-end membership snapshot (2 January 2026): member extract, address history, enrollment spans."""
     rng = W.stream("member_extract")
     mrows, arows, erows = [], [], []
     srcs = ["MEMBER CALL", "CMS TRANSACTION", "RETURNED MAIL UPDATE", "ONLINE PORTAL"]
@@ -292,7 +292,7 @@ def directory_rows(wd):
     rows = []
     agency_name = dict(W.AGENCIES)
     for p in sorted(provs.values(), key=lambda q: q.npi):
-        z = p.zip_on(W.EXTRACT_DATE)
+        z = p.zip_on(W.DIRECTORY_DATE)
         city, county = W.ZIP_INFO[z]
         rows.append([p.npi, p.name, TYPE_NAME[p.kind], city.upper(), z, fips(county), "IN NETWORK",
                      agency_name[p.agency] if p.kind == "home" else ""])
