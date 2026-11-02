@@ -1,92 +1,87 @@
 {
   "task": "task183",
-  "architecture": "v3 (architecture 3, re-root 2026-11-02: a new world, dataset and shell in another client domain; a regional train operating company's 2027 SPAD review, each 2024-2026 SPAD's braking judged at the deceleration a full-service application achieves on that signal's own approach)",
+  "architecture": "v4 (architecture 4, re-root 2026-11-02: a new world, dataset and shell in another client domain; an Irish regional bank's January 2027 review of its cash-intensive business customers, each customer's lodged cash split into the part its own card trade moves and the part it does not)",
   "drawn": "2026-11-02",
-  "slot_note": "Re-root of the anomaly-detection slot to architecture 3. Architecture 1 (an investor-owned utility's underground cable failures) stays delivered on the portal; architecture 2 (a city electric department's feeder patrol) is spent at the judge on Gate G. Architecture 3 leaves energy for Human Factors & Ergonomics: a train operator's SPAD review, where the default path is the analyst's own braking reconstruction at the fleet's rated deceleration on correct records and no shipped artifact estimates any SPAD's cause.",
-  "domain": "human-factors-ergonomics",
-  "subdomain": "safety-incident-error-analysis",
-  "client_domain": "human-factors-ergonomics",
-  "niche": "a regional train operating company choosing the one signal whose approach gets its 2027 driver-focused SPAD mitigation, from the 2024 to 2026 SPADs in which the driver began braking too late to stop, when one approach's falling gradient holds every train's full-service deceleration below the fleet's level-track rating, so its late-braking SPADs read as poor adhesion against the rating",
+  "slot_note": "Re-root of the anomaly-detection slot to architecture 4. Architecture 1 (an investor-owned utility's underground cable failures) stays delivered on the portal; architecture 2 (a city electric department's feeder patrol) is spent at the judge on Gate G; architecture 3 (a train operator's SPAD review) is spent at the judge on a filed rate the default applied. Architecture 4 leaves energy and human factors for Banking, Credit & Financial Risk: a bank's financial crime operations review of cash-intensive business customers, where the default path is the field's own AML screen (cash intensity against the trade's peers) computed by the analyst on correct records, no shipped figure states any ratio, rating or estimate of the decision quantity, and the golden is a decomposition of each customer's lodgements against its own card trade window by window.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a regional bank's annual review of its cash-intensive business customers for cash lodged that their own trading did not take, each lodgement read against the card takings of the trading days since the customer's previous lodgement, when outside cash put through a front on its own weekly schedule lifts the front's cash share only to its trade's ordinary level",
   "objective": "anomaly-detection",
-  "shape": "08",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "CJ58, Cauldwell Junction down home: 6 driver braking SPADs, 1 January 2024 to 30 November 2026 (runner-up SK112, Skelby station junction, 3)",
-  "answer_source": "task183/submission.md block 1; generator/figures.json call, call_n, runner, runner_n",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "objective"
   ],
   "pattern": [
-    "none"
+    "D"
   ],
   "generators": [
+    "G2",
     "G14",
-    "G3",
-    "G16"
+    "G3"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "other",
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "settled_transaction_ledger",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field correctly reconstructs each SPAD's braking from its OTMR download, tests whether a full-service application at the fleet's rated deceleration could have stopped the train at the signal from where braking began, books the rest to poor adhesion, and sends the 2027 package to the level junction signal whose three late-braking SPADs lead that count.",
-  "domain_test": "Railway SPAD analysis decides the call: a SPAD is the driver's when, from the point braking began, a full-service application could not have stopped the train at the signal, a stopping-distance question in the train's speed and the deceleration the brake achieves on that approach; with another field's nouns there is no brake application, approach gradient or stopping distance and the task does not read the same.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:service-braking-judged-at-the-approach-own-achieved-rate",
+  "analyst_test": "A strong analyst who cleans the account exports and the acquirer's daily trade file and reads every field correctly computes each customer's cash intensity, lodged cash against its card takings, and measures it against its trade's peer median, the field's AML screen for cash-intensive businesses, and refers the cafe and the barber whose cash runs more than 40,000 euro above their card trade at the peer ratio, while the two fronts sit at their peers' median and pass.",
+  "domain_test": "AML monitoring of cash-intensive businesses decides it: the quantity is each customer's cash its own trade did not take, estimated by decomposing its lodgements into the part that moves with its own card trade from one lodgement to the next and the part that does not; with another field's nouns (a hospital's oxygen against its bed-days) there is no outside cash supply co-mingled with takings, no lodgement cycle carrying several trading days and no card channel recording the same customers' spend day by day, so the task does not read the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:lodged-cash-decomposed-against-own-card-trade-per-lodgement-window",
   "layer1": [
-    "OTMR times in UTC against the SPAD register's local time across the British Summer Time changes",
-    "overrun distances in yards from the infrastructure manager's reports against metres in the company's",
-    "signal identities with the signal box prefix in one system and without it in another",
-    "headcodes reused every day, the unit read from the performance system's running record where the register leaves it blank",
-    "a preliminary SPAD register export superseded by revision 2",
-    "OTMR cards downloaded twice, their events repeated in the extract and two SPAD downloads sent twice",
-    "the infrastructure manager's register in miles and yards against the OTMR extract's kilometres",
-    "dates written three ways across the register, the running record and the crew system"
+    "card settlements credited a working day or more after the trading day, Friday to Sunday trade settled together on Monday, net of the acquirer's charges, against the acquirer's daily file at gross by trading day",
+    "amounts in cent in the acquirer's file against euro in the account export",
+    "post office counter lodgements credited the next working day under the post office's own reference, with the counter date only in that reference",
+    "an account export delivered twice for one quarter, its rows repeated",
+    "merchant ids several to a customer (a second terminal) mapped through the merchant register",
+    "dates written day-first in the account export and ISO in the acquirer's file",
+    "bank holidays and the Christmas closure with no settlement",
+    "refunds and chargebacks as negative lines in the acquirer's file"
   ],
-  "stakeholder_role": "the train operator's Head of Operational Standards, who sets the SPAD mitigation programme",
+  "stakeholder_role": "the bank's Head of Financial Crime Operations, who runs the investigations desk and decides which customers go to the Financial Intelligence Unit",
   "role_family": "operations_director",
-  "scoring_unit": "per episode",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "otmr_event_extract_2024-01_2026-11.csv",
-    "rows": 26598,
-    "entity": "one OTMR event from a routine download: a brake application on the approach to a signal at caution or danger, or a TPWS brake demand",
-    "grain": "event x unit",
+    "file": "business_account_transactions_2025-01_2026-09.csv",
+    "rows": 0,
+    "entity": "one posted transaction on a cash-intensive business customer's current account: a card settlement credit, a cash lodgement, a transfer or a debit",
+    "grain": "transaction x account",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "utility_or_infrastructure",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "England (a fictional regional train operating company, route, stations and signals)",
-    "currency": "GBP",
-    "org_type": "a regional train operating company running diesel units on a main line and a branch",
+    "geography": "Ireland (a fictional regional bank with branches in Connacht and the midlands; real counties and towns)",
+    "currency": "EUR",
+    "org_type": "a regional bank's business banking and financial crime operations",
     "invented_names": [],
     "people": [
-      "Nicholas Reynolds",
-      "Kim Arnold",
-      "Colin Bailey",
-      "Iain Begum",
-      "Julian Randall"
+      "Malachy Crohan",
+      "Helen Culhane",
+      "Conall Mulgrew",
+      "Dearbhail Cashman"
     ]
   },
-  "deliverables": [
-    "spad_review_2027.pptx",
-    "signal_box_tpws_2024_2026.csv",
-    "depot_hours_2024_2026.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "Each event is judged against what a unit could have achieved, read from the fleet's rating on a reference condition, when every place sets its own achievable level and only the other units' routine records at that place show it; judged against the rating, the place whose own conditions hold every unit below the rating books the operators' late responses there to the conditions of the moment, and the place whose events lead under the rating is not the one whose operators responded late most often.",
-  "driver_concrete": "Each 2024-2026 SPAD is the driver's when, from where braking began, a full-service application could not have stopped the train at the signal, judged at the deceleration full service achieves on that signal's approach in the routine OTMR approach events, not at the fleet's level-track rating; on the falling-gradient approach every train achieves about 0.68 metres per second squared against the rated 0.88, so its late-braking SPADs read as poor adhesion against the rating.",
-  "stump": "A competent solver tests each SPAD at the fleet's rated full-service deceleration, books the falling-gradient signal's SPADs to poor adhesion because their trains decelerated at about 0.68 against the rated 0.88, and sends the package to the level junction signal; the step that lands it there is using the level-track rating on an approach whose own routine stops show every train achieving about 0.68 in dry weather, so the late braking there is the drivers'.",
+  "question_form": "who",
+  "driver": "Each unit's ordinary inflow through one channel moves with its activity, which a second channel records day by day, so every lump the unit pays in carries the activity of the days since its last one at the unit's own ratio; an inflow from outside the activity arrives on its own schedule and does not move with it, so it shows only as a fixed amount per lump against the unit's own activity, while a ratio of the unit's channel totals to its peers' reads the outside inflow as an ordinary channel mix and flags units whose own mix is simply heavy.",
+  "driver_concrete": "Each business's cash takings move with its card takings day by day, so each cash lodgement carries the card trade of the trading days since its previous lodgement at the business's own cash ratio; cash put through a front on the launderer's weekly schedule does not move with the trade and shows only as a fixed amount per lodgement window, while cash intensity against the trade's peers reads it as an ordinary cash share and refers cafes and barbers whose own customers simply pay cash.",
+  "stump": "A competent analyst refers the businesses whose cash intensity stands highest above their trade's peer median, the cafe and the barber, because their lodged cash exceeds their card takings at the peer ratio by more than 40,000 euro; the step that lands them there is judging each business's cash against its peers' ratio instead of against its own card trade lodgement by lodgement, which shows the cafe's and the barber's cash moving exactly with their trade and the car wash and the nail bar each carrying a fixed weekly sum their trade never moved.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task191": "task191 architecture 3 rated bus depots on warnings whose trigger was real, an exposure denominator over fixed structures; task183 v3 rates no exposure and catches no artefact: each SPAD's braking is judged at the deceleration its own approach permits, which the routine stops there measure",
-    "task186": "task186 tests a unit's change against the shared cycles of its place (a noise model for a change); task183 v3 has no change and no null: each event is judged against the physical braking performance its place permits",
-    "task308": "task308 values a capacity offer by the shortfall it would remove when units of its kind fail together from one shared cause, so their rated availability overstates them in the hours that matter (a correlated-availability correction to a forward valuation); task183 v3 values nothing and corrects no availability: each past SPAD is classed by whether full service could have stopped the train from where braking began, at the deceleration its own approach permits, which the routine stops there measure"
+    "task69": "task69's PA draw (never built) rebuilt experiment effects in the joint cells of two concurrent randomisations, an interaction no balance check sees; task183 v4 randomises nothing and rebuilds no assignment cell: each customer's lodged cash is split into the part that moves with its own card trade from one lodgement window to the next and the part that does not.",
+    "task201": "task201's v1a (killed at its draw) read one contributor's share of a test-statistic inflation off the intercept of a cross-variant regression on a covariate the signal scales with; task183 v4 is a decomposition inside each customer's own lodgement series against its own card trade, with no population-wide regression and no inflation of a statistic, and the decision is which customers carry cash their trade did not move.",
+    "task180": "task180 v5 splits a volume-linked book shortfall between meter drift on the litres since calibration and a leak that runs only while the pump runs; task183 v4 has no instrument and no drift: the outside cash does not move with the trade at all, and the field's screen it defeats is a peer ratio of channel totals, not a throughput regression."
   },
   "lineage": [
     {
@@ -161,6 +156,42 @@
         "rounding opener": "miles",
         "deliverable set": "csv+csv+docx"
       }
+    },
+    {
+      "architecture": "v3 (a regional train operating company's 2027 SPAD review: each 2024-2026 SPAD's braking judged at the deceleration a full-service application achieves on that signal's own approach)",
+      "drawn": "2026-11-02",
+      "fate": "spent 2026-11-02 at stage 4: the determinism judge returned NOT_DETERMINISTIC with SEND_BACK (cut 2d063320): SP-07 3.5 leaves the rate that tests a full-service application unfiled, the Class 162 sheet's filed 0.88 m/s2 read literally files SK112 (3) with CJ58 on 0 and the judge licensed that reading against the golden's rate from each approach's own routine stands, and the sentence that would close the fork (the rate full service gives on that approach) names the decisive step, so the fork is the stump; the asks forked as well (TPWS events on non-signal loops filed under signal_ref, turns extended by no filed sentence); re-rooted the same day to architecture 4 in another client domain, world, dataset and shell",
+      "domain": "human-factors-ergonomics",
+      "subdomain": "safety-incident-error-analysis",
+      "objective": "anomaly-detection",
+      "shape": "08",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G3",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "other",
+      "forum": "committee_or_panel",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "utility_or_infrastructure",
+      "niche": "a regional train operating company choosing the one signal whose approach gets its 2027 driver-focused SPAD mitigation, from the 2024 to 2026 SPADs in which the driver began braking too late to stop, when one approach's falling gradient holds every train's full-service deceleration below the fleet's level-track rating, so its late-braking SPADs read as poor adhesion against the rating",
+      "driver": "Each event is judged against what a unit could have achieved, read from the fleet's rating on a reference condition, when every place sets its own achievable level and only the other units' routine records at that place show it; judged against the rating, the place whose own conditions hold every unit below the rating books the operators' late responses there to the conditions of the moment, and the place whose events lead under the rating is not the one whose operators responded late most often.",
+      "stump": "A competent solver tests each SPAD at the fleet's rated full-service deceleration, books the falling-gradient signal's SPADs to poor adhesion because their trains decelerated at about 0.68 against the rated 0.88, and sends the package to the level junction signal; the step that lands it there is using the level-track rating on an approach whose own routine stops show every train achieving about 0.68 in dry weather, so the late braking there is the drivers'.",
+      "why": "The default path applied a figure a shipped document states (the fleet's filed level-track rating) to the decision quantity, and the judge licensed it as a literal reading; a default path must be the analyst's own model, refuted by the data's own fit, and no rating, factor or stated rate the default can apply to the decision quantity may ship.",
+      "shell": {
+        "question form": "where",
+        "second-sentence opener": "send",
+        "rounding opener": "counts",
+        "deliverable set": "csv+pptx+xlsx"
+      }
     }
   ],
   "lineage_shells": [
@@ -175,15 +206,20 @@
       "second-sentence opener": "name",
       "rounding opener": "miles",
       "deliverable set": "csv+csv+docx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "send",
+      "rounding opener": "counts",
+      "deliverable set": "csv+pptx+xlsx"
     }
   ],
-  "notes": "Anomaly Detection & Diagnostics: a real driver-error SPAD hotspot separated from SPADs that read as adhesion against the fleet rating. Stump strategy other, named here: an achievable-performance reference taken per place from the place's own routine record rather than from the fleet's rating. Gap objective: the fleet's rated deceleration is correct for level track and is not what decides a SPAD's class on a falling approach. G14 decisive (the pooled fleet rate does not apply to this approach), G3 (the rated against the operated), G16 (the method the records entitle). Personas drawn with guard.py names --geo 'United Kingdom' --seed 183 (en_GB): Nicholas Reynolds and Kim Arnold, not the v1 or v2 personas.",
-  "registered": "2026-11-02T12:28:59Z",
+  "notes": "Banking fraud and AML, anomaly detection: a front's laundered cash separated from a legitimately cash-heavy trade. Pattern D: the account totals and the lodgement-level detail are both correct, and the decision lives only at the lodgement grain, where each lodgement can be read against the card trade of its own window. G2 decisive (the lodgement window is the grain the trade's cash is visible at), G14 (the peer ratio does not apply to this business), G3 (the lodgement record against the trading operation). Personas drawn with guard.py names --geo Ireland --seed 183 (en_IE), not the v1 to v3 personas. Calibration form settled_transaction_ledger: the acquirer's daily file of settled card trade is the forcing file at a finer grain than the account export.",
+  "registered": "2026-11-02T17:04:45Z",
   "shell": {
-    "question form": "where",
-    "second-sentence opener": "send",
-    "rounding opener": "counts",
-    "deliverable set": "csv+pptx+xlsx"
-  },
-  "architecture_spent": true
+    "question form": "who",
+    "second-sentence opener": "write",
+    "rounding opener": "referral",
+    "deliverable set": "docx+xlsx"
+  }
 }
