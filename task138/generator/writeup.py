@@ -6,8 +6,8 @@ def fmt(n):
 
 
 def write(fig, fam, path):
-    ub50 = "about %d to %d ms" % (int(fam["ub50_lo"]), int(fam["ub50_hi"]) + 1)
-    ub100 = "about %d to %d ms" % (int(fam["ub100_lo"]), int(fam["ub100_hi"]) + 1)
+    ub50 = "%.1f to %.1f ms" % (fam["ub50_lo"], fam["ub50_hi"])
+    ub100 = "%.1f to %.1f ms" % (fam["ub100_lo"], fam["ub100_hi"])
     L = []
     L.append("## Tags\n")
     L.append("**Domain:** Biomedical & Clinical Research (dose-response and PK-PD modelling: the concentration-QTc "
