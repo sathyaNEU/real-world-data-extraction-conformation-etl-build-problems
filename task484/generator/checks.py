@@ -55,7 +55,10 @@ def doc_text(path):
 
 
 def main():
+    import pack
     W = WD.build()
+    pack.layout(W)
+    pack.ids(W)
     G = GO.compute(TGT)
     R = G["R"]
     P = R["P"]
@@ -129,9 +132,24 @@ def main():
     words = [w for w in ("detector", "signal", "expansion", "factor", "ratio", "UTC", "counter group", "seasonal", "pattern", "own record")
              if re.search(w, gov, re.I)]
     check("R3b not rule application: no governing document names a method, a record or a factor", not words, str(words))
-    rev = [r for r in W.factor_review]
-    check("R3c no plant: the one context artifact covers counters only and recomputes from the counter export",
-          all(r[0] in P["sites"] for r in rev) and len(rev) == len(P["sites"]), "%d rows" % len(rev))
+    rev = [r for r in AN.xlsx_rows(os.path.join(TGT, "expansion_factor_review_2025.xlsx"), "Counters")[1:] if r[0]]
+    test_days = [i for i, d in enumerate(est.DAYS) if dt.date(2025, 3, 1) <= d <= dt.date(2025, 10, 31) and d.weekday() <= 3
+                 and d not in AN.BANK_HOLIDAYS and not WD.in_ranges(d, WD.SCHOOL_HOLIDAYS)]
+    recomputed = {}
+    for setting in ("urban", "rural"):
+        grp = [s for s in sorted(P["sites"]) if P["sites"][s]["setting"] == setting]
+        for s in grp:
+            others = [o for o in grp if o != s]
+            own = float(np.nanmean(P["atc"][s]["q24"]))
+            errs = []
+            for i in test_days:
+                if np.isnan(P["atc"][s]["q12"][i]) or any(np.isnan(P["atc"][o]["q12"][i]) for o in others):
+                    continue
+                f = sum(float(np.nanmean(P["atc"][o]["q24"])) for o in others) / sum(float(P["atc"][o]["q12"][i]) for o in others)
+                errs.append(abs(P["atc"][s]["q12"][i] * f / own - 1.0) * 100.0)
+            recomputed[s] = (len(errs), round(float(np.mean(errs)), 1), round(float(np.max(errs)), 1))
+    check("R3c no plant: the one context artifact covers counters only and recomputes from the counter export at zero tolerance",
+          len(rev) == len(P["sites"]) and all(recomputed[r[0]] == (r[3], r[4], r[5]) for r in rev), "%d rows" % len(rev))
     check("R3c the factor review validates the textbook expansion on every counter (the back-test passes)",
           all(r[5] < 10 for r in rev), "largest %.1f%%" % max(r[5] for r in rev))
 

@@ -269,28 +269,67 @@ def renewal_day(P, ref):
 
 
 def remap(P, ref, sw):
-    """Which channel each channel was before the renewal: match each pre-renewal series to a post-renewal one on
-    its level and its Saturday and Sunday shares over the four weeks either side of the dark days."""
+    """Which current channel each channel was before the renewal. The register gives the current channels'
+    approaches; before the renewal the same numbers carried other lanes. Lanes of one approach carry one stream, so
+    their day-to-day departures from their own weekday rhythm move together: the pre-renewal channels are grouped
+    into approaches of the register's sizes by that co-movement, and each group is matched to the current approach
+    with the closest level, weekend shares and 07:00-19:00 share across the dark days. Within a two-lane approach
+    the lanes are matched by level."""
+    import itertools
     dets = sorted(d for d, x in P["detectors"].items() if x["junction_ref"] == ref)
     i = DIDX[sw]
+    pre = [k for k in range(i - 63, i - 1) if all(P["utc"][d]["av"][k] > 0 for d in dets)]
+    post = [k for k in range(i + 2, i + 65) if all(P["utc"][d]["av"][k] > 0 for d in dets)]
 
-    def sig(x, idx):
-        v = x["d24"][idx]
+    def resid(d, idx):
+        v = np.log(P["utc"][d]["d24"][idx])
         wk = np.array([DAYS[k].weekday() for k in idx])
-        lvl = np.nanmean(v[wk < 5])
-        return np.array([math.log(lvl), np.nanmean(v[wk == 5]) / lvl, np.nanmean(v[wk == 6]) / lvl])
+        out = v.copy()
+        for w in range(7):
+            out[wk == w] -= v[wk == w].mean()
+        return out
 
-    pre = list(range(i - 30, i - 2))
-    post = list(range(i + 3, i + 31))
-    S_pre = {d: sig(P["utc"][d], pre) for d in dets}
-    S_post = {d: sig(P["utc"][d], post) for d in dets}
-    import itertools
-    best, bm = None, None
+    def sig(v24, v12, idx):
+        wk = np.array([DAYS[k].weekday() for k in idx])
+        lvl = np.mean(v24[wk < 5])
+        return np.array([math.log(lvl), np.mean(v24[wk == 5]) / lvl, np.mean(v24[wk == 6]) / lvl,
+                         np.sum(v12[wk < 5]) / np.sum(v24[wk < 5])])
+
+    arms = {}
+    for d in dets:
+        x = P["detectors"][d]
+        arms.setdefault((norm(x["approach"]), x["heading"]), []).append(d)
+    sizes = sorted(len(v) for v in arms.values())
+    R = {d: resid(d, pre) for d in dets}
+    corr = {(a, b): float(np.corrcoef(R[a], R[b])[0, 1]) for a in dets for b in dets if a < b}
+    best = None
     for perm in itertools.permutations(dets):
-        cost = sum(float(np.sum(((S_pre[a] - S_post[b]) * np.array([1.0, 4.0, 4.0])) ** 2)) for a, b in zip(dets, perm))
-        if best is None or cost < best:
-            best, bm = cost, dict(zip(dets, perm))
-    return bm            # pre-renewal id -> the current id carrying the same lane
+        groups, k = [], 0
+        for n in sorted(len(v) for v in arms.values()):
+            groups.append(tuple(sorted(perm[k:k + n])))
+            k += n
+        key = tuple(sorted(groups))
+        score = sum(corr[(g[0], g[1])] for g in groups if len(g) == 2)
+        if best is None or score > best[0]:
+            best = (score, key)
+    pre_groups = list(best[1])
+    S_pre = {g: sig(sum(P["utc"][d]["d24"][pre] for d in g), sum(P["utc"][d]["d12"][pre] for d in g), pre) for g in pre_groups}
+    S_post = {a: sig(sum(P["utc"][d]["d24"][post] for d in ds), sum(P["utc"][d]["d12"][post] for d in ds), post) for a, ds in arms.items()}
+    wts = np.array([1.0, 4.0, 4.0, 8.0])
+    bestm = None
+    for perm in itertools.permutations(list(arms)):
+        if any(len(g) != len(arms[a]) for g, a in zip(pre_groups, perm)):
+            continue
+        cost = sum(float(np.sum(((S_pre[g] - S_post[a]) * wts) ** 2)) for g, a in zip(pre_groups, perm))
+        if bestm is None or cost < bestm[0]:
+            bestm = (cost, perm)
+    mp = {}
+    for g, a in zip(pre_groups, bestm[1]):
+        cur = sorted(arms[a], key=lambda d: -np.mean(P["utc"][d]["d24"][post]))
+        old = sorted(g, key=lambda d: -np.mean(P["utc"][d]["d24"][pre]))
+        for o, c in zip(old, cur):
+            mp[o] = c
+    return mp            # pre-renewal id -> the current id carrying the same lane
 
 
 def approach_flows(P, how):

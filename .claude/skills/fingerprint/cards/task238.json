@@ -1,87 +1,135 @@
 {
   "task": "task238",
-  "architecture": "v1",
-  "drawn": "2026-10-17",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
   "slot_note": "",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-  "niche": "a national statistics office's quarterly wellbeing tracker cutting over from telephone-first to web-first collection, setting how far its mode-mix monitor lets a quarter's web share move before the indexes are recalibrated, from each index's mode effect separated from who chooses to answer online",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a Nova Scotia grocery chain's quarterly price-integrity review deciding which stores go on Price Watch for the first quarter of 2027, judged on each store's share of fourth-quarter item scans that rang up at the price on the item's shelf-edge label at the moment of the scan, when each Thursday's price changes reach the shelf only after the store prints and hangs its changeover labels",
   "objective": "data-quality-monitoring",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "rate_or_share",
-  "answer": "Run the Halvreth Wellbeing Tracker's mode-mix monitor at a band of 4 percentage points of web share from the fourth quarter of 2027, heavy drinking binding",
-  "answer_source": "submission.md block 1; golden mwt_mode_mix_band_2027q4.xlsx, sheet Band",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G16",
-    "G6"
+    "G6",
+    "G7",
+    "G14"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "causal_design",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
-  "stakeholder_role": "the tracker's head of survey methodology",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "index points",
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans every file, reads the price integrity standard correctly and estimates each store's price accuracy from the quarter's random price audits, weighted by item sales or not, puts no store on Price Watch (every store at 99.4 per cent or more), against the golden's stores below 99.0 per cent, rebuilt from each Thursday changeover's stale labels and the store's own Thursday scans.",
+  "domain_test": "The deciding quantity is each store's scan-weighted label accuracy, observed only at the audit moments and missing at every scan, which the missing-data analyst estimates as missing at random given the time since the store's changeover labels were printed, with the hanging pace read from current-status spot checks; replacing that estimate with the audited share changes the call, and with another field's nouns (hospital wristbands, transit departure boards) there is no weekly changeover batch, no hanging pace and no flyer-day scan crowd for the estimate to act on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:use-weighted-state-from-spot-checks",
+  "layer1": [
+    "the label printer fleet log stamped in UTC across the 1 November 2026 DST change, every other system in Atlantic local time",
+    "the weekly price change file issued as a Monday preliminary and a Tuesday revision that overlap",
+    "UPCs as 12-digit UPC-A in the POS and printer exports and 13-digit EAN with a leading zero in the audit handhelds and the service desk",
+    "store numbers in the POS against store names in the audit handhelds and printer device names in the fleet log",
+    "designated store-closed days (Thanksgiving, Remembrance Day, Christmas Day, Boxing Day) and short Christmas Eve and New Year's Eve hours",
+    "printer jams leaving a voided job and its reprint in the fleet log",
+    "service desk receipt numbers typed with and without the store prefix",
+    "till price overrides recorded in cents"
+  ],
+  "stakeholder_role": "the chain's director of price integrity",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per settled transaction",
   "spine": {
-    "file": "mwt_cst27_issued_addresses.csv",
-    "rows": 76000,
-    "entity": "one address issued in the 2027 contact strategy test, its random letter allocation and final outcome",
-    "grain": "address",
+    "file": "price_change_item_movement_q4_2026.csv",
+    "rows": 68000,
+    "entity": "one price-changed item at one store at one weekly changeover, its units scanned on the changeover Thursday and on the Thursday before",
+    "grain": "store x item x changeover",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "research_or_statistics_office",
+  "forum": "operations_desk",
+  "forcing_event": "period_close",
+  "org_family": "retailer_or_ecommerce",
   "world": {
-    "geography": "Halvreth, an invented island state (New Zealand English)",
-    "currency": "none",
-    "org_type": "national statistics office",
+    "geography": "Canada, Nova Scotia (a fictional regional grocery chain of fourteen stores; the chain, its stores, systems and people are invented; the Scanner Price Accuracy Voluntary Code is real)",
+    "currency": "CAD",
+    "org_type": "regional grocery chain",
     "invented_names": [
-      "Halvreth Statistics Office",
-      "Halvreth Wellbeing Tracker"
+      "Saltmarsh Market",
+      "Price Watch"
     ],
     "people": [
-      "Bernard Johnstone",
-      "Tania Nicholas",
-      "Leonard McMurray"
+      "Melanie Donaldson",
+      "Kimberly Welch",
+      "Brian Allison"
     ]
   },
   "deliverables": [
-    "mwt_mode_mix_band_2027q4.xlsx",
-    "mwt_mode_mix_band_2027q4.png"
+    "price_watch_2027q1.xlsx",
+    "price_accuracy_q4_2026.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is how much the channel a unit reports through changes what it reports, and units choose their channel on traits that also move their reports, some of them unrecorded; a randomized nudge toward one channel shifted uptake without changing who reports, so the effect is the arms' difference in reports divided by their difference in uptake, while comparing the channels' reporters, even with every recorded trait held fixed, counts who chose the channel as its effect, and the arms' raw difference counts only the units the nudge moved.",
-  "driver_concrete": "The tracker's mode-mix monitor band is the widest whole-point departure of a quarter's web share that moves no headline index by more than its continuity tolerance, so it rests on each index's mode effect; households that answer online are younger and, in ways no field records, more often away from home, so comparing web with telephone completes, even adjusted for age, sex, education, region, household size, tenure and employment, overstates the mode effects of safe after dark and heavy drinking and sets the band at 3 points, safe after dark binding, while the contact strategy test allocated the web-first and telephone-first letters at random, so each index's difference between the letters divided by the letters' difference in web share gives the effect and sets the band at 4; the letters' difference alone sets 6.",
-  "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, safe after dark binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds the test's completes under the test plan's rules, scores each index as the codebook defines it, reads the continuity standard correctly and estimates each mode effect from web against telephone completes adjusted for every recorded characteristic files a band of 3 points; one who takes the two letters' difference as the mode effect files 6; the golden 4 comes from each index's difference between the letters scaled by the letters' difference in web share.",
-  "domain_test": "The deciding quantity is each index's mode effect, the measurement difference between answering online and by telephone for the same households, which survey methodology separates from self-selection into the mode by reading a randomized contact-strategy contrast through the shift it causes in web uptake; with hospital visits or megawatt-hours in place of web and telephone answers, the measurement-versus-selection split, the contact letters as the lever and the mode-mix artefact on a published series stop meaning anything.",
+  "question_form": "whether",
+  "driver": "The decisive quantity is the share of a unit's uses that met a displayed value gone stale, known only from spot checks taken at random moments; each scheduled change leaves the changed values stale until the unit runs its update batch, at a time only the unit's own batch log records and at a pace the spot checks show, and uses crowd into the hours after each change, so the spot checks' share, weighted by each item's use or not, understates the stale uses at the units that update late, and only the use-weighted stale share rebuilt from each unit's batch times, the update pace and its own hourly use is the quantity.",
+  "driver_concrete": "Saltmarsh Market's price integrity standard measures a store's quarterly price accuracy over every item scan at its registers against the shelf-edge label at the moment of the scan; the random price audits check labels at random moments and put every store at 99.4 per cent or more, but each Thursday's price changes leave the changed items' labels showing the old price until the store prints its changeover labels (Wednesday night where an overnight crew works, Thursday morning or later elsewhere) and its staff hang them, and flyer-day shoppers buy the changed items in those hours, so only each changeover's stale share rebuilt from the label printer's job times, the hanging pace the Thursday changeover checks show and the store's own Thursday hourly scans puts the stores below 99.0 per cent on Price Watch.",
+  "stump": "A competent analyst reads each store's price accuracy off the quarter's random price audits (labels checked at random moments, the integrity team's own measure and the provincial inspectors' method), weighted by item sales or not, and puts no store on Price Watch; the step that lands it there is taking the audited labels for the scans, when each Thursday's changed items carry the old label until the store prints and hangs its changeover labels and the Thursday scans crowd into those hours, which puts several stores below 99.0 per cent.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Seed DQ11: the world (a tracker adding a new mode) and the quantity (each index's mode effect) kept; the seed's pairing (psychometric invariance) is banned against task237, so the draw sits in survey methodology's own mode-effect analysis. The decision is cut as the mode-mix monitor's band, a monitoring dial that governs every release after the cutover; a per-index pool, flag or new-series designation repeated task465 v1's gap, pattern and decision type. G14 decisive (the telephone completes' level is not what the web completes would have answered by telephone), G16 (the estimator the random letter allocation entitles), G6 (the answerer groups' mix). Forum line_manager_or_team: MS-14 s.5 has the Head of Survey Methodology set the band, with no formal forum (redrawn at stage 3 from executive_team, which task157, filed earlier the same day, holds).",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:mode-effect-through-a-randomized-contact-strategy",
-  "layer1": [
-    "an address-level issued-sample file and an interview-level file at different grains, joined by address",
-    "telephone interviews stamped in local time by the CATI system and web submissions stamped in UTC by the survey platform",
-    "web submissions arriving after a quarter's fieldwork close, kept in the export",
-    "households interviewed by telephone after they had already submitted online, or the reverse",
-    "web break-offs with answers to the early items only",
-    "item nonresponse codes that differ by mode"
+  "differentiation": {
+    "task268": "task268 v3 credits patients lost to follow-up after their state worsened (informative censoring of a survival curve); this build weights a spot-checked shelf-label state by the moments shoppers scan items around each store's own changeover, with no follow-up, survival or censoring of units",
+    "task453": "task453 v2 reads a questionnaire redesign's effect from a rotating panel's newest groups, net of time-in-sample drift and per-occasion effects; this build has no panel, redesign or rotation: it weights a spot-checked shelf-label state by when shoppers scan the changed items around each store's own changeover print"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-17",
+      "domain": "survey-research-official-statistics",
+      "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+      "niche": "a national statistics office's quarterly wellbeing tracker cutting over from telephone-first to web-first collection, setting how far its mode-mix monitor lets a quarter's web share move before the indexes are recalibrated, from each index's mode effect separated from who chooses to answer online",
+      "objective": "data-quality-monitoring",
+      "shape": "04",
+      "decision_type": "dial_setting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "causal_design",
+      "calibration_form": "none",
+      "context_artifact": "close_out_summary",
+      "forum": "line_manager_or_team",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "research_or_statistics_office",
+      "layer2_pattern": "own:mode-effect-through-a-randomized-contact-strategy",
+      "driver": "The decisive quantity is how much the channel a unit reports through changes what it reports, and units choose their channel on traits that also move their reports, some of them unrecorded; a randomized nudge toward one channel shifted uptake without changing who reports, so the effect is the arms' difference in reports divided by their difference in uptake, while comparing the channels' reporters, even with every recorded trait held fixed, counts who chose the channel as its effect, and the arms' raw difference counts only the units the nudge moved.",
+      "driver_concrete": "The tracker's mode-mix monitor band is the widest whole-point departure of a quarter's web share that moves no headline index by more than its continuity tolerance, so it rests on each index's mode effect; households that answer online are younger and, in ways no field records, more often away from home, so comparing web with telephone completes, even adjusted for age, sex, education, region, household size, tenure and employment, overstates the mode effects of safe after dark and heavy drinking and sets the band at 3 points, safe after dark binding, while the contact strategy test allocated the web-first and telephone-first letters at random, so each index's difference between the letters divided by the letters' difference in web share gives the effect and sets the band at 4; the letters' difference alone sets 6.",
+      "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, safe after dark binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
+      "shell": null,
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-17, judge APPROVE, no portal result); the mode-mix monitor world is closed"
+    }
   ],
-  "registered": "2026-10-17T14:45:47Z"
+  "notes": "Architecture 2, drawn 2026-11-02 at the Batch 3 re-root. Client domain General Statistics & Data Science, task type missing-data-censoring-measurement-error (serves DQ). G7 decisive (the label hanging window each store's own printer job pins), G14 (the audited rate does not carry to the scans), G6 (the flyer-day scan crowd). Calibration physical_verification: the random audits and the Thursday changeover checks are physical label checks.",
+  "registered": "2026-11-02T02:05:08Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "set",
+    "rounding opener": "the",
+    "deliverable set": "png+xlsx"
+  }
 }

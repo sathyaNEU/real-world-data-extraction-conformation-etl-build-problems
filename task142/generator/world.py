@@ -395,15 +395,15 @@ def amr_export(rng, wx, conns, amr):
 
 
 def weather_2425(rng):
-    """Daily mean temperatures for the 2024-25 gas year (local days), a mild winter."""
+    """Daily mean temperatures for the 2024-25 gas year (local days): a mild winter and a warm end of September."""
     out = {}
     d = D(2024, 10, 1)
     a = 0.0
     while d <= D(2025, 9, 30):
         doy = d.timetuple().tm_yday
         a = 0.78 * a + rng.normal(0, 1.85)
-        cool = -5.5 * math.sin(math.pi * ((d - D(2025, 9, 17)).days + 1) / 15) if D(2025, 9, 17) <= d <= D(2025, 9, 30) else 0.0
-        out[d] = 11.0 - 7.2 * math.cos(2 * math.pi * (doy - 22) / 365.25) + a + cool
+        late = 2.0 * math.sin(math.pi * ((d - D(2025, 9, 17)).days + 1) / 15) if D(2025, 9, 17) <= d <= D(2025, 9, 30) else 0.0
+        out[d] = 11.0 - 7.2 * math.cos(2 * math.pi * (doy - 22) / 365.25) + a + late
         d += TD(days=1)
     return out
 

@@ -181,16 +181,11 @@ class Pack:
                     ctype = "Pedestrian" if k["cls"] == "Pedestrian" else OLD_CASUALTY_TYPE[vt[k["vehicle"]]]
                     old_k.append([ref, i, k["vehicle"], cls, k["recorded"], 1 if k["sex"] == "Male" else 2, k["age"], ctype])
             if c["date"] >= P.MIGRATION or c.get("resent"):
-                seq_new += int(rng.integers(1, 4))
-                cid = "47-2026-%06d" % seq_new
-                c["new_ref"] = cid
                 rs = c.get("resent")
                 tt = t + dt.timedelta(minutes=(rs["dmin"] if rs else 0))
                 off = "+01:00" if bst(tt.date()) else "+00:00"
                 e = c["easting"] + (rs["de"] if rs else 0)
                 n_ = c["northing"] + (rs["dn"] if rs else 0)
-                sev = min(k["recorded"] if not (rs and rs["sev_change"]) else min(k["recorded"], k["sev"] if k["sev"] > 1 else 2)
-                          for k in c["casualties"])
                 if rs:
                     upd = P.MIGRATION + dt.timedelta(days=int(rng.integers(3, 120)))
                     status = "Amended"
@@ -206,7 +201,8 @@ class Pack:
                         ksev = 2
                     cas.append({"casualty": i, "vehicle": k["vehicle"], "class": k["cls"], "severity": SEV_TEXT[ksev],
                                 "sex": "M" if k["sex"] == "Male" else "F", "age": k["age"]})
-                new.append({"collision_id": cid, "occurred": tt.strftime("%Y-%m-%dT%H:%M:00") + off,
+                created = (upd if rs else c["date"] + dt.timedelta(days=int(rng.integers(0, 4))))
+                new.append({"_created": (created, tt), "collision_id": None, "occurred": tt.strftime("%Y-%m-%dT%H:%M:00") + off,
                             "easting": int(e), "northing": int(n_), "road": c["road"],
                             "severity": SEV_TEXT[min(SEV_TEXT_INV[x["severity"]] for x in cas)],
                             "record_status": status, "last_updated": upd.isoformat(),
@@ -219,7 +215,13 @@ class Pack:
                   ["accident_ref", "casualty_ref", "vehicle_ref", "casualty_class", "casualty_severity", "sex", "age",
                    "casualty_type"], old_k)
         write_csv(self.p("police_vehicles_2026_jan_may.csv"), ["accident_ref", "vehicle_ref", "vehicle_type"], old_v)
-        new.sort(key=lambda r: r["collision_id"])
+        # the new system numbers records as they are created in it: a migrated collision when it was amended
+        new.sort(key=lambda r: r["_created"])
+        for r in new:
+            seq_new += int(rng.integers(1, 4))
+            r["collision_id"] = "47-2026-%06d" % seq_new
+            del r["_created"]
+        new = [dict([("collision_id", r["collision_id"])] + [(k, v) for k, v in r.items() if k != "collision_id"]) for r in new]
         doc = {"source": "Ardleshire Police collision recording system", "extract": "Injury road traffic collisions, Ardleshire policing area",
                "pulled": "2026-11-20T08:14:00Z", "collisions": new}
         with open(self.p("police_export_2026_jun_sep.json"), "w", encoding="utf-8") as f:

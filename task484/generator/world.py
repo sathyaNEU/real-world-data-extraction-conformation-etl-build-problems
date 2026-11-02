@@ -182,8 +182,8 @@ JUNCTIONS = [
     ("J13", "Coventry Road / Mill Lane", "MOVA", [("Coventry Road", "EB", "commuter", 9700, 2), ("Coventry Road", "WB", "commuter", 9400, 2)]),
     ("J14", "Coventry Road / Infirmary Road", "MOVA", [("Coventry Road", "EB", "commuter", 9100, 2), ("Coventry Road", "WB", "commuter", 9900, 2)]),
     ("J16", "Lea Road / Castlegate Road", "MOVA", [("Lea Road", "NB", "commuter", 6500, 1), ("Lea Road", "SB", "commuter", 6800, 1)]),
-    ("J19", "Western Avenue / Fenwick Road", "SCOOT", [("Western Avenue", "NB", "commuter", 11200, 2), ("Western Avenue", "SB", "commuter", 11900, 2), ("Fenwick Road", "EB", "commuter", 7600, 1), ("Fenwick Road", "WB", "retail", 5300, 1)]),
-    ("J23", "Ring Road / Tanyard Lane", "SCOOT", [("Ring Road", "EB", "commuter", 12600, 2), ("Ring Road", "WB", "commuter", 13300, 2), ("Tanyard Lane", "NB", "leisure", 3900, 1), ("Tanyard Lane", "SB", "commuter", 4600, 1)]),
+    ("J19", "Western Avenue / Fenwick Road", "SCOOT", [("Western Avenue", "NB", "commuter", 11200, 2), ("Western Avenue", "SB", "commuter", 14300, 2), ("Fenwick Road", "EB", "commuter", 7600, 1), ("Fenwick Road", "WB", "retail", 5300, 1)]),
+    ("J23", "Ring Road / Tanyard Lane", "SCOOT", [("Ring Road", "EB", "commuter", 12600, 2), ("Ring Road", "WB", "commuter", 9300, 2), ("Tanyard Lane", "NB", "leisure", 3900, 1), ("Tanyard Lane", "SB", "commuter", 4700, 1)]),
     ("J20", "Northgate Road / Station Street", "SCOOT", [("Northgate Road", "NB", "commuter", 7400, 2), ("Northgate Road", "SB", "commuter", 7700, 2), ("Station Street", "EB", "commuter", 4100, 1)]),
     ("J21", "Ring Road / Northgate Road", "SCOOT", [("Ring Road", "EB", "commuter", 13500, 2), ("Ring Road", "WB", "commuter", 12900, 2), ("Northgate Road", "NB", "commuter", 6900, 1), ("Northgate Road", "SB", "commuter", 7200, 1)]),
     ("J22", "Birmingham Road / Ashby Road", "SCOOT", [("Birmingham Road", "NB", "commuter", 10600, 2), ("Birmingham Road", "SB", "commuter", 10100, 2), ("Ashby Road", "EB", "commuter", 5600, 1), ("Ashby Road", "WB", "commuter", 5900, 1)]),
@@ -543,6 +543,8 @@ def choose_count_days(W):
         if not found:
             raise RuntimeError("no count day for %s" % s["name"])
         W.count_day[s["name"]], W.base_mult[s["name"]] = found
+        rows, tot = count_rows(s, si, DIDX[found[0]], found[1])      # the count exactly as tested
+        s["count_rows"], s["count_total"] = rows, count_total(rows)
         if found[1] != 1.0:          # the section's level is the tuned free parameter: rescale its flows
             s["q24"] = s["q24"] * found[1]
             s["q12"] = s["q12"] * found[1]
@@ -551,8 +553,6 @@ def choose_count_days(W):
                     c[k] = c[k] * found[1]
                 c["obs24"] = np.round(c["obs24"])
                 c["obs12"] = np.round(c["obs12"])
-        rows, tot = count_rows(s, si, DIDX[found[0]], 1.0)
-        s["count_rows"], s["count_total"] = rows, count_total(rows)
 
 
 def build():

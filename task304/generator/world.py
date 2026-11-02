@@ -42,7 +42,10 @@ def is_trunk(road, easting):
 
 class World:
     def __init__(self, seed=P.SEED):
-        self.rng = np.random.default_rng(seed)
+        self.rng = np.random.default_rng(seed)            # the network
+        self.rc = np.random.default_rng(seed + 1)         # the junctions' collision counts
+        self.rr = np.random.default_rng(seed + 2)         # the records' details
+        self.rp = np.random.default_rng(seed + 3)         # the 2026 provisional data
         self.junctions = []
         self._network()
         self._counts()
@@ -115,9 +118,15 @@ class World:
             self.junctions.append(dict(node="J%04d" % jid, name=name, layout=lay, control=ctrl, road=road_no,
                                        road_name=road_name, minor=minor, easting=e, northing=n_, district=dist,
                                        maj=maj26 * growth, mnr=mnr26 * mgrowth, theta=theta, cand=name, rec=list(rec)))
-        # nodes that existed before the 2019 recode carry a former number
-        for j in self.junctions:
-            j["former"] = "N%05d" % (int(j["node"][1:]) * 3 + 211)
+        # node numbers follow the inventory's own order (the 2019 recode numbered nodes along each road), with the
+        # pre-2019 numbers kept beside them; neither tracks the screening
+        order = sorted(range(len(self.junctions)), key=lambda i: (self.junctions[i]["road"], self.junctions[i]["easting"]))
+        nid = 1000
+        olds = rng.choice(np.arange(2000, 9999), size=len(self.junctions), replace=False)
+        for k, i in enumerate(order):
+            nid += int(rng.integers(1, 8))
+            self.junctions[i]["node"] = "J%04d" % nid
+            self.junctions[i]["former"] = "N%05d" % int(olds[k])
 
     def mu(self, j, year):
         b0, b1, b2 = P.SPF[j["layout"]]
@@ -125,7 +134,7 @@ class World:
         return float(np.exp(b0 + b1 * np.log(j["maj"][t]) + b2 * np.log(j["mnr"][t]))) * P.YEAR_FACTOR[year]
 
     def _counts(self):
-        rng = self.rng
+        rng = self.rc
         win = P.WINDOW
         for j in self.junctions:
             for attempt in range(60):
@@ -144,7 +153,7 @@ class World:
     def _steady_years(self):
         """The network's give-way junction collisions held near the window's year-on-year level: a few collisions
         moved between years within background junctions so 2022 to 2025 run level and 2021 at its lower level."""
-        rng = self.rng
+        rng = self.rc
         ref = [j for j in self.reference() if not j["cand"]]
         win = P.WINDOW
         f = {y: P.YEAR_FACTOR[y] for y in win}
@@ -171,7 +180,7 @@ class World:
 
     # ---------------- validated collision records 2016 to 2025
     def _when(self, year):
-        rng = self.rng
+        rng = self.rr
         start = dt.date(year, 1, 1)
         days = (dt.date(year + 1, 1, 1) - start).days
         d = start + dt.timedelta(days=int(rng.integers(0, days)))
@@ -179,11 +188,11 @@ class World:
         return d, hour, int(rng.integers(0, 60))
 
     def _severity(self):
-        r = self.rng.random()
+        r = self.rr.random()
         return 1 if r < P.SEVERITY_SHARE[0] else (2 if r < P.SEVERITY_SHARE[0] + P.SEVERITY_SHARE[1] else 3)
 
     def _records(self):
-        rng = self.rng
+        rng = self.rr
         recs = []
         for j in self.junctions:
             for y in P.REC_YEARS:
@@ -204,7 +213,7 @@ class World:
         self.collisions = recs
 
     def _collision(self, d, h, m, j=None):
-        rng = self.rng
+        rng = self.rr
         if j is not None:
             e = j["easting"] + int(rng.integers(-14, 15))
             n_ = j["northing"] + int(rng.integers(-14, 15))
@@ -235,7 +244,7 @@ class World:
     def _provisional(self):
         """The county's provisional 2026 collisions January to September, each with its casualties and vehicles and
         the true severity on the national 30-day definition. Trunk-road collisions are in the police data too."""
-        rng = self.rng
+        rng = self.rp
         out = []
         d0 = P.PROV_START
         days = (P.PROV_END - d0).days + 1
