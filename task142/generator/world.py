@@ -48,20 +48,20 @@ def weather(rng):
     doy = np.array([d.timetuple().tm_yday for d in ds])
     base = 10.6 - 7.6 * np.cos(2 * np.pi * (doy - 22) / 365.25)
     anom = np.zeros(n)
-    e = rng.normal(0, 2.35, n)
+    e = rng.normal(0, 1.85, n)
     for i in range(n):
         anom[i] = (0.78 * anom[i - 1] if i else 0.0) + e[i]
     # the winter's two cold spells (a January easterly and a late-February frost)
     for i, d in enumerate(ds):
         if D(2026, 1, 5) <= d <= D(2026, 1, 24):
             k = (d - D(2026, 1, 5)).days
-            anom[i] += -7.4 * math.sin(math.pi * (k + 1) / 21) - 1.2
+            anom[i] += -5.6 * math.sin(math.pi * (k + 1) / 21) - 0.8
         if D(2026, 2, 17) <= d <= D(2026, 2, 27):
             k = (d - D(2026, 2, 17)).days
-            anom[i] += -6.9 * math.sin(math.pi * (k + 1) / 12)
+            anom[i] += -5.2 * math.sin(math.pi * (k + 1) / 12)
         if D(2025, 12, 1) <= d <= D(2025, 12, 9):
             k = (d - D(2025, 12, 1)).days
-            anom[i] += -4.6 * math.sin(math.pi * (k + 1) / 10)
+            anom[i] += -3.4 * math.sin(math.pi * (k + 1) / 10)
     daily = base + anom
     amp = 2.4 + 2.2 * (1 + np.cos(2 * np.pi * (doy - 196) / 365.25)) / 2 + rng.uniform(-0.6, 0.6, n)
     hourly = {}
