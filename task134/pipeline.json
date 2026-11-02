@@ -3,8 +3,8 @@
  "status": "BUILD",
  "domain": "physical-environmental-sciences",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-02",
  "stump": "a dredged part fills in proportion to how far its bed is held below the natural bed beside it, read from the survey cells beyond the maintained widths; two more metres raise each part's record by two metres over that depth, not by the held-depth ratio 14.3 over 12.3",
  "architecture": 4,
@@ -17,19 +17,19 @@
  },
  "leak": {
   "leak_py": "REVIEW ruled (2026-11-02, --asof 2027-01-18), no LEAK; each REVIEW line answered in the design note ## Leak review",
-  "reader": ""
+  "reader": "round 1 clean (main session); to be re-read since the licence and the sampling workbook changed"
  },
  "duplicate_check": {
   "heart": "PASS 2026-11-02 (NOTE same_puzzle_older, differentiated against task154 on the card)",
   "nearest": "surface: task133 (back to back), task166 and task154 promoted for adjudication; surface 0.08 to 0.10; the task154 collision is differentiated on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "round 1 on target.zip 456d4b72: DETERMINISTIC, FIX_NOW (small); G and H pass, F moderate",
+  "disposition": "fixed in the generator 2026-11-02 on target.zip 890c87d8: the 2026 area summary is the licence 5.5 mean printed to three decimals and every placement keeps its bin under the full-precision recomputation (the campaigns' dry-solids levels tuned, no load re-read, every total 415 t or more inside its bin); licence 5.3 and 5.4 name UK civil time; step 3 names the cell membership and component 1 is stated to 0.1 m; the basis docx template parts removed and every Office file's zip entries dated by its own last-saved stamp; main call and six parts unchanged",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4 check: the main session spawns the isolated leak reader and the determinism judge on the final cut (target.zip 456d4b72); every finding fixed in the generator in one pass, every gate re-run, then ship (ledger row, card current, SHIPPED commit)",
+ "resume": "stage 4 re-check: the main session re-judges once and re-runs the leak reader on target.zip 890c87d8 (the licence and the sampling workbook changed); any finding fixed in the generator, every gate re-run, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -161,16 +161,16 @@
  ],
  "gates": {
   "date": "2026-11-02",
-  "generator_checks": "88 assertions, 0 failed",
-  "verify": "56 checks, 0 failed (own XLSX, PDF with ASCII85 and Flate, DOCX readers and geometry; every graded figure and the golden workbook against figures.json)",
+  "generator_checks": "102 assertions, 0 failed",
+  "verify": "65 checks, 0 failed (own readers; every graded figure, the golden workbook, and the placements under the 5.5 recomputation)",
   "byte_identical_builds": "two builds in fresh interpreters byte-identical (13 target files, 2 goldens, target.zip)",
-  "figures_check": "PASS, 70 figures, 0 absent",
+  "figures_check": "PASS, 72 figures, 0 absent",
   "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS (815 characters)",
   "leak_py": "REVIEW, no LEAK (--asof 2027-01-18)",
   "guard_heart": "PASS",
   "guard_surface": "3 pairs promoted for adjudication (task133 back to back, task166, task154)",
   "ceiling": "pair 36.4, mirror 14.3, full includer 49.1 (generator/ceiling.py on the cut pack)",
-  "target_zip_sha256": "456d4b725534e3a86824d20d128e0bde7933eaf7d901d2f8a9d14dc1f6e10173"
+  "target_zip_sha256": "890c87d8875f38741fb455285e3284d3c42921d0379b838c36e6ecb3fa571610"
  }
 }

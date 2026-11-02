@@ -76,7 +76,7 @@ def write_xlsx(tdir, out, res):
     for name in A.REACH_NAMES:
         h = g["nat"][name]
         d0 = nt.parts[name]["depth"]
-        vals = [name, round(g["V"][name]), round(h, 2), round(d0 - h, 2), round(A.NEW_DEPTH - h, 2), round(g["parts"][name]),
+        vals = [name, round(g["V"][name]), round(h, 3), round(d0 - h, 2), round(A.NEW_DEPTH - h, 2), round(g["parts"][name]),
                 res["parts"][name]]
         for c, v in enumerate(vals, start=1):
             ws.cell(row=row, column=c, value=v)
@@ -93,7 +93,8 @@ def write_xlsx(tdir, out, res):
     for rr in range(r0 + 1, row + 1):
         for cc in (2, 6, 7):
             ws.cell(row=rr, column=cc).number_format = "#,##0"
-        for cc in (3, 4, 5):
+        ws.cell(row=rr, column=3).number_format = "0.000"
+        for cc in (4, 5):
             ws.cell(row=rr, column=cc).number_format = "0.00"
     notes = [
         "Year 1 m3 for each reach and the basin = mean x (14.3 - natural bed) / (12.3 - natural bed); the berth pockets "
