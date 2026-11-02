@@ -1,6 +1,5 @@
-"""The pack's documents: the department's planning standard PS-07, the regional immunisation office's options paper,
-the national planning unit's circular on local health office areas, the national guidelines' MMR chapter excerpt and
-the national quarterly uptake report. No document describes the pack's data files (dataset-generation section 3)."""
+"""The pack's documents: the company's network operations standard NOS 12, the outage plan for the Ferrars Lane
+relining, and the 2024 trunk mains condition assessment. No document describes a data file."""
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -20,274 +19,203 @@ pdfmetrics.registerFont(TTFont("LiberationSans-Bold", FONT_DIR + "LiberationSans
 pdfmetrics.registerFont(TTFont("LiberationSerif", FONT_DIR + "LiberationSerif-Regular.ttf"))
 pdfmetrics.registerFont(TTFont("LiberationSerif-Bold", FONT_DIR + "LiberationSerif-Bold.ttf"))
 SANS, SANS_B, SERIF, SERIF_B = "LiberationSans", "LiberationSans-Bold", "LiberationSerif", "LiberationSerif-Bold"
-INK = colors.HexColor("#1d2329")
-GREY = colors.HexColor("#5b6670")
-TEAL = colors.HexColor("#0b5f63")
+INK = colors.HexColor("#1b2430")
+GREY = colors.HexColor("#5d6872")
+BLUE = colors.HexColor("#0f4c81")
 RULE = colors.HexColor("#9aa6ad")
 
 
-def _styles(font, bold, size=10.2, accent=INK):
+def _styles(font, bold, size=10.0, accent=INK):
     body = ParagraphStyle("b", fontName=font, fontSize=size, leading=size * 1.36, textColor=INK, spaceAfter=5)
     return dict(
         body=body,
-        num=ParagraphStyle("n", parent=body, leftIndent=26, firstLineIndent=-26),
-        h1=ParagraphStyle("h1", fontName=bold, fontSize=size + 5, leading=size + 9, textColor=accent, spaceAfter=4),
+        num=ParagraphStyle("n", parent=body, leftIndent=28, firstLineIndent=-28),
+        h1=ParagraphStyle("h1", fontName=bold, fontSize=size + 5, leading=size + 9, textColor=accent, spaceAfter=3),
         h2=ParagraphStyle("h2", fontName=bold, fontSize=size + 1, leading=size + 5, textColor=accent, spaceBefore=7,
                           spaceAfter=3),
         small=ParagraphStyle("s", fontName=font, fontSize=size - 1.6, leading=(size - 1.6) * 1.35, textColor=GREY,
                              spaceAfter=3),
-        cell=ParagraphStyle("c", fontName=font, fontSize=size - 1.4, leading=(size - 1.4) * 1.25, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName=bold, fontSize=size - 1.9, leading=(size - 1.9) * 1.25, textColor=INK),
+        cell=ParagraphStyle("c", fontName=font, fontSize=size - 1.5, leading=(size - 1.5) * 1.25, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName=bold, fontSize=size - 1.8, leading=(size - 1.8) * 1.25, textColor=INK),
     )
 
 
 def _doc(path, title, author, subject, footer):
     def page(canvas, doc):
         canvas.saveState()
-        canvas.setFont(SANS, 7.5)
+        canvas.setFont(SANS, 7.4)
         canvas.setFillColor(GREY)
         canvas.drawString(18 * mm, 10 * mm, footer)
         canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
         canvas.restoreState()
     d = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
                           bottomMargin=18 * mm, title=title, author=author, subject=subject, creator=author,
-                          producer=W.REGION)
+                          producer=W.COMPANY)
     return d, page
 
 
-def _table(rows, widths, st, header_rows=1, align_right_from=None, zebra=False):
+def _table(rows, widths, st, header_rows=1, zebra=False):
     data = []
     for i, r in enumerate(rows):
         data.append([Paragraph(str(c), st["cellb"] if i < header_rows else st["cell"]) for c in r])
     t = Table(data, colWidths=[w * mm for w in widths], repeatRows=header_rows)
     style = [("LINEBELOW", (0, header_rows - 1), (-1, header_rows - 1), 0.6, RULE),
              ("LINEBELOW", (0, -1), (-1, -1), 0.4, RULE),
-             ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2.2),
-             ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2), ("LEFTPADDING", (0, 0), (-1, -1), 3),
+             ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2.0),
+             ("BOTTOMPADDING", (0, 0), (-1, -1), 2.0), ("LEFTPADDING", (0, 0), (-1, -1), 3),
              ("RIGHTPADDING", (0, 0), (-1, -1), 3)]
     if zebra:
         for i in range(header_rows, len(rows)):
             if (i - header_rows) % 2 == 1:
-                style.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor("#f1f4f5")))
+                style.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor("#f0f3f5")))
     t.setStyle(TableStyle(style))
     return t
 
 
-# ----------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------ NOS 12
+STANDARD_42 = ("A trunk main that the change would carry at a higher hourly flow than the highest hourly flow it "
+               "carried in the twelve months to the end of the month before the outage plan is prepared shall be "
+               "flushed before the change is made.")
+STANDARD_43 = "Flows under the change are judged on the districts' recorded hourly inflows for the same dates a year earlier."
+STANDARD_TRUNK = ("Trunk main: a main listed in the company's trunk mains register. The register's interconnectors are "
+                  "trunk mains.")
+
+
 def standard(path):
-    st = _styles(SERIF, SERIF_B, 10.4, TEAL)
-    d, page = _doc(path, "PS-07 Measles winter planning standard", W.PEOPLE["director"],
-                   "Planning standard", "%s | PS-07 Measles winter planning standard | version 3.0" % W.DEPT)
-    P = lambda t: Paragraph(t, st["num"])
-    s = [Paragraph(W.DEPT.upper(), st["small"]),
-         Paragraph("PS-07 Measles winter planning standard", st["h1"]),
-         _table([["Version", "Approved", "Owner", "Review"],
-                 ["3.0", "10 March 2026", "%s, Director of Public Health" % W.PEOPLE["director"], "March 2028"]],
-                [22, 34, 80, 30], st),
-         Spacer(1, 6),
-         Paragraph("1 Purpose and scope", st["h2"]),
-         P("1.1&nbsp;&nbsp;This standard sets how the department decides each year, before the measles season, whether "
-           "to fund a catch-up MMR campaign and, if so, which one."),
-         P("1.2&nbsp;&nbsp;It applies to the autumn campaign and to the winter that follows it. Routine childhood "
-           "immunisation and outbreak control are covered by PS-02 and PS-05."),
-         Paragraph("2 Roles", st["h2"]),
-         P("2.1&nbsp;&nbsp;The regional immunisation manager prepares an options paper by 30 June, setting out the "
-           "catch-up options the office can deliver between September and November, the people in each option's "
-           "birth cohorts and the number of people each option is expected to make immune."),
-         P("2.2&nbsp;&nbsp;The director of public health makes the winter assessment in section 3 and recommends an "
-           "option, or none, to the executive management team, which funds at most one catch-up a year."),
-         Paragraph("3 The winter assessment", st["h2"]),
-         P("3.1&nbsp;&nbsp;The department's aim is that measles cannot sustain transmission in the region through the "
-           "winter, December to February: the reproduction number, the average number of people one case infects, "
-           "stays below one throughout, with the year's programme in place."),
-         P("3.2&nbsp;&nbsp;The department plans on a basic reproduction number (R0) of 15 for measles: the "
-           "reproduction number measles would have in the region over the winter if nobody in it were immune."),
-         P("3.3&nbsp;&nbsp;The winter is assessed on the region's population and immunity on 1 January of the winter's "
-           "second year, using the department's projection of the region's usual residents for that date."),
-         P("3.4&nbsp;&nbsp;Immunity by year of birth is taken from the national immunisation programme's latest measles "
-           "immunity profile for the region, which projects each year of birth to the assessment date."),
-         P("3.5&nbsp;&nbsp;A catch-up option counts for the people the options paper expects it to make immune."),
-         P("3.6&nbsp;&nbsp;If the reproduction number without a catch-up is below one, the department runs none. "
-           "Otherwise it funds an option that brings the reproduction number below one; where more than one does, "
-           "the one with the lowest cost; where none does, the option that brings it lowest, and the director reports "
-           "the shortfall to the national immunisation programme."),
-         Paragraph("4 Timetable", st["h2"]),
-         _table([["Step", "By"],
-                 ["Options paper to the director", "30 June"],
-                 ["Winter assessment and recommendation to the executive management team", "July meeting"],
-                 ["Catch-up delivered", "September to November"],
-                 ["Report on uptake to the director", "15 December"]], [120, 46], st),
-         Paragraph("5 Records", st["h2"]),
-         P("5.1&nbsp;&nbsp;The options paper, the winter assessment, the recommendation and the executive management "
-           "team's decision are kept on the year's file for seven years."),
-         Spacer(1, 8),
-         Paragraph("Supersedes version 2.1 (February 2023). Changes in 3.0: the options paper deadline moved from 31 "
-                   "July to 30 June; section 3.6 adds the report to the national immunisation programme.", st["small"])]
-    d.build(s, onFirstPage=page, onLaterPages=page)
+    st = _styles(SERIF, SERIF_B, 10.2, BLUE)
+    d, page = _doc(path, "NOS 12 Planned changes to supply routes: discolouration", W.PEOPLE["wq"],
+                   "Network Operations Standard", "%s | NOS 12 Planned changes to supply routes | Issue 3" % W.COMPANY)
+    f = []
+    f.append(Paragraph(W.COMPANY.upper(), st["small"]))
+    f.append(Paragraph("Network Operations Standard NOS 12", st["h1"]))
+    f.append(Paragraph("Planned changes to supply routes: discolouration", st["h2"]))
+    f.append(_table([["Issue", "Effective", "Owner", "Approved"],
+                     ["3", "1 April 2025", "%s, %s" % (W.PEOPLE["wq"], W.TITLES["wq"]),
+                      "%s, %s" % (W.PEOPLE["head_ops"], W.TITLES["head_ops"])]], [14, 26, 64, 66], st))
+    f.append(Spacer(1, 6))
+    f.append(Paragraph("1  Purpose", st["h2"]))
+    f.append(Paragraph("This standard sets how the company controls the risk of discoloured water reaching customers "
+                       "when it changes the route by which water reaches them through the trunk mains.", st["body"]))
+    f.append(Paragraph("2  Scope", st["h2"]))
+    f.append(Paragraph("It applies to every planned change in the route by which water reaches one or more districts "
+                       "through the trunk mains that is to last more than 24 hours: a planned outage of a trunk main, a "
+                       "re-zoning, or the commissioning of a new interconnection.", st["body"]))
+    f.append(Paragraph("3  Definitions", st["h2"]))
+    f.append(Paragraph("3.1  " + STANDARD_TRUNK, st["num"]))
+    f.append(Paragraph("3.2  District: a district metered area. Its inflow is the flow recorded by its inlet meter.",
+                       st["num"]))
+    f.append(Paragraph("3.3  Outage plan: the plan prepared by Network Operations that sets the valve operations and "
+                       "the supply arrangements for a planned change.", st["num"]))
+    f.append(Paragraph("4  Assessment before a planned change", st["h2"]))
+    f.append(Paragraph("4.1  The outage plan for each planned change is assessed under this section before the change "
+                       "is made, and the result is recorded with the plan.", st["num"]))
+    f.append(Paragraph("4.2  " + STANDARD_42, st["num"]))
+    f.append(Paragraph("4.3  " + STANDARD_43, st["num"]))
+    f.append(Paragraph("4.4  Flushing under 4.2 is completed in the six weeks before the change, in sections, from "
+                       "hydrants or washouts at the downstream end of each section, until the discharge stays below "
+                       "1.0 NTU for ten minutes.", st["num"]))
+    f.append(Paragraph("4.5  Customers in the districts whose route changes are told of the change at least 14 days "
+                       "before it is made.", st["num"]))
+    f.append(Paragraph("5  Routine flushing", st["h2"]))
+    f.append(Paragraph("5.1  Distribution mains in districts with a record of discolouration contacts are flushed on a "
+                       "rolling programme agreed each year between Water Quality and Network Operations and carried out "
+                       "by the mains flushing contractor.", st["num"]))
+    f.append(Paragraph("6  Records", st["h2"]))
+    f.append(Paragraph("The assessment under section 4 records each trunk main assessed, the flows compared and "
+                       "whether the main was flushed, and is kept with the outage plan for six years.", st["body"]))
+    f.append(Spacer(1, 8))
+    f.append(Paragraph("Issue history", st["h2"]))
+    f.append(_table([["Issue", "Date", "Change"],
+                     ["1", "June 2018", "First issue."],
+                     ["2", "February 2021", "Interconnectors brought within the definition of a trunk main."],
+                     ["3", "March 2025", "Reference period and the basis for judging flows under a change restated "
+                                         "(4.2, 4.3); customer notice period added (4.5)."]], [14, 28, 128], st))
+    d.build(f, onFirstPage=page, onLaterPages=page)
 
 
-def options(path, opts, reg_people):
-    st = _styles(SANS, SANS_B, 9.6, TEAL)
-    d, page = _doc(path, "Autumn 2027 MMR catch-up: options", W.PEOPLE["manager"], "Options paper",
-                   "%s | Autumn 2027 MMR catch-up: options | 9 June 2027" % W.RIO)
-    P = lambda t: Paragraph(t, st["num"])
-    rows = [["Option", "Born", "Age on 1 Jan 2028", "Delivered through", "People", "Estimated susceptible",
-             "Expected uptake", "Expected made immune", "Cost (EUR)"]]
-    for k in W.OPTION_KEYS:
-        o = W.OPTIONS[k]
-        parts = opts[k]
-        a, b = o["years"]
-        rows.append([k, "%d to %d" % (a, b), "%d to %d" % (2027 - b, 2027 - a), o["setting"],
-                     "{:,}".format(sum(p["people"] for p in parts)), "{:,}".format(sum(p["susceptible"] for p in parts)),
-                     "%d%%" % round(o["uptake"] * 100), "{:,}".format(sum(p["made"] for p in parts)),
-                     "{:,}".format(o["cost"])])
-    e = opts["E"]
-    e_split = ("Of option E's %s expected people made immune, %s are among those born %d to %d and %s among those born "
-               "%d to %d." % ("{:,}".format(sum(p["made"] for p in e)), "{:,}".format(e[0]["made"]), e[0]["years"][0],
-                              e[0]["years"][1], "{:,}".format(e[1]["made"]), e[1]["years"][0], e[1]["years"][1]))
-    s = [Paragraph(W.RIO.upper(), st["small"]),
-         Paragraph("Autumn 2027 MMR catch-up: options", st["h1"]),
-         Paragraph("For the Director of Public Health. Prepared by %s, Regional Immunisation Manager, 9 June 2027."
-                   % W.PEOPLE["manager"], st["small"]),
-         Paragraph("1 Purpose", st["h2"]),
-         P("1.1&nbsp;&nbsp;Under PS-07 (2.1) this paper sets out the catch-up options the office can deliver between "
-           "September and November 2027, the people in each option's birth cohorts and the people each is expected to "
-           "make immune. The executive management team meets on 21 July 2027 and can fund one."),
-         Paragraph("2 Background", st["h2"]),
-         P("2.1&nbsp;&nbsp;On 2 April 2027 a man with measles acquired abroad attended a GP surgery and the emergency "
-           "department in Navan before he was diagnosed. Two adults who were in the department that afternoon became "
-           "ill on 15 and 17 April. The director asked for catch-up options the same week."),
-         P("2.2&nbsp;&nbsp;The options cover the birth cohorts outside the routine programme with the largest immunity "
-           "gaps in the national profile (May 2027): the children born 2008 to 2012, whose MMR uptake fell during the "
-           "2010-12 vaccine scare; the children born 2013 to 2017; the young adults born 2003 to 2007; and the adults "
-           "born 1993 to 2002, who were at school before the second dose moved to junior infants."),
-         P("2.3&nbsp;&nbsp;Each option is costed at the office's 2027 rates for the delivery route shown. The budget "
-           "allocated for an autumn catch-up is EUR 470,000, so every option is affordable and only one can run."),
-         Paragraph("3 Options", st["h2"]),
-         _table(rows, [12, 21, 15, 37, 15, 18, 17, 17, 17], st, zebra=True),
-         Spacer(1, 3),
-         Paragraph("People: the department's projection of usual residents at 1 January 2028 for those years of birth. "
-                   "Estimated susceptible: those people less the immune share the national profile gives for each year "
-                   "of birth. Expected people made immune: susceptible people expected to become immune (estimated "
-                   "susceptible x expected uptake among the susceptible x 0.97, the effectiveness of a catch-up course), "
-                   "to the nearest ten; doses given to people already immune do not count. Cost: vaccine, staff, venues "
-                   "and invitations. " + e_split, st["small"]),
-         Paragraph("4 Delivery", st["h2"]),
-         P("4.1&nbsp;&nbsp;Options A and B use the school immunisation team's autumn sessions; the team can add catch-up "
-           "sessions in 61 primary and 38 post-primary schools between 15 September and 20 November. Further education "
-           "colleges and school leavers in option B are reached through the colleges and by GP letter."),
-         P("4.2&nbsp;&nbsp;Option C runs clinics on the three third-level campuses in Freshers' weeks and invites the rest "
-           "by GP letter. Options D and E invite by letter and text message through GP practices and pharmacies, and E "
-           "adds workplace clinics at the four largest employers."),
-         P("4.3&nbsp;&nbsp;Invitation lists for the option funded will be drawn from the regional immunisation register; "
-           "people not on it will be reached through schools, colleges, practices and employers."),
-         Paragraph("5 Next step", st["h2"]),
-         P("5.1&nbsp;&nbsp;The director's winter assessment under PS-07 section 3, and the recommendation to the "
-           "executive management team.")]
-    d.build(s, onFirstPage=page, onLaterPages=page)
+# ------------------------------------------------------------------------------------------------ the outage plan
+def plan(path, vlist):
+    st = _styles(SANS, SANS_B, 9.6, BLUE)
+    vno = {(v["key"], v["end"]): v for v in vlist}
+    d, page = _doc(path, "Ferrars Lane trunk main relining, phase 2: outage plan", W.PEOPLE["planner"],
+                   "Outage plan", "%s | Network Operations | TM107 relining phase 2 outage plan | v1.0" % W.COMPANY)
+    f = []
+    f.append(Paragraph(W.COMPANY.upper() + "  |  NETWORK OPERATIONS", st["small"]))
+    f.append(Paragraph("TM107 Ferrars Lane trunk main relining (phase 2): outage plan", st["h1"]))
+    f.append(_table([["Version", "Date", "Prepared by", "Approved by"],
+                     ["1.0", "16 November 2026", "%s, %s" % (W.PEOPLE["planner"], W.TITLES["planner"]),
+                      "%s, %s" % (W.PEOPLE["head_ops"], W.TITLES["head_ops"])]], [16, 30, 64, 60], st))
+    f.append(Paragraph("1  Scope of the works", st["h2"]))
+    f.append(Paragraph("TM107, the Ferrars Lane main between Market Hill and Ferrars Corner (2,310 m of 375 mm cast "
+                       "iron laid in 1931), is to be relined with a close-fit polyethylene lining as phase 2 of the trunk "
+                       "mains relining programme. The contractor takes possession on 15 March 2027 and TM107 is out of service from 15 March to "
+                       "15 September 2027.", st["body"]))
+    f.append(Paragraph("2  Supply arrangements during the works", st["h2"]))
+    f.append(Paragraph("The valves below are set on 15 March 2027 from 05:00, in this order. Every other valve stays "
+                       "in its normal position for the duration, and each is returned on completion.", st["body"]))
+    ops = [("X04", "B", "Open", "Coldharbour-Ferrars interconnector, boundary valve"),
+           ("X02", "B", "Open", "Highfield-Sallowby interconnector, boundary valve"),
+           ("T10", "A", "Shut", "Sallowby Road main"),
+           ("T10", "B", "Shut", "Sallowby Road main"),
+           ("T03", "A", "Shut", "Ferrars Lane main"),
+           ("T03", "B", "Shut", "Ferrars Lane main")]
+    rows = [["Step", "Valve", "Main", "Location", "Set to"]]
+    for i, (k, end, op, desc) in enumerate(ops):
+        v = vno[(k, end)]
+        rows.append([str(i + 1), v["valve_no"], "%s %s" % (W.MAIN_ID[k], desc), v["location"], op])
+    f.append(_table(rows, [11, 20, 82, 34, 20], st))
+    f.append(Spacer(1, 4))
+    f.append(Paragraph("Ferrars Corner and Mill Bridge are supplied from Coldharbour through IC05 for the duration. "
+                       "The Sallowby districts are held on the Highfield feed through IC03, with TM115 shut at both ends "
+                       "so that the two routes are kept apart.", st["body"]))
+    f.append(Paragraph("3  Districts supplied by another route", st["h2"]))
+    rows = [["District", "Name", "Supplied during the works through"]]
+    for dk in W.REROUTED:
+        rows.append([W.DCODE[dk], W.DISTRICTS[dk][1], "IC05 (Coldharbour)" if W.DNODE[dk] in ("N3", "N4")
+                     else "IC03 (Highfield)"])
+    f.append(_table(rows, [24, 40, 60], st, zebra=True))
+    f.append(Paragraph("4  Water quality", st["h2"]))
+    f.append(Paragraph("The arrangement in section 2 is a planned change under NOS 12. The assessment under NOS 12 "
+                       "section 4 is to be completed and attached to this plan before the flushing works order is "
+                       "raised; any flushing it requires is to be done between 1 February and 12 March 2027.",
+                       st["body"]))
+    f.append(Paragraph("5  Customers", st["h2"]))
+    f.append(Paragraph("Every customer in the districts in section 3 is written to by 1 March 2027. Non-household "
+                       "customers in those districts are contacted individually by the Business Customers team before "
+                       "the works, with the water they used over the last twelve months, so that any with a continuous "
+                       "process can plan for the change.", st["body"]))
+    f.append(Paragraph("6  Key dates", st["h2"]))
+    f.append(_table([["Date", "Step"],
+                     ["15 January 2027", "Flushing works order placed with the mains flushing contractor"],
+                     ["1 February to 12 March 2027", "Flushing, where the assessment requires it"],
+                     ["1 March 2027", "Customer letters issued"],
+                     ["15 March 2027, 05:00", "Valves set as in section 2; TM107 handed to the contractor"],
+                     ["15 September 2027", "TM107 returned to service; valves in section 2 returned"]],
+                    [52, 118], st))
+    d.build(f, onFirstPage=page, onLaterPages=page)
 
 
-def circular(path):
-    st = _styles(SANS, SANS_B, 9.8, colors.HexColor("#283c6b"))
-    d, page = _doc(path, "Local health office areas: revision of 1 July 2024", "National health service planning unit",
-                   "Circular 03/2024", "National health service planning unit | Circular 03/2024")
-    P = lambda t: Paragraph(t, st["num"])
-    s = [Paragraph("NATIONAL HEALTH SERVICE PLANNING UNIT", st["small"]),
-         Paragraph("Circular 03/2024: Local health office areas, revision of 1 July 2024", st["h1"]),
-         Paragraph("12 April 2024. To: health regions, national and regional registers, information services.", st["small"]),
-         Paragraph("1 The revision", st["h2"]),
-         P("1.1&nbsp;&nbsp;Following the 2023 review of local health office boundaries, the areas and codes below change "
-           "on 1 July 2024. All other areas and codes are unchanged."),
-         P("1.2&nbsp;&nbsp;The full list of areas and codes in force from 1 July 2024 is published with this circular."),
-         Paragraph("2 Changes", st["h2"]),
-         _table([["Area before 1 July 2024", "From 1 July 2024", "Health region"],
-                 ["LH26 Monaghan East", "LH26 Monaghan (Monaghan East and Monaghan West together)", W.REGION],
-                 ["LH27 Monaghan West", "Merged into LH26 Monaghan", W.REGION],
-                 ["LH31 Laois (Portlaoise town and hinterland)", "New area LH27 Portlaoise", "Midlands"],
-                 ["LH31 Laois (the rest)", "LH31 Laois", "Midlands"],
-                 ["LH11 Longford/Westmeath", "LH11 Longford and Westmeath (name only)", "Midlands"],
-                 ["LH09 Kildare North and LH10 Kildare South", "Three electoral divisions move from LH10 to LH09 (annex)",
-                  "Midlands"]], [56, 74, 36], st),
-         Paragraph("3 Annex: electoral divisions moving between areas", st["h2"]),
-         _table([["Electoral division", "From", "To"],
-                 ["Maynooth (part)", "LH10", "LH09"], ["Kilcock", "LH10", "LH09"], ["Donadea", "LH10", "LH09"],
-                 ["Portlaoise Urban", "LH31", "LH27"], ["Portlaoise Rural", "LH31", "LH27"], ["Maryborough", "LH31", "LH27"],
-                 ["Clones Urban", "LH27", "LH26"], ["Clones Rural", "LH27", "LH26"], ["Carrickmacross Urban", "LH27", "LH26"],
-                 ["Carrickmacross Rural", "LH27", "LH26"], ["Castleblayney Rural", "LH27", "LH26"]], [70, 30, 30], st),
-         Spacer(1, 6),
-         Paragraph("Queries to the planning unit's geography team.", st["small"])]
-    d.build(s, onFirstPage=page, onLaterPages=page)
-
-
-def guidelines(path):
-    st = _styles(SERIF, SERIF_B, 10.2, colors.HexColor("#5a2a5f"))
-    d, page = _doc(path, "Immunisation guidelines chapter 12: measles, mumps and rubella (excerpt)",
-                   "National immunisation programme", "Guidelines", "National immunisation guidelines | Chapter 12 "
-                   "Measles, mumps and rubella | revised November 2025")
-    P = lambda t: Paragraph(t, st["num"])
-    s = [Paragraph("NATIONAL IMMUNISATION GUIDELINES", st["small"]),
-         Paragraph("Chapter 12. Measles, mumps and rubella (MMR): sections 12.4 to 12.6", st["h1"]),
-         Paragraph("Revised November 2025. Sections 12.1 to 12.3 (the diseases) and 12.7 to 12.9 (adverse events, "
-                   "contraindications, outbreak control) are not reproduced.", st["small"]),
-         Paragraph("12.4 Schedule", st["h2"]),
-         P("12.4.1&nbsp;&nbsp;Two doses of MMR vaccine are given: the first at 12 months of age by the child's GP, the "
-           "second at 4 to 5 years (junior infants) by the school immunisation team."),
-         P("12.4.2&nbsp;&nbsp;MMR was introduced in 1988 at 15 months. A second dose was added in 1992 at 10 to 14 "
-           "years and moved to 4 to 5 years from 1999. The first dose moved to 12 months for children born from 2008."),
-         Paragraph("12.5 Valid doses", st["h2"]),
-         P("12.5.1&nbsp;&nbsp;A dose given before the first birthday does not count towards the two doses. A child "
-           "vaccinated before 12 months, for example during an outbreak, needs two further doses from 12 months of age."),
-         P("12.5.2&nbsp;&nbsp;The minimum interval between two doses of MMR is four weeks (28 days). A dose given "
-           "sooner after the previous dose does not count and should be repeated."),
-         P("12.5.3&nbsp;&nbsp;Doses given abroad count when they are documented with the date given."),
-         Paragraph("12.6 Catch-up", st["h2"]),
-         P("12.6.1&nbsp;&nbsp;Children and adults born in or after 1978 who do not have two documented valid doses "
-           "should be offered MMR, whatever their age, to complete two doses."),
-         P("12.6.2&nbsp;&nbsp;People born before 1978 are likely to have had measles and are presumed immune unless "
-           "they work in healthcare or have no history of the disease."),
-         P("12.6.3&nbsp;&nbsp;There is no harm in giving MMR to a person who is already immune. Serology before "
-           "vaccination is not needed."),
-         P("12.6.4&nbsp;&nbsp;MMR may be given at the same visit as other vaccines. Live vaccines not given on the same "
-           "day are separated by four weeks."),
-         Paragraph("12.6 Table. Doses needed by documented history", st["h2"]),
-         _table([["Documented valid doses", "Born 1978 or later", "Born before 1978"],
-                 ["None", "Two doses, four weeks apart", "None needed (healthcare workers: two doses)"],
-                 ["One", "One dose", "None needed (healthcare workers: one dose)"],
-                 ["Two", "None", "None"]], [52, 56, 62], st)]
-    d.build(s, onFirstPage=page, onLaterPages=page)
-
-
-def uptake(path):
-    st = _styles(SANS, SANS_B, 9.6, colors.HexColor("#5a2a5f"))
-    d, page = _doc(path, "MMR uptake at 24 months and 5 years, quarter 1 2027", "National immunisation programme",
-                   "Quarterly uptake report", "National immunisation programme | MMR uptake, quarter 1 2027")
-    P = lambda t: Paragraph(t, st["body"])
-    rows = [["Health region", "MMR1 at 24 months (born Jan to Mar 2025)", "MMR2 at 5 years (born Jan to Mar 2022)",
-             "MMR1 at 24 months, quarter 4 2026"],
-            ["Dublin and North Coast", "88.6%", "84.2%", "88.9%"],
-            ["Dublin and Mid-Leinster", "89.9%", "85.8%", "90.4%"],
-            ["Midlands", "90.8%", "87.1%", "91.0%"],
-            [W.REGION, "90.3%", "86.4%", "89.7%"],
-            ["South East", "91.6%", "88.0%", "91.2%"],
-            ["South West", "90.9%", "86.9%", "91.4%"],
-            ["Mid-West", "90.2%", "86.3%", "90.6%"],
-            ["West", "91.4%", "88.4%", "91.1%"],
-            ["North West", "92.0%", "88.9%", "92.3%"],
-            ["Ireland", "90.1%", "86.3%", "90.4%"]]
-    s = [Paragraph("NATIONAL IMMUNISATION PROGRAMME", st["small"]),
-         Paragraph("MMR uptake at 24 months and at 5 years, quarter 1 2027", st["h1"]),
-         Paragraph("Published 20 June 2027. Provisional; figures for earlier quarters are revised as late returns arrive.",
-                   st["small"]),
-         Paragraph("Uptake by health region", st["h2"]),
-         _table(rows, [44, 42, 42, 38], st, zebra=True),
-         Spacer(1, 4),
-         Paragraph("Uptake is the share of children in the cohort, resident in the health region on the last day of the "
-                   "quarter, with the dose recorded by the age shown. The target for both doses is 95 per cent.",
-                   st["small"]),
-         Paragraph("Commentary", st["h2"]),
-         P("First-dose uptake at 24 months fell for a third quarter in a row in five of the nine health regions and is "
-           "4.9 points below target nationally. Second-dose uptake at 5 years is unchanged on the quarter. Regions with "
-           "uptake under 90 per cent at 24 months should review GP reminder and recall arrangements."),
-         P("From quarter 3 2027 the report will add uptake at 12 months for the first dose, to show delays in the "
-           "routine schedule earlier.")]
-    d.build(s, onFirstPage=page, onLaterPages=page)
+# ------------------------------------------------------------------------------------------------ distractor
+def condition(path, rows):
+    st = _styles(SANS, SANS_B, 9.4, colors.HexColor("#3b5323"))
+    d, page = _doc(path, "Trunk mains condition assessment 2024", W.PEOPLE["asset"], "Asset condition",
+                   "%s | Asset Management | Trunk mains condition assessment 2024" % W.COMPANY)
+    f = []
+    f.append(Paragraph(W.COMPANY.upper() + "  |  ASSET MANAGEMENT", st["small"]))
+    f.append(Paragraph("Trunk mains condition assessment 2024", st["h1"]))
+    f.append(Paragraph("%s, %s. 23 September 2024." % (W.PEOPLE["asset"], W.TITLES["asset"]), st["small"]))
+    f.append(Paragraph("1  Basis", st["h2"]))
+    f.append(Paragraph("Each trunk main in the Stavenham register was graded on its structural condition from pipe "
+                       "samples taken at planned excavations between 2021 and 2024, acoustic wall-thickness surveys "
+                       "in 2023 and the joint leakage tests of 2024. Grade 1 is as new and grade 5 is at the end of its "
+                       "life. Residual wall is the median remaining wall thickness against the original.", st["body"]))
+    f.append(Paragraph("2  Findings", st["h2"]))
+    hdr = [["Main", "Name", "DN", "Material", "Laid", "Grade", "Residual wall %", "Joints", "Residual life (yrs)",
+            "Recommendation"]]
+    f.append(_table(hdr + [list(r) for r in rows], [13, 34, 9, 15, 10, 10, 14, 20, 14, 31], st, zebra=True))
+    f.append(Paragraph("3  Recommendations", st["h2"]))
+    f.append(Paragraph("The Ferrars Lane main (TM107) and the Brook Street main (TM105) are at grade 4 and are "
+                       "recommended for close-fit relining, TM105 first. The Mill Road main (TM108) follows in a third "
+                       "phase. No other main needs structural intervention within the current asset plan period; the "
+                       "interconnectors' valves should be exercised to the programme.", st["body"]))
+    d.build(f, onFirstPage=page, onLaterPages=page)

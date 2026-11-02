@@ -1,109 +1,105 @@
-"""Render submission.md from generator/figures.json: the prose is fixed here, every figure comes from the file the
-generator wrote, so no figure in the write-up is typed."""
+"""Write submission.md from figures.json: every figure in it is one the generator emitted."""
 import json
 import os
-import sys
+
+import world as W
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-KEYS = ["A", "B", "C", "D", "E"]
 
 
-def render(f):
-    R = f["reproduction_number"]
-    y = f["option_birth_years"]
+def main():
+    f = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    m = f["mains"]
+    pk = lambda k: m[k]["highest_hourly_flow_during_works_l_s"]
+    rf = lambda k: m[k]["highest_hourly_flow_carried_nov2025_oct2026_l_s"]
+    keep = ["TM104", "TM109", "TM110", "IC03"]
+    aw = f["flushing_water_m3_per_100m"]
+    bw = f["nonhousehold_water_ml"]
+    mv = f["moved_supply_points"]
     L = []
-    w = L.append
-    w("## Tags")
-    w("")
-    w("**Domain:** Epidemiology & Public Health (infectious-disease transmission modeling).")
-    w("**Analytical objective:** Forecasting & Predictive Modeling.")
-    w("")
-    w("## 1. Final Recommendation")
-    w("")
-    w("**We should fund option B, the MMR catch-up for those born %s: it is the only option that brings measles' "
-      "reproduction number in the region below one for winter 2027-28 (%s, against %s with no catch-up).** Not no "
-      "catch-up: the region is %s per cent immune (%s as R0 times the susceptible share) and every diary in the contact "
-      "survey together gives %s, but two thirds of those diaries were kept in the school summer holidays, when the %s-year-"
-      "olds, %s per cent susceptible, have under a fifth of their contacts with each other against more than half in "
-      "term, and the winter runs in term. Not D or E, the least immune cohort and the most people made immune, which "
-      "leave it at %s. Not A or C, which leave it at %s."
-      % (y["B"], R["Option B"], R["No catch-up"], f["region_immune_per_cent"], f["default_R0_times_susceptible_share"],
-         f["default_every_diary_reproduction_number"], f["age_group_teenagers"], f["susceptible_share_15_19_per_cent"],
-         R["Option D"], R["Option A"]))
-    w("")
-    w("## 2. Critical Components")
-    w("")
-    w("1. Reproduction number with no catch-up, winter 2027-28, from the survey's term-time diaries scaled to R0 %s: "
-      "**%s**" % (f["R0"], R["No catch-up"]))
-    w("2. Reproduction number under option B: **%s**" % R["Option B"])
-    w("3. Reproduction number under options A, C, D and E: **%s** each" % R["Option A"])
-    w("4. Susceptible share of %s-year-olds on 1 January 2028: **%s per cent**, against **%s per cent** across the "
-      "region" % (f["age_group_teenagers"], f["susceptible_share_15_19_per_cent"], f["susceptible_share_region_per_cent"]))
-    w("")
-    w("## 3. Step-by-Step Solution")
-    w("")
-    w("1. Joined measles_immunity_profile_oriel_2027-05.csv to population_projection_oriel_2028-01-01.csv by year of "
-      "birth (PS-07 3.3 and 3.4): each age band's susceptible share on 1 January 2028, %s per cent for %s and %s per "
-      "cent overall." % (f["susceptible_share_15_19_per_cent"], f["age_group_teenagers"],
-                         f["susceptible_share_region_per_cent"]))
-    w("2. Built the contact matrix (mean contacts per day by participant and contact age band) from the diaries in "
-      "nscs_2023_participants.csv and nscs_2023_contacts.csv kept in school term, 2 to 26 May 2023, since the 3 July to "
-      "18 August 2023 diaries fell in the school summer holidays and PS-07 3.1 needs the figure below one throughout a "
-      "winter that runs in term.")
-    w("3. Multiplied it by each band's susceptible share and scaled it so that a wholly susceptible region gives the R0 "
-      "of %s (PS-07 3.2): its dominant eigenvalue is %s with no catch-up, so a catch-up is needed (PS-07 3.6)."
-      % (f["R0"], R["No catch-up"]))
-    w("4. Took each option's expected people made immune in mmr_catch_up_options_autumn_2027.pdf off the susceptibles "
-      "of its birth years (PS-07 3.5) and recomputed: option B %s; options A, C, D and E %s." % (R["Option B"], R["Option A"]))
-    w("5. Counted each option's residents in register_people_active_born_1993-2017.csv by the year each was born, "
-      "reading each lho_code in the scheme in force on its lho_recorded date (circular 03/2024: LH27 recorded before 1 "
-      "July 2024 is Monaghan West, in the region) and reading a date_of_birth ten years on where the child was "
-      "registered 6 to 45 days after the date ten years on and had its first GP dose 12 to 17 months after it (a birth "
-      "registration and the schedule's first dose, the decade keyed one early).")
-    w("6. Counted each person's valid doses in register_mmr_events_born_1993-2017.csv, re-pointed through "
-      "register_merges_born_1993-2017.csv and without the GP lines gp_return_queries_mmr_2005-2027.csv shows replaced "
-      "or withdrawn, giving the second of two GP lines one registration holds from one day to its twin (the other "
-      "registration with its date of birth, sex, practice, registration date and address, which holds no GP line), "
-      "under guidelines 12.5, given by 30 June 2027.")
-    w("7. Recommended option B, the only option below one (PS-07 3.6).")
-    w("")
-    w("## 4. Deliverable Answers")
-    w("")
-    w("### winter_measles_2027.xlsx")
-    w("")
-    w("1. Call: fund option B, the MMR catch-up for those born %s." % y["B"])
-    w("2. Reproduction number for winter 2027-28, to one decimal place:")
-    for k in ["No catch-up"] + ["Option %s" % x for x in KEYS]:
-        w("   - %s: %s" % (k, R[k]))
-    w("3. People born in each option's years whom the register holds as living in the region at 30 June 2027:")
-    for k in KEYS:
-        w("   - Option %s (born %s): %s" % (k, y[k], f["ask1_register_residents"][k]))
-    w("4. Of those, people with no valid MMR dose by that date and with exactly one:")
-    for k in KEYS:
-        w("   - Option %s: %s with no valid dose, %s with exactly one" % (k, f["ask2_no_valid_dose"][k],
-                                                                       f["ask2_one_valid_dose"][k]))
-    w("")
-    w("### measles_readiness_2027.pptx")
-    w("")
-    w("1. Slide 1 opens with the call: fund option B, the catch-up for those born %s, the only option that brings the "
-      "winter's reproduction number below one (%s)." % (y["B"], R["Option B"]))
-    w("2. Slide 2: bar chart of the six reproduction numbers (no catch-up %s, A %s, B %s, C %s, D %s, E %s) against a "
-      "dashed line at one, option B's bar the only one under it." % tuple(R[k] for k in
-                                                                        ["No catch-up"] + ["Option %s" % x for x in KEYS]))
-    return "\n".join(L) + "\n"
-
-
-def main(figs_path=None, out=None):
-    figs_path = figs_path or os.path.join(HERE, "figures.json")
-    out = out or os.path.join(TASK, "submission.md")
-    f = json.load(open(figs_path, encoding="utf-8"))
-    text = render(f)
-    assert "\u2014" not in text and "\u2013" not in text
-    with open(out, "w", encoding="utf-8") as fh:
-        fh.write(text)
-    return out
+    L.append("## Tags")
+    L.append("")
+    L.append("**Domain:** Energy Systems & Utilities (asset condition and maintenance: water distribution trunk mains).")
+    L.append("**Analytical objective:** Forecasting & Predictive Modeling.")
+    L.append("")
+    L.append("## 1. Final Recommendation")
+    L.append("")
+    L.append("**%s**" % f["call"])
+    L.append("TM112 will carry %d l/s during the works against at most %d l/s in November 2025 to October 2026, and IC05 "
+             "%d l/s against none. Not TM104, TM109, TM110 or IC03: the relining loads them to %d, %d, %d and %d l/s, "
+             "below the %d, %d, %d and %d l/s they carried in the June and July 2026 Mill Road jobs. Not all six mains "
+             "the relining loads, which is what flows read through the register's normal valve positions give."
+             % (pk("TM112"), rf("TM112"), pk("IC05"), pk("TM104"), pk("TM109"), pk("TM110"), pk("IC03"), rf("TM104"),
+                rf("TM109"), rf("TM110"), rf("IC03")))
+    L.append("")
+    L.append("## 2. Critical Components")
+    L.append("")
+    L.append("1. The relining arrangement sends more water through six trunk mains in every hour: TM104, TM109, TM110, "
+             "TM112, IC03 and IC05.")
+    L.append("2. Highest hourly flow during the works: TM104 **%d**, TM109 **%d**, TM110 **%d**, TM112 **%d**, IC03 **%d** "
+             "and IC05 **%d** l/s." % (pk("TM104"), pk("TM109"), pk("TM110"), pk("TM112"), pk("IC03"), pk("IC05")))
+    L.append("3. Highest hourly flow carried in November 2025 to October 2026, through the valve positions in force each "
+             "hour: TM104 **%d**, TM109 **%d**, TM110 **%d**, TM112 **%d**, IC03 **%d** and IC05 **%d** l/s."
+             % (rf("TM104"), rf("TM109"), rf("TM110"), rf("TM112"), rf("IC03"), rf("IC05")))
+    L.append("")
+    L.append("## 3. Step-by-Step Solution")
+    L.append("")
+    L.append("1. Read nos12_planned_supply_route_changes_issue3.pdf (section 4) and tm107_ferrars_lane_relining_outage_plan_"
+             "v1.pdf: the reference is November 2025 to October 2026, works flows are judged on the districts' inflows for "
+             "15 March to 15 September 2026, and the plan opens the IC05 and IC03 boundary valves and shuts TM115 and "
+             "TM107.")
+    L.append("2. Built the network from trunk_mains_register_2026-11.xlsx (mains by junction, valves by main, districts by "
+             "inlet junction) and read dma_inlet_flows_2025-11_2026-10.csv on UTC hours, re-sent rows dropped and "
+             "blank hours left out.")
+    L.append("3. Routed the 15 March to 15 September 2026 inflows through the plan's valve positions: six mains carry more "
+             "than in normal running in every hour, peaking at %d (TM104), %d (TM109), %d (TM110), %d (TM112), %d (IC03) "
+             "and %d (IC05) l/s." % (pk("TM104"), pk("TM109"), pk("TM110"), pk("TM112"), pk("IC03"), pk("IC05")))
+    L.append("4. Applied every OPEN and CLOSE on a register valve in control_room_valve_log_2025-11_2026-10.csv (local "
+             "time to UTC) to get the positions in force each hour, among them TM105 out from 13 April to 19 June with "
+             "Brook End fed through IC02, TM108 out from 24 to 27 June with Mill Bridge and Sallowby fed through IC03 and "
+             "TM115, and TM108 out from 20 to 22 July with Mill Bridge fed through IC08.")
+    L.append("5. Routed every hour's inflows through that hour's positions: the highest hourly flow carried was %d "
+             "(TM104), %d (TM109), %d (TM110), %d (TM112), %d (IC03) and %d (IC05) l/s."
+             % (rf("TM104"), rf("TM109"), rf("TM110"), rf("TM112"), rf("IC03"), rf("IC05")))
+    L.append("6. Flushing water: from mains_flushing_job_sheets_2025-26.csv, dropped re-sent rows, differenced crew C14's "
+             "volume_m3 within each night from 1 December 2025 (a running meter reading, each later figure well above "
+             "that row's gauge flow times its minutes), added the two hydrants of a twin-hydrant flush and counted its "
+             "section length once, then divided water by length by diameter and year of night_of.")
+    L.append("7. Non-household water: summed nonhousehold_monthly_consumption_2025-04_2026-10.csv for 2025-11 to "
+             "2026-10 by SPID; the logged supply points %s use more in some hours than their recorded DMA's whole inflow "
+             "(amr_large_users_hourly_2025-11_2026-10.csv against the inlet meters) and were placed in the neighbouring "
+             "DMA whose inflow carries their load steps (%s)." % (
+                 ", ".join(x["logger"] for x in mv),
+                 "; ".join("%s from %s to %s" % (x["logger"], x["recorded"], x["supplied"]) for x in mv)))
+    L.append("8. Compared each main's works peak with its highest hourly flow carried (NOS 12 section 4): only TM112 and IC05 "
+             "pass it, so those two are flushed and the other four are not.")
+    L.append("")
+    L.append("## 4. Deliverable Answers")
+    L.append("")
+    L.append("### ferrars_lane_flushing_2027.xlsx")
+    L.append("")
+    L.append("1. %s" % f["call"])
+    L.append("2. Trunk mains the relining arrangement sends more water through, highest hourly flow during the works "
+             "(l/s) and whether to flush:")
+    for k in sorted(m):
+        L.append("   - %s %s: %d l/s, %s" % (k, m[k]["name"], pk(k), "flush" if m[k]["flush"] == "Yes" else "no flush"))
+    L.append("3. Water used per 100 m of main flushed, 2025-26 flushing programme (m3 per 100 m):")
+    for dn in W.DIAMETERS:
+        L.append("   - %d mm: %s in 2025, %s in 2026" % (dn, aw["%d mm 2025" % dn], aw["%d mm 2026" % dn]))
+    L.append("4. Water used from November 2025 to October 2026 by the non-household customers each re-routed district "
+             "supplies (Ml):")
+    for k, v in bw.items():
+        L.append("   - %s: %s" % (k, v))
+    L.append("")
+    L.append("### ferrars_lane_flushing_note.pdf")
+    L.append("")
+    L.append("1. One page that leads with the call and charts each of the six mains' highest hourly flow during the "
+             "works as a bar (TM112 and IC05 in orange, the others in blue), each with a marker at the highest hourly flow it carried in "
+             "November 2025 to October 2026.")
+    with open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8") as fh:
+        fh.write("\n".join(L) + "\n")
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    main()

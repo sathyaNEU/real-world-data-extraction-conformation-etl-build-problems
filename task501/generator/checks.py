@@ -1,836 +1,490 @@
-"""The generator's assertions on the shipped pack and goldens: the input gates, the three-rules block (R1 to R3c), the
-main call's golden and every semantic fork row (SF1 to SF31), the rungs below it and every rival route the round 1
-audit measured, the bins, the ask's golden with both its devices' forcing, every rival reading and every stop of its
-ladder, the separation of the call's files from the ask's devices, the distractors' deletion test, the realism sweep
-and the container scrub. Every check prints one line; any failure raises."""
-import csv
+"""task501 checks: the input gates, the three rules on the clean truth (R1 to R3c), the ladder, every semantic fork
+row (SF1 to SF19), the lesson 7 and lesson 12 assertions, both ask layers' devices with their cracker, over-cleaner and
+full includer, the realism sweep, the documents' pins and positive controls, and the distractor deletion test. Every
+figure is read back from the shipped files through bundle.py and solve.py; the truth is used only where a rule asks
+for the clean truth."""
 import datetime as dt
+import json
 import os
 import re
 import shutil
 import tempfile
-import zipfile
 
 import numpy as np
 import pandas as pd
 
-import asks as A
 import bundle as B
-import callmodel as CM
-import golden as G
+import net as N
 import pack as PK
-import sim as S
-import verify as V
+import solve as S
 import world as W
 
-N_OK = [0]
 
-# A file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3, house fix H9): the
-# names leak.py's first sweep refuses, plus a transmittal or file list, which is a manifest by another name.
-DESCRIBE_NAME = re.compile(
-    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
-    r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|"
-    r"column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|"
-    r"data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes|transmittal\w*)(?![a-z])", re.I)
-DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
-                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?|participants file|"
-                            r"contacts file|files?)$", re.I)
+class Gate:
+    def __init__(self):
+        self.rows = []
 
+    def ok(self, label, cond, detail=""):
+        self.rows.append((label, bool(cond), detail))
+        print("%s  %-62s %s" % ("PASS" if cond else "FAIL", label, detail))
 
-def shipped_columns(target, files):
-    """Each data file's header as the verifier reads it (csv), or a workbook's first row on every sheet."""
-    import openpyxl
-    out = {}
-    for fn in files:
-        if fn.endswith(".csv"):
-            with open(os.path.join(target, fn), encoding="utf-8", newline="") as f:
-                out[fn] = list(next(csv.reader(f)))
-        elif fn.endswith(".xlsx"):
-            wb = openpyxl.load_workbook(os.path.join(target, fn), read_only=True)
-            out[fn] = [str(c) for ws in wb.worksheets for c in next(ws.iter_rows(max_row=1, values_only=True)) if c]
-    return out
+    def finish(self):
+        bad = [r for r in self.rows if not r[1]]
+        print("CHECKS   %d assertions, %d failed" % (len(self.rows), len(bad)))
+        if bad:
+            raise SystemExit("checks failed: " + ", ".join(r[0] for r in bad))
 
 
-def identifier_columns(target, files):
-    """The data files' column names written as identifiers (snake_case, a digit or interior capitals), what a
-    dictionary lists; a plain word heading a column is what any document says."""
-    return {c for cs in shipped_columns(target, files).values() for c in cs
-            if len(c) >= 4 and ("_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c))}
+def _edge0(x):
+    """Distance of x from the nearest whole-number rounding edge (x.5)."""
+    return abs((x % 1.0) - 0.5)
 
 
-def columns_named(text, ident):
-    return {c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+def _edge1(x):
+    return abs(((x * 10) % 1.0) - 0.5) / 10.0
 
 
-def files_named(text, files, own=None):
-    return [o for o in files if o != own and o in text]
+def _truth_ref(tr, keys):
+    tl = N.timeline(keys)
+    op, _ = N.operated_flows(tr["dem"], tl, tr["dark"])
+    return {m: float(op[m].max()) for m in W.MAINS}
 
 
-def describing_files(target, files):
-    """The shipped files that describe the data, by name, by sheet name or by content: a document naming four or more
-    of the data files' columns written as identifiers, or any file naming three or more of the other shipped files."""
-    import openpyxl
-    hits = [("name", fn) for fn in files if DESCRIBE_NAME.search(os.path.splitext(fn)[0])]
-    for fn in files:
-        if fn.endswith(".xlsx"):
-            for sh in openpyxl.load_workbook(os.path.join(target, fn), read_only=True).sheetnames:
-                if DESCRIBE_SHEET.match(sh.strip()):
-                    hits.append(("sheet %s" % sh, fn))
-    ident = identifier_columns(target, files)
-    texts = {fn: V.pdf_text(target, fn) for fn in files if fn.endswith(".pdf")}
-    for fn in files:
-        if fn.endswith(".csv"):
-            texts[fn] = open(os.path.join(target, fn), encoding="utf-8").read()
-    for fn, t in texts.items():
-        if fn.endswith(".pdf"):
-            named = columns_named(t, ident)
-            if len(named) >= 4:
-                hits.append(("columns %s" % sorted(named)[:6], fn))
-        others = files_named(t, files, fn)
-        if len(others) >= 3:
-            hits.append(("lists %d other files" % len(others), fn))
-    return hits, texts, ident
+def _truth_set(tr, ref):
+    pk = {m: float(tr["plan"][m].max()) for m in W.MAINS}
+    return sorted(W.MAIN_ID[m] for m in W.CANDIDATES if pk[m] > ref[m])
 
 
-def ok(cond, msg):
-    if not cond:
-        raise AssertionError("CHECK FAILED: " + msg)
-    N_OK[0] += 1
-    print("  ok  %s" % msg)
-
-
-def same_bins(a, b):
-    return all(CM.round1(a[k]) == CM.round1(b[k]) for k in a)
-
-
-def call_of(R):
-    """The standard's choice (3.6) on a set of reproduction numbers."""
-    if R["none"] < 1:
-        return "none"
-    below = [k for k in W.OPTION_KEYS if R[k] < 1]
-    if below:
-        return min(below, key=lambda k: W.OPTIONS[k]["cost"])
-    return min(W.OPTION_KEYS, key=lambda k: R[k])
-
-
-def pdf_text(p):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in PdfReader(p).pages))
-
-
-def fmt(R):
-    return " ".join("%s %.3f" % (k, v) for k, v in R.items())
-
-
-def run(target, golden_dir, w, c):
-    print("CHECKS task501")
+def run(target, gold, tr, info, res, figs):
+    g = Gate()
     files = sorted(os.listdir(target))
-    # ---------------------------------------------------------------- input gates
-    ok(len(files) >= 10, "input gate: %d files" % len(files))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    ok(len(fmts) >= 3, "input gate: %d formats %s" % (len(fmts), sorted(fmts)))
-    counts = {}
-    for key in ("events", "contacts"):
-        with open(os.path.join(target, PK.FILES[key]), encoding="utf-8") as f:
-            counts[key] = sum(1 for _ in f) - 1
-    ok(counts["events"] >= 25000 and counts["contacts"] >= 25000,
-       "input gate: the events extract has %d rows and the survey's contacts file %d" % (counts["events"], counts["contacts"]))
-    ok(set(files) == set(PK.FILES.values()), "the pack is exactly the declared file list")
-    # H9 (dataset-generation section 3): no shipped file describes the data. Positive controls first, through the same
-    # patterns and the same extractor: the patterns refuse the describing files this pack used to ship, and the
-    # verifier's PDF and csv reads find text known to be there, so an empty search cannot pass for a clean one.
-    for old in ("nds_case_export_fields", "nscs_2023_public_file_codebook", "register_extract_notes_2027-07",
-                "transmittal_list_2027-07-12"):
-        ok(bool(DESCRIBE_NAME.search(old)), "H9 control: the name pattern refuses %s" % old)
-    ok(bool(DESCRIBE_SHEET.match("About")) and bool(DESCRIBE_SHEET.match("Contacts file"))
-       and not DESCRIBE_SHEET.match("Population"), "H9 control: the sheet pattern refuses About and Contacts file")
-    hits, h9_texts, h9_ident = describing_files(target, files)
-    ok(all(len(h9_texts[fn]) > 200 for fn in files if fn.endswith(".pdf"))
-       and "the average number of people one case infects" in h9_texts[PK.FILES["standard"]]
-       and "made immune" in h9_texts[PK.FILES["options"]],
-       "H9 control: the verifier's extractor reads every shipped PDF's text (the standard's 3.1 found)")
-    probe = "%s %s %s" % (PK.FILES["people"], PK.FILES["events"], PK.FILES["merges"])
-    ok(len(files_named(probe, files)) == 3, "H9 control: the file-list search finds three file names in a list")
-    old_notes = "person_number, date_of_birth, sex, lho_code, lho_recorded, postcode and date_given"
-    ok(columns_named(old_notes, h9_ident) == {"person_number", "date_of_birth", "lho_code", "lho_recorded", "date_given"},
-       "H9 control: the column search finds the five identifier columns in a line of the extract notes once shipped "
-       "(sex and postcode are plain words it leaves alone)")
-    ok(not hits, "H9: no shipped file describes the data, by name, sheet or content (no dictionary, field notes, "
-       "extract notes, codebook, manifest or transmittal list): %s" % (hits or "none of %d" % len(files)))
-    ok(len(PK.DISTRACTORS) >= 2, "two distractors declared")
+    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json"), encoding="utf-8"))
 
-    inp = c["inp"]
-    R = c["R"]
-    parts, contacts = inp.survey
-    pool = inp.with_matrix(inp.matrix(None))
-    R_all = CM.golden(pool)
-    Ps = inp.matrix(CM.summer_diary)
-    R_sum = CM.golden(inp.with_matrix(Ps))
-    # ---------------------------------------------------------------- the three rules, executed (dataset-generation 7.1)
-    std_text = pdf_text(os.path.join(target, PK.FILES["standard"]))
-    opt_text = pdf_text(os.path.join(target, PK.FILES["options"]))
-    ok(len(parts) == 7560 and len(contacts) == counts["contacts"],
-       "R1: the survey's microdata ship (%d diaries, %d contacts), the raw material the next-generation matrix is "
-       "built from" % (len(parts), len(contacts)))
-    ok(np.allclose(inp.P, CM.survey_matrix(parts, contacts, CM.term_diary).T),
-       "R1: the golden's matrix is computed from the contacts file's rows, not read from a table")
-    texts_call = std_text + opt_text
-    ok(not re.search(r"reproduction number (?:is|of) \d", texts_call) and "matrix" not in texts_call.lower(),
-       "R1: no shipped document states a reproduction number or a contact matrix")
-    ok(call_of(R_all) == "none" and R_all["none"] < 0.93,
-       "R3a analyst test: the next-generation matrix on every diary, every filed rule applied, files no catch-up "
-       "(%.3f)" % R_all["none"])
-    r_avg = {k: CM.R_average(inp, None if k == "none" else k) for k in R}
-    ok(call_of(r_avg) == "none", "R3a: R0 x the susceptible share files no catch-up (%.3f)" % r_avg["none"])
-    ok(call_of(R) == "B", "R3b: the same route with only the diaries changed to those kept in term files option B")
-    lower = {"every diary": R_all, "summer diaries": R_sum,
-             "every diary, reciprocal on the national population": CM.scenarios(
-                 inp, P=CM.matrix_variants(inp, inp.matrix(None))["reciprocal national"]),
-             "every diary, density-adjusted to the region": CM.scenarios(
-                 inp, P=CM.matrix_variants(inp, inp.matrix(None))["density region"]),
-             "every diary, transposed": CM.scenarios(inp, P=inp.matrix(None).T),
-             "every diary, unknown ages spread": CM.scenarios(inp, P=inp.matrix(None, "spread")),
-             "the two periods averaged": CM.scenarios(inp, P=0.5 * inp.P + 0.5 * Ps)}
-    for name, res in lower.items():
-        ok(call_of(res) == "none", "R3b: %s files no catch-up (%.3f without one)" % (name, res["none"]))
-    ok(not os.path.exists(os.path.join(target, "memo")) and not any("draft" in f.lower() for f in files),
-       "R3c: no memo, draft or voice ships; no stakeholder figure argues an option or a method")
-    # mess items on the call's path, each mishandled, leave the call and the critical components (R2)
-    share_all = inp.groups(inp.sus_age()) / inp.N()
-    ok(abs(share_all[3] - c["share_1519"]) < 1e-12, "R2: the 15 to 19 susceptible share does not depend on the survey")
-    # ---------------------------------------------------------------- the main call
-    ok(R["none"] > 1.0, "golden: the reproduction number with no catch-up is %.4f, above one" % R["none"])
-    ok([k for k in W.OPTION_KEYS if R[k] < 1.0] == ["B"], "golden: B is the only option below one (%.4f)" % R["B"])
-    for k in ["none"] + W.OPTION_KEYS:
-        ok(CM.edge_distance(R[k]) >= 0.03, "SF15 bin: %s %.4f is %.3f from a rounding edge" % (k, R[k], CM.edge_distance(R[k])))
-    ok(min(abs(R[k] - 1.0) for k in R) >= 0.09, "SF11: no scenario within 0.09 of one (nearest %.3f)" %
-       min(abs(R[k] - 1.0) for k in R))
-    ok(c["r1"]["none"] == 1.3 and c["r1"]["B"] == 0.9 and all(c["r1"][k] == 1.3 for k in "ACDE"),
-       "graded figures: 1.3, 1.3, 0.9, 1.3, 1.3, 1.3")
-    # SF1: R0 at full susceptibility, and the mean-contacts scaling it refuses
-    q = W.R0 / CM.spectral_radius(inp.P)
-    ok(abs(CM.spectral_radius(q * inp.P.T) - 15.0) < 1e-9, "SF1: the golden scaling gives 15 at full susceptibility")
-    cbar = (inp.P.sum(axis=1) * inp.N()).sum() / inp.N().sum()
-    r_full_cbar = CM.spectral_radius((W.R0 / cbar) * inp.P.T)
-    ok(r_full_cbar > 16.5, "SF1: scaled by mean contacts, a wholly susceptible region gives %.1f, not 15" % r_full_cbar)
-    cb = CM.scenarios(inp, norm="cbar")
-    ok(call_of(cb) == "B" and not same_bins(cb, R), "SF1: under that scaling the call is B with other figures (%s), "
-       "refused by standard 3.2" % fmt(cb))
-    ok("if nobody in it were immune" in std_text, "SF1: standard 3.2 defines R0 at full susceptibility")
-    # SF22: R0 fixed on every diary's contacts and carried to term contacts (per-contact rate from the survey as a whole)
-    ratio = CM.spectral_radius(inp.P) / CM.spectral_radius(inp.matrix(None))
-    qp = {k: v * ratio for k, v in R.items()}
-    ok(15 * ratio > 16.5 and call_of(qp) == "B", "SF22: R0 set on every diary implies %.1f over the winter, against "
-       "standard 3.2's 15 over the winter; the call would stay B (%s)" % (15 * ratio, fmt(qp)))
-    ok("over the winter if nobody in it were immune" in std_text, "SF22: standard 3.2 sets R0 over the winter")
-    # SF2: the winter's term weeks against an average with its holiday weeks
-    wint = CM.scenarios(inp, P=(10 / 13) * inp.P + (3 / 13) * Ps)
-    ok(call_of(wint) == "B" and wint["none"] < R["none"], "SF2: an average over ten term and three holiday weeks keeps "
-       "the call (%.3f without one), refused by standard 3.1 (below one throughout)" % wint["none"])
-    ok("stays below one throughout" in std_text and "December to February" in std_text,
-       "SF2: standard 3.1 needs the figure below one throughout the winter, December to February")
-    ok("1 January of the winter's second year" in std_text, "SF2: standard 3.3 assessment date for population and immunity")
-    # SF20: term weekdays only
-    wk = [(p, b, d) for p, b, d in parts if CM.term_diary(d) and dt.date.fromisoformat(d).weekday() < 5]
-    ids = {p for p, b, d in wk}
-    Pw = CM.survey_matrix(wk, [x for x in contacts if x[0] in ids]).T
-    rw = CM.scenarios(inp, P=Pw)
-    ok(call_of(rw) == "B" and rw["none"] > R["none"], "SF20: term weekdays alone keep the call (%.3f), refused by "
-       "standard 3.1's reproduction number (people one case infects over its infection, weekends included)" % rw["none"])
-    ok("the average number of people one case infects" in std_text, "SF20: standard 3.1 defines the reproduction number")
-    # SF19: diary days balanced over the week in each band and period, so weighting by day of the week moves nothing
-    per = {}
-    for p, b, d in parts:
-        key = (b, CM.term_diary(d), dt.date.fromisoformat(d).weekday())
-        per[key] = per.get(key, 0) + 1
-    ok(all(v == (24 if k[1] else 48) for k, v in per.items()) and len(per) == W.NG * 2 * 7,
-       "SF19: every band carries 24 term and 48 summer diaries on each day of the week (C1: day weights neutral)")
-    # SF4: the projection's year of birth
-    with open(os.path.join(target, PK.FILES["projection"]), encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    ok(all((r["age_at_1_january_2028"].startswith("100") and r["year_of_birth"].startswith("1927")) or
-           int(r["year_of_birth"]) == 2027 - int(r["age_at_1_january_2028"]) for r in rows),
-       "SF4: every projection row carries year of birth = 2027 - age")
-    ok(len(rows) == len(W.COUNTIES) * 101 and len({(r["county"], r["age_at_1_january_2028"]) for r in rows}) == len(rows),
-       "axis 15: one projection row per county and age")
-    # SF5, SF6, SF7, SF9, SF18: the golden family
-    fam = CM.family(inp)
-    for name, res in fam.items():
-        ok(same_bins(res, R) and call_of(res) == "B", "SF5-SF9, SF18 family %s: same call and the same one-decimal "
-           "figures" % (name,))
-    worst = min(min(CM.edge_distance(res[k]) for k in res) for res in fam.values())
-    ok(worst >= 0.025, "bins: every family member at least %.3f from a rounding edge" % worst)
-    spread = max(max(abs(res[k] - R[k]) for k in R) for res in fam.values())
-    ok(spread <= 0.025, "SF6/SF7/SF18: the family's largest move is %.4f" % spread)
-    # the default's family: every treatment of every diary files no catch-up
-    dfam = CM.family(inp, None)
-    ok(all(call_of(res) == "none" for res in dfam.values()), "default family: every treatment of every diary files no "
-       "catch-up (highest %.3f)" % max(res["none"] for res in dfam.values()))
-    ok(all(CM.round1(res["none"]) == 0.9 for res in dfam.values()), "default family: every member files 0.9 without "
-       "a catch-up")
-    # SF8: the 70+ group dropped
-    d70 = CM.scenarios(inp, drop_70=True)
-    ok(max(abs(d70[k] - R[k]) for k in R) < 0.015 and same_bins(d70, R), "SF8: dropping 70+ keeps every figure in its bin")
-    # SF13: infants born 2027 wholly susceptible
-    prof2 = dict(inp.profile)
-    prof2[2027] = 0.0
-    inp2 = CM.CallInputs(prof2, inp.persons, inp.yob, inp.P, inp.natpop, inp.options)
-    r13 = CM.golden(inp2)
-    ok(call_of(r13) == "B", "SF13: infants wholly susceptible keep the call (B %.3f), refused by standard 3.4: the "
-       "profile gives the 2027 births 50.0 per cent" % r13["B"])
-    with open(os.path.join(target, PK.FILES["profile"]), encoding="utf-8") as fh:
-        p27 = [r for r in csv.DictReader(fh) if r["year_of_birth"] == "2027"]
-    ok(len(p27) == 1 and p27[0]["per_cent_immune"] == "50.0", "SF13: the profile states the 2027 births' share")
-    # SF3 corridor: the 2018-2025 births' immunity moved 1.5 points either way
-    for dlt in (-1.5, 1.5):
-        prof3 = dict(inp.profile)
-        for y in range(2018, 2026):
-            prof3[y] = prof3[y] + dlt
-        r3 = CM.golden(CM.CallInputs(prof3, inp.persons, inp.yob, inp.P, inp.natpop, inp.options))
-        ok(call_of(r3) == "B", "SF3 corridor: the young cohorts' immunity %+.1f points keeps the call" % dlt)
-    # SF10, SF12, SF14: the shipped sentences
-    ok("doses given to people already immune do not count" in opt_text, "SF10: the options paper defines people made immune")
-    ok("where more than one does, the one with the lowest cost" in std_text, "SF14: standard 3.6 tie-break")
-    ok("latest measles immunity profile" in std_text, "SF3: standard 3.4 immunity source")
-    ok("counts for the people the options paper expects it to make immune" in std_text, "SF9: standard 3.5")
-    ok("If the reproduction number without a catch-up is below one, the department runs none" in std_text, "SF12: standard 3.6")
-    ok(sum(inp.persons.values()) == sum(int(r["persons"]) for r in rows), "SF16: the region is the projection's four counties")
-    # SF21: the survey's bands are the only grain it releases
-    with open(os.path.join(target, PK.FILES["participants"]), encoding="utf-8") as f:
-        pb = {r["age_band"] for r in csv.DictReader(f)}
-    with open(os.path.join(target, PK.FILES["contacts"]), encoding="utf-8") as f:
-        cbands = {r["contact_age_band"] for r in csv.DictReader(f)}
-    ok(pb == set(W.GROUP_LABELS) and cbands == set(W.GROUP_LABELS) | {"Unknown"},
-       "SF21: ages ship in the survey's fifteen five-year bands only (and Unknown for contacts)")
-    # options paper read back equals what was written
-    for k in W.OPTION_KEYS:
-        ok([(p["years"], p["made"]) for p in inp.options[k]] == [(p["years"], p["made"]) for p in w["opts"][k]],
-           "the options paper's %s reads back as written" % k)
-    # ---------------------------------------------------------------- rungs below the golden
-    r_cw = {k: CM.R_contact_weighted(inp, None if k == "none" else k, P=inp.matrix(None)) for k in R}
-    ok(all(v < 1 for v in r_avg.values()), "rung 0: R0 x susceptible share is below one everywhere (%.3f without)" % r_avg["none"])
-    ok(CM.round1(r_avg["none"]) == 0.7 and CM.edge_distance(r_avg["none"]) >= 0.02, "rung 0 files 0.7 mid-bin")
-    ok(all(v < 1 for v in r_cw.values()), "rung 1: the contact-weighted share is below one everywhere (%.3f without)" % r_cw["none"])
-    ok(CM.round1(R_all["none"]) == 0.9 and CM.edge_distance(R_all["none"]) >= 0.03,
-       "rung 2 (every diary) files 0.9 mid-bin (%.3f)" % R_all["none"])
-    ok(lower["the two periods averaged"]["none"] < 0.98, "rung 2: the two periods averaged stay below one (%.3f)"
-       % lower["the two periods averaged"]["none"])
-    pcb = CM.scenarios(pool, norm="cbar")
-    ok(call_of(pcb) == "none", "rung 2: every diary with the mean-contacts scaling files no catch-up (%.3f)" % pcb["none"])
-    imm = {k: 100 - 100 * sum(p["susceptible"] for p in w["opts"][k]) / sum(p["people"] for p in w["opts"][k])
-           for k in W.OPTION_KEYS}
-    ok(min(imm, key=imm.get) == "D", "rung 2: the options paper shows D least immune (%.1f against B %.1f)" % (imm["D"], imm["B"]))
-    ok(max(c["made"], key=c["made"].get) == "E", "rung 2: E makes the most people immune (%d)" % c["made"]["E"])
-    ok(min(W.OPTION_KEYS, key=lambda k: r_avg[k]) == "E" and min(W.OPTION_KEYS, key=lambda k: R_all[k]) == "E",
-       "position: E is lowest on rung 0 and on every diary; B is not")
-    for name, x in (("rung 0", r_avg), ("rung 1", r_cw), ("every diary", R_all),
-                    ("the two periods averaged", lower["the two periods averaged"]), ("summer diaries", R_sum)):
-        same = [k for k in R if CM.round1(x[k]) == CM.round1(R[k])]
-        ok(not same, "mirror: %s files none of the six graded reproduction numbers (B %.3f against %.3f)" %
-           (name, x["B"], R["B"]))
-    flip = CM.flip_people(inp, "B")
-    ok(flip < 0.75 * c["made"]["B"], "flip: B reaches one at %.0f people made immune against %d" % (flip, c["made"]["B"]))
-    own_t = inp.P[3, 3] / inp.P[3].sum()
-    own_s = Ps[3, 3] / Ps[3].sum()
-    Pt_u = inp.matrix(CM.term_diary, "spread")
-    Ps_u = inp.matrix(CM.summer_diary, "spread")
-    own_t2 = Pt_u[3, 3] / (Pt_u[3].sum())
-    own_s2 = Ps_u[3, 3] / (Ps_u[3].sum())
-    ok(min(own_t, own_t2) > 0.52 and max(own_s, own_s2) < 0.19, "the data: 15 to 19-year-olds' contacts with their own "
-       "band %.3f in term, %.3f in the summer diaries (more than half, under a fifth, with unknown ages dropped or "
-       "spread)" % (own_t, own_s))
-    sch = {}
-    with open(os.path.join(target, PK.FILES["contacts"]), encoding="utf-8") as f:
-        pdate = {p: d for p, b, d in parts}
-        pband = {p: b for p, b, d in parts}
-        for r in csv.DictReader(f):
-            if r["at_school"] == "Y" and 1 <= pband[r["part_id"]] <= 3:
-                t = CM.term_diary(pdate[r["part_id"]])
-                sch[t] = sch.get(t, 0) + 1
-    ok(sch.get(True, 0) > 4000 and sch.get(False, 0) < 0.05 * sch.get(True, 0), "the data: school contacts of 5 to "
-       "19-year-olds %d in May, %d in July and August" % (sch.get(True, 0), sch.get(False, 0)))
-    # SF25: the school regime the winter runs in, a premise of the window that no file states as a calendar (a pin naming
-    # term would file the decisive step): the survey's own at_school field separates its two periods, the options paper
-    # puts the school team in schools from 15 September, and standard 3.1 binds the figure throughout December to February
-    band_of = {lab: k for k, lab in enumerate(W.GROUP_LABELS)}
-    n_all, n_sch, n_1519, s_1519, phys = {True: 0, False: 0}, {True: 0, False: 0}, {True: 0, False: 0}, \
-        {True: 0, False: 0}, []
-    with open(os.path.join(target, PK.FILES["contacts"]), encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            t = CM.term_diary(pdate[r["part_id"]])
-            n_all[t] += 1
-            n_sch[t] += r["at_school"] == "Y"
-            if pband[r["part_id"]] == 3:
-                n_1519[t] += 1
-                s_1519[t] += r["at_school"] == "Y"
-            if r["physical"] == "Y":
-                phys.append((r["part_id"], band_of.get(r["contact_age_band"], -1)))
-    sh = {t: n_sch[t] / n_all[t] for t in (True, False)}
-    sh15 = {t: s_1519[t] / n_1519[t] for t in (True, False)}
-    ok(0.170 < sh[True] < 0.180 and 0.017 < sh[False] < 0.027 and 0.59 < sh15[True] and sh15[False] < 0.015,
-       "SF25 closure in the data: at-school contacts are %.1f per cent of all contacts in the May diaries against %.1f "
-       "in July and August (15 to 19-year-olds %.1f against %.1f)" % (100 * sh[True], 100 * sh[False], 100 * sh15[True],
-                                                                       100 * sh15[False]))
-    ok("between 15 September and 20 November" in opt_text and "stays below one throughout" in std_text,
-       "SF25: the options paper's school sessions run from 15 September and standard 3.1 binds the figure throughout "
-       "December to February")
-    ok(not re.search(r"term time|term-time|school term|school holiday|summer holiday|school calendar|school year",
-                     (std_text + " " + opt_text).lower()),
-       "SF25: no call document names term, the holidays or a school calendar (the pin refused, Tried and rejected)")
-    # SF26: a contact is a row the contacts file lists, physical or not (the producing system carries it: physical is a
-    # Y or N attribute of each listed contact, never a second file), and standard 3.1's reproduction number counts the
-    # people one case infects; physical contacts alone keep the call. Asserted through the verifier's csv and PDF reads.
-    v_parts = V.rows(target, PK.FILES["participants"])
-    v_cont = V.rows(target, PK.FILES["contacts"])
-    v_pids = {r["part_id"] for r in v_parts}
-    v_phys = {}
-    for r in v_cont:
-        v_phys[r["physical"]] = v_phys.get(r["physical"], 0) + 1
-    ok(len(v_cont) == counts["contacts"] and len(v_parts) == 7560 and all(r["part_id"] in v_pids for r in v_cont),
-       "SF26 control (verifier's csv read): %d contact rows, each listed by one of the %d diaries" % (len(v_cont),
-                                                                                                    len(v_parts)))
-    ok(set(v_phys) == {"Y", "N"} and v_phys["N"] > 0.2 * len(v_cont) and v_phys["Y"] > 0.2 * len(v_cont),
-       "SF26 closure in the data: physical is Y on %d and N on %d of the listed contacts, an attribute of a contact "
-       "and not its definition" % (v_phys["Y"], v_phys["N"]))
-    std_v = V.pdf_text(target, PK.FILES["standard"])
-    ok("the reproduction number, the average number of people one case infects, stays below one throughout" in std_v,
-       "SF26 closure (verifier's PDF read): standard 3.1 defines the reproduction number by the people one case infects")
-    rph = CM.scenarios(inp, P=CM.survey_matrix(parts, phys, CM.term_diary).T)
-    ok(call_of(rph) == "B" and rph["none"] > R["none"] and not same_bins(rph, R),
-       "SF26: physical contacts alone on the term diaries keep the call with other figures (%s), refused by the "
-       "literal reading (every contact a diary lists) and standard 3.1" % fmt(rph))
-    # closure axis 8 (window length): the survey's two periods are its diaries' own dates, nothing between them
-    v_dates = sorted({r["diary_date"] for r in v_parts})
-    v_may = [d for d in v_dates if "2023-05-02" <= d <= "2023-05-26"]
-    v_sum = [d for d in v_dates if "2023-07-03" <= d <= "2023-08-18"]
-    ok(len(v_may) + len(v_sum) == len(v_dates) and v_may[0] == "2023-05-02" and v_may[-1] == "2023-05-26"
-       and v_sum[0] == "2023-07-03" and v_sum[-1] == "2023-08-18"
-       and sum(1 for r in v_parts if r["diary_date"] <= "2023-05-26") == 2520,
-       "closure 8 in the data (verifier's csv read): every diary is dated 2 to 26 May or 3 July to 18 August 2023, "
-       "nothing between, 2,520 in May")
-    # SF6: the survey's population table reads back (fifteen bands, the all-ages row their sum) for the reciprocity
-    # treatment, the same call under every basis
+    # ------------------------------------------------------------------------------------------ input gates
+    g.ok("G1 ten or more files", len(files) >= 10, "%d files" % len(files))
+    fmts = sorted({f.rsplit(".", 1)[1] for f in files})
+    g.ok("G2 three or more formats", len(fmts) >= 3, ", ".join(fmts))
+    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
+    g.ok("G3 a file of 25,000 or more rows", big >= 25000, "%d rows" % big)
+    g.ok("G4 two or more distractors named in metadata and shipped", len(meta["distractor_files"]) >= 2 and all(
+        d in files for d in meta["distractor_files"]), ", ".join(meta["distractor_files"]))
+    bad_names = [f for f in files if re.search(r"readme|dictionar|codebook|manifest|schema|notes|field|distractor|"
+                                               r"glossary|how_to", f, re.I)]
+    g.ok("G5 no file named as a description of the data", not bad_names, ", ".join(bad_names) or "none")
     import openpyxl
-    pop_rows = list(openpyxl.load_workbook(os.path.join(target, PK.FILES["population"]), read_only=True)["Population"]
-                    .iter_rows(values_only=True))
-    ok([r[0] for r in pop_rows[1:-1]] == W.GROUP_LABELS and pop_rows[-1][0] == "All ages"
-       and pop_rows[-1][1] == sum(r[1] for r in pop_rows[1:-1]) and np.allclose(inp.natpop, [r[1] for r in pop_rows[1:-1]]),
-       "SF6: the survey's population table reads back, %d bands summing to its all-ages row %d" % (len(pop_rows) - 2,
-                                                                                                pop_rows[-1][1]))
-    ok(abs(c["immune_pct"] - 95.17) < 0.02, "the region is %.2f per cent immune" % c["immune_pct"])
-    # ---------------------------------------------------------------- the ask
-    f = B.ask_frames(target)
-    a1 = c["ask1"]
-    a2 = c["ask2"]
-    ppl = f["people"]
-    people_w = {p_.pid: p_ for p_ in w["people"]}
-    v_ppl = V.rows(target, PK.FILES["people"])
-    v_ev = V.merged_events(target)
-    v_dob = V.born(target, v_ev)
-    # The ask's first device (D-alpha): dates of birth the register holds ten years early. Its two signatures, each on
-    # the child's own records, read through the verifier's csv path; the generator's keyed-early records the control.
-    keyed = {p_.pid for p_ in w["people"] if p_.dob_rec is not None}
-    by_both = A.decade_early(f)
-    by_reg = A.decade_early(f, rule="registration")
-    by_dose = A.decade_early(f, rule="first_dose")
-    v_moved = {r_["person_number"] for r_ in v_ppl if v_dob[r_["person_number"]].isoformat() != r_["date_of_birth"]}
-    ok(len(keyed) > 60 and by_both == by_reg == by_dose == keyed == v_moved,
-       "D-alpha control: the %d dates of birth held ten years early are exactly the registrations made 6 to 45 days "
-       "after the date ten years on (%d), exactly those whose first GP dose came 12 to 17 months after it (%d), and the "
-       "verifier's own reading (%d)" % (len(keyed), len(by_reg), len(by_dose), len(v_moved)))
-    ok(all(V.born(target, v_ev, rule) == v_dob for rule in ("registration", "first_dose")),
-       "SF31 C1 (verifier's csv read): either signature alone reads the same dates of birth as both together")
-    tenth = pd.to_datetime(A._plus_years(ppl["date_of_birth"], 10))
-    lag = (pd.to_datetime(ppl["registered_on"]) - tenth).dt.days
-    near = set(ppl.loc[lag.between(0, 60), "person_id"])
-    ok(near == keyed, "SF31 C1: no other registration falls within 60 days after the tenth anniversary of the date of "
-       "birth it holds (%d registrations there, all the keyed-early ones)" % len(near))
-    first_gp = {}
-    for p_, d_, ref_ in v_ev:
-        if ref_.startswith("GPR-") and (p_ not in first_gp or d_ < first_gp[p_]):
-            first_gp[p_] = d_
-    late = {r_["person_number"] for r_ in v_ppl if r_["person_number"] in first_gp
-            and 3650 <= (first_gp[r_["person_number"]] - dt.date.fromisoformat(r_["date_of_birth"])).days <= 4400}
-    ok(late == keyed, "SF31 C1: no other registration had its first GP dose ten years and 12 to 17 months after the date "
-       "of birth it holds (%d such registrations, all the keyed-early ones)" % len(late))
-    born_rec = {p_.pid: (p_.dob, p_.registered) for p_ in w["people"] if p_.pid in keyed}
-    ok(all(6 <= (reg - dob).days <= 45 for dob, reg in born_rec.values()),
-       "D-alpha realism: every keyed-early child was registered from its birth notification")
-    sit = [(p_, d_, ref_) for p_, d_, ref_ in v_ev if ref_.startswith("SIT-") and p_ in v_dob]
-    held = {r_["person_number"]: r_ for r_ in v_ppl}
-    sess_years = {}
-    for p_, d_, ref_ in sit:
-        sess_years.setdefault(ref_, []).append((p_, int(held[p_]["date_of_birth"][:4])))
-    older, seen = set(), set()
-    for p_, d_, ref_ in sit:
-        mates = [y_ for q_, y_ in sess_years[ref_] if q_ != p_]
-        if mates:
-            seen.add(p_)
-            if float(np.median(mates)) - int(held[p_]["date_of_birth"][:4]) >= 8:
-                older.add(p_)
-    ok(older <= keyed and older == seen & keyed and len(older) > 50,
-       "SF31 C1: dating a child by its school session's other pupils (a session one programme's, on one day in one "
-       "area) moves no registration the golden leaves, and moves every keyed-early child that has classmates at a "
-       "session (%d of %d; the rest hold no school dose with classmates)" % (len(older), len(keyed)))
-    p_any = A.people_as_born(f, "any_birthday")
-    any_dob = dict(zip(p_any["person_id"], p_any["date_of_birth"]))
-    moved_any = {p_ for p_, d_ in any_dob.items() if d_ != held[p_]["date_of_birth"]} - keyed
-    ev_all = {}
-    for p_, d_, ref_ in v_ev:
-        ev_all.setdefault(p_, []).append((d_, ref_))
+    sheets = []
+    for f in files:
+        if f.endswith(".xlsx"):
+            sheets += openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames
+    g.ok("G6 no sheet that describes the data", not [s for s in sheets if re.search(
+        r"note|readme|dictionar|about|field|legend|key", s, re.I)], ", ".join(sheets))
+    g.ok("G7 metadata names no method vocabulary", not re.search(
+        r"operated|arrangement|valve position|condition(ed|ing)|running register|twin|standpipe|mass balance|"
+        r"supplied from|neighbour|impossib", json.dumps(meta), re.I), "metadata.json")
 
-    def refuted_any(p_):
-        b_ = dt.date.fromisoformat(any_dob[p_])
-        evs = ev_all.get(p_, [])
-        early = any(d_ < b_ for d_, _ in evs)
-        sched = any(ref_.startswith("GPR-") and 365 <= (d_ - b_).days <= 525 for d_, ref_ in evs)
-        return early or not sched
-    ok(len(moved_any) > 1000 and all(refuted_any(p_) for p_ in moved_any),
-       "SF31 rival ruled out: reading every registration made 6 to 45 days after any birthday as a birth registration "
-       "would move %d more registrations, and each of them holds a dose dated before such a birth or no GP first dose "
-       "at the schedule's age after it" % len(moved_any))
-    # The ask's second device (D-beta): same-sex twins at a practice whose returns carry no register number, both
-    # twins' GP lines loaded to the first registration of the pair. Read through the verifier's csv path.
-    loaders = {p_.pid for p_ in w["people"] if p_.loader_twin}
-    lower = {p_ for p_ in loaders if people_w[p_].twin.pid > p_}
+    # ------------------------------------------------------------------------------------------ three rules
+    inflow, finfo = B.flows(target)
+    mains_reg, valves_reg, dmas_reg = B.register(target)
+    main_ids = {m["Main"] for m in mains_reg}
+    g.ok("R1 the district meters ship hourly at the district grain", set(inflow.columns) == {d["DMA"] for d in dmas_reg}
+         and len(inflow) == 8760, "%d districts x %d hours" % (inflow.shape[1], inflow.shape[0]))
+    headers = []
+    for f in files:
+        if f.endswith(".csv"):
+            headers += open(os.path.join(target, f), encoding="utf-8").readline().strip().lower().split(",")
+    g.ok("R1 no shipped column holds a trunk main's flow", not [h for h in headers if re.search(r"trunk|main_flow|tm\d",
+                                                                                                h)]
+         and not (set(pd.read_csv(os.path.join(target, PK.FILES["flows"]), usecols=["dma"])["dma"]) & main_ids),
+         "%d csv columns" % len(headers))
+    ref_all = {m: float(tr["op"][m].max()) for m in W.MAINS}
+    ref_static = {m: float(tr["static"][m].max()) for m in W.MAINS}
+    gold_set = sorted(res_id for res_id in figs["flush"])
+    t_default = _truth_set(tr, ref_static)
+    g.ok("R3a analyst test on the clean truth: the normal arrangement flushes six", t_default == sorted(
+        W.MAIN_ID[m] for m in W.CANDIDATES), ", ".join(t_default))
+    t_gold = _truth_set(tr, ref_all)
+    g.ok("R3b the decisive step alone on the clean truth files the golden", t_gold == gold_set == sorted(
+        W.MAIN_ID[m] for m in W.GOLDEN_FLUSH), ", ".join(t_gold))
+    t_burst = _truth_set(tr, _truth_ref(tr, {"july_t04"}))
+    t_planned = _truth_set(tr, _truth_ref(tr, {e["key"] for e in W.EVENTS if e["key"] != "july_t04"}))
+    t_june = _truth_set(tr, _truth_ref(tr, {"june_t04"}))
+    g.ok("R3b each single correction short of the step stays wrong", len(t_burst) == 5 and len(t_planned) == 3 and
+         len(t_june) == 3 and t_gold not in (t_burst, t_planned, t_june),
+         "bursts only %d, planned only %d, June job only %d" % (len(t_burst), len(t_planned), len(t_june)))
     days = {}
-    for p_, d_, ref_ in v_ev:
-        if ref_.startswith("GPR-"):
-            days.setdefault((p_, d_), set()).add(ref_)
-    dbl = {k_: v_ for k_, v_ in days.items() if len(v_) > 1}
-    days_of = {}
-    for (p_, d_) in days:
-        days_of.setdefault(p_, set()).add(d_)
-    holders = {p_ for p_, _ in dbl}
-    gp_owners = {e_.owner for e_ in w["events"] if e_.given_by == "GP" and e_.kind == "dose"}
-    with_gp = {p_ for p_ in lower if p_ in gp_owners or people_w[p_].twin.pid in gp_owners}
-    ok(len(holders) > 150 and holders == with_gp and all(len(v_) == 2 for v_ in dbl.values()),
-       "D-beta control (verifier's csv read): the %d registrations holding two GP lines on one day are exactly the first "
-       "registrations of the same-sex twin pairs at the practices whose returns carry no register number that had a GP "
-       "dose (%d day pairs, two lines each)" % (len(holders), len(dbl)))
-    given, n_moved = V.twins_given_back(target, v_ev)
-    co = {}
-    for (p_, d_), refs in dbl.items():
-        moved_to = {q_ for q_, dd_, rr_ in given if dd_ == d_ and rr_ in refs and q_ != p_}
-        co.setdefault(p_, set()).update(moved_to)
-    ok(n_moved == len(dbl) and all(len(v_) == 1 and next(iter(v_)) == people_w[p_].twin.pid for p_, v_ in co.items()),
-       "SF30 C1: every doubled day's second line goes to the holder's twin, the one other registration of its household "
-       "with no GP line that day (%d lines given back)" % n_moved)
-    for key in (("date_of_birth", "sex", "gp_practice"), ("date_of_birth", "sex", "registered_on"),
-                ("date_of_birth", "sex", "gp_practice", "registered_on")):
-        alt, n_alt = V.twins_given_back(target, v_ev, key)
-        ok(n_alt == n_moved and sorted(alt) == sorted(given),
-           "SF30 C1: the co-twin read by %s finds the same child on every doubled day" % ", ".join(key))
-    co_gp = {q_ for q_ in (people_w[p_].twin.pid for p_ in holders) if q_ in days_of}
-    ok(not co_gp, "SF30: no co-twin of a doubled registration holds a GP line of its own")
-    pairs = [(p_.pid, p_.twin.pid) for p_ in w["people"] if p_.twin is not None and p_.pid < p_.twin.pid]
-    refs_ok = 0
-    split_ok = True
-    for x_, y_ in pairs:
-        if x_ in loaders:
-            continue
-        dx, dy = days_of.get(x_, set()), days_of.get(y_, set())
-        if dx or dy:
-            refs_ok += 1
-            split_ok &= dx == dy and all(len(days[(x_, d_)]) == 1 and len(days[(y_, d_)]) == 1 for d_ in dx)
-    ok(refs_ok > 500 and split_ok,
-       "SF30 referee: the other %d twin pairs with a GP dose (boy and girl at any practice, same-sex at the practices "
-       "whose returns carry the register number) hold one line each on every day the GP vaccinated them" % refs_ok)
-    sess_of = {}
-    for p_, d_, ref_ in v_ev:
-        if ref_.startswith("SIT-"):
-            sess_of.setdefault(p_, set()).add((d_, ref_))
-    both_sess = sum(1 for p_ in holders if sess_of.get(p_) and sess_of.get(p_) == sess_of.get(people_w[p_].twin.pid))
-    ok(both_sess > 100, "SF30: %d doubled registrations and their twins each hold their own dose at the same school "
-       "sessions (two pupils' doses at one session)" % both_sess)
-    held_gp = {}
-    for p_, d_, ref_ in v_ev:
-        if ref_.startswith("GPR-"):
-            held_gp.setdefault(ref_, set()).add(p_)
-    ok(all(len(h_) == 1 for h_ in held_gp.values()),
-       "SF29 retired: no GP return line sits on two registrations once the merges are followed (%d lines)" % len(held_gp))
-    # the ask's stops (each a complete pipeline), every figure against the golden
-    stops = {
-        "the current code list, dates as held, lines as loaded (the natural path)":
-            dict(how="current", dob_how="held", twins="loaded"),
-        "the circular read, dates as held, lines as loaded, merges and queries handled (the cracker)":
-            dict(dob_how="held", twins="loaded"),
-        "the cracker with twins merged as one child (household key)": dict(dob_how="held", twins="loaded",
-                                                                          link="household"),
-        "every device handled but the dates of birth (D-beta cracked alone)": dict(dob_how="held"),
-        "every device handled but the twins' lines (D-alpha cracked alone)": dict(twins="loaded"),
-        "a registration 6 to 45 days after any birthday read as a birth registration (over-cleaning)":
-            dict(dob_how="any_birthday"),
-        "every LH27 read as Monaghan West": dict(how="old"),
-        "every active registration": dict(how="all"),
-        "a person key on date of birth, sex and area code": dict(link="dob_sex_area"),
-        "a person key on date of birth, sex and postcode": dict(link="dob_sex_postcode"),
-        "records joined by any shared source reference": dict(link="any_ref"),
-        "registrations no practice lists left out": dict(unlisted="drop"),
-    }
-    moved_by = {}
-    for name, kw in stops.items():
-        k1 = {x: kw[x] for x in ("how", "link", "unlisted", "dob_how") if x in kw}
-        k2 = {("pop" if x == "how" else x): v for x, v in kw.items()}
-        s1, s2 = A.ask1(f, **k1), A.ask2(f, **k2)
-        hit = sum(s1[k] == a1[k] for k in a1) + sum(s2[k][x] == a2[k][x] for k in a2 for x in ("none", "one"))
-        moved_by[name] = 15 - hit
-        print("      %-100s %2d of 15 figures off" % (name, 15 - hit))
-    ok(moved_by["the circular read, dates as held, lines as loaded, merges and queries handled (the cracker)"] == 15,
-       "ask: the cracker (circular, merges, queries, interval rule, dates of birth as held, lines as loaded) files all 15 "
-       "figures wrong")
-    ok(moved_by["the current code list, dates as held, lines as loaded (the natural path)"] == 15
-       and moved_by["the cracker with twins merged as one child (household key)"] == 15,
-       "ask: the natural path and the twin-merging over-clean each file all 15 figures wrong")
-    ok(moved_by["every device handled but the dates of birth (D-beta cracked alone)"] >= 9
-       and moved_by["every device handled but the twins' lines (D-alpha cracked alone)"] >= 10,
-       "ask: each device alone leaves at least nine figures wrong (dates as held %d, lines as loaded %d)" % (
-           moved_by["every device handled but the dates of birth (D-beta cracked alone)"],
-           moved_by["every device handled but the twins' lines (D-alpha cracked alone)"]))
-    held_r = A.ask1(f, dob_how="held")
-    ok(all(held_r[k] != a1[k] for k in a1), "D-alpha moves every option's people (%s)" % ", ".join(
-        "%s %+d" % (k, held_r[k] - a1[k]) for k in a1))
-    loaded = A.ask2(f, twins="loaded")
-    ok(all(loaded[k]["none"] != a2[k]["none"] and loaded[k]["one"] != a2[k]["one"] for k in a2),
-       "D-beta moves every option's no-dose and one-dose figures (%s)" % ", ".join(
-           "%s %+d/%+d" % (k, loaded[k]["none"] - a2[k]["none"], loaded[k]["one"] - a2[k]["one"]) for k in a2))
-    # SF23 retired: the register gives a record at an address outside the State no area code, so the code and the
-    # address agree such a record is not in the region (C1); nothing about it is filed
-    bt = ppl["postcode"].fillna("").str.startswith("BT")
-    ni_pids = {p_.pid for p_ in w["people"] if p_.status == "ni"}
-    ok(set(ppl.loc[bt, "person_id"]) == ni_pids, "SF23 retired: the UK postcodes are exactly the pupils living in "
-       "Northern Ireland")
-    v_bt = {r_["person_number"] for r_ in v_ppl if r_["postcode"].strip().upper().startswith("BT")}
-    v_blank = {r_["person_number"] for r_ in v_ppl if not r_["lho_code"].strip()}
-    ok(len(v_bt) == int(bt.sum()) > 900 and v_bt == v_blank,
-       "SF23 retired (verifier's csv read): the %d registrations with a UK postcode are the %d with no area code"
-       % (len(v_bt), len(v_blank)))
-    ok(bool((A.in_region(ppl, "lh27") == A.in_region(ppl, "golden")).all()),
-       "SF23 retired, C1: read by its area code alone or by its address as well, the region holds the same registrations")
-    with open(os.path.join(target, PK.FILES["lho"]), encoding="utf-8") as fh:
-        lho_rows = list(csv.DictReader(fh))
-    ok(all(r["county"] in set(W.COUNTIES) | {v[1] for v in W.OTHER_LHO.values()} for r in lho_rows)
-       and not any(r["county"] in ("Armagh", "Down", "Fermanagh", "Tyrone", "Antrim", "Londonderry") for r in lho_rows),
-       "SF23 retired: the national code list holds no office outside the State")
-    pcs = ppl["postcode"].fillna("")
-    eircode = pcs.str.fullmatch(r"(?:[AC-FHKNPRTV-Y][0-9]{2}|D6W) [0-9AC-FHKNPRTV-Y]{4}")
-    ukpc = pcs.str.fullmatch(r"BT[0-9]{1,2} [0-9][A-Z]{2}")
-    ok(bool((eircode | ukpc | (pcs == "")).all()) and int(ukpc.sum()) == int(bt.sum()),
-       "SF23 retired: every recorded postcode is an Eircode or a BT postcode (%d)" % int(ukpc.sum()))
-    rec = ppl.loc[ppl["lho_code"] == "LH27", "lho_recorded"]
-    ok(not rec.between("2024-06-24", "2024-07-08").any(), "ask C1: no LH27 recorded within a week of 1 July 2024")
-    lh27 = ppl[(ppl["lho_code"] == "LH27") & (ppl["postcode"].fillna("") != "")]
-    rk = lh27["postcode"].str[:3]
-    old_rk, new_rk = set(W.ROUTING_KEYS["LH27_old"]), set(W.ROUTING_KEYS["LH27"])
-    ok(bool((rk[lh27["lho_recorded"] < W.CUTOVER.isoformat()].isin(old_rk)).all())
-       and bool((rk[lh27["lho_recorded"] >= W.CUTOVER.isoformat()].isin(new_rk)).all()),
-       "ask C1: every LH27 Eircode agrees with the code's date (Monaghan West routing keys before 1 July 2024, "
-       "Portlaoise's after; %d LH27 records with a postcode)" % len(lh27))
-    nat = A.ask1(f, how="current")
-    ok(all(nat[k] != a1[k] for k in a1), "ask hazard: the current code list moves every option's people (%s)" % ", ".join(
-        "%s %+d" % (k, nat[k] - a1[k]) for k in a1))
-    log = f["log"]
-    ext = set(f["events"]["source_ref"])
-    lines_in = set(log["line_ref"]) & ext
-    reps_needed = set(log.loc[log["line_ref"].isin(lines_in) & (log["outcome"] == "Replaced by corrected line"), "replaced_by"])
-    ok(reps_needed <= ext, "ask fairness: every replaced line in the extract has its corrected line loaded")
-    # SF17: a GP return line under a query the office had not closed
-    ok(set(log["outcome"]) == {"Confirmed as sent", "Replaced by corrected line", "Withdrawn by practice"},
-       "SF17: every query in the log has an outcome, none open")
-    ok(bool((log["closed_on"] != "").all()) and bool((log["raised_on"] < log["closed_on"]).all())
-       and log["closed_on"].max() <= W.AS_AT.isoformat(),
-       "SF17: every query closed after it was raised and by 30 June 2027 (latest %s)" % log["closed_on"].max())
-    st = A.ask2(f, ev_how="drop_unresolved")
-    ok(st == a2, "SF17: lines under a query not closed as confirmed by 30 June 2027 dropped, every dose figure unchanged")
-    for name, kw in {"no merges": dict(merge_how="none"), "one hop": dict(merge_how="one_hop"),
-                     "every loaded event": dict(ev_how="all"), "every queried line dropped": dict(ev_how="drop_queried")
-                     }.items():
-        st = A.ask2(f, **kw)
-        moved = sum(st[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
-        ok(moved >= (3 if name == "one hop" else 8), "ask hazard %s moves %d of 10 dose figures" % (name, moved))
-    # SF28 closed by the prompt as filed: the doses are those had by 30 June 2027 ("by that date"), a dose had on the
-    # day it was given (date_given); counting every row the extract holds, or the rows loaded by 30 June, moves figures
-    prompt_txt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
-    ok(prompt_txt.count("the register holds as living in the region at 30 June 2027, how many of those have had no "
-                        "valid MMR dose by that date and how many exactly one") == 1,
-       "SF28 closed by the prompt as filed: \"how many of those have had no valid MMR dose by that date\", the date the "
-       "residents are counted at")
-    ev_all = f["events"]
-    late_ld = ev_all[(ev_all["date_given"] <= W.AS_AT.isoformat()) & (ev_all["loaded_on"] > W.AS_AT.isoformat())]
-    after = ev_all[ev_all["date_given"] > W.AS_AT.isoformat()]
-    by_load = A.ask2(f, events=ev_all[ev_all["loaded_on"] <= W.AS_AT.isoformat()])
-    moved_load = sum(by_load[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
-    keep_asat, A.AS_AT = A.AS_AT, pd.Timestamp("2099-12-31")
+    dup_days = 0
+    for d in inflow.columns:
+        v = inflow[d].values
+        for k in range(0, len(v) - 24, 24):
+            key = tuple(np.round(v[k:k + 24], 2))
+            if np.isnan(v[k:k + 24]).any():
+                continue
+            if key in days:
+                dup_days += 1
+            days[key] = (d, k)
+    g.ok("R3c no copied block: no district-day repeats another", dup_days == 0, "%d district-days" % len(days))
+    docs_text = {k: B.pdf_text(target, k) for k in ("standard", "plan", "condition")}
+    four = ["TM104", "TM109", "TM110", "TM112"]
+    g.ok("R3c no document names a main the call turns on outside the register", not any(
+        m in docs_text[k] for m in four for k in ("standard", "plan")), "standard and plan")
+    g.ok("R3c no memo, proposal, risk assessment or prior assessment ships", not [f for f in files if re.search(
+        r"memo|proposal|risk|assessment_2026|podds|model|flushing_plan|affected", f, re.I)], "file names")
+
+    # ------------------------------------------------------------------------------------------ the ladder on the pack
+    c = S.call(target)
+    rungs = {}
+    for model in ("normal", "bursts", "planned"):
+        rungs[model] = S.call(target, model=model)["flush"]
+    cand = c["rises"]
+    typical = c["N0"][c["ok"].values].groupby(c["N0"][c["ok"].values].index.date).max().median()
+    r1 = [m for m in cand if c["peak"][m] > typical[m]]
+    g.ok("L0 any rise: six mains", len(cand) == 6, ", ".join(cand))
+    g.ok("L1 above the typical daily peak: six", len(r1) == 6, ", ".join(r1))
+    g.ok("L2 the default (normal arrangement): six", rungs["normal"] == cand, ", ".join(rungs["normal"]))
+    g.ok("L3 bursts rebuilt, planned jobs as normal: five", len(rungs["bursts"]) == 5, ", ".join(rungs["bursts"]))
+    g.ok("L3b planned jobs rebuilt, the burst as normal: three", len(rungs["planned"]) == 3, ", ".join(rungs["planned"]))
+    g.ok("L4 the golden: two (TM112, IC05)", c["flush"] == ["IC05", "TM112"], ", ".join(c["flush"]))
+    ratio = {m: (c["peak"][m] / c["ref"][m] if c["ref"][m] > 0 else np.inf) for m in cand}
+    g.ok("L5 no main within 8 per cent of its reference", all(abs(r - 1) >= 0.08 for r in ratio.values()),
+         ", ".join("%s %.3f" % (m, r) for m, r in ratio.items()))
+    stats = {"works peak": {m: c["peak"][m] for m in cand}, "normal peak": {m: c["normal_peak"][m] for m in cand},
+             "relative rise": {m: (c["peak"][m] / c["normal_peak"][m] if c["normal_peak"][m] > 0 else 1e9) for m in cand},
+             "diameter": {m: float(c["net"].mains[m]["DN (mm)"]) for m in cand},
+             "year laid": {m: float(c["net"].mains[m]["Laid"]) for m in cand},
+             "length": {m: float(c["net"].mains[m]["Length (m)"]) for m in cand}}
+    hits = [n for n, st in stats.items() for k in (2,) for top in (sorted(st, key=st.get)[:k], sorted(st, key=st.get)[-k:])
+            if sorted(top) == c["flush"]]
+    g.ok("L6 the pair is no top or bottom pair of a shipped statistic", not hits, ", ".join(hits) or "none of %d" % len(stats))
+    rise = {m: c["peak"][m] - c["normal_peak"][m] for m in cand}
+    top3 = sorted(rise, key=rise.get)[-3:]
+    g.ok("L6 by rise in peak the pair sits inside a top three within 5 l/s", set(c["flush"]) < set(top3) and
+         max(rise[m] for m in top3) - min(rise[m] for m in top3) < 5.0,
+         ", ".join("%s %.1f" % (m, rise[m]) for m in top3))
+
+    # ------------------------------------------------------------------------------------------ semantic forks
+    std = docs_text["standard"]
+    g.ok("SF1 interconnectors are trunk mains (NOS 12 3.1) and two of them rise", "The register's interconnectors are "
+         "trunk mains." in std and {"IC03", "IC05"} <= set(cand), "filed sentence present")
+    daily = {}
+    for nm, F_ in (("ref", c["F"][c["ok"].values]), ("peak", c["P"][c["use"]])):
+        daily[nm] = F_.groupby(F_.index.date).mean().max()
+    flush_daily = [m for m in cand if daily["peak"][m] > daily["ref"][m]]
+    g.ok("SF2 hourly flow filed; daily means give the same call", "hourly flow" in std and flush_daily == c["flush"],
+         ", ".join(flush_daily))
+    when = {m: c["F"][c["ok"].values][m].idxmax() for m in cand if c["ref"][m] > 0}
+    g.ok("SF3 every reference peak falls in January to October 2026", all(
+        pd.Timestamp("2026-01-01") <= t < pd.Timestamp("2026-11-01") for t in when.values()),
+        ", ".join("%s %s" % (m, t.date()) for m, t in when.items()))
+    log = B.valve_log(target)
+    t04 = [v["Valve"] for v in valves_reg if v["Main"] == "TM108"]
+    shut = log[log["valve_no"].isin(t04) & (log["action"] == "CLOSE")]
+    g.ok("SF4 carried: the log shows TM108 shut in June and July 2026, the normal estimate differs there",
+         len(shut) == 4 and all(abs(c["F"][m] - c["N0"][m]).max() > 20 for m in ("TM104", "TM109", "TM110", "IC03")),
+         "%d closures of TM108's valves" % len(shut))
+    up = {m: c["peak"][m] * 1.03 for m in cand}
+    g.ok("SF5 the recorded 2026 inflows filed; a 3 per cent growth leaves the call", "recorded hourly inflows for the "
+         "same dates a year earlier" in std and [m for m in cand if up[m] > c["ref"][m]] == c["flush"], "4.3 filed")
+    g.ok("SF6 strictly higher or not lower: same call", all(abs(c["peak"][m] - c["ref"][m]) > 1.0 for m in cand), "")
+    sgn_ok = True
+    plan_sign = {}
+    for m in W.CANDIDATES:
+        sg = tr["sgn"][m][tr["op"][m] > 0.5]
+        ps = tr["psgn"].get(m, 1)
+        plan_sign[W.MAIN_ID[m]] = ps
+        if len(sg) and not np.all(sg == ps):
+            sgn_ok = False
+    g.ok("SF7 no main the relining loads ran against its works direction in the year", sgn_ok,
+         "TM115 and IC02 reversed, neither a candidate")
+    for sh in (1, -1):
+        cs = S.call(target, shift_hours=sh)
+        g.ok("SF8 the log read an hour %s: same call and figures" % ("late" if sh > 0 else "early"),
+             cs["flush"] == c["flush"] and all(round(cs["ref"][m]) == round(c["ref"][m]) for m in cand), "")
+    cf = S.call(target, gaps="fill")
+    g.ok("SF9 blank meter hours filled: same call and figures", cf["flush"] == c["flush"] and all(
+        round(cf["peak"][m]) == round(c["peak"][m]) and round(cf["ref"][m]) == round(c["ref"][m]) for m in cand), "")
+    pl = B.plan(target)
+    tm115 = [v["Valve"] for v in valves_reg if v["Main"] == "TM115"]
+    g.ok("SF10 the plan's table shuts TM115 at both ends", sorted(v for v, o in pl["ops"] if o == "Shut" and v in tm115)
+         == sorted(tm115), "%d operations read" % len(pl["ops"]))
+    g.ok("SF11 the standard and the question name flushing", "shall be flushed before the change is made" in std, "")
+    rest = [m for m in sorted(c["net"].mains) if m not in cand]
+    g.ok("SF12 every listed main rises in every hour and no other rises in any", rest == [m for m in rest if m in
+                                                                                     c["falls_or_same"]], "")
+
+    # ------------------------------------------------------------------------------------------ ask A
+    A, adf = S.ask_a(target)
+    rows = adf.copy()
+    run_rows = rows[(rows["crew"] == W.CREW_DIST) & (rows["night"] >= pd.Timestamp(W.RUNNING_FROM)) &
+                    rows.duplicated(["key"])]
+    other = rows.drop(run_rows.index)
+    rr = (run_rows["vol"] / run_rows["gxt"])
+    ro = (other["vol"] / other["gxt"])
+    g.ok("SF13 lesson 8: a running reading is 1.3 or more times its flush's gauge flow times minutes",
+         rr.min() >= 1.3 and 0.82 <= ro.min() and ro.max() <= 0.96,
+         "running rows %d at %.2f and up; others %.2f to %.2f" % (len(run_rows), rr.min(), ro.min(), ro.max()))
+    g.ok("SF14 no flushing night crosses a year end", not rows["night"].dt.strftime("%m-%d").eq("12-31").any(), "")
+    per, tot = {}, {}
+    for (dn, yr), sub in rows.groupby(["dn", "year"]):
+        sec = sub.groupby(["night_of", "section_ref"]).agg(w=("w", "sum"), L=("L", "first"))
+        per[(dn, yr)] = float((sec["w"] / sec["L"] * 100).mean())
+        tot[(dn, yr)] = float(sec["w"].sum() / sec["L"].sum() * 100)
+    differ = sum(abs(per[k] - A[k]) > 0.05 for k in A)
+    g.ok("SF17 the golden is the literal reading, the programme's water over its metres; the mean of sections' rates "
+         "is another number", all(abs(tot[k] - A[k]) < 1e-9 for k in A) and differ >= 1,
+         "mean of rates differs in %d of %d cells" % (differ, len(A)))
+    twin = rows[rows.duplicated(["night_of", "section_ref"], keep=False)]
+    tg = twin.groupby(["night_of", "section_ref"])
+    g.ok("A1 twin-hydrant flushes: two rows, one section, one start and finish, two hydrants, 225 and 300 mm only",
+         len(twin) > 0 and tg.size().eq(2).all() and tg["start"].nunique().eq(1).all() and tg["finish"].nunique().eq(
+             1).all() and tg["hydrant_no"].nunique().eq(2).all() and set(twin["dn"]) == {225, 300},
+         "%d sections" % tg.ngroups)
+    early = rows[(rows["crew"] == W.CREW_DIST) & (rows["night"] < pd.Timestamp(W.RUNNING_FROM))]
+    g.ok("A2 benign twins: crew C14 before December and crew C22's 150 mm rows read as single flushes",
+         len(early) > 20 and ((early["vol"] / early["gxt"]).between(0.82, 0.96)).all() and
+         (rows[(rows["crew"] == W.CREW_TRUNK) & (rows["dn"] == 150)]["vol"] / rows[(rows["crew"] == W.CREW_TRUNK) &
+                                                                                   (rows["dn"] == 150)]["gxt"]
+          ).between(0.82, 0.96).all(), "%d early rows" % len(early))
+    routes = {h: S.ask_a(target, h)[0] for h in ("plain", "gauge", "diff_all", "dedup", "running_only", "twin_only")}
+    near = lambda a, b: abs(a - b) < 0.05
+    for h in ("plain", "gauge"):
+        g.ok("A3 %s route misses every diameter-year" % h, all(not near(routes[h][k], A[k]) for k in A),
+             "%d cells" % len(A))
+    miss = sum(not near(routes["diff_all"][k], A[k]) for k in A)
+    g.ok("A3 every night differenced (the over-cleaner) misses seven or more diameter-years", miss >= 7,
+         "%d of %d" % (miss, len(A)))
+    small = [k for k in A if k[0] <= 150]
+    large = [k for k in A if k[0] >= 225]
+    g.ok("A4 disjoint blocks: running nights alone fixed hits only the small mains", all(
+        near(routes["running_only"][k], A[k]) for k in small) and not any(near(routes["running_only"][k], A[k])
+                                                                           for k in large), "")
+    g.ok("A4 disjoint blocks: twin flushes alone fixed hits only the large mains", all(
+        near(routes["twin_only"][k], A[k]) for k in large) and not any(near(routes["twin_only"][k], A[k])
+                                                                       for k in small), "")
+    g.ok("A5 one row per section kept misses the large mains", not any(near(routes["dedup"][k], A[k]) for k in large), "")
+    g.ok("A6 every ask A figure clear of its rounding edge", all(_edge1(v) > 0.004 for v in A.values()),
+         "min %.4f" % min(_edge1(v) for v in A.values()))
+    g.ok("A7 golden figures equal figures.json", all(figs["flushing_water_m3_per_100m"]["%d mm %d" % k] == "%.1f" % (
+        np.floor(A[k] * 10 + 0.5) / 10) for k in A), "")
+
+    # ------------------------------------------------------------------------------------------ ask B
+    rer = [W.DCODE[d] for d in W.REROUTED]
+    Bg, moved = S.ask_b(target, "golden", rer)
+    Bp, _ = S.ask_b(target, "plain", rer)
+    Bc, movedc = S.ask_b(target, "corr", rer)
+    g.ok("SF15 lesson 8: each moved supply point uses more than its recorded DMA's whole inflow for 100 hours or more",
+         len(moved) == 4 and all(v[2] >= 100 for v in moved.values()),
+         ", ".join("%s %d h" % (k, v[2]) for k, v in sorted(moved.items())))
+    sec_ok = all(sorted(v[3].values())[-1] - sorted(v[3].values())[-2] > 0.15 for v in moved.values())
+    g.ok("SF15 the supplying DMA is the one inflow that carries each moved point's steps", sec_ok and {
+        (v[0], v[1]) for v in moved.values()} == {(W.DCODE[b], W.DCODE[s]) for _, _, b, s, _ in N.USERS if b != s}, "")
+    sp = B.supply(target)
+    con = B.consumption(target)
+    a = B.amr(target)
+    a["local"] = pd.to_datetime(a["read_start_local"], format="%d/%m/%Y %H:%M")
+    a["month"] = a["local"].dt.strftime("%Y-%m")
+    am = a.groupby(["logger_id", "month"])["volume_m3"].sum()
+    lg = sp[sp["AMR logger"].notna()].set_index("SPID")["AMR logger"]
+    cm = con[con["spid"].isin(lg.index) & (con["month"] >= "2025-11")].copy()
+    cm["amr"] = [am.get((lg[s], m), np.nan) for s, m in zip(cm["spid"], cm["month"])]
+    g.ok("SF16 each logged point's monthly settlement equals its logger total to the cubic metre",
+         (cm["consumption_m3"] - cm["amr"]).abs().max() <= 0.51, "%d months" % len(cm))
+    ends = pd.to_datetime(sp["Supply end"].dropna())
+    g.ok("SF19 no supply ended inside the window (present and past tense agree)", not ((ends >= "2025-11-01") &
+                                                                                     (ends <= "2026-10-31")).any(), "")
+    g.ok("SF18 the window's months are November 2025 to October 2026 in the settlement", sorted(set(
+        cm["month"])) == S_months(), "")
+    g.ok("B1 plain DMA misses every re-routed district", all(abs(Bp[d] - Bg[d]) >= 1.0 for d in rer),
+         ", ".join("%s %.1f" % (d, Bp[d] - Bg[d]) for d in rer))
+    g.ok("B2 the correlation mover misses four or more districts", sum(abs(Bc[d] - Bg[d]) >= 0.05 for d in rer) >= 4,
+         "%d moved" % len(movedc))
+    g.ok("B3 every re-routed district gains or loses a moved point", all(any(d in (v[0], v[1]) for v in moved.values())
+                                                                         for d in rer), "")
+    g.ok("B4 every ask B figure clear of its rounding edge", all(_edge1(v) > 0.004 for v in Bg.values()), "")
+    rep = a[a.duplicated(["logger_id", "read_start_local"], keep="first")]
+    lg2 = sp[sp["AMR logger"].notna()].set_index("AMR logger")
+    home = {l_: (moved[l_][1] if l_ in moved else lg2.loc[l_, "DMA"]) for l_ in lg2.index}
+    worst, crossed = 0.0, []
+    for d in rer:
+        dv = rep[rep["logger_id"].isin([l_ for l_, h_ in home.items() if h_ == d])]["volume_m3"].sum() / 1000.0
+        worst = max(worst, dv)
+        if np.floor((Bg[d] - dv) * 10 + 0.5) != np.floor(Bg[d] * 10 + 0.5):
+            crossed.append(d)
+    g.ok("R2 the autumn repeated hour dropped from logger totals moves no ask B figure", not crossed,
+         "largest %.3f Ml" % worst)
+    nf = {k: v for k, v in figs["nonhousehold_water_ml"].items()}
+    g.ok("B5 golden figures equal figures.json", all(nf["%s %s" % (W.DCODE[d], W.DISTRICTS[d][1])] == "%.1f" % (
+        np.floor(Bg[W.DCODE[d]] * 10 + 0.5) / 10) for d in W.REROUTED), "")
+
+    # ------------------------------------------------------------------------------------------ lesson 7
+    out = B.outlet(target)
+    tot = inflow.sum(axis=1, min_count=18)
+    gap = (out.reindex(tot.index) - tot) / tot
+    burst_h = pd.Timestamp(W.to_utc(W.BURST_LOSS[0])).floor("h")
+    mb = gap.drop([burst_h, burst_h + pd.Timedelta(hours=1)], errors="ignore").dropna()
+    g.ok("C1 the works outlet closes on the districts within 3 per cent outside the burst", mb.abs().max() < 0.03,
+         "max %.4f, mean %.4f over %d hours" % (mb.abs().max(), mb.mean(), len(mb)))
+    g.ok("C2 every hour's arrangement is a fed tree", all(S._is_tree(c["net"], s) for s in set(c["sets"])),
+         "%d arrangements" % len(set(c["sets"])))
+    change_hours = {pd.Timestamp(t).floor("h") for t in log[log["valve_no"].isin(c["net"].valves) &
+                                                             log["action"].isin(["OPEN", "CLOSE"])]["utc"]}
+    pk_hours = [c["F"][c["ok"].values][m].idxmax() for m in cand if c["ref"][m] > 0]
+    g.ok("C3 no reference peak in an hour with a valve operation or next to one", all(
+        min(abs((h - t).total_seconds()) for t in change_hours) >= 7200 for h in pk_hours), "")
+    ev_sets = {frozenset(W.MAIN_ID[m] for m in (set(W.TRUNK) - ev["out"]) | ev["open"]) for ev in W.EVENTS}
+    got = set(c["sets"]) - {c["net"].normal()}
+    g.ok("C4 every arrangement other than normal is one the logged trunk valve operations make", got == ev_sets,
+         "%d arrangements from %d jobs" % (len(got), len(W.EVENTS)))
+    g.ok("C5 graded flows clear of their rounding edges", all(_edge0(c["peak"][m]) > 0.1 for m in cand) and all(
+        _edge0(c["ref"][m]) > 0.08 or c["ref"][m] == 0 for m in cand),
+        "min %.2f" % min(_edge0(c["peak"][m]) for m in cand))
+    g.ok("C6 meter gaps sit away from every peak", all(inflow.loc[h - pd.Timedelta(hours=24):h + pd.Timedelta(
+        hours=24)].notna().all().all() for h in pk_hours), "")
+    g.ok("C7 the plan is prepared in November 2026, the window ends October 2026", pl["date"] == "16 November 2026" and
+         "twelve months to the end of the month before the outage plan is prepared" in std, pl["date"] or "")
+
+    # ------------------------------------------------------------------------------------------ lesson 12
+    val = S.turbidity_backtest(target, c)
+    g.ok("V1 the operated flows explain the inlet turbidity record", val["recall_op"] >= 0.75,
+         "%.2f of %d observed event days" % (val["recall_op"], val["n_obs"]))
+    g.ok("V2 the normal arrangement explains almost none of it", val["recall_nm"] <= 0.1, "%.2f" % val["recall_nm"])
+    g.ok("V3 the normal arrangement predicts July turbidity below TM109 and TM110 that never came", val["false_nm"] >= 2
+         and val["false_op"] == 0, "normal %d, operated %d" % (val["false_nm"], val["false_op"]))
+
+    # ------------------------------------------------------------------------------------------ R2 mess items
+    g.ok("R2 re-sent meter rows are exact copies", finfo["dup"] == 24, "%d" % finfo["dup"])
+    raw = pd.read_csv(os.path.join(target, PK.FILES["flows"]), dtype=str)
+    ser = raw.groupby("meter_serial")["dma"].nunique()
+    g.ok("R2 every meter serial belongs to one district (the meter changes key on the DMA)", ser.max() == 1 and
+         raw.groupby("dma")["meter_serial"].nunique().max() == 2, "")
+    raw_s = raw[raw["quality"] != "S"]
+    g.ok("R2 substituted hours dropped: same figures", True if not len(raw_s) else _same_without(target, raw_s, c), "")
+    ex = log[log["action"] == "EXERCISE"]
+    g.ok("R2 exercising moves no arrangement", len(ex) > 20 and set(ex["valve_no"]) <= set(c["net"].valves), "%d" % len(ex))
+    # SF20: an exercised boundary valve read as the interconnector in service for that hour. Only IC05's and IC03's
+    # boundary valves sit on listed mains; IC03's reference can only rise (it stays unflushed); IC05 is bounded above by
+    # the whole inflow of the districts its far end serves (Ferrars Corner and Mill Bridge) in each exercise hour.
+    shut_v = {v["Valve"]: v["Main"] for v in valves_reg if v["Normal position"] == "Shut"}
+    ex_b = ex[ex["valve_no"].isin(shut_v)]
+    ex_mains = {shut_v[v] for v in ex_b["valve_no"]}
+    far = [d["DMA"] for d in dmas_reg if d["Inlet junction"] in ("Ferrars Corner", "Mill Bridge")]
+    ic05_hours = [pd.Timestamp(t).floor("h") for t, v in zip(ex_b["utc"], ex_b["valve_no"]) if shut_v[v] == "IC05"]
+    bound = max(float(inflow.loc[h, far].sum()) for h in ic05_hours) if ic05_hours else 0.0
+    reshut = all(re.search(r"reshut|left shut", r_, re.I) for r_ in ex_b["remarks"])
+    g.ok("SF20 an exercised boundary valve read as in service for its hour: same call", reshut and len(ic05_hours) >= 1
+         and bound < c["peak"]["IC05"] and ex_mains <= {"IC05", "IC03", "IC02", "IC08"} and c["ref"]["IC03"] >
+         c["peak"]["IC03"], "IC05 at most %.1f l/s in %d exercise hours against %.1f" % (bound, len(ic05_hours),
+                                                                                        c["peak"]["IC05"]))
+    dist = log[~log["valve_no"].isin(c["net"].valves)]
+    g.ok("R2 distribution valves are outside the register", len(dist) > 1000, "%d rows" % len(dist))
+    jd = B.jobs(target)
+    slash = [x for x in jd["night_of"] if "/" in x]
+    g.ok("R2 the job sheets' day-first dates are fixed by the column itself and carry the year either way",
+         any(int(x[:2]) > 12 for x in slash) and all(len(x) == 10 for x in jd["night_of"]),
+         "%d day-first, %d ISO" % (len(slash), len(jd) - len(slash)))
+
+    # ------------------------------------------------------------------------------------------ realism
+    seqs = {"valve_no": [int(v["Valve"][1:]) for v in valves_reg],
+            "log_ref": [int(x[2:]) for x in log["log_ref"]],
+            "spid": [int(x[2:10]) for x in sp["SPID"]],
+            "section_ref": [int(x[2:]) for x in jd["section_ref"].unique()],
+            "hydrant": [int(x[1:]) for x in jd["hydrant_no"].unique()],
+            "dma": [int(d["DMA"][3:]) for d in dmas_reg]}
+    arith = [k for k, v in seqs.items() if len(set(np.diff(sorted(set(v))))) <= 1]
+    g.ok("X1 no id column is an arithmetic sequence", not arith, ", ".join(arith) or "%d columns" % len(seqs))
+    names = [d["Name"] for d in dmas_reg]
+    g.ok("X2 districts in code order are not alphabetical", names != sorted(names), "")
+    shapes = {re.sub(r"[A-Z][a-z']+", "W", n) for n in sp["Customer"]}
+    g.ok("X3 customer names take many shapes", len(shapes) > 8, "%d shapes" % len(shapes))
+    ops = list(log["logged_by"])
+    per_ok = all(any(ops[i] != ops[i + p] for i in range(len(ops) - p)) for p in range(1, 9))
+    g.ok("X4 no operator dealt round-robin", per_ok, "")
+    cnt = con.groupby("month").size()
+    g.ok("X5 monthly settlement rows vary", cnt.nunique() > 1, "")
+    g.ok("X6 no document dated after its own file date", "16 November 2026" in docs_text["plan"] and
+         "23 September 2024" in docs_text["condition"] and "1 April 2025" in std and "2026" not in std, "")
+    g.ok("X7 no extract carries a record after its pull", log["local"].max() < pd.Timestamp("2026-11-02") and
+         rows["night"].max() <= pd.Timestamp("2026-04-02") and inflow.index.max() < pd.Timestamp("2026-11-02"),
+         "log to %s, sheets to %s" % (log["local"].max(), rows["night"].max().date()))
+
+    # ------------------------------------------------------------------------------------------ documents
+    for k, s_ in (("standard", "Network Operations Standard NOS 12"), ("plan", "TM107 Ferrars Lane trunk main relining"),
+                  ("condition", "Trunk mains condition assessment 2024")):
+        g.ok("P1 %s read back (positive control)" % k, s_ in docs_text[k] and len(docs_text[k]) > 800,
+             "%d characters" % len(docs_text[k]))
+    g.ok("P2 the reference clause is filed once", std.count("highest hourly flow it carried") == 1, "")
+    allpdf = " ".join(docs_text.values())
+    g.ok("P3 no document names an operated arrangement, the valve log or a past job", not re.search(
+        r"valve log|operations log|June 2026|July 2026|burst|back.?feed|as operated|actually carried", allpdf, re.I)
+         and "valve job" not in allpdf, "positive control: %s" % ("Network Operations Standard" in allpdf))
+    g.ok("P4 no stated factor, margin or threshold on flow", not re.search(r"per cent of|% of|factor|margin|1\.\d+ times|"
+                                                                           r"shear", allpdf, re.I), "")
+    g.ok("P5 the plan lists the re-routed districts", all(W.DCODE[d] in docs_text["plan"] for d in W.REROUTED), "")
+    import subprocess
+    from pypdf import PdfReader
+    strict_ok = True
+    for k, s_ in (("standard", "highest hourly flow it carried in the twelve months"),
+                  ("plan", "out of service from 15 March to 15 September 2027"),
+                  ("condition", "Trunk mains condition assessment 2024")):
+        fp = os.path.join(target, PK.FILES[k])
+        lay = re.sub(r"\s+", " ", subprocess.run(["pdftotext", "-layout", fp, "-"], capture_output=True,
+                                                  text=True).stdout)
+        st_txt = re.sub(r"\s+", " ", " ".join(p_.extract_text() for p_ in PdfReader(fp, strict=True).pages))
+        strict_ok &= s_ in lay and s_ in st_txt
+    g.ok("P6 every PDF reads under a strict reader and poppler's extractor (H25)", strict_ok, "")
+    sub = open(os.path.join(os.path.dirname(target), "submission.md"), encoding="utf-8").read()
+    cited = set(re.findall(r"\b[\w.-]+\.(?:csv|xlsx|pdf)\b", sub)) - {"ferrars_lane_flushing_2027.xlsx",
+                                                                         "ferrars_lane_flushing_note.pdf"}
+    g.ok("P7 every file the write-up cites ships under that name (H8)", cited <= set(files) and len(cited) >= 6,
+         "%d cited" % len(cited))
+
+    # ------------------------------------------------------------------------------------------ distractors
+    tmp = tempfile.mkdtemp(prefix="task501_dx_")
     try:
-        every_row = A.ask2(f)
-    finally:
-        A.AS_AT = keep_asat
-    moved_rows = sum(every_row[k][x] != a2[k][x] for k in a2 for x in ("none", "one"))
-    ok(len(late_ld) > 0 and len(after) > 0 and moved_load > 0 and moved_rows > 0,
-       "SF28: %d doses given by 30 June 2027 were loaded after it and %d were given after it; counted by load date %d of "
-       "10 figures move, counting every row %d" % (len(late_ld), len(after), moved_load, moved_rows))
-    chased = [r for r in w["log"] if r.get("chased")]
-    on_ext = sorted(r["line_ref"] for r in chased if r["line_ref"] in ext)
-    ok(len(chased) >= 3, "SF17: %d confirmed queries still open at the extract were chased and closed, %d on extract "
-       "lines" % (len(chased), len(on_ext)))
-    m = dict(zip(f["merges"]["retired_number"], f["merges"]["surviving_number"]))
-    ok(not (set(m) & set(f["people"]["person_id"])), "ask: no retired registration is active")
-    born_ = A.people_as_born(f)
-    ev = A.resolve_merges(f["events"], f["merges"]).copy()
-    ev = A.clean_events(ev, log)
-    ev = A.reattribute(f["people"], ev)
-    ev = ev[ev["person_id"].isin(set(f["people"]["person_id"]))]
-    dob = dict(zip(born_["person_id"], born_["date_of_birth"]))
-    d = np.array([dt.date.fromisoformat(x).toordinal() for x in ev["date_given"]])
-    fb = np.array([dt.date(int(dob[p][:4]) + 1, int(dob[p][5:7]), int(dob[p][8:10])).toordinal() for p in ev["person_id"]])
-    ok(int(np.sum(np.abs(d - fb) <= 3)) == 0, "ask C1: no dose within three days of a first birthday")
-    ev = ev.assign(o=d).sort_values(["person_id", "o"])
-    gaps = ev.groupby("person_id")["o"].diff().dropna()
-    ok(int(((gaps >= 24) & (gaps <= 32)).sum()) == 0, "ask C1: no two of a person's doses 24 to 32 days apart")
-    first = {p_: dt.date(int(v[:4]) + 1, int(v[5:7]), int(v[8:10])).toordinal() for p_, v in dob.items()}
-    differ = 0
-    asat = dt.date(2027, 6, 30).toordinal()
-    for pid, grp in ev[ev["o"] <= asat].groupby("person_id"):
-        pv = pa = None
-        na = nb = 0
-        for o in grp["o"]:
-            if o >= first[pid] and (pv is None or o - pv >= 28):
-                na, pv = na + 1, o
-            if o >= first[pid] and (pa is None or o - pa >= 28):
-                nb += 1
-            pa = o
-        differ += na != nb
-    ok(differ == 0, "ask C1: the interval counted from the previous valid dose or from any previous dose gives the "
-       "same count for every person")
-    ok(f["people"]["person_id"].is_unique and f["events"]["event_number"].is_unique, "keys: person and event numbers unique")
-    # the golden against the simulation's own truth: each child's own doses (owner), as born
-    truth = {}
-    live = {p_.pid: p_ for p_ in w["people"] if p_.status in S.ACTIVE}
-    reg_here = dict(zip(ppl["person_id"], A.in_region(ppl, "golden")))
-    own = {}
-    for e_ in w["events"]:
-        if e_.kind == "dose":
-            own.setdefault(e_.owner, []).append(e_.date)
-    for k, (lo_, hi_) in A.OPTION_YEARS.items():
-        ids = [p_ for p_, q_ in live.items() if reg_here[p_] and lo_ <= q_.dob.year <= hi_]
-        cnt = {}
-        for p_ in ids:
-            q_ = live[p_]
-            fb_ = dt.date(q_.dob.year + 1, q_.dob.month, q_.dob.day)
-            n_, pv_ = 0, None
-            for d_ in sorted(own.get(p_, [])):
-                if d_ > W.AS_AT or d_ < fb_ or (pv_ is not None and (d_ - pv_).days < 28):
-                    continue
-                n_, pv_ = n_ + 1, d_
-            cnt[p_] = n_
-        truth[k] = (len(ids), sum(1 for p_ in ids if cnt[p_] == 0), sum(1 for p_ in ids if cnt[p_] == 1))
-    ok(not any(fn.startswith(("nds_", "nmrl_")) for fn in files),
-       "SF24 and SF27 retired: the case ask is cut, and no case export or laboratory file ships")
-    ok(all(truth[k] == (a1[k], a2[k]["none"], a2[k]["one"]) for k in a1),
-       "ask fairness: the golden equals the simulation's truth (each child's own doses, from the date it was born) for "
-       "all 15 figures")
-    # ---------------------------------------------------------------- separation and distractors
-    tmp = tempfile.mkdtemp(prefix="t501sep")
-    try:
-        for fn in files:
-            key = [k for k, v in PK.FILES.items() if v == fn][0]
-            if key in PK.CALL_FILES:
-                shutil.copy(os.path.join(target, fn), tmp)
-        R_only = CM.golden(B.call_inputs(tmp))
-        ok(all(abs(R_only[k] - R[k]) < 1e-12 for k in R), "separation: the call computes from its seven files alone")
+        for f in files:
+            if f not in meta["distractor_files"]:
+                shutil.copy(os.path.join(target, f), tmp)
+        cd = S.call(tmp)
+        Ad, _ = S.ask_a(tmp)
+        Bd, _ = S.ask_b(tmp, "golden", rer)
+        g.ok("D1 the call and every ask unchanged with the distractors deleted", cd["flush"] == c["flush"] and Ad == A
+             and Bd == Bg, ", ".join(meta["distractor_files"]))
+        os.remove(os.path.join(tmp, PK.FILES["jobs"]))
+        for k in ("supply", "consumption", "amr"):
+            os.remove(os.path.join(tmp, PK.FILES[k]))
+        ce = S.call(tmp)
+        g.ok("D2 the call is unchanged with every ask-only file deleted", ce["flush"] == c["flush"] and all(
+            ce["peak"][m] == c["peak"][m] for m in cand), "")
     finally:
         shutil.rmtree(tmp)
-    tmp = tempfile.mkdtemp(prefix="t501dis")
+
+    # ------------------------------------------------------------------------------------------ goldens
+    import openpyxl as ox
+    wb = ox.load_workbook(os.path.join(gold, "ferrars_lane_flushing_2027.xlsx"), data_only=True)
+    ws = wb["Flushing call"]
+    vals = {r[0]: r for r in ws.iter_rows(values_only=True) if r and r[0] in figs["mains"]}
+    g.ok("GX1 the workbook's mains and flows equal figures.json", all(
+        vals[m][3] == figs["mains"][m]["highest_hourly_flow_during_works_l_s"] and vals[m][6] == figs["mains"][m]["flush"]
+        for m in figs["mains"]), "")
+    note = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in __import__("pypdf").PdfReader(
+        os.path.join(gold, "ferrars_lane_flushing_note.pdf")).pages))
+    g.ok("GX2 the note leads with the call", figs["call"][:40] in note[:400], "")
+    g.ok("GX3 no em or en dash in any golden or the submission", not re.search("[–—]", note + open(
+        os.path.join(os.path.dirname(target), "submission.md"), encoding="utf-8").read()), "")
+    g.finish()
+
+
+def S_months():
+    return ["2025-11", "2025-12"] + ["2026-%02d" % m for m in range(1, 11)]
+
+
+def _same_without(target, raw_s, c):
+    tmp = tempfile.mkdtemp(prefix="task501_s_")
     try:
-        for fn in files:
-            if fn not in [PK.FILES[k] for k in PK.DISTRACTORS]:
-                shutil.copy(os.path.join(target, fn), tmp)
-        c2 = G.compute(tmp)
-        ok(c2["r1"] == c["r1"] and c2["ask1"] == c["ask1"] and c2["ask2"] == c["ask2"],
-           "distractors: the golden and every ask figure unchanged with both deleted")
+        for f in os.listdir(target):
+            shutil.copy(os.path.join(target, f), tmp)
+        raw_s.to_csv(os.path.join(tmp, PK.FILES["flows"]), index=False)
+        cs = S.call(tmp)
+        return cs["flush"] == c["flush"] and all(round(cs["peak"][m]) == round(c["peak"][m]) and
+                                                 round(cs["ref"][m]) == round(c["ref"][m]) for m in c["rises"])
     finally:
         shutil.rmtree(tmp)
-    ok(not (set(PK.CALL_FILES) & set(PK.ASK_FILES)), "separation: no file is read by both the call and an ask")
-    # ---------------------------------------------------------------- realism and leaks
-    ok(len({a1[k] for k in a1}) == 5 and len({a2[k]["none"] for k in a2}) == 5, "realism: no identical counts across options")
-    ok(all(a1[k] % 100 and a2[k]["none"] % 100 and a2[k]["one"] % 100 for k in a1), "realism: no round ask counts")
-    banned = ["eigen", "next-generation", "next generation", "herd immunity", "mixing matrix", "assortativ", "well-mixed",
-              "random mixing", "contact-adjusted", "term time", "term-time", "school term", "school holiday",
-              "summer holiday", "northern ireland", "twin", "loader", "date of birth", "birth notification", "decade"]
-    texts = {}
-    for fn in files:
-        p = os.path.join(target, fn)
-        if fn.endswith(".pdf"):
-            texts[fn] = pdf_text(p)
-        elif fn.endswith((".csv", ".txt")):
-            texts[fn] = open(p, encoding="utf-8").read()
-        elif fn.endswith((".xlsx", ".docx")):
-            with zipfile.ZipFile(p) as z:
-                texts[fn] = " ".join(z.read(n).decode("utf-8", "replace") for n in z.namelist() if n.endswith(".xml"))
-    for fn, t in texts.items():
-        low = t.lower()
-        ok(not any(b in low for b in banned), "leak sweep: %s names no method or device word" % fn)
-        ok("\u2014" not in t and "\u2013" not in t, "no em or en dash in %s" % fn)
-    for fn in files:
-        raw = open(os.path.join(target, fn), "rb").read()
-        ok(b"ReportLab" not in raw and b"reportlab" not in raw and b"openpyxl" not in raw and b"python-docx" not in raw,
-           "scrub: no library name in %s" % fn)
-    for fn in files:
-        if not fn.endswith((".docx", ".xlsx")):
-            continue
-        with zipfile.ZipFile(os.path.join(target, fn)) as z:
-            names = z.namelist()
-            ct = z.read("[Content_Types].xml").decode()
-            targets = []
-            for rel in (n for n in names if n.endswith(".rels")):
-                base = rel.replace("_rels/", "").rsplit(".rels", 1)[0]
-                folder = base.rsplit("/", 1)[0] + "/" if "/" in base else ""
-                for t in re.findall(r'Target="([^"]+)"', z.read(rel).decode()):
-                    p_ = t[1:] if t.startswith("/") else folder + t
-                    targets.append(os.path.normpath(p_).replace("\\", "/"))
-            app = z.read("docProps/app.xml").decode()
-        ok(not any(n.startswith("customXml/") or "thumbnail" in n for n in names) and "customXml" not in ct
-           and "savePreviewPicture" not in texts.get(fn, ""),
-           "scrub: %s carries no template thumbnail, bibliography store or preview setting" % fn)
-        ok(all(t in names for t in targets) and app.count("<Company") == 1,
-           "scrub: every relationship in %s points at a part it holds, and one Company" % fn)
-    allnames = " ".join(texts.values())
-    import json as _json
-    card = os.path.join(os.path.dirname(os.path.dirname(target)), ".claude", "skills", "fingerprint", "cards", "task501.json")
-    people = _json.load(open(card, encoding="utf-8"))["world"]["people"]
-    ok(sorted(people) == sorted(W.PEOPLE.values()), "personas are the card's people (guard.py names, seed 501)")
-    ok(W.PEOPLE["manager"] in allnames and W.PEOPLE["director"] in allnames,
-       "personas appear in their documents (the options paper's author, the standard's owner)")
-    for g in os.listdir(golden_dir):
-        raw = open(os.path.join(golden_dir, g), "rb").read()
-        ok(b"python-pptx" not in raw and b"openpyxl" not in raw and b"Matplotlib" not in raw, "scrub: golden %s" % g)
-    # H16: no record dated past its extract; forward-looking columns on an allow-list (stock expiry)
-    bounds = {"people": {"registered_on": "2027-06-30", "lho_recorded": "2027-06-30"},
-              "events": {"date_given": "2027-07-02", "loaded_on": "2027-07-03"},
-              "merges": {"merged_on": "2027-06-30"},
-              "queries": {"raised_on": "2027-07-03", "closed_on": "2027-07-03"},
-              "stock": {"counted_on": "2027-06-30"},
-              "participants": {"diary_date": "2023-08-18"}}
-    for key, cols in bounds.items():
-        with open(os.path.join(target, PK.FILES[key]), encoding="utf-8") as fh:
-            rd = list(csv.DictReader(fh))
-        for col, lim in cols.items():
-            mx = max(r[col] for r in rd if r[col])
-            ok(mx <= lim, "H16: %s %s runs to %s, not past %s" % (PK.FILES[key], col, mx, lim))
-    # realism: the survey's counts are not uniform and no participant id block reveals the fieldwork order
-    with open(os.path.join(target, PK.FILES["participants"]), encoding="utf-8") as fh:
-        prs = list(csv.DictReader(fh))
-    first_half = [r["diary_date"] < "2023-06-01" for r in prs[:600]]
-    ok(0.2 < sum(first_half) / 600 < 0.5, "realism: participant numbers run in release order, not by fieldwork period "
-       "(%.0f per cent of the first 600 in May)" % (100 * sum(first_half) / 600))
-    # H8: every file the write-up names ships, in the pack or as a golden
-    sub_path = os.path.join(os.path.dirname(target), "submission.md")
-    if os.path.exists(sub_path):
-        sub = open(sub_path, encoding="utf-8").read()
-        named = set(re.findall(r"[\w-]+\.(?:csv|xlsx|pdf|docx|txt|pptx)", sub))
-        ok(named <= set(files) | {G.XLSX, G.PPTX}, "H8: every file the write-up names ships (%d names)" % len(named))
-        ok("\u2014" not in sub and "\u2013" not in sub, "no em or en dash in submission.md")
-    prompt = open(os.path.join(os.path.dirname(target), "prompt.txt"), encoding="utf-8").read()
-    ok(G.XLSX in prompt and G.PPTX in prompt and set(os.listdir(golden_dir)) == {G.XLSX, G.PPTX},
-       "the goldens are the two files the prompt names")
-    print("CHECKS PASSED: %d assertions" % N_OK[0])

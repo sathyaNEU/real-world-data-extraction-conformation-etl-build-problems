@@ -6,13 +6,13 @@
   "domain": "energy-systems-utilities",
   "subdomain": "asset-condition-maintenance",
   "client_domain": "energy-systems-utilities",
-  "niche": "a water-only company's network operations team deciding which trunk mains to flush before a six-month relining outage re-routes a town's supply in 2027, when each main's settled material is conditioned to the highest flow it has carried and the year's burst repairs and an earlier relining phase ran some mains far above anything the normal valve arrangement implies",
+  "niche": "a water-only company's network operations team deciding which trunk mains to flush before a six-month relining outage re-routes a town's supply in 2027, when each main's settled material is conditioned to the highest flow it has carried and a June valve job and a July burst ran four of the mains the relining loads far above anything the normal valve arrangement implies",
   "objective": "forecasting",
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars interconnector.",
+  "answer_source": "task501/generator/figures.json (call), task501/submission.md block 1",
   "gap": [
     "time",
     "population"
@@ -33,8 +33,8 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the district meters' UTC hours, reads the relining plan's valve changes and the asset register's normal arrangement, and applies the field's conditioning test (a main is disturbed only by flows above its own recent peak) to each main's 2026 flows built from the normal arrangement, flushes every main the relining raises (all six); flagging every main whose flow rises, or every main above its typical daily peak, also flushes all six; only the flows rebuilt through the valve operations log's 2026 arrangements show four of them already carried more than the relining will send them, leaving two to flush.",
-  "domain_test": "The deciding quantity is each trunk main's peak flow under the relining arrangement against the highest flow it has carried, the distribution engineer's test of whether a change of flow will mobilise the material layers that build up on a main's wall (the layers are conditioned to the greatest shear the main has seen, as discolouration research and practice treat them); with another field's nouns (a hospital's corridors, a warehouse's aisles) nothing is conditioned by a past peak, so the task stops making sense.",
+  "analyst_test": "A strong analyst who conforms the district meters' UTC hours, reads NOS 12's planned-change clause and the outage plan's valve settings correctly, and builds each trunk main's reference-year flows from the district meters through the register's normal valve positions flushes all six mains the relining loads (TM104, TM109, TM110, TM112, IC03, IC05); counting every main whose flow rises also gives six, rebuilding only the July burst gives five and only the planned jobs three; only the flows rebuilt through every arrangement the control room's valve log records leave TM112 and IC05 (executed in checks.py on the shipped rows and on the generator's clean truth).",
+  "domain_test": "The deciding quantity is each trunk main's highest hourly flow under the relining arrangement against the highest hourly flow it carried in the reference year, the distribution engineer's discolouration test (a main's wall layers are conditioned to the greatest shear it has carried) on trunk flows that no meter records, built by mass balance from the district meters through the network as valved. With a hospital's nouns (corridors deep-cleaned before a ward closure re-routes patients) the task stops making sense: nothing in a corridor is conditioned by the most traffic it has carried, and no corridor's traffic is rebuilt from a door log through a building plan.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:discolouration-conditioning-by-the-operated-flow-history",
   "layer1": [
@@ -50,11 +50,11 @@
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "district_inlet_flows_2025-05_2026-10.csv",
-    "rows": 236736,
+    "file": "dma_inlet_flows_2025-11_2026-10.csv",
+    "rows": 157704,
     "entity": "one hour's mean flow into one district metered area",
-    "grain": "district x hour",
-    "source": "synthetic (fictional water company telemetry)"
+    "grain": "district x hour (UTC)",
+    "source": "synthetic (fictional water company telemetry historian export)"
   },
   "forum": "operations_desk",
   "forcing_event": "purchase_order_or_contract",
@@ -65,8 +65,12 @@
     "org_type": "water-only company, network operations",
     "invented_names": [
       "Lydden Valley Water",
-      "Hollins Lane",
-      "Brook Street"
+      "Stavenham",
+      "Ferrars Lane",
+      "Coldharbour-Ferrars interconnector",
+      "Highfield-Sallowby interconnector",
+      "Sallowby",
+      "Copt Hill"
     ],
     "people": [
       "Lauren Dobson",
@@ -76,14 +80,14 @@
     ]
   },
   "deliverables": [
-    "t03_relining_flushing_2027.xlsx",
-    "t03_relining_flushing_note.pdf"
+    "ferrars_lane_flushing_2027.xlsx",
+    "ferrars_lane_flushing_note.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "what",
-  "driver": "A unit is disturbed only by a load above the highest it has already carried, so its threshold is the maximum of its own past load; the natural history of that load is rebuilt from the system's standing arrangement, but the system ran for weeks under temporary arrangements that only an operations log records, and those raised several units' maxima above anything the standing arrangement implies, so a threshold read from the standing arrangement flags units a planned change will not in fact disturb.",
-  "driver_concrete": "Each trunk main's wall material is conditioned to the highest flow it has carried; the planner builds each main's 2026 flows from the district meters and the normal valve arrangement and flushes every main the T03 relining raises above its 2026 peak (six), but the valve operations log shows phase 1 of the relining programme (T06, April to June 2026) and the June and July 2026 T04 bursts routed extra districts through T05, T08, T09 and X02 at flows the relining will not reach, which the district turbidity monitors confirm (no rise when those mains' summer peaks passed their normal-arrangement highs), so only T13 and X04 need flushing.",
-  "stump": "Building each trunk main's 2026 flows from the district meters and the normal valve arrangement and flushing every main the Hollins Lane relining sends above its own 2026 peak names all six mains the relining raises; the step that lands it there is reading each main's conditioning off the arrangement on paper, when the valve operations log shows the 2026 phase 1 relining and the June and July bursts ran four of them at flows the relining will not reach, so only two need flushing.",
+  "driver": "A unit is disturbed only by a load above the highest it has already carried, so its threshold is the maximum of its own past load; that load is rebuilt from the system's standing arrangement, but the system ran for days under temporary arrangements that only an operations log records, composed through an asset register, and those raised several units' maxima above the forward load, so the standing arrangement names every unit the change loads where only the never-loaded ones need treatment.",
+  "driver_concrete": "Each trunk main's wall material is conditioned to the highest hourly flow it has carried; the planner builds each main's November 2025 to October 2026 flows from the district meters and the register's normal valve positions and flushes every main the TM107 Ferrars Lane relining loads above that peak (six), but the control room's valve log shows the June 2026 TM108 valve job fed Mill Bridge and Sallowby from Highfield (TM109, TM110, IC03 and a reversed TM115) and the July 2026 TM108 burst fed them from Brook End (TM104), at flows the relining will not reach, so only TM112 (65 against 140 l/s) and IC05 (never in service) need flushing.",
+  "stump": "Building each trunk main's reference-year flows from the district meters through the register's normal valve positions and flushing every main the Ferrars Lane relining sends above its own reference-year peak ends on flush six mains (TM104, TM109, TM110, TM112, IC03 and IC05); the step that lands it there is reading each main's past flows off the arrangement on paper, when the valve log shows the network ran for days in June and July 2026 with the Mill Road main out, fed first through the north and then through the east at flows the relining will not reach, so only TM112 and IC05 need flushing.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task445": "task445 v2 completed a recent window's count for deaths a second body still held out of the register, linking that body's log on personal identifiers (a count completed); here nothing is counted or completed: each trunk main's conditioning threshold is the highest flow it actually carried, rebuilt from the valve operations log's temporary arrangements through the network, and the decision is which mains a forward flow change will lift above that threshold"
@@ -230,7 +234,7 @@
       "deliverable set": "pptx+xlsx"
     }
   ],
-  "notes": "Architecture 5 (2026-11-02). Energy Systems & Utilities (a water utility's distribution network), asset-condition-maintenance, Forecasting: each trunk main's peak flow in the 2027 relining months at 2026's demand, against the highest flow it carried in the year before, the 2026 operated arrangements (an earlier relining phase, burst repairs) included. Gap time first (the history the planner reads is 2026's flows as the normal arrangement implies them, and the decision is on the state that year's operated flows left for the 2027 relining), then population (the arrangement on paper is not the network as operated). G3 decisive (the record of the normal arrangement against the operation the valve log records), G16 (the conditioning threshold, validated by the turbidity monitors), G13 (the relining months against the year that conditioned the mains). Calibration form other: the district turbidity monitors are the physical record of which past flow changes mobilised material (physical_verification is banned in the window by task163). Strategy other: a physical state (each main's conditioning) set by the flows it actually carried, rebuilt from an operations log the arrangement on paper does not reflect; none of the vocabulary's strategies names it (time_semantics nearest, effective-dated arrangements). Personas drawn with guard.py names --geo england --seed 501 (en_GB). Ask layer, provisional, screened as code against the careful-solver cracker at stage 2 before any data is cut: Ask A on the 2025-26 flushing programme's contractor job sheets (the standpipe meter's register read after each main's flush within a night's run and booked as that main's water, bounded by the hydrant register's tested flows); Ask B on phase 1's section acceptance tests (the make-up water a sealed lined section takes moves with the water's temperature, so the test's recorded loss is not all leakage).",
+  "notes": "Architecture 5 (2026-11-02). Energy Systems & Utilities (a water utility's distribution network), asset-condition-maintenance, Forecasting: each trunk main's peak flow in the 2027 relining months at 2026's demand, against the highest flow it carried in the year before, the 2026 operated arrangements (an earlier relining phase, burst repairs) included. Gap time first (the history the planner reads is 2026's flows as the normal arrangement implies them, and the decision is on the state that year's operated flows left for the 2027 relining), then population (the arrangement on paper is not the network as operated). G3 decisive (the record of the normal arrangement against the operation the valve log records), G16 (the conditioning threshold, validated by the turbidity monitors), G13 (the relining months against the year that conditioned the mains). Calibration form other: the district turbidity monitors are the physical record of which past flow changes mobilised material (physical_verification is banned in the window by task163). Strategy other: a physical state (each main's conditioning) set by the flows it actually carried, rebuilt from an operations log the arrangement on paper does not reflect; none of the vocabulary's strategies names it (time_semantics nearest, effective-dated arrangements). Personas drawn with guard.py names --geo england --seed 501 (en_GB). Ask layer as built (stage 3, 2026-11-02): ask A, the 2025-26 flushing programme's water per 100 m of main flushed by diameter and year (10 figures) on the contractor's job sheets, two devices on disjoint blocks (a crew's running standpipe display booked as each section's volume on the 75 to 150 mm mains, linked by the sheet's own gauge flow times minutes; twin-hydrant flushes written one row per hydrant with the section's length on both on the 225 and 300 mm mains); ask B, the re-routed districts' non-household water November 2025 to October 2026 (7 figures), four large users recorded in the DMA their premises sit in and supplied from the neighbour, each using more than its recorded DMA's whole inflow in 624 to 1,995 hours. Cracker 0 of 17, mirror leakage 41.2, pair ceiling 50.3 (generator/ceiling.py).",
   "registered": "2026-11-02T18:16:10Z",
   "shell": {
     "question form": "what",

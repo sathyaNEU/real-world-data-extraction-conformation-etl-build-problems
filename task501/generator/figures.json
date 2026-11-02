@@ -1,83 +1,100 @@
 {
- "call": "Option B, the catch-up for those born 2008 to 2012",
- "reproduction_number": {
-  "No catch-up": "1.3",
-  "Option A": "1.3",
-  "Option B": "0.9",
-  "Option C": "1.3",
-  "Option D": "1.3",
-  "Option E": "1.3"
- },
- "reproduction_number_unrounded": {
-  "No catch-up": 1.2992,
-  "Option A": 1.2882,
-  "Option B": 0.8923,
-  "Option C": 1.2917,
-  "Option D": 1.2923,
-  "Option E": 1.2888
- },
- "R0": 15,
- "region_immune_per_cent": "95.2",
- "herd_immunity_threshold_per_cent": "93.3",
- "default_R0_times_susceptible_share": "0.7",
- "default_every_diary_reproduction_number": "0.9",
- "susceptible_share_15_19_per_cent": "11.2",
- "susceptible_share_region_per_cent": "4.8",
- "diaries_term": "2,520",
- "diaries_summer": "5,040",
- "people_made_immune": {
-  "A": "790",
-  "B": "1,470",
-  "C": "540",
-  "D": "1,590",
-  "E": "2,250"
- },
- "ask1_register_residents": {
-  "A": "35,840",
-  "B": "33,665",
-  "C": "29,810",
-  "D": "31,016",
-  "E": "58,570"
- },
- "ask2_no_valid_dose": {
-  "A": "3,576",
-  "B": "4,354",
-  "C": "2,897",
-  "D": "5,029",
-  "E": "8,597"
- },
- "ask2_one_valid_dose": {
-  "A": "4,795",
-  "B": "6,155",
-  "C": "4,005",
-  "D": "7,414",
-  "E": "11,964"
- },
- "option_birth_years": {
-  "A": "2013 to 2017",
-  "B": "2008 to 2012",
-  "C": "2003 to 2007",
-  "D": "1993 to 1997",
-  "E": "1993 to 2002"
- },
- "assessment_date": "1 January 2028",
- "register_as_at": "30 June 2027",
- "dates": [
-  "1 July 2024",
-  "28 days",
-  "2 to 26 May 2023",
-  "3 July to 18 August 2023",
-  "6 to 45 days",
-  "12 to 17 months"
- ],
- "age_group_teenagers": "15 to 19",
- "citations": [
-  "PS-07 3.1",
-  "PS-07 3.2",
-  "PS-07 3.3",
-  "PS-07 3.4",
-  "PS-07 3.5",
-  "PS-07 3.6",
-  "guidelines 12.5"
- ]
+  "call": "Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars interconnector.",
+  "flush": [
+    "IC05",
+    "TM112"
+  ],
+  "mains": {
+    "IC03": {
+      "name": "Highfield-Sallowby interconnector",
+      "highest_hourly_flow_during_works_l_s": 84,
+      "highest_hourly_flow_carried_nov2025_oct2026_l_s": 141,
+      "flush": "No"
+    },
+    "IC05": {
+      "name": "Coldharbour-Ferrars interconnector",
+      "highest_hourly_flow_during_works_l_s": 121,
+      "highest_hourly_flow_carried_nov2025_oct2026_l_s": 0,
+      "flush": "Yes"
+    },
+    "TM104": {
+      "name": "Eastgate main",
+      "highest_hourly_flow_during_works_l_s": 229,
+      "highest_hourly_flow_carried_nov2025_oct2026_l_s": 263,
+      "flush": "No"
+    },
+    "TM109": {
+      "name": "North Road main",
+      "highest_hourly_flow_during_works_l_s": 179,
+      "highest_hourly_flow_carried_nov2025_oct2026_l_s": 228,
+      "flush": "No"
+    },
+    "TM110": {
+      "name": "Highfield main",
+      "highest_hourly_flow_during_works_l_s": 124,
+      "highest_hourly_flow_carried_nov2025_oct2026_l_s": 177,
+      "flush": "No"
+    },
+    "TM112": {
+      "name": "Coldharbour Road main",
+      "highest_hourly_flow_during_works_l_s": 140,
+      "highest_hourly_flow_carried_nov2025_oct2026_l_s": 65,
+      "flush": "Yes"
+    }
+  },
+  "flushing_water_m3_per_100m": {
+    "75 mm 2025": "1.5",
+    "75 mm 2026": "1.5",
+    "100 mm 2025": "2.7",
+    "100 mm 2026": "2.7",
+    "150 mm 2025": "6.1",
+    "150 mm 2026": "6.2",
+    "225 mm 2025": "13.8",
+    "225 mm 2026": "14.0",
+    "300 mm 2025": "23.0",
+    "300 mm 2026": "22.1"
+  },
+  "nonhousehold_water_ml": {
+    "BRK134 Ferrars": "141.9",
+    "BRK137 St Anne's": "40.5",
+    "BRK142 Mill Bridge": "203.2",
+    "BRK146 Weir Lane": "85.7",
+    "BRK153 Sallowby": "160.7",
+    "BRK155 Sallowby Park": "104.4",
+    "BRK168 Hollow Lane": "26.7"
+  },
+  "moved_supply_points": [
+    {
+      "logger": "AMR6641",
+      "customer": "Stavenham Linen Services",
+      "recorded": "BRK146",
+      "supplied": "BRK142"
+    },
+    {
+      "logger": "AMR7233",
+      "customer": "Pennick Dairies Ltd",
+      "recorded": "BRK137",
+      "supplied": "BRK134"
+    },
+    {
+      "logger": "AMR8131",
+      "customer": "Sallowby Mill Bottling Co",
+      "recorded": "BRK155",
+      "supplied": "BRK153"
+    },
+    {
+      "logger": "AMR8432",
+      "customer": "Hollow Lane Leisure Centre",
+      "recorded": "BRK168",
+      "supplied": "BRK155"
+    }
+  ],
+  "diameters_mm": [
+    75,
+    100,
+    150,
+    225,
+    300
+  ],
+  "per_metres": 100
 }

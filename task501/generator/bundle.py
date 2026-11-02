@@ -1,99 +1,108 @@
-"""Read the shipped pack back: the call's inputs into callmodel.CallInputs, the ask's files into frames. The golden
-and the checks compute from these, never from simulation state."""
+"""Read the shipped pack back. The golden, the ladder and the checks compute from these readers, never from the
+simulation; verify.py reads the same files on its own code path."""
 import csv
+import datetime as dt
 import os
+import re
 
 import numpy as np
 import pandas as pd
 
-import callmodel as CM
 import pack as PK
-import world as W
+
+UK_BST = [(dt.datetime(2025, 3, 30, 1), dt.datetime(2025, 10, 26, 1)), (dt.datetime(2026, 3, 29, 1), dt.datetime(2026, 10, 25, 1))]
 
 
 def path(target, key):
     return os.path.join(target, PK.FILES[key])
 
 
-def call_inputs(target):
-    prof = {}
-    with open(path(target, "profile"), encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            y = 1927 if r["year_of_birth"].startswith("1927") else int(r["year_of_birth"])
-            prof[y] = float(r["per_cent_immune"])
-    persons, yob = {}, {}
-    with open(path(target, "projection"), encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            a = 100 if r["age_at_1_january_2028"].startswith("100") else int(r["age_at_1_january_2028"])
-            y = 1927 if r["year_of_birth"].startswith("1927") else int(r["year_of_birth"])
-            persons[a] = persons.get(a, 0) + int(r["persons"])
-            yob[a] = y
-    parts, contacts = survey_from_pack(target)
-    natpop = population_from_pack(target)
-    opts = options_from_paper(target)
-    inp = CM.CallInputs(prof, persons, yob, CM.survey_matrix(parts, contacts, CM.term_diary).T, natpop, opts)
-    inp.survey = (parts, contacts)
-    return inp
+def local_to_utc(t):
+    """Wall-clock time in the UK to UTC."""
+    for a, b in UK_BST:
+        if a + dt.timedelta(hours=1) <= t < b + dt.timedelta(hours=1):
+            return t - dt.timedelta(hours=1)
+    return t
 
 
-def survey_from_pack(target):
-    """The public use file read back: participants as (part_id, band index, diary date), contacts as (part_id, band
-    index, -1 for Unknown)."""
-    band = {lab: k for k, lab in enumerate(W.GROUP_LABELS)}
-    parts = []
-    with open(path(target, "participants"), encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            parts.append((r["part_id"], band[r["age_band"]], r["diary_date"]))
-    contacts = []
-    with open(path(target, "contacts"), encoding="utf-8") as f:
-        for r in csv.DictReader(f):
-            contacts.append((r["part_id"], band.get(r["contact_age_band"], -1)))
-    return parts, contacts
-
-
-def population_from_pack(target):
-    """The survey's population table (the State at 1 January 2023 by age band), read back from its workbook; the
-    all-ages row must equal the bands' sum."""
-    import openpyxl
-    wb = openpyxl.load_workbook(path(target, "population"), data_only=True)
-    ws = wb["Population"]
-    rows = list(ws.iter_rows(min_row=2, max_row=2 + W.NG, values_only=True))
-    assert [r[0] for r in rows[:W.NG]] == W.GROUP_LABELS and rows[W.NG][0] == "All ages"
-    assert int(rows[W.NG][1]) == sum(int(r[1]) for r in rows[:W.NG])
-    return np.array([float(r[1]) for r in rows[:W.NG]])
-
-
-def options_from_paper(target):
-    """The options paper's table read back from the PDF text: per option, its years of birth, the people, the
-    estimated susceptible and the expected people made immune; option E as the note under the table splits its people
-    made immune between its two spans of years."""
-    import re
+def pdf_text(target, key):
     from pypdf import PdfReader
-    text = " ".join(p.extract_text() for p in PdfReader(path(target, "options")).pages)
-    text = re.sub(r"\s+", " ", text)
-    num = lambda x: int(x.replace(",", ""))
-    spans = list(re.finditer(r"(\d{4}) to (\d{4}) (\d{1,2}) to (\d{1,2}) ", text))
-    out = {k: [] for k in W.OPTION_KEYS}
-    for k, m in enumerate(spans):
-        chunk = text[m.end(): spans[k + 1].start() if k + 1 < len(spans) else m.end() + 600]
-        r = re.search(r"(\d{1,3}(?:,\d{3})+) (\d{1,3}(?:,\d{3})*) (\d{2})% (\d{1,3}(?:,\d{3})*)", chunk)
-        if not r:
-            continue
-        y = (int(m.group(1)), int(m.group(2)))
-        key = next(o for o in W.OPTION_KEYS if W.OPTIONS[o]["years"] == y)
-        out[key].append(dict(years=y, people=num(r.group(1)), susceptible=num(r.group(2)), made=num(r.group(4))))
-    s = re.search(r"Of option E.s ([\d,]+) expected people made immune, ([\d,]+) are among those born (\d{4}) to (\d{4}) "
-                  r"and ([\d,]+) among those born (\d{4}) to (\d{4})", text)
-    parts = [dict(years=(int(s.group(3)), int(s.group(4))), made=num(s.group(2))),
-             dict(years=(int(s.group(6)), int(s.group(7))), made=num(s.group(5)))]
-    assert len(out["E"]) == 1 and num(s.group(1)) == out["E"][0]["made"] == sum(p["made"] for p in parts)
-    out["E"] = parts
-    return out
+    txt = " ".join(p.extract_text() for p in PdfReader(path(target, key)).pages)
+    return re.sub(r"\s+", " ", txt)
 
 
-def ask_frames(target):
-    people = pd.read_csv(path(target, "people"), dtype=str).rename(columns={"person_number": "person_id"})
-    events = pd.read_csv(path(target, "events"), dtype=str).rename(columns={"person_number": "person_id"})
-    merges = pd.read_csv(path(target, "merges"), dtype=str)
-    log = pd.read_csv(path(target, "queries"), dtype=str, keep_default_na=False)
-    return dict(people=people, events=events, merges=merges, log=log)
+def _sheet_rows(ws):
+    rows = list(ws.iter_rows(values_only=True))
+    hdr = list(rows[2])
+    return [dict(zip(hdr, r)) for r in rows[3:]]
+
+
+def register(target):
+    import openpyxl
+    wb = openpyxl.load_workbook(path(target, "register"), data_only=True)
+    mains = _sheet_rows(wb["Mains"])
+    valves = _sheet_rows(wb["Valves"])
+    dmas = _sheet_rows(wb["Districts"])
+    return mains, valves, dmas
+
+
+def flows(target):
+    """District inflows as an hour x district frame (UTC hours), exact re-sent rows dropped, blank hours NaN."""
+    df = pd.read_csv(path(target, "flows"), dtype=str, keep_default_na=False)
+    n0 = len(df)
+    df = df.drop_duplicates()
+    df["flow"] = pd.to_numeric(df["flow_l_s"].replace("", np.nan))
+    wide = df.pivot(index="reading_utc", columns="dma", values="flow").sort_index()
+    wide.index = pd.to_datetime(wide.index)
+    return wide, dict(rows=n0, unique=len(df), dup=n0 - len(df))
+
+
+def outlet(target):
+    df = pd.read_csv(path(target, "outlet"))
+    s = pd.Series(df["outlet_flow_l_s"].values, index=pd.to_datetime(df["reading_utc"]))
+    return s
+
+
+def valve_log(target):
+    df = pd.read_csv(path(target, "valvelog"), dtype=str, keep_default_na=False)
+    df["local"] = pd.to_datetime(df["date"] + " " + df["time"], format="%d/%m/%Y %H:%M")
+    df["utc"] = [local_to_utc(t.to_pydatetime()) for t in df["local"]]
+    return df
+
+
+def plan(target):
+    """The outage plan's valve operations (valve, Open or Shut) in its own order, the works dates and its date."""
+    txt = pdf_text(target, "plan")
+    sec = txt[txt.index("Step Valve Main Location Set to"):txt.index("are supplied from Coldharbour")]
+    ops = re.findall(r"\b(V\d{5})\b.*?\b(Open|Shut)\b", sec)
+    works = re.search(r"out of service from (\d{1,2} \w+) to (\d{1,2} \w+ \d{4})", txt)
+    date = re.search(r"1\.0 (\d{1,2} \w+ \d{4})", txt)
+    return dict(ops=ops, works=works.groups() if works else None, date=date.group(1) if date else None, text=txt)
+
+
+def turbidity(target):
+    df = pd.read_csv(path(target, "turbidity"), dtype=str, keep_default_na=False)
+    df["ntu"] = pd.to_numeric(df["turbidity_ntu"].replace("", np.nan))
+    df["t"] = pd.to_datetime(df["reading_utc"])
+    return df
+
+
+def jobs(target):
+    df = pd.read_csv(path(target, "jobs"), dtype=str, keep_default_na=False)
+    return df
+
+
+def supply(target):
+    import openpyxl
+    wb = openpyxl.load_workbook(path(target, "supply"), data_only=True)
+    rows = _sheet_rows(wb["Supply points"])
+    return pd.DataFrame(rows)
+
+
+def consumption(target):
+    return pd.read_csv(path(target, "consumption"), dtype={"spid": str, "month": str, "basis": str})
+
+
+def amr(target):
+    df = pd.read_csv(path(target, "amr"), dtype={"logger_id": str, "read_start_local": str})
+    return df

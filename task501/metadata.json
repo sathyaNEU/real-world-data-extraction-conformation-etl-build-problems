@@ -1,166 +1,147 @@
 {
   "task": "task501",
-  "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health Region below one, with each option's register residents and its unvaccinated and part-vaccinated people",
-  "domain": "Epidemiology & Public Health",
-  "subdomain": "infectious-disease transmission modelling (measles' winter reproduction number under each autumn catch-up option)",
+  "title": "Which trunk mains, if any, Lydden Valley Water must flush before the TM107 Ferrars Lane main comes out for relining in March 2027, with its 2025-26 flushing water per 100 m by diameter and the re-routed districts' non-household water",
+  "domain": "Energy Systems & Utilities",
+  "subdomain": "asset-condition-maintenance (water distribution trunk mains)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, with each option's register residents and its no-dose and one-dose counts",
-  "as_of": "2027-07-12",
+  "prompt_shape": "07 (grid of cells): each trunk main the relining loads with its highest hourly flow during the works and whether to flush it, the flushing water per 100 m by diameter and year, and the non-household water by re-routed district",
+  "as_of": "2026-11-16",
   "deliverables": [
-    "winter_measles_2027.xlsx",
-    "measles_readiness_2027.pptx"
+    "ferrars_lane_flushing_2027.xlsx",
+    "ferrars_lane_flushing_note.pdf"
   ],
   "distractor_files": [
-    "national_mmr_uptake_report_2027q1.pdf",
-    "mmr_stock_return_2027-06-30.csv"
+    "trunk_mains_condition_assessment_2024.pdf",
+    "stavenham_weather_daily_2025-11_2026-10.csv",
+    "regulatory_tap_samples_2025-11_2026-10.csv"
   ],
   "input_gates": {
-    "files": 16,
+    "files": 14,
     "formats": [
       "csv",
       "pdf",
       "xlsx"
     ],
-    "largest_file": "register_mmr_events_born_1993-2017.csv",
-    "largest_file_rows": 283131
+    "largest_file": "dma_inlet_turbidity_2025-11_2026-10.csv",
+    "largest_file_rows": 315360
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional regional health authority (Oriel Health Region), its immunisation register, a fictional national contact survey and immunity profile; no real person, patient or practice is depicted, and the place names are used as geography only.",
-      "date": "2027-07-12",
+      "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a fictional water-only company (Lydden Valley Water) and town (Stavenham); no real person, customer, company or asset is depicted.",
+      "date": "2026-11-16",
       "license": "CC0-1.0 (original work)"
     }
   ],
   "provenance": [
     {
-      "file": "gp_return_queries_mmr_2005-2027.csv",
-      "covers": "Query log for GP return lines with an MMR dose, from January 2005",
-      "issued_by": "Regional Immunisation Office",
-      "as_of": "2027-07-03",
-      "extracted": "2027-07-03",
-      "rows": 1838,
+      "file": "dma_inlet_flows_2025-11_2026-10.csv",
+      "covers": "Hourly mean inflow at each district metered area's inlet meter, historian export (UTC)",
+      "issued_by": "Network Operations telemetry",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 157704
+    },
+    {
+      "file": "copt_hill_outlet_flow_2025-11_2026-10.csv",
+      "covers": "Hourly treated water outflow at Copt Hill works (UTC)",
+      "issued_by": "Network Operations telemetry",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 8760
+    },
+    {
+      "file": "trunk_mains_register_2026-11.xlsx",
+      "covers": "Stavenham trunk mains register: mains, valves and district metered areas",
+      "issued_by": "Asset Information",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 60
+    },
+    {
+      "file": "control_room_valve_log_2025-11_2026-10.csv",
+      "covers": "Control room valve operations log, Stavenham network, November 2025 to October 2026",
+      "issued_by": "Control Room",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 2282
+    },
+    {
+      "file": "dma_inlet_turbidity_2025-11_2026-10.csv",
+      "covers": "Fifteen-minute turbidity at monitored district inlets (UTC)",
+      "issued_by": "Water Quality telemetry",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 315360
+    },
+    {
+      "file": "nos12_planned_supply_route_changes_issue3.pdf",
+      "covers": "Network Operations Standard NOS 12, issue 3",
+      "issued_by": "Lydden Valley Water",
+      "as_of": "2025-03-18",
       "license": "CC0-1.0 (original work)"
     },
     {
-      "file": "immunisation_guidelines_ch12_mmr_excerpt.pdf",
-      "covers": "National immunisation guidelines, chapter 12 (MMR), sections 12.4 to 12.6",
-      "issued_by": "National immunisation programme",
-      "as_of": "2025-11-24",
+      "file": "tm107_ferrars_lane_relining_outage_plan_v1.pdf",
+      "covers": "Outage plan for the TM107 Ferrars Lane relining, version 1.0",
+      "issued_by": "Network Operations",
+      "as_of": "2026-11-16",
       "license": "CC0-1.0 (original work)"
     },
     {
-      "file": "lho_codes_national_2024-07.csv",
-      "covers": "Local health office codes in force from 1 July 2024",
-      "issued_by": "National health service planning unit",
-      "as_of": "2024-07-01",
-      "rows": 36,
+      "file": "mains_flushing_job_sheets_2025-26.csv",
+      "covers": "Mains flushing contractor's job sheets, 2025-26 programme",
+      "issued_by": "Mains flushing contractor",
+      "as_of": "2026-04-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 364
+    },
+    {
+      "file": "nonhousehold_supply_points_2026-11.xlsx",
+      "covers": "Non-household supply points in Stavenham",
+      "issued_by": "Business Customers",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 770
+    },
+    {
+      "file": "nonhousehold_monthly_consumption_2025-04_2026-10.csv",
+      "covers": "Monthly settled consumption per non-household supply point, April 2025 to October 2026",
+      "issued_by": "Business Customers",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 13865
+    },
+    {
+      "file": "amr_large_users_hourly_2025-11_2026-10.csv",
+      "covers": "Hourly consumption from the loggers on large non-household meters (local time)",
+      "issued_by": "Business Customers",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 140160
+    },
+    {
+      "file": "trunk_mains_condition_assessment_2024.pdf",
+      "covers": "Trunk mains condition assessment 2024",
+      "issued_by": "Asset Management",
+      "as_of": "2024-09-23",
       "license": "CC0-1.0 (original work)"
     },
     {
-      "file": "lho_revision_circular_2024-04.pdf",
-      "covers": "Circular 03/2024: local health office areas, revision of 1 July 2024",
-      "issued_by": "National health service planning unit",
-      "as_of": "2024-04-12",
-      "license": "CC0-1.0 (original work)"
+      "file": "stavenham_weather_daily_2025-11_2026-10.csv",
+      "covers": "Daily weather at Stavenham (Copt Hill)",
+      "issued_by": "Network Operations",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 365
     },
     {
-      "file": "measles_immunity_profile_oriel_2027-05.csv",
-      "covers": "Measles immunity profile by year of birth, Oriel Health Region, projected to 1 January 2028",
-      "issued_by": "National immunisation programme",
-      "as_of": "2027-05-14",
-      "rows": 101,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "mmr_catch_up_options_autumn_2027.pdf",
-      "covers": "Autumn 2027 MMR catch-up: options paper",
-      "issued_by": "Regional Immunisation Office",
-      "as_of": "2027-06-09",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "mmr_stock_return_2027-06-30.csv",
-      "covers": "MMR stock return at 30 June 2027",
-      "issued_by": "Regional Immunisation Office",
-      "as_of": "2027-06-30",
-      "rows": 26,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "national_mmr_uptake_report_2027q1.pdf",
-      "covers": "MMR uptake at 24 months and 5 years, quarter 1 2027",
-      "issued_by": "National immunisation programme",
-      "as_of": "2027-06-20",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "nscs_2023_contacts.csv",
-      "covers": "National Social Contact Survey 2023, public use file: contacts",
-      "issued_by": "National Social Contact Survey",
-      "as_of": "2024-03-08",
-      "rows": 85393,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "nscs_2023_participants.csv",
-      "covers": "National Social Contact Survey 2023, public use file: participants",
-      "issued_by": "National Social Contact Survey",
-      "as_of": "2024-03-08",
-      "rows": 7560,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "nscs_2023_population_by_age_band.xlsx",
-      "covers": "National Social Contact Survey 2023, public use file: the statistics office's estimate of the population of the State at 1 January 2023 by age band",
-      "issued_by": "National Social Contact Survey",
-      "as_of": "2024-03-08",
-      "rows": 16,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "population_projection_oriel_2028-01-01.csv",
-      "covers": "Projected usual residents of Oriel Health Region at 1 January 2028 by county and single year of age",
-      "issued_by": "Department of Public Health, health intelligence",
-      "as_of": "2027-03-22",
-      "rows": 404,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "ps07_measles_winter_planning_standard.pdf",
-      "covers": "PS-07 Measles winter planning standard, version 3.0",
-      "issued_by": "Department of Public Health",
-      "as_of": "2026-03-10",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "register_merges_born_1993-2017.csv",
-      "covers": "Regional immunisation register extract: merged registrations, people born 1993 to 2017",
-      "issued_by": "Regional immunisation register",
-      "as_of": "2027-06-30",
-      "extracted": "2027-07-03",
-      "rows": 3863,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "register_mmr_events_born_1993-2017.csv",
-      "covers": "Regional immunisation register extract: MMR events, people born 1993 to 2017",
-      "issued_by": "Regional immunisation register",
-      "as_of": "2027-06-30",
-      "extracted": "2027-07-03",
-      "rows": 283131,
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "file": "register_people_active_born_1993-2017.csv",
-      "covers": "Regional immunisation register extract: people with an active registration, born 1993 to 2017",
-      "issued_by": "Regional immunisation register",
-      "as_of": "2027-06-30",
-      "extracted": "2027-07-03",
-      "rows": 166518,
-      "license": "CC0-1.0 (original work)"
+      "file": "regulatory_tap_samples_2025-11_2026-10.csv",
+      "covers": "Regulatory samples at customer taps, by water supply zone",
+      "issued_by": "Water Quality",
+      "as_of": "2026-11-02",
+      "license": "CC0-1.0 (original work)",
+      "rows": 286
     }
-  ],
-  "created": "2026-10-12",
-  "generator": "task501/generator/build.py"
+  ]
 }

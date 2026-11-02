@@ -1,12 +1,12 @@
 {
   "task": "task501",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "energy-systems-utilities/asset-condition-maintenance",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-02",
-  "stump": "Building each trunk main's 2026 flows from the district meters and the normal valve arrangement and flushing every main the Hollins Lane relining sends above its own 2026 peak names all six mains the relining raises; the step that lands it there is reading each main's conditioning off the arrangement on paper, when the valve operations log shows the 2026 phase 1 relining and the June and July T04 jobs ran four of them at flows the relining will not reach, so only two need flushing.",
+  "stump": "Building each trunk main's reference-year flows from the district meters through the register's normal valve positions and flushing every main the Ferrars Lane relining sends above its own reference-year peak ends on flush six mains (TM104, TM109, TM110, TM112, IC03 and IC05); the step that lands it there is reading each main's past flows off the arrangement on paper, when the valve log shows the network ran for days in June and July 2026 with the Mill Road main out, fed first through the north and then through the east at flows the relining will not reach, so only TM112 and IC05 need flushing.",
   "architecture": 5,
   "round": 1,
   "loops": 0,
@@ -16,21 +16,22 @@
     "guard_check": "PASS on the registered card (NOTE test.same_puzzle_older against task445 v2, differentiated)"
   },
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-02",
+    "line": "PASS task501: 61 checks, 0 FAIL, 0 WARN"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK) 2026-11-02 --asof 2026-11-16; every REVIEW line ruled harmless in the design note's ## Leak check",
+    "reader": "clean on 4dd0c077 (Q1 quoted NOS 12 4.2 and 4.3 as the estimand, no main named; Q2 to Q4 none; Q6 an analytical choice; every sweep line harmless; one remark, two premises named Mill Bridge Garage, plausible)"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "PASS 2026-11-02 (NOTE test.same_puzzle_older against task445 v2, differentiated)",
+    "nearest": "task164 at 0.11 (driver); surface: one promoted pair, task131 at 0.101, carried by the deliverable species and formats alone (pdf+xlsx), no shared names, files, schemas or constructions"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "on 4dd0c077: every figure reproduced (works peaks 229.4/178.9/124.0/140.4/84.3/120.6, references 263.3/227.6/177.4/65.2/141.0/0, both asks); call unchanged under S-flag rows, missing hours, valve state at either end of the hour and the window edges; Gate G analytical_non_defect; Gate H pass (analytical, read as borderline toward rule application); two optional residuals closed in the fork table and asserted (SF17 literal reading, SF20 same call), md5 unchanged"
   },
   "returned": [
     {
@@ -69,9 +70,9 @@
       "judge": "2026-11-02 pass 4 on cut 84e4046b: NOT_DETERMINISTIC, SEND_BACK on the register asks (determinism_check_report_pass4.md): the call and all six reproduction numbers forced and reproduced, but the 104 decade-early dates of birth and the 228 same-day GP lines given to a twin read as unfiled inferences; read literally (dates of birth as held; a same-day second line invalid under 12.5.2) the people and dose counts move (A 35,798 and B 33,629 people; no dose A 3,581 to E 8,620, one dose A 4,842 to E 12,000)"
     }
   ],
-  "resume": "Stage 2 (design) of architecture 5: write the default path, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and ask sheet; screen both ask devices as code against the careful-solver cracker before any data is cut; then precut.py.",
+  "resume": "SHIPPED 2026-11-02 (architecture 5, target.zip 4dd0c077): pending the portal. A portal result routes per build-pipeline Returned tasks.",
   "approved": null,
-  "delivered": "2026-10-14",
+  "delivered": "2026-11-02",
   "portal": [
     {
       "version": "v2",
@@ -126,5 +127,16 @@
       "status_before": "SHIPPED"
     },
     "resume": "RE-ROOT at stage 1 (2026-11-02): the ask layer cannot be carried by this world's records. The re-sited register ask (D-alpha, dates of birth keyed a decade low; D-beta, a twin's GP lines on the co-twin's registration) died at the judge, pass 4 SEND_BACK: each device needs a rule no file states, and filing it hands the device to the careful solver; every earlier ask layer and every full-replacement candidate is spent (Tried and rejected). The call is sound (all six reproduction numbers forced, pass 4), but a new draw, dataset and generator under the same objective (Forecasting & Predictive Modeling) and number is owed, in another world. The committed cut 84e4046b is the dead rework, kept as its record; the delivered 10-14 version stays on the portal as delivered."
+  },
+  "built": {
+    "date": "2026-11-02",
+    "target_zip_md5": "4dd0c07728517f0c7278c201bc196350",
+    "checks": "99 assertions, 0 failed",
+    "verify": "all figures reproduced from the bundle",
+    "rebuild": "byte-identical: 14 pack files, 2 goldens, figures.json",
+    "figures_check": "64 figures in blocks 1 to 4, 0 absent",
+    "voice_check": "PASS",
+    "ceiling": "cracker 0 of 17, mirror leakage 41.2, pair ceiling 50.3 (generator/ceiling.py)",
+    "answer": "Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars interconnector."
   }
 }

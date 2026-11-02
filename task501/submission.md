@@ -1,55 +1,57 @@
 ## Tags
 
-**Domain:** Epidemiology & Public Health (infectious-disease transmission modeling).
+**Domain:** Energy Systems & Utilities (asset condition and maintenance: water distribution trunk mains).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**We should fund option B, the MMR catch-up for those born 2008 to 2012: it is the only option that brings measles' reproduction number in the region below one for winter 2027-28 (0.9, against 1.3 with no catch-up).** Not no catch-up: the region is 95.2 per cent immune (0.7 as R0 times the susceptible share) and every diary in the contact survey together gives 0.9, but two thirds of those diaries were kept in the school summer holidays, when the 15 to 19-year-olds, 11.2 per cent susceptible, have under a fifth of their contacts with each other against more than half in term, and the winter runs in term. Not D or E, the least immune cohort and the most people made immune, which leave it at 1.3. Not A or C, which leave it at 1.3.
+**Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars interconnector.**
+TM112 will carry 140 l/s during the works against at most 65 l/s in November 2025 to October 2026, and IC05 121 l/s against none. Not TM104, TM109, TM110 or IC03: the relining loads them to 229, 179, 124 and 84 l/s, below the 263, 228, 177 and 141 l/s they carried in the June and July 2026 Mill Road jobs. Not all six mains the relining loads, which is what flows read through the register's normal valve positions give.
 
 ## 2. Critical Components
 
-1. Reproduction number with no catch-up, winter 2027-28, from the survey's term-time diaries scaled to R0 15: **1.3**
-2. Reproduction number under option B: **0.9**
-3. Reproduction number under options A, C, D and E: **1.3** each
-4. Susceptible share of 15 to 19-year-olds on 1 January 2028: **11.2 per cent**, against **4.8 per cent** across the region
+1. The relining arrangement sends more water through six trunk mains in every hour: TM104, TM109, TM110, TM112, IC03 and IC05.
+2. Highest hourly flow during the works: TM104 **229**, TM109 **179**, TM110 **124**, TM112 **140**, IC03 **84** and IC05 **121** l/s.
+3. Highest hourly flow carried in November 2025 to October 2026, through the valve positions in force each hour: TM104 **263**, TM109 **228**, TM110 **177**, TM112 **65**, IC03 **141** and IC05 **0** l/s.
 
 ## 3. Step-by-Step Solution
 
-1. Joined measles_immunity_profile_oriel_2027-05.csv to population_projection_oriel_2028-01-01.csv by year of birth (PS-07 3.3 and 3.4): each age band's susceptible share on 1 January 2028, 11.2 per cent for 15 to 19 and 4.8 per cent overall.
-2. Built the contact matrix (mean contacts per day by participant and contact age band) from the diaries in nscs_2023_participants.csv and nscs_2023_contacts.csv kept in school term, 2 to 26 May 2023, since the 3 July to 18 August 2023 diaries fell in the school summer holidays and PS-07 3.1 needs the figure below one throughout a winter that runs in term.
-3. Multiplied it by each band's susceptible share and scaled it so that a wholly susceptible region gives the R0 of 15 (PS-07 3.2): its dominant eigenvalue is 1.3 with no catch-up, so a catch-up is needed (PS-07 3.6).
-4. Took each option's expected people made immune in mmr_catch_up_options_autumn_2027.pdf off the susceptibles of its birth years (PS-07 3.5) and recomputed: option B 0.9; options A, C, D and E 1.3.
-5. Counted each option's residents in register_people_active_born_1993-2017.csv by the year each was born, reading each lho_code in the scheme in force on its lho_recorded date (circular 03/2024: LH27 recorded before 1 July 2024 is Monaghan West, in the region) and reading a date_of_birth ten years on where the child was registered 6 to 45 days after the date ten years on and had its first GP dose 12 to 17 months after it (a birth registration and the schedule's first dose, the decade keyed one early).
-6. Counted each person's valid doses in register_mmr_events_born_1993-2017.csv, re-pointed through register_merges_born_1993-2017.csv and without the GP lines gp_return_queries_mmr_2005-2027.csv shows replaced or withdrawn, giving the second of two GP lines one registration holds from one day to its twin (the other registration with its date of birth, sex, practice, registration date and address, which holds no GP line), under guidelines 12.5, given by 30 June 2027.
-7. Recommended option B, the only option below one (PS-07 3.6).
+1. Read nos12_planned_supply_route_changes_issue3.pdf (section 4) and tm107_ferrars_lane_relining_outage_plan_v1.pdf: the reference is November 2025 to October 2026, works flows are judged on the districts' inflows for 15 March to 15 September 2026, and the plan opens the IC05 and IC03 boundary valves and shuts TM115 and TM107.
+2. Built the network from trunk_mains_register_2026-11.xlsx (mains by junction, valves by main, districts by inlet junction) and read dma_inlet_flows_2025-11_2026-10.csv on UTC hours, re-sent rows dropped and blank hours left out.
+3. Routed the 15 March to 15 September 2026 inflows through the plan's valve positions: six mains carry more than in normal running in every hour, peaking at 229 (TM104), 179 (TM109), 124 (TM110), 140 (TM112), 84 (IC03) and 121 (IC05) l/s.
+4. Applied every OPEN and CLOSE on a register valve in control_room_valve_log_2025-11_2026-10.csv (local time to UTC) to get the positions in force each hour, among them TM105 out from 13 April to 19 June with Brook End fed through IC02, TM108 out from 24 to 27 June with Mill Bridge and Sallowby fed through IC03 and TM115, and TM108 out from 20 to 22 July with Mill Bridge fed through IC08.
+5. Routed every hour's inflows through that hour's positions: the highest hourly flow carried was 263 (TM104), 228 (TM109), 177 (TM110), 65 (TM112), 141 (IC03) and 0 (IC05) l/s.
+6. Flushing water: from mains_flushing_job_sheets_2025-26.csv, dropped re-sent rows, differenced crew C14's volume_m3 within each night from 1 December 2025 (a running meter reading, each later figure well above that row's gauge flow times its minutes), added the two hydrants of a twin-hydrant flush and counted its section length once, then divided water by length by diameter and year of night_of.
+7. Non-household water: summed nonhousehold_monthly_consumption_2025-04_2026-10.csv for 2025-11 to 2026-10 by SPID; the logged supply points AMR6641, AMR7233, AMR8131, AMR8432 use more in some hours than their recorded DMA's whole inflow (amr_large_users_hourly_2025-11_2026-10.csv against the inlet meters) and were placed in the neighbouring DMA whose inflow carries their load steps (AMR6641 from BRK146 to BRK142; AMR7233 from BRK137 to BRK134; AMR8131 from BRK155 to BRK153; AMR8432 from BRK168 to BRK155).
+8. Compared each main's works peak with its highest hourly flow carried (NOS 12 section 4): only TM112 and IC05 pass it, so those two are flushed and the other four are not.
 
 ## 4. Deliverable Answers
 
-### winter_measles_2027.xlsx
+### ferrars_lane_flushing_2027.xlsx
 
-1. Call: fund option B, the MMR catch-up for those born 2008 to 2012.
-2. Reproduction number for winter 2027-28, to one decimal place:
-   - No catch-up: 1.3
-   - Option A: 1.3
-   - Option B: 0.9
-   - Option C: 1.3
-   - Option D: 1.3
-   - Option E: 1.3
-3. People born in each option's years whom the register holds as living in the region at 30 June 2027:
-   - Option A (born 2013 to 2017): 35,840
-   - Option B (born 2008 to 2012): 33,665
-   - Option C (born 2003 to 2007): 29,810
-   - Option D (born 1993 to 1997): 31,016
-   - Option E (born 1993 to 2002): 58,570
-4. Of those, people with no valid MMR dose by that date and with exactly one:
-   - Option A: 3,576 with no valid dose, 4,795 with exactly one
-   - Option B: 4,354 with no valid dose, 6,155 with exactly one
-   - Option C: 2,897 with no valid dose, 4,005 with exactly one
-   - Option D: 5,029 with no valid dose, 7,414 with exactly one
-   - Option E: 8,597 with no valid dose, 11,964 with exactly one
+1. Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars interconnector.
+2. Trunk mains the relining arrangement sends more water through, highest hourly flow during the works (l/s) and whether to flush:
+   - IC03 Highfield-Sallowby interconnector: 84 l/s, no flush
+   - IC05 Coldharbour-Ferrars interconnector: 121 l/s, flush
+   - TM104 Eastgate main: 229 l/s, no flush
+   - TM109 North Road main: 179 l/s, no flush
+   - TM110 Highfield main: 124 l/s, no flush
+   - TM112 Coldharbour Road main: 140 l/s, flush
+3. Water used per 100 m of main flushed, 2025-26 flushing programme (m3 per 100 m):
+   - 75 mm: 1.5 in 2025, 1.5 in 2026
+   - 100 mm: 2.7 in 2025, 2.7 in 2026
+   - 150 mm: 6.1 in 2025, 6.2 in 2026
+   - 225 mm: 13.8 in 2025, 14.0 in 2026
+   - 300 mm: 23.0 in 2025, 22.1 in 2026
+4. Water used from November 2025 to October 2026 by the non-household customers each re-routed district supplies (Ml):
+   - BRK134 Ferrars: 141.9
+   - BRK137 St Anne's: 40.5
+   - BRK142 Mill Bridge: 203.2
+   - BRK146 Weir Lane: 85.7
+   - BRK153 Sallowby: 160.7
+   - BRK155 Sallowby Park: 104.4
+   - BRK168 Hollow Lane: 26.7
 
-### measles_readiness_2027.pptx
+### ferrars_lane_flushing_note.pdf
 
-1. Slide 1 opens with the call: fund option B, the catch-up for those born 2008 to 2012, the only option that brings the winter's reproduction number below one (0.9).
-2. Slide 2: bar chart of the six reproduction numbers (no catch-up 1.3, A 1.3, B 0.9, C 1.3, D 1.3, E 1.3) against a dashed line at one, option B's bar the only one under it.
+1. One page that leads with the call and charts each of the six mains' highest hourly flow during the works as a bar (TM112 and IC05 in orange, the others in blue), each with a marker at the highest hourly flow it carried in November 2025 to October 2026.

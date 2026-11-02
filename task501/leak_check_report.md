@@ -1,27 +1,29 @@
 # leak check, task501
 
-**Verdict: REVIEW.** 16 files read, 20 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 26 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: diaries, matrix, survey, contacts, school, contact, method, immune, eigenvalue, regime, population, susceptible, decisive, public, periods, season, term-time, window, reflex, fieldwork, golden, next-generation, standard, summer, sentence
+Stump terms swept: register, million, carried, asserted, normal, network, meters, sentence, decisive, reference, operations, rebuilt, standard, golden, record, nothing, operated, method, records, reading, shipped, inside, period, school, districts
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `mmr_catch_up_options_autumn_2027.pdf`: carries 8 of 11 distinctive words of the committed call: "We should fund option B, the MMR catch-up for those born 2008 to 2012: it is the only option that brings measles' reprod"
-- **REVIEW** `ps07_measles_winter_planning_standard.pdf`: carries 9 of 11 distinctive words of the committed call: "We should fund option B, the MMR catch-up for those born 2008 to 2012: it is the only option that brings measles' reprod"
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `trunk_mains_condition_assessment_2024.pdf`: golden figure 300 appears: ...ine 2027 (programme phase 2) TM108 Mill Road main 300 Cast iron 1931 3 72 Sound 21 Reline, programme ph...
+- **REVIEW** `tm107_ferrars_lane_relining_outage_plan_v1.pdf`: carries 9 of 11 distinctive words of the committed call: 'Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars in'
+- **REVIEW** `trunk_mains_condition_assessment_2024.pdf`: carries 8 of 11 distinctive words of the committed call: 'Flush two mains before the relining starts on 15 March 2027: TM112 Coldharbour Road main and IC05 Coldharbour-Ferrars in'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `mmr_catch_up_options_autumn_2027.pdf`: 4 of 25 stump-paragraph terms appear (school, immune, susceptible, public); read whether the document names the move
-- **REVIEW** `ps07_measles_winter_planning_standard.pdf`: 5 of 25 stump-paragraph terms appear (immune, population, public, season, standard); read whether the document names the move
+- **REVIEW** `nos12_planned_supply_route_changes_issue3.pdf`: 10 of 25 stump-paragraph terms appear (register, carried, network, reference, operations, standard); read whether the document names the move
+- **REVIEW** `tm107_ferrars_lane_relining_outage_plan_v1.pdf`: 4 of 25 stump-paragraph terms appear (normal, network, operations, districts); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `mmr_stock_return_2027-06-30.csv`: 26 ISO dates after 2027-07-12, e.g. 2027-10-27, 2027-11-10, 2027-11-17, 2027-11-28, 2027-12-22
+## 6 ranking artifacts (REVIEW 3, INFO 2)
+- **REVIEW** `nonhousehold_supply_points_2026-11.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `trunk_mains_condition_assessment_2024.pdf`: names 3 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `trunk_mains_register_2026-11.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `mains_flushing_job_sheets_2025-26.csv`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `tm107_ferrars_lane_relining_outage_plan_v1.pdf`: names 5 of 8 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 36% of 196 prompts (cap 30%); second-sentence opener 'put' at 35% of 196 prompts (cap 20%); rounding opener 'give' at 42% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -29,19 +31,23 @@ Stump terms swept: diaries, matrix, survey, contacts, school, contact, method, i
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
+
+## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
-Q1 to Q4: none (PS-07 3.1 and 3.2 define the reproduction number and R0 without a method; the options paper ranks nothing on R and its "expected made immune" figures are filed inputs; every file reads as an office file or licensed reference data). Q5: PS-07 3.3 to 3.6; read literally with population-average mixing the reader got R 0.72 with no catch-up (no catch-up needed), the R0-times-susceptible-share rung, below the golden: it did not build the age-structured matrix. Q6: an analytical choice (how R is computed, homogeneous or age-structured, and which immunity goes in). Readings: the method for R is unfiled (by design: the data and the field's method force it; the judge to rule); the profile's open-ended bands; option E's overlap with D on the chart; residents at 30 June against moved-away records still active; imported against import-related; migrated duplicate cases. Realism: the options paper's budget sentence slightly editorial; uniform stock-return batch numbers; a docx thumbnail and customXml part to scrub. REVIEW lines: all harmless (shared vocabulary, future vaccine expiry dates).
-
-### Reship reads (2026-11-01, Sonnet at medium, fresh copies, the case export's field list, the survey codebook, the register extract notes and the transmittal list no longer shipped)
-
-First cut (8daa8d2a): no decisive-step sentence, nothing computes the reproduction number, Q6 an analytical choice (how the contact survey and the immunity profile make an effective reproduction number); the options paper's table of people, susceptibles and expected made immune reads as the standard's filed input (PS-07 3.5), never a ranking on R. It named two ask readings, the dose window and "Imported" against "Import-related"; the re-judge on that cut found the dose window and the cross-border records open, and the rubric pass closed them (the prompt's "by that date"; the cross-border records carry no area code).
-
-Rubric cut (81564f48, new prompt): 1 none (PS-07 3.6 is the filed decision rule, not the step); 2 none; 3 no field list, codebook, extract notes or transmittal list, the standard, the guidelines excerpt and the circular are governing documents; 4 none as the answer; 5 PS-07 3.1 to 3.6 and the prompt's filters, each executed as written, the mixing method left open; 6 an analytical choice. Its ask readings (Imported against Import-related, the LH27 scheme, the case duplicates) are each ruled in judge pass 3. Its realism notes (the round made-immune counts, the tidy profile, the fictional region) are on files the reship did not change.
+One isolated reader (medium) on a fresh copy of `prompt.txt` and `target/` from target.zip md5
+4dd0c07728517f0c7278c201bc196350, 2026-11-02; answers as the main thread relayed them:
+1. Which sentence or file tells you the decisive step: none; NOS 12 4.2 and 4.3 quoted as the estimand, with no main named.
+2. Which file already ranks or scores the candidates: none.
+3. Which file exists only to help the analyst: none.
+4. Which figure or name reads as the answer: none.
+6. What decides the main answer: an analytical choice.
+Every sweep line read harmless. One realism remark: two premises named "Mill Bridge Garage" in the supply point report,
+plausible for a town's garages and left as is.

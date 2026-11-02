@@ -1,240 +1,238 @@
-"""The goldens, computed from the shipped pack only: the call and the six reproduction numbers (callmodel on the call's
-files), the ask (asks on the register's files), written into winter_measles_2027.xlsx and measles_readiness_2027.pptx,
-with generator/figures.json and the task's metadata.json."""
+"""The golden deliverables, figures.json and metadata.json, computed from the shipped pack by solve.py."""
+import datetime as dt
 import io
 import json
 import os
 
 import numpy as np
 
-import asks as A
 import bundle as B
-import callmodel as CM
 import pack as PK
 import post as PP
+import solve as S
 import world as W
 
-XLSX = "winter_measles_2027.xlsx"
-PPTX = "measles_readiness_2027.pptx"
-AUTHOR = W.PEOPLE["manager"]
-SCEN = ["none"] + W.OPTION_KEYS
-SCEN_LABEL = {"none": "No catch-up", "A": "Option A", "B": "Option B", "C": "Option C", "D": "Option D", "E": "Option E"}
+ASSESSED = "20 November 2026"
+FLUSH, KEEP = "#eb6834", "#2a78d6"          # validated pair (dataviz validate_palette.js, light surface)
+
+
+def r0(x):
+    return int(np.floor(x + 0.5))
+
+
+def r1(x):
+    return "%.1f" % (np.floor(x * 10 + 0.5) / 10.0)
 
 
 def compute(target):
-    inp = B.call_inputs(target)
-    R = CM.golden(inp)
-    r1 = {k: CM.round1(v) for k, v in R.items()}
-    below = [k for k in W.OPTION_KEYS if R[k] < 1.0]
-    assert R["none"] >= 1.0 and below == ["B"], (R, below)
-    N = inp.N()
-    S = inp.groups(inp.sus_age())
-    share = S / N
-    region_share = S.sum() / N.sum()
-    pool = inp.with_matrix(inp.matrix(None))
-    R_all = CM.golden(pool)
-    Ps = inp.matrix(CM.summer_diary)
-    parts, _ = inp.survey
-    f = B.ask_frames(target)
-    a1 = A.ask1(f)
-    a2 = A.ask2(f)
-    return dict(inp=inp, R=R, r1=r1, call="B", share_1519=float(share[3]), region_share=float(region_share),
-                immune_pct=float(100 * (1 - region_share)), R_avg=CM.R_average(inp), R_all=R_all, ask1=a1, ask2=a2,
-                made={k: sum(p["made"] for p in inp.options[k]) for k in W.OPTION_KEYS},
-                own_term=float(inp.P[3, 3] / inp.P[3].sum()), own_summer=float(Ps[3, 3] / Ps[3].sum()),
-                n_term=sum(1 for q in parts if CM.term_diary(q[2])), n_summer=sum(1 for q in parts if CM.summer_diary(q[2])))
+    c = S.call(target)
+    net = c["net"]
+    mains = []
+    for m in c["rises"]:
+        k = c["F"][c["ok"].values][m].idxmax()
+        mains.append(dict(id=m, name=net.mains[m]["Name"], dn=int(net.mains[m]["DN (mm)"]), peak=float(c["peak"][m]),
+                          ref=float(c["ref"][m]), when=(k if c["ref"][m] > 0 else None), flush=m in c["flush"]))
+    a, _ = S.ask_a(target)
+    _, adf = S.ask_a(target, "golden")
+    b, moved = S.ask_b(target, "golden", districts=[W.DCODE[d] for d in W.REROUTED])
+    sp = B.supply(target)
+    moved_rows = []
+    for lid, (rec, new, over, _) in sorted(moved.items()):
+        cust = sp.loc[sp["AMR logger"] == lid, "Customer"].iloc[0]
+        moved_rows.append(dict(logger=lid, customer=cust, recorded=rec, supplied=new, hours=over))
+    # components of ask A for the workbook
+    sec = adf.groupby(["night_of", "crew", "section_ref"]).agg(w=("w", "sum"), L=("L", "first"), dn=("dn", "first"),
+                                                                year=("year", "first")).reset_index()
+    parts = sec.groupby(["dn", "year"]).agg(w=("w", "sum"), L=("L", "sum"), n=("section_ref", "count"))
+    return dict(call=c, mains=mains, ask_a=a, ask_a_parts=parts, ask_b=b, moved=moved_rows)
 
 
-def pct1(x):
-    return "%.1f" % (np.floor(x * 1000 + 0.5) / 10)
+def call_sentence(res):
+    fl = [m for m in res["mains"] if m["flush"]]
+    fl.sort(key=lambda m: (not m["id"].startswith("TM"), m["id"]))
+    names = " and ".join("%s %s" % (m["id"], m["name"]) for m in fl)
+    return "Flush two mains before the relining starts on 15 March 2027: %s." % names
 
 
-def pct0(x):
-    return "%d" % int(np.floor(x * 100 + 0.5))
+def figures(res):
+    out = {"call": call_sentence(res), "flush": [m["id"] for m in res["mains"] if m["flush"]],
+           "mains": {}, "flushing_water_m3_per_100m": {}, "nonhousehold_water_ml": {}}
+    for m in res["mains"]:
+        out["mains"][m["id"]] = {"name": m["name"], "highest_hourly_flow_during_works_l_s": r0(m["peak"]),
+                                 "highest_hourly_flow_carried_nov2025_oct2026_l_s": r0(m["ref"]),
+                                 "flush": "Yes" if m["flush"] else "No"}
+    for (dn, yr), v in sorted(res["ask_a"].items()):
+        out["flushing_water_m3_per_100m"]["%d mm %d" % (dn, yr)] = r1(v)
+    for d in W.REROUTED:
+        out["nonhousehold_water_ml"]["%s %s" % (W.DCODE[d], W.DISTRICTS[d][1])] = r1(res["ask_b"][W.DCODE[d]])
+    out["moved_supply_points"] = [dict(logger=m["logger"], customer=m["customer"], recorded=m["recorded"],
+                                       supplied=m["supplied"]) for m in res["moved"]]
+    out["diameters_mm"] = list(W.DIAMETERS)
+    out["per_metres"] = 100
+    return out
 
 
-def figures(c):
-    return {
-        "call": "Option B, the catch-up for those born 2008 to 2012",
-        "reproduction_number": {SCEN_LABEL[k]: "%.1f" % c["r1"][k] for k in SCEN},
-        "reproduction_number_unrounded": {SCEN_LABEL[k]: round(c["R"][k], 4) for k in SCEN},
-        "R0": 15,
-        "region_immune_per_cent": pct1(1 - c["region_share"]),
-        "herd_immunity_threshold_per_cent": "93.3",
-        "default_R0_times_susceptible_share": "%.1f" % CM.round1(c["R_avg"]),
-        "default_every_diary_reproduction_number": "%.1f" % CM.round1(c["R_all"]["none"]),
-        "susceptible_share_15_19_per_cent": pct1(c["share_1519"]),
-        "susceptible_share_region_per_cent": pct1(c["region_share"]),
-        "diaries_term": "{:,}".format(c["n_term"]),
-        "diaries_summer": "{:,}".format(c["n_summer"]),
-        "people_made_immune": {k: "{:,}".format(c["made"][k]) for k in W.OPTION_KEYS},
-        "ask1_register_residents": {k: "{:,}".format(c["ask1"][k]) for k in W.OPTION_KEYS},
-        "ask2_no_valid_dose": {k: "{:,}".format(c["ask2"][k]["none"]) for k in W.OPTION_KEYS},
-        "ask2_one_valid_dose": {k: "{:,}".format(c["ask2"][k]["one"]) for k in W.OPTION_KEYS},
-        "option_birth_years": {k: "%d to %d" % W.OPTIONS[k]["years"] for k in W.OPTION_KEYS},
-        "assessment_date": "1 January 2028",
-        "register_as_at": "30 June 2027",
-        "dates": ["1 July 2024", "28 days", "2 to 26 May 2023", "3 July to 18 August 2023", "6 to 45 days",
-                  "12 to 17 months"],
-        "age_group_teenagers": "15 to 19",
-        "citations": ["PS-07 3.1", "PS-07 3.2", "PS-07 3.3", "PS-07 3.4", "PS-07 3.5", "PS-07 3.6", "guidelines 12.5"],
-    }
-
-
-# --- the workbook ------------------------------------------------------------------------------------------------
-def write_xlsx(path, c):
+# ------------------------------------------------------------------------------------------------ workbook
+def write_xlsx(path, res, figs):
     import openpyxl
-    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    from openpyxl.styles import Alignment, Font, PatternFill
     wb = openpyxl.Workbook()
+    bold = Font(bold=True)
+    head = PatternFill("solid", fgColor="D9E2EA")
     ws = wb.active
-    ws.title = "Call"
-    navy = "1F3A5F"
-    hdr_fill = PatternFill("solid", fgColor="DCE6EF")
-    pick_fill = PatternFill("solid", fgColor="E3F1E6")
-    thin = Side(style="thin", color="9AA6AD")
-    ws["A1"] = "Only the catch-up for those born 2008 to 2012 keeps measles below one this winter"
-    ws["A1"].font = Font(bold=True, size=14, color=navy)
-    ws["A2"] = ("Winter 2027-28 assessment under PS-07 section 3. Regional Immunisation Office, for the Director of Public "
-                "Health, 14 July 2027.")
-    ws["A2"].font = Font(italic=True, size=10, color="5B6670")
-    ws["A4"] = "Recommendation"
-    ws["A4"].font = Font(bold=True, size=11, color=navy)
-    ws["A5"] = ("Fund option B, the MMR catch-up for those born 2008 to 2012 (aged 15 to 19 on 1 January 2028). It is the "
-                "only option that brings measles' reproduction number for winter 2027-28 below one: %s with it, against "
-                "%s with no catch-up and %s under each of the other four options."
-                % ("%.1f" % c["r1"]["B"], "%.1f" % c["r1"]["none"], "%.1f" % c["r1"]["A"]))
-    ws["A5"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.merge_cells("A5:F5")
-    ws.row_dimensions[5].height = 48
-    heads = ["Scenario", "Birth years targeted", "Expected people made immune", "Reproduction number, winter 2027-28",
-             "Below one"]
-    r0 = 7
-    for j, h in enumerate(heads, start=1):
-        cell = ws.cell(row=r0, column=j, value=h)
-        cell.font = Font(bold=True)
-        cell.fill = hdr_fill
-        cell.alignment = Alignment(wrap_text=True, vertical="center")
-        cell.border = Border(bottom=thin)
-    ws.row_dimensions[r0].height = 32
-    for i, k in enumerate(SCEN, start=1):
-        r = r0 + i
-        ws.cell(row=r, column=1, value=SCEN_LABEL[k])
-        ws.cell(row=r, column=2, value=None if k == "none" else "%d to %d" % W.OPTIONS[k]["years"])
-        if k != "none":
-            ws.cell(row=r, column=3, value=c["made"][k]).number_format = "#,##0"
-        v = ws.cell(row=r, column=4, value=c["r1"][k])
-        v.number_format = "0.0"
-        ws.cell(row=r, column=5, value="Yes" if c["R"][k] < 1 else "No").alignment = Alignment(horizontal="center")
-        if k == "B":
-            for j in range(1, 6):
-                ws.cell(row=r, column=j).fill = pick_fill
-                ws.cell(row=r, column=j).font = Font(bold=True)
+    ws.title = "Flushing call"
+    ws.append(["TM107 Ferrars Lane relining, 15 March to 15 September 2027: NOS 12 assessment"])
+    ws["A1"].font = Font(bold=True, size=12)
+    ws.append(["Assessed %s against outage plan v1.0 (16 November 2026)" % ASSESSED])
+    ws["A2"].font = Font(italic=True, size=9, color="555555")
+    ws.append([])
+    ws.append([figs["call"] + " No other main needs flushing."])
+    ws["A4"].font = Font(bold=True, color="9C2A00")
+    ws.append([])
+    ws.append(["Main", "Name", "DN (mm)", "Highest hourly flow during the works (l/s)",
+               "Highest hourly flow carried, Nov 2025 to Oct 2026 (l/s)", "Date of that flow", "Flush before works"])
+    for c in ws[6]:
+        c.font = bold
+        c.fill = head
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for m in res["mains"]:
+        f = figs["mains"][m["id"]]
+        when = m["when"].strftime("%d %b %Y") if m["when"] is not None else "not in service"
+        ws.append([m["id"], m["name"], m["dn"], f["highest_hourly_flow_during_works_l_s"],
+                   f["highest_hourly_flow_carried_nov2025_oct2026_l_s"], when, f["flush"]])
+        for col in ("D", "E"):
+            ws["%s%d" % (col, ws.max_row)].number_format = "0"
+    ws.freeze_panes = "A7"
+    ws.append([])
     notes = [
-        "Reproduction number: the dominant eigenvalue of the next-generation matrix, built from the National Social Contact "
-        "Survey 2023 diaries kept in school term (2 to 26 May 2023, contacts per day by age band) and each age band's "
-        "susceptible share on 1 January 2028, scaled so that a wholly susceptible region gives the R0 of 15 in PS-07 3.2. "
-        "The winter is school term apart from the Christmas and February breaks, and PS-07 3.1 needs the figure below "
-        "one throughout.",
-        "Susceptible shares: the national immunity profile (May 2027) by year of birth, weighted by the department's "
-        "projection of residents at 1 January 2028 (PS-07 3.3, 3.4).",
-        "Each option takes the options paper's expected people made immune off the susceptibles of its birth years "
-        "(PS-07 3.5); option E as the paper splits it between those born 1993 to 1997 and 1998 to 2002.",
-        "On the region's average immunity alone (%s per cent immune, above the %s per cent herd immunity threshold for R0 "
-        "15) the figure would be %s, and on every diary in the survey %s. But two thirds of the diaries were kept from 3 "
-        "July to 18 August 2023, in the school summer holidays, when the 15 to 19-year-olds have under a fifth of their "
-        "contacts with each other, against more than half in term; %s per cent of them are susceptible, against %s per "
-        "cent across the region." % (
-            pct1(1 - c["region_share"]), "93.3", "%.1f" % CM.round1(c["R_avg"]), "%.1f" % CM.round1(c["R_all"]["none"]),
-            pct1(c["share_1519"]), pct1(c["region_share"])),
+        "Trunk mains have no meters: hourly flows rebuilt from the district inlet meters (UTC) through the valve "
+        "positions in force each hour, from the control room valve log (local time) and the register.",
+        "Works flows: the outage plan's valve changes applied to the districts' recorded inflows for 15 Mar to 15 Sep "
+        "2026 (NOS 12, 4.3). Listed mains are those the arrangement loads above their normal flow in every hour.",
+        "Flush where the works flow passes the highest hourly flow the main carried in the twelve months to October "
+        "2026 (NOS 12, 4.2). IC05 has not been in service in the period.",
     ]
-    rn = r0 + len(SCEN) + 2
-    ws.cell(row=rn, column=1, value="Notes").font = Font(bold=True, color=navy)
-    for i, t in enumerate(notes, start=1):
-        cell = ws.cell(row=rn + i, column=1, value=t)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells(start_row=rn + i, start_column=1, end_row=rn + i, end_column=6)
-        ws.row_dimensions[rn + i].height = 46
-    for col, wdt in zip("ABCDEF", (16, 20, 18, 22, 11, 14)):
+    for n in notes:
+        ws.append([n])
+    for col, wdt in zip("ABCDEFG", (8, 36, 9, 20, 22, 16, 12)):
         ws.column_dimensions[col].width = wdt
+    ws.row_dimensions[6].height = 45
 
-    ws2 = wb.create_sheet("Options")
-    ws2["A1"] = "What each option involves"
-    ws2["A1"].font = Font(bold=True, size=14, color=navy)
-    ws2["A2"] = "Register: regional immunisation register at 30 June 2027 (extract run 3 July 2027)."
-    ws2["A2"].font = Font(italic=True, size=10, color="5B6670")
-    heads2 = ["Option", "Born", "People the register holds as living in the region, 30 June 2027",
-              "Of whom no valid MMR dose", "Of whom exactly one valid dose"]
-    for j, h in enumerate(heads2, start=1):
-        cell = ws2.cell(row=4, column=j, value=h)
-        cell.font = Font(bold=True)
-        cell.fill = hdr_fill
-        cell.alignment = Alignment(wrap_text=True, vertical="center")
-        cell.border = Border(bottom=thin)
-    ws2.row_dimensions[4].height = 62
-    for i, k in enumerate(W.OPTION_KEYS, start=1):
-        r = 4 + i
-        vals = [k, "%d to %d" % W.OPTIONS[k]["years"], c["ask1"][k], c["ask2"][k]["none"], c["ask2"][k]["one"]]
-        for j, v in enumerate(vals, start=1):
-            cell = ws2.cell(row=r, column=j, value=v)
-            if isinstance(v, int):
-                cell.number_format = "#,##0"
-    rn = 4 + len(W.OPTION_KEYS) + 2
-    notes2 = [
-        "Living in the region: counted where the local health office, read in the scheme in force when it was recorded, "
-        "is in the region; LH27 recorded before 1 July 2024 is Monaghan West (circular 03/2024). Each person by the "
-        "year they were born: a date of birth the register holds ten years early (the child registered from the birth "
-        "notification and given the GP's first dose at the schedule's age ten years after it) is read ten years on.",
-        "Valid doses: each person's MMR events re-pointed through the register's merges to the registration they now "
-        "belong to, less GP return lines the query log shows replaced or withdrawn; where one registration holds two GP "
-        "lines from one visit, the second is the dose of its twin (registered with it from the same birth notification, "
-        "at the same address and practice). Counted under the guidelines' 12.5 (on or after the first birthday, at least "
-        "28 days after the previous valid dose), given on or before 30 June 2027. Option E includes option D's birth "
-        "years.",
+    ws = wb.create_sheet("Flushing water")
+    ws.append(["2025-26 mains flushing programme: water used per 100 m of main flushed"])
+    ws["A1"].font = Font(bold=True, size=12)
+    ws.append(["From the contractor's job sheets (re-sent sheets removed; crew C14's meter readings from 1 Dec 2025 "
+               "run on through each night and are differenced; twin-hydrant flushes counted once per section)"])
+    ws["A2"].font = Font(italic=True, size=9, color="555555")
+    ws.append([])
+    ws.append(["Diameter (mm)", "2025 (m3 per 100 m)", "2026 (m3 per 100 m)", "2025 main flushed (m)",
+               "2026 main flushed (m)", "2025 water used (m3)", "2026 water used (m3)"])
+    for c in ws[4]:
+        c.font = bold
+        c.fill = head
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    parts = res["ask_a_parts"]
+    for dn in W.DIAMETERS:
+        row = [dn]
+        for yr in W.ASK_YEARS:
+            row.append(float(figs["flushing_water_m3_per_100m"]["%d mm %d" % (dn, yr)]))
+        for yr in W.ASK_YEARS:
+            row.append(int(round(parts.loc[(dn, yr), "L"])))
+        for yr in W.ASK_YEARS:
+            row.append(round(float(parts.loc[(dn, yr), "w"]), 1))
+        ws.append(row)
+        r_ = ws.max_row
+        for col, fmt in zip("BCDEFG", ("0.0", "0.0", "#,##0", "#,##0", "#,##0.0", "#,##0.0")):
+            ws["%s%d" % (col, r_)].number_format = fmt
+    ws.freeze_panes = "B5"
+    for col, wdt in zip("ABCDEFG", (13, 13, 13, 14, 14, 14, 14)):
+        ws.column_dimensions[col].width = wdt
+    ws.row_dimensions[4].height = 32
+
+    ws = wb.create_sheet("Non-household water")
+    ws.append(["Non-household water, November 2025 to October 2026, districts the relining re-routes"])
+    ws["A1"].font = Font(bold=True, size=12)
+    ws.append(["Monthly settled consumption by supply point, placed in the district that supplies it"])
+    ws["A2"].font = Font(italic=True, size=9, color="555555")
+    ws.append([])
+    ws.append(["DMA", "Name", "Supplied during works through", "Water used (Ml)"])
+    for c in ws[4]:
+        c.font = bold
+        c.fill = head
+    for d in W.REROUTED:
+        ws.append([W.DCODE[d], W.DISTRICTS[d][1], "IC05" if W.DNODE[d] in ("N3", "N4") else "IC03",
+                   float(figs["nonhousehold_water_ml"]["%s %s" % (W.DCODE[d], W.DISTRICTS[d][1])])])
+        ws["D%d" % ws.max_row].number_format = "#,##0.0"
+    ws.append(["Total", None, None, float(r1(sum(res["ask_b"][W.DCODE[d]] for d in W.REROUTED)))])
+    ws["A%d" % ws.max_row].font = bold
+    ws["D%d" % ws.max_row].font = bold
+    ws["D%d" % ws.max_row].number_format = "#,##0.0"
+    ws.freeze_panes = "A5"
+    ws.append([])
+    ws.append(["Supply points recorded in one DMA and supplied from its neighbour (logged use above the recorded "
+               "DMA's whole inflow; load steps in the neighbour's inflow):"])
+    ws.cell(row=ws.max_row, column=1).font = bold
+    for m in res["moved"]:
+        ws.append([m["logger"], m["customer"], "recorded %s, supplied from %s" % (m["recorded"], m["supplied"])])
+    for col, wdt in zip("ABCD", (10, 30, 34, 16)):
+        ws.column_dimensions[col].width = wdt
+    ws = wb.create_sheet("Notes")
+    notes = [
+        ("As at", "Meters and valve log to 31 October 2026; outage plan v1.0 of 16 November 2026."),
+        ("Clock", "District meters and turbidity on UTC hours; valve log on local time, converted (BST to 25 October)."),
+        ("Meters", "Re-sent rows for BRK179 on 9 February removed; blank hours left out (none near a peak); "
+                   "BRK146 and BRK194 meter changes joined on the DMA."),
+        ("Switch hours", "An hour with valve work is taken in the arrangement that held for most of it."),
+        ("Flushing water", "Year is that of night_of. Length is section_length_m, once per section and night."),
+        ("Non-household", "Settled monthly consumption, 2025-11 to 2026-10. Supply points placed by the DMA whose "
+                          "inflow carries them (see that sheet)."),
+        ("Rounding", "Flows to the whole l/s, flushing water to 0.1 m3 per 100 m, non-household water to 0.1 Ml, "
+                     "each rounded once from unrounded totals."),
     ]
-    ws2.cell(row=rn, column=1, value="Notes").font = Font(bold=True, color=navy)
-    for i, t in enumerate(notes2, start=1):
-        cell = ws2.cell(row=rn + i, column=1, value=t)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws2.merge_cells(start_row=rn + i, start_column=1, end_row=rn + i, end_column=5)
-        ws2.row_dimensions[rn + i].height = 64
-    for col, wdt in zip("ABCDE", (9, 14, 26, 18, 18)):
-        ws2.column_dimensions[col].width = wdt
-    ws2.freeze_panes = "C5"
-    for sh in (ws, ws2):
-        sh.page_setup.orientation = "landscape"
-        sh.page_setup.fitToWidth = 1
-        sh.sheet_properties.pageSetUpPr.fitToPage = True
-    ws2.print_title_rows = "4:4"
+    ws.append(["Item", "Note"])
+    for c in ws[1]:
+        c.font = bold
+        c.fill = head
+    for n_ in notes:
+        ws.append(list(n_))
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 110
     wb.save(path)
-    PP.normalize_ooxml(path, AUTHOR, AUTHOR, "2027-07-13T13:05:00Z", "2027-07-14T09:42:00Z", excel=True)
+    PP.normalize_ooxml(path, W.PEOPLE["planner"], W.PEOPLE["planner"], "2026-11-18T09:12:00Z", "2026-11-20T16:40:00Z",
+                       excel=True)
 
 
-# --- the deck -----------------------------------------------------------------------------------------------------------
-def chart_png(c):
+# ------------------------------------------------------------------------------------------------ note
+def chart_png(res):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams["font.family"] = "DejaVu Sans"
-    fig, ax = plt.subplots(figsize=(8.6, 4.3), dpi=150)
-    labels = ["No catch-up", "A\nborn 2013-17", "B\nborn 2008-12", "C\nborn 2003-07", "D\nborn 1993-97", "E\nborn 1993-2002"]
-    vals = [c["r1"][k] for k in SCEN]
-    cols = ["#9aa6ad" if k == "none" else ("#2e7d4f" if k == "B" else "#5b7fa6") for k in SCEN]
-    bars = ax.bar(range(6), vals, color=cols, width=0.62)
-    for b_, v in zip(bars, vals):
-        ax.text(b_.get_x() + b_.get_width() / 2, v + 0.03, "%.1f" % v, ha="center", va="bottom", fontsize=11,
-                fontweight="bold", color="#1d2329")
-    ax.axhline(1.0, color="#b23a3a", linestyle="--", linewidth=1.4)
-    ax.text(-0.42, 1.5, "Dashed line at 1.0: below it, measles cannot keep spreading", color="#b23a3a", fontsize=9.5,
-            ha="left", va="center")
-    ax.annotate("only\noption\nbelow one", xy=(2, vals[2] / 2), ha="center", va="center", fontsize=8.5,
-                color="white", fontweight="bold", linespacing=1.3)
-    ax.set_xticks(range(6))
-    ax.set_xticklabels(labels, fontsize=9.5)
-    ax.set_ylim(0, 1.6)
-    ax.set_ylabel("Reproduction number, winter 2027-28", fontsize=10)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    ax.tick_params(axis="y", labelsize=9)
+    ms = sorted(res["mains"], key=lambda m: m["peak"])
+    fig, ax = plt.subplots(figsize=(6.6, 3.0), dpi=150)
+    y = np.arange(len(ms))
+    cols = [FLUSH if m["flush"] else KEEP for m in ms]
+    ax.barh(y, [r0(m["peak"]) for m in ms], color=cols, height=0.56, zorder=2)
+    ax.scatter([r0(m["ref"]) for m in ms], y, marker="|", s=380, color="#0b0b0b", linewidths=2.0, zorder=3)
+    for yi, m in zip(y, ms):
+        ax.text(r0(m["peak"]) + 3, yi - 0.05, "%d" % r0(m["peak"]), va="center", fontsize=7.5, color="#0b0b0b")
+    ax.set_yticks(y)
+    ax.set_yticklabels(["%s %s" % (m["id"], m["name"].replace(" interconnector", " IC").replace(" main", ""))
+                        for m in ms], fontsize=7.5)
+    ax.set_xlabel("Highest hourly flow (l/s)", fontsize=8)
+    ax.tick_params(axis="x", labelsize=7.5)
+    ax.set_xlim(0, max(max(r0(m["peak"]), r0(m["ref"])) for m in ms) * 1.12)
+    ax.grid(axis="x", color="#dddddd", linewidth=0.6, zorder=0)
+    for s_ in ("top", "right"):
+        ax.spines[s_].set_visible(False)
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    ax.set_title("Four of the six already carried more than the works will send them", fontsize=8.6, loc="left",
+                 color="#0b0b0b")
+    ax.legend(handles=[Patch(color=FLUSH, label="During the works: flush"),
+                       Patch(color=KEEP, label="During the works: no flush"),
+                       Line2D([0], [0], marker="|", color="#0b0b0b", linestyle="None", markersize=10, mew=2,
+                              label="Highest carried, Nov 2025 to Oct 2026")],
+              fontsize=6.8, loc="lower right", frameon=False)
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -242,191 +240,145 @@ def chart_png(c):
     return buf.getvalue()
 
 
-def write_pptx(path, c):
-    from pptx import Presentation
-    from pptx.dml.color import RGBColor
-    from pptx.util import Emu, Pt
-    prs = Presentation()
-    prs.slide_width = Emu(12192000)
-    prs.slide_height = Emu(6858000)
-    blank = prs.slide_layouts[6]
-    navy = RGBColor(0x1F, 0x3A, 0x5F)
-    grey = RGBColor(0x5B, 0x66, 0x70)
+def write_note(path, res, figs):
+    from reportlab import rl_config
+    rl_config.invariant = 1
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+    import docs as DOC
+    ink = colors.HexColor("#1b2430")
+    body = ParagraphStyle("b", fontName=DOC.SANS, fontSize=9.2, leading=12.4, textColor=ink, spaceAfter=4)
+    lead = ParagraphStyle("l", parent=body, fontName=DOC.SANS_B, fontSize=10.4, leading=13.8, spaceAfter=6)
+    h1 = ParagraphStyle("h", fontName=DOC.SANS_B, fontSize=13.5, leading=17, textColor=colors.HexColor("#0f4c81"))
+    small = ParagraphStyle("s", parent=body, fontSize=7.6, leading=10, textColor=colors.HexColor("#5d6872"))
+    cell = ParagraphStyle("c", parent=body, fontSize=8.0, leading=10, spaceAfter=0)
+    d = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=15 * mm,
+                          bottomMargin=14 * mm, title="TM107 relining: trunk mains to flush", author=W.PEOPLE["planner"],
+                          subject="NOS 12 assessment", creator=W.PEOPLE["planner"], producer=W.COMPANY)
+    f = [Paragraph("%s | Network Operations" % W.COMPANY, small),
+         Paragraph("TM107 relining: flush TM112 and IC05 before 15 March 2027", h1), Spacer(1, 2),
+         Paragraph("To: %s, %s. From: %s, %s. %s. Ref: TM107 outage plan v1.0, NOS 12 section 4 assessment."
+                   % (W.PEOPLE["head_ops"], W.TITLES["head_ops"], W.PEOPLE["planner"], W.TITLES["planner"], ASSESSED),
+                   small), Spacer(1, 4)]
+    fl = [m for m in res["mains"] if m["flush"]]
+    nf = [m for m in res["mains"] if not m["flush"]]
+    f.append(Paragraph(figs["call"], lead))
+    f.append(Paragraph(
+        "The relining arrangement loads six trunk mains above their normal flow. Four of them (%s) carried more water in "
+        "the June and July 2026 Mill Road jobs than the relining will send them, so their deposits have already been "
+        "worked at those flows and they need no flushing. TM112 carried at most %d l/s in the year (Brook Street "
+        "relining, spring 2026) against %d l/s during the works, and IC05 has not been in service at all."
+        % (", ".join(m["id"] for m in nf), r0(next(m for m in fl if m["id"] == "TM112")["ref"]),
+           r0(next(m for m in fl if m["id"] == "TM112")["peak"])), body))
+    png = chart_png(res)
+    img = Image(io.BytesIO(png), width=170 * mm, height=170 * mm * 3.0 / 6.6)
+    f.append(img)
+    f.append(Paragraph("Source: district inlet meters (historian, hourly), control room valve log, trunk mains register, "
+                       "outage plan v1.0.", small))
+    rows = [["Main", "Name", "During the works (l/s)", "Carried, Nov 2025 to Oct 2026 (l/s)", "Flush"]]
+    for m in res["mains"]:
+        fm = figs["mains"][m["id"]]
+        rows.append([m["id"], m["name"], str(fm["highest_hourly_flow_during_works_l_s"]),
+                     str(fm["highest_hourly_flow_carried_nov2025_oct2026_l_s"]), fm["flush"]])
+    t = Table([[Paragraph(c, cell) for c in r] for r in rows], colWidths=[16 * mm, 62 * mm, 30 * mm, 42 * mm, 16 * mm])
+    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#9aa6ad")),
+                           ("LINEBELOW", (0, -1), (-1, -1), 0.4, colors.HexColor("#9aa6ad")),
+                           ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)]))
+    f.append(Spacer(1, 3))
+    f.append(t)
+    f.append(Spacer(1, 5))
+    f.append(Paragraph(
+        "Basis. No trunk main is metered, so each main's hourly flow is rebuilt from the district inlet meters through "
+        "the valve positions in force that hour (control room valve log, local time, against the trunk mains "
+        "register). Flows during the works are the outage plan's valve changes applied to the districts' recorded "
+        "inflows for 15 March to 15 September 2026 (NOS 12, 4.3); a main is flushed where that flow passes the highest "
+        "hourly flow it carried in November 2025 to October 2026 (NOS 12, 4.2). The flushing water per 100 m and the "
+        "non-household water for the re-routed districts are in ferrars_lane_flushing_2027.xlsx.", small))
+    f.append(Paragraph("IC05's boundary valve was worked twice in the year under the exercising programme, cracked a few "
+                       "turns and reshut each time; it carried no water.", small))
 
-    def textbox(slide, x, y, w, h, paras, size=18, bold_first=False, color=navy):
-        tb = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(w), Emu(h))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        for i, t in enumerate(paras):
-            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-            run = p.add_run()
-            run.text = t
-            run.font.size = Pt(size if i == 0 or not bold_first else size - 4)
-            run.font.bold = bool(bold_first and i == 0)
-            run.font.color.rgb = color if i == 0 else RGBColor(0x1D, 0x23, 0x29)
-            p.space_after = Pt(8)
-        return tb
-
-    def footer(slide, n, source):
-        textbox(slide, 600000, 6420000, 10000000, 300000, [source], size=10, color=grey)
-        textbox(slide, 11000000, 6420000, 700000, 300000, ["%d / 5" % n], size=10, color=grey)
-
-    # 1: the call
-    s = prs.slides.add_slide(blank)
-    textbox(s, 600000, 520000, 11000000, 700000, ["Winter 2027-28 measles readiness"], size=30, bold_first=True)
-    textbox(s, 600000, 1350000, 11000000, 2200000, [
-        "Recommendation: fund option B, the MMR catch-up for those born 2008 to 2012",
-        "It is the only option that brings measles' reproduction number for the winter below one: %s with it, against %s "
-        "with no catch-up and %s under each of the other options." % ("%.1f" % c["r1"]["B"], "%.1f" % c["r1"]["none"],
-                                                                   "%.1f" % c["r1"]["A"]),
-        "Without it, one case in the region would on average start a chain that keeps growing through the winter."],
-        size=24, bold_first=True)
-    textbox(s, 600000, 3900000, 11000000, 1300000, [
-        "Decision for the executive management team, 21 July 2027",
-        "Fund option B for delivery from September to November 2027 through the school immunisation team, further "
-        "education colleges and GP letters (EUR %s in the options paper)." % "{:,}".format(W.OPTIONS["B"]["cost"])],
-        size=16, bold_first=True)
-    footer(s, 1, "Regional Immunisation Office, Oriel Health Region")
-    # 2: the chart
-    s = prs.slides.add_slide(blank)
-    textbox(s, 600000, 350000, 11000000, 600000, ["Only option B brings the winter reproduction number below one"],
-            size=26, bold_first=True)
-    png = chart_png(c)
-    s.shapes.add_picture(io.BytesIO(png), Emu(900000), Emu(1150000), width=Emu(10300000))
-    footer(s, 2, "Dominant eigenvalue of the next-generation matrix: National Social Contact Survey 2023 term-time "
-                 "diaries, national immunity profile May 2027, projection at 1 January 2028, scaled to R0 15 (PS-07 3.2).")
-    # 3: why the teenagers
-    s = prs.slides.add_slide(blank)
-    textbox(s, 600000, 350000, 11000000, 600000, ["Why the 15 to 19-year-olds decide it"], size=26, bold_first=True)
-    textbox(s, 600000, 1250000, 11000000, 4500000, [
-        "The region is %s per cent immune, above the %s per cent that R0 15 needs, so on the average no catch-up looks "
-        "needed (%s)." % (pct1(1 - c["region_share"]), "93.3", "%.1f" % CM.round1(c["R_avg"])),
-        "All the contact survey's diaries together give %s, but two thirds were kept in July and August with the schools "
-        "closed. The winter runs in term." % ("%.1f" % CM.round1(c["R_all"]["none"])),
-        "In the May diaries, kept in term, more than half of the contacts of 15 to 19-year-olds are with others of that "
-        "age; in the summer diaries, under a fifth.",
-        "The cohort born 2008 to 2012, whose uptake fell in the 2010-12 vaccine scare, is 15 to 19 on 1 January 2028 and "
-        "%s per cent susceptible, against %s per cent across the region. In term, chains of infection run inside that "
-        "group, so only option B takes the reproduction number below one; D and E reach the least immune adults and the "
-        "most people and leave it at %s." % (pct1(c["share_1519"]), pct1(c["region_share"]), "%.1f" % c["r1"]["D"])],
-        size=17)
-    footer(s, 3, "National Social Contact Survey 2023 public use file; national immunity profile, May 2027")
-    # 4: what each option involves
-    s = prs.slides.add_slide(blank)
-    textbox(s, 600000, 350000, 11000000, 600000, ["What each option involves"], size=26, bold_first=True)
-    rows, cols = 6, 4
-    tbl_shape = s.shapes.add_table(rows, cols, Emu(600000), Emu(1250000), Emu(11000000), Emu(3600000))
-    tbl = tbl_shape.table
-    tbl_shape._element.graphic.graphicData.tbl.tblPr.set("bandRow", "0")
-    for j, wdt in enumerate((3200000, 3000000, 2400000, 2400000)):
-        tbl.columns[j].width = Emu(wdt)
-    heads = ["Option", "On the register, living in the region", "No valid MMR dose", "Exactly one valid dose"]
-    for j, h in enumerate(heads):
-        cell = tbl.cell(0, j)
-        cell.text = h
-        cell.fill.solid()
-        cell.fill.fore_color.rgb = navy
-        run = cell.text_frame.paragraphs[0].runs[0]
-        run.font.size = Pt(13)
-        run.font.bold = True
-        run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-    for i, k in enumerate(W.OPTION_KEYS, start=1):
-        vals = ["%s (born %d to %d)" % ((k,) + W.OPTIONS[k]["years"]), "{:,}".format(c["ask1"][k]),
-                "{:,}".format(c["ask2"][k]["none"]), "{:,}".format(c["ask2"][k]["one"])]
-        for j, v in enumerate(vals):
-            cell = tbl.cell(i, j)
-            cell.text = v
-            cell.fill.solid()
-            cell.fill.fore_color.rgb = RGBColor(0xE3, 0xF1, 0xE6) if k == "B" else RGBColor(0xF4, 0xF6, 0xF7)
-            run = cell.text_frame.paragraphs[0].runs[0]
-            run.font.size = Pt(13)
-            run.font.color.rgb = RGBColor(0x1D, 0x23, 0x29)
-            if j:
-                cell.text_frame.paragraphs[0].alignment = 3
-    textbox(s, 600000, 5050000, 11000000, 1300000, [
-        "Register at 30 June 2027; valid doses under the national guidelines (12.5). No valid dose: two doses to offer; "
-        "one: one dose. Option E includes option D's birth years."], size=12, color=grey)
-    footer(s, 4, "Regional immunisation register extract of 3 July 2027")
-    # 5: method and sources
-    s = prs.slides.add_slide(blank)
-    textbox(s, 600000, 350000, 11000000, 600000, ["Method and sources"], size=26, bold_first=True)
-    textbox(s, 600000, 1250000, 11000000, 4800000, [
-        "PS-07 section 3: the reproduction number below one throughout the winter, December to February, with R0 15 over "
-        "the winter; population and immunity on 1 January 2028 from the national profile; each option counted for the "
-        "people the options paper expects it to make immune.",
-        "Next-generation matrix: contacts per day by age band from the survey's term-time diaries (2 to 26 May 2023) "
-        "times each band's susceptible share, scaled so a wholly susceptible region gives 15; the reproduction number "
-        "is its dominant eigenvalue, which has to stay below one through the term weeks of the winter (PS-07 3.1).",
-        "Register: local health office codes read in the scheme in force when recorded; each person by the year they "
-        "were born, a date of birth held ten years early read ten years on; events through the merge table; GP return "
-        "lines replaced or withdrawn removed; a twin's dose loaded to its twin given back; doses counted under "
-        "guidelines 12.5."],
-        size=16)
-    footer(s, 5, "PS-07 Measles winter planning standard, version 3.0; options paper of 9 June 2027")
-    prs.save(path)
-    PP.normalize_ooxml(path, AUTHOR, AUTHOR, "2027-07-14T10:12:00Z", "2027-07-14T16:20:00Z",
-                       title="Winter 2027-28 measles readiness")
+    def foot(canvas, doc):
+        canvas.saveState()
+        canvas.setFont(DOC.SANS, 7.2)
+        canvas.setFillColor(colors.HexColor("#5d6872"))
+        canvas.drawString(18 * mm, 9 * mm, "%s | NOS 12 assessment | TM107 relining" % W.COMPANY)
+        canvas.drawRightString(A4[0] - 18 * mm, 9 * mm, "Page 1 of 1")
+        canvas.restoreState()
+    d.build(f, onFirstPage=foot)
+    PP.normalize_pdf(path, b"D:20261120161502+00'00'", b"D:20261120163844+00'00'")
 
 
-def build(target, golden_dir, figures_path, w=None):
-    os.makedirs(golden_dir, exist_ok=True)
-    c = compute(target)
-    write_xlsx(os.path.join(golden_dir, XLSX), c)
-    write_pptx(os.path.join(golden_dir, PPTX), c)
-    figs = figures(c)
-    with open(figures_path, "w", encoding="utf-8") as f:
-        json.dump(figs, f, indent=1, ensure_ascii=False)
-        f.write("\n")
-    return c
-
-
-def provenance(files, counts):
-    """Per shipped file: what it covers, the body that issued it, its own as-of or issue date, the day an extract was
-    run and its rows (dataset-generation section 9). It says what each file is, never how the files fit together."""
-    by_name = {PK.FILES[k]: (k, covers, issuer, asof, run) for k, covers, issuer, asof, run in PK.PROVENANCE}
-    assert sorted(by_name) == files, sorted(set(by_name) ^ set(files))
-    out = []
-    for fn in files:
-        key, covers, issuer, asof, run = by_name[fn]
-        rec = {"file": fn, "covers": covers, "issued_by": issuer, "as_of": asof}
-        if run:
-            rec["extracted"] = run
-        if counts.get(key):
-            rec["rows"] = int(counts[key])
-        rec["license"] = "CC0-1.0 (original work)"
-        out.append(rec)
-    return out
-
-
+# ------------------------------------------------------------------------------------------------ metadata
 def metadata(path, target, counts):
-    files = sorted(os.listdir(target))
-    fmts = sorted({f.rsplit(".", 1)[1] for f in files})
-    big = max(((k, v) for k, v in counts.items() if v), key=lambda kv: kv[1])
+    rows = {k: counts.get(k, 0) for k in PK.FILES}
+    largest = max(("flows", "turbidity", "amr"), key=lambda k: rows[k])
+    prov = {
+        "flows": ("Hourly mean inflow at each district metered area's inlet meter, historian export (UTC)",
+                  "Network Operations telemetry", "2026-11-02"),
+        "outlet": ("Hourly treated water outflow at Copt Hill works (UTC)", "Network Operations telemetry", "2026-11-02"),
+        "register": ("Stavenham trunk mains register: mains, valves and district metered areas", "Asset Information",
+                     "2026-11-02"),
+        "valvelog": ("Control room valve operations log, Stavenham network, November 2025 to October 2026",
+                     "Control Room", "2026-11-02"),
+        "turbidity": ("Fifteen-minute turbidity at monitored district inlets (UTC)", "Water Quality telemetry",
+                      "2026-11-02"),
+        "standard": ("Network Operations Standard NOS 12, issue 3", W.COMPANY, "2025-03-18"),
+        "plan": ("Outage plan for the TM107 Ferrars Lane relining, version 1.0", "Network Operations", "2026-11-16"),
+        "jobs": ("Mains flushing contractor's job sheets, 2025-26 programme", "Mains flushing contractor",
+                 "2026-04-02"),
+        "supply": ("Non-household supply points in Stavenham", "Business Customers", "2026-11-02"),
+        "consumption": ("Monthly settled consumption per non-household supply point, April 2025 to October 2026",
+                        "Business Customers", "2026-11-02"),
+        "amr": ("Hourly consumption from the loggers on large non-household meters (local time)", "Business Customers",
+                "2026-11-02"),
+        "condition": ("Trunk mains condition assessment 2024", "Asset Management", "2024-09-23"),
+        "weather": ("Daily weather at Stavenham (Copt Hill)", "Network Operations", "2026-11-02"),
+        "samples": ("Regulatory samples at customer taps, by water supply zone", "Water Quality", "2026-11-02"),
+    }
     meta = {
         "task": "task501",
-        "title": "Which autumn 2027 MMR catch-up, if any, keeps measles' winter reproduction number in Oriel Health "
-                 "Region below one, with each option's register residents and its unvaccinated and part-vaccinated "
-                 "people",
-        "domain": "Epidemiology & Public Health",
-        "subdomain": "infectious-disease transmission modelling (measles' winter reproduction number under each autumn "
-                     "catch-up option)",
+        "title": "Which trunk mains, if any, Lydden Valley Water must flush before the TM107 Ferrars Lane main comes out "
+                 "for relining in March 2027, with its 2025-26 flushing water per 100 m by diameter and the re-routed "
+                 "districts' non-household water",
+        "domain": "Energy Systems & Utilities",
+        "subdomain": "asset-condition-maintenance (water distribution trunk mains)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "07 (grid of cells): the winter reproduction number under no catch-up and each of five options, "
-                        "with each option's register residents and its no-dose and one-dose counts",
-        "as_of": "2027-07-12",
-        "deliverables": [XLSX, PPTX],
+        "prompt_shape": "07 (grid of cells): each trunk main the relining loads with its highest hourly flow during the "
+                        "works and whether to flush it, the flushing water per 100 m by diameter and year, and the "
+                        "non-household water by re-routed district",
+        "as_of": "2026-11-16",
+        "deliverables": ["ferrars_lane_flushing_2027.xlsx", "ferrars_lane_flushing_note.pdf"],
         "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],
-        "input_gates": {"files": len(files), "formats": fmts, "largest_file": PK.FILES[big[0]], "largest_file_rows": big[1]},
+        "input_gates": {"files": len(PK.FILES), "formats": sorted({v.rsplit(".", 1)[1] for v in PK.FILES.values()}),
+                        "largest_file": PK.FILES[largest], "largest_file_rows": rows[largest]},
         "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around a "
-                               "fictional regional health authority (Oriel Health Region), its immunisation register, a "
-                               "fictional national contact survey and immunity profile; no real person, patient or "
-                               "practice is depicted, and the place names are used as geography only.",
-                     "date": "2027-07-12", "license": "CC0-1.0 (original work)"}],
-        "provenance": provenance(files, counts),
-        "created": "2026-10-12",
-        "generator": "task501/generator/build.py",
+                     "origin": "constructed for this task by task501/generator/build.py (seeded, deterministic) around "
+                               "a fictional water-only company (Lydden Valley Water) and town (Stavenham); no real "
+                               "person, customer, company or asset is depicted.",
+                     "date": "2026-11-16", "license": "CC0-1.0 (original work)"}],
+        "provenance": [],
     }
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(meta, f, indent=2, ensure_ascii=False)
-        f.write("\n")
+    for k, fn in PK.FILES.items():
+        cov, by, asof = prov[k]
+        e = {"file": fn, "covers": cov, "issued_by": by, "as_of": asof, "license": "CC0-1.0 (original work)"}
+        if rows.get(k):
+            e["rows"] = rows[k]
+        meta["provenance"].append(e)
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(meta, fh, indent=2)
+        fh.write("\n")
+
+
+def build(target, golden_dir, figures_path):
+    os.makedirs(golden_dir, exist_ok=True)
+    res = compute(target)
+    figs = figures(res)
+    write_xlsx(os.path.join(golden_dir, "ferrars_lane_flushing_2027.xlsx"), res, figs)
+    write_note(os.path.join(golden_dir, "ferrars_lane_flushing_note.pdf"), res, figs)
+    with open(figures_path, "w", encoding="utf-8") as fh:
+        json.dump(figs, fh, indent=2)
+        fh.write("\n")
+    return res, figs
