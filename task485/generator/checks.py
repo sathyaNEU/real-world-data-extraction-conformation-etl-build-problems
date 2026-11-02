@@ -27,7 +27,7 @@ import world as W      # noqa: E402
 
 ROWS = []
 GOLD_PICKS = {"GLP-1 receptor agonists": "Velantro", "SGLT2 inhibitors": "Empriva", "Long-acting insulins": "Glarvia",
-              "Direct oral anticoagulants": "Apiqor", "Inhaled corticosteroid and LABA combinations": "Brezara",
+              "Direct oral anticoagulants": "Apiqor", "Inhaled corticosteroid and LABA combinations": "Bevoria",
               "Adalimumab products": "adalimumab-kvrn"}
 DEFAULT_PICKS = dict(GOLD_PICKS, **{"GLP-1 receptor agonists": "Liraquent", "Long-acting insulins": "insulin glargine-qmrt",
                                     "Inhaled corticosteroid and LABA combinations": "Saltiva"})
@@ -292,6 +292,11 @@ def main():
                                                                   round(c["qty"] / pk.per30[c["brand"]])) > 1e-9]
     check("SF13 every compared claim dispenses whole 30-day supplies, so no partial-supply convention arises",
           not partial, "%d partial" % len(partial))
+    fq4_late = [c for c in D["claims_all"] if c["fq"] == "FQ4" and c["paid"] > dt.date(2026, 8, 14)]
+    fq4_rev = [r for r in rows if r["claim_status"] == "R" and by_no[r["reversal_of"]]["fq"] == "FQ4"
+               and A.parse_date(r["date_paid"]) > dt.date(2026, 8, 14)]
+    check("axis 12 maturity: no April to June 2026 claim was paid or reversed after the 14 August cut-off, so no "
+          "adjustment for fiscal 2026 service waits on a statement not yet received", not fq4_late and not fq4_rev)
     gaps = [v["gap"] for v in g["picks"].values()]
     check("SF14 no tie: the nearest runner-up sits at least 40 dollars above the preferred product",
           min(gaps) >= 40, "nearest gap %.2f" % min(gaps))
@@ -303,7 +308,7 @@ def main():
         check("golden margin %s runner-up over preferred at least 1.15x" % c, v["ratio"] >= 1.15, "%.3f" % v["ratio"])
     rung = {"gross": pk.net({}), "default": pk.net(pk.prorata()), "cellwise": pk.net(pk.prorata(cellwise=True)),
             "units": pk.net(pk.prorata(basis="units")), "inscope": pk.net(pk.fit(brands=set(pk.compared))[0])}
-    want = {"gross": ["Dulmira", "Canivo", "insulin glargine-qmrt", "Ravelta", "Saltiva", "adalimumab-kvrn"],
+    want = {"gross": ["Dulavio", "Canivo", "insulin glargine-qmrt", "Ravelta", "Saltiva", "adalimumab-kvrn"],
             "default": [DEFAULT_PICKS[c] for c in A.CLASS_ORDER], "cellwise": [DEFAULT_PICKS[c] for c in A.CLASS_ORDER],
             "units": ["Liraquent", "Empriva", "Deglutra", "Apiqor", "Saltiva", "adalimumab-kvrn"],
             "inscope": ["Velantro", "Canivo", "Glarvia", "Apiqor", "Vilaro", "adalimumab-kvrn"]}
@@ -333,8 +338,8 @@ def main():
         n = pk.net(rb)
         check("golden family, %s: every net cost in its golden band" % lab,
               all(r10(n[b]) == r10(gnet[b]) for b in pk.compared))
-    check("default margin: Velantro sits above Liraquent and Dulmira under the split (the wrong rung is not a near tie "
-          "in insulin and inhalers)", rung["default"]["Velantro"] > rung["default"]["Dulmira"] and
+    check("default margin: Velantro sits above Liraquent and Dulavio under the split (the wrong rung is not a near tie "
+          "in insulin and inhalers)", rung["default"]["Velantro"] > rung["default"]["Dulavio"] and
           rung["default"]["Deglutra"] / rung["default"]["insulin glargine-qmrt"] >= 1.15 and
           rung["default"]["Vilaro"] / rung["default"]["Saltiva"] >= 1.15)
     check("the cheap routes that reach the golden: one (the fit on every product of each manufacturer)",

@@ -172,12 +172,7 @@ def main_call(target):
 
 
 # ------------------------------------------------------------------------------------------------- ask A: releases
-def releases(target):
-    """rainbow trout released alive into each lake: each trip's load counted once at its raceway's fish per kilogram
-    on the loading day, shared between its drops by the nets the drop crew tallied, less the dead at release; a trip
-    the drop crew recorded as returned to the hatchery released nothing"""
-    reg = register(target)
-    by_name = {v["name"]: c for c, v in reg.items()}
+def _trip_sheets(target):
     wb = openpyxl.load_workbook(os.path.join(target, "quillet_creek_trip_sheets_2026.xlsx"), read_only=True, data_only=True)
     rows = list(wb["Trips 2026"].iter_rows(values_only=True))
     hdr = rows[0]
@@ -186,48 +181,89 @@ def releases(target):
         if r[0] is None:
             continue
         d = dict(zip(hdr, r))
-        t = trips.setdefault(d["Trip"], {"date": dt.date.fromisoformat(str(d["Date"])[:10]), "raceway": str(d["Raceway"]),
-                                         "load": float(d["Net load (kg)"]), "dests": []})
-        t["dests"].append(by_name[d["Destination"]])
-    renum = {r["old_raceway"]: int(r["new_raceway"]) for r in read_csv(os.path.join(target, "quillet_creek_raceway_numbers.csv"))}
-    switch = dt.date.fromisoformat(read_csv(os.path.join(target, "quillet_creek_raceway_numbers.csv"))[0]["from_date"])
-    samples = {}
+        t = trips.setdefault(d["Trip"], {"date": dt.date.fromisoformat(str(d["Date"])[:10]), "raceway": int(d["Raceway"]),
+                                         "load": float(d["Net load (kg)"]), "dests": [],
+                                         "new_template": d["Tank temp (C)"] not in (None, "")})
+        t["dests"].append(d["Destination"])
+    return trips
+
+
+def _samples(target):
+    out = []
     for r in read_csv(os.path.join(target, "quillet_creek_raceway_samples_2026.csv")):
-        samples[(dt.date.fromisoformat(r["sample_date"]), r["raceway"])] = int(r["fish_counted"]) / (int(r["sample_g"]) / 1000.0)
+        out.append({"date": dt.date.fromisoformat(r["sample_date"]), "raceway": int(r["raceway"]),
+                    "fpk": int(r["fish_counted"]) / (int(r["sample_g"]) / 1000.0), "onhand": int(r["fish_on_hand"])})
+    return out
+
+
+def _crosswalk(target):
+    rows = read_csv(os.path.join(target, "quillet_creek_raceway_numbers.csv"))
+    return {int(r["old_raceway"]): int(r["new_raceway"]) for r in rows}, dt.date.fromisoformat(rows[0]["from_date"])
+
+
+def raceway_of_trip(t, cw, switch, mode="golden"):
+    """the raceway each load came from, in the 2026 (new) numbering: the trip sheets kept the old numbers until their
+    template changed (the tank temperature column); mode 'in_force' reads each trip's number in the numbering the
+    crosswalk puts in force on the trip date"""
+    if mode == "golden":
+        return t["raceway"] if t["new_template"] else cw[t["raceway"]]
+    return cw[t["raceway"]] if t["date"] < switch else t["raceway"]
+
+
+def unified_samples(samples, cw, switch):
+    """every sample under the 2026 (new) raceway numbers"""
+    return [dict(s, raceway=(s["raceway"] if s["date"] >= switch else cw[s["raceway"]])) for s in samples]
+
+
+def fpk_at(samples, raceway, d, how="latest"):
+    ss = sorted((s for s in samples if s["raceway"] == raceway), key=lambda s: s["date"])
+    before = [s for s in ss if s["date"] <= d]
+    after = [s for s in ss if s["date"] > d]
+    if how == "latest" or not after:
+        return before[-1]["fpk"]
+    a, b = before[-1], after[0]
+    if how == "nearest":
+        return a["fpk"] if (d - a["date"]).days <= (b["date"] - d).days else b["fpk"]
+    w = (d - a["date"]).days / (b["date"] - a["date"]).days
+    return a["fpk"] * (1 - w) + b["fpk"] * w
+
+
+def releases(target, how="latest", raceways="golden", split="nets", doa=True):
+    """catchable rainbow trout released alive into each lake: each load at its raceway's fish per kilogram, shared
+    between the trip's drops by the nets the drop crew tallied, less the dead counted at the drop"""
+    trips = _trip_sheets(target)
+    cw, switch = _crosswalk(target)
+    samples = unified_samples(_samples(target), cw, switch)
     drops = json.load(open(os.path.join(target, "quillet_creek_drop_tallies_2026.json")))["records"]
     by_trip = {}
     for x in drops:
         by_trip.setdefault(x["trip_id"], []).append(x)
-    fish = {c: 0.0 for c in reg}
+    fish = {}
     for tid, t in trips.items():
-        lab = t["raceway"]
-        if t["date"] >= switch:
-            key = str(renum[lab]) if lab in renum else lab
-        else:
-            key = lab
-        fpk = samples[(t["date"], key)]
-        recs = [x for x in by_trip.get(tid, []) if x["lake_code"] != "RETURNED"]
-        nets = sum(x["nets"] for x in by_trip.get(tid, []))
-        if nets == 0:
-            continue
+        rw = raceway_of_trip(t, cw, switch, raceways)
+        f = fpk_at(samples, rw, t["date"], how)
+        recs = by_trip[tid]
+        nets = sum(x["nets"] for x in recs)
         for x in recs:
-            fish[x["lake_code"]] += t["load"] * x["nets"] / nets * fpk - x["doa"]
-    return {c: v for c, v in fish.items() if v > 0}
+            share = x["nets"] / nets if split == "nets" else 1.0 / len(recs)
+            fish[x["lake_code"]] = fish.get(x["lake_code"], 0.0) + t["load"] * share * f - (x["doa"] if doa else 0)
+    return fish
 
 
 # ------------------------------------------------------------------------------------------------- ask B: warm days
-def warm_days(target, start=dt.date(2026, 7, 1), end=dt.date(2026, 8, 31), line=20.0):
-    """for each lake with a 1 m logger: the days in the window whose mean 1 m temperature (local day) was above the line;
-    each reading belongs to the deployment its serial was in at that moment, and a logger launched on UTC is read in
-    Pacific time"""
-    dep = [{"serial": r["logger_serial"], "lake": r["lake_code"], "depth": float(r["depth_m"]),
-            "a": dt.datetime.strptime(r["deployed"], "%Y-%m-%d %H:%M"), "b": dt.datetime.strptime(r["retrieved"], "%Y-%m-%d %H:%M")}
-           for r in read_csv(os.path.join(target, "logger_deployments_2026.csv"))]
-    raw = {}
-    for r in read_csv(os.path.join(target, "lake_temperature_loggers_2026.csv")):
-        raw.setdefault(r["logger_serial"], []).append((dt.datetime.strptime(r["date_time"], "%Y-%m-%d %H:%M"), float(r["temp_c"])))
-    # each serial's clock: a logger whose warmest time of day sits near midnight was launched on UTC
-    offset = {}
+def _deployments(target):
+    out = []
+    for r in read_csv(os.path.join(target, "logger_deployments_2026.csv")):
+        out.append({"serial": r["logger_serial"], "lake": r["lake_code"], "depth": float(r["depth_m"]),
+                    "a": dt.datetime.strptime(r["deployed"], "%Y-%m-%d %H:%M"),
+                    "b": dt.datetime.strptime(r["retrieved"], "%Y-%m-%d %H:%M") if r["retrieved"] else None})
+    return out
+
+
+def logger_clock_offsets(raw):
+    """hours to add to each serial's stamps for Pacific daylight time: a 1 m logger's water is warmest in the late
+    afternoon, so a serial whose warmest hour of the day sits near midnight was launched on UTC"""
+    off = {}
     for s, recs in raw.items():
         prof = np.zeros(24)
         n = np.zeros(24)
@@ -235,32 +271,60 @@ def warm_days(target, start=dt.date(2026, 7, 1), end=dt.date(2026, 8, 31), line=
             prof[t.hour] += v
             n[t.hour] += 1
         prof = prof / np.maximum(n, 1)
-        offset[s] = -7 if prof.argmax() in (22, 23, 0, 1, 2) else 0
-    daily = {}
+        off[s] = -7 if int(prof.argmax()) in (21, 22, 23, 0, 1, 2, 3) else 0
+    return off
+
+
+def warm_days(target, start=dt.date(2026, 7, 1), end=dt.date(2026, 8, 31), line=20.0, mode="golden", combine="pooled"):
+    """for each lake with a logger at 1 m: the days in the window whose 1 m readings averaged above the line over the
+    local day; each reading belongs to the deployment its serial was in at that moment (golden), or to the station
+    the download names (mode 'site')"""
+    dep = _deployments(target)
+    raw = {}
+    site = {}
+    for r in read_csv(os.path.join(target, "lake_temperature_loggers_2026.csv")):
+        raw.setdefault(r["logger_serial"], []).append((dt.datetime.strptime(r["date_time"], "%Y-%m-%d %H:%M"),
+                                                       float(r["temp_c"])))
+        site[r["logger_serial"]] = (r["site"], float(r["depth_m"]))
+    reg = register(target)
+    by_name = {v["name"].replace(" Lake", ""): c for c, v in reg.items()}
+    off = logger_clock_offsets(raw)
+    per = {}
     for s, recs in raw.items():
         for t, v in recs:
-            tl = t + dt.timedelta(hours=offset[s])
-            for d in dep:
-                if d["serial"] == s and d["a"] <= tl <= d["b"]:
-                    if d["depth"] < 2:
-                        daily.setdefault((d["lake"], tl.date()), []).append(v)
-                    break
-    lakes = sorted({d["lake"] for d in dep if d["depth"] < 2})
-    out = {}
-    means = {}
+            tl = t + dt.timedelta(hours=off[s])
+            if mode == "golden":
+                hit = None
+                for d in dep:
+                    if d["serial"] == s and d["a"] <= tl and (d["b"] is None or tl <= d["b"]):
+                        hit = d
+                        break
+                if hit is None or hit["depth"] >= 2:
+                    continue
+                lake = hit["lake"]
+            else:
+                nm, depth = site[s]
+                if depth >= 2:
+                    continue
+                lake = by_name[nm]
+            if start <= tl.date() <= end:
+                per.setdefault((lake, tl.date()), {}).setdefault(s, []).append(v)
+    lakes = sorted({c for c, d in per})
+    out, means = {}, {}
     for c in lakes:
         k = 0
-        for i in range((end - start).days + 1):
-            day = start + dt.timedelta(days=i)
-            vals = daily.get((c, day))
-            if not vals:
+        for (cc, day), m in per.items():
+            if cc != c:
                 continue
-            m = float(np.mean(vals))
-            means[(c, day)] = m
-            if m > line:
+            if combine == "pooled":
+                mu = float(np.mean([v for vs in m.values() for v in vs]))
+            else:
+                mu = float(np.mean([np.mean(vs) for vs in m.values()]))
+            means[(c, day)] = mu
+            if mu > line:
                 k += 1
         out[c] = k
-    return out, means, offset
+    return out, means
 
 
 def run(target):

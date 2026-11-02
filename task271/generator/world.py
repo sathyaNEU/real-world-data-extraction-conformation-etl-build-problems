@@ -30,11 +30,11 @@ LAKES = [
     ("PP-22", "Ostrum Lake", "general", 22.4, 242, 13, 1195, "paved", "yes", "concrete ramp", 0.88),
     ("PP-24", "Farrowdale Lake", "general", 51.2, 331, 11, 1230, "gravel", "yes", "gravel ramp", 0.86),
     ("PP-27", "Pillory Lake", "general", 26.3, 205, 18, 1290, "gravel", "no", "gravel ramp", 0.90),
-    ("PP-31", "Saddlebank Lake", "general", 33.1, 206, 21, 1320, "4x4", "no", "car-top", 0.93),
-    ("PP-33", "Copperjack Lake", "general", 19.8, 227, 15, 1275, "gravel", "yes", "gravel ramp", 0.90),
+    ("PP-31", "Saddlebank Lake", "general", 33.1, 199, 21, 1320, "4x4", "no", "car-top", 0.93),
+    ("PP-33", "Copperjack Lake", "general", 19.8, 221, 15, 1275, "gravel", "yes", "gravel ramp", 0.90),
     ("PP-05", "Ellerdine Lake", "fly", 24.9, 595, 5, 1305, "gravel", "yes", "gravel ramp", 0.45),
-    ("PP-09", "Quorrin Lake", "fly", 29.6, 678, 6, 1340, "gravel", "yes", "gravel ramp", 0.40),
-    ("PP-16", "Ravensky Lake", "fly", 17.3, 818, 16, 1380, "4x4", "no", "car-top", 0.47),
+    ("PP-09", "Quorrin Lake", "fly", 29.6, 670, 6, 1340, "gravel", "yes", "gravel ramp", 0.40),
+    ("PP-16", "Ravensky Lake", "fly", 17.3, 836, 16, 1380, "4x4", "no", "car-top", 0.47),
     ("PP-20", "Inverkeld Lake", "fly", 21.8, 800, 19, 1355, "gravel", "yes", "gravel ramp", 0.44),
     ("PP-26", "Kittiwake Lake", "fly", 15.6, 1150, 2, 1295, "paved", "yes", "concrete ramp", 0.38),
     ("PP-29", "Mosswater Lake", "fly", 30.9, 205, 22, 1410, "4x4", "no", "car-top", 0.92),
@@ -285,7 +285,7 @@ def old_number(rw_new):
 
 
 FPK0 = {1: 4.30, 2: 2.55, 3: 3.80, 4: 2.70, 5: 3.70, 6: 2.60, 7: 3.45, 8: 2.75}       # fish per kg on 4 May
-GROWTH = {1: .0036, 2: .0026, 3: .0033, 4: .0028, 5: .0034, 6: .0027, 7: .0031, 8: .0029}
+GROWTH = {1: .0016, 2: .0012, 3: .0015, 4: .0013, 5: .0016, 6: .0012, 7: .0014, 8: .0013}   # maintenance ration
 ONHAND0 = {1: 30400, 2: 27100, 3: 33800, 4: 26300, 5: 31900, 6: 28800, 7: 29500, 8: 27700}
 SAMPLE_DAY0 = dt.date(2026, 5, 4)
 
@@ -326,7 +326,17 @@ def hatchery_plan():
     return rel
 
 
-LOAD_PLAN = {}    # planned net loads (kg) by trip, where the plan set them
+LOAD_PLAN = {    # the hatchery's planned net loads (kg) by trip, from the 2026 stocking plan
+    "QC-2601": 492.1, "QC-2602": 345.6, "QC-2603": 334.0, "QC-2604": 439.1, "QC-2605": 313.9, "QC-2606": 422.2,
+    "QC-2607": 315.9, "QC-2608": 398.6, "QC-2609": 518.1, "QC-2610": 487.3, "QC-2611": 440.5, "QC-2612": 477.1,
+    "QC-2613": 482.4, "QC-2614": 504.4, "QC-2615": 481.8, "QC-2616": 512.7, "QC-2617": 483.6, "QC-2618": 370.3,
+    "QC-2619": 355.4, "QC-2620": 501.3, "QC-2621": 517.1, "QC-2622": 322.3, "QC-2623": 491.2, "QC-2624": 347.7,
+    "QC-2625": 468.6, "QC-2626": 479.2, "QC-2627": 505.4, "QC-2628": 333.6, "QC-2629": 440.3, "QC-2630": 364.6,
+    "QC-2631": 361.4, "QC-2632": 358.3, "QC-2633": 328.1, "QC-2634": 380.5, "QC-2635": 301.2, "QC-2636": 331.2,
+    "QC-2637": 379.0, "QC-2638": 300.2, "QC-2639": 468.4, "QC-2640": 339.9, "QC-2641": 517.6, "QC-2642": 498.4,
+    "QC-2643": 381.2, "QC-2644": 425.1, "QC-2645": 348.2, "QC-2646": 393.0, "QC-2647": 387.6, "QC-2648": 513.6,
+    "QC-2649": 349.3, "QC-2650": 463.6, "QC-2651": 415.7, "QC-2652": 518.1,
+}
 
 
 def hatchery_trips():
@@ -399,8 +409,8 @@ def raceway_samples(trips):
                 onhand[t["rw_new"]] -= t["load"] * fpk_true(t["rw_new"], x)
             x += dt.timedelta(days=1)
         for rw in range(1, 9):
-            grams = float(np.round(g.uniform(2400, 3600), 0))
-            n = int(round(fpk_true(rw, d) * grams / 1000 * math.exp(g.normal(0, 0.012))))
+            grams = float(np.round(g.uniform(18000, 26000), -1))
+            n = int(round(fpk_true(rw, d) * grams / 1000 * math.exp(g.normal(0, 0.006))))
             out.append({"date": d, "rw_new": rw, "grams": grams, "count": n, "onhand": int(round(onhand[rw], -1))})
         prev = d
         d += dt.timedelta(days=7)
@@ -469,8 +479,8 @@ DEPLOYMENTS = [
 ]
 PEAK_DOY = 207.0
 # each logger's reading error against a reference thermometer, inside the +/-0.53 C a pendant logger is specified to
-CALIBRATION = {"20184452": -0.30, "20184402": 0.00, "20184470": -0.04, "20184441": -0.31, "20184421": 0.00,
-               "20184409": 0.18, "20184533": 0.02, "20184438": 0.03, "20184457": -0.05, "20184417": 0.07,
+CALIBRATION = {"20184452": -0.19, "20184402": 0.00, "20184470": 0.00, "20184441": -0.39, "20184421": -0.05,
+               "20184409": 0.32, "20184533": 0.03, "20184438": 0.03, "20184457": -0.04, "20184417": 0.07,
                "20184425": -0.12}
 
 

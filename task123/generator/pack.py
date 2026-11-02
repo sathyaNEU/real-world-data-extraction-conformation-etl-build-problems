@@ -107,11 +107,12 @@ def nem12(W, path):
 
 
 def like_day(W, i, d):
-    """The operator's substitution: the meter's average half-hourly profile over the seven days before
-    (the seven after in the first week), each interval to the nearest Wh."""
+    """The operator's substitution: the meter's half-hourly profile over the seven days before (the seven after
+    in the first week), the nearer days weighted more, each interval to the nearest Wh."""
     x = kwh_half(W, i)
-    days = [k for k in range(d - 7, d) if k >= 1] if d > 7 else [k for k in range(d + 1, d + 8)]
-    prof = np.mean([x[(k - 1) * 48:k * 48] for k in days], axis=0)
+    days = list(range(d - 1, d - 8, -1)) if d > 7 else list(range(d + 1, d + 8))
+    w = np.arange(7, 0, -1, dtype=float)
+    prof = np.sum([wt * x[(k - 1) * 48:k * 48] for wt, k in zip(w, days)], axis=0) / w.sum()
     return np.round(prof, 3)
 
 
@@ -215,7 +216,7 @@ def events_json(W, path):
                      "end_utc": e["end"].strftime("%Y-%m-%dT%H:%M:%SZ"),
                      "v_extreme": round(e["vpk"], 1)})
     doc = {"source": "Quaylight head-end, power quality event log", "site": "OC1 PS431877Q " + COMPLEX,
-           "generated_utc": "2026-08-04T01:12:07Z", "period_utc": ["2026-06-30T14:00:00Z", "2026-07-31T14:00:00Z"],
+           "exported_utc": "2026-08-04T01:12:07Z", "period_utc": ["2026-06-30T14:00:00Z", "2026-07-31T14:00:00Z"],
            "events": recs}
     with open(path, "w") as f:
         json.dump(doc, f, indent=1)

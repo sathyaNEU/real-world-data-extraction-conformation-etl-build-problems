@@ -48,7 +48,7 @@ BOARD_DATE = dt.date(2026, 11, 19)
 FILING_DATE = dt.date(2026, 12, 1)
 POLICY_DATE = dt.date(2026, 3, 12)           # the board adopted the allocation policy's 2026 revision
 PROTOCOL_DATE = dt.date(2026, 4, 28)
-RACEWAY_RENUMBER = dt.date(2026, 7, 6)       # the hatchery's new raceway bank came into use
+RACEWAY_RENUMBER = dt.date(2026, 6, 22)      # the new headbox came into use and the raceways were renumbered from the intake end
 TRIPSHEET_SWITCH = dt.date(2026, 8, 17)      # the drivers' trip sheet template took the new raceway numbers
 PDT = dt.timezone(dt.timedelta(hours=-7))
 UTC = dt.timezone.utc

@@ -38,18 +38,18 @@ PLAN = "Employees' Group Health Plan"
 OFFICE = "Office of Employee Benefits"
 
 # manufacturers: key, name on the product file (labeler), name on the remittance statements, labeler code
-MFR = [("M1", "Arvelle Pharmaceuticals, Inc.", "ARVELLE PHARMACEUTICALS INC", "71584"),
+MFR = [("M1", "Tamsford Pharmaceuticals, Inc.", "TAMSFORD PHARMACEUTICALS INC", "71584"),
        ("M2", "Brennick Therapeutics LLC", "BRENNICK THERAPEUTICS", "63097"),
        ("M3", "Castellan Pharma USA, Inc.", "CASTELLAN PHARMA USA", "58126"),
        ("M4", "Quorvia Inc.", "QUORVIA INC", "70451"),
        ("M5", "Teravian Pharmaceuticals, Inc.", "TERAVIAN PHARMACEUTICALS", "66273"),
-       ("M6", "Ombrel Laboratories, Inc.", "OMBREL LABORATORIES", "51938"),
+       ("M6", "Linmoor Laboratories, Inc.", "LINMOOR LABORATORIES", "51938"),
        ("M7", "Pellard Pharma US LLC", "PELLARD PHARMA US", "69620"),
-       ("M8", "Vantrel Biosciences, Inc.", "VANTREL BIOSCIENCES", "73019"),
+       ("M8", "Quillon Biosciences, Inc.", "QUILLON BIOSCIENCES", "73019"),
        ("M9", "Kelvarin Biologics LLC", "KELVARIN BIOLOGICS", "55870"),
        ("M10", "Dorvane Pharma Inc.", "DORVANE PHARMA", "68342"),
        ("M11", "Elsmere Therapeutics, Inc.", "ELSMERE THERAPEUTICS", "62714"),
-       ("M12", "Fenwick Laboratories LLC", "FENWICK LABORATORIES", "57409")]
+       ("M12", "Ostwick Laboratories LLC", "OSTWICK LABORATORIES", "57409")]
 
 CLASSES = [("GLP1", "GLP-1 receptor agonists"), ("SGLT2", "SGLT2 inhibitors"), ("BASAL", "Long-acting insulins"),
            ("DOAC", "Direct oral anticoagulants"), ("ICS", "Inhaled corticosteroid and LABA combinations"),
@@ -61,7 +61,7 @@ REVIEWED = [c for c, _ in CLASSES]
 # channel profile: R (retail), M (mail heavy), S (specialty only)
 PRODUCTS = [
     ("GLP_A", "M1", "GLP1", "Velantro", "semaglutide 1 mg/0.75 mL pen", "1 pen", 1, "EA", 1.0, 1008.40, 0.48, "R"),
-    ("GLP_B", "M2", "GLP1", "Dulmira", "dulaglutide 1.5 mg/0.5 mL pen", "4 pens", 4, "EA", 4.0, 964.10, 0.34, "R"),
+    ("GLP_B", "M2", "GLP1", "Dulavio", "dulaglutide 1.5 mg/0.5 mL pen", "4 pens", 4, "EA", 4.0, 964.10, 0.34, "R"),
     ("GLP_C", "M3", "GLP1", "Liraquent", "liraglutide 18 mg/3 mL pen", "3 pens", 9, "ML", 9.0, 1041.70, 0.41, "R"),
     ("SGL_A", "M2", "SGLT2", "Empriva", "empagliflozin 25 mg tablet", "30 tablets", 30, "EA", 30.0, 609.30, 0.56, "R"),
     ("SGL_B", "M4", "SGLT2", "Daplexa", "dapagliflozin 10 mg tablet", "30 tablets", 30, "EA", 30.0, 595.80, 0.40, "R"),
@@ -72,7 +72,7 @@ PRODUCTS = [
      15.0, 267.10, 0.20, "R"),
     ("DOA_A", "M5", "DOAC", "Apiqor", "apixaban 5 mg tablet", "60 tablets", 60, "EA", 60.0, 585.60, 0.35, "R"),
     ("DOA_B", "M7", "DOAC", "Ravelta", "rivaroxaban 20 mg tablet", "30 tablets", 30, "EA", 30.0, 568.30, 0.20, "R"),
-    ("ICS_A", "M4", "ICS", "Brezara", "budesonide 160 mcg/formoterol 4.5 mcg inhaler", "1 inhaler, 120 actuations",
+    ("ICS_A", "M4", "ICS", "Bevoria", "budesonide 160 mcg/formoterol 4.5 mcg inhaler", "1 inhaler, 120 actuations",
      10.2, "GM", 10.2, 426.10, 0.52, "R"),
     ("ICS_B", "M6", "ICS", "Vilaro", "fluticasone furoate 100 mcg/vilanterol 25 mcg inhaler", "1 inhaler, 30 doses",
      1, "EA", 1.0, 389.30, 0.35, "R"),
@@ -84,8 +84,8 @@ PRODUCTS = [
      0.02, "S"),
     # products outside the reviewed classes, paid for under the same manufacturer agreements
     ("ONC_1", "M1", "ONC", "Trivoleta", "talzenacor 150 mg capsule", "30 capsules", 30, "EA", 30.0, 15390.00, 0.02, "S"),
-    ("MS_1", "M2", "MS", "Ambrelis", "ozanimod-like 0.92 mg capsule", "30 capsules", 30, "EA", 30.0, 8340.00, 0.07, "S"),
-    ("HIV_1", "M4", "HIV", "Virelda", "bictegravir/emtricitabine/tenofovir AF tablet", "30 tablets", 30, "EA", 30.0,
+    ("MS_1", "M2", "MS", "Ambrelis", "ozanimod 0.92 mg capsule", "30 capsules", 30, "EA", 30.0, 8340.00, 0.07, "S"),
+    ("HIV_1", "M4", "HIV", "Ralvenza", "bictegravir/emtricitabine/tenofovir AF tablet", "30 tablets", 30, "EA", 30.0,
      3910.00, 0.05, "R"),
     ("HCV_1", "M5", "HCV", "Hepravo", "sofosbuvir/velpatasvir tablet", "28 tablets", 28, "EA", 28.0, 11280.00, 0.14,
      "S"),
@@ -103,7 +103,7 @@ OTHER = [
     ("OTH_05", "M11", "Torvanza", "ezetimibe/rosuvastatin tablet", 30, 142.00, 0.32),
     ("OTH_06", "M11", "Dermalyn", "crisaborole 2% ointment", 60, 742.00, 0.22),
     ("OTH_07", "M12", "Nexoril", "esomeprazole 40 mg capsule", 30, 286.00, 0.12),
-    ("OTH_08", "M12", "Sumivex", "rimegepant 75 mg ODT", 8, 1012.00, 0.26),
+    ("OTH_08", "M12", "Rimeza", "rimegepant 75 mg ODT", 8, 1012.00, 0.26),
     ("OTH_09", "M12", "Thyrelle", "levothyroxine 100 mcg capsule", 30, 88.00, 0.05),
     ("OTH_10", "M10", "Glauvex", "latanoprostene bunod 0.024% solution", 5, 296.00, 0.28),
     ("OTH_11", "M11", "Asmerin", "montelukast 10 mg granules", 30, 191.00, 0.10),
@@ -313,8 +313,8 @@ def _pharmacies(rng):
     out.append(dict(npi=npi(), name="Halcroft Specialty Pharmacy - Southeast", channel="SPECIALTY", c340b=False,
                     since=dt.date(2021, 7, 1)))
     # hospital outpatient pharmacies: retail until 1 May 2026, then the specialty network
-    for nm, c3 in (("University Medical Center Outpatient Pharmacy", False), ("St. Brigid Health Outpatient Pharmacy", False),
-                   ("Mercy Ridge Hospital Pharmacy", False)):
+    for nm, c3 in (("University Medical Center Outpatient Pharmacy", False), ("Northgate Health Outpatient Pharmacy", False),
+                   ("Larkfield Hospital Pharmacy", False)):
         out.append(dict(npi=npi(), name=nm, channel="SPECIALTY", c340b=c3, since=NETWORK_MOVE, before="RETAIL"))
     return out
 

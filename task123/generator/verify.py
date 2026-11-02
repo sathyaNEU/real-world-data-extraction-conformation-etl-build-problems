@@ -109,6 +109,24 @@ def grid(rows, first):
     return out
 
 
+def unit_written(w):
+    """An apartment as owners write it (A1402, A-1402, 1402/A, Apt 14.02 Tower A); None for a postal address
+    or an application made for the owners corporation."""
+    w = w.strip()
+    if "for the OC" in w:
+        return None
+    m = re.fullmatch(r"([ABC])-?(\d\d)(\d\d)", w)
+    if m:
+        return m.group(1) + m.group(2) + m.group(3)
+    m = re.fullmatch(r"(\d\d)(\d\d)/([ABC])", w)
+    if m:
+        return m.group(3) + m.group(1) + m.group(2)
+    m = re.fullmatch(r"Apt (\d+)\.(\d\d) Tower ([ABC])", w)
+    if m:
+        return "%s%02d%s" % (m.group(3), int(m.group(1)), m.group(2))
+    return None
+
+
 # ----------------------------------------------------------------------------------------------- recompute
 def main():
     T = os.path.join(TASK, "target")
@@ -251,16 +269,7 @@ def main():
             if datetime.strptime(a["Lodged"], "%d/%m/%Y") < datetime(2025, 3, 15):
                 sp = remark[sp]
             else:
-                w = a["Unit or owner address"]
-                m = re.match(r"([ABC])-?(\d{4})$", w) or re.match(r"(\d{4})/([ABC])$", w)
-                m2 = re.match(r"Apt (\d+)\.(\d{2}) Tower ([ABC])$", w)
-                cand = None
-                if m and m.re.pattern.startswith("([ABC])"):
-                    cand = m.group(1) + m.group(2)
-                elif m:
-                    cand = m.group(2) + m.group(1)
-                elif m2:
-                    cand = "%s%02d%s" % (m2.group(3), int(m2.group(1)), m2.group(2))
+                cand = unit_written(a["Unit or owner address"])
                 if cand and owner.get(sp) != cand and owner.get(remark.get(sp)) == cand:
                     sp = remark[sp]
         spaces.add(sp)
@@ -310,7 +319,7 @@ def main():
             ok &= int(float(r["Charger requests lodged"])) == F["requests"][rid]
             ok &= abs(float(r["Time outside 216-253 V, week of 13 July (%)"]) - F["voltage_pct"][rid]) < 1e-9
             ok &= int(float(r["Busiest phase, share of rating (%)"])) == round(shares[rid])
-    check("golden workbook carries every riser's figures as recomputed", ok and len(tab) == 18)
+    check("golden workbook carries every riser's figures as recomputed", ok and sum(1 for r in tab if r["Rising main"] in F["july_mwh"]) == 18)
     svg = open(os.path.join(G, "riser_phase_loading_2027.svg")).read()
     check("golden chart is an SVG with the 80% limit and every main", "80% limit" in svg and all(k in svg for k in risers))
     sub = open(os.path.join(TASK, "submission.md")).read()

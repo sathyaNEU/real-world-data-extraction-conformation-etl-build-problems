@@ -224,10 +224,15 @@ def slides(path, pk, g):
         tbl.cell(i, 3).text = "%s, ${:,}".format(r10(g["net"][v["runner"]])) % v["runner"]
     for r_ in range(rows):
         for c_ in range(4):
-            for para in tbl.cell(r_, c_).text_frame.paragraphs:
+            cell = tbl.cell(r_, c_)
+            cell.fill.solid()
+            cell.fill.fore_color.rgb = RGBColor(0x3A, 0x3A, 0x3A) if r_ == 0 else (
+                RGBColor(0xF2, 0xF2, 0xF2) if r_ % 2 else RGBColor(0xFF, 0xFF, 0xFF))
+            for para in cell.text_frame.paragraphs:
                 for run in para.runs:
-                    run.font.size = Pt(15 if r_ else 15)
+                    run.font.size = Pt(15)
                     run.font.bold = (r_ == 0)
+                    run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF) if r_ == 0 else RGBColor(0x1F, 0x1F, 0x1F)
     tbl.columns[0].width = Inches(4.3)
     tbl.columns[1].width = Inches(2.6)
     tbl.columns[2].width = Inches(2.3)
@@ -248,8 +253,9 @@ def slides(path, pk, g):
             vals.append(r10(g["net"][b]))
     cd.categories = labels
     cd.add_series("Net cost per 30-day supply (USD)", vals)
-    gf = s2.shapes.add_chart(XL_CHART_TYPE.BAR_CLUSTERED, Inches(0.5), Inches(1.5), Inches(8.6), Inches(5.7), cd)
+    gf = s2.shapes.add_chart(XL_CHART_TYPE.BAR_CLUSTERED, Inches(0.5), Inches(1.45), Inches(8.6), Inches(5.45), cd)
     ch = gf.chart
+    ch.has_title = False
     ch.has_legend = False
     plot = ch.plots[0]
     plot.has_data_labels = True

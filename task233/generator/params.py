@@ -44,28 +44,29 @@ FQT_MULTIPLES = 4            # outlets re-collected per region per month
 FQT_INDEPENDENTS = 5
 FQT_DRAW_DAYS = 4            # the team re-collects at outlets visited in the window's first four working days
 
-# collector recording errors by region (truth): keying slips, wrong variety or size, and the
-# chance a collector keeps the handheld's pre-filled previous price when the shelf price changed
+# collector recording errors by region (truth): keying slips and wrong variety or size at a low,
+# near-uniform rate, and the chance a collector keeps the handheld's pre-filled previous price when the
+# shelf price has changed since the last visit, which carries the regions' differences
 ERRORS = {
-    "CR01": (0.004454, 0.002970, 0.019796),
-    "CR02": (0.011388, 0.007212, 0.045552),
-    "CR03": (0.003363, 0.002403, 0.014413),
-    "CR04": (0.004358, 0.003270, 0.021790),
-    "CR05": (0.033144, 0.023200, 0.165718),
-    "CR06": (0.010068, 0.006471, 0.039551),
-    "CR07": (0.014234, 0.010168, 0.081340),
-    "CR08": (0.006902, 0.004601, 0.030673),
-    "CR09": (0.007564, 0.006303, 0.037824),
-    "CR10": (0.019414, 0.011816, 0.067525),
-    "CR11": (0.005796, 0.004347, 0.028981),
-    "CR12": (0.016296, 0.011639, 0.069839),
-    "CR13": (0.008327, 0.005651, 0.029734),
-    "CR14": (0.005302, 0.003976, 0.026507),
+    "CR01": (0.0024, 0.0016, 0.0235),
+    "CR02": (0.0031, 0.0019, 0.1938),
+    "CR03": (0.0022, 0.0015, 0.0647),
+    "CR04": (0.0026, 0.0017, 0.0691),
+    "CR05": (0.0034, 0.0021, 0.5378),
+    "CR06": (0.0027, 0.0016, 0.0428),
+    "CR07": (0.0030, 0.0020, 0.2809),
+    "CR08": (0.0025, 0.0018, 0.0175),
+    "CR09": (0.0023, 0.0015, 0.0759),
+    "CR10": (0.0032, 0.0019, 0.3603),
+    "CR11": (0.0026, 0.0016, 0.0232),
+    "CR12": (0.0029, 0.0020, 0.3878),
+    "CR13": (0.0024, 0.0017, 0.0737),
+    "CR14": (0.0027, 0.0016, 0.0032),
 }
 
 # Price Collection Quality Standard bands on collection accuracy (per cent)
 BAND_COMPLIANT = 98.0
-BAND_CREDIT = 96.0
+BAND_CREDIT = 95.5
 CREDIT_PERCENT = 4
 
 # item groups: monthly frequency of a shelf-price change at multiples and at independents

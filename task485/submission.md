@@ -5,16 +5,16 @@
 
 ## 1. Final Recommendation
 
-**Prefer Velantro (GLP-1 receptor agonists), Empriva (SGLT2 inhibitors), Glarvia (Long-acting insulins), Apiqor (Direct oral anticoagulants), Brezara (Inhaled corticosteroid and LABA combinations) and adalimumab-kvrn (Adalimumab products) on the 2027 preferred drug list.** Each has its class's lowest fiscal 2026 net cost per 30-day supply once every manufacturer's remittances are traced to the products that earned them: Velantro $510 against Liraquent $600, Glarvia $100 against Deglutra $170 and Brezara $200 against Vilaro $250. Not Liraquent, insulin glargine-qmrt or Saltiva, which lead their classes only when each manufacturer's remittances are spread over its products by ingredient cost, giving every product its manufacturer's average rebate.
+**Prefer Velantro (GLP-1 receptor agonists), Empriva (SGLT2 inhibitors), Glarvia (Long-acting insulins), Apiqor (Direct oral anticoagulants), Bevoria (Inhaled corticosteroid and LABA combinations) and adalimumab-kvrn (Adalimumab products) on the 2027 preferred drug list.** Each has its class's lowest fiscal 2026 net cost per 30-day supply once every manufacturer's remittances are traced to the products that earned them: Velantro $510 against Liraquent $600, Glarvia $100 against Deglutra $170 and Bevoria $200 against Vilaro $250. Not Liraquent, insulin glargine-qmrt or Saltiva, which lead their classes only when each manufacturer's remittances are spread over its products by ingredient cost, giving every product its manufacturer's average rebate.
 
 ## 2. Critical Components
 
 Net cost per 30-day supply, fiscal 2026:
 
-1. GLP-1 receptor agonists: Velantro **$510**, Liraquent **$600**, Dulmira **$620**
+1. GLP-1 receptor agonists: Velantro **$510**, Liraquent **$600**, Dulavio **$620**
 2. SGLT2 inhibitors: Empriva **$260**, Daplexa **$350**, Canivo **$370**
 3. Long-acting insulins: Glarvia **$100**, Deglutra **$170**, insulin glargine-qmrt **$210**
-4. Direct oral anticoagulants: Apiqor **$370**, Ravelta **$450**; Inhaled corticosteroid and LABA combinations: Brezara **$200**, Vilaro **$250**, Saltiva **$260**
+4. Direct oral anticoagulants: Apiqor **$370**, Ravelta **$450**; Inhaled corticosteroid and LABA combinations: Bevoria **$200**, Vilaro **$250**, Saltiva **$260**
 5. Adalimumab products: adalimumab-kvrn **$1,190**, Advelis **$3,060**, Adalvane **$3,690**
 
 ## 3. Step-by-Step Solution
@@ -34,7 +34,7 @@ Net cost per 30-day supply, fiscal 2026:
 1. Net cost per 30-day supply, fiscal 2026, to the nearest ten dollars:
    - GLP-1 receptor agonists: Velantro $510, preferred
    - GLP-1 receptor agonists: Liraquent $600
-   - GLP-1 receptor agonists: Dulmira $620
+   - GLP-1 receptor agonists: Dulavio $620
    - SGLT2 inhibitors: Empriva $260, preferred
    - SGLT2 inhibitors: Daplexa $350
    - SGLT2 inhibitors: Canivo $370
@@ -43,7 +43,7 @@ Net cost per 30-day supply, fiscal 2026:
    - Long-acting insulins: insulin glargine-qmrt $210
    - Direct oral anticoagulants: Apiqor $370, preferred
    - Direct oral anticoagulants: Ravelta $450
-   - Inhaled corticosteroid and LABA combinations: Brezara $200, preferred
+   - Inhaled corticosteroid and LABA combinations: Bevoria $200, preferred
    - Inhaled corticosteroid and LABA combinations: Vilaro $250
    - Inhaled corticosteroid and LABA combinations: Saltiva $260
    - Adalimumab products: adalimumab-kvrn $1,190, preferred
@@ -54,7 +54,7 @@ Net cost per 30-day supply, fiscal 2026:
    - SGLT2 inhibitors: Empriva
    - Long-acting insulins: Glarvia
    - Direct oral anticoagulants: Apiqor
-   - Inhaled corticosteroid and LABA combinations: Brezara
+   - Inhaled corticosteroid and LABA combinations: Bevoria
    - Adalimumab products: adalimumab-kvrn
 3. Rebate guarantee by fiscal 2026 quarter (brand claims by channel, guarantee, rebates remitted for the quarter's claims, shortfall):
    - Jul-Sep 2025: retail under 84 days 9,484 claims, retail 84 days or more 654, mail order 839, specialty 572; guarantee $3,476,679; remitted $3,648,595; no shortfall

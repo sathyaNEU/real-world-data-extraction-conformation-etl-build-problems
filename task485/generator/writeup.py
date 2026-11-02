@@ -36,13 +36,13 @@ def write(task_dir):
     L.append("")
     L.append("**Prefer %s on the 2027 preferred drug list.** Each has its class's lowest fiscal 2026 net cost per 30-day "
              "supply once every manufacturer's remittances are traced to the products that earned them: Velantro %s "
-             "against Liraquent %s, Glarvia %s against Deglutra %s and Brezara %s against Vilaro %s. Not Liraquent, "
+             "against Liraquent %s, Glarvia %s against Deglutra %s and Bevoria %s against Vilaro %s. Not Liraquent, "
              "insulin glargine-qmrt or Saltiva, which lead their classes only when each manufacturer's remittances are "
              "spread over its products by ingredient cost, giving every product its manufacturer's average rebate."
              % (", ".join("%s (%s)" % (picks[c], c) for c in classes[:-1]) + " and %s (%s)" % (picks[classes[-1]],
                                                                                           classes[-1]),
                 money(f["net.Velantro"]), money(f["net.Liraquent"]), money(f["net.Glarvia"]), money(f["net.Deglutra"]),
-                money(f["net.Brezara"]), money(f["net.Vilaro"])))
+                money(f["net.Bevoria"]), money(f["net.Vilaro"])))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")

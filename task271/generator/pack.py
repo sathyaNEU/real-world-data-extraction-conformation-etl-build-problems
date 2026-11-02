@@ -129,11 +129,11 @@ FSA = ["V2C", "V2B", "V2H", "V1S", "V1T", "V1Y", "V2E", "V0K", "V0E", "V5K", "V3
 
 
 def interview_rows(X):
-    g = K.rng_for("interview_rows")
     iv = sorted(X["interviews"], key=lambda r: (r["date"], r["lake"], r["end"]))
     seq = {}
     rows = []
     for r in iv:
+        g = K.rng_for("ivrow", r["lake"], r["date"].isoformat(), "%.6f" % r["start"], "%.6f" % r["end"])
         clerk = r["clerk"]
         k = (clerk, r["date"])
         seq[k] = seq.get(k, 0) + 1
@@ -199,17 +199,20 @@ def write_trip_sheets(path, X):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Trips 2026"
-    cols = ["Trip", "Date", "Truck", "Raceway", "Net load (kg)", "Destination", "Release site", "Driver"]
-    _xlsx_header(ws, cols, [9, 11, 7, 9, 12, 18, 18, 12])
+    cols = ["Trip", "Date", "Truck", "Raceway", "Net load (kg)", "Destination", "Release site", "Driver",
+            "Tank temp (C)"]
+    _xlsx_header(ws, cols, [9, 11, 7, 9, 12, 18, 14, 12, 12])
     g = K.rng_for("trips_sheet")
     drivers = {"T1": ["P. Wong", "R. Fields"], "T2": ["S. Haldane", "P. Wong"]}
     n = 0
     for t in X["hatchery"]:
-        lab = t["rw_old"] if t["date"] < K.TRIPSHEET_SWITCH else str(t["rw_new"])
+        new_template = t["date"] >= K.TRIPSHEET_SWITCH
+        lab = t["rw_new"] if new_template else W.old_number(t["rw_new"])
         drv = drivers[t["truck"]][int(g.integers(0, 2))]
         for dr in t["drops"]:
             site = "main ramp" if INFO[dr["lake"]][9] in ("concrete ramp", "gravel ramp") else "shore access"
-            ws.append([t["trip"], t["date"].isoformat(), t["truck"], lab, t["load"], INFO[dr["lake"]][1], site, drv])
+            ws.append([t["trip"], t["date"].isoformat(), t["truck"], lab, t["load"], INFO[dr["lake"]][1], site, drv,
+                       t["tank_temp"] if new_template else None])
             n += 1
     for r in range(2, ws.max_row + 1):
         ws.cell(row=r, column=5).number_format = "0.0"
@@ -238,42 +241,44 @@ def write_drop_tallies(path, X):
 def sample_rows(X):
     rows = []
     for s in X["samples"]:
-        lab = [k for k, v in W.RENUMBER.items() if v == s["rw_new"]][0] if s["date"] < K.RACEWAY_RENUMBER else str(s["rw_new"])
-        rows.append([s["date"].isoformat(), lab, int(s["grams"]), s["count"]])
+        lab = W.old_number(s["rw_new"]) if s["date"] < K.RACEWAY_RENUMBER else s["rw_new"]
+        rows.append([s["date"].isoformat(), lab, int(s["grams"]), s["count"], s["onhand"]])
     return rows
 
 
-SAMPLE_COLS = ["sample_date", "raceway", "sample_g", "fish_counted"]
+SAMPLE_COLS = ["sample_date", "raceway", "sample_g", "fish_counted", "fish_on_hand"]
 RACEWAY_COLS = ["old_raceway", "new_raceway", "from_date"]
 
 
 def raceway_rows():
-    return [[k, v, K.RACEWAY_RENUMBER.isoformat()] for k, v in sorted(W.RENUMBER.items())]
+    return [[k, W.old_number(k), K.RACEWAY_RENUMBER.isoformat()] for k in range(1, 9)]
 
 
 # ------------------------------------------------------------------------------------------------- loggers
 def logger_rows(X):
-    site_at_download = {}
-    for serial, code, depth, dep, ret, clock in W.LOGGERS:
-        site_at_download[serial] = TABLET_NAME[code]          # the last deployment's lake, written at download
+    """the compiled download: every reading each logger stored, stamped by the logger's own clock, with the station it
+    was downloaded from"""
+    station = {}
+    for serial, code, depth, a, b in W.DEPLOYMENTS:
+        if b is not None:
+            station[serial] = (TABLET_NAME[code], depth)
     rows = []
-    clocks = {}
-    for serial, code, depth, dep, ret, clock in W.LOGGERS:
-        clocks[(serial, code, dep)] = clock
-    for (serial, code, dep), recs in sorted(X["temps"].items(), key=lambda kv: (kv[0][0], kv[0][2])):
-        clock = clocks[(serial, code, dep)]
-        for t, v in recs:
+    for serial in sorted(X["temps"]):
+        clock = W.SERIALS[serial][0]
+        site, depth = station[serial]
+        for t, v, where in X["temps"][serial]:
             tt = t + dt.timedelta(hours=7) if clock == "utc" else t
-            rows.append([serial, site_at_download[serial], tt.strftime("%Y-%m-%d %H:%M"), "%.2f" % v])
+            rows.append([serial, site, "%.1f" % depth, tt.strftime("%Y-%m-%d %H:%M"), "%.2f" % v])
     return rows
 
 
-LOGGER_COLS = ["logger_serial", "site", "date_time", "temp_c"]
+LOGGER_COLS = ["logger_serial", "site", "depth_m", "date_time", "temp_c"]
 DEPLOY_COLS = ["logger_serial", "lake_code", "depth_m", "deployed", "retrieved"]
 
 
 def deploy_rows():
-    return [[s, c, "%.1f" % d, a.strftime("%Y-%m-%d %H:%M"), b.strftime("%Y-%m-%d %H:%M")] for s, c, d, a, b, _ in W.LOGGERS]
+    return [[s, c, "%.1f" % d, a.strftime("%Y-%m-%d %H:%M"), b.strftime("%Y-%m-%d %H:%M") if b else ""]
+            for s, c, d, a, b in W.DEPLOYMENTS]
 
 
 # ------------------------------------------------------------------------------------------------- campgrounds

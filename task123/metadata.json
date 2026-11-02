@@ -1,0 +1,109 @@
+{
+ "decision": "which apartment rising mains need re-phasing or a larger main before the 2027 chargers and cooktop conversions are connected",
+ "deliverables": [
+  "riser_capacity_2027.xlsx",
+  "riser_phase_loading_2027.svg"
+ ],
+ "distractor_files": [
+  "target/nem12_PARENT_6203117452_202607.csv",
+  "target/common_property_submeters_2026-07.xlsx",
+  "target/switchboard_thermal_scan_June2025.pdf"
+ ],
+ "domain": "General Statistics & Data Science",
+ "files": {
+  "target/EV_charger_applications_2024-2026.xlsx": {
+   "covers": "register of charger applications under the 2024 EV charging by-law, as at 31 October 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/MSB_upgrade_2019_rising_main_schedule.pdf": {
+   "covers": "rising main schedule from the 2019 main switchboard replacement",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/OC1_2027_electrification_works_schedule.xlsx": {
+   "covers": "2027 electrification works schedule (approved chargers and cooktop conversions), issued 6 November 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/OC1_electrification_capacity_standard_2026.pdf": {
+   "covers": "the owners corporation's electrification capacity standard, adopted 14 October 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/OC1_register_extract_lots_20260930.xlsx": {
+   "covers": "owners corporation register extract of lots, units and accessory car spaces, 30 September 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/QES_PQ_events_2026-07.json": {
+   "covers": "the head-end's power-quality event log for July 2026, generated 4 August 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/QES_PQ_hourly_V_20260712T0000Z-20260720T0000Z.csv": {
+   "covers": "the embedded network operator's hourly power-quality export (average, minimum and maximum voltage per meter and element), 12 to 20 July 2026 UTC",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/QES_child_meter_register_20261031.xlsx": {
+   "covers": "child meter register as at 31 October 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/QES_meter_exchanges_2026.csv": {
+   "covers": "meter exchange log for 2026 with final and initial register reads",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/QES_register_reads_2026-07.csv": {
+   "covers": "register reads at the start of July and of August 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/basement_remarking_schedule_March2025.xlsx": {
+   "covers": "basement 2 and 3 car space re-marking schedule, March 2025",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/common_property_submeters_2026-07.xlsx": {
+   "covers": "house supply sub-meter daily readings, July 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/nem12_PARENT_6203117452_202607.csv": {
+   "covers": "the distributor's parent meter NEM12 export, July 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/nem12_QUAYLIGHT_OC1PS431877Q_202607.csv": {
+   "covers": "the embedded network operator's NEM12 interval export for the child meters, July 2026, extracted 2 August 2026",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  },
+  "target/switchboard_thermal_scan_June2025.pdf": {
+   "covers": "annual thermographic survey of the switchboards, June 2025",
+   "date": "2026-11-20",
+   "licence": "CC BY 4.0 (constructed data)",
+   "source": "constructed for this task (synthetic, in the layout of the producing system)"
+  }
+ },
+ "objective": "Data Extraction & Conformation (ETL)",
+ "people": "fictional, drawn with guard.py names",
+ "setting_as_of": "2026-11-20",
+ "task": "task123"
+}

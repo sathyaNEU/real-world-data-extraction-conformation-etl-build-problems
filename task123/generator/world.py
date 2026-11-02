@@ -4,7 +4,7 @@ approved 2027 electrification loads.  Everything is drawn from one fixed seed.""
 import numpy as np
 from datetime import date, datetime, timedelta
 
-SEED = 3001
+SEED = 30079
 VNOM = 230.0
 LIMIT_SHARE = 0.80          # the standard's share of a rising main's per-phase rating
 EV_KW = 3.7                 # the standard's evening after-diversity demand of an approved charger
@@ -406,8 +406,32 @@ def requests(W, seed=SEED + 61):
     W["nonres"] = nonres
     return W
 
+def tune_july_edges(W):
+    """The controlled-load hot water is a free quantity of the world: where a riser's July use would sit within
+    0.4 kWh of a rounding edge at two decimals of a MWh, one off-peak apartment's heater runs a little longer,
+    moving the riser to the middle of its bin.  The register is zero in the call's evening window."""
+    apts = W["apts"]
+    for r in W["plan"]:
+        idx = [i for i, a in enumerate(apts) if a["riser"] == r["riser"]]
+        tot = sum((W["load"][i].sum() + W["cl"][i].sum()) * 0.5 for i in idx) / 1000.0
+        e = 0.005 - abs(tot - round(tot, 2))
+        if e >= 0.0004:
+            continue
+        cand = [i for i in idx if W["has_cl"][i]]
+        if not cand:
+            continue
+        i = cand[0]
+        lo = np.floor(tot * 100) / 100
+        target = lo + 0.0025 if tot - lo < 0.005 else lo + 0.0075
+        need = (target - tot) * 1000.0
+        cur = W["cl"][i].sum() * 0.5
+        W["cl"][i] = W["cl"][i] * (1 + need / cur)
+    return W
+
+
 def build_all(seed=SEED):
     W = build(seed)
+    W = tune_july_edges(W)
     W = identifiers(W)
     W = five_minute_voltage(W)
     W = exchanges_and_gaps(W)
