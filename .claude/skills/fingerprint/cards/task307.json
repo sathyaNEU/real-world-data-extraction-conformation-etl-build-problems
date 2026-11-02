@@ -1,27 +1,27 @@
 {
   "task": "task307",
-  "architecture": "v1",
-  "drawn": "2026-10-27",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
   "slot_note": "",
-  "domain": "urban-regional-science",
-  "subdomain": "optimization",
-  "niche": "ranking the four road projects competing for a metropolitan planning organisation's 2028 congestion-relief slot by the peak-hour vehicle-hours each saves across the whole network, when trips re-route once a project opens and the river crossings downstream of the busiest freeway segment bind",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "patient-flow-beds-workforce-optimization",
+  "niche": "choosing the one winter scheme an acute trust funds for its medical bed base, sized by the bed-days each would have released over the last winter, when infectious patients can be nursed only in side rooms and a bay with one in it closes whenever every medical side room is full",
   "objective": "opportunity-sizing-decision",
-  "shape": "other",
+  "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Put the Center Street Bridge widening (TIP-28-009) forward: with the 2028 peak-hour trips re-assigned to equilibrium on each build network it saves 323,000 vehicle-hours a year, 8,300 per million dollars; the Route 9 Millbrook auxiliary lane saves 159,000",
-  "answer_source": "submission.md block 1; generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "objective"
+    "objective",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G1",
-    "G8"
+    "G7"
   ],
   "gate_g": "binding_constraint",
   "calibration_form": "none",
@@ -29,58 +29,98 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_model",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst takes the regional model's 2028 no-build loaded network, applies each project's capacity change to its own links and prices the time saved on those links at the no-build volumes through the documented volume-delay functions, so it funds the freeway widening, whose lane-drop segment carries the most vehicles and the largest link-level saving; that holds every trip on its no-build route, and once trips re-route the widened freeway feeds the downstream crossing that binds, so the widening saves a fraction of its link-level figure and another project saves the most.",
-  "domain_test": "The deciding quantity is the change in the region's total peak-hour vehicle-hours when a project opens, the transport planner's network appraisal from a user-equilibrium assignment of the trip table over volume-delay functions; swapping hospitals or classrooms in loses route choice, link capacities and the equilibrium in which every trip's route depends on every other trip's, which is what moves the savings.",
+  "analyst_test": "A strong analyst who reads every record and the trust's winter capacity framework correctly sizes each scheme with the bed model, the medical beds as one pool (beds added times days, bed-days taken out of the stays a scheme touches), and funds the modular ward; only crediting each scheme with the bays that stay open because it frees a side room at the moments every medical side room is full funds the palliative rapid-discharge partnership.",
+  "domain_test": "Bed planning sizes a winter scheme by replaying the winter's bed use with the scheme in place, and infection control makes side rooms a separate pool that infectious patients alone can use and whose shortage closes a whole bay, so what a scheme releases turns on the side rooms it frees at the moments they bind; with classrooms or server racks for wards there are no bays, side rooms or isolation and the call no longer reads.",
   "layer2_family": "allocation_constraints",
-  "layer2_pattern": "own:project-benefit-from-the-re-equilibrated-network-not-the-improved-links",
+  "layer2_pattern": "own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays",
   "layer1": [
-    "the regional model's link file and node file with facility codes and lanes per direction in separate fields",
-    "trip tables as zone-by-zone matrices in long format with zone numbers that skip retired zones",
-    "15-minute continuous count records in local time with the daylight-saving duplicate and gap and stations offline for weeks",
-    "probe speeds by segment that do not share the model's link identifiers",
-    "project sheets in the TIP's own segment names and mileposts"
+    "patient-administration bed movements by bed code, with ward codes renamed part way through the year",
+    "the infection prevention team's closure log by ward name and bay letter, not bed code",
+    "a daily bed state at 23:59 local time across the October and March clock changes",
+    "microbiology results keyed by NHS number while the bed movements carry the hospital number",
+    "the palliative team's fast-track register with decision times entered after the fact"
   ],
-  "stakeholder_role": "travel demand modelling lead at a metropolitan planning organisation",
-  "role_family": "policy_adviser",
+  "stakeholder_role": "head of patient flow and capacity at an acute NHS foundation trust",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "probe_segment_travel_times_2025.parquet",
-    "rows": 900091,
-    "entity": "one 15-minute travel time on one probe segment",
-    "grain": "segment-15-minute",
+    "file": "bed_movements",
+    "rows": 0,
+    "entity": "one patient's stay in one bed",
+    "grain": "bed-stay segment",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "board_of_directors",
   "forcing_event": "budget_or_appropriation",
-  "org_family": "government_agency",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States (a fictional river metro)",
-    "currency": "USD",
-    "org_type": "metropolitan planning organisation",
+    "geography": "England (a fictional county, Ellenmoor)",
+    "currency": "GBP",
+    "org_type": "acute NHS foundation trust",
     "invented_names": [
-      "Merrimont Area Metropolitan Planning Organization"
+      "Stourleigh Hospitals NHS Foundation Trust",
+      "Stourleigh General Hospital",
+      "Ellenmoor County Council"
     ],
     "people": [
-      "Krystal Cooke",
-      "Charles Cummings"
+      "Hazel Doyle",
+      "Kayleigh Howe"
     ]
   },
   "deliverables": [
-    "mampo_tip2028_project_ranking.xlsx",
-    "mampo_tip2028_executive_brief.pptx"
+    "winter_scheme_appraisal_2026-27.xlsx",
+    "winter_capacity_board_paper.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is what an added capacity saves across a whole system whose users each choose their path given everyone else's, so pricing the time saved on the improved element at today's loads credits it with users who would arrive from parallel paths into a downstream element that binds, and ranks first the element that saves least once the system re-settles.",
-  "driver_concrete": "Each project's 2028 benefit is the drop in the region's total AM and PM peak-hour vehicle-hours between the no-build and the build network, both at user equilibrium over the documented volume-delay functions; the Route 9 widening on the Millbrook segment prices highest at no-build volumes, but once trips re-route it draws traffic off the arterial bridges onto Route 9 and into the Route 9 bridge downstream, which binds, so it keeps about four fifths of its link-level figure, while the Center Street Bridge lane gains by pulling trips off Route 9 and saves about a third more than the widening.",
-  "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
+  "question_form": "where",
+  "driver": "The decisive quantity is what a scheme releases from a resource split into two pools, when the units that need the small pool can use nothing else and a full small pool takes a whole block of the large pool out of use, so valuing each scheme at the large-pool capacity it adds or frees misses the blocks it keeps open by emptying small-pool places at the moments the small pool is full.",
+  "driver_concrete": "A winter scheme is worth the medical bed-days it would have released over the 2025/26 winter; an infectious patient can be nursed only in a side room and a bay with one in it closes to admissions whenever every medical side room is full, so the palliative rapid-discharge partnership, whose fast-track patients hold side rooms while they wait for their package, keeps bays open and releases more than the modular ward, which the bed model funds.",
+  "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task158": "task158 prices new calls at rates earned by traffic that re-sends cached input, a per-unit rate carried to a different kind of unit; task307 carries no rate: its decisive step is that users re-route once capacity is added, so the saving is the re-settled system's and the binding element downstream absorbs most of what the improved one would save."
+    "task118": "task118 v2 prices the share of a display item's gain that is new to the system rather than taken from its neighbours, and v4 values a levy cut by the welfare wedge on the quantity reached in the year; task307 v2 has no substitution, price or elasticity: a scheme is worth the bays its freed side rooms keep open while the side-room pool is full.",
+    "task184": "task184 v1 reads a shared resource's effect against the site's own record rather than its filed plan; task307 v2 reads no plan: the decisive step is that a full side-room pool closes bays, so a scheme that empties side rooms releases bays.",
+    "task198": "task198 v4 recovers an entitlement hidden under a lesser-of record; task307 v2's records are what happened, and the step is the two-pool constraint behind the bay closures, not a censored value.",
+    "task472": "task472 v1 finishes a job when its slowest parallel stream does; task307 v2 has no parallel streams: a bay closes because a separate small pool is full, and freeing that pool reopens the bay.",
+    "task140": "task140 strikes a residual after higher reservations with a dependent load; task307 v2 has no reservations or residual: the step is the shortage of a sub-pool that infectious patients alone may use."
   },
   "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-27",
+      "domain": "urban-regional-science",
+      "subdomain": "optimization",
+      "objective": "opportunity-sizing-decision",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G8"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "binding_constraint",
+      "layer2_pattern": "own:project-benefit-from-the-re-equilibrated-network-not-the-improved-links",
+      "forum": "executive_team",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "government_agency",
+      "driver": "The decisive quantity is what an added capacity saves across a whole system whose users each choose their path given everyone else's, so pricing the time saved on the improved element at today's loads credits it with users who would arrive from parallel paths into a downstream element that binds, and ranks first the element that saves least once the system re-settles.",
+      "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
+      "fate": "spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the decisive step is rule application (R3a fails, generator/analyst_test.py; the fixed-volume route reaches Route 9 only by breaking 6.1's gap); the survivor anatomy holds only Actor. The shipped pack stays at the portal, pending.",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "score",
+        "rounding opener": "annual",
+        "deliverable set": "pptx+xlsx"
+      }
+    },
     {
       "architecture": "seed OS09",
       "fate": "dropped at the draw 2026-10-27: a mini-split rebate programme's net savings, its honest stump labels held by the guard window and its furniture barred",
@@ -92,8 +132,20 @@
       "driver": "not drawn"
     }
   ],
-  "notes": "Redrawn twice at stage 1 under the author's rule that a stuck build is unblocked, not parked: the OS09 seed's world could not carry an honest unbanned draw, and a resource adequacy design collided with task308 v3 at registration time. Architecture 1 spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the decisive step is rule application (R3a fails, generator/analyst_test.py); the survivor anatomy holds only Actor.",
-  "client_domain": "urban-regional-science",
-  "architecture_spent": true,
-  "registered": "2026-10-27T13:18:43Z"
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "score",
+      "rounding opener": "annual",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "Re-root of the number at the 11-02 orchestrator's call after architecture 1 was found spent (rule application through documentation 6.1). Moved off transport networks and trip assignment to another client domain, world, dataset and shell.",
+  "registered": "2026-11-02T01:11:13Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "appraise",
+    "rounding opener": "released",
+    "deliverable set": "docx+xlsx"
+  }
 }

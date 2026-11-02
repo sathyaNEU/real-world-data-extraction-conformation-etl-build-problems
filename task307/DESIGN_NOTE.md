@@ -1,314 +1,201 @@
 # task307 design note
 
+Architecture 2, a re-root drawn on 2026-11-02 in the same objective (Opportunity Sizing & Decision Support) and the
+same number, at the orchestrating session's call. Architecture 1 (a metropolitan planning organisation's congestion
+slot, decided by re-assigning trips to user equilibrium on each build network) was found spent at the 11-01 re-check:
+its documentation 6.1 filed the HOW, so executing the scoring guidance gave the golden (rule application), and only
+Actor held on the survivor anatomy. Its shipped pack stays at the portal, pending, untouched. This architecture moves to
+another client domain, world, dataset and prompt shell, away from transport networks and trip assignment.
+
 ## Draw
 
-- **Number and objective.** task307, Opportunity Sizing & Decision Support, architecture 1. The seed (OS09, a
-  mini-split rebate programme's net savings) was left at the draw: every honest label for its decisive step
-  (a comparison-group design, a population read, a decomposition of gross into net) was held by the guard
-  window, and its furniture (a utility's filing with its regulator) was barred. Under the author's rule that a
-  stuck build is unblocked rather than parked, the build moved to another client domain and dataset.
-- **Pairing.** Urban & Regional Science, task type `optimization` (OS): which road project in a metropolitan
-  planning organisation's 2028 Transportation Improvement Program takes its one congestion-relief slot, sized
-  by the vehicle-hours a year it saves across the whole network.
-- **World.** Merrimont, a fictional river metro in the United States, split by the Ashkettle River; the
-  west bank's suburbs reach the east bank's downtown over three crossings (the Route 9 freeway bridge, the
-  Center Street Bridge and the Southport Bridge). The Merrimont Area Metropolitan Planning Organization
-  (MAMPO) runs the regional travel demand model. Personas drawn with `guard.py names --geo US --seed 307`:
-  Krystal Cooke (travel demand modelling lead), Charles Cummings (executive director).
-- **Decision and quantity.** Four candidate projects (the Route 9 widening on the west bank, the Ferry Street
-  exit ramp, a lane each way on the Center Street Bridge, the Southport Avenue signal and turn-lane package);
-  the call is the project that saves the most vehicle-hours in 2028's AM and PM peak hours across the
-  network, with the annual hours each saves and the hours saved per million dollars.
-- **Default path (written first).** Take the regional model's 2028 no-build loaded network, apply each
-  project's capacity change to its own links, price the time saved on those links at the no-build volumes
-  through the documented volume-delay functions, annualise and fund the largest: the Route 9 widening, whose
-  segment carries the most vehicles at the worst volume to capacity ratio. Ends on: the Route 9 widening.
-  Once trips re-route, the widened segment feeds the Route 9 bridge downstream, which binds, and the Center
-  Street Bridge lane pulls trips off Route 9: the prototype keeps about four fifths of the widening's
-  link-level saving and puts the Center Street lane about a third ahead.
-- **Stump sentence.** A competent solver prices each project on its own links at the no-build volumes and
-  funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when
-  trips re-route once a project opens and the widened freeway feeds the downstream crossing that binds.
-- **Data-native sentence.** The trip table and the volume-delay functions are the network's own record, and
-  re-assigning the 2028 trip table to equilibrium on each build network is the only way the record says where
-  the traffic goes once a project opens.
-- **Candidates written before this one (each with its default path and screen):**
-  1. OS09 spillover by installers against their pre-registration baseline: the default (registered
-     installers' unrebated sales as spillover) ends wrong, but the honest label is a comparison-group design,
-     held by the window (task271).
-  2. OS09 claims-lag completion of this year's rebated volume: a reflex chain-ladder completion; dead on the
-     readability screen.
-  3. Resource adequacy for a generation cooperative, forced outages conditioned on the cold that sets the
-     heating peak: prototyped (the plan near the criterion on all-hours rates, near 190 MW short on
-     temperature-conditioned rates, the tolling unit credited at about 60 MW not 97); task308's architecture
-     3 registered the same world and driver first, so it is task308's.
-  4. Screening yield by time since the last screen (a mobile screening unit across four districts): the
-     decision frame and the yield-by-elapsed-time driver echo task301; dropped.
-  5. Network equilibrium (this draw): no build on file assigns a trip table; `guard.py slots` on the
-     mechanism (wardrop, equilibrium, assignment, rerouting, braess) and on the setting (traffic, congestion,
-     route, link) returned no screen of it.
-
-- **Guard at registration (2026-10-27, WARN).** `overuse.org_family` (government_agency in 40 builds): an
-  MPO is a government agency, and the honest label stays. `repeat.decision` and `repeat.question_form`
-  against task308 v3: the call is a pick among four projects, so it asks which. Differentiation filed
-  against task158 (`test.same_puzzle_older`).
+- **Card.** `.claude/skills/fingerprint/cards/task307.json`, architecture v2, v1 moved into the lineage with its fate
+  and shell. `guard.py check` at WARN only: `repeat.deliverables` (a board paper and its appraisal workbook is the set
+  an NHS trust board takes, docx+xlsx, as task273 v5 did in another domain; answered here). The older same-puzzle and
+  same-driver signatures (gap objective, decisive generator G1, pick one; Gate G binding constraint) are differentiated
+  on the card against task118 v2 and v4, task184 v1, task198 v4, task472 v1 and task140, none of whose drivers is a
+  two-pool shortage.
+- **Pairing.** Healthcare Delivery & Health Economics (client domain) / `patient-flow-beds-workforce-optimization`
+  (serves Opportunity Sizing in the taxonomy) / Opportunity Sizing & Decision Support. The headline is a sized
+  opportunity, pool to realisable: the medical bed-days the 2025/26 winter lost to bay closures and to patients
+  waiting to leave, and the share of them each scheme releases; it drives the call.
+- **World.** Stourleigh Hospitals NHS Foundation Trust, an acute trust in the fictional county of Ellenmoor, England.
+  The medical bed base at Stourleigh General Hospital is a set of wards built of six-bed bays and single side rooms;
+  infection prevention and control (IPC) nurses infectious patients (norovirus and other diarrhoea and vomiting,
+  influenza, COVID-19, RSV) in side rooms, and side rooms also hold patients at the end of life and known carriers of
+  resistant organisms. Personas drawn with `guard.py names --geo UK --seed 307`: Hazel Doyle (head of patient flow and
+  capacity, the appraisal's author), Kayleigh Howe (director of finance, the envelope's holder).
+- **Decision and quantity.** One winter scheme for 2026/27 from the trust's candidate list: a modular ward of general
+  beds, a same-day emergency care (SDEC) extension into evenings and weekends, a seven-day discharge team for simple
+  discharges, and a palliative rapid-discharge partnership with the county hospice (hospice at home and fast-track
+  continuing healthcare brokered within 24 hours of the decision). The trust's winter capacity framework files the
+  WHAT: a scheme's benefit is the medical bed-days it would have released over the 2025/26 winter (1 December 2025 to
+  31 March 2026) against the bed base as it ran, the slot goes to the largest benefit, and every scheme is reported
+  with its benefit per £1,000 of winter cost. Forward facing: the scheme runs in the 2026/27 winter, appraised on the
+  last complete winter as the framework's standard winter.
+- **Shape.** 01, ranked list under the envelope: each scheme's released bed-days and bed-days per £1,000, the call,
+  the runner-up and the gap, the chart's named bars, and the asks (`## Ask sheet`).
+- **Strategy, Gate G, family.** `binding_constraint` (the side-room pool binds and removes the natural pick, as a
+  removal that re-places nobody), Gate G `binding_constraint`, decisive generator G1 (what the bed base is limited by)
+  then G7 (the moments the limit binds), Layer 2 family `allocation_constraints`, pattern
+  `own:side-room-shortage-closes-bays-so-freed-side-rooms-release-bays`.
+- **Default path (written first, short form).** The bed model counts each scheme's beds or the bed-days it removes from
+  the stays it touches, with the medical beds as one pool: the modular ward's twelve beds over its opening days, the
+  SDEC admissions it avoids, the weekend days simple discharges wait, the days fast-track patients wait for their
+  package. Ends on the modular ward. Golden: the palliative partnership, because the fast-track patients it moves hold
+  side rooms, and a bay with one infectious patient in it closes to admissions whenever every medical side room is
+  full.
+- **Data-native sentence.** The bed movements record which bed every patient held and the bed register which beds are
+  side rooms, the IPC closure log records each bay closure and how many patients were symptomatic when it closed, and
+  the palliative team's register records each fast-track decision; only together do they show that every closure with
+  one symptomatic patient began while every medical side room was occupied, and that fast-track patients past their
+  24 hours held some of those rooms at most such moments.
+- **Abstraction sentence (the one a reviewer would say of this build and its nearest approved one).** A unit of a
+  small specialised pool is worth a block of the large pool it keeps open while the small pool is full. Not writable
+  against any approved build: task106 shares a pool across candidates (double-booking), task303 removes a shared loss
+  logged per unit, task308 values a unit by the outages it shares, task120 nets storage out of production, task127
+  (same task type) splits one patient's concurrent waits; none values a scheme through a sub-pool whose shortage
+  closes blocks of the main pool.
+- **Candidates screened at this draw (each with its default path, swap test, anatomy and bin test; the dead ones are
+  also in `## Tried and rejected`).**
+  1. *Collections (banking, collections-recovery): keep or sell charged-off segments, in-house recovery read with sold
+     accounts censored.* Default: the life-table recovery curve with sales as censoring files keep-in-house for the
+     card segment; swap passes (debt sale is collections' own); anatomy: Actor and Link fail (the sale tranche is a
+     column); bin: the stratified life table is a grouping (stumping 1.1c). Dead: `ban.strategy` (population
+     selection is task273's) and the grouping dichotomy.
+  2. *Subscriptions (product analytics, churn-propensity-uplift): a payment-recovery upgrade credited with the voluntary
+     cancellations a failed-payment notice triggers.* Default: the cancellation reason codes size the save offer
+     first; swap passes; anatomy: Back-test fails (a pilot's retention ITT lands it); bin: without the pilot the
+     triggered share is a model with a free baseline window. Dead on Gate C.
+  3. *Anticoagulant switching (pharmacology, benefit-risk): the 2027 switch cohort sits in the early-bleeding months.*
+     Default: annual rates per patient-year file the oldest group; swap passes; anatomy: Reflex fails (one-year
+     cumulative incidence from past switchers lands the golden); bin passes. Dead on Gate F and on its honest label
+     (composition by time since initiation, banned in the window).
+  4. *Retention (product analytics or actuarial lapse): customers migrated at a system go-live only if active, so a
+     curve from origin ignores delayed entry.* Default: Kaplan-Meier from start date files the loyalty programme; swap
+     passes; anatomy holds on paper; bin passes (one estimator). Dead: honest label population selection (survivorship),
+     banned in the window.
+  5. *A clash cover (actuarial, reinsurance-capital): motor and home claims from one storm in two claims systems.*
+     Default: per-line models with an annual correlation file the per-line cover; anatomy: Pins fail (the treaty's
+     occurrence clause files the unit). Dead on the WHAT screen and on the dependence fork.
+  6. *A long-short sleeve (quantitative finance, portfolio-construction-risk): shorts the prime broker cannot locate.*
+     Default: the backtest's alpha files the small-cap sleeve; anatomy: Reflex and Second use fail (borrow cost is a
+     quant default; the locate file exists only for the step). Dead.
+  7. *A discharge lounge (healthcare, patient-flow): bed-hours released only count when an ED patient is waiting.*
+     Default: bed-hours released one for one; anatomy: Reflex fails (boarding by hour is one group-by). Dead, and close
+     to task127's world.
+  8. *A booking line (healthcare, workforce): redials inflate offered calls in an Erlang sizing.* Dead on Gate C (a
+     retrial queue carries a free persistence parameter).
+  9. *Blood pressure programmes (epidemiology, health-burden): regression dilution in the cohort's slope.* Dead: the
+     usual-BP relative risks of the literature land it, and the swap reads the same in any field with noisy exposures.
+  10. *A ticketing tier (marketing, conjoint and choice): sold-out options narrow the observed choice sets.* Dead: the
+      substitution is task302's, and the choice model's specification forks.
+  11. *Delinquency (banking, collections): month-end snapshots hide episodes that cure inside the month.* Dead: the
+      step is a grain reading.
+  12. *A schools vaccination programme (epidemiology, health-burden): household secondary cases.* Dead: honest label
+      causal design (spillover), task157's, banned in the window.
+  13. *A side-room pod among the candidates (this world).* The mechanism kept, the candidate dropped: a scheme that
+      adds side rooms names the step.
+  The strongest, this draw, was prototyped in code before carding: across four seeds the bed model files the modular
+  ward (12 beds over 107 opening days, 1,284 bed-days) with the palliative partnership last on its own waits (about
+  400 to 470), while crediting each scheme with the single-patient closures it would have kept open files the
+  partnership at about 1,550 to 2,140 (generator/checks.py carries the analyst test once the generator exists).
 
 ## Survivor anatomy
 
-Written at the 11-01 re-check from two measurements: generator/analyst_test.py on the clean truth and the column and
-sentence inventory of the shipped cut.
-Actor: holds; the deciding property (each build network's re-assigned link volumes) has no column, the only loaded
-network in the pack is the no-build one.
-Link: fails; no join or cross-entity comparison carries the step, the comparison (the opening-year no-build network
-against the network with the project coded in, both from the model) is named by guidance 2.1.
-Reflex: fails; the field's named method for a capacity project's vehicle-hours is a user-equilibrium re-assignment of
-the build network, which is the golden, not rung 0 or 1 (stumping 1.1b, the reflex collision).
-Back-test: fails; nothing in the pack validates the fixed-volume route, and 6.1's own convergence test refutes it
-(the no-build loads sit at a relative gap of 0.0079 to 0.1494 on the four build networks against the filed 0.000001).
-Second use: fails; the 2028 trip tables are read only by the decisive step (the fixed-volume route needs only the links
-and the loaded no-build file, the asks read the count files), so deleting the step drops the trip file.
-Shock: fails; the golden is the project link with the worst AM volume to capacity ratio (the Center Street Bridge, 1.34),
-the top of a sort on a shipped statistic.
-Pins: fails; documentation 6.1 files the method the stump rides on (user equilibrium, Wardrop's condition stated in
-full, the convergence gap) and guidance 2.1 files it on the coded network; together they are the work order.
+Written at the draw, measured again on the cut pack at stage 3.
+Actor: whether a bay closure began while every medical side room was occupied, and which of those rooms a scheme would
+have emptied by then, sits in no column of any file; it is a relation between the closure's start and the bed
+movements of every side room at that moment.
+Link: the IPC log names a closure by ward name and bay letter at a clock time, the bed movements carry bed codes, and
+the palliative register carries the hospital number with its own decision time; the comparison of a closure's start
+with side-room occupancy at that minute is one the bed model never asks for, and no key offers it.
+Reflex: the field's own sizing, the bed model with the medical beds as one pool (added beds times days, bed-days taken
+out of the stays a scheme touches), is rung 0 and files the modular ward.
+Back-test: the capacity team's bed model, run on beds as one pool, reproduces the 2025/26 winter's occupancy at the
+23:59 bed state, so the pack's own validation confirms the easy route (to be built and measured at stage 3).
+Second use: the bed movements are the spine (occupancy and every ask's base), the bed register is the bed base, the
+IPC log is the bed state's record of closed beds, and the palliative register is how the default path sizes the
+partnership's own waits; none sits in the pack for the decisive step alone.
+Shock: closures are ordinary winter events, about one every day and a half, spread across wards and months; the
+partnership ranks last or next to last on every statistic the pack ships.
+Pins: the framework files the WHAT (benefit, window, comparison, award rule, the per-£1,000 report); no filed sentence
+names side rooms, isolation, closures or the moments the side-room pool is full.
 
 ## Default path
 
 The route a capable analyst takes with every file read and every filed rule executed:
 
-1. Reads the subarea extract's two-way link records and Table 4.2, and takes the 2028 no-build volumes and times from
-   MAMPO_v42_loaded_network_2028NB.csv, which reproduce the model's no-build vehicle-hours (2,682.0 AM, 2,206.4 PM).
-2. Codes each candidate's capacity change from the Model coding sheet onto its own links and re-times those links
-   through their volume-delay functions at the loaded no-build volumes, AM and PM.
-3. Sums the time saved on the changed links, annualises it as guidance 2.2 sets out (times 247 times 2.9) and divides by
-   each year-of-expenditure cost: Route 9 about 196,500 vehicle-hours a year (4,200 per million), Center Street
-   95,700, Southport 93,200, Ferry Street 53,200.
-4. Awards the largest annual benefit (guidance 3.1).
+1. Reads the winter capacity framework: a scheme's benefit is the medical bed-days it would have released over the
+   2025/26 winter against the bed base as it ran; the slot goes to the largest benefit; each scheme also with its
+   benefit per £1,000.
+2. Takes each scheme's specification from the scheme workbook and sizes it with the bed model, the medical beds as one
+   pool: the modular ward as twelve beds over its opening days (about 1,280 bed-days); the SDEC extension as the
+   bed-days of the short-stay ambulatory admissions it would have taken (about 700); the seven-day team as the days
+   simple discharges ready at a weekend waited for a weekday (about 1,000); the palliative partnership as the days
+   fast-track patients waited beyond 24 hours after the decision (about 420).
+3. Divides by each scheme's winter cost and awards the largest benefit.
 
-Ends on: the Route 9 Millbrook auxiliary lane (TIP-28-014), about 196,500 vehicle-hours a year.
-Golden: the Center Street Bridge widening (TIP-28-009), 323,000 vehicle-hours a year (8,300 per million); Route 9
-159,000 once trips re-route.
+Ends on: the modular ward, about 1,280 bed-days.
+Golden: the palliative rapid-discharge partnership, about 1,800 bed-days (its own waits plus the closed beds of the
+bays that stay open because the rooms its patients held are free when every medical side room would otherwise be
+full); the modular ward next.
 
 ## Stump sentence
 
-A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9
-widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project
-opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips
-off Route 9.
-
-Data-native sentence (as at the draw): the trip table and the volume-delay functions are the network's own record, and
-re-assigning the 2028 trip table to equilibrium on each build network is the only way the record says where the traffic
-goes once a project opens.
+A competent analyst sizes each scheme with the bed model, the medical beds as one pool, and funds the modular ward at
+about 1,280 bed-days; the step that lands it there is counting a side room as a bed, when an infectious patient can be
+nursed only in a side room, a bay with one in it closes to admissions whenever every medical side room is full, and the
+palliative partnership empties side rooms held by fast-track patients, so it keeps those bays open and releases about
+1,800.
 
 ## Three rules
 
-Task type: urban-regional-science / optimization (OS): one capital slot among four network improvements, sized by the
-vehicle-hours each saves across the network.
-Domain test: the deciding quantity is the change in the region's peak-hour vehicle-hours when a project opens, which
-transport planning estimates by assigning the trip table to user equilibrium over volume-delay functions on the build
-network; where traffic goes once a link widens (Wardrop's route choice, a downstream bottleneck that binds) is the
-field's own question.
-Swap: "fund the hospital ward whose extra beds save the most patient-hours" keeps the words and loses route choice,
-link capacities and an equilibrium in which every trip's route depends on every other trip's; no field outside network
-planning prices an added lane by re-solving where everyone travels.
-Layer 1: two-way link records with lanes per direction, zones numbered with gaps, subzone trip tables loaded through
-connectors, a loaded network file at model precision, a coding sheet beside the sponsors' descriptions, counts by hour
-ending in local time with 23 and 25 hour days, a replaced station number, NR and EST hours, counters carrying a missed
-poll, model volumes in passenger-car equivalents. Each is what a travel model, a count program and a probe vendor produce; none
-moves the call (SF1 to SF16 asserted).
-Layer 2: network equilibrium: the build network's vehicle-hours come from re-assigning the same trips to their own
-equilibrium routes, so a capacity change moves traffic on links the project never touches.
-Decisive step: re-assigning the 2028 trip table to user equilibrium on each build network instead of re-timing the
-project's own links at the no-build volumes, which credits the Route 9 lane with traffic that, once trips re-route,
-queues at the Route 9 bridge, and misses the trips the Center Street lane draws off Route 9.
-Not semantics: every field, unit and code can be read right (FTYPE 12's bridge curve, lanes per direction, vehicles
-against passenger-car equivalents) and the project links still be re-timed at fixed volumes, filing Route 9; the step is
-whether traffic moves, which no field states.
-Not rule application: fails, measured at the 11-01 re-check (generator/analyst_test.py). Guidance 2.1 takes the
-build network's vehicle-hours from the current regional model on the coded network and documentation 6.1 files that
-model's assignment as user equilibrium to a relative gap below 0.000001; executed word for word they are the golden
-(Center Street 323,000), and the fixed-volume route reaches Route 9 only by breaking 6.1 (its build-network loads sit
-at a relative gap of 0.0079 to 0.1494). 6.1 files the HOW, so the decisive step is executing a stated procedure.
-Analyst test: fails, measured at the 11-01 re-check. With every filed rule applied (2.1, 6.1, 2.2, 3.1) the route is
-the equilibrium re-assignment and funds the Center Street Bridge widening, the golden; the fixed-volume route that funds
-Route 9 at about 196,500 is an analyst skipping 6.1, not one who read every rule and still went wrong (dataset-generation
-7.1 R3a). Architecture 1 is spent; 6.1 stays filed because the golden rests on it.
-Estimand: guidance 2.1 to 2.3 files the population (the region's 2028 AM and PM peak-hour trips as the tables give
-them), the outcome (total vehicle-hours on the network), the comparison (the opening-year no-build network against the
-network with the project coded in), the window (the two peak hours, annualised by 247 times 2.9) and the unit
-(vehicle-hours a year, and per million dollars of year-of-expenditure cost); the award rule is guidance 3.1.
-No decoy: nothing is planted: the loaded network file is the model's true no-build output and is used by the golden's
-no-build run as well; no memo, sponsor figure or draft ranks the candidates.
-No certified replay: no certified or published figure is reproduced to recover a hidden method; the guidance states the
-estimand and the trip tables and network carry the evidence.
-Lesson: a capacity improvement saves what the network saves once every trip re-settles, which is not what its own link
-saves at today's loads; widening the segment in front of a bottleneck moves the queue downstream.
-
-## Readability screen
-
-| Rung | Test 1 (a filed sentence names it) | Test 2 (a file or column names it) | Test 3 (the field's reflex reaches it) | Verdict |
-|---|---|---|---|---|
-| R1 the network's capacities and volume-delay functions | documentation 4.1, 5.1, Table 4.2 | yes | yes | readable |
-| R2 the no-build vehicle-hours | the loaded network file | yes | yes | readable |
-| R3 each candidate coded onto its links | the Model coding sheet | yes | yes | readable |
-| R4 the trip table re-assigned on each build network (decisive) | no: guidance 2.1 says the benefit comes from the model on the coded network and the documentation that the model assigns to equilibrium; neither says the no-build loads do not hold on a build network | no: the only loaded network in the pack is the no-build one, and nothing names re-routing, a bottleneck or the Route 9 bridge | no for the sizing reflex: a loaded network and a volume-delay curve price a capacity change in one step | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the trips | vehicles, as the tables give them | passenger-car equivalents | same call | documentation 6.3; asserted |
-| SF2 | the peak hours | AM plus PM | AM alone | same call | guidance 2.1, 2.2; asserted |
-| SF3 | vehicle-hours on the network | links and connectors | links only | same call | connector time cancels; asserted |
-| SF4 | convergence | relative gap below 0.000001 | exact, or ten times looser | same call | documentation 6.1; figures asserted at 1e-6 |
-| SF5 | the no-build vehicle-hours | the model's no-build run | read from the loaded file | same call | within 0.1 vehicle-hours; asserted |
-| SF6 | the Ferry Street project | exit and on-ramp (both directions) | exit only | same call | the coding sheet; asserted |
-| SF7 | the Route 9 project | the lane-drop link 2 | Lakeview Road to Quarry Lane read long | same call | the coding sheet; asserted |
-| SF8 | the Southport package | per-lane capacity both directions | one direction | same call | the coding sheet; asserted |
-| SF9 | the annual factor | 247 times 2.9 | another common factor | same call | guidance 2.2; proportional |
-| SF10 | FTYPE 12 capacity | the freeway's per lane with the bridge curve | the bridge's per lane | same call | Table 4.2; asserted |
-| SF11 | the award rule | the largest annual benefit | the largest per million dollars | same call | guidance 3.1; asserted |
-| SF12 | a zone as a way through | never | used | same call | one connector per zone; asserted |
-| SF13 | subzone against macro-zone tables | the subzone tables | aggregated | same call | shared attachment nodes; asserted |
-| SF14 | induced or suppressed trips | none | elastic demand | same call | guidance 2.1 |
-| SF15 | the opening year | 2028 | another year | same call | the only tables in the pack; asserted |
-| SF16 | the Route 9 section after widening | FTYPE 12 kept (the coding sheet changes lanes only) | recoded FTYPE 1 | same call | guidance 4 (the coding sheet is the record); asserted |
-
-## Ladder
-
-- R0 the project link carrying the most vehicles (the Route 9 lane drop, 4,105 in the AM peak hour against 3,800 of
-  capacity): Route 9.
-- R1 each project's own links re-timed at the loaded no-build volumes: Route 9, about 196,500 vehicle-hours a year
-  against Center Street's 95,700 (the default path).
-- R2 one all-or-nothing re-route on the build network at no-build times: Route 9 (asserted).
-- R3 equilibrium, AM peak only: Center Street (the call lands; the figures do not).
-- R4 equilibrium stopped early (Frank-Wolfe at 3, 10 or 50 iterations; MSA at 10 or 50): Center Street.
-- Golden: equilibrium on each build network, AM and PM: Center Street 323,000, Route 9 159,000, Southport 126,000, Ferry
-  Street 37,000. Center Street leads by 103 per cent.
-- Cheap routes on the clean truth that land the call: any re-assignment to (near) equilibrium, which is the decisive
-  step itself; and the screening heuristic of the worst volume to capacity ratio among the project links (the Center
-  Street Bridge, 1.34 in the AM), which ranks congestion rather than sizing a benefit and carries no figure.
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | the region's 2028 AM and PM peak-hour trips in the subarea tables | filed (guidance 2.1, documentation 4.3) |
-| 2 | Unit of account | vehicle-hours a year; vehicle-hours per USD 1 million | filed (guidance 2.2, 2.3) |
-| 3 | Attribution window | the AM 7 to 8 and PM 5 to 6 peak hours of 2028 | filed (documentation 6.2) |
-| 4 | As-of dating | the opening year 2028; counts for 2025 | filed |
-| 5 | Version basis | TDM v4.2 and the TIP workbook's coding sheet | filed (guidance 4) |
-| 6 | Denominator | year-of-expenditure cost in the Candidates sheet | filed (guidance 2.3) |
-| 7 | Weighting | each vehicle trip once | filed (documentation 6.3); SF1 asserted |
-| 8 | Window length | one peak hour each, annualised by 2.9 | filed (guidance 2.2) |
-| 9 | Boundary inclusivity | counts by hour ending 8 and 18 | filed (manual 3.1, documentation 6.4) |
-| 10 | Rounding path | unrounded vehicle-hours, rounded once at the stated unit | filed (the prompt) |
-| 11 | Tie-break | none: Center Street leads by 103 per cent | asserted |
-| 12 | Maturity and censoring | none | C1 |
-| 13 | Order of operations | assign, difference, annualise, divide | filed (guidance 2.1 to 2.3) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | none in the call; the repeated autumn hour in the counts | filed (manual 3.1) |
-| 16 | Identity normalisation | node numbers and LINK_ID shared across files; S-0103R continues S-0103 | filed (manual 3.3) |
-| 17 | Netting against gross | no-build less build; connector time cancels | filed (guidance 2.1); SF3 asserted |
-| 18 | Dimensional units | minutes, miles, miles an hour; vehicles against passenger-car equivalents | filed (documentation 4.1, 6.3) |
-| 19 | Code and status semantics | FTYPE codes, count statuses | filed (Table 4.2, manual 3.2); never the stump |
-| 20 | Integerisation | whole trips as given | C1 |
-| 21 | Clause scope | guidance 2.1 to each candidate alone | filed |
-| 22 | Forward window contents | the 2028 tables are the opening-year demand | filed (guidance 2.1); SF15 asserted |
-
-## Literal reader
-
-Executed word for word, guidance 2.1 asks for the reduction in the total vehicle-hours of the region's 2028 AM and PM
-peak-hour trips with the project open, "taken from the current regional model, on the network the project is coded
-into", and the documentation (6.1) says the model assigns each table to user equilibrium to a relative gap below
-0.000001. Executed on the coded network, the model re-assigns the trips; a reading that re-times the project's links at
-the no-build loads uses the model's curves but not the model's assignment of the coded network. Every member of the
-convergence family from a gap of 1e-6 down to 1e-12 prints the same eight figures (SF4 asserted), and the call is Center
-Street on every equilibrium route, either peak alone included.
-
-## Oracles
-
-The generator's clean truth (solve.py, the path solver on the macro-zone tables) and the pack's replay (pack.py, the
-subzone tables read from the files) agree on every annual figure to 0.01 vehicle-hours; verify.py recomputes every graded
-figure on its own code path (its own path equilibration, its own day and hour rules and its own fault detector for
-the counts) with 0 failures; the routes, the fork rows and the ask devices are asserted in
-checks.py.
-
-## Ask sheet
-
-**Ask A: each permanent count station's 2025 AADT and K-factor (16 figures, whole vehicles and three decimals).** H18:
-the TIP application carries the design-hour volumes of the corridors the candidates touch, a measure every candidate
-carries that the call does not read; the call reads none of the count files (asserted). Use: the count program's annual
-table beside the ranking. Primary device, silent (D4 and D6): every station had one loop or detector-card fault in 2025,
-a dead lane loop undercounting its direction by about that lane's share, or a crosstalking card overcounting it, from a
-mid-day hour until the crew's repair; the hours stay status OK, and only the direction's share of the two-way traffic
-against its usual share for that hour of the week, with the work order in the inventory's Maintenance 2025 sheet (which
-gives the repair day, not the start), shows the days that are not a true count (manual 4.1). Fault starts sit clear of
-holidays and clock changes, and two detectors written apart (a change point and a daily-median chain) recover every
-window (asserted). Hazards (filed, executed by the cracker): the counters carrying a missed poll into the next answered
-one, and restarting after a whole-day outage (manual 3.2), S-0103R continuing S-0103, NR and EST hours, 23 and 25 hour
-days, AASHTO month by weekday. Stops (AADT / K hits of 8): the filed rules (the cracker) 0/0; status OK only 0/0;
-faults found, carried polls kept 3/3; every hour after an NR dropped, whole-day outages too 0/8 (against manual 3.2);
-the plain mean of valid days 0 AADT.
-
-**Ask B: the 2025 base-year validation at the three river-bridge stations, by direction and peak hour (12 figures,
-percent to one decimal).** H18: the credibility of the model the scores rest on, read at the screenline; the call does
-not read the validation or count files. Primary device: the same loop and card faults, which fall in the validation
-months at all three bridges (April, September, May), so the filed day rule without them averages undercounted or
-overcounted days into the counts. Hazards (filed): passenger-car equivalents to vehicles through HV_PCT (which moves by
-direction and peak), hour ending 8 and 18, valid Tuesdays to Thursdays in March to May and September to October, S-0103R
-in the autumn months. Stops: the filed rules (the cracker) 0 of 12; the faults found 12 of 12.
-
-Main population zero-counts: the call reads the link, node, trip and loaded-network files, the documentation's chapters
-4 to 6.2, the guidance and the TIP workbook, and none of the count, station or validation files; the asks read those and
-the documentation's 6.3 and 6.4 only. The probe file, the segment reference and the CMP memo are distractors (named in
-metadata.json), with the crash summary and the transit ridership.
-
-| Ask | Cracker (lands the call, executes every filed rule, runs the battery) | Verdict |
-|---|---|---|
-| A AADT and K-factor | 0 of 16 on the filed rules; the faults are on no filed path | miss |
-| B validation | 0 of 12 on the filed rules; the faults are on no filed path | miss |
-
-Pair ceiling: 26.0 ((45.0 + 7.0) / 2), the cracker keeping 0 of the 28 ask figures and the mirror (the fixed-volume
-call) 0 of the 9 call figures.
-Mirror leakage: 0.0 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack.
-
-## Pre-ship check
-
-- 2026-10-27, stage 4 on the cut pack. Leak reader (isolated, sonnet, medium): no decisive-step sentence, no file ranks
-  the candidates, nothing reads as the answer; it calls the loaded network a mild helper (a check on a solver's own
-  no-build run, carrying no build result), which is what it is. Its question 6 read the call as following a stated
-  procedure (guidance 2.1 and 2.2 with documentation 6.1). Every REVIEW line harmless (documentation vocabulary; four
-  hourly counts that coincide with answer figures in a 140,160-row series; zone-range labels; files that list stations,
-  corridors, links, routes and segments rank nothing). The stump-vocabulary lines, ruled here: documentation 4 to 6 and
-  the guidance carry network, equilibrium, capacity and no-build as their own subject, and neither says that the
-  no-build loads do not hold on a build network.
-- Judge pass 1 (/tmp/determinism-check-task307-1793113523): DETERMINISTIC, FIX_NOW. The main call and all four
-  candidates' figures reproduced on its own solver (Center Street 322,911, Route 9 159,166, Southport 125,963, Ferry
-  Street 37,203; every per-million figure); the easy route names Route 9 at 196,483. Gate G method_or_model_selection,
-  analytical_non_defect, no surface read; Gate H domain pass, layers pass, decisive step analytical, borderline toward
-  rule application because documentation 6.1 files user equilibrium. The judge settles the reader's question 6 on what
-  the shipped sentences license (build-pipeline, stage 4): the guidance files the estimand and the documentation the
-  model's general method, and the decisive step is seeing that the loaded no-build volumes do not stand for a build
-  network. Three forks, all fixed in one pass: F1 the Route 9 section's facility type after widening (closed by guidance 4, the
-  coding sheet changing lanes only, with a neutral sponsor description; SF16 asserted); F2 the counters carrying a missed poll and restarting after
-  a whole-day outage (filed in manual 3.2, so the carry is a hazard and the loop faults carry ask A); F3 the probe
-  stamps marking the interval end (filed in the CMP memo, which left the planning time index ask with no silent device,
-  so that ask was dropped and the probe files ship as distractors).
-- Realism fixes from the reader: transit ridership on route levels with a season and a trend; heavy-vehicle shares by
-  direction and peak in the validation file; candidate costs stored as numbers; work orders numbered across every crew.
-- After the repair: station seeds re-tuned so the repaired cracker misses every figure; checks 431, verifier 0
-  failures, two byte-identical builds, figures_check, precut 0 FAIL, leak.py REVIEW (the same kinds of line).
-- Judge pass 2 (/tmp/determinism-check-task307-1793114444) on the repaired pack: DETERMINISTIC, APPROVE; every graded
-  figure reproduced (8 AADT, 8 K, 12 validation cells, all four candidates); Gate G method_or_model_selection,
-  analytical_non_defect; Gate H analytical, borderline toward rule application as in pass 1. Its optional note, a
-  missed poll carried across midnight, filed in manual 3.2 ("across midnight as at any other hour"); the Route 9
-  description made neutral (SF16 closed by guidance 4). No graded figure moved; rebuilt twice byte-identically,
-  verifier 0 failures, figures_check, leak.py REVIEW, precut 0 FAIL. Final isolated read: question 6 an analytical
-  choice. Watch item for the portal: Gate H borderline (documentation 6.1 files user equilibrium).
-- The 10/10 rules re-read against the built pack: the decisive step is re-solving where the 2028 trips go on each build
-  network; the mess (two-way records, subzone tables, counts and their statuses, passenger-car equivalents) stays Layer 1.
+Task type: healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization (OS): one winter scheme for
+the medical bed base, sized by the bed-days it releases.
+Domain test: the deciding quantity is the medical bed-days a scheme releases over the winter, which bed planning
+estimates by replaying the winter's bed use with the scheme in place; infection control makes side rooms a separate
+pool that infectious patients alone may use and whose shortage closes a whole bay, so what a scheme releases turns on
+the side rooms it frees at the moments that pool binds.
+Swap: "fund the classroom scheme whose freed seminar rooms keep lecture halls open" keeps the sentence and loses
+isolation, bays, infection control and end-of-life care; no other field closes a block of its main resource because a
+small specialised pool is full.
+Layer 1: patient-administration bed movements by bed code with ward codes renamed part way through the year, the IPC
+closure log by ward name and bay letter, a 23:59 bed state that crosses the October and March clock changes,
+microbiology results keyed by NHS number against the hospital number, the palliative register's decision times
+entered after the fact, a scheme workbook in each sponsor's own units. Each is what a hospital's systems produce; none
+moves the call (asserted in checks.py as the R2 block).
+Layer 2: capacity under a binding sub-pool: a scheme's released bed-days are what the bed base gains with it in place,
+and the side-room pool's shortage closes bays, so a scheme that empties side rooms at the moments they are all full
+keeps bays open that the bed model never sees.
+Decisive step: crediting each scheme with the closed bay beds it would have kept open, by checking each closure that
+began with one symptomatic patient against side-room occupancy at that moment and the rooms the scheme would have
+emptied by then, instead of counting a side room as a bed.
+Not semantics: every room type, closure reason, symptomatic count and decision time can be read right and the bed model
+still counts the partnership's own waits only; no field, code or definition says a closure followed from a full
+side-room pool or that a scheme's patients held the rooms.
+Not rule application: the framework files the estimand and the award rule and no document says how a closure arises or
+how a scheme's benefit is built; executing every filed rule with the bed model files the modular ward. The enumerated
+family (the bed model, the bed model with the ward's own closures netted, the partnership's own waits at the
+brokerage's real start dates, crediting every closure in the IPC log to every scheme that frees a side room, the
+closure-by-closure check) spreads the partnership from about 420 to about 2,300 bed-days and the call across two
+schemes; the data's own absolute split (every single-patient closure began with every medical side room occupied,
+every closure that began with a room free had two or more symptomatic patients) leaves the closure-by-closure check
+standing, with a spread to be measured at stage 2 under the pool and timing conventions the fork table closes.
+Analyst test: a strong analyst who reads every record and the framework correctly sizes each scheme with the bed model
+and funds the modular ward at about 1,280 bed-days; the golden credits the bays each scheme keeps open and funds the
+palliative partnership at about 1,800 (generator/checks.py, R3a, once the generator exists).
+Estimand: the winter capacity framework (2026/27), section 3, files the population (the winter's medical bed base and
+its patients as they ran), the outcome (medical bed-days released), the window (1 December 2025 to 31 March 2026),
+the comparison (the bed base as it ran against the bed base with the scheme in place) and the unit (bed-days, and per
+£1,000 of the scheme's winter cost); section 4 files the award rule.
+No decoy: nothing is planted; the closures, rooms and decisions are the winter as the hospital ran it, and no memo,
+sponsor figure or draft ranks the schemes.
+No certified replay: no certified or published figure is reproduced to recover a hidden method; the framework states
+the estimand and the records carry the evidence.
+Lesson: a hospital's medical beds are not one pool when infectious patients may use only side rooms; a scheme is worth
+the bays it keeps open by freeing side rooms when they are all full, which no bed count shows. No build on file teaches
+a sub-pool shortage that closes blocks of the main pool.
 
 ## Tried and rejected
 
@@ -324,3 +211,34 @@ Measured by: generator/pair.py on the cut pack.
   6.1 (user equilibrium on the coded network) is the golden, so the analyst test fails and the decisive step is rule
   application (generator/analyst_test.py); the survivor anatomy holds only Actor. Not re-rooted on the orchestrating
   session's rule; the shipped pack stays at the portal, pending.
+- 2026-11-02: re-rooted at the orchestrating session's call: architecture 1 died because 6.1 filed the HOW, so
+  executing the guidance gave the golden, and only Actor held; architecture 2 moves to healthcare patient flow, a new
+  world, dataset and shell, with no governing document filing the method.
+- 2026-11-02: debt-sale censoring of an in-house recovery curve (collections) dropped at the draw: population selection
+  is banned in the window (task273) and stratifying by the sale score is the grouping dichotomy.
+- 2026-11-02: failed-payment notices triggering voluntary cancellations (subscriptions) dropped at the draw: a pilot's
+  retention ITT lands it, and without one the triggered share is a model with a free baseline.
+- 2026-11-02: an early-bleeding window for a 2027 anticoagulant switch cohort (pharmacology) dropped at the draw: the
+  one-year cumulative incidence from past switchers is a reflex that lands it, and its honest label is banned.
+- 2026-11-02: delayed entry at a system go-live (retention) dropped at the draw: its honest label, population
+  selection, is banned in the window.
+- 2026-11-02: cross-line common shocks for a clash cover (reinsurance) dropped at the draw: the treaty's occurrence
+  clause files the unit (the WHAT screen) and the dependence model forks.
+- 2026-11-02: short-borrow availability capping a long-short sleeve (quantitative finance) dropped at the draw: borrow
+  cost is a quant default and the locate file would exist only for the step.
+- 2026-11-02: bed-hours from a discharge lounge counted only when an ED patient waits (patient flow) dropped at the
+  draw: boarding by hour is one group-by, and the world sits on task127's.
+- 2026-11-02: redials inflating an Erlang sizing (a booking line) dropped at the draw: the retrial queue carries a free
+  persistence parameter.
+- 2026-11-02: regression dilution in a blood-pressure slope (health burden) dropped at the draw: the literature's
+  usual-BP relative risks land it and the swap reads the same in any field.
+- 2026-11-02: sold-out options narrowing observed choice sets (choice modelling) dropped at the draw: task302's
+  substitution, and the choice model's specification forks.
+- 2026-11-02: month-end snapshots hiding intra-month delinquency (collections) dropped at the draw: a grain reading.
+- 2026-11-02: household secondary cases credited to a schools vaccination programme dropped at the draw: causal design
+  (spillover) is banned in the window (task157).
+- 2026-11-02: a care-home discharge-to-assess partnership as the scheme that frees side rooms, prototyped and replaced
+  by the palliative partnership before carding: its vocabulary and world (care-home waits, medically optimised dates,
+  discharge-to-assess) sit on task127's.
+- 2026-11-02: a side-room pod as one of the candidate schemes dropped at the draw: a scheme that adds side rooms names
+  the decisive step.

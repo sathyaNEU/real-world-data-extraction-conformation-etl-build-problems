@@ -1,47 +1,41 @@
 {
  "task": "task307",
- "status": "SHIPPED",
- "domain": "urban-regional-science",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-11-01",
- "stump": "A competent solver prices each project on its own links at the regional model's no-build volumes and funds the Route 9 widening; the step that lands it there is holding every trip on its no-build route, when trips re-route once a project opens, the widened segment feeds the Route 9 bridge that binds downstream, and the Center Street Bridge lane pulls trips off Route 9.",
- "architecture": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "A competent analyst sizes each scheme with the bed model, treating the medical beds as one pool, and funds the modular ward; the step that lands it there is counting a side room as a bed, when an infectious patient can be nursed only in a side room, a bay with one in it closes whenever every medical side room is full, and the palliative partnership empties side rooms held by fast-track patients waiting for their package.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-27, --asof 2026-10-23)",
-  "reader": "three isolated reads: no decisive-step sentence, no ranking or helper file; question 6 read the call as a stated procedure (judge settles: analytical)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family, repeat.decision and repeat.question_form against task308 v3; answered in the note)",
-  "nearest": "0.08 task267"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 2; pass 1 FIX_NOW fixed)",
-  "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 1 spent at the 11-01 re-check: guidance 2.1 with documentation 6.1 (user equilibrium on the coded network) executed word for word is the golden, so the analyst test fails and the decisive step is rule application; not re-rooted on the orchestrating session's rule. The shipped pack (549ae906) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (architecture 2) or leave the shipped version to the portal.",
+ "resume": "Architecture 2 drawn 2026-11-02 (card registered, DRAWN committed). Next: stage 2 design (readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt), then the generator at stage 3; precut sits at exit 1 until generator/checks.py and the pair script exist.",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "zip": "549ae906954d0ec4",
- "architecture_spent": true,
- "recheck_2026_11_01": {
-  "rebuild": "reproduces the shipped target.zip byte for byte (549ae906); generator 431 checks, verify green, pair ceiling 26.0; pyarrow and scipy installed into the container",
-  "analyst_test": "generator/analyst_test.py on the clean truth: fixed no-build volumes fund Route 9 (196,483) but only by breaking 6.1 (build-network loads at relative gap 0.0079 to 0.1494 against the filed 0.000001); every filed rule executed (2.1, 6.1, 2.2, 3.1) is the equilibrium route, Center Street 322,911: R3a fails",
-  "gate_h": "settled: rule application; 6.1 files the HOW (user equilibrium, Wardrop's condition, the gap), 2.1 makes it the work order",
-  "survivor_anatomy": "Actor holds; Link, Reflex, Back-test, Second use, Shock and Pins fail",
-  "gates_on_shipped_cut": "precut 61 checks 0 FAIL (8 anatomy WARNs before the lines were written, 0 after); voice-check PASS with WARNs (counts 'the four', 'the eight'; shell quota); leak.py REVIEW (sweep 12 REVIEW: documentation 4.1 names AB_LANES, BA_LANES, FTYPE; sweep 13 clean); guard.py heart WARN, surface exit 0; figures_check 72 of 72",
-  "repair": "none cut; nothing in target/, golden/, target.zip, the prompt or any graded figure moved"
+ "architecture_1": {
+  "status": "SHIPPED, pending at the portal (delivered 2026-10-27, zip 549ae906954d0ec4)",
+  "spent": "2026-11-01 re-check: rule application through documentation 6.1 (generator/analyst_test.py in its tree, commit bd291a3)"
  }
 }
