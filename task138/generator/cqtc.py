@@ -82,10 +82,18 @@ def corrected(qt, rr, scheme, b=None):
 
 # ---------------------------------------------------------------- REML mixed model
 def lme_reml(y, X, Z, groups):
+    """REML fit of y = X b + Z u + e, u_i ~ N(0, G) per group, e ~ N(0, s2); profiled over s2, small-matrix form."""
     ug = list(dict.fromkeys(groups.tolist()))
     idx = [np.where(groups == g)[0] for g in ug]
     q = Z.shape[1]
     n, p = X.shape
+    XtX = np.array([X[i].T @ X[i] for i in idx])
+    Xty = np.array([X[i].T @ y[i] for i in idx])
+    yty = np.array([y[i] @ y[i] for i in idx])
+    ZtZ = np.array([Z[i].T @ Z[i] for i in idx])
+    ZtX = np.array([Z[i].T @ X[i] for i in idx])
+    Zty = np.array([Z[i].T @ y[i] for i in idx])
+    I = np.eye(q)
 
     def unpack(th):
         L = np.zeros((q, q))
@@ -98,21 +106,14 @@ def lme_reml(y, X, Z, groups):
 
     def parts(th):
         G = unpack(th)
-        XtVX = np.zeros((p, p))
-        XtVy = np.zeros(p)
-        logdet = 0.0
-        Vinvs = []
-        for ii in idx:
-            Zi = Z[ii]
-            Vi = Zi @ G @ Zi.T + np.eye(len(ii))
-            ch = np.linalg.cholesky(Vi)
-            Vinv = np.linalg.inv(Vi)
-            Vinvs.append(Vinv)
-            logdet += 2 * np.log(np.diag(ch)).sum()
-            XtVX += X[ii].T @ Vinv @ X[ii]
-            XtVy += X[ii].T @ Vinv @ y[ii]
+        M = I[None] + ZtZ @ G[None]                      # I + A_i G
+        H = G[None] @ np.linalg.inv(M)                   # G (I + A_i G)^-1
+        XtVX = (XtX - np.einsum("gqp,gqr,grs->gps", ZtX, H, ZtX)).sum(0)
+        XtVy = (Xty - np.einsum("gqp,gqr,gr->gp", ZtX, H, Zty)).sum(0)
+        ytVy = (yty - np.einsum("gq,gqr,gr->g", Zty, H, Zty)).sum()
+        logdet = np.linalg.slogdet(M)[1].sum()
         b = np.linalg.solve(XtVX, XtVy)
-        rss = sum(float((y[ii] - X[ii] @ b) @ Vinv @ (y[ii] - X[ii] @ b)) for ii, Vinv in zip(idx, Vinvs))
+        rss = float(ytVy - b @ XtVy)
         s2 = rss / (n - p)
         ll = -0.5 * ((n - p) * np.log(s2) + logdet + np.linalg.slogdet(XtVX)[1])
         return ll, b, s2 * np.linalg.inv(XtVX), s2 * G, s2
@@ -127,8 +128,8 @@ def lme_reml(y, X, Z, groups):
     best = None
     for start in (th0, th0 * 0.3, th0 * 3.0):
         res = optimize.minimize(lambda th: -parts(th)[0], start, method="Nelder-Mead",
-                                options={"maxiter": 6000, "xatol": 1e-7, "fatol": 1e-9})
-        if best is None or res.fun < best.fun - 1e-9:
+                                options={"maxiter": 8000, "xatol": 1e-8, "fatol": 1e-10})
+        if best is None or res.fun < best.fun - 1e-10:
             best = res
     ll, b, cov, G, s2 = parts(best.x)
     return dict(b=b, cov=cov, G=G, s2=s2, ll=ll)

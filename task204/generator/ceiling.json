@@ -2,10 +2,10 @@
  "ask_figures": 48,
  "asks": {
   "A": {
-   "cracker_hits": 11,
+   "cracker_hits": 22,
    "figures": 30,
    "full_includer_hits": 30,
-   "mirror_hits": 3
+   "mirror_hits": 5
   },
   "B": {
    "cracker_hits": 3,
@@ -20,12 +20,12 @@
    "mirror_hits": 0
   }
  },
- "cracker_keep": 0.2917,
+ "cracker_keep": 0.5208,
  "full_includer_keep": 0.8125,
- "landed_score": 61.0,
- "mirror_keep": 0.0625,
- "mirror_leakage_pct": 6.2,
- "missed_score": 15.4,
- "pair_ceiling": 38.2,
- "pair_if_both_land": 54.7
+ "landed_score": 73.6,
+ "mirror_keep": 0.1042,
+ "mirror_leakage_pct": 10.4,
+ "missed_score": 17.7,
+ "pair_ceiling": 45.7,
+ "pair_if_both_land": 62.2
 }
