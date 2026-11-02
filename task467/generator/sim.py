@@ -1,392 +1,417 @@
-"""The clean truth and the records it leaves: every taxi trip that began or ended at Velmont International Airport from
-2023 to August 2026, the licences that drove them and the brokerages they belonged to on each day, then the records
-the Vehicle-for-Hire Office received (voided trips with their reversals, store-and-forward trips sent late and, from
-the January 2026 meter firmware, the Corvane units' re-sent copies)."""
+"""The clean truth: Wrenfield & Holt's returned orders, every parcel's delivery to the Cotterby returns centre, the
+hall's working (block-stacked roll cages, so the next parcel opened is always the newest still waiting), the processing
+and refund records, the customer cases, goodwill vouchers and their redemptions, and the centre's operating records.
+
+Everything is integer seconds of UK local wall-clock time (naive) until the writers in pack.py stamp a zone.
+Random streams are separate per concern, so a change to one record family leaves the others byte-identical."""
 import datetime as dt
-import math
+from collections import defaultdict
 
 import numpy as np
-import pandas as pd
 
 import world as W
 
-DAYS = [W.FIRST_DAY + dt.timedelta(days=i) for i in range((W.LAST_DAY - W.FIRST_DAY).days + 1)]
-NDAY = len(DAYS)
-DAY_INDEX = {d: i for i, d in enumerate(DAYS)}
-ZONES = W.CITY_ZONES
-NZ = len(ZONES)
-ZI = {z: i for i, z in enumerate(ZONES)}
-DAY64 = np.array(DAYS, dtype="datetime64[D]")
-
-# arrivals leave the rank on the airport's arrival banks; departures reach the forecourt on its departure banks
-HOUR_P = [0.62, 0.16, 0.03, 0.01, 0.01, 0.04, 0.78, 2.35, 3.55, 3.20, 2.45, 2.20, 2.60, 3.05, 3.40, 3.55, 3.85,
-          4.40, 4.55, 4.25, 3.80, 4.05, 3.90, 2.55]
-HOUR_D = [0.06, 0.02, 0.01, 0.03, 0.92, 3.70, 4.55, 3.45, 2.60, 2.40, 2.60, 2.90, 3.00, 3.10, 3.20, 3.40, 3.45,
-          3.20, 2.80, 2.40, 1.90, 1.30, 0.62, 0.22]
+EPOCH = dt.datetime(2024, 11, 1)
 
 
-def rngs():
-    return {k: np.random.default_rng([W.SEED, i]) for i, k in enumerate(
-        ("shares", "months", "days", "times", "attrs", "fleet", "assign", "voids", "late", "resend", "ids", "pax"))}
+def sec(t):
+    return int((t - EPOCH).total_seconds())
 
 
-# ---------------------------------------------------------------- where the trips go
-def zone_shares(r):
-    """The share of the airport's pickups bound for each city zone and of its drop-offs coming from each, before the
-    line: the station zones per W.STATION_SPLIT_*, the rest falling off with distance and differing a little by
-    direction (residents ride home from the airport more than to it)."""
-    others = W.OTHER_ZONES
-    km = np.array([W.ZONE[z][2] for z in others])
-    base = np.exp(-km / 17.0) * np.exp(r.normal(0, 0.35, len(others)))
-    base[others.index(38)] *= 0.55
-    tilt = np.exp(r.normal(0, 0.18, len(others)))
-    wp = base * tilt
-    wd = base / tilt
-    sp = {z: W.STATION_SHARE_P * W.STATION_SPLIT_P[z] for z in W.STATION_ZONES}
-    sd = {z: W.STATION_SHARE_D * W.STATION_SPLIT_D[z] for z in W.STATION_ZONES}
-    sp.update({z: (1 - W.STATION_SHARE_P) * w / wp.sum() for z, w in zip(others, wp)})
-    sd.update({z: (1 - W.STATION_SHARE_D) * w / wd.sum() for z, w in zip(others, wd)})
-    return np.array([sp[z] for z in ZONES]), np.array([sd[z] for z in ZONES])
+def at(s):
+    return EPOCH + dt.timedelta(seconds=int(s))
 
 
-def expected(sp, sd):
-    """Expected trips a day by zone, pickups and drop-offs: traffic growth, the month, the weekday, the line on the
-    station zones from 4 November 2024 and the temporary rank on pickups until 2027."""
-    ep = np.zeros((NDAY, NZ))
-    ed = np.zeros((NDAY, NZ))
-    station = np.array([z in W.STATION_ZONES for z in ZONES])
-    for i, d in enumerate(DAYS):
-        g = (1 + W.GROWTH) ** ((d - dt.date(2024, 7, 1)).days / 365.25)
-        s = W.SEAS[d.month - 1] / (sum(W.SEAS) / 12)
-        line = np.where(station & (d >= W.CHANGE), W.LINE, 1.0)
-        rank = W.RANK if W.CHANGE <= d < W.RETURN else 1.0
-        lean = W.TILT[d.month - 1]
-        ep[i] = W.P_DAY * g * s * (1 + lean) * W.DOW_P[d.weekday()] * sp * line * rank
-        ed[i] = W.D_DAY * g * s * (1 - lean) * W.DOW_D[d.weekday()] * sd * line
-    return ep, ed
+def day_of(s):
+    return at(s).date()
 
 
-def stoch_round(x, r):
-    f = np.floor(x)
-    return (f + (r.random(np.shape(x)) < (x - f))).astype(int)
+def rng(name):
+    return np.random.default_rng([W.SEED, sum(ord(c) * (i + 1) for i, c in enumerate(name))])
 
 
-def daily_counts(ep, ed, r_m, r_d):
-    """Each zone-month's count drawn once for both directions (a month's shock and a zone's month shock shared by
-    pickups and drop-offs, a small one each), then spread over the month's days by expected value and a day's
-    shock shared across the airport."""
-    cp = np.zeros((NDAY, NZ), dtype=int)
-    cd = np.zeros((NDAY, NZ), dtype=int)
-    dayshock = np.exp(r_d.normal(0, 0.05, NDAY))
-    for (y, m) in W.months():
-        idx = [i for i, d in enumerate(DAYS) if (d.year, d.month) == (y, m)]
-        sm = math.exp(r_m.normal(0, 0.02))
-        u = np.exp(r_m.normal(0, 0.03, NZ))
-        eP = ep[idx].sum(0) * sm * u * np.exp(r_m.normal(0, 0.006, NZ))
-        eD = ed[idx].sum(0) * sm * u * np.exp(r_m.normal(0, 0.006, NZ))
-        nP, nD = stoch_round(eP, r_m), stoch_round(eD, r_m)
-        for j in range(NZ):
-            for arr, n, e in ((cp, nP[j], ep), (cd, nD[j], ed)):
-                if n:
-                    w = e[idx, j] * dayshock[idx]
-                    arr[idx, j] = r_d.multinomial(n, w / w.sum())
-    return cp, cd
+# ----------------------------------------------------------------------------------------------- the operating profile
+def arrivals_base(d):
+    """Return parcels delivered to the centre per working day (before the Monday uplift)."""
+    y, m, dd = d.year, d.month, d.day
+    if (y, m) == (2024, 12):
+        return 470 if dd <= 21 else 360
+    if (y, m) == (2025, 1):
+        return 760 if dd <= 25 else 600
+    if (y, m) == (2025, 2):
+        return 520
+    if (y, m) in ((2025, 7),):
+        return 540
+    if (y, m) == (2025, 11):
+        return 500 if dd <= 22 else 650
+    if (y, m) == (2025, 12):
+        return 680 if dd <= 20 else 400
+    if (y, m) == (2026, 1):
+        return 930
+    if (y, m) == (2026, 2):
+        return 640 if dd <= 14 else 520
+    if (y, m) == (2026, 5):
+        return 640 if 11 <= dd <= 30 else 500
+    if (y, m) == (2026, 7):
+        return 580
+    return 490
 
 
-# ---------------------------------------------------------------- the licences and their brokerages
-def fleet(r):
-    """Taxi licences that serve the airport, each with a meter vendor, an activity weight and its affiliation spells.
-    Licences change brokerage at the 1 January renewal (about one in nine) and now and then during a year; a few are
-    surrendered and new ones issued."""
-    bro = list(W.BROKERAGES)
-    bw = np.array([0.22, 0.20, 0.16, 0.18, 0.14, 0.10])
-    lic = []
-    nxt = 1001
-
-    def new(start, b=None):
-        nonlocal nxt
-        v = dict(vid="VT%04d" % nxt, vendor=1 + int(r.random() < 0.45), w=float(np.exp(r.normal(0, 0.45))),
-                 start=start, end=None, spells=[[int(b or r.choice(bro, p=bw)), start, None]])
-        nxt += 1
-        lic.append(v)
-        return v
-
-    for _ in range(214):
-        new(dt.date(2015, 1, 1) + dt.timedelta(days=int(r.integers(0, 2900))))
-
-    def switch(v, day):
-        cur = v["spells"][-1][0]
-        others = [b for b in bro if b != cur]
-        p = np.array([bw[bro.index(b)] for b in others])
-        v["spells"][-1][2] = day - dt.timedelta(days=1)
-        v["spells"].append([int(r.choice(others, p=p / p.sum())), day, None])
-
-    for year in (2023, 2024, 2025, 2026):
-        jan1 = dt.date(year, 1, 1)
-        active = [v for v in lic if v["end"] is None and v["start"] < jan1]
-        if year > 2023:
-            for v in active:
-                if r.random() < 0.11:
-                    switch(v, jan1)
-        last = W.LAST_DAY if year == 2026 else dt.date(year, 12, 31)
-        span = (last - jan1).days
-        for v in list(active):
-            if r.random() < 0.03 * span / 365:
-                switch(v, jan1 + dt.timedelta(days=int(r.integers(20, span))))
-            if r.random() < 0.035 * span / 365:
-                day = jan1 + dt.timedelta(days=int(r.integers(10, span)))
-                if day > v["spells"][-1][1]:
-                    v["end"] = day
-                    v["spells"][-1][2] = day
-                    new(day + dt.timedelta(days=int(r.integers(1, 30))), v["spells"][-1][0])
-    return lic
+def capacity_base(d):
+    """Parcels the centre's team opens per full working day."""
+    y, m = d.year, d.month
+    table = {(2024, 12): 560, (2025, 1): 690, (2025, 2): 620, (2025, 11): 590, (2025, 12): 600,
+             (2026, 1): 560, (2026, 2): 640, (2026, 3): 660, (2026, 4): 600, (2026, 5): 580}
+    return table.get((y, m), 560)
 
 
-def force_renewal_moves(lic, r):
-    """At the 2026 renewal every brokerage both lost and gained at least two licences that drove all of 2025."""
-    jan = dt.date(2026, 1, 1)
-    full = [v for v in lic if v["start"] <= dt.date(2025, 1, 1) and (v["end"] is None or v["end"] > dt.date(2026, 2, 10))]
-
-    def moved(v):
-        return any(s[1] == jan for s in v["spells"])
-
-    def held(v, day):
-        return next(s[0] for s in v["spells"] if s[1] <= day and (s[2] is None or day <= s[2]))
-
-    for b in W.BROKERAGES:
-        out = [v for v in full if moved(v) and held(v, dt.date(2025, 12, 31)) == b]
-        inn = [v for v in full if moved(v) and held(v, jan) == b]
-        while len(out) < 2 or len(inn) < 2:
-            cands = [v for v in full if not moved(v) and len(v["spells"]) == 1 and v["spells"][0][2] is None]
-            v = cands[int(r.integers(0, len(cands)))]
-            src = v["spells"][0][0]
-            if len(out) < 2 and src == b:
-                tgt = [c for c in W.BROKERAGES if c != b][int(r.integers(0, 5))]
-            elif len(inn) < 2 and src != b:
-                tgt = b
-            else:
-                continue
-            v["spells"][0][2] = jan - dt.timedelta(days=1)
-            v["spells"].append([tgt, jan, None])
-            out = [v for v in full if moved(v) and held(v, dt.date(2025, 12, 31)) == b]
-            inn = [v for v in full if moved(v) and held(v, jan) == b]
+def working(d):
+    return d.weekday() < 6 and d not in W.BANK_HOLIDAYS
 
 
-def brokerage_on(v, day):
-    for b, a, z in v["spells"]:
-        if a <= day and (z is None or day <= z):
-            return b
-    return v["spells"][-1][0]
+def payment_run_day(d):
+    return d.weekday() < 5 and d not in W.BANK_HOLIDAYS
 
 
-def latest_brokerage(v, built):
-    """The brokerage an annual file built on `built` stamps on a licence's trips: the licence's spell that day, or its
-    last spell if it was surrendered before then."""
-    for b, a, z in v["spells"]:
-        if a <= built and (z is None or built <= z):
-            return b
-    return v["spells"][-1][0]
+def next_run(s):
+    """Refunds go out in the 18:00 payment run on weekdays; a refund triggered after the run waits for the next."""
+    t = at(s)
+    d = t.date()
+    if payment_run_day(d) and t.time() < dt.time(18, 0):
+        return d
+    d += dt.timedelta(days=1)
+    while not payment_run_day(d):
+        d += dt.timedelta(days=1)
+    return d
 
 
-# ---------------------------------------------------------------- the trips
-def hour_draw(n, prof, r):
-    p = np.array(prof) / sum(prof)
-    h = r.choice(24, size=n, p=p)
-    return h * 3600 + r.integers(0, 3600, n)
+# ------------------------------------------------------------------------------------------------ the record family
+def deliveries():
+    """Each return parcel's goods-in time (seconds), carrier and door; 07:00 to 17:30 on delivery days."""
+    r = rng("deliveries")
+    out = []
+    for d in W.days():
+        if not working(d):
+            continue
+        n = r.poisson(arrivals_base(d) * (1.22 if d.weekday() == 0 else 1.0))
+        base = sec(dt.datetime.combine(d, dt.time(7, 0)))
+        secs = np.sort(r.choice(10 * 3600 + 1800, size=n, replace=False)) + base
+        out.extend(int(s) for s in secs)
+    return np.array(out, dtype=np.int64)
 
 
-def speed(h):
-    return np.where((h >= 7) & (h < 9) | (h >= 16) & (h < 18), 29.0, np.where((h >= 22) | (h < 6), 56.0, 43.0))
-
-
-def make_trips(cp, cd, lic, R):
-    """One row per trip, pickups and drop-offs, before any record is written."""
-    rows = []
-    for direction, counts in (("P", cp), ("D", cd)):
-        di, zj = np.nonzero(counts)
-        n = counts[di, zj]
-        day = np.repeat(di, n)
-        zone = np.array(ZONES)[np.repeat(zj, n)]
-        rows.append(pd.DataFrame({"dir": direction, "day": day, "zone": zone}))
-    t = pd.concat(rows, ignore_index=True)
-    return finish(t, lic, R, "trip")
-
-
-def finish(t, lic, R, kind):
-    r = R["times"]
-    n = len(t)
-    pick = (t["dir"] == "P").to_numpy()
-    sec = np.where(pick, hour_draw(n, HOUR_P, r), hour_draw(n, HOUR_D, r))
-    km_zone = np.array([W.ZONE[z][2] for z in t["zone"]])
-    km = np.round(km_zone * R["attrs"].uniform(0.92, 1.13, n) + R["attrs"].uniform(0.3, 1.4, n), 2)
-    hr = (sec // 3600).astype(int)
-    mins = km / speed(hr) * 60 + R["attrs"].uniform(1.5, 6.5, n)
-    dur = np.round(mins * 60).astype(int)
-    base = DAY64[t["day"].to_numpy()].astype("datetime64[s]")
-    anchor = base + sec.astype("timedelta64[s]")
-    # a pickup's meter starts at the rank; a drop-off's anchor is its arrival at the forecourt
-    on = np.where(pick, anchor, anchor - dur.astype("timedelta64[s]"))
-    off = on + dur.astype("timedelta64[s]")
-    t = t.assign(meter_on=on, meter_off=off, km=km, wait=np.round(R["attrs"].uniform(0, 1, n) ** 2 * 7, 1))
-    t["kind"] = kind
-    assign_vehicles(t, lic, R)
-    price(t, R, lic)
-    return t
-
-
-TURN = 25 * 60     # seconds: no taxi starts a trip within 25 minutes of ending its last
-BUSY = {}          # licence index -> (sorted starts, ends) of the trips already given to it
-
-
-def assign_vehicles(t, lic, R):
-    """Each trip to a licence active that day, drawn by the licences' activity, and free: no taxi starts a trip within
-    25 minutes of ending another (the holding lot's queue after a drop-off, the run back after a pickup)."""
-    import bisect
-    r = R["assign"]
-    on = t["meter_on"].to_numpy().astype("datetime64[s]").astype(np.int64)
-    off = t["meter_off"].to_numpy().astype("datetime64[s]").astype(np.int64)
-    days = t["day"].to_numpy()
-    pick = np.empty(len(t), dtype=np.int64)
-    active = {}
-    for i in np.argsort(on, kind="stable"):
-        d = int(days[i])
-        if d not in active:
-            day = DAYS[d]
-            act = [k for k, v in enumerate(lic) if v["start"] <= day and (v["end"] is None or day < v["end"])]
-            active[d] = (act, np.cumsum([lic[k]["w"] for k in act]))
-        act, cw = active[d]
-        for _ in range(2000):
-            k = act[int(np.searchsorted(cw, r.random() * cw[-1], side="right"))]
-            st, en = BUSY.setdefault(k, ([], []))
-            j = bisect.bisect_left(st, off[i] + TURN)
-            if j == 0 or en[j - 1] + TURN <= on[i]:
-                st.insert(j, int(on[i]))
-                en.insert(j, int(off[i]))
-                pick[i] = k
-                break
+def processing_slots(deliv):
+    """The team's opening slots: weekdays 06:00 to 22:00, Saturdays 07:00 to 17:00, Sundays and bank holidays
+    08:00 to 14:00 at six tenths of the day's capacity. A slot opens a parcel only when the hall holds one."""
+    r = rng("slots")
+    taken = set(int(x) for x in deliv)
+    out = []
+    for d in W.days():
+        cap = capacity_base(d)
+        if d.weekday() == 6 or d in W.BANK_HOLIDAYS:
+            n, h0, span = int(r.normal(0.6 * cap, 12)), 8, 6 * 3600
+        elif d.weekday() == 5:
+            n, h0, span = int(r.normal(0.85 * cap, 15)), 7, 10 * 3600
         else:
-            raise RuntimeError("no free licence on day %d" % d)
-    t["vehicle"] = [lic[k]["vid"] for k in pick]
-    on_day = pd.to_datetime(t["meter_on"]).dt.date.to_numpy()
-    t["vendor"] = [lic[k]["vendor"] for k in pick]
-    t["brokerage"] = [brokerage_on(lic[k], dd) for k, dd in zip(pick, on_day)]
+            n, h0, span = int(r.normal(cap, 18)), 6, 16 * 3600
+        base = sec(dt.datetime.combine(d, dt.time(h0, 0)))
+        for s in np.sort(r.choice(span, size=max(n, 0), replace=False)) + base:
+            s = int(s)
+            while s in taken:          # no slot shares a second with a goods-in scan
+                s += 1
+            taken.add(s)
+            out.append(s)
+    return np.array(sorted(out), dtype=np.int64)
 
 
-REPROGRAM = {}
-
-
-def reprogram_day(vid, year, r):
-    key = (vid, year)
-    if key not in REPROGRAM:
-        REPROGRAM[key] = dt.date(year, 1, 1) + dt.timedelta(days=int(r.integers(1, 23)))
-    return REPROGRAM[key]
-
-
-def price(t, R, lic):
-    """The Office's rate order (2025 raised the flag and the distance rate), the fee the meter charges on an airport
-    pickup (last year's until the meter is reprogrammed in January), tips on cards."""
-    r = R["attrs"]
-    n = len(t)
-    on = pd.to_datetime(t["meter_on"])
-    year = on.dt.year.to_numpy()
-    flag = np.where(year >= 2025, 4.25, 4.10)
-    rate = np.where(year >= 2025, 2.02, 1.95)
-    waitr = np.where(year >= 2025, 0.64, 0.62)
-    fare = np.round((flag + rate * t["km"].to_numpy() + waitr * t["wait"].to_numpy()) * 20) / 20
-    pick = (t["dir"] == "P").to_numpy()
-    fee = np.zeros(n)
-    dates = on.dt.date.to_numpy()
-    for i in np.nonzero(pick)[0]:
-        d = dates[i]
-        fee[i] = W.FEES[d.year] if d >= reprogram_day(t["vehicle"].iat[i], d.year, R["fleet"]) else W.FEES[d.year - 1]
-    pay = r.choice([1, 2, 3], size=n, p=[0.72, 0.23, 0.05])
-    tip = np.where(pay == 1, np.round(fare * r.uniform(0.08, 0.21, n), 2) * (r.random(n) > 0.06), 0.0)
-    pax = R["pax"].choice([1, 2, 3, 4], size=n, p=[0.62, 0.24, 0.09, 0.05])
-    t["fare"] = fare
-    t["fee"] = fee
-    t["tip"] = tip
-    t["total"] = np.round(fare + fee + tip, 2)
-    t["pay"] = pay
-    t["pax"] = pax
-
-
-def voids(cp, cd, lic, R):
-    """Voided trips: a meter started and the trip voided (the passenger gone, a dispute settled at the rank); the meter
-    sends the trip and then its reversal. None is a trip."""
-    r = R["voids"]
-    vp = r.poisson(cp * W.VOID_RATE)
-    vd = r.poisson(cd * W.VOID_RATE)
-    t = make_trips(vp, vd, lic, R)
-    t["kind"] = "void"
-    t["km"] = np.round(t["km"] * r.uniform(0.02, 0.15, len(t)), 2)
-    flag = np.where(pd.to_datetime(t["meter_on"]).dt.year >= 2025, 4.25, 4.10)
-    t["fare"] = np.round((flag + 2.0 * t["km"]) * 20) / 20
-    t["tip"] = 0.0
-    t["total"] = np.round(t["fare"] + t["fee"], 2)
-    t["meter_off"] = t["meter_on"] + (r.integers(40, 400, len(t))).astype("timedelta64[s]")
-    rev = t.copy()
-    rev["kind"] = "reversal"
-    for c in ("fare", "fee", "tip", "total"):
-        rev[c] = -rev[c]
-    return t, rev
-
-
-def receive(t, R):
-    """When each record reached the Office: minutes after the meter stopped, days for a store-and-forward record."""
-    r = R["late"]
-    n = len(t)
-    late = r.random(n) < W.LATE_RATE
-    delay = np.where(late, r.integers(86400, 9 * 86400, n), r.integers(8, 1200, n))
-    t["received"] = t["meter_off"] + delay.astype("timedelta64[s]")
-    t["sf"] = np.where(late | (r.random(n) < 0.021), "Y", "N")
-    return t
-
-
-def resends(t, R):
-    """From the January 2026 firmware, a Corvane unit that loses its connection re-sends its unacknowledged trips once
-    it reconnects; the Office's intake gives each copy a new record number, and the unit writes the copy's meter times
-    to the minute."""
-    r = R["resend"]
-    base = t[(t["kind"] == "trip") & (t["vendor"] == 2) &
-             (pd.to_datetime(t["meter_on"]) >= pd.Timestamp(W.UTC_FROM))]
-    take = base[r.random(len(base)) < W.RESEND_RATE].copy()
-    take["kind"] = "resend"
-    take["meter_on"] = take["meter_on"].dt.floor("min")
-    take["meter_off"] = take["meter_off"].dt.floor("min")
-    take["received"] = take["received"] + (r.integers(86400, 12 * 86400, len(take))).astype("timedelta64[s]")
-    take["sf"] = "Y"
-    return take
+def hall(deliv, slots, discipline="newest"):
+    """Replay the hall: deliveries join, slots open the newest waiting parcel (block-stacked cages) or, for the
+    rungs, the oldest. Returns (slot seconds, parcel index) for every slot that opened a parcel."""
+    ev = [(int(s), 0, i) for i, s in enumerate(deliv)] + [(int(s), 1, j) for j, s in enumerate(slots)]
+    ev.sort()
+    stack, out, head = [], [], 0
+    for t, kind, i in ev:
+        if kind == 0:
+            stack.append(i)
+        elif discipline == "newest":
+            if stack:
+                out.append((t, stack.pop()))
+        else:
+            if head < len(stack):
+                out.append((t, stack[head]))
+                head += 1
+    return out
 
 
 def everything():
-    """The world: the truth, the records and everything the documents quote."""
-    REPROGRAM.clear()
-    BUSY.clear()
-    R = rngs()
-    sp, sd = zone_shares(R["shares"])
-    ep, ed = expected(sp, sd)
-    cp, cd = daily_counts(ep, ed, R["months"], R["days"])
-    lic = fleet(R["fleet"])
-    force_renewal_moves(lic, R["fleet"])
-    trips = make_trips(cp, cd, lic, R)
-    v, rev = voids(cp, cd, lic, R)
-    trips = receive(trips, R)
-    v = receive(v, R)
-    rev["received"] = v["received"].to_numpy() + R["late"].integers(1800, 3 * 86400, len(rev)).astype("timedelta64[s]")
-    rev["sf"] = "N"
-    # a void whose reversal would reach the Office after the last monthly file closes is left out with it (in that
-    # file it would be indistinguishable from a trip)
-    cut = np.datetime64(W.LAST_DAY + dt.timedelta(days=1))
-    edge = (v["received"].to_numpy() < cut) & (rev["received"].to_numpy() >= cut)
-    v, rev = v[~edge], rev[~edge]
-    rs = resends(trips, R)
-    recs = pd.concat([trips, v, rev, rs], ignore_index=True)
-    recs = recs.sort_values(["received", "meter_on", "vehicle"], kind="stable").reset_index(drop=True)
-    recs["rid"] = 41_870_000 + np.arange(len(recs)) * 1 + R["ids"].integers(0, 3, len(recs)).cumsum()
-    return dict(sp=sp, sd=sd, ep=ep, ed=ed, cp=cp, cd=cd, lic=lic, recs=recs)
+    """The whole clean truth as plain Python structures."""
+    deliv = deliveries()
+    slots = processing_slots(deliv)
+    opened = hall(deliv, slots)
+    n = len(deliv)
+    r = rng("orders")
+    # customers: a returning customer base, a tenth of it on the Irish site in euros
+    n_cust = int(n * 0.74)
+    cust_site = np.where(r.random(n_cust) < 0.12, "IE", "UK")
+    cust_ids = r.choice(np.arange(1_200_000, 9_999_999), size=n_cust, replace=False)
+    # each parcel is one returned order; a customer returns about 1.35 orders over the record
+    pcust = r.integers(0, n_cust, size=n)
+    deliv_days = np.array([day_of(s) for s in deliv])
+    transit = r.choice([1, 1, 2, 2, 2, 3, 3, 4], size=n)
+    keep_days = r.choice(np.arange(1, 26), size=n, p=np.r_[np.full(10, 0.06), np.full(15, 0.4 / 15)])
+    ship_days = r.choice([1, 2, 2, 3], size=n)
+    posted = deliv - (transit * 86400 + r.integers(0, 6 * 3600, size=n) + 9 * 3600)
+    ordered = posted - (keep_days + ship_days) * 86400 - r.integers(0, 14 * 3600, size=n)
+    totals = np.round(np.exp(r.normal(4.05, 0.55, size=n)), 2)
+    # order references: allocated in order time across returned and other orders (assigned below)
+    parcels = {"deliv": deliv, "cust": pcust, "posted": posted, "ordered": ordered, "total": totals,
+               "deliv_day": deliv_days}
+    # carriers and barcodes: prepaid Tarnwell labels for parcels posted on labels issued to 31 December 2025
+    rb = rng("barcodes")
+    label_issue = posted - r.integers(2 * 3600, 3 * 86400, size=n)
+    has_label = np.array([day_of(s) <= W.LABELS_END for s in label_issue])
+    carrier, barcode = [], []
+    used = set()
+
+    def fresh(fmt):
+        while True:
+            c = fmt(rb)
+            if c not in used:
+                used.add(c)
+                return c
+    for i in range(n):
+        if has_label[i]:
+            carrier.append("Tarnwell")
+            barcode.append(fresh(lambda q: "TW%012d" % q.integers(10 ** 11, 10 ** 12)))
+        else:
+            c = rb.choice([c for c, _ in W.CARRIERS_2026], p=[p for _, p in W.CARRIERS_2026])
+            carrier.append(str(c))
+            if c == "Ambrell Post":
+                barcode.append(fresh(lambda q: "AP%09dGB" % q.integers(10 ** 8, 10 ** 9)))
+            elif c == "Tarnwell":
+                barcode.append(fresh(lambda q: "TW%012d" % q.integers(10 ** 11, 10 ** 12)))
+            elif c == "Kestrix":
+                barcode.append(fresh(lambda q: "KX%010d" % q.integers(10 ** 9, 10 ** 10)))
+            else:
+                barcode.append(fresh(lambda q: "VP%dX%06d" % (q.integers(10, 99), q.integers(10 ** 5, 10 ** 6))))
+    parcels["carrier"] = carrier
+    parcels["barcode"] = barcode
+    parcels["label"] = [barcode[i] if has_label[i] else "" for i in range(n)]
+    parcels["label_issue"] = label_issue
+    parcels["door"] = rb.choice(["D1", "D2", "D3", "D4"], size=n, p=[0.34, 0.31, 0.22, 0.13])
+    # processing outcomes and the refunds they trigger
+    ro = rng("outcomes")
+    proc_time = np.full(n, -1, dtype=np.int64)
+    for t, i in opened:
+        proc_time[i] = t
+    outcome = ro.choice(["REFUND", "REJECT_RETURNED", "REJECT_DISPOSED"], size=n, p=[0.946, 0.041, 0.013])
+    refund_day = [next_run(proc_time[i]) if proc_time[i] >= 0 and outcome[i] == "REFUND" else None for i in range(n)]
+    failed = ro.random(n) < 0.012
+    reissue_gap = ro.integers(2, 7, size=n)
+    reissue_day = []
+    for i in range(n):
+        if refund_day[i] is None or not failed[i]:
+            reissue_day.append(None)
+            continue
+        d = refund_day[i] + dt.timedelta(days=int(reissue_gap[i]))
+        while not payment_run_day(d):
+            d += dt.timedelta(days=1)
+        reissue_day.append(d)
+    # a card refund that fails is reissued in a run the same month, and its reissue never moves it across day 15 of
+    # its parcel's count (the failures that would have are paid first time)
+    for i in range(n):
+        if reissue_day[i] is None:
+            continue
+        dd = day_of(deliv[i])
+        a, b = refund_day[i], reissue_day[i]
+        if (a.year, a.month) != (b.year, b.month) or ((a - dd).days >= 15) != ((b - dd).days >= 15):
+            reissue_day[i] = None
+            failed[i] = False
+    made_day = [reissue_day[i] if reissue_day[i] is not None else refund_day[i] for i in range(n)]
+    parcels.update({"proc": proc_time, "outcome": outcome, "refund_day": refund_day, "failed": failed,
+                    "reissue_day": reissue_day, "made_day": made_day})
+    x = {"deliv": deliv, "slots": slots, "opened": opened, "parcels": parcels, "n_cust": n_cust,
+         "cust_site": cust_site, "cust_ids": cust_ids}
+    other_orders(x)
+    cases_and_vouchers(x)
+    allocate_order_refs(x)
+    return x
 
 
-def truth(x):
-    """The trips themselves, one row each, voided trips and copies out."""
-    r = x["recs"]
-    return r[r["kind"] == "trip"]
+# ---------------------------------------------------------------------------- orders, cases, vouchers, redemptions
+def other_orders(x):
+    """Each returning customer's other orders (about one every three months over the record)."""
+    r = rng("other_orders")
+    first, last = sec(dt.datetime(2025, 10, 1)), sec(dt.datetime.combine(W.END, dt.time(22)))
+    p = x["parcels"]
+    y26 = sec(dt.datetime(2026, 1, 1))
+    active = sorted(set(int(c) for c, d in zip(p["cust"], p["deliv"]) if d >= y26 - 30 * 86400))
+    oc, ot = [], []
+    ks = r.poisson((last - first) / 86400 / 110, size=len(active))
+    for c, k in zip(active, ks):
+        if k:
+            oc.extend([c] * int(k))
+            ot.extend(int(t) for t in np.sort(r.integers(first, last, size=int(k))))
+    x["other"] = {"cust": oc, "ordered": ot, "total": [float(v) for v in np.round(np.exp(r.normal(4.0, 0.6, size=len(oc))), 2)],
+                  "kind": ["other"] * len(oc)}
+
+
+def _order_lists(x):
+    """Per customer, every order as (time, key), key ('R', parcel index) or ('O', other-order index)."""
+    p, o = x["parcels"], x["other"]
+    by = defaultdict(list)
+    for i in range(len(p["deliv"])):
+        by[int(p["cust"][i])].append((int(p["ordered"][i]), ("R", i)))
+    for k in range(len(o["cust"])):
+        by[o["cust"][k]].append((o["ordered"][k], ("O", k)))
+    for c in by:
+        by[c].sort()
+    return by
+
+
+def cases_and_vouchers(x):
+    """Customer cases opened in 2026 (a customer waiting on a refund opens a refund-delay case more often the longer
+    the wait), goodwill vouchers issued on them (a tenth of the case order's value, whole units of the order's
+    currency, 5 to 40; the voucher form's order field defaults to the customer's latest order and the agent changes it
+    only when the default is another returned order), vouchers for other reasons, and redemptions, each on a new order
+    in the voucher's currency within its 90 days."""
+    import bisect
+    p, o = x["parcels"], x["other"]
+    n = len(p["deliv"])
+    rc = rng("cases")
+    y26 = sec(dt.datetime(2026, 1, 1))
+    endt = sec(dt.datetime.combine(W.END, dt.time(20)))
+    cases = []
+    for i in range(n):
+        if p["outcome"][i] != "REFUND" or p["made_day"][i] is None:
+            continue
+        paid = sec(dt.datetime.combine(p["made_day"][i], dt.time(18, 5)))
+        wait_days = (paid - p["posted"][i]) / 86400
+        if wait_days <= 11:
+            continue
+        if rc.random() >= min(0.78, 0.22 + 0.02 * (wait_days - 11)):
+            continue
+        opened = int(p["posted"][i] + rc.uniform(10.5, max(11.0, wait_days - 0.3)) * 86400)
+        if y26 <= opened <= endt:
+            cases.append({"cust": int(p["cust"][i]), "opened": opened, "topic": "Refund delay", "key": ("R", i),
+                          "channel": str(rc.choice(["Web form", "Chat", "Email", "Phone"], p=[0.46, 0.27, 0.17, 0.10]))})
+    pool = [(int(p["cust"][i]), int(p["ordered"][i]), ("R", i)) for i in range(n)]
+    pool += [(o["cust"][k], o["ordered"][k], ("O", k)) for k in range(len(o["cust"]))]
+    pool = [a for a in pool if a[1] > sec(dt.datetime(2025, 11, 20))]
+    topics = [("Where is my order", 0.30), ("Return label or address", 0.14), ("Exchange", 0.10),
+              ("Damaged or faulty item", 0.16), ("Account or payment", 0.13), ("Promotion or price", 0.10),
+              ("Delivery delay", 0.07)]
+    tw = np.array([b for _, b in topics])
+    for j in rc.integers(0, len(pool), size=int(len(cases) * 1.7)):
+        c, ot, key = pool[int(j)]
+        opened = int(ot + rc.uniform(1, 30) * 86400)
+        if y26 <= opened <= endt:
+            cases.append({"cust": c, "opened": opened, "key": key if rc.random() > 0.08 else None,
+                          "topic": str(rc.choice([a for a, _ in topics], p=tw / tw.sum())),
+                          "channel": str(rc.choice(["Web form", "Chat", "Email", "Phone"], p=[0.42, 0.30, 0.16, 0.12]))})
+    cases.sort(key=lambda cs: (cs["opened"], cs["cust"]))
+    seq = 5_100_000
+    for cs in cases:
+        seq += int(rc.integers(1, 3))
+        cs["case_ref"] = "CS-%07d" % seq
+        cs["closed"] = cs["opened"] + int(rc.uniform(0.2, 9) * 86400)
+    rv, rr = rng("vouchers"), rng("redemptions")
+    orders = _order_lists(x)
+    total = lambda key: float(p["total"][key[1]]) if key[0] == "R" else o["total"][key[1]]
+    vouchers, reds = [], []
+    for cs in cases:
+        reason = None
+        if cs["topic"] == "Refund delay":
+            if (cs["opened"] - p["posted"][cs["key"][1]]) / 86400 >= 14 and rv.random() < 0.66:
+                reason = "Refund delay"
+        elif cs["topic"] in ("Delivery delay", "Where is my order") and rv.random() < 0.20:
+            reason = "Delivery delay"
+        elif cs["topic"] == "Damaged or faulty item" and rv.random() < 0.25:
+            reason = "Damaged item"
+        elif cs["topic"] in ("Promotion or price", "Account or payment") and rv.random() < 0.08:
+            reason = "Other"
+        if reason is None:
+            continue
+        issued = cs["opened"] + int(rv.uniform(0.05, 2.2) * 86400)
+        base = total(cs["key"]) if cs["key"] else float(np.round(np.exp(rv.normal(4.0, 0.5)), 2))
+        base = base * (1.16 if x["cust_site"][cs["cust"]] == "IE" else 1.0)     # the order's value in its currency
+        hist = orders[cs["cust"]]
+        pos = bisect.bisect_right(hist, (issued, ("~", 0)))
+        latest = hist[pos - 1][1] if pos else None
+        auto = latest
+        if latest is not None and latest[0] == "R" and cs["key"] is not None and latest != cs["key"]:
+            auto = cs["key"]          # the default was another returned order: the agent picks the case's order
+        v = {"case": cs["case_ref"], "cust": cs["cust"], "issued": issued, "reason": reason,
+             "value": int(min(40, max(5, round(0.10 * base)))), "case_key": cs["key"], "auto_key": auto}
+        vouchers.append(v)
+        if rr.random() < 0.57:
+            t = issued + int(rr.uniform(0.5, 88) * 86400)
+            if t <= endt:
+                tot = float(np.round(np.exp(rr.normal(4.15, 0.5)), 2))
+                part = rr.random() < 0.18
+                cur = 1.16 if x["cust_site"][cs["cust"]] == "IE" else 1.0
+                applied = round(min(v["value"], tot * cur) * (rr.uniform(0.35, 0.8) if part else 1.0), 2)
+                reds.append({"voucher": v, "t": t, "applied": applied, "total": tot, "cust": cs["cust"]})
+                if part and rr.random() < 0.55:
+                    t2 = t + int(rr.uniform(2, 40) * 86400)
+                    if t2 <= min(endt, issued + 89 * 86400):
+                        tot2 = float(np.round(np.exp(rr.normal(4.15, 0.5)), 2))
+                        reds.append({"voucher": v, "t": t2, "applied": round(min(v["value"] - applied, tot2 * cur), 2),
+                                     "total": tot2, "cust": cs["cust"]})
+    # each redemption is a new order of the customer's, which later vouchers' order field can default to
+    for d in sorted(reds, key=lambda d: d["t"]):
+        k = len(o["cust"])
+        o["cust"].append(d["cust"])
+        o["ordered"].append(d["t"] - int(rr.integers(30, 600)))
+        o["total"].append(d["total"])
+        o["kind"].append("redemption")
+        d["order_key"] = ("O", k)
+    x["cases"], x["vouchers"], x["redemptions"] = cases, vouchers, reds
+    # the vouchers' order field had to see the redemption orders placed before each voucher; recompute it now that
+    # every order exists (the case order and the redemptions are unchanged)
+    orders = _order_lists(x)
+    for v in vouchers:
+        hist = orders[v["cust"]]
+        pos = bisect.bisect_right(hist, (v["issued"], ("~", 0)))
+        latest = hist[pos - 1][1] if pos else None
+        auto = latest
+        if latest is not None and latest[0] == "R" and v["case_key"] is not None and latest != v["case_key"]:
+            auto = v["case_key"]
+        v["auto_key"] = auto
+    rv2 = rng("voucher_codes")
+    vseq = 41_000
+    for v in sorted(vouchers, key=lambda v: v["issued"]):
+        vseq += int(rv2.integers(1, 4))
+        v["code"] = "GW%06d" % vseq
+        v["expires"] = (at(v["issued"]) + dt.timedelta(days=90)).date()
+    rseq = 880_000
+    for d in sorted(reds, key=lambda d: d["t"]):
+        rseq += int(rv2.integers(1, 5))
+        d["id"] = "RD%07d" % rseq
+
+
+CATEGORIES = [("Womenswear", 0.31, 0.40), ("Menswear", 0.18, 0.17), ("Footwear", 0.14, 0.16),
+              ("Home", 0.17, 0.11), ("Kids", 0.11, 0.09), ("Accessories", 0.09, 0.07)]
+
+
+def allocate_order_refs(x):
+    """Order references run in order time across every order; each order carries its main product category (returned
+    orders lean to clothing and footwear)."""
+    p, o = x["parcels"], x["other"]
+    n = len(p["deliv"])
+    rcat = rng("categories")
+    names = [c for c, _, _ in CATEGORIES]
+    p["category"] = list(rcat.choice(names, size=n, p=[r for _, _, r in CATEGORIES]))
+    o["category"] = list(rcat.choice(names, size=len(o["cust"]), p=[a for _, a, _ in CATEGORIES]))
+    keys = [("R", i) for i in range(n)] + [("O", k) for k in range(len(o["cust"]))]
+    times = [int(p["ordered"][i]) for i in range(n)] + list(o["ordered"])
+    order = sorted(range(len(keys)), key=lambda j: (times[j], j))
+    r = rng("order_refs")
+    gaps = r.integers(1, 4, size=len(keys))
+    num, ref = 20_418_000, {}
+    for k, j in enumerate(order):
+        num += int(gaps[k])
+        ref[keys[j]] = "WH%08d" % num
+    x["ref"] = ref
+    p["order_ref"] = [ref[("R", i)] for i in range(n)]
+    o["order_ref"] = [ref[("O", k)] for k in range(len(o["cust"]))]

@@ -1,128 +1,158 @@
-"""Read the shipped pack as a solver would: the Office's annual files and 2026 drops conformed to one table of trips in
-local time (voided trips with their reversals out, re-sent copies out), the 2023 archive's daily counts, and each
-licence's brokerage on each day from the affiliation register."""
-import csv
+"""Readers for the pack as a solver meets it (target/ only): the two goods-in exports conformed to one UK-time
+delivery record, the processing log, the refund ledger with each return refund's made date, and the ask files. Used
+by golden.py, checks.py and ceiling.py; verify.py has its own readers."""
 import datetime as dt
 import os
 
 import numpy as np
 import pandas as pd
-import pyarrow.parquet as pq
 
 import world as W
 
-V2_TO_V3 = {"pickup_datetime": "meter_on", "dropoff_datetime": "meter_off", "pickup_zone": "pu_zone",
-            "dropoff_zone": "do_zone", "passenger_count": "passengers", "trip_distance_km": "distance_km",
-            "fare_amount": "fare", "tip_amount": "tip", "total_amount": "total", "store_and_fwd_flag": "sf_flag"}
+_C = {}
 
 
 def path(target, key):
     return os.path.join(target, W.FILES[key])
 
 
-def _read(p):
-    t = pq.read_table(p).to_pandas()
-    t = t.rename(columns=V2_TO_V3)
-    t = t.rename(columns={c: "airport_fee" for c in t.columns if c.lower() == "airport_fee"})
-    for c in ("meter_on", "meter_off"):
-        s = t[c]
-        if getattr(s.dt, "tz", None) is not None:
-            t[c] = s.dt.tz_convert(W.TZ).dt.tz_localize(None)
-    return t
+def _cache(key, fn):
+    if key not in _C:
+        _C[key] = fn()
+    return _C[key]
 
 
-def drop_voids(t):
-    """A reversal carries its trip's vehicle, times and zones with every amount negated: both rows go."""
-    rev = t[t["total"] < 0]
-    if not len(rev):
-        return t
-    key = ["vehicle_id", "meter_on", "meter_off", "pu_zone", "do_zone"]
-    orig = t[t["total"] > 0].merge(rev[key + ["total"]].assign(total=-rev["total"]), on=key + ["total"],
-                                   how="inner")["record_id"]
-    out = t[(t["total"] >= 0) & ~t["record_id"].isin(orig)]
-    assert len(t) - len(out) == 2 * len(rev), (len(t), len(out), len(rev))
+def goods(target):
+    """Every goods-in scan in UK local time (naive), with the class each export gives it."""
+    def load():
+        a = pd.read_csv(path(target, "goods2025"), dtype=str)
+        a = pd.DataFrame({"t": pd.to_datetime(a.scanned_at_uk), "barcode": a.barcode,
+                          "cls": a.item_type.map({"RETURN": "RET", "STOCK TRANSFER": "TRF", "SUPPLIER SAMPLE": "SMP",
+                                                  "MISDELIVERED": "MIS"}), "door": a.door})
+        b = pd.read_parquet(path(target, "goods2026"))
+        b = pd.DataFrame({"t": pd.to_datetime(b.event_ts_uk),
+                          "barcode": b.parcel_barcode, "cls": b.parcel_class, "door": "D" + b.dock_door.astype(str)})
+        return pd.concat([a, b], ignore_index=True).sort_values(["t", "barcode"], kind="stable").reset_index(drop=True)
+    return _cache(("goods", target), load)
+
+
+def deliveries(target, keep="first"):
+    """Return parcels delivered to the centre: one per barcode, at its first scan (keep='last' for the rung)."""
+    g = goods(target)
+    g = g[g.cls == "RET"]
+    g = g.drop_duplicates("barcode", keep=keep)
+    return g.sort_values(["t", "barcode"], kind="stable").reset_index(drop=True)
+
+
+def processing(target, refunds_only=False):
+    def load():
+        p = pd.read_csv(path(target, "processing"), dtype=str, keep_default_na=False)
+        return pd.DataFrame({"t": pd.to_datetime(p.processed_at_uk), "order": p.order_ref, "label": p.return_label,
+                             "outcome": p.outcome, "id": p.process_id})
+    p = _cache(("proc", target), load)
+    if refunds_only:
+        p = p[p.outcome == "REFUND"]
+    return p.sort_values(["t", "id"], kind="stable").reset_index(drop=True)
+
+
+def refunds(target):
+    def load():
+        r = pd.read_parquet(path(target, "refunds"))
+        r["t"] = r.initiated_at_utc.dt.tz_convert(W.TZ_NAME).dt.tz_localize(None)
+        r["day"] = r.t.dt.date
+        r["value"] = np.where(r.amount.notna(), r.amount, r.amount_pence / 100.0)
+        return r
+    return _cache(("refunds", target), load)
+
+
+def return_refunds_made(target):
+    """Each return refund once: its order and the day it was made (the payment that succeeded)."""
+    r = refunds(target)
+    r = r[(r.reason == "RETURN") & (r.status == "PAID")]
+    assert r.order_ref.is_unique
+    return r[["order_ref", "day", "t", "refund_id", "reissue_of", "currency"]].reset_index(drop=True)
+
+
+def replay(target, discipline="newest", start=None, keep="first", refunds_only=False):
+    """Pair every opened parcel with a delivered one through the hall: 'newest' takes the newest parcel still waiting
+    at the moment of opening, 'oldest' the oldest (arrival order). start drops every delivery and opening before it
+    (the rung that ignores the hall's content). Returns {process id: delivery time}."""
+    d = deliveries(target, keep=keep)
+    p = processing(target, refunds_only=refunds_only)
+    if start is not None:
+        d = d[d.t >= start]
+        p = p[p.t >= start]
+    dt_ = d.t.values.astype("datetime64[s]").astype(np.int64)
+    pt_ = p.t.values.astype("datetime64[s]").astype(np.int64)
+    ev = np.concatenate([np.stack([dt_, np.zeros(len(dt_), np.int64), np.arange(len(dt_))], 1),
+                         np.stack([pt_, np.ones(len(pt_), np.int64), np.arange(len(pt_))], 1)])
+    ev = ev[np.lexsort((ev[:, 2], ev[:, 1], ev[:, 0]))]
+    out = {}
+    stack, head = [], 0
+    pid = p.id.values
+    for t, kind, i in ev:
+        if kind == 0:
+            stack.append(i)
+        elif discipline == "newest":
+            out[pid[i]] = stack.pop() if stack else None
+        else:
+            out[pid[i]] = stack[head] if head < len(stack) else None
+            head += 1
+    dts = d.t.values
+    return {k: (pd.Timestamp(dts[v]) if v is not None else None) for k, v in out.items()}
+
+
+def refund_table(target, pairing):
+    """Each return refund made, with the delivery time its parcel gets under a pairing {process id: delivery time}."""
+    rf = return_refunds_made(target)
+    p = processing(target)
+    p = p[p.outcome == "REFUND"]
+    assert p.order.is_unique
+    m = rf.merge(p[["order", "id", "t", "label"]].rename(columns={"order": "order_ref", "t": "opened"}), on="order_ref",
+                 how="left")
+    m["delivered"] = m.id.map(pairing)
+    return m
+
+
+def monthly(m, late_day=W.LATE_DAY, hours=False):
+    """Refunds made, late and the late share by month made, January to June 2026."""
+    out = {}
+    for (y, mo) in W.WINDOW_MONTHS:
+        sel = m[(pd.to_datetime(m.day).dt.year == y) & (pd.to_datetime(m.day).dt.month == mo)]
+        if hours:
+            late = int(((sel.t - sel.delivered).dt.total_seconds() > 14 * 86400).sum())
+        else:
+            days = (pd.to_datetime(sel.day) - pd.to_datetime(sel.delivered.dt.date)).dt.days
+            late = int((days >= late_day).sum())
+        out["%d-%02d" % (y, mo)] = (int(len(sel)), late)
     return out
 
 
-def drop_copies(t):
-    """A record matching an earlier-received one on the licence, the meter's start and stop minute, the zones and the
-    amounts is a copy of it."""
-    t = t.sort_values("record_id", kind="stable")
-    key = pd.DataFrame({"v": t["vehicle_id"], "on": t["meter_on"].dt.floor("min"), "off": t["meter_off"].dt.floor("min"),
-                        "pu": t["pu_zone"], "do": t["do_zone"], "fare": t["fare"], "total": t["total"]})
-    return t[~key.duplicated(keep="first").to_numpy()]
+def orders(target):
+    return _cache(("orders", target), lambda: pd.read_parquet(path(target, "orders")))
 
 
-def annual(target, year):
-    return drop_voids(_read(path(target, "trips%d" % year)))
+def vouchers(target):
+    def load():
+        v = pd.read_csv(path(target, "vouchers"), dtype=str, keep_default_na=False)
+        v["value"] = v.value.astype(float)
+        v["issued"] = pd.to_datetime(v.issued_at, utc=True).dt.tz_convert(W.TZ_NAME).dt.tz_localize(None)
+        return v
+    return _cache(("vouchers", target), load)
 
 
-def drops(target, copies=False):
-    t = pd.concat([_read(path(target, k)).assign(drop=k) for k in W.DROP_KEYS], ignore_index=True)
-    t = drop_voids(t)
-    return t if copies else drop_copies(t)
+def redemptions(target):
+    def load():
+        r = pd.read_csv(path(target, "redemptions"), dtype=str, keep_default_na=False)
+        r["applied"] = r.amount_applied.astype(float)
+        r["t"] = pd.to_datetime(r.redeemed_at, utc=True).dt.tz_convert(W.TZ_NAME).dt.tz_localize(None)
+        return r
+    return _cache(("redemptions", target), load)
 
 
-def as_trips(t):
-    """dir and city zone from the zones: a pickup begins in zone 1."""
-    pick = t["pu_zone"].to_numpy() == W.AIRPORT
-    return t.assign(dir=np.where(pick, "P", "D"), zone=np.where(pick, t["do_zone"], t["pu_zone"]))
-
-
-def archive(target):
-    rows = list(csv.DictReader(open(path(target, "archive"), encoding="utf-8")))
-    pu = np.array([int(r["pu_zone"]) for r in rows])
-    do = np.array([int(r["do_zone"]) for r in rows])
-    return pd.DataFrame({"date": np.array([r["trip_date"] for r in rows], dtype="datetime64[D]"),
-                         "dir": np.where(pu == W.AIRPORT, "P", "D"), "zone": np.where(pu == W.AIRPORT, do, pu),
-                         "n": [int(r["trips"]) for r in rows]})
-
-
-def counts(target):
-    """The conformed counts table, 2023 to August 2026."""
-    import methods as M
-    parts = [archive(target)]
-    for y in (2024, 2025):
-        parts.append(M.counts_from_trips(as_trips(annual(target, y))))
-    parts.append(M.counts_from_trips(as_trips(drops(target))))
-    c = pd.concat(parts, ignore_index=True)
-    return c.groupby(["date", "dir", "zone"], as_index=False)["n"].sum()
-
-
-def spells(target):
-    a = pd.read_csv(path(target, "affiliations"), dtype=str, keep_default_na=False)
-    a["from"] = pd.to_datetime(a["effective_from"])
-    a["to"] = pd.to_datetime(a["effective_to"].replace("", "2099-12-31"))
-    a["brokerage_id"] = a["brokerage_id"].astype(int)
-    return a
-
-
-def brokerage_at_start(trips, sp):
-    """Each trip's brokerage on the day its meter started, from the register's spells."""
-    day = trips["meter_on"].dt.normalize()
-    m = trips[["vehicle_id"]].assign(day=day.to_numpy(), i=np.arange(len(trips))).merge(
-        sp[["vehicle_id", "brokerage_id", "from", "to"]], on="vehicle_id", how="left")
-    m = m[(m["from"] <= m["day"]) & (m["day"] <= m["to"])]
-    assert m["i"].is_unique and len(m) == len(trips)
-    return m.sort_values("i")["brokerage_id"].to_numpy()
-
-
-def ledger_pickups(target):
-    """Fee-liable pickups, 2025 and 2026 to date, with the brokerage each was billed to."""
-    sp = spells(target)
-    t25 = annual(target, 2025)
-    t25 = t25[t25["pu_zone"] == W.AIRPORT]
-    t26 = drops(target)
-    t26 = t26[t26["pu_zone"] == W.AIRPORT]
-    return pd.concat([pd.DataFrame({"meter_on": t25["meter_on"], "brokerage": brokerage_at_start(t25, sp)}),
-                      pd.DataFrame({"meter_on": t26["meter_on"], "brokerage": t26["brokerage_id"].astype(int)})],
-                     ignore_index=True)
-
-
-def budget_amount(target):
-    from openpyxl import load_workbook
-    ws = load_workbook(path(target, "budget"), data_only=True).active
-    for row in ws.iter_rows(values_only=True):
-        if row[1] and str(row[1]).startswith("Amount assigned to the taxi pickup fee"):
-            return float(row[2])
-    raise ValueError("no amount line")
+def cases(target):
+    def load():
+        c = pd.read_csv(path(target, "cases"), dtype=str, keep_default_na=False)
+        c["opened"] = pd.to_datetime(c.opened_at_utc, utc=True).dt.tz_convert(W.TZ_NAME).dt.tz_localize(None)
+        return c
+    return _cache(("cases", target), load)

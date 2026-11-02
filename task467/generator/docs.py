@@ -1,21 +1,20 @@
-"""The pack's documents: the Authority's fees by-law and finance policy, its temporary rank notice, Velmont Transit's
-Airport Line bulletin, the 2027 program budget workbook, the airport's passenger statistics and its 2023 ground access
-survey (the last two distractors); and PROVENANCE, each shipped file's source and date, which goes to metadata.json and
-the files' saved dates (no file in the pack lists or describes the others)."""
+"""The pack's documents: the written assurance Wrenfield & Holt gave Calvermoor Trading Standards (the return's
+definitions, filed once, in the assurance's own words), the Cotterby returns centre's 2025 review (the compliance
+lead's close-out file, a distractor), the centre's daily operations workbook (a distractor); and PROVENANCE, each
+shipped file's source and date, which goes to metadata.json and the files' saved dates. No file describes another,
+how the centre's records pair, how the hall is worked, or how a return was posted."""
 import datetime as dt
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
 from reportlab.lib import colors                                                      # noqa: E402
-from reportlab.lib.pagesizes import letter                                            # noqa: E402
+from reportlab.lib.pagesizes import A4                                                # noqa: E402
 from reportlab.lib.styles import ParagraphStyle                                       # noqa: E402
-from reportlab.lib.units import inch                                                  # noqa: E402
+from reportlab.lib.units import mm                                                    # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
-
-import numpy as np    # noqa: E402
 
 import world as W     # noqa: E402
 
@@ -26,357 +25,170 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.getFont(nm)
     except KeyError:
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
-INK = colors.HexColor("#1b1d1f")
-GREY = colors.HexColor("#5b6067")
-NAVY = colors.HexColor("#17365d")
-TEAL = colors.HexColor("#0f5c63")
-GREEN = colors.HexColor("#2f5d34")
-BODY = ParagraphStyle("body", fontName="LiberationSerif", fontSize=10.5, leading=14.2, textColor=INK, spaceAfter=6)
-SANS = ParagraphStyle("sans", fontName="LiberationSans", fontSize=9.6, leading=13.2, textColor=INK, spaceAfter=6)
-CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.4, leading=10.4, textColor=INK)
+INK = colors.HexColor("#1c1c1c")
+GREY = colors.HexColor("#5d6166")
+PLUM = colors.HexColor("#4b2142")
+SLATE = colors.HexColor("#2c3e50")
+BODY = ParagraphStyle("body", fontName="LiberationSerif", fontSize=10.6, leading=14.4, textColor=INK, spaceAfter=6)
+SANS = ParagraphStyle("sans", fontName="LiberationSans", fontSize=9.5, leading=13.1, textColor=INK, spaceAfter=6)
+CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.3, leading=10.3, textColor=INK)
 CELLB = ParagraphStyle("cellb", parent=CELL, fontName="LiberationSans-Bold")
-SCELL = ParagraphStyle("scell", fontName="LiberationSerif", fontSize=9, leading=11.2, textColor=INK)
-SCELLB = ParagraphStyle("scellb", parent=SCELL, fontName="LiberationSerif-Bold")
-SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=8.3, leading=10.8, textColor=GREY)
+SMALL = ParagraphStyle("small", fontName="LiberationSans", fontSize=8.2, leading=10.6, textColor=GREY)
+NUM = ParagraphStyle("num", fontName="LiberationSerif", fontSize=10.6, leading=14.4, textColor=INK, spaceAfter=6,
+                     leftIndent=8 * mm, firstLineIndent=-8 * mm)
 
 
-def styles(accent, serif=False):
-    face = "LiberationSerif" if serif else "LiberationSans"
-    h1 = ParagraphStyle("h1", fontName=face + "-Bold", fontSize=14, leading=18, textColor=accent, spaceAfter=2)
-    h1s = ParagraphStyle("h1s", fontName=face, fontSize=9.3, leading=12.5, textColor=GREY, spaceAfter=10)
-    h2 = ParagraphStyle("h2", fontName=face + "-Bold", fontSize=10.5, leading=14, textColor=INK, spaceBefore=7,
+def heads(accent, face):
+    h1 = ParagraphStyle("h1", fontName=face + "-Bold", fontSize=14.5, leading=18.5, textColor=accent, spaceAfter=3)
+    h1s = ParagraphStyle("h1s", fontName=face, fontSize=9.4, leading=12.6, textColor=GREY, spaceAfter=10)
+    h2 = ParagraphStyle("h2", fontName=face + "-Bold", fontSize=10.6, leading=14, textColor=INK, spaceBefore=8,
                         spaceAfter=3)
     return h1, h1s, h2
 
 
-def _doc(path, title, author, footer, layout="left"):
+def _doc(path, title, author, footer, face="LiberationSerif"):
     def frame(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        if layout == "left":
-            canvas.setFont("LiberationSans", 7.5)
-            canvas.drawString(0.9 * inch, 0.6 * inch, footer)
-            canvas.drawRightString(letter[0] - 0.9 * inch, 0.6 * inch, "Page %d" % doc.page)
-        elif layout == "centre":
-            canvas.setFont("LiberationSerif", 8.5)
-            canvas.drawCentredString(letter[0] / 2, 0.6 * inch, "%s  -  %d" % (footer, doc.page))
-        else:
-            canvas.setFont("LiberationSans", 8)
-            canvas.drawString(0.9 * inch, letter[1] - 0.55 * inch, footer)
-            canvas.setStrokeColor(GREY)
-            canvas.setLineWidth(0.5)
-            canvas.line(0.9 * inch, letter[1] - 0.6 * inch, letter[0] - 0.9 * inch, letter[1] - 0.6 * inch)
-            canvas.drawCentredString(letter[0] / 2, 0.55 * inch, str(doc.page))
+        canvas.setFont(face, 7.8)
+        canvas.drawString(20 * mm, 11 * mm, footer)
+        canvas.drawRightString(A4[0] - 20 * mm, 11 * mm, "Page %d" % doc.page)
         canvas.restoreState()
-    d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.8 * inch,
-                          bottomMargin=0.9 * inch, title=title, author=author, subject="", creator="", producer="")
+    d = SimpleDocTemplate(path, pagesize=A4, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=20 * mm,
+                          bottomMargin=20 * mm, title=title, author=author, subject="", creator="", producer="")
     return d, frame
 
 
-def _table(rows, widths, head="#e6eef0", serif=False):
-    c, cb = (SCELL, SCELLB) if serif else (CELL, CELLB)
-    data = [[Paragraph(str(v), cb if i == 0 else c) for v in r] for i, r in enumerate(rows)]
+def _table(rows, widths, head="#ece6ea"):
+    data = [[Paragraph(str(v), CELLB if i == 0 else CELL) for v in r] for i, r in enumerate(rows)]
     t = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
-    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9aa0a6")),
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#a2a5aa")),
                            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(head)),
                            ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 4),
                            ("RIGHTPADDING", (0, 0), (-1, -1), 4)]))
     return t
 
 
-def long_date(d):
-    if isinstance(d, str):
-        d = dt.date.fromisoformat(d)
-    return d.strftime("%B ") + str(d.day) + d.strftime(", %Y")
-
-
-def ca_date(d):
-    if isinstance(d, str):
-        d = dt.date.fromisoformat(d)
+def uk_date(d):
     return str(d.day) + d.strftime(" %B %Y")
 
 
-# ---------------------------------------------------------------- the Authority's by-law and policy
-def write_bylaw(path):
-    h1, h1s, h2 = styles(NAVY, serif=True)
-    d, frame = _doc(path, W.BYLAW, W.AUTHORITY, W.AUTHORITY + "  |  " + W.BYLAW + ", consolidated 1 January 2026",
-                    layout="centre")
-    fees = [["Year", "Fee per fee-liable pickup"]] + [[str(y), "$%.2f" % f] for y, f in sorted(W.FEES.items())] + [
-        ["2027", "To be set by the Board under section 4"]]
-    s = [Paragraph(W.BYLAW.replace(" GT-3", ""), h1),
-         Paragraph("By-law GT-3 of the Velmont Airport Authority. Consolidated to 1 January 2026.", h1s),
-         Paragraph("1. Short title", h2),
-         Paragraph("This By-law may be cited as the Ground Transportation Fees By-law.", BODY),
-         Paragraph("2. Definitions", h2),
-         Paragraph("In this By-law, <i>airport</i> means the lands of Velmont International Airport, which the City of "
-                   "Velmont's taxi zone map shows as zone 1; <i>brokerage</i> means a taxi brokerage licensed by the "
-                   "City; <i>fee-liable pickup</i> means a trip a licensed taxi begins at the airport; a trip the "
-                   "taximeter records as voided is not a trip for this By-law; <i>Ground Transportation Program</i> "
-                   "means the Authority's taxi rank, taxi holding lot, marshalling and dispatch; <i>year</i> means a "
-                   "calendar year. Days, months and years are reckoned in Velmont local time.", BODY),
-         Paragraph("3. Fee", h2),
-         Paragraph("(1) A taxi pickup fee is payable for each fee-liable pickup at the fee Schedule A sets for the year "
-                   "in which the trip begins.", BODY),
-         Paragraph("(2) The Authority bills each month's fee-liable pickups to the brokerage with which the taxi is "
-                   "affiliated when the trip begins, counting each trip once.", BODY),
-         Paragraph("(3) A brokerage shall have its taxis' meters charge the fee in force within 21 days of the fee "
-                   "changing. The fee billed is the fee in force, whatever a meter charged.", BODY),
-         Paragraph("4. Setting the fee", h2),
-         Paragraph("(1) Before 1 December each year the Board sets the next year's fee as the lowest multiple of $0.25 "
-                   "at which the year's budgeted fee-liable pickups, multiplied by the fee, are not less than the "
-                   "amount the year's Ground Transportation Program budget assigns to the taxi pickup fee.", BODY),
-         Paragraph("(2) Budgeted fee-liable pickups are determined under Finance Policy FP-07.", BODY),
-         Paragraph("5. Review", h2),
-         Paragraph("The Board reviews this By-law at least every five years.", BODY),
-         Paragraph("Schedule A: Taxi pickup fee", h2),
-         _table(fees, [1.2 * inch, 3.2 * inch], serif=True),
+# ------------------------------------------------------------------------------------------- the written assurance
+def write_assurance(path):
+    h1, h1s, h2 = heads(PLUM, "LiberationSerif")
+    doc, frame = _doc(path, "Written assurance: Wrenfield & Holt Ltd", W.COUNCIL, "%s  |  Trading Standards Service  |  "
+                      "Ref TS/CON/26/0417" % W.COUNCIL)
+    s = [Paragraph("Written assurance", h1),
+         Paragraph("Given by Wrenfield &amp; Holt Ltd to %s Trading Standards Service. Reference TS/CON/26/0417."
+                   % W.COUNCIL, h1s),
+         Paragraph("Background", h2),
+         Paragraph("Between January and April 2026 the Service received complaints from consumers that refunds for goods "
+                   "returned to Wrenfield &amp; Holt Ltd were slow. Regulation 34 of the Consumer Contracts (Information, "
+                   "Cancellation and Additional Charges) Regulations 2013 requires a trader to reimburse a consumer who "
+                   "withdraws from a sales contract without undue delay, and in any event within 14 days after the day on "
+                   "which the trader receives the goods back. Wrenfield &amp; Holt Ltd has met the Service and gives the "
+                   "assurance below. It is not an admission that any refund breached the Regulations.", BODY),
+         Paragraph("Assurance", h2),
+         Paragraph("1.&nbsp;&nbsp;&nbsp;Wrenfield &amp; Holt Ltd will reimburse consumers within the period regulation 34 "
+                   "allows.", NUM),
+         Paragraph("2.&nbsp;&nbsp;&nbsp;By 30 November 2026 Wrenfield &amp; Holt Ltd will give the Service a return for each "
+                   "calendar month from January to June 2026 setting out: (a) the refunds it made in the month for goods "
+                   "returned to its Cotterby returns centre; (b) how many of those refunds were made late; (c) that number "
+                   "as a percentage of the refunds in (a); (d) whether the month met the commitment in paragraph 4; and "
+                   "(e) the value, in pounds, of the goodwill vouchers its customer services team issued in the month.", NUM),
+         Paragraph("3.&nbsp;&nbsp;&nbsp;For the return: (i) a refund is made on the date of the payment run that pays it, "
+                   "and a refund that fails and is paid again is made on the date of the payment that succeeds; (ii) a "
+                   "refund belongs to the month in which it is made; (iii) days are counted as calendar days from the day "
+                   "the returned goods were delivered to the Cotterby returns centre, as recorded by the centre's goods-in "
+                   "scan in UK time, that day being day 0, and a refund made on day 15 or later is made late.", NUM),
+         Paragraph("4.&nbsp;&nbsp;&nbsp;In each month at least 95 per cent of the refunds in paragraph 2(a) will have been "
+                   "made by day 14.", NUM),
+         Paragraph("5.&nbsp;&nbsp;&nbsp;For each refund made late in January to June 2026, Wrenfield &amp; Holt Ltd will pay "
+                   "&pound;15 into the customer goodwill fund administered by the Meridale Consumer Trust, within 28 days of "
+                   "giving the return.", NUM),
+         Paragraph("6.&nbsp;&nbsp;&nbsp;The Service may ask to see the records the return is drawn from.", NUM),
          Spacer(1, 10),
-         Paragraph("Enacted 12 March 2019. Amended 9 December 2019, 7 December 2020, 6 December 2021, 5 December 2022, "
-                   "4 December 2023, 2 December 2024 and 1 December 2025 (Schedule A).", SMALL)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
+         _table([["Signed for Wrenfield &amp; Holt Ltd", "Signed for %s" % W.COUNCIL],
+                 ["%s<br/>%s<br/>9 October 2026" % (W.PEOPLE["compliance"], W.ROLES["compliance"]),
+                  "%s<br/>%s, Trading Standards Service<br/>9 October 2026" % (W.PEOPLE["officer"], W.ROLES["officer"])]],
+                [80 * mm, 86 * mm], head="#f1edf0")]
+    doc.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-def write_policy(path):
-    h1, h1s, h2 = styles(GREEN)
-    d, frame = _doc(path, W.POLICY, W.AUTHORITY, W.AUTHORITY + "  |  " + W.POLICY + ": Budgeting user-fee revenue")
-    s = [Paragraph("Finance Policy FP-07: Budgeting user-fee revenue", h1),
-         Paragraph("Approved by the Finance and Audit Committee, 18 May 2021; revised 14 June 2023.", h1s),
-         Paragraph("1. Purpose and application", h2),
-         Paragraph("1.1 This policy sets how the Authority budgets the revenue of its fee-funded programs.", BODY),
-         Paragraph("1.2 It applies to the taxi pickup fee, limousine and sedan permit fees and shuttle permit fees. "
-                   "Parking revenue is budgeted under FP-04.", BODY),
-         Paragraph("1.3 The Authority's fiscal year is the calendar year.", BODY),
-         Paragraph("2. Program budgets", h2),
-         Paragraph("2.1 Each fee-funded program's budget states its costs, its other revenues and the amount it "
-                   "assigns to its fee.", BODY),
-         Paragraph("2.2 Costs are budgeted at the contract prices and wage rates in force for the budget year.", BODY),
-         Paragraph("3. Permit fees", h2),
-         Paragraph("3.1 Limousine, sedan and shuttle permit revenue is budgeted on the permits issued for the current "
-                   "year at the budget year's permit fees.", BODY),
-         Paragraph("4. Taxi pickup fee", h2),
-         Paragraph("4.1 The taxi pickup fee is set under section 4 of the Ground Transportation Fees By-law on the "
-                   "budgeted fee-liable pickups this section defines.", BODY),
-         Paragraph("4.2 Budgeted fee-liable pickups for a year are the fee-liable pickups of the most recent complete "
-                   "fiscal year (the base year), restated for any change in taxi loading arrangements between the "
-                   "base year and the budget year. A taxi loading arrangement is the location and operation of the "
-                   "taxi rank and the taxi holding lot. No traffic growth is assumed.", BODY),
-         Paragraph("4.3 Where an arrangement that applied in the base year will not apply in the budget year, the "
-                   "base year's pickups are restated to those the base year would have had under the budget year's "
-                   "arrangement.", BODY),
-         Paragraph("4.4 Base-year pickups are read from the Vehicle-for-Hire Office's final annual file for the base "
-                   "year.", BODY),
-         Paragraph("5. Reporting", h2),
-         Paragraph("5.1 The budget package states each fee's budgeted volume and the fee proposed.", BODY)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
+# ------------------------------------------------------------------------------------------------ the 2025 review
+def write_review(path, monthly):
+    """monthly: {(2025, m): (parcels received, parcels opened, refunds made)} from the clean truth."""
+    h1, h1s, h2 = heads(SLATE, "LiberationSans")
+    doc, frame = _doc(path, "Cotterby returns centre: 2025 in review", W.PEOPLE["centre"],
+                      "Wrenfield & Holt  |  Cotterby returns centre  |  Internal", face="LiberationSans")
+    rows = [["Month", "Return parcels received", "Parcels opened", "Return refunds paid"]]
+    tot = [0, 0, 0]
+    for m in range(1, 13):
+        a, b, c = monthly[(2025, m)]
+        tot = [tot[0] + a, tot[1] + b, tot[2] + c]
+        rows.append([dt.date(2025, m, 1).strftime("%B"), "{:,}".format(a), "{:,}".format(b), "{:,}".format(c)])
+    rows.append(["2025", "{:,}".format(tot[0]), "{:,}".format(tot[1]), "{:,}".format(tot[2])])
+    s = [Paragraph("Cotterby returns centre: 2025 in review", h1),
+         Paragraph("%s, %s. February 2026." % (W.PEOPLE["centre"], W.ROLES["centre"]), h1s),
+         Paragraph("Volumes", h2),
+         Paragraph("The centre received %s return parcels in 2025 and opened %s. January carried the post-Christmas "
+                   "returns and the weeks from Black Friday to Christmas the second peak of the year; both were worked with "
+                   "agency cover beside the core team." % ("{:,}".format(tot[0]), "{:,}".format(tot[1])), SANS),
+         _table(rows, [42 * mm, 42 * mm, 36 * mm, 40 * mm], head="#e3e8ec"),
+         Paragraph("Team", h2),
+         Paragraph("The core team is 74 colleagues across the early, late and weekend shifts. The agency contract that "
+                   "covered the peaks ended on 31 December 2025 and was not renewed in the 2026 budget; the centre starts "
+                   "2026 on its core team, with overtime available from the second half of February.", SANS),
+         Paragraph("2026", h2),
+         Paragraph("Priorities are the refund promise on the website, the new goods-in scanner software going live on "
+                   "1 January, and the grading guide refresh for footwear.", SANS)]
+    doc.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-def write_notice(path):
-    h1, h1s, h2 = styles(NAVY)
-    d, frame = _doc(path, W.NOTICE, W.AUTHORITY, W.AUTHORITY + "  |  Ground Transportation", layout="header")
-    s = [Paragraph("Ground Transportation Notice GT-2024-11", h1),
-         Paragraph("Temporary taxi rank during the arrivals forecourt reconstruction. Issued 7 October 2024; "
-                   "revision 2, 14 August 2026.", h1s),
-         Paragraph("To: taxi brokerages, licensed drivers, terminal operations, customer service", SANS),
-         Paragraph("What changes", h2),
-         Paragraph("From 05:00 on Monday 4 November 2024 the terminal's arrivals forecourt closes for reconstruction. "
-                   "Taxis load passengers at the temporary rank on the Level 2 road of Parkade P2, reached from the "
-                   "arrivals hall by the covered walkway at door 6 or by the courtesy shuttle from door 2, every six "
-                   "minutes from 06:00 to 01:00. The taxi holding lot (P7), the dispatch procedure and the order of "
-                   "loading do not change. Departures drop-off on the upper roadway is not affected.", SANS),
-         Paragraph("Signage and staff", h2),
-         Paragraph("Marshals at doors 2 and 6 direct passengers to the rank. Customer service will hand out the rank "
-                   "map at the arrivals information desk.", SANS),
-         Paragraph("Revision 2, 14 August 2026", h2),
-         Paragraph("The forecourt works remain on schedule. The taxi rank returns to its former position on the arrivals "
-                   "forecourt on Friday 1 January 2027, and the temporary rank on P2 closes at 05:00 that day. The "
-                   "courtesy shuttle ends with it.", SANS),
-         Spacer(1, 12),
-         Paragraph("%s<br/>%s" % (W.PEOPLE["director"], W.TITLES["director"]), SANS)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-def write_bulletin(path):
-    h1, h1s, h2 = styles(colors.HexColor("#6b2d5c"))
-    d, frame = _doc(path, "Service Bulletin 2024-19", W.TRANSIT, W.TRANSIT + "  |  Service Bulletin 2024-19")
-    s = [Paragraph("Service Bulletin 2024-19: the Airport Line opens Monday, November 4", h1),
-         Paragraph("%s. Issued October 21, 2024." % W.TRANSIT, h1s),
-         Paragraph("The Airport Line begins service with the first train from Central at 4:40 a.m. on Monday, "
-                   "November 4, 2024. Trains run between Central and Airport stations, calling at Midtown, University "
-                   "and Commerce Park.", SANS),
-         Paragraph("Service", h2),
-         _table([["", "Weekdays", "Saturdays", "Sundays and holidays"],
-                 ["First train from Central", "4:40 a.m.", "5:10 a.m.", "5:40 a.m."],
-                 ["First train from Airport", "5:05 a.m.", "5:35 a.m.", "6:05 a.m."],
-                 ["Last train from Airport", "1:10 a.m.", "1:10 a.m.", "12:40 a.m."],
-                 ["Every", "8 min. (6 a.m. to 9 p.m.), 15 min. other times", "10 min. / 15 min.", "12 min. / 15 min."]],
-                [1.7 * inch, 1.9 * inch, 1.3 * inch, 1.7 * inch]),
-         Spacer(1, 6),
-         Paragraph("Running times from Airport: Commerce Park 5 minutes, University 14, Midtown 21, Central 27.", SANS),
-         Paragraph("Fares", h2),
-         Paragraph("Regular fares apply between Central and Commerce Park. Trips to or from Airport station pay a $4.50 "
-                   "airport station charge in addition to the regular fare; transfers to buses are free for 90 minutes.",
-                   SANS),
-         Paragraph("Bus changes", h2),
-         Paragraph("Route 97 Airport Express ends on Sunday, November 3. Routes 11, 26 and 58 are rerouted to serve "
-                   "Commerce Park and University stations.", SANS)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------- the 2027 program budget workbook
-BUDGET_LINES = [
-    ("Rank operations contract (Corran Ground Services, year 3 of 5)", 284600.00),
-    ("Marshalling, 3.2 full-time equivalents", 196450.00),
-    ("Dispatch system licence and support", 38920.00),
-    ("Holding lot P7 lease (Authority real estate)", 61200.00),
-    ("Forecourt rank: cleaning and maintenance", 22840.00),
-    ("Signage, wayfinding and customer information", 9310.00),
-]
-OVERHEAD = 0.065
-OTHER_REVENUE = [("Limousine and sedan permit fees", 74350.00), ("Shuttle and hotel courtesy vehicle permits", 31480.00),
-                 ("Ground transportation advertising", 12328.80)]
-
-
-def budget_figures():
-    direct = sum(v for _, v in BUDGET_LINES)
-    over = round(direct * OVERHEAD, 2)
-    total = round(direct + over, 2)
-    amount = round(total - sum(v for _, v in OTHER_REVENUE), 2)
-    return direct, over, total, amount
-
-
-def write_budget(path):
+# ----------------------------------------------------------------------------------- the daily operations workbook
+def write_dailyops(path, rows):
     from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font, PatternFill
-    direct, over, total, amount = budget_figures()
-    assert abs(amount - W.AMOUNT_2027) < 0.005, amount
+    from openpyxl.styles import Font
     wb = Workbook()
     ws = wb.active
-    ws.title = "Program budget 2027"
-    bold = Font(name="Calibri", bold=True, size=11)
-    head = PatternFill("solid", fgColor="DCE6F1")
-    ws.append(["Velmont Airport Authority: Ground Transportation Program, budget 2027"])
-    ws["A1"].font = Font(name="Calibri", bold=True, size=12)
-    ws.append(["Draft for the Finance and Audit Committee, 4 November 2026. Dollars."])
-    ws.append([])
-    ws.append(["Line", "Item", "Budget 2027"])
-    for c in ws[4]:
-        c.font = bold
-        c.fill = head
-    rows = [[i, item, v] for i, (item, v) in enumerate(BUDGET_LINES, start=1)]
-    rows.append([7, "Allocated corporate overhead, 6.5% of lines 1 to 6", over])
-    rows.append([8, "Total program cost", total])
-    for j, (item, v) in enumerate(OTHER_REVENUE, start=9):
-        rows.append([j, "Less: " + item.lower(), -v])
-    rows.append([12, "Amount assigned to the taxi pickup fee", amount])
+    ws.title = "Daily sheet"
+    ws.append(["Date", "Parcels booked in", "Parcels opened", "Refunds triggered", "Waiting at close (bay count)",
+               "Team on shift"])
+    for c in ws[1]:
+        c.font = Font(bold=True)
     for r in rows:
-        ws.append(r)
-    for r in ws.iter_rows(min_row=5, max_row=ws.max_row):
-        r[2].number_format = '#,##0.00;(#,##0.00)'
-        r[0].alignment = Alignment(horizontal="center")
-    for c in ws[ws.max_row]:
-        c.font = bold
-    ws.append([])
-    ws.append([None, "The amount assigned to the fee is the program's cost less its other revenues (FP-07 2.1)."])
-    ws.column_dimensions["A"].width = 6
-    ws.column_dimensions["B"].width = 58
-    ws.column_dimensions["C"].width = 15
-    ws.freeze_panes = "A5"
-    wb.save(path)
-    return amount
-
-
-# ---------------------------------------------------------------- distractors: passenger statistics and the survey
-def passenger_rows():
-    rng = np.random.default_rng([W.SEED, 91])
-    out = []
-    for (y, m) in W.months():
-        g = (1 + W.GROWTH) ** (((y - 2024) * 12 + m - 7) / 12)
-        s = W.SEAS[m - 1] / (sum(W.SEAS) / 12)
-        days = (dt.date(y + (m == 12), m % 12 + 1, 1) - dt.date(y, m, 1)).days
-        base = 5480 * g * s * days
-        enp = int(round(base * np.exp(rng.normal(0, 0.012))))
-        dep = int(round(base * np.exp(rng.normal(0, 0.012)) * (1.004 if m in (1, 8, 9) else 0.996)))
-        mov = int(round(base / 92.0 * np.exp(rng.normal(0, 0.01))))
-        out.append(["%d-%02d" % (y, m), enp, dep, enp + dep, mov])
-    return out
-
-
-def write_passengers(path):
-    from openpyxl import Workbook
-    from openpyxl.styles import Font, PatternFill
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Monthly traffic"
-    ws.append(["Velmont International Airport: passengers and aircraft movements"])
-    ws["A1"].font = Font(name="Calibri", bold=True, size=12)
-    ws.append(["Source: airline traffic returns; aircraft movements from the airfield operations log."])
-    ws.append([])
-    ws.append(["Month", "Enplaned passengers", "Deplaned passengers", "Total passengers", "Aircraft movements"])
-    for c in ws[4]:
-        c.font = Font(name="Calibri", bold=True)
-        c.fill = PatternFill("solid", fgColor="E2EFDA")
-    for r in passenger_rows():
-        ws.append(r)
-    for r in ws.iter_rows(min_row=5, max_row=ws.max_row):
-        for c in r[1:]:
-            c.number_format = "#,##0"
-    for col, w in zip("ABCDE", (10, 20, 20, 18, 19)):
-        ws.column_dimensions[col].width = w
-    ws.freeze_panes = "A5"
+        ws.append(list(r))
+    for row in ws.iter_rows(min_row=2, min_col=1, max_col=1):
+        for c in row:
+            c.number_format = "dd/mm/yyyy"
+    ws.column_dimensions["A"].width = 12
+    for col in "BCDEF":
+        ws.column_dimensions[col].width = 18
+    ws.freeze_panes = "A2"
     wb.save(path)
 
 
-def write_survey(path):
-    h1, h1s, h2 = styles(TEAL)
-    d, frame = _doc(path, "Ground access survey 2023", W.AUTHORITY, W.AUTHORITY + "  |  Ground access survey, October 2023")
-    shares = [["Mode", "Arriving passengers", "Departing passengers"],
-              ["Private vehicle, picked up or dropped off", "31.4%", "36.2%"],
-              ["Private vehicle, parked", "22.7%", "24.1%"],
-              ["Taxi", "11.8%", "8.9%"],
-              ["App-based vehicle", "14.6%", "13.1%"],
-              ["Rental car", "9.3%", "7.6%"],
-              ["Bus (Route 97 Airport Express and others)", "6.1%", "6.0%"],
-              ["Hotel courtesy shuttle", "3.6%", "3.4%"],
-              ["Other", "0.5%", "0.7%"]]
-    purpose = [["Trip purpose", "Share of passengers", "Taxi share within purpose"],
-               ["Business", "27.3%", "16.4%"], ["Leisure", "51.8%", "8.1%"], ["Visiting friends or relatives", "20.9%", "9.7%"]]
-    s = [Paragraph("Ground access survey 2023", h1),
-         Paragraph("Intercept survey of 4,212 passengers in the terminal, 10 to 23 October 2023. Weighted to the "
-                   "month's enplaned and deplaned passengers.", h1s),
-         Paragraph("How passengers reach and leave the airport", h2),
-         _table(shares, [3.2 * inch, 1.5 * inch, 1.5 * inch]),
-         Spacer(1, 8),
-         Paragraph("By trip purpose (both directions)", h2),
-         _table(purpose, [2.6 * inch, 1.6 * inch, 1.9 * inch]),
-         Spacer(1, 8),
-         Paragraph("Notes", h2),
-         Paragraph("Shares are of passengers, not of vehicles. App-based vehicles have been licensed in Velmont since "
-                   "2018. The survey will be repeated after the forecourt reconstruction.", SANS)]
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
-# ---------------------------------------------------------------- provenance (metadata.json, saved dates)
 PROVENANCE = [
-    ("trips2024", "City of Velmont Vehicle-for-Hire Office", "2025-02-03",
-     "Annual file 2024, airport extract (trips with a pickup or drop-off in zone 1)."),
-    ("trips2025", "City of Velmont Vehicle-for-Hire Office", "2026-02-06",
-     "Annual file 2025, airport extract."),
-] + [("drop%02d" % m, "City of Velmont Vehicle-for-Hire Office", d,
-      "Monthly file %s, airport extract." % dt.date(2026, m, 1).strftime("%B %Y"))
-     for m, d in zip(range(1, 9), ("2026-03-06", "2026-04-07", "2026-05-08", "2026-06-05", "2026-07-07",
-                                   "2026-08-06", "2026-09-04", "2026-10-02"))] + [
-    ("archive", "City of Velmont Vehicle-for-Hire Office", "2024-03-15",
-     "Daily origin-destination archive 2023 for trips with a pickup or drop-off in zone 1."),
-    ("zones", "City of Velmont Vehicle-for-Hire Office", "2019-06-01", "Taxi zone list (zone map 2019)."),
-    ("brokerages", "City of Velmont Vehicle-for-Hire Office", "2026-10-09", "Licensed taxi brokerages."),
-    ("affiliations", "City of Velmont Vehicle-for-Hire Office", "2026-10-09",
-     "Taxi licences and the brokerage each was affiliated with, by effective date."),
-    ("bylaw", "Velmont Airport Authority", "2026-01-02", "Ground Transportation Fees By-law GT-3, consolidated."),
-    ("policy", "Velmont Airport Authority", "2023-06-14", "Finance Policy FP-07: Budgeting user-fee revenue."),
-    ("budget", "Velmont Airport Authority", "2026-10-14", "Ground Transportation Program budget 2027, draft."),
-    ("notice", "Velmont Airport Authority", "2026-08-14", "Ground Transportation Notice GT-2024-11, revision 2."),
-    ("bulletin", "Velmont Transit", "2024-10-21", "Service Bulletin 2024-19: the Airport Line."),
-    ("passengers", "Velmont Airport Authority", "2026-09-22", "Passengers and aircraft movements, monthly."),
-    ("survey", "Velmont Airport Authority", "2024-02-26", "Ground access survey, October 2023."),
+    ("goods2025", "Cotterby returns centre goods-in scanner (software in use to 31 December 2025), export of every "
+                  "goods-in scan from 2 December 2024", "2026-10-30", "goods-in scans, 2 December 2024 to 31 December 2025"),
+    ("goods2026", "Cotterby returns centre goods-in scanner software (live 1 January 2026), event export",
+     "2026-10-30", "goods-in scans, 1 January to 28 October 2026"),
+    ("processing", "Cotterby returns processing system, record export", "2026-10-30",
+     "parcels opened and graded, 2 December 2024 to 28 October 2026"),
+    ("refunds", "Wrenfield & Holt finance system, refund ledger export", "2026-10-30",
+     "refund payments, 2 December 2024 to 28 October 2026"),
+    ("orders", "Wrenfield & Holt order system, extract for customers with a parcel delivered to Cotterby from "
+               "1 December 2025 or a 2026 customer case", "2026-10-30", "their orders from 1 October 2025"),
+    ("assurance", "Calvermoor County Council Trading Standards Service", "2026-10-09",
+     "the written assurance and the return it requires"),
+    ("review", "Cotterby returns centre operations manager", "2026-02-11", "the centre's 2025 volumes and team"),
+    ("vouchers", "Wrenfield & Holt customer services goodwill voucher system, export", "2026-10-30",
+     "vouchers issued 1 January to 28 October 2026"),
+    ("redemptions", "Wrenfield & Holt e-commerce platform, voucher redemption export", "2026-10-30",
+     "redemptions of 2026 goodwill vouchers"),
+    ("cases", "Wrenfield & Holt customer services case system, export", "2026-10-30",
+     "customer cases opened 1 January to 28 October 2026"),
+    ("dailyops", "Cotterby returns centre shift supervisors' daily sheet", "2026-10-29",
+     "daily goods-in, opening and refund counts and the team on shift"),
+    ("rota", "Cotterby returns centre rota", "2026-10-29", "2026 shifts with employees and agency colleagues rostered"),
 ]
-

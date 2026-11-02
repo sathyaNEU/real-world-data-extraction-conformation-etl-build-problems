@@ -10,7 +10,7 @@ import world as W
 
 F = W.FILES
 DISTRACTORS = [F[k] for k in W.DISTRACTORS]
-DELIVERABLES = [W.GOLDEN["memo"], W.GOLDEN["ledger"]]
+DELIVERABLES = [W.GOLDEN["return"], W.GOLDEN["note"]]
 
 
 def rows_of(path):
@@ -19,6 +19,9 @@ def rows_of(path):
             return sum(1 for _ in fh) - 1
     if path.endswith(".parquet"):
         return pq.ParquetFile(path).metadata.num_rows
+    if path.endswith(".xlsx"):
+        from openpyxl import load_workbook
+        return load_workbook(path, read_only=True).active.max_row - 1
     return None
 
 
@@ -29,32 +32,32 @@ def write(target, out_path, counts=None):
     big = max((f for f in files if rows[f] is not None), key=lambda f: rows[f])
     meta = {
         "task": "task467",
-        "architecture": 1,
-        "title": "What taxi pickup fee Velmont Airport Authority should set for 2027 under its cost-recovery by-law, "
-                 "with 2025's fee-liable pickups restated to the forecourt rank that returns in 2027; with the surplus "
-                 "at the fee and the shortfall 25 cents below it, a chart of the monthly pickups and drop-offs, and "
-                 "each brokerage's monthly pickups and fees owed from January 2025 to August 2026",
-        "domain": "Survey Research & Official Statistics",
-        "subdomain": "seasonal-adjustment-official-time-series-production (an airport authority's taxi pickup counts "
-                     "conformed from a city regulator's trip records to budget next year's per-trip fee)",
+        "architecture": 2,
+        "title": "How much Wrenfield & Holt must pay into its customer goodwill fund under its written assurance to "
+                 "Calvermoor Trading Standards for refunds made late in January to June 2026 and which months broke its "
+                 "95 per cent commitment; with each month's refunds, late refunds, late share and goodwill vouchers in "
+                 "pounds, and the refund-delay vouchers by product category",
+        "domain": "General Statistics & Data Science",
+        "subdomain": "data-integration-record-linkage-entity-resolution (an online retailer's refund timeliness return "
+                     "to Trading Standards, conformed from its operations, finance and customer service systems)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "07: grid of cells: each brokerage's fee-liable pickups and fees owed in each month from "
-                        "January 2025 to August 2026 (six brokerages by twenty months), beside the 2027 fee with the "
-                        "recorded and restated base year, the rank's share, the surplus and shortfall either side of "
-                        "the fee and a chart",
+        "prompt_shape": "08: a rule replayed on history: each month's refunds made, refunds made late, late share and "
+                        "whether the month met the commitment, January to June 2026, beside the payment and the breach "
+                        "months, each month's goodwill vouchers in pounds and the refund-delay vouchers by product category",
         "as_of": W.AS_OF,
         "deliverables": DELIVERABLES,
         "distractor_files": DISTRACTORS,
-        "stated_inputs": ["2027", "2025", "2023", "2026", "25 cents", "1 January"],
+        "stated_inputs": ["January to June 2026", "30 November", "14 days", "95 per cent"],
         "input_gates": {"files": len(files), "formats": fmts, "largest_file": big, "largest_file_rows": rows[big]},
         "sources": [
             {"files": "all files under target/",
-             "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts "
-                       "of a municipal vehicle-for-hire regulator's taxi trip records (annual files, monthly Parquet "
-                       "drops, a daily origin-destination archive, zone, brokerage and affiliation registers), an "
-                       "airport authority's fees by-law, finance policy, program budget, rank notice, passenger "
-                       "statistics and ground access survey, and a transit agency's service bulletin; the "
-                       "province is unnamed and the city, its airport, agencies, brokerages and people are fictional",
+             "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts of "
+                       "a UK online retailer's returns centre goods-in and processing systems, its finance system's refund "
+                       "ledger, order system, customer case and goodwill voucher systems and e-commerce redemption "
+                       "records, a county council Trading Standards written assurance, and the centre's review, daily "
+                       "sheet and rota; the retailer, its centre, the council, the trust, the carriers and the people are "
+                       "fictional; the 14-day refund period follows the Consumer Contracts (Information, Cancellation and "
+                       "Additional Charges) Regulations 2013, regulation 34",
              "date": W.AS_OF,
              "license": "original work for this task; no third-party data"}],
         "provenance": [{"file": W.FILES[k], "source": src, "date": d, "covers": desc, "rows": rows[W.FILES[k]]}

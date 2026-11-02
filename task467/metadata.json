@@ -1,194 +1,130 @@
 {
  "task": "task467",
- "architecture": 1,
- "title": "What taxi pickup fee Velmont Airport Authority should set for 2027 under its cost-recovery by-law, with 2025's fee-liable pickups restated to the forecourt rank that returns in 2027; with the surplus at the fee and the shortfall 25 cents below it, a chart of the monthly pickups and drop-offs, and each brokerage's monthly pickups and fees owed from January 2025 to August 2026",
- "domain": "Survey Research & Official Statistics",
- "subdomain": "seasonal-adjustment-official-time-series-production (an airport authority's taxi pickup counts conformed from a city regulator's trip records to budget next year's per-trip fee)",
+ "architecture": 2,
+ "title": "How much Wrenfield & Holt must pay into its customer goodwill fund under its written assurance to Calvermoor Trading Standards for refunds made late in January to June 2026 and which months broke its 95 per cent commitment; with each month's refunds, late refunds, late share and goodwill vouchers in pounds, and the refund-delay vouchers by product category",
+ "domain": "General Statistics & Data Science",
+ "subdomain": "data-integration-record-linkage-entity-resolution (an online retailer's refund timeliness return to Trading Standards, conformed from its operations, finance and customer service systems)",
  "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "07: grid of cells: each brokerage's fee-liable pickups and fees owed in each month from January 2025 to August 2026 (six brokerages by twenty months), beside the 2027 fee with the recorded and restated base year, the rank's share, the surplus and shortfall either side of the fee and a chart",
- "as_of": "2026-10-16",
+ "prompt_shape": "08: a rule replayed on history: each month's refunds made, refunds made late, late share and whether the month met the commitment, January to June 2026, beside the payment and the breach months, each month's goodwill vouchers in pounds and the refund-delay vouchers by product category",
+ "as_of": "2026-10-30",
  "deliverables": [
-  "velmont_2027_taxi_pickup_fee.docx",
-  "velmont_taxi_fee_ledger_2025_2026.csv"
+  "goodwill_fund_return_h1_2026.csv",
+  "refund_timeliness_note.pdf"
  ],
  "distractor_files": [
-  "vaa_passenger_statistics_2023_2026.xlsx",
-  "vaa_ground_access_survey_2023.pdf"
+  "cotterby_daily_operations_2025_2026.xlsx",
+  "cotterby_shift_rota_2026.csv",
+  "cotterby_returns_review_2025.pdf"
  ],
  "stated_inputs": [
-  "2027",
-  "2025",
-  "2023",
-  "2026",
-  "25 cents",
-  "1 January"
+  "January to June 2026",
+  "30 November",
+  "14 days",
+  "95 per cent"
  ],
  "input_gates": {
-  "files": 21,
+  "files": 12,
   "formats": [
    "csv",
    "parquet",
    "pdf",
    "xlsx"
   ],
-  "largest_file": "vfh_taxi_trips_airport_2024.parquet",
-  "largest_file_rows": 169753
+  "largest_file": "wh_orders_returning_customers.parquet",
+  "largest_file_rows": 595609
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts of a municipal vehicle-for-hire regulator's taxi trip records (annual files, monthly Parquet drops, a daily origin-destination archive, zone, brokerage and affiliation registers), an airport authority's fees by-law, finance policy, program budget, rank notice, passenger statistics and ground access survey, and a transit agency's service bulletin; the province is unnamed and the city, its airport, agencies, brokerages and people are fictional",
-   "date": "2026-10-16",
+   "origin": "constructed for this task by task467/generator/build.py (seeded, deterministic) in the layouts of a UK online retailer's returns centre goods-in and processing systems, its finance system's refund ledger, order system, customer case and goodwill voucher systems and e-commerce redemption records, a county council Trading Standards written assurance, and the centre's review, daily sheet and rota; the retailer, its centre, the council, the trust, the carriers and the people are fictional; the 14-day refund period follows the Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, regulation 34",
+   "date": "2026-10-30",
    "license": "original work for this task; no third-party data"
   }
  ],
  "provenance": [
   {
-   "file": "vfh_taxi_trips_airport_2024.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2025-02-03",
-   "covers": "Annual file 2024, airport extract (trips with a pickup or drop-off in zone 1).",
-   "rows": 169753
+   "file": "cotterby_goods_in_2025.csv",
+   "source": "Cotterby returns centre goods-in scanner (software in use to 31 December 2025), export of every goods-in scan from 2 December 2024",
+   "date": "2026-10-30",
+   "covers": "goods-in scans, 2 December 2024 to 31 December 2025",
+   "rows": 178815
   },
   {
-   "file": "vfh_taxi_trips_airport_2025.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-02-06",
-   "covers": "Annual file 2025, airport extract.",
-   "rows": 138055
+   "file": "cotterby_goods_in_2026.parquet",
+   "source": "Cotterby returns centre goods-in scanner software (live 1 January 2026), event export",
+   "date": "2026-10-30",
+   "covers": "goods-in scans, 1 January to 28 October 2026",
+   "rows": 146801
   },
   {
-   "file": "vfh_taxi_trips_airport_2026-01.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-03-06",
-   "covers": "Monthly file January 2026, airport extract.",
-   "rows": 10652
+   "file": "cotterby_returns_processing_2025_2026.csv",
+   "source": "Cotterby returns processing system, record export",
+   "date": "2026-10-30",
+   "covers": "parcels opened and graded, 2 December 2024 to 28 October 2026",
+   "rows": 325616
   },
   {
-   "file": "vfh_taxi_trips_airport_2026-02.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-04-07",
-   "covers": "Monthly file February 2026, airport extract.",
-   "rows": 9350
+   "file": "wh_refund_ledger_2025_2026.parquet",
+   "source": "Wrenfield & Holt finance system, refund ledger export",
+   "date": "2026-10-30",
+   "covers": "refund payments, 2 December 2024 to 28 October 2026",
+   "rows": 334172
   },
   {
-   "file": "vfh_taxi_trips_airport_2026-03.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-05-08",
-   "covers": "Monthly file March 2026, airport extract.",
-   "rows": 12309
+   "file": "wh_orders_returning_customers.parquet",
+   "source": "Wrenfield & Holt order system, extract for customers with a parcel delivered to Cotterby from 1 December 2025 or a 2026 customer case",
+   "date": "2026-10-30",
+   "covers": "their orders from 1 October 2025",
+   "rows": 595609
   },
   {
-   "file": "vfh_taxi_trips_airport_2026-04.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-06-05",
-   "covers": "Monthly file April 2026, airport extract.",
-   "rows": 12192
-  },
-  {
-   "file": "vfh_taxi_trips_airport_2026-05.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-07-07",
-   "covers": "Monthly file May 2026, airport extract.",
-   "rows": 12455
-  },
-  {
-   "file": "vfh_taxi_trips_airport_2026-06.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-08-06",
-   "covers": "Monthly file June 2026, airport extract.",
-   "rows": 12390
-  },
-  {
-   "file": "vfh_taxi_trips_airport_2026-07.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-09-04",
-   "covers": "Monthly file July 2026, airport extract.",
-   "rows": 14305
-  },
-  {
-   "file": "vfh_taxi_trips_airport_2026-08.parquet",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-10-02",
-   "covers": "Monthly file August 2026, airport extract.",
-   "rows": 13300
-  },
-  {
-   "file": "vfh_od_daily_archive_2023.csv",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2024-03-15",
-   "covers": "Daily origin-destination archive 2023 for trips with a pickup or drop-off in zone 1.",
-   "rows": 23785
-  },
-  {
-   "file": "vfh_taxi_zones.csv",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2019-06-01",
-   "covers": "Taxi zone list (zone map 2019).",
-   "rows": 38
-  },
-  {
-   "file": "vfh_brokerages.csv",
-   "source": "City of Velmont Vehicle-for-Hire Office",
+   "file": "calvermoor_written_assurance_oct2026.pdf",
+   "source": "Calvermoor County Council Trading Standards Service",
    "date": "2026-10-09",
-   "covers": "Licensed taxi brokerages.",
-   "rows": 6
-  },
-  {
-   "file": "vfh_vehicle_affiliations.csv",
-   "source": "City of Velmont Vehicle-for-Hire Office",
-   "date": "2026-10-09",
-   "covers": "Taxi licences and the brokerage each was affiliated with, by effective date.",
-   "rows": 340
-  },
-  {
-   "file": "vaa_ground_transportation_fees_bylaw_gt3.pdf",
-   "source": "Velmont Airport Authority",
-   "date": "2026-01-02",
-   "covers": "Ground Transportation Fees By-law GT-3, consolidated.",
+   "covers": "the written assurance and the return it requires",
    "rows": null
   },
   {
-   "file": "vaa_finance_policy_fp07_user_fee_revenue.pdf",
-   "source": "Velmont Airport Authority",
-   "date": "2023-06-14",
-   "covers": "Finance Policy FP-07: Budgeting user-fee revenue.",
+   "file": "cotterby_returns_review_2025.pdf",
+   "source": "Cotterby returns centre operations manager",
+   "date": "2026-02-11",
+   "covers": "the centre's 2025 volumes and team",
    "rows": null
   },
   {
-   "file": "vaa_2027_ground_transportation_budget.xlsx",
-   "source": "Velmont Airport Authority",
-   "date": "2026-10-14",
-   "covers": "Ground Transportation Program budget 2027, draft.",
-   "rows": null
+   "file": "wh_goodwill_vouchers_2026.csv",
+   "source": "Wrenfield & Holt customer services goodwill voucher system, export",
+   "date": "2026-10-30",
+   "covers": "vouchers issued 1 January to 28 October 2026",
+   "rows": 5123
   },
   {
-   "file": "vaa_notice_gt-2024-11_temporary_taxi_rank.pdf",
-   "source": "Velmont Airport Authority",
-   "date": "2026-08-14",
-   "covers": "Ground Transportation Notice GT-2024-11, revision 2.",
-   "rows": null
+   "file": "wh_voucher_redemptions_2026.csv",
+   "source": "Wrenfield & Holt e-commerce platform, voucher redemption export",
+   "date": "2026-10-30",
+   "covers": "redemptions of 2026 goodwill vouchers",
+   "rows": 2989
   },
   {
-   "file": "velmont_transit_airport_line_service_bulletin.pdf",
-   "source": "Velmont Transit",
-   "date": "2024-10-21",
-   "covers": "Service Bulletin 2024-19: the Airport Line.",
-   "rows": null
+   "file": "wh_customer_cases_2026.csv",
+   "source": "Wrenfield & Holt customer services case system, export",
+   "date": "2026-10-30",
+   "covers": "customer cases opened 1 January to 28 October 2026",
+   "rows": 16099
   },
   {
-   "file": "vaa_passenger_statistics_2023_2026.xlsx",
-   "source": "Velmont Airport Authority",
-   "date": "2026-09-22",
-   "covers": "Passengers and aircraft movements, monthly.",
-   "rows": null
+   "file": "cotterby_daily_operations_2025_2026.xlsx",
+   "source": "Cotterby returns centre shift supervisors' daily sheet",
+   "date": "2026-10-29",
+   "covers": "daily goods-in, opening and refund counts and the team on shift",
+   "rows": 696
   },
   {
-   "file": "vaa_ground_access_survey_2023.pdf",
-   "source": "Velmont Airport Authority",
-   "date": "2024-02-26",
-   "covers": "Ground access survey, October 2023.",
-   "rows": null
+   "file": "cotterby_shift_rota_2026.csv",
+   "source": "Cotterby returns centre rota",
+   "date": "2026-10-29",
+   "covers": "2026 shifts with employees and agency colleagues rostered",
+   "rows": 510
   }
  ]
 }

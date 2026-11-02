@@ -1,177 +1,323 @@
-"""The data files as the Office and the Authority export them: the two final annual trip files, the eight provisional
-2026 monthly drops, the 2023 origin-destination archive and the Office's three registers."""
+"""The pack's data files, each in its producing system's own layout: the centre's two goods-in exports (the scanner
+software changed on 1 January 2026, with a new layout and format), the returns processing log, the refund ledger, the
+order extract, the customer cases, the goodwill vouchers and their redemptions, and the centre's daily operations
+workbook and shift rota (the last two distractors). Layer 1 lives here and only here, and on the main call's path it is
+neutral by construction: the two goods-in layouts, prepaid labels on the 2025 records and on parcels still arriving on
+them in January 2026, failed card refunds reissued as store credit in the same month and on the same side of day 15,
+the refund ledger's UTC stamps (its 18:00 runs fall on the same date either way), the finance system's pence column from
+April. The ask files carry their own: UTC stamps, partial redemptions, statuses as at the extract, cases with no order.
+Nothing here carries the main call's step or an ask's handling."""
 import csv
 import datetime as dt
 
 import numpy as np
-import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 import sim as S
 import world as W
 
-V2 = {"rid": "record_id", "vendor": "vendor_id", "vehicle": "vehicle_id", "brokerage_label": "brokerage_id",
-      "meter_on": "pickup_datetime", "meter_off": "dropoff_datetime", "pu": "pickup_zone", "do": "dropoff_zone",
-      "pax": "passenger_count", "km": "trip_distance_km", "fare": "fare_amount", "fee": "airport_fee",
-      "tip": "tip_amount", "total": "total_amount", "pay": "payment_type", "sf": "store_and_fwd_flag"}
-V3 = {"rid": "record_id", "vendor": "vendor_id", "vehicle": "vehicle_id", "brokerage_label": "brokerage_id",
-      "meter_on": "meter_on", "meter_off": "meter_off", "pu": "pu_zone", "do": "do_zone", "pax": "passengers",
-      "km": "distance_km", "fare": "fare", "fee": "airport_fee", "tip": "tip", "total": "total",
-      "pay": "payment_type", "sf": "sf_flag"}
-INTS = {"rid": pa.int64(), "vendor": pa.int8(), "brokerage_label": pa.int8(), "pu": pa.int16(), "do": pa.int16(),
-        "pax": pa.int8(), "pay": pa.int8()}
+UTC = dt.timezone.utc
 
 
-def zones_cols(recs):
-    """Pickup and drop-off zone from the direction: a pickup leaves zone 1 for its zone, a drop-off arrives from it."""
-    pick = (recs["dir"] == "P").to_numpy()
-    z = recs["zone"].to_numpy()
-    return np.where(pick, W.AIRPORT, z), np.where(pick, z, W.AIRPORT)
+def to_utc(local_naive):
+    return local_naive.replace(tzinfo=W.local_tz()).astimezone(UTC)
 
 
-def local_date(s):
-    return pd.to_datetime(s).to_numpy().astype("datetime64[D]")
+def iso_offset(local_naive):
+    return local_naive.replace(tzinfo=W.local_tz()).isoformat()
 
 
-def file_2024(x):
-    r = x["recs"]
-    d = local_date(r["meter_on"])
-    sel = (d >= np.datetime64("2024-01-01")) & (d <= np.datetime64("2024-12-31")) & r["kind"].isin(
-        ["trip", "void", "reversal"]).to_numpy()
-    return labelled(r[sel], x, W.FILE_2024_BUILT).sort_values(["meter_on", "rid"], kind="stable")
-
-
-def file_2025(x):
-    r = x["recs"]
-    d = local_date(r["meter_on"])
-    sel = (d >= np.datetime64("2025-01-01")) & (d <= np.datetime64("2025-12-31")) & (r["kind"] == "trip").to_numpy()
-    return labelled(r[sel], x, W.FILE_2025_BUILT).sort_values(["meter_on", "rid"], kind="stable")
-
-
-def labelled(r, x, built):
-    """An annual file joins each trip to the vehicle register as it stands the day the file is built."""
-    by = {v["vid"]: v for v in x["lic"]}
-    r = r.copy()
-    r["brokerage_label"] = [S.latest_brokerage(by[v], built) for v in r["vehicle"]]
-    return r
-
-
-def drop_2026(x, month):
-    """The records the Office received in a 2026 month, trips begun in 2026 only (a closed year's late records go to
-    its annual file), in the order received, each trip's brokerage that day."""
-    r = x["recs"]
-    rec = local_date(r["received"])
-    on = local_date(r["meter_on"])
-    a = np.datetime64(dt.date(2026, month, 1))
-    b = np.datetime64(dt.date(2026 + (month == 12), month % 12 + 1, 1))
-    sel = (rec >= a) & (rec < b) & (on >= np.datetime64("2026-01-01"))
-    out = r[sel].copy()
-    out["brokerage_label"] = out["brokerage"]
-    # a Corvane unit on firmware 8.1 writes a trip it sends from memory with its meter times to the minute
-    log = ((out["kind"] == "trip") & (out["vendor"] == 2) & (out["sf"] == "Y")).to_numpy()
-    for c in ("meter_on", "meter_off"):
-        out.loc[log, c] = pd.to_datetime(out.loc[log, c]).dt.floor("min").to_numpy()
-    return out.sort_values("rid", kind="stable")
-
-
-def table(df, names, utc=False, fee_name=None, local_zone=False):
-    """The records as one Parquet table. utc: meter times in UTC, written with the zone (firmware 8.1, the 2026 files);
-    local_zone: meter times in local time written with the local zone (the version 3 annual file); otherwise local
-    time with no zone (the version 2 annual file). The repeated autumn hour is read as daylight time and a time in the
-    spring gap moves to the hour after it."""
-    pu, do = zones_cols(df)
-    df = df.assign(pu=pu, do=do)
-    cols, arrays = [], []
-    for k, name in names.items():
-        if k == "fee" and fee_name:
-            name = fee_name
-        v = df[k]
-        if k in ("meter_on", "meter_off"):
-            loc = pd.to_datetime(v)
-            if utc:
-                loc = loc.dt.tz_localize(W.TZ, ambiguous="NaT", nonexistent="shift_forward").dt.tz_convert("UTC")
-                arr = pa.array(loc, type=pa.timestamp("us", tz="UTC"))
-            elif local_zone:
-                loc = loc.dt.tz_localize(W.TZ, ambiguous=np.ones(len(loc), dtype=bool), nonexistent="shift_forward")
-                arr = pa.array(loc, type=pa.timestamp("us", tz=str(W.TZ)))
-            else:
-                arr = pa.array(loc, type=pa.timestamp("us"))
-        elif k in INTS:
-            arr = pa.array(v.to_numpy().astype("int64"), type=INTS[k])
-        elif k == "km":
-            arr = pa.array(np.round(v.to_numpy().astype(float), 2), type=pa.float64())
-        elif k in ("fare", "fee", "tip", "total"):
-            arr = pa.array(np.round(v.to_numpy().astype(float), 2), type=pa.float64())
-        else:
-            arr = pa.array(v.astype(str).tolist(), type=pa.string())
-        cols.append(name)
-        arrays.append(arr)
-    return pa.Table.from_arrays(arrays, names=cols)
-
-
-DELTA = ("record_id", "meter_on", "meter_off", "pickup_datetime", "dropoff_datetime")
-
-
-def write_parquet(path, tbl):
-    tbl = tbl.replace_schema_metadata(None)
-    enc = {c: "DELTA_BINARY_PACKED" for c in tbl.column_names if c in DELTA}
-    pq.write_table(tbl, path, compression="zstd", compression_level=9,
-                   use_dictionary=[c for c in tbl.column_names if c not in enc], column_encoding=enc,
-                   write_statistics=True, data_page_size=1 << 20, row_group_size=1 << 17)
-    return tbl.num_rows
-
-
-def write_annual(path, df, names, local_zone=False):
-    return write_parquet(path, table(df, names, local_zone=local_zone))
-
-
-def write_drop(path, df, month):
-    fee_name = "Airport_Fee" if (2026, month) >= W.FEE_COL_RENAMED else None
-    return write_parquet(path, table(df, V3, utc=True, fee_name=fee_name))
-
-
-def archive_rows(x):
-    """The Office's daily origin-destination archive for 2023: trips (voided trips not counted) by local start date."""
-    t = S.truth(x)
-    d = local_date(t["meter_on"])
-    t = t[(d >= np.datetime64("2023-01-01")) & (d <= np.datetime64("2023-12-31"))]
-    pu, do = zones_cols(t)
-    g = pd.DataFrame({"trip_date": local_date(t["meter_on"]).astype(str), "pu_zone": pu, "do_zone": do})
-    g = g.groupby(["trip_date", "pu_zone", "do_zone"]).size().reset_index(name="trips")
-    return [[r.trip_date, int(r.pu_zone), int(r.do_zone), int(r.trips)] for r in g.itertuples()]
-
-
-ARCHIVE_COLS = ["trip_date", "pu_zone", "do_zone", "trips"]
-ZONE_COLS = ["zone_id", "zone_name", "district"]
-BROKERAGE_COLS = ["brokerage_id", "brokerage_name", "brokerage_licence", "licensed_since", "status"]
-AFFIL_COLS = ["vehicle_id", "brokerage_id", "effective_from", "effective_to", "reason"]
-
-
-def zone_rows():
-    return [[z, name, district] for z, name, district, _ in W.ZONES]
-
-
-def brokerage_rows():
-    since = {1: "1994-04-01", 2: "2001-09-17", 3: "1988-01-11", 4: "1979-06-30", 5: "2009-03-02", 6: "2014-11-20"}
-    return [[b, W.BROKERAGES[b], "VFH-B-%03d" % (100 + 17 * b), since[b], "Active"] for b in W.BROKERAGES]
-
-
-def affiliation_rows(x):
-    """Each licence's spells with a brokerage, as the Office's register held them when pulled (9 October 2026)."""
-    rows = []
-    for v in sorted(x["lic"], key=lambda v: v["vid"]):
-        for i, (b, a, z) in enumerate(v["spells"]):
-            if z is not None and z < dt.date(2022, 1, 1):
-                continue
-            why = "Licence issued" if i == 0 else "Annual renewal" if (a.month, a.day) == (1, 1) else "Mid-term transfer"
-            rows.append([v["vid"], b, a.isoformat(), z.isoformat() if z else "", why])
-    return rows
+def z(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def write_csv(path, cols, rows):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
+    with open(path, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh, lineterminator="\r\n")
         w.writerow(cols)
-        w.writerows(rows)
+        for r in rows:
+            w.writerow(r)
     return len(rows)
+
+
+def write_parquet(path, table):
+    pq.write_table(table, path, compression="snappy", use_dictionary=True, write_statistics=False,
+                   version="2.6", data_page_version="1.0")
+    return table.num_rows
+
+
+# ----------------------------------------------------------------------------------------------- goods-in scans
+def goods_events(x):
+    """Every goods-in scan: each return parcel once, at its delivery."""
+    p = x["parcels"]
+    ev = [{"t": int(s), "barcode": p["barcode"][i], "carrier": p["carrier"][i], "door": str(p["door"][i]), "cls": "RET"}
+          for i, s in enumerate(p["deliv"])]
+    ev.sort(key=lambda e: (e["t"], e["barcode"]))
+    ops = ["GI%03d" % k for k in (11, 12, 14, 17, 21, 23, 26, 31, 32, 38)]
+    for k, e in enumerate(ev):
+        e["user"] = ops[(e["t"] // 3600 + k % 3) % len(ops)]
+    return ev
+
+
+def id_run(start, n, name):
+    """An identifier run with the gaps a live system leaves (cancelled and test events)."""
+    r = S.rng(name)
+    return list(start + np.cumsum(r.choice([1, 1, 1, 1, 1, 1, 2, 2, 3, 5], size=n)))
+
+
+OLD_TYPE = {"RET": "RETURN"}
+NEW_CARRIER = {"Tarnwell": "TWL", "Ambrell Post": "AMB", "Kestrix": "KSX", "Vellum Parcels": "VLP"}
+
+
+def write_goods(x, path25, path26):
+    ev = goods_events(x)
+    cut = S.sec(dt.datetime(2026, 1, 1))
+    old = [e for e in ev if e["t"] < cut]
+    new = [e for e in ev if e["t"] >= cut]
+    rows = []
+    ids = id_run(100_000, len(old), "scan_ids")
+    for k, e in enumerate(old):
+        rows.append([int(ids[k]), S.at(e["t"]).strftime("%Y-%m-%d %H:%M:%S"), e["door"], e["barcode"], e["carrier"],
+                     OLD_TYPE[e["cls"]], e["user"]])
+    n25 = write_csv(path25, ["scan_id", "scanned_at_uk", "door", "barcode", "carrier", "item_type", "scanned_by"], rows)
+    ts = [S.at(e["t"]) for e in new]
+    tbl = pa.table({
+        "event_id": pa.array([int(v) for v in id_run(7_400_001, len(new), "event_ids")], pa.int64()),
+        "event_ts_uk": pa.array(ts, pa.timestamp("s")),
+        "dock_door": pa.array([int(e["door"][1]) for e in new], pa.int8()),
+        "parcel_barcode": pa.array([e["barcode"] for e in new], pa.string()),
+        "carrier_code": pa.array([NEW_CARRIER[e["carrier"]] for e in new], pa.string()),
+        "parcel_class": pa.array([e["cls"] for e in new], pa.string()),
+        "handheld_user": pa.array([e["user"].lower() for e in new], pa.string()),
+    })
+    n26 = write_parquet(path26, tbl)
+    return n25, n26
+
+
+# ------------------------------------------------------------------------------------------------- processing
+OUTCOME = {"REFUND": "REFUND", "REJECT_RETURNED": "REJECTED - RETURNED TO CUSTOMER",
+           "REJECT_DISPOSED": "REJECTED - DISPOSED"}
+
+
+def processing_rows(x):
+    """One record per parcel opened, at the moment it was opened, with the order read from the returns note and the
+    prepaid label where the parcel had one."""
+    p = x["parcels"]
+    r = S.rng("processing_noise")
+    benches = ["B%02d" % k for k in range(1, 15)]
+    ops = ["RC%03d" % k for k in (104, 107, 109, 112, 118, 121, 125, 126, 130, 133, 137, 141, 142, 150, 151, 158)]
+    recs = []
+    for t, i in x["opened"]:
+        recs.append({"t": t, "bench": benches[int(r.integers(0, len(benches)))], "op": ops[int(r.integers(0, len(ops)))],
+                     "order": p["order_ref"][i], "label": p["label"][i], "outcome": OUTCOME[p["outcome"][i]]})
+    recs.sort(key=lambda d: d["t"])
+    return recs
+
+
+def write_processing(x, path):
+    recs = processing_rows(x)
+    ids = id_run(31_000_000, len(recs), "process_ids")
+    rows = [["P%08d" % ids[k], S.at(d["t"]).strftime("%Y-%m-%d %H:%M:%S"), d["bench"], d["op"], d["order"], d["label"],
+             d["outcome"]] for k, d in enumerate(recs)]
+    return write_csv(path, ["process_id", "processed_at_uk", "bench", "operator", "order_ref", "return_label", "outcome"],
+                     rows)
+
+
+# ---------------------------------------------------------------------------------------------------- refunds
+def refund_rows(x):
+    """The refund ledger: each return refund in the 18:00 payment run after its parcel was opened (a card refund that
+    fails is reissued as store credit in a later run), and the refunds that are not for returns."""
+    p = x["parcels"]
+    r = S.rng("refund_rows")
+    site = x["cust_site"]
+    recs = []
+    for i in range(len(p["deliv"])):
+        if p["refund_day"][i] is None:
+            continue
+        cur = "EUR" if site[int(p["cust"][i])] == "IE" else "GBP"
+        tender = str(r.choice(["CARD", "PAYPAL", "GIFT CARD"], p=[0.82, 0.12, 0.06]))
+        amt = round(float(p["total"][i]) * (1.0 if cur == "GBP" else 1.16), 2)
+        t0 = dt.datetime.combine(p["refund_day"][i], dt.time(18, 0)) + dt.timedelta(seconds=int(r.integers(4, 2400)))
+        if p["failed"][i]:
+            recs.append({"t": t0, "order": p["order_ref"][i], "reason": "RETURN", "tender": "CARD", "cur": cur,
+                         "amt": amt, "status": "FAILED", "of": None, "key": i})
+            t1 = dt.datetime.combine(p["reissue_day"][i], dt.time(18, 0)) + dt.timedelta(seconds=int(r.integers(4, 2400)))
+            recs.append({"t": t1, "order": p["order_ref"][i], "reason": "RETURN", "tender": "STORE CREDIT", "cur": cur,
+                         "amt": amt, "status": "PAID", "of": i, "key": None})
+        else:
+            recs.append({"t": t0, "order": p["order_ref"][i], "reason": "RETURN", "tender": tender, "cur": cur,
+                         "amt": amt, "status": "PAID", "of": None, "key": None})
+    # refunds that are not for returns, against the customers' other orders (never an order a refund-delay voucher's
+    # own order field holds: that order had no refund of any kind)
+    o = x["other"]
+    held = {v["auto_key"][1] for v in x["vouchers"] if v["auto_key"] is not None and v["auto_key"][0] == "O"}
+    for d in W.days():
+        if not S.payment_run_day(d):
+            continue
+        for reason, rate in (("CANCELLATION", 34), ("PRICE MATCH", 6), ("GOODWILL", 3), ("NOT DELIVERED", 5)):
+            for _ in range(r.poisson(rate)):
+                k = int(r.integers(0, len(o["cust"])))
+                if k in held:
+                    continue
+                cur = "EUR" if site[o["cust"][k]] == "IE" else "GBP"
+                amt = round(o["total"][k] * (1.16 if cur == "EUR" else 1.0) * (1.0 if reason in ("CANCELLATION", "NOT DELIVERED")
+                                                                                else r.uniform(0.05, 0.3)), 2)
+                t = dt.datetime.combine(d, dt.time(18, 0)) + dt.timedelta(seconds=int(r.integers(4, 2400)))
+                recs.append({"t": t, "order": o["order_ref"][k], "reason": reason,
+                             "tender": str(r.choice(["CARD", "PAYPAL"], p=[0.86, 0.14])), "cur": cur, "amt": amt,
+                             "status": "PAID", "of": None, "key": None})
+    recs.sort(key=lambda d: (d["t"], d["order"]))
+    ids = {}
+    for k, d in enumerate(recs):
+        d["id"] = "RF%08d" % (60_000_000 + 3 * k + int(r.integers(0, 3)))
+        if d["key"] is not None:
+            ids[d["key"]] = d["id"]
+    for d in recs:
+        d["of_id"] = ids[d["of"]] if d["of"] is not None else None
+    return recs
+
+
+def write_refunds(x, path):
+    recs = refund_rows(x)
+    cut = dt.datetime(2026, 4, 1)
+    tbl = pa.table({
+        "refund_id": pa.array([d["id"] for d in recs], pa.string()),
+        "order_ref": pa.array([d["order"] for d in recs], pa.string()),
+        "reason": pa.array([d["reason"] for d in recs], pa.string()),
+        "tender": pa.array([d["tender"] for d in recs], pa.string()),
+        "currency": pa.array([d["cur"] for d in recs], pa.string()),
+        "amount": pa.array([d["amt"] if d["t"] < cut else None for d in recs], pa.float64()),
+        "amount_pence": pa.array([int(round(d["amt"] * 100)) if d["t"] >= cut else None for d in recs], pa.int64()),
+        "initiated_at_utc": pa.array([to_utc(d["t"]) for d in recs], pa.timestamp("us", tz="UTC")),
+        "status": pa.array([d["status"] for d in recs], pa.string()),
+        "reissue_of": pa.array([d["of_id"] for d in recs], pa.string()),
+    })
+    return write_parquet(path, tbl)
+
+
+# ------------------------------------------------------------------------------------- orders, cases, vouchers
+def extract_customers(x):
+    """The order extract's scope: customers with a parcel delivered from 1 December 2025 or a 2026 case."""
+    p = x["parcels"]
+    cut = S.sec(dt.datetime(2025, 12, 1))
+    keep = set(int(c) for c, s in zip(p["cust"], p["deliv"]) if s >= cut)
+    keep |= set(cs["cust"] for cs in x["cases"])
+    return keep
+
+
+def write_orders(x, path):
+    p, o = x["parcels"], x["other"]
+    keep = extract_customers(x)
+    since = S.sec(dt.datetime(2025, 10, 1))
+    site, cid = x["cust_site"], x["cust_ids"]
+    rows = []
+    for i in range(len(p["deliv"])):
+        c = int(p["cust"][i])
+        if c in keep and p["ordered"][i] >= since:
+            rows.append((int(p["ordered"][i]), p["order_ref"][i], c, float(p["total"][i]), p["category"][i]))
+    for k in range(len(o["cust"])):
+        c = o["cust"][k]
+        if c in keep and o["ordered"][k] >= since:
+            rows.append((o["ordered"][k], o["order_ref"][k], c, o["total"][k], o["category"][k]))
+    rows.sort(key=lambda r: r[1])
+    eur = [site[r[2]] == "IE" for r in rows]
+    tot = [round(r[3] * (1.16 if e else 1.0), 2) for r, e in zip(rows, eur)]
+    tbl = pa.table({
+        "order_ref": pa.array([r[1] for r in rows], pa.string()),
+        "customer_ref": pa.array(["C%07d" % cid[r[2]] for r in rows], pa.string()),
+        "site": pa.array(["wrenfieldholt.ie" if e else "wrenfieldholt.co.uk" for e in eur], pa.string()),
+        "currency": pa.array(["EUR" if e else "GBP" for e in eur], pa.string()),
+        "ordered_at_utc": pa.array([to_utc(S.at(r[0])) for r in rows], pa.timestamp("us", tz="UTC")),
+        "order_total": pa.array(tot, pa.float64()),
+        "order_total_gbp": pa.array([round(t * W.EUR_RATE, 2) if e else t for t, e in zip(tot, eur)], pa.float64()),
+        "main_category": pa.array([r[4] for r in rows], pa.string()),
+    })
+    return write_parquet(path, tbl)
+
+
+def write_cases(x, path):
+    cid = x["cust_ids"]
+    rows = []
+    for cs in x["cases"]:
+        ref = x["ref"][cs["key"]] if cs["key"] is not None else ""
+        rows.append([cs["case_ref"], "C%07d" % cid[cs["cust"]], z(to_utc(S.at(cs["opened"]))), cs["channel"],
+                     cs["topic"], ref, z(to_utc(S.at(cs["closed"]))) if cs["closed"] <= S.sec(dt.datetime(2026, 10, 30)) else ""])
+    return write_csv(path, ["case_ref", "customer_ref", "opened_at_utc", "channel", "topic", "order_ref", "closed_at_utc"],
+                     rows)
+
+
+def voucher_status(x, v, asof):
+    used = sum(d["applied"] for d in x["redemptions"] if d["voucher"] is v)
+    if used >= v["value"] - 0.005:
+        return "REDEEMED"
+    if used > 0:
+        return "PART REDEEMED" if v["expires"] >= asof else "EXPIRED"
+    return "ACTIVE" if v["expires"] >= asof else "EXPIRED"
+
+
+def write_vouchers(x, path):
+    cid = x["cust_ids"]
+    asof = dt.date.fromisoformat(W.AS_OF)
+    rows = []
+    for v in sorted(x["vouchers"], key=lambda v: v["code"]):
+        rows.append([v["code"], "C%07d" % cid[v["cust"]], x["ref"][v["auto_key"]] if v["auto_key"] else "", v["case"],
+                     v["reason"], v["value"], z(to_utc(S.at(v["issued"]))), v["expires"].isoformat(),
+                     voucher_status(x, v, asof)])
+    return write_csv(path, ["voucher_code", "customer_ref", "order_ref", "case_ref", "reason", "value", "issued_at",
+                            "expires_on", "status"], rows)
+
+
+def write_redemptions(x, path):
+    rows = []
+    for d in sorted(x["redemptions"], key=lambda d: d["id"]):
+        rows.append([d["id"], d["voucher"]["code"], x["ref"][d["order_key"]], z(to_utc(S.at(d["t"]))),
+                     "%.2f" % d["applied"]])
+    return write_csv(path, ["redemption_id", "voucher_code", "order_ref", "redeemed_at", "amount_applied"], rows)
+
+
+# --------------------------------------------------------------------------------- the centre's operating records
+def daily_ops(x):
+    """The supervisor's end-of-day sheet: parcels booked in at goods-in (every delivery the dock took), parcels opened,
+    refunds triggered, parcels waiting at close by the bay count, and the team on shift."""
+    p = x["parcels"]
+    ev = goods_events(x)
+    r = S.rng("dailyops")
+    booked, opened, trig = {}, {}, {}
+    for e in ev:
+        booked[S.day_of(e["t"])] = booked.get(S.day_of(e["t"]), 0) + 1
+    for t, i in x["opened"]:
+        d = S.day_of(t)
+        opened[d] = opened.get(d, 0) + 1
+        if p["outcome"][i] == "REFUND":
+            trig[d] = trig.get(d, 0) + 1
+    waiting = 0
+    rows = []
+    rets = {}
+    for s in p["deliv"]:
+        rets[S.day_of(s)] = rets.get(S.day_of(s), 0) + 1
+    for d in W.days():
+        waiting += rets.get(d, 0) - opened.get(d, 0)
+        team = 0 if opened.get(d, 0) == 0 else int(round(opened.get(d, 0) / r.uniform(52, 61)))
+        rows.append([d, booked.get(d, 0), opened.get(d, 0), trig.get(d, 0), waiting + int(r.integers(-6, 7)) if waiting > 40 else waiting,
+                     team])
+    return rows
+
+
+def rota_rows(x):
+    r = S.rng("rota")
+    rows = []
+    for d in W.days():
+        if d < dt.date(2026, 1, 1):
+            continue
+        cap = S.capacity_base(d)
+        if d.weekday() == 6 or d in W.BANK_HOLIDAYS:
+            shifts = [("Weekend", 0.6 * cap / 55)]
+        elif d.weekday() == 5:
+            shifts = [("Weekend", 0.85 * cap / 55)]
+        else:
+            shifts = [("Early", 0.55 * cap / 55), ("Late", 0.45 * cap / 55)]
+        for name, need in shifts:
+            agency = 0 if d < dt.date(2026, 2, 16) else int(max(0, round(need * r.uniform(0.15, 0.3))))
+            rows.append([d.isoformat(), name, max(1, int(round(need)) - agency), agency])
+    return rows

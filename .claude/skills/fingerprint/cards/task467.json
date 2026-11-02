@@ -11,8 +11,8 @@
   "shape": "08",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "GBP 127,785 into the goodwill fund for 8,519 refunds made late in January to June 2026; February, March and April 2026 broke the 95 per cent commitment",
+  "answer_source": "task467/generator/figures.json (payment_gbp, late_total, breach_months), from golden.py's replay of every goods-in delivery and opening with the newest parcel waiting opened first",
   "gap": [
     "objective",
     "population"
@@ -33,26 +33,25 @@
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms both goods-in exports, keys every refund to its processing record and reads the written assurance's definition pairs each 2026 refund with the earliest parcel still waiting at the centre (the cumulative arrival and departure curves, which reproduce 2025's tracked late counts) and files a goodwill payment several times too small with only the peak month in breach.",
-  "domain_test": "The deciding quantity is the delivery date behind each 2026 refund, a link between the centre's goods-in scans and its processing records that no key carries, estimated by replaying over 2026's own arrivals and picks the bay-picking behaviour the tracked 2025 returns measure (the oldest bay first in a measured share of picks, any waiting parcel otherwise); pair the two logs in arrival order or carry 2025's waits forward and the late counts and breach months change, and put a pool that empties strictly in arrival order in place of the bays and the step disappears.",
+  "analyst_test": "A strong analyst who conforms both goods-in exports, keys every refund to its processing record and reads the written assurance's definitions pairs each 2026 opening with the earliest parcel still waiting at the centre (the cumulative arrival and departure curves, which close against the daily waiting count and give the labelled 2025 mean wait exactly) and files GBP 189,330 with February and March in breach, against GBP 127,785 with February, March and April.",
+  "domain_test": "The deciding quantity is the delivery date behind each 2026 refund, a link between the centre's goods-in scans and its processing records that no key carries, estimated by the linkage model the records where the link survives validate (every 2025 opening and January 2026's labelled stragglers show the newest parcel waiting opened first, 181,318 of 181,318) and replayed over 2026's own deliveries and openings; pair the two logs in arrival order or carry 2025's late shares forward and the payment and breach months change, and put a pool worked strictly in arrival order in place of the block-stacked hall and the step disappears.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:delivery dates of unlabelled parcels recovered by replaying a measured picking behaviour over two unlinked logs",
+  "layer2_pattern": "own:delivery dates of unlabelled parcels recovered by replaying, over two unlinked logs, the service order the surviving labelled links reveal",
   "layer1": [
-    "two goods-in exports, the old scanner software to 2025 and a new one from January 2026 with renamed columns and UTC timestamps",
-    "parcels scanned twice at goods-in when a bay label misreads, and non-return deliveries (stock transfers, supplier samples) in the same log under their own type codes",
-    "Sunday closure and the 2026 bank holidays in both logs",
-    "card refunds that fail and are reissued as store credit, both rows in the refund ledger",
-    "a finance system change that writes refund amounts in pence from April 2026",
-    "the 2025 label registry with reprinted labels under a new tracking number",
-    "processing handhelds whose clocks run in local time beside UTC goods-in scans"
+    "two goods-in exports, the old scanner software's CSV to 2025 and the new software's parquet from January 2026 with renamed columns and carrier codes",
+    "prepaid return labels on the 2025 processing records and on parcels still arriving on them in January 2026",
+    "Sunday closure and the bank holidays in both logs",
+    "card refunds that fail and are reissued as store credit at the next payment run, both rows in the refund ledger",
+    "the refund ledger's UTC stamps beside the centre's UK-time logs",
+    "a finance system change that writes refund amounts in pence from April 2026"
   ],
   "stakeholder_role": "the retailer's head of regulatory compliance, who files the return with Trading Standards and pays the goodwill fund",
   "role_family": "compliance_or_audit",
   "scoring_unit": "per settled transaction",
   "spine": {
-    "file": "the returns centre's goods-in scan log, January 2025 to June 2026",
-    "rows": 300000,
-    "entity": "one goods-in scan of a parcel delivered to the returns centre",
+    "file": "the returns centre's goods-in scan logs (two exports) and its processing log, December 2024 to October 2026",
+    "rows": 325616,
+    "entity": "one goods-in scan of a return parcel delivered to the returns centre",
     "grain": "parcel scan",
     "source": "synthetic"
   },
@@ -66,8 +65,13 @@
     "invented_names": [
       "Wrenfield & Holt",
       "Cotterby returns centre",
-      "Kesterfield Trading Standards",
-      "Parcelway"
+      "Calvermoor Trading Standards",
+      "Calvermoor County Council",
+      "Meridale Consumer Trust",
+      "Tarnwell",
+      "Ambrell Post",
+      "Kestrix",
+      "Vellum Parcels"
     ],
     "people": [
       "Howard Jones",
@@ -81,14 +85,14 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "The decisive quantity is the time each item spent between two events logged by two systems that share no key, where items leave a waiting pool oldest-first only part of the time and otherwise at random; pairing the two logs in arrival order, or carrying a linked period's observed waits into a period with a deeper pool, misplaces how many waited past a limit, and only replaying the leaving behaviour the linked period measures over the unlinked period's own arrivals and departures recovers it.",
-  "driver_concrete": "Wrenfield & Holt's 2026 refunds carry no record of when their customer-posted parcels reached the Cotterby returns centre: the goods-in scans and the processing log share no key once prepaid labels ended, and the bays are worked oldest first in only a measured share of picks (the rest from any bay, as the 2025 labelled returns show), so the January backlog left far more parcels past 14 days, in more months, than pairing the logs in arrival order or applying 2025's waits implies.",
-  "stump": "A competent solver pairs the 2026 goods-in scans and processing records in arrival order (cumulative arrival and departure curves, which reproduce 2025's tracked late counts), finds refunds made more than 14 days after delivery in the peak month only and files a goodwill payment several times too small; the picking behaviour the 2025 labelled returns measure, replayed over 2026's own arrivals and picks, puts several times as many refunds past 14 days and a second month in breach (figures fixed at build).",
+  "driver": "The decisive quantity is the time each item spent between two events logged by two systems that share no key, where the waiting pool is always worked newest first; pairing the two logs in arrival order (cumulative curves that close every count and reproduce the mean wait) misplaces how many waited past a limit, and only testing the service order on the records whose link survives and replaying it over the unlinked period's own arrivals and departures recovers it.",
+  "driver_concrete": "Wrenfield & Holt's 2026 refunds carry no record of when their customer-posted parcels reached the Cotterby returns centre: the goods-in scans and the processing log share no key once prepaid labels ended, and the block-stacked hall always gives up the newest parcel waiting (as every labelled opening shows), so January's deep hall left its oldest parcels waiting into March and April and the late refunds fall in different months, and in different numbers, than pairing the logs in arrival order implies.",
+  "stump": "Pairing the 2026 goods-in scans with the openings in arrival order (the cumulative curves, whose mean wait matches the labelled 2025 records exactly) files a goodwill payment of GBP 189,330 with February and March in breach, because the centre's block-stacked hall always gives up the newest parcel waiting: in January's deep hall the newest parcels went out within days while the oldest waited until the hall emptied in March and April, so replayed that way the payment is GBP 127,785 and April breaches too.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task195": "task195 judges two screens read on the same units through the paired difference's interval; task467 dates each refund's parcel by replaying a measured picking behaviour over two logs that share no key, with no paired comparison or interval in the decision.",
+    "task195": "task195 judges two screens read on the same units through the paired difference's interval; task467 dates each refund's parcel by replaying the service order its surviving labelled links reveal over two logs that share no key, with no paired comparison or interval in the decision.",
     "task228": "task228's second architecture separates each unit's random error by three-way covariances among comparators; task467 has no measurement error to separate, it pairs two unlinked event logs through the order in which a pool is worked.",
-    "task478": "task478 carries a supplier's monthly input property across spot tests to each unit's period total; task467 recovers each event's start date from the share of picks a pool takes oldest first, a pairing of two logs rather than a rate carried across tests."
+    "task478": "task478 carries a supplier's monthly input property across spot tests to each unit's period total; task467 recovers each event's start date from the order a pool is worked, tested on its labelled records, a pairing of two logs rather than a rate carried across tests."
   },
   "lineage": [
     {
@@ -129,12 +133,12 @@
       "deliverable set": "csv+docx"
     }
   ],
-  "notes": "Re-root 2026-11-02. Architecture 1's identity is in lineage with its fate. Domain general-statistics-data-science, task type data-integration-record-linkage-entity-resolution (serves ETL): the deciding quantity is a link between two record streams with no key, estimated statistically. Personas drawn with guard.py names --geo 'United Kingdom' --seed 467.",
+  "notes": "Re-root 2026-11-02. Architecture 1's identity is in lineage with its fate. Domain general-statistics-data-science, task type data-integration-record-linkage-entity-resolution (serves ETL): the deciding quantity is a link between two record streams with no key, estimated statistically. Personas drawn with guard.py names --geo 'United Kingdom' --seed 467. Stage 3 (2026-11-02): the hall's discipline made deterministic (newest parcel waiting first) on the coordinator's direction so the golden is exact; the card brought current to the built pack (answer, tests, driver, stump, layer1, spine, shell).",
   "registered": "2026-11-02T19:00:47Z",
   "shell": {
     "question form": "how-much",
-    "second-sentence opener": "kesterfield",
-    "rounding opener": "refunds",
+    "second-sentence opener": "the",
+    "rounding opener": "counts",
     "deliverable set": "csv+pdf"
   }
 }

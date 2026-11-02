@@ -1,66 +1,60 @@
-# determinism-check report, task467, 2026-10-17 (pass 2, run r2)
+# determinism-check report, task467 (pass 2, run a2b), 2026-11-02
 
 ## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE
-**Stumping type:** mechanism: decomposition_attribution, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC (minor SOLUTION_WRONG wording defect in CRITICAL_COMPONENTS 1 and step 3)
+**Disposition:** FIX_NOW (wording only; no input file, figure or rerun changes)
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One thread (sonnet, medium) saw only a fresh unzip at /tmp/determinism-check-task467-r2/target/ and the inlined blocks. It recomputed every load-bearing value from the bundle. By-law GT-3 s.4 (25-cent steps), FP-07 4.2/4.3 (restatement for loading-arrangement changes only, so the Airport Line is not restated away) and budget line 12 ($535,027) fix the estimand. The data then separate the candidates: the station-zone and other-zone pickup-to-drop-off ratios fall 10.6 and 11.0 per cent, giving 83,855 restated pickups (84,000 to the nearest thousand), an 11 per cent rank share and a fee of $6.50. The $6.50 step holds for a restated base of 82,312 to 85,603. All 120 ledger rows matched an independent rebuild. No decisive fact is missing.
+Every committed figure reproduced from target.zip (md5 cb252556972e11e3389478083d3b5f04). Each refund's delivery day is on no column; it is fixed by replaying goods-in scans and openings in time order, each opening (rejected parcels included) taking the newest parcel waiting. That matches 181,318 of 181,318 labelled openings; arrival order matches 1,759. The data, not a reading of the prompt, separate the candidates. Wording defect: the labelled openings run from December 2024 to 12 April 2026 (Jan 2026 1,658; Mar 1; Apr 844), not "2025 and January 2026". Label gap in Feb/Mar is untested, so newest-first there is an extrapolation, but it is the only candidate the data support.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| 2025 recorded pickups (pu_zone=1, annual 2025 file) | 74,753 | 74,753 | yes |
-| Budget line 12 | 535,027 | 653,185.8 - 74,350 - 31,480 - 12,328.8 = 535,027 | yes |
-| Station-zone drop-offs, 12 months to 3 Nov 2024 vs 2025 | about -one third | -32% (zones -31.7% to -33.1%); other zones +0.2% to +5.4% | yes |
-| Ratio change, station / other zones | -10.6% / -11.0% | -10.6% / -11.0% | yes |
-| Restated 2025 | 84,000 | 83,855 (55,955 + 27,900) | yes |
-| Rank share | 11% | 10.85% (11.0% on 84,000) | yes |
-| Fee | $6.50 | 535,027 / 83,855 = $6.38, lowest step $6.50 | yes |
-| Surplus at $6.50 | $10,000 | 10,031 (10,973 on 84,000) | yes |
-| Shortfall at $6.25 | $10,000 | 10,933 (10,027 on 84,000) | yes |
-| Ledger, 120 rows (pickups and fees) | as filed | all 120 matched (affiliation by trip date, UTC to America/New_York, 315 void pairs and 1,741 re-sent copies removed, fee at the year's rate) | yes |
+| Newest-first labelled matches | 181,318 / 181,318 | 181,318 / 181,318 | yes |
+| Arrival-order matches | 1,759 | 1,759 | yes |
+| Refunds made Jan-Jun (ledger RETURN, PAID; failed card at reissue) | 14,103 / 15,546 / 18,301 / 13,300 / 12,894 / 13,497 | same (87,641) | yes |
+| Late refunds | 0 / 1,106 / 5,292 / 1,935 / 151 / 35 (8,519) | same | yes |
+| Late share % | 0.0 / 7.1 / 28.9 / 14.5 / 1.2 / 0.3 | same | yes |
+| Payment | GBP 127,785 | 8,519 x 15 | yes |
+| 2025 late (Feb, Dec) | 615 / 889 | 615 / 889, other months 0 | yes |
+| Voucher value by UK month (GBP) | 3,325 / 16,561 / 9,832 / 1,575 / 1,229 / 1,023 | same (UTC months would move Mar, Apr) | yes |
+| Refund-delay vouchers by case-order category | Womenswear 1,523/11,117; Menswear 648/4,693; Footwear 621/4,537; Home 402/2,840; Kids 356/2,608; Accessories 275/1,922 | same (3,825) | yes |
 
 ## Competing answers that survived
-Only one residual fork, judged not decisive. Pickups to non-station zones only with no growth control gives 81,578 and a fee of $6.75. It survives only by ignoring the +3% growth in drop-offs and passengers, which FP-07 4.3 does not license, and it falls to -11.3% once growth is controlled. The judge's optional hardening (state that the restatement is net of other changes in the period) is not needed. All the other readings are closed by shipped text:
-
-| Reading | Restated | Fee | Closed by |
-|---|---|---|---|
-| Recorded | 74,753 | $7.25 | FP-07 4.3 |
-| Whole 22% fall | about 95,700 | $5.75 | FP-07 4.2 (the line is not a loading arrangement) |
-| Pooled ratio, all drop-offs | 77,418 | $7.00 | mix shift across groups |
-| Passenger-based ratio | about 98,800 | $5.50 | line diversion left in |
-| Window variants | 83.8k to 83.9k | $6.50 | robust |
-
-The pass 1 FIX_NOW fork is not visible in the pass 2 recomputation. I did not read the pass 1 report for this pass.
+None on the main call. Arrival order (GBP 189,330, Feb and Mar only), uniform pairing (GBP 192,000) and opening-day-as-delivery (GBP 0) all fail the labelled test or the assurance's goods-in wording.
+Residual forks outside the main call:
+- Ask 4: the voucher's own order_ref is the customer's latest order and differs from the case's order on 1,631 vouchers (36 per cent of those orders never refunded). Prompt says "orders in that category" without naming the order. The case order is supported by the files (every case order was refunded); a literal reader of the voucher row gets Womenswear 1,387 / 10,087 etc. Resolvable, not closed by prompt text. Optional one-clause pin ("the order the delay case was opened on") moves no figure.
+- Voucher currency is inferred (customer order currency; redemptions at face value on matching-currency orders, zero cross); all-pounds would give 3,393 / 16,860 / 10,003 / 1,594 / 1,250 / 1,044. Forced by evidence, but semantics, in the CSV only.
+- Rubric-level only: CSV column names and "met" form not pinned; chart line drawn at 5 per cent late share.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 23 (the judge counted 21; I counted 23 in the unzip and in target/) | yes |
-| Formats | 3 or more | parquet, csv, pdf, xlsx | yes |
-| Large file | 25,000 or more rows | 2024 annual 169,753 rows; 2025 annual 138,055 | yes |
-| Distractors | 2 or more, in metadata.json, not in file names | vaa_passenger_statistics_2023_2026.xlsx and vaa_ground_access_survey_2023.pdf; names are neutral | yes |
-| Distractor unused yet weighable, ruled out by a shipped fact | yes | the passenger-based ratio gives $5.50 and reproduces arithmetically; the line's diversion in the bulletin rules it out | yes |
-| Deliverables | 1 to 3, all in golden | 2 (docx, csv), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 120-cell ledger plus the docx figures; prompt states the rounding for each | yes |
-| Prompt shape and rubric | shape identifiable, 25 or more criteria | shape 07 grid, 120 ledger cells plus 4 figures and the chart | yes |
-| Reads as real, not LLM generated | yes | judge found no authoring or provenance leakage, and the dates are consistent | yes |
+| Files | 10+ | 12 | yes |
+| Formats | 3+ | 4 (csv, parquet, pdf, xlsx) | yes |
+| Large file | 25,000+ rows | 325,616 scans/openings; 595,609 orders rows | yes |
+| Distractors | 2+ named in metadata.json, none labelled in a file name | 3 (daily operations xlsx, shift rota, 2025 review pdf); neutral names | yes |
+| Distractor weight | unused by solution, weighable, ruled out by a shipped fact | per metadata and the judge's hygiene read; I did not recompute a distractor-derived answer | yes (not independently recomputed) |
+| Deliverables | 1 to 3, all in golden | 2, both in golden | yes |
+| Asks | multi-dimensional, unit and rounding stated | 6 months x 5 fields, category table; unit and rounding in the prompt | yes |
+| Prompt shape and 25+ criteria | identifiable, 25+ | shape 08; graded cells (30 monthly, 12 category, payment, months) exceed 25; rubric is portal-generated, not checkable here | yes (inferred) |
+| Reads as real | no LLM tells, goldens realistic | prompt 983 characters, one paragraph; judge found business-like noise and no tells | yes |
 
 ## Gate G reconciliation
-Thread: mechanism decomposition_attribution, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: gate_g decomposition_attribution, stump_class analytical, stump_strategy composition_mix. They match. The thread named no declared distractor as the surface read carrying the task; the passenger statistics file is a weighing alternative only, and the call survives its deletion. No mismatch.
+Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The card and design note declare the same family (stump_class analytical; the easy route is arrival-order pairing at GBP 189,330 against 127,785), so there is no mismatch. The declared distractors are not named as the surface read; the thread named none. One mild note: the thread says the daily sheet's backlog "nudges toward a pile". The sheet's bay counts track the running net and corroborate a stack without discriminating the order, so it does not carry the call. Gate G passes.
+
+Gate H line: domain pass, layers pass, decisive_step analytical (borderline).
+Borderline note, reconciled: the thread feared newest-first reads as a withheld rule. The design note's "Not rule application" and "No decoy" lines say no filed document states a pairing or picking practice, and the card's analyst_test places the decisive step in testing the arrival-order assumption on labelled openings. The labelled openings make it a measured behaviour, not a rule: 181,318 of 181,318 newest-first against 1,759 arrival order, across 13 months of December 2024 to April 2026 with 2025 reproducing Feb 615 and Dec 889 late refunds. A solver has to run the comparison; no sentence invites it. I accept the design note's reading. The risk is that the step is a one-comparison discovery (stump power moderate: a solver who fits candidates on return_label succeeds). The card text ("2025 and January 2026") understates label coverage, as does CC1; align them.
 
 ## Stump power (Gate F)
-Plausible but not guaranteed. The easy routes are $7.25, $5.75 and $7.00, each clean and wrong. The pooled-ratio route yields a small 3 per cent effect that may tempt partial solvers. A strong model that notices the line must still stratify by station zone and control for drop-off growth. The ledger asks add independent traps (affiliation by trip date, UTC, voids, re-sends, the fee in force).
-
-## Gate H
-domain: pass, layers: pass, decisive_step: analytical. The thread's Layer 2 is the stratified ratio against an unaffected control. The design note's decisive step and the card's analyst_test and domain_test say the same, so there is no mismatch.
+Moderate, per the thread. The easy route (arrival order, or opening day as delivery) files a wrong, plausible answer. A solver who inspects return_label and tests candidates lands the call. This is the test-and-select organ, not a textbook route with a single obvious method; the main thread weighs it against the design note's ladder.
 
 ## Findings, ranked
-1. None blocking.
-2. Minor and optional: the 2024 annual file still carries voids, which the dictionary says only the 2025 file excludes; this is determinate.
-3. Minor and optional: the residual pickups-only $6.75 fork could be closed by wording FP-07 4.3 as restatement net of other changes. The judge did not require it and I agree.
+1. Wording (FIX_NOW): CC1 and step 3 say labelled openings are "2025 and January 2026"; they run to 12 April 2026. Reword in the submission (and card text if it repeats it). No figure moves.
+2. Ask 4 fork (optional): the prompt names no order for the category. A one-clause pin narrows it; the asks are free of the main-call rules, so it can stand.
+3. Voucher currency inference (informational): forced by redemption evidence.
+4. Feb/Mar label gap is an extrapolation of newest-first (informational; no alternative survives).
 
 ## Next action for the author
-Proceed to ship (stage 5) from the current rebuild; no change to the generator, prompt or submission is needed.
+Reword CRITICAL_COMPONENTS 1 and step 3 of submission.md to say the labelled openings run from December 2024 to 12 April 2026, then rerun the free gates (no rebuild); optionally add the order-pinning clause to ask 4.
