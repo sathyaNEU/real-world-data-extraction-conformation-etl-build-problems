@@ -1,0 +1,141 @@
+{
+ "architecture": 2,
+ "as_of": "2026-05-15",
+ "decision": "how many OPS-41 series teams the Carvale Police Service summer deployment plan stands up for the spring 2026 phone robberies and thefts from the person, and the patrol districts each team covers",
+ "deliverables": [
+  "series_assessment_2026.xlsx",
+  "summer_series_deployment_memo.docx"
+ ],
+ "distractor_files": [
+  "cpsd_school_year_calendar_2025_26.pdf",
+  "secondhand_dealer_phone_returns_2026q1.csv"
+ ],
+ "files": {
+  "carvale_transit_codes.xlsx": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit fare systems code list, revision 14 of 30 March 2026; synthetic"
+  },
+  "cau_lrt_station_reference_2026.pdf": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Police Service Crime Analysis Unit station reference, revised 6 April 2026; synthetic"
+  },
+  "cpsd_school_year_calendar_2025_26.pdf": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Carvale Public School Division 2025-2026 school year calendar; synthetic"
+  },
+  "fare_gate_daily_summary_2025.csv": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit fare system archived daily summary by gate, 3 Feb to 11 May 2025; synthetic"
+  },
+  "fare_gate_entries_hourly_2026.csv": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit fare system, hourly entries by gate, 2 Feb to 10 May 2026; synthetic"
+  },
+  "gtfs/agency.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/calendar.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/calendar_dates.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/feed_info.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/frequencies.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/routes.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/stop_times.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/stops.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "gtfs/trips.txt": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit GTFS feed 2026.03.29-r2; synthetic"
+  },
+  "ops41_series_crime_response_directive.pdf": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Police Service Operational Directive OPS-41, version 2.1; synthetic"
+  },
+  "patrol_districts_2025.geojson": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Police Service patrol district boundaries 2019 to 2025 (archived layout); synthetic"
+  },
+  "patrol_districts_2026.geojson": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Police Service patrol district boundaries in force from 1 January 2026; synthetic"
+  },
+  "rms_occurrence_extract_20260511.csv": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Police Service records management system, occurrence extract pulled 11 May 2026 (all occurrence types, 2 Feb to 11 May 2025 and 2 Feb to 10 May 2026); synthetic, built for this task"
+  },
+  "secondhand_dealer_phone_returns_2026q1.csv": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Second-hand dealer bylaw returns for phones bought January to March 2026; synthetic"
+  },
+  "summer_deployment_planning_note.docx": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Deputy Chief (Operations) planning note of 4 May 2026; synthetic"
+  },
+  "tpo_occurrence_log_2025_2026.xlsx": {
+   "date": "2026-05-15",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Carvale Transit Security Operations, transit peace officer occurrence log export of 11 May 2026; synthetic"
+  }
+ }
+}

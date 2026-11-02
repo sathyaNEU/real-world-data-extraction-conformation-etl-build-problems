@@ -59,9 +59,9 @@ def main():
              "rms_occurrence_extract_20260511.csv by occurred_from_local, 9 February to 3 May 2026, with the transit "
              "officer reports in tpo_occurrence_log_2025_2026.xlsx not already filed with the Service, and kept the "
              "%d with two or more suspects (an offender group, section 3)." % f["n_group_scope"])
-    L.append("2. Linked those offences on method, overlapping suspect ages, 1 km and 28 days: %s local series, one each "
+    L.append("2. Linked those offences on method, overlapping suspect ages, %d km and %d days: %s local series, one each "
              "at Ridgeview, Ashford Road, Millbrook, Union Yards, Cobb Street and Hollin and one of street robberies in "
-             "district 6." % WORDS[f["rung0_teams"]])
+             "district 6." % (f["linkage_km"], f["linkage_days"], WORDS[f["rung0_teams"]]))
     L.append("3. Placed each platform offence on the train trips leaving its station within three minutes of "
              "occurred_from_local, from the gtfs/ feed with frequencies.txt expanded and calendar_dates.txt applied: "
              "%d trips each carry two or three offences at different stations and join the Ridgeview, Ashford Road, "
@@ -88,7 +88,7 @@ def main():
     for x in f["teams"]:
         L.append("   - %s: %s, %d offences" % (x["label"], dlist(x["districts"]), x["n"]))
     L.append("2. Robbery and theft from the person with a phone taken, 2026 patrol districts, same twelve weeks of 2025:")
-    for d, v in f["ask_a"].items():
+    for d, v in sorted(f["ask_a"].items(), key=lambda kv: int(kv[0][1:])):
         L.append("   - District %s: %d (%s), %d (%s), %d (%s)" % (d[1:], v[0], PERIODS[0], v[1], PERIODS[1], v[2], PERIODS[2]))
     L.append("3. Eastline stations, 9 February to 3 May 2026, fare-gate entries and scheduled Eastline departures in "
              "both directions:")

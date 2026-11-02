@@ -1,37 +1,49 @@
 {
  "task": "task238",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics",
+ "status": "BUILD",
+ "domain": "general-statistics-data-science (missing-data-censoring-measurement-error; retail price integrity)",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-17",
- "stump": "A competent analyst estimates each index's mode effect by comparing web with telephone completes adjusted for every recorded characteristic and sets the monitor band at 3 points, safe after dark binding; the step that lands it there is reading the mode effect off households that chose their mode, when the test's randomly allocated letters give a contrast that, divided by the letters' difference in web uptake, sets the band at 4.",
- "architecture": 1,
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-02",
+ "stump": "A competent analyst reads each store's price accuracy off the weekly random price audit and files no store on Price Watch (every store at 99.9% or more); the step that lands it there is taking the audited labels for the scans, when each Thursday's changed items carry last week's label from opening until the store prints and hangs its changeover batch and the Thursday scans crowd into those hours, which puts Spryfield, Lower Sackville, Antigonish, Bridgewater and Yarmouth below 99.0 per cent.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; every REVIEW line answered in the note)",
-  "reader": "four isolated reads: question 1 none in each, question 6 analytical; the close-out's processing list rewritten after pass 1"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g against task266, answered)",
-  "nearest": "task259 0.10"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (r2; r1 FIX_NOW on asks 2 and 3 fixed by filing the selected-person rule in plan section 5)",
-  "report": "determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4: spawn the isolated leak reader and the determinism judge together on the final cut",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "lineage": [
+  {
+   "architecture": 1,
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset",
+   "delivered": "2026-10-17",
+   "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (r2; r1 FIX_NOW on asks 2 and 3 fixed by filing the selected-person rule in plan section 5)",
+    "report": "determinism_check_report.md"
+   }
+  }
+ ]
 }

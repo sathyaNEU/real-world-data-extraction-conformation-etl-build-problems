@@ -163,12 +163,14 @@ def build(out):
     # ---------------- dispatch, fleet, inventory ----------------
     loads = O.lg_loads(hist, gc_by_block)
     truth["loads"] = loads
+    open_t = _opening(loads)
+    truth["lgsp_open_t"] = open_t
     _write_dispatch(out, loads)
     _write_fleet(os.path.join(out, F_FLEET))
     write_csv(os.path.join(out, F_INV), ["STOCKPILE", "TONNES", "AU_GPT", "CONTAINED_OZ", "BASIS"],
               [["ROM PAD", "61,880", "1.06", "2,109", "2022 year-end survey, grade by dispatch"],
-               ["LGSP (low-grade stockpile)", "%s" % format(P.LGSP_OPEN_T, ","), "%.2f" % P.LGSP_OPEN_G,
-                format(int(round(P.LGSP_OPEN_T * P.LGSP_OPEN_G / P.TROY)), ","), "2022 year-end survey, grade by dispatch"],
+               ["LGSP (low-grade stockpile)", "%s" % format(open_t, ","), "%.2f" % P.LGSP_OPEN_G,
+                format(int(round(open_t * P.LGSP_OPEN_G / P.TROY)), ","), "2022 year-end survey, grade by dispatch"],
                ["MW DUMP (mineralised waste)", "3,412,960", "0.19", "20,849", "2022 year-end survey"]])
 
     # ---------------- DCS and CMMS ----------------
@@ -195,6 +197,30 @@ def build(out):
 
 
 # ---------------------------------------------------------------------------------------------------------------
+
+STOCK_ENDS = (dt.datetime(2024, 1, 1), dt.datetime(2025, 1, 1), dt.datetime(2026, 1, 1), dt.datetime(2026, 11, 1))
+
+
+def stock_truth(loads, open_t):
+    out = []
+    for end in STOCK_ENDS:
+        s = loads[loads["time_local"] < end]
+        t = open_t + s["payload"].sum()
+        au = (open_t * P.LGSP_OPEN_G + (s["payload"] * s["grade"]).sum()) / P.TROY
+        out.append((t, au))
+    return out
+
+
+def _opening(loads):
+    """The 2022 year-end survey tonnage of the low-grade stockpile, the first candidate that keeps every year-end
+    figure clear of its rounding line."""
+    for k in range(200):
+        t0 = P.LGSP_OPEN_T + 137 * k
+        ok = all(80 <= abs((t % 1000) - 500) and 8 <= abs((au % 100) - 50) for t, au in stock_truth(loads, t0))
+        if ok:
+            return t0
+    raise AssertionError("no opening tonnage clears the rounding lines")
+
 
 def _hole_ids(hd):
     """Hole ids as the drill-and-blast system numbers them: bench, pattern (one per bench and drilling week), hole."""

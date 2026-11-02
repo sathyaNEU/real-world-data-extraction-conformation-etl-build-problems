@@ -1,0 +1,131 @@
+{
+ "ask_a": {
+  "D1": [
+   9,
+   16,
+   12
+  ],
+  "D10": [
+   3,
+   2,
+   1
+  ],
+  "D2": [
+   7,
+   8,
+   7
+  ],
+  "D3": [
+   11,
+   3,
+   4
+  ],
+  "D4": [
+   6,
+   4,
+   6
+  ],
+  "D5": [
+   9,
+   2,
+   4
+  ],
+  "D6": [
+   15,
+   2,
+   9
+  ],
+  "D7": [
+   2,
+   7,
+   5
+  ],
+  "D8": [
+   4,
+   6,
+   4
+  ],
+  "D9": [
+   6,
+   2,
+   5
+  ]
+ },
+ "ask_a_total": 181,
+ "ask_b": {
+  "Ashford Road": 158588,
+  "Centre Square": 709302,
+  "Cobb Street": 171545,
+  "Fairgrounds": 45586,
+  "Millbrook": 311291,
+  "Prairie Gate": 235756,
+  "Ridgeview": 276132,
+  "Union Yards": 194321,
+  "Westgate": 222832
+ },
+ "ask_c": {
+  "Ashford Road": 14466,
+  "Centre Square": 16472,
+  "Cobb Street": 15268,
+  "Fairgrounds": 7220,
+  "Millbrook": 16640,
+  "Prairie Gate": 6948,
+  "Ridgeview": 13896,
+  "Union Yards": 16556,
+  "Westgate": 8236
+ },
+ "eastline_trips": 18,
+ "linkage_days": 28,
+ "linkage_km": 1,
+ "n_group_scope": 100,
+ "n_teams": 4,
+ "no_series_districts": [
+  "1",
+  "2",
+  "3",
+  "10"
+ ],
+ "review_period": [
+  "2026-02-09",
+  "2026-05-03"
+ ],
+ "rung0_teams": 7,
+ "rung1_teams": 6,
+ "rung2_merged_n": 59,
+ "rung2_teams": 3,
+ "simultaneous_evenings": 3,
+ "teams": [
+  {
+   "districts": [
+    "4",
+    "6",
+    "7",
+    "9"
+   ],
+   "label": "Eastline group",
+   "n": 43
+  },
+  {
+   "districts": [
+    "5"
+   ],
+   "label": "Hollin station group",
+   "n": 18
+  },
+  {
+   "districts": [
+    "8"
+   ],
+   "label": "Cobb Street station group",
+   "n": 16
+  },
+  {
+   "districts": [
+    "6"
+   ],
+   "label": "District 6 street robbery group",
+   "n": 14
+  }
+ ],
+ "trip_window_min": 3
+}

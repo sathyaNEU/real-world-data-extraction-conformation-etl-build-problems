@@ -281,6 +281,19 @@ def gold_room(md):
             for m_ in mem:
                 b.loc[m_, "lot"] = lot
             k += len(mem)
+    # a quarter whose poured fine gold would sit on a 50-ounce line takes its largest single-bar lot a little heavier
+    for _ in range(8):
+        alloc = quarter_fine(b)
+        hit = [q for q, v in alloc.items() if 38 <= v % 100 <= 62]
+        if not hit:
+            break
+        for q in hit:
+            a, z = QUARTERS[q]
+            solo = b.groupby("lot")["lot"].transform("size") == 1
+            c = b[solo & (b["kind"] == "REG") & (b["pour_day"] >= a.date()) & (b["pour_day"] < z.date())]
+            i = c["fine"].idxmax()
+            b.loc[i, "fine"] += 26.0
+            b.loc[i, "gross"] = b.loc[i, "fine"] / b.loc[i, "fineness"]
     ship_date = dict(zip(sh["ship"], sh["date"]))
     rec_day = {s_: ship_date[s_] + dt.timedelta(days=int(rng.integers(3, 6))) for s_ in ship_date}
     lots = []
@@ -293,6 +306,18 @@ def gold_room(md):
         lots.append(dict(lot=lt, ship=s_, received=received, settled=settled, gross_rec=gross_rec,
                          fineness=fine / gross_rec, fine=fine, ag=gross_rec * float(rng.uniform(0.07, 0.12))))
     return b, sh, pd.DataFrame(lots)
+
+
+def quarter_fine(b):
+    """Each quarter's poured fine gold: a lot's fine gold shared among its bars by their gross weights, by pour day."""
+    lot_fine = b.groupby("lot")["fine"].transform("sum")
+    lot_gross = b.groupby("lot")["gross"].transform("sum")
+    alloc = lot_fine * b["gross"] / lot_gross
+    out = {}
+    for q, (a, z) in enumerate(QUARTERS):
+        sel = (b["pour_day"] >= a.date()) & (b["pour_day"] < z.date())
+        out[q] = float(alloc[sel].sum())
+    return out
 
 
 # ---------------------------------------------------------------------------------------------------------------

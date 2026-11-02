@@ -51,6 +51,9 @@ def figures(res):
         "ask_c": res["ask_c"],
         "review_period": ["2026-02-09", "2026-05-03"],
         "n_group_scope": res["n_group_scope"],
+        "linkage_km": 1,
+        "linkage_days": 28,
+        "trip_window_min": 3,
     }
     return f
 

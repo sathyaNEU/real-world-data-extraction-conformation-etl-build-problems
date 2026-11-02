@@ -1,4 +1,333 @@
-# task149: Ostrander Logistics' fiscal 2027 recordable injuries at its twenty ergonomics programme DCs (architecture 1)
+# task149: Rathgarvan station's weekday commuter boardings in 2029, Kilcarrow Metropolitan Transport Authority (architecture 2)
+
+Private, never ships. Architecture 2, re-rooted on 2026-11-02 at the Batch 3 queue reset: architecture 1 (a 3PL's
+FY2027 recordable injuries at twenty grocery DCs, epidemiology-public-health / health-burden-impact-modeling, shipped
+2026-10-16 with no portal result) is closed with its world, and its note is kept below as `## Architecture 1 record`.
+The new draw moves the number to another client domain and world under the same objective.
+
+## Draw
+
+- **Pairing.** Urban & Regional Science, task type `forecasting` (card subdomain `forecasting`), objective Forecasting &
+  Predictive Modeling. Shape 02 on the card; the criteria come from the zones' figures (ten zones with a station share)
+  plus the call, the scope and two ask blocks: total and scope 2, zone boardings 10, ask A 7, ask B 6,
+  instruction-following 3, 28 criteria.
+- **World.** A fictional Irish city, Kilcarrow, and its metropolitan transport authority (KMTA). A new station at
+  Rathgarvan opens in September 2028 on the Ardnagree commuter line; the Investment Committee picks its scope on 14
+  December 2027 from the commuter boardings the station will carry on an average ordinary weekday in 2029 (full scheme
+  at 1,400 or more). Fiction as-of date 2027-12-06.
+- **Call.** About 1,300 weekday commuter boardings (1,312.0), so the reduced scheme. Default about 2,400 (2,374.6), the
+  full scheme.
+- **Personas** from `guard.py names --geo Ireland --locale en_IE --seed 149`: Colum Curtis (author of the refresh),
+  Deaglan Gilmore (author of the Lisnagry review), Eve Dunne (the panel provider's contact). Garrett Dulohery and Ciaran
+  McInnes were drawn first and replaced (first names already used in task104 and task106, `people.first` WARN).
+- **Candidates written before choosing** (each with its fate in `## Tried and rejected`): a hospital's medical wards
+  moving to single rooms (nursing hours from the Safer Nursing Care Tool); a taxi tariff rise read through each driver's
+  stopping rule; blood donors' haemoglobin deferrals under a shorter donation interval; a media plan's cross-channel reach;
+  an app feature's durable effect from a staggered test; the commuting days of a new station's catchment (chosen).
+- **Guard.** `check` on the draft: BLOCK `ban.pattern` (decisive G3 against task248, registered minutes earlier), so the
+  decisive generator was redrawn to G2 (the census is at worker grain, boardings at journey grain; the honest label of
+  the conversion), with G13 and G3 behind it; `test.same_puzzle_older` and `test.same_driver_older` against task482,
+  task65 and task67 cleared by differentiation lines on the card (none of those builds converts a count of persons into
+  journeys). Registered; `check` re-run on the registered card: WARN only, `overuse.org_family` (government_agency: a
+  transport authority is a government agency, the honest family) and `repeat.question_form` (how-many against task248:
+  the decision is a count of boardings, so the form follows the decision).
+- **Data-native sentence.** The catchment's commuters work mainly at the hospital campus on twelve-hour rosters, at
+  Carrigboy's plants on four-on four-off shifts and in the Docklands' hybrid offices, so the census's one row per worker
+  stands for a different number of weekday journeys at each workplace, and only the operator's panel of the residents'
+  own daily stays shows how many.
+- **Forward facing.** The call is a 2029 quantity on a station not yet open.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, how many of an average ordinary weekday's journeys each workplace zone's census
+  commuters actually make, has no column anywhere: the census counts persons by usual workplace, the refresh files the
+  station share, and the panel holds stays; the property is a relation between each device's long workplace stays and
+  the ordinary weekdays it was observed on.
+- **Link:** the census commuters are turned into journeys through the panel, read zone by zone through the cell lookup's
+  area shares, a comparison of persons in one system against stays in another that no key joins and that the
+  journey-to-work construction never asks for.
+- **Reflex:** the field's own construction for a new station (journey-to-work flows times the mode share, each commuter
+  a journey every weekday) sits at rung 0 and files 2,374.6 (about 2,400) and the full scheme.
+- **Back-test:** the Lisnagry review validates the reflex at the last new station on the line: the 2018 census-based
+  forecast of 1,140 against 1,076 ordinary-weekday entries in its first autumn and winter, 5.6 per cent low.
+- **Second use:** the panel and its cell lookup carry ask B (arrival times); the gate file and the register carry ask A
+  and the Lisnagry review's outturn; the calendar defines ordinary weekdays for every figure; the census is the refresh's
+  filed basis. Delete the decisive step and every file stays.
+- **Shock:** rosters and hybrid weeks are ordinary working patterns; no zone, device or station is an outlier, and the
+  golden's zones are not an interval of any shipped statistic (the hospital and Carrigboy sit inside the zones' weekday
+  shares, 50.4 to 78.8 per cent).
+- **Pins:** the refresh files the WHAT in the authority's own business-case form (population: the seven small areas'
+  census commuters, final release, 2022 base; outcome: journeys to work begun at Rathgarvan; window: an average ordinary
+  weekday in 2029; unit: boardings; comparison: each zone's station share and the 1,400 threshold); no filed sentence
+  names a trip rate, a weekly frequency, a factor or the panel's use.
+
+## Default path
+
+1. Read the census final release and sum the seven small areas' commuters by workplace zone, leaving out home workers,
+   no fixed place and outside the county.
+2. Multiply each zone by its station share in the refresh's Table 2.
+3. Count each commuter as one journey to work every weekday, the journey-to-work convention the Lisnagry review
+   validated, and sum the zones: 2,374.6.
+4. Compare with the threshold of 1,400: the full scheme.
+
+Ends on: about 2,400 weekday commuter boardings in 2029 (2,374.6) and the full scheme.
+Golden: about 1,300 weekday commuter boardings in 2029 (1,312.0) and the reduced scheme.
+
+## Stump sentence
+
+A competent solver multiplies each zone's census commuters by the refresh's station share and counts every commuter as
+a boarding each weekday, filing about 2,400 (2,374.6) and the full scheme; the step that lands it there is reading a
+usual-workplace count as daily journeys, when the panel shows each zone's commuters going in on 50 to 79 per cent of
+ordinary weekdays (2.5 to 3.9 days a week), which puts Rathgarvan at about 1,300 (1,312.0) and the reduced scheme.
+
+## Three rules
+
+- **Task type:** urban-regional-science / forecasting: a new station's 2029 weekday demand forecast, the urban planner's
+  own forward quantity for a scope decision.
+- **Domain test:** the deciding quantity is the new station's weekday trip generation from its catchment's journey-to-work
+  flows (commuters by workplace zone times the mode share times the journeys each makes), the transport planner's own
+  demand construction; with another field's nouns (a clinic's registered list) there is no census place-of-work table, no
+  station share by workplace zone and no working week in a stay panel, so the call stops reading.
+- **Swap:** "a clinic will see about 1,300 patients on an average weekday" keeps a count and a rate but loses the
+  usual-workplace census row, the zone's station share and the roster or hybrid week that sets how often a worker
+  travels there; nothing in it would be read from a mobility panel of daily stays.
+- **Layer 1:** the panel's stays stamped in UTC while weekdays are Irish (the end of Irish Summer Time on 31 October falls
+  inside the weeks: the operator's export); network cells overlapping census zones through an area-share lookup (radio
+  planning); device identifiers reissued on a SIM change (the operator's subscriber system); a provisional and a final
+  census release overlapping (the statistics office's two releases); the operator's gate entries in thousands in the 2020
+  review against units in the export; the October bank holiday and the school mid-term inside the panel weeks (the
+  calendar); home workers, no fixed place and outside-county rows inside the census table. None is placed to be caught;
+  checks.py holds each to the golden's bin.
+- **Layer 2:** estimand_identification: the estimand is journeys made on the day and the census counts persons; the
+  choice that flips the call is to measure each zone's share of ordinary weekdays travelled from the panel, against one
+  journey per commuter or a line-wide recovery factor.
+- **Decisive step:** turning each zone's usual-workplace commuters into journeys on an average ordinary weekday at the
+  share of ordinary weekdays the panel shows that zone's resident commuters going to their workplace.
+- **Not semantics:** every field read right (UTC to Irish time, the cell lookup, the final release, the calendar, the
+  identifiers' spans) still leaves the default on 2,374.6: the census counts its persons correctly and the shares are
+  right; the default files the wrong answer on correct data by counting a person as a journey every weekday.
+- **Not rule application:** no filed sentence says how many journeys a commuter makes, so executing the refresh literally
+  needs a journeys-per-commuter quantity that only an estimate from the panel supplies; the enumerated family spreads
+  1,312 to 2,375 (census daily 2,374.6, Lisnagry recovery factor 1,758.2, line recovery factor 1,610.1, pooled panel share
+  1,483.3, zone-by-zone panel shares 1,312.0) and the standing family (zone shares under every licensed reading of
+  workplace, commuting day, cell and denominator) spreads 1,312.0 to 1,314.4, one bin, ruled out loudly by the panel's own
+  stays (zone shares from 50.4 to 78.8 per cent, devices 35 to 183 per zone).
+- **Analyst test:** a strong analyst who reads every file correctly multiplies each zone's census commuters by the
+  station share, counts each commuter as a journey every weekday, sees the Lisnagry review confirm the construction and
+  files about 2,400 (2,374.6) and the full scheme, against about 1,300 and the reduced scheme.
+- **Estimand:** rathgarvan_fbc_demand_refresh_dec2027.pdf section 2: commuter boardings are the journeys to work that
+  residents of the catchment begin at Rathgarvan on an average ordinary weekday in 2029 (Monday to Friday in school term,
+  not a public holiday); the commuters are the persons the Census 2022 place-of-work tables (final release) count in the
+  seven small areas by zone of usual workplace, held at the 2022 base; each zone contributes the journeys to work its
+  commuters make at the Table 2 station share; home workers, no fixed place and outside the county are outside the market.
+- **No decoy:** nothing is planted to be caught: no copied block, no withheld rule, no memo or stakeholder figure; the
+  Lisnagry review reports a real forecast and outturn, the panel is the operator's ordinary extract, and no shipped text
+  states the default figure or the golden.
+- **No certified replay:** the method is not recovered by reproducing certified figures: the only certified comparison
+  (Lisnagry, 2019 to 2020) is reproduced by the default too; the golden's figure rests on the 2027 panel's stays.
+- **Lesson:** a census place-of-work count is a count of people, and a station carries journeys; where rosters and hybrid
+  weeks set how often each workplace's commuters travel, the conversion is measured workplace by workplace from the
+  residents' own days, not taken as one a weekday or as a line-wide factor; no build on file converts a person count to
+  journeys through a stay panel.
+
+## Readability screen
+
+| Rung | Named in a filed sentence | A column or one join away | The field's reflex | A file whose presence announces it | Verdict |
+|---|---|---|---|---|---|
+| 0 census commuters x share, one journey a weekday | yes (the refresh's basis) | yes | yes | yes | readable |
+| 1 Lisnagry recovery factor (2027 over 2019 entries) | no | yes (gate file) | yes (a recovery ratio) | yes (the review) | readable |
+| 2 line recovery factor | no | yes (gate file) | yes | yes | readable |
+| 3 one pooled weekday share from the panel | no | no | partly | no | readable |
+| 4 zone-by-zone weekday share from the panel's stays (decisive) | no | no (stays to commuting days to zones through the lookup) | no | no (the panel also carries ask B) | silent |
+
+## Semantic fork table
+
+| SF | Term | Golden reading | Other reading | Effect on the call | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | commuting day | a workplace stay of four hours or more | 3.5 or 5 hours | none: every zone figure in one bin | same call, asserted in checks.py |
+| SF2 | usual workplace | the zone of most long stays, three or more | a strict majority, or five or more | none | same call, asserted |
+| SF3 | a cell shared by two zones | the zone with the larger area share | split by area share | none | same call, asserted |
+| SF4 | a zone's weekday share | commuting days over observed days | the mean of each device's share | none | same call, asserted |
+| SF5 | the day of a stay | Irish date | UTC date | none | same call, asserted |
+| SF6 | ordinary weekday | Monday to Friday in term, not a public holiday | every weekday | total 1,284.7, same bin | the refresh section 2; asserted |
+| SF7 | census basis | final release | provisional release | total in the same bin | the refresh section 2 (final release); asserted |
+| SF8 | the market | zones KW01 to KW11 | home workers, no fixed place, outside county added | would add journeys with no station share | the refresh section 2 and Table 2; asserted |
+| SF9 | a boarding | a journey to work begun at the station by a resident | return journeys or visitors | none in the graded figure | the refresh section 2; asserted |
+| SF10 | station share | applies to each zone's journeys to work | applies to commuters | same arithmetic once journeys are counted | Table 2's heading; asserted |
+| SF11 | a reissued identifier | each identifier over its own first to last day | every identifier over all 55 days | total 1,264.9, same bin | the panel notes (reissued identifiers are not linked); asserted |
+| SF12 | the base year | census commuters held at 2022 | grown by completions or jobs to 2029 | would move the total | the refresh section 2 (held at the 2022 base); asserted |
+| SF13 | ask A, a station | the station with the code it replaced (UHK with KUH, CBH with CBY) | the current code alone | no 2019 figure for two stations | the asking sentence; asserted |
+| SF14 | ask A, a station's entries | every location code carrying its register number | the register's codes alone | every station figure moves | the register's station_no and the codes G<no><gateline>; asserted |
+| SF15 | ask B, reaching the workplace | the start of the workplace stay, Irish time, 07:30 to 09:30 inclusive | the first stay away from home; UTC | figures move | the asking sentence; asserted |
+| SF16 | rounding | zones to the nearest 10 and the total to the nearest 100, from the same exact figures | the total as the sum of rounded zones | 1,310 against 1,300 | the prompt's rounding sentence; asserted |
+
+## Ladder
+
+| Rung | Construction | Weekday boardings 2029 | Scope |
+|---|---|---|---|
+| 0 | census commuters x station share, one journey each weekday | 2,374.6 (about 2,400) | full |
+| 1 | rung 0 x Lisnagry's autumn 2027 entries over autumn 2019 (0.740) | 1,758.2 (about 1,800) | full |
+| 2 | rung 0 x the line's autumn 2027 entries over autumn 2019 (0.678) | 1,610.1 (about 1,600) | full |
+| 3 | rung 0 x one weekday share pooled over every panel commuter (62.5 per cent) | 1,483.3 (about 1,500) | full |
+| 4 | each zone's commuters x share x that zone's panel weekday share (the golden) | 1,312.0 (about 1,300) | reduced |
+
+The field's method is rung 0; the decisive step is the precondition it assumes (one journey per commuter per weekday)
+failing differently zone by zone. Rungs 1 to 3 are the recoveries a careful analyst reaches for when the review or the
+gate file suggests commuting has fallen, each wrong by the zone mix; checks.py counts the cheap routes that reach the
+call on the clean truth: none.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | the seven small areas' census commuters by workplace zone, home workers, no fixed place and outside county out | filed, refresh section 2 and Table 1 |
+| 2 Unit of account | one journey to work begun at Rathgarvan | filed, refresh section 2 |
+| 3 Attribution window | an average ordinary weekday in 2029 | filed; the panel weeks stand for it (C1) |
+| 4 As-of dating | panel 6 September to 26 November 2027; census 2022 final release | filed in the notes and the refresh |
+| 5 Version basis | the final release | filed, refresh section 2; C1 over the provisional |
+| 6 Denominator | a device's observed ordinary weekdays | C1 against all 55 days (SF11) |
+| 7 Weighting | commuting days over observed days, pooled within a zone | C1 against the mean of device shares (SF4) |
+| 8 Window length | the twelve panel weeks | C1, the weekday share is stable across weeks |
+| 9 Boundary inclusivity | stays starting on Irish ordinary weekdays | C1 against UTC dates (SF5) |
+| 10 Rounding path | exact zones summed, rounded once | filed in the prompt (SF16) |
+| 11 Tie-break | none arises (no zone at a rounding edge) | asserted bin distances |
+| 12 Maturity and censoring | identifiers that start or end inside the weeks | each over its own span (SF11) |
+| 13 Order of operations | census x share x weekday share, any order | C1, a product |
+| 14 Row order | sums and counts | C1 |
+| 15 Duplicate resolution | none: one row per stay | C1 |
+| 16 Identity normalisation | reissued identifiers left apart, each over its own span | C1 (SF11) |
+| 17 Netting against gross | gross journeys to work, no returns | filed, refresh section 2 (SF9) |
+| 18 Dimensional units | persons, shares, journeys | C1 |
+| 19 Code and status semantics | KX rows outside the market | filed, refresh section 2 (SF8); never the stump |
+| 20 Integerisation | none before the final rounding | C1 |
+| 21 Clause scope | Table 2's share applies to each zone's journeys | filed (SF10) |
+| 22 Forward window contents | the 2022 base held; no completions or jobs growth | filed, refresh section 2 (SF12) |
+
+## Literal reader
+
+Executed word for word, the refresh asks for the journeys to work the catchment's census commuters begin at Rathgarvan on
+an average ordinary weekday; the census gives persons, so the literal reader needs journeys per commuter per ordinary
+weekday by zone, and the only shipped evidence of it is the panel's stays, which give 1,312.0 (about 1,300) and the
+reduced scheme. The default (a person counted as a journey every weekday) does not comply with "the journeys ... on an
+average ordinary weekday", because it substitutes the census's count of persons for the journeys they make.
+
+## Oracles
+
+- The independent verifier (generator/verify.py, pandas and raw OOXML) recomputes the total (1,312.0), every zone, every
+  ask figure and reads the golden files back.
+- The Lisnagry review's outturn recomputes from the gate file (asserted).
+- The world's own working regimes (params.py) put each zone's true weekday share within the panel's estimate, by
+  construction; the golden reads only the shipped panel.
+
+## Ask sheet
+
+**Ask A, stations now on the Ardnagree line and the line as a whole (7 figures, whole per cents).** H18 home: a qualifier
+of the call (how far each station's autumn entries stand below 2019), used in the note's context paragraph. Primary
+device D7 keys: the export lists secondary gatelines under their own location codes (G0213 Ardnagree park-and-ride gate
+to May 2021, G0305 Central south concourse to August 2022, G0417 Docklands' temporary entrance in 2019 and 2020, G0711
+Carrigboy's second entrance from 2022, G0612 University Hospital's east entrance from 2024, G0909 Lisnagry's Mill Road
+entrance from 2026), none in the register, each carrying its station's register number; hazards: UHK to KUH and Carrigboy
+Halt to Carrigboy (the register, stated), ordinary weekdays from the calendar (2019's October mid-term and bank holiday).
+Path: gate file (3 columns), register (6), calendar (4). Stops: register codes only (ARD 94, LSG 59, KCN 90, KDK 87, KUH
+64, CBY 65, line 80), the current code alone (no 2019 figure for KUH and CBY), the golden (73, 74, 65, 56, 83, 79, 68).
+Pin test: the asking sentence pins the window, the day type and the predecessor; the device sits in which rows are the
+station's, a dimension the pins leave open.
+
+**Ask B, zones with a station share of 0.10 or more (6 figures, whole per cents).** H18 home: a component of the scope
+case (how many of each zone's journeys arrive in the morning peak), shown in the workbook. Primary device D8 clocks: UTC
+stamps against Irish time across the end of Irish Summer Time inside the weeks; second device D6: a late-shift or
+night-shift commuter's day often starts with a short morning stay away from home, so the day's first stay away from home
+is not the arrival at work (moves the city centre, the hospital and Carrigboy). Path: stays (4 columns), devices (4),
+lookup (4), calendar (4). Stops: UTC read as Irish time (66, 91, 56, 76, 39, 58), the day's first stay away from home (88,
+93, 95, 97, 53, 99), the golden (83, 93, 92, 97, 40, 99). Pin test: the asking sentence pins the window and "reached the
+workplace"; the devices sit in the clock and in which stay is the arrival.
+
+Main population's zero-counts: every served zone has panel commuters (35 to 183 devices); every station has entries in
+both autumns. Referee: the full includer's row below reproduces every figure (checks.py).
+
+| Ask | Cracker's handling | Cracker |
+|---|---|---|
+| A | register codes, predecessors joined, ordinary weekdays: all seven figures off | miss |
+| B | time-zone database, first stay away from home: three of six figures off | miss |
+| full includer | G-codes by station number, workplace-stay arrival: all thirteen right (check row, not the cracker) | miss |
+
+Pair ceiling: 41.2 (cracker 57.7, mirror 24.7; the cracker keeps 3 of 13 ask criteria)
+Mirror leakage: 23.1 per cent of the ask weight
+Measured by: generator/ceiling.py on the cut pack
+
+## Tried and rejected
+- The seed's mechanism (new hires not yet in the tenure window where harm surfaces): rejected at the draw, a hazard by
+  time since hire is close kin to task133's delayed entry and task130's report lag.
+- Regression to the mean of sites chosen for a high recent rate: rejected at the draw, task130's lineage spent it
+  (a group chosen on a noisy outcome, forecast by its own chosen-period value).
+- Contact injuries scaling with how many associates share the floor at once (density per operating hour, a new shift
+  spreading the crew thin): rejected at the draw, task181's driver (events follow encounters between units present at
+  the same time, not the time units spend) in other nouns.
+- Injuries per hour rising past a utilisation threshold of the building's capacity: rejected at the draw, task79's
+  driver (a conversion that changes once a capacity binds, the forward window past it).
+- Heavier freight read through a convex dose in case weight (fatigue-failure damage): rejected at the draw, a weight
+  column in the item master makes it a stratification on a visible attribute, and the convexity is task229's driver.
+- A first cut of the world where cases per hour back-tested as well as pace (MAPE 10.1 against 10.2 per cent, deviance
+  1.3 apart): the history's freight mix was stable inside each DC, so the two exposures moved together and a fit on cases
+  per hour (842, the 800 bin) was a defensible construction the data could not rule out. Rejected for an open method;
+  repaired by the history's real account wins and losses (heavy and light accounts on and off at 30 DCs, staffed at the
+  standards) and by two to four lasting pace changes at every DC, which separate the two (60 deviance points; 14.7
+  against 11.1 out of sample).
+- Ask A as two figures per DC (days away, days restricted): the cracker's log-based path gets every days-away figure
+  right, since the continuation files hold restricted days only. Rejected; the ask asks the two added together, and every
+  programme DC places at least one associate on transitional duty.
+- A rival exposure read as agency hours left out of direct hours: the plan's hours did not say whether agency
+  associates' hours were in them, so a reader could build the plan's pace on another basis than the history's. Closed by
+  the plan's read-me (the hours Ostrander's and agency associates' together, as the WFM system records them), a WHAT.
+
+- Ask B's kilogram weights left to density alone (the stage 4 judge's FIX_NOW): no shipped record stated the PORTAL
+  unit, so the cell read as underdetermined. The export notes now give each weight source's unit in the system's own
+  terms. Discontinued items now stay in the master, so the habitual join matches every row and the reissued numbers
+  carry the ask. Every Ask B cell is unchanged and the pound-reading stop still misses at every DC.
+- The agreement's header read "draft for signature 11/16/2026", a date after the 11/02/2026 pull: the draft is now
+  dated 10/29/2026, its own save date.
+- The prompt in British spelling and day-month dates against a US company's files: US spelling and dates throughout.
+- A filed back-test as the forecast's selection criterion: not filed. The judge advised against it because it would
+  name the validation step. Schedule B3 files only what the forecast is compared with (the fiscal 2027 logged cases).
+
+- Text written to close readings, found by the stage 4 re-read: Schedule B 2.2's "on the plan's volumes and labor
+  hours" (with section 8 it pointed at rate times planned hours), B3's "no fee is adjusted", a data-request clause that
+  listed exactly the two asked tables, EHS-RK-01 sections 5 to 7 and its revision line describing the pack's own
+  systems, and the Rockford re-numbering told in three places. Rewritten as the documents' owners would write them: B2.2
+  files the approved plan only; the post-term review sits in section 1; section 4 is a data-request list; sections 5 to
+  7 are policy; the migration fact is in the platform's field note; Rockford is in the site register alone.
+- 2026-11-02, re-root (architecture 1 to 2): the DC recordable-injury architecture (pace against engineered standards,
+  shipped 2026-10-16, no portal result) re-rooted at the Batch 3 queue reset; its world is closed, one architecture per
+  world, and the number moves to Urban & Regional Science.
+- 2026-11-02, candidate: a hospital's medical wards moving to single rooms, nursing hours from the Safer Nursing Care
+  Tool: the conversion of cohort observation into one-to-one hours is a filed planning rule once written (rule
+  application) and an unestimable response while unwritten; patient-flow quantities land (task170's law).
+- 2026-11-02, candidate: a city taxi tariff rise read through each driver's own stopping rule: a pooled regression of
+  hours on hourly earnings is a defensible competing estimator that can land near the golden (Gate C and F), the
+  income-targeting literature is contested, and a WHAT naming each driver's rule hands over the step.
+- 2026-11-02, candidate: blood donors' haemoglobin deferrals at a shorter donation interval: the response has to be
+  extrapolated below every observed interval (Gate B) and the trial benchmark default is a composition argument.
+- 2026-11-02, candidates screened dead in other slots' notes before any code: cross-channel media reach and deposit
+  burnout (task170, task162), an app feature's novelty decay (a library card, task179's rebuild screen), a fertility
+  echo by parity and interval, two-sex births and tempo (task176, task173), scaling-law checkpoints, a titration-to-goal
+  dose response and a surgeon's learning curve (task141, task171, task178, task170).
+- 2026-11-02, candidate: mortgage arrears at fixed-rate resets read from instalment steps: the reset date is a standard
+  loan-tape field, so leaving it out is a coverage gap (a planted defect, task123's lesson).
+- 2026-11-02, candidate: a branch closure's users following their own second branch: the swap test reads it the same
+  for libraries, clinics or shops; the domain would be a backdrop.
+- 2026-11-02, ask design: a departure-from-home share. The extract holds stays that start on weekdays, so a Monday
+  journey's departure is not in it; excluding against imputing those journeys moved four zones by 1.2 to 1.4 points.
+  Replaced by arrival at the workplace (the workplace stay always starts on the day).
+- 2026-11-02, ask design: panel residents per zone (reissued identifiers linked). Beside an arrival-share ask it gives
+  journeys per commuter, the decisive step itself; dropped.
+- 2026-11-02, ask devices tuned, never figures moved: departure offsets per zone and the gate file's seed chosen so
+  every graded figure clears its bin edge under every licensed reading (tune.py; asserted in checks.py).
+
+## Architecture 1 record
+
+Architecture 1, kept as it stood when it was re-rooted (headings demoted one level).
+
+### task149: Ostrander Logistics' fiscal 2027 recordable injuries at its twenty ergonomics programme DCs (architecture 1)
 
 Private, never ships. A new build (wave 4), numbered from seed FC20. The seed (a logistics operator's ergonomics
 programme at twenty growth sites, priced by the vendor per forecast recordable injury) was read at its header and
@@ -10,7 +339,7 @@ the pace the planners assume, and the recordable rate per hour worked is not a p
 hours are worked against the standards. The FY2027 operating plan gives the twenty DCs their new accounts' cases at
 labour hours that imply each crew working about 9 per cent faster against standard than it does today.
 
-## Draw
+### Draw
 
 | Axis | Value |
 |---|---|
@@ -83,7 +412,7 @@ Ostrander's forecast. The FY2027 operating plan (version 3) was approved by the 
 The EHS team's exports, the workforce-management hours and the WMS throughput were pulled on Monday 2 November 2026
 through fiscal 2026 week 44 (the week ending Saturday 31 October 2026).
 
-## Default path
+### Default path
 
 1. From the two EHS case exports (the legacy database to 30 June 2024, the EHS platform from 1 July 2024), keep each
    programme DC's recordable cases (first-aid cases and cases removed as not work-related out, each open case migrated
@@ -97,7 +426,7 @@ through fiscal 2026 week 44 (the week ending Saturday 31 October 2026).
 Ends on: about 800 recordable cases in fiscal 2027 (816.7 from the shipped files, the same on the clean truth).
 Golden: about 1,000 recordable cases in fiscal 2027 (1,001.8 from the shipped files, one standard error 26).
 
-## Stump sentence
+### Stump sentence
 
 Carrying each programme DC's recordable rate per hour worked from the latest twelve months onto its FY2027 planned hours
 files about 800 recordable cases for fiscal 2027 (Ends on); the step that lands it there is pricing every planned hour at
@@ -105,7 +434,7 @@ today's rate, when the plan moves the new accounts' cases through hours that imp
 faster against the engineered standards, and within each DC the rate per hour rises steeply with pace against standard,
 so the twenty DCs come to about 1,000.
 
-## Three rules
+### Three rules
 
 - **Task type:** epidemiology-public-health, health-burden-impact-modeling (serves Forecasting): the burden of
   occupational injury a working population will carry under a planned shift in its exposure, built the impact-modelling
@@ -180,7 +509,7 @@ so the twenty DCs come to about 1,000.
   against an engineered standard as the exposure (task47's exposure base, task46's cumulative-exposure rate law and
   task79's capacity kink are other structures).
 
-## Readability screen
+### Readability screen
 
 Six tests per rung (`stumping` 2.1): 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear. Values
 from the shipped files.
@@ -197,7 +526,7 @@ from the shipped files.
 | R2p the rate per hour fitted on pace against standard pooled across DCs | no | no | no | no | no | no: pace built from three systems | silent |
 | R3 (decisive) the rate per hour fitted on pace against standard within each DC, carried to the pace the plan's cases and hours imply | no: no sentence says the plan's hours are worked faster, names a pace or says a faster hour carries more risk | no: no column holds pace; it is built from the WMS cases by category, the standards in force and the direct hours | no: rate times hours is the reflex, and the plan's cases per direct hour barely move (1.03) while its pace against standard rises 9 per cent | no: no forecast, scorecard or certified figure ships | no: nothing in the files is wrong | no: a weekly join of three systems through two crosswalks, a fit with sixty DC effects, then the plan's own standard hours | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 Every row is asserted in `generator/checks.py`.
 
@@ -218,7 +547,7 @@ Every row is asserted in `generator/checks.py`.
 | SF13 | the history read | fiscal 2021 week 1 to fiscal 2026 week 44 | from fiscal 2022, 2023 or 2024 | same call, same bin (asserted: 1,005.0, 1,005.0, 995.5) | none needed |
 | SF14 | the plan's version | v3, approved 23 October 2026 | none ships | same | the plan's read-me |
 
-## Ladder
+### Ladder
 
 Measured on the shipped files by `generator/calc.py` (the clean truth gives the same default, 816.7, and the same
 golden fit, 1,001.8); every figure is the twenty programme DCs' fiscal 2027 recordable cases.
@@ -258,7 +587,7 @@ golden fit, 1,001.8); every figure is the twenty programme DCs' fiscal 2027 reco
   above the latest twelve months', the rate per hour about a quarter higher at it), never an intermediate a valid method
   could skip.
 
-## Closure table
+### Closure table
 
 Each row's assertion is in `checks.py` (C1 to C22).
 
@@ -287,7 +616,7 @@ Each row's assertion is in `checks.py` (C1 to C22).
 | 21 | Clause scope | EHS-RK-01 covers every Ostrander DC | filed |
 | 22 | Forward window contents | the plan's twelve periods (52 weeks), the new accounts from period 1 | the plan |
 
-## Literal reader
+### Literal reader
 
 Executing the prompt, the agreement's Schedules A and B, EHS-RK-01, the export notes, the plan's read-me and the
 standards' notes word for word fixes the target (the twenty Schedule A DCs' OSHA 300 Log cases with a date of injury in
@@ -300,7 +629,7 @@ the sites' fiscal 2027 recordable cases against the forecast in the post-term pr
 expected value of B2.3 is the expectation of that count, and a budgeting convention is one estimator of it among others
 the history tests. Read literally, Schedule B files no figure but the fee (asserted, C2c).
 
-## Oracles
+### Oracles
 
 - The ITA Form 300A submissions (calendar 2021 to 2025, every DC): each establishment-year's recordable cases and total
   hours worked (salaried hours in); equal to the cleaned EHS cases by calendar year (asserted) and blind to the decisive
@@ -310,7 +639,7 @@ the history tests. Read literally, Schedule B files no figure but the fee (asser
   and both asks unchanged with both deleted (asserted, SEP1).
 - Nothing ties only under the golden: no forecast, scorecard or certified figure of fiscal 2027 ships.
 
-## Ask sheet
+### Ask sheet
 
 **Main call's declared row population:** the two EHS case exports' case, classification, status, date and DC fields;
 the workforce-management hours; the WMS cases by category; the engineered standards; the FY2027 plan; the site register;
@@ -403,50 +732,7 @@ chart's five yearly bars and its axis, not the forecast).
 Pair ceiling: 36 (the cracker about 50 with the call, its components, the instructions and the chart; the mirror about 22
 with the instructions, the chart's history and the asks' shared misses; 40 ask figures).
 
-## Tried and rejected
-
-- The seed's mechanism (new hires not yet in the tenure window where harm surfaces): rejected at the draw, a hazard by
-  time since hire is close kin to task133's delayed entry and task130's report lag.
-- Regression to the mean of sites chosen for a high recent rate: rejected at the draw, task130's lineage spent it
-  (a group chosen on a noisy outcome, forecast by its own chosen-period value).
-- Contact injuries scaling with how many associates share the floor at once (density per operating hour, a new shift
-  spreading the crew thin): rejected at the draw, task181's driver (events follow encounters between units present at
-  the same time, not the time units spend) in other nouns.
-- Injuries per hour rising past a utilisation threshold of the building's capacity: rejected at the draw, task79's
-  driver (a conversion that changes once a capacity binds, the forward window past it).
-- Heavier freight read through a convex dose in case weight (fatigue-failure damage): rejected at the draw, a weight
-  column in the item master makes it a stratification on a visible attribute, and the convexity is task229's driver.
-- A first cut of the world where cases per hour back-tested as well as pace (MAPE 10.1 against 10.2 per cent, deviance
-  1.3 apart): the history's freight mix was stable inside each DC, so the two exposures moved together and a fit on cases
-  per hour (842, the 800 bin) was a defensible construction the data could not rule out. Rejected for an open method;
-  repaired by the history's real account wins and losses (heavy and light accounts on and off at 30 DCs, staffed at the
-  standards) and by two to four lasting pace changes at every DC, which separate the two (60 deviance points; 14.7
-  against 11.1 out of sample).
-- Ask A as two figures per DC (days away, days restricted): the cracker's log-based path gets every days-away figure
-  right, since the continuation files hold restricted days only. Rejected; the ask asks the two added together, and every
-  programme DC places at least one associate on transitional duty.
-- A rival exposure read as agency hours left out of direct hours: the plan's hours did not say whether agency
-  associates' hours were in them, so a reader could build the plan's pace on another basis than the history's. Closed by
-  the plan's read-me (the hours Ostrander's and agency associates' together, as the WFM system records them), a WHAT.
-
-- Ask B's kilogram weights left to density alone (the stage 4 judge's FIX_NOW): no shipped record stated the PORTAL
-  unit, so the cell read as underdetermined. The export notes now give each weight source's unit in the system's own
-  terms. Discontinued items now stay in the master, so the habitual join matches every row and the reissued numbers
-  carry the ask. Every Ask B cell is unchanged and the pound-reading stop still misses at every DC.
-- The agreement's header read "draft for signature 11/16/2026", a date after the 11/02/2026 pull: the draft is now
-  dated 10/29/2026, its own save date.
-- The prompt in British spelling and day-month dates against a US company's files: US spelling and dates throughout.
-- A filed back-test as the forecast's selection criterion: not filed. The judge advised against it because it would
-  name the validation step. Schedule B3 files only what the forecast is compared with (the fiscal 2027 logged cases).
-
-- Text written to close readings, found by the stage 4 re-read: Schedule B 2.2's "on the plan's volumes and labor
-  hours" (with section 8 it pointed at rate times planned hours), B3's "no fee is adjusted", a data-request clause that
-  listed exactly the two asked tables, EHS-RK-01 sections 5 to 7 and its revision line describing the pack's own
-  systems, and the Rockford re-numbering told in three places. Rewritten as the documents' owners would write them: B2.2
-  files the approved plan only; the post-term review sits in section 1; section 4 is a data-request list; sections 5 to
-  7 are policy; the migration fact is in the platform's field note; Rockford is in the site register alone.
-
-## Build record
+### Build record
 
 Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
 
@@ -491,7 +777,7 @@ Stage 3, built 2026-10-16 from `task149/generator/build.py` (seed 1492027).
   exit is the call sentence's spelling (programme to program), the requested prompt change. Shipped as built: the
   realism cut, target.zip sha256 b45b1fc033957446801a9b223300f0c1407e9845b060c4a9aba5008e890c5e4c.
 
-## Pre-ship check
+### Pre-ship check
 
 The 10/10 rules read again against the built pack.
 - Domain: the deciding quantity is still each DC's recordable rate per hour as a function of pace against the
@@ -503,7 +789,7 @@ The 10/10 rules read again against the built pack.
 - Rule 3: nothing is planted. No field, unit or definition decides the call. The shipped HOW sentences, executed
   literally, file 778 to 888 or no figure at all (R3s, C2c). The decisive step is analytical.
 
-## Leak review
+### Leak review
 
 `leak.py --asof 2026-11-02` on the realism cut (b45b1fc0): REVIEW, no LEAK. One line per REVIEW line.
 
