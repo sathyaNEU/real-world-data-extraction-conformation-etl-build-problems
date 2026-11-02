@@ -1,313 +1,204 @@
-"""The golden deliverables: Tarbert Economics' one-page client preview (PDF, the call first, a chart of the revision
-record) and its tables workbook, and generator/figures.json with every figure the write-up states."""
+"""The golden deliverables, computed from the shipped pack through calc: the licence variation note (PDF, with the
+limiting borehole's drawdown chart and line 3's water use) and the returns check (CSV). Writes figures.json, every
+figure the write-up states, as the goldens state it."""
 from __future__ import annotations
 
+import datetime as dt
+import io
 import json
 import os
 
-from reportlab import rl_config
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt                                                      # noqa: E402
+from reportlab import rl_config                                                      # noqa: E402
 
 rl_config.invariant = 1
-from reportlab.graphics.shapes import Drawing, Line, Rect, String                  # noqa: E402
 from reportlab.lib import colors                                                     # noqa: E402
 from reportlab.lib.pagesizes import A4                                               # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                      # noqa: E402
 from reportlab.lib.units import mm                                                   # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import asks as A            # noqa: E402
-import calc as C            # noqa: E402
-import common as K          # noqa: E402
-import docs as D            # noqa: E402
-import postprocess as PP    # noqa: E402
+import calc as C                                                                     # noqa: E402
+import common as K                                                                   # noqa: E402
+import docs as D                                                                     # noqa: E402
 
-F_PDF = "gdp_preview_2026q2.pdf"
-F_XLSX = "gdp_preview_2026q2_tables.xlsx"
-TEAL = colors.HexColor("#0e4f5c")
-AMBER = colors.HexColor("#c4801f")
-INK = colors.HexColor("#1b1f24")
-GREY = colors.HexColor("#646b73")
-RULE = colors.HexColor("#b6bdc5")
-LINE_LABELS = [("HFCE", "Household consumption"), ("GFCE", "Government consumption"),
-               ("GFCF_DW", "Dwelling investment"), ("GFCF_ME", "Machinery and equipment"),
-               ("GFCF_NDC", "Non-dwelling construction"), ("GFCF_IPP", "Intellectual property products"),
-               ("GFCF_PUB", "Public investment"), ("CIPI_NF", "Business inventories"),
-               ("CIPI_FO", "Farm and other inventories"), ("X_G", "Goods exports"), ("X_S", "Services exports"),
-               ("M_G", "Goods imports"), ("M_S", "Services imports")]
+G_NOTE = "bh2_licence_variation_note.pdf"
+G_CSV = "bh2_returns_check.csv"
+MONTHS_A = [(2026, m) for m in range(4, 10)]                                   # the returns check, April to September 2026
+MONTHS_B = [(2025, m) for m in range(4, 13)] + [(2026, m) for m in range(1, 4)]  # line 3, the 2025-26 licence year
+BRAND = colors.HexColor("#0b5563")
 
 
-def r1(x):
-    return K.round_half_up(x, 1)
+def month_label(k):
+    return dt.date(k[0], k[1], 1).strftime("%B %Y")
 
 
-def r2(x):
-    return K.round_half_up(x, 2)
+def compute(b):
+    mc = C.main_call(b)
+    T, S, img = mc["T"], mc["S"], mc["img"]
+    largest = C.largest_passing_round(mc["golden"], 100.0)
+    assert largest == C.nearest(mc["golden"], 100.0)
+    worst = mc["worst"]
+    at1800 = {k: int(C.nearest(v, 1.0)) for k, v in mc["at1800"].items()}
+    at_largest = {k: C.assessment(largest, xy, T, S, img) for k, xy, _ in mc["prot"]}
+    series = {q: C.term_series(b, T, S, img, q, worst) for q in (largest, K.APPLIED_QD)}
+    a = C.ask_a(b)
+    bb = C.ask_b(b)
+    res = dict(mc=mc, largest=largest, worst=worst, at1800=at1800, at_largest=at_largest, series=series,
+               ask_a={k: (int(C.nearest(v[0], 100.0)), int(v[1])) for k, v in a.items()},
+               ask_a_raw=a, ask_b={k: round(v, 2) for k, v in bb.items()}, ask_b_raw=bb,
+               avail={n: av for n, _, av in mc["prot"]})
+    return res
 
 
-def s1(x):
-    v = r1(x)
-    return ("+%.1f" % v) if v > 0 else ("%.1f" % v if v < 0 else "0.0")
+def chart_png(res):
+    worst = res["worst"]
+    avail = res["avail"][worst]
+    fig, ax = plt.subplots(figsize=(7.2, 3.5), dpi=150)
+    for q, col, lab in ((res["largest"], "#2a78d6", "%s m3/d from April 2027" % "{:,}".format(int(res["largest"]))),
+                        (K.APPLIED_QD, "#eb6834", "1,800 m3/d from April 2027")):
+        xs = [d for d, _ in res["series"][q]]
+        ys = [s for _, s in res["series"][q]]
+        ax.plot(xs, ys, color=col, lw=1.8, marker="o", ms=2.6, label=lab)
+        ax.annotate("%s m3/d" % "{:,}".format(int(q)), (xs[-1], ys[-1]), xytext=(5, -2), textcoords="offset points",
+                    fontsize=7.2, color="#333333", va="center")
+    ax.axhline(avail, color="#444444", lw=1.0, ls="--")
+    ax.text(dt.date(2016, 6, 1), avail + 0.18, "available drawdown %.2f m" % avail, fontsize=7.5, color="#444444")
+    ax.axvline(dt.date(2027, 4, 1), color="#999999", lw=0.8, ls=":")
+    ax.text(dt.date(2027, 6, 1), 0.5, "renewed licence", fontsize=7.2, color="#666666")
+    ax.set_ylabel("Predicted drawdown (m)", fontsize=8)
+    ax.set_title("%s: within its %.2f m at %s m3/d, over it at 1,800" % (worst, avail, "{:,}".format(int(res["largest"]))),
+                 fontsize=9, loc="left")
+    ax.tick_params(labelsize=7.5)
+    ax.set_ylim(0, 11.5)
+    ax.set_xlim(dt.date(2015, 9, 1), dt.date(2041, 9, 1))
+    ax.grid(axis="y", color="#e2e2e2", lw=0.6)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.legend(fontsize=7.3, frameon=False, loc="upper left")
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", metadata={"Software": None})
+    plt.close(fig)
+    return buf.getvalue()
 
 
-def s2(x):
-    v = r2(x)
-    return ("+%.2f" % v) if v > 0 else ("%.2f" % v if v < 0 else "0.00")
-
-
-def results(B):
-    g = C.golden(B)
-    figs_a, rec = A.ask_a(B)
-    figs_b = A.ask_b(B)
-    return {"golden": g, "a": figs_a, "rec": rec, "b": figs_b}
-
-
-def chart(rec, width=170 * mm, height=58 * mm):
-    """The revision record: each quarter's growth in its advance estimate and in the latest estimates, at an
-    annualised rate."""
-    d = Drawing(width, height)
-    qs = A.QUARTERS_A
-    vals = [v for q in qs for v in rec[q][:2]]
-    lo, hi = min(-1.0, min(vals) - 0.5), max(vals) + 0.6
-    x0, x1, y0, y1 = 14 * mm, width - 4 * mm, 12 * mm, height - 14 * mm
-    ys = lambda v: y0 + (v - lo) / (hi - lo) * (y1 - y0)
-    d.add(String(0, height - 4 * mm, "Growth in each quarter at an annualised rate, per cent: the advance estimate and "
-                 "the latest estimates", fontName="Carlito-Bold", fontSize=8.2, fillColor=INK))
-    for t in range(int(lo), int(hi) + 1):
-        y = ys(t)
-        d.add(Line(x0, y, x1, y, strokeColor=RULE if t else GREY, strokeWidth=0.3 if t else 0.6))
-        d.add(String(x0 - 3 * mm, y - 1.2, "%d" % t, fontName="Carlito", fontSize=6.8, fillColor=GREY,
-                     textAnchor="end"))
-    slot = (x1 - x0) / len(qs)
-    bw = slot * 0.32
-    for i, q in enumerate(qs):
-        a, l, _ = rec[q]
-        cx = x0 + slot * (i + 0.5)
-        for v, off, col in ((a, -bw / 2 - 0.4, AMBER), (l, bw / 2 + 0.4, TEAL)):
-            yb, yt = ys(0), ys(v)
-            d.add(Rect(cx + off - bw / 2, min(yb, yt), bw, abs(yt - yb), fillColor=col, strokeColor=None))
-        lab = {"1": "Mar", "2": "Jun", "3": "Sep", "4": "Dec"}[q[-1]] + " " + q[2:4]
-        d.add(String(cx, y0 - 4.5 * mm, lab, fontName="Carlito", fontSize=6.6, fillColor=GREY, textAnchor="middle"))
-    lx, ly = x0, height - 9.5 * mm
-    for lab, col in (("Advance estimate", AMBER), ("Latest estimates (annual national accounts, 21 July)", TEAL)):
-        d.add(Rect(lx, ly, 2.6 * mm, 2.2 * mm, fillColor=col, strokeColor=None))
-        d.add(String(lx + 3.6 * mm, ly + 0.5, lab, fontName="Carlito", fontSize=6.8, fillColor=INK))
-        lx += 3.6 * mm + 6.8 * 0.48 * len(lab) + 6 * mm
-    return d
-
-
-def write_pdf(path, B, res):
-    g, fa, rec, fb = res["golden"], res["a"], res["rec"], res["b"]
-    c = g["contrib"]
-    body = ParagraphStyle("b", fontName="Carlito", fontSize=9.4, leading=12.4, textColor=INK, spaceAfter=5)
-    lead = ParagraphStyle("l", fontName="Carlito-Bold", fontSize=11.2, leading=14.6, textColor=INK, spaceAfter=6)
-    h1 = ParagraphStyle("h", fontName="Carlito-Bold", fontSize=17, leading=21, textColor=TEAL, spaceAfter=3)
-    sub = ParagraphStyle("s", fontName="Carlito", fontSize=8.4, leading=11, textColor=GREY, spaceAfter=7)
-    cell = ParagraphStyle("c", fontName="Carlito", fontSize=7.8, leading=9.4, textColor=INK)
-    cellr = ParagraphStyle("cr", fontName="Carlito", fontSize=7.8, leading=9.4, textColor=INK, alignment=2)
-    cellb = ParagraphStyle("cb", fontName="Carlito-Bold", fontSize=7.8, leading=9.4, textColor=INK)
-    cellbr = ParagraphStyle("cbr", fontName="Carlito-Bold", fontSize=7.8, leading=9.4, textColor=INK, alignment=2)
-    e = D.esc
-    tot_coal = fb[("total", "32")]
-    tot_lng = fb[("total", "34")]
-    s = [Paragraph("Tarbert Economics | GDP preview | Wednesday 29 July 2026, 18:00", sub),
-         Paragraph(e("June quarter GDP: we expect %.1f%% annualised" % r1(g["ann"])), h1),
-         Paragraph(e("We expect the Statistics Office's advance estimate, out at 10:45 tomorrow, to show real GDP "
-                     "growth of %.1f%% at an annualised rate in the June quarter, %.2f%% on the March quarter."
-                     % (r1(g["ann"]), r2(g["q"]))), lead),
-         Paragraph(e("Net exports carry the quarter. Goods exports add %.2f percentage points, with the coal ports "
-                     "back to full loadings after February's dip, and goods imports, down in volume as import prices "
-                     "rose in March and again in June, add %.2f. Business inventories take %.2f points off. At home, "
-                     "household spending adds %.2f and government spending %.2f, while machinery and equipment "
-                     "investment takes %.2f off and dwelling investment %.2f."
-                     % (r2(c["X_G"]), r2(c["M_G"]), -r2(c["CIPI_NF"]), r2(c["HFCE"]), r2(c["GFCE"]),
-                        -r2(c["GFCF_ME"]), -r2(c["GFCF_DW"]))), body),
-         Paragraph(e("TBS's June bulletin, out yesterday after its outage, carries business stocks at book value, "
-                     "at what each business paid. We value each industry's end-March and end-June stocks at its "
-                     "input prices over the months its stock-to-sales ratio covers, a method that rebuilds the "
-                     "Office's estimates of the past 28 quarters with a root mean square error of $%.1f million. The "
-                     "machinery, vehicle and household goods trades hold around two months of stock, much of it "
-                     "bought before the March and June rises in import prices. On that basis business stocks fell by "
-                     "$%s million at 2025 prices in the June quarter after a build of $%s million in the March "
-                     "quarter."
-                     % (round(C.backtest(B)["turnover"]["rmse"], 1), "{:,.0f}".format(-C.cipi(B, "2026Q2")),
-                        "{:,.0f}".format(B["base"]["CIPI_NF"]))), body),
-         Paragraph(e("The first print moves. Over the twelve quarters to March 2026 the advance estimate has been "
-                     "revised by %.2f points on average, in either direction, and up by %.2f points on average; the "
-                     "annual national accounts of 21 July revised the September and December quarters of 2025 by %s "
-                     "and %s points and the March quarter of 2026 by %s."
-                     % (r2(fa["mar"]), r2(fa["mean"]), s1(fa["2025Q3"]), s1(fa["2025Q4"]), s1(fa["2026Q1"]))), body),
-         Paragraph(e("Coal and LNG shipped to Japan, China, Korea, India and Taiwan were up $%s million and $%s million "
-                     "on the June quarter of 2025, when LNG loadings at Cape Mallory dropped in June; Japan took $%s "
-                     "million more LNG." % ("{:,.1f}".format(r1(tot_coal)), "{:,.1f}".format(r1(tot_lng)),
-                                    "{:,.1f}".format(r1(fb[("JP", "34")])))), body),
-         chart(rec),
-         Paragraph(e("Sources: Statistics Office real-time database of quarterly GDP estimates (advance estimates); "
-                     "annual national accounts 2025, Table 3 (latest estimates)."), sub)]
-    rows = [[Paragraph("Contribution to growth on the March quarter, percentage points", cellb),
-             Paragraph("", cellbr)]]
-    for code, lab in LINE_LABELS:
-        rows.append([Paragraph(e(lab), cell), Paragraph(e("%.2f" % r2(c[code])), cellr)])
-    rows.append([Paragraph("GDP, on the March quarter", cellb), Paragraph(e("%.2f" % r2(g["q"])), cellbr)])
-    rows.append([Paragraph("GDP, at an annualised rate (per cent)", cellb), Paragraph(e("%.1f" % r1(g["ann"])), cellbr)])
-    t = Table(rows, colWidths=[78 * mm, 22 * mm])
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.5, RULE), ("LINEABOVE", (0, -2), (-1, -2), 0.5, RULE),
-                           ("TOPPADDING", (0, 0), (-1, -1), 0.9), ("BOTTOMPADDING", (0, 0), (-1, -1), 0.9)]))
-    s.append(t)
-    s.append(Spacer(1, 3))
-    s.append(Paragraph(e("Contributions may not add to the total because of rounding. Sources: Statistics Office, "
-                         "TBS, Harbours Board, Tarbert Economics. Nicola Jones, Senior Economist. For clients of "
-                         "Tarbert Bank; not investment advice."), sub))
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=12 * mm,
-                            bottomMargin=10 * mm, title="GDP preview, June quarter 2026", author="Tarbert Economics",
+def write_note(path, res):
+    st = D.styles("Carlito", "Carlito-Bold", BRAND, 9.9)
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=17 * mm,
+                            bottomMargin=17 * mm, title="BH2 licence renewal and variation", author=K.PEOPLE["lead"],
                             subject="", creator="", producer="")
-    doc.build(s)
-    PP.normalize_pdf(path, b"D:20260729174812+12'00'", b"D:20260729174812+12'00'")
+    mc = res["mc"]
+    L = int(res["largest"])
+    worst = res["worst"]
+    flow = [Paragraph("Borehole 2 renewal: apply for %s cubic metres a day, not 1,800" % "{:,}".format(L), st["h1"]),
+            Paragraph(D.esc("%s, %s. Licence MA/28/15/0042. For the application due %s." % (
+                K.PEOPLE["lead"], K.long_date(K.NOTE_DATE), K.long_date(K.APPLICATION_DUE))), st["sub"]),
+            Paragraph("<b>Apply for %s cubic metres a day.</b> The 1,800 a day line 5 needs fails the licensing "
+                      "team's derogation test at all three protected boreholes. %s limits the quantity: %.1f m "
+                      "predicted at %s a day against its %.2f m available drawdown." % (
+                          "{:,}".format(L), worst, res["at_largest"][worst], "{:,}".format(L), res["avail"][worst]),
+                      st["body"])]
+    flow.append(Paragraph("Derogation test at 31 March 2039", st["h2"]))
+    rows = [["Protected borehole", "Available drawdown (m)", "Predicted at 1,800 (m)", "Predicted at %s (m)" % "{:,}".format(L),
+             "Passes at 1,800"]]
+    for name, _, av in mc["prot"]:
+        rows.append([name, "%.2f" % av, "%d" % res["at1800"][name], "%.1f" % res["at_largest"][name],
+                     "no" if mc["at1800"][name] > av else "yes"])
+    flow.append(D.grid(rows, [46 * mm, 30 * mm, 30 * mm, 30 * mm, 26 * mm], st, right_from=1))
+    flow.append(Paragraph(D.esc("Available drawdowns as tabled in the licensing team's letter of 22 September 2026. "
+                                "Drawdowns at 1,800 to the nearest metre, at %s to one decimal." % "{:,}".format(L)),
+                          st["small"]))
+    flow.append(Spacer(1, 5))
+    flow.append(Paragraph(D.esc(
+        "Basis: Borehole 2 at 1,200 m3/d from 1 April 2015 and at the applied quantity from 1 April 2027, drawdowns "
+        "from each borehole's April 2015 rest level (the letter's test). Aquifer: transmissivity %d m2/d and storage "
+        "coefficient %.5f from the June 2014 constant-rate test (all three observation boreholes), with the "
+        "Coldharbour Fault as a no-flow boundary: it throws the Sherwood Sandstone against Mercia Mudstone, so the "
+        "cone is held at the fault and each protected borehole also carries the drawdown of an image of Borehole 2 "
+        "across it. The 72-hour test never reached the fault; the observation boreholes' record from 2015 to March "
+        "2026 (OB2 read from its raised casing top from March 2020), less the regional movement at Windle Cross and "
+        "under the returned abstraction, matches this model to %.2f m (rms) against %.2f m for an unbounded aquifer, "
+        "and Windle Cross, beyond the fault, shows no response." % (round(mc["T"]), round(mc["S"], 5), res["verdict"]["closed by the fault, test T and S"],
+                                res["verdict"]["unbounded, test T and S"])), st["small"]))
+    png = chart_png(res)
+    flow.append(Image(io.BytesIO(png), width=170 * mm, height=170 * mm * 3.5 / 7.2))
+    flow.append(Paragraph(D.esc("%s's predicted drawdown at each 31 March under the two quantities, against its "
+                                "available drawdown." % worst), st["small"]))
+    flow.append(Paragraph("Need: line 3 water use, 2025-26", st["h2"]))
+    flow.append(Paragraph(D.esc("Line 5 copies line 3, so the application's need is sized on line 3's water use "
+                                "per litre packed, its cleans included (meter FM-L3, packed output from the MES at "
+                                "the bottle sizes filled that year: the 75cl still glass was still 750 ml until "
+                                "April 2026)."), st["body"]))
+    rows = [["Month", "Litres of water per litre packed"]]
+    for k in MONTHS_B:
+        rows.append([month_label(k), "%.2f" % res["ask_b"][k]])
+    flow.append(D.grid(rows, [50 * mm, 52 * mm], st, right_from=1))
+    flow.append(Paragraph(D.esc("FM-L3's register from the site telemetry by local month, over the good bottles in "
+                                "the MES orders at the size filled."), st["small"]))
+    flow.append(Spacer(1, 5))
+    flow.append(Paragraph("Returns check", st["h2"]))
+    flow.append(Paragraph(D.esc(
+        "The bulk bay that opened for the Ferncastle Foods contract in April 2026 draws off the raw main upstream "
+        "of FM-1, so the tanker loads are taken from Borehole 2 without passing the licence meter and FM-1 "
+        "understates this year's abstraction. Each load is matched to its pump run in the wellhead log (the haulier "
+        "dates its tickets by the night shift). Monthly volumes and days over 1,200 m3 from April to September 2026 "
+        "are in bh2_returns_check.csv; the 2026-27 return will need the bulk loads added."), st["body"]))
+    doc.build(flow, onFirstPage=D._footer("Brackenholt Spring Water", "Carlito"),
+              onLaterPages=D._footer("Brackenholt Spring Water", "Carlito"))
 
 
-def write_xlsx(path, B, res):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    from openpyxl.utils import get_column_letter
-    g, fa, rec, fb = res["golden"], res["a"], res["rec"], res["b"]
-    bold = Font(bold=True)
-    fill = PatternFill("solid", fgColor="DDE8EA")
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Revision record"
-    ws["A1"] = ("The advance estimate has been revised up by %.2f points on average over the twelve quarters to March "
-                "2026" % r2(fa["mean"]))
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("Growth at an annualised rate, per cent. Advance: each quarter on the one before in its advance "
-                "estimate. Latest: the annual national accounts of 21 July 2026. Revision: latest less advance, "
-                "percentage points, from the unrounded estimates.")
-    for j, h in enumerate(["Quarter", "Advance estimate", "Latest estimate", "Revision"], 1):
-        c = ws.cell(row=4, column=j, value=h)
-        c.font, c.fill = bold, fill
-    for i, q in enumerate(A.QUARTERS_A):
-        a, l, rv = rec[q]
-        ws.cell(row=5 + i, column=1, value="%s Q%s" % (q[:4], q[-1]))
-        for j, v in enumerate((a, l, rv), 2):
-            ws.cell(row=5 + i, column=j, value=r2(v)).number_format = "0.00"
-    r = 5 + len(A.QUARTERS_A) + 1
-    ws.cell(row=r, column=1, value="Summary").font = bold
-    for k, (lab, key, nd) in enumerate((("Revision, September quarter 2025", "2025Q3", 1),
-                                        ("Revision, December quarter 2025", "2025Q4", 1),
-                                        ("Revision, March quarter 2026", "2026Q1", 1),
-                                        ("Mean revision, June 2023 to March 2026", "mean", 2),
-                                        ("Mean absolute revision, June 2023 to March 2026", "mar", 2))):
-        ws.cell(row=r + 1 + k, column=1, value=lab)
-        c = ws.cell(row=r + 1 + k, column=4, value=K.round_half_up(fa[key], nd))
-        c.number_format = "0.0" if nd == 1 else "0.00"
-    ws.cell(row=r + 7, column=1, value="Sources: Statistics Office, real-time database of quarterly GDP estimates "
-            "(advance estimates); annual national accounts 2025, Table 3 (latest estimates).").font = Font(italic=True,
-                                                                                                       size=9)
-    ws.column_dimensions["A"].width = 44
-    for j in (2, 3, 4):
-        ws.column_dimensions[get_column_letter(j)].width = 17
-    ws.freeze_panes = "A5"
-    ws2 = wb.create_sheet("Coal and LNG")
-    ws2["A1"] = ("LNG shipped to Japan, China, Korea, India and Taiwan up $%s million on the June quarter of 2025, coal "
-                 "up $%s million" % ("{:,.1f}".format(r1(fb[("total", "34")])), "{:,.1f}".format(r1(fb[("total", "32")]))))
-    ws2["A1"].font = Font(bold=True, size=12)
-    ws2["A2"] = ("$ million, original terms. June quarter 2026: TBS bulk download for April and May, TBS June "
-                 "bulletin for June. "
-                 "June quarter 2025: the bulk download's May, June and July months, each the month after the cargoes "
-                 "sailed.")
-    head = ["Market", "Coal, Jun qtr 2025", "Coal, Jun qtr 2026", "Coal, change", "LNG, Jun qtr 2025",
-            "LNG, Jun qtr 2026", "LNG, change"]
-    for j, h in enumerate(head, 1):
-        c = ws2.cell(row=4, column=j, value=h)
-        c.font, c.fill = bold, fill
-        c.alignment = Alignment(wrap_text=True)
-    for i, mk in enumerate(A.MARKETS):
-        ws2.cell(row=5 + i, column=1, value=A.MARKET_NAMES[mk])
-        for j, d in ((2, "32"), (5, "34")):
-            for k, v in enumerate((A.quarter_2025(B, mk, d), A.quarter_2026(B, mk, d), fb[(mk, d)])):
-                ws2.cell(row=5 + i, column=j + k, value=r1(v)).number_format = "#,##0.0;-#,##0.0"
-    rr = 5 + len(A.MARKETS)
-    ws2.cell(row=rr, column=1, value="Five markets").font = bold
-    for j, d in ((2, "32"), (5, "34")):
-        v25 = sum(A.quarter_2025(B, mk, d) for mk in A.MARKETS)
-        v26 = sum(A.quarter_2026(B, mk, d) for mk in A.MARKETS)
-        for k, v in enumerate((v25, v26, fb[("total", d)])):
-            c = ws2.cell(row=rr, column=j + k, value=r1(v))
-            c.number_format = "#,##0.0;-#,##0.0"
-            c.font = bold
-    ws2.column_dimensions["A"].width = 16
-    for j in range(2, 8):
-        ws2.column_dimensions[get_column_letter(j)].width = 14
-    ws2.row_dimensions[4].height = 30
-    ws2.freeze_panes = "B5"
-    ws2.cell(row=rr + 2, column=1, value="Sources: TBS bulk download of trade by country and SITC division (pulled 24 "
-             "June 2026), divisions 32 and 34; TBS, Merchandise trade and business stocks, June 2026, Table 4; "
-             "Harbours Board bulk loadings.").font = Font(italic=True, size=9)
-    ws3 = wb.create_sheet("Call")
-    ws3["A1"] = "June quarter 2026: we expect GDP growth of %.1f%% at an annualised rate" % r1(g["ann"])
-    ws3["A1"].font = Font(bold=True, size=12)
-    ws3["A3"] = "GDP growth at an annualised rate, per cent"
-    ws3["B3"] = r1(g["ann"])
-    ws3["B3"].number_format = "0.0"
-    ws3["A4"] = "GDP growth on the March quarter, per cent"
-    ws3["B4"] = r2(g["q"])
-    ws3["B4"].number_format = "0.00"
-    ws3.cell(row=6, column=1, value="Contribution to growth on the March quarter, percentage points").font = bold
-    for i, (code, lab) in enumerate(LINE_LABELS):
-        ws3.cell(row=7 + i, column=1, value=lab)
-        ws3.cell(row=7 + i, column=2, value=r2(g["contrib"][code])).number_format = "0.00"
-    ws3.cell(row=7 + len(LINE_LABELS) + 1, column=1, value="Contributions may not add to the total because of "
-             "rounding.").font = Font(italic=True, size=9)
-    ws3.column_dimensions["A"].width = 58
-    ws3.column_dimensions["B"].width = 12
-    ws4 = wb.create_sheet("Notes")
-    for i, n in enumerate([
-            "Tarbert Economics, 29 July 2026. Prepared by Nicola Jones.",
-            "The call: the desk's tracker for the lines TBS's June bulletin does not feed; goods trade from the bulletin "
-            "by SITC section over the export and import price indexes rebased to 2025; business inventories from the "
-            "bulletin's book values, each industry's end-March and end-June stock valued at its input price index "
-            "averaged over the months its stock-to-sales ratio covers, less the March quarter's published change.",
-            "The revision record and the coal and LNG table are described on their sheets."], 1):
-        ws4.cell(row=i, column=1, value=n)
-    ws4.column_dimensions["A"].width = 120
-    wb.save(path)
-    PP.normalize_ooxml(path, "Nicola Jones", "Nicola Jones", "2026-07-29T05:12:00Z", "2026-07-29T05:46:00Z",
-                       title="GDP preview tables, June quarter 2026", excel=True, company="Tarbert Bank")
+def write_csv(path, res):
+    rows = []
+    for k in MONTHS_A:
+        v, n = res["ask_a"][k]
+        rows.append(["%04d-%02d" % k, v, n])
+    K.write_csv(path, ["month", "volume_taken_m3", "days_over_1200_m3"], rows)
 
 
-def figures(B, res, routes, backtest):
-    g, fa, rec, fb = res["golden"], res["a"], res["rec"], res["b"]
-    out = {
-        "call": {"annualised_pct": r1(g["ann"]), "quarterly_pct": r2(g["q"]), "unrounded": g["ann"]},
-        "contributions_pp": {k: r2(v) for k, v in g["contrib"].items()},
-        "business_inventories_m": {"june_quarter_2026": round(C.cipi(B, "2026Q2"), 1),
-                                   "march_quarter_2026_published": B["base"]["CIPI_NF"],
-                                   "change": round(C.cipi(B, "2026Q2") - B["base"]["CIPI_NF"], 1)},
-        "goods_m": {"exports_q2": round(C.goods(B, "2026Q2", "x"), 1), "imports_q2": round(C.goods(B, "2026Q2", "m"), 1),
-                    "exports_q1": B["base"]["X_G"], "imports_q1": B["base"]["M_G"]},
-        "gdp_q1_m": B["gdp_q1"],
-        "tracker_sum_pp": r2(sum(v for k, v in g["contrib"].items() if k not in ("X_G", "M_G", "CIPI_NF"))),
-        "inventories_drag_pp": -r2(g["contrib"]["CIPI_NF"]),
-        "ask_a": {k: (K.round_half_up(v, 1) if k not in ("mean", "mar") else K.round_half_up(v, 2))
-                  for k, v in fa.items()},
-        "ask_a_record": {q: [r2(x) for x in v] for q, v in rec.items()},
-        "ask_b": {"%s_%s" % (c, d): r1(v) for (c, d), v in fb.items()},
-        "ask_b_levels": {"%s_%s" % (mk, d): [r1(A.quarter_2025(B, mk, d)), r1(A.quarter_2026(B, mk, d))]
-                         for mk in A.MARKETS for d in ("32", "34")},
-        "routes": {k: K.round_half_up(v[1], 1) for k, v in routes.items()},
-        "routes_unrounded": {k: round(v[1], 3) for k, v in routes.items()},
-        "backtest_rmse_m": {k: round(v["rmse"], 1) for k, v in backtest.items()},
-        "backtest_last_m": {k: round(v["last"], 1) for k, v in backtest.items()},
-    }
-    return out
-
-
-def write_all(golden_dir, gen_dir, B):
-    res = results(B)
-    write_pdf(os.path.join(golden_dir, F_PDF), B, res)
-    write_xlsx(os.path.join(golden_dir, F_XLSX), B, res)
-    routes = C.routes(B)
-    bt = C.backtest(B)
-    figs = figures(B, res, routes, bt)
-    with open(os.path.join(gen_dir, "figures.json"), "w", encoding="utf-8", newline="\n") as fh:
-        json.dump(figs, fh, indent=1, ensure_ascii=False, sort_keys=True)
+def write_all(gdir, gendir, b):
+    res = compute(b)
+    res["verdict"], (Ta, Sa), _ = C.long_record_verdict(b, res["mc"]["T"], res["mc"]["S"], res["mc"]["img"])
+    res["apparent"] = (Ta, Sa)
+    write_note(os.path.join(gdir, G_NOTE), res)
+    write_csv(os.path.join(gdir, G_CSV), res)
+    import postprocess as PP
+    PP.normalize_pdf(os.path.join(gdir, G_NOTE), b"D:20261113161400+00'00'", b"D:20261113161400+00'00'")
+    figs = figures(res)
+    with open(os.path.join(gendir, "figures.json"), "w") as fh:
+        json.dump(figs, fh, indent=1, sort_keys=True)
         fh.write("\n")
     return res, figs
+
+
+def figures(res):
+    mc = res["mc"]
+    f = {
+        "call_largest_m3d": int(res["largest"]),
+        "call_applied_m3d": int(K.APPLIED_QD),
+        "call_limiting": res["worst"],
+        "T_m2d": int(round(mc["T"])),
+        "S_e4": round(mc["S"] * 1e4, 1),
+        "S": round(mc["S"], 5),
+        "limiting_avail_m": res["avail"][res["worst"]],
+        "licensed_m3d": int(K.LICENSED_QD),
+    }
+    for name, _, av in mc["prot"]:
+        key = name.split()[0].lower()
+        f["at1800_%s_m" % key] = res["at1800"][name]
+        f["avail_%s_m" % key] = av
+    for k in MONTHS_A:
+        lab = "%04d_%02d" % k
+        f["askA_volume_%s" % lab] = res["ask_a"][k][0]
+        f["askA_days_%s" % lab] = res["ask_a"][k][1]
+    for k in MONTHS_B:
+        f["askB_l3_%04d_%02d" % k] = res["ask_b"][k]
+    f["fault_throw_m"] = 260
+    f["rms_closed_m"] = round(res["verdict"]["closed by the fault, test T and S"], 2)
+    f["rms_unbounded_m"] = round(res["verdict"]["unbounded, test T and S"], 2)
+    f["size_bsg1101_window_ml"] = 750
+    f["size_bsg1101_export_ml"] = 700
+    f["test_hours"] = 72
+    return f

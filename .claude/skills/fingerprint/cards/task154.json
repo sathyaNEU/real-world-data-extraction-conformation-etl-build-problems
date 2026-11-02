@@ -11,8 +11,8 @@
   "shape": "13",
   "decision_type": "dial_setting",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Apply for 1,300 cubic metres a day: the 1,800 a day the new line needs fails the derogation test at all three protected boreholes, and Lower Hay Farm limits the quantity (10 m predicted at 31 March 2039 at 1,800 against its 7.53 m available drawdown)",
+  "answer_source": "task154/generator/figures.json (call_largest_m3d, call_limiting, at1800_*_m), golden bh2_licence_variation_note.pdf, recomputed from target/ by generator/verify.py",
   "gap": [
     "time"
   ],
@@ -31,25 +31,24 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the pre-application letter's derogation test correctly, fits the field's Theis solution to the 2014 constant-rate test (a clean fit at every observation borehole) and superposes the existing and applied quantities to 31 March 2039 files about 2,300 cubic metres a day as the largest quantity, with Kilnbrook Nurseries limiting it and 1,800 passing; the golden, in which the Coldharbour Fault closes the aquifer to the east so every protected borehole also feels Borehole 2's image across it, files 1,300 with Lower Hay Farm limiting and 1,800 failing there.",
+  "analyst_test": "A strong analyst who reads the pre-application letter's derogation test correctly, fits the field's Theis solution to the 2014 constant-rate test (a clean fit at every observation borehole) and superposes the existing and applied quantities to 31 March 2039 files 2,600 cubic metres a day as the largest quantity, with Kilnbrook Nurseries limiting it and 1,800 passing; refitting or scaling Theis to the observation boreholes' record since 2015 files 1,700 to 1,800, still at Kilnbrook Nurseries; the golden, in which the Coldharbour Fault closes the aquifer to the east so every protected borehole also feels Borehole 2's image across it, files 1,300 with Lower Hay Farm limiting and 1,800 failing there.",
   "domain_test": "The deciding quantity is the drawdown a groundwater abstraction causes at neighbouring licensed boreholes over a licence term, the hydrologist's forecast behind every licence variation, and it turns on the aquifer's geometry and the physics of radial flow to a well (a confined sandstone the fault juxtaposes against mudstone, so the cone that reaches the fault deepens on the near side as if a second well pumped beyond it); with a hospital's or a retailer's nouns there is no aquifer, no cone of depression and nothing for a barrier to reflect, so the task stops reading.",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:aquifer barrier felt only over the licence horizon, not in the pumping test",
   "layer1": [
-    "the 2014 constant-rate test's loggers in two makes (pressure in kPa against water level in metres above the sensor), each borehole's dip datum its own casing top, logger clocks on GMT against the field sheets' local time",
-    "the observation boreholes' monthly dips since 2015 as depth below casing top, a casing raised on one borehole in 2020 and resurveyed",
+    "the 2014 constant-rate test's loggers in two makes (metres of water above the sensor on UTC against OB3's vented transducer in kPa on BST), each borehole's dip datum its own casing top",
+    "the observation boreholes' monthly mean levels since 2015 as depth below casing top, OB2's casing raised 0.45 m in February 2020 and both levels kept in the survey",
     "the regional observation borehole's daily levels in metres above ordnance datum, gaps at logger swaps",
-    "borehole coordinates as national grid references in the survey and as eastings and northings in the logs",
-    "the borehole logs in drillers' lithology words against the geological map's formation names",
-    "abstraction telemetry every 15 minutes in UTC with a totaliser that rolls over, the site engineer's weekly meter readings and the annual returns in licence years April to March",
-    "bottling line production in the plant system's runs and pack sizes, line water sub-meters, bulk tanker sales on the haulier's tickets"
+    "borehole positions as SJ grid references in the letter and the memoir against the survey's numeric eastings and northings",
+    "site telemetry every 15 minutes on UTC, FM-1 replaced in October 2025 with its register restarting at zero, against the controller's local-time log and the returns in licence years April to March",
+    "the haulier's monthly statements with ticket numbers restarting each month and the odd ticket re-sent, the MES order numbers with gaps, the QC samples with the odd underfill caught and rejected"
   ],
   "stakeholder_role": "the bottler's water resources lead who prepares its licence renewal and variation for the licensing team",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "bh2_test_2014_loggers.csv",
-    "rows": 0,
+    "file": "bh2_crt_june2014.xlsx",
+    "rows": 34560,
     "entity": "one logger reading in the June 2014 constant-rate test and its recovery (the pumping borehole and three observation boreholes)",
     "grain": "borehole x minute",
     "source": "synthetic"
@@ -72,7 +71,8 @@
     "people": [
       "Francis Mason",
       "Dominic Schofield",
-      "Wendy Hodgson"
+      "Wendy Hodgson",
+      "William Swift"
     ]
   },
   "deliverables": [
@@ -82,8 +82,8 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "A response measured over a short disturbance in what behaves as an unbounded medium is carried over a horizon hundreds of times longer, but the medium is closed on one side by a barrier the short test never reached; over the long horizon every point also carries the response of a mirror source beyond the barrier, close to doubling it nearest the barrier and moving which constraint binds, and only the barrier's mapped trace, a record from across it that stays flat where the unbounded model expects a response, and the long record's own excess show it.",
-  "driver_concrete": "Borehole 2's 2014 constant-rate test fits Theis cleanly at every observation borehole because in 72 hours its cone never reached the Coldharbour Fault two kilometres east, which throws the Sherwood Sandstone against Mercia Mudstone; over the derogation test's 24 years the cone is held by the fault, so each protected borehole's drawdown is Borehole 2's own plus that of its image across the fault (Lower Hay Farm, half a kilometre from the fault, nearly double), which the observation boreholes' dips since 2015 (deeper than the test's Theis predicts) and the regional borehole beyond the fault (no response at all) bear out.",
-  "stump": "Projecting the field's Theis solution fitted to the 2014 constant-rate test over the derogation test's 24 years files about 2,300 cubic metres a day as the largest quantity, Kilnbrook Nurseries limiting it and the new line's 1,800 passing everywhere, because the 72-hour test never reached the Coldharbour Fault: over the licence term the fault closes the aquifer to the east, every protected borehole carries Borehole 2's image across it as well, and Lower Hay Farm's drawdown at 1,800 is about 10.5 metres against its 7.8, so the largest quantity that passes is 1,300.",
+  "driver_concrete": "Borehole 2's 2014 constant-rate test fits Theis cleanly at every observation borehole because in 72 hours its cone never reached the Coldharbour Fault two and a half kilometres east, which throws the Sherwood Sandstone against Mercia Mudstone; over the derogation test's 24 years the cone is held by the fault, so each protected borehole's drawdown is Borehole 2's own plus that of its image across the fault (Lower Hay Farm, half a kilometre from the fault, nearly double), which the observation boreholes' dips since 2015 (deeper than the test's Theis predicts) and the regional borehole beyond the fault (no response at all) bear out.",
+  "stump": "Projecting the field's Theis solution fitted to the June 2014 constant-rate test over the derogation test's 24 years files 2,600 cubic metres a day as the largest quantity, Kilnbrook Nurseries limiting it and the new line's 1,800 passing everywhere, because the 72-hour test never reached the Coldharbour Fault two and a half kilometres east: over the licence term the fault closes the aquifer to the east, every protected borehole carries Borehole 2's image across it as well, and Lower Hay Farm's drawdown at 1,800 is 10 metres against its 7.53, so the largest quantity that passes is 1,300 with Lower Hay Farm limiting.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task174": "task174 v2 recovers each member's within-session gain from stopping records broken by overnight breaks; here nothing is learned or forgotten: an aquifer's response to one borehole, fitted cleanly on a three-day test, is carried over 24 years in which a fault the test never reached holds and deepens the cone",
@@ -92,7 +92,8 @@
     "task229": "task229 v2 corrects a checked-unit rate for checks that see units just before resetting them, and v3 a convex conversion of a cycled input; here nothing is checked, reset or converted: a cone of depression reaches a barrier only after the test that measured the aquifer had ended",
     "task242": "task242 corrects a detector whose chance of registering an event fades with the time since it happened; here nothing is detected or fades: the response grows over the horizon as a mirror source beyond a barrier adds to it",
     "task476": "task476 v2 dates each leak's unrecorded start within its inspection interval from a seasonal start profile; here no start is dated: the moment the cone meets the barrier follows from the aquifer's own diffusivity and the fault's distance, and it falls after the test and inside the licence term",
-    "task501": "task501 v4 reads a who-passes-to-whom matrix's eigenvalue under one season's contact regime rather than pooled days; here no matrix or regime is pooled: a short test's unbounded fit is carried over a long horizon in which a barrier nearly doubles the response near it"
+    "task501": "task501 v4 reads a who-passes-to-whom matrix's eigenvalue under one season's contact regime rather than pooled days; here no matrix or regime is pooled: a short test's unbounded fit is carried over a long horizon in which a barrier nearly doubles the response near it",
+    "task156": "task156 v2 sizes how often a wastewater pump station's consented overflows are exceeded once a subdivision connects, from the infiltration each storm and each dry day drives through the sewer below the water table; here nothing overflows and no capacity is exceeded by a load: a confined aquifer's drawdown at three licensed boreholes is carried from a 72-hour pumping test over a 24-year licence term in which a fault the test never reached holds the cone, and the water table is the forecast, not a driver of inflow."
   },
   "lineage": [
     {

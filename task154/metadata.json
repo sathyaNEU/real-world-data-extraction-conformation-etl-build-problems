@@ -1,179 +1,194 @@
 {
-  "task": "task154",
-  "title": "What a bank's economics desk calls for the advance estimate of June-quarter GDP growth the evening before, when the late trade and stocks bulletin feeds three of its lines",
-  "domain": "Economics & Econometrics",
-  "client_domain": "Economics & Econometrics",
-  "subdomain": "forecasting-forecast-evaluation (a bottom-up forecast of a statistical office's first release, the change in business inventories built from book-value stocks revalued over each industry's stockholding period at both quarter ends, validated against the office's estimates of past quarters)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a single committed growth rate in a one-page client preview, with two tables: the advance estimate's revision record (three quarters and two means over twelve) and the change in coal and LNG shipped to five markets (ten cells and two totals)",
-  "as_of": "2026-07-29",
-  "deliverables": [
-    "gdp_preview_2026q2.pdf",
-    "gdp_preview_2026q2_tables.xlsx"
+ "task": "task154",
+ "title": "How much water a spring water bottler can apply to take from its borehole at the licence renewal under the licensing authority's derogation test, with its returns and its bottling line's water use",
+ "domain": "Physical & Environmental Sciences",
+ "client_domain": "Physical & Environmental Sciences",
+ "subdomain": "hydrology-flood-frequency (groundwater abstraction licensing)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "the largest daily quantity a licence variation can take and whether the quantity needed passes, with each protected borehole's predicted drawdown, a chart, a monthly returns check and a bottling line's monthly water use",
+ "as_of": "2026-10-02",
+ "deliverables": [
+  "bh2_licence_variation_note.pdf",
+  "bh2_returns_check.csv"
+ ],
+ "distractor_files": [
+  "bh2_water_quality_2015-2026.csv",
+  "brackenholt_rain_gauge_2015-2026.csv"
+ ],
+ "stated_inputs": [
+  "7.53",
+  "10.00",
+  "9.90"
+ ],
+ "input_gates": {
+  "files": 17,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
   ],
-  "distractor_files": [
-    "harbourline_gdp_poll_2026-07-23.json",
-    "industry_federation_business_conditions_2026-06.csv"
-  ],
-  "field_terms": [],
-  "stated_inputs": [],
-  "input_gates": {
-    "files": 15,
-    "formats": [
-      "csv",
-      "json",
-      "pdf",
-      "txt",
-      "xlsx"
-    ],
-    "largest_file": "tbs_trade_partner_sitc2_monthly_2023-01_2026-05.csv",
-    "largest_file_rows": 72129
+  "largest_file": "bh2_site_telemetry_15min_2025-2026.csv",
+  "largest_file_rows": 52608
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task154/generator/build.py (seeded, deterministic) around a fictional English spring water bottler, its licensing authority, its neighbouring licence holders and its bulk haulier, in the layouts of pumping test logger downloads, monitoring and telemetry exports, a controller log, a haulier's statements, manufacturing and quality exports, a licence, a pre-application letter, a geological records extract, abstraction returns and a project brief; no real organisation's records or person is depicted.",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-11-02",
+ "generator": "task154/generator/build.py",
+ "files": [
+  {
+   "path": "abstraction_licence_MA-28-15-0042.pdf",
+   "format": "pdf",
+   "bytes": 44961,
+   "source": "Constructed: licence to abstract water MA/28/15/0042, as issued",
+   "date": "2015-03-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task154/generator/build.py (seeded, deterministic) around a fictional country's statistics office, its trade and business statistics unit, its ports board, a wire service, an industry body and a fictional commercial bank's economics desk, in the layouts of a national accounts user guide and notice, a real-time database and annual accounts workbook, price index tables, a monthly trade and stocks bulletin, a statistics portal pull and bulk download, port statistics, a desk tracker workbook, a poll and a survey release; no real organisation's records or person is depicted.",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-17",
-  "generator": "task154/generator/build.py",
-  "files": [
-    {
-      "path": "harbourline_gdp_poll_2026-07-23.json",
-      "format": "json",
-      "bytes": 667,
-      "rows": null,
-      "source": "Constructed: Harbourline, economists' poll on June quarter 2026 GDP",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "harbours_board_bulk_loadings_2022-12_2026-06.csv",
-      "format": "csv",
-      "bytes": 6446,
-      "rows": 172,
-      "source": "Constructed: Harbours Board, monthly bulk loadings by port",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "industry_federation_business_conditions_2026-06.csv",
-      "format": "csv",
-      "bytes": 11639,
-      "rows": 324,
-      "source": "Constructed: Industry Federation, business conditions survey",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "so_annual_national_accounts_2025.xlsx",
-      "format": "xlsx",
-      "bytes": 18719,
-      "rows": 108,
-      "source": "Constructed: Statistics Office, annual national accounts 2025 with revised quarterly series, 21 July 2026",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "so_gdp_user_guide_2026.pdf",
-      "format": "pdf",
-      "bytes": 44915,
-      "rows": null,
-      "source": "Constructed: Statistics Office, quarterly national accounts user guide, 2026 edition",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "so_notice_gdp_advance_2026-07-24.txt",
-      "format": "txt",
-      "bytes": 686,
-      "rows": 7,
-      "source": "Constructed: Statistics Office, notice on the June quarter 2026 advance estimate, 24 July 2026",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "so_price_indexes_2026-06.xlsx",
-      "format": "xlsx",
-      "bytes": 31526,
-      "rows": 431,
-      "source": "Constructed: Statistics Office, price indexes, June 2026",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "so_realtime_gdp_database.csv",
-      "format": "csv",
-      "bytes": 4680768,
-      "rows": 45576,
-      "source": "Constructed: Statistics Office, real-time database of quarterly GDP estimates (Tarbert Economics' download of 26 June 2026)",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tarbert_econ_data_index.csv",
-      "format": "csv",
-      "bytes": 2462,
-      "rows": 14,
-      "source": "Constructed: Tarbert Economics, index of the desk's data folder",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tarbert_gdp_tracker_2026q2.xlsx",
-      "format": "xlsx",
-      "bytes": 8791,
-      "rows": 22,
-      "source": "Constructed: Tarbert Economics, GDP tracker for the June quarter 2026",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tbs_country_codes.csv",
-      "format": "csv",
-      "bytes": 1258,
-      "rows": 55,
-      "source": "Constructed: Trade and Business Statistics, country codes",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tbs_merchandise_trade_business_stocks_2026-06.pdf",
-      "format": "pdf",
-      "bytes": 41203,
-      "rows": null,
-      "source": "Constructed: Trade and Business Statistics, merchandise trade and business stocks, June 2026",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tbs_portal_monthly_2019-01_2026-05.csv",
-      "format": "csv",
-      "bytes": 573226,
-      "rows": 5696,
-      "source": "Constructed: Trade and Business Statistics, portal monthly series (Tarbert Economics' pull of 24 June 2026)",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tbs_sitc_rev4_divisions.csv",
-      "format": "csv",
-      "bytes": 5051,
-      "rows": 62,
-      "source": "Constructed: Trade and Business Statistics, SITC Revision 4 divisions",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "tbs_trade_partner_sitc2_monthly_2023-01_2026-05.csv",
-      "format": "csv",
-      "bytes": 2154883,
-      "rows": 72129,
-      "source": "Constructed: Trade and Business Statistics, bulk download of trade by country and SITC division (pull of 24 June 2026)",
-      "date": "2026-07-29",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "path": "bh2_abstraction_returns_2015-2026.pdf",
+   "format": "pdf",
+   "bytes": 55900,
+   "source": "Constructed: Brackenholt Spring Water, annual returns of water abstracted, 2015-16 to 2025-26",
+   "date": "2026-04-22",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "bh2_crt_june2014.xlsx",
+   "format": "xlsx",
+   "bytes": 634746,
+   "source": "Constructed: Brackenholt Spring Water, constant-rate pumping test of Borehole 2, June 2014, logger downloads and field sheet",
+   "date": "2014-06-14",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 34671
+  },
+  {
+   "path": "bh2_site_telemetry_15min_2025-2026.csv",
+   "format": "csv",
+   "bytes": 3809815,
+   "source": "Constructed: Brackenholt Spring Water, site telemetry export, 15-minute meter registers and tank level",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 52608
+  },
+  {
+   "path": "bh2_water_quality_2015-2026.csv",
+   "format": "csv",
+   "bytes": 7414,
+   "source": "Constructed: Brackenholt Spring Water, Borehole 2 raw water analyses",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 138
+  },
+  {
+   "path": "bh2_wellhead_controller_events.csv",
+   "format": "csv",
+   "bytes": 80376,
+   "source": "Constructed: Borehole 2 wellhead pump controller event log",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 2141
+  },
+  {
+   "path": "bottling_runs_2025-2026.csv",
+   "format": "csv",
+   "bytes": 162683,
+   "source": "Constructed: Brackenholt Spring Water, manufacturing execution system order export",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 2490
+  },
+  {
+   "path": "brackenholt_geology_and_borehole_records.pdf",
+   "format": "pdf",
+   "bytes": 79012,
+   "source": "Constructed: geological records extract for the Brackenholt district with borehole logs",
+   "date": "2026-09-30",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "brackenholt_rain_gauge_2015-2026.csv",
+   "format": "csv",
+   "bytes": 64545,
+   "source": "Constructed: Brackenholt site rain gauge, daily totals at 09:00",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 4291
+  },
+  {
+   "path": "line5_project_brief.docx",
+   "format": "docx",
+   "bytes": 9580,
+   "source": "Constructed: Brackenholt Spring Water, line 5 project brief",
+   "date": "2026-09-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ob_monthly_levels_2015-2026.csv",
+   "format": "csv",
+   "bytes": 12115,
+   "source": "Constructed: Brackenholt Spring Water, observation borehole monthly mean levels under licence condition 9, as returned to March 2026",
+   "date": "2026-04-22",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 393
+  },
+  {
+   "path": "pre-application_advice_BH2_2026-09-22.pdf",
+   "format": "pdf",
+   "bytes": 42806,
+   "source": "Constructed: the licensing authority's pre-application advice for licence MA/28/15/0042",
+   "date": "2026-09-22",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "qc_fill_weights_2025-2026.csv",
+   "format": "csv",
+   "bytes": 923730,
+   "source": "Constructed: Brackenholt Spring Water, quality control net fill weight samples",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 22950
+  },
+  {
+   "path": "site_survey_boreholes_2026.csv",
+   "format": "csv",
+   "bytes": 629,
+   "source": "Constructed: site survey of boreholes, 2026",
+   "date": "2026-03-11",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 6
+  },
+  {
+   "path": "sku_master_export_2026-10.xlsx",
+   "format": "xlsx",
+   "bytes": 6685,
+   "source": "Constructed: Brackenholt Spring Water, product master export",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 11
+  },
+  {
+   "path": "teme_valley_bulk_tickets_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 22370,
+   "source": "Constructed: Teme Valley Bulk Liquids, monthly statements of bulk loads, April to September 2026",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 296
+  },
+  {
+   "path": "windle_cross_obh_daily_levels.csv",
+   "format": "csv",
+   "bytes": 257736,
+   "source": "Constructed: the licensing authority's regional observation borehole at Windle Cross, daily levels",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (original work, constructed for this task)",
+   "rows": 6434
+  }
+ ]
 }

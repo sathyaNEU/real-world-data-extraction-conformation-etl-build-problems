@@ -16,21 +16,27 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import common as K          # noqa: E402
 import postprocess as PP    # noqa: E402
 import records as R         # noqa: E402
+import docs as D            # noqa: E402
 
 TASK = os.path.dirname(HERE)
-# the desk's folder as it stood when the call was made, and the goldens as sent
-EXPORT_STAMP = dt.datetime(2026, 7, 29, 17, 30, 0)
-GOLDEN_STAMP = dt.datetime(2026, 7, 29, 18, 0, 0)
-# who saved each workbook, when (UTC)
-OFFICE = {
-    R.F_ANNUAL: ("Statistics Office", "Statistics Office", "2026-07-20T21:02:00Z", "2026-07-20T22:31:00Z",
-                 "Annual national accounts 2025", "Statistics Office"),
-    R.F_PRICES: ("Statistics Office", "Statistics Office", "2026-07-15T20:40:00Z", "2026-07-15T22:05:00Z",
-                 "Price indexes, June 2026", "Statistics Office"),
-    R.F_TRACKER: ("Jodie Ford", "Jodie Ford", "2026-04-30T23:18:00Z", "2026-07-27T19:52:00Z",
-                  "GDP tracker, June quarter 2026", "Tarbert Bank"),
+EXPORT_STAMP = dt.datetime(2026, 10, 5, 15, 20, 0)      # the water resources lead's pull of the records
+GOLDEN_STAMP = dt.datetime(2026, 11, 13, 16, 14, 0)
+# who saved each workbook and when (UTC); the PDFs' issue dates
+OWNERS = {
+    R.F_TEST: ("Hollybush Hydro Consultants", "Hollybush Hydro Consultants", "2014-06-14T16:02:00Z",
+               "2014-06-16T09:41:00Z", "BH2 constant rate test June 2014"),
+    R.F_TICKETS: ("Teme Valley Bulk Liquids", "Teme Valley Bulk Liquids", "2026-05-01T07:52:00Z",
+                  "2026-10-05T07:58:00Z", "Bulk load statements"),
+    R.F_SKU: ("SAP export", K.PEOPLE["lead"], "2026-10-02T10:12:00Z", "2026-10-02T10:12:00Z", "Material master"),
+}
+PDF_DATES = {
+    D.F_LETTER: (b"D:20260922113000+01'00'", b"D:20260922113000+01'00'"),
+    D.F_LICENCE: (b"D:20150326100000+00'00'", b"D:20150326100000+00'00'"),
+    D.F_GEOLOGY: (b"D:20260930141500+01'00'", b"D:20260930141500+01'00'"),
+    D.F_RETURNS: (b"D:20260422090500+01'00'", b"D:20260422090500+01'00'"),
 }
 
 
@@ -39,21 +45,25 @@ class Built:
 
 
 def build(out, quiet=False):
-    import docs as D
+    import calc as C
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    W = R.prepare()
-    counts = R.write_all(out, W)
-    D.write_all(out, W)
-    for f, (cr, by, c0, c1, title, company) in OFFICE.items():
-        PP.normalize_ooxml(os.path.join(out, f), cr, by, c0, c1, title=title, excel=True, company=company)
+    O = C.ops_cached()
+    counts = R.write_all(out, O)
+    D.write_all(out, O)
+    for f, (cr, by, c0, c1, title) in OWNERS.items():
+        PP.normalize_ooxml(os.path.join(out, f), cr, by, c0, c1, title=title, excel=True,
+                           company=cr if "Teme" in cr or "Hollybush" in cr else K.COMPANY)
+    for f, (c0, c1) in PDF_DATES.items():
+        PP.normalize_pdf(os.path.join(out, f), c0, c1)
+    PP.normalize_docx(os.path.join(out, D.F_BRIEF), K.PEOPLE["lead"], K.PEOPLE["lead"], "2026-09-02T08:40:00Z",
+                      "2026-09-08T15:22:00Z", 4, 96, K.SEED, title="Line 5 project brief", company=K.COMPANY)
     stamp = EXPORT_STAMP.timestamp()
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (stamp, stamp))
     B = Built()
-    B.W, B.counts = W, counts
-    B.bundle = R.bundle(out, W)
+    B.counts = counts
     if not quiet:
         print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in counts.items())))
     return B
@@ -79,6 +89,7 @@ def cut_zip(root):
 
 
 def everything(root, quiet=False):
+    import calc as C
     import deliver as DL
     import metadata as MD
     import submission as SUB
@@ -88,6 +99,7 @@ def everything(root, quiet=False):
         shutil.rmtree(gdir)
     os.makedirs(gdir)
     os.makedirs(os.path.join(root, "generator"), exist_ok=True)
+    Bt.bundle = C.bundle(os.path.join(root, "target"))
     res, figs = DL.write_all(gdir, os.path.join(root, "generator"), Bt.bundle)
     stamp = GOLDEN_STAMP.timestamp()
     for f in os.listdir(gdir):
@@ -123,9 +135,9 @@ def main():
     allh = hashlib.sha256("".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
                           "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode())
     print("two builds byte-identical: %d target files, %d golden files, metadata.json, figures.json, submission.md and "
-          "target.zip (sha256 %s; target.zip sha256 %s)" % (
+          "target.zip (sha256 %s; target.zip md5 %s)" % (
               len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))),
-              allh.hexdigest()[:16], hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()))
+              allh.hexdigest()[:16], hashlib.md5(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()))
 
 
 if __name__ == "__main__":

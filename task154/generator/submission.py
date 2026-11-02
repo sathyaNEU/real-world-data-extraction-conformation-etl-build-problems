@@ -1,116 +1,96 @@
-"""Write task154/submission.md from the computed figures (every number from figures.json's objects)."""
+"""submission.md, drafted from figures.json: the five blocks and nothing else."""
 from __future__ import annotations
 
-import asks as A
-import calc as C
-import common as K
+import datetime as dt
+
+import deliver as DL
+import records as R
+import docs as D
 
 
-def r1(x):
-    return K.round_half_up(x, 1)
+def fmt(n):
+    return "{:,}".format(int(n))
 
 
-def r2(x):
-    return K.round_half_up(x, 2)
-
-
-def sg1(x):
-    v = r1(x)
-    return "+%.1f" % v if v > 0 else ("-%.1f" % -v if v < 0 else "0.0")
-
-
-def sg2(x):
-    v = r2(x)
-    return "+%.2f" % v if v > 0 else ("-%.2f" % -v if v < 0 else "0.00")
-
-
-def mny(x):
-    v = r1(x)
-    s = "{:,.1f}".format(abs(v))
-    return ("+" if v > 0 else "-" if v < 0 else "") + s
-
-
-def text(B, res, figs):
-    g, fa, fb = res["golden"], res["a"], res["b"]
-    c = g["contrib"]
-    q2 = C.cipi(B, "2026Q2")
-    q1 = B["base"]["CIPI_NF"]
-    bt = figs["backtest_rmse_m"]["turnover"]
-    x2, m2 = C.goods(B, "2026Q2", "x"), C.goods(B, "2026Q2", "m")
+def write(path, b, res, f):
+    worst = f["call_limiting"]
+    L = f["call_largest_m3d"]
     lines = []
-    w = lines.append
-    w("## Tags")
-    w("")
-    w("**Domain:** Economics & Econometrics (forecasting and forecast evaluation: a statistical office's first "
-      "estimate of quarterly GDP growth).")
-    w("**Analytical objective:** Forecasting & Predictive Modeling.")
-    w("")
-    w("## 1. Final Recommendation")
-    w("")
-    w("**The Statistics Office's advance estimate will show real GDP growth of %.1f%% at an annualised rate in the June "
-      "quarter of 2026.**" % r1(g["ann"]))
-    w("Quarterly growth is %.2f%%, with business inventories, each industry's book-value stocks revalued over its own "
-      "stockholding period at both quarter ends, taking %.2f percentage points off. Not each industry's book value over "
-      "its month-end price index, which reads the rise in import prices inside the stockholding period as a fall in the "
-      "volume of stocks bought before it; not the quarter's average index, which reads it the other way; not a "
-      "two-month stockholding period for every industry, which ignores each industry's own stock-to-sales ratio."
-      % (r2(g["q"]), -r2(c["CIPI_NF"])))
-    w("")
-    w("## 2. Critical Components")
-    w("")
-    w("1. The change in business inventories at 2025 prices in the June quarter is **%s million dollars**, after the "
-      "March quarter's published **%s million**: a contribution of **%.2f** percentage points."
-      % ("{:,.0f}".format(q2), "{:,.0f}".format(q1), r2(c["CIPI_NF"])))
-    w("2. Goods exports contribute **%s** and goods imports **%s** percentage points." % (sg2(c["X_G"]), sg2(c["M_G"])))
-    w("3. GDP grows **%.2f%%** on the March quarter." % r2(g["q"]))
-    w("")
-    w("## 3. Step-by-Step Solution")
-    w("")
-    w("1. Took the June-quarter estimates of the ten lines TBS's bulletin does not feed, with their contributions, and "
-      "the March-quarter base from tarbert_gdp_tracker_2026q2.xlsx: March-quarter GDP is %s million dollars."
-      % "{:,.0f}".format(B["gdp_q1"]))
-    w("2. Rebased the export and import price indexes in so_price_indexes_2026-06.xlsx from 2019 to their 2025 "
-      "average and divided the seasonally adjusted April to June values by SITC section in "
-      "tbs_merchandise_trade_business_stocks_2026-06.pdf by them (user guide, sources and price measures): goods "
-      "exports %s and imports %s million dollars at 2025 prices, against the March quarter's %s and %s."
-      % ("{:,.1f}".format(x2), "{:,.1f}".format(m2), "{:,.0f}".format(B["base"]["X_G"]),
-         "{:,.0f}".format(B["base"]["M_G"])))
-    w("3. For each of the bulletin's eight industries, divided the end-March and end-June book value by the average of "
-      "the industry's input price index, rebased to 2025, over the months its stock-to-sales ratio covers at that "
-      "date, counted back from the month end: the change in business inventories is %s million dollars at 2025 prices."
-      % "{:,.0f}".format(q2))
-    w("4. Rebuilt every quarter from 2019Q2 to 2026Q1 the same way from tbs_portal_monthly_2019-01_2026-05.csv: it comes "
-      "within %.1f million dollars root mean square of the Office's latest estimates of non-farm business inventories, "
-      "the 25 June release in so_realtime_gdp_database.csv." % bt)
-    w("5. Took each line's change over March-quarter GDP (user guide, contributions to growth), summed the thirteen "
-      "contributions to %.2f%% and compounded to an annual rate (user guide, the headline): %.1f%%."
-      % (r2(g["q"]), r1(g["ann"])))
-    w("")
-    w("## 4. Deliverable Answers")
-    w("")
-    w("### gdp_preview_2026q2.pdf")
-    w("")
-    w("1. The call, in the headline and the first sentence: real GDP growth of %.1f%% at an annualised rate, %.2f%% on "
-      "the March quarter, in the June quarter of 2026." % (r1(g["ann"]), r2(g["q"])))
-    w("2. A chart of each quarter's growth from the June quarter 2023 to the March quarter 2026 in its advance "
-      "estimate and in the latest estimates, and the thirteen contributions.")
-    w("")
-    w("### gdp_preview_2026q2_tables.xlsx")
-    w("")
-    w("1. The revision from the advance estimate to the latest estimate of annualised growth, percentage points:")
-    for q, lab in (("2025Q3", "September quarter 2025"), ("2025Q4", "December quarter 2025"),
-                   ("2026Q1", "March quarter 2026")):
-        w("   - %s: %s" % (lab, sg1(fa[q])))
-    w("2. Over the twelve quarters from June 2023 to March 2026: mean revision %s, mean absolute revision %.2f."
-      % (sg2(fa["mean"]), r2(fa["mar"])))
-    w("3. The change in the value of coal and of LNG shipped in the June quarter of 2026 on the June quarter of "
-      "2025, millions of dollars:")
-    for mk in A.MARKETS:
-        w("   - %s: coal %s, LNG %s" % (A.MARKET_NAMES[mk], mny(fb[(mk, "32")]), mny(fb[(mk, "34")])))
-    w("   - The five markets: coal %s, LNG %s" % (mny(fb[("total", "32")]), mny(fb[("total", "34")])))
-    return "\n".join(lines) + "\n"
-
-
-def write(path, B, res, figs):
-    with open(path, "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(text(B, res, figs))
+    lines.append("## Tags")
+    lines.append("")
+    lines.append("**Domain:** Physical & Environmental Sciences (hydrology: the drawdown a groundwater abstraction "
+                 "causes at neighbouring licensed boreholes over a licence term).")
+    lines.append("**Analytical objective:** Forecasting & Predictive Modeling.")
+    lines.append("")
+    lines.append("## 1. Final Recommendation")
+    lines.append("")
+    lines.append("**Apply for %s cubic metres a day: the 1,800 a day the new line needs fails the derogation test, "
+                 "and %s limits the quantity.**" % (fmt(L), worst))
+    lines.append("At 1,800 a day %s's predicted drawdown on 31 March 2039 is %d m against its %.2f m available "
+                 "drawdown. Not the unbounded aquifer the June 2014 test fits, which never reached the Coldharbour "
+                 "Fault and lets 1,800 pass with Kilnbrook Nurseries limiting. Not an unbounded aquifer refitted or "
+                 "scaled to the observation boreholes' record since 2015, which still puts the limit at Kilnbrook "
+                 "Nurseries and above %s." % (worst, f["at1800_lower_m"], f["avail_lower_m"], fmt(L)))
+    lines.append("")
+    lines.append("## 2. Critical Components")
+    lines.append("")
+    lines.append("1. The June 2014 constant-rate test gives a transmissivity of **%d m2/d** and a storage coefficient "
+                 "of **%.5f**." % (f["T_m2d"], f["S"]))
+    lines.append("2. The Coldharbour Fault closes the aquifer east of Borehole 2, so each protected borehole's drawdown "
+                 "includes that of Borehole 2's image across the fault.")
+    lines.append("3. %s's predicted drawdown on 31 March 2039 at 1,800 a day is **%d m** against **%.2f m** "
+                 "available." % (worst, f["at1800_lower_m"], f["avail_lower_m"]))
+    lines.append("")
+    lines.append("## 3. Step-by-Step Solution")
+    lines.append("")
+    lines.append("1. Fitted Theis to the drawdown at OB1, OB2 and OB3 in %s (OB3's kPa converted and its local clock "
+                 "set to UTC, the rate the field sheet's flow checks give): transmissivity %d m2/d, storage coefficient "
+                 "%.5f." % (R.F_TEST, f["T_m2d"], f["S"]))
+    lines.append("2. Took the Coldharbour Fault's trace from the two grid references in %s, where it throws the "
+                 "sandstone down %d m to the east against Mercia Mudstone, and placed Borehole 2's image across it." %
+                 (D.F_GEOLOGY, f["fault_throw_m"]))
+    lines.append("3. Set both models against %s less the Windle Cross regional movement in %s, under the returns' "
+                 "abstraction: the closed aquifer fits to %.2f m rms against %.2f m for the unbounded one, and Windle "
+                 "Cross shows no response." % (R.F_OBS, R.F_RMB, f["rms_closed_m"], f["rms_unbounded_m"]))
+    lines.append("4. Ran the pre-application letter's derogation test with the image well: at 1,800 a day the "
+                 "predicted drawdowns are %d m at Lower Hay Farm, %d m at Kilnbrook Nurseries and %d m at Hollin Bank "
+                 "Golf Club, each above its available drawdown." % (f["at1800_lower_m"], f["at1800_kilnbrook_m"],
+                                                                      f["at1800_hollin_m"]))
+    lines.append("5. Solved each protected borehole's quantity at its available drawdown: %s limits, and the largest "
+                 "daily quantity that passes is %s cubic metres." % (worst, fmt(L)))
+    lines.append("6. For the returns check, set each ticket in %s on its run in %s (a time in before noon belongs to "
+                 "the next calendar day, the haulier's night shift), added the bulk loads to FM-1's volume from %s by "
+                 "local day, and counted the days above 1,200 m3." % (R.F_TICKETS, R.F_PUMP, R.F_TELEM))
+    lines.append("7. For line 3, divided FM-L3's water by local month by the good bottles in %s times each bottle's "
+                 "size, as %s sizes it, with BSG-1101 at the 750 ml its fill weights in %s show through March 2026, "
+                 "not the export's 700." % (R.F_RUNS, D.F_BRIEF, R.F_QC))
+    lines.append("8. Apply for %s cubic metres a day." % fmt(L))
+    lines.append("")
+    lines.append("## 4. Deliverable Answers")
+    lines.append("")
+    lines.append("### %s" % DL.G_NOTE)
+    lines.append("")
+    lines.append("1. Largest daily quantity that passes the derogation test: %s cubic metres a day." % fmt(L))
+    lines.append("2. Protected borehole that limits it: %s." % worst)
+    lines.append("3. Whether 1,800 cubic metres a day passes: no.")
+    lines.append("4. Predicted drawdown on 31 March 2039 at 1,800 cubic metres a day:")
+    lines.append("   - Lower Hay Farm: %d m" % f["at1800_lower_m"])
+    lines.append("   - Kilnbrook Nurseries: %d m" % f["at1800_kilnbrook_m"])
+    lines.append("   - Hollin Bank Golf Club: %d m" % f["at1800_hollin_m"])
+    lines.append("5. Chart on page 1: %s's predicted drawdown at each 31 March from 2016 to 2039, at %s and at 1,800 "
+                 "cubic metres a day, against its %.2f m available drawdown." % (worst, fmt(L), f["avail_lower_m"]))
+    lines.append("6. Litres of water line 3 took per litre packed, cleans included:")
+    for k in DL.MONTHS_B:
+        lines.append("   - %s: %.2f" % (DL.month_label(k), f["askB_l3_%04d_%02d" % k]))
+    lines.append("")
+    lines.append("### %s" % DL.G_CSV)
+    lines.append("")
+    lines.append("1. Volume taken from Borehole 2 and days above 1,200 cubic metres, by month from April to "
+                 "September 2026:")
+    for k in DL.MONTHS_A:
+        lab = "%04d_%02d" % k
+        n = f["askA_days_%s" % lab]
+        lines.append("   - %s: %s m3, %d %s" % (DL.month_label(k), fmt(f["askA_volume_%s" % lab]), n,
+                                                 "day" if n == 1 else "days"))
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")

@@ -38,10 +38,10 @@ read `## Tried and rejected` first.
    available drawdown.
 4. **Call (forward):** the largest daily quantity that passes the derogation test (to the nearest 100 cubic metres a
    day), which protected borehole limits it, and whether the 1,800 the new line needs passes.
-5. **Shape:** 13, scenarios and the flip point: each protected borehole's predicted 2039 drawdown at the applied 1,800
-   and at the largest passing quantity, each borehole's own limiting quantity, the flip (the largest quantity) and
-   the limiting borehole, with a chart of the limiting borehole's drawdown over the term; the asks supply the rest of
-   the 25 or more criteria (arithmetic in `## Ladder` and `## Ask sheet`).
+5. **Shape:** 13, scenarios and the flip point: the largest daily quantity that passes (the flip), the protected
+   borehole that limits it, each protected borehole's predicted drawdown at 31 March 2039 at the applied 1,800, and a
+   chart of the limiting borehole's drawdown over the term at both quantities against its available drawdown; the
+   asks supply the rest of the 25 or more criteria (arithmetic in `## Ladder` and `## Ask sheet`).
 6. **Strategy and mechanism labels:** `stump_strategy` forecast_method_backtest, the honest label: the natural fit
    (Theis on the 72-hour test) is right in sample and wrong over the decision's horizon, and the honest history that
    refutes it is the observation boreholes' own dips since 2015 and the regional borehole beyond the fault (no
@@ -51,7 +51,7 @@ read `## Tried and rejected` first.
    horizon, not in the pumping test.
 7. **Data-native sentence:** Borehole 2 taps a confined sandstone whose storage is small, so in the 72 hours of the
    June 2014 test its cone of depression spread across the observation boreholes and fitted an unbounded aquifer
-   exactly, while over the derogation test's 24 years the cone reaches the Coldharbour Fault two kilometres east,
+   exactly, while over the derogation test's 24 years the cone reaches the Coldharbour Fault two and a half kilometres east,
    which throws the sandstone against mudstone, and is held there: the dips at the observation boreholes since 2015,
    deeper than the test's model predicts, and the regional borehole beyond the fault, which never responds, carry
    that, and the test never could.
@@ -100,10 +100,418 @@ read `## Tried and rejected` first.
       the sandstone against mudstone or seal it by cataclasis.
     - Spring water bottlers' licensed quantities of a few hundred to a few thousand cubic metres a day, and the
       operators' abstraction returns, meter readings and bulk tanker sales.
-13. **Prompt and shell** (provisional `prompt.txt`, 887 characters, `voice-check.py` PASS): question form how-much,
+13. **Prompt and shell** (`prompt.txt`, 991 characters, `voice-check.py` PASS): question form how-much,
     second-sentence opener Our, rounding opener Quantities, deliverables csv+pdf; against the lineage shells (whether,
-    lead, pdf+xlsx; how-many, list, docx+xlsx). The asks are drafted at stage 2 (`## Ask sheet`) and the prompt is
-    worded last against the golden.
+    lead, pdf+xlsx; how-many, list, docx+xlsx). Worded last against the golden: the call and its four figures in the
+    note, the returns check in the CSV, the line 3 ratios in the note.
+
+## Default path
+
+1. Read the pre-application letter's derogation test: for each protected abstraction in its table, the drawdown in the
+   Sherwood Sandstone at its borehole on 31 March 2039, from its April 2015 rest level, with Borehole 2 at 1,200 m3/d
+   from 1 April 2015 and at the applied quantity from 1 April 2027; a quantity passes only if no protected borehole's
+   predicted drawdown exceeds its available drawdown (7.53 m at Lower Hay Farm, 10.00 m at Kilnbrook Nurseries, 9.90 m
+   at Hollin Bank Golf Club).
+2. Placed the protected boreholes from the letter's SJ grid references on the survey's eastings and northings.
+3. Fitted the field's method, Theis's solution for a confined aquifer, to the June 2014 constant-rate test at OB1, OB2
+   and OB3 (OB3's kPa converted, its BST clock set to the loggers' UTC, the field sheet's rate): transmissivity
+   206 m2/d, storage coefficient 3.6 x 10^-4, a clean fit at every borehole through all 72 hours.
+4. Superposed the two quantities in time to 31 March 2039 and solved each protected borehole's quantity at its
+   available drawdown.
+
+Ends on: 2,600
+Golden: 1,300
+
+The default path files 2,600 m3/d as the largest quantity (2,612), Kilnbrook Nurseries limiting (Lower Hay Farm's own
+limit, 2,637, a hair behind) and 1,800 passing at every protected borehole (5, 7 and 6 m against 7.53, 10.00 and
+9.90 m).
+
+## Stump sentence
+
+Projecting the field's Theis solution fitted to the June 2014 constant-rate test over the derogation test's 24 years
+files 2,600 cubic metres a day as the largest quantity with Kilnbrook Nurseries limiting and the new line's 1,800
+passing, because the 72-hour test never reached the Coldharbour Fault two and a half kilometres east, which throws the
+Sherwood Sandstone against Mercia Mudstone: over the licence term the fault holds the cone, every protected borehole
+also carries the drawdown of Borehole 2's image across it, Lower Hay Farm (half a kilometre from the fault) is
+predicted at 10 m against its 7.53 m at 1,800, and the largest quantity that passes is 1,300 with Lower Hay Farm
+limiting.
+
+## Three rules
+
+Task type: hydrology-flood-frequency (physical-environmental-sciences), the domain's hydrology task type, serving
+Forecasting & Predictive Modeling: the groundwater level a borehole will stand at after 24 years of abstraction,
+carried from a fitted aquifer model past the record.
+
+Domain test: the deciding quantity is the drawdown Borehole 2 causes at each neighbouring licensed borehole on 31 March
+2039, the hydrogeologist's forecast behind every licence variation, estimated by fitting Theis's solution
+(transmissivity and storage) to a constant-rate pumping test and carrying it forward by superposition in time; the
+physics of radial flow to a well in a confined sandstone decides the figure.
+
+Swap: put a hospital's nouns in ("how many beds can the new ward add before the neighbouring wards' waits pass their
+limits in 2039") and nothing carries over: there is no cone of depression spreading at a rate set by transmissivity
+over storage, no sandstone thrown against mudstone and nothing for a barrier to reflect, so the call exists only
+because water levels respond to pumping through rock.
+
+Layer 1: the test's loggers in two makes (metres above the sensor on UTC; OB3's vented transducer in kPa on BST), each
+dip to its own casing top; the observation boreholes' monthly means as depth below the casing top, OB2's casing raised
+0.45 m in February 2020 (the survey keeps both levels); the regional borehole's daily levels in m AOD with gaps at
+logger swaps; SJ grid references in the letter and the memoir against the survey's numeric eastings and northings; on
+the ask paths, the telemetry on UTC quarter-hours with FM-1 replaced in October 2025 (its register restarts), the
+haulier's monthly statements re-sending a ticket now and then with ticket numbers that restart each month, the MES
+order numbers with gaps, the QC samples with the odd underfill caught and rejected. Each is what its producing system
+writes, and each is asserted neutral on the call (checks R2).
+
+Layer 2: forecast_uncertainty (a model carried past its record, chosen on the evidence the record gives): the 72-hour
+test fits an unbounded aquifer exactly, and the choice between that and an aquifer closed by the fault, which only the
+long record, the regional borehole and the geology separate, moves the call from 2,600 to 1,300.
+
+Decisive step: recognising that the sandstone Borehole 2 pumps is closed to the east by the Coldharbour Fault, a
+boundary the test's cone never reached but the licence term's cone does, so each protected borehole's drawdown is
+Borehole 2's own plus that of its mirror image across the fault's trace; the observation boreholes' dips since 2015,
+deeper than the short test implies, and Windle Cross beyond the fault, flat, are where the data show it.
+
+Not semantics: every field, code, unit and definition read correctly (the loggers' units and clocks, the casing tops,
+the grid references, the letter's datum, quantities and dates, the geology's fault trace and throw) still leaves the
+easy route on the unbounded aquifer, because nothing in any file says the fault stops water: the memoir gives a trace
+and a throw as geology, and the drawdown that line causes is physics the solver has to bring and test against the
+long record.
+
+Not rule application: the letter files the population (the three protected boreholes), the datum, the window, the
+quantities and the pass rule, and says nothing about how drawdown is predicted; executing every filed sentence with
+the field's model files 2,600. Enumerated family (checks R3b, on the cut pack): Theis on the test 2,600 at Kilnbrook
+Nurseries; Theis refitted to the long record (T 112 m2/d, S 1.1 x 10^-3) 1,700 at Kilnbrook Nurseries; Theis scaled by
+the observation boreholes' closed-to-open ratios at the record's end (1.40 to 1.54) 1,700 to 1,800 at Kilnbrook
+Nurseries; a fault sealing half or 80 per cent 1,800 and 1,500 at Lower Hay Farm; the sealing fault 1,300 at Lower
+Hay Farm, a spread of 1,300 to 2,600 under the filed sentences alone. Standing under the data as well: only the
+sealing fault (the long record, modelled under the returned abstraction, fits it at 0.03 m rms against 0.31 m for the
+test's unbounded aquifer and 0.06 m for an unbounded refit whose two free parameters still leave a likelihood ratio of
+533 and whose transmissivity the test refutes; its fitted coefficient is 1.00; Windle Cross rises 0.015 m a year where
+the unbounded models expect 1.7 to 2.1 m of drawdown), and nine defensible fits of transmissivity and storage under it
+file 1,326 to 1,332, every one 1,300 at Lower Hay Farm. The ruling-out is quiet: no clause does it; it takes the long
+record set against the test's model and the geology read as a boundary.
+
+Analyst test: a strong analyst who conforms every logger, reads the letter's test and the survey correctly and applies
+the field's Theis solution fitted to the 2014 test (a clean fit at all three observation boreholes) files 2,600 m3/d
+as the largest quantity with Kilnbrook Nurseries limiting and 1,800 passing (the default path's Ends on); refitting or
+scaling to the long record files 1,700 to 1,800, still at Kilnbrook Nurseries; only the aquifer closed by the
+Coldharbour Fault files 1,300 at Lower Hay Farm.
+
+Estimand: pre-application_advice_BH2_2026-09-22.pdf, the derogation test: for each protected abstraction in its table,
+the drawdown in the Sherwood Sandstone at the protected borehole on 31 March 2039, measured from its rest water level
+in April 2015, with Borehole 2 abstracting continuously at 1,200 m3/d from 1 April 2015 to 31 March 2027 and at the
+applied daily quantity from 1 April 2027 to 31 March 2039; a quantity passes only if no protected borehole's predicted
+drawdown exceeds its available drawdown; the call is the largest daily quantity that passes, to the nearest 100 m3/d.
+
+No decoy: nothing is planted to be caught: the loggers, the long record, the regional borehole, the survey, the
+geology and the letter are what each producer writes; no earlier hydrogeological report, consultant's model,
+regulator's assessment or stakeholder figure states a quantity, a drawdown or an aquifer model; the distractors (the
+raw water analyses, the rain gauge) are named in metadata.json.
+
+No certified replay: no shipped figure is reproduced to recover a method; there is no published drawdown prediction,
+no certified aquifer model and no earlier assessment of the licence; the aquifer's parameters come from the test and
+the boundary from the geology and the long record.
+
+Lesson: a model learns that a pumping test's clean fit says nothing about boundaries its cone never reached, so a
+drawdown forecast over a licence term has to bring the aquifer's geometry in (here a fault that throws the aquifer
+against mudstone) and test the model on the long record, where the boundary shows as a cone that keeps deepening
+faster than the test's model and a borehole beyond the fault that never responds; no build on file carries a
+short-test response over a horizon in which a barrier reflects it.
+
+## Survivor anatomy
+
+Actor: the deciding property is the aquifer's closure at the fault, and no file has a column for it: the loggers
+record levels, the survey positions, the letter limits, the memoir a trace and a throw in a paragraph; the drawdown at
+a protected borehole is a relation between its position, Borehole 2's and the fault's trace, worked through the
+aquifer's response, that nothing stores.
+
+Link: the signal is read through a comparison the field's method never asks for once the test fits: the long record's
+monthly levels set against the test model's prediction under the returns' abstraction (a three-file reconstruction,
+the regional movement taken off with Windle Cross), and Windle Cross itself, the regional reference, read as a borehole
+the unbounded cone should have reached; no key joins the fault's trace to a borehole.
+
+Reflex: the field's named method for the deciding quantity, Theis fitted to the constant-rate test and superposed in
+time, sits at rung 0 and files 2,600 at Kilnbrook Nurseries (the default path's Ends on); the refits and scalings a
+careful analyst reaches for at rung 1 stay at Kilnbrook Nurseries and 1,700 to 1,800.
+
+Back-test: the textbook route validates on what a solver uses to validate it: the 2014 test fits Theis at all three
+observation boreholes to the loggers' noise over 72 hours (the barrier's share of the test drawdown is 0.06 to 0.16
+per cent), and the per-borehole fits agree within 0.3 per cent; only the long record, which a solver meets as the
+licence's monitoring return, refutes it, and only once it is modelled.
+
+Second use: every file the decisive step reads ships for its own reason: the geology extract and logs for the
+aquifer's confinement and the boreholes' construction, the survey for positions, the long record because licence
+condition 9 requires it and the letter asks for it, Windle Cross because the letter encloses it for the regional
+level, the returns because the letter asks for them; delete the decisive step and every one of them stays in the pack.
+
+Shock: the movement the step recovers reads as ordinary: water levels at the observation boreholes falling year on
+year under a growing abstraction, a regional borehole holding its level; nothing in any series steps, spikes or ends,
+and the fault is one line among a brook and a road in the memoir.
+
+Pins: the WHAT is filed in the licensing team's own genre, a pre-application letter (the protected boreholes and their
+available drawdowns, the rest-level datum, the quantities and their dates, the pass rule); no filed sentence names an
+aquifer model, a boundary, a horizon or a method; delete any sentence of the letter and the call is either unchanged
+or undefined, never handed over.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 Theis on the 2014 test, superposed per the letter | fires: the letter's test asks for a predicted drawdown | fires: the loggers are the test | fires: the field's method | quiet | fires: units and clocks conformed | quiet | quiet | readable |
+| R1 Theis refitted to the long record | quiet | quiet | fires: calibrate to the monitoring record | quiet | quiet | quiet | quiet | readable |
+| R2 Theis scaled by the observation boreholes' ratio | quiet | quiet | fires: a correction factor | quiet | quiet | fires: one ratio | quiet | readable |
+| R3 a partly sealing fault | quiet | quiet | quiet | quiet | quiet | quiet | quiet | readable |
+| R4 (decisive) the aquifer closed by the Coldharbour Fault, Borehole 2's image across the trace | quiet: no sentence says the fault stops water or that drawdown reflects; the memoir gives the trace and the throw as geology | quiet: no column holds a boundary, an image or a drawdown at a protected borehole | quiet: the reflex is the unbounded test fit, which validates | quiet: Windle Cross is the regional reference the letter encloses, and only a model of what it should show refutes the reflex | quiet: no battery item reads a level against a model | quiet: a second Theis term at a mirrored distance, not one ratio | quiet: every file it reads ships for another reason | silent |
+
+R3 is readable only once the boundary is seen, and it dies to the long record's fitted coefficient (1.00) and to
+Windle Cross's flat record, which a leaky fault would not give.
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the largest daily quantity that passes, to the nearest 100 | the continuous limit (1,328) rounded | the largest whole hundred that passes | same call | same call: 1,300 either way, the limit 28 above the hundred (asserted, SF1) |
+| SF2 | the aquifer's transmissivity and storage | the joint Theis fit to OB1 to OB3 | one borehole alone, the first day, the late half, the nominal 25.0 l/s, Cooper-Jacob, OB3 set aside | 1,326 to 1,332, Lower Hay Farm | same call at every estimate (asserted, SF2) |
+| SF3 | the drawdowns at 1,800, to the nearest metre | 10, 11 and 10 m | the same under every estimate above | same figures | same call (asserted, SF3) |
+| SF4 | the aquifer the test describes | closed by the fault | unbounded (the test alone); unbounded refitted to the long record | 2,600; 1,700 | the long record's misfit, 0.31 and 0.06 m against 0.03 (a likelihood ratio of 533 for the refit), and a refit transmissivity the test refutes (asserted, SF4) |
+| SF5 | how far the fault seals | fully (no flow across) | half or 80 per cent | 1,800; 1,500 | the fitted coefficient, 1.00, and Windle Cross's flat record (asserted, SF5) |
+| SF6 | leakage through the mudstone over 24 years | none | a leaky aquifer flattening the cone | larger quantities | OB1 still falling in the record's last year (asserted, SF6) |
+| SF7 | the drawdown datum | the April 2015 rest level | the June 2014 pre-test level, the 2026 level | other figures | the letter: "measured from its rest water level in April 2015" (asserted, SF7) |
+| SF8 | the pumping basis | 1,200 continuous from 1 April 2015, the applied quantity from 1 April 2027 | the actual abstraction since 2015 | other figures | the letter: "1,200 cubic metres a day from 1 April 2015 to 31 March 2027" (asserted, SF8) |
+| SF9 | the end instant on 31 March 2039 | the end of the day | its start, a day either way | same call | same call (asserted, SF9) |
+| SF10 | passes | does not exceed | exceeds strictly | same call | same call: no protected borehole within 0.05 m of its limit at 1,300 (asserted, SF10) |
+| SF11 | the fault's trace | the line through the memoir's two grid references | the trace read 25 m either way | same call | same call (asserted, SF11) |
+| SF12 | the protected boreholes' positions | the letter's grid references in the SJ square | the survey's frame | same positions | the national grid: SJ is one 100 km square of the survey's eastings and northings (asserted, SF12) |
+| SF13 | the quantity's unit | cubic metres a day | litres a second, a year's volume | other figures | the letter and the licence state cubic metres a day (asserted, SF13) |
+| SF14 | which pump run a ticket's load is | the run inside the ticket's times on its night shift | the run at the ticket's own date and time | ask A | exactly one run at the ticket's litres for every ticket under the shift reading (asserted, SF14) |
+| SF15 | a ticket's date | the night the shift began, the load on its pump run's start day | the calendar date of the load; the ticket's own time-in day | ask A day counts; same figures | the literal date finds no run at the ticket's litres for most after-midnight tickets; every ticket's time-in day is its pump run's start day, so the time-in reading files every figure (asserted, SF15) |
+| SF16 | the volume taken | FM-1 plus the bulk loads | FM-1, the licence meter, alone | ask A | FM-1 records nothing while the bay fills, and the licence's purposes include the bulk supply (asserted, SF16) |
+| SF17 | the licence day | local midnight to midnight | the UTC clock (the telemetry's dates and the loads' runs in UTC); each quarter ending at its stamp; FM-1's register steps for its flow | other day counts under UTC; same figures under the other two | the licence's condition 6: a day beginning at midnight, local time (asserted, SF17, with the UTC reading as the rival); the other two converge (asserted) |
+| SF18 | litres packed in 2025-26 | good bottles at the size filled, BSG-1101 at 750 ml | the export's 700 ml; the fill weights as sizes; rejects counted | ask B | QC net fills at 751 g until April 2026, and the brief: good bottles times the bottle's size (asserted, SF18) |
+| SF19 | line 3's water | cleans included | production only | ask B | the asking sentence: cleans included (asserted, SF19) |
+
+## Ladder
+
+| Rung | Construction | Largest quantity | Limiting | 1,800 passes | Dies to |
+|---|---|---|---|---|---|
+| R0 | Theis on the 2014 test, superposed | 2,600 (2,612) | Kilnbrook Nurseries | yes | the long record (0.31 m rms against 0.03) |
+| R1 | Theis refitted to the long record | 1,700 (1,688) | Kilnbrook Nurseries | no | its misfit (0.06 m, a likelihood ratio of 533), its transmissivity, 112 against the test's 206, and Windle Cross |
+| R2 | Theis scaled by the observation boreholes' ratios (1.40 to 1.54) | 1,700 to 1,800 | Kilnbrook Nurseries | at 1.40 only | Windle Cross: a uniform factor predicts a response there |
+| R3 | a fault sealing half or 80 per cent | 1,800 (1,780) or 1,500 (1,480) | Lower Hay Farm | no | the fitted coefficient, 1.00, and Windle Cross flat |
+| R4 | the fault fully sealing (golden) | 1,300 (1,328) | Lower Hay Farm | no | nothing |
+
+Position and margins: every unbounded route limits at Kilnbrook Nurseries; only a barrier moves the limit to Lower
+Hay Farm, and only the full barrier gives 1,300 (the nearest rival, the 80-per-cent fault, two bins away; the default
+path 13 bins). The decisive move is the largest (2,612 to 1,328, a factor of 1.97); each correction walks the same way
+and none lands: the scaled family reaches 1,300 only at a factor of 1.9, Lower Hay Farm's own closed-to-open ratio,
+which no observation borehole shows (they show 1.40 to 1.54). Pricing: the step is worth 13 bins against a golden
+family spread of 0.07 bins (1,326 to 1,332 over nine fits) and a whole-metre drawdown at 1,800 that every fit files
+the same. The barrier's share of the 72-hour test drawdown is 0.06 to 0.16 per cent at the observation boreholes; at
+1,800 over the term it is 36 to 48 per cent at the protected boreholes. Gate F, counted on the clean truth (checks
+R3a, R3b): no cheap route reaches the call; the one route that does takes the boundary.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | the three protected abstractions in the letter's table | filed in the letter |
+| 2 | Unit of account | each protected borehole | filed in the letter |
+| 3 | Attribution window | to 31 March 2039 | filed; a day either way inert (C1, SF9) |
+| 4 | As-of dating | rest levels of April 2015 | filed in the letter (SF7) |
+| 5 | Version basis | the 2014 test as recorded; the long record as returned | single versions; OB2's casing change resolved by the survey's two levels (C1, R2) |
+| 6 | Denominator | none in the call; ask B divides by good bottles at their size | filed in the brief (SF18) |
+| 7 | Weighting | joint fit across the three observation boreholes | C1: every borehole alone files the same call (SF2) |
+| 8 | Window length | the test's 72 hours; the long record's 131 months | C1: the first day, the late half and all of it file the same call (SF2) |
+| 9 | Boundary inclusivity | passes means not exceeding | C1: nothing on the edge (SF10) |
+| 10 | Rounding path | the continuous limit rounded once to 100 | C1: round and floor agree (SF1); drawdowns rounded once to the metre (SF3) |
+| 11 | Tie-break | none | Lower Hay Farm limits by 304 m3/d over Kilnbrook Nurseries' own limit |
+| 12 | Maturity and censoring | none in the call; the long record is complete to March 2026, as returned | not applicable, stated |
+| 13 | Order of operations | superposition is linear | C1: order cannot matter |
+| 14 | Row order | none | C1: no figure reads row order |
+| 15 | Duplicate resolution | re-sent ticket lines on ask A | exact repeats counted once (asserted); the call reads no ticket |
+| 16 | Identity normalisation | grid references against the survey | C4: the SJ square letters convert to the survey's frame (SF12) |
+| 17 | Netting against gross | none | not applicable, stated |
+| 18 | Dimensional units | OB3's kPa against metres | converted; mishandled it is visible (R2) |
+| 19 | Code and status semantics | PUMP START and STOP, PROD and CIP orders | the systems' own labels; on the ask paths only |
+| 20 | Integerisation | the call to the nearest 100 | SF1 |
+| 21 | Clause scope | the letter's pass rule applies to each protected borehole | filed in the letter |
+| 22 | Forward window contents | the applied quantity from April 2027, continuous | filed in the letter (SF8) |
+
+## Literal reader
+
+Executed word for word, the letter's test asks for a predicted drawdown at each protected borehole and names no
+aquifer model; the estimand is literal and single (population, datum, window, quantities and pass rule all filed), and
+the readings that differ do so by method, not by term: the unbounded aquifer (2,600) and its refits (1,700) are the
+easy route on the same literal estimand, each refuted by the shipped long record and Windle Cross (SF4 to SF6), so the
+literal execution with the model the records support is the golden, 1,300 at Lower Hay Farm. On the asks, every
+convention a literal reader meets is either inert (SF17) or ruled out by a shipped row or a filed sentence (SF14 to
+SF16, SF18, SF19).
+
+## Oracles
+
+None decides the call. The long record and Windle Cross refute the unbounded aquifer only once modelled (a solver meets
+them as the monitoring return and the regional reference). On ask A, FM-1 is the licence meter and the returns from
+April 2015 to March 2026 agree with its telemetry to within about a cubic metre a month, so the meter reads as complete
+(the shape that held: a second source agreeing with the wrong path); the window's loads appear only in the controller
+log and the haulier's tickets. On ask B, the export's 700 ml is the current product master and confirms the wrong
+reading. No control ties only under the golden.
+
+## Ask sheet
+
+Ask A, the returns check (bh2_returns_check.csv): for each month from April to September 2026, the volume taken from
+Borehole 2 to the nearest 100 m3 and the number of days above 1,200 m3 (12 figures). Home: the letter asks for the
+returns with the application, and the licensing team reads this year's abstraction against the licence it is
+varying; a day above 1,200 is a day over the licence's daily maximum. Use: the water resources lead knows this year's
+position before the application goes in and adds the bulk loads to the 2026-27 return. Files on the path: the
+telemetry (FM-1's flow and register, UTC), the wellhead controller's log (local), the haulier's statements, the licence
+(the day, the purposes), the brief (the bulk supply from April 2026). Primary device D4, absence evidenced in a file no
+habitual join reaches: the bulk bay that opened for the Ferncastle Foods contract in April 2026 draws off the raw main
+upstream of FM-1, so every tanker load (25 to 31 m3, 39 to 47 a month) is taken from Borehole 2 without passing the
+licence meter; only the wellhead log, where the pump runs at night while FM-1 records nothing, and the haulier's
+tickets carry it. Second device D8, a recorded date for the event date, on the day block: the haulier dates every
+ticket by the night its shift began, so a load after midnight belongs to the next calendar day; the literal date finds
+no pump run at the ticket's litres for most of them and the night-shift reading finds exactly one for every ticket.
+Hazards: the UTC clock, the quarter-hour stamp and FM-1's register against its flow (each inert, SF17); exact re-sent
+ticket lines. Over-cleaning half: ticket numbers restart each month, so a dedup on the number alone deletes real loads.
+
+| Reading (ask A) | Volumes | Days |
+|---|---|---|
+| FM-1 alone | 1,100 to 1,300 m3 low every month (11 to 13 bins) | wrong every month |
+| loads on the ticket date | right in 3 of 6 months, wrong where a month-boundary night carries loads | wrong every month |
+| loads on the night-shift run (golden) | golden | golden |
+
+Ask B, line 3's water use (in the note): for each month of the 2025-26 licence year, the litres of water line 3 took
+per litre packed, cleans included, to two decimals (12 figures). Home: the letter asks for each line's water used per
+litre of product, and line 5 copies line 3, so the need case is sized on it (the brief files the sizing: the litres
+through line 3's meter, cleans included, per litre packed, good bottles times the bottle's size). Files on the path:
+the telemetry (FM-L3's register, UTC), the MES orders (PROD and CIP, local), the product master export, the QC net
+fill weights, the brief. Primary device D2, a label stored before a silent switch with a false-clean as-of join:
+material BSG-1101, the 75cl still glass, was filled at 750 ml through the 2025-26 year and became the 70cl hospitality
+bottle in April 2026 under the same code; the October 2026 export carries 700 ml for it, so the packed litres join
+understates every month (each ratio 0.10 to 0.15 high, 10 to 15 bins); only the QC net fills (759 g against
+708 g after the switch) show it. Over-cleaning half: reading every line 3 size off the fill weights (the glass is
+filled to a level, about 1.2 per cent over nominal, and the sparkling carries its dissolved gas) puts every month
+0.025 to 0.030 low (2.5 to 3 bins) low, a reading the brief's bottle size rules out.
+
+| Reading (ask B) | Line 3 ratios |
+|---|---|
+| export sizes | 0.10 to 0.15 high every month |
+| every size from the fill weights | every month 0.025 to 0.030 low (2.5 to 3 bins) |
+| good bottles at the size filled, BSG-1101 at 750 ml through March 2026 (golden) | golden |
+
+Separation line: zero device rows in the main call's population, asserted by date: the bulk trade began in April
+2026, after the observation record as returned (to March 2026) and the returns the long-record model reads; the call
+reads the test, the long record, Windle Cross, the survey, the letter, the geology and the returns, and the devices
+live in the telemetry, the controller log, the tickets, the MES, the export and the QC samples.
+
+| Ask block | Cracker reading (the careful solver on the call: FM-1 as the licence meter, the export's sizes, the clock converted, exact re-sends dropped) | Kept | Verdict |
+|---|---|---|---|
+| Ask A volumes | FM-1 alone | 0 of 6 | miss |
+| Ask A days | FM-1 alone | 0 of 6 | miss |
+| Ask B ratios | the export's 700 ml | 0 of 12 | miss |
+
+| Route (generator/ceiling.py, on the cut pack) | Main | Asks kept | Total |
+|---|---|---|---|
+| careful solver on the call | 100 per cent | 0 per cent | 45.0 |
+| careful solver off the call (the default path) | 22 per cent | 0 per cent | 15.4 |
+| includer, ticket-dated (on the call) | 100 per cent | 12.5 per cent (ask A volumes 3 of 6) | 51.9 |
+| over-cleaner, fill weights as sizes (on the call) | 100 per cent | 0 per cent | 45.0 |
+| full includer (on the call) | 100 per cent | 100 per cent | 100.0 |
+
+Pair ceiling: 30.2
+Mirror leakage: 0.0 per cent of ask weight (the careful solver off the call keeps no ask figure).
+Measured by: generator/ceiling.py on the cut pack.
+
+## Stage 3 record
+
+Gates on the final cut, 2026-11-02 (target.zip md5 05a14e7cade8c21d1194e6567709f7e3):
+
+- Generator checks: 179 assertions, 0 failed, every fork SF1 to SF19 asserted; verify PASS on its own code path (the
+  call, T and S, the three drawdowns, the long record's two misfits from the returns PDF, all 24 ask figures).
+- Two consecutive builds byte-identical: 17 target files, 2 golden files, metadata.json, figures.json, submission.md
+  and target.zip (md5 05a14e7cade8c21d1194e6567709f7e3 both times).
+- precut.py PASS (61 checks, 0 FAIL, 0 WARN); voice-check.py PASS (999 characters); figures_check.py PASS (54 figures,
+  0 absent).
+- leak.py --asof 2026-10-05 (the records' pull): REVIEW, no LEAK, sweep 11 clean; the six lines are ruled below. The
+  first run's one LEAK, the test workbook's name matching `test_`, was fixed in the generator by the consultant's own
+  name for a constant-rate test (bh2_crt_june2014.xlsx).
+- guard.py surface: exit 0, 302 builds screened, 6 pairs promoted for the author's adjudication (task156 at 0.100 for the repeated domain and objective pairing; task461, task501, task242, task476 and task174 for the gap, pattern and Gate G labels the card's differentiation lines answer at the draw); its one persona note, Sherwood Sandstone, is the formation, not a person; guard.py heart: WARN, no BLOCK (overuse.domain, repeat.gate_g and overuse.gate_g,
+  answered at the draw), nearest driver 0.08 (task146 v3).
+- generator/ceiling.py: pair ceiling 30.2 (careful solver on the call 45.0, off it 15.4), mirror leakage 0.0; the
+  ticket-dated includer 51.9, the over-cleaner 45.0, the full includer 100.0 (reproduces figures.json).
+- Input gates: 17 files in 4 formats (csv, docx, pdf, xlsx), the telemetry at 52,608 rows, two distractors named in
+  metadata.json (the raw water analyses and the rain gauge), source, date and licence on every file.
+- golden-realism and reduce-house-fixes: the note titled by its finding; the chart on a validated pair with direct
+  labels and a finding as title; a source line under each table, the rounding and casing conventions stated; the
+  write-up's storage coefficient as a plain decimal; container audit clean on target/ and golden/ (H1); every PDF read
+  by a strict parser; distinct, ordered creation stamps per document.
+
+Leak REVIEW rulings, one line each:
+
+- Sweep 3, the letter carries eight of the call's twelve distinctive words: the call is worded in the letter's own
+  terms (the derogation test, cubic metres a day, the protected boreholes, the new line); the letter states no quantity
+  that passes and no drawdown (asserted, R3c). Harmless.
+- Sweep 4, the licence carries six stump-paragraph terms: they are its own conditions' nouns (the observation
+  boreholes, abstraction, the sandstone source, meter readings); it names no boundary, model or drawdown. Harmless.
+- Sweep 4, the geology carries five: the memoir's stratigraphy, logs and the regional borehole's record; it says
+  nothing about water flow (asserted) and gives the fault as a trace and a throw. Harmless.
+- Sweep 4, the letter carries six: the test's own words (the aquifer, the observation borehole record, the regional
+  level, abstraction from the sandstone); it names no model, boundary or method (asserted, R3c). Harmless.
+- Sweep 6, the geology names four of five candidates beside numbers: grid references and log depths, no ranking on
+  any quantity the call turns on. Harmless.
+- Sweep 6, the letter names three of five beside numbers: the protected table's rest levels and available
+  drawdowns, the WHAT the test files (stated_inputs in metadata.json), no ranking on the largest quantity or a
+  predicted drawdown. Harmless.
+
+## Stage 4 findings and fixes
+
+Cut 05a14e7c, judged DETERMINISTIC with FIX_NOW on the returns ask only (the main call, T and S, Lower Hay Farm at
+1,330, the three drawdowns at 1,800, all 12 line 3 ratios forced and reproduced; Gate G analytical_non_defect, Gate H
+analytical); the leak reader found no leak (Q1 to Q4 none, Q6 an analytical choice). Fixed in one generator pass under
+freeze.py (snapshot on 05a14e7c, `check --mode rubric` after):
+
+- Fork 1, the day clock: the licence's condition 6 now reads "a day is a period of 24 hours beginning at midnight,
+  local time" (a WHAT in the licence's own clause); the UTC reading is asserted as the rival it rules out.
+- Fork 2, the ticket day: a load the pump starts just after midnight is booked in after midnight, so every ticket's
+  time-in day is its pump run's start day and the time-in reading files every returns figure (asserted); nothing
+  names the loads or the runs.
+- Realism: Windle Cross carries its station's quality words (Good, Estimated on four infilled outages, Suspect on the
+  days after each logger swap and three odd readings, Unchecked on the latest weeks), with the long record's misfits
+  asserted to round the same with the flagged days dropped; the controller log carries occasional overload trips with
+  their fault resets, outstation link drops and restores, and a buffered stop re-sent, with every pump run asserted
+  unchanged; the returns are signed by the operations manager to 2018-19, then the water resources lead, once by the
+  site engineer for him, on days from 12 to 27 April; the ticket book's numbering, booking waits, departures and crews
+  vary within the matching window (every ticket still on exactly one pump run).
+
+Gates on the fixed cut, 2026-11-02 (target.zip md5 a5afff1947530c87ed53002304d42e81): generator checks 184 assertions, 0
+failed; verify PASS; two consecutive builds byte-identical (17 target files, 2 goldens, metadata.json, figures.json,
+submission.md, target.zip, md5 a5afff1947530c87ed53002304d42e81 both times); freeze.py check --mode rubric PASS (no
+frozen figure moved; its WARN that no ask figure moved is the intent, since both forks were closed by convergence and a
+WHAT, and --mode determinism also PASS); precut PASS (61 checks); voice-check PASS (999 characters); figures_check PASS
+(54 figures); leak.py REVIEW with the same six lines ruled in the Stage 3 record, no LEAK; heart WARN, no BLOCK;
+surface exit 0 with the same six pairs promoted for the author's adjudication and the same formation-name persona note; ceiling unchanged (pair 30.2, mirror leakage 0.0); container audit clean; every PDF read
+strictly.
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each protected borehole's
+  drawdown at 31 March 2039, the field's groundwater forecast for a licence term, and what decides it is the aquifer's
+  boundary beyond the pumping test's reach, the Coldharbour Fault holding the cone so each borehole also feels the
+  well's image across it; with a hospital's or a retailer's nouns there is no aquifer, no boundary and no image (both
+  judge passes: domain pass). Layers: the test's four logger conventions, the OB2 casing change, the regional record,
+  the returns and the telemetry's UTC clock are the systems' own records and decide nothing on the call (layers pass).
+  Three rules: no decoy, no certified figure and no filed model ship; read correctly, every field still leaves Theis
+  fitted to the 72-hour test (2,600, 1,800 passing), and only the closed aquifer the 2015-2026 record forces (0.03 m
+  rms against 0.31 unbounded) gives 1,300 with Lower Hay Farm limiting (pass 2: decisive step analytical).
+- **Stage 4.** Leak reader on cut 05a14e7c: no leak (Q1 to Q4 none, Q6 an analytical choice). Judge pass 1:
+  DETERMINISTIC, FIX_NOW on the returns ask (the day clock; the ticket day). The clock closed as a WHAT in licence
+  condition 6 ("beginning at midnight, local time"); the ticket day closed in the data so both readings converge,
+  with no sentence naming the loads. Realism tells fixed (the regional record's quality flags, the controller's trips
+  and resets, the returns' signatories, the ticket book). Leak re-read on cut a5afff19: no leak. Judge pass 2:
+  DETERMINISTIC, APPROVE, every figure reproduced; its optional line 3 bottle-size pin not taken, since the fill
+  weights force 750 ml (the device's one reading) and the prompt is at 999 characters.
+- **Every gate re-run on the final cut a5afff19** (2026-11-02): precut 61 checks 0 FAIL; voice-check PASS;
+  figures_check 54 figures 0 absent; leak.py REVIEW, no LEAK (the lines ruled in `## Stage 3 record`); guard surface
+  exit 0; guard heart WARN; guard validate 306 cards 0 invalid.
 
 ## Architecture 2 record (spent 2026-11-02)
 
@@ -232,3 +640,34 @@ the same world (a back-test of household services) was lost with its session's s
   architecture 2); and a fault close enough for the 72-hour test to reach shows the doubled Cooper-Jacob slope in the
   test itself, a textbook diagnostic, so the observation boreholes sit west and south of Borehole 2 where the test
   sees under 1 per cent of the barrier (prototypes p1 to p4 in the session scratchpad, t154/proto).
+- 2026-11-02, stage 2 and 3 (architecture 3): a fault 1,980 m east of Borehole 2 (OB2 read 1.5 per cent of the
+  barrier in the 72-hour test, enough for a careful Cooper-Jacob reading to see the slope bend; moved to 2,500 m with
+  OB2 west of the borehole, where the test sees 0.06 to 0.16 per cent); Kilnbrook Nurseries' available drawdown at
+  10.6 m (the long-record refit rung landed at 1,799, next to the applied 1,800, and the limiting borehole stopped
+  separating the rungs; set to 10.00 m); drawdowns at 1,800 graded to one decimal (the golden family's fits split
+  across a tenth's rounding edge; graded to the whole metre with the positions mid-bin, every fit files the same); a second ask B device, line 3's meter
+  also reading another line's runs (dropped: a meter whose register moves while its own line is stopped is a
+  cardinality the hygiene battery checks, so it would be seen and repaired); bulk loads dated on the haulier's ticket
+  date in the golden (matched to no run for most after-midnight tickets; the haulier dates by the night shift, so each
+  load is placed on its own pump run); line 3's monthly ratio left wherever the cleans put it (three months sat within
+  a thousandth of a two-decimal edge; each month's cleans now carry the rinse that moves it three thousandths clear,
+  under half a cubic metre a clean).
+- 2026-11-02, stage 3 (architecture 3): the bulk trade from May 2024 with the returns check on the 2025-26 licence year
+  (the loads that bypass FM-1 sat inside the observation record the decisive step reads, so modelling the record from
+  the returns, the main call's own files, put the closed aquifer at 0.069 m rms against 0.072 m for an unbounded refit:
+  the ask's device had leaked into the main call's evidence, and the golden's 0.03 m read the generator's true
+  abstraction rather than the pack; the bulk trade now begins in April 2026, after the record as returned to March
+  2026, the long record is modelled on the returns read from the PDF, and the returns check covers April to September
+  2026); the borehole survey carrying a tanker bay row ("valve on raw water main") beside FM-1's position (a narration
+  of ask A's device in a file the main call reads; both rows dropped); FM-1's flow logged to a tenth of a litre a
+  second (a run's constant rate rounded the same way every quarter, nine cubic metres a month against the register;
+  logged to a hundredth, and the register reading asserted to file the same figures); line 3's glass filled to the
+  same 0.15 per cent overfill as the PET lines (the fill weights read as sizes then landed 8 of 12 months; glass
+  filled to a level now runs about 1.2 per cent over nominal, as level fillers do, and that reading misses).
+- 2026-11-02, stage 4 (architecture 3, cut 05a14e7c): the licence's day clause without its clock (the judge read the
+  day on the UTC clock and filed 7, 8, 5, 6, 4 and 6 days over against the golden 6, 8, 5, 5, 5 and 5; condition 6
+  now says local time, and the UTC reading is asserted as the rival it rules out); tickets booked in before midnight
+  for loads the pump started after it (the time-in day put April at 23,357, rounding to 23,400 against 23,300; such
+  loads are booked in after midnight, so both readings file every figure, asserted, and no sentence names the loads);
+  the realism tells the reader named (Windle Cross all "G", a controller log of bare alternating starts and stops,
+  every return signed by one person on 22 April, a near-uniform ticket book), each fixed without moving a figure.

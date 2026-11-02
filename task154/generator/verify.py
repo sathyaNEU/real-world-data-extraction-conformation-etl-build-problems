@@ -1,9 +1,6 @@
-"""task154's independent verifier. It reads only the shipped files under target/ (and, to compare, the goldens and
-generator/figures.json), imports no generator module, and recomputes on its own code path: the call and the three
-lines TBS's bulletin feeds, the default path and the other rungs, the back-test against the Office's past estimates,
-the revision record and the coal and LNG table (the lodgement lag read from the ports' loadings, not assumed).
-
-    python3 task154/generator/verify.py [target_dir golden_dir]"""
+"""The independent verifier: reads only the shipped pack and the goldens, on its own code path (nothing from the
+generator's modules), and recomputes the call, its components and every ask figure, reading back every format the
+pack ships (xlsx, csv, pdf, docx) with a positive control on each document it quotes."""
 from __future__ import annotations
 
 import csv
@@ -14,358 +11,291 @@ import os
 import re
 import sys
 
+import numpy as np
 import openpyxl
-import pdfplumber
+from pypdf import PdfReader
+from scipy.optimize import brentq, least_squares
+from scipy.special import exp1
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-
-
-def half_up(x, nd):
-    q = 10 ** nd
-    return math.floor(x * q + 0.5) / q
+FAILS = []
 
 
-def month_seq(a, b):
-    y, m = int(a[:4]), int(a[5:])
-    out = []
-    while (y, m) <= (int(b[:4]), int(b[5:])):
-        out.append("%04d-%02d" % (y, m))
-        y, m = (y, m + 1) if m < 12 else (y + 1, 1)
-    return out
+def ok(label, cond, detail=""):
+    if not cond:
+        FAILS.append((label, detail))
+        print("VERIFY FAIL  %s  %s" % (label, detail))
 
 
-def prev_month(mo, k=1):
-    y, m = int(mo[:4]), int(mo[5:])
-    for _ in range(k):
-        y, m = (y, m - 1) if m > 1 else (y - 1, 12)
-    return "%04d-%02d" % (y, m)
+def text(path):
+    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
 
 
-def q_months(q):
-    y, n = int(q[:4]), int(q[-1])
-    return ["%04d-%02d" % (y, 3 * n - 2 + k) for k in range(3)]
+def find(folder, pattern):
+    hits = [f for f in os.listdir(folder) if re.search(pattern, f)]
+    assert len(hits) == 1, (pattern, hits)
+    return os.path.join(folder, hits[0])
 
 
-def q_prev(q):
-    y, n = int(q[:4]), int(q[-1])
-    return "%dQ%d" % ((y, n - 1) if n > 1 else (y - 1, 4))
+def bst(t):
+    y = t.year
+    ls = lambda m: (lambda x: x - dt.timedelta(days=(x.weekday() + 1) % 7))(dt.date(y, m, 31))     # noqa: E731
+    return dt.datetime.combine(ls(3), dt.time(1)) <= t < dt.datetime.combine(ls(10), dt.time(1))
 
 
-def q_seq(a, b):
-    out, q = [], a
-    while True:
-        out.append(q)
-        if q == b:
-            return out
-        y, n = int(q[:4]), int(q[-1])
-        q = "%dQ%d" % ((y, n + 1) if n < 4 else (y + 1, 1))
+def to_local(t_utc):
+    return t_utc + dt.timedelta(hours=1) if bst(t_utc) else t_utc
 
 
-def num(s):
-    return float(s.replace(",", ""))
+def from_local(t_loc):
+    g = t_loc - dt.timedelta(hours=1)
+    return g if bst(g) else t_loc
 
 
-# ---------------------------------------------------------------------------------------------------- reading
-def read_csv(path):
-    with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+def gridref(s):
+    m = re.match(r"SJ (\d{5}) (\d{5})", s)
+    return 300000 + int(m.group(1)), 300000 + int(m.group(2))
 
 
-def read_prices(path):
-    wb = openpyxl.load_workbook(path, data_only=True)
-    out = {}
-    for sheet in ("PPI inputs", "PPI outputs", "Export prices", "Import prices"):
-        ws = wb[sheet]
-        codes = [str(ws.cell(row=3, column=j).value) for j in range(2, ws.max_column + 1)]
-        d = {c: {} for c in codes}
-        for r in range(5, ws.max_row + 1):
-            when = ws.cell(row=r, column=1).value
-            if not isinstance(when, dt.datetime):
+def theis(r2, t, T, S):
+    return exp1(r2 * S / (4 * T * t)) / (4 * math.pi * T)
+
+
+def main(target, golden):
+    FAILS.clear()
+    # ---------------------------------------------------------------------------------------------- the test
+    wb = openpyxl.load_workbook(find(target, r"crt_june2014"), read_only=True, data_only=True)
+    fs = list(wb["Field sheet"].iter_rows(values_only=True))
+    on_local = dt.datetime.strptime(fs[1][1], "%d/%m/%Y %H:%M")
+    ok("test field sheet: pump on is in BST", fs[1][2] == "BST")
+    on = from_local(on_local)
+    q = np.mean([float(r[4]) for r in fs[7:] if r and r[2] == "BH2" and r[4] not in (None, "")]) * 86.4
+    survey = {}
+    with open(find(target, r"site_survey"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            survey.setdefault(r["point"], (float(r["easting"]), float(r["northing"])))
+    e0, n0 = survey["BH2"]
+    data = []
+    for ob in ("OB1", "OB2", "OB3"):
+        rows = list(wb[ob].iter_rows(values_only=True))
+        hdr = {str(r[0]): r[1] for r in rows[:6] if r and r[0]}
+        body = rows[7:]
+        if ob == "OB3":
+            ok("OB3 logger: kPa on local time", "kPa" in str(hdr.get("Pressure unit")) and "BST" in str(hdr.get("Time zone")))
+            tt = [from_local(dt.datetime.strptime(r[0], "%d/%m/%Y %H:%M")) for r in body]
+            lv = np.array([float(r[1]) for r in body]) / 9.80665
+        else:
+            ok("%s logger: metres on UTC" % ob, hdr.get("Clock") == "UTC")
+            tt = [dt.datetime.strptime(r[0] + " " + r[1], "%Y-%m-%d %H:%M:%S") for r in body]
+            lv = np.array([float(r[2]) for r in body])
+        tm = np.array([(x - on).total_seconds() / 86400.0 for x in tt])
+        pre = lv[(tm > -1 / 24.0) & (tm <= 0)].mean()
+        m = (tm > 1 / 1440.0) & (tm <= 3.0)
+        e, n = survey[ob]
+        data.append(((e - e0) ** 2 + (n - n0) ** 2, tm[m], pre - lv[m]))
+
+    def res(p):
+        T, S = math.exp(p[0]), math.exp(p[1])
+        return np.concatenate([q * theis(r2, t, T, S) - s for r2, t, s in data])
+    f = least_squares(res, [math.log(100.0), math.log(1e-3)])
+    T, S = math.exp(f.x[0]), math.exp(f.x[1])
+    # ---------------------------------------------------------------------------------------------- letter and geology
+    letter = text(find(target, r"pre-application"))
+    flat = re.sub(r"\s+", " ", letter)
+    ok("letter read back: the test sentence", "measured from its rest water level in April 2015" in flat)
+    prot = []
+    for name in ("Lower Hay Farm", "Kilnbrook Nurseries", "Hollin Bank Golf Club"):
+        m = re.search(re.escape(name) + r".*?(SJ \d{5} \d{5})\s+(\d+\.\d{2})\s+(\d+\.\d{2})", flat)
+        ok("letter: %s row" % name, m is not None)
+        e, n = gridref(m.group(1))
+        prot.append((name, (e - e0, n - n0), float(m.group(3))))
+    geo = re.sub(r"\s+", " ", text(find(target, r"geology")))
+    ok("geology read back: the structure paragraph", "Coldharbour Fault" in geo)
+    m = re.search(r"Windle Cross road at (SJ \d{5} \d{5}) and the disused mineral railway at (SJ \d{5} \d{5})", geo)
+    ok("geology: two points on the fault", m is not None)
+    a = np.array(gridref(m.group(1)), float) - (e0, n0)
+    c = np.array(gridref(m.group(2)), float) - (e0, n0)
+    d = (c - a) / np.linalg.norm(c - a)
+    img = 2 * (a + np.dot(-a, d) * d)
+    t_tot = (dt.date(2039, 4, 1) - dt.date(2015, 4, 1)).days
+    t_new = (dt.date(2039, 4, 1) - dt.date(2027, 4, 1)).days
+
+    def dd(qn, xy, image=True):
+        r2 = xy[0] ** 2 + xy[1] ** 2
+        ri2 = (xy[0] - img[0]) ** 2 + (xy[1] - img[1]) ** 2
+        s = 1200 * theis(r2, t_tot, T, S) + (qn - 1200) * theis(r2, t_new, T, S)
+        if image:
+            s += 1200 * theis(ri2, t_tot, T, S) + (qn - 1200) * theis(ri2, t_new, T, S)
+        return s
+    lim = {name: brentq(lambda x: dd(x, xy) - av, -1e5, 1e6) for name, xy, av in prot}
+    worst = min(lim, key=lim.get)
+    largest = math.floor(lim[worst] / 100.0) * 100
+    at1800 = {name: int(math.floor(dd(1800, xy) + 0.5)) for name, xy, _ in prot}
+    th = {name: brentq(lambda x: dd(x, xy, False) - av, -1e5, 1e6) for name, xy, av in prot}
+    # ---------------------------------------------------------------------------------------------- the long record
+    rt = text(find(target, r"abstraction_returns"))
+    mnames = {dt.date(2000, m, 1).strftime("%B"): m for m in range(1, 13)}
+    ret = {}
+    for mname, y, v in re.findall(r"^(%s) (\d{4})\s*\n\s*([\d,]+)\s*$" % "|".join(mnames), rt, re.M):
+        k = (int(y), mnames[mname])
+        nd = ((dt.date(k[0] + (k[1] == 12), k[1] % 12 + 1, 1)) - dt.date(*k, 1)).days
+        ret[k] = float(v.replace(",", "")) / nd
+    ok("returns read back: April 2015 to March 2026, every month", len(ret) == 132 and min(ret) == (2015, 4) and
+       max(ret) == (2026, 3), str(len(ret)))
+    casing = {}
+    with open(find(target, r"site_survey"), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            if r["casing_top_maod"]:
+                casing.setdefault(r["point"], []).append(float(r["casing_top_maod"]))
+    wx = {}
+    for r in csv.DictReader(open(find(target, r"windle_cross"), encoding="utf-8")):
+        d_ = dt.datetime.strptime(r["Date"], "%d/%m/%Y").date()
+        wx.setdefault((d_.year, d_.month), []).append(float(r["Level (mAOD)"]))
+    wx = {k: float(np.mean(v)) for k, v in wx.items()}
+    obl = {}
+    for r in csv.DictReader(open(find(target, r"ob_monthly_levels"), encoding="utf-8")):
+        y, m = map(int, r["month"].split("-"))
+        ct = casing[r["borehole"]][1] if (r["borehole"] == "OB2" and (y, m) >= (2020, 3)) else casing[r["borehole"]][0]
+        obl.setdefault(r["borehole"], {})[(y, m)] = ct - float(r["mean_depth_to_water_m_btoc"])
+    steps = sorted(ret)
+
+    def model(xy, k, image):
+        mid = dt.datetime(*k, 1) + dt.timedelta(days=((dt.date(k[0] + (k[1] == 12), k[1] % 12 + 1, 1)) -
+                                                       dt.date(*k, 1)).days / 2.0)
+        s_, prev_ = 0.0, 0.0
+        for st_ in steps:
+            t0 = dt.datetime(*st_, 1)
+            if t0 >= mid:
+                break
+            age = (mid - t0).total_seconds() / 86400.0
+            r2 = xy[0] ** 2 + xy[1] ** 2
+            u = theis(r2, age, T, S)
+            if image:
+                u += theis((xy[0] - img[0]) ** 2 + (xy[1] - img[1]) ** 2, age, T, S)
+            s_ += (ret[st_] - prev_) * u
+            prev_ = ret[st_]
+        return s_
+    resid = {True: [], False: []}
+    for ob in ("OB1", "OB2", "OB3"):
+        e, n = survey[ob]
+        xy = (e - e0, n - n0)
+        ks = sorted(k for k in obl[ob] if k in wx)
+        lev = np.array([obl[ob][k] - (wx[k] - wx[(2015, 4)]) for k in ks])
+        for image in (True, False):
+            pred = np.array([model(xy, k, image) for k in ks])
+            resid[image].append(lev - (np.mean(lev + pred) - pred))
+    rms_c = float(np.sqrt(np.mean(np.concatenate(resid[True]) ** 2)))
+    rms_u = float(np.sqrt(np.mean(np.concatenate(resid[False]) ** 2)))
+    # ---------------------------------------------------------------------------------------------- goldens
+    figs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
+    ok("verify: the long record's misfits, closed and unbounded", round(rms_c, 2) == figs["rms_closed_m"] and
+       round(rms_u, 2) == figs["rms_unbounded_m"], "%.4f %.4f" % (rms_c, rms_u))
+    note = re.sub(r"\s+", " ", text(os.path.join(golden, "bh2_licence_variation_note.pdf")))
+    ok("verify: largest quantity", largest == figs["call_largest_m3d"] == 1300, "%s" % largest)
+    ok("verify: limiting borehole", worst == figs["call_limiting"])
+    ok("verify: drawdowns at 1,800", all(at1800[n] == figs["at1800_%s_m" % n.split()[0].lower()] for n in at1800), str(at1800))
+    ok("verify: T and S", int(round(T)) == figs["T_m2d"] and round(S * 1e4, 1) == figs["S_e4"], "%.2f %.3e" % (T, S))
+    ok("verify: the unbounded aquifer limits at Kilnbrook Nurseries near 2,600",
+       min(th, key=th.get) == "Kilnbrook Nurseries" and abs(min(th.values()) - 2600) < 50, str({k: round(v) for k, v in th.items()}))
+    ok("golden note states the call", "Apply for 1,300 cubic metres a day." in note)
+    for name in at1800:
+        ok("golden note row %s" % name, re.search(re.escape(name) + r" \d+\.\d{2} %d " % at1800[name], note) is not None)
+    # ---------------------------------------------------------------------------------------------- ask A
+    tel = list(csv.DictReader(open(find(target, r"telemetry"), encoding="utf-8")))
+    day = {}
+    l3 = {}
+    prev = None
+    for r in tel:
+        loc = to_local(dt.datetime.strptime(r["time_utc"], "%Y-%m-%dT%H:%MZ"))
+        day[loc.date()] = day.get(loc.date(), 0.0) + float(r["fm1_flow_ls"]) * 0.9
+        reg = float(r["fm_l3_register_m3"])
+        if prev is not None:
+            l3[(loc.year, loc.month)] = l3.get((loc.year, loc.month), 0.0) + reg - prev
+        prev = reg
+    ev = list(csv.DictReader(open(find(target, r"controller_events"), encoding="utf-8")))
+    runs = []
+    st = None
+    for r in ev:
+        t = dt.datetime.strptime(r["timestamp"], "%d/%m/%Y %H:%M:%S")
+        if r["event"] == "PUMP START":
+            st = t
+        elif r["event"] == "PUMP STOP" and st is not None:
+            runs.append((st, t))
+            st = None
+    wb = openpyxl.load_workbook(find(target, r"bulk_tickets"), read_only=True, data_only=True)
+    seen = set()
+    add = {}
+    unmatched = 0
+    for ws in wb.worksheets:
+        for r in list(ws.iter_rows(values_only=True))[4:]:
+            if not r or not r[0] or not str(r[0]).isdigit():
                 continue
-            for j, c in enumerate(codes, 2):
-                d[c]["%04d-%02d" % (when.year, when.month)] = float(ws.cell(row=r, column=j).value)
-        out[sheet] = d
-    return out
-
-
-def read_bulletin(path):
-    with pdfplumber.open(path) as pdf:
-        text = "\n".join(p.extract_text() for p in pdf.pages)
-    tables = {}
-    parts = re.split(r"\n(?=Table \d\. )", text)
-    months = ["2026-03", "2026-04", "2026-05", "2026-06"]
-    for part in parts:
-        m = re.match(r"Table (\d)\. ", part)
-        if not m:
-            continue
-        n = int(m.group(1))
-        rows = {}
-        for ln in part.split("\n")[2:]:
-            if n in (1, 2):
-                mm = re.match(r"(\d) .*? ([\d,]+\.\d) ([\d,]+\.\d) ([\d,]+\.\d) ([\d,]+\.\d)$", ln)
-                if mm:
-                    rows[mm.group(1)] = dict(zip(months, (num(x) for x in mm.groups()[1:])))
-            elif n in (5, 6, 7):
-                mm = re.match(r"([A-Z]{3}) .*? ([\d,]+\.\d+) ([\d,]+\.\d+) ([\d,]+\.\d+) ([\d,]+\.\d+)$", ln)
-                if mm:
-                    rows[mm.group(1)] = dict(zip(months, (num(x) for x in mm.groups()[1:])))
-            elif n == 4:
-                mm = re.match(r"([A-Za-z ]+?) ([\d,]+\.\d|-) ([\d,]+\.\d|-) ([\d,]+\.\d|-) ([\d,]+\.\d|-)$", ln)
-                if mm and mm.group(1) != "Total":
-                    v = [0.0 if x == "-" else num(x) for x in mm.groups()[1:]]
-                    rows[mm.group(1)] = {"coal": v[0], "coal_kt": v[1], "lng": v[2], "lng_kt": v[3]}
-        tables[n] = rows
-    return tables, text
-
-
-def read_db(path):
-    db, order, basis = {}, [], {}
-    for r in read_csv(path):
-        kind = "cvm" if r["price_basis"].startswith("Chain") else "cp"
-        db[(r["release_id"], kind, r["quarter"], r["series_id"])] = int(r["value_m"])
-        if r["release_id"] not in basis:
-            order.append((r["release_date"], r["release_id"]))
-            basis[r["release_id"]] = r["release_date"]
-    order.sort()
-    return db, [rid for _, rid in order]
-
-
-def read_annual(path):
-    wb = openpyxl.load_workbook(path, data_only=True)
-    ws = wb["Table 3"]
-    names = {"Gross domestic product": "GDP", "Changes in inventories: non-farm business": "CIPI_NF",
-             "Exports of goods": "X_G", "Imports of goods": "M_G"}
-    cols = {names[ws.cell(row=4, column=j).value]: j for j in range(2, ws.max_column + 1)
-            if ws.cell(row=4, column=j).value in names}
-    out = {k: {} for k in cols}
-    for r in range(5, ws.max_row + 1):
-        q = ws.cell(row=r, column=1).value
-        if q:
-            for k, j in cols.items():
-                out[k][q.replace(" ", "")] = ws.cell(row=r, column=j).value
-    return out
-
-
-def read_tracker(path):
-    ws = openpyxl.load_workbook(path, data_only=True)["Tracker"]
-    base, track = {}, {}
-    for r in range(6, ws.max_row + 1):
-        code = ws.cell(row=r, column=2).value
-        if code:
-            base[code] = ws.cell(row=r, column=3).value
-            v = ws.cell(row=r, column=4).value
-            if isinstance(v, (int, float)):
-                track[code] = v
-    return base, track
-
-
-# ---------------------------------------------------------------------------------------------------- the revaluation
-def rebased(idx):
-    y25 = [v for k, v in idx.items() if k.startswith("2025")]
-    a = sum(y25) / len(y25)
-    return {k: v / a for k, v in idx.items()}
-
-
-def period_price(p, mo, T):
-    """The index averaged over the T months before the end of month mo, each month's index holding over its month:
-    the integral of the step function over [end - T, end] divided by T."""
-    lo, tot, k, edge = -float(T), 0.0, mo, 0.0
-    while edge > lo + 1e-12:
-        share = min(1.0, edge - lo)
-        tot += share * p[k]
-        edge -= 1.0
-        k = prev_month(k)
-    return tot / float(T)
-
-
-def volume(stock, p, mo, rule, T):
-    if rule == "turnover":
-        return stock / period_price(p, mo, T)
-    if rule == "monthend":
-        return stock / p[mo]
-    if rule == "qavg":
-        return stock / ((p[mo] + p[prev_month(mo)] + p[prev_month(mo, 2)]) / 3.0)
-    if rule == "two":
-        return stock / period_price(p, mo, 2.0)
-    raise ValueError(rule)
-
-
-def inventories(stocks, ratios, p25, q, rule):
-    end, start = q_months(q)[-1], prev_month(q_months(q)[0])
-    return sum(volume(stocks[c][end], p25[c], end, rule, ratios[c][end]) -
-               volume(stocks[c][start], p25[c], start, rule, ratios[c][start]) for c in stocks)
-
-
-# ---------------------------------------------------------------------------------------------------- main
-def main(target=None, golden=None):
-    target = target or os.path.join(TASK, "target")
-    golden = golden or os.path.join(TASK, "golden")
-    f = lambda name: os.path.join(target, name)
-    names = sorted(os.listdir(target))
-    pick = lambda pat: [n for n in names if re.match(pat, n)][0]
-    prices = read_prices(f(pick(r"so_price_indexes_.*\.xlsx")))
-    tabs, btext = read_bulletin(f(pick(r"tbs_merchandise_trade_business_stocks_.*\.pdf")))
-    db, rel_order = read_db(f(pick(r"so_realtime_gdp_database\.csv")))
-    annual = read_annual(f(pick(r"so_annual_national_accounts_.*\.xlsx")))
-    base, track = read_tracker(f(pick(r"tarbert_gdp_tracker_.*\.xlsx")))
-    portal = read_csv(f(pick(r"tbs_portal_monthly_.*\.csv")))
-    bulk = read_csv(f(pick(r"tbs_trade_partner_sitc2_monthly_.*\.csv")))
-    ports = read_csv(f(pick(r"harbours_board_bulk_loadings_.*\.csv")))
-    countries = read_csv(f(pick(r"tbs_country_codes\.csv")))
-    res, bad = {}, []
-
-    def check(label, got, want, tol=1e-9):
-        good = abs(got - want) <= tol
-        print("%s  %s: %s against %s" % ("ok  " if good else "DIFF", label, got, want))
-        if not good:
-            bad.append(label)
-
-    inds = list(tabs[5])
-    p25 = {c: rebased(prices["PPI inputs"][c]) for c in inds}
-    pout25 = {c: rebased(prices["PPI outputs"][c]) for c in inds}
-    px25 = {s: rebased(prices["Export prices"][s]) for s in prices["Export prices"]}
-    pm25 = {s: rebased(prices["Import prices"][s]) for s in prices["Import prices"]}
-    q2 = ["2026-04", "2026-05", "2026-06"]
-    x2 = sum(tabs[1][s][m] / px25[s][m] for s in tabs[1] for m in q2)
-    m2 = sum(tabs[2][s][m] / pm25[s][m] for s in tabs[2] for m in q2)
-    gdp1 = base.pop("GDP")
-
-    def call(cipi_q2):
-        con = {c: (-1.0 if c == "M_S" else 1.0) * (track[c] - base[c]) / gdp1 * 100.0 for c in track}
-        con["X_G"] = (x2 - base["X_G"]) / gdp1 * 100.0
-        con["M_G"] = -(m2 - base["M_G"]) / gdp1 * 100.0
-        con["CIPI_NF"] = (cipi_q2 - base["CIPI_NF"]) / gdp1 * 100.0
-        qq = sum(con.values())
-        return qq, ((1.0 + qq / 100.0) ** 4 - 1.0) * 100.0, con
-
-    stocks, ratios = tabs[5], tabs[7]
-    cq2 = inventories(stocks, ratios, p25, "2026Q2", "turnover")
-    q, ann, con = call(cq2)
-    res["call"] = ann
-    rungs = {r: call(inventories(stocks, ratios, p25, "2026Q2", r))[1] for r in ("monthend", "qavg", "two")}
-    out_cipi = sum(stocks[c]["2026-06"] / pout25[c]["2026-06"] - stocks[c]["2026-03"] / pout25[c]["2026-03"]
-                   for c in inds)
-    print("verify: the call %.4f (quarterly %.4f); month-end %.3f, quarter average %.3f, two months %.3f, output "
-          "indexes %.3f; business inventories %.1f, goods %.1f / %.1f" % (
-              ann, q, rungs["monthend"], rungs["qavg"], rungs["two"], call(out_cipi)[1], cq2, x2, m2))
-    # the March quarter's goods volumes reproduce the base from TBS's January to March over the rebased indexes
-    pst = {}
-    for r in portal:
-        pst[(r["series_id"], r["month"])] = float(r["value"])
-    q1m = ["2026-01", "2026-02", "2026-03"]
-    xq1 = sum(pst[("TBS.EXP.S%s.SA" % s, m)] / px25[s][m] for s in tabs[1] for m in q1m[:2]) + \
-        sum(tabs[1][s]["2026-03"] / px25[s]["2026-03"] for s in tabs[1])
-    check("March-quarter goods exports rebuilt within $1m of the tracker's base", abs(xq1 - base["X_G"]), 0.0, tol=1.0)
-    # back-test against the Office's latest estimates of past quarters
-    last = rel_order[-1]
-    pstk = {c: {} for c in inds}
-    prat = {c: {} for c in inds}
-    for (sid, m), v in pst.items():
-        part = sid.split(".")
-        if part[1] == "STK":
-            pstk[part[2]][m] = v
-        elif part[1] == "RAT":
-            prat[part[2]][m] = v
-    for c in inds:
-        pstk[c]["2026-03"] = stocks[c]["2026-03"]
-        prat[c]["2026-03"] = ratios[c]["2026-03"]
-    errs = {"turnover": [], "monthend": []}
-    for qq in q_seq("2019Q2", "2026Q1"):
-        off = db[(last, "cvm", qq, "CIPI_NF")]
-        for rule in errs:
-            errs[rule].append(inventories(pstk, prat, p25, qq, rule) - off)
-    rmse = {k: math.sqrt(sum(e * e for e in v) / len(v)) for k, v in errs.items()}
-    print("verify: back-test over %d quarters, RMSE turnover %.2f, month-end %.2f ($m)" % (
-        len(errs["turnover"]), rmse["turnover"], rmse["monthend"]))
-    # Ask A: the advance estimate's revision record
-    lat = annual["GDP"]
-    growth = lambda lv, qq: ((lv[qq] / lv[q_prev(qq)]) ** 4 - 1.0) * 100.0
-    revs = {}
-    for qq in q_seq("2023Q2", "2026Q1"):
-        adv = {k[2]: v for k, v in db.items() if k[0] == qq + "-A" and k[1] == "cvm" and k[3] == "GDP"}
-        revs[qq] = growth(lat, qq) - growth(adv, qq)
-    va = list(revs.values())
-    ask_a = {qq: revs[qq] for qq in ("2025Q3", "2025Q4", "2026Q1")}
-    ask_a["mean"] = sum(va) / len(va)
-    ask_a["mar"] = sum(abs(v) for v in va) / len(va)
-    # Ask B: the lodgement lag read from the ports, then coal and LNG to five markets
-    tbs_t = {}
-    for r in bulk:
-        if r["flow"] == "Exports" and r["sitc_division"] in ("32", "34"):
-            k = (r["month"], r["sitc_division"])
-            tbs_t[k] = tbs_t.get(k, 0) + int(r["quantity"])
-    port_t = {}
-    for r in ports:
-        if r["cargo"] in ("Coal", "LNG"):
-            k = (r["month"], "32" if r["cargo"] == "Coal" else "34")
-            port_t[k] = port_t.get(k, 0) + int(r["tonnes_loaded"])
-
-    def best_lag(months_):
-        gaps = {lag: sum(abs(tbs_t[(m, d)] / port_t[(prev_month(m, lag), d)] - 1.0) for m in months_
-                         for d in ("32", "34")) for lag in (0, 1)}
-        return min(gaps, key=gaps.get), gaps
-    lag25, g25 = best_lag(month_seq("2025-02", "2025-11"))
-    lag26, g26 = best_lag(month_seq("2026-01", "2026-05"))
-    print("verify: TBS's coal and LNG tonnes follow the ports' loadings by %d month(s) in 2025 and %d in 2026" % (
-        lag25, lag26))
-    code_of = {}
-    for r in countries:
-        code_of[r["country"]] = r["code"]
-    val = {}
-    for r in bulk:
-        if r["flow"] == "Exports" and r["sitc_division"] in ("32", "34"):
-            val[(r["month"], r["country"], r["sitc_division"])] = int(r["value_000"]) / 1000.0
-    june = {}
-    for name, row in tabs[4].items():
-        code = code_of.get(name) or [c for n, c in code_of.items() if n.startswith(name)][0]
-        june[(code, "32")], june[(code, "34")] = row["coal"], row["lng"]
-    ask_b = {}
-    for d in ("32", "34"):
-        tot = 0.0
-        for c in ("JP", "CN", "KR", "IN", "TW"):
-            v26 = val.get(("2026-04", c, d), 0.0) + val.get(("2026-05", c, d), 0.0) + june.get((c, d), 0.0)
-            v25 = sum(val.get((m if lag25 == 0 else month_seq(m, "2026-12")[lag25], c, d), 0.0)
-                      for m in ("2025-04", "2025-05", "2025-06"))
-            ask_b["%s_%s" % (c, d)] = v26 - v25
-            tot += v26 - v25
-        ask_b["total_%s" % d] = tot
-    # against figures.json and the goldens
-    with open(os.path.join(TASK if target == os.path.join(TASK, "target") else os.path.dirname(target), "generator",
-                           "figures.json"), encoding="utf-8") as fh:
-        figs = json.load(fh)
-    check("the call, annualised, one decimal", half_up(ann, 1), figs["call"]["annualised_pct"])
-    check("the call, unrounded", ann, figs["call"]["unrounded"], tol=1e-9)
-    check("quarterly growth, two decimals", half_up(q, 2), figs["call"]["quarterly_pct"])
-    check("business inventories' contribution", half_up(con["CIPI_NF"], 2), figs["contributions_pp"]["CIPI_NF"])
-    check("goods exports' contribution", half_up(con["X_G"], 2), figs["contributions_pp"]["X_G"])
-    check("goods imports' contribution", half_up(con["M_G"], 2), figs["contributions_pp"]["M_G"])
-    check("business inventories, June quarter ($m)", round(cq2, 1), figs["business_inventories_m"]["june_quarter_2026"])
-    check("goods exports, June quarter ($m)", round(x2, 1), figs["goods_m"]["exports_q2"])
-    check("goods imports, June quarter ($m)", round(m2, 1), figs["goods_m"]["imports_q2"])
-    check("the default path rounds to 2.2", half_up(rungs["monthend"], 1), 2.2)
-    check("the back-test RMSE, turnover ($m)", round(rmse["turnover"], 1), figs["backtest_rmse_m"]["turnover"])
-    check("the back-test RMSE, month-end ($m)", round(rmse["monthend"], 1), figs["backtest_rmse_m"]["month-end"])
-    for k, v in ask_a.items():
-        check("Ask A %s" % k, half_up(v, 1 if k.startswith("20") else 2), figs["ask_a"][k])
-    check("Ask B lag in 2025 (months)", lag25, 1)
-    check("Ask B lag in 2026 (months)", lag26, 0)
-    for k, v in ask_b.items():
-        check("Ask B %s" % k, half_up(v, 1), figs["ask_b"][k])
-    gw = openpyxl.load_workbook(os.path.join(golden, "gdp_preview_2026q2_tables.xlsx"), data_only=True)
-    check("the tables workbook's call cell", gw["Call"]["B3"].value, half_up(ann, 1))
-    with pdfplumber.open(os.path.join(golden, "gdp_preview_2026q2.pdf")) as pdf:
-        ptxt = " ".join(p.extract_text() for p in pdf.pages)
-    check("the preview's headline carries the call", float("June quarter GDP: we expect %.1f%% annualised" %
-                                                           half_up(ann, 1) in ptxt), 1.0)
-    if bad:
-        raise SystemExit("verify: %d differences: %s" % (len(bad), "; ".join(bad)))
-    print("verify: every figure recomputed from the shipped files on an independent path")
-    return res
+            key = (ws.title,) + tuple(r)
+            if key in seen:
+                continue
+            seen.add(key)
+            d0 = dt.datetime.strptime(r[1], "%d/%m/%Y").date()
+            hi, mi = map(int, r[3].split(":"))
+            ho, mo = map(int, r[4].split(":"))
+            dd0 = d0 + dt.timedelta(days=1 if hi < 12 else 0)
+            t_in = dt.datetime.combine(dd0, dt.time(hi, mi))
+            t_out = dt.datetime.combine(dd0, dt.time(ho, mo)) + dt.timedelta(seconds=59)
+            if t_out < t_in:
+                t_out += dt.timedelta(days=1)
+            hit = [x for x in runs if t_in <= x[0] <= t_out]
+            if len(hit) != 1:
+                unmatched += 1
+                continue
+            add[hit[0][0].date()] = add.get(hit[0][0].date(), 0.0) + float(r[5]) / 1000.0
+    ok("ask A: every ticket on one pump run", unmatched == 0, str(unmatched))
+    months_a = [(2026, m) for m in range(4, 10)]
+    months = [(2025, m) for m in range(4, 13)] + [(2026, m) for m in range(1, 4)]
+    gold = {row["month"]: row for row in csv.DictReader(open(os.path.join(golden, "bh2_returns_check.csv"), encoding="utf-8"))}
+    ok("ask A: the returns check holds April to September 2026", sorted(gold) == ["%04d-%02d" % k for k in months_a],
+       str(sorted(gold)))
+    for y, m in months_a:
+        days = [dt.date(y, m, 1) + dt.timedelta(days=i) for i in range(31) if (dt.date(y, m, 1) + dt.timedelta(days=i)).month == m]
+        vol = sum(day.get(x, 0.0) + add.get(x, 0.0) for x in days)
+        over = sum(1 for x in days if day.get(x, 0.0) + add.get(x, 0.0) > 1200)
+        lab = "%04d-%02d" % (y, m)
+        ok("ask A %s volume" % lab, int(math.floor(vol / 100 + 0.5) * 100) == int(gold[lab]["volume_taken_m3"]) ==
+           figs["askA_volume_%04d_%02d" % (y, m)], "%.1f" % vol)
+        ok("ask A %s days" % lab, over == int(gold[lab]["days_over_1200_m3"]) == figs["askA_days_%04d_%02d" % (y, m)], str(over))
+    # ---------------------------------------------------------------------------------------------- ask B
+    sku = {r[0]: float(r[2]) for r in list(openpyxl.load_workbook(find(target, r"sku_master"), read_only=True,
+                                                                   data_only=True).active.iter_rows(values_only=True))[1:]}
+    wts = {}
+    for r in csv.DictReader(open(find(target, r"qc_fill"), encoding="utf-8")):
+        t = dt.datetime.strptime(r["sample_time"], "%d/%m/%Y %H:%M").date()
+        if r["line"] == "L3" and r["result"] == "PASS" and dt.date(2025, 4, 1) <= t <= dt.date(2026, 3, 31):
+            wts.setdefault(r["material"], []).append(float(r["net_fill_g"]))
+    size = dict(sku)
+    for k, w in wts.items():
+        size[k] = round(np.median(w) / 1.0015 / 50.0) * 50.0
+    ok("ask B: the 75cl still glass filled at 750 ml in the year", size["BSG-1101"] == 750.0 and sku["BSG-1101"] == 700.0)
+    lit = {}
+    for r in csv.DictReader(open(find(target, r"bottling_runs"), encoding="utf-8")):
+        if r["line"] == "L3" and r["order_type"] == "PROD":
+            t = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
+            lit[(t.year, t.month)] = lit.get((t.year, t.month), 0.0) + int(r["qty_good"]) * size[r["sku"]] / 1000.0
+    for y, m in months:
+        v = l3[(y, m)] * 1000.0 / lit[(y, m)]
+        lab = dt.date(y, m, 1).strftime("%B %Y")
+        ok("ask B %s" % lab, round(v, 2) == figs["askB_l3_%04d_%02d" % (y, m)] and ("%s %.2f" % (lab, v)) in note,
+           "%.4f" % v)
+    # ---------------------------------------------------------------------------------------------- formats
+    import docx
+    brief = "\n".join(p.text for p in docx.Document(find(target, r"line5_project_brief")).paragraphs)
+    ok("docx read back: the brief's need sentence", "about 1,800 cubic metres" in brief)
+    ok("pdf read back: the licence's day condition", "a day is a period of 24 hours beginning at midnight" in
+       re.sub(r"\s+", " ", text(find(target, r"abstraction_licence"))))
+    ok("pdf read back: the returns", "Return of water abstracted" in text(find(target, r"abstraction_returns")))
+    print("verify: %s (largest %d at %s; T %.1f, S %.3e; ask A and ask B recomputed from the pack)" % (
+        "PASS" if not FAILS else "FAIL %d" % len(FAILS), largest, worst, T, S))
+    if FAILS:
+        raise SystemExit("verify failed")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
-        main(sys.argv[1], sys.argv[2])
-    else:
-        main()
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    main(os.path.join(task, "target"), os.path.join(task, "golden"))

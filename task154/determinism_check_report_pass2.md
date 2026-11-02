@@ -1,70 +1,62 @@
-# determinism-check report, task154, 2026-11-02 (pass 2)
+# determinism-check report, task154, 2026-11-02 (pass 2, architecture 3 re-judge after the FIX_NOW)
 
 ## Verdict
-NOT_DETERMINISTIC
-**Disposition:** SEND_BACK
-**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
-Taxonomy: underspecified_objective (growth-rate basis). Judge verdict: /tmp/determinism-check-task154-1793605151/verdict.md. Zip md5 2320312b46930fdfa93134540cf22dd4. Brief: /tmp/determinism-check-task154-1793605151/judge_brief.md.
+DETERMINISTIC. Every graded figure reproduced from the shipped bundle.
+**Disposition:** APPROVE
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-Every golden figure reproduces from the bundle, but the filed text does not license the growth rate that produces them. Section 6.4 says only "adding the wall loss its external corrosion produces after the run". No file gives a rate or says how to get one. The golden rate is "reported depth over days from the zone's failure to the run" (zero depth before failure, constant rate, nothing before failure). Other literal readings give different counts and some flip the call. The always-protected zones R-1, R-4 and R-8 carry external corrosion up to 29 per cent, so "all depth accrued after failure" is contradicted by the data, and the data do not separate the candidates. This is an unfiled WHAT (the estimand's growth basis), not a method choice the data settle.
+The June 2014 test gives T 206 m2/d, S 0.00036. The geology extract files the Coldharbour Fault by two grid references. The 2015-2026 observation record, run under the returns' abstraction with the Windle Cross movement removed, separates the models: closed aquifer 0.03 m rms, unbounded 0.31 m. The letter files the test (drawdown on 31 March 2039 from the April 2015 rest level, BH2 at 1,200 m3/d to 31 March 2027, then the applied quantity). Datum is a difference from rest, so it does not enter. At 1,800 the drawdowns are 9.96 / 10.94 / 9.96 m (10 / 11 / 10). Lower Hay Farm limits at 1,328 to 1,331 m3/d, which is 1,300 to the nearest 100 (the midpoint 1,350 is more than 2 percent of T away). The previous FIX_NOW is closed: licence condition 6 now files "a period of 24 hours beginning at midnight, local time", and the controller runs plus the haulier's night shift fix the ticket day.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Eligible anomalies (Metal Loss, Corrosion, EXT, depth < 60) | 8,142 (implied) | 8,142; the 59 at 60 or deeper match the 59 register rows | yes |
-| 34 mileposts (2 dp) | golden | interpolation between AGM markers matches all 34 | yes |
-| R-7 failure | 12 Aug 2019 | RMU first low day; any threshold 15 to 94 per cent gives it | yes |
-| R-5 failure | 9 Jul 2016 | RMU step change | yes |
-| R-3 failure | 12 Jul 2011 | inspections only; 63-day gap, counts unchanged | yes |
-| Run date and days | 2,102 R-7; 3,231 R-5 | pass-time interpolation puts all on 14 May 2025 (UTC same); 2,102, 3,231, R-3 5,055 | yes |
-| Restorations | R-3 16 Oct 2028; R-7 10 Jun 2030 | capital plan Projects sheet; R-5 Deferred only | yes |
-| Digs by year | 4, 9, 11, 6, 4 = 34 vs 24 | same; all 34 schedule rows match | yes |
-| Nearest year-end crossing | n/a | 29 days (feature 29097, 3 Dec 2027); failure-date shifts and R-7 stop dates Feb 2030 to Mar 2031 give same counts | robust |
-| Repairs: composite / type B / pipe replacement | 28 (72.0) / 17 (88.0) / 7 (63.3) | 52 distinct repairs from 59 rows; same | yes |
-| Completed Jun to Sep | 7, 16, 15, 14 | same | yes |
+| T, S (joint Theis, OB1-3; OB3 kPa and BST fixed, Q about 2,164 m3/d) | 206, 0.00036 | 205.7, 3.60e-4, rms 0.0024 m | yes |
+| Closed / unbounded rms vs OB record | 0.03 / 0.31 | 0.027-0.030 / 0.298-0.311 | yes |
+| Drawdown at 1,800 LHF / KN / HB | 10 / 11 / 10 m | 9.96 / 10.94 / 9.96 | yes |
+| Qmax LHF / KN / HB | LHF limits, 1,300 | 1,328 / about 1,635 / about 1,789 | yes |
+| LHF at 1,300 and 1,400 | passes / fails | 7.37 / 7.89 vs 7.53 | yes |
+| Volume Apr-Sep 2026 | 23,300 / 23,700 / 26,600 / 27,600 / 20,200 / 26,500 | 23,330 / 23,731 / 26,606 / 27,616 / 20,205 / 26,475 | yes |
+| Days over 1,200 | 6, 8, 5, 5, 5, 5 | 6, 8, 5, 5, 5, 5 | yes |
+| Line 3 litres per litre, Apr 2025 to Mar 2026 | 2.38 2.32 2.38 2.33 2.40 2.33 2.39 2.34 2.35 2.37 2.36 2.33 | 2.3828 2.3220 2.3820 2.3287 2.4020 2.3280 2.3913 2.3380 2.3520 2.3723 2.3576 2.3277 | yes, none on a rounding edge |
 
 ## Competing answers that survived
-- A1 growth-rate basis (open, decisive):
-  - pipe-age rate, unprotected zones, stopped at restoration: 0,0,0,0,0 = 0, Yes
-  - golden with 5 per cent background removed: 3,7,10,4,5 = 29, No
-  - minus 9.6 per cent (mean of always-protected zones): 1,6,8,7,2 = 24, fails by year (2029)
-  - minus 15 per cent: 17, Yes
-  - minus 29 per cent: 5, Yes
-  - Closing rule: none shipped (6.4 silent on the rate).
-- A2 failure-date source (minor): annual survey last passing September gives 2,7,10,5,5 = 29; naive first RMU record for all zones gives 0,3,9,4,4 = 20. The RMU day is the precise source.
-- A3 restoration stops growth (natural, unfiled): R-7 not stopped 4,9,11,6,18 = 48; R-3 not stopped 36.
-- A4 dig timing: closed by 6.5.
-- B repair ask (smaller fork):
-  - unit = register row or dig (59): composite 31 / 87.0 ft, type B 19 / 98.0, pipe replacement 9 / 87.4; months 9, 18, 16, 16
-  - union of placed intervals: pipe replacement 63.4 ft instead of 63.3
-  - excavation month: 7, 17, 14, 14
-  - The "count once" rule for shared repairs is filed only in the solution.
+Main call: none. Second readings and their figures:
+- Plain unbounded Theis with the test's T, S: 5.2 / 7.0 / 5.9 m at 1,800, so 1,800 passes (Qmax about 2,600, Kilnbrook). Contradicted by the fault in the geology extract and the record fit.
+- Unbounded refit to the monthly record (T 112, S 1.1e-3): LHF 7.42, KN 10.62, Kilnbrook limits, about 1,700. Contradicted by the test (rms 0.0024 at T 206) and fits worse (0.055 vs 0.028).
+- 24 years against 24 years less a day: no change.
+Returns ask (all closed by a shipped fact):
+- UTC day: (23,400, 7), (23,700, 8), (26,600, 5), (27,600, 6), (20,200, 4), (26,400, 6). Excluded by licence condition 6, local time.
+- Ticket date as printed, no shift: days 5/7/4/6/4/4. Excluded by the controller runs; every ticket's window then holds exactly one run (255 tickets to 255 zero-FM-1 runs after 5 duplicate rows are dropped).
+- FM-1 only: days 1/3/1/1/0/3. Excluded: the bulk runs are real pump runs with zero FM-1 flow.
+- Run minutes at 24.8 l/s: days 9/11/8/7/6/7. Excluded: the tickets measure the bulk water (ticket litres equal run minutes times 19.5 l/s, r = 0.995).
+- Strict ">" vs ">=": agree (nearest day total 1,290 against a day of at least 1,312.9). No run crosses local midnight, so run-start, run-end and pro-rata assignment agree.
+Line 3 ask: one residual, low to moderate fork on BSG-1101's size. The brief says "the bottle's size". The export says 700 (stale), the fill weights show 750 nominal (758.8 g mean through March 2026, other SKUs run 1.2 to 1.9 percent over nominal). 700 gives 2.49 2.44 2.49 2.45 2.55 2.43 2.49 2.47 2.48 2.50 2.48 2.47. Measured fill 758.8 gives 2.35 2.29 2.35 2.30 2.37 2.30 2.36 2.31 2.32 2.34 2.33 2.30. The golden is the nominal reading, which the fill weights force against the export. Local-month and UTC-month water agree at 2 dp; no run crosses a month. Optional pin: "per litre of nominal bottle size".
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files / formats / large file | 10 / 3 / 25,000 rows | 14 / csv, pdf, xlsx / 36,008 rows | yes |
-| Distractors in metadata, none named by file | 2+ | 3 (soil resistivity, one-call tickets, class location study); names carry no label | yes |
-| Distractor unused yet weighty | yes | not load-bearing per thread; none answers a graded quantity | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, docx), both present in golden/ | yes |
-| Asks multi-dimensional, unit and rounding stated | yes | mileposts 2 dp, depths and feet 1 dp; the repair ask's unit (repair counted once) is not stated | partial |
-| Rubric 25+ criteria | 25+ | not generated here; 34-row schedule plus asks plausibly reach it, unverified | unverified |
-| Reads as real, not LLM | yes | thread found no disclosures; one minor R-6 date oddity (RMU 4 Oct 2016 vs inspection remark 15 Nov 2016), touches no figure | yes |
+| Files | 10+ | 17 | yes |
+| Formats | 3+ | 4 (csv, docx, pdf, xlsx) | yes |
+| Large file | 25,000+ rows | telemetry 52,608 rows | yes |
+| Distractors | 2+ in metadata, none labelled by file name | bh2_water_quality, brackenholt_rain_gauge; neither answers a graded quantity and neither is named in a file name | yes |
+| Distractors unused, relevant | yes | water quality and rain gauge unused by the solution, plausible for a borehole licence; the stale SKU export (700) is a Layer 1 trap, not a declared distractor | yes |
+| Deliverables | 1-3, all in golden | 2 (variation note PDF, returns CSV); both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | 3 drawdowns, a chart, 12 monthly ratios, 6 months by 2 figures; the prompt's last sentence states every unit and rounding | yes |
+| Prompt shape, 25+ criteria | yes | shape 13; main call plus about 40 graded figures | yes |
+| Prompt | one paragraph, under 1,000 chars | 999 chars, no persona or bullets | yes |
+| Reads as real, not LLM generated | yes | judge found real-looking mess and no authoring disclosures; goldens' realism is for golden-realism, not tested here | yes |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The design note's stump sentence and its R3 line (full-life rate, 0 digs) match the thread's easy route (pipe-age rate, 0 digs, Yes), and the declared distractors are not named as the surface read. Gate G is consistent. The mismatch is that the design note calls the decisive step "dating growth from the failure day" and treats the rate as derived, while the files never file that estimand, so the thread finds the decisive step analytical only conditionally.
-
-Gate H: domain pass (ILI growth projection by CP exposure to schedule digs); layers pass; decisive_step analytical (conditional). Pinning the rate as a formula turns it into rule application, so file the WHAT (wall loss accrues only while the zone is without protection, none before the failure) and not the formula.
+Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: gate_g method_or_model_selection, stump_strategy forecast_method_backtest, stump_class analytical, decisive_rule_filed false, official_decoy false. Match. The declared distractors (water quality, rain gauge) are not the surface read; the surface read is the unbounded Theis fit to the test, which the data refute. No shipped artifact ranks the protected boreholes wrongly. Gate H line: domain pass, layers pass, decisive_step analytical. This matches the design note's `## Three rules` (domain test, Layer 1 / Layer 2, analyst test: 2,600 / 1,700 to 1,800 on the easy routes, 1,300 only with the fault).
 
 ## Stump power (Gate F)
-A strong solver who dates failures from the RMU and stops R-7 and R-3 at restoration lands the golden, since depth over exposure is the natural rate. The failing easy route is the textbook pipe-age rate (0 digs, Yes). The stump is real but confounded with the unfiled rate basis. Pinning the exposure WHAT makes the golden the only literal reading and keeps the stump. The main thread weighs this against the design note's ladder.
+Moderate to good. The easy route is an unbounded Theis fit from the test (rms 0.0024), filing "1,800 passes". Only a solver who back-tests boundary models against the observation record, or reads the fault as a closing boundary, files "no, 1,300". The refits land on the wrong limiter (Kilnbrook) and a wrong quantity. The thread did not class the step analytical merely because Theis is the field's method; the choice of boundary, validated out of sample, is the judgment. The main thread should still weigh that Theis with an image well is a textbook route a strong solver can reach (`stumping` 1.3), and that nothing in a file states the fault stops water. The asks carry independent Layer 1 traps (night-shift ticket day, bulk bay outside FM-1, UTC against local day, BSG-1101 size).
 
 ## Findings, ranked
-1. Growth-rate basis unfiled (A1): decisive, flips call and every graded dig figure.
-2. Restoration-stops-growth unfiled (A3): 48 or 36 digs under the second reading.
-3. Repair unit and length basis unfiled (B): row reading gives 31/19/9 and different months; 63.3 vs 63.4 ft.
-4. Failure-date source (A2): minor.
+1. Low: BSG-1101 bottle size on the line 3 ask ("the bottle's size") leaves a measured-fill reading (758.8 g) at 2.29 to 2.37. Forced to nominal 750 by the fill weights against the stale export. Optional prompt pin, no figure moves.
+2. Low: the ticket +1 day (before noon, the night shift) is stated in no file; it is recoverable only from the controller events and the one-to-one match. It is data semantics on an ask, which the rules permit, and it is forced.
+3. Hygiene: the geology prose places the Windle Cross road crossing at SJ 87040 39350, but the drawn road crosses the fault near northing 40.6 km. The fault trace is consistent between text and map, so the stump is unaffected.
 
 ## Next action for the author
-Edit Section 6.4 of northline_integrity_plan_section6.pdf in the generator to file that an anomaly's external corrosion occurs only while its zone is without cathodic protection, none before the failure, at a constant rate from the failure to the run, and that wall loss stops on the restoring project's in-service date. File the WHAT, not the formula. Pin the repair ask as each physical repair counted once however many anomalies it covers, with feet as the filed repair length. Then rebuild twice, rerun the free gates and the leak reader, and re-judge. Per the Guardrail, this is the single re-judge after the FIX_NOW, so a SEND_BACK follows the CLAUDE.md dead-design path (re-root) unless the author directs otherwise.
+None required for determinism. Proceed to ship once the leak check and the other gates are green. Optionally pin "per litre of nominal bottle size" in prompt.txt, which would need a re-run of the free gates (the prompt is at 999 of 1,000 characters, so it would need an equal trim).

@@ -1,201 +1,158 @@
 """task154 constants and helpers shared by every generator module.
 
-Tarbert Bank's economics desk sends its call on the Statistics Office's advance estimate of June-quarter 2026 GDP
-growth to the bank's markets floor and, in a one-page preview, to clients at 18:00 on Wednesday 29 July 2026, the
-evening before the release. Trade and Business Statistics' June bulletin of merchandise trade and business stocks,
-due on Wednesday 22 July, was delayed by an outage of its processing system and came out on Tuesday 28 July as a PDF.
-The world's master seed is the task number, fixed before any record was drawn; every stream below derives from it."""
+Brackenholt Spring Water bottles spring water at Brackenholt in the West Midlands of England from Borehole 2
+(BH2), drilled in 2013 into the Sherwood Sandstone where it lies confined beneath the Mercia Mudstone. The licence
+granted for the plant's opening (1,200 cubic metres a day from 1 April 2015) expires on 31 March 2027. In September
+2026 the licensing team's pre-application letter set the derogation test for the renewal to the 2039 common end date
+and for the variation the new line 5 needs. The world's master seed is the task number, fixed before any record was
+drawn; every stream below derives from it."""
 from __future__ import annotations
 
 import csv
 import datetime as dt
 import hashlib
 import io
-import math
 
 import numpy as np
 
 SEED = 154
 
-OFFICE = "Statistics Office"
-TBS = "Trade and Business Statistics"
-TBS_DEPT = "Department of Industry"
-RESERVE = "Reserve Bank"
-BANK = "Tarbert Bank"
-DESK = "Tarbert Economics"
-POLL = "Harbourline economists' poll"
-WIRE = "Harbourline"
+COMPANY = "Brackenholt Spring Water Ltd"
+SHORT = "Brackenholt Spring Water"
+REGULATOR = "Water Resources Licensing, Mercia Area"
+HAULIER = "Teme Valley Bulk Liquids"
+BULK_CUSTOMER = "Ferncastle Foods"
 
 PEOPLE = {
-    "economist": "Nicola Jones",      # senior economist, Tarbert Economics; the preview's author (not in the prompt)
-    "chief": "Garry Greenwood",       # Tarbert's chief economist
-    "analyst": "Jodie Ford",          # economics data analyst, keeps the tracker and the desk's data folder
-    "office": "Yvonne Mitchell",      # the Statistics Office's national accounts release contact
-    "tbs": "Bryan O'Brien",           # Trade and Business Statistics, the bulletin's contact
-    "poll": "Josh Dean",              # compiles the Harbourline poll
+    "lead": "Francis Mason",        # water resources lead; keeps the licence file and the returns
+    "site": "Dominic Schofield",    # site engineer; reads the meter and dips the observation boreholes
+    "officer": "Wendy Hodgson",     # the licensing team's officer who signs the pre-application letter
+    "previous": "William Swift",    # operations manager who signed the returns to 2018-19
 }
 
-# ---------------------------------------------------------------------------------------------------- the calendar
-D_Q1_THIRD = dt.date(2026, 6, 25)       # the Office's March-quarter third estimate
-D_MAY_BULLETIN = dt.date(2026, 6, 23)   # TBS's May bulletin
-D_PORTAL_PULL = dt.date(2026, 6, 24)    # the desk's last pull from TBS's portal
-D_DB_PULL = dt.date(2026, 6, 26)        # the desk's download of the Office's real-time database
-D_PRICES = dt.date(2026, 7, 16)         # producer and trade price indexes, June 2026
-D_OUTAGE = dt.date(2026, 7, 13)         # TBS's processing system and portal down
-D_ANNUAL = dt.date(2026, 7, 21)         # the Office's annual national accounts, with revised quarterly series
-D_JUNE_DUE = dt.date(2026, 7, 22)       # the June bulletin's scheduled date
-D_POLL = dt.date(2026, 7, 23)           # the poll closed at 17:00
-D_NOTICE = dt.date(2026, 7, 24)         # the Office's notice
-D_TRACKER = dt.date(2026, 7, 28)        # the tracker as at 08:00, before the bulletin
-D_JUNE_BULLETIN = dt.date(2026, 7, 28)  # the June bulletin, 11:00
-D_CALL = dt.date(2026, 7, 29)           # the desk files at 18:00
-D_ADVANCE = dt.date(2026, 7, 30)        # the Office's advance estimate, 10:45
+# ------------------------------------------------------------------------------------------------- the calendar
+LICENCE_NO = "MA/28/15/0042"
+LICENCE_START = dt.date(2015, 4, 1)
+LICENCE_END = dt.date(2027, 3, 31)
+NEW_FROM = dt.date(2027, 4, 1)
+COMMON_END = dt.date(2039, 3, 31)
+LETTER_DATE = dt.date(2026, 9, 22)
+APPLICATION_DUE = dt.date(2026, 12, 18)
+EXPORT_DATE = dt.date(2026, 10, 2)          # the site's data pull for the application
+NOTE_DATE = dt.date(2026, 11, 13)           # the variation note
+TEST_START_UTC = dt.datetime(2014, 6, 10, 9, 0)    # pump on, 10:00 BST
+TEST_PUMP_H = 72
+TEST_RECOVERY_H = 48
+TEST_PRE_H = 24
+TEST_Q_LS = 25.0
+LICENSED_QD = 1200.0                        # cubic metres a day
+LICENSED_QA = 400000.0                      # cubic metres a year
+APPLIED_QD = 1800.0
+LINE4_FROM = dt.date(2024, 8, 5)
+BULK_FROM = dt.date(2026, 4, 1)
+OPS_FROM = dt.date(2025, 4, 1)              # the operational extracts start here
+OPS_TO = dt.date(2026, 9, 30)               # and end here (inclusive)
 
-MONTHS0 = "2017-07"                     # the generator's first month (book-value windows reach back before 2018)
-PRICE0 = "2018-01"                      # the first month the price indexes ship
-Q0 = "2018Q1"                           # the first quarter of the national accounts history
-SHIP0 = "2019-01"                       # the first month the shipped monthly files carry
-LAST = "2026-06"
+# ------------------------------------------------------------------------------------------------- the aquifer
+T_M2D = 205.0
+S_CONF = 3.6e-4
+STRIKE_DEG = 15.0                            # the Coldharbour Fault trends N15E
+FAULT_DIST = 2500.0                          # BH2's perpendicular distance to the fault trace, metres
+# British National Grid position of BH2 (the site's survey); the local frame is metres east and north of it
+BH2_E, BH2_N = 384960.0, 341250.0
 
-# the bulletin's industries: TBS code, name, end-March 2026 book value ($m), mean stock-to-sales ratio (months),
-# share of the industry's input prices that moves with import prices
-INDUSTRIES = [
-    ("WFG", "Wholesale: food, grocery and liquor", 3150.0, 0.85, 0.15),
-    ("WFP", "Wholesale: fuel and petroleum products", 1620.0, 0.50, 0.95),
-    ("WME", "Wholesale: machinery and equipment", 7050.0, 2.25, 0.80),
-    ("WMV", "Wholesale: motor vehicles and parts", 3620.0, 2.00, 0.85),
-    ("WOT", "Wholesale: building, household and other goods", 5300.0, 1.75, 0.50),
-    ("RFD", "Retail: food and groceries", 2080.0, 0.80, 0.15),
-    ("ROT", "Retail: other goods", 8600.0, 1.80, 0.55),
-    ("MFG", "Manufacturing", 14100.0, 1.10, 0.40),
+
+def normal():
+    a = np.deg2rad(STRIKE_DEG)
+    return np.array([np.cos(a), -np.sin(a)])
+
+
+def image_xy():
+    return 2.0 * FAULT_DIST * normal()
+
+
+def fault_side(xy):
+    """Signed distance from the fault trace, negative on BH2's side."""
+    p0 = FAULT_DIST * normal()
+    return float(np.dot(np.asarray(xy, float) - p0, normal()))
+
+
+# boreholes in the local frame (metres east, north of BH2); ground and casing-top levels in metres above datum
+OBS = {
+    "OB1": dict(xy=(-160.0, 70.0), gl=96.42, ct=96.95, depth=120.0),
+    "OB2": dict(xy=(-240.0, -410.0), gl=95.10, ct=95.58, depth=125.0),
+    "OB3": dict(xy=(-860.0, 260.0), gl=99.37, ct=99.88, depth=120.0),
+}
+OB2_RAISE = dt.date(2020, 2, 18)             # headworks fitted, casing top raised
+OB2_RAISE_M = 0.45
+BH2 = dict(xy=(0.0, 0.0), gl=97.80, ct=98.31, depth=160.0)
+RMB = dict(name="Windle Cross OBH", xy=(3300.0, -900.0), gl=91.05, ct=91.60, depth=410.0)
+PROTECTED = [
+    # name, licence, holder, local xy, available drawdown (m), rest level April 2015 (m above datum), licensed m3/d
+    ("Lower Hay Farm", "MA/28/15/0117", "R. and J. Pryce", (2158.0, 405.0), 7.53, 88.62, 25.0),
+    ("Kilnbrook Nurseries", "MA/28/15/0093", "Kilnbrook Nurseries Ltd", (-550.0, -300.0), 10.0, 89.94, 40.0),
+    ("Hollin Bank Golf Club", "MA/28/15/0151", "Hollin Bank Golf Club", (300.0, 1300.0), 9.9, 89.31, 60.0),
 ]
-IND_CODES = [c for c, *_ in INDUSTRIES]
-
-SITC = [
-    ("0", "Food and live animals"),
-    ("1", "Beverages and tobacco"),
-    ("2", "Crude materials, inedible, except fuels"),
-    ("3", "Mineral fuels, lubricants and related materials"),
-    ("4", "Animal and vegetable oils, fats and waxes"),
-    ("5", "Chemicals and related products"),
-    ("6", "Manufactured goods classified chiefly by material"),
-    ("7", "Machinery and transport equipment"),
-    ("8", "Miscellaneous manufactured articles"),
-    ("9", "Commodities and transactions not classified elsewhere"),
-]
-SITC_CODES = [s for s, _ in SITC]
+PROT_NAMES = [p[0] for p in PROTECTED]
+REST_2015 = 89.86                             # BH2's rest water level, April 2015, metres above datum
 
 
-# ---------------------------------------------------------------------------------------------------- helpers
 def rng(*keys):
-    """An independent numpy stream per name: blake2b of the seed and the keys (hash() is salted per process)."""
-    h = hashlib.blake2b(("%d|" % SEED + "|".join(str(k) for k in keys)).encode(), digest_size=8).digest()
-    return np.random.default_rng(int.from_bytes(h, "big"))
+    h = hashlib.sha256(("%d|" % SEED + "|".join(str(k) for k in keys)).encode()).digest()
+    return np.random.default_rng(int.from_bytes(h[:8], "little"))
 
 
 def token(*keys, n=12):
-    return hashlib.blake2b(("%d|" % SEED + "|".join(str(k) for k in keys)).encode(), digest_size=16).hexdigest()[:n]
+    return hashlib.sha256(("%d|" % SEED + "|".join(str(k) for k in keys)).encode()).hexdigest()[:n]
 
 
 def write_csv(path, cols, rows, crlf=False):
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
     w.writerow(cols)
-    n = 0
     for r in rows:
-        w.writerow(["" if r.get(c) is None else r.get(c) for c in cols] if isinstance(r, dict) else r)
-        n += 1
+        w.writerow(["" if v is None else v for v in r])
     with open(path, "w", encoding="utf-8", newline="") as fh:
         fh.write(buf.getvalue())
-    return n
 
 
 def round_half_up(x, nd=0):
-    q = x * 10 ** nd
-    return math.floor(q + 0.5 + 1e-12) / 10 ** nd
-
-
-def bin_clearance(x, step):
-    """Distance from x to the nearest rounding edge of its step-wide bin, as a share of the step (0.5 is mid-bin)."""
-    q = x / step
-    return 0.5 - abs(q - math.floor(q + 0.5))
-
-
-def month_list(a, b):
-    """'2019-01' .. '2026-06' inclusive, as strings."""
-    y, m = int(a[:4]), int(a[5:7])
-    yb, mb = int(b[:4]), int(b[5:7])
-    out = []
-    while (y, m) <= (yb, mb):
-        out.append("%04d-%02d" % (y, m))
-        m += 1
-        if m == 13:
-            y, m = y + 1, 1
-    return out
-
-
-def quarter_of(month):
-    y, m = int(month[:4]), int(month[5:7])
-    return "%dQ%d" % (y, (m - 1) // 3 + 1)
-
-
-def quarter_months(q):
-    y, n = int(q[:4]), int(q[-1])
-    return ["%04d-%02d" % (y, 3 * (n - 1) + k) for k in (1, 2, 3)]
-
-
-def quarter_end(q):
-    return quarter_months(q)[-1]
-
-
-def prev_quarter(q):
-    y, n = int(q[:4]), int(q[-1])
-    return "%dQ%d" % (y - 1, 4) if n == 1 else "%dQ%d" % (y, n - 1)
-
-
-def quarter_list(a, b):
-    out, q = [], a
-    while True:
-        out.append(q)
-        if q == b:
-            return out
-        y, n = int(q[:4]), int(q[-1])
-        q = "%dQ%d" % (y + 1, 1) if n == 4 else "%dQ%d" % (y, n + 1)
-
-
-MONTH_NAMES = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-               "November", "December"]
-MON3 = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-QNAME = {1: "March", 2: "June", 3: "September", 4: "December"}
+    q = 10 ** nd
+    return float(np.floor(x * q + 0.5) / q)
 
 
 def long_date(d):
-    """29 July 2026."""
-    return "%d %s %d" % (d.day, MONTH_NAMES[d.month], d.year)
+    return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
 
 
-def day_date(d):
-    """Wednesday 29 July 2026."""
-    return "%s %d %s %d" % (d.strftime("%A"), d.day, MONTH_NAMES[d.month], d.year)
+def bst(d):
+    """True when the UK clock is on British Summer Time at local date-time d (last Sunday of March 01:00 UTC to last
+    Sunday of October 01:00 UTC)."""
+    y = d.year
+
+    def last_sunday(month):
+        x = dt.date(y, month, 31)
+        return x - dt.timedelta(days=(x.weekday() + 1) % 7)
+    start = dt.datetime.combine(last_sunday(3), dt.time(1, 0))
+    end = dt.datetime.combine(last_sunday(10), dt.time(1, 0))
+    return start <= d < end
 
 
-def qlabel(q):
-    """2026Q2 -> June 2026 quarter."""
-    return "%s %s quarter" % (QNAME[int(q[-1])], q[:4])
+def utc_to_local(t):
+    return t + dt.timedelta(hours=1) if bst(t) else t
 
 
-def annualise(q_pct):
-    """A quarterly percentage change as a compound annual rate, per cent."""
-    return ((1.0 + q_pct / 100.0) ** 4 - 1.0) * 100.0
+def local_to_utc(t):
+    # local times inside the spring-forward gap do not occur in the records
+    guess = t - dt.timedelta(hours=1)
+    return guess if bst(guess) else t
 
 
-def window_avg(p, m, T):
-    """The average of the monthly indexes p over the T months ending with month index m: month m whole, then the
-    months before it whole, then a fraction of the earliest (each month's index is its own average price)."""
-    tot, rem, k = 0.0, float(T), m
-    while rem > 1e-12:
-        w = min(1.0, rem)
-        tot += w * p[k]
-        rem -= w
-        k -= 1
-    return tot / float(T)
+def grid_ref(e, n):
+    """A twelve-figure national grid reference with its 100 km square letters (the SJ square for this area)."""
+    assert 300000 <= e < 400000 and 300000 <= n < 400000
+    return "SJ %05d %05d" % (int(round(e)) - 300000, int(round(n)) - 300000)
+
+
+def to_grid(xy):
+    return BH2_E + xy[0], BH2_N + xy[1]

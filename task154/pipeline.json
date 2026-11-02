@@ -1,12 +1,12 @@
 {
   "task": "task154",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences/hydrology-flood-frequency",
   "objective": "forecasting",
-  "stage": 2,
-  "stage_name": "design (architecture 3)",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-02",
-  "stump": "Projecting the field's Theis solution fitted to the 2014 constant-rate test over the derogation test's 24 years files about 2,300 cubic metres a day as the largest quantity, Kilnbrook Nurseries limiting it and the new line's 1,800 passing everywhere, because the 72-hour test never reached the Coldharbour Fault: over the licence term the fault closes the aquifer to the east, every protected borehole carries Borehole 2's image across it as well, and Lower Hay Farm's drawdown at 1,800 is about 10.5 metres against its 7.8, so the largest quantity that passes is 1,300.",
+  "stump": "Projecting the field's Theis solution fitted to the June 2014 constant-rate test over the derogation test's 24 years files 2,600 cubic metres a day as the largest quantity with Kilnbrook Nurseries limiting and the new line's 1,800 passing, because the 72-hour test never reached the Coldharbour Fault two and a half kilometres east, which throws the Sherwood Sandstone against Mercia Mudstone: over the licence term the fault holds the cone, every protected borehole also carries the drawdown of Borehole 2's image across it, Lower Hay Farm (half a kilometre from the fault) is predicted at 10 m against its 7.53 m at 1,800, and the largest quantity that passes is 1,300 with Lower Hay Farm limiting.",
   "architecture": 3,
   "loops": 0,
   "spent_architectures": [
@@ -19,25 +19,27 @@
       "fate": "spent 2026-11-02 at stage 4: judge round 2 NOT_DETERMINISTIC, SEND_BACK, underspecified_objective on the main call (the growth-rate basis open against old metal loss in the never-failed zones); reports determinism_check_report.md and determinism_check_report_pass2.md, committed with the architecture 3 DRAWN commit as the evidence and deleted at the end of architecture 3's stage 3"
     }
   ],
-  "resume": "Architecture 3 drawn and registered 2026-11-02T08:33:17Z (Brackenholt Spring Water's Borehole 2 licence renewal and variation, England; the largest daily quantity passing the derogation test at 31 March 2039, the Coldharbour Fault closing the confined sandstone beyond a 72-hour test's reach). Next: stage 2 sections of the design note (default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet) to precut.py exit 0, then stage 3 with a new generator replacing architecture 2's files in the task folder.",
+  "resume": "",
   "precut": {
-    "exit": null,
-    "checks": null,
-    "date": ""
+    "exit": 0,
+    "checks": 61,
+    "date": "2026-11-02"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW 2026-11-02 on cut a5afff19 (--asof 2026-10-05), no LEAK, sweep 11 clean; the same six lines (sweeps 3, 4 and 6) ruled harmless in the design note's Stage 3 record",
+    "reader": "round 1 on cut 05a14e7c: no leak (Q1 to Q4 none, Q6 an analytical choice); four realism tells fixed in the generator (Windle Cross quality flags, the controller log's trips, resets and link drops, the returns' signatories and dates, the ticket book); re-read due on the fresh copy at scratchpad/leak-task154-fix since documents changed",
+    "reader_arch3": "round 1 on cut 05a14e7c: no leak (Q6 analytical); round 2 on cut a5afff19: no leak"
   },
   "duplicate_check": {
-    "heart": "",
-    "surface": "",
-    "nearest": "0.08 task146 v3, 0.05 task135 v2, task32 v5, task171 v5, task156 v2 (guard.py check on the registered card, WARN only)"
+    "heart": "WARN 2026-11-02 on cut a5afff19, no BLOCK",
+    "surface": "exit 0 2026-11-02 on cut a5afff19, 6 pairs promoted for the author's adjudication (task156 pairing; task461, task501, task242, task476, task174 on card labels answered by the differentiation lines); persona note 'Sherwood Sandstone' is the formation",
+    "nearest": "0.08 task146 v3; 0.05 task135 v2, task32 v5, task171 v5, task156 v2"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC (round 1, cut 05a14e7c): main call, T and S, Lower Hay Farm at 1,330, the drawdowns at 1,800, all 12 line 3 ratios and the returns reproduced; Gate G analytical_non_defect, Gate H analytical",
+    "disposition": "FIX_NOW on the returns ask only: the day clock (condition 6 now names local time, the UTC reading asserted as the rival) and the ticket day (every ticket's time-in day is its pump run's start day, both readings asserted to file every figure); one re-judge due",
+    "report": "",
+    "arch3": "pass 1 on cut 05a14e7c: DETERMINISTIC, FIX_NOW (returns day clock and ticket day); pass 2 on cut a5afff19: DETERMINISTIC, APPROVE; Gate G method_or_model_selection, analytical_non_defect; Gate H analytical; reports determinism_check_report.md and determinism_check_report_pass2.md"
   },
   "returned": [],
   "approved": null,
@@ -118,5 +120,20 @@
     },
     "fate": "spent 2026-11-02 at stage 4: judge round 2 NOT_DETERMINISTIC, SEND_BACK, underspecified_objective on the main call (the growth-rate basis open against old metal loss in the never-failed zones); reports determinism_check_report.md and determinism_check_report_pass2.md, committed with the architecture 3 DRAWN commit as the evidence and deleted at the end of architecture 3's stage 3"
   },
-  "gates": {}
+  "gates": {
+    "checks": "184 assertions, 0 failed (SF1 to SF19 asserted)",
+    "verify": "PASS",
+    "byte_identical": "two consecutive builds identical: 17 target files, 2 goldens, metadata.json, figures.json, submission.md, target.zip md5 a5afff1947530c87ed53002304d42e81",
+    "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
+    "voice_check": "PASS, 999 characters",
+    "figures_check": "PASS, 54 figures, 0 absent",
+    "leak_py": "REVIEW, no LEAK",
+    "ceiling": "pair 30.2 (on the call 45.0, off it 15.4), mirror leakage 0.0; ticket-dated includer 51.9, over-cleaner 45.0, full includer 100.0",
+    "input_gates": "17 files, 4 formats (csv, docx, pdf, xlsx), bh2_site_telemetry_15min_2025-2026.csv 52,608 rows, two distractors (bh2_water_quality_2015-2026.csv, brackenholt_rain_gauge_2015-2026.csv)",
+    "target_zip_md5": "a5afff1947530c87ed53002304d42e81",
+    "guard_surface": "exit 0, 6 pairs promoted for adjudication",
+    "guard_heart": "WARN, no BLOCK",
+    "freeze": "check --mode rubric PASS (no frozen figure moved; no ask figure moved either, --mode determinism PASS)"
+  },
+  "shipped": "2026-11-02"
 }

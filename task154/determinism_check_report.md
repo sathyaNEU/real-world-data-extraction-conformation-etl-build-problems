@@ -1,79 +1,66 @@
-# determinism-check report, task154 (architecture 2), 2026-11-02
-
-Judge thread: one pass, sonnet, medium. Scratch: /tmp/determinism-check-task154-1793602500/ (verdict.md there). target.zip md5 b6d0643e186cb81b4a18410542f71b99.
+# determinism-check report, task154, 2026-11-02
 
 ## Verdict
-NOT_DETERMINISTIC on the field-check ask only (second sheet); the main call and the dig-plan sheet are forced. No SOLUTION_WRONG.
-**Disposition:** FIX_NOW
-**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+DETERMINISTIC on the main call; two open readings on the returns ask.
+**Disposition:** FIX_NOW (prompt only: pin the returns ask's day clock and ticket day; data, main call and stump stay frozen; no model rerun for the main call)
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-The register ships its own "Field Depth (%)" column against its own "Nominal WT". For 12 of 59 digs that wall (0.250 in) disagrees with the wall of the upstream joint in the tally (0.188 in). No sentence in the prompt or any file says which governs. The golden bands hold only under the tally wall (87.5 / 94.1 / 77.8 / 100.0 / 85.7 per cent within 10 points); the register's own column gives 68.8 / 82.4 / 66.7 / 80.0 / 57.1. "Largest inspection minus field" is also unpinned (signed maximum vs largest magnitude). Gates C and E fail for the second sheet; governing label underspecified_objective. The main recommendation passes A to E.
+The pre-application letter files the test (drawdown on 31 March 2039 from the April 2015 rest level, BH2 at 1,200 m3/d from 1 April 2015, then the applied quantity, against the table's available drawdown). The geology extract's Coldharbour Fault and the 2015-2026 observation record (closed model rms 0.036 m against 0.308 m unbounded, recovering the 2014 test's own T and S) force the closed aquifer: Lower Hay Farm limits at 1,330, which is 1,300 to the nearest 100, and 1,800 fails. The returns ask is not closed. The licence says only "a day ... beginning at midnight" (condition 6), the telemetry is UTC while the controller log and tickets are local, and seven tickets straddle midnight.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Ext. corrosion anomalies at 60 or deeper (dug) | 59 | 59 (register 60 rows, re-excavation 028R) | yes |
-| R-7 failure | 12 Aug 2019 | 12 Aug 2019 (prior day 93 per cent of design, run day 14) | yes |
-| R-5 failure | 9 Jul 2016 | 9 Jul 2016 (prior day 98, run day 15) | yes |
-| R-3 failure | 12 Jul 2011 | 12 Jul 2011 (first "U" inspection) | yes |
-| Days failure to run | R-7 2,102; R-5 3,231 | 2,102; 3,231 (14 May); 2,101 / 3,230 if 13 May | yes |
-| R-7 / R-3 restoration | 10 Jun 2030 / 16 Oct 2028 | same; R-5 bed on Deferred sheet (2032 to 2036) | yes |
-| R-3 anomalies reach 80 before restoration | none | earliest 24 Mar 2031 | yes |
-| Digs by year | 4, 9, 11, 6, 4 = 34 | same (R-7: 4,7,6,3,0; R-5: 0,2,5,3,4) | yes |
-| Funded | 4,5,5,5,5 = 24 | same | yes |
-| 34 mileposts and depths | listed | all reproduce to 2 decimals | yes |
-| Band table (tally wall) | as filed | as filed, n 16/17/9/10/7 | yes |
+| T, S (Theis, OB1-3, 25.0 l/s, OB3 kPa and BST fixed) | 206, 0.00036 | 205.3, 0.000359 | yes |
+| LHF / KN / HB drawdown at 1,800 | 10 / 11 / 10 m | 9.96 / 10.94 / 9.96 | yes |
+| Qmax by borehole | LHF limits, 1,300 | LHF 1,330, KN 1,635, HB 1,789 | yes |
+| LHF at 1,300 | passes | 7.37 m < 7.53 | yes |
+| Unbounded 2014 T,S | 1,800 passes, KN limits | 2,618 KN | yes |
+| Unbounded refit to OB record | KN limits, above 1,300 | T 112, S 0.00108; KN 1,687 | yes |
+| Closed / unbounded fit rms | 0.03 / 0.31 | 0.036 / 0.308 | yes |
+| Monthly volume Apr-Sep 2026 | 23,300 / 23,700 / 26,600 / 27,600 / 20,200 / 26,500 | 23,330 / 23,731 / 26,606 / 27,616 / 20,205 / 26,475 | yes (local day, ticket on pump-run day) |
+| Days over 1,200 | 6, 8, 5, 5, 5, 5 | 6, 8, 5, 5, 5, 5 | yes |
+| Line 3 litres per litre | 2.38 2.32 2.38 2.33 2.40 2.33 2.39 2.34 2.35 2.37 2.36 2.33 | 2.383 2.322 2.382 2.329 2.402 2.328 2.391 2.338 2.352 2.372 2.358 2.328 | yes |
 
 ## Competing answers that survived
-Main call (digs 2027/28/29/30/31, total), second readings tested:
-- Run end 13 May, per-anomaly pass day, 365 vs 365.25, failure date from the inspection call-out, R-3 failure 2008 to 2011, failure threshold 30 to 90 per cent, raw odometer/5280 zones, 31 December boundary (closest crossing 28 days): all identical to the golden. No fork.
-- Failure date set to last "normal" inspection: 3,9,12,5,4 = 33 (outlying; the RMU gives the exact day).
-- No stop at restoration (R-3 and R-7): 4,9,11,6,20 = 50; R-3 only 35; R-7 only 47. R-7 restoration read as start of 2030: 4,9,11,3,4 = 31.
-- Full-life rate since 8 Oct 1974: 0,0,0,0,0 = 0 ("yes, 24 suffice").
-- Unfiled but forced: growth basis (Section 6.4 gives no rate; nothing states the whole depth accrued between the zone's failure and the run) and growth stopping at restoration. The golden basis is the only one built from the shipped CP records. The judge finds no surviving defensible alternative, but the estimand is inferred, not filed.
-- Mileposts: raw odometer/5280 is off by +0.03 to +0.06 mile for all 34, but the ILI summary says the marker survey ties the run to the line; counted wrong, not a fork.
-
-Field-check ask (FORK SURVIVES):
-| Band | Golden: tally wall (within 10 %, mean, largest signed) | Register Field Depth column | Golden, largest by magnitude |
-|---|---|---|---|
-| 60 to 64.9 (n16) | 87.5, 1.2, 10.9 | 68.8, 5.2, 21.3 | 12.4 |
-| 65 to 69.9 (n17) | 94.1, -0.4, 9.4 | 82.4, 1.5, 23.6 | 12.0 |
-| 70 to 74.9 (n9) | 77.8, 2.7, 11.8 | 66.7, 6.3, 26.9 | 11.8 |
-| 75 to 79.9 (n10) | 100.0, 1.9, 8.6 | 80.0, 5.9, 18.3 | 8.6 |
-| 80 to 84.9 (n7) | 85.7, 5.1, 12.6 | 57.1, 10.4, 26.0 | 12.6 |
-- Wall fork rows: D25-005, 007, 012, 013, 020, 025 (Prairie) and 039, 040, 045, 046, 052, 058 (Kaw Valley); register 0.250 vs tally 0.188. The tally wall is better supported (ILI summary: depth is "a percentage of the joint's nominal wall"; differences stay inside the tool's plus or minus 10 spec, against up to 26 on the register wall) but no file says it governs.
-- Cut-outs: D25-005 76.6 (tally wall) vs 57.6 (register wall); D25-007 72.3 vs 54.4; the other five cut-outs have equal walls.
-- Counting the re-excavation twice moves only the 65 band (94.4, -0.1, 9.4). Treating the 7 cut-outs as blank deletes the 80 to 84.9 band.
-- No fork: 59 sites counted once; Kaw Valley mils as inches single reading; band edges and inclusive vs exclusive "within 10" identical.
+1. Returns, day clock (survives). On UTC days the counts are 7, 8, 5, 6, 4, 6 and volumes 23,400 / 23,700 / 26,600 / 27,600 / 20,200 / 26,400, against the golden's local-day figures. Neither the prompt nor the licence names the clock. The design note's fork row SF17 asserts "same figures under all three" readings, which the judge's recomputation contradicts. The author should re-run that assertion in checks.py.
+2. Returns, ticket day (survives). Seven tickets have time in 23:5x and a pump start 00:0x. Counting litres on the ticket's own time-in day gives April 23,357, which rounds to 23,400 (golden 23,300), and shifts the April/May split. Day counts are unchanged.
+Closed forks, each with the second reading's figure:
+- Unbounded aquifer, 2014 T,S: 2,600 (KN). Unbounded refit: 1,700 (KN). Both are contradicted by the fault and the record.
+- Actual returns instead of the filed 1,200 scenario: LHF 1,384, which rounds to 1,400. The letter states the scenario literally, so this is not licensed.
+- Rounding margin: LHF 1,330.5 sits 20 below the 1,350 boundary. T from 204 to 207 gives 1,318-1,337, so it holds at 1,300.
+- Bottle size: the export's 700 ml gives 2.43-2.55. The fill weights force 750 ml.
+- Rejects counted as packed: 2.41-2.52. "Good bottles" closes it.
+- Naive ticket date or kept duplicates: day counts 5, 7, 4, 6, 4, 4. Layer 1 mess, forced by the one-to-one match of 255 tickets to 255 pump runs.
+- Chart window "over the term" is unpinned. Minor, because the graded content is the plotted series.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 14 | yes |
-| Formats | 3 or more | csv (8), pdf (4), xlsx (2) | yes |
-| Large file | 25,000 rows or more | tally 36,009; RMU readings 31,283 | yes |
-| Distractors | 2 or more named, none labelled by file name | metadata.json names soil resistivity, one-call tickets, class location study (judge also saw crossings, annual CP survey as unused) | yes |
-| Distractor weight | unused, relevant, ruled out by a shipped fact | not separately tested by the thread; judge found them unused by the solution; arithmetic route to a graded figure not seen | yes (unconfirmed on "ruled out") |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, docx), golden/ holds both | yes |
-| Asks | multi-dimensional, unit and rounding stated | dig schedule, banded field check; mileposts two decimals, rest one decimal | yes |
-| Prompt shape / 25 criteria | identifiable, 25 or more | shape identifiable; rubric count not checkable here (generated at portal) | not verified |
-| Reads as real | no LLM tells | judge saw none in pdf text, csv headers, xlsx cells | yes |
+| Files / formats / large file | 10 / 3 / 25,000 rows | 17 / 4 (csv, pdf, xlsx, docx) / 52,608 rows | yes |
+| Distractors | 2 or more named in metadata.json, none in a file name | water quality csv and rain gauge csv named; no file name labels one | yes |
+| Distractors unused yet weighable | unused by the solution | the thread found the SKU master a weak decoy and the other two unused; I did not independently check that they fail to reproduce a graded quantity | yes (not independently checked) |
+| Deliverables | 1 to 3, all in golden | 2 (the PDF note and the CSV), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | prompt files nearest 100 m3/d, nearest metre, 2 decimals, nearest 100 m3 | yes |
+| Prompt | one paragraph, under 1,000 characters, no persona | 999 characters, one paragraph | yes |
+| Rubric 25 or more criteria | 25 or more | not generated; the design note argues the count from the per-month and per-borehole asks (12 + 12 + 3 + chart + call) | argued, not verified |
+| Reads as real, not LLM generated | yes | the thread found no such signs; duplicate tickets, meter rollover, casing change and mixed date formats read as system exports | yes |
+| Hygiene note | | line5_project_brief.docx explains the litres-per-litre metric slightly; acceptable | yes |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_class analytical; design note stump sentence: the full-life rate files 0 digs, the real driver is exposure time since a zone's rectifier failed. Match. The thread names the full-life rate as the easy route, not a declared distractor; the declared distractors are soil, one-call and class location, none the surface read. Design note's `## Three rules` has No decoy, Not semantics, Not rule application lines. Note: the note claims "nothing filed says how a growth rate is estimated" (Not rule application), consistent with the judge's "unfiled" growth basis; the judge accepts it as forced but inferred. The field-check ask rests on a data defect (register wall) and is semantics; allowed for an ask.
+The thread and the design note agree. The thread gave method_or_model_selection and no surface-read dependency, and the note's Layer 2 is forecast_uncertainty with a model chosen on the record. The thread did not name either declared distractor as the surface read. The surface read it names is the correct 2014 test fit, which is not a distractor. Gate G passes.
 
-## Gate H
-`domain: pass`, `layers: pass`, `decisive_step: analytical`. Layer 1: RMU readings in UTC, odometer vs marker-tied milepost, two contractor register layouts, mils vs inches. Layer 2: growth by exposure time since protection loss, stopped at restoration. Easy route: depth over full life gives 0 digs ("yes, 24 suffice"); the thread says a strong analyst who cleaned everything can still land there.
+## Gate H reconciliation
+The thread gave domain pass, layers pass and decisive_step analytical, and the card and note's `## Three rules` say the same. The easy route is Theis on the 2014 test filing 2,600 with KN limiting and 1,800 passing, or an OB refit filing 1,700. The fault appears in the geology extract and the record independently confirms it, so it is not a planted decoy. No mismatch was found. The concern is that the geology extract describes the fault, so a strong reader of every file could find it.
 
 ## Stump power (Gate F)
-Plausibly strong on the main call: the easy age-based rate answers 0 digs; the right route needs the failure day from about 31k daily RMU readings (R-3 only from the inspection log), restoration dates from Projects vs Deferred, and a crossing-year count. The thread did not classify the decisive step as landable-by-standard-method. Risk: a response lands the call but misses exact counts through one zone's date; the field check adds ask-level difficulty (wall choice).
+The 72-hour test fits an unbounded curve to rms 0.002 m, so a solver who stops at the clean fit files 2,600. The fault and the 2015-2026 record are the separators. The thread's rating is that the main call carries the stump and the asks (UTC against local day, night-shift tickets, bulk water outside FM-1, 750 against 700 ml) hold the top responses down. Neither it nor I classed the decisive step as the field's standard method applied with no judgment, so the main thread should weigh it against the note's ladder. No hardening is advised.
 
 ## Findings, ranked
-1. Field-check ask: wall thickness for field depth is unfiled (register 0.250 vs tally 0.188 on 12 digs); bands differ materially (e.g. 85.7 vs 57.1). FIX_NOW.
-2. "Largest inspection minus field" unpinned (signed max vs magnitude; band 60 to 64.9: 10.9 vs 12.4).
-3. Main call growth basis is an inferred estimand, not filed (accepted as forced; record in the design note).
-4. Distractor ruling-out and the 25-criteria rubric were not verified by the thread.
+1. Returns ask: the day clock is unpinned (UTC and local days give different counts and volumes), and the design note's SF17 "same figures" assertion does not hold on the judge's recomputation.
+2. Returns ask: the ticket day for midnight-straddling tickets is unpinned (April 23,400 against 23,300).
+3. The chart's "over the term" window is unpinned (minor).
+4. The rubric count is not verified.
 
 ## Next action for the author
-Add to the second-sheet clause of prompt.txt, as a WHAT only: field depth as a per cent of the wall thickness the inspection tally gives for the anomaly's joint, and the largest as the largest signed inspection minus field difference; the analytic surface and stump stay unchanged and goldens need no figure change. Alternative: correct the register's nominal wall so both walls agree. Record the inferred growth basis in the design note; if a pin is wanted, file only the population (anomalies in zones whose protection was lost) and the window, not the rate formula. Re-judge once after the fix.
+Edit `prompt.txt` to file the WHAT for the returns ask, for example "days run local midnight to midnight and each bulk load counts on the day its pump run began", staying under 1,000 characters (the prompt is at 999, so tighten other words). Then re-assert SF17 and SF15 in checks.py, rebuild twice byte-identically, and re-judge once. Optionally pin the chart window to 31 March 2016 to 2039.
