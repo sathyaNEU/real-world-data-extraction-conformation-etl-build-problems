@@ -1,17 +1,18 @@
 {
  "task": "task458",
- "architecture": "v1",
- "drawn": "2026-10-15",
- "slot_note": "seed ET15 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a Medicaid program's behavioral-health prescriber pilot designating counties on workforce ratios, the provider master rebuilt from NPPES monthly files and weekly deltas); the decoy-era traps are not used",
- "domain": "healthcare-delivery-health-economics",
- "subdomain": "payment-claims-health-plan-analytics",
- "niche": "a nonprofit Medicaid health plan's designation of eastern Washington counties for a 2027 behavioral-health prescriber loan-repayment pilot, each county scored on prescribers per adult member with a serious mental illness, per adult member with an opioid use disorder, and the share of members with a serious mental illness seen by a prescriber, populations the claims record only through services billed while a member is enrolled",
+ "architecture": "v2 (architecture 2, re-root 2026-11-02: a new world, dataset, generator and shell in another client domain; a city's 2027 performance-based meter rates, each metered zone's weekday midday occupancy assembled from the payment app's complete record of paid vehicles and the enforcement vehicles' plate reads of every parked vehicle)",
+ "drawn": "2026-11-02",
+ "slot_note": "re-root of task458 (architecture 1, healthcare delivery, spent on its ask layer); no seed: a draw outside the seeds in General Statistics & Data Science, data integration, objective ETL",
+ "domain": "general-statistics-data-science",
+ "subdomain": "data-integration-record-linkage-entity-resolution",
+ "client_domain": "general-statistics-data-science",
+ "niche": "a mid-size city's 2027 performance-based on-street meter rates, each metered zone's rate moved by its fiscal-2026 weekday 12:00 to 14:00 occupancy, which no system records: the parking app records every paid vehicle minute by minute, the license-plate-reading enforcement vehicles read every parked vehicle only on their passes (hourly downtown, mid-morning and mid-afternoon in the neighborhood districts), and the vehicles parked without paying (disability placard holders all day, overnight residents gone by mid-morning, school-run stops after three) show only in the plate reads",
  "objective": "etl",
  "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Designate Adams, Douglas, Franklin, Grant and Okanogan for the 2027 Prescriber Service Award Pilot.",
- "answer_source": "task458/submission.md, block 1; golden/prescriber_pilot_county_scorecard_2027.xlsx",
+ "decision_type": "dial_setting",
+ "answer_unit": "currency",
+ "answer": "",
+ "answer_source": "task458/submission.md, block 1 (filled at build)",
  "gap": [
   "population",
   "time"
@@ -20,64 +21,72 @@
   "none"
  ],
  "generators": [
-  "G14",
   "G12",
+  "G3",
   "G6"
  ],
  "gate_g": "etl_conformance",
  "calibration_form": "none",
- "stump_strategy": "maturity_censoring",
+ "stump_strategy": "population_selection",
  "decisive_rule_filed": false,
  "official_decoy": false,
  "validated_decoy": false,
  "context_artifact": "monitoring_export",
- "stakeholder_role": "the plan's director of network development",
- "role_family": "capacity_planner",
- "scoring_unit": "per covered member",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms both payment vendors' sessions, the plate reads, the meter inventory and the bagged-meter permits correctly expands each zone's paid midday occupancy the way parking studies do, by the ratio of all vehicles to paid vehicles at the zone's enforcement passes (or adds the passes' average count of unpaid vehicles to the paid record), and moves the neighborhood zones' rates on that occupancy, filing a 2027 rate schedule that raises and lowers the wrong zones, because the neighborhood passes come only mid-morning and mid-afternoon, when the unpaid vehicles include overnight residents and school-run stops that are gone by midday, and the all-day unpaid vehicles are a fixed number, not a multiple of the paid ones.",
+ "domain_test": "General statistics, so the swap is of the method: the deciding quantity is each zone's midday occupancy as a data-integration estimate that joins a complete minute-by-minute record of one part of the population (paid vehicles) to periodic censuses of all of it (the passes' plate reads), the unrecorded part entering through each unpaid vehicle's own sightings on both sides of the window; replacing it with a generic summary (paid occupancy, the passes' mean occupancy, a paid-to-total ratio or the passes' mean unpaid count) moves zones across the pricing thresholds.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:unrecorded-group-in-a-window-from-its-own-sightings-on-both-sides",
+ "layer1": [
+  "several sources for one picture: two parking-app vendors' session exports either side of the 1 February 2026 vendor change, the enforcement vehicles' plate-read log, the sensor pilot blocks, the meter inventory and the bagged-meter permits",
+  "layouts changing across the year: the old vendor's local-time CSV with zone codes against the new vendor's UTC export keyed by four-digit location numbers through a crosswalk",
+  "imperfect keys: plates read by camera with O/0 and I/1 confusions and dropped spaces against plates typed into the app, block faces placed from GPS near corners",
+  "genuine overlap: sessions running across the vendor change exported by both vendors",
+  "real coverage: meters added and spaces removed during the year, spaces bagged for street-use permits, city holidays",
+  "documentation that has to be read: the pricing rule's band, thresholds and step sizes, the inventory's effective dates"
+ ],
+ "stakeholder_role": "the city's parking program manager",
+ "role_family": "policy_adviser",
+ "scoring_unit": "per active unit per period",
  "spine": {
-  "file": "bh_claims_encounters_dos_2025-07-01_2026-06-30.csv",
-  "rows": 104860,
-  "entity": "one line of a behavioral-health claim or encounter for an adult member with a service date in the contract year, every version, with its diagnosis codes, rendering and billing NPIs, frequency code and paid amount",
-  "grain": "claim line",
-  "source": "synthetic (constructed in the idiom of a Medicaid managed care plan's claims and encounter extract)"
+  "file": "lpr_plate_reads_fy2026.csv",
+  "rows": 480000,
+  "entity": "one license plate read by an enforcement vehicle's camera on a metered block face during a pass, with its time, block face, the payment check's result and the vehicle's route",
+  "grain": "plate read",
+  "source": "synthetic (constructed in the idiom of a city's license-plate-recognition parking enforcement export)"
  },
- "forum": "board_of_directors",
- "forcing_event": "budget_or_appropriation",
- "org_family": "nonprofit_or_charity",
+ "forum": "council_or_assembly",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "local_government",
  "world": {
-  "geography": "United States, Washington (ten eastern Washington counties)",
+  "geography": "United States, Oregon (a fictional mid-size city)",
   "currency": "USD",
-  "org_type": "nonprofit Medicaid managed care plan",
+  "org_type": "city transportation department's parking services division",
   "invented_names": [
-   "Sandhollow Health Plan",
-   "Prescriber Service Award Pilot"
+   "City of Elsworth",
+   "Elsworth Performance Parking Program"
   ],
   "people": [
-   "Cameron Joyce",
-   "William Guerrero",
-   "Charles Schmidt"
+   "Kelsey Solis",
+   "Andrew Ward"
   ]
  },
  "deliverables": [
-  "prescriber_pilot_county_scorecard_2027.xlsx",
-  "county_adult_members_2026_conformed.csv"
+  "elsworth_2027_meter_rates.docx",
+  "zone_midday_occupancy_fy2026.csv"
  ],
  "opening_move": "question-first",
- "question_form": "which",
- "driver": "A population defined by a lasting trait is counted from records that show the trait only through events logged while each unit is observed; the fully observed units cannot stand in for the briefly observed, because staying observed is selected on the trait, so each recorded unit is counted as one over the share of fully observed trait-holders recorded within a window of its own length, measured on their time to a first event, and carrying the fully observed units' rate to every unit, even within the visible groups, overstates exactly the segments whose units come and go.",
- "driver_concrete": "Adult members with a serious mental illness or an opioid use disorder appear in the claims only through services billed while they were enrolled; the members enrolled all year are fully observed but are not a sample of the membership, because the farmworkers who enrol for a harvest have the conditions about half as often, so each identified member is counted as 1 over the share of the full-year members with the condition identified within the same number of months, and carrying the full-year prevalence to every member, eligibility group by group, overstates Yakima and fails it on two standards it meets (figures fixed at build).",
- "stump": "A strong analyst completes each county's members with each condition, as NP-31 2.5 requires, with the prevalence its members enrolled all year show within each eligibility group, carried to all the group's members, and designates Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the seasonal expansion adults and parents in Yakima's short spells have the conditions about half as often as the members who stay enrolled; counted for the months each identified member was enrolled, Yakima meets all three standards. A weaker analyst counts the identified members and designates Douglas and Okanogan.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms NPPES, the claims and the enrollment spans, reads every field and NP-31 correctly and completes each county's count of members with a serious mental illness and with an opioid use disorder, as NP-31 2.5 requires (every member who has the condition, identified or not), with the prevalence its members enrolled all year show within each eligibility group (the stage-4 leak reader's route on the first design), designates Adams, Douglas, Franklin, Grant, Okanogan and Yakima; carrying the county's full-year prevalence whole files the same six; counting the identified members files Douglas and Okanogan.",
- "domain_test": "Need is each county's number of adult members with a serious mental illness and with an opioid use disorder, estimated the way claims-based epidemiology corrects case identification for the length of observation: the sensitivity of a k-month lookback window measured on members observed all year, applied to each identified member's own window, because continuously enrolled Medicaid members are sicker than the members who churn; with retail or school nouns no enrolment is selected on a lasting condition recorded only through billed services, and no standard counts people the record does not show.",
+ "question_form": "what",
+ "driver": "A quantity averaged over a window is assembled from a complete record of one part of a population and periodic counts of all of it taken only outside the window; the unrecorded part is not a fixed multiple of the recorded part, and the counts outside the window also catch members present only near the counting times, so scaling the record by the counts' ratio, or adding the counts' mean unrecorded number, misstates the window, and only the unrecorded members counted on both sides of the window, with no record of their own inside it, give the window's unrecorded part.",
+ "driver_concrete": "Each zone's weekday 12:00 to 14:00 occupancy joins the parking app's minute-by-minute record of paid vehicles to the enforcement vehicles' plate reads of every parked vehicle, which in the neighborhood districts come only mid-morning and mid-afternoon; there the unpaid vehicles are disability placard holders parked all day plus overnight residents gone by about 10:30 and school-run stops after 15:00, so neither the paid occupancy scaled by the passes' all-to-paid ratio nor the paid occupancy plus the passes' mean unpaid count gives the midday band, and only the unpaid plates read on both of a day's passes, added to the paid record, do (figures fixed at build).",
+ "stump": "The default path expands each neighborhood zone's midday paid occupancy by the ratio of all vehicles to paid vehicles at its mid-morning and mid-afternoon passes and moves the rates on it, raising and lowering the wrong zones (fixed at build); the unpaid vehicles at midday are only the all-day placard holders, a fixed number rather than a multiple of the paid parkers, while the passes also catch overnight residents and school-run stops, so only the plates read on both passes of a day, added to the paid record, place each zone on the right side of 60 and 85 per cent.",
  "mechanism_source": "design_note",
  "differentiation": {
-  "task231": "task231 estimates the exited share of a register's silent units from follow-up that reaches active units more often than exited ones; task458 counts members with a lasting condition from claims that record it only while each member is enrolled, correcting each identified member for the sensitivity of its own window measured on the fully observed members, because the fully observed are a selected group.",
-  "task445": "task445 completes a period's holdings for reporters whose reports have not arrived; task458 counts a population whose trait the record shows only through events during each unit's observation, so the shortfall sits with units observed briefly, not with units still to report.",
-  "task456": "task456 estimates each region's share of full ICU hospital-days with a latent class model of three conflicting feeds, no feed a record of the outcome; task458 has one record of each condition that is complete for members observed all year and censored for members enrolled briefly, and counts each identified member over its window's sensitivity: no latent class, no feed error rates.",
-  "task457": "task457 aligns each disclosure with the register's payments made by the day it was submitted and weights a matched-line ratio by its credibility; task458 counts members with a condition from claims censored by enrollment, each identified member over its window's sensitivity: no register, no reporting ratio, no credibility weighting; the two share only the ETL pack's genres (a policy PDF, a dictionary, CSV extracts).",
-  "task448": "task448 completes a register missing whole lenders from a second list whose capture depends on the recording route, estimated within route strata on the lenders both lists hold; task458 has one list (the claims) whose capture of a lasting condition depends on how long each member was enrolled, measured on the members observed all year and applied to each identified member's own window, and its trap is the selected reference population (the full-year members' prevalence carried to the seasonal enrollees), not a pooled capture.",
-  "task458": "the first design's golden (the full-year prevalence standardized by eligibility group) is this design's default path: the seasonal members' lower prevalence makes it file the six, and the decisive step moves from standardizing the reference population to not using it as the seasonal members' stand-in at all."
+  "task107": "task107's ETL architecture lost the months a payment feed never recorded and the scheme counts as nil; task458 v2 recovers which unpaid vehicles were parked through a window no read covers, from each vehicle's own reads on both sides of it, against a paid record that is complete.",
+  "task458": "architecture 1 counted members with a condition from claims censored by enrollment, each identified member over its own window's sensitivity measured on the full-year members; architecture 2 has no sensitivity, no reference group and no completion factor: the paid vehicles are recorded in full, and the unpaid vehicles in the window are the ones read on both of a day's passes, the rest of the passes' unpaid reads being people present only near the pass times.",
+  "task473": "task473 completes a count by one over a catch rate at each case's level of the trait, measured where every unit is tested; task458 v2 completes nothing by a rate: the window's unpaid vehicles are counted directly from their own reads on both sides of the window, and the trap is a ratio or a mean taken at the wrong times.",
+  "task275": "task275 rebuilds unobserved trips from a catch per hour of effort by ground; task458 v2 has no effort and no observer effect: the plate reads see every parked vehicle at their times, and the error is carrying the reads' unpaid mix at those times into a window they do not cover.",
+  "task120": "task120 subtracts a storage gain between midnights from production; task458 v2 has no storage and no balance: it adds to a complete paid record the unpaid stock present through the window, identified by reads on both sides of it."
  },
  "lineage": [
   {
@@ -88,18 +97,84 @@
    "stump_strategy": "maturity_censoring",
    "gate_g": "etl_conformance",
    "layer2_pattern": "own:chronic-condition-prevalence-from-fully-observed-enrollment"
+  },
+  {
+   "architecture": "v1 (a nonprofit Medicaid plan's county designation for a 2027 behavioral-health prescriber loan-repayment pilot, healthcare-delivery-health-economics payment and claims analytics)",
+   "drawn": "2026-10-15",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "payment-claims-health-plan-analytics",
+   "niche": "a nonprofit Medicaid health plan's designation of eastern Washington counties for a 2027 behavioral-health prescriber loan-repayment pilot, each county scored on prescribers per adult member with a serious mental illness, per adult member with an opioid use disorder, and the share of members with a serious mental illness seen by a prescriber, populations the claims record only through services billed while a member is enrolled",
+   "objective": "etl",
+   "shape": "10",
+   "decision_type": "designation_set",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G14",
+    "G12",
+    "G6"
+   ],
+   "gate_g": "etl_conformance",
+   "stump_strategy": "maturity_censoring",
+   "layer2_family": "estimation_fit",
+   "layer2_pattern": "own:condition-count-from-claims-by-lookback-window-sensitivity",
+   "driver": "A population defined by a lasting trait is counted from records that show the trait only through events logged while each unit is observed; the fully observed units cannot stand in for the briefly observed, because staying observed is selected on the trait, so each recorded unit is counted as one over the share of fully observed trait-holders recorded within a window of its own length, measured on their time to a first event, and carrying the fully observed units' rate to every unit, even within the visible groups, overstates exactly the segments whose units come and go.",
+   "driver_concrete": "Adult members with a serious mental illness or an opioid use disorder appear in the claims only through services billed while they were enrolled; the members enrolled all year are fully observed but are not a sample of the membership, because the farmworkers who enrol for a harvest have the conditions about half as often, so each identified member is counted as 1 over the share of the full-year members with the condition identified within the same number of months, and carrying the full-year prevalence to every member, eligibility group by group, overstates Yakima and fails it on two standards it meets (figures fixed at build).",
+   "stump": "A strong analyst completes each county's members with each condition, as NP-31 2.5 requires, with the prevalence its members enrolled all year show within each eligibility group, carried to all the group's members, and designates Adams, Douglas, Franklin, Grant, Okanogan and Yakima, because the seasonal expansion adults and parents in Yakima's short spells have the conditions about half as often as the members who stay enrolled; counted for the months each identified member was enrolled, Yakima meets all three standards. A weaker analyst counts the identified members and designates Douglas and Okanogan.",
+   "forum": "board_of_directors",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "nonprofit_or_charity",
+   "role_family": "capacity_planner",
+   "context_artifact": "monitoring_export",
+   "world": {
+    "geography": "United States, Washington (ten eastern Washington counties)",
+    "currency": "USD",
+    "org_type": "nonprofit Medicaid managed care plan",
+    "invented_names": [
+     "Sandhollow Health Plan",
+     "Prescriber Service Award Pilot"
+    ],
+    "people": [
+     "Cameron Joyce",
+     "William Guerrero",
+     "Charles Schmidt"
+    ]
+   },
+   "deliverables": [
+    "prescriber_pilot_county_scorecard_2027.xlsx",
+    "county_adult_members_2026_conformed.csv"
+   ],
+   "answer": "Designate Adams, Douglas, Franklin, Grant and Okanogan for the 2027 Prescriber Service Award Pilot.",
+   "architecture_spent": true,
+   "fate": "delivered 2026-10-15 (stays on the portal as delivered); spent 2026-11-02 at the honest-cracker audit after the leak repair: the main call sound, the ask layer spent (the careful solver keeps 132 of 132 ask figures, pair 81.8; Ask A's device, one paid amount repeated on every line of a multi-line claim, is the battery's header-to-items check), re-siting barred (the device's tells sit in the claims file the call reads), cutting Ask A failed (52 of 52 kept) and every replacement candidate died; re-rooted into a new world, dataset, generator and shell",
+   "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "round",
+    "deliverable set": "csv+xlsx"
+   }
   }
  ],
- "notes": "Personas drawn with guard.py names --geo 'United States' --seed 458. org_family nonprofit_or_charity: a nonprofit Medicaid managed care plan (no payer key in the vocabulary). forum board_of_directors: the plan's board approves the pilot's county list with its 2027 budget (forcing event budget_or_appropriation). Decisive generator G14 (the recorded share of members with the condition is conditioned on how long each was observed and on who stays enrolled), G12 behind it (a member with no qualifying claim is a non-answer, not a zero), G6 (the seasonal composition of the farm counties). Re-centred at stage 4 after the leak reader filed the first design's golden: the first design's decisive step (full-year prevalence by eligibility group) is now the default path, and the lineage keeps its driver.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:condition-count-from-claims-by-lookback-window-sensitivity",
- "layer1": [
-  "several sources for one picture: the NPPES monthly full replacement file and its weekly incremental files, the NPPES deactivation file, the plan's behavioral-health claims and encounter extract, the eligibility spell file",
-  "vintages and revisions: the October 2026 monthly file superseded record by record by four weekly files, one after the as-of date, deactivated NPIs reactivated, claims replaced and voided by frequency code",
-  "imperfect keys: rendering NPIs present on some encounters and absent on others, member numbers reissued at re-enrollment and tied by a person number, practice against mailing addresses, ZIP codes spanning two counties",
-  "documentation that has to be read: the taxonomy code list, the standard's definitions, claim frequency and place-of-service codes",
-  "genuine overlap: overlapping eligibility spells after retroactive enrollment, an encounter and a fee-for-service claim for the same visit",
-  "real coverage: members enrolling and leaving during the year, prescribers arriving, moving and leaving during the year"
+ "lineage_shells": [
+  {
+   "question form": "which",
+   "second-sentence opener": "put",
+   "rounding opener": "round",
+   "deliverable set": "csv+xlsx"
+  }
  ],
- "registered": "2026-10-15T01:00:53Z"
+ "architecture_spent": false,
+ "notes": "Re-root of task458 on 2026-11-02 (architecture 1 spent on its ask layer, see lineage). Personas drawn with guard.py names --geo 'United States' --seed 458, skipping the two architecture 1 used. Client domain General Statistics & Data Science, task type data integration (record linkage and entity resolution), objective ETL: the call is a conformed figure (each zone's band occupancy) assembled from systems that disagree. Ask records named at the draw: the residential permit registry (pricing: calendar-year permits prorated by month and renewed from December, the term readable only from the amount) and the city garages' access and ticket records (presence and pricing); both screened as code before any data is cut.",
+ "registered": "2026-11-02T14:55:24Z",
+ "shell": {
+  "question form": "what",
+  "second-sentence opener": "the",
+  "rounding opener": "occupancy",
+  "deliverable set": "csv+docx"
+ }
 }
