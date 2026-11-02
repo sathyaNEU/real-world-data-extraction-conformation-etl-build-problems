@@ -182,7 +182,11 @@ class Events:
     def make_g3(self):
         r = self.rng
         cands = [d for d in dates(*P.W26) if school_day(d)]
-        pick = sorted(r.choice(len(cands), size=P.GROUPS["G3"]["n"], replace=False))
+        while True:
+            pick = sorted(r.choice(len(cands), size=P.GROUPS["G3"]["n"], replace=False))
+            ds = [cands[i] for i in pick]
+            if max((b - a).days for a, b in zip(ds, ds[1:])) <= 12:
+                break
         for i in pick:
             d = cands[i]
             ev = at(d, int(r.integers(15 * 3600 + 15 * 60, 17 * 3600 + 45 * 60)))

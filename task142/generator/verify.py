@@ -218,7 +218,8 @@ def main():
         say(rnd(b - a, u) == fig["heat_change_MWh"][k], "change %s" % k, "%.1f MWh" % (b - a))
     # ---- the scope and the golden workbook read back
     doc = zipfile.ZipFile(pick("weidehaven_aardgasvrij_scope")).read("word/document.xml").decode("utf-8")
-    say("radiators remain in service" in re.sub(r"<[^>]+>", "", doc), "scope read back")
+    txt = re.sub(r"<[^>]+>", "", doc)
+    say("original two-pipe radiators" in txt and "remain in service" in txt, "scope read back")
     gold = xlsx(os.path.join(TASK, "golden", "os_west_debiet_2027-2029.xlsx"))
     seas = [r for r in table(gold["Seizoenen"], "Heating season") if r["Heating season"] in ("2027-28", "2028-29")]
     say([r["Design-day flow (m3/h)"] for r in seas] == [fig["flow_2027_28"], fig["flow_2028_29"]] and

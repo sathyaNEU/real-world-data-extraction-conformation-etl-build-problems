@@ -1,7 +1,7 @@
 """Fixed parameters of the Ardmuir University Library world (architecture 4)."""
 import datetime as dt
 
-SEED = 28104
+SEED = 28115
 
 UTC = dt.timezone.utc
 # UK clock changes inside the record (UTC instants)

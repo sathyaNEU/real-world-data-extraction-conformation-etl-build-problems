@@ -117,7 +117,7 @@ def simulate(seed=P.SEED):
                     if sf == 0.0:
                         hr = rng.uniform(9.0, 16.5)
                     elif rng.random() < 0.035 and m in ("BP", "DH", "FL"):
-                        hr = rng.uniform(20.5, 30.0)     # 24-hour card pumps
+                        hr = rng.uniform(20.5, 28.8)     # 24-hour card pumps
                     else:
                         hr = float(np.clip(rng.normal(13.0, 3.0), 7.03, 19.96))
                     g = float(np.clip(rng.lognormal(math.log(avg) - 0.18, 0.6), 3.0, 260.0))
@@ -276,7 +276,7 @@ def simulate(seed=P.SEED):
                     arrive_net = t.chart_gal(t.reorder_h - float(rng_t.uniform(1.5, 4.0)))
                     if netc - draw < arrive_net:
                         dd = when.date() + dt.timedelta(days=lag)
-                        heapq.heappush(q, (local(dd, float(rng_t.uniform(8.3, 13.2))), 0, "DS", None))
+                        heapq.heappush(q, (local(dd, float(rng_t.uniform(5.15, 6.10))), 0, "DS", None))
                         pending = True
         out["true_closing"][tid] = net
 

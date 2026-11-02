@@ -126,7 +126,7 @@ def main():
 
     # ------------------------------------------------------------------ the three rules, executed
     rep = pdf_text(os.path.join(TDIR, pack.F_RECON))
-    f1_printed = float(re.search(r"Jan 2023-Oct 2026\n(?:[\d.]+\n){12}([\d.]+)", rep).group(1))
+    f1_printed = float(re.search(r"Jan 2023-Oct 2026\n(?:[\d.]+\n){11}([\d.]+)", rep).group(1))
     check("R3a analyst test: the plan's model gold times the reports' printed 0.50 g/t factor files 130,000 oz",
           rnd(m["plan_oz"] * f1_printed, 10000) == 130000, (f1_printed, round(m["plan_oz"] * f1_printed)))
     check("R3a the plan's own model gold (rung 0) files 130,000 oz", rnd(m["R0"], 10000) == 130000, round(m["R0"]))
@@ -152,9 +152,7 @@ def main():
         check("R2 mess neutral: %s" % lab, rnd(d_oz, 10000) == gold and rnd(d_t, 100000) == 2800000,
               (round(d_oz), round(d_t)))
     lims = A._csv(os.path.join(TDIR, pack.F_LIMS))
-    newonly = pm.loc[[i for i in pm.index if i in set(
-        A.blast_holes(TDIR).loc[lims.loc[A.blast_holes(TDIR).index, "SOURCE_SYSTEM"].values == "LIMS", "ijk"])]]
-    d_new = A.route_D(newonly, pl)[0]
+    d_new = A.route_D(A.paired(TDIR, source="LIMS"), pl)[0]
     check("R2 mess neutral: the legacy laboratory system's rows dropped (post-migration record only)",
           rnd(d_new, 10000) == gold, round(d_new))
     g0 = A.grid(TDIR)

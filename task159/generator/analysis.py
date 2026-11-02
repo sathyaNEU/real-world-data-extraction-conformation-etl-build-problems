@@ -56,10 +56,12 @@ def au_gpt(ppb, grav, bdl="half"):
     return np.array(out)
 
 
-def blast_holes(target, bdl="half", with_dups=False, grav="use"):
+def blast_holes(target, bdl="half", with_dups=False, grav="use", source=None):
     lims = _csv(os.path.join(target, "gc_assays_lims_export_20261105.csv"))
     types = {"BH", "BLASTHOLE"} | ({"DUP", "FIELD DUP"} if with_dups else set())
     h = lims[lims["SAMPLE_TYPE"].isin(types)].copy()
+    if source:
+        h = h[h["SOURCE_SYSTEM"] == source]
     gr = h["AU_GRAV_GPT"] if grav == "use" else pd.Series(["10.0"] * len(h), index=h.index)
     h["au"] = au_gpt(h["AU_PPB"], gr, bdl)
     x, y = utm_to_kmg(h["EASTING_UTM17"].astype(float), h["NORTHING_UTM17"].astype(float), grid(target))
