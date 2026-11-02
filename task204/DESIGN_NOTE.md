@@ -3,7 +3,7 @@
 Architecture v2, drawn 2026-11-02 under the Batch 3 re-root. Architecture 1 (indoor air in an Irish
 further-education block) shipped 2026-10-27 with no portal result; its world is closed and its record sits in
 `## Architecture 1 record` below. Every figure in this note is a measurement on the cut pack, printed by
-`generator/checks.py` (95 checks), `generator/verify.py` (16 claims, its own code path, bundle only) and
+`generator/checks.py` (104 checks), `generator/verify.py` (13 claims, its own code path, bundle only) and
 `generator/ceiling.py`, from a generator that rebuilds to byte-identical output twice over.
 
 ## Draw

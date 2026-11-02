@@ -2,25 +2,53 @@
  "task": "task204",
  "wave": 5,
  "architecture": "v2",
- "status": "DESIGN",
- "stage": 2,
- "stage_name": "design",
+ "status": "BUILD",
+ "stage": 3,
+ "stage_name": "build",
  "drawn": "2026-11-02",
  "updated": "2026-11-02",
  "domain": "criminology-justice / crime-incidence-hotspot-analysis (client domain criminology-justice; world: a fictional Alberta city's municipal police service and its two-line light rail)",
  "subdomain": "crime-incidence-hotspot-analysis",
  "objective": "anomaly-detection",
  "shape": "07",
- "card": ".claude/skills/fingerprint/cards/task204.json, architecture v2, registered 2026-11-02 (guard check WARN, no BLOCK); v1 in lineage",
- "call": "",
- "stump": "",
+ "card": ".claude/skills/fingerprint/cards/task204.json, architecture v2, re-registered 2026-11-02T03:48:32Z after the axis redraw (stump strategy identity_resolution, forcing event budget_or_appropriation); guard check on the registered card WARN, no BLOCK",
+ "call": "Four series teams: the Eastline group on patrol districts 4, 6, 7 and 9 (42 offences), the Hollin station group on district 5 (18), the Cobb Street station group on district 8 (16) and the district 6 street robbery group on district 6 (14).",
+ "stump": "The field's linkage (MO, suspect description, 1 km, 28 days) files seven teams, one per station cluster; joining offences at different stations that sit on the same scheduled westbound trip makes the four Eastline stations one group, while Cobb Street, struck within three minutes of Union Yards on four evenings, stays separate.",
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02",
+  "result": "61 checks, 0 FAIL, 0 WARN"
  },
- "measured": {},
- "resume": "",
- "resume_step": "stage 2 design note and generator, then the free gates",
+ "measured": {
+  "checks_py": "104 checks, 0 failed",
+  "verify_py": "13 claims, 0 failed (own code path)",
+  "byte_identical_builds": "yes (target 560045eb126a542b, golden f2317e1829a2ca39)",
+  "target_zip_sha256_8": "78ac3cba",
+  "figures_check": "PASS, 42 figures, 0 absent",
+  "voice_check": "PASS (774 characters)",
+  "leak_py": "REVIEW, no LEAK (asof 2026-05-15)",
+  "guard_heart": "WARN (nearest driver 0.09, task273 v2 lineage)",
+  "guard_surface": "exit 0; 2 promoted pairs (task487, task272), both answered by the card's differentiation lines",
+  "ceiling": {
+   "cracker_keep": 0.4583,
+   "full_includer_keep": 0.8125,
+   "mirror_keep": 0.1042,
+   "pair_ceiling": 44.0,
+   "pair_if_both_land": 60.5,
+   "mirror_leakage_pct": 10.4
+  },
+  "ladder": {
+   "rung0": 7,
+   "rung1": 6,
+   "rung2": 3,
+   "golden": 4,
+   "eastline_trips": 18,
+   "simultaneous_evenings": 4
+  },
+  "fiction_asof": "2026-05-15"
+ },
+ "resume": "stage 4: the leak reader and the determinism judge (main session), then ship",
+ "resume_step": "stage 4 (leak reader and judge), stage 5 ship",
  "returned": [],
  "portal": null,
  "portal_status": "",
@@ -31,13 +59,13 @@
   "report": ""
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK), 2026-11-02",
   "reader": ""
  },
  "delivered": null,
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN",
+  "nearest": "0.09 task273 (v2, lineage)"
  },
  "loops": 0,
  "lineage": [

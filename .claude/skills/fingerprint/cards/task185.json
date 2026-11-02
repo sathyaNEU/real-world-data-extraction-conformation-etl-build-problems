@@ -2,11 +2,11 @@
   "task": "task185",
   "architecture": "v2",
   "drawn": "2026-11-02",
-  "slot_note": "Batch 3 re-root (architecture v2): new world, dataset, generator and shell; objective kept (anomaly detection); the weather-station world is closed",
+  "slot_note": "Batch 3 re-root (architecture v2): new world, dataset, generator and shell; objective kept (anomaly detection); the weather-station world is closed; the gas excavation draw (v2a) died at stage 2 and is in lineage",
   "domain": "energy-systems-utilities",
   "subdomain": "grid-reliability-outage-analysis",
   "client_domain": "energy-systems-utilities",
-  "niche": "a state utility commission's pipeline safety division auditing which operating areas a gas distribution company's 2027 service line replacement rider should fund, ranked on the service line failures the lines' own deterioration produced, when lines crossed by other parties' trenches crack weeks after the dig and the repair crews record the mechanism they find",
+  "niche": "a state utility commission's electric reliability division auditing which circuits an electric utility's 2027 feeder voltage program should fund, ranked on the high-voltage events the company's own system delivered, when rooftop solar homes on long aluminium services push their own meters over the Range A limit while a solar subdivision's feeder end runs high for everyone",
   "objective": "anomaly-detection",
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
@@ -14,15 +14,14 @@
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G3",
-    "G7"
+    "G18"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
@@ -32,39 +31,40 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the repair orders to service line failures, sets aside the excavation damage the crews recorded and divides each area's remaining failures by its active services ranks the fibre-build area among the four, because the cracks and coupling failures that surface weeks after other parties trench along a street carry the mechanism codes of deterioration.",
-  "domain_test": "The deciding quantity is each operating area's deterioration-driven service line failure rate, the pipeline integrity engineer's replacement metric, once the failures that other parties' excavations induce are taken out by the excess failure rate on lines inside recent dig areas over the weeks after the dig, estimated across the whole system; with another field's nouns there is no trench settling under a buried line weeks after the locate ticket closes, so the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:excavation-induced-failures-separated-by-the-excess-rate-in-the-weeks-after-nearby-digs",
+  "analyst_test": "A strong analyst who reads the commission's order and the interconnection tariff, dedupes the head-end's events and counts each circuit's high-voltage events per 1,000 meters funds the rural circuit whose events come from large arrays on long #2 aluminium services; applying the tariff's own-rise clause the easy way, by setting aside every event at a meter that was exporting, also sets aside the solar subdivision's circuit, whose feeder end runs above Range A at midday where nearly every meter exports.",
+  "domain_test": "The deciding quantity is each circuit's count of service-voltage events above ANSI C84.1 Range A that the company's distribution system delivered, the distribution engineer's voltage compliance measure, read at each exporting meter as its recorded voltage less the rise its own export drives through its service conductor (export current times the conductor's resistance over the service length); with another field's nouns there is no inverter pushing current back through a 300-foot aluminium service, so the task stops making sense.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:service-voltage-delivered-net-of-each-exporting-meters-own-service-rise",
   "layer1": [
-    "811 dig areas given as street address ranges, matched to service addresses",
-    "ticket revisions and remarks re-issued under suffixed numbers",
-    "one-call times in UTC against local repair dates",
-    "repair orders mixing main, service and meter-set leaks, with recheck orders for the same leak",
-    "active services rebuilt from install and retirement dates",
-    "area codes in the register against area names in the work system",
-    "state plane feet in the GIS against latitude and longitude in the ticket system"
+    "AMI head-end event times in UTC against the order's calendar year and local business days",
+    "a head-end batch re-sent in full after a communications outage, duplicating its events",
+    "meter numbers zero-padded to eleven digits in the event export and unpadded in the meter register",
+    "meters exchanged during 2025, their earlier events filed under the retired meter number",
+    "service conductor codes written one way in the GIS register and another in the construction standard",
+    "circuit codes in the register against circuit names in the order and the company's filing",
+    "low-voltage, power-fail and restore events mixed into the same voltage event export",
+    "complaint tickets closed in the customer system while the field correction sits in the work management system"
   ],
-  "stakeholder_role": "the commission's pipeline safety analyst preparing the staff audit of the rider's area selection",
+  "stakeholder_role": "the commission's distribution engineer preparing the staff audit of the program's circuit selection",
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "one_call_tickets_2021_2025.csv",
-    "rows": 60000,
-    "entity": "one 811 locate ticket revision",
-    "grain": "ticket x revision",
+    "file": "ami_voltage_events_2025.csv",
+    "rows": 30000,
+    "entity": "one AMI voltage event at a meter",
+    "grain": "meter x event",
     "source": "synthetic"
   },
   "forum": "regulator_or_inspector",
   "forcing_event": "audit_or_inspection",
   "org_family": "government_agency",
   "world": {
-    "geography": "United States, a fictional Midwestern state (the commission, the utility, its operating areas and contractors are fictional)",
+    "geography": "United States, a fictional Midwestern state (the commission, the utility, its circuits and customers are fictional)",
     "currency": "USD",
-    "org_type": "a state utility commission's pipeline safety division",
+    "org_type": "a state utility commission's electric reliability and service quality division",
     "invented_names": [
       "Tamarack Utility Commission",
-      "Kessler Valley Gas Company"
+      "Kessler Valley Power Company"
     ],
     "people": [
       "Lisa Kent",
@@ -72,23 +72,24 @@
     ]
   },
   "deliverables": [
-    "slr_area_audit_2027.xlsx",
-    "slr_area_audit_2027.pptx"
+    "feeder_voltage_audit_2027.xlsx",
+    "feeder_voltage_audit_2027.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "A unit's failures are read as its own deterioration, but some surface weeks after other parties work beside it and carry the mechanism codes of deterioration, so a same-day coincidence check clears the outside work; only the excess failure rate in the weeks after nearby work, estimated across every unit, separates the deterioration a replacement removes.",
-  "driver_concrete": "Each operating area's service line failures are read net of those that other parties' trenches induced, the excess failure rate on lines inside a dig area over the weeks after its locate ticket estimated across the system, so the fibre-build area drops out of the four the 2027 rider funds.",
-  "stump": "A competent solver sets aside the recorded excavation damage, divides each area's remaining service line failures by its active services and funds the four highest areas with the fibre-build area among them; the step that lands it there is reading the cracks and coupling failures that surface weeks after nearby digs as deterioration.",
+  "driver": "A limit breach recorded at each endpoint is partly the endpoint's own push through the private link that serves only it, so the shared supply's breaches are read after subtracting each endpoint's own rise, worked from its recorded outflow and its link's resistance and length; discarding every endpoint while it pushes also discards the supply's own breaches wherever pushing endpoints are all the supply reaches.",
+  "driver_concrete": "Each circuit's 2025 high-voltage events are read at the voltage the company's system delivered, each exporting meter's recorded voltage less the rise its own export drives through its service conductor (export current times the conductor's resistance over the service length), so the rural circuit whose events come from large arrays on long #2 aluminium services drops out of the five and the solar subdivision's circuit, whose feeder end runs high at midday for every meter, stays in.",
+  "stump": "A competent solver counts each circuit's AMI high-voltage events per 1,000 meters and funds the five highest with the rural long-service circuit among them, or applies the own-rise clause by setting aside every event at an exporting meter and loses the solar subdivision's circuit; the step that lands the golden is subtracting each exporting meter's own service-conductor rise before testing the event against 126.0 volts.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task101": "task101 keeps a funder's own top-ups out of a cold-spot baseline; here delayed failures on buried lines inside other parties' dig areas are taken out of a deterioration rate by the excess rate in the weeks after the dig",
-    "task121": "task121 v2 reads signed-out club-app customers; here the units are gas service lines and the separated failures surface weeks after outside trenching",
-    "task464": "task464 prices a feeder section's I2R loss on its own net flow with solar export; here the quantity is a service line failure rate net of excavation-induced failures",
-    "task455": "task455 separates establishment births from re-registrations in an employer register; here the separated records are buried-line failures induced by outside digging, found by their timing after nearby locate tickets",
-    "task173": "task173 forecasts the leaks a planned meter exchange will add on the services it visits (the utility's own work, carried forward); here failures already recorded are attributed, out of a deterioration ranking, to other parties' digs that preceded them by weeks, and the call is which areas a rider funds",
-    "task181": "task181 traces each operation's tray to a shared steriliser's loads; here no record links a failure to its cause and the separation is statistical, the excess failure rate after nearby digs across the system",
-    "task303": "task303 removes losses of supply that every sibling feeder records in the same minute; here the outside cause precedes the failures by weeks, so a same-time coincidence check finds nothing"
+    "task101": "task101 keeps a funder's own top-ups out of a cold-spot baseline; here each meter's own export rise is subtracted, by Ohm's law over its service conductor, from the voltage events a feeder program counts",
+    "task121": "task121 v2 reads signed-out club-app customers; here the units are distribution circuits and the separated quantity is a physical voltage rise worked from current and conductor resistance",
+    "task464": "task464 prices a feeder section's I2R loss on its own net flow with solar export; here no loss is priced: each exporting meter's own service-conductor voltage rise is subtracted from its recorded voltage to count the events the circuit delivered, and the call is which circuits a voltage program funds",
+    "task455": "task455 separates establishment births from re-registrations in an employer register; here the separated part is a voltage rise each exporting meter drives through its own service conductor",
+    "task123": "task123 v4 reads which phase each apartment draws from out of how meters' hourly voltages move together; here no grouping is inferred: each AMI high-voltage event is reduced by the rise the meter's own export drives through its service conductor, on a utility's distribution circuits",
+    "task303": "task303 removes losses of supply that every sibling feeder records in the same minute; here nothing is removed by coincidence: each event keeps the voltage the supply delivered after the meter's own rise is subtracted",
+    "task181": "task181 traces each operation's tray to a shared steriliser's loads; here the outside part is each endpoint's own physical push, computed per event from current and resistance, not a shared resource's added risk",
+    "task185": "the slot's v2a draw (dropped at stage 2, never built) separated gas service failures induced by other parties' digs through a statistical excess rate in the weeks after each locate ticket; this draw subtracts, event by event, the deterministic voltage rise each exporting meter's own current drives through its service conductor, on electric circuits, with no excess rate, window or failure count estimated"
   },
   "lineage": [
     {
@@ -117,14 +118,41 @@
       "stump": "A competent solver brings the glass era to the probe's basis with the comparison readings' mean difference (+0.13 C, +0.25 C on summer days), which moves no half-degree reading across 35.0 C or 40.0 C, so the 1995 step stays in the heat-day line and the quote is the raw record's premium, $567 a hectare against $525; a solver who sizes one hot-day offset moves the 34.5 C days but not the 39.0 C days ($542), or the 34.0 C days as well ($506).",
       "shell": null,
       "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-12, no portal result; spent on paper 2026-10-21: the conversion was a documented transformation, readable by its clause or its parallel archive, and the ask layer measured over the bar)"
+    },
+    {
+      "architecture": "v2a",
+      "drawn": "2026-11-02",
+      "domain": "energy-systems-utilities",
+      "subdomain": "grid-reliability-outage-analysis",
+      "niche": "a state utility commission's pipeline safety division auditing which operating areas a gas distribution company's 2027 service line replacement rider should fund, ranked on the service line failures the lines' own deterioration produced, when lines crossed by other parties' trenches crack weeks after the dig and the repair crews record the mechanism they find",
+      "objective": "anomaly-detection",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G7"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "driver": "A unit's failures are read as its own deterioration, but some surface weeks after other parties work beside it and carry the mechanism codes of deterioration, so a same-day coincidence check clears the outside work; only the excess failure rate in the weeks after nearby work, estimated across every unit, separates the deterioration a replacement removes.",
+      "stump": "A competent solver sets aside the recorded excavation damage, divides each area's remaining service line failures by its active services and funds the four highest areas with the fibre-build area among them; the step that lands it there is reading the cracks and coupling failures that surface weeks after nearby digs as deterioration.",
+      "shell": null,
+      "fate": "dropped at stage 2 on 2026-11-02 before any file was cut: measured on three simulated worlds, a crude exclusion of every failure inside a dig area in the weeks after its ticket lands the golden set at most windows (30 to 273 days), the pooled excess estimator files the default under any risk difference between excavation types, the attribution rests on a few dozen failures per area so the excess family forks across seeds, and the post-work excess is task173 v3's driver read backwards, solved at stage 4 there"
     }
   ],
   "notes": "",
-  "registered": "2026-11-02T02:49:55Z",
   "shell": {
     "question form": "how-many",
     "second-sentence opener": "send",
     "rounding opener": "give",
     "deliverable set": "csv+pdf"
-  }
+  },
+  "registered": "2026-11-02T03:58:18Z"
 }
