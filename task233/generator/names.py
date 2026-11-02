@@ -23,24 +23,30 @@ STREETS = ["Main Street", "High Street", "Victoria Road", "Station Road", "Churc
            "Harbour Road", "Mill Lane", "Park Road", "Bridge Street", "Market Street", "King Street",
            "Hillside Road", "Beach Road", "North Road", "South Road", "Elm Avenue", "Union Street"]
 
+# surnames for independent shop names, from faker's en_NZ index with a fixed seed; words that read as
+# adjectives in a shop name are passed over
+_ADJECTIVES = {"Small", "Little", "Long", "Short", "Young", "Best", "Rich", "Good", "Fair", "Sharp", "Sweet",
+               "Strong", "Wise", "Gay", "Hardy", "Bright", "Moody", "Love", "Hope", "Bacon", "Lamb", "Baker",
+               "Butcher", "Cook", "Fish", "Fry", "Taylor", "Draper", "Chemist"}
 _fake = Faker("en_NZ")
 _fake.seed_instance(233)
 _surnames = []
-while len(_surnames) < 40:
+while len(_surnames) < 160:
     s = _fake.last_name()
-    if s not in _surnames:
+    if s not in _surnames and s not in _ADJECTIVES and " " not in s:
         _surnames.append(s)
+SURNAMES = _surnames
 
-_TEMPLATES = [
-    "{s} Fruit and Vege", "{s} Butchery", "{s} Bakery", "{s} Superette", "{s} Pharmacy",
-    "{s} Clothing", "{s} Hardware", "%(loc)s Fresh Produce", "%(loc)s Meat Co", "%(loc)s Bakehouse",
-    "%(loc)s Dairy", "%(loc)s Chemist", "%(loc)s Outfitters", "%(loc)s Home and Garden",
-    "{s} Family Store", "{s} and Sons Butchers", "{s} Corner Store", "{s} Drapers",
-]
+# how an independent outlet of each kind is named ({s} a surname, {loc} the outlet's locality)
+KIND_NAMES = {
+    "greengrocer": ["{s} Fruit and Vege", "{loc} Fresh Produce", "{s} Fruiterers", "{s} Greengrocers"],
+    "butcher": ["{s} Butchery", "{loc} Meat Co", "{s} and Sons Butchers", "{s} Quality Meats"],
+    "bakery": ["{s} Bakery", "{loc} Bakehouse", "{s} Hot Bread Shop"],
+    "convenience": ["{s} Superette", "{loc} Dairy", "{s} Corner Store", "{s} Family Store"],
+    "pharmacy": ["{s} Pharmacy", "{loc} Chemist", "{s} Chemist"],
+    "boutique": ["{s} Clothing", "{loc} Outfitters", "{s} Drapers", "{s} Menswear"],
+    "hardware": ["{s} Hardware", "{loc} Home and Garden", "{s} Building Supplies"],
+}
 
-SHOP_NAMES = []
-for i, s in enumerate(_surnames):
-    SHOP_NAMES.append(_TEMPLATES[i % len(_TEMPLATES)].format(s=s))
-for t in _TEMPLATES:
-    if "%(loc)s" in t:
-        SHOP_NAMES.append(t)
+# the size of the shop-name list the outlet draw permutes (kept so every later draw in that stream holds)
+SHOP_NAME_DRAW = 47

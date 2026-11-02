@@ -1,145 +1,261 @@
-# task301: the quit outreach team's 2027 placement
+# task301: the Comunidad de Valdemora's 2027 child poverty measure
 
-Architecture 2 (re-rooted 2026-10-25 from architecture 1, the solar build, spent at stage 4).
+Architecture 3, drawn 2026-11-02 under the Batch 3 queue reset. The fiction's date is 6 November 2026; the
+Complemento register was pulled on 2 November 2026 and nothing in the pack is later than the as-of date.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task301.json`, architecture v2. Guard check: every finding answered except `ban.calibration` (pilot_log against task170), which clears when the next card of another task registers; `test.same_puzzle_older` (task454) and `test.same_driver_older` (task177 v3, task75 v2) are cleared by differentiation; `repeat.question_form` is answered below.
-- **Pairing:** Epidemiology & Public Health / `health-burden-impact-modeling`, drawn for Opportunity Sizing & Decision Support. The task type sizes the health gain an intervention buys in each candidate population: here the quits a quit outreach team achieves in a sub-region in 2027, pool (the patients its practices record as current smokers) to addressable (those still smoking when the team calls) to realisable (those the team reaches who set a quit date and are not smoking four weeks later).
-- **Niche:** Coast and Tablelands PHN (fictional, New South Wales, five sub-regions, 61 practices) places its quit outreach team (a clinical nurse consultant and two quit coaches) in one of four sub-regions for 2027. The team calls every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, as it did in Eastern Shore in 2025 off a list drawn at the end of January 2025.
-- **The call:** Inner South, about 550 quits in 2027 (563.0 before rounding to the nearest 50). Every route that carries Eastern Shore's yield, its decay or a pooled decay places the team in Coastal Hinterland.
-- **Shape:** other. The call is one of four sub-regions with its quits, a chart of the four, and three asks (16 Quitline cells, 10 evening-call cells, 10 talk-time cells). The runner-up and the other three sub-regions' quits are not graded: the licensed constructions split the runner-up between Western Plains and Coastal Hinterland and put Coastal Hinterland anywhere from 480 to 541.
-- **Strategy:** `population_selection` (the listed population is not the population the team can help: the recorded smokers who have since stopped are on the list and cannot quit), pattern C (the serviceable share behind a join: the share still smoking is rebuilt from the status history, never read off a column), generators G9 (the list was acquired upstream at each recording, the quit is realised downstream at the call), G14 (the 2025 yield is conditioned on a fresh list), G13 (records dated years before the 2027 calls); Gate G `forecasting`.
-- **Forum, event, organisation:** executive_team (the PHN's executive places the team), budget_or_appropriation (the Commonwealth's 2026-27 allocation funds the 2027 year), foundation_or_funder (a PHN commissions primary care services rather than providing them). Role research_desk (the health intelligence manager); context artifact register (the active patient extract); calibration pilot_log (the 2025 team's case log).
-- **People** (`guard.py names --geo AU --seed 301`): Megan Collins, health intelligence manager, who wrote the plan and the dictionary; Gregory Roth, the team's clinical nurse consultant. Neither appears in the prompt.
-- **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, ten builds): task105 the part of a catchment nearer the new outlet; task106 candidates drawing on one shared pool; task116 a group offer reachable through one signatory; task118 the gain on volume a unit does not already treat; task120 a supply system's draw net of what accumulated inside it; task127 the part of a fused wait the intervention removes; task128 a contact's effect read only on over-capacity days; task306 an asset base that keeps taking in units the roll does not hold yet; task305 short-stay occupants who sit in no origin; task301 v1 a deposit averaged away at the meter. None reads a recorded state's decay from the candidate population's own re-recordings.
-- **Probes before the draw:** two call-only probes, isolated, sonnet at medium, on a prototype pack (scratch `t301sm/pack/`, seven files: the extract, the status history, the practices, the 2025 call log, the plan, two distractors). Both modelled the 2025 team's quits per listed patient on the age of the status record and filed Coastal Hinterland (about 490 binned and logistic; about 510 with a step at two years), the prototype's golden being Inner South; neither fitted a decay from the candidate sub-regions' own recordings.
-- **WARN answered:** `repeat.question_form` (which, against task482 and task184): the decision is a pick of one of four sub-regions, so the form is which; the count is asked for the chosen one.
-- **Data-native sentence:** each sub-region's practices re-record many patients' smoking status over the years, and those consecutive recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year against Inner South's 5, so Coastal Hinterland's list, 5,287 of its 8,422 recorded more than five years before the extract, is about half ex-smokers by 2027 while about 85 per cent of Inner South's 5,456 still smoke.
+- **Pairing.** economics-econometrics, task type elasticity-welfare-policy-impact-estimation, objective Opportunity
+  Sizing & Decision Support. A regional government funds one measure against child poverty in its 2027 budget; the
+  headline is a sized opportunity taken from the pool (children below the line in the families a measure covers)
+  through the addressable (those a full year's payment would lift) to the realisable (those whose families receive
+  enough of it during 2027), and the realisable count decides which measure is funded. Retagged as Forecasting the
+  prompt would ask for a predicted value; it asks which measure to fund and the children it reaches.
+- **Shape 14** (cuts of a distribution per segment): the call, the region and its three provinces; ask 1 is four
+  quarter-end months by three provinces, ask 2 three survey cuts by three provinces. Criteria: call 1, region 1,
+  provinces 3, ask 1 12, ask 2 9, the chart's named parts 3, the files 2: 31.
+- **World.** The Comunidad de Valdemora, a fictional Spanish autonomous community (provinces 81 Valdemora, 82 Las
+  Cuencas, 83 Sierra del Alba), its Consejería de Derechos Sociales y Familias and statistics institute (IEV). The
+  Complemento Familiar Valdemorense is a claimed child benefit that opened on 1 October 2022 with a limit of 7,200
+  of computable income per equivalent adult, raised to 8,400 from 1 April 2024. The 2027 proposals: A, an automatic
+  payment through the regional tax agency to families who filed a 2025 return under 28,000 gross; B, a new claimed
+  child payment below the poverty line; C, the Complemento's limit raised to 10,800; D, a claimed rent supplement;
+  E, a higher Complemento amount for current recipients. Personas from `guard.py names` (Guiomar Iñiguez, Diego
+  Hervia) appear only as document authors.
+- **Candidates weighed at this draw** (each in `## Tried and rejected`): a roadside inspection van, a motorway queue,
+  take-up by benefit amount, a hiring subsidy's deadweight, an insurer's no-decline rule, a fuel retailer's entry, a
+  pothole crew, and this world's first signature (generator G13, blocked by the guard).
+- **Data-native sentence.** The register dates every claim against the two moments the Complemento opened to new
+  families, its launch and the April 2024 limit rise, and the families the rise brought in claimed at about half the
+  launch's first-year pace (41.6 against 78.3 per cent of the claims their first two and a half years held, by the
+  twelfth month), so a higher limit in 2027 reaches the families it newly entitles over years, not in January.
+- **Abstraction.** Widening a claimed entitlement is credited in its first year with the settled take-up for the
+  whole year, when its newly entitled claim at the pace the last widening's newly entitled claimed and are paid only
+  from the month after each decision; an automatic payment that reaches fewer members from the first month brings
+  more of them over the line within the year.
+- **The coordinator's lesson (task304), answered.** The filed WHAT names the quantity (children brought above the
+  line in calendar 2027 by the payments the household receives during 2027) and never the procedure: no sentence
+  names a claiming pace, a cohort, a take-up rate, a phasing factor or a construction. The decisive estimate (the
+  claiming pace of the families C newly entitles) is one the register supports and no sentence performs, and the
+  standard routes a strong analyst takes (static microsimulation at the coverage rate; the same with the decision
+  lag; claims built up at the launch's pace or evenly) all file C.
+- **Sources.** A fully constructed pack (synthetic, generated by `generator/` from seed 3013, licence CC BY 4.0),
+  every file declared in `metadata.json` with its source, date and licence; the spine is the ECVV 2026 person file
+  (26,539 rows), the operating layer the Complemento register (63,433 rows) and its 2025 incident log.
+- **Distractors** (named in `metadata.json`): the ECVV 2025 household file in the institute's old variable layout
+  (2024 incomes) and the institute's 2024 small-area poverty estimates by municipality.
+- **Forward facing.** The call is about calendar 2027, a window not yet open at the as-of date.
+
+## Survivor anatomy
+
+- Actor: The deciding property, how many months of payment each family a claimed measure newly entitles receives in 2027, has no column in any file: the survey holds incomes, the register holds claims, and the months come from the pace at which the April 2024 band claimed, rebuilt from claim dates and computable incomes.
+- Link: The pace is read through a link no key offers: the rules' history (the limit of 7,200 raised to 8,400 from 1 April 2024) laid over the register's computable income and claim dates cuts out the widening cohort, whose curve is then carried to the survey households in the 8,400 to 10,800 band; no file pairs the 2024 band with the 2027 one.
+- Reflex: The field's method for the deciding quantity, static tax-benefit microsimulation with a settled take-up rate (the department's 71.8 per cent coverage), sits at rung 1 and files measure C at about 13,200 children.
+- Back-test: The textbook route validates: the survey's entitled families at the 71.8 per cent coverage rate sit within a few per cent of the register's end-2025 caseload, so the static model looks calibrated against the department's own record.
+- Second use: Every file the decisive step reads is in the pack for its own reason: the register carries ask 1's 2025 caseload, the rules carry the payment, review and address clauses every measure and ask needs, the proposals carry the measures and their costing.
+- Shock: The widening's slow claims read as ordinary inflow among 63,433 resolutions, and the answer is no interval of any sort: C leads on cost, coverage and every full-year count, A is fourth on all of those and first only on what families receive in 2027.
+- Pins: The WHAT is filed in the department's appraisal guidance (children brought above the line in calendar 2027 by the payments the household receives during 2027); no sentence names a pace, a cohort, a take-up rate or a phasing factor, and deleting any filed sentence unforces the call only where it defines the estimand.
 
 ## Three rules
 
-Task type: health-burden-impact-modeling (Epidemiology & Public Health), tagged in the taxonomy for Opportunity Sizing & Decision Support: the quits a cessation programme achieves in each candidate population, pool (recorded current smokers) to realisable (those still smoking when called whom the team reaches and who are abstinent four weeks after a quit date).
-Domain test: The deciding quantity is how many of each sub-region's recorded smokers still smoke when the team calls, which epidemiology estimates from repeated status recordings as a two-state (smoker, ex-smoker) continuous-time Markov process with a cessation and a relapse rate by population, fitted to that population's own consecutive recordings, times the programme's quits per smoker it calls.
-Swap: "the sub-region whose recorded smokers still smoke when called, at its own rate of stopping and relapse" put into a bank's dormant accounts or a retailer's lapsed customers keeps the arithmetic and loses the epidemiology that makes the rates differ and bounds them: the relapse floor of ex-smokers returning, the deprivation gradient in cessation, and a quit defined by four weeks' abstinence with lost to follow-up counted as smoking.
-Layer 1: two clinical systems' vocabularies for one status (daily, weekly or irregular smoker against smoker; never smoked against non-smoker); patients registering through the record with a status taken at registration; ex-smokers now and then entered as never smoked; same-day re-entries and corrections; a practice that moved from Medical Director to Best Practice in 2021 with its history carried across; Eastern Shore patients on the 2025 list who have since left and are not in the 2026 extract; the case log's four-week follow-up with lost to follow-up.
-Layer 2: estimation_fit: the decay of a recorded state is estimated per population from interval-censored panel observations (each patient's consecutive recordings) as a continuous-time Markov process with relapse, and the programme's conversion is carried per smoker reached, not per listed patient.
-Decisive step: estimating from each sub-region's own consecutive status recordings how fast its recorded smokers stop and relapse, and so how many of its list still smoke when called through 2027, instead of carrying the 2025 team's quits per listed patient by record age, which is Eastern Shore's own rate of stopping.
-Not semantics: every field reads as what it is (the latest status and its date, every entry since 2012, the case log's outcomes); no field, code or note marks a status as stale or a sub-region as quitting fast, and an analyst who maps both vocabularies and counts every list exactly still files Coastal Hinterland by carrying the pilot's curve.
-Not rule application: the plan files the WHAT (the team calls every listed patient in 2027, a quit is a quit date and four weeks not smoking, lost to follow-up counted as smoking) and nothing about decay, rates or how the history is used; the family it leaves open, ten constructions that each fit a sub-region's own decay from its own recordings (Markov fits on day or entry pairs, from smoker records only, with never smoked dropped, at mid-year, with a modelled conversion, a share-by-gap curve, two logistic curves, split by the review flag), names Inner South in all ten at a spread of 554.8 to 566.5 that prints 550 every time, while the enumerated family that carries Eastern Shore's yield or decay, a common 5 per cent or a pooled decay names Coastal Hinterland in all six; what rules those out is the record, the four sub-regions' rates differing at 2 dlogL 564.3 on 6 degrees of freedom, not a filed clause.
-Analyst test: A strong analyst reads each listed smoker's status date, finds the 2025 team's quits per listed patient falling with the age of the status record, models that curve on the case log, carries it to each sub-region's list and places the team in Coastal Hinterland at about 750 quits (737 on the logistic curve, 787 binned), where the golden is Inner South at about 550.
-Estimand: the patients the team calls in 2027 who set a quit date with it and are not smoking four weeks after that date, lost to follow-up counted as smoking, the team calling once each every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, the calls spread evenly through 2027 (`quit_outreach_plan_2027.docx`, "How the team will work in 2027" and "The decision").
-No decoy: nothing is planted: the extract, the history, the practices and the case log are the PHN's and the team's ordinary records; no memo, draft or stakeholder figure argues for a sub-region, no file ranks the four, and the 2025 case log is the team's own record of its year, needed for the conversion the golden also uses.
-No certified replay: no certified or published figure sits in the pack to be reproduced, and the method is not recovered from any figure.
-Lesson: a programme's yield on a list is its conversion times the share of the list still in the recorded state, and that share decays at the population's own rate, so a yield curve carried from where the programme ran is that place's decay; each candidate's consecutive recordings give its own rate, and the oldest list with the fastest exits shrinks the most. No build on file reads a recorded state's decay from the candidate population's own re-recordings (nearest drivers at 0.06).
+- Task type: elasticity welfare policy impact estimation (economics-econometrics), the distributional impact of cash measures on a household survey, which the taxonomy lists under opportunity sizing.
+- Domain test: The quantity that decides is the number of children each measure brings above the relative poverty line in 2027, which public economics estimates by tax-benefit microsimulation on household survey microdata (each household's equivalised disposable income with and without the measure on the modified OECD scale, grossed by the survey weights); in customers or subscribers there is no equivalence scale, no relative line, no means test and no benefit rule timing the payments.
+- Swap: "Which of the proposed loyalty offers would lift the most customers over the gold tier in 2027?" keeps the words and loses the call: there is no equivalised income, no line set at 60 per cent of a median, and no claimed entitlement whose newly eligible members are paid only from the month after a decision.
+- Layer 1: The register's migration on 1 March 2024 (day-month-year dates, month-year months and decimal commas before, ISO after); its province column naming the deciding office, which serves the border municipalities of the neighbouring province; renewals written as new resolutions open in the review month beside the old one; suspended renewals decided on the day documents arrived, extinguished awards and appeals on the refused case; 2026 revocations overwriting an award's status; the incident log's quarterly sheets with title rows; the survey's Spanish CSV locale and its person-to-parent line links; the 2025 wave's old variable layout; the fieldwork export's references re-sectioned from April 2026; the mid-2025 uprating of the Complemento's amount. Each is how the producing system writes its records, and none moves the call.
+- Layer 2: estimation fit; the methodological choice is which recorded claiming curve estimates the first-year receipts of the families the higher limit newly entitles: the April 2024 widening's newly entitled band, the only recorded limit rise, against the scheme's launch, an even spread or the settled coverage rate.
+- Decisive step: Estimating when the families the 2027 limit rise newly entitles will claim, from the claims the families the April 2024 rise brought within the limit made month by month after it, and paying each from the month after its decision, so C's 2027 receipts lift about 2,100 children against A's 3,700.
+- Not semantics: Reading every field, code, unit and definition correctly (the computable income column, both date layouts, the 7,200 and 8,400 limits and their dates, rules 6.1 and 7.1, guidance 3.5) leaves C's newly entitled families' claiming pace unfiled: the register records two paces and the guidance names neither, so a reader who executes every definition still files C by taking claims at once, at the launch's pace or evenly.
+- Not rule application: No filed rule or procedure estimates when newly entitled families claim; executing every stated rule (eligibility, amounts, payment from the month after the decision, the coverage rate) still files C. The enumerated family (22 constructions over the curve, the eventual share and the timing construction) spreads C's 2027 figure from 993 to 18,439 and files C in 12 and A in 10; the standing family (the 10 constructions on the widening's own curve, however measured) files A in 10 of 10, with A at 3,695 in every member and the strongest rival at 1,830 to 2,858 (margin 1.29 to 1.89); the ruling-out is quiet: the launch's pace over-predicts the April 2024 band's first-year claims about 1.9 times, which only a cut of the register by claim date and income band shows.
+- Analyst test: A strong analyst who cleans the data, simulates every measure correctly on the survey and credits the claimed measures with the department's 71.8 per cent coverage for all of 2027 files measure C at about 13,200 children; adding the decision lag with claims at the opening (11,200) or building claims up at the launch's pace (4,800) still files C, and only the widening's own pace files A.
+- Estimand: Guidance 2.1 and 3.5 in appraisal_guidance_child_poverty_2027.docx: each measure is appraised on the number of children it brings above the poverty line in calendar 2027, a child being brought above it when the household is below the line without the measure and at or above it once the measure's payments that the household receives during 2027 are added (population 3.4 and 3.6, line 3.1, income 3.2, 3.3 and 3.7).
+- No decoy: Nothing is planted to be caught: no memo, draft, briefing or stakeholder figure argues for C; the proposals' costing column is the department's routine full-year costing in euros, a different question, and no file holds a count of children lifted by any measure.
+- No certified replay: The method is not hidden behind published figures to reproduce: the coverage rate and the institute's poverty rates are context that no construction is tuned to match, and the pace is estimated from raw claim records.
+- Lesson: A widened benefit's first-year reach is set by how fast the families it newly entitles claim, and the evidence for that pace is the record of the last comparable widening, not the scheme's launch or its settled take-up; no build on file teaches the claiming curve of a widened claimed benefit (task255's refill rhythm and task309's take-up by amount are other quantities).
 
 ## Default path
 
-1. Map both clinical systems' wording and take each candidate sub-region's active patients recorded as current smokers in the extract: Coastal Hinterland 8,422, Inner South 5,456, Northern Corridor 4,855, Western Plains 4,957.
-2. From the 2025 case log, 609 of the 5,489 listed patients quit (11.1 per cent); the quits per listed patient fall, and "not a current smoker" rises, with the age of the status record at the call.
-3. Model quits per listed patient on the record's age at the call (in bins, or logistic in age and its square) on the case log.
-4. Apply the curve to each candidate's list at its records' ages in 2027, sum, and place the team in the sub-region with the most.
+1. Read the appraisal guidance (line 11,550 a year per equivalent adult, modified OECD scale, 2025 disposable income
+   raised 6.1 per cent, children born 2009 or later, guidance 3.5) and the proposals.
+2. Build the survey households (ecvv2026_households.csv with ecvv2026_persons.csv): equivalent adults from birth
+   years, children, the 2027 income before any measure, computable income per equivalent adult (3.7).
+3. Give each measure's covered households their annual payment: A filers under 28,000 gross at 28 a month per
+   child; B below the line at 36; C newly within 8,400 to 10,800 and not receiving the Complemento at 100; D renters
+   below the line at 52; E current recipients at 35 more.
+4. Static microsimulation: children whose household crosses the line with a full year (C 18,439, B 7,785, D 6,658,
+   A 3,695, E 320).
+5. The field's take-up correction: the claimed measures B, C and D at the department's 71.8 per cent coverage rate
+   (C 13,240, B 5,590, D 4,781, A 3,695).
+6. Recommend the largest.
 
-Ends on: Coastal Hinterland at about 750 quits
-Golden: Inner South at about 550 quits
+Ends on: measure C (Complemento Familiar: higher limit), about 13,200 children
+Golden: measure A (Prestación Infancia Directa), 3,700 children (Valdemora 1,100, Las Cuencas 1,400, Sierra del Alba 1,200)
 
 ## Stump sentence
 
-A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.
-
-## Ladder
-
-| Rung | Construction | Names | Inner South |
-|---|---|---|---|
-| R0 | the list times the 2025 quits per listed patient (11.1 per cent) | Coastal Hinterland (934) | 605 |
-| R1 | only patients recorded in the last two years, at that rate | Western Plains (359) | 279 |
-| R2 | a common 5 per cent a year stopping, times quits per smoker called | Coastal Hinterland (715) | 550 |
-| R3 | the 2025 quits per listed patient by record age, in bins or logistic (the default path) | Coastal Hinterland (787, 737) | 589, 578 |
-| R4 | Eastern Shore's own decay fitted from its recordings, carried to the four | Coastal Hinterland (687) | 535 |
-| R5 | one decay fitted to the four candidates' recordings pooled | Coastal Hinterland (673) | 529 |
-| R6 (decisive) | each sub-region's own decay from its own recordings, times quits per smoker called | Inner South | 563 (550) |
-
-Each rung is asserted in `generator/checks.py` (`ladder:` lines). R4 and R5 are the careful analyst's corrections of R3 and still land Coastal Hinterland; only R6 separates the sub-regions.
+The default path credits the higher limit with a full year of payments at the Complemento's 71.8 per cent coverage
+and recommends measure C at about 13,200 children; the step that lands it there is treating the families the higher
+limit newly entitles as claiming at once (or at the launch's pace), when the register shows the families the April
+2024 rise brought in claiming at about half the launch's first-year pace, so C's payments received in 2027 lift about
+2,100 children and the automatic payment, measure A, brings the most children above the line at 3,700.
 
 ## Readability screen
 
-| Rung | What the pack shows a reader | Verdict |
+Tests: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 dedicated organ.
+
+| Rung | What fires | Verdict |
 |---|---|---|
-| R0 | the case log's quits over its list | readable |
-| R1 | the extract's status dates | readable |
-| R2 | nothing; a rate a reader brings | readable |
-| R3 | the case log's list status dates against its outcomes: quits fall and "not a current smoker" rises with age | readable |
-| R4 | Eastern Shore's own recordings in the history | readable |
-| R5 | the four candidates' recordings in the history | readable |
-| R6 (decisive) | nothing names a sub-region's rate or says the rates differ; the plan describes the history as every status recorded since 2012 and the dictionary describes its fields | silent |
+| R0 static microsimulation, every covered family paid all 2027 | 3 (the field's first move) | readable |
+| R1 claimed measures at the department's coverage rate | 1 (the coverage report's rate) and 3 | readable |
+| R1b claims at the opening, each paid from the month after its decision | 1 (rules 6.1 read for the lag) | readable |
+| R2 claims built up at the launch's pace or evenly through 2027 | 3 (the scheme's own launch curve is the obvious build-up) | readable |
+| R3 the widening's pace for C's newly entitled (decisive) | none: no sentence names a pace or a cohort (1); no column holds a pace or a cohort flag (2); the reflex is R1 and R2 (3); no control scores the pace (4); the battery finds no defect, the cohort is clean data (5); the curve is a month-by-month build-up, not a ratio (6); the register and the rules are there for ask 1 and every measure (7) | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative reading | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | current smoker | daily, weekly or irregular smoker, or smoker | daily smoker or smoker only | Inner South | same call; the dictionary names all four |
-| SF2 | a quit | quit date set and not smoking at four weeks, lost to follow-up as smoking | lost to follow-up left out of the conversion | Inner South | same call (one factor for all four); the plan counts them as smoking |
-| SF3 | calls spread evenly through 2027 | each patient's chance averaged over the year | every call at mid-2027 | Inner South | same call |
-| SF4 | recorded as a current smoker in the extract | the extract's latest status | the history's last day-level entry | Inner South | same call; the two lists are identical (23,690) |
-| SF5 | never smoked after a smoker or ex-smoker entry | read as not smoking | the pair dropped | Inner South | same call |
-| SF6 | one recording | the day's last entry | every entry, same-day re-entries included | Inner South | same call |
-| SF7 | the team's conversion | reach times quits per smoker reached | quits over the 2025 list's expected smokers under Eastern Shore's own fit | Inner South | same call and the same printed 550 |
-| SF8 | quits in 2027 | counted by the year of the call | a December call's four weeks ending in 2028 left out | Inner South | same call; the plan counts a quit by the call |
+| SF1 | "children" | members born in 2009 or later | members under 18 throughout 2027 (born 2010 or later) | A (asserted) | guidance 3.4; the proposals' note that a child in every measure is born in 2009 or later |
+| SF2 | "brings above the line" | below without the measure, at or above with it | strictly above; a fall in the poverty gap | A (asserted) | guidance 3.5 |
+| SF3 | "in 2027" | payments received from January to December 2027 | each family's first twelve months of payment | C (the full-year basis, R1) | guidance 2.1 "calendar 2027" and 3.5 "receives during 2027" |
+| SF4 | equivalent adults | modified OECD scale, age taken as 2026 less the birth year | age as 2027 less the birth year | A (asserted) | guidance 3.2 |
+| SF5 | 2027 income before the measures | 2025 disposable income raised 6.1 per cent, the 2025 Complemento included | the Complemento left out of the base | A (asserted) | guidance 3.3 and 3.8 |
+| SF6 | eligibility income of B, C and D | household 2025 disposable income less the 2025 Complemento, over its equivalent adults | the same raised 6.1 per cent | A (asserted) | guidance 3.7 |
+| SF7 | counting children | each child carries the household weight | unweighted sample children | A (asserted) | guidance 3.6 |
+| SF8 | C's newly entitled | computable income from 8,400 to under 10,800 and not receiving the Complemento | current recipients counted again | A (asserted: they get nothing new) | the proposals' C row, families newly within the limit claim |
+| SF9 | A's reach | families who filed a 2025 return with gross income under 28,000 | non-filers reached too | A (asserted) | the proposals' A row, families who filed no 2025 return are not reached in 2027 |
+| SF10 | E's start | automatic with the Complemento from January | claimed like B | A (asserted) | the proposals' E row |
+| SF11 | when a claimed measure pays | from the month after the month of decision | from the claim month | A (asserted) | rules 6.1; the proposals' B and D rows (the Complemento's rules on decisions and payment apply) and C row (the usual way) |
+| SF12 | a month's payment received in 2027 | in the month it is paid for | a month in arrears | A (asserted) | rules 6.1, paid monthly from the month after the decision |
+| SF13 | the province of a child | the survey household's province | none other in the survey | same call | the institute's results publish by the province in which the dwelling is located; guidance 4.1 |
+| SF14 | rounding | each figure to the nearest hundred from its unrounded value | provinces forced to the region's total | same figures (1,100 + 1,400 + 1,200 = 3,700, asserted) | guidance 4.2; the prompt |
+| SF15 | the eventual share of claimants | the coverage rate, 71.8 per cent | every entitled family; the widening cohort's own share of its band | A (asserted) | same call |
+| SF16 | the construction over claim timing | each household's chance over claim month and lag | average months; expected payment; the full-year count scaled | A (asserted) | same call |
+| SF17 | measuring the widening's pace | claims by month to October 2026 | to September 2026; by first month paid; B and D's launch curve over its first twelve months | A (asserted) | same call |
+| SF18 | boundaries of the income tests | strictly below each limit and below the line | at or below | same households (asserted: none within a euro of a limit or a cent of the line) | the proposals and guidance 3.5 |
+
+## Ladder
+
+Measured on the cut pack (children brought above the line in 2027; A, E automatic and identical on every rung).
+
+| Rung | Construction | C | B | D | A | E | Order, A's place, margin |
+|---|---|---|---|---|---|---|---|
+| R0 | static, every covered family paid all of 2027 (the department's costing basis) | 18,439 | 7,785 | 6,658 | 3,695 | 320 | C > B > D > A > E, A 4th, 2.37 |
+| R1 | claimed measures at the 71.8 per cent coverage rate (the default path) | 13,240 | 5,590 | 4,781 | 3,695 | 320 | A 4th, 2.37 |
+| R1b | claims at the opening, each paid from the month after its decision | 11,191 | 4,429 | 4,060 | 3,695 | 320 | A 4th, 2.53 |
+| R2 | claims built up at the launch's pace (evenly through 2027: C 4,640) | 4,832 | 1,954 | 1,819 | 3,695 | 320 | C > A, A 2nd, 1.31 (even 1.26) |
+| R3 | C's newly entitled at the April 2024 widening's pace, B and D at the launch's (golden) | 2,052 | 1,954 | 1,819 | 3,695 | 320 | A 1st, 1.80 |
+
+- Separation: A is 4th on R0, never first before R3, second only on R2 (by 1.31), every rung margin 1.26 or more,
+  final margin 1.80. The paces: the widening's curve reaches 41.6 per cent of its cohort's claims to October 2026
+  by the twelfth month, the launch's 78.3 per cent of its claims to March 2024; the decision lag puts 25.7 per cent
+  of first payments one month after the claim month, 62.5 two, 10.6 three.
+- The standing family (all A): average months 1,830 to 2,028; expected payment 1,960; full-year count scaled
+  2,285; widening pace for every claimed measure 2,052; B and D's launch curve over its first twelve months 2,495;
+  widening pace to September 2026 2,072; widening cohort dated by first month paid 2,579; every entitled family
+  claiming eventually 2,858 (margin 1.29); the widening cohort's own share of its band 2,715.
+- The wrong constructions (all C): the launch's pace with average months 4,495, expected payment 4,026, a linear
+  share 5,226; an even spread with expected payment 4,026; the golden paces with every claimant counted as paid all
+  year 4,771; the full-year count at the coverage rate times 0.50 (6,620) or 0.75 (9,930).
+- Misspecified and landing A for the wrong reason: every initial claim since the launch as one curve normalised to
+  every claim to date (C 1,985), which counts the widening's and later families' claims in the launch's base.
+- Graded: the call and A's figures only (region 3,695 printed 3,700, edge 45; Valdemora 1,094 printed 1,100, edge
+  44; Las Cuencas 1,424 printed 1,400, edge 26; Sierra del Alba 1,178 printed 1,200, edge 28). A is automatic, so no
+  construction of the claimed measures moves them; the runner-up is not graded (B, C and D sit within 15 per cent of
+  each other on R3).
 
 ## Closure table
 
-| Axis | Reading | Move |
+| Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, those who have since stopped included | filed in the plan; C1 (the extract and the history give one list, SF4) |
-| 2 Unit of account | a patient helped to quit | the question and the plan name it |
-| 3 Attribution window | calls in 2027, a quit counted by its call | filed (SF8) |
-| 4 As-of dating | each status at its recorded date; the list at the 30 September 2026 extract | filed in the plan and the dictionary |
-| 5 Version basis | the extract as cut | one extract ships |
-| 6 Denominator | quits per smoker reached times reach, over the listed patients still smoking | C1 across the two conversions (SF7) |
-| 7 Weighting | each listed patient counts once | the plan's once each |
-| 8 Window length | the whole 2012 to 2026 record for the fits | C1: share-by-gap and Markov fits agree on the call |
-| 9 Boundary inclusivity | a status dated on the extract day is in the list | no status after the extract ships |
-| 10 Rounding path | the sub-region total rounded once to the nearest 50 | stated in the prompt; every licensed construction prints 550 |
-| 11 Tie-break | none needed | the winner leads by 4.8 per cent or more under every construction |
-| 12 Maturity and censoring | every pair of consecutive recordings, the interval censoring handled by the Markov likelihood | C1 across fits |
-| 13 Order of operations | collapse same-day entries, pair, fit, average, multiply | C1 (SF6) |
-| 14 Row order | sorted by patient and time | asserted by the fit's independence of file order |
-| 15 Duplicate resolution | the day's last entry | C1 (SF6) |
-| 16 Identity normalisation | one patient key across every file | the dictionary |
-| 17 Netting against gross | none | no netting in the estimand |
-| 18 Dimensional units | patients and years | one unit each |
-| 19 Code and status semantics | the two vocabularies mapped by the dictionary | dictionary semantics, never the stump (SF1) |
-| 20 Integerisation | none before the final rounding | one rounding |
-| 21 Clause scope | the plan's quit and calling rules apply to the 2027 team | filed |
-| 22 Forward window contents | the calls through 2027 and each listed patient's chance of still smoking then | the history carries the rates; the extract carries the ages |
+| 1 Population | children born 2009 or later in the ECVV 2026 households | filed, guidance 3.4 and 3.6 |
+| 2 Unit of account | children, not families or households | filed, guidance 2.1 |
+| 3 Attribution window | payments the household receives during calendar 2027 | filed, guidance 3.5 |
+| 4 As-of dating | 2025 incomes raised to 2027; the register as pulled on 2 November 2026; ask 1 as decisions stood at 31 December 2025 | filed (guidance 3.3; the extract's name; the prompt) |
+| 5 Version basis | the ECVV 2026 wave, not the 2025 wave | filed, guidance 1 and 3.3 |
+| 6 Denominator | none for the call (a count); the response rate over eligible dwellings | filed, the institute's results |
+| 7 Weighting | the household weight on every member | filed, guidance 3.6 |
+| 8 Window length | the twelve months of 2027 | filed, guidance 2.1 |
+| 9 Boundary inclusivity | below without, at or above with; income tests strictly below | filed, guidance 3.5 and the proposals; C1 (no household on a boundary, asserted) |
+| 10 Rounding path | each figure to the nearest hundred from its unrounded value | filed, guidance 4.2 |
+| 11 Tie-break | none needed, final margin 1.80 | C3, asserted |
+| 12 Maturity and censoring | the widening cohort's claims observed to October 2026, normalised over its months | C1, every licensed measurement files A (asserted) |
+| 13 Order of operations | eligibility, payments received, the line test, then weights | C1, the order cannot move the count |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | each survey household once; ask 1 each family once a month; ask 2 each dwelling once | filed by the unit in each ask; asserted |
+| 16 Identity normalisation | municipality codes to provinces through territorial_codes.csv; a dwelling is its municipality and serial | C1 for the call (survey provinces); the asks' devices |
+| 17 Netting against gross | the measures' payments are additional and reduce no benefit | filed, guidance 3.8 |
+| 18 Dimensional units | euros a year per equivalent adult; monthly amounts times months received | filed, guidance 3.1 and the proposals |
+| 19 Code and status semantics | the call reads granted initial claims and their dates; the asks read the decision column | C1 for the call (revocations sit on renewals, asserted) |
+| 20 Integerisation | weighted sums kept unrounded to the end | filed, guidance 4.2 |
+| 21 Clause scope | the guidance governs every measure; the Complemento's decision and payment rules govern B, C and D | filed, the proposals' rows |
+| 22 Forward window contents | no further limit change or uprating in 2027; every measure starts in January and runs all year | filed, the proposals' opening paragraph |
 
 ## Literal reader
 
-Executed word for word, the plan fixes who is called (every active patient the chosen sub-region's practices record as a current smoker in the 30 September 2026 extract, once each, through 2027), what counts (a quit date with the team and four weeks not smoking, lost to follow-up as smoking) and how the team works (as in Eastern Shore in 2025). It says nothing about how many of the listed patients still smoke, so the literal reader has to estimate it, and every reading of the fork table gives Inner South (SF1 to SF8, asserted). The easy answer comes from the easy method on the same estimand, carrying Eastern Shore's curve, never from another reading.
+Executing the prompt, the guidance, the proposals and the rules word for word, the population, the outcome (3.5), the
+window (calendar 2027), the unit, the income definitions and the payment clause are all filed; what families a
+claimed measure newly entitles receive during 2027 is left to the data, and every construction that estimates C's
+newly entitled families' claims from the April 2024 widening files measure A at 3,700 children (Valdemora 1,100, Las
+Cuencas 1,400, Sierra del Alba 1,200). A reading that credits a claimed measure with a full year breaks 3.5's
+"payments that the household receives during 2027"; a reading that takes the launch's pace or an even spread
+violates no sentence and files C, which is the stump, not a fork (the readings agree on every term).
 
 ## Oracles
 
-No file reproduces the golden or ranks the four sub-regions on the quits question. The 2025 case log reproduces its own curve by construction, which is the trap rather than an oracle; the Quitline report and the dialler export carry the asks only; the three distractors (sub-region profiles, GP workforce, quit medicines dispensed) carry no smoking-status signal.
+None. No file holds a count of children lifted by any measure, a claiming pace, a first-year take-up or a phasing
+factor. The coverage report's rate is a settled stock ratio; the institute's poverty rates are 2025 incomes with no
+measure; the proposals' costing is euros at full coverage. No shipped artifact ranks the measures on children brought
+above the line in 2027 (Gate G). For the asks, the coverage report gives shares by number of children rather than a
+monthly count, so no published total ties under either handling of the revocations, and the results summary publishes
+no response rate.
 
 ## Ask sheet
 
-Ask A, Quitline referrals from each candidate sub-region's practices in 2025 (4 cells): the report labels each practice with Quitline's own directory sub-region, taken in 2023 and never updated after the PHN realigned four practices round a cycle on 1 July 2025, and names practices in Quitline's spelling; the register's sub-region by a normalised name match gives the golden. Device D2, an attribute at the wrong vintage, every cell moving; a battery repair for most readers (three of four took it), so the ask is cut to the year's four totals and carries little weight.
+Two asks, each sited on files the call never reads (the Complemento's 2025 incident log and code list with the
+register's renewals and revocations; the survey's fieldwork export), neither fed to the chart. With every ask-only
+file deleted the call and A's figures are unchanged and neither ask can be computed (checks R2.4).
 
-Ask B, the 2025 team's calls to patients from 5 pm and the patients reached in them, by weekday (10 cells): each team member's legs run one after another through the shift, and the dialler writes a leg's record when its line is released, so date_time is the end of the leg and a call starts its duration_s earlier. Read as start times, the members' last calls before 5 pm (begun in the minutes before the day shift ends or the evening starts and running past it) count as evening calls and their patients as reached in them. Device D8 (an anchor on the leg's release, not its dial), silent: the dictionary says when the record is written, nothing says when that is, and the evidence is two identities only a cross-row cut shows: read as starts, the same member's legs overlap 1,736 times, read as ends never (a transferred call's member part ending at the transfer); and each Transferred leg carries its patient's answered leg's date_time to the second, both lines released when the patient hangs up. Every cell moving.
+**Ask 1, the families the Complemento was paying for March, June, September and December 2025, as its decisions stood
+at 31 December 2025, by the province each family lived in that month (12 figures, whole families).** Home: the
+cabinet's picture of whom the Complemento reaches now, province by province, beside a measure that widens it.
+- Primary device (D2, a status stored after a silent switch): revocations decided between January and October 2026
+  overwrote the decision column of every award they revoked (1,013 award rows, all renewals or changes of claimant)
+  with REVOKED, and each revocation sits on its own row on the award's case number with its 2026 date. At the
+  cut-off those awards stood granted, so they count; a careful route that keeps the rows reading GRANTED drops them
+  from every quarter-end in every province (checks K2: 0 of 12 kept).
+- Hazards: renewals written as a new resolution open in the review month beside the old one (one family, two rows);
+  the province column naming the deciding office, which serves the border municipalities of the neighbouring
+  province; moves recorded in the incident log, effective the month after (rules 8); legacy month-year layouts on
+  awards decided before the migration; renewals held by missing documents and decided after the cut-off; appeals on
+  the refused case.
 
-Ask C, the minutes each team member spent on answered calls per patient they reached, by dialler login and month (30 cells): a patient who sets a quit date and wants Quitline's call-back service as well is transferred on the call; the coach dials Quitline and leaves, the dialler logs a Transferred leg from the transfer to the end, and the patient's own answered leg stays open until the patient hangs up. Device D6 (an event's quantity on every line it covers, grain unstated), silent: the answered leg's duration_s holds Quitline's minutes as well as the coach's, so summing answered legs, merging each with its Transferred leg (it sits inside the answered leg) or adding both overstates every month; only the answered leg less its Transferred leg is the staff's time, and the coach's next leg starting before the patient's leg ends (254 of 407 transfers) shows the coach had left. Every cell moving.
+**Ask 2, the ECVV 2026's eligible sample dwellings, complete interviews and response rate in each province (9
+figures).** Home: the reliability of the survey the whole appraisal rests on, by province.
+- Primary device (D7, the true key elsewhere): the dwelling register renumbered part of each municipality's census
+  sections from 1 April 2026, so 118 reissued dwellings carry a reference no first issue carries; a dwelling is its
+  municipality and serial. A careful route that takes each reference once at its last issue counts those dwellings
+  twice: every province's eligible dwellings and response rate miss (checks F2), and the complete interviews are kept.
+- Hazards: the office column (border municipalities served from the neighbouring province); partial interviews,
+  eligible but not complete under the institute's definition; empty dwellings, non-dwellings and addresses not found.
 
-| Ask | Cracker's handling | Cracker |
+Pin test: the asking sentences pin the unit (families, dwellings, interviews), the months, the as-of date, the
+province by residence or location, and the rounding; no pin names a status, a revocation, a section, a serial or a
+reissue, and no shipped sentence states either device's handling. The main population carries zero device rows:
+every revocation sits on a renewal or a change of claimant (R2.1), and the call reads no incident, no code list and
+no fieldwork case (R2.4).
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule it points at) | Verdict |
 |---|---|---|
-| A | Quitline's phn_sub_region as given; an exact-name join falling back on it misses as well | miss |
-| B | the record time read as the call's start, Transferred legs set aside or kept | miss |
-| C | each login's answered legs' minutes over the patients it reached, merged with their Transferred legs or not | miss |
+| Ask 1, every month and province (12) | keeps the rows reading GRANTED, deduplicates the review-month overlap, places each family by municipality with the moves from the month after: drops the awards revoked in 2026 | miss |
+| Ask 2, eligible dwellings and response rate in every province (6) | takes each dwelling reference once at its last issue, in the province of its municipality: counts the 118 re-sectioned reissues as second dwellings | miss |
 
-Pair ceiling: 28.5 (cracker 45.0 on the call with no ask cell, mirror 12.0 off it with none); a cracker that also finds ask A's device alone reaches 31.0, ask B's 34.8, ask C's 47.2. Measured on round 5 (target.zip 06472847): both readers missed the call and kept 14 of 44 ask figures each (asks A and B whole, none of C), 29.5 each.
-Mirror leakage: 0.0 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack.
+Ask 2's complete interviews (3 figures) are kept by the cracker and counted in the leakage below. The full includer,
+who reads each revocation's date against the cut-off and links the re-sectioned references by municipality and
+serial, keeps all 21 (stress row).
 
-Separation: none of the ask files is read by the main call (the golden opens only the extract, the history and the case log), and the asks' devices sit in the Quitline report and the dialler export. Measured on the round of 25 October (target.zip f2c362ba): ask A's register join was taken by one reader of two (reader A matched the names, reader B kept Quitline's label), so ask A is a coin flip and stays as it is; asks B and C were re-sited after both readers took them. Round 3 (target.zip 10e9cb2e) took asks A and B from both readers and held C from both; the roster that gave B away no longer ships. Round 5 (target.zip 06472847, asks re-cut to 4, 10 and 30 cells) took A and B from both readers through the register join and the legs' overlap rates and held all 30 cells of C from both; the final pack drops the 2025 New South Wales public holidays from the calling days and archives a few hundred never-recorded patients per candidate sub-region, which moves the ask B and C figures and leaves the call at 563.
+Pair ceiling: 36.4 ((38 + 7 + 55 x 0.143) and (5 + 7 + 55 x 0.143), averaged)
+Mirror leakage: 14.3 per cent of ask weight (the mirror handles the asks as the cracker does)
+Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Tried and rejected
 
@@ -173,8 +289,161 @@ Separation: none of the ask files is read by the main call (the golden opens onl
 - Ask layer v3, round 4 (target.zip c52cf3bc, no roster): both readers missed the call (Coastal Hinterland at about 800) and ask C again (15.2 to 16.0 minutes, the Transferred legs set aside as nested duplicates), and both took asks A and B again, 26 of 36 each: reader A read the release time off the Transferred legs' shared record times, reader B off the overlap rate per login (1.8 per cent read as releases against 13.7 read as dial times). The release time is two cross-row identities from the reader's path, not one; the grain device held eight readers of eight. The ask layer is re-cut, not re-sited: ask A to the year's four totals, ask C to each login's month (30 cells), ask B as it is.
 - Ask layer v3, round 3 (target.zip 10e9cb2e): both readers missed the call (Coastal Hinterland at about 700) and ask C (they set the Transferred legs aside and kept each answered leg whole), and both took asks A and B, 26 of 36 each, a measured pair of about 52: ask A's register join is a battery repair, and ask B's release time was read straight off the roster, whose shifts the derived start times matched to the second (8:30 and 11:00 to the first call, 19:46 against 20:03 at the end of the evening). The roster served no ask after the clock device went, so it no longer ships, and each member now starts dialling a few minutes into the shift and stops a few minutes before its end; the release time stays fair on the overlap identity alone (the judge's own evidence, 1,292 overlaps read as dial times against none read as releases).
 - The state survey's modelled adult smoking prevalence as a distractor in architecture 2: it puts Coastal Hinterland lowest against the longest list and invites the stale-list reading by a cross-check of the two; replaced by the practices' GP workforce returns before any reader saw the pack.
+- Architecture 2, the quit outreach team placed in one of four sub-regions for 2027 sized by the patients it helps to quit (epidemiology-public-health, health-burden-impact-modeling; shipped 2026-10-25 on target.zip 1dbc72b8 with no portal result): re-rooted 2026-11-01 at the Batch 3 queue reset; the world is closed and its record is kept below.
+- A roadside inspection van placed by the defects it finds (set aside at this draw): its decisive step, which vehicles a van stops, is task308's driver on another road.
+- A motorway queue sized by the delay a lane closure saves (set aside at this draw): the queue's build-up and discharge is task162's architecture-2 construction.
+- Take-up of a benefit by the size of its amount (set aside at this draw): the claimed share read off the amount is task309's and task281's ground.
+- A hiring subsidy sized net of the hires that would have happened anyway (set aside at this draw): the deadweight rests on a refill-style rhythm too close to task255's driver.
+- An insurer's no-decline rule sized by the policies it retains (set aside at this draw): its decisive step was a blend of two filed rates, the fork task445's second architecture died on.
+- A fuel retailer's entry into one of four towns, and a pothole repair crew placed by the defects it prevents (set aside at this draw): both reduced to executing a stated catchment or inspection rule, rule application.
+- This world's first signature (decisive generator G13, the settled caseload rate read as a forecast): guard check BLOCKed it on test.same_driver against task134's second architecture and older builds; redrawn honestly to G14, since the settled rate does not fit a newly entitled cohort in its first year.
+- This world's first calibration (A at 8,300 children against C's 4,800 under the launch's pace): every build-up of claims filed A whatever the pace, so the decisive step was only noticing the timing; recalibrated (A's amount and limit, B and D's amounts, the widening's slower pace) so that the launch's pace and an even spread file C and only the widening's own pace files A.
+- A third ask on the register's 2025 decisions by type of claim: computable from the main call's register alone, and its initial claims sit in the call's own population, so no device could live there; dropped.
+- Fieldwork outcomes drawn alike in every province: two provinces printed the same response rate (74.4); the capital now has more no-contacts and the villages more empty dwellings.
+- The coverage report's average families paid a month: a published count the as-of reading of ask 1 would tie to and the careful reading would miss by the revocations, an oracle; the report gives shares by number of children instead.
 
-## Pre-ship check
+## Architecture 2 record
+
+### Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task301.json`, architecture v2. Guard check: every finding answered except `ban.calibration` (pilot_log against task170), which clears when the next card of another task registers; `test.same_puzzle_older` (task454) and `test.same_driver_older` (task177 v3, task75 v2) are cleared by differentiation; `repeat.question_form` is answered below.
+- **Pairing:** Epidemiology & Public Health / `health-burden-impact-modeling`, drawn for Opportunity Sizing & Decision Support. The task type sizes the health gain an intervention buys in each candidate population: here the quits a quit outreach team achieves in a sub-region in 2027, pool (the patients its practices record as current smokers) to addressable (those still smoking when the team calls) to realisable (those the team reaches who set a quit date and are not smoking four weeks later).
+- **Niche:** Coast and Tablelands PHN (fictional, New South Wales, five sub-regions, 61 practices) places its quit outreach team (a clinical nurse consultant and two quit coaches) in one of four sub-regions for 2027. The team calls every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, as it did in Eastern Shore in 2025 off a list drawn at the end of January 2025.
+- **The call:** Inner South, about 550 quits in 2027 (563.0 before rounding to the nearest 50). Every route that carries Eastern Shore's yield, its decay or a pooled decay places the team in Coastal Hinterland.
+- **Shape:** other. The call is one of four sub-regions with its quits, a chart of the four, and three asks (16 Quitline cells, 10 evening-call cells, 10 talk-time cells). The runner-up and the other three sub-regions' quits are not graded: the licensed constructions split the runner-up between Western Plains and Coastal Hinterland and put Coastal Hinterland anywhere from 480 to 541.
+- **Strategy:** `population_selection` (the listed population is not the population the team can help: the recorded smokers who have since stopped are on the list and cannot quit), pattern C (the serviceable share behind a join: the share still smoking is rebuilt from the status history, never read off a column), generators G9 (the list was acquired upstream at each recording, the quit is realised downstream at the call), G14 (the 2025 yield is conditioned on a fresh list), G13 (records dated years before the 2027 calls); Gate G `forecasting`.
+- **Forum, event, organisation:** executive_team (the PHN's executive places the team), budget_or_appropriation (the Commonwealth's 2026-27 allocation funds the 2027 year), foundation_or_funder (a PHN commissions primary care services rather than providing them). Role research_desk (the health intelligence manager); context artifact register (the active patient extract); calibration pilot_log (the 2025 team's case log).
+- **People** (`guard.py names --geo AU --seed 301`): Megan Collins, health intelligence manager, who wrote the plan and the dictionary; Gregory Roth, the team's clinical nurse consultant. Neither appears in the prompt.
+- **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, ten builds): task105 the part of a catchment nearer the new outlet; task106 candidates drawing on one shared pool; task116 a group offer reachable through one signatory; task118 the gain on volume a unit does not already treat; task120 a supply system's draw net of what accumulated inside it; task127 the part of a fused wait the intervention removes; task128 a contact's effect read only on over-capacity days; task306 an asset base that keeps taking in units the roll does not hold yet; task305 short-stay occupants who sit in no origin; task301 v1 a deposit averaged away at the meter. None reads a recorded state's decay from the candidate population's own re-recordings.
+- **Probes before the draw:** two call-only probes, isolated, sonnet at medium, on a prototype pack (scratch `t301sm/pack/`, seven files: the extract, the status history, the practices, the 2025 call log, the plan, two distractors). Both modelled the 2025 team's quits per listed patient on the age of the status record and filed Coastal Hinterland (about 490 binned and logistic; about 510 with a step at two years), the prototype's golden being Inner South; neither fitted a decay from the candidate sub-regions' own recordings.
+- **WARN answered:** `repeat.question_form` (which, against task482 and task184): the decision is a pick of one of four sub-regions, so the form is which; the count is asked for the chosen one.
+- **Data-native sentence:** each sub-region's practices re-record many patients' smoking status over the years, and those consecutive recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year against Inner South's 5, so Coastal Hinterland's list, 5,287 of its 8,422 recorded more than five years before the extract, is about half ex-smokers by 2027 while about 85 per cent of Inner South's 5,456 still smoke.
+
+### Three rules
+
+Task type: health-burden-impact-modeling (Epidemiology & Public Health), tagged in the taxonomy for Opportunity Sizing & Decision Support: the quits a cessation programme achieves in each candidate population, pool (recorded current smokers) to realisable (those still smoking when called whom the team reaches and who are abstinent four weeks after a quit date).
+Domain test: The deciding quantity is how many of each sub-region's recorded smokers still smoke when the team calls, which epidemiology estimates from repeated status recordings as a two-state (smoker, ex-smoker) continuous-time Markov process with a cessation and a relapse rate by population, fitted to that population's own consecutive recordings, times the programme's quits per smoker it calls.
+Swap: "the sub-region whose recorded smokers still smoke when called, at its own rate of stopping and relapse" put into a bank's dormant accounts or a retailer's lapsed customers keeps the arithmetic and loses the epidemiology that makes the rates differ and bounds them: the relapse floor of ex-smokers returning, the deprivation gradient in cessation, and a quit defined by four weeks' abstinence with lost to follow-up counted as smoking.
+Layer 1: two clinical systems' vocabularies for one status (daily, weekly or irregular smoker against smoker; never smoked against non-smoker); patients registering through the record with a status taken at registration; ex-smokers now and then entered as never smoked; same-day re-entries and corrections; a practice that moved from Medical Director to Best Practice in 2021 with its history carried across; Eastern Shore patients on the 2025 list who have since left and are not in the 2026 extract; the case log's four-week follow-up with lost to follow-up.
+Layer 2: estimation_fit: the decay of a recorded state is estimated per population from interval-censored panel observations (each patient's consecutive recordings) as a continuous-time Markov process with relapse, and the programme's conversion is carried per smoker reached, not per listed patient.
+Decisive step: estimating from each sub-region's own consecutive status recordings how fast its recorded smokers stop and relapse, and so how many of its list still smoke when called through 2027, instead of carrying the 2025 team's quits per listed patient by record age, which is Eastern Shore's own rate of stopping.
+Not semantics: every field reads as what it is (the latest status and its date, every entry since 2012, the case log's outcomes); no field, code or note marks a status as stale or a sub-region as quitting fast, and an analyst who maps both vocabularies and counts every list exactly still files Coastal Hinterland by carrying the pilot's curve.
+Not rule application: the plan files the WHAT (the team calls every listed patient in 2027, a quit is a quit date and four weeks not smoking, lost to follow-up counted as smoking) and nothing about decay, rates or how the history is used; the family it leaves open, ten constructions that each fit a sub-region's own decay from its own recordings (Markov fits on day or entry pairs, from smoker records only, with never smoked dropped, at mid-year, with a modelled conversion, a share-by-gap curve, two logistic curves, split by the review flag), names Inner South in all ten at a spread of 554.8 to 566.5 that prints 550 every time, while the enumerated family that carries Eastern Shore's yield or decay, a common 5 per cent or a pooled decay names Coastal Hinterland in all six; what rules those out is the record, the four sub-regions' rates differing at 2 dlogL 564.3 on 6 degrees of freedom, not a filed clause.
+Analyst test: A strong analyst reads each listed smoker's status date, finds the 2025 team's quits per listed patient falling with the age of the status record, models that curve on the case log, carries it to each sub-region's list and places the team in Coastal Hinterland at about 750 quits (737 on the logistic curve, 787 binned), where the golden is Inner South at about 550.
+Estimand: the patients the team calls in 2027 who set a quit date with it and are not smoking four weeks after that date, lost to follow-up counted as smoking, the team calling once each every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, the calls spread evenly through 2027 (`quit_outreach_plan_2027.docx`, "How the team will work in 2027" and "The decision").
+No decoy: nothing is planted: the extract, the history, the practices and the case log are the PHN's and the team's ordinary records; no memo, draft or stakeholder figure argues for a sub-region, no file ranks the four, and the 2025 case log is the team's own record of its year, needed for the conversion the golden also uses.
+No certified replay: no certified or published figure sits in the pack to be reproduced, and the method is not recovered from any figure.
+Lesson: a programme's yield on a list is its conversion times the share of the list still in the recorded state, and that share decays at the population's own rate, so a yield curve carried from where the programme ran is that place's decay; each candidate's consecutive recordings give its own rate, and the oldest list with the fastest exits shrinks the most. No build on file reads a recorded state's decay from the candidate population's own re-recordings (nearest drivers at 0.06).
+
+### Default path
+
+1. Map both clinical systems' wording and take each candidate sub-region's active patients recorded as current smokers in the extract: Coastal Hinterland 8,422, Inner South 5,456, Northern Corridor 4,855, Western Plains 4,957.
+2. From the 2025 case log, 609 of the 5,489 listed patients quit (11.1 per cent); the quits per listed patient fall, and "not a current smoker" rises, with the age of the status record at the call.
+3. Model quits per listed patient on the record's age at the call (in bins, or logistic in age and its square) on the case log.
+4. Apply the curve to each candidate's list at its records' ages in 2027, sum, and place the team in the sub-region with the most.
+
+Ends on: Coastal Hinterland at about 750 quits
+Golden: Inner South at about 550 quits
+
+### Stump sentence
+
+A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.
+
+### Ladder
+
+| Rung | Construction | Names | Inner South |
+|---|---|---|---|
+| R0 | the list times the 2025 quits per listed patient (11.1 per cent) | Coastal Hinterland (934) | 605 |
+| R1 | only patients recorded in the last two years, at that rate | Western Plains (359) | 279 |
+| R2 | a common 5 per cent a year stopping, times quits per smoker called | Coastal Hinterland (715) | 550 |
+| R3 | the 2025 quits per listed patient by record age, in bins or logistic (the default path) | Coastal Hinterland (787, 737) | 589, 578 |
+| R4 | Eastern Shore's own decay fitted from its recordings, carried to the four | Coastal Hinterland (687) | 535 |
+| R5 | one decay fitted to the four candidates' recordings pooled | Coastal Hinterland (673) | 529 |
+| R6 (decisive) | each sub-region's own decay from its own recordings, times quits per smoker called | Inner South | 563 (550) |
+
+Each rung is asserted in `generator/checks.py` (`ladder:` lines). R4 and R5 are the careful analyst's corrections of R3 and still land Coastal Hinterland; only R6 separates the sub-regions.
+
+### Readability screen
+
+| Rung | What the pack shows a reader | Verdict |
+|---|---|---|
+| R0 | the case log's quits over its list | readable |
+| R1 | the extract's status dates | readable |
+| R2 | nothing; a rate a reader brings | readable |
+| R3 | the case log's list status dates against its outcomes: quits fall and "not a current smoker" rises with age | readable |
+| R4 | Eastern Shore's own recordings in the history | readable |
+| R5 | the four candidates' recordings in the history | readable |
+| R6 (decisive) | nothing names a sub-region's rate or says the rates differ; the plan describes the history as every status recorded since 2012 and the dictionary describes its fields | silent |
+
+### Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | current smoker | daily, weekly or irregular smoker, or smoker | daily smoker or smoker only | Inner South | same call; the dictionary names all four |
+| SF2 | a quit | quit date set and not smoking at four weeks, lost to follow-up as smoking | lost to follow-up left out of the conversion | Inner South | same call (one factor for all four); the plan counts them as smoking |
+| SF3 | calls spread evenly through 2027 | each patient's chance averaged over the year | every call at mid-2027 | Inner South | same call |
+| SF4 | recorded as a current smoker in the extract | the extract's latest status | the history's last day-level entry | Inner South | same call; the two lists are identical (23,690) |
+| SF5 | never smoked after a smoker or ex-smoker entry | read as not smoking | the pair dropped | Inner South | same call |
+| SF6 | one recording | the day's last entry | every entry, same-day re-entries included | Inner South | same call |
+| SF7 | the team's conversion | reach times quits per smoker reached | quits over the 2025 list's expected smokers under Eastern Shore's own fit | Inner South | same call and the same printed 550 |
+| SF8 | quits in 2027 | counted by the year of the call | a December call's four weeks ending in 2028 left out | Inner South | same call; the plan counts a quit by the call |
+
+### Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, those who have since stopped included | filed in the plan; C1 (the extract and the history give one list, SF4) |
+| 2 Unit of account | a patient helped to quit | the question and the plan name it |
+| 3 Attribution window | calls in 2027, a quit counted by its call | filed (SF8) |
+| 4 As-of dating | each status at its recorded date; the list at the 30 September 2026 extract | filed in the plan and the dictionary |
+| 5 Version basis | the extract as cut | one extract ships |
+| 6 Denominator | quits per smoker reached times reach, over the listed patients still smoking | C1 across the two conversions (SF7) |
+| 7 Weighting | each listed patient counts once | the plan's once each |
+| 8 Window length | the whole 2012 to 2026 record for the fits | C1: share-by-gap and Markov fits agree on the call |
+| 9 Boundary inclusivity | a status dated on the extract day is in the list | no status after the extract ships |
+| 10 Rounding path | the sub-region total rounded once to the nearest 50 | stated in the prompt; every licensed construction prints 550 |
+| 11 Tie-break | none needed | the winner leads by 4.8 per cent or more under every construction |
+| 12 Maturity and censoring | every pair of consecutive recordings, the interval censoring handled by the Markov likelihood | C1 across fits |
+| 13 Order of operations | collapse same-day entries, pair, fit, average, multiply | C1 (SF6) |
+| 14 Row order | sorted by patient and time | asserted by the fit's independence of file order |
+| 15 Duplicate resolution | the day's last entry | C1 (SF6) |
+| 16 Identity normalisation | one patient key across every file | the dictionary |
+| 17 Netting against gross | none | no netting in the estimand |
+| 18 Dimensional units | patients and years | one unit each |
+| 19 Code and status semantics | the two vocabularies mapped by the dictionary | dictionary semantics, never the stump (SF1) |
+| 20 Integerisation | none before the final rounding | one rounding |
+| 21 Clause scope | the plan's quit and calling rules apply to the 2027 team | filed |
+| 22 Forward window contents | the calls through 2027 and each listed patient's chance of still smoking then | the history carries the rates; the extract carries the ages |
+
+### Literal reader
+
+Executed word for word, the plan fixes who is called (every active patient the chosen sub-region's practices record as a current smoker in the 30 September 2026 extract, once each, through 2027), what counts (a quit date with the team and four weeks not smoking, lost to follow-up as smoking) and how the team works (as in Eastern Shore in 2025). It says nothing about how many of the listed patients still smoke, so the literal reader has to estimate it, and every reading of the fork table gives Inner South (SF1 to SF8, asserted). The easy answer comes from the easy method on the same estimand, carrying Eastern Shore's curve, never from another reading.
+
+### Oracles
+
+No file reproduces the golden or ranks the four sub-regions on the quits question. The 2025 case log reproduces its own curve by construction, which is the trap rather than an oracle; the Quitline report and the dialler export carry the asks only; the three distractors (sub-region profiles, GP workforce, quit medicines dispensed) carry no smoking-status signal.
+
+### Ask sheet
+
+Ask A, Quitline referrals from each candidate sub-region's practices in 2025 (4 cells): the report labels each practice with Quitline's own directory sub-region, taken in 2023 and never updated after the PHN realigned four practices round a cycle on 1 July 2025, and names practices in Quitline's spelling; the register's sub-region by a normalised name match gives the golden. Device D2, an attribute at the wrong vintage, every cell moving; a battery repair for most readers (three of four took it), so the ask is cut to the year's four totals and carries little weight.
+
+Ask B, the 2025 team's calls to patients from 5 pm and the patients reached in them, by weekday (10 cells): each team member's legs run one after another through the shift, and the dialler writes a leg's record when its line is released, so date_time is the end of the leg and a call starts its duration_s earlier. Read as start times, the members' last calls before 5 pm (begun in the minutes before the day shift ends or the evening starts and running past it) count as evening calls and their patients as reached in them. Device D8 (an anchor on the leg's release, not its dial), silent: the dictionary says when the record is written, nothing says when that is, and the evidence is two identities only a cross-row cut shows: read as starts, the same member's legs overlap 1,736 times, read as ends never (a transferred call's member part ending at the transfer); and each Transferred leg carries its patient's answered leg's date_time to the second, both lines released when the patient hangs up. Every cell moving.
+
+Ask C, the minutes each team member spent on answered calls per patient they reached, by dialler login and month (30 cells): a patient who sets a quit date and wants Quitline's call-back service as well is transferred on the call; the coach dials Quitline and leaves, the dialler logs a Transferred leg from the transfer to the end, and the patient's own answered leg stays open until the patient hangs up. Device D6 (an event's quantity on every line it covers, grain unstated), silent: the answered leg's duration_s holds Quitline's minutes as well as the coach's, so summing answered legs, merging each with its Transferred leg (it sits inside the answered leg) or adding both overstates every month; only the answered leg less its Transferred leg is the staff's time, and the coach's next leg starting before the patient's leg ends (254 of 407 transfers) shows the coach had left. Every cell moving.
+
+| Ask | Cracker's handling | Cracker |
+|---|---|---|
+| A | Quitline's phn_sub_region as given; an exact-name join falling back on it misses as well | miss |
+| B | the record time read as the call's start, Transferred legs set aside or kept | miss |
+| C | each login's answered legs' minutes over the patients it reached, merged with their Transferred legs or not | miss |
+
+Pair ceiling: 28.5 (cracker 45.0 on the call with no ask cell, mirror 12.0 off it with none); a cracker that also finds ask A's device alone reaches 31.0, ask B's 34.8, ask C's 47.2. Measured on round 5 (target.zip 06472847): both readers missed the call and kept 14 of 44 ask figures each (asks A and B whole, none of C), 29.5 each.
+Mirror leakage: 0.0 per cent of ask weight.
+Measured by: generator/pair.py on the cut pack.
+
+Separation: none of the ask files is read by the main call (the golden opens only the extract, the history and the case log), and the asks' devices sit in the Quitline report and the dialler export. Measured on the round of 25 October (target.zip f2c362ba): ask A's register join was taken by one reader of two (reader A matched the names, reader B kept Quitline's label), so ask A is a coin flip and stays as it is; asks B and C were re-sited after both readers took them. Round 3 (target.zip 10e9cb2e) took asks A and B from both readers and held C from both; the roster that gave B away no longer ships. Round 5 (target.zip 06472847, asks re-cut to 4, 10 and 30 cells) took A and B from both readers through the register join and the legs' overlap rates and held all 30 cells of C from both; the final pack drops the 2025 New South Wales public holidays from the calling days and archives a few hundred never-recorded patients per candidate sub-region, which moves the ask B and C figures and leaves the call at 563.
+
+### Pre-ship check
 
 - Free gates on the shipped pack (target.zip 1dbc72b8): generator checks 47 passed (the call at 563 printed 550, the
   ladder R0 to R6, the standing family, SF1 to SF8, the three rules on the clean truth, every ask figure's edge, the

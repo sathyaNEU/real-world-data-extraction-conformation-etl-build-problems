@@ -284,7 +284,7 @@ BLOCKS = [
 PHASE_DATES = {1: D(2027, 5, 18), 2: D(2027, 7, 6), 3: D(2027, 9, 7), 4: D(2028, 5, 23), 5: D(2028, 7, 11),
                6: D(2028, 9, 5)}
 REISSUE = {"2112": D(2026, 1, 20), "2146": D(2026, 2, 11)}          # gas EAN re-registered at a capacity change
-GAS_EXCHANGE = {"2104": D(2026, 3, 17), "2124": D(2025, 11, 25), "2152": D(2026, 6, 9)}   # meter exchanged, same EAN
+GAS_EXCHANGE = {"2104": D(2026, 3, 17), "2124": D(2025, 11, 25), "2140": D(2026, 1, 13), "2152": D(2026, 2, 24)}   # meter exchanged, same EAN
 
 
 def blocks(rng):
@@ -402,7 +402,8 @@ def weather_2425(rng):
     while d <= D(2025, 9, 30):
         doy = d.timetuple().tm_yday
         a = 0.78 * a + rng.normal(0, 1.85)
-        out[d] = 11.0 - 7.2 * math.cos(2 * math.pi * (doy - 22) / 365.25) + a
+        cool = -5.5 * math.sin(math.pi * ((d - D(2025, 9, 17)).days + 1) / 15) if D(2025, 9, 17) <= d <= D(2025, 9, 30) else 0.0
+        out[d] = 11.0 - 7.2 * math.cos(2 * math.pi * (doy - 22) / 365.25) + a + cool
         d += TD(days=1)
     return out
 
@@ -430,15 +431,22 @@ def legacy_and_open(rng, conns, wx):
         def fmt(kwh):
             return round(kwh / 277.7778, 3) if unit == "GJ" else round(kwh / 1000.0, 3)
 
+        dl_ = sorted(cons)
+        pref = {}
+        acc = reg0
+        for x in dl_:
+            pref[x] = acc
+            if x >= start:
+                acc += cons[x]
+        end_acc = acc
+
         def reg_at(day, frac):
-            tot = reg0
-            x = start
-            while x < day:
-                tot += cons[x] if x >= c["aansluitdatum"] else 0.0
-                x += TD(days=1)
-            if day >= c["aansluitdatum"] and day in cons:
-                tot += frac * cons[day]
-            return tot
+            if day > dl_[-1]:
+                return end_acc
+            base_ = pref[day] if day >= start else reg0
+            if day >= start and day in cons:
+                base_ += frac * cons[day]
+            return base_
         ser = c["serial_legacy"]
         if c["aansluitdatum"] < D(2024, 10, 1):
             reads.append([ser, D(2024, 10, 1), fmt(reg_at(D(2024, 10, 1), 0.42)), unit, "J"])
@@ -712,40 +720,50 @@ def tune(blks, fam):
             b0 = big[ph]["load"]
             for dlt in range(-int(0.08 * b0), int(0.08 * b0) + 1):
                 K = sum(b["load"] for b in base[ph]) + dlt
-                fl = [K / (P.CP * x) for x in gw]
+                fl = [K / (P.CP * x) for x in g]
                 if same_bin(fl, 5, 0.35):
                     o.append((abs(dlt), dlt, K))
-            opts[ph] = sorted(o)[:60]
+            opts[ph] = sorted(o)[:30]
         if any(not opts[ph] for ph in opts):
             continue
-        # phases 1-3 then 4-6
+        first = {}
         for a in opts[1]:
             for b in opts[2]:
                 for c3 in opts[3]:
                     KA = a[2] + b[2] + c3[2]
-                    if not (KA / (P.CP * g_lo) <= H / 1.08 and KA / (P.CP * 20.0) >= 1.06 * H):
+                    cost = a[0] + b[0] + c3[0]
+                    if KA in first and first[KA][0] <= cost:
                         continue
-                    f3 = [KA / (P.CP * x) for x in gw]
+                    if not (KA / (P.CP * g_lo) <= H / 1.08 and KA / (P.CP * gw_lo) <= H / 1.04
+                            and KA / (P.CP * 20.0) >= 1.06 * H):
+                        continue
+                    f3 = [KA / (P.CP * x) for x in g]
                     if not same_bin(f3, 10, 1.0) or max(f3) >= H:
                         continue
-                    cost_a = a[0] + b[0] + c3[0]
-                    if best and cost_a >= best[0]:
-                        continue
-                    for d4 in opts[4]:
-                        for e5 in opts[5]:
-                            for f6_ in opts[6]:
-                                KAB = KA + d4[2] + e5[2] + f6_[2]
-                                if not (KAB / (P.CP * gw_hi) >= 1.08 * H and KAB / (P.CP * p_lo) <= H / 1.06):
-                                    continue
-                                f6 = [KAB / (P.CP * x) for x in gw]
-                                if not same_bin(f6, 10, 1.0):
-                                    continue
-                                sh = [v - H for v in f6]
-                                if not same_bin(sh, 10, 1.0):
-                                    continue
-                                cost = cost_a + d4[0] + e5[0] + f6_[0]
-                                if best is None or cost < best[0]:
-                                    best = (cost, H, {1: a[1], 2: b[1], 3: c3[1], 4: d4[1], 5: e5[1], 6: f6_[1]})
+                    first[KA] = (cost, (a[1], b[1], c3[1]))
+        second = {}
+        for d4 in opts[4]:
+            for e5 in opts[5]:
+                for f6_ in opts[6]:
+                    K2 = d4[2] + e5[2] + f6_[2]
+                    cost = d4[0] + e5[0] + f6_[0]
+                    if K2 not in second or second[K2][0] > cost:
+                        second[K2] = (cost, (d4[1], e5[1], f6_[1]))
+        for KA, (ca, da) in first.items():
+            for K2, (cb, db) in second.items():
+                cost = ca + cb
+                if best is not None and cost >= best[0]:
+                    continue
+                KAB = KA + K2
+                if not (KAB / (P.CP * g_hi) >= 1.08 * H and KAB / (P.CP * gw_hi) >= 1.04 * H
+                        and KAB / (P.CP * p_lo) <= H / 1.06):
+                    continue
+                f6 = [KAB / (P.CP * x) for x in g]
+                if not same_bin(f6, 10, 1.0):
+                    continue
+                if not same_bin([v - H for v in f6], 10, 1.0):
+                    continue
+                best = (cost, H, {1: da[0], 2: da[1], 3: da[2], 4: db[0], 5: db[1], 6: db[2]})
     if best is None:
         raise SystemExit("tune: no feasible setting")
     cost, H, dl = best

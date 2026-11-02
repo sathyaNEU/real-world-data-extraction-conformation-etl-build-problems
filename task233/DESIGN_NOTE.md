@@ -246,6 +246,13 @@ asserted neutral (R2); the decisive step reads the visit log and the price datab
   and holidays postdate the letter, as the real calendar's do. Harmless.
 - The visit log's handheld column, first named `device` (sweep 8), renamed `handheld_id` as the export names it. Fixed.
 
+Stage 4 leak reader on 62987245: clean on every question (question 6 an analytical choice). Its one realism finding,
+independent outlets named from a shared list regardless of kind (a pharmacy named as a butcher's), fixed in the
+generator: each name is now drawn from its outlet's kind on its own stream, the register runs in outlet-code order across
+the file, and the items each outlet prices are asserted to fit its kind (Z11 to Z13). Only the register and the schedule
+changed; figures.json, the write-up and both goldens are byte-identical, and all 20 alternative netting readings still
+give the golden outcomes (C5, nearest edge 0.46).
+
 ## Architecture 2 record
 
 Architecture 2 (2026-10-16, shipped 2026-10-16, no portal result): a university social survey unit's quality flags on

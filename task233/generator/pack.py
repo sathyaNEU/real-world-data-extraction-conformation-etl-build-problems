@@ -157,7 +157,7 @@ class Pack:
         kinds = {"supermarket": "Supermarket", "pharmacy_chain": "Pharmacy", "clothing_chain": "Clothing store",
                  "greengrocer": "Greengrocer", "butcher": "Butcher", "bakery": "Bakery", "convenience": "Convenience store",
                  "pharmacy": "Pharmacy", "boutique": "Clothing store", "hardware": "Hardware store"}
-        for o in sorted(w.outlets, key=lambda x: (x["region"], x["nso_code"])):
+        for o in sorted(w.outlets, key=lambda x: x["nso_code"]):
             ws.append([o["nso_code"], o["tnum"], o["name"], o["address"], o["region"],
                        "Multiple" if o["stratum"] == "M" else "Independent", kinds[o["kind"]], o["chain"] or None,
                        o["added"], o["removed"]])

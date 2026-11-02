@@ -203,6 +203,29 @@ def main(target, golden):
     ok("Z3 outlet names take more than two shapes", len(shapes) > 2, str(len(shapes)))
     counts = [len([b for b in p.counted() if b["region"] == r]) for r in R]
     ok("Z4 back-check counts vary by region", len(set(counts)) == len(counts), str(counts))
+    words = {"Greengrocer": ("Fruit and Vege", "Fresh Produce", "Fruiterers", "Greengrocers"),
+             "Butcher": ("Butchery", "Meat Co", "Butchers", "Quality Meats"),
+             "Bakery": ("Bakery", "Bakehouse", "Hot Bread"),
+             "Convenience store": ("Superette", "Dairy", "Corner Store", "Family Store"),
+             "Pharmacy": ("Pharmacy", "Chemist"),
+             "Clothing store": ("Clothing", "Outfitters", "Drapers", "Menswear", "Threadline", "Baxter & Co"),
+             "Hardware store": ("Hardware", "Home and Garden", "Building Supplies"),
+             "Supermarket": ("Freshway", "ValuMart", "Kettering's", "Harbour Fresh")}
+    misnamed = [(o["Outlet name"], o["Kind"]) for o in p.outlets
+                if not any(x in o["Outlet name"] for x in words[o["Kind"]])
+                or any(x in o["Outlet name"] for k, ws in words.items() if k != o["Kind"] for x in ws
+                       if not (k == "Supermarket" and x == "Harbour Fresh" and o["Kind"] == "Greengrocer"))]
+    ok("Z11 every outlet's name agrees with its kind", not misnamed, str(misnamed[:5]))
+    ok("Z11 no two outlets share a name and address", len({(o["Outlet name"], o["Address"]) for o in p.outlets}) == len(p.outlets))
+    kind_groups = {"Supermarket": {"FV", "MF", "BC", "DE", "OF", "HS", "PC"}, "Pharmacy": {"PC", "HS"},
+                   "Clothing store": {"CF"}, "Greengrocer": {"FV"}, "Butcher": {"MF"}, "Bakery": {"BC"},
+                   "Convenience store": {"DE", "OF", "BC", "HS"}, "Hardware store": {"HS"}}
+    group_of = {it[0]: it[1] for it in __import__("items").ITEMS}
+    unfit = sorted({(r["outlet_code"], r["item_code"]) for r in p.quotes.values()
+                    if group_of[r["item_code"]] not in kind_groups[p.by_code[r["outlet_code"]]["Kind"]]})
+    ok("Z12 every quote's item fits its outlet's kind", not unfit, str(unfit[:5]))
+    reg_codes = [o["Outlet code"] for o in p.outlets]
+    ok("Z13 the outlet register runs in outlet-code order across the file", reg_codes == sorted(reg_codes))
     ok("Z5 no extract carries a date after its pull", dates_in_range(p))
     pc = pdf_text(os.path.join(target, "pcqs_price_collection_quality_standard_v3.pdf"))
     ok("Z7 PCQS read back (positive control) and its bands parsed", "collection window" in pc and p.band_compliant == 98.0 and p.band_credit == 95.5)

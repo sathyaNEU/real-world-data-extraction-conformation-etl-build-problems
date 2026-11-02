@@ -132,11 +132,12 @@ def write_loads(W, out):
         rows.append([r["load_ref"], r["vessel"], tl, P.CODES_2021[r["area"]], "%.0f" % r["hopper_m3"], rho, tds,
                      P.SITES[r["route"]][0], td, "%.5f" % r["lat"], "%.5f" % r["lon"]])
         if r.get("fault"):
-            rev.append([r["trip_ref"], "%.0f" % r["tds_true"]])
+            rev.append([r["trip_ref"], "%.0f" % r["tds_true"], "loading monitor dry solids",
+                        "density gauge recalibrated 27/03/2026", P.CONTRACTOR, "30/03/2026"])
     write_csv(os.path.join(out, LOADS), ["load_ref", "vessel", "loading_start_utc", "area", "hopper_m3",
                                           "mixture_density_t_m3", "dry_solids_t", "planned_site", "dump_start_utc",
                                           "dump_lat", "dump_lon"], rows)
-    write_csv(os.path.join(out, REVISION), ["trip_ref", "dry_solids_t_revised"], rev)
+    write_csv(os.path.join(out, REVISION), ["trip_ref", "dry_solids_t_revised", "revises", "basis", "issued_by", "issued"], rev)
     return len(rows), len(rev)
 
 

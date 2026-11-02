@@ -10,6 +10,7 @@ LIMIT_SHARE = 0.80          # the standard's share of a rising main's per-phase 
 EV_KW = 3.7                 # the standard's evening after-diversity demand of an approved charger
 COOK_KW = 1.4               # the standard's evening after-diversity demand of a cooktop conversion
 JULY_DAYS = 31
+P_AUG_EST = 0.13           # meters the head-end could not reach at midnight on 1 August
 PEAK_WEEK = [date(2026, 7, 13) + timedelta(days=d) for d in range(5)]      # Monday 13 to Friday 17 July
 PQ_START_UTC = datetime(2026, 7, 12, 0, 0)                                  # the PQ export runs 12 to 20 July UTC
 PQ_HOURS = 192
@@ -264,6 +265,7 @@ def five_minute_voltage(W, seed=SEED + 21):
             el = W["V5_3ph"][i]
             W["V5_3ph"][i] = np.array([(np.repeat(el[p], 6) + swell + ar + lift + rng.normal(0, 0.05, T5)) for p in range(3)], dtype=np.float32)
     W["V5"] = V5
+    W["swell"] = swell
     return W
 
 def exchanges_and_gaps(W, seed=SEED + 31):
@@ -321,7 +323,12 @@ def register_reads(W, seed=SEED + 41):
     estset = {i for i, _ in W["estimated"]}
     rq = np.random.default_rng(seed + 3)
     for i, a in enumerate(apts):
-        a["aug_estimated"] = bool(i not in gapset and i not in estset and "exchange" not in a and rq.random() < 0.10)
+        a["aug_estimated"] = bool(i not in gapset and i not in estset and "exchange" not in a and rq.random() < P_AUG_EST)
+    # move-out and move-in special reads on 1 August for a few tenancy changes (midnight read actual as well)
+    rs = np.random.default_rng(seed + 7)
+    for i, a in enumerate(apts):
+        a["special_read"] = bool(i not in gapset and "exchange" not in a and not a["aug_estimated"] and rs.random() < 0.03)
+    rr = np.random.default_rng(seed + 9)
     for i, a in enumerate(apts):
         kwh_half = load[i] * 0.5
         if "exchange" in a:
@@ -336,15 +343,36 @@ def register_reads(W, seed=SEED + 41):
         else:
             r0 = float(rng.uniform(3000, 72000))
             a["reads"] = {"jul": round(r0, 2), "aug": round(r0 + kwh_half.sum(), 2)}
+            if a["aug_estimated"] or a["special_read"]:
+                # a later actual read on 1 August: an on-demand read once the meter answered again, or a tenancy
+                # change's special read; the registers have moved on by the morning's use since midnight
+                mins = int(rr.integers(452, 746)) if a["aug_estimated"] else int(rr.integers(540, 960))
+                m1, m2 = morning_kwh(W, i, mins, rr)
+                a["later_read"] = {"time": "%02d:%02d" % divmod(mins, 60), "e1": round(r0 + kwh_half.sum() + m1, 2)}
+                if "reads_e2" in a:
+                    a["later_read"]["e2"] = round(a["reads_e2"]["aug"] + m2, 2)
+                a["morning_kwh"] = m1 + (m2 if "reads_e2" in a else 0.0)
             if a["aug_estimated"]:
                 # the head-end could not reach the meter at midnight on 1 August and estimated the read from the
-                # meter's average daily use over the previous quarter
-                a["reads"]["aug"] = round(r0 + kwh_half.sum() * rq.uniform(0.82, 1.18), 2)
+                # meter's average daily use over the previous quarter, which runs below a winter month's
+                a["reads"]["aug"] = round(r0 + kwh_half.sum() * rq.uniform(0.78, 0.94), 2)
                 if "reads_e2" in a:
                     e2 = a["reads_e2"]
-                    e2["aug"] = round(e2["jul"] + (e2["aug"] - e2["jul"]) * rq.uniform(0.85, 1.15), 2)
+                    e2["aug"] = round(e2["jul"] + (e2["aug"] - e2["jul"]) * rq.uniform(0.80, 0.95), 2)
         a["july_kwh_true"] = float(kwh_half.sum()) + a.get("july_kwh_e2_true", 0.0)
     return W
+
+
+def morning_kwh(W, i, minutes, rng):
+    """Energy from midnight to the given minute of 1 August on each register (kWh), on the meter's own last-day
+    profile."""
+    o = (JULY_DAYS - 1) * 48
+    k, frac = divmod(minutes, 30)
+    frac /= 30.0
+    f = rng.uniform(0.92, 1.08)
+    e1 = (W["load"][i][o:o + k].sum() + W["load"][i][o + k] * frac) * 0.5 * f
+    e2 = (W["cl"][i][o:o + k].sum() + W["cl"][i][o + k] * frac) * 0.5 * f
+    return float(e1), float(e2)
 
 CARPARK = {"B1": 96, "B2": 142, "B3": 150}
 

@@ -84,6 +84,7 @@ def write_workbook(F, path):
     c.number_format = "#,##0"
     c.font = bold
     ws.freeze_panes = "A5"
+    ws.print_title_rows = "4:4"
 
     ws = wb.create_sheet("Complemento 2025")
     ws["A1"] = "Families the Complemento Familiar was paying, last month of each quarter of 2025"
@@ -104,6 +105,7 @@ def write_workbook(F, path):
         c.number_format = "#,##0"
         c.font = bold
     ws.freeze_panes = "B5"
+    ws.print_title_rows = "4:4"
 
     ws = wb.create_sheet("ECVV 2026 fieldwork")
     ws["A1"] = "ECVV 2026 fieldwork by province"
@@ -128,13 +130,17 @@ def write_workbook(F, path):
         c.font = bold
     ws.freeze_panes = "B5"
 
-    ws = wb.create_sheet("Sources")
+    ws = wb.create_sheet("Notes")
     notes = [
         ("Survey", "ecvv2026_households.csv and ecvv2026_persons.csv (IEV, ECVV 2026, incomes of 2025)."),
         ("Measures", "child_poverty_proposals_2027.pdf (28 October 2026); appraisal guidance of 15 October 2026."),
         ("Complemento", "cfv_register_extract_20261102.csv, cfv_incidents_2025.xlsx, territorial_codes.csv; "
                         "complemento_familiar_rules_2026.pdf (payment from the month after the decision, 6.1)."),
         ("Fieldwork", "ecvv2026_fieldwork_cases.csv; eligibility and response rate as in the ECVV 2026 main results."),
+        ("As of", "Complemento register as extracted on 2 November 2026; families counted as the decisions stood "
+                  "at 31 December 2025, so an award revoked in 2026 counts as granted in 2025."),
+        ("Rounding", "Children to the nearest hundred from the unrounded figure, each province on its own; families, "
+                     "dwellings and interviews whole; response rates to one decimal from the counts."),
         ("Prepared", "Servicio de Estudios y Evaluación, 6 November 2026."),
     ]
     ws.column_dimensions["A"].width = 14
@@ -152,34 +158,46 @@ def chart_png(F, path):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import FuncFormatter
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.4, "svg.hashsalt": "task301"})
+    ink, ink2, grid = "#0b0b0b", "#52514e", "#e4e4e2"
+    s27, sfull = "#2a78d6", "#eb6834"
     order = ["A", "B", "C", "D", "E"]
     labels = {"A": "A  Prestación Infancia Directa", "B": "B  Ayuda a la Crianza",
               "C": "C  Complemento: higher limit", "D": "D  Suplemento de Alquiler", "E": "E  Complemento: higher amount"}
     fig, ax = plt.subplots(figsize=(6.7, 3.3), dpi=150)
+    fig.patch.set_facecolor("#ffffff")
+    ax.set_facecolor("#ffffff")
     ys = list(range(len(order)))[::-1]
-    full = [F["R0"][m] for m in order]
     yr = [F["R3"][m] for m in order]
-    ax.xaxis.grid(True, color="#e2e5e7", lw=0.6)
+    full = [F["R0"][m] for m in order]
+    ax.xaxis.grid(True, color=grid, lw=0.6)
     ax.set_axisbelow(True)
-    ax.barh([y + 0.19 for y in ys], full, height=0.36, color="#c9d3da", label="If every family covered were paid all year")
-    cols = ["#d4622a" if m == F["call"] else "#3f6f8f" for m in order]
-    ax.barh([y - 0.19 for y in ys], yr, height=0.36, color=cols, label="Payments families receive in 2027")
+    ax.barh([y + 0.2 for y in ys], yr, height=0.36, color=s27, edgecolor="#ffffff", linewidth=1.0,
+            label="Payments families receive in 2027")
+    ax.barh([y - 0.2 for y in ys], full, height=0.36, color=sfull, edgecolor="#ffffff", linewidth=1.0,
+            label="If every family covered were paid all year")
     ax.set_yticks(ys)
-    ax.set_yticklabels([labels[m] for m in order])
+    ax.set_yticklabels([labels[m] for m in order], color=ink)
     ia = order.index(F["call"])
-    ax.text(yr[ia] + 180, ys[ia] - 0.19, fmt(F["A_r"]), va="center", fontsize=8, fontweight="bold", color="#9c3d12")
+    ax.get_yticklabels()[ia].set_fontweight("bold")
+    ax.text(yr[ia] + 180, ys[ia] + 0.2, fmt(F["A_r"]) + " (recommended)", va="center", fontsize=7.9,
+            fontweight="bold", color=ink)
     ic = order.index("C")
-    ax.text(full[ic] + 180, ys[ic] + 0.19, fmt(F["R0_r"]["C"]), va="center", fontsize=7.6, color="#4d5a62")
+    ax.text(full[ic] + 180, ys[ic] - 0.2, fmt(F["R0_r"]["C"]), va="center", fontsize=7.6, color=ink2)
     ax.set_xlim(0, max(full) * 1.13)
-    ax.set_xlabel("Children brought above the poverty line in 2027")
-    ax.legend(loc="lower right", frameon=False, fontsize=7.6)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: "{:,.0f}".format(v)))
+    ax.tick_params(colors=ink2, labelsize=7.8)
+    ax.set_xlabel("Children brought above the poverty line in 2027", color=ink2)
+    ax.legend(loc="lower right", frameon=False, fontsize=7.6, labelcolor=ink)
     ax.set_title("Measure A brings the most children above the line in 2027", loc="left", fontsize=9.4,
-                 fontweight="bold")
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
+                 fontweight="bold", color=ink)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_color("#b9b8b2")
     fig.tight_layout()
-    fig.savefig(path, dpi=150, metadata={"Software": None})
+    fig.savefig(path, dpi=150, metadata={"Software": None}, facecolor=fig.get_facecolor())
     plt.close(fig)
 
 
@@ -198,8 +216,9 @@ def write_note(F, path, png):
               % (fmt(F["A_limit"]), fmt(F["A_r"]), fmt(p["81"]), fmt(p["82"]), fmt(p["83"]))),
         ("img", (png, 170 * mm, 84 * mm)),
         ("small", "Children whose household is below the line of €%s a year per equivalent adult without the "
-                  "measure and at or above it with the payments it receives during 2027; ECVV 2026 households, 2025 "
-                  "incomes raised 6.1 per cent, grossed by the household weights." % fmt(F["line"])),
+                  "measure and at or above it with the payments it receives during 2027 (guidance 3.5); ECVV 2026 "
+                  "households, 2025 incomes raised 6.1 per cent, grossed by the household weights. Figures are "
+                  "rounded to the nearest hundred, each province on its own (guidance 4.2)." % fmt(F["line"])),
         ("h", "Why not the higher Complemento limit"),
         ("p", "Raising the Complemento Familiar's limit to €%s (measure C) would bring %s children above the line "
               "if every family it newly covers were paid for the whole year, which is how the proposals are costed. "

@@ -226,7 +226,10 @@ def events_json(W, path):
 
 # ------------------------------------------------------------------------------------- reads and exchanges
 def reads_csv(W, path):
+    """The head-end's register reads export, with its own code descriptions beside each code."""
     apts = W["apts"]
+    rdesc = {"E1": "General supply", "E2": "Controlled load"}
+    tdesc = {"A": "Actual", "E": "Estimated"}
     rows = []
     for a in apts:
         for reg, key in (("E1", "reads"), ("E2", "reads_e2")):
@@ -239,8 +242,12 @@ def reads_csv(W, path):
             else:
                 rows.append((a["serial"], a["nmi"], reg, "2026-07-01 00:00", "%.2f" % r["jul"], "A"))
                 rows.append((a["serial"], a["nmi"], reg, "2026-08-01 00:00", "%.2f" % r["aug"], "E" if a["aug_estimated"] else "A"))
+                if "later_read" in a:
+                    rows.append((a["serial"], a["nmi"], reg, "2026-08-01 " + a["later_read"]["time"],
+                                 "%.2f" % a["later_read"]["e1" if reg == "E1" else "e2"], "A"))
     rows.sort(key=lambda x: (x[3], x[1], x[2]))
-    write_csv(path, ["meter_serial", "nmi", "register", "read_local", "reading_kwh", "read_type"], rows)
+    rows = [(s_, n, g, rdesc[g], t, v, q, tdesc[q]) for s_, n, g, t, v, q in rows]
+    write_csv(path, ["meter_serial", "nmi", "register", "register_desc", "read_local", "reading_kwh", "read_type", "read_type_desc"], rows)
 
 
 def exchanges_csv(W, path):
@@ -332,7 +339,7 @@ def applications(W, path):
         if investor:
             street = str(rng.choice(["Hyde St", "Gordon St", "Albert St", "Pickett St", "Droop St", "Moore St"]))
             sub = str(rng.choice(["Yarraville", "Seddon", "Kensington", "Williamstown", "Brunswick", "Coburg"]))
-            return "%d/%d %s, %s VIC" % (int(rng.integers(1, 9)), int(rng.integers(2, 140)), street, sub)
+            return "Lot %d, %d/%d %s, %s VIC" % (a["lot"], int(rng.integers(1, 9)), int(rng.integers(2, 140)), street, sub)
         return unit_label(a, str(rng.choice(["plain", "dash", "slash", "words"], p=[0.4, 0.3, 0.2, 0.1])))
 
     allrec = []
@@ -487,9 +494,9 @@ def standard_pdf(W, path):
              Paragraph("5. When a rising main needs works", h2),
              Paragraph("A rising main needs re-phasing at its floor boards or a larger main before the 2027 works are connected where, on any of its phases, the phase demand plus the added demand on that phase exceeds %d per cent of its rating per phase." % int(round(Wd.LIMIT_SHARE * 100)), body),
              Paragraph("6. Supply voltage", h2),
-             Paragraph("The statutory limits are 216 V to 253 V at the point of supply (Electricity Distribution Code of Practice). An apartment's time outside the limits is the time its meter recorded the voltage outside them.", body),
+             Paragraph("The statutory limits are 216 V to 253 V at the point of supply (Electricity Distribution Code of Practice). A three-phase supply is outside the limits while any one of its phases is outside them. An apartment's time outside the limits is the time its meter recorded its supply outside them.", body),
              Paragraph("7. Use", h2),
-             Paragraph("An apartment's use over a period is the energy its meter registered over the period.", body),
+             Paragraph("An apartment's use over a period is the energy its meter registered over the period, general supply and controlled load together.", body),
              Paragraph("8. Charger requests", h2),
              Paragraph("A charger request is an owner's application under the EV charging by-law for a charger at one car space; an application lodged again for the same car space after a lapse or a decline continues that request. A charger connects to the supply of the apartment to which its car space is accessory.", body),
              Spacer(1, 6),

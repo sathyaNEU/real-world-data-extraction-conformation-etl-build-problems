@@ -10,7 +10,7 @@ import numpy as np
 
 import params as P
 from items import ITEMS, KIND_ITEMS
-from names import LOCALITIES, STREETS, SHOP_NAMES
+from names import LOCALITIES, STREETS, SURNAMES, KIND_NAMES, SHOP_NAME_DRAW
 
 ITEM = {c: dict(code=c, group=g, desc=d, unit=u, base=b) for c, g, d, u, b in ITEMS}
 
@@ -96,8 +96,10 @@ class World:
         self.outlets = []
         codes = rng.choice(np.arange(10000, 99999), size=700, replace=False)
         tnums = rng.choice(np.arange(1000, 9999), size=700, replace=False)
-        shop_order = rng.permutation(len(SHOP_NAMES))
-        n = shop = 0
+        rng.permutation(SHOP_NAME_DRAW)   # the outlet stream's draw order is kept
+        nrng = stream(1, 51)              # shop names, drawn from each outlet's kind
+        used_names = set()
+        n = 0
         for r in self.regions:
             locs = LOCALITIES[r["code"]]
             region_outlets = []
@@ -124,8 +126,12 @@ class World:
                     name = "%s %s" % (chain, loc)
                 else:
                     chain = ""
-                    name = SHOP_NAMES[shop_order[shop % len(SHOP_NAMES)]] % dict(loc=loc)
-                    shop += 1
+                    while True:
+                        tpl = KIND_NAMES[kind][int(nrng.integers(0, len(KIND_NAMES[kind])))]
+                        name = tpl.format(s=SURNAMES[int(nrng.integers(0, len(SURNAMES)))], loc=loc)
+                        if name not in used_names:
+                            break
+                    used_names.add(name)
                 self.outlets.append(dict(
                     oid=n, nso_code="OT%05d" % codes[n], tnum="T%04d" % tnums[n], region=r["code"],
                     stratum=o["stratum"], kind=kind, chain=chain, name=name, locality=loc,

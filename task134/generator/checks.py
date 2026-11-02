@@ -66,7 +66,7 @@ def main(tdir):
     check("ladder: R0 carry files 1,300,000", graded["R0 carry"] == 1300000, "%.0f" % rg["R0 carry"])
     check("ladder: R1 depth ratio (default path) files 1,500,000", graded["R1 depth ratio"] == 1500000, "%.0f" % rg["R1 depth ratio"])
     check("ladder: R2 trapping efficiency files 1,400,000", graded["R2 trapping efficiency"] == 1400000, "%.0f" % rg["R2 trapping efficiency"])
-    check("ladder: R3 pooled depth regression files 2,300,000", graded["R3 pooled depth regression"] == 2300000, "%.0f" % rg["R3 pooled depth regression"])
+    check("ladder: R3 pooled depth regression files 2,200,000", graded["R3 pooled depth regression"] == 2200000, "%.0f" % rg["R3 pooled depth regression"])
     rung_bins = [graded[k] for k in ("R0 carry", "R1 depth ratio", "R2 trapping efficiency", "R3 pooled depth regression")]
     check("ladder: every rung files a different bin from the golden and from each other",
           len(set(rung_bins)) == 4 and res["total"] not in rung_bins, str(rung_bins))
@@ -283,8 +283,10 @@ def main(tdir):
     tight_total = min(edge(v, 50000) for v in totals)
     check("SF14 the tightest standing member is at least 2,500 m3 inside a part's bin and 5,000 inside the total's",
           tight_part >= 2500 and tight_total >= 5000, "%.0f, %.0f" % (tight_part, tight_total))
-    check("SF11 the coefficient is one across the parts (0.105 to 0.125 a year per metre)",
-          all(0.105 <= v <= 0.125 for v in info["k"].values()), str({k: round(v, 4) for k, v in info["k"].items()}))
+    kp_all = float(np.mean(list(info["k"].values())))
+    check("SF11 the coefficient is one across the parts (each within 1 per cent of their mean, none identical)",
+          all(abs(v / kp_all - 1) <= 0.01 for v in info["k"].values()) and len({round(v, 4) for v in info["k"].values()}) == len(info["k"]),
+          str({k: round(v, 4) for k, v in info["k"].items()}))
     ins = []
     for n in A.REACH_NAMES:
         p = nt.parts[n]
@@ -304,38 +306,26 @@ def main(tdir):
         te.append(tot)
     check("ladder: a trapping efficiency at any exponent 0.5 to 5 misses the golden's bin", all(R.nearest(v, 50000) != 1750000 for v in te),
           "%.0f to %.0f" % (min(te), max(te)))
-    # Berth 2's relaxation follows the same coefficient
-    nq = nt.berths["North Quay Berth 2"]["corners"]
-    from matplotlib.path import Path as MPath
-    poly = MPath(nq)
-    pts = np.column_stack([E, N])
-    inside = poly.contains_points(pts)
-    dates_a = []
-    with open(os.path.join(tdir, A.SURV_A), newline="") as fh:
-        for r in csv.DictReader(fh):
-            if float(r["DEPTH_M_BCD"]) > -99:
-                dates_a.append(dt.datetime.strptime(r["SURVEY_DATE"], "%d/%m/%Y").date())
-    with open(os.path.join(tdir, A.SURV_B), newline="") as fh:
-        for r in csv.DictReader(fh):
-            dates_a.append(dt.date.fromisoformat(r["survey_date"]))
-    dates_a = np.array(dates_a)
-    ser = {}
-    for d_ in sorted(set(dates_a[inside])):
-        if d_ > dt.date(2019, 4, 1):
-            ser[d_] = float(np.mean(Z[inside & (dates_a == d_)]))
-    ds = sorted(ser)
-    yrs = np.array([(d_ - dt.date(2019, 3, 22)).days / 365.25 for d_ in ds])
-    lv = np.array([ser[d_] for d_ in ds])
-    best = None
-    for kk in np.arange(0.08, 0.15, 0.0005):
-        X = np.exp(-kk * yrs)
-        Amat = np.column_stack([np.ones_like(X), X])
-        coef, resid, *_ = np.linalg.lstsq(Amat, lv, rcond=None)
-        sse = float(np.sum((Amat @ coef - lv) ** 2))
-        if best is None or sse < best[0]:
-            best = (sse, kk, coef)
-    check("Berth 2 has relaxed toward a natural bed near 3.9 m at the parts' coefficient (0.105 to 0.125)",
-          0.105 <= best[1] <= 0.125 and 3.0 <= best[2][0] <= 4.8, "k %.4f, asymptote %.2f" % (best[1], best[2][0]))
+    # Berth 2's relaxation follows the same coefficient toward the basin's natural bed, whichever way it is fitted
+    forms, finfo = A.model_forms(tdir)
+    b2 = finfo["berth2"]
+    kpool = float(np.sum(rate * od) / np.sum(od ** 2))
+    check("Berth 2 has relaxed toward the basin's natural bed at the parts' coefficient (free fit and fit on the measured bed "
+          "within 0.002 of the pooled coefficient, the free asymptote within 0.1 m of the basin bed)",
+          abs(b2["k_free"] - kpool) <= 0.002 and abs(b2["k_fixed"] - kpool) <= 0.002 and abs(b2["asymptote_free"] - b2["basin_bed"]) <= 0.1,
+          "pooled %.4f, free %.4f, on the bed %.4f, asymptote %.2f against %.2f" % (kpool, b2["k_free"], b2["k_fixed"], b2["asymptote_free"], b2["basin_bed"]))
+    check("the maintained berths read the parts' law on the basin's natural bed (exponent within 0.05 of one, coefficient "
+          "within 0.002 of the pooled one)", abs(finfo["berth_exponent"] - 1.0) <= 0.05 and abs(finfo["berth_k"] - kpool) <= 0.002,
+          "exponent %.3f, coefficient %.4f" % (finfo["berth_exponent"], finfo["berth_k"]))
+    # SF11 every model of the law, every part: the same bin as the golden, with its distance to the bin edge
+    for lab, d in forms.items():
+        for p_ in A.REACH_NAMES:
+            check("SF11 %s: %s files %s m3" % (lab, p_, R.fmt(res["parts"][p_])), R.nearest(d[p_], 20000) == res["parts"][p_],
+                  "%.0f, %.0f inside its edge" % (d[p_], edge(d[p_], 20000)))
+        check("SF11 %s: the total files 1,750,000 m3" % lab, R.nearest(d["total"], 50000) == 1750000,
+              "%.0f, %.0f inside its edge" % (d["total"], edge(d["total"], 50000)))
+    worst = min(edge(d[p_], 20000) for d in forms.values() for p_ in A.REACH_NAMES)
+    check("SF11 the tightest part under any model of the law is at least 5,000 m3 inside its bin", worst >= 5000, "%.0f" % worst)
 
     # ---------------- the asks ----------------
     check("SF15 the licence asks for the quantity placed at each disposal site", "giving the quantity placed at each disposal site in wet tonnes" in licence)
@@ -344,8 +334,10 @@ def main(tdir):
           and "the month taken in UK civil time as in 5.3" in licence)
     check("SF17 the licence files the campaign rule", "most recent sampling campaign completed before the month in which it was placed" in licence)
     check("SF18 the licence files the formula for a vessel without a loading monitor", "For a vessel without a loading monitor" in licence)
-    rev_hdr = next(csv.reader(open(os.path.join(tdir, A.REVISION))))
-    check("SF19 the revision's own column carries the revised dry solids", rev_hdr == ["trip_ref", "dry_solids_t_revised"])
+    rev_rows = list(csv.reader(open(os.path.join(tdir, A.REVISION))))
+    check("SF19 the revision's own columns carry the revised dry solids, what they revise and when they were issued",
+          rev_rows[0] == ["trip_ref", "dry_solids_t_revised", "revises", "basis", "issued_by", "issued"]
+          and all(r[2] == "loading monitor dry solids" and r[5] == "30/03/2026" for r in rev_rows[1:]), str(rev_rows[0]))
     check("SF20 SF21 the licence files where a sample counts and the duplicate rule", "in which each sample was actually taken" in licence and "averaged with its primary sample" in licence)
     lab_units = {r["units"] for r in csv.DictReader(open(os.path.join(tdir, A.LAB))) if r["determinand"] == "Mercury"}
     check("SF22 the lab's units column carries the mercury units", lab_units == {"mg/kg", "ug/kg"}, str(lab_units))

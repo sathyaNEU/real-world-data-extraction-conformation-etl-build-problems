@@ -46,11 +46,12 @@ REACHES = ["OC", "FR", "MR", "IR"]
 DEEPENED = ["OC", "FR", "MR", "IR", "TB"]
 
 # Berth pockets on the basin's north side (offset +210 to +250 m) and its west end; s in km along the last reach. They
-# open onto the basin floor and share its natural bed; Berth 2 relaxes toward it at the common coefficient.
+# open onto the basin floor and share its natural bed; Berth 2's own rate and bed are set so its surveyed relaxation
+# since 2019 reads the common coefficient and the basin's bed, whether its asymptote is fitted or taken as measured.
 BERTHS = [
     # code, name, s0, s1, t0, t1, depth (None = not maintained), nat, k
     ("NQ1", "North Quay Berth 1", 9.440, 9.680, 210.0, 250.0, 12.8, 4.87, 0.11314),
-    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 4.87, 0.11350),
+    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 5.27, 0.12180),
     ("NQ3", "North Quay Berth 3", 9.940, 10.180, 210.0, 250.0, 12.8, 4.87, 0.11026),
     ("CT5", "Container Terminal Berth 5", 10.200, 10.255, -165.0, 165.0, 14.3, 4.87, 0.11481),
 ]

@@ -494,3 +494,89 @@ def natural_bed_memberships(tdir, buffer=50.0, outer=300.0):
     out["nearest segment, distance as offset"] = cut
     out["nearest segment, offset square to its line"] = perp
     return out
+
+
+def berth2_relaxation(tdir):
+    """Berth 2's mean surveyed depth since it went out of maintenance, fitted two ways: the asymptote taken as the
+    basin's measured natural bed (rate from log(depth less bed) on years), and all three parameters free."""
+    from matplotlib.path import Path as MPath
+    nt = Notice(tdir)
+    hb = natural_bed(tdir)["Turning Basin"]
+    E, N, Z, C = read_surveys(tdir)
+    dates = []
+    with open(os.path.join(tdir, SURV_A), newline="") as fh:
+        for r in csv.DictReader(fh):
+            if float(r["DEPTH_M_BCD"]) > -99:
+                dates.append(dt.datetime.strptime(r["SURVEY_DATE"], "%d/%m/%Y").date())
+    with open(os.path.join(tdir, SURV_B), newline="") as fh:
+        for r in csv.DictReader(fh):
+            dates.append(dt.date.fromisoformat(r["survey_date"]))
+    dates = np.array(dates)
+    inside = MPath(nt.berths["North Quay Berth 2"]["corners"]).contains_points(np.column_stack([E, N]))
+    ser = {d: float(np.mean(Z[inside & (dates == d)])) for d in sorted(set(dates[inside])) if d > dt.date(2019, 4, 1)}
+    ds_ = sorted(ser)
+    yrs = np.array([(d - dt.date(2019, 3, 22)).days / 365.25 for d in ds_])
+    lv = np.array([ser[d] for d in ds_])
+    k_fixed = float(-np.polyfit(yrs, np.log(lv - hb), 1)[0])
+    best = None
+    for kk in np.arange(0.05, 0.25, 0.0001):
+        X = np.exp(-kk * yrs)
+        Am = np.column_stack([np.ones_like(X), X])
+        coef = np.linalg.lstsq(Am, lv, rcond=None)[0]
+        sse = float(np.sum((Am @ coef - lv) ** 2))
+        if best is None or sse < best[0]:
+            best = (sse, float(kk), float(coef[0]))
+    return dict(basin_bed=hb, k_fixed=k_fixed, k_free=best[1], asymptote_free=best[2], surveys=len(ds_))
+
+
+def model_forms(tdir):
+    """Each deepened part's year 1 volume under every model of the law the record supports: each part's own ratio (the
+    golden); one pooled coefficient (through the origin, the ratio of totals, the mean of the parts') on absolute volumes
+    or on the increment; a line with an intercept and a power law, absolute or anchored; the maintained berths' own
+    exponent and coefficient against the basin's natural bed; Berth 2's relaxation rate, fitted with the basin's bed or
+    freely, absolute or on the increment."""
+    rg, info = rungs(tdir)
+    V, nat, areas = info["V"], info["nat"], info["areas"]
+    nt = Notice(tdir)
+    names = REACH_NAMES
+    od = np.array([nt.parts[n]["depth"] - nat[n] for n in names])
+    nd = od + (NEW_DEPTH - np.array([nt.parts[n]["depth"] for n in names]))
+    Aa = np.array([areas[n] for n in names])
+    Vv = np.array([V[n] for n in names])
+    rate = Vv / Aa
+    k = rate / od
+    forms = {"own ratio per part (golden)": Vv * nd / od}
+    for lab, kp in (("through the origin", float(np.sum(rate * od) / np.sum(od ** 2))),
+                    ("ratio of totals", float(np.sum(Vv) / np.sum(Aa * od))), ("mean of the parts'", float(np.mean(k)))):
+        forms["pooled coefficient %s, absolute" % lab] = kp * Aa * nd
+        forms["pooled coefficient %s, increment" % lab] = Vv + kp * Aa * (nd - od)
+    b, a = np.polyfit(od, rate, 1)
+    forms["line with an intercept, absolute"] = (a + b * nd) * Aa
+    forms["line with an intercept, increment"] = Vv + b * (nd - od) * Aa
+    p, lc = np.polyfit(np.log(od), np.log(rate), 1)
+    forms["power law, absolute"] = np.exp(lc) * nd ** p * Aa
+    forms["power law, anchored"] = Vv * (nd / od) ** p
+    hb = nat["Turning Basin"]
+    bod, brate = [], []
+    for bn in BERTH_NAMES:
+        cs = nt.berths[bn]["corners"]
+        ba = math.hypot(cs[1][0] - cs[0][0], cs[1][1] - cs[0][1]) * math.hypot(cs[2][0] - cs[1][0], cs[2][1] - cs[1][1])
+        bod.append(nt.berths[bn]["depth"] - hb)
+        brate.append(V[bn] / ba)
+    bod, brate = np.array(bod), np.array(brate)
+    pb = float(np.polyfit(np.log(bod), np.log(brate), 1)[0])
+    kb = float(np.sum(brate * bod) / np.sum(bod ** 2))
+    forms["berths' exponent on the basin bed, anchored"] = Vv * (nd / od) ** pb
+    forms["berths' coefficient on the basin bed, absolute"] = kb * Aa * nd
+    forms["berths' coefficient on the basin bed, increment"] = Vv + kb * (nd - od) * Aa
+    b2 = berth2_relaxation(tdir)
+    for lab, kk in (("with the basin bed", b2["k_fixed"]), ("fitted freely", b2["k_free"])):
+        forms["Berth 2's relaxation rate %s, absolute" % lab] = kk * Aa * nd
+        forms["Berth 2's relaxation rate %s, increment" % lab] = Vv + kk * (nd - od) * Aa
+    berths = sum(V[bn] for bn in BERTH_NAMES)
+    out = {}
+    for lab, arr in forms.items():
+        d = {n: float(arr[i]) for i, n in enumerate(names)}
+        d["total"] = float(np.sum(arr)) + berths
+        out[lab] = d
+    return out, dict(k=dict(zip(names, k)), berth_exponent=pb, berth_k=kb, berth2=b2, line=(float(a), float(b)), power=float(p))

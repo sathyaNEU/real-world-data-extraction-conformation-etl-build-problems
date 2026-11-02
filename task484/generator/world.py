@@ -139,20 +139,20 @@ SECTIONS = [
     ("Hollins Lane", "C", "urban", "leisure", 8950, "Fenwick Road", "Hollins Park entrance", 0.81, "J11", 1),
     ("Infirmary Road", "U", "urban", "hospital", 8800, "Coventry Road", "Priory Road", 0.47, "J14", 2),
     ("Grange Road", "B", "urban", "school", 7400, "Station Street", "Sandy Lane", 0.74, "J08", 1),
-    ("Castlegate Road", "C", "urban", "industrial", 7300, "Leamore Road", "Castlegate Industrial Estate", 0.95, "J16", 1),
+    ("Castlegate Road", "C", "urban", "industrial", 7300, "Lea Road", "Castlegate Industrial Estate", 0.95, "J16", 1),
     ("College Road", "B", "urban", "university", 6900, "Kingsway", "Oakhill Road", 0.58, "J03", 1),
     ("Station Street", "B", "urban", "commuter", 9900, "Market Way", "Grange Road", 0.52, "J09", 2),
     ("Kingsway", "B", "urban", "commuter", 11600, "Ring Road", "College Road", 0.69, "J02", 1),
     ("Mill Lane", "C", "urban", "commuter", 7100, "Coventry Road", "Tanhouse Lane", 0.88, "J13", 1),
-    ("Ashfield Road", "B", "urban", "commuter", 10400, "Darlaston Road", "Wharf Street", 0.73, None, 0),
-    ("Priory Road", "C", "urban", "commuter", 9300, "Infirmary Road", "Bloxwich Road", 0.66, None, 0),
+    ("Ashfield Road", "B", "urban", "commuter", 10400, "Ashby Road", "Wharf Street", 0.73, None, 0),
+    ("Priory Road", "C", "urban", "commuter", 9300, "Infirmary Road", "Northgate Road", 0.66, None, 0),
     ("Wharf Street", "B", "urban", "commuter", 12700, "Ashfield Road", "Canal Street", 0.41, None, 0),
-    ("Sandy Lane", "U", "urban", "commuter", 6700, "Grange Road", "Birchills Street", 0.57, None, 0),
+    ("Sandy Lane", "U", "urban", "commuter", 6700, "Grange Road", "Birch Street", 0.57, None, 0),
     ("Oakhill Road", "C", "urban", "commuter", 5200, "College Road", "Rowley Street", 0.79, None, 0),
-    ("Tanhouse Lane", "C", "urban", "commuter", 7350, "Mill Lane", "Darlaston Road", 0.84, None, 0),
-    ("Lower Heath Road", "C", "rural", "interurban", 4100, "Walsall Road", "Heath End", 1.92, None, 0),
-    ("Cradley Lane", "U", "rural", "interurban", 6200, "Lichfield Road", "Cradley", 1.37, None, 0),
-    ("Holloway Bank", "B", "rural", "interurban", 9700, "Walsall Road", "Pelsall Lane", 1.48, None, 0),
+    ("Tanhouse Lane", "C", "urban", "commuter", 7350, "Mill Lane", "Ashby Road", 0.84, None, 0),
+    ("Lower Heath Road", "C", "rural", "interurban", 4100, "Stafford Road", "Heath End", 1.92, None, 0),
+    ("Cradock Lane", "U", "rural", "interurban", 6200, "Lichgate Road", "Cradock", 1.37, None, 0),
+    ("Holloway Hill", "B", "rural", "interurban", 9700, "Stafford Road", "Pelham Lane", 1.48, None, 0),
 ]
 
 # Permanent automatic counters: name, road, class, setting, base AADF, installation date of the TX-200.
@@ -160,14 +160,14 @@ ATCS = [
     ("Western Avenue", "A", "urban", 24600, dt.date(2025, 3, 11)),
     ("Coventry Road", "A", "urban", 19800, dt.date(2025, 3, 12)),
     ("Ring Road North", "A", "urban", 27900, dt.date(2025, 3, 18)),
-    ("Leamore Road", "B", "urban", 13200, dt.date(2025, 4, 2)),
+    ("Lea Road", "B", "urban", 13200, dt.date(2025, 4, 2)),
     ("Fenwick Road", "A", "urban", 17400, dt.date(2025, 4, 3)),
     ("Birmingham Road", "A", "urban", 22100, dt.date(2025, 4, 23)),
-    ("Darlaston Road", "B", "urban", 12100, dt.date(2025, 5, 7)),
-    ("Bloxwich Road", "A", "urban", 15600, dt.date(2025, 5, 8)),
-    ("Walsall Road", "A", "rural", 16300, dt.date(2025, 5, 20)),
-    ("Lichfield Road", "B", "rural", 9800, dt.date(2025, 6, 3)),
-    ("Pelsall Lane", "C", "rural", 6900, dt.date(2025, 6, 4)),
+    ("Ashby Road", "B", "urban", 12100, dt.date(2025, 5, 7)),
+    ("Northgate Road", "A", "urban", 15600, dt.date(2025, 5, 8)),
+    ("Stafford Road", "A", "rural", 16300, dt.date(2025, 5, 20)),
+    ("Lichgate Road", "B", "rural", 9800, dt.date(2025, 6, 3)),
+    ("Pelham Lane", "C", "rural", 6900, dt.date(2025, 6, 4)),
 ]
 
 # Signalised junctions. control: MOVA (isolated) or SCOOT (linked). arms: road, heading of the approach,
@@ -181,19 +181,19 @@ JUNCTIONS = [
     ("J11", "Fenwick Road / Hollins Lane", "MOVA", [("Fenwick Road", "NB", "commuter", 8600, 2), ("Fenwick Road", "SB", "commuter", 8900, 2)]),
     ("J13", "Coventry Road / Mill Lane", "MOVA", [("Coventry Road", "EB", "commuter", 9700, 2), ("Coventry Road", "WB", "commuter", 9400, 2)]),
     ("J14", "Coventry Road / Infirmary Road", "MOVA", [("Coventry Road", "EB", "commuter", 9100, 2), ("Coventry Road", "WB", "commuter", 9900, 2)]),
-    ("J16", "Leamore Road / Castlegate Road", "MOVA", [("Leamore Road", "NB", "commuter", 6500, 1), ("Leamore Road", "SB", "commuter", 6800, 1)]),
+    ("J16", "Lea Road / Castlegate Road", "MOVA", [("Lea Road", "NB", "commuter", 6500, 1), ("Lea Road", "SB", "commuter", 6800, 1)]),
     ("J19", "Western Avenue / Fenwick Road", "SCOOT", [("Western Avenue", "NB", "commuter", 11200, 2), ("Western Avenue", "SB", "commuter", 11900, 2), ("Fenwick Road", "EB", "commuter", 7600, 1), ("Fenwick Road", "WB", "retail", 5300, 1)]),
     ("J23", "Ring Road / Tanyard Lane", "SCOOT", [("Ring Road", "EB", "commuter", 12600, 2), ("Ring Road", "WB", "commuter", 13300, 2), ("Tanyard Lane", "NB", "leisure", 3900, 1), ("Tanyard Lane", "SB", "commuter", 4600, 1)]),
-    ("J20", "Bloxwich Road / Station Street", "SCOOT", [("Bloxwich Road", "NB", "commuter", 7400, 2), ("Bloxwich Road", "SB", "commuter", 7700, 2), ("Station Street", "EB", "commuter", 4100, 1)]),
-    ("J21", "Ring Road / Bloxwich Road", "SCOOT", [("Ring Road", "EB", "commuter", 13500, 2), ("Ring Road", "WB", "commuter", 12900, 2), ("Bloxwich Road", "NB", "commuter", 6900, 1), ("Bloxwich Road", "SB", "commuter", 7200, 1)]),
-    ("J22", "Birmingham Road / Darlaston Road", "SCOOT", [("Birmingham Road", "NB", "commuter", 10600, 2), ("Birmingham Road", "SB", "commuter", 10100, 2), ("Darlaston Road", "EB", "commuter", 5600, 1), ("Darlaston Road", "WB", "commuter", 5900, 1)]),
+    ("J20", "Northgate Road / Station Street", "SCOOT", [("Northgate Road", "NB", "commuter", 7400, 2), ("Northgate Road", "SB", "commuter", 7700, 2), ("Station Street", "EB", "commuter", 4100, 1)]),
+    ("J21", "Ring Road / Northgate Road", "SCOOT", [("Ring Road", "EB", "commuter", 13500, 2), ("Ring Road", "WB", "commuter", 12900, 2), ("Northgate Road", "NB", "commuter", 6900, 1), ("Northgate Road", "SB", "commuter", 7200, 1)]),
+    ("J22", "Birmingham Road / Ashby Road", "SCOOT", [("Birmingham Road", "NB", "commuter", 10600, 2), ("Birmingham Road", "SB", "commuter", 10100, 2), ("Ashby Road", "EB", "commuter", 5600, 1), ("Ashby Road", "WB", "commuter", 5900, 1)]),
     ("J24", "Ring Road / Market Way", "SCOOT", [("Ring Road", "EB", "commuter", 14100, 2), ("Ring Road", "WB", "commuter", 13700, 2), ("Market Way", "NB", "retail", 5100, 1), ("Market Way", "SB", "retail", 4800, 1)]),
     ("J25", "Coventry Road / Ring Road", "SCOOT", [("Coventry Road", "EB", "commuter", 9800, 2), ("Coventry Road", "WB", "commuter", 10300, 2), ("Ring Road", "NB", "commuter", 12800, 2), ("Ring Road", "SB", "commuter", 12400, 2)]),
-    ("J26", "Western Avenue / Leamore Road", "SCOOT", [("Western Avenue", "NB", "commuter", 10900, 2), ("Western Avenue", "SB", "commuter", 11400, 2), ("Leamore Road", "EB", "commuter", 5900, 1)]),
+    ("J26", "Western Avenue / Lea Road", "SCOOT", [("Western Avenue", "NB", "commuter", 10900, 2), ("Western Avenue", "SB", "commuter", 11400, 2), ("Lea Road", "EB", "commuter", 5900, 1)]),
     ("J27", "Birmingham Road / Canal Street", "SCOOT", [("Birmingham Road", "NB", "commuter", 9900, 2), ("Birmingham Road", "SB", "commuter", 9600, 2), ("Canal Street", "WB", "commuter", 3300, 1)]),
     ("J28", "Fenwick Road / Market Way", "SCOOT", [("Fenwick Road", "NB", "commuter", 7100, 1), ("Fenwick Road", "SB", "commuter", 6900, 1), ("Market Way", "EB", "retail", 4600, 1), ("Market Way", "WB", "retail", 4400, 1)]),
-    ("J30", "Darlaston Road / Wednesbury Road", "MOVA", [("Darlaston Road", "NB", "commuter", 6000, 1), ("Darlaston Road", "SB", "commuter", 6200, 1), ("Wednesbury Road", "EB", "industrial", 3100, 1)]),
-    ("J31", "Lichfield Road / Mill Street", "MOVA", [("Lichfield Road", "NB", "commuter", 5400, 1), ("Lichfield Road", "SB", "commuter", 5100, 1), ("Mill Street", "WB", "commuter", 2300, 1)]),
+    ("J30", "Ashby Road / Weston Road", "MOVA", [("Ashby Road", "NB", "commuter", 6000, 1), ("Ashby Road", "SB", "commuter", 6200, 1), ("Weston Road", "EB", "industrial", 3100, 1)]),
+    ("J31", "Lichgate Road / Mill Street", "MOVA", [("Lichgate Road", "NB", "commuter", 5400, 1), ("Lichgate Road", "SB", "commuter", 5100, 1), ("Mill Street", "WB", "commuter", 2300, 1)]),
 ]
 REFURBISHED = {"J19": dt.date(2025, 4, 14), "J23": dt.date(2025, 7, 21)}   # controller replaced, channels re-terminated
 DARK_DAYS = 3                                                               # detectors dark during the swap
@@ -259,7 +259,295 @@ def build_world():
     return W
 
 
-if __name__ == "__main__":
+
+
+# ---------------------------------------------------------------------------------------------------------
+# Detectors, counter channels, count days and the manual counts.
+# ---------------------------------------------------------------------------------------------------------
+import est  # noqa: E402
+
+SECTION_SIDE = {"Brookfield Way": ("in", "out"), "Hollins Lane": ("in", "out"), "Infirmary Road": ("in", "out"),
+                "Grange Road": ("out", "in"), "College Road": ("out", "in"), "Castlegate Road": ("out", "out"),
+                "Station Street": ("in", "in"), "Kingsway": ("in", "in"), "Mill Lane": ("out", "out")}
+CONTROLS = {"Station Street", "Kingsway", "Mill Lane"}
+
+
+def neutral_pool():
+    out = []
+    for d in DAYS:
+        if not (dt.date(2025, 3, 3) <= d <= dt.date(2025, 10, 23)):
+            continue
+        if d.weekday() > 3 or d in BANK_HOLIDAYS or in_ranges(d, SCHOOL_HOLIDAYS):
+            continue
+        out.append(d)
+    return out
+
+
+def make_detectors(W):
+    rng = np.random.default_rng([SEED, 7])
+    refs = {}
+    used = set()
+    for j in JUNCTIONS:
+        while True:
+            r = "%04d" % int(rng.integers(110, 990))
+            if r not in used:
+                used.add(r)
+                refs[j[0]] = r
+                break
+    sec_by_j = {s["end_j"]: s for s in W.sections if s["end_j"]}
+    W.junctions = []
+    W.detectors = []          # one per channel
+    for jid, jname, control, arms in JUNCTIONS:
+        arms = list(arms)
+        s = sec_by_j.get(jid)
+        if s is not None:
+            arms.insert(int(rng.integers(0, len(arms) + 1)), (s["name"], section_heading(s["name"]), s["kind"], None, s["lanes"]))
+        chans = []
+        for ai, (road, head, kind, aadf, lanes) in enumerate(arms):
+            letter = "ABCD"[ai]
+            if aadf is None:          # the counted section's own approach: one direction of its two-way flow
+                eta = rng.normal(0.0, 0.011, len(DAYS))
+                a24 = s["dir_share"] * s["q24"] * (1.0 + eta)
+                a12 = s["dir_share"] * s["q12"] * (1.0 + eta + rng.normal(0.0, 0.004, len(DAYS)))
+                own = s["name"]
+            else:
+                m = np.array([rhythm(kind, d) for d in DAYS])
+                m = m / m.mean()
+                e = rng.normal(0.0, 0.03, len(DAYS))
+                a24 = aadf * m * (1.0 + W.delta) * (1.0 + e)
+                a12 = a24 * np.array([r12(kind, d) for d in DAYS]) * (1.0 + rng.normal(0.0, 0.006, len(DAYS)))
+                own = None
+            if lanes == 1:
+                shares = [rng.uniform(0.968, 0.992)]
+            else:
+                l1 = rng.uniform(0.50, 0.60)
+                shares = [l1, rng.uniform(0.955, 0.985) - l1]
+            for li, sh in enumerate(shares):
+                eps = rng.normal(0.0, 0.012 if lanes == 2 else 0.006, len(DAYS))
+                d24 = sh * a24 * (1.0 + eps)
+                d12 = sh * a12 * (1.0 + eps + rng.normal(0.0, 0.003, len(DAYS)))
+                chans.append({"junction": jid, "arm": letter, "road": road, "heading": head, "lane": li + 1,
+                              "kind": kind, "section": own, "d24": d24, "d12": d12})
+        # channel numbering: current (register) order; refurbished junctions had another order before the swap
+        order = list(range(len(chans)))
+        rng.shuffle(order)
+        for ch_no, ci in enumerate(order, start=1):
+            chans[ci]["channel"] = ch_no
+        if jid in REFURBISHED:
+            old = list(range(1, len(chans) + 1))
+            while True:
+                rng.shuffle(old)
+                if all(old[i] != chans[i]["channel"] for i in range(len(chans))):
+                    break
+            for i, c in enumerate(chans):
+                c["old_channel"] = old[i]
+        # availability
+        for c in chans:
+            av = np.full(len(DAYS), 100.0)
+            if jid in REFURBISHED:
+                sw = DIDX[REFURBISHED[jid]]
+                av[sw - 1:sw - 1 + DARK_DAYS] = 0.0
+            else:
+                p_part = 0.016 if c["section"] else 0.022
+                for i in range(len(DAYS)):
+                    u = rng.random()
+                    if u < 0.003:
+                        av[i] = 0.0
+                    elif u < 0.003 + p_part:
+                        av[i] = float(rng.integers(58, 100))
+                if c["section"] is None and rng.random() < 0.10:      # a longer loop fault on a few channels
+                    st = int(rng.integers(20, 330))
+                    av[st:st + int(rng.integers(9, 26))] = 0.0
+            c["avail"] = av
+            obs24 = np.where(av > 0, np.round(c["d24"] * av / 100.0 * (1.0 + np.where(av < 100, rng.normal(0, 0.02, len(DAYS)), 0.0))), np.nan)
+            obs12 = np.where(av > 0, np.round(c["d12"] * av / 100.0 * (1.0 + np.where(av < 100, rng.normal(0, 0.02, len(DAYS)), 0.0))), np.nan)
+            c["obs24"], c["obs12"] = obs24, obs12
+        W.junctions.append({"id": jid, "ref": refs[jid], "name": jname, "control": control, "arms": arms})
+        W.detectors.extend(chans)
+    W.refs = refs
+
+
+SCHEME_ARD = ["motorcycle", "car", "car_trailer", "lgv", "rigid2", "rigid3", "artic", "bus"]
+
+
+def atc_channels(W):
+    """24-hour vehicles by output channel: legacy ARD-8 classes until the firmware push, native TX-8 after."""
+    rng = np.random.default_rng([SEED, 11])
+    for a in W.atcs:
+        n = len(DAYS)
+        tot = np.round(a["q24"]).astype(int)
+        mc, bus, lgv, trl, hgv = a["mc_share"], a["bus_share"], a["lgv_share"], a["trailer_share"], a["hgv_share"]
+        r2 = a["rigid2_frac"]
+        art = rng.uniform(0.30, 0.42)
+        ch = np.zeros((n, 8), dtype=int)
+        truth = np.zeros((n, 8), dtype=int)
+        for i, d in enumerate(DAYS):
+            wk = d.weekday()
+            hf = 1.0 if wk < 5 else (0.55 if wk == 5 else 0.35)
+            p_h = hgv * hf / (1.0 if wk < 5 else 0.85)
+            p = np.array([mc, 0.0, trl, lgv, p_h * r2, p_h * (1 - r2 - art), p_h * art, bus])
+            p = p * (1.0 + rng.normal(0.0, 0.05, 8))
+            p = np.clip(p, 0.0002, None)
+            p[1] = 1.0 - p.sum()
+            v = rng.multinomial(int(tot[i]), p)
+            truth[i] = v
+            if d < FIRMWARE_PUSH:
+                ch[i] = v
+            else:
+                l_short = int(round(v[3] * rng.uniform(0.66, 0.74)))
+                a5 = int(round(v[6] * rng.uniform(0.64, 0.76)))
+                ch[i] = [v[0], v[1] + l_short, v[3] - l_short, v[2], v[7], v[4], v[5] + v[6] - a5, a5]
+        a["classes_true"] = truth
+        a["channels"] = ch
+        a["obs24"] = tot.astype(float)
+        a["obs12"] = np.round(a["q12"]).astype(float)
+        a["hgv_true"] = truth[:, 4] + truth[:, 5] + truth[:, 6]
+    # a six-day outage at one rural counter in January (rows absent from the export)
+    W.atc_outage = (W.atcs[9]["name"], [DIDX[dt.date(2025, 1, 20)] + k for k in range(6)])
+    for k in W.atc_outage[1]:
+        W.atcs[9]["obs24"][k] = np.nan
+        W.atcs[9]["obs12"][k] = np.nan
+
+
+def count_rows(s, si, di, base_mult=1.0):
+    """The 12-hour manual classified count on day di: rows (direction, hour, classes)."""
+    rng = np.random.default_rng([SEED, 31, si, di, int(round(base_mult * 1000))])
+    total = int(round(s["q12"][di] * base_mult * (1.0 + rng.normal(0.0, 0.006))))
+    w = np.array(HOURLY[s["kind"]], dtype=float) * (1.0 + rng.normal(0.0, 0.05, 12))
+    inbound = np.clip(0.5 + np.linspace(0.07, -0.07, 12) * (1 if s["kind"] in ("commuter", "school", "hospital", "industrial", "university") else -0.4) + rng.normal(0, 0.02, 12), 0.3, 0.7)
+    cells = np.concatenate([w * inbound, w * (1 - inbound)])
+    alloc = rng.multinomial(total, cells / cells.sum())
+    hgv, bus, lgv, mc = s["hgv"], s["bus"], s["lgv"], s["mc"]
+    hsplit = np.array([0.42, 0.10, 0.08, 0.10, 0.12, 0.18])
+    rows = []
+    for k, n in enumerate(alloc):
+        direction = 0 if k < 12 else 1
+        hour = 7 + (k % 12)
+        p = np.concatenate([[mc, 0.0, bus, lgv], hgv * hsplit])
+        p[1] = 1.0 - p.sum()
+        v = rng.multinomial(int(n), p)
+        cyc = int(rng.poisson(max(0.5, n * s["cyc"])))
+        rows.append((direction, hour, cyc, v))
+    return rows, total
+
+
+def count_total(rows):
+    return int(sum(int(v.sum()) for _, _, _, v in rows))
+
+
+def lane_arrays(W, sname):
+    chans = [c for c in W.detectors if c["section"] == sname]
+    chans.sort(key=lambda c: c["lane"])
+    return chans
+
+
+def tmg_group(W, setting=None):
+    return [(a["obs24"], a["obs12"]) for a in W.atcs if setting is None or a["setting"] == setting]
+
+
+def families(W, s, si, di, base_mult=1.0):
+    rows, _ = count_rows(s, si, di, base_mult)
+    c12 = count_total(rows)
+    grp = tmg_group(W, s["setting"])
+    tm = {k: f(c12, di, grp) if "same-day" in k else f(c12, di, grp, BANK_HOLIDAYS) for k, f in est.TMG.items()}
+    tm["T5 same-day, every counter pooled"] = est.tmg_sameday_ratio_of_sums(c12, di, tmg_group(W))
+    own = {}
+    if s["end_j"]:
+        ch = lane_arrays(W, s["name"])
+        d24 = np.nansum([c["obs24"] for c in ch], axis=0)
+        d12 = np.nansum([c["obs12"] for c in ch], axis=0)
+        av = np.min([c["avail"] for c in ch], axis=0)
+        d24 = np.where(av > 0, d24, np.nan)
+        d12 = np.where(av > 0, d12, np.nan)
+        for k, f in est.OWN.items():
+            own[k] = f(c12, di, d24, d12, av) if "month" not in k else f(c12, di, d24, d12, av, BANK_HOLIDAYS)
+        if len(ch) == 2:
+            for c in ch:
+                own["G1 lane %d alone" % c["lane"]] = est.own_exact_day(c12, di, c["obs24"], c["obs12"], c["avail"])
+    return c12, tm, own
+
+
+def ok_day(W, s, si, di, base_mult):
+    if s["end_j"]:
+        ch = lane_arrays(W, s["name"])
+        if any(c["avail"][di] < 100 for c in ch):
+            return False
+    for a in W.atcs:
+        if np.isnan(a["obs12"][di]):
+            return False
+    c12, tm, own = families(W, s, si, di, base_mult)
+    gold_fam = own if s["end_j"] else tm
+    gkey = "G1 counted day, full days" if s["end_j"] else "T1 same-day, ratio of sums"
+    g = est.bin01(gold_fam[gkey])
+    gb = round(g, 1)
+    side_gold = "in" if g > 3.0 else "out"
+    for v in gold_fam.values():
+        b = est.bin01(v)
+        if round(b, 1) != gb or est.edge(b) < 0.014 or abs(b - 3.0) < 0.12:
+            return False
+        if ("in" if b > 3.0 else "out") != side_gold:
+            return False
+    if s["end_j"]:
+        want_g, want_d = SECTION_SIDE[s["name"]]
+        if side_gold != want_g:
+            return False
+        for v in tm.values():
+            b = est.bin01(v)
+            if ("in" if b > 3.0 else "out") != want_d or abs(b - 3.0) < 0.08:
+                return False
+            if s["name"] in CONTROLS:
+                if round(b, 1) != gb or est.edge(b) < 0.01:
+                    return False
+            elif abs(b - g) < 0.2:
+                return False
+    return True
+
+
+def choose_count_days(W):
+    pool = neutral_pool()
+    W.count_day = {}
+    W.base_mult = {}
+    for si, s in enumerate(W.sections):
+        rng = np.random.default_rng([SEED, 53, si])
+        order = list(pool)
+        rng.shuffle(order)
+        found = None
+        for bm in (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016):
+            for d in order:
+                if ok_day(W, s, si, DIDX[d], bm):
+                    found = (d, bm)
+                    break
+            if found:
+                break
+        if not found:
+            raise RuntimeError("no count day for %s" % s["name"])
+        W.count_day[s["name"]], W.base_mult[s["name"]] = found
+        if found[1] != 1.0:          # the section's level is the tuned free parameter: rescale its flows
+            s["q24"] = s["q24"] * found[1]
+            s["q12"] = s["q12"] * found[1]
+            for c in lane_arrays(W, s["name"]):
+                for k in ("d24", "d12", "obs24", "obs12"):
+                    c[k] = c[k] * found[1]
+                c["obs24"] = np.round(c["obs24"])
+                c["obs12"] = np.round(c["obs12"])
+        rows, tot = count_rows(s, si, DIDX[found[0]], 1.0)
+        s["count_rows"], s["count_total"] = rows, count_total(rows)
+
+
+def build():
     W = build_world()
-    for s in W.sections:
-        print(s["name"], round(s["q24"].mean()), s["kind"])
+    make_detectors(W)
+    atc_channels(W)
+    choose_count_days(W)
+    return W
+
+
+if __name__ == "__main__":
+    W = build()
+    for si, s in enumerate(W.sections):
+        d = W.count_day[s["name"]]
+        c12, tm, own = families(W, s, si, DIDX[d], 1.0)
+        g = own.get("G1 counted day, full days") or tm["T1 same-day, ratio of sums"]
+        print("%-17s %s x%.3f c12 %5d true %6.0f gold %6.0f (%.2fM) tmg %6.0f (%.2fM)" % (
+            s["name"], d, W.base_mult[s["name"]], c12, s["q24"].mean(), g, est.bin01(g),
+            tm["T1 same-day, ratio of sums"], est.bin01(tm["T1 same-day, ratio of sums"])))
