@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Morrow Cross and Tamsey",
+  "answer_source": "task483/submission.md",
   "gap": [
     "objective",
     "population"
@@ -38,19 +38,20 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:empiric coverage read on the cultures taken before any course, not on every culture the laboratory receives",
   "layer1": [
-    "pathology network export in the laboratory's own organism and antibiotic codes",
-    "susceptibility entries S, I, R and expert-rule R for intrinsic resistance",
-    "repeat specimens from one episode",
-    "GP issue extract with brand, generic, strength and duration variants",
-    "a practice merger in 2026 that changes practice codes mid-year",
-    "collection, receipt and report dates against issue dates"
+    "the culture export across two laboratory systems (go-live 7 September 2026): accession formats, date layouts and result wording of each",
+    "organism codes the current code table only partly covers; one row per organism; S, I and R with expert-rule R",
+    "two pots from one consultation, each registered",
+    "antenatal, emergency department, assessment unit and ward requests beside the practices' and the hub's",
+    "children's bag and clean-catch urines and catheter specimens",
+    "EMIS and SystmOne product names and dosage texts, acute and repeat issues, suspensions and prophylaxis templates",
+    "Stanbridge Road's records under Hollin Lane from the 1 July 2026 merger; hub issues with the registered practice"
   ],
   "stakeholder_role": "the federation's antimicrobial stewardship lead",
   "role_family": "compliance_or_audit",
   "scoring_unit": "per episode",
   "spine": {
     "file": "urine_culture_results_2024-2026.csv",
-    "rows": 0,
+    "rows": 73705,
     "entity": "one urine specimen result the pathology laboratory reported to a member practice",
     "grain": "specimen",
     "source": "synthetic"
@@ -85,7 +86,7 @@
   "question_form": "where",
   "driver": "A choice's failure share among the cases a first choice treats is read from records made mostly after a first choice has failed, so the current choices' own failures fill the record with the cases they fail on and shrink every alternative's apparent gain; only the records made before any choice was given estimate the share, and read there the comparison between alternatives reverses.",
   "driver_concrete": "Each off-guideline drug's chance of meeting a resistant organism is read on the urine cultures sent at a first consultation (no UTI antibiotic in the episode before the specimen), not on every community culture, because GPs culture after a failed course far more than at presentation and nitrofurantoin's and trimethoprim's failed courses fill the laboratory's record with organisms resistant to them, so nitrofurantoin reads near 12 per cent instead of 6 and the pivmecillinam courses that moving to it would fix look worthless.",
-  "stump": "The default path prices each off-guideline first course at its drug's resistance in the federation's 2024 to 2026 community urine cultures from women aged 16 to 64, first isolate per woman a year, where nitrofurantoin reads about 12 per cent because a culture follows most failed courses, so moving pivmecillinam, cefalexin and co-amoxiclav courses to it looks worthless and the pharmacists go to Kesterby and Ashwell Vale for their trimethoprim; read on the cultures taken at a first consultation, nitrofurantoin is about 6 per cent against pivmecillinam's 11 and Morrow Cross and Tamsey stop the most mismatched first courses.",
+  "stump": "The default path prices each off-guideline first course at its antibacterial's resistance in the federation's 2024 to 2026 community urine antibiogram for women aged 16 to 64, first isolate per woman and organism a year, where nitrofurantoin reads 19.0 per cent because a culture follows nearly every failed course and nitrofurantoin's failures send the laboratory the organisms resistant to it, so moving pivmecillinam and fosfomycin courses to nitrofurantoin looks worthless and the pharmacists go to Kesterby and Ashwell Vale for their trimethoprim; read on the cultures sent at a first course's own consultation, nitrofurantoin is 5.4 per cent against pivmecillinam's 13.1 and fosfomycin's 9.9, and Morrow Cross and Tamsey stop the most mismatched first courses.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task308": "task308 v3 conditions an added unit's availability on the hours the decision prices, read from sister units out together on one fuel service; here nothing is conditioned on the period priced: the record itself is made by the outcome (a culture is sent because a course failed), so the conditioning is on how each record came to exist, and the fix is reading the records made before any course, not replaying hours",
@@ -120,6 +121,8 @@
       "deliverable set": "svg+xlsx"
     }
   ],
-  "notes": "Architecture 2, drawn 2026-11-02 after the author re-tasked the number from Data Extraction & Conformation (ETL) to Opportunity Sizing & Decision Support on 2026-11-01 (retirement not taken; START_HERE.md not edited: the range fixes which objective a number belongs to and nothing else, and the card and the ledger carry the real objective). Gap objective first: the laboratory's resistance rates are correct for the cultures it receives and are not the rate the placement is scored on; G14 conditioned yield first, G6 composition second.",
-  "registered": "2026-11-02T00:30:12Z"
+  "notes": "Architecture 2, drawn 2026-11-02 after the author re-tasked the number from Data Extraction & Conformation (ETL) to Opportunity Sizing & Decision Support on 2026-11-01 (retirement not taken; START_HERE.md not edited: the range fixes which objective a number belongs to and nothing else, and the card and the ledger carry the real objective). Gap objective first: the laboratory's resistance rates are correct for the cultures it receives and are not the rate the placement is scored on; G14 conditioned yield first, G6 composition second. Shipped 2026-11-02: placement Morrow Cross and Tamsey (about 70 mismatched first courses stopped each, runner-up Kesterby about 50) against the default path's Kesterby and Ashwell Vale; ceiling.py pair 28.5; leak reader NO LEAK.",
+  "registered": "2026-11-02T00:30:12Z",
+  "asks": "one ask, 14 figures: women aged 65 and over and men aged 16 and over with a 2026 culture from a practice or the hub growing an enterococcus and an Enterobacter, by network; device a code the new laboratory system reissued (the old ENTC is the Enterobacter cloacae complex, the new ENTC the enterococci, the shipped table the new system's)",
+  "shipped": "2026-11-02"
 }

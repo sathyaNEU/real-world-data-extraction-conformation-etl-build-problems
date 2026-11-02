@@ -1,0 +1,70 @@
+{
+ "task": "task483",
+ "architecture": 2,
+ "title": "Placing the 2027-28 UTI pathway pharmacists",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "subdomain": "benefit-risk-assessment",
+ "objective": "Opportunity Sizing & Decision Support",
+ "prompt_shape": "01",
+ "as_of": "2027-01-11",
+ "deliverables": [
+  "uti_pathway_placement_2027-28.xlsx",
+  "uti_pathway_placement_note_2027-28.docx"
+ ],
+ "distractor_files": [
+  "icb_antimicrobial_prescribing_2025-26.xlsx",
+  "c_difficile_community_cases_2024-2026.csv",
+  "gp_registered_list_sizes_2026-10.csv"
+ ],
+ "stated_inputs": [],
+ "input_gates": {
+  "files": 10,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "gp_uti_antibacterial_issues_2024-2026.csv",
+  "largest_file_rows": 118996
+ },
+ "sources": [
+  {
+   "files": [
+    "urine_culture_results_2024-2026.csv",
+    "laboratory_organism_codes.csv",
+    "laboratory_antimicrobial_codes.csv"
+   ],
+   "origin": "constructed: the pathology network laboratory's urine culture export across its two laboratory systems (go-live 7 September 2026) and its current code tables, generated from a simulated process of consultations, cultures and susceptibilities (task483/generator/world.py, records.py, pack.py)",
+   "date": "2027-01-06",
+   "license": "CC0-1.0 (synthetic, no real patient data)"
+  },
+  {
+   "files": [
+    "gp_uti_antibacterial_issues_2024-2026.csv"
+   ],
+   "origin": "constructed: the federation's EMIS and SystmOne issue extract for urinary problems, generated from the same simulated consultations",
+   "date": "2027-01-07",
+   "license": "CC0-1.0 (synthetic)"
+  },
+  {
+   "files": [
+    "member_practice_register_2026.xlsx",
+    "uti_pathway_code_lists_2027-28.xlsx",
+    "uti_pathway_specification_2027-28.pdf"
+   ],
+   "origin": "constructed: the federation's register, pathway code lists and pathway specification, written for this task; drug choices follow NICE NG109 (lower UTI, antimicrobial prescribing, 2018)",
+   "date": "2026-12-03",
+   "license": "CC0-1.0 (synthetic); NICE NG109 cited, not reproduced"
+  },
+  {
+   "files": [
+    "icb_antimicrobial_prescribing_2025-26.xlsx",
+    "c_difficile_community_cases_2024-2026.csv",
+    "gp_registered_list_sizes_2026-10.csv"
+   ],
+   "origin": "constructed: ICB prescribing indicators, community C. difficile cases and an NHS Digital style registered-list file for the invented practices (layout after NHS Digital's Patients Registered at a GP Practice, Open Government Licence v3.0)",
+   "date": "2026-11-13",
+   "license": "CC0-1.0 (synthetic); layout reference OGL-3.0"
+  }
+ ]
+}

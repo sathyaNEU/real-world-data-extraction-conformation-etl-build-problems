@@ -111,22 +111,24 @@ reports resistant to the drug given, priced on the networks' 2026 first courses.
 5. Price each off-guideline course at its drug's resistance less nitrofurantoin's, sum by network, take the two
    largest.
 
-Ends on: Kesterby and Ashwell Vale, whose off-guideline courses are mostly trimethoprim; nitrofurantoin reads about 12
-per cent, so moving pivmecillinam, cefalexin or co-amoxiclav courses to it looks worth nothing or less.
+Ends on: Kesterby and Ashwell Vale, whose courses on other antibacterials are mostly trimethoprim; the antibiogram
+reads nitrofurantoin at 19.0 per cent of 7,352 first isolates and pivmecillinam at 21.2, so moving pivmecillinam,
+fosfomycin, cefalexin or co-amoxiclav courses to nitrofurantoin looks worth almost nothing or less (Kesterby 34.1,
+Ashwell Vale 26.9, then Upper Lode 10.0, Morrow Cross 8.9 and Tamsey 4.7).
 
-Golden: Morrow Cross and Tamsey. Read on the cultures sent at a first consultation (no UTI antibiotic in the episode
-before the specimen), nitrofurantoin is about 6 per cent and pivmecillinam about 11, so their pivmecillinam and
-co-amoxiclav courses stop the most mismatched first courses. Figures are set at the build.
+Golden: Morrow Cross and Tamsey, about 70 mismatched first courses stopped each (73.3 and 67.5 unrounded), runner-up
+Kesterby about 50 (47.5). Read on the 4,658 cultures sent at a first course's own consultation, nitrofurantoin meets a
+resistant organism in 5.4 per cent of first courses, pivmecillinam in 13.1 and fosfomycin in 9.9.
 
 ## Stump sentence
 
-The default path prices each off-guideline first course at its drug's resistance in the federation's 2024 to 2026
-community urine cultures from women aged 16 to 64, first isolate per woman a year, where nitrofurantoin reads about 12
-per cent because a culture follows most failed courses and nitrofurantoin's failures send the laboratory the organisms
-resistant to it, so moving pivmecillinam, cefalexin and co-amoxiclav courses to nitrofurantoin looks worthless and the
-pharmacists go to Kesterby and Ashwell Vale for their trimethoprim; read on the cultures taken at a first
-consultation, nitrofurantoin is about 6 per cent against pivmecillinam's 11, and Morrow Cross and Tamsey stop the most
-mismatched first courses.
+The default path prices each off-guideline first course at its antibacterial's resistance in the federation's 2024 to
+2026 community urine antibiogram for women aged 16 to 64, first isolate per woman and organism a year, where
+nitrofurantoin reads 19.0 per cent because a culture follows nearly every failed course and nitrofurantoin's failures
+send the laboratory the organisms resistant to it, so moving pivmecillinam and fosfomycin courses to nitrofurantoin
+looks worthless and the pharmacists go to Kesterby and Ashwell Vale for their trimethoprim; read on the cultures sent
+at a first course's own consultation, nitrofurantoin is 5.4 per cent against pivmecillinam's 13.1 and fosfomycin's 9.9,
+and Morrow Cross and Tamsey stop the most mismatched first courses.
 
 ## Three rules
 
@@ -165,23 +167,27 @@ antibiogram still gives the cultured isolates' rates; no field, code or definiti
 consultation or after a failed course, which takes the culture's place in the woman's prescribing history.
 
 Not rule application: no filed rule, standard or procedure says which cultures estimate a first course's chance of
-meeting a resistant organism; the specification files the outcome, the courses and the pricing, and executing every
-filed rule on the laboratory's cultures as they come files Kesterby and Ashwell Vale. Measured on the draw harness
-(scratch, three seeds): the enumerated family (all cultures, CLSI first isolate by woman and year, E. coli only,
-women 16 to 64 only, the cultures before any course) spreads nitrofurantoin's rate from about 6 to 13 per cent and
-names three different slates; the standing family (the estimates on cultures taken before any course, with or without
-standardising by first or repeat episode, windows of 14 to 60 days) spreads it under one point and names one slate.
-Re-measured on the generator's clean truth at stage 2.
+meeting a resistant organism; the specification files the outcome, the courses, the pricing and the placement, and
+executing every filed rule on the laboratory's cultures as they come files Kesterby and Ashwell Vale. Measured on the
+cut pack (`checks.py`): the enumerated family (the antibiogram for women 16 to 64, for all women, for everyone, for E.
+coli only, on every isolate, on every requester; the second-course route; the cultures at the consultation; the
+failure-weighted estimator over every culture) spreads nitrofurantoin's chance from 4.2 to 20.9 per cent and names two
+slates, Kesterby and Ashwell Vale on all seven laboratory and outcome routes; the standing family (the cultures at the
+first course's consultation under every window from the day of issue to two days either side, which select the same
+4,658 cultures, and the failure-weighted estimator) spreads it from 5.4 to 5.5 per cent, names one slate and keeps
+every network's nearest-10 figure; nothing loud rules the antibiogram out, only the filed WHAT's "a first course".
 
 Analyst test: the strong analyst prices each off-guideline drug at its resistance in the federation's community urine
 cultures from women aged 16 to 64, first isolate per woman a year, and files Kesterby and Ashwell Vale (the default
-path's `Ends on:`), while the cultures taken at a first consultation file Morrow Cross and Tamsey.
+path's `Ends on:`, 34.1 and 26.9 against Upper Lode's 10.0), while the cultures sent at a first course's consultation
+file Morrow Cross and Tamsey (73.3 and 67.5 against Kesterby's 47.5); `checks.py` executes both on the cut pack and the
+clean truth.
 
-Estimand: filed in `uti_pathway_specification_2027-28.pdf` (sections 3 and 4): each network's first courses for
-uncomplicated lower UTI in women aged 16 to 64 issued in calendar 2026 with an antibiotic other than nitrofurantoin,
-each counted as mismatched when the woman's infection carries an organism the laboratory reports resistant to the drug
-issued, less the same chance on nitrofurantoin; the pharmacists go to the two networks with the most mismatched courses
-stopped.
+Estimand: filed in `uti_pathway_specification_2027-28.pdf` (sections 2 to 4): each network's first courses for lower
+UTI in women aged 16 to 64 issued in calendar 2026 on a pathway antibacterial other than nitrofurantoin, each counted at
+its antibacterial's chance of meeting an organism the laboratory reports resistant (one federation figure per
+antibacterial over 2024 to 2026) less nitrofurantoin's; the pharmacists go to the two networks with the most mismatched
+courses stopped.
 
 No decoy: nothing is planted to be caught: the cultures sent after a failed course are there because GPs culture
 failures as NICE advises; no antibiogram report, memo, draft, briefing or stakeholder figure ships to carry the wrong
@@ -209,9 +215,10 @@ Reflex: the field's named construction for empiric coverage, the CLSI M39 cumula
 patient a year), sits at rung 1 and files the default slate; the obvious population filters (women 16 to 64, community
 requests, E. coli only) stay on it.
 
-Back-test: the textbook route validates: the antibiogram's rates hold steady across 2024, 2025 and 2026 and across the
-networks, because the culturing practice and the drug mix behind them did not change, so no trend or cross-section
-refutes it.
+Back-test: the textbook route validates: the antibiogram's rates hold steady across 2024, 2025 and 2026, every
+laboratory construction (all ages, everyone, every isolate, every requester, E. coli alone) and the outcome route of
+second courses name the same two networks, because the culturing practice and the drug mix behind them did not change,
+so no trend, cross-section or second method refutes it.
 
 Second use: the issue extract carries the pool (each network's 2026 courses by drug) and the asks; the laboratory export
 carries any coverage figure and the asks; deleting the decisive step leaves both files in the pack.
@@ -223,6 +230,162 @@ laboratories publish for urinary coliforms, and the golden slate is not the top 
 Pins: the WHAT is filed in the federation's pathway specification, a service specification in the organisation's own
 genre (the outcome, the courses, the pricing and the placement rule); no filed sentence names which cultures, the first
 consultation, the prescribing history, the antibiogram or a window for the cultures.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0, the cumulative antibiogram (women 16 to 64, community, first isolate a year), each course at its drug's resistance less nitrofurantoin's | specification 3.2 "the chance that a first course on it meets": fires toward the laboratory's results | the culture export's antibiotic columns | CLSI M39 first isolate: fires | none | none | one group-by | readable |
+| R1, the antibiogram widened or narrowed (all ages, everyone, E. coli only, every isolate, every requester) | none | the same columns | the field's surveillance tables: fires | none | none | one filter | readable |
+| R2, each drug's share of first courses followed by another course (the outcome route) | none | the issue extract's dates | treatment failure as the outcome: fires | none | none | one self-join | readable |
+| R3, the cultures sent at a first course's own consultation, before any course can have failed, each drug's resistant share of them (decisive) | none: the specification files the chance a first course meets a resistant organism, not which cultures measure it | none: no column marks a culture as sent at a first consultation or after a failed course | none: the antibiogram is the field's construction and de-duplicates isolates without looking at prescriptions | none | none | a join of each culture to the woman's issues across two files by pseudonym and date | silent |
+
+R3 is silent: every culture in the export is a valid report of a real infection, the antibiogram's rates are stable and
+plausible for English urinary isolates, and the outcome route agrees with it; the culture's place in the woman's
+prescribing history is a relation across two files that no field, document or rule names.
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternatives | Call under each | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | first course | acute issue, pathway antibacterial, lower UTI problem, woman 16 to 64 at issue, none in the 28 days before | repeat issues counted | same call (no repeat issue to a woman aged 16 to 64) | specification 2.1 "an acute issue" |
+| SF2 | the 28 days before | issues from 1 to 28 days before | 14, 21, 35 or 42 days | same call (asserted) | specification 2.1 |
+| SF3 | pregnancy | courses linked to a pregnancy problem are not pathway courses, nor their cultures in the estimate | pregnancy-linked cultures added | same call (asserted) | specification 2.1, the code list's "No" |
+| SF4 | a culture at the consultation | collected the day of the first course's issue | the day before to the day after, two days either side | same call, the same 4,658 cultures (C1, asserted) | same call |
+| SF5 | resistant | R, including expert-rule R; S and I not | I counted as R | same call (no pathway antibacterial reports I) | specification 3.1 |
+| SF6 | the chance | per culture, no growth and mixed growth carrying no resistant organism | per isolate | same call (asserted); figures change | specification 3.1 |
+| SF7 | a network's courses | the registered practice's network as the register gives it for 2027-28 | the issuing organisation, the hub apart | same call (asserted) | specification 2.2 |
+| SF8 | the hub | hub courses and their cultures belong to the registered practice | hub cultures left out of the estimate | same call (asserted) | specification 2.2 |
+| SF9 | the estimator | each drug's resistant share of the cultures at the consultation | every culture tied to a first course weighted by its episode's chance of being cultured given whether a second course followed | same call, every nearest-10 figure the same (asserted) | same call |
+| SF10 | the chance for a drug | taken over all first courses, whichever antibacterial each was issued | read only on the first courses issued that antibacterial | same call and runner-up (asserted); four networks' nearest-10 figures move | specification 3.2 "taken over all the federation's first courses whichever antibacterial each was in fact issued" (added after the stage 4 judge's FIX_NOW) |
+| SF13 | a course below nitrofurantoin's chance | counts against the network | floored at zero | same call (asserted) | specification 4.1 |
+| SF15 | de-duplication | each first course's culture counts | a woman's first culture each year only (CLSI) | same call (asserted) | specification 3.2 "the chance that a first course" |
+| SF18 | a second pot | one culture per first course, the first registered | both pots | same call (asserted) | same call |
+
+## Ladder
+
+Measured on the cut pack and asserted in `checks.py` (mismatched first courses stopped, 2026 basis).
+
+| Rung | Each drug's chance from | Nitrofurantoin | Slate | Second over third |
+|---|---|---|---|---|
+| R0 (default) | the antibiogram, women 16 to 64, first isolate a year (7,352 isolates) | 19.0 | Kesterby 34.1, Ashwell Vale 26.9 | 2.69 over Upper Lode |
+| R1 | the antibiogram for all women, everyone, E. coli only, every isolate, every requester | 4.2 to 20.9 | Kesterby and Ashwell Vale | 2.0 to 3.2 |
+| R2 | the share of first courses followed by another course | 12.0 | Kesterby and Ashwell Vale | 1.0 and up |
+| R3 (golden) | the cultures at the first course's consultation (4,658) | 5.4 | Morrow Cross 73.3, Tamsey 67.5 | 1.42 over Kesterby 47.5 |
+
+Dominance: the golden pair's edge on R3 (Tamsey over Kesterby, 20.0 courses) against the default pair's edge on R0
+(Ashwell Vale over Upper Lode, 16.9) is 1.18 in absolute courses and 1.42 against 2.69 in ratio; the separation holds
+on the clean truth (every episode's organism) at the margin `checks.py` prints. The golden pair is not the top two on
+any single shipped statistic (Shock, asserted): Stanbridge North has the most courses on other antibacterials, Morrow
+Cross and Upper Lode the most pivmecillinam, Tamsey and Stanbridge North the most fosfomycin.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | first courses as specification 2.1 defines them; women 16 to 64 at issue | filed |
+| 2 Unit of account | a first course; the chance per culture | filed (3.1, 3.2, 4.1) |
+| 3 Attribution window | courses by issue date in 2026; cultures by collection date 2024 to 2026 | filed (2.3, 3.2) |
+| 4 As-of dating | networks as the register gives them for 2027-28 | filed (2.2) |
+| 5 Version basis | the export as shipped, one laboratory report a specimen | C1 (no amended report) |
+| 6 Denominator | every culture at a first course's consultation | filed (3.1) |
+| 7 Weighting | one figure for the federation | filed (3.2); SF9 converges |
+| 8 Window length | the day of issue; up to two days either side | C1 (SF4) |
+| 9 Boundary inclusivity | 28 days before, 16 and 64 inclusive | filed; C1 (SF2) |
+| 10 Rounding path | courses stopped computed unrounded, each network rounded to the nearest 10 once | filed in the prompt; asserted stable across the standing family |
+| 11 Tie-break | none needed (margin 1.42) | C1 |
+| 12 Maturity and censoring | a 2026 course's culture is in the export (export pulled 6 January 2027) | C1 |
+| 13 Order of operations | estimate, then price, then sum | filed (4.1) |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | second pots: one culture per course | C1 (SF18) |
+| 16 Identity normalisation | the pseudonym both extracts carry | the systems' own key |
+| 17 Netting against gross | a course below nitrofurantoin counts against the network | filed (4.1); C1 (SF13) |
+| 18 Dimensional units | courses and chances | units in the data |
+| 19 Code and status semantics | the code lists' antibacterials and problems; R, S and I | the code lists; filed (3.1) |
+| 20 Integerisation | none | C1 |
+| 21 Clause scope | the specification's courses only | filed |
+| 22 Forward window contents | 2027-28 placement on the 2026 basis | filed (2.3) |
+
+## Literal reader
+
+Executed on paper and on the cut pack: every filed sentence read word for word lands the golden courses and pricing;
+the one open term is the estimate of each drug's chance, which the specification files as "the chance that a first
+course on it meets an organism the laboratory reports resistant"; read literally, a culture sent after a first course
+failed measures a failed course's infection, and the cultures that measure first courses are those at the first
+course's consultation, which every window and the failure-weighted estimator select or reproduce (SF4, SF9). No literal
+reading reaches the antibiogram's slate without substituting the isolates' resistance for the chance a first course
+meets.
+
+## Oracles
+
+None: no shipped figure ties only under the golden, no antibiogram, published rate, prior placement or closed figure
+is in the pack, and the register and code lists answer their own questions. The distractors (the ICB's prescribing
+indicators, community C. difficile cases, the registered-list file) rank nothing on the decision question.
+
+## Ask sheet
+
+One ask, fourteen figures: for women aged 65 and over and men aged 16 and over, each network's patients with a 2026
+urine culture from a member practice or the hub that grew an enterococcus, and that grew an Enterobacter (a component
+of the pharmacists' wider advice, on rows the main call never reads). Device: the laboratory changed system on 7
+September 2026; the old system coded the Enterobacter cloacae complex ENTC and enterococci ENTE, the new one codes the
+enterococci ENTC and the Enterobacter ECLO, and the shipped code table is the new system's (a code reissued to another
+organism, D7, with the old system's whole-panel reporting leaving no per-row contradiction). Recoverable from the data:
+the old ENTC isolates are all amoxicillin and co-amoxiclav resistant, which no enterococcus is, ENTE appears only
+before the change and ECLO only after. Separation: no ask specimen is in the main call's population, and blanking every
+organism code leaves every main-call figure unchanged (asserted).
+
+| Ask row | Golden | Cracker reading | Cracker |
+|---|---|---|---|
+| Enterococcus by network (7 figures) | 84 to 143 | every ENTC read as the table's enterococcus, ENTE by its letters | miss |
+| Enterobacter by network (7 figures) | 31 to 53 | ECLO alone, the old ENTC counted as enterococci | miss |
+
+Pair ceiling: 28.5 (landed call 45.0, best miss 12.0; the cracker keeps 0 of 14 ask figures on pack digest
+0add17a8f4c9dc60)
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror handles the ask as the cracker does)
+
+Measured by: generator/ceiling.py, run on the cut pack
+
+## Layer 1 inventory
+
+- The culture export spans two laboratory systems (go-live 7 September 2026): H-prefixed accession numbers and
+  dd/mm/yyyy dates before, the new numbering and ISO dates after, the result wording of each, and organism codes the
+  current code table only partly covers (the pathology network's own systems).
+- One row per organism a specimen grew, a row with no organism for no significant growth and mixed growth, S, I and R
+  with expert-rule R for intrinsic resistance, and agents the new system's reporting rules suppress (the laboratory).
+- A practice sometimes sends two pots from one consultation, each registered (the laboratory).
+- Requests from the antenatal clinic, the emergency department, the assessment unit and wards beside the practices'
+  and the hub's; children's bag and clean-catch urines; catheter specimens (the hospital and community requesters).
+- The issue extract from EMIS and SystmOne practices and the hub: each system's product names, dosage texts typed in
+  several styles, acute and repeat issues, suspensions for children, prophylaxis templates, the problems issues were
+  linked to, and Stanbridge Road's records under Hollin Lane from 1 July 2026 (the clinical systems and the merger).
+
+## Pre-ship check
+
+- Generator checks 86 of 86, `verify.py`, two byte-identical builds, `figures_check.py` (47 figures, none absent),
+  `precut.py` exit 0, `voice-check.py` PASS, `ceiling.py` (every cracker row missed, pair ceiling 28.5).
+- `leak.py` REVIEW on three lines, each innocent: the specification shares the call's vocabulary because it is the
+  placement's governing document and names no network; its overlap with the stump paragraph is five generic words;
+  the register lists the networks beside list sizes and ranks nothing on the decision question.
+- `guard.py heart` WARN (Gate G method_or_model_selection repeating task190 and in five of the last twelve, answered
+  in `## Draw`); `guard.py surface` promotes task270, task465, task264 (surface at the corpus top 1 per cent) and
+  task308 (the same-driver signature, differentiated on the card) for the author's adjudicated read.
+- Rubric arithmetic (shape 01): seven networks by two figures (courses on other antibacterials, mismatched courses
+  stopped to the nearest 10), the two networks and the runner-up, the chart and its marked networks, the two files, and
+  the ask's fourteen patient counts: 33 criteria or more.
+- Stage 4, leak reader (Sonnet, medium, isolated copies of prompt.txt and target/): no leak on the pre-fix pack and
+  again on the final pack (`leak_check_report.md`); question 6 answers an analytical choice both times. Its realism note
+  (monthly issues without a seasonal swing) ruled harmless: the monthly spread is about twice Poisson and the
+  consultation process has no season by design.
+- Stage 4, determinism judge pass 1 (`determinism_check_report.md`): DETERMINISTIC, FIX_NOW on specification 3.2 read
+  as conditional on the antibacterial issued (the slate and runner-up held, four nearest-10 figures moved). Fixed in the
+  generator in one pass: 3.2 files the chance "taken over all the federation's first courses whichever antibacterial
+  each was in fact issued" (SF10, asserted), and the ask names Enterobacter cloacae in place of an Enterobacter (the
+  judge's Klebsiella aerogenes reading). Pass 2 (`determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE; residual
+  low-grade forks left open by choice: the course-to-culture window (the decisive HOW, data-separated: cultures sit at
+  0 or 3 to 13 days, so windows of 0 to 2 days give the golden; naming the consultation culture would hand over the
+  stump), the ask's system boundary keyed by collection date rather than by accession (a few cells by one or two
+  patients), and age at the culture against the maximum 2026 age (one patient in one cell).
 
 ## Architecture 1 record (spent 2026-10-28)
 
@@ -719,3 +882,19 @@ Measured by: generator/ceiling.py on the cut pack.
 - Further 2026-11-02 screens, dead on the rules or the record: peak coincidence of a group's demand (task196, task164); a rate read against the observation effort behind it (task199); a renewal process restarting a wear curve (task132); a halo of complementary items lost with a delisted one (task302's world turned over); a share of a fixed pot under a filed formula (rule application); a radiopharmacy generator's decay through the week (the decay correction is the field's first move); rent arrears read at a snapshot of each tenant's monthly benefit cycle (a phase of a balance, time semantics, and an estimand that would have to name the step); a stewardship campaign's switches recognised as same-week bursts across a practice's patients (task303's simultaneity signature).
 - The empiric first-line choice itself as the call (keep nitrofurantoin or move the first line to pivmecillinam or trimethoprim), set aside at the draw: the call is then the sign of one difference between two drugs' resistance, a Descriptive retag, while the pathway's placement in two networks makes the sized opportunity (the mismatched first courses each network's move stops) decide.
 - An estimand naming the infections at a first presentation (or a 28-day window for the cultures), set aside at the draw: the sentence would name the step and make linking the cultures to the prescriptions an executed rule (task445 v2); the specification files the outcome, the courses and the pricing only, and which cultures estimate a first course's chance stays the analyst's.
+- 2026-11-02, architecture 2 stage 2: an ask on older women's nitrofurantoin courses against an eGFR under 45 with the
+  laboratory's switch from MDRD to CKD-EPI: the two equations differ by one to three units near 45 for women over 65, so
+  the device moves almost no course, and filing the equation names the device.
+- 2026-11-02, architecture 2 stage 2: an ask on men's short courses with SystmOne quantities in packs: a course of one
+  tablet is found by inspection, so the discovery and the remedy are one act.
+- 2026-11-02, architecture 2 stage 2: Enterobacter aerogenes coded EAER before the go-live and counted as a Klebsiella:
+  the old name read literally files it as an Enterobacter, a semantics fork the judge would read two ways.
+- 2026-11-02, architecture 2 stage 2: a Pharmacy First claims file: a failed pharmacy course makes the GP's next course
+  look like a first course and its culture look like one sent at a first consultation, which moves the estimate.
+- 2026-11-02, architecture 2 stage 2: the ENTC reissue with the old system's selective reporting: an enterococcus row
+  carrying gentamicin and cefpodoxime contradicts its code on the row, which the hygiene battery re-derives; the old
+  system now prints its whole panel for every organism.
+- 2026-11-02, architecture 2 stage 3: each antibacterial's chance graded to the whole per cent: the failure-weighted
+  estimator moves trimethoprim and cefalexin by one point, so only the placement, the pools and the nearest-10 courses
+  stopped are graded; the world's seed was redrawn (483099) after the retune left a network's figure on a nearest-10
+  line under the first seeds.
