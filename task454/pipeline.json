@@ -1,11 +1,11 @@
 {
  "task": "task454",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-13",
+ "updated": "2026-11-02",
  "stump": "The default path proposes Antipsychotics because it costs every unpriced NDC at its product's rate, which the retail bottles set, so the unit-dose cartons long-term care pharmacies dispense (86 per cent of the unpriced cost, 1.9 times the bottle per unit) are booked below cost; costing each unpriced NDC from the priced NDCs of the same product and package type proposes Anticonvulsants.",
  "architecture": 1,
  "loops": 0,
@@ -32,7 +32,8 @@
   "findings": "step 4's unrounded spreads restated rounded; the unfiled cost of a unit with no rate kept (the design's HOW, closed by SF9)"
  },
  "returned": [],
- "resume": "shipped 2026-10-13; waiting for the portal",
+ "ask_audit_2026_11_02": "careful-solver cracker (generator/ceiling.py on the shipped target.zip, md5 0be2b3af3cdb77b996a272511fd82397): the FY2026 workbook kept 36 of 36 (D2 executed under the request letter's list, D8 filed in the data delivery note), pair 76.1 with the mirror on the cracker's ask path; no re-site and no full replacement passed both tests (design note, Tried and rejected); the ask layer is owed a new design, the pack unchanged",
+ "resume": "RE-ROOT at stage 1, architecture 2 (in-house audit, 2026-11-02): (1) the main call is landed by one group-by of the claims extract ranking classes by window ingredient cost paid (Anticonvulsants $233,380 first, Antipsychotics second, the golden's call and runner-up), and the FY2026 summary's own cost column and the request letter's order agree, so the default path files the golden (Gate G); (2) two shipped files describe the data: corvane_extract_record_layout.csv is a column dictionary and corvane_data_delivery_note_2027-04-21.docx a file manifest that states the FY2026 ask's cut (leak.py now finds both); (3) the ask is spent (careful solver 36 of 36, pair 76.1, generator/ceiling.py). A new draw, dataset and generator.",
  "approved": null,
  "delivered": "2026-10-13",
  "portal": null,
