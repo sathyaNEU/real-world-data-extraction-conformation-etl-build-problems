@@ -1,292 +1,87 @@
 # task197 design note
 
-A flexibility aggregator's reserve portfolio desk decides which one of its nine contracted frequency
-containment reserve sites comes out of the portfolio for the November delivery month and takes the system
-operator's single monthly re-prequalification slot.
+Architecture 2, a re-root (2026-11-02). Architecture 1 (Veerkracht Flex's November 2026 FCR re-prequalification,
+energy-systems-utilities) delivered 2026-10-18 and reshipped 2026-11-01; its main call is sound (judge pass 2
+DETERMINISTIC, Gates F, G and H pass) but the honest-cracker audit of 2026-11-01 measured its ask layer spent, and the
+/fix-rubric screen of 2026-11-02 found no passing device as code (`## Tried and rejected`). It stays on the portal as
+delivered; its identity sits in the card's lineage with `architecture_spent` and its shell in `lineage_shells`; its
+pipeline record is under `earlier_architectures`. The objective and the number are kept; the client domain, the world,
+the dataset, the generator, the shell and the decisive step are new.
 
 ## Draw
 
-| Axis | Value |
-|---|---|
-| Domain / task type | energy-systems-utilities / grid-reliability-outage-analysis (serves anomaly-detection) |
-| Objective | anomaly-detection |
-| Shape | 10, scorecard against thresholds: nine sites by three figures, plus the call, the runner-up, the gap and a chart |
-| Decision type / answer unit | pick_one_of_n / named_option |
-| Gap | time, population |
-| Guard WARNs answered | `repeat.gate_g` and `overuse.gate_g`: method selection is the corpus's commonest mechanism, and this build's selection is of a counterfactual construction the data settles rather than of a model family, so the collision is in the label and not in the move. `repeat.question_form`: the decision is a pick, so the question asks which; any other form would misstate the call. `ban.artifact` moved twice while this build was in flight (operations_log and published_series both went to a shipped neighbour), so the card names the asset register, which this pack also ships. |
-| Pattern / generators | E (conditioned yield) / G14, G4 |
-| Gate G mechanism | method_or_model_selection (which construction of the counterfactual output the analyst selects) |
-| Stump strategy / Layer 2 | causal_design / estimand_identification, own:droop-response-confounded-by-own-block-ramp |
-| Calibration organ | none |
-| Context artifact | register (the desk's asset register of its reserve-providing units) |
-| Forum / forcing event / org family | other (no committee; the desk signs) / statutory_or_regulatory_filing / other (an asset-light flexibility aggregator) |
-| Stakeholder role | the reserve portfolio desk (capacity_planner) |
-| Spine | target/platform/vkf_highres_archive.sqlite, one row per second of recorded net active power per site |
-| World | Netherlands, EUR, Veerkracht Flex (aggregator), Rijksnet (system operator), people drawn with guard.py names |
-| Deliverables | response_determination.md, site_response_scorecard.xlsx |
-
-**Assigned ground, and why this is not it.** The wave assignment named quantitative-finance /
-market-microstructure-execution-cost. No quantitative-finance task type serves anomaly-detection in the
-client taxonomy, so `guard.py check` blocks that pairing outright on `three_rules.task_type`; the
-coordinator confirmed the assignment was drawn off a coverage grid without the objective map. The finance
-group's only anomaly-detection task type (banking-credit-financial-risk / fraud-aml-detection) was
-registered by task196 while this draw was being written. This ground was taken from the coordinator's
-fallback list because the architecture's confounder, a unit's own scheduled traverse running in the same
-seconds its response to a shared signal is measured, is native to a synchronous power system and to
-nothing else on that list.
-
-**Data-native sentence.** Deterministic frequency deviations in this system fall in the first minutes of a
-settlement period, which are exactly the seconds in which every site is traversing between programme
-setpoints, so each site's recorded power at the second its response is read carries both its droop response
-and its own programme movement, and the archive gives the traverse only as the endpoints the programme file
-holds.
-
-**Sources read.** `stumping` Part 1.2 (the WHAT screen: the decisive step settles none of the five parts,
-because the baseline is a nuisance quantity in estimating a filed gain rather than the comparison);
-`determinism-check` section 1 (the comparison is filed as the site's own contracted characteristic);
-`supplemental-stumping` Parts 1 to 3 (the ask layer and its devices); `dataset-generation` sections 6 to 8
-(rung exactness, Layer 1 mess, provenance); `two-layer-task-design.md` (the five Layer 2 families; energy
-carries no Layer 2 pattern library, so the pattern is `own:`).
-
-## Default path
-
-1. Read `operator/system_frequency_minute_summary.csv`, find every minute whose minimum is at or below
-   49.920 Hz, and pull those windows from `operator/system_frequency_1s_extracts.csv`.
-2. Keep the runs at or below 49.920 Hz lasting 15 seconds or more; take each run's lowest second as its
-   extreme second, reading the deviation beyond the 10 mHz dead band from the published frequency.
-3. Join `platform/fcr_block_commitments.csv` by delivery date and block to get the sites contracted for
-   each episode, and drop the parts of blocks the event log shows withdrawn from reserve.
-4. For each site and episode, pull the second-by-second power from `platform/vkf_highres_archive.sqlite`
-   and take the site's response as its power at the extreme second minus its power at the last undisturbed
-   second before the episode, the natural reading of "the output it would have produced had the frequency
-   stayed inside the dead band".
-5. Divide by the deviation beyond the dead band and by the contracted gain (contracted FCR capacity divided
-   by 0.190 Hz) from `register/asset_register.xlsx`, average the ratios with equal weight across the site's
-   episodes, express as a percentage and rank the nine sites.
-6. Take the site furthest below contract, check it against the 90.0 per cent tolerance in the performance
-   standard, and write the determination.
-
-Ends on: Zwartewater (VKF-ZWT) at 76 per cent of contracted gain
-Golden: Kampvliet (VKF-KPV) at 72 per cent of contracted gain
-
-## Stump sentence
-
-Measuring each site's response from its undisturbed level before the episode, rather than from the
-programme traverse its own controller was running through those same seconds, credits every site with
-whatever its programme did during the deviation and files Zwartewater (VKF-ZWT) at 76 per cent, because
-Zwartewater's qualifying episodes fall in the quarter-hours in which it is unwinding a 13 MW morning
-discharge in 1.5 MW steps, while Kampvliet, whose droop gain is genuinely at three-quarters of contract,
-is lifted to 93 per cent by the evening traverse running up underneath it.
-
-## Three rules
-
-- **Task type:** grid-reliability-outage-analysis in energy-systems-utilities, which serves anomaly-detection: the post-event analysis of what each reserve-providing unit delivered into a system frequency disturbance.
-- **Domain test:** the deciding quantity is a unit's realised droop gain, megawatts of primary frequency response per hertz of deviation beyond the dead band, which a power system measures against the unit's own scheduled trajectory because deterministic frequency deviations coincide with market-block traverses.
-- **Swap:** "which ward comes off the roster, measured on the beds it staffed per hour of demand beyond the planning band" reads as an ordinary rate comparison: there is no shared signal every unit answers to in the same second, no dead band, no droop, and no traverse between half-hourly setpoints, so nothing in the swapped sentence makes the measured response ambiguous.
-- **Layer 1:** programme and commitment files in local market time against a UTC archive and UTC frequency extracts; one settlement meter reporting kWh with its unit column; a metering point replaced mid-window; an October settlement statement issued preliminary and then amended; frequency at two resolutions, a minute summary for locating and one-second extracts for measuring, the summary carrying the mean alone with no minimum or maximum for the minutes the summariser had only the SCADA chain's own one-minute average; deviation away from the period boundaries that crosses the operator's extract trigger and never qualifies, some of it carrying a transient that reaches the threshold for too few seconds and some of it too shallow for an extract to be published at all; a settlement meter file indexed by the interval it closes; two clocks in the control platform's event log; three logged withdrawals a later correction row cancels; estimated-quality seconds in the archive; a fortnight's retention on the platform's rate-of-change captures, a capture queue that misses eligible steps and a buffer that wraps; each site's disturbance recorder on its own threshold, ring buffer, hysteresis and hold-off, so a deviation one site records is one another misses and no two sites record the same instants; an archive writer whose queue drops a capture and wraps part way through another; an archive recording restored twice after a storage fault. Each is produced by the systems named in the event log, each writing its own export; none carries the decisive step.
-- **Layer 2:** estimand_identification. The response credited to a site at a given second depends on what its own programme was doing at that second, and the programme's path between setpoints is in no document, so the gain is identified only against the traverse the site's own archive shows at boundaries where no episode ran.
-- **Decisive step:** build each site's programme traverse from its own recorded boundaries, the span its controller takes between settlement-period setpoints, and measure the delivered response against that moving baseline rather than against a level, a setpoint or a period average.
-- **Not semantics:** every field, code, unit, time zone and definition can be read correctly and the easy route still files Zwartewater, because the error is in what the undisturbed level stands for, not in what any field means; the programme file's setpoints are read correctly and are simply not the power the site was being taken to at the second the response is read.
-- **Not rule application:** no shipped sentence states the shape, span or start of a programme traverse, and none says how to reconstruct it. The technical conditions say only that the response owed is additional to the output the unit would deliver under its programme; the performance standard files the quantity and leaves its construction to the desk.
-- **Analyst test:** an analyst who resolves the time zones, the units, the commitments and the withdrawn block parts, and who reads the standard's definition correctly, takes the undisturbed level before each episode as the counterfactual and files Zwartewater (VKF-ZWT) at 76 per cent.
-- **Estimand:** clause 2 of `standards/reserve_performance_standard_v4.pdf` files population (qualifying episodes in settlement periods the site was contracted for, withdrawn block parts out of scope), outcome (power in excess of the output the site would have produced had the frequency stayed inside the dead band, per hertz beyond the dead band, at the extreme second), window (21 September to 11 October 2026), unit (percentage of the site's own contracted gain, equal-weighted mean across episodes, to the nearest whole per cent) and comparison (the gain the site's own contract requires, capacity divided by 0.190 Hz).
-- **No decoy:** nothing is planted to be caught. No memo argues a site, no block of readings is copied, no rule is withheld against a stated one, and no document ranks the sites. The system operator's statements are at group level by design, as the conditions say.
-- **No certified replay:** the prequalification records carry each site's commissioning step test and the controller-change declarations; no certified figure reproduces under the wrong baseline, and no corpus of closed determinations ships.
-- **Lesson:** when a unit's response to a shared signal is measured at a second in which the unit is also moving along a schedule, the counterfactual is the schedule's path and not any level, and the path has to come from the unit's own record. No build on file teaches it: the corpus's own-contribution builds separate a source from a background (task182) or attribute a signal to a neighbouring compartment (task180 v2), neither of which has a scheduled trajectory running through the measurement second.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 undisturbed level | the standard's counterfactual invites it | power and frequency columns only | yes, the first reflex | none | battery passes | one subtraction | readable |
-| 1 period setpoint | the programme file names the setpoint | a column holds it | yes, the document reflex | none | passes | one subtraction | readable |
-| 2 linear traverse across the period, or the period's metered average | no sentence states a traverse | nothing names a span | partly, a smoothing reflex | none | passes | two subtractions | readable |
-| 3 the site's own traverse from its episode-free boundaries (decisive) | no sentence states shape, span or start | no column, no flag, no marker | no: no reflex measures a baseline against the unit's own boundary records | nothing ties only under it | no sweep looks at boundary traverses | neither a ratio nor a half of a reported figure | silent |
-
-## Semantic fork table
-
-| id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | realised response gain | clause 2: per-episode ratio, equal-weighted mean, one decimal | energy ratio over the episode, or ratio of sums | Kampvliet either way at this window | clause 2 words "taken at the extreme second of each qualifying episode ... averaged with equal weight"; `checks.py` asserts the call under both |
-| SF2 | qualifying under-frequency episode | at or below 49.920 Hz for 15 or more consecutive seconds | 49.900 Hz, or 20 seconds | same call | clause 2 of the standard states both numbers; asserted across both variants |
-| SF3 | the output it would have produced had the frequency stayed inside the dead band | the power the site's own programme was taking it to at that second | the settlement period's programme setpoint | Reiderland | the archive at boundaries where no episode ran: with no response owed, recorded power still sits more than a megawatt off the period setpoint at the measured second, so the setpoint is not what the site would have produced; `checks.py` measures the largest such offset |
-| SF4 | contracted gain | contracted FCR capacity divided by 0.190 Hz | capacity divided by 0.200 Hz | same call, every figure scales by 5.3 per cent | clause 2 of the technical conditions, dead band 10 mHz and full activation at 200 mHz |
-| SF5 | settlement period the site was contracted for | the commitment file by delivery date and block | the register's usual blocks column | same call and runner-up; measured, only Dollardkust moves, its count 144 to 145 and its printed gain unchanged | the register's own header, "Usual FCR blocks (indicative)", against the platform's commitment file, which records each site's blocks by delivery date and departs from the usual blocks on 7, 2, 1 and 6 of the 21 dates at Dollardkust, Kampvliet, Meppelerdiep and Oosterhout; `checks.py` executes the alternative and asserts the call under it, the departure and the header |
-| SF6 | extreme second | lowest published second, earliest on a tie | last on a tie | same call | clause 2's tie-break; asserted, no tie changes a printed figure |
-| SF7 | under the tolerance | below 90 per cent of contracted gain | at or below | same set of three sites | clause 3 of the standard; no figure within 1 pp of 90 |
-| SF8 | comes out of the portfolio | the one site furthest below contract | every site under tolerance | the determination still names Kampvliet first | clause 3, one site and the operator's single test slot |
-| SF9 | episode count | qualifying episodes in contracted periods, withdrawn parts excluded | all qualifying episodes in the window | same call | clause 2's scope sentence; asserted per site |
-| SF10 | time base | archive and frequency in UTC, programme and commitments in local market time | local throughout | no episode changes period | each producing system writes its own clock: every `_utc` column stamps `Z` (the archive, both frequency files, the event log's log time) and every `_local` column stamps `+02:00` or a local clock hour (the programme, the commitments, the meter file, the event log's start field), and clause 1 of the technical conditions runs the blocks from 00:00 local time; the offset is +02:00 for the whole window; `checks.py` asserts all 14 timestamp columns through the verifier's readers; the nine withdrawal rows whose start field carries the clock read in UTC are Ask B's logged-clock device (Ask sheet), one reading by convergence: read as written they lag `logged_utc` by 7,290 s against the log's 90 s on every other row, and the archive's alarm recordings and the zero-response episodes sit at the UTC reading (judge pass 2, 2026-11-01) |
-
-## Ladder
-
-| Rung | Analysis | Names | Figure | Dies to |
-|---|---|---|---|---|
-| 0 | response from the undisturbed level before the episode | VKF-ZWT | 76 | the archive's own boundary records, which show the programme moving through the episode |
-| 1 | response from the settlement period's programme setpoint | VKF-RDL | 58 | the same records: at an episode-free boundary the recorded power is not at the setpoint |
-| 2 | the programme read as traversing linearly across the whole settlement period, or the period's metered average as the baseline | VKF-ZWT / VKF-RDL | 74 / 58 | the traverse spans 80 to 300 seconds by site, not 900 |
-| 3 | the site's own traverse, its span read from the boundaries where no episode ran and the frequency sat inside the dead band (decisive, silent) | VKF-KPV | 72 | nothing: this is the golden |
-
-Golden ranking: KPV 72, RDL 83, HGZ 88, NWV 91, DLK 93, OOS 95, MPD 97, ZWT 99, TRB 101.
-Margin to the runner-up 11 pp, which is 11 printed units. The golden sits 4th on rung 0 (93) and 2nd on
-rung 1 (69), so no naive route puts it first. Rung 0's own margin over its runner-up is 7.0 pp, so the
-default path commits. Every rung reproduces from the raw files, every rung names a site that is not the
-golden, and each rung is a finished-looking analysis: two of the four land on Zwartewater and two on
-Reiderland, which is the permitted "two fall to one correction". Partial applications were swept: correcting
-the traverse for some sites and not others moves the ranking only through the sites corrected, and every
-single-correction cell lands on ZWT, RDL or KPV, each a named answer. Dominance: the decisive move changes
-all nine figures, by 11.5 pp on average against the undisturbed level, 9.8 pp against the setpoint and 12.1 pp
-against the linear reading, so it is not the smallest move on the graded quantity, and it is the only one that
-reverses the ranking.
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | qualifying episodes in contracted periods, withdrawn block parts out | filed in clause 2; commitment file is the record; counts asserted |
-| 2 Unit of account | the reserve-providing unit (site) | the question names the site; the register is one row per unit |
-| 3 Attribution window | the episode falls in the period holding its extreme second | asserted: no extreme second within 5 s of a period boundary |
-| 4 As-of dating | determination dated 2026-10-13, window closed 2026-10-11 | filed in clause 3 |
-| 5 Version basis | the settlement statements are the operator's record and carry two October issues; nothing graded reads them | clause 5 names them as the monthly reconciliation and grades nothing from them; the ask side reads the desk's own meter file |
-| 6 Denominator | deviation beyond the dead band, times contracted gain | filed in clause 2 of both documents |
-| 7 Weighting | equal weight per episode | filed in clause 2; asserted against the ratio-of-sums variant |
-| 8 Window length | 21 delivery dates | filed in clause 3 |
-| 9 Boundary inclusivity | at or below 49.920, 15 or more seconds | asserted: no published second equals 49.9200, no 15-second run is decisive |
-| 10 Rounding path | ratios unrounded, the mean rounded once to the nearest whole per cent | filed in clause 2; asserted |
-| 11 Tie-break | earliest second on a tied extreme | filed in clause 2; asserted no tie moves a figure |
-| 12 Maturity and censoring | the window is closed; every extract is complete to 2026-10-11 | asserted: 911 of the 935 obliged site-episode pairs have a recording of the extreme second, the archive writer's queue having dropped or wrapped on 24, and every pair that has one also has its undisturbed second, so the measured population is what the archive carries and the write-up says so in step 2 |
-| 13 Order of operations | ratio per episode then mean, never sum over sum | filed in clause 2; both computed and asserted |
-| 14 Row order | archive rows keyed by recording and second | asserted invariant under permutation |
-| 15 Duplicate resolution | one recording per site per window; the restored duplicate sits only on over-frequency extracts | asserted: zero duplicated site-seconds inside the under-frequency populations |
-| 16 Identity normalisation | site_id throughout; metering points change on the settlement side | asserted: site_id joins are one to one |
-| 17 Netting against gross | response signed against the deviation; up and down never averaged | filed in clause 2 |
-| 18 Dimensional units | MW in archive and programme, MWh or kWh with a unit column in metering, Hz to four decimals | the exports' own headers (`p_mw`, `programme_mw`, `committed_mw`, `frequency_hz`, `settled_volume_mwh`, the register's "(MW)") and the meter file's unit column, kWh on one metering point; asserted on the shipped bytes, the unit column against the volumes it labels (median 1006 to programme energy on the kWh point, 1.002 on an MWh point) |
-| 19 Code and status semantics | quality M or E, event types and codes | the event log's own type labels, with a detail text on every row; C1 for the archive's flag: no E-flagged sample sits at the extreme second of a qualifying episode and every traverse span recovers exactly with the E-flagged samples left out, so keeping or dropping them prints the same graded figures (asserted); never the stump |
-| 20 Integerisation | episode counts whole, gains not integerised | the asking sentence |
-| 21 Clause scope | standard clause 2 the measure, clause 3 the decision, conditions clause 2 the characteristic | each clause names its scope |
-| 22 Forward window contents | the call applies to November; nothing about November is needed | the window to date is the whole evidence, filed in clause 3 |
-
-## Literal reader
-
-Executed word for word, clause 2 of the performance standard asks for the power a site delivered in excess
-of the output it would have produced at that second had the frequency stayed inside the dead band. The pack
-answers what that output was: at every boundary where no qualifying episode ran, the site's recorded power
-traverses between the two setpoints over a span its controller fixes and holds, identical at every such
-boundary to within the archive's noise, so the counterfactual at any second inside a traverse is
-determinate from the shipped bytes. The setpoint reading of the same clause is contradicted by those same
-records, since it would have each site deviating from programme by megawatts for minutes at a time with no
-response owed. Every other licensed reading in the fork table either gives the same call or is ruled out by
-a quoted sentence, and the easy answer comes from an easy method on the same literal estimand, not from a
-second reading of it.
-
-## Oracles
-
-None ties only under the golden. The system operator's group availability statement is at group level and
-carries no per-site figure, as clause 4 of the technical conditions says. The prequalification records
-carry commissioning tests from 2017 to 2025 and four controller-change declarations, and reproduce under
-every baseline because they are step tests at a fixed deviation, not window measurements. The settlement
-statements reconcile to the metered volumes on the ask path and say nothing about response. The auction
-results and imbalance prices are the two declared distractors and touch no graded figure.
-
-## Ask sheet
-
-Three asks, 50 graded figures. Each is a component of the determination's own case, each is computed
-over rows the main call never reads, and each carries one primary device the cracker misses: an
-internal inconsistency nothing in the pack invites, found only by a cross-file or cross-grain cut,
-with its forcing stated as a number measured on the cut pack.
-
-| Ask | Figures | H18 home | Population the call does not read | Primary device | Hazards |
-|---|---|---|---|---|---|
-| A down regulation | 9 gains, 9 episode counts | the other half of the same contract: the desk owes the operator a view of both directions, and the down product is reviewed on the same characteristic | qualifying over-frequency episodes (f at or above 50.080 Hz), which the call's population excludes by sign | **D9 self-validation.** For 32 minutes the operator's summary ran on the SCADA chain's own one-minute average, so those rows carry the mean alone and go out with the minimum and maximum columns empty, while the published extract for the same minute runs well above where that mean sits. A response that locates episodes from the summary, which is the pack's index to a 97,730 row extract file and the route the under-frequency call rewards, never opens them. | the clock device below (shared), the restored recording, the kWh feed, UTC against local market time |
-| B capacity held available | 6 held-available, 6 shortfall | capacity settlement: the desk is paid on the capacity it holds available and reports the shortfall per block | the control platform's reserve-withdrawal rows, every one placed clear of every qualifying under-frequency episode of the call's population | **D8 clocks.** The alarm handler stamps `start_local` from the local clock; the operator interface stamps the same field from the UTC clock and the export appends the house offset either way, so nine rows read two hours early. Nothing says so. The file's own `logged_utc` is 90 seconds after the window opens on every row the platform wrote, which is a convention no document states and only a column-against-column cut shows. | the three correction rows, the block grain against the minute grain |
-| C imbalance exposure | 9 above programme, 9 below programme, 2 portfolio totals | clause 5: outside the blocks it is committed to, the whole gap between what a site delivers and what its programme sets falls to the desk's imbalance position, and upward and downward exposure are priced apart | the settlement periods the site held no delivery-block commitment for, the complement of the call's own population, read off a meter file the call never opens | **D6 grain.** The meter data platform stamps each interval with the instant it closes and derives the period index from that instant, so every row carries the interval before the one it names. The column is named for the timestamp the platform writes, not for a convention, so nothing in the pack asserts either reading, and the only evidence is the programme the rows are paired against. | the replaced metering point, the kWh meter, the preliminary against the amended October statement |
-
-**The separation line, asserted by count in `checks.py`.** Zero device and hazard rows in the main
-call's declared row population:
-
-| Assertion | Measured |
-|---|---|
-| withdrawal windows touching a qualifying under-frequency episode at their true place | 0 |
-| withdrawal windows touching one at the place their own `start_local` field reads | 0 |
-| summary minutes carrying the mean alone that hold a second at or below 49.920 Hz | 0 of 32 |
-| held summary rows moving a minute into or out of the set the call locates | 0 of 32 |
-| main-call gains that move when the withdrawal scope is opened | 0 of 9 |
-| reads of the settlement meter series on the call's path | 0 |
-| deviation recordings whose bounds the operator's publication fixes | 0 of 3,699 starts, 2 of 3,699 ends |
-| published minutes the extract overlaps that the summary contradicts | 0 of 2,301 |
-
-The first four are the ones that matter. The clock device sits on rows the call reads (it drops
-withdrawn block parts), so the assertion is run on the call's figures and not on the file: with the
-withdrawal scope opened entirely, every under-frequency gain prints the same whole per cent. The
-interval-index device sits in a file the call never opens, and that is asserted by counting the
-reads of the metered series while the under-frequency table is built, rather than by reasoning
-about it.
-
-**Forcing, measured on the cut pack.** `generator/ceiling.py` recomputes each figure from the
-shipped bytes under both readings and `checks.py` asserts each line.
-
-| Device | The arithmetic that makes the wrong reading wrong | Natural read | Golden | Against a stated rounding of |
-|---|---|---|---|---|
-| B, the logged clock | `logged_utc` less `start_local` is 90 s on 21 withdrawal rows and 7,290 s on 9 of them; 7,290 s is not a local offset of a 90 second lag | shortfall per block misplaced by 1.3 to 7.7 MWh, every one of the six blocks moved | 18.0, 17.0, 20.9, 7.1, 26.5, 7.8 MWh | 0.1 MWh |
-| C, the interval index | over 13,873 scored periods the mean absolute deviation from programme is 0.0255 MWh when a row is paired with the interval it closes and 0.1437 MWh when it is paired with the period its own index names, a factor of 5.6; of the 2,874 periods whose setpoint steps by more than 1 MW, the row carrying that index sits nearer the previous setpoint in 2,870 and nearer its own in 4. Smallest per-site gap 39.7 MWh, largest 214.8 | 944.5 above and 1,054.0 below | 114.4 above and 242.6 below | 0.1 MWh |
-| A, the summary rows carrying the mean alone | the summary publishes no maximum for those 32 minutes, and 5 qualifying over-frequency episodes sit inside them | 8 of 9 episode counts move on a summary-first route | 20, 150, 20, none, 71, 15, 20, 66, 69 | 1 episode |
-| A and B, the clock hazard | the same 9 rows withdraw 5 over-frequency obligations the face-value reading leaves in | 5 of 9 counts and 5 of 9 gains move on either route | as above | 1 episode, 1 per cent |
-| hazard, the correction rows | three logged withdrawals a later row cancels | 12.3 MWh of shortfall counted twice | excluded | 0.1 MWh |
-| hazard, the restored recording | one over-frequency capture replayed under a fresh id after the storage fault | a per-recording average counts that date twice | per-episode, per clause 2 | 1 episode |
-
-**The cracker sheet.** The cracker is the response that landed the call, so it has the traverse
-construction; it ran the hygiene battery (key uniqueness, exact duplicates, unmatched joins,
-fan-out, count ties) and executed every filed sentence it points at: clause 2's scope, clause 4's
-availability, clause 5's exposure, the unit column on the kWh meter, the replaced metering point the
-event log records, the amended October statement and the three correction rows. Device A is the only
-one whose bite depends on the route a response takes, so the cracker is scored twice and the gated
-figure is the worse of the two, the cracker that scans the extracts directly and so beats device A.
-
-| Ask (cracker, extract-scanning: the gated reading) | What it keeps | Verdict |
-|---|---|---|
-| A down regulation, 18 figures | 9 of 18: the four gains and four counts the clock device does not reach, plus Meppelerdiep's pair, which has no qualifying over-frequency episode in the window | miss |
-| B capacity held available, 12 figures | 0 of 12 | miss |
-| C imbalance exposure, 20 figures | 0 of 20 | miss |
-
-| Ask (cracker, summary-first) | What it keeps | Verdict |
-|---|---|---|
-| A down regulation, 18 figures | 6 of 18 | miss |
-| B capacity held available, 12 figures | 0 of 12 | miss |
-| C imbalance exposure, 20 figures | 0 of 20 | miss |
-
-| Ask (mirror, stopped at rung 0 and named VKF-ZWT) | What it keeps | Verdict |
-|---|---|---|
-| A down regulation, 18 figures | 3 of 18: every gain is on the undisturbed-level baseline and wrong | miss |
-| B capacity held available, 12 figures | 0 of 12 | miss |
-| C imbalance exposure, 20 figures | 0 of 20 | miss |
-
-Asks B and C consume nothing the call's construction produces, so the two columns agree there by
-construction; the separation assertions above are what prove the decoupling, not the agreement of
-two rows in a script. The columns part on ask A, which is the construction layer and is meant to.
-
-Mirror leakage: 6.0
-Pair ceiling: 35.1
-Measured by: generator/ceiling.py
-
-**Why the pair sits below the 40 target rather than on it.** The three primaries are one per ask and
-nothing is stacked. The clock device turned out to reach two figure families in ask A rather than one,
-because a withdrawn over-frequency obligation leaves a near-zero response in the average as well as
-a missing episode in the count, so five gains move as well as five counts. That was measured, not
-designed, and the honest number is the measured one. The free figures the gated cracker still banks
-are nine, and the sweep in `ceiling.py` puts the 40 line at eighteen, so the margin is real rather
-than a rounding of it. Raising the pair would mean adding figures no device reaches, which Part 6 of
-`supplemental-stumping` says to cut rather than add.
-
-## Leak re-check
-
-`leak.py task197 --asof 2026-10-13` on the reshipped cut (target.zip aa74426a, 2026-11-01): REVIEW with no
-LEAK; sweeps 1, 9, 12 and 13 clean. Each REVIEW line ruled:
-
-- sweep 4, `operator/fcr_group_availability_2026-09.pdf` (second, seconds, deviation, measured, operator): the statement's own sentence on how group availability is sampled and weighted, at group level with no per-site figure (Oracles); byte-identical to the judged pack.
-- sweep 4, `operator/fcr_technical_conditions_2026.pdf` (second, clause, published, seconds, deviation, inside): the conditions' own characteristic, dead band, 30 second requirement and publication note; byte-identical to the judged pack; `verify.py` asserts it silent on a ramp rate and on ramping linearly, and clause 5 states an obligation, not a construction (Tried and rejected).
-- sweep 4, `standards/reserve_performance_standard_v4.pdf` (second, window, published, seconds, deviation, inside): clause 2's estimand and clause 3's window in the standard's own words; byte-identical to the judged pack; `verify.py` asserts it silent on a ramp and a traverse.
-- sweep 11, the counts in `prompt.txt` ("nine", "six"): predates this repair and is outside it: the prompt is unchanged, its first sentence is the frozen call sentence, and the six blocks are the product's own count in clause 1 of the technical conditions; carried to the main thread.
-- sweep 11, the shell quota: a corpus-level WARN inside voice-check's PASS, on the unchanged prompt.
+- **Card:** `.claude/skills/fingerprint/cards/task197.json`, architecture v2, checked on the draft, registered
+  2026-11-02 and checked again on the filed card: WARN only (shell.repeat read off architecture 1's prompt.txt, cleared
+  when this architecture's prompt is written), NOTE test.same_puzzle_older (task270 v6) and test.same_driver_older
+  (task245), each differentiated on the card. Redrawn at the draw and why each replacement is the honester label:
+  pattern G16 (method selection) BLOCKed ban.pattern against task467 and the structural signature against task501, and
+  G9 (survival downstream against acquisition upstream) is the truer code, since the at-risk base is the packs still in
+  homes and the default reads the packs bought; forum regulator_or_inspector BLOCKed against task467, and the referral
+  is in fact signed inside the service (line_manager_or_team); context artifact filed_standard BLOCKed against task501,
+  and the stakeholder's own file is the enquiry export (monitoring_export); forcing event statutory_or_regulatory_filing
+  BLOCKed against task467, and what forces the call is the regulator's annual packaging review intake
+  (audit_or_inspection); Gate G method_or_model_selection repeated the batch's signature five times over, and the move
+  that decides is a split of one observed post-change rise between the cupboard stock's own dynamics and the change
+  (decomposition_attribution).
+- **Pairing:** Pharmacology, Pharmacoepidemiology & Safety, task type `safety-signal-detection` (serves AD), objective
+  Anomaly Detection & Diagnostics: a real event (a packaging change that made each pack in a home riskier to a young
+  child) separated from an artifact (an exposure rate per pack sold that moves when sales move, because the packs a child
+  can reach are the ones earlier sales left in the cupboard). Shape `17` (each candidate read around its own change
+  point: the twelve months after it, observed against expected). Decision `pick_one_of_n`, answer unit `named_option`,
+  question form `which`. Not energy, physical or environmental sciences, biomedical and clinical research, survey
+  research and official statistics, human factors, banking, product analytics, general statistics, healthcare delivery
+  or accounting (the brief's exclusions, all in flight or shipped today); not the lineage's domain.
+- **World:** Poisons Advice New Zealand (invented), the national poisons advice line, hosted by Tasman University
+  (invented) and staffed by poisons information specialists around the clock; its toxicovigilance unit watches a list of
+  over-the-counter medicines and supplements most often involved in young children's accidental exposures. The Medicines
+  Safety Authority (invented) runs one Child-Resistant Packaging Review a year: it takes one product, and the outcome can
+  be an order for a child-resistant closure or blister. Its procedure (the WHAT) invites the service to refer the watched
+  product whose packaging change between 1 January 2024 and 30 September 2025 had the largest effect on young
+  children's accidental exposures, the effect being the exposures in the twelve calendar months after the month the
+  changed pack first reached retail sale divided by the number the product's packs would have produced in those months
+  had they kept their previous packaging. Referrals close 27 November 2026; the 2027 review is forward facing (one
+  product's packaging is re-examined and possibly re-ordered for 2027 sale). As-of Friday 6 November 2026. People:
+  Lesley Johansen (toxicovigilance lead, the referral's signatory) and Gregory Watkins (the Authority's review
+  secretary, the procedure's contact), drawn with `guard.py names --geo "New Zealand" --seed 197`.
+- **Mechanism:** gap `population` (the packs sold are not the packs a child can reach), then `time` (the reachable packs
+  are the sales of earlier months drained at the product's own pace); pattern none, generators G9 decisive (packs still
+  in homes downstream against packs acquired upstream), G13 (the window the exposures are read over is not the window
+  the packs were bought in). Gate G `decomposition_attribution`; strategy `forecast_method_backtest` (the per-pack risk
+  is stationary only in the constructed exposure, and the product's own pre-change record, not a filed criterion,
+  forces the construction); Layer 2 family `estimation_fit`, pattern `own:exposure-stock-against-sales-flow`;
+  calibration none.
+- **Data-native sentence:** a child can only reach the packs already sitting in its home, which a product's past sales
+  put there and which each household uses up or throws out at the product's own pace (a daily supplement is finished in
+  weeks, a bottle of junior paracetamol waits years for the next fever), so the year's packs sold track a packaging
+  change's commercial effect far faster than they track the packs a child can reach.
+- **Abstraction sentence (written to be refused):** "each unit's events come from a stock its past inflows built and
+  that drains at the unit's own pace, so a change's effect is read against the events that stock would have produced,
+  not against the current inflow." Against the approved and delivered builds it does not describe any of them: the
+  nearest drivers are task125 v4 (scheduled occasions moved to another site, 0.07), task451 v1 (spending credited
+  through commingled intermediaries, 0.07) and task500 v2 (spillover through household links, 0.06), and `guard.py
+  slots` on the setting's nouns (poison, ingestion, paediatric, toxicovigilance, cupboard, packs sold, units sold) and on
+  the mechanism's nouns (in-home, household stock, depletion, reservoir) returned no slot note with the insight.
+- **The insight each spent AD driver takes, read off `guard.py mechanisms --objective anomaly-detection` (35 builds):**
+  completion from a second source (25, 196); a reachable share behind a join (28); forward yield of a shift still in
+  force (33); a pair grain (48); a custody exposure integral (54); a matched panel across successions (68); a look-back
+  class (76); a per-unit observation window (85); an authorization as permission (103); a self-adapting scorer (104);
+  waits a unit could have shortened (119); a value-sized conversion (185); shared local cycles (186); a capped curved
+  response (187); grouped tests (188); censored limits by instrument (189); a paired difference (195); orderings by
+  window position (193); a validation covering only the window's opening (192); a scheduled trajectory in the same
+  seconds (197 v1); coding lag vintages (194); length-biased snapshots (182); the lesser of ask and entitlement (198);
+  watchers' filing volume (199); unit averages against item spread (202); a reporting opening interval (201); a
+  saturating container indicator (184); an unsteady balance (204); a shared upstream resource (181); informative open
+  cases (191); occasions moved to another site (125); detection by a second record (190); drift by volume passed (180);
+  a lump at the unit's own trade ratio (183). None reads a count against a stock its own past inflows built.
+- **Sources:** the service's enquiry export (the spine, one row per substance line, 2019 to October 2026); the market
+  measurement provider's four-weekly scan sales of the watched products (2016 to October 2026, a preliminary and a
+  revised release); the watched-product register (presentations, pack sizes, closures and dated packaging changes); the
+  Authority's review procedure (the WHAT); the service's own records the asks read (named on the ask sheet); distractors
+  named in `metadata.json`. All synthetic, generated by `generator/`, CC0.
+- **Validation where the golden applies (lesson 12):** the golden imputes each product's exposures had its packs kept
+  their old packaging, from its packs in homes; four watched products changed nothing in the window, so their whole
+  record observes exactly what the golden imputes, and each candidate's own record before its change does the same. The
+  construction is fitted on each record's earlier years and back-tested on its later ones, asserted in `checks.py`.
 
 ## Tried and rejected
 
@@ -360,3 +155,27 @@ LEAK; sweeps 1, 9, 12 and 13 clean. Each REVIEW line ruled:
 
 - 2026-11-01, re-check under the new leak gate (`leak.py --asof 2026-10-13`: LEAK on `data_dictionary.csv`, a file whose name says it describes the data, and on `metadata.json`, whose gate_g paragraph used the author's vocabulary). Shipped: `data_dictionary.csv` (each file's row grain and column list, and the archive's quality legend, M measured and E estimated), the register's Notes sheet (its pull date, one row per unit, glosses on three of its columns, one pointing at the commitment file), and a `metadata.json` carrying that gate_g paragraph, a notes paragraph on the asks' row populations and per-file row glosses, one of which named the meter file's interval stamping. Replaced: neither describing file ships (17 files, four formats); `metadata.json` holds the decision, the deliverables, the distractors and per-file provenance (source, coverage, rows, extract or issue date) and nothing else, its prequalification text corrected to the file's own rows (step tests 2017 to 2025, four declarations, not 2022 and 2023 and one); SF10, closures 18 and 19 and SF5 rest on the producing systems (each timestamp's own zone, the headers' units and the meter file's unit column, the event log's own labels, the register's own "(indicative)" header), each asserted in `checks.py` through the verifier's readers; and closure 19's archive flag is closed by C1: the writer's E flag is withheld from the extreme second of every qualifying episode, two samples of 1,194,352 (Dollardkust 2026-09-26T15:16:20Z on a graded pair, Nieuwveen 2026-10-01T19:01:21Z on an uncommitted one, values unchanged), so the E-flagged samples move nothing graded, where before dropping them took Dollardkust's count from 144 to 143. SF5's row was also wrong on its own measure: executed, the usual blocks move Dollardkust's count, not Terborgh's or Meppelerdiep's, and its old `checks.py` line never ran the alternative. `figures.json` loses one key, `counts.dictionary` (15, the dropped file's own row count, a provenance key nothing grades), accepted with `freeze.py check --mode determinism --allow counts.dictionary`; every graded figure, the call, the ladder, both goldens and `submission.md` are byte-identical, and all three PDFs and every CSV are byte-identical to the judged pack. The archive's bytes also differ from the shipped file because this container's SQLite (3.53.1) lays pages out differently from the one that cut the shipped zip (3.45.1); its recording table and every power row but the two flags are identical.
 - The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 50 of 50 against the recorded 9 of 50, SPENT on Asks A, B and C, pair 57.6 (75.3 or more with the mirror on the same checks); the reason in one line: two clocks on one event-log row (90 s against 7,290 s lag), and the meter series' unmatched interval at each end, the interval-ending signature; the script's Ask A recount also differs from figures.json on 5 sites. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.
+- 2026-11-02, the /fix-rubric screen on architecture 1 (time-boxed, run as code before any data was cut:
+  scratchpad `task197_ask_screen.py` on the shipped pack, read-only). Ask A's eighteen figures live on the over-frequency
+  seconds of the archive, extracts and minute summary, files the frozen call reads, so it can carry no device and hands
+  an on-call response 18 of 50; with A free, Asks B and C (32 figures) would have to hold the careful solver to 4.7 or
+  fewer even after one device is repaired, which two device families on disjoint blocks cannot do by construction. Every
+  candidate on the ask-only records failed a test: a meter series swapped, re-stamped, rescaled or merged is exposed by
+  the ask's own residual against programme (each series' best-fit site is its own in all 10, runner-up at least 9 times
+  worse; slopes 0.972 to 1.003); a substituted interval reconciles against the daily statements and clause 5 licenses
+  face value; an auxiliary sub-meter is a fork; a withdrawal keyed to the wrong site falls to a register cross-check;
+  a planned against actual end and two overlapping logs fall to the battery. No passing device, so re-rooted at once.
+- Architecture 2's first form, a rate per pack present in homes filed as the WHAT ("per pack in the community"): dead
+  at the draw on paper. Filing presence names the quantity the decisive step must recognise (lesson 10), and once it is
+  named the step that remains, a depletion per product against one shared window, is the grouping dichotomy of stumping
+  1.1c (one clock against one per class); leaving it unnamed forks against the toxicovigilance field's own standard,
+  exposures per units sold. Replaced by the counterfactual WHAT (the exposures the product's packs would have produced
+  had they kept their previous packaging), which names no stock and leaves the construction to the data's own fit.
+- Architecture 2's first parameterisation (scratchpad task197_v2/proto3.py): with the golden's product on flat sales,
+  raw counts, the trailing-twelve-month denominator and an interrupted time series with sales as a covariate all landed
+  it in 8 to 10 of 10 seeds, three cheap routes to the call. The product's own history now carries a market event (a
+  competitor's supply gap that boomed its sales two to three years before its change), whose packs are still in
+  cupboards in the year before the change: every flow-based route reads the post-change rise against an inflated base,
+  and the boom's echo pins the product's depletion. Measured over 20 seeds (proto6.py): the golden lands it 20 of 20
+  with rival kernels within 0.04; per pack sold lands the iron decoy 18 of 20, raw counts the short-lived decoy 19 of
+  20, the trailing window the declining decoy 20 of 20, the time series the two growth decoys 20 of 20.

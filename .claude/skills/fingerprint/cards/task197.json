@@ -1,87 +1,159 @@
 {
- "task": "task197",
- "architecture": "v1",
- "drawn": "2026-10-17",
- "slot_note": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection: no quantitative-finance task type serves it, and the coordinator confirmed the assignment was drawn off a coverage grid without the objective map. The finance group's only AD task type (banking-credit-financial-risk / fraud-aml-detection) was registered by task196 while this draw was being written. Taken from the coordinator's fallback list because the architecture's confound (a reserve unit's own market-block ramp moving its output in the same seconds its frequency response is measured) is native to a power system and to no other ground on that list.",
- "domain": "energy-systems-utilities",
- "subdomain": "grid-reliability-outage-analysis",
- "client_domain": "energy-systems-utilities",
- "niche": "the frequency containment reserve portfolio of an independent flexibility aggregator: which contracted site's primary response is genuinely short of its contracted droop rather than measured short because its own market-block ramp moved its output in the same seconds",
- "objective": "anomaly-detection",
- "shape": "10",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
- "answer_source": "generator/figures.json: call_site, call_gain",
- "gap": [
-  "time",
-  "population"
- ],
- "pattern": [
-  "E"
- ],
- "generators": [
-  "G14",
-  "G4"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "causal_design",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "register",
- "stakeholder_role": "the reserve portfolio desk of an independent flexibility aggregator",
- "role_family": "capacity_planner",
- "scoring_unit": "per episode",
- "spine": {
-  "file": "target/platform/vkf_highres_archive.sqlite",
-  "rows": 1194352,
-  "entity": "one one-second record of one contracted site's net active power inside one recording",
-  "grain": "site x recording x second",
-  "source": "synthetic"
- },
- "forum": "other",
- "forcing_event": "statutory_or_regulatory_filing",
- "org_family": "other",
- "world": {
-  "geography": "Netherlands",
-  "currency": "EUR",
-  "org_type": "independent flexibility aggregator running a portfolio of grid-scale batteries and gas-engine sites into the system operator's frequency containment reserve market",
-  "invented_names": [
-   "Veerkracht Flex",
-   "Amstelveld"
+  "task": "task197",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "Re-rooted 2026-11-02 from architecture 1 (energy-systems-utilities, FCR droop response), whose main call is sound but whose ask layer the honest careful-solver cracker spent and the /fix-rubric screen could not repair. Drawn outside every domain in flight or shipped today (no energy, physical or environmental sciences, biomedical, survey and official statistics, human factors, banking, product analytics, general statistics, healthcare delivery or accounting).",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "safety-signal-detection",
+  "niche": "paediatric toxicovigilance at a national poisons advice service: which watched over-the-counter medicine's packaging change raised accidental exposures of children under six above what the product would have produced unchanged, when the packs a child can reach are the ones its past sales left in household cupboards",
+  "objective": "anomaly-detection",
+  "shape": "17",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "generator/figures.json: call_product, call_ratio",
+  "gap": [
+    "population",
+    "time"
   ],
-  "people": [
-   "Maartje Nedermeijer",
-   "Hidde Kolen"
-  ]
- },
- "deliverables": [
-  "response_determination.md",
-  "site_response_scorecard.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:droop-response-confounded-by-own-block-ramp",
- "layer1": "programme and commitment files in local market time against a UTC archive and UTC frequency extracts; one settlement meter reporting kWh with its unit column; a metering point replaced mid-window; an October settlement statement issued preliminary and then amended; frequency at two resolutions, a minute summary for locating and one-second extracts for measuring, which disagree for the minutes the summariser ran on the SCADA chain's own average; a settlement meter file indexed by the interval it closes; two clocks in the control platform's event log; three logged withdrawals a later correction row cancels; estimated-quality seconds in the archive; a high resolution archive holding five kinds of capture with a fortnight's retention on the rate-of-change ones, a capture queue that misses eligible steps and a buffer that wraps; an archive recording restored twice after a storage fault",
- "driver": "The decisive quantity is a unit's own response to a shared signal, measured over seconds in which the unit's output is also moving along a scheduled trajectory that the records give only as its endpoints, and because the shared signal deviates systematically at exactly the moments those trajectories run, taking the output change over the episode, or its change from the scheduled endpoint, measures response plus trajectory and ranks the units by the direction their trajectories happened to run rather than by the response they owed.",
- "driver_concrete": "Each contracted site's delivered droop response has to be measured against its own market-block ramp trajectory, recovered from the boundaries where no qualifying deviation occurred, because deterministic frequency deviations fall at the same quarter-hour boundaries at which every site is ramping to a new schedule, so a response taken as output minus the pre-event level, or minus the block setpoint, credits the sites that happened to be ramping up and penalises the sites that happened to be ramping down.",
- "stump": "The default path measures each site's response as its output change from the second before each qualifying deviation (or from the block's scheduled setpoint), divides by the deviation to get MW per hertz, compares that with the contracted droop and files the site whose qualifying deviations mostly fell on boundaries where it was ramping down, while the site whose droop is genuinely about three-quarters of contract sits mid-table because its deviations fell on boundaries where it was ramping up.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst joins the telemetry to the schedules, fixes the DST boundary, the sign convention and the kW feed, reads the technical conditions' definition of delivered response, subtracts the block setpoint (or the pre-deviation second) from the measured output, divides by the deviation and ranks the sites on realised droop against contract, and files the site that was ramping down through its deviations, because the schedule file gives only block endpoints and nothing in it names the ramp trajectory that was running through those same seconds.",
- "domain_test": "The deciding quantity is a unit's realised droop (megawatts of primary frequency response per hertz of deviation, outside the deadband), which power systems measure against the unit's own scheduled trajectory because deterministic frequency deviations coincide with market-block ramping, and a noun swap breaks the task because outside a synchronous power system there is no droop, no deadband and no shared deviation that every unit answers to in the same second.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task155": "task155 forecasts a forward take-up rate for open tasks whose chance of being taken depends on adjacency to already-scheduled work; this build measures a physical response slope (megawatts per hertz) confounded within each episode by a scheduled trajectory running in the same seconds, with no take-up probability and no forward rate.",
-  "task467": "task467 separates a temporary from a permanent change across a treated and a comparison series whose component mixes differ; this build has no comparison series and no series decomposition, and recovers the confounding trajectory from the same unit's own boundaries where no qualifying deviation occurred.",
-  "task235": "task235 reads a loss over the items whose sending device has had a further chance to send, a completeness question about a feed; this build has no feed and no completeness question, and measures a unit's response slope against the scheduled trajectory running through the same seconds.",
-  "task445": "task445 completes a holder class whose amount moves with a unit's size because it holds a fixed fraction, an ownership-composition identity; this build has no holder, no fraction and no identity to complete, and its decisive move removes a programme trajectory from a measured response.",
-  "task459": "task459 turns on a ratio of input to output that varies with the operating level across a closed period; this build's ratio is a response per hertz whose contamination is a scheduled movement inside each measured second, not a level-dependent efficiency.",
-  "task166": "task166 projects two parts of a loan stock forward and turns on one part's balloons being extended where the property's own income no longer covers a new loan, a composition-mix forecast whose answer is which overlay to designate; this build measures a physical response slope in megawatts per hertz at a single second and turns on the scheduled trajectory running through that same second, with no stock, no projection and no refinance cover. The shared gap and pattern are the coarse labels time, population and conditioned yield, which both builds reach by different mechanisms."
- },
- "lineage": [],
- "notes": "stump_strategy causal_design: the decisive move identifies a unit's own response against a confounder that runs in the same seconds and is correlated with the shared signal by market design, which is the estimand_identification family's confounding case; gate_g decomposition_attribution because the mechanism splits one observed output movement between two causes where their coincidence decides the split. forum and org_family are 'other': no vocabulary key names an asset-light flexibility aggregator (utility_or_infrastructure is both inaccurate and banned against the last three), and no committee or board decides, the determination being signed inside the performance desk and filed with the system operator.",
- "registered": "2026-10-17T22:52:03Z"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G9",
+    "G13"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the enquiry records and the four-weekly sales and reads the review procedure correctly sets each watched product's accidental under-six exposures in the twelve months after its packaging change against the twelve months before per 100,000 packs sold, and refers the product whose rate rose most, a product whose sales fell after its change while the packs already in cupboards kept producing exposures, not the product whose new cap made each pack in a home riskier but also lifted its sales.",
+  "domain_test": "The deciding quantity is a medicine's accidental paediatric exposures against those its packs in homes would have produced without the change, the toxicovigilance exposure rate read through how long each medicine's packs stay in a household (used up by daily dosing or kept for occasional fevers), and a noun swap to a field without household stocks of dosed products leaves no depletion by use pattern to recover.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:exposure-stock-against-sales-flow",
+  "layer1": [
+    "enquiry records one row per substance line, several products on one enquiry",
+    "free-text product names matched to the service's product index with variants and misspellings",
+    "a case-management system migration mid-window with recoded circumstance and caller lists",
+    "local time across daylight saving changes",
+    "market sales in four-week reporting periods, not calendar months, with a preliminary and a revised release",
+    "pack-size variants under one product",
+    "age recorded in months for infants and years otherwise"
+  ],
+  "stakeholder_role": "the toxicovigilance unit of a national poisons advice service",
+  "role_family": "research_desk",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "enquiries/poisons_enquiries.csv",
+    "rows": 60000,
+    "entity": "one substance line of one poisons enquiry",
+    "grain": "enquiry x substance",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "New Zealand",
+    "currency": "NZD",
+    "org_type": "a national poisons advice service hosted by a university, referring to an invented medicines regulator's child-resistant packaging review",
+    "invented_names": [],
+    "people": [
+      "Lesley Johansen",
+      "Gregory Watkins"
+    ]
+  },
+  "deliverables": [
+    "packaging_referral.docx",
+    "exposure_effects.csv",
+    "counterfactual_chart.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "Each unit's events come from a stock that its past inflows built and that drains at the unit's own pace, so a change's effect has to be read against the events that stock would have produced, recovered from the unit's own record before the change, because a rate on the current inflow credits a change with every move of the inflow.",
+  "driver_concrete": "Each watched medicine's accidental under-six exposures in the twelve months after its packaging change are set against the exposures its packs in homes would have produced unchanged, a stock its past sales built that drains at the product's own pace and that only the product's own exposure record before the change pins, because a rate on the year's packs sold rises for a product whose sales fell while its old packs stayed in cupboards and stays flat for a product whose new packaging lifted both its sales and its per-pack risk.",
+  "stump": "The default path divides each product's accidental under-six exposures by its packs sold, compares the twelve months after its packaging change with the twelve before and refers the product whose sales fell after its change, while the product whose new cap made each pack in a home riskier shows a flat rate because the same cap also lifted its sales.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task270": "task270 v6 reads where an item sold without a fixed slot actually landed, a placement recovered by joining a sales record to a landing record; this build has no slot and no placement, and its decisive move rebuilds the packs a product's past sales left in household cupboards, which drain at the product's own pace, as the exposure base a packaging change's effect is read against.",
+    "task245": "task245 rebuilds periods a recorder lost, non-randomly, from a shared driver and the recorder's own response to it; this build has no missing periods, every exposure is recorded, and its decisive move is the at-risk stock behind complete counts, built from the product's sales history and its own depletion, against which a packaging change's effect is read."
+  },
+  "lineage": [
+    {
+      "domain": "energy-systems-utilities",
+      "subdomain": "grid-reliability-outage-analysis",
+      "client_domain": "energy-systems-utilities",
+      "niche": "the frequency containment reserve portfolio of an independent flexibility aggregator: which contracted site's primary response is genuinely short of its contracted droop rather than measured short because its own market-block ramp moved its output in the same seconds",
+      "objective": "anomaly-detection",
+      "shape": "10",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G4"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "causal_design",
+      "forum": "other",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "other",
+      "driver": "The decisive quantity is a unit's own response to a shared signal, measured over seconds in which the unit's output is also moving along a scheduled trajectory that the records give only as its endpoints, and because the shared signal deviates systematically at exactly the moments those trajectories run, taking the output change over the episode, or its change from the scheduled endpoint, measures response plus trajectory and ranks the units by the direction their trajectories happened to run rather than by the response they owed.",
+      "driver_concrete": "Each contracted site's delivered droop response has to be measured against its own market-block ramp trajectory, recovered from the boundaries where no qualifying deviation occurred, because deterministic frequency deviations fall at the same quarter-hour boundaries at which every site is ramping to a new schedule, so a response taken as output minus the pre-event level, or minus the block setpoint, credits the sites that happened to be ramping up and penalises the sites that happened to be ramping down.",
+      "stump": "The default path measures each site's response as its output change from the second before each qualifying deviation (or from the block's scheduled setpoint), divides by the deviation to get MW per hertz, compares that with the contracted droop and files the site whose qualifying deviations mostly fell on boundaries where it was ramping down, while the site whose droop is genuinely about three-quarters of contract sits mid-table because its deviations fell on boundaries where it was ramping up.",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:droop-response-confounded-by-own-block-ramp",
+      "context_artifact": "register",
+      "role_family": "capacity_planner",
+      "deliverables": [
+        "response_determination.md",
+        "site_response_scorecard.xlsx"
+      ],
+      "question_form": "which",
+      "world": {
+        "geography": "Netherlands",
+        "currency": "EUR",
+        "org_type": "independent flexibility aggregator running a portfolio of grid-scale batteries and gas-engine sites into the system operator's frequency containment reserve market",
+        "invented_names": [
+          "Veerkracht Flex",
+          "Amstelveld"
+        ],
+        "people": [
+          "Maartje Nedermeijer",
+          "Hidde Kolen"
+        ]
+      },
+      "answer": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
+      "architecture": "v1 (Veerkracht Flex's November 2026 FCR re-prequalification: which contracted site's droop response is genuinely short once its own market-block ramp is taken out of the same seconds)",
+      "drawn": "2026-10-17",
+      "architecture_spent": true,
+      "fate": "spent 2026-11-02: delivered 2026-10-18 and reshipped 2026-11-01 (leak repair); the main call held at both judge passes (DETERMINISTIC, Gates F, G and H pass, decisive step analytical) and is sound, but the honest-cracker audit of 2026-11-01 measured the ask layer SPENT (the careful solver keeps 50 of 50 against a recorded 9), and the /fix-rubric screen of 2026-11-02 found no passing device as code: Ask A's population sits in files the frozen call reads, so it carries no device and hands an on-call response 18 of 50, and every candidate on the ask-only records is exposed by the ask's own residual against programme or licensed by clause 5; re-rooted the same day to architecture 2 in another client domain, world, dataset and shell. The delivered version stays on the portal as delivered."
+    }
+  ],
+  "notes": "gate_g decomposition_attribution: the decisive move splits one observed post-change rise between the cupboard stock's own dynamics and the packaging change. stump_strategy forecast_method_backtest: the per-pack hazard is stationary only in the constructed exposure (the stock), and the data's own pre-change fit, not a filed criterion, forces it. forum line_manager_or_team: the referral is signed inside the service by its toxicovigilance lead and medical director; forcing_event audit_or_inspection: the regulator's annual packaging review intake. context_artifact monitoring_export: the service's enquiry export.",
+  "client_domain": "pharmacology-pharmacoepidemiology-safety",
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "md+xlsx"
+    }
+  ],
+  "registered": "2026-11-02T20:41:04Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "xlsx"
+  }
 }
