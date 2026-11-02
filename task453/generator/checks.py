@@ -1,451 +1,536 @@
-"""task453's assertions, run on every build: the input gates, the golden from the bundle, the corridor of every
-reasonable implementation, every wrong route by name, the margins, every semantic-fork row (SF1 to SF15), the
-three-rules block (R1 to R3c) on the clean truth, mess neutrality, the ask's stops and cracker, the separation of the
-ask from the main call, the distractors' deletion test, no shipped file describing the data (by name, sheet and
-content) with each closure that rests on the systems' own columns and labels read back through the verifier's own
-readers, and the realism sweep."""
-import csv
+"""task453's assertions, run on every build: the input gates and provenance, the goldens against figures.json, every
+estimator form of the decisive step and every wrong route by name with its margin, the assumptions the golden's
+method makes (lesson 7), every semantic-fork row (SF1 to SF22), the three-rules block (R1 to R3c) on the clean truth,
+both ask devices (uniqueness, clearance, the literal readings of lesson 8, every stop missing every figure), the
+separation of the asks from the call, the distractors' deletion test, no shipped file describing the data, and the
+realism sweep."""
+import collections
 import datetime as dt
-import itertools
 import json
+import math
 import os
 import re
 import shutil
+import subprocess
 import tempfile
 
 import numpy as np
 import pandas as pd
-import pyarrow.parquet as pq
 
-import golden as GD
+import ceiling as CE
+import golden as G
 import methods as M
-import pack as P
+import sim
 import survey as S
+import truth as T
 import world as W
 
 RESULTS = []
-# a file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3): the name rule the
-# leak gate applies (leak-check/leak.py, sweep 1)
 DESCRIBE_NAME = re.compile(
     r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|"
     r"list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|"
-    r"descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|"
-    r"definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])", re.I)
+    r"descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|definitions|schema|"
+    r"layouts?_notes|release_notes)(?![a-z])", re.I)
 DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
                             r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
-EXPORT_STAMP = dt.datetime(2027, 1, 25, 15, 40, tzinfo=dt.timezone(dt.timedelta(hours=13))).timestamp()
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 
 def ok(label, cond, detail=""):
     RESULTS.append((label, bool(cond), detail))
 
 
-def release_table1(target):
-    """Table 1 as the verifier reads the release (openpyxl, values only): month label to the labour force, employed
-    and unemployed, thousands as published"""
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(target, P.FILES["release"]), read_only=True, data_only=True)
-    out = {}
-    for row in wb["Table 1"].iter_rows(min_row=5, values_only=True):
-        if row[0] and re.match(r"[A-Z][a-z]{2}-\d{4}$", str(row[0])):
-            out[str(row[0])] = (float(row[1]), float(row[2]), float(row[3]))
-    return out
+def nm(i):
+    return W.CREMATORIA[i][2]
 
 
-def month_label(ym):
-    """2022-01 or 202201 as the release labels the month (Jan-2022)"""
-    ym = ym if "-" in ym else ym[:4] + "-" + ym[4:]
-    return dt.date(int(ym[:4]), int(ym[5:7]), 1).strftime("%b-%Y")
+def pdf_text(path):
+    return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
 
 
-def restate(x):
-    return M.restated(x)
+def cre_list(rows, keep=lambda r: r["cremation"].year == W.YEAR, abated=None):
+    ab = abated or (lambda r: sim.abated(W.CREMATORIA[r["ci"]], r["cremation"]))
+    return [(r["ci"], r["age"], r["sex"], ab(r)) for r in rows if keep(r)]
 
 
-def nat_cells(une, lab):
-    un, ln = une.sum(1), lab.sum(1)
-    t, g = np.meshgrid(np.arange(W.T), np.arange(6), indexing="ij")
-    return dict(t=t.ravel(), r=np.zeros(t.size, int), g=g.ravel(), y=(100 * un / ln).ravel(), w=ln.ravel(),
-                new=M.NEWM.ravel(), m=M.MISM.ravel())
-
-
-def sexage_cells(S_):
-    une = S_["une"].astype(float)
-    lab = (S_["une"] + S_["emp"]).astype(float)
-    tt, rr, gg, ss, aa = np.meshgrid(np.arange(W.T), np.arange(W.R), np.arange(6), np.arange(2), np.arange(5),
-                                     indexing="ij")
-    return dict(t=tt.ravel(), r=(rr * 10 + ss * 5 + aa).ravel(), g=gg.ravel(), y=(100 * une / lab).ravel(),
-                w=lab.ravel(), new=M.NEWM[tt, gg].ravel(), m=M.MISM[tt, gg].ravel())
-
-
-def fe_sparse(F, cols, use, weighted):
-    from scipy import sparse
-    from scipy.sparse.linalg import lsqr
-    key = F["t"][use] * 1000 + F["r"][use]
-    _, idx = np.unique(key, return_inverse=True)
-    n = int(use.sum())
-    X1 = sparse.csr_matrix((np.ones(n), (np.arange(n), idx)))
-    M5 = sparse.csr_matrix(np.column_stack([(F["m"][use] == j) for j in range(2, 7)]).astype(float))
-    C = sparse.csr_matrix(np.column_stack([np.asarray(c)[use] for c in cols]).astype(float))
-    X = sparse.hstack([X1, M5, C]).tocsr()
-    sw = np.sqrt(F["w"][use] / F["w"][use].mean()) if weighted else np.ones(n)
-    b = lsqr(sparse.diags(sw) @ X, F["y"][use] * sw, atol=1e-12, btol=1e-12, iter_lim=50000)[0]
-    return b[-len(cols):]
+def order_margin(d, gold):
+    hg = d["hg"]
+    outs = [i for i in d["order"] if i not in gold]
+    return min(hg[x] for x in gold) / max(hg[y] for y in outs) - 1
 
 
 def run(target, golden_dir, world=None, meta_path=None):
     RESULTS.clear()
-    S_ = world
-    X = world["golden"] if world and "golden" in world else GD.compute(target)
+    fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
+    if world is None:
+        import build as B
+        world = B.simulate()
+    rows, tab = world["rows"], world["tab"]
+    gold_names = fig["call"]["designated"]
+    gold = {i for i, c in enumerate(W.CREMATORIA) if c[2] in gold_names}
+
+    # ------------------------------------------------------------ input gates and provenance
     files = sorted(os.listdir(target))
-    meta = json.load(open(meta_path)) if meta_path else {}
-
-    # ---------------------------------------------------------------- input gates
-    ok("gate: ten or more files", len(files) >= 10, "%d files" % len(files))
+    meta = json.load(open(meta_path))
     fmts = {f.rsplit(".", 1)[1] for f in files}
-    ok("gate: three or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
-    ok("gate: a file of 25,000 rows or more", world["counts"]["old"] >= 25000 and world["counts"]["field"] >= 25000,
-       "%d and %d" % (world["counts"]["old"], world["counts"]["field"]))
-    dis = meta.get("distractor_files", [])
-    ok("gate: two or more distractors in metadata.json", len(dis) >= 2 and all(d in files for d in dis), dis)
-    ok("gate: no file name says distractor or answer", not any(re.search("distract|answer|known_issue", f) for f in files))
-    ok("gate: every pack file has a source and licence in metadata.json",
-       sorted(x["path"] for x in meta.get("files", [])) == files and all(x.get("license") for x in meta["files"]))
+    ok("input gate: 10 or more files", len(files) >= 10, "%d files" % len(files))
+    ok("input gate: 3 or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    big = max((x["rows"] or 0) for x in meta["files"])
+    ok("input gate: a file of 25,000 rows or more", big >= 25000, "%d rows" % big)
+    ok("input gate: two or more distractors named in metadata.json, each shipped and none read by the goldens",
+       len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]), meta["distractor_files"])
+    ok("provenance: every file in metadata.json with source, date and licence",
+       sorted(x["path"] for x in meta["files"]) == files and all(x["source"] and x["date"] and x["license"]
+                                                                  for x in meta["files"]))
+    ok("no distractor named after its role", not any(re.search(r"distract|decoy|unused", f, re.I) for f in files))
 
-    # ---------------------------------------------------------------- the golden, from the bundle
-    ok("golden: change rounds to 0.5 points", X["change"] == 0.5, "%.4f" % X["G"])
-    ok("golden: restated trigger 6.5", X["trigger"] == 6.5)
-    ok("golden: designated Eastern Ranges, Western Coast, River Delta, Highlands",
-       X["designated"] == ["05", "07", "08", "09"], X["designated"])
-    F = X["F"]
-    truthF = None
-    if S_ is not None:
-        Fg = M.cells_from(S_["une"].sum(axis=(3, 4)), (S_["une"] + S_["emp"]).sum(axis=(3, 4)))
-        ok("golden: the bundle's cells equal the generator's", np.allclose(Fg["y"], F["y"], atol=5e-6) and
-           np.allclose(Fg["w"], F["w"], rtol=1e-9, atol=1.0))
+    # ------------------------------------------------------------ the goldens against figures.json
+    res = G.call(target, tab)
+    ok("golden: the call recomputed from the bundle designates %s" % " and ".join(gold_names),
+       [nm(i) for i in res["des"]] == gold_names)
+    ok("golden: 2026 short of 55 per cent", not fig["call"]["met"] and res["share"] < W.SHARE_REQUIRED,
+       "%.2f" % res["share"])
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(golden_dir, W.GOLDEN["book"]), data_only=False)
+    lev_ws = {r[0]: r[5] for r in wb["Levy 2026"].iter_rows(min_row=2, values_only=True) if r[0]}
+    ok("golden workbook: every levy equals figures.json", lev_ws == fig["levy"])
+    byp_ws = collections.defaultdict(dict)
+    for r in wb["Bypassed cremations 2026"].iter_rows(min_row=2, values_only=True):
+        byp_ws[r[0]][r[2].split()[1]] = r[3]
+    ok("golden workbook: every bypass count equals figures.json", dict(byp_ws) == fig["bypass"])
+    ok("golden workbook: 20 levies and 24 bypass cells", len(lev_ws) == 20 and sum(len(v) for v in byp_ws.values()) == 24)
+    cert = pdf_text(os.path.join(golden_dir, W.GOLDEN["cert"]))
+    flat = " ".join(cert.split())
+    ok("golden certificate: names both designated crematoria, the verdict and the share at its precision",
+       all(n in flat for n in gold_names) and "about %d per cent" % fig["call"]["share_pct_whole"] in flat
+       and "did not meet" in flat)
+    ok("golden certificate: no share or mercury given finer than the data carry (no decimal per cent)",
+       not re.search(r"\d+\.\d+ per cent", flat))
 
-    # ---------------------------------------------------------------- the corridor (C3)
-    var = M.variants(F)
-    une, lab = GD.read_cells(target)
-    Fn = nat_cells(une, lab)
-    for pre in (24, 36, 42):
-        u = Fn["t"] >= W.PHASE - pre
-        var[("national", pre, "each")] = float(M.mis_effects(Fn, u, True, True).mean())
-        b = M.fe(Fn, [Fn["new"], Fn["new"] * (Fn["m"] >= 2)], u, True)
-        var[("national", pre, "first/later")] = float(b[0] + 5.0 / 6.0 * b[1])
-    if S_ is not None:
-        Fc = sexage_cells(S_)
-        u = Fc["t"] >= W.PHASE - 42
-        for wt in (True, False):
-            e = fe_sparse(Fc, [Fc["new"] * (Fc["m"] == j) for j in range(1, 7)], u, wt)
-            var[("sex and age cells", wt)] = float(e.mean())
-    vals = np.array(list(var.values()))
-    ok("C3 corridor: every implementation rounds to 0.5", all(round(v + 1e-9, 1) == 0.5 for v in vals),
-       "%.4f to %.4f over %d" % (vals.min(), vals.max(), len(vals)))
-    ok("C3 corridor: every implementation 0.02 or more from a rounding edge",
-       vals.min() >= 0.47 and vals.max() <= 0.53, "%.4f to %.4f" % (vals.min(), vals.max()))
-    ok("golden: the first-interview effect is negative and the later ones positive",
-       X["eff"][0] < -0.3 and (X["eff"][1:] > 0.4).all(), np.round(X["eff"], 3).tolist())
+    # ------------------------------------------------------------ the decisive step: every form, every wrong route
+    cre = cre_list(rows)
+    gold_steps = None
+    for f in M.FORMS:
+        d = M.designate(cre, tab, f)
+        mo = order_margin(d, gold) if set(d["des"]) == gold else -1
+        ok("form %s designates the golden pair with the third crematorium 5 per cent or more behind" % f,
+           set(d["des"]) == gold and mo >= 0.05, "margin %.3f, share %.2f" % (mo, d["share"]))
+        ok("form %s: the steps clear 55 per cent by 2 points either side" % f,
+           len(d["steps"]) >= 3 and d["steps"][1] <= 53.0 and d["steps"][2] >= 57.0,
+           " ".join("%.2f" % x for x in d["steps"]))
+        if f == M.GOLDEN_FORM:
+            gold_steps = d["steps"]
+    for f in M.SCALING + M.OFF_BY_ONE:
+        d = M.designate(cre, tab, f)
+        ok("form %s (refuted or off by a year) still designates the golden pair" % f, set(d["des"]) == gold,
+           "margin %.3f" % (order_margin(d, gold) if set(d["des"]) == gold else -1))
+    shares = [M.designate(cre, tab, f)["share"] for f in M.FORMS]
+    ok("the standing family's share spans under 1.5 points, so the certificate states it whole",
+       max(shares) - min(shares) < 1.5 and len({int(round(x)) for x in shares}) <= 2, "%.2f to %.2f" % (min(shares), max(shares)))
+    wrong = {"count": {"Corbett Narrows Crematorium"},
+             "age2016": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"},
+             "age2016_interp": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"},
+             "age2006": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"},
+             "age_trend": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"},
+             "age_trend3": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"},
+             "age_trend_prop": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"},
+             "cohort_noage": {"Ashgrove Cremation Centre", "Corbett Narrows Crematorium"},
+             "cohort_along_2016": {"Tallis Creek Crematorium", "Dunmore Falls Memorial Gardens"}}
+    landed = 0
+    for f, want in wrong.items():
+        d = M.designate(cre, tab, f)
+        got = {nm(i) for i in d["des"]}
+        landed += got == set(gold_names)
+        x = sorted(gold, key=lambda i: -d["hg"][i])
+        outs = [z for z in d["order"] if z not in gold]
+        od = max(d["hg"][z] for z in outs) / d["hg"][x[1]] - 1
+        ok("wrong route %s designates %s, the golden pair 5 per cent or more off it (or its count stops apart)" % (
+            f, " and ".join(sorted(want))), got == want and (od >= 0.05 or len(d["des"]) != 2),
+           "share %.2f, margin %.3f" % (d["share"], od))
+    ok("Gate F: no cheap route lands the call (count, both waves' profiles, the bands' trends, the cohort unaged or "
+       "aged along the cross-section)", landed == 0, "%d of %d" % (landed, len(wrong)))
+    a16 = M.designate(cre, tab, "age2016")
+    al = M.designate(cre, tab, "cohort_along_2016")
+    ok("ageing the cohort along the 2016 cross-section returns the age profile at death exactly",
+       np.allclose(a16["hg"], al["hg"]))
 
-    # ---------------------------------------------------------------- the wrong routes, by name
-    wr = M.wrong_routes(F, X["nat"])
-    ok("R0: no restatement files 6.0", restate(0.0) == 6.0)
-    ok("R1 (default): the arm gap files 7.2", restate(wr["R1 arm gap"]) == 7.2, "%.3f" % wr["R1 arm gap"])
-    ok("R1': the rotation-group letter held fixed files 7.2", restate(wr["R1 rotation letter held fixed"]) == 7.2,
-       "%.3f" % wr["R1 rotation letter held fixed"])
-    r2 = wr["R2 one effect"]
-    ok("R2: one effect within month in sample files 6.3 or 6.4 on every implementation",
-       all(restate(v) in (6.3, 6.4) for v in r2.values()) and max(r2.values()) <= 0.42,
-       "%.3f to %.3f" % (min(r2.values()), max(r2.values())))
-    r3 = wr["R3 continuing households"]
-    ok("R3': the continuing households' effect files 6.7", all(restate(v) == 6.7 for v in r3.values()),
-       "%.3f to %.3f" % (min(r3.values()), max(r3.values())))
-    ok("event: 2026 against 2024 in the published rate files 6.8", restate(wr["event 2026 against 2024"]) == 6.8,
-       "%.3f" % wr["event 2026 against 2024"])
-    sets = {"R0": M.designated(X["avg"], 6.0), "R2 6.3": M.designated(X["avg"], 6.3),
-            "R2 6.4": M.designated(X["avg"], 6.4), "R3'": M.designated(X["avg"], 6.7),
-            "event": M.designated(X["avg"], 6.8), "R1": M.designated(X["avg"], 7.2)}
-    ok("ladder: every wrong route designates another set",
-       all(v != X["designated"] for v in sets.values()), {k: v for k, v in sets.items()})
-    ok("ladder: R0 designates six, R2 five, the golden four, R1 two",
-       (len(sets["R0"]), len(sets["R2 6.3"]), len(sets["R2 6.4"]), len(X["designated"]), len(sets["R1"])) ==
-       (6, 5, 5, 4, 2))
-    ok("dominance: the nearest wrong routes sit 0.07 or more from the golden's corridor",
-       min(abs(np.array(list(r2.values())) - vals.min()).min(),
-           abs(np.array(list(r3.values())) - vals.max()).min()) >= 0.07)
+    # ------------------------------------------------------------ lesson 7: the golden method's assumptions
+    xs, ys, dec = [], [], {1: [], 2: []}
+    for s in "MF":
+        for k, (y0, y1) in enumerate(((1996, 2006), (2006, 2016)), 1):
+            for lo in range(45, 80, 5):
+                c0, c1 = M.band(tab, y0, s, lo), M.band(tab, y1, s, lo + 10)
+                xs.append(c0)
+                ys.append(c1 - c0)
+                dec[k].append(c1 - c0)
+    b = np.polyfit(xs, ys, 1)
+    prop_slope = np.mean(ys) / np.mean(xs)
+    ok("lesson 7: a cohort's change between waves does not scale with its level (slope near nil, a proportional change "
+       "would need %.3f)" % prop_slope, abs(b[0]) < 0.04 and abs(b[0] - prop_slope) > 0.08, "slope %.3f" % b[0])
+    ok("lesson 7: the within-cohort change is the same over both decades (a constant rate, no period shock)",
+       abs(np.mean(dec[1]) - np.mean(dec[2])) < 0.15, "%.2f and %.2f" % (np.mean(dec[1]), np.mean(dec[2])))
+    fixed_age = [tab[(2016, s, lo)]["amalgam"] - tab[(2006, s, lo)]["amalgam"] for s in "MF" for lo in range(45, 90, 5)]
+    ok("lesson 7: at a fixed age the change between waves swings both ways (the age bands' own trends are not "
+       "stable, the cohorts' are)", max(fixed_age) > 1.5 and min(fixed_age) < -1.5 and np.std(ys) < 0.35,
+       "%.1f to %.1f against a cohort spread of %.2f" % (min(fixed_age), max(fixed_age), np.std(ys)))
+    ok("lesson 7: no background to subtract (the 18 to 24 band, born after amalgam's use fell away, carries the "
+       "least), no offset (every mean at or above nil)",
+       all(tab[(y, s, 18)]["amalgam"] <= 3.5 for y in (2006, 2016) for s in "MF") and
+       all(c["amalgam"] >= 0 for c in tab.values()))
+    ok("lesson 7: the survey's sampling error is plausible for its samples (each cell's interval from its own "
+       "examined count)", all(0.08 <= c["se"] <= 0.5 for (y, s, lo), c in tab.items() if s in "MF"))
+    # the realised noise against the stated error: chi-square per degree of freedom near 1, not far below
+    z = []
+    for (y, s, lo), c in tab.items():
+        if s in "MF":
+            hi = c["hi"]
+            ages = np.arange(lo, hi + 1)
+            wgt = np.exp(-np.maximum(0, ages - 86) / 4.0) * np.exp(-np.maximum(0, 30 - ages) / 40.0)
+            v = float(np.average([S.truth(y - a, a, s) for a in ages], weights=wgt))
+            z.append((c["amalgam"] - v) / math.sqrt(c["se"] ** 2 + 0.0289 ** 2))
+    chi = float(np.mean(np.square(z)))
+    ok("lesson 7: the published cells' dispersion about the truth is plausible (chi-square per cell 0.6 to 1.6)",
+       0.6 <= chi <= 1.6, "%.2f" % chi)
 
-    # ---------------------------------------------------------------- margins and the semantic fork table
-    edge = np.abs((X["avg"] * 100) % 1 - 0.5)
-    ok("bins: no region's 2026 average sits on a two-decimal rounding edge", edge.min() >= 0.15,
-       "%.3f" % edge.min())
-    ok("margin: no region's 2026 average within 0.04 of 6.5", np.abs(X["avg"] - 6.5).min() >= 0.04,
-       "%.3f" % np.abs(X["avg"] - 6.5).min())
-    act_text = pdf_text(os.path.join(target, P.FILES["act"]))
-    ok("SF1: the Act's trigger is 6.0 per cent", "The trigger rate is 6.0 per cent" in act_text)
-    ok("SF2: the change rounded then added equals the sum rounded",
-       round(6.0 + round(X["G"], 1), 1) == round(6.0 + X["G"] + 1e-9, 1) == 6.5)
-    ok("SF3: a comparison of periods (2026 against 2024) files another trigger",
-       restate(wr["event 2026 against 2024"]) != 6.5)
-    ok("SF4: weighted and unweighted regional cells both round to 0.5",
-       all(round(v + 1e-9, 1) == 0.5 for k, v in var.items() if isinstance(k, tuple) and len(k) == 5))
-    ok("SF5: the phase-in as seen (the arm gap) files another trigger", restate(wr["R1 arm gap"]) != 6.5)
-    ok("SF6: half up and half to even agree", round(X["G"], 1) == float(np.round(X["G"], 1)))
-    ok("SF7: at or above and strictly above designate the same regions",
-       [c for i, c in enumerate(W.RCODE) if X["avg"][i] > 6.5] == X["designated"])
-    unr = S.published(S_)[0] if S_ is not None else None
-    if unr is not None:
-        avg_unr = unr[W.Y26:].mean(0)
-        tot = (S_["une"].sum(axis=(2, 3, 4))[W.Y26:].sum(0) / (S_["une"] + S_["emp"]).sum(axis=(2, 3, 4))[W.Y26:].sum(0)) * 100
-        ok("SF8: every reading of the twelve-month average designates the same regions",
-           M.designated(avg_unr, 6.5) == X["designated"] == M.designated(tot, 6.5),
-           "North Coast %.3f %.3f %.3f" % (X["avg"][2], avg_unr[2], tot[2]))
-    ok("SF9: every rotation group answers the redesigned questionnaire in every month of 2026",
-       all(W.redesigned(t, g) for t in range(W.Y26, W.T) for g in range(6)))
-    F19 = dict(F)
-    remap = {W.RCODE.index(c): W.RCODE.index(W.CODE19[c]) for c in W.RCODE}
-    F19["r"] = np.array([remap[r] if t < W.MONTHS.index("2025-01") else r for t, r in zip(F["t"], F["r"])])
-    ok("SF10: reading the 2019 codes as 2025 codes leaves the change unchanged",
-       abs(M.golden_break(F19)[0] - X["G"]) < 1e-9)
-    gcsv = pd.read_csv(os.path.join(golden_dir, GD.CSV_NAME), dtype={"region": str})
-    pre = gcsv[gcsv["month"] < "2025-07"]
-    ok("SF11: months before July 2025 restated by the change as determined (one decimal place) for every region alike",
-       np.allclose(pre["redesigned_basis_rate"] - pre["published_rate"], X["change"], atol=1e-9))
-    ph = gcsv[gcsv["month"] >= "2025-07"]
-    ok("SF12: July 2025 on carried as published (the transition months marked)",
-       np.allclose(ph["redesigned_basis_rate"], ph["published_rate"], atol=1e-9) and
-       set(gcsv[(gcsv["month"] >= "2025-07") & (gcsv["month"] <= "2025-11")]["collected_on"]) ==
-       {"both questionnaires (as published)"})
-    gs = pd.read_csv(os.path.join(golden_dir, GD.CSV_NAME), dtype=str)
-    ok("SF12: every CSV rate carries one decimal place, as the release publishes",
-       gs["published_rate"].str.fullmatch(r"\d+\.\d").all() and gs["redesigned_basis_rate"].str.fullmatch(r"\d+\.\d").all())
-    trunc = [float(M.mis_effects(F, F["t"] <= W.PHASE + k).mean()) for k in (4, 5)]
-    ok("SF15: reading the effects only from the months before full use (to November or December 2025) files another "
-       "trigger, which the Act's 'once the change is in full use' rules out", all(restate(v) != 6.5 for v in trunc),
-       "%.3f and %.3f" % tuple(trunc))
-    fw = pd.read_parquet(os.path.join(target, P.FILES["field"]))
-    ok("SF13: the fieldwork file holds the contact months October to December 2026",
-       sorted(fw["contact_month"].unique()) == ["2026-10", "2026-11", "2026-12"])
-    st = M.dwellings_q4_stops(X["rows"], X["psu_region"])
-    ok("SF14: full interviews only gives another count", st["complete only"]["all"] != X["q4"]["all"],
-       "%d against %d" % (st["complete only"]["all"], X["q4"]["all"]))
+    # ------------------------------------------------------------ the clean truth: R1, R2, R3
+    true_cre = []
+    for r in rows:
+        if r["cremation"].year != W.YEAR:
+            continue
+        b0 = r["cremation"].year - r["age"] - 0.5
+        v = 0.0 if r["age"] < 18 else S.truth(int(round(b0)), r["age"], r["sex"])
+        true_cre.append((r["ci"], v, sim.abated(W.CREMATORIA[r["ci"]], r["cremation"])))
+    n = len(W.CREMATORIA)
+    thg, tab_ = np.zeros(n), np.zeros(n)
+    for ci, v, abt in true_cre:
+        thg[ci] += v * W.HG_PER_TOOTH_G
+        if abt:
+            tab_[ci] += v * W.HG_PER_TOOTH_G
+    unab = sorted([i for i, c in enumerate(W.CREMATORIA) if c[8] == "U"], key=lambda i: -thg[i])
+    tdes, cur = [], tab_.sum()
+    for i in unab:
+        if 100 * cur / thg.sum() >= W.SHARE_REQUIRED:
+            break
+        tdes.append(i)
+        cur += thg[i]
+    ok("R3b the decisive step recovers the truth: each decedent's own amalgam designates the golden pair",
+       set(tdes) == gold, "true share %.2f" % (100 * tab_.sum() / thg.sum()))
+    clean = {}
+    for y in S.WAVES:
+        for lo, hi in S.BANDS[y]:
+            ages = np.arange(lo, hi + 1)
+            wgt = np.exp(-np.maximum(0, ages - 86) / 4.0) * np.exp(-np.maximum(0, 30 - ages) / 40.0)
+            for s in "MF":
+                clean[(y, s, lo)] = {"lo": lo, "hi": hi,
+                                     "amalgam": float(np.average([S.truth(y - a, a, s) for a in ages], weights=wgt))}
+    d_easy = M.designate(cre, clean, "age2016")
+    ok("R3a analyst test: on the clean truth the 2016 profile at age at death designates Tallis Creek and Dunmore Falls",
+       {nm(i) for i in d_easy["des"]} == wrong["age2016"], "share %.2f" % d_easy["share"])
+    d_gold = M.designate(cre, clean, M.GOLDEN_FORM)
+    ok("R3b the decisive step alone: on the clean truth the cohort carried by its own change designates the golden pair",
+       set(d_gold["des"]) == gold, "share %.2f" % d_gold["share"])
+    d_half = M.designate(cre, clean, "cohort_noage")
+    ok("R3b each lower rung's single correction stays wrong on the clean truth (the cohort unaged designates "
+       "Ashgrove and Corbett Narrows)", {nm(i) for i in d_half["des"]} == wrong["cohort_noage"])
+    ok("R1 the field's raw material ships: permits at the cremation grain and the survey's cells by wave, band and sex",
+       len(world["permits"]) > 25000 and sum(1 for k in tab if k[1] in "MF") == 2 * sum(len(S.BANDS[y]) for y in S.WAVES))
+    heads = []
+    for f in files:
+        p = os.path.join(target, f)
+        if f.endswith(".csv"):
+            heads += list(pd.read_csv(p, nrows=1).columns)
+        elif f.endswith(".parquet"):
+            heads += list(pd.read_parquet(p).columns)
+        elif f.endswith(".xlsx"):
+            for sh in pd.ExcelFile(p).sheet_names:
+                heads += [str(x) for x in pd.read_excel(p, sheet_name=sh, nrows=6, header=None).fillna("").values.ravel()]
+    heads = [h.replace("Crematoria Mercury Fund", "") for h in heads]
+    ok("R1 no shipped column holds a cremation's mercury, amalgam, birth cohort or a designation",
+       not any(re.search(r"mercury|amalgam|cohort|birth|designat", h, re.I) for h in heads),
+       [h for h in heads if re.search(r"mercury|amalgam|cohort|birth|designat", h, re.I)][:3])
+    # R2: each Layer 1 item mishandled leaves the call where it was
+    def call_with(keep=None, abated=None, tabx=None, form=M.GOLDEN_FORM, skip=()):
+        kp = keep or (lambda r: r["cremation"].year == W.YEAR)
+        cx = cre_list([r for k, r in enumerate(rows) if k not in skip], keep=kp, abated=abated)
+        return {nm(i) for i in M.designate(cx, tabx or tab, form)["des"]}
+    ok("R2 mess: Wexley Regional's permits under its old number dropped leaves the call (SF8)",
+       call_with(keep=lambda r: r["cremation"].year == W.YEAR and not (r["code"] == "CM-1590" and
+                 r["cremation"] < W.WEXLEY_RENUMBERED)) == set(gold_names))
+    ok("R2 mess: the 2026 population by date of death leaves the call (SF1)",
+       call_with(keep=lambda r: r["death"].year == W.YEAR) == set(gold_names))
+    ok("R2 mess: infants aged in months read as years leaves the call (SF5)", True,
+       "nil under 18 either way: %d infants" % sum(1 for p in world["permits"] if p["age_unit"] == "M"))
+    ok("R2 mess: the commissioning day counted as abated leaves the call (SF2)",
+       call_with(abated=lambda r: W.CREMATORIA[r["ci"]][8] != "U" and
+                 r["cremation"] >= dt.date.fromisoformat(W.CREMATORIA[r["ci"]][9])) == set(gold_names))
+    tab2 = {k: dict(v, amalgam=v["amalgam"] * (1 - v["edentulous_pct"] / 100)) for k, v in tab.items()}
+    ok("R2 mess: the per-adult means multiplied again by the dentate share leaves the call (SF6)",
+       call_with(tabx=tab2) == set(gold_names))
+    ok("R3c no plant: no file computes or ranks any crematorium's mercury, no memo or earlier inventory ships",
+       not any(re.search(r"(?<![a-z])(inventory|memo|draft|briefing|estimates?)(?![a-z])", f, re.I) for f in files))
 
-    # ---------------------------------------------------------------- the three rules, executed
-    ok("R1 the field's raw material ships: estimation cells by month, region, rotation group, sex and age on both "
-       "questionnaires", world["counts"]["old"] > 60000 and world["counts"]["new"] > 8000)
-    heads = open(os.path.join(target, P.FILES["old"])).readline() + open(os.path.join(target, P.FILES["new"])).readline()
-    ok("R1 no shipped column holds month in sample, the change or a designation",
-       not re.search(r"(?i)mis\b|month_in_sample|interview|effect|change|designat|trigger", heads), heads.strip())
-    if S_ is not None:
-        L = (S_["lf"]).sum(axis=(3, 4)).astype(float)
-        truth = (S_["p"] * S_["lf"]).sum(axis=(3, 4)) / L
-        Ft = M.cells_from(truth * L / 100.0, L)
-        ag = M.arm_gap(Ft)
-        ok("R3a analyst test: on the clean truth the arm gap files 7.2 and designates River Delta and Highlands",
-           restate(ag) == 7.2 and M.designated(X["avg"], restate(ag)) == ["08", "09"], "%.3f" % ag)
-        gt, et = M.golden_break(Ft)
-        ok("R3b the decisive step alone: the six effects averaged on the clean truth file 6.5", restate(gt) == 6.5,
-           "%.4f" % gt)
-        one = float(M.fe(Ft, [Ft["new"]], Ft["t"] >= 0, True)[0])
-        ok("R3b the first correction alone (one effect, month in sample fixed) files 6.3 or 6.4 on the clean truth",
-           restate(one) in (6.3, 6.4), "%.3f" % one)
-        ok("R3b the clean truth's effects: first interview %.2f, later %.2f (within 0.015, the sampled sex and age mix)"
-           % (W.FIRST_EFFECT, W.LATER_EFFECT),
-           abs(et[0] - W.FIRST_EFFECT) < 0.015 and np.allclose(et[1:], W.LATER_EFFECT, atol=0.015),
-           np.round(et, 3).tolist())
-    reg_rel = X["reg"]
-    rep = any((reg_rel[t] == reg_rel[t + 12]).all() for t in range(W.T - 12))
-    ok("R3c no copied or repeated block in the published regional rates", not rep)
-    docs_text = pdf_text(os.path.join(target, P.FILES["note"])) + act_text
-    ok("R3c no document states a change, a restated trigger or a designation",
-       not re.search(r"restated (trigger )?(rate )?(is|of|at) \d|\b6\.[1-9] per cent|designat\w+ (are|is) [A-Z]", docs_text))
-    Fk = dict(F)
-    oldq = np.array([not W.redesigned(t, g) for t, g in zip(F["t"], F["g"])])
-    Fk["w"] = np.where(oldq, F["w"] / 1000.0, F["w"])
-    gk = M.golden_break(Fk)[0]
-    ok("R2 mess: CAI 2014's thousands left unconverted (cells weighted 1,000 times too light) still files 6.5",
-       restate(gk) == 6.5, "%.4f" % gk)
-    early = M.designated(reg_rel[W.Y26 - 1:W.Y26 + 11].mean(0), 6.5)
-    ok("R2 mess: the release's Table 2 read one month early still designates the same regions",
-       early == X["designated"], early)
+    # ------------------------------------------------------------ the semantic fork table
+    ok("SF1 cremations in 2026 by date of cremation; by date of death the same call",
+       call_with(keep=lambda r: r["death"].year == W.YEAR) == set(gold_names))
+    ok("SF2 abated strictly after commissioning; on the day the same call",
+       call_with(abated=lambda r: W.CREMATORIA[r["ci"]][8] != "U" and
+                 r["cremation"] >= dt.date.fromisoformat(W.CREMATORIA[r["ci"]][9])) == set(gold_names))
+    bt = {(x["ci"], x["k"]) for ci, p in world["plants"].items() for x in world["cyc"]
+          if x["ci"] == ci and x["type"] == "CREMATION" and any(x["start"] <= b1 and x["end"] >= b0
+                                                                 for b0, b1 in p["auto"] + p["manual"])}
+    byk = {k for ci, k in bt}
+    byid = {id(rows[k]) for k in byk}
+    ok("SF3 a cremation while the plant was bypassed is still abated; counted as not abated the same call",
+       call_with(abated=lambda r: sim.abated(W.CREMATORIA[r["ci"]], r["cremation"]) and
+                 id(r) not in byid) == set(gold_names), "%d bypassed cremations" % len(byk))
+    ok("SF4 the factor is the Regulation's 0.55 grams a tooth", W.HG_PER_TOOTH_G == 0.55 and
+       "0.55 grams" in " ".join(pdf_text(os.path.join(target, W.FILES["reg"])).split()))
+    ok("SF5 nil under 18 (the Regulation); infants in months are under 18", all(
+        p["age"] < 12 for p in world["permits"] if p["age_unit"] == "M"))
+    ok("SF6 the survey's means are per adult with the edentulous counted as none; a second dentate factor the same call",
+       call_with(tabx=tab2) == set(gold_names) and "count as having none" in " ".join(
+           pdf_text(os.path.join(target, W.FILES["s2016"])).split()))
+    ok("SF7 the decedent's sex reads the sex-specific table; the all-adult table the same call",
+       {nm(i) for i in M.designate(cre, tab, "cohort_pooled_sex")["des"]} == set(gold_names))
+    ok("SF8 Wexley Regional's F1984 permits key to CM-1590 through the register; dropped, the same call",
+       call_with(keep=lambda r: r["cremation"].year == W.YEAR and not (r["code"] == "CM-1590" and
+                 r["cremation"] < W.WEXLEY_RENUMBERED)) == set(gold_names))
+    ok("SF9 the scheme year is the calendar year (Regulation s.1)", "scheme year" in " ".join(
+        pdf_text(os.path.join(target, W.FILES["reg"])).split()))
+    hg = M.designate(cre, tab, M.GOLDEN_FORM)["hg"]
+    sec = sorted(gold, key=lambda i: -hg[i])[1]
+    ok("SF10 Wexley Regional and Hollinsbrook (abated cremations in 2026) are not candidates; as candidates the same call",
+       hg[5] < hg[sec] and hg[6] < hg[sec], "%.0f and %.0f grams against %.0f" % (hg[5], hg[6], hg[sec]))
+    per = sorted([i for i, c in enumerate(W.CREMATORIA) if c[8] == "U"],
+                 key=lambda i: -hg[i] / max(1, sum(1 for r in cre if r[0] == i)))
+    ok("SF11 the designation order is by total mercury (s.4(2)); per cremation would be another order, not a reading",
+       per[:2] != sorted(gold, key=lambda i: -hg[i]))
+    ok("SF12 the stop 'at least 55 per cent' has nothing on its edge (strict the same call)",
+       gold_steps[1] < 54.0 and gold_steps[2] > 56.0, " ".join("%.2f" % x for x in gold_steps))
+    oop = {p["_k"] for p in world["permits"] if p["residence_region"] == "Out of province"}
+    ok("SF13 out-of-province residents cremated in the province are in; left out, the same call",
+       call_with(skip=oop) == set(gold_names), "%d such permits" % len(oop))
+    ok("SF14 the survey age is age at examination, the 2016 wave ten years earlier; lags of 9 and 11 years and the "
+       "single-year mixture the same call", all({nm(i) for i in M.designate(cre, tab, f)["des"]} == set(gold_names)
+                                                for f in ("cohort_lag9", "cohort_lag11", "cohort_lagmix")))
+    ok("SF15 the open top bands read whole; interpolated by single years of age the same call",
+       {nm(i) for i in M.designate(cre, tab, "cohort_interp")["des"]} == set(gold_names))
+    ok("SF16 cohorts not surveyed as adults in 2006: the youngest band, the 2016 profile, the unaged mean or nil, the "
+       "same call", all({nm(i) for i in M.designate(cre, tab, f)["des"]} == set(gold_names)
+                        for f in ("cohort_young_profile", "cohort_young_noage", "cohort_young_zero")))
+    lev_gross = None
+    L = G.ledger_lines(target)
+    ok("SF17 the levy base excludes goods, disbursements and sales tax (scheme rules 2.2): the base and the excluded "
+       "lines differ", (L[(L.doc == "INV") & ~L.fee].cents.sum() > 0))
+    comm = G.register(target)[2]
+    lev, matched = G.levies(target, comm)
+    split_round = {}
+    for c in W.CREMATORIA:
+        v = lev[c[0]]
+        split_round[c[0]] = int(round(v["income_unabated"] * W.LEVY_UNABATED)) + int(round(v["income_abated"] * W.LEVY_ABATED))
+    diff = [k for k in lev if split_round[k] != lev[k]["levy"]]
+    ok("SF18 the levy is rounded once on the year's income (scheme rules 2.3); rounding each rate's part first moves "
+       "at most a dollar, only where a crematorium has both", all(abs(split_round[k] - lev[k]["levy"]) <= 1 and
+       k in ("CM-1590", "CM-2251") for k in diff), "differs at %s" % (diff or "none"))
+    ok("SF19 a credit takes the scheme year of the fees it was allowed against; the posting date is the device (Ask A)",
+       CE.levy_route(target, "posted") != fig["levy"])
+    et = G.ET
+    q_et, q_utc = collections.Counter(), collections.Counter()
+    for ci, p in world["plants"].items():
+        for x in world["cyc"]:
+            if x["ci"] == ci and x["type"] == "CREMATION" and any(x["start"] <= b1 and x["end"] >= b0
+                                                                   for b0, b1 in p["auto"] + p["manual"]):
+                q_et[(ci, (x["start"].month - 1) // 3)] += 1
+                u = x["start"].replace(tzinfo=et).astimezone(dt.timezone.utc)
+                q_utc[(ci, (u.month - 1) // 3 + 4 * (u.year - W.YEAR))] += 1
+    ok("SF20 a bypassed cremation's quarter is the same read in Eastern time or in UTC", q_et == q_utc)
+    clear_min = []
+    for ci, p in world["plants"].items():
+        edges = sorted([x["start"] for x in world["cyc"] if x["ci"] == ci] + [x["end"] for x in world["cyc"] if x["ci"] == ci])
+        import bisect
+        for b0, b1 in p["auto"] + p["manual"]:
+            for t in (b0, b1):
+                j = bisect.bisect_left(edges, t)
+                cand = [abs((edges[k] - t).total_seconds()) for k in (j - 1, j) if 0 <= k < len(edges)]
+                clear_min.append(min(cand) / 60)
+    ok("SF21 'under way': no cycle starts or ends within 25 minutes of a bypass's ends, so cooling or the clock's "
+       "minute never moves a count", min(clear_min) >= 25, "%.0f minutes" % min(clear_min))
+    ok("SF22 Hollinsbrook's and Wexley Regional's partial third quarters are quarters in service (the prompt)",
+       "Q3" in fig["bypass"]["CM-2251"] and "Q3" in fig["bypass"]["CM-1590"] and "Q2" not in fig["bypass"]["CM-1590"])
 
-    # ---------------------------------------------------------------- the ask
-    ok("ask: golden counts", X["q4"]["all"] == sum(X["q4"][c] for c in W.RCODE), X["q4"])
-    ok("ask cracker (dwelling references counted) misses every figure",
-       all(st["slots"][k] != X["q4"][k] for k in W.RCODE + ["all"]), st["slots"])
-    for k in ("interviews", "every dwelling", "complete only", "eligible"):
-        ok("ask stop '%s' misses every figure" % k, all(st[k][c] != X["q4"][c] for c in W.RCODE + ["all"]))
-    ok("ask: no golden count is round", all(X["q4"][k] % 100 for k in W.RCODE + ["all"]))
+    d_q = M.designate(cre, tab, "cohort_quad3")
+    d2 = [M.band(tab, 2016, s_, lo + 20) - 2 * M.band(tab, 2006, s_, lo + 10) + M.band(tab, 1996, s_, lo)
+          for s_ in "MF" for lo in range(45, 70, 5)]
+    se2 = float(np.std(d2, ddof=1) / math.sqrt(len(d2)))
+    bt_rep, bt_none = {}, {}
+    for s_ in "MF":
+        rep, none = [], []
+        for lo in range(25, 80, 5):
+            c96, c06, c16 = (M.band(tab, 1996, s_, lo), M.band(tab, 2006, s_, lo + 10), M.band(tab, 2016, s_, lo + 20))
+            rep.append(2 * c06 - c96 - c16)
+            none.append(c06 - c16)
+        bt_rep[s_], bt_none[s_] = math.sqrt(np.mean(np.square(rep))), math.sqrt(np.mean(np.square(none)))
+    ok("SF23 a quadratic through each cohort's three waves (another set: %s) is ruled out: its curvature is untestable "
+       "on three waves and the waves show none (mean second difference within two standard errors of nil), the "
+       "back-test the waves allow favours repeating the last change over no change for both sexes, and it carries "
+       "about twice the additive form's sampling error" % " and ".join(nm(i) for i in d_q["des"]),
+       abs(float(np.mean(d2))) < 2 * se2 and all(bt_rep[x] < bt_none[x] for x in "MF")
+       and math.sqrt(9 + 9 + 1) > 1.9 * math.sqrt(4 + 1),
+       "share %.2f; second difference %.2f (sd %.2f, n %d); back-test RMSE repeat %.2f and %.2f, none %.2f and %.2f" % (
+           d_q["share"], float(np.mean(d2)), float(np.std(d2, ddof=1)), len(d2), bt_rep["M"], bt_rep["F"],
+           bt_none["M"], bt_none["F"]))
+
+    # ------------------------------------------------------------ Ask A: the account credits
+    lt = T.levy_truth(world["ar"])
+    ok("Ask A: the golden levies from the bundle equal the simulation's own", lt == fig["levy"])
+    inv = L[L.doc == "INV"]
+    by_cust = {k: g for k, g in inv.groupby(["ledger", "cust"])}
+    adj = L[(L.doc == "CRN") & L.adj]
+    uniq_bad, single_bad, multi = 0, 0, 0
+    for r in adj.itertuples():
+        g = by_cust[(r.ledger, r.cust)]
+        sv = pd.to_datetime(g.service)
+        end = pd.Timestamp(r.posted)
+        for days, k in ((200, 4), (10000, 3)):
+            w = g[(sv <= end + pd.Timedelta(days=10)) & (sv >= end - pd.Timedelta(days=days))]
+            grp = collections.Counter()
+            for x in w.itertuples():
+                d = dt.date.fromisoformat(x.service)
+                grp[(x.cents, (x.code, d.year, comm.get(x.code) is not None and d > comm[x.code], x.fee))] += 1
+            eff = G._effects(-r.cents, [(a, s_, c) for (a, s_), c in grp.items()], k)
+            uniq_bad += len(eff) != 1
+        w = g[(sv <= end) & (sv >= end - pd.Timedelta(days=200))]
+        if not (w.cents == -r.cents).any():
+            multi += 1
+            refs = w.ref.unique()
+            tot = inv[inv.ref.isin(refs) & (inv.ledger == r.ledger)].groupby("ref").cents
+            single_bad += int((tot.sum() == -r.cents).any() or (inv[inv.ref.isin(refs) & inv.fee &
+                              (inv.ledger == r.ledger)].groupby("ref").cents.sum() == -r.cents).any())
+    ok("Ask A device: every account credit has one effect on the levies (up to four lines in 200 days, three on the "
+       "whole account, across the ledger's sites)", uniq_bad == 0, "%d credits, %d unsettled" % (len(adj), uniq_bad))
+    ok("Ask A device: no booking's total equals a credit that no single line explains (the battery's pairing misses)",
+       single_bad == 0, "%d multi-line credits" % multi)
+    ok("Ask A device: no marker: account credits carry the same document type, code and description as their benign "
+       "single-line twins, and occur in every month", adj.posted.str[:7].nunique() >= 12)
+    routes = {k: CE.levy_route(target, k) for k in ("posted", "month_before", "ignore", "year_before")}
+    routes["by_posting"] = CE.levy_route(target, "posted", by_posting=True)
+    for k, r in routes.items():
+        miss = min(abs(r[c] - fig["levy"][c]) for c in fig["levy"])
+        ok("Ask A stop %s misses every crematorium's levy (by 2 dollars or more; the cracker's by 5)" % k,
+           miss >= (5 if k == "posted" else 2), "smallest miss %d" % miss)
+    ok("Ask A: the full includer (credits matched to the lines they sum to) reproduces figures.json",
+       CE.levy_route(target, "match") == fig["levy"])
+    ok("Ask A realism: no levy a round hundred", all(v % 100 for v in fig["levy"].values()))
+
+    # ------------------------------------------------------------ Ask B: the bypass trace
+    bt_ = T.bypass_truth(world["cyc"], world["plants"])
+    ok("Ask B: the golden counts from the bundle equal the simulation's own", bt_ == fig["bypass"])
+    pl = pd.read_parquet(os.path.join(target, W.FILES["plant"]))
+    rd = pl[pl.record == "READING"]
+    iv, _ = G.bypass_intervals(target)
+    cold_ok, warm_ok = True, True
+    for code, ivs in iv.items():
+        r_ = rd[rd.fund_code == code]
+        t = r_.logged_utc.values
+        v = r_.inlet_temp_c.values
+        for b0, b1, kind in ivs:
+            m = (t >= np.datetime64((b0 + pd.Timedelta(minutes=25)).tz_convert(None))) & (t <= np.datetime64(b1.tz_convert(None)))
+            if m.any() and v[m].max() > 45:
+                cold_ok = False
+        ev = pl[(pl.fund_code == code) & (pl.record == "EVENT")].sort_values("logged_utc")
+        rows_ = list(ev.itertuples())
+        for i, e in enumerate(rows_):
+            if e.event == "ALARM" and e.detail.startswith("DP HIGH"):
+                clr = next(x for x in rows_[i + 1:] if x.event == "ALARM CLEARED" and x.detail == "DP HIGH")
+                if clr.logged_utc - e.logged_utc <= pd.Timedelta(minutes=5):
+                    m = (t >= np.datetime64(e.logged_utc.tz_convert(None))) & \
+                        (t <= np.datetime64((e.logged_utc + pd.Timedelta(minutes=40)).tz_convert(None)))
+                    if m.any() and v[m].min() < 100:
+                        warm_ok = False
+    ok("Ask B device: through every bypass the inlet runs at ambient (45 degrees or under from 25 minutes in)", cold_ok)
+    ok("Ask B over-cleaning half: an alarm cleared within five minutes leaves the inlet warm (the plant stayed on line)",
+       warm_ok)
+    stops = sum(1 for e in pl[pl.record == "EVENT"].itertuples() if e.event == "PLANT STOP")
+    ok("Ask B benign twins: weekend plant stops give a cold inlet with no cremation under way",
+       stops >= 20 and all(not any(x["start"] < s1 and x["end"] > s0 for x in world["cyc"] if x["ci"] == ci)
+                           for ci, p in world["plants"].items() for s0, s1 in p["stops"]), "%d stops" % stops)
+    for mode in ("manual", "alarms_clear", "utc_as_local", "count_events"):
+        r = CE.bypass_route(target, mode)
+        kept = sum(1 for c in fig["bypass"] for q in fig["bypass"][c] if r[c].get(q) == fig["bypass"][c][q])
+        lim = 0 if mode == "manual" else 2
+        ok("Ask B stop %s keeps %s" % (mode, "no cell (the cracker)" if lim == 0 else "two cells at most"), kept <= lim,
+           "%d of 24 kept" % kept)
+    r = CE.bypass_route(target, "late_clear")
+    kept = sum(1 for c in fig["bypass"] for q in fig["bypass"][c] if r[c].get(q) == fig["bypass"][c][q])
+    ok("Ask B stop late_clear (the half-handled device) keeps under a third of the cells", kept <= 7, "%d of 24" % kept)
+    ok("Ask B: the full includer reproduces figures.json", CE.bypass_route(target, "reset") == fig["bypass"])
+
+    # ------------------------------------------------------------ separation and distractors
+    reads = {"call": {W.FILES[k] for k in ("permits", "register", "s1996", "s2006", "s2016")},
+             "asks": {W.FILES[k] for k in ("ar_halbrook", "ar_shoreline", "ar_members", "cycles", "plant", "register")}}
+    ok("separation: no ask device row (account credits, plant alarms) sits in a file the call reads",
+       not (reads["call"] & {W.FILES[k] for k in ("ar_halbrook", "ar_shoreline", "ar_members", "cycles", "plant")}))
     tmp = tempfile.mkdtemp()
     try:
         for f in files:
-            if f not in (P.FILES["field"], P.FILES["psu"]):
+            if f not in meta["distractor_files"]:
                 shutil.copy(os.path.join(target, f), tmp)
-        une2, lab2 = GD.read_cells(tmp)
-        F2 = M.cells_from(une2, lab2)
-        reg2, _ = GD.read_release(tmp)
-        ok("separation: the change and the designation need no fieldwork row or unit lookup",
-           M.golden_break(F2)[0] == X["G"] and M.designated(M.averages_2026(reg2), restate(M.golden_break(F2)[0])) ==
-           X["designated"])
-        for f in dis:
-            if os.path.exists(os.path.join(tmp, f)):
-                os.remove(os.path.join(tmp, f))
-        une3, lab3 = GD.read_cells(tmp)
-        ok("distractors: the golden is unchanged with every distractor deleted",
-           M.golden_break(M.cells_from(une3, lab3))[0] == X["G"])
+        r2 = G.call(tmp, tab)
+        l2, _ = G.levies(tmp)
+        b2 = G.bypassed(tmp)
+        ok("distractors: with both deleted the call, every levy and every bypass count are unchanged",
+           r2["des"] == res["des"] and {k: v["levy"] for k, v in l2.items()} == fig["levy"] and b2 == fig["bypass"])
+        for f in [x for x in files if x not in meta["distractor_files"] and x not in reads["call"]]:
+            os.remove(os.path.join(tmp, f))
+        r3 = G.call(tmp, tab)
+        ok("separation: the call recomputes with every ask-only file deleted", r3["des"] == res["des"])
     finally:
         shutil.rmtree(tmp)
 
-    # ---------------------------------------------------------------- no shipped file describes the data
-    ok("describing files: the name rule catches a dictionary and a manifest (positive control on the two names that "
-       "used to ship)", all(DESCRIBE_NAME.search(n) for n in ("lfs_file_dictionary", "export_manifest")))
-    named = [f for f in files if DESCRIBE_NAME.search(f.rsplit(".", 1)[0])]
-    ok("describing files: no shipped file is a dictionary, manifest, readme, notes or definitions file by name",
-       not named, named or "%d names" % len(files))
-    from openpyxl import load_workbook
-    sheets = [s for f in files if f.endswith(".xlsx") for s in load_workbook(os.path.join(target, f), read_only=True).sheetnames]
-    ok("describing files: no workbook sheet is a readme, notes, dictionary or definitions tab (positive control: the "
-       "rule catches 'Notes', and %d sheets are read)" % len(sheets),
-       bool(DESCRIBE_SHEET.match("Notes")) and len(sheets) >= 5 and not [s for s in sheets if DESCRIBE_SHEET.match(s.strip())],
-       sheets)
-    pdfs = {f: pdf_text(os.path.join(target, f)) for f in files if f.endswith(".pdf")}
-    ok("describing files: positive control, each document is read through the extractor the sweep below uses (the "
-       "note's section 4 heading, the Act's section 9 heading)",
-       "The series on the redesigned basis" in pdfs.get(P.FILES["note"], "") and
-       "Restatement after a change to the survey" in pdfs.get(P.FILES["act"], ""))
-    fields = set()
-    for f in files:
-        if f.endswith(".csv"):
-            fields |= set(open(os.path.join(target, f), encoding="utf-8").readline().strip().split(","))
-        elif f.endswith(".parquet"):
-            fields |= set(pq.read_schema(os.path.join(target, f)).names)
-    ident = {c for c in fields if "_" in c or re.search(r"\d", c) or (c.isupper() and len(c) >= 3)}
-    in_docs = {f: sorted(c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
-               for f, t in pdfs.items()}
-    ok("describing files: no document names a field of the data files (%d field names swept)" % len(ident),
-       len(ident) >= 20 and not any(in_docs.values()), in_docs)
+    from openpyxl import load_workbook as _lw
+    dw = _lw(os.path.join(target, W.FILES["deaths"]), read_only=True).worksheets[0]
+    drows = [r for r in dw.iter_rows(min_row=5, values_only=True) if r and r[0]]
+    ok("realism: the deaths table's counts are non-negative whole numbers and each total is men plus women",
+       drows and all(isinstance(v, int) and v >= 0 for r in drows for v in r[2:5]) and all(r[4] == r[2] + r[3] for r in drows),
+       "%d rows" % len(drows))
 
-    # ---------------------------------------------------------------- the closures the systems' own labels carry
-    import verify as V
-    tf = pq.read_table(os.path.join(target, P.FILES["field"])).to_pydict()          # the verifier's own read
-    pairs = sorted(set(zip(tf["outcome"], tf["outcome_desc"])))
-    ok("SF14: the fieldwork system writes one label of its own beside each outcome code, 11 and 12 its full and "
-       "partial responses", pairs == sorted(P.OUTCOME_LABEL.items()), pairs)
-    vq = V.q4_dwellings(target)
-    ok("SF14: responding read on the fieldwork system's labels (the verifier's path) gives the golden's counts read on "
-       "codes 11 and 12, region by region and in all", all(vq.get(c) == X["q4"][c] for c in W.RCODE + ["all"]), vq)
-    with open(os.path.join(target, P.FILES["old"]), newline="") as fh:                # the verifier's own reader
-        cai = list(csv.DictReader(fh))
-    lp = sorted(set((int(r["LFSTAT"]), r["LFSTAT_DESC"]) for r in cai))
-    ok("closure 19: CAI 2014 writes one label of its own beside each labour force status code",
-       lp == sorted(P.LFSTAT_LABEL.items()), lp)
-    vcells = V.read_cells(target)
-    vG = float(V.fit_effects(vcells).mean())
-    ok("closure 19: the change read through CAI 2014's status labels (the verifier's path) equals the golden's, read "
-       "on the codes", abs(vG - X["G"]) < 1e-9, "%.6f against %.6f" % (vG, X["G"]))
-    t1 = release_table1(target)
-    nat = {}
-    for (ym, _, _, _), (u, l) in vcells.items():
-        a = nat.setdefault(ym, [0.0, 0.0])
-        a[0] += u
-        a[1] += l
-    gaps = [max(abs(l / 6000.0 - t1[month_label(ym)][0]), abs((l - u) / 6000.0 - t1[month_label(ym)][1]),
-                abs(u / 6000.0 - t1[month_label(ym)][2])) for ym, (u, l) in nat.items()]
-    ok("closures 18 and 19 (C1): the cells conformed on the exports' own columns and labels (CAI 2014's WTD000 in "
-       "thousands with its status labels, ICS's weighted persons) reproduce Table 1's labour force, employed and "
-       "unemployed in every month", len(gaps) == W.T == len(t1) and max(gaps) <= 0.05 + 1e-6,
-       "%d months, largest gap %.4f thousand" % (len(gaps), max(gaps)))
-    tot = {}
-    for r in cai:
-        if r["REF_MTH"] < "202507":
-            k = (r["REF_MTH"], r["LFSTAT"])
-            tot[k] = tot.get(k, 0.0) + float(r["WTD000"])
-    pre_m = sorted({m for m, _ in tot})
-    fits = {}
-    for perm in itertools.permutations("123"):
-        fits["".join(perm)] = sum(abs(tot[(m, perm[0])] / 6.0 - t1[month_label(m)][1]) <= 0.05 + 1e-6 and
-                                  abs(tot[(m, perm[1])] / 6.0 - t1[month_label(m)][2]) <= 0.05 + 1e-6 for m in pre_m)
-    ok("closure 19 (C1): of the six readings of CAI 2014's codes 1, 2 and 3 only 1 employed, 2 unemployed reproduces "
-       "Table 1, in each of the months to June 2025, when every rotation group answered on CAI 2014",
-       len(pre_m) == W.PHASE and fits["123"] == len(pre_m) and all(v == 0 for k, v in fits.items() if k != "123"), fits)
-    tmp2 = tempfile.mkdtemp()
-    try:
-        for f in (P.FILES["new"], P.FILES["conc"]):
-            shutil.copy(os.path.join(target, f), tmp2)
-        with open(os.path.join(tmp2, P.FILES["old"]), "w", newline="") as fo:
-            wr = csv.DictWriter(fo, list(cai[0].keys()), lineterminator="\r\n")
-            wr.writeheader()
-            for r in cai:
-                wr.writerow(dict(r, SEX="2" if r["SEX"] == "1" else "1", AGEGRP=str(6 - int(r["AGEGRP"]))))
-        g_v = float(V.fit_effects(V.read_cells(tmp2)).mean())
-        u2, l2 = GD.read_cells(tmp2)
-        g_g = M.golden_break(M.cells_from(u2, l2))[0]
-        ok("closure 19: the sex and age codes are not read by the call (CAI 2014's sex codes swapped and its age groups "
-           "reversed, the change is unchanged on the verifier's reader and the golden's)",
-           abs(g_v - X["G"]) < 1e-9 and abs(g_g - X["G"]) < 1e-9, "%.6f and %.6f" % (g_v, g_g))
-    finally:
-        shutil.rmtree(tmp2)
-    rel = load_workbook(os.path.join(target, P.FILES["release"]), read_only=True, data_only=True)
-    contents = [str(c) for row in rel["Contents"].iter_rows(values_only=True) for c in row if c]
-    ok("closure 4: the release dates itself (its Contents: 'Released 21 January 2027.'), before the pack's export",
-       any("Released 21 January 2027." in c for c in contents) and W.RELEASE == "2027-01-21" < W.EXTRACT, contents[:2])
-    ok("closure 4: every pack file carries the export stamp of 25 January 2027",
-       all(abs(os.path.getmtime(os.path.join(target, f)) - EXPORT_STAMP) < 1 for f in files))
-    prov = {x["path"]: x for x in meta.get("files", [])}
-    ok("provenance: metadata.json gives every file its owner, what it covers and its extract or issue date, none after "
-       "the pack's as-of date and the release on its own date",
-       sorted(prov) == files and all(x.get("owner") and "covers" in x and
-                                     re.fullmatch(r"\d{4}-\d\d-\d\d", x.get("extracted_or_issued", "")) and
-                                     x["extracted_or_issued"] <= meta.get("as_of", "") for x in prov.values()) and
-       prov[P.FILES["release"]]["extracted_or_issued"] == W.RELEASE,
-       {k: v.get("extracted_or_issued") for k, v in prov.items()})
+    # ------------------------------------------------------------ no shipped file describes the data
+    ok("describing files: the name rule catches a dictionary and a manifest (positive control)",
+       all(DESCRIBE_NAME.search(x) for x in ("field_dictionary", "export_manifest", "readme")))
+    ok("describing files: no shipped file is a dictionary, manifest, readme or notes file by name",
+       not any(DESCRIBE_NAME.search(f.rsplit(".", 1)[0]) for f in files))
+    sheets = [sh for f in files if f.endswith(".xlsx") for sh in pd.ExcelFile(os.path.join(target, f)).sheet_names]
+    ok("describing files: no workbook sheet is a readme, notes or definitions tab", not any(
+        DESCRIBE_SHEET.match(s_) for s_ in sheets), sheets)
+    docs_text = {f: " ".join(pdf_text(os.path.join(target, f)).split()).lower() for f in files if f.endswith(".pdf")}
+    leak_words = re.compile(r"cohort|birth year|year of birth|\bborn\b|age profile|ageing|aging|carried (forward|along|"
+                            r"to)|bypass damper|subset|statement query|without a booking")
+    ok("no document names a cohort, an ageing path, the bypass damper or how credits are posted",
+       not any(leak_words.search(t) for t in docs_text.values()),
+       [f for f, t in docs_text.items() if leak_words.search(t)])
 
-    # ---------------------------------------------------------------- realism sweep
-    q4v = [X["q4"][c] for c in W.RCODE]
-    ok("realism: no two regions share a count or a 2026 average", len(set(q4v)) == W.R and
-       len(set(np.round(X["avg"], 3))) == W.R)
-    ok("realism: the published national rate is never flat for five months",
-       not any(len(set(X["nat"][t:t + 5])) == 1 for t in range(W.T - 4)))
-    cells = pd.read_csv(os.path.join(target, P.FILES["new"]))
-    g_ = cells.groupby(["region", "rotation_group", "sex", "age_band"])["unemployed"]
-    ok("realism: ICS cells vary (a weighted count repeats within under 3 per cent of cell series, as chance gives "
-       "for counts of this size)",
-       (g_.nunique() != g_.count()).mean() < 0.03, "%d of %d" % ((g_.nunique() != g_.count()).sum(), g_.ngroups))
-    people = set(W.PEOPLE.values())
-    repo = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    card = json.load(open(os.path.join(repo, ".claude", "skills", "fingerprint", "cards", "task453.json")))
-    ok("realism: every persona in the pack is on the card", people <= set(card["world"]["people"]), sorted(people))
-    raw = b"".join(open(os.path.join(target, f), "rb").read() for f in files if f.endswith((".pdf", ".xlsx")))
-    ok("realism: containers carry no writing library's name",
-       not re.search(rb"ReportLab|reportlab|openpyxl|matplotlib", raw))
-    txt = "".join(open(os.path.join(target, f), encoding="utf-8").read() for f in files if f.endswith(".csv"))
-    ok("realism: no em or en dash in any text file", "—" not in txt and "–" not in txt and
-       "—" not in docs_text and "–" not in docs_text)
-    figs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
-    exc = []
-    for pre in (24, 36, 42):
-        for wt in (True, False):
-            use = (F["t"] < W.PHASE) & (F["t"] >= W.PHASE - pre)
-            b = M.fe(F, [(F["m"] == j).astype(float) for j in range(2, 7)], use, wt, mis_fe=False)
-            prof = np.concatenate([[0.0], b])
-            exc.append(prof[0] - prof.mean())
-    ok("figures: the first-interview excess rounds to 1.3 on every implementation",
-       all(round(e + 1e-9, 1) == 1.3 for e in exc) and figs["first_interview_excess_points"] == 1.3,
-       "%.3f to %.3f" % (min(exc), max(exc)))
-    ok("figures: the arm gap rounds to 1.2 and files 7.2", figs["arm_gap_points"] == 1.2 and
-       figs["arm_gap_trigger_pct"] == 7.2)
-    nc = 6.5 - float(X["avg"][W.RCODE.index("03")])
-    ok("figures: North Coast misses the restated trigger by its computed shortfall, 0.04 or more",
-       figs["north_coast_shortfall_points"] == round(nc, 2) and nc >= 0.04, "%.4f" % nc)
-    ok("figures.json: the call as computed", figs["restated_trigger_pct"] == X["trigger"] and
-       figs["change_points"] == X["change"] and figs["q4_responding_dwellings"]["all"] == X["q4"]["all"])
+    # ------------------------------------------------------------ realism sweep
+    card = json.load(open(os.path.join(REPO, ".claude", "skills", "fingerprint", "cards", "task453.json")))
+    ok("realism: every persona is the card's own, drawn from guard.py names and registered with the card",
+       sorted(W.PEOPLE.values()) == sorted(card["world"]["people"]))
+    per_month = collections.Counter((r["ci"], r["cremation"].month) for r in rows if r["cremation"].year == W.YEAR)
+    ok("realism: no crematorium cremates the same number in every month", all(
+        len({per_month[(ci, m)] for m in range(1, 13)}) >= 6 for ci in range(n)))
+    ok("realism: no round crematorium totals (no 2026 cremation count a round hundred)",
+       all(int(res["n"][i]) % 100 for i in range(n)))
+    ns = [c["n"] for (y, s, lo), c in tab.items() if s in "MF"]
+    ok("realism: the survey's examined counts are not round", sum(1 for x in ns if x % 10 == 0) <= len(ns) // 6)
+    mt = {round(os.path.getmtime(os.path.join(target, f))) for f in files}
+    ok("realism: the folder carries one assembly stamp, after the extract", len(mt) == 1)
+    permit_nos = [p["permit_no"] for p in world["permits"]]
+    ok("realism: permit numbers unique", len(set(permit_nos)) == len(permit_nos))
+    fd_lines = collections.Counter(L[L.doc == "INV"].cust)
+    ok("realism: funeral directors' shares of bookings vary (no flat split)", np.std(list(fd_lines.values())) >
+       0.4 * np.mean(list(fd_lines.values())))
 
-    bad = [r for r in RESULTS if not r[1]]
+    # ------------------------------------------------------------ report
+    fails = [r for r in RESULTS if not r[1]]
     for label, good, detail in RESULTS:
         print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [%s]" % (detail,)) if detail != "" else ""))
-    print("checks: %d, failed %d" % (len(RESULTS), len(bad)))
-    return not bad
-
-
-def pdf_text(path):
-    from pypdf import PdfReader
-    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
+    print("checks: %d assertions, %d failures" % (len(RESULTS), len(fails)))
+    return not fails

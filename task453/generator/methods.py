@@ -1,161 +1,154 @@
-"""Every route to the redesign's effect on the published unemployment rate, read on month x region x rotation group
-cells, and the restated trigger, the designation, the back series and the fourth-quarter dwelling count built on it.
+"""Estimators of each cremation's amalgam-restored teeth from the survey's published tables, and the regulation's
+arithmetic. Used by the goldens, the checks and the ceiling; verify.py has its own."""
+import math
 
-The design-implied route: each month in sample on the redesigned questionnaire against the same month in sample on
-the previous one (month and region held fixed, the previous questionnaire's month-in-sample pattern estimated from
-every month before July 2025), the six month-in-sample effects averaged as the published estimate averages the six
-rotation groups."""
 import numpy as np
 
 import world as W
 
-NEWM = np.array([[1 if W.redesigned(t, g) else 0 for g in range(6)] for t in range(W.T)])
-MISM = np.array([[W.mis(t, g) for g in range(6)] for t in range(W.T)])
+
+def band(tab, y, s, a):
+    """The wave's published mean for the band holding age a (an age under 18 reads the youngest band)."""
+    for (yy, ss, lo), cell in tab.items():
+        if yy == y and ss == s and cell["lo"] <= max(a, 18) <= cell["hi"]:
+            return cell["amalgam"]
+    raise KeyError((y, s, a))
 
 
-def cells_from(une, lab):
-    """month x region x group rate (per cent) and weighted labour force from weighted counts"""
-    une, lab = np.asarray(une, float), np.asarray(lab, float)
-    t, r, g = np.meshgrid(np.arange(W.T), np.arange(W.R), np.arange(6), indexing="ij")
-    return dict(t=t.ravel(), r=r.ravel(), g=g.ravel(), y=(100.0 * une / lab).ravel(), w=lab.ravel(),
-                new=NEWM[t, g].ravel(), m=MISM[t, g].ravel())
+def interp(tab, y, s, a):
+    """The wave's band means read at single years of age (linear between band midpoints, flat beyond the ends)."""
+    pts = sorted((cell["lo"] + (min(cell["hi"], cell["lo"] + 4) - cell["lo"]) / 2.0 if cell["hi"] < 100 else cell["lo"] + 2.5,
+                  cell["amalgam"]) for (yy, ss, lo), cell in tab.items() if yy == y and ss == s)
+    xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+    if y == 1996:
+        xs = [cell_mid for cell_mid in xs]
+    return float(np.interp(max(a, 18), xs, ys))
 
 
-def arm_gap(F, months=None):
-    """January to May of the phase-in (July to November 2025): the groups on the redesigned questionnaire against
-    those still on the previous one, month by month, averaged"""
-    months = months or range(W.PHASE, W.PHASE + 5)
-    out = []
-    for k in months:
-        a = F["t"] == k
-        n1, n0 = a & (F["new"] == 1), a & (F["new"] == 0)
-        out.append((F["y"][n1] * F["w"][n1]).sum() / F["w"][n1].sum() - (F["y"][n0] * F["w"][n0]).sum() / F["w"][n0].sum())
-    return float(np.mean(out))
+def _cohort_add(tab, a, s, lag=10, rd=band):
+    c16 = rd(tab, 2016, s, a - lag)
+    c06 = rd(tab, 2006, s, a - lag - 10)
+    return max(0.0, 2 * c16 - c06)
 
 
-def fe(F, cols, use, weighted=True, mis_fe=True, by_region=True):
-    t, r = F["t"][use], F["r"][use]
-    key = t * W.R + r if by_region else t
-    _, idx = np.unique(key, return_inverse=True)
-    X = [np.eye(idx.max() + 1)[idx]]
-    if mis_fe:
-        X.append(np.column_stack([(F["m"][use] == j) for j in range(2, 7)]).astype(float))
-    X += [np.asarray(c)[use][:, None].astype(float) for c in cols]
-    X = np.hstack(X)
-    sw = np.sqrt(F["w"][use] / F["w"][use].mean()) if weighted else np.ones(int(use.sum()))
-    beta = np.linalg.lstsq(X * sw[:, None], F["y"][use] * sw, rcond=None)[0]
-    return beta[-len(cols):]
+def teeth(tab, a, s, form):
+    """Teeth restored with amalgam for a person cremated in 2026 at age a (completed years), sex s."""
+    if a < 18 and not form.startswith("child_"):
+        return 0.0                                    # the regulation's schedule: nil under 18
+    if form == "count":
+        return 1.0
+    if form == "age2016":
+        return band(tab, 2016, s, a)
+    if form == "age2016_interp":
+        return interp(tab, 2016, s, a)
+    if form == "age2006":
+        return band(tab, 2006, s, a)
+    if form == "age_trend":                           # each age band's change between the last two waves, repeated
+        return max(0.0, 2 * band(tab, 2016, s, a) - band(tab, 2006, s, a))
+    if form == "age_trend3":                          # each age band's line through the three waves, to 2026
+        ys = np.array([band(tab, 1996, s, a), band(tab, 2006, s, a), band(tab, 2016, s, a)])
+        b1 = np.polyfit(np.array([-20.0, -10.0, 0.0]), ys, 1)
+        return max(0.0, b1[0] * 10 + b1[1])
+    if form == "age_trend_prop":
+        v16, v06 = band(tab, 2016, s, a), band(tab, 2006, s, a)
+        return v16 * v16 / v06 if v06 > 0 else v16
+    c16 = band(tab, 2016, s, a - 10)
+    c06 = band(tab, 2006, s, a - 20)
+    if form == "cohort_noage":                        # the cohort's 2016 value, not carried
+        return c16
+    if form == "cohort_along_2016":                   # carried along the 2016 cross-section (equals age2016)
+        return c16 + (band(tab, 2016, s, a) - band(tab, 2016, s, a - 10))
+    if form == "cohort_add":
+        return max(0.0, 2 * c16 - c06)
+    if form == "cohort_prop":
+        return c16 * c16 / c06 if c06 > 0 else c16
+    if form == "cohort_logit":
+        L = lambda p: math.log(p / (1 - p))
+        x = 2 * L(max(c16, 0.05) / 32) - L(max(c06, 0.05) / 32)
+        return 32 / (1 + math.exp(-x))
+    if form == "cohort_age_specific":                 # the decade's change at these ages, from the cohort before
+        aa = min(a, 89)                               # the open top band holds no decade of one cohort
+        return max(0.0, c16 + (band(tab, 2016, s, aa) - band(tab, 2006, s, aa - 10)))
+    if form == "cohort_mean_decrement":               # the mean within-cohort decade change over cohorts aged 45+
+        return max(0.0, c16 + mean_decrement(tab, s))
+    if form in ("cohort_line3", "cohort_logline3"):
+        c96 = band(tab, 1996, s, a - 30)
+        t, ys = np.array([-20.0, -10.0, 0.0]), np.array([c96, c06, c16])
+        if form == "cohort_line3":
+            b1 = np.polyfit(t, ys, 1)
+            return max(0.0, b1[0] * 10 + b1[1])
+        b1 = np.polyfit(t, np.log(np.maximum(ys, 0.05)), 1)
+        return math.exp(b1[0] * 10 + b1[1])
+    if form == "cohort_quad3":                        # a quadratic through the three waves (ruled out: SF23)
+        c96 = band(tab, 1996, s, a - 30)
+        return max(0.0, 3 * c16 - 3 * c06 + c96)
+    if form == "cohort_pooled_sex":
+        return 0.5 * (_cohort_add(tab, a, "M") + _cohort_add(tab, a, "F"))
+    if form == "cohort_interp":                       # single years of age read off the band midpoints
+        return _cohort_add(tab, a, s, rd=interp)
+    if form == "cohort_lag9":                         # the survey a year later in the decedent's life
+        return _cohort_add(tab, a, s, lag=9)
+    if form == "cohort_lag11":
+        return _cohort_add(tab, a, s, lag=11)
+    if form == "cohort_split":                        # half the decedents a year younger at the survey
+        return 0.5 * (_cohort_add(tab, a, s, lag=10) + _cohort_add(tab, a, s, lag=11))
+    if form == "cohort_lagmix":                       # age at the survey by single years: deaths and fieldwork mid-year
+        return (0.125 * _cohort_add(tab, a, s, lag=9) + 0.75 * _cohort_add(tab, a, s, lag=10) +
+                0.125 * _cohort_add(tab, a, s, lag=11))
+    if form == "cohort_young_profile":                # cohorts not surveyed as adults in 2006 read at age at death
+        return band(tab, 2016, s, a) if a - 20 < 18 else max(0.0, 2 * c16 - c06)
+    if form == "cohort_young_zero":
+        return 0.0 if a - 20 < 18 else max(0.0, 2 * c16 - c06)
+    if form == "cohort_young_noage":
+        return c16 if a - 20 < 18 else max(0.0, 2 * c16 - c06)
+    raise ValueError(form)
 
 
-def mis_effects(F, use=None, weighted=True, by_region=True):
-    """the redesign's effect at each month in sample (1 to 6)"""
-    use = np.ones(len(F["y"]), bool) if use is None else use
-    return fe(F, [F["new"] * (F["m"] == j) for j in range(1, 7)], use, weighted, by_region=by_region)
+def mean_decrement(tab, s):
+    """Average change in a cohort's mean between 2006 and 2016, over the 5-year cohorts aged 45 and over in 2006."""
+    d = []
+    for (yy, ss, lo), cell in tab.items():
+        if yy == 2006 and ss == s and 45 <= lo <= 80 and cell["hi"] < 100:
+            d.append(band(tab, 2016, s, lo + 10) - cell["amalgam"])
+    return float(np.mean(d))
 
 
-def golden_break(F):
-    e = mis_effects(F)
-    return float(e.mean()), e
+FORMS = ["cohort_add", "cohort_age_specific", "cohort_mean_decrement", "cohort_line3", "cohort_pooled_sex",
+         "cohort_interp", "cohort_lagmix", "cohort_young_profile", "cohort_young_zero", "cohort_young_noage"]
+SCALING = ["cohort_prop", "cohort_logit", "cohort_logline3"]   # a change that scales with the level: the waves refute it
+OFF_BY_ONE = ["cohort_lag9", "cohort_lag11", "cohort_split"]
+RULED_OUT = ["cohort_quad3"]                                  # untestable curvature the waves do not show (SF23)
+ROUTES = ["count", "age2016", "age2016_interp", "age2006", "age_trend", "age_trend3", "age_trend_prop", "cohort_noage",
+          "cohort_along_2016"]
+GOLDEN_FORM = "cohort_add"
 
 
-def variants(F):
-    """the design-implied break under every reasonable implementation: the months before the phase-in that set the
-    month-in-sample pattern (24, 36 or all 42), December 2025 kept or left out, weighted or unweighted cells, region
-    and month or month alone held fixed, each month-in-sample effect free or the second to sixth sharing one"""
-    out = {}
-    for pre in (24, 36, 42):
-        for dec in (True, False):
-            use = F["t"] >= W.PHASE - pre
-            if not dec:
-                use = use & (F["t"] != W.PHASE + 5)
-            for wt in (True, False):
-                for byr in (True, False):
-                    e = mis_effects(F, use, wt, byr)
-                    out[(pre, dec, wt, byr, "each")] = float(e.mean())
-                    b = fe(F, [F["new"], F["new"] * (F["m"] >= 2)], use, wt, by_region=byr)
-                    out[(pre, dec, wt, byr, "first/later")] = float(b[0] + 5.0 / 6.0 * b[1])
-    return out
-
-
-def wrong_routes(F, nat):
-    """the default and the other easy routes, each a number of points"""
-    out = {"R0 none": 0.0, "R1 arm gap": arm_gap(F)}
-    use = F["t"] >= W.PHASE - 36
-    out["R1 rotation letter held fixed"] = float(
-        fe(F, [F["new"]] + [(F["g"] == j) for j in range(1, 6)], use, True, mis_fe=False)[0])
-    single = {}
-    for pre in (24, 36, 42):
-        for wt in (True, False):
-            for byr in (True, False):
-                u = F["t"] >= W.PHASE - pre
-                single[(pre, wt, byr)] = float(fe(F, [F["new"]], u, wt, by_region=byr)[0])
-    out["R2 one effect"] = single
-    later = {}
-    for pre in (24, 36, 42):
-        for wt in (True, False):
-            u = F["t"] >= W.PHASE - pre
-            later[(pre, wt)] = float(mis_effects(F, u, wt)[1:].mean())
-    out["R3 continuing households"] = later
-    out["event 2026 against 2024"] = float(np.mean(nat[W.Y26:]) - np.mean(nat[W.Y26 - 24:W.Y26 - 12]))
-    out["event second half 2025 against 2024"] = None
-    return out
-
-
-def restated(break_points):
-    return round(W.TRIGGER + round(break_points + 1e-9, 1), 1)
-
-
-def averages_2026(reg_published_1dp):
-    """each region's 2026 average: the mean of its twelve monthly rates as published (one decimal place)"""
-    return np.asarray(reg_published_1dp)[W.Y26:].mean(0)
-
-
-def designated(avg, trigger):
-    return [W.RCODE[i] for i in range(W.R) if avg[i] >= trigger - 1e-9]
-
-
-def back_series(reg_published_1dp, nat_published_1dp, break_1dp):
-    """the series on the redesigned basis (the note's section 4): months before July 2025 restated by adding the change
-    as determined (one decimal place) to the rate as published, every region alike; July to November 2025, both
-    questionnaires in the field, carried as published; from December 2025 as published"""
-    reg = np.asarray(reg_published_1dp, float)
-    nat = np.asarray(nat_published_1dp, float)
-    add = np.where(np.arange(W.T) < W.PHASE, break_1dp, 0.0)
-    return np.round(reg + add[:, None], 1), np.round(nat + add, 1), add
-
-
-def dwellings_q4(rows, psu_region):
-    """responding dwellings in October to December 2026, each dwelling once: a dwelling is its slot together with the
-    month it entered the sample; responding means a complete (11) or partial (12) interview"""
-    seen = set()
-    for r in rows:
-        if r["outcome"] in (11, 12):
-            seen.add((r["dwelling_ref"], r["in_sample_from"], psu_region[r["psu"]]))
-    by = {c: 0 for c in W.RCODE}
-    for _, _, c in seen:
-        by[c] += 1
-    by["all"] = sum(by[c] for c in W.RCODE)
-    return by
-
-
-def dwellings_q4_stops(rows, psu_region):
-    """the ask's wrong stops: slots counted as dwellings; responding interviews counted; every dwelling counted
-    whether it responded or not; complete interviews only"""
-    def count(keyf, keep):
-        s = set()
-        for r in rows:
-            if keep(r):
-                s.add(keyf(r))
-        by = {c: 0 for c in W.RCODE}
-        for k in s:
-            by[k[-1]] += 1
-        by["all"] = sum(by[c] for c in W.RCODE)
-        return by
-    reg = lambda r: psu_region[r["psu"]]
-    return {
-        "slots": count(lambda r: (r["dwelling_ref"], reg(r)), lambda r: r["outcome"] in (11, 12)),
-        "interviews": count(lambda r: (r["dwelling_ref"], r["contact_month"], reg(r)), lambda r: r["outcome"] in (11, 12)),
-        "every dwelling": count(lambda r: (r["dwelling_ref"], r["in_sample_from"], reg(r)), lambda r: True),
-        "complete only": count(lambda r: (r["dwelling_ref"], r["in_sample_from"], reg(r)), lambda r: r["outcome"] == 11),
-        "eligible": count(lambda r: (r["dwelling_ref"], r["in_sample_from"], reg(r)), lambda r: r["outcome"] not in (31, 32, 33)),
-    }
+def designate(cre, tab, form):
+    """cre: list of (crematorium index, age, sex, abated) for the 2026 cremations. Returns the share, the designated
+    crematoria (indices, in order), the order of unabated crematoria, each crematorium's mercury in grams and the
+    share after each designation."""
+    n = len(W.CREMATORIA)
+    hg, ab = np.zeros(n), np.zeros(n)
+    cache = {}
+    for ci, a, s, abt in cre:
+        k = (a, s)
+        if k not in cache:
+            cache[k] = teeth(tab, a, s, form)
+        v = cache[k] * W.HG_PER_TOOTH_G
+        hg[ci] += v
+        if abt:
+            ab[ci] += v
+    tot = hg.sum()
+    share = 100 * ab.sum() / tot
+    unab = [i for i, c in enumerate(W.CREMATORIA) if c[8] == "U"]
+    order = sorted(unab, key=lambda i: -hg[i])
+    des, cur, steps = [], ab.sum(), []
+    for i in order:
+        steps.append(100 * cur / tot)
+        if 100 * cur / tot >= W.SHARE_REQUIRED:
+            break
+        des.append(i)
+        cur += hg[i]
+    else:
+        steps.append(100 * cur / tot)
+    return {"share": share, "des": des, "order": order, "hg": hg, "ab": ab, "steps": steps, "tot": tot}

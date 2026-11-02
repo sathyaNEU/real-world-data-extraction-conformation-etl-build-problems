@@ -1,102 +1,74 @@
-"""The world of task453: a national statistics office's monthly Labour Force Survey, kept in six rotation groups,
-moving to a redesigned questionnaire through the dwellings entering the sample from July 2025, and the statutory
-trigger of the Regional Employment Support Act 2021 that reads the survey's regional rates.
+"""task453 world: a fictional Canadian province's crematoria, the Crematoria Mercury Fund, its regulation and the
+national adult oral health survey. Every constant the generator, the goldens and the checks share lives here."""
+import datetime as dt
 
-Everything the pack holds is computed forward from these constants: the sample, the responses, the weighted cells
-both collection systems export, the published release and the fourth-quarter fieldwork log."""
-import numpy as np
+YEAR = 2026
+SEED = 4532026
+TZ_NAME = "America/Toronto"   # the province keeps Eastern time (DST)
+EXTRACT = dt.date(2027, 2, 26)          # the Vital Statistics extract and the operators' ledger pulls
+MEETING = dt.date(2027, 2, 24)
 
-SEED = 453
+SHARE_REQUIRED = 55.0                   # per cent of the year's cremation mercury released in abated cremators
+HG_PER_TOOTH_G = 0.55                   # grams of mercury per tooth restored with amalgam (regulation, schedule)
+LEVY_UNABATED = 0.045                   # scheme rules: levy on cremation fee income
+LEVY_ABATED = 0.015
 
-OFFICE = "Statistics Office"
-STATISTICIAN = "Government Statistician"
-SURVEY = "Labour Force Survey"
-ACT = "Regional Employment Support Act 2021"
-MINISTRY = "Ministry of Employment and Skills"
-OLD_SYSTEM = "CAI 2014"            # the computer-assisted interviewing system the previous questionnaire ran on
-NEW_SYSTEM = "ICS"                 # the integrated collection system the redesigned questionnaire runs on
-TRIGGER = 6.0
+PEOPLE = {"secretary": "Heidi Bond", "chair": "Casey Hodges", "vitals": "Alison Pena"}
+FUND = "Crematoria Mercury Fund"
+AGENCY = "Vital Statistics Agency"
+SURVEY_BODY = "Dental Public Health Monitoring Unit"
+SURVEY = "National Adult Dentition Survey"
 
-PEOPLE = {"statistician": "Jared Elliott", "methods": "Debra O'Brien", "operations": "Gabrielle Esson"}
+# (fund code, agency facility no., name, operator, cremators, cremations 2026, median-ish age, sd, status, commissioned)
+CREMATORIA = [
+ ("CM-0417", "F2311", "Halbrook Memorial Crematorium", "City of Halbrook", 3, 3700, 88.1, 8.0, "A", "2021-05-17"),
+ ("CM-1182", "F2087", "Fenwick Harbour Crematorium", "Shoreline Memorial Group", 3, 3200, 87.6, 8.0, "A", "2019-11-04"),
+ ("CM-0659", "F2440", "Larchmere Cemetery Crematorium", "City of Larchmere", 2, 2800, 88.6, 7.5, "A", "2022-03-28"),
+ ("CM-2034", "F2156", "Stannard Bay Crematorium & Chapel", "Shoreline Memorial Group", 2, 2500, 87.6, 8.0, "A", "2020-09-21"),
+ ("CM-0738", "F2319", "Ostrander Hill Crematorium", "City of Halbrook", 2, 2200, 87.1, 8.5, "A", "2023-06-12"),
+ ("CM-1590", "F2672", "Wexley Regional Crematorium", "Regional District of Wexley", 2, 1600, 86.6, 8.5, "M", "2026-07-03"),
+ ("CM-2251", "F2728", "Hollinsbrook Funeral Home Crematory", "Hollinsbrook Funeral Home Ltd.", 1, 1400, 87.6, 8.0, "M", "2026-09-14"),
+ ("CM-0896", "F2193", "Corbett Narrows Crematorium", "Corbett Narrows Memorial Society", 3, 2452, 89.0, 7.0, "U", None),
+ ("CM-1347", "F2505", "Ashgrove Cremation Centre", "Ashgrove Funeral Co-operative", 2, 1557, 79.0, 7.5, "U", None),
+ ("CM-0372", "F2268", "Tallis Creek Crematorium", "Orrinsford Memorial Services", 2, 1339, 72.4, 9.4, "U", None),
+ ("CM-1925", "F2581", "Dunmore Falls Memorial Gardens", "Dunmore Falls Cemetery Board", 2, 1120, 69.5, 8.5, "U", None),
+ ("CM-2163", "F2702", "Bellhaven Crematorium", "Orrinsford Memorial Services", 1, 855, 81.0, 7.3, "U", None),
+ ("CM-0514", "F2134", "Kestrel Lake Crematory", "Lakeland Cremation Ltd.", 1, 950, 82.0, 8.5, "U", None),
+ ("CM-1768", "F2397", "Port Alder Crematorium", "Shoreline Memorial Group", 1, 850, 81.0, 8.5, "U", None),
+ ("CM-2409", "F2045", "Sorrel Bay Crematorium", "Shoreline Memorial Group", 1, 750, 83.0, 8.5, "U", None),
+ ("CM-0283", "F2621", "Wynford Crematorium", "Township of Wynford", 1, 650, 82.0, 8.5, "U", None),
+ ("CM-1471", "F2476", "Brackenridge Cremation Services", "Brackenridge Cremation Services Inc.", 1, 550, 84.0, 8.0, "U", None),
+ ("CM-2087", "F2358", "Ravensmoor Crematorium", "Lakeland Cremation Ltd.", 1, 450, 82.0, 8.5, "U", None),
+ ("CM-0941", "F2219", "Elderton Memorial Crematorium", "Elderton Cemetery Company", 1, 410, 83.0, 8.5, "U", None),
+ ("CM-1633", "F2554", "Glenmora Crematorium", "Glenmora Cremation Society", 1, 350, 82.0, 8.5, "U", None),
+]
+WEXLEY_OLD_FACILITY = "F1984"            # the agency's number for Wexley until the district took it over
+WEXLEY_RENUMBERED = dt.date(2026, 3, 2)
 
-# regions on the 2025 classification (code, name); the 2019 classification numbered the same regions alphabetically
-REGIONS = [("01", "Capital"), ("02", "Harbour"), ("03", "North Coast"), ("04", "Inland Plains"),
-           ("05", "Eastern Ranges"), ("06", "Southern Valleys"), ("07", "Western Coast"), ("08", "River Delta"),
-           ("09", "Highlands")]
-RCODE = [c for c, _ in REGIONS]
-RNAME = dict(REGIONS)
-CODE19 = {c: "%02d" % (1 + sorted(RNAME.values()).index(n)) for c, n in REGIONS}
-R = len(REGIONS)
+# which accounts-receivable export each crematorium's fees sit in
+LEDGER_OF = {"City of Halbrook": "halbrook", "Shoreline Memorial Group": "shoreline"}
 
-# months: January 2022 to December 2026; the redesign enters with the rotation group replaced in July 2025
-MONTHS = ["%d-%02d" % (y, m) for y in range(2022, 2027) for m in range(1, 13)]
-T = len(MONTHS)
-PHASE = MONTHS.index("2025-07")
-Y26 = MONTHS.index("2026-01")
-Q4 = [MONTHS.index(m) for m in ("2026-10", "2026-11", "2026-12")]
-GROUPS = "ABCDEF"                   # group A's dwellings are replaced in January and July, B's in February and August
+FILES = {
+ "permits": "cremation_permits_returned_2025-12-01_2027-01-31.csv",
+ "register": "cmf_member_crematoria_register_2026.xlsx",
+ "s1996": "nads_1996_report_tables.pdf",
+ "s2006": "nads_2006_report_tables.pdf",
+ "s2016": "nads_2016_report_tables.pdf",
+ "reg": "crematoria_mercury_regulation_2023_consolidated.pdf",
+ "rules": "cmf_scheme_rules_2026.pdf",
+ "ar_halbrook": "halbrook_bereavement_ar_2025-12_2027-02.csv",
+ "ar_shoreline": "shoreline_memorial_receivables_2025-12_2027-02.xlsx",
+ "ar_members": "cmf_fee_returns_independent_crematoria_2025-12_2027-02.csv",
+ "cycles": "cremator_controller_cycles_2026.csv",
+ "plant": "abatement_plant_logs_2026.parquet",
+ "stack": "crematoria_stack_tests_2019-2025.pdf",
+ "deaths": "deaths_registered_2026_by_region_age_sex.xlsx",
+}
+DISTRACTORS = ["stack", "deaths"]
+GOLDEN = {"cert": "designation_certificate_2026.pdf", "book": "levy_and_bypass_2026.xlsx"}
 
-
-def mis(t, g):
-    """month in sample (1 to 6) of rotation group g (0 for A .. 5 for F) in month index t (January 2022 is 0)"""
-    return ((t - g) % 6) + 1
-
-
-def entered(t, g):
-    """the month index in which group g's dwellings of month t entered the sample"""
-    return t - (mis(t, g) - 1)
-
-
-def redesigned(t, g):
-    return entered(t, g) >= PHASE
-
-
-# persons aged 15 and over (thousands, January 2026) by region; age and sex structure
-POP15 = np.array([9150, 5240, 3290, 4130, 2280, 2940, 1910, 3680, 1430], float)
-AGES = ["15-24", "25-34", "35-44", "45-54", "55+"]
-AGE_SHARE = np.array([0.155, 0.178, 0.168, 0.162, 0.337])
-SEX = ["M", "F"]
-SEX_SHARE = np.array([0.49, 0.51])
-PART = np.array([[0.63, 0.92, 0.93, 0.90, 0.44], [0.57, 0.80, 0.81, 0.79, 0.34]])   # participation, sex x age
-UFAC = np.array([[2.15, 1.10, 0.80, 0.74, 0.79], [2.02, 1.12, 0.84, 0.78, 0.74]])   # unemployment against the region
-
-# each region's 2026 unemployment rate on the redesigned questionnaire (the generator tunes the regional level to it)
-TARGET26 = {"01": 4.32, "02": 5.38, "03": 6.44, "04": 6.21, "05": 6.60, "06": 4.91, "07": 6.64, "08": 7.45, "09": 8.31}
-
-SEAS = np.array([0.45, 0.35, 0.15, -0.10, -0.30, -0.35, -0.05, 0.05, -0.15, -0.20, -0.05, 0.20])
-# the national cycle: easing through 2022 and 2023, flat into 2024, edging up from mid-2025
-NAT = np.interp(np.arange(T), [0, 12, 24, 30, 36, 42, 48, 54, 59],
-                [0.40, 0.10, -0.15, -0.25, -0.22, -0.12, 0.02, 0.10, 0.14])
-DRIFT = {"01": -0.10, "02": 0.15, "03": 0.30, "04": -0.20, "05": 0.25, "06": -0.15, "07": 0.10, "08": 0.20, "09": -0.25}
-
-# the previous questionnaire's rotation-group bias (points, by month in sample) and the redesign's effect on it
-MIS_BIAS = np.array([1.30, 0.15, -0.12, -0.30, -0.45, -0.58])
-FIRST_EFFECT = -0.45          # the revised job-search questions at a first interview
-LATER_EFFECT = 0.688          # the revised questions with dependent interviewing, second to sixth interview
-
-# the sample: primary sampling units allocated by the square root of each region's population, 12 dwellings in each
-# rotation group of a unit, one rotation group replaced each month
-PSUS = 1180
-LINES = 12
-VACANT = 0.072                # dwellings found vacant (code 31), derelict or demolished (code 32)
-DERELICT = 0.006              # of which derelict or demolished
-NONPRIVATE = 0.013            # not private dwellings (code 33)
-RESPONSE = np.array([0.82, 0.79, 0.78, 0.77, 0.76, 0.75])   # eligible dwellings responding, by month in sample
-# response is lowest in the Capital's apartment blocks and highest in the rural regions, dips over the summer holidays
-# and in July, and drifts down a little each year
-RESP_REGION = {"01": -0.050, "02": -0.024, "03": 0.011, "04": 0.026, "05": 0.017, "06": 0.004, "07": 0.031,
-               "08": -0.009, "09": 0.043}
-RESP_MONTH = np.array([-0.031, -0.009, 0.0, 0.004, 0.006, 0.003, -0.011, -0.004, 0.003, 0.005, 0.002, -0.023])
-RESP_TREND = -0.008           # a year
-RESP_SEAS_AMP = {"01": 1.35, "02": 1.15, "03": 0.95, "04": 0.80, "05": 1.00, "06": 0.85, "07": 1.10, "08": 0.90,
-                 "09": 0.70}   # the summer dip deepest in the cities
-PARTIAL = 0.06                # responding interviews only partly completed (code 12)
-PERSONS = 2.42                # persons aged 15 and over in a responding dwelling
-
-EXTRACT = "2027-01-25"
-RELEASE = "2027-01-21"        # Labour Force Survey, December 2026
-
-
-def response(t, code, m):
-    """the chance an eligible dwelling responds in month t, in region code, at month in sample m"""
-    return RESPONSE[m - 1] + RESP_REGION[code] + RESP_MONTH[t % 12] * RESP_SEAS_AMP[code] + RESP_TREND * t / 12.0
+# fees (scheme rules: cremation fee income includes these item kinds; urns, keepsakes and disbursements are out)
+FEE_ITEMS = [("CREM", "Cremation fee", True), ("CHAP", "Chapel service (40 min)", True), ("XTND", "Extended chapel time",
+             True), ("ORGN", "Organist", True), ("WEBC", "Webcast and recording", True), ("MEMB", "Book of remembrance entry",
+             True), ("SCAT", "Scattering in the garden", True), ("URN", "Urn", False), ("KEEP", "Keepsake", False),
+             ("MREF", "Medical referee fee (disbursement)", False), ("CERT", "Certificate copies", True)]

@@ -1,80 +1,94 @@
 {
- "task": "task453",
- "status": "DESIGN",
- "domain": "physical-environmental-sciences",
- "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-02",
- "stump": "provisional (pinned at stage 2): the inventory's age-based method applies the 2016 oral health survey's amalgam at each decedent's age at death, or ages each cohort along that profile (the same figures), and designates the crematoria whose dead died in their sixties; counting cremations finds the sector compliant; each decedent's cohort carried from 2016 along its own change since 2006 designates the crematoria whose dead died in their seventies and early eighties.",
- "architecture": 3,
- "loops": 0,
- "precut": {
-  "exit": null,
-  "date": ""
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "",
-  "nearest": "0.14 task480 v2 (differentiated); check WARN overuse.domain, shell.repeat (architecture 2 prompt on disk)"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "Stage 2 (design): architecture 3 drawn and registered 2026-11-02 (card v3 at WARN). Next: the default path and ladder pinned on a prototype generator, the fork table, the ask sheet with two device families on crematoria operations records, prompt.txt, precut.py exit 0; then stage 3.",
- "approved": null,
- "delivered": null,
- "portal": null,
- "lineage_note": "architecture 1 shipped 2026-10-13 and was re-rooted 2026-10-14 (a dated level shift an event study finds); architecture 2 shipped 2026-10-14, reshipped 2026-11-01 under the leak gate (target.zip f0225faebee7b06320587fc6bae6a6fa), its main call held at the judge (Gate H analytical) but its ask layer measured spent 2026-11-01 and unrepairable inside the world 2026-11-02; re-rooted 2026-11-02 to architecture 3 (crematoria mercury from dental amalgam by birth cohort).",
- "architecture_2_record": {
-  "returned": [
-   {
-    "date": "2026-10-14",
-    "portal": "none (self-found before review)",
-    "repair": "prompt: H23 presupposition (whether the trigger needs restating, and if so to what)",
-    "commit": ""
-   },
-   {
-    "date": "2026-11-01",
-    "portal": "none: in-house re-check under the new leak gate (LEAK export_manifest.csv: a file whose name says it describes the data (manifest); LEAK lfs_file_dictionary.csv: a file whose name says it describes the data (dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3))",
-    "repair": "leak",
-    "move": "The generator no longer writes lfs_file_dictionary.csv or export_manifest.csv (11 files, still four formats). The manifest's provenance (what each file is and covers, its owning office, its extract or issue date, its rows) moved to metadata.json through metadata.PROVENANCE. No sentence was added to any document: what the determinism took from the dictionary now rests on the producing systems, each asserted. CAI 2014 exports LFSTAT_DESC (Employed, Unemployed, Not in labour force) beside its status codes (closure 19, with C1: of the six readings of codes 1 to 3 only 1 employed, 2 unemployed reproduces the release's Table 1 in the 42 months to June 2025; the sex and age codes are not read by the call, the change unchanged with them swapped and reversed); the units rest on WTD000 and Table 1, which the conformed cells reproduce in all 60 months (closure 18); the as-of rests on the release's own Contents date and the files' export stamp (closure 4); the ask's responding dwelling rests on the fieldwork system's outcome_desc beside its codes (SF14: 11 Full response, 12 Partial response). The sample reference, interview number, mode and region-vintage glosses are dropped and left unstated: no fork rests on them, the ask's reused reference stays closed by the note's section 1 and the interview number restarting, and no ask device is filed. verify.py now reads the status and the outcome on the labels while the golden reads the codes; checks.py gains the describing-file assertions (by name, sheet and content, positive-controlled on the two old names) and a positive control through the verifier's readers for each moved closure (84 checks, 0 failed). Both PDFs, both workbooks and five CSVs are byte-identical to the judged pack; the CAI 2014 cells and the fieldwork log differ only by the added label column (rows unchanged); the goldens and figures.json are byte-identical and freeze.py --mode determinism passes. Gates: checks and verify 0 failures, two builds byte-identical (target.zip md5 f0225faebee7b06320587fc6bae6a6fa twice), figures_check 52 figures 0 absent, voice-check PASS, leak.py --asof 2027-01-25 REVIEW with no LEAK, guard.py surface exit 0. generator/ceiling.py now measures the ask layer on the cut pack (the cracker lands the call and keeps 0 of the 10 counts, the mirror at the default path's 7.2 keeps 0, every stop keeps 0, the full includer reproduces figures.json as the control; mirror leakage 0.0 per cent; pair 30.5 on the ask sheet's formula, 46.3 with the chart's five and the CSV's two call-tied criteria inside the ask weight, 58.0 and 62.5 were the reused reference found), and the ask sheet carries its Measured by line, so precut exits 0 (61 checks, 0 FAIL, 8 WARN). Stage 4 on that cut: judge pass 3 DETERMINISTIC, APPROVE (Gate H decisive step analytical); the reship leak read found no decisive-step sentence, and its one ask fork, 'responded', is closed by the fieldwork labels and the response workbook; step 2 of the write-up now says the 1.3 is read from the CAI 2014 cells (the judge's optional note, no figure moved, freeze determinism PASS).",
-    "commit": "RESHIPPED (task453)"
-   }
-  ],
-  "gates": {
-   "checks": "84, failed 0",
-   "verify": "PASS (0 mismatches; change 0.4848)",
-   "rebuild": "byte-identical (11 target, 2 golden), target.zip f0225faebee7b06320587fc6bae6a6fa",
-   "figures_check": "PASS, 52 figures",
-   "precut": "61 checks, 0 FAIL, 8 WARN",
-   "container": "clean (target and golden)",
-   "surface": "exit 0",
-   "heart": "BLOCK read against the dates (duplicate_check.heart_2026_11_01)",
-   "freeze": "determinism PASS",
-   "voice_check": "PASS",
-   "ceiling": "cracker 0 of 10, mirror leakage 0.0, pair 30.5"
+  "task": "task453",
+  "status": "SHIPPED",
+  "domain": "physical-environmental-sciences",
+  "objective": "etl",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-11-02",
+  "stump": "Applying the 2016 survey's amalgam at each decedent's age at death (or ageing each cohort along that cross-section, the same figures) designates Tallis Creek and Dunmore Falls at 41.8 per cent; only each decedent's cohort read at its 2016 mean and carried by its own change since 2006 designates Ashgrove and Tallis Creek (about 45 per cent).",
+  "architecture": 3,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-11-02",
+    "note": "61 checks, 0 FAIL, 0 WARN on the final cut"
+  },
+  "leak": {
+    "leak_py": "REVIEW, no LEAK (REVIEW lines ruled in the note, ## Build gates)",
+    "asof": "2027-02-26",
+    "reader": "arch 3 on cut 323b1685: no leak (Q6 analytical); the deaths distractor's negative count fixed on cut 549af4b0 (no document or prompt changed)"
+  },
+  "duplicate_check": {
+    "surface": "exit 0",
+    "heart": "WARN (overuse.domain; repeat.deliverables against task180 v5; driver.near 0.14 task480 v2 differentiated)",
+    "date": "2026-11-02"
   },
   "judge": {
-   "verdict": "DETERMINISTIC (all three passes)",
-   "disposition": "pass 1 FIX_NOW (the CSV's July to November 2025 rows estimator-dependent at two decimals; the base of the other rows open), fixed in the note's section 4 with the CSV at one decimal place; re-judge APPROVE",
-   "report": "task453/determinism_check_report.md (pass 1), task453/determinism_check_report_pass2.md (re-judge), task453/determinism_check_report_pass3.md (reship)",
-   "pass3": "2026-11-01 on the reshipped cut f0225fae: DETERMINISTIC, APPROVE; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; the dropped dictionary opened no second figure; 'responded' closed by the fieldwork system's labels and the response workbook (11 and 12 reproduce 74.5, 74.1, 71.5; 11 alone 70.0, 69.6, 67.2); optional note applied (step 2 says the 1.3 is read from the CAI 2014 cells)"
+    "verdict": "arch 3 pass 1 on cut 323b1685: DETERMINISTIC",
+    "disposition": "APPROVE; residual three-wave quadratic recorded as ruled-out SF23; Gate G method_or_model_selection, analytical_non_defect; Gate H analytical",
+    "report": "determinism_check_report.md"
   },
-  "ask_audit_2026_11_01": {
-   "verdict": "SPENT on Ask A",
-   "careful_cracker_keeps": "10 of 10 against the recorded 0 of 10",
-   "pair": "58.0 (85.5 with the mirror counting as the cracker)",
-   "why": "dwelling_ref is a slot: interview_no runs 6 then 1 on 28,403 of 84,988 references, so a dwelling is the reference plus its entry month",
-   "probe": "scratchpad audit_cracker/task453/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
-   "status_before": "SHIPPED"
+  "returned": [],
+  "resume": "",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "lineage_note": "architecture 1 shipped 2026-10-13 and was re-rooted 2026-10-14 (a dated level shift an event study finds); architecture 2 shipped 2026-10-14, reshipped 2026-11-01 under the leak gate (target.zip f0225faebee7b06320587fc6bae6a6fa), its main call held at the judge (Gate H analytical) but its ask layer measured spent 2026-11-01 and unrepairable inside the world 2026-11-02; re-rooted 2026-11-02 to architecture 3 (crematoria mercury from dental amalgam by birth cohort).",
+  "architecture_2_record": {
+    "returned": [
+      {
+        "date": "2026-10-14",
+        "portal": "none (self-found before review)",
+        "repair": "prompt: H23 presupposition (whether the trigger needs restating, and if so to what)",
+        "commit": ""
+      },
+      {
+        "date": "2026-11-01",
+        "portal": "none: in-house re-check under the new leak gate (LEAK export_manifest.csv: a file whose name says it describes the data (manifest); LEAK lfs_file_dictionary.csv: a file whose name says it describes the data (dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3))",
+        "repair": "leak",
+        "move": "The generator no longer writes lfs_file_dictionary.csv or export_manifest.csv (11 files, still four formats). The manifest's provenance (what each file is and covers, its owning office, its extract or issue date, its rows) moved to metadata.json through metadata.PROVENANCE. No sentence was added to any document: what the determinism took from the dictionary now rests on the producing systems, each asserted. CAI 2014 exports LFSTAT_DESC (Employed, Unemployed, Not in labour force) beside its status codes (closure 19, with C1: of the six readings of codes 1 to 3 only 1 employed, 2 unemployed reproduces the release's Table 1 in the 42 months to June 2025; the sex and age codes are not read by the call, the change unchanged with them swapped and reversed); the units rest on WTD000 and Table 1, which the conformed cells reproduce in all 60 months (closure 18); the as-of rests on the release's own Contents date and the files' export stamp (closure 4); the ask's responding dwelling rests on the fieldwork system's outcome_desc beside its codes (SF14: 11 Full response, 12 Partial response). The sample reference, interview number, mode and region-vintage glosses are dropped and left unstated: no fork rests on them, the ask's reused reference stays closed by the note's section 1 and the interview number restarting, and no ask device is filed. verify.py now reads the status and the outcome on the labels while the golden reads the codes; checks.py gains the describing-file assertions (by name, sheet and content, positive-controlled on the two old names) and a positive control through the verifier's readers for each moved closure (84 checks, 0 failed). Both PDFs, both workbooks and five CSVs are byte-identical to the judged pack; the CAI 2014 cells and the fieldwork log differ only by the added label column (rows unchanged); the goldens and figures.json are byte-identical and freeze.py --mode determinism passes. Gates: checks and verify 0 failures, two builds byte-identical (target.zip md5 f0225faebee7b06320587fc6bae6a6fa twice), figures_check 52 figures 0 absent, voice-check PASS, leak.py --asof 2027-01-25 REVIEW with no LEAK, guard.py surface exit 0. generator/ceiling.py now measures the ask layer on the cut pack (the cracker lands the call and keeps 0 of the 10 counts, the mirror at the default path's 7.2 keeps 0, every stop keeps 0, the full includer reproduces figures.json as the control; mirror leakage 0.0 per cent; pair 30.5 on the ask sheet's formula, 46.3 with the chart's five and the CSV's two call-tied criteria inside the ask weight, 58.0 and 62.5 were the reused reference found), and the ask sheet carries its Measured by line, so precut exits 0 (61 checks, 0 FAIL, 8 WARN). Stage 4 on that cut: judge pass 3 DETERMINISTIC, APPROVE (Gate H decisive step analytical); the reship leak read found no decisive-step sentence, and its one ask fork, 'responded', is closed by the fieldwork labels and the response workbook; step 2 of the write-up now says the 1.3 is read from the CAI 2014 cells (the judge's optional note, no figure moved, freeze determinism PASS).",
+        "commit": "RESHIPPED (task453)"
+      }
+    ],
+    "gates": {
+      "checks": "84, failed 0",
+      "verify": "PASS (0 mismatches; change 0.4848)",
+      "rebuild": "byte-identical (11 target, 2 golden), target.zip f0225faebee7b06320587fc6bae6a6fa",
+      "figures_check": "PASS, 52 figures",
+      "precut": "61 checks, 0 FAIL, 8 WARN",
+      "container": "clean (target and golden)",
+      "surface": "exit 0",
+      "heart": "BLOCK read against the dates (duplicate_check.heart_2026_11_01)",
+      "freeze": "determinism PASS",
+      "voice_check": "PASS",
+      "ceiling": "cracker 0 of 10, mirror leakage 0.0, pair 30.5"
+    },
+    "judge": {
+      "verdict": "DETERMINISTIC (all three passes)",
+      "disposition": "pass 1 FIX_NOW (the CSV's July to November 2025 rows estimator-dependent at two decimals; the base of the other rows open), fixed in the note's section 4 with the CSV at one decimal place; re-judge APPROVE",
+      "report": "task453/determinism_check_report.md (pass 1), task453/determinism_check_report_pass2.md (re-judge), task453/determinism_check_report_pass3.md (reship)",
+      "pass3": "2026-11-01 on the reshipped cut f0225fae: DETERMINISTIC, APPROVE; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; the dropped dictionary opened no second figure; 'responded' closed by the fieldwork system's labels and the response workbook (11 and 12 reproduce 74.5, 74.1, 71.5; 11 alone 70.0, 69.6, 67.2); optional note applied (step 2 says the 1.3 is read from the CAI 2014 cells)"
+    },
+    "ask_audit_2026_11_01": {
+      "verdict": "SPENT on Ask A",
+      "careful_cracker_keeps": "10 of 10 against the recorded 0 of 10",
+      "pair": "58.0 (85.5 with the mirror counting as the cracker)",
+      "why": "dwelling_ref is a slot: interview_no runs 6 then 1 on 28,403 of 84,988 references, so a dwelling is the reference plus its entry month",
+      "probe": "scratchpad audit_cracker/task453/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+      "status_before": "SHIPPED"
+    },
+    "delivered": "2026-10-14"
   },
-  "delivered": "2026-10-14"
- }
+  "build": {
+    "checks": "128 assertions, 0 failures",
+    "verify": "11 checks, 0 failures",
+    "byte_identical": true,
+    "target_zip_md5": "549af4b08de9c17806c28e1fef3630fe",
+    "freeze": "PASS (determinism mode, against cut 323b1685)",
+    "figures_check": "40 figures, 0 absent",
+    "voice_check": "PASS",
+    "ceiling": "pair 31.7; cracker 45.0 keeps no ask figure; mirror 18.4; best careful on the call 53.0"
+  },
+  "shipped": "2026-11-02"
 }

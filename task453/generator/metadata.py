@@ -1,54 +1,58 @@
-"""Write task453/metadata.json from the built pack. Each file's provenance (what it is, what it covers, the office
-that owns it and the date it was extracted or issued) lives here, outside the pack: no file under target/ describes
-the others."""
+"""Write task453/metadata.json from the built pack. Each file's provenance (what it is, what it covers, the office that
+owns it and the date it was extracted or issued) lives here, outside the pack: no file under target/ describes the
+others."""
 import json
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import pack as P    # noqa: E402
 import world as W   # noqa: E402
 
 TASK = os.path.dirname(HERE)
-F = P.FILES
-# file: (what it is, what it covers, the owning office, extracted or issued)
+F = W.FILES
 PROVENANCE = {
-    F["old"]: ("the Labour Force Survey's estimation cells from CAI 2014 (the previous questionnaire), January 2022 to "
-               "November 2025", "January 2022 to November 2025", "Labour Market Statistics", W.EXTRACT),
-    F["new"]: ("the Labour Force Survey's estimation cells from ICS (the redesigned questionnaire), July 2025 to "
-               "December 2026", "July 2025 to December 2026", "Labour Market Statistics", W.EXTRACT),
-    F["release"]: ("the Labour Force Survey release for December 2026 (Tables 1 to 3)", "January 2022 to December 2026",
-                   "Labour Market Statistics", W.RELEASE),
-    F["field"]: ("the fieldwork system's contact outcomes, October to December 2026", "October to December 2026",
-                 "Survey Operations", W.EXTRACT),
-    F["psu"]: ("the survey's primary sampling units and their regions, 2025 regional classification",
-               "2025 regional classification", "Survey Operations", W.EXTRACT),
-    F["conc"]: ("the regional classification concordance, 2019 and 2025", "2019 and 2025 classifications",
-                "Classifications", "2024-11-29"),
-    F["pop"]: ("the population benchmarks the survey is weighted to, 1 January 2025 to 2027",
-               "1 January 2025 to 2027, 2027 projected", "Population Statistics", "2026-11-12"),
-    F["seas"]: ("the projected seasonal factors for the national unemployment rate, 2027", "2027",
-                "Time Series Analysis", "2027-01-08"),
-    F["resp"]: ("Survey Operations' monthly response rates by region, 2025 and 2026", "January 2025 to December 2026",
-                "Survey Operations", W.EXTRACT),
-    F["note"]: ("the methodology note LMM 2025/04 on the redesigned questionnaire and its introduction", "",
-                "Labour Market Methods", "2025-06-16"),
-    F["act"]: ("the Regional Employment Support Act 2021, Part 1, consolidated to 1 July 2025",
-               "consolidated to 1 July 2025", "Parliamentary Counsel", "2025-07-01"),
+    F["permits"]: ("the Vital Statistics Agency's extract of cremation permits returned by crematoria, 1 December 2025 "
+                   "to 31 January 2027", "permits returned 1 December 2025 to 31 January 2027", W.AGENCY, "2027-02-08"),
+    F["register"]: ("the Crematoria Mercury Fund's register of member crematoria and the agency's facility numbers",
+                    "as checked 15 January 2027", W.FUND, "2027-01-15"),
+    F["s1996"]: ("report tables of the National Adult Dentition Survey, 1996 wave", "1996", W.SURVEY_BODY, "1997-06-11"),
+    F["s2006"]: ("report tables of the National Adult Dentition Survey, 2006 wave", "2006", W.SURVEY_BODY, "2007-06-19"),
+    F["s2016"]: ("report tables of the National Adult Dentition Survey, 2016 wave", "2016", W.SURVEY_BODY, "2017-06-14"),
+    F["reg"]: ("the Crematoria Mercury Regulation (Regulation 41/2023), consolidated", "consolidated to 1 January 2025",
+               "Office of Legislative Counsel", "2025-01-01"),
+    F["rules"]: ("the Crematoria Mercury Fund's scheme rules for 2026", "2026 scheme year", W.FUND, "2025-11-18"),
+    F["ar_halbrook"]: ("the City of Halbrook's bereavement services receivables extract (Halbrook Memorial and Ostrander "
+                       "Hill crematoria)", "postings 1 December 2025 to 19 February 2027", "City of Halbrook",
+                       "2027-02-26"),
+    F["ar_shoreline"]: ("Shoreline Memorial Group's receivables for its four crematoria", "postings 1 December 2025 to 19 "
+                        "February 2027", "Shoreline Memorial Group", "2027-02-26"),
+    F["ar_members"]: ("the fee returns the independent crematoria lodge with the Fund each week", "weeks ending 7 "
+                      "December 2025 to 21 February 2027", W.FUND, "2027-02-26"),
+    F["cycles"]: ("cremator controller cycles at every member crematorium, 2026", "1 January to 31 December 2026",
+                  W.FUND, "2027-01-29"),
+    F["plant"]: ("abatement plant historian exports (events and 10-minute inlet temperatures) at the abated crematoria, "
+                 "2026", "1 January (or commissioning) to 31 December 2026", W.FUND, "2027-01-29"),
+    F["stack"]: ("the Air Quality Branch's summary of mercury stack tests at abated crematoria, 2019 to 2025",
+                 "2019 to 2025", "Air Quality Branch", "2026-03-03"),
+    F["deaths"]: ("the Vital Statistics Agency's preliminary deaths registered in 2026 by region, age group and sex",
+                  "deaths registered in 2026", W.AGENCY, "2027-02-12"),
 }
-SOURCES = {f: v[0] for f, v in PROVENANCE.items()}
-DISTRACTORS = [F["pop"], F["seas"], F["resp"]]
-DELIVERABLES = ["trigger_restatement_determination_2027.pdf", "regional_unemployment_redesigned_basis_2024-2026.csv"]
+DISTRACTORS = [F[k] for k in W.DISTRACTORS]
+DELIVERABLES = [W.GOLDEN["cert"], W.GOLDEN["book"]]
 
 
 def rows_of(path):
-    if path.endswith((".csv", ".txt")):
-        with open(path, encoding="utf-8", errors="replace") as fh:
+    if path.endswith(".csv"):
+        with open(path, encoding="utf-8") as fh:
             return sum(1 for _ in fh) - 1
     if path.endswith(".parquet"):
         import pyarrow.parquet as pq
         return pq.ParquetFile(path).metadata.num_rows
+    if path.endswith(".xlsx"):
+        from openpyxl import load_workbook
+        wb = load_workbook(path, read_only=True)
+        return sum(ws.max_row for ws in wb.worksheets)
     return None
 
 
@@ -59,43 +63,33 @@ def write(target, out_path):
         what, covers, owner, issued = PROVENANCE[f]
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
                       "source": "Constructed: " + what, "covers": covers, "owner": owner, "extracted_or_issued": issued,
-                      "date": "2027-01-25", "license": "CC0-1.0 (original work, constructed for this task)"})
-    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
+                      "date": "2027-02-26", "license": "CC0-1.0 (original work, constructed for this task)"})
     meta = {
         "task": "task453",
-        "architecture": 2,
-        "title": "How far a statutory unemployment trigger moves when a national Labour Force Survey moves to a "
-                 "redesigned questionnaire phased in through its rotation groups, and which regions the restated "
-                 "trigger designates for 2027",
-        "domain": "Survey Research & Official Statistics",
-        "subdomain": "seasonal-adjustment-official-time-series-production (the survey's two collection systems, one per "
-                     "questionnaire, conformed into one series on the redesigned basis, and the statutory trigger "
-                     "restated by the change the redesign makes to the published rate)",
+        "architecture": 3,
+        "title": "Which crematoria a provincial crematoria mercury fund designates to fit mercury abatement after its "
+                 "2026 scheme year, with each crematorium's 2026 levy and each abated crematorium's bypassed "
+                 "cremations by quarter",
+        "domain": "Physical & Environmental Sciences",
+        "subdomain": "emissions-inventory (a provincial cremation source's 2026 abated share against a filed "
+                     "threshold and the designations it triggers)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "other: the restated trigger, the change it rests on, the designation of nine regions, the "
-                        "fourth-quarter responding dwellings by region, a chart and the regional series on the "
-                        "redesigned basis",
-        "as_of": "2027-01-25",
+        "prompt_shape": "other: the verdict on the 2026 share, the designated crematoria, a chart of each "
+                        "crematorium's mercury, each crematorium's 2026 levy and each abated crematorium's bypassed "
+                        "cremations by quarter",
+        "as_of": "2027-02-26",
         "deliverables": DELIVERABLES,
         "distractor_files": DISTRACTORS,
-        "stated_inputs": ["6.0"],
-        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
-                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
-        "sources": [{"files": "all files under target/",
-                     "origin": "constructed for this task by task453/generator/build.py (seeded, deterministic) in the "
-                               "layouts of a national statistics office's Labour Force Survey estimation cells, "
-                               "release tables, fieldwork outcomes and lookups; the country, its office, regions, "
-                               "statute and people are fictional.",
-                     "date": "2027-01-25", "license": "CC0-1.0 (original work)"}],
-        "created": "2027-01-25",
-        "generator": "task453/generator/build.py",
+        "distractor_notes": {
+            F["stack"]: "post-abatement stack concentrations at the abated crematoria; the Regulation measures the "
+                        "mercury a cremation releases by the amalgam of the person cremated, so no figure uses them",
+            F["deaths"]: "all deaths registered in 2026 by region of residence, every disposition; the cremations are "
+                         "the permits, so no figure uses it"},
         "files": files,
+        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
+                        "largest_rows": max((x["rows"] or 0) for x in files)},
     }
     with open(out_path, "w") as fh:
-        json.dump(meta, fh, indent=2, ensure_ascii=False)
+        json.dump(meta, fh, indent=1)
         fh.write("\n")
     return meta
-
-
-if __name__ == "__main__":
-    write(os.path.join(TASK, "target"), os.path.join(TASK, "metadata.json"))

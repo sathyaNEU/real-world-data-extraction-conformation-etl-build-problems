@@ -1,177 +1,202 @@
 {
-  "task": "task453",
-  "architecture": 2,
-  "title": "How far a statutory unemployment trigger moves when a national Labour Force Survey moves to a redesigned questionnaire phased in through its rotation groups, and which regions the restated trigger designates for 2027",
-  "domain": "Survey Research & Official Statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production (the survey's two collection systems, one per questionnaire, conformed into one series on the redesigned basis, and the statutory trigger restated by the change the redesign makes to the published rate)",
-  "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "other: the restated trigger, the change it rests on, the designation of nine regions, the fourth-quarter responding dwellings by region, a chart and the regional series on the redesigned basis",
-  "as_of": "2027-01-25",
-  "deliverables": [
-    "trigger_restatement_determination_2027.pdf",
-    "regional_unemployment_redesigned_basis_2024-2026.csv"
-  ],
-  "distractor_files": [
-    "population_benchmarks_15plus_2025-2027.csv",
-    "lfs_seasonal_factors_2027_projected.csv",
-    "lfs_response_rates_2025-2026.xlsx"
-  ],
-  "stated_inputs": [
-    "6.0"
-  ],
-  "input_gates": {
-    "files": 11,
-    "formats": [
-      "csv",
-      "parquet",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "lfs_fieldwork_contacts_2026q4.parquet",
-    "largest_file_rows": 254964
+ "task": "task453",
+ "architecture": 3,
+ "title": "Which crematoria a provincial crematoria mercury fund designates to fit mercury abatement after its 2026 scheme year, with each crematorium's 2026 levy and each abated crematorium's bypassed cremations by quarter",
+ "domain": "Physical & Environmental Sciences",
+ "subdomain": "emissions-inventory (a provincial cremation source's 2026 abated share against a filed threshold and the designations it triggers)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "other: the verdict on the 2026 share, the designated crematoria, a chart of each crematorium's mercury, each crematorium's 2026 levy and each abated crematorium's bypassed cremations by quarter",
+ "as_of": "2027-02-26",
+ "deliverables": [
+  "designation_certificate_2026.pdf",
+  "levy_and_bypass_2026.xlsx"
+ ],
+ "distractor_files": [
+  "crematoria_stack_tests_2019-2025.pdf",
+  "deaths_registered_2026_by_region_age_sex.xlsx"
+ ],
+ "distractor_notes": {
+  "crematoria_stack_tests_2019-2025.pdf": "post-abatement stack concentrations at the abated crematoria; the Regulation measures the mercury a cremation releases by the amalgam of the person cremated, so no figure uses them",
+  "deaths_registered_2026_by_region_age_sex.xlsx": "all deaths registered in 2026 by region of residence, every disposition; the cremations are the permits, so no figure uses it"
+ },
+ "files": [
+  {
+   "path": "abatement_plant_logs_2026.parquet",
+   "format": "parquet",
+   "bytes": 1367973,
+   "rows": 305339,
+   "source": "Constructed: abatement plant historian exports (events and 10-minute inlet temperatures) at the abated crematoria, 2026",
+   "covers": "1 January (or commissioning) to 31 December 2026",
+   "owner": "Crematoria Mercury Fund",
+   "extracted_or_issued": "2027-01-29",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task453/generator/build.py (seeded, deterministic) in the layouts of a national statistics office's Labour Force Survey estimation cells, release tables, fieldwork outcomes and lookups; the country, its office, regions, statute and people are fictional.",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work)"
-    }
+  {
+   "path": "cmf_fee_returns_independent_crematoria_2025-12_2027-02.csv",
+   "format": "csv",
+   "bytes": 9479934,
+   "rows": 74600,
+   "source": "Constructed: the fee returns the independent crematoria lodge with the Fund each week",
+   "covers": "weeks ending 7 December 2025 to 21 February 2027",
+   "owner": "Crematoria Mercury Fund",
+   "extracted_or_issued": "2027-02-26",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cmf_member_crematoria_register_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 9149,
+   "rows": 46,
+   "source": "Constructed: the Crematoria Mercury Fund's register of member crematoria and the agency's facility numbers",
+   "covers": "as checked 15 January 2027",
+   "owner": "Crematoria Mercury Fund",
+   "extracted_or_issued": "2027-01-15",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cmf_scheme_rules_2026.pdf",
+   "format": "pdf",
+   "bytes": 41820,
+   "rows": null,
+   "source": "Constructed: the Crematoria Mercury Fund's scheme rules for 2026",
+   "covers": "2026 scheme year",
+   "owner": "Crematoria Mercury Fund",
+   "extracted_or_issued": "2025-11-18",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cremation_permits_returned_2025-12-01_2027-01-31.csv",
+   "format": "csv",
+   "bytes": 3409257,
+   "rows": 34893,
+   "source": "Constructed: the Vital Statistics Agency's extract of cremation permits returned by crematoria, 1 December 2025 to 31 January 2027",
+   "covers": "permits returned 1 December 2025 to 31 January 2027",
+   "owner": "Vital Statistics Agency",
+   "extracted_or_issued": "2027-02-08",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cremator_controller_cycles_2026.csv",
+   "format": "csv",
+   "bytes": 2196318,
+   "rows": 30981,
+   "source": "Constructed: cremator controller cycles at every member crematorium, 2026",
+   "covers": "1 January to 31 December 2026",
+   "owner": "Crematoria Mercury Fund",
+   "extracted_or_issued": "2027-01-29",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "crematoria_mercury_regulation_2023_consolidated.pdf",
+   "format": "pdf",
+   "bytes": 46696,
+   "rows": null,
+   "source": "Constructed: the Crematoria Mercury Regulation (Regulation 41/2023), consolidated",
+   "covers": "consolidated to 1 January 2025",
+   "owner": "Office of Legislative Counsel",
+   "extracted_or_issued": "2025-01-01",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "crematoria_stack_tests_2019-2025.pdf",
+   "format": "pdf",
+   "bytes": 44632,
+   "rows": null,
+   "source": "Constructed: the Air Quality Branch's summary of mercury stack tests at abated crematoria, 2019 to 2025",
+   "covers": "2019 to 2025",
+   "owner": "Air Quality Branch",
+   "extracted_or_issued": "2026-03-03",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "deaths_registered_2026_by_region_age_sex.xlsx",
+   "format": "xlsx",
+   "bytes": 8661,
+   "rows": 95,
+   "source": "Constructed: the Vital Statistics Agency's preliminary deaths registered in 2026 by region, age group and sex",
+   "covers": "deaths registered in 2026",
+   "owner": "Vital Statistics Agency",
+   "extracted_or_issued": "2027-02-12",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "halbrook_bereavement_ar_2025-12_2027-02.csv",
+   "format": "csv",
+   "bytes": 3913016,
+   "rows": 26511,
+   "source": "Constructed: the City of Halbrook's bereavement services receivables extract (Halbrook Memorial and Ostrander Hill crematoria)",
+   "covers": "postings 1 December 2025 to 19 February 2027",
+   "owner": "City of Halbrook",
+   "extracted_or_issued": "2027-02-26",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "nads_1996_report_tables.pdf",
+   "format": "pdf",
+   "bytes": 47100,
+   "rows": null,
+   "source": "Constructed: report tables of the National Adult Dentition Survey, 1996 wave",
+   "covers": "1996",
+   "owner": "Dental Public Health Monitoring Unit",
+   "extracted_or_issued": "1997-06-11",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "nads_2006_report_tables.pdf",
+   "format": "pdf",
+   "bytes": 42983,
+   "rows": null,
+   "source": "Constructed: report tables of the National Adult Dentition Survey, 2006 wave",
+   "covers": "2006",
+   "owner": "Dental Public Health Monitoring Unit",
+   "extracted_or_issued": "2007-06-19",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "nads_2016_report_tables.pdf",
+   "format": "pdf",
+   "bytes": 44219,
+   "rows": null,
+   "source": "Constructed: report tables of the National Adult Dentition Survey, 2016 wave",
+   "covers": "2016",
+   "owner": "Dental Public Health Monitoring Unit",
+   "extracted_or_issued": "2017-06-14",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "shoreline_memorial_receivables_2025-12_2027-02.xlsx",
+   "format": "xlsx",
+   "bytes": 1548689,
+   "rows": 32775,
+   "source": "Constructed: Shoreline Memorial Group's receivables for its four crematoria",
+   "covers": "postings 1 December 2025 to 19 February 2027",
+   "owner": "Shoreline Memorial Group",
+   "extracted_or_issued": "2027-02-26",
+   "date": "2027-02-26",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ],
+ "input_gates": {
+  "files": 14,
+  "formats": [
+   "csv",
+   "parquet",
+   "pdf",
+   "xlsx"
   ],
-  "created": "2027-01-25",
-  "generator": "task453/generator/build.py",
-  "files": [
-    {
-      "path": "lfs_cai2014_estimation_cells_2022-01_2025-11.csv",
-      "format": "csv",
-      "bytes": 3082598,
-      "rows": 72090,
-      "source": "Constructed: the Labour Force Survey's estimation cells from CAI 2014 (the previous questionnaire), January 2022 to November 2025",
-      "covers": "January 2022 to November 2025",
-      "owner": "Labour Market Statistics",
-      "extracted_or_issued": "2027-01-25",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_fieldwork_contacts_2026q4.parquet",
-      "format": "parquet",
-      "bytes": 1176270,
-      "rows": 254964,
-      "source": "Constructed: the fieldwork system's contact outcomes, October to December 2026",
-      "covers": "October to December 2026",
-      "owner": "Survey Operations",
-      "extracted_or_issued": "2027-01-25",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_ics_estimation_cells_2025-07_2026-12.csv",
-      "format": "csv",
-      "bytes": 372122,
-      "rows": 8370,
-      "source": "Constructed: the Labour Force Survey's estimation cells from ICS (the redesigned questionnaire), July 2025 to December 2026",
-      "covers": "July 2025 to December 2026",
-      "owner": "Labour Market Statistics",
-      "extracted_or_issued": "2027-01-25",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_psu_region_lookup_2025.csv",
-      "format": "csv",
-      "bytes": 24550,
-      "rows": 1180,
-      "source": "Constructed: the survey's primary sampling units and their regions, 2025 regional classification",
-      "covers": "2025 regional classification",
-      "owner": "Survey Operations",
-      "extracted_or_issued": "2027-01-25",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_redesigned_questionnaire_methodology_note.pdf",
-      "format": "pdf",
-      "bytes": 43570,
-      "rows": null,
-      "source": "Constructed: the methodology note LMM 2025/04 on the redesigned questionnaire and its introduction",
-      "covers": "",
-      "owner": "Labour Market Methods",
-      "extracted_or_issued": "2025-06-16",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_release_2026-12_tables.xlsx",
-      "format": "xlsx",
-      "bytes": 18656,
-      "rows": null,
-      "source": "Constructed: the Labour Force Survey release for December 2026 (Tables 1 to 3)",
-      "covers": "January 2022 to December 2026",
-      "owner": "Labour Market Statistics",
-      "extracted_or_issued": "2027-01-21",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_response_rates_2025-2026.xlsx",
-      "format": "xlsx",
-      "bytes": 8137,
-      "rows": null,
-      "source": "Constructed: Survey Operations' monthly response rates by region, 2025 and 2026",
-      "covers": "January 2025 to December 2026",
-      "owner": "Survey Operations",
-      "extracted_or_issued": "2027-01-25",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_seasonal_factors_2027_projected.csv",
-      "format": "csv",
-      "bytes": 206,
-      "rows": 12,
-      "source": "Constructed: the projected seasonal factors for the national unemployment rate, 2027",
-      "covers": "2027",
-      "owner": "Time Series Analysis",
-      "extracted_or_issued": "2027-01-08",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "population_benchmarks_15plus_2025-2027.csv",
-      "format": "csv",
-      "bytes": 6427,
-      "rows": 270,
-      "source": "Constructed: the population benchmarks the survey is weighted to, 1 January 2025 to 2027",
-      "covers": "1 January 2025 to 2027, 2027 projected",
-      "owner": "Population Statistics",
-      "extracted_or_issued": "2026-11-12",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "region_classification_concordance_2019_2025.csv",
-      "format": "csv",
-      "bytes": 342,
-      "rows": 9,
-      "source": "Constructed: the regional classification concordance, 2019 and 2025",
-      "covers": "2019 and 2025 classifications",
-      "owner": "Classifications",
-      "extracted_or_issued": "2024-11-29",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "regional_employment_support_act_2021_extract.pdf",
-      "format": "pdf",
-      "bytes": 66039,
-      "rows": null,
-      "source": "Constructed: the Regional Employment Support Act 2021, Part 1, consolidated to 1 July 2025",
-      "covers": "consolidated to 1 July 2025",
-      "owner": "Parliamentary Counsel",
-      "extracted_or_issued": "2025-07-01",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  "largest_rows": 305339
+ }
 }

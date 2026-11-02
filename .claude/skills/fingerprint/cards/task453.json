@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "golden (filled at ship)",
+  "answer": "Yes: the Crematoria Mercury Fund must designate Ashgrove Cremation Centre (CM-1347) and Tallis Creek Crematorium (CM-0372); about 45 per cent of 2026 cremation mercury was released in abated cremations against the Regulation's 55, and the share reaches it only with both counted (about 59)",
+  "answer_source": "task453/submission.md block 1; task453/generator/figures.json; golden designation_certificate_2026.pdf",
   "gap": [
     "time",
     "population"
@@ -38,18 +38,18 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:cohort-carried-amalgam-read-along-the-cohort-across-survey-waves",
   "layer1": [
-    "the survey's three waves published as PDF tables whose layouts change by wave (age bands, sex splits and the top band differ)",
-    "the province's cremation permits keyed by permit number with age at death in completed years and a crematorium code that changed when two operators merged",
-    "each crematorium's abatement plant commissioned on its own date, some during the scheme year, so a crematorium is abated for only part of 2026",
-    "operators' own registers, cremator controller logs and abatement plant logs in their own layouts and clocks (for the asks)",
-    "distractors: post-abatement stack test reports and the province's deaths by place of occurrence"
+    "the survey's three waves published as PDF report tables whose layouts change by wave (1996 one table with sex and age as rows and standard errors, 2006 men and women side by side with confidence intervals, 2016 a table per sex and for all adults; top band 80 and over in 1996, 90 and over after)",
+    "the agency's cremation permits keyed by its own facility numbers, Wexley Regional renumbered on 2 March 2026 when the regional district took it over, infant ages in months, out-of-province residents, a window by return date",
+    "two abatement plants commissioned during the scheme year, so two crematoria are abated for part of 2026 only",
+    "three receivables layouts (a city's ledger CSV with net and HST, a group's workbook with descriptions only, the independents' weekly fee returns), a controller export in Eastern time and a plant historian in UTC (for the asks)",
+    "distractors: the regulator's post-abatement stack tests and the agency's deaths by region of residence"
   ],
   "stakeholder_role": "the Fund's technical secretary, who compiles the annual mercury return and the designation proposal for the trustees",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "provincial cremation permits 2026",
-    "rows": 0,
+    "file": "cremation_permits_returned_2025-12-01_2027-01-31.csv (the province's cremation permits)",
+    "rows": 34893,
     "entity": "one cremation permit issued and used in 2026",
     "grain": "cremation",
     "source": "synthetic"
@@ -68,16 +68,21 @@
       "Alison Pena"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "designation_certificate_2026.pdf",
+    "levy_and_bypass_2026.xlsx"
+  ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "whether",
   "driver": "The decisive quantity is a per-member property carried by each member's birth cohort and measured only in repeated cross-sections of the living population taken years before the period the decision reads; one cross-section's age profile runs across cohorts, so applying it at each member's age in that period, or carrying each cohort forward along that same profile, returns earlier cohorts' values, and only each cohort's own change between the cross-sections carries it to the period, which reorders the units whose members differ in age.",
   "driver_concrete": "Each 2026 cremation releases the mercury in the dental amalgam of the person cremated, which follows the person's birth cohort (those born from the mid-1940s to the late 1950s carry the most amalgam, earlier cohorts lost their teeth, later ones grew up with fluoride), and the national adult oral health survey measured cohorts only in 1996, 2006 and 2016; applying the 2016 survey's age profile at each decedent's age at death, or ageing each cohort along that profile, gives the 2016 values of older cohorts and overweights crematoria whose decedents died in their sixties, so the abated share and the designation order are read from each decedent's cohort carried from 2016 along its own change since 2006.",
   "stump": "A competent analyst applies the 2016 survey's amalgam at each decedent's age at death (or ages each cohort along that profile, which returns the same figures) and files the abated share and the designations that profile gives; counting cremations files another; only each decedent's cohort carried from 2016 along its own change since 2006 gives the golden share and designations.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task480": "task480 reads each vehicle's current-year mileage from one lifetime cumulative total, whose average over a vehicle's life overstates a yearly increment that falls with age; task453 has no per-unit record at all: a property each person carries from their birth cohort is measured only in survey cross-sections years earlier, and the cross-section's age profile runs across cohorts, so it is re-keyed to each decedent's cohort and aged along that cohort's own change between waves",
-    "task453": "v2 restated a survey's published rate across a questionnaire redesign read within month in sample; v1 removed a dated placement step before seasonal factors; v3 has no change in measurement, no phase-in and no seasonal adjustment: an emissions inventory reads each cremation's mercury from a cohort-carried property measured in earlier survey waves"
+    "task453": "v2 restated a survey's published rate across a questionnaire redesign read within month in sample; v1 removed a dated placement step before seasonal factors; v3 has no change in measurement, no phase-in and no seasonal adjustment: an emissions inventory reads each cremation's mercury from a cohort-carried property measured in earlier survey waves",
+    "task452": "task452 estimates a forest program's deforestation area from a stratified reference sample whose strata were drawn on a preliminary map later revised, so the sample's inclusion probabilities, not the revised classes, weight each point; task453 has no sample design at all: a cohort-carried property measured in repeated survey cross-sections is re-keyed onto each 2026 decedent's birth cohort and carried by that cohort's own change between waves. They share the domain, task type and objective of consecutive numbers in the ETL lane, not a driver.",
+    "task451": "task451 completes each care partner's period cost from claims not yet paid at the cut, with development measured on a handler's changed delay; task453 completes nothing and develops nothing: it reads each decedent's amalgam from earlier survey waves by birth cohort. They share the decisive gap (time) and a designation decision by trustees, not a mechanism."
   },
   "lineage": [
     {
@@ -129,12 +134,12 @@
       "driver_concrete": "Each region's first-quarter 2027 seasonally adjusted payroll jobs are set against its 2026 average, both on the workplace placement the revenue agency's statistics have used since January 2026, when jobs that had sat at employers' account addresses (head offices in Wickmoor and Saltmere) moved to their mines, mills, plants, hospitals and stores; a default seasonal adjustment estimates the seasonal pattern across that step, pulling the quarter down in the regions that gained (Kestrow North, Varrenby Shore) and up in the Capital, while official practice removes the step as a level shift in the regARIMA pre-adjustment (or restates the earlier history) before the seasonal filters run."
     }
   ],
-  "notes": "Re-rooted 2026-11-02 (architecture 3). The ETL move is re-keying a survey's age-by-wave tables onto the decedents' birth cohorts and ageing them along each cohort's own trajectory; reading the tables correctly is not sufficient because the easy re-key (age at death, or ageing along one wave's profile) is algebraically the same cross-section. The decision reads a closed year (2026) because the regulation tests each scheme year after it closes; the designation it triggers is forward (abatement by 2028). Guard at the draw: WARN overuse.domain (physical-environmental-sciences in 5 of the last 12; emissions-inventory is the only task type that serves ETL for a cremation source) and WARN shell.repeat read off architecture 2's prompt.txt still on disk (the architecture 3 prompt redraws the shell). Pattern none with G6 decisive: the cohorts shifted under the survey's age profile.",
+  "notes": "Re-rooted 2026-11-02 (architecture 3). The ETL move is re-keying a survey's age-by-wave tables onto the decedents' birth cohorts and ageing them along each cohort's own trajectory; reading the tables correctly is not sufficient because the easy re-key (age at death, or ageing along one wave's profile) is algebraically the same cross-section. The decision reads a closed year (2026) because the regulation tests each scheme year after it closes; the designation it triggers is forward (abatement by 2028). Guard at the draw: WARN overuse.domain (physical-environmental-sciences in 5 of the last 12; emissions-inventory is the only task type that serves ETL for a cremation source) and WARN shell.repeat read off architecture 2's prompt.txt still on disk (the architecture 3 prompt redraws the shell). Pattern none with G6 decisive: the cohorts shifted under the survey's age profile. Stage 3 (2026-11-02): the shell redrawn to whether | the | levies | pdf+xlsx (the draw's which form sat over the corpus quota); operator and survey names moved off near-real names (Hollinsbrook, Orrinsford, the National Adult Dentition Survey).",
   "registered": "2026-11-02T09:08:49Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "put",
-    "rounding opener": "give",
-    "deliverable set": "csv+pdf"
+    "question form": "whether",
+    "second-sentence opener": "the",
+    "rounding opener": "levies",
+    "deliverable set": "pdf+xlsx"
   }
 }

@@ -1,6 +1,6 @@
-"""Build task453: the pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json; then the checks and the independent verifier, a second full build into a scratch folder
-inside the task compared byte for byte, and target.zip cut from the final build.
+"""Build task453: the pack into <task>/target, the goldens into <task>/golden, metadata.json and generator/figures.json;
+then the checks and the independent verifier, a second full build into a scratch folder inside the task compared byte
+for byte, and target.zip cut from the final build.
 
     python3 task453/generator/build.py              everything
     python3 task453/generator/build.py --out DIR    the pack only, into DIR
@@ -21,16 +21,20 @@ warnings.filterwarnings("ignore")
 import docs as DC           # noqa: E402
 import pack as P            # noqa: E402
 import postprocess as PP    # noqa: E402
+import sim                  # noqa: E402
 import survey as S          # noqa: E402
 import world as W           # noqa: E402
 
 TASK = os.path.dirname(HERE)
-LOCAL = dt.timezone(dt.timedelta(hours=13))
-STAMP = dt.datetime(2027, 1, 25, 15, 40, tzinfo=LOCAL)       # the folder as Labour Market Statistics assembled it
+STAMP = dt.datetime(2027, 2, 26, 15, 40, tzinfo=dt.timezone(dt.timedelta(hours=-5)))   # the folder as the Fund assembled it
 
 
 def simulate():
-    return S.simulate()
+    rows = sim.decedents()
+    cyc = sim.cycles(rows)
+    plants = sim.plant_logs(rows, cyc)
+    ar = sim.receivables(rows)
+    return {"rows": rows, "cyc": cyc, "plants": plants, "ar": ar, "tab": S.tables(W.SEED)}
 
 
 def build(out, quiet=False, world=None):
@@ -38,32 +42,40 @@ def build(out, quiet=False, world=None):
         shutil.rmtree(out)
     os.makedirs(out)
     w = world or simulate()
-    f = lambda k: os.path.join(out, P.FILES[k])
+    f = lambda k: os.path.join(out, W.FILES[k])
     n = {}
-    pub = P.published_tables(w)
-    numbers, reg = S.psu_regions()
-    n["old"] = P.write_old(w, f("old"))
-    n["new"] = P.write_new(w, f("new"))
-    n["release"] = P.write_release(pub, f("release"))
-    n["field"] = P.write_fieldwork(w["q4"], f("field"))
-    n["psu"] = P.write_psu(numbers, reg, f("psu"))
-    n["conc"] = P.write_concordance(f("conc"))
-    n["pop"] = P.write_population(S.population(), f("pop"))
-    n["seas"] = P.write_seasonal(f("seas"))
-    n["resp"] = P.write_response(w, f("resp"))
-    DC.write_note(f("note"))
-    DC.write_act(f("act"))
-    PP.normalize_ooxml(f("release"), "Labour Market Statistics", "Labour Market Statistics", "2022-02-14T21:05:00Z",
-                       "2027-01-20T22:41:37Z", excel=True, company=W.OFFICE)
-    PP.normalize_ooxml(f("resp"), W.PEOPLE["operations"], W.PEOPLE["operations"], "2025-02-03T20:12:00Z",
-                       "2027-01-22T03:18:51Z", excel=True, company=W.OFFICE)
-    PP.normalize_pdf(f("note"), b"D:20250616093012+12'00'", b"D:20250616094455+12'00'")
-    PP.normalize_pdf(f("act"), b"D:20250701080000+12'00'", b"D:20250701081207+12'00'")
+    w["permits"] = P.permits(w["rows"])
+    n["permits"] = P.write_permits(w["permits"], f("permits"))
+    n["register"] = P.write_register(f("register"))
+    lrows = P.ledger_rows(w["ar"])
+    w["lrows"] = lrows
+    n["ar_halbrook"] = P.write_ar_halbrook(lrows, w["ar"], f("ar_halbrook"))
+    n["ar_shoreline"] = P.write_ar_shoreline(lrows, w["ar"], f("ar_shoreline"))
+    n["ar_members"] = P.write_ar_members(lrows, w["ar"], f("ar_members"))
+    n["cycles"] = P.write_cycles(w["cyc"], f("cycles"))
+    n["plant"] = P.write_plant(w["plants"], f("plant"))
+    n["deaths"] = P.write_deaths(w["rows"], f("deaths"))
+    for y in S.WAVES:
+        DC.write_survey(w["tab"], y, f("s%d" % y))
+    DC.write_regulation(f("reg"))
+    DC.write_rules(f("rules"))
+    DC.write_stack(f("stack"))
+    PP.normalize_ooxml(f("register"), W.PEOPLE["secretary"], W.PEOPLE["secretary"], "2021-03-09T15:22:00Z",
+                       "2027-01-15T19:06:44Z", excel=True, company=W.FUND)
+    PP.normalize_ooxml(f("ar_shoreline"), "SMG Finance", "SMG Finance", "2027-02-26T13:51:08Z", "2027-02-26T13:51:08Z",
+                       excel=True, company="Shoreline Memorial Group")
+    PP.normalize_ooxml(f("deaths"), W.PEOPLE["vitals"], W.PEOPLE["vitals"], "2027-02-12T16:30:00Z",
+                       "2027-02-12T16:41:27Z", excel=True, company=W.AGENCY)
+    PP.normalize_pdf(f("s1996"), b"D:19970604101544-04'00'", b"D:19970604102231-04'00'")
+    PP.normalize_pdf(f("s2006"), b"D:20070612140210-04'00'", b"D:20070612141957-04'00'")
+    PP.normalize_pdf(f("s2016"), b"D:20170607093318-04'00'", b"D:20170607095102-04'00'")
+    PP.normalize_pdf(f("reg"), b"D:20241230113005-05'00'", b"D:20241230113642-05'00'")
+    PP.normalize_pdf(f("rules"), b"D:20251118154820-05'00'", b"D:20251118160233-05'00'")
+    PP.normalize_pdf(f("stack"), b"D:20260303084511-05'00'", b"D:20260303085937-05'00'")
     stamp = STAMP.timestamp()
     for name in os.listdir(out):
         os.utime(os.path.join(out, name), (stamp, stamp))
     w["counts"] = n
-    w["published"] = pub
     if not quiet:
         print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in n.items())))
     return w
@@ -76,7 +88,7 @@ def digest(folder):
 def cut_zip(root):
     import zipfile
     folder = os.path.join(root, "target")
-    stamp = (2027, 1, 25, 15, 40, 0)
+    stamp = (2027, 2, 26, 15, 40, 0)
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):

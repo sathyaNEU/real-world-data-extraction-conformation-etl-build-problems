@@ -1,364 +1,239 @@
-"""task453 ask layer against the careful solver's routes, on the cut pack.
+"""The ask layer measured on the cut pack: the careful solver's routes through each ask, and the pair arithmetic.
 
-    python3 task453/generator/ceiling.py [pack]
-
-pack is target.zip (the default, the archive that ships) or a folder holding the pack's files. The one ask of the
-design note's ask sheet (Ask A) gives ten figures: the dwellings that responded to the survey in October to December
-2026, region by region and in all, each dwelling counted once however many months it responded. Every route below
-is a complete pipeline over the cut pack (the fieldwork log and the unit lookup for the ask; both collection systems'
-exports, the region concordance, the release and the Act for the calls), scored figure by figure against
-figures.json; a count is kept only when it is exact.
-
-The cracker lands the call (each interview's effect on the redesigned questionnaire against the same interview on
-the previous one, month and region held fixed, the six averaged: the trigger restated at 6.5, four regions), runs
-the hygiene battery (exact duplicate rows, one row per reference and month, each reference built from its unit, group
-and line, one region per unit, one label per outcome code, the log tied to Survey Operations' response rates) and
-applies every filed rule (the fourth quarter's contact months, the fieldwork system's own Full response and Partial
-response, each dwelling once, the unit's region), and takes the ask on its natural read: a dwelling is its
-dwelling_ref. The mirror stops at the default path (the gap between the two questionnaires' rotation groups in July to
-November 2025: 7.2 per cent, two regions) and takes the ask on the same natural read without the battery. The full
-includer reads a dwelling as its reference with the month it entered (the contact month less its interview number
-plus one) and has to give back figures.json exactly: the route code's control. The stops are the sheet's other
-wrong paths, each scored as a route.
-
-The pair is the ask sheet's formula: 38 recommendation and components (the trigger, the change and the designated
-regions), 7 instruction following, 55 asks over the ten counts, a response off the call keeping r = 5 of the 38, and
-2 for a chart criterion either response may keep. Printed beside it on the same routes: the pair with the chart's five
-criteria and the CSV's two inside the 55 (each scored from the response's own change, since both follow the call
-through the methodology note's section 4), and each pair again if the device is found."""
-from __future__ import annotations
-
-import csv
+The cracker lands the call, reads every field by its plain meaning (the service date on a fee line, the item code or
+description against the scheme rules' list, the net amount beside the tax, the UTC mark on the plant log and the
+Eastern-time mark on the controller export, the alarm and reset events as written), executes every filed rule as worded
+and runs the hygiene battery: a credit is paired to the line or the booking it reverses where one line or one booking's
+lines equal it (the pairing of a header amount to its rows), and is otherwise taken where it was posted. The stops are
+the other complete pipelines a careful solver could file. The full includer reproduces figures.json or this script exits
+1. Run: python3 task453/generator/ceiling.py
+"""
 import datetime as dt
 import hashlib
 import json
 import os
-import re
-import shutil
 import sys
-import tempfile
-import zipfile
-from collections import defaultdict
+from zoneinfo import ZoneInfo
 
 import numpy as np
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import verify as V   # noqa: E402  (the bundle-only readers: both exports conformed, the release, the fit)
+import golden as G   # noqa: E402
+import world as W    # noqa: E402
 
-TASK = os.path.dirname(HERE)
-ACT = "regional_employment_support_act_2021_extract.pdf"
-RESP_BOOK = "lfs_response_rates_2025-2026.xlsx"
-GOLDEN_CSV = os.path.join(TASK, "golden", "regional_unemployment_redesigned_basis_2024-2026.csv")
-Q4 = ("2026-10", "2026-11", "2026-12")
-RESPONDING = ("Full response", "Partial response")
-OUT_OF_SCOPE = ("Vacant", "Derelict or demolished", "Not a private dwelling")
-REC, INS, ASK, OFF, CHART = 38.0, 7.0, 55.0, 5.0, 2.0      # the ask sheet's planning weights, r and chart allowance
-STOPS = {
-    "interviews counted (each responding contact)": "interviews",
-    "every dwelling counted, responding or not": "every dwelling",
-    "eligible dwellings counted": "eligible",
-    "full responses only": "full only",
-}
+TASK = os.environ.get("T453_ROOT", os.path.dirname(HERE))
+TARGET = os.path.join(TASK, "target")
+ET = ZoneInfo(W.TZ_NAME)
+# rubric weights (the shape's arithmetic): the call side, instruction-following and the two ask blocks
+W_CALL, W_FOLLOW, W_ASK_A, W_ASK_B = 38.0, 7.0, 27.5, 27.5
 
 
-def pack_dir(arg):
-    """The pack as a folder: target.zip unpacked into a scratch folder (removed after), or the folder given."""
-    src = arg or os.path.join(TASK, "target.zip")
-    if os.path.isdir(src):
-        files = sorted(os.listdir(src))
-        h = hashlib.sha256("".join(hashlib.sha256(open(os.path.join(src, f), "rb").read()).hexdigest()
-                                   for f in files).encode()).hexdigest()
-        return src, None, "folder %s (%d files, sha256 of the file digests %s)" % (src, len(files), h[:16])
-    tmp = tempfile.mkdtemp(prefix="ceiling453-")
-    with zipfile.ZipFile(src) as z:
-        z.extractall(tmp)
-    md5 = hashlib.md5(open(src, "rb").read()).hexdigest()
-    return tmp, tmp, "%s (%d files, md5 %s)" % (src, len(os.listdir(tmp)), md5)
+_CACHE = {}
 
 
-def label(ym):
-    return dt.date(int(ym[:4]), int(ym[5:7]), 1).strftime("%b-%Y")
+def _ledger(target):
+    if target not in _CACHE:
+        _CACHE[target] = (G.register(target)[2], G.ledger_lines(target))
+    return _CACHE[target]
 
 
-def trigger_in_force(folder):
-    """the Act's section 8, read from the extract"""
-    from pypdf import PdfReader
-    text = " ".join(" ".join((p.extract_text() or "").split()) for p in PdfReader(os.path.join(folder, ACT)).pages)
-    m = re.search(r"The trigger rate is (\d+\.\d) per cent", text)
-    if not m:
-        raise SystemExit("the Act's section 8 could not be read from %s" % ACT)
-    return float(m.group(1))
+def levy_route(target, adj_rule, by_posting=False):
+    """Every crematorium's 2026 levy under one handling of the ledgers. adj_rule says where an account credit no single
+    line or booking explains is taken: 'posted', 'month_before', 'ignore', 'year_before' or 'match' (the lines whose
+    amounts sum to it)."""
+    comm, L = _ledger(target)
+    ab = lambda code, d: comm.get(code) is not None and d > comm[code]
+    base = {}
 
-
-def restate(base, points):
-    return round(base + round(points + 1e-9, 1), 1)
-
-
-def arm_gap(cells):
-    """the default path: in each of July to November 2025 the rotation groups on the redesigned questionnaire against
-    those still on the previous one, the national rate of each, the five months averaged"""
-    gaps = []
-    for ym in ("2025-07", "2025-08", "2025-09", "2025-10", "2025-11"):
-        u = defaultdict(float)
-        l = defaultdict(float)
-        for (m, _, _, sysno), (uu, ll) in cells.items():
-            if m == ym:
-                u[sysno] += uu
-                l[sysno] += ll
-        gaps.append(100.0 * u[1] / l[1] - 100.0 * u[0] / l[0])
-    return float(np.mean(gaps))
-
-
-def averages_2026(regs, rates):
-    return np.mean([rates[label("2026-%02d" % m)] for m in range(1, 13)], axis=0)
-
-
-def designate(regs, avg, trigger):
-    return [regs[i] for i in range(len(regs)) if avg[i] >= trigger - 1e-9]
-
-
-def conformance(cells, regs, rates, nat):
-    """the cracker's conformance check: the cells both systems export, conformed, against the release's Table 1
-    (national rate) and Table 2 (regional rates)"""
-    by_mr, by_m = defaultdict(lambda: [0.0, 0.0]), defaultdict(lambda: [0.0, 0.0])
-    for (m, r, _, _), (u, l) in cells.items():
-        by_mr[(m, r)][0] += u
-        by_mr[(m, r)][1] += l
-        by_m[m][0] += u
-        by_m[m][1] += l
-    t2 = sum(abs(round(100.0 * u / l, 1) - rates[label(m)][regs.index(r)]) < 1e-9 for (m, r), (u, l) in by_mr.items())
-    t1 = sum(abs(round(100.0 * u / l, 1) - nat[label(m)]) < 1e-9 for m, (u, l) in by_m.items())
-    return t1, len(by_m), t2, len(by_mr)
-
-
-def load_fieldwork(folder):
-    import pyarrow.parquet as pq
-    fw = pq.read_table(os.path.join(folder, V.FIELD)).to_pydict()     # the verifier's own read
-    with open(os.path.join(folder, V.PSU), newline="") as fh:
-        lk = list(csv.DictReader(fh))
-    return fw, lk
-
-
-def battery(folder, fw, lk):
-    """the hygiene battery a careful analyst runs on the fieldwork log before counting: each line is (check, passed,
-    detail)"""
-    rows = list(zip(*[fw[c] for c in fw]))
-    out = []
-    out.append(("exact duplicate rows", len(rows) == len(set(rows)), "%d dropped" % (len(rows) - len(set(rows)))))
-    keys = list(zip(fw["contact_month"], fw["dwelling_ref"]))
-    out.append(("one row per reference and contact month", len(keys) == len(set(keys)), "%d rows" % len(keys)))
-    built = sum(ref == "%s%s%02d" % (p, g, int(n)) for ref, p, g, n in
-                zip(fw["dwelling_ref"], fw["psu"], fw["rotation_group"], fw["line"]))
-    out.append(("each reference built from its unit, group and line", built == len(keys), "%d of %d" % (built, len(keys))))
-    units = defaultdict(set)
-    for r in lk:
-        units[r["psu"]].add(r["region_2025"])
-    out.append(("every unit in the lookup, one region each", set(fw["psu"]) <= set(units) and
-                all(len(v) == 1 for v in units.values()), "%d units" % len(units)))
-    pairs = set(zip(fw["outcome"], fw["outcome_desc"]))
-    out.append(("one label per outcome code", len(pairs) == len({c for c, _ in pairs}) == len({d for _, d in pairs}),
-                "%d codes" % len(pairs)))
-    # counts that tie: Survey Operations' monthly response rates against the log, region by region
-    from openpyxl import load_workbook
-    ws = load_workbook(os.path.join(folder, RESP_BOOK), read_only=True, data_only=True).worksheets[0]
-    head = next(ws.iter_rows(min_row=4, max_row=4, values_only=True))
-    names = {r["region_name"]: r["region_2025"] for r in lk}
-    book = {}
-    for row in ws.iter_rows(min_row=5, values_only=True):
-        if row[0] in Q4:
-            for h, v in zip(head[1:], row[1:]):
-                if h in names:
-                    book[(row[0], names[h])] = float(v)
-    reg_of = {r["psu"]: r["region_2025"] for r in lk}
-    el, rs = defaultdict(int), defaultdict(int)
-    for m, p, d in zip(fw["contact_month"], fw["psu"], fw["outcome_desc"]):
-        if m in Q4 and d not in OUT_OF_SCOPE:
-            el[(m, reg_of[p])] += 1
-            rs[(m, reg_of[p])] += d in RESPONDING
-    tie = sum(abs(round(100.0 * rs[k] / el[k], 1) - book[k]) < 1e-9 for k in book)
-    out.append(("the log ties to Survey Operations' response rates, October to December 2026", tie == len(book) == 27,
-                "%d of %d region-months (a month holds one dwelling per reference, so the tie confirms no count)"
-                % (tie, len(book))))
+    def add(code, d, cents):
+        if d.year == W.YEAR:
+            k = (code, ab(code, d))
+            base[k] = base.get(k, 0) + cents
+    inv = L[L.doc == "INV"]
+    for i, r in enumerate(inv.itertuples()):
+        if r.fee:
+            d = dt.date.fromisoformat(r.posted if by_posting else r.service)
+            add(r.code, d, r.cents)
+    by_cust = {}
+    for r in inv.itertuples():
+        by_cust.setdefault((r.ledger, r.cust), []).append(r)
+    books = {}
+    for r in inv.itertuples():
+        books.setdefault((r.ledger, r.ref), []).append(r)
+    for r in L[L.doc == "CRN"].itertuples():
+        if not r.adj:
+            if r.fee:
+                add(r.code, dt.date.fromisoformat(r.posted if by_posting else r.service), r.cents)
+            continue
+        posted = dt.date.fromisoformat(r.posted)
+        amt = -r.cents
+        if adj_rule == "match":
+            win = [x for x in by_cust[(r.ledger, r.cust)] if x.service and
+                   0 <= (posted - dt.date.fromisoformat(x.service)).days <= 200]
+            g = {}
+            for x in win:
+                d = dt.date.fromisoformat(x.service)
+                sig = (x.code, d.year, ab(x.code, d), x.fee)
+                g[(x.cents, sig)] = g.get((x.cents, sig), 0) + 1
+            eff = G._effects(amt, [(a, s, c) for (a, s), c in g.items()], 4)
+            if len(eff) != 1:
+                raise SystemExit("an account credit the lines do not settle: %s %s %s" % (r.ledger, r.cust, r.posted))
+            (e,) = eff
+            for (code, y, abt, fee), cts in e:
+                if fee and y == W.YEAR:
+                    k = (code, abt)
+                    base[k] = base.get(k, 0) - cts
+            continue
+        # the battery: one line of the account, or one booking's lines, equal to the credit
+        single = [x for x in by_cust[(r.ledger, r.cust)] if x.cents == amt and x.service and
+                  0 <= (posted - dt.date.fromisoformat(x.service)).days <= 200]
+        if single:
+            x = single[-1]
+            if x.fee:
+                add(x.code, dt.date.fromisoformat(x.service), -amt)
+            continue
+        whole = []
+        for ref in {x.ref for x in by_cust[(r.ledger, r.cust)] if x.ref}:
+            rows = books[(r.ledger, ref)]
+            if sum(x.cents for x in rows) == amt or sum(x.cents for x in rows if x.fee) == amt:
+                whole.append(rows)
+        if whole:
+            for x in whole[-1]:
+                if x.fee:
+                    add(x.code, dt.date.fromisoformat(x.service), -x.cents)
+            continue
+        if adj_rule == "posted":
+            add(r.code, posted, -amt)
+        elif adj_rule == "month_before":
+            add(r.code, posted.replace(day=1) - dt.timedelta(days=1), -amt)
+        elif adj_rule == "year_before":
+            add(r.code, dt.date(posted.year - 1, 12, 15) if posted.month in (1, 2) else posted, -amt)
+        elif adj_rule == "ignore":
+            pass
+    out = {}
+    for c in W.CREMATORIA:
+        un, abt = base.get((c[0], False), 0), base.get((c[0], True), 0)
+        out[c[0]] = int(np.floor((un * W.LEVY_UNABATED + abt * W.LEVY_ABATED) / 100 + 0.5))
     return out
 
 
-def ask_a(fw, lk, how):
-    """the ten figures a route gives, by region code and in all"""
-    reg_of = {r["psu"]: r["region_2025"] for r in lk}
-    seen = set()
-    for m, ref, k, d, p in zip(fw["contact_month"], fw["dwelling_ref"], fw["interview_no"], fw["outcome_desc"], fw["psu"]):
-        if m not in Q4:
-            continue
-        entered = V.month_index(m) - int(k) + 1
-        r = reg_of[p]
-        if how == "reference":                     # the natural read: a dwelling is its dwelling_ref
-            if d in RESPONDING:
-                seen.add((ref, r))
-        elif how == "entry":                       # the full includer: the reference with the month it entered
-            if d in RESPONDING:
-                seen.add((ref, entered, r))
-        elif how == "interviews":
-            if d in RESPONDING:
-                seen.add((ref, m, r))
-        elif how == "every dwelling":
-            seen.add((ref, entered, r))
-        elif how == "eligible":
-            if d not in OUT_OF_SCOPE:
-                seen.add((ref, entered, r))
-        elif how == "full only":
-            if d == "Full response":
-                seen.add((ref, entered, r))
+def bypass_route(target, mode):
+    """Each abated crematorium's cremations under way while its plant was bypassed, by quarter, under one reading of
+    the plant log. mode: 'manual' (the bypass events as logged), 'alarms_clear' (every differential-pressure alarm from
+    the alarm to its clearing, with the manual bypasses), 'late_clear' (alarms cleared after five minutes, to the
+    clearing), 'reset' (the full includer: alarms not cleared within five minutes, to the reset), 'utc_as_local' (the
+    full includer reading the UTC log as local time), 'count_events' (bypass episodes rather than cremations)."""
+    comm = G.register(target)[2]
+    pl = pd.read_parquet(os.path.join(target, W.FILES["plant"]))
+    ev = pl[pl.record == "EVENT"].sort_values(["fund_code", "logged_utc"])
+    cy = pd.read_csv(os.path.join(target, W.FILES["cycles"]), dtype={"fund_code": str})
+    cy = cy[cy.cycle_type == "CREMATION"]
+    out = {}
+    for code, g in ev.groupby("fund_code"):
+        rows = list(g.itertuples())
+        iv = []
+        for i, r in enumerate(rows):
+            if r.event == "MANUAL BYPASS ON":
+                off = next(x for x in rows[i + 1:] if x.event == "MANUAL BYPASS OFF")
+                iv.append((r.logged_utc, off.logged_utc))
+            if r.event == "ALARM" and r.detail.startswith("DP HIGH"):
+                clr = next(x for x in rows[i + 1:] if x.event == "ALARM CLEARED" and x.detail == "DP HIGH")
+                late = (clr.logged_utc - r.logged_utc) > pd.Timedelta(minutes=5)
+                if mode == "alarms_clear" or (mode == "late_clear" and late):
+                    iv.append((r.logged_utc, clr.logged_utc))
+                if mode in ("reset", "utc_as_local", "count_events") and late:
+                    rst = next(x for x in rows[i + 1:] if x.event == "PLANT RESET")
+                    iv.append((r.logged_utc + pd.Timedelta(minutes=5), rst.logged_utc))
+        c = cy[cy.fund_code == code]
+        if mode == "utc_as_local":
+            s = pd.to_datetime(c.charge_et).dt.tz_localize("UTC")
+            e = pd.to_datetime(c.end_et).dt.tz_localize("UTC")
         else:
-            raise ValueError(how)
-    by = defaultdict(int)
-    for key in seen:
-        by[key[-1]] += 1
-    by["all"] = len(seen)
-    return dict(by)
+            s = pd.to_datetime(c.charge_et).dt.tz_localize(ET).dt.tz_convert("UTC")
+            e = pd.to_datetime(c.end_et).dt.tz_localize(ET).dt.tz_convert("UTC")
+        q = pd.to_datetime(c.charge_et).dt.quarter.values
+        first_q = 1 if comm[code].year < W.YEAR else (comm[code].month - 1) // 3 + 1
+        if mode == "count_events":
+            qs = [pd.Timestamp(b0).tz_convert(ET).quarter for b0, b1 in iv]
+            out[code] = {"Q%d" % k: int(sum(1 for x in qs if x == k)) for k in range(first_q, 5)}
+            continue
+        hit = np.zeros(len(c), bool)
+        for b0, b1 in iv:
+            hit |= ((s <= b1) & (e >= b0)).values
+        out[code] = {"Q%d" % k: int(hit[q == k].sum()) for k in range(first_q, 5)}
+    return out
 
 
-def call_tied(change, trigger, golden, regs, rates, nat):
-    """the chart's five criteria and the CSV's two (the design note's shape), for a response whose change is `change`
-    and whose trigger is `trigger`, each built on the methodology note's section 4 from the response's own change:
-    months before July 2025 the published rate plus the change, from July 2025 as published"""
-    months = ["%d-%02d" % (y, m) for y in (2024, 2025, 2026) for m in range(1, 13)]
-    d = round(change + 1e-9, 1)
-    gd = golden["change_points"]
-    with open(GOLDEN_CSV, newline="") as fh:
-        gcsv = {(r["month"], r["region"]): float(r["redesigned_basis_rate"]) for r in csv.DictReader(fh)}
-    rows_ok = sum(abs(round(rates[label(ym)][i] + (d if ym < "2025-07" else 0.0), 1) - gcsv[(ym, c)]) < 1e-9
-                  for ym in months for i, c in enumerate(regs))
-    series_ok = sum(abs(round(nat[label(ym)] + (d if ym < "2025-07" else 0.0), 1) -
-                        round(nat[label(ym)] + (gd if ym < "2025-07" else 0.0), 1)) < 1e-9 for ym in months)
-    crit = {
-        "chart: the national rate as published, January 2024 to December 2026": True,
-        "chart: the national rate on the redesigned basis": series_ok == len(months),
-        "chart: July to November 2025 shaded as both questionnaires in the field": True,
-        "chart: the old and the restated trigger at their values": trigger == golden["restated_trigger_pct"],
-        "chart: a title stating the change": d == gd,
-        "CSV: every month, January 2024 to December 2026": True,
-        "CSV: every region": True,
+def kept_a(route, gold):
+    return sum(1 for k in gold if route[k] == gold[k]) / len(gold)
+
+
+def kept_b(route, gold):
+    cells = [(c, q) for c in gold for q in gold[c]]
+    return sum(1 for c, q in cells if route.get(c, {}).get(q) == gold[c][q]) / len(cells)
+
+
+def main():
+    fig = json.load(open(os.path.join(TASK, "generator", "figures.json")))
+    digest = hashlib.sha256(b"".join(open(os.path.join(TARGET, f), "rb").read() for f in sorted(os.listdir(TARGET))))
+    print("ceiling measured on the cut pack (sha256 %s)" % digest.hexdigest()[:16])
+    gold_a, gold_b = fig["levy"], fig["bypass"]
+    routes_a = {
+        "full includer: account credits matched to the lines they sum to": levy_route(TARGET, "match"),
+        "cracker: battery pairing, else the posting date": levy_route(TARGET, "posted"),
+        "stop: account credits to the month before posting": levy_route(TARGET, "month_before"),
+        "stop: account credits left out": levy_route(TARGET, "ignore"),
+        "stop: Jan and Feb account credits to the year before": levy_route(TARGET, "year_before"),
+        "stop: every line and credit by its posting date": levy_route(TARGET, "posted", by_posting=True),
     }
-    return crit, rows_ok, len(gcsv), series_ok, len(months)
-
-
-def pair_sheet(kc, km, n):
-    c, s = REC + INS + ASK * kc / n, OFF + INS + ASK * km / n
-    return c, s, (c + s) / 2.0 + CHART
-
-
-def pair_wide(kc, km, n):
-    c, s = REC + INS + ASK * kc / n, OFF + INS + ASK * km / n
-    return c, s, (c + s) / 2.0
-
-
-def fmt(by, names, gold=None):
-    return "; ".join("%s %s%s" % (names.get(k, k), "{:,}".format(by.get(k, 0)),
-                                  " (%s)" % "{:,}".format(gold[names.get(k, k)]) if gold else "")
-                     for k in sorted(names) + ["all"])
-
-
-def main(arg=None):
-    folder, scratch, stamp = pack_dir(arg)
-    try:
-        return run(folder, stamp)
-    finally:
-        if scratch:
-            shutil.rmtree(scratch)
-
-
-def run(folder, stamp):
-    print("pack: " + stamp)
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    gold = figs["q4_responding_dwellings"]
-    fw, lk = load_fieldwork(folder)
-    names = {r["region_2025"]: r["region_name"] for r in lk}
-    n = len(names) + 1
-
-    # the calls
-    base = trigger_in_force(folder)
-    cells = V.read_cells(folder)
-    regs, rates, nat = V.read_release(folder)
-    t1, n1, t2, n2 = conformance(cells, regs, rates, nat)
-    print("cracker's conformance: the cells reproduce Table 1's national rate in %d of %d months and Table 2's "
-          "regional rates in %d of %d" % (t1, n1, t2, n2))
-    avg = averages_2026(regs, rates)
-    change = float(V.fit_effects(cells).mean())
-    c_trig = restate(base, change)
-    c_des = [names[c] for c in designate(regs, avg, c_trig)]
-    gap = arm_gap(cells)
-    m_trig = restate(base, gap)
-    m_des = [names[c] for c in designate(regs, avg, m_trig)]
-    on_call = c_trig == figs["restated_trigger_pct"] and round(change + 1e-9, 1) == figs["change_points"] and \
-        c_des == figs["designated"]
-    off_call = m_trig != figs["restated_trigger_pct"] and m_des != figs["designated"]
-    print("cracker's call: change %+.4f (%+.1f), trigger %.1f per cent, designates %s (%s)" % (
-        change, round(change + 1e-9, 1), c_trig, ", ".join(c_des), "lands the golden" if on_call else "MISSES"))
-    print("mirror's call (the default path, the arm gap %+.2f): trigger %.1f per cent, designates %s (%s)" % (
-        gap, m_trig, ", ".join(m_des), "off the call" if off_call else "ON THE CALL"))
-    if not (on_call and off_call and t1 == n1 and t2 == n2):
-        print("the rows below assume the cracker on the call and the mirror off it: they are not")
-        return 1
-
-    # the ask
-    print("\nthe cracker's hygiene battery on the fieldwork log:")
-    bat = battery(folder, fw, lk)
-    for check, passed, detail in bat:
-        print("  %-4s %s (%s)" % ("ok" if passed else "FAIL", check, detail))
-    if not all(p for _, p, _ in bat):
-        print("the battery fails on the cut pack: the routes below are not the cracker's")
-        return 1
-    full = ask_a(fw, lk, "entry")
-    kf = sum(full.get(k, 0) == gold[names.get(k, k)] for k in list(names) + ["all"])
-    if kf != n:
-        print("CONTROL FAILED: the full includer gives %d of %d, the route code does not reproduce figures.json" % (kf, n))
-        return 1
-    crk = ask_a(fw, lk, "reference")
-    mir = ask_a(fw, lk, "reference")
-    kept = lambda by: sum(by.get(k, 0) == gold[names.get(k, k)] for k in list(names) + ["all"])
-    kc, km = kept(crk), kept(mir)
-    print("\nAsk A, responding dwellings October to December 2026 (figures.json in brackets):")
-    print("  cracker, a dwelling is its dwelling_ref: " + fmt(crk, names, gold))
-    print("  mirror, the same natural read without the battery: " + fmt(mir, names))
-    print("  full includer (control), a dwelling is its reference with its entry month: " + fmt(full, names))
-    print("\nper route, figures kept of %d:" % n)
-    print("  %-62s %d" % ("cracker (natural read, battery run, every filed rule)", kc))
-    print("  %-62s %d" % ("mirror (natural read, off the call)", km))
-    for nm, how in STOPS.items():
-        by = ask_a(fw, lk, how)
-        print("  %-62s %d  (all %s)" % ("stop: " + nm, kept(by), "{:,}".format(by["all"])))
-    print("  %-62s %d  (control, figures.json reproduced)" % ("full includer", kf))
-
-    # the deliverable criteria that follow the call
-    cc, crows, nrows, cser, nser = call_tied(change, c_trig, figs, regs, rates, nat)
-    mc, mrows, _, mser, _ = call_tied(gap, m_trig, figs, regs, rates, nat)
-    kcc, kmc = sum(cc.values()), sum(mc.values())
-    print("\nthe chart's and the CSV's criteria, each response from its own change (they follow the call):")
-    for k in cc:
-        print("  %-74s cracker %-4s mirror %s" % (k, "yes" if cc[k] else "no", "yes" if mc[k] else "no"))
-    print("  CSV rows on the golden at one decimal: cracker %d of %d, mirror %d of %d; chart months on the redesigned "
-          "basis: cracker %d of %d, mirror %d of %d" % (crows, nrows, mrows, nrows, cser, nser, mser, nser))
-
-    # the pair
-    c, s, p = pair_sheet(kc, km, n)
-    print("\nthe sheet's formula (38, 7, 55 over the %d counts; r = 5; plus 2 for a chart criterion either response "
-          "may keep): cracker %.1f, mirror %.1f, pair %.1f" % (n, c, s, p))
-    print("  if the cracker finds the reused reference (keeps all %d): pair %.1f" % (n, pair_sheet(n, km, n)[2]))
-    print("  if the mirror finds it: pair %.1f" % pair_sheet(kc, n, n)[2])
-    w = n + len(cc)
-    c2, s2, p2 = pair_wide(kc + kcc, km + kmc, w)
-    print("with the chart's %d criteria and the CSV's %d inside the 55 (%d ask criteria): cracker keeps %d, mirror %d; "
-          "cracker %.1f, mirror %.1f, pair %.1f" % (
-              sum(1 for k in cc if k.startswith("chart")), sum(1 for k in cc if k.startswith("CSV")), w,
-              kc + kcc, km + kmc, c2, s2, p2))
-    print("  if the cracker also finds the reused reference: pair %.1f" % pair_wide(n + kcc, km + kmc, w)[2])
-    print("\nCracker keeps: %d of %d ask figures" % (kc, n))
-    print("Mirror leakage: %.1f per cent of ask weight (%.1f with the chart and the CSV inside it)" % (
-        100.0 * km / n, 100.0 * (km + kmc) / w))
-    print("Pair ceiling: %.1f (the sheet's formula on the measured keeps)" % p)
-    return 0
+    routes_b = {
+        "full includer: alarms not cleared in five minutes, to the reset": bypass_route(TARGET, "reset"),
+        "cracker: the bypass events as logged": bypass_route(TARGET, "manual"),
+        "stop: every differential-pressure alarm to its clearing": bypass_route(TARGET, "alarms_clear"),
+        "stop: late-cleared alarms to their clearing": bypass_route(TARGET, "late_clear"),
+        "stop: the log's UTC read as local time": bypass_route(TARGET, "utc_as_local"),
+        "stop: bypass episodes counted, not cremations": bypass_route(TARGET, "count_events"),
+    }
+    ok = True
+    print("\nAsk A, each crematorium's 2026 levy (20 figures, nearest dollar): share of figures kept, and the smallest miss")
+    for name, r in routes_a.items():
+        miss = min(abs(r[k] - gold_a[k]) for k in gold_a if r[k] != gold_a[k]) if kept_a(r, gold_a) < 1 else 0
+        print("  %-62s kept %5.1f%%  smallest miss %s" % (name, 100 * kept_a(r, gold_a), miss))
+    if routes_a["full includer: account credits matched to the lines they sum to"] != gold_a:
+        print("FULL INCLUDER DOES NOT REPRODUCE figures.json (Ask A)")
+        ok = False
+    print("\nAsk B, cremations under way while bypassed, each abated crematorium and quarter (24 cells): share kept")
+    for name, r in routes_b.items():
+        print("  %-62s kept %5.1f%%" % (name, 100 * kept_b(r, gold_b)))
+    if routes_b["full includer: alarms not cleared in five minutes, to the reset"] != gold_b:
+        print("FULL INCLUDER DOES NOT REPRODUCE figures.json (Ask B)")
+        ok = False
+    ca = routes_a["cracker: battery pairing, else the posting date"]
+    cb = routes_b["cracker: the bypass events as logged"]
+    ka, kb = kept_a(ca, gold_a), kept_b(cb, gold_b)
+    best_a = max(kept_a(r, gold_a) for n, r in routes_a.items() if not n.startswith("full"))
+    best_b = max(kept_b(r, gold_b) for n, r in routes_b.items() if not n.startswith("full"))
+    cracker = W_CALL + W_FOLLOW + W_ASK_A * ka + W_ASK_B * kb
+    # the mirror stops at the call's most attractive wrong rung (the survey's age profile at age at death): it keeps
+    # the verdict and the instruction weight, misses the designations, and runs the same ask routes as the cracker
+    mirror = 0.30 * W_CALL + W_FOLLOW + W_ASK_A * ka + W_ASK_B * kb
+    best_careful = W_CALL + W_FOLLOW + W_ASK_A * best_a + W_ASK_B * best_b
+    print("\nPair arithmetic (call %.0f, instructions %.0f, Ask A %.1f, Ask B %.1f):" % (W_CALL, W_FOLLOW, W_ASK_A, W_ASK_B))
+    print("  cracker on the call            %.1f  (asks kept: A %.0f%%, B %.0f%%)" % (cracker, 100 * ka, 100 * kb))
+    print("  mirror off the call            %.1f" % mirror)
+    print("  pair (cracker, mirror)         %.1f" % ((cracker + mirror) / 2))
+    print("  two careful responses on call  %.1f each at most (the best stop on each ask)" % best_careful)
+    if (cracker + mirror) / 2 > 60 or best_careful >= 70:
+        ok = False
+        print("PAIR OVER THE BAR")
+    if ka > 0 or kb > 0:
+        ok = False
+        print("THE CRACKER KEEPS AN ASK FIGURE")
+    print("\n%s" % ("ceiling OK" if ok else "ceiling FAILED"))
+    return ok
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else None))
+    sys.exit(0 if main() else 1)

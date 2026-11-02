@@ -1,51 +1,318 @@
 {
- "trigger_in_force_pct": 6.0,
- "restated_trigger_pct": 6.5,
- "change_points": 0.5,
- "change_points_unrounded": 0.4848,
- "designated": [
-  "Eastern Ranges",
-  "Western Coast",
-  "River Delta",
-  "Highlands"
- ],
- "not_designated": [
-  "Capital",
-  "Harbour",
-  "North Coast",
-  "Inland Plains",
-  "Southern Valleys"
- ],
- "average_2026": {
-  "Capital": 4.32,
-  "Harbour": 5.38,
-  "North Coast": 6.44,
-  "Inland Plains": 6.21,
-  "Eastern Ranges": 6.58,
-  "Southern Valleys": 4.9,
-  "Western Coast": 6.64,
-  "River Delta": 7.44,
-  "Highlands": 8.32
+ "account_credits_matched": 261,
+ "bypass": {
+  "CM-0417": {
+   "Q1": 16,
+   "Q2": 15,
+   "Q3": 12,
+   "Q4": 17
+  },
+  "CM-0659": {
+   "Q1": 11,
+   "Q2": 7,
+   "Q3": 7,
+   "Q4": 12
+  },
+  "CM-0738": {
+   "Q1": 10,
+   "Q2": 4,
+   "Q3": 7,
+   "Q4": 12
+  },
+  "CM-1182": {
+   "Q1": 15,
+   "Q2": 11,
+   "Q3": 8,
+   "Q4": 14
+  },
+  "CM-1590": {
+   "Q3": 6,
+   "Q4": 6
+  },
+  "CM-2034": {
+   "Q1": 3,
+   "Q2": 4,
+   "Q3": 6,
+   "Q4": 11
+  },
+  "CM-2251": {
+   "Q3": 2,
+   "Q4": 4
+  }
  },
- "q4_responding_dwellings": {
-  "Capital": 14827,
-  "Harbour": 11749,
-  "North Coast": 9532,
-  "Inland Plains": 10842,
-  "Eastern Ranges": 7981,
-  "Southern Valleys": 9007,
-  "Western Coast": 7532,
-  "River Delta": 10008,
-  "Highlands": 6562,
-  "all": 88040
+ "call": {
+  "cremations_2026": 29294,
+  "designated": [
+   "Ashgrove Cremation Centre",
+   "Tallis Creek Crematorium"
+  ],
+  "designated_codes": [
+   "CM-1347",
+   "CM-0372"
+  ],
+  "mercury_kg_total": 54.35,
+  "met": false,
+  "order": [
+   "Ashgrove Cremation Centre",
+   "Tallis Creek Crematorium",
+   "Corbett Narrows Crematorium",
+   "Dunmore Falls Memorial Gardens",
+   "Kestrel Lake Crematory",
+   "Bellhaven Crematorium",
+   "Port Alder Crematorium",
+   "Sorrel Bay Crematorium",
+   "Wynford Crematorium",
+   "Brackenridge Cremation Services",
+   "Ravensmoor Crematorium",
+   "Elderton Memorial Crematorium",
+   "Glenmora Crematorium"
+  ],
+  "share_pct": 44.87,
+  "share_pct_whole": 45,
+  "steps_pct": [
+   44.87,
+   52.14,
+   58.93
+  ]
  },
- "csv_rows": 324,
- "arm_gap_points": 1.2,
- "arm_gap_trigger_pct": 7.2,
- "single_effect_triggers_pct": [
-  6.3,
-  6.4
- ],
- "first_interview_excess_points": 1.3,
- "north_coast_shortfall_points": 0.06
+ "fee_income": {
+  "CM-0283": [
+   763488.07,
+   0.0
+  ],
+  "CM-0372": [
+   1629415.87,
+   0.0
+  ],
+  "CM-0417": [
+   0.0,
+   3860508.22
+  ],
+  "CM-0514": [
+   1135761.44,
+   0.0
+  ],
+  "CM-0659": [
+   0.0,
+   3304458.03
+  ],
+  "CM-0738": [
+   0.0,
+   2423612.59
+  ],
+  "CM-0896": [
+   2736234.64,
+   0.0
+  ],
+  "CM-0941": [
+   492496.7,
+   0.0
+  ],
+  "CM-1182": [
+   0.0,
+   3731507.38
+  ],
+  "CM-1347": [
+   1598478.31,
+   0.0
+  ],
+  "CM-1471": [
+   570523.29,
+   0.0
+  ],
+  "CM-1590": [
+   849021.25,
+   813450.52
+  ],
+  "CM-1633": [
+   398351.78,
+   0.0
+  ],
+  "CM-1768": [
+   1022943.5,
+   0.0
+  ],
+  "CM-1925": [
+   1366687.27,
+   0.0
+  ],
+  "CM-2034": [
+   0.0,
+   2599834.49
+  ],
+  "CM-2087": [
+   535928.9,
+   0.0
+  ],
+  "CM-2163": [
+   931029.11,
+   0.0
+  ],
+  "CM-2251": [
+   1051734.13,
+   448468.07
+  ],
+  "CM-2409": [
+   851376.07,
+   0.0
+  ]
+ },
+ "filed": {
+  "factor_g_per_tooth": 0.55,
+  "levy_rates_pct": [
+   4.5,
+   1.5
+  ],
+  "threshold_pct": 55.0
+ },
+ "levy": {
+  "CM-0283": 34357,
+  "CM-0372": 73324,
+  "CM-0417": 57908,
+  "CM-0514": 51109,
+  "CM-0659": 49567,
+  "CM-0738": 36354,
+  "CM-0896": 123131,
+  "CM-0941": 22162,
+  "CM-1182": 55973,
+  "CM-1347": 71932,
+  "CM-1471": 25674,
+  "CM-1590": 50408,
+  "CM-1633": 17926,
+  "CM-1768": 46032,
+  "CM-1925": 61501,
+  "CM-2034": 38998,
+  "CM-2087": 24117,
+  "CM-2163": 41896,
+  "CM-2251": 54055,
+  "CM-2409": 38312
+ },
+ "mercury_kg": {
+  "CM-0283": {
+   "abated": 0.0,
+   "cremations": 635,
+   "total": 1.403
+  },
+  "CM-0372": {
+   "abated": 0.0,
+   "cremations": 1332,
+   "total": 3.692
+  },
+  "CM-0417": {
+   "abated": 5.625,
+   "cremations": 3610,
+   "total": 5.625
+  },
+  "CM-0514": {
+   "abated": 0.0,
+   "cremations": 944,
+   "total": 2.066
+  },
+  "CM-0659": {
+   "abated": 4.139,
+   "cremations": 2783,
+   "total": 4.139
+  },
+  "CM-0738": {
+   "abated": 3.577,
+   "cremations": 2150,
+   "total": 3.577
+  },
+  "CM-0896": {
+   "abated": 0.0,
+   "cremations": 2460,
+   "total": 3.404
+  },
+  "CM-0941": {
+   "abated": 0.0,
+   "cremations": 411,
+   "total": 0.843
+  },
+  "CM-1182": {
+   "abated": 5.161,
+   "cremations": 3179,
+   "total": 5.161
+  },
+  "CM-1347": {
+   "abated": 0.0,
+   "cremations": 1520,
+   "total": 3.95
+  },
+  "CM-1471": {
+   "abated": 0.0,
+   "cremations": 547,
+   "total": 1.112
+  },
+  "CM-1590": {
+   "abated": 1.293,
+   "cremations": 1582,
+   "total": 2.687
+  },
+  "CM-1633": {
+   "abated": 0.0,
+   "cremations": 357,
+   "total": 0.798
+  },
+  "CM-1768": {
+   "abated": 0.0,
+   "cremations": 823,
+   "total": 1.9
+  },
+  "CM-1925": {
+   "abated": 0.0,
+   "cremations": 1130,
+   "total": 3.297
+  },
+  "CM-2034": {
+   "abated": 3.941,
+   "cremations": 2440,
+   "total": 3.941
+  },
+  "CM-2087": {
+   "abated": 0.0,
+   "cremations": 432,
+   "total": 0.971
+  },
+  "CM-2163": {
+   "abated": 0.0,
+   "cremations": 837,
+   "total": 1.989
+  },
+  "CM-2251": {
+   "abated": 0.655,
+   "cremations": 1371,
+   "total": 2.195
+  },
+  "CM-2409": {
+   "abated": 0.0,
+   "cremations": 751,
+   "total": 1.607
+  }
+ },
+ "routes": {
+  "age_profile_2016_at_death": {
+   "designated": [
+    "Tallis Creek Crematorium",
+    "Dunmore Falls Memorial Gardens"
+   ],
+   "share_pct": 41.83
+  },
+  "cohort_2016_mean_unaged": {
+   "designated": [
+    "Ashgrove Cremation Centre",
+    "Corbett Narrows Crematorium"
+   ],
+   "share_pct": 46.27
+  },
+  "count_of_cremations": {
+   "designated": [
+    "Corbett Narrows Crematorium"
+   ],
+   "share_pct": 52.31
+  }
+ },
+ "share_with_one_designated_pct": {
+  "Ashgrove Cremation Centre": 52.14,
+  "Tallis Creek Crematorium": 51.67
+ }
 }

@@ -1,119 +1,257 @@
-"""The golden deliverables, computed from the shipped bundle alone: the Government Statistician's determination
-(trigger_restatement_determination_2027.pdf) and the regional series on the redesigned basis
-(regional_unemployment_redesigned_basis_2024-2026.csv); and generator/figures.json, every figure the write-up states."""
+"""The golden deliverables of task453, computed from the pack in target/ (the survey's published cells are read from
+survey.tables, which the report PDFs print; verify.py reads them back off the PDFs):
+
+  designation_certificate_2026.pdf   the trustees' certificate: the 2026 share, the verdict, the designations, a chart
+  levy_and_bypass_2026.xlsx          each crematorium's 2026 levy, and each abated crematorium's bypassed cremations
+
+and generator/figures.json, every graded and supporting figure."""
+import datetime as dt
 import io
 import json
 import os
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
 
 import methods as M
-import pack as P
+import survey as S
 import world as W
 
-
-def read_cells(target):
-    """both exports conformed to one month x region x rotation group table of weighted unemployed and labour force,
-    regions on the 2025 classification"""
-    conc = pd.read_csv(os.path.join(target, P.FILES["conc"]), dtype=str)
-    to25 = dict(zip(conc["region_2019"], conc["region_2025"]))
-    old = pd.read_csv(os.path.join(target, P.FILES["old"]), dtype={"REF_MTH": str, "REGION": str})
-    old["month"] = old["REF_MTH"].str[:4] + "-" + old["REF_MTH"].str[4:]
-    old["region"] = np.where(old["month"] < "2025-01", old["REGION"].map(to25), old["REGION"])
-    piv = old.pivot_table(index=["month", "region", "ROTGRP"], columns="LFSTAT", values="WTD000", aggfunc="sum")
-    o = pd.DataFrame({"une": piv[2] * 1000.0, "lab": (piv[1] + piv[2]) * 1000.0}).reset_index()
-    o.columns = ["month", "region", "group", "une", "lab"]
-    new = pd.read_csv(os.path.join(target, P.FILES["new"]), dtype={"region": str})
-    n = new.groupby(["period", "region", "rotation_group"])[["unemployed", "employed"]].sum().reset_index()
-    n = pd.DataFrame({"month": n["period"], "region": n["region"], "group": n["rotation_group"],
-                      "une": n["unemployed"].astype(float), "lab": (n["unemployed"] + n["employed"]).astype(float)})
-    allc = pd.concat([o, n], ignore_index=True)
-    allc = allc.groupby(["month", "region", "group"])[["une", "lab"]].sum().reset_index()
-    une = np.zeros((W.T, W.R, 6))
-    lab = np.zeros((W.T, W.R, 6))
-    for row in allc.itertuples(index=False):
-        t, r, g = W.MONTHS.index(row.month), W.RCODE.index(row.region), W.GROUPS.index(row.group)
-        une[t, r, g] += row.une
-        lab[t, r, g] += row.lab
-    return une, lab
+ET = ZoneInfo(W.TZ_NAME)
+INCLUDED_H = {"BRV-CREM", "BRV-CRMC", "BRV-DIRC", "BRV-CHAP", "BRV-XTND", "BRV-ORGN", "BRV-WEBC", "BRV-MEMB",
+              "BRV-SCAT", "BRV-CERT"}
+INCLUDED_S = {"Cremation", "Cremation - child", "Direct cremation", "Chapel 40 min", "Chapel 40 min (child)",
+              "Chapel extension 20 min", "Organist", "Webcast & recording", "Memorial book entry", "Garden scattering",
+              "Certified copy - cremation certificate"}
+INCLUDED_F = {"CRM", "DCR", "CHP", "CHX", "ORG", "WEB", "BOR", "SCT", "CRT"}
+CODE_OF_SITE = {"HMC": "CM-0417", "OHC": "CM-0738"}
+CODE_OF_LOCATION = {"Fenwick Harbour": "CM-1182", "Stannard Bay": "CM-2034", "Port Alder": "CM-1768",
+                    "Sorrel Bay": "CM-2409"}
 
 
-def read_release(target):
-    x = pd.read_excel(os.path.join(target, P.FILES["release"]), sheet_name=None, header=None)
-    t1 = x["Table 1"].iloc[4:4 + W.T]
-    t2 = x["Table 2"].iloc[4:4 + W.T]
-    nat = t1.iloc[:, 4].astype(float).values
-    reg = t2.iloc[:, 1:1 + W.R].astype(float).values
-    return reg, nat
+def P(target, key):
+    return os.path.join(target, W.FILES[key])
 
 
-def read_fieldwork(target):
-    f = pd.read_parquet(os.path.join(target, P.FILES["field"]))
-    lk = pd.read_csv(os.path.join(target, P.FILES["psu"]), dtype=str)
-    psu_region = dict(zip(lk["psu"], lk["region_2025"]))
-    mi = {m: i for i, m in enumerate(W.MONTHS)}
-    f["in_sample_from"] = [W.MONTHS[mi[m] - int(k) + 1] for m, k in zip(f["contact_month"], f["interview_no"])]
-    rows = f.to_dict("records")
-    return rows, psu_region
+# ---------------------------------------------------------------- readers
+def register(target):
+    reg = pd.read_excel(P(target, "register"), sheet_name="Members", header=3, dtype={"fund_code": str})
+    fac = pd.read_excel(P(target, "register"), sheet_name="Agency facility numbers", dtype=str)
+    comm = {r.fund_code: (pd.Timestamp(r.abatement_commissioned).date() if pd.notna(r.abatement_commissioned) else None)
+            for r in reg.itertuples()}
+    return reg, fac, comm
 
 
-def compute(target):
-    une, lab = read_cells(target)
-    F = M.cells_from(une, lab)
-    G, eff = M.golden_break(F)
-    change = round(G + 1e-9, 1)
-    trigger = M.restated(G)
-    reg, nat = read_release(target)
-    avg = M.averages_2026(reg)
-    des = M.designated(avg, trigger)
-    breg, bnat, add = M.back_series(reg, nat, change)
-    rows, psu_region = read_fieldwork(target)
-    q4 = M.dwellings_q4(rows, psu_region)
-    return dict(G=G, eff=eff, change=change, trigger=trigger, reg=reg, nat=nat, avg=avg, designated=des,
-                breg=breg, bnat=bnat, add=add, q4=q4, F=F, rows=rows, psu_region=psu_region)
+def cremations_2026(target):
+    """The 2026 cremations: (fund code, age in completed years, sex, abated, date)."""
+    reg, fac, comm = register(target)
+    fmap = {}
+    for r in fac.itertuples():
+        fmap.setdefault(r.agency_facility_no, []).append((r.fund_code, r.valid_from, r.valid_to))
+    pm = pd.read_csv(P(target, "permits"), dtype=str)
+    pm = pm[pm.date_of_cremation.str.startswith("2026")]
+    out = []
+    for r in pm.itertuples():
+        d = dt.date.fromisoformat(r.date_of_cremation)
+        code = [c for c, f, t in fmap[r.crematorium_facility_no]
+                if dt.date.fromisoformat(f[:10]) <= d and (not isinstance(t, str) or d <= dt.date.fromisoformat(t[:10]))]
+        assert len(code) == 1
+        code = code[0]
+        age = int(r.age) if r.age_unit == "Y" else 0
+        out.append((code, age, r.sex, comm[code] is not None and d > comm[code], d))
+    return out
 
 
-def fmt(v, d=1):
-    return ("%.*f" % (d, v)).replace("-", "−")
+def call(target, tab=None, form=M.GOLDEN_FORM):
+    tab = tab if tab is not None else S.tables(W.SEED)
+    idx = {c[0]: i for i, c in enumerate(W.CREMATORIA)}
+    cre = [(idx[c], a, s, ab) for c, a, s, ab, d in cremations_2026(target)]
+    res = M.designate(cre, tab, form)
+    res["n"] = np.bincount([c[0] for c in cre], minlength=len(W.CREMATORIA))
+    res["n_ab"] = np.bincount([c[0] for c in cre if c[3]], minlength=len(W.CREMATORIA))
+    return res
 
 
-def chart_png(X):
+def ledger_lines(target):
+    """The three receivables files as one table: ledger, fund code, document type, posting date, customer, booking,
+    service date, whether the item is cremation fee income, account-adjustment flag and net amount in cents."""
+    out = []
+    h = pd.read_csv(P(target, "ar_halbrook"), dtype=str, keep_default_na=False)
+    for r in h.itertuples():
+        out.append(("halbrook", CODE_OF_SITE[r.site], r.doc_type, r.posting_date, "H" + r.customer_no, r.booking_ref,
+                    r.service_date, r.item_code in INCLUDED_H, r.item_code == "BRV-ADJ",
+                    int(round(float(r.net_amount) * 100))))
+    s = pd.read_excel(P(target, "ar_shoreline"), sheet_name="Receivables", dtype={"Case No.": str})
+    for r in s.itertuples(index=False):
+        loc, date, typ, no, cust, case, svc, prod, qty, rate, amt, tax = r
+        out.append(("shoreline", CODE_OF_LOCATION[loc], "INV" if typ == "Invoice" else "CRN",
+                    pd.Timestamp(date).date().isoformat(), "S" + cust, case if isinstance(case, str) else "",
+                    pd.Timestamp(svc).date().isoformat() if pd.notna(svc) else "", prod in INCLUDED_S,
+                    prod == "Credit - account", int(round(float(amt) * 100))))
+    f = pd.read_csv(P(target, "ar_members"), dtype=str, keep_default_na=False)
+    for r in f.itertuples():
+        posted = None
+        out.append((r.fund_code, r.fund_code, "INV" if r.record == "FEE" else "CRN", r.week_ending, r.fd_account,
+                    r.booking_ref, r.service_date, r.fee_code in INCLUDED_F, r.fee_code == "ADJ",
+                    int(round(float(r.amount_ex_tax) * 100))))
+    cols = ["ledger", "code", "doc", "posted", "cust", "ref", "service", "fee", "adj", "cents"]
+    return pd.DataFrame(out, columns=cols)
+
+
+def _effects(cents, groups, kmax):
+    groups = sorted(groups)
+    eff = set()
+
+    def rec(start, left, k, acc):
+        if left == 0:
+            tot = {}
+            for a, sig in acc:
+                tot[sig] = tot.get(sig, 0) + a
+            eff.add(tuple(sorted(tot.items())))
+            return
+        if k == 0:
+            return
+        for gi in range(start, len(groups)):
+            a, sig, cnt = groups[gi]
+            if a > left:
+                break
+            if sum(1 for x in acc if x == (a, sig)) >= cnt:
+                continue
+            rec(gi, left - a, k - 1, acc + [(a, sig)])
+    rec(0, cents, kmax, [])
+    return eff
+
+
+def levies(target, comm=None):
+    """Each crematorium's 2026 levy: fee income for 2026 cremations at the rate their abatement status sets, net of
+    credits allowed against those fees. A credit on a booking takes its booking's service date; a credit posted to a
+    funeral director's account with no booking takes the service dates of the lines it reverses, the lines on that
+    account whose amounts sum to it."""
+    if comm is None:
+        comm = register(target)[2]
+    L = ledger_lines(target)
+    abated = lambda code, d: comm.get(code) is not None and d > comm[code]
+    base = {}
+    matched = []
+    inv = L[L.doc == "INV"]
+    for r in inv.itertuples():
+        if r.fee and r.service.startswith("2026"):
+            k = (r.code, abated(r.code, dt.date.fromisoformat(r.service)))
+            base[k] = base.get(k, 0) + r.cents
+    crn = L[L.doc == "CRN"]
+    by_cust = {}
+    for r in inv.itertuples():
+        by_cust.setdefault((r.ledger, r.cust), []).append(r)
+    for r in crn.itertuples():
+        if not r.adj:
+            if r.fee and r.service.startswith("2026"):
+                k = (r.code, abated(r.code, dt.date.fromisoformat(r.service)))
+                base[k] = base.get(k, 0) + r.cents                       # a credit's cents are negative
+            continue
+        posted = dt.date.fromisoformat(r.posted) if r.ledger != r.code else None
+        # members' returns carry the week ending, not the posting day: the window runs from the week's end
+        end = dt.date.fromisoformat(r.posted)
+        win = [x for x in by_cust[(r.ledger, r.cust)] if x.service and
+               0 <= (end - dt.date.fromisoformat(x.service)).days <= 200]
+        g = {}
+        for x in win:
+            d = dt.date.fromisoformat(x.service)
+            sig = (x.code, d.year, abated(x.code, d), x.fee)
+            g[(x.cents, sig)] = g.get((x.cents, sig), 0) + 1
+        eff = _effects(-r.cents, [(a, s, c) for (a, s), c in g.items()], 4)
+        assert len(eff) == 1, (r.ledger, r.cust, r.posted, r.cents, eff)
+        (e,) = eff
+        matched.append((r.ledger, r.cust, r.posted, -r.cents, e))
+        for (code, y, ab, fee), cts in e:
+            if fee and y == 2026:
+                base[(code, ab)] = base.get((code, ab), 0) - cts
+    out = {}
+    for c in W.CREMATORIA:
+        un, ab = base.get((c[0], False), 0), base.get((c[0], True), 0)
+        out[c[0]] = {"income_unabated": un / 100, "income_abated": ab / 100,
+                     "levy": int(np.floor((un * W.LEVY_UNABATED + ab * W.LEVY_ABATED) / 100 + 0.5))}
+    return out, matched
+
+
+def quarter(d):
+    return (d.month - 1) // 3 + 1
+
+
+def bypass_intervals(target):
+    """Each abated crematorium's bypass intervals (UTC): a manual bypass from ON to OFF; a differential-pressure alarm
+    that is not cleared within five minutes opens the bypass damper, which stays open until the plant is reset."""
+    pl = pd.read_parquet(P(target, "plant"))
+    ev = pl[pl.record == "EVENT"].sort_values(["fund_code", "logged_utc"])
+    out = {}
+    for code, g in ev.groupby("fund_code"):
+        rows = list(g.itertuples())
+        iv = []
+        for i, r in enumerate(rows):
+            if r.event == "MANUAL BYPASS ON":
+                off = next(x for x in rows[i + 1:] if x.event == "MANUAL BYPASS OFF")
+                iv.append((r.logged_utc, off.logged_utc, "manual"))
+            if r.event == "ALARM" and r.detail.startswith("DP HIGH"):
+                clr = next(x for x in rows[i + 1:] if x.event == "ALARM CLEARED" and x.detail == "DP HIGH")
+                if (clr.logged_utc - r.logged_utc) > pd.Timedelta(minutes=5):
+                    rst = next(x for x in rows[i + 1:] if x.event == "PLANT RESET")
+                    iv.append((r.logged_utc + pd.Timedelta(minutes=5), rst.logged_utc, "alarm"))
+        out[code] = iv
+    return out, pl
+
+
+def bypassed(target, comm=None):
+    if comm is None:
+        comm = register(target)[2]
+    iv, pl = bypass_intervals(target)
+    cy = pd.read_csv(P(target, "cycles"), dtype={"fund_code": str})
+    cy = cy[cy.cycle_type == "CREMATION"]
+    out = {}
+    for code, ivs in sorted(iv.items()):
+        c = cy[cy.fund_code == code]
+        s_utc = pd.to_datetime(c.charge_et).dt.tz_localize(ET).dt.tz_convert("UTC")
+        e_utc = pd.to_datetime(c.end_et).dt.tz_localize(ET).dt.tz_convert("UTC")
+        hit = np.zeros(len(c), bool)
+        for b0, b1, kind in ivs:
+            hit |= ((s_utc <= b1) & (e_utc >= b0)).values
+        q = pd.to_datetime(c.charge_et).dt.quarter.values
+        cm = comm[code]
+        first_q = 1 if cm.year < W.YEAR else quarter(cm)
+        out[code] = {"Q%d" % k: int(hit[q == k].sum()) for k in range(first_q, 5)}
+    return out
+
+
+# ---------------------------------------------------------------- the certificate
+def _chart_png(res, des, order):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams["font.family"] = "DejaVu Sans"
-    k0 = W.MONTHS.index("2024-01")
-    xs = np.arange(W.T - k0)
-    pub = X["nat"][k0:]
-    red = X["bnat"][k0:]
-    fig, ax = plt.subplots(figsize=(7.0, 3.5), dpi=150)
-    p0, p1 = W.PHASE - k0, W.PHASE - k0 + 4
-    ax.axvspan(p0 - 0.5, p1 + 0.5, color="#e9eef3", lw=0)
-
-    ax.plot(xs, pub, color="#8a96a3", lw=1.6, label="As published")
-    ax.plot(xs, red, color="#0f4c5c", lw=2.0, label="On the redesigned basis")
-    ax.axhline(W.TRIGGER, color="#9a9a9a", lw=1.0, ls=":")
-    ax.axhline(X["trigger"], color="#b03a2e", lw=1.1, ls="--")
-    ax.text(len(xs) - 0.6, W.TRIGGER + 0.03, "trigger before restatement, 6.0%", ha="right", va="bottom", fontsize=7,
-            color="#6b6b6b")
-    ax.text(len(xs) - 0.6, X["trigger"] + 0.03, "restated trigger, %s%%" % fmt(X["trigger"]), ha="right", va="bottom",
-            fontsize=7, color="#b03a2e")
-    ticks = [i for i in range(len(xs)) if W.MONTHS[k0 + i][5:] in ("01", "07")]
-    ax.set_xticks(ticks)
-    ax.set_xticklabels([pd.Timestamp(W.MONTHS[k0 + i] + "-01").strftime("%b %Y") for i in ticks], fontsize=7.5)
-    ax.set_ylabel("Unemployment rate, original (%)", fontsize=8)
-    ax.tick_params(axis="y", labelsize=7.5)
-    lo = np.floor((min(pub.min(), red.min()) - 0.25) * 10) / 10
-    ax.set_ylim(lo, 6.75)
-    ax.text((p0 + p1) / 2.0, lo + 0.04, "both questionnaires\nin the field", ha="center", va="bottom", fontsize=7,
-            color="#4a5560")
-    ax.set_xlim(-0.6, len(xs) - 0.4)
-    for sp in ("top", "right"):
+    plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 7.6, "svg.hashsalt": "task453"})
+    names = [W.CREMATORIA[i][2] for i in range(len(W.CREMATORIA))]
+    hg, ab = res["hg"] / 1000.0, res["ab"] / 1000.0
+    idx = sorted(range(len(names)), key=lambda i: hg[i])
+    fig, ax = plt.subplots(figsize=(6.6, 4.9), dpi=200)
+    y = np.arange(len(idx))
+    a = np.array([ab[i] for i in idx])
+    u = np.array([hg[i] - ab[i] for i in idx])
+    ax.barh(y, a, height=0.62, color="#2a78d6", label="Released in abated cremations")
+    ax.barh(y, u, left=a + np.where(a > 0, 0.012, 0), height=0.62, color="#eb6834",
+            label="Released in cremations not abated")
+    ax.set_yticks(y)
+    ax.set_yticklabels([names[i] + ("  (designated)" if i in des else "") for i in idx])
+    for t, i in zip(ax.get_yticklabels(), idx):
+        if i in des:
+            t.set_fontweight("bold")
+    for k, i in enumerate(idx):
+        ax.text(hg[i] + 0.05, k, "%.1f" % hg[i], va="center", fontsize=6.8, color="#52514e")
+    ax.set_xlabel("Mercury released by cremation in 2026, kilograms")
+    ax.grid(axis="x", color="#e4e3df", linewidth=0.6)
+    ax.set_axisbelow(True)
+    for sp in ("top", "right", "left"):
         ax.spines[sp].set_visible(False)
-    ax.legend(loc="lower right", fontsize=7.5, frameon=False)
-    ax.set_title("The redesigned questionnaire puts the national rate %s points higher" % fmt(X["change"]),
-                 fontsize=9.5, loc="left")
+    ax.tick_params(axis="y", length=0)
+    ax.legend(loc="lower right", frameon=False, fontsize=7.0)
+    ax.set_xlim(0, max(hg) * 1.12)
     fig.tight_layout()
     buf = io.BytesIO()
     fig.savefig(buf, format="png", metadata={"Software": None})
@@ -121,7 +259,7 @@ def chart_png(X):
     return buf.getvalue()
 
 
-def write_pdf(X, path):
+def write_certificate(res, path):
     from reportlab import rl_config
     rl_config.invariant = 1
     from reportlab.lib import colors
@@ -130,151 +268,208 @@ def write_pdf(X, path):
     from reportlab.lib.units import mm
     from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
     import docs  # noqa: F401  (registers the fonts)
-    INK, GREY, TEAL = colors.HexColor("#1b1d20"), colors.HexColor("#5b6067"), colors.HexColor("#0f4c5c")
-    body = ParagraphStyle("b", fontName="LiberationSans", fontSize=9.6, leading=13.6, textColor=INK, spaceAfter=6)
-    h1 = ParagraphStyle("h1", fontName="LiberationSans-Bold", fontSize=14, leading=18, textColor=TEAL, spaceAfter=4)
-    sub = ParagraphStyle("s", fontName="LiberationSans", fontSize=9, leading=12.5, textColor=GREY, spaceAfter=10)
-    h2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.5, leading=14, textColor=TEAL,
-                        spaceBefore=8, spaceAfter=3)
-    cell = ParagraphStyle("c", fontName="LiberationSans", fontSize=8.6, leading=11, textColor=INK)
-    cellb = ParagraphStyle("cb", parent=cell, fontName="LiberationSans-Bold")
-    num = ParagraphStyle("num", parent=cell, alignment=2)
-    numb = ParagraphStyle("numb", parent=cellb, alignment=2)
-    note = ParagraphStyle("n", fontName="LiberationSans-Italic", fontSize=7.8, leading=10.5, textColor=GREY,
-                          spaceBefore=3, spaceAfter=8)
-
-    def frame(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("LiberationSans", 7.5)
-        canvas.setFillColor(GREY)
-        canvas.drawString(20 * mm, 12 * mm, "Determination 2027/1 under section 9 of the %s" % W.ACT)
-        canvas.drawRightString(A4[0] - 20 * mm, 12 * mm, "%d" % doc.page)
-        canvas.restoreState()
-
+    ink, grey = colors.HexColor("#1c1e21"), colors.HexColor("#5d6168")
+    body = ParagraphStyle("b", fontName="LiberationSans", fontSize=9.4, leading=13.2, textColor=ink, spaceAfter=6)
+    h1 = ParagraphStyle("h", fontName="LiberationSans-Bold", fontSize=14, leading=18, textColor=colors.HexColor("#2e5e3a"),
+                        spaceAfter=2)
+    sub = ParagraphStyle("s", fontName="LiberationSans", fontSize=9, leading=12, textColor=grey, spaceAfter=10)
+    h2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10, leading=13, textColor=ink, spaceBefore=6,
+                        spaceAfter=3)
+    des, order, steps = res["des"], res["order"], res["steps"]
+    names = lambda i: "%s (%s)" % (W.CREMATORIA[i][2], W.CREMATORIA[i][0])
+    share = res["share"]
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=20 * mm, title="Determination 2027/1: restated trigger rate",
-                            author=W.STATISTICIAN, subject="", creator="", producer="")
-    des = set(X["designated"])
-    names = ", ".join(W.RNAME[c] for c in X["designated"][:-1]) + " and " + W.RNAME[X["designated"][-1]]
-    s = [Paragraph("The trigger rate is restated at %s per cent" % fmt(X["trigger"]), h1),
-         Paragraph("Determination 2027/1 of the %s under section 9 of the %s. %s, 3 February 2027." %
-                   (W.STATISTICIAN, W.ACT, W.OFFICE), sub),
-         Paragraph("Determination", h2),
-         Paragraph("The %s moved to its redesigned questionnaire with the rotation groups replaced from July 2025, and "
-                   "every rotation group has answered it since December 2025. With the redesigned questionnaire in full "
-                   "use, the national unemployment rate the survey publishes is <b>%s percentage points higher</b> than "
-                   "the previous questionnaire would have published for the same months. Under section 9(2) the trigger "
-                   "rate of 6.0 per cent is restated at <b>%s per cent</b>, and it applies to the designation that "
-                   "takes effect on 1 April 2027 and to every later one." % (W.SURVEY, fmt(X["change"]), fmt(X["trigger"])),
-                   body),
-         Paragraph("On their twelve-month averages for 2026, every month of them measured on the redesigned "
-                   "questionnaire, four regions are at or above the restated trigger: %s." % names, body),
-         Paragraph("How the change was measured", h2),
-         Paragraph("From July to November 2025 the dwellings entering the sample answered the redesigned questionnaire "
-                   "while the dwellings already in it finished on the previous one, so in each of those months the two "
-                   "questionnaires were answered by dwellings at different interviews: the redesign by dwellings on "
-                   "their first few, the previous questionnaire by dwellings on their last. A first interview, conducted "
-                   "face to face, has always found more people looking for work than the telephone interviews after it. "
-                   "The change was therefore read interview by interview: each interview number on the redesigned "
-                   "questionnaire against the same interview number on the previous questionnaire in the months before "
-                   "July 2025, month and region held fixed. The redesign lowers the rate at a first interview and raises "
-                   "it at the second to sixth, where dependent interviewing applies, and the change in the published "
-                   "rate is the average of the six interview effects, as the published estimate averages the six "
-                   "rotation groups.", body),
-         Image(io.BytesIO(chart_png(X)), width=170 * mm, height=85 * mm),
-         Paragraph("Months before July 2025 restated by the change as determined; July to November 2025, with both "
-                   "questionnaires in the field, as published. Source: %s estimation cells (CAI 2014 and ICS) and the "
-                   "December 2026 release." % W.SURVEY, note),
-         PageBreak(), Paragraph("Regions designated for 2027", h2)]
-    rows = [[Paragraph("<b>Region</b>", cell), Paragraph("<b>Twelve-month average, 2026 (%)</b>", num),
-             Paragraph("<b>Designated</b>", cell)]]
-    for i, c in enumerate(W.RCODE):
-        st = cellb if c in des else cell
-        rows.append([Paragraph("%s %s" % (c, W.RNAME[c]), st), Paragraph(fmt(X["avg"][i], 2), numb if c in des else num),
-                     Paragraph("Yes" if c in des else "No", st)])
-    t = Table(rows, colWidths=[62 * mm, 58 * mm, 30 * mm])
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, TEAL), ("LINEBELOW", (0, -1), (-1, -1), 0.4, GREY),
-                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
-    s += [t, Paragraph("Averages are the means of the twelve monthly rates published to one decimal place (section 3).",
-                       note),
-          Paragraph("The survey behind the 2026 rates", h2),
-          Paragraph("In the fourth quarter of 2026 the survey interviewed %s dwellings, each counted once whatever the "
-                    "number of its interviews in the quarter; a dwelling counts when it gave a full or a partial "
-                    "interview." % format(X["q4"]["all"], ","), body)]
-    rows = [[Paragraph("<b>Region</b>", cell), Paragraph("<b>Responding dwellings, October to December 2026</b>", num)]]
-    for c in W.RCODE:
-        rows.append([Paragraph("%s %s" % (c, W.RNAME[c]), cell), Paragraph(format(X["q4"][c], ","), num)])
-    rows.append([Paragraph("<b>All regions</b>", cell), Paragraph("<b>%s</b>" % format(X["q4"]["all"], ","), num)])
-    t = Table(rows, colWidths=[62 * mm, 70 * mm])
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, TEAL), ("LINEABOVE", (0, -1), (-1, -1), 0.4, GREY),
-                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"), ("TOPPADDING", (0, 0), (-1, -1), 2.5),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
-    s += [t, Spacer(1, 10),
-          Paragraph("%s<br/>%s" % (W.PEOPLE["statistician"], W.STATISTICIAN), body)]
+                            bottomMargin=18 * mm, title="Certificate for the 2026 scheme year", author=W.FUND,
+                            subject="", creator="", producer="")
+
+    def frame(canvas, d):
+        canvas.saveState()
+        canvas.setFont("LiberationSans", 7.4)
+        canvas.setFillColor(grey)
+        canvas.drawString(20 * mm, 10 * mm, "%s  |  Certificate under section 5 of the Crematoria Mercury Regulation, "
+                          "2026 scheme year" % W.FUND)
+        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "%d" % d.page)
+        canvas.restoreState()
+    tot_kg = res["tot"] / 1000
+    note = ParagraphStyle("n", fontName="LiberationSans", fontSize=7.6, leading=10, textColor=grey, spaceAfter=3)
+    s = [Paragraph("2026 scheme year: abatement share not met, two crematoria designated", h1),
+         Paragraph("Certificate CMF-C-2026 of the trustees of the %s, made at their meeting of %s under section 5 "
+                   "of the Crematoria Mercury Regulation. To the Minister and the operators of member crematoria." %
+                   (W.FUND, W.MEETING.strftime("%-d %B %Y")), sub),
+         Paragraph("1. The trustees certify that about %d per cent of the mercury released by cremation in the "
+                   "province in 2026 was released in abated cremations. That is less than the 55 per cent section 3 "
+                   "requires, so the 2026 scheme year did not meet the Regulation." % int(round(share)), body),
+         Paragraph("2. Under section 4 the trustees designate %s and %s. Their operators must connect every "
+                   "cremator to a commissioned mercury abatement plant by 31 December 2028. Counting the mercury "
+                   "released at %s as abated, the share would have been about %d per cent, still short; counting "
+                   "%s as well, about %d per cent. No other crematorium is designated." %
+                   (names(des[0]), names(des[1]), W.CREMATORIA[des[0]][2], int(round(steps[1])),
+                    W.CREMATORIA[des[1]][2], int(round(steps[2]))), body),
+         Paragraph("Basis of the estimate", h2),
+         Paragraph("The %s cremations performed in the province in 2026 are those on the Vital Statistics Agency's "
+                   "cremation permits with a 2026 date of cremation<super>1</super>; a cremation is abated where its "
+                   "crematorium's abatement plant was commissioned before that date, which makes Wexley Regional and "
+                   "Hollinsbrook abated from 4 July and 15 September. The mercury of each person cremated is 0.55 grams "
+                   "for each tooth restored with amalgam, nil under 18<super>2</super>. The teeth restored with "
+                   "amalgam are read from the %s by birth cohort: a person who died at a given age in 2026 was ten "
+                   "years younger at the 2016 survey and twenty at the 2006 survey, so each person takes the 2016 mean "
+                   "of their sex and cohort, carried to 2026 by that cohort's own change between the 2006 and 2016 "
+                   "surveys. The survey's age profile, applied at age at death, would describe the cohorts born ten "
+                   "years earlier. In all, %.1f kilograms of mercury were released by cremation in 2026." %
+                   ("{:,}".format(int(res["n"].sum())), W.SURVEY, tot_kg), body)]
+    png = _chart_png(res, des, order)
+    img = Image(io.BytesIO(png), width=158 * mm, height=158 * mm * 4.9 / 6.6)
+    s += [Spacer(1, 2), Paragraph("Mercury released by cremation at each crematorium, 2026", h2), img,
+          Paragraph("Source: Vital Statistics Agency cremation permits, extract of 8 February 2027; the Fund's member "
+                    "register as checked 15 January 2027; %s report tables, 2006 and 2016." % W.SURVEY, note),
+          PageBreak()]
+    data = [["Crematorium", "Cremations", "Abated cremations", "Mercury, kg", "of which abated"]]
+    for i in sorted(range(len(W.CREMATORIA)), key=lambda i: W.CREMATORIA[i][2]):
+        data.append([W.CREMATORIA[i][2], "{:,}".format(int(res["n"][i])), "{:,}".format(int(res["n_ab"][i])),
+                     "%.1f" % (res["hg"][i] / 1000), "%.1f" % (res["ab"][i] / 1000)])
+    data.append(["All crematoria", "{:,}".format(int(res["n"].sum())), "{:,}".format(int(res["n_ab"].sum())),
+                 "%.1f" % (res["tot"] / 1000), "%.1f" % (res["ab"].sum() / 1000)])
+    t = Table(data, colWidths=[64 * mm, 22 * mm, 28 * mm, 22 * mm, 24 * mm], repeatRows=1)
+    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "LiberationSans", 8.0),
+                           ("FONT", (0, 0), (-1, 0), "LiberationSans-Bold", 8.0),
+                           ("FONT", (0, -1), (-1, -1), "LiberationSans-Bold", 8.0),
+                           ("LINEABOVE", (0, 0), (-1, 0), 0.6, ink), ("LINEBELOW", (0, 0), (-1, 0), 0.6, ink),
+                           ("LINEABOVE", (0, -1), (-1, -1), 0.4, ink),
+                           ("LINEBELOW", (0, -1), (-1, -1), 0.6, ink), ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
+                           ("ALIGN", (1, 0), (-1, 0), "RIGHT"),
+                           ("TOPPADDING", (0, 0), (-1, -1), 1.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5)]))
+    s += [Paragraph("2026 cremations and mercury by crematorium", h2), t,
+          Paragraph("Mercury in kilograms to one decimal place; totals from the unrounded figures.", note),
+          Spacer(1, 8),
+          Paragraph("<super>1</super> Wexley Regional Crematorium's permits for cremations before 2 March 2026 carry "
+                    "the agency's former facility number for it, F1984, as the register's facility sheet records.",
+                    note),
+          Paragraph("<super>2</super> Section 2(2) of the Regulation. The survey examines adults aged 18 and over; "
+                    "ages at death under one year are recorded on the permits in months.", note),
+          Spacer(1, 18),
+          Paragraph("%s, Chair of the trustees&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s, Technical Secretary" %
+                    (W.PEOPLE["chair"], W.PEOPLE["secretary"]), body),
+          Paragraph("%s" % W.MEETING.strftime("%-d %B %Y"), body)]
     doc.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-CSV_NAME = "regional_unemployment_redesigned_basis_2024-2026.csv"
-PDF_NAME = "trigger_restatement_determination_2027.pdf"
+def write_book(lev, byp, path):
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Levy 2026"
+    ws.append(["Fund code", "Crematorium", "Operator", "Fee income, cremations not abated ($)",
+               "Fee income, abated cremations ($)", "Levy ($)"])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws.row_dimensions[1].height = 30
+    for c in sorted(W.CREMATORIA, key=lambda x: x[2]):
+        v = lev[c[0]]
+        ws.append([c[0], c[2], c[3], v["income_unabated"], v["income_abated"], v["levy"]])
+    n = len(W.CREMATORIA) + 1
+    ws.append([None, "All crematoria", None, round(sum(v["income_unabated"] for v in lev.values()), 2),
+               round(sum(v["income_abated"] for v in lev.values()), 2), sum(v["levy"] for v in lev.values())])
+    for cell in ws[n + 1]:
+        cell.font = Font(bold=True)
+    for row in ws.iter_rows(min_row=2):
+        for cell in row[3:5]:
+            cell.number_format = "#,##0.00"
+        row[5].number_format = "#,##0"
+    for col, wdt in zip("ABCDEF", [10, 34, 34, 18, 18, 11]):
+        ws.column_dimensions[col].width = wdt
+    ws.freeze_panes = "C2"
+    ws.print_title_rows = "1:1"
+    ws2 = wb.create_sheet("Bypassed cremations 2026")
+    ws2.append(["Fund code", "Crematorium", "Quarter", "Cremations under way while the plant was bypassed"])
+    for c in ws2[1]:
+        c.font = Font(bold=True)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    ws2.row_dimensions[1].height = 30
+    for c in sorted(W.CREMATORIA, key=lambda x: x[2]):
+        if c[0] not in byp:
+            continue
+        for q, v in byp[c[0]].items():
+            ws2.append([c[0], c[2], "2026 %s" % q, v])
+    for col, wdt in zip("ABCD", [10, 34, 10, 22]):
+        ws2.column_dimensions[col].width = wdt
+    ws2.freeze_panes = "A2"
+    ws2.print_title_rows = "1:1"
+    ws3 = wb.create_sheet("Notes")
+    notes = [
+        "Levy 2026",
+        "Scheme rules 2.1 to 2.3: 4.5 per cent of cremation fee income from 2026 cremations not abated and 1.5 per cent "
+        "from abated ones, net of credits allowed against those fees, excluding sales tax, rounded once per crematorium.",
+        "Fee income is taken by the cremation's service date. Urns, keepsakes and the medical referee's fee are left out.",
+        "Wexley Regional and Hollinsbrook are split at commissioning: cremations from 4 July and 15 September are abated.",
+        "A credit on a booking takes that booking's service date. A credit posted to a funeral director's account without "
+        "a booking takes the service dates of the lines on that account whose amounts it equals.",
+        "Ledgers: City of Halbrook and Shoreline Memorial Group extracts and the independent crematoria's fee returns, "
+        "postings to 19 February 2027.",
+        "",
+        "Bypassed cremations 2026",
+        "A plant is bypassed from a manual bypass to its end, and from a DP HIGH alarm not cleared within five minutes to "
+        "the next plant reset (the inlet temperature falls to ambient while cremators fire).",
+        "A cremation counts once, in the quarter of its charge (Eastern time), if it was under way at any time while the "
+        "plant was bypassed. Quarters are those in which the plant was in service.",
+    ]
+    for line in notes:
+        ws3.append([line or None])
+    ws3.column_dimensions["A"].width = 120
+    for r in (1, 8):
+        ws3.cell(row=r, column=1).font = Font(bold=True)
+    for row in ws3.iter_rows():
+        row[0].alignment = Alignment(wrap_text=True, vertical="top")
+    wb.save(path)
 
 
-def basis_word(t):
-    if t < W.PHASE:
-        return "previous questionnaire (restated)"
-    if t < W.PHASE + 5:
-        return "both questionnaires (as published)"
-    return "redesigned questionnaire"
-
-
-def write_csv(X, path):
-    import csv
-    k0 = W.MONTHS.index("2024-01")
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, lineterminator="\r\n")
-        w.writerow(["month", "region", "region_name", "published_rate", "redesigned_basis_rate", "collected_on"])
-        for t in range(k0, W.T):
-            for i, c in enumerate(W.RCODE):
-                w.writerow([W.MONTHS[t], c, W.RNAME[c], "%.1f" % X["reg"][t, i], "%.1f" % X["breg"][t, i],
-                            basis_word(t)])
-    return (W.T - k0) * W.R
-
-
-def figures(X):
-    return {
-        "trigger_in_force_pct": W.TRIGGER,
-        "restated_trigger_pct": X["trigger"],
-        "change_points": X["change"],
-        "change_points_unrounded": round(X["G"], 4),
-        "designated": [W.RNAME[c] for c in X["designated"]],
-        "not_designated": [W.RNAME[c] for c in W.RCODE if c not in X["designated"]],
-        "average_2026": {W.RNAME[c]: round(float(X["avg"][i]), 2) for i, c in enumerate(W.RCODE)},
-        "q4_responding_dwellings": {(W.RNAME[c] if c != "all" else "all"): X["q4"][c] for c in W.RCODE + ["all"]},
-        "csv_rows": (W.T - W.MONTHS.index("2024-01")) * W.R,
-        "arm_gap_points": round(M.arm_gap(X["F"]), 1),
-        "arm_gap_trigger_pct": M.restated(M.arm_gap(X["F"])),
-        "single_effect_triggers_pct": sorted({M.restated(v) for v in M.wrong_routes(X["F"], X["nat"])["R2 one effect"].values()}),
-        "first_interview_excess_points": round(first_excess(X["F"]), 1),
-        "north_coast_shortfall_points": round(X["trigger"] - float(X["avg"][W.RCODE.index("03")]), 2),
-    }
-
-
-def first_excess(F):
-    """before July 2025: the first interview's rate less the average of the six interviews, month and region fixed"""
-    use = F["t"] < W.PHASE
-    b = M.fe(F, [(F["m"] == j).astype(float) for j in range(2, 7)], use, True, mis_fe=False)
-    prof = np.concatenate([[0.0], b])
-    return float(prof[0] - prof.mean())
-
-
-def main(target, out_dir, fig_path):
-    os.makedirs(out_dir, exist_ok=True)
-    X = compute(target)
-    write_pdf(X, os.path.join(out_dir, PDF_NAME))
-    write_csv(X, os.path.join(out_dir, CSV_NAME))
+def main(target, golden_dir, figures_path):
     import postprocess as PP
-    PP.normalize_pdf(os.path.join(out_dir, PDF_NAME), b"D:20270203101544+13'00'", b"D:20270203104219+13'00'")
-    with open(fig_path, "w") as f:
-        json.dump(figures(X), f, indent=1, sort_keys=False)
-        f.write("\n")
-    return X
+    os.makedirs(golden_dir, exist_ok=True)
+    tab = S.tables(W.SEED)
+    res = call(target, tab)
+    comm = register(target)[2]
+    lev, matched = levies(target, comm)
+    byp = bypassed(target, comm)
+    cert = os.path.join(golden_dir, W.GOLDEN["cert"])
+    book = os.path.join(golden_dir, W.GOLDEN["book"])
+    write_certificate(res, cert)
+    write_book(lev, byp, book)
+    PP.normalize_pdf(cert, b"D:20270224163012-05'00'", b"D:20270224171905-05'00'")
+    PP.normalize_ooxml(book, W.PEOPLE["secretary"], W.PEOPLE["secretary"], "2027-02-18T14:02:00Z",
+                       "2027-02-24T21:47:31Z", excel=True, company=W.FUND)
+    stamp = dt.datetime(2027, 2, 24, 17, 20, tzinfo=dt.timezone(dt.timedelta(hours=-5))).timestamp()
+    for f in os.listdir(golden_dir):
+        os.utime(os.path.join(golden_dir, f), (stamp, stamp))
+    names = lambda i: W.CREMATORIA[i][2]
+    fig = {
+        "call": {"met": bool(res["share"] >= W.SHARE_REQUIRED), "designated": [names(i) for i in res["des"]],
+                 "designated_codes": [W.CREMATORIA[i][0] for i in res["des"]],
+                 "share_pct_whole": int(round(res["share"])), "share_pct": round(float(res["share"]), 2),
+                 "steps_pct": [round(float(x), 2) for x in res["steps"]],
+                 "order": [names(i) for i in res["order"]],
+                 "cremations_2026": int(res["n"].sum()), "mercury_kg_total": round(float(res["tot"]) / 1000, 2)},
+        "mercury_kg": {W.CREMATORIA[i][0]: {"total": round(float(res["hg"][i]) / 1000, 3),
+                                             "abated": round(float(res["ab"][i]) / 1000, 3),
+                                             "cremations": int(res["n"][i])} for i in range(len(W.CREMATORIA))},
+        "levy": {k: v["levy"] for k, v in lev.items()},
+        "fee_income": {k: [round(v["income_unabated"], 2), round(v["income_abated"], 2)] for k, v in lev.items()},
+        "bypass": byp,
+        "account_credits_matched": len(matched),
+        "filed": {"threshold_pct": W.SHARE_REQUIRED, "factor_g_per_tooth": W.HG_PER_TOOTH_G,
+                  "levy_rates_pct": [round(100 * W.LEVY_UNABATED, 1), round(100 * W.LEVY_ABATED, 1)]},
+        "share_with_one_designated_pct": {names(i): round(float(100 * (res["ab"].sum() + res["hg"][i]) / res["tot"]), 2)
+                                          for i in res["des"]},
+        "routes": {},
+    }
+    idx = {c[0]: i for i, c in enumerate(W.CREMATORIA)}
+    cre = [(idx[c], a, s_, ab) for c, a, s_, ab, d in cremations_2026(target)]
+    for key, form in (("age_profile_2016_at_death", "age2016"), ("count_of_cremations", "count"),
+                      ("cohort_2016_mean_unaged", "cohort_noage")):
+        d = M.designate(cre, tab, form)
+        fig["routes"][key] = {"share_pct": round(float(d["share"]), 2), "designated": [names(i) for i in d["des"]]}
+    with open(figures_path, "w") as fh:
+        json.dump(fig, fh, indent=1, sort_keys=True)
+        fh.write("\n")
+    return {"res": res, "lev": lev, "byp": byp, "matched": matched, "fig": fig}
