@@ -75,6 +75,17 @@ def pdf_text(path):
     return re.sub(r"[ \t]+", " ", "".join(out))
 
 
+def docx_text(path):
+    """A Word document's paragraphs, then each table row's cells joined by spaces."""
+    from docx import Document
+    d = Document(path)
+    out = [p.text for p in d.paragraphs]
+    for t in d.tables:
+        for r in t.rows:
+            out.append(" ".join(c.text for c in r.cells))
+    return "\n".join(out)
+
+
 def norm(s):
     return "".join(ch for ch in (s or "").upper() if ch.isalpha())
 
@@ -118,7 +129,7 @@ class Pack:
         self.may_reg = [dict(zip(hdr, r)) for r in rows[1:]]
         self.regs_text = pdf_text(f("regs"))
         self.paper_text = pdf_text(f("paper"))
-        self.minutes_text = pdf_text(f("minutes"))
+        self.minutes_text = docx_text(f("minutes"))
 
 
 # ---------------------------------------------------------------------------------------------------------------

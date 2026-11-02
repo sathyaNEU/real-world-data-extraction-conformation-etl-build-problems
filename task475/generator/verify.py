@@ -58,11 +58,14 @@ def main():
     names = sorted(os.listdir(T))
     # every format read back, each with a positive control on the same code path
     regs = pdf_strings(os.path.join(T, "cae_examination_regulations_2026.pdf"))
-    mins = pdf_strings(os.path.join(T, "examinations_committee_minutes_2026-06-18.pdf"))
+    from docx import Document
+    md = Document(os.path.join(T, "examinations_committee_minutes_2026-06-18.docx"))
+    mins = " ".join(p.text for p in md.paragraphs) + " " + " ".join(
+        " ".join(c.text for c in row.cells) for tb in md.tables for row in tb.rows)
     paper = pdf_strings(os.path.join(T, "cae_paper2_nov2026.pdf"))
     ok("PDF regulations read back (control: regulation 14.1 and Schedule 1)",
        "each counted once" in regs and "Clerical check, per script" in regs, "%d chars" % len(regs))
-    ok("PDF minutes read back (control: the moves table)", "Move (marks)" in mins, "%d chars" % len(mins))
+    ok("DOCX minutes read back (control: the moves table)", "Move (marks)" in mins, "%d chars" % len(mins))
     ok("PDF question paper read back (control: the rubric)", "Answer any FIVE questions" in paper)
     import openpyxl
     wb = openpyxl.load_workbook(os.path.join(T, "cae_candidates_may2026.xlsx"), read_only=True)

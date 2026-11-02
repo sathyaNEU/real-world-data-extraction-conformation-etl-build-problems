@@ -93,7 +93,7 @@ FILES = {
     "accounts": "corporate_accounts.csv",
     "regs": "cae_examination_regulations_2026.pdf",
     "paper": "cae_paper2_nov2026.pdf",
-    "minutes": "examinations_committee_minutes_2026-06-18.pdf",
+    "minutes": "examinations_committee_minutes_2026-06-18.docx",
     "history": "cae_results_history_2019_2026.csv",
     "venues": "venue_holds_2027.xlsx",
 }

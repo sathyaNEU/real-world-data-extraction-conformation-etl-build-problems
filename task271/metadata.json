@@ -1,0 +1,160 @@
+{
+  "task": "task271",
+  "title": "Which of a lake-stocking society's lakes go into its 2027 high-use catchable tier on 2026 open-water angler-hours per hectare, the creel survey's route-timed flight counts read against each lake's own hour-by-hour presence from the access interviews",
+  "domain": "Survey Research & Official Statistics",
+  "client_domain": "Survey Research & Official Statistics",
+  "subdomain": "sample-design-allocation-weighting (a lake-stocking society's creel survey: each lake's open-water angler-hours per hectare from aerial counts flown at route-fixed hours and the access interviews' start and finish times)",
+  "objective": "Descriptive & Distribution Analysis",
+  "prompt_shape": "a tier for every lake that takes catchables against the policy's 500 angler-hours per hectare line with a bar chart, and two tables (catchables released alive into each lake in 2026, nearest 100; July and August days above 20 C at 1 m for each lake with a logger there)",
+  "as_of": "2026-10-26",
+  "deliverables": [
+    "stocking_tiers_2027.xlsx",
+    "stocking_board_note_2027.docx"
+  ],
+  "distractor_files": [
+    "campground_permits_2026.xlsx",
+    "vellacott_air_flight_log_2026.xlsx"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 13,
+    "formats": [
+      "csv",
+      "json",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "lake_temperature_loggers_2026.csv",
+    "largest_file_rows": 101650
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task271/generator/build.py (seeded, deterministic) around a fictional British Columbia lake-stocking society, its hatchery, its creel survey and a floatplane operator, in the layouts of an aerial count file, access-interview tablet exports, hatchery trip sheets and a drop tally app, temperature logger downloads and a recreation sites occupancy export; no real organisation's records or person is depicted.",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-11-01",
+  "generator": "task271/generator/build.py",
+  "files": [
+    {
+      "path": "campground_permits_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 36952,
+      "rows": 1744,
+      "source": "Constructed: Recreation Sites and Trails, nightly occupancy at the plateau's lakeside recreation sites, 2026 season",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "catchable_allocation_policy_2026.pdf",
+      "format": "pdf",
+      "bytes": 35638,
+      "rows": null,
+      "source": "Constructed: Pelloran Plateau Fisheries Society, Catchable Trout Allocation Policy, 2026 revision (12 March 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "creel_interviews_2026.csv",
+      "format": "csv",
+      "bytes": 321601,
+      "rows": 3551,
+      "source": "Constructed: Pelloran Plateau creel survey, access interviews from the clerks' tablets, 2026 season (exported 23 October 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "creel_survey_protocol_2026.pdf",
+      "format": "pdf",
+      "bytes": 42351,
+      "rows": null,
+      "source": "Constructed: Pelloran Plateau Creel Survey 2026, field protocol (28 April 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lake_register_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9023,
+      "rows": 27,
+      "source": "Constructed: Pelloran Plateau Fisheries Society, lake register (revised 14 April 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lake_temperature_loggers_2026.csv",
+      "format": "csv",
+      "bytes": 4624523,
+      "rows": 101650,
+      "source": "Constructed: Pelloran Plateau Fisheries Society, compiled temperature logger downloads, 2026",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "logger_deployments_2026.csv",
+      "format": "csv",
+      "bytes": 777,
+      "rows": 14,
+      "source": "Constructed: Pelloran Plateau Fisheries Society, temperature logger deployment sheet, 2026",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quillet_creek_drop_tallies_2026.json",
+      "format": "json",
+      "bytes": 12625,
+      "rows": 71,
+      "source": "Constructed: Quillet Creek Hatchery, drop crew tally app export (2 September 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quillet_creek_raceway_numbers.csv",
+      "format": "csv",
+      "bytes": 154,
+      "rows": 8,
+      "source": "Constructed: Quillet Creek Hatchery, raceway numbering from the new headbox (22 June 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quillet_creek_raceway_samples_2026.csv",
+      "format": "csv",
+      "bytes": 4089,
+      "rows": 144,
+      "source": "Constructed: Quillet Creek Hatchery, Monday raceway sample counts and inventory, 2026",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "quillet_creek_trip_sheets_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9544,
+      "rows": 71,
+      "source": "Constructed: Quillet Creek Hatchery, release trip sheets, 2026",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "survey_flight_counts_2026.csv",
+      "format": "csv",
+      "bytes": 56333,
+      "rows": 1152,
+      "source": "Constructed: Pelloran Plateau creel survey, aerial count file as keyed by the observers after each loop, 2026 season (exported 23 October 2026)",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "vellacott_air_flight_log_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9172,
+      "rows": 50,
+      "source": "Constructed: Vellacott Air, flight log for the society's survey charter, 2026",
+      "date": "2026-10-26",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

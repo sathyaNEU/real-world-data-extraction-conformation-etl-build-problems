@@ -107,9 +107,9 @@ The pipeline a competent analyst builds from the prompt's words and the files' g
    attribution a PBM rebate report uses (the same set per account and quarter).
 6. Divide each product's ingredient cost less its share by its 30-day supplies and prefer the lowest in each class.
 
-- Ends on: Liraquent, Empriva, insulin glargine-qmrt, Apiqor, Saltiva and adalimumab-kvrn (Liraquent $570 against
-  Dulavio $620 and Velantro $700; insulin glargine-qmrt $160 against Deglutra $190 and Glarvia $260; Saltiva $180
-  against Vilaro $230 and Bevoria $310).
+- Ends on: Liraquent, Empriva, insulin glargine-qmrt, Apiqor, Saltiva and adalimumab-kvrn.
+- The split's figures: Liraquent $570 against Dulavio $620 and Velantro $700; insulin glargine-qmrt $160 against
+  Deglutra $190 and Glarvia $260; Saltiva $180 against Vilaro $230 and Bevoria $310.
 - Golden: Velantro, Empriva, Glarvia, Apiqor, Bevoria and adalimumab-kvrn (Velantro $510, Empriva $260, Glarvia $100,
   Apiqor $370, Bevoria $200, adalimumab-kvrn $1,190).
 

@@ -102,6 +102,8 @@ def text_files(target):
             out[fn] = open(p, encoding="utf-8").read()
         elif fn.endswith(".pdf"):
             out[fn] = flat(A.pdf_text(p))
+        elif fn.endswith(".docx"):
+            out[fn] = flat(A.docx_text(p))
         elif fn.endswith(".xlsx"):
             import openpyxl
             wb = openpyxl.load_workbook(p, read_only=True)
@@ -324,8 +326,33 @@ def main():
           "%d entered and not withdrawn, %d sat" % (len(may_entered), len(may_sat_p)))
     mem = [x["member"] for x in may_sat_p if x["member"]]
     kk = [x["key"] for x in may_sat_p]
-    check("SF18 identity across sittings is unique: no two May sitters share a member number or a name key",
-          len(mem) == len(set(mem)) and len(kk) == len(set(kk)))
+    sat_may = {r["candidate_no"] for r in exp if r["series"] == "MAY26"}
+    keyed = {"first": set(), "full": set(), "lower": set()}
+    mems = set()
+    for r in Pk.may_reg:
+        if "2" not in str(r["Papers"]) or str(r["Cand No"]) not in sat_may:
+            continue
+        fam, giv = [s.strip() for s in r["Candidate Name"].split(",", 1)]
+        dob = dt.datetime.strptime(r["Date of Birth"], "%d/%m/%Y").date()
+        keyed["first"].add((A.norm(fam), A.norm(giv.split()[0]), dob))
+        keyed["full"].add((A.norm(fam), A.norm(giv), dob))
+        keyed["lower"].add((fam.lower(), giv.lower(), dob))
+        if r["Member No"]:
+            mems.add(str(r["Member No"]))
+    links = {k: 0 for k in keyed}
+    for r in Pk.nov_reg:
+        if r["paper"] != "P2" or r["candidate_no"] not in sat:
+            continue
+        dob = dt.date.fromisoformat(r["date_of_birth"])
+        hit_m = bool(r["member_no"]) and r["member_no"] in mems
+        ks = {"first": (A.norm(r["family_name"]), A.norm(r["given_names"].split()[0]), dob),
+              "full": (A.norm(r["family_name"]), A.norm(r["given_names"]), dob),
+              "lower": (r["family_name"].lower(), r["given_names"].lower(), dob)}
+        for k in keyed:
+            links[k] += hit_m or ks[k] in keyed[k]
+    check("SF18 identity across sittings is unique (no two May sitters share a member number or a name key) and the "
+          "match does not depend on how names are normalised (first given name, all given names, case only)",
+          len(mem) == len(set(mem)) and len(kk) == len(set(kk)) and len(set(links.values())) == 1, json.dumps(links))
     check("SF19 May results as issued use the marks of record on 30 June (regulation 16), after review all marks, "
           "both with the minutes' moves (regulation 19.2)", "issued on the marks of record on that date" in flat(Pk.regs_text)
           and "does not change the moves approved" in flat(Pk.regs_text))
@@ -421,12 +448,19 @@ def main():
         if f.endswith(".pdf"):
             mm = re.search(rb"/CreationDate \(D:(\d{8})", open(os.path.join(TARGET, f), "rb").read())
             stamps.append(dt.datetime.strptime(mm.group(1).decode(), "%Y%m%d").date())
+    for f in files:
+        if f.endswith((".xlsx", ".docx")):
+            with zipfile.ZipFile(os.path.join(TARGET, f)) as z:
+                core = z.read("docProps/core.xml").decode()
+            for tag in ("created", "modified"):
+                mm = re.search(r"<dcterms:%s[^>]*>(\d{4}-\d{2}-\d{2})" % tag, core)
+                stamps.append(dt.date.fromisoformat(mm.group(1)))
     late = [r for r in exp if A.entered(r).date() > P.EXPORT_DAY]
     late += [q for q in Pk.requests if q["submitted"][:10] > P.EXPORT_DAY.isoformat()]
     late += [r for r in Pk.nov_reg if r["entered_on"] > P.EXPORT_DAY.isoformat()]
     late += [r for r in Pk.invoices if r["issue_date"] > P.EXPORT_DAY.isoformat()]
     check("RS5 no document dated after the as-of day and no extract carrying a date after its pull",
-          all(s <= P.ASOF for s in stamps) and not late, "pdf dates %s" % [s.isoformat() for s in stamps])
+          all(s <= P.ASOF for s in stamps) and not late, "document dates %s" % sorted({s.isoformat() for s in stamps}))
     check("RS6 no round headline figure", M["n_sat"] % 10 and M["n_pass"] % 10 and round(R["refund"]) % 10,
           "%d, %d, %d" % (M["n_sat"], M["n_pass"], round(R["refund"])))
     for k in ("withdrawals", "absentees", "may_sitters"):
@@ -442,7 +476,7 @@ def main():
     for f in files:
         b = open(os.path.join(TARGET, f), "rb").read()
         blobs = [b]
-        if f.endswith(".xlsx"):
+        if f.endswith((".xlsx", ".docx")):
             with zipfile.ZipFile(os.path.join(TARGET, f)) as z:
                 blobs = [z.read(n) for n in z.namelist()]
         for blob in blobs:
@@ -458,8 +492,8 @@ def main():
           "%s %s %s" % (hits14, hits_close, hits_mv))
     ctrl = {P.FILES["regs"]: "rounded to the nearest whole mark", P.FILES["paper"]: "Answer any FIVE questions",
             P.FILES["minutes"]: "subject to the borderline review"}
-    check("RS11 every PDF reads back through the extractor, with a known sentence found (positive control)",
-          all(len(texts[f]) > 500 and s in texts[f] for f, s in ctrl.items()), "3 PDFs")
+    check("RS11 every governing document reads back through the extractor, with a known sentence found (positive "
+          "control)", all(len(texts[f]) > 500 and s in texts[f] for f, s in ctrl.items()), "2 PDFs and the minutes")
     det = [q["detail"] for q in Pk.requests if q["detail"]]
     top = max(det.count(x) for x in set(det)) / float(len(det))
     check("RS12 no free text recurs beyond a real rate in the request log", top < 0.6, "%.2f" % top)

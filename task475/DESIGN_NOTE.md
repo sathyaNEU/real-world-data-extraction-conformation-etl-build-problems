@@ -1,21 +1,7 @@
 # task475 design note
 
 Status lives in `pipeline.json`; this note holds the design. Architecture 2, drawn 2026-11-01 at the Batch 3 queue
-reset; architecture 1 is summarised under `## Leak review
-
-`leak.py --asof 2026-12-01` on the final cut: REVIEW, no LEAK; each line answered.
-
-- Sweep 3, the regulations and the minutes carry most words of the committed call: they are the rules the call executes
-  and May's results meeting; neither states a November move, difficulty or pass count (checks.py R3c).
-- Sweep 4, the regulations (8 terms), the question paper (3) and the minutes (7): the regulations must say "a choice of
-  questions", "the average of the paper's optional questions" and "mark of record" to file the WHAT; the minutes' hits
-  are "multiple choice paper", "the meeting closed" and "no member declared". No document relates a choice to a mark.
-- Sweep 9, corporate_accounts.csv's agreement end dates (30 June 2027): forward-looking terms of a live agreement, the
-  file's own allow-listed kind of date.
-- Sweep 12, the regulations name "Sydney", "accredited", "mark", "paper", "papers" and "questions": ordinary words of
-  the institute's own rules (Sydney time, accreditation), not a description of any file.
-
-## Architecture 1 record` and its world is closed.
+reset; architecture 1 is summarised under the Architecture 1 record section and its world is closed.
 
 ## Draw
 
@@ -167,7 +153,7 @@ Question 8 -3, and 401 passes.
 | SF15 | "absentees" | entered, not withdrawn before the day, not sitting | every withdrawn entry with no marks | another count | regulation 17.2 and 17.3 |
 | SF16 | a candidate's centre | the entry's centre after any transfer | the centre first entered | same call (transfers are carried into the entry) | regulation 18 |
 | SF17 | "had sat Paper 2 in May" | marked present in May (MAY26 marks) | entered in May | another count | regulation 2 "marked present" |
-| SF18 | the same person across sittings | member number where both carry one, else family name, first given name and date of birth | the candidate number | another count | candidate numbers are issued per sitting (the directory's blocks, the register); the match is unique (checks.py SF18) |
+| SF18 | the same person across sittings | member number where both carry one, else family name, given name and date of birth | the candidate number | another count | candidate numbers are issued per sitting (the directory's blocks, the register); the match is unique and the same under every name normalisation (checks.py SF18) |
 | SF19 | "May results changed on review" | the result issued on the marks of record on 30 June against the result after review, both with the minutes' moves | the first marks against the last | same call among the requests | regulations 16 and 19.2 |
 | SF20 | "the review fees to refund" | the fee paid for each changed review and each declined request | the schedule fee | another refund | regulation 19.4 "the fee paid", Schedule 1's agreed-rate sentence |
 | SF21 | the refund's rounding | AUD 2,625.13 to the nearest dollar | none | same call | the cents sit 0.37 from the half dollar |
@@ -229,7 +215,10 @@ not choose, so every literal reader has to estimate each question's difficulty f
 The question means estimate it only if a question's answerers stand for the 714, and the records show they do not;
 the easy answer (422) therefore comes from an easier method on the same literal estimand, never from another reading.
 Every term and convention has a fork-table row, every alternative reading gives the golden or violates a quoted
-sentence, and every write-up step names the file and the regulation it executes.
+sentence, and every write-up step names the file and the regulation it executes. Regulation 14.1 names the
+quantity and never the procedure: no formula, no averaging over candidates and no comparison of a candidate's
+answers is filed, so joining the files leaves the estimate still to make, and the standard route a strong analyst
+takes (the question means) files 422 against the golden's 401.
 
 ## Oracles
 
@@ -260,6 +249,21 @@ May results changed on review and, if so, how many, and the review fees to refun
 The full includer (every device handled) keeps all 20 (stress row, ceiling.py). Zero device rows sit in the main
 call's population: the call reads the export's NOV26 rows alone (R2.6), no withdrawn entry carries a November mark
 (A5), and every ask figure recomputes the clean truth (A1, A2).
+
+## Leak review
+
+`leak.py --asof 2026-12-01` on the final cut: REVIEW, no LEAK; each line answered.
+
+- Sweep 3, the regulations and the minutes carry most words of the committed call: they are the rules the call executes
+  and May's results meeting; neither states a November move, difficulty or pass count (checks.py R3c).
+- Sweep 4, the regulations (8 terms), the question paper (4) and the minutes (7): the regulations must say "a choice of
+  questions", "the average of the paper's optional questions" and "mark of record" to file the WHAT; the minutes' hits
+  are "multiple choice paper", "the meeting closed" and "no member declared", the paper's "each question carries 20
+  marks". No document relates a choice to a mark.
+- Sweep 9, corporate_accounts.csv's agreement end dates (30 June 2027): forward-looking terms of a live agreement, the
+  file's own allow-listed kind of date.
+- Sweep 12, the regulations name "Sydney", "accredited", "mark", "paper", "papers" and "questions": ordinary words of
+  the institute's own rules (Sydney time, accreditation), not a description of any file.
 
 ## Architecture 1 record
 
@@ -327,3 +331,10 @@ the Batch 3 queue reset with its world closed. Its reports are kept as `determin
 - Every centre's May-sitter figure was first left to the draw (2026-11-02, stage 3, checks.py A3): at two centres the
   May absentees who re-entered and the members who changed surname cancelled, so the careful route kept those figures;
   the operating records were redrawn so the two never cancel at a centre.
+- Given names cut to the first name for any candidate in the portal (2026-11-02, stage 3, measured): a match on all
+  given names would have missed 22 non-members that a first-name match finds, a fork on the ask; the cut is now the
+  membership database's pre-fill of a member's account, so every name rule gives the same 150 links (SF18).
+- The November marks on seed 477238 (2026-11-02, stage 3): their unmoved pass count equalled the May minutes' 433, a
+  coincidence a reader could take for a planted tie; the marks were redrawn (432 unmoved, 401 golden).
+- The draft minutes as a PDF (2026-11-02, stage 3, `guard.py surface`): the pack's format mix matched two shipped
+  builds exactly; minutes circulated as a draft for confirmation are a Word document, as the office keeps them.

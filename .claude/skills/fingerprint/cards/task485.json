@@ -11,8 +11,8 @@
   "shape": "03",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Prefer Velantro (GLP-1 receptor agonists, $510), Empriva (SGLT2 inhibitors, $260), Glarvia (long-acting insulins, $100), Apiqor (direct oral anticoagulants, $370), Bevoria (inhaled corticosteroid and LABA combinations, $200) and adalimumab-kvrn (adalimumab products, $1,190), fiscal 2026 net cost per 30-day supply to the nearest ten dollars",
+  "answer_source": "task485/generator/figures.json (call.*, net.*), computed from target/ by analysis.py; verified on its own path by verify.py",
   "gap": [
     "objective",
     "population"
@@ -38,23 +38,23 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:each product's rebate recovered from its manufacturer's quarterly remittances by employer account against the units of every product it supplies, not spread over its products by ingredient cost",
   "layer1": [
-    "NDCs in 11-digit hyphenated, 11-digit plain and legacy 10-digit forms across the PBM's two claims extracts",
-    "reversed claims and resubmissions carried as separate rows",
-    "rebate statements as quarterly PDFs with prior-period adjustments and disputed amounts on their own lines",
-    "manufacturer names on the statements differing from the labeler names in the product file",
-    "a product moved to a new labeler mid-year with its NDCs unchanged",
-    "participating employer account codes renumbered on 1 January 2026",
-    "fill dates against paid dates across quarter ends",
-    "package sizes in pens, inhalers or millilitres against the labelled 30-day supply"
+    "the PBM's claims platform changed its export on 1 January 2026: US dates and hyphenated 5-4-2 NDCs before, ISO dates and plain 11-digit NDCs after, each row in the layout of the platform that adjudicated it",
+    "reversed claims carried as their own rows naming the claim they reverse, some written in the other layout",
+    "group codes, cardholder numbers and person codes renumbered on 1 January 2026 by the account restructure",
+    "rebate remittance statements with prior-period adjustment lines on the next quarter's statement and fiscal 2025 lines on the first two",
+    "manufacturer names on the statements differing from the labeler names in the drug file",
+    "compound claims not invoiced to manufacturers",
+    "package sizes in pens, inhalers or millilitres against the clinical review's 30-day quantity",
+    "a pharmacy network file that is the network on 1 October 2026"
   ],
   "stakeholder_role": "the plan's director of pharmacy benefits, who brings the net cost table to the Pharmacy and Therapeutics Committee",
   "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
     "file": "pbm_paid_claims_fy2026.csv",
-    "rows": 60000,
+    "rows": 49787,
     "entity": "one paid or reversed pharmacy claim",
-    "grain": "claim x fill date",
+    "grain": "one adjudication row (paid or reversal) per claim",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
@@ -68,7 +68,8 @@
     "people": [
       "Maria Burgess",
       "Brenda Cook",
-      "Timothy Peterson"
+      "Timothy Peterson",
+      "Alyssa Fletcher"
     ]
   },
   "deliverables": [
@@ -79,7 +80,7 @@
   "question_form": "which",
   "driver": "A total remitted for a group of items in each period and account is attributed to each item at the rate recovered from how the totals move with every item's own volume across periods and accounts, because the payer's rate differs sharply by item and a split in proportion to value moves its high rate on contested items onto the rest.",
   "driver_concrete": "Each product's rebate per 30-day supply recovered by fitting its manufacturer's quarterly remittance to each participating employer account against the 30-day supplies of every product that manufacturer has on the claims, not the remittance spread over its products by ingredient cost.",
-  "stump": "Spreading each manufacturer's remitted rebates over its products by ingredient cost files the wrong preferred products, because a manufacturer's rebate sits mostly on its products in contested classes while its sole-source products carry much of its spend.",
+  "stump": "Spreading each manufacturer's remitted rebates over its products by ingredient cost files Liraquent, insulin glargine-qmrt and Saltiva as preferred, because a manufacturer's rebate sits mostly on its products in contested classes while its sole-source products carry much of its spend; each product's own rate, solved from its manufacturer's remittances by account and quarter against every product's 30-day supplies, files Velantro, Glarvia and Bevoria.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task84": "task84 builds a composite target key over an advertiser's live campaigns and prices a copy premium from its own past merges to attribute a cost rise; here no key is built and nothing is merged: each product's rebate is recovered from its manufacturer's remittances to the plan's employer accounts across quarters against each product's units, and the call is the preferred product in each therapeutic class",

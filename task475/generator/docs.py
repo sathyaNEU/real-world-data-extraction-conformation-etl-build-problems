@@ -2,6 +2,7 @@
 paper, the minutes of the Examinations Committee's May results meeting, and two files kept for other purposes (the
 accreditation results history and the 2027 venue holds)."""
 import datetime as dt
+import re
 
 import numpy as np
 
@@ -194,7 +195,67 @@ def minutes(path, w):
               "will be known as Western Sydney from 1 August."),
         ("p", "The meeting closed at 11.40 am. Next meeting: Thursday 10 December 2026."),
     ]
-    write_pdf(path, "Examinations Committee minutes 18 June 2026", ISSUER, b, stamp_date="D:20260622153000+10'00'")
+    write_docx(path, b, "Examinations Office", dt.datetime(2026, 6, 22, 15, 30), "2026-06-22T05:30:00Z",
+               "Examinations Committee minutes 18 June 2026")
+
+
+def write_docx(path, blocks, creator, when, stamp, title):
+    """A Word document in the office's own plain style: the minutes are drafted and circulated as Word files."""
+    from docx import Document
+    from docx.shared import Cm, Pt, RGBColor
+    doc = Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Arial"
+    st.font.size = Pt(10)
+    for s in doc.sections:
+        s.left_margin = s.right_margin = Cm(2.0)
+        s.top_margin = s.bottom_margin = Cm(1.8)
+    for kind, val in blocks:
+        txt = val if isinstance(val, str) else ""
+        clean = re.sub(r"</?[bi]>", "", txt)
+        if kind == "title":
+            r = doc.add_paragraph().add_run(clean)
+            r.bold = True
+            r.font.size = Pt(13)
+        elif kind == "small":
+            r = doc.add_paragraph().add_run(clean)
+            r.font.size = Pt(8.5)
+            r.font.color.rgb = RGBColor.from_string("444444")
+        elif kind == "h":
+            r = doc.add_paragraph().add_run(clean)
+            r.bold = True
+            r.font.size = Pt(10.5)
+        elif kind == "p":
+            par = doc.add_paragraph()
+            for k, piece in enumerate(re.split(r"(<b>.*?</b>)", txt)):
+                if not piece:
+                    continue
+                run = par.add_run(re.sub(r"</?[bi]>", "", piece))
+                run.bold = piece.startswith("<b>")
+        elif kind == "table":
+            t = doc.add_table(rows=len(val), cols=len(val[0]))
+            t.style = "Table Grid"
+            for i, row in enumerate(val):
+                for j, cell in enumerate(row):
+                    c = t.cell(i, j)
+                    c.text = ""
+                    run = c.paragraphs[0].add_run(str(cell))
+                    run.bold = i == 0 or j == 0
+                    run.font.size = Pt(9)
+            doc.add_paragraph()
+    cp = doc.core_properties
+    cp.author = creator
+    cp.last_modified_by = creator
+    cp.title = title
+    cp.comments = ""
+    cp.created = when
+    cp.modified = when
+    cp.revision = 2
+    doc.save(path)
+    words = sum(len(p.text.split()) for p in doc.paragraphs)
+    normalise_zip(path, when=stamp, app="Microsoft Office Word",
+                  stats={"Pages": 1, "Words": words, "Characters": sum(len(p.text) for p in doc.paragraphs),
+                         "Lines": 40, "Paragraphs": len(doc.paragraphs)})
 
 
 def history_rows():
