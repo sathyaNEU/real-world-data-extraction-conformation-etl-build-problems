@@ -1,25 +1,38 @@
 {
  "task": "task277",
- "status": "PAUSED",
- "domain": "economics",
- "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "",
+ "status": "SHIPPED",
+ "domain": "business-operations-analytics (client domain human-factors-ergonomics, task type human-reliability-assessment)",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-02",
+ "stump": "A competent analyst carries the 2026 failure rate by channel and range (or the opened-inner rate the Daily store lines take on under inners of four) onto the client's February and March plan and files about 0.12 to 0.17 per cent of lines failing, 35 to 53 lines in February, and a kept 99.80 per cent target; the step that lands it there is reading count errors as a property of the article, the range or the order size, when they come from picks that need whole inner packs plus loose units, which the Daily range's new inners of four make of every six- and eighteen-unit store line.",
  "architecture": 1,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": null,
- "judge": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-02"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK): close-out wording, two documents' generic vocabulary, item master rows dated from 11 January 2027",
+  "reader": "three reads, no leak: question 1 none, question 6 analytical in each; the first read's realism tells fixed in the generator"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.decision only)",
+  "nearest": "task54 stump at 0.06"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2, after pass 1 FIX_NOW fixed in the generator)",
+  "report": "task277/determinism_check_report.md"
+ },
  "returned": [],
- "resume": "PAUSED 2026-11-01 at the draw of architecture 1. Reopened 2026-10-25 at the author's direction to re-root in a fresh world; this pass ran guard.py recent, coverage, suggest and mechanisms --objective descriptive-distribution, slots on every candidate's mechanism and setting nouns, read task274's two architecture-3 lines and the sibling slots' notes, lineages and resume lines (task139, task143, task254, task256, task268, task269, task270, task273, task281, task302, task459, task487), and screened about a hundred and ten candidates on paper across every client domain the objective serves; none cleared, so no card was registered. Each was spent in another slot or on a card, the field's named correction as the golden (a reflex), forked under literal determinism, a WHAT, a reading or a stated rule, or banned in the window (DESIGN_NOTE.md's three 2026-11-01 Tried and rejected lines list each with its record). Before the reopen: RETIRED 2026-10-24 at the author's choice, never drawn. Next action, the author's call: retire the number, move it to another objective, or name ground to draw from. A session resuming the draw reads the three 2026-11-01 lines first and starts only from ground none of them lists, with guard.py check run on the registered card as the last act of stage 1.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "DA27 (world, decision and quantity only: the change in HHI a Medicare Advantage acquisition files for its most affected county, at close on 1 January, with an employer retiree block changing carrier that day)"
+ "retask": "2026-11-01, the author: Descriptive & Distribution Analysis to Forecasting & Predictive Modeling, retirement not taken"
 }

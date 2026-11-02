@@ -1,0 +1,181 @@
+{
+ "task": "task277",
+ "architecture": 1,
+ "title": "Whether Kroonvaart Fulfilment's Venlo site holds its client Siersma Care's 99.80 per cent pick accuracy target in February and March 2027, with the expected failing order lines each month, and the accepted 2026 store claims in units by customer and quarter of delivery",
+ "domain": "Business & Operations Analytics (client domain Human Factors & Ergonomics)",
+ "subdomain": "service-operations-sla (client task type human-reliability-assessment)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "02: a forecast across periods (February and March 2027), with each month's failing lines, accuracy and verdict against target, a store claims table by customer and quarter, and a chart",
+ "as_of": "2027-01-04",
+ "deliverables": [
+  "venlo_accuracy_forecast_feb_mar_2027.xlsx",
+  "siersma_pick_accuracy_q1_2027.png"
+ ],
+ "distractor_files": [
+  "cycle_counts_2026.csv",
+  "bms_zone_temperatures_2026.csv"
+ ],
+ "stated_inputs": [
+  "February 2027",
+  "March 2027",
+  "99.80",
+  "2026"
+ ],
+ "input_gates": {
+  "files": 15,
+  "formats": [
+   "csv",
+   "parquet",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_rows": 242567
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task277/generator/build.py (seeded, deterministic) in the layouts of a warehouse management system's exports, a pack-out verification log, an item master, a client volume plan, dispatch exports, a customer service claims register, a labour system export and the agreement's service level schedule; the companies, customers, stores, people, articles and codes are fictional.",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2027-01-04",
+ "generator": "task277/generator/build.py",
+ "files": [
+  {
+   "path": "bms_zone_temperatures_2026.csv",
+   "format": "csv",
+   "bytes": 34701,
+   "rows": 1095,
+   "source": "Constructed: the building management system's daily zone temperatures for 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cycle_counts_2026.csv",
+   "format": "csv",
+   "bytes": 136478,
+   "rows": 3875,
+   "source": "Constructed: the site's 2026 cycle counts of pick faces",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "dispatch_colli_2026-01_2026-06.csv",
+   "format": "csv",
+   "bytes": 4482471,
+   "rows": 104635,
+   "source": "Constructed: the dispatch module's container contents for retail deliveries, January to June 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "dispatch_deliveries_2026.csv",
+   "format": "csv",
+   "bytes": 817480,
+   "rows": 13797,
+   "source": "Constructed: the dispatch system's retail delivery notes for 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "lms_shifts_2026.csv",
+   "format": "csv",
+   "bytes": 522304,
+   "rows": 13307,
+   "source": "Constructed: the labour management system's shift bookings for 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "packout_exceptions_2026.csv",
+   "format": "csv",
+   "bytes": 57558,
+   "rows": 816,
+   "source": "Constructed: the pack-out verification stations' finding log for 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "schedule_3_service_levels_v2.pdf",
+   "format": "pdf",
+   "bytes": 42067,
+   "rows": null,
+   "source": "Constructed: Schedule 3 (Service Levels) of the logistics services agreement, version 2.0",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "siersma_item_master_2027-01-04.xlsx",
+   "format": "xlsx",
+   "bytes": 35339,
+   "rows": 500,
+   "source": "Constructed: the WMS item master as exported on 4 January 2027",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "siersma_pcn_2026-11_daily_range.pdf",
+   "format": "pdf",
+   "bytes": 41556,
+   "rows": null,
+   "source": "Constructed: the client's packaging change notification PCN-2026-11",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "siersma_store_claims_2026.csv",
+   "format": "csv",
+   "bytes": 107743,
+   "rows": 1133,
+   "source": "Constructed: the client's store claims register as exported on 4 January 2027",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "siersma_volume_plan_q1_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 6753,
+   "rows": 16,
+   "source": "Constructed: the client's logistics volume plan for the first quarter of 2027",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "venlo_siersma_closeout_2026-12.pdf",
+   "format": "pdf",
+   "bytes": 42109,
+   "rows": null,
+   "source": "Constructed: the site's service close-out for December 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "wms_pick_confirmations_2026-01-01_2026-06-12.csv",
+   "format": "csv",
+   "bytes": 11278597,
+   "rows": 183359,
+   "source": "Constructed: the old WMS's pick confirmation export, 1 January to 12 June 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "wms_pick_confirmations_2026-06-15_2026-12-31.parquet",
+   "format": "parquet",
+   "bytes": 3443445,
+   "rows": 242567,
+   "source": "Constructed: the new WMS's pick task export, 15 June to 31 December 2026",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "wms_users.csv",
+   "format": "csv",
+   "bytes": 1655,
+   "rows": 68,
+   "source": "Constructed: the old WMS's user list with labour badges",
+   "date": "2027-01-04",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}
