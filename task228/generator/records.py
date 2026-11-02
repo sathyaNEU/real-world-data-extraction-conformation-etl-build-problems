@@ -309,3 +309,120 @@ def booking_queue(rng):
                          planned_installs=int(rng.choice([12000, 16000, 20000, 24000, 30000])), status="booked"))
     rows.sort(key=lambda r: (r["planned_start"], r["booking_id"]))
     return rows
+
+
+# ------------------------------------------------------------------ the collector's client summary, 3 to 19 August
+def _clients(rng, n):
+    return ["%016x" % x for x in rng.integers(2 ** 60, 2 ** 64 - 1, n, dtype=np.uint64)]
+
+
+def _stamp(day, secs):
+    t = datetime(P.CS_DAY0.year, P.CS_DAY0.month, P.CS_DAY0.day, tzinfo=CPH) + timedelta(days=int(day), seconds=int(secs))
+    return t
+
+
+def client_summary(rng):
+    """One row per client ID and SDK version for the iOS and Android clients that sent batches from 3 to 19 August:
+    first and last batch (Copenhagen time), first and last sequence number, batches and events. The 11.3.0 update
+    (SDK 9.4.2) issued a new client ID to some installs while their event counter carried on.
+    Returns the rows and the truth: per install its platform, its client IDs, whether it sent from 9.4.1 from 3 to 6
+    August, and the day it first sent from 9.4.2 (None if it never did in the window)."""
+    D = P.CS_DAYS
+    rows, truth = [], []
+    for plat in ("ios", "android"):
+        groups = [("base", P.CS_INSTALLS[plat], None)]
+        fresh_n = rng.poisson(P.CS_FRESH[plat], D)
+        for d0 in range(3, D):
+            groups.append(("fresh", int(fresh_n[d0]), d0))
+        for kind, n, d0 in groups:
+            if n == 0:
+                continue
+            p_open = np.clip(rng.beta(2.2, 2.0, n), 0.05, 0.98)
+            act = rng.random((n, D)) < p_open[:, None]
+            if kind == "fresh":
+                act[:, :d0] = False
+                act[:, d0] = True
+            lam = rng.gamma(P.CS_EVENTS[0], P.CS_EVENTS[1], n)
+            ev = np.where(act, rng.poisson(lam[:, None], (n, D)) + 1, 0)
+            seq0 = rng.integers(10 ** 9, 2 ** 56, n)
+            night = rng.random((n, D)) < 0.06
+            first_t = np.where(night, rng.integers(2 * 3600 + 600, 6 * 3600, (n, D)), rng.integers(6 * 3600, 13 * 3600, (n, D)))
+            last_t = np.minimum(first_t + rng.integers(600, 12 * 3600, (n, D)), 23 * 3600 + 50 * 60)
+            u941 = rng.random((n, D))
+            u942 = rng.random((n, D))
+            offer = rng.integers(P.CS_OFFER[plat][0], P.CS_OFFER[plat][1] + 1, n)
+            rekey = rng.random(n) < P.CS_REKEY[plat]
+            if kind == "base":
+                start941 = rng.random(n) < P.CS_ON_941[plat]
+                late = (~start941) & (rng.random(n) < P.CS_LATE_941)
+            else:
+                start941 = np.zeros(n, bool)
+                late = np.zeros(n, bool)
+                on941_fresh = (rng.random(n) < P.CS_LATE_ON_941) & (d0 < P.CS_OFFER[plat][1])
+                start941 = on941_fresh
+            # the day each install first sends from 9.4.1 (late adopters of 11.2.1 on 3 to 5 August) and from 9.4.2
+            d941 = np.full(n, D)
+            d941[start941] = -1
+            for i in np.where(late)[0]:
+                cand = [d for d in range(0, 3) if act[i, d] and u941[i, d] < 0.6]
+                if cand:
+                    d941[i] = cand[0]
+            d942 = np.full(n, D)
+            for i in range(n):
+                lo = max(int(offer[i]), d0 if d0 is not None else 0)
+                if kind == "fresh" and not start941[i]:
+                    d942[i] = d0
+                    continue
+                for d in range(lo, D):
+                    if d941[i] < D and d <= d941[i]:
+                        continue
+                    if act[i, d] and u942[i, d] < P.CS_UPDATE_P:
+                        d942[i] = d
+                        break
+            cum = seq0[:, None] + np.cumsum(ev, axis=1)
+            ids = _clients(rng, n)
+            new_ids = _clients(rng, n)
+            for i in range(n):
+                days = np.where(act[i])[0]
+                if len(days) == 0:
+                    continue
+                spans = []
+                v_of = lambda d: "9.4.2" if d >= d942[i] else ("9.4.1" if d >= d941[i] else "9.3.1")
+                for d in days:
+                    v = v_of(d)
+                    if spans and spans[-1][0] == v:
+                        spans[-1][2] = d
+                    else:
+                        spans.append([v, d, d])
+                cids = []
+                for v, a, b in spans:
+                    cid = new_ids[i] if (v == "9.4.2" and rekey[i] and d942[i] < D and kind == "base" or
+                                         v == "9.4.2" and rekey[i] and kind == "fresh" and start941[i]) else ids[i]
+                    sel = days[(days >= a) & (days <= b)]
+                    evs = ev[i, sel]
+                    rows.append(dict(client_id=cid, platform=plat, sdk_version=v,
+                                     first_batch=_stamp(a, first_t[i, a]), last_batch=_stamp(b, last_t[i, b]),
+                                     first_seq=int(cum[i, a] - ev[i, a] + 1), last_seq=int(cum[i, b]),
+                                     batches=int(np.ceil(evs / 7.0).sum()), events=int(evs.sum())))
+                    if cid not in cids:
+                        cids.append(cid)
+                in_pop = bool(any(v_of(d) == "9.4.1" for d in days if P.CS_POP_START <= d <= P.CS_POP_END))
+                truth.append(dict(platform=plat, clients=cids, population=in_pop,
+                                  first_942=int(d942[i]) if d942[i] < D and act[i, d942[i]] else None,
+                                  rekeyed=len(cids) > 1))
+    rows.sort(key=lambda r: r["client_id"] + r["sdk_version"])
+    return rows, truth
+
+
+def releases_sdk94(rows):
+    """the SDK story the change log records: 9.4.1 in the 11.2.1 hotfix of 30 July, fixed by 9.4.2 in 11.3.0 on 6 August"""
+    out = []
+    for r in rows:
+        if r["released"] == "2026-08-06":
+            r = dict(r, sdk_version="9.4.2")
+        out.append(r)
+    for plat in ("ios", "android"):
+        out.append(dict(released="2026-07-30", platform=plat, app_version="11.2.1", sdk_version="9.4.1",
+                        rollout_complete="2026-08-04"))
+    out.sort(key=lambda r: (r["released"], {"ios": 0, "android": 1}[r["platform"]]))
+    return out

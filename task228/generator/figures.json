@@ -33,61 +33,67 @@
  "z": "2.576",
  "standard_installs": "10,000",
  "run_days": "14",
- "review": {
-  "telemetry loss": {
-   "flagged": 5,
-   "never": 5
+ "sdk941": {
+  "2026-08-06": {
+   "ios": 39523,
+   "android": 32798
   },
-  "duplicate delivery": {
-   "flagged": 1,
-   "never": 2
+  "2026-08-07": {
+   "ios": 36149,
+   "android": 28101
   },
-  "late delivery": {
-   "flagged": 0,
-   "never": 2
+  "2026-08-08": {
+   "ios": 32148,
+   "android": 22422
   },
-  "consent loss": {
-   "flagged": 1,
-   "never": 2
+  "2026-08-09": {
+   "ios": 27664,
+   "android": 16246
+  },
+  "2026-08-10": {
+   "ios": 22967,
+   "android": 9821
+  },
+  "2026-08-11": {
+   "ios": 18207,
+   "android": 6318
+  },
+  "2026-08-12": {
+   "ios": 13146,
+   "android": 4314
+  },
+  "2026-08-13": {
+   "ios": 8216,
+   "android": 3049
+  },
+  "2026-08-14": {
+   "ios": 5436,
+   "android": 2268
+  },
+  "2026-08-15": {
+   "ios": 3777,
+   "android": 1715
+  },
+  "2026-08-16": {
+   "ios": 2727,
+   "android": 1363
+  },
+  "2026-08-17": {
+   "ios": 2047,
+   "android": 1093
+  },
+  "2026-08-18": {
+   "ios": 1571,
+   "android": 905
+  },
+  "2026-08-19": {
+   "ios": 1232,
+   "android": 731
   }
  },
- "app_wide": {
-  "DI-26-025": {
-   "gap": "10,152",
-   "share": "17.56",
-   "sessions": "57,817",
-   "opened": "11 February"
-  },
-  "DI-26-026": {
-   "gap": "1,100",
-   "share": "30.53",
-   "sessions": "3,603",
-   "opened": "29 March"
-  },
-  "DI-26-027": {
-   "gap": "12,630",
-   "share": "30.67",
-   "sessions": "41,181",
-   "opened": "6 May"
-  },
-  "DI-26-028": {
-   "gap": "23,721",
-   "share": "20.28",
-   "sessions": "116,960",
-   "opened": "18 June"
-  },
-  "DI-26-029": {
-   "gap": "34,141",
-   "share": "32.66",
-   "sessions": "104,538",
-   "opened": "3 August"
-  },
-  "DI-26-030": {
-   "gap": "5,871",
-   "share": "29.45",
-   "sessions": "19,935",
-   "opened": "15 September"
-  }
+ "sdk_versions": {
+  "faulty": "9.4.1",
+  "fix": "9.4.2"
  },
  "default_path": {
   "check": "Late sessions",

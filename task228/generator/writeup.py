@@ -23,10 +23,8 @@ def figures(A):
         "experiments": len(A["inc"]) + len(A["none"]), "with_incident": len(A["inc"]), "without": len(A["none"]),
         "allowance": cap, "allowance_pct": "2", "level_pct": "1", "z": "2.576", "standard_installs": "10,000",
         "run_days": "14",
-        "review": {t: {"flagged": A["review"][t][0], "never": A["review"][t][1]} for t in E.TYPES},
-        "app_wide": {a["incident"]: {"gap": "{:,}".format(a["gap"]), "share": "%.2f" % a["share"],
-                                     "sessions": "{:,}".format(a["sessions"]), "opened": day(a["opened"])}
-                     for a in A["app_wide"]},
+        "sdk941": {d: {"ios": A["sdk941"][d]["ios"], "android": A["sdk941"][d]["android"]} for d in E.DAYS941},
+        "sdk_versions": {"faulty": "9.4.1", "fix": "9.4.2"},
         "default_path": {"check": E.NAMES[A["picks"]["naive"][0]],
                          "record": {E.NAMES[m]: {"incidents": A["recs"]["naive"][m]["incidents"],
                                                  "none": A["recs"]["naive"][m]["none"]} for m in E.CHECKS},
@@ -88,10 +86,10 @@ def submission(A, f):
         "Took the per-install variance of the gap-session share over both arms of the %d experiments without an "
         "incident and set the line at %s standard errors of the difference for %s installs an arm: %s percentage points."
         % (f["without"], f["z"], f["standard_installs"], f["line"]),
-        "Weekly review: an incident counts as flagged when weekly_review_log_2026.csv holds any flag against its "
-        "experiment, and each incident takes the cause established in reconciliation_summary_2026.pdf.",
-        "App-wide incidents: took each incident's gap sessions once (data_incident_register_2026.xlsx repeats the "
-        "incident's figure on every platform row) and divided by the sum of its rows' sessions in the window.",
+        "SDK 9.4.1 installs: from collector_client_summary_2026-08.parquet took the iOS and Android client IDs with a 9.4.1 "
+        "batch on a day from 3 to 6 August, joined each client ID first seen on 9.4.2 to the earlier client ID whose last "
+        "sequence number it continues by one (the update issued it a new client ID), and counted, at each day's end, "
+        "Copenhagen time, the installs with no 9.4.2 batch yet.",
     ]
     for i, s in enumerate(steps, start=1):
         L.append("%d. %s" % (i, s))
@@ -102,14 +100,11 @@ def submission(A, f):
     L.append("2. Experiments with a confirmed data incident each check would have held, of %d:" % f["with_incident"])
     for m in E.CHECKS:
         L.append("   - %s: %d" % (E.NAMES[m], rec[m]["incidents"]))
-    L.append("3. The weekly review, by type of confirmed incident (flagged; never flagged):")
-    for t in E.TYPES:
-        L.append("   - %s: %d; %d" % (t.capitalize(), A["review"][t][0], A["review"][t][1]))
-    L.append("4. Incidents the register logged against the whole app (gap sessions; share of the sessions in the window on "
-             "the platforms hit):")
-    for a in A["app_wide"]:
-        g = f["app_wide"][a["incident"]]
-        L.append("   - %s, opened %s: %s; %s per cent" % (a["incident"], g["opened"], g["gap"], g["share"]))
+    L.append("3. Installs that sent events from SDK 9.4.1 from 3 to 6 August still on it at the end of each day, Copenhagen "
+             "time (iOS; Android):")
+    for d in E.DAYS941:
+        L.append("   - %d August: %s; %s" % (int(d[-2:]), "{:,}".format(A["sdk941"][d]["ios"]),
+                                            "{:,}".format(A["sdk941"][d]["android"])))
     L.append("")
     return "\n".join(L)
 

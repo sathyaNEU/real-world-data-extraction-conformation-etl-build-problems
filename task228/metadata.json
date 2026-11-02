@@ -4,7 +4,7 @@
   "domain": "Product Analytics",
   "subdomain": "metric-definition-measurement-science (data-health checks for an experiment platform's automatic readout hold)",
   "objective": "Data Quality Monitoring & Alerting",
-  "prompt_shape": "10: scorecard, each of the five data-health checks judged on the 82 experiments of 2026 (experiments with a confirmed incident held, experiments without one held) against the one-in-fifty allowance, with the weekly review's record by type and the app-wide incidents",
+  "prompt_shape": "10: scorecard of the hold standard's data-health checks on the 2026 experiments (those with a confirmed data incident each would have held), with the daily count of the SDK 9.4.1 base still on it from 6 to 19 August, iOS and Android",
   "as_of": "2026-10-12",
   "deliverables": [
     "auto_hold_check_scorecard_2027.xlsx"
@@ -12,11 +12,12 @@
   "distractor_files": [
     "collector_daily_2026.csv",
     "app_releases_2026.csv",
-    "booking_queue_2027q1.csv"
+    "booking_queue_2027q1.csv",
+    "weekly_review_log_2026.csv"
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 14,
+    "files": 13,
     "formats": [
       "csv",
       "json",
@@ -44,6 +45,9 @@
       "format": "pdf",
       "bytes": 5498,
       "rows": null,
+      "covers": "DH-3 data-health hold for experiment readouts, version 1.0, approved 5 October 2026",
+      "system": "Experimentation Platform",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -53,6 +57,9 @@
       "format": "json",
       "bytes": 33433,
       "rows": 82,
+      "covers": "Experiment registry: experiments started in 2026",
+      "system": "Experiment platform",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -62,6 +69,9 @@
       "format": "csv",
       "bytes": 9888465,
       "rows": 238808,
+      "covers": "Install export, experiments started 5 January to 30 March 2026",
+      "system": "Scorecard service 1",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -71,6 +81,9 @@
       "format": "parquet",
       "bytes": 3368871,
       "rows": 222092,
+      "covers": "Install export, experiments started 6 April to 29 June 2026",
+      "system": "Scorecard service 2",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -80,6 +93,9 @@
       "format": "parquet",
       "bytes": 3024748,
       "rows": 198839,
+      "covers": "Install export, experiments started 6 July to 14 September 2026",
+      "system": "Scorecard service 2",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -89,6 +105,9 @@
       "format": "xlsx",
       "bytes": 9739,
       "rows": null,
+      "covers": "Data incident register 2026",
+      "system": "Data-health desk",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -98,6 +117,9 @@
       "format": "pdf",
       "bytes": 5385,
       "rows": null,
+      "covers": "Telemetry reconciliation summary, January to September 2026, compiled 9 October 2026",
+      "system": "Data-health desk",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -107,15 +129,9 @@
       "format": "csv",
       "bytes": 4058,
       "rows": 40,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "data_dictionary.md",
-      "format": "md",
-      "bytes": 4572,
-      "rows": null,
+      "covers": "Weekly review log, 12 January to 5 October 2026",
+      "system": "Data-health desk",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -125,6 +141,9 @@
       "format": "md",
       "bytes": 1190,
       "rows": null,
+      "covers": "Experiment platform change log 2026",
+      "system": "Experimentation Platform",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -134,6 +153,9 @@
       "format": "csv",
       "bytes": 38994,
       "rows": 852,
+      "covers": "Collector daily totals by platform, 1 January to 11 October 2026",
+      "system": "Collector",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -141,8 +163,11 @@
     {
       "path": "app_releases_2026.csv",
       "format": "csv",
-      "bytes": 1730,
-      "rows": 40,
+      "bytes": 1814,
+      "rows": 42,
+      "covers": "App releases 2026 with SDK versions",
+      "system": "Mobile release management",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
@@ -152,15 +177,21 @@
       "format": "csv",
       "bytes": 1363,
       "rows": 18,
+      "covers": "Experiments booked for January to March 2027",
+      "system": "Experiment platform",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 1580,
-      "rows": 13,
+      "path": "collector_client_summary_2026-08.parquet",
+      "format": "parquet",
+      "bytes": 9342137,
+      "rows": 238202,
+      "covers": "Collector client summary, iOS and Android, 3 to 19 August 2026",
+      "system": "Collector",
+      "pulled": "2026-10-12",
       "source": "Constructed (seeded generator)",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"

@@ -1,5 +1,5 @@
 """The analysis, run on the shipped files: labels, every check's record under each route, the pick, the hold line,
-the weekly review by type and the app-wide incidents."""
+and the installs that sent from SDK 9.4.1 still on it each day (the collector client summary)."""
 import json
 import os
 import re
@@ -174,36 +174,89 @@ def analyse(target, causes):
     A = dict(inc=sorted(inc), none=none_keys, Z=Z, recs=recs, picks=picks, line=line,
              line_naive_late=naive_line(D["ins"], none_keys, "late"), line_naive_gap=naive_line(D["ins"], none_keys, "gap"),
              line_mor_late=mor_line(D["ins"], none_keys, "late"), moved_most=moved_most(Z, inc))
-    A["review"] = review_by_type(D, inc, causes)
-    A["review_first_call"] = review_by_type(D, inc, first_calls(D))
-    A["app_wide"] = app_wide(D)
-    A["app_wide_summed"] = app_wide(D, summed=True)
+    C = load_clients(target)
+    A["sdk941"] = still_on(C, links(C))
     return A, D, S
 
 
-def first_calls(D):
-    by_title = {norm(e["title"]): e["key"] for e in D["reg"]}
-    r = D["rgx"]
-    ex = r[(r["scope"] == "experiment") & (r["status"] == "confirmed")]
-    return {by_title[norm(t)]: ty for t, ty in zip(ex["experiment"], ex["incident_type"])}
+# ------------------------------------------------------------------ the ask on SDK 9.4.1's installs (collector client summary)
+CLIENTS = "collector_client_summary_2026-08.parquet"
+DAYS941 = ["2026-08-%02d" % d for d in range(6, 20)]
+PLATS = ["ios", "android"]
 
 
-def review_by_type(D, inc, types):
-    rv = D["rev"]
-    flagged = set(rv.loc[rv["action"] == "flag", "experiment_key"])
-    out = {t: [0, 0] for t in TYPES}
-    for k in inc:
-        out[types[k]][0 if k in flagged else 1] += 1
+def load_clients(target):
+    import pyarrow.parquet as pq
+    t = pq.read_table(os.path.join(target, CLIENTS)).to_pandas()
+    for c in ("first_batch", "last_batch"):
+        t[c] = t[c].dt.tz_convert("Europe/Copenhagen")
+    return t
+
+
+def population(C, start="2026-08-03", end="2026-08-06"):
+    """client IDs that sent from SDK 9.4.1 on a day from 3 to 6 August, Copenhagen time"""
+    r = C[C["sdk_version"] == "9.4.1"]
+    d0, d1 = r["first_batch"].dt.strftime("%Y-%m-%d"), r["last_batch"].dt.strftime("%Y-%m-%d")
+    r = r[(d0 <= end) & (d1 >= start)]
+    return dict(zip(r["client_id"], r["platform"]))
+
+
+def links(C, tol=0):
+    """a client ID first seen on 9.4.2 whose first sequence number is one above the last of a client ID on an earlier
+    SDK that never sent from 9.4.2, on the same platform and after it: one install under a new client ID"""
+    has942 = set(C.loc[C["sdk_version"] == "9.4.2", "client_id"])
+    older = C[C["sdk_version"] != "9.4.2"]
+    seen_older = set(older["client_id"])
+    olds = older[~older["client_id"].isin(has942)]
+    key = {}
+    for cid, plat, ls, lb in zip(olds["client_id"], olds["platform"], olds["last_seq"], olds["last_batch"]):
+        key.setdefault((plat, int(ls) + 1), []).append((cid, lb))
+    new = C[(C["sdk_version"] == "9.4.2") & ~C["client_id"].isin(seen_older)]
+    out = {}
+    for cid, plat, fs, fb in zip(new["client_id"], new["platform"], new["first_seq"], new["first_batch"]):
+        for k in ([0] if tol == 0 else range(-tol, tol + 1)):
+            cand = [c for c, lb in key.get((plat, int(fs) - k), []) if lb < fb]
+            if cand:
+                out[cand[0]] = cid
+                break
     return out
 
 
-def app_wide(D, summed=False):
-    r = D["rgx"]
-    a = r[r["scope"] == "app-wide"]
-    out = []
-    for iid, g in a.groupby("incident_id", sort=True):
-        sess = int(g["sessions_in_window"].sum())
-        gap = int(g["gap_sessions"].sum()) if summed else int(g["gap_sessions"].iloc[0])
-        out.append(dict(incident=iid, opened=str(g["opened"].iloc[0]), platforms=list(g["platform"]), gap=gap,
-                        sessions=sess, share=100.0 * gap / sess))
+def timing_links(C, hours=48):
+    """the over-cleaner: a client ID that stopped on 9.4.1 joined to the next new 9.4.2 client ID on its platform"""
+    has942 = set(C.loc[C["sdk_version"] == "9.4.2", "client_id"])
+    seen_older = set(C.loc[C["sdk_version"] != "9.4.2", "client_id"])
+    stopped = C[(C["sdk_version"] == "9.4.1") & ~C["client_id"].isin(has942)].sort_values(["last_batch", "client_id"])
+    new = C[(C["sdk_version"] == "9.4.2") & ~C["client_id"].isin(seen_older)].sort_values(["first_batch", "client_id"])
+    out, j = {}, {p: 0 for p in PLATS}
+    queue = {p: list(zip(new.loc[new["platform"] == p, "client_id"], new.loc[new["platform"] == p, "first_batch"])) for p in PLATS}
+    for cid, plat, lb in zip(stopped["client_id"], stopped["platform"], stopped["last_batch"]):
+        q = queue[plat]
+        while j[plat] < len(q) and q[j[plat]][1] <= lb:
+            j[plat] += 1
+        if j[plat] < len(q) and (q[j[plat]][1] - lb).total_seconds() <= hours * 3600:
+            out[cid] = q[j[plat]][0]
+            j[plat] += 1
+    return out
+
+
+def still_on(C, link, pop=None, silent_days=None):
+    """per day from 6 to 19 August and platform: installs of the population whose last batch by the day's end
+    (Copenhagen time) came from 9.4.1; an install is its client ID joined to the client ID link gives it"""
+    import pandas as pd
+    pop = population(C) if pop is None else pop
+    first942 = C[C["sdk_version"] == "9.4.2"].groupby("client_id")["first_batch"].min().to_dict()
+    lastb = C.groupby("client_id")["last_batch"].max().to_dict()
+    cids = sorted(pop)
+    plat = np.array([pop[c] for c in cids])
+    far = pd.Timestamp("2100-01-01", tz="Europe/Copenhagen")
+    sw = np.array([(first942.get(c) or (first942.get(link[c]) if c in link else None) or far).value for c in cids])
+    lb = np.array([lastb[c].value for c in cids])
+    out = {}
+    for d in DAYS941:
+        end = pd.Timestamp(d + " 23:59:59", tz="Europe/Copenhagen").value
+        keep = sw > end
+        if silent_days is not None:
+            keep &= lb >= end - silent_days * 86400 * 10 ** 9
+        out[d] = {p: int((keep & (plat == p)).sum()) for p in PLATS}
     return out

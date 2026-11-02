@@ -46,7 +46,9 @@ def metadata(target):
             rows = pq.ParquetFile(p).metadata.num_rows
         elif f.endswith(".json"):
             rows = len(json.load(open(p))["experiments"])
+        covers, system = B.PROVENANCE[k]
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
+                      "covers": covers, "system": system, "pulled": "2026-10-12",
                       "source": "Constructed (seeded generator)", "date": "2026-10-12", "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
@@ -55,9 +57,9 @@ def metadata(target):
         "domain": "Product Analytics",
         "subdomain": "metric-definition-measurement-science (data-health checks for an experiment platform's automatic readout hold)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "10: scorecard, each of the five data-health checks judged on the 82 experiments of 2026 (experiments "
-                        "with a confirmed incident held, experiments without one held) against the one-in-fifty allowance, "
-                        "with the weekly review's record by type and the app-wide incidents",
+        "prompt_shape": "10: scorecard of the hold standard's data-health checks on the 2026 experiments (those with a "
+                        "confirmed data incident each would have held), with the daily count of the SDK 9.4.1 base still "
+                        "on it from 6 to 19 August, iOS and Android",
         "as_of": "2026-10-12",
         "deliverables": [GD.XLSX],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],

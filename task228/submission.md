@@ -24,8 +24,7 @@ Tested at the install, the unit the platform assigns to arms, gap sessions would
 4. Counted each check's holds over the 82 experiments: gap sessions 10 and 0, late sessions 5 and 0, duplicate sessions 3 and 0, treatment share 3 and 0, events per install 0 and 3 (with a confirmed incident and without one).
 5. Applied DH-3 section 5: at most 2 per cent of 64, so at most 1, rules out events per install; of the rest, gap sessions holds the most experiments with a confirmed incident.
 6. Took the per-install variance of the gap-session share over both arms of the 64 experiments without an incident and set the line at 2.576 standard errors of the difference for 10,000 installs an arm: 0.28 percentage points.
-7. Weekly review: an incident counts as flagged when weekly_review_log_2026.csv holds any flag against its experiment, and each incident takes the cause established in reconciliation_summary_2026.pdf.
-8. App-wide incidents: took each incident's gap sessions once (data_incident_register_2026.xlsx repeats the incident's figure on every platform row) and divided by the sum of its rows' sessions in the window.
+7. SDK 9.4.1 installs: from collector_client_summary_2026-08.parquet took the iOS and Android client IDs with a 9.4.1 batch on a day from 3 to 6 August, joined each client ID first seen on 9.4.2 to the earlier client ID whose last sequence number it continues by one (the update issued it a new client ID), and counted, at each day's end, Copenhagen time, the installs with no 9.4.2 batch yet.
 
 ## 4. Deliverable Answers
 
@@ -38,15 +37,18 @@ Tested at the install, the unit the platform assigns to arms, gap sessions would
    - Late sessions: 5
    - Events per install: 0
    - Treatment share: 3
-3. The weekly review, by type of confirmed incident (flagged; never flagged):
-   - Telemetry loss: 5; 5
-   - Duplicate delivery: 1; 2
-   - Late delivery: 0; 2
-   - Consent loss: 1; 2
-4. Incidents the register logged against the whole app (gap sessions; share of the sessions in the window on the platforms hit):
-   - DI-26-025, opened 11 February: 10,152; 17.56 per cent
-   - DI-26-026, opened 29 March: 1,100; 30.53 per cent
-   - DI-26-027, opened 6 May: 12,630; 30.67 per cent
-   - DI-26-028, opened 18 June: 23,721; 20.28 per cent
-   - DI-26-029, opened 3 August: 34,141; 32.66 per cent
-   - DI-26-030, opened 15 September: 5,871; 29.45 per cent
+3. Installs that sent events from SDK 9.4.1 from 3 to 6 August still on it at the end of each day, Copenhagen time (iOS; Android):
+   - 6 August: 39,523; 32,798
+   - 7 August: 36,149; 28,101
+   - 8 August: 32,148; 22,422
+   - 9 August: 27,664; 16,246
+   - 10 August: 22,967; 9,821
+   - 11 August: 18,207; 6,318
+   - 12 August: 13,146; 4,314
+   - 13 August: 8,216; 3,049
+   - 14 August: 5,436; 2,268
+   - 15 August: 3,777; 1,715
+   - 16 August: 2,727; 1,363
+   - 17 August: 2,047; 1,093
+   - 18 August: 1,571; 905
+   - 19 August: 1,232; 731

@@ -5,31 +5,51 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-11-02",
  "stump": "A competent solver tests each session-share check with the two-proportion z test over the arm's sessions, finds the gap-session check holding 4 of the 64 clean 2026 experiments, over the one-in-fifty allowance, drops it as too noisy and wires the late-session check (6 of 18 incidents held, line 0.22 points); the step that lands it there is treating sessions as independent draws when the platform randomised installs and an install's sessions share its phone and its reader.",
  "architecture": 5,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-15",
-  "result": "49 checks, 0 FAIL, 0 WARN"
+  "date": "2026-11-02",
+  "result": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK on the final cut (lines ruled in the design note), --asof 2026-10-12",
-  "reader": "pass 1 questions 1 to 4 none, Q6 analytical, findings fixed; pass 2 on the fixed cut questions 1 to 4 none, Q6 analytical, realism notes fixed"
+  "leak_py": "REVIEW, no LEAK on the final cut (lines ruled in the design note's Pre-ship check), --asof 2026-10-12",
+  "reader": "final-cut read (b9cd7086): Q1, Q2 and Q4 none; Q3 the standard, the change log and the reconciliation as the organisation's own records, no dictionary, readme or manifest; Q6 an analytical choice (the test's unit); on the new ask, told to look for one install under two client IDs, it found the sequence continuation by inspection, and no sentence or column states it; realism notes recorded in leak_check_report.md; earlier: pass 1 and pass 2 on the cut of 2026-10-15"
  },
  "duplicate_check": {
   "heart": "WARN (three_rules.strategy_risk answered; test.same_puzzle_older task187 differentiated)",
-  "nearest": "task228 v1 lineage 0.08, task229 v1 lineage 0.06; surface promoted task52, task84, task60 (0.10, surface top 1 per cent, other mechanisms) and task187 (differentiated)"
+  "nearest": "task228 v1 lineage 0.08, task229 v1 lineage 0.06; surface promoted task52, task84, task60 (0.10, surface top 1 per cent, other mechanisms) and task187 (differentiated)",
+  "heart_2026_11_02": "BLOCK read against the dates: ban.artifact (register) against task455 v2, drawn 2026-10-15, the day of this build's own draw (H27); surface exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
+  "verdict": "DETERMINISTIC (pass 2)",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md",
+  "report": "task228/determinism_check_report_pass2.md",
+  "pass1": "DETERMINISTIC, APPROVE (task228/determinism_check_report.md)",
+  "pass2": "DETERMINISTIC, APPROVE on the final cut (b9cd7086): the main call and all 28 new-ask figures reproduced; the day boundary one reading (no batch between 22:00 and 24:00 UTC); one data-supported reading of an install (5,009 client IDs first seen on 9.4.2 continue an earlier ID's last sequence number by one, each match unique and on its platform); residual risks recorded: the unit of the significance test not literally filed (the data force the install level: the session-level test rejects 4 of 64 clean experiments), and the install join not stated (the ask's device)",
   "gate_g": "analytical_non_defect (mechanism statistical_rigor, surface_read_dependency no, sole_data_defect no)",
   "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK data_dictionary.md: a file whose name says it describes the data (data_dictionary); LEAK export_manifest.csv: a file whose name says it describes the data (manifest); LEAK data_dictionary.md: names 44 column(s) of the data files verbatim, 100% of collector_daily_2026.csv)",
+   "repair": "leak",
+   "move": "The generator no longer writes data_dictionary.md (every file's columns glossed, the service 1 arm mapping, the register's and review log's codes) or export_manifest.csv (each file's role, rows, source and pull date). Each file's provenance (what it covers, the system that wrote it, the 12 October pull) moved to metadata.json through build.PROVENANCE. The one definition the call's determinism needed, SF10's service 1 arms, now rests on the change log's own 13 April entry ('the arms are called control and treatment (service 1 called them A and B)') and C1 in the rows: in all five uneven-split service 1 runs arm B holds the design's treatment share of the exported installs, and read the other way arm A would export 3.3 to 7.8 times the installs the registry assigned the treatment (asserted through the verifier's csv and json readers, which verify.py now shares as q1_rows and read_registry). Closure 4 rests on the registry's pulled stamp and the change log's 12 October entry (no run, review or register entry after it, asserted); closure 19 on the change log and C1. No sentence was added to any document. checks.py adds the describing-file screen by name, by sheet and by content with positive controls through the same search. The prompt lost 'of the five', a count the data hold (voice-check REVIEW line). On the leak cut every remaining file was byte-identical to the shipped pack, figures.json, submission.md and the golden unchanged, freeze --mode determinism PASS.",
+   "target_zip_md5": "ef5c71aaa3b47c8a796ebd5f46ac6fee",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house ask audit under the careful-solver cracker (generator/ceiling.py, new, on the leak cut md5 ef5c71aaa3b47c8a796ebd5f46ac6fee: 25 of 25 ask figures kept; pair 80.2 with the mirror running the battery, 58.2 on its natural read; two careful responses on the call 100.0); Asks B and C spent",
+   "repair": "rubric",
+   "move": "Ask B (the weekly review by type of confirmed incident, 8 figures) and Ask C (the app-wide incidents' gap sessions and shares, 12 figures) cut: the careful solver executes DH-3 s.7 and reads the reconciliation's 'Cause established' for B, and finds C's repeated total on every platform row (four incidents with a row above its own sessions); no in-place re-site passed both tests (the design note's Tried and rejected). Full replacement on a new ask-only record, collector_client_summary_2026-08.parquet (238,202 rows: one per client ID and SDK version for the iOS and Android clients that sent batches from 3 to 19 August), under a new asking sentence: for each day from 6 to 19 August, the iOS and the Android installs that sent events from SDK 9.4.1 on any day from 3 to 6 August still on it at the day's end, Copenhagen time, going by the last batch each had sent (28 figures). Device (family 2, a re-keyed asset with a sequence-and-timing link): the 11.3.0 update's storage migration issued a new client ID to 6.1 per cent of iOS and 3.4 per cent of Android updaters while the event counter carried on, so 2,427 iOS and 1,191 Android installs of the population appear as a client ID stopping on 9.4.1 and one starting on 9.4.2 at the next sequence number; read as installs, client IDs leave them on 9.4.1 (every figure high, 125 to 2,427). Over-cleaning halves: silent for a week read as gone, and a timing-only join. app_releases_2026.csv now carries the 11.2.1 release with SDK 9.4.1 (30 July) and 9.4.2 in 11.3.0 on both platforms (6 August), as the change log records; the weekly review log is now a declared distractor. Every file the call reads is byte-identical to the shipped pack (sha256 asserted). checks.py proves the ask on the generator's truth, the join's forcing (exact, unique, at the version change, no other client ID within a million), every rival reading (client IDs, silent installs, timing join, every 9.4.1 client: each off every figure), UTC days and tolerant joins converging, and the separation; verify.py recomputes the ask on its own code path. figures.json loses review and app_wide and gains sdk941 and sdk_versions; submission.md step 7 and Deliverable Answers item 3 rewritten (blocks 1 and 2 unchanged); the golden's two sheets replaced by one. ceiling.py: cracker 5 of 33 (Ask A's construction), 0 of 28 on D; mirror leakage 6.1 per cent, no ask whole; pair 34.3 (57.7 if the cracker found the join); two careful responses on the call 53.3; the full includer reproduces figures.json. freeze --mode rubric PASS with the seven retired ask keys that coincide with main-call numbers allowed by name; --mode determinism flags only the retired Ask B and C keys and Deliverable Answers. The prompt and the pack changed: the leak reader and the determinism judge are owed on this cut.",
+   "target_zip_md5": "b9cd7086c68d951c3c5be40508cce7b3",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-15",
@@ -211,10 +231,19 @@
   }
  ],
  "build": {
-  "checks": 829,
+  "checks": 908,
   "verify": "pass",
   "byte_identical": true,
-  "target_zip_sha256": "25ff0782bef124b02c9492204219c0865da996176624e86fe76746a449fd2292",
-  "figures_check": "37 of 37"
- }
+  "target_zip_sha256": "14d941997fad3744bed66896da967e699c2fc6da0cec4ab4c251bbfe7818b348",
+  "target_zip_md5": "b9cd7086c68d951c3c5be40508cce7b3",
+  "figures_check": "59 of 59"
+ },
+ "ask_audit_2026_11_01": {
+  "before": "cracker 25 of 25 kept on the leak cut (Asks B and C spent: DH-3 s.7 and the reconciliation's cause column; a repeated total on every line); pair 80.2 with the mirror running the battery, 58.2 on its natural read",
+  "after": "cracker 0 of 28 on the device ask (5 of 33 with Ask A's construction); mirror leakage 6.1 per cent; pair 34.3, 57.7 with the device found; two careful responses on the call 53.3; the full includer 33 of 33",
+  "devices": "D: re-keyed client IDs at the SDK 9.4.2 update joined by their event counter (primary); silent installs read as gone and a timing-only join (over-cleaning halves); UTC timestamps and 9.4.1 clients first seen after the window (hazards); Asks B and C cut",
+  "measured_by": "generator/ceiling.py",
+  "status_before": "SHIPPED"
+ },
+ "target_zip_md5": "b9cd7086c68d951c3c5be40508cce7b3"
 }

@@ -39,7 +39,7 @@ architecture 1.
   Kaspar Gregersen, platform engineer who keeps the hold standard; Inge Lund, data quality analyst who keeps
   the incident register.
 - **Deliverables.** `auto_hold_check_scorecard_2027.xlsx`, one workbook (shape 10's single file): the check and its
-  line, each check's 2026 record, the weekly review by type and the app-wide incidents.
+  line, each check's 2026 record, and the installs that sent from SDK 9.4.1 still on it each day from 6 to 19 August.
 - **Data-native sentence.** An install's sessions share one phone and one reader, so an arm's sessions
   arrive as bundles from the installs the platform randomised: a phone whose uploader keeps failing shows
   gaps in session after session, and a reader who opens the app forty times in a fortnight holds forty
@@ -63,6 +63,23 @@ Sources, one line each (what it teaches; how this build differs):
 - This slot's architecture 1 (spent): the same seed world, judged on run length and mid-run revisions (a
   stratification by a visible attribute); here each experiment is judged once on its full run and nothing
   is stratified.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, each gap-session share's spread across the randomised installs, has no column: the
+  exports carry per-install counts, and how an install's sessions bundle is a relation between its rows that no file stores.
+- **Link:** the signal is read by setting the variance of a ratio of per-install sums against the session-level variance,
+  a comparison the textbook share test never asks for; DH-3 names no test, variance or unit of analysis (asserted).
+- **Reflex:** the field's named test for a share, the two-proportion z over sessions, sits at rung 1 and files the
+  late-session check at 0.22 points (the default path's Ends on), not the golden gap sessions at 0.28.
+- **Back-test:** the easy route validates on its own terms: under the session-level test the late-session check holds
+  none of the 64 clean experiments and 6 of the 18 incidents, inside the allowance, so the clean record confirms it.
+- **Second use:** every file the decisive step reads (the registry, the three install exports, the register and DH-3) is
+  read by the default path as well; the step changes only the variance taken over the same per-install rows.
+- **Shock:** the gap-session check's 4 clean holds under the session test read as a noisy check's ordinary misfires (the
+  design effect is about 3.8), and the check that moved most across the incidents is duplicate sessions, not the golden.
+- **Pins:** DH-3 files the WHAT (the population, the level, the hold direction, the allowance, the selection and the
+  standard experiment) and no sentence names the clock, grouping, test or unit the stump rides on.
 
 ## Default path
 
@@ -186,7 +203,7 @@ half of a reported figure.
 | SF7 | a share of the arm's sessions | gap sessions over all sessions in the arm (ratio of sums) | the mean of per-install shares | late sessions (rung 2) | DH-3 s.3: "as a share of all sessions in the arm" |
 | SF8 | hold direction | above control for the session shares, below for events per install and the treatment share | either direction | recorded in checks | DH-3 s.4: "lies in the check's hold direction" |
 | SF9 | treatment share base | the experiment's exported installs against the design share | the registry's assigned counts | the share check holds none; gap sessions still | DH-3 s.3: "the experiment's exported installs" |
-| SF10 | service 1 arms | A control, B treatment | inverted | Q1 records move | data dictionary: "A is the control arm and B the treatment arm" |
+| SF10 | service 1 arms | A control, B treatment | inverted | Q1 records move | change log, 13 April: "the arms are called control and treatment (service 1 called them A and B)"; C1: in all five service 1 runs with an uneven design split arm B holds the design's treatment share of the exported installs, and read the other way arm A would export 3.3 to 7.8 times the installs the registry assigned the treatment (asserted through the verifier's readers) |
 | SF11 | standard experiment | 10,000 installs in each arm of its export, 14 days, even split | 10,000 assigned (0.30 points) | another line | DH-3 s.6: "10,000 installs in each arm of its export" |
 | SF12 | the line's reference | both arms of the 64, pooled or arm by arm (0.281 and 0.280) | control arms only | the same two decimals here, still ruled out | DH-3 s.6: "from both arms"; pooled and arm by arm converge (C1, asserted) |
 | SF13 | tie-break | fewer holds without an incident | none needed | no tie (10 against 5) | same call |
@@ -195,6 +212,12 @@ half of a reported figure.
 | SF16 | the 2026 record | the registry's 82 completed runs | other years | none ships | DH-3 s.5: "the 82 experiments run from January to September 2026" |
 | SF17 | register titles | case and spacing ignored, every entry matches one title | exact text | the exact join leaves entries unmatched, loudly | C4: after normalising every confirmed entry matches exactly one registry title (asserted) |
 | SF18 | title uniqueness | 82 titles unique after normalising | duplicates | none | asserted |
+| SFD1 | installs (ask D) | an install: its client IDs, joined where a client ID first seen on 9.4.2 continues an older one's last sequence number by one | each client ID an install | every D figure high (125 to 2,427 on iOS) | the rows: every in-place updater (99,305) carries its own counter on by exactly one; each join is exact, unique and at the 9.4.1 to 9.4.2 change; no other client ID comes within a million (asserted) |
+| SFD2 | the population | client IDs with a 9.4.1 batch on a day from 3 to 6 August, Copenhagen time | every 9.4.1 client ID | every D figure high | the asking sentence: "sent events from SDK 9.4.1 on any day from 3 to 6 August" |
+| SFD3 | still on it at a day's end | no 9.4.2 batch from the install by the day's end | a silent install read as gone | every D figure moves | the asking sentence: "going by the last batch each had sent" |
+| SFD4 | the day | Copenhagen time | UTC days | same figures | the asking sentence; every batch falls from 02:10 to 23:50 Copenhagen time, so local and UTC dates agree (C1, asserted) |
+| SFD5 | the join's tolerance | exact: one above the last | any tolerance up to a million | same figures | C1, asserted |
+| SFD6 | a day's end, inclusive or exclusive | no batch within 10 minutes before a midnight or two hours after | either | same figures | asserted |
 
 ## Ladder
 
@@ -228,7 +251,7 @@ fact that kills it.
 | 1 | Population | the 82 completed runs of 2026, labelled 18 and 64 | DH-3 s.5 filed; C1 (register = reconciliation) |
 | 2 | Unit of account | the experiment, judged once on its full run | DH-3 s.4 |
 | 3 | Attribution window | each run's 14 days, one export row an install | DH-3 s.2 and s.4; asserted |
-| 4 | As-of dating | the pull of 12 October 2026; every run and reconciliation closed | change log and manifest |
+| 4 | As-of dating | the pull of 12 October 2026; every run and reconciliation closed | the registry's pulled stamp (2026-10-12T06:00:00+02:00) and the change log's 12 October entry; no run, review or register entry after it (asserted) |
 | 5 | Version basis | the register's final status per entry | C1: confirmed entries equal the reconciliation's findings |
 | 6 | Denominator | all sessions in the arm; installs in the arm; exported installs | DH-3 s.3 definitions |
 | 7 | Weighting | ratio of sums over the arm | DH-3 s.3 "a share of all sessions in the arm" (SF7) |
@@ -243,7 +266,7 @@ fact that kills it.
 | 16 | Identity normalisation | register titles matched with case and spacing ignored | C4 (SF17, asserted) |
 | 17 | Netting against gross | a hold counts only in the hold direction | DH-3 s.4 (SF8) |
 | 18 | Dimensional units | shares in percentage points, events, installs | DH-3 s.3 and s.6 |
-| 19 | Code and status semantics | A control and B treatment; preliminary, confirmed, withdrawn | data dictionary (SF10); DH-3 s.5 (SF3) |
+| 19 | Code and status semantics | A control and B treatment; preliminary, confirmed, withdrawn | change log and C1 (SF10); DH-3 s.5 (SF3) |
 | 20 | Integerisation | the allowance: no more than 2 per cent of 64 is 1 | DH-3 s.5 (SF5) |
 | 21 | Clause scope | DH-3 applies to experiments from 4 January 2027; the choice is made on the 2026 record | DH-3 s.1 and s.5 |
 | 22 | Forward window contents | the 2027 standard experiment, 10,000 exported installs an arm over 14 days | DH-3 s.6 (SF11) |
@@ -272,32 +295,62 @@ share, so the stump is analysis, never a reading.
 | Ask | Use (H18) | Primary device (silent) | Hazards | Span |
 |---|---|---|---|---|
 | A. Each check: experiments with a confirmed data incident it would have held (5 figures) | the scorecard behind the call (construction layer) | none: the decisive construction on every check | the export layout change, title drift (main path, neutral) | registry, three exports, register, standard |
-| B. Each type of confirmed incident: how many the weekly review flagged and how many it never flagged (8 figures) | the incumbent's record the hold replaces, the case for the call | D2, a label stored before a silent switch: the register's incident_type is the on-call engineer's call at opening; for 7 of the 18 the reconciliation summary established another cause; totals by type are the same under both columns | 2025 experiment keys in January reviews; notes before flags | review log, register, reconciliation summary, registry |
-| C. Each incident logged against the whole app: gap sessions it cost and their share of its window's sessions on the platforms it hit (12 figures) | what the hold cannot see (both arms alike), the qualifier on the call | D6, an event's quantity on every line it covers: the register repeats each incident's gap sessions on every platform row; summing rows doubles or triples both figures; the tell is a row whose gap sessions exceed its own sessions (4 of 6 incidents) | preliminary rows elsewhere in the register | register, standard s.7 |
+| D. Each day from 6 to 19 August: the iOS and the Android installs that sent from SDK 9.4.1 on a day from 3 to 6 August still on it at the day's end, Copenhagen time (28 figures) | what the hold cannot see: a fault that hits both arms alike outlives the night the register logged it (DI-26-029), so the desk follows the installs off the faulty SDK | family 2, a re-keyed asset with a sequence-and-timing link: the 11.3.0 update's storage migration issued a new client ID to 6.1 per cent of iOS and 3.4 per cent of Android updaters while the event counter carried on | UTC timestamps read in Copenhagen time (battery); 5,012 9.4.1 client IDs first seen after 6 August, outside the window; 28,927 client IDs first seen on 9.4.2 with no earlier row (fresh installs, and the re-keyed) | collector_client_summary_2026-08.parquet (238,202 rows, 9 columns); the asking sentence's window, clock and measure |
 
-**Separation.** Zero device rows reach the main call: the main call reads the register's status column on
-experiment rows only (asserted unchanged when every type is rewritten), app-wide rows name no experiment, and the
-review log and reconciliation summary are never read by it.
+**Device D.** The collector keys each client by the SDK's client ID. When 11.3.0 (SDK 9.4.2) reached an install, its
+storage migration sometimes could not read the stored client ID and issued a new one, while the event counter, kept
+apart, carried on. So 2,427 iOS and 1,191 Android installs of the population appear as a client ID that stops on 9.4.1
+and a client ID that starts on 9.4.2 at the next sequence number. Read as installs, client IDs leave each of them on
+9.4.1 forever. Over-cleaning halves: an install silent for a week read as gone (drops the population's genuinely idle
+installs, still on 9.4.1), and a stopped 9.4.1 client joined to the next new 9.4.2 client on its platform (joins fresh
+installs). Realism: a telemetry SDK that stores its client ID apart from its counter, and a migration that loses the
+one, is how such exports really look; nothing in the pack names it.
 
-**Stops.** B: register types with any flag (every figure off: 3 and 7, 2 and 1, 2 and 0, 0 and 3 against 5 and 5,
-1 and 2, 0 and 2, 1 and 2); reconciliation causes with flags read as last action (same here, no flag is cleared on
-an incident). C: rows summed (shares 2 or 3 times the golden, from 35.1 to 98.6 per cent); one row's sessions as the
-base (shares off by 1.7 to 6.7 times); the golden.
+**Pin test.** The asking sentence carries the population (installs that sent from 9.4.1 on any day from 3 to 6 August),
+the window (each day from 6 to 19 August), the clock (Copenhagen time) and the measure (the last batch each had sent).
+The device sits in the one dimension those pins leave open: which records are one install. No document names a client
+ID, a sequence number or the migration.
+
+**Separation.** Zero device rows in the main call's population: the client summary is a new file the call never reads
+(asserted: the call's loader and its tests never open it), and every file the call reads is byte-identical to the
+shipped pack (sha256 asserted). Asks B and C are cut, and their files (the weekly review log, the register's app-wide
+rows) stay as shipped; the review log is now a declared distractor.
+
+**Forcing.** Every join continues its predecessor's sequence exactly, and no other older client ID comes within a million
+of a joined one; no unjoined new client ID comes within a million of any older one (asserted), so any tolerant join
+files the same figures. Every in-place updater, 99,305 of them, carries its own counter on by exactly one across the
+update. A re-keyed install waits as long from its last old batch to its first 9.4.2 batch as an in-place updater does
+(asserted). Read on UTC days the figures are the same.
+
+**Stops.** Client IDs read as installs: every figure high, by 125 to 2,427 on iOS and by 130 to 1,191 on Android. An
+install silent for a week read as gone: from 596 low to 1,065 high on iOS, from 449 low to 766 high on Android. A stopped
+client joined to the next new one: low by 518 to 1,057 on iOS and by 403 to 600 on Android. Every 9.4.1 client ID,
+whenever it first sent: high on every figure. The golden is the join by the sequence.
 
 | Ask row | What the cracker does | Against the golden | Cracker |
 |---|---|---|---|
-| B, flagged, four types | groups the flagged incidents by the register's incident_type | every type off by 1 or 2 | miss |
-| B, never flagged, four types | the same grouping | every type off by 1 or 2 | miss |
-| C, gap sessions, six incidents | groups the register's app-wide rows by incident and sums gap_sessions | every incident 2 or 3 times the golden | miss |
-| C, share of the window's sessions, six incidents | the summed gap sessions over the summed sessions | every incident 2 or 3 times the golden | miss |
+| D, iOS, 6 to 19 August (14 figures) | lands the call; runs the battery on the summary (clean: no duplicate or near-duplicate row, each client ID's counter runs on, no start near one); reads each client ID as an install, the window and the clock as the sentence files them | every figure high, by 125 on 6 August to 2,427 on 19 August | miss |
+| D, Android, 6 to 19 August (14 figures) | the same | every figure high, by 130 to 1,191 | miss |
+| D, the full includer's route (the control) | joins nothing: the join of a client ID first seen on 9.4.2 to the one it continues is the full includer's, run through the verifier's own code | the full includer reproduces figures.json, 28 of 28; the cracker keeps none | miss |
 
-**Mirror sheet.** The default path (late sessions) keeps ask A's events per install (0) and treatment share (3)
-and misses gap sessions (11), duplicate (4) and late (6); it misses B and C as the cracker does. Rung 2 keeps A's
-duplicate (3), late (5), events per install (0) and treatment share (3).
+The full includer's row is the control the script requires, not a response; the cracker keeps Ask A's 5 figures,
+the call's own construction, by design.
 
-Mirror leakage: 8 per cent of ask weight on the default path (2 of 25 ask figures); 16 per cent on rung 2.
+**Mirror sheet.** The default path (late sessions) keeps ask A's events per install (0) and treatment share (3) and
+misses gap (11), duplicate (4) and late (6); it reads D as the cracker does and misses all 28, and running the battery
+changes nothing. Rung 2 keeps A's duplicate (3), late (5), events per install (0) and treatment share (3).
 
-Pair ceiling: 38.4 (cracker 38 + 7 + 55 x 5/25 = 56.0; rung-2 mirror 5 + 7 + 55 x 4/25 = 20.8; mean 38.4).
+Mirror leakage: 6.1 per cent of ask weight (2 of 33 ask figures on the default path; the same with the battery run; no
+ask whole).
+
+Pair ceiling: 34.3 (the sheet's formula, 38, 7 and 55 over 33 ask figures with r = 5: cracker 53.3, mirror 15.3; 57.7 if
+the cracker finds the join; two careful responses on the call 53.3).
+
+Measured by: generator/ceiling.py, on target.zip (md5 b9cd7086c68d951c3c5be40508cce7b3): the careful-solver cracker, the
+mirror, the full includer through the verifier's independent join (it reproduces figures.json) and the three stops.
+
+**Criteria.** The call and its line (2), Ask A (5), Ask D (28), the critical components (4) and instruction following (the
+file, the line's unit and rounding, whole counts: 3): 42.
 
 ## Pre-ship check
 
@@ -308,13 +361,16 @@ Pair ceiling: 38.4 (cracker 38 + 7 + 55 x 5/25 = 56.0; rung-2 mirror 5 + 7 + 55 
   session-level route files late sessions and the install-level variance alone files gap sessions (checks.py R3).
   Layer 1 (the service 1 layout, typed titles, preliminary rows, local time against UTC, consent gaps) is neutral:
   the shipped records equal the clean truth's under every route (asserted).
-- **Free gates.** checks.py 829 passed; verify.py independent recomputation from the bundle; two builds byte-identical
-  (final target.zip sha256 25ff0782...2292); figures_check 37 of 37; precut 49 checks, 0 FAIL; voice-check PASS (800
-  characters); container audit clean (target and golden); guard heart WARN (strategy risk answered), validate clean.
-- **leak.py REVIEW lines, ruled.** The standard and the dictionary carry the call's words because they define the five
-  checks the call chooses among (harmless: the candidate set, not the choice). The documents share general vocabulary
-  with the design note (platform, installs, telemetry), and none names the move (harmless; asserted above). The
-  booking queue's 2027 dates are a forward plan, the file a distractor (harmless; allow-listed as forward-looking).
+- **Free gates (final cut, 2026-11-02).** checks.py 908 passed; verify.py recomputes the call, every record, the line,
+  the reconciliation's agreement with the register and the 28 SDK figures from the bundle; two consecutive full builds
+  give target.zip md5 b9cd7086c68d951c3c5be40508cce7b3 both times; figures_check, precut, voice-check (742 characters),
+  leak.py and guard.py surface as recorded in pipeline.json.
+- **leak.py REVIEW lines, ruled (final cut, as-of 2026-10-12).** DH-3 carries the call's words because it defines the
+  checks the call chooses among (the candidate set, not the choice). DH-3, the change log and the reconciliation share
+  general vocabulary with the design note (platform, installs, telemetry), name plain words that head columns (control,
+  experiment, platform) and none names the move (harmless; the standard's method words asserted absent). The change log
+  is the platform's own log. The booking queue's 2027 dates are a forward plan, the file a distractor. The prompt's shell
+  quota (question form "which") is the frozen call sentence's. The metadata's subdomain is the client's own tag.
 - **Surface screen.** Four pairs promoted for adjudication, none on a hard tell: task52, task84 and task60 at surface
   0.10 (product-analytics vocabulary; their mechanisms are a milestone clock, competing duplicate campaigns and a
   register of filings), and task187 on gap, pattern and decision type (differentiated on the card). Personas in the
@@ -323,6 +379,10 @@ Pair ceiling: 38.4 (cracker 38 + 7 + 55 x 5/25 = 56.0; rung-2 mirror 5 + 7 + 55 
 ## Leak check
 
 - **leak.py**: REVIEW, no LEAK, on the final cut (as-of 2026-10-12); the REVIEW lines ruled in `## Pre-ship check`.
+- **Re-check under the new gate (2026-11-01):** LEAK on data_dictionary.md (by name, and 44 columns named) and
+  export_manifest.csv (by name); both dropped, and on the final cut leak.py is REVIEW with no LEAK, the lines ruled in
+  `## Pre-ship check`. The prompt (ask sentences) and the pack (the new client summary, the release record) changed, so the
+  reader reads the final cut again.
 - **Reader pass 1** (Sonnet, medium, isolated sandbox): questions 1 to 4 none; question 6 an analytical choice (the test's
   unit). Fixed in the generator: the prompt's unit cue (the line is now asked in the check's own unit), the review flag
   timing (flags on confirmed incidents at the review during the run, none cleared), DH-3 s.7 (the reconciliation
@@ -1134,3 +1194,35 @@ author grants one then, or without one if the window has moved. Every candidate 
 - **The late-session check as a strong rival under the right test** (second prototype, late sessions rising
   in most loss incidents): its record under the delta method came within two incidents of the golden;
   late-delivery effects now ride on three of the ten loss incidents only.
+- **data_dictionary.md and export_manifest.csv (shipped 2026-10-15), dropped 2026-11-01.** The dictionary glossed 44
+  columns, all of collector_daily_2026.csv's, and filed SF10's arm mapping ("A is the control arm and B the treatment
+  arm"); the manifest gave each file's role, rows and source. SF10 now rests on the change log's 13 April entry and C1 (in
+  all five uneven-split service 1 runs arm B holds the design's treatment share, and the other reading exports 3.3 to 7.8
+  times the treatment's assigned installs), closure 4 on the registry's pulled stamp and the change log; provenance moved
+  to metadata.json (build.PROVENANCE). The prompt lost "of the five", a count the data hold.
+- **Ask B, the weekly review by type of confirmed incident (8 figures, shipped 2026-10-15), cut 2026-11-01.** The careful
+  solver executes DH-3 s.7 ("its cause established, by the monthly reconciliation") and reads the reconciliation's "Cause
+  established" by its plain meaning, so the register's opening type never stands: 8 of 8 kept (generator/ceiling.py on the
+  leak cut, md5 ef5c71aaa3b47c8a796ebd5f46ac6fee). In-place re-sites, all dead: the type without s.7 leaves two type
+  columns (a fork); flags under a second key have no relationship between values in the pack (only an order, or a mid-run
+  panel figure the full-run exports cannot give); flags missing from the log show in the register's notes (a comment read
+  for what it says); flags under a concurrent experiment's key are a planted defect.
+- **Ask C, the app-wide incidents' gap sessions and shares (12 figures, shipped 2026-10-15), cut 2026-11-01.** The register
+  repeats each incident's figure on every platform row and four of six incidents carry a row above its own sessions: the
+  battery's repeated total, 12 of 12 kept. Re-sites dead: running counts per row (a part above its whole the battery finds);
+  one outage under two incident IDs (the register's IDs define its incidents: a fork); a platform hit but not logged (an
+  inference from a magnitude); the collector's alerts or tickets (a time-overlap join, consecutive spells merged). The
+  register is a file the call reads, so its app-wide rows stay as shipped. Not chased: the collector's daily gap totals sit
+  below the register's incident gap sessions on five of six incident days (pre-existing; collector_daily_2026.csv is a
+  distractor).
+- **Full-replacement candidates rejected 2026-11-02, before the SDK ask.** The 2027 bookings that re-run a 2026 experiment,
+  linked by planned installs (no record says what a re-run is: a fork); bookings moved or extended as continuation blocks
+  (consecutive spells merged by the battery, and back-to-back runs a second explanation); the app's telemetry completeness
+  by month against the content API (no device that is not a scope or unit fork); collector postmortems revised (latest
+  version, a battery item); an install ID that resets on update, counted in the experiment exports (it reaches the main
+  population); the same re-key with sequence numbers that start at one (labels checked against a sequence find it).
+  Prototype measured on code before the cut: the careful solver kept 0 of 28, the exact and a tolerant join agreed, no
+  coincidental continuation.
+- **freeze.py keys retired with Asks B and C.** review.* (five keys) and app_wide.DI-26-028.opened and
+  app_wide.DI-26-029.opened coincide with main-call numbers (5, 1, 0, 18, 3) and are ask figures; they leave with their asks
+  (allowed by name on the rubric check).

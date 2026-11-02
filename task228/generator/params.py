@@ -45,3 +45,19 @@ CONSENT_LOST = (0.05, 0.09)
 ENGAGE = (0.04, 0.08)
 
 STD_SPLIT = 0.5
+
+# the collector's client summary for 3 to 19 August (the ask on SDK 9.4.1's installs; read by no main-call path)
+CS_SEED_OFFSET = 31                       # its own RNG stream, so every other file keeps its bytes
+CS_DAY0 = date(2026, 8, 3)                # first day of the extract, Copenhagen time
+CS_DAYS = 17                              # 3 to 19 August
+CS_POP_START, CS_POP_END = 0, 3           # day offsets of 3 and 6 August: installs that sent from 9.4.1 then
+CS_ASK_DAYS = list(range(3, 17))          # 6 to 19 August
+CS_INSTALLS = {"ios": 61000, "android": 55000}       # installs on 9.3.1 or 9.4.1 active in the extract's window
+CS_ON_941 = {"ios": 0.71, "android": 0.66}           # share already on 9.4.1 (app 11.2.1) by 3 August
+CS_LATE_941 = 0.35                        # of the rest, the share the 11.2.1 rollout reaches from 3 to 5 August
+CS_OFFER = {"ios": (3, 10), "android": (3, 7)}       # day offsets the store offers 11.3.0 (9.4.2): 6 to 13, 6 to 10 August
+CS_UPDATE_P = 0.78                        # chance an offered install takes the update on an active day
+CS_REKEY = {"ios": 0.061, "android": 0.034}          # updaters whose 9.4.2 storage migration issued a new client ID
+CS_FRESH = {"ios": 640, "android": 590}              # fresh installs a day from 6 August
+CS_LATE_ON_941 = 0.12                     # fresh installs outside the 9.4.2 phase that land on 11.2.1 (9.4.1) first
+CS_EVENTS = (2.6, 6.0)                    # gamma shape and scale of an install's events per active day

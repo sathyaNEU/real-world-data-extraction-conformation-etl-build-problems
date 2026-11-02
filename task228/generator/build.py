@@ -23,14 +23,29 @@ FILES = dict(
     register="data_incident_register_2026.xlsx",
     recon="reconciliation_summary_2026.pdf",
     review="weekly_review_log_2026.csv",
-    dictionary="data_dictionary.md",
     changes="platform_change_log_2026.md",
     collector="collector_daily_2026.csv",
     releases="app_releases_2026.csv",
     bookings="booking_queue_2027q1.csv",
-    manifest="export_manifest.csv",
+    clients="collector_client_summary_2026-08.parquet",
 )
-DISTRACTORS = ["collector", "releases", "bookings"]
+DISTRACTORS = ["collector", "releases", "bookings", "review"]
+# provenance for metadata.json (dataset-generation section 9): what each file is and the system that wrote it
+PROVENANCE = dict(
+    standard=("DH-3 data-health hold for experiment readouts, version 1.0, approved 5 October 2026", "Experimentation Platform"),
+    registry=("Experiment registry: experiments started in 2026", "Experiment platform"),
+    q1=("Install export, experiments started 5 January to 30 March 2026", "Scorecard service 1"),
+    q2=("Install export, experiments started 6 April to 29 June 2026", "Scorecard service 2"),
+    q3=("Install export, experiments started 6 July to 14 September 2026", "Scorecard service 2"),
+    register=("Data incident register 2026", "Data-health desk"),
+    recon=("Telemetry reconciliation summary, January to September 2026, compiled 9 October 2026", "Data-health desk"),
+    review=("Weekly review log, 12 January to 5 October 2026", "Data-health desk"),
+    changes=("Experiment platform change log 2026", "Experimentation Platform"),
+    collector=("Collector daily totals by platform, 1 January to 11 October 2026", "Collector"),
+    releases=("App releases 2026 with SDK versions", "Mobile release management"),
+    bookings=("Experiments booked for January to March 2027", "Experiment platform"),
+    clients=("Collector client summary, iOS and Android, 3 to 19 August 2026", "Collector"),
+)
 OS_OLD = {"ios": "iOS", "android": "Android", "web": "Web"}
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
           "December"]
@@ -146,31 +161,29 @@ def run(target, seed=P.SEED):
                                  ["review_week", "logged_at_utc", "experiment_key", "action", "reviewer", "comment"], rv)
     cd = R.collector_daily(rng)
     counts["collector"] = write_csv(os.path.join(target, FILES["collector"]), list(cd[0].keys()), cd)
-    ar = R.app_releases(rng)
+    ar = R.releases_sdk94(R.app_releases(rng))
     counts["releases"] = write_csv(os.path.join(target, FILES["releases"]), list(ar[0].keys()), ar)
     bq = R.booking_queue(rng)
     counts["bookings"] = write_csv(os.path.join(target, FILES["bookings"]), list(bq[0].keys()), bq)
     docs.standard(os.path.join(target, FILES["standard"]))
-    docs.markdown(target, FILES)
-    write_manifest(os.path.join(target, FILES["manifest"]), counts)
-    return dict(exps=exps, data=data, tries=tries, app=app, register=rows, recon=rr, review=rv, counts=counts, tabs=tabs)
+    docs.changelog(os.path.join(target, FILES["changes"]))
+    cs, cs_truth = R.client_summary(np.random.default_rng(seed + P.CS_SEED_OFFSET))
+    counts["clients"] = write_clients(os.path.join(target, FILES["clients"]), cs)
+    return dict(exps=exps, data=data, tries=tries, app=app, register=rows, recon=rr, review=rv, counts=counts, tabs=tabs,
+                clients=cs, clients_truth=cs_truth)
 
 
-def write_manifest(path, counts):
-    desc = [
-        ("standard", "DH-3 data-health hold for experiment readouts, version 1.0", "Experimentation Platform"),
-        ("registry", "Experiment registry: experiments started in 2026", "Experiment platform"),
-        ("q1", "Install export, experiments started 5 January to 30 March 2026 (scorecard service 1)", "Scorecard service 1"),
-        ("q2", "Install export, experiments started 6 April to 29 June 2026 (scorecard service 2)", "Scorecard service 2"),
-        ("q3", "Install export, experiments started 6 July to 14 September 2026 (scorecard service 2)", "Scorecard service 2"),
-        ("register", "Data incident register 2026", "Data-health desk"),
-        ("recon", "Telemetry reconciliation summary, January to September 2026", "Data-health desk"),
-        ("review", "Weekly review log, 12 January to 5 October 2026", "Data-health desk"),
-        ("dictionary", "Data dictionary for these files", "Data-health desk"),
-        ("changes", "Experiment platform change log 2026", "Experimentation Platform"),
-        ("collector", "Collector daily totals by platform, 1 January to 11 October 2026", "Collector"),
-        ("releases", "App releases 2026 with SDK versions", "Mobile release management"),
-        ("bookings", "Experiments booked for January to March 2027", "Experiment platform"),
-    ]
-    rows = [dict(file=FILES[k], description=d, rows=counts.get(k, ""), source=s, pulled="2026-10-12") for k, d, s in desc]
-    write_csv(path, ["file", "description", "rows", "source", "pulled"], rows)
+def write_clients(path, cs):
+    tab = pa.Table.from_arrays(
+        [pa.array([r["client_id"] for r in cs], pa.string()), pa.array([r["platform"] for r in cs], pa.string()),
+         pa.array([r["sdk_version"] for r in cs], pa.string()),
+         pa.array([r["first_batch"] for r in cs], pa.timestamp("s", tz="Europe/Copenhagen")),
+         pa.array([r["last_batch"] for r in cs], pa.timestamp("s", tz="Europe/Copenhagen")),
+         pa.array([r["first_seq"] for r in cs], pa.int64()), pa.array([r["last_seq"] for r in cs], pa.int64()),
+         pa.array([r["batches"] for r in cs], pa.int32()), pa.array([r["events"] for r in cs], pa.int32())],
+        names=["client_id", "platform", "sdk_version", "first_batch", "last_batch", "first_seq", "last_seq", "batches",
+               "events"]).replace_schema_metadata(None)
+    pq.write_table(tab, path, compression="snappy", row_group_size=131072, use_dictionary=["platform", "sdk_version"],
+                   write_statistics=True, store_schema=False)
+    return len(cs)
+

@@ -1,56 +1,45 @@
 # leak check, task228
 
-**Verdict: LEAK.** 14 files read, 13 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 29 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: variance, per-install, installs, decisive, platform, incidents, metric, install, allowance, method, sentence, record, telemetry, metric-definition-measurement-science, reconciliation, default, golden, estimand, exports, architecture, analytics, quality, duplicate, treatment, judged
+Stump terms swept: sessions, variance, per-install, decisive, install, incidents, register, sentence, allowance, metric, platform, method, default, record, client, exports, golden, metric-definition-measurement-science, telemetry, checks, gap-session, shares, estimand, randomised, session
 
-## 1 file names (LEAK 2, REVIEW 1)
-- **LEAK** `data_dictionary.md`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
-- **LEAK** `export_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+## 1 file names (REVIEW 1)
 - **REVIEW** `platform_change_log_2026.md`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `data_dictionary.md`: carries 9 of 13 distinctive words of the committed call: 'The scorecard service should hold experiments on the gap-sessions check from January 2027, at a hold line of 0.28 percen'
+## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `dh3_data_health_hold_standard.pdf`: carries 13 of 13 distinctive words of the committed call: 'The scorecard service should hold experiments on the gap-sessions check from January 2027, at a hold line of 0.28 percen'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `data_dictionary.md`: 9 of 25 stump-paragraph terms appear (installs, platform, incidents, install, telemetry, reconciliation); read whether the document names the move
-- **REVIEW** `dh3_data_health_hold_standard.pdf`: 12 of 25 stump-paragraph terms appear (installs, platform, incidents, install, allowance, record); read whether the document names the move
-- **REVIEW** `platform_change_log_2026.md`: 5 of 25 stump-paragraph terms appear (platform, install, record, exports, treatment); read whether the document names the move
-- **REVIEW** `reconciliation_summary_2026.pdf`: 7 of 25 stump-paragraph terms appear (installs, install, record, telemetry, reconciliation, default); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `dh3_data_health_hold_standard.pdf`: 12 of 25 stump-paragraph terms appear (sessions, install, incidents, register, allowance, platform); read whether the document names the move
+- **REVIEW** `platform_change_log_2026.md`: 5 of 25 stump-paragraph terms appear (install, register, platform, record, exports); read whether the document names the move
+- **REVIEW** `reconciliation_summary_2026.pdf`: 5 of 25 stump-paragraph terms appear (install, register, default, record, telemetry); read whether the document names the move
 
-## 7 hidden content (REVIEW 2)
-- **REVIEW** `install_summary_2026q2.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
-A suitable version of pyarrow or fastparquet is r
-- **REVIEW** `install_summary_2026q3.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
-A suitable version of pyarrow or fastparquet is r
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 9 dates after the setting (REVIEW 1)
+- **REVIEW** `booking_queue_2027q1.csv`: 18 ISO dates after 2026-10-12, e.g. 2027-01-04, 2027-01-11, 2027-01-25, 2027-02-08, 2027-02-22
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 11 prompt gate (REVIEW 2)
-- **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "each of the five"; the N things: "the five checks" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); reword at the role level, not the verb
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 36% of 196 prompts (cap 30%); reword at the role level, not the verb
 
-## 12 describing content (LEAK 1, REVIEW 2)
-- **LEAK** `data_dictionary.md`: names 44 column(s) of the data files verbatim, 100% of collector_daily_2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+## 12 describing content (REVIEW 2)
 - **REVIEW** `dh3_data_health_hold_standard.pdf`: names 11 column(s) of the data files verbatim (assigned, confirmed, control, design, events, experiment): confirm it is the organisation's own record and not a note written for the analyst
 - **REVIEW** `platform_change_log_2026.md`: names 9 column(s) of the data files verbatim (control, date, experiment, experiments, install, platform): confirm it is the organisation's own record and not a note written for the analyst
 
-## 13 task metadata (REVIEW 2)
-- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (platform, metric, metric-definition-measurement-science): say what the task decides, not how
-- **REVIEW** `metadata.json`: prompt_shape shares the design note's stump vocabulary (incidents, allowance, record, judged): say what the task decides, not how
+## 13 task metadata (REVIEW 1)
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (metric, platform, metric-definition-measurement-science, checks): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
 
 ## 6 ranking artifacts (clean)
+
+## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
@@ -135,3 +124,26 @@ A suitable version of pyarrow or fastparquet is r
 - Questions 1 to 4: none. Question 6: analytical. Harmless.
 - Ask-side readings (register type against cause established, the repeated app-wide figure): the ask devices, settled by the records (dictionary and DH-3 s.7; rows whose gap sessions exceed their own sessions). Kept.
 - Realism: reconciliation months now named the same way in the summary and the register (the month the reconciliation ran, and the runs it covered); SDK versions in the release file follow the change log; review comments varied. Fixed in the generator; no graded figure moved (checks, verify and figures_check re-run).
+
+### Reship read, 2026-11-02 (the final cut b9cd7086)
+
+One isolated reader on prompt.txt and target/ only, nothing computed.
+1. Decisive step: none stated. DH-3 section 5 states the selection rule and section 6 the line's population; neither
+   names the test or its unit.
+2. Ranking file: none. No file carries per-check hold counts, false-hold rates or a hold line.
+3. Explanatory files: none shipped. The hold standard, the platform change log and the reconciliation summary read
+   as the organisation's own records; the change log's 13 April entry (the export's move to Parquet, the arms renamed
+   control and treatment) is the platform's record of its own change, kept as SF10's home.
+4. Answer-like figure or name: none.
+5. Filed sentences: DH-3 sections 4 to 6 (the hold test at 1 per cent, the allowance, the selection and tie rule, the
+   standard experiment and the line's population); the test statistic and its unit are left open, the design's open
+   method.
+6. What decides: an analytical choice, the unit of the test (installs are randomised, sessions are not).
+Supplementary, the SDK 9.4.1 ask: the day boundary settled by "Copenhagen time" (no batch falls in the hours where the
+two ends of day differ); told to look for one install under more than one client ID, the reader found the sequence
+continuation by inspection; no sentence and no column states it (the ask's device, silent in the files, forced in the
+rows per the judge's pass 2).
+Realism notes (pre-existing, recorded): the weekly review log's comments repeat a small phrase set (a distractor
+since this rework); the register's name distortions read mechanical; the reconciliation table is regular; app-wide
+incident rows repeat one gap-session total per incident (the cut Ask C's columns); releases on Thursdays and
+experiments on Mondays; booking ids not in date order. None exclusion-level. Verdict: clean.

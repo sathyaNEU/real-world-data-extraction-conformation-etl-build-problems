@@ -1,5 +1,5 @@
-"""task228 documents: the data-health hold standard and the reconciliation summary (pdf), the incident register (xlsx),
-the data dictionary and the platform change log (md)."""
+"""task228 documents: the data-health hold standard and the reconciliation summary (pdf), the incident register (xlsx)
+and the platform change log (md). No file under target/ describes the data (dataset-generation section 3)."""
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -181,104 +181,7 @@ def register(path, rows):
     postprocess.finish_office(path, "2026-01-06T08:12:00Z", "2026-10-09T14:41:00Z", COMPANY)
 
 
-# ------------------------------------------------------------------ the dictionary and the change log
-DICTIONARY = """# Data dictionary: experiment data-health files
-
-Avisly Medier A/S, Data-health desk. Files pulled on Monday 12 October 2026. Times are Copenhagen local time unless a
-field says UTC.
-
-## experiment_registry_2026.json
-
-One object per experiment started in 2026, as the experiment platform holds it.
-
-- `key`: the experiment key.
-- `title`: the experiment's title as its owner entered it.
-- `team`: the product team that owns the experiment.
-- `start`, `end`: the run's first and last moment, Copenhagen local time with its UTC offset.
-- `design`: the share of installs the experiment assigns to each arm.
-- `assigned`: installs assigned to each arm over the run, including installs that have not allowed analytics.
-- `status`: completed for a run that ran its 14 days.
-- `scorecard_service`: the scorecard service that read the experiment out and wrote its install export (v1 for runs
-  that ended by 12 April 2026, v2 after).
-
-## install_summary_2026q1.csv
-
-Written by scorecard service 1. One row per install in an experiment that started from 5 January to 30 March 2026,
-written when the run ended. Installs that have not allowed analytics are not exported.
-
-- `exp_id`: the experiment key.
-- `install`: the install ID, hashed.
-- `variant`: the install's arm; A is the control arm and B the treatment arm.
-- `os`: iOS, Android or Web.
-- `n_sessions`: sessions the install started during the run.
-- `sessions_seq_gap`: of those, sessions whose events show a gap in the client's sequence numbers.
-- `sessions_dup_ids`: of those, sessions in which the collector received an event ID twice.
-- `sessions_late`: of those, sessions whose last batch reached the collector more than six hours after the session
-  ended.
-- `events`: events the collector received from the install during the run.
-
-## install_summary_2026q2.parquet and install_summary_2026q3.parquet
-
-Written by scorecard service 2, for experiments that started from 6 April to 29 June and from 6 July to 14 September
-2026. The content is service 1's under new names.
-
-- `experiment_key`, `install_id`, `arm` (control or treatment), `platform` (ios, android or web).
-- `sessions`, `gap_sessions`, `duplicate_sessions`, `late_sessions`, `events_received`: as `n_sessions`,
-  `sessions_seq_gap`, `sessions_dup_ids`, `sessions_late` and `events` above.
-
-## data_incident_register_2026.xlsx
-
-The desk's log of suspected and confirmed data incidents in 2026. An incident first logged as preliminary gets a second
-row when the monthly reconciliation confirms or withdraws it.
-
-- `incident_id`: the incident's reference.
-- `opened`: when the incident was logged. `closed`: for app-wide incidents, when the collector team closed it.
-- `scope`: experiment (logged against one experiment, named by its title) or app-wide (logged against the whole app,
-  one row for each platform it hit).
-- `experiment`: the experiment's title, typed by the desk.
-- `platform`: for app-wide rows, the platform.
-- `incident_type`: the type of data incident the on-call engineer logged when the incident was opened (telemetry
-  loss, duplicate delivery, late delivery or consent loss).
-- `status`, `status_date`: preliminary, confirmed or withdrawn, and the date the status was set.
-- `sessions_in_window`: app-wide rows, sessions that started on the row's platform between opened and closed, from
-  the collector.
-- `gap_sessions`: app-wide rows, gap sessions the reconciliation counted.
-- `notes`: free text.
-
-## reconciliation_summary_2026.pdf
-
-The monthly reconciliation of suspected incidents in experiments, January to September 2026 (see its first page).
-
-## weekly_review_log_2026.csv
-
-The Monday review of experiment telemetry, 12 January to 5 October 2026. One row per action.
-
-- `review_week`: the ISO week of the review.
-- `logged_at_utc`: when the action was logged, UTC.
-- `experiment_key`: the experiment the action concerns.
-- `action`: flag (the readout is held for a telemetry check), clear (the hold is lifted) or note (a comment, nothing
-  held).
-- `reviewer`, `comment`.
-
-## collector_daily_2026.csv
-
-The collector's daily totals by platform for every install, in an experiment or not: sessions started, gap,
-duplicate and late sessions, events received.
-
-## app_releases_2026.csv
-
-App releases for iOS and Android with the SDK version each carries and the date its rollout completed.
-
-## booking_queue_2027q1.csv
-
-Experiments booked to start from January to March 2027, with their planned installs (both arms, before consent) and
-design treatment share.
-
-## export_manifest.csv
-
-The files in this pull, with row counts.
-"""
-
+# ------------------------------------------------------------------ the change log
 CHANGELOG = """# Experiment platform change log, 2026
 
 Experimentation Platform, Avisly Medier A/S. Entries in date order.
@@ -299,9 +202,6 @@ Experimentation Platform, Avisly Medier A/S. Entries in date order.
 """
 
 
-def markdown(target, FILES):
-    import os
-    with open(os.path.join(target, FILES["dictionary"]), "w", encoding="utf-8", newline="\n") as f:
-        f.write(DICTIONARY)
-    with open(os.path.join(target, FILES["changes"]), "w", encoding="utf-8", newline="\n") as f:
+def changelog(path):
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(CHANGELOG)

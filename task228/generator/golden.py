@@ -1,5 +1,5 @@
-"""The golden deliverable: auto_hold_check_scorecard_2027.xlsx (the check and its line, every check's 2026 record, the
-weekly review's record by type of confirmed incident, the app-wide incidents)."""
+"""The golden deliverable: auto_hold_check_scorecard_2027.xlsx (the check and its line, every check's 2026 record, and the
+installs that sent from SDK 9.4.1 from 3 to 6 August still on it at each day's end)."""
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
@@ -79,42 +79,26 @@ def write(folder, A):
         _cell(ws2, i, 4, rec[m]["none"], "0", fill=fill)
         _cell(ws2, i, 5, "yes" if rec[m]["none"] <= cap else "no", fill=fill)
     ws2.freeze_panes = "A2"
-    # the weekly review
-    ws3 = wb.create_sheet("Weekly review")
-    _head(ws3, 1, ["Type of confirmed incident (cause the reconciliation established)", "Flagged by the weekly review",
-                   "Never flagged", "Confirmed incidents"], [44, 22, 16, 20])
-    for i, t in enumerate(E.TYPES, start=2):
-        f, n = A["review"][t]
-        _cell(ws3, i, 1, t.capitalize())
-        _cell(ws3, i, 2, f, "0")
-        _cell(ws3, i, 3, n, "0")
-        _cell(ws3, i, 4, f + n, "0")
-    r = len(E.TYPES) + 2
-    _cell(ws3, r, 1, "All types", bold=True)
-    for j in range(3):
-        _cell(ws3, r, 2 + j, sum((A["review"][t][0], A["review"][t][1], sum(A["review"][t]))[j] for t in E.TYPES), "0", bold=True)
+    # the installs that sent from SDK 9.4.1 from 3 to 6 August, still on it at each day's end
+    ws3 = wb.create_sheet("SDK 9.4.1 installs")
+    _head(ws3, 1, ["Day (Copenhagen time)", "iOS installs still on 9.4.1 at the day's end",
+                   "Android installs still on 9.4.1 at the day's end"], [24, 30, 32])
+    from datetime import date as _date
+    for i, d in enumerate(E.DAYS941, start=2):
+        y, m, dd = (int(x) for x in d.split("-"))
+        _cell(ws3, i, 1, _date(y, m, dd), "d mmmm yyyy")
+        _cell(ws3, i, 2, A["sdk941"][d]["ios"], "#,##0")
+        _cell(ws3, i, 3, A["sdk941"][d]["android"], "#,##0")
     ws3.freeze_panes = "A2"
-    # the app-wide incidents
-    ws4 = wb.create_sheet("App-wide incidents")
-    _head(ws4, 1, ["Incident", "Opened (Copenhagen)", "Platforms hit", "Gap sessions", "Sessions in the window",
-                   "Share of the window's sessions (%)"], [12, 20, 22, 14, 22, 22])
-    for i, a in enumerate(A["app_wide"], start=2):
-        _cell(ws4, i, 1, a["incident"])
-        _cell(ws4, i, 2, a["opened"])
-        _cell(ws4, i, 3, ", ".join(sorted(a["platforms"])))
-        _cell(ws4, i, 4, a["gap"], "#,##0")
-        _cell(ws4, i, 5, a["sessions"], "#,##0")
-        _cell(ws4, i, 6, round(a["share"], 2), "0.00")
-    ws4.freeze_panes = "A2"
     ws5 = wb.create_sheet("Notes")
-    notes = ["Sources: experiment registry, install exports (service 1 for Q1, service 2 after), incident register, "
-             "reconciliation summary and weekly review log, all as pulled on 12 October 2026.",
+    notes = ["Sources: experiment registry, install exports (service 1 for Q1, service 2 after) and incident register as pulled "
+             "on 12 October 2026; collector client summary for 3 to 19 August.",
              "An experiment counts as one with a confirmed data incident when the register holds a confirmed entry "
              "against it (18 of 82); withdrawn suspicions count as experiments without one.",
-             "Weekly review: an experiment counts as flagged if any review logged a flag against it, cleared or not; "
-             "types are the causes the reconciliation established.",
-             "App-wide incidents: the register repeats each incident's gap sessions on every platform row, so each "
-             "incident's figure is taken once; its sessions are the sum of its rows.",
+             "SDK 9.4.1 installs: the iOS and Android clients that sent a batch from 9.4.1 on a day from 3 to 6 August. The "
+             "11.3.0 update gave some installs a new client ID while their event counter carried on, so a client ID first "
+             "seen on 9.4.2 whose first sequence number is one above the last of a client ID last seen on 9.4.1 is the "
+             "same install. An install counts as still on 9.4.1 at a day's end while no 9.4.2 batch had arrived from it.",
              "Hold line: 2.576 standard errors of the difference in gap-session share for 10,000 installs an arm, the "
              "per-install variance taken from both arms of the 64 experiments without a confirmed incident."]
     for i, t in enumerate(notes, start=1):
