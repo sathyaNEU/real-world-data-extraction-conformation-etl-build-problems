@@ -10,16 +10,18 @@
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02",
+  "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-02 on 1a624630, no LEAK; four lines (sweeps 3, 4 and 6 on the screening note, the guidance and the inventory) ruled harmless in the note's Build record",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-11-02 (repeat.question_form against task484 v4, registered later)",
+  "nearest": "0.07 task464 v1",
+  "surface": "2026-11-02: no hard tell; two pairs promoted on surface similarity alone (task231, task271; shared gap label time) for the author's adjudicated clone check"
  },
  "judge": {
   "verdict": "",
@@ -40,7 +42,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 3: free gates on the final cut, then stage 4 (main session)",
+ "resume": "stage 4 (main session): the leak reader and the determinism judge on target.zip 1a624630; every finding fixed in the generator, then stage 5",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
@@ -115,5 +117,21 @@
    "report": "stage 4 (main session): gates A to E reproduced; Gate H3 rule_application (Schedule 2 filed the estimand and method); Gate F too easy (every session-based method lands on Kewdale); Gate G passed with sole_data_defect yes"
   },
   "fate": "spent 2026-11-02 at stage 4; the parcel-hub noise world closed"
+ },
+ "target_zip": "1a624630",
+ "as_of": "2026-12-04",
+ "gates_final_cut": {
+  "date": "2026-11-02",
+  "target_zip": "1a624630",
+  "checks": "58 of 58",
+  "verify": "14 of 14",
+  "rebuilds": "two byte-identical",
+  "figures_check": "37 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "heart": "WARN",
+  "surface": "2 promoted on surface similarity, no hard tell",
+  "pair_ceiling": "28.6 (mirror leakage 4.8 per cent, generator/ceiling.py)"
  }
 }

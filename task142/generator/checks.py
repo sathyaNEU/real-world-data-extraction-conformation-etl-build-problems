@@ -236,6 +236,19 @@ def main():
            KAB / (A.CP * p_lo), KA / (A.CP * max(gfam)), KA / (A.CP * min(gfam)), KAB / (A.CP * max(gfam)),
            KAB / (A.CP * min(gfam)), KA / (A.CP * 20)))
 
+    cy = {c["aansluitnummer"]: A.asdate(c["aansluitdatum"]).year for c in T["conns"]}
+    blk = [b["load"] for b in M["loads"]]
+    pre_ids = [i for i in M["kw"] if M["by"][i] < 1985]
+    filters = {"kW >= %d" % k: [i for i in pre_ids if M["kw"][i] >= k] for k in (250, 300, 350, 400, 450)}
+    filters["the blocks' kW range"] = [i for i in pre_ids if min(blk) <= M["kw"][i] <= max(blk)]
+    filters["built 1960 to 1972"] = [i for i in pre_ids if 1960 <= M["by"][i] <= 1972]
+    filters["connected by 2012"] = [i for i in pre_ids if cy[i] <= 2012]
+    filters["connected by 2015"] = [i for i in pre_ids if cy[i] <= 2015]
+    land4 = [(k, how) for k, ids in filters.items() for how in ("mean", "median", "harm")
+             if call_of(KA, KAB, A.pooled(per0, ids, M["kw"], how), H) != "none"]
+    ok("F4 no size, age or connection-year filter of the pre-1985 connections lands a season", not land4,
+       land4 or "%d filters x 3 poolings, all none" % len(filters))
+
     # ------------------------------------------------------------------ B: bin edges under every licensed member
     def edge(vals, unit):
         rs = {A.rnd(v, unit) for v in vals}

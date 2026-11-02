@@ -190,13 +190,16 @@ def main():
     gi = fin[(fin["claim_type"] == "INITIAL") & (fin["decision"] == "GRANTED")]
     cm = gi["claim"].dt.year * 12 + gi["claim"].dt.month - 1
 
-    def curve(mask, start, n):
+    kk = hh[hh["kids"] > 0]
+    stock_w = kk.loc[(kk["comp"] >= old_lim) & (kk["comp"] < c_lo), "household_weight"].sum()
+    stock_l = kk.loc[kk["comp"] < old_lim, "household_weight"].sum()
+
+    def curve(mask, start, stock):
         rel = (cm[mask] - start + 1)
-        rel = rel[(rel >= 1) & (rel <= n)]
-        c = np.cumsum(np.bincount(rel, minlength=n + 1)[1:])
-        return c / c[-1]
-    widen = curve((gi["inc"] >= old_lim) & (gi["inc"] < c_lo) & (gi["claim"] >= "2024-04-01"), 2024 * 12 + 3, 31)
-    launch = curve((gi["claim"] < "2024-04-01") & (gi["inc"] < old_lim), 2022 * 12 + 9, 18)
+        rel = rel[(rel >= 1) & (rel <= 12)]
+        return np.cumsum(np.bincount(rel, minlength=13)[1:]) / stock
+    widen = curve((gi["inc"] >= old_lim) & (gi["inc"] < c_lo) & (gi["claim"] >= "2024-04-01"), 2024 * 12 + 3, stock_w)
+    launch = curve((gi["claim"] < "2024-04-01") & (gi["inc"] < old_lim), 2022 * 12 + 9, stock_l)
     nrows = reg["case_number"].value_counts()
     one = gi[gi["case_number"].map(nrows) == 1]
     lag = (one["first"] - (one["claim"].dt.year * 12 + one["claim"].dt.month - 1)).value_counts(normalize=True)
@@ -218,7 +221,7 @@ def main():
         for n_, q in d.items():
             if n_:
                 tot += q * wk[lifted(annual[m] / 12.0 * n_)].sum()
-        return take * tot
+        return tot
     y27 = {"A": static["A"], "E": static["E"], "B": year27("B", launch), "C": year27("C", widen),
            "D": year27("D", launch)}
     call = max(y27, key=y27.get)
@@ -271,12 +274,11 @@ def main():
     ok("V5 ask 1: all 12 family counts recompute and match the golden workbook and figures.json", all_ok)
 
     # ---------------------------------------------------------------- ask 2
-    fw = pd.read_csv(fn["fw"], dtype=str)
-    parts = fw["dwelling"].str.split("-", expand=True)
-    fw["key"] = parts[0] + ":" + parts[2]
+    fw = pd.read_csv(fn["fw"], dtype=str, keep_default_na=False)
+    fw["key"] = np.where(fw["reissue_of"] != "", fw["reissue_of"], fw["case"])
     fw["issue"] = fw["issue"].astype(int)
     lastc = fw.sort_values("issue").groupby("key").tail(1)
-    lastc = lastc.assign(prov=lastc["key"].str[:5].map(codes))
+    lastc = lastc.assign(prov=lastc["dwelling"].str[:5].map(codes))
     elig = lastc[~lastc["result"].isin(["empty dwelling", "not a dwelling", "address not found"])]
     gf = {r[0]: r[1:4] for r in xlsx_rows(os.path.join(GOLD, "appraisal_annex_2027.xlsx"), "ECVV 2026 fieldwork")
           if r and r[0] in names.values()}

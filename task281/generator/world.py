@@ -128,7 +128,9 @@ def build(seed=P.SEED):
         for _ in range(n):
             g = rng.random()
             grp = "UG" if g < 0.70 else ("PGT" if g < 0.93 else "PGR")
-            students.append(dict(id=sid, school=code, group=grp, leaves=rng.random() < (0.24 if grp == "UG" else 0.62)))
+            imp = rng.random() < P.BEHAVIOUR[old]["imp"]
+            students.append(dict(id=sid, school=code, group=grp, imp=imp,
+                                 leaves=rng.random() < (0.24 if grp == "UG" else 0.62)))
             sid += 1
     W.students = students
     by_school = {}
@@ -200,7 +202,7 @@ def build(seed=P.SEED):
             if not active:
                 continue
             shape = weekly_shape(rng)[:weeks]
-            scale = t["pop"] * beh["demand"] * 3.3
+            scale = t["pop"] * beh["demand"] * P.DEMAND_SCALE
             for w, f in enumerate(shape):
                 lam = scale * f
                 n = poisson(rng, lam)
@@ -305,17 +307,20 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
             else:
                 push(time + dt.timedelta(hours=P.OFFER_HOURS), "expire", h)
 
-    def hazard(pos):
+    def hazard(pos, h):
         cap = max(1, capacity)
         ahead_weeks = (pos - 1) / cap * 0.75
-        return beh["base"] + beh["sens"] * max(0.0, ahead_weeks - 0.4)
+        hz = beh["base"]
+        if W.students[h.student]["imp"]:
+            hz += P.IMPATIENT_SENS * max(0.0, ahead_weeks - 1.0)
+        return hz
 
     now = None
     while ev:
         nxt = ev[0][0]
         # competing cancellations among waiting holds
         if queue:
-            hz = [hazard(i + 1) for i in range(len(queue))]
+            hz = [hazard(i + 1, queue[i]) for i in range(len(queue))]
             tot = sum(hz)
             if tot > 0:
                 gap_days = rng.expovariate(tot)

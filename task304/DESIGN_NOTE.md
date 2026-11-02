@@ -341,7 +341,7 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 9 to the crac
 - **Gates on the final cut (2026-11-02):** generator checks 58 of 58; verify 14 of 14 (its own NB2 fit by joint
   quasi-Newton, overdispersion 0.260); two byte-identical builds, target.zip 1a624630; figures_check 37 figures, 0
   absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (710 characters); leak.py REVIEW, no LEAK (ruled below);
-  guard heart PASS (nearest driver 0.07); guard surface: no hard tell (no shared file, seed table or invented name;
+  guard heart WARN (repeat.question_form against task484 v4, a card registered after this one: the prompt opens on which and how many because the call is a pick sized by a count; nearest driver 0.07); guard surface: no hard tell (no shared file, seed table or invented name;
   personas Alison Hartley and Cheryl Gregory, the card's), two pairs promoted on surface similarity alone (corpus top 1
   per cent) against task231 and task271, each sharing only the decisive gap label (time), for the author's adjudicated
   clone check. Pair ceiling 28.6, mirror leakage 4.8 per cent (generator/ceiling.py).

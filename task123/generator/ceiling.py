@@ -37,6 +37,13 @@ def main(target):
         print("| %s | %d | %d | %d | %s |" % (name, n, k, m, "miss" if k < n else "keep"))
     print("\nLc = %.3f, Ls = %.3f, C = %.1f, S = %.1f, pair ceiling = %.1f, mirror leakage = %.1f per cent of ask weight"
           % (Lc, Ls, C, S, pair, 100 * Ls))
+    # the full includer: also executes standard section 6's hourly cross-check, which files ask C exactly
+    rc = R.c_literal(D, U)
+    kc = sum(1 for x in E["voltage_pct"] if binv(rc[x], 0.01) == binv(E["voltage_pct"][x], 0.01))
+    kept_f = kept - rows[2][2] + kc
+    Lf = kept_f / total
+    print("full includer (section 6's cross-check executed): ask C keeps %d of 18, Lc = %.3f, pair = %.1f, mirror leakage = %.1f"
+          % (kc, Lf, (38 + 7 + 55 * Lf + 5 + 7 + 55 * Lf) / 2, 100 * Lf))
     return pair, 100 * Ls
 
 

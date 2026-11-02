@@ -97,13 +97,14 @@ def write(target, w, r):
 
     # ---------------- flyer keying: the ad plan, the two price change releases, the flyer item weekly units -----
     rows = []
-    for (k, line, members, qty, price_q) in w.ad_lines:
+    for (k, line, members, qty, price_q, lead) in w.ad_lines:
         d = w.co[k]["date"]
         txt = ("$%.2f" % price_q) if qty == 1 else ("%d/$%.2f" % (qty, price_q) if qty == 2 else
                                                      "%d for $%d" % (qty, int(round(price_q))))
-        for i in members:
-            desc = w.desc[i]
-            rows.append([d.isoformat(), "%03d" % line, w.upc[i][:11], desc, txt])
+        copy = w.famname[w.fam[lead]] + (", assorted" if len(members) > 1 else "")
+        if len(members) == 1:
+            copy = w.desc[lead]
+        rows.append([d.isoformat(), "%03d" % line, w.upc[lead][:11], copy, txt])
     write_csv(os.path.join(target, F["adplan"]), ["flyer_start", "ad_line", "upc_11", "ad_copy", "ad_price"], rows)
     n["adplan"] = len(rows)
 
@@ -111,7 +112,7 @@ def write(target, w, r):
     wb.remove(wb.active)
     for rel in ("PRELIM", "REVISED"):
         ws = wb.create_sheet(rel)
-        ws.append(["Release", "Issued", "Effective", "EAN", "Zone", "Change", "Price", "Price qty"])
+        ws.append(["Release", "Issued", "Effective", "EAN", "Description", "Zone", "Change", "Price", "Price qty"])
         for k, c in enumerate(w.co):
             d = c["date"]
             issued = d - dt.timedelta(days=3 if rel == "PRELIM" else 2)
@@ -124,11 +125,11 @@ def write(target, w, r):
                         qty, pq = w.keyed[(k, i, zone, rel)]
                     else:
                         qty, pq = 1, float(c["new"][j])
-                    ws.append([relid, issued, d, ean13(w.upc[i]), zone, c["kind"][j], pq, qty])
+                    ws.append([relid, issued, d, ean13(w.upc[i]), w.desc[i].upper(), zone, c["kind"][j], pq, qty])
         for rr in ws.iter_rows(min_row=2):
             rr[1].number_format = "yyyy-mm-dd"
             rr[2].number_format = "yyyy-mm-dd"
-            rr[6].number_format = "0.00"
+            rr[7].number_format = "0.00"
     xlsx_props(wb, "Saltmarsh Market Pricing", "Weekly price change releases Q4 2026")
     p = os.path.join(target, F["pricefile"])
     wb.save(p)

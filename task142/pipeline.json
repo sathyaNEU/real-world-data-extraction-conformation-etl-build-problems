@@ -20,7 +20,7 @@
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g against task301, answered in the Draw), 2026-11-02",
   "nearest": "task273 v6 at 0.08",
-  "surface": "no pair promoted for task142, 2026-11-02"
+  "surface": "5 pairs promoted for the author's adjudication, differentiation lines on the card, 2026-11-02"
  },
  "judge": {
   "verdict": "",
@@ -49,13 +49,17 @@
  "call": "2028-29 heating season (about 200 m3/h against 168 available, short by about 30; 2027-28 holds at about 150)",
  "asof": "2026-10-16",
  "gates_final_cut": {
-  "checks": "85 of 85",
+  "checks": "86 of 86",
   "verify": "0 failed",
   "byte_identical": "two builds, 17 files",
   "figures_check": "59 of 59",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS",
-  "target_zip": "5760b115",
+  "leak_py": "REVIEW (8 lines ruled in the note)",
+  "heart": "WARN (repeat.gate_g vs task301)",
+  "surface": "5 pairs promoted for adjudication (task140 two apart on gap, G1, capacity report; task134, task133, task167, task261 on surface similarity 0.10); differentiation lines on the card",
+  "target_zip": "b35cf51b",
+  "zip_fresh": true,
   "pair_ceiling": 28.5,
   "mirror_leakage": 0.0
  }

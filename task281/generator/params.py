@@ -42,19 +42,24 @@ FACULTIES = [
 # behaviour per old faculty: request intensity scale, copies scale, cancel base (per day), sensitivity
 # (extra daily cancel probability per expected week of wait ahead)
 BEHAVIOUR = {
-    "AH": dict(demand=0.78, copies=1.00, base=0.006, sens=0.012),
-    "SS": dict(demand=0.95, copies=1.05, base=0.007, sens=0.016),
-    "BS": dict(demand=1.25, copies=1.15, base=0.009, sens=0.085),
-    "LW": dict(demand=1.10, copies=0.95, base=0.008, sens=0.110),
-    "EN": dict(demand=1.05, copies=1.10, base=0.008, sens=0.030),
-    "PS": dict(demand=0.90, copies=1.05, base=0.007, sens=0.024),
-    "LS": dict(demand=1.00, copies=1.00, base=0.008, sens=0.020),
-    "MD": dict(demand=1.30, copies=1.20, base=0.010, sens=0.095),
-    "NH": dict(demand=1.05, copies=0.90, base=0.009, sens=0.055),
+    # demand: request intensity; copies: copies bought per unit of demand; imp: share of students who give up
+    # on a long queue (buy or borrow the book elsewhere); base: daily cancel probability of any waiting hold
+    "AH": dict(demand=0.95, copies=1.00, imp=0.10, base=0.004),
+    "SS": dict(demand=1.00, copies=1.05, imp=0.14, base=0.004),
+    "BS": dict(demand=1.05, copies=1.10, imp=0.55, base=0.005),
+    "LW": dict(demand=1.10, copies=0.95, imp=0.62, base=0.005),
+    "EN": dict(demand=1.00, copies=1.10, imp=0.22, base=0.004),
+    "PS": dict(demand=0.95, copies=1.05, imp=0.18, base=0.004),
+    "LS": dict(demand=1.00, copies=1.00, imp=0.20, base=0.004),
+    "MD": dict(demand=1.10, copies=1.15, imp=0.58, base=0.005),
+    "NH": dict(demand=1.00, copies=0.95, imp=0.40, base=0.005),
 }
+IMPATIENT_SENS = 0.55     # extra daily cancel probability per week of estimated wait beyond the first
 
 OFFER_HOURS = 48
 P_BORROW = 0.86
 LOAN_DAYS = [(7, 0.66), (3, 0.19), (1, 0.15)]
 P_EARLY_RETURN = 0.24
 METER_LOANS = 40
+
+DEMAND_SCALE = 10.0

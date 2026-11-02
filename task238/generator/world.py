@@ -78,32 +78,41 @@ class World:
     # ------------------------------------------------------------------ assortment
     def items(self):
         r = self.r
-        n = 12600
+        varieties = ["Original", "Vanilla", "Strawberry", "Low Fat", "Garlic", "BBQ", "Sea Salt", "Unsalted",
+                     "Spicy", "Honey", "Lemon", "Mint", "Whole Wheat", "Light", "Classic", "Extra Sharp", "Medium",
+                     "Mild", "Peach", "Mixed Berry", "Dark Roast", "Decaf", "Chicken", "Beef", "Unscented"]
         seen = set()
         rows = []
+        fam = []
         mfr = [str(x) for x in r.choice(np.arange(55000, 79000), size=180, replace=False)]
-        while len(rows) < n:
+        fid = 0
+        while len(rows) < 12600:
             dep = DEPTS[r.choice(len(DEPTS), p=DEPT_W / DEPT_W.sum())]
             m = mfr[r.integers(len(mfr))]
-            body = "0" + m + "%05d" % r.integers(0, 100000)
-            body = body[:11]
-            if body in seen:
-                continue
-            seen.add(body)
-            upc = body + upc_check(body)
             brand = BRANDS[r.integers(len(BRANDS))]
             noun = NOUNS[dep][r.integers(len(NOUNS[dep]))]
             size = SIZES[r.integers(len(SIZES))]
+            nv = int(r.choice([1, 2, 3, 4, 5], p=[0.46, 0.2, 0.16, 0.1, 0.08]))
             base = float(np.round(np.exp(r.normal(1.35, 0.55)), 2))
             price = max(0.99, round(np.floor(base) + [0.49, 0.79, 0.99, 0.29, 0.69][r.integers(5)], 2))
-            pop = float(np.exp(r.normal(0, 1.1)))
-            rows.append((upc, dep, "%s %s %s" % (brand, noun, size), price, pop))
+            vs = list(r.choice(varieties, size=nv, replace=False)) if nv > 1 else [""]
+            fid += 1
+            for v in vs:
+                body = ("0" + m + "%05d" % r.integers(0, 100000))[:11]
+                if body in seen:
+                    continue
+                seen.add(body)
+                upc = body + upc_check(body)
+                desc = " ".join(x for x in (brand, noun, v, size) if x)
+                rows.append((upc, dep, desc, price, float(np.exp(r.normal(0, 1.1))), fid, "%s %s %s" % (brand, noun, size)))
         self.upc = np.array([x[0] for x in rows])
         self.dept = np.array([x[1] for x in rows])
         self.desc = np.array([x[2] for x in rows])
         self.reg = np.array([x[3] for x in rows])
         self.pop = np.array([x[4] for x in rows])
-        # store assortments: the big stores carry everything, the small ones a popularity-led subset
+        self.fam = np.array([x[5] for x in rows])
+        self.famname = {x[5]: x[6] for x in rows}
+        n = len(rows)
         self.stocked = {}
         big = max(s[6] for s in P.STORES)
         for s in P.STORES:
@@ -162,9 +171,24 @@ class World:
             big = d in P.HOLIDAY_WEEKS
             n_ad = int(r.integers(150, 185) if big else r.integers(96, 122))
             n_reg = int(r.integers(38, 70))
-            cand = r.choice(n, size=n_ad * 3, replace=False, p=w)
             prev = set(int(x) for x in prev_ad)
-            ad = np.array([int(i) for i in cand if int(i) not in prev][:n_ad])
+            fams = []
+            got = 0
+            famw = {}
+            for i in range(n):
+                famw[self.fam[i]] = famw.get(self.fam[i], 0.0) + w[i]
+            fkeys = np.array(sorted(famw))
+            fw = np.array([famw[f] for f in fkeys])
+            for f in r.choice(fkeys, size=len(fkeys), replace=False, p=fw / fw.sum()):
+                mem = [int(i) for i in np.where(self.fam == f)[0]]
+                if any(i in prev for i in mem):
+                    continue
+                fams.append(mem)
+                got += len(mem)
+                if got >= n_ad:
+                    break
+            ad = np.array([i for mem in fams for i in mem])
+            self.co_families = getattr(self, "co_families", []) + [fams]
             ended = prev_ad.copy()
             rest = np.setdiff1d(np.arange(n), np.concatenate([ad, ended]).astype(int))
             regs = r.choice(rest, size=n_reg, replace=False)
@@ -172,9 +196,10 @@ class World:
             kinds = np.array(["AD START"] * len(ad) + ["AD END"] * len(ended) + ["REG"] * len(regs))
             old = cur[items].copy()
             new = np.empty(len(items))
+            famcut = {}
             for j, i in enumerate(items):
                 if kinds[j] == "AD START":
-                    cut = float(r.choice([0.15, 0.2, 0.25, 0.3, 0.33, 0.4]))
+                    cut = famcut.setdefault(self.fam[i], float(r.choice([0.15, 0.2, 0.25, 0.3, 0.33, 0.4])))
                     target = regular[i] * (1 - cut)
                     p = np.floor(target) + 0.99 - (1.0 if target - np.floor(target) < 0.99 else 0.0)
                     p = round(max(0.79, p if p > 0.5 else round(target, 2)), 2)
@@ -375,35 +400,33 @@ class World:
     # ------------------------------------------------------------------ flyer keying (ask B)
     def flyer_keying(self):
         r = self.r
-        self.ad_lines = []    # (k, line_no, [item indexes], qty, ad_price_for_qty)
+        self.ad_lines = []    # (k, line_no, [item indexes], qty, ad_price_for_qty, lead item)
         self.keyed = {}       # (k, item, zone, release) -> (qty, price_for_qty)
         self.ad_units = {}    # (k, item, zone) -> units in the flyer week
         for k, c in enumerate(self.co):
-            ad = list(c["ad_items"])
-            r.shuffle(ad)
-            line = 0
-            pos = 0
-            while pos < len(ad):
-                line += 1
-                grp = int(r.choice([1, 1, 1, 1, 2, 3, 4], p=[0.5, 0.15, 0.1, 0.05, 0.1, 0.06, 0.04]))
-                members = ad[pos:pos + grp]
-                pos += grp
+            fams = list(self.co_families[k])
+            order = r.permutation(len(fams))
+            for line, fi in enumerate(order, start=1):
+                members = fams[fi]
                 unit = float(np.max([c["ad_price"][int(np.where(c["ad_items"] == i)[0][0])] for i in members]))
                 qty = int(r.choice([1, 2, 3], p=[0.72, 0.18, 0.10]))
-                if qty > 1:
+                if qty == 2:
                     unit = max(1.00, round(np.floor(unit) + 0.50, 2))
-                    price_q = round(unit * qty, 2) if qty == 2 else float(np.round(unit * 3)) + 0.0
+                    price_q = round(unit * 2, 2)
+                elif qty == 3:
+                    price_q = float(max(3, int(np.round(unit * 3))))
                 else:
                     price_q = unit
-                self.ad_lines.append((k, line, [int(i) for i in members], qty, round(price_q, 2)))
+                lead = int(members[int(np.argmax(self.pop[members]))])
+                self.ad_lines.append((k, line, [int(i) for i in members], qty, round(price_q, 2), lead))
                 for i in members:
                     for zone in (1, 2):
                         good = (qty, round(price_q, 2))
                         prelim = good
                         u = r.random()
-                        if u < 0.035:
-                            prelim = (qty, round(price_q + r.choice([0.50, 1.00, 0.30]), 2))
-                        elif u < 0.045 and qty > 1:
+                        if u < 0.030:
+                            prelim = (qty, round(price_q + float(r.choice([0.50, 1.00, 0.30])), 2))
+                        elif u < 0.040 and qty > 1:
                             prelim = (1, round(price_q, 2))
                         revised = good if r.random() < 0.62 else prelim
                         if prelim == good and r.random() < 0.006:
@@ -411,7 +434,7 @@ class World:
                         self.keyed[(k, int(i), zone, "PRELIM")] = prelim
                         self.keyed[(k, int(i), zone, "REVISED")] = revised
                         zw = 0.6 if zone == 1 else 0.4
-                        self.ad_units[(k, int(i), zone)] = int(r.poisson(self.pop[i] * 260 * zw) + 3)
+                        self.ad_units[(k, int(i), zone)] = int(r.poisson(self.pop[i] * 180 * zw) + 3)
 
 
 def build_world():

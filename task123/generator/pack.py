@@ -169,11 +169,87 @@ def events(W):
                     # the record's extreme is the meter's ten-cycle value, beyond its five-minute averages
                     m5 = float(x[k:k2 + 1].max())
                     out.append({"i": i, "serial": a["serial"], "element": el, "start": st, "end": en,
-                                "m5": m5, "vpk": m5 + 0.15 + abs(rng.normal(0, 0.3))})
+                                "m5": m5, "vpk": m5 + 0.15 + abs(rng.normal(0, 0.3)),
+                                "slot_end": t0 + timedelta(seconds=(k2 + 1) * 300)})
                     k = k2 + 1
                 else:
                     k += 1
     return out
+
+
+# concentrator (tower, first floor, last floor) and the market-time date of the morning it rebooted
+RESEND_ZONES = [("A", 2, 3, 15), ("A", 8, 9, 16), ("A", 12, 13, 19), ("A", 14, 15, 15), ("A", 20, 21, 16), ("A", 22, 23, 19),
+                ("B", 4, 5, 16), ("B", 6, 7, 19), ("B", 10, 11, 15), ("B", 16, 17, 16), ("B", 18, 19, 19), ("B", 22, 23, 15),
+                ("C", 2, 3, 19), ("C", 6, 7, 15), ("C", 10, 11, 16), ("C", 16, 17, 19), ("C", 18, 19, 16), ("C", 24, 25, 15)]
+WEEK = (datetime(2026, 7, 12, 14, 0), datetime(2026, 7, 19, 14, 0))       # 13 to 19 July, midnight to midnight market time
+
+
+def in_resend_window(a, e):
+    for tw, f0, f1, day in RESEND_ZONES:
+        lo = datetime(2026, 7, day - 1, 14, 0) - timedelta(minutes=25)
+        hi = datetime(2026, 7, day - 1, 22, 0)
+        if a["tower"] == tw and f0 <= a["floor"] <= f1 and lo <= e["start"] < hi:
+            return True
+    return False
+
+
+def _union_secs(lst):
+    lst = sorted(lst)
+    tot, (cs, ce) = 0.0, lst[0]
+    for s_, t_ in lst[1:]:
+        if s_ <= ce:
+            ce = max(ce, t_)
+        else:
+            tot += (ce - cs).total_seconds()
+            cs, ce = s_, t_
+    return tot + (ce - cs).total_seconds()
+
+
+def tune_week_edges(W, evs):
+    """The excursions' end seconds are a free quantity of the world (each closes somewhere inside its last
+    five-minute interval): where a riser's share of time outside in the week would sit near a rounding edge of its
+    two-decimal figure, a few of its single-phase excursions close a little earlier or later inside that interval,
+    so the figure keeps clear of its edges by more than an end second counted inclusively would move it."""
+    apts = W["apts"]
+    w0, w1 = WEEK
+    for r in W["plan"]:
+        idx = [i for i, a in enumerate(apts) if a["riser"] == r["riser"]]
+        denom = len(idx) * 7 * 86400.0
+        mine = [e for e in evs if apts[e["i"]]["riser"] == r["riser"]]
+
+        def share(extra_s=0):
+            per = {}
+            for e in mine:
+                s_, t_ = max(e["start"], w0), min(e["end"] + timedelta(seconds=extra_s), w1)
+                if t_ > s_:
+                    per.setdefault(e["i"], []).append((s_, t_))
+            return sum(_union_secs(v) for v in per.values()) / denom * 100.0
+
+        v = share()
+        move = share(1) - v
+        R = round(v, 2)
+        lo_safe, hi_safe = R - 0.005 + 0.0008, R + 0.005 - move - 0.0006
+        if lo_safe <= v <= hi_safe:
+            continue
+        target = (hi_safe - 0.0002) if v > hi_safe else (lo_safe + 0.0002)
+        need = (target - v) / 100.0 * denom          # seconds, signed
+        pool = [e for e in mine if not apts[e["i"]]["three_phase"] and w0 < e["start"] and e["end"] < w1
+                and not in_resend_window(apts[e["i"]], e) and (e["end"] - e["start"]).total_seconds() >= 300]
+        for e in pool:
+            if abs(need) < 0.5:
+                break
+            slot_end = e["slot_end"]
+            if need < 0:
+                room = min(290 - (slot_end - e["end"]).total_seconds(), (e["end"] - e["start"]).total_seconds() - 240)
+                d = -min(room, -need)
+            else:
+                d = min((slot_end - e["end"]).total_seconds(), need)
+            d = float(int(d))
+            if d == 0:
+                continue
+            e["end"] = e["end"] + timedelta(seconds=d)
+            need -= d
+    return evs
 
 
 def resent(W, evs):
@@ -186,14 +262,10 @@ def resent(W, evs):
     meters' own hourly maxima are inside the limits."""
     rng = np.random.default_rng(Wd.SEED + 131)
     apts = W["apts"]
-    # concentrator (tower, first floor, last floor) and the market-time date of the morning it rebooted
-    zones = [("A", 2, 3, 15), ("A", 8, 9, 16), ("A", 12, 13, 19), ("A", 14, 15, 15), ("A", 20, 21, 16), ("A", 22, 23, 19),
-             ("B", 4, 5, 16), ("B", 6, 7, 19), ("B", 10, 11, 15), ("B", 16, 17, 16), ("B", 18, 19, 19), ("B", 22, 23, 15),
-             ("C", 2, 3, 19), ("C", 6, 7, 15), ("C", 10, 11, 16), ("C", 16, 17, 19), ("C", 18, 19, 16), ("C", 24, 25, 15)]
     extra = []
     for e in evs:
         a = apts[e["i"]]
-        for tw, f0, f1, day in zones:
+        for tw, f0, f1, day in RESEND_ZONES:
             lo = datetime(2026, 7, day - 1, 14, 0) - timedelta(minutes=25)       # last good upload, 23:35 market time
             hi = datetime(2026, 7, day - 1, 22, 0)                              # reboot, 08:00 market time
             if a["tower"] == tw and f0 <= a["floor"] <= f1 and lo <= e["start"] < hi and (e["end"] - e["start"]).total_seconds() >= 600:
@@ -209,7 +281,7 @@ def resent(W, evs):
 
 
 def events_json(W, path):
-    evs = events(W)
+    evs = tune_week_edges(W, events(W))
     evs = evs + resent(W, evs)
     rng = np.random.default_rng(Wd.SEED + 141)
     evs.sort(key=lambda e: (e["start"], e["serial"], e["element"]))

@@ -186,7 +186,7 @@ def main():
         rd = csv.DictReader(fh)
         for r in rd:
             pq.setdefault(r["meter_serial"], {}).setdefault(r["element"], []).append((r["interval_start_utc"], float(r["v_avg"])))
-            hourmax[(r["meter_serial"], r["element"], r["interval_start_utc"][:13])] = float(r["v_max"])
+            hourmax[(r["meter_serial"], r["element"], r["interval_start_utc"][:13])] = (float(r["v_min"]), float(r["v_max"]))
     # phase groups: iterative correlation-to-centroid assignment, its own method
     shares = {}
     for rid in sorted(risers):
@@ -297,15 +297,16 @@ def main():
         u = s2u.get(e["meter_serial"])
         if not u:
             continue
-        # the meter's own hourly maxima: a record in hours that stay inside 253 V records no time outside
+        # section 6: a record counts only where the meter's own hourly maximum or minimum in an hour it covers
+        # is itself outside 216 V to 253 V
         h0 = datetime.strptime(e["start_utc"][:13], "%Y-%m-%dT%H")
-        hs = []
+        counts = False
         while h0 < datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ"):
             k = (e["meter_serial"], e["element"], h0.strftime("%Y-%m-%dT%H"))
-            if k in hourmax:
-                hs.append(hourmax[k])
+            if k in hourmax and (hourmax[k][1] > 253.0 or hourmax[k][0] < 216.0):
+                counts = True
             h0 += timedelta(hours=1)
-        if hs and max(hs) <= 253.0:
+        if not counts:
             continue
         s = max(datetime.strptime(e["start_utc"], "%Y-%m-%dT%H:%M:%SZ"), lo)
         t = min(datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ"), hi)
