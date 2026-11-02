@@ -1,41 +1,36 @@
 {
   "task": "task501",
-  "status": "PAUSED",
-  "domain": "epidemiology-public-health",
+  "status": "DESIGN",
+  "domain": "energy-systems-utilities/asset-condition-maintenance",
   "objective": "forecasting",
-  "stage": 1,
-  "stage_name": "re-root owed (ask layer spent in this world)",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-11-02",
-  "target_zip_md5": "84e4046b9f27621e5ee921772b7c5a20",
-  "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
-  "architecture": 4,
-  "round": 2,
+  "stump": "Building each trunk main's 2026 flows from the district meters and the normal valve arrangement and flushing every main the Hollins Lane relining sends above its own 2026 peak names all six mains the relining raises; the step that lands it there is reading each main's conditioning off the arrangement on paper, when the valve operations log shows the 2026 phase 1 relining and the June and July T04 jobs ran four of them at flows the relining will not reach, so only two need flushing.",
+  "architecture": 5,
+  "round": 1,
   "loops": 0,
+  "drawn": {
+    "date": "2026-11-02",
+    "card_registered": "2026-11-02T18:16:10Z",
+    "guard_check": "PASS on the registered card (NOTE test.same_puzzle_older against task445 v2, differentiated)"
+  },
   "precut": {
-    "exit": 0,
-    "date": "2026-11-02"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild after the stage 4 fix pass (--asof 2027-07-12), no LEAK, sweep 11 clean; the five lines (sweeps 3, 4 and 9) answered in the design note's Build record",
-    "reader": "round 2 read 2026-10-14 on the round 2 pack: no decisive-step sentence, no ranking, helping file or answer-like figure; Q5 read literally gives 0.72 (rung 0), Q6 an analytical choice; realism tells fixed in the generator (the extract notes' thumbnail and customXml parts, the stock return's batch numbers), the options paper's budget sentence left with its reason; appended to leak_check_report.md; no second read, since no document's text or the prompt changed",
-    "reship_reader_rubric": "2026-11-01, fresh copy of 81564f48 with the new prompt: no decisive-step sentence, nothing computes R, Q6 an analytical choice (turning age-specific immunity and the contact survey into a reproduction number); its ask readings closed per pass 3",
-    "leak_py_2026_11_02": "REVIEW 2026-11-02 on cut 84e4046b (--asof 2027-07-12), no LEAK: the four standing lines (sweep 3 the call's own words in the options paper and PS-07, sweep 4 their own nouns, sweep 9 the stock return's future expiries, sweep 11 the frozen prompt shell's quota); the leak reader's fresh copy is the scratchpad's leak-task501-ask (prompt.txt and target/ from the new zip), not yet read"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-14 on the final round 2 rebuild, no BLOCK (nearest driver off the slot 0.06, task32; this slot's round 1 driver differentiated on the card)",
-    "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 169 cards, 0 invalid",
-    "heart_2026_11_01": "BLOCK read against the dates as H27 artifacts: test.same_puzzle_older against task194 v3 (drawn 2026-10-17) and test.same_driver_older against task174 v2 (2026-10-28), task242 (2026-10-17), task461 (2026-10-15) and task476 v2 (2026-10-20), all drawn after this build's 2026-10-12 draw. Surface exit 0.",
-    "surface_2026_11_02": "exit 0 on cut 84e4046b: 15 pairs promoted for the author-triggered adjudication (surface similarity in the corpus top 1 per cent, nearest task265 at 0.101, and four same-driver card signatures), none from the ask layer",
-    "heart_2026_11_02": "BLOCK on the card's two structural tests (test.same_puzzle_older against task194, drawn 2026-10-17; test.same_driver_older against task174 2026-10-28, task242 2026-10-17, task461 2026-10-15, task476 2026-10-20), every colliding card drawn after this build's 2026-10-12 draw (H27, as recorded on 2026-11-01); the card is untouched by the ask rework"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC (round 2, one isolated thread on the round 2 pack, 2026-10-14), every figure reproduced",
-    "disposition": "APPROVE; its four residual forks closed in one generator pass with no graded figure moved (freeze.py PASS): SF20 and SF26 by the literal reading, SF25 closed in the data and not pinned, SF27 the 2024 twins a boy and a girl so every person key converges, SF23 the meaning of living in the region; both optional pins declined; no re-judge",
-    "report": "task501/determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
-    "gate_g": "method_or_model_selection on honest data, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-    "gate_h": "domain pass, layers pass, decisive step analytical",
-    "pass3": "2026-11-01 re-judge on 81564f489c1ab10c04582ad74fecb818: DETERMINISTIC (task501/determinism_check_report_pass3.md); the call (fund B; R 1.30 with no catch-up, B 0.89) forced and every figure reproduced; Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical. Its residual readings: the diary set is the stump (PS-07 3.1's 'throughout'); one child per GP return line is Ask 1's device, forced by the rows; the blank area codes equal the BT postcodes; LH27 by the circular; Imported by the column's own label. Its optional FIX_NOW (Ask 3's unit as people) was measured and not filed: the people clause hands the cracker Ask 3 (pair 60.4 against the 60 build line), and the judge rules the record reading incoherent (it collapses legacy pairs as one illness yet counts the same person's same-day notices twice; the pack's comments name them as notifications). Accepted residual risk on Ask 3's unit.",
-    "pass4": "2026-11-02 (84e4046b): NOT_DETERMINISTIC, SEND_BACK on the register asks; call and R values forced"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [
     {
@@ -74,7 +69,7 @@
       "judge": "2026-11-02 pass 4 on cut 84e4046b: NOT_DETERMINISTIC, SEND_BACK on the register asks (determinism_check_report_pass4.md): the call and all six reproduction numbers forced and reproduced, but the 104 decade-early dates of birth and the 228 same-day GP lines given to a twin read as unfiled inferences; read literally (dates of birth as held; a same-day second line invalid under 12.5.2) the people and dose counts move (A 35,798 and B 33,629 people; no dose A 3,581 to E 8,620, one dose A 4,842 to E 12,000)"
     }
   ],
-  "resume": "RE-ROOT at stage 1 (2026-11-02): the ask layer cannot be carried by this world's records. The re-sited register ask (D-alpha, dates of birth keyed a decade low; D-beta, a twin's GP lines on the co-twin's registration) died at the judge, pass 4 SEND_BACK: each device needs a rule no file states, and filing it hands the device to the careful solver; every earlier ask layer and every full-replacement candidate is spent (Tried and rejected). The call is sound (all six reproduction numbers forced, pass 4), but a new draw, dataset and generator under the same objective (Forecasting & Predictive Modeling) and number is owed, in another world. The committed cut 84e4046b is the dead rework, kept as its record; the delivered 10-14 version stays on the portal as delivered.",
+  "resume": "Stage 2 (design) of architecture 5: write the default path, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and ask sheet; screen both ask devices as code against the careful-solver cracker before any data is cut; then precut.py.",
   "approved": null,
   "delivered": "2026-10-14",
   "portal": [
@@ -91,12 +86,45 @@
   "portal_status_date": "",
   "harden_loops": 0,
   "solver_rounds": [],
-  "ask_audit_2026_11_01": {
-    "verdict": "SPENT on Ask 3 (Asks 1 and 2 hold, narrowly)",
-    "careful_cracker_keeps": "10 of 25 against the recorded 0 of 25",
-    "pair": "52.7 (54.9 with the mirror on the careful ask route; 69.2 if a uniqueness test of source_ref within GP lines also finds Ask 1's second registrations)",
-    "why": "the 28 back-entered confirmed records cite 'Legacy no. MZ19/0nnn' in comments, each matching a migrated record's legacy_ref, and the 6 GP-and-hospital double notifications match on birth date, sex, onset and county; the recorded cracker ran only one of the two checks",
-    "probe": "scratchpad audit_cracker2/task501/probe.py (independent of the generator, reproduces the recorded cracker and the golden route)",
-    "status_before": "SHIPPED"
+  "architecture_4_record": {
+    "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
+    "architecture": 4,
+    "round": 2,
+    "precut": {
+      "exit": 0,
+      "date": "2026-11-02"
+    },
+    "leak": {
+      "leak_py": "REVIEW 2026-10-14 on the final round 2 rebuild after the stage 4 fix pass (--asof 2027-07-12), no LEAK, sweep 11 clean; the five lines (sweeps 3, 4 and 9) answered in the design note's Build record",
+      "reader": "round 2 read 2026-10-14 on the round 2 pack: no decisive-step sentence, no ranking, helping file or answer-like figure; Q5 read literally gives 0.72 (rung 0), Q6 an analytical choice; realism tells fixed in the generator (the extract notes' thumbnail and customXml parts, the stock return's batch numbers), the options paper's budget sentence left with its reason; appended to leak_check_report.md; no second read, since no document's text or the prompt changed",
+      "reship_reader_rubric": "2026-11-01, fresh copy of 81564f48 with the new prompt: no decisive-step sentence, nothing computes R, Q6 an analytical choice (turning age-specific immunity and the contact survey into a reproduction number); its ask readings closed per pass 3",
+      "leak_py_2026_11_02": "REVIEW 2026-11-02 on cut 84e4046b (--asof 2027-07-12), no LEAK: the four standing lines (sweep 3 the call's own words in the options paper and PS-07, sweep 4 their own nouns, sweep 9 the stock return's future expiries, sweep 11 the frozen prompt shell's quota); the leak reader's fresh copy is the scratchpad's leak-task501-ask (prompt.txt and target/ from the new zip), not yet read"
+    },
+    "duplicate_check": {
+      "heart": "WARN 2026-10-14 on the final round 2 rebuild, no BLOCK (nearest driver off the slot 0.06, task32; this slot's round 1 driver differentiated on the card)",
+      "nearest": "surface 0 promoted pairs (nearest task132 at 0.100); validate 169 cards, 0 invalid",
+      "heart_2026_11_01": "BLOCK read against the dates as H27 artifacts: test.same_puzzle_older against task194 v3 (drawn 2026-10-17) and test.same_driver_older against task174 v2 (2026-10-28), task242 (2026-10-17), task461 (2026-10-15) and task476 v2 (2026-10-20), all drawn after this build's 2026-10-12 draw. Surface exit 0.",
+      "surface_2026_11_02": "exit 0 on cut 84e4046b: 15 pairs promoted for the author-triggered adjudication (surface similarity in the corpus top 1 per cent, nearest task265 at 0.101, and four same-driver card signatures), none from the ask layer",
+      "heart_2026_11_02": "BLOCK on the card's two structural tests (test.same_puzzle_older against task194, drawn 2026-10-17; test.same_driver_older against task174 2026-10-28, task242 2026-10-17, task461 2026-10-15, task476 2026-10-20), every colliding card drawn after this build's 2026-10-12 draw (H27, as recorded on 2026-11-01); the card is untouched by the ask rework"
+    },
+    "judge": {
+      "verdict": "DETERMINISTIC (round 2, one isolated thread on the round 2 pack, 2026-10-14), every figure reproduced",
+      "disposition": "APPROVE; its four residual forks closed in one generator pass with no graded figure moved (freeze.py PASS): SF20 and SF26 by the literal reading, SF25 closed in the data and not pinned, SF27 the 2024 twins a boy and a girl so every person key converges, SF23 the meaning of living in the region; both optional pins declined; no re-judge",
+      "report": "task501/determinism_check_report_round2.md (round 1: determinism_check_report.md and determinism_check_report_pass2.md, kept as history)",
+      "gate_g": "method_or_model_selection on honest data, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+      "gate_h": "domain pass, layers pass, decisive step analytical",
+      "pass3": "2026-11-01 re-judge on 81564f489c1ab10c04582ad74fecb818: DETERMINISTIC (task501/determinism_check_report_pass3.md); the call (fund B; R 1.30 with no catch-up, B 0.89) forced and every figure reproduced; Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical. Its residual readings: the diary set is the stump (PS-07 3.1's 'throughout'); one child per GP return line is Ask 1's device, forced by the rows; the blank area codes equal the BT postcodes; LH27 by the circular; Imported by the column's own label. Its optional FIX_NOW (Ask 3's unit as people) was measured and not filed: the people clause hands the cracker Ask 3 (pair 60.4 against the 60 build line), and the judge rules the record reading incoherent (it collapses legacy pairs as one illness yet counts the same person's same-day notices twice; the pack's comments name them as notifications). Accepted residual risk on Ask 3's unit.",
+      "pass4": "2026-11-02 (84e4046b): NOT_DETERMINISTIC, SEND_BACK on the register asks; call and R values forced"
+    },
+    "target_zip_md5": "84e4046b9f27621e5ee921772b7c5a20",
+    "ask_audit_2026_11_01": {
+      "verdict": "SPENT on Ask 3 (Asks 1 and 2 hold, narrowly)",
+      "careful_cracker_keeps": "10 of 25 against the recorded 0 of 25",
+      "pair": "52.7 (54.9 with the mirror on the careful ask route; 69.2 if a uniqueness test of source_ref within GP lines also finds Ask 1's second registrations)",
+      "why": "the 28 back-entered confirmed records cite 'Legacy no. MZ19/0nnn' in comments, each matching a migrated record's legacy_ref, and the 6 GP-and-hospital double notifications match on birth date, sex, onset and county; the recorded cracker ran only one of the two checks",
+      "probe": "scratchpad audit_cracker2/task501/probe.py (independent of the generator, reproduces the recorded cracker and the golden route)",
+      "status_before": "SHIPPED"
+    },
+    "resume": "RE-ROOT at stage 1 (2026-11-02): the ask layer cannot be carried by this world's records. The re-sited register ask (D-alpha, dates of birth keyed a decade low; D-beta, a twin's GP lines on the co-twin's registration) died at the judge, pass 4 SEND_BACK: each device needs a rule no file states, and filing it hands the device to the careful solver; every earlier ask layer and every full-replacement candidate is spent (Tried and rejected). The call is sound (all six reproduction numbers forced, pass 4), but a new draw, dataset and generator under the same objective (Forecasting & Predictive Modeling) and number is owed, in another world. The committed cut 84e4046b is the dead rework, kept as its record; the delivered 10-14 version stays on the portal as delivered."
   }
 }

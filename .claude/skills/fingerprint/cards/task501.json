@@ -1,17 +1,18 @@
 {
   "task": "task501",
-  "architecture": "v4",
-  "drawn": "2026-10-12",
-  "slot_note": "architecture 4 of the slot, re-rooted at stage 1 on 2026-10-12: architectures 1 to 3 were private-markets liquidity forecasts for a Swiss pension foundation (v1 retired on the client's rules, v2 landed on the portal, v3 spent at stage 4 on two failed judge passes); the re-root moved to Epidemiology & Public Health, infectious-disease transmission modelling. Round 2 on 2026-10-14 redesigned the decisive step in the same world after the 10/10 audit found the round 1 step (the next-generation matrix itself) a textbook reflex: the matrix is now the rung below, and the step is the contact regime the winter runs on. Bar top two under 50, build to 40",
-  "domain": "epidemiology-public-health",
-  "subdomain": "infectious-disease-transmission-modeling",
-  "niche": "a regional health authority's department of public health choosing which birth cohort its one autumn 2027 MMR catch-up targets, or none, so that measles cannot keep spreading in winter 2027-28, when the cohort whose uptake fell in a 2010-12 vaccine scare is aged 15-19, and the national contact survey's public use file kept two thirds of its diaries in the school summer holidays, when teenagers' contacts with each other collapse",
+  "architecture": "v5 (architecture 5, re-root 2026-11-02: a new world, dataset, generator and shell in another client domain; a water company's trunk mains to flush before a 2027 relining re-routes a town's supply, each main judged against the highest flow it actually carried, the 2026 operated arrangements included)",
+  "drawn": "2026-11-02",
+  "slot_note": "architecture 5 of the slot, re-rooted at stage 1 on 2026-11-02: architectures 1 to 3 were private-markets liquidity forecasts for a Swiss pension foundation (v1 retired on the client's rules, v2 landed on the portal, v3 spent at stage 4), architecture 4 an MMR catch-up chosen by measles' winter reproduction number (delivered 2026-10-14; its ask layer spent at the 2026-11-02 judge); architecture 5 moves to Energy Systems & Utilities, a water distribution network's asset condition, with a new world, dataset and shell",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a water-only company's network operations team deciding which trunk mains to flush before a six-month relining outage re-routes a town's supply in 2027, when each main's settled material is conditioned to the highest flow it has carried and the year's burst repairs and an earlier relining phase ran some mains far above anything the normal valve arrangement implies",
   "objective": "forecasting",
   "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "We should fund option B, the MMR catch-up for those born 2008 to 2012: it is the only option that brings measles' reproduction number in the region below one for winter 2027-28 (0.9, against 1.3 with no catch-up).",
-  "answer_source": "task501/submission.md, 1. Final Recommendation, first sentence (bold markers removed); figures in task501/generator/figures.json, written with golden/winter_measles_2027.xlsx and golden/measles_readiness_2027.pptx by generator/golden.py from target/ and recomputed by generator/verify.py",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
@@ -20,81 +21,72 @@
     "none"
   ],
   "generators": [
-    "G13",
+    "G3",
     "G16",
-    "G6"
+    "G13"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "calibration_form": "other",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
-  "stakeholder_role": "the regional immunisation manager, preparing the director of public health's recommendation to the executive management team",
-  "role_family": "programme_officer",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the district meters' UTC hours, reads the relining plan's valve changes and the asset register's normal arrangement, and applies the field's conditioning test (a main is disturbed only by flows above its own recent peak) to each main's 2026 flows built from the normal arrangement, flushes every main the relining raises (all six); flagging every main whose flow rises, or every main above its typical daily peak, also flushes all six; only the flows rebuilt through the valve operations log's 2026 arrangements show four of them already carried more than the relining will send them, leaving two to flush.",
+  "domain_test": "The deciding quantity is each trunk main's peak flow under the relining arrangement against the highest flow it has carried, the distribution engineer's test of whether a change of flow will mobilise the material layers that build up on a main's wall (the layers are conditioned to the greatest shear the main has seen, as discolouration research and practice treat them); with another field's nouns (a hospital's corridors, a warehouse's aisles) nothing is conditioned by a past peak, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:discolouration-conditioning-by-the-operated-flow-history",
+  "layer1": [
+    "district meters logging hourly mean flows on UTC, against a valve operations log kept on the control room's local clock across both 2026 clock changes",
+    "trunk main flows that no meter records, built by mass balance from the district meters through the network's arrangement",
+    "an asset register holding each main's normal valve state, with interconnectors normally shut",
+    "valve operations logged by crews as closures and openings by valve number, a valve's main found through the valve register",
+    "turbidity monitors at district inlets logging every 15 minutes with gaps at maintenance visits",
+    "district meters replaced or re-scaled during the record, their logger series carrying a short gap",
+    "the relining plan's valve changes stated by valve number, the mains they open and shut found through the register"
+  ],
+  "stakeholder_role": "the network operations planner preparing the relining outage plan the operations desk signs off",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "register_mmr_events_born_1993-2017.csv",
-    "rows": 279819,
-    "entity": "one MMR dose event loaded to one person's record in the regional immunisation register",
-    "grain": "person x dose event",
-    "source": "synthetic (fictional regional immunisation register)"
+    "file": "district_inlet_flows_2025-05_2026-10.csv",
+    "rows": 236736,
+    "entity": "one hour's mean flow into one district metered area",
+    "grain": "district x hour",
+    "source": "synthetic (fictional water company telemetry)"
   },
-  "forum": "executive_team",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "hospital_or_health_provider",
+  "forum": "operations_desk",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Ireland, the north-east (counties Louth, Meath, Cavan and Monaghan)",
-    "currency": "EUR",
-    "org_type": "regional health authority (department of public health and regional immunisation office)",
+    "geography": "England (the south Midlands, a fictional water-only company)",
+    "currency": "GBP",
+    "org_type": "water-only company, network operations",
     "invented_names": [
-      "Oriel Health Region",
-      "National Social Contact Survey"
+      "Lydden Valley Water",
+      "Hollins Lane",
+      "Brook Street"
     ],
     "people": [
-      "Eadaoin Bonner",
-      "Nigel Macmillan",
-      "Therese McGann",
-      "Karl McLoughlin"
+      "Lauren Dobson",
+      "Karl North",
+      "Georgina Cooper",
+      "Connor Wyatt"
     ]
   },
   "deliverables": [
-    "winter_measles_2027.xlsx",
-    "measles_readiness_2027.pptx"
+    "t03_relining_flushing_2027.xlsx",
+    "t03_relining_flushing_note.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "Whether a structured population can sustain a chain process through a coming season is set by the dominant eigenvalue of its who-passes-to-whom matrix under the conditions that season runs in, and the only measurement of the matrix pools observation days from two regimes, one in which the subgroup holding a large unprotected share passes mostly within itself and one, the larger share of the days, in which it does not; the pooled matrix and every textbook treatment of it put the system below its threshold, as do the system-average and contact-weighted propensities, while the matrix rebuilt from the days under the season's own regime puts it above and points at that subgroup.",
-  "driver_concrete": "On 1 January 2028 the region is 95.2 per cent immune, above the 93.3 per cent measles at R0 15 needs, so R0 times the susceptible share is 0.7, and the next-generation matrix built from all 7,560 diaries of the National Social Contact Survey 2023 gives 0.9; but 5,040 of those diaries were kept from 3 July to 18 August 2023, with the schools closed, when 15 to 19-year-olds have under a fifth of their contacts with each other against more than half in the May term diaries, and the winter runs in term; built from the term-time diaries the reproduction number is 1.3, and only the catch-up for those born 2008-12, 11.2 per cent susceptible, brings it below one (0.9), while D and E, the least immune cohort and the most people made immune, leave it at 1.3.",
-  "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field, dose rule, profile basis and filed clause right and compares the region's 95.2 per cent immunity with the 93.3 per cent threshold (0.7), weights each band's susceptible share by its contacts (0.7), or builds the next-generation matrix from every diary in the survey, as computed, made reciprocal on either population, density-adjusted, transposed or with unknown ages spread (0.9), or with the two fieldwork periods averaged (1.0), files that no catch-up is needed; ranking cohorts by immunity gap or people made immune picks D or E, both left at 1.3.",
-  "domain_test": "The deciding quantity is measles' reproduction number through winter 2027-28 under each option, which infectious-disease epidemiology computes as the dominant eigenvalue of the next-generation matrix built from the contact matrix of the transmission season and age-specific susceptibility; measles transmission is forced by the school calendar, so the winter's matrix is the term-time one. With another field's nouns there are no contact diaries, no school term and no susceptibility left by a vaccine history, so the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "epidemiology-public-health/infectious-disease-transmission-modeling/2",
-  "layer1": [
-    "immunity published by year of birth against a contact survey released in five-year age bands, joined through a projection at 1 January 2028",
-    "survey microdata as a public use file: participants and contacts in two files on part_id, contact ages Unknown where not given, proxy diaries for children, a contact in several settings, participants numbered in release order",
-    "options defined by birth years and delivery settings, with expected people made immune per option",
-    "a register extract loaded as received from GP returns, school sessions, hospitals and records from abroad",
-    "GP return lines queried by the immunisation office and corrected or withdrawn in a separate log",
-    "local health office codes revised on 1 July 2024, one retired code reassigned to an area in another region",
-    "pupils living across the border recorded by the school team with a UK postcode and the school's area code",
-    "postcodes recorded only for addresses set since Eircodes were issued in July 2015; practices cleared when a person leaves",
-    "a surveillance system migrated in March 2021, with the 2019 outbreak's cases back-entered to its outbreak module",
-    "a case notified by both a GP and a hospital, two records unlinked",
-    "laboratory results keyed to surveillance case numbers, legacy numbers before the migration",
-    "a dose extract run three days after its as-of date"
-  ],
+  "question_form": "what",
+  "driver": "A unit is disturbed only by a load above the highest it has already carried, so its threshold is the maximum of its own past load; the natural history of that load is rebuilt from the system's standing arrangement, but the system ran for weeks under temporary arrangements that only an operations log records, and those raised several units' maxima above anything the standing arrangement implies, so a threshold read from the standing arrangement flags units a planned change will not in fact disturb.",
+  "driver_concrete": "Each trunk main's wall material is conditioned to the highest flow it has carried; the planner builds each main's 2026 flows from the district meters and the normal valve arrangement and flushes every main the T03 relining raises above its 2026 peak (six), but the valve operations log shows phase 1 of the relining programme (T06, April to June 2026) and the June and July 2026 T04 bursts routed extra districts through T05, T08, T09 and X02 at flows the relining will not reach, which the district turbidity monitors confirm (no rise when those mains' summer peaks passed their normal-arrangement highs), so only T13 and X04 need flushing.",
+  "stump": "Building each trunk main's 2026 flows from the district meters and the normal valve arrangement and flushing every main the Hollins Lane relining sends above its own 2026 peak names all six mains the relining raises; the step that lands it there is reading each main's conditioning off the arrangement on paper, when the valve operations log shows the 2026 phase 1 relining and the June and July bursts ran four of them at flows the relining will not reach, so only two need flushing.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task104": "task104 re-thresholds a self-adapting scorer's log under a setting it never ran; here nothing is replayed: the deciding quantity is the dominant eigenvalue of an age-structured who-infects-whom matrix",
-    "task134": "task134 (v1 a competing-exit horizon probability, v2 a conversion hazard by time since entry) is a time-to-event estimand; here there is no hazard or follow-up at all, the threshold is set by the contact structure between age groups",
-    "task70": "task70 constructs a per-record date from an event log under a class-conditional cut; here no record is dated or classed, the method is the eigenvalue the mixing structure forces",
-    "task122": "task122 v2 credits late outcomes back to the session that showed the exposure; here nothing is attributed: the deciding quantity is an eigenvalue of contacts, built from the diaries of the regime the winter runs in where the survey pooled two",
-    "task229": "task229 v2 rebuilds a population share from checks that see a unit just before resetting it; here no unit is checked or reset: the next-generation matrix is rebuilt from the term-time diaries of a survey whose larger share of days fell in the school holidays",
-    "task501": "round 1 of this slot made the eigenvalue itself the decisive step; round 2 keeps the world, the quantity and the eigenvalue as the rung below (it lands on no catch-up) and makes the season's contact regime decisive, so the driver shares the slot's structure by design"
+    "task445": "task445 v2 completed a recent window's count for deaths a second body still held out of the register, linking that body's log on personal identifiers (a count completed); here nothing is counted or completed: each trunk main's conditioning threshold is the highest flow it actually carried, rebuilt from the valve operations log's temporary arrangements through the network, and the decision is which mains a forward flow change will lift above that threshold"
   },
   "lineage": [
     {
@@ -196,8 +188,54 @@
         "G13",
         "G6"
       ]
+    },
+    {
+      "architecture": "v4 round 2 (a regional health authority's autumn 2027 MMR catch-up, measles' winter reproduction number from the next-generation matrix built from the term-time contact diaries)",
+      "drawn": "2026-10-12",
+      "fate": "spent 2026-11-02 on the ask layer: the call stayed sound (all six reproduction numbers forced at every judge pass), but every register device the world could carry died; the last two at the pass 4 judge (SEND_BACK, cut 84e4046b): dates of birth keyed a decade low read as held, and a twin's same-day second GP line read as an invalid second dose under the filed 28-day rule, each holding only on a rule no file states; re-rooted the same day to architecture 5 in another client domain, world, dataset and shell",
+      "domain": "epidemiology-public-health",
+      "subdomain": "infectious-disease-transmission-modeling",
+      "objective": "forecasting",
+      "shape": "07",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G16",
+        "G6"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "forecast_method_backtest",
+      "forum": "executive_team",
+      "forcing_event": "incident_or_complaint",
+      "org_family": "hospital_or_health_provider",
+      "niche": "a regional health authority's department of public health choosing which birth cohort its one autumn 2027 MMR catch-up targets, or none, so that measles cannot keep spreading in winter 2027-28, when the cohort whose uptake fell in a 2010-12 vaccine scare is aged 15-19, and the national contact survey's public use file kept two thirds of its diaries in the school summer holidays, when teenagers' contacts with each other collapse",
+      "driver": "Whether a structured population can sustain a chain process through a coming season is set by the dominant eigenvalue of its who-passes-to-whom matrix under the conditions that season runs in, and the only measurement of the matrix pools observation days from two regimes, one in which the subgroup holding a large unprotected share passes mostly within itself and one, the larger share of the days, in which it does not; the pooled matrix and every textbook treatment of it put the system below its threshold, as do the system-average and contact-weighted propensities, while the matrix rebuilt from the days under the season's own regime puts it above and points at that subgroup.",
+      "driver_concrete": "On 1 January 2028 the region is 95.2 per cent immune, above the 93.3 per cent measles at R0 15 needs, so R0 times the susceptible share is 0.7, and the next-generation matrix built from all 7,560 diaries of the National Social Contact Survey 2023 gives 0.9; but 5,040 of those diaries were kept from 3 July to 18 August 2023, with the schools closed, when 15 to 19-year-olds have under a fifth of their contacts with each other against more than half in the May term diaries, and the winter runs in term; built from the term-time diaries the reproduction number is 1.3, and only the catch-up for those born 2008-12, 11.2 per cent susceptible, brings it below one (0.9), while D and E, the least immune cohort and the most people made immune, leave it at 1.3.",
+      "stump": "A competent solver builds the next-generation matrix from every diary in the National Social Contact Survey's public use file, scales it to R0 15 and puts measles' reproduction number at 0.9 without a catch-up, so files that no catch-up is needed; the step that lands it there is pooling the 5,040 diaries kept from 3 July to 18 August 2023, in the school summer holidays, with the 2,520 kept in May term time, when the winter's transmission runs on term-time contacts: built from the term-time diaries the reproduction number is 1.3 and only the catch-up for those born 2008-2012 brings it below one (0.9).",
+      "architecture_spent": true
     }
   ],
-  "notes": "Round 2 on 2026-10-14 (architecture 4): the decisive step is the contact regime of the winter (the next-generation matrix built from the survey's term-time diaries), with the pooled-survey eigenvalue and its textbook variants the rung below, landing on no catch-up; no sentence names term, holidays or which diaries, and PS-07 files the window (December to February, below one throughout) and R0 over the winter. Strategy forecast_method_backtest (a seasonal regime makes the natural estimate wrong for the forward window): the pooled survey is the natural estimate and the winter's term regime the window; composition_mix fits as well and is banned against task448, so the reviewer's key is taken. Personas drawn with guard.py names --geo Ireland --seed 501. WARN repeat.deliverables (docx+xlsx against task180) answered at the draw by xlsx+pptx.",
-  "registered": "2026-10-14T01:01:05Z"
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "Architecture 5 (2026-11-02). Energy Systems & Utilities (a water utility's distribution network), asset-condition-maintenance, Forecasting: each trunk main's peak flow in the 2027 relining months at 2026's demand, against the highest flow it carried in the year before, the 2026 operated arrangements (an earlier relining phase, burst repairs) included. Gap time first (the history the planner reads is 2026's flows as the normal arrangement implies them, and the decision is on the state that year's operated flows left for the 2027 relining), then population (the arrangement on paper is not the network as operated). G3 decisive (the record of the normal arrangement against the operation the valve log records), G16 (the conditioning threshold, validated by the turbidity monitors), G13 (the relining months against the year that conditioned the mains). Calibration form other: the district turbidity monitors are the physical record of which past flow changes mobilised material (physical_verification is banned in the window by task163). Strategy other: a physical state (each main's conditioning) set by the flows it actually carried, rebuilt from an operations log the arrangement on paper does not reflect; none of the vocabulary's strategies names it (time_semantics nearest, effective-dated arrangements). Personas drawn with guard.py names --geo england --seed 501 (en_GB). Ask layer, provisional, screened as code against the careful-solver cracker at stage 2 before any data is cut: Ask A on the 2025-26 flushing programme's contractor job sheets (the standpipe meter's register read after each main's flush within a night's run and booked as that main's water, bounded by the hydrant register's tested flows); Ask B on phase 1's section acceptance tests (the make-up water a sealed lined section takes moves with the water's temperature, so the test's recorded loss is not all leakage).",
+  "registered": "2026-11-02T18:16:10Z",
+  "shell": {
+    "question form": "what",
+    "second-sentence opener": "send",
+    "rounding opener": "flows",
+    "deliverable set": "pdf+xlsx"
+  }
 }
