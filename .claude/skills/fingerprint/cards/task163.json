@@ -1,100 +1,139 @@
 {
   "task": "task163",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "wave 6 (new), seed FC34: the world (a payroll software company sizing its 2027 sales plan on first-time employers in its twelve core states from business-application and formation statistics, after three states changed how businesses file), the decision and the quantity kept; the seed's channel-field conversion and change-log adjustment are not shipped; the pitfall is re-found from how a filing reform changes who applies",
-  "domain": "economics-econometrics",
-  "subdomain": "forecasting-forecast-evaluation",
-  "client_domain": "economics-econometrics",
-  "niche": "a Columbus payroll services company sizing the first-time-employer line of its 2027 sales plan across twelve Great Lakes, Ohio Valley and Mid-Atlantic states from the Census business formation statistics, when Ohio, Pennsylvania and Michigan, its three largest markets, put the IRS employer identification number application inside the state's online business formation filing in 2023 and retired their older filing routes between October 2025 and February 2026, so business applications there roughly doubled while every state, the nine others included, rose about an eighth on a common wave from autumn 2025",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "wave 6; seed FC34's world (a payroll company's first-time-employer plan) spent in architecture 1; architecture 2 re-rooted under the same objective and number in another client domain, world and dataset, the two ask records and their mechanics chosen and screened as code before the call was fixed",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "human-reliability-assessment",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a Scottish third-party fulfilment centre forecasting the mis-pick claims a cosmetics brand's customers will lodge on 2027's online orders once a product-family re-slot of its shelving pick faces goes live in January, every parcel being check-weighed at packing against a fixed tolerance, under the brand's order-accuracy KPI",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "2,500 new first-time employers in the 2027 plan's first-time-employer line (twelve core states, nearest 100)",
+  "answer": "design target: about 340 mis-pick claims on 2027's orders under the family re-slot, about 2.8 per 10,000 lines against the 2.5 KPI (fixed by the generator at stage 3)",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G6",
+    "G9",
     "G14",
-    "G13"
+    "G6"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "causal_design",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "the company's revenue planning lead in finance, who signs the first-time-employer line of the 2027 sales plan",
-  "role_family": "finance_controller",
-  "scoring_unit": "per boarded entity",
+  "context_artifact": "register",
+  "stakeholder_role": "Lathmor's head of quality at its Uphall fulfilment centre, who signs the Aubrine account's 2027 claims budget and, with the brand, the shelving re-slot's January go-live",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "units served",
   "spine": {
-    "file": "onboarding_accounts_2022-2025.csv (the current account system's onboarding export)",
-    "rows": 37103,
-    "entity": "one payroll account, with its business identifiers, address state, opening stamp, first pay date, onboarding answer, channel and product",
-    "grain": "account",
-    "source": "synthetic (constructed in the layout of a payroll platform's account onboarding export)"
+    "file": "pick_velocity_by_week.csv (the WMS's weekly velocity export)",
+    "rows": 94000,
+    "entity": "one SKU's order lines and units picked in one ISO week, with its pick face",
+    "grain": "SKU-week",
+    "source": "synthetic (constructed in the layout of a warehouse management system's weekly SKU velocity export)"
   },
-  "forum": "executive_team",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "professional_services",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "logistics_or_3pl",
   "world": {
-    "geography": "United States, twelve states of the Great Lakes, Ohio Valley and Mid-Atlantic (the company, its people, systems and customer data are fictional; the state filing reforms of 2023 to 2026 and the rise in applications from January 2026 belong to the constructed world)",
-    "currency": "USD",
-    "org_type": "regional payroll services company for small businesses (payroll processing and payroll tax filing on its own platform)",
+    "geography": "Scotland, United Kingdom (a fulfilment centre in West Lothian; the company, the brand, their people, systems and data are fictional)",
+    "currency": "GBP",
+    "org_type": "third-party logistics company running e-commerce fulfilment for consumer brands",
     "invented_names": [
-      "Kilbourne Payroll"
+      "Lathmor",
+      "Aubrine",
+      "Corsley",
+      "Ravelrig"
     ],
     "people": [
-      "Dominique Thomas",
-      "Charles Fernandez",
-      "Cheryl Mitchell",
-      "Calvin Garrett"
+      "Kathryn Tomlinson",
+      "Brian Cook",
+      "Hazel Collins",
+      "Kayleigh Ward"
     ]
   },
   "layer1": [
-    "the Census business formation statistics as the research team pulled them: the October release from the API in its long layout with FIPS state codes and adjusted and unadjusted rows, formations within four and eight quarters published only for closed cohorts",
-    "the April release kept from the monthly download in the wide layout with postal codes, its latest three months preliminary and its seasonal factors estimated on less data",
-    "the onboarding export's two layouts across the June 2024 migration: legacy client-since stamps in Eastern month/day/year text and upper-case legal names against UTC ISO stamps",
-    "employer identification numbers hyphenated, plain, and with the leading zero lost on legacy rows",
-    "legacy quarterly wages in cents by pay group with the client's company-level group, current wages in dollars with no state, the migration quarter split across both files",
-    "legacy client numbers through the migration crosswalk, state registrations keyed by account, the successor register keyed by EIN",
-    "accounts reopened under the old EIN, successors under a new EIN, relocations, and product changes (the HR bundle, tax filing only)"
+    "the brand's claims register keyed by its own product codes and order numbers, the WMS keyed by item and location codes, crossed through the item master",
+    "claims lodged in the window on orders dispatched before it, duplicates closed as duplicates, rejected claims (customer error) and claims still open",
+    "location codes in the WMS's hyphenated layout against the slotting consultant's dotted, zero-padded layout",
+    "unit weights in grams with a few heavy items in kilograms in the item master",
+    "the weekly velocity export by ISO week against the claims and the KPI scorecard by calendar month",
+    "check-weigh exceptions of every cause (mis-pick, short, extra, carton, scale) in one log with free-text bench notes"
   ],
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:marginal-applicant-employer-yield-read-against-untreated-states",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:unrecovered-error-rate-per-check-passable-neighbour-opportunity",
   "deliverables": [
-    "first_time_employer_plan_2027.xlsx",
-    "first_time_employer_plan_2027_note.docx"
+    "reslot_claims_2027.xlsx",
+    "reslot_claims_2027.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A cut in the cost of entering a leading count draws in marginal entrants who seldom go on to the outcome, so each entrant the cut adds yields a fraction of what an ordinary entrant yields, while a common rise in the count across every region over the same months is ordinary and yields in full; only the treated regions read against the untreated ones, before and after, separate the two and give the added entrants' yield, and carried per added entrant onto a forward period holding far more of them than any closed cohort, it puts the treated regions' outcome below their own latest yield, above zero, and far below the average or high-propensity yield.",
-  "driver_concrete": "Ohio's, Pennsylvania's and Michigan's online formation filings now file the IRS application for an employer identification number for every new business that ticks the box, so applications there rose about a quarter while the older routes stayed open and by about two thirds once each state retired them (January to March 2026), while every state, the nine others included, rose about a tenth into the twelve months on a common rise from early 2026; read against those nine before and after, the applications the reform added formed employers within four quarters at about a quarter of the ordinary rate in the closed 2023 to 2025 cohorts, and carried per added application onto the plan's twelve months of applications to September 2026, with the common rise at the ordinary rate, it puts Kilbourne's 2027 first-time employers at 2,500, well under each state's latest closed rate (2,800), the high-propensity split or the pre-reform rate, over the reform states' own before-and-after split (2,400) and well over a zero yield for the added applications (2,300).",
-  "stump": "Carrying each state's formations within four quarters per application over its latest four closed quarters onto the twelve months of applications to September 2026 at the plan's 2025 share files 2,800; the step that lands it there is treating the reform states' latest closed rate as theirs, when it is a mix of ordinary and added applications whose added share rises from about a fifth of the closed cohorts to about a third of the twelve months, and only the added applications' own yield, read against the nine other states before and after and carried per added application, gives 2,500.",
+  "driver": "A count of errors that slip past a downstream check is a fixed share of the work only while what each error can turn into stays the same: the check stops an error only when the substitute differs from the intended item by more than a tolerance on a measured total, and the substitutes within reach are fixed by what sits beside each intended item, so a rearrangement that puts near-equal items side by side raises the slipping count while the error rate itself is unchanged, and the forward count is the slip rate per near-equal neighbouring opportunity carried onto the rearranged neighbours, well above the count per unit of work and far from what a similarity-of-kind multiplier gives.",
+  "driver_concrete": "Every Aubrine parcel is check-weighed at Lathmor's pack benches against a 15 g tolerance, so a mis-pick reaches a customer only when the item taken from the next face weighs within 15 g of the one ordered; the January re-slot of the shelving zones puts each line's shades side by side, lifting the picks with a weight-alike neighbour from about a sixth to about two fifths, while the caught mis-picks show pickers err no more often beside look-alikes; carried per weight-alike neighbouring pick, the twelve months' claims put 2027 at about 340 (2.8 per 10,000 lines, over the 2.5 KPI), against about 140 at the claims per line and 100 to 180 under a look-alike multiplier fitted on the same claims.",
+  "stump": "Carrying the twelve months' claims per 10,000 lines onto the plan's 2027 lines files about 140 claims, inside the KPI; the step that lands it there is treating claims as a fixed share of picking, when they are only the mis-picks the check-weigh lets through, which happen where an item's neighbour weighs within 15 g of it, and only the claims per weight-alike neighbouring pick, carried onto the plan's neighbours and forecast lines, gives about 340, over the KPI.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the formation statistics by state, keeps only cohorts old enough to have closed, reads the plan standard's estimand and share table correctly and carries each state's latest closed formation rate per application onto the twelve months of applications to September 2026 files 2,800, and the cheaper corrections (the latest closed quarter's rate 2,800, a before-and-after split in the reform states alone 2,400, the filing's effect carried as a level 2,400, a zero yield for the added applications 2,300, the high-propensity split 2,800, a line through the closed formations 2,000 to 2,400, 2025 grown with applications 2,400 to 2,900) file other wrong figures; only estimating the added applications' yield against the nine other states and carrying it per added application gives 2,500, as does a regression of formations on applications with state and month effects, which reads the same comparison (executed in checks.py on the generator's clean truth).",
-  "domain_test": "The deciding quantity is the employer yield of the business applications a filing reform added, identified the way an econometrician identifies a policy's effect on business formation (difference-in-differences of applications and of closed formation cohorts against the states the reform did not reach, before and after) and carried into a formation forecast; with a clinic's referrals or a utility's connection requests in place of applications there is no federal application register whose filings become employers only after a four-quarter window, no high-propensity classification that the marginal filer inflates, and no filing cost whose cut changes who applies, so the call has nothing to stand on.",
+  "analyst_test": "A strong analyst who cleans the claims register to validated mis-picks on the twelve months' lines, reads the KPI schedule and the plan correctly and carries the claims per 10,000 lines onto the plan's 2027 lines files about 140 (1.2 per 10,000, inside the 2.5 KPI); fitting a look-alike multiplier on claims beside same-line or same-family neighbours files about 100 or 180; only the rate per weight-alike neighbouring pick, read off the claims' ordered and received items and the caught exceptions and carried onto the plan's neighbours, gives about 340 (executed in checks.py on the generator's clean truth).",
+  "domain_test": "The deciding quantity is the unrecovered error probability of a picking task, worked the way human reliability assessment works it: the error's own probability per opportunity, held where the caught exceptions show it does not move, times the probability that the downstream check fails to recover it, which depends on the form the error takes against the check; with a ward's or a call centre's nouns there is no check that recovers an error by the physical size of the substitute against a tolerance and no layout that fixes which substitute is within reach, so the call has nothing to stand on.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task136": "task136 nets out enrolments a scheduled campaign drew from households about to install anyway, by sites read against sites whose campaign had not yet run; here nothing is pulled forward, the reform adds filers who mostly never hire, the outcome observed is a lagged conversion of a leading count rather than the count itself, and the decisive quantity is the conversion yield of the added filers carried onto a forward period whose added share has more than doubled",
-    "task137": "task137 rebuilds, unit by unit, which deposits a temporary premium won from each unit's price against its entry cohort's floor; here no unit can be classed (an added application looks like any other in every field and flag), and the two kinds exist only as an aggregate counterfactual from untreated states",
-    "task95": "task95 recovers a fixed class weight by differencing two dated events on each unit across two registers; here there is no unit-level class, the added share is the gap between treated and untreated states before and after, and its yield is a causal effect per added application, not a class rate read off a register",
-    "task157": "task157 sizes a returning cohort from the part already back at a timing ratio earlier cohorts kept; here no cohort is completed from its own early arrivals, the closed formation cohorts are read as they are, and the forward quantity is an added share's yield identified against untreated states",
-    "task446": "task446 backs a moved base rate out of a screen's flagged share through stable error rates; here the propensity flag is not the instrument, it misclassifies the added filers, and the yield of the added filers comes from the reform's natural experiment across states",
-    "task124": "task124 prices unexamined units by the kind of group and cohort they sit in, the kind read off the surviving records of each group's other members, every measured sample drawn toward the flagged groups; here no record or group membership classes an application, the added applications exist only as the gap between reform and other states before and after, and the forward quantity is their conversion yield on a forward volume holding more of them",
-    "task132": "task132 restarts a replaced item at the bottom of its wear curve so the old item's rate overcounts failures; here nothing is replaced or aged, and the decisive quantity is the conversion yield of applications a filing reform added, identified across states",
-    "task144": "task144 values a seeded intervention as its seeds times a branching process set by the seeds' follower reach; here no adoption propagates, the reform's added applications convert on their own at a fraction of the ordinary rate, and the fraction comes from a difference-in-differences against the states the reform did not reach",
-    "task465": "task465's lineage priced an area-yield cover from published totals that fix withheld low years; here nothing is withheld, the formation cohorts are published as they close, and the decisive quantity is the added applications' yield read against untreated states"
+    "task156": "task156's first architecture carries a closed pool's leaving rate by tenure, the fast leavers going first so the open pool's rate overstates forward losses; here nothing leaves a pool and the error rate per pick holds, and the forward count turns on which errors a downstream check lets through, set by the weight of the item beside each pick face, which the re-slot rearranges",
+    "task452": "task452 weights reference observations by their own design inclusion probabilities after a classification revision; here nothing is sampled or weighted, the claims are every error the check let through, and the forward count is their rate per weight-alike neighbouring pick carried onto a new arrangement of the faces"
   },
-  "lineage": [],
-  "notes": "Domain: the seed's house label is economics; the deciding analysis is a policy effect on business formation (the employer yield of the applications a filing reform added, identified by a difference-in-differences across states) feeding a formation forecast, so the honest home is economics-econometrics/forecasting-forecast-evaluation, not product analytics, whose platform rule would apply if the decisive step were the company's own funnel. Strategy: the decisive move is the comparison the design implies (untreated states before and after) for a rate that depends on who applies (stumping F9); composition_mix (F5) is the neighbouring key and is not used because no record classes an application as added, the mix is identified only through the comparison. Organisation: Kilbourne is a payroll services company (NAICS 541214, payroll services, inside professional, scientific and technical services), which processes its clients' payroll and files their payroll taxes on its own platform; professional_services is the industry classification's own home for it.",
-  "registered": "2026-10-18T01:45:42Z"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "economics-econometrics",
+      "subdomain": "forecasting-forecast-evaluation",
+      "client_domain": "economics-econometrics",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "quantity_figure",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G14",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "causal_design",
+      "calibration_form": "censored_or_lagged_release",
+      "context_artifact": "filed_standard",
+      "role_family": "finance_controller",
+      "forum": "executive_team",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "professional_services",
+      "niche": "a Columbus payroll services company sizing the first-time-employer line of its 2027 sales plan across twelve Great Lakes, Ohio Valley and Mid-Atlantic states from the Census business formation statistics, when Ohio, Pennsylvania and Michigan, its three largest markets, put the IRS employer identification number application inside the state's online business formation filing in 2023 and retired their older filing routes between October 2025 and February 2026, so business applications there roughly doubled while every state, the nine others included, rose about an eighth on a common wave from autumn 2025",
+      "driver": "A cut in the cost of entering a leading count draws in marginal entrants who seldom go on to the outcome, so each entrant the cut adds yields a fraction of what an ordinary entrant yields, while a common rise in the count across every region over the same months is ordinary and yields in full; only the treated regions read against the untreated ones, before and after, separate the two and give the added entrants' yield, and carried per added entrant onto a forward period holding far more of them than any closed cohort, it puts the treated regions' outcome below their own latest yield, above zero, and far below the average or high-propensity yield.",
+      "driver_concrete": "Ohio's, Pennsylvania's and Michigan's online formation filings now file the IRS application for an employer identification number for every new business that ticks the box, so applications there rose about a quarter while the older routes stayed open and by about two thirds once each state retired them (January to March 2026), while every state, the nine others included, rose about a tenth into the twelve months on a common rise from early 2026; read against those nine before and after, the applications the reform added formed employers within four quarters at about a quarter of the ordinary rate in the closed 2023 to 2025 cohorts, and carried per added application onto the plan's twelve months of applications to September 2026, with the common rise at the ordinary rate, it puts Kilbourne's 2027 first-time employers at 2,500, well under each state's latest closed rate (2,800), the high-propensity split or the pre-reform rate, over the reform states' own before-and-after split (2,400) and well over a zero yield for the added applications (2,300).",
+      "stump": "Carrying each state's formations within four quarters per application over its latest four closed quarters onto the twelve months of applications to September 2026 at the plan's 2025 share files 2,800; the step that lands it there is treating the reform states' latest closed rate as theirs, when it is a mix of ordinary and added applications whose added share rises from about a fifth of the closed cohorts to about a third of the twelve months, and only the added applications' own yield, read against the nine other states before and after and carried per added application, gives 2,500.",
+      "answer": "2,500 new first-time employers in the 2027 plan's first-time-employer line (twelve core states, nearest 100)",
+      "fate": "spent 2026-11-02: the main call held through three determinism rounds (DETERMINISTIC, APPROVE; 2,500, nine defensible variants 2,492 to 2,508) but the honest-cracker audit measured the ask layer spent (the careful solver keeps 29 of 29, pair 83.5, two careful responses on the call 100.0), each device performed by one battery item (a rollup reconciliation, an anti-join on first_pay_date, a re-keyed EIN match), and no re-site or full replacement passed both device tests (the new-hire log forced but told-reader landed 6 of 6); cutting the spent asks left 7 criteria. Re-rooted in another client domain, world, dataset, generator and shell with the ask records chosen first",
+      "architecture_spent": true
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "round",
+      "deliverable set": "docx+xlsx"
+    }
+  ],
+  "notes": "Domain: human-factors-ergonomics/human-reliability-assessment (F): the deciding quantity is an unrecovered human error rate, a picking error's own probability times its check's failure to recover it, the form HRA gives a task with a downstream check; supply-chain-logistics, the house domain a warehouse would sit in, maps to urban-regional-science and general-statistics-data-science, neither of which carries a human error estimate. Strategy: forecast_method_backtest (F6), a rate stationary only in a constructed exposure (picks with a weight-alike neighbour), the per-line rate back-testing clean on the stable layout and failing forward; validated_decoy false: no certified or closed record blesses the per-line route; the KPI history is the brand's own monthly count, and the claims register's ordered and received items refute the per-line route on the twelve months already held. Ask records chosen first: the staffing agency's weekly invoices (premiums settled per four-week pay period, unlabelled, on the first invoice after the period closes) and the returns bench's grading log (codes 2 and 3 swapped meaning at the handheld go-live, read only through the repack partner's monthly bills). Axes redrawn at the draw: context artifact register (the brand's claims register, which the stakeholder works from) after monitoring_export met task458's ban, forcing event cutover_or_migration (the layout cut-over in January) after launch_or_rollout met task458's; generators lead with G9 (the claims are the errors that survive the downstream check, the picks the errors acquired upstream), which is the honest first key, G14 having met five older same-signature builds.",
+  "registered": "2026-11-02T15:09:46Z"
 }

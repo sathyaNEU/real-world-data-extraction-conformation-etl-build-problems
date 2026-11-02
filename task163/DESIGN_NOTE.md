@@ -1,484 +1,135 @@
 # task163 design note
 
-Architecture 1, drawn 2026-10-18 (wave 6, Forecasting lane, sathya8571), numbered from seed FC34. The seed (a payroll
-company sizing its 2027 sales plan on first-time employers in its twelve core states, from business-application and
-formation statistics by state, after three states opened one-stop filing) was read at its header and Situation only.
-Its world, decision and quantity are kept. Its decoy-era mechanism (a channel field and a change-log entry that hand
-over the conversion adjustment) is not shipped: no field marks an application as added by a reform, and the change
-log states what each state's system does and when, never what it does to formations. The pitfall is re-found from how
-a filing reform changes who applies.
+Architecture 2, drawn 2026-11-02 (wave 6, Forecasting lane), a re-root of architecture 1 (seed FC34's payroll company,
+spent on its ask layer; its record is below and its full note is in git history). New client domain, world, dataset,
+generator and shell. The two ask records and their mechanics were chosen and screened as code before the call was
+fixed (the brief's ask-first rule), and the call was then drawn in the same world.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task163.json`, architecture v1. `guard.py check` WARN (answered below).
-2. Pairing: Economics & Econometrics (client domain) / `forecasting-forecast-evaluation` / Forecasting & Predictive
-   Modeling. The deciding analysis is a policy effect on business formation (the employer yield of the applications a
-   filing reform added, identified by a difference-in-differences across states) feeding a formation forecast. The
-   domains README files a platform's own funnel under Product Analytics; that rule would bind if the decisive step were
-   the company's conversion of its own leads. It is not: the company's share is a filed multiplier and the decisive
-   quantity is the market's formation yield, an economist's quantity.
-3. Niche: a Columbus payroll services company sizing the first-time-employer line of its 2027 sales plan across twelve
-   Great Lakes, Ohio Valley and Mid-Atlantic states, when Ohio, Pennsylvania and Michigan (its three largest markets)
-   put the IRS employer identification number application inside the state's online business formation filing in 2023
-   and retired their older filing routes between January and March 2026.
-4. Call and shape: Kilbourne's new first-time-employer customers in the twelve states in 2027, to the nearest 100
-   (`quantity_figure`, count, question form how-many). Shape `other`: the call with four critical components (the
-   added applications in the twelve months, their yield against the ordinary rate, the formations the twelve months
-   will produce, the three states' part of the line) and two decoupled ask tables in the workbook (each sales
-   territory's 2024 first-time employers: signed, still with us in the fourth quarter of 2025, gross wages in the
-   first quarter on payroll and in 2024; the 2024 first-time employers by signup channel), with a one-page note
-   charting the territories; 1 call, 4 components, 29 ask figures, 4 chart criteria and 2 files make 40 criteria.
-5. Mechanism keys: gap population (which applications go on to employ: the ordinary filer or the filer a cheaper
-   filing added) with time (the closed cohorts are a statement about a window whose added share was much smaller than
-   the plan's); decisive generator G6 (the population of applications shifted under the formation rate), then G14 (the
-   pooled or latest rate does not apply to this pool) and G13 (the plan window's added share against the closed
-   window's); Gate G `forecasting`; strategy `causal_design` (stumping F9: a rate that depends on the pool, read off
-   the comparison the design implies). `composition_mix` (F5) is the neighbouring key and is not used: no record classes
-   an application as added, so the mix exists only through the comparison against untreated states.
-6. Layer 2: `estimand_identification`, pattern `own:marginal-applicant-employer-yield-read-against-untreated-states`.
-   Library neighbours: economics-econometrics/causal-identification-did-iv-rd-synthetic-control/1 (staggered adoption
-   read against not-yet and never-treated units); this build reads three staggered reforms against nine untreated
-   states, but the estimand of the comparison is a yield per added application, carried into a forecast, not an ATT.
-7. Furniture: forum `executive_team` (the CFO signs the 2027 operating plan on Friday); forcing event
-   `budget_or_appropriation` (the annual operating plan and the sales capacity it funds); organisation family
-   `professional_services` (Kilbourne is a payroll services company, NAICS 541214, which runs clients' payroll and files
-   their payroll taxes on its own platform; `software_or_platform` was the seed's wording and was banned by task162 at the
-   check, and the industry classification's own home for a payroll services firm is professional services); role
-   family `finance_controller` (the revenue planning lead in FP&A); context artifact `filed_standard` (the 2027 plan's
-   market sizing standard); calibration `censored_or_lagged_release` (the formation statistics publish a cohort's
-   formations only once four or eight quarters have closed).
-8. Spine: the current account system's onboarding export (`onboarding_accounts_2022-2025.csv`, one row per account
-   with a first pay date from January 2022 to December 2025, 37,103 rows, two layouts across the June 2024 migration),
-   with the quarterly wage files of both systems (178,829 legacy rows, 167,168 current rows). The formation statistics
-   pull (applications January 2021 to September 2026) is the main call's evidence; the spine and its companions carry
-   the asks. 14 files in four formats (JSON, CSV, XLSX, DOCX); distractors `bfs_monthly_states_2026-04-15.csv` (the
-   April release) and `nonemployer_statistics_2023_states.csv`, named in `metadata.json` only.
-9. Deliverables: `first_time_employer_plan_2027.xlsx` (the call, its components and the ask tables) and
-   `first_time_employer_plan_2027_note.docx` (a one-page note with the chart of the reform states against the nine);
-   the format set xlsx and docx is in none of the last three builds.
-10. People, drawn with `guard.py names --geo "United States" --seed 163`: Dominique Thomas (revenue planning lead,
-    FP&A, the requester, in no file the prompt names and not in the prompt), Charles Fernandez (market research analyst,
-    keeps the research team's change log and the statistics extract), Cheryl Mitchell (sales operations, the onboarding
-    export and the 2025 share table), Calvin Garrett (CFO, the plan sign-off). Invented name: Kilbourne Payroll (checked
-    against real payroll firms: no match); further names are checked the same way when the pack is cut.
+1. Card: `.claude/skills/fingerprint/cards/task163.json`, architecture v2, registered 2026-11-02; `guard.py check` on
+   the registered card PASS (two NOTEs, differentiated; item 11).
+2. Pairing: Human Factors & Ergonomics (client domain) / `human-reliability-assessment` (F) / Forecasting & Predictive
+   Modeling. The deciding quantity is an unrecovered human error rate: a picking error's own probability per
+   opportunity times the probability that the downstream check fails to recover it, the form human reliability
+   assessment gives a task with a check. The house domain a warehouse would sit in (supply-chain-logistics) maps to
+   urban-regional-science and general-statistics-data-science, neither of which carries a human error estimate.
+3. World: Lathmor, a third-party logistics company, picks the online orders of Aubrine (a UK cosmetics and fragrance
+   brand) at its Uphall fulfilment centre in West Lothian, from about 1,800 pick faces in four zones (A, carton flow
+   for the fastest lines; B, C and D, static shelving). Every parcel is check-weighed at the pack benches against the
+   item master's unit weights and the carton's tare, with a fixed tolerance; a parcel outside it is held and re-checked,
+   so a mis-pick reaches a customer only when it passes. Aubrine's customer service logs the claims; the contract's
+   order-accuracy KPI caps validated mis-pick claims per 10,000 order lines in a contract year. The slotting
+   consultant's plan re-slots zones B to D by product family over the Christmas shutdown, live in January 2027, to cut
+   pick travel. People (`guard.py names --geo GB --seed 163`): Kathryn Tomlinson, Lathmor's head of quality at Uphall
+   (the stakeholder, never named in the prompt); Brian Cook, Lathmor's account director for Aubrine; Hazel Collins,
+   Aubrine's head of e-commerce operations; Kayleigh Ward, the returns bench team leader. Invented names: Lathmor,
+   Aubrine, Corsley (the staffing agency), Ravelrig (the repack partner).
+4. The call: how many validated mis-pick claims Aubrine's customers will lodge on the order lines Lathmor picks in
+   calendar 2027 under the re-slot plan, the claims per 10,000 lines against the KPI, and so whether the plan can go
+   live as drawn (`quantity_figure`, count, how-many). Forward facing: the window opens in January.
+   **Lesson 10, the fork-is-the-stump test on the WHAT, run now.** The filed WHAT names the claims (validated, on lines
+   picked in 2027), the lines (the plan's forecast), the year and the KPI's ratio. The forks a judge would raise (claims
+   lodged in 2027 against claims on 2027's lines; validated against lodged; the plan's lines against grown 2026 lines)
+   close with sentences about claims, lines and dates. None names a weight, a tolerance, a neighbour or the check-weigh,
+   which is what the decisive step recognises, so filing the WHAT hands over nothing.
+   **Lesson 11.** No shipped document states a rate, factor, benchmark or design value the easy route can apply to the
+   2027 claims: no accuracy benchmark, no "expected impact" line in the plan (it states travel only), no contract
+   assumption of a claims rate. The KPI cap is a threshold the forecast is read against, not a rate it is built from.
+   The easy route's rate is the analyst's own fit (claims per line), and the data's own fit refutes it (item 6).
+5. Default path, in one line (written in full at stage 2): carry the twelve months' validated claims per 10,000 lines
+   picked onto the plan's 2027 lines, about 140 claims and 1.2 per 10,000, inside the 2.5 KPI. Golden, design target
+   about 340 and 2.8 per 10,000, over it. Rung 1, the look-alike reflex (human reliability assessment's performance
+   shaping factor for similar items side by side), fitted on the same claims beside same-line or same-family
+   neighbours: about 100 or 180, both inside. Toy screen of the ladder: scratchpad `task163_a2/task163_screen_main.py`
+   (rung 0 140.1, same-line multiplier 97.8, same-family multiplier 175.8, golden 344.1 at 2.82 per 10,000; the
+   plan lifts the weight-alike share of picks from 0.166 to 0.408 while the error rate per pick is held).
+6. Stump sentence (draft): carrying the twelve months' claims per 10,000 lines onto the plan's 2027 lines files about
+   140 claims, inside the KPI; the step that lands it there is treating claims as a fixed share of picking, when they are
+   only the mis-picks the check-weigh lets through, which happen only where the item beside the ordered one weighs
+   within the tolerance of it, so the re-slot that puts each line's shades side by side raises claims with no change in
+   how often pickers err; only the claims per weight-alike neighbouring pick, carried onto the plan's faces and lines,
+   gives about 340. Data-native sentence: the claims are the residue of a physical filter (a scale against a tolerance)
+   applied to errors whose form a shelf layout fixes, so a count kept per line is stationary only while the layout is.
+7. Shape and deliverables: shape `other`: the call (claims under the plan, per 10,000 lines, the verdict against the
+   KPI), its comparison (the current layout's 2027 claims) and its zone split, then two decoupled ask tables. Tentative
+   files: a workbook and a chart (`reslot_claims_2027.xlsx`, `reslot_claims_2027.png`); the shell is drawn with the
+   prompt at stage 2 and must differ from architecture 1's (how-many, put, docx+xlsx).
+8. **The ask records, chosen first, each with the domain mechanic that forces its reading, screened as code against
+   the honest cracker before any data is cut** (scratchpad `task163_a2/task163_screen_asks.py`, toy data):
+   - **Ask A, Corsley's weekly agency invoices** (scheduling and pricing). Each weekly invoice bills every agency
+     worker's hours by day at the base charge rate; the night and Sunday uplifts are settled on one unlabelled
+     "premium reconciliation" line on the first invoice after each of Corsley's four-week pay periods closes, the
+     periods running Monday to Sunday and crossing month ends. The ask: what an agency hour worked cost in each month
+     of the twelve (the rate the plan's travel saving is valued at). Only one alignment makes the lines an identity
+     with two constant uplifts: the 28 days ending the Sunday a week before the invoice (worst residual GBP 0.00,
+     against 504.07 for the 28 days to the Sunday before and 1,462.17 for the previous calendar month). The cracker
+     that books each line by its date misses 12 of 12 months to the penny; the cracker that reads the line as last
+     month's arrears (the reflex repair, the over-cleaning half) misses 12 of 12; the full includer hits 12 of 12.
+     Told reader: told the premiums are periodic, it still has to find the period by fitting two unknown uplifts over
+     candidate windows; no join, sort or uniqueness test performs it. Mass to widen at stage 2 (toy smallest gap 1.9p).
+     Family: a catch-up half settled in a later period's line (the 151 family), on a pay-period grain no label states.
+   - **Ask B, the returns bench's grading log with Ravelrig's monthly repack bills** (pricing). The bench grades every
+     returned unit 1, 2 or 3; the handheld app that replaced the paper sheets on 8 June 2026 kept the codes but swapped
+     the meanings of 2 and 3 (paper: 2 repack, 3 scrap; app: 2 scrap, 3 repack), and the bench's procedure on file
+     carries the app's legend only. Ravelrig bills each month's repacks as one amount at constant contract rates by
+     pack size (no unit counts, no rates on file). The ask: the share of returned units repacked and scrapped and the
+     stock value scrapped, by product family (what each claim's wrong item costs when it comes back). Only the old
+     legend before 8 June fits the bills to the penny at constant rates (worst monthly residual GBP 0.00; the filed
+     legend all year 7.54, the old legend to 30 June 5.32 in the toy, both to widen at stage 2). The filed-legend
+     cracker misses 13 of 20 toy figures; the resell share does not move under the swap, so the ask drops it and keeps
+     the repack share, the scrap share and the scrapped value (15 figures, each moved). Over-cleaning half: a solver who
+     swaps the codes to the end of June, or for the whole year, misses (11 and 13 of 20). Told reader: told the codes
+     changed, it still has to find which codes and from which day by fitting the partner's unknown rates.
+     Family: a label stored before a silent switch (D2), read through a partner's bills.
+   - Both sit outside the main population: the call never reads an invoice, a return or a repack bill. The two
+     families are disjoint and neither is on the brief's list (checked one by one: no person under two keys, no lent
+     device, no re-keyed asset, no refiling, no scale per source, no capacity cardinality, no reference basis, no
+     physical repair on every row, no visit placed by a purchase, no blank status read through a counter, no gauge
+     rise, no silent meter, no blanket charge placed by hours, no bypassed meter, no pack size against fill weights, no
+     subset-sum credit, no duct temperature). Suspicion test: the asks' nouns are an hour's cost and a returned unit's
+     fate; neither invites a pay-period grain or a code switch.
+9. Mechanism keys: gap population (the claims file is not the errors and the lines are not the exposure: the claims
+   are the errors that survive the check, and their exposure is the picks whose neighbour the check cannot tell
+   apart); decisive generator G9 (downstream survival against upstream acquisition), then G14 (the escape yield
+   conditioned on the neighbour's weight gap) and G6 (the plan shifts the neighbour mix); Gate G `forecasting`;
+   strategy `forecast_method_backtest` (stumping F6: a rate stationary only in a constructed exposure, the per-line
+   rate back-testing clean on the stable layout and failing forward); Layer 2 `estimation_fit` (survivorship: the
+   observed errors are the ones a filter passed), pattern `own:unrecovered-error-rate-per-check-passable-neighbour-opportunity`;
+   calibration `physical_verification` (the check-weigh's own exception log, which counts the errors it caught and so
+   pins the error rate per pick independently of the claims); context artifact `register` (Aubrine's claims register).
+10. Lesson 7, the golden's assumptions, each asserted in checks.py on the shipped rows: the error rate per pick does
+   not move with what sits beside a face (caught mis-picks per non-alike opportunity equal beside same-line,
+   same-family and other neighbours; claims per alike opportunity equal across them); a mis-pick takes the left or right
+   face of the same shelf run with equal chance and never a face above, below or across the aisle; no neighbour pair
+   sits within a few grams of the tolerance, so scale and tare variation cannot move a pair across it; the reporting
+   share of escaped mis-picks does not move with price, family or zone; no contamination cluster (a wrong item put away
+   in a face) and no trend in the error rate across the twelve months; the tolerance and the pack benches unchanged in
+   2027; every 2027 face in the plan holds an SKU with a 2026 history or a forecast on the plan's own sheet.
+11. Guard: PASS on the registered card. NOTE test.same_puzzle_older and test.same_driver_older against task156's first
+   architecture (a closed pool's leaving rate by tenure) and task452 v2 (design-weighted reference observations),
+   differentiated on the card. Axes redrawn at the draw: context artifact `register` (monitoring_export met task458's
+   ban), forcing event `cutover_or_migration` (launch_or_rollout met task458's), generators led by G9 (G14 first met five
+   older same-signature builds; G6 first met task453's pattern ban and this slot's own lineage), validated_decoy false
+   (no certified record blesses the per-line route; two_layer.validated_decoy refuses one). WARNs answered: Russell
+   (first name in task460) replaced by Brian Cook; the pdf+xlsx deliverable set (task453 v3) moved to xlsx+png.
+   Nearest drivers 0.05 (task149, task251 v4, task455 v1, task173 v3, task446 v2). `slots` on the driver's and the
+   setting's nouns: task194's rejected candidate (a unit's own defect rate seen through a downstream check whose catch
+   moves with its load, killed because caught plus escaped makes the rate unlatent and the escapes too thin to rank) and
+   task107 v1 (the share of past failures a new check could have stopped, by delivery kind) are the nearest screens;
+   here the check is fixed, the error rate is pinned by the caught log on purpose, and the forward count turns on the
+   forms a new layout puts within the check's blind band, which neither screened. task44 (a fulfilment campus's
+   carton-flow faces) and task229's Thornacre lineage (pick-face record accuracy) share the setting, not the mechanism.
 
-**Data-native sentence.** The three reform states' online formation filings now file the IRS application for an
-employer identification number for any new business that ticks the box, so the business applications those states
-report rose about a quarter while filers could still use the older routes and by about two thirds once each state
-retired them (January to March 2026), while every state, the nine others included, rose about a tenth into the twelve
-months on a common rise from early 2026 that nothing in the record explains; an application the reform added looks like
-any other in every field the statistics publish (as often high-propensity, as often with planned wages), but its owner
-was forming an LLC anyway and seldom hires, so the formations the closed cohorts show are a blend whose added share
-(about a fifth) is a little over half of what the plan's twelve months hold (about a third), and only the reform states
-set against the nine before and after separate the blend.
+## Architecture 1 record (spent 2026-11-02)
 
-**Guard and similarity.** `guard.py check` WARN at the draw. The ban window held task182, task164 and task162. WARNs
-answered: `repeat.gate_g` (forecasting, task162) is the honest key for a call whose difficulty is a forward quantity;
-`repeat.decision` (quantity_figure, task162) and `repeat.question_form` (how-many, task164 and task162) are what a count
-of customers is. NOTE `test.same_driver_older` (gap population, G6, Gate G forecasting) is differentiated on the card
-against task124, task132, task144 and task465. Nearest driver 0.06 (task136).
-
-**Abstraction test.** Stripped of nouns: a cut in the cost of entering a leading count draws in marginal entrants who
-seldom go on to the outcome; a common rise over the same months is ordinary; only treated regions against untreated
-ones, before and after, separate the two, and the added entrants' yield, carried per added entrant onto a forward period
-holding more of them, sets the outcome. The nearest by mechanism, read for latent structure:
-- task136 nets out enrolments a scheduled campaign drew from households about to install anyway, sites read against
-  sites whose campaign had not yet run. Here nothing is pulled forward: the reform adds filers who mostly never hire,
-  the outcome is a lagged conversion of a leading count, and the decisive quantity is the conversion yield of the added
-  filers carried onto a forward volume whose added share has nearly doubled.
-- task137 rebuilds, unit by unit, which deposits a temporary premium won, from each unit's price against its entry
-  cohort's floor. Here no unit can be classed; the two kinds exist only as an aggregate counterfactual.
-- task95 recovers a fixed class weight by differencing two dated events on each unit across two registers. Here there
-  is no unit-level class and the added share is a gap between states, not a register field.
-- task157 sizes a returning cohort from its own early arrivals at a timing ratio earlier cohorts kept. Here no cohort is
-  completed from its leading edge; closed cohorts are read as they are.
-- task446 backs a moved base rate out of a screen's flagged share through stable error rates. Here the propensity flag
-  misclassifies the added filers and the yield comes from the reform's natural experiment.
-None shares the latent structure, the default path and the correction.
-
-**WHAT screen (stumping 1.2).** The decisive step settles none of the estimand's five parts, each filed by the
-standard: the population (the twelve core states' business applications in the twelve months to September 2026, in
-the release's unadjusted counts), the outcome (business formations within four quarters, October release), the window
-(those twelve months), the unit (Kilbourne's first-time employers, each state's formations times its 2025 share) and
-the comparison (none: the line compares nothing). The nine states enter only as the identification of the added
-applications' yield, which is HOW the filed quantity is estimated; every identification the data admits files 2,500
-(544 constructions, the comparison's regression forms among them), and the data's own structure (the early 2026 rise
-every state shared, after every go-live) rules out the reform states' own before-and-after level.
-
-**Sources, one line each.**
-- Seed FC34 header and Situation (`status.py task163`): the world, the twelve states, the 2027 first-time-employer plan,
-  the statistics with high-propensity splits, the rise in applications, the three states' filing changes; nothing else
-  of the seed is read or kept.
-- `guard.py mechanisms --objective forecasting`: the formation and conversion ground on file is a cohort sized from its
-  own leading edge (task157), a conversion hazard by time since entry after a surge (task134 round 1), a development
-  speed that changed mid-period (task451), a screen's yield moving with the base rate (task446) and an intervention's
-  additionality against not-yet-treated sites (task136); none reads a reform-added leading count's conversion yield
-  against untreated regions.
-- `stumping/references/client/layer2-rigor-patterns.md`, economics-econometrics causal-identification pattern 1
-  (staggered adoption against not-yet and never-treated units): the comparison here is used for a yield per added
-  application inside a forecast, not for an average treatment effect.
-- `stumping/references/strategies.md` F9 (causal design: a rate that depends on the pool) and F5 (composition, the
-  neighbouring key): the property that splits the pool is named by no record and rebuilt only through the comparison.
-- `two-layer-task-design.md`: the client's example of comparing against the right group in a staggered rollout, not a
-  simple before and after, and of a forecast validated on data it was not built on (the back-test across the go-live
-  change of mix).
-- The economics of entry costs: one-stop registration reforms raise registrations mostly through marginal entrants who
-  rarely grow or hire (Branstetter et al. on Portugal's "On the Spot Firm"; Kaplan, Piedra and Seira on Mexico's SARE),
-  which is the behaviour the generator gives the added filers.
-
-## Survivor anatomy
-
-Actor: the deciding property, which of the three reform states' applications the integrated filing added, has no column: no field marks an added application (the high-propensity, planned-wage and corporate counts carry the added ones at the ordinary shares), so the split exists only as each reform state's applications against the nine other states' path before and after its go-live.
-Link: the signal is a cross-state comparison no key offers and no sentence invites: each reform state's monthly applications set against the nine untreated states' path over the same calendar months, before and after its go-live, and the closed cohorts' formations read against that counterfactual; the standard files the estimand and names no comparison, yield or split.
-Reflex: the field's reflex, each state's latest closed formation rate per application carried onto the twelve months to September 2026 at the plan's shares, is rung 0 and files 2,800 (Ends on: 2,800); the reflex comparison, the filing's effect on formations carried as a monthly level, files 2,400.
-Back-test: the textbook route validates where a solver would check it: the latest closed rate reproduces the closed cohorts it is read from and the share tab's formation bases tie to the release, so nothing shipped refutes it; only the analyst's own back-test across the go-live change of mix does, the rate before go-live missing each reform state's first year after go-live by 14.6 per cent where the split comes within 0.5.
-Second use: every file the decisive step reads sits in the pack for its own reason: the October release is the standard's filed source for the volume and the outcome, the change log is Market Research's record of state filing changes kept since 2023, and the share tab is the standard's multiplier; deleting the decisive step leaves all three in the pack, and no file is read by the split alone.
-Shock: the movement the step recovers reads as ordinary explained movement: the reform states' applications rise after each go-live, which the change log dates, beside the common early 2026 rise of about a tenth in every state, and their closed formations rise as a blend; nothing singles out the added applications or their yield, and the golden is a total, never the extreme of a shipped statistic.
-Pins: FP&A's 2027 sizing standard files the WHAT in the organisation's own genre (the twelve states, formations within four quarters in the October release, a year of applications at the level of the twelve months to September 2026 in unadjusted counts, the 2025 share, the twelve added to the nearest 100), and no filed sentence names the comparison, the counterfactual, the added applications or a yield (verify.py asserts the sizing section names no rate, ratio, window or method).
-
-## Default path
-
-1. Read the 2027 sizing standard: each state's line is its 2025 share in the plan workbook times the business
-   formations within four quarters that a year of applications at the level of the twelve months to September 2026, in
-   the release's unadjusted counts, will produce; the twelve states add up, to the nearest 100.
-2. Stack the October release's state rows (unadjusted), keeping only the cohorts whose formations within four quarters
-   have closed (applications to June 2025).
-3. Take each state's formation rate as its formations within four quarters per application over its latest four closed
-   quarters (July 2024 to June 2025 applications, the share tab's own base window).
-4. Multiply by each state's applications in the twelve months to September 2026 and by its 2025 share; add the twelve.
-
-Ends on: 2,800 (2,769.0 unrounded)
-Golden: 2,500 (2,499.6 unrounded)
-
-## Stump sentence
-
-Carrying each state's latest closed formation rate per application onto the twelve months of applications to September
-2026 at the plan's 2025 shares files 2,800; the step that lands it there is treating Ohio's, Pennsylvania's and
-Michigan's latest closed rate as theirs, when it blends ordinary applications with applications the integrated filing
-added, which were about a fifth of the closed cohorts and are about a third of the twelve months, so only the added
-applications' own yield, read against the nine other states before and after go-live and carried per added
-application, files 2,500.
-
-## Three rules
-
-Task type: forecasting-forecast-evaluation (Economics & Econometrics), which serves Forecasting & Predictive Modeling in the taxonomy; the setting is a payroll company's 2027 plan sized on employer business formations from the Census business formation statistics.
-Domain test: the quantity that decides the call is the employer yield of the business applications a filing reform added, estimated the way econometricians estimate a policy's effect on business formation (a difference-in-differences of applications and of closed formation cohorts against the states the reform did not reach, before and after) and carried into the formation forecast, then validated out of sample across the go-live change of mix.
-Swap: "how many new depositors will a credit union sign in 2027 after three branches added online account opening" keeps a funnel and a surge but loses the federal application register whose filings become employers only after a four-quarter window, the high-propensity classification the marginal filer shares, and the filing cost whose cut changes who applies, so nothing it holds is a business formation the field would forecast.
-Layer 1: the Census API pull in its long layout with FIPS codes and adjusted and unadjusted rows from January 2021, the April download in the wide bfs_monthly layout with postal codes from January 2022 and preliminary latest months, formations published only for closed cohorts (the statistics' own lag); the onboarding export's two layouts across the June 2024 migration (legacy client-since stamps in Eastern month/day/year text and upper-case names against UTC ISO stamps), EINs hyphenated, plain and with the leading zero lost; a migrated account's first_pay_date carrying its legacy client-since date, and clients the legacy system re-opened under a corrected EIN; legacy quarterly wages in cents by pay group with a company-level group, current wages in dollars with no state; the crosswalk join, state registrations keyed by account, the successor register keyed by EIN; product changes, relocations, cancellations and returns; every item is how those systems write their files and none carries the call.
-Layer 2: estimand_identification, the right counterfactual: the reform states' applications split into the ordinary and the added only against the nine untreated states before and after, and the added applications' yield read from the closed post-go-live cohorts on that split, not the reform states' latest blended rate, their own before-and-after level, a propensity or planned-wage split, a line through the closed formations or the filing's effect carried as a level; a regression of formations on applications with state and month effects across the twelve states reads the same comparison in regression form and lands with it.
-Decisive step: identify the applications each integrated filing added as the reform state's applications less its counterfactual from the nine other states' path, estimate the added applications' formation yield from the closed post-go-live cohorts against that counterfactual, and carry it per added application onto the twelve months, whose added share is nearly twice the closed cohorts', with the early 2026 rise every state shared at the ordinary rate.
-Not semantics: every field is read correctly on the default path (applications, high-propensity and planned-wage counts, formations within four quarters, which cohorts have closed, the standard's estimand, the share tab); no field marks an added application, and reading the statistics perfectly still leaves the analyst choosing a rate for applications whose mix the closed cohorts do not share.
-Not rule application: the standard files the estimand (whose formations, from which year of applications in which counts, at which share, rounded how) and no filed sentence says how to turn a state's applications into formations; executing every filed rule on the clean data files 2,800 (asserted in checks.py, R3a).
-Analyst test: a strong analyst who stacks the statistics by state, keeps only closed cohorts, reads the standard correctly and carries each state's latest closed formation rate per application onto the twelve months to September 2026 at the plan's shares files 2,800; only splitting the reform states' applications against the nine other states and carrying the added applications' own yield files 2,500 (executed in checks.py on the generator's clean truth).
-Estimand: the 2027 sizing standard (Dominique Thomas, FP&A, plan_2027_sizing_standard.docx) files the population (the twelve core states, named), the outcome (business formations within four quarters, the Census measure, October release), the volume (a year of business applications at the level of the twelve months to September 2026 in the release's unadjusted counts, whose formations are not yet observed), the unit (Kilbourne's first-time employers, each state's formations times its 2025 share in the plan workbook) and the rounding (the twelve states added, to the nearest 100); there is no comparison in the estimand.
-No decoy: no memo, draft, forecast, prior plan figure or stakeholder estimate states a 2027 figure or argues a method; the change log states what each state's system does and when, never what it does to formations; the share tab is sales operations' 2025 count over the release's own base and ties under every reading.
-No certified replay: no published or certified figure is reproduced to recover a method; the closed formation cohorts are the outcome data every method reads alike, and the back-test across the go-live change of mix (the split fitted on the cohorts from a year after each go-live to June 2025 predicting each state's first year after go-live within 0.5 per cent, the rate of the twelve months before go-live missing by 14.6) is the analyst's own validation.
-Lesson: a model learns that a leading indicator inflated by a cut in filing cost carries marginal filers whose conversion is a fraction of the average, that the fraction has to be identified against units the cut did not reach rather than assumed (zero or full), read from a blended latest rate, extrapolated from the closed outcomes or measured as a level, and that it must be carried per added unit onto a forward volume whose added share differs; no build on file reads a reform-added leading count's conversion yield against untreated regions.
-
-## Readability screen
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| Rung 1: the latest closed quarter's rate, the rate having fallen | no | no | yes, recency | no | no | yes, one ratio per state | readable |
-| Rung 2: the split before and after against each reform state's own pre-go-live level | the log's go-live dates invite a before-and-after | no | yes, the event study | no | no | no | readable |
-| Rung 3 (decisive): the split against the nine states' path, the added applications' yield from the closed cohorts since go-live, carried per added application onto the twelve months | no sentence names a comparison, a yield or a split | no column marks an added application; the high-propensity, planned-wage and corporate flags carry them at the ordinary rates | no: the reflex comparison measures the filing's effect on formations as a monthly level and carries the level (2,400, 1.42 bins off) | no control scores a split; the closed cohorts are counts every method reads alike | nothing to find | no: a counterfactual, a ratio of excess formations, then a carry by volume | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | applications at the level of the twelve months | the unadjusted twelve-month total | the seasonally adjusted total | 2,500 (2,495.0) | the standard: "in the release's unadjusted counts"; same call |
-| SF2 | the 2025 share | the tab's stored ratio | the displayed two-decimal percentage | 2,500 (2,500.4) | same call |
-| SF3 | business formations within four quarters | BF_BF4Q | BF_BF8Q, formations within eight quarters | not the measure | the standard: "business formations within four quarters" |
-| SF4 | the twelve core states | the twelve the standard names | other geographies in a release | not in the pull | the standard names them; the pull holds exactly those twelve |
-| SF5 | the release | the October 2026 release | the April 2026 download | cannot form the twelve months (applications end March 2026) | the standard: "The plan uses the October release" |
-| SF6 | a year at the level of the twelve months to September 2026 | the twelve-month total | the latest quarter times four | 2,800 (2,753) | the standard: "at the level of the twelve months to September 2026" |
-| SF7 | rounding | the twelve states added, then the nearest 100 | each state rounded first | not the line | the standard: "The twelve states add up to the line, which goes into the plan to the nearest 100"; 2,499.6 sits 0.50 of a bin from an edge |
-| SF8 | the formations a year of applications will produce | formations within four quarters of those applications | first payrolls falling in calendar 2027 | not the measure | the standard's sizing sentence names the applications' formations |
-| SF9 | a first-time employer signed in 2024 | a business whose first payroll ever ran with us, in 2024 | an account flagged first-time | the flag counts 2,900 | the counting notes: "first payroll ever runs with us"; "re-forms as a new entity and carries on, ... is the same business" |
-| SF10 | the state it counts in | the state it first employed in (earliest registration) | the address state at the extract | moves movers | the counting notes: "in the state it first employed in" |
-| SF11 | still with us in the fourth quarter of 2025 | wages we paid with a pay date in the quarter, on any of its accounts | the first account's own fourth-quarter row | misses returners and successors | the counting notes' still-with-us sentence |
-| SF12 | the first quarter on payroll | the calendar quarter of its first payroll with us | the first full quarter | other quarters | the counting notes: "the calendar quarter of its first payroll with us" |
-| SF13 | gross wages we ran | gross wages we ran on our payroll | wages on the returns, tax filing only included | adds filed wages | the counting notes: "the gross wages we ran on our payroll" |
-| SF14 | a legacy client quarter's wages | group 00, the client's total | every group summed | doubles two-group clients | the identity 00 = 01 + 02 in every two-group client quarter, to the cent (asserted, 37,739 client quarters) |
-| SF15 | a migrated account's signup channel | the export's channel | the channel its legacy source code stands for | same call | C1: the migration load wrote every legacy referral code's channel onto the export, the older CPA, BP, TEL and APX included, so the two agree on all 22,551 migrated accounts and the channel table read through the legacy codes is the golden's (checks.py SF15); verify.py recomputes the table from the export's channel alone |
-| SF16 | the window the 2025 share applies to | the share times the formations the twelve months' applications will produce | the share on its own base window (July 2024 to June 2025 applications) | 2,200 (2,155, the 2025 count back) | the standard: the share is the 2025 count "over the state's business formations within four quarters from the applications of July 2024 to June 2025", and the line is that share times the formations a year of applications "at the level of the twelve months to September 2026" will produce |
-| SF17 | a business bought by a new owner who carries it on | the same business as the seller, its accounts joined through the register | a new business | counts acquired businesses as first-time | the counting notes: "is bought by a new owner who carries it on, is the same business" |
-| SF18 | first-time status | the state's liability record: no liability date before the quarter of the first payroll with us | the onboarding flag | the flag counts 2,900 | the counting notes: "Whether a business has paid wages before is a matter of the state's record, not of its onboarding answer" |
-| SF19 | a quarter on tax filing only | not a quarter we paid: neither still with us nor wages | a quarter with wages on the returns | keeps tax-only clients still and adds their filed wages | the counting notes: "A quarter an account spent on tax filing only does not count" and "a quarter on tax filing only adds none" |
-| SF20 | a business's channel | its first account's, a migrated one's in the export as its legacy code reads | the export's channel on its latest account | moves four channels (107 businesses' accounts differ) | the counting notes: "A business came to us through the channel of its first account"; SF15 C1 for a migrated first account |
-| SF21 | the year and quarter of the first payroll with us | the first quarter we ran wages, from the wage files | a migrated account's first_pay_date (its legacy client-since date) | January starters in 2023, first quarters a quarter early | the counting notes count "the year its first payroll with us ran"; wherever the field's quarter differs from the first quarter with wages it holds no wages (asserted, 4,885 migrated accounts; no current-system account differs) |
-| SF22 | a client re-opened under its corrected EIN | one business with its first account | two businesses | double counts, loses the still and the later wages | the counting notes: "A business is the employer, whatever its account or EIN"; the EIN pairs one adjacent swap apart on accounts with the same names, industry and entity are exactly the 803 clients cancelled and re-opened the next day (asserted) |
-| SF23 | a successor of an EIN with no account in the extract | its predecessor's business, not a first-time employer | a first-time employer of its own | a larger 2024 count in every territory (asserted, the count printed in checks.py) | the counting notes: "A business the successor transfer register lists as the successor of an EIN with no account in the year-end planning extract is the same business as that predecessor" |
-
-## Ladder
-
-| Rung | Construction | Figure | Rounded | Dies to |
-|---|---|---|---|---|
-| 0 (default path) | each state's latest four closed quarters' rate carried onto the twelve months | 2,769.0 | 2,800 | the added share of the reform states' applications: about a fifth in the latest four closed quarters (Ohio 0.19, Pennsylvania 0.20, Michigan 0.19), about a third in the twelve months (0.35, 0.35, 0.31) |
-| 1 | the latest closed quarter's rate, April to June 2025 | 2,763.3 | 2,800 | the same: the latest closed quarter still holds the voluntary phase |
-| 2 | the split against each reform state's own pre-go-live level, the added yield from the closed cohorts | 2,436.9 | 2,400 | every state's ordinary applications rose about a tenth into the twelve months on the early 2026 rise with no filing change (the nine 9.9 per cent), so the own level counts the common rise as added applications and prices it at the added yield; 0.63 bins below the golden, it rounds to the neighbouring hundred |
-| 3 (decisive) | the split against the nine states' path, the added yield pooled over the closed cohorts since go-live (0.260 of the ordinary rate), carried per added application | 2,499.6 | 2,500 | the golden |
-
-Routes inside a bin of the golden (checks.py `NEAR_ROUTES`, each with its reason; every one rounds to 2,400 and none to
-the golden, asserted, and no other route sits inside a bin):
-- the own before-and-after (rung 2), 2,436.9, 0.63 bins below: it counts the early 2026 rise every state shared as
-  added applications and prices it at the added yield;
-- each reform state's formations regressed on its applications with calendar-month terms over every closed cohort,
-  2,440.0, 0.60 bins below: one slope through the months before and after go-live mixes the ordinary rate with the
-  added yield, so the twelve months' ordinary rise is priced below the ordinary rate;
-- 2025's first-time employers grown by the nine states' applications from January to September 2025, 2,429.2, 0.70
-  bins below: the nine states' growth leaves out the added applications that do form (the same carry over the six other
-  windows sits 1.31 to 1.39 bins below).
-
-Single-error cells off the ladder, each a full bin or more from the golden (checks.py RIVALS): the filing's effect
-carried as a level 2,357.5 (2,400, 1.42 bins); the added applications never forming 2,265.7 (2,300); the pre-go-live rate
-on every application 3,164.6 (3,200); every closed cohort's rate 2,956.7 (3,000); formations per high-propensity
-application over the latest four closed quarters 2,771.7 (2,800) and over every closed cohort 2,956.1 (3,000); per
-planned-wage application 2,775.1 (2,800) and 2,957.5 (3,000); each reform state's formations regressed on its
-applications without month terms 2,619.9 (2,600, the nearest rival at 1.20 bins); 2025's first-time employers carried
-2,155.0 (2,200); 2025 grown with the twelve states' applications from calendar 2025 2,621.6 (2,600), from the prior
-twelve months 2,622.7 (2,600), from the base window 2,621.0 (2,600), year to date 2,761.7 (2,800), over six quarters
-adjusted 2,889.2 (2,900); each state's closed formations on a straight line from July 2023 2,200.9 (2,200). Each
-correction on the ladder moves the figure, and the decisive move is the only one that lands. Worth on the graded
-figure: rung 0 to 3 is 269 (2.7 bins); the decisive step alone, applied to the default path, moves 2,800 to 2,500 (R3b).
-
-Bypass battery (checks.py BYPASS, 47 routes that size the line without splitting the applications; every one but the
-January-to-September nine-state carry above is a full bin or more off): straight lines through the closed formations,
-monthly, adjusted or not, linear or log, from seven start months between January 2021 and July 2024, 1,991.6 to 2,290.4
-(2.09 bins or more); annual totals on a line by calendar, fiscal February, fiscal October and July years, 2,262.2 to
-2,354.3 (1.45 or more); the rate per application on a line from January 2023, July 2023, January 2024 or July 2024,
-2,620.6 to 2,706.3 (1.21 or more); 2025's first-time employers grown by the nine or the twelve states' formation growth,
-2,176.7 and 2,153.3; 2025 grown by the nine states' applications over seven windows, 2,360.4 to 2,429.2; by the twelve
-states' applications, 2,618.6 to 2,761.7 (1.19 or more); each state's 2025 count grown by its own applications,
-2,765.9. They miss on their own merits: the closed cohorts end in June 2025, before the early 2026 rise and before any
-older route closed, so a line through their formations or rates prices neither; the nine states' growth leaves out the
-added applications that do form, and the twelve states' growth prices them at the ordinary rate.
-
-Construction family (544 constructions: six counterfactuals, every one resting on months before the state's go-live;
-three ordinary-rate windows; six added-yield estimators; the nine states' rate over every closed cohort or the latest
-four quarters; unadjusted or adjusted volume; the six controls without Indiana, Kentucky and Tennessee; and four
-regression forms of the comparison, formations on applications across the twelve states with state and month-of-sample
-effects 2,506.3, with state and calendar-month effects 2,506.0, the same in logs 2,480.6, and each reform state's
-formations on its applications from go-live with month terms 2,502.1): 2,477.2 to 2,516.2, every one 2,500, the nearest
-0.272 of a bin from an edge. The regressions land because state effects learn the slope from the voluntary step at
-go-live, the reform states' own variation read against the other states' months, and the full take-up in the twelve
-months is the same filers scaled up: the comparison in regression form. The bootstrap (300 Poisson redraws of the
-release's formations and of the applications before the twelve months, which are the estimand's own volume and stay as
-filed) puts the line's 95 per cent interval at 2,469.0 to 2,530.2, inside 2,450 to 2,550 with 19.0 to spare (sd 15.3);
-one sigma with every count redrawn is 15.5, and the family's ends plus or minus one sigma stay 2,500. The added
-applications' relative yield rests on 0.260 with a sigma of 0.023. Out of sample: the formations the twelve months'
-applications go on to produce price at 2,470.4 in the generator's truth; the golden is 29 over it and the default path
-299. Back-test across the go-live change of mix: fitted on the cohorts from a year after each go-live to June 2025
-(relative yield 0.251), the split predicts each state's first year after go-live within 0.5 per cent; the rate of the
-twelve months before go-live, the default path's move at that change, misses by 14.6 per cent.
-
-P(one top response lands the call): about 0.16, counting the regressions as landings. The decisive split carried per
-added application is about 0.10 of strong responses (it needs the comparison against the nine and the carry together);
-a panel regression of formations on applications with state and month effects across the twelve states is about 0.05 (a
-strong model reaching for a regression on the release's own counts runs the comparison in regression form and lands);
-the reform states' post-go-live regression with month terms about 0.01. Nothing else lands: the reflex comparison
-carries a level (2,400), the own before-and-after and a regression through every closed month file 2,400, a zero yield
-2,300, and no straight line, rate trend or growth carry reaches the bin (outside the three named routes the nearest is
-1.19 bins off). P(both): about 0.04, above the 0.026 independence would give, since two top responses tend to take the
-same route.
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | the twelve core states' applications in the twelve months to September 2026, in the release's unadjusted counts, whose formations are not yet observed | filed literally (the standard), C1 |
-| 2 Unit of account | Kilbourne's first-time employers, each state's formations times its share | filed (the standard) |
-| 3 Attribution window | formations belong to the application month (the statistics' cohort) | C1: every reading uses the release's cohorts |
-| 4 As-of dating | the October 2026 release, pulled 14 October 2026; the share tab refreshed from it | filed (the standard, the workbook note) |
-| 5 Version basis | October release, not April | filed (the standard); C1 for the months both hold (R2, 2,496.0) |
-| 6 Denominator | a state's formation rate per application; the added yield over the added applications at the ordinary rate | C3: absolute and relative yields both in the family |
-| 7 Weighting | the added yield pooled over the three states or per state | C3: pooled, per state and the four regression forms all 2,500 |
-| 8 Window length | the ordinary rate's window (every month before go-live from January 2021, 2021 and 2022, the twelve months before go-live); the counterfactual's base (the same three, or the state's ratio to the nine) | C3: every window in the family, 2,500 |
-| 9 Boundary inclusivity | Michigan's part-month go-live counted or left out | C1: 2,499.6 and 2,502.0 |
-| 10 Rounding path | the twelve states added, then the nearest 100 | filed (the standard) |
-| 11 Tie-break | none, a single figure | nothing to break |
-| 12 Maturity and censoring | only cohorts whose four quarters have closed (to June 2025) | the release itself: formations within four quarters through June 2025 applications and no row after (checks.py AXIS 12, verify.py); the standard and the share tab index formations by the applications' months |
-| 13 Order of operations | share times formations per state, then added | commutes; C1 |
-| 14 Row order | sums only | C1 |
-| 15 Duplicate resolution | one row per series, adjustment, month and state | asserted unique; nothing to resolve |
-| 16 Identity normalisation | FIPS codes to the twelve states | C1: the twelve codes, the standard's twelve names |
-| 17 Netting against gross | counts, nothing to net | none |
-| 18 Dimensional units | applications and formations as counts, adjusted or not | filed (unadjusted counts); C1: adjusted volume 2,495.0 |
-| 19 Code and status semantics | data type codes and the adjustment flag | the release's own codes (BA_BA, BF_BF4Q) against the standard's measure names, its eight-quarter and duration series named nowhere in the standard (checks.py AXIS 19); the flag's yes and no, same call (SF1); never the stump |
-| 20 Integerisation | none before the rounding | none |
-| 21 Clause scope | "a year of applications at the level of the twelve months to September 2026" | filed scope (the standard) |
-| 22 Forward window contents | the twelve months' applications are all observed; the older routes closed inside them (January to March 2026); the log files no further change to formation filings | shipped (the pull and the log) |
-
-## Literal reader
-
-Executed word for word, the standard asks for each state's 2025 share times the business formations within four
-quarters that the twelve months of applications to September 2026, in the release's unadjusted counts, will produce,
-added and rounded to the nearest 100; the pack holds those applications and the shares but no formations for those
-cohorts, so every literal reading must forecast them; every reading of each term in the fork table gives 2,500 or
-violates a quoted sentence, and the easy answer (2,800) comes from an easy method on the same literal estimand, not from
-another reading.
-
-## Oracles
-
-- The share tab's formations base: it is the October release's own sum for July 2024 to June 2025 and ties under every
-  handling; it confirms the share, not a forecast.
-- The share tab's 2025 counts: they tie to the onboarding export read by the flag and read by the counting notes,
-  because the 2025 first-time employers carry no ask device (asserted); they confirm nothing about the line.
-- The closed formation cohorts: published counts every method reads alike; the back-test on them is the analyst's own.
-- The April release: an earlier vintage from January 2022 with formations closed to December 2024 and no forecast;
-  nothing ties to the golden.
-- None ties only under the golden. On the ask side no control total ships for the territory or the channel table.
-
-## Ask sheet
-
-Asks (decoupled from the call: the 2024 first-time employers, a cohort and a year the call never reads; H18, the plan
-line's case on retention, first-quarter value and where first-time employers come from):
-- A, by sales territory: signed in 2024; still with us in the fourth quarter of 2025 (12 figures).
-- B, by sales territory: gross wages we ran for them in their first quarter on payroll; in all of 2024 (12 figures,
-  to the cent).
-- C, by signup channel: the 2024 first-time employers (5 figures).
-- The note's chart: each territory's signed against still with us (4 criteria, two of them structural).
-
-Devices (no row in the call's population: the call reads the release, the share tab and the log, and the 2025 cohort
-carries no device, asserted; every device below measured spent under the careful-solver cracker on 2026-11-02, the
-battery item that performs each named under the cracker sheet, so "silent" below is the shipped claim, not the
-measurement):
-- A primary, D8 a date the load wrote for the event's date: the June 2024 migration loaded each legacy client's
-  client-since date (the day its account opened, 5 to 37 days before its first payroll) into first_pay_date. The
-  counting notes count the year and the quarter the first payroll with us ran, and only the wage files say when that
-  was: 4,885 migrated accounts hold no wages in the field's quarter, and no current-system account differs. Trusting the
-  field puts January 2024 starters into 2023 (12 to 54 a territory) and moves first quarters a quarter early. Silent:
-  the export's own column calls it the first pay date, and nothing invites the cross-check.
-- A and C second primary, D7 the true key elsewhere: the legacy system could not change an EIN, so a client whose first
-  quarterly return came back rejected for a mistyped EIN was cancelled and opened again the next day under the corrected
-  number (803 clients), with the same legal and trade names, industry and entity and the two EINs one adjacent swap
-  apart. Where the state registered the corrected EIN afresh (a business first employing through us) the re-opened
-  account looks like a new first-time employer; where the state already held the business under its correct EIN it
-  keeps the old liability date, and the business's later quarters fall off its first account. Silent: no field links
-  the two accounts, and the counting notes' "whatever its account or EIN" states the principle, not the link.
-- B primary, D9 a rollup above its parts: a two-group legacy client's company-level group 00 holds the client's totals,
-  so the plain sum of a client quarter's rows doubles its wages; found only by reconciling 00 against 01 and 02.
-- Documented, filed at the determinism judge's request and executed by the cracker (the mirror's bar): first-time
-  status from the state's liability record, not the onboarding flag, which successors and self-run businesses often
-  answered yes on the older form (D2); a quarter on tax filing only is not one we paid, with its over-cleaning twin, accounts
-  moved to tax filing only from 1 January 2026, which we still paid in the fourth quarter of 2025 (D5); a business
-  bought by a new owner who carries it on is the same business, and a successor of an EIN with no account in the
-  extract is its predecessor's business, never a first-time one.
-- Shared hazards: successors through the payroll tax team's register (the counting notes' re-formed entity and
-  new-owner rules), returning clients under the old EIN in three formats, the state first employed in against the
-  address state (the counting notes), legacy cents (the report's own column, gross_wages_cents), legacy numbers through
-  the crosswalk, the migration quarter split across both wage files (each file's 2024 Q2 row holds only its own pay
-  dates, asserted), the channel of a business's first account (the counting notes).
-
-Spans: A reads the export, the crosswalk, both wage files (the first payroll), the registrations, the successor
-register, the territory map and the counting notes; B adds the legacy wages' pay groups (eight files, fourteen
-columns); C reads the export, the crosswalk, the wage files, the registrations, the register and the counting notes.
-
-| Ask figure | Golden | Careful-solver cracker (generator/ceiling.py) | Verdict |
-|---|---|---|---|
-| Indiana-Kentucky signed | 207 | 207 | hit |
-| Indiana-Kentucky still | 158 | 158 | hit |
-| Indiana-Kentucky first-quarter wages | 1,977,871.23 | 1,977,871.23 | hit |
-| Indiana-Kentucky 2024 wages | 7,786,220.16 | 7,786,220.16 | hit |
-| Michigan signed | 447 | 447 | hit |
-| Michigan still | 351 | 351 | hit |
-| Michigan first-quarter wages | 4,061,127.70 | 4,061,127.70 | hit |
-| Michigan 2024 wages | 15,033,987.82 | 15,033,987.82 | hit |
-| Ohio signed | 803 | 803 | hit |
-| Ohio still | 659 | 659 | hit |
-| Ohio first-quarter wages | 6,772,408.40 | 6,772,408.40 | hit |
-| Ohio 2024 wages | 27,328,523.89 | 27,328,523.89 | hit |
-| Pennsylvania signed | 478 | 478 | hit |
-| Pennsylvania still | 391 | 391 | hit |
-| Pennsylvania first-quarter wages | 4,247,739.25 | 4,247,739.25 | hit |
-| Pennsylvania 2024 wages | 16,840,397.09 | 16,840,397.09 | hit |
-| South and Plains signed | 126 | 126 | hit |
-| South and Plains still | 98 | 98 | hit |
-| South and Plains first-quarter wages | 1,039,154.06 | 1,039,154.06 | hit |
-| South and Plains 2024 wages | 4,135,224.30 | 4,135,224.30 | hit |
-| Upper Midwest signed | 129 | 129 | hit |
-| Upper Midwest still | 104 | 104 | hit |
-| Upper Midwest first-quarter wages | 1,183,846.12 | 1,183,846.12 | hit |
-| Upper Midwest 2024 wages | 4,529,319.79 | 4,529,319.79 | hit |
-| channel accountant referral | 582 | 582 | hit |
-| channel bank partner | 271 | 271 | hit |
-| channel outbound | 274 | 274 | hit |
-| channel partner marketplace | 262 | 262 | hit |
-| channel web sign-up | 801 | 801 | hit |
-
-Measured 2026-11-02 with the careful-solver cracker on the reshipped cut: it lands the call, reads every field by its
-plain meaning, executes every rule the counting notes file and runs the hygiene battery, each item detecting its device
-on the pack before it acts, and it keeps all 29 figures. Each device falls to one battery item: the rollup
-reconciliation finds group 00 the sum of the other groups in all 37,739 multi-group legacy client quarters (with it
-switched off the cracker keeps 17 of 29, the counts and the channels); the anti-join of first_pay_date's quarter against
-the wage rows finds 4,885 migrated accounts, and no current-system account, with no wages in the field's quarter (off, 0
-of 29); the re-keyed-record match the counting notes' "whatever its account or EIN" invites finds 803 EIN pairs on
-accounts with the same names, industry and entity, the first cancelled the day before the second opened, all one
-adjacent swap apart (off, 3 of 29). The asks consume nothing the call's construction produces, so the best response off
-the call runs the same ask route and keeps every ask whole; the plain read (the onboarding flag, the field's first pay
-date, the address state, the account's own fourth-quarter row, every legacy row, the export's channel) keeps 6.1 per
-cent. The narrowed cracker the sheet recorded at the reship (generator/cracker.py, which trusted the account's first pay
-date, an EIN as the mark of a separate business and every row of a legacy client quarter) keeps 0 of 29 on the same
-pack; it ran none of the three battery items, so its numbers were never the ceiling (Tried and rejected).
-
-Pair ceiling: 83.5 (the careful solver on the call 38 + 7 + 55 x 33/33 = 100.0, the response off the call 5 + 7 + 55 x 33/33 = 67.0; 82.5 with r = 3; 57.7 against the plain-read mirror); two careful responses on the call 100.0 each
-Mirror leakage: 100.0 per cent of ask weight (every ask whole; 6.1 per cent on the plain read)
-Measured by: generator/ceiling.py on target.zip md5 dc7c39432937530f4193e1393cf044ea (the cracker's code is its own, no generator module imported; the full includer reproduces figures.json's 29 figures exactly; exit 2, the gate fails)
-
-## Leak sweep
-
-`leak.py task163 --asof 2026-10-16` on the 14-file pack: REVIEW, no LEAK (no file or sheet describes the data, checks.py
-REGISTER). Each REVIEW line and why it is harmless:
-- The plan workbook's Notes sheet: FP&A's own workbook notes (owner, the sizing standard, the share tab's refresh, the
-  sign-off); it names no column, file or code.
-- The standard carries the golden figure 100: it is the filed rounding ("to the nearest 100"), stated once at authority.
-- The standard carries most words of the committed call: it is where the first-time-employer line is defined; it
-  states no figure for it and names no rate, ratio, window or method (verify.py asserts the sizing section is free of
-  them).
-- The standard carries ten stump-paragraph terms: they are the estimand's own nouns (applications, formations,
-  months, release); none names the comparison, the yield or the split.
-- The prompt's shell quota (the second sentence opens on "Put", 35 per cent of the corpus against a cap of 20): a
-  corpus-quota WARN on the shipped prompt, voice-check PASS; the prompt stays as shipped on a repair that moves the pack.
-- metadata.json's title shares three stump terms (formation, application, filing): it names the decision and the setting
-  the research log files, never the comparison, the yield or the split; the subdomain, which narrated the decisive
-  step, now says only what the task decides.
-- The surface screen promotes task124, task132, task165 and task175 on the shared card keys (gap population, pattern
-  G6, Gate G forecasting, decision quantity_figure), the same-driver signature the card's differentiation answers at
-  the draw; heart WARN on the draw's three repeats (Gate G, decision, question form), answered in `## Draw`.
-
-## Pre-ship check
-
-The 10/10 rules read again against the built pack (round 3):
-- Rule 1, the domain: the deciding quantity is the employer yield of the applications the integrated filings added,
-  read the way econometrics reads a policy's effect on business formation (a difference-in-differences against the
-  nine states the reform did not reach, before and after) and carried into the formation forecast; the swap test holds
-  (the judge's Gate H: pass).
-- Rule 2, two layers: Layer 1 is the Census pulls in two layouts and vintages, the closed-cohort lag, the onboarding
-  export's two layouts across the June 2024 migration, legacy cents and pay groups, EIN formats, the crosswalk, the
-  registrations and the successor register, each asserted neutral on the call (R2); Layer 2 decides (the judge's Gate
-  H: layers pass, decisive step analytical).
-- Rule 3: nothing planted, no filed method, no field marks an added application (the round-3 recheck: PASS, strength
-  HOLDS); the easy route on the clean truth files 2,800 (R3a). P(one) about 0.15 and P(both) 0.04 to 0.05, counting as
-  landings the regression family: the two-way fixed-effects panel of formations on applications across the twelve
-  states (2,506.3, 2,506.0 and 2,480.6 in its three forms) and the reform states' post-go-live regression with month
-  terms (2,502.1) read the comparison in regression form and sit inside the golden's bin, asserted with the family.
-- Near routes, each with its reason in the ladder and checks.py: the own before-and-after (0.63 bins below), the
-  reform-state regression with month terms over every closed cohort (0.60 below) and 2025 grown with the nine states'
-  January-to-September applications (0.70 below) sit 0.6 to 0.7 bins off and round to 2,400; none rounds to the
-  golden, no other route is inside a bin, and the default path is 2.69 bins off.
-- Determinism: round 3 judge DETERMINISTIC, APPROVE, no fix (2,499.64, a relative yield of 0.2603, 312,103 added of
-  919,455 applications; seven variants at 2,491 to 2,500; every ask figure to the cent; Gates G and H pass). Its one ask
-  fork, a successor of an EIN with no account in the extract, is closed by one sentence in the counting notes (SF23).
-  The reader found no leak; its small tells are answered (the share tab's shares are formulas over the tab's own counts
-  and bases, shown to two decimals of a per cent with the results Excel stores).
-  figures.json and the Deliverable Answers block are byte-identical to the judged build.
-- Residual, recorded as measured: the common rise in applications ramps from January to April 2026, and all three
-  older routes close inside the ramp (Ohio 5 January, Pennsylvania 2 February, Michigan 2 March). It stays: moving the
-  rise off the closings (from October 2025 to January 2026 in the harness) brought the twelve-state growth carries
-  within 0.62 bins of the golden and the own before-and-after within 0.46, and nothing in the record logs a cause for
-  the rise. On the asks, a response that cracks both silent count devices lands every count (pair 47.7), and two
-  responses that both land the call average 48.3 before any device (the call's 45 and two structural chart criteria).
+Economics & Econometrics / forecasting-forecast-evaluation: Kilbourne Payroll's 2027 first-time employers across twelve
+states after three states put the employer-number application inside their formation filing; the call 2,500 (the
+added applications' yield read against the nine other states before and after), the default 2,800. The call held
+through three determinism rounds (DETERMINISTIC, APPROVE). The ask layer measured spent under the honest cracker
+(29 of 29 kept, pair 83.5) and no re-site or full replacement passed both device tests, so the slot re-roots with a new
+world, dataset, generator and shell. The full architecture 1 note, generator and pack are in git history (commit
+7ea9cab and before); its card identity, fate and shell are in the card's lineage.
 
 ## Tried and rejected
 
@@ -514,3 +165,27 @@ The 10/10 rules read again against the built pack (round 3):
 - The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 29 of 29 against the recorded 0 of 29, SPENT on Asks A, B and C, pair 57.7 (83.5 with the mirror on the honest route); the reason in one line: the anti-join on first_pay_date's quarter against the wage rows (179 migrated accounts), the counting notes' 'whatever its account or EIN' linking the re-keyed businesses, pay group 00 equal to 01 plus 02. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.
 - Re-siting the spent asks inside the files they read (2026-11-02, the /fix-rubric pass, each screened as code on the generator's own world before any cut): reciprocity home-state withholding registrations moving a business's first-employed state (a geography and tax-law link: a resident of a reciprocity partner has the home state's tax withheld, with no UI account there) die twice, since the home-state row ties the work-state row on the first payroll's date and the address-state tie-break a careful solver reaches for misplaces 1 of the 113 cohort businesses carrying one (file order 50), and the same law runs in the 2025 cohort, where the earliest-registration reading moves the share tab's counts by state (IN +30, KY +19, OH -23, PA -16), so the call's own input would be the device's oracle; a new company's first payrolls under its owner's legacy client, split out at the migration (a child under its parent's client number), is unforced, since the state dates the child's first wages under its own EIN and nothing shows they ran with us rather than elsewhere; a quarter-to-date balance load in the migration quarter is the battery's carried-over record across two systems (each such client's pay dates would overrun its frequency's quarter).
 - The full replacement on new ask-only records (2026-11-02, step 4b), built as a prototype outside the pack and measured: the payroll tax team's new-hire report log, asking how many people each territory's 2024 first-time employers took on in 2025 (in whole people), the WHAT drafted for the counting notes ("A person a business took on in a year is someone who started working for it that year, counted each time they started."), the device the reports a successor's or a returning account files for the staff it carried on (a new FEIN requires them), the over-cleaning half the rehires; forced (the notes make the re-formed business the same business, and each carried person's earlier report is the predecessor's), and every natural careful route misses 6 of 6 (every report, distinct people, the first report only), but the told reader lands 6 of 6 with a person repeat and a date match on the new account's first pay date, the battery's re-keyed-record match applied to employees, and South and Plains carries one device row: spent. Screened and not built: fees on a billing export with an affiliate billed on its parent's invoice (the child's payroll with no invoice is an anti-join orphan and the parent's lines name it), fees billed in arrears (an invoice after an account's cancellation is a row after a system's close), the partners' payouts by channel priced at a share of the client's fees (one client under a partner's key priced on the account's fees, task447's family), commissions on multi-entity deals (the plan's per-business bonus, a reconciliation to a filed schedule), SUI rate notices with an inherited rate (the counting notes file status by the liability date, so the literal rule and the rate disagree, and the 2025 cohort carries the same mechanism into the share tab), 2025 W-2s across a re-formation (the carried staff are not in the per-EIN totals, unrecoverable), a legacy run archive dated by processing for a monthly phasing (forced only at quarter ends), employment on 12 December from the UI reports (the plain read is right). Cutting the spent asks leaves 7 criteria (the call, its four components, the two files), under 25. Owed: the author's call, a new ask layer on records this world would hold, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root of the asks; the leak repair and the determinism record of the reship stand.
+- 2026-11-02, architecture 1 re-rooted: its call held and its ask layer measured spent (the careful solver keeps 29 of
+  29, pair 83.5), no re-site or full replacement passing both device tests; the world, the dataset, the generator and the
+  prompt shell all move (architecture 2: Human Factors / human reliability assessment, a 3PL's mis-pick claims under a
+  re-slot), the ask records chosen first.
+- The world search for architecture 2 (2026-11-02), each candidate killed on paper before any harness: a pension
+  scheme's payroll (a spouse's pension equal to half the deceased member's, the guarantee lump sum equal to the
+  instalments left; strong ask links) had no main call that was not a reflex or a composition (commutation take-up
+  against the factor, the payroll's run-off, deaths with a notification lag); consumer and motor lending (interest that
+  dates a payment's value day, an instalment that reveals an unrecorded term change) had only reflex calls (roll rates,
+  equity-driven hand-backs, refix shock); a district heat network's return temperature and a bus network's timed
+  transfers had fresh calls but ask records in the banned meter and presence families.
+- Ask devices screened in this world and rejected at the draw: a returns label reused for a later claim (the return
+  booked under an old order; a join on customer, SKU and date performs the link, so a told reader lands it); a carrier's
+  late-billed tariff increase (the same catch-up family as Ask A, and a filed rate card's reconciliation finds it); the
+  grade switch read through waste transfer weights (a recorded attribute contradicted by a weight, the banned family);
+  the repack partner's bills with unit counts (a count pairing performs it, so the bills carry amounts only); re-sends
+  sent by another carrier and absent from the main carrier's invoices (an anti-join performs it); an agency worker's
+  12-week parity (the charge rate states the tenure); a carton read from the carrier's dimensional weight and two orders
+  in one parcel read from a weight sum (banned families: a measured weight against a master, a subset sum).
+- The look-alike multiplier as the golden (human reliability assessment's performance shaping factor for similar items
+  side by side, fitted on claims beside same-line or same-family faces): rejected at the draw as the field's reflex; it
+  sits at rung 1 and files about 100 or 180 against about 340, because the current layout's same-line neighbours are a
+  line's sizes (never weight-alike) while the plan's are its shades, and the caught exceptions show no rise in the
+  error rate beside look-alikes.
