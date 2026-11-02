@@ -73,7 +73,7 @@ LOCAL_CELLS = ["RG01", "RG02", "RG04", "RG05", "RG06", "RG08", "RG09", "BM701"]
 OUTSIDE_CELLS = ["XO001", "XO002"]
 SAMPLE = 0.09  # panel devices per resident commuter, about
 DEP_SHIFT = {"KW04": -12, "KW05": 16}  # minutes added to every shift of a destination's workers (set by tuning)
-GATE_SEED = 40
+GATE_SEED = 145
 
 # Existing stations on the Ardnagree line and their 2019 base and 2027 standing (ordinary weekday entries).
 STATIONS = [

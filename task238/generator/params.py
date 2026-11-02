@@ -27,18 +27,18 @@ SUN_OPEN, SUN_CLOSE = 9, 21
 STORES = [
     # no,  pos name,                    audit name,                    dev,   zone, crew,  size,  share, morn, print, sd,  hol
     (101, "SALTMARSH QUINPOOL",       "Quinpool Road",                "QNP", 1, "night", 23800, 0.205, 0.55, -1.30, 0.30, 0.0),
-    (102, "SALTMARSH SPRYFIELD",      "Spryfield",                    "SPR", 1, "day",   15400, 0.2985, 1.05, 10.55, 0.35, 0.70),
+    (102, "SALTMARSH SPRYFIELD",      "Spryfield",                    "SPR", 1, "day",   15400, 0.2913, 1.05, 10.55, 0.35, 0.70),
     (103, "SALTMARSH CLAYTON PK",     "Clayton Park",                 "CLP", 1, "day",   19100, 0.192, 0.70,  7.35, 0.25, 0.30),
     (104, "SALTMARSH BEDFORD PL",     "Bedford Place",                "BDF", 1, "night", 21700, 0.198, 0.40, -1.55, 0.30, 0.0),
     (105, "SALTMARSH PORTLAND ST",    "Dartmouth - Portland St",      "PTL", 1, "night", 24600, 0.214, 0.60, -1.10, 0.35, 0.0),
-    (106, "SALTMARSH COLE HBR",       "Cole Harbour",                 "CLH", 1, "day",   16800, 0.1569, 0.00, 10.90, 0.40, 0.60),
-    (107, "SALTMARSH SACKVILLE",      "Lower Sackville",              "SKV", 1, "day",   17900, 0.2668, 0.95, 10.85, 0.35, 0.80),
+    (106, "SALTMARSH COLE HBR",       "Cole Harbour",                 "CLH", 1, "day",   16800, 0.1684, 0.00, 10.90, 0.40, 0.60),
+    (107, "SALTMARSH SACKVILLE",      "Lower Sackville",              "SKV", 1, "day",   17900, 0.2500, 0.95, 10.85, 0.35, 0.80),
     (201, "SALTMARSH TRURO",          "Truro (Prince St)",            "TRU", 2, "night", 18300, 0.226, 0.50, -1.40, 0.30, 0.0),
     (202, "SALTMARSH NEW GLASGOW",    "New Glasgow",                  "NGL", 2, "day",   14200, 0.2350, 0.85,  8.30, 0.30, 0.45),
-    (203, "SALTMARSH ANTIGONISH",     "Antigonish",                   "ANT", 2, "day",   11600, 0.2544, 0.30, 12.00, 0.45, 0.50),
+    (203, "SALTMARSH ANTIGONISH",     "Antigonish",                   "ANT", 2, "day",   11600, 0.2751, 0.30, 12.00, 0.45, 0.50),
     (204, "SALTMARSH KENTVILLE",      "Kentville",                    "KTV", 2, "night", 16900, 0.219, 0.45, -1.25, 0.30, 0.0),
-    (205, "SALTMARSH BRIDGEWATER",    "Bridgewater",                  "BRW", 2, "day",   13900, 0.2817, 0.65,  9.40, 0.30, 3.60),
-    (206, "SALTMARSH YARMOUTH",       "Yarmouth",                     "YAR", 2, "day",   12400, 0.2671, 1.10, 12.30, 0.40, 0.50),
+    (205, "SALTMARSH BRIDGEWATER",    "Bridgewater",                  "BRW", 2, "day",   13900, 0.2825, 0.65,  9.40, 0.30, 3.60),
+    (206, "SALTMARSH YARMOUTH",       "Yarmouth",                     "YAR", 2, "day",   12400, 0.2630, 1.10, 12.30, 0.40, 0.50),
     (207, "SALTMARSH AMHERST",        "Amherst",                      "AMH", 2, "day",   10900, 0.185, 0.35,  8.20, 0.35, 0.40),
 ]
 

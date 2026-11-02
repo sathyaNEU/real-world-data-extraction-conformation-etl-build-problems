@@ -227,14 +227,19 @@ def station_ratios(D, codes_map=None, naive=False):
     """Average ordinary-weekday entries, September to November 2027 over September to November 2019."""
     hol = D["nonordinary"]
     succ = {"KUH": ["UHK", "KUH"], "CBY": ["CBH", "CBY"], "ARD": ["ARD"], "LSG": ["LSG"], "KCN": ["KCN"],
-            "KDK": ["KDK"]}
-    if naive:
+            "KDK": ["KDK", "KDX"]}
+    if naive == "register":
+        succ = dict(succ, KDK=["KDK"])
+    elif naive:
         succ = {k: [k] for k in succ}
     out = {}
     for st, codes in succ.items():
         def mean(y):
-            v = [n for d, c, n in D["gates"] if c in codes and d.year == y and 9 <= d.month <= 11 and d.weekday() < 5
-                 and d not in hol]
+            by = collections.Counter()
+            for d, c, n in D["gates"]:
+                if c in codes and d.year == y and 9 <= d.month <= 11 and d.weekday() < 5 and d not in hol:
+                    by[d] += n
+            v = list(by.values())
             return (sum(v) / len(v)) if v else None, len(v)
         a, na = mean(2027)
         b, nb = mean(2019)
@@ -304,6 +309,7 @@ def run(target):
         "lisnagry_route": census_daily * lsg, "station_ratios": {k: v[0] for k, v in sr.items()},
         "station_means": {k: (v[1], v[2], v[3], v[4]) for k, v in sr.items()},
         "station_ratios_naive": {k: v[0] for k, v in station_ratios(D, naive=True).items()},
+        "station_ratios_register": {k: v[0] for k, v in station_ratios(D, naive="register").items()},
         "departures": dep, "departure_days": dict(dep_n), "departures_utc": dep_u,
         "variants": {k: {"total": v[1], "rows": v[0]} for k, v in var.items()},
         "scope": "reduced" if golden < D["threshold"] else "full",

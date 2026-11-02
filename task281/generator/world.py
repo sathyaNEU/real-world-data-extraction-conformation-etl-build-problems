@@ -58,6 +58,22 @@ SCHOOLS = [
 ]
 
 
+# titles a school owns that other schools' courses also list (owner: (probability, [(school, weight)]))
+CROSS = {
+    "ECON": (0.42, [("ACFN", 3), ("MGMT", 3), ("POLI", 1)]),
+    "MATH": (0.40, [("ACFN", 2), ("ENGN", 2), ("COMP", 1), ("ECON", 1)]),
+    "PSYC": (0.38, [("NURS", 3), ("AHPR", 2), ("MKTG", 2), ("EDUC", 1)]),
+    "SOCI": (0.36, [("CRIM", 2), ("NURS", 2), ("LAWS", 1), ("POLI", 1)]),
+    "POLI": (0.30, [("LAWS", 3), ("ECON", 1)]),
+    "BIOL": (0.38, [("MEDI", 3), ("DENT", 1), ("BMSC", 1)]),
+    "BMSC": (0.40, [("MEDI", 3), ("DENT", 2), ("NURS", 1)]),
+    "CHEM": (0.25, [("MEDI", 2), ("BIOL", 1), ("DENT", 1)]),
+    "PHIL": (0.28, [("LAWS", 2), ("POLI", 1)]),
+    "HIST": (0.20, [("POLI", 1), ("LAWS", 1)]),
+    "SPEX": (0.25, [("AHPR", 2), ("NURS", 1)]),
+}
+
+
 def new_faculty(old):
     for code, name, olds in P.FACULTIES:
         if old in olds:
@@ -146,10 +162,13 @@ def build(seed=P.SEED):
         for _ in range(k):
             sem = rng.choices(["S26", "A", "both"], weights=[0.42, 0.33, 0.25])[0]
             cross = None
-            if rng.random() < 0.14:
+            aff = CROSS.get(code)
+            if aff and rng.random() < aff[0]:
+                cross = rng.choices([c for c, _ in aff[1]], weights=[x for _, x in aff[1]])[0]
+            elif rng.random() < 0.08:
                 same_fac = [c for c in by_school if W.school_old[c] == old and c != code]
-                pool = same_fac if (same_fac and rng.random() < 0.6) else [c for c in by_school if c != code]
-                cross = rng.choice(pool)
+                if same_fac:
+                    cross = rng.choice(same_fac)
             pop = rng.lognormvariate(0.0, 0.62)
             titles.append(dict(id=tid, school=code, cross=cross, sem=sem, pop=pop))
             tid += 1
@@ -214,7 +233,7 @@ def build(seed=P.SEED):
                     if t0 >= P.EXTRACT or t0 < P.RECORD_START:
                         continue
                     school = t["school"]
-                    if t["cross"] and rng.random() < 0.3:
+                    if t["cross"] and rng.random() < P.CROSS_SHARE:
                         school = t["cross"]
                     stu = rng.choice(by_school[school])
                     reqs[t["id"]].append((t0, stu))
@@ -268,6 +287,16 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
 
     active_by_student = set()
     lapsing = []
+
+    def renew(L, time):
+        k = len([x for x in W.licences if x.title == L.title]) + 1
+        rn = Licence(lic_id="L%06d" % ((int(L.lic_id[1:]) * 7 + k * 131) % 999983), title=L.title, model="1U-M",
+                     copies=1, bought=time.date(), po_line="AR-%s-%d" % (L.lic_id, k),
+                     price_gbp=round(L.price_gbp * rng.uniform(1.0, 1.08), 2))
+        rn.remaining = [P.METER_LOANS]
+        rn.lapsed_at = [None]
+        rn.renewal_of = L.lic_id
+        return rn
 
     def meter_loan():
         for L in lics:
@@ -378,7 +407,10 @@ def simulate_title(W, t, rng, holds, loans, hcount, lcount):
             active_by_student.discard(loan.student)
             if m and m[0].remaining[m[1]] == 0 and m[0].lapsed_at[m[1]] is None:
                 m[0].lapsed_at[m[1]] = time
-                capacity -= 1
+                # the platform re-licenses a lapsed metered copy at once (auto-renewal on titles on current lists)
+                rn = renew(m[0], time)
+                lics.append(rn)
+                W.licences.append(rn)
             offer_heads(time)
         elif kind == "lic":
             capacity += payload.copies

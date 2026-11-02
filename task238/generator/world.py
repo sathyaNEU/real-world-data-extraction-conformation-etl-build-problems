@@ -93,6 +93,9 @@ class World:
             noun = NOUNS[dep][r.integers(len(NOUNS[dep]))]
             size = SIZES[r.integers(len(SIZES))]
             nv = int(r.choice([1, 2, 3, 4, 5], p=[0.46, 0.2, 0.16, 0.1, 0.08]))
+            if (brand, noun, size) in self._famkeys if hasattr(self, "_famkeys") else False:
+                continue
+            self._famkeys = getattr(self, "_famkeys", set()) | {(brand, noun, size)}
             base = float(np.round(np.exp(r.normal(1.35, 0.55)), 2))
             price = max(0.99, round(np.floor(base) + [0.49, 0.79, 0.99, 0.29, 0.69][r.integers(5)], 2))
             vs = list(r.choice(varieties, size=nv, replace=False)) if nv > 1 else [""]

@@ -309,8 +309,10 @@ def run(W, target, E):
     endinc = R.c_literal(D, U, end_second=1)
     moves = {k: abs(endinc[k] - lit[k]) for k in lit}
     room = {k: edge(E["voltage_pct"][k], 0.01) for k in lit}
+    margin = {k: room[k] - moves[k] for k in lit}
+    kt = min(margin, key=margin.get)
     ok("Q5: every cell's distance to its rounding edge exceeds what any boundary convention moves (an end second counted inclusively the largest)",
-       all(room[k] > moves[k] for k in lit), "tightest room %.5f against a move of %.5f" % (min(room.values()), max(moves.values())))
+       all(margin[k] > 0 for k in lit), "tightest %s: room %.5f against a move of %.5f" % (kt, room[kt], moves[kt]))
     # F1: the standard files the any-phase reading for three-phase supplies
     ok("F1: the standard files when a three-phase supply is outside the limits",
        "A three-phase supply is outside the limits while any one of its phases is outside them" in " ".join(D["std_text"].split()), "")

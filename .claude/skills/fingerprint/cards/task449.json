@@ -1,92 +1,148 @@
 {
   "task": "task449",
-  "architecture": "v1",
-  "drawn": "2026-10-12",
-  "slot_note": "wave 2 for oviya1301, seed ET06 (analytical_tasks/07_data_extraction_conformation): the complaint-operations world, the permanent-staff-against-overtime decision after an industry event and the sustained workload quantity are kept; the seed's taxonomy-seam trap (data semantics) is not used as the decisive step, and the pitfall is re-found from how the program's contacts are matched into complaint matters",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "client_domain": "general-statistics-data-science",
-  "niche": "estimating, from a card issuer's outsourced complaint desk's six intake channels, the weekly new complaint matters that do not arise from a processor's payment-posting failure (the sustained base the 2027 dedicated team is sized on), when about a fifth of the window's matters open on a social care desk that attaches the first of the cardholders whose name and city match a poster's display name",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "Batch 3 re-root of task449 (ETL lane). Architecture 1 (the complaint desk, general statistics record linkage) moved to lineage; the slot moves to Survey Research & Official Statistics (census, register and administrative data quality), a client domain no other ETL build in the batch held at the draw except task484, which re-rooted into the same client domain's seasonal-adjustment task type on 2026-11-02; this draw takes the other task type, another world, strategy, shape and forum.",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a provincial statistics bureau certifying, for the labour minister's 2027 in-demand occupations order, each occupation's registered jobseekers per vacancy on four quarterly reference dates, conformed from the provincial employment service's job board snapshots and employer-services vacancy records and benchmarked to the bureau's quarterly employer vacancy survey by sector",
   "objective": "etl",
-  "shape": "other",
-  "decision_type": "dial_setting",
-  "answer_unit": "count",
-  "answer": "Carry 35 dedicated analysts in Bellcroft's 2027 complaint desk statement of work (a sustained base of 950 new matters a week after 500 a week arising from Meridel's payment-posting failure).",
-  "answer_source": "task449/submission.md, block 1",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G17",
-    "G3",
-    "G10"
+    "G12",
+    "G14",
+    "G6"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "etl_conformance",
   "calibration_form": "none",
-  "stump_strategy": "identity_resolution",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "workforce planning lead at the outsourcing firm that runs a card issuer's complaint desk, who sets the dedicated analysts the client's 2027 statement of work will carry",
-  "role_family": "capacity_planner",
-  "scoring_unit": "flat per seat",
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the job board's reference-date snapshots to NOC 2021, takes each posting's sector from the employer register, scales the live positions to the vacancy survey's sector estimates and applies the order's 1.5 jobseekers-per-vacancy test files a list that carries the fast-filling self-service occupations and leaves off slow-filling occupations whose vacancies employer services manages (the occupations fixed at build).",
+  "domain_test": "The deciding quantity is each occupation's stock of unfilled vacancies on the reference dates in the vacancy survey's definition, which official labour statistics estimates from an administrative job register benchmarked to an employer vacancy survey, and how far the register's live listings stand for that stock is set by how each channel records a vacancy's end; with a retailer's nouns (catalogue listings against a stock count) there is no sample survey defining the concept by sector and no channel whose records outlive the state, so the task does not read the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "survey-research-official-statistics/census-register-administrative-data-quality/2",
+  "layer1": [
+    "monthly job board snapshots in two layouts across a 2025 system change, legacy NOC 2016 codes on older postings with an official concordance",
+    "postings carrying no sector, which comes from the employer register by employer number",
+    "multi-position postings counted in positions",
+    "renewed postings keeping their number with a new term, reposted jobs taking a new number",
+    "employer-services outcomes kept in a separate case system in its own workbook layout",
+    "the vacancy survey release as a workbook with title blocks, coefficients of variation and suppressed cells",
+    "jobseeker counts by primary sought occupation in a monthly extract with a revised month",
+    "provincial program guide and data dictionary as PDFs"
+  ],
+  "stakeholder_role": "manager of labour market statistics at the provincial statistics bureau, who certifies the order's figures to the labour minister",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "per accepted item",
   "spine": {
-    "file": "complaint_matters_2025_2026.csv",
-    "rows": 77145,
-    "entity": "one complaint matter opened by the program's case system from a contact on any of six intake channels",
-    "grain": "matter (one consumer's complaint about one problem with one account)",
-    "source": "synthetic (constructed in the layouts of a complaint case register with its status history, a social care tool's JSON export, a processor's affected-payment file and a workforce time system; no real consumer, complaint or company is depicted)"
+    "file": "workshore_board_snapshots_2024-2026.csv",
+    "rows": 0,
+    "entity": "one job posting live on the board on one month-end snapshot date",
+    "grain": "posting x month-end",
+    "source": "synthetic (constructed in the layouts of a public employment service job board export, an employer-services case system, a jobseeker register extract and an employer vacancy survey release; no real person, employer or agency is depicted)"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "professional_services",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "United States (a regional card issuer's national cardholder base; the complaint desk works Eastern time)",
-    "currency": "USD",
-    "org_type": "business process outsourcer running a regional card issuer's complaint desk under an annual statement of work",
+    "geography": "Canada (a fictional province; its statistics bureau, employment service, job board, survey, employers and people are invented)",
+    "currency": "CAD",
+    "org_type": "provincial statistics bureau, labour market statistics unit",
     "invented_names": [
-      "Bellcroft Bank",
-      "Fenwright Contact Services",
-      "Meridel Payment Systems"
+      "Workshore",
+      "Workshore Job Board",
+      "Quarterly Employer Vacancy Survey",
+      "In-Demand Occupations Order"
     ],
     "people": [
-      "Catherine Schneider",
-      "Stacy Fernandez"
+      "Sherri Underwood",
+      "Cody Riddle"
     ]
   },
   "deliverables": [
-    "dedicated_analysts_2027.docx",
-    "flex_hours_2026.csv"
+    "in_demand_2027_briefing.docx",
+    "in_demand_2027_tables.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A characteristic of each record is read through a link to another file, and for one class of records the link is the first of several equally plausible targets, so the linked value is the record's own only one time in k and otherwise the value of an unrelated target, which carries the population's rate; a share computed from the linked values is diluted toward that rate, and the class's true share has to be recovered by inverting the dilution with each record's own chance of a right link, which matters only once a shock moves a large share of the records into that class.",
-  "driver_concrete": "After the May 2026 payment-posting failure about a quarter of new complaint matters open on the social care desk, whose agents attach the first of the cardholders whose name and city match a poster's display name; whether a social-care matter arises from the failure (the cardholder's payment was in the processor's affected-payment file) read off that attached account comes out near 36 per cent, against a true share of about 80 per cent, so the sustained base the dedicated analysts are sized on is overstated by about 135 matters a week unless the share is estimated from the searches that returned one cardholder or by inverting each attachment's one-in-k reliability (figures fixed at build).",
-  "stump": "A competent solver attributes each new matter in the last eight complete weeks to the failure by checking the account the case system attached against the processor's affected-payment file, keeps every social-care matter whose attached account had no affected payment in the sustained base, and files about 40 dedicated analysts; the social care desk attached the first of k same-name cardholders, so most of the failure's social-care matters look unaffected, and with the share estimated from the one-match searches the base is about 950 matters a week and the team 35 (figures fixed at build).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the six channel matters, joins the social care desk's search records, applies Schedule 7's four codes and affected-payment test to each matter's attached account and the planning standard's 27.5 matters per analyst-week files about 40 dedicated analysts; one who distrusts the name-and-city attachments and imputes from the verified social matters files 34 (figures fixed at build).",
-  "domain_test": "False links attenuate: a characteristic read through an uncertain link mixes the record's own value with the population's, and record linkage corrects estimates from linked data for the false-link rate (the Lahiri and Larsen and Chambers adjustments, or the subsample whose links are certainly right) instead of reading the linked values as truth; with a plain join of the attached account the sustained base rises by about 135 matters a week and the team from 35 to 40, so the call does not survive the swap of method.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
-  "layer1": [
-    "six intake channels in one register, each with its own source-reference format",
-    "the social care tool's export in JSON lines with nested search records and UTC post times, against the register's Eastern opening times",
-    "account references in two formats across the register and the processor's affected-payment file",
-    "returned and re-presented payments in the processor's file",
-    "the desk's complaint code list against the incident schedule's four codes",
-    "a status history in which a reopened matter keeps its number, and merged duplicates",
-    "Fenwright's time records carrying other programs' overtime, and two staffing agencies' timesheets in their own layouts",
-    "an operations log of the surge (overtime approvals, agency starts, the social care desk's changes)"
-  ],
+  "question_form": "which",
+  "driver": "A record stays live after the state it stands for has ended on one recording channel until a fixed term lapses, while on the other channel it ends with the state; the stock on a date counts each first-channel record by the chance its state was still running at its age, read from the end times the second channel records for the same class, and scaling the raw stock to a survey's group totals corrects the net level but leaves the lapsed records' weight in each group's mix.",
+  "driver_concrete": "A self-service posting on the provincial job board stays live until its employer removes it or its 90-day term runs out, while employer-services vacancies close on the day their outcome is recorded; so the jobseekers-per-vacancy test needs each live self-service posting weighted by the chance its job was still unfilled on the reference date, read from the end times employer services records for the same occupation, because scaling the board's live positions to the vacancy survey's sector totals keeps the filled fast-filling jobs in each sector's occupation mix (figures fixed at build).",
+  "stump": "A competent analyst counts the positions live on the board on each reference date, scales them to the vacancy survey's sector estimates and lists the occupations at or under 1.5 jobseekers per vacancy, which puts fast-filling self-service occupations on the list and leaves slow-filling managed ones off; the step that lands it there is reading every live self-service posting as an unfilled job for its whole term (occupations fixed at build).",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task101": "task101 removes the decision's own earlier payments from the distribution a threshold is cut from; here nothing is removed from a baseline: a share read through first-of-k account attachments is diluted toward the portfolio rate and is recovered by inverting the dilution.",
-    "task126": "task126 splits units a succession link wrongly joins, using a separate ledger's classification; here no unit is split or joined: each matter's count is exact and only the characteristic read through an arbitrary account attachment is corrected for the attachment's one-in-k reliability."
+    "task231": "task231 reads the closed share of a fieldwork round's silent firms from older rounds of the same register once its late closures have arrived; here the self-service channel never dates a job's end at all (the posting lapses on its own 90-day clock), so no round ever catches up: each live posting counts by its occupation's chance of still being unfilled at its own age, read across channels from the dated employer-services outcomes, and the survey's sector totals fix only the net level, leaving the error in each sector's occupation mix.",
+    "task234": "task234 restores the items a stream lost in transit from a share no loss can move; here nothing is lost and nothing is restored: the register holds every posting, and what is estimated is each live posting's chance that its job was still open at its age.",
+    "task445": "task445's loop 0 completes a period's total for reports that had not yet arrived, reporter by reporter from each one's last report; here every record is present and nothing is completed: the stock shrinks, weighting live postings whose end their channel never dates.",
+    "task482": "task482's architecture 14 sets members already past a per-member cap at the cap however their running episode ends; here no cap binds and nothing is carried forward: each live posting counts by the survival of its occupation's jobs at its age."
   },
-  "lineage": [],
-  "notes": "Drawn 2026-10-12 for wave 2 with rule 1 as the governing constraint. The seed's world is complaint operations, and the ETL lane's only task type that fits it is record linkage (general statistics); the swap there is of the method, and the deciding quantity is the linkage field's own estimate of distinct entities under linkage error (the client's pattern: propagate linkage error to the estimate; shortcut: links above a cutoff as truth). stump_strategy identity_resolution is the honest family (the decisive step is the reliability of an entity link) and draws the guard's semantics-risk WARN: every field and rule is read right on the default path, which still files the wrong base; the step is the correction of a linked share for false links. First draw (rejected before registering): counting new matters as the sum of one minus the matching engine's probabilities, which is task253's lesson (count by summed posterior probabilities); the capture-rate alternative (unlinkable contacts imputed from linkable ones) is task448's. calibration_form none. Personas drawn with guard.py names --geo 'United States' --seed 449. Forum, forcing event and organisation drawn clear of the three builds drawn before it (tasks 185, 229 and 448)."
+  "lineage": [
+    {
+      "version": "v1",
+      "fate": "re-rooted 2026-11-02 at the Batch 3 queue reset (shipped 2026-10-12 with no portal result; the complaint-desk world closed)",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "niche": "estimating, from a card issuer's outsourced complaint desk's six intake channels, the weekly new complaint matters that do not arise from a processor's payment-posting failure (the sustained base the 2027 dedicated team is sized on), when about a fifth of the window's matters open on a social care desk that attaches the first of the cardholders whose name and city match a poster's display name",
+      "objective": "etl",
+      "shape": "other",
+      "decision_type": "dial_setting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G3",
+        "G10"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "identity_resolution",
+      "forum": "committee_or_panel",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "professional_services",
+      "world": {
+        "geography": "United States (a regional card issuer's national cardholder base; the complaint desk works Eastern time)",
+        "currency": "USD",
+        "org_type": "business process outsourcer running a regional card issuer's complaint desk under an annual statement of work",
+        "invented_names": [
+          "Bellcroft Bank",
+          "Fenwright Contact Services",
+          "Meridel Payment Systems"
+        ],
+        "people": [
+          "Catherine Schneider",
+          "Stacy Fernandez"
+        ]
+      },
+      "deliverables": [
+        "dedicated_analysts_2027.docx",
+        "flex_hours_2026.csv"
+      ],
+      "question_form": "how-many",
+      "driver": "A characteristic of each record is read through a link to another file, and for one class of records the link is the first of several equally plausible targets, so the linked value is the record's own only one time in k and otherwise the value of an unrelated target, which carries the population's rate; a share computed from the linked values is diluted toward that rate, and the class's true share has to be recovered by inverting the dilution with each record's own chance of a right link, which matters only once a shock moves a large share of the records into that class.",
+      "driver_concrete": "After the May 2026 payment-posting failure about a quarter of new complaint matters open on the social care desk, whose agents attach the first of the cardholders whose name and city match a poster's display name; whether a social-care matter arises from the failure (the cardholder's payment was in the processor's affected-payment file) read off that attached account comes out near 36 per cent, against a true share of about 80 per cent, so the sustained base the dedicated analysts are sized on is overstated by about 135 matters a week unless the share is estimated from the searches that returned one cardholder or by inverting each attachment's one-in-k reliability (figures fixed at build).",
+      "stump": "A competent solver attributes each new matter in the last eight complete weeks to the failure by checking the account the case system attached against the processor's affected-payment file, keeps every social-care matter whose attached account had no affected payment in the sustained base, and files about 40 dedicated analysts; the social care desk attached the first of k same-name cardholders, so most of the failure's social-care matters look unaffected, and with the share estimated from the one-match searches the base is about 950 matters a week and the team 35 (figures fixed at build).",
+      "answer": "Carry 35 dedicated analysts in Bellcroft's 2027 complaint desk statement of work (a sustained base of 950 new matters a week after 500 a week arising from Meridel's payment-posting failure).",
+      "shell": null
+    }
+  ],
+  "notes": "Drawn 2026-11-02 for the Batch 3 re-root. Labels redrawn against the moving window before registering: classification_error (the first label, the register misclassifying ended jobs as open) and informative_censoring were banned by task159 and task281, registered minutes earlier; maturity_censoring is kept as the honester family because the mechanism is a channel-specific delay in recording exits (the self-service end surfaces only at the term's lapse, undated), which strategies.md F4 lists under 'whose speed differs (route, reporter, cohort, channel)'. Decisive generator G12 (an absent removal is a non-answer, not evidence the job is open); gap time first (the record's term against the job's end), population second. Personas from guard.py names --geo Canada --locale en_CA --seed 449, taking the first two the people rules pass clean (Stacy Fernandez is on architecture 1's card).",
+  "registered": "2026-11-02T02:34:55Z"
 }

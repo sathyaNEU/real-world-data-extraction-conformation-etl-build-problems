@@ -367,11 +367,24 @@ def unit_price(qty, price):
     return price / qty
 
 
-def ask_flyer(target):
+def ask_flyer(target, lead_only=False, release="REVISED", qty_aware=True, zone_units=True):
     """ask B: for each flyer week, the advertised UPCs that rang up at a price other than the flyer price, and the
-    dollars customers paid above the flyer price"""
+    dollars customers paid above the flyer price that week"""
     ad = rows(os.path.join(target, FILES["adplan"]))
-    adp = {}
+    rel = xlsx_rows(os.path.join(target, FILES["pricefile"]), release)
+    keyed = {}
+    adstart = defaultdict(list)   # week -> [(upc11, description)]
+    for r in rel:
+        d = r["Effective"]
+        d = (d.date() if isinstance(d, dt.datetime) else d).isoformat()
+        u11 = str(r["EAN"])[1:12]
+        keyed[(d, u11, int(r["Zone"]))] = (int(r["Price qty"]), float(r["Price"]))
+        if r["Change"] == "AD START" and int(r["Zone"]) == 1:
+            adstart[d].append((u11, str(r["Description"])))
+    units = defaultdict(int)
+    for r in rows(os.path.join(target, FILES["adsales"])):
+        units[(r["flyer_start"], r["upc"][:11], int(r["price_zone"][1:]))] += int(r["units"])
+    advertised = {}
     for r in ad:
         txt = r["ad_price"]
         m1 = re.match(r"^\$(\d+\.\d{2})$", txt)
@@ -383,30 +396,35 @@ def ask_flyer(target):
             qty, pr = int(m2.group(1)), float(m2.group(2))
         else:
             qty, pr = int(m3.group(1)), float(m3.group(2))
-        adp[(r["flyer_start"], r["upc_11"])] = (qty, pr)
-    rel = xlsx_rows(os.path.join(target, FILES["pricefile"]), "REVISED")
-    keyed = {}
-    for r in rel:
-        d = r["Effective"]
-        d = (d.date() if isinstance(d, dt.datetime) else d).isoformat()
-        keyed[(d, str(r["EAN"])[1:12], int(r["Zone"]))] = (int(r["Price qty"]), float(r["Price"]))
-    units = {}
-    for r in rows(os.path.join(target, FILES["adsales"])):
-        units[(r["flyer_start"], r["upc"][:11], int(r["price_zone"][1:]))] = int(r["units"])
+        d = r["flyer_start"]
+        members = [r["upc_11"]]
+        copy = r["ad_copy"]
+        if copy.endswith(", assorted") and not lead_only:
+            fam = copy[:-len(", assorted")].upper().split()
+            size2 = " ".join(fam[-2:])
+            head = " ".join(fam[:2])
+            members = [u for (u, desc) in adstart[d] if desc.startswith(head + " ") and desc.endswith(" " + size2)
+                       and len(desc.split()) > len(fam)]
+            if r["upc_11"] not in members:
+                members.append(r["upc_11"])
+        for u in members:
+            advertised[(d, u)] = (qty, pr)
     cnt = defaultdict(int)
     over = defaultdict(float)
-    for (d, u11), (q, p) in adp.items():
+    for (d, u11), (q, p) in advertised.items():
         bad = False
+        tot_units = units[(d, u11, 1)] + units[(d, u11, 2)]
         for z in (1, 2):
             kq, kp = keyed[(d, u11, z)]
-            ku, au = kp / kq, p / q
-            if abs(ku - au) > 0.004 or kq != q:
-                if abs(ku - au) > 0.004:
-                    bad = True
+            ku = kp / kq if qty_aware else kp
+            au = p / q if qty_aware else p
+            if abs(ku - au) > 0.004:
+                bad = True
                 if ku > au + 0.004:
-                    over[d] += (ku - au) * units[(d, u11, z)]
+                    zu = units[(d, u11, z)] if zone_units else tot_units / 2.0
+                    over[d] += (ku - au) * zu
         cnt[d] += bad
-    weeks = sorted({d for (d, _) in adp})
+    weeks = sorted({r["flyer_start"] for r in ad})
     return {d: cnt[d] for d in weeks}, {d: round(over[d], 2) for d in weeks}
 
 
