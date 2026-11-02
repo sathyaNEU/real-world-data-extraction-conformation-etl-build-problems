@@ -1,31 +1,30 @@
 {
  "task": "task266",
- "status": "PAUSED",
- "domain": "sociology-demography",
+ "status": "DESIGN",
+ "domain": "biomedical-clinical-research",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
- "architecture": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "A competent solver reads each case's latency from first exposure to diagnosis, admits each case to the risk set only from the fund's start on 1 July 2004 (delayed entry) and files a 55-year horizon; the step that lands it there is treating the register as seeing every latency after the fund began, when it also cannot see the latencies that end after 30 June 2026, which for workers first exposed in the 1970s and 1980s are their long ones, and the estimate that conditions each case on its two-sided window puts nine in ten by 60 years.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note and the report's Solver's-eye read; wave 3 second pass (data only): REVIEW, the same two documents, harmless",
-  "reader": "round 1: Q6 read the first form of 3.3 as a stated rule (degrees to date over entrants), a main-call fork, fixed in 3.3; round 2: Q1 none, Q2 none, Q4 none, Q6 an analytical choice (the estimate for the students whose ninth term is still to come); realism residue fixed (the outlook widened to 41 occupations); round 3 (wave 3 ask re-cut): Q1 none, Q2 none, Q4 none, Q6 an analytical choice; the asks' new devices unfound"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS at stage 3; BLOCK at ship on G17, register and vote_or_meeting against task466, whose card was re-keyed to them after this card was filed; shipped under the author's override (2026-10-17, in session), recorded on the card",
-  "nearest": "task134 ledger 0.09; task265 0.08",
-  "surface": "task265 and task448 promoted, answered on the card; persona sweep: Early Childhood is the program's name"
+  "heart": "",
+  "nearest": "guard.py check at the draw: task89 0.08, task265 0.08"
  },
  "judge": {
-  "verdict": "pass 3 DETERMINISTIC (pass 1 NOT_DETERMINISTIC, FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 after the wave 3 ask re-cut); pass 4 after Ask B's second device NOT_DETERMINISTIC, SEND_BACK by the thread, every graded figure reproduced",
-  "disposition": "pass 3 APPROVE; pass 4 adjudicated in the main thread: the leavers' risk-set timing does not reproduce (the same shares to the last digit under either timing, asserted R2/SF7), Ask A's credit-hour source stays as pass 3 ruled it (closed by the registrar's definitions) and goes to the author as an open risk",
-  "report": "task266/determinism_check_report_pass3.md, task266/determinism_check_report_pass4.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -50,14 +49,38 @@
    "commit": ""
   }
  ],
- "resume": "RE-ROOT at stage 1 (architecture 2, same number and objective): a new draw, a new dataset and a new generator. Architecture 1 is spent on its ask layer, measured 2026-11-01: with the honest careful-solver cracker both asks are executable (ceiling.py: cracker 18 of 18, mirror 0, pair 59.9 only because the mirror is off the call; two careful responses on the call reach 86.5), and every re-site and every replacement ask either reopens a fork for this build's literal judges or is read by the careful solver (design note, Tried and rejected, pass 6b and the replacement-ask table). The delivered cut stays on the portal as delivered (portal pending); the working generator and target.zip here are the spent architecture's last state (9deca6a5), never delivered. Lessons for the re-root: the main call's estimand was sound (forks 1 and 3 closed in policy 3.3, the six-program call forced); choose asks whose silent device rides on cardinality or identity across two systems that the judge accepts as forced without a header (supplemental-stumping proven-in-production), and measure them with the careful solver before any data is cut. Before drawing: guard.py recent, coverage and mechanisms --objective descriptive-distribution, then guard.py check on a fresh card with task266 v1 in lineage as spent.",
+ "resume": "Stage 2 (design) of architecture 2: the card is registered (v2, 2026-11-02T08:16:02Z) and the design note carries ## Draw; next the default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles and ask sheet, then the generator and precut.py.",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "DA16 worked at the draw and set aside (lending serves no Descriptive task type; its stumps composition_mix or maturity_censoring); the slot draws a new world, a community college's program review",
- "reshipped": "2026-10-18: asks re-cut in the wave 3 audit (the cracker hit all eighteen after the pass-1 fix filed each device); call frozen",
- "target_zip_md5": "9deca6a54538d585d8fa2ca5d3cd62ba"
+ "architecture_1": {
+  "world": "Quenlow County Community College (sociology-demography / event-history-life-course-analysis)",
+  "fate": "spent 2026-11-01 on its ask layer; delivered 2026-10-17 and stays on the portal as delivered (pending)",
+  "delivered": "2026-10-17",
+  "reshipped": "2026-10-18: asks re-cut in the wave 3 audit (the cracker hit all eighteen after the pass-1 fix filed each device); call frozen",
+  "target_zip_md5": "9deca6a54538d585d8fa2ca5d3cd62ba",
+  "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-17"
+  },
+  "judge": {
+   "verdict": "pass 3 DETERMINISTIC (pass 1 NOT_DETERMINISTIC, FIX_NOW; pass 2 DETERMINISTIC, APPROVE; pass 3 after the wave 3 ask re-cut); pass 4 after Ask B's second device NOT_DETERMINISTIC, SEND_BACK by the thread, every graded figure reproduced",
+   "disposition": "pass 3 APPROVE; pass 4 adjudicated in the main thread: the leavers' risk-set timing does not reproduce (the same shares to the last digit under either timing, asserted R2/SF7), Ask A's credit-hour source stays as pass 3 ruled it (closed by the registrar's definitions) and goes to the author as an open risk",
+   "report": "task266/determinism_check_report_pass3.md, task266/determinism_check_report_pass4.md"
+  },
+  "leak": {
+   "leak_py": "REVIEW (2027-05-28): sweeps 4, 6 and 9, each harmless, answered in the design note and the report's Solver's-eye read; wave 3 second pass (data only): REVIEW, the same two documents, harmless",
+   "reader": "round 1: Q6 read the first form of 3.3 as a stated rule (degrees to date over entrants), a main-call fork, fixed in 3.3; round 2: Q1 none, Q2 none, Q4 none, Q6 an analytical choice (the estimate for the students whose ninth term is still to come); realism residue fixed (the outlook widened to 41 occupations); round 3 (wave 3 ask re-cut): Q1 none, Q2 none, Q4 none, Q6 an analytical choice; the asks' new devices unfound"
+  },
+  "duplicate_check": {
+   "heart": "PASS at stage 3; BLOCK at ship on G17, register and vote_or_meeting against task466, whose card was re-keyed to them after this card was filed; shipped under the author's override (2026-10-17, in session), recorded on the card",
+   "nearest": "task134 ledger 0.09; task265 0.08",
+   "surface": "task265 and task448 promoted, answered on the card; persona sweep: Early Childhood is the program's name"
+  },
+  "seed": "DA16 worked at the draw and set aside (lending serves no Descriptive task type; its stumps composition_mix or maturity_censoring); the slot draws a new world, a community college's program review"
+ }
 }

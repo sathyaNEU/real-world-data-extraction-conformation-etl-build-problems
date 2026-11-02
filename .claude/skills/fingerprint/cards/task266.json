@@ -1,18 +1,18 @@
 {
   "task": "task266",
-  "architecture": "v1",
-  "drawn": "2026-10-17",
-  "slot_note": "wave 3, Descriptive lane, sathay3012; seed DA16 (a building society's forced-sale discount for one city) worked at the draw and set aside, see lineage",
-  "domain": "sociology-demography",
-  "subdomain": "event-history-life-course-analysis",
-  "client_domain": "sociology-demography",
-  "niche": "a community college's program review: each associate-degree program's three-year completion share for its fall 2023 to fall 2025 entering students, estimated from the student record while the later entrants are still enrolled, with transfers out and withdrawals as other ways a student's time at the college ends",
+  "architecture": "v2",
+  "drawn": "2026-11-02",
+  "slot_note": "wave 3, Descriptive lane; architecture 2, a re-root at stage 1 of architecture 1 (Quenlow County Community College, completion as a cumulative incidence with competing endings), which was spent on its ask layer on 2026-11-01; new world, new dataset, new generator and new shell",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "survival-time-to-event-analysis",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "a state dust-diseases compensation fund setting the 2027-2031 horizon of its former asbestos workers' review program, the number of years after first exposure the annual reviews must run to cover nine in ten of the mesothelioma cases its pre-1986 workforce produces, from the fund's case register, which holds only the mesotheliomas diagnosed between the fund's start on 1 July 2004 and its 2025-26 close on 30 June 2026, with each case's first exposure taken from the claim's employment history",
   "objective": "descriptive-distribution",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Six of the nine programs go into review in June 2027: General Studies, Biological Sciences, Business Administration, Psychology, Medical Assisting and Early Childhood Education.",
-  "answer_source": "submission.md block 1; generator/figures.json call",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "date_or_period",
+  "answer": "",
+  "answer_source": "golden (filled at ship)",
   "gap": [
     "population"
   ],
@@ -20,83 +20,116 @@
     "none"
   ],
   "generators": [
-    "G17",
-    "G4",
+    "G7",
     "G16"
   ],
-  "gate_g": "decomposition_attribution",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
-  "stakeholder_role": "the college's director of institutional research, preparing the program review for the board of trustees",
-  "role_family": "research_desk",
-  "scoring_unit": "per accepted item",
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who derives each case's first exposure from the claim's employment history, keeps the workers first exposed before 1986, and admits each case to the risk set only from the fund's start on 1 July 2004 (the delayed-entry product-limit curve the survival field fits to a register that began after its cohort's exposure) reads nine in ten of the cases by 55 years and files a 55-year horizon; the register cannot show the long latencies of workers first exposed in the 1970s and 1980s, whose cases come after 30 June 2026, and the delayed-entry risk set reads their absence as their not happening.",
+  "domain_test": "The deciding quantity is the latency distribution of mesothelioma from first asbestos exposure to diagnosis, a time-to-event distribution the survival analyst estimates, here from a case register that sees a case only if its diagnosis falls inside the register's years, so each case is observed under a window its own first exposure fixes on both sides and the estimate is the nonparametric maximum likelihood estimate for doubly truncated data; with a school's admissions in its place there is no induction period between an exposure and a disease for a register's opening and closing dates to cut, and the five-year review horizon has nothing to read.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:doubly-truncated-case-register",
+  "layer1": [
+    "the claims' employment histories in two layouts, the paper claim form keyed until 2012 and the online form from 2013, with workplace names in one and workplace codes in the other",
+    "first exposure read from the earliest spell the fund's assessment marks as exposed, across concurrent and overlapping spells",
+    "dates written several ways across the register's two systems",
+    "workers outside the pre-1986 cohort and non-occupational cases on the same register"
+  ],
+  "stakeholder_role": "the fund's health program manager, setting the review program's 2027-2031 horizon for the fund's board",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "sis_admissions_exits_202410-202720.csv with ir_fall_entering_students_2023-2025.xlsx",
-    "rows": 13796,
-    "entity": "one admission (a student's time at the college from one admit term)",
-    "grain": "admission: student and admit term, with its exit term and reason",
+    "file": "the claims' employment histories (one row per spell of work a claimant listed) with the fund's mesothelioma register",
+    "rows": 0,
+    "entity": "one spell of work a mesothelioma claimant listed",
+    "grain": "spell",
     "source": "synthetic"
   },
-  "forum": "trustees_or_governors",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "university_or_school",
+  "forum": "board_of_directors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "government_agency",
   "world": {
-    "geography": "United States (Pennsylvania; the college, its programs and the state transfer exchange are fictional; personas on the en_US index)",
-    "currency": "USD",
-    "org_type": "a public community college with three campuses",
-    "invented_names": [
-      "Quenlow County Community College",
-      "Quenlow",
-      "Tarvelly",
-      "Hollenby",
-      "Pennsylvania Enrollment Exchange"
-    ],
+    "geography": "Australia (an unnamed state; the fund, its act, its register and the workplaces are fictional; personas on the en_AU index)",
+    "currency": "AUD",
+    "org_type": "a state statutory fund that compensates dust diseases and runs a review program for former asbestos workers",
+    "invented_names": [],
     "people": [
-      "Tammy Weaver",
-      "Derek Collier",
-      "Colleen Fisher"
+      "Caitlin Holland",
+      "Veronica Wagner"
     ]
   },
   "deliverables": [
-    "program_completion_review_2027.xlsx",
-    "completion_review_board_paper_2027.pdf"
+    "review_horizon_board_paper_2027.docx",
+    "review_horizon_workbook_2027.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is the share of units whose spell ends one particular way within a fixed time of its start, estimated from a record in which many spells are still open and the others end in several ways; counting the spells that ended another way as if they were still open and could yet end the counted way spreads their chance over the counted ending, so the share has to be built from each ending's own hazard among the units still in their spell.",
-  "driver_concrete": "The board reviews any program whose share of entering students earning the award within three years is below 30 per cent, but the fall 2024 and 2025 entrants are still enrolled, so the share must be estimated; a Kaplan-Meier curve of time to award that treats students who transferred out or withdrew as censored counts them as if they could still graduate and puts programs with heavy transfer above the floor, while the cumulative incidence of the award with transfer and withdrawal as competing endings puts them below it.",
-  "stump": "A competent solver fits a Kaplan-Meier curve of the terms to the degree for each program's fall 2023 to 2025 entrants, censoring the admissions still open and also those that ended in a transfer out or a withdrawal, and sends only Early Childhood Education into review (22.2 per cent), the transfer-oriented programs at 34.8 to 41.4 per cent and Medical Assisting at 38.1; the step that lands it there is treating a transfer or a withdrawal as loss to follow-up, when it ends the admission's chance of the college's degree, so the share has to be the cumulative incidence of the degree with transfer and withdrawal as competing endings, which sends six programs into review.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the two student-system exports, places each student in the program entered, reads every status code correctly and censors students still enrolled at the census runs Kaplan-Meier on time to the award with transfers out and withdrawals censored as students the college lost sight of, and files the transfer-heavy programs as above the floor, because a censored transfer keeps a share of the award probability the student can no longer earn.",
-  "domain_test": "The deciding quantity is each program's three-year completion share estimated by the cumulative incidence of the award with transfer out and withdrawal as competing endings and students still enrolled censored, the event-history estimator for a life-course transition with several exits; with a warehouse's pallets or a hospital's admissions in place of students the endings, the census and the program floor lose their meaning and the task no longer reads the same.",
+  "question_form": "what",
+  "driver": "The decisive quantity is an upper cut of the delay from an origin to an event, estimated from a record that holds a case only if its event fell between the record's first and last dates, so each case's origin fixes both the shortest and the longest delay the record could have shown for it; correcting only for the record's start leaves the long delays of recent origins counted as absent, correcting only for its end overweights them, and the cut has to come from the estimate that conditions every case on its own two-sided window.",
+  "driver_concrete": "The fund sets the former workers' review horizon at the shortest five-year step by which nine in ten of the pre-1986 workforce's mesotheliomas are diagnosed, but its register holds only diagnoses from 1 July 2004 to 30 June 2026, so a worker first exposed in 1950 can appear only at 54 to 76 years after exposure and one first exposed in 1980 only at 24 to 46; the delayed-entry Kaplan-Meier curve the register's start calls for still reads the missing long latencies of the 1970s and 1980s cohorts as absent and sets 55 years, while the nonparametric maximum likelihood estimate under double truncation puts nine in ten by 60.",
+  "stump": "A competent solver reads each case's latency from first exposure to diagnosis, admits each case to the risk set only from the fund's start on 1 July 2004 (delayed entry) and files a 55-year horizon, because its product-limit curve passes nine in ten by 55; the step that lands it there is treating the register as seeing every latency after the fund began, when it also cannot see the latencies that end after 30 June 2026, which for workers first exposed in the 1970s and 1980s are their long ones, and the estimate that conditions each case on its two-sided window puts nine in ten by 60 years.",
   "mechanism_source": "design_note",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:competing-endings-cumulative-incidence",
-  "layer1": [
-    "the student record held in two student systems (a 2024 conversion): IR's fall 2023 entering file under the legacy system's student numbers and term codes, everything else under the new system's, joined through the conversion map",
-    "program changes after entry, the entering program kept as the student's program by the review policy",
-    "transfers out found by the state transfer exchange's quarterly match, an admission first closed as a withdrawal and recoded when the match arrives",
-    "a withdrawal recorded at the census of the first fall or spring term without enrolment",
-    "associate degrees conferred at term ends in a separate conferral file",
-    "returning students readmitted under a new admission"
-  ],
-  "differentiation": {
-    "task265": "back to back with the same gap key and decision type, a different driver: task265 admits hips the registry entered late into the risk set (left truncation of a survival curve); task266 splits one ending's probability from the endings that compete with it (a cumulative incidence, nothing truncated), on admissions with three recorded endings, decisive generator G17 against task265's",
-    "task448": "shares only the gap key and a register as context: task448 completes a mortgage-lending register from a vendor feed (composition mix, ranked slate under a cap); task266 estimates program completion with competing endings on a college's student record",
-    "task466": "shares three generic keys and nothing else: task466 fits a town's 50-year low flow to a river gauge with the water-works reports' silent years entered as censored (an ETL build, a dial setting); task266 estimates each program's completion as a cumulative incidence with transfer and withdrawal as competing endings (a descriptive build, a designation set); domain, objective, decision, data and driver differ"
-  },
   "lineage": [
     {
       "architecture": "v0",
       "fate": "set aside at the draw 2026-10-17, never registered",
       "driver": "The decisive quantity is the discount at which forced sales fall below the market value of the same units, where the record's own value for each unit is an error-prone proxy whose error grows with the unit's chance of being forced to sale; measuring the discount against that proxy counts the proxy's error as part of the discount.",
       "note": "seed DA16, a building society's forced-sale discount for one city: lending sits in Banking, whose task types serve no Descriptive objective; the exit-route mix is composition_mix and the open defaults maturity_censoring (both spent or banned now); measuring the discount against the same property's indexed last ordinary sale works only with the comparison filed, which makes the step rule application"
+    },
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-11-01 on its ask layer: with the honest careful-solver cracker both asks were executable (cracker 18 of 18 ask figures; two careful responses on the call reach 86.5), so the delivered cut stays on the portal as delivered and the slot re-roots into a new world, dataset, generator and shell",
+      "domain": "sociology-demography",
+      "subdomain": "event-history-life-course-analysis",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G4",
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "decision_type": "designation_set",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:competing-endings-cumulative-incidence",
+      "driver": "The decisive quantity is the share of units whose spell ends one particular way within a fixed time of its start, estimated from a record in which many spells are still open and the others end in several ways; counting the spells that ended another way as if they were still open and could yet end the counted way spreads their chance over the counted ending, so the share has to be built from each ending's own hazard among the units still in their spell.",
+      "driver_concrete": "The board reviews any program whose share of entering students earning the award within three years is below 30 per cent, but the fall 2024 and 2025 entrants are still enrolled, so the share must be estimated; a Kaplan-Meier curve of time to award that treats students who transferred out or withdrew as censored counts them as if they could still graduate and puts programs with heavy transfer above the floor, while the cumulative incidence of the award with transfer and withdrawal as competing endings puts them below it.",
+      "stump": "A competent solver fits a Kaplan-Meier curve of the terms to the degree for each program's fall 2023 to 2025 entrants, censoring the admissions still open and also those that ended in a transfer out or a withdrawal, and sends only Early Childhood Education into review (22.2 per cent), the transfer-oriented programs at 34.8 to 41.4 per cent and Medical Assisting at 38.1; the step that lands it there is treating a transfer or a withdrawal as loss to follow-up, when it ends the admission's chance of the college's degree, so the share has to be the cumulative incidence of the degree with transfer and withdrawal as competing endings, which sends six programs into review.",
+      "answer": "Six of the nine programs go into review in June 2027: General Studies, Biological Sciences, Business Administration, Psychology, Medical Assisting and Early Childhood Education.",
+      "shell": {
+        "question_form": "how-many",
+        "opener": "I need",
+        "deliverables": [
+          "xlsx",
+          "pdf"
+        ]
+      },
+      "world": "Quenlow County Community College, Pennsylvania (program completion review, board of trustees)",
+      "people": [
+        "Tammy Weaver",
+        "Derek Collier",
+        "Colleen Fisher"
+      ]
     }
   ],
-  "notes": "WARNs answered in the design note. Shipped under the author's override, authorised in session on 2026-10-17, of guard heart's three BLOCKs against task466 (ban.pattern G17, ban.artifact register, ban.forcing_event vote_or_meeting): this card was filed at 13:44 clean against task466's card as it then stood (G12 and G16, published_series, purchase_order_or_contract); task466 was re-keyed to these three keys at its own stage 3 after this card was filed, and a filed card's check meets only the builds drawn before it, so the re-key never met this card. No honest re-key clears it (G16 repeats task236's gap, generator and decision type inside the batch, G9 is task265's and G12 task157's). Asks re-cut in the wave 3 audit (2026-10-18), the call frozen: the notes went back to flat field definitions, and silent primaries now sit under the policy's pins (the extract's course credit hours, revised for two gateway courses from spring 2027, on linked sections too; each program's accelerated eight-week pair sharing one instructor, room and time; late adds after the census). The guard heart BLOCKs re-read on 2026-10-18 are the same three against task466, and the override stands with the card's keys unchanged. Second audit pass (2026-10-18): measured with the sections' dates in its meeting key, the cracker kept all nine Ask B figures; each video class's second campus now meets from the second week to the last day of classes, so a key on the sections' dates or first day splits every video class and only a meeting shared in common weeks lands the count (cracker 0 of 18 with or without dates); every graded figure unchanged. Judge pass 4 returned SEND_BACK on the leavers' risk-set timing (does not reproduce: the same shares under either timing, asserted) and Ask A's credit-hour source (closed at pass 3 by the definitions; an open risk for the author).",
-  "registered": "2026-10-17T13:44:45Z"
+  "differentiation": {
+    "task271": "task271 v2 reads the share of members holding a state from a latent-class model of who answers a call when; task266 estimates a time-from-exposure-to-diagnosis distribution from a case register that holds a case only if its diagnosis falls inside the register years, with no reachability, classes or calls",
+    "task272": "task272 v3 reads the share of a drifting process output outside a limit from sparse checks that stop runs; task266 conditions each case on its own two-sided calendar window to estimate a latency distribution, with no process, checks or resets",
+    "task308": "task308 v1 rebuilds requests a capacity-limited record never logged; task266 has no capacity limit (every case diagnosed inside the window is on the register), and the window two dates cut the latency each case could show",
+    "task471": "task471 v1 restores long trips by weighting replies that came back only if the trip ended before collection stopped, one right edge; task266 has both edges at once on a case register, the fund start hiding the short latencies of early cohorts and the 2026 close hiding the long latencies of late ones, and neither one-sided correction lands the horizon",
+    "task265": "task265 admits each legacy hip to a risk set at its registry enrolment (left truncation, one edge, a cohort registry that holds unrevised implants); task266 is a case-only register with both edges, where the delayed-entry curve task265 calls for is the wrong rung because it still reads the latencies that end after the 2026 close as absent"
+  },
+  "notes": "WARN overuse.org_family answered in the design note: a state statutory fund is the honest organisation (a government agency); the forum, forcing event and role are all off the last three builds. WARN shell.repeat read the architecture 1 prompt still on disk at the draw; the architecture 2 prompt is written at stage 2 with its own shell (what, a rule-first second sentence, docx and xlsx). test.same_driver_older differentiated against task271, task272, task308 and task471 (gap population, generator G7 and method_or_model_selection are generic keys; the drivers differ, nearest 0.08). Context artifact close_out_summary: the fund register as closed at 30 June 2026 for the 2025-26 year, which answers which diagnoses the register holds and never ranks a horizon.",
+  "registered": "2026-11-02T08:16:02Z"
 }
