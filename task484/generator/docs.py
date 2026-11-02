@@ -126,7 +126,7 @@ def ops_log(W, out):
     for k, a in enumerate(W.atcs):
         rows.append((a["installed"], "%s (%s)" % (W.atc_id[a["name"]], a["name"]),
                      "TX-200 outstation installed under the counter renewal programme, Ardent LC4 removed. " + notes[k % len(notes)], "MW"))
-    rows.append((dt.date(2025, 9, 8), "ATC network", "Firmware 4.2.1 deployed to all TX-200 outstations by remote push (change ref CM-2291).", "MW"))
+    rows.append((dt.date(2025, 9, 8), "ATC network", "Firmware 5.1.3 deployed to all TX-200 outstations by remote push (change ref CM-2291).", "MW"))
     names = {j["id"]: j for j in W.junctions}
     for jid, sw in sorted(WD.REFURBISHED.items(), key=lambda x: x[1]):
         j = names[jid]

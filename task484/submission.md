@@ -22,7 +22,7 @@
 5. For the rest: the count times the same-day ratio of the permanent counters in the section's setting (atc_daily_2025.csv, atc_sites_2025.csv), their annual mean over their 07:00 to 19:00 flow on the count day.
 6. Annual traffic is the daily flow times 365; 9 sections are over 3.0 million.
 7. Counters' heavy goods vehicles: classes 5 to 7 of the legacy table until 2025-09-08, when the outstations' channel 5 switched from two-axle rigid lorries to buses, and classes 6 to 8 of the TX-8 table from it, averaged over each counter's recorded days.
-8. The two renewed junctions: each channel's series before its renewal matched to the current channel carrying the same lane on level and weekend shares across the dark days, then each approach's recorded vehicles summed over 2025.
+8. The two renewed junctions: the channels' series before each renewal grouped into approaches by their day-to-day co-movement and matched to the register's current approaches on level, weekend shares and 07:00 to 19:00 share across the dark days, then each approach's recorded vehicles summed over 2025.
 
 ## 4. Deliverable Answers
 

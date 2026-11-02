@@ -122,7 +122,7 @@ def main():
     ok("PDF read back (terms note): annual traffic is both directions on all days", "both directions together" in terms and "all the" in terms)
     ok("PDF read back (scope note): more than three million vehicle passages, every section counted in 2025",
        "three million vehicle passages" in scope and "counted in 2025" in scope)
-    ok("DOCX read back (operations log): the firmware push is logged", "Firmware 4.2.1" in log)
+    ok("DOCX read back (operations log): the firmware push is logged", "Firmware 5.1.3" in log)
     reg = xlsx_sheets(os.path.join(TGT, "utc_asset_register_2025.xlsx"))
     cpx = xlsx_sheets(os.path.join(TGT, "count_points_2025.xlsx"))
     ok("XLSX read back (UTC register and count point register)", len(reg["Junctions"]) > 15 and len(cpx["Count points"]) > 20)
