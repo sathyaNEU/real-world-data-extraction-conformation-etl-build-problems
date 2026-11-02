@@ -1,10 +1,10 @@
 {
  "task": "task475",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "The default path sets each question's mean mark among its answerers against the paper's mean, moves Question 6 by +1 and Question 8 by -1 and files 422 passes of 714; only each question read on the same candidates across the questions they chose gives Question 6 +3, Question 8 -3 and 401 passes.",
  "architecture": 2,
@@ -14,23 +14,22 @@
   "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-02, --asof 2026-12-01; every line answered in the note's ## Leak review)",
-  "reader": ""
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-12-01)",
+  "reader": "clean in both rounds; question 6 analytical each round; appended to task475/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "PASS (2026-11-02)",
-  "nearest": "task474 v7 stump at 0.07; task488 ledger row at 0.04 (shares the estimator, not the driver)",
-  "surface": "1 promoted for adjudication (2026-11-02): task474 back to back, education x ETL on consecutive numbers; the two format-only pairs cleared once the minutes became a Word document"
+  "heart": "PASS 2026-11-02 at the ship gate",
+  "nearest": "surface promoted task474 (same domain and objective on consecutive numbers, different mechanism)"
  },
  "judge": {
-  "verdict": "round 1 NOT_DETERMINISTIC (SEND_BACK on Gates C and E; G, H PASS, F real)",
-  "disposition": "repaired 2026-11-02: regulation 14.1 files the comparison on the same candidates whichever questions each chose (no model named); colliding birthdays separated so every cross-sitting link rests on a member number or a full name with the date of birth; call and every graded figure unchanged",
-  "report": ""
+  "verdict": "round 2 DETERMINISTIC, APPROVE (order kept; Gate F moderate; Gate G method_or_model_selection / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; round 1's main-call fork closed by filing the same-candidates comparison at the WHAT level",
+  "report": "task475/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 round 2: re-judge once and re-run the leak reader (main session); every free gate green on the final cut, target.zip 9a59084f",
+ "resume": "Shipped 2026-11-02 (architecture 2, ETL): approve the November 2026 Paper 2 results with Q6 +3 and Q8 -3 among the moves, 401 of 714 pass; target.zip 9a59084f. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "source_note": "re-rooted 2026-11-01 at the Batch 3 queue reset: architecture 1 (Corran Valley weatherization fund by EITC families, IRS ZIP-code tables) closed with its world; architecture 2 drawn in Education & Learning Sciences, item-response-theory-test-equating, an accreditation examination with optional questions",
  "architecture_1": {

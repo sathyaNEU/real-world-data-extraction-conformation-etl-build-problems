@@ -37,3 +37,25 @@ Stump terms swept: questions, difficulty, choice, average, answerers, member, st
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (Leak reader, architecture 2 round 1 (2026-11-02, isolated, Sonnet at medium effort, on target.zip c316e563))
+
+1. Decisive step: none stated; the nearest is regulation 14.1 (the move equals how much harder or easier the question proved than the average of the paper's optional questions, each counted once, for the candidates who sat the paper), which defines the estimand; 11.2 (the mark of record is the last mark entered) is rule context.
+2. Nothing ranks November's questions; the minutes carry May's moves, a prior sitting's result.
+3. Nothing exists only to help the analyst (the regulations, the paper and the minutes are governing context).
+4. Nothing reads as the answer (May's moves and 433 of 698 are May values).
+5. Regulations 14.1, 14.2 and 12 read literally: each optional question's difficulty against the average of the eight counted once, over the candidates who sat, rounded to a whole mark; the move applied to every answerer's mark of record, clamped to the question's range; the pass mark of 50 counted after the moves; how difficulty is measured is left to the analyst.
+6. An analytical choice: how to measure how much harder a question proved when candidates chose five of eight, so each question's answerers are a self-selected group; Layer 1 reading (last mark of record, dash cells, sat against withdrawn or absent) is secondary.
+Sweep flags: the regulations and minutes are harmless (no November move, pass count, step or difficulty measure; the minutes record that the Committee approved May's moves under regulation 14 with no method named or certified); the paper is question text and marks only; corporate_accounts.csv's 2027-06-30 is an ordinary two-year agreement end.
+Realism: none generated; mildly tidy: the results history's rate column and the identical agreement terms in corporate_accounts.csv, both plausible.
+
+## Solver's-eye read (Leak reader, architecture 2 round 2 (2026-11-02, isolated, Sonnet at medium effort, on target.zip 9a59084f))
+
+1. Decisive step: none announced; the nearest is regulation 14.1, which fixes the estimand (each question's difficulty against the average optional question, compared on the same candidates whichever questions each chose) without saying that answerers self-select or naming any method.
+2. Nothing ranks November's questions (the minutes carry May's moves; the history file carries accreditation rates).
+3. Nothing exists only to help the analyst; distractors (invoices, corporate accounts, venue holds, centre directory, results history) read as office records.
+4. Nothing reads as the answer (May's moves and 433 of 698 are May context).
+5. Regulation 14.1 and 14.2 read literally: each optional question's move against the average optional question on the same candidates, rounded to a whole mark, applied to every answerer's mark of record within 0 to 20; no fit, model or formula named.
+6. An analytical choice: the comparison design; mark of record, withdrawal and portal time zones are Layer 1.
+Sweep flags: regulation 14.1 says only what is compared and names no executable method; the minutes certify no method and carry no November figure; corporate_accounts.csv's 2027-06-30 is a contract end date.
+Realism: none generated (tidy billing amounts read as a real export).
