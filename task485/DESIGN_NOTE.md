@@ -4,7 +4,7 @@ Status lives in `pipeline.json`; this note holds the design. Architecture 5, dra
 reset: architecture 4 (an island Statistics Unit's provisional long-term immigration by employment sector) shipped
 on 2026-10-26 with no portal result and was re-rooted with its world closed, one architecture per world. A fresh
 client domain, world and mechanism on the lane's objective (Data Extraction & Conformation); the candidates screened
-before this one are in `## Tried and rejected`, with the four earlier architectures' records below the design.
+before this one are in the Tried and rejected section, with the four earlier architectures' records below the design.
 
 ## Draw
 
@@ -37,7 +37,7 @@ before this one are in `## Tried and rejected`, with the four earlier architectu
   the card answer task84 (a composite target key over live campaigns), task482 (one site meter's gas split by the
   physical driver each process burns by) and task65 (entities constituted from child records before a cap). The
   registered card is checked again as the draw's last act and again on the final cut (`pipeline.json` gates).
-- **Candidates written before choosing** (the four set aside are in `## Tried and rejected`): (1) this draw, each
+- **Candidates written before choosing** (the four set aside are in the Tried and rejected section): (1) this draw, each
   product's rebate recovered from its manufacturer's pass-through remittances; (2) a health system's case mix across
   a grouper version change; (3) a Medicaid plan's incurred claims completed through a processing backlog; (4) a 340B
   contract pharmacy's replenishment accumulators; (5) a dialysis network's cost per treatment with shared supplies
@@ -387,8 +387,130 @@ and layers pass, decisive step analytical); it was not taken to a report, the ca
 notes: the settled stock barely moves from 2020 to 2025, the ramp is a near-exact exponential alike in every ward and
 type, the trajectory's site sizes are round, and no register row lacks a UPRN.
 
-## Tried and rejected`. The slot's seed (ET42) was set aside at the
-first draw and stays set aside.
+## Tried and rejected
+- 2026-10-25, at the draw: the seed's own world, each employer's FY2025 H-1B workers at Level I read from labour
+  condition applications through USCIS's employer data hub, positions converting to approved petitions at very
+  different rates by petition type (cap lottery against continuations) so the position share overstates Level I where
+  it sits in new employment: the per-type apportionment is one join and one group-by once seen, the hub's initial and
+  continuing columns invite it, and the employer-level conversion that leaves the share unchanged is the only partial
+  fix; the cheapest licensed member is the golden, a single insight a reader has or does not. Not drawn.
+- 2026-10-25, at the draw: the FY2027 weighted wage-level selection, each employer's Level I intake read through
+  selection probabilities by level: executing the stated selection procedure is rule application, and its separation
+  from the linear reading is small (Level I at 0.174 against 0.154 on a plausible pool). Not drawn.
+- 2026-10-25, at the draw: regression to the mean and retransformation bias (spent in five slot notes each), landfill
+  first-order decay (set aside three times in this lane against task480), overdose deaths with unspecified drugs
+  (task455 v1's certificates corrected by drug class), age heaping (task230's rejected draw), areal interpolation
+  (task253), a business register's head-office employment (a reflex join once the local unit register ships), a
+  housing trajectory's lead-in times for unstarted sites (the trajectory reproduces the started sites by construction
+  and fails forward on the rest, a validated decoy), spiralled forms in a random-groups equating (a balance check is a
+  reflex and presmoothing forks the cut), a business register's industry codes maturing with the enterprise's age (a
+  completion reskin). Spent or not drawn.
+- 2026-10-25, architecture 1 (each dwelling's electors aged to its canvasses on the 2032 register on the build-up the
+  registers show), spent at stage 4: both scored readers fitted electors per dwelling to the dwelling's age since
+  completion on the property-level registers and applied the ramp to every dwelling built and to come, landing the
+  golden five. A register panel at property level beside every new dwelling's completion date makes a new unit's ramp to
+  the settled level the forecaster's first move, not a skipped step; task484 v1's lease-up curve (a fill record of
+  earlier additions beside a flat stock) was the same insight and fell the same way, and the draw's slot screen missed it
+  because it searched the mechanism's words (build-up, canvass, register) rather than the setting's (lease-up,
+  occupancy, new premises). The ask's switch-off device fell to the report's own run date beside a notices file: a
+  file-level stamp that differs from the register's date is read by every careful reader.
+
+- 2026-10-25, architecture 2 draw: a national forest inventory's rotating panels, the drought year's carbon change read
+  by year effects across overlapping remeasurement intervals against the panels' moving average. Prototyped: at a
+  district's 900 plots the year effect scattered 3 to 12 tC/ha a year around truths of -5 to +1.6, lumpy mortality and
+  fellings swamping one year's signal; at a province's 6,000 plots it recovered the drought (-0.4 to -1.9 against
+  -1.05) where the moving average said +2.2, but spreading interval changes onto calendar years is task123's
+  calendarization driver, and the latest panel's own contrast cues it. Not drawn.
+- 2026-10-25, architecture 2 draw, set aside on their records: length-biased sampling (task182 v4, 264, 130, 135, 268,
+  272, 282, 120), plausible-value conditioning (task482 v11), at-berth reefer load (task482 v8 and task484 v3 screens),
+  death distribution methods (task243), capacity-censored demand (task168), competing risks (task266, task133), rater
+  drift (task471 v2, sent back as planted), rapid guessing (task479 v4), speededness (an anchor-drift screen catches
+  it), ecological inference (forks, task279), trend uncertainty with shared factors (task482 v10, margin fragility), a
+  birth-death model (task482 v12), a lunar new year shutdown (a calendar reflex), catalyst age in throughput (task478
+  v6, landed), intermittent aerial plumes annualised (task462, task484's own screen, task450's), three imperfect sources
+  read by a latent class model (task456; task271's screen), linkage error carried into a linked rate (task449, task454,
+  task468), queueing at a runway or a desk (task148, task156, task159, task198), deductible leveraging on large
+  claimants (task479 v3, landed), and in-progress treatment courses or prior authorisations (task482 v14's open
+  episodes).
+- 2026-10-25, architecture 2 draw, not drawn on the merits: children ageing into the electorate (the linkage chains for
+  the probabilities fork and the lifecycle shows in the panel's cross-section); free school meal registration under
+  universal meals (the year-group jumps show in one file); holiday-let flipping, demand response generators, fuel
+  tourism, heat pump savings and insulation rebound (each a change read by a difference-in-differences in a side file,
+  task484 v3's driver); hull fouling (a weak ETL fit, and the fouling curve forks); under-reported venting and
+  capitated encounters (defects to catch); nutrient-neutrality credits, tankering, the authorised vehicle register and
+  a free-meals expansion (rule application); developer absorption against a filed trajectory (a competing defensible
+  answer); the payroll survey's four- and five-week months (smaller than the noise); embedded solar (semantics plus a
+  calibration, and no ETL task type); coroner routes (a task181 replica); provisional industry codes maturing (a
+  completion reskin); subset-sum remittance matching (a client exemplar's replica); list inflation in a patient
+  register (a defect risk); continuous-monitor substitution, a feed additive, crop abandonment, a refrigerant
+  retirement wave and an occupant-turnover rebuild (each on file or v1-adjacent).
+- 2026-10-25, architecture 2 draw, screened this session and set aside: truncation at a facility reporting threshold
+  (calibrating on reporters selects on the outcome, but every correction forks and a gas customer file gives the
+  answer directly); differential order effects in a counterbalanced bridge study (task464's world and decision); a
+  link error accumulated over chained equatings (task482 v10's trend-uncertainty shape, margin-fragile); survey weights
+  recalibrated to new population estimates (the official weights execute literally, so the recalibration reads
+  unlicensed, as task484 v2 died); business-survey imputation with a payroll auxiliary (the class imputation is a member
+  of the licensed family and the late returns hand over the back-test); a fuel's reclassification after a rebate
+  ended (a code's meaning, semantics); a broiler flock's crop phase on the census day (the estimand's own definition
+  invites the placements; its insight is kept, and widened, in the herd draw).
+- 2026-10-25, architecture 2 (each region's cattle-manure ammonia from animal-days placed by region and housing season, against the June census at the annual factor): spent at stage 4 round 1. Both scored readers rebuilt the animal-days from the register at Table 3's per-day rates by region and season and landed the golden six; with the register covering the whole year at the estimand's grain and the factor note stating per-day rates by place and season, the golden was the careful route, not a step past a default.
+- 2026-10-25, architecture 3 draw, screened and set aside before the scrubber balance: a gas bill's therms split by the
+  daily profile (task123's calendarisation), register over-coverage by signs of life (screened in task478's and
+  task482's notes), extinct cohorts for the oldest old (task173, task271), rater severity (task471 v2), pooled tests
+  (task188), a common stack's units unmixed from single-unit hours (task263), a warranty's usage clock against months in
+  service (task478 v6's hours since renewal, landed), a flare's destruction read from steam dilution (task478 v7's
+  driver: a rate set by a metered condition, read on test days), AdBlue dosing against type-approval NOx (a fleet's
+  reagent sits beside its fuel and reads at once), a district heat network's fixed losses (no ETL task type, and the
+  loss model forks on ground temperature), a heat pump fleet's coefficient of performance integrated over the hours (no
+  ETL task type), the time-of-observation bias in manual maximum thermometers (the carry-over day's true maximum is
+  unobserved, so every correction forks), a continuous monitor's flow bias read from the fuel's carbon balance (an
+  instrument bias is Layer 1 cleaning, never the stump), and the scrubber balance read from gypsum to landfill (the waste
+  return's FGD code names the link).
+- 2026-10-25, architecture 3 stage 3: two suppliers' laboratories reporting sulphur on an air-dried basis with the
+  moisture beside it, set aside before the pack was cut. A scrubber that runs all year passes about 5 per cent of its
+  flue gas sulphur, so a basis misread moves that boiler's tonnage about twentyfold and would carry the call, which
+  Layer 1 may not; every supplier now reports as received. Per-truck certificates set aside too: a supplier's
+  laboratory analyses a day's dispatch or a train as one lot, so the trucks and wagons of one dispatch share a
+  certificate.
+- 2026-10-25, architecture 3 (each scrubber's year closed on the limestone it consumed, against its one-day test removal
+  carried across the year), spent at stage 4 round 1: both scored readers took the removal from the reagent balance,
+  reading the test as a snapshot against the guidance's "removed over the year", and landed the golden six with every
+  boiler's tonnes. A consumable whose year is on record beside a governing sentence that names the year is the first
+  route, not a skipped one.
+- 2026-10-26, architecture 4 draw, screened and set aside before the returner completion: chain-linked volume indices
+  across a base-year change (a stated formula executes the answer), a space-mean against a time-mean speed from loop
+  detectors (a textbook conversion the reader states), trip chaining in a travel diary (the textbook linking rule is
+  rule application), a coincident peak's share of a network charge (the settlement calendar names the hours), age and
+  digit heaping in a register's birth dates (spent in task230's screen), and a shared control's capacity split across
+  premises (task486 v3's density driver). Not drawn.
+- 2026-10-26, architecture 4 draw, the returner completion prototyped five ways before the card was filed. With every
+  arrival on six- to ten-month placements and a flat circular intake, the history-conditioned completion and the
+  sector-by-months completion differed by 10 to 20 on sectors of 200 to 400 (smaller than the family's own spread); with
+  returns concentrated in the 2025-26 year the gap widened to 35 to 70 but the 2025-26 returners' early departures
+  showed in the cohort's own first months (6 to 9 per cent left within six months against 3 to 5 per cent), which a
+  pooled Kaplan-Meier on the current arrivals partly reads; with placements of nine and a half to eleven and a half
+  months no returner leaves before the cut, the first months match between cohorts (3 to 5 per cent both years), and
+  the gap holds at 40 to 70 on care and construction and 25 to 35 on retail, the history-conditioned family agreeing to
+  within 16. The chain ladder on the July and August 2025 arrivals scatters by 30 to 120 on a sector between seeds and is
+  set aside as a route.
+- 2026-10-26, architecture 4 stage 4 round 1: the back series' device on the stays open at the move (the TRANSFER
+  records' arrival dates and activities) and the twice-held people merged in the crosswalk fell to both readers, who
+  stitched the archive to the TRANSFER records and saw the crosswalk's two-to-one rows; a device on the record a
+  careful reader reconciles across two systems is on that reader's path, and a crosswalk that merges the device's pairs
+  announces them. Re-sited onto pairs nothing links but their particulars and their one ending.
+- 2026-10-26, architecture 4 stage 4 round 1: section 3.2 alone ("counted at its chance of reaching it, estimated from
+  the arrivals of the year before") left the conditioning open, and the judge filed four estimators on four sets; filing
+  the history split would make the decisive step rule application, so 3.3 files a one-year-back test that names no
+  grouping and the data separates the candidates by 0.0114 at the nearest pair.
+- 2026-10-26, architecture 4 fix pass: the history read from the current extract alone left out the stays the legacy
+  register closed before the move, which the test's 2023-24 training arrivals need; read from both systems, the
+  any-stay split (0.1602) sits 0.0098 from the share of arrivals by history (0.1700), so a separation of every
+  history-conditioned candidate from every other by 0.01 was dropped as the assertion and the margin is asserted where
+  the criterion acts, the best candidate (0.1549) against the best candidate filing another set (0.1700).
+- 2026-10-26, architecture 4 stage 4 round 2: the judge's optional sentence for the extract specification (a double
+  registration of one stay carries the same leaving date and notice) would file the back series' device in a shipped
+  document and hand a careful reader its key; rejected in favour of telling the still-open companions apart by birth
+  year in the generator, which closes the same reading without a word in the pack.
 - 2026-11-01, architecture 4 (each open stay completed on earlier arrivals with the same migration history), re-rooted
   at the Batch 3 queue reset with no portal result: shipped 2026-10-26, its world closes with it and survey-research-
   official-statistics carries several builds in flight, so architecture 5 moves to healthcare-delivery-health-economics.
