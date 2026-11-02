@@ -51,7 +51,7 @@ def metadata():
         "files": {f: {"source": s, "date": ASOF, "license": "synthetic, CC0", "role": role} for f, (role, s) in SOURCES.items()},
         "distractor_files": sorted(DISTRACTORS),
         "distractor_notes": DISTRACTORS,
-        "stated_inputs": ["98.0", "96.0", "4"],
+        "stated_inputs": ["98.0", "95.5", "4"],
     }
 
 

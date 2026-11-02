@@ -29,20 +29,21 @@
  },
  "components": {
   "band_compliant": "98.0",
-  "band_credit": "96.0",
+  "band_credit": "95.5",
   "corrective_accuracy_whole": [
+   96,
    97
   ],
   "credit_region_accuracy_whole": {
-   "Belmont Valley": 95
+   "Belmont Valley": 94
   },
   "days_per_month": "30.4",
   "default_credit_dollars": "7,049",
-  "disagreement_high": "7.1",
+  "disagreement_high": "7.2",
   "disagreement_high_region": "Belmont Valley",
   "disagreement_low": "1.1",
   "disagreement_low_region": "Halbrook Central",
-  "prices_rechecked_found": "6,260"
+  "prices_rechecked_found": "6,125"
  },
  "deliverables": {
   "CR01": {

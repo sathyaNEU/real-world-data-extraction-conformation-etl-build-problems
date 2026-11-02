@@ -102,8 +102,10 @@ def chart(res, png):
     ax.barh(y, [v - 93.0 for v in vals], left=93.0, color=cols, height=0.62)
     ax.axvline(p.band_compliant, color="#333333", lw=1.0, ls="--")
     ax.axvline(p.band_credit, color="#333333", lw=1.0, ls=":")
-    ax.text(p.band_compliant + 0.04, len(names) - 0.35, "98.0 compliant", fontsize=7.5, va="bottom")
-    ax.text(p.band_credit + 0.04, len(names) - 0.35, "96.0 service credit below", fontsize=7.5, va="bottom")
+    ax.text(p.band_compliant + 0.06, len(names) - 0.35, "Compliant from %.1f" % p.band_compliant, fontsize=7.5,
+            va="bottom")
+    ax.text(p.band_credit - 0.06, len(names) - 0.35, "Service credit below %.1f" % p.band_credit, fontsize=7.5,
+            va="bottom", ha="right")
     ax.set_yticks(y)
     ax.set_yticklabels(names, fontsize=8)
     ax.set_xlim(93.0, 100.0)
@@ -112,8 +114,13 @@ def chart(res, png):
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     from matplotlib.patches import Patch
-    ax.legend(handles=[Patch(color=col[k], label=k) for k in col], fontsize=7.5, loc="lower right", frameon=False)
-    ax.set_title("Belmont Valley falls below 96.0 per cent; four regions sit between the bands", fontsize=9, loc="left")
+    ax.legend(handles=[Patch(color=col[k], label=k) for k in col], fontsize=7.5, loc="upper center",
+              bbox_to_anchor=(0.45, -0.17), ncol=3, frameon=False)
+    cred = [p.region_name[r] for r in p.regions if res["outcomes"][r] == "Service credit"]
+    ncorr = sum(1 for r in p.regions if res["outcomes"][r] == "Corrective action")
+    ax.set_title("%s falls below %.1f per cent; %s regions sit between the bands"
+                 % (" and ".join(cred), p.band_credit, {4: "four", 3: "three", 5: "five"}.get(ncorr, str(ncorr))),
+                 fontsize=9, loc="left")
     fig.tight_layout()
     fig.savefig(png, metadata={"Software": None})
     plt.close(fig)
@@ -138,9 +145,10 @@ def letter(res, path, png):
         ("p", "This is the quarterly assessment under the Price Collection Quality Standard (version 3.0) for the "
               "collection your teams carried out from July to September 2026."),
         ("p", "<b>Outcomes.</b> %s %s placed under corrective action, with accompanied collection in every month of "
-              "the October to December quarter. %s %s below 96.0 per cent and so carries a service credit as well as "
+              "the October to December quarter. %s %s below %.1f per cent and so carries a service credit as well as "
               "accompanied collection. The other %s regions are compliant: %s." %
          (andlist(corr), "are" if len(corr) > 1 else "is", andlist([nm[r] for r in cred]), "falls" if len(cred) == 1 else "fall",
+          p.band_credit,
           {9: "nine"}.get(len(comp), str(len(comp))), andlist(comp))),
         ("p", "<b>Service credit.</b> The credit for the quarter is $%s, %d per cent of the quarterly collection fee in "
               "Schedule 4 for %s ($%s). It will be deducted from the invoice for the October to December quarter." %

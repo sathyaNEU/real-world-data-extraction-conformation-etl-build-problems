@@ -105,9 +105,10 @@ def main(target, golden):
     pers = p.persistence()
     ok("C4 rung 2 (price persistence read quote by quote) names a wrong set", vec(p, pers) != gvec and vec(p, pers) not in (dvec, vec(p, nofv)), vec(p, pers))
     fam = {}
-    for key in ("class", "item", "stratum", "all"):
+    for key in ("class", "item", "stratum", "all", "region", "region_class", "region_only"):
         for form in ("exp", "lin"):
             fam["%s %s" % (key, form)] = p.netted(key=key, form=form)
+    fam["expected changes subtracted from the disagreements"] = additive_variant(p)
     fam["Q3 window"] = p.netted(months=["2026-07", "2026-08", "2026-09"])
     fam["Jan to Sep window"] = p.netted(months=[m for m in p.months if m >= "2026-01"])
     fam["index day as visit date (SF2)"] = p.netted(basis="index")
@@ -197,7 +198,7 @@ def main(target, golden):
     ok("Z4 back-check counts vary by region", len(set(counts)) == len(counts), str(counts))
     ok("Z5 no extract carries a date after its pull", dates_in_range(p))
     pc = pdf_text(os.path.join(target, "pcqs_price_collection_quality_standard_v3.pdf"))
-    ok("Z7 PCQS read back (positive control) and its bands parsed", "collection window" in pc and p.band_compliant == 98.0 and p.band_credit == 96.0)
+    ok("Z7 PCQS read back (positive control) and its bands parsed", "collection window" in pc and p.band_compliant == 98.0 and p.band_credit == 95.5)
     ok("Z7 Schedule 4 fees read back for every region", len(p.fees) == len(R) and all(r in p.fees for r in R))
     sig = toolchain_signatures(target) + toolchain_signatures(golden)
     ok("Z8 no writing-library signature in any shipped file", not sig, str(sig))
@@ -274,6 +275,17 @@ def workday_variant(p):
         v = [b for b in p.counted() if b["region"] == r]
         a = sum(abs(b["rec"] - b["fqt"]) < 0.005 for b in v)
         out[r] = 100.0 * a / sum((1 - f[p.fkey(b, "class")]) ** (p.lag(b, workdays=True) / 21.7) for b in v)
+    return out
+
+
+def additive_variant(p):
+    f = p.change_frequency()
+    out = {}
+    for r in p.regions:
+        v = [b for b in p.counted() if b["region"] == r]
+        a = sum(abs(b["rec"] - b["fqt"]) < 0.005 for b in v)
+        ch = sum(1 - (1 - f[p.fkey(b, "class")]) ** (p.lag(b) / 30.4) for b in v)
+        out[r] = 100.0 * (a + ch) / len(v)
     return out
 
 

@@ -157,13 +157,13 @@ def main(t, g, figpath):
             denom[d["Region"]] += (1 - f) ** (lag / 30.4)
     acc = {r: 100.0 * agree[r] / denom[r] for r in regions}
     pcqs = pdf_strings(t + "/pcqs_price_collection_quality_standard_v3.pdf")
-    check("V5 PCQS read back (PDF streams), positive control", "at the time the collector recorded it" in pcqs and "96.0 per cent" in pcqs)
+    check("V5 PCQS read back (PDF streams), positive control", "at the time the collector recorded it" in pcqs and "95.5 per cent" in pcqs)
     fees_txt = pdf_strings(t + "/pcsa_schedule4_collection_fees.pdf")
     fees = {m.group(1): int(m.group(2).replace(",", "")) for m in re.finditer(r"(CR\d\d)\s+\S.*?\s(\d\d,\d\d\d)", fees_txt)}
     check("V6 Schedule 4 read back (PDF streams)", len(fees) == 14, str(len(fees)))
 
     def band(a):
-        return "Compliant" if a >= 98.0 else ("Corrective action" if a >= 96.0 else "Service credit")
+        return "Compliant" if a >= 98.0 else ("Corrective action" if a >= 95.5 else "Service credit")
     outs = {r: band(acc[r]) for r in regions}
     for r in regions:
         check("V7 %s outcome %s" % (r, outs[r]), fig["deliverables"][r]["outcome"] == outs[r], "%.2f" % acc[r])

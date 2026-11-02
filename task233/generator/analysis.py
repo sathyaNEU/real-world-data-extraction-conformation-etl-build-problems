@@ -143,14 +143,7 @@ class Pack:
                 a, b = d.get(self.months[i - 1]), d[m]
                 if a is None or a["status"] not in priced or b["status"] not in same:
                     continue
-                if key == "class":
-                    k = (self.item_class[b["item_code"]], self.stratum(b["outlet_code"]))
-                elif key == "item":
-                    k = (b["item_code"], self.stratum(b["outlet_code"]))
-                elif key == "stratum":
-                    k = self.stratum(b["outlet_code"])
-                else:
-                    k = "all"
+                k = self.fkey(dict(item=b["item_code"], outlet=b["outlet_code"]), key)
                 cmp_[k] += 1
                 chg[k] += abs(float(a["price"]) - float(b["price"])) > 0.004
         return {k: chg[k] / cmp_[k] for k in cmp_}
@@ -162,6 +155,13 @@ class Pack:
             return (b["item"], self.stratum(b["outlet"]))
         if key == "stratum":
             return self.stratum(b["outlet"])
+        region = self.by_code[b["outlet"]]["Region"]
+        if key == "region":
+            return (region, self.item_class[b["item"]], self.stratum(b["outlet"]))
+        if key == "region_class":
+            return (region, self.item_class[b["item"]])
+        if key == "region_only":
+            return region
         return "all"
 
     def visit_date(self, b):

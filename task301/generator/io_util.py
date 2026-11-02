@@ -240,7 +240,7 @@ def _unescape(s):
     s = re.sub(rb"\\([0-7]{1,3})", lambda m: bytes([int(m.group(1), 8) & 0xFF]), s)
     s = s.replace(rb"\(", b"(").replace(rb"\)", b")").replace(rb"\n", b"\n").replace(rb"\r", b"\r")
     s = s.replace(rb"\t", b"\t").replace(b"\\\\", b"\\")
-    return s.decode("latin-1")
+    return s.decode("cp1252", errors="replace")
 
 
 def pdf_text(path):

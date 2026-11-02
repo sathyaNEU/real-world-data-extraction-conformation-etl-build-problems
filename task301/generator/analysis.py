@@ -38,13 +38,21 @@ def filed(target):
     born_from = int(re.search(r"born in (\d{4}) or later", g).group(1))
     age_base = int(re.search(r"taken as (\d{4}) less the year of birth", g).group(1))
     pr = IO.pdf_text(p(target, "proposals"))
-    a_rate = float(re.search(r"€(\d+) a month per child Paid automatically", pr).group(1))
-    a_lim = float(re.search(r"returns was below €([\d,]+)", pr).group(1).replace(",", ""))
-    b_rate = float(re.search(r"€(\d+) a month per child Families apply on the department's portal from 1 January 2027\. "
-                             r"The Complemento Familiar's rules on decisions and payment apply\. [\d.]+ D\.", pr).group(1))
-    c_old, c_new = [float(x.replace(",", "")) for x in re.search(r"from €([\d,]+) to €([\d,]+) of computable income", pr).groups()]
-    d_rate = float(re.search(r"rent their home.*?€(\d+) a month per child", pr).group(1))
-    e_rate = float(re.search(r"€(\d+) a month more per child", pr).group(1))
+    table = pr[pr.index("A. Prestación Infancia Directa"):pr.index("Notes on the measures")]
+    labels = ["A. Prestación Infancia Directa", "B. Ayuda a la Crianza", "C. Complemento Familiar: higher limit",
+              "D. Suplemento de Alquiler con Hijos", "E. Complemento Familiar: higher amount"]
+    seg = {}
+    for i, lab in enumerate(labels):
+        a = table.index(lab)
+        b = table.index(labels[i + 1]) if i + 1 < len(labels) else len(table)
+        seg[lab[0]] = table[a:b]
+    a_rate = float(re.search(r"€(\d+) a month per child", seg["A"]).group(1))
+    a_lim = float(re.search(r"returns was below €([\d,]+)", seg["A"]).group(1).replace(",", ""))
+    b_rate = float(re.search(r"€(\d+) a month per child", seg["B"]).group(1))
+    c_old, c_new = [float(x.replace(",", "")) for x in
+                    re.search(r"from €([\d,]+) to €([\d,]+) of computable income", seg["C"]).groups()]
+    d_rate = float(re.search(r"€(\d+) a month per child", seg["D"]).group(1))
+    e_rate = float(re.search(r"€(\d+) a month more per child", seg["E"]).group(1))
     cv = IO.pdf_text(p(target, "coverage"))
     take_up = float(re.search(r"reached ([\d.]+) per cent of entitled families", cv).group(1)) / 100.0
     ru = IO.pdf_text(p(target, "rules"))
