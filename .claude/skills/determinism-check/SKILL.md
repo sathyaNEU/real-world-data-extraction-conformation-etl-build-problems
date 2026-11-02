@@ -141,7 +141,12 @@ spent. A rate or trend read from one observation per unit is where this lives: t
 the background and the growth together, and nothing in the pack separates them.
 
 **Never file a procedure, basis or formula whose literal application gives another answer**: an official
-decoy and a fork at once. **And a pin added to close one fork can open a larger one**, so read every
+decoy and a fork at once. A rating, design value or stated rate shipped as engineering context is filed
+too: task183's third architecture shipped a brake data sheet's level-track 0.88 m/s2 beside a procedure
+that never said whose rate tests a stop, the judge read applying it as a licensed literal reading against
+the golden's rate from each approach's own stops, and the build went back; a default path that applies a
+shipped figure is a literal reading, so the easy route must be a model the analyst builds and the data's
+own fit refutes. **And a pin added to close one fork can open a larger one**, so read every
 new pin's literal execution against the graded quantity and not only against the fork it was written for.
 A build added a clause pinning the grain ("a partner's household-size band has one award level for those
 twelve months ... an award level is not taken claim month by claim month") to close a month-by-month
