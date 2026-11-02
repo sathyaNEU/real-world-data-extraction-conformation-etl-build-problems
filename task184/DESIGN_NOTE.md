@@ -1,558 +1,64 @@
-# task184 design note (architecture 8: the saturated indicator)
+# task184 design note (architecture 11: deaths split against the flock's own age and thinning course)
 
-Architectures 1 to 7 are spent and in the card's lineage. Architectures 3 to 7 were one family, a night-time
-patrol slate ranked under a cap, and all five died on the same pair of horns that `stumping` 1.1c and 1.1h
-name: where the data separate the candidate placements the analyst reads the fit and Gate F fails, where they
-do not two placements are defensible and Gate C fails. Architecture 8 does not change the mechanism, it
-changes the kind of call, which is the law that slot's own measurements produced (`stumping` 1.1i): in this
-lane every build that shipped and held its call graded a recovered quantity or a decomposition, and every
-build that died graded a ranking. So the cap and the slate are gone and the call is one recovered count.
+Architectures 1 to 8 are spent and in the card's lineage; the architecture 9 and 10 draw hunts closed on
+measurement before any card and are entered in the lineage from this note's own lines. Architecture 11 leaves
+`accounting-audit-forensic` and every client domain the lineage or today's builds hold, and re-roots into
+`epidemiology-public-health` with a new world, dataset, generator and shell. The deciding quantity is the one
+the slot's live-cell filter asked for: an unobserved quantity (the birds an infection killed) whose
+reconstruction closes on a piece the records supply exactly (each flock's age and its thinning history, from
+the placement notes and the plant's receiving log), at a grain no grouping of the decision file reproduces,
+with the difficulty in which background applies to which house rather than in any free parameter.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task184.json` (v8), registered 2026-10-26. `guard.py check`
-  carries no BLOCK; nearest driver on file 0.07 (task190 lineage, task132), which is the lowest this slot has
-  drawn. Two WARNs, both answered below.
-- **Pairing.** accounting-audit-forensic / audit-testing-sampling, client domain
-  banking-credit-financial-risk, objective anomaly-detection, shape 03 (bridge between totals, each trading
-  unit a reconciling item), decision type `quantity_figure`, answer unit `count`. The domain carries one card
-  in 296 and the subdomain none; `auditor` has decided two prompts in the corpus and `audit_or_inspection` has
-  forced four.
-- **Strategy.** `grain_or_unit`, `layer2_family: estimand_identification`,
-  `layer2_pattern: own:saturated-indicator-inversion`.
-- **World.** Drumcondra Provisions Group, a foodservice distribution group in the Republic of Ireland: twelve
-  trading units (nine regional depots, a national contracts business, a central bakery and a group services
-  unit) posting into one shared general ledger. Postings reach the ledger four ways: an EPOS interface for
-  depot counter sales, a route-accounting interface that posts each van's day as one voucher, a payables
-  interface, and manual journals. Group internal audit runs a continuous-monitoring ruleset over the ledger
-  nightly and the platform writes one verdict per journal entry.
-- **People.** Drawn from `guard.py names --geo Ireland --seed 184`: Ruairi Barnett (group head of internal
-  audit), Alana Marnan (continuous monitoring), Fergus Rynne (group financial controller), Myles Connaughton
-  (route accounting). No name typed.
-- **Forcing event.** The internal audit plan for the year is being sized, and the sample sizes and the
-  unit-by-unit allocation of testing turn on how many postings in the population trip the ruleset.
-- **Forward facing.** The window is the financial year to date, which is open: the call is a quantity about a
-  window not yet closed, so the default holds and no retrospective reason is owed.
-
-**Data-native sentence.** The purchase ledger posts one voucher per supplier invoice and the migrated delivery
-rounds one per docket, while branch EPOS posts a whole trading day under one voucher and payroll a whole
-run, so the number of postings behind one journal entry in this ledger runs from 1 to 2,347 inside the same
-trading unit; the monitoring platform
-records its verdict on the voucher, so the same indicator means "one posting tripped the ruleset" on a manual
-journal and "at least one of 2,347 did" on a branch trading day, and the map between the two is saturating.
-
-**Why the line detail is not a planted organ.** The postings behind an entry come from the voucher's own item
-count, which every route to the answer needs: the easy route needs it to total the group's postings at all,
-and the question is asked per posting, so the count is forced by the question rather than by the decisive
-step (`leak-check` readability test 7, the multi-purpose escape). Double-entry is what makes it recoverable:
-the posting interfaces write each source document as its own balanced set of lines, so the voucher's internal
-composition is legible from its line structure, and the entry header carries the item count a posted voucher
-always carries.
-
-## Default path
-
-A competent analyst with every field read correctly and every filed rule applied:
-
-1. Reads `monitoring_exceptions.csv` (the platform's exception register, one row per flagged journal entry)
-   and `rule_catalogue.pdf`, and keeps the rules whose stated evaluation grain is the posting rather than the
-   voucher.
-2. Joins the register to `journal_entries.csv` on `entry_id` to get the trading unit, the period and the
-   entry type, and filters to the financial year to date.
-3. Reconciles the register against the platform's own monthly summary and ties.
-4. Groups by trading unit, counts flagged entries, and reports that count as the number of postings that
-   tripped the ruleset, bridging it to the group total.
-
-**Ends on:** 7,481 postings for the group, with the twelve unit figures running 131 to 920.
-
-A sharper analyst notices the entry is not the posting, takes the flag rate per entry and grosses it up by
-the group's posting count.
-
-**Ends on (the sharper route):** 29,234 postings for the group.
-
-**Golden:** 14,989 postings for the group, which is 15,000 to the nearest thousand, with the twelve unit
-figures 1,700, 2,100, 1,500, 1,300, 1,100, 1,200, 1,400, 1,000, 1,600, 900, 800 and 400 to the nearest
-hundred, summing to 15,000.
-
-Both default figures are wrong by a factor, not a margin: the flag count is 0.50 times the golden (49.7 per
-cent of the generator's clean truth) and the grossed-up rate 1.95 times it (194.4 per cent of clean truth).
-
-## Stump sentence
-
-The analyst reports the monitoring platform's 7,481 flagged entries as the number of postings that tripped
-the ruleset for the year to date (or 29,234 from the entry flag rate grossed up by the group's postings); the
-step that lands there is treating the entry verdict as one observation of one posting, when it is an
-indicator that fires once however many of the voucher's postings trip the rule, so the count has to be
-recovered by inverting one minus the complement raised to the postings on the entry, entry by entry, with the
-rate estimated on each trading unit's own population.
-
-## Three rules
-
-Task type: fraud-aml-detection in the client taxonomy, which serves Anomaly Detection and Diagnostics; audit-testing-sampling in the house domain, which is the card's subdomain. The build is rule-based transaction
-monitoring: a ruleset evaluates postings, the platform raises an alert, and the question is how many postings
-actually tripped a rule rather than how many alerts were raised. That gap between the alert's grain and the
-monitored item's grain is the standing measurement problem of transaction monitoring, and on the audit side the
-same figure is the population deviation rate an attribute test is sized against.
-
-Domain test: the deciding quantity is a population deviation rate at the item subject to the control, the
-figure an auditor estimates to size an attribute sample and to allocate testing across components of a group.
-The field's own method defines the sampling unit as the item the control operates on, and here the evidence
-arrives at the accounting document's unit instead, so the rate has to be recovered from the document-level
-indicator before any sample is sized.
-
-Swap: put shipping container for journal entry and damaged carton for tripped posting. The arithmetic still
-inverts, but nothing then says what the unit of observation ought to be, because only an audited population
-has a standard that defines the item subject to the control; and nothing makes the container's internal
-composition recoverable, because only double-entry writes each source document as its own balanced set of
-lines. The swap leaves a counting exercise with no reason to prefer either unit and no route to the fan-out.
-
-Layer 1: the ledger's own mess, none of it placed to be caught. The EPOS interface changed its voucher
-convention mid-year (one voucher a day per depot, then one a day per till), so the posting fan-out per entry
-steps down at the cut-over; the route-accounting interface posts in the depot's local time while the platform
-stamps its verdicts in UTC, so a van's day straddles the period boundary twice a year; the payables interface
-restates a supplier's accruals in a later period without reversing the first posting, so the same source
-document appears under two entries; unit codes were renumbered at the half-year and the register carries the
-old ones; and the group's period calendar is a 4-4-5 fiscal month against the platform's calendar months.
-
-Layer 2: `estimand_identification`. The decisive choice is what the rate is a rate of, and therefore what
-the observation is: the platform's row is a voucher, the decision's unit is a posting, and the map from the
-posting rate to the voucher-level indicator rate saturates with the postings on the voucher, so no rescale of
-the indicator count recovers the posting count.
-
-Decisive step: recover the population deviation rate at the posting by inverting the voucher-level
-indicator, entry by entry, over each trading unit's own population, rather than rescaling the indicator
-count to or from the voucher population.
-
-Not semantics: every field reads exactly as it is labelled and the analyst reads it right. The register's
-row is a flagged journal entry and says so, the entry header's item count is the postings on the voucher and
-says so, and the rule catalogue states each rule's evaluation grain. Reading all three correctly is what
-produces the two default figures: knowing that the row is a voucher and that the voucher holds up to 2,347
-postings is exactly what licenses "flags over entries, times postings", which is wrong by 1.95 times. The answer does
-not turn on any field's meaning; it turns on the shape of the map between the two units.
-
-Not rule application: no filed rule or procedure performs the recovery. The rule catalogue says what each
-rule tests and at what grain; the monitoring platform's documentation says it retains a verdict per entry;
-neither says, and no shipped sentence says, that the indicator saturates or how to invert it. Executing every
-stated rule produces the register and the two default figures, which is what the analyst test files.
-
-Analyst test: a strong analyst reconciles the register, counts flagged entries per unit and reports 7,481 for
-the group, or grosses the entry flag rate up to 29,234. Executed in `checks.py` on the generator's clean
-truth, both routes reproduce those figures and the golden reproduces 14,989, which is 15,000 as graded.
-
-Estimand: the number of postings in the group's general ledger, in the financial year to date, that trip
-the continuous-monitoring ruleset, counted for each trading unit on that unit's own population and summed to
-the group. Filed in the prompt's question and in `exception_population_bridge.xlsx`'s scope note; the unit of
-estimation is part of the WHAT, which is why the prompt asks for the figure per trading unit and for the
-group (`determinism-check` section 1).
-
-No decoy: nothing is planted to be caught. There is no copied block, no hidden rule, no memo or briefing
-arguing a figure, and no stakeholder number written to be overturned. Every artifact speaks in entries,
-because that is what the platform records; none states a posting count.
-
-No certified replay: no certified or published figure is reproduced by the method, and no artifact blesses
-either route. The platform's monthly summary ties to the register under every route, because both are counts
-of entries.
-
-Lesson: that an indicator recorded on a container of items is not an observation of an item, so the rate
-the decision needs is recovered by inverting the container-size map rather than by rescaling the count, and
-that the rescale is wrong by a factor whichever direction it is taken. No build on file teaches it: the
-corpus's nearest drivers sit at 0.07.
-
-## Measured on the built world
-
-Every figure below comes from the generator at `SEED = 184008`, measured over FY26 P1 to P9: 313,678
-journal entries carrying 1,225,763 postings across twelve trading units, with each unit's rate solved by
-bisection so its recovered figure lands on a bin centre. `golden` is the estimand executed literally;
-`clean truth` is the generator's count of postings that actually trip the ruleset, which nothing ships.
-
-| Route | Figure | Of the golden | Of clean truth | Distance from the graded bin |
-|---|---|---|---|---|
-| rung 0, flagged entries as the platform reports them | 7,481 | 0.50x | 49.7% | 50.1% |
-| rung 1, the entry flag rate grossed up to the postings | 29,234 | 1.95x | 194.4% | 94.9% |
-| rung 2, the inversion applied once on the mean entry size | 7,548 | 0.50x | 50.2% | 49.7% |
-| counting the register's rule hits rather than its entries | 12,655 | 0.85x | 84.1% | 15.6% |
-| every posting on a flagged voucher | 798,238 | 53.3x | 5,307% | outside the floor |
-| **the golden** | **14,989** | 1.00x | **99.66%** | **0.1%, eleven from the centre** |
-
-**The three conditions a corrected route owes** (`stumping` 1.1f), each asserted separately in `checks.py`:
-
-1. **The default path lands outside the bin.** Every rung sits 49.7 per cent or further from the graded bin,
-   and the nearest wrong route of any kind, counting rule hits, sits 15.4 per cent out, against the 6 per
-   cent `C4` floor.
-2. **Every licensed estimator lands inside the bin.** Per unit then summed, the maximum likelihood estimate
-   is 14,989, method of moments 15,006 and the complementary log-log form 15,102, a spread of 113 postings
-   against a half-bin of 500. At unit level the worst spread is 44.3 postings against a half-bin of 50, the
-   median 13.1, and **all twelve units and the group total have every licensed estimator rounding to one
-   bin**. Each unit's golden sits within 0.20 of its bin centre and the group's within 0.02 of its own.
-3. **The golden is strictly more accurate against clean truth.** 99.66 per cent, against 49.7 per cent for
-   the default path. The correction is 147 times closer, not marginally closer.
-
-**The grouping fork, closed twice.** Estimating one rate for the whole group and estimating a rate per unit
-are both defensible, and on an earlier tuning of this world, where the unit rates spanned six times, they
-differed by 2.9 per cent on the group total with the pooled figure 187 postings from a bin edge. Two
-closures now hold together. The estimand files the unit of estimation, which is WHAT and not HOW
-(`determinism-check` section 1), and the prompt asks for the figure per trading unit and for the group, so
-the literal reading fixes the grouping. And the rates were reassigned into a narrow band, 0.91 to 1.81 per
-cent, which is what controls the concavity bias: the pooled maximum likelihood estimate is now 14,712, a
-gap of 277 postings or 1.85 per cent, and the pooled method of moments and complementary log-log figures are
-14,798 and 14,888, so **all six estimates, pooled and per unit, sit inside the 15,000 bin**. A solver who
-pools lands in the same bin.
-
-**Why the saturation and the identification do not fight.** This is what killed architectures 3 to 7: the
-structure that made the easy route wrong was the same structure that destroyed the answer's determinacy.
-Here they live in different entries, because a general ledger is heavy-tailed in entry size and the tail has
-a cause. The purchase ledger posts one voucher per supplier invoice and the migrated delivery rounds post
-one per docket, so 23 per cent of postings sit on vouchers of exactly one posting, which is 93 per cent of
-all entries and is what identifies the rate. Branch EPOS posts a whole trading day under one voucher and
-payroll a whole run, so 66 per cent of postings sit on 1,836 vouchers of 150 to 2,347, which is where the
-platform's verdict hides the mass. Tightening the identification does not loosen the saturation, because
-they are different streams of the same ledger.
-
-**The no-op that makes rung 2 attractive.** For a small indicator rate the inverse of the pooled indicator
-is the rate over the mean entry size, and the mean entry size is the postings over the entries, so the two
-cancel: inverting once on the aggregate returns 7,548 against a flag count of 7,481, a difference that is
-the second-order term alone. A solver who spots the saturation but corrects at group level gets back the
-number it started with and reads two agreeing routes as corroboration.
-
-## Guard WARNs, answered
-
-- `three_rules.strategy_risk` on `grain_or_unit`: the risk the rule names is that a grain stump decides on
-  reading a field or applying a stated rule. Here the analyst test is executed, not argued, and it reads every
-  field right: the register's row is labelled a journal entry, the item count is labelled the postings on the
-  voucher, the rule catalogue states each rule's grain, and reading all three correctly is precisely what
-  licenses the grossed-up entry rate, which is wrong by 1.42 times. What defeats the easy route is that the
-  rescale between the two units is not a division.
-- `test.same_puzzle_older` against task151 and `test.same_driver_older` against task464 v2: differentiation
-  lines are in the card.
-
-**What stage 2 owes:** the readability screen with the decisive row silent, the semantic fork table, the
-three-to-five rung ladder with its grid and worth arithmetic, the 22-axis closure table, the literal reader
-line, the oracle list, the ask sheet with its cracker and mirror sheets, and `prompt.txt` through
-`voice-check.py`; then `precut.py` exit 0.
-
-## Readability screen
-
-Six tests per rung (`stumping` 2.1). The decisive row must read `silent`.
-
-| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the flag count as the platform reports it | names it (the platform's documentation says it writes a verdict per entry) | the register's row is a flagged entry | yes, the opponent's first group-by | the monthly summary ties to it | the battery reconciles it | yes, a count | readable |
-| 1 the entry flag rate grossed up to the posting population | no sentence; the postings per entry are on the voucher because the question is per posting | `item_count` is a column, and every route needs it | yes, the reflex once the unit mismatch is seen | nothing scores it | the battery passes it | yes, a ratio times a total | readable |
-| 2 the inversion applied once, on the group's mean entry size | no sentence | no column isolates it | the correction a careful solver reaches for | nothing scores it | invisible to the battery | no, a root of a power | readable |
-| 3 the inversion per entry, with the rate on each unit's own population **(decisive)** | no sentence anywhere states that the indicator saturates, or how to invert it | no column, no key, no marker; `item_count` serves every route including both wrong ones | no: the measured reflexes land on rungs 0, 1 and 2 | no control, summary or corpus scores it; every artifact counts entries and ties under every route | the battery reconciles the register, ties the summary and finds nothing | no: the step is a per-entry inversion summed over 313,678 entries, not a subtraction, ratio or half of a reported figure | `silent` |
-
-**The one tell, named.** A solver who reaches rung 2 finds that inverting on the mean entry size returns the
-flag count it started from, because for a small indicator rate the inverse is the rate over the mean size and
-the mean size is the postings over the entries, so the two cancel identically (7,548 against 7,481, the gap
-being the second-order term alone). That no-op is a real tell: a diligent solver sees that the correction
-changed nothing. It is kept, for two reasons. It announces that something is wrong, not what to do about it,
-so discovery and remedy are different acts (`supplemental-stumping` 1.0 applied to the call). And it makes
-rungs 0 and 2 corroborate each other, so the common outcome is a solver who takes two routes, gets one answer
-and files it with more confidence than it deserves.
-
-## Semantic fork table
-
-| id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | posting | one source document's entry into the ledger, the unit `item_count` counts | a ledger line (debit or credit) | 15,308, the same graded figure | `gl_data_dictionary.pdf` names `item_count` as the source documents posted under the voucher and `line_count` separately, and the two readings converge anyway, because the indicator is the same and the inversion rescales with it: 15,308 is 1.02 times the golden and rounds to the same 15,000 (`C1`, asserted on the figure and on all twelve units) |
-| SF2 | tripped the ruleset | the ruleset's rules evaluated the posting and one or more fired on it | the entry was flagged | 7,481, which is rung 0 | the question asks for postings, and `monitoring_platform_guide.pdf` states the platform evaluates each posting on the voucher and writes one verdict for the voucher |
-| SF3 | this financial year to date | the group's 4-4-5 fiscal periods FY26 P1 to P9, as `period_calendar.csv` dates them | calendar months October 2025 to June 2026 | same call: `period_calendar.csv` aligns FY26 P1 to P9 exactly with the extract window, and the entries in the two differences net to zero flagged entries (asserted on figure and counts) | C1 |
-| SF4 | trading unit | the twelve units in `trading_unit_register.csv` as they stand at the extract | the pre-renumbering codes the register carried before the half-year | same call at group level; per-unit figures differ | `trading_unit_register.csv` carries `code_from` and `code_to` with effective dates and the extract date is filed |
-| SF5 | the ruleset | the nine rules `rule_catalogue.pdf` marks live in FY26 | all eleven rules listed, including the two marked withdrawn | same call | `rule_catalogue.pdf` dates each rule's withdrawal, and the two withdrawn rules fired on zero FY26 entries, so both readings select the same rows (`C1`, asserted on the figure and the counts) |
-| SF6 | the group | the twelve trading units, group services included | the nine depots only, the trading units proper | same call for each unit; the group total differs | the question asks for each trading unit and for the group, and the register lists twelve |
-| SF7 | rounding path | round each unit's figure to the nearest hundred and the group's own figure to the nearest thousand, each from its own unrounded value | sum the rounded unit figures to get the group | same call: the rounded units sum to exactly 15,000 and the group's own unrounded figure, 14,989, rounds to 15,000 | `C1`, asserted |
-
-Every row is asserted in `generator/checks.py` by its id.
-
-## Ladder
-
-Four rungs, each a complete pipeline from the raw files, each terminating on a figure a competent analyst
-would file and defend. Graded quantity: the group's postings that trip the ruleset in FY26 to date.
-
-| Rung | The analysis | Figure | Of the golden | Distance from the graded bin | Dies to |
-|---|---|---|---|---|---|
-| 0 | Reconcile the exception register to the platform's monthly summary, group by trading unit, count flagged entries | 7,481 | 0.50x | 50.1 per cent outside | `item_count` on the voucher: one branch EPOS entry carries up to 2,347 postings, so the count is of vouchers |
-| 1 | Take the flag rate per entry and gross it up by the group's postings | 29,234 | 1.95x | 94.9 per cent outside | the indicator cannot exceed one per voucher, so the entry rate is an upper bound on the posting rate, not an estimate of it |
-| 2 | Invert the indicator once, on the group's mean entry size | 7,548 | 0.50x | 49.7 per cent outside | the inverse of a mean is not the mean of the inverses: the entry-size distribution is heavy-tailed (1 to 2,347), so the single inversion is algebraically the flag count again |
-| 3 **(decisive)** | Invert the indicator entry by entry, estimating the rate on each trading unit's own population, then sum | 14,989 | 1.00x | the golden, 11 from the bin's centre | nothing: this is the estimand executed literally |
-
-**The arithmetic.** Position: rung 0 is the default path and is the figure the reflex group-by files.
-Separation: every rung sits 49.7 per cent or more from the graded bin, against the 6 per cent `C4` floor, and
-0.50x to 1.95x of the golden, so every rung is wrong by a factor. The nearest wrong route of any kind is
-counting the register's rule hits rather than its flagged entries, 12,684, and that sits 15.4 per cent from
-the bin. Worth on the graded quantity: refusing rung 0 is worth 7,508 postings (50.1 per cent of the golden),
-rung 1 is worth 14,245 (95.0 per cent) and rung 2 is worth 7,441 (49.6 per cent); nothing but the decisive
-move changes the figure at all.
-
-**Dominance.** Each rung dies to exactly one shipped fact, named above, and no rung dies to two. Rung 2 is
-not reachable by fixing a loop in rung 1, and rung 3 is not reachable by fixing a loop in rung 2: it needs
-the per-entry form, which is a different computation over 313,678 rows rather than a corrected constant.
-
-**The grid.** Three live axes: the unit the rate is taken on (voucher or posting), the form of the map
-(linear or saturating), and where the map is applied (once on an aggregate, or per entry). Eight cells.
-
-| Unit | Map | Applied | Figure | Named |
-|---|---|---|---|---|
-| voucher | linear | aggregate | 7,481 | rung 0 |
-| voucher | linear | per entry | 7,481 | rung 0, identical by construction |
-| voucher | saturating | aggregate | 7,548 | rung 2 |
-| voucher | saturating | per entry | 7,481 | collapses to rung 0: inverting an indicator that is already per voucher returns the indicator |
-| posting | linear | aggregate | 29,234 | rung 1 |
-| posting | linear | per entry | 798,238 | outside the floor: it credits every posting on a flagged voucher, 53.3x the golden, and no analyst files it |
-| posting | saturating | aggregate | 7,548 | rung 2 |
-| posting | saturating | per entry | 14,989 | the golden |
-
-No cell is unnamed and no single-error cell is infeasible. The grid is not saturated: the two
-`per entry` cells on the voucher unit collapse into rung 0, which is why four rungs and not eight.
-
-## Closure table
-
-| # | Axis | The reading taken | Closure |
-|---|---|---|---|
-| 1 | Population | every journal entry posted to the group ledger in FY26 P1 to P9, all twelve trading units, every live rule | estimand filed in the prompt's question and the workbook's scope note; entries posted after the extract are stated as out of scope in the extract manifest |
-| 2 | Unit of account | the posting (one source document's entry), not the voucher and not the ledger line | SF2 rules out the voucher at a factor (`C4`, 0.50x); SF1 shows the ledger line converges (`C1`, 1.02x, same bin) |
-| 3 | Attribution window | the fiscal period the entry is posted in, per `period_calendar.csv` | SF3, `C1`: FY26 P1 to P9 and January to September differ by entries that carry zero flags, asserted on figure and counts |
-| 4 | As-of dating | the extract date, 2026-07-03, filed in the manifest; the unit register read at that date | SF4; the register's effective dates are filed and the extract date is stated once |
-| 5 | Version basis | the entry as posted, including later restatements as their own entries | the payables restatement is an ask device and sits in FY25, outside the window; asserted zero in the main population |
-| 6 | Denominator | the group's postings in the window, the sum of `item_count` over in-scope entries | the question asks for a count, not a rate, so no denominator is graded; `item_count` is defined in the dictionary |
-| 7 | Weighting | each trading unit's rate estimated on that unit's own population, summed to the group | the estimand files the unit of estimation (WHAT, not HOW, `determinism-check` section 1), and the prompt asks per unit and for the group; `C1` as well, since pooling converges to within 0.07 to 0.35 per cent |
-| 8 | Window length | the nine fiscal periods to date, not a trailing twelve months | the question says this financial year to date and the calendar dates it |
-| 9 | Boundary inclusivity | periods inclusive at both ends | `C1`: no entry posts on P1's first or P9's last day with a flag, so no reading sits on the edge (asserted) |
-| 10 | Rounding path | each unit's own unrounded figure to the nearest hundred, the group's own unrounded figure to the nearest thousand | SF7: both roundings stated separately in the prompt, and both figures stated, so the rounded units summing to 22,200 is not an alternative reading of the group figure |
-| 11 | Tie-break | none: the graded figure is a count, not a ranking | no tie exists; the chart orders units by their figure and no two units round to the same hundred |
-| 12 | Maturity and censoring | every entry in the window is fully evaluated; the unevaluated entries are an FY25 ask | `monitoring_run_log.csv` shows complete FY26 coverage, asserted; the gaps are in FY25 |
-| 13 | Order of operations | invert per entry, then aggregate; never aggregate then invert | this is the decisive step itself and is not filed; rung 2 is the wrong order and is 51.5 per cent outside the bin |
-| 14 | Row order | file order cannot move the result | `C1`, asserted over six permutations of the entry file: the inversion is a sum over entries and the likelihood is order free |
-| 15 | Duplicate resolution | the register carries exactly one row per flagged entry, with the rules that fired in a `rules_fired` column | asserted unique on `entry_id`, so counting rows and counting distinct flagged entries cannot differ; 2,190 entries had more than one rule fire and splitting `rules_fired` would count 12,684 rule hits, which is 15.4 per cent from the bin |
-| 16 | Identity normalisation | the unit register's effective-dated codes map the register's old codes to the twelve current units | SF4; `C4` at unit level, and the group figure is invariant to the mapping (asserted) |
-| 17 | Netting against gross | nothing nets: a count of postings has no sign | no reading nets |
-| 18 | Dimensional units | `item_count` counts source documents throughout, on every interface | asserted equal to the distinct source-document references on the entry's lines, for every entry in the line-detail extract |
-| 19 | Code and status semantics | the register's `verdict` is `exception` or `cleared`; only `exception` rows are flags | dictionary semantics, and never the stump: both readings are counts of entries and both sit outside the bin |
-| 20 | Integerisation | postings are whole; the inversion's output is rounded once at the end | the rounding is stated in the prompt and applied once per graded figure |
-| 21 | Clause scope | the rule catalogue's withdrawal dates scope which rules are live in FY26 | SF5, `C1`: the two withdrawn rules fired zero times in FY26 |
-| 22 | Forward window contents | FY26 runs to 2026-09-27 and P10 to P12 are still to run, so the year is open; every entry inside P1 to P9 is posted and evaluated and nothing is forecast | the extract manifest files the extract date, 2026-07-03, and states that P9 closed on 2026-06-28 |
-
-## Literal reader
-
-A reader who executes the prompt and every filed definition word for word, inferring nothing, is asked for
-the postings that tripped the ruleset per trading unit and for the group; `gl_data_dictionary.pdf` defines a
-posting as one source document's entry under a voucher and `item_count` as the number of those,
-`monitoring_platform_guide.pdf` states the platform evaluates each posting on the voucher and writes one
-verdict for the voucher, and `period_calendar.csv` dates the window. Executing that literally gives the
-number of postings that fired a live rule, per unit on that unit's own population, which is 14,989 for the
-group, graded as 15,000, and the twelve unit figures. No filed sentence states how to recover it, and no literal reading
-reaches rung 0, 1 or 2: each of those is an easy method on the same literal estimand, which is where the
-easy answer must come from (`determinism-check` section 2, test 3).
-
-## Oracles
-
-| Artifact | What it confirms | Reading on the wrong path |
-|---|---|---|
-| `monitoring_platform_guide.pdf` monthly exception summary | the register is complete: flagged entries per unit per period | ties under every route, because both the summary and the register count entries, so rung 0 is confirmed exactly as the golden is |
-| `gl_control_totals.csv` | debits equal credits and the entry count per period | ties under every route; carries no posting count and no exception figure |
-| `trading_unit_register.csv` | the twelve units and their effective-dated codes | ties under every route |
-| `period_calendar.csv` | the 4-4-5 period dates | ties under every route |
-
-No artifact ties only under the golden and none ties only on a wrong read. Nothing ranks the units on the
-decision question, and no shipped artifact states a posting count for any unit or for the group, so Gate G
-holds with every wrong number deleted: the difficulty is that the pack states entry counts truthfully and
-the question asks for postings. The ask layer's referee (`payables_control_account.csv`) arbitrates ask 1
-only and carries nothing the call reads.
-
-## Ask sheet
-
-Three asks, all on FY25, which is outside the call's window, so every device row sits outside the main
-population by construction.
-
-**Ask 1, the payables accrual reconciliation.** Figures: per trading unit (12), the subledger's supplier
-accrual balance at the FY25 close, the ledger control account balance, and the difference; plus the
-reconciling items. H18 home: an input reconciled to another system's total, the gap made of devices. Use:
-internal audit decides whether to rely on the payables reconciliation control. Primary device: D2, a
-restatement posted in a later period without reversing the first, so the same source document carries an
-accrual under two entries and the naive sum double-counts (seen, repaired right only if the solver reads the
-restatement chain, not the period). Hazards: D7 the half-year unit renumbering, present in the subledger
-only; D9 a control total true in its own scope (the subledger's own trial balance ties to itself under the
-double count). Files: `payables_accruals_fy25.csv`, `payables_control_account.csv`,
-`trading_unit_register.csv`, `period_calendar.csv`, `gl_data_dictionary.pdf`, plus the FY25 journal entries,
-the supplier register and the restatement log: eight files, eleven columns on the golden's path. Stops: the
-naive sum (double counts), the period-filtered sum (drops the restatement), the reversal-matched sum
-(over-corrects where the first posting was itself a correction), the answer. Lazy delta: the naive sum
-differs from the answer on all twelve units. Realism: a group payables ledger restates accruals and the
-restatements are chained, not reversed.
-
-**Ask 2, the till takings reconciliation.** Figures: per branch and quarter (9 by 4), FY25 till takings
-against the sales control account, and the gap. H18 home: the trail from an input the call consumes, through
-device rows it never reads, to its control total. Use: internal audit scopes till testing by where takings
-and the ledger disagree. Primary device: D8, the till file's `business_date` is the branch's local date while
-the voucher is stamped in UTC, so a naive date join moves one trading hour across the quarter boundary and
-double-counts the night the clocks go back (seen by nobody who joins on date, and the battery passes it).
-Hazards: D6 a till's day appears at two grains across the EPOS convention change; D1 a re-sent batch on one
-depot. Files: `epos_till_takings_fy25.csv`, `gl_control_totals.csv`, the FY25 journal entries,
-`trading_unit_register.csv`, `period_calendar.csv`, `epos_interface_notes.pdf`, the branch register and the
-sales account map: eight files, twelve columns on the path. Stops: the date join (double counts the DST
-night), the UTC-naive join (drops an hour each quarter), the grain-blind sum (double counts the convention
-change week), the answer. Lazy delta: the date join differs on 14 of the 36 cells.
-
-**Ask 3, the monitoring coverage.** Figures: per trading unit and FY25 month (12 by 12), the entries in
-scope of the ruleset but never evaluated. H18 home: a measure every unit carries that the call does not turn
-on. Use: internal audit judges how far FY25 monitoring can be relied on. Primary device: D4, coverage is
-drained down in stages rather than absent, so a unit's evaluated share falls over three months before a
-re-platforming and the absence is evidenced only in the run log's partial-run rows, which no habitual join
-reaches. Hazards: D5 a silently partial extract on one unit's first month; D9 the run log's own completion
-flag is true for a partial run. Files: `monitoring_run_log.csv`, the FY25 journal entries,
-`rule_catalogue.pdf`, `monitoring_platform_guide.pdf`, `trading_unit_register.csv`, `period_calendar.csv`,
-the scope rules and the re-platforming note: eight files, ten columns on the path. Stops: entries minus
-evaluated entries (counts out-of-scope entries as unevaluated), the completion-flag filter (believes the
-partial runs), the scope-blind count, the answer. Lazy delta: the subtraction differs on 31 of the 144 cells.
-
-**The main population's zero counts**, each asserted in `checks.py`: zero FY26 entries carry a payables
-restatement chain, zero FY26 entries are sourced from the till file, zero FY26 periods carry a partial
-monitoring run, and zero rows of the three ask files fall inside FY26 P1 to P9.
-
-**Hazard table.**
-
-| Hazard | Asks moved | Per-ask delta |
-|---|---|---|
-| D7 half-year unit renumbering | 1, 3 | ask 1: 4 of 12 units; ask 3: 19 of 144 cells |
-| D9 a control true in its own scope | 1, 3 | ask 1: 12 of 12; ask 3: 12 of 144 |
-| D1 a re-sent batch | 2 | 3 of 36 cells |
-
-No subset of mishandlings composes back inside any ask's bin, and no two asks share a primary device
-family (D2, D8, D4).
-
-**Referee.** `payables_control_account.csv` arbitrates ask 1's designed disagreement and carries no level
-for asks 2 and 3 and nothing the call reads. Every other control ties under every handling.
-
-**Cracker sheet.** The cracker landed the call, ran the hygiene battery (key uniqueness, exact duplicates,
-unmatched joins, fan-out, count ties), executed every filed rule and matched every control and published
-figure.
-
-| Figure (the cracker) | Cracker's route | Outcome |
-|---|---|---|
-| ask 1, the 12 unit differences | subledger sum against the control account, restatements kept as posted | miss |
-| ask 1, the reconciling items | the period-filtered gap | miss |
-| ask 2, the 36 branch-quarter gaps | till file joined to vouchers on date | miss |
-| ask 3, the 144 unevaluated counts | in-scope entries minus entries with a verdict | miss |
-
-Every row misses.
-
-Mirror leakage: 17.0 per cent of ask weight, measured on the cut pack. The mirror takes no ask whole: it
-misses every one of ask 1's thirteen balances and every one of ask 3's 144 cells, and on ask 2 it keeps the
-control-account column and the four quarters the upload lag does not move, 54 of 108 figures.
-
-Pair ceiling: 36.3, measured on the cut pack, from one response landing the call: 28.5 plus 27.5 times the
-ask weight the pair keeps, which is 11.4 per cent for the cracker and 17.0 per cent for the mirror. Ask
-weight is shared in proportion to separately gradable figures, 65 for ask 1, 108 for ask 2 and 144 for ask 3.
-
-Measured by: generator/pair.py, run on the cut pack. It refuses rather than reporting a pass on an empty
-denominator (reduce-house-fixes H34). Its measured rows: ask 1 cracker 0 of 65 and mirror 0 of 65, ask 2
-cracker 36 of 108 and mirror 54 of 108, ask 3 cracker 0 of 144 and mirror 0 of 144.
-
-The one figure no route can miss: ask 2's control-account column is a read of a shipped file rolled from
-period to quarter, so every route that maps the unit codes gets it. It is graded because the question asks
-for it, and it is why ask 2's cracker keeps 33.3 per cent of that ask while missing every gap. The two
-figures the device moves, the takings and the gap, miss on all 36 cells.
-
-## Leak sweep and the pre-ship check
-
-`leak.py task184 --asof 2026-07-03`. Sweeps 1, 2, 5, 6, 7, 8 and 11 clean. Every REVIEW line answered below;
-nothing was fixed by hand, the one fix went into the generator.
-
-**Sweep 3, the platform's own reported figures.** The sweep first read the monitoring platform's exception
-counts as golden figures: the group total in the operating guide's period summary and the manifest's row
-count for `monitoring_exceptions_fy26.csv`, both 7,481, and the twelve per-unit totals. They are not the
-answer, they are the figure the platform publishes and the figure the bridge starts from, and Gate B
-requires them in the pack: without the summary the register cannot be reconciled and the oracle has nothing
-to tie to. They are now declared in `metadata.json` under `stated_inputs`, which is what that field is for,
-and the sweep reads them as stated inputs.
-
-**Sweep 4, shared vocabulary.** The rule catalogue and the operating guide carry 8 of the 12 distinctive
-words of the committed call, and the dictionary, the operating guide and the EPOS note carry 3 to 5 of the
-stump paragraph's terms (voucher, carries, interface, writes, source, register, verdict, window,
-catalogue). Harmless: the call sentence is written in the ledger's own nouns and the documents are about
-those nouns, so the overlap is the domain's vocabulary and not the move. Nothing in any of the four
-documents says that the entry-level indicator saturates, or how to invert it, and the readability screen's
-decisive row stays `silent`.
-
-**Sweep 9, dates after the as-of.** `period_calendar.csv` carries five dates after 2026-07-03 and
-`extract_manifest.txt` one. They are the remaining fiscal periods P10 to P12 and the financial year's end,
-2026-09-27. Harmless and necessary: a 4-4-5 calendar is published before the year starts and states every
-period's dates, and the manifest has to say which year the extract covers and that P9 closed on 2026-06-28.
-Both are facts the requester holds before the window closes, which is what makes the call forward facing.
-
-**The house-fix register** (`reduce-house-fixes`), checked file by file:
-
-| Fix | Check | Result |
-|---|---|---|
-| H1 containers | writer signature or out-of-band stamp in any shipped file | the four PDFs and the golden workbook go through `postprocess.normalize_pdf` and `normalize_ooxml`; `grep` for the library name in every PDF returns zero |
-| H18 asks inside the decision | each ask a component, qualifier or audit trail of the call | all three are: the payables reconciliation and the till reconciliation are the controls the plan relies on, the coverage shortfall is how far monitoring can be relied on at all |
-| H23 presupposition | an ask that only parses if a subset is non-empty | none: "what makes up any difference" and "how many entries were in scope but never evaluated" both read with nothing as the answer |
-| H24 fiction tells | a sentence saying the pack was built | none; sweep 2 clean |
-| H34 a measuring script that scores nothing | `pair.py` on an empty denominator | it refuses with exit 3 and names the empty, and it refused correctly at stage 2 when no pack existed |
-| H35 a measuring brief that names the answer | the stage 4 reader's brief | written from `score_reader.py --emit-keys`, and `grep` for the figures, the method words and the wrong routes returns zero; the `rungs.*` keys were deliberately withheld, because they name the wrong routes |
-| H36 a tolerant comparison before the exact one | `score_reader.py` | compares numbers before strings, which is the fixed order |
-
-**The pre-ship check, the 10/10 rules re-read against the built pack.** The decisive step is still analytical:
-`checks.py` executes the easy route on the generator's clean truth and it files 7,481, then changes the
-inversion alone and files 14,989. The mess is still only Layer 1: the two unit-code vintages, the 4-4-5
-calendar against calendar months, the EPOS voucher convention changing mid-year and the upload lag all
-complicate the work and none decides the call, which `checks.py` asserts by recomputing the golden under
-each reading. No artifact ranks the units on the decision question and no artifact states a posting count,
-so Gate G holds with every wrong number deleted.
-
-## Stage 4: the leak reader and the determinism judge, 2026-10-26
-
-Both spawned together in the background on the built pack, each isolated.
-
-**The leak reader** (Sonnet, medium, holding only a fresh unzip of `target.zip` and `prompt.txt`; its brief
-written from `score_reader.py --emit-keys` with the `rungs.*` keys withheld, so it named no figure, no
-method and no wrong route). It filed **12,000** against the golden's 15,000, so the call was missed. Its six
-answers are clean and they confirm the design from outside it: nothing in the pack told it the decisive
-step ("No sentence states the decisive step. The inference step is my own"), no file ranks or scores on the
-question, the only files it called analyst-only were the two declared distractors, no filed sentence fixes
-the computation, and on question 6 it named the deciding move as "an analytical choice: the detection-rate
-model inferring postings from entry-level verdicts". Gate H's rule 3 therefore passes from outside the
-design: not a plant, not a field reading, not an executed procedure.
-
-**But the reader reached the decisive step unaided, and its estimator is the golden.** It wrote that it
-fitted the per-posting rate by maximum likelihood on the raise outcome by entry size and then took the
-expected tripped postings for each raised entry. Executed per unit and summed, that estimator returns
-14,989.3, which is the golden to the figure. It filed 12,000 only because it applied the rule catalogue's
-scope exclusion and the pack contradicts itself there. The step was not hard; it was hidden by a defect.
-
-**The determinism judge** (isolated thread, seeing only the bundle, the prompt, the graded blocks and the
-judge's own system prompt): **NOT_DETERMINISTIC, SEND_BACK**, taxonomy `answer_contradicts_files` with an
-underspecified population. Gate G passes (`statistical_rigor`, analytical, no surface-read dependency, no
-sole data defect). Gate H passes (domain pass, layers pass, decisive step analytical). It confirmed the
-golden reproduces, group and units. Its three findings:
-
-1. **The scope contradiction.** The catalogue marks PAYROLL and AP_INVOICE not covered, and the register
-   still raises 58 of 60 payroll entries and 1,806 AP entries. Confirmed here: 1,634 of the 7,481 exception
-   rows sit on streams the catalogue excludes, and the golden counts all 1,225,763 postings while ask 3's
-   own scope filter excludes those streams. The pack contradicts itself.
-2. **The rounding is fragile.** Fitting the rate per unit and posting stream gives 14,472, which grades to
-   14,000; excluding payroll gives 14,076, also 14,000; excluding payroll and single-posting AP gives
-   12,475, which grades to 12,000. The note's claim that every licensed estimator lands in one bin is false
-   once the grouping is allowed to vary, which it is.
-3. **The per-unit grouping is not forced.** One group-wide rate puts DPG-420 at about 1,400 against the
-   golden's 1,600.
-
-It also asked for the "synthetic, generated by task184/generator" line to come out of `metadata.json`, which
-is an in-house fix and correct.
-
-**The verdict on the architecture, and why it is not a repair.** Finding 1 is a defect and would be a
-one-line fix. Findings 2 and 3 are not: they are `stumping` 1.1c arriving by another road. The decisive
-step here is an estimator, and an estimator has to be fitted over some population; group, unit, and unit by
-stream are each defensible and give 14,712, 14,989 and 14,472, which is two bins. Filing the grouping closes
-the fork and makes the decisive step rule application; leaving it open fails Gate C. That is the same pair
-of horns that killed architectures 3 to 7, and changing the decision type from a ranked slate to a recovered
-count did not escape it, because the free parameter was never the cap, it was the fit. Architecture 8 is
-spent. The measurement is filed as `stumping` 1.1j, and 1.1i has been amended, because as first written it
-claimed more for the decision type than the build then showed.
-
-**What the next architecture needs.** A decisive step with exactly one defensible execution given the
-records: a reconstruction the records determine, where the easy route omits a piece the records supply
-exactly, rather than a quantity fitted over a population the analyst chooses. That is
-`supplemental-stumping` 1.0b, filed for ask devices, and it holds for the call for the same reason.
+- Card: `.claude/skills/fingerprint/cards/task184.json`, architecture v11, registered 2026-11-02.
+- Pairing: client domain `epidemiology-public-health`, task type `disease-surveillance-outbreak-anomaly-detection`
+  (serves Anomaly Detection & Diagnostics and Data Quality), objective Anomaly Detection & Diagnostics. No
+  architecture of this slot used the domain (v1 human factors at an airport, v2 to v7 criminology, v8 to v10
+  accounting, energy and environmental sciences).
+- Niche: Fosdyke Poultry, a broiler integrator in Lincolnshire and the Norfolk fens with its own hatchery, feed
+  mill and processing plant and about forty contract growers. In the 2026-27 avian influenza prevention-zone
+  season its flock health team swabs, each Monday, the farms where avian influenza killed more than a set number
+  of birds over the five days to Sunday, as its surveillance protocol puts it. The call is the set of farms for
+  week 7 (the five days Wednesday 10 to Sunday 14 February 2027), as of Monday 15 February 2027.
+- Decision: `designation_set`, the farms over the protocol's line, each with the birds the infection killed;
+  forward facing in its use (the swabbing visits run that week), retrospective in its window, which is the
+  protocol's own five days.
+- Shape: `01`, each candidate farm with its figure; criteria from the designated farms and their houses, the
+  nearest farm under the line, the chart's parts, and two settlement asks (below).
+- Strategy: `decomposition_attribution`; Gate G `decomposition_attribution`; gap objective then population;
+  decisive generator G14 (the background rate conditioned on the flock), with G3 (the returns' deaths against
+  what the infection did) and G6 (each farm's age and thinning mix moves under a pooled course).
+- Layer 2: `estimation_fit`, `own:flock-deaths-split-against-the-age-and-thinning-course`.
+- Data-native sentence: a broiler flock's daily deaths fall through its first week and climb from about day 30,
+  and a flock thinned for the plant at day 31 to 34 loses its remaining birds at about two thirds of the rate an
+  unthinned flock of the same age does, so a farm's deaths against its own previous week read every late flock
+  as rising and a week-old infected flock as falling, and a course pooled over thinned and unthinned flocks reads
+  the unthinned ones as excess; the thinning is recorded only in the processing plant's receiving log.
+- Abstraction sentence (no domain nouns): each unit's ordinary losses follow a course set by its members' age and
+  by whether part of it was removed partway, which leaves the rest less crowded and losing less, a removal only a
+  downstream receiving log records; read against the unit's own recent days the course flags every unit late in
+  it and hides an intrusion in a young unit whose losses merely stop falling, read against one course pooled over
+  removed and unremoved units it flags the units never thinned and shrinks the intrusions in the thinned ones,
+  and only the course conditioned on each unit's own removal history finds the intrusions. Against the approved
+  builds it is not the same sentence: 132 restarts a wear curve at each replacement for a forecast, 169 and 107
+  carry a clock since release or intake into a forecast, 182 reads each unit's own lagged response to a shared
+  driver, 103 and 119 are a grain and a held resource; none splits an observed loss into a background course
+  conditioned on each unit's own age and removal history and an intrusion.
+- Nearest driver on file (`guard.py mechanisms`, `check`): task183 v4 at 0.06 (lodged cash split against a
+  customer's own card trade); the structural signature repeats task122 v4 (objective, G14,
+  decomposition_attribution) and is differentiated on the card.
+- Guard verdict at registration: WARN, 0 BLOCK (repeat.gate_g against task197 v2, answered below).
+- The ask layer's two records, each with its own domain mechanic: (A) the processing plant's live-bird receipts,
+  load by load (birds hung on, dead on arrival, live weight, weighbridge times), whose mechanic is the grower
+  settlement's liveability; (B) the feed mill's delivery tickets, drop by drop into each farm's bins, whose
+  mechanic is the settlement's feed conversion ratio. Both are decoupled from the call, which reads the growers'
+  daily returns, the placement notes and the plant's thinning loads only.
+- Sources: every file is synthetic, generated for this task by `generator/` (no real dataset, no licensed
+  material); provenance, date and licence per file in `metadata.json`.
+- Guard WARN answered: `repeat.gate_g` (decomposition_attribution against task197 v2): task197 decomposes a
+  poison centre's exposures against a stock its past sales built; this build splits a flock's deaths against an
+  age and thinning course. The gate label repeats, the mechanism does not.
 
 ## Tried and rejected
 
@@ -980,3 +486,33 @@ exactly, rather than a quantity fitted over a population the analyst chooses. Th
   rule application (the arithmetic is closed, so a competent analyst who sees the structure executes it) or
   to one of the twenty-two drivers already on file for this objective; the enumeration is in this entry's
   predecessors. A draw that cannot name its arithmetic-closed piece is not a candidate.
+
+- 2026-11-02, the architecture 11 re-root: architecture 8's accounting world, the architecture 9 and 10 hunts
+  and the whole `accounting-audit-forensic` cell are left; the slot moves to `epidemiology-public-health`, a
+  client domain none of its architectures used, with a new world, dataset, generator and shell. Candidates
+  screened this session and set aside, one line each, before the avian influenza draw was fixed:
+  - Haemodialysis potassium emergencies read against each patient's hours since the last completed session: the
+    nearest driver on file is task478 v6 ("an output whose rate climbs with the operating hours since a component
+    was last renewed"), which a reader landed by fitting the shared climb, the long interdialytic interval is the
+    best-known fact in the field, and events per unit were too few for the bins; also the nominal schedule
+    against the sessions the log shows is task501 v5's paper-against-logged arrangement.
+  - Inpatient falls read on each patient's days since arriving on the ward (transfers resetting the clock): the
+    abstraction is task134 v2's hazard by time since entry after a surge filled the pool, and the AD comparison
+    pincer is open (the falls standard has to say what predicts a ward's falls, and naming the stay structure
+    names the step); no latent physical quantity carries the WHAT.
+  - Hospital-onset infection by day of stay, colonisation pressure, prior-occupant bed contamination and
+    ribotype clusters: task181's and task183's notes kill each (134 v2's clock, task181 v4's crossings, the
+    infection-control reflex, a typing column one group-by away).
+  - A broiler flock's age course alone as the decisive step: an age-specific background is the first thing a
+    poultry-aware analyst builds, and it is the client's surveillance card (the seasonal baseline) read in flock
+    time, so the library test fails; kept as rung 2, and the decisive step moved to the thinning history it pools.
+  - Vaccination coverage against an inflated registered list (children who have left still registered): the
+    stump would be Layer 1 mess (registration lag) and task485 set the same structure aside as a defect risk.
+  - Vaccine cold-chain failure read through each clinic's breakthrough cases: the comparison population is the
+    estimand (WHAT) and filing it executes the step; school term calendars against the calendar week, task181's
+    WHAT pincer; unexplained ILI against virology, a term added to a fitted specification (closed as a class).
+  - Chick quality shared through the hatchery's breeder flocks across the houses it stocks: task181 v6's shared
+    upstream resource in poultry nouns.
+  - Antibiotic items against courses in primary care prescribing: the seed AD40's own mechanism, a grain read off
+    item patterns; platelet outdates replayed through each hospital's stock: perishable inventory, the swap test
+    fails.

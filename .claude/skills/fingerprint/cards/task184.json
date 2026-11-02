@@ -1,165 +1,176 @@
 {
- "task": "task184",
- "architecture": "v8",
- "drawn": "2026-10-26",
- "slot_note": "re-root after the v1 architecture was sent back at Gate C and Gate G; same number and objective",
- "domain": "accounting-audit-forensic",
- "subdomain": "audit-testing-sampling",
- "niche": "sizing a group internal audit plan on the number of postings that trip the continuous-monitoring ruleset, when the platform retains a verdict per journal entry and a single interface batch entry carries a day of van-sales postings under one voucher",
- "objective": "anomaly-detection",
- "shape": "03",
- "decision_type": "quantity_figure",
- "answer_unit": "count",
- "answer": "",
- "answer_source": "",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G1",
-  "G7"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "grain_or_unit",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "monitoring_export",
- "stakeholder_role": "group head of internal audit",
- "role_family": "compliance_or_audit",
- "scoring_unit": "per settled transaction",
- "spine": {
-  "file": "drumcondra_gl_fy26.sqlite, table journal_entries",
-  "rows": 313678,
-  "row_meaning": "one journal entry (voucher) posted to the group ledger in FY26 P1 to P9, with the number of postings recorded under it",
-  "grain": "journal entry",
-  "source_dataset": "synthetic"
- },
- "forum": "auditor",
- "forcing_event": "audit_or_inspection",
- "org_family": "logistics_or_3pl",
- "world": {
-  "geography": "Republic of Ireland",
-  "currency": "EUR",
-  "org_type": "cash and carry and delivered wholesale group",
-  "invented_names": [],
-  "people": [
-   "Ruairi Barnett",
-   "Alana Marnan",
-   "Fergus Rynne",
-   "Myles Connaughton"
-  ],
-  "invented_nouns": [
-   "Drumcondra Provisions Group",
-   "Transpoint RA 7",
-   "Kerridge EPOS",
-   "Megabyte Payroll"
-  ]
- },
- "deliverables": [
-  "exception_population_bridge.xlsx",
-  "audit_plan_paper.pdf",
-  "recovered_exceptions_by_unit.png"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:saturated-indicator-inversion",
- "layer1": [
-  "offence records whose occurrence time is a window (occurred_from and occurred_to) and whose report time is a third timestamp",
-  "two recording systems across the window, the force's legacy incident export to March 2026 and the new records management system after it, with different column names and time formats",
-  "the same offence present in both exports across the cut-over fortnight under two reference numbers",
-  "a licensed premises register whose addresses match the offence locations only through a gazetteer with two spellings per street",
-  "night-time economy footfall counts from four pedestrian sensors with gaps where a sensor was down",
-  "a patrol tasking plan in a spreadsheet, one sheet per quarter, hours written as text",
-  "offences recorded under a British Summer Time local clock across two clock changes",
-  "an offence class whose counts jump when a national counting rule changed, documented in the extract notes"
- ],
- "driver": "The decisive quantity is a per-item rate recovered from an indicator recorded on a container of items, where the indicator fires once however many items inside it qualify, so the mapping from the per-item rate to the observed indicator rate saturates with container size, and every linear rescale of the indicator count, up to the container population or down to a per-item rate, is wrong by a factor rather than a margin.",
- "driver_concrete": "The continuous-monitoring platform writes one verdict per journal entry, so an interface batch entry carrying a day of van-sales postings raises one exception however many of its postings trip the ruleset. Recovering the posting count means inverting one minus the complement raised to the postings on the entry, entry by entry, with the rate estimated on each trading unit's own population; the entry's posting count comes from the voucher's own item count, which every route to the answer needs.",
- "stump": "Report the monitoring platform's 10,587 flagged entries as the number of postings that tripped the ruleset for the year to date, or the entry flag rate times the group's postings; the step that lands there is treating the entry verdict as one observation of one posting when it is a saturating indicator over the postings on the voucher, so the count has to be recovered entry by entry.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst reads every field and every filed rule correctly, takes the monitoring platform's exception register, keeps the rules whose stated evaluation grain is the posting rather than the voucher, and reports the count of flagged entries as the number of postings that tripped the ruleset, or divides those flags by entries to get a flag rate and multiplies it by the group's posting count. The first files about 47 per cent of the real figure, the second about 137 per cent of it; both are wrong by a factor.",
- "domain_test": "The deciding quantity is a population deviation rate at the unit the control applies to, which is what an auditor estimates to size an attribute sample and allocate testing across components, and the evidence arrives at the accounting document's unit instead. Put shipping container for journal entry and damaged carton for tripped posting: the arithmetic still inverts, but nothing then says what the unit of observation ought to be, because only an audited population has a standard defining the item subject to the control, and nothing makes the container's internal composition recoverable, because only double-entry writes each source document as its own balanced set of lines.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task184": "architecture 2 made the decisive step a choice of estimation GROUPING, one clock across the five offence classes against one per class, which stumping 1.1c closes from both horns and whose judge failed it on Gate C at z = -4.29; and its step moved only the cap boundary, so its reader got seven of the eight slots (stumping 1.1d). Architecture 3 keeps the world, the pack, the ask layer and the latent-clock mechanism and changes what is estimated: the window's PLACEMENT is informative about the hour inside it, so the naive likelihood is misspecified rather than merely grouped at the wrong level, and the correction reorders the week globally instead of at the cap.",
-  "task464": "the shared axes are the generic ones (a population gap, no pattern, Gate G method selection, a ranked slate under a cap). task464 links two measurement SCALES: part of the population was read on an old instrument, a both-ways sample links the scales, and predicting each unit's new value by regression shrinks the converted spread so the tail past the cut is too thin. Nothing there is censored in time and nothing depends on an observer's routine; here each record's POSITION IN A CYCLE is known only within a window an observer's routine placed, so the correction is to the likelihood's censoring mechanism rather than to an attenuated scale, and the quantity reordered is a weekly profile rather than a tail count.",
-  "task184 v1 to v7": "Every earlier architecture in this slot ranked a slate under a cap and put the decisive step in where an event sits inside a censoring interval. This one grades a recovered count, has no cap and no slate, and its decisive step is the inversion of a saturating indicator, which no earlier architecture touched; the measured separation is a factor (47 per cent and 137 per cent against the golden), not a margin.",
-  "task202": "task202 is also gap population with method_or_model_selection on anomaly detection, but its unit problem is which rows belong in a denominator. Here every row belongs and the question is that the observation unit is a container of the decision's units, with a nonlinear map between them.",
-  "task187": "task187 also recovers a quantity the records understate, by decomposition across named causes. Here nothing is decomposed: one latent per-item rate is identified from the size distribution of the containers the indicator was recorded on.",
-  "task151": "task151 is also a quantity_figure on gap population with no pattern, but its decisive quantity is a stepped payout built as a sum of threshold-clearing probabilities over a season, and its difficulty is which comparison population the probabilities come from. Nothing here is stepped and no probability is summed over thresholds: one latent per-item rate is identified from the size distribution of the containers an indicator was recorded on, and the easy route fails by a factor because that indicator saturates."
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "fate": "spent 2026-10-14: judge SEND_BACK at the hardening (Gate C, the forward lanes are not filed, so the counterfactual arm is inferred from last summer; Gate G surface_read_rejection, the difficulty is the refusal of an official artifact). Shipped 10-12 as the single-layer version and left off the portal's approved list.",
-   "driver": "The decisive quantity is what a shared resource adds to a site, and both arms of that difference are taken from the site's own filed plan when the site's records show it never meets the plan: the untreated arm has to be read from what the site does on its own, and the shortfall its treated periods show against the plan has to be split into the part the resource caused and the part that was there anyway, so subtracting the whole shortfall while keeping the plan as the untreated arm, the obvious correction, ranks the sites wrongly too.",
-   "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (697,500 passengers moved within the standard); the step that lands it there is taking the roster pattern as the lanes that will be open on both arms of the comparison, when the checkpoints' own lane counts show seven of the eight opening fewer lanes at their banks than the pattern plans on every day of the summer, Eskerford two fewer, so the posting moves the most at Eskerford (342,200).",
-   "domain": "supply-chain-logistics",
-   "subdomain": "other",
-   "niche": "posting a national screening agency's one mobile screening unit to one of eight flagged airports for the summer, judged by the passengers it moves within the 20-minute queue standard, when host airports stand down their own lanes while the unit is there",
-   "shape": "13",
-   "decision_type": "pick_one_of_n",
-   "gap": [
+  "task": "task184",
+  "architecture": "v11 (architecture 11, re-root 2026-11-02: a new world, dataset, generator and shell in another client domain; a Lincolnshire broiler integrator's weekly avian influenza swabbing list in the 2026-27 prevention zone season, each farm's deaths split between the course its flocks' age and thinning set and what an infection killed)",
+  "drawn": "2026-11-02",
+  "slot_note": "re-root at stage 1: architecture 8 spent at the judge (SEND_BACK), the architecture 9 and 10 draw hunts closed on measurement; same number and objective, a client domain no architecture of this slot used",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a broiler integrator's flock health team choosing which contract farms it swabs for avian influenza in a prevention-zone week, when every flock dies along a course set by its age and by whether part of it was thinned out for the plant",
+  "objective": "anomaly-detection",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "objective",
-    "time"
-   ],
-   "pattern": [
+    "population"
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G1",
-    "G3"
-   ],
-   "gate_g": "decomposition_attribution",
-   "stump_strategy": "causal_design",
-   "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more."
+  ],
+  "generators": [
+    "G14",
+    "G3",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stakeholder_role": "head of flock health",
+  "role_family": "field_unit_lead",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "grower_daily_returns_2025-01_2027-02.csv",
+    "rows": 100000,
+    "entity": "one house's morning return: birds found dead, birds culled and water drunk since the previous morning",
+    "grain": "house x day",
+    "source": "synthetic"
   },
-  {
-   "architecture": "v2",
-   "fate": "spent 2026-10-25 on measurement, not on a portal result. Its judge failed Gate C (underspecified_objective) with Gate F strong and Gates G and H passing: one clock per offence class gives seven of the eight slots and a different eighth, totalling 4,866 a season against 5,705, at a likelihood ratio of per-class over pooled of 511.1 on 668 degrees of freedom, z = -4.29, so the data neither reject pooling nor prefer it. A blind reader then fitted per class unasked and filed 5,096.6 with the same two slots swapped, missing all seven call figures and taking 31.7 per cent of the asks (a pair of 29.4, under the 40 target). Closed by stumping 1.1c and 1.1d: a grouping choice is not drawable, and a step that bites only at the cap makes Gate F and Gate C the same margin.",
-   "driver": "The decisive quantity is a latent cyclical profile recovered from records that observe each event only as the interval it fell in, where the interval is the gap in the target's own inspection routine and its length varies systematically with the part of the cycle it covers, so the flat reading that spreads each event evenly across its own interval divides the busiest parts of the cycle across the longest intervals and the quietest across the shortest, and only the placement under which the recorded intervals are the likeliest set to have been recorded recovers the profile.",
-   "stump": "The default path spreads each occurrence window evenly over its own hours and commissions Friday 12:00 to 16:00, Thursday 20:00 to 00:00, Friday 00:00 to 04:00, Saturday 00:00 to 04:00, Friday 16:00 to 20:00, Thursday 16:00 to 20:00, Friday 20:00 to 00:00 and Sunday 20:00 to 00:00, filing 3,150 covered offences a season, when its eight meet only 4,250 of the golden's 5,700; the step that lands it there is reading the window as a claim that the offence is equally likely in each of its hours, when the window is the keeper's own closure and the closures covering the heaviest nights are the longest."
+  "forum": "operations_desk",
+  "forcing_event": "season_or_peak",
+  "org_family": "agriculture_or_food_producer",
+  "world": {
+    "geography": "Lincolnshire and the Norfolk fens, England",
+    "currency": "GBP",
+    "org_type": "broiler integrator with its own hatchery, feed mill and processing plant and about forty contract growers",
+    "invented_names": [
+      "Fosdyke Poultry"
+    ],
+    "people": [
+      "Annette Begum",
+      "Eileen Porter"
+    ]
   },
-  {
-   "architecture": "v3",
-   "fate": "spent 2026-10-26 on measurement, at the draw, never built. Architectures v3 to v7 were one family: a night-time patrol slate ranked under a cap, the decisive step a correction to where an offence sits inside the occurrence window the keeper's routine bounds. Every variant died on the same pair of horns (stumping 1.1c and 1.1h): where the data separate the placement rules the analyst reads the fit and Gate F fails, where they do not two placements are defensible and Gate C fails. The world was redrawn once, which bought the first monotone ladder in the slot (window start 0.29 to 0.44, midpoint 0.35 to 0.41, window end 0.48 to 0.51, flat aoristic 0.60 to 0.66, the field's own method 0.79 to 0.89, golden 1.00) and still left the decisive rung inside the licensed spread.",
-   "driver": "The decisive quantity is a per-period intensity recovered from records that fix each event only within an interval whose placement an observer's routine sets, so the interval carries information about where in it the event sits, and the obvious estimator, which spreads each event evenly across its own interval, ranks the periods wrongly because the intervals are longest exactly where nobody was watching.",
-   "stump": "Spread each offence evenly across its occurrence window and the slate takes the small hours; the step that lands it there is treating the window as uninformative about the hour inside it, when the window exists precisely because the keeper was away, so its length and its position both carry the hour.",
-   "domain": "criminology-justice",
-   "subdomain": "crime-incidence-hotspot-analysis",
-   "niche": "night-time economy hotspot patrol slate off offences the force records as an occurrence window rather than a time, the window being bounded by the keeper's own last look and first notice, so which hours the record can see at all is set by the keeper's routine",
-   "shape": "07",
-   "decision_type": "ranked_slate_under_cap",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G1",
-    "G7"
-   ],
-   "gate_g": "method_or_model_selection",
-   "stump_strategy": "informative_censoring",
-   "answer": ""
+  "deliverables": [
+    "swab_list_2027w07.xlsx",
+    "flock_health_brief_2027w07.pdf"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:flock-deaths-split-against-the-age-and-thinning-course",
+  "layer1": [
+    "two return channels across the year (the growers' app with birds found dead and culled per house, and the paper record sheets keyed in by the area managers with a single losses column and the house written as the grower names it)",
+    "house codes that differ between the farm register, the placement notes and the processing plant's receipts",
+    "hatchery delivery notes as PDF tables with chicks placed per house and the free chicks the hatchery adds",
+    "thinning and clearance loads in the plant's receipts by load, stamped by the plant's weighbridge clock",
+    "water meter readings that roll over and a meter replaced mid-flock",
+    "a cleanout gap between flocks with no returns, and a farm that changed grower"
+  ],
+  "driver": "Each unit's ordinary losses follow a course set by the age of its members and by whether part of the unit was taken out partway, which leaves the rest less crowded and losing less, a removal only a downstream receiving log records; read against the unit's own recent days the course flags every unit late in it and hides an intrusion in a young unit whose losses merely stop falling, read against one course pooled over thinned and unthinned units it flags the units never thinned and shrinks the intrusions in the thinned ones, and only the course conditioned on each unit's own removal history finds the intrusions.",
+  "driver_concrete": "A broiler flock's daily deaths fall through its first week and climb from about day 30, and a flock thinned for the plant at day 31 to 34 loses its remaining birds at about two thirds of the rate an unthinned flock of the same age does; the birds an avian influenza infection killed on a farm are its deaths over the five days less the deaths its flocks' own age and thinning history give on the company's earlier flocks, which brings in a farm whose week-old chicks merely stopped dying off and leaves out a farm whose unthinned flocks at day 37 die above a pooled course.",
+  "stump": "Read against each house's own previous week, the flock health team's test swabs the two farms with mid- and late-cycle infections and an uninfected farm whose unthinned flocks at day 37 are climbing, and misses the farm whose week-old flock was infected; an age course from the company's earlier flocks brings that farm in but still swabs the unthinned farm, because its course pools in the thinned flocks; the step that lands it is reading each flock's background on its own thinning history.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans both return channels, accounts for every bird placed, culled and thinned, and reads each farm's deaths over the five days against its houses' previous week (the field's increase-in-mortality test) swabs the two infected mid- and late-cycle farms plus an uninfected farm with climbing unthinned flocks and misses the infected week-old flock; one who builds an age course from the company's earlier flocks still swabs the unthinned farm.",
+  "domain_test": "The deciding quantity is the birds an avian influenza infection killed on each farm in the week, which veterinary epidemiology estimates as observed deaths less the deaths an uninfected flock of the same age and stocking history would have had, read from the company's own earlier flocks; with parcels or machines for birds there is no first-week loss falling day by day, no late loss climbing with crowding and no thinning that takes a third of a house to the plant and leaves the rest dying less.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task122": "task122 v4 prices a discretionary aid by comparing its working and idle minutes at like count and like mix of two kinds of unit present, a causal comparison whose confounder is the mix; this build has no aid, no on and off periods and no mix of kinds: it splits each farm's observed deaths into a background course and an intrusion, the background set by each flock's own age and its own removal history read from the plant's receiving log, and the call is which farms carry an intrusion."
   },
-  {
-   "architecture": "v8",
-   "fate": "spent 2026-10-26 at stage 4 on a judge SEND_BACK and on the isolated reader's own method, built in full. Separation was the best this slot has had (the flag count 0.50 times the golden, the grossed-up entry rate 1.95 times it, the golden within 0.34 per cent of clean truth, 108 generator and 244 verifier assertions green, two byte-identical builds, pair ceiling 36.3 measured on the cut pack, nearest driver 0.07). It died because the decisive step is an estimator and the grouping it is fitted over is a free choice the records do not settle: group, unit, and unit by stream give 14,712, 14,989 and 14,472, which is two bins. The reader also reached the estimator unaided in one pass. Filed as stumping 1.1j with 1.1i amended: dropping the ranking removes the cap boundary but does not make the decisive step uniquely executable. Architectures 9 and 10 were then refused at the draw on measurement, 9 on the joint-feasibility and inverse-probability families and 10 on the measurement-model family.",
-   "driver": "The decisive quantity is a latent population total recovered by inverting, per record, a known nonlinear observation map that saturates, so a count of the records the map marks understates the total and the understatement is largest where the map is nearest saturation.",
-   "stump": "Report the group's population exception count as the flag count the monitoring indicator carries, about half the golden, because the indicator saturates per entry and the entries it marks are not the entries that carry the exceptions."
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-14: judge SEND_BACK at the hardening (Gate C, the forward lanes are not filed, so the counterfactual arm is inferred from last summer; Gate G surface_read_rejection, the difficulty is the refusal of an official artifact). Shipped 10-12 as the single-layer version and left off the portal's approved list.",
+      "driver": "The decisive quantity is what a shared resource adds to a site, and both arms of that difference are taken from the site's own filed plan when the site's records show it never meets the plan: the untreated arm has to be read from what the site does on its own, and the shortfall its treated periods show against the plan has to be split into the part the resource caused and the part that was there anyway, so subtracting the whole shortfall while keeping the plan as the untreated arm, the obvious correction, ranks the sites wrongly too.",
+      "stump": "A competent solver runs the planning standard on each airport's 2027 design days and summer roster pattern with the unit's three lanes added and posts the unit to Cullinvale (697,500 passengers moved within the standard); the step that lands it there is taking the roster pattern as the lanes that will be open on both arms of the comparison, when the checkpoints' own lane counts show seven of the eight opening fewer lanes at their banks than the pattern plans on every day of the summer, Eskerford two fewer, so the posting moves the most at Eskerford (342,200).",
+      "domain": "supply-chain-logistics",
+      "subdomain": "other",
+      "niche": "posting a national screening agency's one mobile screening unit to one of eight flagged airports for the summer, judged by the passengers it moves within the 20-minute queue standard, when host airports stand down their own lanes while the unit is there",
+      "shape": "13",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G3"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "causal_design",
+      "answer": "Post the mobile screening unit to Eskerford from 15 June to 31 August 2027: it moves 342,200 passengers within the 20-minute standard, against 272,600 at Halloran Bay, and 13 per cent is the smallest whole per cent shortfall in Eskerford's forecast passengers at which another posting would move more."
+    },
+    {
+      "architecture": "v2",
+      "fate": "spent 2026-10-25 on measurement, not on a portal result. Its judge failed Gate C (underspecified_objective) with Gate F strong and Gates G and H passing: one clock per offence class gives seven of the eight slots and a different eighth, totalling 4,866 a season against 5,705, at a likelihood ratio of per-class over pooled of 511.1 on 668 degrees of freedom, z = -4.29, so the data neither reject pooling nor prefer it. A blind reader then fitted per class unasked and filed 5,096.6 with the same two slots swapped, missing all seven call figures and taking 31.7 per cent of the asks (a pair of 29.4, under the 40 target). Closed by stumping 1.1c and 1.1d: a grouping choice is not drawable, and a step that bites only at the cap makes Gate F and Gate C the same margin.",
+      "driver": "The decisive quantity is a latent cyclical profile recovered from records that observe each event only as the interval it fell in, where the interval is the gap in the target's own inspection routine and its length varies systematically with the part of the cycle it covers, so the flat reading that spreads each event evenly across its own interval divides the busiest parts of the cycle across the longest intervals and the quietest across the shortest, and only the placement under which the recorded intervals are the likeliest set to have been recorded recovers the profile.",
+      "stump": "The default path spreads each occurrence window evenly over its own hours and commissions Friday 12:00 to 16:00, Thursday 20:00 to 00:00, Friday 00:00 to 04:00, Saturday 00:00 to 04:00, Friday 16:00 to 20:00, Thursday 16:00 to 20:00, Friday 20:00 to 00:00 and Sunday 20:00 to 00:00, filing 3,150 covered offences a season, when its eight meet only 4,250 of the golden's 5,700; the step that lands it there is reading the window as a claim that the offence is equally likely in each of its hours, when the window is the keeper's own closure and the closures covering the heaviest nights are the longest."
+    },
+    {
+      "architecture": "v3",
+      "fate": "spent 2026-10-26 on measurement, at the draw, never built. Architectures v3 to v7 were one family: a night-time patrol slate ranked under a cap, the decisive step a correction to where an offence sits inside the occurrence window the keeper's routine bounds. Every variant died on the same pair of horns (stumping 1.1c and 1.1h): where the data separate the placement rules the analyst reads the fit and Gate F fails, where they do not two placements are defensible and Gate C fails. The world was redrawn once, which bought the first monotone ladder in the slot (window start 0.29 to 0.44, midpoint 0.35 to 0.41, window end 0.48 to 0.51, flat aoristic 0.60 to 0.66, the field's own method 0.79 to 0.89, golden 1.00) and still left the decisive rung inside the licensed spread.",
+      "driver": "The decisive quantity is a per-period intensity recovered from records that fix each event only within an interval whose placement an observer's routine sets, so the interval carries information about where in it the event sits, and the obvious estimator, which spreads each event evenly across its own interval, ranks the periods wrongly because the intervals are longest exactly where nobody was watching.",
+      "stump": "Spread each offence evenly across its occurrence window and the slate takes the small hours; the step that lands it there is treating the window as uninformative about the hour inside it, when the window exists precisely because the keeper was away, so its length and its position both carry the hour.",
+      "domain": "criminology-justice",
+      "subdomain": "crime-incidence-hotspot-analysis",
+      "niche": "night-time economy hotspot patrol slate off offences the force records as an occurrence window rather than a time, the window being bounded by the keeper's own last look and first notice, so which hours the record can see at all is set by the keeper's routine",
+      "shape": "07",
+      "decision_type": "ranked_slate_under_cap",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G7"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "informative_censoring",
+      "answer": ""
+    },
+    {
+      "architecture": "v8",
+      "fate": "spent 2026-10-26 at stage 4 on a judge SEND_BACK and on the isolated reader's own method, built in full. Separation was the best this slot has had (the flag count 0.50 times the golden, the grossed-up entry rate 1.95 times it, the golden within 0.34 per cent of clean truth, 108 generator and 244 verifier assertions green, two byte-identical builds, pair ceiling 36.3 measured on the cut pack, nearest driver 0.07). It died because the decisive step is an estimator and the grouping it is fitted over is a free choice the records do not settle: group, unit, and unit by stream give 14,712, 14,989 and 14,472, which is two bins. The reader also reached the estimator unaided in one pass. Filed as stumping 1.1j with 1.1i amended: dropping the ranking removes the cap boundary but does not make the decisive step uniquely executable. Architectures 9 and 10 were then refused at the draw on measurement, 9 on the joint-feasibility and inverse-probability families and 10 on the measurement-model family.",
+      "driver": "The decisive quantity is a latent population total recovered by inverting, per record, a known nonlinear observation map that saturates, so a count of the records the map marks understates the total and the understatement is largest where the map is nearest saturation.",
+      "stump": "Report the group's population exception count as the flag count the monitoring indicator carries, about half the golden, because the indicator saturates per entry and the entries it marks are not the entries that carry the exceptions."
+    },
+    {
+      "architecture": "v9 (draw hunt, never registered)",
+      "fate": "closed 2026-10-27 on measurement at the draw, nothing cut: three accounting-audit-forensic candidates (a joint-feasibility deficiency in depot fuel issues, a per-case inverse of a claim probability, a displacement pair a count calendar breaks), each dead on a measured dial, an identity or a guard BLOCK; the residue is that every one put the decisive step in the nonlinearity of a records-fixed count and the nonlinearity was either attained by a one-pass scan or financed by a parameter the records do not fix",
+      "driver": "The decisive quantity is the part of a records-fixed count that a nonlinear property of the records hides from a per-row test, recovered by a whole-population reconstruction (joint feasibility, a per-case inverse probability, a pairing across windows)."
+    },
+    {
+      "architecture": "v10 (draw hunt, never registered)",
+      "fate": "closed 2026-10-27 on measurement at the draw, nothing cut: a transformer hot-spot exposure from the IEC thermal model (the standard's own licensed variants worth 11 to 24 times the step, the bin test failing 5 of 5) and a river load integrated over a fitted concentration-discharge rating (the retransformation family 544.6 to 602.1 t, failing 3 of 5, a cheaper estimator nearer the truth at 2 of 5); filed as stumping 1.2c, the decisive step may not be priced by a model of the measurement",
+      "driver": "The decisive quantity is an unobserved exposure reconstructed by driving a measurement model with a fine-grain record, against counting the record's own crossings of a limit."
+    }
+  ],
+  "notes": "Re-root at stage 1 on 2026-11-02 into epidemiology-public-health after nine dead architectures across three worlds. The current card's identity (v8) is in the lineage with its fate; v9 and v10 never registered and are entered from the design note's measured kills so the screens see them.",
+  "lineage_shells": [
+    {
+      "architecture": "v8",
+      "question_form": "how-many",
+      "second_opener": "We",
+      "deliverable_set": "pdf+png+xlsx"
+    }
+  ],
+  "registered": "2026-11-02T22:04:31Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "we",
+    "rounding opener": "round",
+    "deliverable set": "pdf+png+xlsx"
   }
- ],
- "notes": "Re-root to architecture 3. New vocab value stump_strategies.informative_censoring: no existing key is honest. maturity_censoring is about an outcome not yet crystallised at the extract, while this is a window whose PLACEMENT depends on the hour inside it through the observer's routine, and it is blocked against task306 regardless; population_selection is about which units the records represent, not which positions within a unit's record are observable; other was architecture 2's own value and says nothing. layer2_family moves from estimation_fit to estimand_identification, because the profile is not identified from the windows alone without the notice process. v8 2026-10-26: re-rooted out of criminology into accounting after stumping 1.1i, which was filed from this slot's own measurements: a ranked slate forces Gate C and Gate F into conflict, a recovered quantity does not. stump_strategy grain_or_unit carries the three_rules.strategy_risk WARN; answered in the design note's Readability screen and Three rules, since the entry grain is plainly labelled and the solver reads it right, and what defeats the easy route is that rescaling from the voucher to the posting is not a division.",
- "registered": "2026-10-25T02:21:35Z",
- "client_domain": "banking-credit-financial-risk",
- "architecture_spent": true
 }
