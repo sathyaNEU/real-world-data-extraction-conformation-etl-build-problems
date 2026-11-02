@@ -1,82 +1,52 @@
-"""task304 architecture 4: fixed parameters of the world (Brolga Parcel Network's sortation hubs)."""
+"""task304 architecture 5: fixed parameters of the world (Ardleshire's principal road network and its 2026 junction
+screening, the 2027 Junction Safety Fund bid, and the county's 2026 provisional police data)."""
 import datetime as dt
 
 SEED = 304
 
-# The reference weeks the undertaking's schedule names: shifts that began 12 October to 8 November 2026.
-REF_START = dt.date(2026, 10, 12)
-REF_END = dt.date(2026, 11, 8)
-# The sorter control system export covers two weeks before the reference weeks as well.
-LOG_START = dt.date(2026, 9, 28)
-LOG_END = dt.date(2026, 11, 8)
-EXPORT_DATE = dt.date(2026, 11, 16)
-AS_OF = dt.date(2026, 11, 27)
+YEARS = list(range(2016, 2027))          # traffic estimates run to 2026
+REC_YEARS = list(range(2016, 2026))      # the validated collision record the county keeps (2016 to 2025)
+WINDOW = list(range(2021, 2026))         # the fund's record: the validated years 2021 to 2025
+PRESENT = 2026                           # the fund's "2026 traffic"
+SCREEN_MIN = 12                          # the county's 2026 screening: 12 or more injury collisions in 2021 to 2025
 
-SHIFTS = {"AM": 5, "PM": 13, "NT": 21}     # local start hour; every shift is eight hours
-SHIFT_HOURS = 8.0
-BREAK_HOURS = 1.0                          # two 15-minute breaks and a 30-minute meal, taken in the amenities
-MEAL_AT = 3.75                             # hours after shift start the line stops for the 30-minute meal
-MEAL_LEN = 0.5
-STANDARD = 85.0                            # dB(A), LAeq,8h exposure standard
-PROGRAM_COST_AUD = 438                     # the hearing program's annual cost per enrolled worker (undertaking 4.3)
+AS_OF = dt.date(2026, 12, 4)             # the bid is being written; it closes 29 January 2027
+BID_CLOSES = dt.date(2027, 1, 29)
 
-# Hubs. Li: induct-area LAeq before; Lp: induct-area LAeq the supplier predicts after the enclosure;
-# Lf: sort and dock floor; La: amenities (meal room). Levels are the 2026 survey's, to 0.1 dB.
-HUBS = [
-    dict(code="LAR", name="Larapinta", city="Brisbane", state="QLD", tz="Australia/Brisbane", vendor="V1",
-         stations=16, Li=93.6, Lp=84.1, Lf=81.9, La=64.6, scheme="dedicated",
-         loaders=46, sorters=30, forklift=5, leads=2, agency=7, spares=4),
-    dict(code="ECR", name="Eastern Creek", city="Sydney", state="NSW", tz="Australia/Sydney", vendor="V1",
-         stations=20, Li=96.6, Lp=88.2, Lf=82.8, La=65.3, scheme="am_rotation",
-         loaders=58, sorters=36, forklift=6, leads=2, agency=10, spares=6),
-    dict(code="TRU", name="Truganina", city="Melbourne", state="VIC", tz="Australia/Melbourne", vendor="V2",
-         stations=12, Li=95.1, Lp=84.4, Lf=81.4, La=63.9, scheme="sorter_relief",
-         loaders=30, sorters=40, forklift=4, leads=2, agency=6, spares=4),
-    dict(code="WFD", name="Wingfield", city="Adelaide", state="SA", tz="Australia/Adelaide", vendor="V3",
-         stations=10, Li=91.4, Lp=82.9, Lf=80.6, La=63.4, scheme="break_buddies",
-         loaders=40, sorters=22, forklift=4, leads=1, agency=5, spares=3),
-    dict(code="KEW", name="Kewdale", city="Perth", state="WA", tz="Australia/Perth", vendor="V2",
-         stations=12, Li=94.9, Lp=86.4, Lf=81.8, La=64.8, scheme="half_shift",
-         loaders=34, sorters=24, forklift=4, leads=2, agency=6, spares=4),
-    dict(code="BFD", name="Beresfield", city="Newcastle", state="NSW", tz="Australia/Sydney", vendor="V3",
-         stations=8, Li=92.9, Lp=84.0, Lf=81.3, La=64.1, scheme="agency_pm",
-         loaders=22, sorters=16, forklift=3, leads=1, agency=8, spares=3),
+DISTRICTS = ["Ardle Vale", "Brindham", "Kestermoor"]
+
+# The fund's crash modification factors for a roundabout replacing a give-way or stop-controlled junction (guidance
+# Table 2): injury collisions after = factor x injury collisions before.
+CMF = {"X": 0.52, "T": 0.70, "ST": 0.70}
+
+# Truth: safety performance by layout (injury collisions a year), ln mu = b0 + b1 ln(major AADT) + b2 ln(minor AADT)
+SPF = {"T": (-9.30, 0.64, 0.31), "ST": (-9.22, 0.64, 0.31), "X": (-8.85, 0.64, 0.36),
+       "MR": (-9.05, 0.62, 0.33), "RB": (-9.60, 0.66, 0.28), "SIG": (-8.70, 0.60, 0.30)}
+K_TRUE = 0.24                            # junction-to-junction spread beyond chance (gamma variance)
+YEAR_FACTOR = {2016: 1.07, 2017: 1.05, 2018: 1.03, 2019: 1.02, 2020: 0.80, 2021: 0.94,
+               2022: 1.0, 2023: 1.0, 2024: 1.0, 2025: 1.0, 2026: 1.0}
+
+# Network size by layout and control (give-way or stop for T, ST, X)
+N_LAYOUT = {"T": 318, "ST": 41, "X": 117, "MR": 38, "RB": 57, "SIG": 34}
+
+# The six junctions the 2026 screening lists (designed; their 2021 to 2025 counts are their own records).
+# name, district, layout, control, major road, minor road, major AADT 2026, minor AADT 2026, theta, counts 2021..2025
+CANDIDATES = [
+    ("Saxby Cross", "Kestermoor", "X", "GW", "B4419 Saxby Road", "Holt Lane", 5150, 1480, 2.55, [4, 3, 5, 5, 4]),
+    ("Tollgate Crossroads", "Brindham", "X", "STOP", "A6118 Brindham Road", "Tollgate Road", 20800, 3950, 0.62, [2, 3, 2, 2, 3]),
+    ("Mill Lane Crossroads", "Ardle Vale", "X", "GW", "A5207 Ardle Road", "B4421 Mill Lane", 13600, 3550, 1.27, [4, 4, 3, 4, 3]),
+    ("Church Street Junction", "Kestermoor", "X", "GW", "B4433 Kestermoor Road", "Church Street", 9700, 2280, 1.55, [3, 2, 3, 3, 3]),
+    ("Fen Lane Junction", "Brindham", "T", "GW", "A6118 Station Road", "Fen Lane", 12100, 3800, 1.90, [3, 3, 2, 3, 2]),
+    ("Coppice Way Junction", "Ardle Vale", "ST", "GW", "A5207 London Road", "Coppice Way", 17400, 3300, 1.10, [3, 2, 2, 3, 2]),
 ]
 
-# Job titles as each hub's HR records write them.
-TITLES = {
-    "LAR": dict(induct="Inductor", relief="Relief Inductor", loader="Loader", sorter="Sort Operator",
-                forklift="Forklift Driver", lead="Team Leader"),
-    "ECR": dict(induct="Induction Operator", relief="Induction Relief", loader="Loader", sorter="Sort Operator",
-                forklift="Forklift Operator", lead="Shift Lead"),
-    "TRU": dict(induct="Sorter - Induct", relief="Sorter - Relief", loader="Dock Operator", sorter="Sorter - Chute",
-                forklift="MHE Driver", lead="Team Leader"),
-    "WFD": dict(induct="Inductor", relief=None, loader="Loader", sorter="Floor Operator",
-                forklift="Forklift Driver", lead="Team Leader"),
-    "KEW": dict(induct="Inductor", relief="Relief Inductor", loader="Loader", sorter="Sort Operator",
-                forklift="Forklift Driver", lead="Team Leader"),
-    "BFD": dict(induct="Induction Operator", relief=None, loader="Loader", sorter="Sort Operator",
-                forklift="Forklift Operator", lead="Shift Lead"),
-}
+# Collisions away from junctions and at junction types the record keeps, per year (validated record)
+LINK_COLLISIONS = 1980                    # non-junction injury collisions a year, about
+SEVERITY_SHARE = (0.016, 0.205, 0.779)    # fatal, serious, slight
 
-ABSENCE = 0.07          # chance an employee is off (leave or sick) on a rostered shift
-AGENCY_SHOW = 0.80      # chance a labour-hire operative on a hub's call list works a given shift
-
-# ---- ask A: the PPE vending supplier's machines (July to September 2026)
-VEND_START = dt.date(2026, 7, 1)
-VEND_END = dt.date(2026, 9, 30)
-PAIRS_PER_WORKER_SHIFT = 0.36
-VEND_SEED = 315
-RANGE_CHANGE_SUNDAYS = (dt.date(2026, 8, 2), dt.date(2026, 8, 9))   # EP-01 moves from one pair to a pack of five
-EP_PACK_AFTER = 5
-# machine swaps between hubs: (date the machine leaves, days offline, (hub_a, hub_b))
-RELOCATIONS = [
-    (dt.date(2026, 8, 15), ("ECR", "WFD")), (dt.date(2026, 8, 15), ("LAR", "BFD")), (dt.date(2026, 8, 15), ("TRU", "KEW")),
-    (dt.date(2026, 9, 12), ("ECR", "KEW")), (dt.date(2026, 9, 12), ("LAR", "WFD")), (dt.date(2026, 9, 12), ("TRU", "BFD")),
-]
-
-# ---- ask B: audiometry (the program enrols the induct titles and team leaders)
-AUDIO_YEAR = 2026
-AUDIO_EXPORT = dt.date(2026, 11, 6)        # ClearTone's client list export
-STS_DB = 10.0           # average worsening at 2, 3 and 4 kHz in either ear
-RETEST_DAYS = 30
+# 2026 provisional data (the annex asks)
+PROV_START = dt.date(2026, 1, 1)
+PROV_END = dt.date(2026, 9, 30)
+MIGRATION = dt.date(2026, 6, 1)           # the force's new collision system went live
+RESEND_SHARE = 0.065                      # pre-migration collisions amended after go-live, re-sent under new references
+TRUNK_SHARE = 0.055                       # provisional collisions on trunk roads (national highway authority)

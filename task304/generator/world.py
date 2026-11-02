@@ -1,313 +1,311 @@
-"""task304 architecture 4: the clean truth.
-
-Brolga Parcel Network's six sortation hubs, their workforce, who worked which shift, who staffed which induct
-station when (the sorter control system's operator sessions), and each worker's noise exposure computed from the
-time they actually spent at induct. Nothing here is mess: pack.py writes the files the organisation keeps.
-"""
+"""task304 architecture 5: the clean truth of Ardleshire's road network. Junction nodes with traffic by year, injury
+collisions 2016 to 2025 from a safety performance by layout and each junction's own spread beyond chance, the six
+junctions the 2026 screening lists, and the county's 2026 provisional collisions with their casualties and vehicles.
+Everything downstream (pack, analysis, checks) reads from here or from target/; nothing here is written for a reader."""
 import datetime as dt
-import math
-import zoneinfo
 from collections import defaultdict
 
 import numpy as np
-import pandas as pd
-from faker import Faker
 
 import params as P
 
+FIRST = ["Alan", "Brian", "Carol", "Diane", "Edward", "Fiona", "Gareth", "Helen", "Ian", "Janet", "Keith", "Linda"]
+MINOR_NAMES = ["Mill Lane", "Church Street", "Station Road", "Fen Lane", "Holt Lane", "Coppice Way", "Tollgate Road",
+               "Back Lane", "Moor Road", "Park Lane", "School Lane", "Green Lane", "Chapel Street", "Main Street",
+               "Grange Road", "Hall Lane", "Westfield Road", "Brook Street", "Manor Road", "Kiln Lane", "Pinfold Lane",
+               "Sandy Lane", "Ings Lane", "Carr Lane", "Field Lane", "Wold Road", "Low Road", "High Street",
+               "Bridge Street", "Mere Lane", "Common Lane", "Hollow Lane", "Barn Close", "Priory Road", "Long Lane",
+               "Cross Lane", "Gravel Pit Lane", "Thorn Lane", "Ash Grove", "Willow Road", "Beck Lane", "Marsh Lane"]
+A_ROADS = [("A5207", "Ardle Road"), ("A5207", "London Road"), ("A6118", "Brindham Road"), ("A6118", "Station Road"),
+           ("A4560", "Kestermoor Road"), ("A5340", "Hessle Road"), ("A6075", "Sutton Road"), ("A4600", "Ardle Bypass"),
+           ("A6510", "Wold Road")]
+B_ROADS = [("B4419", "Saxby Road"), ("B4421", "Mill Lane"), ("B4433", "Kestermoor Road"), ("B4450", "Thorpe Road"),
+           ("B4467", "Ings Road"), ("B4480", "Carlby Road"), ("B4492", "Hollin Road"), ("B4512", "Stow Road")]
+TRUNK = {"A4600": (452000, 470000), "A6510": None}     # A6510 trunk throughout; A4600 trunk west of easting 470000
+#                                                          (the section east of it was detrunked to the county in 2019)
+DISTRICT_BOX = {"Ardle Vale": (440000, 456000), "Brindham": (456000, 470000), "Kestermoor": (470000, 486000)}
 
-def lex(t_induct, Li, Lf, La, work=7.0, brk=1.0):
-    """LAeq,8h of a shift with t_induct hours at the induct line, the rest of the working time on the floor and the
-    breaks in the amenities."""
-    t = min(max(t_induct, 0.0), work)
-    e = t * 10 ** (Li / 10) + (work - t) * 10 ** (Lf / 10) + brk * 10 ** (La / 10)
-    return 10 * math.log10(e / P.SHIFT_HOURS)
+
+def district_of(e):
+    for d, (lo, hi) in DISTRICT_BOX.items():
+        if lo <= e < hi:
+            return d
+    return "Kestermoor"
 
 
-def weekdays(a, b):
-    d, out = a, []
-    while d <= b:
-        if d.weekday() < 5:
-            out.append(d)
-        d += dt.timedelta(days=1)
-    return out
+def is_trunk(road, easting):
+    if road not in TRUNK:
+        return False
+    span = TRUNK[road]
+    return True if span is None else (span[0] <= easting < span[1])
 
 
 class World:
     def __init__(self, seed=P.SEED):
         self.rng = np.random.default_rng(seed)
-        self.fake = Faker("en_AU")
-        Faker.seed(seed)
-        self.hubs = {h["code"]: h for h in P.HUBS}
-        self.days = weekdays(P.LOG_START, P.LOG_END)
-        self.people = []        # dicts: pid, kind (EMP/LH/CON), hub, title, team, group
-        self.shifts = []        # dicts: pid, hub, date, shift, status (WORKED/LEAVE/SICK)
-        self.sessions = []      # dicts: hub, station_no, pid, start_local(datetime naive), end_local, end_type
-        self._names = set()
-        self.cover_count = defaultdict(int)
-        self._build_people()
-        self._build_days()
+        self.junctions = []
+        self._network()
+        self._counts()
+        self.collisions = []
+        self._records()
+        self.prov = []
+        self._provisional()
 
-    # ------------------------------------------------------------------ people
-    def _name(self):
-        while True:
-            n = "%s %s" % (self.fake.first_name(), self.fake.last_name())
-            if n not in self._names:
-                self._names.add(n)
-                return n
-
-    def _add(self, **kw):
-        kw["pid"] = len(self.people)
-        kw["name"] = self._name()
-        self.people.append(kw)
-        return kw["pid"]
-
-    def _build_people(self):
+    # ---------------- network
+    def _network(self):
         rng = self.rng
-        self.teams = defaultdict(lambda: defaultdict(list))   # hub -> (team, group) -> [pid]
-        relief_count = {"LAR": 2, "ECR": 2, "TRU": 1, "WFD": 0, "KEW": 2, "BFD": 0}
-        for code, h in self.hubs.items():
-            T = P.TITLES[code]
-            for team in ("AM", "PM", "NT"):
-                n_ind = h["stations"] + h["spares"]
-                for _ in range(n_ind):
-                    pid = self._add(kind="EMP", hub=code, title=T["induct"], team=team, group="induct")
-                    self.teams[code][(team, "induct")].append(pid)
-                for _ in range(relief_count[code]):
-                    pid = self._add(kind="EMP", hub=code, title=T["relief"], team=team, group="relief")
-                    self.teams[code][(team, "relief")].append(pid)
-                # rotation and cover groups drawn from the floor titles
-                rot = {"am_rotation": ("loader", 30 if team == "AM" else 0),
-                       "sorter_relief": ("sorter", 6),
-                       "break_buddies": ("loader", 24),
-                       "half_shift": ("loader", h["stations"] + 4),
-                       "dedicated": ("loader", 0),
-                       "agency_pm": ("loader", 0)}[h["scheme"]]
-                n_load = h["loaders"] + int(rng.integers(-3, 4))
-                n_sort = h["sorters"] + int(rng.integers(-2, 3))
-                for i in range(n_load):
-                    grp = "rotation" if (rot[0] == "loader" and i < rot[1]) else "floor"
-                    pid = self._add(kind="EMP", hub=code, title=T["loader"], team=team, group=grp)
-                    self.teams[code][(team, grp)].append(pid)
-                for i in range(n_sort):
-                    grp = "rotation" if (rot[0] == "sorter" and i < rot[1]) else "floor"
-                    pid = self._add(kind="EMP", hub=code, title=T["sorter"], team=team, group=grp)
-                    self.teams[code][(team, grp)].append(pid)
-                for _ in range(h["forklift"]):
-                    pid = self._add(kind="EMP", hub=code, title=T["forklift"], team=team, group="floor")
-                    self.teams[code][(team, "floor")].append(pid)
-                for _ in range(h["leads"]):
-                    grp = "lead_relief" if h["scheme"] == "agency_pm" else "lead"
-                    pid = self._add(kind="EMP", hub=code, title=T["lead"], team=team, group=grp)
-                    self.teams[code][(team, grp)].append(pid)
-                # labour-hire operatives on the hub's call list for this shift
-                n_ag = h["agency"] + (6 if (h["scheme"] == "agency_pm" and team == "PM") else 0)
-                for i in range(n_ag):
-                    grp = "agency_induct" if (h["scheme"] == "agency_pm" and team == "PM" and i < 13) else "agency_floor"
-                    agency = "Tasman Workforce" if rng.random() < 0.6 else "Meridian Labour Hire"
-                    pid = self._add(kind="LH", hub=code, title="Operative", team=team, group=grp, agency=agency)
-                    self.teams[code][(team, grp)].append(pid)
-
-    # ------------------------------------------------------------------ days
-    def _present(self, pids, show):
-        rng = self.rng
-        return [p for p in pids if rng.random() < show]
-
-    def _build_days(self):
-        rng = self.rng
-        # a week of annual leave for some employees, inside the log window
-        leave_week = {}
-        for p in self.people:
-            if p["kind"] == "EMP" and rng.random() < 0.18:
-                wk = int(rng.integers(0, 6))
-                leave_week[p["pid"]] = wk
-        for code, h in self.hubs.items():
-            for d in self.days:
-                wk = (d - P.LOG_START).days // 7
-                for team in ("AM", "PM", "NT"):
-                    groups = self.teams[code]
-                    present = {}
-                    for (tm, grp), pids in groups.items():
-                        if tm != team:
-                            continue
-                        keep = []
-                        for pid in pids:
-                            person = self.people[pid]
-                            if person["kind"] == "EMP":
-                                if leave_week.get(pid) == wk:
-                                    self.shifts.append(dict(pid=pid, hub=code, date=d, shift=team, status="LEAVE"))
-                                    continue
-                                if rng.random() < P.ABSENCE:
-                                    self.shifts.append(dict(pid=pid, hub=code, date=d, shift=team, status="SICK"))
-                                    continue
-                                self.shifts.append(dict(pid=pid, hub=code, date=d, shift=team, status="WORKED"))
-                                keep.append(pid)
-                            else:
-                                if rng.random() < P.AGENCY_SHOW:
-                                    self.shifts.append(dict(pid=pid, hub=code, date=d, shift=team, status="WORKED"))
-                                    keep.append(pid)
-                        present[grp] = keep
-                    self._staff_shift(code, h, d, team, present)
-
-    def _t(self, d, team, minutes):
-        start = dt.datetime(d.year, d.month, d.day, P.SHIFTS[team])
-        return start + dt.timedelta(minutes=float(minutes))
-
-    def _sess(self, code, st, pid, d, team, a, b, end_type="OPERATOR"):
-        rng = self.rng
-        ja = float(rng.uniform(0.2, 3.5))
-        jb = float(rng.uniform(-2.5, 0.5))
-        start = self._t(d, team, a + ja)
-        end = self._t(d, team, b + jb)
-        if end_type == "AUTO":
-            end = self._t(d, team, b + 10.0)
-        self.sessions.append(dict(hub=code, station_no=st, pid=pid, start=start, end=end, end_type=end_type))
-
-    def _staff_shift(self, code, h, d, team, pres):
-        rng = self.rng
-        n = h["stations"]
-        meal_a, meal_b = P.MEAL_AT * 60, (P.MEAL_AT + P.MEAL_LEN) * 60
-        scheme = h["scheme"]
-        ind = list(pres.get("induct", []))
-        rng.shuffle(ind)
-        rotation = list(pres.get("rotation", []))
-        rng.shuffle(rotation)
-        primaries = ind[:n]
-        floor_loaders = [p for p in pres.get("floor", []) if self.people[p]["title"] == P.TITLES[code]["loader"]]
-        rng.shuffle(floor_loaders)
-        # cover is shared out: the loader who has covered least so far goes first
-        floor_loaders.sort(key=lambda p: self.cover_count[p])
-        if len(primaries) < n:      # a short induct team is covered from the rotation group, then off the floor
-            need = n - len(primaries)
-            if scheme in ("am_rotation", "sorter_relief") and rotation:
-                take = rotation[:need]
-                rotation = rotation[need:]
-                primaries += take
-                need -= len(take)
-            for p in floor_loaders[:need]:
-                self.cover_count[p] += 1
-            primaries += floor_loaders[:need]
-            floor_loaders = floor_loaders[need:]
-        if scheme == "half_shift" and len(rotation) < n:   # a short rotation group is made up from the floor
-            need = n - len(rotation)
-            for p in floor_loaders[:need]:
-                self.cover_count[p] += 1
-            rotation += floor_loaders[:need]
-            floor_loaders = floor_loaders[need:]
-        # break slots: two 15-minute breaks per station, first in the first half, second in the second half
-        b1 = [60 + 15 * (k % 10) + 5 * (k // 10) for k in range(n)]
-        b2 = [270 + 15 * (k % 12) + 5 * (k // 12) for k in range(n)]
-        relief = list(pres.get("relief", []))
-        lead_relief = list(pres.get("lead_relief", []))
-        buddies = list(pres.get("rotation", [])) if scheme == "break_buddies" else []
-        rng.shuffle(buddies)
-        ag_ind = list(pres.get("agency_induct", []))
-        rng.shuffle(ag_ind)
-        auto_end = rng.random() < 0.35
-        for k in range(n):
-            op = primaries[k]
-            # the station's run of the shift for its primary, with its two breaks and the meal stop
-            blocks = []
-            if scheme == "half_shift":
-                partner = rotation[k] if k < len(rotation) else None
-                first_half = (d.toordinal() + k) % 2 == 0
-                a_op, b_op = (op, partner) if first_half else (partner, op)
-                if a_op is None:
-                    a_op = op
-                if b_op is None:
-                    b_op = op
-                blocks = [(a_op, 0, b1[k]), (a_op, b1[k] + 15, meal_a), (b_op, meal_b, b2[k]), (b_op, b2[k] + 15, 480)]
-            elif scheme == "am_rotation" and team == "AM" and k < len(rotation):
-                r = rotation[k]
-                ra, rb = (120, 210) if k % 2 == 0 else (300, 390)
-                if ra < b1[k] < rb or ra < b2[k] < rb:
-                    ra, rb = (300, 390) if ra == 120 else (120, 210)
-                segs = sorted([(0, b1[k]), (b1[k] + 15, meal_a), (meal_b, b2[k]), (b2[k] + 15, 480)])
-                for a, b in segs:
-                    if b <= ra or a >= rb:
-                        blocks.append((op, a, b))
-                    else:
-                        if a < ra:
-                            blocks.append((op, a, ra))
-                        blocks.append((r, max(a, ra), min(b, rb)))
-                        if b > rb:
-                            blocks.append((op, rb, b))
-            elif scheme == "sorter_relief" and rotation:
-                r = rotation[(k // 3) % len(rotation)] if (k // 3) < len(rotation) else None
-                ra = 60 + 60 * (k % 3) if k % 2 == 0 else 270 + 60 * (k % 3)
-                rb = ra + 60
-                segs = sorted([(0, b1[k]), (b1[k] + 15, meal_a), (meal_b, b2[k]), (b2[k] + 15, 480)])
-                for a, b in segs:
-                    if r is None or b <= ra or a >= rb:
-                        blocks.append((op, a, b))
-                    else:
-                        if a < ra:
-                            blocks.append((op, a, ra))
-                        blocks.append((r, max(a, ra), min(b, rb)))
-                        if b > rb:
-                            blocks.append((op, rb, b))
-            elif scheme == "agency_pm" and team == "PM" and k < len(ag_ind):
-                ag = ag_ind[k]
-                blocks = [(op, 0, b1[k]), (op, b1[k] + 15, meal_a), (ag, meal_b, b2[k]), (ag, b2[k] + 15, 480)]
+        jid = 100
+        used = set()
+        layouts = []
+        for lay, n in P.N_LAYOUT.items():
+            layouts += [lay] * n
+        order = rng.permutation(len(layouts))
+        for k in order:
+            lay = layouts[k]
+            jid += int(rng.integers(1, 6))
+            e = int(rng.integers(441000, 485000))
+            n_ = int(rng.integers(291000, 329000))
+            if lay in ("RB", "SIG"):
+                maj = float(np.exp(rng.normal(np.log(11000), 0.45)))
             else:
-                blocks = [(op, 0, b1[k]), (op, b1[k] + 15, meal_a), (op, meal_b, b2[k]), (op, b2[k] + 15, 480)]
-            for who, a, b in blocks:
-                if b - a < 4:
-                    continue
-                et = "OPERATOR"
-                if (b == meal_a or b == 480) and auto_end and rng.random() < 0.5:
-                    et = "AUTO"
-                self._sess(code, k + 1, who, d, team, a, b, et)
-            # break cover
-            for (ba, bb) in ((b1[k], b1[k] + 15), (b2[k], b2[k] + 15)):
-                if scheme == "break_buddies":
-                    who = buddies[(2 * k + (0 if ba == b1[k] else 1)) % len(buddies)] if buddies else op
-                elif scheme == "agency_pm" or (not relief):
-                    who = lead_relief[k % len(lead_relief)] if lead_relief else None
+                maj = float(np.exp(rng.normal(np.log(6300), 0.55)))
+            maj = min(max(maj, 1400.0), 29000.0)
+            mmed = {"T": 900, "ST": 1000, "X": 1250}.get(lay, 2600)
+            mnr = min(max(float(np.exp(rng.normal(np.log(mmed), 0.65))), 140.0), 0.72 * maj)
+            if maj >= 7500 or lay in ("RB", "SIG"):
+                road = A_ROADS[int(rng.integers(0, len(A_ROADS)))]
+            else:
+                road = B_ROADS[int(rng.integers(0, len(B_ROADS)))] if rng.random() < 0.6 else (
+                    "C%d" % int(rng.integers(101, 399)), MINOR_NAMES[int(rng.integers(0, len(MINOR_NAMES)))])
+            minor = MINOR_NAMES[int(rng.integers(0, len(MINOR_NAMES)))]
+            name = "%s / %s" % (road[1], minor)
+            while name in used:
+                minor = MINOR_NAMES[int(rng.integers(0, len(MINOR_NAMES)))]
+                name = "%s / %s" % (road[1], minor)
+            used.add(name)
+            ctrl = {"RB": "RBT", "MR": "RBT", "SIG": "SIG"}.get(lay, "STOP" if rng.random() < 0.12 else "GW")
+            growth = np.cumprod(np.r_[1.0, 1 + rng.normal(0.007, 0.010, len(P.YEARS) - 1)])
+            growth = growth / growth[P.YEARS.index(P.PRESENT)]
+            self.junctions.append(dict(node="J%04d" % jid, name=name, layout=lay, control=ctrl, road=road[0],
+                                       road_name=road[1], minor=minor, easting=e, northing=n_, district=district_of(e),
+                                       maj=maj * growth, mnr=mnr * growth * (1 + rng.normal(0, 0.01)),
+                                       theta=float(rng.gamma(1 / P.K_TRUE, P.K_TRUE)), cand=None))
+        # the six screened junctions
+        for (name, dist, lay, ctrl, major, minor, maj26, mnr26, theta, rec) in P.CANDIDATES:
+            jid += int(rng.integers(1, 6))
+            lo, hi = DISTRICT_BOX[dist]
+            e = int(rng.integers(lo + 1500, hi - 1500))
+            n_ = int(rng.integers(293000, 327000))
+            growth = np.cumprod(np.r_[1.0, 1 + rng.normal(0.007, 0.006, len(P.YEARS) - 1)])
+            growth = growth / growth[P.YEARS.index(P.PRESENT)]
+            road_no, road_name = major.split(" ", 1)
+            self.junctions.append(dict(node="J%04d" % jid, name=name, layout=lay, control=ctrl, road=road_no,
+                                       road_name=road_name, minor=minor, easting=e, northing=n_, district=dist,
+                                       maj=maj26 * growth, mnr=mnr26 * growth, theta=theta, cand=name, rec=list(rec)))
+        # nodes that existed before the 2019 recode carry a former number
+        for j in self.junctions:
+            j["former"] = "N%04d" % (int(j["node"][1:]) * 3 + 211) if self.rng.random() < 0.93 else ""
+
+    def mu(self, j, year):
+        b0, b1, b2 = P.SPF[j["layout"]]
+        t = P.YEARS.index(year)
+        return float(np.exp(b0 + b1 * np.log(j["maj"][t]) + b2 * np.log(j["mnr"][t]))) * P.YEAR_FACTOR[year]
+
+    def _counts(self):
+        rng = self.rng
+        win = P.WINDOW
+        for j in self.junctions:
+            for attempt in range(60):
+                n = {y: int(rng.poisson(self.mu(j, y) * j["theta"])) for y in P.REC_YEARS + [2026]}
+                if j["cand"]:
+                    for y, c in zip(win, j["rec"]):
+                        n[y] = c
+                    break
+                ref = j["layout"] in ("T", "ST", "X")
+                if not ref or sum(n[y] for y in win) < P.SCREEN_MIN:
+                    break
+                j["theta"] = float(rng.gamma(1 / P.K_TRUE, P.K_TRUE))
+            j["n"] = n
+
+    def reference(self):
+        """Give-way or stop-controlled T, staggered and crossroads junctions: the screening's population."""
+        return [j for j in self.junctions if j["layout"] in ("T", "ST", "X") and j["control"] in ("GW", "STOP")]
+
+    def candidates(self):
+        return [j for j in self.junctions if j["cand"]]
+
+    # ---------------- validated collision records 2016 to 2025
+    def _when(self, year):
+        rng = self.rng
+        start = dt.date(year, 1, 1)
+        days = (dt.date(year + 1, 1, 1) - start).days
+        d = start + dt.timedelta(days=int(rng.integers(0, days)))
+        hour = int(rng.choice(np.arange(24), p=HOUR_P))
+        return d, hour, int(rng.integers(0, 60))
+
+    def _severity(self):
+        r = self.rng.random()
+        return 1 if r < P.SEVERITY_SHARE[0] else (2 if r < P.SEVERITY_SHARE[0] + P.SEVERITY_SHARE[1] else 3)
+
+    def _records(self):
+        rng = self.rng
+        recs = []
+        for j in self.junctions:
+            for y in P.REC_YEARS:
+                for _ in range(j["n"][y]):
+                    d, h, m = self._when(y)
+                    recs.append(self._collision(d, h, m, j=j))
+        for y in P.REC_YEARS:
+            nl = int(rng.poisson(P.LINK_COLLISIONS * P.YEAR_FACTOR[y]))
+            for _ in range(nl):
+                d, h, m = self._when(y)
+                recs.append(self._collision(d, h, m, j=None))
+        recs.sort(key=lambda r: (r["date"], r["hour"], r["minute"], r["easting"]))
+        seq = defaultdict(int)
+        for r in recs:
+            y = r["date"].year
+            seq[y] += int(rng.integers(1, 4))
+            r["ref"] = ("AR/%02d/%06d" % (y % 100, 4000 + seq[y] * 7)) if y < 2020 else ("%d/47/%07d" % (y, 1200 + seq[y] * 5))
+        self.collisions = recs
+
+    def _collision(self, d, h, m, j=None):
+        rng = self.rng
+        if j is not None:
+            e = j["easting"] + int(rng.integers(-14, 15))
+            n_ = j["northing"] + int(rng.integers(-14, 15))
+            road1, road2 = j["road"], (j["minor"] if not j["minor"].startswith("B") else j["minor"].split(" ")[0])
+            jd = {"T": 3, "ST": 3, "X": 6, "MR": 2, "RB": 1, "SIG": 6}[j["layout"]]
+            jc = {"GW": 4, "STOP": 3, "SIG": 2, "RBT": 4}[j["control"]]
+            speed = 30 if j["maj"][-1] < 8000 and rng.random() < 0.6 else int(rng.choice([40, 50, 60]))
+        else:
+            e = int(rng.integers(441000, 485000))
+            n_ = int(rng.integers(291000, 329000))
+            rr = A_ROADS + B_ROADS
+            road1 = rr[int(rng.integers(0, len(rr)))][0] if rng.random() < 0.7 else "U"
+            road2 = ""
+            jd, jc = 0, 0
+            speed = int(rng.choice([20, 30, 30, 30, 40, 50, 60, 60, 70]))
+        vehicles = int(rng.choice([1, 2, 3, 4], p=[0.28, 0.5, 0.17, 0.05]))
+        cas = 1 + int(rng.poisson(0.32))
+        return dict(date=d, hour=h, minute=m, easting=e, northing=n_, road1=road1, road2=road2, jd=jd, jc=jc,
+                    severity=self._severity(), vehicles=vehicles, casualties=cas, speed=speed,
+                    light=int(rng.choice([1, 4, 6], p=[0.72, 0.2, 0.08])), weather=int(rng.choice([1, 2, 3, 8], p=[0.8, 0.13, 0.02, 0.05])),
+                    surface=int(rng.choice([1, 2, 4], p=[0.7, 0.27, 0.03])), node=(j["node"] if j else ""),
+                    former=(j["former"] if j else ""), district=district_of(e))
+
+    # ---------------- 2026 provisional data (the annex asks)
+    def _provisional(self):
+        """The county's provisional 2026 collisions January to September, each with its casualties and vehicles and
+        the true severity on the national 30-day definition. Trunk-road collisions are in the police data too."""
+        rng = self.rng
+        out = []
+        d0 = P.PROV_START
+        days = (P.PROV_END - d0).days + 1
+        n = int(rng.poisson(2050))
+        for i in range(n):
+            d = d0 + dt.timedelta(days=int(rng.integers(0, days)))
+            hour = int(rng.choice(np.arange(24), p=HOUR_P))
+            minute = int(rng.integers(0, 60))
+            rr = A_ROADS + B_ROADS
+            if rng.random() < 0.12:
+                road = "A4600" if rng.random() < 0.7 else "A6510"
+                e = int(rng.integers(452000, 486000)) if road == "A4600" else int(rng.integers(441000, 470000))
+            else:
+                road = rr[int(rng.integers(0, len(rr)))][0] if rng.random() < 0.72 else "U"
+                e = int(rng.integers(441000, 485000))
+            nn = int(rng.integers(291000, 329000))
+            nveh = int(rng.choice([1, 2, 3, 4], p=[0.27, 0.55, 0.14, 0.04]))
+            vehicles = []
+            for v in range(1, nveh + 1):
+                vt = str(rng.choice(VTYPES, p=VTYPE_P))
+                vehicles.append(dict(ref=v, type=vt))
+            cas = []
+            struck = [v for v in vehicles if v["type"] in ("Car", "Taxi or private hire car", "Van or light goods")]
+            if struck and rng.random() < 0.16:
+                cas.append(dict(cls="Pedestrian", vehicle=struck[0]["ref"], age=int(rng.integers(5, 90)),
+                                sex=str(rng.choice(["Male", "Female"]))))
+                n_occ = int(rng.poisson(0.25))
+            else:
+                n_occ = 1 + int(rng.poisson(0.3))
+            for _ in range(n_occ):
+                v = vehicles[int(rng.integers(0, len(vehicles)))]
+                solo = v["type"] in ("Pedal cycle", "E-scooter")
+                cls = "Driver or rider" if (solo or rng.random() < 0.72) else "Passenger"
+                cas.append(dict(cls=cls, vehicle=v["ref"], age=int(rng.integers(16, 88)), sex=str(rng.choice(["Male", "Female"]))))
+            for c in cas:
+                r = rng.random()
+                c["sev"] = 1 if r < 0.012 else (2 if r < 0.22 else 3)
+                c["recorded"] = c["sev"]
+            out.append(dict(date=d, hour=hour, minute=minute, road=road, easting=e, northing=nn, vehicles=vehicles,
+                            casualties=cas, trunk=is_trunk(road, e), district=district_of(e)))
+        # deaths within 30 days that came after the police record was made (serious in the police data), two serious
+        # casualties who died after 30 days (not killed on the national definition), and one 30-day death on a trunk road
+        late = [c for c in out if not c["trunk"] and any(k["sev"] == 2 for k in c["casualties"])]
+        pick = sorted(int(x) for x in rng.choice(len(late), size=11, replace=False))
+        for k, i in enumerate(pick):
+            cas = [x for x in late[i]["casualties"] if x["sev"] == 2][0]
+            if k < 9:
+                cas["sev"] = 1
+                cas["died_day"] = int(rng.integers(3, 29))
+            else:
+                cas["died_day"] = int(rng.integers(34, 61))
+        trunk = [c for c in out if c["trunk"] and any(k["sev"] == 2 for k in c["casualties"])]
+        cas = [x for x in trunk[int(rng.integers(0, len(trunk)))]["casualties"] if x["sev"] == 2][0]
+        cas["sev"] = 1
+        cas["died_day"] = int(rng.integers(3, 25))
+        for c in out:
+            for k in c["casualties"]:
+                if k["recorded"] == 1:
+                    k["died_day"] = int(rng.integers(0, 3))
+        # collisions before the migration that were amended after it and re-sent under the new system's references
+        pre = [c for c in out if c["date"] < P.MIGRATION]
+        n_re = int(round(P.RESEND_SHARE * len(pre)))
+        for i in sorted(int(x) for x in rng.choice(len(pre), size=n_re, replace=False)):
+            c = pre[i]
+            c["resent"] = dict(dmin=int(rng.choice([0, 0, 0, 2, 5, 9, 14])), de=int(rng.integers(-22, 23)),
+                               dn=int(rng.integers(-22, 23)), sev_change=bool(rng.random() < 0.18))
+            if c["resent"]["sev_change"]:
+                worst = min(c["casualties"], key=lambda k: k["sev"])
+                if worst["sev"] == 2 and worst["recorded"] == 2:
+                    worst["recorded"] = 3          # first submitted as slight, reclassified serious on amendment
                 else:
-                    who = relief[k % len(relief)]
-                if who is None:
-                    continue
-                self._sess(code, k + 1, who, d, team, ba, bb, "OPERATOR")
+                    c["resent"]["sev_change"] = False
+        out.sort(key=lambda c: (c["date"], c["hour"], c["minute"], c["easting"]))
+        self.prov = out
 
-    # ------------------------------------------------------------------ the clean truth
-    def frames(self):
-        people = pd.DataFrame(self.people)
-        shifts = pd.DataFrame(self.shifts)
-        sess = pd.DataFrame(self.sessions)
-        return people, shifts, sess
+    def prov_truth(self):
+        """Ask A: collisions on the county's roads by quarter of the collision and 30-day severity; ask B: casualties by
+        road user group and quarter (pedestrian, pedal cyclist, motorcyclist, car occupant)."""
+        a = defaultdict(int)
+        b = defaultdict(int)
+        for c in self.prov:
+            if c["trunk"]:
+                continue
+            q = (c["date"].month - 1) // 3 + 1
+            sev = min(k["sev"] for k in c["casualties"])
+            a[(q, sev)] += 1
+            vt = {v["ref"]: v["type"] for v in c["vehicles"]}
+            for k in c["casualties"]:
+                g = road_user(k["cls"], vt[k["vehicle"]])
+                if g:
+                    b[(q, g)] += 1
+        return dict(a), dict(b)
 
 
-def shift_start_date(row):
-    return row
+VTYPES = ["Car", "Taxi or private hire car", "Van or light goods", "Goods 7.5 tonnes and over", "Bus or coach",
+          "Motorcycle 125cc and under", "Motorcycle over 500cc", "Motorcycle 125cc to 500cc", "Pedal cycle", "E-scooter",
+          "Agricultural vehicle", "Other"]
+VTYPE_P = [0.62, 0.03, 0.09, 0.03, 0.02, 0.035, 0.035, 0.02, 0.08, 0.015, 0.01, 0.015]
+GROUP = {"Car": "Car occupant", "Taxi or private hire car": "Car occupant", "Pedal cycle": "Pedal cyclist",
+         "Motorcycle 125cc and under": "Motorcyclist", "Motorcycle 125cc to 500cc": "Motorcyclist",
+         "Motorcycle over 500cc": "Motorcyclist"}
+GROUPS = ["Pedestrian", "Pedal cyclist", "Motorcyclist", "Car occupant"]
+_h = np.array([0.6, 0.4, 0.3, 0.3, 0.4, 0.9, 2.2, 4.6, 6.4, 4.9, 4.6, 5.0, 5.6, 5.6, 5.9, 7.2, 8.4, 8.6, 7.0, 5.0,
+               3.6, 2.8, 2.0, 1.2])
+HOUR_P = _h / _h.sum()
 
 
-def exposures(people, shifts, sess, hubs, tail="keep", window=(P.REF_START, P.REF_END)):
-    """Each worker's mean induct hours per worked shift in the window and their LAeq before and after."""
-    s = sess.copy()
-    if tail == "trim":
-        m = s["end_type"] == "AUTO"
-        s.loc[m, "end"] = s.loc[m, "end"] - pd.Timedelta(minutes=10)
-    s["hours"] = (s["end"] - s["start"]).dt.total_seconds() / 3600.0
-    # a session belongs to the shift that began on the date its shift started (night shifts begin the evening before)
-    def sdate(ts):
-        return (ts - pd.Timedelta(hours=5)).date() if True else None
-    s["shift_date"] = [((t - dt.timedelta(hours=5)).date()) for t in s["start"]]
-    inwin = s[(s["shift_date"] >= window[0]) & (s["shift_date"] <= window[1])]
-    ih = inwin.groupby("pid")["hours"].sum()
-    w = shifts[(shifts["status"] == "WORKED") & (shifts["date"] >= window[0]) & (shifts["date"] <= window[1])]
-    ns = w.groupby("pid").size()
-    out = people.set_index("pid").copy()
-    out["shifts"] = ns
-    out["induct_hours"] = ih
-    out = out[out["shifts"].notna()].copy()
-    out["induct_hours"] = out["induct_hours"].fillna(0.0)
-    out["t_mean"] = out["induct_hours"] / out["shifts"]
-    pre, post = [], []
-    for pid, r in out.iterrows():
-        h = hubs[r["hub"]]
-        pre.append(lex(r["t_mean"], h["Li"], h["Lf"], h["La"]))
-        post.append(lex(r["t_mean"], h["Lp"], h["Lf"], h["La"]))
-    out["lex_pre"] = pre
-    out["lex_post"] = post
-    return out
+def road_user(cls, vtype):
+    if cls == "Pedestrian":
+        return "Pedestrian"
+    return GROUP.get(vtype)

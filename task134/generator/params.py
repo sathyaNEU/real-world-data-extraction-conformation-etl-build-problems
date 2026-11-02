@@ -29,25 +29,30 @@ WAYPOINTS = [(0.00, 652400.0, 296100.0), (2.60, 649957.0, 296989.0), (5.10, 6474
              (7.70, 645215.0, 298507.0), (9.40, 643573.0, 298947.0), (10.20, 642800.0, 299154.0)]
 
 # The dredged parts. half: half the maintained width (m); nat: natural bed depth below CD on the north and south
-# margins; k: the infill coefficient (per year) of the relaxation law rate = k * (held depth - natural depth).
+# margins; k: the infill coefficient (per year) of the relaxation law rate = k * (held depth - natural depth). Each
+# part's k and natural bed are set so the record measures one coefficient across the parts and berths within a natural
+# spread of under one per cent, so every model of the law (each part's own ratio, one pooled coefficient on absolute
+# volumes or on the increment, a line with an intercept, a power law, the berths' own exponent or coefficient) puts
+# every part inside its rounding bin.
 PARTS = [
     # code, name, ch0, ch1, half, nat_n, nat_s, k
-    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 8.04, 8.16, 0.11810),
-    ("FR", "Fend Roads", 2.60, 5.10, 90.0, 8.26, 8.34, 0.11101),
-    ("MR", "Middle Reach", 5.10, 7.70, 85.0, 6.33, 6.47, 0.11296),
-    ("IR", "Inner Reach", 7.70, 9.40, 80.0, 5.22, 5.38, 0.11282),
-    ("TB", "Turning Basin", 9.40, 10.20, 210.0, 4.80, 4.80, 0.11192),
+    ("OC", "Outer Channel", 0.00, 2.60, 100.0, 7.87, 7.99, 0.11384),
+    ("FR", "Fend Roads", 2.60, 5.10, 90.0, 8.42, 8.50, 0.11479),
+    ("MR", "Middle Reach", 5.10, 7.70, 85.0, 6.26, 6.40, 0.11237),
+    ("IR", "Inner Reach", 7.70, 9.40, 80.0, 5.16, 5.32, 0.11267),
+    ("TB", "Turning Basin", 9.40, 10.20, 210.0, 4.92, 4.92, 0.11387),
 ]
 REACHES = ["OC", "FR", "MR", "IR"]
 DEEPENED = ["OC", "FR", "MR", "IR", "TB"]
 
-# Berth pockets on the basin's north side (offset +210 to +250 m) and its west end; s in km along the last reach.
+# Berth pockets on the basin's north side (offset +210 to +250 m) and its west end; s in km along the last reach. They
+# open onto the basin floor and share its natural bed; Berth 2 relaxes toward it at the common coefficient.
 BERTHS = [
     # code, name, s0, s1, t0, t1, depth (None = not maintained), nat, k
-    ("NQ1", "North Quay Berth 1", 9.440, 9.680, 210.0, 250.0, 12.8, 3.90, 0.1160),
-    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 3.90, 0.1135),
-    ("NQ3", "North Quay Berth 3", 9.940, 10.180, 210.0, 250.0, 12.8, 3.90, 0.1160),
-    ("CT5", "Container Terminal Berth 5", 10.200, 10.255, -165.0, 165.0, 14.3, 4.40, 0.1140),
+    ("NQ1", "North Quay Berth 1", 9.440, 9.680, 210.0, 250.0, 12.8, 4.87, 0.11314),
+    ("NQ2", "North Quay Berth 2", 9.700, 9.920, 210.0, 250.0, None, 4.87, 0.11350),
+    ("NQ3", "North Quay Berth 3", 9.940, 10.180, 210.0, 250.0, 12.8, 4.87, 0.11026),
+    ("CT5", "Container Terminal Berth 5", 10.200, 10.255, -165.0, 165.0, 14.3, 4.87, 0.11481),
 ]
 NQ2_LAST_DREDGED = dt.date(2019, 3, 22)
 NQ2_LAST_DEPTH = 12.95
