@@ -1,88 +1,88 @@
 {
   "task": "task304",
-  "architecture": "v4",
-  "drawn": "2026-11-01",
+  "architecture": "v5",
+  "drawn": "2026-11-02",
   "slot_note": "",
-  "domain": "epidemiology-public-health",
-  "subdomain": "health-burden-impact-modeling",
-  "client_domain": "epidemiology-public-health",
-  "niche": "occupational noise exposure at a parcel carrier's sortation hubs: the workers one hub's 2027 induct-line enclosure brings below the 85 dB(A) exposure standard",
+  "domain": "urban-regional-science",
+  "subdomain": "municipal-service-demand-resource-allocation",
+  "client_domain": "urban-regional-science",
+  "niche": "an English county's road safety term consultant choosing which junction on the county's 2026 network screening list gets the roundabout in its 2027 Junction Safety Fund bid, sized by the injury collisions a year the roundabout would prevent",
   "objective": "opportunity-sizing-decision",
-  "shape": "07",
+  "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Kewdale, 102 workers brought from at or above 85 dB(A) to below it (runner-up Truganina 69; the job-based default files Larapinta 66 with Kewdale at none)",
-  "answer_source": "task304/submission.md and task304/generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G3",
-    "G6"
+    "G17",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "signal_vs_noise_or_hold",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and rule correctly assesses exposure by job title, each title at its zone's level for the shift as the job-based strategy of AS/NZS 1269.1 does, and files Larapinta with 66 workers brought below 85 dB(A) and Kewdale at none, where each worker's own induct hours, summed from the induct stations' log-on sessions through the badge register, file Kewdale at 102.",
-  "domain_test": "The call turns on each worker's daily noise exposure, LAeq,8h, the energy average of the A-weighted levels of the places they worked over the shift, set against the 85 dB(A) exposure standard before and after one hub's induct area is treated; with another field's nouns in there is no logarithmic energy average over a shift, no exposure standard and no treated zone, so nothing decides.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:similar-exposure-group-broken-by-informal-rotation",
+  "analyst_test": "A strong analyst who reads every field and rule correctly takes each listed junction's injury collisions in the validated 2021 to 2025 record as its expected annual count, the cluster-site practice, and files the junction with the highest recent count; the junctions were listed because their recent counts were high, so those counts carry the luck that listed them, and only an estimate that weighs each junction's own record against what junctions of its layout and traffic on the same network have, by how far those junctions spread beyond chance, files the junction the fund's benefit names.",
+  "domain_test": "The call turns on each junction's expected injury collision frequency at its present traffic, the quantity road safety engineering estimates with a safety performance function fitted to comparable junctions and combined with the site's own record by empirical Bayes, times the treatment's crash modification factor; with another field's nouns there is no traffic-volume exposure model by junction layout, no crash modification factor and no screening of sites on their collision counts.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:sites-screened-on-recent-counts-regress-to-their-traffic-model",
   "layer1": [
-    "the sorter control system's log-on export in UTC against shifts kept in four Australian time zones, night shifts across midnight",
-    "a badge register with reissued badges, labour-hire day badges and contractor badges",
-    "job titles that differ by hub (Inductor, Induction Operator, Sorter - Induct)",
-    "labour-hire timesheets keyed by agency worker number, not payroll number",
-    "noise survey tables in PDF reports with each hub's own zone names",
-    "station codes in three sorter vendors' formats"
+    "police collision records keyed by two reference formats across a 2020 force system change, grid references in OSGB eastings and northings, severity coded 1 to 3",
+    "a junction inventory with traffic by year in wide columns and layout and control codes (T, ST, X, MR, RB, SIG) the county's network register uses",
+    "collisions linked to junction nodes by the county's collision system, link collisions carrying road names only",
+    "the 2026 provisional police data split across a June 2026 force system migration: an old-system CSV and a new-system JSON export",
+    "casualty and vehicle records at their own grain, keyed by collision and vehicle references"
   ],
-  "stakeholder_role": "the parcel carrier's hearing conservation program lead, who prepares the 2027 schedule of the noise enforceable undertaking the carrier gave the state WHS regulator",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the road safety engineering lead at the consultancy holding the county council's term contract for road safety engineering, who prepares the county's one-scheme bid to the national Junction Safety Fund",
+  "role_family": "field_unit_lead",
   "scoring_unit": "units served",
   "spine": {
-    "file": "wcs_operator_sessions_export_20261116.csv",
-    "rows": 44128,
-    "entity": "one row is one operator session on an induct station",
-    "grain": "badge x station x session",
+    "file": "collision_records_2016_2025.csv",
+    "rows": 0,
+    "entity": "one row is one police-reported injury collision",
+    "grain": "collision",
     "source": "constructed (seeded generator)"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "logistics_or_3pl",
+  "forum": "funder_or_donor",
+  "forcing_event": "other",
+  "org_family": "professional_services",
   "world": {
-    "geography": "Australia (a fictional national parcel carrier with sortation hubs in the industrial suburbs of Brisbane, Sydney, Melbourne, Adelaide, Perth and Newcastle)",
-    "currency": "AUD",
-    "org_type": "national parcel carrier's sortation hub network",
+    "geography": "England (a fictional shire county's principal road network)",
+    "currency": "GBP",
+    "org_type": "transport planning consultancy holding a county council's road safety engineering term contract",
     "invented_names": [
-      "Brolga Parcel Network"
+      "Ardleshire County Council",
+      "Halberd Transport Planning",
+      "Junction Safety Fund"
     ],
     "people": [
-      "Melissa Hayes",
-      "Dennis Simmons",
-      "Brent Roberts"
+      "Alison Hartley",
+      "Neil Ingram",
+      "Cheryl Gregory"
     ]
   },
   "deliverables": [
-    "induct_enclosure_2027.pptx",
-    "hearing_program_2026.csv"
+    "junction_bid_2027.pdf",
+    "bid_annex_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is how many members of each group sit above a limit on a per-person exposure that is an energy average of the levels of the places each spent the shift in; the field's method gives every member the level of the place their role names, but the loud place's hours are shared out among members by an informal rotation that no role record shows, so the role-based exposure misplaces members on both sides of the limit before and after that place is treated, and only each member's own hours, summed from a log of where their badge was signed on and joined to people through a dated register of badge holders, counts who crosses.",
-  "driver_concrete": "Each worker's LAeq,8h is built from their own induct hours, summed from the induct stations' log-on sessions and joined to people through the badge register, not from their job title's zone; at Kewdale the 54 inductors and 48 rotation loaders share the induct work at about 2.8 hours a shift each, so 102 workers sit near 90.7 dB(A) before the enclosure and near 83.7 after it, where the job-title assessment puts the inductors at 94.3 and 85.8 and brings none below the standard.",
-  "stump": "A competent analyst assesses each worker by job title at the zone that title names for the shift (AS/NZS 1269.1's job-based strategy), files Larapinta at 66 workers brought below 85 dB(A) and puts Kewdale at none; the step that lands it there is giving every worker their title's induct hours when Kewdale's induct work is shared between its 54 inductors and 48 of its loaders at about 2.8 hours a shift each, which only each worker's own log-on sessions, joined to people through the badge register, show.",
+  "question_form": "which",
+  "driver": "The decisive quantity is each candidate's long-run count of events at its present exposure, when the candidates were listed because their recent counts were high: a listed unit's recent count carries the luck that listed it, so ranking on it favours the luckiest, and ranking on an exposure model fitted to comparable units ignores what each unit's own record shows; only each unit's own record weighed against the model by how far comparable units spread beyond chance estimates the long-run count the decision is scored on.",
+  "driver_concrete": "Each listed junction's expected injury collisions a year at its 2026 traffic come from a safety performance function fitted on the network's give-way junctions of its layout, combined with the junction's own 2021 to 2025 record by empirical Bayes; the junction with the most recent collisions sits on a lightly trafficked road whose model predicts few, the busiest junction's record runs well below its model, and the crossroads between them keeps both its record and its traffic high.",
+  "stump": "A competent analyst takes each listed junction's 2021 to 2025 injury collisions as its expected annual count and files the junction with the highest recent count; the step that lands it there is reading a recent count as the long-run count at junctions listed because their recent counts were high, which only the network's own junctions, modelled on traffic and layout and weighed against each site's record by their spread beyond chance, correct.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task308": "task308 values an added unit on the shortfall it would have removed when units of its kind failed together from one cause; here each worker's noise exposure is rebuilt from their own induct hours read through a badge register, and the enclosure's yield is a count of people crossing an exposure standard"
+    "task479": "task479 weighs small employers' noisy claims records against the trust's pool level because a few members make a short record mostly chance; here every candidate was listed for a high recent count, so the bias has one direction across the whole list, the reference is a traffic-and-layout exposure model fitted to the network's own junctions rather than a pool level, and the model alone (ignoring each site's record) is itself a wrong rung"
   },
   "lineage": [
     {
@@ -180,22 +180,61 @@
           "xlsx"
         ]
       }
+    },
+    {
+      "architecture": "v4",
+      "fate": "spent 2026-11-02 at stage 4 on target.zip d1946edf: the determinism judge returned SEND_BACK, Gate H3 rule_application (the undertaking's Schedule 2 filed the whole estimand and method, so reading clauses 2.1 to 2.5 correctly gives Kewdale 102) and Gate F too easy (every session-based method lands on Kewdale; the difficulty was assembling the files, Layer 1); the leak reader's question 6 read it the same way",
+      "domain": "epidemiology-public-health",
+      "subdomain": "health-burden-impact-modeling",
+      "niche": "occupational noise exposure at a parcel carrier's sortation hubs: the workers one hub's 2027 induct-line enclosure brings below the 85 dB(A) exposure standard",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G3",
+        "G6"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "grain_or_unit",
+      "decision_type": "pick_one_of_n",
+      "layer2_pattern": "own:similar-exposure-group-broken-by-informal-rotation",
+      "forum": "regulator_or_inspector",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "logistics_or_3pl",
+      "context_artifact": "register",
+      "calibration_form": "none",
+      "role_family": "programme_officer",
+      "driver": "The decisive quantity is how many members of each group sit above a limit on a per-person exposure that is an energy average of the levels of the places each spent the shift in; the field's method gives every member the level of the place their role names, but the loud place's hours are shared out among members by an informal rotation that no role record shows, so the role-based exposure misplaces members on both sides of the limit before and after that place is treated, and only each member's own hours, summed from a log of where their badge was signed on and joined to people through a dated register of badge holders, counts who crosses.",
+      "driver_concrete": "Each worker's LAeq,8h is built from their own induct hours, summed from the induct stations' log-on sessions and joined to people through the badge register, not from their job title's zone; at Kewdale the 54 inductors and 48 rotation loaders share the induct work at about 2.8 hours a shift each, so 102 workers sit near 90.7 dB(A) before the enclosure and near 83.7 after it, where the job-title assessment puts the inductors at 94.3 and 85.8 and brings none below the standard.",
+      "stump": "A competent analyst assesses each worker by job title at the zone that title names for the shift (AS/NZS 1269.1's job-based strategy), files Larapinta at 66 workers brought below 85 dB(A) and puts Kewdale at none; the step that lands it there is giving every worker their title's induct hours when Kewdale's induct work is shared between its 54 inductors and 48 of its loaders at about 2.8 hours a shift each, which only each worker's own log-on sessions, joined to people through the badge register, show.",
+      "shell": {
+        "question form": "how-many",
+        "second-sentence opener": "our",
+        "rounding opener": "worker",
+        "deliverable set": "csv+pptx"
+      }
     }
   ],
-  "notes": "Architecture 4, re-rooted 2026-11-01 at the Batch 3 queue reset; the find-and-treat world (architectures 2 and 3) and the building society (architecture 1) are closed. stump_strategy grain_or_unit: the default's unit of exposure assessment is the job title, the decision's is the worker; population_selection and committee_or_panel were drawn first and redrawn when task475 v2 registered both inside the window (2026-11-01 23:34Z); the forum is now the regulator the carrier's enforceable undertaking answers to, which is where the 2027 control's site is filed. Decisive generator G14 (conditioned yield): the enclosure's yield at a hub is read person by person on each worker's own induct hours, the job title's exposure being the unconditioned group rate; G3 (record against operation) sits second, being equally apt but held by the window's task160 when drawn. Gap objective first: the job-title exposure is correct for the work the title names and is not the quantity the decision is scored on, each worker's own exposure.",
-  "registered": "2026-11-01T23:35:51Z",
-  "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "our",
-    "rounding opener": "worker",
-    "deliverable set": "csv+pptx"
-  },
+  "notes": "Architecture 5, re-rooted 2026-11-02 after architecture 4 was spent at stage 4 (SEND_BACK, H3 rule_application, F too easy); the parcel-hub noise world is closed and the slot moves to Urban & Regional Science. Axes redrawn at the draw: shape 07 (task271) to 01, the candidates ranked by prevented collisions under a cap of one scheme; pattern A (spent with gap time and pick_one_of_n in five builds) to none with G17 decisive, the honest name being statistical rigour on a screened set; org local_government (task134) and then government_agency (task485) to professional_services, the consultancy holding the county's road safety engineering term contract, which is who does this analysis for a shire county. stump_strategy causal_design: regression to the mean in a candidate set screened on its recent counts. forcing_event other: the fund's 2027 bid round closing on 29 January 2027.",
+  "registered": "2026-11-02T01:41:08Z",
+  "shell": {},
   "lineage_shells": [
     {
       "question form": "how-many",
       "second-sentence opener": "in",
       "rounding opener": "round",
       "deliverable set": "docx+xlsx"
+    },
+    {
+      "question form": "how-many",
+      "second-sentence opener": "our",
+      "rounding opener": "worker",
+      "deliverable set": "csv+pptx"
     }
   ]
 }

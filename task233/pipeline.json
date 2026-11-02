@@ -1,25 +1,26 @@
 {
  "task": "task233",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "survey-research-official-statistics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-11-01",
- "stump": "",
+ "stage": 3,
+ "stage_name": "build complete; stage 4 (leak reader and determinism judge) next",
+ "updated": "2026-11-02",
+ "stump": "The field's QA measure, each region's share of back-checked prices agreeing with the Field Quality Team's re-collection, files ten regions wrong (seven compliant regions under corrective action, three corrective regions on credits, $7,049); the officers re-collected the far regions' prices four to six days after the visits, and only netting each back-check's chance of a genuine price change over its own delay (the visit log's dates through the outlet register against each item class's monthly change frequency in the price database) gives corrective action for Halbrook North, Tamsin Bay, Fenwick and Westholm, a credit for Belmont Valley ($1,775) and nine compliant regions.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-02 on target.zip 62987245, --asof 2026-10-16: no LEAK, four REVIEW lines ruled harmless in the note (the standard's and Schedule 4's own nouns, the outlet register's region names, the 2026 calendar's later dates); the visit log's device column renamed handheld_id",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS 2026-11-02 (NOTE test.same_puzzle_older vs task270 v9 lineage, differentiated on the card)",
+  "surface": "9 pairs promoted for the author's adjudication at surface 0.090 to 0.102 (task234, task231 same pairing two apart, task270, task265, task458, task480, task450, task479, task178); personas in the pack: Joanne MacDonald, Lucia Morrison",
+  "nearest": "0.07 task229 v2 lineage"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4 in the main session: spawn the leak reader and the determinism judge together (medium); fix every finding in the generator in one pass, rebuild, re-run every gate, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -46,5 +47,22 @@
    "architecture": 1,
    "fate": "spent 2026-10-16 at stage 4 (judge SEND_BACK, underspecified_objective); report determinism_check_report_arch1.md"
   }
- ]
+ ],
+ "gates": {
+  "date": "2026-11-02",
+  "target_zip_sha256": "62987245e5c62c8c",
+  "generator_checks": "73 assertions, 0 failed",
+  "verify": "0 failed",
+  "byte_identical": "two builds byte-identical over 17 files",
+  "figures_check": "50 figures in blocks 1 to 4, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "guard_heart": "PASS",
+  "guard_surface": "run; 9 promoted pairs for adjudication, no persona WARN",
+  "container_scrub": "target and golden clean",
+  "pair_ceiling": 32.4,
+  "mirror_leakage": 2.4,
+  "fiction_asof": "2026-10-16"
+ }
 }
