@@ -17,8 +17,8 @@ def write(fig_path, out_path):
         "",
         "**Domain:** General Statistics & Data Science (data integration: a fatal crash census whose surviving "
         "drivers were tested completely at three agencies and only after an arrest at the scene everywhere else, "
-        "integrated into one completed count of alcohol-impaired-driving deaths per county, with the toxicology "
-        "laboratory's specimens, the crash records system's reports and the DOT's vehicle miles).",
+        "integrated into one completed count of alcohol-impaired-driving deaths per county, with the DOT's vehicle "
+        "miles and the county courts' criminal traffic cases).",
         "**Analytical objective:** Data Extraction & Conformation (ETL).",
         "",
         "## 1. Final Recommendation",
@@ -64,20 +64,14 @@ def write(fig_path, out_path):
         "summed by county, and divided by the 2023 to 2025 vehicle miles of %s, each year's DVMT times its days "
         "(%d in 2024), per 100 million: Tanager %s." % (f["sections"]["estimand"], W.FILES["vmt"], f["leap_days"],
                                                          f["tanager_rate"]),
-        "6. From %s, kept the 2025 DUI arrests by local collection date, one per agency case number and one where a "
-        "county jail's kit under the sheriff's number shares a department's collection site and minute, placed each in "
-        "its agency's county from %s and each State Patrol arrest (submitted under SPHQ000) in its post's county "
-        "from the post in its case number, and took the first specimen's whole-blood ethanol (serum divided by "
-        "%s, the amended report over the superseded): the arrests and the per cent at .15 or more below." % (
-            W.FILES["lab"], W.FILES["agencies"], f["serum"]),
-        "7. From %s and %s, took each report's latest accepted version, kept public-road crashes with an injury and "
-        "a driver unit HAD BEEN DRINKING, counted a crash two agencies reported once (same date, road, time within "
-        "minutes and drivers), and dropped those in the census, by agency and report number or, where the census "
-        "cites a death investigation number, by date, road and time, keeping a crash outside the census whose "
-        "supplement records a death more than 30 days after it, and placed each crash in a town in the town's "
-        "county from the directory's police departments: the injury crashes below." % (
-            W.FILES["reports"], W.FILES["units"]),
-        "8. Certified %s as high-range (guidelines %s: %s or more)." % (_join(f["call"]), f["sections"]["rate"],
+        "6. From %s, kept each county court's impaired-driving cases (the three DUI charges) for offenses in 2025, "
+        "counted as one prosecution a case dismissed on the day the same court opened another for the same offense "
+        "date and arresting agency together with that later case (guidelines %s: one for each person charged and "
+        "offense), and took each prosecution's last case: a guilty plea or verdict on an impaired-driving charge by "
+        "28 February 2027 is a conviction, and an amended charge, a deferral, a dismissal, an acquittal or no "
+        "disposition is not: the prosecutions and the per cent convicted below." % (
+            W.FILES["court"], f["sections"]["baselines"]),
+        "7. Certified %s as high-range (guidelines %s: %s or more)." % (_join(f["call"]), f["sections"]["rate"],
                                                                            f["threshold"]),
         "",
         "## 4. Deliverable Answers",
@@ -89,14 +83,11 @@ def write(fig_path, out_path):
     ]
     for r in rows:
         lines.append("   - %s: %d deaths, %s" % (r["county"], r["deaths"], r["rate"]))
-    lines.append("2. Each county's 2025 impaired-driving arrests with a blood specimen at the State Toxicology "
-                 "Laboratory and the per cent of them at .15 or more (one decimal):")
+    lines.append("2. Each county's impaired-driving offenses of 2025 that its county court had prosecuted by 28 "
+                 "February 2027 (one for each person charged and offense, whole numbers) and the per cent of them "
+                 "that had ended in an impaired-driving conviction by then (one decimal):")
     for r in rows:
-        lines.append("   - %s: %s arrests, %s%%" % (r["county"], format(r["arrests"], ","), r["pct15"]))
-    lines.append("3. Each county's 2025 injury crashes in which no one died within %d days and an officer reported a "
-                 "driver had been drinking:" % f["window_days"])
-    for r in rows:
-        lines.append("   - %s: %d" % (r["county"], r["crashes"]))
+        lines.append("   - %s: %s offenses, %s%%" % (r["county"], format(r["prosecuted"], ","), r["pct_conv"]))
     lines += [
         "",
         "### %s" % W.GOLDEN["letter"],

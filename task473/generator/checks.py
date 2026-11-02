@@ -2,6 +2,7 @@
 golden completion's family, the semantic fork table (SF1 to SF14), the Layer 1 items' neutrality, the asks and their
 devices, every graded figure's distance to its bin edge, the input gates and distractors, the realism sweeps and the
 deliverables' agreement with figures.json."""
+import collections
 import csv
 import datetime as dt
 import json
@@ -115,33 +116,115 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
               call({f: true.get(f, 0) / tv[f] * 1e8 for f in tv}) == GOLD)
         check("R3 the bundle's completed deaths equal the generator's for every county",
               all(abs(deaths[f] - M.route(tobs, "G")[f]) < 1e-6 for f in miles))
-    docs = {k: pdf_text(os.path.join(target, W.FILES[k])) for k in ("guidelines", "manual", "crs_notes",
-                                                                       "lab_annual")}
-    docs["lab_notes"] = re.sub(r"\s+", " ", open(os.path.join(target, W.FILES["lab_notes"]), encoding="utf-8").read())
+    docs = {k: pdf_text(os.path.join(target, W.FILES[k])) for k in ("guidelines", "manual")}
     for k in ("agencies", "vmt", "licensed"):
         docs[k] = xlsx_text(os.path.join(target, W.FILES[k]))
     control = {"guidelines": "A county whose rate is 0.60 or more is high-range.",
                "manual": "the Corwin County and Ossian County sheriffs follow the same procedure",
-               "crs_notes": "A report as it stands is its latest accepted version.",
-               "lab_annual": "Kits received, 2025", "lab_notes": "An agency may submit a second specimen",
-               "agencies": "Each State Patrol post patrols the county shown", "vmt": "Annual vehicle miles traveled",
+               "agencies": "State Patrol Headquarters",
+               "vmt": "daily vehicle miles traveled by county and functional class (thousands)",
                "licensed": "Licensed drivers"}
     check("R3c positive controls: each document's text is read through the extractor the absence checks use",
           all(control[k] in docs[k] for k in control), [k for k in control if control[k] not in docs[k]])
     banned = r"catch|detect|BAC band|bands|weight|inverse|imput|Horvitz|capture|probab|untested drivers|" \
              r"high-range counties are|notic"
-    hits = {k: re.findall(banned, v, re.I) for k, v in docs.items() if k in ("guidelines", "manual", "crs_notes",
-                                                                             "lab_annual", "lab_notes")}
+    hits = {k: re.findall(banned, v, re.I) for k, v in docs.items() if k in ("guidelines", "manual")}
     check("R3c no plant: no document names a catch rate, a BAC band, a weight, an imputation or an officer's "
           "noticing", not any(hits.values()), {k: v for k, v in hits.items() if v})
-    county_hits = {k: [n for n in W.NAMES.values() if n in docs[k]] for k in ("guidelines", "crs_notes", "lab_annual",
-                                                                               "lab_notes")}
+    county_hits = {k: [n for n in W.NAMES.values() if n in docs[k]] for k in ("guidelines",)}
     check("R3c no document ranks or names a county (the manual names only the two sheriffs that test everyone)",
           not any(county_hits.values()) and [n for n in W.NAMES.values() if n in docs["manual"]] == ["Corwin",
                                                                                                     "Ossian"],
           county_hits)
     check("R3c no memo, briefing, draft, earlier list or stakeholder figure ships",
           not any(re.search(r"memo|draft|briefing|list|rank", f, re.I) for f in files))
+
+    # ------------------------------------------------------------------ no shipped file describes the data
+    describe_name = re.compile(
+        r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+        r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|"
+        r"glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|"
+        r"feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes|"
+        r"index|contents)(?![a-z])", re.I)
+    check("describing: the files that described the data no longer ship (%s), and no shipped file's name says it "
+          "describes the data" % ", ".join(W.DESCRIBING),
+          not (set(W.DESCRIBING) & set(files)) and not [f for f in files if describe_name.search(f.rsplit(".", 1)[0])],
+          [f for f in files if describe_name.search(f.rsplit(".", 1)[0]) or f in W.DESCRIBING])
+    describe_sheet = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|"
+                                r"field notes|about|about this (file|workbook)|how to (read|use)( this)?|columns?|"
+                                r"sources?)$", re.I)
+    sheets = {f: list(B.xlsx_sheets(os.path.join(target, f))) for f in files if f.endswith(".xlsx")}
+    check("describing: no workbook carries a notes, readme or dictionary sheet (the sheets: %s)" % "; ".join(
+        "%s %s" % (f, ", ".join(v)) for f, v in sorted(sheets.items())),
+        len(sheets) == 3 and not [(f, n) for f, v in sheets.items() for n in v if describe_sheet.match(n.strip())])
+    data_cols = {}
+    for f in files:
+        if f.endswith(".csv"):
+            head = open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+            data_cols[f] = {c for c in head if len(c) >= 4}
+        elif f.endswith(".xlsx"):
+            for nm, rows_ in B.xlsx_sheets(os.path.join(target, f)).items():
+                hd = next((r for r in rows_ if r and r[0] in ("agency_id", "post", "County FIPS")), None)
+                if hd:
+                    data_cols["%s/%s" % (f, nm)] = {str(c) for c in hd if c and len(str(c)) >= 4}
+    every_col = set().union(*data_cols.values())
+
+    def cols_named(text):
+        """the data files' column names a text writes verbatim, and those written as identifiers"""
+        found = {c for c in every_col if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+        return found, {c for c in found if "_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c)}
+    code_text = open(os.path.join(target, W.FILES["codes2011"]), encoding="utf-8").read()
+    ctl_found, ctl_ident = cols_named(code_text)
+    check("describing positive control: the column finder, on a text known to name the 2011 form's elements (the "
+          "code table itself, a data file), finds %d of them" % len(ctl_ident),
+          ctl_ident == {"RTE_SYS", "ACC_TIME", "PER_TYP", "HIT_RUN", "ALC_TST", "ALC_RES", "DWI_ARR"}, sorted(ctl_ident))
+    worst = {}
+    for k in ("guidelines", "manual"):
+        found, ident = cols_named(docs[k])
+        share = max((len(found & cols) / float(len(cols)) for cols in data_cols.values() if len(cols) >= 5),
+                    default=0.0)
+        worst[k] = (len(found), len(ident), share)
+    check("describing: no document names the data's columns (each document's column names, identifiers and worst "
+          "share of one file's columns: %s), read through the same extractor as its control" % "; ".join(
+              "%s %d, %d, %.0f%%" % (k, v[0], v[1], 100 * v[2]) for k, v in worst.items()),
+          all(v[1] < 4 and v[0] < 8 and v[2] < 0.4 for v in worst.values()) and
+          all(len(docs[k]) > 500 for k in ("guidelines", "manual")))
+    check("describing: the census manual keeps the census's own rules (1.2 the files closed, 3.1 a death within 30 "
+          "days, 4.1 the result, 4.2 who is tested) and lists no field",
+          all(t in docs["manual"] for t in ("A year's file is closed when the 30-day window",
+                                            "A person coded fatal died within 30 days of the crash",
+                                            "whole blood, or vitreous humor for some killed persons",
+                                            "draw blood from a surviving driver arrested at the scene")) and
+          not re.search(r"CASE_NUM|PER_TYP|ALC_TST|crash_id|person_type|alcohol_result|Field", docs["manual"]))
+    cd = B.codes(target)
+    p23 = B.read_csv(B.find(target, "fcc_2023_person"))
+    c23 = B.read_csv(B.find(target, "fcc_2023_crash"))
+    unlabelled = sorted({(e, r[e]) for r in p23 + c23 for e in r if e in cd and r[e] and r[e] not in cd[e] and
+                         not (e in ("AGE", "ACC_TIME", "ALC_RES") and r[e].isdigit() and r[e] not in cd[e])})
+    check("closure 19: the 2011 form's code table labels every coded value the 2023 files carry (%d elements, %d "
+          "codes)" % (len(cd), sum(len(v) for v in cd.values())), not unlabelled and len(cd) >= 14, unlabelled[:6])
+    per_veh = {}
+    for r in p23:
+        if r["VEH_NUM"] != "0":
+            per_veh.setdefault((r["CASE_NUM"], r["VEH_NUM"]), []).append(cd["PER_TYP"][r["PER_TYP"]])
+    fatal = {}
+    for r in p23:
+        fatal[r["CASE_NUM"]] = fatal.get(r["CASE_NUM"], 0) + (cd["INJ"][r["INJ"]] == "FATAL INJURY")
+    check("closure 19 C1: read through the code table, every 2023 vehicle holds exactly one DRIVER and every crash "
+          "row's FATAL_CT equals its persons coded FATAL INJURY (%d vehicles, %d crashes)" % (len(per_veh), len(c23)),
+          all(v.count("DRIVER") == 1 for v in per_veh.values()) and
+          all(int(r["FATAL_CT"]) == fatal.get(r["CASE_NUM"], 0) for r in c23))
+    tst = {(cd["ALC_TST"][r["ALC_TST"]], r["ALC_RES"] == "996") for r in p23}
+    check("closure 18 C1: the 2011 form's ALC_RES is 996 exactly where ALC_TST is NOT TESTED, and a result "
+          "otherwise (thousandths, every one under 400)", tst <= {("NOT TESTED", True), ("BLOOD", False),
+                                                                  ("VITREOUS HUMOR", False)} and
+          all(int(r["ALC_RES"]) < 400 for r in p23 if r["ALC_RES"] != "996"))
+    dv = B.dvmt_sheets(target)
+    check("SF8 C1: the DOT's sheets carry their unit in their own title row (thousands) and the miles read from the "
+          "header row on through the verifier's reader", all(rows_[0][0] == "County FIPS" and len(rows_) == 16
+                                                             for rows_ in dv.values()) and
+          all(("%d daily vehicle miles traveled by county and functional class (thousands)" % y) in docs["vmt"]
+              for y in (2023, 2024, 2025)))
 
     # ------------------------------------------------------------------ the ladder, read from the bundle
     rr = {r: M.rate(M.route(obs, r), miles) for r in M.ROUTES}
@@ -238,9 +321,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     for c, o in zip(cr, obs):
         by_year.setdefault(c["year"], []).append(o)
     yr_miles = {}
-    sh = B.xlsx_sheets(B.find(target, "dot_county_dvmt"))
-    for y in (2023, 2024, 2025):
-        rows = sh["DVMT %d" % y]
+    for y, rows in B.dvmt_sheets(target).items():
         for r in rows[1:]:
             if r[0]:
                 yr_miles[(str(r[0]), y)] = sum(float(v) for v in r[2:-1]) * 1000.0 * (366 if y == 2024 else 365)
@@ -282,105 +363,123 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
                                                        for p in c["persons"] if p["tested"]))
     alt = B.golden_g(obs, f365)
     check("L1 the DOT's daily miles times 365 every year: the same call", call(alt["rates"]) == gold)
-    serum = [r for r in B.lab(target) if r["specimen"] == "SER" and r["case_type"] in ("FATAL CRASH",
-                                                                                       "DEATH INVESTIGATION")]
-    check("L1 no census driver's result is a serum result (the laboratory's serum results are arrests away from "
-          "fatal crashes)", not serum)
 
-    # ------------------------------------------------------------------ the asks
-    rows = B.lab(target)
-    a = B.ask_a(rows, dr)
-    crk = B.ask_a(rows, dr, merge_jail=False)
-    hq = B.ask_a(rows, dr, county_of=lambda ag, case, k: str(dr["agencies"][ag]["county_fips"]))
-    miss_h = [W.NAMES[f] for f in miles if hq.get(f, (0, 0))[0] == a[f][0]]
-    check("ask A stop: the State Patrol's arrests at headquarters misses every county's arrests", not miss_h, miss_h)
-    site = B.sites(target)
-    sit = B.ask_a(rows, dr, county_of=lambda ag, case, k: site[k["site"]]["county_fips"])
-    utc = B.ask_a(rows, dr, year_of=lambda k: int(k["utc"][:4]))
-    miss_c = [W.NAMES[f] for f in miles if crk.get(f, (0, 0))[0] == a[f][0] or "%.1f" % crk.get(f, (0, 0))[1] ==
-              "%.1f" % a[f][1]]
-    check("ask A cracker (one arrest per agency case number, the State Patrol's by its post, every documented hazard "
-          "repaired, the jail's second submissions kept) misses every county's arrests and per cent", not miss_c, miss_c)
-    pairs = {}
+    # ------------------------------------------------------------------ the ask: the courts' prosecutions
+    import hashlib
+    rows = B.court(target)
+    a = B.ask_court(rows)
+    same = {f: hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest() == h
+            for f, h in W.CALL_FILES.items()}
+    check("ask separation: every file the call reads but the guidelines is byte-identical to the leak repair's cut "
+          "(%d files) and no retired ask file ships" % len(same), all(same.values()) and
+          not (set(W.RETIRED) & set(files)), [f for f, v in same.items() if not v])
+    check("ask separation: the guidelines keep the call's sections (2.2 to 2.4) and file the baseline once in 3.1",
+          "one for each person charged and offense" in docs["guidelines"] and
+          docs["guidelines"].count("one for each person charged and offense") == 1 and
+          "whether or not that driver was tested" in docs["guidelines"] and
+          not re.search(r"refil|dismiss|case number|same day", docs["guidelines"], re.I))
+    dui = [r for r in rows if B.impaired(r)]
+    by_case = {}
     for r in rows:
-        if r["case_type"] == "DUI":
-            pairs.setdefault((r["collection_site"], r["collected_utc"]), set()).add((r["submitting_agency"],
-                                                                                     r["agency_case_number"]))
-    multi = [v for v in pairs.values() if len(v) > 1]
-    check("ask A device: %d draws submitted twice, each a police department's and the sheriff's of one county jail, "
-          "and no two arrests drawn at one site in one minute otherwise" % len(multi),
-          len(multi) >= 28 and all(len(v) == 2 and sum(1 for ag, cs in v if ag.startswith("SO")) == 1 and
-                                   sum(1 for ag, cs in v if ag.startswith("PD")) == 1 for v in multi))
-    miss_s = [W.NAMES[f] for f in miles if sit.get(f, (0, 0))[0] == a[f][0] and
-              "%.1f" % sit.get(f, (0, 0))[1] == "%.1f" % a[f][1]]
-    same_n = [W.NAMES[f] for f in miles if sit.get(f, (0, 0))[0] == a[f][0]]
-    check("ask A the collection site's county misses every county's arrests or per cent (%d counties' arrests "
-          "unchanged)" % len(same_n), not miss_s and len(same_n) <= 2, (miss_s, same_n))
-    moved = [W.NAMES[f] for f in miles if utc.get(f, (0, 0))[0] != a[f][0]]
-    check("ask A hazard: the year read on UTC moves %d counties' arrests" % len(moved), len(moved) >= 4)
-    kit_cases = {}
-    for r in rows:
-        if r["case_type"] == "DUI":
-            kit_cases.setdefault((r["submitting_agency"], r["agency_case_number"]), set()).add(r["lab_number"])
-    seconds = sum(1 for v in kit_cases.values() if len(v) > 1)
-    tubes = sum(1 for r in rows if r["tube"] == "2")
-    amended = sum(1 for r in rows if r["report_status"] == "AMENDED")
-    check("ask A hazards present: %d arrests with a second specimen, %d second-tube rows, %d amended reports" % (
-        seconds, tubes, amended), seconds > 100 and tubes > 100 and amended > 100)
-    sp = [r for r in rows if r["submitting_agency"] == "SPHQ000" and r["case_type"] == "DUI"]
-    check("ask A device: the State Patrol's %d DUI rows are all under SPHQ000 with a post-numbered case" % len(sp),
-          sp and all(re.fullmatch(r"P\d\d-\d\d-\d{5}", r["agency_case_number"]) for r in sp) and
-          not any(r["submitting_agency"].startswith("SP0") or r["submitting_agency"].startswith("SP1") for r in rows))
-    reps_b, groups = B.ask_b(target, cr)
-    nodup, _ = B.ask_b(target, cr, dedupe=False, link_census=False)
-    miss_n = [W.NAMES[f] for f in miles if nodup.get(f, 0) == reps_b.get(f, 0)]
-    check("ask B stop: every report counted on its own severity misses every county", not miss_n, miss_n)
-    bynum, _ = B.ask_b(target, cr, link_near=False, late_k=False)
-    miss_b = [W.NAMES[f] for f in miles if bynum.get(f, 0) == reps_b.get(f, 0)]
-    check("ask B cracker (latest accepted version, two agencies' reports merged, the census linked by agency and "
-          "report number, severity A to C) misses every county", not miss_b, miss_b)
-    filed, _ = B.ask_b(target, cr, by_place=False)
-    miss_p = [W.NAMES[f] for f in miles if filed.get(f, 0) == reps_b.get(f, 0)]
-    check("ask B device: every handling right but the county the report is filed under misses every county (the "
-          "readers' path after two re-sitings)", not miss_p, miss_p)
-    towns = {a_["city"]: a_["county_fips"] for a_ in dr["agencies"].values() if a_["city"]}
-    across = [r_ for r_ in B.crs(target)[0] if r_["municipality"] and towns[r_["municipality"]] != r_["county_fips"]]
-    check("ask B fair: the %d reports whose town lies in another county are all the State Patrol's, filed under its "
-          "post's county (the directory's posts)" % len({r_["report_id"] for r_ in across}),
-          across and all(r_["agency_id"].startswith("SP") and dr["agencies"][r_["agency_id"]]["county_fips"] ==
-                         r_["county_fips"] for r_ in across))
-    linked, _ = B.ask_b(target, cr, late_k=False)
-    miss_k = [W.NAMES[f] for f in miles if linked.get(f, 0) == reps_b.get(f, 0)]
-    check("ask B device: the census linked in full, a report whose supplement records a death after 30 days dropped "
-          "as fatal, misses every county (the measured readers' path)", not miss_k, miss_k)
-    cen25 = {(c_["agency"], c_["report"]) for c_ in cr if c_["year"] == 2025}
-    late_rows = [v for g_ in groups for v in g_ if v["severity"] == "K" and
-                 (v["agency_id"], v["report_number"]) not in cen25]
-    check("ask B fair: each K report outside the census is a supplement submitted more than 30 days after its crash "
-          "(%d reports)" % len(late_rows), late_rows and all(
-              (dt.date.fromisoformat(v["submitted"]) - dt.date.fromisoformat(v["crash_date"])).days > 30
-              for v in late_rows if not any((w["agency_id"], w["report_number"]) in cen25
-                                            for g_ in groups if v in g_ for w in g_)))
-    dups = {}
-    for gr_ in groups:
-        if len(gr_) > 1:
-            dups[gr_[0]["county_fips"]] = dups.get(gr_[0]["county_fips"], 0) + 1
-    check("ask B device: every county has crashes two agencies reported (%d to %d)" % (min(dups.values()),
-                                                                                       max(dups.values())),
-          len(dups) == 14 and min(dups.values()) >= 2)
-    false_pairs = [gr_ for gr_ in groups if len(gr_) > 2 or (len(gr_) == 2 and gr_[0]["agency_id"] ==
-                                                               gr_[1]["agency_id"])]
-    check("ask B the same-crash match is unambiguous: every pair is two agencies, no group of three", not false_pairs)
+        by_case.setdefault((r["county_fips"], r["case_number"]), []).append(r)
+    check("ask realism: one row per case within its court (%d cases, %d impaired-driving), case numbers repeating "
+          "only across courts" % (len(rows), len(dui)), all(len(v) == 1 for v in by_case.values()) and
+          len({r["case_number"] for r in rows}) < len(rows))
+    check("ask realism: every case opened from 1 January 2025 to 28 February 2027, after its offense, and disposed "
+          "after it opened and by the close", all("2025-01-01" <= r["filed_date"] <= "2027-02-28" and
+                                                  r["offense_date"] <= r["filed_date"] and
+                                                  (not r["disposition_date"] or
+                                                   r["filed_date"] <= r["disposition_date"] <= "2027-02-28")
+                                                  for r in rows))
+    twins = collections.Counter(tuple(v for k, v in r.items() if k != "case_number") for r in dui
+                                if r["offense_date"][:4] == "2025")
+    check("ask determinism: no two impaired-driving cases of 2025 agree in every field but the case number, so a "
+          "near-duplicate cleanup moves no figure", max(twins.values()) == 1)
+    pros = B.prosecutions(rows)
+    pairs = [g for g in pros if len(g) > 1]
+    check("ask device: %d prosecutions of 2025 held two cases, the first dismissed on the day the court opened the "
+          "second for the same offense date and arresting agency, in every county (%d to %d)" % (
+              len(pairs), min(collections.Counter(g[0]["county_fips"] for g in pairs).values()),
+              max(collections.Counter(g[0]["county_fips"] for g in pairs).values())),
+          len(pairs) >= 200 and all(len(g) == 2 for g in pairs) and
+          len({g[0]["county_fips"] for g in pairs}) == 14 and
+          all(sorted(g, key=lambda r: r["filed_date"])[0]["disposition"] == "DISMISSED" and
+              sorted(g, key=lambda r: r["filed_date"])[0]["disposition_date"] ==
+              sorted(g, key=lambda r: r["filed_date"])[1]["filed_date"] for g in pairs))
+    cells = collections.Counter((r["county_fips"], r["offense_date"], r["arresting_agency"]) for r in dui
+                                if r["offense_date"][:4] == "2025")
+    shared = sum(1 for g in B.prosecutions(rows, "cell") if len(g) > 1 and len(B.prosecutions(g)) > 1)
+    check("ask over-cleaning half: %d court, offense date and agency cells hold two or more prosecutions of 2025 "
+          "(co-arrested drivers, a night's arrests)" % shared, shared >= 300)
+    nat = B.ask_court(rows, "cases")
+    over = B.ask_court(rows, "cell")
+
+    def misses(r, by=1, pc=0.1):
+        return [W.NAMES[f] for f in miles if abs(r[f][0] - a[f][0]) < by or abs(r[f][1] - a[f][1]) < pc - 1e-9]
+    check("ask device mass: each case read as a prosecution misses every county's count by %d to %d and per cent by "
+          "%.1f to %.1f points" % (min(nat[f][0] - a[f][0] for f in miles), max(nat[f][0] - a[f][0] for f in miles),
+                                   min(a[f][1] - nat[f][1] for f in miles), max(a[f][1] - nat[f][1] for f in miles)),
+          not misses(nat, 3, 1.0), misses(nat, 3, 1.0))
+    check("ask over-cleaning mass: one prosecution per court, offense date and agency misses every county's count by "
+          "%d to %d and every printed per cent (%.1f to %.1f points)" % (
+              min(a[f][0] - over[f][0] for f in miles), max(a[f][0] - over[f][0] for f in miles),
+              min(over[f][1] - a[f][1] for f in miles), max(over[f][1] - a[f][1] for f in miles)),
+          all(a[f][0] - over[f][0] >= 3 and "%.1f" % over[f][1] != "%.1f" % a[f][1] for f in miles),
+          [W.NAMES[f] for f in miles if a[f][0] - over[f][0] < 3 or "%.1f" % over[f][1] == "%.1f" % a[f][1]])
+    # the rival readings a careful judge could take, each computed; every acceptable one files the golden
+    rivals = {"the relation without the arresting agency": B.ask_court(rows, agency=False),
+              "the relation allowing one to three days": B.ask_court(rows, slack=3),
+              "both readings at once": B.ask_court(rows, agency=False, slack=3),
+              "a prosecution convicted if any of its cases is": B.ask_court(
+                  rows, conv=lambda g: B.convicted(g, last=False)),
+              "the impaired-driving charges by their code (MSC 42-1201)": B.ask_court(
+                  [dict(r, lead_charge="UNDER THE INFLUENCE" if r["lead_charge_code"].startswith("MSC 42-1201")
+                        else r["lead_charge"]) for r in rows]),
+              "the relation only where the two cases carry one lead charge": B.ask_court(rows, same_charge=True),
+              "a dismissal linked to any case of its court, offense date and agency opened on or after it":
+              B.ask_court(rows, how="later"),
+              "a dismissal linked to any case of its court and offense date opened on or after it":
+              B.ask_court(rows, how="later", agency=False),
+              "any later case, one lead charge": B.ask_court(rows, how="later", agency=False, same_charge=True)}
+    for k, v in rivals.items():
+        check("ask determinism: %s files the golden in every county" % k,
+              all(v[f][0] == a[f][0] and "%.1f" % v[f][1] == "%.1f" % a[f][1] for f in miles),
+              [W.NAMES[f] for f in miles if v[f] != a[f]])
+    ruled = {"the year read on the filing date (guidelines 3.1: offenses committed in 2025)":
+             B.ask_court(rows, by="filed"),
+             "an amended-charge plea read as a conviction (3.1: a conviction for impaired driving)":
+             B.ask_court(rows, conv=lambda g: B.convicted(g, guilty=("GUILTY PLEA", "GUILTY VERDICT",
+                                                                    "GUILTY PLEA, AMENDED CHARGE"),
+                                                          impaired_only=False)),
+             "the drug charge left out (3.1: driving under the influence of alcohol or drugs, MSC 42-1201)":
+             B.ask_court([r for r in rows if r["lead_charge_code"] != "MSC 42-1201(3)"]),
+             "a deferred prosecution read as a conviction (3.1: a conviction)":
+             B.ask_court(rows, conv=lambda g: B.convicted(g) or any(
+                 r["disposition"] == "DEFERRED PROSECUTION" for r in [max(g, key=lambda r: r["filed_date"])]))}
+    for k, v in ruled.items():
+        moved = [W.NAMES[f] for f in miles if v[f][0] != a[f][0] or "%.1f" % v[f][1] != "%.1f" % a[f][1]]
+        check("ask hazard, ruled out by a filed sentence: %s moves %d counties' figures" % (k, len(moved)),
+              len(moved) >= 10)
+    disp = collections.Counter(r["disposition"] or "(open at the close)" for r in dui)
+    check("ask hazards present: %s" % ", ".join("%s %d" % kv for kv in sorted(disp.items())),
+          all(disp[k] >= 100 for k in ("GUILTY PLEA, AMENDED CHARGE", "DEFERRED PROSECUTION", "NOT GUILTY",
+                                       "(open at the close)")))
+    early = sum(1 for r in dui if r["offense_date"][:4] == "2024")
+    late = sum(1 for r in dui if r["offense_date"][:4] == "2025" and r["filed_date"][:4] > "2025")
+    other = sum(1 for r in rows if not B.impaired(r))
+    check("ask hazards present: %d cases of 2024 offenses opened in 2025, %d cases of 2025 offenses opened later, "
+          "%d other criminal traffic cases" % (early, late, other), early >= 100 and late >= 100 and other >= 15000)
     if x is not None:
-        import crs as R
-        tb = R.ask_b(x["crs"])
-        check("ask B the bundle's counts equal the generator's", all(reps_b.get(f, 0) == tb[f] for f in miles))
-        import pack as P
-        ta = P.ask_a(x["arrests"])
-        check("ask A the bundle's arrests and per cents equal the generator's",
-              all(a[f][0] == ta[f][0] and abs(a[f][1] - ta[f][1]) < 1e-9 for f in miles))
-    check("asks free of the call: the call reads no laboratory or crash records row (the bundle's completion reads "
-          "the census and the miles only)", gold == GOLD)
+        import court as CT
+        ta = CT.ask(x["cases"])
+        check("ask the bundle's prosecutions and per cents equal the generator's (the relation through the verifier's "
+              "reader is the positive control)", all(a[f][0] == ta[f][0] and abs(a[f][1] - ta[f][1]) < 1e-9
+                                                     for f in miles))
+        refiled = {c.pid for c in x["cases"] if c.refile_of is not None and c.dui and c.offense.year == 2025}
+        check("ask fair: the relation finds exactly the generator's refiled prosecutions (%d), and joins no two "
+              "others" % len(refiled), len(refiled) == len(pairs))
+    check("ask free of the call: the call reads no court row (the bundle's completion reads the census and the miles "
+          "only)", gold == GOLD)
 
     # ------------------------------------------------------------------ bins
     dm = min(min(fam[k][f] for k in fam) - (gd[f] - 0.5) for f in miles)
@@ -391,7 +490,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     check("bins: every rate at least 0.002 inside its two-decimal cell under the family and 365 days (%.4f)" % re_,
           re_ >= 0.002)
     ea = min(edge(a[f][1], 0.1) for f in miles)
-    check("bins: every per cent at .15 or more at least 0.012 inside its one-decimal cell (%.3f)" % ea, ea >= 0.012)
+    check("bins: every per cent convicted at least 0.012 inside its one-decimal cell (%.3f)" % ea, ea >= 0.012)
     check("bins: no rate prints the same as the line (0.60)", all(gr[f] != "0.60" for f in miles))
 
     # ------------------------------------------------------------------ distractors
@@ -404,11 +503,9 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
             d2 = B.directory(tmp)
             c2 = B.census(tmp, d2)
             g2 = B.golden_g(B.observed(c2, B.complete_agencies(d2)), B.vmt(tmp))
-            a2 = B.ask_a(B.lab(tmp), d2)
-            b2, _ = B.ask_b(tmp, c2)
+            a2 = B.ask_court(tmp)
             check("distractor %s deleted: the call and every graded figure unchanged" % W.FILES[k],
-                  call(g2["rates"]) == gold and all("%.2f" % g2["rates"][f] == gr[f] for f in miles) and
-                  a2 == a and b2 == reps_b)
+                  call(g2["rates"]) == gold and all("%.2f" % g2["rates"][f] == gr[f] for f in miles) and a2 == a)
         finally:
             shutil.rmtree(tmp)
     lic = B.xlsx_sheets(B.find(target, "dmv_licensed"))["Licensed drivers 2025"]
@@ -455,54 +552,32 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
     reports = [(c["agency"], c["report"]) for c in cr]
     check("realism: census case numbers and agency report numbers unique", len(set(cases)) == len(cases) and
           len(set(reports)) == len(reports))
-    lab_ids = {}
-    bad = 0
-    for r in rows:
-        key = r["lab_number"]
-        sig = (r["case_type"], r["submitting_agency"], r["agency_case_number"], r["collected_utc"])
-        if lab_ids.setdefault(key, sig) != sig:
-            bad += 1
-    check("realism: every lab number is one kit (one case, agency and collection time)", bad == 0, bad)
-    ok_dates = all(r["collected_utc"][:10] <= r["received_date"] <= r["report_date"] <= "2027-03-12" for r in rows)
-    check("realism: every specimen collected before it was received and reported before the 12 March 2027 extract",
-          ok_dates and min(r["received_date"] for r in rows) >= "2023-01-01" and
-          max(r["received_date"] for r in rows) <= "2026-01-15")
-    reps, units = B.crs(target)
-    check("realism: every crash report is a 2025 crash submitted after it and before the 8 March 2027 extract",
-          all(r["crash_date"].startswith("2025") and r["crash_date"] <= r["submitted"] <= "2027-03-08" for r in reps))
-    linked = {(r["agency_id"], r["report_number"]) for r in reps}
-    c25 = [c for c in cr if c["year"] == 2025]
-    by_num = sum(1 for c in c25 if (c["agency"], c["report"]) in linked)
-    check("realism: %d of the census's %d 2025 crashes carry their crash report's number, the rest the agency's "
-          "death investigation number (a county or city crash whose victim died after the report)" % (by_num, len(c25)),
-          0.3 * len(c25) < by_num < len(c25))
     yearly = {}
     for c in cr:
         yearly.setdefault(c["fips"], []).append(c["year"])
     ties = [W.NAMES[f] for f, v in yearly.items() if len({v.count(y) for y in (2023, 2024, 2025)}) < 3]
     check("realism sweep: the counties' fatal crashes vary year to year (equal counts in two years in %d counties, "
           "as chance gives)" % len(ties), len(ties) <= 2, ties)
-    check("realism sweep: the state's totals are not round (deaths %d, 2025 arrests %d, injury crashes %d)" % (
-        sum(gd.values()), sum(v[0] for v in a.values()), sum(reps_b.values())),
-          sum(gd.values()) % 10 and sum(v[0] for v in a.values()) % 10 and sum(reps_b.values()) % 10)
-    check("realism: the documents' dates precede what they describe (guidelines 9 February 2027, the extracts of "
-          "8 and 12 March 2027, the annual report of 6 March 2027, all before the 22 March 2027 as-of)",
-          "Issued 9 February 2027" in docs["guidelines"] and "8 March 2027" in docs["crs_notes"] and
-          "12 March 2027" in docs["lab_notes"] and "6 March 2027" in docs["lab_annual"])
+    check("realism sweep: the state's totals are not round (deaths %d, prosecutions of 2025 %d, cases %d)" % (
+        sum(gd.values()), sum(v[0] for v in a.values()), len(rows)),
+          sum(gd.values()) % 10 and sum(v[0] for v in a.values()) % 10 and len(rows) % 100)
+    check("realism: the documents' dates precede what they describe (guidelines 9 February 2027 naming the close of "
+          "28 February 2027 ahead, the manual of 15 March 2024 before the 2024 files it governs, the court extract's "
+          "last disposition on the close, all before the 22 March 2027 as-of)",
+          "Issued 9 February 2027" in docs["guidelines"] and "issued 15 March 2024" in docs["manual"] and
+          max(r["disposition_date"] for r in rows) <= "2027-02-28")
     if golden and F:
         with open(os.path.join(golden, W.GOLDEN["csv"]), encoding="utf-8") as fh:
             gcsv = list(csv.DictReader(fh))
-        check("deliverables: the CSV carries each county's deaths, rate and baselines as figures.json does",
+        check("deliverables: the CSV carries each county's deaths, rate and baseline as figures.json does",
               [(r["county"], int(r["ai_driving_deaths_2023_2025"]), r["ai_driving_rate_per_100m_vmt"],
-                int(r["arrests_blood_specimen_2025"]), r["pct_arrests_015_or_more_2025"],
-                int(r["injury_crashes_drinking_driver_2025"])) for r in gcsv] ==
-              [(r["county"], r["deaths"], r["rate"], r["arrests"], r["pct15"], r["crashes"]) for r in F["rows"]])
+                int(r["dui_offenses_prosecuted_2025"]), r["pct_convicted_dui_by_2027_02_28"]) for r in gcsv] ==
+              [(r["county"], r["deaths"], r["rate"], r["prosecuted"], r["pct_conv"]) for r in F["rows"]])
         check("deliverables: the CSV's figures are the bundle's",
               all(int(r["ai_driving_deaths_2023_2025"]) == gd[r["county_fips"]] and
                   r["ai_driving_rate_per_100m_vmt"] == gr[r["county_fips"]] and
-                  int(r["arrests_blood_specimen_2025"]) == a[r["county_fips"]][0] and
-                  r["pct_arrests_015_or_more_2025"] == "%.1f" % a[r["county_fips"]][1] and
-                  int(r["injury_crashes_drinking_driver_2025"]) == reps_b[r["county_fips"]] for r in gcsv))
+                  int(r["dui_offenses_prosecuted_2025"]) == a[r["county_fips"]][0] and
+                  r["pct_convicted_dui_by_2027_02_28"] == "%.1f" % a[r["county_fips"]][1] for r in gcsv))
         lt = pdf_text(os.path.join(golden, W.GOLDEN["letter"]))
         check("deliverables: the letter certifies the four with their rates and carries every county's row",
               all(("%s (%s)" % (c, v)) in lt or ("%s (%s alcohol" % (c, v)) in lt for c, v in F["high_rates"]) and

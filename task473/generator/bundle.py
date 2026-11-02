@@ -1,6 +1,6 @@
 """Reading the cut pack the way a solver must: every file through its own format, no generator state. The census in
-both layouts, the agency directory, the DOT's miles, the laboratory's extract, the crash records extract, the
-documents' text. verify.py and checks.py read the bundle only through here."""
+both layouts, the agency directory, the DOT's miles, the county courts' case extract, the documents' text. verify.py
+and checks.py read the bundle only through here."""
 import csv
 import datetime as dt
 import os
@@ -65,10 +65,19 @@ def complete_agencies(dr):
 
 
 # ------------------------------------------------------------------------------------------------- the census
+def codes(target):
+    """The 2011 report form's code table: {element: {code: label}}."""
+    out = {}
+    for r in read_csv(find(target, "fcc_2011_form_codes")):
+        out.setdefault(r["element"], {})[r["code"]] = r["label"]
+    return out
+
+
 def census(target, dr=None):
     """Every 2023 to 2025 crash as {case, year, date, fips, agency, report, deaths, persons: [...]}, both layouts
-    read into one structure; agencies on the 2024 numbers."""
+    read into one structure (the 2011 form's codes through its code table); agencies on the 2024 numbers."""
     dr = dr or directory(target)
+    cd = codes(target)
     out = []
     c23 = read_csv(find(target, "fcc_2023_crash"))
     p23 = read_csv(find(target, "fcc_2023_person"))
@@ -81,16 +90,17 @@ def census(target, dr=None):
         ag = dr["by_old"][r["AGCY"]]["agency_id"]
         ps = []
         for q in per.get(r["CASE_NUM"], []):
-            role = {"1": "driver", "2": "passenger", "5": "pedestrian", "6": "pedalcyclist"}[q["PER_TYP"]]
+            role = cd["PER_TYP"][q["PER_TYP"]].lower()
             dd = None
             if q["DTH_DATE"]:
                 mm, dd_, yy = (int(v) for v in q["DTH_DATE"].split("/"))
                 dd = dt.date(yy, mm, dd_)
-            tested = q["ALC_TST"] in ("1", "3")
-            ps.append(dict(role=role, unit=int(q["VEH_NUM"]), killed=q["INJ"] == "4", death=dd,
-                           identified=not (role == "driver" and q["HIT_RUN"] == "1"), tested=tested,
-                           test=q["ALC_TST"], bac=int(q["ALC_RES"]) / 1000.0 if tested else None,
-                           arrested=q["DWI_ARR"] == "1", body=q["BODY"]))
+            test = cd["ALC_TST"][q["ALC_TST"]]
+            tested = test != "NOT TESTED"
+            ps.append(dict(role=role, unit=int(q["VEH_NUM"]), killed=cd["INJ"][q["INJ"]] == "FATAL INJURY", death=dd,
+                           identified=not (role == "driver" and cd["HIT_RUN"].get(q["HIT_RUN"]) == "YES"),
+                           tested=tested, test=q["ALC_TST"], bac=int(q["ALC_RES"]) / 1000.0 if tested else None,
+                           arrested=cd["DWI_ARR"].get(q["DWI_ARR"]) == "YES", body=q["BODY"]))
         out.append(dict(case=r["CASE_NUM"], year=y, date=date, fips=r["CNTY"], agency=ag, report=r["RPT_NUM"],
                         deaths=sum(1 for p in ps if p["killed"]), persons=ps, time=r["ACC_TIME"]))
     c25 = read_csv(find(target, "fcc_2024_2025_crash"))
@@ -136,13 +146,22 @@ def observed(crashes, complete, roles=("driver",), unidentified=False, late_deat
 
 
 # ------------------------------------------------------------------------------------------------- the miles
-def vmt(target, days=None):
-    """Each county's 2023 to 2025 vehicle miles: each year's DVMT (thousands a day, all classes) times its days."""
-    days = days or {2023: 365, 2024: 366, 2025: 365}
+def dvmt_sheets(target):
+    """Each year's DVMT sheet from its header row on (the sheet's title row above it carries the unit)."""
     sh = xlsx_sheets(find(target, "dot_county_dvmt"))
     out = {}
     for y in (2023, 2024, 2025):
         rows = sh["DVMT %d" % y]
+        k = next(i for i, r in enumerate(rows) if r and r[0] == "County FIPS")
+        out[y] = rows[k:]
+    return out
+
+
+def vmt(target, days=None):
+    """Each county's 2023 to 2025 vehicle miles: each year's DVMT (thousands a day, all classes) times its days."""
+    days = days or {2023: 365, 2024: 366, 2025: 365}
+    out = {}
+    for y, rows in dvmt_sheets(target).items():
         head = rows[0]
         for r in rows[1:]:
             rec = dict(zip(head, r))
@@ -214,162 +233,75 @@ def backtest(obs):
     return out, rmse(1), rmse(2)
 
 
-# ------------------------------------------------------------------------------------------------- the laboratory
-def lab(target):
-    return read_csv(find(target, "stl_specimen_extract"))
+# ------------------------------------------------------------------------------------------------- the courts
+def court(target):
+    return read_csv(find(target, "aoc_criminal_traffic_cases"))
 
 
-def sites(target):
-    return {r["site_code"]: r for r in read_csv(find(target, "stl_collection_sites"))}
+def impaired(r):
+    """an impaired-driving charge, by the charge's own words"""
+    return "UNDER THE INFLUENCE" in r["lead_charge"]
 
 
-def _local(utc):
-    t = dt.datetime.strptime(utc, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
-    return t.astimezone(CENTRAL).replace(tzinfo=None)
-
-
-def arrests_2025(rows, dr, county_of=None, year_of=None, merge_jail=True):
-    """Each 2025 impaired-driving arrest with a blood specimen: one per submitting agency and case number, its county,
-    and whether its first specimen's whole-blood ethanol was .15 or more."""
-    kits = {}
-    for r in rows:
-        if r["case_type"] != "DUI":
-            continue
-        k = kits.setdefault(r["lab_number"], dict(agency=r["submitting_agency"], case=r["agency_case_number"],
-                                                  utc=r["collected_utc"], site=r["collection_site"],
-                                                  specimen=r["specimen"], eth=None, rows=[]))
-        k["rows"].append(r)
-        if r["analyte"] == "ETHANOL" and r["report_status"] in ("FINAL", "AMENDED") and r["result"]:
-            v = float(r["result"])
-            k["eth"] = v / 1.16 if r["specimen"] == "SER" else v
-    by_case = {}
-    for ln, k in kits.items():
-        by_case.setdefault((k["agency"], k["case"]), []).append(k)
-    if merge_jail:
-        # one draw submitted twice, by the arresting department and by the county jail under the sheriff's booking
-        # number: the same collection site and minute under two agencies is one arrest, the department's
-        first_at = {}
-        for key, ks in by_case.items():
-            k0 = min(ks, key=lambda k: k["utc"])
-            first_at.setdefault((k0["site"], k0["utc"]), []).append(key)
-        for spot, keys in first_at.items():
-            if len(keys) > 1:
-                keep = [key for key in keys if not key[0].startswith("SO")] or keys[:1]
-                for key in keys:
-                    if key not in keep[:1]:
-                        del by_case[key]
+def prosecutions(rows, how="relation", year=2025, agency=True, slack=0, by="offense", same_charge=False):
+    """The county courts' impaired-driving prosecutions of the year's offenses as lists of cases. how: "relation" (a
+    case dismissed on the day its court opened another for the same offense date and arresting agency is one
+    prosecution with that case; agency=False drops the agency, slack allows that many days), "cases" (each case its
+    own), "cell" (one per court, offense date and agency), "later" (a dismissed case one prosecution with any case of its
+    court and offense date opened on or after its dismissal). same_charge=True links only cases with one lead charge.
+    by="filed" reads the year on the filing date."""
+    col = "offense_date" if by == "offense" else "filed_date"
+    cs = [r for r in rows if impaired(r) and r[col][:4] == str(year)]
+    if how == "cases":
+        return [[r] for r in cs]
+    cells = {}
+    for r in cs:
+        cells.setdefault((r["county_fips"], r["offense_date"]) + ((r["arresting_agency"],) if agency else ()),
+                         []).append(r)
+    if how == "cell":
+        return list(cells.values())
     out = []
-    for (agency, case), ks in by_case.items():
-        ks.sort(key=lambda k: k["utc"])
-        first = ks[0]
-        when = _local(first["utc"]) if year_of is None else year_of(first)
-        if (when.year if hasattr(when, "year") else when) != 2025:
-            continue
-        if county_of:
-            f = county_of(agency, case, first)
-        elif agency == "SPHQ000":
-            f = str(dr["posts"][int(case[1:3])]["county_fips"])
-        else:
-            f = str(dr["agencies"][agency]["county_fips"])
-        out.append(dict(agency=agency, case=case, fips=f, high=first["eth"] is not None and first["eth"] >= 0.150))
+    for g in cells.values():
+        parent = list(range(len(g)))
+
+        def root(i):
+            while parent[i] != i:
+                i = parent[i]
+            return i
+        for i, x in enumerate(g):
+            if x["disposition"] != "DISMISSED":
+                continue
+            for j, y in enumerate(g):
+                gap = (dt.date.fromisoformat(y["filed_date"]) - dt.date.fromisoformat(x["disposition_date"])).days
+                near = gap >= 0 if how == "later" else abs(gap) <= slack
+                if j != i and near and (not same_charge or y["lead_charge_code"] == x["lead_charge_code"]):
+                    parent[root(j)] = root(i)
+        groups = {}
+        for i, r in enumerate(g):
+            groups.setdefault(root(i), []).append(r)
+        out += list(groups.values())
     return out
 
 
-def ask_a(rows, dr, **kw):
-    arr = arrests_2025(rows, dr, **kw)
+GUILTY = ("GUILTY PLEA", "GUILTY VERDICT")
+
+
+def convicted(pros, guilty=GUILTY, impaired_only=True, last=True):
+    """the prosecution's last case convicted on an impaired-driving charge (guilty widens the dispositions read as a
+    conviction, impaired_only=False any convicted charge, last=False any of its cases)"""
+    cases = [max(pros, key=lambda r: (r["filed_date"], r["case_number"]))] if last else pros
+    return any(r["disposition"] in guilty and ("UNDER THE INFLUENCE" in r["convicted_charge"] or not impaired_only)
+               for r in cases)
+
+
+def ask_court(target_or_rows, how="relation", conv=None, **kw):
+    rows = court(target_or_rows) if isinstance(target_or_rows, str) else target_or_rows
     out = {}
-    for a in arr:
-        n, h = out.get(a["fips"], (0, 0))
-        out[a["fips"]] = (n + 1, h + (1 if a["high"] else 0))
+    for g in prosecutions(rows, how, **kw):
+        f = g[0]["county_fips"]
+        n, h = out.get(f, (0, 0))
+        out[f] = (n + 1, h + (conv or convicted)(g))
     return {f: (n, 100.0 * h / n) for f, (n, h) in out.items()}
-
-
-# ------------------------------------------------------------------------------------------------- crash records
-def crs(target):
-    reps = read_csv(find(target, "crs_reports_2025"))
-    units = read_csv(find(target, "crs_units_2025"))
-    u = {}
-    for r in units:
-        u.setdefault((r["report_id"], r["version"]), []).append(r)
-    return reps, u
-
-
-def ask_b(target, census_crashes, dedupe=True, link_census=True, latest=True, link_near=True, late_k=True,
-          by_place=True, dr=None):
-    reps, units = crs(target)
-    dr = dr or directory(target)
-    towns = {a["city"]: a["county_fips"] for a in dr["agencies"].values() if a["city"]}
-    by = {}
-    for r in reps:
-        by.setdefault(r["report_id"], []).append(r)
-    stand = []
-    for rid, vs in by.items():
-        acc = [v for v in vs if v["version_status"] == "ACCEPTED"]
-        v = max(acc, key=lambda v: int(v["version"])) if latest else min(vs, key=lambda v: int(v["version"]))
-        us = units.get((rid, v["version"]), [])
-        v = dict(v)
-        v["units"] = us
-        v["drivers"] = tuple(sorted((x["driver_age"], x["driver_sex"]) for x in us if x["unit_type"] == "MOTOR VEHICLE"))
-        stand.append(v)
-    fatal = {(c["agency"], c["report"]) for c in census_crashes if c["year"] == 2025}
-    # the census cites a death investigation number where a person died after the report: a crash is also the
-    # census's when its date, county and road agree and its time is within 15 minutes
-    near = {}
-    for c in census_crashes:
-        if c["year"] == 2025:
-            near.setdefault((c["date"].isoformat(), c["fips"], c.get("road", "")), []).append(c["time"])
-
-    def in_census(v):
-        if (v["agency_id"], v["report_number"]) in fatal:
-            return True
-        if not link_near:
-            return False
-        for t in near.get((v["crash_date"], v["county_fips"], v["road_name"]), []):
-            if not t:
-                return True
-            t0 = dt.datetime.strptime(t, "%H:%M")
-            t1 = dt.datetime.strptime(v["crash_time"], "%H:%M")
-            if abs((t1 - t0).total_seconds()) <= 15 * 60:
-                return True
-        return False
-    # one crash, two agencies' reports: same date, county, road and drivers, times within 15 minutes
-    groups = []
-    if dedupe:
-        key = {}
-        for v in stand:
-            key.setdefault((v["crash_date"], v["county_fips"], v["road_name"], v["drivers"]), []).append(v)
-        for k, vs in key.items():
-            vs.sort(key=lambda v: v["crash_time"])
-            cur = [vs[0]]
-            for v in vs[1:]:
-                t0 = dt.datetime.strptime(cur[-1]["crash_time"], "%H:%M")
-                t1 = dt.datetime.strptime(v["crash_time"], "%H:%M")
-                if abs((t1 - t0).total_seconds()) <= 15 * 60 and v["agency_id"] != cur[-1]["agency_id"]:
-                    cur.append(v)
-                else:
-                    groups.append(cur)
-                    cur = [v]
-            groups.append(cur)
-    else:
-        groups = [[v] for v in stand]
-    out = {}
-    for g in groups:
-        if link_census and any(in_census(v) for v in g):
-            continue
-        # a crash left outside the census whose report records a death (K) is one where the death came after 30 days
-        sevs = ("A", "B", "C", "K") if late_k else ("A", "B", "C")
-        ok = any(v["public_road"] == "Y" and v["severity"] in sevs and
-                 any(x["unit_type"] == "MOTOR VEHICLE" and x["driver_condition"] == "HAD BEEN DRINKING"
-                     for x in v["units"]) for v in g)
-        if ok:
-            # a crash is in the county where it happened: a town's county from the directory's police departments
-            # (the State Patrol files a report under its post's county)
-            f = g[0]["county_fips"]
-            town = next((v["municipality"] for v in g if v["municipality"]), "")
-            if by_place and town:
-                f = towns[town]
-            out[f] = out.get(f, 0) + 1
-    return out, groups
 
 
 def golden_csv(gdir):

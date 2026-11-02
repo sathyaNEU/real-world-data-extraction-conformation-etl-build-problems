@@ -38,20 +38,19 @@
   "layer2_pattern": "own:arrest-triggered-blood-tests-completed-by-the-catch-rate-at-each-bac-band",
   "layer1": [
     "crash and person files on the 2011 and the 2024 report forms with different codes, person types and agency numbers",
-    "toxicology laboratory specimens keyed by agency case number, medical examiner and coroner case formats, resubmitted specimens and second draws",
-    "whole-blood and serum ethanol results and truncation to hundredths",
-    "crash times in local time against the laboratory's UTC timestamps",
+    "BAC results by specimen type (blood, vitreous) truncated to the form's decimals, coded on the 2011 form and in words on the 2024 form",
     "county DVMT in thousands of daily miles by road class with a leap year",
-    "deaths within 30 days recorded after the crash year"
+    "deaths within 30 days recorded after the crash year",
+    "the courts' statistical extract with no party identifier: case numbers that repeat across courts, amended-charge pleas and deferred prosecutions, cases open at the close, and offenses dated months before their filing"
   ],
   "stakeholder_role": "the Center's impaired driving program coordinator",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
-    "file": "stl_specimen_extract_2023_2025.csv",
-    "rows": 31781,
-    "entity": "one analysis of one tube of a specimen kit the State Toxicology Laboratory received",
-    "grain": "analysis",
+    "file": "aoc_criminal_traffic_cases_2025_2027.csv",
+    "rows": 31404,
+    "entity": "one criminal traffic case a county court filed in 2025 to February 2027, by its lead charge and disposition",
+    "grain": "case",
     "source": "synthetic"
   },
   "forum": "funder_or_donor",

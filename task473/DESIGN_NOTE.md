@@ -145,12 +145,12 @@ wounds are swabbed only where a nurse suspects infection") and the setting's str
 gone: the killed drivers tested by coroners whatever anyone suspects, the State Patrol drawing every survivor, the BAC
 bands an officer's eye separates, the crash counted through any driver at .08, miles as the exposure.
 
-Layer 1: the 2011 and 2024 crash report forms with different codes and person types (the census's own form change),
-the toxicology laboratory's specimens keyed by agency case number with the medical examiner's and coroners' case
-formats, resubmitted specimens and second draws (the laboratory's LIMS), whole-blood and serum results and
-truncation to hundredths (the laboratory's reporting rules), crash times in local time against the laboratory's
-timestamps, the DOT's county DVMT in thousands of daily miles by road class with a leap year (the DOT's HPMS
-releases), agency codes renumbered with the 2024 form; each to be asserted neutral on the call.
+Layer 1: the 2011 and 2024 crash report forms with different codes and person types (the census's own form change,
+the 2011 codes read through the census's own code table), results in thousandths on the 2011 form against g/dL on the
+2024 form, agency codes renumbered with the 2024 form (the directory's former codes), the DOT's county DVMT in
+thousands of daily miles by road class with a leap year (the DOT's HPMS releases), and on the ask's path the courts'
+statistical case extract (case numbers per court, one year's offenses opened in the next, amended charges, deferrals,
+cases still open); each asserted neutral on the call.
 
 Layer 2: estimand_identification (selection on the outcome): the surviving drivers county and city agencies test are
 the ones officers arrested, and arrest depends on the BAC itself, more steeply than any recorded covariate carries,
@@ -162,8 +162,8 @@ Decisive step: completing each county's county-and-city surviving drivers by cou
 is tested (28.6 per cent from .08 to .149 and 88.9 per cent at .15 or more), which certifies Tanager and drops
 Pruett and Brisbin.
 
-Not semantics: every field, code, unit and definition read correctly (the crash forms, the specimen types, whole
-blood, the arrest flag, the case numbers, the dictionary's sentence on which agencies draw blood from whom) still
+Not semantics: every field, code, unit and definition read correctly (the crash forms and the 2011 code table, whole
+blood, the arrest flag, the agency numbers, the manual's sentence on which agencies draw blood from whom) still
 leaves the easy route on one share of unarrested drivers impaired, measured where every driver is tested, or on a
 model of impairment on arrest fitted to the tested drivers; no field records how likely an officer was to notice a
 driver, and the step is the choice of completion, not a reading.
@@ -185,8 +185,8 @@ high-range when its 2023 to 2025 alcohol-impaired-driving fatalities, every deat
 county in which an identified driver of a motor vehicle in transport had a BAC of .08 g/dL or more whether or not
 that driver was tested, divided by its 2023 to 2025 vehicle miles, is 0.60 or more per 100 million vehicle miles.
 
-No decoy: nothing is planted to be caught: the crash census, the laboratory's results, the arrest records and the
-DOT's miles are what each system writes; no memo, draft, briefing, earlier list or stakeholder figure argues a method
+No decoy: nothing is planted to be caught: the crash census, the arrests it records, the DOT's miles and the
+courts' cases are what each system writes; no memo, draft, briefing, earlier list or stakeholder figure argues a method
 or a list, and no file ranks the counties.
 
 No certified replay: no published county rate, earlier designation or certified figure ships to back a method out
@@ -223,7 +223,7 @@ severity.
 | SF5 | a BAC of .08 or more | the laboratory's whole-blood result as the census records it (three decimals, truncated) | more than .08; a serum value | same call and every figure (asserted: no driver's result sits on .080 or .150, and no census result is serum) | guidelines 2.2; manual 4.1 |
 | SF6 | tested | a reported result in the person file (blood; vitreous humor only for some killed passengers and pedestrians) | vitreous read as no test | same call and every figure (asserted: no driver has a vitreous result) | manual 4.1 |
 | SF7 | the county | where the crash occurred | the investigating agency's county; the driver's residence | same call and every figure (asserted: every census crash's agency is in the crash's county; residence is not recorded) | guidelines 2.2 "in the county" |
-| SF8 | vehicle miles | the DOT's annual county VMT, daily miles times the year's days (366 in 2024) | 365 days every year | same call and every rate in its cell (asserted) | the DOT workbook's note on annual totals |
+| SF8 | vehicle miles | the DOT's annual county VMT, daily miles times the year's days (366 in 2024) | 365 days every year | same call and every rate in its cell (asserted) | C1 in the data (checks.py SF8: 365 days every year gives the same call and every rate in its cell); the DOT's sheets carry their unit, thousands a day, in their own title row |
 | SF9 | the rate | the three years' deaths over the three years' miles | the mean of three annual rates | same call (asserted) | guidelines 2.4 |
 | SF10 | the catch rates | the two band rates pooled over the State Patrol and the Corwin and Ossian sheriffs | the State Patrol alone; the two sheriffs alone; four or six sub-bands | same call and every figure (asserted: the rates are equal at the State Patrol, at the two sheriffs together and in every sub-band) | the data's structure |
 | SF11 | where the missed drivers sit | spread evenly over the county's untested surviving drivers | carried at each found driver's crash deaths; spread over the untested drivers in crashes not otherwise counted | same call and every figure (asserted) | guidelines 2.2 "each crash counts its deaths times the chance"; the data's structure |
@@ -281,7 +281,7 @@ Built figures, read from the cut pack by `generator/checks.py` (rates per 100 mi
 | 1 | Population | every death within 30 days of a 2023 to 2025 crash in the county with an identified driver at .08 or more, tested or not (guidelines 2.2, 2.3); the 14 counties |
 | 2 | Unit of account | deaths per 100 million vehicle miles (guidelines 2.4); a death is a person, not a crash or a driver |
 | 3 | Attribution window | the crash date in local time, 2023 to 2025 (SF2) |
-| 4 | As-of dating | the census files as closed (each when its last 30-day window had passed, manual 1.2; the files dated 27 February 2025 and 25 February 2027), the DOT's final 2023 to 2025 DVMT (30 January 2027), the laboratory extract of 12 March 2027, the crash records extract of 8 March 2027 |
+| 4 | As-of dating | the census files as closed (each when its last 30-day window had passed, manual 1.2; the files dated 27 February 2025 and 25 February 2027), the DOT's final 2023 to 2025 DVMT (30 January 2027, metadata.json), the courts' extract of 2 March 2027 with dispositions as recorded on 28 February 2027 (guidelines 3.1) |
 | 5 | Version basis | the closed census files; the 2024 report form from 2024 on |
 | 6 | Denominator | the DOT's annual county VMT (SF8) |
 | 7 | Weighting | the three years' totals (SF9) |
@@ -292,11 +292,11 @@ Built figures, read from the cut pack by `generator/checks.py` (rates per 100 mi
 | 12 | Maturity and censoring | the census files are closed with every death within 30 days and every tested driver's result |
 | 13 | Order of operations | drivers' chances, each crash's chance that a driver was at .08 or more, its deaths, the county's sum, the rate |
 | 14 | Row order | no dependence |
-| 15 | Duplicate resolution | one person row per person; resubmitted specimens are the asks' (laboratory file), not the census's |
-| 16 | Identity normalisation | agencies renumbered with the 2024 form (the directory's crosswalk); county codes in both forms |
+| 15 | Duplicate resolution | one person row per person; a refiled prosecution is the ask's (the courts' extract), not the census's |
+| 16 | Identity normalisation | agencies renumbered with the 2024 form (manual 2.1; the directory's former_code beside agency_id, every 2011 code mapping to one agency, asserted); county codes in both forms |
 | 17 | Netting | none |
-| 18 | Dimensional units | BAC in g/dL (the 2011 form in thousandths); DVMT in thousands of miles a day |
-| 19 | Code and status semantics | person types, injury codes and test codes in both forms (manual tables); never the stump |
+| 18 | Dimensional units | BAC in g/dL (the 2011 form in thousandths, 996 where the code table says NOT TESTED; C1 by magnitude, asserted); DVMT in thousands of miles a day (the DOT's sheet titles) |
+| 19 | Code and status semantics | person types, injury codes and test codes: the 2011 form's code table (fcc_2011_form_codes.csv, a plain crosswalk) and the 2024 form's own words, each 2023 vehicle holding one DRIVER and each FATAL_CT equal to its FATAL INJURY persons (asserted); never the stump |
 | 20 | Integerisation | deaths whole after completion; rates two decimals |
 | 21 | Clause scope | guidelines 2: the FY2028 designation on 2023 to 2025 |
 | 22 | Forward window contents | the FY2028 designation on the closed window (a retrospective quantity with its reason, Draw) |
@@ -326,75 +326,83 @@ executes.
 ## Oracles
 
 None that ties only under the golden. The complete agencies score a completion only by comparisons a solver chooses
-to run; no published county rate, earlier designation or certified list ships. The laboratory's 2025 annual report
-tables count kits received in 2025 by case type and the first reports' ethanol ranges statewide, a workload basis
-(received dates, every kit) that ties with no county attribution and no arrest count, so it arbitrates nothing on
-Ask A. Distractors: the licensed-driver counts by county (another denominator) and the 2026
+to run; no published county rate, earlier designation or certified list ships. The courts' extract carries no total, control or published
+count of prosecutions or convictions, so nothing arbitrates the ask's device. Distractors: the licensed-driver counts by county (another denominator) and the 2026
 preliminary census extract (another window), each named in metadata.json; neither ranks the counties on the
 designation's basis.
 
 ## Ask sheet
 
-- **Ask A, each county's 2025 impaired-driving arrests with a blood specimen at the State Toxicology Laboratory, and
-  the per cent of those arrests at .15 or more: 28 figures.** H18 home: guidelines 3.1(a) makes them each task force
-  application's baseline, so the certification carries them for every county; a measure every candidate carries
-  that the call does not turn on. Path: the laboratory's specimen extract (case type, agency, agency case number,
-  collection site, collection time in UTC, specimen type, analyte, result, report status), the agency directory (old
-  and new agency numbers, county, State Patrol posts), the facilities list, the guidelines (3.1(a), the county where
-  the arrest was made) and the laboratory's extract notes: five files, twelve columns.
-  Primary device (re-sited after stage 4 reader 1): D1, the same records under two key schemes. A county jail's booking
-  nurse draws some city police arrests and the jail submits its own kit under the sheriff's agency number and booking
-  number beside the department's, so one draw sits in the extract twice, same collection site and minute, same
-  result, under two agencies; one arrest per agency case number counts it twice. No sweep sees it (different lab
-  numbers, agencies and case numbers). Kept as a hazard from the first cut: D7, the true key elsewhere. The State Patrol submits under one agency number for the whole state,
-  and its arrests reach the county only through the post in its case number ("P07-25-01234") and the directory's
-  post list; the laboratory's collection site is where the blood was drawn, and a rural arrest's blood is often
-  drawn at the nearest hospital across the county line. Read by the agency's county or by the collection site, every
-  county's arrests and share move; read by the post for the State Patrol and the agency's county for the rest, they
-  are the golden. No sweep sees it: every specimen has an agency and a site, nothing repeats, and the statewide total
-  is the same under every attribution.
-  Hazards: collection times in UTC (New Year's Eve arrests change year; the lab number carries the year received),
-  analyses reissued after review (the AMENDED report stands over the SUPERSEDED one), drug-only requests and
-  cancelled requests (an arrest with a blood specimen and no ethanol result), two tubes in one kit, a second
-  specimen under the same case number, serum results (whole blood is serum divided by 1.16), and the FATAL CRASH
-  draws of drivers not arrested.
-- **Ask B, each county's 2025 injury crashes in which no one died within 30 days and an officer reported a driver
-  had been drinking: 14 figures.** H18 home: guidelines 3.1(b), the task forces' crash baseline. Path: the crash
-  records system's 2025 report and unit extracts, the fatal crash census, the dictionary, the guidelines: four
-  files, eleven columns. Primary devices: D1, the same crash under two agencies' reports (the State Patrol and a
-  sheriff both report a crash on a state highway, two report numbers, the same vehicles and time, nothing linking
-  them), and D9, a control true only in its scope. Re-sited after stage 4 reader 1, which merged the two agencies'
-  reports and linked the census by report number: the census cites a county or city agency's death investigation
-  number where a person died after the crash report, so a report-number link keeps those crashes as injury crashes;
-  only date, road and time link them. Re-sited again after the second pair of readers, which both linked the census
-  by date and coordinates and took all 14 figures: the primary is now D2, a supplement that records a death more
-  than 30 days after the crash (severity K, submitted 34 to 80 days on), on one or two drinking-driver injury
-  crashes per county that the census, counting deaths within 30 days, leaves out; the crash had no death within 30
-  days and stays an injury crash, and a reader who drops K reports as fatal misses every county (asserted). The
-  death investigation numbers stay as a hazard. Re-sited a third time after reader 5 (pack 0a92575f), which read
-  an unbacked K as a death after 30 days and took all 14: the primary is now D7, the true key in another field. The
-  State Patrol's records system files a report under its post's county, so a post's crash inside a neighbouring
-  county's town carries that town and the post's county; 21 such reports, unequal along each pair of counties so
-  every county's count moves, beside 442 State Patrol reports in their own counties' towns (no marker). Only the
-  town, read against the directory's police departments, places the crash; the K supplements stay as a hazard.
-  Kept from the first cut (the crash extract keeps the severity the officer coded, so a crash
-  whose injured person died within 30 days stays an injury crash there and is a fatal crash only in the census).
-  Hazards: supplements under the same report number (the latest accepted stands, a rejected one never), a
-  non-driver unit coded as drinking, crashes on private property, a supplement that lowers the severity to no
-  injury, and a second agency's report of a crash that is in the census.
-- **The construction layer:** the four counties, the 14 rates and deaths and the chart; the cracker has them.
-- **Main population zero-counts (asserted):** the call reads no laboratory and no crash records row (the census
-  carries each tested driver's result), so neither ask's device moves a call figure.
+The ask is guidelines 3.1's 2025 baselines, which every task force application states and the Center certifies with
+the list: for each county, the impaired-driving offenses committed there in 2025 that its county court had prosecuted
+by 28 February 2027, one for each person charged and offense, and the per cent of them that had ended in a conviction
+for impaired driving by that date (28 figures). The task force funds a prosecutor for impaired-driving cases
+(guidelines 1.1), and these are the prosecution figures its FY2028 targets are set against (3.2).
 
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+- **H18 home:** a measure every candidate county carries that the call does not turn on; the call reads no court row.
+  Use: the GHSO reads each application's targets against it.
+- **Records:** `aoc_criminal_traffic_cases_2025_2027.csv`, the Administrative Office of the Courts' statistical extract
+  of every criminal traffic case the county courts opened from 1 January 2025 to 28 February 2027 (31,404 cases, 10,389
+  of them impaired-driving), with no party identifier: court, case number, filing and offense dates, arresting
+  agency, lead charge, disposition and its date, the charge convicted of (one row per case). A new ask-only file the call never
+  reads, and the pack's largest. The spent asks' files (the laboratory's extract, sites and tables, the crash records
+  extract) no longer ship.
+- **Primary device (a re-keyed contract whose link is a timing relationship):** a prosecutor who dismisses a case to
+  refile it (an amended charge once the blood result is back, a defective complaint) opens the new case the same day.
+  268 of the 2025 prosecutions hold two cases, the first DISMISSED on the date the second was filed, in the same court
+  with the same offense date and arresting agency, 11 to 40 in every county. No field links them: no party
+  identifier, no related-case number, a new case number; the refile keeps the lead charge. Counted case by case, every county's
+  prosecutions run 11 to 40 high and its per cent convicted 2.8 to 5.0 points low (the dismissed first case reads as a
+  non-conviction). Only a relation between two values finds it: one case's disposition date equals the other's filing
+  date in one court, offense date and agency, which no uniqueness, duplicate or anti-join test performs, and the
+  shared fields alone over-merge.
+- **Over-cleaning half:** 487 court, offense date and agency cells hold two or more prosecutions of 2025 (a night's
+  arrests by one agency, co-arrested drivers); one prosecution per cell undercounts every county by 11 to 103 and
+  misses every printed per cent.
+- **Forcing (checks.py, on the shipped rows through the verifier's reader):** the relation finds exactly the
+  generator's 268 refiled prosecutions and joins no two others; no other impaired-driving case of a court and offense
+  date of 2025 opens after, or within three days before, a dismissal there, and such a cell holds at most one dismissal; no two 2025 impaired-driving cases agree in every field but the
+  case number; the relation through bundle.ask_court reproduces figures.json (the positive control).
+- **Hazards (battery items and filed rules, texture):** 291 cases of 2024 offenses opened in 2025 (out by the offense
+  date), 383 cases of 2025 offenses opened in 2026 or 2027 (in), 1,175 amended-charge pleas (convicted of reckless
+  driving, not impaired driving), 560 deferred prosecutions, 156 acquittals, 1,595 cases open at the close, three
+  impaired-driving charges (the BAC .15 and drugs subsections among them), 21,015 other criminal traffic cases, case
+  numbers that repeat across courts.
+- **Pin test:** 3.1 pins the population (offenses committed in the county in 2025, prosecuted in the county court),
+  the close (28 February 2027), the unit (one for each person charged and offense) and the outcome (a conviction for
+  impaired driving); the device sits in the one dimension the pins leave open, which cases are one prosecution, and
+  no sentence names a case number, a dismissal or a refiling.
+- **Path:** the extract and the guidelines, eleven columns (county_fips, case_number, filed_date, offense_date,
+  arresting_agency, lead_charge_code, lead_charge, disposition, disposition_date, convicted_charge).
+- **Main population zero-counts (asserted):** the call reads no court row; every file it reads but the guidelines is
+  byte-identical to the leak repair's cut, and the guidelines changed only in 3.1 (2.2 to 2.4 asserted).
+- **Realism:** a court administrator shares criminal case data with a research center as a statistical extract
+  without party fields; dismissing and refiling a complaint the same day is routine in county courts.
+
+| Rival reading (a careful judge's) | Prosecutions and per cent | Verdict |
 |---|---|---|
-| A, each county's 2025 arrests with a blood specimen and the per cent at .15 or more | one arrest per agency case number, the State Patrol's placed by the post in its case number, every documented hazard repaired (UTC, the amended report, drug-only requests, two tubes, second specimens, serum); the jail's second submissions counted as arrests, so every county's arrests and share fall outside their bins | miss |
-| B, each county's 2025 injury crashes with no death within 30 days and a drinking driver | the latest accepted version, the two agencies' reports of one crash merged, drinking drivers on motor vehicle units, the census linked in full, a K outside the census kept; each crash counted in the county its report is filed under, so the State Patrol's crashes in a neighbour's towns sit in the post's county and every county's count falls outside its bin | miss |
+| the relation without the arresting agency | the golden in every county | same |
+| the relation allowing one to three days | the golden in every county | same |
+| both at once | the golden in every county | same |
+| a prosecution convicted if any of its cases is | the golden in every county | same |
+| the impaired-driving charges by their code (MSC 42-1201) rather than their words | the golden in every county | same |
+| the relation only where the two cases carry one lead charge | the golden in every county | same (every refile keeps its charge) |
+| a dismissal linked to any later case of its court and offense date, with or without the agency | the golden in every county | same (no later case follows a dismissal there) |
+| the drug charge left out | 14 counties move | ruled out by 3.1, driving under the influence of alcohol or drugs, MSC 42-1201 |
+| each case one prosecution | 11 to 40 high, 2.8 to 5.0 points low | ruled out: 3.1's one for each person charged and offense, and the two cases are one by the relation |
+| one prosecution per court, offense date and agency | 11 to 103 low, every per cent missed | ruled out: the court opens a case per person and offense, and two cases of a cell are one only by the relation |
+| the year read on the filing date | 14 counties move | ruled out by 3.1, offenses committed in 2025 |
+| an amended-charge plea read as a conviction | 14 counties move | ruled out by 3.1, a conviction for impaired driving (the convicted charge) |
+| a deferred prosecution read as a conviction | 14 counties move | ruled out by 3.1, a conviction |
 
-- Mirror leakage: 0.0 per cent of ask weight (the asks read no rung's construction; every rung's response handles
-  them as the cracker does).
-- Pair ceiling: 30.5 on the cut pack (weights 38 / 7 / 55; the cracker keeps the main block and instructions, 45.0,
-  and none of the 42 ask figures; the mirror, R6, keeps 5 of 14 rates and 2 of 14 deaths in their cells, 16.0).
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule as worded) | Verdict |
+|---|---|---|
+| each county's 2025 impaired-driving offenses its court prosecuted by 28 February 2027 and the per cent convicted | the impaired-driving charges by their words, offenses of 2025, the battery clean in the window (no exact or near-exact duplicate, one row per court and case number, numbers in filing order, both dates on each row), each case one person and offense (no party identifier), a guilty plea or verdict on an impaired-driving charge a conviction: every county's prosecutions 11 to 40 high and per cent 2.8 to 5.0 points low, 0 of 28 kept | miss |
+
+- Mirror leakage: 0.0 per cent of ask weight (the mirror, R6, reads the ask as the cracker does).
+- Pair ceiling: 30.5 on the cut pack (target.zip b01d6139; weights 38 / 7 / 55; the cracker keeps the main block and
+  instructions, 45.0, and none of the 28 ask figures; the mirror, R6, keeps 5 of 14 rates and 2 of 14 deaths, 16.0);
+  58.0 if the cracker alone finds the refiled prosecutions; two careful responses on the call 45.0 each.
 - Measured by: generator/ceiling.py.
 
 ## Pre-ship check
@@ -402,19 +410,20 @@ designation's basis.
 - **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is the field's own completed
   count, alcohol-impaired-driving deaths with the untested drivers completed, and the completion is a data
   integration of two observation mechanisms of one item (checks.py: every rung but G names another set). Layers: the
-  mess (two report forms, renumbered agencies, thousandths against g/dL, DVMT in thousands a day with a leap year,
-  the laboratory's UTC times, amended and serum results, second specimens and tubes, report supplements and a second
-  agency's reports) is the systems' own and is neutral on the call (SF2 to SF8, the L1 assertions); the call reads no
-  laboratory or crash records row. Three rules: no decoy or withheld rule ships (R3c), no field reading decides
-  (every SF row converges or is ruled out by a filed sentence), and executing every filed rule with one share of
-  unarrested drivers impaired certifies Corwin, Hatchell, Ossian and Pruett (R3a).
-- **Free gates (2026-10-20):** checks.py 106 of 106, verify.py clean, two builds byte-identical, target.zip cut from
-  the final build (18 files), figures_check.py 106 of 106, precut.py 51 checks clean, voice-check clean, guard.py
-  surface clean and heart WARN after a pull (shape and Gate G overuse, answered at the draw), containers clean.
+  mess (two report forms, the 2011 code table, renumbered agencies, thousandths against g/dL, DVMT in thousands a day
+  with a leap year, and on the ask's path the courts' cases opened across years, amended charges, deferrals and open
+  cases) is the systems' own and is neutral on the call (SF2 to SF8, the L1 assertions); the call reads no court row.
+  Three rules: no decoy or withheld rule ships (R3c), no field reading decides (every SF row converges or is ruled out
+  by a filed sentence), and executing every filed rule with one share of unarrested drivers impaired certifies
+  Corwin, Hatchell, Ossian and Pruett (R3a).
+- **No file describes the data:** no notes, index, manifest or dictionary ships, no workbook carries a notes sheet, and
+  no document names the data's columns (checks.py, by name, sheet and content, each read through the extractor its
+  positive control uses).
 - **leak.py REVIEW lines, each harmless:** the guidelines carry the program's own name (high-range, FY2028, County
-  Impaired Driving Task Force grants), which the call repeats; the manual, the guidelines and the laboratory's and
-  crash records system's notes carry the domain's nouns (drivers, tested, arrest, agency, records), and none names a
-  catch rate, a band, a weight or a completion (R3c asserts the absence through the same extractor as its control).
+  Impaired Driving Task Force grants), which the call repeats; the manual and the guidelines carry the domain's nouns
+  (drivers, tested, arrest, agency, records), and none names a catch rate, a band, a weight or a completion (R3c
+  asserts the absence through the same extractor as its control); the prompt's "our 14 counties" is the call
+  sentence, frozen with the call, and its shell quota is that sentence's question form.
 
 ## Tried and rejected
 
@@ -482,3 +491,34 @@ designation's basis.
   the catch yield conditioned on the BAC band (G14; the composition shift, G6, is what it corrects), and what forces
   the call is the FY2028 grant round (budget_or_appropriation); differentiation added against the six older builds
   G14 then matched. Heart WARN.
+- 2026-11-02, the leak reship: the pack shipped stl_extract_notes.txt and crs_extract_notes_2025.pdf (the new gate's
+  LEAK by name and by content) and the census manual's two field tables (LEAK by content, 58 columns), beside
+  cts_fy2028_package_index.csv (a file list) and three Notes sheets. Replaced by nothing inside target/ that describes
+  the data: the manual keeps 1.1, 1.2, 3.1, 4.1 and 4.2 as the census's own rules with 2.1 one line on the report forms,
+  the 2011 codes ship as the census's plain code table (fcc_2011_form_codes.csv), the DOT's unit sits in each sheet's
+  own title row, provenance moved to metadata.json, and the serum ratio the laboratory's notes stated went unstated with
+  every serum result's class at .15 the same for any ratio from 1.10 to 1.25 (C1); no graded figure moved (freeze
+  determinism PASS on cut 23828a39).
+- 2026-11-02, the ask audit on the leak cut (23828a39): the shipped sheet's 0 of 42 was a narrowed cracker's (the old
+  ceiling.py skipped the jail merge and counted Ask B by the filed county); the careful solver keeps 42 of 42 (pair
+  85.5): the jail's second submissions are one draw at one site and minute (a uniqueness test of site and minute finds
+  all 210), the State Patrol's post is the finer key under SPHQ000, and the misfiled State Patrol crashes carry the
+  neighbour's town (a county field contradicted by a finer key). Both asks spent.
+- 2026-11-02, re-sites weighed inside the spent asks' own files and rejected: the jail's kit stamped at booking (no
+  shared minute, but two analyses of one draw leave a coincidence the rows cannot rule out: a fork), a later jail draw
+  for the same arrest (elimination is not exact: a fork), State Patrol crashes across the line without a town (their
+  coordinates against the counties' extents in the records themselves: a finer key), report supplements as addenda (a
+  header count against its unit rows, or unit numbers against a sequence), State Patrol details booked across the line
+  (the jail's county contradicts the post's), a hospital's serum results left unlabelled (an inference, and the census
+  rows that would show it are the call's).
+- 2026-11-02, the full replacement (ask-rework brief 4b), shipped: both spent asks cut with their files (the
+  laboratory's extract, sites and annual tables, the crash records reports and units); the new baselines are the
+  county courts' prosecutions of 2025 impaired-driving offenses and the per cent convicted by 28 February 2027
+  (guidelines 3.1, one for each person charged and offense) on the AOC's statistical case extract; the device is a
+  prosecution dismissed and refiled the same day under a new case number, linked only by one case's disposition date
+  equalling the other's filing date in one court, offense date and agency (a re-keyed contract linked by timing, not
+  a person under two keys). The careful solver keeps 0 of 28 (pair 30.5, 58.0 if it alone finds the refiles), the
+  over-cleaner (one per court, offense date and agency) misses all 28, and the relation's rivals (no agency, three
+  days' slack) file the golden. Prototyped outside the pack first on the leak cut's own arrests (cases per prosecution
+  0 of 28, one per cell 0 of 28, the relation 28 of 28, no coincident pair).
+- 2026-11-02, judge pass 3 FIX_NOW on the court ask (the main call, deaths and rates forced): one prosecution read two more ways, a dismissal linked only where the lead charge is the same (65 refiles had changed subsection) and a dismissal linked to any later case of its court, offense date and agency (6 such cases), and the drug charge read in or out; the leak re-read then took 3.1's one for each person charged and offense as each of a case's counts. Closed in the data and the WHAT, no graded figure moved: every refile keeps its lead charge, a 2025 cell holds at most one dismissal and no case of the cell follows it, the extract drops its counts column, and 3.1 names the offenses (driving under the influence of alcohol or drugs, MSC 42-1201). Filing what one prosecution is was rejected: it names the device. ceiling.py on b01d6139: the cracker 0 of 28, pair 30.5.

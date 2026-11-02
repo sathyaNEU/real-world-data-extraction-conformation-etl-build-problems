@@ -15,6 +15,9 @@ CENSUS_CLOSE = {2023: dt.date(2025, 2, 27), 2024: dt.date(2026, 2, 26), 2025: dt
 LAB_EXTRACT = dt.date(2027, 3, 12)           # the laboratory's extract for the Center
 CRASHDB_EXTRACT = dt.date(2027, 3, 8)        # the crash records system's 2025 extract
 PRELIM_2026 = dt.date(2027, 3, 1)            # the 2026 preliminary census extract (a distractor)
+COURT_CLOSE = dt.date(2027, 2, 28)           # the courts' dispositions as recorded on this date (guidelines 3.1)
+COURT_EXTRACT = dt.date(2027, 3, 2)          # the Administrative Office of the Courts' extract for the Center
+AOC = "Administrative Office of the Courts"
 
 UNIVERSITY = "Merrivale State University"
 CENTER = "Merrivale State University Center for Transportation Safety"
@@ -112,20 +115,30 @@ FILES = {
     "manual": "fcc_reference_manual_2024_ed.pdf",
     "crash23": "fcc_2023_crash.csv",
     "person23": "fcc_2023_person.csv",
+    "codes2011": "fcc_2011_form_codes.csv",
     "crash2425": "fcc_2024_2025_crash.csv",
     "person2425": "fcc_2024_2025_person.csv",
     "agencies": "fcc_agency_directory.xlsx",
     "vmt": "dot_county_dvmt_2023_2025.xlsx",
-    "lab": "stl_specimen_extract_2023_2025.csv",
-    "lab_notes": "stl_extract_notes.txt",
-    "sites": "stl_collection_sites.csv",
-    "reports": "crs_reports_2025.csv",
-    "units": "crs_units_2025.csv",
-    "crs_notes": "crs_extract_notes_2025.pdf",
-    "lab_annual": "stl_annual_report_2025_tables.pdf",
+    "court": "aoc_criminal_traffic_cases_2025_2027.csv",
     "licensed": "dmv_licensed_drivers_by_county_2025.xlsx",
     "prelim26": "fcc_2026_preliminary_crash.csv",
-    "index": "cts_fy2028_package_index.csv",
+}
+# files that describe the data never ship (dataset-generation section 3): checked by name and by content in checks.py
+DESCRIBING = ("stl_extract_notes.txt", "crs_extract_notes_2025.pdf", "cts_fy2028_package_index.csv")
+# the spent asks' files, no longer shipped: the laboratory's extract, sites and tables, the crash records extract
+RETIRED = ("stl_specimen_extract_2023_2025.csv", "stl_collection_sites.csv", "stl_annual_report_2025_tables.pdf",
+           "crs_reports_2025.csv", "crs_units_2025.csv")
+# the files the call reads, byte-identical to the leak repair's cut (sha256); the guidelines change only in section 3
+CALL_FILES = {
+    "fcc_2023_crash.csv": "6ffa771d2ea65fa29302b31f33db5b9ea45cad753a897b56039788245939845b",
+    "fcc_2023_person.csv": "2c14e63639a7efd9fd9cf7be1d1a72a32926d03adc263502bf7e0704e77ca0f8",
+    "fcc_2011_form_codes.csv": "db7bb51dec4da32c4e985b6e48af5ac6a2f4a56efd04513a2b450e0c0b1aa42d",
+    "fcc_2024_2025_crash.csv": "8733289fda86d5c755673dddda52f22c2736d3124ecaa2746c8aaf1782efb76e",
+    "fcc_2024_2025_person.csv": "299264bdde57bfa2ddcc1726ed63d11e7ac37fec4c89db2257412925e017ee12",
+    "fcc_agency_directory.xlsx": "1e905e7b7e6c5abab69d7d5759f64d495719359b90f2cc174f2842b189773066",
+    "dot_county_dvmt_2023_2025.xlsx": "82f760726a5d969b831c1156adc4c9ae95f5b536d33ff6880d98706d146403ac",
+    "fcc_reference_manual_2024_ed.pdf": "0b3f75ce89a0e537f582d9202dbc23d0f88f2fbbf55297e45698a941431df574",
 }
 DISTRACTORS = ("licensed", "prelim26")
 GOLDEN = {"csv": "county_impaired_driving_rates_2023_2025.csv", "letter": "fy2028_high_range_certification.pdf"}

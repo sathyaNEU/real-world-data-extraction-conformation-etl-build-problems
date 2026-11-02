@@ -5,29 +5,62 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-20",
+ "updated": "2026-11-02",
  "stump": "The default path gives every unarrested surviving driver of the county and city agencies the share of unarrested drivers at .08 or more where every driver is tested and certifies Corwin, Hatchell, Ossian and Pruett, dropping Tanager and certifying Pruett, because one probability for every county ignores how each county's impaired drivers are spread across the BAC bands officers catch.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-20"
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20: answer-call words in the guidelines (the program's own name), design-note vocabulary in the manual, guidelines, lab and crash records notes (domain nouns); no LEAK",
-  "reader": "six scored readers: all missed the call (Corwin, Hatchell, Ossian and Pruett, the default path); reader 6 on the shipped pack 12.9 per cent of ask figures (exit 0)"
+  "leak_py": "REVIEW, no LEAK on the final cut b01d6139 (--asof 2027-03-22; the lines ruled in the design note)",
+  "reader": "six scored readers: all missed the call (Corwin, Hatchell, Ossian and Pruett, the default path); reader 6 on the shipped pack 12.9 per cent of ask figures (exit 0)",
+  "reader_owed": "the guidelines (3.1, the new baselines) and the manual (field tables stripped) changed, and the court extract is new: the leak reader re-reads the final cut (scratch copy leak-task473-ask)",
+  "reader_2026_11_02": "two reads this reship: on 76759c75 (Q1 the guidelines' 2.2 expected-count estimand, filed since ship; Q6 an analytical choice; it raised the drug charge and multi-count cases as second readings of the court ask), and on c065f483 after the fix (the same; it took 3.1's one for each person charged and offense as each of a case's counts, so the final cut drops the extract's counts column); neither found a sentence naming refiling"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-20 on the registered card (shape 01 overuse, Gate G method_or_model_selection repeat and overuse); BLOCKs cleared at the draw by redrawing the decisive generator, decision type, strategy and organisation family, and at registration the pairing and forcing event against task474",
   "heart": "WARN 2026-10-20 at ship (shape 01 overuse, Gate G repeat and overuse, decision type repeat); a pull brought task268 into the window (BLOCK on pattern G6 and forcing event launch_or_rollout), cleared by the honester labels: decisive pattern G14 (the catch yield conditioned on the band), forcing event budget_or_appropriation (the FY2028 grant round), with differentiation against task233, 458, 256, 262, 267 and 54",
-  "nearest": "task458 at 0.06"
+  "nearest": "task458 at 0.06",
+  "heart_2026_11_02": "BLOCK read against the dates: ban.pattern, ban.artifact and ban.strategy against task165 (drawn 2026-10-18; outside this card's window when it registered on 2026-10-20, the window moved as later cards were spent); test.same_puzzle_older and test.same_driver_older against task273 v2 (2026-10-22), task280 (2026-10-24), task486 v3 (2026-10-25) and task445 v3 (2026-11-01), each drawn after this build and each carrying its own differentiation against task473 (H27); surface exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (pass 2)",
+  "verdict": "DETERMINISTIC (pass 4)",
   "disposition": "APPROVE",
-  "report": "task473/determinism_check_report_pass2.md"
+  "report": "task473/determinism_check_report_pass4.md",
+  "pass2": "DETERMINISTIC, APPROVE (task473/determinism_check_report_pass2.md, the cut before this reship)",
+  "pass3": "NOT_DETERMINISTIC on the court ask only, FIX_NOW (task473/determinism_check_report_pass3.md, on 76759c75): one prosecution read as linked only where the lead charge is the same (65 refiles changed subsection), or as a dismissal linked to any later same-key case (6 cases); the drug charge a minor fork; the main call, deaths and rates forced",
+  "pass4": "DETERMINISTIC, APPROVE on the final cut b01d6139: every graded figure reproduced; the only link the data support is a dismissal followed the same day by a new case of the court, offense date and agency (268, none at 1 to 30 days); every looser reading moves all 14 counties and is argued against by the rows; residual risks recorded: the person link inferred from the data (the ask's device) and the estimator choice on the main call (the band catch rates' back-test error a third of the band-blind rate's)",
+  "gate_g": "analytical_non_defect (mechanism method_or_model_selection, surface_read_dependency no, sole_data_defect no)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK by name, extract_notes: crs_extract_notes_2025.pdf and stl_extract_notes.txt; LEAK by describing content: crs_extract_notes_2025.pdf 27 columns, fcc_reference_manual_2024_ed.pdf 58 columns, stl_extract_notes.txt 15 columns)",
+   "repair": "leak",
+   "move": "Stopped writing the three files that described the data (the laboratory's and the crash records system's extract notes, and cts_fy2028_package_index.csv, a file list) and the three Notes sheets (the agency directory, the DOT's miles, the licensed drivers). The census manual lost its two field tables and its file-layout sentences (2.1 is one line on the report forms, 3.1 names no code, 4.3 dropped) and keeps 1.1, 1.2, 3.1, 4.1 and 4.2 as the census's own rules; the 2011 form's codes ship as the census's plain code table fcc_2011_form_codes.csv (element, code, label), which the census reader reads; the DOT's unit sits in each DVMT sheet's own title row; per-file provenance and the DOT's release status moved to metadata.json, whose subdomain no longer narrates the mechanism; the serum to whole-blood ratio the laboratory's notes stated went unstated, closed by C1 in the data (no serum result's class at .15 turns on a ratio from 1.10 to 1.25). checks.py asserts that no shipped file describes the data, by name, sheet and content, with positive controls through the same extractor, and closures 18 and 19 and SF8 by C1. No graded figure moved (freeze determinism PASS, figures.json and submission.md unchanged); the leak cut was 23828a39.",
+   "md5": "23828a39ebe20883ad989cea8d69afec",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house honest-cracker audit (ask-rework brief): on the leak cut 23828a39 the careful solver kept 42 of 42 ask figures, pair 85.5",
+   "repair": "rubric",
+   "move": "Both asks were spent: Ask A's jail copies fall to a uniqueness test of collection site and minute and its State Patrol post is the finer key under SPHQ000; Ask B's misfiled State Patrol crashes carry the neighbour's town. Both cut with their files (the laboratory's specimen extract, collection sites and annual tables, the crash records reports and units) and replaced on a new ask-only record, the Administrative Office of the Courts' statistical extract of criminal traffic cases (31,430 rows, the pack's largest): each county's impaired-driving offenses of 2025 that its county court had prosecuted by 28 February 2027, one for each person charged and offense, and the per cent ending in an impaired-driving conviction by then, filed once in guidelines 3.1. The device: 294 prosecutions dismissed and refiled the same day under a new case number, linked only by one case's disposition date equalling the other's filing date in one court, offense date and agency; the over-cleaning half, 487 cells of co-arrested drivers. The prompt's ask sentence and rounding clause changed (the call sentence did not; 'the 14 rates' became 'every county's rate'), the golden CSV's three baseline columns became two and the letter's table and baseline paragraph followed. Careful solver 0 of 28, pair 30.5 (58.0 if it alone finds the refiles); freeze rubric PASS; every file the call reads but the guidelines is byte-identical to the leak cut.",
+   "md5": "76759c758992d8cdccbc959b554a48f5",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house determinism judge pass 3 on the reship cut (FIX_NOW on the court ask: the refiles' changed charges and six later same-key cases left two readings of one prosecution; the drug charge minor)",
+   "repair": "determinism",
+   "move": "Closed in the data and the WHAT, no graded figure moved: every refile keeps the dismissed case's lead charge, a court and offense date of 2025 holds at most one dismissal and no case of it follows the dismissal (court.py _one_dismissal, _no_later_filing), the extract drops its counts column (the leak re-read had multiplied them out), and guidelines 3.1 names the offenses (driving under the influence of alcohol or drugs, MSC 42-1201). checks.py asserts each rival reading; ceiling.py: the cracker 0 of 28, pair 30.5. Re-judged once (pass 4): DETERMINISTIC, APPROVE.",
+   "md5": "b01d61394f12389322e0578cb21baf1e",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-20",
@@ -35,5 +68,12 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "seed ET30 (FARS alcohol-impaired-driving fatality rates, untested drivers, ten imputations): the world (a highway safety office targeting impaired-driving help on alcohol-impaired-driving fatality rates per 100 million VMT), the decision (which jurisdictions get the help) and the quantity kept; the units moved from states to one state's counties; the pitfall re-found in how surviving drivers come to be tested"
+ "source_note": "seed ET30 (FARS alcohol-impaired-driving fatality rates, untested drivers, ten imputations): the world (a highway safety office targeting impaired-driving help on alcohol-impaired-driving fatality rates per 100 million VMT), the decision (which jurisdictions get the help) and the quantity kept; the units moved from states to one state's counties; the pitfall re-found in how surviving drivers come to be tested",
+ "ask_audit_2026_11_01": {
+  "before": "cracker 42 of 42 kept on the leak cut 23828a39 (pair 85.5; Ask A's jail copies to a uniqueness test of site and minute, its State Patrol post a finer key; Ask B's misfiled crashes to their towns)",
+  "after": "cracker 0 of 28 kept on 76759c75; mirror leakage 0.0 per cent; pair 30.5, 58.0 with the device found alone; two careful responses on the call 45.0",
+  "devices": "the courts' prosecutions refiled the same day under a new case number (primary); co-arrested drivers in one court, offense date and agency (over-cleaning half); Asks A and B cut with their files",
+  "measured_by": "generator/ceiling.py"
+ },
+ "target_zip_md5": "b01d61394f12389322e0578cb21baf1e"
 }

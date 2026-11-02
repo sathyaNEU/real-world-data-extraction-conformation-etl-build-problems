@@ -1,7 +1,7 @@
-"""The State Toxicology Laboratory's specimens: every impaired-driving arrest whose blood the laboratory received, the
-fatal crash procedure's draws from surviving drivers who were not arrested, the coroners' and the medical examiner's
-death investigations, and the other criminal cases; as the laboratory's information system exports them (one row per
-analysis, collection times in UTC). The census's tested drivers are among them, with the same results."""
+"""The impaired-driving arrests with a blood specimen, 2023 to 2025 and the days around them: the census's arrested
+drivers and the arrests away from fatal crashes, each with its agency, county, time and first specimen's result. The
+county courts' cases are cut from them (court.py). The laboratory's own specimen extract no longer ships, so its
+writers are gone; the arrests are drawn exactly as they were."""
 import datetime as dt
 import math
 
@@ -10,11 +10,7 @@ import geo as G
 import truth as T
 import world as W
 
-EXTRACT_FROM = dt.date(2023, 1, 1)           # received dates covered by the extract
-EXTRACT_TO = dt.date(2026, 1, 15)
-SERUM = 1.16                                  # the laboratory's serum to whole-blood ratio
-COLS = ["lab_number", "case_type", "submitting_agency", "agency_case_number", "collection_site", "collected_utc",
-        "received_date", "specimen", "tube", "analyte", "result", "units", "report_status", "report_date"]
+SERUM_FREE = (0.140, 0.163)                   # whole-blood values no serum result carries (any ratio 1.10 to 1.25)
 CORONER_ID = {c["fips"]: "CO%s00" % c["fips"] for c in W.COUNTIES}
 ME_ID = "ME00000"
 ME_COUNTIES = ("013", "011", "023")          # the medical examiner takes these counties' deaths
@@ -162,7 +158,9 @@ def _one(rng, f, k, when):
     drug_only = rng.random() < 0.062
     bac = None if drug_only else _arrest_bac(rng, _hi_share(f, grp))
     site = _site(rng, f, grp, a.kind == "University Police")
-    serum = site.kind == "Hospital" and not drug_only and rng.random() < 0.035 and abs(bac - 0.150) > 0.004
+    # a hospital's serum result is never one whose class at .15 turns on the serum ratio (1.10 to 1.25 agree)
+    serum = site.kind == "Hospital" and not drug_only and rng.random() < 0.035 and not (SERUM_FREE[0] <= bac <
+                                                                                      SERUM_FREE[1])
     re = None
     if not drug_only and rng.random() < 0.026:
         re = round(float(rng.choice([-1, 1])) * float(rng.uniform(0.004, 0.011)), 3)
@@ -170,163 +168,3 @@ def _one(rng, f, k, when):
                   screen=drug_only or rng.random() < 0.28, second=(not drug_only) and rng.random() < 0.036,
                   site=site, serum=serum, tube2=(not drug_only) and rng.random() < 0.05, reanalysis=re,
                   cancel=rng.random() < 0.007 and when.year != 2025, crash=None, kind="DUI")
-
-
-def _number_cases(arrests_, numbers):
-    """Each agency numbers its cases through the year; a fatal crash's arrest keeps the crash report's number."""
-    for a in sorted(arrests_, key=lambda a: (a.when, a.fips, a.agency.aid)):
-        if not a.case:
-            a.case = numbers.next(a.agency, a.when.date(), int(T.rng_for("caseno", a.agency.aid, a.when.isoformat())
-                                                               .integers(0, 4)))
-
-
-def _utc(local):
-    return local.replace(tzinfo=W.CENTRAL).astimezone(W.UTC)
-
-
-def specimens(order, arrests_, numbers):
-    """Every specimen kit the laboratory received, with its analyses: one row per analysis and tube."""
-    _number_cases(arrests_, numbers)
-    kits = []
-    for a in arrests_:
-        rng = T.rng_for("kit", a.agency.aid, a.case)
-        # the draw: 20 to 110 minutes after the arrest, and never past midnight on New Year's Eve
-        lag = int(rng.integers(20, 111))
-        coll = a.when + dt.timedelta(minutes=lag)
-        if a.when.month == 12 and a.when.day == 31 and coll.date() != a.when.date():
-            coll = a.when.replace(hour=23, minute=59) if a.when.hour == 23 else a.when + dt.timedelta(minutes=15)
-            if coll.date() != a.when.date():
-                coll = a.when.replace(hour=23, minute=59)
-        agency = AG.PATROL_ID if a.agency.kind == "State Patrol" else a.agency.aid
-        kits.append(dict(arrest=a, case_type=a.kind, agency=agency, case=a.case, coll=coll, site=a.site,
-                         specimen="SER" if a.serum else "WB", bac=a.bac, drug_only=a.drug_only, screen=a.screen,
-                         tube2=a.tube2, re=a.reanalysis, cancel=a.cancel, first=True))
-        if a.second:
-            coll2 = coll + dt.timedelta(minutes=int(rng.integers(50, 85)))
-            if not (a.when.month == 12 and a.when.day == 31 and coll2.date() != a.when.date()):
-                drop = 0.017 * (coll2 - coll).total_seconds() / 3600.0 + float(rng.uniform(-0.003, 0.003))
-                kits.append(dict(arrest=a, case_type=a.kind, agency=agency, case=a.case, coll=coll2, site=a.site,
-                                 specimen="SER" if a.serum else "WB", bac=_trunc3(max(0.0, a.bac - drop)),
-                                 drug_only=False, screen=False, tube2=False, re=None, cancel=False, first=False))
-    # two arrests are never drawn at one site in the same minute
-    seen = set()
-    for k in sorted(kits, key=lambda k: (k["coll"], k["agency"], k["case"] or "")):
-        while (k["site"].code, k["coll"]) in seen:
-            k["coll"] = k["coll"] - dt.timedelta(minutes=1)
-        seen.add((k["site"].code, k["coll"]))
-    # a county jail's booking nurse draws a city police arrest and the jail submits its own kit under the sheriff's
-    # agency number and booking number, beside the arresting department's
-    for f in [c["fips"] for c in W.COUNTIES]:
-        jail = [k for k in kits if k["arrest"] is not None and k["first"] and k["arrest"].fips == f and
-                k["arrest"].agency.kind == "Police Department" and k["site"].kind == "Jail" and
-                not k["drug_only"] and not k["cancel"]]
-        jail.sort(key=lambda k: (k["bac"] < 0.150, T.rng_for("jaildup", k["case"]).random()))
-        for yr in (2023, 2024, 2025):
-            mine = [k for k in jail if k["arrest"].when.year == yr]
-            for k in mine[:max(2, int(round(0.08 * len(mine))))]:
-                sh = AG.sheriff(f)
-                kits.append(dict(arrest=None, case_type="DUI", agency=sh.aid, case=numbers.next(sh, k["coll"].date(), 2),
-                                 coll=k["coll"], site=k["site"], specimen="WB", bac=k["bac"], drug_only=False,
-                                 screen=False, tube2=False, re=None, cancel=False, first=True))
-    # the fatal crash procedure's draws from surviving drivers not arrested, and the death investigations
-    for cr in order:
-        for p in cr.persons:
-            rng = T.rng_for("crashkit", cr.cid, p.unit, p.pno)
-            when = dt.datetime(cr.date.year, cr.date.month, cr.date.day, cr.hour, cr.minute)
-            if p.is_driver and p.identified and not p.killed and p.tested and not p.arrested:
-                agency = AG.PATROL_ID if cr.group == "SP" else cr.agency.aid
-                site = _site(rng, cr.fips, "SP")
-                kits.append(dict(arrest=None, case_type="FATAL CRASH", agency=agency, case=cr.report,
-                                 coll=when + dt.timedelta(minutes=int(rng.integers(35, 150))), site=site,
-                                 specimen="WB", bac=p.bac, drug_only=False, screen=rng.random() < 0.6, tube2=False,
-                                 re=None, cancel=False, first=True, crash=cr))
-            tested_dead = p.killed and (p.is_driver or getattr(p, "nm_tested", False))
-            if tested_dead:
-                off = ME_ID if cr.fips in ME_COUNTIES else CORONER_ID[cr.fips]
-                site = G.ME if off == ME_ID else G.CORONERS[cr.fips]
-                dday = cr.date + dt.timedelta(days=p.death_days)
-                coll = dt.datetime(dday.year, dday.month, dday.day, int(rng.integers(8, 18)), int(rng.integers(0, 60)))
-                if p.death_days == 0:
-                    coll = max(coll, when + dt.timedelta(hours=3))
-                spec = "VH" if p.test_type == "Vitreous" else "WB"
-                kits.append(dict(arrest=None, case_type="DEATH INVESTIGATION", agency=off, case=None, coll=coll,
-                                 site=site, specimen=spec, bac=p.bac, drug_only=False, screen=rng.random() < 0.85,
-                                 tube2=False, re=None, cancel=False, first=True, crash=cr, person=p))
-    # the death investigations and other criminal cases away from crashes
-    for c in W.COUNTIES:
-        f = c["fips"]
-        rng = T.rng_for("other_cases", f)
-        off = ME_ID if f in ME_COUNTIES else CORONER_ID[f]
-        site = G.ME if off == ME_ID else G.CORONERS[f]
-        for y in (2023, 2024, 2025):
-            vy = T.knobs(f)["vmt3"] / 3.0
-            for i in range(int(round(vy * 1.32 * float(rng.uniform(0.9, 1.1))))):
-                d = dt.date(y, 1, 1) + dt.timedelta(days=int(rng.integers(0, 365)))
-                coll = dt.datetime(d.year, d.month, d.day, int(rng.integers(8, 18)), int(rng.integers(0, 60)))
-                bac = 0.0 if rng.random() < 0.78 else _trunc3(float(rng.uniform(0.01, 0.31)))
-                kits.append(dict(arrest=None, case_type="DEATH INVESTIGATION", agency=off, case=None, coll=coll,
-                                 site=site, specimen="WB" if rng.random() < 0.93 else "VH", bac=bac, drug_only=False,
-                                 screen=rng.random() < 0.9, tube2=False, re=None, cancel=False, first=True))
-            for i in range(int(round(vy * 0.41 * float(rng.uniform(0.9, 1.1))))):
-                d = dt.date(y, 1, 1) + dt.timedelta(days=int(rng.integers(0, 365)))
-                coll = dt.datetime(d.year, d.month, d.day, int(rng.integers(0, 24)), int(rng.integers(0, 60)))
-                u = rng.random()
-                a = AG.patrol_post(f) if u < 0.2 else AG.sheriff(f) if u < 0.5 else AG.city_pd(f, rng)
-                agency = AG.PATROL_ID if a.kind == "State Patrol" else a.aid
-                kits.append(dict(arrest=None, case_type="OTHER CRIMINAL", agency=agency,
-                                 case=numbers.next(a, d, int(rng.integers(0, 3))), coll=coll,
-                                 site=G.JAILS[f] if rng.random() < 0.6 else (G.HOSPITALS.get(f) or [G.JAILS[f]])[0],
-                                 specimen="WB" if rng.random() < 0.7 else "UR", bac=None, drug_only=True, screen=True,
-                                 tube2=False, re=None, cancel=False, first=True))
-    # the extract: received from 1 January 2023 through 15 January 2026
-    for k in kits:
-        rng = T.rng_for("recv", k["agency"], k["case"] or "", k["coll"].isoformat())
-        k["received"] = k["coll"].date() + dt.timedelta(days=int(rng.integers(1, 10)))
-        k["rng"] = rng
-    kits = [k for k in kits if EXTRACT_FROM <= k["received"] <= EXTRACT_TO]
-    kits.sort(key=lambda k: (k["received"], k["coll"], k["agency"], k["case"] or ""))
-    seq = {}
-    for k in kits:
-        y = k["received"].year
-        seq[y] = seq.get(y, 0) + 1
-        k["lab_no"] = "T%02d-%06d" % (y % 100, seq[y])
-        k["utc"] = _utc(k["coll"])
-    # coroner and medical examiner case numbers
-    cseq = {}
-    for k in kits:
-        if k["case_type"] == "DEATH INVESTIGATION":
-            key = (k["agency"], k["coll"].year)
-            cseq[key] = cseq.get(key, 0) + 1
-            k["case"] = "%s-%02d-%04d" % ("ME" if k["agency"] == ME_ID else "C" + k["agency"][2:5], k["coll"].year % 100,
-                                         cseq[key])
-    return kits
-
-
-def rows(kits):
-    out = []
-    for k in kits:
-        rng = k["rng"]
-        rep = k["received"] + dt.timedelta(days=int(rng.integers(3, 26)))
-        base = [k["lab_no"], k["case_type"], k["agency"], k["case"], k["site"].code,
-                k["utc"].strftime("%Y-%m-%dT%H:%M:%SZ"), k["received"].isoformat(), k["specimen"]]
-        if k["cancel"]:
-            out.append(base + ["1", "ETHANOL", "", "g/100 mL", "CANCELLED", rep.isoformat()])
-            continue
-        if not k["drug_only"]:
-            v = k["bac"] * SERUM if k["specimen"] == "SER" else k["bac"]
-            res = "%.3f" % _trunc3(v)
-            tubes = ["1", "2"] if k["tube2"] else ["1"]
-            for t in tubes:
-                if k["re"] is not None:
-                    v2 = max(0.0, k["bac"] + k["re"])
-                    v2 = v2 * SERUM if k["specimen"] == "SER" else v2
-                    rep2 = rep + dt.timedelta(days=int(rng.integers(40, 160)))
-                    out.append(base + [t, "ETHANOL", "%.3f" % _trunc3(v2), "g/100 mL", "SUPERSEDED", rep.isoformat()])
-                    out.append(base + [t, "ETHANOL", res, "g/100 mL", "AMENDED", rep2.isoformat()])
-                else:
-                    out.append(base + [t, "ETHANOL", res, "g/100 mL", "FINAL", rep.isoformat()])
-        if k["screen"]:
-            pos = rng.random() < (0.46 if k["case_type"] in ("DUI", "OTHER CRIMINAL") else 0.38)
-            rep3 = rep + dt.timedelta(days=int(rng.integers(5, 30)))
-            out.append(base + ["1", "DRUG SCREEN", "POSITIVE" if pos else "NEGATIVE", "", "FINAL", rep3.isoformat()])
-    return out

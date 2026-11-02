@@ -1,5 +1,5 @@
 """The independent verifier: reads only the shipped bundle (target/) and the golden deliverables, through bundle.py's
-readers and its own completion, and recomputes the call, every county's deaths and rate, both asks' figures and every
+readers and its own completion, and recomputes the call, every county's deaths and rate, the ask's figures and every
 filed sentence the call leans on. No generator state: nothing from truth, methods, pack or golden is imported."""
 import csv
 import json
@@ -46,29 +46,30 @@ def main(target, golden):
     ok("pdf read back: the manual's testing procedures (4.2)",
        "The State Patrol's fatal crash procedure draws blood from every surviving driver" in man and
        "draw blood from a surviving driver arrested at the scene for impaired driving" in man)
-    notes = open(B.find(target, "stl_extract_notes"), encoding="utf-8").read()
-    ok("txt read back: the laboratory's extract notes (serum ratio, amended reports)",
-       "divided by 1.16" in notes and "SUPERSEDED" in notes)
-    crs_notes = re.sub(r"\s+", " ", B.pdf_text(B.find(target, "crs_extract_notes")))
-    ok("pdf read back: the crash records notes (latest accepted version)",
-       "A report as it stands is its latest accepted version." in crs_notes)
+    cd = B.codes(target)
+    ok("csv read back: the 2011 form's code table (%d elements; drivers, fatal injuries, tests and arrests labelled)"
+       % len(cd), cd["PER_TYP"]["1"] == "DRIVER" and cd["INJ"]["4"] == "FATAL INJURY" and
+       cd["ALC_TST"]["0"] == "NOT TESTED" and cd["DWI_ARR"]["1"] == "YES")
+    ok("no file that describes the data ships (no notes, index or dictionary)",
+       not [f for f in os.listdir(target) if re.search(r"notes|index|dictionar|readme|manifest", f, re.I)])
+    ok("pdf read back: the guidelines' 2025 baseline (3.1), one for each person charged and offense",
+       "one for each person charged and offense" in re.sub(r"\s+", " ", gl))
     ok("the call: %s" % ", ".join(call), call == ["Corwin", "Hatchell", "Ossian", "Tanager"])
     bt, e_ipw, e_pool = B.backtest(B.observed(cr, comp))
     ok("the State Patrol back-test, each post held out: the catch rates miss by %.2f, the one unarrested share by "
        "%.2f" % (e_ipw, e_pool), len(bt) == 14 and e_pool > 2.5 * e_ipw)
     with open(B.find(golden, "county_impaired_driving_rates"), encoding="utf-8") as fh:
         rows = {r["county_fips"]: r for r in csv.DictReader(fh)}
-    a = B.ask_a(B.lab(target), dr)
-    b, _ = B.ask_b(target, cr)
+    a = B.ask_court(target)
+    ok("csv read back: the county courts' case extract (%d cases)" % len(B.court(target)), len(a) == 14)
     for f in sorted(miles):
         r = rows[f]
         d, rt = g["deaths"][f], g["rates"][f]
-        ok("%s: deaths %d, rate %s, arrests %d at %s per cent, injury crashes %d" % (
-            r["county"], int(round(d)), "%.2f" % rt, a[f][0], "%.1f" % a[f][1], b.get(f, 0)),
+        ok("%s: deaths %d, rate %s, impaired-driving offenses of 2025 prosecuted %d, %s per cent convicted" % (
+            r["county"], int(round(d)), "%.2f" % rt, a[f][0], "%.1f" % a[f][1]),
            int(r["ai_driving_deaths_2023_2025"]) == int(round(d)) and r["ai_driving_rate_per_100m_vmt"] == "%.2f" % rt
-           and int(r["arrests_blood_specimen_2025"]) == a[f][0] and r["pct_arrests_015_or_more_2025"] == "%.1f" % a[f][1]
-           and int(r["injury_crashes_drinking_driver_2025"]) == b.get(f, 0) and
-           (r["high_range_fy2028"] == "Y") == (rt >= 0.60))
+           and int(r["dui_offenses_prosecuted_2025"]) == a[f][0] and
+           r["pct_convicted_dui_by_2027_02_28"] == "%.1f" % a[f][1] and (r["high_range_fy2028"] == "Y") == (rt >= 0.60))
     ok("bins from the shipped figures: deaths at least 0.2 from a half (tightest %.2f), rates at least 0.002 from a "
        "cell edge (%.4f), per cents at least 0.012 (%.3f)" % (
            min(edge(v, 1.0) for v in g["deaths"].values()), min(edge(v, 0.01) for v in g["rates"].values()),

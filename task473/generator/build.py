@@ -28,8 +28,6 @@ CENTRAL_DST = dt.timezone(dt.timedelta(hours=-5))
 PDF_STAMPS = {
     "guidelines": (b"D:20270209100512-06'00'", b"D:20270209100512-06'00'"),
     "manual": (b"D:20240314162207-05'00'", b"D:20240315091130-05'00'"),
-    "crs_notes": (b"D:20270308141844-06'00'", b"D:20270308141844-06'00'"),
-    "lab_annual": (b"D:20270305113027-06'00'", b"D:20270306082419-06'00'"),
 }
 OOXML = {   # creator, last modified by, created, modified, company
     "agencies": (W.CENTER_SHORT, "Eduardo Chapman", "2024-01-08T15:12:00Z", "2027-01-04T16:40:27Z", W.UNIVERSITY),
@@ -40,18 +38,15 @@ OOXML = {   # creator, last modified by, created, modified, company
 }
 AS_OF = {   # each file's date as its source dated it
     "guidelines": "2027-02-09", "manual": "2024-03-15", "crash23": "2025-02-27", "person23": "2025-02-27",
-    "crash2425": "2027-02-25", "person2425": "2027-02-25", "agencies": "2027-01-04", "vmt": "2027-01-30",
-    "lab": "2027-03-12", "lab_notes": "2027-03-12", "sites": "2027-03-12", "reports": "2027-03-08",
-    "units": "2027-03-08", "crs_notes": "2027-03-08", "lab_annual": "2027-03-06", "licensed": "2026-01-15",
-    "prelim26": "2027-03-01", "index": "2027-03-18",
+    "codes2011": "2025-02-27", "crash2425": "2027-02-25", "person2425": "2027-02-25", "agencies": "2027-01-04",
+    "vmt": "2027-01-30", "court": "2027-03-02", "licensed": "2026-01-15", "prelim26": "2027-03-01",
 }
 
 
 def build(out, x=None, quiet=False):
     import census as C
-    import crs as R
+    import court as CT
     import docs as DC
-    import lab as L
     import postprocess as PP
     if os.path.exists(out):
         shutil.rmtree(out)
@@ -63,19 +58,13 @@ def build(out, x=None, quiet=False):
     c25, p25 = x["census25"]
     n["crash23"] = P.write_csv(f("crash23"), C.CRASH23_COLS, c23)
     n["person23"] = P.write_csv(f("person23"), C.PERSON23_COLS, p23)
+    n["codes2011"] = P.write_csv(f("codes2011"), C.CODE_COLS, C.code_rows())
     n["crash2425"] = P.write_csv(f("crash2425"), C.CRASH25_COLS, c25)
     n["person2425"] = P.write_csv(f("person2425"), C.PERSON25_COLS, p25)
-    n["lab"] = P.write_csv(f("lab"), L.COLS, x["lab_rows"], crlf=True)
-    n["sites"] = P.write_csv(f("sites"), P.SITE_COLS, P.site_rows(), crlf=True)
-    n["reports"] = P.write_csv(f("reports"), R.REPORT_COLS, x["rep_rows"])
-    n["units"] = P.write_csv(f("units"), R.UNIT_COLS, x["unit_rows"])
+    n["court"] = P.write_csv(f("court"), CT.COLS, x["court_rows"], crlf=True)
     n["prelim26"] = P.write_csv(f("prelim26"), C.PRELIM_COLS, x["prelim"])
-    n["index"] = P.write_csv(f("index"), P.INDEX_COLS, P.index_rows(), crlf=True)
-    DC.write_lab_notes(f("lab_notes"), n["lab"])
     DC.write_guidelines(f("guidelines"))
     DC.write_manual(f("manual"))
-    DC.write_crs_notes(f("crs_notes"), n["reports"], n["units"])
-    DC.write_lab_annual(f("lab_annual"), x["kits"])
     DC.write_directory(f("agencies"))
     DC.write_dvmt(f("vmt"), x["tab"])
     DC.write_licensed(f("licensed"), x["vmt"])

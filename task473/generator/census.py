@@ -24,6 +24,36 @@ COLL_OLD = {v: str(i) for i, v in enumerate(COLL)}
 REST = ("SHOULDER AND LAP BELT", "NONE USED", "UNKNOWN", "HELMET", "NOT APPLICABLE")
 REST_OLD = {"SHOULDER AND LAP BELT": "03", "NONE USED": "20", "UNKNOWN": "99", "HELMET": "05", "NOT APPLICABLE": "00"}
 
+CODE_COLS = ["element", "code", "label"]
+
+
+def code_rows():
+    """The 2011 report form's code table, as the census exports it beside the 2023 files: each coded element's codes
+    and their labels, and nothing else."""
+    def words(v):
+        return v
+    rows = []
+    rows += [["RTE_SYS", c, words(v)] for v, c in sorted(ROAD_OLD.items(), key=lambda t: t[1])]
+    rows += [["LGT", c, words(v)] for v, c in sorted(LIGHT_OLD.items(), key=lambda t: t[1])]
+    rows += [["WTHR", c, words(v)] for v, c in sorted(WEATHER_OLD.items(), key=lambda t: t[1])]
+    rows += [["COLL", c, words(v)] for v, c in sorted(COLL_OLD.items(), key=lambda t: t[1])]
+    rows += [["ACC_TIME", "9999", "UNKNOWN"]]
+    rows += [["PER_TYP", "1", "DRIVER"], ["PER_TYP", "2", "PASSENGER"], ["PER_TYP", "5", "PEDESTRIAN"],
+             ["PER_TYP", "6", "PEDALCYCLIST"]]
+    rows += [["BODY", c, words(v)] for v, c in sorted(BODY_OLD.items(), key=lambda t: t[1])]
+    rows += [["AGE", "999", "UNKNOWN"]]
+    rows += [["SEX", "1", "MALE"], ["SEX", "2", "FEMALE"], ["SEX", "9", "UNKNOWN"]]
+    inj = {"O": "NO APPARENT INJURY", "C": "POSSIBLE INJURY", "B": "SUSPECTED MINOR INJURY",
+           "A": "SUSPECTED SERIOUS INJURY", "K": "FATAL INJURY", "U": "UNKNOWN"}
+    rows += [["INJ", c, inj[v]] for v, c in sorted(INJ_OLD.items(), key=lambda t: t[1])]
+    rows += [["HIT_RUN", "0", "NO"], ["HIT_RUN", "1", "YES"]]
+    rows += [["REST", c, words(v)] for v, c in sorted(REST_OLD.items(), key=lambda t: t[1])]
+    rows += [["ALC_TST", "0", "NOT TESTED"], ["ALC_TST", "1", "BLOOD"], ["ALC_TST", "3", "VITREOUS HUMOR"]]
+    rows += [["ALC_RES", "996", "NOT TESTED"]]
+    rows += [["DWI_ARR", "0", "NO"], ["DWI_ARR", "1", "YES"]]
+    return rows
+
+
 CRASH23_COLS = ["CASE_NUM", "ACC_DATE", "ACC_TIME", "CNTY", "CITY_NAME", "AGCY", "RPT_NUM", "RTE_SYS", "RTE_ID", "LGT",
                 "WTHR", "COLL", "VEH_CT", "FATAL_CT", "LAT", "LON"]
 PERSON23_COLS = ["CASE_NUM", "VEH_NUM", "PER_NUM", "PER_TYP", "BODY", "AGE", "SEX", "INJ", "DTH_DATE", "HIT_RUN",

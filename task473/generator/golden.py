@@ -16,13 +16,11 @@ from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, 
 
 import bundle as B    # noqa: E402
 import docs as DC     # noqa: E402
-import lab as L       # noqa: E402
 import methods as M   # noqa: E402
 import world as W     # noqa: E402
 
 CSV_COLS = ["county_fips", "county", "ai_driving_deaths_2023_2025", "vmt_2023_2025_100m", "ai_driving_rate_per_100m_vmt",
-            "high_range_fy2028", "arrests_blood_specimen_2025", "pct_arrests_015_or_more_2025",
-            "injury_crashes_drinking_driver_2025"]
+            "high_range_fy2028", "dui_offenses_prosecuted_2025", "pct_convicted_dui_by_2027_02_28"]
 INK = colors.HexColor("#1f2124")
 GREY = colors.HexColor("#5b5e63")
 HIGH = colors.HexColor("#eb6834")     # validated pair (dataviz validate_palette.js, light surface): high-range
@@ -41,8 +39,8 @@ def figures(x):
     rows = []
     for r in fig["rows"]:
         rows.append(dict(fips=r["fips"], county=r["county"], deaths=int(round(r["deaths"])), vmt=_r2(r["vmt"] / 1e8),
-                         rate=_r2(r["rate"]), high=r["high"], arrests=r["arrests"], pct15="%.1f" % r["pct15"],
-                         crashes=r["crashes"]))
+                         rate=_r2(r["rate"]), high=r["high"], prosecuted=r["prosecuted"],
+                         pct_conv="%.1f" % r["pct_conv"]))
     high = sorted([r for r in rows if r["high"]], key=lambda r: -float(r["rate"]))
     below = sorted([r for r in rows if not r["high"]], key=lambda r: -float(r["rate"]))
     top_below = [r for r in below if r["rate"] == below[0]["rate"]]
@@ -69,8 +67,8 @@ def figures(x):
     scored = dict(call=sorted(r["county"] for r in high),
                   rates={r["county"]: round(float(r["rate"]), 2) for r in rows},
                   deaths={r["county"]: r["deaths"] for r in rows},
-                  ask_a={r["county"]: {"arrests": r["arrests"], "pct15": round(float(r["pct15"]), 1)} for r in rows},
-                  ask_b={r["county"]: r["crashes"] for r in rows})
+                  ask_court={r["county"]: {"prosecuted": r["prosecuted"], "pct_conv": round(float(r["pct_conv"]), 1)}
+                             for r in rows})
     return dict(scored, rows=rows, high=[r["county"] for r in high],
                 high_rates=[(r["county"], r["rate"]) for r in high],
                 below_top=[r["county"] for r in top_below], below_top_rate=below[0]["rate"],
@@ -81,7 +79,7 @@ def figures(x):
                 tanager_found_lo=found.get(0, 0),
                 tanager_found_hi=found.get(1, 0), tanager_missed="%.1f" % missed_t,
                 tanager_rate=_r2(tan["rate"]), threshold="%.2f" % W.THRESHOLD, sections=DC.SECTIONS,
-                window_days=DC.WINDOW_DAYS, leap_days=366, serum="%.2f" % L.SERUM)
+                window_days=DC.WINDOW_DAYS, leap_days=366)
 
 
 def write_csv(path, f):
@@ -90,7 +88,7 @@ def write_csv(path, f):
         w.writerow(CSV_COLS)
         for r in f["rows"]:
             w.writerow([r["fips"], r["county"], r["deaths"], r["vmt"], r["rate"], "Y" if r["high"] else "N",
-                        r["arrests"], r["pct15"], r["crashes"]])
+                        r["prosecuted"], r["pct_conv"]])
 
 
 def _bar(d, x0, y0, w, h, fill):
@@ -197,31 +195,31 @@ def write_letter(path, f):
                        "gives every county's figures." % sec["rate"], cap),
              PageBreak()]
     hdr = ["County", "Deaths, 2023 to 2025", "Vehicle miles (100 million)", "Rate", "High-range",
-           "Arrests with a blood specimen, 2025", "At .15 or more", "Injury crashes, drinking driver, 2025"]
+           "Impaired-driving offenses of 2025 prosecuted", "Convicted of impaired driving by 28 Feb 2027"]
     t = [[Paragraph(h, smallb if i == 0 else smallbr) for i, h in enumerate(hdr)]]
     for r in sorted(f["rows"], key=lambda r: r["county"]):
         vals = (r["county"], r["deaths"], r["vmt"], r["rate"], "Yes" if r["high"] else "No",
-                format(r["arrests"], ","), r["pct15"] + "%", r["crashes"])
+                format(r["prosecuted"], ","), r["pct_conv"] + "%")
         t.append([Paragraph(str(v), small if i == 0 else smallr) for i, v in enumerate(vals)])
-    tab = Table(t, colWidths=[0.8 * inch, 0.7 * inch, 0.84 * inch, 0.45 * inch, 0.7 * inch, 0.95 * inch,
-                              0.6 * inch, 0.92 * inch], repeatRows=1, hAlign="LEFT")
+    tab = Table(t, colWidths=[0.8 * inch, 0.72 * inch, 0.86 * inch, 0.45 * inch, 0.84 * inch, 1.12 * inch,
+                              1.21 * inch], repeatRows=1, hAlign="LEFT")
     tab.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.7, INK), ("LINEBELOW", (0, -1), (-1, -1), 0.5, GREY),
                              ("VALIGN", (0, 0), (-1, 0), "BOTTOM"), ("VALIGN", (0, 1), (-1, -1), "TOP"),
                              ("TOPPADDING", (0, 0), (-1, -1), 1.8), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8)]))
     story += [Spacer(1, 6),
               Paragraph("<b>Table 1. Rates and 2025 baselines by county</b>", body), tab, Spacer(1, 4),
               Paragraph("Sources: Fatal Crash Census, 2023, 2024 and 2025 files; DOT county daily vehicle miles "
-                        "2023 to 2025; State Toxicology Laboratory specimen extract of 12 March 2027; Crash Records "
-                        "System extract of 8 March 2027.", note),
+                        "2023 to 2025; Administrative Office of the Courts criminal traffic case extract of 2 March "
+                        "2027.", note),
               Paragraph("Deaths are the number expected from the census records under guidelines %s, rounded to "
                         "whole deaths; each rate is computed from the unrounded count and compared with 0.60 before "
                         "rounding. Vehicle miles are the DOT's daily miles times 365 days, 366 in 2024." %
                         sec["estimand"], note), Spacer(1, 8),
-              Paragraph("The baselines in Table 1 are the three section %s figures each task force application "
-                        "states: the county's 2025 impaired-driving arrests with a blood specimen at the laboratory "
-                        "and the per cent of them at .15 or more, and its 2025 injury crashes in which no one died "
-                        "within %d days and an officer reported a driver had been drinking." % (
-                            sec["baselines"], f["window_days"]), body),
+              Paragraph("The baselines in Table 1 are the section %s figures each task force application states: "
+                        "the impaired-driving offenses committed in the county in 2025 that its county court had "
+                        "prosecuted by 28 February 2027, one for each person charged and offense, and the per cent of "
+                        "them that had ended in a conviction for impaired driving by that date." % sec["baselines"],
+                        body),
               Paragraph("Sincerely,", body), Spacer(1, 16),
               Paragraph("%s<br/>%s, %s" % (coord, title, W.CENTER_SHORT), body),
               Paragraph("cc: %s, %s" % W.PEOPLE["records"], body)]
