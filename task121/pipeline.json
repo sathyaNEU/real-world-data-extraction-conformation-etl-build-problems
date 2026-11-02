@@ -1,34 +1,41 @@
 {
  "task": "task121",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "human-factors-ergonomics",
  "objective": "root-cause",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "stump": "A competent solver sets the monthly under-triage rate against the dated changes, sees the step at protocol release 13.3 on 3 March 2026, rules out the graduates and the call mix and names the release; the step that lands it there is reading the coincident go-live as the cause, when the rotation begun on 2 March put 15.8 per cent of shifts on less than eleven hours' rest and the rise lives in the calls taken on those shifts (31.1 against 10.7 on rested shifts, which held at 10.2 before March), which only each call-taker's rest built from consecutive worked shifts shows.",
  "architecture": 6,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-26",
-  "checks": 51
+  "date": "2026-11-02",
+  "checks": 61
  },
  "leak": {
   "leak_py": "REVIEW 2026-11-01 (--asof 2026-11-04, no LEAK): the release number 13.3 in the release note; generic nouns in the release note and the QA program; the prompt's shell quota; each ruled in the design note's build record",
   "reader": "round 1 (7691f03b): both readers named release 13.3, both landed every ask figure (asks re-sited to silent devices); round 2 (4eb36d04, shipped): reader C release 13.3, reader D the quick returns (the one response the ladder lets onto the call), both 0 of 36 ask figures (score_reader 2 of 38, the two rates)",
-  "reship_reader": "2026-11-01, fresh copy of 0d39c59f, no dictionary or folder index: no decisive-step sentence, nothing ranks the causes, Q6 an analytical choice (attributing the March rise among candidate causes); the release note and the academy class read as context candidates; the ask readings it named are closed per judge pass 4"
+  "reship_reader": "2026-11-01, fresh copy of 0d39c59f, no dictionary or folder index: no decisive-step sentence, nothing ranks the causes, Q6 an analytical choice (attributing the March rise among candidate causes); the release note and the academy class read as context candidates; the ask readings it named are closed per judge pass 4",
+  "leak_py_2026_11_02": "REVIEW (--asof 2026-11-04, no LEAK) on the Ask A cut: the reship's four lines (the release number, the release note's nouns, the QA program's nouns, the prompt's shell quota), 30 golden figures swept, the QA program's terms gaining records (2.3 and 6.1, the PDF byte-identical to the judged one); each ruled in the design note's build record",
+  "reader_2026_11_02": "owed next (the prompt changed): fresh copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/aa89d852-d261-54bf-a8a2-dbdcaa1de391/scratchpad/leak-task121-askcut/ (prompt.txt and target/)",
+  "ask_cut_reader": "2026-11-02, fresh copy of the Ask A cut (prompt without the processing-time clause, target.zip 0d39c59f unchanged): no decisive-step sentence, nothing ranks the causes, Q6 an analytical choice; the release note's 3 March go-live reads as the signposted candidate, which is the designed easy route (the judge's: blaming release 13.3), not the answer; its readings (the windows, the recording offset, TG05) one each per judge pass 4"
  },
  "duplicate_check": {
   "heart": "WARN (people.first, overuse), no BLOCK",
   "surface": "WARN people.first (Erica, Raymond in older builds)",
-  "heart_2026_11_01": "BLOCK read against the dates: test.same_driver_older against task232 v2, drawn 2026-11-01, after this build's 2026-10-26 draw (H27); surface exit 0, people.first WARNs (Erica, Raymond)"
+  "heart_2026_11_01": "BLOCK read against the dates: test.same_driver_older against task232 v2, drawn 2026-11-01, after this build's 2026-10-26 draw (H27); surface exit 0, people.first WARNs (Erica, Raymond)",
+  "surface_2026_11_02": "exit 0: people.first WARNs (Erica, Raymond); 9 pairs promoted for the author's adjudicated read, on the unchanged card's axes or surface similarity near 0.10",
+  "heart_2026_11_02": "BLOCK test.same_driver_older against task232 v2 (drawn 2026-11-01, after this build's 2026-10-26 draw): read against the dates (H27), the card untouched"
  },
  "judge": {
   "verdict": "DETERMINISTIC (pass 4, the reship, 2026-11-01; pass 3, round 2)",
   "disposition": "pass 4 FIX_NOW on wording only, applied: the Final Recommendation's 'call mix' now reads 'protocol mix' (at determinant grain the mix reads 10.3, so the claim holds at protocol grain), and the unfiled day in '2 March 2026' is dropped from the call sentence and the workbook's cause line; the goldens agree (the Began row now gives the roster's own dates, 2 March for the first regular runs mixing two shift types, 4 March for the first quick return from March, asserted)",
   "report": "task121/determinism_check_report_pass4.md (reship), task121/determinism_check_report_pass3.md",
-  "pass4": "on 0d39c59f: every graded figure reproduced (36 monthly ask figures, the chart, every main-call figure); Gate G decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical (the easy route blames release 13.3); the five conventions the removed dictionary carried are each one reading in the data (unit_assigned's first assignment from the unit history, a repeated che_call_id one call, position passes, QA7's keyed minutes and seconds, TG05 a 911 group by the reference sheet), three of them the asks' devices"
+  "pass4": "on 0d39c59f: every graded figure reproduced (36 monthly ask figures, the chart, every main-call figure); Gate G decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical (the easy route blames release 13.3); the five conventions the removed dictionary carried are each one reading in the data (unit_assigned's first assignment from the unit history, a repeated che_call_id one call, position passes, QA7's keyed minutes and seconds, TG05 a 911 group by the reference sheet), three of them the asks' devices",
+  "pass5": "owed next: the prompt's ask wording changed (Ask A's clause cut), the condition on which fix-rubric spawns the judge; pass 4's DETERMINISTIC is scoped to the reship's prompt",
+  "ask_cut": "no re-judge: the cut removes Ask A's clause and figures only, and judge pass 4 ruled the call and Asks B and C deterministic on this byte-identical pack (0d39c59f)"
  },
  "returned": [
   {
@@ -37,9 +44,17 @@
    "repair": "leak",
    "move": "The generator no longer writes data_dictionary.csv (every column glossed) or qa_review_folder_index.txt (a REVIEW line, but a file list giving each file's system and span describes the data under section 3): 12 files in three formats (CSV, PDF, XLSX). Their provenance (each file's system and what it covers, the folder's 4 November 2026 assembly) moved to metadata.json (build.PROVENANCE, as_of). The QA program, a governing document caught by its name only, ships as qa_program_measures_2025.pdf, its text unchanged but for one sentence added to 5.1: \"Every cardiac arrest call is reviewed from its recording, and the reviewer times each event from the start of the recording.\" It takes over the dictionary's gloss on the review log's times (seconds into the recording), without which Ask B's twelve medians had a second reading (read from the answer, all 12 months move, asserted); it names neither when the recording starts nor QA7's keying. Every other closure the two files carried rests on the producing systems, asserted through the verifier's csv extractor: SF5 (every CAD answer time is the call detail's answered_utc in US Central), Ask A's grain (judge pass 3's fork 2, closed on the dictionary and QA 3.2, now on QA 3.2 and che_call_id being one call_id of the call detail), closure 16 (every ePCR number dashed is a CAD incident, every login and employee on the call-taker list), closure 19 (COLD on exactly levels O to C) and closure 4 (every file saved at the 4 November 2026 assembly). checks.py adds 13 assertions (the name screen with a positive control on the three retired names, sheet names, both PDFs' text with their own sentences as controls and no data column named, the input gates, the five closures and the Ask B clock) and the dash sweep now reads the PDFs; verify.py's UTC-to-Central rule is lifted into a helper the checks share, logic unchanged. The other 11 files are byte-identical to the judged pack; figures.json, submission.md, prompt.txt and the golden workbook are unchanged; the golden chart re-renders under this container's matplotlib 3.11.2 with the same content (the untouched generator renders it the same way), so the shipped PNG is kept. Cracker 0 of 36, pair ceiling 28.5, unchanged. Judge pass 4 on 0d39c59f was DETERMINISTIC with a wording-only FIX_NOW, closed through writeup.py: the Final Recommendation now says \"the protocol mix\" for the 14.7 (Step 3 already said \"the earlier protocol mix\"), and the call sentence and Deliverable Answers item 1 say \"the rotation worked from March 2026\", since no shipped file states 2 March; no figure moved, freeze.py flagging only the dropped day \"2\" in block 1 and in the workbook's answers; the goldens followed (call.statement and the workbook's Cause row say \"from March 2026\", the Began row gives the roster's dates, regular runs mixing two shift types from 2 March 2026 and the first quick return from March on 4 March 2026, asserted in checks.py, and the chart's note reads \"March 2026: the new rotation begins\"), call.statement cleared in freeze by --allow.",
    "commit": "RESHIPPED (task121)"
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house honest-cracker audit 2026-11-01 (ask_audit_2026_11_01, SPENT on Ask A); the /fix-rubric pass stopped on Ask A with no silent site inside the frozen scope, and the coordinator chose the cut",
+   "repair": "rubric",
+   "move": "Ask A (each month's 90th percentile call processing time for medical calls, twelve figures) cut: the careful solver folds the CAD's 1,548 split incidents by their shared che_call_id and lands all twelve, and inside the frozen scope no device could replace it (the CAD calls file the call reads fixes its grain and start, QA 3.1, 3.2 and 6.1 its measure, and the CAD's che_call_ids pin the call detail's records). The prompt loses the clause (699 to 639 characters; the call sentence, the B and C wording and the rounding sentence unchanged; voice-check PASS). figures.json loses asks.A (12 keys) and parameters.percentile_rank; block 3 loses its Ask A step and block 4 its item, both renumbered with their text unchanged; the workbook's Monthly sheet loses the processing column and the Notes sheet its line. The unit history, read only by Ask A, ships as a third declared distractor (metadata.json; with all three distractors deleted the call and both asks are unchanged, and it ranks nothing), so every file under target/ is byte-identical to the judged pack. checks.py drops the three Ask A stops and the ASKA fair, silent and grain rows (the one-record-per-call_id clause now sits in SF5 C1), keeps the split incidents' separation rows and the call-unchanged row as R2, and asserts the freeze (the call's files, B's and C's files and the distractors byte-identical to 0d39c59f; every main-call figure and B's and C's 24 figures as shipped): 83 run, 0 failed. verify.py drops its Ask A block: 43 figures, 0 differ. generator/ceiling.py, the careful-solver cracker reading the pack itself, replaces cracker.py: 0 of 24 on every battery route, mirror leakage 0 per cent with no ask whole, pair 28.5, two on the call 45.0, the full includer 24 of 24. The design note gains its Survivor anatomy (precut 61 checks, 0 FAIL, 0 WARN with the build PAUSED), the Ask sheet is rewritten on the measured sheets, and the shape arithmetic reads 35 criteria. freeze --mode rubric PASS (the workbook and 13 ask figures moved); --mode determinism flags exactly Ask A's 12 keys, percentile_rank and block 4. The golden chart re-renders byte-identical.",
+   "md5": "0d39c59f3c649ddbc68494806a3e72b0 (unchanged: no file under target/ moved)",
+   "commit": "RESHIPPED (task121): rubric, Ask A cut"
   }
  ],
- "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 12 of 36 against the recorded 0 of 36, SPENT on Ask A (Asks B and C hold), so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-26",
  "portal": null,
@@ -133,23 +148,27 @@
   }
  },
  "build": {
-  "checks": "82 run, 0 failed",
-  "verifier": "PASS (55 figures)",
+  "checks": "83 run, 0 failed",
+  "verifier": "PASS (43 figures)",
   "byte_identical": true,
-  "figures_check": "71 of 71",
-  "cracker": "0 of 36 ask figures, pair ceiling 28.5",
+  "figures_check": "58 of 58",
+  "cracker": "generator/ceiling.py (careful solver): 0 of 24 ask figures, mirror leakage 0, pair ceiling 28.5",
   "target_zip_md5": "0d39c59f3c649ddbc68494806a3e72b0"
  },
  "seed": "none: a fresh world drawn 2026-10-26 (Quellmont County Emergency Communications District), probed before the card on prototype p121b",
  "gates": {
-  "checks": "82 assertions, 0 failed",
-  "verify": "55 figures, 0 differ",
-  "rebuild": "byte-identical (two consecutive builds, target.zip twice)",
-  "figures_check": "71 figures, 0 absent",
-  "precut": "61 checks, 0 FAIL, 8 WARN (survivor anatomy section, predates the reship)",
-  "cracker": "0 of 36, pair ceiling 28.5 (measured 0 of 36 by two readers on 4eb36d04; the cracker 0 of 36 on 0d39c59f)",
-  "target_zip_md5": "0d39c59f3c649ddbc68494806a3e72b0",
-  "freeze": "determinism PASS"
+  "checks": "83 assertions, 0 failed",
+  "verify": "43 figures, 0 differ",
+  "rebuild": "byte-identical (two consecutive builds, target.zip 0d39c59f3c649ddbc68494806a3e72b0 both times, each with its own second build identical)",
+  "figures_check": "58 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN (Survivor anatomy written, the build PAUSED when run)",
+  "voice_check": "PASS (639 characters; the shell-quota WARN as shipped)",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-11-04)",
+  "surface": "exit 0",
+  "validate": "306 cards, 0 invalid",
+  "freeze": "rubric PASS; determinism mode flags only Ask A's 12 keys, parameters.percentile_rank and block 4",
+  "ceiling": "PASS: careful cracker 0 of 24, mirror 0 of 24, pair 28.5, two on the call 45.0, full includer 24 of 24",
+  "target_zip_md5": "0d39c59f3c649ddbc68494806a3e72b0"
  },
  "architectures": [],
  "ask_audit_2026_11_01": {
@@ -159,5 +178,11 @@
   "why": "1,548 che_call_id values each on two incidents with the same answer second, call-taker, protocol and determinant: the near-exact duplicate check finds them",
   "probe": "scratchpad audit_cracker/task121/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
   "status_before": "SHIPPED"
+ },
+ "ask_rework_2026_11_01": {
+  "verdict": "STOPPED on Ask A (no device passes both tests inside the /fix-rubric scope; Asks B and C hold); the coordinator then chose the cut, done 2026-11-02 (returned)",
+  "baseline": "careful-solver probe on 0d39c59f: A 12 of 12, B 0 of 12, C 0 of 12, pair 46.8; B and C 0 of 12 under every battery variant tried",
+  "why": "the CAD calls file (read by the call, byte-frozen) fixes Ask A's grain and start, QA 3.1, 3.2 and 6.1 its measure, and the CAD's che_call_ids pin the call detail's records; each unit-history candidate is a battery item, a fork, an oracle or without mass, each re-worded one a battery item, tuned or in the call's population",
+  "changed": "no generator, pack, golden, prompt or submission file; the freeze snapshot retaken on the shipped state; one Tried and rejected line"
  }
 }

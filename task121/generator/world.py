@@ -209,7 +209,7 @@ class World:
                     suffix=int(rng.integers(1, 6)),
                     second_patient=contact and rng.random() < 0.012))
 
-    # ------------------------------------------------------------------ ambulances assigned (Ask A)
+    # ------------------------------------------------------------------ ambulances assigned (the unit history)
     def _units(self):
         """the first ambulance is assigned a minute or two after answer (a few seconds longer on release 13.3, its
         new breathing prompt); about one call in eighteen loses its first ambulance to a higher-priority call or to a
@@ -242,7 +242,7 @@ class World:
             c["first_assigned"] = units[0]["assigned"]
             c["dispatched"] = units[-1]["assigned"]
 
-    # ------------------------------------------------------------------ split incidents (Ask A)
+    # ------------------------------------------------------------------ split incidents (Layer 1 in the CAD)
     def _splits(self):
         """a traffic incident with a patient in a second vehicle, or a second patient found at another call, goes to
         a second ambulance on its own CAD incident: the split copies the call's answer time, call-taker, phone call

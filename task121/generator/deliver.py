@@ -49,13 +49,11 @@ def compute(target):
         },
         "monthly_under_triage": {ym_key(ym): K.r1(G["monthly"][ym]) for ym in K.MONTHS},
         "asks": {
-            "A": {"p90_processing_s": {ym_key(ym): ak["A"][ym] for ym in K.MONTHS}},
             "B": {"median_first_compression_s": {ym_key(ym): ak["B"][ym] for ym in K.MONTHS}},
             "C": {"answered_within_15s_pct": {ym_key(ym): ak["C"][ym] for ym in K.MONTHS}},
         },
         "threshold": {"quick_return_hours": K.QUICK_RETURN_HOURS, "answer_seconds": K.STANDARD_ANSWER},
-        "parameters": {"percentile_rank": 0.9, "qa_clause_under_triage": 2.2, "emergency_number": 911,
-                       "release": 13.3},
+        "parameters": {"qa_clause_under_triage": 2.2, "emergency_number": 911, "release": 13.3},
     }
     return fig, dict(G=G, rungs=rg, asks=ak)
 
@@ -97,11 +95,11 @@ def write_workbook(path, fig):
     ws["B3"].alignment = Alignment(wrap_text=True, vertical="top")
     ws.row_dimensions[3].height = 32
     wm = wb.create_sheet("Monthly")
-    wm.append(["Month", "Under-triage rate (%)", "Call processing, 90th percentile (s)",
-               "Time to first compression, median (s)", "911 calls answered within 15 s (%)"])
+    wm.append(["Month", "Under-triage rate (%)", "Time to first compression, median (s)",
+               "911 calls answered within 15 s (%)"])
     for ym in K.MONTHS:
         k = ym_key(ym)
-        wm.append([dt.date(ym[0], ym[1], 1), fig["monthly_under_triage"][k], fig["asks"]["A"]["p90_processing_s"][k],
+        wm.append([dt.date(ym[0], ym[1], 1), fig["monthly_under_triage"][k],
                    fig["asks"]["B"]["median_first_compression_s"][k], fig["asks"]["C"]["answered_within_15s_pct"][k]])
     for cell in wm[1]:
         cell.font = Font(bold=True, color="FFFFFF")
@@ -112,9 +110,8 @@ def write_workbook(path, fig):
         row[0].number_format = "mmm yyyy"
         row[1].number_format = "0.0"
         row[2].number_format = "0"
-        row[3].number_format = "0"
-        row[4].number_format = "0.0"
-    for col, w in zip("ABCDE", (11, 14, 18, 18, 16)):
+        row[3].number_format = "0.0"
+    for col, w in zip("ABCD", (11, 14, 18, 16)):
         wm.column_dimensions[col].width = w
     wm.freeze_panes = "B2"
     n = wb.create_sheet("Notes")
@@ -123,8 +120,6 @@ def write_workbook(path, fig):
                  "patient (QA program 2.2).",
                  "Rest before a shift: from the end of the call-taker's previous shift worked to the start of the shift, "
                  "from the scheduling system's shifts worked; a quick return is under 11 hours.",
-                 "Call processing: answer to the first ambulance assigned, from the CAD's unit history, each call "
-                 "once however many incidents carry it (QA program 3).",
                  "Time to first compression: answer to the first coached compression, the recording's seconds taken "
                  "from the start of the recording, each arrest at its primary review; reviewer QA7 keys times as "
                  "minutes and seconds without the colon (QA program 5).",

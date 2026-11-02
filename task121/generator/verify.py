@@ -3,7 +3,6 @@ the csv module alone, sharing no code with the golden's analysis or asks."""
 import csv
 import datetime as dt
 import json
-import math
 import os
 import statistics
 import sys
@@ -110,26 +109,6 @@ def main(task):
                 qb += q
     ok("quick-return share before", _r(100.0 * qb / sb, "0.1"), fig["components"]["quick_return_share_before"])
     ok("quick-return share from March", _r(100.0 * qa / sa, "0.1"), fig["components"]["quick_return_share_from_march"])
-    # ---- Ask A: a call once, however many CAD incidents carry it (same phone call, answer second and call-taker),
-    # at the earliest ambulance any of its incidents had
-    first = {}
-    for u in rows(T, "cad_unit_history_2025_2026.csv"):
-        a = lt(u["assigned"])
-        if u["incident_no"] not in first or a < first[u["incident_no"]]:
-            first[u["incident_no"]] = a
-    call_first = {}
-    for c in calls:
-        k = (c["che_call_id"], c["call_answered"], c["call_taker"])
-        f = first[c["incident_no"]]
-        if k not in call_first or f < call_first[k]:
-            call_first[k] = f
-    per = {}
-    for (che, ans, taker), f in call_first.items():
-        t = lt(ans)
-        per.setdefault((t.year, t.month), []).append((f - t).total_seconds())
-    for ym in months:
-        v = sorted(per[ym])
-        ok("Ask A %s" % key(ym), int(v[math.ceil(0.9 * len(v)) - 1]), fig["asks"]["A"]["p90_processing_s"][key(ym)])
     # ---- Ask B: QA7 keys minutes and seconds without the colon
     answered = {c["incident_no"]: lt(c["call_answered"]) for c in calls}
     per = {}

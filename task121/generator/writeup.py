@@ -21,8 +21,7 @@ def mname(k):
 
 def text(fig):
     r, cp, s = fig["rates"], fig["components"], fig["steps"]
-    A, B, C = (fig["asks"]["A"]["p90_processing_s"], fig["asks"]["B"]["median_first_compression_s"],
-               fig["asks"]["C"]["answered_within_15s_pct"])
+    B, C = fig["asks"]["B"]["median_first_compression_s"], fig["asks"]["C"]["answered_within_15s_pct"]
     out = ["## Tags", "",
            "**Domain:** Human Factors & Ergonomics (workload, fatigue and shift analysis).",
            "**Analytical objective:** Root-Cause Analysis.", "",
@@ -61,20 +60,16 @@ def text(fig):
            "%s to %s per cent, and at the earlier protocol mix the March to August rate is %s." %
            (f1(cp["rested_shifts_before"]), f1(cp["from_march_on_rested_shifts"]), f1(s["veterans"][0]),
             f1(s["veterans"][1]), f1(s["standardised_from_march"])),
-           "4. Ask A: took each medical call in cad_medical_calls_2025_2026.csv once (a split CAD incident repeats its "
-           "call's che_call_id, answer second and call-taker), its processing time from the answer to the earliest "
-           "assignment in cad_unit_history_2025_2026.csv among its incidents (unit_assigned holds the ambulance now on "
-           "the incident), and each month's 90th percentile at rank 0.9 times the calls, rounded up (QA program 3).",
-           "5. Ask B: took each arrest's primary review in tcpr_arrest_reviews_2025_2026.csv where compressions were "
+           "4. Ask B: took each arrest's primary review in tcpr_arrest_reviews_2025_2026.csv where compressions were "
            "coached, reading reviewer QA7's times as minutes and seconds keyed without the colon (QA7's calibrated "
            "calls agree with the other reviewer only when so read), the first compression at "
            "recording_started plus those seconds, less the CAD's call_answered, and each month's median (QA program 5).",
-           "6. Ask C: took the calls in che_call_detail_2025_2026.csv on the 911 trunk groups of centre_reference.xlsx "
+           "5. Ask C: took the calls in che_call_detail_2025_2026.csv on the 911 trunk groups of centre_reference.xlsx "
            "(TG01, TG02, TG03 and TG05, not the 10-digit lines on TG07), leaving out the record of a call passed from "
            "one position to another (it arrives the second an earlier record on the same trunk group from the same "
            "number was released), answered and not abandoned, and each month's share answered 15 seconds or less "
            "after arriving, by the month answered in local time (QA program 4).",
-           "7. Named the cause: from March the calls on quick-return shifts were sent cold at %s per cent against %s "
+           "6. Named the cause: from March the calls on quick-return shifts were sent cold at %s per cent against %s "
            "on rested shifts, so the rise came from the quick returns." %
            (f1(cp["from_march_on_quick_return_shifts"]), f1(cp["from_march_on_rested_shifts"])), "",
            "## 4. Deliverable Answers", "", "### %s" % K.GOLDEN, "",
@@ -82,13 +77,10 @@ def text(fig):
            "(the rotation worked from March 2026), not protocol release 13.3.",
            "2. Under-triage rate: September 2025 to February 2026 %s%%; March to August 2026 %s%%." %
            (f1(r["before"]), f1(r["from_march"])),
-           "3. 90th percentile call processing time, medical calls, seconds:"]
-    for k in sorted(A):
-        out.append("   - %s: %d" % (mname(k), A[k]))
-    out.append("4. Median time to first compression, cardiac arrest calls, seconds:")
+           "3. Median time to first compression, cardiac arrest calls, seconds:"]
     for k in sorted(B):
         out.append("   - %s: %d" % (mname(k), B[k]))
-    out.append("5. 911 calls answered within 15 seconds, per cent:")
+    out.append("4. 911 calls answered within 15 seconds, per cent:")
     for k in sorted(C):
         out.append("   - %s: %s" % (mname(k), f1(C[k])))
     out += ["", "### %s" % K.CHART, "",

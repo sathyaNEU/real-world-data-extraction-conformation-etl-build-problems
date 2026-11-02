@@ -7,7 +7,8 @@
  ],
  "distractor_files": [
   "target/protocol_case_reviews_2025_2026.csv",
-  "target/ems_unit_hours_2025_2026.csv"
+  "target/ems_unit_hours_2025_2026.csv",
+  "target/cad_unit_history_2025_2026.csv"
  ],
  "domain": "Human Factors & Ergonomics (workload, fatigue and shift analysis)",
  "objective": "Root-Cause Analysis",

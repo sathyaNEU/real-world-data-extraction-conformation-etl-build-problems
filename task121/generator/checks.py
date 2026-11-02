@@ -1,7 +1,9 @@
 """The generator's assertions for task121, run on every build: the three rules on the clean truth (R1 to R3), the
 semantic fork table (SF), the ladder and the golden's family, the asks' devices and their fairness, the separation of
 the asks from the call, the pack's hygiene (no file describes the data, the input gates, and each closure the producing
-systems now carry), and the realism sweep. Prints one line a check; returns 1 on any failure."""
+systems now carry), the freeze of the 2026-11-01 rubric repair (Ask A cut, the pack, the call and Asks B and C as
+shipped) with the distractors' deletion test, and the realism sweep. Prints one line a check; returns 1 on any
+failure."""
 import calendar
 import collections
 import datetime as dt
@@ -28,6 +30,100 @@ DESCRIBE = re.compile(
     r"schema|layouts?_notes|handling_notes|release_notes|index|contents|notes)(?![a-z])", re.I)
 DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
                             r"about|about this (file|workbook)|how to (read|use)( this)?|columns?|index|contents)$", re.I)
+
+
+# the pack, the main call and Asks B and C as shipped on 0d39c59f (the 2026-11-01 rubric repair cut Ask A and moved
+# nothing else): fix-rubric holds the files the call reads byte-identical and every main-call figure unchanged
+SHIPPED_MD5 = {
+ "cad_medical_calls_2025_2026.csv": "2d217f556dd44be90f05922c50d51bf7",
+ "cad_unit_history_2025_2026.csv": "0f73a063edc0ce5de38645dc00d860ab",
+ "call_takers.csv": "2a33b861b40814ffb9ce969553a13f37",
+ "centre_reference.xlsx": "04b0a9cf3342238ce90d1f2af532a952",
+ "che_call_detail_2025_2026.csv": "64cda29d880907f2f10a8e9d532e70ba",
+ "ems_unit_hours_2025_2026.csv": "92daaf3123f2b2c8fb0d123c13372ea9",
+ "epcr_patient_records_2025_2026.csv": "fa732355f97ac59e12820ca84bc19830",
+ "protocol_case_reviews_2025_2026.csv": "10d6f84264bcf959796099a831907bb7",
+ "protocol_software_release_13_3.pdf": "959884c557ade9c1731276fb0121850d",
+ "qa_program_measures_2025.pdf": "7070abbd66d7c8768be208259b36086f",
+ "roster_shifts_worked_2025_2026.csv": "23d461d8f4ae243c5a3d3895ea74f6d2",
+ "tcpr_arrest_reviews_2025_2026.csv": "93da2d11a67f900e93d1adf53b48bf5f"
+}
+SHIPPED_MAIN = {
+ "components": {
+  "from_march_on_quick_return_shifts": 31.1,
+  "from_march_on_rested_shifts": 10.7,
+  "quick_return_share_before": 1.5,
+  "quick_return_share_from_march": 15.8,
+  "rested_shifts_before": 10.2
+ },
+ "monthly_under_triage": {
+  "2025-09": 9.6,
+  "2025-10": 10.0,
+  "2025-11": 10.2,
+  "2025-12": 11.3,
+  "2026-01": 10.7,
+  "2026-02": 10.7,
+  "2026-03": 16.0,
+  "2026-04": 15.1,
+  "2026-05": 15.2,
+  "2026-06": 14.1,
+  "2026-07": 14.8,
+  "2026-08": 13.0
+ },
+ "rates": {
+  "before": 10.5,
+  "from_march": 14.8
+ },
+ "steps": {
+  "release_changed_protocols": [
+   11.2,
+   17.0
+  ],
+  "release_unchanged_protocols": [
+   9.9,
+   13.3
+  ],
+  "standardised_from_march": 14.7,
+  "veterans": [
+   10.4,
+   14.5
+  ]
+ }
+}
+SHIPPED_ASKS = {
+ "B": {
+  "median_first_compression_s": {
+   "2025-09": 112,
+   "2025-10": 121,
+   "2025-11": 113,
+   "2025-12": 105,
+   "2026-01": 119,
+   "2026-02": 117,
+   "2026-03": 108,
+   "2026-04": 128,
+   "2026-05": 123,
+   "2026-06": 110,
+   "2026-07": 114,
+   "2026-08": 112
+  }
+ },
+ "C": {
+  "answered_within_15s_pct": {
+   "2025-09": 92.5,
+   "2025-10": 92.6,
+   "2025-11": 92.2,
+   "2025-12": 90.2,
+   "2026-01": 90.6,
+   "2026-02": 90.0,
+   "2026-03": 92.2,
+   "2026-04": 92.5,
+   "2026-05": 92.4,
+   "2026-06": 92.2,
+   "2026-07": 92.0,
+   "2026-08": 92.7
+  }
+ }
+}
 
 
 def row(label, ok, detail=""):
@@ -157,8 +253,7 @@ def run(task, world, res):
     # ------------------------------------------------------------------ the asks
     g = res["asks"]
     st = AK.stops(target)
-    for k, ask, need in (("A_split_incidents_kept", "A", 12), ("A_current_unit", "A", 12),
-                         ("A_split_incident_for_call", "A", 12), ("B_times_as_keyed", "B", 12),
+    for k, ask, need in (("B_times_as_keyed", "B", 12),
                          ("B_seconds_as_recorded", "B", 12), ("B_every_reviewer_read", "B", 12),
                          ("B_reviewer_left_out", "B", 9), ("B_calibration_kept", "B", 6),
                          ("C_passed_calls_kept", "C", 12), ("C_same_number_ten_minutes", "C", 10),
@@ -166,21 +261,15 @@ def run(task, world, res):
                          ("C_abandoned_counted", "C", 12)):
         moved = [ym for ym in K.MONTHS if st[k][ym] != g[ask][ym]]
         row("ASK%s %s moves %d months or more" % (ask, k, need), len(moved) >= need, "%d of 12" % len(moved))
-    # Ask A: a split incident repeats its call's phone call, answer second and call-taker; no two calls share all three
+    # the CAD's split incidents (Layer 1 in a file the call reads): a second patient's ambulance on an incident of its
+    # own, repeating the call's phone call, answer second and call-taker; mishandled, they leave the call where it was
     c = d["calls"].copy()
     key = c["che_call_id"] + "|" + c["call_answered"] + "|" + c["call_taker"]
-    dup = key.duplicated(keep=False)
-    grp = c[dup].groupby(key[dup]).size()
-    row("ASKA fair: a split incident shares its call with exactly one other incident, every month",
-        (grp == 2).all() and c.loc[dup, "call_answered"].str[:2].nunique() == 12,
-        "%d calls carried by two incidents" % len(grp))
-    row("ASKA silent: the incident number is unique and no split shares a row's other columns",
-        c["incident_no"].is_unique and not c.drop(columns=["incident_no"]).duplicated().any(), "")
     e2 = e.groupby("incident_no")["acuity"].min()
     later = c[key.duplicated()]["incident_no"]
-    row("ASKA separation: no split incident has a critical or emergent patient, so the call never counts one",
+    row("R2 split incidents: none has a critical or emergent patient, so the call never counts one",
         e2.reindex(later).dropna().ge(3).all() and e2.reindex(later).notna().all(), "%d split incidents" % len(later))
-    row("ASKA separation: every critical or emergent call is the first incident of its call",
+    row("R2 split incidents: every critical or emergent call is the first incident of its call",
         not hi["incident_no"].isin(set(later)).any(), "")
     # Ask B: QA7's times read as minutes and seconds; calibration pairs agree only when so read
     tb = d["tcpr"]
@@ -247,7 +336,7 @@ def run(task, world, res):
     d["calls"] = base_c
     same = all(K.r1(G2[k]) == K.r1(G[k]) for k in ("before", "after", "qr_share_before", "qr_share_after", "after_qr",
                                                    "after_rested", "before_rested"))
-    row("SEP the call's figures are the same with the split incidents taken out", same, "")
+    row("R2 split incidents: the call's figures are the same with them taken out", same, "")
     # ------------------------------------------------------------------ nothing describes the data (dataset-generation 3)
     shipped = sorted(os.listdir(target))
     retired = ("data_dictionary", "qa_program_definitions_2025", "qa_review_folder_index")
@@ -274,10 +363,54 @@ def run(task, world, res):
         not hits and _has(",".join(heads["calls"]), "che_call_id"), ", ".join(hits) or "%d names screened" % len(ident))
     exts = {os.path.splitext(f)[1] for f in shipped}
     nrows = {k: len(d[k]) for k in heads}
-    row("INPUT 10 or more files, 3 or more formats, a 25,000-row file, two distractors shipped",
+    row("INPUT 10 or more files, 3 or more formats, a 25,000-row file, two or more distractors shipped",
         len(shipped) >= 10 and len(exts) >= 3 and max(nrows.values()) >= 25000 and len(K.DISTRACTORS) >= 2 and
         all(K.FILES[k] in shipped for k in K.DISTRACTORS),
         "%d files, %s, largest %d rows" % (len(shipped), " ".join(sorted(exts)), max(nrows.values())))
+    # ------------------------------------------------------------------ the 2026-11-01 rubric repair: Ask A cut, nothing
+    # else moved (fix-rubric step 4), and the unit history, which only Ask A read, declared a distractor (8.3)
+    import hashlib
+    digest = {f: hashlib.md5(open(os.path.join(target, f), "rb").read()).hexdigest() for f in shipped}
+    groups = (("the files the call reads", ("calls", "epcr", "roster", "takers", "program", "release")),
+              ("Ask B's and Ask C's files", ("tcpr", "che", "reference")), ("the distractors", K.DISTRACTORS))
+    for what, keys in groups:
+        moved = [K.FILES[k] for k in keys if digest[K.FILES[k]] != SHIPPED_MD5[K.FILES[k]]]
+        row("FREEZE %s byte-identical to the shipped pack 0d39c59f" % what, not moved and len(keys) >= 3,
+            ", ".join(moved) or "%d files" % len(keys))
+    ymk = lambda ym: "%d-%02d" % ym
+    now_main = {"rates": {"before": K.r1(G["before"]), "from_march": K.r1(G["after"])},
+                "components": {"quick_return_share_before": K.r1(G["qr_share_before"]),
+                               "quick_return_share_from_march": K.r1(G["qr_share_after"]),
+                               "from_march_on_quick_return_shifts": K.r1(G["after_qr"]),
+                               "from_march_on_rested_shifts": K.r1(G["after_rested"]),
+                               "rested_shifts_before": K.r1(G["before_rested"])},
+                "steps": {"release_changed_protocols": [K.r1(x) for x in rg["Rp_changed"]],
+                          "release_unchanged_protocols": [K.r1(x) for x in rg["Rp_unchanged"]],
+                          "veterans": [K.r1(x) for x in rg["Rg_veterans"]],
+                          "standardised_from_march": K.r1(rg["Rm_standardised"][1])},
+                "monthly_under_triage": {ymk(ym): K.r1(G["monthly"][ym]) for ym in K.MONTHS}}
+    row("FREEZE every main-call figure recomputes as shipped (rates, components, steps, the monthly rate)",
+        now_main == SHIPPED_MAIN, "%d figures" % (2 + 5 + 7 + 12))
+    now_asks = {"B": {"median_first_compression_s": {ymk(ym): g["B"][ym] for ym in K.MONTHS}},
+                "C": {"answered_within_15s_pct": {ymk(ym): g["C"][ym] for ym in K.MONTHS}}}
+    row("FREEZE Ask B's and Ask C's 24 figures recompute as shipped, and no Ask A figure remains",
+        now_asks == SHIPPED_ASKS and set(g) == {"B", "C"}, "asks %s" % ", ".join(sorted(g)))
+    held = {k: d.pop(k) for k in K.DISTRACTORS}
+    try:
+        G3, g3 = A.golden(target), AK.golden(target)
+        unread = all(K.r1(G3[x]) == K.r1(G[x]) for x in ("before", "after", "qr_share_before", "qr_share_after",
+                                                         "after_qr", "after_rested", "before_rested")) and \
+            G3["monthly"] == G["monthly"] and g3 == g
+    except KeyError:
+        unread = False
+    d.update(held)
+    row("DISTRACTOR every distractor deleted at once, the call and both asks unchanged (none is read)", unread,
+        ", ".join(K.FILES[k] for k in K.DISTRACTORS))
+    uh = heads["units"]
+    row("DISTRACTOR the unit history ranks nothing: ambulance assignments only, no protocol, version, call-taker, "
+        "shift, rate or score", uh == ["incident_no", "unit", "assigned", "enroute", "at_scene", "cleared", "outcome"]
+        and not any(re.search(r"protocol|version|taker|login|emp|shift|rate|pct|score|rest|cause", h) for h in uh),
+        ", ".join(uh))
     # ------------------------------------------------------------------ closures the dictionary and the index carried,
     # now carried by the producing systems and the program, read through the verifier's own extractor
     import verify as VF
@@ -285,14 +418,10 @@ def run(task, world, res):
     vche = VF.rows(target, K.FILES["che"])
     per_id = collections.Counter(r["call_id"] for r in vche)
     che_by = {r["call_id"]: r for r in vche}
-    row("SF5 C1 every CAD answer time is the call detail's answered_utc on the centre's clock, so the CAD keeps local "
-        "time", all(VF.lt(c["call_answered"]) == VF.central(VF.utc(che_by[c["che_call_id"]]["answered_utc"]))
-                    for c in vcalls) and _has(texts["program"], "calendar months in local time (US Central)"),
-        "%d incidents" % len(vcalls))
-    triples = {(c["che_call_id"], c["call_answered"], c["call_taker"]) for c in vcalls}
-    row("ASKA grain: each che_call_id is one call_id of the call detail, and alone selects the verifier's calls",
-        all(per_id[c["che_call_id"]] == 1 for c in vcalls) and len({c["che_call_id"] for c in vcalls}) == len(triples)
-        < len(vcalls), "%d incidents, %d calls" % (len(vcalls), len(triples)))
+    row("SF5 C1 every CAD answer time is the answered_utc of its one call detail record on the centre's clock, so the "
+        "CAD keeps local time", all(per_id[c["che_call_id"]] == 1 and VF.lt(c["call_answered"]) ==
+                                    VF.central(VF.utc(che_by[c["che_call_id"]]["answered_utc"])) for c in vcalls) and
+        _has(texts["program"], "calendar months in local time (US Central)"), "%d incidents" % len(vcalls))
     vepcr = VF.rows(target, K.FILES["epcr"])
     incs = {c["incident_no"] for c in vcalls}
     vtk = VF.rows(target, K.FILES["takers"])

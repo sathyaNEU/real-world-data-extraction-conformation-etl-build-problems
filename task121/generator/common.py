@@ -90,7 +90,7 @@ FILES = {
     "casereview": "protocol_case_reviews_2025_2026.csv",
     "unithours": "ems_unit_hours_2025_2026.csv",
 }
-DISTRACTORS = ("casereview", "unithours")
+DISTRACTORS = ("casereview", "unithours", "units")
 GOLDEN = "under_triage_cause_2026.xlsx"
 CHART = "under_triage_2025_26.png"
 DELIVERABLES = (GOLDEN, CHART)

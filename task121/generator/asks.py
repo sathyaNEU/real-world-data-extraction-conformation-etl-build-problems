@@ -1,8 +1,7 @@
-"""The three supplemental asks for task121, each a month-by-month measure from September 2025 to August 2026, read
-from files the main call never opens or from rows it never counts: the CAD's incidents and unit history (Ask A), the
-arrest reviews against the CAD (Ask B) and the 911 call handling equipment's call detail (Ask C). Each function takes
-the handling as arguments, so the ladder's other stops are the same code with one argument changed."""
-import math
+"""The two supplemental asks for task121, each a month-by-month measure from September 2025 to August 2026, read
+from files the main call never opens: the arrest reviews against the CAD's answer times (Ask B) and the 911 call
+handling equipment's call detail (Ask C). Each function takes the handling as arguments, so the ladder's other stops
+are the same code with one argument changed."""
 import statistics
 
 import pandas as pd
@@ -13,42 +12,6 @@ import pack as P
 
 def _months(ts):
     return list(zip(ts.dt.year, ts.dt.month))
-
-
-def processing(target, first_unit=True, nearest_rank=True, calls="once"):
-    """Ask A: the 90th percentile seconds from answer to the first ambulance assigned, medical calls, by month.
-    calls: "once" takes each call once, its incidents (a split incident repeats the call's phone call, answer second
-    and call-taker) at the earliest ambulance any of them had; "incidents" takes every CAD incident as a call; "split"
-    keeps the later incident of a split call; "second" takes calls answered the same second as one"""
-    d = P.load(target)
-    c = d["calls"].copy()
-    c["t"] = P.local(c["call_answered"])
-    if first_unit:
-        u = d["units"].copy()
-        u["a"] = P.local(u["assigned"])
-        first = u.groupby("incident_no")["a"].min()
-        c["a"] = c["incident_no"].map(first)
-    else:
-        c["a"] = P.local(c["unit_assigned"])
-    if calls != "incidents":
-        key = c["call_answered"] if calls == "second" else c["che_call_id"] + "|" + c["call_answered"] + "|" + \
-            c["call_taker"]
-        c["key"] = key
-        if calls == "split":
-            c = c.sort_values("incident_no").groupby("key", as_index=False).last()
-        else:
-            c["a"] = c.groupby("key")["a"].transform("min")
-            c = c.sort_values("incident_no").drop_duplicates("key")
-    c["s"] = (c["a"] - c["t"]).dt.total_seconds()
-    c["m"] = _months(c["t"])
-    out = {}
-    for ym in K.MONTHS:
-        v = sorted(c.loc[c["m"].apply(lambda x: x == ym), "s"].tolist())
-        if nearest_rank:
-            out[ym] = int(v[math.ceil(0.9 * len(v)) - 1])
-        else:
-            out[ym] = K.r0(float(pd.Series(v).quantile(0.9)))
-    return out
 
 
 def minsec_seconds(v):
@@ -139,14 +102,11 @@ def answering(target, trunks_911_only=True, local_months=True, abandoned_out=Tru
 
 
 def golden(target):
-    return dict(A=processing(target), B=tcpr(target), C=answering(target))
+    return dict(B=tcpr(target), C=answering(target))
 
 
 def stops(target):
     return dict(
-        A_split_incidents_kept=processing(target, calls="incidents"),
-        A_current_unit=processing(target, first_unit=False, calls="incidents"),
-        A_split_incident_for_call=processing(target, calls="split"),
         B_times_as_keyed=tcpr(target, keyed=None),
         B_seconds_as_recorded=tcpr(target, from_answer=False, keyed=None),
         B_calibration_kept=tcpr(target, primary_only=False),

@@ -1,4 +1,4 @@
-"""Read the cut pack back for the golden, the asks, the checks and the cracker: every figure is computed from the
+"""Read the cut pack back for the golden, the asks and the checks: every figure is computed from the
 shipped files, never from the generator's world."""
 import os
 
