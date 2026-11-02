@@ -220,7 +220,8 @@ def write_operator_reports(t, target):
             run_h = on.sum() / 60.0
             # the hour meter also turns during warm-up, cool-down and unsynchronised test running
             n_st = int(((on[1:] & ~on[:-1]).sum()))
-            meter_h = run_h + n_st * 0.21 + r.uniform(0.5, 4.0)
+            test_h = sum(max(0, min(s["test"][1], b) - max(s["test"][0], a)) for s in p["eng_stops"][e] if "test" in s) / 60.0
+            meter_h = run_h + test_h + n_st * 0.21 + r.uniform(0.5, 4.0)
             fuel_kg = p["eng_fuel"][e][a // 60:b // 60].sum()
             gen = fuel_kg * W.LHV_KWH_PER_KG * W.ENG_EFF
             hm0, kw0 = hm[e], kwh[e]

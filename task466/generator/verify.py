@@ -210,9 +210,19 @@ def overlap(ivs, a, b):
 
 pfail = [o for o in outs if o["cause"] == "Utility power failure"]
 for unit, e in (("GEN1", 1), ("GEN2", 2)):
-    on, since, ivs, starts = True, Y0, [], []
+    on, since, ivs, starts, req = True, Y0, [], [], None
     for t, u, code, text in ev:
         if u != unit:
+            continue
+        if code == "START REQUEST":
+            req = t if on is False else None
+            continue
+        if code == "START FAIL":
+            req = None
+            continue
+        if code == "STOP" and on is False and req is not None:
+            starts.append(req)          # fired from standstill, stopped before synchronising
+            req = None
             continue
         if code in ("STOP", "TRIP", "BREAKER OPEN") and on:
             ivs.append((since, t))

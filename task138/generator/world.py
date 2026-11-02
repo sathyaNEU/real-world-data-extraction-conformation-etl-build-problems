@@ -298,10 +298,12 @@ def build(seed=P.SEED, phys=None, drug=None, streams=None, holter=True):
                     qt = ((s["qtc0"] + circ_q(h, s) + drug["s_qt"] * c + rng.normal(0, phys["seg_qtc_sd"]))
                           * (rr / 1000.0) ** s["beta"] + rng.normal(0, phys["seg_qt_sd"]))
                     noise = 100.0 * (1 - valid_frac)
+                    base_noise = float(min(40.0, rng.gamma(1.3, 2.2)))
+                    art_u, art_v = rng.random(), float(rng.uniform(55, 96))
                     if valid_frac >= 1.0:
-                        noise = float(min(40.0, rng.gamma(1.3, 2.2)))
-                        if rng.random() < 0.012 and not a:
-                            noise = float(rng.uniform(55, 96))
+                        noise = base_noise
+                        if art_u < 0.016 and 8.0 <= h < 20.0:     # movement artefact on the ward by day
+                            noise = art_v
                     W["holter"].append(dict(rec=r["id"], serial=r["serial"], subject=s["subject"], study=s["study"],
                                             cohort=s["cohort"], start=t, dur=dur, hr=hr, rr=rr, qt=qt,
                                             noise=noise, valid_frac=valid_frac, asleep=a, conc=c, kind=which,

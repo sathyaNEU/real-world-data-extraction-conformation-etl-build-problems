@@ -238,10 +238,14 @@ def build(world, target):
         else:
             hh, mm = int(trng.integers(8, 16)), int(trng.integers(0, 60))
         ts = dt.datetime(d.year, d.month, d.day, hh, mm, int(trng.integers(0, 60)))
-        typ = {"DEP": "CDEP", "WDL": "CWDL", "REV": "REVERSAL"}[t["kind"]]
+        typ = {"DEP": "CDEP", "WDL": "CWDL", "REV": "REVERSAL", "ENC": "CHQ_ENCASH"}[t["kind"]]
+        # the teller terminals at the upcountry branches were moved onto T24 on 24 April 2026 and wrote the
+        # legacy account number until then
+        upcountry = "%03d" % t["branch"] in ("322", "337", "351")
+        acc = p["acct"]["legacy"] if (d < P.CUTOVER or (upcountry and d < dt.date(2026, 4, 24))) else p["acct"]["new"]
         rows.append(["%03d" % t["branch"], "T%03d%02d" % (t["branch"] % 1000, int(trng.integers(1, 9))),
-                     ts.strftime("%Y-%m-%d %H:%M:%S"), acct_no_on(p["acct"], d), typ, "%.2f" % abs(p["amount"]),
-                     p["ref"], t.get("reverses", "")])
+                     ts.strftime("%Y-%m-%d %H:%M:%S"), acc, typ, "%.2f" % abs(p["amount"]),
+                     p["ref"], t.get("reverses", "") or (("CHQ %06d" % t["chq"]) if t.get("chq") else "")])
     fn = "teller_cash_txn_2025-10_2026-09.csv"
     write_csv(os.path.join(target, fn), ["BRANCH", "TELLER_ID", "TXN_TIMESTAMP", "ACCOUNT", "TXN_TYPE", "AMOUNT_KES",
                                          "TXN_REF", "ORIG_REF"], rows)

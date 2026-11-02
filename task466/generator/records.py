@@ -158,6 +158,10 @@ def engine_events(p):
                 ev.append((a, tag, "TRIP", trip_text[int(r.integers(0, len(trip_text)))]))
             else:
                 ev.append((a, tag, reasons[s["kind"]][0], reasons[s["kind"]][1]))
+                if "test" in s:
+                    ta, tb = s["test"]
+                    ev.append((ta, tag, "START REQUEST", "local - test run after %s" % ("oil change" if s["kind"] == "oil" else "service")))
+                    ev.append((tb, tag, "STOP", "test run complete - not synchronised"))
             # restart: start request, then running when synchronised (3 to 7 minutes)
             if b < len(on):
                 req = max(a + 1, b - int(r.uniform(3, 8)))

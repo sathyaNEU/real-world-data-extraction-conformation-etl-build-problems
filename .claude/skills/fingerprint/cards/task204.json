@@ -27,7 +27,7 @@
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "identity_resolution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -57,7 +57,7 @@
     "source": "synthetic"
   },
   "forum": "executive_team",
-  "forcing_event": "season_or_peak",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "local_government",
   "world": {
     "geography": "Canada, Alberta (a fictional prairie city with a two-line light-rail system)",
@@ -137,11 +137,11 @@
     "task487": "task487 prices events found at inspections, a share of them started by the inspection itself, from how often each kind is found against the inspection window; here no event is found late or started by an observer, and the timetable is not an observation window but the path that ties one group's offences together across districts."
   },
   "mechanism_source": "design_note",
-  "notes": "gate_g read against the vocab: the decisive step is the choice of the proximity that links offences into series (distance and time along the rail line on the trip each snatch sits on, against straight-line distance and elapsed time), pinned by the data's own structure; stump_strategy grain_or_unit: the decided unit is the offender group's series, built by linking occurrence rows through a network bridge (the timetable), never a key column.",
-  "registered": "2026-11-02T03:47:29Z",
+  "notes": "gate_g read against the vocab: offences are attributed to the offender groups behind them, and no shipped artifact ranks groups or states a count; stump_strategy identity_resolution: the decided unit is the offender group, whose identity across station clusters is resolved through a network bridge (the scheduled trip each offence sits on), never a key column; forcing_event budget_or_appropriation: the deputy chief signs the summer deployment plan on 28 May with the seasonal overtime allocation that funds series teams (OPS-41 section 6); both axes redrawn on 2026-11-02 at the last check of the draw, when task178 v4 took grain_or_unit and season_or_peak in the window.",
+  "registered": "2026-11-02T03:48:32Z",
   "shell": {
     "question form": "how-many",
-    "second-sentence opener": "the",
+    "second-sentence opener": "use",
     "rounding opener": "every",
     "deliverable set": "docx+xlsx"
   }

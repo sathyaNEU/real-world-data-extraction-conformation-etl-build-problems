@@ -289,7 +289,7 @@ def ask_cash(target, basis="mean", aggregate=True, net_reversals=True, by_custom
     reversed_refs = {r["ORIG_REF"] for r in rows if r["TXN_TYPE"] == "REVERSAL" and r["ORIG_REF"]}
     day = defaultdict(float)
     for r in rows:
-        if r["TXN_TYPE"] != "CWDL":
+        if r["TXN_TYPE"] not in ("CWDL", "CHQ_ENCASH"):
             continue
         if net_reversals and r["TXN_REF"] in reversed_refs:
             continue
@@ -313,7 +313,8 @@ def ask_cash(target, basis="mean", aggregate=True, net_reversals=True, by_custom
 
 
 # ---------------------------------------------------------------- ask B: September 2026 salaries
-def ask_salary(target, by_narrative=True, distinct=True, include_october=True):
+def ask_salary(target, by_period=True, distinct=True, include_casual=False):
+    """Salaries for the September 2026 payroll period: the period sits in the batch reference (SAL-cccc-YYMM-nnn)."""
     stmts = read_statements(target)
     conv = read_conversion(target)
     owner = acct_owner(stmts, conv)
@@ -321,15 +322,19 @@ def ask_salary(target, by_narrative=True, distinct=True, include_october=True):
     total = defaultdict(float)
     with open(os.path.join(target, "bulk_salary_uploads_2026-07_2026-10.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            det = r["PAYMENT_DETAILS"].upper()
+            ref = r["BATCH_REF"]
             vd = dt.date.fromisoformat(r["VALUE_DATE"])
-            if by_narrative:
-                if not det.startswith("SALARY SEP 2026"):
+            casual = ref.startswith("CAS-")
+            if casual and not include_casual:
+                continue
+            if by_period:
+                mt = re.match(r"^SAL-\d{4}-(\d{2})(\d{2})-", ref)
+                if not casual and not (mt and (mt.group(1), mt.group(2)) == ("26", "09")):
                     continue
-                if not include_october and vd > YEAR_END:
+                if casual and not (dt.date(2026, 9, 1) <= vd <= dt.date(2026, 9, 30)):
                     continue
             else:
-                if not (dt.date(2026, 9, 1) <= vd <= dt.date(2026, 9, 30)) or det.startswith("CASUALS"):
+                if not (dt.date(2026, 9, 1) <= vd <= dt.date(2026, 9, 30)):
                     continue
             cif = owner.get(r["DEBIT_ACCOUNT"], "?")
             key = r["PAYEE_ID_NO"] if distinct else (r["PAYEE_ID_NO"], r["BATCH_REF"], r["PAYEE_NAME"])

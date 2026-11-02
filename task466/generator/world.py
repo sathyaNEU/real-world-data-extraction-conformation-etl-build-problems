@@ -260,6 +260,7 @@ def build_engines(times, capture, run_frac, outages):
             on[e][a + lag:min(nmin, b + d)] = False
             stop_list[e].append(dict(start=a + lag, end=min(nmin, b + d), kind="plant", outage=k))
     for e in (1, 2):
+        rt2 = rng(500 + e)
         for y in YEARS:
             for st, mins, kind in engine_stops(y, rng(40 + 10 * e + y), e):
                 a = minute_of(st)
@@ -270,7 +271,14 @@ def build_engines(times, capture, run_frac, outages):
                 if not on[e][a:b].all():
                     continue
                 on[e][a:b] = False
-                stop_list[e].append(dict(start=a, end=b, kind=kind, outage=None))
+                stop = dict(start=a, end=b, kind=kind, outage=None)
+                if kind in ("oil", "service"):
+                    # the mechanic test-runs the engine off the grid before handing it back (8 to 20 minutes, ending
+                    # 12 to 45 minutes before the operator's start)
+                    dur = int(rt2.integers(8, 21))
+                    gap = int(rt2.integers(12, 46))
+                    stop["test"] = (b - gap - dur, b - gap)
+                stop_list[e].append(stop)
         stop_list[e].sort(key=lambda s: s["start"])
     out = dict(eng_on_min=on, eng_stops=stop_list, restart_delay=restart_delay)
     split_fuel(out, capture)
@@ -278,16 +286,24 @@ def build_engines(times, capture, run_frac, outages):
 
 
 def split_fuel(eng, capture):
-    """Each hour's capture to the engines first (up to capacity times their on-share), the rest to the flare."""
+    """Each hour's capture to the engines first (up to capacity times their on-share, plus about a third of full
+    fuel while an engine test-runs off the grid), the rest to the flare."""
     on = eng["eng_on_min"]
     frac_on = {e: on[e].reshape(NH, 60).mean(axis=1) for e in (1, 2)}
-    c1 = ENG_CAP * frac_on[1]
-    c2 = ENG_CAP * frac_on[2]
+    test = {}
+    for e in (1, 2):
+        tm = np.zeros(NH * 60, dtype=bool)
+        for s in eng["eng_stops"][e]:
+            if "test" in s:
+                tm[s["test"][0]:s["test"][1]] = True
+        test[e] = tm.reshape(NH, 60).mean(axis=1)
+    c1 = ENG_CAP * (frac_on[1] + 0.34 * test[1])
+    c2 = ENG_CAP * (frac_on[2] + 0.34 * test[2])
     take = np.minimum(capture, c1 + c2)
     tot = np.where(c1 + c2 > 0, c1 + c2, 1.0)
     eng_fuel = {1: np.where(capture > 0, take * c1 / tot, 0.0), 2: np.where(capture > 0, take * c2 / tot, 0.0)}
     flare = np.where(capture > 0, capture - take, 0.0)
-    eng.update(eng_frac=frac_on, eng_fuel=eng_fuel, flare_kg=flare)
+    eng.update(eng_frac=frac_on, eng_fuel=eng_fuel, flare_kg=flare, eng_test_frac=test)
 
 
 def extend_stop(p, e, k, extra_min):

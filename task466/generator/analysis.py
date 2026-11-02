@@ -218,7 +218,7 @@ def quarter_bounds(year, q):
     return a, b
 
 
-def engine_answers(target, outages, use_outage_log=True, count_resync=False):
+def engine_answers(target, outages, use_outage_log=True, count_resync=False, count_test_runs=True):
     """Each engine's operating hours (synchronised) and starts from standstill, per local quarter of 2026."""
     ev = read_events(target)
     res = {}
@@ -229,11 +229,23 @@ def engine_answers(target, outages, use_outage_log=True, count_resync=False):
         state = "running"            # the year opens with both engines on the grid (first line decides otherwise)
         on_since = year_bounds(2026)[0]
         lines = [x for x in ev if x["unit"] == unit]
+        pending = None               # a start request made from standstill, not yet resolved
         for x in lines:
             c = x["code"]
+            if c == "START REQUEST":
+                if state == "stopped":
+                    pending = x["t"]
+                continue
+            if c == "START FAIL":
+                pending = None
+                continue
             if c in ("STOP", "TRIP"):
                 if state == "running":
                     intervals.append((on_since, x["t"]))
+                elif state == "stopped" and pending is not None and count_test_runs:
+                    # started from standstill and stopped again without synchronising (a test run): a start
+                    starts.append(pending)
+                pending = None
                 state = "stopped"
             elif c == "BREAKER OPEN":
                 if state == "running":
@@ -250,6 +262,7 @@ def engine_answers(target, outages, use_outage_log=True, count_resync=False):
                     intervals.append((on_since, stop_t))
                 state = "stopped"
             elif c == "RUNNING":
+                pending = None
                 if state == "stopped":
                     starts.append(x["t"])
                 elif state == "breaker" and count_resync:

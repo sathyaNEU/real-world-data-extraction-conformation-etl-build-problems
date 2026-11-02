@@ -110,6 +110,14 @@ def cut_zip(target, path):
 
 def main():
     a, b = tempfile.mkdtemp(), tempfile.mkdtemp()
+    try:
+        install(a, b)
+    finally:
+        shutil.rmtree(a, ignore_errors=True)
+        shutil.rmtree(b, ignore_errors=True)
+
+
+def install(a, b):
     da = one_build(a, True)
     db = one_build(b, False)
     if da != db:
@@ -131,8 +139,6 @@ def main():
     cut_zip(os.path.join(TASK, "target"), os.path.join(TASK, "target.zip"))
     z = hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()
     print("target.zip", z[:8])
-    shutil.rmtree(a)
-    shutil.rmtree(b)
 
 
 if __name__ == "__main__":

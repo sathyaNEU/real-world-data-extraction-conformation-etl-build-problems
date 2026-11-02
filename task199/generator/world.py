@@ -606,6 +606,12 @@ class World:
                         self.teller.append(dict(kind="WDL", posting=rec, branch=br))
                     continue
                 acc = accs[0]
+                if amt > 0.9 * thr and rng.random() < 0.3:
+                    chq = int(rng.integers(100000, 999999))
+                    rec = self.post(code, acc, d, -_kes_amount(amt, 100), "CASH", "debit",
+                                    narrative="CHQ ENCASHMENT %06d" % chq)
+                    self.teller.append(dict(kind="ENC", posting=rec, branch=c["branch"][2], chq=chq))
+                    continue
                 rec = self.post(code, acc, d, -_kes_amount(amt, 100), "CASH", "debit", narrative="CASH WITHDRAWAL")
                 self.teller.append(dict(kind="WDL", posting=rec, branch=c["branch"][2]))
         # teller errors reversed the same day
@@ -659,60 +665,70 @@ class World:
                                              amount=part, pay_date=pd_, posting=rec, part=k + 1, parts=len(parts)))
 
     def _payroll(self):
-        """Monthly salary batches (and weekly casual batches) through the bulk upload service."""
+        """Monthly salary batches (and weekly casual batches) through the bulk upload service. A batch reference
+        carries the payroll period it pays (SAL-cccc-YYMM-nnn); most customers pay a month's salaries before its
+        end, three pay them on the second business day of the next month."""
         rng = np.random.default_rng([P.SEED, 95])
         from faker import Faker
         fk = Faker("en_KE")
         fk.seed_instance(P.SEED % 100000)
         staff = {"C01": 46, "C02": 138, "C03": 212, "C04": 19, "C05": 64, "C06": 410, "C07": 520, "C08": 37,
                  "C09": 71, "C10": 14, "C11": 186, "C12": 52}
+        label = {"C01": "SALARY", "C02": "NET PAY", "C03": "SALARIES", "C04": "STAFF SALARY", "C05": "SALARY",
+                 "C06": "PAYROLL", "C07": "NET SALARY", "C08": "SALARY", "C09": "STAFF PAY", "C10": "SALARY",
+                 "C11": "PAYROLL", "C12": "SALARIES"}
+        arrears_payers = ("C05", "C08", "C11", "C01")
+        late_payers = ("C03", "C07", "C11")
         self.staff = {}
         for i, c in enumerate(P.CUSTOMERS):
             code = c["code"]
             people = []
-            for k in range(staff[code] + 12):
+            for k in range(staff[code] + 14):
                 nid = "%08d" % int(rng.integers(20_000_000, 39_999_999))
-                people.append(dict(nid=nid, name=fk.name().upper(), net=round(float(rng.lognormal(math.log(48000), 0.55)), -1)))
+                people.append(dict(nid=nid, name=fk.name().upper(),
+                                   net=round(float(rng.lognormal(math.log(48000), 0.55)), -1)))
             self.staff[code] = people
-            for (y, m) in ((2026, 7), (2026, 8), (2026, 9)):
-                active = people[:staff[code]] if m < 9 else people[3:staff[code] + 3]
-                pay = dt.date(y, m, 28)
-                while not is_business(pay):
-                    pay -= DAY
-                late_sep = (m == 9 and code in ("C03", "C07", "C11"))
-                if late_sep:
-                    pay = dt.date(2026, 10, 2)
-                batch = "SAL-%s-%02d%02d-%03d" % (c["cif"][-4:], y % 100, m, int(rng.integers(1, 999)))
-                total = 0.0
-                rows = []
-                for prs in active:
-                    amt = prs["net"]
-                    rows.append(dict(code=code, batch=batch, nid=prs["nid"], name=prs["name"], amount=amt,
-                                     narrative="SALARY %s %d" % (dt.date(y, m, 1).strftime("%b").upper(), y),
-                                     pay_date=pay, month=(y, m), kind="salary"))
-                    total += amt
-                # a supplementary batch for people left out of the main run
-                if m == 9 and code in ("C02", "C06", "C09", "C12"):
-                    extra = people[staff[code] + 3: staff[code] + 6]
-                    sb = batch[:-3] + "%03d" % int(rng.integers(1, 999))
-                    for prs in extra + active[:1]:
-                        rows.append(dict(code=code, batch=sb, nid=prs["nid"], name=prs["name"] if prs is not active[0]
-                                         else prs["name"].split()[0] + " " + prs["name"].split()[-1],
-                                         amount=prs["net"] if prs is not active[0] else round(prs["net"] * 0.25, -1),
-                                         narrative="SALARY SEP 2026" if prs is not active[0] else "SALARY SEP 2026 BALANCE",
-                                         pay_date=add_business(pay, 2) if not late_sep else pay, month=(y, m),
-                                         kind="salary"))
-                # arrears for the previous month paid in September
-                if m == 9 and code in ("C05", "C08", "C11"):
-                    ab = batch[:-3] + "%03d" % int(rng.integers(1, 999))
-                    for prs in people[staff[code]: staff[code] + 4]:
-                        rows.append(dict(code=code, batch=ab, nid=prs["nid"], name=prs["name"],
-                                         amount=round(prs["net"] * 0.5, -1), narrative="ARREARS AUG 2026",
-                                         pay_date=dt.date(2026, 9, 15), month=(2026, 8), kind="arrears"))
-                self.payroll.extend(rows)
+            n = staff[code]
+            roster = {6: people[0:n], 7: people[1:n + 1], 8: people[2:n + 2], 9: people[4:n + 4]}
+            for m in (6, 7, 8, 9):
+                y = 2026
+                if code in late_payers:
+                    pay = W_second_business_day(y, m + 1)
+                else:
+                    pay = dt.date(y, m, 25 + int(rng.integers(0, 4)))
+                    while not is_business(pay):
+                        pay -= DAY
+                if pay < dt.date(2026, 7, 1):
+                    continue
+                batch = "SAL-%s-%02d%02d-%03d" % (c["cif"][-4:], y % 100, m, int(rng.integers(100, 999)))
+                for prs in roster[m]:
+                    self.payroll.append(dict(code=code, batch=batch, nid=prs["nid"], name=prs["name"],
+                                             amount=prs["net"], narrative=label[code], pay_date=pay, month=(y, m),
+                                             kind="salary"))
+                # a supplementary September run for people left out of the main batch, one of them a balance
+                if m == 9 and code in ("C02", "C06", "C09", "C12", "C04"):
+                    sb = "SAL-%s-%02d%02d-%03d" % (c["cif"][-4:], y % 100, m, int(rng.integers(100, 999)))
+                    extra = people[n + 4: n + 7]
+                    first = roster[9][int(rng.integers(0, len(roster[9])))]
+                    for prs in extra:
+                        self.payroll.append(dict(code=code, batch=sb, nid=prs["nid"], name=prs["name"],
+                                                 amount=prs["net"], narrative=label[code],
+                                                 pay_date=add_business(pay, 2), month=(y, m), kind="salary"))
+                    parts = first["name"].split()
+                    self.payroll.append(dict(code=code, batch=sb, nid=first["nid"],
+                                             name=(parts[-1] + " " + parts[0]) if len(parts) > 1 else first["name"],
+                                             amount=round(first["net"] * 0.3, -1), narrative=label[code],
+                                             pay_date=add_business(pay, 2), month=(y, m), kind="salary"))
+                # August arrears paid in mid September under the August period
+                if m == 9 and code in arrears_payers:
+                    ab = "SAL-%s-%02d%02d-%03d" % (c["cif"][-4:], y % 100, 8, int(rng.integers(100, 999)))
+                    for prs in roster[8][: 3 + int(rng.integers(0, 4))]:
+                        self.payroll.append(dict(code=code, batch=ab, nid=prs["nid"], name=prs["name"],
+                                                 amount=round(prs["net"] * 0.5, -1), narrative=label[code],
+                                                 pay_date=dt.date(2026, 9, 15), month=(2026, 8), kind="arrears"))
             # weekly casual wages (construction, flowers, tea)
             if code in ("C03", "C06", "C07"):
-                for wk in range(27, 40):
+                for wk in range(27, 41):
                     d = dt.date.fromisocalendar(2026, wk, 5)
                     if d > P.LOG_END:
                         continue
@@ -721,8 +737,8 @@ class World:
                         nid = "%08d" % int(rng.integers(20_000_000, 39_999_999))
                         self.payroll.append(dict(code=code, batch=cb, nid=nid, name=fk.name().upper(),
                                                  amount=round(float(rng.uniform(2800, 5200)), -1),
-                                                 narrative="CASUALS WK%02d" % wk, pay_date=d, month=(2026, d.month),
-                                                 kind="casual"))
+                                                 narrative="CASUAL WAGES WK%02d" % wk, pay_date=d,
+                                                 month=(2026, d.month), kind="casual"))
         # post one debit per batch that falls inside the statements' window
         batches = {}
         for r in self.payroll:
@@ -753,6 +769,19 @@ class World:
             self.post(p["code"], ka, m["value_date"], -fee_kes, "CHG", "debit", narrative="SWIFT CHARGE %s" % m["ref"])
             self.post(p["code"], ka, m["value_date"], -round(fee_kes * 0.2, 2), "CHG", "debit",
                       narrative="EXCISE DUTY ON SWIFT CHARGE %s" % m["ref"])
+
+
+def W_second_business_day(y, m):
+    if m == 13:
+        y, m = y + 1, 1
+    d = dt.date(y, m, 1)
+    k = 0
+    while True:
+        if is_business(d):
+            k += 1
+            if k == 2:
+                return d
+        d += DAY
 
 
 def kes_value(world, rec):
