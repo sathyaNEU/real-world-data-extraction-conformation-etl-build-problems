@@ -75,7 +75,7 @@ def write(fig, fam, path):
     L.append("### cqtc_dose_memo.pdf\n")
     L.append("1. Call: 50 mg once daily; 100 mg breaches the 10 ms bound at its high clinical exposure.")
     L.append("2. Chart: placebo-adjusted change in QTcI against plasma concentration, with concentration-decile means, "
-             "the model line and its 90% band, the 10 ms line and a marker at each dose's high clinical exposure "
+             "the model line and its 90%% band, the 10 ms line and a marker at each dose's high clinical exposure "
              "(%s, %s and %s ng/mL)." % (fmt(fig["c_high_25"]), fmt(fig["c_high_50"]), fmt(fig["c_high_100"])))
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(L) + "\n")

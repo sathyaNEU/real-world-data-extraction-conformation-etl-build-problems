@@ -92,8 +92,11 @@ def main(target, golden_dir=None):
 
     # ------------------------------------------------------------ R2: every Layer 1 item neutral
     ex_utc = A.exponents(F["df"], "hour", clock="utc")
-    check("R2a Holter clock read as UTC or local leaves every exponent unchanged",
-          max(abs(ex_utc[k] - ex["hour"][k]) for k in ex["hour"]) < 1e-9, "")
+    moved = [k for k in ex["hour"] if abs(ex_utc[k] - ex["hour"][k]) > 1e-9]
+    r = A.run_cqtc(D, "own", ex_utc, ch=ch)
+    check("R2a Holter clock left in UTC moves exponents only across the clock change and keeps the call",
+          r["call"] == 50 and all(D["subj"][k]["study"] == "101" and D["subj"][k]["cohort"] == 4 for k in moved),
+          "%d subjects moved, %.2f/%.2f" % (len(moved), r["ubs"][50], r["ubs"][100]))
     df_nom = A.drug_free(D, recs, owner, cut="nominal")
     r = A.run_cqtc(D, "own", A.exponents(df_nom, "hour"), ch=ch)
     check("R2b drug-free cut at nominal 08:00 instead of the logged dose time keeps the call", r["call"] == 50,
@@ -316,7 +319,7 @@ def pooled_within(df, grouping):
     for sid, a in df.items():
         xs += list(np.log(a[:, 1]))
         ys += list(np.log(a[:, 2]))
-        gs += list(sid * 100 + (np.floor(a[:, 0]).astype(int) if grouping == "hour" else 0))
+        gs += list(sid * 100 + (np.floor(a[:, 0]).astype(int) if grouping == "hour" else np.zeros(len(a), int)))
     return cqtc._within(np.array(xs), np.array(ys), np.array(gs))
 
 

@@ -85,9 +85,9 @@ def _chart(fig, path):
     ax.axvline(1.0, color=INK2, linewidth=0.9)
     ax.text(1.0, len(rows) - 0.25, "  expected annual turnover (1.00)", fontsize=7.2, color=INK2, va="bottom")
     ax.set_xscale("log")
-    ticks = [0.2, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0]
+    ticks = [0.25, 0.5, 1.0, 2.0, 4.0]
     ax.xaxis.set_major_locator(FixedLocator(ticks))
-    ax.xaxis.set_major_formatter(FixedFormatter(["0.20", "0.25", "0.50", "1.00", "2.00", "3.00", "4.00"]))
+    ax.xaxis.set_major_formatter(FixedFormatter(["0.25", "0.50", "1.00", "2.00", "4.00"]))
     ax.xaxis.set_minor_locator(NullLocator())
     ax.set_xlim(0.17, 4.6)
     ax.set_yticks(y)
@@ -100,11 +100,11 @@ def _chart(fig, path):
     ax.tick_params(axis="x", colors=INK2, labelsize=7.5)
     ax.grid(axis="x", color="#ecebe6", linewidth=0.6)
     ax.set_axisbelow(True)
-    ax.set_xlabel("Third-party receipts, year to 30 September 2026, as a multiple of expected annual turnover "
-                  "(log scale)", fontsize=7.6, color=INK2)
-    f.text(0.012, 0.965, "%s received %s of its declared turnover from third parties, the furthest from profile"
+    ax.set_xlabel("Third-party receipts as a multiple of expected annual turnover (log scale)", fontsize=7.6,
+                  color=INK2)
+    f.text(0.012, 0.965, "%s: third-party receipts %s of declared turnover, furthest from profile"
            % (fig["call_name"].replace(" Ltd", ""), fig["call_ratio"]), fontsize=9.6, fontweight="bold", color=INK)
-    f.text(0.012, 0.925, "EDD register, twelve customers. Next in line: %s at %s."
+    f.text(0.012, 0.925, "EDD register, year to 30 September 2026. Next in line: %s at %s."
            % (fig["runner_name"].replace(" Ltd", ""), fig["runner_ratio"]), fontsize=7.8, color=INK2)
     f.text(0.012, 0.012, "Source: core banking statements (legacy and T24), SWIFT MT103 archive, EDD profiles; "
            "receipts per FCC-07 section 3.", fontsize=6.6, color=INK2)

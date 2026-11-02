@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: exposure, record, traffic, junctions, worker, induct, average, crossroads, expected, sentence, control, kewdale, decisive, workers, export, job-based, standard, register, strategy, fitted, function, session, family, shifts, analyst
+Stump terms swept: exposure, record, traffic, junctions, worker, induct, crossroads, average, sentence, control, kewdale, register, decisive, workers, expected, standard, network, export, job-based, expectation, strategy, fitted, function, session, family
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `network_screening_2026.pdf`: carries 5 of 5 distinctive words of the committed call: 'Ardleshire should bid for the roundabout at Mill Lane Crossroads.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `junction_safety_fund_guidance_2027.pdf`: 7 of 25 stump-paragraph terms appear (record, traffic, junctions, average, crossroads, expected); read whether the document names the move
-- **REVIEW** `network_screening_2026.pdf`: 4 of 25 stump-paragraph terms appear (record, junctions, crossroads, control); read whether the document names the move
+- **REVIEW** `junction_safety_fund_guidance_2027.pdf`: 8 of 25 stump-paragraph terms appear (record, traffic, junctions, crossroads, average, control); read whether the document names the move
+- **REVIEW** `network_screening_2026.pdf`: 6 of 25 stump-paragraph terms appear (record, traffic, junctions, crossroads, control, network); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 1, INFO 1)
 - **REVIEW** `junction_inventory_2026.xlsx`: names 6 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question

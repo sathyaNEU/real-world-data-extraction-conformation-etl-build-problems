@@ -1,177 +1,157 @@
 # task281 design note
 
-Architecture 3, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 2 (Tallisford Power & Light's LED conversion phases and their group driver replacement) came back from the portal with a determinism return and then a landed call, and its world is closed with it (one architecture per world); architecture 1 (the State of Merrimont's relief positions) was spent at the portal on 2026-10-27. Both sit in the card's `lineage` and in their records below. This architecture is a new world, a new dataset and a new generator: General Statistics & Data Science / robustness-analysis under Descriptive & Distribution Analysis, in a community health center network's autonomous diabetic retinopathy screening.
+Architecture 4, drawn 2026-11-02 after architecture 3 was blocked at `guard.py heart` with no author waiver. Architecture 3 (the screening AI's operating points), architecture 2 (Tallisford Power & Light's LED conversion phases) and architecture 1 (the State of Merrimont's relief positions) sit in the card's `lineage` and in their records below. This architecture is a new world, a new dataset and a new generator: General Statistics & Data Science / missing data, censoring and measurement error under Descriptive & Distribution Analysis, in a Scottish university library dividing a course e-textbook fund among its faculties on the hold-weeks their students waited in the spring 2026 semester.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task281.json`, architecture v3, registered 2026-11-01 at WARN (repeat.gate_g against task255 v2: both file `method_or_model_selection`; answered here: task255 chooses a reserving method for an actuarial book, this build carries a classifier's measured hit rate to sites by their capture devices, and the Gate G class is the only shared axis), then checked again as the draw's last act after the sibling builders' cards landed.
-2. Pairing: General Statistics & Data Science / `robustness-analysis` / Descriptive & Distribution Analysis. The task type had never been drawn on any objective (`guard.py coverage`). The deliverable describes how a validated performance figure is distributed across the clinics' operating conditions: each clinic's estimated sensitivity at every vendor point, read through the composition of its screenings by capture device.
-3. Niche: Corrowan Valley Community Health (Oregon), twelve primary care clinics running Kelvory RetinaCheck, an autonomous diabetic retinopathy screening AI, on Halvard Optics retinal cameras of two models (the older NR-40 and the NR-70 bought from late 2024), with a local validation study at three pilot clinics in early 2025 and a 2027 overread agreement with Pellam Eye Reading Center.
-4. Objective: Descriptive & Distribution Analysis, forward facing: the operating point each clinic runs for contract year 2027, set on the reference year October 2025 to September 2026 under the network's governance standard CAI-03 v3.
-5. Shape 07 (grid of cells): one row per clinic and one column per vendor point, the clinic's point and the referrals it implies. Criteria: 12 points + 12 referral counts + the network total against capacity (2) + 24 reading-center figures by clinic + 4 quarterly turnaround figures + 6 fault figures + the brief's heatmap (4 parts: rows, columns, cell values, outlined points) + 2 files = 66.
-6. Decision type `dial_setting`, answer unit named option per clinic, question form what (a which question on the corpus quota's terms). Forum: the network's Executive Leadership Team (`executive_team`: the Chief Executive, the Chief Medical Officer and the Chief Operating Officer set each clinic's point; the Chief Medical Officer receives the estimate's precision and the quarterly reviews); forcing event: the 2027 reading center agreement and vendor subscription (`purchase_order_or_contract`); organisation `hospital_or_health_provider`; role `compliance_or_audit` (Quality and Clinical AI).
-7. Deliverables: `ai_operating_points_2027.xlsx` (the points, the referrals, the reading center's reads, the camera faults) and `operating_points_2027_leadership.pptx` (one slide for the Executive Leadership Team carrying the heatmap). The PNG first drawn beside the workbook went onto the slide when `voice-check.py` put the png+xlsx set over its corpus quota and a pdf+xlsx set repeated two sibling builds (`guard.py` repeat.deliverables).
-8. People, drawn with `guard.py names --geo US --seed 281`: Natalie Mckinney (Director of Quality and Clinical AI), Noah Odonnell (Biomedical Engineering Manager), Christy Francis (lead certified grader). None appears in the prompt.
-9. Candidates written before the choice, each screened on the survivor anatomy and the WHAT screen:
-   - A (taken): the validation study's sensitivity carried to each clinic by the camera model behind each image, the model recovered from the asset register's dated placements. The field's method (transport by the recorded case mix) sits at rung 1 and the dataset violates its precondition (no unrecorded factor of the score differs between the corpus and the clinics).
-   - B: the transport by case mix itself (age, HbA1c, ethnicity) as the decisive step: it is the field's named method, so it is the opponent's first move (stumping 1.1b); kept as rung 1.
-   - C: verification bias in the reading center's overreads (only referred screenings carry a reference grade) corrected to a clinic sensitivity: the step is a named correction (library test: use X on Y), a reflex; dropped.
-   - D: spectrum shift (each clinic's severity mix of referable disease): no file holds the severity of unreferred screenings, so the deciding input is absent (Gate B); dropped.
-   - E: a silent score recalibration at the 4.2 to 4.3 software release: it needs a withheld rule or a planted switch to decide the call (rule 3); the release stays and is shown inert (SF11).
-   - F: grader drift in the reference standard: the call would flip on reading the adjudication rule (data semantics); dropped.
-10. Screens before the draw: `guard.py recent`, `coverage`, `mechanisms --objective descriptive-distribution` and `slots` on the mechanism nouns (camera, device, transport, composition, validation, operating point) and the setting nouns (retinopathy, screening AI, reading center, community health center): no build on file carries a capture-device composition or a screening AI.
-11. Abstraction test against task181 v6 (the older structural match, cleared by the card's differentiation line) and task258 (the approved precondition build): task181 lays a shared resource's excess risk on the units it served and removes it case by case; task258 transports an intervention's effect to units its mechanism cannot reach; this build removes nothing and transports no effect: it re-weights a measured accuracy by the composition of each clinic's screenings over a latent capture device.
-12. Data-native sentence: the validation study ran January to August 2025 while the pilots' cameras were being swapped (Wendmere's NR-40 out on 1 March, Yarrowby's on 22 February with a two-week loaner in June, a three-week NR-40 loaner at Quarry Hill), so 848 of its 4,477 images came from NR-40 cameras, few enough to leave the pooled and every pilot's sensitivity above 85 per cent at Standard, while three clinics screened the whole reference year on an NR-40 and two ran most of it on NR-40 loaners whose own NR-70s came back in September.
+1. Card: `.claude/skills/fingerprint/cards/task281.json`, architecture v4, registered 2026-11-02T02:21:39Z after `guard.py recent`, `coverage` and `mechanisms --objective descriptive-distribution`; check WARN only (no BLOCK), and run again as the draw's last act.
+2. Pairing: General Statistics & Data Science / `missing-data-censoring-measurement-error` / Descriptive & Distribution Analysis. The deliverable is how the spring's hold-weeks are distributed over the eight faculties as they stand from 1 August 2026, each faculty's share of a fixed £180,000; the call is forward facing (the 2027 calendar year's licences).
+3. Strategy `informative_censoring`, held by no live card near the end of the draw order; shape 05 (allocation to a fixed total), forum `auditor` (Internal Audit reviews the division before the Fund opens), forcing event `incident_or_complaint` (the Court upheld the Students' Association complaint), organisation `university_or_school`, role `portfolio_manager`.
+4. Candidates weighed (each with its fate in `## Tried and rejected`): a call centre's offered wait from abandoned calls; a currency desk's last-look population; a water utility's valve segments at the main's grain; watched-hours salvage on a streaming catalogue; an interval around a stated allocation; the library's hold-weeks with cancelled holds carried to the offer the queue would have made them (drawn).
+5. Distance from the builds named in the brief: task271, task255, task259 and task264 hold other domains, worlds, strategies, shapes and forums (no university, no lending platform, no censoring strategy, no shape 05 among them); no in-flight world is a library.
+6. Data-native sentence: Shelfmark Lend serves a title's holds earliest-placed first and the students who give up are the ones it told of a long queue, so a cancelled hold's wait is cut short by exactly the queue length that makes it long, and the moment it would have been served is written in the record of the holds placed behind it and the copies that came free after it left.
+7. Abstraction: a fixed total divided on a censored duration whose exits are informative, where the counterfactual exit is generated by a known deterministic service rule and so is recorded, not estimated.
 
 ## Survivor anatomy
 
-- Actor: the deciding property is the camera model behind each image, and no file has a column for it: the validation record carries a site letter and a capture date, the result export a site and a UTC stamp, and the model exists only as the serial the asset register's location history places at that clinic on that day.
-- Link: the signal is read through an as-of interval join no key offers: site letter to clinic through the protocol, clinic to biomedical location through the directory, capture date into the location history's move dates, serial (typed with or without the maker's prefix) to model through the Assets sheet; nothing in the standard, the protocol or the vendor guide invites the join.
-- Reflex: the field's method for a validated sensitivity at a new site (carry it pooled, check it by site and subgroup, or reweight it to the site's recorded case mix) sits at rungs 0 to 2 and files Standard at every clinic (90.8 per cent pooled at Standard).
-- Back-test: the textbook route validates: every pilot clears 85 per cent at Standard on its own (87.1, 93.1 and 91.6), the case-mix transport leaves every clinic between 90.9 and 91.0 per cent, and the weakest pre-specified subgroup (75 and over, 60 referable) still clears the floor at 88.3.
-- Second use: the asset register and the service tickets carry the camera-fault ask (clinic days lost to each fault), the result export carries the same ask's capture days, the directory carries every crosswalk, and the validation study and its protocol are the method's own evidence; delete the decisive step and every file still has its job.
-- Shock: nothing moves; the five clinics the step resets show ordinary figures on every shipped statistic (their referral and ungradable rates on the vendor dashboard sit inside the network's spread, masked by their prevalence), and no sort of any shipped column puts the five together.
-- Pins: CAI-03 v3 files the WHAT (the reference year by local date, the clinic of capture, referable disease, sensitivity with Ungradable referred, the 85 per cent floor on the estimate as it stands, the capacity test), the agreement files the capacity and the referral unit, the protocol files the reference standard and the site letters; no filed sentence names a camera, a device or a grouping.
+Actor: the hold; the property that decides (the instant a copy would have been offered to a cancelled hold) has no column in any file: it is a relation between the cancelled hold, the holds placed after it on the same title and the copies that came free in another export after it left.
+Link: the queue order on a title, read across the holds export and the checkouts export through placement order and copy-free instants; no key joins a cancelled hold to the copy it would have taken and no sentence invites the comparison (3.3 names the quantity, Shelfmark 2.2 the service rule, neither the other file).
+Reflex: the survival curve with cancellations treated as censored observations, fitted per faculty, sits at rung 1 and files every faculty off its £100 (Ardmuir Business School £20,500 against £21,500).
+Back-test: the textbook route validates: the faculty curves are monotone and respect every observed time, on offered holds alone they reproduce the empirical waits exactly, and nothing in the pack refutes the uninformative-censoring premise except the queue itself.
+Second use: the checkouts export, the decisive step's second file, carries ask C's licence replay; the lending terms carry 3.2 and 3.3 for ask C; the holds export is the call's own record.
+Shock: the money the easy route moves reads as ordinary explained movement: the four faculties it underpays are the four whose students cancel most, which is exactly what a censoring adjustment is believed to handle, so the result looks corrected rather than anomalous.
+Pins: the WHAT is filed in the Court's terms (3.1 to 3.4, 2.1 to 2.3) and the service rule in Shelfmark's terms 2.2; no sentence names a replay, a survival model, censoring, a queue position or a counterfactual method.
 
 ## Default path
 
-1. Read CAI-03 v3 section 3: each clinic runs the least sensitive vendor point at which the AI's sensitivity for referable disease among its reference-year screenings is at least 85 per cent, and the referrals the points imply stay within the agreement's 7,500.
-2. Read retinacheck_operating_points.pdf for the thresholds (Standard 50, Enhanced 42, High 34, Maximum 26) and the protocol for the reference standard and the site letters.
-3. From local_validation_study_2025.csv compute sensitivity at each point: referable by final_level and final_dme, referred when Ungradable or dr_score at or above the threshold: 90.8 per cent at Standard pooled, 87.1, 93.1 and 91.6 at the three pilots.
-4. Transport it to each clinic the field's way: link each 2025-26 screening to its patient through the EHR orders and the registry, post-stratify the validation sensitivity on age group (and check sex, diabetes type, HbA1c and ethnicity): every clinic at 91 per cent at Standard, the weakest subgroup at 88.3.
-5. Apply section 3.1 at every clinic and count the referrals: Standard everywhere, 5,269 referrals, within capacity.
+1. Take shelfmark_holds_20250901-20261031.csv, keep holds placed 12 January to 26 April 2026 by UK date, drop patron type Staff, and map each department code's school to its faculty under Schedule 1.
+2. For a hold offered a copy (fulfilled or lapsed), the wait is offer_made_at less placed_at.
+3. A cancelled hold was never offered: treat its time to cancellation as a censored observation of its wait.
+4. Fit the survival curve of the wait per faculty with those censored observations (the field's method for durations cut short).
+5. Take each hold's expected hold-weeks from its faculty's curve (the mean of the wait beyond 14 days, capped at 84 days, in weeks), sum by faculty and divide £180,000 in proportion.
 
-Ends on: Standard at all twelve clinics, 5,269 referrals.
-
-Golden: Standard at Orrin Falls, Pellsbury, Quarry Hill, Sallow Creek, Thistlebrook, Wendmere and Yarrowby; High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane; 7,076 referrals against 7,500.
+Ends on: £20,500 for Ardmuir Business School, and every other faculty off its £100 as well (Arts and Humanities £20,100, Social Sciences £34,700, Law £18,000, Science and Engineering £47,100, Life Sciences £15,200, Medicine and Dentistry £14,000, Health Sciences £10,500).
+Golden: £21,500 for Ardmuir Business School (Arts and Humanities £19,000, Social Sciences £33,500, Law £19,200, Science and Engineering £45,800, Life Sciences £14,600, Medicine and Dentistry £15,400, Health Sciences £10,900).
 
 ## Stump sentence
 
-The default path carries the validation study's 90.8 per cent at Standard to every clinic, pooled, pilot by pilot or reweighted to each clinic's patient mix, and files Standard at all twelve clinics with 5,269 referrals; but the study's images came from two camera models (58 of 90 referable patients referred on the NR-40 against 378 of 390 on the NR-70 at Standard) in a mix the pilots' 2025 camera swaps happened to produce, and only each model's sensitivity, the model behind every image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane to High (7,076 referrals).
+The censored survival estimate files Ardmuir Business School £20,500 against £21,500, and misses every faculty's £100, because the students who cancel are the ones the platform told of a long queue, so the holds still waiting are not like the ones that left, while under the earliest-placed-first rule each cancelled hold's would-be offer is a recorded instant: the first copy freed after the cancellation that went to a hold placed after it, or to nobody.
 
 ## Three rules
 
-- Task type: general-statistics-data-science / robustness-analysis, which serves Descriptive & Distribution Analysis in the taxonomy: whether a model's validated performance holds across the operating conditions it is deployed in, described clinic by clinic.
-- Domain test: the deciding quantity is the AI's sensitivity for referable diabetic retinopathy under each clinic's own capture conditions at each vendor point, estimated from a validation study read against an adjudicated reading-center reference, the robustness analyst's performance-under-shift estimate.
-- Swap: "set each hospital's discharge threshold so that the readmission model flags 85 per cent of readmissions" keeps the arithmetic but loses what decides it: there is no capture device whose mix the validation corpus and the sites hold in different proportions, so the step that moves five clinics has nothing to act on.
-- Layer 1: the vendor portal stamps captures and releases in UTC (the cameras and the EHR keep Pacific time, with the DST change inside the year); the EHR, the vendor portal, the asset register and the reading center each name the clinics their own way; biomedical staff type camera serials with and without the maker's prefix; the validation export uses site letters and M/D/YYYY dates; the reading center opens a second case under the same referral when it asks for new photographs; merged charts leave retired MRNs on HIM documents; patients are screened at clinics other than their home clinic. Each is produced by the system named and none is placed to be caught (M1 to M8).
-- Layer 2: estimation under distribution shift (composition by a latent factor): the methodological choice is to estimate sensitivity per capture device and carry it by each clinic's device mix, rather than transporting one pooled or case-mix-weighted figure.
-- Decisive step: recognising that the validated sensitivity is a mixture over capture devices the validation corpus and each clinic hold in different proportions, and estimating it per device and recombining it with each clinic's device composition recovered from the equipment history.
-- Not semantics: every field read correctly (the site letters, the final grade, the Ungradable rule, the thresholds, the UTC stamps) still leaves the camera model in no column; with the clean truth's cameras known exactly the default route still files Standard at the five clinics (R3b).
-- Not rule application: no filed rule names the camera, the device or a grouping (R3c); executing CAI-03 3.1 and 3.2 on the pooled, pilot or case-mix sensitivity files Standard everywhere. Enumerated family: pooled, by pilot, case-mix post-stratified, worst subgroup, camera by current snapshot, camera by history (observed proportions weighted by screenings, days, gradable screenings, expected referables or camera and age; or the validation study's calibration of referable status on the DR score, logistic, logit-logistic, binned or isotonic, carried to each clinic's own scores; Pacific or UTC dating): Standard at 12 clinics to High at 5. Standing family once the data rule out the camera-blind routes: every camera-by-history member, spread zero on the call (every clinic's point identical in all fourteen, the tightest deciding cell 1.99 points from the floor under binned calibration, 3.89 under the observed proportions); the ruling-out is loud only for a reader who joins the register (58 of 90 against 378 of 390 at Standard).
-- Analyst test: a strong analyst who reads CAI-03 and every file correctly, and transports the validation study's sensitivity to each clinic pooled, by pilot or reweighted to its patient mix, files Standard at all twelve clinics with 5,269 referrals, against the golden's High at five.
-- Estimand: CAI-03 v3 section 2 and 3.1 (clinical_ai_governance_standard_v3.pdf): the population is the screenings captured at the clinic in the reference year by local date, the outcome referable disease under the validation study's reference standard, sensitivity the share referred (Referable or Ungradable), the comparison the estimate as it stands against 85 per cent at each vendor point.
-- No decoy: nothing is planted: no memo, briefing, draft or stakeholder figure argues a point; the protocol carries no results; the vendor dashboard reports referral and ungradable rates, not sensitivity, and is a declared distractor; no block of records is copied or withheld.
-- No certified replay: no published or certified sensitivity exists anywhere in the pack to reproduce; the method is not hidden behind a figure the solver backs out.
-- Lesson: a validation figure is a mixture over the conditions its corpus happened to contain; before carrying it to a site, ask which unrecorded factor of the score differs between the corpus and the site, and recover that factor from the operational records that track it. No build on file teaches a capture-device composition or a screening AI's transport.
+Task type: General Statistics & Data Science, `missing-data-censoring-measurement-error` (missing data, censoring and measurement error), serving Descriptive & Distribution Analysis (how the spring's hold-weeks are distributed across the faculties that divide the fund).
+Domain test: the deciding quantity is each cancelled hold's wait to the offer it would have had, a right-censored duration; the field's estimator is the Kaplan-Meier survival curve with cancellations as censoring, read as a restricted mean of the excess wait per faculty.
+Swap: "divide a hospital fund across wards on the patient-weeks waited for a bed" reads only while the deciding object stays a censored wait in an earliest-first service; replace it with a mean of observed waits or a count of holds and the division changes in every faculty (the filled-only and to-cancellation rungs miss all eight).
+Layer 1: UTC timestamps against a UK-dated window (the platform's export), lower-case prefixed department codes (the single sign-on feed), the 1 August 2026 faculty merger (Schedule 1), CRLF exports, staff holds in the same export, hyphenated and ISBN-10 citations, retitled editions and typed titles (the reading-list tool), dd/mm/yyyy invoice dates in three currencies (the finance system), re-licences reaching the register without a fund code (the order feed), a status report listing licences in force; none placed to be caught, and R2a to R2f assert the call files' mess moves nothing.
+Layer 2: informative censoring in a queue; the methodological choice is whether a cancelled hold's would-be offer is estimated from a censored survival curve or read from the record of the holds and copies that followed it.
+Decisive step: recognising that the borrowers who cancel are the ones told of long queues, so a cancellation is not an uninformative end of observation, and that the earliest-placed-first rule makes each cancelled hold's would-be offer a recorded instant: the first copy freed after the cancellation that went to a later-placed hold or to no hold.
+Not semantics: every field read correctly (offer times, lapsed offers as offers, UK dates, staff out, Schedule 1, both cancellation statuses) still leaves a cancelled hold with no offer time, and the easy route estimates it and files amounts £385 to £1,415 from the golden.
+Not rule application: 3.3 names the quantity and Shelfmark 2.2 the service rule, but no filed sentence says where the moment is found or how; the enumerated family (to cancellation, filled only, survival per faculty, pooled or per title, the replays) spreads Arts and Humanities £13,900 to £24,200 and Ardmuir Business School £15,900 to £32,600, the standing family (the two replays) spreads nothing at £100 (the simple replay drifts at most £12), and what rules the estimates out is silent: no file or sentence says the moment is recorded.
+Analyst test: a strong analyst who reads every field and rule correctly, treats each cancellation as a censored observation and fits each faculty's survival curve (the field's method) files Ardmuir Business School £20,500 against the golden £21,500, with every faculty off its £100.
+Estimand: Court paper UC/26/114, 3.1 to 3.4 with 2.1 and 2.2: holds students placed 12 January to 26 April 2026 by UK time, each counting for its school's faculty from 1 August 2026, hold-weeks the wait to the offer or (cancelled) to the offer it would have had, less fourteen days and never more than ten weeks, each faculty's share of £180,000.
+No decoy: nothing is planted to be caught: no memo, prior division, estimate file or stakeholder figure; the survey and the usage report answer other questions and are declared distractors; no file computes a division.
+No certified replay: no certified or published figure is reproduced to recover the method; the record determines each counterfactual offer under the platform's own service rule, and the pack holds no table to match against.
+Lesson: a duration cut short by an exit that depends on the very wait it truncates is not missing at random, and where the service rule is known and deterministic the counterfactual exit is observed in what the queue did next; no build on file teaches it (task148 takes the survival estimate of an abandoned caller's wait as its golden; this build puts that estimate at rung 1).
 
 ## Readability screen
 
-| Rung | What the reader does | Test that could fire | Verdict |
-|---|---|---|---|
-| 0 pooled validation sensitivity | carries 90.8 per cent at Standard to every clinic | the field's reflex | readable |
-| 1 case-mix transport | post-stratifies on age group and the recorded subgroups | the field's reflex, quoted in the protocol's analysis plan | readable |
-| 2 worst subgroup | sets every clinic by the 75 and over group (still Standard) | a conservative reflex | readable |
-| 3 camera by the register's snapshot | reads each clinic's camera from the Assets sheet as of September 2026 | needs the camera idea first; the snapshot is one sheet away from the history | silent |
-| 4 camera by placement history (decisive) | estimates each model's sensitivity with every image placed on its camera by capture date, and carries it by each clinic's screening mix | no column, no key, no filed sentence names the camera; nothing sorts the five clinics together | silent |
+| Rung | 1 column | 2 one join | 3 field reflex | 4 sentence | 5 control | 6 extreme | 7 second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| To cancellation (no counterfactual) | no | no | no | 3.3 rules it out | no | no | yes | readable |
+| Filled holds only | no | no | no | 3.3 rules it out | no | no | yes | readable |
+| Survival per faculty, cancellations censored | no | no | yes | no | no | no | yes | readable |
+| Survival pooled or per title | no | no | yes | no | no | no | yes | readable |
+| Queue replay from holds and checkouts (decisive) | no | no | no | no | no | no | yes | silent |
 
 ## Semantic fork table
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | reference year and the camera join's date | local Pacific date of capture | UTC date | same call | same call (CAI-03 2.1 files the local date) |
-| SF2 | sensitivity | Ungradable counts as referred | Ungradable left out | same call | CAI-03 2.4 and the protocol's analysis plan; same call |
-| SF3 | referable | the final (adjudicated) level | one grader's level | grader 1 alone moves clinics | CAI-03 2.3 and protocol section 3 (the adjudicated level stands) |
-| SF4 | a clinic's screenings | captured at the clinic | the clinic's home patients wherever screened | same call | CAI-03 2.2; same call |
-| SF5 | camera weights | share of screenings | share of clinic days | same call | same call |
-| SF6 | transport | by camera model | by camera model and age group | same call | same call |
-| SF7 | least sensitive point | highest threshold (Standard) | lowest threshold | reverses the dial | the guide: a lower threshold refers more patients |
-| SF8 | at least 85 per cent | the estimate as it stands | a confidence bound | moves points up | CAI-03 3.1 (compared with the floor as it stands) |
-| SF9 | referrals implied | referred screenings | referral orders net of cancellations | same call (7,076 and 6,879, both within 7,500) | CAI-03 3.2 (counted on the screenings); same call |
-| SF10 | the comparison's rounding | unrounded | whole per cent | same call (no cell within 0.5 of 85) | same call |
-| SF11 | software release | one score scale | 4.3 rescaled | same call | the guide (same scale) |
-| SF12 | a reading-center referral | one referral order | one case | figures differ | agreement 1.2 and 2.1 (a referral counts once) |
-| SF13 | quarter of a read | quarter the screening was captured | quarter of the grade | figures differ | CAI-03 4.1 (screenings captured in the quarter) |
-| SF14 | a fault's lost days | scheduled screening days on which the clinic screened no one | days carrying an equipment cancellation, or weekdays across the ticket's Opened to Closed window | figures differ | CAI-03 4.2 (a scheduled screening day on which the clinic screened no one because its camera was out of service) |
-| SF15 | days to the closing grade | calendar days between Pacific dates | elapsed UTC time | figures differ | CAI-03 4.1 (calendar days between local dates) |
-| SF16 | estimating a clinic's sensitivity | observed proportions by camera, weighted by the clinic's screenings | the validation study's calibration of referable status on the DR score (logistic, logit-logistic, binned, isotonic) carried to the clinic's own scores, or weights on expected referables or camera and age | same call (all fourteen members, tightest deciding cell 1.99 points from the floor) | same call |
+| SF1 | "between Monday 12 January and Sunday 26 April 2026, by UK time" | placed_at's UK date in the window | placed_at's UTC date | same call | asserted: every amount in its £100 under either |
+| SF2 | "Holds placed by members of staff do not count" | patron type Staff dropped | staff kept | other | 3.1's second sentence |
+| SF3 | faculty "from 1 August 2026" | Schedule 1's eight faculties | the 2025-26 faculties | other | 3.2 and 2.1 |
+| SF4 | "offered it a copy" | offer_made_at, fulfilled or lapsed | lapsed offers as cancellations | other | 3.3 (a lapsed offer was offered); Shelfmark 2.2 |
+| SF5 | "the moment a copy would have been offered to it had it not been cancelled" | the record's first copy after the cancellation that went to a later-placed hold or to none | the time of cancellation; an estimated wait | other | 3.3's "would have been offered"; Shelfmark 2.2 makes the moment determinate (two replays agree hold for hold) |
+| SF6 | "less fourteen days, and never more than ten weeks" | (min(wait, 84 days) less 14 days) in weeks | min(wait less 14 days, 70 days) | same call | identical algebra, asserted |
+| SF7 | "fourteen days or less has no hold-weeks" | counted, zero hold-weeks | dropped from the count | same call | 3.4 sums over holds; zero adds nothing |
+| SF8 | a faculty's hold-weeks | sum over its holds | mean per hold | other | 3.4 |
+| SF9 | rounding the amounts | each amount from the unrounded share, to the nearest £100 | shares from rounded hold-weeks | same call | prompt rounds once at the end; asserted |
+| SF10 | holds still waiting at the extract | none in the window | to the extract | same call | asserted: none waiting |
+| SF11 | "a course e-textbook" | every title held | only titles on 2025-26 lists | same call | asserted: every title held is on a list |
+| SF12 | "a hold that was cancelled" | both statuses, borrower and account closure | borrower cancellations only | other | Shelfmark 2.3: a closed account's holds are cancelled |
+| SF13 | copies freed by lapsed offers | enter the replay | checkouts only | other | Shelfmark 2.2: the lapsed copy is offered to the next hold |
+| SF14 | copies freed at one instant | earliest-placed first | any order | same call | asserted: both replays agree; no shared instant in the cut |
+| SF15 | a cancelled hold no copy reached before the extract | ten weeks | open | same call | asserted: none, and the cap fixes it |
+| SF16 | "the school the student belonged to when the hold was placed" | the hold's department code | the borrower's latest code | same call | asserted: one code per borrower |
 
 ## Ladder
 
-| Rung | Route | Points | Referrals |
-|---|---|---|---|
-| 0 | pooled validation sensitivity (90.8 per cent at Standard) | Standard at 12 | 5,269 |
-| 1 | case-mix transport on the recorded subgroups (91 per cent at every clinic) | Standard at 12 | 5,269 |
-| 2 | worst pre-specified subgroup (75 and over, 88.3 per cent at Standard) | Standard at 12 | 5,269 |
-| 3 | camera by the register's current snapshot (NR-70s back at Kestle Road and Veldane) | High at Brackenfield, Hollinmoor and Rookwood; Standard at 9 | 6,353 |
-| golden | camera by placement history, weighted by each clinic's screenings | Standard at 7, High at Brackenfield, Hollinmoor, Kestle Road, Rookwood and Veldane | 7,076 |
+| Rung | AHU | SSC | BUS | LAW | SAE | LSC | MED | HSC | Faculties on the golden's £100 |
+|---|---|---|---|---|---|---|---|---|---|
+| To cancellation | 24,200 | 39,400 | 15,900 | 13,100 | 50,800 | 16,600 | 11,400 | 8,600 | 0 |
+| Filled holds only | 23,300 | 38,800 | 16,700 | 12,400 | 50,400 | 17,400 | 12,100 | 8,800 | 0 |
+| Survival pooled | 13,900 | 24,700 | 32,600 | 20,100 | 38,000 | 15,100 | 19,400 | 16,200 | 0 |
+| Survival per faculty (default) | 20,100 | 34,700 | 20,500 | 18,000 | 47,100 | 15,200 | 14,000 | 10,500 | 0 |
+| Survival per title | 19,400 | 33,800 | 21,200 | 18,900 | 45,900 | 14,700 | 15,200 | 10,900 | 1 |
+| Queue replay, next later hold's offer | 19,000 | 33,500 | 21,500 | 19,200 | 45,800 | 14,600 | 15,400 | 10,900 | 8 |
+| Queue replay, exact (golden) | 19,000 | 33,500 | 21,500 | 19,200 | 45,800 | 14,600 | 15,400 | 10,900 | 8 |
 
-Each rung differs from the golden at two or more clinics (L1); High at every clinic implies 9,261 referrals, over the 7,500 capacity (L2). Validation by model: NR-40 848 images (90 referable), NR-70 3,629 (390). The fourteen estimators of the standing family give the golden's point at every clinic (checks.py F and SF16).
+Holds counted: 3,151, 5,587, 7,369, 4,542, 8,589, 3,419, 4,384, 3,656 (40,697). Hold-weeks to the nearest 100: 12,200, 21,500, 13,800, 12,300, 29,500, 9,400, 9,900, 7,000. One cheap route lands the call (the replay family) and every estimate misses (R3c, R3d).
 
 ## Closure table
 
-| Axis | Name | Reading here | Move |
-|---|---|---|---|
-| 1 | Population | screenings captured at the clinic in the reference year | filed, CAI-03 2.1 and 2.2 (C1 under UTC dating, SF1) |
-| 2 | Unit of account | the screening (one result a visit) | filed, CAI-03 2.4 |
-| 3 | Attribution window | October 2025 to September 2026 by local date | filed; C1 (one screening moves under UTC, no figure moves) |
-| 4 | As-of dating | each image's camera on its capture date | the location history's dated moves; swaps on Saturdays, none on a clinic day (C1) |
-| 5 | Version basis | the register as it stands with its full history | C4: the snapshot rung is wrong at two clinics |
-| 6 | Denominator | referable screenings, Ungradable referred | filed, CAI-03 2.4 (SF2) |
-| 7 | Weighting | camera share of the clinic's screenings | C1 across screening, day and gradable weights and an age stratum (SF5, SF6) |
-| 8 | Window length | the validation study's full six months | C1: every image is placed on its camera |
-| 9 | Boundary inclusivity | at or above the threshold refers | filed in the vendor guide |
-| 10 | Rounding path | compare unrounded, report whole per cents | C1 (no cell within 0.5 of the floor, SF10) |
-| 11 | Tie-break | none needed | C1: no cell equals 85 per cent |
-| 12 | Maturity and censoring | none: every validation image graded | not applicable, asserted |
-| 13 | Order of operations | estimate per model, then combine | C4: combining first is the pooled rung |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | a re-photographed referral is one referral | filed, agreement 1.2 and 2.1 (asks only) |
-| 16 | Identity normalisation | serials with and without the prefix are one camera | C1: one asset tag per serial (M2) |
-| 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | per cents, counts, days | stated in the prompt |
-| 19 | Code and status semantics | Referable and Ungradable refer | filed, CAI-03 2.4 and the guide |
-| 20 | Integerisation | referral counts are whole screenings | C1 |
-| 21 | Clause scope | section 3 per clinic, 3.2 for the network | filed |
-| 22 | Forward window contents | 2027 volumes read on the reference year's screenings | filed, CAI-03 3.2 |
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | students' holds placed in the window, UK dates, staff out | filed 3.1; C1 on UTC dates (SF1) |
+| 2 Unit of account | the hold | filed 3.3 and 3.4 |
+| 3 Attribution window | placement date | filed 3.1 |
+| 4 As-of dating | faculties from 1 August 2026, the extract of 31 October | filed 3.2 and Schedule 1 |
+| 5 Version basis | the one October extract | single version shipped |
+| 6 Denominator | all faculties' hold-weeks | filed 2.2 |
+| 7 Weighting | each hold equal, weighted by its hold-weeks | filed 3.4 |
+| 8 Window length | 12 January to 26 April 2026 | filed 3.1 |
+| 9 Boundary inclusivity | both days included | filed "between Monday ... and Sunday"; C1 (UTC reading same call) |
+| 10 Rounding path | each amount once from the unrounded share | prompt; asserted SF9 |
+| 11 Tie-break | copies freed together go earliest-placed first | C1, no shared instant (SF14) |
+| 12 Maturity and censoring | no counted hold still waiting; cancelled holds by replay | asserted SF10, SF15; the replay is the decisive step |
+| 13 Order of operations | cap at 84 days, then less 14 | C1, both orders identical (SF6) |
+| 14 Row order | export order irrelevant | replay sorts by time; C1 |
+| 15 Duplicate resolution | identifiers unique | asserted REAL1, REAL2 |
+| 16 Identity normalisation | department code to school by code | C4, every code maps (R2b) |
+| 17 Netting against gross | none | n/a, asserted no negative waits |
+| 18 Dimensional units | days to weeks by 7 | filed 3.3 |
+| 19 Code and status semantics | both cancellation statuses cancelled; lapsed offers offered | Shelfmark 2.2 and 2.3 (SF4, SF12) |
+| 20 Integerisation | none before the amounts | C1 |
+| 21 Clause scope | 3.3 applies to every counted hold | filed |
+| 22 Forward window contents | 2027 licences bought with the amounts | not modelled; the call is the division |
 
 ## Literal reader
 
-Executed word for word, CAI-03 3.1 asks for each clinic's sensitivity among its own reference-year screenings at each vendor point; the only shipped evidence of sensitivity is the validation study, so every literal reader estimates it from that record and carries it to the clinics. Every reading of every term is in the fork table and every one either gives the golden or violates a quoted sentence. The easy answer (Standard everywhere) comes from an easy method on the same literal estimand (carrying a pooled or case-mix sensitivity), never from another reading. Every write-up step names the shipped file and the clause it executes.
+Executed word for word: 3.1 selects the holds by UK date and patron type, 3.2 assigns faculties through Schedule 1, 3.3's "the moment a copy would have been offered to it had it not been cancelled" is executed with Shelfmark 2.2 (a copy that becomes free goes to the earliest-placed hold still waiting): with the cancelled hold left in place, each later copy-free instant goes to it unless an earlier-placed hold is still waiting, so the moment is the first copy freed after the cancellation that went to a later-placed hold or to none; 3.4 and 2.2 divide £180,000. Every reading listed in the fork table gives the golden or violates a quoted sentence; the survival estimate is not a reading of 3.3 but an estimate of a moment the record determines.
 
 ## Oracles
 
-None. No file holds a per-clinic or per-camera sensitivity (R1b), no control ties only under the golden, the vendor dashboard reports another quantity (referral and ungradable rates), and the protocol is the pre-study plan with no results. The capacity test passes at the golden and at every camera-blind rung, so it arbitrates nothing.
+None ships. No file holds a division, a wait, a queue position or an estimated offer time; the usage report counts checkouts and turnaways by title and month and the survey reports students' views by the old faculties, both declared distractors. The independent verifier (`generator/verify.py`, pypdf and its own membership-test replay) reproduces all 49 graded figures from the bundle.
 
 ## Ask sheet
 
-The asks sit on the reading center's log and the equipment records, quantities the main call's files cannot compute (no grade, no fault date in them). Ask 1: by clinic, the AI referrals Pellam read and the share whose closing grade is Referable; by quarter of screening, the average calendar days to the closing grade (28 figures). Ask 2: for each camera fault, the clinic days with no AI screening (6 figures).
+Asks (55 per cent): A, each faculty's course text spend on invoice lines dated 1 January to 31 October 2026 (nearest £10, 8 figures); B, essential spring 2026 reading-list items the Library could not lend as an e-book on 12 January 2026 (8 counts); C, loans left on the 40-loan licences charged to each faculty and in force at the end of 30 October 2026 (8 counts). None reads the holds export; A and B read only ask files, C reads the checkouts with the register and the status report (deleting those leaves C uncomputable and the call unchanged, R2f).
 
-- Pair ceiling: 28.5 (cracker 45.0 on the call with 0 of 34 ask criteria, mirror 12.0 with 0 of 34).
-- Mirror leakage: 0.0 per cent of the ask weight (target two fifths; nothing in the asks comes from the call).
-- Measured by: generator/ceiling.py on the cut pack.
+Devices: A, package shares need each list item's work, and earlier editions published under other titles are linked to their successors only from the later record (preceding_edition_mms), so ISBN and title routes both lose them (primary D7), beside FX and Schedule 2 (filed hazards). B, the same identity hazard plus lists that moved to a newer print edition the platform does not lend (C3.4's edition rule, primary D2). C, a licence bought before the record and absent from the status report had already lapsed (primary D4), and a re-licence reaches the register without a fund code and is charged to the licence it replaced, found only by replaying which licence's fortieth loan ended that day (second primary, D7 by a state rebuilt from the checkouts).
 
-| Ask | Primary device | Hazards | Cracker's handling | Cracker |
-|---|---|---|---|---|
-| Ask 1 reads and confirmed share by clinic | the log holds the teleretinal reads of patients excluded from AI screening, cases under IMG92250 photography orders indistinguishable in the log from AI referrals; only the referral order's procedure in the EHR extract separates them | re-photographed referrals (two cases under one order), UTC grade stamps, the reading center's site codes | pairs the cases, converts the clock, reads every case as an AI referral | miss |
-| Ask 1 days by quarter | the same, with teleretinal reads on routine turnaround | the same | the same | miss |
-| Ask 2 lost days by fault | the fault day carries equipment cancellations and also morning screenings, so it is not a lost day | the ticket's Closed date is the repaired camera's return, not the loaner's arrival | counts the days carrying an equipment cancellation up to the next camera's arrival | miss |
+| Ask figure | Cracker (lands the call; FX, Schedule 2, KBART shares, C3.4, Shelfmark 3.2 and 3.3 executed; ISBNs normalised and followed through each row's own links, then a normalised title match; a licence missing from the status report taken at 40; a re-licence's fund from its invoice line, else its title's usual fund) | Verdict |
+|---|---|---|
+| A, spend by faculty (8) | 0 of 8 within £5 (every gap £46 or more on the cut) | miss |
+| B, uncovered essential items (8) | 0 of 8 (earlier editions unresolved count as unlendable) | miss |
+| C, loans left by faculty (8) | 0 of 8 (phantom licences and misplaced re-licences move every faculty) | miss |
 
-The full includer (REF7734 orders only, the fault day kept out) keeps all 34 (stress row). Zero device rows sit in the main call's population: no teleretinal read, re-photograph or cancellation is in the result export (M7, M8).
+Mirror leakage: 0.0 per cent of ask weight (the mirror stops at the survival estimate per faculty, matches ISBNs to the catalogue and its related record only, and meters loans without the copy-on-loan condition; it keeps no ask figure).
+Pair ceiling: 31.0 (cracker 45.0: the call, holds and hold-weeks 38, files 7, no ask figure; mirror 17.0: holds 10, files 7). A full includer who also resolves every edition and reads the status report's absences keeps all 24 ask figures and the pair reaches 58.5, under 60.
+Measured by: `generator/ceiling.py`, run on the cut pack after every change.
 
-## Leak review
+## Architecture 3 record
 
-`leak.py --asof 2026-11-16` on the final cut: no LEAK; seven REVIEW lines (the operating-points guide's line below appeared on an earlier cut), each ruled here (the capacity 7,500 and the floor are declared `stated_inputs`).
-- Sweep 4, clinical_ai_governance_standard_v3.pdf (camera, validation, capture, screened, service, network): harmless; "camera", "screened" and "service" occur only in 4.2, the fault ask's WHAT, "capture" in 2.1 and 2.2 (the population's local date and the clinic of capture), "validation" in 2.3's reference standard; no sentence ties a camera to the AI's performance (checks.py R3c).
-- Sweep 4, retinacheck_operating_points.pdf (capture, carries, screen): harmless, the vendor's description of a result, its thresholds and its configuration.
-- Sweep 4, pellam_reading_agreement_2027.pdf (closed, network, screen): harmless, the agreement's service, capacity and fee terms; "closed" is a referral closed by a grade (1.2), the WHAT of the reading-center ask.
-- Sweep 4, validation_study_protocol_2025.pdf (validation, analysis, network, screen): harmless, the study's own design and plan; it names no camera and carries no result.
-- Sweep 6, biomed_asset_register_2026-09-30.xlsx: harmless, equipment by location and its moves; no sensitivity, no operating point, nothing ranked on the decision question.
-- Sweep 6, biomed_service_tickets_2025-26.csv: harmless, repair tickets for every equipment class.
-- Sweep 6, retinacheck_site_configuration_2026-10-01.json: harmless, every site's current configuration (all at Standard since October 2025); it states the status quo and ranks nothing.
-- Sweep 6, retinacheck_site_dashboard_2026q3.xlsx: a declared distractor (metadata.json), referral and ungradable rates by site and quarter at Standard, not sensitivity.
-
-`guard.py heart`: WARN (repeat.gate_g against task255 v2, answered in the Draw). `guard.py surface`: one pair promoted for the author's adjudication, task280 against task281, back to back on the slot pairing (General Statistics & Data Science under Descriptive & Distribution Analysis) at surface 0.000. Differentiation: task280 rebuilds a broadband panel's quarter-hour delivery shares per hub from household tests (missing-data-censoring-measurement-error); this build carries a screening AI's validated sensitivity to clinics by the camera behind each image (robustness-analysis); the worlds, task types, files and drivers share nothing but the lane's objective.
+Drawn 2026-11-01 in General Statistics & Data Science / robustness-analysis: the Corrowan Valley community health centre network's autonomous diabetic retinopathy screening (the Oregon screening AI), each clinic's sensitivity at every vendor operating point carried to its own capture devices, a grid of clinic by operating point for the Executive Leadership Team under CAI-03. Judge APPROVE and leak reader clean, blocked at guard.py heart (strategy composition_mix, artifact filed_standard, role compliance_or_audit, shape 07, forum executive_team) with no author waiver; re-rooted 2026-11-02. Its determinism and leak reports are kept as `determinism_check_report_arch3.md` and `leak_check_report_arch3.md` (last target.zip 314f3a3b).
 
 ## Architecture 2 record
 
@@ -223,3 +203,13 @@ Drawn from seed DA31: the State of Merrimont's relief positions, each unit's nee
 - Stage 4 round 1, 2026-11-01: the judge (DETERMINISTIC, Gates G and H PASS) found the estimator open (Gate C, settled only by the plain reading): the validation study's calibration of referable status on the DR score, carried to each clinic's own scores, put Brackenfield, Hollinmoor and Rookwood at Enhanced (85.5 to 87.1 against the observed NR-40 82.2) and Veldane at Standard, because the deciding cells sat 2.0 to 2.8 points from the floor with 101 NR-40 positives. Closed by construction, no wording filed: the referable NR-40 scores tightened (latent spread 0.605), the NR-70 lifted (mean 1.18), the study ran to 22 August with 4,477 images, Kestle Road's and Veldane's NR-70s failed in October and came back in September (90 and 91 per cent NR-40), the capacity rose to 7,500, and the validation draw was chosen from seventy on the whole family's agreement (draw 37: every member gives the golden's point at every clinic, tightest deciding cell 1.99 points); the graded sensitivities are now stated as referred over referable counts.
 - Stage 4 round 2 advisories, 2026-11-01 (the re-judge approved): a lost clinic day is now defined in CAI-03 4.2 as a scheduled screening day on which the clinic screened no one because its camera was out of service (holidays and the ticket's Closed date fall out by the sentence; no holiday lies inside any fault window, so no figure moved); the protocol carries amendment 1 (enrolment to 22 August 2025, about 1,500 a site) to match the study file; the committee slide states the basis of each heatmap cell.
 - The Clinical AI Oversight Committee as the deciding forum (`committee_or_panel`), 2026-11-01: task273 v6 shipped with a committee forum inside this card's window, so `guard.py heart` returned BLOCK ban.forum on the final cut; the forum was redrawn to the Executive Leadership Team (CAI-03 approval, 3.1's precision report, 3.4's presentation, 4.1 and 4.2's reviews), the prompt's slide and its file name followed, and no graded figure moved.
+- Architecture 3 (the screening AI's operating points carried to each clinic's capture devices), re-rooted 2026-11-02: judge APPROVE and leak reader clean, blocked at guard.py heart (strategy composition_mix, artifact filed_standard, role compliance_or_audit, shape 07, forum executive_team) with no author waiver; the new draw left composition and case mix entirely and moved to a strategy no live card near the end of the draw order holds (informative_censoring), in a university library's lending records.
+- Architecture 4 candidates dropped at the draw, 2026-11-02: a call centre's offered wait recovered from abandoned calls (the same censored-wait object as task148, whose golden is the survival estimate itself); a currency desk's last-look rejections priced on the trades the desk saw (population_selection, the WHAT screen: filing the population is the step); a water utility's valve-isolation segments read at the main's grain (a re-grain, task255 v2's family under another noun); watched-hours salvage on a streaming catalogue (task184's lineage); an interval around a stated allocation (uncertainty_in_insights, two cards in the window hold it).
+- Guard BLOCKs met while fixing this draw, 2026-11-02: context artifact filed_model (task138 v4 in the window) dropped for none; generators G12 alone repeated a driver on the population and objective (test.same_driver), so the card carries G9 and G12; forum line_manager_or_team (task248 v2) moved to auditor (Internal Audit reviews the division under 4 of the Court's terms); a persona first name the guard flagged was redrawn from guard.py names.
+- First metering model, 2026-11-02: every loan counted against the earliest-purchased 40-loan licence with loans left whether or not that copy was out, and a licence lapsing at the first return after its counter reached zero; neither matches a single-user licence (two loans could sit on one copy) nor "lapses when its fortieth loan ends", and the bundle's replay disagreed with the platform on one title in eight; the platform now makes each loan on the earliest-purchased licence not on loan with loans left (Shelfmark 3.2 says so), and a licence lapses when the loan that took it to zero ends.
+- Hashed platform identifiers drawn without a clash check, 2026-11-02: two checkouts shared an id in a 60,000-row export (and hold ids would have repeated about five times); identifiers are now re-drawn on a clash and asserted unique.
+- Ask C as a count of 40-loan licences in force with ten or fewer loans left, 2026-11-02: the careful route (the status report's figures, 40 for a licence the report omits, a re-licence charged to its title's usual fund) kept three to four of eight faculties because so few licences sit near the line; the ask moved to the loans left on each faculty's licences in force, where every misplaced loan, phantom licence or misattributed re-licence moves the figure.
+- Ask A at the nearest £100, 2026-11-02: with the earlier editions' citations resolved by normalised title, a careful route kept one to five faculties across administrative draws; earlier editions published under other titles (catalogue rows linked forward by preceding_edition_mms only) and spend to the nearest £10 left the careful route with no faculty, with every figure at least £2 from its edge.
+- Ask B with the edition cited taken as the edition lent, 2026-11-02: kept as a hazard; reading lists that moved to a newer print edition the platform does not lend yet make the edition rule bite (C3.4).
+- A shared-instant convention for the queue replay, 2026-11-02: copies freed at the same instant are rare enough (none in the cut) that both replays (recipient tags and the membership test) agree hold for hold (SF14); kept as an assertion, not a filing.
+- Seeds, 2026-11-02: 28104 and 28115 were measured and set aside when the platform model changed (per-copy metering moved the random stream); 28240 was taken from a sweep of 100 seeds because every amount clears its £100 edge by at least £7.70 beyond the simple replay's drift and every faculty's hold-weeks by 5.2, with no counted hold still waiting and the UTC reading of the window on the same call.

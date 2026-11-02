@@ -40,17 +40,25 @@ card's lineage. Everything above `## Architecture 4 record` is architecture 5.
   here every candidate was listed for a high recent count, so the bias runs one way across the whole list, the
   reference is a traffic-and-layout model fitted to the network's own junctions, and the model alone is itself a wrong
   rung.
+- **Context artifact redrawn at stage 4 (2026-11-02):** guard heart BLOCKed `ban.artifact` (register, against
+  task123 v4, delivered). The bid's author never worked the decision from the road network register (a reference file
+  for Annex A's road authority and the eligibility clause) or from the inventory (the analysis's traffic data); she
+  works from the screening list clause 3.4 confines the bid to, which was her own firm's note. The pack now delivers
+  that list as the county network management team's memo to her (Neil Ingram to Alison Hartley, 9 October 2026), card
+  `planning_thread`; the register stays a reference file. `filed_standard` was not taken: the fund's guidance is the
+  governing document, a separate organ, and task248 v2, drawn after this card, holds the type. check and heart WARN
+  only (question form); no build drawn after this card meets a new ban.
 - **World:** Ardleshire, a fictional English shire county in three districts (Ardle Vale, Brindham, Kestermoor). Its
-  road safety engineering term consultant, Halberd Transport Planning, screened the principal road network in October
-  2026 and listed six give-way or stop-controlled junctions with twelve or more injury collisions in the validated
-  2021 to 2025 record; the national Junction Safety Fund pays for one roundabout per authority in 2027 to 2028 at the
+  network management team screened the principal road network in October 2026 and sent its road safety engineering
+  term consultant, Halberd Transport Planning, the six give-way or stop-controlled junctions with twelve or more injury
+  collisions in the validated 2021 to 2025 record; the national Junction Safety Fund pays for one roundabout per authority in 2027 to 2028 at the
   listed junction with the largest benefit. Personas (`guard.py names --geo gb --locale en_GB --seed 304`): Alison
-  Hartley, Halberd's road safety lead (the screening note, the bid); Cheryl Gregory, the fund's programme manager (the
-  guidance); Neil Ingram, the county's traffic data officer (pulls the extracts; appears in no file). As-of date of the
+  Hartley, Halberd's road safety lead (the bid); Cheryl Gregory, the fund's programme manager (the guidance); Neil
+  Ingram, the county's traffic data officer (the screening memo to Alison Hartley). As-of date of the
   fiction: Friday 4 December 2026 (the bid closes 29 January 2027).
 - **The call:** which listed junction takes the roundabout, sized by the injury collisions a year it would prevent.
-  Golden: Mill Lane Crossroads, 1.3 a year (expected 2.7 a year as it stands); the runner-up Tollgate Crossroads at
-  1.0. Forward facing: the benefit is the collisions the 2027 scheme would prevent in the years after it opens.
+  Golden: Mill Lane Crossroads, 1.3 a year; the runner-up Tollgate Crossroads at 1.0 (the expectation behind the
+  call, 2.65 to 2.74 a year across the licensed fits, is stated nowhere at one decimal). Forward facing: the benefit is the collisions the 2027 scheme would prevent in the years after it opens.
 - **Shape arithmetic:** six listed junctions' benefits 6; the junction and the runner-up 2; the chart's parts (a bar
   per junction, the chosen bar marked, value labels, the axis title) 4; ask A, injury collisions by quarter and
   severity, 9; ask B, casualties by quarter and road user, 12; the two files 2. 35 gradable criteria, 21 of them asks.
@@ -377,11 +385,17 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 3 of 9 to the crac
   draw is the one (`COUNT_DRAW`, chosen among the first 414 screened) on which the licensed fits agree, and the six
   listed junctions' 2026 major-road traffic was re-centred so each junction's range across the fifteen fits sits inside
   one one-decimal bin (Mill Lane 12,630, Tollgate 14,620, Church Street 9,370, Saxby 3,320, Coppice Way 23,410, Fen Lane
-  11,340 vehicles a day). Every one-decimal benefit, the call, the expected 2.7, the annex tables cell for cell, and the
-  own-count and model-alone rungs (Saxby Cross, Tollgate Crossroads) are unchanged. Outside the family: a function
-  fitted without the six listed junctions (selected on the very counts that listed them) lowers the overdispersion to
-  0.19 and every benefit by 0.08 to 0.15, Mill Lane still first; the call's expected collisions read 2.7 under fourteen
-  of the fifteen fits and 2.648 under five-year totals on 2026 traffic.
+  11,340 vehicles a day). Every one-decimal benefit, the call, the annex tables cell for cell, and the own-count and model-alone
+  rungs (Saxby Cross, Tollgate Crossroads) are unchanged. Outside the family: a function fitted without the six listed
+  junctions (selected on the very counts that listed them) lowers the overdispersion to 0.19 and every benefit by 0.08
+  to 0.15, Mill Lane still first.
+- **Before the final judge pass (2026-11-02, on 1c5b094a):** (1) the context artifact redrawn in the pack (Draw above):
+  the screening list is now the county network management team's memo to the bid's author; network_screening_2026.pdf
+  and its provenance line changed, nothing else in target/. (2) The call's expectation read 2.7 under fourteen of the
+  fifteen fits and 2.648 under five-year totals on 2026 traffic, so critical component 1 and step 4 no longer state it,
+  and the bid's first paragraph applies the factor to the expectation without printing it; the critical components are
+  the benefit 1.3 and the runner-up Tollgate Crossroads 1.0, which every fit prints, Tollgate second under every fit
+  (B2 asserts the figures, the order and that no expected-collisions figure is stated).
 - **Gates on the final cut (2026-11-02):** generator checks 69 of 69; verify 15 of 15 (its own NB2 fit by joint
   quasi-Newton, overdispersion 0.273); two byte-identical builds, target.zip 1c5b094a; figures_check 37 figures, 0
   absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (710 characters); leak.py REVIEW, no LEAK (ruled below);

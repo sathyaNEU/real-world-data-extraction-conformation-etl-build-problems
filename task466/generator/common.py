@@ -102,7 +102,11 @@ def text_pdf(path, title, blocks, width_chars=104, author=""):
         else:
             c.setFont("Helvetica-Bold" if style == "B" else "Helvetica", size)
             lines = textwrap.wrap(text, width_chars if size <= 9 else int(width_chars * 0.86))
+        from reportlab.pdfbase.pdfmetrics import stringWidth
+        font = "Courier" if style == "T" else ("Helvetica-Bold" if style == "B" else "Helvetica")
         for ln in lines:
+            # nothing may run past the right margin (a clipped cell reads as generated)
+            assert 17 * mm + stringWidth(ln, font, size) <= letter[0] - 12 * mm, (path, ln)
             if y < 18 * mm:
                 c.showPage()
                 y = top

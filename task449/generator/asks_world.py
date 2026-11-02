@@ -215,10 +215,29 @@ def write_referrals(referrals, rng, tgt):
 
 def write_job_reports(placements, clients, emps, rng, tgt):
     """Job start and end reports: consultant follow-ups (employer number) and client portal reports (employer name
-    as typed); a consultant records a hire that did not start."""
+    as typed); a consultant records a hire that did not start. At a multi-site employer a report may name the
+    location's own account (its number, or its name as the client types it)."""
+    import pack
     ext = W.d2i(P.EXTRACT)
     lo = W.d2i(REF_FROM)
     emp_by_no = {e["employer_no"]: e for e in emps}
+    sib = {}
+    for a in pack.sibling_accounts(emps):
+        sib.setdefault(a["parent_no"], []).append(a)
+
+    def ident(pl, ch):
+        """The account a report names for a placement: the posting's, or the location's sibling account."""
+        e = emp_by_no[pl["employer_no"]]
+        alt = sib.get(pl["employer_no"])
+        if alt and pl.setdefault("at_sibling", rng.random() < 0.6):
+            a = alt[0]
+            if ch == "consultant":
+                return a["employer_no"], None
+            return None, (a["operating_name"] if rng.random() < 0.8 else a["operating_name"].lower())
+        if ch == "consultant":
+            return pl["employer_no"], None
+        return None, typed_name(e, rng)
+
     recs = []
     for pl in placements:
         e = emp_by_no[pl["employer_no"]]
@@ -240,10 +259,11 @@ def write_job_reports(placements, clients, emps, rng, tgt):
             if rd > ext:
                 rd = ext
             rec = {"client": pl["client"], "source": ch, "event": "job_start", "date": W.i2d(s).isoformat()}
-            if ch == "consultant":
-                rec["employer_no"] = pl["employer_no"]
+            num, name = ident(pl, ch)
+            if num is not None:
+                rec["employer_no"] = num
             else:
-                rec["employer_name"] = typed_name(e, rng)
+                rec["employer_name"] = name
             recs.append((max(rd, s), rec))
         last = s + pl["L"] - 1
         pl["last"] = last
@@ -261,10 +281,11 @@ def write_job_reports(placements, clients, emps, rng, tgt):
                 rd = min(ext, last + int(rng.integers(0, 31)))
                 ch = "consultant" if rng.random() < 0.5 else "portal"
                 rec = {"client": pl["client"], "source": ch, "event": "job_end", "date": W.i2d(last).isoformat()}
-                if ch == "consultant":
-                    rec["employer_no"] = pl["employer_no"]
+                num, name = ident(pl, ch)
+                if num is not None:
+                    rec["employer_no"] = num
                 else:
-                    rec["employer_name"] = typed_name(e, rng)
+                    rec["employer_name"] = name
                 recs.append((rd, rec))
                 pl["end_channel"] = ch
         else:
@@ -277,7 +298,10 @@ def write_job_reports(placements, clients, emps, rng, tgt):
     placed_names = {}
     for pl in placements:
         pe = emp_by_no[pl["employer_no"]]
-        placed_names.setdefault(pl["client"], set()).update({nn(pe["operating_name"]), nn(pe["legal_name"])})
+        nm = {nn(pe["operating_name"]), nn(pe["legal_name"])}
+        for a in sib.get(pl["employer_no"], []):
+            nm |= {nn(a["operating_name"]), nn(a["legal_name"])}
+        placed_names.setdefault(pl["client"], set()).update(nm)
     own = []
     for k in range(5200):
         c = clients[int(rng.integers(len(clients)))]

@@ -385,7 +385,7 @@ def calibration_log(walks):
                 if wk["q"] == 3 and d == (2026, 9, 15) and t is midday:
                     read = span_ref * 1.22
                     ok = False
-                rows.append(dict(t=t, zero=round(float(r.uniform(-0.6, 0.9)), 1), span_ref=span_ref,
+                rows.append(dict(t=t, zero=round(float(r.uniform(-0.6, 0.9)), 1) + 0.0, span_ref=span_ref,
                                  span_read=round(float(read), 1), result="PASS" if ok else "FAIL"))
                 if not ok:
                     t2 = t + dt.timedelta(minutes=int(r.integers(12, 21)))

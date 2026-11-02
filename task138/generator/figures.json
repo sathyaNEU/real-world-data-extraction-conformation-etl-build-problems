@@ -1,0 +1,42 @@
+{
+ "auc_sad_100": 5000,
+ "auc_sad_200": 9300,
+ "auc_sad_25": 1300,
+ "auc_sad_400": 21000,
+ "auc_sad_50": 2500,
+ "below10_100": "no",
+ "below10_25": "yes",
+ "below10_50": "yes",
+ "c_high_100": 1170,
+ "c_high_25": 301,
+ "c_high_50": 647,
+ "call_mg": 50,
+ "exp_hour_mean": 0.43,
+ "exp_pooled_mean": 0.53,
+ "family": {
+  "calls": [
+   50
+  ],
+  "ub100_hi": 14.94,
+  "ub100_lo": 12.59,
+  "ub50_hi": 8.25,
+  "ub50_lo": 6.94
+ },
+ "night_hr_101_100": 0.4,
+ "night_hr_101_200": 1.4,
+ "night_hr_101_25": 0.5,
+ "night_hr_101_400": 3.9,
+ "night_hr_101_50": 0.0,
+ "night_hr_102_100": 1.0,
+ "night_hr_102_25": 0.2,
+ "night_hr_102_50": 0.9,
+ "pooled_call": 25,
+ "pt_100": 11.3,
+ "pt_25": 2.9,
+ "pt_50": 6.2,
+ "qtcf_call": 100,
+ "slope_per100": 0.97,
+ "ub_100": 12.9,
+ "ub_25": 3.4,
+ "ub_50": 7.1
+}

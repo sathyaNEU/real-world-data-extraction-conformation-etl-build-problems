@@ -286,6 +286,35 @@ def write_cases(rows, tgt):
     return len(rows)
 
 
+TOWNS = ["Port Laurent", "Saint-Ours", "Bayfield", "Fairhaven", "Kettle Creek", "Belle-Rive", "Grand Portage",
+         "Westvale", "Oxbow", "Highland", "Ashford", "Lakeshore"]
+
+
+def sibling_accounts(emps):
+    """Second accounts some multi-site employers hold for another location: a new employer number under the same
+    business number and legal name. Drawn on their own stream, so nothing else in the world moves."""
+    rng = np.random.default_rng(P.SEED + 61)
+    used = {e["employer_no"] for e in emps}
+    cand = [e for e in emps if not e["public"]]
+    w = np.array([e["size"] for e in cand])
+    pick = rng.choice(len(cand), size=int(round(0.05 * len(cand))), replace=False, p=w / w.sum())
+    out = []
+    for i in sorted(int(x) for x in pick):
+        e = cand[i]
+        while True:
+            num = "%06d" % rng.integers(100000, 999999)
+            num = num + W.luhn_digit(num)
+            if num not in used:
+                used.add(num)
+                break
+        town = TOWNS[int(rng.integers(len(TOWNS)))]
+        out.append({"employer_no": num, "bn9": e["bn9"], "legal_name": e["legal_name"], "sector": e["sector"],
+                    "operating_name": "%s %s" % (e["operating_name"], town), "naics": e["naics"],
+                    "parent_no": e["employer_no"],
+                    "opened": W.i2d(int(rng.integers(W.d2i(dt.date(2023, 1, 1)), W.d2i(dt.date(2025, 3, 1)))))})
+    return out
+
+
 def write_employers(emps, rng, tgt):
     rows = []
     for e in sorted(emps, key=lambda e: e["employer_no"]):
@@ -293,6 +322,10 @@ def write_employers(emps, rng, tgt):
         status = "Active"
         rows.append([e["employer_no"], e["legal_name"], e["operating_name"], e["naics"], e["bn9"],
                      opened.isoformat(), status])
+    for e in sibling_accounts(emps):
+        rows.append([e["employer_no"], e["legal_name"], e["operating_name"], e["naics"], e["bn9"],
+                     e["opened"].isoformat(), "Active"])
+    rows.sort(key=lambda r: r[0])
     C.write_csv(os.path.join(tgt, "workshore_employer_accounts.csv"),
                 ["employer_number", "legal_name", "operating_name", "naics_2017", "business_number", "account_opened",
                  "status"], rows)

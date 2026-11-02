@@ -1,0 +1,99 @@
+{
+ "task": "task138",
+ "architecture": 4,
+ "as_of": "2026-10-28",
+ "decision": "the highest of the 25, 50 and 100 mg once-daily phase 2b doses of VLT-317 whose predicted placebo-corrected QTc change at its high clinical exposure keeps the upper 90% bound below 10 ms",
+ "deliverables": [
+  "cqtc_dose_review.xlsx",
+  "cqtc_dose_memo.pdf"
+ ],
+ "files": {
+  "holter_5min_segments_VLT317-101-102.txt": {
+   "source": "Ekerstede CPU HS-2 Holter station, 5-minute segment export of the continuous recordings of studies VLT-317-101 and VLT-317-102; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "corelab_ecg_VLT317-101_transfer3.xlsx": {
+   "source": "Core laboratory ECG transfer 3 for study VLT-317-101 (triplicate extractions); synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "corelab_ecg_VLT317-102_transfer2.csv": {
+   "source": "Core laboratory ECG transfer 2 for study VLT-317-102 (triplicate extractions); synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "bioanalysis_plasma_VLT317-101-102.csv": {
+   "source": "Ekerstede CPU bioanalytical laboratory, VLT-317 plasma results for inpatient samples; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "ambulatory_lab_results_2026.csv": {
+   "source": "Ekerstede CPU laboratory results for ambulatory visits, 2026; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "dosing_log_VLT317-101-102.csv": {
+   "source": "Ekerstede CPU dosing log for studies VLT-317-101 and VLT-317-102; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "randomisation_unblinded_VLT317-101-102.xlsx": {
+   "source": "Unblinded randomisation list for studies VLT-317-101 and VLT-317-102; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "screening_log_2026.csv": {
+   "source": "Ekerstede CPU volunteer screening log, 2026; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "vital_signs_VLT317-101-102.csv": {
+   "source": "Scheduled supine vital signs, studies VLT-317-101 and VLT-317-102; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "distractor"
+  },
+  "safety_ecg_machine_VLT317-101-102.csv": {
+   "source": "Safety 12-lead ECG machine reads at screening, admission, discharge and follow-up; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "distractor"
+  },
+  "VLT-317_CQTc_analysis_plan_v2.0.pdf": {
+   "source": "Valtenna Therapeutics VLT-317 concentration-QTc analysis plan, version 2.0; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  },
+  "VLT-317-103_CSR_synopsis.pdf": {
+   "source": "Valtenna Therapeutics clinical study report synopsis, study VLT-317-103; synthetic",
+   "date": "2026-10-28",
+   "license": "synthetic, CC0",
+   "role": "evidence"
+  }
+ },
+ "distractor_files": [
+  "vital_signs_VLT317-101-102.csv",
+  "safety_ecg_machine_VLT317-101-102.csv"
+ ],
+ "largest_file": {
+  "name": "holter_5min_segments_VLT317-101-102.txt",
+  "rows": 46617
+ },
+ "generator": {
+  "seed": 13804,
+  "streams": {
+   "late": 355,
+   "exchange": 420
+  }
+ }
+}

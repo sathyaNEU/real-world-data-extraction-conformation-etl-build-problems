@@ -10,8 +10,8 @@
   "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Credit the Course Texts Fund 2027 as Arts and Humanities GBP 19,000, Social Sciences 33,500, Ardmuir Business School 21,500, Law 19,200, Science and Engineering 45,800, Life Sciences 14,600, Medicine and Dentistry 15,400, Health Sciences 10,900",
+  "answer_source": "generator/analysis.py main_call (golden), written by golden.py and writeup.py; generator/figures.json call",
   "gap": [
     "objective",
     "population"
@@ -36,21 +36,21 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:informative-cancellation-queue-order",
   "layer1": [
-    "the lending platform stamps holds and loans in UTC while the library management system and the reading-list tool keep UK local time, the clocks changing inside the semester",
-    "titles keyed by the platform's own ID in the holds and loans exports, by ISBN in the licence register and by the catalogue's record number in the reading lists",
-    "the 1 August 2026 restructure that merged two faculties, so spring holds carry the old faculty codes and the fund is split across the new ones",
-    "the student feed is a snapshot taken after graduation, so students who left in June appear only in the historical enrolment extract",
-    "two holds exports with overlapping dates (the March download and the October download)",
-    "a hold whose copy was offered but not collected inside the platform's collection window shows as expired, not fulfilled",
-    "licence orders carrying several copies on one line, renewals as new lines, and metered licences that lapse after a set number of loans"
+    "the lending platform stamps holds and checkouts in UTC while the fund's window is set in UK dates, the clocks changing inside the semester",
+    "department codes from the single sign-on feed, lower case with a prefix, mapped to schools and then to the faculties as they stand after the 1 August 2026 merger",
+    "staff holds in the same export as students' holds",
+    "a hold whose offer was not taken up inside 48 hours shows as Offer expired, an account closed on 1 July 2026 cancels its holds",
+    "reading lists cite print ISBNs, ISBN-10s, hyphenated forms, earlier editions (some published under other titles) and newer print editions, typed titles that drift from the catalogue",
+    "the finance system's invoice lines in pounds, euros and dollars with UK dates, title licences invoiced monthly in arrears",
+    "automatic re-licences reaching the licence register through the order feed without a fund code, and a platform status report that lists only licences in force"
   ],
   "stakeholder_role": "head of collections and content, a university library",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "lend_holds_export_20261031.csv",
-    "rows": 0,
-    "entity": "one hold placed on a one-user course e-textbook",
+    "file": "shelfmark_holds_20250901-20261031.csv",
+    "rows": 109888,
+    "entity": "one hold placed on a course e-textbook on the lending platform",
     "grain": "hold",
     "source": "synthetic (constructed lending-platform export)"
   },
@@ -74,14 +74,13 @@
   },
   "deliverables": [
     "course_texts_fund_2027.csv",
-    "course_texts_fund_2027.xlsx",
-    "course_texts_fund_2027_memo.docx"
+    "course_texts_fund_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The decisive quantity is how long every member who joined a first-come-first-served queue waited, or would have waited, to be served, when members leave the queue more often the further back they stand; the served members' waits and a survival curve that treats each departure as uninformative both understate it, and only the service time of the first member behind each leaver who was served, read from the queue's own order, gives the wait the leaver faced, which summed past a threshold over each group splits a fixed total.",
-  "driver_concrete": "Each faculty's share of the 2027 Course Texts Fund is its students' share of the weeks beyond the second that their spring 2026 holds on one-user e-textbook licences waited, or would have waited had the student kept the hold, for a copy; a cancelled hold's wait is the time the platform offered a copy to the first hold placed after it on the same title that was offered one, because copies go to holds in the order placed and students cancel more the further down the queue they stand, so neither the fulfilled holds alone nor a Kaplan-Meier curve with cancellations censored gives it.",
-  "stump": "A competent analyst sums each faculty's hold-weeks beyond the second from the holds the platform fulfilled, or completes the cancelled holds with a Kaplan-Meier curve that treats a cancellation as uninformative censoring, and files a split that gives too little to the faculties whose students cancel long holds and buy the book; only each cancelled hold's turn, read from the first later hold on the same title that was offered a copy, gives the waits the fund is split on.",
+  "driver_concrete": "Each faculty's share of the 2027 Course Texts Fund is its students' share of the weeks beyond the second that their spring 2026 holds waited, or would have waited had the student kept the hold, for a copy; a cancelled hold's wait ends at the first copy that came free after the cancellation and went to a hold placed after it or to no hold, because copies go to holds in the order placed and students cancel more the further back they stand, so neither the offered holds alone nor a Kaplan-Meier curve with cancellations censored gives it.",
+  "stump": "A competent analyst sums each faculty's hold-weeks from the holds offered a copy and completes the cancelled holds with a Kaplan-Meier curve that treats a cancellation as uninformative censoring, and files a split that gives too little to the faculties whose students give up on long queues; under the earliest-placed-first rule each cancelled hold's would-be offer is recorded: the first copy freed after the cancellation that went to a hold placed after it, or to no hold.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task148": "task148 v2 forecasts a 911 late shift's answer rate under Erlang A, estimating the patience that drains the queue from waits the answer censors; task281 measures no patience and forecasts no staffing: it reads the wait each cancelled hold would have faced from the service time of the first later hold on the same title, a reconstruction from the queue's own order of the waits that informative cancellations hide."
@@ -179,14 +178,20 @@
       "second-sentence opener": "return",
       "rounding opener": "give",
       "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "how-many",
+      "second-sentence opener": "the",
+      "rounding opener": "counts",
+      "deliverable set": "pptx+xlsx"
     }
   ],
   "notes": "Architecture 4, re-rooted 2026-11-02 after architecture 3 (judge APPROVE, leak reader clean) was blocked at guard.py heart on window bans with no author waiver. New world (a Scottish research university library's course e-textbook lending), new task type (missing-data-censoring-measurement-error), objective kept (Descriptive & Distribution Analysis). Strategy informative_censoring: a hold's wait is observed only until the student cancels, and students cancel more the further back in the queue they stand, so the cancellation window carries information about the wait inside it; no live card near the end of the draw order holds the strategy (latest task191, 2026-10-31). Forcing event incident_or_complaint: the University Court upheld the Students' Association's complaint about e-textbook waits and created the fund, its split due with the complaint's resolution.",
   "registered": "2026-11-02T02:21:39Z",
   "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "the",
-    "rounding opener": "counts",
-    "deliverable set": "pptx+xlsx"
+    "question form": "how-much",
+    "second-sentence opener": "course",
+    "rounding opener": "amounts",
+    "deliverable set": "csv+xlsx"
   }
 }

@@ -518,6 +518,29 @@ people = ["Heidi Dillon", "Tina Hays", "Jeffrey Lamb"]
 card = json.load(open(os.path.join(TASK, "..", ".claude", "skills", "fingerprint", "cards", "task466.json")))
 check("realism every persona is the card's", sorted(people) == sorted(card["world"]["people"]), "")
 
+import subprocess  # noqa: E402
+pdfs = [os.path.join(T, f) for f in files if f.endswith(".pdf")] + [os.path.join(GOLD, f) for f in os.listdir(GOLD) if f.endswith(".pdf")]
+strict_ok, text_ok = [], []
+for pth in pdfs:
+    try:
+        rd_ = PdfReader(pth, strict=True)
+        lenient = "".join(pg.extract_text() for pg in rd_.pages)
+        strict_ok.append(bool(lenient.strip()))
+    except Exception as exc:  # noqa: BLE001
+        strict_ok.append(False)
+        lenient = ""
+    try:
+        out = subprocess.run(["pdftotext", "-layout", pth, "-"], capture_output=True, text=True, timeout=30).stdout
+    except FileNotFoundError:
+        out = lenient
+    words = [w for w in re.findall(r"[A-Za-z]{6,}", lenient)][:40]
+    text_ok.append(bool(out.strip()) and all(w in out for w in words))
+check("H25 every shipped and golden PDF opens under a strict reader and a second extractor with the same words",
+      all(strict_ok) and all(text_ok), "%d PDFs" % len(pdfs))
+csv_txt = open(os.path.join(T, "SEM_analyser_checks_2026.csv")).read()
+check("H13 no negative zero or fixed-step pattern in the check sheet (times vary, no -0.0)",
+      "-0.0," not in csv_txt and len(set(re.findall(r",(\d\d:\d\d),", csv_txt))) >= 12, "")
+
 # ------------------------------------------------------------------------------------------------ figures agree
 wb = openpyxl.load_workbook(os.path.join(GOLD, "breck_hollow_methane_return_2026.xlsx"), read_only=True)
 ret = {r[0]: r[1] for r in wb["Return 2026"].iter_rows(values_only=True) if r and r[0]}
