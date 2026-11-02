@@ -1,22 +1,35 @@
 {
  "task": "task277",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "business-operations-analytics (client domain human-factors-ergonomics, task type human-reliability-assessment)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-02",
- "stump": "A competent analyst carries the 2026 failure rate by channel, range and quantity (or the Pro range's measured rise after its 2025 pack change) onto the client's February and March plan and files about 0.14 per cent of lines failing and a kept 99.80 per cent KPI; the step that lands it there is reading count errors as a property of the article or the order size, when they come from mixed picks, quantities above one inner pack that are not a whole number of inners, which the Daily range's new inners of four make of every six- and eighteen-unit store line.",
+ "stump": "A competent analyst carries the 2026 failure rate by channel and range (or the opened-inner rate the Daily store lines take on under inners of four) onto the client's February and March plan and files about 0.12 to 0.17 per cent of lines failing, 35 to 53 lines in February, and a kept 99.80 per cent target; the step that lands it there is reading count errors as a property of the article, the range or the order size, when they come from picks that need whole inner packs plus loose units, which the Daily range's new inners of four make of every six- and eighteen-unit store line.",
  "architecture": 1,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": null,
- "judge": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-02"
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK): close-out wording, two documents' generic vocabulary, item master rows dated from 11 January 2027",
+  "reader": "three reads, no leak: question 1 none, question 6 analytical in each; the first read's realism tells fixed in the generator"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.decision only)",
+  "nearest": "task54 stump at 0.06"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE (pass 2, after pass 1 FIX_NOW fixed in the generator)",
+  "report": "task277/determinism_check_report.md"
+ },
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

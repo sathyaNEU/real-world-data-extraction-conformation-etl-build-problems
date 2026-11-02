@@ -1,0 +1,95 @@
+{
+ "claims": {
+  "HGH_Q1": 347,
+  "HGH_Q2": 359,
+  "HGH_Q3": 488,
+  "HGH_Q4": 598,
+  "RAV_Q1": 469,
+  "RAV_Q2": 518,
+  "RAV_Q3": 585,
+  "RAV_Q4": 580,
+  "VLM_Q1": 347,
+  "VLM_Q2": 279,
+  "VLM_Q3": 250,
+  "VLM_Q4": 231,
+  "ZLF_Q1": 542,
+  "ZLF_Q2": 390,
+  "ZLF_Q3": 631,
+  "ZLF_Q4": 437
+ },
+ "claims_year": {
+  "HGH": 1792,
+  "RAV": 2152,
+  "VLM": 1107,
+  "ZLF": 2000
+ },
+ "fails_loose": 245,
+ "fails_mixed": 172,
+ "fails_whole": 109,
+ "feb_accuracy": "99.7",
+ "feb_failing_lines": 100,
+ "feb_plan_lines": 31460,
+ "hep_loose_pct": "0.111",
+ "hep_mixed_pct": "1.049",
+ "hep_whole_pct": "0.061",
+ "history": {
+  "1": "99.89",
+  "10": "99.87",
+  "11": "99.86",
+  "12": "99.90",
+  "2": "99.88",
+  "3": "99.88",
+  "4": "99.89",
+  "5": "99.87",
+  "6": "99.84",
+  "7": "99.84",
+  "8": "99.86",
+  "9": "99.88"
+ },
+ "lines_loose": 221100,
+ "lines_mixed": 16393,
+ "lines_whole": 177273,
+ "mar_accuracy": "99.7",
+ "mar_failing_lines": 110,
+ "mar_plan_lines": 35170,
+ "rungs": {
+  "G by channel": {
+   "2": "99.68",
+   "3": "99.68"
+  },
+  "R0 site rate": {
+   "2": "99.87",
+   "3": "99.87"
+  },
+  "R1 channel and range": {
+   "2": "99.88",
+   "3": "99.87"
+  },
+  "R1b same months of 2026": {
+   "2": "99.88",
+   "3": "99.88"
+  },
+  "R2a inner size": {
+   "2": "99.89",
+   "3": "99.89"
+  },
+  "R2b channel and quantity": {
+   "2": "99.88",
+   "3": "99.87"
+  },
+  "R2c opened inner": {
+   "2": "99.83",
+   "3": "99.83"
+  },
+  "R2d loose units": {
+   "2": "99.87",
+   "3": "99.87"
+  },
+  "R2e range and quantity": {
+   "2": "99.88",
+   "3": "99.88"
+  }
+ },
+ "rungs_fail": {},
+ "target": "99.80"
+}
