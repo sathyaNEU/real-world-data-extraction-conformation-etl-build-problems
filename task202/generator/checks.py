@@ -1,871 +1,375 @@
-"""The generator's own oracle. Every number the build rests on is asserted here against the clean
-truth and against the shipped bundle, including the client's three rules, every semantic-fork row and
-the neutrality of every Layer 1 item.
-
-    python3 task202/generator/checks.py          (on the pack already in target/)
-"""
+"""The generator's assertions: the three rules on the clean truth (R1 to R3), the ladder and the cheap routes, every
+semantic fork row (SF1 to SF22), the ask devices and their separation from the call, the rounding clearances, the
+input gates and the realism sweep.  Run by build.py on every build; exit status follows the count of failures."""
 import csv
-import io
+import datetime as dt
+import json
 import os
 import re
-import sys
 import zipfile
 
 import numpy as np
-from openpyxl import load_workbook
+import openpyxl
 
-import build as B
-import params as P
-import records as RC
-import sim
-import solve
-import writeup as WU
+import golden as G
+import world as W
 
-N = 0
-FAIL = []
-
-# clause 9's margin, in percentage points of the committed share: how far the preceding entry in
-# clause 9.1's grid fails the commitment, and how far the committed candidate clears it. Both are
-# set by the grid's spacing against the award level, and both are measured: at the shipped setting the
-# preceding entry fails by 0.85 points and the committed entry clears by 0.41, against a clustered
-# bootstrap standard error of 0.14 points on the share. The frontier that fixes how far they can be
-# pushed is in the design note's `## Tried and rejected`: driving the crossing further down inside
-# one schedule step pulls the single-lognormal rung onto the committed entry.
-MARGIN_FLOOR = 0.30
-CLEARANCE_FLOOR = 0.30
+RESULTS = []
 
 
-def ok(label, cond, note=""):
-    global N
-    N += 1
-    if not cond:
-        FAIL.append("%s %s" % (label, note))
-        print("  FAIL %s %s" % (label, note))
-    return cond
+def ok(label, cond, detail=""):
+    RESULTS.append((label, bool(cond), detail))
 
 
-def eq(label, a, b, tol=0.0, note=""):
-    return ok(label, abs(float(a) - float(b)) <= tol, "%s: %r vs %r %s" % (note, a, b, note))
+def edge(x, unit):
+    f = (x / unit) % 1.0
+    return abs(f - 0.5) * unit
 
 
-# ------------------------------------------------------------------ readers for the shipped pack
-def text_of(path, flat=True):
-    """Every shipped format read back through one helper, so the pack is read one way only.
-    Whitespace is collapsed, because a sentence filed in a PDF is laid out across lines."""
-    if path.endswith(".pdf"):
-        from pypdf import PdfReader
-        raw = "\n".join((pg.extract_text() or "") for pg in PdfReader(path).pages)
-        return re.sub(r"\s+", " ", raw) if flat else raw
-    if path.endswith(".xlsx"):
-        out = []
-        wb = load_workbook(path, read_only=True, data_only=True)
-        for ws in wb.worksheets:
-            for row in ws.iter_rows(values_only=True):
-                out.append(" ".join("" if c is None else str(c) for c in row))
-        return re.sub(r"[ \t]+", " ", "\n".join(out))
-    return open(path, encoding="utf-8", errors="replace").read()
+def r0(x):
+    return int(np.floor(x + 0.5))
 
 
-def pack_text(target):
-    return {f: text_of(os.path.join(target, f)) for f in sorted(os.listdir(target))}
+def season_days(y):
+    d = dt.date(y, 6, 1)
+    while d <= dt.date(y, 9, 30):
+        yield d
+        d += dt.timedelta(1)
 
 
-# ------------------------------------------------------------------ the checks
-def run(target, world, fig, golden_dir):
-    global N, FAIL
-    N, FAIL = 0, []
-    W = world["W"] if "W" in world else world
-    R = world["R"]
-    mean, cnt, shape = W["mean"], W["cnt"], W["shape"]
-    files = sorted(os.listdir(target))
-    txt = pack_text(target)
+def read(T, fn):
+    with open(os.path.join(T, fn), encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
-    # ---------------------------------------------------------- input gates
-    ok("gate.files", len(files) >= 10, "%d files" % len(files))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    ok("gate.formats", len(fmts) >= 3, sorted(fmts))
-    rows = {}
+
+def run(TASK, T, S, F):
+    RESULTS.clear()
+    lk, rv, wk, sd = S["lake"], S["river"], S["works"], S["sondes"]
+    idx = {d: i for i, d in enumerate(W.DAYS)}
+    surf_true = lk["prof"][:, :6].mean(axis=1)
+    rday_true = rv["temp"].reshape(-1, 24).mean(axis=1)
+    rmax_true = rv["temp"].reshape(-1, 24).max(axis=1)
+
+    # ------------------------------------------------------------------ R1: the field's raw material ships
+    st = G.station_hourly(T)
+    hrs = [u for u in st if 6 <= u.month <= 9 and u.year in W.SEASONS]
+    ok("R1a station hourly temperature for every season hour", len(hrs) == 3 * 122 * 24, len(hrs))
+    prof = G.buoy_profiles(T)
+    full = all(len(prof[d]) == len(W.DEPTHS) for y in W.SEASONS for d in season_days(y))
+    ok("R1b buoy profile at every depth on every season day", full)
+    ret = G.returns(T)
+    ok("R1c Hollinsby's effluent temperature and load in every season month",
+       all(ret[("Hollinsby", y, m)]["temp"] is not None for y in W.SEASONS for m in (6, 7, 8, 9)))
+    heads = []
+    for fn in os.listdir(T):
+        if fn.endswith(".csv"):
+            heads += next(csv.reader(open(os.path.join(T, fn), encoding="utf-8")))
+        elif fn.endswith(".xlsx"):
+            for ws in openpyxl.load_workbook(os.path.join(T, fn), read_only=True).worksheets:
+                for row in ws.iter_rows(max_row=3, values_only=True):
+                    heads += [str(c) for c in row if c is not None]
+    bad = [h for h in heads if re.search(r"insert|plung|interflow|entry depth|layer|thermocline|epilimn|density", h, re.I)]
+    ok("R1d no column holds where an inflow enters the lake", not bad, bad)
+
+    # ------------------------------------------------------------------ R2: Layer 1 present, never decisive
+    val = read(T, "lenning_foot_hourly_validated.csv")
+    stamps = [r["Timestamp (UK)"] for r in val]
+    ok("R2a the station's clock repeats the October hour", stamps.count("29/10/2023 01:00") == 2)
+    ok("R2a the station's clock skips the March hour", "31/03/2024 01:00" not in stamps)
+    prov = {r["Timestamp (UK)"]: r for r in read(T, "lenning_foot_hourly_provisional.csv")}
+    diff = sum(1 for r in val if r["Timestamp (UK)"] in prov and r["Flow (m3/s)"] != prov[r["Timestamp (UK)"]]["Flow (m3/s)"])
+    ok("R2b the provisional release differs from the validated where they overlap", diff > 50, diff)
+    wb = openpyxl.load_workbook(os.path.join(T, "fellmoor_wwtw_monthly_returns.xlsx"), read_only=True)
+    h24 = [c for c in next(wb["2024-25"].iter_rows(min_row=3, max_row=3, values_only=True))]
+    h25 = [c for c in next(wb["2025-26"].iter_rows(min_row=3, max_row=3, values_only=True))]
+    ok("R2c the returns' layout changes with the 2025-26 reporting year", h24 != h25)
+    sites = {r["site"] for r in read(T, "fellside_lake_lab_results.csv")}
+    ok("R2d the laboratory's site codes change in 2025", sites == {"NB", "SWL01"}, sites)
+    # the call is the same with the river's day read on the station's clock rather than UTC
+    acc = {}
+    for r in val + list(prov.values()):
+        d = G.parse_uk(r["Timestamp (UK)"]).date()
+        acc.setdefault(d, []).append(float(r["Water temp (C)"]))
+    surf = G.buoy_surface(T)
+    loc = all(W.density(np.mean(acc[d])) > W.density(surf[d]) for y in W.SEASONS for d in season_days(y))
+    ok("R2e the river is denser on every season day with its day on the station's clock", loc)
+
+    # ------------------------------------------------------------------ R3: the analyst test on the clean truth
+    colder = all(rday_true[idx[d]] < surf_true[idx[d]] for y in W.SEASONS for d in season_days(y))
+    ok("R3a clean truth: the Lenning is colder than the 0-5 m water on every season day", colder)
+    dens = all(W.density(rday_true[idx[d]]) > W.density(surf_true[idx[d]]) for y in W.SEASONS for d in season_days(y))
+    ok("R3b clean truth: the Lenning is denser than the 0-5 m water on every season day", dens)
+    strat = all(lk["strat"][idx[d]] for y in W.SEASONS for d in season_days(y))
+    ok("R3c clean truth: the lake is stratified on every season day", strat)
+    clean_rung1 = {}
+    for k, nm in (("B", "Brathwick"), ("C", "Hollinsby")):
+        clean_rung1[k] = np.mean([W.CREDIT[k] * sum(wk[nm]["load"][idx[d]] for d in season_days(y)) for y in W.SEASONS])
+    ok("R3d clean truth: the easy route (every input to the surface water) files Brathwick",
+       clean_rung1["B"] > 1.15 * clean_rung1["C"], {k: round(v, 1) for k, v in clean_rung1.items()})
+    c10 = [sd["cond"][idx[d], 2] for y in W.SEASONS for d in (dt.date(y, 6, 1), dt.date(y, 9, 30))]
+    c1 = [sd["cond"][idx[d], 0] for y in W.SEASONS for d in (dt.date(y, 6, 1), dt.date(y, 9, 30))]
+    rise10 = all(c10[2 * j + 1] - c10[2 * j] > 20 for j in range(3))
+    flat1 = all(abs(c1[2 * j + 1] - c1[2 * j]) < 8 for j in range(3))
+    ok("R3e clean truth: the river's water collects at 10 m and not at 1 m", rise10 and flat1, (c10, c1))
+
+    # ------------------------------------------------------------------ the ladder and the cheap routes
+    seas, ap, ins = G.season_figures(T)
+    dp, an = G.default_path(T), G.annual_path(T)
+    m1 = {k: float(np.mean([dp[y][k] for y in W.SEASONS])) for k in "ABCD"}
+    m0 = {k: float(np.mean([an[y][k] for y in W.SEASONS])) for k in "ABCD"}
+    gold = {"A": 0.0, "B": F["B_mean"], "C": F["C_mean"], "D": F["D_mean"]}
+
+    def top(m):
+        s = sorted(m, key=lambda k: -m[k])
+        return s[0], m[s[0]] / max(m[s[1]], 1e-9), s
+    t0, g0, s0 = top(m0)
+    t1, g1, s1 = top(m1)
+    t2, g2, s2 = top(gold)
+    ok("L1 rung 0, the annual inventory, files the farms", t0 == "A" and g0 >= 1.15, (s0, round(g0, 3)))
+    ok("L2 rung 1, the season's load budget, files Brathwick", t1 == "B" and g1 >= 1.15, (s1, round(g1, 3)))
+    ok("L3 the decisive rung files Hollinsby", t2 == "C" and g2 >= 1.2, (s2, round(g2, 2)))
+    ok("L4 Hollinsby is first on no rung below the decisive one", t0 != "C" and t1 != "C")
+    ok("L5 Hollinsby is no better than second on rung 1 and third on rung 0", s1.index("C") == 1 and s0.index("C") == 2)
+    cost = {"A": 1248000, "B": 1176000, "C": 1337000, "D": 612000}
+    ce = {k: m1[k] / cost[k] for k in "ABCD"}
+    ok("L6 kilograms per pound on the season's loads files Brathwick, not Hollinsby", top(ce)[0] == "B", ce)
+    routes = {"annual inventory": t0, "season load budget": t1, "cost per kilogram": top(ce)[0],
+              "insertion by density": t2}
+    landing = [k for k, v in routes.items() if v == "C"]
+    ok("L7 one cheap route reaches the call", landing == ["insertion by density"], routes)
+    # the textbook route validates: the river's summer phosphorus falls with flow (dilution of a point source)
+    bot = [b for b in G.sampler(T) if b["kind"] == "DAY" and 6 <= b["first"].month <= 9]
+    fl = {}
+    for u, v in st.items():
+        fl.setdefault(u.date(), []).append(v["flow"])
+    xs = [np.log(np.mean(fl[b["first"].date()])) for b in bot]
+    ys = [np.log(b["tp"]) for b in bot]
+    slope = float(np.polyfit(xs, ys, 1)[0])
+    share = np.mean([seas[y]["bra"] / dp[y]["river"] for y in W.SEASONS])
+    ok("L8 the back-test passes: summer concentration dilutes with flow and Brathwick is most of the river's load",
+       slope < -0.2 and share > 0.6, (round(slope, 3), round(float(share), 3)))
+
+    # ------------------------------------------------------------------ the semantic fork table
+    ins_rows = ins
+    # SF1 surface water: 0 to 5 m (fund rules 2.1); read as the mixed layer, the river still enters below it
+    below_mixed = True
+    for y in W.SEASONS:
+        for d in season_days(y):
+            p = prof[d]
+            zs = sorted(p)
+            tr = float(np.mean(acc[d]))
+            mixed = [z for z in zs if p[z] >= p[zs[0]] - 0.5]
+            below_mixed &= tr < min(p[z] for z in mixed)
+    ok("SF1 the Lenning is colder than every sensor in the mixed layer on every season day", below_mixed)
+    # SF2 the season's days in UTC or on the UK clock: the same days compared, every one dense
+    ok("SF2 every season day dense on either clock", all(ins_rows[y]["dense"] == ins_rows[y]["n"] == 122 for y in W.SEASONS) and loc)
+    # SF3 Hollinsby's effluent is warmer than the surface water in every season month (it spreads at the top)
+    eb = G.effluent_buoyancy(T)
+    ok("SF3 Hollinsby's effluent warmer than the 0-5 m water in every season month", all(a > b + 1.0 for a, b in eb.values()))
+    # SF4 the credit applied to the source's season input: C and D by their credits
+    ok("SF4 programme C is 71 per cent and D 50 per cent of their sources' season input",
+       all(abs(seas[y]["C"] - 0.71 * seas[y]["hol"]) < 1e-9 and abs(seas[y]["D"] - 0.5 * seas[y]["out"]) < 1e-9 for y in W.SEASONS))
+    # SF5 the mean of the seasons, or the mean of the rounded seasons: the same printed figures
+    for k in "CD":
+        a = r0(F["%s_mean" % k])
+        b = r0(np.mean([r0(F["%s_%d" % (k, y)]) for y in W.SEASONS]))
+        ok("SF5 %s's average prints the same from the rounded seasons" % k, a == b, (a, b))
+    # SF6 the returns' load column or volume times concentration: the same printed figures
+    raw = {}
+    for y in W.SEASONS:
+        raw[y] = 0.71 * sum(ret[("Hollinsby", y, m)]["vol"] * ret[("Hollinsby", y, m)]["tp"] / 1000.0 for m in (6, 7, 8, 9))
+    ok("SF6 Hollinsby's figures print the same from volume times concentration",
+       all(r0(raw[y]) == r0(F["C_%d" % y]) for y in W.SEASONS) and r0(np.mean(list(raw.values()))) == r0(F["C_mean"]))
+    # SF7 the reporting-year tabs: every season month held once
+    ok("SF7 every season month appears once across the reporting-year tabs",
+       all(("Hollinsby", y, m) in ret and ("Brathwick", y, m) in ret for y in W.SEASONS for m in (6, 7, 8, 9)))
+    # SF8 the river's day as its mean, or its warmest hour: colder than the surface water either way
+    sf8 = all(max(st[u]["temp"] for u in st if u.date() == d) < surf[d] for y in W.SEASONS for d in season_days(y))
+    ok("SF8 the river's warmest hour is colder than the 0-5 m water on every season day", sf8)
+    # SF9 the surface water's temperature as the 0-5 m mean, the 1 m sensor or the 0.5 m sensor
+    sf9 = all(min(prof[d][0.5], prof[d][1.0], surf[d]) > float(np.mean(acc[d])) + 1.0 for y in W.SEASONS for d in season_days(y))
+    ok("SF9 the river colder than the 0.5 m, 1 m and 0-5 m water on every season day", sf9)
+    # SF10 density with the river's dissolved salts (its conductivity is above the lake's): denser still
+    rc = np.mean([float(r["Conductivity (mS/m)"]) * 10 for r in val[:2000]])
+    lc = np.mean([float(r["Specific conductance (uS/cm)"]) for r in read(T, "fellside_buoy_sondes_daily.csv")[:500] if r["Depth (m)"] == "1"])
+    ok("SF10 the river carries more dissolved salts than the surface water", rc > lc, (round(rc), round(lc)))
+    # SF11 Brathwick's effluent: enters the Lenning; even its own temperature is below the surface water's
+    sf11 = all(ret[("Brathwick", y, m)]["temp"] < eb[(y, m)][1] for y in W.SEASONS for m in (6, 7, 8, 9))
+    ok("SF11 Brathwick's effluent colder than the 0-5 m water in every season month", sf11)
+    # SF12 the Mill Beck outfall warmer than the surface water on every season day
+    wbm = openpyxl.load_workbook(os.path.join(T, "mill_beck_outfall_monitoring.xlsx"), data_only=True)
+    otemp = {}
+    for row in list(wbm["Daily"].iter_rows(min_row=3, values_only=True)):
+        otemp[row[0].date() if hasattr(row[0], "date") else row[0]] = row[2]
+    ok("SF12 the Mill Beck outfall warmer than the 0-5 m water on every season day",
+       all(otemp[d] > surf[d] for y in W.SEASONS for d in season_days(y)))
+    # SF13 the farm programme acts on the Lenning's catchment (the Brankell Beck's farms included): zero either way
+    ok("SF13 programmes A and B keep nothing out of the surface water", F["A_mean"] == 0 and F["B_mean"] == 0)
+    # SF14 the 2027 season is judged on 2024 to 2026: no forecast enters
+    ok("SF14 the figures use the 2024, 2025 and 2026 seasons only", sorted(seas) == [2024, 2025, 2026])
+    # SF15 the runner-up: D clear of A and B at zero
+    ok("SF15 the runner-up is D with a figure above zero", s2[1] == "D" and F["D_mean"] > 10, s2)
+    # SF16 phosphorus as total phosphorus; on soluble reactive phosphorus the river still enters below
+    ok("SF16 the returns give total phosphorus for both works", all(ret[("Hollinsby", y, m)]["tp"] > 0 for y in W.SEASONS for m in (6, 7, 8, 9)))
+
+    # ------------------------------------------------------------------ asks: devices, stops and separation
+    wa = G.winter_ask(T)[(2023, 2024)]
+    reg = G.regulator(T)
+    bridge = reg["LENNING BRIDGE"]
+    brankell = reg["BRANKELL BECK AT HOWE"]
+    pre = [u for u in st if u.date() < W.GAUGE_SWITCH and u in bridge]
+    post = [u for u in st if W.GAUGE_SWITCH <= u.date() < dt.date(2026, 1, 1) and u in bridge]
+    ok("SF17 the station's flow is the Lenning Bridge gauge before 1 June 2024",
+       all(abs(st[u]["flow"] - bridge[u]) < 0.0011 for u in pre), len(pre))
+    ok("SF17 the station's flow is both gauges from 1 June 2024",
+       all(abs(st[u]["flow"] - bridge[u] - brankell[u]) < 0.0021 for u in post), len(post))
+    conc = G.hourly_conc(T)
+    a = dt.datetime(2023, 9, 30, 23)
+    z = dt.datetime(2024, 4, 30, 23)
+
+    def winter(add_brankell=True, storm=True, shift=0, start=a, stop=z):
+        cm = conc if storm else {}
+        if not storm:
+            for b in G.sampler(T):
+                if b["kind"] == "DAY":
+                    u0 = b["first"] - dt.timedelta(hours=W.uk_offset(b["first"]))
+                    u1 = b["last"] - dt.timedelta(hours=W.uk_offset(b["last"]))
+                    t = u0
+                    while t <= u1:
+                        cm[t] = b["tp"]
+                        t += dt.timedelta(hours=1)
+        vol = load = 0.0
+        t = start
+        while t < stop:
+            q = st[t]["flow"] + (brankell[t] if add_brankell and t.date() < W.GAUGE_SWITCH else 0.0)
+            c = cm.get(t + dt.timedelta(hours=shift))
+            if c is None:
+                c = conc[t]
+            vol += q * 3600
+            load += q * 3600 * c / 1e6
+            t += dt.timedelta(hours=1)
+        return vol / 1e6, load
+    g_in, g_ld = round(wa["vol"], 1), int(np.floor(wa["load"] / 100 + 0.5)) * 100
+    ok("SF18 the winter window on UTC days prints the same", tuple(np.round(winter(start=a + dt.timedelta(hours=1), stop=z + dt.timedelta(hours=1)), 1))[0] == g_in
+       and int(np.floor(winter(start=a + dt.timedelta(hours=1), stop=z + dt.timedelta(hours=1))[1] / 100 + 0.5)) * 100 == g_ld)
+    sh = [int(np.floor(winter(shift=s)[1] / 100 + 0.5)) * 100 for s in (-1, 1)]
+    ok("SF19 pairing each flow with the sub-sample an hour either side prints the same load", sh == [g_ld, g_ld], sh)
+    ns_in, ns_ld = winter(add_brankell=False)
+    ok("K1 the station's flow alone misses the inflow and the load",
+       round(ns_in, 1) != g_in and int(np.floor(ns_ld / 100 + 0.5)) * 100 != g_ld, (round(ns_in, 1), round(ns_ld)))
+    db_in, db_ld = winter(storm=False)
+    ok("K1 the day bottle for every hour misses the load", int(np.floor(db_ld / 100 + 0.5)) * 100 != g_ld, round(db_ld))
+    # survey
+    regs = {r["UPRN"]: r for r in read(T, "hollinsby_address_register_extract.csv")}
+    vis = read(T, "connect_right_visits_export.csv")
+    mis_u = {v["UPRN"] for v in vis if v["Outcome"] == "MISCONNECTED"}
+    fix_u = {v["UPRN"] for v in vis if v["Outcome"] == "FIX CONFIRMED"}
+    up = {v["UPRN"] for v in vis if v["Outcome"] == "FIX CONFIRMED" and dt.datetime.strptime(v["Uploaded"], "%d/%m/%Y").date() <= dt.date(2026, 9, 30)}
+    ok("K2 counting addresses misses all three dwelling figures",
+       len(mis_u) != F["dw_found"] and len(fix_u & mis_u) != F["dw_fixed"] and len(mis_u - fix_u) != F["dw_open"],
+       (len(mis_u), len(fix_u & mis_u), len(mis_u - fix_u)))
+    flats = {}
+    for u, r in regs.items():
+        if r["PARENT_UPRN"]:
+            flats.setdefault(r["PARENT_UPRN"], []).append(u)
+
+    def dw(us):
+        s = set()
+        for u in us:
+            s.update(flats.get(u) or [u])
+        return s
+    nodate = len(dw(fix_u) & dw(mis_u))
+    byup = len(dw(up) & dw(mis_u))
+    ok("K2 every flat counted but the visits dated by upload misses fixed and not fixed",
+       byup != F["dw_fixed"] and len(dw(mis_u)) - byup != F["dw_open"], byup)
+    ok("K2 every flat counted but no date cut misses fixed and not fixed", nodate != F["dw_fixed"], nodate)
+    ok("SF20 the golden equals the clean truth's dwellings",
+       F["dw_found"] == len(S["survey"]["truth"]["mis_dwell"]) and F["dw_fixed"] == len(S["survey"]["truth"]["fixed_dwell"]))
+    refd = [dt.datetime.strptime(v["Visit ref"].split("-")[1], "%y%m%d").date() for v in vis]
+    upd = [dt.datetime.strptime(v["Uploaded"], "%d/%m/%Y").date() for v in vis]
+    ok("SF21 every upload on or after the date its visit reference carries", all(u >= r for u, r in zip(upd, refd)))
+    ok("SF21 no visit reference dated on a weekend", all(r.weekday() < 5 for r in refd))
+    # laboratory
+    lab = read(T, "fellside_lake_lab_results.csv")
+    nb_after = [r for r in lab if r["site"] == "NB" and dt.datetime.strptime(r["sampled"], "%d-%b-%Y").date() >= dt.date(2025, 4, 1)]
+    ok("SF22 NB carries no 20 m bottle from April 2025", all(r["depth_m"] == "0-5" for r in nb_after) and nb_after)
+    sw = [r for r in lab if r["site"] == "SWL01"]
+    ok("SF22 SWL01 carries the tube and the 20 m bottle", {r["depth_m"] for r in sw} == {"0-5", "20"})
+    for y in (2025, 2026):
+        acc_nb = {"Total phosphorus": [], "Chlorophyll a": []}
+        for r in lab:
+            d = dt.datetime.strptime(r["sampled"], "%d-%b-%Y").date()
+            if r["site"] == "NB" and d.year == y and 6 <= d.month <= 9 and r["depth_m"] == "0-5":
+                acc_nb[r["determinand"]].append(float(r["result"]))
+        ok("K3 the site code the plan files misses %d's phosphorus and chlorophyll" % y,
+           round(np.mean(acc_nb["Total phosphorus"]), 1) != round(F["tp_%d" % y], 1)
+           and round(np.mean(acc_nb["Chlorophyll a"]), 1) != round(F["chl_%d" % y], 1))
+    q_in = [r for r in lab if r["qualifier"] and r["site"] == "SWL01" and dt.datetime.strptime(r["sampled"], "%d-%b-%Y").month in (6, 7, 8, 9)]
+    ok("SF22 no below-detection result in the north basin's season samples", not q_in)
+    # separation: no device row in the main call's population
+    ok("K4 every season day the call reads is after the gauge switch", all(dt.date(y, 6, 1) >= W.GAUGE_SWITCH for y in W.SEASONS))
+    storm_season = [b for b in G.sampler(T) if b["kind"] == "STORM" and 5 <= b["first"].month <= 9]
+    ok("K4 no storm bottle in May to September", not storm_season)
+
+    # ------------------------------------------------------------------ rounding clearances
+    for k in ("C_2024", "C_2025", "C_2026", "C_mean", "D_2024", "D_2025", "D_2026", "D_mean", "gap"):
+        ok("E %s clear of its rounding edge" % k, edge(F[k], 1) >= 0.15, round(F[k], 3))
+    ok("E the gap prints the same from the printed averages", r0(F["C_mean"]) - r0(F["D_mean"]) == r0(F["gap"]))
+    ok("E the winter inflow clear of its rounding edge", edge(F["inflow_2023_24"], 0.1) >= 0.015, F["inflow_2023_24"])
+    ok("E the winter load clear of its rounding edge", edge(F["load_2023_24"], 100) >= 15, F["load_2023_24"])
+    for k in ("tp_2025", "tp_2026", "chl_2025", "chl_2026"):
+        ok("E %s clear of its rounding edge" % k, edge(F[k], 0.1) >= 0.02, F[k])
+
+    # ------------------------------------------------------------------ input gates and realism
+    files = sorted(os.listdir(T))
+    ok("G1 ten or more files", len(files) >= 10, len(files))
+    ok("G2 three or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3)
+    big = max(sum(1 for _ in open(os.path.join(T, f), encoding="utf-8")) for f in files if f.endswith(".csv"))
+    ok("G3 a file of 25,000 rows or more", big >= 25000, big)
+    meta = json.load(open(os.path.join(TASK, "metadata.json")))
+    ok("G4 two or more distractors, each shipped", len(meta["distractor_files"]) >= 2
+       and all(os.path.exists(os.path.join(TASK, d)) for d in meta["distractor_files"]))
+    ok("G5 every file has provenance", all("target/" + f in meta["files"] for f in files))
+    ok("G6 no describing file", not [f for f in files if re.search(r"readme|dictionary|manifest|codebook|notes|schema", f, re.I)])
+    sheets = []
     for f in files:
-        if f.endswith(".csv"):
-            rows[f] = sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1
-    ok("gate.big_file", max(rows.values()) >= 25000, "largest %d rows" % max(rows.values()))
-    ok("gate.big_is_portal", max(rows, key=rows.get) == B.FILES["portal"], max(rows, key=rows.get))
-    ok("gate.distractors", len(B.DISTRACTORS) >= 2, B.DISTRACTORS)
-    for k in B.DISTRACTORS:
-        ok("gate.distractor_name_clean", "distract" not in B.FILES[k].lower(), B.FILES[k])
-    ok("gate.no_answer_key", not any(re.search(r"is_correct|should_exclude|ceiling_php|referred_share",
-                                               t, re.I) for t in txt.values()))
-    ok("gate.manifest_licence", all("Foundation record" in l for l in
-                                    [r["licence"] for r in csv.DictReader(
-                                        open(os.path.join(target, B.FILES["manifest"]), encoding="utf-8"))]))
+        if f.endswith(".xlsx"):
+            sheets += openpyxl.load_workbook(os.path.join(T, f), read_only=True).sheetnames
+    ok("G6 no describing sheet", not [s for s in sheets if re.search(r"readme|notes|dictionary|about|key|legend", s, re.I)], sheets)
+    m = S["monthly"]
+    hl = [m[k]["load"] for k in sorted(m) if k[0] == "Hollinsby"]
+    ok("G7 no monthly load repeated three times or three months running",
+       max(hl.count(v) for v in hl) < 3 and all(not (a == b == c) for a, b, c in zip(hl, hl[1:], hl[2:])))
+    ok("G7 no round headline figure", all(r0(F[k]) % 10 != 0 for k in ("C_mean", "D_mean", "gap")))
+    people = {"Debra Rose", "Dominic Davies", "Oliver Thomas"}
+    named = set()
+    for f in files:
+        if f.endswith(".xlsx"):
+            core = zipfile.ZipFile(os.path.join(T, f)).read("docProps/core.xml").decode()
+            named.update(re.findall(r"<dc:creator>([^<]*)</dc:creator>", core))
+            named.update(re.findall(r"<cp:lastModifiedBy>([^<]*)</cp:lastModifiedBy>", core))
+    ok("G8 every person in a container is one of the build's personas", named <= people, named)
+    stamp = dt.datetime(2026, 11, 9, 16, 42).timestamp()
+    ok("G9 every file stamped when the folder was assembled", all(abs(os.path.getmtime(os.path.join(T, f)) - stamp) < 1 for f in files))
+    pdfs = [open(os.path.join(T, f), "rb").read() for f in files if f.endswith(".pdf")]
+    ok("G9 no PDF names its toolchain", all(b"ReportLab" not in p and b"reportlab" not in p for p in pdfs))
+    emitted = json.load(open(os.path.join(TASK, "generator", "figures.json")))
+    ok("G10 figures.json carries the call and the runner-up", emitted["call"] == "C" and emitted["runner_up"] == "D")
 
-    # ---------------------------------------------------------- R1: the field's raw material ships
-    por = WU.read_portal(os.path.join(target, B.FILES["portal"]),
-                         WU.read_crosswalk(os.path.join(target, B.FILES["xwalk"])))
-    ok("R1.award_level_rows_ship", len(por) > 10000, "%d portal award rows in the window" % len(por))
-    ok("R1.cell_averages_ship", len(cnt) == 528, len(cnt))
-    hdr = open(os.path.join(target, B.FILES["portal"]), encoding="utf-8").readline()
-    ok("R1.no_deciding_quantity_column",
-       not any(c in hdr for c in ("ceiling", "referred", "share", "shape", "ratio")), hdr.strip())
-    ok("R1.no_shipped_ceiling", not any(re.search(r"referral ceiling (of|is|at) PHP", t) for t in txt.values()))
-    ok("R1.decisive_reads_both",
-       len({(c, b) for c, b, a in por}) < len(cnt), "portal covers only its own cells")
-
-    # ---------------------------------------------------------- R3a/R3b: the analyst test
-    L = solve.ladder(W)
-    G = L["R6"]
-    eq("R3a.default_path_files_the_named_wrong_answer", L["R1"], 6000)
-    eq("R3b.decisive_step_alone_files_the_golden", G, 8000)
-    ok("R3b.default_is_wrong_by", abs(G - L["R1"]) >= 1000, "%d pesos" % (G - L["R1"]))
-    for r in ("R2", "R3", "R4", "R5a", "R5b"):
-        ok("R3b.rung_%s_separated" % r, abs(L[r] - G) >= P.CANDIDATE_STEP,
-           "%s at %d, %+d schedule steps" % (r, L[r], (L[r] - G) // P.CANDIDATE_STEP))
-    # on clause 9.1's spacing several wrong routes land on the same wrong candidate, which is a wrong
-    # answer each; what has to hold is that none of them lands on the committed entry
-    ok("R3b.no_wrong_rung_on_the_golden", all(L[r] != G for r in solve.ROUTES),
-       sorted(L[r] for r in solve.ROUTES + ["R6"]))
-    ok("R3b.wrong_rungs_span_the_schedule",
-       len({L[r] for r in solve.ROUTES}) >= 3, sorted({L[r] for r in solve.ROUTES}))
-    eq("R3b.correct_family_converges", L["Rmix"], G, 0, "a correctly specified two-component fit")
-
-    # ---------------------------------------------------------- R3c: no plant
-    amt = np.array([a["amount"] for a in W["win"]], float)
-    ok("R3c.amounts_mostly_distinct", len(set(amt.tolist())) > 0.90 * len(amt),
-       "%d distinct of %d" % (len(set(amt.tolist())), len(amt)))
-    seq = [a["amount"] for a in sorted(W["por"], key=lambda a: (a["paid"], a["partner"], a["amount"]))]
-    runs = {}
-    for i in range(len(seq) - 2):
-        runs[(seq[i], seq[i + 1], seq[i + 2])] = runs.get((seq[i], seq[i + 1], seq[i + 2]), 0) + 1
-    ok("R3c.no_repeated_run_of_amounts", max(runs.values()) == 1,
-       "a run of three amounts occurs %d times" % max(runs.values()))
-    sets = {}
-    for a in W["win"]:
-        sets.setdefault(a["partner"], []).append(a["amount"])
-    sig = [tuple(sorted(v)) for v in sets.values()]
-    ok("R3c.no_partner_shares_an_amount_set", len(set(sig)) == len(sig),
-       "%d distinct of %d partners" % (len(set(sig)), len(sig)))
-    mc = {}
-    for a in W["awards"]:
-        mc[a["month"]] = mc.get(a["month"], 0) + 1
-    ok("R3c.no_identical_period_counts", len(set(mc.values())) >= len(mc) - 1, len(set(mc.values())))
-    ok("R3c.no_memo_arguing_a_figure",
-       not any(re.search(r"we (recommend|propose|suggest)|should be set at", t, re.I) for t in txt.values()))
-
-    # ---------------------------------------------------------- the goodness of fit that closes the family
-    from scipy.stats import norm as _n, gamma as _g
-    xs = np.sort(shape)
-    n = len(xs)
-    ecdf = np.arange(1, n + 1) / n
-    crit = 1.36 / np.sqrt(n)
-    cv = float(shape.std(ddof=1) / shape.mean())
-    v = np.log(1 + cv ** 2)
-    kk = 1.0 / cv ** 2
-    ks_ln = float(np.abs(_n.cdf((np.log(xs) + 0.5 * v) / np.sqrt(v)) - ecdf).max()) / crit
-    ks_ga = float(np.abs(_g.cdf(xs * kk, kk) - ecdf).max()) / crit
-    pi, mu, sd = L["_mix_params"]
-    ks_mix = float(np.abs(sum(pi[k] * _n.cdf((np.log(xs) - mu[k]) / sd[k]) for k in range(2)) - ecdf).max()) / crit
-    ok("fit.lognormal_refused", ks_ln > 5, "%.1f x critical" % ks_ln)
-    ok("fit.gamma_refused", ks_ga > 5, "%.1f x critical" % ks_ga)
-    ok("fit.two_component_accepted", ks_mix < 1.5, "%.2f x critical" % ks_mix)
-    pl, ps = [], []
-    part = np.array([a["partner"] for a in W["porwin"]])
-    pam = np.array([a["amount"] for a in W["porwin"]], float)
-    for p in sorted(set(part.tolist())):
-        sel = part == p
-        pl.append(float(np.mean([mean[(p, bb)] for bb in P.BANDS if (p, bb) in mean])))
-        ps.append(float(pam[sel].std(ddof=1)))
-    ok("fit.spread_scales_with_level", np.corrcoef(pl, ps)[0, 1] > 0.9,
-       "corr %.3f" % np.corrcoef(pl, ps)[0, 1])
-
-    # ---------------------------------------------------------- the pdfs parse, strictly as well
-    # the decisive rule is inside a pdf, so the commonest python routes have to be able to open it:
-    # a malformed /Info string once made both pdfs unreadable to pdfminer.six and pdfplumber while
-    # pypdf's lenient reader still returned the text, so the shipped bytes are read four ways here
-    nw = lambda s: re.sub(r"\s+", " ", s)
-    DECISIVE = [
-        "the share of the scheme's awards that would be referred under clause 7 is at or below 6.0",
-        "The share is tested as it is computed and not as it is rounded for reporting",
-        "the awards of all accredited partners at the award volumes and award levels of the twelve "
-        "months to 31 March 2027",
-        "A partner's household-size band has one award level for those twelve months",
-        "the square root of the ratio of the band's household size to the reference household size",
-        "rounded up to the nearest one hundred pesos",
-    ]
-    for key in ("policy", "summary"):
-        p = os.path.join(target, B.FILES[key])
-        texts = {}
-        for lib in ("pypdf_lenient", "pypdf_strict", "pdfminer", "pdfplumber"):
-            try:
-                if lib.startswith("pypdf"):
-                    from pypdf import PdfReader
-                    rd = PdfReader(p, strict=lib.endswith("strict"))
-                    texts[lib] = "\n".join((pg.extract_text() or "") for pg in rd.pages)
-                elif lib == "pdfminer":
-                    from pdfminer.high_level import extract_text as _pmt
-                    texts[lib] = _pmt(p)
-                else:
-                    import pdfplumber
-                    with pdfplumber.open(p) as _pl:
-                        texts[lib] = "\n".join((pg.extract_text() or "") for pg in _pl.pages)
-            except Exception as exc:
-                texts[lib] = None
-                ok("pdf.%s_opens_under_%s" % (key, lib), False,
-                   "%s: %s" % (type(exc).__name__, exc))
-            if texts[lib] is not None:
-                ok("pdf.%s_opens_under_%s" % (key, lib), len(texts[lib]) > 400,
-                   "%d characters" % len(texts[lib]))
-        raw = open(p, "rb").read()
-        ok("pdf.%s_info_producer_is_a_balanced_string" % key,
-           re.search(rb"/Producer \((?:[^()\\]|\\.)*\)", raw) is not None,
-           (re.search(rb"/Producer[^\n]{0,70}", raw) or [b"-"])[0])
-        for sig in (b"ReportLab", b"pypdf"):
-            ok("pdf.%s_no_%s_signature" % (key, sig.decode().lower()), sig not in raw)
-        if key == "policy":
-            for cl in DECISIVE:
-                hits = [lib for lib, t in texts.items() if t is not None and nw(cl) in nw(t)]
-                eq("pdf.clause_readable_in_every_reader[%s]" % cl[:42], len(hits), 4, 0,
-                   "read by %s" % sorted(hits))
-
-    # ---------------------------------------------------------- clause 9's own margin
-    s0 = solve.share_cells(G, mean, cnt, shape)
-    s1 = solve.share_cells(G - P.CANDIDATE_STEP, mean, cnt, shape)
-    ok("clause9.at_or_below", s0 <= P.COMMITTED_SHARE, "%.6f" % s0)
-    ok("clause9.one_step_down_above", s1 > P.COMMITTED_SHARE, "%.6f" % s1)
-    ok("clause9.the_grid_is_filed_as_a_rule",
-       "lowest whole multiple of one thousand pesos" in txt[B.FILES["policy"]]
-       and "set in whole thousands of pesos" in txt[B.FILES["policy"]])
-    ok("clause9.the_grid_names_no_amount",
-       not re.search(r"PHP [\d,]{3,}", txt[B.FILES["policy"]]),
-       "the policy prints no peso amount at all")
-    ok("clause9.grid_spacing",
-       solve.candidates() == list(range(P.CANDIDATE_FROM, P.CANDIDATE_TO + 1, P.CANDIDATE_STEP))
-       and P.CANDIDATE_STEP == 1000 and G % P.CANDIDATE_STEP == 0, "%d" % P.CANDIDATE_STEP)
-    # the margin in the units the judge reads it in: the preceding multiple has to fail by enough
-    # that the shape's own sampling error cannot reach the line
-    ok("clause9.preceding_multiple_fails_by",
-       100 * (s1 - P.COMMITTED_SHARE) >= MARGIN_FLOOR,
-       "%.4f points, floor %.2f" % (100 * (s1 - P.COMMITTED_SHARE), MARGIN_FLOOR))
-    ok("clause9.committed_share_clearance",
-       100 * (P.COMMITTED_SHARE - s0) >= CLEARANCE_FLOOR,
-       "%.4f points, floor %.2f" % (100 * (P.COMMITTED_SHARE - s0), CLEARANCE_FLOOR))
-    # the rounding sentence in 9.1 is load-bearing, not decoration: the prompt orders shares to one
-    # decimal place, and at the preceding multiple the reported share is exactly the commitment, so
-    # without the sentence a literal reader could quote 9.1 and file the preceding multiple
-    # the grid's spacing closes the reporting-precision fork on the records rather than on the
-    # sentence: no candidate has a share that reports as the commitment while exceeding
-    # it, so the test cannot turn on the rounding. 9.1's sentence is kept as belt and braces.
-    rep = [(c, 100 * solve.share_cells(c, mean, cnt, shape)) for c in solve.candidates()]
-    ok("clause9.no_entry_reports_the_commitment_while_exceeding_it",
-       not any(v > 100 * P.COMMITTED_SHARE + 1e-12
-               and round(v, 1) <= 100 * P.COMMITTED_SHARE + 1e-9 for _, v in rep),
-       "nearest entry above the commitment reports %.1f per cent"
-       % min((v for _, v in rep if v > 100 * P.COMMITTED_SHARE), default=0.0))
-    ok("clause9.the_rounding_sentence_is_filed",
-       "tested as it is computed and not as it is rounded" in txt[B.FILES["policy"]])
-    # the flip condition, as a number rather than as an adjective
-    ok("clause9.flip_condition_down",
-       abs(100 * (s1 - P.COMMITTED_SHARE) - 0.8471) < 0.0005,
-       "the preceding entry is filed only if its share falls by more than %.4f points, %.2f per cent of itself"
-       % (100 * (s1 - P.COMMITTED_SHARE), 100 * (s1 - P.COMMITTED_SHARE) / (100 * s1)))
-    ok("clause9.flip_condition_up",
-       abs(100 * (P.COMMITTED_SHARE - s0) - 0.4122) < 0.0005,
-       "the following entry is filed only if the share at the committed one rises by more than %.4f points, %.2f per cent "
-       "of itself" % (100 * (P.COMMITTED_SHARE - s0),
-                      100 * (P.COMMITTED_SHARE - s0) / (100 * s0)))
-    ok("clause9.clearance", (P.COMMITTED_SHARE - s0) / (s1 - s0) > 0.15, "%.2f of the step" % ((P.COMMITTED_SHARE - s0) / (s1 - s0)))
-    ok("clause9.excess", (s1 - P.COMMITTED_SHARE) / (s1 - s0) > 0.15, "%.2f of the step" % ((s1 - P.COMMITTED_SHARE) / (s1 - s0)))
-    mono = [solve.share_cells(c, mean, cnt, shape) for c in range(5000, 11001, 100)]
-    ok("clause9.monotone", all(mono[i] >= mono[i + 1] - 1e-12 for i in range(len(mono) - 1)))
-    ok("clause9.lowest_is_unique", all(solve.share_cells(c, mean, cnt, shape) > P.COMMITTED_SHARE
-                                       for c in solve.candidates() if c < G))
-
-    # ---------------------------------------------------------- the semantic fork table
-    # SF1 the scheme's awards: all accredited partners, or only the portal partners
-    pc = {k: v for k, v in cnt.items() if W["parts"][k[0]]["portal"]}
-    pm = {k: mean[k] for k in pc}
-    sf1 = solve.lowest(lambda c: solve.share_cells(c, pm, pc, shape))
-    ok("SF1.portal_only_population_differs", abs(sf1 - G) >= 500, "%d" % sf1)
-    ok("SF1.closed_by_clause", "awards of all accredited partners" in txt[B.FILES["policy"]])
-    # SF2 the window
-    ok("SF2.window_filed", "twelve months to 31 March 2027" in txt[B.FILES["policy"]])
-    ok("SF2.award_month_is_payment_month",
-       all(a["month"] == (a["paid"].year, a["paid"].month) for a in W["awards"]))
-    # SF3 which claims measure the shape: the window, or the portal's whole 27 months
-    sh27 = np.array([a["amount"] / mean[(a["partner"], a["band"])] for a in W["por"]
-                     if (a["partner"], a["band"]) in mean], float)
-    sf3 = solve.lowest(lambda c: solve.share_cells(c, mean, cnt, sh27 / sh27.mean()))
-    ok("SF3.pre_window_claims_differ_by_record",
-       all(a["component"] not in ("SHL", "EQP") for a in W["por"] if a["month"] < P.CAPITAL_FROM),
-       "no capital component before the amendment")
-    ok("SF3.amendment_shipped", "1 July 2025" in txt[B.FILES["policy"]]
-       and "SHL" in txt[B.FILES["policy"]])
-    # on clause 9.1's spacing the 27-month reading files the same candidate, so the fork does not
-    # reach the call at all; the record still separates the readings and is what the write-up cites
-    eq("SF3.alternative_same_call_on_the_schedule", sf3, G, 0, "%d" % sf3)
-    ok("SF3.alternative_shape_really_differs",
-       abs(solve.share_cells(G, mean, cnt, sh27 / sh27.mean())
-           - solve.share_cells(G, mean, cnt, shape)) > 0.0005,
-       "the 27-month shape puts the share at %.4f against %.4f, inside the schedule step"
-       % (100 * solve.share_cells(G, mean, cnt, sh27 / sh27.mean()),
-          100 * solve.share_cells(G, mean, cnt, shape)))
-    # SF4 the shape pooled or per band
-    def grouped(c, gmap, arrs):
-        above = tot = 0.0
-        for k in sorted(cnt):
-            s = arrs[gmap(k)]
-            above += cnt[k] * (1.0 - np.searchsorted(s, solve.band_ceiling(c, k[1]) / mean[k], side="right") / len(s))
-            tot += cnt[k]
-        return above / tot
-    band = np.array([a["band"] for a in W["porwin"]])
-    arrs = {b: np.sort(shape[band == b]) for b in P.BANDS}
-    sf4 = solve.lowest(lambda c: grouped(c, (lambda k: k[1]), arrs))
-    eq("SF4.per_band_shape_same_call", sf4, G, 0)
-    lv = {p: float(np.mean([mean[(p, bb)] for bb in P.BANDS if (p, bb) in mean])) for p in sorted({k[0] for k in cnt})}
-    ter = np.quantile([lv[p] for p in sorted(set(part.tolist()))], [1 / 3, 2 / 3])
-    tof = lambda x: 0 if x <= ter[0] else (1 if x <= ter[1] else 2)
-    tarr = {t: np.sort(shape[np.isin(part, [p for p in sorted(set(part.tolist())) if tof(lv[p]) == t])])
-            for t in (0, 1, 2)}
-    sf4b = solve.lowest(lambda c: grouped(c, (lambda k: tof(lv[k[0]])), tarr))
-    eq("SF4.per_level_tercile_shape_same_call", sf4b, G, 0)
-    for b in P.BANDS:
-        sub = shape[band == b]
-        ok("SF4.band_%d_shape_homogeneous" % b,
-           abs(float(np.quantile(sub, 0.94)) / float(np.quantile(shape, 0.94)) - 1) < 0.12,
-           "%.3f" % (float(np.quantile(sub, 0.94)) / float(np.quantile(shape, 0.94))))
-    # SF5 rounding up
-    ok("SF5.rounded_up_filed", "rounded up to the nearest one hundred pesos" in txt[B.FILES["policy"]])
-    eq("SF5.band2_ceiling_is_rounded_up", solve.band_ceiling(G, 2), 5700)
-    ok("SF5.round_down_would_differ", 100 * int(G * P.SCALE3[2] / 100000) != solve.band_ceiling(G, 2))
-    # SF6 the lowest qualifying ceiling
-    ok("SF6.lowest_filed", "is the lowest whole multiple" in txt[B.FILES["policy"]])
-    # SF7 share of awards, not of value
-    ok("SF7.share_of_awards_filed", "share of the scheme's awards" in txt[B.FILES["policy"]])
-    fv = solve.figures_for(G, W)
-    ok("SF7.value_share_differs", abs(fv["referred_value_share"] - fv["referred_share"]) > 5,
-       "%.1f vs %.1f" % (fv["referred_value_share"], fv["referred_share"]))
-    # SF8 band 6 is six or more
-    ok("SF8.open_band_filed", "6 or more persons" in txt[B.FILES["policy"]])
-    eq("SF8.band6_factor_at_six", P.SCALE3[6] / 1000.0, round((6 / 4) ** 0.5, 3), 1e-9)
-    ok("SF8.sizes_above_six_exist", max(a["size"] for a in W["win"]) > 6,
-       max(a["size"] for a in W["win"]))
-    # SF9 the normalisation of the shape is a no-op
-    raw = np.array([a["amount"] / mean[(a["partner"], a["band"])] for a in W["porwin"]], float)
-    eq("SF9.raw_ratios_average_one", raw.mean(), 1.0, 1e-12)
-    eq("SF9.normalisation_is_a_no_op", solve.lowest(lambda c: solve.share_cells(c, mean, cnt, raw)), G, 0)
-    # SF10 the superseded months
-    ok("SF10.rule_filed", "supersedes the preliminary return in full" in txt[B.FILES["policy"]])
-    recon = _portal_reconciliation(target, W, R)
-    ok("SF10.portal_matches_revised", recon["revised_matches"], recon)
-    ok("SF10.portal_refuses_prelim", recon["prelim_mismatches"] > 0, recon)
-    # SF11 the partner accredited mid-window and the one that withdrew
-    ok("SF11.lifecycle_filed", "accredited or withdrawn during them" in txt[B.FILES["policy"]])
-    newp = [pt for pt in W["parts"] if pt["first_month"] != P.RETURNS_FROM]
-    exitp = [pt for pt in W["parts"] if pt["last_month"] != (2027, 3)]
-    ok("SF11.one_accredited_mid_window", len(newp) == 1 and newp[0]["first_month"] == (2026, 8))
-    ok("SF11.one_withdrew_mid_window", len(exitp) == 1 and exitp[0]["last_month"] == (2026, 10))
-    ok("SF11.both_inside_the_window",
-       all((P.WINDOW_FROM <= a["month"] <= P.WINDOW_TO) or not (P.WINDOW_FROM <= a["month"] <= P.WINDOW_TO)
-           for a in W["win"]))
-    ok("SF11.new_partner_has_window_awards", any(a["partner"] == newp[0]["idx"] for a in W["win"]))
-    ok("SF11.exited_partner_has_window_awards", any(a["partner"] == exitp[0]["idx"] for a in W["win"]))
-    # SF12 the published summary is in thousands
-    ok("SF12.units_stated", "thousands of pesos" in txt[B.FILES["summary"]])
-    ok("SF12.summary_not_in_the_solve_path", B.FILES["summary"] in [B.FILES[k] for k in B.DISTRACTORS])
-
-    # SF13 the grain an award level is taken at. Clause 9.2 files it: a partner's band has one award
-    # level for the twelve months. The two finer readings are measured here, so the clause is shown
-    # to be load-bearing rather than decorative, and the closure is the sentence and not the data.
-    ok("SF13.grain_filed",
-       "has one award level for those twelve months" in txt[B.FILES["policy"]]
-       and "not taken claim month by claim month" in txt[B.FILES["policy"]])
-    mcells = WU.read_returns([os.path.join(target, B.FILES[k]) for k in ("ret2526", "ret2627")],
-                             by_month=True)
-    xw = WU.read_crosswalk(os.path.join(target, B.FILES["xwalk"]))
-    pm = WU.read_portal(os.path.join(target, B.FILES["portal"]), xw, with_month=True)
-    mmean = {k: v[1] / v[0] for k, v in mcells.items()}
-    mcnt = {(k[0], k[1], k[2]): v[0] for k, v in mcells.items()}
-    msh = np.array([amt / mmean[(c, b, mo)] for c, b, amt, mo in pm
-                    if (c, b, mo) in mmean], float)
-    msh = msh / msh.mean()
-    # the band of a monthly cell is its second element, which is what share_cells reads
-    mkeyed_mean = {(k[0] + "|" + str(k[2]), k[1]): v for k, v in mmean.items()}
-    mkeyed_cnt = {(k[0] + "|" + str(k[2]), k[1]): v for k, v in mcnt.items()}
-    sf13a = solve.lowest(lambda c: solve.share_cells(c, mkeyed_mean, mkeyed_cnt, msh))
-    sf13b = solve.lowest(lambda c: solve.share_cells(c, mkeyed_mean, mkeyed_cnt, shape))
-    ok("SF13.partner_band_month_grain_measured", True, "%d" % sf13a)
-    ok("SF13.monthly_cells_with_the_filed_shape_measured", True, "%d" % sf13b)
-    ok("SF13.the_clause_and_not_the_data_closes_it",
-       "award level" in txt[B.FILES["policy"]],
-       "finer grains print %d and %d against the filed %d" % (sf13a, sf13b, G))
-
-    # SF14 the share is tested before the rounding the prompt orders
-    ok("SF14.tested_before_rounding_filed",
-       "tested as it is computed and not as it is rounded" in txt[B.FILES["policy"]])
-    return _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv)
-
-
-def _portal_reconciliation(target, W, R):
-    """For the reopened months the portal's own awards match the revised return and not the
-    preliminary one, which is what refuses counting both."""
-    ws = load_workbook(os.path.join(target, B.FILES["ret2627"]), read_only=True, data_only=True).active
-    grid = [[c for c in r] for r in ws.iter_rows(values_only=True)]
-    h = next(i for i, r in enumerate(grid) if r and any(str(c).strip() == "claim_month" for c in r if c))
-    cols = {str(c).strip(): j for j, c in enumerate(grid[h]) if c}
-    pid = {R.ledger[pt["idx"]]: pt["idx"] for pt in R.parts}
-    pw = {}
-    for a in W["por"]:
-        k = (a["month"], a["partner"], a["band"])
-        c = pw.setdefault(k, [0, 0.0])
-        c[0] += 1
-        c[1] = round(c[1] + a["amount"], 2)
-    rev_ok, pre_bad = True, 0
-    for r in grid[h + 1:]:
-        if not r or r[cols["claim_month"]] is None:
-            continue
-        mo = WU._month(r[cols["claim_month"]])
-        if mo not in P.REVISED_MONTHS:
-            continue
-        code = str(r[cols["partner_code"]]).strip()
-        if code not in pid or not W["parts"][pid[code]]["portal"]:
-            continue
-        k = (mo, pid[code], WU._band(r[cols["household_size_band"]]))
-        if k not in pw:
-            continue
-        n, tot = int(r[cols["awards"]]), float(r[cols["total_claimed_php"]])
-        st = str(r[cols["return_status"]]).strip()
-        same = (n == pw[k][0] and abs(tot - pw[k][1]) < 0.01)
-        if st == "REVISED":
-            rev_ok = rev_ok and same
-        elif not same:
-            pre_bad += 1
-    return {"revised_matches": rev_ok, "prelim_mismatches": pre_bad}
-
-
-def _ask_checks(target, world, fig):
-    """The annex asks: the separation line, each device's forcing figure, every ladder stop and the
-    quarter closure. The ceiling's own figures are asserted against their frozen values first, so a
-    device that reached the main call would fail here before anything else."""
-    WINDOW = {(2026, m) for m in range(4, 13)} | {(2027, m) for m in range(1, 4)}
-    C = world["R"].closed
-    a = fig["asks"]
-    raw = fig.get("_asks_raw") or WU.ask_figures(target, B.FILES)["_raw"]
-
-    # ---- the main call is where it was: a device that moved it fails here
-    for k, v in (("call", 8000), ("call_down", 7000), ("default_call", 6000), ("cells", 528),
-                 ("awards", 49265), ("partners", 88)):
-        eq("separation.main_call_%s_unmoved" % k, fig[k], v)
-    for k, v in (("share_pct", 5.59), ("share_down_pct", 6.85), ("default_share_pct", 8.93),
-                 ("cv", 0.72)):
-        eq("separation.main_call_%s_unmoved" % k, fig[k], v, 1e-9)
-
-    # ---- zero device or hazard rows inside the main call's declared population, by count
-    for key, col in (("checks", "claim_month"), ("archive", "claim_months_covered")):
-        months = []
-        with open(os.path.join(target, B.FILES[key]), newline="", encoding="utf-8") as fh:
-            for r in csv.DictReader(fh):
-                months.append(WU._month(r[col]))
-        eq("separation.%s_rows_in_the_window" % key, sum(1 for m in months if m in WINDOW), 0)
-        ok("separation.%s_months_are_closed" % key,
-           min(months) == P.CHECK_FROM and max(months) == P.CHECK_TO,
-           "%s to %s" % (min(months), max(months)))
-    eq("separation.device_partner_months_in_the_window",
-       sum(1 for k, c in C.cells.items()
-           if k[1] in WINDOW and (c["consolidated"] or c["deferred"] or c["held_amount"] > 0)), 0)
-    eq("separation.recoveries_outside_the_window",
-       sum(1 for mo, _, _, _, _ in C.recovery_lines if mo in WINDOW), 0)
-    # delete every ask-layer row and the ceiling is the same ceiling: the call's own path reads
-    # four files and neither closed-period file is one of them
-    import shutil
-    import tempfile
-    tmp = tempfile.mkdtemp()
-    try:
-        for k in ("ret2526", "ret2627", "portal", "xwalk"):
-            shutil.copy(os.path.join(target, B.FILES[k]), os.path.join(tmp, B.FILES[k]))
-        cells2 = WU.read_returns([os.path.join(tmp, B.FILES[k]) for k in ("ret2526", "ret2627")])
-        xw2 = WU.read_crosswalk(os.path.join(tmp, B.FILES["xwalk"]))
-        por2 = WU.read_portal(os.path.join(tmp, B.FILES["portal"]), xw2)
-        m2 = {k: v[1] / v[0] for k, v in cells2.items()}
-        n2 = {k: v[0] for k, v in cells2.items()}
-        sh2 = np.array([x / m2[(c, b)] for c, b, x in por2], float)
-        sh2 = sh2 / sh2.mean()
-        C2 = solve.lowest(lambda x: solve.share_cells(x, m2, n2, sh2))
-        eq("separation.ceiling_without_either_ask_file", C2, fig["call"])
-        eq("separation.share_without_either_ask_file",
-           round(100 * solve.share_cells(C2, m2, n2, sh2), 2), fig["share_pct"], 1e-9)
-    finally:
-        shutil.rmtree(tmp)
-
-    # ---- device A, one payment instruction standing on both of a claim month's run lines
-    archive = WU.read_archive(os.path.join(target, B.FILES["archive"]))
-    claimed, _ = WU.read_closed_returns([os.path.join(target, B.FILES[k])
-                                         for k in ("ret2425", "ret2526")])
-    over = [k for k, v in archive.items()
-            if round(sum(g for g, _, _ in v), 2) > claimed.get(k, 0.0) + 0.005]
-    exact = [k for k, v in archive.items()
-             if abs(round(sum(g for g, _, _ in v), 2) - round(sum(x[0] for x in set(v)), 2)) < 0.005]
-    eq("deviceA.claim_months_whose_lines_exceed_what_was_claimed", len(over),
-       a["instruction_repeats"])
-    ok("deviceA.every_such_month_states_the_same_amounts_on_its_lines",
-       all(len(set(archive[k])) == 1 and len(archive[k]) > 1 for k in over), len(over))
-    eq("deviceA.other_claim_months_never_exceed_the_claim",
-       sum(1 for k, v in archive.items()
-           if k not in over and round(sum(g for g, _, _ in v), 2) > claimed.get(k, 0.0) + 0.005), 0)
-    ok("deviceA.the_repeat_is_not_an_exact_duplicate_row",
-       len(exact) >= 0 and all(len({x[0] for x in archive[k]}) == 1 for k in over))
-
-    # ---- device B, the running totals turn over on the partner's own accreditation year
-    rows = WU._raw_register(os.path.join(target, B.FILES["checks"]))
-    acc = WU.read_accreditation(os.path.join(target, B.FILES["register"]))
-    check, _ = WU.read_check_register(os.path.join(target, B.FILES["checks"]), acc)
-    impossible = sum(1 for r in rows if r["passed"] > claimed.get((r["code"], r["month"]), 0.0) + 0.005)
-    ok("deviceB.rows_stating_more_passed_than_the_month_was_claimed_for",
-       impossible > 0.8 * len(rows), "%d of %d" % (impossible, len(rows)))
-    anniv = {WU._accreditation_year(acc[r["code"]], r["month"]) for r in rows}
-    ok("deviceB.the_running_total_turns_over_more_than_once", len(anniv) > 1, sorted(anniv))
-    months = {}
-    for r in rows:
-        months.setdefault(r["code"], set()).add(r["month"])
-    turns = {c: {m for m in ms
-                 if WU._accreditation_year(acc[c], m)
-                 != WU._accreditation_year(acc[c], (m[0] - (m[1] == 1), (m[1] - 2) % 12 + 1))}
-             for c, ms in months.items()}
-    ok("deviceB.the_turnover_month_is_the_partners_own_and_not_july",
-       sum(1 for c, ms in turns.items() if any(m[1] != P.SCHEME_YEAR_START for m in ms))
-       > 0.7 * len(turns),
-       "%d of %d partners turn over in a month other than July"
-       % (sum(1 for c, ms in turns.items() if any(m[1] != P.SCHEME_YEAR_START for m in ms)),
-          len(turns)))
-    bad = [k for k, v in check.items()
-           if abs(round(claimed.get(k, 0.0) - v["passed"] - v["held"], 2)) > 0.005]
-    eq("deviceB.differencing_restores_claimed_less_passed_as_held", len(bad), 0)
-    # and the scheme year, which is the year the return workbooks label, does not: the forcing
-    # figure for the device, computed on the pack rather than argued
-    live = {}
-    for r in sorted(rows, key=lambda r: r["checked"]):
-        live[(r["code"], r["month"])] = r
-    bysy, prev = {}, {}
-    for (code, mo) in sorted(live):
-        sy = WU._scheme_year(mo)
-        base = prev.get((code, sy), (0.0, 0.0))
-        r = live[(code, mo)]
-        bysy[(code, mo)] = (round(r["passed"] - base[0], 2), round(r["held"] - base[1], 2))
-        prev[(code, sy)] = (r["passed"], r["held"])
-    wrong = sum(1 for k, v in bysy.items()
-                if abs(round(claimed.get(k, 0.0) - v[0] - v[1], 2)) > 0.005)
-    ok("deviceB.the_scheme_year_reading_fails_the_same_reconciliation", wrong > 0,
-       "%d of %d partner claim-months do not reconcile on the scheme year" % (wrong, len(bysy)))
-    ties = {}
-    for r in rows:
-        ties.setdefault((r["code"], r["month"]), set()).add(r["checked"])
-    eq("deviceB.no_claim_month_has_two_checks_on_one_date",
-       sum(1 for k, v in ties.items() if len(v) != len([x for x in rows
-                                                        if (x["code"], x["month"]) == k])), 0)
-
-    # ---- device C, a blank reason means two things
-    blank_hold = sum(1 for v in check.values() if v["held"] > 0.005 and not v["reason"])
-    blank_none = sum(1 for v in check.values() if v["held"] <= 0.005 and not v["reason"])
-    eq("deviceC.holds_with_no_reason_recorded", blank_hold, a["holds_by_reason"]["Not recorded"])
-    ok("deviceC.blank_also_means_no_hold", blank_none > blank_hold, blank_none)
-    free = [r["reason"] for r in rows
-            if r["reason"] and r["reason"] not in WU.REASONS]
-    ok("deviceC.free_text_entries_before_the_list", len(free) > 0, len(free))
-    ok("deviceC.every_free_text_entry_folds_onto_one_reason",
-       all(WU._reason(x) in WU.REASONS for x in free), len(set(free)))
-    byn = {k for k, v in check.items() if v["held"] > 0.005}
-    bycount = {k for k, v in check.items()
-               if v["passed_n"] < WU._claimed_counts(target, B.FILES).get(k, v["passed_n"])}
-    eq("deviceC.the_hold_population_agrees_on_both_routes", len(byn ^ bycount), 0)
-
-    # ---- the ladder: every stop outside the bin on every figure
-    st = WU.ask_stops(target, B.FILES)
-    QA = a["quarters"]
-    # each ask's graded cells, both measures of A and of B
-    KEYS = {"A": QA + ["n " + q for q in QA], "B": QA + ["passed " + q for q in QA],
-            "C": list(WU.REASONS)}
-    gold = {"A": [a["transferred"][q] for q in QA] + [a["instructions"][q] for q in QA],
-            "B": [a["held"][q] for q in QA] + [a["passed"][q] for q in QA],
-            "C": [a["holds_by_reason"][r] for r in WU.REASONS]}
-    eq("ladder.graded_figures", sum(len(v) for v in gold.values()), 30)
-    # A4 attributes the instruction to the quarter of its run date, which lands on one of the
-    # twelve by coincidence of the draw; it is recorded rather than smoothed over
-    expect = {"A": [0, 0, 0, 1, 12], "B": [0, 0, 0, 0, 12], "C": [0, 0, 5, 6]}
-    for grp in ("A", "B", "C"):
-        keys = KEYS[grp]
-        for i, (label, vals) in enumerate(st[grp].items()):
-            hits = sum(1 for k, g in zip(keys, gold[grp]) if abs(vals[k] - g) <= 0.5)
-            eq("ladder.%s_stop_%d_hits" % (grp, i + 1), hits, expect[grp][i], 0, label)
-        worst = max(abs(list(st[grp].values())[0][k] - g) for k, g in zip(keys, gold[grp]))
-        ok("ladder.%s_lazy_delta" % grp, worst > 0, "%.0f" % worst)
-    # the reader-calibrated row: the stop an isolated reader at medium effort actually reached on
-    # each ask, scored on the cut pack rather than taken from the cracker sheet
-    READER = {"A": 0, "B": 2, "C": 3}
-    kept = 0
-    for grp in ("A", "B", "C"):
-        vals = list(st[grp].values())[READER[grp]]
-        kept += sum(1 for k, g in zip(KEYS[grp], gold[grp]) if abs(vals[k] - g) <= 0.5)
-    eq("ladder.reader_calibrated_keep", kept, 6)
-    pair = (38.0 + 5.0) / 2.0 + 7.0 + 55.0 * kept / 30.0
-    ok("ladder.reader_calibrated_pair_under_the_bar", pair < 50.0, "%.1f" % pair)
-
-    # ---- ask A's convention is forced by the records and filed nowhere
-    dct = open(os.path.join(target, B.FILES["dict"]), encoding="utf-8").read()
-    for phrase in ("counted once", "a second time", "is that one instruction"):
-        ok("deviceA.the_convention_is_not_filed[%s]" % phrase, phrase not in dct)
-
-    # ---- every count and delta the ask sheet states, so the note's prose recomputes (H2, H3)
-    raw_rows = [r for r in csv.DictReader(
-        open(os.path.join(target, B.FILES["checks"]), newline="", encoding="utf-8"))]
-    eq("prose.register_rows", len(raw_rows), 1604)
-    eq("prose.register_partner_months", len(check), 1566)
-    eq("prose.register_july_rows", sum(1 for r in rows if r["month"][1] == P.SCHEME_YEAR_START), 180)
-    months_seen = {}
-    for r in rows:
-        months_seen[(r["code"], r["month"])] = months_seen.get((r["code"], r["month"]), 0) + 1
-    eq("prose.claim_months_checked_twice", sum(1 for v in months_seen.values() if v > 1), 38)
-    eq("prose.rows_with_the_old_separator",
-       sum(1 for r in raw_rows if "/" in r["claims_partner_ref"]), 536)
-    eq("prose.rows_stating_an_impossible_amount_passed", impossible, 1387)
-    eq("prose.free_text_reason_entries", len(free), 74)
-    eq("prose.free_text_spellings", len(set(free)), 21)
-    eq("prose.blank_reason_with_no_hold", blank_none, 1288)
-    eq("prose.archive_rows",
-       sum(1 for _ in open(os.path.join(target, B.FILES["archive"]), encoding="utf-8")) - 1, 3053)
-    eq("prose.archive_partner_months", len(archive), 1527)
-    absent = [k for k in check if k not in archive]
-    eq("prose.claim_months_absent_from_the_archive", len(absent), 39)
-    eq("prose.claim_months_tying_exactly", len(archive) - len(over), 1389)
-    eq("prose.holds_in_the_period", sum(a["holds_by_reason"].values()), 278)
-    ok("prose.the_manifest_records_the_archive_cut_off",
-       "31 January 2026" in open(os.path.join(target, B.FILES["manifest"]), encoding="utf-8").read())
-    for k in ("checks", "archive"):
-        ok("prose.the_dictionary_names_%s" % k,
-           B.FILES[k] in open(os.path.join(target, B.FILES["dict"]), encoding="utf-8").read())
-
-    # ---- each hazard's measured delta, recomputed here rather than taken from a scratch script
-    _, recl = WU.read_closed_returns([os.path.join(target, B.FILES[k])
-                                      for k in ("ret2425", "ret2526")])
-    QL = a["quarters"]
-    ql = lambda mo: WU._qlabel(WU._quarter(mo))
-    h1 = {q: 0.0 for q in QL}
-    for k, v in check.items():
-        if k[1] >= (2025, 1):
-            h1[ql(k[1])] = round(h1[ql(k[1])] + v["held"], 2)
-    ok("hazard.H1_the_unjoined_months_empty_the_first_two_quarters",
-       int(round(h1[QL[0]])) == 0 and int(round(h1[QL[1]])) == 0
-       and all(int(round(h1[q])) == a["held"][q] for q in QL[2:]),
-       [int(round(h1[q])) for q in QL])
-    h2 = {q: float(a["transferred"][q]) for q in QL}
-    for k, v in recl.items():
-        h2[ql(k[1])] = round(h2[ql(k[1])] - abs(v), 2)
-    for k, lines in archive.items():
-        r2 = round(sum(x[1] for x in set(lines)), 2)
-        if r2:
-            h2[ql(k[1])] = round(h2[ql(k[1])] + r2, 2)
-    eq("hazard.H2_the_recovery_lag_moves_this_many_quarters",
-       sum(1 for q in QL if int(round(h2[q])) != a["transferred"][q]), 5)
-    for (code, mo), v in recl.items():
-        nxt = (mo[0] + (mo[1] == 12), mo[1] % 12 + 1)
-        ok("hazard.H2_recovery_%s_%s_is_applied_in_the_next_claim_month" % (code, mo[1]),
-           any(abs(x[1] - abs(v)) < 0.005 for x in archive.get((code, nxt), [])),
-           "%s -> %s" % (mo, nxt))
-    ok("hazard.H2_each_recovery_crosses_a_quarter_boundary",
-       all(ql(mo) != ql((mo[0] + (mo[1] == 12), mo[1] % 12 + 1)) for (_, mo) in recl))
-    h4 = {q: float(a["transferred"][q]) for q in QL}
-    for k in absent:
-        h4[ql(k[1])] = round(h4[ql(k[1])] + claimed.get(k, 0.0) - check[k]["held"], 2)
-    ok("hazard.H4_imputing_the_absent_months_moves_every_quarter",
-       all(int(round(h4[q])) != a["transferred"][q] for q in QL),
-       "max delta %d" % max(int(round(h4[q])) - a["transferred"][q] for q in QL))
-    eq("hazard.H4_largest_delta",
-       max(int(round(h4[q])) - a["transferred"][q] for q in QL), 1208963)
-
-    # ---- the quarter closure, at the grain the annex balances on
-    for q in a["quarters"]:
-        eq("closure.%s" % q, round(raw["claimed"][q] - raw["held"][q] - raw["recovered"][q]
-                                   - raw["unsettled"][q], 2), round(raw["transferred"][q], 2), 0.005)
-    eq("closure.every_hold_has_a_reason_line", sum(a["holds_by_reason"].values()),
-       sum(1 for v in check.values() if v["held"] > 0.005))
-
-
-def _rest(target, world, fig, golden_dir, txt, L, G, mean, cnt, shape, fv):
-    W = world["W"]
-    R = world["R"]
-    # ---------------------------------------------------------- closure axes that need a number
-    eq("axis10.rounding_once", solve.band_ceiling(G, 5), 9000)
-    import math
-    for b in P.BANDS:
-        exact = 100 * math.ceil(G * math.sqrt(b / 4.0) / 100 - 1e-9)
-        eq("axis13.three_decimal_factor_agrees_with_the_root_band_%d" % b,
-           solve.band_ceiling(G, b), exact, 0)
-    perms = []
-    rng = np.random.default_rng(7)
-    for _ in range(6):
-        idx = rng.permutation(len(shape))
-        perms.append(solve.lowest(lambda c: solve.share_cells(c, mean, cnt, shape[idx])))
-    ok("axis14.row_order_invariant", len(set(perms)) == 1 and perms[0] == G, perms)
-    ok("axis20.ceilings_are_whole_hundreds",
-       all(solve.band_ceiling(G, b) % 100 == 0 for b in P.BANDS))
-    srt = np.sort(shape)
-    thr = np.array([solve.band_ceiling(G, k[1]) / mean[k] for k in sorted(cnt)])
-    j = np.clip(np.searchsorted(srt, thr), 1, len(srt) - 1)
-    gap = float(np.minimum(np.abs(srt[j] - thr), np.abs(srt[j - 1] - thr)).min())
-    ok("axis9.no_ratio_sits_on_a_threshold", gap > 1e-9, "nearest ratio %.3e away" % gap)
-    strict = solve.share_cells(G, mean, cnt, shape)
-    nonstrict = float(sum(cnt[k] * (1.0 - np.searchsorted(np.sort(shape), solve.band_ceiling(G, k[1]) / mean[k], side="left") / len(shape))
-                          for k in sorted(cnt)) / sum(cnt.values()))
-    eq("axis9.strict_and_nonstrict_agree", strict, nonstrict, 1e-12)
-    ddof0 = float(shape.std(ddof=0) / shape.mean())
-    eq("axis19.cv_reading_invariant", round(ddof0, 2), fig["cv"], 1e-9)
-
-    # ---------------------------------------------------------- mess neutrality, item by item
-    import mess_check as MC
-    neu = MC.all_items(target)
-    for k, v in sorted(neu.items()):
-        eq("mess.%s_call_unchanged" % k, v["call"], G, 0)
-        if k == "both_counted":
-            # not a Layer 1 item: counting a superseded return as well as its revision breaks
-            # clause 4.2, so it is judged at the precision the graded figure prints
-            eq("mess.%s_printed_overall_share_unchanged" % k, round(v["share"], 1),
-               fig["referred_share"], 1e-9)
-        else:
-            eq("mess.%s_overall_share_unchanged" % k, round(v["share"], 2), fig["share_pct"], 1e-9)
-            eq("mess.%s_band_figures_unchanged" % k, round(v["b4"], 1),
-               fig["bands"]["4"]["referred_share"], 1e-9)
-    # counting a superseded return as well as its revision breaks clause 4.2 rather than mishandling
-    # the mess, and the asks are meant to turn on it: it must move an ask figure and nothing else
-    ok("ask.device_superseded_return_moves_the_award_count",
-       neu["both_counted"]["awards"] != fig["awards"],
-       "%s awards against %s" % (neu["both_counted"]["awards"], fig["awards"]))
-    eq("ask.device_superseded_return_leaves_the_call", neu["both_counted"]["call"], G, 0)
-
-    # ---------------------------------------------------------- distractor deletion
-    for k in B.DISTRACTORS:
-        ok("distractor.%s_unused" % k, True, B.FILES[k])
-    f2 = WU.figures(target, B.FILES)
-    eq("distractor.deletion_leaves_the_call", f2["call"], fig["call"], 0)
-    for b in P.BANDS:
-        eq("distractor.deletion_leaves_band_%d" % b, f2["bands"][str(b)]["referred_share"],
-           fig["bands"][str(b)]["referred_share"], 1e-9)
-
-    # ---------------------------------------------------------- the pack reproduces the golden
-    eq("pack.call_from_bundle", f2["call"], G, 0)
-    eq("pack.default_from_bundle", f2["default_call"], L["R1"], 0)
-    eq("pack.awards_from_bundle", f2["awards"], len(W["win"]), 0)
-    eq("pack.cells_from_bundle", f2["cells"], len(cnt), 0)
-    eq("pack.shape_rows_from_bundle", f2["portal_window_rows"], len(shape), 0)
-    for b in P.BANDS:
-        eq("pack.band_%d_ceiling" % b, f2["bands"][str(b)]["ceiling"], solve.band_ceiling(G, b), 0)
-        eq("pack.band_%d_factor" % b, f2["bands"][str(b)]["factor"], P.SCALE3[b] / 1000.0, 1e-9)
-
-    # ---------------------------------------------------------- every graded figure is mid-cell
-    tight = (None, 9e9)
-    for b in P.BANDS:
-        for key, unit in (("referred_share", 0.1), ("referred_value_share", 0.1)):
-            v = fv["bands"][b][key]
-            e = unit / 2 - abs(v - round(v / unit) * unit)
-            ok("bin.band_%d_%s" % (b, key), e > 0.15 * (unit / 2),
-               "%.4f, edge %.4f = %.2f of the half-cell" % (v, e, e / (unit / 2)))
-            if e / (unit / 2) < tight[1]:
-                tight = ("band %d %s" % (b, key), e / (unit / 2))
-    print("  tightest graded figure: %s at %.2f of its half-cell" % tight)
-
-    # ---------------------------------------------------------- realism sweep
-    amt = [a["amount"] for a in W["win"]]
-    ok("real.no_round_total", abs(sum(amt) - round(sum(amt), -3)) > 1, "%.2f" % sum(amt))
-    ok("real.amounts_not_round", sum(1 for x in amt if abs(x - round(x, -2)) < 0.005) < 0.02 * len(amt))
-    ok("real.no_uniform_partner_counts", len({sum(1 for a in W["win"] if a["partner"] == p)
-                                              for p in range(len(W["parts"]))}) > 60)
-    names = [pt["name"] for pt in W["parts"]]
-    ok("real.no_placeholder_names", not any(re.search(r"\b(Acme|Company [A-Z]|Partner [A-Z]|John Doe|Test|Sample)\b", n) for n in names))
-    ok("real.personas_from_guard", {v[0] for v in P.PEOPLE.values()} <=
-       {"Kathryn Newman", "Robert Gonzalez", "Erica Costa", "Ronald Rosales", "Barry Rose",
-        "James Snyder", "Cheryl Chase", "Alexandra Melton", "Steven Espinoza", "John King"})
-    ok("real.no_em_dash", not any("—" in t for t in txt.values()))
-    ok("real.distinct_partner_names", len(set(names)) == len(names))
-    # document control dates against the events they describe
-    pol = txt[B.FILES["policy"]]
-    ok("doc.policy_dates_coherent", "12 February 2027" in pol and "1 April 2027" in pol)
-    ok("doc.amendment_before_approval", pol.index("1 July 2025") < len(pol))
-    ok("doc.extract_after_last_record",
-       max(a["paid"] for a in W["awards"]).isoformat() <= P.EXTRACT_DATE.isoformat())
-    ok("doc.no_date_after_extract",
-       not re.search(r"\b(2027-0[5-9]|2027-1[0-2]|2028)-\d\d\b", txt[B.FILES["portal"]]))
-
-    # ---------------------------------------------------------- the positive controls
-    ok("control.policy_text_readable", "Household Relief Grant" in pol and len(pol) > 2000,
-       "%d characters extracted" % len(pol))
-    ok("control.summary_text_readable", "Annual Report 2025/26" in txt[B.FILES["summary"]],
-       "%d characters" % len(txt[B.FILES["summary"]]))
-    ok("control.returns_readable", "partner_code" in txt[B.FILES["ret2627"]])
-    ok("control.clause9_present", "9.1 For each scheme year" in pol)
-    ok("control.scheduleB_present", "B.2 The factor for a band" in pol)
-    ok("control.scheduleB_tabulates_no_factor",
-       not re.search(r"0\.500|0\.707|0\.866|1\.118|1\.225", pol),
-       "a tabulated factor is a graded answer printed in the pack")
-    for b in P.BANDS:
-        ok("leak.factor_band_%d_absent_from_the_pack" % b,
-           not any(("%.3f" % (P.SCALE3[b] / 1000.0)) in t for t in txt.values()),
-           "%.3f" % (P.SCALE3[b] / 1000.0))
-
-    # ---------------------------------------------------------- no leak of the decisive step
-    for f, t in txt.items():
-        ok("leak.%s_no_within_partner" % f,
-           not re.search(r"within[- ]partner|award shape|spread about|coefficient of variation", t, re.I), f)
-    ok("leak.no_method_in_the_pack",
-       not re.search(r"rebuild|reconstruct the distribution|per[- ]award distribution", pol, re.I))
-
-    # ---------------------------------------------------------- H9: the registers know every file
-    man = [r["file_name"] for r in csv.DictReader(
-        open(os.path.join(target, B.FILES["manifest"]), encoding="utf-8"))]
-    shipped = set(os.listdir(target))
-    ok("register.manifest_is_the_shipped_set", set(man) == shipped,
-       "manifest %d vs shipped %d: %s" % (len(man), len(shipped),
-                                          sorted(shipped.symmetric_difference(man))))
-    dct = txt[B.FILES["dict"]]
-    for k in B.PACK:
-        if k in ("dict", "policy", "summary", "request"):
-            continue
-        ok("register.dictionary_names_%s" % k, B.FILES[k] in dct, B.FILES[k])
-    # H4: the golden folder is exactly the deliverables
-    import golden as _G
-    ok("ship.golden_is_the_deliverables",
-       sorted(os.listdir(golden_dir)) == sorted([_G.XLSX, _G.PDF, _G.ANNEX]),
-       sorted(os.listdir(golden_dir)))
-    # the archive is cut after these checks run, so its freshness is asserted in make.py where it
-    # is cut (H7: a freshness assertion rather than build order)
-
-    # ---------------------------------------------------------- the ask layer
-    _ask_checks(target, world, fig)
-
-    # ---------------------------------------------------------- the goldens
-    import golden as GD
-    for f in (GD.XLSX, GD.PDF, GD.ANNEX):
-        ok("golden.%s_exists" % f, os.path.exists(os.path.join(golden_dir, f)))
-    gx = text_of(os.path.join(golden_dir, GD.XLSX))
-    gp = text_of(os.path.join(golden_dir, GD.PDF))
-    ok("golden.call_in_workbook", "8000" in gx.replace(",", "") or "8,000" in gx)
-    ok("golden.call_in_paper", "PHP 8,000" in gp, gp[:0])
-    for b in P.BANDS:
-        c = "{:,}".format(solve.band_ceiling(G, b))
-        ok("golden.band_%d_ceiling_in_paper" % b, c in gp, c)
-    ok("golden.chart_embedded", os.path.getsize(os.path.join(golden_dir, GD.PDF)) > 60000)
-    ok("golden.no_working_png", not any(f.endswith(".png") for f in os.listdir(golden_dir)))
-
-    if FAIL:
-        print("\n%d FAILED:" % len(FAIL))
-        for f in FAIL:
-            print("   " + f)
-        raise AssertionError("%d checks failed" % len(FAIL))
-    return N
-
-
-if __name__ == "__main__":
-    import make
-    TASK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    w = B.run(os.path.join(TASK, "target"), documents=False) if "--rebuild" in sys.argv else None
-    import json
-    fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json")))
-    world = {"W": sim.make()}
-    world["R"] = RC.Records(world["W"])
-    print("checks: %d assertions passed" % run(os.path.join(TASK, "target"), world, fig,
-                                               os.path.join(TASK, "golden")))
+    # the measured values the design note quotes, printed so each has a script behind it
+    print("ladder rung 0 (annual inventory): " + ", ".join("%s %.1f" % (k, m0[k]) for k in "ABCD"))
+    print("ladder rung 1 (season load budget): " + ", ".join("%s %.1f" % (k, m1[k]) for k in "ABCD"))
+    print("ladder decisive: " + ", ".join("%s %.1f" % (k, gold[k]) for k in "ABCD")
+          + "; entrainment share at which B passes C %.2f" % (gold["C"] / m1["B"]))
+    print("back-test: log slope %.3f, Brathwick's share of the river's season load %.3f" % (slope, share))
+    print("10 m conductivity rise by season %s; 1 m change %s" % ([round(c10[2 * j + 1] - c10[2 * j], 1) for j in range(3)],
+                                                                  [round(c1[2 * j + 1] - c1[2 * j], 1) for j in range(3)]))
+    print("winter stops: station alone %.1f / %d kg; day bottle for every hour %d kg; dwellings by address %d / %d / %d;"
+          " flats by upload %d fixed; flats no date cut %d fixed" % (ns_in, ns_ld, db_ld, len(mis_u), len(fix_u & mis_u),
+                                                                    len(mis_u - fix_u), byup, nodate))
+    fails = [r for r in RESULTS if not r[1]]
+    for label, good, detail in RESULTS:
+        if not good:
+            print("FAIL", label, detail)
+    print("checks: %d assertions, %d failed" % (len(RESULTS), len(fails)))
+    return not fails

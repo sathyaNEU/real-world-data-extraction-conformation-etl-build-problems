@@ -1,145 +1,38 @@
 {
-  "asks": {
-    "check_months": 1566,
-    "check_rows": 1604,
-    "claimed": {
-      "2024/25 Q1": 32056732,
-      "2024/25 Q2": 31212030,
-      "2024/25 Q3": 24751981,
-      "2024/25 Q4": 27646505,
-      "2025/26 Q1": 40333102,
-      "2025/26 Q2": 40044708
-    },
-    "held": {
-      "2024/25 Q1": 262327,
-      "2024/25 Q2": 145280,
-      "2024/25 Q3": 265812,
-      "2024/25 Q4": 162803,
-      "2025/26 Q1": 271136,
-      "2025/26 Q2": 224160
-    },
-    "holds_by_reason": {
-      "Arithmetic error on return": 17,
-      "Component not eligible": 30,
-      "Duplicate application": 36,
-      "Household record incomplete": 46,
-      "Not recorded": 76,
-      "Receipts incomplete": 73
-    },
-    "instruction_repeats": 138,
-    "instructions": {
-      "2024/25 Q1": 486,
-      "2024/25 Q2": 483,
-      "2024/25 Q3": 493,
-      "2024/25 Q4": 481,
-      "2025/26 Q1": 488,
-      "2025/26 Q2": 484
-    },
-    "passed": {
-      "2024/25 Q1": 31794406,
-      "2024/25 Q2": 31066751,
-      "2024/25 Q3": 24486170,
-      "2024/25 Q4": 27483702,
-      "2025/26 Q1": 40061966,
-      "2025/26 Q2": 39820548
-    },
-    "quarters": [
-      "2024/25 Q1",
-      "2024/25 Q2",
-      "2024/25 Q3",
-      "2024/25 Q4",
-      "2025/26 Q1",
-      "2025/26 Q2"
-    ],
-    "recovered": {
-      "2024/25 Q1": 0,
-      "2024/25 Q2": 2328,
-      "2024/25 Q3": 1210,
-      "2024/25 Q4": 3489,
-      "2025/26 Q1": 4757,
-      "2025/26 Q2": 0
-    },
-    "run_months": 1527,
-    "transferred": {
-      "2024/25 Q1": 31571689,
-      "2024/25 Q2": 30216105,
-      "2024/25 Q3": 23957244,
-      "2024/25 Q4": 26285439,
-      "2025/26 Q1": 39057620,
-      "2025/26 Q2": 38611585
-    },
-    "unsettled": {
-      "2024/25 Q1": 222717,
-      "2024/25 Q2": 848317,
-      "2024/25 Q3": 527715,
-      "2024/25 Q4": 1194773,
-      "2025/26 Q1": 999589,
-      "2025/26 Q2": 1208963
-    }
-  },
-  "awards": 49265,
-  "bands": {
-    "1": {
-      "awards": 9149,
-      "ceiling": 4000,
-      "factor": 0.5,
-      "referred_share": 5.8,
-      "referred_value_share": 22.0
-    },
-    "2": {
-      "awards": 9080,
-      "ceiling": 5700,
-      "factor": 0.707,
-      "referred_share": 5.5,
-      "referred_value_share": 21.3
-    },
-    "3": {
-      "awards": 8987,
-      "ceiling": 7000,
-      "factor": 0.866,
-      "referred_share": 5.4,
-      "referred_value_share": 21.0
-    },
-    "4": {
-      "awards": 8829,
-      "ceiling": 8000,
-      "factor": 1.0,
-      "referred_share": 5.7,
-      "referred_value_share": 21.7
-    },
-    "5": {
-      "awards": 7063,
-      "ceiling": 9000,
-      "factor": 1.118,
-      "referred_share": 5.7,
-      "referred_value_share": 21.7
-    },
-    "6": {
-      "awards": 6157,
-      "ceiling": 9800,
-      "factor": 1.225,
-      "referred_share": 5.4,
-      "referred_value_share": 21.1
-    }
-  },
-  "call": 8000,
-  "call_down": 7000,
-  "call_php": "PHP 8,000",
-  "candidate_step": 1000,
-  "cells": 528,
-  "committed_pct": 6.0,
-  "cv": 0.72,
-  "default_call": 6000,
-  "default_share_pct": 8.93,
-  "ks_gamma": 19,
-  "ks_lognormal": 16,
-  "partners": 88,
-  "portal_partners": 22,
-  "portal_window_rows": 11788,
-  "referred_awards": 2753,
-  "referred_share": 5.6,
-  "referred_value_share": 21.4,
-  "round_to": 100,
-  "share_down_pct": 6.85,
-  "share_pct": 5.59
+ "A_2024": 0,
+ "A_2025": 0,
+ "A_2026": 0,
+ "A_mean": 0,
+ "B_2024": 0,
+ "B_2025": 0,
+ "B_2026": 0,
+ "B_mean": 0,
+ "C_2024": 229,
+ "C_2025": 221,
+ "C_2026": 216,
+ "C_mean": 222,
+ "D_2024": 36,
+ "D_2025": 37,
+ "D_2026": 36,
+ "D_mean": 36,
+ "call": "C",
+ "chl_2025": 8.0,
+ "chl_2026": 7.9,
+ "credit_C": 71,
+ "credit_D": 50,
+ "days_2024": 122,
+ "days_2025": 122,
+ "days_2026": 122,
+ "dense_2024": 122,
+ "dense_2025": 122,
+ "dense_2026": 122,
+ "dw_fixed": 39,
+ "dw_found": 126,
+ "dw_open": 87,
+ "gap": 186,
+ "inflow_2023_24": 51.4,
+ "load_2023_24": 5200,
+ "runner_up": "D",
+ "tp_2025": 29.9,
+ "tp_2026": 29.2
 }
