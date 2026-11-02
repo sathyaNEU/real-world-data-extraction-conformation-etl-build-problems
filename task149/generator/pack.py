@@ -169,8 +169,8 @@ def write_review(path, gates):
               "information screens were commissioned on 4 November 2019."),
     ]
     IO.write_pdf(path, "Lisnagry Station post-opening review", "Deaglan Gilmore", "Microsoft Word for Microsoft 365",
-                 blocks, "KMTA Rail Planning | Lisnagry post-opening review | April 2020", "D:20200421143300Z",
-                 "D:20200421143300Z")
+                 blocks, "KMTA Rail Planning | Lisnagry post-opening review | April 2020", "D:20200421143300+00'00'",
+                 "D:20200421143300+00'00'")
     return mean, n
 
 
@@ -223,7 +223,7 @@ def write_case(path):
     ]
     IO.write_pdf(path, "Rathgarvan Station FBC demand refresh", "Colum Curtis", "Microsoft Word for Microsoft 365",
                  blocks, "KMTA Rail Planning | Rathgarvan FBC demand refresh | DRAFT v0.4 | 6 December 2027",
-                 "D:20271206091500Z", "D:20271206094000Z", widths={3: [38 * 2.835, 80 * 2.835, 52 * 2.835]})
+                 "D:20271206091500+00'00'", "D:20271206094000+00'00'", widths={3: [38 * 2.835, 80 * 2.835, 52 * 2.835]})
 
 
 def write_panel_note(path):
@@ -232,32 +232,32 @@ def write_panel_note(path):
         ("s", "Data licence between Vantra Mobile Ireland Limited and the Kilcarrow Metropolitan Transport Authority for "
               "the Resident Mobility Panel, Rathgarvan catchment. Schedule 2 as agreed 14 September 2027; delivery "
               "contact Eve Dunne, Vantra Insights."),
-        ("h", "2.1 Panel"),
+        ("h", "Panel"),
         ("p", "The panel consists of devices on the Vantra network whose home cell lies within the catchment cells "
               "listed in Schedule 1 and which are active on at least 20 days of the delivery weeks. Panel penetration in "
               "the catchment is about one resident adult in eleven. No expansion weights are supplied under this "
               "licence."),
-        ("h", "2.2 Stays"),
+        ("h", "Stays"),
         ("p", "A stay is a period of 20 minutes or more in which a device's location resolves to one cell. A stay ends "
               "where the device's location changes cell or the device is inactive for more than 90 minutes. Start and "
               "end times are given in Coordinated Universal Time to the minute."),
         ("p", "The delivery contains every stay that begins on a weekday in Irish time from Monday 6 September to "
               "Friday 26 November 2027 (ISO weeks 36 to 47), each running to its end even where that falls after the "
               "delivery window. Stays beginning on a Saturday or a Sunday are not delivered."),
-        ("h", "2.3 Home cell and identifiers"),
+        ("h", "Home cell and identifiers"),
         ("p", "A device's home cell is the cell where it spent the most time between 22:00 and 06:00 Irish time over "
               "the delivery weeks. Devices are identified by a one-way hash of the SIM identity; a replacement SIM card "
               "receives a new hash, which is not linked to the earlier one. Hashes are not stable between deliveries."),
-        ("h", "2.4 Cells and census zones"),
+        ("h", "Cells and census zones"),
         ("p", "Each cell's coverage area is related to the census zones it overlaps by the share of that area lying in "
               "each zone, as estimated by Vantra radio planning (lookup version 3)."),
-        ("h", "2.5 Use and disclosure"),
+        ("h", "Use and disclosure"),
         ("p", "The data may be used for transport planning by the Authority. Results describing fewer than ten devices "
               "may not be published."),
     ]
     IO.write_pdf(path, "Licence 2027-114 Schedule 2", "Eve Dunne", "Microsoft Word for Microsoft 365",
                  blocks, "Vantra Mobile Ireland | Licence 2027-114 | Schedule 2 | Commercial in confidence",
-                 "D:20270914110000Z", "D:20271201103000Z")
+                 "D:20270914110000+00'00'", "D:20271201103000+00'00'")
 
 
 def calendar_rows():

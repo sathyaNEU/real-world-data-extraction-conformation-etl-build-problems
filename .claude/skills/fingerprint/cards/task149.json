@@ -144,8 +144,16 @@
  "registered": "2026-11-02T02:14:23Z",
  "shell": {
   "question form": "how-many",
-  "second-sentence opener": "lindqvist",
-  "rounding opener": "give",
-  "deliverable set": "pptx+xlsx"
- }
+  "second-sentence opener": "work",
+  "rounding opener": "zone",
+  "deliverable set": "docx+xlsx"
+ },
+ "lineage_shells": [
+  {
+   "question form": "how-many",
+   "second-sentence opener": "lindqvist",
+   "rounding opener": "give",
+   "deliverable set": "pptx+xlsx"
+  }
+ ]
 }

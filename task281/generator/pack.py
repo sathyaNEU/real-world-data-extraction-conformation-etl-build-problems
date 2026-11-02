@@ -35,6 +35,7 @@ KBART = {
     "Corran & Lyle Law Library 2026": "CorranLyle_LawLibrary_2026_kbart.txt",
     "Northfield Health Sciences Essentials 2026": "NorthfieldMedical_HealthSciencesEssentials_2026_kbart.txt",
     "Ashdown STEM Texts 2026": "AshdownScientific_STEMTexts_2026_kbart.txt",
+    "Ellesmere Humanities and Social Sciences 2026": "EllesmereUP_HumanitiesSocialSciences_2026_kbart.txt",
 }
 DISTRACTORS = [FILES["survey"], FILES["usage"]]
 
@@ -57,10 +58,17 @@ def patron_key(sid):
 
 
 def assign_ids(W):
-    for i, h in enumerate(W.holds):
-        h.hold_id = hid("HLD", i, "hold")
-    for i, l in enumerate(W.loans):
-        l.loan_id = hid("CHK", i, "loan")
+    """platform identifiers: hashed sequence numbers, re-drawn on a clash so every identifier is unique"""
+    for objs, prefix, salt, attr in ((W.holds, "HLD", "hold", "hold_id"), (W.loans, "CHK", "loan", "loan_id")):
+        seen = set()
+        for i, o in enumerate(objs):
+            k = 0
+            v = hid(prefix, i, salt)
+            while v in seen:
+                k += 1
+                v = hid(prefix, i, "%s%d" % (salt, k))
+            seen.add(v)
+            setattr(o, attr, v)
 
 
 def write(W, A, target):

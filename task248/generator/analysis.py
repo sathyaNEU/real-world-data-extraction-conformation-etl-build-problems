@@ -21,6 +21,10 @@ def loc(s):
     return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC).astimezone(CHI).replace(tzinfo=None)
 
 
+def lt(s):
+    return dt.datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
+
+
 def hat(h, knots):
     h = np.asarray(h, dtype=float)
     B = np.zeros((len(h), len(knots)))
@@ -98,7 +102,7 @@ class Pack:
         out = {}
         for (cs, tn), rows in by_ct.items():
             rows.sort(key=lambda r: int(r["record_seq"]))
-            times = [loc(r["reading_utc"]) for r in rows]
+            times = [lt(r["reading_time"]) for r in rows]
             bad = [i for i, t in enumerate(times) if t.year != 2026]
             if bad and redate:
                 i0, i1 = bad[0], bad[-1]
@@ -119,7 +123,7 @@ class Pack:
     def deliveries(self):
         out = {}
         for r in rcsv(os.path.join(self.t, "atg_deliveries_2026.csv")):
-            s, e = loc(r["start_utc"]), loc(r["end_utc"])
+            s, e = lt(r["start_time"]), lt(r["end_time"])
             tid = self.tid_for(r["console_sn"], r["tank"], s)
             out.setdefault(tid, []).append({"start": s, "end": e, "h0": float(r["start_height_in"]), "h1": float(r["end_height_in"]),
                                             "T0": float(r["start_temp_f"]), "T1": float(r["end_temp_f"]),
@@ -344,8 +348,8 @@ def ask_days(pk, inv=None, redate=True, by_current=False, utc_days=False):
     seen = {}
     for (cs, tn), rows in by_ct.items():
         rows.sort(key=lambda r: int(r["record_seq"]))
-        times = [loc(r["reading_utc"]) for r in rows]
-        utcs = [dt.datetime.strptime(r["reading_utc"], "%Y-%m-%dT%H:%M:%SZ") for r in rows]
+        times = [lt(r["reading_time"]) for r in rows]
+        utcs = list(times)
         bad = [i for i, t in enumerate(times) if t.year != 2026]
         if bad and redate:
             i1 = bad[-1]
@@ -511,7 +515,6 @@ def analyse(target):
     res["A3"] = {"%s|%s" % k: v for k, v in ask_gallons(pk).items()}
     res["stops"] = {
         "A1_drop_reset": ask_days(pk, redate=False), "A1_current_setup": ask_days(pk, by_current=True),
-        "A1_utc_days": ask_days(pk, utc_days=True),
         "A2_every_row": ask_tests(pk, redate=False, dedupe=False), "A2_no_redate": ask_tests(pk, redate=False),
         "A2_utc_months": ask_tests(pk, utc_months=True),
         "A3_both": {"%s|%s" % k: v for k, v in ask_gallons(pk, shadow="both").items()},

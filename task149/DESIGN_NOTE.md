@@ -159,7 +159,7 @@ ordinary weekdays (2.5 to 3.9 days a week), which puts Rathgarvan at about 1,300
 | SF13 | ask A, a station | the station with the code it replaced (UHK with KUH, CBH with CBY) | the current code alone | no 2019 figure for two stations | the asking sentence; asserted |
 | SF14 | ask A, a station's entries | every location code carrying its register number | the register's codes alone | every station figure moves | the register's station_no and the codes G<no><gateline>; asserted |
 | SF15 | ask B, reaching the workplace | the start of the workplace stay, Irish time, 07:30 to 09:30 inclusive | the first stay away from home; UTC | figures move | the asking sentence; asserted |
-| SF16 | rounding | zones to the nearest 10 and the total to the nearest 100, from the same exact figures | the total as the sum of rounded zones | 1,310 against 1,300 | the prompt's rounding sentence; asserted |
+| SF16 | rounding | zones to the nearest 10 and the total to the nearest 100, from the same exact figures | the total as the sum of rounded zones | 1,320 against 1,300 | the prompt's rounding sentence; asserted |
 
 ## Ladder
 
@@ -264,8 +264,8 @@ Measured by: generator/ceiling.py on the cut pack
   ships and moves no figure by hand (it reports bin distances; the world's free parameters, departure offsets per zone,
   the gate seed and two-decimal station shares, were set from it).
 - **Gates on the final cut.** checks.py 77 of 77; verify.py agrees on its own path (pandas and raw OOXML: total 1,311.6,
-  every zone, 6 arrival shares, 7 station ratios, golden files read back); two builds byte-identical over 20 files;
-  figures_check.py 60 figures, 0 absent; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 (871 characters);
+  every zone, 6 arrival shares, 7 station ratios, golden files read back); two builds byte-identical over 20 files
+  (target.zip aa619280); figures_check.py 60 figures, 0 absent; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 (871 characters);
   leak.py --asof 2027-12-06 REVIEW, no LEAK; guard.py heart WARN (no BLOCK); guard.py surface exit 0, personas Colum
   Curtis, Deaglan Gilmore and Eve Dunne only.
 - **Guard WARNs answered.** overuse.org_family: a metropolitan transport authority is a government agency, the honest
@@ -277,7 +277,13 @@ Measured by: generator/ceiling.py on the cut pack
   refresh carry stump-paragraph terms (census, journey, forecast) as the organisation's own vocabulary; neither names a
   trip rate, a weekly share or the panel's use. The census table, the employment outlook and the refresh name zones beside
   numbers without ranking them on the decision question. The panel's field notes were rewritten as Schedule 2 of the data
-  licence (service description, no column names) after sweep 12 and the file-name sweep flagged a describing document.
+  licence (service description, no column names, no clause numbers) after sweep 12 and the file-name sweep flagged a
+  describing document.
+- **Card shell.** `register` read the prompt still on disk at registration (architecture 1's), so the card's `shell`
+  was corrected to this prompt's (how-many | work | docx+xlsx) and architecture 1's shell (how-many | lindqvist |
+  pptx+xlsx) moved to `lineage_shells`; `guard.py validate` clean, `heart` WARN with no BLOCK.
+- **PDF dates.** The documents' creation and modification dates are written at reportlab's own length, so every PDF's
+  cross-reference offsets stay valid (pypdf reads all three without a warning).
 
 ## Tried and rejected
 - The seed's mechanism (new hires not yet in the tenure window where harm surfaces): rejected at the draw, a hazard by

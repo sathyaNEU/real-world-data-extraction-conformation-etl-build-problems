@@ -145,6 +145,10 @@ def simulate(seed=P.SEED):
             start = local(dt.date(2026, 1, 1) + dt.timedelta(days=int(rng2.integers(5, 355))), float(rng2.uniform(0, 24)))
             dur_h = float(rng2.choice([6, 14, 30, 60, 90, 120, 150])) + float(rng2.uniform(0, 10))
             outs.append((start.replace(microsecond=0), (start + dt.timedelta(hours=dur_h)).replace(microsecond=0)))
+        # the monitoring service's legacy cellular network was retired on 24 September; each console was offline
+        # until its replacement modem went in
+        s0 = local(dt.date(2026, 9, 24), 6.0 + float(rng2.uniform(0, 3)))
+        outs.append((s0.replace(microsecond=0), (local(dt.date(2026, 10, 2), 9.0) + dt.timedelta(hours=float(rng2.uniform(0, 30)))).replace(microsecond=0)))
         out["outages"][m] = sorted(outs)
     out["probe_faults"] = [("DH-2", local(dt.date(2026, 1, 9), 3.5), local(dt.date(2026, 1, 14), 15.0)),
                            ("EB-3", local(dt.date(2026, 8, 18), 11.0), local(dt.date(2026, 8, 19), 19.0)),

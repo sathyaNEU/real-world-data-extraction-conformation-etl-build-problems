@@ -11,7 +11,7 @@
  "shape": "15",
  "decision_type": "conformed_dataset",
  "answer_unit": "dataset",
- "answer": "Nine of the sections counted in 2025 carried more than three million vehicles and go into the noise mapping contract's scope: Ashfield Road 3.8, Brookfield Way 3.4, Hollins Lane 3.2, Holloway Hill 3.5, Infirmary Road 3.2, Kingsway 4.2, Priory Road 3.3, Station Street 3.6 and Wharf Street 4.7 million; Grange Road 2.7, College Road 2.5 and Castlegate Road 2.6 stay under.",
+ "answer": "Nine of the sections counted in 2025 carried more than three million vehicles and go into the noise mapping contract's scope: Ashfield Road 3.8, Brookfield Way 3.4, Hollins Lane 3.2, Holloway Hill 3.5, Infirmary Road 3.2, Kingsway 4.3, Priory Road 3.5, Station Street 3.7 and Wharf Street 4.7 million; Grange Road 2.7, College Road 2.5 and Castlegate Road 2.6 stay under.",
  "answer_source": "golden/noise_round_sections_2025.csv",
  "gap": [
   "time"
@@ -89,7 +89,7 @@
  "question_form": "how-many",
  "driver": "The decisive quantity is each unit's ratio of its whole-period mean to the single short window in which it was measured; the standard method borrows that ratio from a pooled group of continuous recorders whose weekly and seasonal rhythm many units do not share, while a continuous recorder in a separate system sits on the unit itself but sees only part of its flow at another grain, so the unit's own ratio is read by pairing that recorder's value in the measured window with the measurement and carrying the recorder's whole-period mean through the pair.",
  "driver_concrete": "Each counted road section's 2025 traffic is its 12-hour manual count times the section's own expansion factor; the borough's permanent counters sit on commuter roads, so their factors misstate sections ending at a retail park, a leisure park, a hospital, a school, an industrial estate or a campus, whose own year is recorded only by the signal detectors on one approach lane at the junction the section ends at, joinable only by junction and arm names and usable only through the counted day both recorded.",
- "stump": "The textbook expansion with the permanent counters' same-day factors files 8 sections over three million, College Road (3.3) and Grange Road (3.3) in and Brookfield Way (2.7), Hollins Lane (2.0) and Infirmary Road (2.6) out; reading the approach detectors' mean day as the section's flow drops every signalised section under the line (4 sections), the nearest junction's whole detected flow files another nine, and the own approach with the counters' 24/12 ratio, which the sections' own records refute, files 7.",
+ "stump": "The textbook expansion with the permanent counters' same-day factors files 8 sections over three million, College Road (3.3) and Grange Road (3.3) in and Brookfield Way (2.7), Hollins Lane (2.0) and Infirmary Road (2.7) out; reading the approach detectors' mean day as the section's flow drops every signalised section under the line (4 sections), the nearest junction's whole detected flow files another nine, and the own approach with the counters' 24/12 ratio, which the sections' own records refute, files 7.",
  "mechanism_source": "own: the short-count expansion of official traffic statistics, with the section's own factor recovered from an urban traffic control detector on one approach lane through the counted day",
  "differentiation": {
   "task251": "There each permanent station's counting error is read from pairs of stations on one stream; here no counter errs: a short count is taken to its year by the section's own approach detectors, which see one lane and give the year only through the day both recorded.",
@@ -143,7 +143,7 @@
    "objective": "etl"
   }
  ],
- "notes": "Architecture 4 built 2026-11-02; judge pass 1 DETERMINISTIC FIX_NOW (container hygiene, ask B approach naming) repaired with no graded figure moved; re-judge pending.",
+ "notes": "Architecture 4 built 2026-11-02; judge pass 1 FIX_NOW repaired; re-judge 2 APPROVE with two rounding edges, closed by construction (every section 0.023 or more inside its bin under every treatment); short re-judge pending.",
  "architecture_spent": false,
  "registered": "2026-11-02T01:33:54Z"
 }

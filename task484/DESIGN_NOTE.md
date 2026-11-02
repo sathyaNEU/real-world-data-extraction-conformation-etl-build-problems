@@ -79,7 +79,7 @@ append-only `## Tried and rejected` closes the note.
 - **Shock:** the six sections the step moves are ordinary: their counts (5,293 to 8,613 vehicles in 12 hours) sit
   inside the others' range on ordinary neutral weekdays, and sorted on count, length, class or the default figure
   the golden set is no interval (Hollins Lane at 5,293 and Brookfield Way at 7,058 are over while Grange Road at
-  8,613 and College Road at 8,358 are under).
+  8,613 and College Road at 8,403 are under).
 - **Pins:** the WHAT is filed in the council's own genres: the terms note (a count point stands for the whole
   section between its two junctions; annual traffic is every motor vehicle passing along it, both directions,
   on all the days of the year) and Environmental Protection's scope note (every section counted in 2025; more
@@ -97,9 +97,9 @@ append-only `## Tried and rejected` closes the note.
 4. Check the factors against expansion_factor_review_2025.xlsx: every counter inside the 10 per cent target.
 5. Annual traffic is the daily flow times 365; mark the sections over 3.0 million.
 
-Ends on: 8 sections over 3.0 million, Ashfield Road, College Road, Grange Road, Holloway Hill, Kingsway, Priory Road, Station Street and Wharf Street, with Grange Road and College Road at 3.3 over and Brookfield Way at 2.7, Hollins Lane at 2.0 and Infirmary Road at 2.6 under.
+Ends on: 8 sections over 3.0 million, Ashfield Road, College Road, Grange Road, Holloway Hill, Kingsway, Priory Road, Station Street and Wharf Street, with Grange Road and College Road at 3.3 over and Brookfield Way at 2.7, Hollins Lane at 2.0 and Infirmary Road at 2.7 under.
 
-Golden: 9 sections over 3.0 million, Ashfield Road 3.8, Brookfield Way 3.4, Hollins Lane 3.2, Holloway Hill 3.5, Infirmary Road 3.2, Kingsway 4.2, Priory Road 3.3, Station Street 3.6 and Wharf Street 4.7, with Grange Road 2.7, College Road 2.5 and Castlegate Road 2.6 under.
+Golden: 9 sections over 3.0 million, Ashfield Road 3.8, Brookfield Way 3.4, Hollins Lane 3.2, Holloway Hill 3.5, Infirmary Road 3.2, Kingsway 4.3, Priory Road 3.5, Station Street 3.7 and Wharf Street 4.7, with Grange Road 2.7, College Road 2.5 and Castlegate Road 2.6 under.
 
 ## Stump sentence
 
@@ -119,7 +119,7 @@ approach, which see one lane and so give that year only through the day the coun
 - **Layer 2:** field method: the expansion factor of a short count taken from the section's own continuous record through the day both observed, where the field's group factors assume a rhythm the section does not share.
 - **Decisive step:** recognising that a counted section is recorded through the year by the signal detectors of its own approach, and taking the section's own year from them as their mean full day over their own 07:00 to 19:00 flow on the counted day, so that their level, one lane of one direction, cancels and only the section's week and year remain.
 - **Not semantics:** every field, code, unit and definition read correctly (the counts, the counters, the settings, the terms note's annual traffic) still files the 8 sections: the error is the counters' rhythm standing in for the section's, and no field, code or unit states either.
-- **Not rule application:** no filed sentence names a method, a record, a factor or a window, so executing the terms and scope notes leaves the expansion open; the enumerated family on Brookfield Way (counter forms, the detectors' raw mean, the nearest junction's whole flow, the detectors pooled as a counter group, the own approach with the counters' 24/12 ratio, the own-approach forms) spans 1.68 to 3.65 million, the standing family (the own-approach forms on the nine detector sections, with the counters' 24/12 ratio among them where the section's own 07:00 to 19:00 share agrees with the counters', and the counter forms on the other nine) spans at most 0.07 million inside one 0.1 million bin on every section, and the ruling out is quiet: the terms note's section definition and the counted day's own detector reading.
+- **Not rule application:** no filed sentence names a method, a record, a factor or a window, so executing the terms and scope notes leaves the expansion open; the enumerated family on Brookfield Way (counter forms, the detectors' raw mean, the nearest junction's whole flow, the detectors pooled as a counter group, the own approach with the counters' 24/12 ratio, the own-approach forms) spans 1.68 to 3.65 million, the standing family (on the nine detector sections every treatment of their own approach: each lane or both, the annual mean over full days, over every recorded day or scaled by availability, against the counted day or its month-and-weekday mean, with the counters' 24/12 ratio where the section's own 07:00 to 19:00 share agrees with the counters'; the counter forms on the other nine) spans at most 0.05 million, every member 0.023 million or more inside one 0.1 million bin, and the ruling out is quiet: the terms note's section definition and the counted day's own detector reading.
 - **Analyst test:** a strong analyst who cleans the data and reads every rule expands each count with the permanent counters' same-day factors by setting, checks them against the factor review (every counter inside 10 per cent) and files 8 sections over three million: College Road and Grange Road in, Brookfield Way, Hollins Lane and Infirmary Road out.
 - **Estimand:** traffic_estimate_terms_2025.pdf files a section as the road between its two named junctions and its annual traffic as every motor vehicle passing along it, both directions together, on all the days of the calendar year; noise_mapping_2026_scope.pdf files the population (every section counted in 2025) and the line (more than three million vehicle passages).
 - **No decoy:** nothing is planted: no memo, draft or figure argues the counters' answer, the one context artifact (the factor review) answers another question correctly for counters only and recomputes from the counter export at zero tolerance, and no file carries a section's annual figure.
@@ -167,15 +167,15 @@ approach, which see one lane and so give that year only through the day the coun
 
 | Rung | Route | Sections over 3.0 million | What moves |
 |---|---|---|---|
-| R0 | counters' same-day factors by setting (the field's method) | 8 | College Road 3.3 and Grange Road 3.3 in; Brookfield Way 2.7, Hollins Lane 2.0, Infirmary Road 2.6 out |
+| R0 | counters' same-day factors by setting (the field's method) | 8 | College Road 3.3 and Grange Road 3.3 in; Brookfield Way 2.7, Hollins Lane 2.0, Infirmary Road 2.7 out |
 | R1 | counter forms T2 to T5 (mean of ratios, month-and-weekday tables, every counter pooled) | 8, the same | every form inside 0.1 million of R0 |
 | R2 | the approach detectors' mean day read as the section's flow | 4 | every detector section under (1.3 to 2.0 million: one lane of one direction) |
-| R3 | the nearest junction's whole detected flow as the section's record | 9, another nine | Castlegate Road 3.0, College Road 3.5, Grange Road 3.1 in; Brookfield Way, Hollins Lane, Infirmary Road out |
+| R3 | the nearest junction's whole detected flow as the section's record | 9, another nine | Castlegate Road 3.1, College Road 3.4, Grange Road 3.1 in; Brookfield Way, Hollins Lane, Infirmary Road out |
 | R4 | every detector pooled as one more counter group | 8 | as R0 |
-| R5 | own approach with the counters' 24/12 ratio where the section's own record refutes that ratio | 7 | Brookfield Way 3.7 in; Hollins Lane 2.7 and Infirmary Road 2.9 out (the leisure park's evenings and the hospital's shifts fall outside 07:00 to 19:00; their own shares 0.70 and 0.77 against the counters' 0.84 to 0.86) |
+| R5 | own approach with the counters' 24/12 ratio where the section's own record refutes that ratio | 7 | Brookfield Way 3.6 in; Hollins Lane 2.7 and Infirmary Road 2.9 out (the leisure park's evenings and the hospital's shifts fall outside 07:00 to 19:00; their own shares 0.70 and 0.77 against the counters' 0.84 to 0.86) |
 | Golden | own approach detectors through the counted day | 9 | Brookfield Way 3.4, Hollins Lane 3.2, Infirmary Road 3.2 in; Grange Road 2.7, College Road 2.5, Castlegate Road 2.6 under |
 
-Separation: every rung names a different set; the decisive sections move by 0.28 million or more between R0 and
+Separation: every rung names a different set; the decisive sections move by 0.23 million or more between R0 and
 the golden (BE5); on the three commuter sections with detectors (Station Street, Kingsway, Mill Lane) R0 and the
 golden make the same call (BE6) and print the same figure on two of them, so the method moves the call only where
 the section's rhythm differs. Where the counters' 24/12 ratio would move a section's figure, the section's own
@@ -256,7 +256,7 @@ the same on every lane of the arm. Stops: register mapping all year; pre-renewal
 | A | 11 counters' heavy goods vehicles a day | each counter's table switched on its installed date (the site list and the log) | miss |
 | B | 8 approaches' recorded vehicles | channels joined to the register's current approaches, pre-renewal days kept or dropped | miss |
 
-Pair ceiling: 33.0 (cracker 45.0 with no ask figure kept; mirror 20.9, sharing 11 of the 18 section figures with the golden and no ask figure).
+Pair ceiling: 31.7 (cracker 45.0 with no ask figure kept; mirror 18.4, sharing 9 of the 18 section figures with the golden and no ask figure).
 
 Mirror leakage: 0.0 per cent of the ask weight.
 
@@ -688,3 +688,13 @@ models; the stage 4 readers measure the real one.
   it comes in from, the same on every lane, and grouping by that column gives the golden's eight approaches (SF18).
   No graded figure moved; the register's commissioning dates against the log's recommissioning a day later stay as
   the systems' own mess.
+- 2026-11-02, stage 4 re-judge (zip sha256 39174925): DETERMINISTIC, APPROVE, with two rounding edges to close:
+  Station Street read 3.554 to 3.586 across the detectors' day treatments (0.004 from 3.55) and Sandy Lane 2.464
+  (0.014 above 2.45). The tuning now chooses each section's count day and level to maximise its tightest edge over
+  every treatment (each lane or both, full days, every recorded day or scaled by availability, the counted day or
+  the month-and-weekday mean, the counters' 24/12 ratio where licensed, the counter forms off the detectors, the
+  zero-filled blanks kept in the bin), under the rung sets as filed; the counted sections' stop-line loops now lose
+  minutes rather than whole days and their two lanes split steadily. Every section clears its edge by 0.023 or more,
+  asserted per section and treatment (checks BE1) with every rung's set asserted (LD). The nine sections, the rung
+  sets, the heavy goods vehicle figures and the approach totals are unchanged; five section figures moved inside
+  their side of the line (Station Street 3.7, Kingsway 4.3, Priory Road 3.5, Oakhill Road 1.8, Lower Heath Road 1.6).

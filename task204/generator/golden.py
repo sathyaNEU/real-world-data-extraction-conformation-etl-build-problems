@@ -93,7 +93,7 @@ def write_xlsx(path, res):
     ws3["A1"] = "Eastline stations, 9 February to 3 May 2026 (local time)"
     ws3["A1"].font = BOLD
     ws3.append([])
-    ws3.append(["Station", "Fare-gate entries", "Scheduled Eastline departures (both directions)"])
+    ws3.append(["Station", "Fare-gate entries", "Scheduled Eastline train calls (both directions)"])
     for c in ws3[3]:
         c.font = BOLD
         c.fill = HDR

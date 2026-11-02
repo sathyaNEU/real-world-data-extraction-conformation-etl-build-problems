@@ -129,9 +129,9 @@ def lending_terms(path):
                        "lapses by a new 40-loan licence for the title, invoiced at the current price on the following "
                        "monthly invoice.", BODY))
     s.append(Paragraph("4. Invoicing", H2))
-    s.append(Paragraph("4.1 Title licences and re-licences are invoiced monthly in arrears. Publisher packages are "
-                       "invoiced annually in advance by the publisher's appointed agent, in the agent's currency.",
-                       BODY))
+    s.append(Paragraph("4.1 Title licences and re-licences are invoiced monthly in arrears, by Shelfmark Lend or, for "
+                       "a publisher that sells through an appointed agent, by the agent in the agent's currency. "
+                       "Publisher packages are invoiced annually in advance.", BODY))
     _doc(path, "Lending and licence terms for institutional customers", "Shelfmark Lend Ltd", s)
 
 

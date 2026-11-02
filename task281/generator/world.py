@@ -89,6 +89,8 @@ PACKAGES = [
     ("Corran & Lyle Law Library 2026", "Corran & Lyle", ["LAWS", "CRIM", "POLI"]),
     ("Northfield Health Sciences Essentials 2026", "Northfield Medical", ["NURS", "AHPR", "MEDI", "DENT", "BMSC"]),
     ("Ashdown STEM Texts 2026", "Ashdown Scientific", ["ENGN", "COMP", "MATH", "PHYS", "CHEM"]),
+    ("Ellesmere Humanities and Social Sciences 2026", "Ellesmere University Press",
+     ["HIST", "ENGL", "PHIL", "MLAN", "SOCI", "PSYC"]),
 ]
 
 DISCIPLINE_WORDS = {

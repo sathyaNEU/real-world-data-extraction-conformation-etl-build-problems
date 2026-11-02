@@ -1,490 +1,342 @@
-"""The hourly truth: each offered plant's 2024 and 2025, hour by hour in local standard time (UTC-8).
+"""Services for task459's world: every medical, pharmacy and in-home support service the plan paid for in 2025.
 
-Ambient temperature by climate zone; a dispatch the plant's style and the season drive; forced, maintenance and
-planned outages and reserve shutdowns as GADS events; each monitored stack's operating time, gross load, heat input,
-CO2, NOx and SO2; the plant's net output at its revenue meter (negative while it sits idle and draws station
-service); the stacks' substitute-data episodes. Nothing here is written to the pack; pack.py does that."""
+Each service is generated from where the member actually was that day (world.Member.timeline) and from where
+the member's regular care sits (the assigned primary care practice). The events here are clean: one row per
+service with its true date, provider and amounts. pack.py adds the claim-system texture (multi-line claims,
+replacements, voids, denials, reversals, the PBM's identifiers and date layouts).
+"""
 import datetime as dt
-import math
 
 import numpy as np
 
 import world as W
 
-N = W.NHOURS
-DAYS = N // 24
+# Procedure codes and allowed amounts (Medicare-like 2025 rates, Arizona locality).
+PCP_CODES = [("99213", 92.40), ("99214", 131.20), ("99215", 183.10), ("99397", 162.00)]
+AWV = ("G0439", 133.50)
+UC_CODES = [("99213", 96.80), ("99214", 138.40), ("99203", 112.60)]
+SPEC_CODES = [("99243", 172.50), ("99244", 233.40), ("99214", 131.20), ("99215", 183.10)]
+PT_CODES = [("97110", 31.60), ("97140", 28.90), ("97530", 35.20), ("97161", 104.70)]
+LAB_PANELS = [[("80053", 11.20), ("85025", 8.10)], [("83036", 9.70)], [("80061", 13.40), ("84443", 17.60)],
+              [("82570", 6.30), ("82043", 7.40)], [("85610", 4.30)]]
+IMG_CODES = [("71046", 31.20), ("73721", 228.40), ("70553", 384.70), ("77080", 39.80), ("93306", 211.30)]
+ER_CODES = [("99284", 268.90), ("99285", 391.40)]
+TELE_CODES = [("99213", 92.40), ("99214", 131.20)]
+HOME_CODES = [("T1019", 6.85), ("S5130", 6.10), ("S5150", 5.90)]  # per 15 minutes
+
+DRUGS = [  # (ndc, name, strength, cost per 30 days)
+    ("00093505698", "ATORVASTATIN CALCIUM", "20 MG TAB", 4.10), ("68180051301", "LISINOPRIL", "10 MG TAB", 2.20),
+    ("00093104801", "METFORMIN HCL", "500 MG TAB", 2.90), ("00093317156", "AMLODIPINE BESYLATE", "5 MG TAB", 2.40),
+    ("00378180001", "LEVOTHYROXINE SODIUM", "50 MCG TAB", 6.80), ("62175011843", "OMEPRAZOLE DR", "20 MG CAP", 5.60),
+    ("68180037703", "LOSARTAN POTASSIUM", "50 MG TAB", 3.70), ("55111046705", "METOPROLOL SUCC ER", "25 MG TAB", 6.20),
+    ("00228273611", "TAMSULOSIN HCL", "0.4 MG CAP", 5.90), ("00003089321", "ELIQUIS", "5 MG TAB", 541.00),
+    ("16729002010", "DONEPEZIL HCL", "10 MG TAB", 4.60), ("00172208380", "HYDROCHLOROTHIAZIDE", "25 MG TAB", 1.90),
+    ("68382013610", "GABAPENTIN", "300 MG CAP", 5.10), ("00088221905", "LANTUS SOLOSTAR", "100 UNIT/ML", 312.00),
+    ("00006027731", "JANUVIA", "100 MG TAB", 518.00), ("00597014030", "JARDIANCE", "10 MG TAB", 566.00),
+]
+ACUTE = [("00093310901", "AMOXICILLIN", "500 MG CAP", 7.20), ("00781506131", "CIPROFLOXACIN", "500 MG TAB", 6.40),
+         ("00093085001", "PREDNISONE", "10 MG TAB", 3.10), ("59762332401", "AZITHROMYCIN", "250 MG TAB", 9.80)]
 
 
-def t_of(h):
-    return dt.datetime.combine(W.FIRST_DAY, dt.time()) + dt.timedelta(hours=int(h))
+class Svc:
+    __slots__ = ("mid", "date", "npi", "pos", "lines", "kind", "here")
+
+    def __init__(self, mid, date, npi, pos, lines, kind, here):
+        self.mid = mid
+        self.date = date
+        self.npi = npi
+        self.pos = pos
+        self.lines = lines        # [(code, units, allowed)]
+        self.kind = kind
+        self.here = here          # region where the member was that day (truth)
 
 
-def ambient(rng, zone):
-    c = W.CLIMATE[zone]
-    doy = np.array([(W.FIRST_DAY + dt.timedelta(days=d)).timetuple().tm_yday for d in range(DAYS)])
-    seas = c["mean"] + c["amp"] * np.cos(2 * math.pi * (doy - 200) / 365.25)
-    noise = np.zeros(DAYS)
-    for d in range(1, DAYS):
-        noise[d] = 0.78 * noise[d - 1] + rng.normal(0, c["sd"])
-    daily = seas + noise
-    hod = np.arange(24)
-    diurnal = c["diurnal"] * np.cos(2 * math.pi * (hod - 15) / 24)
-    T = (daily[:, None] + diurnal[None, :] + rng.normal(0, 1.2, (DAYS, 24))).reshape(-1)
-    return T
+class Fill:
+    __slots__ = ("mid", "date", "ncpdp", "ndc", "name", "strength", "days", "qty", "cost", "here")
+
+    def __init__(self, mid, date, ncpdp, ndc, name, strength, days, qty, cost, here):
+        self.mid, self.date, self.ncpdp, self.ndc, self.name = mid, date, ncpdp, ndc, name
+        self.strength, self.days, self.qty, self.cost, self.here = strength, days, qty, cost, here
 
 
-# ------------------------------------------------------------------------------------------------- dispatch
-SPRING = (3, 4, 5, 6)
+class Visit:
+    __slots__ = ("mid", "date", "start", "npi", "code", "units", "here")
+
+    def __init__(self, mid, date, start, npi, code, units, here):
+        self.mid, self.date, self.start, self.npi, self.code, self.units, self.here = mid, date, start, npi, code, units, here
 
 
-def plan(rng, p, T):
-    """desired hourly operation before outages: x[h] the unfired load as a fraction of capability (0 off) and
-    fire[h] the duct firing MW"""
-    style = p["disp"]
-    x = np.zeros(N)
-    fire = np.zeros(N)
-    on_day_prob = {1: .78, 2: .62, 3: .32, 4: .14, 5: .2, 6: .46, 7: .86, 8: .88, 9: .62, 10: .5, 11: .62, 12: .78}
-    week_prob = {1: .86, 2: .82, 3: .55, 4: .18, 5: .22, 6: .6, 7: .9, 8: .92, 9: .74, 10: .62, 11: .8, 12: .86}
-    week_on = {}
-    prev_day_on = False
-    prev_stop_h = -1
-    for d in range(DAYS):
-        date = W.FIRST_DAY + dt.timedelta(days=d)
-        m, wd = date.month, date.weekday()
-        base = d * 24
-        if style == "base":
-            spring_weekend_off = (m in (4, 5) and wd >= 5 and ((date - W.FIRST_DAY).days // 7 + p["code"]) % 3 == 0)
-            for hh in range(24):
-                if spring_weekend_off:
-                    continue
-                night = hh < 6 or hh >= 23
-                if night:
-                    v = rng.uniform(0.76, 0.9) if m in SPRING else rng.uniform(0.88, 0.97)
-                else:
-                    v = rng.uniform(0.95, 1.0) if not (m in SPRING and 10 <= hh <= 15) else rng.uniform(0.84, 0.97)
-                x[base + hh] = v
-        elif style in ("cycle_daily", "cycle_seasonal", "mid"):
-            if style == "cycle_seasonal":
-                inseason = (date >= dt.date(date.year, 6, 12) and date <= dt.date(date.year, 9, 22)) or \
-                    (date >= dt.date(date.year, 11, 8)) or (date <= dt.date(date.year, 2, 26))
-                prob = (0.82 if wd < 5 else 0.3) if inseason else 0.0
-            elif style == "mid":
-                prob = None if m in (12, 1, 2, 7, 8, 9) else (0.74 if wd < 5 else 0.3)
-            else:
-                prob = on_day_prob[m] * (1.0 if wd < 5 else 0.42)
-            if prob is None:              # mid in its base months
-                for hh in range(24):
-                    night = hh < 6 or hh >= 23
-                    x[base + hh] = rng.uniform(0.62, 0.8) if night else rng.uniform(0.9, 1.0)
-                prev_day_on = True
-                continue
-            on = rng.random() < prob
-            if on:
-                start = 5 if rng.random() < 0.5 else 6
-                stop = 22 if rng.random() < 0.55 else 23
-                overnight = prev_day_on and prev_stop_h >= 0 and m in (1, 7, 8, 12) and rng.random() < 0.35
-                if overnight:              # stayed on through the night at minimum load
-                    for h in range(prev_stop_h, base + start):
-                        x[h] = rng.uniform(0.48, 0.53)
-                for hh in range(start, stop):
-                    if hh < start + 3:
-                        v = rng.uniform(0.48, 0.62)
-                    elif hh < 15:
-                        v = rng.uniform(0.55, 0.8) if m not in (7, 8) else rng.uniform(0.7, 0.95)
-                    elif hh < 21:
-                        v = rng.uniform(0.72, 1.0)
-                    else:
-                        v = rng.uniform(0.48, 0.6)
-                    x[base + hh] = v
-                prev_stop_h = base + stop
-            prev_day_on = on
-        elif style == "cycle_weekly":
-            wk = (date - W.FIRST_DAY).days // 7
-            if wk not in week_on:
-                week_on[wk] = rng.random() < week_prob[m]
-            if not week_on[wk]:
-                continue
-            for hh in range(24):
-                if wd == 0 and hh < 4:
-                    continue
-                if wd == 5 and hh >= 1:
-                    continue
-                if wd == 6:
-                    continue
-                night = hh < 6 or hh >= 23
-                x[base + hh] = rng.uniform(0.55, 0.63) if night else rng.uniform(0.8, 1.0)
-    # output follows load from hour to hour: a five-hour average inside each run (three hours near its ends)
-    on = x > 0
-    xs = x.copy()
-    for h in range(N):
-        if not on[h]:
+def spans(tl):
+    out = []
+    s = 0
+    for i in range(1, len(tl) + 1):
+        if i == len(tl) or tl[i] != tl[s]:
+            out.append((s, i - 1, int(tl[s])))
+            s = i
+    return out
+
+
+def pcp_on(m, d):
+    p = m.pcp_hist[0][1]
+    for when, npi in sorted(m.pcp_hist):
+        if when <= d:
+            p = npi
+    return p
+
+
+def simulate(wd):
+    provs, byr, lab = wd["provs"], wd["by_region"], wd["lab"]
+    ph_byr, mail, spec = wd["ph_by_region"], wd["mail"], wd["spec"]
+    rng = W.stream("services")
+    rng_rx = W.stream("pharmacy_fills")
+    rng_hv = W.stream("home_visits")
+    svcs, fills, visits = [], [], []
+
+    def pick(lst, local_seed=None):
+        return lst[int(rng.integers(0, len(lst)))]
+
+    def add_svc(m, d_idx, kind, region_code, npi=None):
+        d = W.day(d_idx)
+        here = W.REGION_CODES[int(m.timeline[d_idx])] if 0 <= d_idx < W.NDAYS else None
+        if kind == "pcp":
+            if npi is None:
+                npi = pcp_on(m, d)
+            code = PCP_CODES[int(rng.choice(4, p=[0.38, 0.47, 0.12, 0.03]))]
+            lines = [(code[0], 1, code[1])]
+            pos = "11"
+        elif kind == "awv":
+            npi = npi or pcp_on(m, d)
+            lines = [(AWV[0], 1, AWV[1])]
+            pos = "11"
+        elif kind == "uc":
+            p = pick(byr[region_code]["uc"])
+            npi = p.npi
+            code = UC_CODES[int(rng.choice(3, p=[0.5, 0.35, 0.15]))]
+            lines = [(code[0], 1, code[1])]
+            pos = "20"
+        elif kind == "dpcp":  # a primary care visit away from the assigned practice
+            p = pick(byr[region_code]["pcp"])
+            npi = p.npi
+            code = PCP_CODES[int(rng.choice(3, p=[0.5, 0.4, 0.1]))]
+            lines = [(code[0], 1, code[1])]
+            pos = "11"
+        elif kind == "spec":
+            p = npi and provs[npi] or pick(byr[region_code]["spec"])
+            npi = p.npi
+            code = SPEC_CODES[int(rng.choice(4, p=[0.3, 0.2, 0.35, 0.15]))]
+            lines = [(code[0], 1, code[1])]
+            pos = "11" if rng.random() < 0.8 else "22"
+        elif kind == "pt":
+            npi = npi or pick(byr[region_code]["pt"]).npi
+            lines = []
+            for c in PT_CODES[:3]:
+                if rng.random() < 0.75:
+                    lines.append((c[0], int(rng.integers(1, 4)), c[1]))
+            if not lines:
+                lines = [(PT_CODES[0][0], 2, PT_CODES[0][1])]
+            pos = "11"
+        elif kind == "lab_ref":
+            npi = lab.npi
+            panel = LAB_PANELS[int(rng.integers(0, len(LAB_PANELS)))]
+            lines = [(c, 1, a) for c, a in panel]
+            pos = "81"
+        elif kind == "lab_hosp":
+            p = pick(byr[region_code]["hosp"])
+            npi = p.npi
+            panel = LAB_PANELS[int(rng.integers(0, len(LAB_PANELS)))]
+            lines = [(c, 1, round(a * 1.6, 2)) for c, a in panel]
+            pos = "22"
+        elif kind == "img":
+            p = pick(byr[region_code]["img"])
+            npi = p.npi
+            code = IMG_CODES[int(rng.integers(0, len(IMG_CODES)))]
+            lines = [(code[0], 1, code[1])]
+            pos = "24" if rng.random() < 0.6 else "22"
+        elif kind == "er":
+            p = pick(byr[region_code]["hosp"])
+            npi = p.npi
+            code = ER_CODES[int(rng.choice(2, p=[0.7, 0.3]))]
+            lines = [(code[0], 1, code[1])]
+            pos = "23"
+        elif kind == "tele":
+            npi = pcp_on(m, d)
+            code = TELE_CODES[int(rng.choice(2, p=[0.6, 0.4]))]
+            lines = [(code[0], 1, code[1])]
+            pos = "10"
+        else:
+            raise ValueError(kind)
+        svcs.append(Svc(m.mid, d, npi, pos, lines, kind, here))
+
+    def poisson_days(lo, hi, mean_gap, offset_rng=rng):
+        out = []
+        t = lo + float(offset_rng.exponential(mean_gap)) * 0.6
+        while t <= hi:
+            out.append(int(t))
+            t += max(4.0, float(offset_rng.exponential(mean_gap)))
+        return out
+
+    def enrolled_days(m):
+        s, e = m.enroll[0]
+        lo = max(0, W.doy(s)) if s > W.YEAR_START else 0
+        hi = W.NDAYS - 1
+        if e is not None and e < W.YEAR_END:
+            hi = W.doy(e)
+        if m.dod is not None:
+            hi = min(hi, W.doy(m.dod))
+        return lo, hi
+
+    for m in wd["members"]:
+        lo, hi = enrolled_days(m)
+        if hi < lo:
             continue
-        for k in (2, 1):
-            if h - k >= 0 and h + k < N and on[h - k:h + k + 1].all():
-                xs[h] = x[h - k:h + k + 1].mean()
-                break
-    x = xs
-    # duct firing over the heavy-load hours of a hot or a cold day, at one level for the day
-    if p["db"] > 0:
-        for d in range(DAYS):
-            base = d * 24
-            tmax = T[base + 12:base + 20].max()
-            tmin = T[base + 6:base + 22].min()
-            if tmax > 86 and rng.random() < 0.8:
-                hrs, level = range(10, 22), p["db"] * rng.uniform(0.55, 1.0)
-            elif tmin < 22 and rng.random() < 0.65:
-                hrs, level = range(6, 22), p["db"] * rng.uniform(0.4, 0.9)
+        young = m.kind == "young"
+        sp = [(a, b, r) for a, b, r in spans(m.timeline) if b >= lo and a <= hi]
+        sp = [(max(a, lo), min(b, hi), r) for a, b, r in sp]
+        pt_series = rng.random() < (0.28 if not young else 0.14)
+        pt_done = False
+        for (a, b, ridx) in sp:
+            rc = W.REGION_CODES[ridx]
+            d_mid = W.day((a + b) // 2)
+            care_region = provs[pcp_on(m, d_mid)].region
+            home_care = rc == care_region
+            length = b - a + 1
+            if home_care:
+                # Regular care: the assigned practice, specialists, therapy, laboratory and imaging.
+                pcp_gap = 52 if not young else 85
+                if m.kind == "long":
+                    pcp_gap = 30
+                for t in poisson_days(a, b, pcp_gap):
+                    if rng.random() < (0.12 if m.kind not in ("long",) else 0.0) and m.kind != "short":
+                        add_svc(m, t, "tele", rc)
+                    else:
+                        add_svc(m, t, "pcp", rc)
+                if rng.random() < 0.55 and length > 60:
+                    add_svc(m, a + int(rng.integers(5, max(6, length - 5))), "awv", rc)
+                spec_gap = 95 if not young else 160
+                if m.kind == "long":
+                    spec_gap = 40
+                for t in poisson_days(a, b, spec_gap):
+                    add_svc(m, t, "spec", rc)
+                lab_gap = 100 if not young else 170
+                if m.kind == "long":
+                    lab_gap = 45
+                for t in poisson_days(a, b, lab_gap):
+                    add_svc(m, t, "lab_hosp", rc)
+                if pt_series and not pt_done and length > 50:
+                    start = a + int(rng.integers(3, max(4, length - 45)))
+                    pnpi = pick(byr[rc]["pt"]).npi
+                    for k in range(int(rng.integers(6, 11))):
+                        tt = start + k * int(rng.integers(3, 6))
+                        if tt <= b:
+                            add_svc(m, tt, "pt", rc, pnpi)
+                    pt_done = True
+                if rng.random() < (0.22 if m.kind == "long" else 0.12) * min(1.0, length / 120):
+                    add_svc(m, a + int(rng.integers(0, length)), "img", rc)
+                # High-country stayers see a specialist in the Valley or Tucson now and then: a day's drive.
+                if rc in W.HIGH and m.kind in ("stay", "young") and rng.random() < 0.22:
+                    tert = "MAR" if rng.random() < 0.75 else "SAZ"
+                    for _ in range(int(rng.integers(1, 3))):
+                        add_svc(m, a + int(rng.integers(0, length)), "spec", tert)
             else:
-                continue
-            for hh in hrs:
-                if x[base + hh] >= 0.8:
-                    x[base + hh] = 1.0
-                    fire[base + hh] = level * rng.uniform(0.97, 1.0)
-    return x, fire
+                # Away from the regular practice: urgent care, a local practice now and then, the odd test.
+                uc_gap = 75 if m.kind == "long" else 95
+                for t in poisson_days(a, b, uc_gap):
+                    add_svc(m, t, "uc" if rng.random() < 0.6 else "dpcp", rc)
+                if rng.random() < 0.5 * min(1.0, length / 120):
+                    add_svc(m, a + int(rng.integers(0, length)), "lab_hosp", rc)
+            # Independent reference laboratory work, billed from Phoenix wherever the specimen was drawn.
+            for t in poisson_days(a, b, 140 if not young else 220):
+                add_svc(m, t, "lab_ref", rc)
+            if rng.random() < 0.035 * length / 365:
+                add_svc(m, a + int(rng.integers(0, length)), "er", rc)
 
+        # Members who live part of the year away see someone on each side of every move: a visit or test in
+        # the days before they leave and in the days after they arrive.
+        if m.kind in ("long", "short", "summer", "early_mover", "late_mover") or (m.kind == "young" and m.notes):
+            for i in range(1, len(sp)):
+                prev_b = sp[i - 1][1]
+                nxt_a = sp[i][0]
+                prc = W.REGION_CODES[sp[i - 1][2]]
+                nrc = W.REGION_CODES[sp[i][2]]
+                tb = prev_b - int(rng.integers(3, 16))
+                ta = nxt_a + int(rng.integers(3, 16))
+                if tb >= lo:
+                    care = provs[pcp_on(m, W.day(tb))].region
+                    add_svc(m, tb, "pcp" if prc == care else ("uc" if rng.random() < 0.5 else "lab_hosp"), prc)
+                if ta <= hi:
+                    care = provs[pcp_on(m, W.day(ta))].region
+                    add_svc(m, ta, "pcp" if nrc == care else ("uc" if rng.random() < 0.55 else "dpcp"), nrc)
 
-# ------------------------------------------------------------------------------------------------- outages
-FORCED = ("U1", "U2", "U3", "SF")
-
-
-def outage_events(rng, p, x=None):
-    """forced, maintenance and planned events (truth), minute precision, local standard time. Each: dict(units,
-    type, start, end, scope) where scope is 'plant', 'ct' (one combustion turbine) or 'st' (the steam turbine)"""
-    units = W.gads_units(p["key"])
-    ev = []
-    t0 = dt.datetime.combine(W.FIRST_DAY, dt.time())
-    t1 = dt.datetime.combine(W.LAST_DAY, dt.time()) + dt.timedelta(days=1)
-    # planned outage each spring (combined cycles take theirs in the hydro season)
-    for yr in (2024, 2025):
-        s = dt.datetime(yr, 4, 1) + dt.timedelta(days=int(rng.integers(0, 40)), hours=int(rng.integers(0, 24)))
-        dur = dt.timedelta(days=int(rng.integers(9, 22)), hours=int(rng.integers(0, 24)), minutes=int(rng.integers(0, 60)))
-        ev.append(dict(units=list(units), type="PO", start=s, end=s + dur, scope="plant"))
-    # forced events, a few a year
-    lam = 6.5 if p["disp"] != "base" else 5.5
-    for yr in (2024, 2025):
-        k = int(rng.poisson(lam))
-        for _ in range(k):
-            s = dt.datetime(yr, 1, 1) + dt.timedelta(minutes=int(rng.integers(0, 365 * 24 * 60)))
-            hours = float(np.clip(rng.lognormal(math.log(11), 1.0), 1.2, 140))
-            e = s + dt.timedelta(minutes=int(round(hours * 60)))
-            typ = rng.choice(["U1", "U1", "U1", "U2", "U3", "SF"] if p["disp"] != "base" else ["U1", "U1", "U1", "U2", "U3"])
-            if typ == "SF" and x is not None:
-                # a start-up failure: at one of the year's planned starts, delaying it
-                lo = (dt.datetime(yr, 1, 1) - t0).days * 24
-                want = x[lo:lo + 8760] > 0
-                starts = np.nonzero(want[1:] & ~want[:-1])[0] + 1
-                if len(starts):
-                    hs = lo + int(starts[int(rng.integers(0, len(starts)))])
-                    s = t0 + dt.timedelta(hours=hs, minutes=int(rng.integers(5, 50)))
-                hours = float(rng.uniform(1.5, 9))
-                e = s + dt.timedelta(minutes=int(round(hours * 60)))
-            if p["config"] == "1x1ss":
-                scope = "plant"
-            else:
-                r = rng.random()
-                if p["config"] == "2x1":
-                    scope = "plant" if r < 0.4 else ("ct" if r < 0.78 else "st")
+        # Pharmacy: maintenance drugs refilled at a local pharmacy, or by mail; long-stayers take a 90-day supply
+        # with them in the autumn and fill by mail in the desert.
+        nmeds = int(rng_rx.choice([0, 1, 2, 3, 4, 5], p=[0.08, 0.16, 0.24, 0.24, 0.17, 0.11])) if not young else \
+            int(rng_rx.choice([0, 1, 2, 3], p=[0.25, 0.35, 0.25, 0.15]))
+        meds = [DRUGS[int(i)] for i in rng_rx.choice(len(DRUGS), size=nmeds, replace=False)] if nmeds else []
+        home_ph = {}
+        for r in W.REGION_CODES:
+            lst = ph_byr[r]
+            home_ph[r] = lst[int(rng_rx.integers(0, len(lst)))]
+        mail_ph = mail[int(rng_rx.integers(0, len(mail)))]
+        for med in meds:
+            supply90 = rng_rx.random() < 0.55
+            t = lo + int(rng_rx.integers(0, 30))
+            while t <= hi:
+                r_here = W.REGION_CODES[int(m.timeline[t])]
+                care = provs[pcp_on(m, W.day(t))].region
+                away = r_here != care
+                if m.mail_order and (m.kind != "long" or away):
+                    ph, days = mail_ph, 90
+                elif m.kind == "long" and away:
+                    ph, days = mail_ph, 90
                 else:
-                    scope = "plant" if r < 0.45 else ("ct" if r < 0.72 else "st")
-            if scope == "plant":
-                us = list(units)
-            elif scope == "ct":
-                cts = [u for u in units if u.startswith("CT")]
-                us = [cts[int(rng.integers(0, len(cts)))]]
-            else:
-                us = ["ST1"]
-            ev.append(dict(units=us, type=str(typ), start=s, end=e, scope=scope))
-    # a maintenance outage or two
-    for yr in (2024, 2025):
-        if rng.random() < 0.7:
-            s = dt.datetime(yr, int(rng.choice([3, 9, 10, 11])), int(rng.integers(1, 26)), int(rng.integers(0, 24)))
-            e = s + dt.timedelta(hours=int(rng.integers(20, 70)))
-            ev.append(dict(units=list(units), type="MO", start=s, end=e, scope="plant"))
-    # every plant has a few forced events in 2025, and where a single unit's loss leaves the plant running (one
-    # turbine of a 2x1, the steam turbine where the turbines can bypass their steam generators) at least one of those
-    y0, y1 = dt.datetime(2025, 1, 1), dt.datetime(2026, 1, 1)
-    def add(scope, typ="U1", lo=y0, span=364):
-        s = lo + dt.timedelta(minutes=int(rng.integers(0, span * 24 * 60)))
-        hours = float(np.clip(rng.lognormal(math.log(14), 0.7), 3.0, 90))
-        if scope == "plant":
-            us = list(units)
-        elif scope == "ct":
-            cts = [u for u in units if u.startswith("CT")]
-            us = [cts[int(rng.integers(0, len(cts)))]]
-        else:
-            us = ["ST1"]
-        ev.append(dict(units=us, type=typ, start=s, end=s + dt.timedelta(minutes=int(round(hours * 60))), scope=scope))
-    single = "ct" if p["config"] == "2x1" else ("st" if p["config"] == "1x1" and p["bypass"] == "Y" else None)
-    if single and not any(e["scope"] == single and e["type"] in FORCED and y0 <= e["start"] < y1 for e in ev):
-        add(single)
-    while sum(1 for e in ev if e["type"] in FORCED and y0 <= e["start"] < y1 and e["scope"] == "plant") < 2:
-        add("plant")
-    for key, (a, b) in W.BOUNDARY.items():
-        if key == p["key"]:
-            ev.append(dict(units=list(units), type="U1", start=a, end=b, scope="plant"))
-    ev = [e for e in ev if e["start"] < t1 and e["end"] > t0]
-    ev.sort(key=lambda e: (e["start"], e["type"] not in FORCED))
-    # no two events on the same unit overlap (the later one starts after the earlier ends)
-    out = []
-    keep = [e for e in ev if (e["start"], e["end"]) in W.BOUNDARY.values()]
-    for e in keep + [e for e in ev if e not in keep]:
-        clash = any(set(e["units"]) & set(o["units"]) and e["start"] < o["end"] + dt.timedelta(hours=2)
-                    and o["start"] < e["end"] + dt.timedelta(hours=2) for o in out)
-        if not clash:
-            out.append(e)
-    out.sort(key=lambda e: e["start"])
-    return out
+                    ph = home_ph[r_here]
+                    days = 90 if supply90 else 30
+                    if m.kind == "long" and not away:
+                        days = 30
+                        # the autumn supply to take south
+                        nxt_away = [k for k in range(t + 1, min(hi, t + 30) + 1) if W.REGION_CODES[int(m.timeline[k])] != care]
+                        if nxt_away:
+                            days = 90
+                qty = days * (2 if med[1] in ("METFORMIN HCL", "GABAPENTIN") else 1)
+                if med[1] in ("LANTUS SOLOSTAR",):
+                    qty = 15 if days >= 90 else 5
+                cost = round(med[3] * days / 30.0 * (1 + float(rng_rx.normal(0, 0.03))), 2)
+                fills.append(Fill(m.mid, W.day(t), ph.ncpdp, med[0], med[1], med[2], days, qty, cost, r_here))
+                t += days - int(rng_rx.integers(0, 6))
+        # Acute fills at a local pharmacy, wherever the member is.
+        for t in poisson_days(lo, hi, 210 if not young else 300, rng_rx):
+            r_here = W.REGION_CODES[int(m.timeline[t])]
+            med = ACUTE[int(rng_rx.integers(0, len(ACUTE)))]
+            fills.append(Fill(m.mid, W.day(t), home_ph[r_here].ncpdp, med[0], med[1], med[2], 10, 20,
+                              round(med[3] * (1 + float(rng_rx.normal(0, 0.05))), 2), r_here))
 
-
-def mode_by_hour(p, events):
-    """per hour: the share of the hour each configuration held. mode codes: 'full', 'half' (one turbine of a 2x1 out),
-    'sc' (steam turbine out, turbines on bypass), 'out'"""
-    t0 = dt.datetime.combine(W.FIRST_DAY, dt.time())
-    unit_out = {u: np.zeros(N) for u in W.gads_units(p["key"])}      # fraction of each hour the unit is out
-    for e in events:
-        a = (e["start"] - t0).total_seconds() / 3600.0
-        b = (e["end"] - t0).total_seconds() / 3600.0
-        a, b = max(a, 0.0), min(b, float(N))
-        for u in e["units"]:
-            h = int(math.floor(a))
-            while h < b and h < N:
-                lo, hi = max(a, h), min(b, h + 1)
-                unit_out[u][h] = max(unit_out[u][h], hi - lo)
-                h += 1
-    return unit_out
-
-
-def plant_state(p, unit_out):
-    """the plant's configuration each hour from its units' availability, and the share of the hour available"""
-    cfg = p["config"]
-    full_out = np.zeros(N)
-    mode = np.array(["full"] * N, dtype=object)
-    if cfg == "1x1ss":
-        full_out = unit_out["CS1"]
-    elif cfg == "1x1":
-        ct, st = unit_out["CT1"], unit_out["ST1"]
-        st_kill = st if p["bypass"] == "N" else np.zeros(N)
-        full_out = np.maximum(ct, st_kill)
-        if p["bypass"] == "Y":
-            mode[(st > 0.5) & (ct < 0.5)] = "sc"
-    else:
-        c1, c2, st = unit_out["CT1"], unit_out["CT2"], unit_out["ST1"]
-        both = np.minimum(c1, c2)
-        st_kill = st if p["bypass"] == "N" else np.zeros(N)
-        full_out = np.maximum(both, st_kill)
-        mode[((c1 > 0.5) ^ (c2 > 0.5)) & (full_out < 0.5)] = "half"
-        if p["bypass"] == "Y":
-            mode[(st > 0.5) & (full_out < 0.5)] = "sc"
-    mode[full_out >= 0.999] = "out"
-    return full_out, mode
-
-
-# ------------------------------------------------------------------------------------------------- physics
-def hr_unfired(p, x, t):
-    return p["hr"] * (1.0 + 0.00045 * np.abs(t - 59.0)) * (1.0 + p["pl"] * np.clip(1.0 - x, 0.0, None) ** 1.7)
-
-
-def plant_out_forced(p, events):
-    """the intervals the whole plant was out on a forced event: every combustion turbine (or the single-shaft unit)
-    out, a steam turbine trip taking the turbines with it where they cannot bypass their steam generators"""
-    def kills(e):
-        if e["type"] not in FORCED:
-            return False
-        if e["scope"] == "plant" or p["config"] == "1x1ss":
-            return True
-        if e["scope"] == "ct":
-            return p["config"] == "1x1"
-        return p["bypass"] == "N"
-    iv = sorted((e["start"], e["end"]) for e in events if kills(e))
-    if p["config"] == "2x1":
-        cts = {}
-        for e in events:
-            if e["type"] in FORCED and e["scope"] == "ct":
-                cts.setdefault(e["units"][0], []).append((e["start"], e["end"]))
-        a, b = cts.get("CT1", []), cts.get("CT2", [])
-        for s1, e1 in a:
-            for s2, e2 in b:
-                lo, hi = max(s1, s2), min(e1, e2)
-                if lo < hi:
-                    iv.append((lo, hi))
-        iv.sort()
-    out = []
-    for a, b in iv:
-        if out and a <= out[-1][1]:
-            out[-1][1] = max(out[-1][1], b)
-        else:
-            out.append([a, b])
-    return out
-
-
-def forced_hours_2025(p, events):
-    y0, y1 = dt.datetime(2025, 1, 1), dt.datetime(2026, 1, 1)
-    tot = 0.0
-    for a, b in plant_out_forced(p, events):
-        lo, hi = max(a, y0), min(b, y1)
-        if lo < hi:
-            tot += (hi - lo).total_seconds() / 3600.0
-    return tot
-
-
-def nudge_forced(p, events, used=()):
-    """keep the plant's 2025 forced outage hours off a rounding edge, off a round number and off another plant's
-    count: the longest 2025 plant outage ends a few minutes later until they are"""
-    y0, y1 = dt.datetime(2025, 1, 1), dt.datetime(2026, 1, 1)
-    for _ in range(80):
-        fo = forced_hours_2025(p, events)
-        frac = fo - math.floor(fo)
-        if abs(frac - 0.5) >= 0.15 and abs(fo - round(fo, -1)) >= 0.3 and int(round(fo)) not in used:
-            return
-        cands = [e for e in events if e["type"] in FORCED and e["scope"] == "plant" and y0 <= e["start"] and e["end"] < y1]
-        e = max(cands, key=lambda e: e["end"] - e["start"])
-        e["end"] = e["end"] + dt.timedelta(minutes=7)
-
-
-def run_plant(rng, p, T, used=()):
-    key = p["key"]
-    x, fire = plan(rng, p, T)
-    events = outage_events(rng, p, x)
-    nudge_forced(p, events, used)
-    unit_out = mode_by_hour(p, events)
-    full_out, mode = plant_state(p, unit_out)
-    avail = 1.0 - full_out                        # share of the hour the plant could run
-    want = x > 0
-    op = np.where(want, avail, 0.0)               # operating time (plant level)
-    op[mode == "out"] = 0.0
-    on = op > 0.001
-    prev_on = np.concatenate([[False], on[:-1]])
-    next_on = np.concatenate([on[1:], [False]])
-    start = on & ~prev_on
-    stop = on & ~next_on
-    # hours off before each start, for the start's temperature (hot, warm, cold)
-    off_run = np.zeros(N)
-    c = 999.0
-    for h in range(N):
-        off_run[h] = c
-        c = 0.0 if on[h] else c + 1.0
-    cap = np.array([W.cap_unfired(p["pmax"], t) for t in T])
-    xs = x.copy()
-    xs[start] = rng.uniform(0.34, 0.46, start.sum())
-    xs[stop & ~start] = np.minimum(xs[stop & ~start], rng.uniform(0.36, 0.52, (stop & ~start).sum()))
-    after = np.concatenate([[False], start[:-1]]) & on
-    xs[after] = np.maximum(np.minimum(xs[after], rng.uniform(0.6, 0.76, after.sum())), 0.6)
-    fire = np.where(start | stop | after, 0.0, fire)
-    # partial operating time at a start or a stop
-    u = op.copy()
-    u[start] = np.minimum(u[start], rng.uniform(0.35, 0.82, start.sum()))
-    u[stop & ~start] = np.minimum(u[stop & ~start], rng.uniform(0.3, 0.75, (stop & ~start).sum()))
-    # configuration
-    modecap = np.where(mode == "half", 0.5, np.where(mode == "sc", 0.66, 1.0))
-    xs = np.where(mode == "full", xs, np.minimum(xs, 0.97))
-    fire = np.where(mode == "full", fire, 0.0)
-    Pun = xs * cap * modecap                        # gross MW unfired, average over operating time
-    Ptot = Pun + fire
-    hr = hr_unfired(p, xs, T)
-    hr = np.where(mode == "sc", hr * 1.45, np.where(mode == "half", hr * 1.03, hr))
-    hr = np.where(after, hr * 1.06, hr)
-    hi_rate = (Pun * hr + fire * p["dbhr"]) / 1000.0     # mmBtu per hour of operation
-    hi = hi_rate * u
-    sfac = np.where(off_run > 48, 4.6, np.where(off_run > 10, 3.4, 2.4)) * p.get("sf", 1.0)
-    hi = hi + np.where(start, sfac * p["pmax"], 0.0)
-    hi = np.where(on, hi * rng.normal(1.0, 0.004, N), 0.0)
-    gross_mwh = np.where(on, Ptot * u, 0.0)
-    aux_on = p["f0"] * p["pmax"] * modecap * u + p["f1"] * gross_mwh
-    ss = 0.0022 * p["pmax"] * (1.0 - u) * rng.uniform(0.85, 1.15, N)
-    net = np.where(on, gross_mwh - aux_on - ss, -0.0022 * p["pmax"] * rng.uniform(0.8, 1.2, N))
-    co2 = hi * W.CO2_PER_MMBTU
-    return dict(key=key, x=x, xs=xs, fire=fire, op=u, on=on, start=start, stop=stop, after=after, mode=mode,
-                cap=cap, Ptot=np.where(on, Ptot, 0.0), hi=hi, co2=co2, net=net, gross_mwh=gross_mwh,
-                events=events, unit_out=unit_out, full_out=full_out, T=T)
-
-
-def commitment_truth(p, T):
-    """the plant held at its contract capacity in every hour of the 2024 and 2025 weather (no starts, no outages):
-    pounds of CO2 per net MWh"""
-    offer = offer_mw(p)
-    g = (offer + p["f0"] * p["pmax"]) / (1.0 - p["f1"])
-    cap = np.array([W.cap_unfired(p["pmax"], t) for t in T])
-    un = np.minimum(g, cap)
-    fired = np.clip(g - cap, 0.0, None)
-    hi = (un * hr_unfired(p, un / cap, T) + fired * p["dbhr"]) / 1000.0
-    return hi.sum() * W.CO2_PER_MMBTU * 2000.0 / (offer * len(T))
-
-
-def offer_mw(p):
-    """the contract capacity each seller offered: net MW at the 100 F design day, unfired or with the duct burners
-    at full, rounded down to 5 MW"""
-    cap = W.cap_unfired(p["pmax"], W.DESIGN_T)
-    g = cap + (p["db"] if p["offer"] == "fired" else 0.0)
-    net = g * (1.0 - p["f1"]) - p["f0"] * p["pmax"]
-    return float(int(net // 5) * 5)
-
-
-def substitute_episodes(rng, p, stacks, on):
-    """heat input substitute-data episodes per stack (a fuel flowmeter out of service or failing its quality
-    assurance, a data acquisition outage) and NOx monitor substitute episodes; each a list of (first hour, hours). A
-    data acquisition outage at a two-turbine plant takes both stacks' records at once."""
-    def when(lo, need_on=True):
-        for _try in range(600):
-            h = lo + int(rng.integers(0, 8760 - 60))
-            if not need_on or on[h]:
-                return h
-        return h
-    hi_ep, nox_ep = {}, {}
-    for s in stacks:
-        eps = []
-        for yr, lo in ((2024, 0), (2025, W.H2025)):
-            for _ in range(1 + int(rng.integers(0, 3))):
-                eps.append((when(lo), int(rng.integers(3, 38))))
-        hi_ep[s] = eps
-        eps = []
-        for yr, lo in ((2024, 0), (2025, W.H2025)):
-            for _ in range(2 + int(rng.integers(0, 4))):
-                eps.append((when(lo, need_on=(yr == 2025)), int(rng.integers(2, 30))))
-        nox_ep[s] = eps
-    if len(stacks) == 2:
-        for lo in (0, W.H2025):
-            h, n = when(lo), int(rng.integers(8, 30))
-            for s in stacks:
-                hi_ep[s].append((h, n))
-                nox_ep[s].append((h, n))
-    return hi_ep, nox_ep
-
-
-def simulate(seed=W.SEED):
-    rng = np.random.default_rng(seed)
-    T = {z: ambient(rng, z) for z in ("east", "west")}
-    out = {}
-    used = set()
-    for p in W.PLANTS:
-        r = run_plant(rng, p, T[p["zone"]], used)
-        used.add(int(round(forced_hours_2025(p, r["events"]))))
-        r["truth_commit"] = commitment_truth(p, T[p["zone"]])
-        r["offer"] = offer_mw(p)
-        stacks_all = W.stacks(p["key"])
-        r["hi_sub"], r["nox_sub"] = substitute_episodes(rng, p, stacks_all, r["on"])
-        out[p["key"]] = r
-    # no two plants share a count of 2025 substitute-data hours: a later plant's first 2025 episode runs an hour longer
-    seen = set()
-    for p in W.PLANTS:
-        r = out[p["key"]]
-        for _ in range(30):
-            n = substitute_hours_2025(r)
-            if n not in seen and n % 10:
-                break
-            s0 = W.stacks(p["key"])[0]
-            eps = r["hi_sub"][s0]
-            i = next(i for i, (h, k) in enumerate(eps) if h >= W.H2025)
-            eps[i] = (eps[i][0], eps[i][1] + 1)
-        seen.add(substitute_hours_2025(r))
-    return dict(T=T, plants=out, rng_state=rng.bit_generator.state["state"]["state"])
-
-
-def substitute_hours_2025(r):
-    """plant hours in 2025 in which an operating stack's heat input came from substitute data (stack operation
-    as pack.stack_series reads it)"""
-    import pack as P
-    st = P.stack_series(dict(plants={r["key"]: r}), r["key"])
-    sel = np.zeros(N, bool)
-    for d in st.values():
-        sel |= d["hi_sub"]
-    return int(sel[W.H2025:].sum())
+    # In-home support: a share of members receive regular visits from the agency serving the region they are in.
+    for m in wd["members"]:
+        lo, hi = enrolled_days(m)
+        if hi < lo:
+            continue
+        p_recv = 0.055 if m.kind not in ("young",) else 0.035
+        if rng_hv.random() >= p_recv:
+            continue
+        per_week = int(rng_hv.choice([1, 2, 3], p=[0.55, 0.32, 0.13]))
+        twice_daily = rng_hv.random() < 0.08
+        first = lo + int(rng_hv.integers(0, 120))
+        last = hi - int(rng_hv.integers(0, 60))
+        for wk in range(first, last, 7):
+            for k in range(per_week):
+                t = wk + int(rng_hv.integers(0, 7))
+                if t > hi or t < lo:
+                    continue
+                rc = W.REGION_CODES[int(m.timeline[t])]
+                if rc != m.home and m.kind not in ("early_mover", "late_mover") and not (m.kind == "young" and m.notes):
+                    continue  # agencies visit at the address they serve
+                ag = byr[rc]["home"]
+                npi = ag[0].npi if rng_hv.random() < 0.7 else ag[1].npi
+                code = HOME_CODES[int(rng_hv.choice(3, p=[0.62, 0.23, 0.15]))]
+                units = int(rng_hv.choice([4, 6, 8, 10, 12, 16, 20, 24], p=[0.2, 0.18, 0.2, 0.12, 0.1, 0.1, 0.06, 0.04]))
+                start = "%02d:%02d" % (8 + int(rng_hv.integers(0, 4)), int(rng_hv.choice([0, 15, 30, 45])))
+                visits.append(Visit(m.mid, W.day(t), start, npi, code[0], units, rc))
+                if twice_daily:
+                    start2 = "%02d:%02d" % (15 + int(rng_hv.integers(0, 3)), int(rng_hv.choice([0, 15, 30, 45])))
+                    visits.append(Visit(m.mid, W.day(t), start2, npi, code[0], int(rng_hv.choice([4, 6, 8])), rc))
+    return svcs, fills, visits

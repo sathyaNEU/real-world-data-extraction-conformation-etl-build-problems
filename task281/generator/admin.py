@@ -128,12 +128,14 @@ def build(W, seed=P.SEED):
     for L in W.licences:
         if L.model == "PKG":
             continue
-        if not (dt.date(2026, 1, 1) <= L.bought <= dt.date(2026, 10, 31)):
+        if not (dt.date(2025, 12, 1) <= L.bought <= dt.date(2026, 10, 31)):
             continue
         t = tby[L.title]
         vendor = [p[1] for p in WD.PUBLISHERS if p[0] == t["publisher"]][0]
-        inv_date = L.bought + dt.timedelta(days=ri.randint(2, 19))
-        if inv_date > dt.date(2026, 10, 31):
+        # monthly in arrears: the month's licences and re-licences on the next month's invoice
+        nxt = dt.date(L.bought.year + (L.bought.month // 12), L.bought.month % 12 + 1, 1)
+        inv_date = nxt + dt.timedelta(days=(ri.randint(1, 4) if vendor.startswith("Shelfmark") else ri.randint(3, 11)))
+        if inv_date > dt.date(2026, 10, 31) or inv_date < dt.date(2026, 1, 1):
             continue
         invno[vendor] += ri.randint(1, 4)
         cur = t["currency"]

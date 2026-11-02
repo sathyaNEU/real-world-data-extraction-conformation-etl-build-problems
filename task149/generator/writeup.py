@@ -34,8 +34,8 @@ def main():
              "to work made on the day, and the catchment's census commuters do not go in every weekday: the panel "
              "shows the Docklands commuters going in on %s days a week, the hospital's on %s and Carrigboy's on %s. "
              "Counting each census commuter as a boarding every weekday gives about %s and the full scheme.\n"
-             % (fmt(F["total_boardings"]), fmt(F["threshold"]), "%.2f" % F["zone_days_per_week"]["KW02"],
-                "%.2f" % F["zone_days_per_week"]["KW03"], "%.2f" % F["zone_days_per_week"]["KW05"],
+             % (fmt(F["total_boardings"]), fmt(F["threshold"]), "%.1f" % F["zone_days_per_week"]["KW02"],
+                "%.1f" % F["zone_days_per_week"]["KW03"], "%.1f" % F["zone_days_per_week"]["KW05"],
                 fmt(F["census_daily_route_rounded"])))
     L.append("## 2. Critical Components\n")
     L.append("1. Weekday commuter boardings in 2029: **%s** (to the nearest 100; %s before rounding), %s below the "

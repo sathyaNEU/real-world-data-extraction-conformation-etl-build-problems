@@ -73,6 +73,14 @@ def block_address(rng, x, y):
     return "%d00 BLK %d AV %s" % (max(1, st % 180), max(1, av % 140), quad)
 
 
+def _clearance(rng, r):
+    """Clearance status; the offender groups behind the series are unidentified, so their offences stay open."""
+    st = "OPEN" if rng.random() < 0.83 else ("CLEARED-CHARGE" if rng.random() < 0.7 else "CLEARED-OTHER")
+    if r["ev"] is not None and r["ev"]["group"] is not None:
+        return "OPEN"
+    return st
+
+
 def rms_rows(world):
     """The RMS extract: every phone offence that reached the police plus every other occurrence."""
     rng = np.random.default_rng(P.SEED + 101)
@@ -119,7 +127,7 @@ def rms_rows(world):
         out.append([occ, fmt(r["t_rep"]), fmt(r["t_from"]), fmt(r["t_to"]), r["offence"], O.DESC[r["offence"]],
                     r["loc"], loc_txt, int(round(r["x"])), int(round(r["y"])), dist, r["mo"], sus,
                     r["alo"], r["ahi"], r["sex"], r["weapon"], r["prop"], r["value"],
-                    "OPEN" if rng.random() < 0.83 else ("CLEARED-CHARGE" if rng.random() < 0.7 else "CLEARED-OTHER")])
+                    _clearance(rng, r)])
     return out, index
 
 

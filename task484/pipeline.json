@@ -11,7 +11,7 @@
  "stump": "The textbook expansion with the permanent counters' same-day factors files 8 sections over three million (College Road and Grange Road in; Brookfield Way, Hollins Lane and Infirmary Road out); each section's own year is on the signal detectors of its own approach, which see one lane and give that year only through the day the count and the detectors both recorded: 9 sections.",
  "source_note": "Batch 3 re-root (2026-11-02): architecture 3 (wood combustion inventory, physical-environmental-sciences) closed with its world; architecture 4 drawn in survey-research-official-statistics / seasonal-adjustment-official-time-series-production",
  "returned": [],
- "resume": "stage 4: re-judge once on zip sha256 39174925 (the FIX_NOW repair)",
+ "resume": "stage 4: short re-judge on zip sha256 49241dce (rounding edges closed)",
  "history": {
   "architecture_3": {
    "status": "SHIPPED",
@@ -73,25 +73,26 @@
   "checks": 61,
   "fail": 0,
   "warn": 0,
-  "pair_ceiling": 33.0,
+  "pair_ceiling": 31.7,
   "mirror_leakage": 0.0,
   "date": "2026-11-02"
  },
  "gates": {
-  "generator_checks": "74 of 74",
+  "generator_checks": "98 of 98",
   "verify": "11 of 11",
   "byte_identical": "two builds, 13 target and 3 golden files",
   "figures_check": "90 figures, 0 absent",
   "voice_check": "PASS",
   "leak_py": "REVIEW, no LEAK (asof 2026-03-23)",
   "heart": "WARN (strategy risk, objective use), no BLOCK",
-  "surface": "exit 0 on the repaired cut; the same 7 pairs promoted for adjudication as before the repair",
-  "zip": "6816119c94383f92",
-  "zip_sha256": "3917492588afc764"
+  "surface": "exit 0 on the re-centred cut; 8 pairs promoted for adjudication: the earlier 7 plus task149 at top-1% surface proximity",
+  "zip": "29d15234bdb99604",
+  "zip_sha256": "49241dce0632e467",
+  "tightest_edge": 0.0232
  },
  "duplicate_check": {
   "heart": "WARN (strategy risk grain_or_unit, answered in the note; objective use), no BLOCK",
-  "surface": "exit 0 on the repaired cut; the same 7 pairs promoted for adjudication as before the repair",
+  "surface": "exit 0 on the re-centred cut; 8 pairs promoted for adjudication: the earlier 7 plus task149 at top-1% surface proximity",
   "date": "2026-11-02"
  },
  "judge": {
@@ -101,6 +102,14 @@
   "disposition": "FIX_NOW",
   "findings": "container hygiene (openpyxl app.xml AppVersion 3.1, python-docx template parts); ask B 'each approach' (Gate E): the register's approach column held the road alone",
   "repair": "every xlsx and docx finalised as its application saves it (asserted H1, verify); each register arm entered as road and side (asserted SF18); no graded figure moved",
-  "date": "2026-11-02"
+  "date": "2026-11-02",
+  "round2": {
+   "zip_sha256": "39174925",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "asked": "close two rounding edges by construction (Station Street 0.004, Sandy Lane 0.014)",
+   "repair": "count day and level chosen per section to maximise the tightest edge over every detector-day and counter treatment under the filed rung sets; counted sections' loops lose minutes not days; tightest edge 0.0232; nine sections, rung sets, HGV figures and approach totals unchanged; Station Street 3.7, Kingsway 4.3, Priory Road 3.5, Oakhill Road 1.8, Lower Heath Road 1.6 moved inside their side of the line",
+   "date": "2026-11-02"
+  }
  }
 }

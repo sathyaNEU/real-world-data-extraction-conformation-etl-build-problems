@@ -64,15 +64,15 @@
   "Westgate": 222832
  },
  "ask_c": {
-  "Ashford Road": 14610,
-  "Centre Square": 16472,
-  "Cobb Street": 15364,
-  "Fairgrounds": 7220,
-  "Millbrook": 16640,
-  "Prairie Gate": 7044,
-  "Ridgeview": 14088,
-  "Union Yards": 16556,
-  "Westgate": 8236
+  "Ashford Road": 14498,
+  "Centre Square": 16360,
+  "Cobb Street": 16528,
+  "Fairgrounds": 7166,
+  "Millbrook": 16528,
+  "Prairie Gate": 13976,
+  "Ridgeview": 13976,
+  "Union Yards": 16864,
+  "Westgate": 16360
  },
  "eastline_trips": 18,
  "linkage_days": 28,

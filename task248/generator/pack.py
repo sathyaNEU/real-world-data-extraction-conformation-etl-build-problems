@@ -93,12 +93,12 @@ def build(target, o):
         stamp = console_stamp(o, m, t)
         cap = tanks[tid].cap
         ull = round(0.9 * cap - r["gross"], 1)
-        rows.append((utc_str(stamp), idm["site"][m], P.MARINAS[m][0], cs, tn, LABEL[tanks[tid].product], seq,
+        rows.append((stamp.strftime("%Y-%m-%d %H:%M:%S"), idm["site"][m], P.MARINAS[m][0], cs, tn, LABEL[tanks[tid].product], seq,
                      "%.3f" % r["h"], "%.2f" % r["water"], "%.1f" % r["T"], "%.1f" % r["gross"], "%.1f" % r["tc"],
                      "%.1f" % ull))
     rows.sort(key=lambda x: (x[1], x[3], x[4], x[6]))
     write_csv(os.path.join(target, "atg_inventory_2026.csv"),
-              ["reading_utc", "site_id", "site_name", "console_sn", "tank", "product", "record_seq", "height_in",
+              ["reading_time", "site_id", "site_name", "console_sn", "tank", "product", "record_seq", "height_in",
                "water_in", "temp_f", "gross_gal", "tc_gal_60f", "ullage_90_gal"], rows)
 
     # ---- delivery reports ----
@@ -111,12 +111,12 @@ def build(target, o):
         dseq[cs] = dseq.get(cs, int(rng.integers(300, 700))) + 1
         s0 = console_stamp(o, m, d["start"]); s1 = console_stamp(o, m, d["end"])
         rows.append((idm["site"][m], P.MARINAS[m][0], cs, tn, LABEL[tanks[tid].product], dseq[cs],
-                     utc_str(s0), utc_str(s1), "%.3f" % d["h0"], "%.3f" % d["h1"], "%.1f" % d["T0"], "%.1f" % d["T1"],
+                     s0.strftime("%Y-%m-%d %H:%M:%S"), s1.strftime("%Y-%m-%d %H:%M:%S"), "%.3f" % d["h0"], "%.3f" % d["h1"], "%.1f" % d["T0"], "%.1f" % d["T1"],
                      "%.1f" % d["g0"], "%.1f" % d["g1"], "%.1f" % d["n0"], "%.1f" % d["n1"],
                      "%.1f" % (d["g1"] - d["g0"]), "%.1f" % (d["n1"] - d["n0"])))
     rows.sort(key=lambda x: (x[6], x[0]))
     write_csv(os.path.join(target, "atg_deliveries_2026.csv"),
-              ["site_id", "site_name", "console_sn", "tank", "product", "delivery_no", "start_utc", "end_utc",
+              ["site_id", "site_name", "console_sn", "tank", "product", "delivery_no", "start_time", "end_time",
                "start_height_in", "end_height_in", "start_temp_f", "end_temp_f", "start_gross_gal", "end_gross_gal",
                "start_tc_gal_60f", "end_tc_gal_60f", "increase_gross_gal", "increase_tc_gal_60f"], rows)
 

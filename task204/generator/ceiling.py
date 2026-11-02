@@ -44,7 +44,7 @@ def main(target=None):
     # reports referred without a file number, stop_times by service date without frequencies.
     mirror = {"A": A.ask_a(rms, tpo, codes, polys26, stref, fare, redistrict=False, date_aware=False, dedupe=False),
               "B": A.ask_b(target, codes, date_aware=False, local_window=False),
-              "C": A.ask_c(gt_flat, by_service_date=True, cache={})}
+              "C": A.ask_c(gt_flat, by_service_date=True, pickups_only=True, cache={})}
     out = {"asks": {}}
     tot_all = 0
     keep = {"crack": 0, "full": 0, "mirror": 0}

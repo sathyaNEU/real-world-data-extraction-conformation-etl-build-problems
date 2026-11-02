@@ -110,7 +110,7 @@ def write_book(R, F, path):
     r = 5
     for z in zones:
         vals = [z, ZONE_NAMES[z], R["census"][z], R["shares"][z], round(100 * R["freq"][z], 1),
-                round(5 * R["freq"][z], 2), round(R["boardings"][z], 1), r10(R["boardings"][z])]
+                round(5 * R["freq"][z], 1), round(R["boardings"][z], 1), r10(R["boardings"][z])]
         for j, v in enumerate(vals, 1):
             ws.cell(row=r, column=j, value=v)
         r += 1

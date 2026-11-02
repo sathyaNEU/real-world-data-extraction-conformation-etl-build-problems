@@ -140,7 +140,7 @@ def rms_station(loc_text):
 
 
 # ---- the population -----------------------------------------------------------------------------------
-def phone_offences(rms, tpo, codes, window, dedupe=True, date_aware_codes=True, fare_codes=None):
+def phone_offences(rms, tpo, codes, window, dedupe=True, date_aware_codes=True, fare_codes=None, ref_window_min=20):
     """Robbery and theft from a person with a phone taken, reported to the Service or to transit officers, once."""
     out = []
     in_win = lambda d: window[0] <= d <= window[1]
@@ -176,7 +176,7 @@ def phone_offences(rms, tpo, codes, window, dedupe=True, date_aware_codes=True, 
                 continue
             if r["Referred To Police"] == "Y" and not r["CPS File #"]:
                 # referred without the file number: the police file is the RMS row at the same station shortly before
-                match = [o for o in rms_station_events.get(st, []) if 0 <= (t - o["t"]).total_seconds() <= 20 * 60]
+                match = [o for o in rms_station_events.get(st, []) if 0 <= (t - o["t"]).total_seconds() <= ref_window_min * 60]
                 if match:
                     continue
         out.append({"src": "TPO", "id": r["TPO Log #"], "t": t, "station": st, "x": None, "y": None,
@@ -378,8 +378,9 @@ def team_table(series, polys26):
 
 
 # ---- asks -------------------------------------------------------------------------------------------------
-def ask_a(rms, tpo, codes, polys26, stref, fare_codes, redistrict=True, date_aware=True, dedupe=True):
-    offs = phone_offences(rms, tpo, codes, W25, dedupe=dedupe, date_aware_codes=date_aware, fare_codes=fare_codes)
+def ask_a(rms, tpo, codes, polys26, stref, fare_codes, redistrict=True, date_aware=True, dedupe=True, ref_window_min=20):
+    offs = phone_offences(rms, tpo, codes, W25, dedupe=dedupe, date_aware_codes=date_aware, fare_codes=fare_codes,
+                          ref_window_min=ref_window_min)
     grid = {d: [0, 0, 0] for d in DISTRICTS}
     for o in offs:
         if o["src"] == "RMS":
@@ -409,7 +410,7 @@ def ask_b(target, codes, date_aware=True, local_window=True):
     return out
 
 
-def ask_c(gtfs, by_service_date=False, pickups_only=True, cache=None):
+def ask_c(gtfs, by_service_date=False, pickups_only=False, cache=None):
     cache = {} if cache is None else cache
     out = {s: 0 for s in EASTLINE}
     lo = dt.datetime(W26[0].year, W26[0].month, W26[0].day)

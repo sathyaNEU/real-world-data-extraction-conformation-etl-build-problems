@@ -12,6 +12,7 @@ weighted equally and hit within half a dollar or exactly for a count.
     python3 task238/generator/ceiling.py [target]
 """
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -114,7 +115,9 @@ def main(target=None):
     on_call = 38 + 7 + 55 * lc
     # the mirror files the audit route's call (no store), so of the call's 38 it keeps only the stores it
     # rightly leaves off: nine of fourteen verdicts at about half the component weight
-    r_off = 38 * 0.5 * (9 / 14.0) * 0.4
+    n_stores = len(F["accuracy"])
+    n_off = n_stores - F["n_watch"]
+    r_off = 38 * 0.5 * (n_off / float(n_stores)) * 0.4
     off_call = r_off + 7 + 55 * ls
     pair = (on_call + off_call) / 2
     print("cracker on the call  %.1f" % on_call)
@@ -123,6 +126,11 @@ def main(target=None):
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * ls))
     full = out["full includer"][3]
     print("full includer keeps %.1f%% of ask weight" % (100 * full))
+    h = hashlib.sha256()
+    for name in sorted(os.listdir(target)):
+        h.update(name.encode())
+        h.update(open(os.path.join(target, name), "rb").read())
+    print("measured on the cut pack target/ (sha256 over its files %s)" % h.hexdigest()[:8])
     return pair, 100 * ls, out
 
 

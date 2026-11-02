@@ -1,10 +1,10 @@
 # leak check, task484
 
-**Verdict: REVIEW.** 13 files read, 52 golden figures and 34 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 51 golden figures and 34 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, propane, survey, appliance, counters, heating, golden, record, season, register, factor, comparison, detector, reflex, window, factors, decisive, exports, burned, degree, sentence, records, estimand, readable, vehicle
+Stump terms swept: architecture, propane, survey, appliance, counters, heating, golden, record, season, register, factor, comparison, detector, reflex, window, factors, decisive, station, exports, burned, degree, vehicle, sentence, records, member
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `traffic_estimate_terms_2025.pdf`: golden figure 3.5 appears: ...les. Heavy goods vehicles are goods vehicles over 3.5 tonnes gross vehicle weight, rigid or articulated...
@@ -18,7 +18,7 @@ Stump terms swept: architecture, propane, survey, appliance, counters, heating, 
 - **REVIEW** `count_points_2025.xlsx`: names 31 of 34 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `expansion_factor_review_2025.xlsx`: names 13 of 34 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `network_operations_log_2025.docx`: names 15 of 34 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `streetworks_permits_2025.csv`: names 23 of 34 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `streetworks_permits_2025.csv`: names 24 of 34 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `utc_asset_register_2025.xlsx`: names 16 of 34 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `atc_sites_2025.csv`: names 13 of 34 answer-set candidates; confirm it does not rank them on the decision question
 

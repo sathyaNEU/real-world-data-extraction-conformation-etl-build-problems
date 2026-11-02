@@ -133,14 +133,16 @@ def engine_events(p):
                     ev.append((req - 4, tag, "START FAIL", "no ignition - retry"))
                 ev.append((req, tag, "START REQUEST", "auto" if s["kind"] in ("plant", "trip") else "operator"))
                 ev.append((b, tag, "RUNNING", "synchronised"))
-        # grid disturbances while running: breaker opens, engine keeps turning, re-synchronises
-        idx = np.flatnonzero(on)
-        n_dist = int(r.integers(26, 38)) * 3
-        for m in sorted(r.choice(idx, size=n_dist, replace=False)):
+        # grid disturbances while running: breaker opens, engine keeps turning, re-synchronises (candidate minutes
+        # drawn on their own stream, so a change to a stop elsewhere does not move them)
+        rd = W.rng(75 + e)
+        cand = np.sort(rd.choice(len(on) - 5, size=int(rd.integers(26, 38)) * 3, replace=False))
+        gaps = rd.integers(1, 3, size=len(cand))
+        for m, g in zip(cand, gaps):
             if not on[m:m + 3].all():
                 continue
             ev.append((int(m), tag, "BREAKER OPEN", "grid disturbance - load shed"))
-            ev.append((int(m) + 1 + int(r.integers(0, 2)), tag, "RUNNING", "synchronised"))
+            ev.append((int(m) + int(g), tag, "RUNNING", "synchronised"))
     ev.sort(key=lambda x: (x[0], x[1]))
     return ev
 

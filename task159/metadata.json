@@ -1,0 +1,76 @@
+{
+ "task": "task159",
+ "domain": "General Statistics & Data Science",
+ "client_domain": "general-statistics-data-science",
+ "subdomain": "regression-classification-model-diagnostics",
+ "objective": "Forecasting & Predictive Modeling",
+ "as_of": "2026-11-13",
+ "question": "the gold an Ontario open-pit mine budgets for the ore it mines in 2027 under a higher ore cut-off, with the low-grade stockpile at four dates, the ball mill's running hours by quarter and the fine gold poured by quarter",
+ "deliverables": [
+  "kessock_2027_budget_gold.xlsx",
+  "lg_stockpile_2023-2026.svg"
+ ],
+ "distractor_files": [
+  {
+   "file": "mz_exploration_assays_2019-2022.csv",
+   "why_relevant": "the resource drilling's assays are the data the block model was estimated from",
+   "why_unused": "no graded figure reads a drill hole interval"
+  },
+  {
+   "file": "pit_slope_review_phase5_2026.pdf",
+   "why_relevant": "the Phase 5 and 6 walls bound the 2027 pit",
+   "why_unused": "the 2027 schedule already carries the wall design; no graded figure reads a slope angle"
+  },
+  {
+   "file": "budget_2027_price_and_fx_deck.pdf",
+   "why_relevant": "the budget's revenue and costs are priced from this deck",
+   "why_unused": "every graded figure is in ounces, tonnes, hours or grams per tonne"
+  }
+ ],
+ "input_gates": {
+  "files": 18,
+  "formats": [
+   "csv",
+   "pdf",
+   "txt",
+   "xlsx"
+  ],
+  "largest_file": "dispatch_loads_to_lgsp_2023-2026.csv",
+  "largest_file_rows": 70756
+ },
+ "files": {
+  "budget_2027_basis_of_ore_and_gold.pdf": "",
+  "budget_2027_price_and_fx_deck.pdf": "",
+  "cmms_work_orders_grinding_2025-2026.csv": 169,
+  "dcs_event_export_grinding_2025-2026.csv": 4123,
+  "dispatch_loads_to_lgsp_2023-2026.csv": 70756,
+  "gc_assays_lims_export_20261105.csv": 61077,
+  "goldroom_bar_register_2025-2026.csv": 155,
+  "haul_fleet_register_2026-10.xlsx": "",
+  "kessock_mine_grid_control.txt": "",
+  "kessock_mine_plan_2027_v3.xlsx": "",
+  "kl_mz_resource_model_2026R.csv": 47587,
+  "mill_daily_production_2023-2026.csv": 1400,
+  "monthly_reconciliation_jan2023_oct2026.pdf": "",
+  "mz_exploration_assays_2019-2022.csv": 14126,
+  "pit_slope_review_phase5_2026.pdf": "",
+  "refinery_outturn_statements_2025-2026.csv": 266,
+  "stockpile_inventory_2022-12-31.csv": 3,
+  "survey_depletion_2023-01_2026-10.csv": 21616
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task159/generator/build.py (seeded and deterministic, seed 15902)",
+   "license": "CC BY 4.0 (constructed data)",
+   "date": "2026-11-13"
+  },
+  {
+   "files": "NAD83(CSRS) UTM zone 17N, CGVD2013 heights, troy ounce (31.1034768 g)",
+   "origin": "public geodetic and measurement standards",
+   "license": "public",
+   "date": "2026-11-13"
+  }
+ ],
+ "notes": "Synthetic pack. Aubreth Gold Corporation, the Kessock Lake mine, its refinery counterparty and every person are invented; the northeastern Ontario setting, Canadian geodetic frames and the laboratory and refinery conventions are real."
+}

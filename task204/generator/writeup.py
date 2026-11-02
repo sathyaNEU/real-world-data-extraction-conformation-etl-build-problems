@@ -76,8 +76,8 @@ def main():
              "Service that match an RMS file at the same station, and counted by Mountain-time date: %d offences."
              % f["ask_a_total"])
     L.append("7. Station figures: summed fare_gate_entries_hourly_2026.csv by gate array (codes were renumbered on 29 "
-             "March) on Mountain-time dates, and counted Eastline stop_times departures with pickups, frequency trips "
-             "expanded and holiday services applied, by local clock time in the twelve weeks.")
+             "March) on Mountain-time dates, and counted every Eastline stop_times call with frequencies.txt trips "
+             "expanded and calendar_dates.txt holiday services applied, in the twelve weeks.")
     L.append("8. Recommendation: the %s teams in block 1." % WORDS[f["n_teams"]])
     L.append("")
     L.append("## 4. Deliverable Answers")
@@ -90,10 +90,10 @@ def main():
     L.append("2. Robbery and theft from the person with a phone taken, 2026 patrol districts, same twelve weeks of 2025:")
     for d, v in sorted(f["ask_a"].items(), key=lambda kv: int(kv[0][1:])):
         L.append("   - District %s: %d (%s), %d (%s), %d (%s)" % (d[1:], v[0], PERIODS[0], v[1], PERIODS[1], v[2], PERIODS[2]))
-    L.append("3. Eastline stations, 9 February to 3 May 2026, fare-gate entries and scheduled Eastline departures in "
+    L.append("3. Eastline stations, 9 February to 3 May 2026, fare-gate entries and scheduled Eastline train calls in "
              "both directions:")
     for st in STATIONS:
-        L.append("   - %s: %s entries, %s departures" % (st, format(f["ask_b"][st], ","), format(f["ask_c"][st], ",")))
+        L.append("   - %s: %s entries, %s train calls" % (st, format(f["ask_b"][st], ","), format(f["ask_c"][st], ",")))
     L.append("")
     L.append("### summer_series_deployment_memo.docx")
     L.append("")

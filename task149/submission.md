@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Rathgarvan will carry about 1,300 commuter boardings on an average ordinary weekday in 2029 (to the nearest 100), below the 1,400 that justifies the full scheme, so build the reduced scheme.** A boarding is a journey to work made on the day, and the catchment's census commuters do not go in every weekday: the panel shows the Docklands commuters going in on 2.52 days a week, the hospital's on 2.78 and Carrigboy's on 2.73. Counting each census commuter as a boarding every weekday gives about 2,400 and the full scheme.
+**Rathgarvan will carry about 1,300 commuter boardings on an average ordinary weekday in 2029 (to the nearest 100), below the 1,400 that justifies the full scheme, so build the reduced scheme.** A boarding is a journey to work made on the day, and the catchment's census commuters do not go in every weekday: the panel shows the Docklands commuters going in on 2.5 days a week, the hospital's on 2.8 and Carrigboy's on 2.7. Counting each census commuter as a boarding every weekday gives about 2,400 and the full scheme.
 
 ## 2. Critical Components
 

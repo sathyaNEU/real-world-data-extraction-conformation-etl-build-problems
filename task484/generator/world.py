@@ -610,7 +610,8 @@ def choose_count_days(W):
     W.count_day = {}
     W.base_mult = {}
     W.edge = {}
-    bms = (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016, 0.98, 1.02, 0.976, 1.024, 0.972, 1.028)
+    bms = (1.0, 0.996, 1.004, 0.992, 1.008, 0.988, 1.012, 0.984, 1.016, 0.98, 1.02, 0.976, 1.024, 0.972, 1.028,
+           0.998, 1.002, 0.994, 1.006, 0.99, 1.01, 0.986, 1.014, 0.982, 1.018, 0.978, 1.022, 0.974, 1.026)
     for si, s in enumerate(W.sections):
         rng = np.random.default_rng([SEED, 53, si])
         order = list(pool)
@@ -621,7 +622,8 @@ def choose_count_days(W):
                 sc = score_day(W, s, si, DIDX[d], bm)
                 if sc is None or sc < EDGE_FLOOR:
                     continue
-                if best is None or sc > best[0] + 1e-9:
+                # a wider margin wins; within a thousandth of a million the smaller change of level wins
+                if best is None or sc > best[0] + 0.001 or (abs(sc - best[0]) <= 0.001 and abs(bm - 1.0) < abs(best[2] - 1.0)):
                     best = (sc, d, bm)
                 if sc >= EDGE_GOOD:
                     break

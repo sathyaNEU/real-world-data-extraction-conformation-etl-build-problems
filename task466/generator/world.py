@@ -33,14 +33,14 @@ RHO_S = RHO_N * 273.15 / 293.15  # kg per standard cubic metre at 20 C (the flar
 TIERS = ((375.0, 0, "Tier 1"), (450.0, 118000, "Tier 2"), (1e9, 312000, "Tier 3"))
 
 # generation and capture
-G0 = 462.0                      # kg CH4 per hour at 2024-01-01
+G0 = 459.1                      # kg CH4 per hour at 2024-01-01
 K_DECAY = 0.046                 # per year
-W_PHI, W_SD = 0.95, 0.011       # hourly AR(1) wobble of the steady capture (barometric and wellfield)
+W_PHI, W_SD = 0.95, 0.008       # hourly AR(1) wobble of the steady capture (barometric and wellfield)
 KAPPA, D_STORE, CE_REC, TAU = 0.95, 10.0, 0.90, 3.0
 BLOWER_NM3H = 1780.0            # the duty blower's capacity, normal m3/h of landfill gas
 
 # engines and flare
-ENG_CAP = 188.0                 # kg CH4 per hour each at full load
+ENG_CAP = 181.0                 # kg CH4 per hour each at full load
 ENG_EFF = 0.392                 # electrical efficiency on methane LHV
 LHV_KWH_PER_KG = 13.89          # methane lower heating value, kWh per kg
 FLARE_CUTOFF_M3H = 45.0         # the flare meter's low-flow cut-off, in its own (standard) cubic metres
@@ -268,23 +268,29 @@ def build_engines(times, capture, run_frac, outages):
                 on[e][a:b] = False
                 stop_list[e].append(dict(start=a, end=b, kind=kind, outage=None))
         stop_list[e].sort(key=lambda s: s["start"])
+    out = dict(eng_on_min=on, eng_stops=stop_list, restart_delay=restart_delay)
+    split_fuel(out, capture)
+    return out
+
+
+def split_fuel(eng, capture):
+    """Each hour's capture to the engines first (up to capacity times their on-share), the rest to the flare."""
+    on = eng["eng_on_min"]
     frac_on = {e: on[e].reshape(NH, 60).mean(axis=1) for e in (1, 2)}
-    # split each hour's capture: engines first (up to capacity while on), the rest to the flare
-    eng_fuel = {1: np.zeros(NH), 2: np.zeros(NH)}
-    flare = np.zeros(NH)
-    for h in range(NH):
-        cap = capture[h]
-        if cap <= 0:
-            continue
-        f1, f2 = frac_on[1][h], frac_on[2][h]
-        # gas arrives over the running part of the hour; engines take up to their capacity times their on-share
-        c1 = ENG_CAP * f1
-        c2 = ENG_CAP * f2
-        share = cap
-        take = min(share, c1 + c2)
-        if c1 + c2 > 0:
-            eng_fuel[1][h] = take * c1 / (c1 + c2)
-            eng_fuel[2][h] = take * c2 / (c1 + c2)
-        flare[h] = cap - take
-    return dict(eng_on_min=on, eng_frac=frac_on, eng_stops=stop_list, eng_fuel=eng_fuel, flare_kg=flare,
-                restart_delay=restart_delay)
+    c1 = ENG_CAP * frac_on[1]
+    c2 = ENG_CAP * frac_on[2]
+    take = np.minimum(capture, c1 + c2)
+    tot = np.where(c1 + c2 > 0, c1 + c2, 1.0)
+    eng_fuel = {1: np.where(capture > 0, take * c1 / tot, 0.0), 2: np.where(capture > 0, take * c2 / tot, 0.0)}
+    flare = np.where(capture > 0, capture - take, 0.0)
+    eng.update(eng_frac=frac_on, eng_fuel=eng_fuel, flare_kg=flare)
+
+
+def extend_stop(p, e, k, extra_min):
+    """Lengthen engine e's k-th stop by extra_min minutes (the restart comes later) and re-split the fuel."""
+    s = p["eng_stops"][e][k]
+    nmin = NH * 60
+    b2 = min(nmin, s["end"] + extra_min)
+    p["eng_on_min"][e][s["end"]:b2] = False
+    s["end"] = b2
+    split_fuel(p, p["capture"])

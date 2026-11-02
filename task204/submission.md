@@ -23,7 +23,7 @@ The Eastline group's 43 offences are one series because 18 westbound trains each
 4. Kept Cobb Street apart: no trip carries one of its offences with another, and three of its offences fell within three minutes of an Eastline group offence at Union Yards.
 5. Took each group's ground from its offences' coordinates in patrol_districts_2026.geojson (OPS-41 section 4): four teams.
 6. 2025 comparison: put each 2025 RMS offence in its 2026 district by coordinates, read each transit officer station code as the station whose gate array carried that code on the day (fare_gate_daily_summary_2025.csv with carvale_transit_codes.xlsx), dropped reports referred to the Service that match an RMS file at the same station, and counted by Mountain-time date: 181 offences.
-7. Station figures: summed fare_gate_entries_hourly_2026.csv by gate array (codes were renumbered on 29 March) on Mountain-time dates, and counted Eastline stop_times departures with pickups, frequency trips expanded and holiday services applied, by local clock time in the twelve weeks.
+7. Station figures: summed fare_gate_entries_hourly_2026.csv by gate array (codes were renumbered on 29 March) on Mountain-time dates, and counted every Eastline stop_times call with frequencies.txt trips expanded and calendar_dates.txt holiday services applied, in the twelve weeks.
 8. Recommendation: the four teams in block 1.
 
 ## 4. Deliverable Answers
@@ -46,16 +46,16 @@ The Eastline group's 43 offences are one series because 18 westbound trains each
    - District 8: 4 (10 Feb to 9 Mar 2025), 6 (10 Mar to 6 Apr 2025), 4 (7 Apr to 4 May 2025)
    - District 9: 6 (10 Feb to 9 Mar 2025), 2 (10 Mar to 6 Apr 2025), 5 (7 Apr to 4 May 2025)
    - District 10: 3 (10 Feb to 9 Mar 2025), 2 (10 Mar to 6 Apr 2025), 1 (7 Apr to 4 May 2025)
-3. Eastline stations, 9 February to 3 May 2026, fare-gate entries and scheduled Eastline departures in both directions:
-   - Westgate: 222,832 entries, 8,236 departures
-   - Centre Square: 709,302 entries, 16,472 departures
-   - Union Yards: 194,321 entries, 16,556 departures
-   - Millbrook: 311,291 entries, 16,640 departures
-   - Fairgrounds: 45,586 entries, 7,220 departures
-   - Cobb Street: 171,545 entries, 15,364 departures
-   - Ashford Road: 158,588 entries, 14,610 departures
-   - Ridgeview: 276,132 entries, 14,088 departures
-   - Prairie Gate: 235,756 entries, 7,044 departures
+3. Eastline stations, 9 February to 3 May 2026, fare-gate entries and scheduled Eastline train calls in both directions:
+   - Westgate: 222,832 entries, 16,360 train calls
+   - Centre Square: 709,302 entries, 16,360 train calls
+   - Union Yards: 194,321 entries, 16,864 train calls
+   - Millbrook: 311,291 entries, 16,528 train calls
+   - Fairgrounds: 45,586 entries, 7,166 train calls
+   - Cobb Street: 171,545 entries, 16,528 train calls
+   - Ashford Road: 158,588 entries, 14,498 train calls
+   - Ridgeview: 276,132 entries, 13,976 train calls
+   - Prairie Gate: 235,756 entries, 13,976 train calls
 
 ### summer_series_deployment_memo.docx
 

@@ -1247,3 +1247,15 @@ task122, task136 and task264 on corpus-top-percent surface similarity, and task1
   Cross 2.1); the register named no authority for unclassified roads (634 against 471 collisions in the first quarter);
   the A4600 handover was placed by an inventory node, which a nearest-node reading splits differently on 6 of 144.
   Closed by filing the quantity in 3.3, a U and a C entry in the register, and grid references on every section row.
+- Architecture 5 re-judge round 2 (2026-11-02, on 32a9da59): the call and both annex tables forced; one fork left, the
+  listed junctions' benefits at one decimal across equally licensed fits. Measured on the judged pack (generator
+  analysis.py, Pack.family): Mill Lane first under all ten fits (margin 1.27 to 1.32x), the own-count and model-alone
+  rungs wrong under all ten, but the benefits span Saxby Cross 0.79 to 0.97, Mill Lane Crossroads 1.28 to 1.37, Church
+  Street Junction 0.89 to 0.97, Coppice Way Junction 0.37 to 0.52 (0.49 to 0.52 without the staggered-only fit),
+  Tollgate Crossroads 1.01 to 1.04 and Fen Lane Junction 0.41 to 0.45, because the weight on each prediction follows the
+  fitted overdispersion, which the fits estimate between 0.20 and 0.32 on one record, and a junction far from its
+  prediction (Saxby Cross, 22 against 1.9) moves 0.016 per 0.01 of it. Tried by construction and not held: a flat 2021
+  to 2025 trend, slopes shared by every layout, a network three times larger (4,456 junctions) and no tail redraw left
+  spans of 0.10 (Saxby Cross) and 0.06 (Mill Lane Crossroads). Every fit agrees at the nearest half collision a year
+  (nearest edge 0.027). Reported to the coordinator before any change to the prompt's precision; the pack is unchanged.
+

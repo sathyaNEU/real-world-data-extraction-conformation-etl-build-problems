@@ -15,7 +15,7 @@
   "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-02, cut 9a1150f3, --asof 2027-12-06); REVIEW lines read in the design note's Build record",
+  "leak_py": "REVIEW, no LEAK (2026-11-02, cut aa619280, --asof 2027-12-06); REVIEW lines read in the design note's Build record",
   "reader": ""
  },
  "duplicate_check": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 3 complete on cut 9a1150f3: the main session runs stage 4 (the isolated leak reader and the determinism judge) on this pack; fix any finding in the generator (task149/generator/build.py rebuilds everything) and re-run the free gates.",
+ "resume": "Stage 3 complete on cut aa619280: the main session runs stage 4 (the isolated leak reader and the determinism judge) on this pack; fix any finding in the generator (task149/generator/build.py rebuilds everything) and re-run the free gates.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -53,7 +53,7 @@
  "gates": {
   "checks": "77 of 77",
   "verify": "agrees on its own path (total 1,311.6, 10 zones, 6 arrival shares, 7 station ratios, golden read back)",
-  "rebuilds": "two byte-identical over 20 files; target.zip 9a1150f3",
+  "rebuilds": "two byte-identical over 20 files; target.zip aa619280",
   "figures_check": "60 figures, 0 absent",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "voice_check": "exit 0 (871 characters)",

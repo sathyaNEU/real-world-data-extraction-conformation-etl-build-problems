@@ -94,13 +94,13 @@ def load(target):
 
 
 # ------------------------------------------------------------------ the main call
-def call_population(d):
+def call_population(d, window="uk", staff=False):
     """holds a student placed in the window (UK dates), with the faculty they count for"""
     out = []
     for h in d.holds:
-        if h["ptype"] == "Staff":
+        if h["ptype"] == "Staff" and not staff:
             continue
-        ld = uk_date(h["placed"])
+        ld = uk_date(h["placed"]) if window == "uk" else h["placed"].date()
         if not (WIN[0] <= ld <= WIN[1]):
             continue
         school = h["dept"].split("-")[-1].upper()
@@ -156,9 +156,14 @@ def next_later_offer(d, h):
     return min(later) if later else None
 
 
-def waits(d, method="golden"):
-    """per counted hold: (faculty, title, wait in days or None, observed days, event flag)"""
-    pop = call_population(d)
+def waits(d, method="golden", window="uk", staff=False):
+    """per counted hold: (faculty, title, wait in days, observed days, event flag, hold)"""
+    key = (method, window, staff)
+    if not hasattr(d, "_waits"):
+        d._waits = {}
+    if key in d._waits:
+        return d._waits[key]
+    pop = call_population(d, window, staff)
     if not hasattr(d, "_by_title"):
         d._by_title = collections.defaultdict(list)
         for h in d.holds:
@@ -183,6 +188,7 @@ def waits(d, method="golden"):
         else:
             w = days(h["placed"], extract)
             out.append((fac, h["title"], w, w, 0, h))
+    d._waits[key] = out
     return out
 
 
@@ -210,8 +216,8 @@ def km_excess(obs):
     return tot / 7.0
 
 
-def faculty_hold_weeks(d, method="golden"):
-    W = waits(d, "golden" if method in ("golden", "filled", "to_cancel") or method.startswith("km") else method)
+def faculty_hold_weeks(d, method="golden", window="uk", staff=False):
+    W = waits(d, "simple" if method == "simple" else "golden", window, staff)
     hw = collections.defaultdict(float)
     n = collections.Counter()
     for fac, t, w, obs, ev, h in W:
@@ -250,9 +256,9 @@ def allocate(hw):
     return {f: FUND * hw[f] / tot for f in FAC_ORDER}
 
 
-def main_call(target, method="golden"):
+def main_call(target, method="golden", window="uk", staff=False):
     d = load(target)
-    hw, n = faculty_hold_weeks(d, method)
+    hw, n = faculty_hold_weeks(d, method, window, staff)
     return dict(hw=hw, n=n, amount=allocate(hw), total_hw=sum(hw.values()))
 
 
@@ -266,6 +272,18 @@ def norm_isbn(s):
     return s
 
 
+def _as_date(v):
+    if isinstance(v, dt.datetime):
+        return v.date()
+    if isinstance(v, dt.date):
+        return v
+    return dt.datetime.strptime(str(v), "%Y-%m-%d").date()
+
+
+def _ed(s):
+    return int(re.match(r"\d+", s).group(0))
+
+
 def load_admin(target):
     d = load(target)
     if hasattr(d, "cat"):
@@ -273,15 +291,32 @@ def load_admin(target):
     F = pack.FILES
     h, rows = IO.read_csv(os.path.join(target, F["catalogue"]))
     ix = {c: i for i, c in enumerate(h)}
-    d.cat = {r[ix["mms_id"]]: dict(mms=r[ix["mms_id"]], edition=int(re.match(r"\d+", r[ix["edition"]]).group(0)),
-                                   isbn=r[ix["isbn"]], rtype=r[ix["resource_type"]], platform=r[ix["shelfmark_title_id"]],
-                                   linked=r[ix["related_record_mms"]], prev=r[ix["preceding_edition_mms"]])
-             for r in rows}
+    d.cat = {r[ix["mms_id"]]: dict(mms=r[ix["mms_id"]], title=r[ix["title"]], edition=_ed(r[ix["edition"]]),
+                                   isbn=r[ix["isbn"]], rtype=r[ix["resource_type"]],
+                                   platform=r[ix["shelfmark_title_id"]], linked=r[ix["related_record_mms"]],
+                                   prev=r[ix["preceding_edition_mms"]]) for r in rows}
     d.cat_by_isbn = {v["isbn"]: v for v in d.cat.values()}
+    # works: records joined by their related-record and preceding-edition links
+    parent = {m: m for m in d.cat}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for v in d.cat.values():
+        for o in (v["linked"], v["prev"]):
+            if o and o in parent:
+                parent[find(v["mms"])] = find(o)
+    d.work = {m: find(m) for m in d.cat}
+    d.work_ebook = {}
+    for v in d.cat.values():
+        if v["platform"]:
+            d.work_ebook[d.work[v["mms"]]] = v
     h, rows = IO.read_csv(os.path.join(target, F["lists"]))
     ix = {c: i for i, c in enumerate(h)}
     d.items = [dict(id=r[ix["list_item_id"]], course=r[ix["course_code"]], period=r[ix["teaching_period"]],
-                    edition=int(re.match(r"\d+", r[ix["edition"]]).group(0)), isbn=r[ix["isbn"]],
+                    title=r[ix["item_title"]], edition=_ed(r[ix["edition"]]), isbn=r[ix["isbn"]],
                     importance=r[ix["importance"]]) for r in rows]
     wb = openpyxl.load_workbook(os.path.join(target, F["courses"]), read_only=True)
     d.course_school = {}
@@ -302,7 +337,8 @@ def load_admin(target):
     for pname, fn in pack.KBART.items():
         h, rows = IO.read_csv(os.path.join(target, fn), delimiter="\t")
         ix = {c: i for i, c in enumerate(h)}
-        d.kbart[pname] = [dict(print=r[ix["print_identifier"]], online=r[ix["online_identifier"]]) for r in rows]
+        d.kbart[pname] = [dict(title=r[ix["publication_title"]], print=r[ix["print_identifier"]],
+                               online=r[ix["online_identifier"]], edition=r[ix["monograph_edition"]]) for r in rows]
     h, rows = IO.read_csv(os.path.join(target, F["invoices"]))
     ix = {c: i for i, c in enumerate(h)}
     d.inv = [dict(vendor=r[ix["supplier"]], inv=r[ix["invoice_no"]],
@@ -312,35 +348,30 @@ def load_admin(target):
     h, rows = IO.read_csv(os.path.join(target, F["rates"]))
     d.rates = {r[0]: (float(r[1]), float(r[2])) for r in rows}
     h, rows = IO.read_csv(os.path.join(target, F["status"]))
-    d.status = {(r[0], int(r[1])): int(r[4]) for r in rows}
+    ix = {c: i for i, c in enumerate(h)}
+    d.status = {r[ix["licence_id"]]: int(r[ix["loans_remaining"]]) for r in rows}
     return d
 
 
-def _as_date(v):
-    if isinstance(v, dt.datetime):
-        return v.date()
-    if isinstance(v, dt.date):
-        return v
-    return dt.datetime.strptime(str(v), "%Y-%m-%d").date()
-
-
-def work_of(d, isbn, chain=True):
-    """the Shelfmark e-book record an ISBN leads to, following the catalogue's related and preceding-edition
-    links: returns (platform title id or None, cited edition)"""
-    rec = d.cat_by_isbn.get(norm_isbn(isbn))
+def item_work(d, it, variant="golden"):
+    """the platform e-book an item's work leads to and the edition the item cites"""
+    rec = d.cat_by_isbn.get(norm_isbn(it["isbn"]))
+    if variant == "direct_isbn":
+        # the ISBN as typed, against e-book records only
+        rec = d.cat_by_isbn.get(re.sub(r"[^0-9X]", "", it["isbn"].upper()))
+        return (rec["platform"] if rec and rec["platform"] else None), it["edition"]
+    if variant == "title":
+        hits = [v for v in d.cat.values() if v["platform"] and v["title"].lower() == it["title"].lower()]
+        return (hits[0]["platform"] if hits else None), it["edition"]
     if rec is None:
-        return None, None
-    ed = rec["edition"]
-    if rec["platform"]:
-        return rec["platform"], ed
-    if rec["linked"] and rec["linked"] in d.cat and d.cat[rec["linked"]]["platform"]:
-        return d.cat[rec["linked"]]["platform"], ed
-    if chain:
-        # an earlier edition: find the record whose preceding edition is this one
-        for v in d.cat.values():
-            if v["prev"] == rec["mms"] and v["platform"]:
-                return v["platform"], ed
-    return None, ed
+        return None, it["edition"]
+    if variant == "no_chain":
+        if rec["platform"]:
+            return rec["platform"], it["edition"]
+        o = d.cat.get(rec["linked"])
+        return (o["platform"] if o and o["platform"] else None), it["edition"]
+    eb = d.work_ebook.get(d.work[rec["mms"]])
+    return (eb["platform"] if eb else None), it["edition"]
 
 
 def list_faculty(d, course):
@@ -361,27 +392,21 @@ def package_titles(d):
 
 
 def ask_a(target, variant="golden"):
-    """each faculty's course text spend on invoices dated 1 Jan to 31 Oct 2026, in pounds"""
+    """each faculty's course text spend on invoice lines dated 1 Jan to 31 Oct 2026, in pounds"""
     d = load_admin(target)
     spend = collections.defaultdict(float)
     pk_titles = package_titles(d)
-    # titles on each faculty's essential 2025-26 lists
     fac_titles = collections.defaultdict(set)
     for it in d.items:
         if it["importance"] != "Essential" or not it["period"].startswith("2025-26"):
             continue
-        if variant == "direct_isbn":
-            rec = d.cat_by_isbn.get(norm_isbn(it["isbn"]))
-            plat = rec["platform"] if rec else None
-        else:
-            plat, _ = work_of(d, it["isbn"])
+        plat, _ = item_work(d, it, variant if variant in ("direct_isbn", "no_chain", "title") else "golden")
         if plat:
             fac_titles[list_faculty(d, it["course"])].add(plat)
     for ln in d.inv:
         if not (dt.date(2026, 1, 1) <= ln["date"] <= dt.date(2026, 10, 31)):
             continue
-        key = ln["date"].strftime("%Y-%m")
-        eur, usd = d.rates[key]
+        eur, usd = d.rates[ln["date"].strftime("%Y-%m")]
         gbp = ln["amount"] if ln["cur"] == "GBP" else ln["amount"] / (eur if ln["cur"] == "EUR" else usd)
         if variant == "no_fx":
             gbp = ln["amount"]
@@ -400,7 +425,7 @@ def ask_a(target, variant="golden"):
 
 
 def ask_b(target, variant="golden"):
-    """essential items on each faculty's spring 2026 lists that could not be lent on 12 January 2026"""
+    """essential items on each faculty's spring 2026 lists the Library could not lend on 12 January 2026"""
     d = load_admin(target)
     day = dt.date(2026, 1, 12)
     licensed = set(r["platform"] for r in d.reg if r["date"] <= day)
@@ -415,16 +440,9 @@ def ask_b(target, variant="golden"):
         if it["importance"] != "Essential" or it["period"] != "2025-26 Semester 2":
             continue
         fac = list_faculty(d, it["course"])
-        if variant == "direct_isbn":
-            rec = d.cat_by_isbn.get(norm_isbn(it["isbn"]))
-            plat = rec["platform"] if rec else None
-            ced = it["edition"]
-        elif variant == "no_chain":
-            plat, ced = work_of(d, it["isbn"], chain=False)
-        else:
-            plat, ced = work_of(d, it["isbn"])
+        plat, ced = item_work(d, it, variant if variant in ("direct_isbn", "no_chain", "title") else "golden")
         ok = False
-        if plat and ed_of.get(plat, 0) >= (ced or 0):
+        if plat and (variant == "any_edition" or ed_of[plat] >= ced):
             if plat in licensed or (variant != "register_only" and plat in in_pkg):
                 ok = True
         if not ok:
@@ -432,71 +450,60 @@ def ask_b(target, variant="golden"):
     return {f: out[f] for f in FAC_ORDER}
 
 
-def ask_c(target, variant="golden"):
+def ask_c(target, variant="golden", trace=None):
     """each faculty's 40-loan licences in force at the end of 30 October 2026 with ten or fewer loans left"""
     d = load_admin(target)
-    cutoff = dt.datetime(2026, 10, 30, 23, 59, 59, tzinfo=UK).astimezone(UTC)
-    rec_start = dt.datetime(2025, 9, 1, tzinfo=UTC)
-    copies = collections.defaultdict(list)   # platform -> list of copy dicts
-    lic_lines = {r["lic"]: r for r in d.reg}
+    cutoff = dt.datetime(2026, 10, 31, 0, 0, 0, tzinfo=UK).astimezone(UTC)
+    rec_start = dt.date(2025, 9, 1)
+    lics = collections.defaultdict(list)
     for r in d.reg:
         if r["model"] != "1 user, 40 loans":
             continue
-        for k in range(int(r["copies"])):
-            left = d.status.get((r["lic"], k + 1), 40) if r["date"] <= rec_start.date() else 40
-            if variant == "no_status":
-                left = 40
-            since = None
-            if r["otype"] == "Renewal":
-                since = "renewal"
-            copies[r["platform"]].append(dict(lic=r["lic"], k=k + 1, date=r["date"], left=left, fund=r["fund"],
-                                              otype=r["otype"], po=r["po"], lapsed=None, since=since))
+        left = d.status.get(r["lic"], 40) if r["date"] < rec_start else 40
+        if variant == "no_status":
+            left = 40
+        c = dict(lic=r["lic"], date=r["date"], left=left, fund=r["fund"], otype=r["otype"], po=r["po"],
+                 lapsed=None, held=None)
+        if r["otype"] != "Renewal":
+            c["held"] = dt.datetime(r["date"].year, r["date"].month, r["date"].day, tzinfo=UK).astimezone(UTC)
+        elif variant == "renewal_dates":
+            c["held"] = dt.datetime(r["date"].year, r["date"].month, r["date"].day, tzinfo=UK).astimezone(UTC)
+        lics[r["platform"]].append(c)
     loans_by_title = collections.defaultdict(list)
     for l in d.loans:
-        loans_by_title[l["title"]].append(l)
-    for plat, cps in copies.items():
-        # a renewal is held from the instant the licence it replaces lapsed
-        for c in cps:
-            if c["otype"] == "Renewal":
-                c["held"] = None
-            elif c["date"] <= rec_start.date():
-                c["held"] = rec_start - dt.timedelta(days=1)
-            else:
-                c["held"] = dt.datetime(c["date"].year, c["date"].month, c["date"].day, 9, 0, tzinfo=UTC)
-        pending = {}   # lapsed licence id -> lapse instant
+        if l["start"] < cutoff:
+            loans_by_title[l["title"]].append(l)
+    for plat, cps in lics.items():
+        by_id = {c["lic"]: c for c in cps}
         for l in sorted(loans_by_title.get(plat, []), key=lambda x: x["start"]):
-            for c in cps:
-                if c["otype"] == "Renewal" and c["held"] is None:
-                    src = c["po"].split("-")[1] if variant != "renewal_dates" else None
-                    if src and src in pending:
-                        c["held"] = pending.pop(src)
-                    elif variant == "renewal_dates":
-                        c["held"] = dt.datetime(c["date"].year, c["date"].month, c["date"].day, 0, 0, tzinfo=UTC)
             if variant == "even":
-                continue
+                break
             live = sorted([c for c in cps if c["held"] is not None and c["held"] <= l["start"] and c["lapsed"] is None
-                           and c["left"] > 0], key=lambda c: (c["held"], c["lic"], c["k"]))
+                           and c["left"] > 0], key=lambda c: (c["held"], c["date"], c["lic"]))
             if not live:
                 continue
             c = live[0]
             c["left"] -= 1
+            if trace is not None:
+                trace[l["id"]] = c["lic"]
             if c["left"] == 0:
-                end = l["ended"]
-                c["lapsed"] = end if end else dt.datetime(2099, 1, 1, tzinfo=UTC)
-                if end:
-                    pending[c["lic"]] = end
+                c["lapsed"] = l["ended"] if l["ended"] else dt.datetime(2099, 1, 1, tzinfo=UTC)
+                if variant != "renewal_dates":
+                    for r in cps:
+                        if r["otype"] == "Renewal" and r["po"].split("-")[1] == c["lic"] and r["held"] is None:
+                            r["held"] = c["lapsed"]
         if variant == "even":
-            n = len([l for l in loans_by_title.get(plat, []) if l["start"] <= cutoff])
-            live = [c for c in cps]
+            n = len(loans_by_title.get(plat, []))
+            live = [c for c in cps if c["date"] < cutoff.date()]
             for c in live:
                 c["left"] -= n / max(1, len(live))
+                c["held"] = c["held"] or cutoff
     out = collections.Counter()
-    for plat, cps in copies.items():
+    for plat, cps in lics.items():
         for c in cps:
-            held = c.get("held")
-            in_force = held is not None and held <= cutoff and (c["lapsed"] is None or c["lapsed"] > cutoff)
-            if variant == "even":
-                in_force = c["date"] <= cutoff.date()
+            in_force = c["held"] is not None and c["held"] <= cutoff and (c["lapsed"] is None or c["lapsed"] > cutoff)
+            if variant == "count_lapsed":
+                in_force = c["held"] is not None and c["held"] <= cutoff
             if in_force and c["left"] <= 10:
                 out[d.fund_fac[c["fund"]]] += 1
     return {f: out[f] for f in FAC_ORDER}

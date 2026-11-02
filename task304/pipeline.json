@@ -25,8 +25,8 @@
  },
  "judge": {
   "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK (repair)",
-  "report": "stage 4 on 1a624630: Gates C and E; repaired on 32a9da59, re-judge pending"
+  "disposition": "awaiting precision decision",
+  "report": "re-judge round 2 on 32a9da59: one fork, per-junction benefits at one decimal"
  },
  "returned": [
   {
@@ -46,9 +46,15 @@
    "portal": "stage 4 judge on 1a624630 (architecture 5): NOT_DETERMINISTIC, SEND_BACK on Gates C and E, G and H pass; clause 3.3 let the own count comply; the register named no authority for unclassified roads; the A4600 handover needed a placement convention. Leak reader clean.",
    "repair": "filed the WHAT: clause 3.3 defines the expectation (long-run yearly average as the junction stands, its recorded count evidence and not the average); register U and C entries; grid references on every section row; call and every graded figure unchanged",
    "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "re-judge round 2 on 32a9da59: main call and annex forced, G and H pass, F moderate to good, leak re-read clean; NOT_DETERMINISTIC on the per-junction benefits at one decimal across licensed fits",
+   "repair": "measured: no world construction holds all six at one decimal under every licensed fit (spans 0.10 Saxby, 0.06 Mill Lane at best); every fit agrees at the nearest half collision; awaiting the coordinator's decision on precision; pack unchanged",
+   "commit": ""
   }
  ],
- "resume": "stage 4 (main session): re-judge once and re-run the leak reader on target.zip 32a9da59",
+ "resume": "coordinator decides the per-junction benefits' precision (nearest half collision holds under every fit); then rebuild, gates, final judge pass",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
