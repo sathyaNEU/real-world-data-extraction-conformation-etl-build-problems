@@ -48,23 +48,23 @@ Their fourth-quarter price accuracy is 98.4%, 98.6%, 98.3%, 98.7% and 97.8% agai
    - 206 Yarmouth: Price Watch, 97.8%
    - 207 Amherst: stays off
 2. Dollars paid out under the Scanner Price Accuracy Code in Q4 2026, to the nearest dollar:
-   - 101 Quinpool Road: $13
-   - 102 Spryfield: $760
-   - 103 Clayton Park: $11
-   - 104 Bedford Place: $25
-   - 105 Dartmouth - Portland St: $3
-   - 106 Cole Harbour: $348
-   - 107 Lower Sackville: $864
-   - 201 Truro (Prince St): $6
-   - 202 New Glasgow: $112
-   - 203 Antigonish: $524
-   - 204 Kentville: $4
-   - 205 Bridgewater: $527
-   - 206 Yarmouth: $814
-   - 207 Amherst: $61
+   - 101 Quinpool Road: $8
+   - 102 Spryfield: $1,079
+   - 103 Clayton Park: $28
+   - 104 Bedford Place: $29
+   - 105 Dartmouth - Portland St: $32
+   - 106 Cole Harbour: $670
+   - 107 Lower Sackville: $1,270
+   - 201 Truro (Prince St): $4
+   - 202 New Glasgow: $192
+   - 203 Antigonish: $855
+   - 204 Kentville: $8
+   - 205 Bridgewater: $865
+   - 206 Yarmouth: $1,209
+   - 207 Amherst: $70
 3. Flyer weeks that started in the quarter: advertised UPCs that rang up at a price other than the flyer price, and dollars customers paid above the flyer price that week:
    - Week of 1 October 2026: 5 UPCs, $314
-   - Week of 8 October 2026: 8 UPCs, $4,427
+   - Week of 8 October 2026: 8 UPCs, $1,523
    - Week of 15 October 2026: 1 UPCs, $19
    - Week of 22 October 2026: 3 UPCs, $163
    - Week of 29 October 2026: 6 UPCs, $99
@@ -72,11 +72,11 @@ Their fourth-quarter price accuracy is 98.4%, 98.6%, 98.3%, 98.7% and 97.8% agai
    - Week of 12 November 2026: 3 UPCs, $129
    - Week of 19 November 2026: 6 UPCs, $357
    - Week of 26 November 2026: 5 UPCs, $123
-   - Week of 3 December 2026: 6 UPCs, $3,234
-   - Week of 10 December 2026: 3 UPCs, $1,823
-   - Week of 17 December 2026: 7 UPCs, $481
-   - Week of 24 December 2026: 6 UPCs, $368
-   - Week of 31 December 2026: 0 UPCs, $0
+   - Week of 3 December 2026: 2 UPCs, $88
+   - Week of 10 December 2026: 7 UPCs, $281
+   - Week of 17 December 2026: 11 UPCs, $332
+   - Week of 24 December 2026: 3 UPCs, $406
+   - Week of 31 December 2026: 2 UPCs, $123
 
 ### price_accuracy_q4_2026.svg
 
