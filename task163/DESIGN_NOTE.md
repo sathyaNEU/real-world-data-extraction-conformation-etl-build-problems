@@ -126,6 +126,16 @@ every state shared, after every go-live) rules out the reform states' own before
   rarely grow or hire (Branstetter et al. on Portugal's "On the Spot Firm"; Kaplan, Piedra and Seira on Mexico's SARE),
   which is the behaviour the generator gives the added filers.
 
+## Survivor anatomy
+
+Actor: the deciding property, which of the three reform states' applications the integrated filing added, has no column: no field marks an added application (the high-propensity, planned-wage and corporate counts carry the added ones at the ordinary shares), so the split exists only as each reform state's applications against the nine other states' path before and after its go-live.
+Link: the signal is a cross-state comparison no key offers and no sentence invites: each reform state's monthly applications set against the nine untreated states' path over the same calendar months, before and after its go-live, and the closed cohorts' formations read against that counterfactual; the standard files the estimand and names no comparison, yield or split.
+Reflex: the field's reflex, each state's latest closed formation rate per application carried onto the twelve months to September 2026 at the plan's shares, is rung 0 and files 2,800 (Ends on: 2,800); the reflex comparison, the filing's effect on formations carried as a monthly level, files 2,400.
+Back-test: the textbook route validates where a solver would check it: the latest closed rate reproduces the closed cohorts it is read from and the share tab's formation bases tie to the release, so nothing shipped refutes it; only the analyst's own back-test across the go-live change of mix does, the rate before go-live missing each reform state's first year after go-live by 14.6 per cent where the split comes within 0.5.
+Second use: every file the decisive step reads sits in the pack for its own reason: the October release is the standard's filed source for the volume and the outcome, the change log is Market Research's record of state filing changes kept since 2023, and the share tab is the standard's multiplier; deleting the decisive step leaves all three in the pack, and no file is read by the split alone.
+Shock: the movement the step recovers reads as ordinary explained movement: the reform states' applications rise after each go-live, which the change log dates, beside the common early 2026 rise of about a tenth in every state, and their closed formations rise as a blend; nothing singles out the added applications or their yield, and the golden is a total, never the extreme of a shipped statistic.
+Pins: FP&A's 2027 sizing standard files the WHAT in the organisation's own genre (the twelve states, formations within four quarters in the October release, a year of applications at the level of the twelve months to September 2026 in unadjusted counts, the 2025 share, the twelve added to the nearest 100), and no filed sentence names the comparison, the counterfactual, the added applications or a yield (verify.py asserts the sizing section names no rate, ratio, window or method).
+
 ## Default path
 
 1. Read the 2027 sizing standard: each state's line is its 2025 share in the plan workbook times the business
@@ -331,7 +341,9 @@ line's case on retention, first-quarter value and where first-time employers com
 - The note's chart: each territory's signed against still with us (4 criteria, two of them structural).
 
 Devices (no row in the call's population: the call reads the release, the share tab and the log, and the 2025 cohort
-carries no device, asserted):
+carries no device, asserted; every device below measured spent under the careful-solver cracker on 2026-11-02, the
+battery item that performs each named under the cracker sheet, so "silent" below is the shipped claim, not the
+measurement):
 - A primary, D8 a date the load wrote for the event's date: the June 2024 migration loaded each legacy client's
   client-since date (the day its account opened, 5 to 37 days before its first payroll) into first_pay_date. The
   counting notes count the year and the quarter the first payroll with us ran, and only the wage files say when that
@@ -363,55 +375,56 @@ Spans: A reads the export, the crosswalk, both wage files (the first payroll), t
 register, the territory map and the counting notes; B adds the legacy wages' pay groups (eight files, fourteen
 columns); C reads the export, the crosswalk, the wage files, the registrations, the register and the counting notes.
 
-| Ask figure | Golden | Cracker | Verdict |
+| Ask figure | Golden | Careful-solver cracker (generator/ceiling.py) | Verdict |
 |---|---|---|---|
-| Indiana-Kentucky signed | 207 | 199 | miss |
-| Indiana-Kentucky still | 158 | 150 | miss |
-| Indiana-Kentucky first-quarter wages | 1,977,871.23 | 1,814,642.41 | miss |
-| Indiana-Kentucky 2024 wages | 7,786,220.16 | 7,757,214.93 | miss |
-| Michigan signed | 447 | 431 | miss |
-| Michigan still | 351 | 335 | miss |
-| Michigan first-quarter wages | 4,061,127.70 | 3,462,684.73 | miss |
-| Michigan 2024 wages | 15,033,987.82 | 14,358,095.61 | miss |
-| Ohio signed | 803 | 761 | miss |
-| Ohio still | 659 | 628 | miss |
-| Ohio first-quarter wages | 6,772,408.40 | 5,886,823.98 | miss |
-| Ohio 2024 wages | 27,328,523.89 | 26,022,389.66 | miss |
-| Pennsylvania signed | 478 | 449 | miss |
-| Pennsylvania still | 391 | 365 | miss |
-| Pennsylvania first-quarter wages | 4,247,739.25 | 3,284,545.81 | miss |
-| Pennsylvania 2024 wages | 16,840,397.09 | 14,735,064.27 | miss |
-| South and Plains signed | 126 | 115 | miss |
-| South and Plains still | 98 | 88 | miss |
-| South and Plains first-quarter wages | 1,039,154.06 | 861,504.03 | miss |
-| South and Plains 2024 wages | 4,135,224.30 | 3,642,986.38 | miss |
-| Upper Midwest signed | 129 | 117 | miss |
-| Upper Midwest still | 104 | 92 | miss |
-| Upper Midwest first-quarter wages | 1,183,846.12 | 823,727.19 | miss |
-| Upper Midwest 2024 wages | 4,529,319.79 | 3,560,338.69 | miss |
-| channel accountant referral | 582 | 543 | miss |
-| channel bank partner | 271 | 260 | miss |
-| channel outbound | 274 | 259 | miss |
-| channel partner marketplace | 262 | 253 | miss |
-| channel web sign-up | 801 | 757 | miss |
+| Indiana-Kentucky signed | 207 | 207 | hit |
+| Indiana-Kentucky still | 158 | 158 | hit |
+| Indiana-Kentucky first-quarter wages | 1,977,871.23 | 1,977,871.23 | hit |
+| Indiana-Kentucky 2024 wages | 7,786,220.16 | 7,786,220.16 | hit |
+| Michigan signed | 447 | 447 | hit |
+| Michigan still | 351 | 351 | hit |
+| Michigan first-quarter wages | 4,061,127.70 | 4,061,127.70 | hit |
+| Michigan 2024 wages | 15,033,987.82 | 15,033,987.82 | hit |
+| Ohio signed | 803 | 803 | hit |
+| Ohio still | 659 | 659 | hit |
+| Ohio first-quarter wages | 6,772,408.40 | 6,772,408.40 | hit |
+| Ohio 2024 wages | 27,328,523.89 | 27,328,523.89 | hit |
+| Pennsylvania signed | 478 | 478 | hit |
+| Pennsylvania still | 391 | 391 | hit |
+| Pennsylvania first-quarter wages | 4,247,739.25 | 4,247,739.25 | hit |
+| Pennsylvania 2024 wages | 16,840,397.09 | 16,840,397.09 | hit |
+| South and Plains signed | 126 | 126 | hit |
+| South and Plains still | 98 | 98 | hit |
+| South and Plains first-quarter wages | 1,039,154.06 | 1,039,154.06 | hit |
+| South and Plains 2024 wages | 4,135,224.30 | 4,135,224.30 | hit |
+| Upper Midwest signed | 129 | 129 | hit |
+| Upper Midwest still | 104 | 104 | hit |
+| Upper Midwest first-quarter wages | 1,183,846.12 | 1,183,846.12 | hit |
+| Upper Midwest 2024 wages | 4,529,319.79 | 4,529,319.79 | hit |
+| channel accountant referral | 582 | 582 | hit |
+| channel bank partner | 271 | 271 | hit |
+| channel outbound | 274 | 274 | hit |
+| channel partner marketplace | 262 | 262 | hit |
+| channel web sign-up | 801 | 801 | hit |
 
-The cracker lands the call, reads the counting notes and executes every rule they state (EINs normalised, returning
-clients, successors and new owners as one business through the register, first-time status from the liability record,
-tax-filing-only quarters left out, a business's channel from its first account, the earliest registration's state,
-territories, the legacy cents its column names, the crosswalk, both wage files summed by quarter); it trusts the account's
-first pay date, an EIN as the mark of a separate business and every row of a legacy client quarter. The two silent
-count devices pull the counts the same way (in every territory the January starters the field moves into 2023, 12 to
-54, outnumber the accounts a re-key adds, 1 to 13; asserted), so no mishandling composes back. Single-device cracks:
-the first payroll from the wage files 33.5 (two still figures land where no re-opened account moves them), the re-keyed
-EINs joined 31.8, group 00 31.8. Two at once: the first payroll with the re-keyed EINs joined 47.7 (group 00 then moves
-only the wages, so every count lands), the first payroll with group 00 34.3, the re-keyed EINs with group 00 31.8;
-every device cracked at once 57.7, the genuinely unstumped response. Two responses that both land the call average 48.3 before any device is
-cracked: each banks 45 on the call and the two structural chart criteria, which no device moves, so that pair is held
-only by the ladder (P(both) about 0.04).
+Measured 2026-11-02 with the careful-solver cracker on the reshipped cut: it lands the call, reads every field by its
+plain meaning, executes every rule the counting notes file and runs the hygiene battery, each item detecting its device
+on the pack before it acts, and it keeps all 29 figures. Each device falls to one battery item: the rollup
+reconciliation finds group 00 the sum of the other groups in all 37,739 multi-group legacy client quarters (with it
+switched off the cracker keeps 17 of 29, the counts and the channels); the anti-join of first_pay_date's quarter against
+the wage rows finds 4,885 migrated accounts, and no current-system account, with no wages in the field's quarter (off, 0
+of 29); the re-keyed-record match the counting notes' "whatever its account or EIN" invites finds 803 EIN pairs on
+accounts with the same names, industry and entity, the first cancelled the day before the second opened, all one
+adjacent swap apart (off, 3 of 29). The asks consume nothing the call's construction produces, so the best response off
+the call runs the same ask route and keeps every ask whole; the plain read (the onboarding flag, the field's first pay
+date, the address state, the account's own fourth-quarter row, every legacy row, the export's channel) keeps 6.1 per
+cent. The narrowed cracker the sheet recorded at the reship (generator/cracker.py, which trusted the account's first pay
+date, an EIN as the mark of a separate business and every row of a legacy client quarter) keeps 0 of 29 on the same
+pack; it ran none of the three battery items, so its numbers were never the ceiling (Tried and rejected).
 
-Pair ceiling: 31.8 for the cracker, 33.5 for the strongest single-device crack (both 40 or under)
-Mirror leakage: 6.1
-Measured by: generator/cracker.py on the cut pack (target/), re-run by checks.py on every build
+Pair ceiling: 83.5 (the careful solver on the call 38 + 7 + 55 x 33/33 = 100.0, the response off the call 5 + 7 + 55 x 33/33 = 67.0; 82.5 with r = 3; 57.7 against the plain-read mirror); two careful responses on the call 100.0 each
+Mirror leakage: 100.0 per cent of ask weight (every ask whole; 6.1 per cent on the plain read)
+Measured by: generator/ceiling.py on target.zip md5 dc7c39432937530f4193e1393cf044ea (the cracker's code is its own, no generator module imported; the full includer reproduces figures.json's 29 figures exactly; exit 2, the gate fails)
 
 ## Leak sweep
 
@@ -499,3 +512,5 @@ The 10/10 rules read again against the built pack (round 3):
 - Moving the early 2026 rise off the three closings (a rise from October 2025 to January 2026): rejected in the round 2 harness and left at stage 4 round 3, the twelve-state growth carries came within 0.62 bins of the golden and the own before-and-after within 0.46; the rise ramps January to April 2026 with every closing inside the ramp, recorded as the residual in the pre-ship check.
 - The pack's field guide (plan_pack_field_guide.xlsx, every data file's fields and codes) and manifest (pack_manifest.csv, each file's owner, source, date and cover), shipped to 18 October: retired on 1 November under the new leak gate, since no shipped file describes the data. Provenance moved to metadata.json; the legacy wage report's cents into its own column (gross_wages_cents); the closed cohorts, the series codes and the migration quarter's split left to the release's and the wage files' own rows (asserted); and the one ask rule the guide carried, a migrated account's channel from its legacy referral code where the load had given CPA, BP, TEL and APX the default web sign-up, closed by convergence in the data: the load now maps every code, so the export's channel is the golden's (SF15, asserted). No call or ask figure moved.
 - The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 29 of 29 against the recorded 0 of 29, SPENT on Asks A, B and C, pair 57.7 (83.5 with the mirror on the honest route); the reason in one line: the anti-join on first_pay_date's quarter against the wage rows (179 migrated accounts), the counting notes' 'whatever its account or EIN' linking the re-keyed businesses, pay group 00 equal to 01 plus 02. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.
+- Re-siting the spent asks inside the files they read (2026-11-02, the /fix-rubric pass, each screened as code on the generator's own world before any cut): reciprocity home-state withholding registrations moving a business's first-employed state (a geography and tax-law link: a resident of a reciprocity partner has the home state's tax withheld, with no UI account there) die twice, since the home-state row ties the work-state row on the first payroll's date and the address-state tie-break a careful solver reaches for misplaces 1 of the 113 cohort businesses carrying one (file order 50), and the same law runs in the 2025 cohort, where the earliest-registration reading moves the share tab's counts by state (IN +30, KY +19, OH -23, PA -16), so the call's own input would be the device's oracle; a new company's first payrolls under its owner's legacy client, split out at the migration (a child under its parent's client number), is unforced, since the state dates the child's first wages under its own EIN and nothing shows they ran with us rather than elsewhere; a quarter-to-date balance load in the migration quarter is the battery's carried-over record across two systems (each such client's pay dates would overrun its frequency's quarter).
+- The full replacement on new ask-only records (2026-11-02, step 4b), built as a prototype outside the pack and measured: the payroll tax team's new-hire report log, asking how many people each territory's 2024 first-time employers took on in 2025 (in whole people), the WHAT drafted for the counting notes ("A person a business took on in a year is someone who started working for it that year, counted each time they started."), the device the reports a successor's or a returning account files for the staff it carried on (a new FEIN requires them), the over-cleaning half the rehires; forced (the notes make the re-formed business the same business, and each carried person's earlier report is the predecessor's), and every natural careful route misses 6 of 6 (every report, distinct people, the first report only), but the told reader lands 6 of 6 with a person repeat and a date match on the new account's first pay date, the battery's re-keyed-record match applied to employees, and South and Plains carries one device row: spent. Screened and not built: fees on a billing export with an affiliate billed on its parent's invoice (the child's payroll with no invoice is an anti-join orphan and the parent's lines name it), fees billed in arrears (an invoice after an account's cancellation is a row after a system's close), the partners' payouts by channel priced at a share of the client's fees (one client under a partner's key priced on the account's fees, task447's family), commissions on multi-entity deals (the plan's per-business bonus, a reconciliation to a filed schedule), SUI rate notices with an inherited rate (the counting notes file status by the liability date, so the literal rule and the rate disagree, and the 2025 cohort carries the same mechanism into the share tab), 2025 W-2s across a re-formation (the carried staff are not in the per-EIN totals, unrecoverable), a legacy run archive dated by processing for a monthly phasing (forced only at quarter ends), employment on 12 December from the UI reports (the plain read is right). Cutting the spent asks leaves 7 criteria (the call, its four components, the two files), under 25. Owed: the author's call, a new ask layer on records this world would hold, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root of the asks; the leak repair and the determinism record of the reship stand.

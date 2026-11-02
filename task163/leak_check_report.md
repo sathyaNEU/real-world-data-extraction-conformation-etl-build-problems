@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: applications, closed, formations, months, standard, cohorts, formation, application, reform, release, comparison, filing, window, decisive, carried, go-live, business, latest, ordinary, quarters, quantity, estimand, statistics, regression, nothing
+Stump terms swept: applications, closed, formations, months, standard, reform, cohorts, formation, application, go-live, release, comparison, filing, carried, decisive, window, latest, ordinary, business, quarters, nothing, estimand, statistics, change, regression
 
 ## 1 file names (REVIEW 1)
 - **REVIEW** `plan_2027_workbook.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files

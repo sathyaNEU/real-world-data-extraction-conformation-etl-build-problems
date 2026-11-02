@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "stump": "Carrying each state's latest closed formation rate per application onto the twelve months of applications to September 2026 at the plan's 2025 shares files 2,800; the reform states' latest closed rate blends ordinary applications with applications the integrated filing added, about a fifth of the closed cohorts and about a third of the twelve months, and only the added applications' own yield, read against the nine other states before and after go-live and carried per added application, files 2,500.",
  "architecture": 1,
  "loops": 3,
@@ -39,7 +39,7 @@
    "commit": "RESHIPPED (task163)"
   }
  ],
- "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 29 of 29 against the recorded 0 of 29, SPENT on Asks A, B and C, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
+ "resume": "ASK LAYER owed before the build ships again (/fix-rubric pass of 2026-11-02, stopped at step 5): generator/ceiling.py's careful solver keeps 29 of 29 ask figures on dc7c39432937530f4193e1393cf044ea (pair 83.5, two careful responses on the call 100.0, mirror 100 per cent), each device performed by one battery item (the rollup reconciliation, the first_pay_date anti-join, the re-keyed-record match), and no re-site or full replacement passed both tests (candidate table: the design note's last two Tried and rejected lines; the full replacement, the new-hire report log, was built as a prototype and measured, the told reader landing 6 of 6). Cutting the spent asks leaves 7 criteria, under 25. Next, the author's call: a new ask layer on records this world would hold, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root of the asks. The leak repair and the determinism record of the reship stand; the pack, every figure and the prompt are unchanged; precut fails only its three ask rows (honest ceiling), the Survivor anatomy now written.",
  "approved": null,
  "delivered": "2026-10-18",
  "portal": null,
@@ -54,5 +54,14 @@
   "why": "the anti-join on first_pay_date's quarter against the wage rows (179 migrated accounts), the counting notes' 'whatever its account or EIN' linking the re-keyed businesses, pay group 00 equal to 01 plus 02",
   "probe": "scratchpad audit_cracker/task163/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
   "status_before": "SHIPPED"
+ },
+ "ask_rework_2026_11_02": {
+  "verdict": "STOP at step 5: no device passed both tests, the step 4b full replacement included",
+  "ceiling": "generator/ceiling.py on target.zip md5 dc7c39432937530f4193e1393cf044ea: the careful solver keeps 29 of 29 (rollup reconciliation over 37,739 multi-group legacy client quarters; anti-join, 4,885 migrated accounts with no wages in first_pay_date's quarter; re-keyed-record match, 803 EIN pairs one adjacent swap apart); pair 83.5 (57.7 against the plain-read mirror), two careful responses on the call 100.0; exit 2",
+  "full_replacement": "new-hire report log (people each territory's 2024 first-time employers took on in 2025): forced; every natural careful route misses 6 of 6, the told reader lands 6 of 6 (a person repeat and a date match on the new account's first pay date): spent",
+  "re_sites": "reciprocity home-state registrations (address tie-break misplaces 1 of 113; the 2025 share tab an oracle); a child company under its parent's legacy client (unforced); a quarter-to-date balance load in the migration quarter (carried-over records across two systems)",
+  "screened": "fees with affiliate billing (anti-join orphan), fees in arrears (rows after close), partner payouts (task447's family), multi-entity commissions (filed schedule), SUI rate notices (fork with the filed rule, 2025 oracle), W-2s (unrecoverable), a processing-dated run archive (unforced), employment on the 12th (no device)",
+  "prototypes": "scratchpad task163_ask_screen/screen_newhire.py and screen_reciprocity.py (outside the pack)",
+  "status_before": "PAUSED"
  }
 }
