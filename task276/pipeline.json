@@ -1,11 +1,11 @@
 {
  "task": "task276",
- "status": "OPEN",
+ "status": "PAUSED",
  "domain": "product-analytics",
  "objective": "descriptive-distribution",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-25",
+ "updated": "2026-11-02",
  "stump": "",
  "architecture": 1,
  "loops": 0,
@@ -14,12 +14,12 @@
  "duplicate_check": null,
  "judge": null,
  "returned": [],
- "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 1; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-24 at the author's choice, never drawn: every mechanism screened on DA26 is spent in the corpus or a reflex, and the exposure-response design is task175's driver at the abstraction test (DESIGN_NOTE.md Tried and rejected and Retired). The number is not reused; wave 5 is closed and wave 6 (task279 to task284) is cut.",
+ "resume": "PAUSED at stage 1 on the orchestrating session's rule (twelve screened across three task types): the 2026-11-02 re-root at the draw screened 22 candidates across nine task types (A1.1 to A1.22 in DESIGN_NOTE.md's Tried and rejected, the four strongest written in full, A1.1 prototyped on a seeded replay of its world) and none cleared guard.py check and the three rules together; no card is registered and nothing is cut. The strongest, A1.1 (Product Analytics, metric-definition-measurement-science: year-one retention by market against the month's sign-ups when leavers erase their accounts, the accounts table and the analytics export holding only accounts not erased), is honest and its replay separates the routes (survivors name the high-erasure market, the sign-ups with the erased placed by the account id's order another market, the bounds on late erasures holding it), but its honest signature (population, G9, method_or_model_selection) BLOCKs test.same_driver inside the twelve-build window against task270's v1 and v6 lineage, the G12 reading BLOCKs against task268 v2 and task273 v1 lineage, and no honest redraw of the gap or the pattern keeps the mechanism. The ban window at the draw (task157, task166, task173) bars causal_design, composition_mix and decomposition_attribution. Every screen in Tried and rejected stays dead, as do the earlier DA26 screens. Next action is the orchestrator's or the author's call.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "DA26 (world, decision and quantity only: which of six developer communities gets the one pair-review launch slot, by the developers its seeding reaches)"
+ "seed": "DA26 (world, decision and quantity only: which of six developer communities gets the one pair-review launch slot, by the developers its seeding reaches); the 2026-11-02 re-root draws without a seed in a fresh world"
 }
