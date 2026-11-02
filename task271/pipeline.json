@@ -20,7 +20,7 @@
  "duplicate_check": {
   "check_at_draw": "WARN 2026-11-01 before and after registration (overuse.gate_g, repeat.decision; shell.repeat read off the old prompt)",
   "heart": "WARN 2026-11-02 (overuse.gate_g, repeat.decision; no BLOCK)",
-  "surface": ""
+  "surface": "2026-11-02: 9 pairs promoted for adjudication, surface similarity at most 0.101 (task272 back to back on G7 and designation_set; card same-driver signatures against task460, task135, task451 and task161); differentiation lines on the card for task451, task135, task161, task460, task272, task193 and task186"
  },
  "judge": {
   "verdict": "",
@@ -72,5 +72,5 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "none (architecture 6 draws its world, decision and quantity new; DA21's health-plan world set aside at architecture 1)",
- "target_zip": ""
+ "target_zip": "8131c7cd97eef21700faadcc85bd928aa45c071b915cc7b502c5e753cc1758da"
 }
