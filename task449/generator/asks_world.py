@@ -95,13 +95,16 @@ def simulate_asks(emps, posts, cases, rng):
             n_h = 0
         used = set()
 
-        def client_for(start_hint=None):
-            for _ in range(60):
+        def client_for(span=None):
+            """A client not already referred to this case; for a hire, one with no other placement job within 30 days
+            of this one's span (no client holds two placements at once)."""
+            for _ in range(200):
                 c = clients[int(rng.integers(n_clients))]
                 if c in used:
                     continue
-                if start_hint is not None:
-                    if any(abs(start_hint - s) < 140 for s in hired_windows.get(c, [])):
+                if span is not None:
+                    a0, b0 = span
+                    if any(a0 - 30 <= y and x <= b0 + 30 for x, y in hired_windows.get(c, [])):
                         continue
                 used.add(c)
                 return c
@@ -115,7 +118,6 @@ def simulate_asks(emps, posts, cases, rng):
             ref_day = int(rng.integers(a, max(a + 1, hd)))
             ref_day = min(ref_day, hd - 1) if hd - 1 >= a else a
             planned = hd + int(_pick(rng, NOTICE))
-            c = client_for(planned)
             show = rng.random() >= NO_SHOW
             if show:
                 delay = int(rng.integers(1, 29)) if rng.random() < DELAY_SHARE else 0
@@ -124,9 +126,12 @@ def simulate_asks(emps, posts, cases, rng):
                     L = int(math.ceil(rng.weibull(0.8) * 400.0))
                     if abs(L - 90) > BOUNDARY_GAP and abs(L - 91) > BOUNDARY_GAP:
                         break
-                hired_windows.setdefault(c, []).append(start)
+                span = (start, start + L)
             else:
                 start, L = None, None
+                span = (planned, planned)
+            c = client_for(span)
+            hired_windows.setdefault(c, []).append(span)
             pl = {"client": c, "case": cn, "post": p, "employer_no": en, "occ": occ, "ref_day": ref_day,
                   "hire_day": hd, "planned": planned, "start": start, "L": L, "show": show}
             placements.append(pl)

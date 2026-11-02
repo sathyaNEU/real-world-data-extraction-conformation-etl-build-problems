@@ -30,6 +30,14 @@ def fix_zip(path):
     """Rewrite an OOXML zip with fixed entry times so two builds are byte-identical."""
     with zipfile.ZipFile(path) as z:
         entries = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    fixed = []
+    for name, data in entries:
+        if name == "docProps/core.xml":
+            # the workbook library stamps the save time; the producing system's export carries its own
+            data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", rb"\g<1>2026-10-31T09:12:00Z\g<2>", data)
+            data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", rb"\g<1>2026-10-31T09:00:00Z\g<2>", data)
+        fixed.append((name, data))
+    entries = fixed
     tmp = path + ".tmp"
     with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in entries:

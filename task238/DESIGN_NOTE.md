@@ -363,10 +363,11 @@ Measured by: generator/ceiling.py on the cut pack (target/ of the final build, s
 leak.py --asof 2027-01-15 on the final cut: REVIEW, no LEAK (sweep 2's one LEAK, the standard's "rung up" in s.2.1, was
 reworded in docs.py to "sold"). Each REVIEW line, ruled:
 
-- PI-2 standard, 4 stump terms (thursday, effect, weekly, report): harmless. They come from s.2.3 (the flyer week),
-  s.2.4 (price changes take effect at the registers at 00:00 on the Thursday that opens the flyer week) and s.6.1, the
-  standard's own calendar, which the flyer price ask also needs; the standard says nothing of labels being printed,
-  hung or checked, and no sentence relates a changeover to the accuracy.
+- PI-2 standard, 5 stump terms (thursday, effect, weekly, report, carries): harmless. They come from s.2.3 (the flyer
+  week), s.2.4 (price changes take effect at the registers at 00:00 on the Thursday that opens the flyer week), s.3.2
+  (accuracy is reported in per cent), s.5.1 (the Code's own "an item that carries no price sticker") and s.6.1, the
+  standard's own calendar and remedy, which the flyer price ask also needs; the standard says nothing of labels being
+  printed, hung or checked, and no sentence relates a changeover to the accuracy.
 - price_audit_results_2026Q4.csv, 8 of 11 candidates beside numbers: harmless. One row per label checked (shelf price,
   register price, result), never a store figure; the audit route is the analyst's own computation (rung 0), not a
   shipped ranking.
