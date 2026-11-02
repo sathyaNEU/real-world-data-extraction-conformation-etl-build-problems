@@ -1,151 +1,151 @@
 {
-  "task": "task149",
-  "architecture": "v2",
-  "drawn": "2026-11-02",
-  "slot_note": "Architecture 2, re-rooted at the Batch 3 queue reset in a new world and client domain: a fictional Irish city's metropolitan transport authority sizing a new commuter-rail station (Rathgarvan) from census place-of-work flows.",
-  "domain": "urban-regional-science",
-  "subdomain": "forecasting",
-  "niche": "new-station demand: weekday commuting boardings at a new commuter-rail station built from census usual-workplace flows and a mobile network operator's stay panel",
-  "objective": "forecasting",
-  "shape": "02",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective",
-    "time"
+ "task": "task149",
+ "architecture": "v2",
+ "drawn": "2026-11-02",
+ "slot_note": "Architecture 2, re-rooted at the Batch 3 queue reset in a new world and client domain: a fictional Irish city's metropolitan transport authority sizing a new commuter-rail station (Rathgarvan) from census place-of-work flows.",
+ "domain": "urban-regional-science",
+ "subdomain": "forecasting",
+ "niche": "new-station demand: weekday commuting boardings at a new commuter-rail station built from census usual-workplace flows and a mobile network operator's stay panel",
+ "objective": "forecasting",
+ "shape": "02",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "answer": "About 1,300 commuter boardings on an average ordinary weekday in 2029 at Rathgarvan (1,312.0 from the shipped files), below the 1,400 that justifies the full scheme, so the reduced scheme; counting each census commuter as a boarding every weekday gives about 2,400 (2,374.6).",
+ "answer_source": "task149/submission.md block 1; generator/figures.json total_boardings",
+ "gap": [
+  "objective",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G2",
+  "G13",
+  "G3"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "prior_period_close_out",
+ "stump_strategy": "forecast_method_backtest",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "other",
+ "stump_class": "analytical",
+ "analyst_test": "With every field read and every rule applied, a strong analyst takes the census usual-workplace commuters from the station's catchment to each zone, applies the refresh's station share and counts each commuter as one boarding every weekday (the journey-to-work convention the 2020 Lisnagry review validated at the last new station), filing about 2,400 weekday commuter boardings (2,374.6) for 2029 and the full scheme, against about 1,300 (1,312.0) and the reduced scheme.",
+ "domain_test": "The deciding quantity is the new station's weekday trip generation from its catchment's journey-to-work flows, the transport planner's own demand estimate, read through how many weekdays each workplace's commuters actually travel; with another field's nouns (patients and a clinic) there is no census place-of-work table, no station share by destination and no working week to read from a mobility panel, so the task stops reading.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:commuting-days-per-workplace-from-a-stay-panel",
+ "layer1": [
+  "panel stays stamped in UTC against local weekdays across the end of Irish Summer Time",
+  "network cells overlapping census zones through a share lookup",
+  "devices that change SIM part-way through the panel weeks",
+  "a provisional and a final census place-of-work release overlapping",
+  "operator gate entries in thousands in an older review against units in the export",
+  "the October bank holiday and the school mid-term week inside the panel weeks",
+  "works-mainly-at-home and no-fixed-workplace rows inside the census table"
+ ],
+ "stakeholder_role": "the authority's rail planning lead",
+ "role_family": "capacity_planner",
+ "scoring_unit": "per boarded entity",
+ "spine": {
+  "file": "mobility_stays_2027w36_w47.csv",
+  "rows": 136684,
+  "entity": "one daytime or night stay of one panel device at one network cell",
+  "grain": "device x stay",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "government_agency",
+ "world": {
+  "geography": "Ireland (a fictional city, Kilcarrow, its metropolitan transport authority and a new commuter-rail station at Rathgarvan; all names invented)",
+  "currency": "EUR",
+  "org_type": "metropolitan transport authority",
+  "invented_names": [
+   "Kilcarrow",
+   "Rathgarvan",
+   "Kilcarrow Metropolitan Transport Authority",
+   "Ardnagree",
+   "Carrigboy",
+   "Kilcarrow University Hospital",
+   "Lisnagry"
   ],
-  "pattern": [
+  "people": [
+   "Colum Curtis",
+   "Deaglan Gilmore",
+   "Eve Dunne"
+  ]
+ },
+ "deliverables": [
+  "rathgarvan_boardings_2029.xlsx",
+  "rathgarvan_demand_note.docx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-many",
+ "driver": "The decisive quantity is how many trips a counted population makes in a week, which the count never records: a census tallies each worker once at a usual workplace, and turning that tally into daily trips at one trip per worker per day, or at one network-wide factor, ignores that each workplace's own working pattern sets how many of its five weekdays its workers actually travel, which only a panel of the workers' own daily stays shows workplace by workplace.",
+ "driver_concrete": "Rathgarvan's 2029 weekday commuter boardings are the census catchment commuters to each workplace zone times the refresh's station share times the share of ordinary weekdays those commuters actually travel there, and the operator's resident panel shows the hospital's and Carrigboy's twelve-hour rosters and the Docklands' hybrid weeks put them on the line on about half of weekdays (50 to 79 per cent across zones), so counting every commuter every weekday files about 2,400 against about 1,300.",
+ "stump": "A competent solver multiplies the census commuters from Rathgarvan's catchment to each zone by the refresh's station share and counts each as a boarding every weekday, filing about 2,400 weekday commuter boardings (2,374.6) and the full scheme for 2029 against about 1,300 (1,312.0) and the reduced scheme; the step that lands it there is reading a usual-workplace count as daily journeys when the panel shows each zone's commuters travel on a zone-specific share of ordinary weekdays.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task482": "task482 splits one meter's fuel among products by each process's own running pattern; here nothing is split or attributed: a census count of workers is turned into weekday trips by each workplace's own share of weekdays travelled, read from a panel of the workers' daily stays.",
+  "task65": "task65 regroups child records into capped entities by their own location; here there is no cap and no regrouping: the forward count changes grain from workers to weekday trips through each workplace's travel-day share.",
+  "task67": "task67 re-prices a fixed-plus-variable cost structure onto a denser future period; here there is no cost structure: the forecast is trips, and the grain conversion is the share of weekdays each workplace's census workers actually travel, measured from a stay panel."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-16",
+   "domain": "epidemiology-public-health",
+   "subdomain": "health-burden-impact-modeling",
+   "objective": "forecasting",
+   "shape": "single-figure",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G2",
-    "G13",
-    "G3"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "forecast_method_backtest",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "other",
-  "stump_class": "analytical",
-  "analyst_test": "With every field read and every rule applied, a strong analyst takes the census usual-workplace commuters from the station's catchment to each destination, applies the business case's station share and counts each commuter as one boarding every weekday (the journey-to-work convention the 2020 opening review validated at the last new station), filing about 2,400 weekday commuter boardings for 2029 and the full scheme, against about 1,500 and the reduced scheme.",
-  "domain_test": "The deciding quantity is the new station's weekday trip generation from its catchment's journey-to-work flows, the transport planner's own demand estimate, read through how many weekdays each workplace's commuters actually travel; with another field's nouns (patients and a clinic) there is no census place-of-work table, no station share by destination and no working week to read from a mobility panel, so the task stops reading.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:commuting-days-per-workplace-from-a-stay-panel",
-  "layer1": [
-    "panel stays stamped in UTC against local weekdays across the end of Irish Summer Time",
-    "network cells overlapping census zones through a share lookup",
-    "devices that change SIM part-way through the panel weeks",
-    "a provisional and a final census place-of-work release overlapping",
-    "operator gate entries in thousands in an older review against units in the export",
-    "the October bank holiday and the school mid-term week inside the panel weeks",
-    "works-mainly-at-home and no-fixed-workplace rows inside the census table"
-  ],
-  "stakeholder_role": "the authority's rail planning lead",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per boarded entity",
-  "spine": {
-    "file": "mobility_stays_2027w36_w47.csv",
-    "rows": 0,
-    "entity": "one daytime or night stay of one panel device at one network cell",
-    "grain": "device x stay",
-    "source": "synthetic"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "government_agency",
-  "world": {
-    "geography": "Ireland (a fictional city, Kilcarrow, its metropolitan transport authority and a new commuter-rail station at Rathgarvan; all names invented)",
-    "currency": "EUR",
-    "org_type": "metropolitan transport authority",
+   ],
+   "generators": [
+    "G14",
+    "G6",
+    "G13"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "forecast_method_backtest",
+   "forum": "executive_team",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "logistics_or_3pl",
+   "world": {
+    "geography": "United States (Ostrander Logistics, a fictional third-party logistics operator running grocery and consumer-goods distribution centres for retail clients in eleven states; its clients, its ergonomics vendor and its people are fictional)",
+    "currency": "USD",
+    "org_type": "third-party logistics operator (dedicated contract distribution centres for grocery retailers)",
     "invented_names": [
-      "Kilcarrow",
-      "Rathgarvan",
-      "Kilcarrow Metropolitan Transport Authority",
-      "Ardnagree",
-      "Carrigboy",
-      "Kilcarrow University Hospital",
-      "Lisnagry"
+     "Ostrander Logistics",
+     "Lindqvist Ergonomics Group"
     ],
     "people": [
-      "Colum Curtis",
-      "Deaglan Gilmore",
-      "Eve Dunne"
+     "Sherri Newton",
+     "Jesse Delgado",
+     "Kurt Gilbert",
+     "Nichole Sandoval",
+     "Tracy Curtis"
     ]
-  },
-  "deliverables": [
-    "rathgarvan_boardings_2029.xlsx",
-    "rathgarvan_demand_note.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is how many trips a counted population makes in a week, which the count never records: a census tallies each worker once at a usual workplace, and turning that tally into daily trips at one trip per worker per day, or at one network-wide factor, ignores that each workplace's own working pattern sets how many of its five weekdays its workers actually travel, which only a panel of the workers' own daily stays shows workplace by workplace.",
-  "driver_concrete": "Rathgarvan's 2029 weekday commuter boardings are the census catchment commuters to each destination times the business case's station share times the share of ordinary weekdays those commuters actually travel there, and the operator's mobility panel shows the hospital's and the pharmaceutical estate's twelve-hour rosters and the city offices' hybrid weeks put them on the line on about half to two thirds of weekdays, so counting every commuter every weekday files about 2,400 against about 1,500.",
-  "stump": "A competent solver multiplies the census commuters from Rathgarvan's catchment to each destination by the business case's station share and counts each as a boarding every weekday, filing about 2,400 weekday commuter boardings and the full scheme for 2029 against about 1,500 and the reduced scheme; the step that lands it there is reading a usual-workplace count as daily trips when the panel shows each destination's commuters travel on a destination-specific share of weekdays.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task482": "task482 splits one meter's fuel among products by each process's own running pattern; here nothing is split or attributed: a census count of workers is turned into weekday trips by each workplace's own share of weekdays travelled, read from a panel of the workers' daily stays.",
-    "task65": "task65 regroups child records into capped entities by their own location; here there is no cap and no regrouping: the forward count changes grain from workers to weekday trips through each workplace's travel-day share.",
-    "task67": "task67 re-prices a fixed-plus-variable cost structure onto a denser future period; here there is no cost structure: the forecast is trips, and the grain conversion is the share of weekdays each workplace's census workers actually travel, measured from a stay panel."
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-16",
-      "domain": "epidemiology-public-health",
-      "subdomain": "health-burden-impact-modeling",
-      "objective": "forecasting",
-      "shape": "single-figure",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G6",
-        "G13"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "forecast_method_backtest",
-      "forum": "executive_team",
-      "forcing_event": "purchase_order_or_contract",
-      "org_family": "logistics_or_3pl",
-      "world": {
-        "geography": "United States (Ostrander Logistics, a fictional third-party logistics operator running grocery and consumer-goods distribution centres for retail clients in eleven states; its clients, its ergonomics vendor and its people are fictional)",
-        "currency": "USD",
-        "org_type": "third-party logistics operator (dedicated contract distribution centres for grocery retailers)",
-        "invented_names": [
-          "Ostrander Logistics",
-          "Lindqvist Ergonomics Group"
-        ],
-        "people": [
-          "Sherri Newton",
-          "Jesse Delgado",
-          "Kurt Gilbert",
-          "Nichole Sandoval",
-          "Tracy Curtis"
-        ]
-      },
-      "driver": "The hazard per unit of working time rises steeply with how fast a fixed content of work is done, measured against that work's engineered content and read within each unit, and a forward plan that fits more work into each hour concentrates it; carrying today's rate per hour, per item or per unit of engineered work onto the plan, reading the speed off raw item counts, or reading it across units rather than within each, under-counts where the plan raises the speed.",
-      "driver_concrete": "Ostrander's FY2027 operating plan gives the twenty programme DCs their new client accounts' cases at labour hours that imply each crew working faster against the engineered labour standards than it does today, and each DC's recordable rate per hour worked rises steeply with its pace against standard, read within each DC over fiscal 2021 to 2026, so the fiscal 2027 forecast is each DC's own rate at the pace its planned cases and hours imply, not its current rate per hour, per case or per standard hour, nor a pace read off cases per hour or across DCs.",
-      "stump": "A competent solver carries each programme DC's recordable rate per 200,000 hours worked from the latest twelve months onto its FY2027 planned hours and files about 800 recordables for fiscal 2027 against about 1,000; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about 9 per cent faster against the engineered standards and the rate per hour rises steeply with that pace within each DC.",
-      "answer": "About 1,000 recordable cases at the twenty ergonomics program DCs in fiscal 2027 under the FY2027 operating plan (1,001.8 from the shipped files).",
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-16, no portal result; the distribution-centre injury world is closed, one architecture per world)"
-    }
-  ],
-  "notes": "Re-root of 2026-11-02 under the Batch 3 instruction; architecture 1 moved to lineage with its fate.",
-  "registered": "2026-11-02T02:14:23Z",
-  "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "lindqvist",
-    "rounding opener": "give",
-    "deliverable set": "pptx+xlsx"
+   },
+   "driver": "The hazard per unit of working time rises steeply with how fast a fixed content of work is done, measured against that work's engineered content and read within each unit, and a forward plan that fits more work into each hour concentrates it; carrying today's rate per hour, per item or per unit of engineered work onto the plan, reading the speed off raw item counts, or reading it across units rather than within each, under-counts where the plan raises the speed.",
+   "driver_concrete": "Ostrander's FY2027 operating plan gives the twenty programme DCs their new client accounts' cases at labour hours that imply each crew working faster against the engineered labour standards than it does today, and each DC's recordable rate per hour worked rises steeply with its pace against standard, read within each DC over fiscal 2021 to 2026, so the fiscal 2027 forecast is each DC's own rate at the pace its planned cases and hours imply, not its current rate per hour, per case or per standard hour, nor a pace read off cases per hour or across DCs.",
+   "stump": "A competent solver carries each programme DC's recordable rate per 200,000 hours worked from the latest twelve months onto its FY2027 planned hours and files about 800 recordables for fiscal 2027 against about 1,000; the step that lands it there is pricing every planned hour at today's rate, when the plan moves the new accounts' cases through hours that imply each crew working about 9 per cent faster against the engineered standards and the rate per hour rises steeply with that pace within each DC.",
+   "answer": "About 1,000 recordable cases at the twenty ergonomics program DCs in fiscal 2027 under the FY2027 operating plan (1,001.8 from the shipped files).",
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-16, no portal result; the distribution-centre injury world is closed, one architecture per world)"
   }
+ ],
+ "notes": "Re-root of 2026-11-02 under the Batch 3 instruction; architecture 1 moved to lineage with its fate.",
+ "registered": "2026-11-02T02:14:23Z",
+ "shell": {
+  "question form": "how-many",
+  "second-sentence opener": "lindqvist",
+  "rounding opener": "give",
+  "deliverable set": "pptx+xlsx"
+ }
 }
