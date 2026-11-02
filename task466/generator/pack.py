@@ -171,7 +171,7 @@ def write_rule(target):
         ("Fraction of uncaptured methane oxidised in the cap:  0.10", "T", 8),
         ("Destruction efficiency: engine 0.99; enclosed flare 0.99; open flare 0.96", "T", 8),
     ]
-    C.text_pdf(os.path.join(target, fn), "Closed Landfill Methane Rule - extract", blocks)
+    C.text_pdf(os.path.join(target, fn), "Closed Landfill Methane Rule - extract", blocks, author="Air Quality Division")
     return fn
 
 
@@ -235,7 +235,7 @@ def write_operator_reports(t, target):
         blocks.append(("", "", 9))
         prev_visit = visit
     blocks.append(("Leyland Renewable Gas - Tina Hays, plant manager", "", 9))
-    C.text_pdf(os.path.join(target, fn), "Monthly operating reports 2026", blocks)
+    C.text_pdf(os.path.join(target, fn), "Monthly operating reports 2026", blocks, author="Tina Hays")
     return fn
 
 
@@ -311,7 +311,7 @@ def write_gas_plan(target):
         ("8.1  The Authority files the annual return under the Closed Landfill Methane Rule by 31 March, with the "
          "surface monitoring results of the reporting year.", "", 9),
     ]
-    C.text_pdf(os.path.join(target, fn), "Landfill gas management plan", blocks)
+    C.text_pdf(os.path.join(target, fn), "Landfill gas management plan", blocks, author=AUTH)
     return fn
 
 

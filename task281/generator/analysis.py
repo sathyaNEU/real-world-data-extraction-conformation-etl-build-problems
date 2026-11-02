@@ -462,11 +462,9 @@ def ask_c(target, variant="golden", trace=None):
         left = d.status.get(r["lic"], 40) if r["date"] < rec_start else 40
         if variant == "no_status":
             left = 40
-        c = dict(lic=r["lic"], date=r["date"], left=left, fund=r["fund"], otype=r["otype"], po=r["po"],
-                 lapsed=None, held=None)
-        if r["otype"] != "Renewal":
-            c["held"] = dt.datetime(r["date"].year, r["date"].month, r["date"].day, tzinfo=UK).astimezone(UTC)
-        elif variant == "renewal_dates":
+        c = dict(lic=r["lic"], date=r["date"], left=left, otype=r["otype"], lapsed=None, held=None,
+                 fac=d.fund_fac[r["fund"]] if r["fund"] else None)
+        if r["otype"] != "Renewal" or variant == "renewal_dates":
             c["held"] = dt.datetime(r["date"].year, r["date"].month, r["date"].day, tzinfo=UK).astimezone(UTC)
         lics[r["platform"]].append(c)
     loans_by_title = collections.defaultdict(list)
@@ -474,10 +472,14 @@ def ask_c(target, variant="golden", trace=None):
         if l["start"] < cutoff:
             loans_by_title[l["title"]].append(l)
     for plat, cps in lics.items():
-        by_id = {c["lic"]: c for c in cps}
+        if variant == "even":
+            n = len(loans_by_title.get(plat, []))
+            live = [c for c in cps if c["date"] < cutoff.date()]
+            for c in live:
+                c["left"] -= n / max(1, len(live))
+                c["held"] = c["held"] or cutoff
+            continue
         for l in sorted(loans_by_title.get(plat, []), key=lambda x: x["start"]):
-            if variant == "even":
-                break
             live = sorted([c for c in cps if c["held"] is not None and c["held"] <= l["start"] and c["lapsed"] is None
                            and c["left"] > 0], key=lambda c: (c["held"], c["date"], c["lic"]))
             if not live:
@@ -488,16 +490,22 @@ def ask_c(target, variant="golden", trace=None):
                 trace[l["id"]] = c["lic"]
             if c["left"] == 0:
                 c["lapsed"] = l["ended"] if l["ended"] else dt.datetime(2099, 1, 1, tzinfo=UTC)
-                if variant != "renewal_dates":
+                if l["ended"]:
+                    # the re-licence Shelfmark raised when this licence lapsed: the title's re-licence dated that day
+                    day = uk_date(l["ended"])
                     for r in cps:
-                        if r["otype"] == "Renewal" and r["po"].split("-")[1] == c["lic"] and r["held"] is None:
-                            r["held"] = c["lapsed"]
-        if variant == "even":
-            n = len(loans_by_title.get(plat, []))
-            live = [c for c in cps if c["date"] < cutoff.date()]
-            for c in live:
-                c["left"] -= n / max(1, len(live))
-                c["held"] = c["held"] or cutoff
+                        if r["otype"] == "Renewal" and r["date"] == day and r.get("src") is None:
+                            r["src"] = c["lic"]
+                            r["fac"] = c["fac"]
+                            if variant != "renewal_dates":
+                                r["held"] = c["lapsed"]
+                            break
+        if variant == "title_majority":
+            own = collections.Counter(c["fac"] for c in cps if c["otype"] != "Renewal")
+            top = own.most_common(1)[0][0]
+            for c in cps:
+                if c["otype"] == "Renewal":
+                    c["fac"] = top
     out = collections.Counter()
     for plat, cps in lics.items():
         for c in cps:
@@ -505,5 +513,5 @@ def ask_c(target, variant="golden", trace=None):
             if variant == "count_lapsed":
                 in_force = c["held"] is not None and c["held"] <= cutoff
             if in_force and c["left"] <= 10:
-                out[d.fund_fac[c["fund"]]] += 1
+                out[c["fac"]] += 1
     return {f: out[f] for f in FAC_ORDER}

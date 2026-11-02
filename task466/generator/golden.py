@@ -66,6 +66,8 @@ def write_brief(res, path):
     g = res["call"]
     c = canvas.Canvas(path, pagesize=letter, invariant=1)
     c.setTitle("Breck Hollow methane charge 2026")
+    c.setAuthor("Heidi Dillon")
+    c.setCreator("")
     y = 262 * mm
 
     def para(text, size=9.5, bold=False, gap=4.6, width=98):
@@ -199,7 +201,9 @@ def figures(res):
         "default_hh8_generated_t": round(g["hh8_gen"], 1), "default_hh8_released_t": res["hh8_rel_1"],
         "naive_released_t": res["naive_rel_1"], "naive_generated_t": round(g["naive_gen"], 1),
         "threshold_tier2_t": 375, "threshold_tier3_t": 450, "charge_tier3_usd": 312000,
-        "ce": 0.90, "ox": 0.10, "de": 0.99,
+        "ce": 0.90, "ox": 0.10, "de": 0.99, "rho_n": 0.7168,
+        "sem_threshold_ppm": 500, "sem_reading_threshold_ppm": 503,
+        "clauses": ["1.1", "1.3", "1.2", "1.6", "1.7", "1.8", "5.1", "1.5", "7.3"],
     }
     for q in (1, 2, 3, 4):
         for e in (1, 2):

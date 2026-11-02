@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 import numpy as np
 
+import catalogue
 import params as P
 
 TZ = ZoneInfo(P.TZ)
@@ -78,6 +79,9 @@ class World:
 
     # ------------------------------------------------------------------ assortment
     def items(self):
+        """the family structure (department, family size, UPCs, popularity, stocking) on the master stream; the
+        brand, product, size and variety words drawn here only hold the stream's place, and catalogue.retexture
+        writes each family's real description and regular price"""
         r = self.r
         varieties = ["Original", "Vanilla", "Strawberry", "Low Fat", "Garlic", "BBQ", "Sea Salt", "Unsalted",
                      "Spicy", "Honey", "Lemon", "Mint", "Whole Wheat", "Light", "Classic", "Extra Sharp", "Medium",
@@ -118,6 +122,7 @@ class World:
         self.fam = np.array([x[5] for x in rows])
         self.famname = {x[5]: x[6] for x in rows}
         self.parts = [x[7] for x in rows]
+        catalogue.retexture(self)      # each family dressed as a real product line, on its own stream
         n = len(rows)
         self.stocked = {}
         big = max(s[6] for s in P.STORES)
@@ -216,7 +221,8 @@ class World:
                     new[j] = regular[i]
                 else:
                     step = float(r.choice([-0.30, -0.20, 0.20, 0.30, 0.40, 0.50]))
-                    regular[i] = round(max(0.99, regular[i] + step), 2)
+                    # a cut that would take the item under 0.99 is taken as a rise of the same size instead
+                    regular[i] = round(regular[i] + (step if regular[i] + step >= 0.99 else abs(step)), 2)
                     new[j] = regular[i]
             cur[items] = new
             self.week_price.append(cur.copy())

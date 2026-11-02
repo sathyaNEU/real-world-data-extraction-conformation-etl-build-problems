@@ -160,5 +160,5 @@ def procedures(path):
     s.append(Paragraph("C3.6 Metered licences", H2))
     s.append(Paragraph("Automatic re-licensing is enabled for all 40-loan licences (Shelfmark terms 3.3). A licence "
                        "and each re-licence of it are charged to the course texts fund of the faculty whose school "
-                       "ordered the title, under the fund code in use on the date of the order or re-licence.", BODY))
+                       "ordered the licence, under the fund code in use on the date of the order or re-licence.", BODY))
     _doc(path, "Collections procedures: course texts", "Ardmuir University Library", s)

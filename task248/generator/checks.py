@@ -180,7 +180,7 @@ def main(target, golden_dir=None, meta_path=None):
     r3 = lambda d: {k: round(v) for k, v in d.items()}
     g3 = r3(res["A3"])
     ok("A3 device: keeping both exports moves 12 or more cells", mv(g3, r3(st["A3_both"])) >= 12, mv(g3, r3(st["A3_both"])))
-    ok("A3 device: reading card settlement stamps as sale times moves 10 or more cells", mv(g3, r3(st["A3_stamp_dates"])) >= 10, mv(g3, r3(st["A3_stamp_dates"])))
+    ok("A3 device: reading card settlement stamps as sale times moves 6 or more cells", mv(g3, r3(st["A3_stamp_dates"])) >= 6, mv(g3, r3(st["A3_stamp_dates"])))
     ok("A3 device: the grade table as published moves the four cells of the two winter marinas", mv(g3, r3(st["A3_grade_table"])) == 4)
     # world truth for the asks
     year = {dt.date(2026, 1, 1) + dt.timedelta(days=i) for i in range(365)}

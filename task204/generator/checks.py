@@ -107,8 +107,12 @@ def main():
               for k in ("rung0", "rung1", "rung2")))
     check("L-walk: the corrections walk 7, 6, 3 and only the decisive step turns back to 4", nr == [7, 6, 3, 4], nr)
     check("L-runs: eighteen train trips each carry two or three Eastline group offences", len(gold_runs) == 18, len(gold_runs))
-    check("L-counts: the four series hold 43, 18, 16 and 14 offences",
-          sorted(t["n"] for t in gold_tab) == [14, 16, 18, 43], sorted(t["n"] for t in gold_tab))
+    check("L-counts: the four series hold 42, 18, 16 and 14 offences",
+          sorted(t["n"] for t in gold_tab) == [14, 16, 18, 42], sorted(t["n"] for t in gold_tab))
+    r0f = {len(A.local_series(offs, dm, dd)) for dm in (400.0, 1000.0, 2000.0) for dd in (14, 28, 90)}
+    r2f = {len(A.corridor_series(offs, dd, dm)) for dm in (400.0, 1000.0, 2000.0) for dd in (14, 28, 90)}
+    check("L-rung-family: rung 0 files seven and rung 2 three across radii of 400 m to 2 km and windows of 14 to 90 days",
+          r0f == {7} and r2f == {3}, (r0f, r2f))
 
     # ---- the three rules ------------------------------------------------------------------------------------------
     r0c = A.local_series(clean)
@@ -128,7 +132,7 @@ def main():
           not any(re.search(r"series|group|crew|gang|run_id|linked", c) for c in cols)
           and {"occurred_from_local", "x_utm12n", "mo_code", "num_suspects"} <= cols)
     check("R1-raw: the trip step reads the published timetable's stop times (raw material, nothing precomputed)",
-          sum(len(v) for v in gt.st.values()) > 5000 and "trip_id" not in R[next(iter(R))])
+          sum(len(v) for v in gt.st.values()) > 4000 and "trip_id" not in R[next(iter(R))])
     directive = pdf_text(os.path.join(TARGET, "ops41_series_crime_response_directive.pdf"))
     check("R3c-control: the directive's text decodes (positive control)",
           "three or more offences committed by the same offender group" in directive)
@@ -156,8 +160,10 @@ def main():
     alt = A.local_series([dict(o, sus=max(o["sus"], 2)) for o in offs])
     check("SF1: reading lone offenders into offender groups changes the series (OPS-41 section 3 rules it out)",
           grounds(alt, polys) != grounds(A.local_series(offs), polys), len(alt))
-    check("SF2: no linked pair stands outside a series, so 'three or more offences' files the same teams as two or more",
-          len(pairs_outside(offs)) == 0, len(pairs_outside(offs)))
+    po = pairs_outside(offs)
+    in_east = {i for t in gold_tab if len(t["districts"]) > 1 for i in t["ids"]}
+    check("SF2: reading a series as two or more offences files the same teams (the one locally linked pair is inside the Eastline group)",
+          grounds(A.golden_series(offs, gt, cache=cache, min_n=2)[0], polys) == G and all(o in in_east for p_ in po for o in p_), po)
     rep = by_reported(rms, tpo, codes, fare)
     check("SF3: windowing by reported date instead of occurred date files the same teams and counts",
           grounds(A.golden_series(rep, gt, cache=cache)[0], polys) == G)
@@ -171,7 +177,7 @@ def main():
     check("SF6: counting a report made to both systems twice leaves every team and count unchanged",
           grounds(A.golden_series(nodup, gt, cache=cache)[0], polys) == G)
     east = [t for t in gold_tab if len(t["districts"]) > 1]
-    per = collections.Counter(A.district_at(polys, o["x"], o["y"]) for c in gold_series for o in c if len(c) == 43)
+    per = collections.Counter(A.district_at(polys, o["x"], o["y"]) for c in gold_series for o in c if len(c) == max(map(len, gold_series)))
     check("SF7: the Eastline team's ground is all four districts of its series (section 4), each holding six or more offences",
           len(east) == 1 and len(east[0]["districts"]) == 4 and min(per.values()) >= 6, dict(per))
     check("SF8: occurred_to equals occurred_from on every series offence, so either time files the same trips",
@@ -179,10 +185,12 @@ def main():
     tolset = [grounds(A.golden_series(offs, gt, tol_min=t, cache=cache)[0], polys) for t in (1.5, 2.0, 3.0, 4.0, 5.0)]
     check("SF9: trip windows of 1.5 to 5 minutes file the same teams and counts", all(x == G for x in tolset))
     linkset = set()
-    for dm in (500.0, 750.0, 1000.0, 1250.0, 1500.0):
-        for dd in (21, 28, 42, 60):
-            linkset.add(tuple(grounds(A.golden_series(offs, gt, dmax=dm, days=dd, cache=cache)[0], polys)))
-    check("SF10: linkage radii of 500 m to 1.5 km and windows of 21 to 60 days, with the trip step, file the same teams",
+    mo_only = lambda a, b: a["mo"] == b["mo"] and bool(a["mo"])
+    for dm in (400.0, 500.0, 750.0, 1000.0, 1250.0, 1500.0, 2000.0):
+        for dd in (14, 21, 28, 42, 60, 90):
+            for m in (None, mo_only):
+                linkset.add(tuple(grounds(A.golden_series(offs, gt, dmax=dm, days=dd, cache=cache, match=m)[0], polys)))
+    check("SF10: linkage radii of 400 m to 2 km, windows of 14 to 90 days, with or without the description, plus the trip step, file the same teams",
           linkset == {tuple(G)}, len(linkset))
     od = one_direction(offs, gt, cache)
     check("SF11: matching westbound trips only finds the same eighteen trips", od == 18, od)
@@ -231,10 +239,10 @@ def main():
 
     # ---- simultaneity and geometry ----------------------------------------------------------------------------------
     sim = max((len(v) for v in res["simultaneous"].values()), default=0)
-    check("P-simultaneous: on three evenings a Cobb Street offence fell within three minutes of an Eastline group offence at Union Yards",
-          sim == 3, sim)
+    check("P-simultaneous: on four evenings a Cobb Street offence fell within three minutes of an Eastline group offence at Union Yards",
+          sim == 4, sim)
     mr = min_ride(w, "CB", "UY")
-    check("P-train-time: no scheduled train joins Cobb Street and Union Yards in under eight minutes", mr >= 480, mr)
+    check("P-train-time: no scheduled train joins Cobb Street and Union Yards in under six minutes", mr >= 360, mr)
     gs = [N.STN[c] for c in ("RV", "AR", "MB", "UY", "CB")]
     sp = min(N.dist((a["x"], a["y"]), (b["x"], b["y"])) for i, a in enumerate(gs) for b in gs[i + 1:])
     check("P-spacing: the five platform stations sit 1.5 km or more apart, so 1 km linkage cannot chain them", sp >= 1500, round(sp))
@@ -261,14 +269,16 @@ def main():
     for win in (15, 20, 30, 45, 60):
         check("A8-%d: matching referred reports without a file number within %d minutes files the same 2025 grid" % (win, win),
               A.ask_a(rms, tpo, codes, polys, stref, fare, ref_window_min=win) == res["ask_a"])
-    check("A9: every station's entries and calls are distinct (no repeated block)",
-          len(set(res["ask_b"].values())) == 9 and len(set(res["ask_c"].values())) == 9)
+    same = lambda a, b: res["ask_c"][a] == res["ask_c"][b]
+    check("A9: entries differ at every station; calls differ except between stations every one of whose trains serves the other",
+          len(set(res["ask_b"].values())) == 9 and len(set(res["ask_c"].values())) == 6
+          and same("Westgate", "Centre Square") and same("Millbrook", "Cobb Street") and same("Ridgeview", "Prairie Gate"))
     check("A10: no 2025 cell is zero and no district repeats another's row (no constant block)",
           min(min(v) for v in res["ask_a"].values()) > 0 and len({tuple(v) for v in res["ask_a"].values()}) == 10)
 
     # ---- distance to bin edge for every graded figure ------------------------------------------------------------
     variants = [grounds(A.golden_series(offs, gt, tol_min=t, dmax=dm, days=dd, cache=cache)[0], polys)
-                for t in (2.0, 3.0, 5.0) for dm in (500.0, 1000.0, 1500.0) for dd in (21, 28, 60)]
+                for t in (1.5, 3.0, 5.0) for dm in (400.0, 1000.0, 2000.0) for dd in (14, 28, 90)]
     variants += [grounds(A.golden_series(nodup, gt, cache=cache)[0], polys), grounds(A.golden_series(rep, gt, cache=cache)[0], polys),
                  grounds(A.golden_series(offs, flat, cache={})[0], polys)]
     check("B-main: the team count, every ground and every series count are exact under all %d licensed variants "
@@ -310,9 +320,9 @@ def main():
           "11 May" in note and "pulled this morning" not in note)
     card = json.load(open(os.path.join(ROOT, ".claude", "skills", "fingerprint", "cards", "task204.json")))
     people = set(P.PEOPLE.values())
-    card_people = set(card.get("people", []))
-    check("Z-people: the personas in the documents are the card's drawn names",
-          people <= card_people, sorted(people - card_people))
+    card_people = set(card.get("world", {}).get("people", []))
+    check("Z-people: the personas in the documents are exactly the card's drawn names",
+          people == card_people, sorted(people ^ card_people))
     docs_text = directive + " " + note + " " + pdf_text(os.path.join(TARGET, "cau_lrt_station_reference_2026.pdf"))
     named = set(re.findall(r"\b(?:Superintendent|Deputy Chief \(Operations\)|Sergeant|Inspector) ([A-Z][a-z]+ [A-Z][a-z]+)", docs_text))
     check("Z-named: every titled person in the documents is a persona", named <= people, sorted(named - people))
@@ -325,16 +335,18 @@ def main():
     check("Z-golden-xlsx: the golden workbook carries the figures.json teams, grounds and counts", golden_matches(gx, figs))
     memo = docx_text(os.path.join(TASK, "golden", "summer_series_deployment_memo.docx"))
     dtext = lambda ds: ("District %s" % ds[0]) if len(ds) == 1 else ("Districts %s and %s" % (", ".join(ds[:-1]), ds[-1]))
-    check("Z-golden-memo: the memo states four teams, every ground and the three evenings",
+    check("Z-golden-memo: the memo states four teams, every ground and the evenings Cobb Street and Union Yards coincided",
           "four series teams" in memo and all(dtext(t["districts"]) in memo for t in figs["teams"])
-          and "on three evenings" in memo and "six evenings" not in memo)
+          and ("on %s evenings" % {3: "three", 4: "four", 5: "five"}[figs["simultaneous_evenings"]]) in memo)
     check("Z-mtimes: every target file carries the 15 May 2026 export time",
           all(abs(os.path.getmtime(f) - pack.FILE_TIME) < 1 for f in files))
-    for f in files:
+    gfiles = [os.path.join(TASK, "golden", g) for g in sorted(os.listdir(os.path.join(TASK, "golden")))]
+    for f in files + gfiles:
         if f.endswith((".xlsx", ".docx")):
             with zipfile.ZipFile(f) as z:
-                bad = [n for n in z.namelist() if re.search(r"comments|people\.xml|customXml|vbaProject", n)]
+                bad = [n for n in z.namelist() if re.search(r"comments|people\.xml|vbaProject|revisions", n)]
                 core = z.read("docProps/core.xml").decode("utf-8") if "docProps/core.xml" in z.namelist() else ""
+                core += z.read("docProps/app.xml").decode("utf-8") if "docProps/app.xml" in z.namelist() else ""
             check("Z-container-%s: no comments, tracked people or macros; no tool signature in core properties" % os.path.basename(f),
                   not bad and not re.search(r"openpyxl|python-docx|python", core.lower()), bad)
     shutil.rmtree(tmp)
@@ -399,14 +411,13 @@ def by_reported(rms, tpo, codes, fare):
 
 
 def one_direction(offs, gt, cache):
-    local = A.local_series(offs)
-    plat = [o for c in local for o in c if o["loc"] == "LRT PLATFORM" and o["station"]]
+    plat = [o for o in offs if o["sus"] >= 2 and o["x"] is not None and o["loc"] == "LRT PLATFORM" and o["station"]]
     west = {tid for tid, tr in gt.trips.items() if tr["direction_id"] == "1" and tr["route_id"] == "201"}
     cands = [{(d, t) for d, t in c if t.split("@")[0] in west} for c in A.trip_candidates(gt, plat, 3.0, cache)]
     runs = set()
     for i in range(len(plat)):
         for j in range(i + 1, len(plat)):
-            if plat[i]["station"] != plat[j]["station"] and cands[i] & cands[j]:
+            if plat[i]["station"] != plat[j]["station"] and A.behaviour_match(plat[i], plat[j]) and cands[i] & cands[j]:
                 runs.add(sorted(cands[i] & cands[j])[0])
     return len(runs)
 

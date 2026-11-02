@@ -76,7 +76,7 @@ def write_csv(path, header, rows, sep=",", preamble=None):
             w.writerow(["" if v is None else str(v) for v in r])
 
 
-def text_pdf(path, title, blocks, width_chars=104):
+def text_pdf(path, title, blocks, width_chars=104, author=""):
     """A plain text PDF: blocks are (text, style, size); style 'B' bold, '' regular, 'T' a table row (monospace)."""
     import textwrap
     from reportlab.lib.pagesizes import letter
@@ -84,6 +84,8 @@ def text_pdf(path, title, blocks, width_chars=104):
     from reportlab.pdfgen import canvas
     c = canvas.Canvas(path, pagesize=letter, invariant=1)
     c.setTitle(title)
+    c.setAuthor(author)
+    c.setCreator("")
     top = 262 * mm
     y = top
     for text, style, size in blocks:

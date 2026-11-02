@@ -341,6 +341,12 @@ def build(seed=P.SEED):
             lic_by_title.setdefault(t["id"], []).append(L)
     W.licences = lic
     W.lic_by_title = lic_by_title
+    # the school that ordered each licence: a title another school lists is sometimes bought on that school's fund
+    ro = random.Random(seed * 7 + 5)
+    tby = {t["id"]: t for t in titles}
+    for L in lic:
+        t = tby[L.title]
+        L.ordered_by = t["cross"] if (t["cross"] and ro.random() < 0.45) else t["school"]
 
     # ---------------------------------------------------------------- requests
     reqs = {t["id"]: [] for t in titles}
@@ -375,6 +381,11 @@ def build(seed=P.SEED):
     holds, loans = [], []
     for t in titles:
         simulate_title(W, t, rp, holds, loans)
+    # Shelfmark's order references for its automatic re-licences, numbered as they were raised
+    seq = 20417
+    for L in sorted([L for L in W.licences if L.order_type == "Renewal"], key=lambda L: (L.created_at, L.lic_id)):
+        seq += ro.randint(1, 6)
+        L.po_line = "SML-AR-%06d" % seq
     holds.sort(key=lambda h: (h.placed, h.title, h.student))
     loans.sort(key=lambda l: (l.start, l.title, l.student))
     W.holds = holds
@@ -499,9 +510,10 @@ def simulate_title(W, t, rng, holds, loans):
     def renew(L, time):
         k = len([x for x in W.licences if x.title == L.title]) + 1
         rn = Licence(lic_id="L%06d" % ((int(L.lic_id[1:]) * 7 + k * 131) % 999983), title=L.title, model="1U-M",
-                     copies=1, bought=time.date(), po_line="AR-%s-%d" % (L.lic_id, k),
+                     copies=1, bought=to_uk(time).date(), po_line="",
                      price_gbp=round(L.price_gbp * rng.uniform(1.0, 1.08), 2), currency=L.currency,
                      renewal_of=L.lic_id, order_type="Renewal")
+        rn.ordered_by = L.ordered_by
         rn.remaining = [P.METER_LOANS]
         rn.remaining0 = [P.METER_LOANS]
         rn.lapsed_at = [None]

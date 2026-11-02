@@ -325,7 +325,7 @@ def trip_candidates(gtfs, offs, tol_min=3.0, cache=None):
     return res
 
 
-def golden_series(offs, gtfs, tol_min=3.0, dmax=1000.0, days=28, cache=None, match=None):
+def golden_series(offs, gtfs, tol_min=3.0, dmax=1000.0, days=28, cache=None, match=None, min_n=3):
     """The field's linkage, plus a link between group offences at different stations that sat on the same train trip."""
     match = match or behaviour_match
     grp = [o for o in offs if o["sus"] >= 2 and o["x"] is not None]
@@ -349,7 +349,7 @@ def golden_series(offs, gtfs, tol_min=3.0, dmax=1000.0, days=28, cache=None, mat
     comps = defaultdict(list)
     for i, o in enumerate(grp):
         comps[find(i)].append(o)
-    return [c for c in comps.values() if len(c) >= 3], sorted(set(runs))
+    return [c for c in comps.values() if len(c) >= min_n], sorted(set(runs))
 
 
 def simultaneity(series, offs, minutes=3.0):

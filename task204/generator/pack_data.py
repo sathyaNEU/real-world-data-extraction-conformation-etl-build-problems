@@ -33,6 +33,27 @@ def write_csv(path, header, rows):
             w.writerow(r)
 
 
+def _app_xml(path, items):
+    """Extended properties as the Office application writes them (the library's own stamp is replaced)."""
+    import re
+    head = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/'
+            'officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">')
+    if path.endswith(".docx"):
+        doc = dict(items).get("word/document.xml", b"").decode("utf-8")
+        text = re.sub(r"<[^>]+>", " ", doc)
+        words = len(text.split())
+        chars = len("".join(text.split()))
+        return (head + "<Template>Normal.dotm</Template><TotalTime>%d</TotalTime><Pages>1</Pages><Words>%d</Words>"
+                "<Characters>%d</Characters><Application>Microsoft Office Word</Application><DocSecurity>0</DocSecurity>"
+                "<Lines>%d</Lines><Paragraphs>%d</Paragraphs><ScaleCrop>false</ScaleCrop><LinksUpToDate>false</LinksUpToDate>"
+                "<CharactersWithSpaces>%d</CharactersWithSpaces><SharedDoc>false</SharedDoc><HyperlinksChanged>false"
+                "</HyperlinksChanged><AppVersion>16.0000</AppVersion></Properties>"
+                % (6 + words // 40, words, chars, max(1, chars // 70), doc.count("</w:p>"), chars + words))
+    return (head + "<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>"
+            "<LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged>"
+            "<AppVersion>16.0300</AppVersion></Properties>")
+
+
 def normalise_zip(path, modified=None):
     """Rewrite an Office file with fixed entry times and order so rebuilds are byte-identical. openpyxl stamps
     dcterms:modified with the clock at save time, so the stamp is set back to the document's own date."""
@@ -46,7 +67,10 @@ def normalise_zip(path, modified=None):
             m = re.search(r"<dcterms:created[^>]*>([^<]+)</dcterms:created>", txt)
             stamp = modified or (m.group(1) if m else "2026-05-15T09:00:00Z")
             txt = re.sub(r"(<dcterms:modified[^>]*>)[^<]+(</dcterms:modified>)", r"\g<1>%s\g<2>" % stamp, txt)
+            txt = re.sub(r"<dc:description>[^<]*</dc:description>", "<dc:description/>", txt)
             data = txt.encode("utf-8")
+        elif name == "docProps/app.xml":
+            data = _app_xml(path, items).encode("utf-8")
         fixed.append((name, data))
     items = fixed
     buf = io.BytesIO()
@@ -106,6 +130,7 @@ def rms_rows(world):
                      "alo": "", "ahi": "", "sex": "", "weapon": o["weapon"], "prop": o["property"], "value": val,
                      "phone": False, "ev": None})
     recs.sort(key=lambda r: (r["t_rep"], r["x"]))
+    recs = [r for r in recs if r["t_rep"] <= P.PULL_LOCAL]       # the extract holds what was reported by the pull
     out = []
     index = {}
     seq = {2025: 10417, 2026: 9862}

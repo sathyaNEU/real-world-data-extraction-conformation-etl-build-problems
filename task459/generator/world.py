@@ -446,9 +446,9 @@ def build_members(provs_by_region):
             to = REGION_CODES[rng.choice(7)]
         m = base("late_mover" if late else "early_mover", frm)
         if late:
-            mv = doy(dt.date(2025, 9, 1)) + int(rng.integers(0, 90))
+            mv = doy(dt.date(2025, 9, 15)) + int(rng.integers(0, 76))
         else:
-            mv = doy(dt.date(2025, 1, 12)) + int(rng.integers(0, 100))
+            mv = doy(dt.date(2025, 1, 10)) + int(rng.integers(0, 80))
         m.away = to
         m.away_zip = pick_zip(rng, to)
         set_span(m, mv, NDAYS - 1, REGION_CODES.index(to))

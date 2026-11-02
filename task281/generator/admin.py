@@ -143,7 +143,7 @@ def build(W, seed=P.SEED):
         amt_cur = L.price_gbp * L.copies if cur == "GBP" else round(L.price_gbp * L.copies * (r["eur"] if cur == "EUR" else r["usd"]), 2)
         inv.append(dict(vendor=vendor, invoice=_invno(vendor, invno[vendor]), inv_date=inv_date, po_line=L.po_line,
                         desc="%s (%s)" % (t["title"], _model_text(L)), isbn=t["e_isbn"], qty=L.copies,
-                        currency=cur, amount=round(amt_cur, 2), fund=fund_code(W.school_old[t["school"]], L.bought),
+                        currency=cur, amount=round(amt_cur, 2), fund=fund_code(W.school_old[L.ordered_by], L.bought),
                         line_type="Renewal" if L.order_type == "Renewal" else "Order"))
     # package invoices (annual, January 2026), charged to the central course texts fund
     A.packages = []

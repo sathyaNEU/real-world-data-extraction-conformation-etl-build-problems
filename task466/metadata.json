@@ -1,0 +1,115 @@
+{
+ "task": "task466",
+ "title": "Breck Hollow Landfill: the 2026 closed landfill methane charge and return",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "domain": "Physical & Environmental Sciences",
+ "decision": "which tier of the state's closed landfill methane charge the landfill's 2026 return falls in, the charge for the 2027 budget, and the 2026 return's schedules",
+ "deliverables": [
+  "breck_hollow_charge_brief_2026.pdf",
+  "breck_hollow_methane_return_2026.xlsx"
+ ],
+ "distractor_files": [
+  "target/weather_station_daily_2024-2026.csv",
+  "target/leachate_pumping_2026.csv",
+  "target/BH_weighbridge_archive_2004-2017.csv"
+ ],
+ "distractor_reasons": {
+  "target/weather_station_daily_2024-2026.csv": "daily weather at the site; the rule's quantities are measured at the gas plant and no figure is weather-normalised",
+  "target/leachate_pumping_2026.csv": "leachate handling at the site's sump, a separate system from the gas plant",
+  "target/BH_weighbridge_archive_2004-2017.csv": "tonnages received while the landfill was open; the rule has a closed landfill with a gas system estimate from its capture, and the archive starts thirty years after the first waste"
+ },
+ "as_of": "2027-01-15",
+ "files": [
+  {
+   "path": "target/BH_engine_plant_events_2026.txt",
+   "content": "the energy plant's control system event log for 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_gas_management_plan_2025.pdf",
+   "content": "the landfill gas management plan, revision 4 (extract)",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_gas_plant_hourly_2024-2026.csv",
+   "content": "the gas plant historian's hourly export, January 2024 to the first days of January 2027",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_gas_plant_outage_log_2024-2026.xlsx",
+   "content": "the gas plant operator's log of blower outages, 2024 to 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_site_register_2025.xlsx",
+   "content": "the Authority's site register for the landfill",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_surface_emissions_monitoring_2026.xlsx",
+   "content": "the quarterly surface walkover logger exports and the re-monitoring record, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_weighbridge_archive_2004-2017.csv",
+   "content": "monthly tonnages received by waste class, 2004 to closure in 2017",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/BH_well_register_2025.xlsx",
+   "content": "the Authority's register of gas wells",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/DEQ_closed_landfill_methane_rule_extract.pdf",
+   "content": "the state's closed landfill methane rule (extract)",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/Leyland_BH_monthly_operating_reports_2026.pdf",
+   "content": "the engine operator's monthly operating reports to the Authority, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/SEM_analyser_checks_2026.csv",
+   "content": "the walkover analyser's zero and span check sheet, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/leachate_pumping_2026.csv",
+   "content": "leachate sump levels, pumping and hauling, 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/weather_station_daily_2024-2026.csv",
+   "content": "the site weather station's daily summaries, 2024 to 2026",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2027-01-14",
+   "licence": "CC0 1.0 (constructed for this task)"
+  }
+ ]
+}

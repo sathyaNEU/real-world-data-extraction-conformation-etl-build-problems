@@ -165,14 +165,13 @@ The full includer (old EANs through the master data, the master data's closing a
 
 ## Leak review
 
-`leak.py --asof 2026-10-16` on the final cut: no LEAK; eight REVIEW lines, each ruled here (the available flow, capacity, committed flow, 1.163 and the design basis are declared `stated_inputs`).
+`leak.py --asof 2026-10-16` on the final cut: no LEAK; seven REVIEW lines, each ruled here (the available flow, capacity, committed flow, 1.163 and the design basis are declared `stated_inputs`).
 - Sweep 3, stadswarmte_tarievenblad_2026.pdf (100): harmless, the tariff's 100 kW class boundary; the write-up's 100 is a rounding unit.
 - Sweep 3, hydraulische_toets_os_west_2026-10-09.pdf (5 of 8 words of the call): harmless, the test's own subject (the station's design-day flow and the season it covers); it states no season and no flow for the blocks.
 - Sweep 3, procedure_capaciteitstoets_aansluitingen_v3.pdf (7 of 8 words of the call): harmless, CT-03 3.3 defines what running short in a heating season means (the WHAT); it names no season.
-- Sweep 4, the hydraulic test (network, design, capacity, connection): harmless, the station's capacity and committed flow; no regime, return temperature or build year (checks.py R3c).
-- Sweep 4, the procedure (network, design, capacity, connection, return, installation): harmless, "return" and "installation" are CT-03 3.2's definition of the drop (the WHAT); no regime, comparison group or build year (R3c).
-- Sweep 4, the scope (design, metered, connection, installation): harmless, the works (the delivery set on the existing installation, radiators kept) and Ask 1's gas year; no drop or return temperature (R3c').
-- Sweep 4, the prompt's deliverable sentence: harmless, the prompt's own terms (design-day flow, connected, available flow).
+- Sweep 4, the hydraulic test (network, design, connections, capacity, service, hydraulic): harmless, the station's capacity, committed flow and reporting basis; no regime, return temperature, build year or installation kind (checks.py R3c).
+- Sweep 4, the procedure (network, design, connections, installation, capacity, return and two more): harmless, CT-03 3.2's definition of the drop and its comparison by installation kind (the WHAT the re-judge required); it names no connection, return temperature, build year or threshold (R3c, SF17).
+- Sweep 4, the scope (design, connections, installation, radiators, metered, return and one more): harmless, the works and the blocks' own installation (original two-pipe radiators sized for 90/70, filed so the comparison has a meaning) and Ask 1's gas year; it names no connection in service and no metered drop (R3c'), and its 90/70 read as the drop files 2027-28 (SF17).
 - Sweep 9, weidehaven_aardgasvrij_fasering_2027-2028.xlsx (15 dates after the as-of): harmless, the schedule's planned connection dates, forward-looking by genre.
 
 Stage 4 leak reader on b35cf51b (run by the main session): clean on every question; question 6 analytical (the drop blocks with unchanged radiators will make in service; CT-03 3.2 names the quantity, not the value; nothing points to which connections they resemble). One realism finding, fixed in the generator: the rev2 study's components sat at one ratio in every row (ventilation 0.53 of transmission, heating-up 0.19); each block's ventilation share now follows its storeys, type and label and its heating-up allowance the night setback found in its boiler room (two new columns, bouwlagen and nachtverlaging_K), every block's total and so every flow, phase sum and graded figure unchanged (checks.py S10 and S11: ventilation 0.30 to 0.60 and heating-up 0.00 to 0.21 of transmission).

@@ -15,7 +15,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (8 lines, ruled in the design note's Leak review), 2026-11-02",
-  "reader": "clean on every question (q6 analytical), one realism finding on the rev2 component shares, fixed 2026-11-02 (checks.py S10, S11)"
+  "reader": "round 1 clean on b35cf51b; documents changed since (CT-03 3.2, scope, rev2 header, hydraulic test section 5), re-read pending"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g against task301, answered in the Draw), 2026-11-02",
@@ -23,12 +23,12 @@
   "surface": "6 pairs promoted for the author's adjudication, differentiation lines on the card, 2026-11-02"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE, two thin ask cells widened before ship (re-judge pending)",
+  "verdict": "NOT_DETERMINISTIC (round 2 on 313a7c32: Gates C, E, B on the cohort)",
+  "disposition": "repaired at the WHAT level: CT-03 3.2 files the comparison by installation kind, the scope and rev2 file the blocks' original radiators sized for 90/70, the heat ask's population pinned; re-judge pending",
   "report": ""
  },
  "returned": [],
- "resume": "one short re-judge on 313a7c32 (main session), then ship",
+ "resume": "re-judge and leak reader on f6146df1 (main session), then ship",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -49,16 +49,16 @@
  "call": "2028-29 heating season (about 200 m3/h against 168 available, short by about 30; 2027-28 holds at about 150)",
  "asof": "2026-10-16",
  "gates_final_cut": {
-  "checks": "96 of 96",
+  "checks": "98 of 98",
   "verify": "0 failed",
   "byte_identical": "two builds, 17 files",
   "figures_check": "59 of 59",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS",
-  "leak_py": "REVIEW (8 lines ruled in the note)",
+  "leak_py": "REVIEW (7 lines ruled in the note)",
   "heart": "WARN (repeat.gate_g vs task301)",
   "surface": "6 pairs promoted for adjudication (task140, task134, task133, task149, task167, task261), each with a differentiation line on the card",
-  "target_zip": "313a7c32",
+  "target_zip": "f6146df1",
   "zip_fresh": true,
   "pair_ceiling": 28.5,
   "mirror_leakage": 0.0

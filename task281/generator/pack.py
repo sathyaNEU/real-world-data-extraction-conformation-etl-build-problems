@@ -131,10 +131,11 @@ def write(W, A, target):
     lics.sort(key=lambda L: (L.bought, L.lic_id))
     for L in lics:
         t = tby[L.title]
-        ordered_by = W.school_old[t["school"]]
         price = _price_in_currency(A, L)
+        # the platform's automatic re-licences reach the register through the order feed, without a fund
+        fund = "" if L.order_type == "Renewal" else AD.fund_code(W.school_old[L.ordered_by], L.bought)
         ws.append([L.lic_id, t["platform_id"], t["e_isbn"], t["title"], t["publisher"], mtext[L.model], L.copies,
-                   L.bought, L.po_line, L.order_type, round(price, 2), L.currency, AD.fund_code(ordered_by, L.bought)])
+                   L.bought, L.po_line, L.order_type, round(price, 2), L.currency, fund])
     for row in ws.iter_rows(min_row=2, min_col=8, max_col=8):
         for c in row:
             c.number_format = "dd/mm/yyyy"
