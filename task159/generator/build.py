@@ -43,11 +43,11 @@ def figures(t):
     m = r["main"]
     F = dict(
         budget_oz=rnd(m["golden"], 10000), budget_oz_raw=round(m["golden"], 1),
-        ore_mt_1dp=round(m["golden_t"] / 1e6, 1), ore_t_raw=round(m["golden_t"]),
+        ore_mt_1dp=round(m["golden_t"] / 1e6, 1), ore_t_raw=round(m["golden_t"]), ore_t_100k=rnd(m["golden_t"], 100000),
         ore_grade_1dp=round(m["golden"] * TROY / m["golden_t"], 1),
         ore_grade_raw=round(m["golden"] * TROY / m["golden_t"], 3),
         plan_oz_100=rnd(m["plan_oz"], 100), plan_oz_raw=round(m["plan_oz"], 1),
-        plan_mt_2dp=round(m["plan_t"] / 1e6, 2), plan_t_raw=round(m["plan_t"]),
+        plan_mt_2dp=round(m["plan_t"] / 1e6, 2), plan_t_raw=round(m["plan_t"]), plan_t_10k=rnd(m["plan_t"], 10000),
         plan_grade_2dp=round(m["plan_oz"] * TROY / m["plan_t"], 2),
         f05_2dp=round(m["f05"], 2), f05_raw=round(m["f05"], 4), f09_1dp=round(m["f09"], 1), f09_raw=round(m["f09"], 4),
         n_pairs=m["n_pairs"],

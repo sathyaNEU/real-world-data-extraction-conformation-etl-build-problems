@@ -334,8 +334,8 @@ def read_sem(target):
     for r in ws.iter_rows(min_row=3, values_only=True):
         if r[0] is None:
             continue
-        t = dt.datetime.strptime(r[1] + " " + r[2], "%Y-%m-%d %H:%M").replace(tzinfo=C.TZ)
-        rm.append(dict(q=int(r[0][1]), t=t, label=r[3], x=float(r[4]), y=float(r[5]), ppm=float(r[6])))
+        t = dt.datetime.strptime(r[0] + " " + r[1], "%Y-%m-%d %H:%M").replace(tzinfo=C.TZ)
+        rm.append(dict(t=t, label=r[2], lat=float(r[3]), lon=float(r[4]), ppm=float(r[5])))
     checks = []
     with open(os.path.join(target, "SEM_analyser_checks_2026.csv"), encoding="utf-8") as f:
         for r in csv.DictReader(f):
@@ -344,41 +344,47 @@ def read_sem(target):
     return walks, rm, checks
 
 
-def sem_answers(target, void_rule=True, match="gps", radius=25.0):
+def wgs84_to_site(lat, lon):
+    """Site grid feet from WGS84, by the tie in the site register (E1000 N2000 = 43.183150 N, 89.672840 W)."""
+    import math
+    la0, lo0 = 43.183150, -89.672840
+    y = 2000.0 + (lat - la0) * 364000.0
+    x = 1000.0 + (lon - lo0) * 364000.0 * math.cos(math.radians(la0))
+    return x, y
+
+
+def sem_answers(target, void_rule=True, match="gps", radius=40.0, bg=3.0):
     walks, rm, checks = read_sem(target)
+    for x in rm:
+        x["x"], x["y"] = wgs84_to_site(x["lat"], x["lon"])
     out = {}
+    fails = [c["t"] for c in checks if c["result"] == "FAIL"]
+    void = []
+    for ft in fails:
+        passes = [c["t"] for c in checks if c["result"] == "PASS" and c["t"] < ft and c["t"].date() == ft.date()]
+        if passes:
+            void.append((max(passes), ft))
     for q in (1, 2, 3, 4):
         rows = walks[q]
+        last = max(r["t"] for r in rows)
         if void_rule:
-            # readings after the last passing check and before a failed check are void
-            fails = [c["t"] for c in checks if c["result"] == "FAIL"]
-            void = []
-            for ft in fails:
-                passes = [c["t"] for c in checks if c["result"] == "PASS" and c["t"] < ft and c["t"].date() == ft.date()]
-                if passes:
-                    lo = max(passes)
-                    void.append((lo, ft))
             rows = [r for r in rows if not any(lo <= r["t"] < hi for lo, hi in void)]
-        exc = [r for r in rows if r["ppm"] - r["bg"] > 500]
-        # one location per point label (a re-walked point counts once)
+        exc = [r for r in rows if r["ppm"] - bg > 500]
         locs = {}
         for r in exc:
             locs.setdefault(r["label"], r)
         locs = list(locs.values())
         still = 0
-        for loc in locs:
-            cands = [x for x in rm if x["q"] == q]
-            if match == "gps":
-                best = min(cands, key=lambda x: (x["x"] - loc["x"]) ** 2 + (x["y"] - loc["y"]) ** 2) if cands else None
-                if best is not None and ((best["x"] - loc["x"]) ** 2 + (best["y"] - loc["y"]) ** 2) ** 0.5 <= radius:
-                    if best["ppm"] - 3 > 500:
-                        still += 1
-                else:
-                    still += 1        # not re-monitored counts as not cleared
-            else:
-                hit = [x for x in cands if x["label"] == loc["label"]]
-                if not hit or hit[0]["ppm"] - 3 > 500:
+        if match == "gps":
+            for loc in locs:
+                cands = [x for x in rm if x["t"] > last and ((x["x"] - loc["x"]) ** 2 + (x["y"] - loc["y"]) ** 2) ** 0.5 <= radius]
+                first = min(cands, key=lambda x: x["t"]) if cands else None
+                if first is None or first["ppm"] - bg > 500:
                     still += 1
+        else:
+            # date window: re-checks within ten days after the walkover's last day
+            win = [x for x in rm if last < x["t"] <= last + dt.timedelta(days=10)]
+            still = sum(1 for x in win if x["ppm"] - bg > 500)
         out[q] = dict(exceed=len(locs), still=still)
     return out
 

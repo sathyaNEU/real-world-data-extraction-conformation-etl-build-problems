@@ -33,24 +33,20 @@ def workbook(path, F):
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = "Ore cut-off 0.90 g/t from 1 January 2027; mine plan 2027 v3 schedule; prepared 24 November 2026"
     ws["A2"].font = Font(italic=True, size=9)
-    _head(ws, 4, ["", "Tonnes (Mt)", "Grade (g/t Au)", "Gold (oz)"], [46, 14, 15, 14])
-    rows = [("2027 budget gold, ore mined (grade control)", F["ore_mt_1dp"], F["ore_grade_1dp"], F["budget_oz"]),
-            ("Plan basis, resource model 2026R at 0.90 g/t", F["plan_mt_2dp"], F["plan_grade_2dp"], F["plan_oz_100"])]
+    _head(ws, 4, ["", "Ore (t)", "Gold (oz)"], [46, 14, 14])
+    rows = [("2027 budget gold, ore mined (grade control)", F["ore_t_100k"], F["budget_oz"]),
+            ("Plan basis, resource model 2026R at 0.90 g/t", F["plan_t_10k"], F["plan_oz_100"])]
     for r, row in enumerate(rows, start=5):
         for c, v in enumerate(row, start=1):
             cell = ws.cell(row=r, column=c, value=v)
-            if c == 2:
-                cell.number_format = "0.0" if r == 5 else "0.00"
-            if c == 3:
-                cell.number_format = "0.0" if r == 5 else "0.00"
-            if c == 4:
+            if c >= 2:
                 cell.number_format = "#,##0"
         if r == 5:
-            for c in range(1, 5):
+            for c in range(1, 4):
                 ws.cell(row=r, column=c).font = Font(bold=True)
     ws["A8"] = "Grade control against the resource model, Jan 2023 to Oct 2026 (gold, each side at its own cut)"
     ws["A8"].font = Font(bold=True)
-    _head(ws, 9, ["Cut-off", "Gold factor", "", ""])
+    _head(ws, 9, ["Cut-off", "Gold factor", ""])
     ws["A10"], ws["B10"] = "0.50 g/t (reconciliation reports)", F["f05_2dp"]
     ws["A11"], ws["B11"] = "0.90 g/t (record re-cut)", F["f09_1dp"]
     ws["B10"].number_format = "0.00"
@@ -58,7 +54,7 @@ def workbook(path, F):
     ws["A13"] = ("Budget gold is the plan's Schedule blocks taken through the record's grade-control-to-model ratios, "
                  "gold kept where grade control reads 0.90 g/t or more; rounded to the nearest 10,000 oz.")
     ws["A13"].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.merge_cells("A13:D14")
+    ws.merge_cells("A13:C14")
     ws.row_dimensions[13].height = 30
 
     s = wb.create_sheet("LG stockpile")

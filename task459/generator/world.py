@@ -463,7 +463,7 @@ def build_members(provs_by_region):
         members.append(m)
 
     # Members aged 65 to 74 on 31 Dec 2025 (the asks' population), some who turn 75 during 2025 sit above.
-    n_young = 7400
+    n_young = 5600
     for i in range(n_young):
         home = REGION_CODES[rng.choice(7, p=np.array([0.07, 0.19, 0.09, 0.33, 0.1, 0.15, 0.07]))]
         m = base("young", home, 65, 74)

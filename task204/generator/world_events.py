@@ -70,7 +70,11 @@ class Events:
     def make_g1(self):
         r = self.rng
         cands = [d for d in dates(*P.W26) if d.weekday() in (1, 3, 4) and d not in P.HOLIDAYS]
-        pick = sorted(r.choice(len(cands), size=P.GROUPS["G1"]["n_runs"], replace=False))
+        while True:
+            pick = sorted(r.choice(len(cands), size=P.GROUPS["G1"]["n_runs"], replace=False))
+            ds = [cands[i] for i in pick]
+            if max((b - a).days for a, b in zip(ds, ds[1:])) <= 10:
+                break
         g1_st = P.GROUPS["G1"]["stations"]           # inbound order RV, AR, MB, UY
         patterns = []
         for i in range(len(pick)):
@@ -192,14 +196,18 @@ class Events:
     def make_g4(self):
         r = self.rng
         cands = [d for d in dates(*P.W26) if d.weekday() in (3, 4, 5)]
-        pick = sorted(r.choice(len(cands), size=P.GROUPS["G4"]["n"], replace=False))
+        while True:
+            pick = sorted(r.choice(len(cands), size=P.GROUPS["G4"]["n"], replace=False))
+            ds = [cands[i] for i in pick]
+            if max((b - a).days for a, b in zip(ds, ds[1:])) <= 10:
+                break
         cx, cy = P.UNIVERSITY
         for i in pick:
             d = cands[i]
             sec = int(r.integers(22 * 3600 + 30 * 60, 25 * 3600 + 45 * 60))
             ev = at(d, sec)
             ang = r.uniform(0, 2 * np.pi)
-            rad = 450 * np.sqrt(r.uniform(0, 1))
+            rad = 230 * np.sqrt(r.uniform(0, 1))
             self.add(group="G4", date=ev.date(), station=None, t_event=ev, t_occ=self.report_time(ev),
                      x=cx + rad * np.cos(ang), y=cy + rad * np.sin(ang), mo="STREET-WEAPON",
                      suspects=2, age_low=int(r.integers(19, 23)),

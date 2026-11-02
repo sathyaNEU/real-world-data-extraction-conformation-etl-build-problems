@@ -267,7 +267,11 @@ Measured by: generator/ceiling.py on the cut pack
   every zone, 6 arrival shares, 7 station ratios, golden files read back); two builds byte-identical over 20 files
   (target.zip aa619280); figures_check.py 60 figures, 0 absent; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 (871 characters);
   leak.py --asof 2027-12-06 REVIEW, no LEAK; guard.py heart WARN (no BLOCK); guard.py surface exit 0, personas Colum
-  Curtis, Deaglan Gilmore and Eve Dunne only.
+  Curtis, Deaglan Gilmore and Eve Dunne only, no hard tell (no shared name, file or seed table); ten pairs promoted
+  for the author's adjudicated read: task148 (the same urban forecasting pairing at the adjacent number; its driver is
+  queue reneging), six pairs at surface 0.10 (task134, task142, task167, task229, task261, task484, the top of this
+  build's own distribution), and task65, task67 and task482 (gap, pattern and decision family, differentiated on the
+  card: none converts a count of persons into journeys).
 - **Guard WARNs answered.** overuse.org_family: a metropolitan transport authority is a government agency, the honest
   family. repeat.deliverables (docx and xlsx against task304): a workbook for the figures and a committee note are what
   the authority's rail planning team produces; the note carries the chart. repeat.question_form (how-many against

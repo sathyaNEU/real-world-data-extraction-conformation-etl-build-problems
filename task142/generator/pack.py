@@ -207,7 +207,8 @@ def revised(path, w):
     ws = wb.active
     ws.title = "Resultaten"
     ws.append(["Warmteverliesberekening NEN-EN 12831, Weidehaven aardgasvrij 2027-2028"])
-    ws.append(["Revisie 2, 18-09-2026. Ontwerpbuitentemperatuur -10 C. %s, %s" % (P.CONSULT, P.PEOPLE["consult"])])
+    ws.append(["Revisie 2, 18-09-2026. Ontwerpbuitentemperatuur -10 C. Afgifte: bestaande tweepijps radiatoren, "
+               "ontwerp 90/70 C. %s, %s" % (P.CONSULT, P.PEOPLE["consult"])])
     ws.append([])
     ws.append(["object", "complex", "woningen", "bouwlagen", "gbo_m2", "nachtverlaging_K", "transmissie_kw",
                "ventilatie_kw", "opwarmtoeslag_kw", "ontwerpwarmteverlies_kw"])

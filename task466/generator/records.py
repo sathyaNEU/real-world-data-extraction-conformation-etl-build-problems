@@ -9,6 +9,16 @@ import common as C
 import world as W
 
 FLARE_MIN_TEMP_F = 1400
+GRID_TIE = (1000.0, 2000.0, 43.183150, -89.672840)   # site grid E, N (US survey ft) at this WGS84 latitude, longitude
+FT_PER_DEG_LAT = 364000.0
+
+
+def site_to_wgs84(x, y):
+    import math
+    e0, n0, la0, lo0 = GRID_TIE
+    lat = la0 + (y - n0) / FT_PER_DEG_LAT
+    lon = lo0 + (x - e0) / (FT_PER_DEG_LAT * math.cos(math.radians(la0)))
+    return lat, lon
 
 
 def minute_time(m):
@@ -268,23 +278,57 @@ def surface_walkovers(p):
         for rw in rewalk:
             if rw["idx"] == row["idx"]:
                 rw["ppm"] = v
-    # re-monitoring within ten days at the spot (GPS), under a re-monitoring label
+    # re-monitoring at the spot (handheld GPS, WGS84), under a running re-monitoring number: a first re-check four
+    # to nine days after the walkover, a second one for a location still over, and in two quarters a location that
+    # fails both and is cleared at a third visit; the year opens with the re-checks of the fourth 2025 walkover
+    rmrows = []
+    seq = [0]
+
+    def add(t, x, y, ppm, idx, q, visit):
+        seq[0] += 1
+        rmrows.append(dict(t=t, label="RM-26-%03d" % seq[0], x=x, y=y, ppm=ppm, idx=idx, q=q, visit=visit))
+
+    for (d, x, y, ppm) in ((dt.datetime(2026, 1, 6, 10, 20, tzinfo=C.TZ), 1640.2, 2711.8, 640.0),
+                           (dt.datetime(2026, 1, 6, 10, 55, tzinfo=C.TZ), 2391.5, 2203.4, 85.0),
+                           (dt.datetime(2026, 1, 15, 9, 40, tzinfo=C.TZ), 1640.6, 2712.9, 120.0)):
+        add(d, x, y, ppm, None, 0, 0)
+    double_fail_q = (2, 4)
     for wk in walks:
         q = wk["q"]
         last_day = dt.date(*wk["days"][-1])
         rm = []
-        n_rm = 0
-        for idx in sorted(wk["exc"]):
-            n_rm += 1
-            d = last_day + dt.timedelta(days=int(r.integers(4, 10)))
-            still = r.uniform() < 0.28
-            ppm = float(r.uniform(540, 1600)) if still else float(r.uniform(30, 380))
+        exc_sorted = sorted(wk["exc"])
+        for n_i, idx in enumerate(exc_sorted):
+            still = r.uniform() < 0.30
+            if q in double_fail_q and n_i == 0:
+                still = True
             pt = wk["pts"][idx]
-            rm.append(dict(t=dt.datetime(d.year, d.month, d.day, int(r.integers(8, 15)), int(r.integers(0, 60)),
-                                         tzinfo=C.TZ),
-                           label="RM-%d-%02d" % (q, n_rm), x=pt["x"] + wk["offx"][idx] + r.uniform(-6, 6),
-                           y=pt["y"] + wk["offy"][idx] + r.uniform(-6, 6), ppm=ppm, idx=idx, still=still))
-        wk["recheck"] = rm
+            bx, by = pt["x"] + wk["offx"][idx], pt["y"] + wk["offy"][idx]
+            d1 = last_day + dt.timedelta(days=int(r.integers(4, 10)))
+            t1 = dt.datetime(d1.year, d1.month, d1.day, int(r.integers(8, 15)), int(r.integers(0, 60)), tzinfo=C.TZ)
+            ppm1 = float(r.uniform(540, 1600)) if still else float(r.uniform(30, 380))
+            rm.append(dict(t=t1, idx=idx, still=still, ppm=ppm1, x=bx + r.uniform(-6, 6), y=by + r.uniform(-6, 6), visit=1))
+            if still:
+                d2 = d1 + dt.timedelta(days=int(r.integers(5, 10)))
+                t2 = dt.datetime(d2.year, d2.month, d2.day, int(r.integers(8, 15)), int(r.integers(0, 60)), tzinfo=C.TZ)
+                fail2 = q in double_fail_q and n_i == 0
+                ppm2 = float(r.uniform(520, 900)) if fail2 else float(r.uniform(25, 300))
+                rm.append(dict(t=t2, idx=idx, still=fail2, ppm=ppm2, x=bx + r.uniform(-6, 6), y=by + r.uniform(-6, 6), visit=2))
+                if fail2:
+                    d3 = d2 + dt.timedelta(days=int(r.integers(5, 9)))
+                    t3 = dt.datetime(d3.year, d3.month, d3.day, int(r.integers(8, 15)), int(r.integers(0, 60)), tzinfo=C.TZ)
+                    rm.append(dict(t=t3, idx=idx, still=False, ppm=float(r.uniform(20, 200)), x=bx + r.uniform(-6, 6),
+                                   y=by + r.uniform(-6, 6), visit=3))
+        wk["recheck"] = [x for x in rm if x["visit"] == 1]
+        wk["recheck_all"] = rm
+    allrm = []
+    for wk in walks:
+        for x in wk["recheck_all"]:
+            allrm.append((x["t"], x, wk["q"]))
+    for t_, x, q in sorted(allrm, key=lambda z: z[0]):
+        add(x["t"], x["x"], x["y"], x["ppm"], x["idx"], q, x["visit"])
+    for wk in walks:
+        wk["rm_rows"] = rmrows
     return walks
 
 

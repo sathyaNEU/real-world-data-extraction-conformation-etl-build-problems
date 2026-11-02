@@ -79,7 +79,7 @@ def write_scada(t, target):
               "FT-202 GEN2 fuel (Nm3/h)", "FT-301 flare gas (m3/h)", "TT-301 flare temp (F)"]
     pre = ["# Breck Hollow LFG plant historian - hourly averages",
            "# Export: 2027-01-04 08:12 UTC by tlhays (Leyland Renewable Gas)",
-           "# Interval: 1 h, labelled at interval start; blank analyser values = no sample flow"]
+           "# Interval: 1 h, labelled at interval start"]
     C.write_csv(os.path.join(target, fn), header, rows, preamble=pre)
     return fn
 
@@ -201,8 +201,7 @@ def write_operator_reports(t, target):
     fn = "Leyland_BH_monthly_operating_reports_2026.pdf"
     p = t["plant"]
     blocks = [("%s - %s energy plant: monthly operating reports, 2026" % (OPER, SITE), "B", 12),
-              ("Prepared for the %s under the 2016 gas rights agreement. Hour meter and kWh meter readings are taken at the "
-               "monthly service visit; readings for each engine are cumulative." % AUTH, "", 9), ("", "", 9)]
+              ("Prepared for the %s under the 2016 gas rights agreement." % AUTH, "", 9), ("", "", 9)]
     r = W.rng(220)
     hm = {1: 61234.0, 2: 59876.0}
     kwh = {1: 48877000.0, 2: 47912000.0}
@@ -260,18 +259,18 @@ def write_sem(t, target):
             ws.append([row["t"].strftime("%Y-%m-%d"), row["t"].strftime("%H:%M:%S"), row["label"],
                        round(row["x"], 1), round(row["y"], 1), round(row["ppm_logged"], 0), 3, "JL"])
     ws = wb.create_sheet("Re-monitoring")
-    ws.append(["Breck Hollow - re-monitoring of marked exceedance locations after repair. GPS position as found on the day."])
+    ws.append(["Breck Hollow - re-monitoring of marked exceedance locations after repair. Position by handheld GPS (WGS84) as found on the day."])
     ws["A1"].font = Font(bold=True)
-    ws.append(["Walkover", "Date", "Time", "Location", "Easting (ft)", "Northing (ft)", "CH4 (ppm)", "Repair"])
+    ws.append(["Date", "Time", "Ref", "Latitude", "Longitude", "CH4 (ppm)", "Repair"])
     for c in ws[2]:
         c.font = Font(bold=True)
     r = W.rng(230)
     rep = ["Cap seam re-welded", "Well boot re-sealed", "Soil added at penetration", "Boot clamp tightened"]
-    for wk in t["walks"]:
-        for row in wk["recheck"]:
-            ws.append(["Q%d" % wk["q"], row["t"].strftime("%Y-%m-%d"), row["t"].strftime("%H:%M"), row["label"],
-                       round(row["x"], 1), round(row["y"], 1), round(row["ppm"], 0), rep[int(r.integers(0, len(rep)))]])
-    C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2026, 12, 21, 15, 0), AUTH)
+    for row in t["walks"][0]["rm_rows"]:
+        la, lo = R.site_to_wgs84(row["x"], row["y"])
+        ws.append([row["t"].strftime("%Y-%m-%d"), row["t"].strftime("%H:%M"), row["label"], round(la, 6), round(lo, 6),
+                   round(row["ppm"], 0), rep[int(r.integers(0, len(rep)))]])
+    C.save_workbook(wb, os.path.join(target, fn), dt.datetime(2027, 1, 12, 15, 0), AUTH)
     return fn
 
 
@@ -297,9 +296,6 @@ def write_gas_plan(target):
          "geomembrane cap and delivers it to the gas plant, where two blowers (one on duty, one on standby) draw the "
          "wellfield. The gas is burned in two engine-generators operated by Leyland Renewable Gas under the 2016 gas "
          "rights agreement, or in the enclosed flare when the engines cannot take it.", "", 9),
-        ("2.2  The plant historian records hourly averages of the landfill gas flow at the plant inlet (FT-101), the "
-         "methane, oxygen and carbon dioxide contents (AT-101), the fuel flow to each engine (FT-201, FT-202) and the "
-         "flare gas flow (FT-301).", "", 9),
         ("", "", 9),
         ("7  Surface emissions monitoring", "B", 10),
         ("7.1  A walkover of the whole cap is made each quarter along a grid of 98.4 ft (30 m) spacing and at every well "
@@ -311,9 +307,9 @@ def write_gas_plan(target):
          "midday and at the end. If a check fails, the readings taken since the last passing check are void and those "
          "points are walked again after recalibration.", "", 9),
         ("", "", 9),
-        ("8  Records", "B", 10),
-        ("8.1  The historian export, the operator's outage log, the energy plant event log, the walkover logger exports "
-         "and the analyser check sheet are kept for five years.", "", 9),
+        ("8  Reporting", "B", 10),
+        ("8.1  The Authority files the annual return under the Closed Landfill Methane Rule by 31 March, with the "
+         "surface monitoring results of the reporting year.", "", 9),
     ]
     C.text_pdf(os.path.join(target, fn), "Landfill gas management plan", blocks)
     return fn
@@ -334,7 +330,8 @@ def write_site_register(target):
             ("Capped area", "%.1f acres (whole waste footprint)" % W.AREA_ACRES),
             ("Gas wells", "58 vertical wells, 4 horizontal collectors"),
             ("Gas plant", "2 blowers (duty/standby), enclosed flare 1,500 scfm, 2 engine-generators 1,060 kW each"),
-            ("Engine operator", OPER), ("Electricity purchaser", COOP)]
+            ("Engine operator", OPER), ("Electricity purchaser", COOP),
+            ("Site grid", "US survey feet, grid north = true north; E1000 N2000 = 43.183150 N, 89.672840 W (WGS84)")]
     for rr in rows:
         ws.append(list(rr))
     ws["A1"].font = Font(bold=True)

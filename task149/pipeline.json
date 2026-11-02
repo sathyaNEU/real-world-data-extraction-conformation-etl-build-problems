@@ -19,8 +19,8 @@
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family, repeat.deliverables, repeat.question_form; answered in the Build record)",
-  "surface": "exit 0, personas Colum Curtis, Deaglan Gilmore, Eve Dunne"
+  "heart": "WARN, no BLOCK (overuse.org_family, repeat.deliverables, repeat.question_form; answered in the Build record); card shell corrected to this prompt's",
+  "surface": "exit 0 on cut aa619280; personas Colum Curtis, Deaglan Gilmore, Eve Dunne; no hard tell; 10 pairs promoted for the author's adjudicated /clone-check (task148 adjacent urban x forecasting pairing; surface 0.10 top-of-distribution pairs task134, task142, task167, task229, task261, task484; card collisions task65, task67, task482, differentiated)"
  },
  "judge": {
   "verdict": "",

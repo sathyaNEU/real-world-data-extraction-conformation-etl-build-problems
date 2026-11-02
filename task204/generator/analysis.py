@@ -325,26 +325,31 @@ def trip_candidates(gtfs, offs, tol_min=3.0, cache=None):
     return res
 
 
-def golden_series(offs, gtfs, tol_min=3.0, dmax=1000.0, days=28, cache=None):
-    """Local series by the field's linkage, then series joined where their offences sat on the same train trip."""
-    local = local_series(offs, dmax, days)
-    plat = [o for c in local for o in c if o["loc"] == "LRT PLATFORM" and o["station"]]
-    cands = trip_candidates(gtfs, plat, tol_min, cache)
-    which = {}
-    for k, c in enumerate(local):
-        for o in c:
-            which[id(o)] = k
-    find, union = _uf(len(local))
+def golden_series(offs, gtfs, tol_min=3.0, dmax=1000.0, days=28, cache=None, match=None):
+    """The field's linkage, plus a link between group offences at different stations that sat on the same train trip."""
+    match = match or behaviour_match
+    grp = [o for o in offs if o["sus"] >= 2 and o["x"] is not None]
+    find, union = _uf(len(grp))
+    for i in range(len(grp)):
+        for j in range(i + 1, len(grp)):
+            a, b = grp[i], grp[j]
+            if not match(a, b) or abs((a["t"] - b["t"]).total_seconds()) > days * 86400:
+                continue
+            if math.hypot(a["x"] - b["x"], a["y"] - b["y"]) <= dmax:
+                union(i, j)
+    plat = [i for i, o in enumerate(grp) if o["loc"] == "LRT PLATFORM" and o["station"]]
+    cands = trip_candidates(gtfs, [grp[i] for i in plat], tol_min, cache)
     runs = []
-    for i in range(len(plat)):
-        for j in range(i + 1, len(plat)):
-            if plat[i]["station"] != plat[j]["station"] and cands[i] & cands[j]:
-                union(which[id(plat[i])], which[id(plat[j])])
-                runs.append(sorted(cands[i] & cands[j])[0])
-    merged = defaultdict(list)
-    for k, c in enumerate(local):
-        merged[find(k)].extend(c)
-    return list(merged.values()), sorted(set(runs))
+    for a in range(len(plat)):
+        for b in range(a + 1, len(plat)):
+            oa, ob = grp[plat[a]], grp[plat[b]]
+            if oa["station"] != ob["station"] and match(oa, ob) and cands[a] & cands[b]:
+                union(plat[a], plat[b])
+                runs.append(sorted(cands[a] & cands[b])[0])
+    comps = defaultdict(list)
+    for i, o in enumerate(grp):
+        comps[find(i)].append(o)
+    return [c for c in comps.values() if len(c) >= 3], sorted(set(runs))
 
 
 def simultaneity(series, offs, minutes=3.0):

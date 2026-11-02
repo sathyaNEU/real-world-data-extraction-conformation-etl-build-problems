@@ -87,7 +87,8 @@ def main():
             for ws in openpyxl.load_workbook(p):
                 for r in ws.iter_rows(max_row=5, values_only=True):
                     heads += [str(x) for x in r if isinstance(x, str)]
-    hit = [h for h in heads if re.search(r"delta|verschil|\bdt\b|drop|debiet_ontwerp|ontwerpdebiet|regime|radiator", h, re.I)]
+    cols = [h for h in heads if " " not in h.strip()]          # column names, not title or subtitle lines
+    hit = [h for h in cols if re.search(r"delta|verschil|\bdt\b|drop|debiet_ontwerp|ontwerpdebiet|regime|radiator", h, re.I)]
     ok("R1b no column holds a drop, a regime or a design flow", not hit, hit or "none")
     like = set(M["like"])
     reg_cols = ["wijk", "categorie", "object"]
@@ -151,9 +152,11 @@ def main():
     filed = docs["procedure"] + " " + docs["hydraulic"]
     named = [t for t in ("return temperature", "radiator", "regime", "comparable", "similar", "build year", "bouwjaar",
                          "renovat", "original") if t in filed.lower()]
-    ok("R3c no filed sentence names a regime, a comparison group or a build year", not named, named or "none")
-    ok("R3c' the scope states the works only (radiators remain, no return or drop)",
-       "radiators remain in service" in scope_txt and "return" not in scope_txt.lower(), "")
+    ok("R3c no filed sentence names a regime, a return temperature, a build year or which connections share the installation", not named, named or "none")
+    ok("R3c' the scope files the blocks' installation (original radiators sized for 90/70) and no connection's drop",
+       "original two-pipe radiators" in scope_txt and "90" in scope_txt and "70" in scope_txt and
+       not any(t in scope_txt.lower() for t in ("connections in service", "metered drop", "high return", "regime",
+                                                 "temperature difference")), "")
     # clean truth: the default family with the regime hidden
     kw = {c["nr"]: c["kw"] for c in w["conns"]}
     by = {c["nr"]: c["bouwjaar"] for c in w["conns"]}
@@ -220,6 +223,23 @@ def main():
     ok("SF15 each row's register is the end of its UTC day (register steps equal the day's energy)", bad == 0,
        "%d consecutive pairs" % n_pairs)
     ok("SF16 categories are the register's two values", set(M["cat"].values()) == {"Woningen", "Utiliteit"}, "")
+    # CT-03 3.2 files the comparison group (connections in service with the same kind of heating installation); the
+    # literal reader with each easy route's inputs does not comply, and the group's members are found only in the data
+    regime = {c_["nr"]: c_["regime"] for c_ in w["conns"]}
+    pre_set = {i for i in M["kw"] if M["by"][i] < 1985}
+    filed32 = "same kind of heating installation" in docs["procedure"].replace("  ", " ")
+    ok("SF17 the same kind of heating installation: the filed comparison, met only by the original-radiator group",
+       filed32 and all(regime[i] == "HT" for i in like) and any(regime[i] == "REN" for i in pre_set) and
+       any(regime[i] != "HT" for i in M["kw"]) and call_of(KA, KAB, 20.0, H) == "2027-28",
+       "pre-1985 holds %d renovated blocks; the design drop of 20 K files 2027-28" %
+       sum(1 for i in pre_set if regime[i] == "REN"))
+    newc = [c_ for c_ in T["conns"] if A.asdate(c_["aansluitdatum"]) >= dt.date(2024, 9, 1) and c_["categorie"] == "Woningen"]
+    like_for_like = {k: 0.0 for k in ("Woningen",)}
+    filed_pop = "over every connection in the register" in docs["hydraulic"].replace("  ", " ")
+    prompt_txt = open(os.path.join(TASK, "prompt.txt")).read()
+    ok("SF18 the heat ask's population is every connection in the register (filed and in the prompt)",
+       filed_pop and "every residential and every utility connection" in prompt_txt and len(newc) >= 1,
+       "%d residential connections went live from September 2024" % len(newc))
 
     # ------------------------------------------------------------------ F: cheap routes
     routes = dict(defaults)

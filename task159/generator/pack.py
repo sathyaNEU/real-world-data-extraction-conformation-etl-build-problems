@@ -461,8 +461,9 @@ def _write_cmms(path, stops):
             n += 1
             desc = ("BM-101 liner change and mill shutdown" if r["kind"] == "RELINE" else
                     "Grinding circuit planned shutdown - BM-101 isolated")
-            rows.append([r["start"], "WO-%d" % 0, "BM-101", "Ball mill 101", "SD", desc,
-                         r["start"], r["end"], "CLOSED"])
+            # the crew's isolation runs from a few minutes after the mill stops to a few minutes before it starts
+            rows.append([r["start"], "WO-%d" % 0, "BM-101", "Ball mill 101", "SD", desc, r["iso_start"], r["iso_end"],
+                         "CLOSED"])
         elif rng.random() < 0.45:
             n += 1
             a = r["start"] + dt.timedelta(minutes=int(rng.integers(8, 35)))

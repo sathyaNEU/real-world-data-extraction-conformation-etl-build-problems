@@ -140,11 +140,27 @@ def ball_mill_stops():
     st = pd.DataFrame(keep).sort_values("start").reset_index(drop=True)
     # guard overlaps once more
     st = st[st["start"] >= st["end"].shift(1).fillna(dt.datetime(2022, 1, 1))].reset_index(drop=True)
-    # a breakdown runs on a little longer where a quarter's running time would sit on a half hour
+    # the maintenance crew's isolation window for each planned stop, a few minutes inside the stop
+    irng = _rng("isolation")
+    st["iso_start"] = [r["start"] + dt.timedelta(minutes=int(irng.integers(3, 14))) if r["kind"] != "TRIP" else r["start"]
+                       for _, r in st.iterrows()]
+    st["iso_end"] = [r["end"] - dt.timedelta(minutes=int(irng.integers(4, 17))) if r["kind"] != "TRIP" else r["end"]
+                     for _, r in st.iterrows()]
+    st["unlogged"] = [r["kind"] != "TRIP" and any(o[0] <= local_to_utc(r["start"]) and local_to_utc(r["end"]) <= o[1]
+                                                  for o in outages) for _, r in st.iterrows()]
+
+    def recorded(df):
+        """The stops as the records show them: the historian's stop and start, or the isolation window where the
+        historian stored nothing."""
+        d = df.copy()
+        d.loc[d["unlogged"], "start"] = d.loc[d["unlogged"], "iso_start"]
+        d.loc[d["unlogged"], "end"] = d.loc[d["unlogged"], "iso_end"]
+        return d
+    # a breakdown runs on a little longer where a quarter's recorded running time would sit on a half hour
     for _ in range(6):
         moved = False
         for a, b in QUARTERS:
-            h = run_hours(st, a, b)
+            h = run_hours(recorded(st), a, b)
             if 0.30 <= h % 1.0 <= 0.70:
                 cand = st[(st["kind"] == "TRIP") & (st["start"] > a + dt.timedelta(days=3)) &
                           (st["end"] < b - dt.timedelta(days=3))]
@@ -154,6 +170,7 @@ def ball_mill_stops():
                 nxt = st["start"].iloc[i + 1] if i + 1 < len(st) else b
                 if st.loc[i, "end"] + dt.timedelta(minutes=50) < nxt:
                     st.loc[i, "end"] = st.loc[i, "end"] + dt.timedelta(minutes=24)
+                    st.loc[i, "iso_end"] = st.loc[i, "end"]
                     moved = True
         if not moved:
             break

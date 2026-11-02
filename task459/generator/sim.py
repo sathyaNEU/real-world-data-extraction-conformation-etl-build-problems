@@ -201,8 +201,9 @@ def simulate(wd):
             home_care = rc == care_region
             length = b - a + 1
             if home_care:
+                n_before = len(svcs)
                 # Regular care: the assigned practice, specialists, therapy, laboratory and imaging.
-                pcp_gap = 52 if not young else 85
+                pcp_gap = 95 if not young else 160
                 if m.kind == "long":
                     pcp_gap = 30
                 for t in poisson_days(a, b, pcp_gap):
@@ -212,12 +213,12 @@ def simulate(wd):
                         add_svc(m, t, "pcp", rc)
                 if rng.random() < 0.55 and length > 60:
                     add_svc(m, a + int(rng.integers(5, max(6, length - 5))), "awv", rc)
-                spec_gap = 95 if not young else 160
+                spec_gap = 200 if not young else 330
                 if m.kind == "long":
                     spec_gap = 40
                 for t in poisson_days(a, b, spec_gap):
                     add_svc(m, t, "spec", rc)
-                lab_gap = 100 if not young else 170
+                lab_gap = 220 if not young else 380
                 if m.kind == "long":
                     lab_gap = 45
                 for t in poisson_days(a, b, lab_gap):
@@ -233,7 +234,7 @@ def simulate(wd):
                 if rng.random() < (0.22 if m.kind == "long" else 0.12) * min(1.0, length / 120):
                     add_svc(m, a + int(rng.integers(0, length)), "img", rc)
                 # High-country stayers see a specialist in the Valley or Tucson now and then: a day's drive.
-                if rc in W.HIGH and m.kind in ("stay", "young") and rng.random() < 0.22:
+                if rc in W.HIGH and m.kind in ("stay", "young") and len(svcs) - n_before >= 6 and rng.random() < 0.22:
                     tert = "MAR" if rng.random() < 0.75 else "SAZ"
                     for _ in range(int(rng.integers(1, 3))):
                         add_svc(m, a + int(rng.integers(0, length)), "spec", tert)
@@ -245,7 +246,7 @@ def simulate(wd):
                 if rng.random() < 0.5 * min(1.0, length / 120):
                     add_svc(m, a + int(rng.integers(0, length)), "lab_hosp", rc)
             # Independent reference laboratory work, billed from Phoenix wherever the specimen was drawn.
-            for t in poisson_days(a, b, 140 if not young else 220):
+            for t in poisson_days(a, b, 300 if not young else 450):
                 add_svc(m, t, "lab_ref", rc)
             if rng.random() < 0.035 * length / 365:
                 add_svc(m, a + int(rng.integers(0, length)), "er", rc)
@@ -269,8 +270,8 @@ def simulate(wd):
 
         # Pharmacy: maintenance drugs refilled at a local pharmacy, or by mail; long-stayers take a 90-day supply
         # with them in the autumn and fill by mail in the desert.
-        nmeds = int(rng_rx.choice([0, 1, 2, 3, 4, 5], p=[0.08, 0.16, 0.24, 0.24, 0.17, 0.11])) if not young else \
-            int(rng_rx.choice([0, 1, 2, 3], p=[0.25, 0.35, 0.25, 0.15]))
+        nmeds = int(rng_rx.choice([0, 1, 2, 3, 4, 5], p=[0.22, 0.32, 0.25, 0.13, 0.06, 0.02])) if not young else \
+            int(rng_rx.choice([0, 1, 2, 3], p=[0.35, 0.35, 0.2, 0.1]))
         meds = [DRUGS[int(i)] for i in rng_rx.choice(len(DRUGS), size=nmeds, replace=False)] if nmeds else []
         home_ph = {}
         for r in W.REGION_CODES:
@@ -278,7 +279,7 @@ def simulate(wd):
             home_ph[r] = lst[int(rng_rx.integers(0, len(lst)))]
         mail_ph = mail[int(rng_rx.integers(0, len(mail)))]
         for med in meds:
-            supply90 = rng_rx.random() < 0.55
+            supply90 = rng_rx.random() < 0.9
             t = lo + int(rng_rx.integers(0, 30))
             while t <= hi:
                 r_here = W.REGION_CODES[int(m.timeline[t])]
@@ -304,7 +305,7 @@ def simulate(wd):
                 fills.append(Fill(m.mid, W.day(t), ph.ncpdp, med[0], med[1], med[2], days, qty, cost, r_here))
                 t += days - int(rng_rx.integers(0, 6))
         # Acute fills at a local pharmacy, wherever the member is.
-        for t in poisson_days(lo, hi, 210 if not young else 300, rng_rx):
+        for t in poisson_days(lo, hi, 420 if not young else 600, rng_rx):
             r_here = W.REGION_CODES[int(m.timeline[t])]
             med = ACUTE[int(rng_rx.integers(0, len(ACUTE)))]
             fills.append(Fill(m.mid, W.day(t), home_ph[r_here].ncpdp, med[0], med[1], med[2], 10, 20,
@@ -315,10 +316,10 @@ def simulate(wd):
         lo, hi = enrolled_days(m)
         if hi < lo:
             continue
-        p_recv = 0.055 if m.kind not in ("young",) else 0.035
+        p_recv = 0.032 if m.kind not in ("young",) else 0.03
         if rng_hv.random() >= p_recv:
             continue
-        per_week = int(rng_hv.choice([1, 2, 3], p=[0.55, 0.32, 0.13]))
+        per_week = int(rng_hv.choice([1, 2, 3], p=[0.68, 0.26, 0.06]))
         twice_daily = rng_hv.random() < 0.08
         first = lo + int(rng_hv.integers(0, 120))
         last = hi - int(rng_hv.integers(0, 60))

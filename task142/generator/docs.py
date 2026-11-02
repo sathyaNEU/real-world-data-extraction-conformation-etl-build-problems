@@ -88,8 +88,9 @@ def procedure(path):
               "its design heat load in kW divided by 1.163 times the temperature difference in K between the supply and the "
               "return that its heating installation makes at the connection on days with a daily mean outdoor temperature "
               "of 0 &deg;C or lower at the Lekstede weather station. For a connection in service the temperature difference "
-              "is read from its heat meter on such days in the last full meter year. For a connection not yet in service it "
-              "is the temperature difference its heating installation is expected to make in service on such days."),
+              "is read from its heat meter on such days in the last full meter year. A connection not yet in service is "
+              "expected to make the temperature difference that connections in service with the same kind of heating "
+              "installation make on such days."),
         ("p", "<b>3.3 Season test.</b> A station runs short in a heating season when the design-day flows of the "
               "connections to be connected by the start of that season, added at full value, exceed the available "
               "design-day flow stated in the station's current hydraulic test. For a programme the planner reports the "
@@ -141,7 +142,8 @@ def hydraulic(path, w):
         ("p", "Design-day flow available at OS West for connections from 1 October 2026: %s - %d = <b>%d m<super>3</super>"
               "/h</b>." % ("{:,}".format(w["capacity"]), tot, w["H"])),
         ("h", "5. Reporting"),
-        ("p", "Heat taken by the connections is reported by gas year, 1 October to 1 October. Distribution losses are "
+        ("p", "Heat taken by the connections is reported by gas year, 1 October to 1 October, over every connection in "
+              "the register, each counted from its connection date. Distribution losses are "
               "reported in the annual network report."),
         ("small", "This test states the design-day flow available at OS West on 1 October 2026; it does not test "
                   "connections that are not yet contracted."),
@@ -214,7 +216,9 @@ def scope(path, w):
     doc.add_paragraph("In each boiler room the gas boilers, burners and flues are removed and a %s delivery set is "
                       "installed: an indirect connection through a plate heat exchanger with its own heat meter, on the "
                       "block's existing heating installation." % P.HEATCO_SHORT)
-    doc.add_paragraph("The block's distribution piping, risers and radiators remain in service. Hot tap water in the "
+    doc.add_paragraph("The block's heating installation stays as built: the distribution piping, the risers and the "
+                      "original two-pipe radiators, sized for a supply of 90 \u00b0C and a return of 70 \u00b0C, remain in "
+                      "service. Hot tap water in the "
                       "dwellings stays individual (electric). No insulation or other envelope works are part of this "
                       "programme; Weidehaven's envelope programme for these complexes is planned after 2030.")
     doc.add_heading("3. Phasing", level=2)

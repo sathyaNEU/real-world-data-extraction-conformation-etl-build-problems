@@ -215,10 +215,8 @@ def write_activity(posts, tgt):
     return len(old_ev), len(recs)
 
 
-def write_cases(posts, emps, rng, tgt):
-    """Employer Services' own case workbook: every managed vacancy open at any time from 1 April 2025."""
-    import openpyxl
-    from openpyxl.styles import Font
+def build_cases(posts, rng):
+    """Employer Services' managed vacancies open at any time from 1 April 2025 (one case per managed posting)."""
     lo = W.d2i(dt.date(2025, 4, 1))
     ext = W.d2i(P.EXTRACT)
     mig = W.d2i(P.MIGRATION)
@@ -246,6 +244,13 @@ def write_cases(posts, emps, rng, tgt):
             outcome, odate = "Open", None
         rows.append((opened, cn, ref, p["employer_no"], p["occ"], p["positions"], outcome, odate, p))
     rows.sort(key=lambda r: (r[0], r[1]))
+    return rows
+
+
+def write_cases(rows, tgt):
+    """Employer Services' own case workbook, one sheet per fiscal year of case opening."""
+    import openpyxl
+    from openpyxl.styles import Font
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
     fy = {"FY 2025-26": (dt.date(2025, 4, 1), dt.date(2026, 3, 31)), "FY 2026-27": (dt.date(2026, 4, 1), dt.date(2027, 3, 31))}
@@ -360,9 +365,10 @@ def write_concordance(tgt):
 
 def write_main(emps, vac, tgt, rng):
     posts = build_postings(emps, vac, rng)
-    n_old, n_new = write_snapshots(posts, emps, tgt)
+    write_snapshots(posts, emps, tgt)
     write_activity(posts, tgt)
-    write_cases(posts, emps, rng, tgt)
+    cases = build_cases(posts, rng)
+    write_cases(cases, tgt)
     write_employers(emps, rng, tgt)
     write_concordance(tgt)
-    return posts
+    return posts, cases

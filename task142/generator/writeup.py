@@ -28,7 +28,7 @@ def main():
 
 ## 1. Final Recommendation
 
-**OS West first runs short of design-day flow in the 2028-29 heating season.** The blocks connected by 1 October 2028 need about {f6} m3/h against the {H} m3/h available, short by about {sh} m3/h, while the 2027-28 blocks fit at about {f3} m3/h. Not that the station holds in both seasons, which carries the blocks at the network's {r0} K design drop, its {r1} K metered drop or the {r2lo} to {r2hi} K of its pre-1985 buildings, drops their original radiators do not make. Not 2027-28, which carries them at a textbook radiator drop of {tb} K.
+**OS West first runs short of design-day flow in the 2028-29 heating season.** The blocks connected by 1 October 2028 need about {f6} m3/h against the {H} m3/h available, short by about {sh} m3/h, while the 2027-28 blocks fit at about {f3} m3/h. Not that the station holds in both seasons, which carries the blocks at the network's {r0} K design drop, its {r1} K metered drop or the {r2lo} to {r2hi} K of its pre-1985 buildings, drops their original radiators do not make. Not 2027-28, which carries them at the {tb} K drop their radiators were sized for (90/70 C).
 
 ## 2. Critical Components
 
@@ -38,10 +38,10 @@ def main():
 
 ## 3. Step-by-Step Solution
 
-1. Read {proc} sections 3.2 to 3.4 and {hyd}: a block's design-day flow is its design heat load over {cp} times the drop its installation makes at the connection on days with a daily mean of 0 C or lower, tested against the {H} m3/h available.
+1. Read {proc} sections 3.2 to 3.4 and {hyd}: a block's design-day flow is its design heat load over {cp} times the drop that connections in service with the same kind of heating installation make on days with a daily mean of 0 C or lower, tested against the {H} m3/h available.
 2. Took each complex's design heat loss from {rev} (the most recent study, 3.4) and its phase from {sched}: {ka} kW connected by 2027-28 and {kab} kW by 2028-29.
 3. Selected the {cold} days with TG at or below 0 in {wx} and mapped every meter in {amr} to its connection through the Meters sheet of {reg}.
-4. The connections' mean cold-day returns split at a gap from {oh} to {rl} C, and the {n} connections above it are the network's original-radiator installations, the kind every block keeps ({scope} section 2), with a mean cold-day drop of {d} K.
+4. The connections' mean cold-day returns split at a gap from {oh} to {rl} C, and the {n} connections above it are the network's original-radiator installations, the kind every block keeps ({scope} section 2: original two-pipe radiators sized for 90/70 C), with a mean cold-day drop of {d} K.
 5. Divided each phase's load by {cp} x {d} K: {f3x} m3/h for phases 1 to 3 and {f6x} m3/h for phases 1 to 6.
 6. For gas, followed each complex's EAN to its boiler room's description in {gm} to pick up the EANs re-registered in 2026, and took every meter's first and last register in the gas year from the 06:00 reads of 1 October in {gr} or the master data's placement and removal readings.
 7. For heat, ran each meter from its annual or connection read in {leg} (GJ or MWh) to its AMR opening register on 1 October 2025, through the drive-by removal reading and the AMR placement reading in the Meters sheet where the meter was exchanged at migration, and took 2025-26 from the AMR registers per meter.

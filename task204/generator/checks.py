@@ -33,7 +33,7 @@ def check(label, ok, detail=""):
 
 
 def grounds(series, polys):
-    return sorted(tuple(t["districts"]) + (t["n"],) for t in A.team_table(series, polys))
+    return sorted((tuple(t["districts"]), t["n"]) for t in A.team_table(series, polys))
 
 
 def teams_only(series, polys):
@@ -350,7 +350,7 @@ def main():
 def pdf_text(path):
     data = open(path, "rb").read()
     out = []
-    for m in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", data, re.S):
+    for m in re.finditer(rb"stream\r?\n(.*?)endstream", data, re.S):
         raw = m.group(1).strip()
         txt = None
         if raw.endswith(b"~>"):
