@@ -1,290 +1,220 @@
-"""The golden: every owed figure computed from the cut pack (bundle.py), written to generator/figures.json, and the two
-deliverables, larkspur_workforce_value_2027-28.xlsx and larkspur_program_tests_2027-28.svg."""
+"""task483 goldens: the placement workbook and the one-page note, computed from target/ alone (analysis.py), and
+generator/figures.json with every graded figure at the precision it is graded."""
 import io
 import json
 import os
 
-import numpy as np
+import openpyxl
+from openpyxl.chart import BarChart, Reference
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
-import bundle as B
+import analysis as A
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-XLSX = "larkspur_workforce_value_2027-28.xlsx"
-SVG = "larkspur_program_tests_2027-28.svg"
-
-
-def compute(target):
-    I = B.Inputs(target)
-    c = B.call(I)
-    d0 = B.call(I, "naive", "quarter")
-    d_deg = B.call(I, "golden", "quarter")
-    d_short = B.call(I, "naive", "golden")
-    a = B.ask_a(I)
-    b = B.ask_b(I)
-    programs = {}
-    for p in I.degree:
-        x = c["deg"][p]
-        programs[p] = {"test": "earnings", "tested": x["tested"], "completers_2024_25": I.c2425.get(p, 0),
-                       "with_earnings": x["n"],
-                       "figure_thousands": None if not x["tested"] else B.hround(x["figure"] / 1000.0),
-                       "passes": x["passes"], "loan_median_usd": b[p][1], "loan_total_usd": b[p][3],
-                       "borrowers": b[p][0]}
-    for p in I.short:
-        x = c["short"][p]
-        programs[p] = {"test": "placement", "tested": x["tested"], "completers_2024_25": I.c2425.get(p, 0),
-                       "grant_completers": x["n"],
-                       "figure_pct": None if not x["tested"] else B.hround(x["figure"]),
-                       "working": None if not x["tested"] else int(round(x["working"])),
-                       "passes": x["passes"], "clock_hours_fy2025": a[p][0]}
-    fail = sorted(p for p, v in programs.items() if v["tested"] and not v["passes"])
-    ma, cdl = "Medical Assisting", "Commercial Driver License, Class A"
-    fig = {
-        "call": {"renews": c["renews"], "share_pct": B.hround(c["share"]), "in_passing": c["num"], "tested": c["den"],
-                 "failing": fail, "line_pct": 75},
-        "programs": programs,
-        "components": {
-            "medical_assisting": {"pooled_thousands": programs[ma]["figure_thousands"],
-                                  "averaged_thousands": B.hround(d0["deg"][ma]["figure"] / 1000.0),
-                                  "completers": I.c2425[ma]},
-            "cdl": {"dated_pct": programs[cdl]["figure_pct"], "quarter_pct": B.hround(d0["short"][cdl]["figure"]),
-                    "completers": I.c2425[cdl], "grant_completers": programs[cdl]["grant_completers"],
-                    "working": programs[cdl]["working"], "quarter_working": int(round(d0["short"][cdl]["working"]))},
-            "default_share_pct": B.hround(d0["share"]), "default_in_passing": d0["num"],
-            "degree_half_alone_pct": B.hround(d_deg["share"]), "short_half_alone_pct": B.hround(d_short["share"]),
-            "untested": sorted(p for p, v in programs.items() if not v["tested"]),
-        },
-        "stated": {"benchmark_usd": 34200, "benchmark_thousands": 34.2, "placement_line_pct": 70, "share_line_pct": 75, "cpi_factor": 1.0294,
-                   "min_with_earnings": 30, "min_grant_completers": 20, "day": 180,
-                   "award_years": ["2020-21", "2021-22"], "earnings_years": [2024, 2025]},
-        "_unrounded": {"share": c["share"], "default": d0["share"], "degree_half_alone": d_deg["share"],
-                       "short_half_alone": d_short["share"],
-                       "figures": {p: (c["deg"][p]["figure"] if p in c["deg"] else c["short"][p]["figure"])
-                                   for p in programs},
-                       "loan_median": {p: b[p][2] for p in I.degree},
-                       "clock_hours": {p: a[p][1] for p in I.short}},
-    }
-    return fig
+GOLDEN = {"workbook": "uti_pathway_placement_2027-28.xlsx", "note": "uti_pathway_placement_note_2027-28.docx"}
+HEAD = PatternFill("solid", fgColor="D9E1F2")
+PICK = PatternFill("solid", fgColor="E2EFDA")
+THIN = Side(style="thin", color="A6A6A6")
 
 
-def write_xlsx(path, f):
-    import openpyxl
-    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+def r10(x):
+    """Nearest 10, halves away from zero."""
+    q = abs(x) / 10.0
+    v = int(q + 0.5) * 10
+    return v if x >= 0 else -v
+
+
+def pct(x):
+    return int(100 * x + 0.5)
+
+
+def figures(L):
+    g = A.golden(L)
+    n, ch, st = g["pool"], g["chances"], g["stopped"]
+    nets = L["order"]
+    rows = []
+    for net in nets:
+        rows.append({"network": net, "first_courses": sum(n[(net, d)] for d in A.DRUGS),
+                     "nitrofurantoin": n[(net, "NIT")],
+                     "other": sum(n[(net, d)] for d in A.OFF),
+                     "by_drug": {d: n[(net, d)] for d in A.OFF},
+                     "stopped": round(st[net], 3), "stopped_r10": r10(st[net])})
+    two, rk = g["slate"], g["rank"]
+    pres = g["pres"]
+    chances = {d: {"cultures": len(pres), "resistant": sum(A.resistant(s, d) for s in pres),
+                   "chance": round(ch[d], 5), "pct": pct(ch[d])} for d in A.DRUGS}
+    grid = {net: {grp: g["grid"].get((net, grp), 0) for grp in A.GROUPS} for net in nets}
+    return {"slate": two, "runner_up": rk[2], "rank": rk, "networks": rows, "chances": chances,
+            "presentation_cultures": len(pres), "first_courses_2024_2026": len(g["fc"]),
+            "first_courses_2026": sum(n.values()), "grid": grid,
+            "filed": {"ages": [16, 64, 65], "lookback_days": 28, "pathway_year": [2026, 2027, 2028],
+                      "specification_sections": [2.1, 2.2, 2.3, 3.1, 3.2, 4.1, 4.2]},
+            "gap_second_to_runner_up": round(st[rk[1]] - st[rk[2]], 3),
+            "margin_second_to_runner_up": round(st[rk[1]] / st[rk[2]], 4)}
+
+
+def _box(ws, r1, r2, c1, c2):
+    for r in range(r1, r2 + 1):
+        for c in range(c1, c2 + 1):
+            ws.cell(row=r, column=c).border = Border(top=THIN, bottom=THIN, left=THIN, right=THIN)
+
+
+def workbook(F, path):
     wb = openpyxl.Workbook()
-    bold = Font(name="Calibri", size=11, bold=True)
-    thin = Side(style="thin", color="808080")
-    fill = PatternFill("solid", fgColor="FCE4D6")
-    pr = f["programs"]
-    cl = f["call"]
-
     ws = wb.active
-    ws.title = "Designation 2027-28"
-    verdict = "renews" if cl["renews"] else "lapses"
-    ws["A1"] = "Larkspur Basin Community College: workforce value designation %s for 2027-28" % verdict
-    ws["A1"].font = Font(name="Calibri", size=14, bold=True)
-    ws["A2"] = ("%d per cent of the 2024-25 completers of tested programs are in passing programs (%s of %s); the "
-                "standard needs 75 per cent." % (cl["share_pct"], "{:,}".format(cl["in_passing"]),
-                                                 "{:,}".format(cl["tested"])))
-    ws["A2"].font = Font(name="Calibri", size=10)
-    ws["A3"] = "Grant programs office, Workforce Value Designation Standard sections 3 to 5. Failing programs shaded."
-    ws["A3"].font = Font(name="Calibri", size=9, italic=True, color="555555")
-
-    def block(title, head, rows, fmts):
-        ws.append([])
-        ws.append([title])
-        ws.cell(row=ws.max_row, column=1).font = Font(name="Calibri", size=11, bold=True)
-        ws.append(head)
-        for c in ws[ws.max_row]:
-            c.font = bold
-            c.alignment = Alignment(wrap_text=True, vertical="bottom")
-            c.border = Border(bottom=thin)
-        ws.row_dimensions[ws.max_row].height = 44
-        for r, shade in rows:
-            ws.append(r)
-            for i, f in fmts.items():
-                ws.cell(row=ws.max_row, column=i + 1).number_format = f
-            if shade:
-                for c in ws[ws.max_row]:
-                    c.fill = fill
-    deg = [p for p in pr if pr[p]["test"] == "earnings"]
-    sht = [p for p in pr if pr[p]["test"] == "placement"]
-    rows = []
-    for p in deg:
-        x = pr[p]
-        res = "Not tested" if not x["tested"] else ("Passes" if x["passes"] else "Fails")
-        rows.append(([p, x["with_earnings"] or None, x["figure_thousands"], 34.2 if x["tested"] else None, res,
-                      x["completers_2024_25"]], x["tested"] and not x["passes"]))
-    block("Credit programs: earnings test", ["Program", "Completers with earnings, 2020-21 and 2021-22 cells",
-                                             "Median earnings, thousand 2025 dollars", "Benchmark, thousand dollars",
-                                             "Result", "2024-25 completers"], rows,
-          {1: "#,##0", 2: "#,##0", 3: "0.0", 5: "#,##0"})
-    rows = []
-    for p in sht:
-        x = pr[p]
-        res = "Not tested" if not x["tested"] else ("Passes" if x["passes"] else "Fails")
-        rows.append(([p, x["grant_completers"], x["working"], x["figure_pct"], 70 if x["tested"] else None, res,
-                      x["completers_2024_25"]], x["tested"] and not x["passes"]))
-    block("Short-term programs: placement test", ["Program", "Grant completers, sections ending July 2024 to June 2025",
-                                                  "Working on day 180", "Share working, per cent", "Line, per cent",
-                                                  "Result", "2024-25 completers"], rows,
-          {1: "#,##0", 2: "#,##0", 3: "0", 4: "0", 6: "#,##0"})
+    ws.title = "Placement"
+    ws["A1"] = "UTI pathway 2027-28: pharmacist placement"
+    ws["A1"].font = Font(bold=True, size=13)
+    ws["A2"] = ("Pharmacists to %s and %s from 1 April 2027; runner-up %s. Basis: 2026 first courses for lower UTI in "
+                "women aged 16 to 64 (specification 2.1 to 4.2)." % (F["slate"][0], F["slate"][1], F["runner_up"]))
+    hdr = ["Network", "2026 first courses", "Nitrofurantoin", "Other antibacterials", "Trimethoprim", "Pivmecillinam",
+           "Cefalexin", "Co-amoxiclav", "Fosfomycin", "Amoxicillin", "Mismatched courses stopped (nearest 10)",
+           "Pharmacist"]
     ws.append([])
-    for label, v, fmt in (("Tested programs' 2024-25 completers", cl["tested"], "#,##0"),
-                          ("In passing programs", cl["in_passing"], "#,##0"),
-                          ("Share in passing programs, per cent", cl["share_pct"], "0")):
-        ws.append([label] + [None] * 5 + [v])
-        ws.cell(row=ws.max_row, column=1).font = bold
-        ws.cell(row=ws.max_row, column=7).font = bold
-        ws.cell(row=ws.max_row, column=7).number_format = fmt
-    for col, wd in zip("ABCDEFG", (36, 16, 15, 14, 12, 11, 12)):
-        ws.column_dimensions[col].width = wd
-    ws.freeze_panes = "B5"
+    ws.append(hdr)
+    order = sorted(F["networks"], key=lambda r: -r["stopped"])
+    for r in order:
+        ws.append([r["network"], r["first_courses"], r["nitrofurantoin"], r["other"]] +
+                  [r["by_drug"][d] for d in A.OFF] + [r["stopped_r10"], "Yes" if r["network"] in F["slate"] else None])
+    top = 4
+    last = top + len(order)
+    for c in range(1, len(hdr) + 1):
+        cell = ws.cell(row=top, column=c)
+        cell.font = Font(bold=True)
+        cell.fill = HEAD
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
+    for rr in range(top + 1, last + 1):
+        if ws.cell(row=rr, column=12).value == "Yes":
+            for c in range(1, len(hdr) + 1):
+                ws.cell(row=rr, column=c).fill = PICK
+    _box(ws, top, last, 1, len(hdr))
+    ws.row_dimensions[top].height = 44
+    for c, w in zip("ABCDEFGHIJKL", (18, 11, 13, 13, 12, 12, 11, 12, 11, 12, 18, 11)):
+        ws.column_dimensions[c].width = w
+    chart = BarChart()
+    chart.type = "bar"
+    chart.style = 10
+    chart.title = "Mismatched first courses stopped by moving 2026 courses to nitrofurantoin"
+    chart.y_axis.title = "Courses (nearest 10)"
+    chart.x_axis.title = None
+    data = Reference(ws, min_col=11, min_row=top, max_row=last)
+    cats = Reference(ws, min_col=1, min_row=top + 1, max_row=last)
+    chart.add_data(data, titles_from_data=True)
+    chart.set_categories(cats)
+    chart.legend = None
+    chart.height, chart.width = 7.5, 16
+    ws.add_chart(chart, "A%d" % (last + 3))
 
-    s2 = wb.create_sheet("Clock hours FY2025")
-    s2.append(["Short-term program", "Clock hours attended by grant participants, July 2024 to June 2025"])
-    for c in s2[1]:
-        c.font = bold
-        c.alignment = Alignment(wrap_text=True, vertical="bottom")
-        c.border = Border(bottom=thin)
-    for p in [p for p in pr if pr[p]["test"] == "placement"]:
-        s2.append([p, pr[p]["clock_hours_fy2025"]])
-    s2.append(["All short-term programs", sum(pr[p]["clock_hours_fy2025"] for p in pr if pr[p]["test"] == "placement")])
-    for c in s2[s2.max_row]:
-        c.font = bold
-        c.border = Border(top=thin)
-    for row in s2.iter_rows(min_row=2, max_row=s2.max_row):
-        row[1].number_format = "#,##0"
-    s2.column_dimensions["A"].width = 36
-    s2.column_dimensions["B"].width = 24
-    s2.row_dimensions[1].height = 46
-    s2.freeze_panes = "A2"
+    ws2 = wb.create_sheet("Chances")
+    ws2.append(["Each pathway antibacterial's chance that a first course meets an organism the laboratory reports "
+                "resistant: urine cultures sent at the first course's consultation, 2024 to 2026"])
+    ws2["A1"].font = Font(bold=True)
+    ws2.append([])
+    ws2.append(["Antibacterial", "Cultures", "Resistant organism", "Chance (%)", "Less nitrofurantoin (points)"])
+    nit = F["chances"]["NIT"]["chance"]
+    for d in A.DRUGS:
+        c = F["chances"][d]
+        ws2.append([A.DRUG_LABEL[d], c["cultures"], c["resistant"], c["pct"],
+                    None if d == "NIT" else round(100 * (c["chance"] - nit), 1)])
+    for c in range(1, 6):
+        ws2.cell(row=3, column=c).font = Font(bold=True)
+        ws2.cell(row=3, column=c).fill = HEAD
+    _box(ws2, 3, 3 + len(A.DRUGS), 1, 5)
+    for c, w in zip("ABCDE", (18, 10, 18, 11, 26)):
+        ws2.column_dimensions[c].width = w
 
-    s3 = wb.create_sheet("Loan principal")
-    s3.append(["Program", "Median Direct Loan principal, 2024-25 completers who borrowed (USD)",
-               "Total Direct Loan principal, the same completers (USD)"])
-    for c in s3[1]:
-        c.font = bold
-        c.alignment = Alignment(wrap_text=True, vertical="bottom")
-        c.border = Border(bottom=thin)
-    for p in [p for p in pr if pr[p]["test"] == "earnings"]:
-        s3.append([p, pr[p]["loan_median_usd"], pr[p]["loan_total_usd"]])
-    for row in s3.iter_rows(min_row=2, max_row=s3.max_row):
-        row[1].number_format = "#,##0"
-        row[2].number_format = "#,##0"
-    s3.column_dimensions["A"].width = 30
-    s3.column_dimensions["B"].width = 26
-    s3.column_dimensions["C"].width = 26
-    s3.row_dimensions[1].height = 46
-    s3.freeze_panes = "A2"
-
-    s4 = wb.create_sheet("Notes")
-    notes = [
-        ("Median earnings", "The release publishes each campus's cohort as a cell of completers with earnings and five "
-         "percentiles. Each cell's earnings distribution is rebuilt by joining its percentiles straight (2024 earnings "
-         "times 1.0294), and the program's median is the point where the cells' pooled share of completers reaches "
-         "half, weighting each cell by its completers with earnings. Paralegal Studies has no published cell."),
-        ("Working on day 180", "Day 180 is the section's last day plus 180 days. A grant completer counts when a job "
-         "paid in the quarter holding day 180 was running on it: paid in the quarters before and after as well, or a "
-         "start or an exit inside the quarter dated from that job's pay there against its pay in its adjacent full "
-         "quarter. Amended wage reports replace the originals. Forklift and Material Handling has 18 grant completers "
-         "and is not tested."),
-        ("Clock hours", "Every session in the college's attendance export dated July 2024 to June 2025, counted once "
-         "(the export repeats one week of March 2025 at its end), each session's time read as hours and minutes "
-         "after the point, under the program of the session's section."),
-        ("Loan principal", "Each completer's Direct Subsidized and Unsubsidized Loans at the college, parent PLUS loans "
-         "left out. Before July 2024 each disbursement counts, returns netted; from July 2024 the aid system writes "
-         "the loan's amount for the year on each of its disbursements, so each loan counts once."),
-        ("Rounding", "Earnings to whole thousands of dollars, shares to whole per cent, clock hours to whole hours and loan "
-         "principal to the nearest 10 dollars, each from the unrounded figure; each figure is compared with its line "
-         "before rounding."),
-    ]
-    s4.append(["Item", "Note"])
-    for c in s4[1]:
-        c.font = bold
-    for k, v in notes:
-        s4.append([k, v])
-    for row in s4.iter_rows(min_row=2):
-        row[1].alignment = Alignment(wrap_text=True, vertical="top")
-        row[0].alignment = Alignment(vertical="top")
-    s4.column_dimensions["A"].width = 20
-    s4.column_dimensions["B"].width = 100
+    ws3 = wb.create_sheet("Outside the pathway")
+    ws3.append(["Women aged 65 and over and men aged 16 and over with a 2026 urine culture from a member practice or the "
+                "hub growing each organism (patients)"])
+    ws3["A1"].font = Font(bold=True)
+    ws3.append([])
+    ws3.append(["Network", "Enterococcus", "Enterobacter cloacae"])
+    for r in F["networks"]:
+        net = r["network"]
+        ws3.append([net] + [F["grid"][net][g] for g in A.GROUPS])
+    for c in range(1, 4):
+        ws3.cell(row=3, column=c).font = Font(bold=True)
+        ws3.cell(row=3, column=c).fill = HEAD
+    _box(ws3, 3, 3 + len(F["networks"]), 1, 3)
+    for c, w in zip("ABC", (18, 14, 14)):
+        ws3.column_dimensions[c].width = w
     wb.save(path)
-    import postprocess as PP
-    PP.normalize_ooxml(path, "Grant Programs Office", "Grant Programs Office", "2026-10-27T15:12:00Z",
-                       "2026-11-06T22:04:31Z", excel=True, company="State Workforce Development Board")
 
 
-def write_svg(path, f):
+def chart_png(F):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib.patches import Patch
-    matplotlib.rcParams["svg.hashsalt"] = "task483-larkspur"
-    matplotlib.rcParams["svg.fonttype"] = "none"
-    matplotlib.rcParams["font.family"] = "DejaVu Sans"
-    pr = f["programs"]
-    un = f["_unrounded"]["figures"]
-    pass_c, fail_c, ink, muted, line = "#2a6fb0", "#c8641a", "#1f2328", "#59636e", "#3d434a"
-    deg = sorted([p for p in pr if pr[p]["test"] == "earnings" and pr[p]["tested"]], key=lambda p: -un[p])
-    sht = sorted([p for p in pr if pr[p]["test"] == "placement" and pr[p]["tested"]], key=lambda p: -un[p])
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(11.6, 6.4), dpi=100)
-    for ax, names, scale, ln, lab, unit in ((a1, deg, 1000.0, 34.2, "34.2 thousand", "thousand dollars"),
-                                            (a2, sht, 1.0, 70.0, "70 per cent", "per cent")):
-        ys = np.arange(len(names))[::-1]
-        vals = [un[p] / scale for p in names]
-        cols = [pass_c if pr[p]["passes"] else fail_c for p in names]
-        ax.barh(ys, vals, height=0.64, color=cols, edgecolor="white", linewidth=1.5, zorder=3)
-        for y, p, v in zip(ys, names, vals):
-            shown = pr[p]["figure_thousands"] if unit.startswith("thousand") else pr[p]["figure_pct"]
-            ax.text(v - max(vals) * 0.015, y, "%d" % shown, ha="right", va="center", fontsize=8.5, color="white",
-                    fontweight="bold", zorder=5)
-        ax.axvline(ln, color=line, linewidth=1.3, linestyle=(0, (4, 3)), zorder=4)
-        ax.text(ln, len(names) - 0.35, " " + lab, color=line, fontsize=8, va="bottom", ha="left")
-        ax.set_yticks(ys)
-        ax.set_yticklabels(names, fontsize=8.5, color=ink)
-        ax.set_xlim(0, max(vals) * 1.14)
-        ax.set_ylim(-0.7, len(names) + 0.3)
-        ax.tick_params(axis="x", labelsize=8, colors=muted)
-        ax.grid(axis="x", color="#e6e8eb", linewidth=0.8, zorder=0)
-        for side in ("top", "right"):
-            ax.spines[side].set_visible(False)
-        ax.spines["left"].set_color("#9aa1a9")
-        ax.spines["bottom"].set_color("#9aa1a9")
-    a1.set_title("Credit programs: median earnings in the third year\nafter the award, 2025 thousands of dollars",
-                 loc="left", fontsize=9, color=muted)
-    a2.set_title("Short-term programs: grant completers working\non day 180, per cent", loc="left", fontsize=9,
-                 color=muted)
-    cl = f["call"]
-    fig.legend(handles=[Patch(color=pass_c, label="Passes its test"), Patch(color=fail_c, label="Fails its test")],
-               loc="upper right", frameon=False, fontsize=8.5, ncol=2, bbox_to_anchor=(0.985, 0.965))
-    fig.suptitle("Workforce value designation %s for 2027-28: %d per cent of completers in passing programs, "
-                 "75 needed" % ("renews" if cl["renews"] else "lapses", cl["share_pct"]),
-                 x=0.012, ha="left", fontsize=11.5, fontweight="bold", color=ink)
-    fig.text(0.012, 0.012, "Larkspur Basin Community College. Earnings: Postsecondary Earnings Outcomes, 2024 and 2025 "
-             "editions. Placement: Career Training Grant roster and wage records.", fontsize=7.5, color=muted)
-    fig.subplots_adjust(left=0.2, right=0.985, top=0.83, bottom=0.08, wspace=0.62)
-    buf = io.StringIO()
-    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Grant Programs Office"})
+    plt.rcParams["svg.hashsalt"] = "task483"
+    order = sorted(F["networks"], key=lambda r: r["stopped"])
+    fig, ax = plt.subplots(figsize=(6.2, 2.9), dpi=150)
+    cols = ["#4E7A3A" if r["network"] in F["slate"] else "#9DB3C9" for r in order]
+    ax.barh([r["network"] for r in order], [r["stopped_r10"] for r in order], color=cols)
+    for i, r in enumerate(order):
+        ax.text(r["stopped_r10"] + 0.6, i, "%d" % r["stopped_r10"], va="center", fontsize=8)
+    ax.set_xlabel("Mismatched first courses stopped (2026 basis, nearest 10)", fontsize=8)
+    ax.tick_params(labelsize=8)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", metadata={"Software": None})
     plt.close(fig)
-    svg = buf.getvalue().replace('id="matplotlib.', 'id="').replace("'DejaVu Sans'",
-                                                                   "'DejaVu Sans', Arial, Helvetica, sans-serif")
-    assert "matplotlib" not in svg.lower()
-    open(path, "w", encoding="utf-8", newline="\n").write(svg)
+    return buf.getvalue()
 
 
-def main(target=None):
-    target = target or os.path.join(os.path.dirname(HERE), "target")
-    f = compute(target)
-    json.dump(f, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
-    out = os.path.join(os.path.dirname(HERE), "golden")
-    os.makedirs(out, exist_ok=True)
-    for fn in os.listdir(out):
-        os.remove(os.path.join(out, fn))
-    write_xlsx(os.path.join(out, XLSX), f)
-    write_svg(os.path.join(out, SVG), f)
-    return f
+def note(F, path):
+    import docx
+    from docx.shared import Cm, Pt
+    d = docx.Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10)
+    for s in d.sections:
+        s.top_margin = s.bottom_margin = Cm(1.6)
+        s.left_margin = s.right_margin = Cm(1.9)
+    h = d.add_paragraph()
+    run = h.add_run("UTI pathway 2027-28: where the two pharmacists go")
+    run.bold = True
+    run.font.size = Pt(13)
+    d.add_paragraph("To: Clinical Director    From: Antimicrobial Stewardship Lead    13 January 2027")
+    a, b = F["slate"]
+    stp = {r["network"]: r for r in F["networks"]}
+    d.add_paragraph(
+        "Placement: one pharmacist to %s and one to %s from 1 April 2027. On the 2026 basis, moving their first courses "
+        "on other antibacterials to nitrofurantoin would have stopped about %d and %d mismatched first courses. "
+        "%s is the runner-up at about %d." % (a, b, stp[a]["stopped_r10"], stp[b]["stopped_r10"], F["runner_up"],
+                                             stp[F["runner_up"]]["stopped_r10"]))
+    ch = F["chances"]
+    d.add_paragraph(
+        "Each antibacterial's chance of meeting a resistant organism is read on the urine cultures practices sent at "
+        "the first course's own consultation in 2024 to 2026 (%d cultures): nitrofurantoin %d%%, pivmecillinam %d%%, "
+        "fosfomycin %d%%, trimethoprim %d%%. Most of the laboratory's other urines from these women were sent after a "
+        "course had not worked, and those over-represent the organisms the federation's current first courses miss, "
+        "nitrofurantoin's above all, so they are not used for the chance a first course runs."
+        % (F["presentation_cultures"], ch["NIT"]["pct"], ch["MEC"]["pct"], ch["FOS"]["pct"], ch["TMP"]["pct"]))
+    t = d.add_table(rows=1, cols=3)
+    t.style = "Light Grid Accent 1"
+    hdr = t.rows[0].cells
+    hdr[0].text, hdr[1].text, hdr[2].text = "Network", "2026 first courses on other antibacterials", \
+        "Mismatched courses stopped (nearest 10)"
+    for r in sorted(F["networks"], key=lambda r: -r["stopped"]):
+        c = t.add_row().cells
+        c[0].text, c[1].text, c[2].text = r["network"], "%d" % r["other"], "%d" % r["stopped_r10"]
+    d.add_paragraph()
+    d.add_picture(io.BytesIO(chart_png(F)), width=Cm(14.5))
+    d.add_paragraph("Detail by antibacterial, and the 2026 organisms in older women and men for the pharmacists' wider "
+                    "advice, are in uti_pathway_placement_2027-28.xlsx.")
+    d.core_properties.author = "Josephine James"
+    d.save(path)
 
 
-if __name__ == "__main__":
-    import sys
-    f = main(sys.argv[1] if len(sys.argv) > 1 else None)
-    print(json.dumps({k: v for k, v in f.items() if not k.startswith("_")}, indent=1)[:5000])
+def main(target, gdir, fig_path):
+    os.makedirs(gdir, exist_ok=True)
+    L = A.load(target)
+    F = figures(L)
+    workbook(F, os.path.join(gdir, GOLDEN["workbook"]))
+    note(F, os.path.join(gdir, GOLDEN["note"]))
+    with open(fig_path, "w") as fh:
+        json.dump(F, fh, indent=1, sort_keys=True)
+        fh.write("\n")
+    return F

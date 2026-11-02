@@ -1,66 +1,70 @@
 {
  "task": "task483",
- "domain": "Survey Research & Official Statistics (census, register and administrative data quality)",
- "client_domain": "Survey Research & Official Statistics",
- "task_type": "census-register-administrative-data-quality",
- "objective": "Data Extraction & Conformation (ETL)",
- "distractor_files": [
-  "state_occupational_wage_estimates_may2025.xlsx",
-  "in_demand_occupations_list_2026-27.pdf"
- ],
- "distractor_reasons": {
-  "state_occupational_wage_estimates_may2025.xlsx": "the state's May 2025 occupational wage estimates for the occupations the college trains for: what the occupations pay statewide, not what the programs' own completers earned",
-  "in_demand_occupations_list_2026-27.pdf": "the board's in-demand occupations list for its outreach and sector partnerships: which occupations the board promotes, which no test in the designation standard reads"
- },
- "stated_inputs": [
-  "2027-28 grant year",
-  "July 2024 to June 2025",
-  "whole thousands of dollars",
-  "whole per cent",
-  "whole hours",
-  "nearest 10 dollars"
- ],
+ "architecture": 2,
+ "title": "Placing the 2027-28 UTI pathway pharmacists",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "subdomain": "benefit-risk-assessment",
+ "objective": "Opportunity Sizing & Decision Support",
+ "prompt_shape": "01",
+ "as_of": "2027-01-11",
  "deliverables": [
-  "larkspur_workforce_value_2027-28.xlsx",
-  "larkspur_program_tests_2027-28.svg"
+  "uti_pathway_placement_2027-28.xlsx",
+  "uti_pathway_placement_note_2027-28.docx"
  ],
- "as_of": "2026-10-16",
- "files": [
-  "copper_flats_antelope_springs_completions_2024-25.csv",
-  "ctg_participant_roster_2023-2026.csv",
-  "ctg_participant_wage_records_2022q3-2026q2.csv",
-  "earnings_outcomes_technical_notes_2025.pdf",
-  "fennimore_ridgefield_completions_2024-25.xlsx",
-  "in_demand_occupations_list_2026-27.pdf",
-  "larkspur_cost_of_attendance_2024-25.pdf",
-  "larkspur_ctg_attendance_2023-2026.csv",
-  "larkspur_direct_loan_disbursements_2019-2026.csv",
-  "larkspur_program_inventory_2025-26.xlsx",
-  "postsecondary_earnings_outcomes_2024_edition.xlsx",
-  "postsecondary_earnings_outcomes_2025_edition.csv",
-  "state_occupational_wage_estimates_may2025.xlsx",
-  "workforce_value_designation_standard_2027-28.pdf"
+ "distractor_files": [
+  "icb_antimicrobial_prescribing_2025-26.xlsx",
+  "c_difficile_community_cases_2024-2026.csv",
+  "gp_registered_list_sizes_2026-10.csv"
  ],
- "rows": {
-  "larkspur_ctg_attendance_2023-2026.csv": 53563,
-  "larkspur_cost_of_attendance_2024-25.pdf": 1,
-  "in_demand_occupations_list_2026-27.pdf": 1,
-  "larkspur_program_inventory_2025-26.xlsx": 23,
-  "larkspur_direct_loan_disbursements_2019-2026.csv": 19564,
-  "copper_flats_antelope_springs_completions_2024-25.csv": 375,
-  "earnings_outcomes_technical_notes_2025.pdf": 1,
-  "state_occupational_wage_estimates_may2025.xlsx": 22,
-  "fennimore_ridgefield_completions_2024-25.xlsx": 1098,
-  "postsecondary_earnings_outcomes_2024_edition.xlsx": 235,
-  "postsecondary_earnings_outcomes_2025_edition.csv": 1242,
-  "ctg_participant_roster_2023-2026.csv": 2207,
-  "workforce_value_designation_standard_2027-28.pdf": 1,
-  "ctg_participant_wage_records_2022q3-2026q2.csv": 27704
+ "stated_inputs": [],
+ "input_gates": {
+  "files": 10,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "gp_uti_antibacterial_issues_2024-2026.csv",
+  "largest_file_rows": 118996
  },
- "sources": {
-  "constructed": "every file is constructed for this task by its generator (task483/generator); the state, its workforce board and data center, the college and its campuses, the other colleges and training providers, the employers and the people are fictional, and every identifier (student, participant, section, employer account, loan) is invented",
-  "public_specifications": "the layouts follow the style of state postsecondary earnings outcome releases (campus by program by cohort cells with earnings percentiles and small-cell suppression), unemployment insurance quarterly wage records, workforce grant participant rosters, a college's completion extracts from two student systems, an attendance export and a Direct Loan disbursement export",
-  "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-16"
- }
+ "sources": [
+  {
+   "files": [
+    "urine_culture_results_2024-2026.csv",
+    "laboratory_organism_codes.csv",
+    "laboratory_antimicrobial_codes.csv"
+   ],
+   "origin": "constructed: the pathology network laboratory's urine culture export across its two laboratory systems (go-live 7 September 2026) and its current code tables, generated from a simulated process of consultations, cultures and susceptibilities (task483/generator/world.py, records.py, pack.py)",
+   "date": "2027-01-06",
+   "license": "CC0-1.0 (synthetic, no real patient data)"
+  },
+  {
+   "files": [
+    "gp_uti_antibacterial_issues_2024-2026.csv"
+   ],
+   "origin": "constructed: the federation's EMIS and SystmOne issue extract for urinary problems, generated from the same simulated consultations",
+   "date": "2027-01-07",
+   "license": "CC0-1.0 (synthetic)"
+  },
+  {
+   "files": [
+    "member_practice_register_2026.xlsx",
+    "uti_pathway_code_lists_2027-28.xlsx",
+    "uti_pathway_specification_2027-28.pdf"
+   ],
+   "origin": "constructed: the federation's register, pathway code lists and pathway specification, written for this task; drug choices follow NICE NG109 (lower UTI, antimicrobial prescribing, 2018)",
+   "date": "2026-12-03",
+   "license": "CC0-1.0 (synthetic); NICE NG109 cited, not reproduced"
+  },
+  {
+   "files": [
+    "icb_antimicrobial_prescribing_2025-26.xlsx",
+    "c_difficile_community_cases_2024-2026.csv",
+    "gp_registered_list_sizes_2026-10.csv"
+   ],
+   "origin": "constructed: ICB prescribing indicators, community C. difficile cases and an NHS Digital style registered-list file for the invented practices (layout after NHS Digital's Patients Registered at a GP Practice, Open Government Licence v3.0)",
+   "date": "2026-11-13",
+   "license": "CC0-1.0 (synthetic); layout reference OGL-3.0"
+  }
+ ]
 }

@@ -1,58 +1,62 @@
 {
  "task": "task483",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
- "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-11-01",
- "stump": "The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the designation at 84 per cent; Medical Assisting's pooled median (33 thousand dollars) and the CDL program's jobs dated from their own pay (63 per cent) put the share at 71 per cent, and either correction alone leaves it at 77 or 78.",
- "architecture": 1,
- "loops": 1,
+ "status": "SHIPPED",
+ "domain": "pharmacology-pharmacoepidemiology-safety/benefit-risk-assessment",
+ "objective": "opportunity-sizing-decision",
+ "stage": 5,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "The default path prices each off-guideline first course at its drug's resistance in the federation's 2024 to 2026 community urine cultures from women aged 16 to 64, first isolate per woman a year, where nitrofurantoin reads about 12 per cent because a culture follows most failed courses and nitrofurantoin's failures send the laboratory the organisms resistant to it, so moving pivmecillinam, cefalexin and co-amoxiclav courses to nitrofurantoin looks worthless and the pharmacists go to Kesterby and Ashwell Vale for their trimethoprim; read on the cultures taken at a first consultation, nitrofurantoin is about 6 per cent against pivmecillinam's 11, and Morrow Cross and Tamsey stop the most mismatched first courses.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
+  "exit": null,
+  "date": ""
  },
- "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-23, --asof 2026-10-16, round 4 pack 7d3d1845): loan amounts matching figures, the standard's 180th day and the call's wording, the technical notes' vocabulary, the extracts and inventory naming programs; every line harmless to eight readers",
-  "reader": "eight isolated scored readers in four rounds all missed the call (77 per cent, renews: the pooled medians with any pay in the quarter), none dating a job from its own pay; round 1 asks 23 and 12 of 23, round 2 11 and 11 of 23, round 3 11 and 23 of 23, each round's devices re-sited; round 4 on the shipped cut (zip 7d3d1845) 0 and 11 of 35 ask figures, score_reader exit 0 and 2"
- },
+ "leak": "NO LEAK (isolated reader on the final pack); leak.py REVIEW lines ruled harmless",
  "duplicate_check": {
-  "heart": "WARN, rerun at ship (strategy risk answered at the draw; government_agency overused; task39 differentiated)",
-  "nearest": "task266 card stump 0.07, task477 ledger row 0.05; task229 v3 driver 0.07",
-  "surface": "people clean (Kathryn Petersen, Rodney Randall); task481 pairing promoted for adjudication only (author-triggered)"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (pass 4 on the shipped cut, after pass 1 FIX_NOW, all fixed)",
-  "report": "determinism_check_report.md",
-  "pass1": "DETERMINISTIC, FIX_NOW (2026-10-23): ask A's fee counting not literally filed, ask B's window unpinned, the credit programs' 30-credit year undefined; the CDL figure moved under two further dating references",
-  "pass2": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-1792766250): Gate G method_or_model_selection and analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical; residual any-pay proxy judged not defensible against 'on the 180th day'",
-  "pass3": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-150426): Gate G method_or_model_selection and analytical_non_defect, Gate H analytical; residual: parametric fits per cell move some whole-thousand figures (Business Administration 40, 38 or 37) while every interpolation through the percentiles files one",
-  "pass4": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-r41792769182, zip 7d3d1845): no competing answer survived; minor: the attendance export's hours unlabelled (the data forces hours and minutes, SF17), the dating step near data semantics (a unit-of-analysis choice)"
+  "pass1": "DETERMINISTIC, FIX_NOW (3.2 conditional reading; fixed in one pass)",
+  "pass2": "DETERMINISTIC, APPROVE"
  },
- "returned": [
-  {
-   "date": "2026-10-28",
-   "portal": "prompt check P6 FAIL: the prompt defines neither a program's pass line on earnings or placement, nor the share of completers in passing programs the designation needs, nor how the designation renews (the reviewer saw no input files)",
-   "repair": "prompt: the question cites the State Workforce Development Board's Workforce Value Designation Standard by its title (in the pack as workforce_value_designation_standard_2027-28.pdf, which files the earnings line, the placement line and the 75 per cent rule); the thresholds stay in the standard; every ask, file name, unit and rounding, the pack (target.zip unchanged) and every graded figure as shipped",
-   "gates": "voice-check PASS (964 characters); no 5-gram of the new clause in another prompt; precut 53 checks, 0 FAIL; leak.py --asof 2026-10-16 REVIEW, no LEAK, the prompt gate clean",
-   "repair_kind": "prompt",
-   "commit": ""
-  },
-  {
-   "date": "2026-10-28",
-   "portal": "determinism block failed (response 2: Gates C, D and E, underspecified_objective, fix_location input_files, model_response semantic_fork): the CDL program's day-180 status is read from quarterly wage records by four constructions the standard does not choose between, both neighbours paid 47 of 79, the golden's dated jobs 50, the adjacent quarter on day 180's side 65, any pay in the quarter 72; 65 or 72 pass and the designation renews (1,108 of 1,441, 76.9 per cent); Medical Assisting's pooled median forced by standard 3.1",
-   "repair": "design: the fork is the stump (fix-determinism step 3). The eight in-house readers and the portal's judge pooled Medical Assisting correctly and missed only the dating, so any closure (the judge's both-neighbours rule, which also moves CDL to 59 per cent; the golden's dating filed; a definition ruling out the quarter's pay) lets that path land the call; not repaired, back to stage 2",
-   "commit": ""
-  }
- ],
- "resume": "re-root at stage 1 as architecture 2 (architecture 1 spent: the CDL day-180 dating was a fork that was the stump, the portal determinism block of 10-28). The 2026-11-01 screens in ## Tried and rejected leave no unscreened ETL mechanism in the window-open cells (emissions inventory, payment claims, IRT equating, record linkage), and survey research x ETL BLOCKs on ban.pairing against task456 v3. Next: the author's call (a ban waiver for survey research x ETL, the number moved to another objective, or a named borderline design accepted at its stated Gate H risk), then /build task483 from 1 with guard.py recent, mechanisms and slots re-run first",
+ "returned": [],
+ "resume": "shipped; next: the portal result",
  "approved": null,
- "delivered": "2026-10-23",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "source_note": "new number from seed ET40 (world, decision and quantity kept); the earnings test alone and the placement test alone screened at the draw and rejected as single steps (Tried and rejected)"
+ "retask": "2026-11-01, the author: objective moved from etl to opportunity-sizing-decision, retirement not taken; START_HERE.md not edited",
+ "architecture_1": {
+  "summary": "ETL, Larkspur Basin Community College's 2027-28 workforce value designation (survey-research-official-statistics / census-register-administrative-data-quality)",
+  "delivered": "2026-10-23",
+  "returned": [
+   {
+    "date": "2026-10-28",
+    "portal": "prompt check P6 FAIL: the prompt defines neither a program's pass line on earnings or placement, nor the share of completers in passing programs the designation needs, nor how the designation renews (the reviewer saw no input files)",
+    "repair": "prompt: the question cites the State Workforce Development Board's Workforce Value Designation Standard by its title (in the pack as workforce_value_designation_standard_2027-28.pdf, which files the earnings line, the placement line and the 75 per cent rule); the thresholds stay in the standard; every ask, file name, unit and rounding, the pack (target.zip unchanged) and every graded figure as shipped",
+    "gates": "voice-check PASS (964 characters); no 5-gram of the new clause in another prompt; precut 53 checks, 0 FAIL; leak.py --asof 2026-10-16 REVIEW, no LEAK, the prompt gate clean",
+    "repair_kind": "prompt",
+    "commit": ""
+   },
+   {
+    "date": "2026-10-28",
+    "portal": "determinism block failed (response 2: Gates C, D and E, underspecified_objective, fix_location input_files, model_response semantic_fork): the CDL program's day-180 status is read from quarterly wage records by four constructions the standard does not choose between, both neighbours paid 47 of 79, the golden's dated jobs 50, the adjacent quarter on day 180's side 65, any pay in the quarter 72; 65 or 72 pass and the designation renews (1,108 of 1,441, 76.9 per cent); Medical Assisting's pooled median forced by standard 3.1",
+    "repair": "design: the fork is the stump (fix-determinism step 3). The eight in-house readers and the portal's judge pooled Medical Assisting correctly and missed only the dating, so any closure (the judge's both-neighbours rule, which also moves CDL to 59 per cent; the golden's dating filed; a definition ruling out the quarter's pay) lets that path land the call; not repaired, back to stage 2",
+    "commit": ""
+   }
+  ],
+  "fate": "spent: the portal determinism block of 2026-10-28 found the CDL day-180 dating a fork that was the stump; built state at commit 16515cc"
+ },
+ "precut_exit": 0,
+ "shipped": "2026-11-02",
+ "call": "Place the two UTI pathway pharmacists in Morrow Cross and Tamsey from 1 April 2027: about 70 mismatched first courses stopped each on the 2026 basis, runner-up Kesterby about 50",
+ "default_path_answer": "Kesterby and Ashwell Vale",
+ "pair_ceiling": 28.5,
+ "heart": "WARN (Gate G method_or_model_selection repeat, answered in the note)",
+ "target_zip_sha256_prefix": "d8cd26685eb0f19b"
 }

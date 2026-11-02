@@ -1,54 +1,55 @@
-# determinism-check report, task483, 2026-10-23 (round 4)
+# determinism-check report, task483, 2026-11-02 (pass 1)
 
 ## Verdict
 DETERMINISTIC
-**Disposition:** APPROVE
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Disposition:** FIX_NOW
+**Stumping type:** mechanism: statistical_rigor (selection bias in the estimand) / etl_conformance, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
-Thread: one general-purpose sonnet/medium thread, run id r41792769182, fresh unzip of the final target.zip; verdict at /tmp/determinism-check-task483-r41792769182/verdict.md.
+Note: the runtime had no Agent tool; the main session spawned the single isolated thread from my brief (scratchpad determinism-check-task483-run1/judge_brief.md). Its verdict is determinism-check-task483-run1/verdict.md.
 
 ## Why
-Executed word for word, the standard gives a pooled median across campuses and both award years (3.1), CPI 1.0294 on 2024 cells (3.2), work status on the 180th day for grant completers (4.1) and the 75 per cent rule on 2024-25 completers of tested programs (5.1, 5.2): 71 per cent (1,021 of 1,441), so the designation lapses. No gate A to E failure. The new round-4 pieces (whole-hour attendance, ask B loan totals) reproduce.
+The main call is forced from the shipped files: Morrow Cross 73.3, Tamsey 67.5, Kesterby 47.8, Upper Lode 44.3, Ashwell Vale 42.6, Stanbridge North 29.7, Brackenholt 24.0 (rounded 70/70/50/40/40/30/20), pharmacists to Morrow Cross and Tamsey, Kesterby runner-up. One narrow Gate C fork touches the asks table only: specification 3.2 "a first course on it" read conditionally (chance among courses actually issued on the drug) moves four of seven nearest-10 figures (Ashwell Vale 40 to 44.8, Stanbridge North 40 to 39.2, Upper Lode 30 to 34.9, Brackenholt 30 to 26.2; Morrow Cross 60, Tamsey 60/57 vs 70), while the slate and runner-up hold. The counterfactual wording favours the pooled reading but the text does not close it.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Credit-program earnings (11 tested; Paralegal suppressed) | 44/40/28/27/28/52/50/33/65/71/47 | same (Medical Assisting 33.06; 33.03 under monotone spline) | yes |
-| Short-term placement (10 tested; Forklift 18, untested) | CDL 63, EMT 44, Coding 50, others 83 to 92 | same (CDL 50/79); nearest dated start/exit 17 days from day 180 | yes |
-| Designation share | 71 (1,021 of 1,441) | 70.85 | yes |
-| Either correction alone | 77 / 78 | 77.8 / 76.9 (both fixed 83.8) | yes (consistent) |
-| Clock hours (11 programs) | CDL 13,127 ... Welding Fund. 16,485 | same; 333 repeated rows dropped; decimal reading would differ | yes |
-| Loan median and total (12 each) | RN 14,750 / 1,422,960; MA 7,250 / 369,390; Paralegal 9,860 / 66,980 etc. | all 24 match; window end 30 Jun 2025 changes nothing | yes |
+| First courses 2026 / 2024-26 | 16068 | 16068 / 48086 (27, 28, 29-day lookback identical) | yes |
+| Other-drug first courses MC/T/K/UL/AV/SN/B | 1123/1098/543/610/521/1192/420 | same | yes |
+| Same-day cultures | 4658 | 4658 (4678 rows; 20 same-result duplicates) | yes |
+| NITR / MECI / FOSF chance | ~5 / 13 / 10 | 5.4 / 13.1 / 9.9 | yes |
+| Courses stopped (nearest 10) | 70/70/50/40/40/30/20 | 73.3/67.5/47.8/44.3/42.6/29.7/24.0 | yes (pooled reading) |
+| Enterococcus patients K/AV/MC/T/SN/UL/B | 129/84/143/122/133/92/110 | same | yes |
+| Enterobacter patients K/AV/MC/T/SN/UL/B | 53/32/48/43/33/42/31 | same (old ENTC, new ECLO; KAER excluded) | yes |
 
 ## Competing answers that survived
-None. Considered and closed: averaged cell medians (MA 36, pass) closed by "taken as one group"; any pay in the quarter (CDL 91) closed by "working on the 180th day"; decimal-hours attendance closed by fractional parts never above .55 in steps of .05; loan rows as installments closed by the annual limits in the cost of attendance pdf. Strict whole-quarter job reading (CDL 59.5) still lapses, so the call is unaffected (it would flip Phlebotomy, but that reading ignores starts and exits the pay records show). Note: the attendance `hours` field is unlabelled in the files, but the data forces the HH.MM reading.
+- Conditional vs pooled chance (spec 3.2): pooled gives 70/70/50/40/40/30/20; conditional gives 60/60/50/44.8/39.2/34.9/26.2 style figures. Same call and runner-up; four asks figures differ. No shipped rule closed it.
+- Minor: Enterobacter counting KAER (organism file names it Klebsiella, so literal reading excludes); naive ENTE+ENTC mapping (enterococcus Kesterby 162, Morrow Cross 174); hospital-requested cultures (excluded by "from a practice or the hub"). The old ENTE/ENTC swap is stated in no shipped document, identified by H-prefix and resistance profile; the prompt's "an Enterobacter" was the looser wording.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10+ | 14 | yes |
+| Files | 10+ | 10 | yes |
 | Formats | 3+ | csv, xlsx, pdf | yes |
-| Large file | 25,000+ rows | attendance 53,563; wage records 27,704 | yes |
-| Distractors | 2+ named in metadata, none labelled in a file name | state OEWS wage estimates, in-demand occupations list; names do not label them | yes |
-| Distractor use | unused, weighable, ruled out by a shipped fact | neither answers a graded quantity (verified by thread; statewide pay / outreach list, no test reads them) | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, svg), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 9 numbered items, units and rounding in the prompt sentence | yes |
-| Prompt shape / rubric | identifiable shape, 25+ criteria | shape 16; about 11+11+12+12+... per-program figures plus call, share, chart gives well over 25 | yes |
-| Reads as real | no LLM tells, goldens real | thread found none; minor: PDFs very short and tidy | yes |
+| Large file | 25,000+ rows | 118,996 rows | yes |
+| Distractors in metadata.json | 2+, none named in a file | 3 (icb prescribing, c_difficile, list sizes); no file name labels one | yes |
+| Distractor unused, weighs, does not answer a graded quantity | yes | none answers a graded quantity (judge found no shipped ranking) | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, docx), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | per-network cuts, whole numbers, nearest 10 | yes |
+| Prompt shape, 25+ criteria | yes | shape 01; rubric not generated here, count not verifiable by me | unverified |
+| Not LLM-read, goldens realistic | yes | judge found no authoring disclosure; golden xlsx has Placement chart, Chances and Outside sheets | yes (judge) |
 
 ## Gate G reconciliation
-Thread: mechanism method_or_model_selection, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_strategy grain_or_unit, layer2_family estimation_fit, stump_class analytical. Consistent (pooling released percentiles and dating a job inside a quarter are both estimation under a coarser recorded grain). The thread did not name either declared distractor as the surface read; no ranking artifact gets the decision wrong. The design note's stump sentence (default 84 per cent, either correction alone keeps) matches the thread's 77.8 / 76.9 / 83.8.
+Judge: mechanism statistical_rigor/etl_conformance, family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note (R3 decisive: cultures at the first consultation vs cumulative antibiogram): matches. No antibiogram or ranking ships, the declared distractors are not the surface read carrying the task. Gate G: clean. No mismatch.
 
-## Gate H line
-domain: pass, layers: pass, decisive_step: analytical. Matches the card's analyst_test and domain_test (pooled half point of rebuilt cell distributions, and day-180 status dated from partial-quarter pay). Caution recorded by the thread: the dating step is close to data semantics, but it is the unit-of-analysis choice between interval and quarter reading.
+Gate H line (judge): domain: pass, layers: pass, decisive_step: analytical. Matches the design note's `## Three rules` (domain test, Layer 2 estimand under selection on the outcome, "No filed rule says which cultures"). Main-thread caution: the stump rests on sample selection that no shipped field marks; weigh the ladder as the note does.
 
 ## Stump power (Gate F)
-Strong per the thread: each shortcut alone still renews, only both corrections together lapse. The pooled-median method is a field-standard route; the main thread should weigh this with the scored readers' result.
+Good. About half of matched cultures follow a failed course (lag 3 to 13 days); the all-cultures route puts NITR at 14.5 to 14.8 per cent and names Kesterby 24, Ashwell Vale 19, a clearly separable wrong answer. Not a landable-by-textbook-method case: the CLSI M39 antibiogram is the wrong route here.
 
 ## Findings, ranked
-1. None blocking.
-2. Minor: unlabelled `hours` field in the attendance export (data forces HH.MM; fork SF17 closed in the note).
-3. Minor: dating step sits near data semantics (Gate H caution).
+1. Gate C (asks): spec 3.2 "a first course on it" conditional vs pooled moves four nearest-10 table figures. FIX_NOW.
+2. Minor: Enterobacter ask wording (KAER); old ENTE/ENTC swap unstated in shipped documents (identifiable from H-prefix and resistance profile).
+3. Rubric count not verified.
 
 ## Next action for the author
-Proceed to ship; no repair or re-judge needed.
+Pin the chance's population in specification 3.2 and name "Enterobacter cloacae" in the prompt (already applied by the main session); re-judge once on the rebuilt bundle (run 2).

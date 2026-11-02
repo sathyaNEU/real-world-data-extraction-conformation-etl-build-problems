@@ -1,361 +1,231 @@
 {
- "_unrounded": {
-  "clock_hours": {
-   "Commercial Driver License, Class A": 13127.333333333334,
-   "Emergency Medical Technician": 9503.666666666666,
-   "Forklift and Material Handling": 803.0,
-   "HVAC Fundamentals": 9772.000000000002,
-   "IT Support Specialist": 16040.250000000004,
-   "Medical Coding": 11193.25,
-   "Nursing Assistant": 12322.000000000004,
-   "Pharmacy Technician": 12439.666666666664,
-   "Phlebotomy Technician": 3670.7500000000005,
-   "Warehouse and Logistics Technician": 10553.250000000002,
-   "Welding Fundamentals": 16485.0
+ "chances": {
+  "AMC": {
+   "chance": 0.05754,
+   "cultures": 4658,
+   "pct": 6,
+   "resistant": 268
   },
-  "default": 83.83067314365024,
-  "degree_half_alone": 76.8910478834143,
-  "figures": {
-   "Automotive Technology": 44119.56828125524,
-   "Business Administration": 40014.47070025228,
-   "Child Development": 27982.01504848536,
-   "Commercial Driver License, Class A": 63.29113924050633,
-   "Criminal Justice": 27036.69313432745,
-   "Culinary Arts": 27844.70510835514,
-   "Diesel Technology": 52041.48122417365,
-   "Emergency Medical Technician": 44.0,
-   "Forklift and Material Handling": null,
-   "HVAC Fundamentals": 92.3076923076923,
-   "IT Support Specialist": 82.6923076923077,
-   "Information Technology": 50134.09784692287,
-   "Medical Assisting": 33057.259698804715,
-   "Medical Coding": 50.0,
-   "Nursing Assistant": 90.81632653061224,
-   "Paralegal Studies": null,
-   "Pharmacy Technician": 87.17948717948718,
-   "Phlebotomy Technician": 88.0,
-   "Radiologic Technology": 65017.774491954886,
-   "Registered Nursing": 71001.95548519335,
-   "Warehouse and Logistics Technician": 90.3225806451613,
-   "Welding Fundamentals": 90.0,
-   "Welding Technology": 47089.186436394826
+  "AMX": {
+   "chance": 0.24324,
+   "cultures": 4658,
+   "pct": 24,
+   "resistant": 1133
   },
-  "loan_median": {
-   "Automotive Technology": 12480.0,
-   "Business Administration": 13260.0,
-   "Child Development": 17000.0,
-   "Criminal Justice": 15300.0,
-   "Culinary Arts": 13560.0,
-   "Diesel Technology": 15500.0,
-   "Information Technology": 12150.0,
-   "Medical Assisting": 7250.0,
-   "Paralegal Studies": 9860.0,
-   "Radiologic Technology": 12190.0,
-   "Registered Nursing": 14750.0,
-   "Welding Technology": 13880.0
+  "CEX": {
+   "chance": 0.0717,
+   "cultures": 4658,
+   "pct": 7,
+   "resistant": 334
   },
-  "share": 70.85357390700902,
-  "short_half_alone": 77.79319916724496
- },
- "call": {
-  "failing": [
-   "Child Development",
-   "Commercial Driver License, Class A",
-   "Criminal Justice",
-   "Culinary Arts",
-   "Emergency Medical Technician",
-   "Medical Assisting",
-   "Medical Coding"
-  ],
-  "in_passing": 1021,
-  "line_pct": 75,
-  "renews": false,
-  "share_pct": 71,
-  "tested": 1441
- },
- "components": {
-  "cdl": {
-   "completers": 87,
-   "dated_pct": 63,
-   "grant_completers": 79,
-   "quarter_pct": 91,
-   "quarter_working": 72,
-   "working": 50
+  "FOS": {
+   "chance": 0.09875,
+   "cultures": 4658,
+   "pct": 10,
+   "resistant": 460
   },
-  "default_in_passing": 1208,
-  "default_share_pct": 84,
-  "degree_half_alone_pct": 77,
-  "medical_assisting": {
-   "averaged_thousands": 36,
-   "completers": 100,
-   "pooled_thousands": 33
+  "MEC": {
+   "chance": 0.13117,
+   "cultures": 4658,
+   "pct": 13,
+   "resistant": 611
   },
-  "short_half_alone_pct": 78,
-  "untested": [
-   "Forklift and Material Handling",
-   "Paralegal Studies"
-  ]
- },
- "programs": {
-  "Automotive Technology": {
-   "borrowers": 29,
-   "completers_2024_25": 50,
-   "figure_thousands": 44,
-   "loan_median_usd": 12480,
-   "loan_total_usd": 411160,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 101
+  "NIT": {
+   "chance": 0.05389,
+   "cultures": 4658,
+   "pct": 5,
+   "resistant": 251
   },
-  "Business Administration": {
-   "borrowers": 53,
-   "completers_2024_25": 134,
-   "figure_thousands": 40,
-   "loan_median_usd": 13260,
-   "loan_total_usd": 751230,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 199
-  },
-  "Child Development": {
-   "borrowers": 21,
-   "completers_2024_25": 64,
-   "figure_thousands": 28,
-   "loan_median_usd": 17000,
-   "loan_total_usd": 374660,
-   "passes": false,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 124
-  },
-  "Commercial Driver License, Class A": {
-   "clock_hours_fy2025": 13127,
-   "completers_2024_25": 87,
-   "figure_pct": 63,
-   "grant_completers": 79,
-   "passes": false,
-   "test": "placement",
-   "tested": true,
-   "working": 50
-  },
-  "Criminal Justice": {
-   "borrowers": 25,
-   "completers_2024_25": 58,
-   "figure_thousands": 27,
-   "loan_median_usd": 15300,
-   "loan_total_usd": 381360,
-   "passes": false,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 108
-  },
-  "Culinary Arts": {
-   "borrowers": 9,
-   "completers_2024_25": 21,
-   "figure_thousands": 28,
-   "loan_median_usd": 13560,
-   "loan_total_usd": 118810,
-   "passes": false,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 37
-  },
-  "Diesel Technology": {
-   "borrowers": 21,
-   "completers_2024_25": 39,
-   "figure_thousands": 52,
-   "loan_median_usd": 15500,
-   "loan_total_usd": 340130,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 77
-  },
-  "Emergency Medical Technician": {
-   "clock_hours_fy2025": 9504,
-   "completers_2024_25": 56,
-   "figure_pct": 44,
-   "grant_completers": 50,
-   "passes": false,
-   "test": "placement",
-   "tested": true,
-   "working": 22
-  },
-  "Forklift and Material Handling": {
-   "clock_hours_fy2025": 803,
-   "completers_2024_25": 20,
-   "figure_pct": null,
-   "grant_completers": 18,
-   "passes": null,
-   "test": "placement",
-   "tested": false,
-   "working": null
-  },
-  "HVAC Fundamentals": {
-   "clock_hours_fy2025": 9772,
-   "completers_2024_25": 43,
-   "figure_pct": 92,
-   "grant_completers": 39,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 36
-  },
-  "IT Support Specialist": {
-   "clock_hours_fy2025": 16040,
-   "completers_2024_25": 60,
-   "figure_pct": 83,
-   "grant_completers": 52,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 43
-  },
-  "Information Technology": {
-   "borrowers": 19,
-   "completers_2024_25": 58,
-   "figure_thousands": 50,
-   "loan_median_usd": 12150,
-   "loan_total_usd": 256850,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 90
-  },
-  "Medical Assisting": {
-   "borrowers": 43,
-   "completers_2024_25": 100,
-   "figure_thousands": 33,
-   "loan_median_usd": 7250,
-   "loan_total_usd": 369390,
-   "passes": false,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 180
-  },
-  "Medical Coding": {
-   "clock_hours_fy2025": 11193,
-   "completers_2024_25": 34,
-   "figure_pct": 50,
-   "grant_completers": 30,
-   "passes": false,
-   "test": "placement",
-   "tested": true,
-   "working": 15
-  },
-  "Nursing Assistant": {
-   "clock_hours_fy2025": 12322,
-   "completers_2024_25": 112,
-   "figure_pct": 91,
-   "grant_completers": 98,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 89
-  },
-  "Paralegal Studies": {
-   "borrowers": 7,
-   "completers_2024_25": 12,
-   "figure_thousands": null,
-   "loan_median_usd": 9860,
-   "loan_total_usd": 66980,
-   "passes": null,
-   "test": "earnings",
-   "tested": false,
-   "with_earnings": 0
-  },
-  "Pharmacy Technician": {
-   "clock_hours_fy2025": 12440,
-   "completers_2024_25": 44,
-   "figure_pct": 87,
-   "grant_completers": 39,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 34
-  },
-  "Phlebotomy Technician": {
-   "clock_hours_fy2025": 3671,
-   "completers_2024_25": 28,
-   "figure_pct": 88,
-   "grant_completers": 25,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 22
-  },
-  "Radiologic Technology": {
-   "borrowers": 13,
-   "completers_2024_25": 25,
-   "figure_thousands": 65,
-   "loan_median_usd": 12190,
-   "loan_total_usd": 182810,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 46
-  },
-  "Registered Nursing": {
-   "borrowers": 91,
-   "completers_2024_25": 156,
-   "figure_thousands": 71,
-   "loan_median_usd": 14750,
-   "loan_total_usd": 1422960,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 227
-  },
-  "Warehouse and Logistics Technician": {
-   "clock_hours_fy2025": 10553,
-   "completers_2024_25": 136,
-   "figure_pct": 90,
-   "grant_completers": 124,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 112
-  },
-  "Welding Fundamentals": {
-   "clock_hours_fy2025": 16485,
-   "completers_2024_25": 56,
-   "figure_pct": 90,
-   "grant_completers": 50,
-   "passes": true,
-   "test": "placement",
-   "tested": true,
-   "working": 45
-  },
-  "Welding Technology": {
-   "borrowers": 31,
-   "completers_2024_25": 80,
-   "figure_thousands": 47,
-   "loan_median_usd": 13880,
-   "loan_total_usd": 459320,
-   "passes": true,
-   "test": "earnings",
-   "tested": true,
-   "with_earnings": 145
+  "TMP": {
+   "chance": 0.15243,
+   "cultures": 4658,
+   "pct": 15,
+   "resistant": 710
   }
  },
- "stated": {
-  "award_years": [
-   "2020-21",
-   "2021-22"
+ "filed": {
+  "ages": [
+   16,
+   64,
+   65
   ],
-  "benchmark_thousands": 34.2,
-  "benchmark_usd": 34200,
-  "cpi_factor": 1.0294,
-  "day": 180,
-  "earnings_years": [
-   2024,
-   2025
+  "lookback_days": 28,
+  "pathway_year": [
+   2026,
+   2027,
+   2028
   ],
-  "min_grant_completers": 20,
-  "min_with_earnings": 30,
-  "placement_line_pct": 70,
-  "share_line_pct": 75
- }
+  "specification_sections": [
+   2.1,
+   2.2,
+   2.3,
+   3.1,
+   3.2,
+   4.1,
+   4.2
+  ]
+ },
+ "first_courses_2024_2026": 48086,
+ "first_courses_2026": 16068,
+ "gap_second_to_runner_up": 19.964,
+ "grid": {
+  "Ashwell Vale": {
+   "Enterobacter": 32,
+   "Enterococcus": 84
+  },
+  "Brackenholt": {
+   "Enterobacter": 31,
+   "Enterococcus": 110
+  },
+  "Kesterby": {
+   "Enterobacter": 53,
+   "Enterococcus": 129
+  },
+  "Morrow Cross": {
+   "Enterobacter": 48,
+   "Enterococcus": 143
+  },
+  "Stanbridge North": {
+   "Enterobacter": 33,
+   "Enterococcus": 133
+  },
+  "Tamsey": {
+   "Enterobacter": 43,
+   "Enterococcus": 122
+  },
+  "Upper Lode": {
+   "Enterobacter": 42,
+   "Enterococcus": 92
+  }
+ },
+ "margin_second_to_runner_up": 1.4203,
+ "networks": [
+  {
+   "by_drug": {
+    "AMC": 24,
+    "AMX": 8,
+    "CEX": 40,
+    "FOS": 9,
+    "MEC": 35,
+    "TMP": 427
+   },
+   "first_courses": 2491,
+   "network": "Kesterby",
+   "nitrofurantoin": 1948,
+   "other": 543,
+   "stopped": 47.501,
+   "stopped_r10": 50
+  },
+  {
+   "by_drug": {
+    "AMC": 35,
+    "AMX": 11,
+    "CEX": 66,
+    "FOS": 10,
+    "MEC": 36,
+    "TMP": 363
+   },
+   "first_courses": 2037,
+   "network": "Ashwell Vale",
+   "nitrofurantoin": 1516,
+   "other": 521,
+   "stopped": 42.388,
+   "stopped_r10": 40
+  },
+  {
+   "by_drug": {
+    "AMC": 61,
+    "AMX": 8,
+    "CEX": 22,
+    "FOS": 282,
+    "MEC": 722,
+    "TMP": 28
+   },
+   "first_courses": 2752,
+   "network": "Morrow Cross",
+   "nitrofurantoin": 1629,
+   "other": 1123,
+   "stopped": 73.342,
+   "stopped_r10": 70
+  },
+  {
+   "by_drug": {
+    "AMC": 39,
+    "AMX": 7,
+    "CEX": 24,
+    "FOS": 461,
+    "MEC": 517,
+    "TMP": 50
+   },
+   "first_courses": 2448,
+   "network": "Tamsey",
+   "nitrofurantoin": 1350,
+   "other": 1098,
+   "stopped": 67.464,
+   "stopped_r10": 70
+  },
+  {
+   "by_drug": {
+    "AMC": 392,
+    "AMX": 14,
+    "CEX": 443,
+    "FOS": 293,
+    "MEC": 23,
+    "TMP": 27
+   },
+   "first_courses": 2429,
+   "network": "Stanbridge North",
+   "nitrofurantoin": 1237,
+   "other": 1192,
+   "stopped": 29.56,
+   "stopped_r10": 30
+  },
+  {
+   "by_drug": {
+    "AMC": 26,
+    "AMX": 4,
+    "CEX": 19,
+    "FOS": 10,
+    "MEC": 547,
+    "TMP": 4
+   },
+   "first_courses": 1870,
+   "network": "Upper Lode",
+   "nitrofurantoin": 1260,
+   "other": 610,
+   "stopped": 44.309,
+   "stopped_r10": 40
+  },
+  {
+   "by_drug": {
+    "AMC": 75,
+    "AMX": 5,
+    "CEX": 111,
+    "FOS": 16,
+    "MEC": 48,
+    "TMP": 165
+   },
+   "first_courses": 2041,
+   "network": "Brackenholt",
+   "nitrofurantoin": 1621,
+   "other": 420,
+   "stopped": 23.885,
+   "stopped_r10": 20
+  }
+ ],
+ "presentation_cultures": 4658,
+ "rank": [
+  "Morrow Cross",
+  "Tamsey",
+  "Kesterby",
+  "Upper Lode",
+  "Ashwell Vale",
+  "Stanbridge North",
+  "Brackenholt"
+ ],
+ "runner_up": "Kesterby",
+ "slate": [
+  "Morrow Cross",
+  "Tamsey"
+ ]
 }

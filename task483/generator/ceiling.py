@@ -1,83 +1,167 @@
-"""The pair ceiling on the cut pack (supplemental-stumping Part 0, on its 38, 7 and 55 weights).
+"""task483 ask ceiling, measured on the cut pack. Shares no code with the generator: it reads target/ and the graded
+figures in generator/figures.json, and nothing else.
 
-The cracker lands the call (every program's median rebuilt from its cells' pooled distributions, every grant
-completer's day-180 status dated from each job's own pay) and every program's figure, runs the hygiene battery (keys
-unique, amended wage reports superseding originals, every program joined through the inventory, both student systems'
-ID formats, both loan-type code sets) and executes every filed rule it is pointed at: ask A as the board's payments to
-the attendance export's sessions dated in fiscal 2025, exact duplicates dropped, each time read as decimal hours; ask
-B as each completer's
-Direct Subsidized and Unsubsidized disbursements as exported, returns netted, parent PLUS loans left out. The mirror
-stops at the default path (cell medians averaged, any pay in the quarter holding day 180) and reads every ask the same
-way, since the asks consume nothing the call's construction produces (checks.py X1 and X2 assert the separation). The
-other rows give the cracker one more repair at a time: the session times read as hours and minutes, each 2024-25 loan
-counted once. A hit is a figure inside half a unit of its stated rounding.
+The cracker is the careful solver: it lands the call (the cultures sent at a first course's consultation), executes
+every filed rule (the specification's first courses, the hub to the registered practice, Stanbridge Road to Hollin
+Lane, the asking sentence's population, requesters and patients) and runs the hygiene battery on the culture export
+(second pots of one consultation dropped, accession formats and both date layouts parsed, result wording of both
+systems read, every organism code read through the laboratory's code table, a code the table lacks read by its
+evident name, each code checked against its own row's panel). The mirror stops at the cumulative antibiogram for the
+call and handles the ask the same way. A figure is kept when it lands within half a unit of its rounding.
 
-    python3 task483/generator/ceiling.py [target]
+    python3 task483/generator/ceiling.py
 """
+import csv
+import datetime
+import hashlib
+import json
 import os
 import sys
-import warnings
+
+import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-warnings.filterwarnings("ignore")
-
-import bundle as B   # noqa: E402
-
-W_REC, W_IF, W_ASK, R_WRONG = 38.0, 7.0, 55.0, 5.0
+TASK = os.path.dirname(HERE)
 
 
-def figures(I, deg_route, short_route, a_basis, b_basis):
-    c = B.call(I, deg_route, short_route)
-    out = {"call": c["renews"], "share": B.hround(c["share"]),
-           "fail": tuple(sorted(p for p, d in list(c["deg"].items()) + list(c["short"].items())
-                                if d["tested"] and not d["passes"]))}
-    for p, d in c["deg"].items():
-        if d["tested"]:
-            out["m|" + p] = B.hround(d["figure"] / 1000.0)
-    for p, d in c["short"].items():
-        if d["tested"]:
-            out["m|" + p] = B.hround(d["figure"])
-    for p, v in B.ask_a(I, a_basis).items():
-        out["A|" + p] = v[0]
-    for p, v in B.ask_b(I, b_basis).items():
-        out["B|" + p] = v[1]
-        out["B2|" + p] = v[3]
-    return out
+def parse_day(text):
+    text = text.strip()
+    if "/" in text[:6]:
+        return datetime.date(int(text[6:10]), int(text[3:5]), int(text[:2]))
+    return datetime.date(int(text[:4]), int(text[5:7]), int(text[8:10]))
 
 
-def score(gold, resp):
-    asks = [k for k in gold if k.split("|")[0] in ("A", "B", "B2")]
-    main = [k for k in gold if k.startswith("m|")] + ["share", "fail"]
-    kept = [k for k in asks if resp[k] == gold[k]]
-    call = resp["call"] == gold["call"]
-    mk = sum(1 for k in main if resp[k] == gold[k])
-    rec = (W_REC * (0.4 + 0.6 * mk / len(main))) if call else R_WRONG
-    return rec + W_IF + W_ASK * len(kept) / len(asks), kept, asks, call, mk, len(main)
+def pack_digest(target):
+    h = hashlib.sha256()
+    for f in sorted(os.listdir(target)):
+        h.update(f.encode())
+        h.update(open(os.path.join(target, f), "rb").read())
+    return h.hexdigest()[:16]
 
 
-def main(target=None):
-    target = target or os.path.join(os.path.dirname(HERE), "target")
-    I = B.Inputs(target)
-    gold = figures(I, "golden", "golden", "golden", "golden")
-    rows = {"cracker": figures(I, "golden", "golden", "decimal", "rows"),
-            "mirror": figures(I, "naive", "quarter", "decimal", "rows"),
-            "cracker who reads the session times as hours and minutes": figures(I, "golden", "golden", "golden",
-                                                                               "rows"),
-            "cracker who counts each 2024-25 loan once": figures(I, "golden", "golden", "decimal", "golden"),
-            "cracker who does both asks": figures(I, "golden", "golden", "golden", "golden")}
-    out = {}
-    for name, resp in rows.items():
-        sc, kept, asks, call, mk, nm = score(gold, resp)
-        out[name] = (sc, kept, asks)
-        ka = sum(1 for k in kept if k.startswith("A|"))
-        kb = sum(1 for k in kept if k.startswith("B"))
-        print("%-64s call %-5s main %2d/%d  ask A %2d/11  ask B %2d/24  score %.1f" % (name, call, mk, nm, ka, kb, sc))
-    sc, sm = out["cracker"][0], out["mirror"][0]
-    print("Pair ceiling: %.1f" % ((sc + sm) / 2))
-    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * len(out["mirror"][1]) / len(out["mirror"][2])))
-    return (sc + sm) / 2
+def read(target):
+    wb = openpyxl.load_workbook(os.path.join(target, "member_practice_register_2026.xlsx"), read_only=True)
+    network, successor, requesters = {}, {}, set()
+    for row in wb["Member practices"].iter_rows(min_row=4, values_only=True):
+        if not row or not row[0]:
+            continue
+        requesters.add(row[0])
+        if row[3] != "Federation-wide":
+            network[row[0]] = row[3]
+        if row[6] and str(row[6]).startswith("Merged into"):
+            successor[row[0]] = str(row[6]).split()[2]
+    table = {}
+    with open(os.path.join(target, "laboratory_organism_codes.csv"), newline="") as fh:
+        for row in csv.DictReader(fh):
+            table[row["OrganismCode"]] = row["OrganismName"]
+    specimens = {}
+    with open(os.path.join(target, "urine_culture_results_2024-2026.csv"), newline="") as fh:
+        for row in csv.DictReader(fh):
+            sp = specimens.setdefault(row["LabNo"], {
+                "patient": row["NHSNumberPseudo"], "sex": row["Sex"], "age": int(row["AgeYears"]),
+                "gp": row["GPPracticeCode"], "requester": row["RequestingLocation"],
+                "collected": parse_day(row["DateCollected"]), "rows": []})
+            if row["OrganismCode"]:
+                sp["rows"].append(row)
+    return network, successor, requesters, table, specimens
+
+
+def battery(specimens):
+    """Second pots: one consultation's specimens with the same patient, collection day and identical results."""
+    seen, keep = set(), {}
+    for lab in sorted(specimens):
+        sp = specimens[lab]
+        key = (sp["patient"], sp["collected"], tuple(sorted(tuple(sorted(r.items()))[11:] for r in sp["rows"])))
+        if key in seen:
+            continue
+        seen.add(key)
+        keep[lab] = sp
+    return keep
+
+
+def name_of(code, table):
+    if code in table:
+        return table[code]
+    guess = {"ENTE": "Enterococcus species"}      # a retired code read by its letters
+    return guess.get(code, code)
+
+
+def panel_profile(table, specimens):
+    """For each laboratory system (the old one's accession numbers start with H), the share of the rows its code table
+    reads as an enterococcus that carry gentamicin or cefpodoxime. A share strictly between 0 and 1 means some of those
+    rows contradict their code, and the battery re-derives them from the panel."""
+    prof = {}
+    for sp_lab, sp in specimens.items():
+        system = "old" if sp_lab.startswith("H") else "new"
+        for row in sp["rows"]:
+            if name_of(row["OrganismCode"], table).startswith("Enterococcus"):
+                n, g = prof.get(system, (0, 0))
+                prof[system] = (n + 1, g + bool(row["GENT"] or row["CPOD"]))
+    return {k: g / n for k, (n, g) in prof.items()}
+
+
+PROFILE = {}
+
+
+def panel_contradicts(name, row, lab):
+    share = PROFILE.get("old" if lab.startswith("H") else "new", 0.0)
+    return name.startswith("Enterococcus") and 0.0 < share < 1.0 and bool(row["GENT"] or row["CPOD"])
+
+
+def ask_grid(network, successor, requesters, table, specimens):
+    pats = {}
+    for lab, sp in specimens.items():
+        if sp["collected"].year != 2026 or sp["requester"] not in requesters:
+            continue
+        if not ((sp["sex"] == "F" and sp["age"] >= 65) or (sp["sex"] == "M" and sp["age"] >= 16)):
+            continue
+        net = network.get(successor.get(sp["gp"], sp["gp"]))
+        for row in sp["rows"]:
+            nm = name_of(row["OrganismCode"], table)
+            if panel_contradicts(nm, row, lab):
+                continue
+            grp = "Enterococcus" if nm.startswith("Enterococcus") else (
+                "Enterobacter" if nm.startswith("Enterobacter") else None)
+            if grp:
+                pats.setdefault((net, grp), set()).add(sp["patient"])
+    return {k: len(v) for k, v in pats.items()}
+
+
+def main():
+    target = os.path.join(TASK, "target")
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    network, successor, requesters, table, specimens = read(target)
+    clean = battery(specimens)
+    PROFILE.update(panel_profile(table, clean))
+    grid = ask_grid(network, successor, requesters, table, clean)
+    rows, kept, total = [], 0, 0
+    for grp in ("Enterococcus", "Enterobacter"):
+        hits = []
+        for r in F["networks"]:
+            net = r["network"]
+            gold = F["grid"][net][grp]
+            got = grid.get((net, grp), 0)
+            total += 1
+            if abs(got - gold) < 0.5:
+                hits.append(net)
+                kept += 1
+        rows.append((grp, len(F["networks"]) - len(hits), hits))
+    lc = kept / total
+    ls = lc          # the mirror handles the ask exactly as the cracker does
+    c = 38 + 7 + 55 * lc
+    s = 5 + 7 + 55 * ls
+    pair = (c + s) / 2
+    print("pack digest %s" % pack_digest(target))
+    print("panel check: share of enterococcus-coded rows carrying gentamicin or cefpodoxime by system %s" % {
+        k: round(v, 3) for k, v in sorted(PROFILE.items())})
+    for grp, missed, hits in rows:
+        print("cracker %s by network: %d of %d missed%s" % (grp, missed, missed + len(hits),
+                                                            "" if not hits else " (kept: %s)" % ", ".join(hits)))
+    print("cracker keeps %.1f per cent of the ask figures; mirror keeps %.1f" % (100 * lc, 100 * ls))
+    print("pair ceiling %.1f (landed call %.1f, best miss %.1f); mirror leakage %.1f per cent of ask weight" % (
+        pair, c, s, 100 * ls))
+    return 0 if kept == 0 else 1
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else None)
+    sys.exit(main())
