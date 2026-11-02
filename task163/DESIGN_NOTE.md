@@ -15,7 +15,7 @@ fixed (the brief's ask-first rule), and the call was then drawn in the same worl
    assessment gives a task with a check. The house domain a warehouse would sit in (supply-chain-logistics) maps to
    urban-regional-science and general-statistics-data-science, neither of which carries a human error estimate.
 3. World: Lathmor, a third-party logistics company, picks the online orders of Aubrine (a UK cosmetics and fragrance
-   brand) at its Uphall fulfilment centre in West Lothian, from about 1,800 pick faces in four zones (A, carton flow
+   brand) at its Uphall fulfilment centre in West Lothian, from 1,200 pick faces holding 823 items in four zones (A, carton flow
    for the fastest lines; B, C and D, static shelving). Every parcel is check-weighed at the pack benches against the
    item master's unit weights and the carton's tare, with a fixed tolerance; a parcel outside it is held and re-checked,
    so a mis-pick reaches a customer only when it passes. Aubrine's customer service logs the claims; the contract's
@@ -37,23 +37,19 @@ fixed (the brief's ask-first rule), and the call was then drawn in the same worl
    2027 claims: no accuracy benchmark, no "expected impact" line in the plan (it states travel only), no contract
    assumption of a claims rate. The KPI cap is a threshold the forecast is read against, not a rate it is built from.
    The easy route's rate is the analyst's own fit (claims per line), and the data's own fit refutes it (item 6).
-5. Default path, in one line (written in full at stage 2): carry the twelve months' validated claims per 10,000 lines
-   picked onto the plan's 2027 lines, about 140 claims and 1.2 per 10,000, inside the 2.5 KPI. Golden, design target
-   about 340 and 2.8 per 10,000, over it. Rung 1, the look-alike reflex (human reliability assessment's performance
-   shaping factor for similar items side by side), fitted on the same claims beside same-line or same-family
-   neighbours: about 100 or 180, both inside. Toy screen of the ladder: scratchpad `task163_a2/task163_screen_main.py`
-   (rung 0 140.1, same-line multiplier 97.8, same-family multiplier 175.8, golden 344.1 at 2.82 per 10,000; the
-   plan lifts the weight-alike share of picks from 0.166 to 0.408 while the error rate per pick is held).
-6. Stump sentence (draft): carrying the twelve months' claims per 10,000 lines onto the plan's 2027 lines files about
-   140 claims, inside the KPI; the step that lands it there is treating claims as a fixed share of picking, when they are
-   only the mis-picks the check-weigh lets through, which happen only where the item beside the ordered one weighs
-   within the tolerance of it, so the re-slot that puts each line's shades side by side raises claims with no change in
-   how often pickers err; only the claims per weight-alike neighbouring pick, carried onto the plan's faces and lines,
-   gives about 340. Data-native sentence: the claims are the residue of a physical filter (a scale against a tolerance)
-   applied to errors whose form a shelf layout fixes, so a count kept per line is stationary only while the layout is.
+5. Default path, in one line (written in full at stage 2): carry the 52 weeks' validated claims per 10,000 lines picked
+   onto the plan's 2027 lines, 1,700 claims and 1.7 per 10,000, inside the 2.5 limit. Golden 3,800 and 3.7 per 10,000,
+   over it. Rung 1, the look-alike reflex (human reliability assessment's performance shaping factor for similar items
+   side by side), fitted on the same claims beside same-line or same-family neighbours: 1,400 or 1,800, both inside.
+   The draw's toy screen (scratchpad `task163_a2/task163_screen_main.py`, a smaller world) measured the same ladder
+   before any data was cut (rung 0 140, same-line multiplier 98, same-family 176, golden 344); the built pack's figures
+   are in `## Ladder`.
+6. Stump sentence: `## Stump sentence`. Data-native sentence: the claims are the residue of a physical filter (a scale
+   against a tolerance) applied to errors whose form a shelf layout fixes, so a count kept per line is stationary only
+   while the layout is.
 7. Shape and deliverables: shape `other`: the call (claims under the plan, per 10,000 lines, the verdict against the
-   KPI), its comparison (the current layout's 2027 claims) and its zone split, then two decoupled ask tables. Tentative
-   files: a workbook and a chart (`reslot_claims_2027.xlsx`, `reslot_claims_2027.png`); the shell is drawn with the
+   KPI) and its comparison (the current layout's 2027 rate), then two decoupled ask tables (the zone split planned here was dropped at stage 2). Tentative
+   files at the draw: a workbook and a chart (built: `reslot_claims_2027.xlsx` and a one-slide `reslot_review_2027.pptx`, the png+xlsx set being over the corpus quota); the shell is drawn with the
    prompt at stage 2 and must differ from architecture 1's (how-many, put, docx+xlsx).
 8. **The ask records, chosen first, each with the domain mechanic that forces its reading, screened as code against
    the honest cracker before any data is cut** (scratchpad `task163_a2/task163_screen_asks.py`, toy data):
@@ -112,7 +108,7 @@ fixed (the brief's ask-first rule), and the call was then drawn in the same worl
    ban), forcing event `cutover_or_migration` (launch_or_rollout met task458's), generators led by G9 (G14 first met five
    older same-signature builds; G6 first met task453's pattern ban and this slot's own lineage), validated_decoy false
    (no certified record blesses the per-line route; two_layer.validated_decoy refuses one). WARNs answered: Russell
-   (first name in task460) replaced by Brian Cook; the pdf+xlsx deliverable set (task453 v3) moved to xlsx+png.
+   (first name in task460) replaced by Brian Cook; the pdf+xlsx deliverable set (task453 v3) moved to xlsx+png at the draw and to xlsx+pptx at stage 3 (voice-check quota).
    Nearest drivers 0.05 (task149, task251 v4, task455 v1, task173 v3, task446 v2). `slots` on the driver's and the
    setting's nouns: task194's rejected candidate (a unit's own defect rate seen through a downstream check whose catch
    moves with its load, killed because caught plus escaped makes the rate unlatent and the escapes too thin to rank) and
@@ -120,6 +116,240 @@ fixed (the brief's ask-first rule), and the call was then drawn in the same worl
    here the check is fixed, the error rate is pinned by the caught log on purpose, and the forward count turns on the
    forms a new layout puts within the check's blind band, which neither screened. task44 (a fulfilment campus's
    carton-flow faces) and task229's Thornacre lineage (pick-face record accuracy) share the setting, not the mechanism.
+
+## Default path
+
+The pipeline a competent operations analyst builds from the question and the files' grain, with the field's own
+reliability method for the deciding quantity in it (a picking error rate per opportunity, carried forward):
+
+1. Filter aubrine_claims_register.xlsx to validated Wrong item received claims on lines despatched in the 52 weeks to
+   20 September 2026 (Schedule 3, 3.2): 1,619.
+2. Sum lines_picked in pick_velocity_by_week.csv over the same 52 weeks: 9,682,373, so 1.67 claims per 10,000 lines.
+   Every quarter sits near that rate (1.5 to 1.8 per 10,000), which is the back-test the analyst runs and passes.
+3. Read the plan's 2027 lines from slotting_plan_2027.xlsx (Faces 2027): 10,327,940.
+4. Carry the rate onto them: about 1,723 claims, 1.67 per 10,000, inside Schedule 3's 2.5; the re-slot changes where
+   things sit, not how often pickers err, so the budget holds.
+
+Ends on: 1,700 claims on 2027's lines, 1.7 per 10,000, inside the limit
+Golden: 3,800 claims on 2027's lines, 3.7 per 10,000, over the limit
+
+## Stump sentence
+
+Carrying the 2026 claims per 10,000 lines onto the plan's 2027 lines files 1,700 claims, 1.7 per 10,000 and inside
+Schedule 3's 2.5; the step that lands it there is treating claims as a fixed share of picking, when a claim is only a
+mis-pick the check-weigh let through, which happens only where the item beside the ordered one weighs within 15 g of
+it, so the re-slot that puts each line's shades side by side more than doubles the picks exposed while the error rate
+per pick holds; claims per 10,000 picks beside a face within 15 g, carried onto the plan's faces and lines, give 3,800,
+3.7 per 10,000, over the limit.
+
+## Three rules
+
+- Task type: human reliability assessment (human-reliability-assessment), the Human Factors & Ergonomics task type that serves Forecasting & Predictive Modeling: forecasting how often a human error in a task reaches the customer.
+- Domain test: the deciding quantity is the unrecovered error probability of a picking task, worked the way human reliability assessment works it, the error's own probability per opportunity times the probability that the downstream check fails to recover it, read off the caught exceptions and the claims together; the caught log shows the first holding still across neighbour types, so the forecast moves only through the second.
+- Swap: put a hospital ward's nouns in (a dispensing error on a drug store's shelves, caught at a barcode check) and the task stops making sense: a barcode check catches every wrong product whatever it weighs, so no layout changes what gets through, and the weight of the item beside the intended one, the quantity that decides here, has no meaning.
+- Layer 1: Aubrine's claims export keyed by Aubrine product codes against the WMS's item codes (crossed through item_master.csv); claims lodged in the window on lines despatched before it, duplicates, customer-error rejections, open claims, other claim reasons; the velocity export running eight weeks past the window; the consultant's dotted, zero-padded location codes against the WMS's hyphenated ones; the holds log's other causes (short, extra, packaging, no fault found) with sequence gaps from other accounts' benches; each produced by the system that would produce it, none placed to be caught, each neutral on the call (asserted R2).
+- Layer 2: estimation fit, survivorship: the observed claims are the errors a physical filter let through, and the filter's pass rate depends on a property of each pick (the weight gap to the face beside it) that the plan changes; the rate is stationary only per exposed pick.
+- Decisive step: recognising that a claim is a mis-pick the check-weigh passed, that it passes only a swap with the face beside it inside 15 g, and so building the exposure as the lines picked beside such a face, which the plan's shade-by-shade shelving more than doubles from 15.6 to 34.5 per cent of picks.
+- Not semantics: every field read correctly (the claim's ordered and received products, the despatch date, Schedule 3's definition, the tolerance in the pack bench procedure, the plan's faces and forecast) still leaves the easy route on 1,700, because no field says that the layout governs what the scale lets through; that has to be inferred by placing each claim's pair on the shelves and weighing it.
+- Not rule application: no filed rule or procedure computes an exposure or forecasts claims; Schedule 3 defines what counts and the procedure sets the tolerance, and executing both on the history files 1,700. The enumerated family (claims per line, per line by zone or family, a same-line or same-family look-alike multiplier, an any-alike-neighbour indicator, claims per weight-alike pick) spans 1,383 to 3,822 claims; the standing family the data leave defensible (claims per weight-alike pick under every full-year window and by zone or family) spans 3,792 to 3,822, all printing 3,800 and 3.7; the ruling-out is loud in the rows (every claim pair within 15 g and beside the ordered face, every caught pair beyond 15 g, half the claims per line at faces with one such neighbour of two, the caught rate flat across neighbour types).
+- Analyst test: a strong analyst who cleans the register to validated wrong-item claims on the 52 weeks' despatches, reads Schedule 3 and the plan correctly and carries 1.67 claims per 10,000 lines onto the plan's 2027 lines files 1,700, 1.7 per 10,000, inside the limit; fitting a look-alike multiplier on claims beside same-line or same-family faces files 1,400 or 1,800, also inside; only the rate per pick beside a face within 15 g, carried onto the plan's faces, gives 3,800 and 3.7 (executed in checks.py on the shipped rows and the generator's clean truth).
+- Estimand: Schedule 3, 3.2 files the claim (validated, a product other than the one ordered, against the order line, in the contract year Lathmor despatched the line) and the rate (per 10,000 order lines despatched in a contract year); the plan's summary files the 2027 lines (the demand plan, sheet Faces 2027); the prompt files the history (the 52 weeks to 20 September 2026); none names a weight, a neighbour or the check-weigh.
+- No decoy: nothing is planted: no memo, draft, briefing, scorecard or stakeholder figure states a 2027 claims rate or an expected effect of the re-slot on accuracy (the plan states travel and hours only), and no copied, backfilled or reversed block ships (asserted R3c).
+- No certified replay: no certified or published figure reproduces the golden's method; the method is recovered from the claims' own pairs and the holds, never by matching a filed number, and no shipped figure blesses the per-line route beyond the history it is fitted on.
+- Lesson: a count of errors seen downstream is the residue of a filter, so its rate moves with whatever changes what the filter can see even when the error rate holds still; no build on file forecasts an unrecovered error through a check whose blind band a layout change moves (task194's rejected candidate ranked units through a load-driven check; task107 v1 sized a new check's coverage).
+
+## Survivor anatomy
+
+- Actor: the deciding property, how many of an item's picks sit beside a face whose item weighs within 15 g of it, has no column anywhere: it exists only as a relation between the location master's adjacent faces and the item master's weights.
+- Link: the signal is read by placing each claim's ordered and received products on the shelves (Aubrine codes through the item master to WMS faces) and weighing the pair against the pack bench tolerance, a comparison across three files and a procedure that no key offers and no sentence invites.
+- Reflex: the field's own rate for the deciding quantity (unrecovered errors per opportunity, opportunities as lines picked, the rate carried forward, a look-alike multiplier as the textbook shaping factor for similar items side by side) sits at rungs 0 and 1 and files 1,700 or 1,400 to 1,800.
+- Back-test: the per-line route validates where a solver checks it, over time: on the stable layout claims per 10,000 lines hold at 1.5 to 1.8 in every quarter of the 52 weeks (and claims per exposed pick show no trend, asserted), so any stretch of history held out reproduces the rest; across zones the rate runs from 1.1 to 3.6 per 10,000, which is the data's own fit refuting the route for the analyst who asks why.
+- Second use: every file the step reads sits in the pack for its own reason: the location master and item master to place and weigh any item, the velocity export for lines, the claims register for the count, the plan for 2027's lines, the holds log as the benches' own record, the pack bench procedure as the standard the benches work to.
+- Shock: nothing in the history moves: the layout has not changed, the claims rate is flat, and the plan's own summary speaks of travel; the jump exists only in the 2027 layout, and no sort of any shipped statistic lists the exposed picks.
+- Pins: the filed WHAT is Schedule 3's claim and rate, the plan's forecast basis and the prompt's history window; deleting any of them leaves the decisive step untouched, and no filed sentence names the weight gap, the neighbour or what the check-weigh misses.
+
+## Readability screen
+
+| Rung | What a reader needs to take it | Verdict |
+|---|---|---|
+| R0 claims per line carried forward | the register, the velocity export and the plan's totals | readable |
+| R1 look-alike multiplier (same line or same family) | the location master's adjacency and the item families | readable |
+| R2 an any-alike-neighbour indicator | the decisive insight, mis-specified (refuted by the half-rate faces) | silent |
+| R3 claims per pick beside a face within 15 g (decisive) | placing each claim's pair on the shelves and weighing it against the pack bench tolerance; no sentence points there | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "mis-pick claims" | validated Wrong item received claims | every wrong-item row, duplicates, rejections and open claims included | same call (3,826, 3.7) | Schedule 3, 3.2 (validated by Lathmor); asserted R2 |
+| SF2 | Item missing claims | not mis-picks | counted as mis-picks | a different figure | Schedule 3, 3.2: a product other than the one ordered |
+| SF3 | "2027 order lines" | the demand plan's lines in Faces 2027 | 2026 lines grown at one rate | same call (3,764, 3.7) | the plan summary's forecast basis line; asserted |
+| SF4 | the history | the 52 weeks to 20 September 2026 | any other full-year window | same call (3,792 to 3,812) | the prompt's second sentence; asserted |
+| SF5 | a claim's year | the year its line was despatched | the year it was lodged | same call (3,774) | Schedule 3, 3.2; asserted R2 |
+| SF6 | "today's layout" | the location master as at 30 October 2026 | the velocity export's location column | same call | the two agree for every item in every week; asserted |
+| SF7 | "the family re-slot" | Faces 2027 in the slotting plan | none on file | same call | the plan as approved |
+| SF8 | "per 10,000 order lines" | claims over order lines | over units | a different figure | Schedule 3, 3.2: an order line is one product on one order, whatever the quantity |
+| SF9 | "inside the accuracy limit" | at or under 2.5 per 10,000 lines | none | same call | Schedule 3, 3.2 and 3.5 |
+| SF10 | the tolerance's edge | more than 15 g is held | 15 g held | same call | no neighbour pair within 4 g of 15 g; asserted |
+| SF11 | which face is beside | left or right on the same shelf, across a bay upright | the same bay only, or above and below | same call | every claim and hold pair is left or right, some across an upright; asserted |
+| SF12 | rounding | claims to the nearest 100, rates to one decimal | none | same call | the prompt's last sentence |
+| SF13 | an agency hour's month | the month its shift started | the invoice's date | a different figure | the prompt's clause "by the month each shift started" and the invoice data's own shift_start_date label |
+| SF14 | "the cost of an agency hour" | everything billed for the hours, premiums included, over the hours | base rates only | a different figure | the premium lines are billed for hours worked (the identity) |
+| SF15 | a returned unit | each return reference once, at its latest grade | every row | a different figure | the log repeats a reference only for a correction minutes later at the same station; asserted |
+| SF16 | the returns' twelve months | graded 1 October 2025 to 30 September 2026 | none (the log has one date) | same call | the prompt |
+| SF17 | stock value scrapped | standard cost in the item master | none on file | same call | item_master.csv std_cost_gbp |
+| SF18 | the month an agency hour falls in | the month its shift started | the month of the invoice's week_commencing | a different figure (some months move 0.01 to 0.10) | the prompt's asking clause, "by the month each shift started" |
+
+## Ladder
+
+| Rung | Construction | 2027 claims | per 10,000 | Bin against the golden |
+|---|---|---|---|---|
+| R0 | 2026 claims per line onto the plan's lines (also by zone or family) | 1,723 to 1,736 | 1.67 to 1.68 | 21 bins of 100 below; inside the limit |
+| R1a | look-alike multiplier, same line | 1,383 | 1.34 | 24 bins below; inside |
+| R1b | look-alike multiplier, same family | 1,770 | 1.71 | 20 bins below; inside |
+| R2 | any-alike-neighbour indicator | 3,094 | 3.00 | 7 bins below; over |
+| R3 | claims per pick beside a face within 15 g (golden) | 3,807 | 3.70 | 0.43 of a bin from the edge |
+
+The decisive step is worth 21 bins against R0; the standing family spans 3,792 to 3,822 (0.3 of a bin) and the
+golden's own sampling interval about 2.5 per cent (1 bin). Gate F: no cheap route reaches 3,800 or the breach.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | validated wrong-item claims on lines despatched in the window | filed (Schedule 3, 3.2); C1 on duplicates and open claims |
+| 2 Unit of account | the order line | filed (Schedule 3, 3.2) |
+| 3 Attribution window | the despatch date's week | filed (Schedule 3, 3.2); C1 against lodging dates |
+| 4 As-of dating | the location master as at 30 October 2026, unchanged through the window | C1: the velocity export's location column agrees every week |
+| 5 Version basis | the plan as approved on 14 October 2026 | one version ships |
+| 6 Denominator | order lines picked (2026) and forecast (2027) | filed (Schedule 3, 3.2; the plan's forecast basis) |
+| 7 Weighting | each pick once, an item's lines times its share of exposed neighbours | C1 by zone and by family (asserted) |
+| 8 Window length | 52 weeks | filed in the prompt; C1 across full-year windows |
+| 9 Boundary inclusivity | more than 15 g held | C1: no pair within 4 g of the edge |
+| 10 Rounding path | rate unrounded, rounded once at the end | prompt; asserted mid-bin |
+| 11 Tie-break | none arises | no tie on any graded figure |
+| 12 Maturity and censoring | claims complete for despatches to 20 September (28-day window, none open) | asserted |
+| 13 Order of operations | rate first, then exposure | one order; C1 |
+| 14 Row order | no figure depends on file order | C1 |
+| 15 Duplicate resolution | duplicates closed by status; a re-graded return at its latest grade | C1 (main); SF15 (ask) |
+| 16 Identity normalisation | Aubrine codes to WMS items through the item master; dotted to hyphenated locations | the systems' own crosswalk |
+| 17 Netting against gross | none | no offsetting quantity |
+| 18 Dimensional units | grams throughout the item master and the procedure | units in the data |
+| 19 Code and status semantics | claim status and reason; grade codes for the asks | the register's own labels; Schedule 3 |
+| 20 Integerisation | claims are a rounded expectation | prompt rounding |
+| 21 Clause scope | Schedule 3's limit per contract year | filed |
+| 22 Forward window contents | 2027 lines from the demand plan, item by item | a shipped driver file (Faces 2027) |
+
+## Literal reader
+
+Executed word for word, the prompt and Schedule 3 fix the claim, the line, the year and the rate; the plan fixes 2027's
+lines and faces; the prompt fixes the history. Read literally, nothing tells the reader how to forecast, so the literal
+reading files no figure until a method is chosen, and every method the data leave standing files 3,800 and 3.7 (SF1 to
+SF12 asserted). No filed sentence gives another answer when executed: the procedure's tolerance and the schedule's
+definitions are used by the golden as written.
+
+## Oracles
+
+None ships. No shipped figure or document states a 2027 claims count or rate, an expected effect of the re-slot on
+accuracy, a weight-alike share, an agency cost per hour or a returns share; Ravelrig's invoices and Corsley's premium
+lines are bills, each one amount, and confirm a reading only through an identity the reader has to fit.
+
+## Ask sheet
+
+Asks are decoupled from the call (they read Corsley's invoices, the returns log and Ravelrig's invoices, which the call
+never reads) and sit inside the go-live case: what an agency hour costs (to value the plan's stated picking hours) and
+what a returned unit's fate costs (the wrong item each extra claim sends back).
+
+- Ask A, the cost of an agency hour worked in each month, September 2025 to August 2026 (12 figures, to the penny).
+  Device: the night and Sunday premiums settled on one unlabelled line per four-week pay period, on the first invoice
+  after it closes (a catch-up half in a later period's line, on a grain no label states). Forced by the identity: only
+  the 28 days ending nine days before each invoice fit two constant uplifts (residual under a penny; the closest of 43
+  rival grains and alignments GBP 67.29).
+- Ask B, the share of returned units repacked and scrapped and the stock value scrapped, by family, October 2025 to
+  September 2026 (15 figures). Device: grades 2 and 3 swapped meaning when the handheld replaced the bench sheets on
+  8 June 2026 (the captured_by column's own switch), the procedure on file carrying the sheets' legend. Forced by a
+  filed price: Ravelrig's invoices reproduce to the penny at one pair of prices only under the swap; under the filed
+  legend no constant prices fit (residual GBP 85.24), nor new prices from the go-live (GBP 27.49).
+
+| Ask figures | Honest careful cracker route | Cracker verdict |
+|---|---|---|
+| A, 12 months | each line by its own date; the premium as last month's arrears; the premium on the invoice week's shifts | miss |
+| B, 15 family figures | the procedure's legend as written, latest grade per return (or every row) | miss |
+
+Rival readings (each a complete pipeline, each outside the bin): A by invoice date (smallest gap GBP 0.0128), as
+arrears (GBP 0.0244), on the invoice week (GBP 0.0128), hours lines only (GBP 0.3735); B under the filed legend (0 of
+15), swapped all year (0 of 15), swapped from 1 June (0 of 15), swapped from 1 July (2 of 15, the swap found and
+misdated).
+
+Pair ceiling: 32.6 (one careful response on the call 49.1, the best response off it 16.1; two careful responses on the call 49.1 each)
+Mirror leakage: 7.4 per cent of the ask weight (the best half-handled route, 2 of 27 figures)
+Measured by: generator/ceiling.py on the cut pack, which exits 1 when the honest cracker keeps a figure
+
+## Layer 1 inventory
+
+Each item, the system that writes it, its file and its natural mishandling; R2 in checks.py asserts each leaves the
+call's graded figures where they are, or moves only its ledgered ask.
+
+| Mess | Produced by | File | Mishandling and its effect |
+|---|---|---|---|
+| Aubrine product codes against WMS item codes | two systems, crossed by the item master | claims register, item master | none once joined; no figure moves |
+| claims on lines despatched outside the window, open claims after it | the brand's CS system, extract of 30 October | claims register | dating by lodging: 1,605 claims, 3,800 and 3.7 hold (SF5) |
+| duplicates and customer-error rejections | CS agents logging a second contact; investigation outcomes | claims register | counting them: 1,627 claims, 3,800 and 3.7 hold (SF1) |
+| other claim reasons (missing, damaged, not received, late) | the brand's reason codes | claims register | Schedule 3 excludes them (SF2) |
+| export weeks past the window | the WMS weekly export run to 25 October | velocity export | closed by the prompt's 52 weeks; full-year windows converge (SF4) |
+| dotted, zero-padded plan locations against hyphenated WMS ones | the consultant's tool and the WMS | plan, location master | parse; zone A identical in both (asserted) |
+| holds of other causes, ids shared with other accounts' benches | the pack benches' WMS screen | holds log | not read by the call |
+| Corsley's own invoice numbering, short shifts, the April rate change | the agency's billing | Corsley invoice lines | Ask A only |
+| a return corrected minutes later at the same station | the bench | returns log | Ask A unaffected; Ask B moves (SF15, ledgered) |
+
+## Leak sweep
+
+leak.py on the final cut (--asof 2026-10-30): REVIEW, no LEAK. Each REVIEW line ruled:
+
+- schedule3_service_levels.pdf carries 2.5: the contract's own limit, the threshold the call is read against (the
+  prompt names "the contract's accuracy limit"); not an answer. Harmless.
+- aubrine_promotions_2027.csv carries 2027 dates: the brand's forward promotional calendar, a plan by nature
+  (allow-listed forward file, H16). Harmless.
+
+guard.py surface promoted two pairs for adjudication (exit 0): task72 on a numeric signature shared by a constant
+column (the claims register's order line was always 1), since varied in the generator; task165 on two of three
+mechanism axes (gap population, decision quantity_figure, context artifact register), a shipped urban-forecasting
+build of 2026-10-18 in another domain and world with a different driver (surface 0.090, driver similarity under
+0.05). guard.py heart: PASS (two NOTEs differentiated on the card).
+
+## Stage 4 findings and the one-pass fix
+
+Cut f93b5359: the determinism judge returned DETERMINISTIC, APPROVE (every figure reproduced, the exposure model forced,
+Gate G analytical_non_defect, Gate H analytical); the leak reader found no leak (Q6 an analytical choice). Fixed in one
+pass, freeze.py proving no graded figure moved:
+- The judge's quiet residual: putting an agency hour in the month of its invoice's week_commencing moves some months by
+  0.01 to 0.10 against a penny rounding. The asking sentence now files the WHAT, "by the month each shift started"
+  (SF18, asserted with the rival's moves); it names no premium, pay period or reconciliation line.
+- The leak reader's realism tell in the distractor picker_training_log.xlsx (a Corsley picker inducted months after
+  their first invoiced shift, dates past the window): each Corsley picker is now inducted before their first invoiced
+  shift and assessed while on assignment, Lathmor's own pickers before the record's date, nothing clamped (asserted).
+
+## Pre-ship check
+
+- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is an unrecovered error
+  probability, the human reliability analyst's error rate per opportunity times the check's failure to recover it,
+  which the check-weigh's 15 g tolerance sets by the weight of the face beside the ordered one; with barcode-checked
+  dispensing the weight gap means nothing and the task stops making sense (judge: domain pass). Layers: the two
+  location formats, the claims register's statuses and windows, the invoices' lines and the returns log's two capture
+  routes are the systems' own records and decide nothing on the call (layers pass). Three rules: no decoy and no
+  shipped rate the easy route can apply; read correctly, every field still leaves the 52 weeks' 1.67 rate carried onto
+  the plan (1,700, inside the limit), and only claims per weight-alike neighbouring pick carried onto the plan gives
+  3,800 and 3.7 (decisive step analytical); the standing family spans 3,792 to 3,822, all printing 3,800 and 3.7.
+- **Stage 4.** Leak reader on cut f93b5359: no leak (Q1 to Q4 none, Q6 an analytical choice). Judge: DETERMINISTIC,
+  APPROVE, every figure reproduced (1,619 claims on 9,682,373 lines; 3,807 under the re-slot; every hour cost and
+  returns figure); its optional residual (the hour-cost month by week_commencing moved some months by up to 0.1)
+  closed as a WHAT in the asking sentence ("by the month each shift started", SF18, asserted), and the training log's
+  dates made consistent in the distractor, freeze.py determinism PASS on cut cc7a75da. Leak re-read on the pinned
+  prompt: no leak.
+- **Every gate re-run on the final cut cc7a75da** (2026-11-02): precut 61 checks 0 FAIL; voice-check PASS (979
+  characters); figures_check 69 figures 0 absent; leak.py REVIEW, no LEAK (the two lines ruled in `## Leak sweep`);
+  guard surface exit 0 (six pairs promoted for the author's adjudicated read); guard heart PASS; guard validate 306
+  cards 0 invalid.
 
 ## Architecture 1 record (spent 2026-11-02)
 
@@ -189,3 +419,20 @@ world, dataset, generator and shell. The full architecture 1 note, generator and
   sits at rung 1 and files about 100 or 180 against about 340, because the current layout's same-line neighbours are a
   line's sizes (never weight-alike) while the plan's are its shades, and the caught exceptions show no rise in the
   error rate beside look-alikes.
+- Kilogram weights for items of 400 g and over in the item master (a real export habit): rejected at stage 3, a
+  reader taking them as grams makes heavy neighbours weight-alike and moves the plan's claims to 3,536 (R2 failed);
+  the master carries grams throughout.
+- A chart PNG beside the workbook as the second deliverable: rejected at stage 3, the png+xlsx set sat at 21 per cent
+  of the corpus against the voice-check's 20 per cent quota; the chart rides a one-slide pptx for the account review.
+- Duplicates at 3.5 per cent of claims and customer-error rejections at one in 60,000 orders: trimmed at stage 3 to a
+  quarter of a per cent and one in 1.5 million, since counting them moved the plan's claims across the 3,850 edge
+  (R2); both stay as realistic minorities.
+- A constant order-line column (every claim on line 1): varied at stage 3 after guard.py surface read it as a
+  same-seed table shared with task72.
+- Make-up growing at the other families' rate in the 2027 demand plan: moved to 8 per cent against 5 at stage 3, the
+  plan's rate otherwise sitting 0.019 from the 3.65 edge; the growth is the brand's plan, the figures centred in
+  their bins (claims 0.43, rates 0.45 and 0.47 of a bin from an edge).
+- Grading the call by zone (2027 claims under each layout per zone): rejected at stage 2, a zone's own rate per exposed
+  pick, a grouping the records license, moves single-zone figures by more than a bin of 100 while the pooled total and
+  the rates hold (zone and family groupings 3,821 to 3,822 against 3,807); the call is graded on the total, the two
+  rates and the verdict.

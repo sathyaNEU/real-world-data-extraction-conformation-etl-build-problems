@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "design target: about 340 mis-pick claims on 2027's orders under the family re-slot, about 2.8 per 10,000 lines against the 2.5 KPI (fixed by the generator at stage 3)",
-  "answer_source": "",
+  "answer": "Hold the family re-slot as drawn: about 3,800 mis-pick claims on 2027's order lines, 3.7 per 10,000 against the Schedule 3 limit of 2.5, where today's layout stays at 1.7",
+  "answer_source": "task163/submission.md block 1; task163/generator/figures.json (call_plan_claims, call_plan_per_10k, call_cur_per_10k)",
   "gap": [
     "population"
   ],
@@ -36,7 +36,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "pick_velocity_by_week.csv (the WMS's weekly velocity export)",
-    "rows": 94000,
+    "rows": 49372,
     "entity": "one SKU's order lines and units picked in one ISO week, with its pick face",
     "grain": "SKU-week",
     "source": "synthetic (constructed in the layout of a warehouse management system's weekly SKU velocity export)"
@@ -63,25 +63,26 @@
   },
   "layer1": [
     "the brand's claims register keyed by its own product codes and order numbers, the WMS keyed by item and location codes, crossed through the item master",
-    "claims lodged in the window on orders dispatched before it, duplicates closed as duplicates, rejected claims (customer error) and claims still open",
-    "location codes in the WMS's hyphenated layout against the slotting consultant's dotted, zero-padded layout",
-    "unit weights in grams with a few heavy items in kilograms in the item master",
-    "the weekly velocity export by ISO week against the claims and the KPI scorecard by calendar month",
-    "check-weigh exceptions of every cause (mis-pick, short, extra, carton, scale) in one log with free-text bench notes"
+    "claims lodged in the window on lines despatched before it, duplicates, customer-error rejections, open claims and other claim reasons",
+    "the velocity export running past the 52-week window",
+    "location codes in the WMS's hyphenated layout against the slotting plan's dotted, zero-padded layout",
+    "the holds log's other causes (short, extra, packaging, no fault found) on a site-wide id sequence with other accounts' gaps",
+    "Corsley's own invoice numbering across its customers, short shifts, and the April rate change",
+    "returns corrected minutes after grading at the same station"
   ],
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:unrecovered-error-rate-per-check-passable-neighbour-opportunity",
   "deliverables": [
     "reslot_claims_2027.xlsx",
-    "reslot_claims_2027.png"
+    "reslot_review_2027.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A count of errors that slip past a downstream check is a fixed share of the work only while what each error can turn into stays the same: the check stops an error only when the substitute differs from the intended item by more than a tolerance on a measured total, and the substitutes within reach are fixed by what sits beside each intended item, so a rearrangement that puts near-equal items side by side raises the slipping count while the error rate itself is unchanged, and the forward count is the slip rate per near-equal neighbouring opportunity carried onto the rearranged neighbours, well above the count per unit of work and far from what a similarity-of-kind multiplier gives.",
-  "driver_concrete": "Every Aubrine parcel is check-weighed at Lathmor's pack benches against a 15 g tolerance, so a mis-pick reaches a customer only when the item taken from the next face weighs within 15 g of the one ordered; the January re-slot of the shelving zones puts each line's shades side by side, lifting the picks with a weight-alike neighbour from about a sixth to about two fifths, while the caught mis-picks show pickers err no more often beside look-alikes; carried per weight-alike neighbouring pick, the twelve months' claims put 2027 at about 340 (2.8 per 10,000 lines, over the 2.5 KPI), against about 140 at the claims per line and 100 to 180 under a look-alike multiplier fitted on the same claims.",
-  "stump": "Carrying the twelve months' claims per 10,000 lines onto the plan's 2027 lines files about 140 claims, inside the KPI; the step that lands it there is treating claims as a fixed share of picking, when they are only the mis-picks the check-weigh lets through, which happen where an item's neighbour weighs within 15 g of it, and only the claims per weight-alike neighbouring pick, carried onto the plan's neighbours and forecast lines, gives about 340, over the KPI.",
+  "driver_concrete": "Every Aubrine parcel is check-weighed at Lathmor's pack benches against 15 g, so a mis-pick reaches a customer only when the item taken from the next face weighs within 15 g of the one ordered; the January re-slot of the shelving zones puts each line's shades side by side, lifting the share of picks beside such a face from 15.6 to 34.5 per cent while the caught mis-picks show pickers err no more often beside look-alikes; carried per exposed pick, the 52 weeks' 1,619 claims put 2027 at 3,800 (3.7 per 10,000 lines, over the 2.5 limit), against 1,700 at the claims per line and 1,400 or 1,800 under a look-alike multiplier fitted on the same claims.",
+  "stump": "Carrying the 52 weeks' claims per 10,000 lines onto the plan's 2027 lines files 1,700 claims, 1.7 per 10,000 and inside the limit; the step that lands it there is treating claims as a fixed share of picking, when they are only the mis-picks the check-weigh lets through, which happen where an item's neighbour weighs within 15 g of it, and only the claims per pick beside such a face, carried onto the plan's faces and lines, gives 3,800, 3.7 per 10,000, over the limit.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the claims register to validated mis-picks on the twelve months' lines, reads the KPI schedule and the plan correctly and carries the claims per 10,000 lines onto the plan's 2027 lines files about 140 (1.2 per 10,000, inside the 2.5 KPI); fitting a look-alike multiplier on claims beside same-line or same-family neighbours files about 100 or 180; only the rate per weight-alike neighbouring pick, read off the claims' ordered and received items and the caught exceptions and carried onto the plan's neighbours, gives about 340 (executed in checks.py on the generator's clean truth).",
+  "analyst_test": "A strong analyst who cleans the claims register to validated wrong-item claims on the 52 weeks' despatches, reads Schedule 3 and the plan correctly and carries 1.67 claims per 10,000 lines onto the plan's 2027 lines files 1,700 (1.7 per 10,000, inside the 2.5 limit); a look-alike multiplier fitted on claims beside same-line or same-family faces files 1,400 or 1,800; only the rate per pick beside a face within 15 g, read off the claims' ordered and received products and the caught holds and carried onto the plan's faces, gives 3,800 and 3.7 (executed in checks.py on the shipped rows).",
   "domain_test": "The deciding quantity is the unrecovered error probability of a picking task, worked the way human reliability assessment works it: the error's own probability per opportunity, held where the caught exceptions show it does not move, times the probability that the downstream check fails to recover it, which depends on the form the error takes against the check; with a ward's or a call centre's nouns there is no check that recovers an error by the physical size of the substitute against a tolerance and no layout that fixes which substitute is within reach, so the call has nothing to stand on.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -134,6 +135,12 @@
       "deliverable set": "docx+xlsx"
     }
   ],
-  "notes": "Domain: human-factors-ergonomics/human-reliability-assessment (F): the deciding quantity is an unrecovered human error rate, a picking error's own probability times its check's failure to recover it, the form HRA gives a task with a downstream check; supply-chain-logistics, the house domain a warehouse would sit in, maps to urban-regional-science and general-statistics-data-science, neither of which carries a human error estimate. Strategy: forecast_method_backtest (F6), a rate stationary only in a constructed exposure (picks with a weight-alike neighbour), the per-line rate back-testing clean on the stable layout and failing forward; validated_decoy false: no certified or closed record blesses the per-line route; the KPI history is the brand's own monthly count, and the claims register's ordered and received items refute the per-line route on the twelve months already held. Ask records chosen first: the staffing agency's weekly invoices (premiums settled per four-week pay period, unlabelled, on the first invoice after the period closes) and the returns bench's grading log (codes 2 and 3 swapped meaning at the handheld go-live, read only through the repack partner's monthly bills). Axes redrawn at the draw: context artifact register (the brand's claims register, which the stakeholder works from) after monitoring_export met task458's ban, forcing event cutover_or_migration (the layout cut-over in January) after launch_or_rollout met task458's; generators lead with G9 (the claims are the errors that survive the downstream check, the picks the errors acquired upstream), which is the honest first key, G14 having met five older same-signature builds.",
-  "registered": "2026-11-02T15:09:46Z"
+  "notes": "Domain: human-factors-ergonomics/human-reliability-assessment (F): the deciding quantity is an unrecovered human error rate, a picking error's own probability times its check's failure to recover it, the form HRA gives a task with a downstream check; supply-chain-logistics, the house domain a warehouse would sit in, maps to urban-regional-science and general-statistics-data-science, neither of which carries a human error estimate. Strategy: forecast_method_backtest (F6), a rate stationary only in a constructed exposure (picks with a weight-alike neighbour), the per-line rate back-testing clean on the stable layout and failing forward; validated_decoy false: no certified or closed record blesses the per-line route; the KPI history is the brand's own monthly count, and the claims register's ordered and received items refute the per-line route on the twelve months already held. Ask records chosen first: the staffing agency's weekly invoices (premiums settled per four-week pay period, unlabelled, on the first invoice after the period closes) and the returns bench's grading log (codes 2 and 3 swapped meaning at the handheld go-live, read only through the repack partner's monthly bills). Axes redrawn at the draw: context artifact register (the brand's claims register, which the stakeholder works from) after monitoring_export met task458's ban, forcing event cutover_or_migration (the layout cut-over in January) after launch_or_rollout met task458's; generators lead with G9 (the claims are the errors that survive the downstream check, the picks the errors acquired upstream), which is the honest first key, G14 having met five older same-signature builds. Stage 3 (2026-11-02): deliverables moved to xlsx+pptx (png+xlsx over the voice-check corpus quota); surface promoted task165 on two mechanism axes (gap population, quantity_figure, register; a shipped urban-forecasting build, different domain, world and driver, surface 0.090) and task72 on a constant order-line column, since varied.",
+  "registered": "2026-11-02T15:09:46Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "work",
+    "rounding opener": "claims",
+    "deliverable set": "pptx+xlsx"
+  }
 }
