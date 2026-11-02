@@ -257,6 +257,27 @@ Pair ceiling: 36.4 ((38 + 7 + 55 x 0.143) and (5 + 7 + 55 x 0.143), averaged)
 Mirror leakage: 14.3 per cent of ask weight (the mirror handles the asks as the cracker does)
 Measured by: generator/ceiling.py (run on the cut pack)
 
+## Pre-ship check
+
+- Free gates on the cut pack (target.zip sha256 ae2a4182): generator checks 69 of 69 (the three rules R1 to R3c on
+  the clean truth, the ladder L1 to L10, SF1 to SF18, mess neutrality R2.1 to R2.6, both asks equal to the clean
+  truth with their device mass, the separation line, the input gates, the realism sweep, the leak sweep, the rounding
+  edges); verify.py 12 of 12 on its own code path (pandas, its own XLSX, DOCX and PDF readers, each proved on a
+  positive control); two builds byte-identical (19 files); figures_check 48 of 48; precut 61 checks clean;
+  voice-check PASS; the producer-metadata audit clean on the pack and the goldens; guard check and heart PASS (the
+  older same-puzzle and same-driver NOTEs answered by the card's differentiation lines).
+- leak.py REVIEW, two lines, both harmless: the rules carry "claims", "history" and "decision" because they are the
+  scheme's rules (section 5 is claims and decisions, section 9 the scheme's dated history) and say nothing about how
+  fast anyone claims; the prompt's second sentence carries "decisions" and "measures" as ask 1's as-of pin and the
+  chart's subject, no pace or cohort word.
+- guard.py surface promotes five pairs for the author's adjudication: task302 (economics-econometrics with
+  opportunity sizing, back to back, a supermarket's automated ordering under structural equilibrium modelling, other
+  task type, world, gap and pattern), and task230, task131, task446 and task183 on the time, G14 and forecasting
+  signature, which the card's differentiation lines answer (a census coding release, a tariff trial, a watch list
+  forecast and a cable programme, none a claimed benefit's first-year receipts).
+- The invented region was renamed from Valdemora (a real municipality in León, one letter from Valdemoro) to
+  Valmesura before stage 4 (reduce-house-fixes H21); no figure moved.
+
 ## Tried and rejected
 
 - Speed-cap transfer on the seed's road-safety world: both call-only probes landed it.

@@ -107,12 +107,17 @@ class World:
             growth = np.cumprod(np.r_[1.0, 1 + rng.normal(0.007, 0.006, len(P.YEARS) - 1)])
             growth = growth / growth[P.YEARS.index(P.PRESENT)]
             road_no, road_name = major.split(" ", 1)
+            mgrowth = growth.copy()
+            if name in P.MINOR_STEP:
+                # a traffic regulation order on the minor road took part of its through traffic from the year given
+                yr, keep = P.MINOR_STEP[name]
+                mgrowth = np.array([g / keep if y < yr else g for y, g in zip(P.YEARS, growth)])
             self.junctions.append(dict(node="J%04d" % jid, name=name, layout=lay, control=ctrl, road=road_no,
                                        road_name=road_name, minor=minor, easting=e, northing=n_, district=dist,
-                                       maj=maj26 * growth, mnr=mnr26 * growth, theta=theta, cand=name, rec=list(rec)))
+                                       maj=maj26 * growth, mnr=mnr26 * mgrowth, theta=theta, cand=name, rec=list(rec)))
         # nodes that existed before the 2019 recode carry a former number
         for j in self.junctions:
-            j["former"] = "N%04d" % (int(j["node"][1:]) * 3 + 211) if self.rng.random() < 0.93 else ""
+            j["former"] = "N%05d" % (int(j["node"][1:]) * 3 + 211)
 
     def mu(self, j, year):
         b0, b1, b2 = P.SPF[j["layout"]]

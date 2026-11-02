@@ -479,6 +479,10 @@ for x in cts:
         outside.append((x["date"].isoformat(), x["loop"], x["lake"]))
 check("H every count's time over its lake falls inside an airborne leg of that loop in the flight log", not outside,
       "%d outside" % len(outside))
+smoke_rows = [r for r in csv.DictReader(open(os.path.join(TARGET, "survey_flight_counts_2026.csv")))
+              if r["remarks"].startswith("smoke") or r["remarks"].startswith("fog")]
+check("H a lake or loop entered with no count carries no time over the lake", all(not r["time_over"] for r in smoke_rows),
+      "%d rows" % len(smoke_rows))
 check("H the tiers do not read the flight log (a distractor): the call is unchanged by it", fig["call"]["high_use_codes"] == GOLD)
 recs = json.load(open(os.path.join(TARGET, "quillet_creek_drop_tallies_2026.json")))["records"]
 check("H the drop tallies carry the dead at the drop in fish, in the key's own name",

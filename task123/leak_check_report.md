@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: rejected, register, architecture, hardening, return, window, decisive, quarter, sentence, annual, balanced, device, census, co-funding, meters, schedule, nothing, government, record, records, identity, months, allocation, income, screen
+Stump terms swept: rejected, register, architecture, hardening, return, window, decisive, quarter, sentence, annual, balanced, device, nothing, census, co-funding, meters, schedule, records, government, record, identity, months, allocation, income, reading
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `OC1_electrification_capacity_standard_2026.pdf`: golden figure 216 appears: ...phase. 6. Supply voltage The statutory limits are 216 V to 253 V at the point of supply (Electricity Di...
@@ -12,7 +12,7 @@ Stump terms swept: rejected, register, architecture, hardening, return, window, 
 - **REVIEW** `OC1_electrification_capacity_standard_2026.pdf`: carries 9 of 10 distinctive words of the committed call: 'Rising mains A4, B2, C3 and C6 need re-phasing or a larger main before the 2027 chargers and cooktop conversions are con'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `OC1_electrification_capacity_standard_2026.pdf`: 4 of 25 stump-paragraph terms appear (register, schedule, record, records); read whether the document names the move
+- **REVIEW** `OC1_electrification_capacity_standard_2026.pdf`: 4 of 25 stump-paragraph terms appear (register, schedule, records, record); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

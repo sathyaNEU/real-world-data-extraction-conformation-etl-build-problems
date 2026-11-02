@@ -1,25 +1,25 @@
 {
  "task": "task301",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "economics-econometrics",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-02",
- "stump": "",
+ "stump": "C (the Complemento's higher limit, about 13,200 children at the coverage rate) against the golden A (3,700): the families a limit rise newly entitles claim at the April 2024 widening's pace, not at once, not at the launch's pace, each paid from the month after its decision",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (2 lines, answered in the design note's pre-ship check), 2026-11-02",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS 2026-11-02 (NOTEs differentiated)",
+  "nearest": "surface: 5 pairs promoted for adjudication (task302 same pairing back to back; task230, task131, task446, task183 on the time/G14/forecasting signature)"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: write DESIGN_NOTE.md for architecture 3 (child poverty measures, Comunidad de Valdemora), then the generator",
+ "resume": "stage 4: spawn the leak reader and the determinism judge together on target.zip ae2a4182; the main session commits DRAWN/SHIPPED",
  "approved": null,
  "delivered": null,
  "portal": null,

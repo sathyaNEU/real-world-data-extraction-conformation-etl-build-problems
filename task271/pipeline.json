@@ -3,8 +3,8 @@
  "status": "BUILD",
  "domain": "survey-research-official-statistics",
  "objective": "descriptive-distribution",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-02",
  "stump": "The plain expansion (each flight count times the 17-hour angling day by stratum, each lake's own anglers per boat) files Galloran, Nockell and Farrowdale for the 2027 high-use tier and leaves Ellerdine, Quorrin, Ravensky and Inverkeld out; read against each lake's own hour-by-hour presence from the access interviews, the four fly-only lakes clear 500 angler-hours per hectare and the three general lakes fall under it.",
  "architecture": 6,
@@ -15,7 +15,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-11-02 (no LEAK; the policy's 500 line, two governing documents naming survey terms, the protocol naming what clerks record)",
-  "reader": ""
+  "reader": "clean 2026-11-02 (question 6 analytical: expanding sparse counts over the day and season)"
  },
  "duplicate_check": {
   "check_at_draw": "WARN 2026-11-01 before and after registration (overuse.gate_g, repeat.decision; shell.repeat read off the old prompt)",
@@ -23,12 +23,12 @@
   "surface": "2026-11-02: 9 pairs promoted for adjudication, surface similarity at most 0.101 (task272 back to back on G7 and designation_set; card same-driver signatures against task460, task135, task451 and task161); differentiation lines on the card for task451, task135, task161, task460, task272, task193 and task186"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "DETERMINISTIC, FIX_NOW (2026-11-02, on 8131c7cd)",
+  "disposition": "fixed in one pass 2026-11-02: per-lake angler-hours per hectare dropped from the write-up and workbook for bands every one of fifty readings shares (high use above 550, standard below 480, nearest lakes named as sets); the drop tallies key the dead at the drop in fish (doaFish); the smoke-day afternoon loops land at the Pillory dock after the last counted lake, so every count sits inside an airborne leg and the smoke-hidden lakes carry no time over them; call and graded ask figures unchanged; re-judge pending",
   "report": ""
  },
  "returned": [],
- "resume": "Architecture 6 built 2026-11-02 with every free gate green on the final cut; stage 4 (the isolated leak reader and the determinism judge) is the main session's; no git in this run (the main session commits).",
+ "resume": "Stage 4 FIX_NOW applied 2026-11-02 (target.zip 9ec2a0b9); the judge re-judges once; no git in this run (the main session commits).",
  "architectures": [
   {
    "architecture": 1,
@@ -72,5 +72,5 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "none (architecture 6 draws its world, decision and quantity new; DA21's health-plan world set aside at architecture 1)",
- "target_zip": "8131c7cd97eef21700faadcc85bd928aa45c071b915cc7b502c5e753cc1758da"
+ "target_zip": "9ec2a0b9676a8a48dee3d4cff530dc9d874525e58b9689d42488ea07e21d2a5e"
 }

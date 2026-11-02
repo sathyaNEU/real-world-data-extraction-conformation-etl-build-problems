@@ -102,7 +102,8 @@ def count_rows(X):
                 continue
             t = K.hm(c["t"])
             if c["boats"] is None:
-                rows.append([d.isoformat(), f["loop"], pos[c["lake"]], VA_NAME[c["lake"]], t, "", "", obs,
+                # smoke hid the lake: the aircraft turned back short of it, so no time over it was noted
+                rows.append([d.isoformat(), f["loop"], pos[c["lake"]], VA_NAME[c["lake"]], "", "", "", obs,
                              "smoke - not counted"])
             else:
                 rows.append([d.isoformat(), f["loop"], pos[c["lake"]], VA_NAME[c["lake"]], t, c["boats"], c["shore"],

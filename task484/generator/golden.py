@@ -123,6 +123,9 @@ def figures(G):
     for a in G["approaches"]:
         f["appr_%s_%s" % (a["junction"], a["approach"])] = "{:,}".format(a["thousands"])
     f["switch_date"] = G["switch"]
+    f["days_2025"] = 365
+    f["hgv_channels_legacy"] = [5, 6, 7]
+    f["hgv_channels_native"] = [6, 7, 8]
     return f
 
 

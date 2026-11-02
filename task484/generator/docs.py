@@ -21,7 +21,7 @@ def pdf(path, title, meta, blocks, author):
     st_h = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=10, leading=13, spaceBefore=7, spaceAfter=3)
     st_p = ParagraphStyle("p", fontName="Helvetica", fontSize=9.5, leading=13, spaceAfter=5)
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=20 * mm,
-                            bottomMargin=20 * mm, title=title, author=author, subject="", creator="", producer="")
+                            bottomMargin=20 * mm, title=title, author=author, subject="", creator="Wrenford Borough Council publishing", producer="Wrenford Borough Council publishing")
     story = [Paragraph(title, st_t), Paragraph(meta, st_m)]
     for kind, val in blocks:
         if kind == "h":
@@ -117,10 +117,15 @@ def ops_log(W, out):
     rows.append((dt.date(2025, 1, 27), "%s (%s)" % (atc_name[lname], lname),
                  "Outstation not answering polls since 20 January. Site visit found the modem failed; logger memory had wrapped, so "
                  "20 to 25 January could not be recovered. Modem replaced.", "MW"))
-    for a in W.atcs:
+    notes = ["Loops tested, commissioned the same day.", "Loops tested; lane 2 feeder re-jointed. Commissioned the same day.",
+             "New cabinet base; loops tested and commissioned the same day.", "Commissioned the same day; old outstation returned to stores.",
+             "Loops retained and tested. Commissioned the same day.", "Spare duct used for the new feeder; commissioned the same day.",
+             "Commissioned after a battery change; first poll 16:00.", "Loops tested. Commissioned the same day, polling confirmed next morning.",
+             "Traffic management on site 09:30 to 13:00; commissioned the same day.", "Loop 1 re-cut ahead of the swap; commissioned the same day.",
+             "Commissioned the same day; GPRS signal weak, aerial moved."]
+    for k, a in enumerate(W.atcs):
         rows.append((a["installed"], "%s (%s)" % (W.atc_id[a["name"]], a["name"]),
-                     "TX-200 outstation installed under the counter renewal programme; Ardent LC4 removed. Loops tested, commissioned "
-                     "the same day.", "MW"))
+                     "TX-200 outstation installed under the counter renewal programme, Ardent LC4 removed. " + notes[k % len(notes)], "MW"))
     rows.append((dt.date(2025, 9, 8), "ATC network", "Firmware 4.2.1 deployed to all TX-200 outstations by remote push (change ref CM-2291).", "MW"))
     names = {j["id"]: j for j in W.junctions}
     for jid, sw in sorted(WD.REFURBISHED.items(), key=lambda x: x[1]):
@@ -245,8 +250,7 @@ def streetworks(W, out):
 def term_dates(out):
     rows = [["2024-25", "Spring", "2025-01-06", "2025-04-04", "2025-02-17", "2025-02-21"],
             ["2024-25", "Summer", "2025-04-22", "2025-07-22", "2025-05-26", "2025-05-30"],
-            ["2025-26", "Autumn", "2025-09-03", "2025-12-19", "2025-10-27", "2025-10-31"],
-            ["2025-26", "Spring", "2026-01-05", "2026-03-27", "2026-02-16", "2026-02-20"]]
+            ["2025-26", "Autumn", "2025-09-03", "2025-12-19", "2025-10-27", "2025-10-31"]]
     C.write_csv(os.path.join(out, "school_term_dates.csv"),
                 ["school_year", "term", "term_starts", "term_ends", "half_term_starts", "half_term_ends"], rows)
 

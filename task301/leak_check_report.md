@@ -4,10 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: measure, record, register, status, patient, claimed, launch, claims, decisive, call-only, extract, history, smoker, widening, recorded, golden, sub-region, recordings, sentence, coverage, reader, probes, coastal, hinterland, decision
+Stump terms swept: measure, claims, claimed, register, launch, record, decisive, call-only, history, sentence, widening, status, golden, decision, cohort, coverage, recorded, reader, probes, coastal, hinterland, recordings, smoker, survey, readable
 
-## 4 design-note vocabulary (REVIEW 2)
+## 4 design-note vocabulary (REVIEW 5)
+- **REVIEW** `appraisal_guidance_child_poverty_2027.docx`: 3 of 25 stump-paragraph terms appear (measure, record, survey); read whether the document names the move
+- **REVIEW** `complemento_familiar_coverage_2025.pdf`: 3 of 25 stump-paragraph terms appear (claimed, coverage, survey); read whether the document names the move
 - **REVIEW** `complemento_familiar_rules_2026.pdf`: 3 of 25 stump-paragraph terms appear (claims, history, decision); read whether the document names the move
+- **REVIEW** `ecvv2026_main_results.pdf`: 3 of 25 stump-paragraph terms appear (measure, register, survey); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'The note, cabinet_note_child_poverty_2027.pdf, should make that recommendation in no more than two pages with a chart comparing the measures, and appraisal_annex_2027.xlsx should give the families the Complemento Familia'
 
 ## 10 container metadata (INFO 1)

@@ -572,10 +572,12 @@ def committed_flow(conns, rows, wx):
         if r[4] is not None and tg[r[1]] <= P.TG_WINDOW:
             by_ser.setdefault(r[0], []).append(r[4] - r[5])
     tot = 0.0
+    per = {}
     for c in conns:
         dd = float(np.mean(by_ser[c["serial_amr"]]))
-        tot += c["kw"] / (P.CP * dd)
-    return tot
+        per[c["idx"]] = c["kw"] / (P.CP * dd)
+        tot += per[c["idx"]]
+    return tot, per
 
 
 def scada(rng, wx, conns, amr):
@@ -701,8 +703,8 @@ def same_bin(vals, unit, margin):
 
 
 def tune(blks, fam):
-    """Set the station's available design-day flow H (a multiple of 10 m3/h, the pump and exchanger limit less the
-    committed flow) and one block load per phase (the largest block's design load within 8 per cent) so that every
+    """Set the station's available design-day flow H (whole m3/h, the exchangers' limit less the committed flow, never
+    a multiple of 5) and one block load per phase (the largest block's design load within 8 per cent) so that every
     licensed estimate of the like installations' drop gives the same call and every graded figure clears its bin
     edge. The search is deterministic and moves no figure by hand."""
     g = list(fam["golden"].values())
@@ -713,7 +715,9 @@ def tune(blks, fam):
     base = {ph: [b for b in blks if b["phase"] == ph] for ph in range(1, 7)}
     big = {ph: max(base[ph], key=lambda b: b["load"]) for ph in base}
     best = None
-    for H in range(140, 200, 10):
+    for H in range(140, 200):
+        if H % 5 == 0:
+            continue
         opts = {}
         for ph in range(1, 7):
             o = []
@@ -785,12 +789,14 @@ def build(seed=P.SEED):
     rows = amr_export(rng2, wx, conns, amr)
     fam = families(rows, conns, wx)
     H, dl = tune(blks, fam)
-    committed = committed_flow(conns, rows, wx)
+    committed, per = committed_flow(conns, rows, wx)
     rng3 = np.random.default_rng(seed + 2000)
     gas_reads, gas_master = gas_truth(rng3, blks, wx)
     sc, E, V, loss = scada(rng3, wx, conns, amr)
     w = {"wx": wx, "conns": conns, "amr": amr, "blocks": blks, "legacy": legacy, "amr_rows": rows, "fam": fam,
          "H": H, "tune": dl, "committed": committed, "capacity": int(round(committed)) + H,
+         "committed_int": int(round(committed)), "committed_by_conn": per,
+         "cold_days": int(sum(1 for t in wx["tg"] if t / 10.0 <= P.TG_WINDOW)),
          "gas_reads": gas_reads, "gas_master": gas_master, "scada": sc}
     return w
 

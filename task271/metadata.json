@@ -141,7 +141,7 @@
     {
       "path": "survey_flight_counts_2026.csv",
       "format": "csv",
-      "bytes": 56333,
+      "bytes": 56283,
       "rows": 1152,
       "source": "Constructed: Pelloran Plateau creel survey, aerial count file as keyed by the observers after each loop, 2026 season (exported 23 October 2026)",
       "date": "2026-10-26",

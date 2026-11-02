@@ -1,0 +1,114 @@
+{
+ "task": "task484",
+ "title": "Wrenford: road sections over three million vehicles in 2025",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "domain": "Survey Research & Official Statistics",
+ "decision": "which road sections the Council counted in 2025 carried more than three million vehicle passages, fixing the noise mapping contract's scope, with each counted section's 2025 traffic, the counters' heavy goods vehicles and the two renewed junctions' recorded approach totals",
+ "deliverables": [
+  "noise_round_sections_2025.csv",
+  "section_traffic_2025.png",
+  "traffic_network_2025.xlsx"
+ ],
+ "distractor_files": [
+  "target/streetworks_permits_2025.csv",
+  "target/school_term_dates.csv"
+ ],
+ "distractor_reasons": {
+  "target/streetworks_permits_2025.csv": "works on the borough's streets in 2025; no works were on a counted section within two days of its count, and the sections' annual traffic is read from records that already carry whatever the works did",
+  "target/school_term_dates.csv": "the term calendar; the counting programme already keeps counts out of school holidays, and a section's own year is read from the records rather than built from a calendar"
+ },
+ "as_of": "2026-03-20",
+ "files": [
+  {
+   "path": "target/atc_daily_2025.csv",
+   "content": "the permanent automatic counters' daily export for 2025, all motor vehicles and output channels",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/atc_sites_2025.csv",
+   "content": "the permanent counter site list with each site's current equipment",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/classifier_schemes.csv",
+   "content": "the vehicle class tables of the two classifier models the counters have carried",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/count_points_2025.xlsx",
+   "content": "the Council's count point register",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/expansion_factor_review_2025.xlsx",
+   "content": "the team's annual review of its counter groups against the counters' own annual flows",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/manual_counts_2025.csv",
+   "content": "the 2025 manual classified counts, keyed from the count sheets, by hour and direction",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/network_operations_log_2025.docx",
+   "content": "the transport data team's operations log for its counters and signal assets, 2025",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/noise_mapping_2026_scope.pdf",
+   "content": "Environmental Protection's scope note for the 2026 noise mapping contract",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/school_term_dates.csv",
+   "content": "the local authority's school term dates, 2024-25 and autumn 2025",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/streetworks_permits_2025.csv",
+   "content": "the street works permits granted on the borough's roads in 2025",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/traffic_estimate_terms_2025.pdf",
+   "content": "the Council's note on traffic estimate terms and the counting programme, edition 2025.2",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/utc_asset_register_2025.xlsx",
+   "content": "the urban traffic control asset register: signalised junctions and their detector channels",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  },
+  {
+   "path": "target/utc_detector_daily_2025.csv",
+   "content": "the urban traffic control system's daily detector summaries for 2025, exported in two half-year parts",
+   "source": "synthetic: constructed by the task generator (fixed seed) in the layout of the named system's export",
+   "date": "2026-03-23",
+   "licence": "CC0 1.0 (constructed for this task)"
+  }
+ ]
+}
