@@ -51,7 +51,7 @@ def band(g):
 
 
 def _keys(rng, n, prefix, width, lo, hi):
-    vals = rng.choice(np.arange(lo, hi), size=n, replace=False)
+    vals = rng.choice(hi - lo, size=n, replace=False) + lo
     return ["%s%0*d" % (prefix, width, v) for v in vals]
 
 

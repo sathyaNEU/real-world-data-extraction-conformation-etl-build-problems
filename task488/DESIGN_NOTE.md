@@ -147,6 +147,18 @@ cut, so the pools look 61 items deeper than the students' answers make them.
   are known; no build on file teaches calibration under adaptive administration (task450 linked two forms through
   common items that drifted; task479's architecture 4 removed rapid guesses before scoring).
 
+## Survivor anatomy
+
+Written at the 2026-11-02 re-check, from the measurements on the clean truth (generator/checks.py R3a to R3e).
+
+- Actor: holds in part. No column carries a workshop item's difficulty on the scale (R1b), but that difficulty is a property of one row type, read straight off the response file by the field's own calibration. No relation between rows or across files that nothing stores decides it.
+- Link: fails. The decisive step reads responses through item_key to the bank export and through event_id to the sessions, both shipped keys, and no cross-entity or cross-unit comparison outside the field's method is needed.
+- Reflex: fails. The golden is the field's own named method for the deciding quantity, fixed-anchor calibration by marginal maximum likelihood with the launch items held at their 2021 values, applied the way the textbook states it (R3b: every standing member files 199; R3e: the golden equals the count from the true difficulties). The Domain test and Decisive step lines describe the same method in different words, nothing in the data violates its precondition, and the standing spread is 0, so the method sits at the top of the ladder, not at rung 0 or 1.
+- Back-test: fails. The pack's own validation record, the launch items re-estimated the same way, confirms the golden and refutes the reported-score route (R3d: golden within 1.5 points, reported-score route 3.4 to 7.6 points too easy). That is a search signal toward the golden, not a back-test that blesses the easy route.
+- Second use: holds. The response file is Tessaline's delivery log, which the migration carries for exposure and history; the launch values and the panel's ratings are the bank's own operational record.
+- Shock: holds on the sorts measured. The 61 items the step moves are not an interval of percent correct (items under 30 per cent correct out of the band files 271) or of item type (multi-step word problems out of the band files 320). Not measured on every shipped statistic.
+- Pins: hold. Corvane's specification files the population, the scale, the data and the floor, and no filed sentence names a calibration method, a grouping or a clock.
+
 ## Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | 7 dedicated organ | verdict |
@@ -429,3 +441,4 @@ agreement or matcher calibration):
   revised item's keys, and enemy groups read from every version's row; the judge's pass 1 loaded both keys of the 98
   re-keyed revisions and called the one-per-item golden wrong, a fork sold as a device. Replaced by the section 1 pin
   and a version-history catalog whose 2025 accessibility versions carry the silent primary.
+- Architecture 1, at the 2026-11-02 re-check: the golden is the field's own fixed-anchor calibration by marginal maximum likelihood with the launch items held at their 2021 values, applied as the textbook states it, with nothing in the data violating its precondition and a standing spread of 0. The field's method is therefore the top rung, not rung 0 or 1 (stumping 1.1b), and the honest anatomy fails Link, Reflex and Back-test. The easy routes do file wrong commissions on the clean truth (138, 116, 93), but the portal's models run this method by reflex. Spent, not re-rooted; the next step is the orchestrator's.

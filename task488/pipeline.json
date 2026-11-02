@@ -5,7 +5,7 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-28",
+ "updated": "2026-11-02",
  "stump": "The default path files a commission of 138 items against 199 because it calibrates each workshop item against the students' reported scale scores, which Tessaline computed with the writing panel's ratings, so the multi-step word problems the panel rated far too easy land back inside the low band; estimated jointly with the students' abilities, the launch items fixed, 61 of them sit above it.",
  "architecture": 1,
  "loops": 0,
@@ -30,7 +30,7 @@
   "report": "task488/determinism_check_report.md, task488/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "",
+ "resume": "Architecture 1 spent at the 11-02 re-check (the golden is the field's own fixed-anchor MML calibration); not re-rooted on the orchestrating session's rule. The shipped pack (target.zip bfca5a21) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (architecture 2) or leave the shipped version to the portal.",
  "approved": null,
  "delivered": "2026-10-28",
  "portal": null,
@@ -45,5 +45,22 @@
   "mirror_leakage": 4.8,
   "zip": "bfca5a21e59bfa05",
   "call_files_unchanged_by_ask_repair": "bank export, sessions, responses, scale note, item statistics, panel ratings, roster byte-identical"
+ },
+ "architecture_spent": true,
+ "recheck_2026_11_02": {
+  "rebuild": "reproduces the shipped target.zip byte for byte (sha256 bfca5a21e59bfa05) with build.py --reuse under python 3.12, numpy 2.5.1, pandas 3.0.5, pyarrow 25.0.1 and numpy's SIMD dispatch held to AVX2 (NPY_ENABLE_CPU_FEATURES); under AVX-512 dispatch the adaptive engine's argpartition breaks ties in another order and the responses, sessions and item statistics differ; pyarrow, matplotlib and a python 3.12 venv installed into the container; generator/pack.py _keys draws the same keys without a 67 GB arange (byte-identical); checks 46 of 46, verify 53 of 53, second build byte-identical; the golden memo re-renders its chart differently under this matplotlib, so the shipped golden is kept",
+  "analyst_test": "clean truth, generator/checks.py R3a to R3e: reported-score calibration 138, joint maximum likelihood 116, maximum-likelihood re-scoring 137, ratings 93, against 199; every standing member (MML per window or fixed, grids 41 and 161, alternating EAP) files 199; the golden equals the true-difficulty count",
+  "reflex": "the golden is the field's own fixed-anchor calibration by marginal maximum likelihood with the launch items fixed, the standard IRT move for new items on an existing scale, applied as stated; nothing in the data violates its precondition; standing spread 0",
+  "open_reading": "none on the main call (SF1 to SF12 closed or same call)",
+  "survivor_anatomy": "Actor in part, Link fail, Reflex fail, Back-test fail (the anchor re-estimate confirms the golden and refutes the easy route), Second use hold, Shock hold on the sorts measured, Pins hold",
+  "gates_on_shipped_cut": {
+   "precut": "PASS 61 checks, 0 FAIL (7 anatomy WARNs before the anatomy was written, 0 after); voice-check shell quota WARN",
+   "voice_check": "PASS (no data count disclosed; shell quota WARN)",
+   "leak_py": "REVIEW, no LEAK: sweep 3 and 4 on the specification and scale note as at ship; sweep 12 the specification names 6 and the scale note 5 of the files' columns; sweep 13 metadata.json subdomain shares launch, ratings, adaptive",
+   "guard_heart": "BLOCK: ban.artifact monitoring_export against task177 v4, whose card changed 10-29 after this build shipped; predates the re-check",
+   "guard_surface": "exit 0; no persona found in the cut pack",
+   "figures_check": "PASS 81 of 81"
+  },
+  "repair": "none cut; nothing in target/, golden/, target.zip, the prompt or any graded figure moved"
  }
 }
