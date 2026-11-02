@@ -34,7 +34,13 @@ carries, and filed a different unit; and filing the comparison instead turns the
 it. Every lever below it, the pool and the denominator, is also part of the estimand, so there is no
 position where both gates hold. Before drawing a decisive step, name which of the five parts it is: if
 it is one of them, it is WHAT, it must be filed, and the stump has to live somewhere else. The HOW is
-how a fully filed estimand is computed, and the data must force that.
+how a fully filed estimand is computed, and the data must force that. **The unit an event is attributed
+to is population too.** task464's eleventh architecture turned on booking each escape-of-water claim to
+the flat its water came from rather than the flat that claimed; the fund terms had to file the population
+("escapes from the water supply of a listed flat, whichever flats the water damaged"), that sentence
+stated the attribution, one join on block, stack and date then found every source, and the judge failed
+Gate H3 as rule application while the leak reader named the same sentence. A step that decides which unit
+an event belongs to is WHAT and cannot carry the stump either.
 
 **Where the decisive step is an estimator choice, the assertions run over its GROUPINGS, not only over its
 placements and penalisations.** One build asserted a single grouping refuted and left three untested; of those
