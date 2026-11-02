@@ -158,7 +158,8 @@ def main():
         n = 0
         for r in reg:
             e = r["xray_endorsed"].date() if hasattr(r["xray_endorsed"], "date") else r["xray_endorsed"]
-            lf = r["left"].date() if r["left"] is not None and hasattr(r["left"], "date") else r["left"]
+            lp = r["endorsement_lapsed"]
+            lf = lp.date() if lp is not None and hasattr(lp, "date") else lp
             if e <= first and (lf is None or lf >= last) and xr.get((r["staff_no"], mo), 0.0) < 20.0:
                 n += 1
         counts.append(n)

@@ -6,6 +6,13 @@ unique architecture on what the approved builds share, so architecture 1 (the pr
 closed, and the slot moves to another client domain (Human Factors & Ergonomics) and a new world, an airport's X-ray
 screening workforce. Architecture 1's record is under `## Architecture 1 record`.
 
+Stage 4 round 2 (2026-11-02): the re-judge read SCS-04's detection performance word for word as the pooled hit rate
+(Gates C and E), so SCS-04 section 3 now files the population, prohibited items the officer has not been shown before,
+and nothing about images against objects, the start of the record or memory; the same section files that a unit's
+hourly count includes its start-up test images, the register files each lapsed endorsement's date, and the roster's
+finishes were moved so that no officer sits within 0.3 hours of the currency standard. The default path is now the
+filed population keyed on the TIP image, or counted from 1 December, which files four casual officers.
+
 ## Draw
 
 1. **Card:** `.claude/skills/fingerprint/cards/task186.json`, architecture v2, registered 2026-11-01 at WARN with no
@@ -97,9 +104,10 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
 - **Link:** the image number to object link sits in the library catalogue (three images per object, no object code in
   the TIP export), the login to officer link in the login register (two login schemes before 1 March 2026); no key in
   the TIP export offers the object, and no sentence invites asking whether an officer had seen it.
-- **Reflex:** the field's method, each officer's TIP hit rate over the assessment year against the standard (with
-  category balancing or the image-level first showing as refinements), is rung 0 and files three officers off: the
-  three casual officers whose raw rates are 76 to 78 per cent.
+- **Reflex:** the field's method on the filed population, each officer's hit rate on the projections of items new to
+  them keyed on the TIP export's own item key, the image number (or counted inside the assessment year), files four
+  officers off: the four casual officers endorsed in 2025. The pooled hit rate (rung 0, three casual officers at 76 to
+  78 per cent) is ruled out by SCS-04 section 3.
 - **Back-test:** the textbook route validates: the pooled hit rate rises from 90.8 per cent in July 2025 to 98.6
   in November 2026, as a learning curve on new scanners would; officers' rates in the two halves of the
   screening year correlate at 0.87; and the lowest four are the casual officers endorsed between August and October
@@ -112,29 +120,34 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
   (91.9 to 99.5 per cent) and the sixth just under it at 91.0, and the ten are not an interval of any shipped
   statistic's sort (hit rate, projections, endorsement date, category-balanced rate, image-level first showings),
   asserted.
-- **Pins:** SCS-04 revision 6 files the WHAT (detection performance as the probability of detecting a prohibited item
-  carried in a passenger's cabin bag, the screening year in Sydney time, every officer endorsed on 30 November, below
-  80 per cent comes off); no filed sentence names repeats, first showings, objects, memory or the library's size.
+- **Pins:** SCS-04 revision 6 files the WHAT: detection performance as the probability of detecting a prohibited item
+  the officer has not been shown before, carried in a passenger's cabin bag, the screening year in Sydney time, every
+  officer endorsed on 30 November, below 80 per cent comes off. No filed sentence says what an item is in the TIP
+  records, which file links images to objects, how far back "before" reaches, or anything about repeats or memory.
 
 ## Default path
 
-1. Read SCS-04 rev 6: detection performance over the screening year 1 December 2025 to 30 November 2026, every
-   officer endorsed on 30 November (the register's Current, 91 officers), below 80 per cent comes off X-ray duty.
-2. Conform the TIP export: drop the re-sent D3 day, move UTC to Sydney time, map OP1 and OP7 logins to staff numbers.
-3. Take each officer's TIP hit rate over the screening year's projections, the field's measure of a screener's
-   detection (checked by threat category, and against each image's first showing, which changes nothing).
+1. Read SCS-04 rev 6: detection performance is the probability of detecting a prohibited item the officer has not
+   been shown before, over the screening year 1 December 2025 to 30 November 2026, for every officer endorsed on 30
+   November (the register's Current, 91 officers); below 80 per cent comes off X-ray duty.
+2. Conform the TIP export: drop the re-sent D3 day, move UTC to Sydney time, map OP1 and OP7 logins to staff numbers,
+   pad the international server's image numbers.
+3. Keep each officer's projections in the screening year of an item they had not been shown before, the item keyed on
+   the export's image number (or, keyed on the object, counting showings from 1 December), and take the share detected.
 4. List the officers under 80 per cent.
 
-Ends on: three officers off X-ray duty, SC17045, SC42948 and SC46133, every full-time officer recertified
+Ends on: four officers off X-ray duty, SC16884, SC17045, SC42948 and SC46133, every full-time officer recertified
 Golden: ten officers off X-ray duty, SC16884, SC17045, SC19116, SC19645, SC29369, SC42948, SC43647, SC46133, SC46282 and SC46312
 
 ## Stump sentence
 
-A competent analyst takes each officer's TIP hit rate over the screening year and withdraws three casual officers,
-SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is reading the hit
-rate as detection when four in five of a full-time officer's projections show an object they have already been shown
-and told was a threat, which officers detect 99.5 per cent of the time, so six full-time officers who detect only 56
-to 74 per cent of objects new to them clear 80 per cent on recognition.
+A competent analyst reads SCS-04's detection performance on the projections of items each officer had not been shown
+before, keys the item on the TIP export's image number (or counts showings only from 1 December), and withdraws four
+casual officers, SC16884, SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it
+there is taking the image rather than the threat object behind its three orientations as the item, or the screening
+year rather than the whole CT record as before, when an orientation new to the officer of an object already shown is
+detected 99.3 per cent of the time and an object first shown before December over 99 per cent, so six full-time
+officers who detect 56 to 74 per cent of the objects new to them clear 80 per cent.
 
 ## Three rules
 
@@ -142,8 +155,8 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
   analysis of screening officers' missed threat items, separating a genuine detection deficit from an artefact of how
   the measure was taken.
 - **Domain test:** the deciding quantity is each officer's probability of detecting a prohibited item a passenger
-  carries, which human factors estimates from threat image projection; recognition memory of an object shown and
-  confirmed after every projection lifts each later projection of it, so the estimate has to be read on what measures
+  carries, which human factors estimates from threat image projection; recognition memory of an object already
+  shown lifts each later projection of it, so the estimate has to be read on what measures
   detection of an unseen item.
 - **Swap:** "which transformers' protection relays fail to detect a fault, read from injected test faults drawn from a
   fixed set" keeps the arithmetic and loses the step: a relay does not remember a test fault it has met, so its hit
@@ -156,44 +169,51 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
 - **Layer 2:** estimand identification, family `estimand_identification`: the measure in hand is a mixture of two
   components in proportions that differ by officer, and the estimand is one of them; the call flips on reading
   detection from the records that measure it.
-- **Decisive step:** reading each officer's detection on the projections of threat objects new to that officer, an
-  object counting as already shown once any of its three scans was projected to them since the CT lanes opened.
-- **Not semantics:** every field read correctly (the result codes, logins, image numbers, categories, dates and the
-  standard's terms) still leaves the easy route on three officers, because no field records whether the officer had
-  been shown the object, and the FINE-numbers test holds: the TIP log is complete and correct.
-- **Not rule application:** no filed rule or procedure names first showings, objects or memory; executing SCS-04 word
-  for word with the field's measure files three officers. The enumerated family (raw hit rate, category-balanced
-  rate, the last quarter alone, first showings of each image, first showings counted inside the year only, first
-  showings of each object, the same reweighted to the library's category mix, a logistic fit on prior showings read at
-  none) spans three to ten officers off; the standing family once the data are read (object-level first showings over
-  the whole log, raw, category-reweighted or fitted) spreads zero officers, with every officer coming off below 74.3
-  per cent and every other at least 83.3 per cent under each form; what rules out the rest is loud only for a reader
-  who links images to objects: repeat showings detected 99.5 per cent, an image new to the officer but of an object
-  already shown 99.3, a new object 88.5.
-- **Analyst test:** a strong analyst who conforms the TIP export, maps every login and reads SCS-04 correctly takes
-  each officer's hit rate over the screening year and files three officers off X-ray duty, SC17045, SC42948 and
-  SC46133, every full-time officer recertified; R3a in checks.py runs it on the clean truth.
+- **Decisive step:** establishing what makes an item new to an officer in the TIP records: the threat object behind an image,
+  whichever of its orientations was projected (the catalogue's image-to-object link), shown at any time since the CT
+  record began, so detection is read on each officer's first showing of each object over the whole record.
+- **Not semantics:** every field reads correctly at the TIP export's own grain (an image number is an image, a result a
+  result) and the filed population is applied, yet the easy route files four officers, because no field and no
+  filed sentence says that three images show one item or how far back a showing counts; the unit of novelty and its
+  reach are read from the data (an image new to the officer of an object already shown detected 99.3 per cent like a
+  repeat, against 88.5 for a new object; objects first shown before December over 99 per cent when shown again), and
+  the FINE-numbers test holds: the TIP log is complete and correct.
+- **Not rule application:** SCS-04 files the population (items the officer has not been shown before) and no
+  procedure: no filed rule names images, objects, orientations, the catalogue or the record's start, and executing the
+  standard on the export's own key, or from the start of the screening year, files four officers. The enumerated family
+  (raw hit rate, category-balanced rate, first showings of each image over the record or inside the year, first
+  showings of each object inside the year or over the record, the last reweighted to the library's category mix or
+  fitted by a logistic on prior showings read at none) spans three to ten officers off; the standing family once the
+  data are read (object-level first showings over the whole record, raw, category-reweighted or fitted) spreads zero
+  officers, with every officer coming off below 74.3 per cent and every other at least 83.3 per cent under each form.
+- **Analyst test:** a strong analyst who conforms the TIP export, maps every login and reads SCS-04 correctly keeps each
+  officer's projections of items they had not been shown before, keyed on the export's image number or counted from 1
+  December, and files four officers off X-ray duty, SC16884, SC17045, SC42948 and SC46133, every full-time officer
+  recertified; R3a in checks.py runs it on the clean truth.
 - **Estimand:** SCS-04 revision 6 sections 3 and 4 (SCS-04_screening_officer_competency_standard_rev6.pdf):
-  detection performance is the probability that the officer detects a prohibited item carried in a passenger's cabin
-  bag at the X-ray screen of a CT lane, assessed over the officer's screening in the screening year 1 December to 30
-  November in Sydney time, for every officer holding an X-ray endorsement on 30 November, below 80 per cent comes off.
+  detection performance is the probability that the officer detects a prohibited item they have not been shown
+  before, carried in a passenger's cabin bag, at the X-ray screen of a CT lane, assessed over the officer's screening
+  in the screening year 1 December to 30 November in Sydney time, for every officer holding an X-ray endorsement on 30
+  November; below 80 per cent comes off.
 - **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure states a hit rate, a ranking or a
   verdict; the TIP manager's settings file states a projection probability and no result; no block of records is
   copied or withheld; the memory effect is how people recognise what they have been shown.
 - **No certified replay:** no certified or published detection figure exists in the pack to reproduce; the method is
   not hidden behind a figure the solver backs out.
-- **Lesson:** a hit rate on a test drawn again and again from a fixed set with feedback measures recognition for the
-  people shown the set most; before reading it as detection, ask what each person had already been shown, and read the
-  measure on the items new to them. No build on file teaches memory contaminating a performance measure.
+- **Lesson:** a test drawn again and again from a fixed set measures recognition for the people shown the set most; when
+  the standard asks for items new to a person, find what one item is in the records and how far back a showing
+  reaches before reading the measure, because an item can wear several faces and a history can start before the
+  window. No build on file teaches memory contaminating a performance measure.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| R0 raw hit rate over the year | SCS-04 detection term | result column | the field's measure | none | none | yes | no | readable |
-| R1 category-balanced hit rate | none | category column | a known refinement | none | none | yes | no | readable |
-| R2 first showing of each image file | none | image_no column | a careful refinement | none | duplicate-image check | yes | no | readable |
-| R3 first showing of each object over the whole log (decisive) | no sentence names repeats, objects or memory | no object column in the TIP export; the object sits in the catalogue's image list | the field's measure takes every projection as a fresh test | no control scores it | no battery item links images to objects across an officer's history | one filter and a ratio, but only once the relation is seen | the catalogue and logins serve every route | silent |
+| R0 raw hit rate over the year | SCS-04 section 3 rules it out (items not shown before) | result column | the field's measure | none | none | yes | no | readable |
+| R1 category-balanced hit rate | the same sentence rules it out | category column | a known refinement | none | none | yes | no | readable |
+| R2 first showing of each image over the record | the population, not the item | image_no column | the export's own item key | none | duplicate-image check | yes | no | readable |
+| R2b first showing of each object inside the year | the population, not the reach | object via catalogue | the window filtered first | none | none | yes | no | readable |
+| R3 first showing of each object over the whole record (decisive) | names the population only; no sentence names images, objects, orientations or the record's start | no object column in the TIP export; the object sits in the catalogue's image list | the export keys a projection by image | no control scores it | no battery item links images to objects across an officer's history | one filter and a ratio, once the item and the reach are seen | the catalogue and logins serve every route | silent |
 
 ## Semantic fork table
 
@@ -201,41 +221,44 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
 |---|---|---|---|
 | SF1 | the screening year's dates | Sydney dates, UTC dates | SCS-04 section 3 (Sydney time throughout); same call either way (checks.py) |
 | SF2 | who is assessed | endorsed on 30 November, anyone who screened | SCS-04 section 4; the register's Current column (91) |
-| SF3 | what counts as already shown | the same image, any scan of the same object | the data: an image new to the officer of an object already shown is detected 99.3 per cent against 88.5 for a new object (checks.py) |
-| SF4 | how far back an earlier showing counts | the whole CT log, inside the year only, recent showings only | the data: the lift is 99.5 within 30 days and 99.3 after 120 days, and objects first shown before the year are recognised in it at 99.2 (checks.py) |
+| SF3 | what one item is | the image projected, the threat object behind any of its orientations | SCS-04 section 7 (the system places images of prohibited items), the catalogue (three images per object) and the data: an image new to the officer of an object already shown is detected 99.3 per cent against 88.5 for a new object (checks.py) |
+| SF4 | how far back "before" reaches | the whole CT record, inside the year only, recent showings only | SCS-04 section 3 sets no window on "before", and the data: the lift is 99.5 within 30 days and 99.3 after 120 days, and objects first shown before the year are detected over 99 per cent in it (checks.py) |
 | SF5 | category weighting | each first showing equally, the library's category mix | same ten officers (checks.py) |
 | SF6 | the estimator on first showings | the share detected, a logistic fit read at no prior showing | same ten officers (checks.py) |
 | SF7 | the re-sent D3 day | kept twice, once | same call (checks.py) |
-| SF8 | the currency population | endorsed for the whole month, endorsed at any point in it | SCS-04 section 5 (the whole of a calendar month) |
+| SF8 | the currency population | endorsed for the whole month, endorsed at any point in it, the year-end officers only | SCS-04 section 5 (the whole of a calendar month) with the register's xray_endorsed and endorsement_lapsed dates (checks.py) |
 | SF9 | X-ray time resolution | moment by moment, five-minute slots | identical counts (checks.py) |
 | SF10 | quarters | Sydney quarters from 1 December, UTC quarters | SCS-04 section 3; UTC moves figures (checks.py) |
-| SF11 | passenger bags | every image a unit counts, images while officers screen passengers | SCS-04 section 3 (bags passengers put through a lane); one rostered-time rule separates them (C1 in checks.py) |
+| SF11 | passenger bags | every image a unit counts, images while the lane is open to passengers | SCS-04 section 3 (start-up test images run before the lane opens are not passenger bags); one rostered-time rule separates them (C1 in checks.py) |
 | SF12 | below 80 per cent | strictly below, at or below | no officer within 3.3 points of the line under any licensed form (checks.py) |
 | SF13 | an officer with few first showings | assessed, held over | every endorsed officer has 107 or more first showings in the year (checks.py) |
+| SF14 | which projections measure detection | every projection, projections of items the officer had not been shown before | SCS-04 section 3 (checks.py) |
 
 ## Ladder
 
 | Rung | Construction | Answer | Dies to |
 |---|---|---|---|
-| R0 | each officer's hit rate over the year's projections (the default path) | three casual officers off (SC17045, SC42948, SC46133) | repeat showings are detected 99.5 per cent against 88.5 for new objects |
-| R1 | the hit rate balanced across the four threat categories | the same three | the same lift, in every category |
-| R2 | each image's first showing to the officer | four casual officers off (adds SC16884, 0.776) | an image new to the officer but of an object already shown is detected 99.3 per cent |
-| R2b | first showings counted inside the screening year only | the same four | objects first shown before the year are recognised in it at 99.2 per cent |
-| R3 | each object's first showing over the whole CT log (golden) | ten officers off, six of them full-time | golden |
+| R0 | each officer's hit rate over the year's projections | three casual officers off (SC17045, SC42948, SC46133) | SCS-04 section 3: items the officer has not been shown before |
+| R1 | the hit rate balanced across the four threat categories | the same three | the same sentence |
+| R2 | each image's first showing to the officer over the record (the default path) | four casual officers off (adds SC16884, 0.776) | an image new to the officer of an object already shown is detected 99.3 per cent, like a repeat |
+| R2b | each object's first showing counted inside the screening year only (the default path's other arm) | the same four | objects first shown before the year are detected over 99 per cent in it |
+| R3 | each object's first showing over the whole CT record (golden) | ten officers off, six of them full-time | golden |
 
-- Separation: R0 and R1 file three, R2 and R2b four, R3 ten; R3 differs from R0 in seven members (asserted by name).
+- Separation: R0 and R1 file three, R2 and R2b four (image-level inside the year also four), R3 ten; R3 differs from
+  the default path in six members, all full-time (asserted by name).
 - Margins: every officer coming off below 74.3 per cent under every licensed form (raw 74.22, category-reweighted
   74.06, logistic 73.96); every other officer at least 83.3 per cent (83.54, 83.34, 83.5); the nearest any officer
-  sits to the line is 3.3 points. The masked full-time officers' raw rates run 91.0 to 95.0 per cent against a
-  recertified range of 91.9 to 99.5, five of the six inside it.
-- Pricing: the step moves seven of ten designations; the lift is 11 points of hit probability on a repeat; every
-  endorsed officer has 107 to 263 first showings in the year, so a designated officer's estimate carries a standard
-  error of 3.4 to 4.7 points, and the decision is the filed comparison of that estimate with 80 per cent. The world's
-  free parameters (library size 360, projection probability 1.3 per cent, the memory multiplier 0.12, competent
-  officers 0.89 to 0.95 on unseen items, deficient full-time officers 0.64 to 0.72) were set so that every officer
-  clears the line by at least 3 points under each licensed form; on nine other seeds (187 to 195) the object-level
-  first showings designate exactly the world's ten deficient officers every time while the raw hit rate designates
-  one to three.
+  sits to the line is 3.3 points.
+- Pricing: the step moves six of ten designations against the default path; an image new to the officer of an object
+  already shown is detected like a repeat (99.3 against 99.5) and 11 points above a new object; every endorsed
+  officer has 107 to 263 first showings in the year, so a designated officer's estimate carries a standard error of
+  3.4 to 4.7 points. The world's free parameters (library size 360, projection probability 1.3 per cent, the memory
+  multiplier 0.12, competent officers 0.89 to 0.95 on unseen items, deficient full-time officers 0.64 to 0.72) were
+  set so that every officer clears the line by at least 3 points under each licensed form; on nine other seeds (187
+  to 195) the object-level first showings designate exactly the world's ten deficient officers every time.
+- Gate F, honestly: with the population filed, the pooled route is non-compliant on its face; what stops a solver is
+  taking the image as the item (R2) or the year as the reach of "before" (R2b). A literal reader of "item" and
+  "before" with the catalogue open resolves both, and both are sustained by the data rather than by any sentence.
 
 ## Closure table
 
@@ -246,7 +269,7 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
 | 3 Attribution window | the screening year, 1 December 2025 to 30 November 2026 | filed (SCS-04 section 3); SF1 |
 | 4 As-of dating | each projection by its Sydney date | filed (Sydney time throughout); SF1 |
 | 5 Version basis | the TIP export, library release 1.0, the register as exported 1 December | one version shipped |
-| 6 Denominator | the officer's first showings in the year | forced by the data (SF3, SF4) |
+| 6 Denominator | the officer's first showings in the year | population filed (SCS-04 section 3, SF14); the item and the reach of "before" forced by the data (SF3, SF4) |
 | 7 Weighting | each first showing equally | C1: category weighting files the same officers (SF5) |
 | 8 Window length | twelve months | filed |
 | 9 Boundary inclusivity | 1 December and 30 November inside | filed |
@@ -266,12 +289,14 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
 
 ## Literal reader
 
-Executed word for word, SCS-04 asks for each endorsed officer's probability of detecting a prohibited item carried in a
-passenger's cabin bag over the screening year and takes off X-ray duty every officer below 80 per cent. Nothing filed
-says how the probability is estimated. A literal reader who takes every projection as a fresh test files three
-officers; one who asks what each projection measures finds that an object already shown is recognised, that a
-passenger's item is never one the officer has been shown, and files the ten. Every licensed estimator on first showings
-files the same ten.
+Executed word for word, SCS-04 asks for each endorsed officer's probability of detecting a prohibited item they have
+not been shown before over the screening year, and takes off X-ray duty every officer below 80 per cent. Read so, the
+pooled hit rate is non-compliant (it counts items already shown). Section 7 says the system places images of
+prohibited items, and the catalogue lists three images of each object, so an image new to the officer of an object
+already shown is an item already shown: first showings keyed on the image are non-compliant. "Before" carries no
+window, so a showing in July to November 2025 is a showing before: first showings counted from 1 December are
+non-compliant. The literal execution is each officer's first showing of each object over the whole CT record, the
+golden; every licensed estimator on those first showings files the same ten.
 
 ## Oracles
 
@@ -300,45 +325,58 @@ register), both owed by SCS-04's own reporting sections.
   each moment, and the roster's rows on a lane-day start and finish at different times (late joiners, early leavers),
   so the divisor changes inside a block; one divisor per roster block files 10, 7, 14, 7, 11, 11, 10, 10, 8, 8, 8, 8.
 - Second device (D4, absence in a file no habitual join reaches): an officer on Personal leave in the payroll export is
-  still on the roster and was not working, so they take none of the lane and their colleagues' shares rise; leaving
-  leave out files 17, 16, 20, 11, 16, 15, 15, 19, 15, 14, 12, 13 (eight months wrong).
+  still on the roster and was not working (no projection is recorded for them that day), so they take none of the lane
+  and their colleagues' shares rise; leaving leave out files 17, 16, 20, 11, 16, 15, 15, 19, 15, 14, 12, 14 (nine
+  months wrong).
 - Hazard: no division at all files zero every month.
-- Golden: 19, 17, 20, 14, 16, 17, 16, 17, 15, 15, 12, 16 (equal to the clean truth, asserted).
-- Pin test: the sentence pins the population (endorsed for the whole month), the unit and the standard's definition of
-  X-ray time; no pin names a block, a leave record or a divisor.
+- Population: the register files each officer's xray_endorsed date and, for the two whose endorsement lapsed, the
+  endorsement_lapsed date; counting the year-end officers only files 18 for December and 13 for March.
+- Margins by construction: the world moves roster finishes by the roster's own 15-minute step, only while another
+  officer works the lane through the moved time and never across a projection, until no officer endorsed for a whole
+  month sits within 0.3 hours of 20 (31 finishes moved; nearest 0.31 hours, asserted); no projection, lane hour or bag
+  count moves.
+- Golden: 19, 17, 20, 14, 17, 18, 17, 17, 15, 15, 12, 16 (equal to the clean truth, asserted).
+- Pin test: the sentence pins the population (endorsed for the whole month, by the register's dates), the unit and the
+  standard's definition of X-ray time; no pin names a block, a leave record or a divisor.
 
 **Ask B, the passenger bags each CT lane screened in each quarter of the screening year (28 figures, nearest
 thousand).** Home: SCS-04 section 6, the year-end throughput return.
 - Primary device (D7, the true key elsewhere): the units' counts are keyed by serial and the unit register keeps only
-  where each unit stands now, while KX6-0413 stood on D2 until 2 March 2026, KX6-0416 on D5 until 19 April and on each
-  lane for its two retrofit days, and KX6-0590 on D2 only from 5 March; placing units by the register misses 17 of 28.
-- Second device (D5, scope): after each unit's retrofit it counts its daily performance-test images in the hour before
-  the lane's first rostered start, which are not passenger bags; with every unit placed right and those counts kept, 12
-  of 28 figures are wrong.
+  where each unit stands now, while KX6-0413 stood on D2 until 2 March 2026, KX6-0416 on D5 until 19 April and from
+  then on a lane whose own unit was away (D3 on 13 May 2026, I2 on 21 October 2026, two days on each lane from June to
+  September), and KX6-0590 on D2 only from 5 March; placing units by the register, with the filed start-up rule
+  executed, misses 13 of 28.
+- Filed WHAT (no longer a device): SCS-04 section 3 says a unit's hourly count includes any start-up test images run
+  before the lane opens to passengers, which are not passenger bags; finding the opening is the roster's first start
+  on the lane that day, and with every unit placed right and those counts kept 12 of 28 figures are wrong.
 - Hazard: counts in UTC hours against Sydney quarters.
 - Golden: equal to the clean truth lane by lane and quarter by quarter (asserted), and to an independent exhaustive
-  placement in verify.py.
+  placement in verify.py; no figure moved this round.
 - Pin test: the sentence pins the lanes, the quarters and passenger bags (SCS-04 section 3); no pin names a serial, a
-  retrofit or a test.
+  unit's location by day or the roster's first start.
 
-Main population zero-counts: the TIP export, the catalogue, the login register and the officer register carry no ask
-device row (asserted); the call reads none of the ask files (asserted from the code).
+Main population zero-counts: the TIP export, the catalogue and the login register carry no ask device row (asserted);
+the officer register's dates fix Ask A's population and carry no device; the call reads none of the ask files
+(asserted from the code).
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| A, 8 of 12 months moved by personal leave | shares each lane among the officers rostered at each moment; the payroll leave export not joined | miss |
-| B, 12 June-to-November figures carrying pre-opening test counts | places every unit right and keeps every hourly count | miss |
+| A, 9 of 12 months moved by personal leave | shares each lane among the officers rostered at each moment over the register's endorsement dates; the payroll leave export not joined | miss |
+| B, 13 lane-quarters where a unit stood off its register lane | drops every count before a lane's first rostered start as SCS-04 files, places each unit on its register lane | miss |
 
-Pair ceiling: 52.6 ((38 + 7 + 55 x 0.500) and (5 + 7 + 55 x 0.375), averaged)
-Mirror leakage: 37.5 per cent of ask weight
-Measured by: generator/ceiling.py (run on the cut pack)
+Pair ceiling: 53.2 ((38 + 7 + 55 x 0.450) and (5 + 7 + 55 x 0.450), averaged)
+Mirror leakage: 45.0 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack; the full includer, who joins the leave export and rebuilds
+every unit's lane, keeps all 40)
 
 ## Leak sweep
 
-- `leak.py --asof 2026-12-02`: REVIEW, one line, harmless. Sweep 4 finds four stump-paragraph terms in SCS-04
-  (projection, threat, records, return): "threat image projection system" and "records" in section 7 name the system
-  and what it records, and "return" is the year-end throughput return in section 6; nothing in the standard names
-  repeats, first showings, objects, memory or the library.
+- `leak.py --asof 2026-12-02`: REVIEW, one line, harmless. Sweep 4 finds six stump-paragraph terms in SCS-04
+  (record, records, projection, threat, images, return): section 7 names the threat image projection system, the
+  images it places and what it records, and "return" is the year-end throughput return in section 6. The standard
+  now files the estimand's population (items the officer has not been shown before) and that start-up test images
+  are not passenger bags, both WHAT the stage 4 judge required; nothing in it names objects, orientations, the
+  catalogue, the record's start, repeats or memory (asserted in checks.py).
 - `guard.py surface`: three pairs promoted on surface similarity alone (0.100 to 0.101, corpus top 1 per cent), task462,
   task172 and task271, each with a differentiation line on the card; the people screen is WARN only, the officers named
   in the goldens drawn with `guard.py names`.
@@ -484,3 +522,16 @@ Gate F against Gate C one for one. Re-rooted 2026-11-01 at the Batch 3 queue res
   `guard.py names`, frozen in params.py.
 - (2026-11-01, build) The drawn names assigned in pool order: all ten officers coming off carried women's first names, a
   pattern with no cause in the world that a reader would ask about; assignment now runs through a seeded permutation.
+- (2026-11-02, stage 4 round 2) The pooled hit rate as the default path with SCS-04 silent on novelty: the re-judge
+  read "the probability that the officer detects a prohibited item carried in a passenger's cabin bag" with section 7's
+  record of every projection as the pooled hit rate (Gates C and E). SCS-04 section 3 now files the population, items
+  the officer has not been shown before, and the default path is that population keyed on the TIP image or counted
+  from 1 December (four officers).
+- (2026-11-02, stage 4 round 2) Start-up test images left to inference from the passenger-bag definition: no file said
+  a unit's count can hold non-passenger images (Gate C). SCS-04 section 3 now files it, which spends Ask B's second
+  device; two single-day spare covers (D3 on 13 May 2026, I2 on 21 October 2026) give the unit-placement device the
+  figures it needs, and no golden figure moves.
+- (2026-11-02, stage 4 round 2) The register's `left` column as the only trace of a lapsed endorsement, and currency
+  margins left where the roster fell (20.004 and 19.979 hours): the register now carries endorsement_lapsed, and a
+  roster pass moves finishes until no officer sits within 0.3 hours. Its first version chose a direction afresh at
+  every step and cycled between two finishes; each officer-month is now pushed one way to the far side of the band.

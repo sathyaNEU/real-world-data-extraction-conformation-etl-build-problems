@@ -1,0 +1,125 @@
+{
+ "answered": {
+  "Q1": 465,
+  "Q2": 452,
+  "Q3": 479,
+  "Q4": 424,
+  "Q5": 437,
+  "Q6": 325,
+  "Q7": 472,
+  "Q8": 499
+ },
+ "centre_totals": {
+  "absentees": 31,
+  "may_sitters": 150,
+  "withdrawals": 61
+ },
+ "centres": {
+  "Adelaide": {
+   "absentees": 4,
+   "may_sitters": 22,
+   "withdrawals": 8
+  },
+  "Brisbane": {
+   "absentees": 9,
+   "may_sitters": 25,
+   "withdrawals": 8
+  },
+  "Melbourne": {
+   "absentees": 8,
+   "may_sitters": 34,
+   "withdrawals": 23
+  },
+  "Perth": {
+   "absentees": 3,
+   "may_sitters": 20,
+   "withdrawals": 7
+  },
+  "Sydney": {
+   "absentees": 4,
+   "may_sitters": 33,
+   "withdrawals": 11
+  },
+  "Western Sydney": {
+   "absentees": 3,
+   "may_sitters": 16,
+   "withdrawals": 4
+  }
+ },
+ "facility_extra_passes": 24,
+ "facility_moves": {
+  "Q1": -1,
+  "Q2": 1,
+  "Q3": 0,
+  "Q4": 1,
+  "Q5": 0,
+  "Q6": 1,
+  "Q7": -1,
+  "Q8": -1
+ },
+ "facility_passed": 417,
+ "failed": 321,
+ "four_answer": 17,
+ "held_at_0": 1,
+ "held_at_20": 11,
+ "may_moves_minutes": [
+  0,
+  -1,
+  1,
+  0,
+  1,
+  0,
+  -1,
+  0
+ ],
+ "may_pass_minutes": [
+  433,
+  698
+ ],
+ "moves": {
+  "Q1": -1,
+  "Q2": 1,
+  "Q3": 0,
+  "Q4": 1,
+  "Q5": 0,
+  "Q6": 3,
+  "Q7": -1,
+  "Q8": -3
+ },
+ "pass_mark": 50,
+ "passed": 393,
+ "q6_choosers_other_mean": 13.5,
+ "q6_mean": 10.1,
+ "q8_choosers_other_mean": 9.0,
+ "q8_mean": 12.1,
+ "references": {
+  "mark_limits": [
+   0,
+   20
+  ],
+  "paper": 2,
+  "questions_named": [
+   6,
+   8
+  ],
+  "regulations": [
+   2,
+   11.2,
+   12,
+   14.1,
+   14.2,
+   16,
+   17.1,
+   17.3,
+   19.2,
+   19.4
+  ]
+ },
+ "refund_aud": 2625,
+ "refund_aud_cents": 2625.13,
+ "reviews_changed": 11,
+ "reviews_declined": 4,
+ "reviews_rekeyed": 3,
+ "sat": 714,
+ "unmoved_passed": 433
+}

@@ -75,12 +75,15 @@ def main():
           "max des %.3f min other %.3f" % (max(tgt[s] for s in gold), min(tgt[s] for s in tab["staff_no"] if s not in gold)))
 
     # ------------------------------------------------------------------ R3: the analyst test and the decisive step
-    r0 = set(M["r0"])
-    check("R3a the default path (each officer's hit rate over the year) files the named wrong answer",
-          r0 != gold and len(r0) == 3 and r0 < gold, "R0 %s" % sorted(r0))
-    missed = gold - r0
-    check("R3a the default path misses all six full-time officers and one casual officer",
-          sum(staff_of[s]["kind"] == "FT" for s in missed) == 6 and len(missed) == 7, "missed %d" % len(missed))
+    r0, r2, r2b = set(M["r0"]), set(M["r2"]), set(M["r2b"])
+    check("R3a the default path under the filed population (first showings keyed on the TIP export's image number, or "
+          "counted from 1 December) files the named wrong answer, four casual officers",
+          r2 == r2b and len(r2) == 4 and r2 < gold and all(staff_of[s]["kind"] == "CA" for s in r2), "R2 %s" % sorted(r2))
+    missed = gold - r2
+    check("R3a the default path misses all six full-time officers", len(missed) == 6 and
+          all(staff_of[s]["kind"] == "FT" for s in missed), "missed %d" % len(missed))
+    check("R3a the pooled hit rate, which SCS-04's population rules out, files three casual officers",
+          len(r0) == 3 and r0 < r2, "R0 %s" % sorted(r0))
     check("R3b the decisive step alone (object-level first showings) reaches the golden",
           set(A.designated(tab, "golden")) == gold, "golden from first showings")
     check("R3b rung R1 (category-balanced hit rate) stays wrong", set(M["r1"]) != gold, str(M["r1"]))
@@ -242,6 +245,25 @@ def main():
           "%d officers" % len(pop))
     check("SF8 ask A counts only officers endorsed for the whole month",
           all(len(v) <= len(pop) + 2 for v in A.whole_month_population(T).values()), "monthly populations")
+    lapsed = T["register"].dropna(subset=["endorsement_lapsed"])
+    check("SF8 the register files every lapsed endorsement's date",
+          len(lapsed) == 2 and set(T["register"]["endorsement_30_nov_2026"]) == {"Current", "Lapsed"}
+          and set(lapsed["endorsement_30_nov_2026"]) == {"Lapsed"}, "%d lapsed" % len(lapsed))
+    hrs_a = A.xray_time(T)
+    near = min(abs(hrs_a.get((sx, mk), 0.0) - P.CURRENCY_H) for mk, v in A.whole_month_population(T).items() for sx in v)
+    check("ask A margin: no officer endorsed for a whole month within %.1f hours of the standard in any month"
+          % P.CURRENCY_MARGIN_H, near >= P.CURRENCY_MARGIN_H - 1e-9, "nearest %.3f h" % near)
+    ro = T["roster"].copy()
+    ro["s"], ro["e"] = ro["start"].map(A.to_min), ro["finish"].map(A.to_min)
+    span = defaultdict(list)
+    for sx, d, ln, a, b in zip(ro["staff_no"], ro["roster_date"], ro["lane"], ro["s"], ro["e"]):
+        span[(sx, d, ln)].append((a, b))
+    tw = tip[tip["in_window"]]
+    outside = sum(not any(a <= m < b for a, b in span.get((sx, d, ln), []))
+                  for sx, d, ln, m in zip(tw["staff_no"], tw["t_local"].dt.strftime("%Y-%m-%d"), tw["lane"],
+                                          tw["t_local"].dt.hour * 60 + tw["t_local"].dt.minute))
+    check("consistency: every projection in the screening year falls inside its officer's rostered time on that lane",
+          outside == 0, "%d outside" % outside)
     check("SF5 category weighting does not move the call", set(A.designated(tab, "cat_rw")) == gold, "cat_rw")
     check("SF6 the logistic fit does not move the call", set(A.designated(tab, "logit0")) == gold, "logit0")
     check("SF11 passenger bags leave out the counts before a lane's first rostered start", miss_test >= 10,
@@ -262,10 +284,17 @@ def main():
     std = IO.pdf_text(os.path.join(TARGET, PK.FILES["standard"]))
     check("positive control: the standard's text is readable", "Detection performance" in std and len(std) > 1500,
           "%d characters" % len(std))
+    flat = re.sub(r"\s+", " ", std)
     check("the standard files the estimand's words",
-          "probability that the officer detects a prohibited item carried" in std and "80 per cent" in std, "WHAT")
-    check("the standard names no repeat, first showing, recognition or object history",
-          not re.search(r"first show|seen before|repeat|recogni|memor|familiar|new to the officer", std, re.I), "clean")
+          "probability that the officer detects a prohibited item they have not been shown before" in flat
+          and "80 per cent" in flat, "WHAT")
+    check("SF14 the standard's population (items the officer has not been shown before) rules out the pooled hit rate",
+          "not been shown before" in flat and set(M["r0"]) != gold, "population filed")
+    check("the standard leaves the analysis open: no object, orientation, image link, start of record, repeat or memory",
+          not re.search(r"first show|seen before|repeat|recogni|memor|familiar|orientation|object|\b1 July 2025|"
+                        r"new to the officer", flat, re.I), "clean")
+    check("SF11 the standard files that a unit's hourly count includes start-up test images, which are not passenger "
+          "bags", "test images the unit runs at start-up, before the lane opens to passengers" in flat, "WHAT")
     check("persona: the standard's approver is a drawn persona", "Teresa Malone" in std, "Teresa Malone")
     check("document dates: the standard was approved before the CT lanes' first projection",
           dt.date(2025, 7, 14) >= P.DAY0 and T["tip"]["event_utc"].min() < "2025-07-14", T["tip"]["event_utc"].min())

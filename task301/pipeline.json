@@ -1,38 +1,38 @@
 {
  "task": "task301",
- "status": "SHIPPED",
- "domain": "epidemiology-public-health",
+ "status": "DESIGN",
+ "domain": "economics-econometrics",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-25",
- "stump": "A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-25"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (the plan names the candidates beside the decision's words; domain vocabulary; the referral report and the workforce distractor name sub-regions; all harmless)",
-  "reader": "round 5 on 06472847: both readers filed Coastal Hinterland (800 and 750), asks 14 of 44 each (A and B whole, C none), measured pair 29.5; rounds 2 to 4 in the design note"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.decision and repeat.question_form, answered: a pick of one of four asks which); surface clean",
-  "nearest": "task482 v10 and v2 lineage, task268 v3 and task95 at 0.06"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (run r4 on 06472847, every graded figure reproduced; one optional pin on ask C's minutes left unfiled, the ask's silent device)",
-  "report": "determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 2: write DESIGN_NOTE.md for architecture 3 (child poverty measures, Comunidad de Valdemora), then the generator",
  "approved": null,
- "delivered": "2026-10-25",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "shipped_zip": "1dbc72b8dbad8f849dc7198ad3a0f59025550605e172a38e9cb80205dfcc4b43"
+ "shipped_zip": ""
 }

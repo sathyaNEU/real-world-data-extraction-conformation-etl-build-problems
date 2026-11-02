@@ -1,0 +1,124 @@
+{
+ "task": "task485",
+ "decision": "the preferred product in each brand drug class the Pharmacy and Therapeutics Committee reviews, for the Employees' Group Health Plan's 2027 preferred drug list",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "domain": "Healthcare Delivery & Health Economics: payment, claims and health plan analytics",
+ "deliverables": [
+  "pdl_2027_net_cost.xlsx",
+  "pdl_2027_trustees.pptx"
+ ],
+ "as_of": "2026-10-19",
+ "files": [
+  {
+   "path": "target/pbm_paid_claims_fy2026.csv",
+   "format": "csv",
+   "source": "Halcroft Pharmacy Solutions, paid claims extract for the Employees' Group Health Plan, brand drugs, dates of service 1 July 2025 to 30 June 2026, paid through 30 September 2026, pulled 9 October 2026",
+   "date": "pulled 9 October 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 50164
+  },
+  {
+   "path": "target/pbm_drug_file_202610.xlsx",
+   "format": "xlsx",
+   "source": "Halcroft Pharmacy Solutions client portal, drug file for the NDCs on the plan's claims, October 2026",
+   "date": "October 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 37
+  },
+  {
+   "path": "target/pharmacy_network_202610.txt",
+   "format": "txt",
+   "source": "Halcroft Pharmacy Solutions, pharmacy network file, 1 October 2026",
+   "date": "1 October 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 102
+  },
+  {
+   "path": "target/member_roster_20261009.csv",
+   "format": "csv",
+   "source": "Office of Employee Benefits eligibility system, member roster at 9 October 2026",
+   "date": "member roster at 9 October 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 79956
+  },
+  {
+   "path": "target/pdl_policy_eb-rx-04.pdf",
+   "format": "pdf",
+   "source": "Office of Employee Benefits, Preferred Drug List Policy EB-RX-04, revised 14 March 2024",
+   "date": "revised 14 March 2024",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis"
+  },
+  {
+   "path": "target/clinical_review_2027_pdl.pdf",
+   "format": "pdf",
+   "source": "Pharmacy and Therapeutics Committee, clinical review for the 2027 preferred drug list, 12 October 2026",
+   "date": "12 October 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis"
+  },
+  {
+   "path": "target/pbm_agreement_exhibit_c.pdf",
+   "format": "pdf",
+   "source": "Pharmacy Benefit Services Agreement, Exhibit C, effective 1 July 2024",
+   "date": "effective 1 July 2024",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis"
+  },
+  {
+   "path": "target/pdl_2027_implementation_messages.pdf",
+   "format": "pdf",
+   "source": "Office of Employee Benefits, messages on the 2027 preferred drug list load, September and October 2026",
+   "date": "September and October 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis"
+  },
+  {
+   "path": "target/rebate_guarantee_reconciliation_fy2025.pdf",
+   "format": "pdf",
+   "source": "Halcroft Pharmacy Solutions, rebate guarantee reconciliation for plan fiscal year 2025, 30 September 2025",
+   "date": "30 September 2025",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis"
+  },
+  {
+   "path": "target/rebate_remittance_2025Q2.xlsx",
+   "format": "xlsx",
+   "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2025 Q2, remitted 19 September 2025",
+   "date": "remitted 19 September 2025",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 94
+  },
+  {
+   "path": "target/rebate_remittance_2025Q3.xlsx",
+   "format": "xlsx",
+   "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2025 Q3, remitted 19 December 2025",
+   "date": "remitted 19 December 2025",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 94
+  },
+  {
+   "path": "target/rebate_remittance_2025Q4.xlsx",
+   "format": "xlsx",
+   "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2025 Q4, remitted 20 March 2026",
+   "date": "remitted 20 March 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 58
+  },
+  {
+   "path": "target/rebate_remittance_2026Q1.xlsx",
+   "format": "xlsx",
+   "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2026 Q1, remitted 19 June 2026",
+   "date": "remitted 19 June 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 61
+  },
+  {
+   "path": "target/rebate_remittance_2026Q2.xlsx",
+   "format": "xlsx",
+   "source": "Halcroft Pharmacy Solutions, manufacturer rebate remittance statement for calendar quarter 2026 Q2, remitted 18 September 2026",
+   "date": "remitted 18 September 2026",
+   "licence": "Office of Employee Benefits operational record; internal use, released for this analysis",
+   "rows": 58
+  }
+ ],
+ "distractor_files": [
+  "target/rebate_remittance_2025Q2.xlsx",
+  "target/rebate_guarantee_reconciliation_fy2025.pdf"
+ ]
+}

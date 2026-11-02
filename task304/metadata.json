@@ -1,0 +1,151 @@
+{
+ "task": "task304",
+ "decision": "which sortation hub receives the 2027 induct-line enclosure under the noise undertaking's schedule, and the workers it brings below the 85 dB(A) exposure standard at each hub",
+ "deliverables": [
+  "induct_enclosure_2027.pptx",
+  "hearing_program_2026.csv"
+ ],
+ "distractor_files": [
+  "target/boundary_noise_complaints_2026.csv",
+  "target/sort_volumes_daily_2026.csv"
+ ],
+ "as_of": "2026-11-27",
+ "files": [
+  {
+   "path": "target/audiometry_clients_20261106.xlsx",
+   "source": "ClearTone Occupational Audiology client list, 6 November 2026",
+   "covers": "enrolled workers with their employee numbers and reference tests",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/audiometry_results_2025_2026.csv",
+   "source": "ClearTone Occupational Audiology test export",
+   "covers": "hearing test thresholds at 2, 3 and 4 kHz for enrolled workers, baselines and 2025 to 2026 tests",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/badge_register_20261113.xlsx",
+   "source": "Brolga site security access-control register, export 13 November 2026",
+   "covers": "badges issued to employees, labour-hire operatives and contractors, with issue and cancel dates",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/boundary_noise_complaints_2026.csv",
+   "source": "Brolga community relations complaint log",
+   "covers": "neighbours' noise complaints at hub boundaries, 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/hr_employee_list_20261113.csv",
+   "source": "Brolga HR system, employee list 13 November 2026",
+   "covers": "employees by site, position title and roster team",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/hr_site_transfers_2026.csv",
+   "source": "Brolga HR system, site transfers 2026",
+   "covers": "employees who moved between hubs in 2026 and the effective dates",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/induct_enclosure_design_report_rev2.pdf",
+   "source": "Quellmark Acoustic Engineering project QAE-0927 revision 2, 22 October 2026",
+   "covers": "the induct-line enclosure design: predicted levels and prices by hub",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/induct_station_register.xlsx",
+   "source": "Brolga engineering asset register (sorters)",
+   "covers": "induct stations by site and their commissioning",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/labour_hire_timesheets_oct_nov_2026.xlsx",
+   "source": "Tasman Workforce and Meridian Labour Hire client timesheets",
+   "covers": "labour-hire operatives' shifts at Brolga hubs, 28 September to 8 November 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/noise_enforceable_undertaking_schedule_2027.pdf",
+   "source": "Brolga Parcel Network, noise enforceable undertaking, Schedules 2 and 3, 6 November 2026",
+   "covers": "the 2027 engineering control's placement and the audiometric testing terms",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/noise_survey_report_2026.pdf",
+   "source": "Kestrel Acoustics report KA-2611-R1, 30 September 2026",
+   "covers": "area noise levels at the six hubs, August and September 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/ppe_vending_asset_list_20260930.xlsx",
+   "source": "SafeStock asset list as at 30 September 2026",
+   "covers": "machines on the Brolga account and the product list",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/ppe_vending_service_visits_2026q3.csv",
+   "source": "SafeStock service and restock visit log",
+   "covers": "restock, range change and commissioning visits by machine and site, July to September 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/ppe_vending_transactions_2026q3.json",
+   "source": "SafeStock Cloud vend transaction export, 6 October 2026",
+   "covers": "PPE vending machine transactions at Brolga hubs, 29 June to 2 October 2026, UTC",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/sort_volumes_daily_2026.csv",
+   "source": "Brolga network operations daily volumes",
+   "covers": "parcels sorted and peak hourly rate by hub, July to November 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/ta_shift_records_20260928_20261108.csv",
+   "source": "Brolga time and attendance system",
+   "covers": "employees' rostered shifts and their status, 28 September to 8 November 2026",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  },
+  {
+   "path": "target/wcs_operator_sessions_export_20261116.csv",
+   "source": "Brolga Parcel Network sorter control system (WCS), operator session export pulled 16 November 2026",
+   "covers": "induct station log-ons and log-offs at six hubs, 28 September to 8 November 2026, UTC",
+   "made": "constructed by the task's seeded generator in the source system's export format",
+   "licence": "synthetic, released with the task under CC BY 4.0",
+   "date": "2026-11-16"
+  }
+ ]
+}

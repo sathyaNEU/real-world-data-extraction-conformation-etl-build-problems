@@ -164,6 +164,8 @@ def write_docs(out, pk):
     survey(out, pk)
     design(out, pk)
     undertaking(out, pk)
-    for name in ("noise_survey_report_2026.pdf", "induct_enclosure_design_report_rev2.pdf",
-                 "noise_enforceable_undertaking_schedule_2027.pdf"):
-        scrub_pdf(os.path.join(out, name))
+    stamps = {"noise_survey_report_2026.pdf": ("D:20260930151200+10'00'", "D:20260930162700+10'00'"),
+              "induct_enclosure_design_report_rev2.pdf": ("D:20261022104500+11'00'", "D:20261022113800+11'00'"),
+              "noise_enforceable_undertaking_schedule_2027.pdf": ("D:20261106083100+10'00'", "D:20261106141900+10'00'")}
+    for name, (created, modified) in stamps.items():
+        scrub_pdf(os.path.join(out, name), created, modified)

@@ -56,14 +56,16 @@ def standard(path):
               "D1 to D5, and the international checkpoint two, I1 and I2."),
         ("h", "3. Terms"),
         ("table", [["Term", "Meaning"],
-                   ["Detection performance", "The probability that the officer detects a prohibited item carried "
-                    "in a passenger's cabin bag at the X-ray screen of a CT lane."],
+                   ["Detection performance", "The probability that the officer detects a prohibited item they have "
+                    "not been shown before, carried in a passenger's cabin bag, at the X-ray screen of a CT lane."],
                    ["Screening year", "1 December to 30 November. Its quarters begin on 1 December, 1 March, "
                     "1 June and 1 September."],
                    ["X-ray time", "An officer's time at the X-ray screen of a CT lane. The officers working on a "
                     "lane take the screen in turn, so an officer's X-ray time on a lane is the time they work on "
                     "the lane divided by the number of officers working on the lane at that time."],
-                   ["Passenger bags", "The bags, trays and loose items passengers put through a CT lane."],
+                   ["Passenger bags", "The bags, trays and loose items passengers put through a CT lane. A CT "
+                    "unit's hourly count also includes any test images the unit runs at start-up, before the lane "
+                    "opens to passengers; these are not passenger bags."],
                    ["Dates and times", "Sydney local time throughout."]]),
         ("h", "4. Annual assessment"),
         ("p", "At the close of each screening year the training and standards lead assesses the detection "

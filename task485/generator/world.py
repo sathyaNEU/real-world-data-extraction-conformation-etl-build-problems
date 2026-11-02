@@ -11,7 +11,7 @@ FY_START, FY_END = dt.date(2025, 7, 1), dt.date(2026, 6, 30)
 EXTRACT_DATE = dt.date(2026, 10, 9)          # the PBM's paid-claims extract, paid through 30 September 2026
 PAID_THROUGH = dt.date(2026, 9, 30)
 RENUMBER = dt.date(2026, 1, 1)               # the PBM's account restructure: new group codes and cardholder ids
-NETWORK_MOVE = dt.date(2026, 3, 1)           # three hospital outpatient pharmacies join the specialty network
+NETWORK_MOVE = dt.date(2026, 5, 1)           # three hospital outpatient pharmacies join the specialty network
 
 # fiscal quarters of FY2026 and the calendar quarter each is invoiced as
 FQ = [("FQ1", dt.date(2025, 7, 1), dt.date(2025, 9, 30), "2025Q3"),
@@ -143,7 +143,7 @@ OTHER_RATE = (52.0, 47.0, 50.0, 41.0)     # 30-day supplies per 1,000 members a 
 AWP_FACTOR = 1.2
 DISCOUNT = {"RETAIL": 0.18, "SPECIALTY": 0.16}
 FEE = {"RETAIL30": 1.25, "RETAIL90": 0.75, "MAIL": 0.0, "SPECIALTY": 0.0}
-GUARANTEE = {"RETAIL30": 236.0, "RETAIL90": 642.0, "MAIL": 668.0, "SPECIALTY": 1170.0}   # Exhibit C, per brand claim
+GUARANTEE = {"RETAIL30": 196.0, "RETAIL90": 560.0, "MAIL": 585.0, "SPECIALTY": 1330.0}   # Exhibit C, per brand claim
 
 
 def luhn_npi(base9):
@@ -286,7 +286,7 @@ def _pharmacies(rng):
                     since=dt.date(2019, 1, 1)))
     out.append(dict(npi=npi(), name="Halcroft Specialty Pharmacy - Southeast", channel="SPECIALTY", c340b=False,
                     since=dt.date(2021, 7, 1)))
-    # hospital outpatient pharmacies: retail until 1 March 2026, then the specialty network
+    # hospital outpatient pharmacies: retail until 1 May 2026, then the specialty network
     for nm, c3 in (("University Medical Center Outpatient Pharmacy", False), ("St. Brigid Health Outpatient Pharmacy", False),
                    ("Mercy Ridge Hospital Pharmacy", False)):
         out.append(dict(npi=npi(), name=nm, channel="SPECIALTY", c340b=c3, since=NETWORK_MOVE, before="RETAIL"))
@@ -367,10 +367,14 @@ def _claims(rng, w):
                     else:
                         ph_user = retail[int(rng.integers(0, len(retail)))]
                 # the months this user fills: a start and a stop inside the year, weighted to the quarter's target
-                start_m = int(rng.choice(12, p=_month_weights(target, "start")))
-                if rng.random() < 0.62:
-                    start_m = 0
-                stop_m = 11 if rng.random() < 0.78 else int(rng.integers(start_m, 12))
+                # on therapy all year, starting during it, or stopping during it, in balance so the year is level
+                r_ss = rng.random()
+                if r_ss < 0.70:
+                    start_m, stop_m = 0, 11
+                elif r_ss < 0.85:
+                    start_m, stop_m = int(rng.integers(1, 12)), 11
+                else:
+                    start_m, stop_m = 0, int(rng.integers(0, 11))
                 span = 3 if hab in ("MAIL", "RETAIL90") else 1
                 m = start_m
                 day = int(rng.integers(1, 28))
@@ -408,14 +412,14 @@ def _claims(rng, w):
         r = rng.random()
         c["rev"] = None
         late_ok = late_ok and c["hab"] != "SPECIALTY"     # specialty claims adjudicate in real time
-        if rng.random() < 0.0016 and late_ok:
+        if rng.random() < 0.0006 and late_ok:
             lo, hi = CUTOFF[sq] + dt.timedelta(days=1), CUTOFF[_next_q(sq)] - dt.timedelta(days=12)
             c["paid"] = lo + dt.timedelta(days=int(rng.integers(0, max(1, (hi - lo).days))))   # paid after the cut-off
         if r < 0.0340:
             c["rev"] = c["paid"] + dt.timedelta(days=int(rng.choice([0, 1, 2, 5, 9, 16])))
             if c["rev"] > CUTOFF[sq] and not late_ok:
                 c["rev"] = None
-        elif r < 0.0355 and late_ok:
+        elif r < 0.0346 and late_ok:
             inv = sq if c["paid"] <= CUTOFF[sq] else _next_q(sq)
             if inv != "2026Q2":
                 lo, hi = CUTOFF[inv] + dt.timedelta(days=1), CUTOFF[_next_q(inv)] - dt.timedelta(days=5)

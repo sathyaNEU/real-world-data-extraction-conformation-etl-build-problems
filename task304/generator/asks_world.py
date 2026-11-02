@@ -149,6 +149,11 @@ class Vending:
 
 
 # ------------------------------------------------------------------ ask B
+def _weekday(d):
+    """A Saturday or Sunday moves to the Monday after (HR transfers take effect on a working day)."""
+    return d + dt.timedelta(days=(7 - d.weekday()) % 7) if d.weekday() >= 5 else d
+
+
 class Audiometry:
     def __init__(self, world, seed=P.SEED + 23):
         self.rng = rng = np.random.default_rng(seed)
@@ -172,11 +177,19 @@ class Audiometry:
         for j in movers:
             p = enrol[int(j)]
             src = str(rng.choice([c for c in codes if c != p["hub"]]))
-            eff = dt.date(2026, int(rng.integers(3, 10)), int(rng.integers(1, 28)))
+            eff = _weekday(dt.date(2026, int(rng.integers(3, 10)), int(rng.integers(1, 28))))
             self.hub_hist[p["pid"]] = [(dt.date(2000, 1, 1), src), (eff, p["hub"])]
             self.transfers.append(dict(pid=p["pid"], from_hub=src, to_hub=p["hub"], effective=eff))
         self.tests = []
+        self._wd = np.random.default_rng(seed + 7)    # its own stream, so placing a test on a working day moves no other draw
         self._simulate()
+
+    def _workday(self, d):
+        """The provider tests on site while the hubs sort, Monday to Friday: a weekend date takes a working day of
+        the same week."""
+        if d.weekday() < 5:
+            return d
+        return d - dt.timedelta(days=d.weekday()) + dt.timedelta(days=int(self._wd.integers(0, 5)))
 
     def hub_at(self, pid, d):
         h = None
@@ -195,12 +208,12 @@ class Audiometry:
             for ear in (0, 1):
                 b = [max(0.0, 5 * round((rng.normal(8 + 0.35 * max(age - 30, 0), 6)) / 5)) for _ in range(3)]
                 base.append(b)
-            bdate = dt.date(int(rng.integers(2022, 2025)), int(rng.integers(1, 13)), int(rng.integers(1, 28)))
+            bdate = self._workday(dt.date(int(rng.integers(2022, 2025)), int(rng.integers(1, 13)), int(rng.integers(1, 28))))
             cur = [list(base[0]), list(base[1])]
             tests = [(bdate, "BASELINE", [list(base[0]), list(base[1])])]
             # annual tests in 2025 and 2026, with occasional true shifts
             for yr in (2025, 2026):
-                ad = dt.date(yr, int(rng.integers(2, 11)), int(rng.integers(1, 28)))
+                ad = self._workday(dt.date(yr, int(rng.integers(2, 11)), int(rng.integers(1, 28))))
                 if ad <= bdate:
                     continue
                 true_shift = rng.random() < (0.09 if yr == 2025 else 0.11)
@@ -217,6 +230,7 @@ class Audiometry:
                 if true_shift or temp:
                     if rng.random() < 0.86:     # retested within 30 days, most of the time
                         rd = ad + dt.timedelta(days=int(rng.integers(9, 29)))
+                        rd += dt.timedelta(days={5: -1, 6: 1}.get(rd.weekday(), 0))    # the nearer working day
                         rmeas = [[max(0.0, 5 * round((x + rng.normal(0, 2.5)) / 5)) for x in cur[e]] for e in (0, 1)]
                         tests.append((rd, "RETEST", rmeas))
             for d, typ, m in tests:

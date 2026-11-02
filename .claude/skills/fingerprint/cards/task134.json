@@ -1,337 +1,345 @@
 {
-  "task": "task134",
-  "architecture": "v4 (re-root 2026-11-01 at the Batch 3 queue reset)",
-  "drawn": "2026-11-01",
-  "slot_note": "Forecasting lane. Architecture 4 leaves urban-regional-science for physical-environmental-sciences hydrology: a council-owned estuary port's maintenance dredging for the first contract year after its approach channel and turning basin are deepened two metres, each dredged part's infill set by how far its held bed sits below the natural bed beside it.",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "hydrology-flood-frequency",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a council-owned estuary port's in-situ maintenance dredging for October 2027 to September 2028, the first contract year after its approach channel and turning basin are deepened from 12.3 to 14.3 m below chart datum, each dredged part's infill read from its own maintenance returns and from how far its held bed sits below the natural bed in the survey cells beyond the channel limits",
-  "objective": "forecasting",
-  "shape": "single-figure",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "scoring_unit": "other",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time",
-    "population"
+ "task": "task134",
+ "architecture": "v4 (re-root 2026-11-01 at the Batch 3 queue reset)",
+ "drawn": "2026-11-01",
+ "slot_note": "Forecasting lane. Architecture 4 leaves urban-regional-science for physical-environmental-sciences hydrology: a council-owned estuary port's maintenance dredging for the first contract year after its approach channel and turning basin are deepened two metres, each dredged part's infill set by how far its held bed sits below the natural bed beside it.",
+ "domain": "physical-environmental-sciences",
+ "subdomain": "hydrology-flood-frequency",
+ "client_domain": "physical-environmental-sciences",
+ "niche": "a council-owned estuary port's in-situ maintenance dredging for October 2027 to September 2028, the first contract year after its approach channel and turning basin are deepened from 12.3 to 14.3 m below chart datum, each dredged part's infill read from its own maintenance returns and from how far its held bed sits below the natural bed in the survey cells beyond the channel limits",
+ "objective": "forecasting",
+ "shape": "single-figure",
+ "decision_type": "quantity_figure",
+ "answer_unit": "count",
+ "scoring_unit": "other",
+ "answer": "1,750,000 m3 in situ for 1 October 2027 to 30 September 2028, nearest 50,000 (Outer Channel 380,000; Fend Roads 300,000; Middle Reach 400,000; Inner Reach 280,000; Turning Basin 360,000; berth pockets 40,000, each nearest 20,000)",
+ "answer_source": "submission.md block 1 and generator/figures.json (call.total_m3), emitted by generator/writeup.py from target/",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G1",
+  "G13",
+  "G14"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads the hydrographic surveys, the monthly maintenance returns, the notices and the deepening scheme correctly averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened parts by the ratio of the held depths, 14.3 over 12.3, filing about 1,500,000 cubic metres (1,494,781) against 1,750,000, because a dredged part fills in proportion to how far its bed is held below the natural bed beside it, so two more metres raise each part's infill by two metres over its own present depth below that bed.",
+ "domain_test": "The deciding quantity is the sediment each dredged part of an estuary channel will gather once it is held two metres deeper, which harbour hydrographers estimate from the part's maintenance record and the dredged trench's trapping efficiency; with another field's nouns the chart datum, the maintained depth, the natural bed beside the channel and the infill of a dredged trench have nothing to attach to.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:maintenance-infill-proportional-to-the-held-bed-below-the-natural-bed",
+ "layer1": [
+  "hydrographic surveys from two contractors: depths below chart datum, positive down, on a 50 m grid to April 2023; elevations to Ordnance Datum Newlyn, negative down, on a 40 m grid from October 2023",
+  "monthly maintenance returns laid out by the council's financial year, the contractor's part codes renumbered in 2021, one month's certificate re-issued",
+  "channel limits given as reach corner coordinates in the harbour master's notice, the surveys on the OSGB grid",
+  "the dredger's load log in UTC with loading areas as the contractor's codes, a hired dredger's loads logged as hopper volume and mixture density",
+  "sediment sampling with stations moved from their planned positions and field duplicates under their own references",
+  "a lab batch reporting mercury in micrograms per kilogram"
+ ],
+ "stakeholder_role": "the port's dredging and hydrography manager setting the maintenance quantity for the 2027 dredging tender",
+ "role_family": "capacity_planner",
+ "spine": {
+  "file": "holmwood_channel_surveys_2016-2023.csv and seaward_channel_surveys_2023-2026.csv",
+  "rows": 82441,
+  "entity": "one gridded sounding: a survey cell's bed level at one survey",
+  "grain": "cell x survey",
+  "source": "synthetic"
+ },
+ "forum": "council_or_assembly",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "local_government",
+ "world": {
+  "geography": "United Kingdom, England (a fictional council-owned port on a fictional east coast estuary)",
+  "currency": "GBP",
+  "org_type": "council-owned estuary port (the harbour authority is a borough council department)",
+  "invented_names": [
+   "Fendmouth",
+   "Fend Estuary",
+   "Fend Roads",
+   "Fend Spit",
+   "Wenning Deep",
+   "Dunmarsh Dredging Ltd",
+   "Holmwood Hydrographic Ltd",
+   "Seaward Geodata Ltd",
+   "Aldern Analytical Ltd",
+   "Fend Endeavour",
+   "Maasbank",
+   "Haddon Weir",
+   "Fendmouth Borough Council"
   ],
-  "pattern": [
+  "people": [
+   "Harriet Thorpe",
+   "Damian Davies",
+   "Graham Ellis",
+   "Zoe Dickinson",
+   "Martyn Rogers",
+   "Garry Stephenson",
+   "Liam O'Brien"
+  ]
+ },
+ "deliverables": [
+  "fendmouth_maintenance_2027-28.xlsx",
+  "placements_2025-26.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "A unit's forward rate is set by how far its held level sits below the level it would settle to on its own, which the record shows only in the untouched ground beside it, so lowering the held level raises the rate by the added distance over the unit's own present distance; carrying the record's rate, or scaling it by the held level, understates the rise most where the present distance is small.",
+ "driver_concrete": "Fendmouth's maintenance dredging for 2027-28 is each dredged part's infill at its new depth, and a part fills at a rate proportional to how far its bed is held below the natural bed beside it, which only the survey cells beyond the channel limits show (the disused Berth 2 relaxing toward it since 2019 shows the same rate), so each part's 2016-17 to 2025-26 infill rises by two metres over its own present depth below that bed, by a half where the natural bed is deep and a quarter where it is shallow, not by the 16 per cent the depth ratio gives.",
+ "stump": "A strong analyst averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened parts by the ratio of the held depths, 14.3 over 12.3, filing about 1,500,000 cubic metres (1,494,781) against 1,750,000; the step that lands it there is reading a part's infill as proportional to its depth, when it is proportional to how far its bed is held below the natural bed beside it, which the survey cells beyond the channel limits put at 4.0 to 7.6 metres, so two more metres raise it by a quarter to a half.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task154": "task154 reads a stock valued at what each holder paid over its own holding period; here no stock is valued: each dredged part's infill rate is set by how far its held bed sits below the natural bed beside it, read from survey cells outside the channel limits, and the forecast moves that distance by the deepening."
+ },
+ "lineage": [
+  {
+   "domain": "urban-regional-science",
+   "subdomain": "land-use-spatial-development-modeling",
+   "client_domain": "urban-regional-science",
+   "niche": "a provincial housing ministry setting the five-year housing target for a suburban city's transit-oriented areas, forecasting the net new homes that building permits will add each year 2027 to 2031 on the lots the 2027 order upzones around four rapid transit stations to 3.0, 4.0 and 5.0 FAR, where concrete towers do not pay",
+   "objective": "forecasting",
+   "shape": "single-figure",
+   "decision_type": "quantity_figure",
+   "answer_unit": "count",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "generators": [
+    "G14",
     "G1",
-    "G13",
-    "G14"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the hydrographic surveys, the monthly maintenance returns, the notices and the deepening scheme correctly averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened parts by the ratio of the held depths, 14.3 over 12.3, filing about 1,450,000 cubic metres against 1,700,000, because a dredged part fills in proportion to how far its bed is held below the natural bed beside it, so two more metres raise each part's infill by two metres over its own present depth below that bed.",
-  "domain_test": "The deciding quantity is the sediment each dredged part of an estuary channel will gather once it is held two metres deeper, which harbour hydrographers estimate from the part's maintenance record and the dredged trench's trapping efficiency; with another field's nouns the chart datum, the maintained depth, the natural bed beside the channel and the infill of a dredged trench have nothing to attach to.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:maintenance-infill-proportional-to-the-held-bed-below-the-natural-bed",
-  "layer1": [
-    "hydrographic surveys from two contractors: depths below chart datum, positive down, on a 50 m grid to April 2023; elevations to Ordnance Datum Newlyn, negative down, on a 40 m grid from October 2023",
-    "monthly maintenance returns laid out by the council's financial year, the contractor's part codes renumbered in 2021, one month's certificate re-issued",
-    "channel limits given as reach corner coordinates in the harbour master's notice, the surveys on the OSGB grid",
-    "the dredger's load log in UTC with loading areas as the contractor's codes, a hired dredger's loads logged as hopper volume and mixture density",
-    "sediment sampling with stations moved from their planned positions and field duplicates under their own references",
-    "a lab batch reporting mercury in micrograms per kilogram"
-  ],
-  "stakeholder_role": "the port's dredging and hydrography manager setting the maintenance quantity for the 2027 dredging tender",
-  "role_family": "capacity_planner",
-  "spine": {
-    "file": "fendmouth_hydrographic_surveys",
-    "rows": 80000,
-    "entity": "one gridded sounding: a survey cell's bed level at one survey",
-    "grain": "cell x survey",
-    "source": "synthetic"
-  },
-  "forum": "council_or_assembly",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
-  "world": {
-    "geography": "United Kingdom, England (a fictional council-owned port on a fictional east coast estuary)",
-    "currency": "GBP",
-    "org_type": "council-owned estuary port (the harbour authority is a borough council department)",
+    "G13"
+   ],
+   "gate_g": "forecasting",
+   "calibration_form": "none",
+   "stump_strategy": "composition_mix",
+   "context_artifact": "operations_log",
+   "role_family": "policy_adviser",
+   "forum": "minister_or_cabinet",
+   "forcing_event": "statutory_or_regulatory_filing",
+   "org_family": "government_agency",
+   "driver": "The forward yield of a raised allowance is each unit's chance of being rebuilt, nil until the best-paying option the allowance permits is worth more than what stands there and then the steady rate units of its kind have shown once rebuilding paid, times that option's output, which past a cost step in the construction method stays below the allowance; the allowance's capacity at a past change's take-up, a model on the visible attributes, or the option the allowance names all miss it.",
+   "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the reference tables' sale values and all-in costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses 3.0, commercial sites 8.5, rental buildings 2.0 per cent a year) have shown since 2014 once rebuilding paid, each lot once; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR bands yield the same six-storey wood frame as the 3.0 band, and zoned capacity at the corridors' take-up since their 2013 rezoning overstates the yield.",
+   "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
+   "answer": "Building permits will add 13,000 net new homes on the lots in the Ridgemont Line transit-oriented area order over 2027 to 2031: 2,800 in 2027, 2,700 in 2028, 2,600 in 2029, 2,500 in 2030 and 2,400 in 2031.",
+   "world": {
+    "geography": "Canada, British Columbia (a fictional suburban city of about 640,000 on a fictional rapid transit line)",
+    "currency": "CAD",
+    "org_type": "provincial housing ministry (housing targets branch) setting a municipal housing target order",
     "invented_names": [
-      "Fendmouth",
-      "Fend Estuary",
-      "Fend Roads",
-      "Fend Spit",
-      "Wenning Deep"
+     "City of Calderbrook",
+     "Ridgemont Line",
+     "Calderbrook Centre",
+     "Pell Road",
+     "Ellery",
+     "Westerly",
+     "Haldane",
+     "North Calder",
+     "Ravensdale",
+     "Fernlea",
+     "Kerslake Road",
+     "Halvorsen Land Economics",
+     "Brockmore Cost Consulting"
     ],
     "people": [
-      "Harriet Thorpe",
-      "Damian Davies",
-      "Graham Ellis",
-      "Zoe Dickinson",
-      "Martyn Rogers",
-      "Garry Stephenson",
-      "Liam O'Brien"
+     "Tonya Bartlett",
+     "Zachary Tyler",
+     "Monique Knapp",
+     "Alec Heath"
     ]
+   },
+   "deliverables": [
+    "tod_housing_target_2027-31.xlsx",
+    "tod_completions_2022-26.png"
+   ],
+   "question_form": "how-many",
+   "layer2_family": "field_method",
+   "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/2",
+   "architecture": "v3",
+   "drawn": "2026-10-14",
+   "registered": "2026-10-14T14:12:07Z",
+   "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "put",
+    "rounding opener": "homes",
+    "deliverable set": "png+xlsx"
+   },
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-14 with no portal result; one architecture per world, so the transit-oriented housing-target world (Calderbrook, the Ridgemont Line order) is closed and the slot moves to a new domain, world, dataset and shell"
   },
-  "deliverables": [
-    "fendmouth_maintenance_2027-28.xlsx",
-    "placements_2025-26.svg"
-  ],
-  "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "A unit's forward rate is set by how far its held level sits below the level it would settle to on its own, which the record shows only in the untouched ground beside it, so lowering the held level raises the rate by the added distance over the unit's own present distance; carrying the record's rate, or scaling it by the held level, understates the rise most where the present distance is small.",
-  "driver_concrete": "Fendmouth's maintenance dredging for 2027-28 is each dredged part's infill at its new depth, and a part fills at a rate proportional to how far its bed is held below the natural bed beside it, which only the survey cells beyond the channel limits show (the disused Berth 2 relaxing toward it since 2019 shows the same rate), so each part's 2016-17 to 2025-26 infill rises by two metres over its own present depth below that bed, by a half where the natural bed is deep and a quarter where it is shallow, not by the 16 per cent the depth ratio gives.",
-  "stump": "A strong analyst averages each part's 2016-17 to 2025-26 in-situ maintenance and scales the deepened parts by the ratio of the held depths, 14.3 over 12.3, filing about 1,450,000 cubic metres against 1,700,000; the step that lands it there is reading a part's infill as proportional to its depth, when it is proportional to how far its bed is held below the natural bed beside it, which the survey cells beyond the channel limits put at 4.0 to 7.5 metres, so two more metres raise it by a quarter to a half.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task154": "task154 reads a stock valued at what each holder paid over its own holding period; here no stock is valued: each dredged part's infill rate is set by how far its held bed sits below the natural bed beside it, read from survey cells outside the channel limits, and the forecast moves that distance by the deepening."
+  {
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "utilization-access-demand-forecasting",
+   "niche": "a Scottish health and social care partnership forecasting how many care home residents it will be paying for at each quarter end of 2027-28, when the second stage of a rise in the upper capital limit on 5 April 2027 brings every self-funding resident's savings to the limit sooner, a step the history saw once, smaller, on 6 April 2026",
+   "objective": "forecasting",
+   "shape": "07",
+   "decision_type": "quantity_figure",
+   "answer_unit": "count",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G13",
+    "G14",
+    "G5"
+   ],
+   "gate_g": "forecasting",
+   "calibration_form": "none",
+   "stump_strategy": "forecast_method_backtest",
+   "context_artifact": "none",
+   "role_family": "research_desk",
+   "forum": "executive_team",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "local_government",
+   "layer2_family": "field_method",
+   "layer2_pattern": "own:capital-limit-step-on-the-depletion-clock",
+   "driver": "The decisive quantity is the inflow a pool sends over a forward window that holds an announced step in the threshold ending each member's duration clock: the hazard fitted on the history carries none of it, its size is read from the one smaller step the history holds as that day's excess entries over an ordinary week in units of clock time, scaled by the ratio of the steps, and it enters the forecast as a jump in every member's clock that brings in those it carries past the threshold on the day and moves the rest on.",
+   "driver_concrete": "Self-funding care home residents come onto council funding when their capital reaches the upper limit; the limit, frozen since 2019, rose by 5,000 pounds on 6 April 2026 and rises by 7,000 on 5 April 2027, so the conversion hazard by months since admission fitted on 2021 to 2026 misses the 2027 step; 6 April 2026 brought 8 conversions against 1.6 in an ordinary week (4.8 weeks of drawdown), so 5 April 2027 is 6.7 weeks, applied as a jump in every self-funder's clock on top of the 4.8 weeks the 2026 pool already carries.",
+   "stump": "A strong solver who builds the conversion hazard by months since admission from the payment lines, with deaths and discharges competing, and projects today's 581 self-funders through it files 770, 780, 790 and 790 (768.7, 778.0, 787.2 and 794.1) against 790, 800, 810 and 810; the step that lands it there is projecting the 2021 to 2026 hazard through 5 April 2027, when the upper capital limit rises by 7,000 pounds and every self-funder's savings reach it about 6.7 weeks sooner, a step the history saw once, at 5,000 pounds on 6 April 2026 (8 conversions that day against 1.6 in an ordinary week).",
+   "answer": "Budget for 790, 800, 810 and 810 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
+   "spine": {
+    "file": "fpnc_payment_lines_2021-2026.csv",
+    "rows": 50528,
+    "entity": "one 4-weekly free personal or nursing care payment line for one self-funding care home resident",
+    "grain": "self-funding resident x payment component x 4-weekly payment period",
+    "source": "synthetic"
+   },
+   "deliverables": [
+    "care_home_funding_forecast_2027-28.xlsx",
+    "care_home_costs_by_locality.png"
+   ],
+   "architecture": "v2 round 2",
+   "drawn": "2026-10-14",
+   "fate": "built to stage 3 on 2026-10-14 and sent back by the determinism judge the same day (NOT_DETERMINISTIC, margin_or_boundary_fragility): the decisive step, the 5 April 2027 capital-limit rise, was sized from one past event (8 conversions on 6 April 2026), the golden sat 2.7 to 4.0 residents from its rounding edges, and the pull-forward construction (4.81 and 6.73 weeks, a clock shift for the earlier pool) was one bespoke choice among several that land on other tens; the author re-rooted the slot to architecture 3, the last"
   },
-  "lineage": [
-    {
-      "domain": "urban-regional-science",
-      "subdomain": "land-use-spatial-development-modeling",
-      "client_domain": "urban-regional-science",
-      "niche": "a provincial housing ministry setting the five-year housing target for a suburban city's transit-oriented areas, forecasting the net new homes that building permits will add each year 2027 to 2031 on the lots the 2027 order upzones around four rapid transit stations to 3.0, 4.0 and 5.0 FAR, where concrete towers do not pay",
-      "objective": "forecasting",
-      "shape": "single-figure",
-      "decision_type": "quantity_figure",
-      "answer_unit": "count",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G1",
-        "G13"
-      ],
-      "gate_g": "forecasting",
-      "calibration_form": "none",
-      "stump_strategy": "composition_mix",
-      "context_artifact": "operations_log",
-      "role_family": "policy_adviser",
-      "forum": "minister_or_cabinet",
-      "forcing_event": "statutory_or_regulatory_filing",
-      "org_family": "government_agency",
-      "driver": "The forward yield of a raised allowance is each unit's chance of being rebuilt, nil until the best-paying option the allowance permits is worth more than what stands there and then the steady rate units of its kind have shown once rebuilding paid, times that option's output, which past a cost step in the construction method stays below the allowance; the allowance's capacity at a past change's take-up, a model on the visible attributes, or the option the allowance names all miss it.",
-      "driver_concrete": "Under the 2027 transit-area order a lot is rebuilt only once the building that pays best, priced from the reference tables' sale values and all-in costs, is worth more than the assessed value of what stands on it, and then at the rate lots of its kind (houses 3.0, commercial sites 8.5, rental buildings 2.0 per cent a year) have shown since 2014 once rebuilding paid, each lot once; at the four suburban stations concrete towers never pay, so the 4.0 and 5.0 FAR bands yield the same six-storey wood frame as the 3.0 band, and zoned capacity at the corridors' take-up since their 2013 rezoning overstates the yield.",
-      "stump": "A strong solver takes each transit-area lot's capacity under the order (lot area times its band's FAR, at 85 per cent net over 820 square feet a home, less the homes on it) and the share of capacity the corridors have delivered each year since their 2013 rezoning, and files about 4,100 net new homes a year, 20,400 over 2027 to 2031, against 13,000 falling from 2,800 to 2,400; the step that lands it there is reading capacity as yield, when a lot is rebuilt only once the building that pays best is worth more than what stands on it, at the rate its kind of lot has shown once that held, and at these stations that building is the six-storey wood frame at 3.0 FAR, never the 4.0 and 5.0 FAR towers the order allows.",
-      "answer": "Building permits will add 13,000 net new homes on the lots in the Ridgemont Line transit-oriented area order over 2027 to 2031: 2,800 in 2027, 2,700 in 2028, 2,600 in 2029, 2,500 in 2030 and 2,400 in 2031.",
-      "world": {
-        "geography": "Canada, British Columbia (a fictional suburban city of about 640,000 on a fictional rapid transit line)",
-        "currency": "CAD",
-        "org_type": "provincial housing ministry (housing targets branch) setting a municipal housing target order",
-        "invented_names": [
-          "City of Calderbrook",
-          "Ridgemont Line",
-          "Calderbrook Centre",
-          "Pell Road",
-          "Ellery",
-          "Westerly",
-          "Haldane",
-          "North Calder",
-          "Ravensdale",
-          "Fernlea",
-          "Kerslake Road",
-          "Halvorsen Land Economics",
-          "Brockmore Cost Consulting"
-        ],
-        "people": [
-          "Tonya Bartlett",
-          "Zachary Tyler",
-          "Monique Knapp",
-          "Alec Heath"
-        ]
-      },
-      "deliverables": [
-        "tod_housing_target_2027-31.xlsx",
-        "tod_completions_2022-26.png"
-      ],
-      "question_form": "how-many",
-      "layer2_family": "field_method",
-      "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/2",
-      "architecture": "v3",
-      "drawn": "2026-10-14",
-      "registered": "2026-10-14T14:12:07Z",
-      "shell": {
-        "question form": "how-many",
-        "second-sentence opener": "put",
-        "rounding opener": "homes",
-        "deliverable set": "png+xlsx"
-      },
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 2026-10-14 with no portal result; one architecture per world, so the transit-oriented housing-target world (Calderbrook, the Ridgemont Line order) is closed and the slot moves to a new domain, world, dataset and shell"
-    },
-    {
-      "domain": "healthcare-delivery-health-economics",
-      "subdomain": "utilization-access-demand-forecasting",
-      "niche": "a Scottish health and social care partnership forecasting how many care home residents it will be paying for at each quarter end of 2027-28, when the second stage of a rise in the upper capital limit on 5 April 2027 brings every self-funding resident's savings to the limit sooner, a step the history saw once, smaller, on 6 April 2026",
-      "objective": "forecasting",
-      "shape": "07",
-      "decision_type": "quantity_figure",
-      "answer_unit": "count",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G13",
-        "G14",
-        "G5"
-      ],
-      "gate_g": "forecasting",
-      "calibration_form": "none",
-      "stump_strategy": "forecast_method_backtest",
-      "context_artifact": "none",
-      "role_family": "research_desk",
-      "forum": "executive_team",
-      "forcing_event": "budget_or_appropriation",
-      "org_family": "local_government",
-      "layer2_family": "field_method",
-      "layer2_pattern": "own:capital-limit-step-on-the-depletion-clock",
-      "driver": "The decisive quantity is the inflow a pool sends over a forward window that holds an announced step in the threshold ending each member's duration clock: the hazard fitted on the history carries none of it, its size is read from the one smaller step the history holds as that day's excess entries over an ordinary week in units of clock time, scaled by the ratio of the steps, and it enters the forecast as a jump in every member's clock that brings in those it carries past the threshold on the day and moves the rest on.",
-      "driver_concrete": "Self-funding care home residents come onto council funding when their capital reaches the upper limit; the limit, frozen since 2019, rose by 5,000 pounds on 6 April 2026 and rises by 7,000 on 5 April 2027, so the conversion hazard by months since admission fitted on 2021 to 2026 misses the 2027 step; 6 April 2026 brought 8 conversions against 1.6 in an ordinary week (4.8 weeks of drawdown), so 5 April 2027 is 6.7 weeks, applied as a jump in every self-funder's clock on top of the 4.8 weeks the 2026 pool already carries.",
-      "stump": "A strong solver who builds the conversion hazard by months since admission from the payment lines, with deaths and discharges competing, and projects today's 581 self-funders through it files 770, 780, 790 and 790 (768.7, 778.0, 787.2 and 794.1) against 790, 800, 810 and 810; the step that lands it there is projecting the 2021 to 2026 hazard through 5 April 2027, when the upper capital limit rises by 7,000 pounds and every self-funder's savings reach it about 6.7 weeks sooner, a step the history saw once, at 5,000 pounds on 6 April 2026 (8 conversions that day against 1.6 in an ordinary week).",
-      "answer": "Budget for 790, 800, 810 and 810 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
-      "spine": {
-        "file": "fpnc_payment_lines_2021-2026.csv",
-        "rows": 50528,
-        "entity": "one 4-weekly free personal or nursing care payment line for one self-funding care home resident",
-        "grain": "self-funding resident x payment component x 4-weekly payment period",
-        "source": "synthetic"
-      },
-      "deliverables": [
-        "care_home_funding_forecast_2027-28.xlsx",
-        "care_home_costs_by_locality.png"
-      ],
-      "architecture": "v2 round 2",
-      "drawn": "2026-10-14",
-      "fate": "built to stage 3 on 2026-10-14 and sent back by the determinism judge the same day (NOT_DETERMINISTIC, margin_or_boundary_fragility): the decisive step, the 5 April 2027 capital-limit rise, was sized from one past event (8 conversions on 6 April 2026), the golden sat 2.7 to 4.0 residents from its rounding edges, and the pull-forward construction (4.81 and 6.73 weeks, a clock shift for the earlier pool) was one bespoke choice among several that land on other tens; the author re-rooted the slot to architecture 3, the last"
-    },
-    {
-      "architecture": "v2 round 1",
-      "drawn": "2026-10-11",
-      "domain": "healthcare-delivery-health-economics",
-      "subdomain": "utilization-access-demand-forecasting",
-      "niche": "the same world and call, round 1's decisive step: the self-funding pool's conversion by months since admission",
-      "objective": "forecasting",
-      "shape": "07",
-      "decision_type": "quantity_figure",
-      "answer_unit": "count",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G13",
-        "G5"
-      ],
-      "gate_g": "method_or_model_selection",
-      "calibration_form": "none",
-      "stump_strategy": "composition_mix",
-      "context_artifact": "none",
-      "role_family": "research_desk",
-      "forum": "committee_or_panel",
-      "forcing_event": "budget_or_appropriation",
-      "org_family": "local_government",
-      "layer2_family": "estimation_fit",
-      "layer2_pattern": "own:self-funder-conversion-by-time-since-admission",
-      "driver": "The decisive quantity is the inflow that a pool held outside the decision's own register will send into it over the forward year, generated by a conversion hazard that is near zero for a member's first months and peaks a year or more after entry; because a recent surge filled the pool with members not yet in their conversion window, the inflow counted in past years, or a pooled per-member rate, understates it, and only the hazard by time since entry applied to each member's own entry date sizes it.",
-      "driver_concrete": "Self-funding care home residents become council-funded when their savings fall to the threshold, which almost never happens in the first months and mostly happens one to three years after admission; two new private homes filled with self-funders in 2025-26, so the partnership's transfer counts of past years and its transfers per self-funder both understate 2027-28, and only conversion by months since admission, applied to each self-funder's admission date, sizes the council-funded caseload.",
-      "stump": "A competent solver projects the council-funded caseload from the placements register, current residents by survival plus direct admissions and conversions from self-funding at their 2024 to 2026 run rate, and files about 740 residents at 31 March 2028 (740.3, and 740 at every quarter end of 2027-28) against 760 rising to 790; the step that lands it there is treating conversions as a steady route when they are generated by the self-funding pool by months since admission, and that pool, 599 against 415 at the end of 2024, is now mostly 2025-26 admissions (505 of the 599 admitted from 1 January 2025) about to enter the one to three years in which savings run down to the upper capital limit.",
-      "answer": "Budget for 760, 770, 780 and 790 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
-      "fate": "shipped 2026-10-12, judged weak by the 10/10 audit of 2026-10-14: the decisive step (the conversion hazard by months since admission) was reachable from the surface and the determinism judge built it unprompted (760.0, 771.0, 781.2 and 790.3 against 760, 770, 780 and 790); round 2 makes it the default path and moves the decisive step to the 2027 capital-limit step",
-      "spine": {
-        "file": "fpnc_payment_lines_2021-2026.csv",
-        "rows": 50773,
-        "entity": "one 4-weekly free personal or nursing care payment line for one self-funding care home resident",
-        "grain": "self-funding resident x payment component x 4-weekly payment period",
-        "source": "synthetic"
-      },
-      "deliverables": [
-        "care_home_funding_forecast_2027-28.xlsx",
-        "care_home_costs_by_locality.png"
-      ]
-    },
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-11",
-      "domain": "criminology-justice",
-      "subdomain": "recidivism-risk-assessment",
-      "niche": "a border county's criminal justice planning office projecting how many of next fiscal year's jail releases will be followed by a return within three years, when some releases are deported or die before they can return, to size a state-funded reentry navigator grant by supervision district",
-      "objective": "forecasting",
-      "shape": "07",
-      "decision_type": "allocation_to_total",
-      "answer_unit": "count",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G16",
-        "G13",
-        "G12"
-      ],
-      "gate_g": "method_or_model_selection",
-      "calibration_form": "none",
-      "stump_strategy": "maturity_censoring",
-      "context_artifact": "none",
-      "role_family": "policy_adviser",
-      "forum": "council_or_assembly",
-      "forcing_event": "vote_or_meeting",
-      "org_family": "local_government",
-      "layer2_family": "estimation_fit",
-      "layer2_pattern": "own:competing-removal-and-death-in-return-forecast",
-      "driver": "The decisive quantity is the probability that a released unit has an event within a fixed horizon when some units leave through exits that are not censoring and most units are not yet followed to the horizon: the share observed so far understates it, the survival estimate that censors those exits overstates it most where they concentrate, treating the exit that can be reversed as final understates it, and only following every unit to the data cut sizes the allocation.",
-      "driver_concrete": "Each supervision district's probability that a release is booked into the jail again within 36 months is estimated from releases since the bail reform, none followed for the full 36 months, while transfers on an immigration detainer end mostly in removal, some removed people come back and are booked again, and some releasees die; the share booked again so far understates it, Kaplan-Meier with removals and deaths censored overstates it most in the border district, a cumulative incidence that ends follow-up at removal drops the returns after people come back, and following every release to the data cut, times next year's projected releases, sets the navigators by district.",
-      "stump": "A competent solver estimates each district's 36-month return probability by Kaplan-Meier from post-reform releases, censoring removals and deaths along with the data cut, and applies for too many navigators with the border district over-allocated; the step that lands it there is treating deportation and death as loss to follow-up, when a removed person who comes back is booked into the same jail and a dead releasee can no longer return.",
-      "answer": "We should apply for 33 reentry navigators: 8 in Puerto, 8 in Centro, 4 in Norte, 6 in Poniente, 4 in Oriente and 3 in Sur, for 7,441 projected returns from fiscal 2027 releases.",
-      "fate": "spent 2026-10-11 at hardening loop 1 of 3: round 1 landed the call exactly (33 navigators, 7,441 projected returns, proxy 82.3) on the default construction (Kaplan-Meier with the cut as the only censoring, deaths as non-returners), which was the golden; the stump (censoring removals and deaths) sat off that path, and loop 1 found on paper no rung on it that is analytical, forced, fork-free and outside the bin (period, mix, a younger window, a forward booking change, a release pulse and visible exits all measured dead)",
-      "spine": {
-        "file": "jail_releases_2021-10_2026-10.csv",
-        "rows": 69418,
-        "entity": "one release from the county jail to the community or to another custody",
-        "grain": "release event",
-        "source": "synthetic"
-      },
-      "deliverables": [
-        "navigator_application_fy2027.xlsx",
-        "release_ratings_by_district.png"
-      ]
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "how-many",
-      "second-sentence opener": "put",
-      "rounding opener": "homes",
-      "deliverable set": "png+xlsx"
-    }
-  ],
-  "notes": "Re-root drawn 2026-11-01 (architecture 4) at the Batch 3 queue reset. Coding: decisive gap time (the record measures each part's infill at 12.3 m and the contract year holds it at 14.3 m), population second (the natural bed is read from the survey cells beside the channel, not from any part's own rows); pattern none with G1 decisive (the quantity that governs the infill is the depth below the natural bed, not the depth or the area), G13 (the forward window holds a depth the channel never had), G14 (the record's rate does not carry to the deeper hold). Strategy other: a physical relaxation toward the natural bed, neither a binding limit, a composition shift nor a decomposition. Forum council_or_assembly (the council's cabinet awards the maintenance contract), forcing purchase_order_or_contract (the 2027 tender's quantity), org local_government (a council-owned port), role capacity_planner, context artifact monitoring_export (the hydrographic surveys). Forum, forcing, shape and artifact redrawn at the draw after task304 and task475 registered (regulator, statutory filing, shape 14 and filed_standard were then banned); the contract tender is the honest forcing event, since the quantity sets the tender's bill of quantities.",
-  "registered": "2026-11-01T23:45:18Z",
-  "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "for",
-    "rounding opener": "part",
-    "deliverable set": "svg+xlsx"
+  {
+   "architecture": "v2 round 1",
+   "drawn": "2026-10-11",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "utilization-access-demand-forecasting",
+   "niche": "the same world and call, round 1's decisive step: the self-funding pool's conversion by months since admission",
+   "objective": "forecasting",
+   "shape": "07",
+   "decision_type": "quantity_figure",
+   "answer_unit": "count",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G14",
+    "G13",
+    "G5"
+   ],
+   "gate_g": "method_or_model_selection",
+   "calibration_form": "none",
+   "stump_strategy": "composition_mix",
+   "context_artifact": "none",
+   "role_family": "research_desk",
+   "forum": "committee_or_panel",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "local_government",
+   "layer2_family": "estimation_fit",
+   "layer2_pattern": "own:self-funder-conversion-by-time-since-admission",
+   "driver": "The decisive quantity is the inflow that a pool held outside the decision's own register will send into it over the forward year, generated by a conversion hazard that is near zero for a member's first months and peaks a year or more after entry; because a recent surge filled the pool with members not yet in their conversion window, the inflow counted in past years, or a pooled per-member rate, understates it, and only the hazard by time since entry applied to each member's own entry date sizes it.",
+   "driver_concrete": "Self-funding care home residents become council-funded when their savings fall to the threshold, which almost never happens in the first months and mostly happens one to three years after admission; two new private homes filled with self-funders in 2025-26, so the partnership's transfer counts of past years and its transfers per self-funder both understate 2027-28, and only conversion by months since admission, applied to each self-funder's admission date, sizes the council-funded caseload.",
+   "stump": "A competent solver projects the council-funded caseload from the placements register, current residents by survival plus direct admissions and conversions from self-funding at their 2024 to 2026 run rate, and files about 740 residents at 31 March 2028 (740.3, and 740 at every quarter end of 2027-28) against 760 rising to 790; the step that lands it there is treating conversions as a steady route when they are generated by the self-funding pool by months since admission, and that pool, 599 against 415 at the end of 2024, is now mostly 2025-26 admissions (505 of the 599 admitted from 1 January 2025) about to enter the one to three years in which savings run down to the upper capital limit.",
+   "answer": "Budget for 760, 770, 780 and 790 council-funded long-stay care home residents on 30 June, 30 September and 31 December 2027 and 31 March 2028.",
+   "fate": "shipped 2026-10-12, judged weak by the 10/10 audit of 2026-10-14: the decisive step (the conversion hazard by months since admission) was reachable from the surface and the determinism judge built it unprompted (760.0, 771.0, 781.2 and 790.3 against 760, 770, 780 and 790); round 2 makes it the default path and moves the decisive step to the 2027 capital-limit step",
+   "spine": {
+    "file": "fpnc_payment_lines_2021-2026.csv",
+    "rows": 50773,
+    "entity": "one 4-weekly free personal or nursing care payment line for one self-funding care home resident",
+    "grain": "self-funding resident x payment component x 4-weekly payment period",
+    "source": "synthetic"
+   },
+   "deliverables": [
+    "care_home_funding_forecast_2027-28.xlsx",
+    "care_home_costs_by_locality.png"
+   ]
+  },
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-11",
+   "domain": "criminology-justice",
+   "subdomain": "recidivism-risk-assessment",
+   "niche": "a border county's criminal justice planning office projecting how many of next fiscal year's jail releases will be followed by a return within three years, when some releases are deported or die before they can return, to size a state-funded reentry navigator grant by supervision district",
+   "objective": "forecasting",
+   "shape": "07",
+   "decision_type": "allocation_to_total",
+   "answer_unit": "count",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G16",
+    "G13",
+    "G12"
+   ],
+   "gate_g": "method_or_model_selection",
+   "calibration_form": "none",
+   "stump_strategy": "maturity_censoring",
+   "context_artifact": "none",
+   "role_family": "policy_adviser",
+   "forum": "council_or_assembly",
+   "forcing_event": "vote_or_meeting",
+   "org_family": "local_government",
+   "layer2_family": "estimation_fit",
+   "layer2_pattern": "own:competing-removal-and-death-in-return-forecast",
+   "driver": "The decisive quantity is the probability that a released unit has an event within a fixed horizon when some units leave through exits that are not censoring and most units are not yet followed to the horizon: the share observed so far understates it, the survival estimate that censors those exits overstates it most where they concentrate, treating the exit that can be reversed as final understates it, and only following every unit to the data cut sizes the allocation.",
+   "driver_concrete": "Each supervision district's probability that a release is booked into the jail again within 36 months is estimated from releases since the bail reform, none followed for the full 36 months, while transfers on an immigration detainer end mostly in removal, some removed people come back and are booked again, and some releasees die; the share booked again so far understates it, Kaplan-Meier with removals and deaths censored overstates it most in the border district, a cumulative incidence that ends follow-up at removal drops the returns after people come back, and following every release to the data cut, times next year's projected releases, sets the navigators by district.",
+   "stump": "A competent solver estimates each district's 36-month return probability by Kaplan-Meier from post-reform releases, censoring removals and deaths along with the data cut, and applies for too many navigators with the border district over-allocated; the step that lands it there is treating deportation and death as loss to follow-up, when a removed person who comes back is booked into the same jail and a dead releasee can no longer return.",
+   "answer": "We should apply for 33 reentry navigators: 8 in Puerto, 8 in Centro, 4 in Norte, 6 in Poniente, 4 in Oriente and 3 in Sur, for 7,441 projected returns from fiscal 2027 releases.",
+   "fate": "spent 2026-10-11 at hardening loop 1 of 3: round 1 landed the call exactly (33 navigators, 7,441 projected returns, proxy 82.3) on the default construction (Kaplan-Meier with the cut as the only censoring, deaths as non-returners), which was the golden; the stump (censoring removals and deaths) sat off that path, and loop 1 found on paper no rung on it that is analytical, forced, fork-free and outside the bin (period, mix, a younger window, a forward booking change, a release pulse and visible exits all measured dead)",
+   "spine": {
+    "file": "jail_releases_2021-10_2026-10.csv",
+    "rows": 69418,
+    "entity": "one release from the county jail to the community or to another custody",
+    "grain": "release event",
+    "source": "synthetic"
+   },
+   "deliverables": [
+    "navigator_application_fy2027.xlsx",
+    "release_ratings_by_district.png"
+   ]
   }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "how-many",
+   "second-sentence opener": "put",
+   "rounding opener": "homes",
+   "deliverable set": "png+xlsx"
+  }
+ ],
+ "notes": "Re-root drawn 2026-11-01 (architecture 4) at the Batch 3 queue reset. Coding: decisive gap time (the record measures each part's infill at 12.3 m and the contract year holds it at 14.3 m), population second (the natural bed is read from the survey cells beside the channel, not from any part's own rows); pattern none with G1 decisive (the quantity that governs the infill is the depth below the natural bed, not the depth or the area), G13 (the forward window holds a depth the channel never had), G14 (the record's rate does not carry to the deeper hold). Strategy other: a physical relaxation toward the natural bed, neither a binding limit, a composition shift nor a decomposition. Forum council_or_assembly (the council's cabinet awards the maintenance contract), forcing purchase_order_or_contract (the 2027 tender's quantity), org local_government (a council-owned port), role capacity_planner, context artifact monitoring_export (the hydrographic surveys). Forum, forcing, shape and artifact redrawn at the draw after task304 and task475 registered (regulator, statutory filing, shape 14 and filed_standard were then banned); the contract tender is the honest forcing event, since the quantity sets the tender's bill of quantities.",
+ "registered": "2026-11-01T23:45:18Z",
+ "shell": {
+  "question form": "how-much",
+  "second-sentence opener": "for",
+  "rounding opener": "part",
+  "deliverable set": "svg+xlsx"
+ }
 }

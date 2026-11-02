@@ -81,6 +81,7 @@ class World:
         self._quotes()
         self._paths()
         self._visits()
+        self._forced_repeats()
         self._collection()
         self._backchecks()
         self._reviews()
@@ -229,6 +230,44 @@ class World:
                 self.visits.append(v)
                 self.vis_index[(o["oid"], y, m)] = v
 
+    def fqt_eligible(self, o, y, m):
+        v = self.vis_index[(o["oid"], y, m)]
+        return (o["chain"] != "Lifeline Chemists" and o["oid"] not in getattr(self, "fqt_excluded", ())
+                and len(v["days"]) == 1
+                and v["days"][0] in v["win"][:P.FQT_DRAW_DAYS] and v["days"][0] <= fqt_date(o["region"], y, m))
+
+    def _forced_repeats(self):
+        """one quote per region whose variety the collector replaces twice in the quarter, in two
+        months when the Field Quality Team cannot draw its outlet"""
+        self.forced = {}
+        self.fqt_excluded = set()
+        pairs = [((2026, 7), (2026, 9)), ((2026, 7), (2026, 8)), ((2026, 8), (2026, 9))]
+        for r in self.regions:
+            pick = None
+            for m1, m2 in pairs:
+                cands = []
+                for q in self.quotes:
+                    o = self.outlets[q["oid"]]
+                    if q["region"] != r["code"] or o["chain"] == "Lifeline Chemists":
+                        continue
+                    v1, v2 = self.vis_index[(o["oid"],) + m1], self.vis_index[(o["oid"],) + m2]
+                    if len(v1["days"]) != 1 or len(v2["days"]) != 1:
+                        continue
+                    if o["kind"] in ("supermarket", "pharmacy_chain", "clothing_chain"):
+                        continue
+                    cands.append(q)
+                if cands:
+                    pick = (sorted(cands, key=lambda x: x["quote_id"])[len(cands) // 2], m1, m2)
+                    break
+            if pick is None:
+                raise RuntimeError("no repeat-replacement candidate in %s" % r["code"])
+            q, m1, m2 = pick
+            self.fqt_excluded.add(q["oid"])
+            first = "Comparable" if int(r["code"][2:]) % 2 else "Not comparable"
+            second = "Not comparable" if first == "Comparable" else "Comparable"
+            self.forced[(q["qid"],) + m1] = first
+            self.forced[(q["qid"],) + m2] = second
+
     # monthly collection ----------------------------------------------------------------------
     def _collection(self):
         rng = stream(6)
@@ -245,11 +284,12 @@ class World:
                 key, size, stale = (x * sc for x in P.ERRORS[q["region"]])
                 rec = dict(qid=q["qid"], y=y, m=m, vday=vd, status="P", price=None, true=None, err=None,
                            scale=rescale.get(q["qid"], 1.0), variety_no=int(u[8] * 1000))
-                if u[1] < P.STATUS_UNAVAILABLE:
+                forced = (q["qid"], y, m) in self.forced
+                if u[1] < P.STATUS_UNAVAILABLE and not forced:
                     rec["status"] = "U"
                     self.records.append(rec)
                     continue
-                if u[1] < P.STATUS_UNAVAILABLE + P.STATUS_REPLACED or (q["quote_id"], y, m) in P.FORCED_REPLACEMENTS:
+                if u[1] < P.STATUS_UNAVAILABLE + P.STATUS_REPLACED or forced:
                     rec["status"] = "R"
                     rescale[q["qid"]] = rescale.get(q["qid"], 1.0) * float(np.exp(0.12 * _norm(u[2])))
                 f = rescale.get(q["qid"], 1.0)
@@ -307,10 +347,9 @@ class World:
                     for stratum, k in (("M", P.FQT_MULTIPLES), ("I", P.FQT_INDEPENDENTS)):
                         elig = []
                         for o in self.base_outlets:
-                            if o["region"] != r["code"] or o["stratum"] != stratum or o["chain"] == "Lifeline Chemists":
+                            if o["region"] != r["code"] or o["stratum"] != stratum:
                                 continue
-                            v = self.vis_index[(o["oid"], y, m)]
-                            if len(v["days"]) == 1 and v["days"][0] in v["win"][:P.FQT_DRAW_DAYS] and v["days"][0] <= fd:
+                            if self.fqt_eligible(o, y, m):
                                 elig.append(o)
                         pick = rng.choice(len(elig), size=min(k, len(elig)), replace=False)
                         for j in sorted(pick.tolist()):
@@ -351,14 +390,45 @@ class World:
 
     # replacement reviews ---------------------------------------------------------------------
     def _reviews(self):
-        """the commodity team's decisions on the variety replacements collectors made from June on"""
-        rng = stream(8)
+        """the commodity team's decisions on the variety replacements collectors made from June on; the
+        stream is the first whose regional acceptance shares all sit clear of a rounding edge"""
+        for k in range(50):
+            self._draw_reviews(k)
+            if self._acceptance_clear():
+                self.review_stream = k
+                return
+        raise RuntimeError("no review stream leaves every acceptance share clear of a rounding edge")
+
+    def _acceptance_clear(self):
+        latest = {}
+        for rv in sorted(self.reviews, key=lambda x: x["date"]):
+            if rv["decision"] != "Query to contractor":
+                latest[(rv["qid"], rv["y"], rv["m"])] = rv["decision"]
+        tot, acc = {}, {}
+        for r in self.records:
+            if r["status"] == "R" and (r["y"], r["m"]) in P.QUARTER:
+                reg = self.quotes[r["qid"]]["region"]
+                tot[reg] = tot.get(reg, 0) + 1
+                acc[reg] = acc.get(reg, 0) + (latest.get((r["qid"], r["y"], r["m"])) == "Comparable")
+        for reg, n in tot.items():
+            v = 100.0 * acc[reg] / n
+            if abs(abs(v - round(v, 1)) - 0.05) < 0.002 or abs(v * 20 - round(v * 20)) < 1e-9 and round(v * 20) % 2 == 1 and abs(v * 10 - round(v * 10)) > 1e-9:
+                return False
+        return True
+
+    def _draw_reviews(self, k):
+        rng = stream(8, k)
         self.reviews = []
         reps = [r for r in self.records if r["status"] == "R" and (r["y"], r["m"]) >= (2026, 6)]
         for r in sorted(reps, key=lambda x: (x["vday"], x["qid"])):
             u = rng.random(7)
             first = add_workdays(r["vday"], 2 + int(u[0] * 9))
             final_date = first
+            fk = (r["qid"], r["y"], r["m"])
+            if fk in self.forced:
+                if first <= P.EXTRACT_DATE:
+                    self.reviews.append(dict(qid=r["qid"], y=r["y"], m=r["m"], decision=self.forced[fk], date=first, final=True))
+                continue
             if u[1] < P.REVIEW_QUERY:
                 self.reviews.append(dict(qid=r["qid"], y=r["y"], m=r["m"], decision="Query to contractor", date=first, final=False))
                 final_date = add_workdays(first, 3 + int(u[2] * 8))

@@ -118,7 +118,7 @@ def write_certificates(W, out):
     for a in AREAS:
         ws.append([P.CODES_2021[a], NAMES[a]])
     save_xlsx(wb, os.path.join(out, CERTS), "Maintenance dredging certificates", P.PEOPLE["contractor_pm"],
-              "2026-10-14T10:05:00Z", company=P.CONTRACTOR)
+              "2016-05-06T09:15:00Z", company=P.CONTRACTOR, modified="2026-10-14T10:05:00Z")
     return rows
 
 
@@ -167,7 +167,8 @@ def write_sampling(W, out):
         for c in range(1, 9):
             sh.cell(row=1, column=c).font = bold
             sh.column_dimensions[get_column_letter(c)].width = 16
-    save_xlsx(wb, os.path.join(out, SAMPLING), "Sediment sampling 2025-2026", P.PEOPLE["manager"], "2026-04-06T15:30:00Z")
+    save_xlsx(wb, os.path.join(out, SAMPLING), "Sediment sampling 2025-2026", P.PEOPLE["manager"], "2025-03-18T09:10:00Z",
+              modified="2026-04-06T15:30:00Z")
 
 
 def write_lab(W, out):

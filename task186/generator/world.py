@@ -57,6 +57,7 @@ class World:
         self._officers()
         self._leave()
         self._operate()
+        self._widen_currency_margins()
 
     # ------------------------------------------------------------------ library
     def _library(self):
@@ -286,3 +287,124 @@ class World:
         self.roster = roster
         self.slots = slots_out
         self.tips = tips
+
+    # ------------------------------------------------------------------ currency margins
+    @staticmethod
+    def _xray_group(rows):
+        """X-ray hours per officer on one lane-day: the lane shared equally among the officers working at each moment."""
+        out = defaultdict(float)
+        pres = [x for x in rows if not x[5]]
+        if not pres:
+            return out
+        pts = sorted({x[3] for x in pres} | {x[4] for x in pres})
+        for lo, hi in zip(pts[:-1], pts[1:]):
+            on = [x[0] for x in pres if x[3] <= lo and x[4] >= hi]
+            for i in on:
+                out[i] += (hi - lo) / 60.0 / len(on)
+        return out
+
+    def _widen_currency_margins(self):
+        """Move roster finish times by the roster's own step so that no officer endorsed for a whole month sits within
+        CURRENCY_MARGIN_H of the monthly standard. A finish moves later only while another officer works the lane through
+        the added time, and earlier only while another officer works it through the removed time and the officer has no
+        projection there, so every lane's hours, every projection and every bag count are untouched."""
+        rows = [list(x) for x in self.roster]
+        groups = defaultdict(list)
+        by_officer_day = defaultdict(list)
+        for k, x in enumerate(rows):
+            groups[(x[1], x[2])].append(k)
+            by_officer_day[(x[0], x[1])].append(k)
+        tip_min = defaultdict(list)
+        for t in self.tips:
+            tip_min[(t[0], t[1], t[2])].append(t[3])
+
+        def lane_shape():
+            out = {}
+            for g, ks in groups.items():
+                hrs = set()
+                for k in ks:
+                    hrs |= set(range(rows[k][3] // 60, (rows[k][4] - 1) // 60 + 1))
+                out[g] = (min(rows[k][3] for k in ks), frozenset(hrs))
+            return out
+        shape0 = lane_shape()
+        ym = lambda d: (d.year, d.month)  # noqa: E731
+        contrib, tot = {}, defaultdict(float)
+        for g, ks in groups.items():
+            contrib[g] = self._xray_group([rows[k] for k in ks])
+            for i, h in contrib[g].items():
+                tot[(i, ym(g[0]))] += h
+
+        def whole(i, key):
+            o = self.off[i]
+            first = dt.date(key[0], key[1], 1)
+            last = dt.date(key[0] + (key[1] == 12), key[1] % 12 + 1, 1) - dt.timedelta(days=1)
+            return o["endorsed"] <= first and (not o["left"] or o["left"] >= last)
+
+        def regroup(g):
+            for i, h in contrib[g].items():
+                tot[(i, ym(g[0]))] -= h
+            contrib[g] = self._xray_group([rows[k] for k in groups[g]])
+            for i, h in contrib[g].items():
+                tot[(i, ym(g[0]))] += h
+
+        def covered(g, k, a, b):
+            return any(j != k and not rows[j][5] and rows[j][3] <= a and rows[j][4] >= b for j in groups[g])
+
+        def step(k, up):
+            i, d, ln, s0, e0, sick = rows[k]
+            st = P.ROSTER_STEP
+            if sick:
+                return False
+            g = (d, ln)
+            if up:
+                a, b = e0, e0 + st
+                if not covered(g, k, a, b):
+                    return False
+                if any(j != k and rows[j][3] < b and rows[j][4] > a for j in by_officer_day[(i, d)]):
+                    return False
+                rows[k][4] = b
+            else:
+                a, b = e0 - st, e0
+                if b - st - s0 < 120 or not covered(g, k, a, b):
+                    return False
+                if any(a <= m for m in tip_min[(i, d, ln)]):
+                    return False
+                rows[k][4] = a
+            regroup(g)
+            return True
+        lo, hi = P.CURRENCY_H - P.CURRENCY_MARGIN_H, P.CURRENCY_H + P.CURRENCY_MARGIN_H
+        WIN = (P.WIN0, P.WIN1)
+
+        def push(i, key, up):
+            """Step one way until the officer-month clears the band; undo every step if it cannot."""
+            log = []
+            ks = sorted((k for k, x in enumerate(rows) if x[0] == i and ym(x[1]) == key),
+                        key=lambda k: (rows[k][1], rows[k][3]))
+            while lo < tot[(i, key)] < hi:
+                for k in ks:
+                    old = rows[k][4]
+                    if step(k, up):
+                        log.append((k, old))
+                        break
+                else:
+                    for k, old in reversed(log):
+                        rows[k][4] = old
+                        regroup((rows[k][1], rows[k][2]))
+                    return False
+            return True
+        for _ in range(4000):
+            bad = sorted(key for key, h in tot.items() if lo < h < hi and whole(*key)
+                         and WIN[0] <= dt.date(key[1][0], key[1][1], 1) <= WIN[1])
+            if not bad:
+                break
+            i, key = bad[0]
+            h = tot[(i, key)]
+            first_up = hi - h <= h - lo
+            if not (push(i, key, first_up) or push(i, key, not first_up)):
+                raise RuntimeError("no roster steps widen officer %d in %s" % (i, key))
+        else:
+            raise RuntimeError("currency margins did not converge")
+        if lane_shape() != shape0:
+            raise RuntimeError("a lane's rostered hours moved")
+        self.margin_moves = sum(1 for x, y in zip(rows, self.roster) if x[4] != y[4])
+        self.roster = [tuple(x) for x in rows]

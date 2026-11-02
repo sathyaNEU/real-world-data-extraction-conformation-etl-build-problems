@@ -6,7 +6,7 @@
  "stage": 4,
  "stage_name": "check",
  "updated": "2026-11-02",
- "stump": "A competent analyst takes each officer's TIP hit rate over the screening year and withdraws three casual officers, SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is reading the hit rate as detection when four in five of a full-time officer's projections show an object they have already been shown and told was a threat, which officers detect 99.5 per cent of the time, so six full-time officers who detect only 56 to 74 per cent of objects new to them clear 80 per cent on recognition.",
+ "stump": "A competent analyst reads SCS-04's detection performance on the projections of items each officer had not been shown before, keys the item on the TIP export's image number (or counts showings only from 1 December), and withdraws four casual officers, SC16884, SC17045, SC42948 and SC46133, recertifying every full-time officer; the step that lands it there is taking the image rather than the threat object behind its three orientations as the item, or the screening year rather than the whole CT record as before, when an orientation new to the officer of an object already shown is detected 99.3 per cent of the time and an object first shown before December over 99 per cent, so six full-time officers who detect 56 to 74 per cent of the objects new to them clear 80 per cent.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -22,12 +22,12 @@
   "nearest": "task190 (3, lineage) 0.13 driver; surface promoted task462 0.101, task172 0.100, task271 0.100 (differentiation lines on the card)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC; SOLUTION_WRONG in wording only (Gate F high, Gate G statistical_rigor / analytical_non_defect, Gate H pass; three Gate C notes resolved by evidence)",
-  "disposition": "FIX_NOW applied 2026-11-02 in writeup.py and golden.py only; re-judge owed",
+  "verdict": "re-judge 2026-11-02: everything reproduced; Gate G PASS, Gate F good, Gate H analytical if the novel-item population is forced; main call failed Gates C and E (SCS-04 read word for word is the pooled hit rate); ask 4 Gate C (start-up tests unfiled); ask 3 low (lapse dates unfiled, thin margins)",
+  "disposition": "repair applied 2026-11-02 (WHAT filed, data and write-up regenerated); re-judge owed",
   "report": ""
  },
  "returned": [],
- "resume": "Re-judge (determinism judge, medium) on target.zip b4586dea after the 2026-11-02 wording FIX_NOW; the leak reader need not re-run (no document under target/ and no prompt sentence changed). Then ship.",
+ "resume": "Re-judge (determinism judge, medium) on the round-2 cut; the leak reader re-runs too, since SCS-04 section 3 changed. Then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -66,6 +66,29 @@
    "graded_figures_moved": "none (call, components, 12 currency and 28 throughput figures unchanged; two evidence keys added to figures.json)",
    "target_zip_sha256_prefix": "b4586dea (target/ byte-identical)",
    "gates": "checks 72/0, verify 14/14, two builds byte-identical, figures_check 54/0, precut 61/0/0, voice-check PASS, leak.py REVIEW unchanged"
+  },
+  {
+   "date": "2026-11-02",
+   "source": "stage 4 re-judge (Gates C and E on the main call; Gate C on ask 4; ask 3 low)",
+   "fix": "SCS-04 section 3 files the population (a prohibited item the officer has not been shown before) and that a unit's hourly count includes start-up test images run before the lane opens, which are not passenger bags; the register's lapse column renamed endorsement_lapsed; a roster pass moves 31 finishes by 15 minutes so no whole-month officer sits within 0.3 h of 20 h; two single-day spare covers (D3 13 May, I2 21 October) give ask B's unit placement the mass the filed test rule took; write-up and goldens regenerated",
+   "rungs": "pooled 3, category-balanced 3, image-level first showings 4, object-level counted from 1 December 4, image-level inside the year 4, golden 10",
+   "figures_moved": "ask A April 16 to 17, May 17 to 18, June 16 to 17; no main-call figure and no ask B figure moved",
+   "ask_a_golden": [
+    19,
+    17,
+    20,
+    14,
+    17,
+    18,
+    17,
+    17,
+    15,
+    15,
+    12,
+    16
+   ],
+   "pair_ceiling": 53.2,
+   "mirror_leakage_pct": 45.0
   }
  ]
 }

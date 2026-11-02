@@ -21,14 +21,18 @@ def read_xlsx(path, sheet, header_row=1):
     return head, body
 
 
-def scrub_pdf(path, stamp="D:20261116090000+10'00'"):
+def scrub_pdf(path, created="D:20261116090000+10'00'", modified=None):
+    """Blank the writer's comment line and set the document's own creation and modification stamps, each
+    substituted at equal length so the cross-reference offsets stay valid."""
     data = open(path, "rb").read()
     data = re.sub(rb"(%[\x80-\xff]*)([^\n]*ReportLab[^\n]*)\n",
                   lambda m: m.group(1) + b" " * len(m.group(2)) + b"\n", data)
-    for key in (rb"/CreationDate", rb"/ModDate"):
-        data = re.sub(key + rb" \(D:[^)]*\)",
-                      lambda m: m.group(0)[:len(key) + 2] + stamp.encode().ljust(len(m.group(0)) - len(key) - 3)[:len(m.group(0)) - len(key) - 3] + b")",
-                      data)
+    for key, stamp in ((rb"/CreationDate", created), (rb"/ModDate", modified or created)):
+        def sub(m, key=key, stamp=stamp):
+            width = len(m.group(0)) - len(key) - 3
+            assert len(stamp) == width, (stamp, width)
+            return m.group(0)[:len(key) + 2] + stamp.encode() + b")"
+        data = re.sub(key + rb" \(D:[^)]*\)", sub, data)
     open(path, "wb").write(data)
 
 

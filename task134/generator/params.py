@@ -72,8 +72,8 @@ GRID_A, GRID_B = 50.0, 40.0
 
 # Disposal sites (WGS84, degrees and decimal minutes as the licence gives them): corner points in order.
 SITES = {
-    "FS": ("Fend Spit", [(52, 3.050, 1, 38.400), (52, 3.050, 1, 39.350), (52, 2.550, 1, 39.350), (52, 2.550, 1, 38.400)]),
-    "WD": ("Wenning Deep", [(52, 1.900, 1, 44.600), (52, 1.900, 1, 45.900), (52, 1.150, 1, 45.900), (52, 1.150, 1, 44.600)]),
+    "FS": ("Fend Spit", [(52, 29.650, 1, 47.525), (52, 29.650, 1, 48.475), (52, 29.150, 1, 48.475), (52, 29.150, 1, 47.525)]),
+    "WD": ("Wenning Deep", [(52, 26.175, 1, 56.950), (52, 26.175, 1, 58.250), (52, 25.425, 1, 58.250), (52, 25.425, 1, 56.950)]),
 }
 FS_CLOSED_MONTHS = (12, 1, 2)            # Fend Spit closed 1 December to the end of February
 ROUTE = {"OC": "WD", "FR": "WD", "MR": "FS", "IR": "FS", "TB": "FS", "NQ1": "FS", "NQ3": "FS", "CT5": "FS"}

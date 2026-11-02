@@ -12,8 +12,8 @@ PAPER2 = "Paper 2: Building Assessment and Certification Practice"
 # seeds: one stream per sitting and one for the operating records
 SEED_PEOPLE = 475_001
 SEED_MAY = 475_249
-SEED_NOV = 475_312
-SEED_OPS = 476_095
+SEED_NOV = 477_238
+SEED_OPS = 476_065
 
 ASOF = D(2026, 12, 1)
 EXPORT_DAY = D(2026, 11, 30)
@@ -52,12 +52,12 @@ MAY_NAME = dict(CENTRE_NAME, WSY="Parramatta")
 NOV_QUESTIONS = [
     ("Building classification and the NCC compliance pathways", [6, 8, 6]),
     ("Structural adequacy and reliance on engineers' certificates", [5, 5, 4, 6]),
-    ("Energy efficiency: Section J and dwelling energy ratings", [8, 7, 5]),
+    ("Energy efficiency: Section J and dwelling energy ratings", [6, 5, 4, 5]),
     ("Waterproofing, wet areas and external moisture", [4, 6, 4, 6]),
-    ("Access for people with a disability under the Premises Standards", [7, 7, 6]),
+    ("Access for people with a disability under the Premises Standards", [5, 6, 5, 4]),
     ("Fire safety performance solutions and fire engineering reports", [5, 6, 4, 5]),
     ("Mandatory inspections, notices and orders", [6, 4, 5, 5]),
-    ("Development consent conditions and the construction certificate", [8, 6, 6]),
+    ("Development consent conditions and the construction certificate", [6, 5, 5, 4]),
 ]
 MAY_QUESTIONS = [
     ("Occupancy certificates and final inspections", [6, 6, 8]),

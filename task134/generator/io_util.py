@@ -57,14 +57,14 @@ def app_props(app="Microsoft Excel", company="Fendmouth Borough Council"):
             f'<Application>{app}</Application><Company>{company}</Company></Properties>')
 
 
-def save_xlsx(wb, path, title, creator, created, company="Fendmouth Borough Council"):
+def save_xlsx(wb, path, title, creator, created, company="Fendmouth Borough Council", modified=None):
     wb.save(path)
-    _normalise_zip(path, core_props(title, creator, created), app_props("Microsoft Excel", company))
+    _normalise_zip(path, core_props(title, creator, created, modified), app_props("Microsoft Excel", company))
 
 
-def save_docx(doc, path, title, creator, created, company="Fendmouth Borough Council"):
+def save_docx(doc, path, title, creator, created, company="Fendmouth Borough Council", modified=None):
     doc.save(path)
-    _normalise_zip(path, core_props(title, creator, created), app_props("Microsoft Office Word", company))
+    _normalise_zip(path, core_props(title, creator, created, modified), app_props("Microsoft Office Word", company))
 
 
 def set_mtime(path):

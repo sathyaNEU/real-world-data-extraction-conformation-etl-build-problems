@@ -45,8 +45,21 @@ def compute(target):
         "pairs": {h: {str(m): int(vend.get((h, m), 0)) for m in (7, 8, 9)} for h in hubs},
         "sts": {h: int(sts[h]) for h in hubs},
         "seven_hour_post_call_hub": round(AN.lex(7.0, pk.levels[best]["Lp"], pk.levels[best]["Lf"], pk.levels[best]["La"]), 1),
+        "clauses_cited": _clauses(target),
     }
     return F, pk, tab
+
+
+def _clauses(target):
+    """The undertaking's own numbers for the clauses the write-up cites, read from the schedule."""
+    import re
+    from io_util import pdf_text
+    txt = " ".join(pdf_text(os.path.join(target, "noise_enforceable_undertaking_schedule_2027.pdf")).split())
+    out = {}
+    for key, opening in (("population", "The workers of a hub"), ("exposure", "A worker's exposure is")):
+        m = re.search(r"(\d\.\d) " + re.escape(opening), txt)
+        out[key] = m.group(1)
+    return out
 
 
 def write(target, path):

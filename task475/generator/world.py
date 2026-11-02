@@ -425,7 +425,7 @@ def build_nov_entries(w, seed):
         c = P.CODES[int(rng.choice(len(P.CODES), p=shares / shares.sum()))]
         add(p["pid"], c, "P1", P.NOV_OPEN + TD(days=int(rng.integers(0, 54))))
     # portal accounts, membership and names as each candidate types them
-    acct_ids = rng.choice(np.arange(10_000, 99_999), size=len(nov) + 40, replace=False)
+    acct_ids = rng.choice(np.arange(10_000, 99_999), size=len(nov), replace=False)
     w.nov_people = {}
     firms = {f[0]: f for f in FIRMS}
     for x, aid in zip(nov, acct_ids):
@@ -457,23 +457,6 @@ def build_nov_entries(w, seed):
             email = "%s%s%d@%s" % (first.lower()[:1], norm(fam).lower(), int(rng.integers(1, 99)), pick(rng, MAILS))
         w.nov_people[x["pid"]] = {"family": fam, "given": given, "member_no": mem, "email": email,
                                   "surname_changed": changed}
-    # a few candidates open a second portal account and enter twice; the office closes the second entry
-    dups = []
-    singles = [x for x in nov if "P2" in x["papers"] and x["entered"] < D(2026, 10, 2)]
-    for x in rng.choice(len(singles), size=8, replace=False):
-        o = singles[int(x)]
-        d = dict(o)
-        d["applicant"] = "A26%05d" % int(acct_ids[len(nov) + len(dups)])
-        d["entered"] = o["entered"] + TD(days=int(rng.integers(1, 9)))
-        d["duplicate_of"] = o["applicant"]
-        d["closed"] = business_days_after(d["entered"], int(rng.integers(2, 12)))
-        np_ = dict(w.nov_people[o["pid"]])
-        first = norm(np_["given"].split()[0])
-        np_["email"] = "%s%s%d@%s" % (first.lower(), norm(np_["family"]).lower()[:3], int(rng.integers(1, 99)),
-                                       pick(rng, MAILS))
-        d["person_override"] = np_
-        dups.append(d)
-    nov += dups
     # requests: withdrawals (whole entry or one paper), transfers, adjustments, other service requests
     reqs = []
     for x in nov:
@@ -481,8 +464,6 @@ def build_nov_entries(w, seed):
         x["status_changed"] = None
         x["withdraw_paper"] = None
     for x in nov:
-        if "duplicate_of" in x:
-            continue
         if "review_pass" in x:
             t = stamp_in(rng, x["review_pass"] + TD(days=int(rng.integers(1, 9))), 7, 22)
             reqs.append(withdraw(rng, x, t, x["papers"]))
@@ -505,7 +486,7 @@ def build_nov_entries(w, seed):
                 t = stamp_in(rng, x["entered"] + TD(days=int(rng.integers(3, 40))), 7, 22)
                 reqs.append(withdraw(rng, x, t, "P1"))
     for x in nov:
-        if "duplicate_of" in x or x.get("review_pass"):
+        if x.get("review_pass"):
             continue
         u = rng.random()
         if u < 0.03:
@@ -539,15 +520,15 @@ def build_nov_entries(w, seed):
             if r["paper"] == x["papers"]:
                 x["withdrawn_at"] = r["created"]
                 x["status_changed"] = r["closed"]
+            else:
+                x["p1_closed"] = r["closed"]
             x["withdraw_paper"] = r["paper"]
-    for x in nov:
-        if "duplicate_of" in x:
-            x["status_changed"] = x["closed"]
+    tidy_requests(reqs)
     w.nov_requests = reqs
     # attendance: an entry live on the day (not withdrawn before 7 November, Sydney time) sits or is absent
     for x in nov:
         x["sat2"] = False
-        if "P2" not in x["papers"] or "duplicate_of" in x:
+        if "P2" not in x["papers"]:
             continue
         if x["withdrawn_at"] is not None and x["withdrawn_at"].date() < P.NOV_SITTING:
             continue
@@ -567,6 +548,43 @@ def build_nov_entries(w, seed):
     for x in nov:
         x.setdefault("cand", "")
     w.nov_entries = nov
+
+
+def tidy_requests(reqs):
+    """Keep each request inside the window the office accepts it in: a centre transfer by 24 October (regulation
+    18) and before any withdrawal of the same entry, an adjustment by 23 October, a Paper 1 withdrawal before the
+    day of the sitting. A moved request is actioned on the next business day."""
+    full_wd = {}
+    for r in reqs:
+        if r["type"] == "Withdrawal" and r["paper"] == r["x"]["papers"]:
+            full_wd[id(r["x"])] = r["created"]
+    for r in reqs:
+        x = r["x"]
+        floor = dt.datetime(x["entered"].year, x["entered"].month, x["entered"].day, 9, 0) + TD(days=1)
+        new = None
+        if r["type"] == "Centre transfer":
+            cap = dt.datetime(2026, 10, 24, 16, 0)
+            if id(x) in full_wd:
+                cap = min(cap, full_wd[id(x)] - TD(days=2))
+            if r["created"] > cap:
+                new = max(floor, cap)
+        elif r["type"] == "Reasonable adjustment":
+            cap = dt.datetime(2026, 10, 23, 15, 0)
+            if r["created"] > cap:
+                new = max(floor, cap)
+        elif r["type"] == "Withdrawal" and r["paper"] != x["papers"]:
+            cap = dt.datetime(2026, 11, 6, 12, 0)
+            if r["created"] > cap:
+                new = max(floor, cap)
+        if new is not None:
+            r["created"] = new
+            cd = new.date()
+            if r["type"] == "Withdrawal" and D(2026, 11, 2) <= cd <= D(2026, 11, 7):
+                r["closed"] = D(2026, 11, 9)
+            else:
+                r["closed"] = business_days_after(cd, 1)
+            if r["type"] == "Withdrawal":
+                x["p1_closed"] = r["closed"]
 
 
 def withdraw(rng, x, t, paper):

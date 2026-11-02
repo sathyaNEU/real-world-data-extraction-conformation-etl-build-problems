@@ -238,6 +238,7 @@ by about a quarter.
 | SF20 | a sample's area | where it was actually taken | the plan's area | the licence 5.5 |
 | SF21 | a field duplicate | averaged with its primary before the means | dropped, or counted as a sample | the licence 5.5 |
 | SF22 | mercury units | micrograms per kilogram converted | read as mg/kg | the lab's units column |
+| SF23 | the asks' rounding | placements to the nearest 1,000 t, means to two decimals in mg/kg dry weight | none | the prompt; every ask figure clear of its rounding edge (asserted) |
 
 ## Ladder
 

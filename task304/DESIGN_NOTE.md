@@ -108,7 +108,7 @@ sit below (`## Architecture 3 record`, and the card's lineage). Everything above
    predicted induct level), count the workers at or above 85 dB(A) and those brought below, and take the hub with the
    most brought below.
 
-- **Ends on:** Larapinta, 66 workers brought below (Kewdale none, its inductors at 85.9 dB(A) after the enclosure).
+- **Ends on:** Larapinta, 66 workers brought below (Kewdale none, its inductors at 85.8 dB(A) after the enclosure).
 - **Golden:** Kewdale, 102 workers brought below.
 
 ## Stump sentence
@@ -199,7 +199,7 @@ worker's own sessions, joined to people through the badge register, show.
 | SF3 | a worker's hub | the hub of the shifts they worked | none worked at two hubs | same | asserted: every worker's shifts are at one hub |
 | SF4 | the places a worker worked | the induct area while signed on to an induct station, the floor for the rest of the seven working hours | the job title's place | Larapinta (R0) | Schedule 2.3 (the places they worked during each shift); the sessions are where they worked |
 | SF5 | an automatic log-off's last ten minutes | kept as signed on | trimmed | same counts | asserted same counts |
-| SF6 | the shifts a worker worked | the roster's and timesheets' worked shifts | days with a session | same counts | Schedule 2.3; asserted same counts |
+| SF6 | the shifts a worker worked | the roster's and timesheets' worked shifts | days with a session | same call, figures move (Kewdale 106) | Schedule 2.3 (energy-averaged over those shifts, the shifts they worked) |
 | SF7 | averaging over shifts | energy average of daily LAeq,8h | arithmetic mean of daily levels; the median shift | same counts | Schedule 2.3 (energy-averaged); asserted same counts |
 | SF8 | the hour of breaks | in the amenities at its level | on the floor | same counts | Schedule 2.3 (breaks in the amenities); asserted same counts |
 | SF9 | at or above | 85.0 dB(A) or more | above 85 | same counts | no worker within 0.9 dB of 85, asserted |
@@ -207,7 +207,7 @@ worker's own sessions, joined to people through the badge register, show.
 | SF11 | the place levels | the 2026 survey's zone LAeq | the survey's highest position | same call | Schedule 2.3 (its LAeq in the 2026 survey) |
 | SF12 | the hub chosen | most workers brought below | most at or above; largest share | Eastern Creek (pool) | Schedule 2.1 |
 | SF13 | earplug pairs issued at a hub | vends from the machines standing at the hub at the time, in pairs | machines' current site; vends counted as units | figures move | the asking sentence (issued at each hub, pairs); the service visits and the range change |
-| SF14 | the month of a vend | the hub's local time | UTC | same figures | the asking sentence (local time); asserted same bins |
+| SF14 | the month of a vend | the hub's local time | UTC | figures move | the asking sentence (by the hub's local time) |
 | SF15 | a confirmed threshold shift | Schedule 3: 10 dB average at 2, 3 and 4 kHz in either ear against the reference, repeated by a retest within 30 days | the provider's flag; any single test | figures move | Schedule 3.1 and 3.2 |
 | SF16 | the reference audiogram | the worker's reference at the test date, rebuilt from their first test and each confirmed retest | the provider's current reference | figures move | Schedule 3.3 (a confirmed retest is the reference from its date) |
 | SF17 | the hub of a confirmed shift | the hub the worker belonged to at the retest date | the HR list's current hub | figures move | Schedule 3.4 |
@@ -226,7 +226,7 @@ Larapinta), G 1.48x (Kewdale over Truganina). Position: Kewdale is fifth on R0 (
 every correction walks one way and only the decisive move reverses Kewdale. Dominance: Kewdale's edge on the decisive
 axis (102 against 0 on R0) is many times Larapinta's carried advantage (66 against 69 under G). Non-standing family:
 each title's average induct hours (R2) names Kewdale at 156, a figure outside every bin, because Kewdale's rotation
-loaders average 1.6 hours a shift as a title while about half of them do none. The pricing sequence: (1) the residue
+loaders average 1.4 hours a shift as a title while about half of them do none. The pricing sequence: (1) the residue
 the filed WHAT leaves is each worker's places, a method, not a knob; (2) the move is worth 102 workers on the golden
 hub against a ceiling of 104 signed on to induct there; (3) the one-group-by routes (distinct badges at induct, station
 hours, headcount) name Eastern Creek or Wingfield; (4) no fitted parameter: every worker's hours are sums of recorded
@@ -287,19 +287,19 @@ Two asks, both on files and periods the call never reads (the PPE vending suppli
 asset list for July to September; the audiometry provider's tests and reference audiograms with the HR transfer
 history), neither feeding the chart.
 
-**Ask A, earplug pairs issued at each hub in each of July, August and September 2026 (18 figures, nearest ten).**
+**Ask A, earplug pairs issued at each hub in each of July, August and September 2026 (18 figures, whole pairs).**
 Home: the hearing program's protector supply, a measure every hub carries that the call does not turn on.
 - Primary device 1 (D2, a label stored before a silent switch): on the supplier's range change (one dated service
-  visit per machine, 3 to 7 August) product code EP-01 moved from a single pair to a pack of five pairs; the asset
+  visit per machine, on Sunday 2 or Sunday 9 August) product code EP-01 moved from a single pair to a pack of five pairs; the asset
   list's product sheet shows only the current pack, so July's EP-01 vends read at five pairs are five times too many.
   Only the service visits (restocks loaded in pairs before, packs after) show the switch.
-- Primary device 2 (D7, a record kept against the current holder): six machines were relocated between hubs in a
-  fleet rotation (14 August and 9 September); the asset list carries each machine's current site, so August's and
+- Primary device 2 (D7, a record kept against the current holder): twelve machines were swapped between hubs in two
+  weekend rounds (15 August and 12 September); the asset list carries each machine's current site, so August's and
   September's vends from moved machines go to the wrong hub. The telemetry's offline gap in transit and the first
   commissioning restock at the new site date each move. The two devices' figure blocks are disjoint (July; August
   and September).
-- Hazards: the telemetry in UTC (SF14, asserted inert at the nearest ten), earmuff vends (EM-01) beside earplugs,
-  test vends after restocks (recorded as vends by the technician, kept: issued is issued).
+- Hazards: the telemetry in UTC (SF14, pinned by the asking sentence's local time), earmuff vends (EM-01) beside
+  earplugs, and the Friday night shift's vends after midnight on a month's first Saturday.
 
 **Ask B, each hub's workers with a standard threshold shift confirmed in 2026 (6 figures, whole counts).** Home: the
 hearing program's audiometric outcome, a measure every hub carries. A construction ask on a filed rule (Schedule 3),
@@ -318,9 +318,10 @@ shift rows carry no ask device (asserted in checks.py A0).
 
 Ask B is kept by the cracker and counted in the leakage below.
 
-Pair ceiling: 42.3 ((38 + 7 + 55 x 0.25) and (5 + 7 + 55 x 0.25), averaged)
+Pair ceiling: 45.2 (the cracker 38 + 7 + 55 x 0.25 = 58.8; the mirror 10.9 + 7 + 55 x 0.25 = 31.6, its 10.9 the four
+of fourteen main-side figures the job-based route happens to print right at Larapinta and Wingfield; averaged)
 Mirror leakage: 25.0 per cent of ask weight
-Measured by: generator/ceiling.py (run on the cut pack)
+Measured by: generator/ceiling.py (run on the cut pack: ask A 0 of 18 to the cracker, ask B 6 of 6)
 
 ## Architecture 3 record (re-rooted 2026-11-01 at the Batch 3 queue reset)
 

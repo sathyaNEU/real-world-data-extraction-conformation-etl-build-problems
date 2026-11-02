@@ -1,0 +1,109 @@
+{
+ "architecture": 3,
+ "as_of": "2026-10-16",
+ "decision": "each collection region's outcome under the national statistics office's Price Collection Quality Standard for the field price collection of July to September 2026, and the quarter's service credit",
+ "deliverables": [
+  "pcqs_2026q3_assessment.xlsx",
+  "pcqs_2026q3_contractor_letter.pdf"
+ ],
+ "distractor_files": [
+  "cpi_regional_indices_2026-06_2026-09.csv",
+  "tallis_collector_roster_2026-09.xlsx"
+ ],
+ "distractor_notes": {
+  "cpi_regional_indices_2026-06_2026-09.csv": "the published regional index levels for June to September 2026; relevant to the prices collected, unused by the solution",
+  "tallis_collector_roster_2026-09.xlsx": "each collector's area, start date and latest collection test; relevant to the contractor's teams, unused by the solution"
+ },
+ "files": {
+  "commodity_replacement_decisions_2026.xlsx": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Prices Division, commodity analysts' replacement decisions, extract of 14 October 2026; synthetic"
+  },
+  "cpi_field_quotes_2025-10_2026-09.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Prices Division, CPI price database extract of field-collected quotes, reference months October 2025 to September 2026, pulled 14 October 2026; synthetic"
+  },
+  "cpi_item_list_2026.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Prices Division, CPI 2026 basket item list with COICOP classes; synthetic"
+  },
+  "cpi_outlet_register_2026-10.xlsx": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Prices Division, CPI outlet register as at 1 October 2026; synthetic"
+  },
+  "cpi_regional_indices_2026-06_2026-09.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "NSO consumer price index monthly regional indices, released 13 October 2026; synthetic"
+  },
+  "fqt_backcheck_register_2026q3.xlsx": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Field Quality Team, back-check register for July to September 2026; synthetic"
+  },
+  "handheld_status_codes.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Prices Division, handheld collection status codes before and after the August 2026 software update; synthetic"
+  },
+  "nso_collection_calendar_2026.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO collection calendar, index days and public holidays; synthetic"
+  },
+  "pcqs_price_collection_quality_standard_v3.pdf": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "NSO Prices Division, Price Collection Quality Standard version 3.0; synthetic"
+  },
+  "pcsa_schedule4_collection_fees.pdf": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Price Collection Services Agreement, Schedule 4 regional collection fees, variation 3; synthetic"
+  },
+  "tallis_collection_schedule_2026q3.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Tallis Field Research Ltd, quarterly collection schedule agreed 26 June 2026; synthetic"
+  },
+  "tallis_collector_roster_2026-09.xlsx": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Tallis Field Research Ltd, collector roster and collection test record, 30 September 2026; synthetic"
+  },
+  "tallis_quarterly_return_2026q3.xlsx": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "context",
+   "source": "Tallis Field Research Ltd, quarterly activity return submitted 9 October 2026; synthetic"
+  },
+  "tallis_visit_log_2026-07_2026-09.csv": {
+   "date": "2026-10-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Tallis Field Research Ltd, handheld visit log export for July to September 2026; synthetic"
+  }
+ },
+ "stated_inputs": [
+  "98.0",
+  "96.0",
+  "4"
+ ],
+ "task": "task233"
+}

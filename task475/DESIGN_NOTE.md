@@ -1,309 +1,256 @@
 # task475 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 1, drawn 2026-10-20 from seed ET32.
+Status lives in `pipeline.json`; this note holds the design. Architecture 2, drawn 2026-11-01 at the Batch 3 queue
+reset; architecture 1 is summarised under `## Architecture 1 record` and its world is closed.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task475.json` (architecture v1), registered 2026-10-20 after a pull. Guard
-  WARN on `overuse.objective` only (ETL in 7 of the last 12 builds): the lane is ETL by assignment, so the objective is
-  not a free axis here. Nearest driver on file task268 v1 at 0.10 (people present in small areas from a commuting
-  table), which shares no latent structure with this one.
-- **Redrawn at the draw, and why the replacements are the honester labels.** The sibling's re-registration of task474
-  put `filed_standard` and `budget_or_appropriation` into the three-build window, and the first card's signature (gap
-  population, G6, allocation) repeats five older builds. Gap moved to `objective`, which is the truer gap: the credit
-  claims count in the IRS tables is correct and complete, and the allocation is scored on a different count, the claims
-  with children. Gate G moved to `etl_conformance`: the decisive step derives the policy's field from fields the source
-  does carry. The forcing event is the council's 2027 weatherization plan filed with the state (`statutory_or_regulatory_filing`),
-  and the context artifact is the program's program year 2025 close-out summary the program director works from, which the asks
-  build on. `government_agency` and `nonprofit_or_charity` are banned in the window, so the deciding body is a regional
-  council of governments (`local_government`), which administers weatherization for its member counties.
-- **Seed:** ET32 (a state energy office splits a fixed weatherization fund across counties in proportion to tax returns
-  claiming the earned income credit, capped at 12 per cent, from IRS ZIP-code tables taken to counties through the
-  HUD crosswalk; the capital county's share jumped). Kept: the world (a public body, a fixed weatherization fund, the
-  IRS ZIP-code tables, the ZIP-to-county relationship file, a seat county), the decision (the capped proportional split)
-  and the quantity (earned income credit claims by county, narrowed to claims with qualifying children). The seed's
-  mechanisms (the crosswalk's direction, its ratio type, the other-ZIP-codes line) are not the stump: the policy files
-  the direction and the residential ratio, and each is Layer 1 the analyst executes.
-- **Pairing:** Demographic & Social Science (house domain, income and poverty statistics from tax returns; card
-  subdomain `income-poverty-inequality`) sitting in Survey Research & Official Statistics, task type
-  `census-register-administrative-data-quality`, which serves ETL. The work is official statistics from an
-  administrative source: the IRS ZIP-code tables for two tax years in two layouts, conformed through the residential
-  ZIP-to-county file into the county table the council's allocation policy defines, with one field the source does
-  not carry and has to be derived. Objective: Data Extraction & Conformation (ETL).
-- **The decision and the quantity:** the council's allocation policy splits the 2027 weatherization fund across its
-  fourteen member counties in proportion to each county's tax-year 2023 returns claiming the federal earned income
-  credit with at least one qualifying child (the latest year the IRS has published at the plan date), filed from
-  residential addresses in the county; no county receives more than 12 per cent, the excess shared in proportion among
-  the rest. Forward facing: the 2027 program year has not opened and the plan is due to the state on 15 November
-  2026, before the subgrantee contracts are signed.
-- **Shape:** `05`, an allocation to a fixed total: fourteen counties times three figures (returns with qualifying
-  children, share, allocation: 42), the cap decision and the largest county (2), a chart with its parts (4), the files
-  (2), and two asks over the program's last closed year, program year 2025 (28): the criteria come from the
-  structure, none stacked.
-- **Strategy:** `decomposition_attribution`: the decisive move splits each county's credit claims in the lowest AGI
-  class into childless workers and families by their paired credit amount. `composition_mix` names the shortcut's
-  failure (the statewide mix applied everywhere) rather than the move, and it is banned in the current window; the
-  move is the split, so the decomposition label is the honest one. Gate G `etl_conformance`; gap `objective`, then
-  `population`; pattern none, generators G6 (composition shift: each county's own mix of families and childless
-  workers), G2 (ZIP code against county), G19 (the policy's county table); Layer 2 family `estimation_fit`, pattern
-  `own:mixture recovered from a count and its paired amount by known per-kind averages`.
-- **Data-native sentence:** the earned income credit pays a childless worker at most about six hundred dollars and
-  phases it out below about twenty-five thousand of income, while a family's credit runs to several thousand, so the
-  lowest AGI class is the only one where both kinds claim, and a county's credit amount in that class divided by its
-  claims is a weighted average of the two kinds' averages that fixes its own share of families; the seat county, with
-  a university and the region's hospitals and many young single workers, has far more childless claimants than the
-  state, so the statewide share overstates its families.
-- **Sources, one line each:** seed ET32 (the world, the decision and the quantity, never its mechanisms); the client's
-  census-register patterns (net against gross classification error, dual-system estimates) for the task type's
-  register-quality ground, neither used; strategies F6 composition rows (the statewide mix applied to every unit is the
-  shortcut); the slot search on mixtures and paired amounts (task124's main kinds, task198's allowed amounts at a rate
-  plateau: a price level, not a composition), none of which recovers a composition from a count and its amount.
-- **Same-puzzle test:** gap objective, decisive generator G6, decision allocation_to_total against the last twelve
-  builds, lineage included: no match. Same-driver test (gap objective, G6, etl_conformance): no match.
-- **Abstraction test:** the nearest drivers stripped of nouns (task268's people present carried by commuting flows,
-  task190's space-time pairs, task253's voucher split by response rates) carry no count and paired amount fixing a
-  composition; none maps onto this driver.
+1. **Card:** `.claude/skills/fingerprint/cards/task475.json`, architecture v2, registered 2026-11-01 at WARN only
+   (`shell.repeat` against task461, raised by architecture 1's prompt, which this build replaced). Checked again as
+   the draw's last act after task304's card landed in the same folder: no BLOCK, the three builds before this one in
+   draw order (task452, task186, task160) hold no forum, forcing event or organisation family this card repeats.
+2. **Pairing:** Education & Learning Sciences / `item-response-theory-test-equating` / Data Extraction & Conformation
+   (ETL). The task type serves ETL and DD in the taxonomy. The deliverable is the sitting's results file conformed to
+   the examination regulations: each candidate's marks on the questions they chose, moved onto one scale as
+   regulation 14 requires, totalled and classified.
+3. **Niche:** the Institute of Accredited Building Certifiers (a fictional national professional institute in
+   Australia) runs the Certifier Accreditation Examination twice a year; its Paper 2 is a three-hour written paper of
+   eight optional questions of 20 marks, of which each candidate answers five. The November 2026 sitting was marked on
+   the new e-marking platform; the May 2026 sitting's marks were migrated into it from the legacy system.
+4. **Objective and facing:** ETL. The decision faces forward (the committee approves results not yet issued, on 10
+   December 2026); the estimand is retrospective by nature, the difficulty each question proved at a sitting already
+   held, because results are always conformed after the sitting they score.
+5. **Shape 14** (cuts of a distribution, each cut per segment): the eight moves (8), the number passing and the
+   results file's rows (3), the bar chart's parts (3), each centre's withdrawals, absentees and May sitters (6 by 3,
+   18), the reviews' answer and refund (2), the files (2): 36 criteria, none stacked.
+6. **Decision type** `conformed_dataset`, question form what, forum the Examinations Committee
+   (`committee_or_panel`), forcing event its results meeting (`vote_or_meeting`), organisation a member body
+   (`cooperative_or_member_body`), role `research_desk` (the assessment analyst in the Examinations Office).
+7. **Deliverables:** `nov2026_paper2_results.csv` (the conformed results) and `paper2_results_committee_paper.docx`
+   (the committee paper carrying the moves, the bar chart, the centres table and the May reviews). The csv+docx set
+   cleared `guard.py`'s repeat.deliverables where pdf+xlsx and docx+xlsx warned.
+8. **People,** from `guard.py names --geo AU --locale en_AU --seed 475`: Terri Brown (Chair, Examinations Committee), Stephanie
+   Nguyen (Assessment Analyst, Examinations Office), Joshua Fitzgerald (Chief Examiner, Paper 2). None is in the prompt;
+   no candidate carries their names (checks.py RS8).
+9. **Candidates written before the choice,** each screened on the survivor anatomy and the WHAT screen:
+   - A (taken): optional questions put on one scale under examinee choice. The field's question statistic (each
+     question's mean mark among its answerers) sits at rung 1, and the dataset violates its precondition: the
+     answerers of a question are not a random slice of the sitting, because the candidates choose.
+   - B: candidates' carried scores across a change of paper (a score conversion through an anchor form): task464's
+     ETL driver map closed the conversion cells, and the decisive step would be the linking method itself, the
+     opponent's first move; dropped.
+   - C: a harsh marking team scaled to the others by seeded scripts: the scaling is a named correction (a reflex),
+     and a harsh team placed to be caught is a planted defect; dropped.
+   - D: results counted over entries instead of sitters (absentees silently omitted from a reported total): a
+     coverage gap is a planted defect (the batch's task123 lesson); absentees stay as Layer 1, neutral on the call.
+   - E: the latest mark of record superseding the first after re-marks as the decisive step: it flips only on
+     reading regulation 11.2 (data semantics); kept as a hazard of the May reviews ask.
+   - F: the pass mark set by a standard-setting panel (an Angoff study): the procedure is the field's named method,
+     and filing it is rule application; dropped.
+10. **Screens before the draw:** `guard.py recent`, `coverage`, `mechanisms --objective etl` and `slots` on the
+    mechanism nouns (choice, optional, examinee, facility, selection, difficulty) and the setting nouns (accreditation,
+    examination, certifier, marking, results committee): no build on file carries examinee choice or optional-question
+    difficulty. Decisive generator G6 (each question's answerers differ in composition from the sitting), with G14 and
+    G17; G16 is banned in the window (task452) and G14 with `quantity_figure` read as task133's lineage puzzle, so the
+    card leads with G6 and `conformed_dataset`.
+11. **Abstraction test** against the nearest drivers (task479 v4 at 0.05: a unit's level from its answers through a
+    known response model; task186 v2 at 0.04: a person's hit rate on items drawn again and again): both estimate a
+    person; this build estimates the items, and the step is that the persons answering each item selected it.
+12. **Data-native sentence:** the November paper's new fire safety question was answered by 325 candidates who
+    averaged 13.5 on their other answers and 10.1 on it, and the plain consent conditions question by 499 who averaged
+    9.0 elsewhere and 12.1 on it; the export holds every candidate's part marks on the five questions each chose, so
+    the same candidates can be read across questions, while each question's mean mixes its difficulty with who chose
+    it.
+
+## Survivor anatomy
+
+- Actor: the deciding property is each question's difficulty for the whole sitting, and no file has a column for it: the export carries part marks by candidate and item, the minutes carry only May's approved moves, and the property exists only as a relation between the same candidate's marks on different questions.
+- Link: the signal is read through a comparison the field's question statistics never ask for: each candidate's mark on a question set against the same candidate's marks on the other questions they chose; the question means read one column at a time, and nothing in the regulations or the question paper invites a comparison across a candidate's answers.
+- Reflex: the field's question-level statistic (each question's mean mark among those who answered it, set against the paper mean) sits at rung 1 and files Q6 +1, Q8 -1 and 417 of 714 passing.
+- Back-test: the textbook route validates: on the May marks as they stood at the committee's 18 June meeting, the question means reproduce every move in the minutes and its 433 passes of 698 (May's choices did not sort the candidates, so the fit agrees there too).
+- Second use: the export is every route's source for the results file, the minutes carry May's moves for the reviews ask, and the registers, request log, review requests, ledger and account register carry the asks; delete the decisive step and every file keeps its job.
+- Shock: nothing stands out: Question 6's mean (10.1) sits mid-pack, Question 8's (12.1) is the highest but close to Questions 1 and 7, the means' moves (+1 and -1) read as ordinary adjustments, and no sort of any shipped column puts Questions 6 and 8 together.
+- Pins: the examination regulations file the WHAT (14.1 the move, each question against the average question counted once, for the candidates who sat; 2 defines those candidates as every candidate marked present; 14.2 the limits; 12 the pass mark; 11.2 the mark of record); no filed sentence names a method, a comparison across a candidate's answers, the choice or the candidates' standing.
 
 ## Default path
 
 A strong analyst with every field read correctly:
 
-1. Reads the allocation policy: tax-year 2023 returns claiming the earned income credit with at least one qualifying
-   child, filed from residential addresses in each member county; the 12 per cent cap with the excess shared in
-   proportion among the rest until no county exceeds it.
-2. Conforms the IRS ZIP-code table for tax year 2023 to counties through the ZIP-to-county relationship file's
-   residential ratio (the policy's direction and ratio), drops the state total and other-ZIP-codes lines, sums the
-   credit claims by county and AGI class.
-3. Finds that no table at ZIP or county level splits the claims by qualifying children; takes the Department of
-   Revenue's statewide table of claims by AGI class and number of qualifying children, and applies the statewide share
-   of claims with children in each AGI class to every county's claims in that class (all but a handful of claims above
-   the lowest class are families, so the share matters in the lowest class).
-4. Shares the fund in proportion and applies the cap.
+1. Reads regulation 14.1 (each optional question moved by the whole marks it proved harder or easier than the
+   average optional question, each counted once, for the candidates who sat the paper), 14.2 (the limits) and 12
+   (a pass is 50 or more of 100 after the moves).
+2. Takes the NOV26 rows of `cae_marking_export_2026.csv` and sums each candidate's part marks per question: 714
+   candidates sat.
+3. Takes each question's mean mark among those who answered it (the facility the field reports for every
+   question), sets it against the mean of the eight means and rounds: Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +1, Q7 -1,
+   Q8 -1.
+4. Checks the method on May: the same means on the May marks at the June meeting give every move in the minutes and
+   its 433 passes of 698.
+5. Applies the moves held within 0 and 20, totals and passes 50 or more.
 
-**Ends on:** Tallis County, the seat, at the 12 per cent cap ($2,400,000), its excess shared among the other thirteen
-counties (Tallis 15.46 per cent of the families before the cap).
+Ends on: Q6 +1 and Q8 -1, 417 of the 714 candidates pass.
 
-**Golden:** no county reaches the cap; Tallis County receives $2,292,000 (11.46 per cent), and every county's
-allocation moves by $1,892 to $107,993 against the default path.
+Golden: Q1 -1, Q2 +1, Q3 0, Q4 +1, Q5 0, Q6 +3, Q7 -1, Q8 -3; 393 of the 714 candidates pass.
 
 ## Stump sentence
 
-The default path applies the statewide share of claimants with children in each AGI class to every county's credit
-claims and caps the seat county at 12 per cent, because it never asks what each county's own credit amounts say about
-its mix of families and childless workers; Tallis County's claims in the lowest class average far less than the
-state's, which only a childless share well above the state's can produce, so its families fall below the cap.
+The default path sets each question's mean mark among its answerers against the paper's mean, moves Question 6 by +1
+and Question 8 by -1 and files 417 passes of 714; but the stronger candidates chose Question 6 and the weaker chose
+Question 8 (their answerers averaged 13.5 and 9.0 on their other answers), so only each question read on the same
+candidates across the questions they chose gives its difficulty for the candidates who sat, Question 6 +3 and
+Question 8 -3, and 393 passes.
 
 ## Three rules
 
-Task type: census-register-administrative-data-quality (Survey Research & Official Statistics, the client domain the house domain demographic-social-science maps to): county statistics built from an administrative register's ZIP-code aggregates, the ZIP-to-county relationship file and the Department of Revenue's statewide credit statistics, conformed to the council's county table, a task type serving Data Extraction & Conformation (ETL).
-
-Domain test: the deciding quantity is each member county's number of working families with children claiming the earned income credit, which tax-policy and income statistics read from the credit's own schedule: a childless worker's credit tops out near six hundred dollars and ends below about twenty-five thousand of income, a family's runs to several thousand, so in the lowest AGI class a county's claims count and credit amount fix how many of its claimants are families, the estimator being the two-kind decomposition by the statewide average credit of each kind in the class.
-
-Swap: "which hospital wards get the new beds, in proportion to the patients with private cover, from each ward's admissions and total charges" keeps a count and an amount but loses the mechanism: no schedule fixes what each kind of patient is charged, so a ward's charges say nothing reliable about its mix, and the decomposition the call turns on does not exist.
-
-Layer 1: the IRS ZIP-code tables in two tax years with a changed column layout (written by the IRS's two releases), amounts in thousands of dollars, AGI classes coded 1 to 6, a state total line and an other-ZIP-codes line; the ZIP-to-county relationship file's four ratios with a county-to-ZIP file beside it (the State Geographic Information Office's two products); four P.O. Box ZIP codes with no residential addresses; the Department of Revenue's statewide statistics as tables inside its annual report PDF; each is the systems as they publish, nothing is placed to be caught, each is executed from a filed sentence or the source's own documentation, and checks.py R2a to R2f mishandle each and keep the call.
-
-Layer 2: estimation_fit, a two-kind mixture recovered from a count and its paired amount: the policy's count of claims with children is never published below the state, and the choice that flips the call is estimating each county's families from its own claims and credit amount instead of carrying the state's share of families to every county.
-
-Decisive step: recovering each county's claims with children in the lowest AGI class from the class's claims count and credit amount, by the statewide average credit of a childless claim and of a family claim in that class, so that a county whose average credit sits low has more childless claimants than the state, instead of applying the statewide share of families to every county's claims.
-
-Not semantics: every field, unit and definition read correctly (the policy's "at least one qualifying child", amounts in thousands, the AGI class codes, the residential ratio, the state and other-ZIP lines, the Department's table by number of children) still leaves the easy route applying the statewide share of families in each class, because no field says that the county's amount carries its own mix; the step is an estimation the analyst chooses, not a reading.
-
-Not rule application: the policy fixes the population, the tax year, the residence rule, the cap and its sharing, and no rule or procedure says how to obtain a county's claims with children from tables that never split them; executing every filed rule with the statewide share files Tallis County at the cap, so the step no rule performs is using each county's credit amount to fix its own mix.
-
-Analyst test: a strong analyst who conforms the ZIP tables to counties correctly, reads the basis correctly and applies the Department's statewide share of claims with children in each AGI class caps Tallis County at 12 per cent ($2,400,000) and shares its excess (the default path's Ends on); the decomposition by each county's own credit amount leaves Tallis County below the cap and moves every allocation; checks.py will run both on the clean truth.
-
-Estimand: the council's weatherization allocation policy (filed in the pack): the population (tax-year 2023 federal returns claiming the earned income credit with at least one qualifying child, filed from residential addresses in a member county), the outcome (each county's count of such returns), the unit (returns; allocations in dollars), the window (tax year 2023, the latest the IRS has published at the plan date) and the comparison (each county's share of the fourteen counties' total, capped at 12 per cent with the excess shared in proportion until no county exceeds it).
-
-No decoy: nothing is planted: the IRS tables, the relationship files and the Department's statistics are the sources' own publications, and the policy states the basis without a method; no memo, earlier allocation, staff draft, briefing or stakeholder figure ranks the counties or carries a statewide-share estimate.
-
-No certified replay: no certified or published county count of claims with children ships, so nothing is recovered by reproducing a number; the method comes from the credit's schedule and each county's own count and amount.
-
-Lesson: when a published total of mixed kinds comes with its paired amount and the kinds carry known, very different average amounts, the area's own count and amount fix its mix, and a region-wide share discards exactly the local information the amount carries; no build on file recovers a composition from a count and its amount (task124 splits mains by kind from the era, task198 reads a price level from allowed amounts).
+- Task type: item-response-theory-test-equating in Education & Learning Sciences, which serves Data Extraction & Conformation (ETL): a written paper's optional questions conformed onto one mark scale and the sitting's results file conformed to the examination regulations.
+- Domain test: the deciding quantity is each optional question's difficulty for the whole sitting, which assessment practice reads from candidates' marks as a question effect on the paper's mark scale (the item difficulty of classical and item response analysis); with another field's nouns there is no optional question, no choice of five from eight and no mark scale for a move to act on.
+- Swap: "set each optional hospital ward's staffing allowance by how much harder its patients proved than the average ward's" loses the deciding structure: patients do not each choose five of eight wards and get scored on every one they chose by the same examiners, so no person's results on several alternatives can be compared and nothing is moved on a common scale.
+- Layer 1: the export spans two series in two code layouts (the legacy system's items 6(b) and component CAE2 on the migrated May rows, the platform's Q06.2 and CAE-P2 in November); part marks out of different maxima with no-response parts shown as '-'; marks of record re-entered after borderline re-marks and reviews in May; candidate numbers issued afresh at each sitting; the legacy register's SURNAME, Given names and dd/mm/yyyy dates against the portal's separate fields and ISO dates; the Parramatta centre renamed Western Sydney at the portal launch; the portal's UTC stamps across the daylight-saving change; withdrawals actioned days after they were sent; the CRM keying candidate numbers as candidates type them; account lines carrying their invoice's total; absentees present in the register and absent from the export. Each is produced by the system named, none is placed to be caught, and none moves the call (R2.1 to R2.7).
+- Layer 2: estimation under a violated precondition (selection on the outcome's driver): a question's mean mark estimates its difficulty for the sitting only if its answerers stand for the sitting; under examinee choice they do not, and the difficulty must be read with each candidate's own standing held fixed.
+- Decisive step: recognising that each question's answerers chose it, so its mean mark carries its choosers' standing, and reading its difficulty from the same candidates' marks across the questions they chose: a candidate effect and a question effect fitted together, each question's effect set against the average question.
+- Not semantics: every field, code and unit can be read correctly (series, item codes, part maxima, no-response parts, the mark of record, regulation 14's population, comparison and rounding) and the analyst still takes each question's mean as its difficulty; no field, code or definition holds a candidate's standing or flags a choice.
+- Not rule application: regulation 14.1 names what is measured (the difficulty for the candidates who sat, against the average question counted once, rounded) and not how; executing every filed rule with the question means files 417. Enumerated family: no moves (433 passes), question means (417), means against an answer-weighted average (417), medians (430), the fit of candidate and question (393), its one-step form, each question's answerers' mark less their own mean on their other answers (393), the regression adjustment on the answerers' other marks (393), a random-intercept model (393), the fit on the logit scale carried back to marks (393): spread 393 to 433 over four distinct pass counts. Standing family once the choice is seen (alternating means, least squares, one-step differences, regression adjustment, random intercept, logit scale, a part-level fit, four-answer candidates in or out, an answer-weighted average): the same eight moves and 393 passes, every value at least 0.2 from a rounding line (checks.py L3, SF2, SF9, SF10). What rules the means out is the data, loudly for anyone who reads across a candidate's answers and silently for the column means: Question 6's answerers average 13.5 on their other answers and 10.1 on it, Question 8's 9.0 and 12.1.
+- Analyst test: a strong analyst who conforms the export correctly and applies regulation 14 with each question's mean among its answerers against the paper mean files Q6 +1, Q8 -1 and 417 of 714 passing, against the golden's Q6 +3, Q8 -3 and 393.
+- Estimand: regulations 2, 12, 14.1 and 14.2 in cae_examination_regulations_2026.pdf: the population is every candidate marked present for Paper 2 at the November 2026 sitting (whichever questions they answered), the outcome each optional question's mark of record, the comparison the average of the optional questions each counted once, the unit whole marks rounded to the nearest, the window the November sitting's marks of record, and a pass at 50 or more of 100 after the moves.
+- No decoy: nothing is planted: no memo, draft, briefing or stakeholder figure argues a move or a pass count; the minutes report May's approved moves, which every route reproduces; no file computes a November question statistic; the two distractors (the results history and the 2027 venue holds) answer other questions.
+- No certified replay: no November move, difficulty or pass count exists anywhere in the pack, and May's certified moves are reproduced alike by the means and by the fit, so nothing certified can be backed out into the method.
+- Lesson: a question's mean mark is a property of the candidates who chose it as much as of the question; when candidates choose which items to answer, read each item's difficulty across the same candidates' other answers before putting it on one scale. No build on file teaches examinee choice or optional-question difficulty.
 
 ## Readability screen
 
-Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
-
-| Rung | What takes the reader there | Verdict |
-|---|---|---|
-| R0 all credit claims | the IRS table's claims count read as the policy's basis, the policy's "with at least one qualifying child" skipped | readable |
-| Layer 1: the residential ratio, the P.O. Box fallback, the other-ZIP and state lines | the policy's residence sentence and the IRS file's own line descriptions | readable |
-| R1 the statewide share of families in each AGI class | the Department of Revenue's statewide table by AGI class and number of qualifying children, the only table that splits claims by children | readable |
-| R2 (decisive) each county's families recovered from its own lowest-class claims count and credit amount | nothing: no sentence says an amount carries a mix, the Department's report gives counts and amounts without comparing kinds, and the IRS dictionary describes the amount as the credit claimed | silent |
+| Rung | What the reader does | Test that could fire | Verdict |
+|---|---|---|---|
+| 0 no moves | totals the marks as they stand | regulation 14 sends any reader past it | readable |
+| 1 question means | sets each question's mean among its answerers against the paper mean | the field's reflex, the question statistic every results meeting sees (test 3) | readable |
+| 1b means, other centres | the same against an answer-weighted average or with medians | reflex variants (test 3) | readable |
+| 2 candidate and question together (decisive) | reads each question on the same candidates across the questions they chose | no filed sentence names a comparison or the choice (1); no column holds standing or flags a choice (2); the reflex is rung 1 (3); the May minutes reproduce under the means (4); the battery compares no candidate across items (5); not one subtraction of a reported figure (6); no organ exists for it, the export is every route's source (7) | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "with at least one qualifying child" | returns claiming the credit for one or more children | every credit claim | Tallis capped (R0) | the policy's basis sentence names the children |
-| SF2 | tax year | 2023, the latest the IRS has published at the plan date | 2022 (last year's file) | moves every share | the policy names the latest published tax year; the 2022 file's header says 2022 |
-| SF3 | a ZIP code's returns to counties | the relationship file's residential ratio | total ratio; the county-to-ZIP file | small moves, same cap decision | the policy's residence sentence names residential addresses and the ZIP-to-county direction |
-| SF4 | a ZIP code with no residential addresses | its total ratio | dropped | same call | the policy's fallback sentence |
-| SF5 | the IRS other-ZIP-codes and state-total lines | not county returns | spread over counties | same call | the policy: returns the tables place in no ZIP code count for no county |
-| SF6 | member counties | the fourteen named in the policy's schedule | every county a ZIP code touches | same call | the policy's schedule; shares are of the fourteen counties' total |
-| SF7 | amounts | thousands of dollars in the IRS file and in the Department's tables | read as dollars | the split fails visibly (every county's first-class count negative) | the dictionary's field list and the report's own note |
-| SF8 | AGI classes | IRS classes 1 to 6 as the dictionary lists them | none | same call | the dictionary's class list |
-| SF9 | families in classes 2 to 6 | every claim there is a family's (the Department's table shows no childless claims above the first class) | the statewide share applied there too | same call (share is 1.000) | the Department's table |
-| SF10 | the decomposition's grain | ZIP cell then county, or county then decomposition | either | same figures (every cell's share of returns with children between 0.263 and 0.971, none clipped) | records converge (asserted) |
-| SF11 | averages for the decomposition | the first class's childless and family averages ($394.88 and $4,723.49) | the family average pooled over all classes | all 14 allocations move by $331 to $7,698, same cap decision | applied to the IRS state line, the class averages return the Department's 162,495 first-class returns with children and the pooled average 181,434 |
-| SF12 | the cap | 12 per cent of the fund, the excess shared in proportion among the rest, repeated until none exceeds it | one pass | same call (no county reaches it in the golden) | the policy's cap sentence |
-| SF13 | rounding | counts and shares carried unrounded, each allocation rounded to the nearest $100 | counts rounded to one decimal first; shares rounded to two decimals first | counts first: same allocations; shares first: 13 allocations move | the policy's rounding sentence |
-| SF14 | the fund | $20,000,000, the 2027 program year, shared whole | net of administration | every allocation | the prompt's fund; the policy shares "the fund" with no deduction |
+| SF1 | "moved" | a whole-mark constant added to every answer to the question | a proportional scaling | another call | regulation 14.1 "moved by a whole number of marks", 14.2 "applied to the mark of record of every candidate who answered" |
+| SF2 | "the average of the paper's optional questions, each counted once" | the eight question effects averaged equally | an average weighted by answers | same call (Q6 +3, Q8 -3, 393) | same call, and 14.1 "each counted once" |
+| SF3 | "the candidates who sat the paper" | every candidate marked present (714) | those who answered the question | the means' answer, 417 | regulation 2 "every candidate marked present for that paper at the sitting" |
+| SF4 | "rounded to the nearest whole mark" | round each move once | truncate toward zero | Q6 +2, Q8 -2, another count | 14.1 "rounded to the nearest whole mark"; no standing value within 0.2 of a rounding line |
+| SF5 | the limits of 14.2 | moved marks held within 0 and 20 | no limits | same call (393) | same call |
+| SF6 | the pass | 50 or more | more than 50 | 380 | regulation 12 "a total of 50 or more" |
+| SF7 | the mark of record | the last mark entered for a part | the first | same call (one November mark per part) | same call, and regulation 11.2 |
+| SF8 | a no-response part ('-') | counts nothing | dropped from the question | same call | same call |
+| SF9 | candidates who answered four questions | in the results and the fit | out of the fit | same call | same call; in the results under regulation 2 |
+| SF10 | the unit of the move | the question | a move per part | same call when summed to questions | regulation 14.1 "each optional question is moved" |
+| SF11 | "the mark counted on each question" | the moved mark held within 0 and 20 | the raw mark | another results file | 14.2 and the prompt's "mark counted" |
+| SF12 | the sitting's rows | series NOV26 (items Qnn.k) | every row of the export | another matrix | the export's series column; the question paper's numbering |
+| SF13 | the total | the counted marks summed over the questions answered | out of five questions regardless | same call | regulation 12 "of the 100 marks available" |
+| SF14 | a withdrawal's date | the request's receipt, Sydney time | the day actioned (status_changed), or the UTC date | another count at every centre | regulation 17.1 "has effect from the time the request is received", regulation 20 Sydney time |
+| SF15 | "absentees" | entered, not withdrawn before the day, not sitting | every withdrawn entry with no marks | another count | regulation 17.2 and 17.3 |
+| SF16 | a candidate's centre | the entry's centre after any transfer | the centre first entered | same call (transfers are carried into the entry) | regulation 18 |
+| SF17 | "had sat Paper 2 in May" | marked present in May (MAY26 marks) | entered in May | another count | regulation 2 "marked present" |
+| SF18 | the same person across sittings | member number where both carry one, else family name, first given name and date of birth | the candidate number | another count | candidate numbers are issued per sitting (the directory's blocks, the register); the match is unique (checks.py SF18) |
+| SF19 | "May results changed on review" | the result issued on the marks of record on 30 June against the result after review, both with the minutes' moves | the first marks against the last | same call among the requests | regulations 16 and 19.2 |
+| SF20 | "the review fees to refund" | the fee paid for each changed review and each declined request | the schedule fee | another refund | regulation 19.4 "the fee paid", Schedule 1's agreed-rate sentence |
+| SF21 | the refund's rounding | AUD 2,625.13 to the nearest dollar | none | same call | the cents sit 0.37 from the half dollar |
 
 ## Ladder
 
-Built values from the cut pack (generator/checks.py L1 to L8). Tallis County is the seat.
+Built values from the cut pack (checks.py L1 to L7, verify.py).
 
-| Rung | Route | Tallis share | Cap | Tallis allocation |
+| Rung | Route | Q6 | Q8 | Passing of 714 |
 |---|---|---|---|---|
-| R0 | all credit claims by county | 16.54 per cent | binds | $2,400,000 |
-| R1 (default path) | statewide share of families in each AGI class | 15.46 per cent | binds | $2,400,000 |
-| R1c | the first class's credit amount over the family average alone | 12.10 per cent | binds | $2,400,000 |
-| R1b | the decomposition with the family average pooled over every class | 11.50 per cent | none | $2,299,700 |
-| Golden | the decomposition by the first class's childless and family averages | 11.46 per cent | none | $2,292,000 |
+| 0 | no moves | 0 | 0 | 433 |
+| 1 (default path) | each question's mean among its answerers against the paper mean | +1 | -1 | 417 |
+| 1b | the same against an answer-weighted average | +1 | -1 | 417 |
+| 1c | medians against the median | +1 | -1 | 430 |
+| golden | candidate and question fitted together, each question against the average question | +3 | -3 | 393 |
 
-- Dominance: the golden and R1 differ in every county's allocation by $1,892 to $107,993, Tallis by $107,993; R1b
-  differs from the golden by $331 to $7,698 per county, outside every $100 bin; every wrong route misses all 14.
-- The second-largest county sits between 9.48 and 9.68 per cent under every route, so the cap decision turns on Tallis
-  alone.
-- Separation: no rung prints a golden figure; R0, R1 and R1c cap Tallis; the golden leaves it 0.54 points under the
-  cap; on the clean truth the true count of families puts Tallis at 10.59 per cent (R3a).
+- The rungs agree on Q1, Q3, Q4, Q5 and Q7 (-1, 0, +1, 0, -1) and on Q2 except the medians (+2); they part on the
+  two questions the choice sorted.
+- Standing family values for Q6 and Q8: alternating means and least squares 2.98 and -2.93, one-step differences 3.16
+  and -3.29, regression adjustment 2.73 and -2.75, random intercept 2.76 and -2.78, logit scale 3.23 and -2.98;
+  smallest distance to a rounding line over all eight questions 0.21 (the one-step form), verify.py's own least
+  squares 0.42.
+- Evidence: Question 6's answerers score 3.34 marks less on it than on their other answers, Question 8's 3.12 more
+  (L6).
 
 ## Closure table
 
-| # | Axis | Reading | Move |
+| Axis | Name | Reading here | Move |
 |---|---|---|---|
-| 1 | Population | tax-year 2023 federal returns claiming the credit with at least one qualifying child, residents of the fourteen member counties | filed in the policy (SF1, SF6) |
-| 2 | Unit of account | returns; allocations in dollars | filed |
-| 3 | Attribution window | tax year 2023 | filed (SF2) |
-| 4 | As-of dating | the IRS file as published; the relationship file of the fourth quarter of 2023 | filed in the policy |
-| 5 | Version basis | the published tables; nothing is restated | C1 |
-| 6 | Denominator | the fourteen counties' total of families | filed |
-| 7 | Weighting | each county's estimated families | filed outcome; the estimate is the decisive step |
-| 8 | Window length | one tax year | filed |
-| 9 | Boundary inclusivity | AGI classes as the IRS defines them | dictionary |
-| 10 | Rounding path | unrounded counts, allocations to $100 | filed (SF13) |
-| 11 | Tie-break | none arises (no two counties share a figure) | C1, asserted |
-| 12 | Maturity and censoring | none: the tax year is closed and published | C1 |
-| 13 | Order of operations | residence shares, then classes, then the cap | filed; the decomposition commutes with the residence shares (SF10) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | one row per ZIP code and AGI class | C1 |
-| 16 | Identity normalisation | ZIP codes as five-digit text, county FIPS codes | dictionary |
-| 17 | Netting against gross | none | C1 |
-| 18 | Dimensional units | thousands in the IRS file, dollars in the Department's table | headers (SF7) |
-| 19 | Code and status semantics | AGI class codes, the other-ZIP and state lines, P.O. Box ZIP codes | dictionary and policy; never the stump |
-| 20 | Integerisation | allocations to $100 | filed |
-| 21 | Clause scope | the cap applies to every county including those taking shared excess | filed (SF12) |
-| 22 | Forward window contents | the 2027 program year funded from the tax-year 2023 count | filed: the latest published year |
+| 1 | Population | every candidate marked present for Paper 2 at the November sitting (714) | filed, regulation 2 with 14.1 (SF3); four-answer candidates in (SF9) |
+| 2 | Unit of account | the candidate's answer to a question; one move per question | filed, 14.1 and 14.2 (SF10) |
+| 3 | Attribution window | the November 2026 sitting, series NOV26 | C1 (SF12) |
+| 4 | As-of dating | the marks of record exported on 30 November | C1: one mark per November part (SF7) |
+| 5 | Version basis | the last mark entered per part | filed, 11.2; the asks read May as issued on 30 June and after review (SF19) |
+| 6 | Denominator | the average question, each counted once | filed, 14.1; C1 against answer weights (SF2) |
+| 7 | Weighting | each answer once in the fit | C1: every standing member gives the same moves (L3) |
+| 8 | Window length | one sitting | not applicable, asserted by the series (SF12) |
+| 9 | Boundary inclusivity | 50 or more passes | filed, regulation 12 (SF6) |
+| 10 | Rounding path | each move rounded once, marks held, totals in whole marks | filed, 14.1; C1, no value within 0.2 of a rounding line (SF4) |
+| 11 | Tie-break | none | C1: no move at a half mark |
+| 12 | Maturity and censoring | none: every November script marked by the export | not applicable, asserted (A5, R1a) |
+| 13 | Order of operations | move, hold within 0 and 20, total | filed, 14.2; C1, the limits change no result (SF5) |
+| 14 | Row order | none | C1: the fit is order-free |
+| 15 | Duplicate resolution | one November row per part; May's later marks supersede | C1 (SF7); filed 11.2 for the asks |
+| 16 | Identity normalisation | candidate number within a sitting; across sittings member number or name and date of birth | C1 for the call; SF18 for the asks |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | part marks out of their maxima, 20 a question | units in the data (max_mark); C1 (R2.1) |
+| 19 | Code and status semantics | '-' is no response and counts nothing; Qnn.k is question nn, part k | C1 (SF8); the question paper |
+| 20 | Integerisation | whole-mark moves and marks | filed, 14.1 |
+| 21 | Clause scope | 14.1 per question per sitting; 14.3 the moves stand for the sitting | filed; the May reviews keep May's moves (19.2) |
+| 22 | Forward window contents | none: the results are for the sitting just marked | not applicable |
 
 ## Literal reader
 
-The policy executed word for word fixes the population, the tax year, the residence rule, the cap and the rounding;
-it is silent on how to count a county's claims with children from tables that never split them, and the two methods
-a literal reader can reach differ: the statewide share (R1) contradicts each county's published credit amount, and
-the decomposition reproduces it, so the records rule R1 out; every other reading converges or violates a quoted
-sentence (fork table). Re-run on the finished pack at stage 3.
+Executed word for word, regulation 14.1 asks how much harder each question proved than the average question, each
+counted once, for the candidates who sat the paper, which regulation 2 defines as every candidate marked present: all
+714, each of whom answered five questions (17 answered four). No file holds a candidate's mark on a question they did
+not choose, so every literal reader has to estimate each question's difficulty for the 714 from the marks that exist.
+The question means estimate it only if a question's answerers stand for the 714, and the records show they do not;
+the easy answer (417) therefore comes from an easier method on the same literal estimand, never from another reading.
+Every term and convention has a fork-table row, every alternative reading gives the golden or violates a quoted
+sentence, and every write-up step names the file and the regulation it executes.
 
 ## Oracles
 
-- The IRS file's state-total line against the sum of its ZIP lines: ties under every handling (the other-ZIP line
-  included), so it confirms the conformance and arbitrates nothing about families (O1).
-- The Department's statewide table against the IRS state line: the same 414,067 credit returns and the same 304,367
-  in the first class (O2); applied to the state line, the class averages return the Department's 162,495 first-class
-  returns with children exactly, the pooled average 181,434 (SF11). It carries no county figure.
-- Each county's published credit amount in the first AGI class: the only check the families estimate has, satisfied
-  by the decomposition and contradicted by the statewide share, which implies first-class amounts 13.8 per cent
-  under to 49.2 per cent over the counties' own (Tallis +49.2 per cent, O3).
-- No control ties only under the golden on the asks: the close-out carries program-wide spending by category and
-  fund and the agencies' intake (jobs opened, audits), which tie under every handling of the ask devices (B10).
+None. No file holds a November move, difficulty or question statistic; the minutes' May moves and pass count are
+reproduced by the means and by the fit alike, so they arbitrate nothing; no control ties only under the golden. In the
+asks no file pairs a withdrawal's receipt with its action, no column marks a May absentee, a surname change, a re-keyed
+candidate number or an account's agreed fee, and the invoice ledger ties to its requests under every handling.
 
 ## Ask sheet
 
-- **Ask A, the dwellings the program weatherized in each county in program year 2025 (fourteen figures, whole
-  dwellings).** H18 home: what each county delivered with the money the board is about to allocate again, set beside
-  each allocation in the board paper (policy 6.1). Path: the job export (job, agency, county entered, dwelling tract,
-  building type, units, funding, status, completion), the job status history (job, status, changed, user, note), the
-  member and agency lists, the policy, the close-out, the dictionary.
-  Primary device: D2, a label stored before a silent switch. The previous system kept one funding code per job, and a
-  job the grant shared with the utility's program carries whichever code the intake worker entered, often UTIL-LIW;
-  the WX system lists every source of the jobs opened in it. So jobs the grant paid for show only the utility's code
-  (every county has at least one first completed in 2025, A13), every row valid; only the grants ledger, read under
-  the right job numbers, shows program money on them (322 lines, A16), and the close-out files the program's jobs as
-  those the grant or the State fund pays for.
-  Hazards: D8, policy 6.1's first completion against the export's COMPLETED_DATE, which is the latest after a callback
-  (275 jobs completed twice; every county straddles the year, A9); H1 the county entered (Tallis-Hesketh Community
-  Action enters Tallis on its 253 Hesketh jobs, while the tract places the dwelling); H2 the utility's own jobs in the
-  same system (counted, all 14 move); multifamily units (jobs counted, all 14 move); deferred and cancelled jobs.
-- **Ask B, the program's spending on dwellings in each county in program year 2025 (fourteen figures, whole
-  dollars).** H18 home: the money each county's dwellings absorbed, the board's second figure beside each allocation.
-  Path: the grants ledger (line, posted, agency, invoice, job number, account, fund, service date, amount), the job
-  export, the status history's conversion notes, the close-out's convention (posted in the year, at the amount
-  posted, lines charged to jobs), the dictionary.
-  Primary device: D7 with a D8 clock, the true key elsewhere behind a cutoff no date column carries. The agencies
-  moved to the WX job system on 14 July 2025 and prepare each month's invoice early in the next month from the system
-  they are on, so invoices for service months to June carry the previous system's job numbers and later ones the WX
-  numbers; 469 lines of June invoices were posted after the move. The conversion loaded the old jobs in their old
-  order under the WX numbers, so every old number is also a valid WX number (none unmatched as written, county totals
-  0.80 to 1.59 times the true, B9); the old numbers live only in the history's MOVED conversion notes. Read by the
-  invoice month every line's agency and dates agree; a posting-date cutoff leaves 468 lines disagreeing and a
-  service-date cutoff 191 (B7), and each misses all 14 counties (B11, B12).
-  Hazards: H1 (the county entered); the service date in place of the posting date (all 14 move); only lines on
-  completed jobs (all 14 move); administration lines with no job; the funding-code vintage for a response that keeps
-  only lines on jobs whose codes name the program.
-- **The construction layer:** the call, the fourteen counts, shares and allocations, and the chart; the cracker has
-  them.
-- **Main population zero-counts (asserted):** the call reads no job, history, ledger or close-out file; with each of
-  them removed the fourteen allocations are unchanged (S1), and the asks read no IRS, relationship or Department file
-  (S2).
-- **Hazard table (asserted):** A2 to A8 and B2 to B6 in checks.py; none moves the call.
-- **Referee:** none; no file states a dwelling or spending total by county or by agency.
+The asks sit on files the call never reads: the November portal's entries and request log, the legacy May register,
+the export's May rows, the review requests, the invoice ledger and the account register. Ask 1: for each centre, the
+withdrawals, the absentees and the November sitters who had also sat Paper 2 in May (18 figures). Ask 2: whether any
+May results changed on review and, if so, how many, and the review fees to refund (2 figures).
 
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, dwellings weatherized by county | the round 1 readers' path: units of jobs whose funding codes name the program, first completed in the year from the history, by the dwelling's tract; keeps 0 of 14 | miss |
-| B, spending on dwellings by county | the round 1 reader 2 path: lines posted in the year with a job number, old numbers read through the conversion notes on lines posted before the move, by the job's tract; keeps 0 of 14 | miss |
-
-- Mirror leakage: 0.0 per cent of ask weight on the cut pack (generator/ceiling.py: the mirror builds both asks the
-  cracker's way and keeps none of 28).
-- Pair ceiling: 31.0 on the cut pack (weights 38 / 7 / 55: the cracker keeps the main block and instructions, 45.0;
-  the best mirror off the call keeps the cap decision through the pooled average and instructions, 17.0), with the
-  cracker on the round 1 readers' measured paths; re-measured by the round 2 readers and from the generated rubric at
-  ship.
+- Pair ceiling: 35.0 (cracker 45.0 on the call with 0 of 20 ask criteria, mirror 25.0 with 6 of 8 moves and 0 of 20 ask criteria).
+- Mirror leakage: 0.0 per cent of the ask weight (nothing in the asks comes from the call).
 - Measured by: generator/ceiling.py on the cut pack.
 
-## Pre-ship check
+| Ask | Primary device | Hazards | Cracker's handling | Cracker |
+|---|---|---|---|---|
+| Ask 1 withdrawals by centre | D8: the register's status_changed is the day the office actioned a withdrawal, and requests sent in the week before the sitting were actioned on 9 and 10 November; only the request log's submitted time dates the receipt (every centre holds at least one, A4) | UTC stamps across the daylight-saving change, Paper 1-only withdrawals, requests received on the day | dates each withdrawal by the register's status_changed | miss |
+| Ask 1 absentees by centre | the same lagged withdrawals, which the register's date leaves absent | the same | the same | miss |
+| Ask 1 May sitters by centre | D4: the legacy register shows May absentees as Entered and only the export's MAY26 rows show who sat; D7: candidate numbers are issued afresh, and members who changed surname match only on member number | the legacy SURNAME, Given names and dd/mm/yyyy dates, the Parramatta rename, new members | links the registers on name and date of birth and counts the May entrants shown as Entered | miss |
+| Ask 2 results changed on review | D7: candidates keyed their own numbers and three carry two digits transposed; the true May candidate is the one whose family name matches | borderline re-marks before issue, a delayed script marked after issue, declined late requests | joins each request to the May marks on the keyed number | miss |
+| Ask 2 refund | D6: each account line repeats its invoice's total, and the fee paid is Schedule 1's fee for the day received less the firm's agreed discount (an allocation by a recorded weight, equal to the invoice share to the cent, SF20) | the fee change on 1 July, declined requests refunded | refunds each account request at the schedule fee | miss |
 
-- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each member county's count of
-  credit returns with qualifying children, recovered in the lowest AGI class from the class's claims and credit
-  amount by the credit schedule's two very different average credits (childless $394.88, families $4,723.49 statewide);
-  a noun swap leaves no schedule and nothing for the amount to say. Layers: the mess (two IRS layouts, thousands, the
-  state and small-ZIP lines, the P.O. Box ZIP codes, the relationship file's ratios and its reverse twin, the
-  Department's tables inside a PDF) is the publishers' own and keeps the call when mishandled (R2a to R2f). Three
-  rules: no decoy, memo, ranking or county figure ships (R3c); no field reading decides (every field read correctly,
-  the statewide share still caps Tallis, R3a); no filed rule says how to count a county's returns with children.
-- **Readers (four, sonnet at medium, each on a fresh copy, scored before reading):** every one missed the call on
-  the default path (the statewide share of first-class returns with children, Tallis 15.46 per cent, capped). Round 1
-  (target.zip sha256 1f991494fb7dfd99): reader 1 kept ask A only (14 of 71, exit 0), reader 2 kept both asks (28 of
-  71, exit 1), so both asks were re-sited. Round 2 on the shipped pack (sha256 5d16182359536da0): both readers missed
-  every ask A figure on the funding codes (1 to 22 dwellings short per county) and kept ask B by reading the old
-  numbers by invoice month, 14 of 71 each, exit 0 twice. Ask B is the softer ask; the pair stays under the bar
-  while the call holds.
-- **Judge:** pass 1 DETERMINISTIC, APPROVE (one low note: the family average pooled over every class moves the counts
-  and keeps the call; the first-class average is the only one consistent with Table 2). Pass 2 on the shipped pack
-  DETERMINISTIC, APPROVE, every figure reproduced, fix none. Gate G etl_conformance with method selection,
-  analytical_non_defect, no surface read, no sole defect; Gate H domain, layers and decisive step pass, analytical.
-- **Free gates (2026-10-20):** checks.py 0 failed (input gates, dates, pins, SF1 to SF14, L1 to L8, O1 to O3, R1 to
-  R3c, S1 and S2, A1 to A12, B1 to B10, E1 to E4, F1 to F6), verify.py 71 of 71 independently, two builds
-  byte-identical, target.zip cut from the final build (14 files, sha256 5d16182359536da0), figures_check.py 130 of 130, precut.py 51 checks
-  clean, voice-check PASS, guard.py heart WARN on objective overuse only (nearest driver 0.06), surface no personas,
-  containers clean, generator/ceiling.py pair ceiling 31.0 with mirror leakage 0.0.
-- **leak.py REVIEW lines, each harmless:** 131, 114, 129, 135 and 200 appear only inside larger numbers (dollar
-  amounts in the close-out and the Department's tables, an income class bound in the dictionary); the policy and the
-  dictionary carry the call's words because they define the allocation and the files it is made from; the policy,
-  the close-out and the dictionary use the plain words amount, residential, published, agency and close-out in their
-  own sense, and none names the decomposition, the conversion's renumbering or the callbacks' effect on the
-  completion date.
+The full includer (every device handled) keeps all 20 (stress row, ceiling.py). Zero device rows sit in the main
+call's population: the call reads the export's NOV26 rows alone (R2.6), no withdrawn entry carries a November mark
+(A5), and every ask figure recomputes the clean truth (A1, A2).
+
+## Architecture 1 record
+
+Drawn 2026-10-20 from seed ET32 in demographic-social-science / income-poverty-inequality (ETL): the Corran Valley
+regional council of governments splitting its 2027 weatherization fund across fourteen member counties by tax-year
+2023 earned income credit returns with qualifying children, from the IRS ZIP-code tables taken to counties through
+the residential ZIP-to-county file, capped at 12 per cent. The default applied the statewide share of claimants with
+children in each AGI class to every county and capped the seat county; the golden decomposed each county's lowest-AGI
+claims into families and childless workers by their paired credit amounts, and left the seat county at 11.46 per cent
+under the cap. Shipped 2026-10-20 (judge passes 1 and 2 DETERMINISTIC), no portal result; re-rooted 2026-11-01 at
+the Batch 3 queue reset with its world closed. Its reports are kept as `determinism_check_report_arch1.md`,
+`determinism_check_report_pass2_arch1.md` and `leak_check_report_arch1.md`.
 
 ## Tried and rejected
 
@@ -333,3 +280,29 @@ sentence (fork table). Re-run on the finished pack at stage 3.
   after the year, where reader 2 read the conversion notes, validated the mapping by agency and kept all fourteen
   spending figures (score_reader exit 1, 28 of 71). Re-sited: ask A on the funding-code vintage, ask B on the invoice
   month behind a move inside the year; both readers had missed the call.
+- Architecture 1 as a whole (2026-11-01, the Batch 3 queue reset): re-rooted with its world closed, one architecture
+  per world; the weatherization-fund world is not drawn again.
+- Carried scores across a change of paper as architecture 2's step (2026-11-01, draw): task464's driver map closed the
+  conversion cells and the linking method would sit at the top of the ladder; candidate B.
+- A harsh marking team scaled by seeded scripts (2026-11-01, draw): a named correction and a planted defect; candidate C.
+- Absentees silently left out of a reported total (2026-11-01, draw): a coverage gap reads as a planted defect;
+  candidate D, kept as neutral Layer 1.
+- The latest mark of record after re-marks as the step (2026-11-01, draw): data semantics; candidate E, kept as a May
+  reviews hazard.
+- A standard-setting panel's pass mark (2026-11-01, draw): the field's named procedure, rule application once filed;
+  candidate F.
+- G16 as the decisive generator and G14 with `quantity_figure` (2026-11-01, guard): G16 banned against task452 in the
+  window, and G14 with a figure decision read as task133's lineage puzzle (same_puzzle BLOCK); the card leads with G6
+  and `conformed_dataset`.
+- Choice strong enough for the means to move Question 6 the wrong way (2026-11-01, prototype on the clean truth): the
+  regression adjustment and the random intercept then fell a whole mark short of the fit, a standing member on another
+  call; the choice was set so every standing member agrees and the means under-move instead (+1 against +3).
+- A compulsory Paper 1 shipped at item level (2026-11-01, design): an adjustment anchored on Paper 1 scores is a
+  defensible member attenuated by that paper's own reliability and lands between the means and the fit; Paper 1 marks
+  are not shipped.
+- Duplicate portal accounts as a withdrawals device (2026-11-02, stage 3, before any reader): an entry the office
+  closed as a duplicate reads as withdrawn or as absent depending on whether the entry or the person is counted, a fork
+  on the ask; removed from the world.
+- Every centre's May-sitter figure was first left to the draw (2026-11-02, stage 3, checks.py A3): at two centres the
+  May absentees who re-entered and the members who changed surname cancelled, so the careful route kept those figures;
+  the operating records were redrawn so the two never cancel at a centre.

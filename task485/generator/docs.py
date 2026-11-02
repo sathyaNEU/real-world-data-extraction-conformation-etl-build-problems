@@ -1,6 +1,6 @@
 """The pack's documents: the Board's preferred drug list policy, the P&T Committee's clinical review for 2027, the
-PBM agreement's rebate exhibit, the PBM's network change notice, the implementation e-mails and the PBM's fiscal
-2025 rebate guarantee reconciliation."""
+PBM agreement's rebate exhibit, the implementation e-mails and the PBM's fiscal 2025 rebate guarantee
+reconciliation."""
 import reportlab.rl_config
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -73,9 +73,9 @@ def policy(path):
          P("3. The preferred product", H),
          P("3.1 In each reviewed class the preferred product is the therapeutically equivalent product with the lowest "
            "net cost per 30-day supply."),
-         P("3.2 A product's net cost per 30-day supply is the ingredient cost the Plan paid on the product's claims filled "
-           "in the fiscal year, less the rebates the product's manufacturer paid the Plan on those claims, divided by the "
-           "30-day supplies dispensed on those claims."),
+         P("3.2 A product's net cost per 30-day supply is the ingredient cost paid on the product's claims filled in the "
+           "fiscal year, before member cost sharing and without dispensing fees, less the rebates the product's "
+           "manufacturer paid the Plan on those claims, divided by the 30-day supplies dispensed on those claims."),
          P("3.3 The fiscal year is the most recent Plan fiscal year (1 July to 30 June) for which the rebate remittances "
            "for all four quarters have been received."),
          P("3.4 A claim that was reversed is not counted."),
@@ -167,21 +167,6 @@ def exhibit_c(path):
     _pdf(path, "Exhibit C Manufacturer Rebates", s, W.PBM, W.PBM)
 
 
-def network_notice(path, w):
-    hosp = [p for p in w.pharmacies if p.get("before")]
-    s = [P(W.PBM, T),
-         P("Network Change Notice. 12 February 2026.", SMALL),
-         P("To: %s, Director of Pharmacy Benefits, %s" % (PEOPLE["director"], W.OFFICE)),
-         P("Effective March 1, 2026, the following pharmacies join the %s Specialty Network and leave the Retail "
-           "Network. Claims these pharmacies dispense on or after March 1 adjudicate under specialty network terms; "
-           "member copays for specialty drugs are unchanged." % W.PBM.split(" ")[0]),
-         _table([["Pharmacy", "NPI"]] + [[p["name"], p["npi"]] for p in hosp], [4.4 * inch, 1.6 * inch], size=8.6),
-         Spacer(1, 6),
-         P("Questions about this notice may be directed to your account team."),
-         P("%s, Account Executive" % PEOPLE["pbm"], SMALL)]
-    _pdf(path, "Network Change Notice", s, PEOPLE["pbm"], W.PBM)
-
-
 def emails(path):
     msgs = [
         ("Monday, September 22, 2026 9:14 AM", PEOPLE["pbm"], PEOPLE["director"], "2027 PDL load",
@@ -227,5 +212,5 @@ def reconciliation_fy2025(path, rec):
     s.append(Spacer(1, 6))
     s.append(P("Guaranteed rates per brand claim: retail under 84 days %.2f, retail 84 days or more %.2f, mail %.2f, "
                "specialty %.2f." % (g["RETAIL30"], g["RETAIL90"], g["MAIL"], g["SPECIALTY"]), SMALL))
-    s.append(P("Shortfalls were paid with the remittance of the following quarter.", SMALL))
+    s.append(P("Shortfalls were paid by separate remittance.", SMALL))
     _pdf(path, "Rebate Guarantee Reconciliation FY2025", s, W.PBM, W.PBM)

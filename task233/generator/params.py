@@ -38,8 +38,8 @@ REGIONS = [
 
 # Field Quality Team circuit: calendar days after the index day on which the team re-collects
 # in each region (moved to the next working day when it falls on a weekend or holiday)
-FQT_OFFSET = {"CR01": 2, "CR02": 3, "CR03": 2, "CR04": 6, "CR05": 6, "CR06": 6, "CR07": 6,
-              "CR08": 6, "CR09": 6, "CR10": 6, "CR11": 7, "CR12": 6, "CR13": 6, "CR14": 7}
+FQT_OFFSET = {"CR01": 2, "CR02": 1, "CR03": 2, "CR04": 6, "CR05": 6, "CR06": 7, "CR07": 6,
+              "CR08": 7, "CR09": 6, "CR10": 7, "CR11": 7, "CR12": 6, "CR13": 6, "CR14": 7}
 FQT_MULTIPLES = 4            # outlets re-collected per region per month
 FQT_INDEPENDENTS = 5
 FQT_DRAW_DAYS = 4            # the team re-collects at outlets visited in the window's first four working days
@@ -47,36 +47,37 @@ FQT_DRAW_DAYS = 4            # the team re-collects at outlets visited in the wi
 # collector recording errors by region (truth): keying slips, wrong variety or size, and the
 # chance a collector keeps the handheld's pre-filled previous price when the shelf price changed
 ERRORS = {
-    "CR01": (0.005643, 0.003762, 0.025080),
-    "CR02": (0.017821, 0.011287, 0.071286),
-    "CR03": (0.004057, 0.002898, 0.017386),
-    "CR04": (0.003621, 0.002716, 0.018104),
-    "CR05": (0.028971, 0.020279, 0.144853),
-    "CR06": (0.004095, 0.002632, 0.016087),
-    "CR07": (0.013981, 0.009987, 0.079894),
-    "CR08": (0.002161, 0.001441, 0.009604),
-    "CR09": (0.006863, 0.005719, 0.034317),
-    "CR10": (0.013922, 0.008474, 0.048424),
-    "CR11": (0.005960, 0.004470, 0.029802),
-    "CR12": (0.014203, 0.010145, 0.060871),
-    "CR13": (0.002001, 0.001358, 0.007145),
-    "CR14": (0.006380, 0.004785, 0.031898),
+    "CR01": (0.004454, 0.002970, 0.019796),
+    "CR02": (0.011388, 0.007212, 0.045552),
+    "CR03": (0.003363, 0.002403, 0.014413),
+    "CR04": (0.004358, 0.003270, 0.021790),
+    "CR05": (0.033144, 0.023200, 0.165718),
+    "CR06": (0.010068, 0.006471, 0.039551),
+    "CR07": (0.014234, 0.010168, 0.081340),
+    "CR08": (0.006902, 0.004601, 0.030673),
+    "CR09": (0.007564, 0.006303, 0.037824),
+    "CR10": (0.019414, 0.011816, 0.067525),
+    "CR11": (0.005796, 0.004347, 0.028981),
+    "CR12": (0.016296, 0.011639, 0.069839),
+    "CR13": (0.008327, 0.005651, 0.029734),
+    "CR14": (0.005302, 0.003976, 0.026507),
 }
 
 # Price Collection Quality Standard bands on collection accuracy (per cent)
 BAND_COMPLIANT = 98.0
-BAND_CREDIT = 96.5
+BAND_CREDIT = 96.0
+CREDIT_PERCENT = 4
 
 # item groups: monthly frequency of a shelf-price change at multiples and at independents
 GROUPS = {
-    "FV": ("Fresh fruit and vegetables", 0.22, 0.18),
-    "MF": ("Meat, fish and poultry", 0.13, 0.09),
-    "BC": ("Bread and cereals", 0.09, 0.05),
-    "DE": ("Milk, cheese and eggs", 0.10, 0.06),
-    "OF": ("Other food and non-alcoholic drinks", 0.11, 0.07),
-    "HS": ("Household supplies", 0.08, 0.04),
-    "PC": ("Personal care", 0.09, 0.04),
-    "CF": ("Clothing and footwear", 0.07, 0.03),
+    "FV": ("Fresh fruit and vegetables", 0.19, 0.15),
+    "MF": ("Meat, fish and poultry", 0.11, 0.075),
+    "BC": ("Bread and cereals", 0.075, 0.045),
+    "DE": ("Milk, cheese and eggs", 0.085, 0.05),
+    "OF": ("Other food and non-alcoholic drinks", 0.095, 0.06),
+    "HS": ("Household supplies", 0.07, 0.035),
+    "PC": ("Personal care", 0.075, 0.035),
+    "CF": ("Clothing and footwear", 0.06, 0.025),
 }
 
 # outlet kinds: stratum, share of the stratum, quotes per outlet (low, high), item groups priced
@@ -100,9 +101,17 @@ CHAINS = {
 }
 
 STATUS_UNAVAILABLE = 0.028   # quote-months the collector could not price
-STATUS_REPLACED = 0.009      # quote-months the collector moved to a new variety
+STATUS_REPLACED = 0.012      # quote-months the collector moved to a new variety
 LATE_VISIT = 0.045           # outlet-months first visited after the collection window
-VISIT_WEIGHTS = {"M": [0.10, 0.15, 0.25, 0.30, 0.20], "I": [0.30, 0.25, 0.20, 0.15, 0.10]}
+VISIT_WEIGHTS = {"M": [0.26, 0.24, 0.21, 0.16, 0.13], "I": [0.30, 0.25, 0.20, 0.15, 0.10]}
 SPLIT_VISIT = 0.06           # large supermarket outlet-months collected over two visits
 FQT_NOT_FOUND = 0.012        # back-checked items the team could not find on the day
 FQT_TRIES = 20               # candidate draws of each month's back-check sample (generator only)
+
+MISSED_VISIT = 0.012         # outlet-months scheduled but not visited at all
+REBRAND_DATE = dt.date(2026, 8, 1)   # Lifeline Chemists' branches trade as CareMed Pharmacy from this day
+EXTRACT_DATE = dt.date(2026, 10, 14) # the price database and review log extracts
+REVIEW_QUERY = 0.12          # replacements first sent back to the contractor with a query
+REVIEW_COMPARABLE = 0.74     # final decisions that accept the replacement as comparable
+REVIEW_RECHECK = 0.14        # final decisions the senior commodity analyst re-checks
+RESENT_BATCH = 0.012         # outlet-month uploads the handheld sent twice

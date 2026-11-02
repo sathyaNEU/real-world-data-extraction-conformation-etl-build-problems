@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Ministry of Agriculture"
+COMPANY = "Office of Employee Benefits"
 
 
 def _x(s):
@@ -305,6 +305,29 @@ def excel_dialect(items, key, app_version="16.0300", company=None):
     return [(nm, parts[nm]) for nm in order]
 
 
+def _embedded(data, creator, created, modified):
+    """A chart's embedded workbook: its core properties take the deck's stamps and its entries the 1980 stamp, so
+    the chart data written at build time carries no build clock."""
+    import io
+    src = zipfile.ZipFile(io.BytesIO(data))
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for i in src.infolist():
+            d = src.read(i.filename)
+            if i.filename == "docProps/core.xml":
+                d = re.sub(rb"<dcterms:created([^>]*)>[^<]*</dcterms:created>",
+                           b"<dcterms:created\\1>" + created.encode() + b"</dcterms:created>", d)
+                d = re.sub(rb"<dcterms:modified([^>]*)>[^<]*</dcterms:modified>",
+                           b"<dcterms:modified\\1>" + modified.encode() + b"</dcterms:modified>", d)
+                d = re.sub(rb"<dc:creator>[^<]*</dc:creator>", b"<dc:creator>" + _x(creator).encode() + b"</dc:creator>", d)
+                d = re.sub(rb"<cp:lastModifiedBy>[^<]*</cp:lastModifiedBy>",
+                           b"<cp:lastModifiedBy>" + _x(creator).encode() + b"</cp:lastModifiedBy>", d)
+            zi = zipfile.ZipInfo(i.filename, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, d)
+    return buf.getvalue()
+
+
 def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
@@ -331,6 +354,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)
             if b"<Company>" not in data:
                 data = data.replace(b"</Properties>", b"<Company>" + _x(company or COMPANY).encode() + b"</Company></Properties>")
+        elif name.endswith(".xlsx"):
+            data = _embedded(data, creator, created, modified)
         out.append((name, data))
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") or not n.endswith((".xml", ".rels")) else XML_DECL + d)

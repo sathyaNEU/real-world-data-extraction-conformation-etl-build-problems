@@ -40,14 +40,15 @@ def write(fig_path, out_path):
     L.append("")
     L.append("1. Took every employee with a WORKED shift in ta_shift_records_20260928_20261108.csv and every labour-hire "
              "operative in labour_hire_timesheets_oct_nov_2026.xlsx whose shift began 12 October to 8 November 2026 "
-             "(Schedule 2, clause 2), with each worker's hub and shifts worked.")
+             "(Schedule 2, clause %s), with each worker's hub and shifts worked." % F["clauses_cited"]["population"])
     L.append("2. Converted wcs_operator_sessions_export_20261116.csv from UTC to each hub's local time, placed each session "
              "in the shift it began in, and joined its badge to a payroll or labour-hire number through "
              "badge_register_20261113.xlsx at the session's date (reissued badges by their issue and cancel dates, "
              "contractors left out).")
     L.append("3. Summed each worker's induct hours over the reference weeks, divided by their shifts worked, and computed "
-             "their LAeq,8h per Schedule 2, clause 3, from the induct, floor and amenities levels in "
-             "noise_survey_report_2026.pdf, before and with the induct level in induct_enclosure_design_report_rev2.pdf.")
+             "their LAeq,8h per Schedule 2, clause %s, from the induct, floor and amenities levels in "
+             "noise_survey_report_2026.pdf, before and with the induct level in induct_enclosure_design_report_rev2.pdf."
+             % F["clauses_cited"]["exposure"])
     L.append("4. Counted by hub the workers at 85 dB(A) or more and those brought below it: %s %d brought below, %s %d."
              % (best, F["below"][best], second, F["below"][second]))
     L.append("5. Placed each EP-01 vend in ppe_vending_transactions_2026q3.json at the hub its machine stood at, from the "
@@ -55,7 +56,7 @@ def write(fig_path, out_path):
              "list's current site), in that hub's local time, at one pair a vend before the machine's RANGE CHANGE visit "
              "and five pairs from it.")
     L.append("6. Replayed each client's tests in audiometry_results_2025_2026.csv from their first test per Schedule 3, "
-             "each confirming retest becoming the reference (not the reference in audiometry_clients_20261031.xlsx), "
+             "each confirming retest becoming the reference (not the reference in audiometry_clients_20261106.xlsx), "
              "and placed each shift confirmed in 2026 at the worker's hub on the retest date from "
              "hr_site_transfers_2026.csv.")
     L.append("7. Placed the enclosure at the hub with the most workers brought below: %s." % best)
@@ -75,7 +76,7 @@ def write(fig_path, out_path):
     L.append("1. Earplug pairs issued at each hub in July, August and September 2026, local time:")
     for h in hubs:
         p = F["pairs"][h]
-        L.append("   - %s: %s, %s, %s" % (h, fmt(p["7"]), fmt(p["8"]), fmt(p["9"])))
+        L.append("   - %s: July %s; August %s; September %s" % (h, fmt(p["7"]), fmt(p["8"]), fmt(p["9"])))
     L.append("2. Workers whose 2026 hearing tests confirmed a standard threshold shift:")
     for h in hubs:
         L.append("   - %s: %d" % (h, F["sts"][h]))

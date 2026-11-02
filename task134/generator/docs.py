@@ -11,7 +11,7 @@ import params as P
 from io_util import pdf_text, save_docx
 
 NOTICE = "notice_to_mariners_03-2026.pdf"
-LICENCE = "marine_licence_L2021-00317_v2.pdf"
+LICENCE = "marine_licence_L2021-00317-2.pdf"
 BASIS = "deepening_2027_maintenance_planning_basis.docx"
 
 # Filed sentences, each once, at authority.
@@ -205,4 +205,4 @@ def write_basis(out):
         for i, v in enumerate(row):
             cells[i].text = v
     save_docx(doc, os.path.join(out, BASIS), "Maintenance dredging planning basis 2027-2030", P.PEOPLE["manager"],
-              "2027-01-11T16:20:00Z")
+              "2026-12-02T14:45:00Z", modified="2027-01-11T16:20:00Z")

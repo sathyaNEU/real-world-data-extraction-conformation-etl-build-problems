@@ -24,8 +24,9 @@ def _d(d, old):
 
 def claims_csv(path, w):
     """One row per adjudication: a paid row for every claim and, for a reversed claim, a reversal row carrying the
-    original's claim number. Rows for service before 1 January 2026 carry the old group codes, cardholder numbers,
-    person codes, hyphenated NDCs and US dates; later rows the new ones."""
+    original's claim number. A claim with service before 1 January 2026 carries the old group code, cardholder number
+    and person code (eligibility on the date of service); a row adjudicated before that day is written in the old
+    platform's layout (US dates, hyphenated NDCs), a later row in the new platform's (ISO dates, plain NDCs)."""
     acc_old = {a[0]: a[1] for a in W.ACCOUNTS}
     acc_new = {a[0]: a[2] for a in W.ACCOUNTS}
     rows = []
@@ -33,24 +34,26 @@ def claims_csv(path, w):
         p = w.products[c["key"]]
         old = c["d"] < OLD_FORMAT_UNTIL
         person = c["person"]
-        base = dict(rx_number="%07d" % c["rx"], fill_number=c["fill"], date_of_service=_d(c["d"], old),
+        base = dict(rx_number="%07d" % c["rx"], fill_number=c["fill"],
                     group_id=acc_old[c["acc"]] if old else acc_new[c["acc"]],
                     cardholder_id=person["old_card"] if old else person["new_card"],
                     person_code=person["old_pc"] if old else person["new_pc"],
-                    patient_dob=_d(person["dob"], old), patient_gender=person["sex"], pharmacy_npi=c["ph"]["npi"],
-                    ndc=p["ndc"] if old else _ndc_plain(p["ndc"]),
+                    patient_gender=person["sex"], pharmacy_npi=c["ph"]["npi"],
                     product_name=claim_name(p),
                     days_supply=c["ds"], daw_code="0" if p["cls"] != "OTH" else ("1" if c["no"] % 23 == 0 else "0"),
                     compound_code="2" if c.get("compound") else "1")
+
+        def layout(when):
+            legacy = when < OLD_FORMAT_UNTIL
+            return dict(date_of_service=_d(c["d"], legacy), date_paid=_d(when, legacy),
+                        patient_dob=_d(person["dob"], legacy), ndc=p["ndc"] if legacy else _ndc_plain(p["ndc"]))
         rows.append((c["paid"], c["no"], dict(base, claim_number=str(c["no"]), claim_status="P", reversal_of="",
-                                              date_paid=_d(c["paid"], c["paid"] < OLD_FORMAT_UNTIL),
                                               quantity_dispensed=_q(c["qty"]), ingredient_cost_paid="%.2f" % c["ingr"],
                                               dispensing_fee_paid="%.2f" % c["fee"], patient_pay_amount="%.2f" % c["pay"],
-                                              plan_paid_amount="%.2f" % c["plan"])))
+                                              plan_paid_amount="%.2f" % c["plan"], **layout(c["paid"]))))
         if c["rev"]:
             rows.append((c["rev"], c["rev_no"], dict(base, claim_number=str(c["rev_no"]), claim_status="R",
-                                                     reversal_of=str(c["no"]),
-                                                     date_paid=_d(c["rev"], c["rev"] < OLD_FORMAT_UNTIL),
+                                                     reversal_of=str(c["no"]), **layout(c["rev"]),
                                                      quantity_dispensed=_q(-c["qty"]),
                                                      ingredient_cost_paid="%.2f" % -c["ingr"],
                                                      dispensing_fee_paid="%.2f" % -c["fee"],
@@ -180,8 +183,12 @@ def remittance(path, w, q):
     """One quarter's rebate remittance statement: each manufacturer's rebates by plan account, current-quarter lines
     for the quarter's claims and prior-period adjustment lines for earlier quarters' claims."""
     acc_name = {a[0]: a[3] for a in W.ACCOUNTS}
-    new = q >= "2026Q1"
-    acc_code = {a[0]: (a[2] if new else a[1]) for a in W.ACCOUNTS}
+    old_code = {a[0]: a[1] for a in W.ACCOUNTS}
+    new_code = {a[0]: a[2] for a in W.ACCOUNTS}
+
+    def acc_code(l):
+        # a line carries the group number its claims were billed under: the old code for service before 1 January 2026
+        return new_code[l["acc"]] if l["svc"] >= "2026Q1" else old_code[l["acc"]]
     lines = [l for l in w.statements if l["stmt"] == q]
     mfr_order = sorted(w.mfr, key=lambda m: w.mfr[m]["stmt"])
     wb = Workbook()
@@ -202,12 +209,12 @@ def remittance(path, w, q):
         ls = [l for l in lines if l["mfr"] == m]
         ls.sort(key=lambda l: (W.ACC.index(l["acc"]), 0 if l["kind"] == "CUR" else 1, l["svc"]))
         for l in ls:
-            ws.append([w.mfr[m]["stmt"], acc_code[l["acc"]], acc_name[l["acc"]],
+            ws.append([w.mfr[m]["stmt"], acc_code(l), acc_name[l["acc"]],
                        "Current Quarter" if l["kind"] == "CUR" else "Prior Period Adjustment", PERIOD[l["svc"]][2],
                        round(l["amount"], 2)])
             total += l["amount"]
     ws.append([])
-    ws.append(["Total remitted", "", "", "", "", round(total, 2)])
+    ws.append(["Total remitted", None, None, None, None, round(total, 2)])
     for cell in ws[hrow]:
         cell.font = Font(bold=True)
     ws["A1"].font = Font(bold=True, size=12)

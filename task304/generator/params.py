@@ -77,5 +77,6 @@ RELOCATIONS = [
 
 # ---- ask B: audiometry (the program enrols the induct titles and team leaders)
 AUDIO_YEAR = 2026
+AUDIO_EXPORT = dt.date(2026, 11, 6)        # ClearTone's client list export
 STS_DB = 10.0           # average worsening at 2, 3 and 4 kHz in either ear
 RETEST_DAYS = 30

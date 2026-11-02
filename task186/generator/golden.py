@@ -167,17 +167,17 @@ def write_all(target, golden, gen):
         t0, Spacer(1, 2),
         Paragraph("Projections from 1 July 2025 to 30 November 2025 count only to decide whether an object had "
                   "already been shown to the officer.", st["c"]),
-        Paragraph("Detection performance is read on each officer's first showing of each threat object over the CT "
-                  "history from 1 July 2025, an object counting as shown once any of its orientations had been "
-                  "projected to the officer. In the screening year first showings were detected %.1f per cent of the "
-                  "time against %.1f per cent for repeat showings of an object, and an orientation new to the officer "
-                  "whose object had already been shown was detected %.1f per cent of the time. Most of a full-time "
-                  "officer's projections in the screening year were of objects already shown, so the raw hit rate "
-                  "mostly reflects repeat showings. %s of the officers coming off clear 80 per cent on the raw hit "
-                  "rate, %s of them full-time; the %s casual officers under 80 per cent on it are under on new "
-                  "objects too."
+        Paragraph("SCS-04 reads detection performance on prohibited items the officer has not been shown before. "
+                  "Here an item is a threat object in the TIP library, whichever of its orientations was projected, "
+                  "and before runs back through the CT record to 1 July 2025: in the screening year first showings "
+                  "of an object were detected %.1f per cent of the time against %.1f per cent for repeat showings, an "
+                  "orientation new to the officer whose object had already been shown %.1f per cent, and an object "
+                  "first shown before December over %d per cent when shown again. Keyed on the image, or counted "
+                  "from 1 December, first showings would take off only %s casual officers. %s of the officers "
+                  "coming off clear 80 per cent on the raw hit rate, %s of them full-time."
                   % (100 * M["pooled_hit_first"], 100 * M["pooled_hit_repeat"], 100 * ev["other_orientation"],
-                     word(len(masked)).capitalize(), word(n_ft), word(len(raw_off))), st["p"]),
+                     int(math.floor(100 * ev["pre_window_min"])), word(len(M["r2"])),
+                     word(len(masked)).capitalize(), word(n_ft)), st["p"]),
         Image(png, width=174 * mm, height=80.2 * mm),
         Paragraph("Source: threat image projection records, 1 July 2025 to 30 November 2026, joined to TIP library "
                   "release %s and the CT operator logins; officers from the officer register at 30 November 2026."
@@ -190,8 +190,9 @@ def write_all(target, golden, gen):
     t1.setStyle(tstyle)
     story += [KeepTogether([
                   Paragraph("2. Currency", st["h"]),
-                  Paragraph("Officers endorsed for the whole of each month who fell short of the 20 hours of X-ray "
-                            "time a month that SCS-04 section 5 requires.", st["p"]),
+                  Paragraph("Officers endorsed for the whole of each month, by the officer register's endorsement "
+                            "and lapse dates, who fell short of the 20 hours of X-ray time a month that SCS-04 section 5 "
+                            "requires.", st["p"]),
                   t1, Spacer(1, 3),
                   Paragraph("Source: lane roster and payroll leave records. An officer's X-ray time on a lane is the "
                             "time worked there divided by the officers working the lane at each moment (SCS-04 "
@@ -207,9 +208,10 @@ def write_all(target, golden, gen):
     t2.setStyle(tstyle)
     story += [t2, Spacer(1, 3),
               Paragraph("Source: CT units' hourly image counts, each unit placed on the lane it stood on that day "
-                        "(D2's unit replaced in March 2026, and the spare unit's two days on each lane from June to "
-                        "September, included). Images counted before a lane's first rostered start, when no projection "
-                        "is recorded on the lane, are not passenger bags and are left out. Quarters in Sydney time.",
+                        "(D2's unit replaced in March 2026, and the spare unit's days on a lane whose own unit was away, "
+                        "included). Images counted before a lane's first rostered start are start-up test "
+                        "images (SCS-04 section 3), and no projection is recorded on the lane then; they are left out. "
+                        "Quarters in Sydney time.",
                         st["c"])]
 
     def page(canvas, d):
@@ -251,6 +253,8 @@ def write_all(target, golden, gen):
         "recertified_count": int(len(tab) - len(off)),
         "masked_ft_count": int(sum(1 for r in masked.itertuples() if r.employment == "Full-time")),
         "raw_off_count": len(M["r0"]),
+        "image_off_count": len(M["r2"]),
+        "inyear_off_count": len(M["r2b"]),
         "pooled_other_orientation_pct": round(100 * ev["other_orientation"], 1),
         "pre_window_repeat_floor_pct": int(math.floor(100 * ev["pre_window_min"])),
         "pooled_first_raw": round(float(M["pooled_hit_first"]), 5),

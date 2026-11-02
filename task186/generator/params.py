@@ -41,6 +41,8 @@ CATS = [("FA", "GUN", "Firearms and parts", 0.45, 0.21),
         ("OP", "OTH", "Other prohibited items", -0.15, 0.24)]
 STANDARD = 0.80          # detection performance below this takes an officer off X-ray duty
 CURRENCY_H = 20.0        # monthly hours at an X-ray screen an endorsed officer must reach
+CURRENCY_MARGIN_H = 0.3  # no officer endorsed for a whole month sits within this of CURRENCY_H (roster finishes moved)
+ROSTER_STEP = 15         # minutes: the roster's own grain, the step a finish time moves by
 
 # Scanner serials and their history (the register only knows where each unit stands now).
 SCANNERS0 = {"D1": "KX6-0412", "D2": "KX6-0413", "D3": "KX6-0414", "D4": "KX6-0415", "D5": "KX6-0416",
@@ -52,6 +54,7 @@ NEW_D2 = "KX6-0590"
 RETROFIT = [("D1", dt.date(2026, 6, 9)), ("D3", dt.date(2026, 6, 23)), ("D4", dt.date(2026, 7, 7)),
             ("I1", dt.date(2026, 7, 21)), ("I2", dt.date(2026, 8, 4)), ("D2", dt.date(2026, 8, 18)),
             ("D5", dt.date(2026, 9, 1))]     # each lane's own unit out two days, the spare in its place
+SPARE_DAYS = [("D3", dt.date(2026, 5, 13)), ("I2", dt.date(2026, 10, 21))]  # a lane unit away for the day; the spare covers
 TEST_IMAGES = (34, 46)                       # daily performance-test images a unit counts after its retrofit
 SERVER_MERGE = dt.date(2026, 3, 1)           # international TIP server folded into the domestic one
 RESEND_DAY = dt.date(2026, 2, 17)            # D3's TIP records for this day re-sent after a network outage

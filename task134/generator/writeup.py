@@ -37,6 +37,13 @@ def emit(tdir, task_dir):
     nb = {n: put("component.natural_bed.%s" % n, "%.2f" % nat[n]) for n in A.REACH_NAMES}
     k0 = put("step.k_low", "%.3f" % kvals[0])
     k1 = put("step.k_high", "%.3f" % kvals[-1])
+    put("constant.year_1", "1")
+    put("constant.band_from_m", "50")
+    put("constant.band_to_m", "300")
+    put("constant.round_total", "50,000")
+    put("constant.round_part", "20,000")
+    put("constant.round_tonnes", "1,000")
+    put("constant.licence_year_end_day", "30")
     put("constant.depth_now", "12.3")
     put("constant.depth_new", "14.3")
     put("constant.odn", "%.2f" % P.CD_BELOW_ODN)
@@ -81,7 +88,7 @@ def emit(tdir, task_dir):
     L.append("5. Raised each reach and the basin by two metres over its depth below the natural bed, mean times (14.3 less bed) over "
              "(12.3 less bed), and added the berth pockets at their means: %s m3, %s to the nearest 50,000." % (unr, total))
     L.append("6. Placed each 2025-26 load in dunmarsh_load_log_2023-2026.csv at the site whose corners in "
-             "marine_licence_L2021-00317_v2.pdf hold its dump position, took the Fend Endeavour's January to March dry solids from "
+             "marine_licence_L2021-00317-2.pdf hold its dump position, took the Fend Endeavour's January to March dry solids from "
              "FE_dry_solids_revision_20260330.csv by trip reference (vessel, local date, trip of the day), the Maasbank's from the "
              "licence formula, divided by the loading area's dry-solids fraction from the latest campaign completed before the month "
              "(sediment_sampling_2025-2026.xlsx) and summed by local quarter: the placements in block 4.")

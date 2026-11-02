@@ -60,15 +60,40 @@ def scrub_xlsx(wb, creator):
     wb.properties.title = None
 
 
+CORE = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+        '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+        'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
+        'xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+        '<dc:creator>{c}</dc:creator><cp:lastModifiedBy>{c}</cp:lastModifiedBy>'
+        '<dcterms:created xsi:type="dcterms:W3CDTF">{cr}</dcterms:created>'
+        '<dcterms:modified xsi:type="dcterms:W3CDTF">{d}</dcterms:modified></cp:coreProperties>')
+APP = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
+       '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
+       'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
+       '<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>'
+       '<Company>{c}</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>'
+       '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>')
+EXPORT_STAMP = {"Site Security": "2026-11-13T06:41:00Z", "Workforce Planning": "2026-11-10T23:05:00Z",
+                "Engineering": "2026-06-30T02:12:00Z", "SafeStock": "2026-09-30T07:30:00Z",
+                "ClearTone Occupational Audiology": "2026-11-06T04:18:00Z"}
+CREATED_STAMP = {"Engineering": "2024-03-11T22:47:00Z"}     # a register kept and re-saved, not a one-off export
+
+
 def save_xlsx(wb, path, creator):
     scrub_xlsx(wb, creator)
     wb.save(path)
-    # normalise the zip so two builds are byte-identical
+    # normalise the zip so two builds are byte-identical, with the exporting system's own stamp
     import zipfile
+    stamp = EXPORT_STAMP.get(creator, "2026-11-16T09:00:00Z")
     buf = io.BytesIO()
     with zipfile.ZipFile(path) as zin, zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zout:
+        names = [i.filename for i in zin.infolist()]
         for item in sorted(zin.infolist(), key=lambda i: i.filename):
             data = zin.read(item.filename)
+            if item.filename == "docProps/core.xml":
+                data = CORE.format(c=creator, d=stamp, cr=CREATED_STAMP.get(creator, stamp)).encode()
+            elif item.filename == "docProps/app.xml":
+                data = APP.format(c=creator).encode()
             zi = zipfile.ZipInfo(item.filename, date_time=(2026, 11, 16, 9, 0, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o600 << 16
@@ -336,7 +361,7 @@ class Pack:
                          "product_code": v["product"], "slot": str(rng.choice(slots[v["product"]])), "qty": 1})
         recs.sort(key=lambda r: (r["vend_utc"], r["machine_id"]))
         doc = {"export": "SafeStock Cloud - vend transactions", "account": "Brolga Parcel Network",
-               "period": {"from": "2026-06-29", "to": "2026-10-02"}, "generated_utc": "2026-10-06T03:14:09Z",
+               "period": {"from": "2026-06-29", "to": "2026-10-02"}, "export_created_utc": "2026-10-06T03:14:09Z",
                "records": recs}
         with open(os.path.join(self.out, "ppe_vending_transactions_2026q3.json"), "w", encoding="utf-8") as f:
             json.dump(doc, f, indent=1, sort_keys=False)
@@ -400,7 +425,7 @@ class Pack:
         for row in ws.iter_rows(min_row=2):
             row[4].number_format = "dd/mm/yyyy"
             row[6].number_format = "dd/mm/yyyy"
-        save_xlsx(wb, os.path.join(self.out, "audiometry_clients_20261031.xlsx"), "ClearTone Occupational Audiology")
+        save_xlsx(wb, os.path.join(self.out, "audiometry_clients_%s.xlsx" % P.AUDIO_EXPORT.strftime("%Y%m%d")), "ClearTone Occupational Audiology")
         rows = []
         for t in sorted(A.transfers, key=lambda t: t["effective"]):
             rows.append([self.payroll[t["pid"]], SITE_HR[t["from_hub"]], SITE_HR[t["to_hub"]], t["effective"].strftime("%d/%m/%Y")])

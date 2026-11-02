@@ -68,6 +68,9 @@ def unit_on(lane, d):
     for ln, day in P.RETROFIT:
         if ln == lane and day <= d <= day + dt.timedelta(days=1):
             return "KX6-0416"
+    for ln, day in P.SPARE_DAYS:
+        if ln == lane and d == day:
+            return "KX6-0416"
     if lane == "D2":
         return P.NEW_D2 if d >= P.D2_NEW else "KX6-0413"
     if lane == "D5":
@@ -165,7 +168,7 @@ def build(world, target):
     ws = wb.active
     ws.title = "Officers"
     ws.append(["staff_no", "payroll_no", "surname", "given_name", "employment", "home_checkpoint",
-               "xray_endorsed", "endorsement_30_nov_2026", "left"])
+               "xray_endorsed", "endorsement_30_nov_2026", "endorsement_lapsed"])
     emp = {"FT": "Full-time", "PT": "Part-time", "CA": "Casual"}
     for o in sorted(world.off, key=lambda o: (ids.name[o["idx"]][1], ids.name[o["idx"]][0])):
         i = o["idx"]

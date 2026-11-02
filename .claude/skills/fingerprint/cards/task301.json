@@ -1,85 +1,95 @@
 {
   "task": "task301",
-  "architecture": "v2",
-  "drawn": "2026-10-25",
+  "architecture": "v3",
+  "drawn": "2026-11-02",
   "slot_note": "",
-  "domain": "epidemiology-public-health",
-  "subdomain": "health-burden-impact-modeling",
-  "client_domain": "epidemiology-public-health",
-  "niche": "placing a primary health network's quit outreach team in one of four sub-regions for 2027, sized by the patients it helps to quit, when the team telephones every patient its practices record as a current smoker and each sub-region's records have aged at its own rate since the practices last recorded each patient's status",
+  "domain": "economics-econometrics",
+  "subdomain": "elasticity-welfare-policy-impact-estimation",
+  "client_domain": "economics-econometrics",
+  "niche": "a Spanish regional government choosing which child poverty measure its 2027 budget funds, sized by the children each brings above the poverty line in 2027 by tax-benefit microsimulation on the regional living conditions survey, when one measure widens an existing claimed benefit whose newly entitled families claim gradually and are paid only from the month after approval",
   "objective": "opportunity-sizing-decision",
-  "shape": "other",
+  "shape": "14",
   "decision_type": "pick_one_of_n",
-  "answer_unit": "count",
-  "answer": "Inner South, about 550 quits in 2027",
-  "answer_source": "golden workbook and submission.md, from generator/figures.json",
+  "answer_unit": "named_option",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
-    "C"
+    "none"
   ],
   "generators": [
-    "G9",
     "G14",
     "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "pilot_log",
-  "stump_strategy": "population_selection",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst reads each listed smoker's status date, finds the 2025 team's quits per listed patient falling with the age of the status record (and the team's 'not a current smoker' outcomes rising with it), models that curve on the case log, carries it to each sub-region's list and places the team in Coastal Hinterland at about 750 quits (737 logistic, 787 binned); the curve is Eastern Shore's own rate of stopping, and each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year against Inner South's 5, so Coastal Hinterland's old records are about half ex-smokers by 2027 and Inner South's mostly still smoke.",
-  "domain_test": "The deciding quantity is how many of each sub-region's recorded smokers will still be smoking when the team calls, which epidemiology estimates from repeated status recordings as a two-state (smoker, ex-smoker) continuous-time Markov process with a cessation and a relapse rate by population, fitted to each sub-region's own consecutive recordings, times the team's quits per smoker it calls; swap in subscribers or debtors and the relapse floor, the deprivation gradient in cessation and the four-week abstinence rule that defines a quit stop meaning anything.",
+  "analyst_test": "A strong analyst who simulates every measure correctly on the survey (2027 incomes, the line, the equivalence scale, the weights) and credits the income-limit rise with the Complemento Familiar's published settled take-up for all of 2027 recommends the limit rise, measure C, where only letting the families it newly entitles claim at the pace the 2024 limit rise's newly entitled families claimed, each paid from the month after approval, shows the automatic payment, measure A, brings the most children above the line in 2027.",
+  "domain_test": "The deciding quantity is the number of children each measure brings above the relative poverty line in 2027, which public economics estimates by tax-benefit microsimulation on household survey microdata, each household's equivalised disposable income with and without the measure's payments as the family would receive them in 2027, grossed by the survey weights; swapped into customers or subscribers there is no equivalence scale, no relative poverty line, no means test and no claim the benefit rules time.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a-calibration-yield-embeds-its-own-population's-decay-of-a-recorded-state",
+  "layer2_pattern": "own:first-year-claims-of-the-newly-entitled-arrive-at-the-last-widening's-pace",
   "layer1": [
-    "two clinical systems' smoking-status vocabularies (daily, weekly or irregular smoker against smoker; never smoked against non-smoker)",
-    "patients registering through the record with a status taken at registration",
-    "a few ex-smokers re-recorded as never smoked",
-    "same-day re-entries and corrections",
-    "a practice that changed clinical system in 2021 with its history carried across",
-    "case-log patients who have left and are absent from the 2026 extract",
-    "the team's four-week follow-up with lost to follow-up"
+    "two survey waves with renamed income components",
+    "province codes in the survey against province names in the benefits ledger",
+    "benefits ledger migrated in 2024 with day-month-year dates before and ISO dates after",
+    "a mid-2025 uprating of the Complemento's monthly amount",
+    "re-awards of the same family under new award numbers",
+    "household members linked to parents by person number, not by household type",
+    "a take-up report published as a PDF table"
   ],
-  "stakeholder_role": "the network's health intelligence manager, who advises the executive on where the 2027 team goes",
+  "stakeholder_role": "the head of the regional statistics institute's social policy modelling unit, who appraises the cash measures for the regional cabinet",
   "role_family": "research_desk",
   "scoring_unit": "units served",
   "spine": {
-    "file": "smoking_status_history_2012-2026.parquet",
-    "rows": 885765,
-    "entity": "one smoking status a practice recorded for one patient on one date",
-    "grain": "patient-recording",
+    "file": "ecvv2026_personas.csv",
+    "rows": 26000,
+    "entity": "one person in a household of the regional living conditions survey, 2026 wave (2025 incomes)",
+    "grain": "person",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "minister_or_cabinet",
   "forcing_event": "budget_or_appropriation",
-  "org_family": "foundation_or_funder",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "Australia (New South Wales)",
-    "currency": "AUD",
-    "org_type": "primary health network (commissioner of primary care services)",
+    "geography": "Spain (a fictional autonomous community, the Comunidad de Valdemora, its provinces, institutions and benefits invented)",
+    "currency": "EUR",
+    "org_type": "regional statistics institute's social policy modelling unit appraising cash measures for the regional cabinet",
     "invented_names": [
-      "Coast and Tablelands PHN"
+      "Comunidad de Valdemora",
+      "Complemento Familiar"
     ],
     "people": [
-      "Megan Collins",
-      "Gregory Roth"
+      "Guiomar Iñiguez",
+      "Diego Hervia"
     ]
   },
   "deliverables": [
-    "quit_outreach_placement_2027.docx",
-    "quit_outreach_placement_2027.xlsx"
+    "nota_consejo_infancia_2027.pdf",
+    "medidas_infancia_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A yield measured on a list recorded recently and carried to lists recorded long ago files the largest list, when members leave the recorded state between recordings at a rate that differs by population and shows only in each population's own consecutive recordings, so the members still in the state when acted on are each list discounted at its own rate over its own record ages, and the list with the oldest records and the fastest exits shrinks the most.",
-  "driver_concrete": "Each sub-region's 2027 quits are its recorded smokers' chances of still smoking when called, from a smoker and ex-smoker Markov process fitted to that sub-region's own consecutive status recordings (Coastal Hinterland about 11 per cent a year stopping, Inner South about 5), times the 2025 team's quits per smoker reached and its reach; Coastal Hinterland's 8,422 listed smokers, 5,287 of them recorded more than five years before the extract, are about half still smoking against about 85 per cent of Inner South's 5,456, so Inner South gives the most quits (about 550).",
-  "stump": "A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.",
+  "driver": "Widening an existing claimed entitlement is credited in its first year with the settled caseload's claiming rate for the whole year, when the newly entitled claim gradually, at the pace the last widening's newly entitled claimed, and are paid only from the month after each claim is approved, so in its first year it brings far fewer members over the line than a payment made automatically from the first month.",
+  "driver_concrete": "Raising the Complemento Familiar's income limit (measure C) is credited by static microsimulation, and again at the Complemento's settled 81.9 per cent take-up for all of 2027, with more children brought above the line than any other measure, when the families the 2024 limit rise newly entitled claimed over about two years and the Complemento pays only from the month after approval, so C's 2027 payments reach few newly eligible families for enough months to lift them and the automatic payment through the regional tax agency (measure A) brings the most children above the line in 2027.",
+  "stump": "A competent solver simulates every measure on the 2026 survey, credits the income-limit rise with the Complemento's 81.9 per cent take-up for the whole of 2027 and recommends measure C, where the golden is measure A; the step that lands it there is crediting the newly entitled families with a full year of payments, when the 2024 limit rise's own claim record shows newly entitled families claiming over about two years and the Complemento pays only from the month after approval.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task118": "task118 v3 prices a harm by time since each unit's exposure began, recovering the real start from a renewal chain in another record; task301 v3 has no start to recover: the families a limit rise newly entitles claim through the measure's first year at the pace the last limit rise's newly entitled families claimed, and only the months each is paid in 2027 count.",
+    "task131": "task131 v2 moves load out of a window and the moved load returns as a surge that sets the target-day maximum; task301 v3 moves nothing between periods: a widened entitlement reaches its newly entitled families only as they claim through its first year, so its 2027 effect is a fraction of the settled one.",
+    "task169": "task169 v1 carries a cell's own growth with an outside condition held fixed; task301 v3 carries no growth: the deciding quantity is when in 2027 the families a limit rise newly entitles would claim, read from the cohort the 2024 limit rise entitled.",
+    "task183": "task183 forecasts events from each part's own failure history; task301 v3 has no per-unit history to carry: the newly entitled families have never claimed, and their first-year claiming is read from the cohort the last limit rise entitled.",
+    "task130": "task130 v5 reads a judge's leniency at the number of earlier visits each judge makes to each unit; task301 v3 has no judge, mark or visit count: the decisive quantity is the claiming pace of a newly entitled cohort in a measure's first year.",
+    "task230": "task230 v3 carries a classification bias to a late channel processed under a looser rule; task301 v3 classifies nothing: a claimed widening's first-year payments reach newly entitled families only after each claims and is approved, at the pace the last widening's cohort claimed.",
+    "task446": "task446 v3 carries each kind of flag's conversion, traced back to the component that raised it; task301 v3 has no flags or components: the pool is the families a limit rise newly entitles, and their claims build up through the first year."
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -97,14 +107,35 @@
       "decision_type": "pick_one_of_n",
       "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.",
       "fate": "spent at stage 4 on target.zip 402a51e4 (2026-10-25): scored reader A landed the call (Kingsley Fields 9,700 MWh) by matching Hallam Down's broiler unit to Wexcombe's word for word and reading the gradient in Wexcombe's block SCADA; both readers took all 31 ask figures"
+    },
+    {
+      "architecture": "v2",
+      "driver": "A yield measured on a list recorded recently and carried to lists recorded long ago files the largest list, when members leave the recorded state between recordings at a rate that differs by population and shows only in each population's own consecutive recordings, so the members still in the state when acted on are each list discounted at its own rate over its own record ages, and the list with the oldest records and the fastest exits shrinks the most.",
+      "domain": "epidemiology-public-health",
+      "subdomain": "health-burden-impact-modeling",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "population_selection",
+      "decision_type": "pick_one_of_n",
+      "stump": "A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.",
+      "shell": null,
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-25 as the quit outreach team's 2027 placement, no portal result; the world is closed)"
     }
   ],
-  "differentiation": {
-    "task454": "task454 prices the items a survey left uncovered from covered items of the same presentation, a coverage gap filled by matching on a product attribute; task301's lists are complete, and the decisive step is how many listed members are still in the recorded state when the team calls, fitted from each population's own consecutive recordings.",
-    "task177": "task177 v3 reaches default through an exit event whose rate shows in the forward employers' payroll registers, a covariate the scored units rarely exhibit; task301's every unit carries a recorded state that decays between recordings, the calibration's decay is the trap, and each population's decay is fitted as a two-state process from its own re-recordings, relapse included.",
-    "task75": "task75 v2 finds a second arrival channel as the residual between two counts of a closed period; task301 has no hidden channel, every listed patient is called, and the decisive step is how many of them still smoke."
-  },
+  "lineage_shells": [],
   "architecture_spent": false,
-  "notes": "Re-rooted from architecture 1 (solar build, spent at stage 4). Two call-only probes on a prototype pack both filed Coastal Hinterland (about 490 and 510) by carrying the pilot's record-age gradient. Calibration form and pattern chosen honestly: the 2025 team's call log is a pilot log. Registered once task302's card moved the window past task170 (whose pilot_log blocked it). WARN repeat.question_form and repeat.decision answered: a pick of one of four sub-regions asks which, as task302's pick of one of four categories does in another domain.",
-  "registered": "2026-10-25T07:21:37Z"
+  "notes": "Re-rooted 2026-11-01 at the Batch 3 queue reset from architecture 2 (the quit outreach world, closed). Architecture 1 (solar soiling) spent at stage 4.",
+  "registered": "2026-11-02T00:31:24Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "the",
+    "rounding opener": "quits",
+    "deliverable set": "docx+xlsx"
+  }
 }

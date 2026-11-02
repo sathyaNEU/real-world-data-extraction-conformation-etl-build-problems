@@ -1,0 +1,147 @@
+{
+ "call": {
+  "compliant": [
+   "Halbrook Central",
+   "Halbrook South",
+   "Eastwick Coast",
+   "Harlow Plains",
+   "Greywater",
+   "Ardmore Uplands",
+   "Corran Peninsula",
+   "Rookby Downs",
+   "Northreach"
+  ],
+  "compliant_count": 9,
+  "corrective_action": [
+   "Halbrook North",
+   "Tamsin Bay",
+   "Fenwick",
+   "Westholm"
+  ],
+  "credit_dollars": "1,775",
+  "credit_percent": 4,
+  "credit_regions_fee": {
+   "Belmont Valley": "44,380"
+  },
+  "service_credit": [
+   "Belmont Valley"
+  ]
+ },
+ "components": {
+  "band_compliant": "98.0",
+  "band_credit": "96.0",
+  "corrective_accuracy_whole": [
+   97
+  ],
+  "credit_region_accuracy_whole": {
+   "Belmont Valley": 95
+  },
+  "days_per_month": "30.4",
+  "default_credit_dollars": "7,049",
+  "disagreement_high": "7.1",
+  "disagreement_high_region": "Belmont Valley",
+  "disagreement_low": "1.1",
+  "disagreement_low_region": "Halbrook Central",
+  "prices_rechecked_found": "6,310"
+ },
+ "deliverables": {
+  "CR01": {
+   "missed_visits": 1,
+   "outcome": "Compliant",
+   "region": "Halbrook Central",
+   "replacement_acceptance": "68.4",
+   "timeliness": "96.3"
+  },
+  "CR02": {
+   "missed_visits": 1,
+   "outcome": "Corrective action",
+   "region": "Halbrook North",
+   "replacement_acceptance": "63.2",
+   "timeliness": "95.8"
+  },
+  "CR03": {
+   "missed_visits": 2,
+   "outcome": "Compliant",
+   "region": "Halbrook South",
+   "replacement_acceptance": "80.0",
+   "timeliness": "95.1"
+  },
+  "CR04": {
+   "missed_visits": 0,
+   "outcome": "Compliant",
+   "region": "Eastwick Coast",
+   "replacement_acceptance": "62.5",
+   "timeliness": "92.8"
+  },
+  "CR05": {
+   "missed_visits": 1,
+   "outcome": "Service credit",
+   "region": "Belmont Valley",
+   "replacement_acceptance": "76.9",
+   "timeliness": "92.8"
+  },
+  "CR06": {
+   "missed_visits": 0,
+   "outcome": "Compliant",
+   "region": "Harlow Plains",
+   "replacement_acceptance": "60.0",
+   "timeliness": "97.0"
+  },
+  "CR07": {
+   "missed_visits": 1,
+   "outcome": "Corrective action",
+   "region": "Tamsin Bay",
+   "replacement_acceptance": "88.9",
+   "timeliness": "95.5"
+  },
+  "CR08": {
+   "missed_visits": 0,
+   "outcome": "Compliant",
+   "region": "Greywater",
+   "replacement_acceptance": "46.2",
+   "timeliness": "95.8"
+  },
+  "CR09": {
+   "missed_visits": 0,
+   "outcome": "Compliant",
+   "region": "Ardmore Uplands",
+   "replacement_acceptance": "42.9",
+   "timeliness": "95.0"
+  },
+  "CR10": {
+   "missed_visits": 0,
+   "outcome": "Corrective action",
+   "region": "Fenwick",
+   "replacement_acceptance": "78.6",
+   "timeliness": "97.0"
+  },
+  "CR11": {
+   "missed_visits": 1,
+   "outcome": "Compliant",
+   "region": "Corran Peninsula",
+   "replacement_acceptance": "65.0",
+   "timeliness": "95.5"
+  },
+  "CR12": {
+   "missed_visits": 1,
+   "outcome": "Corrective action",
+   "region": "Westholm",
+   "replacement_acceptance": "66.7",
+   "timeliness": "98.4"
+  },
+  "CR13": {
+   "missed_visits": 1,
+   "outcome": "Compliant",
+   "region": "Rookby Downs",
+   "replacement_acceptance": "64.3",
+   "timeliness": "93.7"
+  },
+  "CR14": {
+   "missed_visits": 0,
+   "outcome": "Compliant",
+   "region": "Northreach",
+   "replacement_acceptance": "66.7",
+   "timeliness": "91.3"
+  }
+ }
+}

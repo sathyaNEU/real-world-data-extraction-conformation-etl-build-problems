@@ -32,20 +32,25 @@ def main(fig_path=os.path.join(HERE, "figures.json"), out=os.path.join(TASK, "su
     L.append("")
     L.append("**Take %s off X-ray duty from 1 January 2027 for remedial training; recertify every other officer "
              "holding an X-ray endorsement on 30 November 2026.** Read on the threat objects each officer had not been "
-             "shown before, their detection performance is below %d per cent against the %d per cent standard, and "
-             "every other endorsed officer's is above %d per cent. Not only the %d casual officers whose hit rate over "
-             "every projection in the year is under %d per cent: that rate counts projections of objects the officer "
-             "had already been shown, which officers detect %.1f per cent of the time against "
-             "%.1f per cent for objects new to them, so it carries the officers shown the library most over the line."
-             % (names, f["designated_below_pct"], f["standard_pct"], f["others_at_least_pct"], f["raw_off_count"],
-                f["standard_pct"], f["pooled_repeat_pct"], f["pooled_first_pct"]))
+             "shown before, as SCS-04 defines detection performance, their detection performance is below %d per cent "
+             "against the %d per cent standard, and every other endorsed officer's is above %d per cent. Not only the "
+             "%d casual officers that first showings keyed on the TIP image, or counted from 1 December 2025, would take "
+             "off: an orientation new to the officer of an object already shown is detected %.1f per cent of the time "
+             "and an object first shown before December over %d per cent when shown again, against %.1f per cent for "
+             "objects new to the officer, so both readings carry six full-time officers over the line. Not the %d "
+             "casual officers under %d per cent on the hit rate over every projection, which counts items the officer "
+             "had already been shown."
+             % (names, f["designated_below_pct"], f["standard_pct"], f["others_at_least_pct"], f["image_off_count"],
+                f["pooled_other_orientation_pct"], f["pre_window_repeat_floor_pct"], f["pooled_first_pct"],
+                f["raw_off_count"], f["standard_pct"]))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
     L.append("1. **%d** officers hold an X-ray endorsement on 30 November 2026." % f["endorsed_population"])
-    L.append("2. Detection performance is read on each officer's first showing of each threat object over the CT "
-             "history from 1 July 2025, an object counting as shown once any of its orientations had been projected to "
-             "the officer: in the screening year first showings are detected **%.1f per cent** of the time, repeat "
+    L.append("2. Detection performance is read, as SCS-04 section 3 defines it, on items the officer has not been "
+             "shown before: each officer's first showing of each threat object over the CT history from 1 July 2025, "
+             "an object counting as shown once any of its orientations had been projected to the officer; in the "
+             "screening year first showings are detected **%.1f per cent** of the time, repeat "
              "showings **%.1f per cent**, and an orientation new to the officer whose object had already been shown "
              "**%.1f per cent**." % (f["pooled_first_pct"], f["pooled_repeat_pct"], f["pooled_other_orientation_pct"]))
     L.append("3. The officers coming off detect fewer than **%d per cent** of their first showings; every other endorsed "
@@ -56,7 +61,8 @@ def main(fig_path=os.path.join(HERE, "figures.json"), out=os.path.join(TASK, "su
     L.append("## 3. Step-by-Step Solution")
     L.append("")
     L.append("1. Read SCS-04_screening_officer_competency_standard_rev6.pdf: detection performance is the probability "
-             "that the officer detects a prohibited item carried in a passenger's cabin bag, assessed over the "
+             "that the officer detects a prohibited item they have not been shown before, carried in a passenger's "
+             "cabin bag, assessed over the "
              "screening year 1 December 2025 to 30 November 2026 in Sydney time for every officer the register "
              "(screening_officer_register.xlsx) shows as Current on 30 November, %d officers." % f["endorsed_population"])
     L.append("2. Conformed tip_events_20250701_20261130.csv: dropped the D3 records of 17 February 2026 that appear "
@@ -78,14 +84,15 @@ def main(fig_path=os.path.join(HERE, "figures.json"), out=os.path.join(TASK, "su
     L.append("5. For currency, shared each lane's rostered time in lane_roster_20251201_20261130.csv among the "
              "officers rostered on it at each moment, leaving out an officer on Personal leave that day in "
              "hr_leave_taken_20251201_20261130.csv (payroll_no to staff_no through the register), who records no "
-             "projection in the TIP export that day, and counted the officers endorsed for the whole month with under "
-             "20 hours.")
+             "projection in the TIP export that day, and counted the officers endorsed for the whole month (xray_endorsed "
+             "and endorsement_lapsed in the register) with under 20 hours.")
     L.append("6. For throughput, placed each unit in ct_unit_bag_counts_hourly_utc.csv on the lane it stood on each "
              "day (KX6-0413 on D2 until 2 March 2026 and on D5 from 20 April; KX6-0416, the register's spare, on D5 "
-             "until 19 April and on each lane for the two days from June to September when that lane's own unit "
-             "counted nothing; KX6-0590 on D2 from 5 March), kept the Sydney hours inside the lane's rostered time, "
-             "which leaves out the images a unit counted before its lane's first rostered start, when the TIP export "
-             "records no projection on the lane, and summed by quarter of the screening year.")
+             "until 19 April and from then on a lane whose own unit counted nothing: D3 on 13 May 2026, I2 on "
+             "21 October 2026 and two days on each lane from June to September; KX6-0590 on D2 from 5 March), kept the Sydney hours inside the lane's rostered time, "
+             "which leaves out the start-up test images SCS-04 section 3 excludes, counted before the lane's first "
+             "rostered start when the TIP export records no projection on the lane, and summed by quarter of the "
+             "screening year.")
     L.append("7. Recommended taking the officers named in the recommendation off X-ray duty from 1 January 2027 and "
              "recertifying the rest.")
     L.append("")

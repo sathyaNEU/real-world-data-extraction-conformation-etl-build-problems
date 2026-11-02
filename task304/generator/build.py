@@ -36,7 +36,7 @@ PROVENANCE = {
     "ppe_vending_service_visits_2026q3.csv": ("SafeStock service and restock visit log", "restock, range change and commissioning visits by machine and site, July to September 2026"),
     "ppe_vending_asset_list_20260930.xlsx": ("SafeStock asset list as at 30 September 2026", "machines on the Brolga account and the product list"),
     "audiometry_results_2025_2026.csv": ("ClearTone Occupational Audiology test export", "hearing test thresholds at 2, 3 and 4 kHz for enrolled workers, baselines and 2025 to 2026 tests"),
-    "audiometry_clients_20261031.xlsx": ("ClearTone Occupational Audiology client list, 31 October 2026", "enrolled workers with their employee numbers and reference tests"),
+    "audiometry_clients_20261106.xlsx": ("ClearTone Occupational Audiology client list, 6 November 2026", "enrolled workers with their employee numbers and reference tests"),
     "hr_site_transfers_2026.csv": ("Brolga HR system, site transfers 2026", "employees who moved between hubs in 2026 and the effective dates"),
 }
 
@@ -75,7 +75,7 @@ def metadata(target):
 def zip_target(target, path):
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for n in sorted(os.listdir(target)):
-            zi = zipfile.ZipInfo("target/" + n, date_time=ZIP_TIME)
+            zi = zipfile.ZipInfo(n, date_time=ZIP_TIME)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(target, n), "rb").read())

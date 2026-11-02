@@ -196,7 +196,7 @@ def whole_month_population(T):
         first = dt.date(y, m, 1)
         last = (dt.date(y + (m == 12), m % 12 + 1, 1) - dt.timedelta(days=1))
         ok = []
-        for s, e, left in zip(reg["staff_no"], reg["xray_endorsed"], reg["left"]):
+        for s, e, left in zip(reg["staff_no"], reg["xray_endorsed"], reg["endorsement_lapsed"]):
             e = e.date() if hasattr(e, "date") else e
             lf = left.date() if hasattr(left, "date") else left
             if e <= first and (lf is None or pd.isna(lf) or lf >= last):

@@ -282,7 +282,7 @@ class Pack:
         tl = defaultdict(list)
         for v in sorted(visits, key=lambda v: (v["date"], v["type"] != "COMMISSION")):
             if not tl[v["machine"]] or tl[v["machine"]][-1][1] != v["site"]:
-                start = v["date"] if tl[v["machine"]] else dt.date(2026, 7, 1)
+                start = v["date"] if tl[v["machine"]] else dt.date(2026, 1, 1)
                 tl[v["machine"]].append((start, v["site"]))
         change = {v["machine"]: v["date"] for v in visits if v["type"] == "RANGE CHANGE"}
         out = defaultdict(int)
@@ -320,7 +320,7 @@ class Pack:
                                                   type=r[ix["test_type"]],
                                                   L=[float(r[ix["L_2k"]]), float(r[ix["L_3k"]]), float(r[ix["L_4k"]])],
                                                   R=[float(r[ix["R_2k"]]), float(r[ix["R_3k"]]), float(r[ix["R_4k"]])]))
-        head, body = read_xlsx(self.p("audiometry_clients_20261031.xlsx"), "Clients", header_row=1)
+        head, body = read_xlsx(self.p("audiometry_clients_20261106.xlsx"), "Clients", header_row=1)
         ci = {c: i for i, c in enumerate(head)}
         clients = {r[ci["Client No"]]: dict(emp=str(r[ci["Employee No"]]), ref_test=int(r[ci["Reference test"]])) for r in body}
         th, trows = read_csv(self.p("hr_site_transfers_2026.csv"))
