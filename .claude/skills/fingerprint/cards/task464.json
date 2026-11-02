@@ -1,95 +1,132 @@
 {
   "task": "task464",
-  "architecture": 11,
+  "architecture": 12,
   "drawn": "2026-11-02",
-  "slot_note": "re-root, architecture 11: architecture 10 (energy-systems-utilities, a DNO's I2R losses reconductoring programme) held its call but its ask layer could not be repaired inside that world; the draw moves to a client domain none of the lineage used (actuarial-science-insurance / pricing-ratemaking-credibility, Opportunity Sizing & Decision Support) with a world built so the ask layer has records the call never reads (premium adjustments, other perils, weather, the landlord's repairs of other trades).",
-  "domain": "actuarial-science-insurance",
-  "client_domain": "actuarial-science-insurance",
-  "subdomain": "pricing-ratemaking-credibility",
-  "niche": "a specialist property insurer's 1 April 2027 renewal of a build-to-rent landlord's portfolio buildings policy, choosing which leak-detection programme on the renewal shortlist (a list of flats each fitted with an automatic shut-off detector) it funds as a risk-improvement grant, sized as the escape-of-water claims cost the detectors would have prevented over the three policy years to 31 March 2026, when an escape that starts under one flat's floor is claimed in the flats beneath and the landlord's repairs log is the one record of where each escape was stopped",
+  "slot_note": "re-root, architecture 12: architecture 11 (actuarial-science-insurance, an insurer's leak-detection grant sized on escape-of-water claims booked to the flat the water came from) was spent at the judge on Gate H3, the filed population naming the attribution the decisive step turned on; the draw moves to product-analytics, a client domain none of the lineage used, under the same objective, with a decisive step that is an estimate of a spillover the filed estimand (the business's own sponsored clicks) never names.",
+  "domain": "product-analytics",
+  "subdomain": "churn-propensity-uplift-modeling",
+  "niche": "a UK job board's monthly restart-your-alerts email to jobseekers whose daily job alerts were paused for inactivity, piloted April to September 2026 with a random tenth held out, judged for 2027 on the sponsored clicks employers pay for",
   "objective": "opportunity-sizing-decision",
-  "shape": "01",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Fund LD2, the 2017-19 void-turnover kitchen refits: GBP 727,000 of escape-of-water claims prevented (148 claims) over 2023-24 to 2025-26; runner-up LD3, the galvanised pipework blocks, GBP 471,000.",
-  "answer_source": "task464/submission.md, generator/figures.json",
+  "shape": "09",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
   "gap": [
+    "objective",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G3",
-    "G10"
+    "G1",
+    "G6"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the claims listings, the register and the fund terms correctly groups each stack-day's escape-of-water claims under the highest flat that claimed (or books each claim to its own flat) and funds LD3, the galvanised pipework blocks from the second floor up, at GBP 629,000, because the refitted flats' under-floor escapes leave their own flats without a claim; only the repairs log's leak repairs, a floor above the claims, show the escapes started in the refits.",
-  "domain_test": "The deciding quantity is the escape-of-water claims cost a leak-detection programme removes, which property insurers estimate from the claims experience of the risks the devices are fitted to; what decides it is how an escape of water travels through a block of flats, starting in one flat, running down into the flats beneath and being claimed where it lands, so a flat's claims experience measures the water that arrived there, and only where the escape was stopped says where it began; with a road's or a school's nouns there is no escape claimed in the flat beneath, no detector that stops only its own flat's supply and no repairs log locating the source.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:escape-of-water loss booked to the flat where the escape started",
+  "analyst_test": "A strong analyst who maps every address to its mailbox provider, removes scanner clicks and reads the pilot's random holdout correctly measures the restart email's uplift on the restored jobseekers' sponsored clicks, carries it to the twelve 2027 sends and files a gain of about two hundred thousand clicks a year, missing that each send cut the active jobseekers' clicks at three mailbox providers for about ten days.",
+  "domain_test": "The deciding quantity is the series' net incremental sponsored clicks, the randomised holdout uplift among the jobseekers it re-engages less the clicks the job board loses while mailbox providers filter its daily alerts to everyone else after each send, an interference the experimentation field measures by provider against the send dates; put a hospital or a utility in its place and there is no marketplace whose paying clicks ride on one shared alert stream, so the call stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:interference-through-a-shared-sender-standing",
   "layer1": [
-    "Brenmoor's two claims systems: the legacy final extract of 30 June 2024 (its own layout and the landlord's building and door in a risk address) and the new listing, the claims open at the July 2024 migration carried across under new references",
-    "a preliminary and a revised March 2026 listing overlapping",
-    "flat references two ways: Brenmoor's block code and flat number, Pellow's building and door number",
-    "floors labelled per block (lower ground, ground, mezzanine), so floor order comes from the blocks file, not the door number",
-    "Pellow's November 2024 repairs-system change: trade letters, job codes and local time before; trade names, categories and UTC after",
-    "policy years 1 April to 31 March against calendar dates",
-    "losses under the per-claim excess never reaching a listing"
+    "two email platforms either side of the March 2025 migration, with different event names, provider groupings and a UTC clock against the billing system's UK local time",
+    "mailbox provider read from the address domain (gmail and googlemail, the Microsoft family of hotmail, outlook, live and msn, the Yahoo family with aol and ymail, the Apple family, the UK broadband domains)",
+    "Apple Mail Privacy Protection opens on every Apple delivery",
+    "security link scanners clicking every link in an alert at delivery",
+    "employer daily budget caps after which clicks are free",
+    "expired and multi-posted jobs in the click log",
+    "jobseekers with several saved searches receiving several alerts a day"
   ],
-  "stakeholder_role": "the insurer's portfolio underwriter for the landlord's account, who sets the risk-improvement grant at the April 2027 renewal",
-  "role_family": "portfolio_manager",
+  "stakeholder_role": "the job board's head of jobseeker engagement, who sets the 2027 email plan",
+  "role_family": "product_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "repairs_log_2020-04_to_2026-03.csv",
-    "rows": 58841,
-    "entity": "one repair job the landlord raised",
-    "grain": "job",
+    "file": "alert_clicks_daily_by_provider_2025-2026.csv",
+    "rows": 0,
+    "entity": "one day's sponsored clicks for one mailbox provider, one channel and one jobseeker group",
+    "grain": "day x provider x channel x group",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "financial_institution",
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "software_or_platform",
   "world": {
-    "geography": "England (Greater Manchester, invented buildings)",
+    "geography": "England (Leeds head office, UK-wide jobseekers)",
     "currency": "GBP",
-    "org_type": "a specialist property insurer writing a build-to-rent landlord's portfolio buildings policy",
+    "org_type": "an online job board paid by employers per click on sponsored jobs",
     "invented_names": [
-      "Brenmoor Insurance",
-      "Pellow Living"
+      "Quaywork"
     ],
     "people": [
-      "Charlotte Holmes",
-      "Pauline Rahman",
-      "Katie Gill"
+      "Marian Smith",
+      "Glenn Taylor",
+      "Tracy Parkes"
     ]
   },
   "deliverables": [
-    "leak_programmes_2027.xlsx",
-    "renewal_note_2027.pdf"
+    "restart_series_2027.xlsx",
+    "restart_series_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is what fitting a preventer to a set of units removes from a loss that each event records at every unit it damages, when an event that starts at one unit runs on into the units beneath it and often leaves its own unit without a record; the loss records show where damage arrived, not where events began, so the units that record the most are the ones beneath the sources, and only a second system's record of where each event was stopped, matched to the losses by place and day, shows which units start them.",
-  "driver_concrete": "Each programme is sized as the escape-of-water claims cost of the escapes that started in its flats over the three policy years; the 2017 to 2019 void-turnover refits put integrated washing machines in floor-level cupboards whose leaks run under the floor and come through the ceiling below, so those flats rarely claim while the flats beneath them claim again and again, and only the plumber's leak repair in the landlord's repairs log, matched to the claims by building, stack and day, shows the escapes started in the refitted flats.",
-  "stump": "A competent analyst books each escape-of-water claim to the flat that made it, or groups each block, stack and day's claims under the highest flat that claimed, and funds LD3, the galvanised pipework blocks from the second floor up (GBP 582,000 or 629,000); but the 2017-19 refits' floor-cupboard washing machines leak under the floor into the flat below while the refitted flat rarely claims, so only the plumber's leak repair in Pellow's repairs log, a floor above the claims on the same day, shows those escapes started in the refitted flats, and traced there LD2 would have prevented GBP 727,000 against LD3's 471,000.",
+  "question_form": "whether",
+  "driver": "A programme's yield is measured by a randomised holdout inside the group it targets, but every message the organisation sends shares one standing with the services that deliver it, and the targeted group's stale addresses lower that standing for every recipient for some days after each send, so the regular messages to the members outside the test reach fewer of them and the business loses part of what they would have bought; the holdout cannot see it because both its arms share the standing, and only the outside members' purchases, read by delivering service against the send dates and net of what they bought by other routes, show what each send costs.",
+  "driver_concrete": "Each monthly restart-your-alerts send to Quaywork's paused jobseekers hits recycled addresses at the Google, Microsoft and Yahoo mailboxes, which then file Quaywork's daily job alerts to every active jobseeker there as junk for about ten days, so the pilot's holdout uplift (restored jobseekers' sponsored clicks) has to be netted against the active jobseekers' sponsored clicks lost at those three providers in each send's window, read against the unaffected providers and net of the clicks they made on the site and app instead.",
+  "stump": "A competent analyst reads the pilot's random tenth holdout, measures about nineteen thousand extra sponsored clicks per send from the jobseekers the email restored, carries it to the twelve 2027 sends and recommends keeping the series for about 230,000 clicks a year; the step that lands it there is treating the holdout difference as the series' whole effect, when each send cost the active jobseekers at Google, Microsoft and Yahoo addresses more sponsored clicks than it restored, so the series loses the job board clicks and should stop.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task464": "architecture 10 rebuilt a flow magnitude (each section's current as the net of every load and generator beyond it, squared for its loss); here no flow is rebuilt and nothing is squared: each recorded loss is a discrete escape's damage, and the step locates the unit where the escape began from a second system's record of where it was stopped, moving whole claims from the units that recorded them to the unit that caused them.",
-    "task303": "task303 removes losses that every sibling unit logs in the same minute because they originate upstream of all of them; here no loss is removed and no sibling shares one: an escape starts inside one of the candidate units, and its claims are moved, whole, from the flats beneath to that unit, found by the plumber's repair rather than by simultaneity.",
-    "task101": "task101 cuts a threshold from a published distribution once the decision's own earlier payments are taken off it, a component removed from a total; here nothing is removed from any total: every escape-of-water claim stays in, and each escape's claims are moved whole from the flats that recorded them to the flat where the escape started, located by a physical relation (the plumber's leak repair above them in the same stack on the same day), not by subtraction.",
-    "task121": "task121's second architecture follows each unit's reference through a second party's report to an identifier on a different entity; here no reference, identifier or second party links anything: the claims and the repair share only a building, a stack and a day, and the origin is fixed by water running downward, the repair being the highest point of the escape."
+    "task118": "task118's second architecture discounts an item's measured gain by the share taken from items shown beside it on one display (diversion of demand); here nothing is diverted: the targeted sends degrade the delivery of every other message through the senders' shared standing with the mailbox providers, and the loss is read on the untargeted members by provider against the send dates.",
+    "task184": "task184's first architecture rebuilds both arms of a site's difference because the filed plan is not the untreated arm; here the randomised holdout is a correct untreated arm for the targeted group, and the missing piece is a loss outside the experiment, among members the series never mails.",
+    "task472": "task472's first architecture prices a stoppage by how far it pushes the slowest of several parallel streams; here there is no completion time, only a programme's effect on the messages of members outside its test through a shared delivery standing."
   },
-  "notes": "gate_g decomposition_attribution and stump_strategy decomposition_attribution: every escape-of-water claim is correctly recorded at the flat that suffered the damage, and the decision needs it booked to the flat where the escape started (record against operation, G3; one escape under several claims, G10). Shape 01: each shortlisted programme carries its prevented cost and claims, the pick and the runner-up. context_artifact operations_log: the landlord's repairs log the decisive step reads. Forum customer_or_counterparty: the insurer puts the funded programme in the renewal terms it offers the landlord. scoring_unit other: GBP of claims prevented.",
-  "architecture_spent": true,
   "lineage": [
+    {
+      "architecture": "v11 (Brenmoor leak-detection grant at Pellow Living's April 2027 renewal, actuarial-science-insurance pricing-ratemaking-credibility, Opportunity Sizing)",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "pricing-ratemaking-credibility",
+      "client_domain": "actuarial-science-insurance",
+      "niche": "a specialist property insurer's 1 April 2027 renewal of a build-to-rent landlord's portfolio buildings policy, choosing which leak-detection programme on the renewal shortlist (a list of flats each fitted with an automatic shut-off detector) it funds as a risk-improvement grant, sized as the escape-of-water claims cost the detectors would have prevented over the three policy years to 31 March 2026, when an escape that starts under one flat's floor is claimed in the flats beneath and the landlord's repairs log is the one record of where each escape was stopped",
+      "objective": "opportunity-sizing-decision",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G10"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "calibration_form": "none",
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:escape-of-water loss booked to the flat where the escape started",
+      "forum": "customer_or_counterparty",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "financial_institution",
+      "role_family": "portfolio_manager",
+      "context_artifact": "operations_log",
+      "driver": "The decisive quantity is what fitting a preventer to a set of units removes from a loss that each event records at every unit it damages, when an event that starts at one unit runs on into the units beneath it and often leaves its own unit without a record; the loss records show where damage arrived, not where events began, so the units that record the most are the ones beneath the sources, and only a second system's record of where each event was stopped, matched to the losses by place and day, shows which units start them.",
+      "driver_concrete": "Each programme is sized as the escape-of-water claims cost of the escapes that started in its flats over the three policy years; the 2017 to 2019 void-turnover refits put integrated washing machines in floor-level cupboards whose leaks run under the floor and come through the ceiling below, so those flats rarely claim while the flats beneath them claim again and again, and only the plumber's leak repair in the landlord's repairs log, matched to the claims by building, stack and day, shows the escapes started in the refitted flats.",
+      "stump": "A competent analyst books each escape-of-water claim to the flat that made it, or groups each block, stack and day's claims under the highest flat that claimed, and funds LD3, the galvanised pipework blocks from the second floor up (GBP 582,000 or 629,000); but the 2017-19 refits' floor-cupboard washing machines leak under the floor into the flat below while the refitted flat rarely claims, so only the plumber's leak repair in Pellow's repairs log, a floor above the claims on the same day, shows those escapes started in the refitted flats, and traced there LD2 would have prevented GBP 727,000 against LD3's 471,000.",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "book",
+        "rounding opener": "costs",
+        "deliverable set": "pdf+xlsx"
+      },
+      "drawn": "2026-11-02",
+      "fate": "spent 2026-11-02 at stage 4: the determinism judge returned NOT_DETERMINISTIC, SEND_BACK on Gate H3 (rule application): the fund terms had to file the population as escapes from the water supply of a listed flat, whichever flats the water damaged, which stated the attribution the decisive step turned on, and one join on block, stack and date of loss then found every source; the leak reader named the same sentence; the storm asks also forked on an unfiled re-dating rule (fork-is-the-stump, lesson 10)"
+    },
     {
       "architecture": "v10 (Copsewell Cross losses reconductoring, energy-systems-utilities asset-condition-maintenance, Opportunity Sizing)",
       "domain": "energy-systems-utilities",
@@ -267,11 +304,19 @@
       "second-sentence opener": "size",
       "rounding opener": "give",
       "deliverable set": "csv+png+xlsx"
+    },
+    {
+      "question form": "which",
+      "second-sentence opener": "book",
+      "rounding opener": "costs",
+      "deliverable set": "pdf+xlsx"
     }
   ],
-  "registered": "2026-11-02T11:18:59Z",
+  "notes": "Architecture 12 drawn 2026-11-02. Candidates set aside before this card are in the design note's Tried and rejected.",
+  "client_domain": "product-analytics",
+  "registered": "2026-11-02T17:16:45Z",
   "shell": {
-    "question form": "which",
+    "question form": "what",
     "second-sentence opener": "book",
     "rounding opener": "costs",
     "deliverable set": "pdf+xlsx"

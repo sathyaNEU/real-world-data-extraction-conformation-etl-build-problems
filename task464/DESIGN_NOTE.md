@@ -1,377 +1,68 @@
-# task464 design note: Brenmoor's leak-detection grant at Pellow Living's April 2027 renewal (architecture 11)
+# task464 design note: Quaywork's restart-your-alerts series in the 2027 jobseeker email plan (architecture 12)
 
 Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the records at the foot of
 this file before resuming. Architectures 1 to 9 died as the foot and `## Tried and rejected` record (a determinism
 send-back, a portal solve, a Gate C re-judge, three screened-out cells, two refusals on arithmetic, a Gate H3 send-back
 and two portal determinism returns on a forecast's estimator). Architecture 10 (a distribution network operator's
-losses reconductoring, I2R on net section flows) held its call at the in-house judge and was delivered, but its ask
-layer measured spent at the 2026-11-01 honest-cracker audit and no record in that world could carry a passing device,
-so it was re-rooted on 2026-11-02. Architecture 11 moves to a client domain none of the lineage used and to a world
-chosen so that the ask layer has records the call never reads.
+losses reconductoring) was delivered and stays on the portal. Architecture 11 (an insurer's leak-detection grant at a
+landlord's renewal) was spent at the judge on Gate H3 on 2026-11-02: its fund terms filed the attribution the decisive
+step turned on. Architecture 12 moves to product analytics, a client domain none of the lineage used, with a decisive
+step that is an estimate of a spillover the filed estimand never names.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task464.json`, architecture 11, registered 2026-11-02T11:18:59Z,
-  `guard.py check` on the registered card PASS (two NOTEs differentiated on the card, task101 and task121's second
-  architecture, on the gap, the G3 pattern and the Gate G mechanism; nearest drivers 0.09 task306's third architecture
-  and 0.08 task303, task130, task274, task265). Architecture 10 moved into `lineage` with its fate and its prompt shell
-  into `lineage_shells`; seven lineage entries.
-- **Screens run before the draw:** `guard.py recent`, `coverage`, `mechanisms --objective opportunity-sizing-decision`
-  (19 builds, one line each read on the insight spent), `slots` on the mechanism's words (escape of water, flat above,
-  cascade, leak detector, block of flats, stack) and the setting's (repairs log, build-to-rent, landlord, washing
-  machine, leak repair, portfolio policy, flats beneath), and the `resume` of the sibling builds in flight (task180,
-  task183, task453, task154, task266). The live ban window when the card was filed: task453, task154, task183 (forum
-  trustees, regulator, operations desk; forcing period close, statutory filing, season; org nonprofit, agriculture,
-  local government; strategy composition, forecast back-test, grain; shapes other and 13); every axis here clears it.
-- **Pairing:** actuarial-science-insurance / pricing-ratemaking-credibility, which serves Opportunity Sizing and
-  Forecasting; the objective is Opportunity Sizing & Decision Support. The headline is a sized opportunity, pool to
-  realisable: the portfolio's escape-of-water claims (the pool) to the claims of the escapes that start in a
-  programme's flats (what its detectors would have stopped), and it drives a one-programme call. Forecasting is not
-  drawn: the sizing is closed history (the three policy years to 31 March 2026), the record the insurer prices the
-  renewal on, so no forecast enters the graded figure, and the call itself faces forward (the grant for the 2027-28
-  policy year, set at the 1 April 2027 renewal).
-- **Why this ground.** The lineage spent education, healthcare delivery, pharmacology and energy, and screened the
-  survey, physical-science and general-statistics ETL cells; energy and the physical sciences are also where three
-  builds in flight sit with the overuse window full. Actuarial Opportunity Sizing carries one card (task309, a roof
-  retrofit's expected hurricane loss through a vendor event set, catastrophe accumulation), and escape of water in
-  flats was screened only as a pricing lever by floor (task177: a frequency relativity the dwelling-type column takes)
-  and as leak valves by plumbing type (task177: a join and a heterogeneity check), neither the step here.
-- **Niche:** a specialist property insurer's 1 April 2027 renewal of a build-to-rent landlord's portfolio buildings
-  policy: which leak-detection programme on the renewal shortlist (each a list of flats to be fitted with an automatic
-  shut-off detector) the insurer funds as its risk-improvement grant, sized as the escape-of-water claims cost the
-  detectors would have prevented over the policy years 2023-24 to 2025-26.
-- **Strategy:** `decomposition_attribution` (every escape-of-water claim is correctly recorded at the flat that
-  suffered the damage, and the decision needs each escape's claims booked to the flat where the escape started), gap
-  `population` (the claims file is not the escapes), pattern none with generators `G3` (record against operation: the
-  claim records where the water landed, the escape operated in the flat above) then `G10` (one escape under several
-  claims), Gate G `decomposition_attribution`, calibration organ none, decisive rule filed `false`, official decoy
-  `false`, validated decoy `false`, `stump_class: analytical`, Layer 2 family `field_method` (the source attribution
-  insurers already make when they recover a neighbour's escape from the flat it came from).
-- **Data-native sentence.** Pellow Living refitted kitchens on void turnover between 2017 and 2019 and put integrated
-  washing machines in floor-level cupboards, whose hose and valve leaks run under the flat's floor and come through the
-  ceiling of the flat beneath; so the refitted flats themselves rarely claim, the flats under them claim again and
-  again, the insurer's bordereau records each claim at the flat where the water landed, and the only record of where
-  each escape started is the landlord's repairs log, where the plumber who stopped it raised the job.
-- **The abstraction sentence, tested.** The nearest approved build by mechanism is task303 (a feeder's recorded
-  interruptions include losses every sibling feeder logged in the same minute, which originate upstream and leave the
-  conversion's figure). The sentence a reviewer would need, "an intervention at a unit removes only the losses that
-  start there, and the records file losses at units that did not start them", is not true of task303's step, which
-  removes a shared loss from every candidate by simultaneity, and here nothing is shared or removed: each escape starts
-  inside one candidate flat and its claims are moved whole onto that flat from the flats beneath, found by where the
-  escape was stopped and by water running downward, so the source's figure rises by what the others' fall. Against the
-  slot's own architecture 10, which rebuilt a flow magnitude and squared it, nothing here is a flow or a square.
-- **Sources, one line each.** task303 (approved): an upstream shared loss subtracted by the same minute across
-  siblings; here a downstream loss moved to its source by a second system's job record. task309 (approved): an
-  intervention's effect read class by class of intensity through a vendor event set; here no effect is estimated and
-  no event set ships, the detector stopping the escapes that start in its flat by its own specification. task120:
-  a day's use as production less storage gain; nothing here is a balance. task127: a fused wait's replaced step;
-  nothing here is a duration. task106: a shared pool double-booked; no pool is shared here.
-- **Fiction.** An invented portfolio in Greater Manchester: Pellow Living, a build-to-rent landlord with about forty
-  buildings (two 1970s galvanised-pipework towers, mid-rise 1990s and 2000s blocks, low-rise 2015 to 2021 new
-  builds), insured by Brenmoor Insurance, a specialist property insurer, under one portfolio buildings policy with a
-  per-claim escape-of-water excess. Forum `customer_or_counterparty` (Brenmoor puts the funded programme in the renewal
-  terms it offers Pellow), forcing event `purchase_order_or_contract` (the 1 April 2027 renewal), org family
-  `financial_institution`. People drawn with `guard.py names --geo england --seed 464`: Charlotte Holmes (Brenmoor's
-  portfolio underwriter for the account), Pauline Rahman (Pellow's head of property operations, who keeps the repairs
-  log), Katie Gill (Brenmoor's claims analyst).
-- **Deliverables:** `leak_programmes_2027.xlsx` (each programme's prevented claims cost and claims, the pick and the
-  runner-up, and the ask tables) and `renewal_note_2027.pdf` (a one-page note for the landlord with a chart of the
-  programmes' prevented costs). Shell drawn with the world (question form, second-sentence opener `book`, deliverable
-  set pdf+xlsx), differing from architecture 10's (how-much, size, csv+png+xlsx).
-- **Measured at the draw** on a clean-truth prototype (scratch `task464_a11/proto_eow2.py`, 8 seeds, before any row was
-  cut): with equal-sized programmes, booking each claim to its own flat (R0), grouping each escape's claims under the
-  highest flat that claimed (R1) and booking them to the flat where the escape started (R2) name different programmes
-  on most seeds, and R2 names the refitted-flat programme at 1.7 to 2.3 times the next. R0 and R1's winners vary by
-  seed; stage 2 sets the world so that each rung names its own programme and the golden margin clears 1.15 on the cut
-  pack.
+| Item | Architecture 12 |
+|---|---|
+| Card | `.claude/skills/fingerprint/cards/task464.json`, architecture 12, registered 2026-11-02 at WARN (answered below); architecture 11 moved into `lineage` with its fate and its shell into `lineage_shells` |
+| Pairing | Product Analytics (`product-analytics`, client domain product-analytics) / `churn-propensity-uplift-modeling` (serves F and OS) / Opportunity Sizing & Decision Support |
+| Niche | a UK job board (Quaywork, Leeds) paid by employers per click on sponsored jobs, deciding in its 2027 jobseeker email plan whether to keep the monthly restart-your-alerts email to jobseekers whose daily alerts it paused for inactivity, piloted April to September 2026 on the paused pool of 1 April 2026 with a random tenth held out |
+| Call | whether the series stays in the 2027 plan, and the sponsored clicks a year it adds or costs at what each of the pilot's six sends did (`go_hold_or_stop`, answer unit clicks) |
+| Shape | 09, the funnel: per send, the paused pool, the addresses delivered, the jobseekers restored, their sponsored clicks over the holdout's, and on the other side the active jobseekers' sponsored clicks lost at each mailbox provider while it filtered Quaywork's alerts, net of what they clicked on the site and app instead; criteria from each stage by provider and send |
+| Axes | forum `executive_team` (the leadership team signs the 2027 plan), forcing `budget_or_appropriation` (the 2027 email plan and budget), org `software_or_platform`, role `product_manager` (head of jobseeker engagement), context artifact `planning_thread` (the 2027 plan and its thread), calibration `pilot_log`, strategy `causal_design`, Gate G `decomposition_attribution`, gap objective then population, generators G1 then G6 |
+| Personas | Marian Smith, Glenn Taylor, Tracy Parkes (`guard.py names --geo england --seed 464`; Hayley Riley redrawn on a `people.first` WARN against task260; Katie Gill and Olivia Parker not reused) |
+| Deliverables | `restart_series_2027.xlsx` (the per-send funnel and the 2027 sizing) and `restart_series_2027.docx` (a one-page note with a chart), a set none of the lineage shells used |
+| Default path's answer | keep the series: the holdout uplift, about 19,000 sponsored clicks a send, carried to twelve sends, about 230,000 a year (generator to fix the figures) |
+| Golden | stop the series: each send cost the active jobseekers at Google, Microsoft and Yahoo addresses more sponsored clicks than it restored, a net loss of the order of 80,000 a year (generator to fix) |
+| Nearest driver | `guard.py check`: task139 v2 (lineage) at 0.06, a pilot randomised only among units that had all received an opening contact; task302 at 0.05 (substitution within a group); no driver on file at 0.12 or more |
+| Guard verdict | WARN: `repeat.gate_g` against task183 v4 (registered the same day, a bank's lodged cash split by card trade; the label is the honest one here, the business's change in clicks split into the series' gain and its loss on the members it never mails, and the batch carries one other); `test.same_driver_older` differentiated against task118 v2, task184 v1 and task472 v1 (lines on the card) |
 
-## Default path
+**The decisive step, in one line.** Each restart send hits recycled addresses among the paused jobseekers, the
+Google, Microsoft and Yahoo mailboxes then file Quaywork's daily job alerts to every jobseeker there as junk for
+about ten days, and the series' effect on the job board's sponsored clicks is the holdout uplift less those lost
+clicks, read by mailbox provider against the send dates against the unaffected providers, net of the clicks the
+same jobseekers made on the site and app instead.
 
-The route a strong analyst takes with every field read and every filed rule applied, measured on the cut pack:
+**Abstraction sentence.** A programme's effect is measured by a randomised holdout inside the group it targets,
+but every message the organisation sends shares one standing with the services that deliver it; the targeted
+group's stale addresses lower that standing for every recipient for some days after each send, so the business
+loses part of what its other members would have done, a loss the holdout cannot see because both its arms share the
+standing. No build on file carries it: `slots` on the mechanism nouns (deliverability, sender reputation, spam
+complaint, mailbox provider, junk) and on the setting nouns (job board, job alert, pay-per-click, jobseeker) returns
+no slot note with the idea, and `mechanisms --objective opportunity-sizing-decision` lists nineteen builds whose
+nearest relatives are diversion of demand (task118 v2), substitution within a group (task302) and a shared finite
+capacity (task106), none of them a cost imposed on non-targets through a delivery standing.
 
-1. Take Brenmoor's revised March 2026 listing with the legacy extract's claims closed before the July 2024 migration
-   (the migrated open claims counted once, at the listing's value), keep the escape-of-water claims whose date of loss
-   falls from 1 April 2023 to 31 March 2026 (391 claims, GBP 2,037,000) and map each claim's block code and flat
-   number to Pellow's building and door through the register.
-2. Apply the field's own measure of what a risk improvement removes, the claims experience of the risks it is fitted
-   to. The fund terms count every claim an escape caused, whichever flats the water damaged, and water runs down the
-   stack, so group each block, stack and day's claims as one escape and book the group to the highest flat that
-   claimed, the topmost damage being where the water came from.
-3. Sum each programme's booked claims and fund the largest: LD3, the galvanised pipework blocks from the second floor
-   up, at GBP 629,000 from 120 claims, against LD2 at GBP 470,000. Booking each claim to the flat that made it (the
-   claims experience by flat) funds LD3 too, at GBP 582,000, and so does crediting the flat above the highest claimant
-   (GBP 633,000) or a programme's flats with the claims in the flats beneath them (GBP 636,000).
-4. Validate against the record: the galvanised blocks' upper floors lead the escape-of-water claims in 2020-21 to
-   2022-23 as well, and their pipework is the risk the blocks file names.
+**The WHAT, and the fork-is-the-stump test (lesson 10), run at the draw.** The estimand the 2027 plan files:
+population, every jobseeker on Quaywork's books (the paused pool the series mails and everyone else); outcome, the
+sponsored clicks employers pay for; window, the 28 days from each send; unit, clicks; comparison, the job board with
+the send against without it, at what each of the six pilot sends did. The sentence that closes the only open fork
+(whose clicks count) is the plan's measurement line, "a send is judged on the sponsored clicks Quaywork takes in the
+28 days from it, against what it would have taken without it". It names neither the active jobseekers, nor the
+mailbox providers, nor junk filing, nor the alerts; the decisive step is an estimate of a loss the sentence leaves
+to the analyst. The step is not one of the five parts: population, outcome, window, unit and comparison are all
+filed and the step is how the without-send clicks of members outside the experiment are estimated.
 
-Ends on: LD3, the galvanised pipework blocks from the second floor up, GBP 629,000 prevented
-Golden: LD2, the 2017-19 void-turnover kitchen refits, GBP 727,000 prevented from 148 claims
+**The two ask records, named before registration (screened as code at stage 2 before any data is cut).** Record 1,
+the alert click events of one sample week: security gateways (Microsoft Safe Links, Mimecast) open every link in an
+alert in the second it is delivered, so a click on every link of an issue inside one second is no jobseeker, and a
+click count read at its plain meaning is wrong. Record 2, the employers' sponsored-job budget ledger: an employer's
+daily budget caps what it pays, clicks after the cap are delivered free, so revenue is not clicks times the price.
+Neither is a family on the brief's or today's banned lists.
 
-## Stump sentence
-
-Booking each stack-day's escape-of-water claims to the highest flat that claimed funds LD3, the galvanised pipework
-blocks from the second floor up, at GBP 629,000; but the 2017-19 refits put washing machines in floor-level cupboards
-whose leaks run under the floor into the flat below while the refitted flat itself rarely claims, so the highest
-claim sits a floor beneath the escape, and only Pellow's repairs log, where the plumber's leak repair was raised one
-floor above the claims on the same day, shows those escapes started in the refitted flats: traced there, LD2 would
-have prevented GBP 727,000 against LD3's GBP 471,000.
-
-## Three rules
-
-Task type: pricing-ratemaking-credibility in actuarial science and insurance, which serves Opportunity Sizing &
-Decision Support here: a risk improvement grant sized as the escape-of-water claims cost each programme would have
-prevented (the account's escape-of-water claims, to those of escapes from a programme's flats), driving the one
-programme the renewal funds.
-Domain test: the deciding quantity is the escape-of-water claims cost a leak-detection programme removes, which a
-property insurer estimates from the claims experience of the risks it fits the devices to; what decides it is how an
-escape travels through a block of flats, starting at one flat's supply, running down the stack and being claimed
-where it lands.
-Swap: "fund the programme whose detectors would have prevented the most escape-of-water claims" with a school's or a
-road's nouns has no escape claimed in the flat beneath, no device that stops only its own flat's supply and no
-plumber's record of where the water was stopped, so the sentence stops making sense.
-Layer 1: Brenmoor's two claims systems (the legacy final extract of 30 June 2024 and the new listing, the open claims
-migrated under new references), the preliminary and revised March 2026 listings, two reference schemes (block code
-and flat number against building and door), Pellow's November 2024 repairs-system change (job codes and local time
-before, categories and UTC after), floors labelled per block (LG, G, M), policy years against calendar dates, and
-losses under the excess never reaching a listing; each is what the systems write, nothing is placed.
-Layer 2: decomposition attribution, the source attribution an insurer makes when it pursues a neighbour's escape back
-to the flat it came from: the claims of an escape belong to the supply it escaped from, not to the flats that
-recorded the damage, and the claims file alone cannot place that supply.
-Decisive step: attributing each escape-of-water claim to the flat where its escape started, found where the plumber
-stopped it (the leak repair in Pellow's repairs log in the same block and stack, on the claim's date of loss, at or
-above the claim's floor), instead of to the flat that claimed or the highest flat that claimed that day.
-Not semantics: every field read correctly still records each claim at the flat where the water landed, which is what
-a claim's risk address means; the source of an escape has no column in any file, and the highest claimant of a
-stack-day is a coherent reading of the claims alone that is one floor short whenever the water ran under a floor.
-Not rule application: no filed rule says how a claim is traced to its escape; the fund terms file the population
-(escapes from the supply of a flat on the list, whichever flats the water damaged) and nothing else; the enumerated
-family (own flat, own flat or the one above, highest claimant, the flat above it, traced source, traced with riser
-escapes handed to the highest claimant) puts LD2 anywhere from GBP 185,000 to 727,000 and funds LD3 in four of six,
-while the standing family (traced source by local date, by naive UTC date, within a day either side, lowest or
-highest candidate) gives LD2 GBP 727,224 from 148 claims in every member; what rules the rest out is quiet, a leak
-repair a floor above the claims in another system's file, matched by stack, floor and day, which no label or
-sentence points to.
-Analyst test: a strong analyst who reads the listings, the register and the fund terms correctly groups each
-stack-day's claims under the highest flat that claimed and funds LD3, the galvanised pipework blocks from the second
-floor up, at GBP 629,000, because the refitted flats' under-floor escapes leave their own flats without a claim.
-Estimand: risk_improvement_fund_terms_2027.pdf files it: the incurred cost, on the revised March 2026 listing (the
-legacy final extract for a claim closed before the migration), of every escape-of-water claim with a date of loss
-from 1 April 2023 to 31 March 2026 caused by an escape from the water supply of a flat on the programme's list,
-whichever flats the water damaged, the programme with the most being funded.
-No decoy: nothing is planted: no memo, ranking, model output or stakeholder figure of prevented cost ships, the
-shortlist names its programmes and flats only, and the galvanised blocks' claims are their true experience.
-No certified replay: no certified or published figure of prevented cost exists to reproduce; the method is the
-attribution itself, recovered from where each escape was stopped, and nothing validates it but the records.
-Lesson: claims are recorded where water lands, not where it starts, so the flats that claim most are often the
-victims, and sizing a prevention measure means tracing each loss to its source through the trade record of where it
-was stopped; no build on file moves whole losses from the units that recorded them to the unit a second system's
-repair record shows started them.
-
-## Survivor anatomy
-
-Actor: the deciding property is where each escape started, and no file has a column for it: the listing holds the
-flat that claimed, the repairs log the flat a job was raised at, and the source is a relation between a claim and a
-leak repair one or more floors above it in the same stack on the same day.
-Link: the signal is read through a link no key offers: a claim (Brenmoor's block code and flat number, a date) meets a
-leak repair (Pellow's building and door, local time before November 2024 and UTC after) only through the register's
-stack and floor and the date of loss, and no sentence invites the comparison.
-Reflex: the field's own measure, the claims experience of the risks a device is fitted to, booked flat by flat or
-with a cascade grouped under its highest claimant, sits at rungs 0 and 1 and funds LD3.
-Back-test: the easy route validates: the galvanised blocks' upper floors lead the escape-of-water claims in 2020-21 to
-2022-23 too, so the experience is persistent, and every stack-day's highest claimant is a real flat with real damage.
-Second use: every file the decisive step reads is in the pack for a reason of its own: the listings and the register
-are the sizing's base and the fitting cost's flat list, and the repairs log also carries the storms' make-safes and
-the 2025-26 hot water work the asks read.
-Shock: the refitted flats are no anomaly on any shipped statistic: LD2 is last of five on its own flats' claims (GBP
-185,000), its flats sit in ordinary 1990s and 2000s blocks, and the cost the step moves is spread over 148 claims in
-17 blocks.
-Pins: the fund terms file the WHAT (population, outcome, window, unit, comparison, valuation) in Brenmoor's own words
-and no sentence names the repairs log, the leak repair, the stack, the floor or the day the step rides on; deleting
-"whichever flats the water damaged" leaves the step in place, because a claim caused by an escape is still that
-escape's.
-
-## Readability screen
-
-Seven tests per rung (a column or file named for it, a label, a sentence, a sort, a join on a shipped key, a total
-that ties only under it, a narrated process); a rung that any test finds is readable.
-
-| Rung | What reaches it | Verdict |
-|---|---|---|
-| R0 own-flat claims | the listing's block code and flat number, read as written | readable |
-| R0b own flat or the flat above | the register's stack and floor, one join | readable |
-| R1 highest claimant of a stack-day | a group-by on block, stack and date of loss | readable |
-| R1b the flat above the highest claimant | an assumption that sources never claim, one join | readable |
-| R2c traced, riser escapes to the highest claimant | the repairs log without its communal rows | readable |
-| R2 traced source (decisive) | a leak repair in another system's file, a floor or more above the claims, matched by stack, floor and local date; no column, label, sentence, sort or shipped key reaches it | silent |
-
-## Semantic fork table
-
-Every term in the main ask and every convention the main computation needs; each row asserted in `checks.py` under its
-id, the alternative computed through `answers.py`'s readers on the cut pack.
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | "saved us" | Brenmoor's incurred cost, net of the excess | gross of the GBP 500 excess | same call (LD2 GBP 801,224) | the terms' "incurred cost"; same call |
-| SF2 | "escape-of-water claims" | the escape-of-water peril only | every peril at the flats | same call | the terms name escape-of-water claims |
-| SF3 | "the three policy years to 31 March 2026" | date of loss 1 April 2023 to 31 March 2026 | date notified in the window | same call, same figures | the terms' "date of loss"; same call |
-| SF4 | which listing | the revised March 2026 listing | the preliminary listing | same call (LD2 GBP 727,547) | the terms name the revised listing |
-| SF5 | claims closed before the migration | the legacy final extract's value | left out (not on the listing) | same call (LD2 GBP 493,556) | the terms name the legacy extract |
-| SF6 | a claim in both systems | once, at the listing's value | the legacy row and the listing row | same call | the listing's legacy_ref; the terms' valuation |
-| SF7 | "an escape from the water supply of a flat on the list" | the traced source is a listed flat | riser escapes handed to the flats they damaged | same call (LD2 over LD3 1.16) | a riser is no flat's supply |
-| SF8 | "whichever flats the water damaged" | every claim the escape caused | the source flat's own claim only | LD3 | the terms' clause itself |
-| SF9 | "the claims behind it" | claims (listing rows) of the prevented escapes | escapes | same call | the prompt asks for claims |
-| SF10 | the repairs log's clock | UTC rows converted to UK local time | UTC dates read as local | same call, same figures | the Z mark on every new-system time |
-| SF11 | a programme's flats | each programme's own list | flats on two lists counted once overall | same call | the terms' "the programme's list" |
-| SF12 | rounding | sum, then the nearest GBP 1,000 | each claim rounded first | same call, same figures | the prompt's rounding sentence |
-| SF13 | affordability | every programme covered by the fund | a programme beyond the fund | same call | the fund covers the dearest programme under every reading |
-| SF14 | comparison basis | the most prevented cost | prevented cost per flat fitted | same call (LD2 GBP 3,827 a flat) | the terms' "the most"; same call |
-| SF15 | floor order | the blocks file's floor list (LG, G, M, 1 up) | door-number order | same call | the blocks file's floors column |
-| SF16 | stack | the register's stack | the door's last digit | same call | the register |
-| SF17 | the leak repair's day | the claim's date of loss | within a day either side | same call, same figures | one candidate either way |
-| SF18 | which leak repair | the lowest at or above the claim's floor | the highest | same call, same figures | exactly one candidate per claim |
-
-## Ladder
-
-Each programme's credit under every route, cut pack, GBP; margins against the next programme.
-
-| Rung | Route | Winner | Credit | Margin |
-|---|---|---|---|---|
-| R0 | each claim to the flat that made it | LD3 | 582,000 | 1.30 over LD5 |
-| R0b | each claim to its flat or the flat above | LD3 | 636,000 | 1.06 over LD2 |
-| R1 | each stack-day under its highest claimant | LD3 | 629,000 | 1.34 over LD2 |
-| R1b | each stack-day to the flat above its highest claimant | LD3 | 633,000 | 1.45 over LD4 |
-| R2c | traced, riser escapes to the highest claimant | LD2 | 727,000 | 1.16 over LD3 |
-| R2 | traced to the leak repair (golden) | LD2 | 727,000 (148 claims) | 1.54 over LD3 (471,000, 97 claims) |
-
-LD2 is last on R0 (GBP 185,000), so the answer sits at rung 0's bottom; no intermediate rung funds it; the golden
-margin is 1.54.
-
-## Closure table
-
-| Axis | Reading here | Move |
-|---|---|---|
-| 1 Population | claims caused by escapes from a listed flat's supply, whichever flats the water damaged | filed in the fund terms |
-| 2 Unit of account | a claim (a listing row); GBP incurred | the prompt asks for claims and cost |
-| 3 Attribution window | date of loss; the nearest claims sit two days inside each edge | C1, asserted |
-| 4 As-of dating | the revised March 2026 listing; the legacy final extract for claims closed before July 2024 | filed in the fund terms |
-| 5 Version basis | the revised release, not the preliminary | filed; C1 on the call |
-| 6 Denominator | none, a sum | C1 |
-| 7 Weighting | none | C1 |
-| 8 Window length | three policy years | filed |
-| 9 Boundary inclusivity | 1 April 2023 and 31 March 2026 inclusive; no claim within a day of either | C1, asserted |
-| 10 Rounding path | sum, then the nearest GBP 1,000; each graded figure clear of its bin edge | asserted |
-| 11 Tie-break | none needed (margin 1.54) | C1 |
-| 12 Maturity and censoring | open claims at their March 2026 reserve, as the listing values them | filed |
-| 13 Order of operations | trace, then credit the programme | C1, asserted |
-| 14 Row order | file order moves nothing | C1, asserted over a reversal |
-| 15 Duplicate resolution | a migrated claim once, at the listing's value | the listing's legacy_ref; C1 |
-| 16 Identity normalisation | block code and flat number to building and door through the register; FLAT prefixes dropped | the systems' own keys, C4 |
-| 17 Netting against gross | no recoveries on the account | C1 |
-| 18 Dimensional units | GBP throughout | C1 |
-| 19 Code and status semantics | PL03 and Leak repair the same job type; EOW the escape-of-water peril | the systems' own codes, C1 |
-| 20 Integerisation | whole claims | C1 |
-| 21 Clause scope | the fund terms' escape clause governs the escape-of-water figure only | filed |
-| 22 Forward window contents | none; the sizing is closed history | C1 |
-
-## Literal reader
-
-Executing the prompt and the fund terms word for word: the population is every escape-of-water claim with a date of
-loss in the three policy years caused by an escape from the supply of a flat on a programme's list, whichever flats
-the water damaged, valued on the revised March 2026 listing or the legacy final extract. Where the text is silent is
-how a claim is tied to its escape, and the pack holds one record of where escapes were stopped: the leak repairs in
-Pellow's repairs log. Every claim in the window has exactly one leak repair in its block and stack on its date of
-loss at or above its floor (391 of 391), so the literal reader's trace is unique and lands LD2 at GBP 727,000 from 148
-claims. R0 contradicts the terms' "whichever flats the water damaged" (a claim beneath an escape is not the claiming
-flat's); R1, R1b and R0b are not readings of any sentence but assumptions about where the water came from that the
-repairs log refutes claim by claim; R2c hands riser escapes to flats, and a riser is no flat's supply. Every
-alternative in the fork table either keeps LD2 or violates a quotable shipped sentence.
-
-## Oracles
-
-No shipped control ties only under the golden. The listings carry no totals; the repairs log totals nothing; the
-premium schedule's sums are premium; the shortlist carries no figures. The repairs log's leak repairs are not counted
-anywhere, so the trace has no checksum to reconcile to, and the storm and fitting-cost asks have none either: the
-Pennant bordereau's paid figures tie to its own incurred under every dating, and the quote is a price list.
-
-## Ask sheet
-
-The asks carry 55 of the rubric's weight over 18 figures, each a component of the call's case on rows the call never
-reads (H18 ledger: a fitting cost is the grant each candidate would draw from the fund; the fund is the budget the
-grant comes from and the qualifier on whether it covers the programme; each storm's claims and cost are the fund's
-storm cap, which counts any one storm up to GBP 60,000).
-
-- **A1, each programme's fitting cost** (5 figures, GBP to the nearest 1,000), on the quote, the register's hot water
-  and bathrooms, the shortlist and the repairs log's heating jobs. Primary D2, a label stored before a silent switch
-  with a false-clean as-of join: the register's hot water was checked in September and October 2025; from November
-  2025 Lantern Court's flats were given heat interface units and three 1990s blocks' cylinders and cold water tanks
-  were removed for combination boilers, recorded only as heating jobs in the repairs log. A flat whose tank is gone has
-  no second supply to put a valve on, so Kit B is impossible for it, and the quote takes each flat as it is when
-  fitted. Over-cleaning half: like-for-like cylinder and boiler replacements ran in the same months and change nothing.
-- **A2, the fund** (1 figure) and **A3, each storm's claims and cost** (12 figures). Primary D8, a recorded date for
-  the event date: Pennant keyed every claim on the broker's sheet with the date of the storm the sheet followed, so
-  claims from the first storm of each pair sit on the second storm's date, inside its spell and consistent with the
-  station. Forced by a time order and an amount: each such claim's make-safe was raised in the repairs log during the
-  first storm, days before its recorded date of loss, and its paid plus the GBP 250 storm excess equals that make-safe
-  and the repair that followed it. Over-cleaning half: moving a whole sheet to the first storm of its fortnight moves
-  the second storm's own claims.
-- **Disjoint families.** A1 rides the register and the heating jobs (D2); A2 and A3 ride the bordereau and the storm
-  jobs (D8). A response that handles one keeps none of the other's figures. No filed sentence adjudicates either
-  device; neither has a marker (the sheet's batch carries the second storm's own claims too; the heating categories
-  carry the like-for-like jobs); neither touches the main call's rows (escape-of-water claims and leak repairs).
-
-Pair ceiling: 26.0, the cracker on the call at 45.0 and the mirror off it at 7.0; two careful responses on the call at
-45.0 and 48.1.
-Mirror leakage: 0.0 per cent of ask weight (the mirror stops at R1 and takes the asks the cracker's way).
-Measured by: generator/ceiling.py on the cut pack (the full includer reproduces figures.json, or the script exits 1).
-
-The honest cracker's sheet, cut pack:
-
-| Ask figure | Golden | Cracker (register as checked; recorded dates) | Over-cleaner | Cracker verdict |
-|---|---|---|---|---|
-| fit_cost:LD1 | 179000 | 198000 | 178000 | miss |
-| fit_cost:LD2 | 112000 | 117000 | 111000 | miss |
-| fit_cost:LD3 | 255000 | 291000 | 255000 | miss |
-| fit_cost:LD4 | 238000 | 248000 | 237000 | miss |
-| fit_cost:LD5 | 230000 | 257000 | 223000 | miss |
-| fund | 344000 | 368000 | 377000 | miss |
-| storm_claims:15 Jan 2025 | 25 | 33 | 9 | miss |
-| storm_claims:18 Nov 2023 | 16 | 6 | 35 | miss |
-| storm_claims:21 Nov 2025 | 29 | 12 | 67 | miss |
-| storm_claims:25 Nov 2023 | 27 | 37 | 8 | miss |
-| storm_claims:29 Nov 2025 | 38 | 55 | 0 | miss |
-| storm_claims:8 Jan 2025 | 18 | 10 | 34 | miss |
-| storm_cost:15 Jan 2025 | 69000 | 105000 | 27000 | miss |
-| storm_cost:18 Nov 2023 | 34000 | 11000 | 85000 | miss |
-| storm_cost:21 Nov 2025 | 72000 | 26000 | 168000 | miss |
-| storm_cost:25 Nov 2023 | 70000 | 92000 | 19000 | miss |
-| storm_cost:29 Nov 2025 | 97000 | 142000 | 0 | miss |
-| storm_cost:8 Jan 2025 | 72000 | 36000 | 114000 | miss |
-
-## Leak sweep rulings
-
-`leak.py task464 --asof 2026-11-30`: REVIEW, no LEAK. Each REVIEW line ruled:
-
-- Sweep 3, `risk_improvement_fund_terms_2027.pdf` shares the call's words (fund, detector, prevented, escape-of-water
-  claims): harmless, they are the estimand's own words in the governing document; it names no programme, no figure and
-  nothing about how a claim is tied to its escape (`checks.py` asserts no LD code and no sized programme in any PDF).
-- Sweep 4, `portfolio_policy_wording_2025-26.pdf` holds escape, record, recorded and the insurer's name: harmless, they
-  are the peril's name, the storm definition's "as recorded at the weather station" and the issuer; the clause about
-  keeping records of repairs was cut so no sentence points at the repairs log.
-- Sweep 9, `epc_register_2025-09.csv` carries certificate expiry dates after the setting: harmless, an energy
-  certificate's valid-until date is ten years after lodgement by its nature, in a distractor nothing reads.
-
-## Duplicate check
-
-`guard.py heart task464`: WARN, not BLOCK. The one WARN, `repeat.deliverables` (pdf+xlsx against task453's third
-architecture, registered the same day), is the file pair alone: task453's shell is whether, the, levies against this
-build's what, book, costs, and voice-check holds pdf+xlsx under its corpus quota. The two NOTEs (`test.same_puzzle_older`,
-`test.same_driver_older`) are differentiated on the card against task101 and task121's second architecture; the nearest
-driver on file is 0.09 (task306's third architecture). `guard.py surface task464` exits 0 (personas in the pack: the
-card's own).
-
-## Pre-ship check
-
-(stage 5)
+**Lesson 12 at the draw.** The golden imputes, per send, the active jobseekers' clicks that the junk filing
+removed; it is validated where it applies: the dip estimated on the first three sends predicts the last three
+sends' dips at each provider, and the providers that never filtered show no dip after any send (both asserted in
+`checks.py`).
 
 ## Tried and rejected
 
@@ -1006,6 +697,10 @@ card's own).
   (`proto_eow2.py`) and is drawn as architecture 11.
 
 - **Architecture 11's ask drafts dropped at stage 2, 2026-11-02.** Storm claims split by roof type (a re-roofing date read from capital jobs) was a second decision, the storm rating, and failed H18; tenants' deposit deductions repaying accident claims failed the suspicion test (the ask's noun names the recovery, and the join finds it); an unoccupancy audit of theft and malicious damage was presence evidenced in another system, the family the batch has used, and invited the wording's unoccupancy clause onto the escape-of-water call; a storm re-dating keyed to calm days was cracked by the preceding-storm reflex. What shipped: each programme's fitting cost (D2, the register's hot water before the 2025-26 heating work) and the fund with each storm's claims (D8, the broker's sheet keyed to the second storm of a pair). The first programme sets also died: vented-cylinder flats overlapping the refits won every rung, and refits at over a third of a block's flats put the refits under one another, so own-flat claims funded them; the refits were spread over the 1990s and 2000s blocks and the galvanised blocks given risers.
+
+- **Architecture 11 spent at the judge, 2026-11-02.** The judge (cut 57f57e47) returned NOT_DETERMINISTIC, SEND_BACK. The main call was forced (LD2 GBP 727,224 from 148 claims reproduced), but its decisive step read as rule application (Gate H3). The fund terms filed the population as escapes "from the water supply of a flat on the programme's list, whichever flats the water damaged", which states the attribution the step turned on. The source repair was then picked by one join on block, stack and date of loss for all 391 claims, and the leak reader independently named the same sentence as the near-announcement. This is the fork-is-the-stump failure: the sentence that closed the damaged-flat against source-flat fork named what the decisive step recognised. The asks also forked: the storm claims' re-dating by make-safe is filed nowhere, so the bordereau read literally gives 6, 37, 10, 33, 12 and 55 claims and a fund of GBP 368,307; ten escape-of-water claims sat under the GBP 500 excess the wording says is not a claim; "under way" failed literally for 23 make-safes. Re-rooted at stage 1 into another world and dataset.
+
+- **Architecture 12 draw candidates dropped before registration, 2026-11-02, each set aside on paper or on the guard.** Bus priority carried through a level crossing's timetabled closures: task472 v2's driver in transport nouns (a release only inside windows a schedule fixes), `guard.py check` BLOCKed it on `test.same_puzzle_older` against task105 v1 and task460 and on the forum and org bans against task458 v2. A reminder before a monthly due date for payers on four-weekly pay: due date against payday is task177 v2's own driver by abstraction and task174's screened payday failures. A fisheries choke species: the binding quota is the field's textbook first move. A charged-off card portfolio's sale against keeping it, read through the past forward-flow sale's selection: the sale rule names the selection, and task127 set the world aside. Quant asynchronous closes in a Japan sleeve: weekly returns are a quant's reflex for cross-market correlation, and the sizing is weak as an opportunity. Stop consolidation priced by how often buses already skip a stop: the conditional average is a careful analyst's reflex; the dwell set by the slower of two door streams is task127's concurrent-step driver. A walking catchment read on slope-adjusted times: task170 measured the climb in its ninth cell and found the terrain layer a file with one purpose. A shared-sender standing at an online fashion retailer, judged on orders: the damage is an observational effect on orders whose estimate at any plausible scale carries more noise than the band figures can bear, the click route adds a conversion fork, and the band choice coincides with the industry's sunset rule of thumb; moved to a job board whose paid unit is the click, where the loss is read on millions of alerts and the call is a go or hold the rule of thumb cannot reach.
 
 ## Portal result and the diagnosis, 2026-10-27
 
@@ -1747,4 +1442,3 @@ layer and no pack design for cells B or D, because the screens they rest on did 
 figure that is not the golden, so a default path ending on a wrong answer cannot be written at all. No pair
 is quoted either: the pair arithmetic assumes a ladder keeping one of the top two off the call, and with no
 ladder the number measures nothing, which is the error that retired task190.
-- 2026-11-02, stage 4 (architecture 11 spent): the judge (cut 57f57e47) returned NOT_DETERMINISTIC, SEND_BACK. The main call was forced (LD2 GBP 727,224 from 148 claims reproduced), but its decisive step read as rule application (Gate H3). The fund terms filed the population as escapes "from the water supply of a flat on the programme's list, whichever flats the water damaged", which states the attribution the step turned on. The source repair was then picked by one join on block, stack and date of loss for all 391 claims, and the leak reader independently named the same sentence as the near-announcement. This is the fork-is-the-stump failure: the sentence that closed the damaged-flat against source-flat fork named what the decisive step recognised. The asks also forked: the storm claims' re-dating by make-safe is filed nowhere, so the bordereau read literally gives 6, 37, 10, 33, 12 and 55 claims and a fund of GBP 368,307; ten escape-of-water claims sat under the GBP 500 excess the wording says is not a claim; "under way" failed literally for 23 make-safes. Re-rooted at stage 1 into another world and dataset.
