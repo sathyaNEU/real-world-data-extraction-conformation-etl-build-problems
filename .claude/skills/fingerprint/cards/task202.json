@@ -1,105 +1,140 @@
 {
   "task": "task202",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "First live architecture in this slot. Four grounds were screened to death before it (human-factors thinned-count and time-on-task, multiple-testing selective inference, the designation-set device on task181's safety-incident ground, and environmental-monitoring exceedance on four mechanisms and five candidates), all recorded with measurements in task202/DESIGN_NOTE.md and in pipeline.json. No card was ever registered on any of them, so lineage is empty.",
-  "domain": "nonprofit-grant-making",
-  "client_domain": "general-statistics-data-science",
-  "subdomain": "grant-award-portfolios",
-  "niche": "a corporate-endowed relief foundation's per-award referral ceiling for one-off household relief grants that accredited community partners award and claim back monthly in aggregate, where only a minority of partners claim award by award on the foundation's new case-level portal",
-  "objective": "anomaly-detection",
-  "shape": "14",
-  "decision_type": "dial_setting",
-  "answer_unit": "currency",
+  "architecture": "v6",
+  "drawn": "2026-11-02",
+  "slot_note": "task202/DESIGN_NOTE.md",
+  "domain": "physical-environmental-sciences",
+  "client_domain": "physical-environmental-sciences",
+  "subdomain": "pollution-source-attribution",
+  "niche": "a lake catchment trust's one phosphorus programme for the 2027 bloom season, where the inflow river is spring-fed and runs colder than the lake's surface water all summer, so its load sinks below the thermocline while the lakeside town's warm treated effluent enters the surface water the bloom grows in",
+  "objective": "root-cause",
+  "shape": "18",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G17",
-    "G2"
+    "G7",
+    "G8",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "pilot_log",
-  "stump_strategy": "grain_or_unit",
-  "decisive_rule_filed": true,
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
-  "stakeholder_role": "assurance and standards lead for the relief scheme, who puts the referral ceiling schedule to the board of trustees",
-  "role_family": "compliance_or_audit",
-  "scoring_unit": "per resolved case",
+  "stakeholder_role": "the trust's catchment programme manager, who brings the fund's 2027 recommendation to the trustees",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
   "spine": {
-    "file": "portal_awards_2025-01_2027-03.csv",
-    "rows": 31460,
-    "entity": "one relief award to one household on one partner's case-level portal claim",
-    "grain": "award",
+    "file": "selwith_buoy_daily_profiles_2024-2026.csv",
+    "rows": 28500,
+    "entity": "one depth on one day at the lake's monitoring buoy",
+    "grain": "depth x day",
     "source": "synthetic"
   },
   "forum": "trustees_or_governors",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "foundation_or_funder",
+  "forcing_event": "season_or_peak",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "Philippines (a corporate-endowed relief foundation working through accredited community partners in Luzon and the Visayas; invented provinces, partners and people)",
-    "currency": "PHP",
-    "org_type": "private grant-making foundation (funder) and accredited community partner organisations that award and claim relief",
+    "geography": "England (an upland lake district in Cumbria; invented lake, river, town, village, trust and water company)",
+    "currency": "GBP",
+    "org_type": "a registered charity (lake catchment trust) holding a recovery fund, with the regional water company and a university lake laboratory",
     "invented_names": [
-      "Banahaw Relief Foundation",
-      "Household Relief Grant",
-      "Partner Claim Portal",
-      "Tarlaban",
-      "San Roque del Monte",
-      "Maliwanag",
-      "Kabalikat Centre",
-      "Bantayog Parish Outreach",
-      "Sampaga Community Service",
-      "Lilom Neighbourhood Assembly"
+      "Selwith Water",
+      "River Lenning",
+      "Hollinsby",
+      "Brathwick",
+      "Selwith Water Trust",
+      "Selwith Recovery Fund",
+      "Fellmoor Water"
     ],
     "people": [
-      "Erica Costa",
-      "Steven Espinoza",
-      "Cheryl Chase"
+      "Alison Fowler",
+      "Dominic Davies",
+      "Kathryn Mitchell"
     ]
   },
   "deliverables": [
-    "relief_referral_ceilings_2027-28.xlsx",
-    "referral_ceiling_board_paper.pdf"
+    "selwith_fund_recommendation_2027.pdf",
+    "selwith_phosphorus_workings.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decision cuts a distribution over items, and the only item-level figure the record states is each unit's own average over its items, so the distribution of unit averages carries the spread between units and none of the spread within them and every upper cut comes out far too low; the within-unit shape is recovered from a minority of units that reported item by item, where the record itself forces that shape to be scale-free rather than additive and to be used as measured rather than as a fitted smooth curve, and any route that pools or rescales the reporting minority fails to reproduce the averages the record states for every other unit.",
-  "driver_concrete": "The referral ceiling has to cut the distribution of individual relief awards, but the monthly partner claim returns state only a total and an award count per partner per household-size band, so cutting the distribution of partner average awards drops the within-partner spread and files a ceiling that would refer about a third of awards instead of six per cent; the award-level shape comes from the portal partners, whose awards are a standard living-cost award with a one-off capital item on a minority, so the shape is visibly bimodal and neither lognormal nor gamma survives the portal's own goodness of fit, it scales with a partner's level rather than adding to it, and pooling or rescaling the portal partners fails to reproduce the averages every other partner's returns state.",
-  "stump": "A competent solver parses every claim return, supersedes the revised months, fixes the partner crosswalk, builds each partner-band's own average award from the totals and counts, cuts that distribution at the committed share, solves the reference ceiling back through the equivalence scale and the rounding rule and files a ceiling that would refer about a third of the scheme's awards; a solver who finds the portal corpus and pools its awards as they stand files a lower ceiling still, one who rescales the corpus by a single portfolio ratio files a ceiling near the mark, and one who rebuilds per partner but smooths the award shape into a lognormal at the portal's coefficient of variation files the rung immediately below the golden.",
+  "question_form": "which",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who has read the operating policy, applied the equivalence scale and the rounding rule, superseded the revised claim returns and fixed the partner crosswalk still cuts the distribution of partner average awards, because that is the only award figure the claim returns state, and files a reference ceiling far below the one that holds the referral rate to six per cent.",
-  "domain_test": "The deciding quantity is the shape of the scheme's award-amount distribution, which is the task type's own statistical object and which a relief funder genuinely estimates and acts on when it sets a referral ceiling it has to staff; replacing that shape with a generic summary, the partner average, moves the ceiling by thirty-one printed units and the referral rate from six per cent to about a third, and the swap fails on the domain's nouns because the award shape is bimodal for a reason only a relief scheme produces, a standard living-cost award with a one-off capital item on a minority of households, and because the ceiling is nested across household sizes by the scheme's own equivalence scale.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:award-distribution-rebuilt-from-partner-averages-and-a-measured-within-partner-shape",
+  "analyst_test": "A strong analyst who conforms every return and reads every field correctly sums each source's June-to-September phosphorus into the lake over 2024 to 2026, applies each programme's removal and funds chemical phosphorus removal at the Brathwick works (about 340 kg a season against about 220 for the Hollinsby tertiary stage), because it treats every input as reaching the water the bloom grows in.",
+  "domain_test": "The deciding quantity is each source's phosphorus input to the lake's 0 to 5 m surface water in the stratified season, which physical limnology settles by where each inflow inserts, its density at its own temperature against the lake's temperature profile that day; swap in hospital wards and admissions and there is no stratified receiving body or inflow density, so the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:inflow-insertion-depth",
   "layer1": [
-    "monthly claim workbooks whose band columns were renamed and a header block added from July 2026",
-    "the operating policy's equivalence scale and rounding rule in a table inside a scanned PDF",
-    "partner identifiers differing between the claims ledger and the portal, joined on an imperfect crosswalk",
-    "the scheme's fiscal year against the twelve-month claim window the policy names",
-    "amounts in pesos in the claim returns and in thousands of pesos in the published summary",
-    "a preliminary and a revised claim return overlapping for two months, the revised superseding",
-    "suppressed small cells in the published partner summary",
-    "a partner accredited mid-window and a partner that exited"
+    "the buoy's profile export in UTC against the river sonde in local clock time across the BST change",
+    "phosphorus in mg/L on the works' returns against ug/L in the lake laboratory's results",
+    "conductivity in uS/cm at the buoy against mS/m at the river sonde",
+    "a provisional and a validated release of the river sonde record overlapping",
+    "the works' monthly returns on the water company's April-to-March reporting year",
+    "lake results carried as text with below-detection qualifiers",
+    "sampling-point codes renumbered when the laboratory moved databases"
   ],
+  "driver": "The decisive quantity is how much of each source's input reaches the layer of the receiving body that the response draws on during the window, decided day by day by comparing the input's own physical state with the receiving body's layered state in a second record; an input denser than the responding layer sinks below it and feeds nothing until the window closes, so summing the inputs, or summing them over the window, credits the sources whose water sinks.",
+  "driver_concrete": "Each programme's phosphorus kept out of Selwith Water's 0 to 5 m surface water in June to September, counting an inflow's load only on the days its water is no denser than the surface water at the buoy: the spring-fed Lenning runs colder than the surface water on every summer day and plunges below the thermocline (the buoy's conductivity carries it at 8 to 11 m), so the Brathwick works and the farms add nothing to the bloom's water, while the Hollinsby works' warmer effluent enters it.",
+  "stump": "A competent solver sums each source's June-to-September phosphorus into the lake, applies each programme's removal and funds chemical phosphorus removal at the Brathwick works (about 340 kg a season against about 220 for the Hollinsby tertiary stage), because it reads every input as reaching the water the bloom grows in, when the Lenning that carries Brathwick's effluent is colder than the lake's surface water on every summer day and sinks below the thermocline.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task103": "task103 is the other anomaly-detection build in this domain and its driver is a fan-out: one recorded contact serves several units through an effective-dated authorisation, and the only per-contact record of which authorised units were served is a handed-over quantity, with a one-allowance-a-period rule deciding the count. task202 adds no units and re-partitions nothing: every award is already counted in the claim returns, and what the record does not state is how the awards at one partner are SPREAD about that partner's own stated average, which is what a cut of the distribution needs and an average cannot carry.",
-    "task187": "task187's record is the average of a capped, curved response over a spread of inputs, so the correction is a curvature correction on each unit's own level and the graded figure is a per-unit shortfall. task202's record is an arithmetic average over items with no response curve anywhere, the correction restores a distribution rather than a level, and the graded figure is a cut of that distribution: the within-unit spread changes no unit's own average and moves only the tail the cut sits in.",
-    "task246": "task246 separates a measurer offset and a field error out of an observed spread, so its decisive quantity is a variance component recovered from replicates. task202 estimates no variance component and has no replicate measurement of anything: the within-partner shape is observed directly, award by award, on the portal partners, and what the data has to settle is whether that observed shape is scale-free and whether it may be smoothed, both of which the portal answers by its own goodness of fit.",
-    "task449": "task449 recovers a share that a record linkage dilutes: the decisive quantity is a rate contaminated because one class of records is linked to the wrong target k-1 times in k, and the construction is an un-dilution of a linked value. task202 links nothing and has no wrong target: every claim return is joined correctly and the figure it states is correct, and what is missing is the spread of items about a correctly stated average, which no link supplies.",
-    "task466": "task466 fits a yearly extreme to two records of the same process where the long record says only whether the year fell below a fixed level, so its construction carries censored years into a fit. task202 has no fit, no censoring and no second record of the same quantity: the portal partners report the same awards at a finer grain than the claim returns, and the shape they show is used as measured because the portal's own goodness of fit refuses to let it be smoothed.",
-    "task255": "task255 (nearest driver at 0.11) is a truncated and censored size distribution: items reach the record only above a per-item floor and are recorded only to a moving ceiling, so the tail is latent because small and large items are missing from the record. task202's record is complete, with every award counted and paid; the tail is latent only because the record reports awards in partner averages, and nothing is truncated, censored or unfinished anywhere in the pack."
+    "task487": "task487 dates undated release events from how often each kind is found against the inspection window's length; here nothing is undated or inspected, each inflow's recorded load is kept or set aside day by day by whether its water is denser than the lake's surface water, a physical comparison of two continuous records.",
+    "task308": "task308 v1 rebuilds unmet requests that leave no row from second-by-second supply; here every input is recorded in full and the step decides which recorded inputs reach the layer the bloom draws on, so no missing record is rebuilt.",
+    "task258": "task258's reach is a fixed property of each page that limits where a fix acts; here reach is decided day by day by an inflow's density against the lake's temperature profile and decides which sources' inputs count at all.",
+    "task303": "task303 removes events every sibling unit recorded in the same minute as an upstream supply loss; here nothing is removed by simultaneity, each inflow's own load is kept or set aside by comparing its temperature with the lake's layered temperature."
   },
-  "lineage": [],
-  "notes": "Client rigor patterns for the task type were both screened and both are dead as stated: general-statistics-data-science/exploratory-data-analysis-distribution-assessment/1 pins the anomaly rule or distributional assumption, which the estimand pincer makes rule application, and /2 pins the within-group comparison or unit-defining grouping, which is the estimand's unit. layer2_pattern is therefore own:. stump_strategy grain_or_unit fires three_rules.strategy_risk as a WARN, answered in the design note: the grain gap is the gap the build exploits, not the decisive step, and the decisive step is a distributional reconstruction whose family the portal's own fit closes.\narchitecture_spent set 2026-10-20: architecture 2 spent on two independent measured failures, the judge returning NOT_DETERMINISTIC and SEND_BACK on Gate C and Gate D and the isolated reader landing 18 of 30; architecture 3 then screened dead, a finding about the world rather than the step.",
-  "registered": "2026-10-18T13:12:57Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "drawn": "2026-10-18",
+      "domain": "nonprofit-grant-making",
+      "client_domain": "general-statistics-data-science",
+      "subdomain": "grant-award-portfolios",
+      "niche": "a corporate-endowed relief foundation's per-award referral ceiling for one-off household relief grants that accredited community partners award and claim back monthly in aggregate, where only a minority of partners claim award by award on the foundation's new case-level portal",
+      "objective": "anomaly-detection",
+      "shape": "14",
+      "decision_type": "dial_setting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G2"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "grain_or_unit",
+      "driver": "The decision cuts a distribution over items, and the only item-level figure the record states is each unit's own average over its items, so the distribution of unit averages carries the spread between units and none of the spread within them and every upper cut comes out far too low; the within-unit shape is recovered from a minority of units that reported item by item, where the record itself forces that shape to be scale-free rather than additive and to be used as measured rather than as a fitted smooth curve, and any route that pools or rescales the reporting minority fails to reproduce the averages the record states for every other unit.",
+      "stump": "A competent solver parses every claim return, supersedes the revised months, fixes the partner crosswalk, builds each partner-band's own average award from the totals and counts, cuts that distribution at the committed share, solves the reference ceiling back through the equivalence scale and the rounding rule and files a ceiling that would refer about a third of the scheme's awards; a solver who finds the portal corpus and pools its awards as they stand files a lower ceiling still, one who rescales the corpus by a single portfolio ratio files a ceiling near the mark, and one who rebuilds per partner but smooths the award shape into a lognormal at the portal's coefficient of variation files the rung immediately below the golden.",
+      "deliverables": [
+        "relief_referral_ceilings_2027-28.xlsx",
+        "referral_ceiling_board_paper.pdf"
+      ],
+      "forum": "trustees_or_governors",
+      "forcing_event": "cutover_or_migration",
+      "org_family": "foundation_or_funder",
+      "architecture": "v1-v2",
+      "fate": "spent: architecture 1 (the Banahaw Relief Foundation's per-award referral ceiling, PHP 7,800) and its 2026-10-18 re-root of the graded quantity (v2, PHP 8,000) were sent back by the determinism judge (NOT_DETERMINISTIC, SEND_BACK: underspecified_objective with margin fragility) and the ask layer measured over the bar twice; architectures 3 to 5 (2026-10-20 to 10-23) and the 2026-11-01 anomaly draw were refused before any card (31 anomaly structures dead on the corpus); the author re-tasked the number to Root-Cause Analysis on 2026-11-01"
+    }
+  ],
+  "notes": "Architecture 6. The author re-tasked task202 from Anomaly Detection & Diagnostics to Root-Cause Analysis on 2026-11-01 (retirement not taken); START_HERE.md is not edited, the card and the ledger carry the real objective. Physical & Environmental Sciences has no client rigor patterns, so layer2_pattern is own:.",
+  "registered": "2026-11-02T00:23:09Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "clause",
+    "rounding opener": "round",
+    "deliverable set": "pdf+xlsx+xlsx"
+  }
 }
