@@ -90,7 +90,10 @@
     "task451": "task451 completes each unit's period total from how amounts arrive after a handler's delay changed; this build observes nothing late: complete head-counts taken at route-fixed hours are expanded to the whole fishing day by each lake's own hour-by-hour presence from completed trips.",
     "task135": "task135 recovers a long-horizon variance from components struck at different times of day through lead and lag covariances; this build sums presence over the hours of one day from counts at fixed hours, each count scaled by the share of the day's anglers present at its hour, with no variance and no pricing.",
     "task161": "task161 draws a stock build down at each holder's steady share of use; this build has no stock and no drawdown: a day's angler-hours are read from counts at fixed hours and each lake's own presence profile, and the season total per hectare is set against a tier line.",
-    "task460": "task460 weights interval-by-interval marginal changes by a new source's operating profile to price what that source displaces; this build weights nothing at a margin: it expands instantaneous counts to the day by the hour-by-hour presence completed trips show and grades each lake's season use per hectare."
+    "task460": "task460 weights interval-by-interval marginal changes by a new source's operating profile to price what that source displaces; this build weights nothing at a margin: it expands instantaneous counts to the day by the hour-by-hour presence completed trips show and grades each lake's season use per hectare.",
+    "task272": "task272 estimates the share of a period's output past a limit from sparse checks inside runs that drift between resets; this build has no drift, no limit on output and no sampled product: complete head-counts taken at route-fixed hours are expanded to the angling day by each lake's own hour-by-hour presence from completed trips.",
+    "task193": "task193 sets how often two orderings would occur by chance from where each unit's first exposure falls in its window; this build tests no ordering and no chance: it adds up anglers over the hours of the day from counts at fixed hours and each lake's presence profile, and grades each lake's season use per hectare against a line.",
+    "task186": "task186 separates first showings from repeats of test items so a hit rate measures unseen items; this build has no repeated exposure and no hit rate: counts at fixed moments of the day are expanded by the share of each lake's angler-hours present at those moments, read from the interviewed parties' start and finish times."
   },
   "lineage": [
     {
@@ -244,7 +247,7 @@
     }
   ],
   "notes": "Architecture 6 drawn 2026-11-01 at the Batch 3 queue reset in a new world, a new domain and a new shell (question form where, the deliverable pair xlsx and pptx); architecture 5 (Fenmarsh's venue list) moved to lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task233, task134 v2, task485 v5): the forcing event season_or_peak to statutory_or_regulatory_filing (the society files its 2027 stocking application, each lake's tier and numbers, with the province by 1 December 2026; season_or_peak is banned by task485 v5 and the filing is what fixes the date), the deliverable pair pptx+xlsx (task485 v5) to docx+xlsx, the persona Edwin Weiss (people.first against task246) to Luis Thomas (Daniel Cline also warned on people.first). Built 2026-11-02 (stage 3): 13 files, four formats; the default expansion files nine lakes with Galloran, Nockell and Farrowdale, the golden ten with the four fly-only lakes; asks on the hatchery's releases (raceway numbering kept on the trip sheets) and the loggers' warm days (download stations).",
-  "registered": "2026-11-02T01:20:21Z",
+  "registered": "2026-11-02T01:29:31Z",
   "shell": {
     "question form": "where",
     "second-sentence opener": "the",
