@@ -72,10 +72,12 @@ def workbook(E, path):
         ws2.append([rid, levels[rid], v["rating_a"], int(round(v["share"])), r2(E["july_mwh"][rid]),
                     int(E["requests"][rid]), r2(E["voltage_pct"][rid])])
     ws2.append([])
-    ws2.append(["July use is each apartment's register movement over July (the exchange log carries meters changed in July). "
-                "Requests count each car space once, B2 spaces lodged before the March 2025 re-marking carried to their new numbers, "
+    ws2.append(["July use is each apartment's register movement between the midnight reads of 1 July and 1 August, both registers "
+                "(meters changed in July through the exchange log; where the midnight 1 August read was estimated, the meter's July intervals). "
+                "Requests count each car space once, old B2 and B3 numbers carried to their new ones, "
                 "on the main of the apartment the space belongs to; visitor bays are not apartments' requests. "
-                "Time outside the limits is each apartment's swell records joined into one span per excursion, in market time."])
+                "Time outside the limits is each apartment's swell records joined into one span per excursion across its phases, in market time; "
+                "the head-end's re-sent copies (ten hours late, in hours the meter's own maxima stayed under 253 V) are left out."])
     for c, w in zip("ABCDEFG", [12, 10, 12, 16, 14, 14, 18]):
         ws2.column_dimensions[c].width = w
     save_workbook(wb, path, "Kayla Hunt")

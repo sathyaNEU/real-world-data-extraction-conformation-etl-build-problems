@@ -355,6 +355,8 @@ def run(W, target, E):
         if any(a0 <= s0 and t0 <= b0 for a0, b0 in orig.get((c["serial"], c["element"]), [])):
             inside += 1
     ok("ask C: each re-sent record, moved back ten hours, lies inside the excursion it repeats", inside == len(rs_written), "%d of %d" % (inside, len(rs_written)))
+    short = min((c["end"] - c["start"]).total_seconds() for c in rs_written)
+    ok("ask C: every re-sent record spans nine minutes or more (no five-minute average could hide it under 253 V)", short >= 540, "shortest %.0f s" % short)
     sb = R.c_shifted_back(D, U)
     ok("ask C: dropping the re-sent records and moving them back ten hours give the same figures", all(abs(sb[k] - E["voltage_pct"][k]) < 1e-12 for k in sb), "")
     truth_secs = {}

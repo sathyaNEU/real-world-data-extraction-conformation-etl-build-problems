@@ -510,7 +510,7 @@ for x in cts:
 check("Z no two lakes carry the same count sequence", len({tuple(v) for v in seqs.values()}) == len(seqs))
 check("Z no per-lake angler-hours figure is written at a precision the readings split on (bands only)",
       "angler_hours_per_ha" not in fig and "angler_hours_season" not in fig and
-      "nearest 10" not in open(os.path.join(TASK, "submission.md")).read())
+      not re.search(r"nearest 10\b", open(os.path.join(TASK, "submission.md")).read()))
 starts = [K.parse_hm(r["started"]) for r in raw_iv if r["started"]]
 q = sum(1 for s in starts if abs(s * 4 - round(s * 4)) < 1e-6) / len(starts)
 check("Z start times heaped like recall (most on the quarter hour, not all)", 0.6 < q < 0.98, "%.2f on quarters" % q)

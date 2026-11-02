@@ -1,10 +1,10 @@
 # leak check, task271
 
-**Verdict: REVIEW.** 13 files read, 33 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 17 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, architecture, anglers, dropped, reflex, reader, record, readers, candidate, golden, nothing, family, health, hospital, effort, member, screens, estimate, design, selection, decisive, spread, pooled, profile, scored
+Stump terms swept: survey, architecture, anglers, dropped, reflex, reader, golden, record, readers, candidate, nothing, family, health, hospital, effort, member, screens, spread, estimate, design, selection, decisive, pooled, profile, scored
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `catchable_allocation_policy_2026.pdf`: golden figure 500 appears: ...er for a stocking year when anglers fished it for 500 or more angler-hours per hectare of its surface a...

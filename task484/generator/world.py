@@ -370,43 +370,64 @@ def make_detectors(W):
 SCHEME_ARD = ["motorcycle", "car", "car_trailer", "lgv", "rigid2", "rigid3", "artic", "bus"]
 
 
+def atc_site_channels(a, si, hgv_mult):
+    rng = np.random.default_rng([SEED, 11, si, int(round(hgv_mult * 1000))])
+    n = len(DAYS)
+    tot = np.round(a["q24"]).astype(int)
+    mc, bus, lgv, trl, hgv = a["mc_share"], a["bus_share"], a["lgv_share"], a["trailer_share"], a["hgv_share"] * hgv_mult
+    r2 = a["rigid2_frac"]
+    art = rng.uniform(0.30, 0.42)
+    ch = np.zeros((n, 8), dtype=int)
+    truth = np.zeros((n, 8), dtype=int)
+    for i, d in enumerate(DAYS):
+        wk = d.weekday()
+        hf = 1.0 if wk < 5 else (0.55 if wk == 5 else 0.35)
+        p_h = hgv * hf / (1.0 if wk < 5 else 0.85)
+        p = np.array([mc, 0.0, trl, lgv, p_h * r2, p_h * (1 - r2 - art), p_h * art, bus])
+        p = p * (1.0 + rng.normal(0.0, 0.05, 8))
+        p = np.clip(p, 0.0002, None)
+        p[1] = 1.0 - p.sum()
+        v = rng.multinomial(int(tot[i]), p)
+        truth[i] = v
+        if d < FIRMWARE_PUSH:
+            ch[i] = v
+        else:
+            l_short = int(round(v[3] * rng.uniform(0.66, 0.74)))
+            a5 = int(round(v[6] * rng.uniform(0.64, 0.76)))
+            ch[i] = [v[0], v[1] + l_short, v[3] - l_short, v[2], v[7], v[4], v[5] + v[6] - a5, a5]
+    return truth, ch
+
+
 def atc_channels(W):
-    """24-hour vehicles by output channel: legacy ARD-8 classes until the firmware push, native TX-8 after."""
-    rng = np.random.default_rng([SEED, 11])
-    for a in W.atcs:
-        n = len(DAYS)
-        tot = np.round(a["q24"]).astype(int)
-        mc, bus, lgv, trl, hgv = a["mc_share"], a["bus_share"], a["lgv_share"], a["trailer_share"], a["hgv_share"]
-        r2 = a["rigid2_frac"]
-        art = rng.uniform(0.30, 0.42)
-        ch = np.zeros((n, 8), dtype=int)
-        truth = np.zeros((n, 8), dtype=int)
-        for i, d in enumerate(DAYS):
-            wk = d.weekday()
-            hf = 1.0 if wk < 5 else (0.55 if wk == 5 else 0.35)
-            p_h = hgv * hf / (1.0 if wk < 5 else 0.85)
-            p = np.array([mc, 0.0, trl, lgv, p_h * r2, p_h * (1 - r2 - art), p_h * art, bus])
-            p = p * (1.0 + rng.normal(0.0, 0.05, 8))
-            p = np.clip(p, 0.0002, None)
-            p[1] = 1.0 - p.sum()
-            v = rng.multinomial(int(tot[i]), p)
-            truth[i] = v
-            if d < FIRMWARE_PUSH:
-                ch[i] = v
-            else:
-                l_short = int(round(v[3] * rng.uniform(0.66, 0.74)))
-                a5 = int(round(v[6] * rng.uniform(0.64, 0.76)))
-                ch[i] = [v[0], v[1] + l_short, v[3] - l_short, v[2], v[7], v[4], v[5] + v[6] - a5, a5]
-        a["classes_true"] = truth
-        a["channels"] = ch
-        a["obs24"] = tot.astype(float)
-        a["obs12"] = np.round(a["q12"]).astype(float)
-        a["hgv_true"] = truth[:, 4] + truth[:, 5] + truth[:, 6]
+    """24-hour vehicles by output channel: legacy ARD-8 classes until the firmware push, native TX-8 after.
+    Each counter's heavy goods share is the tuned free parameter: the counter's 2025 heavy goods vehicles per day
+    sits at least two vehicles inside its rounding bin and the install-date reading misses it by three bins."""
     # a six-day outage at one rural counter in January (rows absent from the export)
     W.atc_outage = (W.atcs[9]["name"], [DIDX[dt.date(2025, 1, 20)] + k for k in range(6)])
-    for k in W.atc_outage[1]:
-        W.atcs[9]["obs24"][k] = np.nan
-        W.atcs[9]["obs12"][k] = np.nan
+    for si, a in enumerate(W.atcs):
+        a["obs24"] = np.round(a["q24"]).astype(float)
+        a["obs12"] = np.round(a["q12"]).astype(float)
+        if a["name"] == W.atc_outage[0]:
+            for k in W.atc_outage[1]:
+                a["obs24"][k] = np.nan
+                a["obs12"][k] = np.nan
+        keep = ~np.isnan(a["obs24"])
+        for hm in (1.0, 1.006, 0.994, 1.012, 0.988, 1.018, 0.982, 1.024, 0.976, 1.03, 0.97):
+            truth, ch = atc_site_channels(a, si, hm)
+            sw = DIDX[FIRMWARE_PUSH]
+            inst = DIDX[a["installed"]]
+            ard = ch[:, 4] + ch[:, 5] + ch[:, 6]
+            tx = ch[:, 5] + ch[:, 6] + ch[:, 7]
+            gold = float(np.mean(np.concatenate([ard[:sw], tx[sw:]])[keep]))
+            inst_v = float(np.mean(np.concatenate([ard[:inst], tx[inst:]])[keep]))
+            if est.edge(gold, 10.0) >= 2.0 and abs(round(gold / 10) - round(inst_v / 10)) >= 3:
+                break
+        else:
+            raise RuntimeError("counter %s not tuned" % a["name"])
+        a["hgv_mult"] = hm
+        a["classes_true"] = truth
+        a["channels"] = ch
+        a["hgv_true"] = truth[:, 4] + truth[:, 5] + truth[:, 6]
 
 
 def count_rows(s, si, di, base_mult=1.0):

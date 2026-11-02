@@ -45,8 +45,9 @@ FILES = {
     "gasreads": "gas_telemetrie_ketelhuizen_weidehaven_2025-2026.csv",
     "gasmaster": "meterstamgegevens_gas_weidehaven_2026-10-01.xlsx",
     "tariff": "stadswarmte_tarievenblad_2026.pdf",
+    "legacy": "driveby_opnames_warmtemeters_west_2024-10_2025-09.csv",
 }
-DISTRACTORS = ["prelim", "tariff"]
+DISTRACTORS = ["prelim", "tariff", "scada"]
 
 # headroom and phase loads are tuned in world.tune(); these are the search ranges, not the answer
 HEADROOM_RANGE = (138, 166)

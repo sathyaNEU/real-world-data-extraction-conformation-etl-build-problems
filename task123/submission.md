@@ -18,9 +18,9 @@
 2. Sorted each main's single-phase apartments into three groups by how their hourly voltages in QES_PQ_hourly_V_20260712T0000Z-20260720T0000Z.csv move together once the main's own average is taken out, since apartments on one phase sag together whenever any of them draws; the groups separate on every main.
 3. Added each charger in OC1_2027_electrification_works_schedule.xlsx at 3.7 kW and each cooktop conversion at 1.4 kW to its apartment's phase, three-phase supplies split equally (sections 2 and 4).
 4. Took each phase's highest summed half-hour plus its additions against 80% of the main's rating at 230 V (sections 1 and 5): A4 109%, B2 94%, C3 97%, C6 89% over the line, B3 nearest under at 75%.
-5. July use: each meter's register movement over July in QES_register_reads_2026-07.csv on every register, through QES_meter_exchanges_2026.csv for the meters changed in July and from the meter's own July intervals where its 1 August read is an estimate (section 7).
-6. Requests: one per car space in EV_charger_applications_2024-2026.xlsx, B2 and B3 numbers carried through basement_remarking_schedule_March2025.xlsx where written before the re-marking or where the written number is not one of the applicant's own spaces and the re-marked one is, on the main of the apartment the space belongs to (section 8); the visitor bays belong to no apartment.
-7. Time outside the limits: each apartment's records in QES_PQ_events_2026-07.json joined into spans across its elements and repeats, clipped to 13 July 00:00 to 20 July 00:00 market time, over 168 hours an apartment (section 6).
+5. July use: each meter's register movement between its midnight reads of 1 July and 1 August in QES_register_reads_2026-07.csv, general supply and controlled load together (section 7), through QES_meter_exchanges_2026.csv for the meters changed in July; where the midnight 1 August read is an estimate, the meter's own July intervals in the NEM12 file, since the actual read later that morning includes August's first hours.
+6. Requests: one per car space in EV_charger_applications_2024-2026.xlsx, B2 and B3 numbers carried through basement_remarking_schedule_March2025.xlsx where written before the re-marking or where the written number is not one of the applicant's own spaces (by the unit written, or the lot an owner elsewhere gives) and the re-marked one is, on the main of the apartment the space belongs to (section 8); the visitor bays belong to no apartment.
+7. Time outside the limits: each apartment's records in QES_PQ_events_2026-07.json joined into spans across its elements (a three-phase supply is outside while any phase is, section 6), leaving out the records the head-end re-sent ten hours after the excursion they repeat, in hours when the meter's own maxima in the PQ export stay under 253 V; clipped to 13 July 00:00 to 20 July 00:00 market time, over 168 hours an apartment.
 8. A4, B2, C3 and C6 need works before connection; every other main stays under the 80% line.
 
 ## 4. Deliverable Answers
@@ -76,18 +76,18 @@
    - A2: 0.76%
    - A3: 1.61%
    - A4: 1.29%
-   - A5: 1.51%
+   - A5: 1.48%
    - A6: 1.46%
-   - B1: 1.04%
+   - B1: 1.02%
    - B2: 1.50%
    - B3: 1.30%
-   - B4: 2.03%
+   - B4: 2.02%
    - B5: 2.21%
    - B6: 2.15%
    - C1: 1.06%
-   - C2: 1.59%
+   - C2: 1.57%
    - C3: 1.32%
-   - C4: 0.93%
+   - C4: 0.90%
    - C5: 2.27%
    - C6: 1.71%
 

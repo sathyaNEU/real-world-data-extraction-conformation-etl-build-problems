@@ -15,6 +15,11 @@ def listing(names):
     return ", ".join(names[:-1]) + " and " + names[-1]
 
 
+def listing_or(names):
+    names = [short(n) for n in names]
+    return ", ".join(names[:-1]) + " or " + names[-1]
+
+
 def write(f, path):
     hi = f["call"]["high_use"]
     plain = f["plain_expansion"]["set"]
@@ -33,11 +38,12 @@ def write(f, path):
     a("**Put %s into the 2027 high-use tier; every other lake that takes catchables stays standard.** Each of the "
       "ten was fished for more than 500 angler-hours per hectare from 15 May to 31 August 2026 once each flight count "
       "is read against the hours that lake's own anglers fish, and it stays above %d however a count's time is read "
-      "against those hours; the standard lakes stay below %d. The high-use lakes nearest the line are %s, and the "
-      "standard lakes nearest it %s. Not the plain expansion's list: each count times the 17-hour day puts %s in and "
+      "against those hours; the standard lakes stay below %d. Depending on that reading, the high-use lake nearest the "
+      "line is %s, and the standard lake nearest it %s. Not the plain expansion's list: each count times the 17-hour day puts %s in and "
       "leaves %s out, because the flights pass every lake between about 09:30 and 17:00, the general lakes' busy "
       "hours and the fly-only lakes' quiet ones."
-      % (listing(hi), b["high_use_above"], b["standard_below"], listing(nh), listing(ns), listing(out), listing(came)))
+      % (listing(hi), b["high_use_above"], b["standard_below"], listing_or(nh), listing_or(ns), listing(out),
+         listing(came)))
     a("")
     a("## 2. Critical Components\n")
     a("1. Each lake is counted at the time its place on the Vellacott route brings the aircraft over it, so every "

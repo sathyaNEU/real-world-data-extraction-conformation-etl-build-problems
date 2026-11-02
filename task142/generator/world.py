@@ -96,9 +96,9 @@ STREETS = {
     "harbour": ["Havenkade", "Dokweg", "Kraanplein", "Ankerstraat", "Steigerweg", "Werfkade", "Kademuur",
                 "Sluiswachter", "Loswal", "Meerpaal", "Boeiweg", "Zeilmakerij", "Touwbaan", "Scheepmakershof",
                 "Lichtschip", "Kompasweg", "Roerkade", "Spantstraat", "Kielweg", "Bolderstraat"],
-    "birds": ["Kievitlaan", "Merelstraat", "Spreeuwenhof", "Leeuwerikstraat", "Zwaluwlaan", "Reigerstraat",
-              "Roerdomplaan", "Fazantstraat", "Lijsterlaan", "Vinkenstraat", "Meeuwenlaan", "Kwartelstraat",
-              "Grutto­laan", "Wulpstraat", "Pluvierlaan"],
+    "birds": ["Lijsterlaan", "Meeuwenlaan", "Valkstraat", "Uilenhof", "Eksterstraat", "Spechtlaan", "Duivenstraat",
+              "Zwanenhof", "Buizerdlaan", "Havikstraat", "Koekoekhof", "Mezenlaan", "Ooievaarstraat", "Patrijshof",
+              "Sperwerlaan"],
 }
 WIJKEN_OLD = ["Dichterswijk", "Bloemenbuurt", "Lindenhof", "Oud-West", "Rijnzicht"]
 WIJKEN_NEW = ["Havenkwartier", "Werfeiland", "Kadewijk"]

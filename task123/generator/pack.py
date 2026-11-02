@@ -180,7 +180,8 @@ def resent(W, evs):
     which runs on market time, and the head-end filed those times as UTC, so each re-sent record sits ten hours
     after the excursion it repeats, opened a little later and closed a little earlier on the stored log's
     one-second debounce, with the stored log's one-minute extreme; the head-end filed them as new events.
-    The re-sent records fall in daylight hours when the meters' own hourly maxima are inside the limits."""
+    The stored log keeps excursions of ten minutes or more.  The re-sent records fall in daylight hours when the
+    meters' own hourly maxima are inside the limits."""
     rng = np.random.default_rng(Wd.SEED + 131)
     apts = W["apts"]
     # concentrator (tower, first floor, last floor) and the market-time date of the morning it rebooted
@@ -193,7 +194,7 @@ def resent(W, evs):
         for tw, f0, f1, day in zones:
             lo = datetime(2026, 7, day - 1, 14, 0) - timedelta(minutes=25)       # last good upload, 23:35 market time
             hi = datetime(2026, 7, day - 1, 22, 0)                              # reboot, 08:00 market time
-            if a["tower"] == tw and f0 <= a["floor"] <= f1 and lo <= e["start"] < hi:
+            if a["tower"] == tw and f0 <= a["floor"] <= f1 and lo <= e["start"] < hi and (e["end"] - e["start"]).total_seconds() >= 600:
                 c = dict(e)
                 c["start"] = e["start"] + timedelta(hours=10, seconds=int(rng.integers(4, 40)))
                 c["end"] = e["end"] + timedelta(hours=10) - timedelta(seconds=int(rng.integers(4, 40)))
