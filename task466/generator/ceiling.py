@@ -7,7 +7,8 @@ evenly over their 32 graded cells. The cracker lands the call and takes the care
 it executes every filed rule (rule 1.8's starts from standstill, the 1400 F threshold the log states, plan 7.3's void
 rule, the 500 ppm above background), and it meets each silent device the way that route meets it: the run before a
 power failure is closed at the CONTROLLER POWER UP line (no stop is written; the stop minute sits only in the blower
-outage log), the event log's site time is subtracted as written (no offset is printed beside it), the flare's methane is
+outage log), starts are counted where the engine reaches RUNNING from standstill (a mechanic's test run off the grid
+never reaches RUNNING), the event log's site time is subtracted as written (no offset is printed beside it), the flare's methane is
 read from the flare's own meter at the rule's normal density, and re-checks are matched to a walkover by the plan's ten
 days. The mirror stops at the running-share rung of the call (Tier 3) and keeps the captured methane; its asks are the
 cracker's asks (the conservative case, since the asks do not depend on the call). Sensitivity rows print what the
@@ -50,12 +51,12 @@ def local_as_utc(outs):
             for o in outs]
 
 
-def ask_cells(handle_clock, handle_power, d, outs):
+def ask_cells(handle_clock, handle_power, d, outs, handle_tests=False):
     if handle_clock:
-        eng = A.engine_answers(T, outs, use_outage_log=handle_power)
+        eng = A.engine_answers(T, outs, use_outage_log=handle_power, count_test_runs=handle_tests)
         flh = A.flare_answers(T, d, outs)
     else:
-        eng = naive_clock(A.engine_answers, T, local_as_utc(outs), use_outage_log=handle_power)
+        eng = naive_clock(A.engine_answers, T, local_as_utc(outs), use_outage_log=handle_power, count_test_runs=False)
         flh = naive_clock(A.flare_answers, T, d, local_as_utc(outs))
     fld = A.flare_answers(T, d, outs)
     sem = A.sem_answers(T, void_rule=True, match="window")
@@ -105,9 +106,10 @@ def main():
     print("mirror: off the call at Tier 3, captured kept, the cracker's asks: total %.1f" % m_score)
     print("Pair ceiling: %.1f" % pair)
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * m_ask / W_ASK))
-    for label, hc, hp in (("cracker also handles the daylight-saving clock", True, False),
-                          ("cracker handles the clock and the power-failure stops", True, True)):
-        kk = kept(ask_cells(hc, hp, d, outs))
+    for label, hc, hp, ht in (("cracker also handles the daylight-saving clock", True, False, False),
+                              ("cracker handles the clock and the power-failure stops", True, True, False),
+                              ("cracker handles the clock, the power failures and the test runs", True, True, True)):
+        kk = kept(ask_cells(hc, hp, d, outs, ht))
         cs, ca = score(True, 3, kk)
         ms, ma = score(False, 1, kk)
         print("sensitivity, %s: keeps %.1f per cent of the asks, pair %.1f" % (label, 100 * ca / W_ASK, (cs + ms) / 2.0))

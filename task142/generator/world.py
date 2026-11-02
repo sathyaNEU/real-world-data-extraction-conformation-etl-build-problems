@@ -32,6 +32,19 @@ P_NOSIB = {"Molenwijk": 0.30, "Rietveld": 0.47}
 P_OUT = 0.022                      # children outside the catchment
 
 
+def nl_offset_hours(t_utc):
+    """CET/CEST offset (hours ahead of UTC) for a UTC datetime: CEST from 01:00 UTC on the last Sunday of March to
+    01:00 UTC on the last Sunday of October."""
+    y = t_utc.year
+
+    def last_sunday(m):
+        d = D(y, m, 31)
+        while d.weekday() != 6:
+            d -= TD(days=1)
+        return dt.datetime(d.year, d.month, d.day, 1, 0)
+    return 2 if last_sunday(3) <= t_utc < last_sunday(10) else 1
+
+
 def cohort(b):
     """The 1 October count at which a child born on b first counts (aged four on that date)."""
     y = b.year + 4
@@ -245,7 +258,7 @@ def build(seed=P.SEED):
 
 
 # ------------------------------------------------------------------------------------------------- ask worlds
-GAS_EVENTS = {"main": [("exchange", D(2025, 3, 18))], "annex": [("exchange", D(2023, 11, 21)), ("reissue", D(2024, 9, 10))]}
+GAS_EVENTS = {"main": [("exchange", D(2026, 2, 10))], "annex": [("exchange", D(2023, 11, 21)), ("reissue", D(2025, 1, 14))]}
 
 
 def gas_world(rng, w):
@@ -320,19 +333,29 @@ def bso_world(rng, w):
     fam_of = {}
     for p in users + others:
         fam_of[p["pid"]] = p["hh"]["hid"]
+    # before the merger some families used the Molenwijk location (Korenmolen 59), not the dependance
+    korenmolen = set()
+    for p in users + others:
+        if rng.random() < 0.27:
+            korenmolen.add(fam_of[p["pid"]])
     for day in weekdays:
         wd = day.weekday()
         present = [p for p in users + others if wd in plan[p["pid"]] and rng.random() > 0.07]
-        loc = "BSO-KWS" if day < D(2026, 10, 12) else "BSO-MLW2"
         fams = {}
         for p in present:
             fams.setdefault(fam_of[p["pid"]], []).append(p)
+        n_dep = 0
         for fam, ps in sorted(fams.items()):
-            school_kids = [p for p in ps if not p["pid"].startswith("X")]
+            if day >= D(2026, 10, 12):
+                loc = "BSO-MLW2"
+            else:
+                loc = "BSO-MLW" if fam in korenmolen else "BSO-KWS"
             rows.append([day, loc, fam, len(ps), "aanwezig"])
-        truth[wd].append(sum(1 for p in present if not p["pid"].startswith("X")))
+            if loc != "BSO-MLW":
+                n_dep += sum(1 for p in ps if not p["pid"].startswith("X"))
+        truth[wd].append(n_dep)
     w["bso_rows"] = rows
-    w["bso_truth"] = {wd: float(np.mean(v)) for wd, v in truth.items()}
+    w["bso_truth"] = {wd: int(sum(v)) for wd, v in truth.items()}
     w["bso_users"] = users
     w["bso_others"] = others
 

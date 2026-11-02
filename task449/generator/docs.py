@@ -199,7 +199,9 @@ def write_employer_terms(tgt):
     st = []
     st.append(Paragraph("Workshore Job Board: Terms for Employers", h1))
     st.append(Paragraph("Effective 2 February 2026. These terms replace the terms of 3 April 2023 when the board moved "
-                        "to its new platform. Posting terms and fees are unchanged.", small))
+                        "to its new platform. Posting terms and fees are unchanged. Postings on the board on 1 February "
+                        "2026 moved to the new platform with new job numbers, and the vacancies Workshore Employer "
+                        "Services manages moved with the referrals made to them.", small))
     st.append(Spacer(1, 8))
     st.append(Paragraph("1. Employer accounts", h2))
     st.append(Paragraph(

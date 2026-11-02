@@ -215,7 +215,7 @@ Bridgewater and Yarmouth below 99.0 per cent.
 | SF2 | the moment inside an hour | scans spread evenly through each hour | all at mid-hour | same call and figures | same call |
 | SF3 | the hours of a changeover's scans | that Thursday's own hourly scans | the quarter's average Thursday; even trading hours | same call (figures move up to 0.07 under the average) | PI-2 s.3.1 "at the moment of the scan"; the hourly report holds that Thursday's hours |
 | SF4 | the stray-label share | pooled over the chain's audits | each store's own audits | same call and figures | same call |
-| SF5 | the hanging pace | one pace for the chain | each store's own pace | same call | same call; no store has more than three check visits inside its hanging |
+| SF5 | the hanging pace | one pace for the chain | each store's own pace | same call and figures | same call and figures where a store's own checks identify a pace (six stores met a batch still going up); at the rest every post-print check found the batch up, so the store's likelihood has no maximum and it keeps the chain's pace |
 | SF6 | the pace's own precision | the checks' estimate, 9.2 labels a minute | 15 per cent slower or faster | same call and figures | same call |
 | SF7 | below 99.0 | compared unrounded | compared at one decimal | same call | same call; no store within 0.05 of the line |
 | SF8 | a scan below the label price | not accurate | counted as accurate | other figures | PI-2 s.3.1 "above or below the label price was not accurate" |

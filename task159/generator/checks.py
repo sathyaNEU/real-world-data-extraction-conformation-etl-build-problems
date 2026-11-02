@@ -265,7 +265,7 @@ def main():
     # ------------------------------------------------------------------ realism sweep
     disp = A._csv(os.path.join(TDIR, pack.F_DISP))
     for lab, seq in (("dispatch load ids", disp["LOAD_ID"].astype(int)),
-                     ("work order numbers", A._csv(os.path.join(TDIR, pack.F_CMMS))["WO_NUMBER"].str[3:].astype(int)),
+                     ("work order numbers", A._csv(os.path.join(TDIR, pack.F_CMMS))["WONUM"].str[3:].astype(int)),
                      ("legacy sample numbers", lims.loc[lims["SOURCE_SYSTEM"] == "LEGACY-LIMS", "SAMPLE_ID"].str[2:].astype(int)),
                      ("statement numbers", pd.Series(sorted(set(ref["STATEMENT_NO"].str[3:].astype(int)))))):
         dif = np.diff(seq.values)
@@ -274,11 +274,11 @@ def main():
     check("realism: blocks mined per month all differ in count (no uniform stream)", mon.nunique() > 0.8 * len(mon))
     check("realism: no headline figure is round", all(v % 100 != 0 for v in (round(m["golden"]), round(m["plan_oz"]))))
     cmms = A._csv(os.path.join(TDIR, pack.F_CMMS))
-    sd = cmms[cmms["WO_TYPE"] == "SD"]
+    sd = cmms[cmms["WORKTYPE"] == "SD"]
     dcs = A._csv(os.path.join(TDIR, pack.F_DCS))
     dcs_bm = dcs[dcs["TAG"].isin(["BM101.RUNNING", "GRD.BM01.RUN_STS"])]
     dloc = set(A.utc_to_local(dt.datetime.strptime(t, "%Y-%m-%d %H:%M:%S")).strftime("%Y-%m-%d %H:%M") for t in dcs_bm["TIME_UTC"])
-    same = sum(1 for a in sd["ACTUAL_START"] if a in dloc) + sum(1 for b in sd["ACTUAL_FINISH"] if b in dloc)
+    same = sum(1 for a in sd["ACTSTART"] if a in dloc) + sum(1 for b in sd["ACTFINISH"] if b in dloc)
     check("realism: the maintenance system's isolation times never coincide with the DCS stop and start", same == 0, same)
     authors = set()
     for f in files:
@@ -306,7 +306,7 @@ def main():
           max(lim_rep) <= P.LIMS_PULL and disp_t.max() < pd.Timestamp("2026-11-01 12:00")
           and pd.to_datetime(dcs["TIME_UTC"]).max() <= pd.Timestamp("2026-11-01 04:00")
           and max(ref["STATEMENT_DATE"]) <= pack.REFINERY_PULL.isoformat()
-          and max(bars_csv["POUR_DATE"]) <= "2026-10-31" and max(cmms["ACTUAL_FINISH"]) <= "2026-10-31 23:59",
+          and max(bars_csv["POUR_DATE"]) <= "2026-10-31" and max(cmms["ACTFINISH"]) <= "2026-10-31 23:59",
           (max(lim_rep), disp_t.max(), max(ref["STATEMENT_DATE"])))
     settled_bars = set(ref["CLIENT_REF"])
     q3 = bars_csv[bars_csv["POUR_DATE"] < "2026-10-01"]

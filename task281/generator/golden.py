@@ -21,6 +21,10 @@ def r100(x):
     return int(math.floor(x / 100.0 + 0.5)) * 100
 
 
+def r10(x):
+    return int(math.floor(x / 10.0 + 0.5)) * 10
+
+
 def frame(target):
     """every figure the deliverables and the write-up carry, from the bundle alone"""
     g = AN.main_call(target, "golden")
@@ -34,10 +38,9 @@ def frame(target):
     F["amount_total100"] = sum(r["amount100"] for r in F["rows"])
     a, b, c = AN.ask_a(target), AN.ask_b(target), AN.ask_c(target)
     for f in AN.FAC_ORDER:
-        F["spend"][f] = dict(exact=a[f], r100=r100(a[f]))
+        F["spend"][f] = dict(exact=a[f], r10=r10(a[f]))
         F["uncovered"][f] = b[f]
         F["metered"][f] = c[f]
-    F["spend_total100"] = r100(sum(a.values()))
     F["uncovered_total"] = sum(b.values())
     F["metered_total"] = sum(c.values())
     # facts the write-up states about the population and the default route
@@ -125,7 +128,7 @@ def write_xlsx(F, path):
     _head(ws, 3, ["Faculty", "Spend (GBP)"], [30, 14])
     for i, f in enumerate(AN.FAC_ORDER):
         ws.cell(row=4 + i, column=1, value=FAC_NAME[f])
-        ws.cell(row=4 + i, column=2, value=F["spend"][f]["r100"]).number_format = "#,##0"
+        ws.cell(row=4 + i, column=2, value=F["spend"][f]["r10"]).number_format = "#,##0"
     ws.cell(row=13, column=1, value="Includes each faculty's share of the 2026 publisher packages charged to CT-CORE; "
                                     "euro and dollar lines at the Finance Office monthly rate.").font = Font(size=9)
 

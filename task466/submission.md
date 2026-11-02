@@ -20,9 +20,9 @@ The landfill released 410 t of methane in 2026, between the 375 t and 450 t thre
 2. Set the 38 blower outages of BH_gas_plant_outage_log_2024-2026.xlsx (343.65 hours down) against the historian: after each restart the capture runs above its pre-outage level while the wells draw off methane the waste held during the stop, 66 t over the year.
 3. Read the waste's generation from the steady hours (full blower hours outside the outages and those recoveries), month by month at the 0.90 collection efficiency of Schedule 2 for the geomembrane cap (BH_site_register_2025.xlsx), over every hour of the year (rule 1.2): 3,600 t.
 4. Applied rule 1.6 with Schedule 2's 0.10 cap oxidation and 0.99 destruction efficiency: 410 t released, Tier 2 at $118,000 under rule 5.1.
-5. Engine hours and starts (rules 1.7 and 1.8) from BH_engine_plant_events_2026.txt: synchronised time from RUNNING to the next STOP or TRIP, both engines running when the year opens, each utility power failure ending the run at the failure's start in the outage log (the controller writes only CONTROLLER POWER UP when the supply returns), and a RUNNING after BREAKER OPEN not counted as a start.
+5. Engine hours and starts (rules 1.7 and 1.8) from BH_engine_plant_events_2026.txt in site time converted across the daylight-saving changes: synchronised time from RUNNING to the next STOP, TRIP or BREAKER OPEN, both engines running when the year opens, each utility power failure ending the run at the failure's start in the outage log (the controller writes only CONTROLLER POWER UP when the supply returns); a start is each RUNNING from standstill plus each test run (START REQUEST then STOP with no RUNNING), never a RUNNING after BREAKER OPEN or a START FAIL.
 6. Flare figures: its gas by difference at the plant (FT-101 less FT-201 and FT-202, all normal cubic metres) times the methane content, 0.7168 kg and 0.99 (rule 1.5); its hours from TEMP PERMISSIVE or TEMP NORMAL to the next LOW TEMP or FLARE STOP in the event log, with the flare lit when the year opens.
-7. Surface monitoring from BH_surface_emissions_monitoring_2026.xlsx: readings above 503 ppm (500 over the background), the third quarter's readings between the passing morning check and the failed midday check in SEM_analyser_checks_2026.csv void under plan section 7.3, each location's first re-monitoring matched by position after converting its WGS84 fix to the site grid by the site register's tie.
+7. Surface monitoring from BH_surface_emissions_monitoring_2026.xlsx: exceedances are readings above 503 ppm (500 over the background), the third quarter's readings between the passing morning check and the failed midday check in SEM_analyser_checks_2026.csv void under plan section 7.3, and each location's first re-monitoring is its earliest re-check matched by position, the WGS84 fix converted to the site grid by the site register's tie.
 8. The 2027 budget carries $118,000 for the Tier 2 charge.
 
 ## 4. Deliverable Answers
@@ -39,17 +39,17 @@ The landfill released 410 t of methane in 2026, between the 375 t and 450 t thre
 2. Methane captured in 2026: 3,166 t.
 3. Methane released in 2026: 410 t.
 4. Each engine's operating hours and starts by quarter:
-   - Q1: Engine 1 2,016 h and 17 starts; Engine 2 2,017 h and 16 starts
-   - Q2: Engine 1 2,040 h and 16 starts; Engine 2 2,073 h and 16 starts
-   - Q3: Engine 1 2,120 h and 12 starts; Engine 2 2,082 h and 14 starts
-   - Q4: Engine 1 2,119 h and 16 starts; Engine 2 2,112 h and 17 starts
+   - Q1: Engine 1 2,016 h and 18 starts; Engine 2 2,017 h and 17 starts
+   - Q2: Engine 1 2,040 h and 19 starts; Engine 2 2,072 h and 19 starts
+   - Q3: Engine 1 2,120 h and 14 starts; Engine 2 2,082 h and 16 starts
+   - Q4: Engine 1 2,119 h and 17 starts; Engine 2 2,112 h and 19 starts
 5. The flare's operating hours and methane destroyed in it by quarter:
    - Q1: 1,994 h, 53 t
    - Q2: 2,054 h, 55 t
    - Q3: 1,765 h, 35 t
    - Q4: 780 h, 24 t
-6. Each quarterly walkover's locations over 500 ppm and those still over at their first re-monitoring:
-   - Q1: 7 locations, 2 still over
-   - Q2: 8 locations, 4 still over
-   - Q3: 7 locations, 2 still over
-   - Q4: 6 locations, 2 still over
+6. Each quarterly walkover's exceedance locations and those still exceedances at their first re-monitoring:
+   - Q1: 7 exceedance locations, 2 still exceedances
+   - Q2: 8 exceedance locations, 4 still exceedances
+   - Q3: 7 exceedance locations, 2 still exceedances
+   - Q4: 6 exceedance locations, 2 still exceedances

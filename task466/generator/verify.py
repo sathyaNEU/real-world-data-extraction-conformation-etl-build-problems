@@ -233,6 +233,7 @@ for unit, e in (("GEN1", 1), ("GEN2", 2)):
                 ivs.append((since, src[0]["a"] if src else t))
             on = False
         elif code == "RUNNING":
+            req = None
             if on is False:
                 starts.append(t)
             if on is not True:

@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Re-chart six tanks before the service starts on 1 April 2027: BP-2, CF-2, DH-1, FL-1, GC-1 and HS-2 (BP-2, DH-1, FL-1 and HS-2 misstate most between the reorder and half-full heights, CF-2 and GC-1 between the reorder and normal fill heights, each by more than 25 gallons).",
+  "answer_source": "task248/submission.md, 1. Final Recommendation (generator/figures.json call)",
   "gap": [
     "time",
     "objective"
@@ -38,11 +38,13 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:gauge-chart-error-shape-from-sub-cycle-intervals-scale-from-deliveries",
   "layer1": [
-    "the gauge export in UTC beside dock sales in local time across both daylight saving changes",
-    "the dock point-of-sale system replaced in June, its two exports overlapping for a cut-over week under different transaction numbers",
-    "one marina's dock hoses re-piped to another tank at a dated refit",
+    "the leak-test log stamped in UTC beside the gauge export and the legacy dock sales in Central local time",
+    "the dock point-of-sale replaced on 16 November after a shadow week in both exports under different transaction numbers, the new export in UTC with card sales stamped at the next morning's batch settlement",
+    "the January ice storm resetting five older consoles' clocks to their 2016 factory date until a technician set them, the readings carrying the console's running record sequence",
+    "one marina's console replaced in February with its two tanks numbered the other way round, dated in the console setup export",
+    "the monitoring network's September outage, with each console's 48-hour buffer and the remote monitor re-polling each tank's last test result",
+    "two marinas moving their E10 hoses onto REC-90 on 1 December under the same point-of-sale grade code",
     "bills of lading in gross and net gallons at 60 F against the gauge's gross and temperature-compensated volumes",
-    "delivery reports the gauge opens and closes itself, with dock sales running during a delivery",
     "tank charts as quarter-inch tables under the register's chart numbers",
     "winter weeks with fuel docks closed and only temperature moving the gross volume"
   ],
@@ -72,8 +74,8 @@
     ]
   },
   "deliverables": [
-    "tank_chart_programme_2027.csv",
-    "chart_review_2027.pdf"
+    "recharting_list_2027.csv",
+    "cutover_readiness_2027.pdf"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",

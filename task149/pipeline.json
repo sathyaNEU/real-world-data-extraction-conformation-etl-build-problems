@@ -20,7 +20,7 @@
  },
  "duplicate_check": {
   "heart": "WARN, no BLOCK (overuse.org_family, repeat.deliverables, repeat.question_form; answered in the Build record)",
-  "surface": "exit 0 on cut aa619280; personas Colum Curtis, Deaglan Gilmore, Eve Dunne; no hard tell; 10 pairs promoted for the author's adjudicated /clone-check (task148 adjacent urban x forecasting pairing; surface 0.10 top-of-distribution pairs task134, task142, task167, task229, task261, task484; card collisions task65, task67, task482, differentiated)"
+  "surface": "exit 0 on cut 77ba30fa; personas Colum Curtis, Deaglan Gilmore, Eve Dunne; no hard tell; 8 pairs promoted for the author's adjudicated /clone-check (task148 adjacent urban x forecasting pairing; task134, task167, task229, task484 at surface 0.10; task65, task67, task482 card collisions, differentiated)"
  },
  "judge": {
   "verdict": "NOT_DETERMINISTIC (round 1, cut aa619280), SEND_BACK on the asks only; main call forced and reproduced, Gate F good, G and H pass",

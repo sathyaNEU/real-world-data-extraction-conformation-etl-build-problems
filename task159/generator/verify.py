@@ -84,7 +84,7 @@ def model(b):
 
 def plan(b):
     from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(b["kelvanna_mine_plan_2027_v3.xlsx"]), read_only=True, data_only=True)
+    wb = load_workbook(io.BytesIO(b["kelvanna_mine_plan_2027.xlsx"]), read_only=True, data_only=True)
     it = wb["Schedule"].iter_rows(values_only=True)
     hdr = next(it)
     ix = {h: n for n, h in enumerate(hdr)}
@@ -185,9 +185,9 @@ def hours(b):
     if state == "0":
         intervals.append((since, dt.datetime(2026, 11, 1)))
     for d in rows(b, "cmms_work_orders_grinding_2025-2026.csv"):
-        if d["WO_TYPE"] == "SD":
-            intervals.append((dt.datetime.strptime(d["ACTUAL_START"], "%Y-%m-%d %H:%M"),
-                              dt.datetime.strptime(d["ACTUAL_FINISH"], "%Y-%m-%d %H:%M")))
+        if d["WORKTYPE"] == "SD":
+            intervals.append((dt.datetime.strptime(d["ACTSTART"], "%Y-%m-%d %H:%M"),
+                              dt.datetime.strptime(d["ACTFINISH"], "%Y-%m-%d %H:%M")))
     out = []
     for a, c in QUARTERS:
         mins = int((c - a).total_seconds() // 60)

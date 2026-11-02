@@ -1,0 +1,88 @@
+{
+ "amount_total": "179,900",
+ "call": {
+  "Ardmuir Business School": 21500,
+  "Arts and Humanities": 19000,
+  "Health Sciences": 10900,
+  "Law": 19200,
+  "Life Sciences": 14600,
+  "Medicine and Dentistry": 15400,
+  "Science and Engineering": 45800,
+  "Social Sciences": 33500
+ },
+ "cancelled": "15,050",
+ "fund": "180,000",
+ "hold_weeks": {
+  "Ardmuir Business School": 13800,
+  "Arts and Humanities": 12200,
+  "Health Sciences": 7000,
+  "Law": 12300,
+  "Life Sciences": 9400,
+  "Medicine and Dentistry": 9900,
+  "Science and Engineering": 29500,
+  "Social Sciences": 21500
+ },
+ "holds": {
+  "Ardmuir Business School": 7369,
+  "Arts and Humanities": 3151,
+  "Health Sciences": 3656,
+  "Law": 4542,
+  "Life Sciences": 3419,
+  "Medicine and Dentistry": 4384,
+  "Science and Engineering": 8589,
+  "Social Sciences": 5587
+ },
+ "holds_total": "40,697",
+ "km_default_named": {
+  "Ardmuir Business School": 20500,
+  "Arts and Humanities": 20100,
+  "Health Sciences": 10500,
+  "Law": 18000,
+  "Life Sciences": 15200,
+  "Medicine and Dentistry": 14000,
+  "Science and Engineering": 47100,
+  "Social Sciences": 34700
+ },
+ "metered": {
+  "Ardmuir Business School": 1358,
+  "Arts and Humanities": 1133,
+  "Health Sciences": 1069,
+  "Law": 744,
+  "Life Sciences": 801,
+  "Medicine and Dentistry": 1087,
+  "Science and Engineering": 1215,
+  "Social Sciences": 2352
+ },
+ "metered_total": 9759,
+ "offered": "25,647",
+ "rules": {
+  "cap_days": 84,
+  "cap_weeks": 10,
+  "grace_days": 14,
+  "left": 10,
+  "loans": 40,
+  "offer_hours": 48
+ },
+ "spend": {
+  "Ardmuir Business School": 22100,
+  "Arts and Humanities": 9800,
+  "Health Sciences": 11600,
+  "Law": 11300,
+  "Life Sciences": 5400,
+  "Medicine and Dentistry": 12500,
+  "Science and Engineering": 20200,
+  "Social Sciences": 25300
+ },
+ "spend_total": "118,300",
+ "uncovered": {
+  "Ardmuir Business School": 27,
+  "Arts and Humanities": 24,
+  "Health Sciences": 13,
+  "Law": 23,
+  "Life Sciences": 15,
+  "Medicine and Dentistry": 14,
+  "Science and Engineering": 35,
+  "Social Sciences": 27
+ },
+ "uncovered_total": 178
+}

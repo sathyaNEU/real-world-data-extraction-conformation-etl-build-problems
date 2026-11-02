@@ -18,7 +18,7 @@ from io_util import write_csv, save_xlsx, set_mtime
 F_LIMS = "gc_assays_lims_export_20261105.csv"
 F_MODEL = "kl_mz_resource_model_2026R.csv"
 F_DEPL = "survey_depletion_2023-01_2026-10.csv"
-F_PLAN = "kelvanna_mine_plan_2027_v3.xlsx"
+F_PLAN = "kelvanna_mine_plan_2027.xlsx"
 F_BASIS = "budget_2027_basis_of_ore_and_gold.pdf"
 F_RECON = "monthly_reconciliation_jan2023_oct2026.pdf"
 F_GRID = "kelvanna_mine_grid_control.txt"
@@ -465,7 +465,7 @@ def _write_cmms(path, stops):
             desc = ("BM-101 liner change and mill shutdown" if r["kind"] == "RELINE" else
                     "Grinding circuit planned shutdown - BM-101 isolated")
             # the crew's isolation runs from a few minutes after the mill stops to a few minutes before it starts
-            rows.append([r["start"], "WO-%d" % 0, "BM-101", "Ball mill 101", "SD", desc, r["iso_start"], r["iso_end"],
+            rows.append([r["start"], "WO-%d" % 0, "BM-101", "GRD-BM", "SD", desc, r["iso_start"], r["iso_end"],
                          "CLOSED"])
         elif rng.random() < 0.45:
             n += 1
@@ -475,13 +475,13 @@ def _write_cmms(path, stops):
                 b = a + dt.timedelta(minutes=5)
             desc = rng.choice(["BM-101 trip - lube oil pressure low", "BM-101 trip - motor overload",
                                "BM-101 trip - mill discharge chute blocked", "BM-101 trip - trunnion bearing temp"])
-            rows.append([r["start"], "WO-%d" % 0, "BM-101", "Ball mill 101", "CM", str(desc), a, b,
+            rows.append([r["start"], "WO-%d" % 0, "BM-101", "GRD-BM", "CM", str(desc), a, b,
                          "CLOSED"])
     # weekly lube routes and inspections done with the mill running
     d = dt.datetime(2025, 1, 7, 9, 0)
     while d < dt.datetime(2026, 10, 31):
         n += 1
-        rows.append([d, "WO-%d" % 0, "BM-101", "Ball mill 101", "PM",
+        rows.append([d, "WO-%d" % 0, "BM-101", "GRD-BM", "PM",
                      "Weekly lube route and walk-down (mill running)", d, d + dt.timedelta(minutes=int(rng.integers(50, 110))),
                      "CLOSED"])
         d += dt.timedelta(days=7, minutes=int(rng.integers(-90, 90)))
@@ -490,8 +490,8 @@ def _write_cmms(path, stops):
     for r in rows:
         wo += int(wo_rng.integers(6, 41))
         r[1] = "WO-%d" % wo
-    write_csv(path, ["WO_NUMBER", "ASSET_ID", "ASSET_DESC", "WO_TYPE", "DESCRIPTION", "ACTUAL_START",
-                     "ACTUAL_FINISH", "STATUS"],
+    write_csv(path, ["WONUM", "ASSETNUM", "LOCATION", "WORKTYPE", "DESCRIPTION", "ACTSTART",
+                     "ACTFINISH", "STATUS"],
               [[r[1], r[2], r[3], r[4], r[5], r[6].strftime("%Y-%m-%d %H:%M"), r[7].strftime("%Y-%m-%d %H:%M"), r[8]]
                for r in rows])
 

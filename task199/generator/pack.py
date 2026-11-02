@@ -229,14 +229,18 @@ def build(world, target):
     # ---------------- teller cash transactions
     rows = []
     trng = np.random.default_rng([P.SEED, 502])
-    tel = sorted(world.teller, key=lambda t: (t["posting"]["value_date"], t["posting"]["ref"]))
+    tel = sorted(world.teller, key=lambda t: (t["teller_day"], t["posting"]["ref"]))
     for t in tel:
         p = t["posting"]
-        d = p["value_date"]
+        d = t["teller_day"]
         if d.weekday() == 5:
             hh, mm = int(trng.integers(9, 12)), int(trng.integers(0, 60))
+        elif t["late"]:
+            hh, mm = (15, int(trng.integers(31, 60))) if trng.random() < 0.6 else (16, int(trng.integers(0, 25)))
         else:
-            hh, mm = int(trng.integers(8, 16)), int(trng.integers(0, 60))
+            hh, mm = int(trng.integers(8, 15)), int(trng.integers(0, 60))
+            if hh == 15:
+                mm = int(trng.integers(0, 30))
         ts = dt.datetime(d.year, d.month, d.day, hh, mm, int(trng.integers(0, 60)))
         typ = {"DEP": "CDEP", "WDL": "CWDL", "REV": "REVERSAL", "ENC": "CHQ_ENCASH"}[t["kind"]]
         # the teller terminals at the upcountry branches were moved onto T24 on 24 April 2026 and wrote the

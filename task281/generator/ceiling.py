@@ -34,6 +34,10 @@ def b100(x):
     return int(math.floor(x / 100.0 + 0.5))
 
 
+def b10(x):
+    return int(math.floor(x / 10.0 + 0.5))
+
+
 def norm_title(s):
     s = re.sub(r"\s*\(\d+\w*\s+edn\)\s*$", "", s.strip())
     return re.sub(r"\s+", " ", s.replace("&", "and")).lower()
@@ -87,7 +91,7 @@ def score(call, a, b, c, gold):
     rec = sum(b100(call["amount"][f]) == b100(g_call["amount"][f]) for f in AN.FAC_ORDER) / 8.0
     holds = sum(call["n"][f] == g_call["n"][f] for f in AN.FAC_ORDER) / 8.0
     hw = sum(b100(call["hw"][f]) == b100(g_call["hw"][f]) for f in AN.FAC_ORDER) / 8.0
-    ka = sum(b100(a[f]) == b100(g_a[f]) for f in AN.FAC_ORDER)
+    ka = sum(b10(a[f]) == b10(g_a[f]) for f in AN.FAC_ORDER)
     kb = sum(b[f] == g_b[f] for f in AN.FAC_ORDER)
     kc = sum(c[f] == g_c[f] for f in AN.FAC_ORDER)
     kept = (ka + kb + kc) / 24.0

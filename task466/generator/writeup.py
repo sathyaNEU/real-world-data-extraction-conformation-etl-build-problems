@@ -45,19 +45,22 @@ def write(f, path):
     L.append("4. Applied rule %s with Schedule 2's %.2f cap oxidation and %.2f destruction efficiency: %d t released, "
              "%s at $%s under rule %s." % (f["clauses"][3], f["ox"], f["de"], f["released_t_nearest_10"], f["tier"],
                                            fmt(f["charge_usd"]), f["clauses"][6]))
-    L.append("5. Engine hours and starts (rules %s and %s) from BH_engine_plant_events_2026.txt: synchronised time "
-             "from RUNNING to the next STOP or TRIP, both engines running when the year opens, each utility power "
-             "failure ending the run at the failure's start in the outage log (the controller writes only CONTROLLER "
-             "POWER UP when the supply returns), and a RUNNING after BREAKER OPEN not counted as a start."
+    L.append("5. Engine hours and starts (rules %s and %s) from BH_engine_plant_events_2026.txt in site time "
+             "converted across the daylight-saving changes: synchronised time from RUNNING to the next STOP, TRIP or "
+             "BREAKER OPEN, both engines running when the year opens, each utility power failure ending the run at "
+             "the failure's start in the outage log (the controller writes only CONTROLLER POWER UP when the supply "
+             "returns); a start is each RUNNING from standstill plus each test run (START REQUEST then STOP with no "
+             "RUNNING), never a RUNNING after BREAKER OPEN or a START FAIL."
              % (f["clauses"][4], f["clauses"][5]))
     L.append("6. Flare figures: its gas by difference at the plant (FT-101 less FT-201 and FT-202, all normal cubic "
              "metres) times the methane content, %s kg and %.2f (rule %s); its hours from TEMP PERMISSIVE or TEMP "
              "NORMAL to the next LOW TEMP or FLARE STOP in the event log, with the flare lit when the year opens."
              % (f["rho_n"], f["de"], f["clauses"][7]))
-    L.append("7. Surface monitoring from BH_surface_emissions_monitoring_2026.xlsx: readings above %d ppm (%d over the "
-             "background), the third quarter's readings between the passing morning check and the failed midday check "
-             "in SEM_analyser_checks_2026.csv void under plan section %s, each location's first re-monitoring matched "
-             "by position after converting its WGS84 fix to the site grid by the site register's tie."
+    L.append("7. Surface monitoring from BH_surface_emissions_monitoring_2026.xlsx: exceedances are readings above %d "
+             "ppm (%d over the background), the third quarter's readings between the passing morning check and the "
+             "failed midday check in SEM_analyser_checks_2026.csv void under plan section %s, and each location's first "
+             "re-monitoring is its earliest re-check matched by position, the WGS84 fix converted to the site grid by "
+             "the site register's tie."
              % (f["sem_reading_threshold_ppm"], f["sem_threshold_ppm"], f["clauses"][8]))
     L.append("8. The 2027 budget carries $%s for the %s charge." % (fmt(f["charge_usd"]), f["tier"]))
     L.append("")
@@ -83,8 +86,8 @@ def write(f, path):
     L.append("5. The flare's operating hours and methane destroyed in it by quarter:")
     for q in (1, 2, 3, 4):
         L.append("   - Q%d: %s h, %d t" % (q, fmt(f["flare_hours_q%d" % q]), f["flare_destroyed_t_q%d" % q]))
-    L.append("6. Each quarterly walkover's locations over 500 ppm and those still over at their first re-monitoring:")
+    L.append("6. Each quarterly walkover's exceedance locations and those still exceedances at their first re-monitoring:")
     for q in (1, 2, 3, 4):
-        L.append("   - Q%d: %d locations, %d still over" % (q, f["sem_exceed_q%d" % q], f["sem_still_q%d" % q]))
+        L.append("   - Q%d: %d exceedance locations, %d still exceedances" % (q, f["sem_exceed_q%d" % q], f["sem_still_q%d" % q]))
     with open(path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")

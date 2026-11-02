@@ -253,7 +253,7 @@ def bso_loc(path, w):
     for sh, widths in ((ws, [12, 28, 16, 14, 12, 32]), (ws2, [14, 12, 22, 7, 15, 15])):
         for i, wdt in enumerate(widths):
             sh.column_dimensions[chr(65 + i)].width = wdt
-    xlsx_props(wb, P.PEOPLE["provider"], "Locaties en contracten", dt.datetime(2026, 11, 2, 8, 0))
+    xlsx_props(wb, P.PEOPLE["provider"], "Locaties en contracten", dt.datetime(2026, 10, 19, 9, 0))
     wb.save(path)
     normalise_zip(path, "2026-10-19T07:00:00Z")
 

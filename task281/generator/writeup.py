@@ -30,8 +30,8 @@ def write(F, sub_path, fig_path):
         "offered": num(F["n_offered"]),
         "km_default_named": {by[f]["name"]: F["km_amount100"][f] for f in AN.FAC_ORDER},
         "rules": {"grace_days": 14, "cap_weeks": 10, "cap_days": 84, "offer_hours": 48, "loans": 40, "left": 10},
-        "spend": {by[f]["name"]: F["spend"][f]["r100"] for f in AN.FAC_ORDER},
-        "spend_total": num(F["spend_total100"]),
+        "spend": {by[f]["name"]: F["spend"][f]["r10"] for f in AN.FAC_ORDER},
+        "references": ["2027", "100", "10", "2.2", "2.3", "3.2", "3.4", "1"],
         "uncovered": {by[f]["name"]: F["uncovered"][f] for f in AN.FAC_ORDER},
         "uncovered_total": F["uncovered_total"],
         "metered": {by[f]["name"]: F["metered"][f] for f in AN.FAC_ORDER},
@@ -107,9 +107,9 @@ def write(F, sub_path, fig_path):
     for r in rows:
         out.append("   - %s: %s holds; %s hold-weeks; %s" % (r["name"], num(r["holds"]), num(r["hw100"]),
                                                              money(r["amount100"])))
-    out.append("2. Course text spend on invoice lines dated 1 January to 31 October 2026, to the nearest £100:")
+    out.append("2. Course text spend on invoice lines dated 1 January to 31 October 2026, to the nearest £10:")
     for f in AN.FAC_ORDER:
-        out.append("   - %s: %s" % (by[f]["name"], money(F["spend"][f]["r100"])))
+        out.append("   - %s: %s" % (by[f]["name"], money(F["spend"][f]["r10"])))
     out.append("3. Essential spring 2026 reading-list items the Library could not lend as an e-book on 12 January "
                "2026:")
     for f in AN.FAC_ORDER:

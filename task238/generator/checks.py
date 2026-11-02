@@ -181,8 +181,11 @@ def main():
     # SF4 the stray-label share: pooled over the chain, or each store's own audits
     ok(call_of(V["store_baseline"]) == sorted(watch) and same_figs(V["store_baseline"]),
        "SF4 stray_share_basis_same_call_and_figures")
-    # SF5 the hanging pace: one pace for the chain (each store's own pace rests on three check visits at most)
-    ok(call_of(V["store_pace"]) == sorted(watch), "SF5 store_pace_same_call")
+    # SF5 the hanging pace: one pace for the chain, or each store's own where its own checks identify one (a check
+    # after the print that still found an old label); elsewhere a per-store likelihood has no maximum
+    _, ident = A.identified_store_paces(pk, rate)
+    ok(call_of(V["store_pace"]) == sorted(watch) and same_figs(V["store_pace"]),
+       "SF5 store_pace_same_call_and_figures", "own pace identified at %s" % ident)
     # SF6 the pace's own uncertainty, 15 per cent either way
     ok(all(call_of(V[k]) == sorted(watch) and same_figs(V[k]) for k in ("rate_lo", "rate_hi")),
        "SF6 pace_range_same_call_and_figures")

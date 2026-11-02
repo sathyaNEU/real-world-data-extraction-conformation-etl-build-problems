@@ -407,6 +407,10 @@ check("SF18 hours are elapsed time summed (rule 1.7), never a count of clock hou
       all(hourcount[q] != int(round(res["engines"][(1, q)]["hours"])) for q in (1, 2, 3, 4)), str(hourcount))
 
 # ------------------------------------------------------------------------------------------------ ask devices
+nt = A.engine_answers(T, outs, count_test_runs=False)
+check("device D1 a mechanic's test run off the grid is a start from standstill (rule 1.8); keying starts on RUNNING moves "
+      "every start cell", all(nt[k]["starts"] != res["engines"][k]["starts"] for k in res["engines"]),
+      str([nt[k]["starts"] for k in sorted(nt)]))
 pu = A.engine_answers(T, outs, use_outage_log=False)
 check("device D4 engine stop at a power failure (no line written): the power-up time moves all eight hour cells",
       all(int(round(pu[k]["hours"])) != int(round(res["engines"][k]["hours"])) for k in res["engines"]), "")

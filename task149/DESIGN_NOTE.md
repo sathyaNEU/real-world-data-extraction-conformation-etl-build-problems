@@ -284,8 +284,14 @@ Measured by: generator/ceiling.py on the cut pack
   inside the weeks, and the zones' leave rates were set inside a realistic band to clear the edges; (4) the line is
   pinned as the whole line's entries added together. The re-cut moved the exact golden from 1,311.6 to 1,296.6; the call
   (about 1,300, reduced scheme), the default (2,374.6) and the stump are unchanged.
-- **Gates on the final cut.** Listed in pipeline.json and the report: checks.py, verify.py, two byte-identical builds,
-  figures_check.py, precut.py, voice-check.py, leak.py --asof 2027-12-06, guard.py heart and surface.
+- **Gates on the final cut (target.zip 77ba30fa).** checks.py 83 of 83; verify.py agrees on its own path (total 1,296.6,
+  every zone, 6 arrival shares, 7 station ratios, golden read back); two builds byte-identical over 21 files;
+  figures_check.py 60 figures, 0 absent; precut.py 61 checks, 0 FAIL, 0 WARN; voice-check.py PASS (924 characters);
+  leak.py --asof 2027-12-06 REVIEW, no LEAK; guard.py heart WARN, no BLOCK; guard.py surface exit 0, the card's three
+  personas only, no hard tell, eight pairs promoted for the author's adjudicated read (task148 at the adjacent number
+  on the same urban forecasting pairing; task134, task167, task229 and task484 at surface 0.10, the top of this
+  build's own distribution; task65, task67 and task482 on gap, pattern and decision family, differentiated on the
+  card). Pair ceiling 32.7, mirror leakage 7.7 per cent.
 - **Guard WARNs answered.** overuse.org_family: a metropolitan transport authority is a government agency, the honest
   family. repeat.deliverables (docx and xlsx against task304): a workbook for the figures and a committee note are what
   the authority's rail planning team produces; the note carries the chart. repeat.question_form (how-many against

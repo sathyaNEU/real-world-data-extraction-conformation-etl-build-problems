@@ -89,7 +89,7 @@ def paired(target, **kw):
 
 
 def plan(target):
-    wb = load_workbook(os.path.join(target, "kelvanna_mine_plan_2027_v3.xlsx"), read_only=True, data_only=True)
+    wb = load_workbook(os.path.join(target, "kelvanna_mine_plan_2027.xlsx"), read_only=True, data_only=True)
     ws = wb["Schedule"]
     rows = list(ws.iter_rows(values_only=True))
     df = pd.DataFrame(rows[1:], columns=rows[0])
@@ -300,8 +300,8 @@ def mill_hours(target, use_cmms=True, tags="both", local=True, dedup=True):
         down.append((since, end))
     if use_cmms:
         w = _csv(os.path.join(target, "cmms_work_orders_grinding_2025-2026.csv"))
-        w = w[w["WO_TYPE"] == "SD"]
-        for a, b in zip(w["ACTUAL_START"], w["ACTUAL_FINISH"]):
+        w = w[w["WORKTYPE"] == "SD"]
+        for a, b in zip(w["ACTSTART"], w["ACTFINISH"]):
             down.append((dt.datetime.strptime(a, "%Y-%m-%d %H:%M"), dt.datetime.strptime(b, "%Y-%m-%d %H:%M")))
     # union of downtime
     down.sort()

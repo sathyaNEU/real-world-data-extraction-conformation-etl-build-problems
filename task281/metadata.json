@@ -1,0 +1,177 @@
+{
+ "architecture": 4,
+ "as_of": "2026-11-02",
+ "deliverables": [
+  "course_texts_fund_2027.csv",
+  "course_texts_fund_2027.xlsx"
+ ],
+ "distractors": [
+  {
+   "file": "SA_textbook_access_survey_2026_results.xlsx",
+   "why_relevant": "students' own account of e-textbook access by faculty in the same semester, which the Court's terms do not use to divide the fund"
+  },
+  {
+   "file": "shelfmark_title_usage_2025-26.csv",
+   "why_relevant": "the platform's monthly checkouts and turnaways by title, a demand signal at the wrong grain that the terms do not use"
+  }
+ ],
+ "files": [
+  {
+   "date": "2026-05-29",
+   "file": "SA_textbook_access_survey_2026_results.xlsx",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": null,
+   "source": "Students' Association textbook access survey, spring 2026"
+  },
+  {
+   "date": "2026-10-15",
+   "file": "UC-26-114_course_texts_fund_2027_terms.pdf",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": null,
+   "source": "Ardmuir University Court paper UC/26/114, Course Texts Fund 2027 terms"
+  },
+  {
+   "date": "2026-10-31",
+   "file": "agresso_invoice_lines_CT_20260101-20261031.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 325,
+   "source": "Finance system invoice lines charged to course texts funds, 1 January to 31 October 2026"
+  },
+  {
+   "date": "2026-10-30",
+   "file": "alma_course_text_records_20261030.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 1981,
+   "source": "Library catalogue records for course texts (print and electronic)"
+  },
+  {
+   "date": "2026-08-24",
+   "file": "collections_procedures_course_texts_v3.pdf",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": null,
+   "source": "Ardmuir University Library collections procedures for course texts, version 3"
+  },
+  {
+   "date": "2026-10-01",
+   "file": "course_catalogue_2025-26_2026-27.xlsx",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": null,
+   "source": "Registry course catalogue, 2025-26 and 2026-27"
+  },
+  {
+   "date": "2026-10-31",
+   "file": "erm_licence_register_20261031.xlsx",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": null,
+   "source": "The Library's electronic resource management licence register (title licences and packages)"
+  },
+  {
+   "date": "2026-10-01",
+   "file": "finance_office_monthly_rates_2025-26.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 15,
+   "source": "Finance Office monthly exchange rates"
+  },
+  {
+   "date": "2026-10-29",
+   "file": "leganto_reading_list_items_2025-26_2026-27.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 3628,
+   "source": "Reading-list system export of list items, 2025-26 and 2026-27"
+  },
+  {
+   "date": "2026-10-31",
+   "file": "shelfmark_checkouts_20250901-20261031.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 64429,
+   "source": "Shelfmark Lend institutional checkouts export for Ardmuir University, same period"
+  },
+  {
+   "date": "2026-10-31",
+   "file": "shelfmark_holds_20250901-20261031.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 109888,
+   "source": "Shelfmark Lend institutional holds export for Ardmuir University, 1 September 2025 to the October 2026 download"
+  },
+  {
+   "date": "2025-08-01",
+   "file": "shelfmark_lending_licence_terms_v2025.2.pdf",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": null,
+   "source": "Shelfmark Lend lending and licence terms for institutional customers, version 2025.2"
+  },
+  {
+   "date": "2025-09-01",
+   "file": "shelfmark_licence_status_20250901.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 419,
+   "source": "Shelfmark Lend licence status report for 40-loan licences in force"
+  },
+  {
+   "date": "2026-09-02",
+   "file": "shelfmark_title_usage_2025-26.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 5352,
+   "source": "Shelfmark Lend title usage report, 2025-26"
+  },
+  {
+   "date": "2026-01-05",
+   "file": "AshdownScientific_STEMTexts_2026_kbart.txt",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 59,
+   "source": "Publisher KBART title list for the package Ashdown STEM Texts 2026"
+  },
+  {
+   "date": "2026-01-05",
+   "file": "CorranLyle_LawLibrary_2026_kbart.txt",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 57,
+   "source": "Publisher KBART title list for the package Corran & Lyle Law Library 2026"
+  },
+  {
+   "date": "2026-01-05",
+   "file": "EllesmereUP_HumanitiesSocialSciences_2026_kbart.txt",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 65,
+   "source": "Publisher KBART title list for the package Ellesmere Humanities and Social Sciences 2026"
+  },
+  {
+   "date": "2026-01-05",
+   "file": "NorthfieldMedical_HealthSciencesEssentials_2026_kbart.txt",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 55,
+   "source": "Publisher KBART title list for the package Northfield Health Sciences Essentials 2026"
+  },
+  {
+   "date": "2026-01-05",
+   "file": "StanwellPress_BusinessEconomicsCore_2026_kbart.txt",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 63,
+   "source": "Publisher KBART title list for the package Stanwell Business and Economics Core 2026"
+  }
+ ],
+ "stated_inputs": [
+  "180,000"
+ ],
+ "task": "task281",
+ "world": "Ardmuir University Library (fictional), Scotland; Shelfmark Lend (fictional) lending platform"
+}

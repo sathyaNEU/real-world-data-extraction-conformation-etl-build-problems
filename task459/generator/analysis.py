@@ -255,8 +255,10 @@ def events(d, variant="golden"):
     return ev
 
 
-def per_member(ev):
-    """mid -> (days sorted unique, region per day, events per region, n same-day conflicts)."""
+def per_member(ev, high=False):
+    """mid -> (days sorted unique, region per day, events per region, n same-day conflicts). A day holding places in
+    two regions takes the region with more places that day (ties to the first region in Schedule B's order, or the
+    last with high=True)."""
     out = {}
     for mid, g in ev.groupby("mid", sort=False):
         t = g["t"].to_numpy()
@@ -272,7 +274,7 @@ def per_member(ev):
             if len(set(vals.tolist())) > 1:
                 conflicts += 1
                 cnt = np.bincount(vals, minlength=8)
-                reg[k] = int(np.argmax(cnt))
+                reg[k] = int(np.argmax(cnt)) if not high else int(7 - np.argmax(cnt[::-1]))
             else:
                 reg[k] = int(vals[0])
         out[mid] = (days, reg, np.bincount(r, minlength=8), conflicts)
@@ -280,6 +282,7 @@ def per_member(ev):
 
 
 TT = np.arange(ND)
+AN_DAY = [Y0 + dt.timedelta(days=i) for i in range(ND)]
 
 
 def day_regions(days, reg, mode="nearest"):
@@ -331,10 +334,13 @@ def address_on_region(d, mid, day):
 
 
 # ---------------------------------------------------------------------------------------------------------
-RUNGS = ["address", "address_dec31", "address_days", "pcp", "pcp_visits", "claim_majority", "event_days"]
-DAY_VARIANTS = ["golden", "forward", "backward", "nearest_tie_next", "with_lab_tele", "no_denied", "no_rx",
+RUNGS = ["address", "address_dec31", "address_days", "pcp", "pcp_visits", "claim_majority", "event_days",
+         "address_override"]
+DAY_VARIANTS = ["golden", "forward", "backward", "nearest_tie_next", "conflict_high", "no_denied", "no_rx",
                 "no_visits", "medical_only", "rx_all", "net_claims", "fallback_record", "now_location",
-                "pop_active", "pop_ends"]
+                "pop_ends", "with_lab_tele", "pop_active"]
+COMPLIANT = DAY_VARIANTS[:-2]        # every reading the filed text licenses
+LAYER1_SLIPS = ["with_lab_tele", "pop_active"]   # mishandlings the filed text does not license (asserted neutral)
 
 
 def member_regions(target, method="golden"):
@@ -375,6 +381,10 @@ def member_regions(target, method="golden"):
     if not hasattr(d, "_pm_" + ev_var):
         setattr(d, "_pm_" + ev_var, per_member(events(d, ev_var)))
     pm = getattr(d, "_pm_" + ev_var)
+    if var == "conflict_high":
+        if not hasattr(d, "_pm_high"):
+            d._pm_high = per_member(events(d, "golden"), high=True)
+        pm = d._pm_high
     mode = {"forward": "forward", "backward": "backward", "nearest_tie_next": "nearest_tie_next"}.get(var, "nearest")
     for m in pop:
         if m not in pm:
@@ -385,6 +395,12 @@ def member_regions(target, method="golden"):
             c = per_region
         elif method == "event_days":
             c = np.bincount(reg, minlength=8)
+        elif method == "address_override":
+            # home (the address held that day) on every day without a place, the place on days with one
+            base = np.array([d.ridx.get(address_on_region(d, m, AN_DAY[t]), 0) for t in range(ND)]) \
+                if len(d.hist.get(m, [])) > 1 else np.full(ND, d.ridx.get(address_on_region(d, m, Y1), 0))
+            base[days] = reg
+            c = np.bincount(base, minlength=8)
         else:
             c = np.bincount(day_regions(days, reg, mode), minlength=8)
         out[m] = d.regions[int(np.argmax(c[:len(d.regions)]))]

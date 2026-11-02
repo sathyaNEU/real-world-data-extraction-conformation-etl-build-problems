@@ -266,7 +266,7 @@ def simulate(wd):
             # laboratory bills it under its own address, so the claim carries the visit's date.
             visit_days = [x.date for x in svcs[span_start:] if x.mid == m.mid and x.pos in ("11", "20", "22")]
             for dd in visit_days:
-                if rng.random() < (0.14 if not young else 0.1):
+                if rng.random() < (0.06 if not young else 0.05):
                     add_svc(m, W.doy(dd), "lab_ref", rc)
             if rng.random() < 0.035 * length / 365:
                 add_svc(m, a + int(rng.integers(0, length)), "er", rc)
@@ -344,8 +344,8 @@ def simulate(wd):
         first = lo + int(rng_hv.integers(0, 120))
         last = hi - int(rng_hv.integers(0, 60))
         for wk in range(first, last, 7):
-            for k in range(per_week):
-                t = wk + int(rng_hv.integers(0, 7))
+            for k in sorted(int(x) for x in rng_hv.choice(7, size=per_week, replace=False)):
+                t = wk + k
                 if t > hi or t < lo:
                     continue
                 rc = W.REGION_CODES[int(m.timeline[t])]

@@ -156,7 +156,7 @@ def write_workbook(res, path):
         ws2.column_dimensions[col].width = 16
 
     ws3 = wb.create_sheet("Surface monitoring")
-    ws3.append(["Walkover", "Locations over 500 ppm", "Of those, still over 500 ppm at first re-monitoring"])
+    ws3.append(["Walkover", "Exceedance locations", "Of those, still exceedances at first re-monitoring"])
     for cl in ws3[1]:
         cl.font = bold
         cl.alignment = Alignment(wrap_text=True)

@@ -47,7 +47,7 @@ def write_xlsx(path, res):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Series teams"
-    ws["A1"] = "OPS-41 series assessment, summer deployment plan 2026"
+    ws["A1"] = "OPS-41 series assessment: four series teams for the summer deployment plan 2026"
     ws["A1"].font = Font(name="Calibri", size=12, bold=True)
     ws["A2"] = "Assessment date 4 May 2026. Review period 9 February to 3 May 2026. Crime Analysis Unit."
     ws["A2"].font = NORM
@@ -56,10 +56,12 @@ def write_xlsx(path, res):
     for c in ws[4]:
         c.font = BOLD
         c.fill = HDR
+    order = ["Ridgeview", "Ashford Road", "Millbrook", "Union Yards"]
     for i, t in enumerate(team_rows(res), start=1):
-        where = ", ".join(t["stations"]) + " stations" if t["stations"] else "street, late night"
+        where = "%s station platform" % t["stations"][0] if t["stations"] else "street, late night, at knifepoint"
         if t["label"] == "Eastline group":
-            where = "platforms at %s (on the same trains)" % ", ".join(t["stations"])
+            st = [x for x in order if x in t["stations"]]
+            where = "platforms at %s and %s, on the same westbound trains" % (", ".join(st[:-1]), st[-1])
         ws.append(["Team %d" % i, t["label"], ", ".join(d.replace("D", "") for d in t["districts"]), t["n"], where])
     n_teams = len(res["golden"])
     ws.append([])
@@ -86,6 +88,10 @@ def write_xlsx(path, res):
                + [sum(sum(v) for v in res["ask_a"].values())])
     for c in ws2[ws2.max_row]:
         c.font = BOLD
+    ws2.append([])
+    ws2.append(["Offences that took place in each period. A report made to both the Service and Transit Peace Officers "
+                "is counted once (OPS-41 section 2); 2025 offences are placed in the 2026 districts by location."])
+    ws2.freeze_panes = "B4"
     for col, w in zip("ABCDE", (18, 20, 20, 20, 10)):
         ws2.column_dimensions[col].width = w
 
@@ -104,7 +110,9 @@ def write_xlsx(path, res):
         r[1].number_format = "#,##0"
         r[2].number_format = "#,##0"
     ws3.append([])
-    ws3.append(["Fairgrounds opened 29 March 2026."])
+    ws3.append(["Fairgrounds opened 29 March 2026. Entries by gate array on Mountain-time dates; a train call is "
+                "every scheduled stop of an Eastline train in either direction."])
+    ws3.freeze_panes = "B4"
     for col, w in zip("ABC", (18, 18, 44)):
         ws3.column_dimensions[col].width = w
     wb.properties.creator = "Carvale Police Service - Crime Analysis Unit"
@@ -124,32 +132,45 @@ def write_memo(path, res):
     p = d.add_paragraph()
     p.add_run("Carvale Police Service, Crime Analysis Unit").bold = True
     d.add_paragraph("To: Deputy Chief (Operations) %s\nFrom: %s, Crime Analysis Unit\nDate: 15 May 2026\n"
-                    "Subject: Summer deployment plan, OPS-41 series teams" % (P.PEOPLE["deputy_chief"], P.PEOPLE["cau_supervisor"]))
+                    "Subject: Summer deployment plan: OPS-41 series teams" % (P.PEOPLE["deputy_chief"], P.PEOPLE["cau_supervisor"]))
     p = d.add_paragraph()
-    p.add_run("The plan needs %s series teams for 1 June to 27 September." % _word(len(rows))).bold = True
-    for i, t in enumerate(rows, start=1):
-        d.add_paragraph("Team %d, %s: %s, %d offences in the review period." % (i, t["label"], district_text(t["districts"]), t["n"]),
-                        style="List Number")
+    p.add_run("The plan needs four series teams from 1 June to 27 September." if len(rows) == 4 else
+              "The plan needs %s series teams from 1 June to 27 September." % _word(len(rows))).bold = True
+    what = {"Eastline group": "snatches on Eastline platforms", "Hollin station group": "snatches at Hollin station",
+            "Cobb Street station group": "snatches at Cobb Street station"}
+    for t in rows:
+        d.add_paragraph("%s (%s): %s, %d offences in the review period." % (
+            t["label"], what.get(t["label"], "late-night street robberies at knifepoint"), district_text(t["districts"]), t["n"]),
+            style="List Number")
     e = next(t for t in rows if t["label"] == "Eastline group")
+    order = [x for x in ["Ridgeview", "Ashford Road", "Millbrook", "Union Yards"] if x in e["stations"]]
     d.add_paragraph(
-        "The station figures look like four separate local groups, one at each of %s. They are one group: on %d "
-        "evenings two or three of these snatches fell on the departures of a single westbound train, so the same "
-        "people rode the line and struck as the doors closed. Their team needs ground in %s."
-        % (", ".join(e["stations"][:-1]) + " and " + e["stations"][-1], len(res["runs"]), district_text(e["districts"])))
+        "On the district figures the Eastline snatches look like four local groups, one each at %s. They are one "
+        "group. On %d evenings two or three of them fell on the departures of a single westbound train at "
+        "successive stations, so the same people rode the line and struck as the doors closed. Their team needs "
+        "ground in all of %s, not a team in each."
+        % (", ".join(order[:-1]) + " and " + order[-1], len(res["runs"]), district_text(e["districts"])))
     sim = max((len(v) for v in res["simultaneous"].values()), default=0)
     d.add_paragraph(
-        "The Cobb Street group is a different group with the same method. None of its snatches sits on one of those "
-        "trains, and on %s evenings it struck at Cobb Street within three minutes of the Eastline group striking at "
-        "Union Yards, more than six minutes away by train." % _word(sim))
+        "The Cobb Street group uses the same method but is a different group. None of its snatches sits on one of "
+        "those trains, and on %s evenings it struck at Cobb Street within three minutes of the Eastline group "
+        "striking at Union Yards, more than six minutes away by train." % _word(sim))
     covered = sorted({x for t in rows for x in t["districts"]}, key=lambda s: int(s[1:]))
     none = [x for x in ["D%d" % k for k in range(1, 11)] if x not in covered]
-    d.add_paragraph("Districts %s have no series in the review period; their phone offences stay with district "
-                    "investigators. The 2025 comparison for the Commission and the Eastline station figures for "
-                    "Transit are in the workbook." % (", ".join(x[1:] for x in none[:-1]) + " and " + none[-1][1:]))
+    d.add_paragraph("Districts %s have no series in the review period, and their phone offences stay with the "
+                    "district investigators. The 2025 comparison for the Commission and the station figures Transit "
+                    "asked for are in the workbook." % (", ".join(x[1:] for x in none[:-1]) + " and " + none[-1][1:]))
+    d.add_paragraph("J. Jackson")
+    p = d.add_paragraph()
+    r = p.add_run("Review period 9 February to 3 May 2026, the twelve completed weeks before the 4 May assessment "
+                  "(OPS-41 section 3). A report made to both the Service and Transit Peace Officers is counted once "
+                  "(section 2), and a team's ground is every 2026 patrol district where an offence of its series took "
+                  "place (section 4).")
+    r.font.size = Pt(8.5)
     cp = d.core_properties
     cp.author = "J. Jackson"
     cp.last_modified_by = "J. Jackson"
-    cp.title = "Summer deployment plan, OPS-41 series teams"
+    cp.title = "Summer deployment plan: OPS-41 series teams"
     cp.created = dt.datetime(2026, 5, 15, 15, 40, 0)
     cp.modified = dt.datetime(2026, 5, 15, 16, 55, 0)
     cp.revision = 3

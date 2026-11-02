@@ -304,9 +304,22 @@ def rungs(pk):
     return R
 
 
+def identified_store_paces(pk, chain_rate):
+    """each store's own pace where its own checks identify one: a check after the print that still found an old
+    label bounds the pace from above; a store whose post-print checks all found every label up bounds it only from
+    below, its likelihood has no maximum, and the store takes the chain's pace"""
+    raw = fit_pace(pk, per_store=True)
+    seen_old = set()
+    for (s, t, ean, lab, reg) in pk.checks:
+        if (s, t.date()) in pk.batch and (t - pk.batch[(s, t.date())][0]).total_seconds() > 0 \
+                and abs(lab - reg) > 0.004:
+            seen_old.add(s)
+    return {s: (raw[s] if s in seen_old and s in raw else chain_rate) for s in pk.stores}, sorted(seen_old)
+
+
 def variants(pk):
     rate = fit_pace(pk)[0]
-    rates = fit_pace(pk, per_store=True)
+    rates, _ = identified_store_paces(pk, rate)
     b, _, _ = baseline(pk, rate)
     bs, _, _ = baseline(pk, rate, per_store=True)
     V = {}

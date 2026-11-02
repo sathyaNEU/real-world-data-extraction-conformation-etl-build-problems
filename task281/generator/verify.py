@@ -44,6 +44,10 @@ def r100(x):
     return int(math.floor(x / 100.0 + 0.5)) * 100
 
 
+def r10(x):
+    return int(math.floor(x / 10.0 + 0.5)) * 10
+
+
 def find(target, pattern):
     hits = [f for f in os.listdir(target) if re.search(pattern, f)]
     assert len(hits) == 1, (pattern, hits)
@@ -331,7 +335,7 @@ def main(argv):
         for key, got, want in (("amount", r100(r["amount"]), figs["call"][name]),
                                ("holds", r["holds"], figs["holds"][name]),
                                ("hold-weeks", r100(r["hw"]), figs["hold_weeks"][name]),
-                               ("spend", r100(spend[name]), figs["spend"][name]),
+                               ("spend", r10(spend[name]), figs["spend"][name]),
                                ("uncovered", unc[name], figs["uncovered"][name]),
                                ("metered", held[name], figs["metered"][name])):
             n += 1

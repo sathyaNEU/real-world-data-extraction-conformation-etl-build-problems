@@ -1,6 +1,6 @@
 """The pack's documents and small lookups: the register, piping record, close-out sheets, the point-of-sale grade
 table, Fuel Systems Standard FS-3 and the monitoring service's onboarding letter."""
-import os, zipfile, datetime as dt
+import os, re, zipfile, datetime as dt
 import numpy as np
 import params as P
 
@@ -37,6 +37,14 @@ def pos_grades_current():
 def normalize_zip(path):
     with zipfile.ZipFile(path) as z:
         items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
+    fixed = []
+    for name, data in items:
+        if name == "docProps/core.xml":
+            # the writer stamps the save time; the workbook's own date is the export's
+            data = re.sub(rb"<dcterms:modified([^>]*)>[^<]*</dcterms:modified>",
+                          rb"<dcterms:modified\1>2027-01-11T16:30:00Z</dcterms:modified>", data)
+        fixed.append((name, data))
+    items = fixed
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in items:
             zi = zipfile.ZipInfo(name, date_time=FIXED_ZIP)

@@ -190,7 +190,7 @@ def slope_review(path):
     for i, r in enumerate(rows):
         L.append(("Helvetica-Bold" if i == 0 else "Helvetica", 9, list(r), [52, 200, 270, 330, 400, 460], 14))
     L.append(("Helvetica", 4, "", None, 8))
-    _para(L, "Recommendation. Adopt the reduced east-wall face angle below the 1220 bench in mine plan 2027 v3 and "
+    _para(L, "Recommendation. Adopt the reduced east-wall face angle below the 1220 bench in the 2027 mine plan and "
              "continue weekly prism reads on the 1240 and 1225 berms. No change to the haul road alignment.")
     write_pdf(path, "Phase 5 and 6 pit slope review", "Geotechnical engineering", [L], STAMP_GEOT)
 

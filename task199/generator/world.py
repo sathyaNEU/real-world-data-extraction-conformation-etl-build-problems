@@ -602,28 +602,42 @@ class World:
                     for k, a in enumerate((a1, a2)):
                         acc = accs[k % len(accs)]
                         br = c["branch"][2] if k == 0 else int(branches[int(rng.integers(0, len(branches)))])
-                        rec = self.post(code, acc, d, -_kes_amount(a, 100), "CASH", "debit", narrative="CASH WITHDRAWAL")
-                        self.teller.append(dict(kind="WDL", posting=rec, branch=br))
+                        late = k == 1 and d.weekday() < 5 and rng.random() < 0.5
+                        rec = self._cash_out(code, acc, d, a, late, "CASH WITHDRAWAL")
+                        self.teller.append(dict(kind="WDL", posting=rec, branch=br, teller_day=d, late=late))
                     continue
                 acc = accs[0]
+                late = d.weekday() < 5 and rng.random() < 0.12
                 if amt > 0.9 * thr and rng.random() < 0.3:
                     chq = int(rng.integers(100000, 999999))
-                    rec = self.post(code, acc, d, -_kes_amount(amt, 100), "CASH", "debit",
-                                    narrative="CHQ ENCASHMENT %06d" % chq)
-                    self.teller.append(dict(kind="ENC", posting=rec, branch=c["branch"][2], chq=chq))
+                    rec = self._cash_out(code, acc, d, amt, late, "CHQ ENCASHMENT %06d" % chq)
+                    self.teller.append(dict(kind="ENC", posting=rec, branch=c["branch"][2], chq=chq, teller_day=d,
+                                            late=late))
                     continue
-                rec = self.post(code, acc, d, -_kes_amount(amt, 100), "CASH", "debit", narrative="CASH WITHDRAWAL")
-                self.teller.append(dict(kind="WDL", posting=rec, branch=c["branch"][2]))
+                rec = self._cash_out(code, acc, d, amt, late, "CASH WITHDRAWAL")
+                self.teller.append(dict(kind="WDL", posting=rec, branch=c["branch"][2], teller_day=d, late=late))
         # teller errors reversed the same day
-        wd = [t for t in self.teller if t["kind"] == "WDL"]
+        wd = [t for t in self.teller if t["kind"] == "WDL" and not t.get("late")]
         for t in wd[7::53]:
             p = t["posting"]
             rec = self.post(p["code"], p["acct"], p["value_date"], -p["amount"], "CASH", "reversal",
                             narrative="REV CASH WITHDRAWAL %s" % p["ref"])
-            self.teller.append(dict(kind="REV", posting=rec, branch=t.get("branch"), reverses=p["ref"]))
+            self.teller.append(dict(kind="REV", posting=rec, branch=t.get("branch"), reverses=p["ref"],
+                                    teller_day=t["teller_day"], late=False))
         for t in self.teller:
             if "branch" not in t:
                 t["branch"] = self.cust[t["posting"]["code"]]["branch"][2]
+            t.setdefault("teller_day", t["posting"]["value_date"])
+            t.setdefault("late", False)
+
+    def _cash_out(self, code, acc, d, amt, late, narrative):
+        """A teller withdrawal; one taken after the 15:30 cut-off is value-dated the next business day."""
+        vd = d
+        if late:
+            nd = add_business(d, 1)
+            if nd <= P.YEAR_END and (nd < P.CUTOVER) == (d < P.CUTOVER):
+                vd = nd
+        return self.post(code, acc, vd, -_kes_amount(amt, 100), "CASH", "debit", narrative=narrative)
 
     def _kra(self):
         """Tax payments through the KRA gateway (VAT, PAYE, instalment tax), by tax period."""
@@ -652,6 +666,17 @@ class World:
                         pay -= DAY
                     if pay > P.LOG_END or pay < P.LOG_START:
                         continue
+                    # a submission KRA rejected (expired payment slip): logged at the gateway, never debited,
+                    # followed by the payment on a fresh slip
+                    if head == "VAT" and rng.random() < 0.16 and dt.date(2025, 10, 1) <= pay <= dt.date(2026, 9, 10):
+                        fd = pay - dt.timedelta(days=int(rng.integers(2, 7)))
+                        while not is_business(fd):
+                            fd -= DAY
+                        fprn = "%04d%02d%010d" % (fd.year, fd.month, int(rng.integers(10**9, 10**10 - 1)))
+                        if fd >= P.YEAR_START:
+                            self.kra.append(dict(code=code, pin=c["kra"], prn=fprn, head=head, period=(y, m),
+                                                 amount=amount, pay_date=fd, posting=None, part=1, parts=1,
+                                                 failed=True))
                     split = head == "VAT" and rng.random() < 0.10
                     prn = "%04d%02d%010d" % (pay.year, pay.month, int(rng.integers(10**9, 10**10 - 1)))
                     parts = [amount] if not split else [_kes_amount(amount * 0.6), amount - _kes_amount(amount * 0.6)]
@@ -690,6 +715,14 @@ class World:
             self.staff[code] = people
             n = staff[code]
             roster = {6: people[0:n], 7: people[1:n + 1], 8: people[2:n + 2], 9: people[4:n + 4]}
+            # seasonal staffing: a new contract mobilised in September, the flower farm's packing crews taken on for
+            # the October season, the hotels' high-season staff released after August
+            if code in ("C03", "C07", "C11"):
+                k = {"C03": 37, "C07": 52, "C11": -44}[code]
+                more = [dict(nid="%08d" % int(rng.integers(20_000_000, 39_999_999)), name=fk.name().upper(),
+                             net=round(float(rng.lognormal(math.log(31000), 0.4)), -1)) for _ in range(max(k, 0))]
+                people.extend(more)
+                roster[9] = roster[9] + more if k > 0 else roster[9][:k]
             for m in (6, 7, 8, 9):
                 y = 2026
                 if code in late_payers:
