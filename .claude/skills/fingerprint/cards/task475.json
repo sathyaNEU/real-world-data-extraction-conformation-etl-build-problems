@@ -39,10 +39,10 @@
   "layer1": [
     "the e-marking export spans two series in two code layouts (legacy items 6(b) and component CAE2 on the migrated May rows, Q06.2 and CAE-P2 in November), part marks out of different maxima with no-response parts shown as '-'",
     "marks of record re-entered after the May borderline re-marks and reviews, the final mark the latest entered",
-    "candidate numbers issued afresh at each sitting, the legacy register's SURNAME, Given names and dd/mm/yyyy dates against the portal's fields, the Parramatta centre renamed Western Sydney",
+    "candidate numbers issued afresh at each sitting, the legacy register's SURNAME, Given names and dd/mm/yyyy dates against the portal's fields (a member's given name pre-filled as a preferred first name), the Parramatta centre renamed Western Sydney",
     "the portal's request log in UTC across the daylight-saving change, withdrawals actioned days after they were sent",
     "the CRM keying candidate numbers as candidates type them, account lines carrying their invoice's total",
-    "the examination regulations, the question paper and the committee's minutes as PDF documents; absentees in the register with no rows in the export"
+    "the examination regulations and the question paper as PDF documents and the committee's draft minutes as a Word document; absentees in the register with no rows in the export"
   ],
   "stakeholder_role": "assessment analyst in the institute's examinations office, who prepares the results paper for the examination committee",
   "role_family": "research_desk",

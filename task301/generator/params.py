@@ -28,10 +28,10 @@ CFV_RATES = [((2022, 10), 90.0), ((2024, 1), 95.0), ((2025, 7), 100.0)]   # per 
 CFV_RATE_2027 = 100.0
 
 # the five 2027 measures
-A_RATE, A_INCOME_LIMIT = 45.0, 30000.0           # automatic through the regional tax agency
-B_RATE = 54.0                  # new claimed child payment
+A_RATE, A_INCOME_LIMIT = 33.0, 27000.0           # automatic through the regional tax agency
+B_RATE = 32.0                  # new claimed child payment
 C_LIMIT = 10800.0                                # widened Complemento limit, claimed by the newly entitled
-D_RATE = 72.0                  # claimed rent supplement per child, renting families
+D_RATE = 45.0                  # claimed rent supplement per child, renting families
 E_RATE = 35.0                                    # automatic increase for current Complemento recipients
 
 # survey

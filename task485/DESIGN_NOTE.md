@@ -314,7 +314,41 @@ unlinked count all 24 (checks.py).
 
 ## Leak review
 
-`leak.py --asof 2026-10-19` on the final cut: see `leak_check_report.md`; every REVIEW line is answered here.
+`leak.py --asof 2026-10-19` on the final cut: no LEAK; each REVIEW line ruled here.
+- Sweep 1, `pharmacy_network_202610.txt`: harmless, the PBM's own pipe-delimited network export (NPI, NCPDP number,
+  name, city, network, chain code, status); it describes no column and no other file.
+- Sweep 3, `clinical_review_2027_pdl.pdf` (100, 250): harmless, product strengths (insulin 100 units/mL, fluticasone
+  250 mcg). Its 25 of 27 words of the call are the class and product names the review has to list: it names every
+  compared product alike and prefers none.
+- Sweep 3, `rebate_guarantee_reconciliation_fy2025.pdf` (350): harmless, digits inside a fiscal 2025 remittance total.
+- Sweep 4, `pdl_policy_eb-rx-04.pdf`: harmless; manufacturer, rebates, ingredient cost and 30-day supplies are 3.2's
+  own words, the WHAT; no sentence relates a product's rebate to the accounts, the quarters or a solve.
+- Sweep 4, `pbm_agreement_exhibit_c.pdf`: harmless; manufacturer, service, statement, network and remittance are C.2's
+  invoicing terms and C.5's channel definition (ask A's WHAT). C.2's "with a statement by manufacturer and by Plan
+  account" says what each statement shows on its face and nothing about rates by product.
+- Sweep 4, `pdl_2027_implementation_messages.pdf` and `rebate_guarantee_reconciliation_fy2025.pdf`: harmless;
+  "remittance statement", "service" and "network" as a planning thread and a guarantee reconciliation use them.
+- Sweep 4, `clinical_review_2027_pdl.pdf`: harmless, the product names and the policy section the review cites.
+- Sweep 5, the prompt's first sentence: harmless, the decision question itself; it announces nothing.
+- Sweep 6, the five remittance statements: harmless; the matched names are the four employer accounts beside each
+  line's amount; no statement names a product or ranks anything on net cost.
+
+`guard.py heart`: WARN, no BLOCK. `overuse.org_family` (government_agency in 42 builds): the decision belongs to a
+state benefits office, the organisation that runs a public employees' plan. `repeat.gate_g` against task233 (v3, a
+data quality monitoring build in survey-research-official-statistics registered at 23:41 on 2026-11-01, five minutes
+before this card): decomposition_attribution is this mechanism's true label (a manufacturer's lump sum attributed to
+its products), so it is answered rather than relabelled; the worlds, objectives, decisions and drivers share nothing.
+The two NOTEs (task84, task482, task65) are answered by the card's differentiation lines.
+
+`guard.py surface`: exit 0, nine pairs promoted for the author's adjudication. Six on surface similarity at 0.100 to
+0.101, the corpus top percentile's floor (task484, task476, task448, task452, task176, task269; four share only the
+designation_set decision type or the objective gap). Three on the same-driver signature (gap objective, pattern G2,
+Gate G decomposition_attribution): task65 (entities constituted from child records before a per-entity cap), task84
+(a composite target key over an advertiser's live campaigns, a copy premium from past merges) and task482 (one site
+meter's gas split among processes by the physical driver each burns by); each is answered by a differentiation line
+on the card: here nothing is regrouped, keyed, capped or metered, and each product's rebate is solved from its
+manufacturer's pass-through remittances to the Plan's employer accounts across quarters against every product's
+30-day supplies. Personas in the cut pack: the four the card names.
 
 ## Architecture 4 record (re-rooted 2026-11-01)
 

@@ -163,6 +163,7 @@ def write_sampling(W, out):
             ws.append([yr, dt.date(*c1), dt.date(*rep), NAMES[a], W.ds_summary[(yr, a)]])
             ws.cell(row=ws.max_row, column=2).number_format = "dd/mm/yyyy"
             ws.cell(row=ws.max_row, column=3).number_format = "dd/mm/yyyy"
+            ws.cell(row=ws.max_row, column=5).number_format = "0.000"
     for sh in wb.worksheets:
         for c in range(1, 9):
             sh.cell(row=1, column=c).font = bold

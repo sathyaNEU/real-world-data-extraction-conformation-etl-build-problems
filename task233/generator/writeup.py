@@ -22,20 +22,20 @@ def write(task_dir, res, fig):
               "**Analytical objective:** Data Quality Monitoring & Alerting.", ""]
     lines += ["## 1. Final Recommendation", "",
               "**Place %s under corrective action, put %s on a $%s service credit with corrective action, and assess the other %s regions as compliant.** "
-              "%s's estimated collection accuracy is %s per cent, the only region below the %s per cent band. "
+              "%s is the only region whose estimated collection accuracy falls below the %s per cent band, and %s more fall short of %s per cent. "
               "Not the raw agreement between collector and Field Quality Team prices, which counts every price an outlet changed between the visit and the "
               "re-collection days later as a collector's error and would put %s compliant regions under corrective action and %s corrective regions on credits ($%s)."
               % (andlist(corr), andlist(cred), c["credit_dollars"], words[c["compliant_count"]], cred[0],
-                 k["credit_region_accuracy_whole"][cred[0]], k["band_credit"], words[up], words[cr], k["default_credit_dollars"]), ""]
+                 k["band_credit"], words[len(corr)], k["band_compliant"], words[up], words[cr], k["default_credit_dollars"]), ""]
     lines += ["## 2. Critical Components", "",
               "1. The Field Quality Team re-collected **%s** prices it found on the shelf; the share whose re-collected price differs from the collector's runs from **%s per cent** in %s to **%s per cent** in %s."
               % (k["prices_rechecked_found"], k["disagreement_low"], k["disagreement_low_region"], k["disagreement_high"], k["disagreement_high_region"]),
-              "2. Net of the chance that each item's shelf price changed between the visit and its re-collection, %s's collection accuracy is **%s per cent** and %s each sit at **%s per cent**."
-              % (cred[0], k["credit_region_accuracy_whole"][cred[0]], andlist(corr), k["corrective_accuracy_whole"][0]),
+              "2. Net of the chance that each item's shelf price changed between the visit and its re-collection, %s's collection accuracy is the only one below **%s per cent**, and %s sit between %s and **%s per cent**; every other region is at %s per cent or more."
+              % (cred[0], k["band_credit"], andlist(corr), k["band_credit"], k["band_compliant"], k["band_compliant"]),
               "3. The service credit is %s per cent of %s's quarterly collection fee of $%s: **$%s**."
               % (c["credit_percent"], cred[0], c["credit_regions_fee"][cred[0]], c["credit_dollars"]), ""]
     lines += ["## 3. Step-by-Step Solution", "",
-              "1. Read pcqs_price_collection_quality_standard_v3.pdf: accuracy is the share of recorded prices that were the shelf price when the collector recorded it (3.1), estimated from the back-checks (3.2) and set against %s and %s per cent without rounding (3.3, section 4)."
+              "1. Read pcqs_price_collection_quality_standard_v3.pdf: accuracy is the share of recorded prices that were the shelf price when the collector recorded it, estimated from the back-checks and set against %s and %s per cent without rounding (sections 3 and 4)."
               % (k["band_compliant"], k["band_credit"]),
               "2. Took the back-checked prices the officer found from the three monthly sheets of fqt_backcheck_register_2026q3.xlsx (%s prices) and compared each collector price with the FQT price." % k["prices_rechecked_found"],
               "3. Dated each collector's visit from tallis_visit_log_2026-07_2026-09.csv (the local date of started), joined through cpi_outlet_register_2026-10.xlsx (outlet code to contractor outlet no.), and took each back-check's delay in calendar days to its Re-collected on date.",

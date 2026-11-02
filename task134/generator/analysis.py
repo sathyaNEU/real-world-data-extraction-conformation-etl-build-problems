@@ -276,14 +276,18 @@ def ds_fractions(tdir):
     return out
 
 
-def ask_a(tdir, site_by="position", revision=True, clock="local", hired=True, campaign="completed"):
-    """Wet tonnes placed at each site in each quarter of the licence year 2025-26."""
+def ask_a(tdir, site_by="position", revision=True, clock="local", hired=True, campaign="completed", fractions="summary"):
+    """Wet tonnes placed at each site in each quarter of the licence year 2025-26. fractions="recompute" takes the 2026
+    campaign's fractions from the laboratory's values by licence 5.5 at full precision instead of the area summary."""
     codes = {}
     wb = load_workbook(os.path.join(tdir, CERTS), read_only=True, data_only=True)
     for row in wb["Area codes"].iter_rows(min_row=2, values_only=True):
         codes[row[0]] = row[1]
     boxes = site_boxes(tdir)
     fr = ds_fractions(tdir)
+    if fractions == "recompute":
+        full = ds55_fractions(tdir)
+        fr = [(c, a, full[a] if c.year == 2026 else f) for c, a, f in fr]
     rev = {}
     with open(os.path.join(tdir, REVISION), newline="") as f:
         for r in csv.DictReader(f):
@@ -390,4 +394,103 @@ def ask_b(tdir, part_by="position", qa="pair", hg="convert"):
     for part, vs in groups.items():
         for det in ("Cadmium", "Mercury", "Lead", "Copper"):
             out[(part, det)] = float(np.mean([v[det] for v in vs]))
+    return out
+
+
+def _inside(poly, e, n):
+    """Ray casting: is (e, n) inside the polygon?"""
+    inside = False
+    for (x1, y1), (x2, y2) in zip(poly, poly[1:] + poly[:1]):
+        if (y1 > n) != (y2 > n) and e < (x2 - x1) * (n - y1) / (y2 - y1) + x1:
+            inside = not inside
+    return inside
+
+
+def field_log(tdir):
+    wb = load_workbook(os.path.join(tdir, SAMPLING), read_only=True, data_only=True)
+    field = []
+    for row in wb["Field log 2026"].iter_rows(min_row=2, values_only=True):
+        if row[0]:
+            d = row[2].date() if isinstance(row[2], dt.datetime) else row[2]
+            hh, mm = str(row[3]).split(":")
+            field.append(dict(ref=row[0], station=row[1], t=dt.datetime(d.year, d.month, d.day, int(hh), int(mm)),
+                              E=float(row[4]), N=float(row[5])))
+    return field
+
+
+def qa_pairs(field):
+    prim = [x for x in field if x["station"] != "QA"]
+    pairs = {}
+    for d in [x for x in field if x["station"] == "QA"]:
+        best = min(prim, key=lambda p: math.hypot(p["E"] - d["E"], p["N"] - d["N"]) + abs((p["t"] - d["t"]).total_seconds()) / 60.0)
+        pairs[best["ref"]] = d["ref"]
+    return pairs
+
+
+def sample_area(nt, e, n):
+    s, t = nt.chain_offset([e], [n])
+    part = nt.part_of(float(s[0]), float(t[0]))
+    if part:
+        return part
+    for name, b in nt.berths.items():
+        if _inside(b["corners"], e, n):
+            return name
+    return None
+
+
+def ds55_fractions(tdir):
+    """Each area's 2026 dry-solids fraction by licence 5.5 from the laboratory's values at full precision: every sample in
+    the area it was taken in, each field duplicate averaged with its primary before the area mean."""
+    nt = Notice(tdir)
+    field = field_log(tdir)
+    vals = lab_samples(tdir)
+    pairs = qa_pairs(field)
+    groups = {}
+    for p in field:
+        if p["station"] == "QA":
+            continue
+        area = sample_area(nt, p["E"], p["N"])
+        v = vals[p["ref"]]["Dry solids"]
+        if p["ref"] in pairs:
+            v = 0.5 * (v + vals[pairs[p["ref"]]]["Dry solids"])
+        groups.setdefault(area, []).append(v)
+    return {a: float(np.mean(v)) / 100.0 for a, v in groups.items()}
+
+
+def natural_bed_memberships(tdir, buffer=50.0, outer=300.0):
+    """The natural bed beside each part under four ways of giving a survey cell to a part: the golden's (the nearest
+    segment, the cell's chainage within the part's range); the rectangle square to each part's own segment; the nearest
+    segment with the distance to it as the offset; the nearest segment with the offset square to its line."""
+    nt = Notice(tdir)
+    E, N, Z, C = read_surveys(tdir)
+    segs = []
+    for i in range(len(nt.WP) - 1):
+        a, b = nt.WP[i], nt.WP[i + 1]
+        d = b - a
+        L = math.hypot(*d)
+        ux, uy = d / L
+        px, py = E - a[0], N - a[1]
+        u = px * ux + py * uy
+        cross = ux * py - uy * px
+        uc = np.clip(u, 0, L)
+        dist = np.hypot(E - (a[0] + uc * ux), N - (a[1] + uc * uy))
+        segs.append((u, L, -cross, dist))
+    near = np.argmin(np.array([x[3] for x in segs]), axis=0)
+
+    def band(name, t):
+        half = nt.parts[name]["width"] / 2.0
+        if name == "Turning Basin":
+            return (t < -(half + buffer)) & (t >= -(half + outer))
+        return (np.abs(t) > half + buffer) & (np.abs(t) <= half + outer)
+    out = {"nearest segment, chainage range": natural_bed(tdir, buffer)}
+    rect, cut, perp = {}, {}, {}
+    for name in REACH_NAMES:
+        i = [j for j in range(len(nt.CH) - 1) if abs(nt.CH[j] - nt.parts[name]["c0"]) < 1e-6][0]
+        u, L, t, dist = segs[i]
+        rect[name] = float(np.mean(Z[(u >= 0) & (u <= L) & band(name, t)]))
+        cut[name] = float(np.mean(Z[(near == i) & band(name, np.sign(t) * dist)]))
+        perp[name] = float(np.mean(Z[(near == i) & band(name, t)]))
+    out["rectangle on each part's segment"] = rect
+    out["nearest segment, distance as offset"] = cut
+    out["nearest segment, offset square to its line"] = perp
     return out

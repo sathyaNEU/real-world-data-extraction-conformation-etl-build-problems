@@ -1,20 +1,30 @@
 {
  "task": "task123",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "general-statistics-data-science / data-integration-record-linkage-entity-resolution",
  "objective": "etl",
- "stage": 2,
- "stage_name": "architecture 4 drawn and registered 2026-11-02 (owners corporation riser phase loading, Melbourne); design note and generator in progress",
+ "stage": 3,
+ "stage_name": "architecture 4 built, free gates green; stage 4 (leak reader and determinism judge) for the main session",
  "updated": "2026-11-02",
  "stump": "The default carries every single-phase apartment balanced over its riser's three phases because no record names its phase, so each riser's busiest phase is a third of its total and only the risers whose total is over three times the per-phase line are designated; each apartment draws on one phase, and the embedded network meters' hourly voltages, which sag together for the apartments sharing a phase, sort them and show the risers whose apartments bunch on one phase.",
  "architecture": 4,
  "loops": 0,
- "precut": {},
- "leak": {},
- "duplicate_check": {},
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-02",
+  "pair_ceiling": 45.8,
+  "mirror_leakage": 31.5
+ },
+ "leak": {
+  "leak_py": "REVIEW (0 LEAK) at --asof 2026-11-20: the standard carries the statutory voltage limits and the call's words (it asks the question) and four generic note words (register, schedule, record, records)"
+ },
+ "duplicate_check": {
+  "heart": "WARN only (people.first, repeat.decision, repeat.deliverables, repeat.question_form; answered in the note)",
+  "surface": "4 pairs promoted for adjudication: task193 and task281 at 0.101, task147 and task159 on the same-driver signature (differentiated on the card); personas Kayla Hunt, Alan Herrera"
+ },
  "judge": {},
  "returned": [],
- "resume": "stage 2 to 3: write DESIGN_NOTE.md for architecture 4 and the new generator under task123/generator, then run every free gate",
+ "resume": "stage 4: the main session spawns the leak reader and the determinism judge on the cut pack; findings are fixed in task123/generator and rebuilt with build.py",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -155,5 +165,14 @@
    "judge": {},
    "fate": "spent 2026-11-01 at stage 4 (target.zip 9bb485be): judge NOT_DETERMINISTIC, SEND_BACK; Gate G banned (planted_defect_flip, surface_read_rejection, surface-read dependency yes, sole data defect yes: the August survey total omits 194 reporting establishments, with a complete survey the task collapses to a sum over population); Gate H decisive_step planted (a coverage gap built in to flip the answer); asks 4 to 6 open; leak reader: no leak. World closed."
   }
+ },
+ "build": {
+  "target_zip": "1e6fa5a6",
+  "checks": "71 of 71",
+  "verify": "0 failures",
+  "byte_identical": true,
+  "figures_check": "PASS",
+  "voice_check": "PASS",
+  "seed": 30079
  }
 }

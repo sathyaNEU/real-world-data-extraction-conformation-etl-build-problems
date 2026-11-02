@@ -339,7 +339,9 @@ def main(tdir):
 
     # ---------------- the asks ----------------
     check("SF15 the licence asks for the quantity placed at each disposal site", "giving the quantity placed at each disposal site in wet tonnes" in licence)
-    check("SF16 the licence takes quarters by the local date of placement", "taken by the local date on which the material was placed" in licence)
+    check("SF16 the licence takes quarters by the date of placement in UK civil time",
+          "taken by the date on which the material was placed in UK civil time (GMT, or BST while it is in force)" in licence
+          and "the month taken in UK civil time as in 5.3" in licence)
     check("SF17 the licence files the campaign rule", "most recent sampling campaign completed before the month in which it was placed" in licence)
     check("SF18 the licence files the formula for a vessel without a loading monitor", "For a vessel without a loading monitor" in licence)
     rev_hdr = next(csv.reader(open(os.path.join(tdir, A.REVISION))))
@@ -347,6 +349,41 @@ def main(tdir):
     check("SF20 SF21 the licence files where a sample counts and the duplicate rule", "in which each sample was actually taken" in licence and "averaged with its primary sample" in licence)
     lab_units = {r["units"] for r in csv.DictReader(open(os.path.join(tdir, A.LAB))) if r["determinand"] == "Mercury"}
     check("SF22 the lab's units column carries the mercury units", lab_units == {"mg/kg", "ug/kg"}, str(lab_units))
+    # SF25 the dry-solids fraction for April to September 2026: the area summary's 2026 values are the licence 5.5 means
+    # of the laboratory's values printed to three decimals, none near a rounding midpoint, and every placement total
+    # files the same bin under the printed summary and under the 5.5 recomputation at full precision
+    full55 = A.ds55_fractions(tdir)
+    printed = {a_: f_ for c_, a_, f_ in A.ds_fractions(tdir) if c_.year == 2026}
+    check("SF25 the 2026 area summary is the licence 5.5 recomputation printed to three decimals",
+          set(full55) == set(printed) and all(round(full55[k], 3) == printed[k] for k in printed),
+          str({k: (printed[k], round(full55[k], 5)) for k in printed}))
+    check("SF25 no 2026 area mean sits within 0.0001 of a rounding midpoint (every rounding convention prints the same)",
+          all(abs(full55[k] - printed[k]) <= 0.0004 for k in printed), "%.5f" % max(abs(full55[k] - printed[k]) for k in printed))
+    a_rec, _ = A.ask_a(tdir, fractions="recompute")
+    for k_ in sorted(res["raw"]["a"]):
+        va, vb = res["raw"]["a"][k_], a_rec[k_]
+        check("SF25 %s Q%d files %s t under the printed summary and under the 5.5 recomputation, clear of its edge by more "
+              "than the gap" % (k_[0], k_[1], R.fmt(res["a"][k_])),
+              R.nearest(va, 1000) == R.nearest(vb, 1000) == res["a"][k_] and edge(va, 1000) > abs(va - vb) + 300
+              and edge(vb, 1000) >= 300, "%.0f and %.0f, edges %.0f and %.0f" % (va, vb, edge(va, 1000), edge(vb, 1000)))
+    # SF24 a survey cell's part: four memberships, one call, and component 1 stated at the precision they share
+    memb = A.natural_bed_memberships(tdir)
+    mem_ok = True
+    for rule, natm in memb.items():
+        pm = {n_: V[n_] * (14.3 - natm[n_]) / (12.3 - natm[n_]) for n_ in A.REACH_NAMES}
+        pm["Berth pockets"] = berths
+        mem_ok &= R.nearest(sum(pm.values()), 50000) == 1750000 and all(R.nearest(pm[p_], 20000) == res["parts"][p_] for p_ in pm)
+    check("SF24 every cell membership (nearest segment by chainage, rectangle on each segment, nearest segment by distance "
+          "or by square offset) files the call and every part", mem_ok)
+    figs_now = json.load(open(os.path.join(HERE, "figures.json"))) if os.path.exists(os.path.join(HERE, "figures.json")) else {}
+    if figs_now:
+        held = all(any(abs(natm[n_] - float(x)) <= 0.05 + 1e-9 for x in re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_]))
+                   or (len(re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_])) == 2 and
+                       float(re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_])[0]) - 0.05 <= natm[n_] <=
+                       float(re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_])[1]) + 0.05)
+                   for natm in memb.values() for n_ in A.REACH_NAMES)
+        check("SF24 component 1's one-decimal natural beds hold every membership's value", held,
+              str({n_: figs_now["component.natural_bed_1dp.%s" % n_] for n_ in A.REACH_NAMES}))
     check("SF23 ask figures: every placement 150 t and every mean 0.0012 inside its rounding edge",
           min(edge(v, 1000) for v in res["raw"]["a"].values()) >= 150 and min(edge(v, 0.01) for v in res["raw"]["b"].values()) >= 0.0012,
           "%.0f, %.4f" % (min(edge(v, 1000) for v in res["raw"]["a"].values()), min(edge(v, 0.01) for v in res["raw"]["b"].values())))
@@ -433,6 +470,16 @@ def main(tdir):
     check("realism: every workbook and document was created before it was last modified, both by the export date",
           all(c < m <= cut for c, m in stamps.values()), str(sorted(stamps.values())))
     check("realism: no two workbooks or documents share a creation stamp", len({c for c, _ in stamps.values()}) == len(stamps))
+    entry_ok, parts_ok = True, True
+    for f in files:
+        if f.endswith((".xlsx", ".docx")):
+            with zipfile.ZipFile(os.path.join(tdir, f)) as z:
+                dts = {zi.date_time for zi in z.infolist()}
+                parts_ok &= not any(n in ("word/stylesWithEffects.xml", "docProps/thumbnail.jpeg") for n in z.namelist())
+            mod = dt.datetime.strptime(stamps[f][1], "%Y-%m-%dT%H:%M:%SZ")
+            entry_ok &= dts == {(mod.year, mod.month, mod.day, mod.hour, mod.minute, mod.second)} and mod <= P.EXPORT_DATE
+    check("realism: every Office file's zip entries carry its own last-saved stamp, none after the as-of date", entry_ok)
+    check("realism: no Office file carries the writing library's template parts (styles with effects, thumbnail)", parts_ok)
     pdates = [re.search(rb"/CreationDate \(D:(\d{14})", open(os.path.join(tdir, f), "rb").read()).group(1) for f in files if f.endswith(".pdf")]
     check("realism: each PDF carries its own creation date", len(set(pdates)) == len(pdates), str(pdates))
     check("leak: no file name matches the author-word list leak.py sweeps (versions, samples, cleaned copies included)",

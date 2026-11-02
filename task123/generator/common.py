@@ -13,6 +13,10 @@ def normalize_zip(path):
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as out:
         for name, data in sorted(items, key=lambda x: x[0]):
+            if name == "docProps/app.xml":
+                txt = data.decode("utf-8")
+                txt = re.sub(r"<AppVersion>[^<]*</AppVersion>", "<AppVersion>16.0300</AppVersion>", txt)
+                data = txt.encode("utf-8")
             if name == "docProps/core.xml":
                 txt = data.decode("utf-8")
                 txt = re.sub(r"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", r"\g<1>%s\g<2>" % FIXED_ISO, txt)

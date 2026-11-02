@@ -11,8 +11,8 @@
  "shape": "other",
  "decision_type": "designation_set",
  "answer_unit": "set_of_items",
- "answer": "",
- "answer_source": "golden/",
+ "answer": "Rising mains A4, B2, C3 and C6 need re-phasing or a larger main before the 2027 chargers and cooktop conversions are connected (busiest phase 109, 94, 97 and 89 per cent of rating against the 80 per cent line; B3 nearest without works at 75); the balanced allocation designates none",
+ "answer_source": "golden/riser_capacity_2027.xlsx, submission.md",
  "gap": [
   "objective",
   "population"
@@ -49,10 +49,10 @@
  "role_family": "operations_director",
  "scoring_unit": "other",
  "spine": {
-  "file": "QES_PQ_hourly_V_20260713_20260719.csv",
-  "rows": 73248,
-  "entity": "one child meter's average voltage over one hour",
-  "grain": "meter x hour",
+  "file": "QES_PQ_hourly_V_20260712T0000Z-20260720T0000Z.csv",
+  "rows": 86016,
+  "entity": "one child meter element's average, minimum and maximum voltage over one hour",
+  "grain": "meter x element x hour",
   "source": "synthetic"
  },
  "forum": "committee_or_panel",

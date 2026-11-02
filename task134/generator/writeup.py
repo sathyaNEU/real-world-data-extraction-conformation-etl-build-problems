@@ -35,6 +35,12 @@ def emit(tdir, task_dir):
     r2 = put("rung.R2_trapping_efficiency", f(R.nearest(rg["R2 trapping efficiency"], 50000)))
     rec = put("component.record_mean_m3", f(round(record)))
     nb = {n: put("component.natural_bed.%s" % n, "%.2f" % nat[n]) for n in A.REACH_NAMES}
+    fam = A.natural_bed_memberships(tdir)
+    nb1 = {}
+    for n in A.REACH_NAMES:
+        lo, hi = min(m[n] for m in fam.values()), max(m[n] for m in fam.values())
+        txt = "%.1f" % lo if "%.1f" % lo == "%.1f" % hi else "%.1f to %.1f" % (lo, hi)
+        nb1[n] = put("component.natural_bed_1dp.%s" % n, txt)
     k0 = put("step.k_low", "%.3f" % kvals[0])
     k1 = put("step.k_high", "%.3f" % kvals[-1])
     put("constant.year_1", "1")
@@ -68,8 +74,9 @@ def emit(tdir, task_dir):
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. Natural bed beside each part, below chart datum: Outer Channel **%s m**, Fend Roads **%s m**, Middle Reach **%s m**, "
-             "Inner Reach **%s m**, Turning Basin **%s m**." % tuple(nb[n] for n in A.REACH_NAMES))
+    L.append("1. Natural bed beside each part, below chart datum, to the nearest 0.1 m: Outer Channel **about %s m**, Fend Roads "
+             "**about %s m**, Middle Reach **about %s m**, Inner Reach **about %s m**, Turning Basin **about %s m**."
+             % tuple(nb1[n] for n in A.REACH_NAMES))
     L.append("2. Mean in situ maintenance over the licence years 2016-17 to 2025-26: **%s m3** a year." % rec)
     L.append("")
     L.append("## 3. Step-by-Step Solution")
@@ -80,9 +87,10 @@ def emit(tdir, task_dir):
     L.append("2. Averaged maintenance_dredging_certificates_2016-2026.xlsx by area over October 2016 to September 2026, the 2021 codes "
              "read through its Area codes sheet and the re-issued October 2024 Middle Reach certificate in place of the original: "
              "%s m3 a year." % rec)
-    L.append("3. Converted seaward_channel_surveys_2023-2026.csv to depth below chart datum (chart datum 2.90 m below ODN), placed "
-             "every cell of both survey files against the notice's centreline, and took the mean of the cells 50 to 300 m outside each "
-             "maintained width (the basin's open south side): the natural beds of component 1.")
+    L.append("3. Converted seaward_channel_surveys_2023-2026.csv to depth below chart datum (chart datum 2.90 m below ODN), gave "
+             "every cell of both survey files to the notice's centreline segment nearest to it, reading its chainage along the line "
+             "and its offset square to that segment, and took the mean of the cells 50 to 300 m outside each maintained width within "
+             "each part's chainage (the basin's open south side): the natural beds of component 1.")
     L.append("4. Divided each part's yearly infill per square metre by its depth below the natural bed: %s to %s a year per metre, "
              "one coefficient, while the held depth is 12.3 m in every part." % (k0, k1))
     L.append("5. Raised each reach and the basin by two metres over its depth below the natural bed, mean times (14.3 less bed) over "
@@ -91,7 +99,7 @@ def emit(tdir, task_dir):
              "marine_licence_L2021-00317-2.pdf hold its dump position, took the Fend Endeavour's January to March dry solids from "
              "FE_dry_solids_revision_20260330.csv by trip reference (vessel, local date, trip of the day), the Maasbank's from the "
              "licence formula, divided by the loading area's dry-solids fraction from the latest campaign completed before the month "
-             "(sediment_sampling_2025-2026.xlsx) and summed by local quarter: the placements in block 4.")
+             "(the Area summary in sediment_sampling_2025-2026.xlsx) and summed by quarter in UK civil time: the placements in block 4.")
     L.append("7. Put each 2026 sample in aldern_results_FEN26.csv in the area where the field log places it, averaged each QA "
              "duplicate with the primary at its position and time, converted the second batch's mercury from micrograms, and "
              "averaged by area: the means in block 4.")

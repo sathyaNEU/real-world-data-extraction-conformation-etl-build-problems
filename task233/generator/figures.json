@@ -30,13 +30,6 @@
  "components": {
   "band_compliant": "98.0",
   "band_credit": "95.5",
-  "corrective_accuracy_whole": [
-   96,
-   97
-  ],
-  "credit_region_accuracy_whole": {
-   "Belmont Valley": 94
-  },
   "days_per_month": "30.4",
   "default_credit_dollars": "7,049",
   "disagreement_high": "7.2",

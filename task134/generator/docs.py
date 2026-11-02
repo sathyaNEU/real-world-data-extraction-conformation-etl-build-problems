@@ -27,9 +27,10 @@ S_DEEPEN = ("From 1 October 2027 the four reaches of the approach channel and th
             "below chart datum within their present maintained widths. The berth pockets keep their present maintained "
             "depths and North Quay Berth 2 stays out of maintenance.")
 S_QUARTER = ("A quarter is October to December, January to March, April to June or July to September of the licence year, "
-             "taken by the local date on which the material was placed.")
+             "taken by the date on which the material was placed in UK civil time (GMT, or BST while it is in force).")
 S_WET = ("Wet tonnes are the dry solids placed divided by the dry-solids fraction by mass reported for the area the material "
-         "was loaded in, from the most recent sampling campaign completed before the month in which it was placed.")
+         "was loaded in, from the most recent sampling campaign completed before the month in which it was placed, the "
+         "month taken in UK civil time as in 5.3.")
 S_NOMON = ("For a vessel without a loading monitor, dry solids are the hopper volume times 2.65 times the mixture density less "
            "1.025, divided by 1.625 (2.65 less 1.025).")
 S_SAMPLE = ("Results are reported for the dredged area in which each sample was actually taken, and a field duplicate is "

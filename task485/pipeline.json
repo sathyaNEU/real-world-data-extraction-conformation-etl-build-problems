@@ -16,8 +16,22 @@
  "portal": null,
  "source_note": "re-rooted 2026-11-01 at the Batch 3 queue reset: architecture 4 (island migration completion) closed with its world; architectures 1 to 3 spent at stage 4; the slot's seed ET42 set aside at the first draw",
  "as_of": "2026-10-19",
- "zip": "",
- "gates": {},
+ "zip": "8e3640991e63a90b74455cddf0a9171e",
+ "gates": {
+  "checks": "117 PASS, 0 FAIL (2026-11-02, zip 8e364099)",
+  "verify": "45 of 45, its own XLSX, PDF (ASCII85 and Flate), CSV and text readers",
+  "rebuild": "byte-identical twice: target 76f59af512412065b42c9ba3f48fa203, golden f12a1a5857f4169a1812fa2c1f9bb2e6, zip 8e3640991e63a90b74455cddf0a9171e",
+  "figures_check": "110 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN (pair ceiling 43.3, mirror leakage 26.9 by ceiling.py)",
+  "voice_check": "PASS, every shell quota under its cap",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-10-19); every REVIEW line ruled in the note",
+  "heart": "WARN, no BLOCK (overuse.org_family; repeat.gate_g against task233, registered five minutes earlier; answered in the note)",
+  "surface": "exit 0, nine promotions for adjudication (six at the surface floor, task65, task84 and task482 on the same-driver signature, each answered by the card)",
+  "scrub": "target and golden clean (scrub_producer_metadata.py); every PDF reads under strict pypdf with no warning",
+  "golden_realism": "finding titles, slide numbers and source strip, a notes sheet from the pack, money ticks, a zero shortfall shown as 0",
+  "house_fixes": "H21 renames (Arvelle, Ombrel, Vantrel, Fenwick, Dulmira, Brezara, Virelda, Sumivex, two pharmacies); H13 one layout per claim row; H16 nothing paid past the 30 September cut",
+  "card_recheck": "guard.py check on the registered card 2026-11-02: WARN, no BLOCK"
+ },
  "lineage_v1": {
   "zip": "237917da9ecb5387a7250b4fde842cf2",
   "leak": {

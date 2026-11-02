@@ -62,34 +62,34 @@ def proposals(path, line, costs):
              "covered received it (€ million)"],
             ["A. Prestación Infancia Directa",
              "Families with children whose household gross income on their 2025 personal income tax returns was "
-             "below €30,000",
-             "€45 a month per child",
+             "below %s" % euro(P.A_INCOME_LIMIT),
+             "%s a month per child" % euro(P.A_RATE),
              "Paid automatically from January 2027 by the Agencia Tributaria de Valdemora into the account on the "
              "family's 2025 return; no application. Families who filed no 2025 return are not reached in 2027.",
              "%.1f" % costs["A"]],
             ["B. Ayuda a la Crianza",
              "Families with children whose computable income per equivalent adult, measured as for the Complemento "
              "Familiar, is below the 2027 poverty line",
-             "€54 a month per child",
+             "%s a month per child" % euro(P.B_RATE),
              "Families apply on the department's portal from 1 January 2027. The Complemento Familiar's rules on "
              "decisions and payment apply.",
              "%.1f" % costs["B"]],
             ["C. Complemento Familiar: higher limit",
-             "Raises the Complemento Familiar's income limit from €8,400 to €10,800 of computable income per "
-             "equivalent adult from 1 January 2027",
+             "Raises the Complemento Familiar's income limit from %s to %s of computable income per "
+             "equivalent adult from 1 January 2027" % (euro(P.CFV_LIMIT), euro(P.C_LIMIT)),
              "€100 a month per child, as now",
              "Families newly within the limit claim the Complemento in the usual way.",
              "%.1f" % costs["C"]],
             ["D. Suplemento de Alquiler con Hijos",
              "Families with children who rent their home, at market or reduced rent, whose computable income per "
              "equivalent adult is below the 2027 poverty line",
-             "€72 a month per child",
+             "%s a month per child" % euro(P.D_RATE),
              "Families apply on the department's portal from 1 January 2027. The Complemento Familiar's rules on "
              "decisions and payment apply.",
              "%.1f" % costs["D"]],
             ["E. Complemento Familiar: higher amount",
              "Families receiving the Complemento Familiar",
-             "€35 a month more per child",
+             "%s a month more per child" % euro(P.E_RATE),
              "Paid automatically with the Complemento from January 2027.",
              "%.1f" % costs["E"]]]
     from reportlab.lib.units import mm
@@ -107,8 +107,8 @@ def proposals(path, line, costs):
         ("p", "B. A new payment open to every family with children below the poverty line, administered by the "
               "staff who run the Complemento Familiar."),
         ("p", "C. The Complemento Familiar is the department's established payment for families with children on "
-              "low incomes. The higher limit brings families up to €10,800 of computable income per equivalent adult "
-              "within it."),
+              "low incomes. The higher limit brings families up to %s of computable income per equivalent adult "
+              "within it." % euro(P.C_LIMIT)),
         ("p", "D. Families renting their home carry the highest housing costs; the supplement is paid per child and "
               "follows the same income test as B."),
         ("p", "E. A higher amount for the families the Complemento already reaches."),

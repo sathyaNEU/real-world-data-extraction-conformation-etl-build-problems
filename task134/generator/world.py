@@ -214,7 +214,8 @@ def make():
     return W
 
 
-def ask_a_truth(W):
+def placed_dry_solids(W):
+    """{(site, quarter, campaign, area): dry solids placed} over the licence year 2025-26, by the UK civil date of placement."""
     out = {}
     for r in W.loads:
         tl = r["t_dump"] + dt.timedelta(hours=uk_offset_hours(r["t_dump"]))
@@ -222,8 +223,16 @@ def ask_a_truth(W):
             continue
         q = {10: 1, 11: 1, 12: 1, 1: 2, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4}[tl.month]
         camp = 2026 if (tl.year, tl.month) >= (2026, 4) else 2025
-        wet = r["tds_true"] / W.ds_summary[(camp, r["area"])]
-        out[(r["site"], q)] = out.get((r["site"], q), 0.0) + wet
+        k = (r["site"], q, camp, r["area"])
+        out[k] = out.get(k, 0.0) + r["tds_true"]
+    return out
+
+
+def ask_a_truth(W, fractions=None):
+    fr = W.ds_summary if fractions is None else fractions
+    out = {}
+    for (site, q, camp, area), tds in placed_dry_solids(W).items():
+        out[(site, q)] = out.get((site, q), 0.0) + tds / fr[(camp, area)]
     return out
 
 
@@ -247,42 +256,75 @@ def edge_distance(v, unit):
 
 
 def tune_asks(W):
-    """The ask layers' own random streams, then each ask figure moved clear of its rounding edge by one measurement:
-    a placement total within 200 t of the 500 t line has one ordinary load's dry solids re-read, and a metal mean
-    within 0.0015 of the 0.005 line has one sample's reported value moved by one reporting step."""
+    """The ask layers' own random streams, then two realistic free parameters set so every ask figure sits well inside
+    its rounding bin: each channel area's sediment dry-solids level in the 2025 and the 2026 campaigns (within 0.8
+    percentage points of its density-based value, the order seaward to landward kept), chosen by a fixed-seed search so
+    every placement total clears its 1,000 t edge under the printed area summary and, for April to September 2026,
+    under the licence 5.5 recomputation from the laboratory's values at full precision; and a metal mean within 0.0015
+    of the 0.005 line has one sample's reported value moved by one reporting step."""
     make_loads(W, np.random.default_rng(P.SEED + 1000))
     make_sampling(W, np.random.default_rng(P.SEED + 2000))
     W.nudges = []
-    for _ in range(60):
-        a = ask_a_truth(W)
-        bad = [(k, v) for k, v in sorted(a.items()) if edge_distance(v, 1000.0) < 200.0]
-        if not bad:
-            break
-        (site, q), v = bad[0]
-        r_off = v - round(v / 1000.0) * 1000.0
-        shift = (450.0 - r_off) if r_off >= 0 else (-450.0 - r_off)      # aim 450 t inside the centre
-        shift = -r_off if abs(r_off) > 400 else shift
-        target = round(v / 1000.0) * 1000.0 + (0 if abs(r_off) > 400 else (r_off / abs(r_off) * 0.0 if r_off else 0.0))
-        # move the figure towards its bin centre: re-read one Fend Endeavour load outside the revision window
-        cands = []
-        for r in W.loads:
-            tl = r["t_dump"] + dt.timedelta(hours=uk_offset_hours(r["t_dump"]))
-            if not (dt.datetime(2025, 10, 1) <= tl < dt.datetime(2026, 10, 1)) or r["vessel"] != P.DREDGER or r.get("fault"):
-                continue
-            qq = {10: 1, 11: 1, 12: 1, 1: 2, 2: 2, 3: 2, 4: 3, 5: 3, 6: 3, 7: 4, 8: 4, 9: 4}[tl.month]
-            if r["site"] == site and qq == q:
-                cands.append(r)
-        r = cands[len(cands) // 2]
-        camp = 2026 if (r["t_dump"].year, r["t_dump"].month) >= (2026, 4) else 2025
-        f = W.ds_summary[(camp, r["area"])]
-        centre = round(v / 1000.0) * 1000.0
-        dwet = (centre + (260.0 if v < centre else -260.0)) - v      # well inside the present bin, off its centre
-        dtds = round(dwet * f)
-        r["tds_true"] += dtds
-        r["tds_logged"] = r["tds_true"]
-        W.nudges.append(("load", r["load_ref"], dtds))
-    else:
-        raise SystemExit("placements not clear of their edges")
+    srch = np.random.default_rng(P.SEED + 4000)
+    placed = placed_dry_solids(W)
+
+    def cells(fr, quarters):
+        out = {}
+        for (site, q, camp, area), tds in placed.items():
+            if q in quarters:
+                out[(site, q)] = out.get((site, q), 0.0) + tds / fr[(camp, area)]
+        return out
+    # 2025: the printed summary is the only reading (the campaign's results do not ship)
+    best = None
+    for i in range(4000):
+        off = {a: 0.001 * int(srch.integers(-8, 9)) if i else 0.0 for a in CHANNEL5}
+        fr = dict(W.ds_summary)
+        for a in CHANNEL5:
+            fr[(2025, a)] = round(W.ds_base_2025[a] + off[a], 3)
+        if not all(fr[(2025, x)] > fr[(2025, y)] for x, y in zip(CHANNEL5, CHANNEL5[1:])):
+            continue
+        c = cells(fr, (1, 2))
+        if any(round(v / 1000.0) % 10 == 0 for v in c.values()):
+            continue                                       # no return reads as a round figure
+        score = min(edge_distance(v, 1000.0) for v in c.values())
+        key = (round(score, 6), -round(sum(abs(v) for v in off.values()), 6))
+        if best is None or key > best[0]:
+            best = (key, off, fr)
+    W.ds_off_2025 = best[1]
+    W.ds_summary = best[2]
+    # 2026: the printed summary and the 5.5 recomputation at full precision, no area mean near a rounding midpoint
+    pairs = ds_pairs(W)
+    best = None
+    for i in range(4000):
+        off = {a: 0.0002 * int(srch.integers(-40, 41)) if i else 0.0 for a in CHANNEL5}
+        full = {a: ds55_from(pairs[a], off.get(a, 0.0)) for a in AREAS8}
+        prn = {a: round(full[a], 3) for a in AREAS8}
+        if not all(prn[x] > prn[y] for x, y in zip(CHANNEL5, CHANNEL5[1:])):
+            continue
+        if any(abs(full[a] - prn[a]) > 0.0004 for a in AREAS8):
+            continue
+        fa, fb = dict(W.ds_summary), dict(W.ds_summary)
+        for a in AREAS8:
+            fa[(2026, a)], fb[(2026, a)] = prn[a], full[a]
+        ca, cb = cells(fa, (3, 4)), cells(fb, (3, 4))
+        if any(round(ca[k] / 1000.0) != round(cb[k] / 1000.0) for k in ca):
+            continue
+        if any(round(v / 1000.0) % 10 == 0 for v in ca.values()):
+            continue
+        score = min(min(edge_distance(ca[k], 1000.0), edge_distance(cb[k], 1000.0)) for k in ca)
+        key = (round(score, 6), -round(sum(abs(v) for v in off.values()), 6))
+        if best is None or key > best[0]:
+            best = (key, off, prn)
+    if best is None:
+        raise SystemExit("no 2026 dry-solids level clears every placement edge")
+    W.ds_off_2026 = best[1]
+    for x in W.samples:
+        o = best[1].get(x["part"], 0.0)
+        x["vals"]["DS"] = x["vals"]["DS"] + 100.0 * o
+        x["rep"]["DS"] = round(x["vals"]["DS"], 1)
+    for a in AREAS8:
+        W.ds_summary[(2026, a)] = round(ds55(W, a), 3)
+        assert W.ds_summary[(2026, a)] == best[2][a]
     for _ in range(200):
         b = ask_b_truth(W)
         bad = [(k, v) for k, v in sorted(b.items()) if edge_distance(v, 0.01) < 0.0015]
@@ -493,22 +535,54 @@ def make_sampling(W, rng):
                             s=p["s"], part=p["part"], vals=v, rep=reported(v)))
     W.samples = samples
     W.dup_of = dup_of
-    # area dry-solids fractions by campaign (as reported, by the area each sample was actually taken in)
-    summary = {}
+    # area dry-solids fractions by campaign: 2025 as the campaign reported it (its results do not ship), 2026 as licence
+    # 5.5 reports it from the laboratory's values, each sample in the area it was taken in and each field duplicate
+    # averaged with its primary first, printed to three decimals
+    base25 = {}
     for yr in (2025, 2026):
-        for a in ["OC", "FR", "MR", "IR", "TB", "NQ1", "NQ3", "CT5"]:
+        for a in AREAS8:
             if yr == 2026:
-                vals = []
-                for x in samples:
-                    if x["part"] != a:
-                        continue
-                    vals.append(x["vals"]["DS"])
-                f = float(np.mean(vals)) / 100.0
-            else:
-                rho_d = W.dry_density[a] * float(np.exp(0.015 * rng.standard_normal()))
-                f = rho_d / (P.RHO_W + rho_d * (1 - P.RHO_W / P.RHO_S))
-            summary[(yr, a)] = round(f, 3)
-    W.ds_summary = summary
+                continue
+            rho_d = W.dry_density[a] * float(np.exp(0.015 * rng.standard_normal()))
+            f = rho_d / (P.RHO_W + rho_d * (1 - P.RHO_W / P.RHO_S))
+            base25[a] = round(f, 3)
+    W.ds_base_2025 = base25
+    W.ds_summary = {(2025, a): base25[a] for a in AREAS8}
+    W.ds_summary.update({(2026, a): round(ds55(W, a), 3) for a in AREAS8})
+
+
+AREAS8 = ["OC", "FR", "MR", "IR", "TB", "NQ1", "NQ3", "CT5"]
+CHANNEL5 = ["OC", "FR", "MR", "IR", "TB"]
+
+
+def ds_pairs(W):
+    """{area: [(primary's dry solids per cent, its field duplicate's or None)]} for the 2026 samples, by the area each
+    sample was taken in."""
+    dups = {q["primary"]: q for q in W.samples if q["qa"]}
+    out = {}
+    for x in W.samples:
+        if x["qa"]:
+            continue
+        d = dups.get(x["ref"])
+        out.setdefault(x["part"], []).append((x["vals"]["DS"], None if d is None else d["vals"]["DS"]))
+    return out
+
+
+def ds55_from(pairs, off=0.0):
+    vals = []
+    for prim, dup in pairs:
+        v = round(prim + 100.0 * off, 1)
+        if dup is not None:
+            v = 0.5 * (v + round(dup + 100.0 * off, 1))
+        vals.append(v)
+    return float(np.mean(vals)) / 100.0
+
+
+def ds55(W, area, off=0.0):
+    """An area's 2026 dry-solids fraction by licence 5.5 at full precision: each sample in the area it was taken in, a
+    field duplicate averaged with its primary, the laboratory's reported per cent; off shifts the area's dry-solids
+    level (a fraction) before the laboratory reports it."""
+    return ds55_from(ds_pairs(W)[area], off)
 
 
 def make_distractors(W, rng):

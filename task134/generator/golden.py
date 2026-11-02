@@ -99,8 +99,9 @@ def write_xlsx(tdir, out, res):
         "Year 1 m3 for each reach and the basin = mean x (14.3 - natural bed) / (12.3 - natural bed); the berth pockets "
         "keep their present depths and are carried at their means.",
         "Natural bed: mean depth below chart datum of the survey cells 50 to 300 m outside each maintained width (the basin "
-        "from its open south side), all 22 surveys from April 2016 to October 2026, Seaward's ODN elevations converted "
-        "with chart datum 2.90 m below ODN.",
+        "from its open south side), each cell placed on the centreline segment nearest to it, by its chainage along the "
+        "line and its offset square to that segment; all 22 surveys from April 2016 to October 2026, Seaward's ODN "
+        "elevations converted with chart datum 2.90 m below ODN.",
         "North Quay Berth 2 has not been maintained since 1 April 2019 and stays out of maintenance (Notice to Mariners "
         "No. 3 of 2026, planning basis), so it carries no quantity.",
         "Sources: maintenance_dredging_certificates_2016-2026.xlsx (latest issue of each certificate, financial-year sheets "
@@ -111,7 +112,7 @@ def write_xlsx(tdir, out, res):
         c.font = small
         c.alignment = Alignment(wrap_text=True, vertical="top")
         ws.merge_cells(start_row=row + 2 + i, start_column=1, end_row=row + 2 + i, end_column=7)
-        ws.row_dimensions[row + 2 + i].height = 28
+        ws.row_dimensions[row + 2 + i].height = 13 * max(2, -(-len(t) // 115))
     for i, wdt in enumerate([30, 17, 13, 15, 15, 12, 14], start=1):
         ws.column_dimensions[get_column_letter(i)].width = wdt
     ws.freeze_panes = "B%d" % (r0 + 1)
@@ -122,8 +123,8 @@ def write_xlsx(tdir, out, res):
     ws["A1"] = "Placements, licence year 2025-26: %s t at Fend Spit, %s t at Wenning Deep" % (
         R.fmt(yr["Fend Spit"]), R.fmt(yr["Wenning Deep"]))
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("Wet tonnes. Site from each load's dump position; quarter and month by the local date of placement; wet t = "
-                "dry solids / dry-solids fraction of the loading area from the last campaign completed before the month "
+    ws["A2"] = ("Wet tonnes. Site from each load's dump position; quarter and month by the date of placement in UK civil time; "
+                "wet t = dry solids / dry-solids fraction of the loading area from the last campaign completed before the month "
                 "(licence 5.3, 5.4).")
     ws["A2"].font = small
     ws["A2"].alignment = Alignment(wrap_text=True, vertical="top")
@@ -214,7 +215,7 @@ def write_svg(out, res, fmt="svg"):
     ax.set_title("Wenning Deep took everything placed while Fend Spit was closed, December to February", fontsize=11,
                  loc="left", color="#0b0b0b")
     ax.legend(frameon=False, fontsize=8.5, loc="upper right", ncol=2)
-    ax.text(0.0, -0.17, "Licence year 2025-26, wet tonnes by local date of placement (licence 5.3, 5.4). "
+    ax.text(0.0, -0.17, "Licence year 2025-26, wet tonnes by date of placement in UK civil time (licence 5.3, 5.4). "
             "Monthly figures in fendmouth_maintenance_2027-28.xlsx.", transform=ax.transAxes, fontsize=7.5, color="#52514e")
     fig.tight_layout()
     name = SVG if fmt == "svg" else SVG.replace(".svg", "." + fmt)

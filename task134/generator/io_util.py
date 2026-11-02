@@ -19,10 +19,19 @@ def write_csv(path, header, rows, delimiter=","):
             w.writerow(r)
 
 
-def _normalise_zip(path, core_xml=None, app_xml=None):
-    """Rewrite an OOXML zip with fixed timestamps, sorted members and scrubbed core properties."""
+TEMPLATE_PARTS = ("word/stylesWithEffects.xml", "docProps/thumbnail.jpeg")
+
+
+def _normalise_zip(path, core_xml=None, app_xml=None, stamp=None):
+    """Rewrite an OOXML zip with sorted members, scrubbed core properties, the writing library's template parts removed
+    (with their relationships and content types) and every entry dated by the document's own last-saved stamp."""
+    when = FIXED_ZIP_DT
+    if stamp:
+        d = dt.datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ")
+        when = (d.year, d.month, d.day, d.hour, d.minute, d.second)
     with zipfile.ZipFile(path) as z:
-        items = [(n, z.read(n)) for n in z.namelist()]
+        items = [(n, z.read(n)) for n in z.namelist() if n not in TEMPLATE_PARTS]
+    names = {n for n, _ in items}
     out = io.BytesIO()
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for n, data in sorted(items, key=lambda x: (x[0] != "[Content_Types].xml", x[0])):
@@ -30,7 +39,16 @@ def _normalise_zip(path, core_xml=None, app_xml=None):
                 data = core_xml.encode("utf-8")
             if n == "docProps/app.xml" and app_xml is not None:
                 data = app_xml.encode("utf-8")
-            zi = zipfile.ZipInfo(n, date_time=FIXED_ZIP_DT)
+            if n == "[Content_Types].xml" or n.endswith(".rels"):
+                txt = data.decode("utf-8")
+                for part in TEMPLATE_PARTS:
+                    leaf = part.split("/")[-1]
+                    txt = re.sub(r'<Override[^>]*PartName="/%s"[^>]*/>' % re.escape(part), "", txt)
+                    txt = re.sub(r'<Relationship[^>]*Target="(?:/?%s|%s)"[^>]*/>' % (re.escape(part), re.escape(leaf)), "", txt)
+                if n == "[Content_Types].xml" and not any(m.endswith((".jpeg", ".jpg")) for m in names):
+                    txt = re.sub(r'<Default[^>]*Extension="jpe?g"[^>]*/>', "", txt)
+                data = txt.encode("utf-8")
+            zi = zipfile.ZipInfo(n, date_time=when)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o600 << 16
             z.writestr(zi, data)
@@ -59,12 +77,14 @@ def app_props(app="Microsoft Excel", company="Fendmouth Borough Council"):
 
 def save_xlsx(wb, path, title, creator, created, company="Fendmouth Borough Council", modified=None):
     wb.save(path)
-    _normalise_zip(path, core_props(title, creator, created, modified), app_props("Microsoft Excel", company))
+    _normalise_zip(path, core_props(title, creator, created, modified), app_props("Microsoft Excel", company),
+                   stamp=modified or created)
 
 
 def save_docx(doc, path, title, creator, created, company="Fendmouth Borough Council", modified=None):
     doc.save(path)
-    _normalise_zip(path, core_props(title, creator, created, modified), app_props("Microsoft Office Word", company))
+    _normalise_zip(path, core_props(title, creator, created, modified), app_props("Microsoft Office Word", company),
+                   stamp=modified or created)
 
 
 def set_mtime(path):

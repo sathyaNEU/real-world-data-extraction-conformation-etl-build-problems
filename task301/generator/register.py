@@ -21,9 +21,9 @@ import params as P
 PACE_LAUNCH = [0.12, 0.20, 0.27, 0.325, 0.375, 0.43, 0.47, 0.505, 0.54, 0.57, 0.595, 0.62,
                0.645, 0.67, 0.695, 0.72, 0.745, 0.77, 0.79, 0.81, 0.83, 0.85, 0.87, 0.89,
                0.905, 0.92, 0.935, 0.945, 0.955, 0.965, 0.972, 0.979, 0.986, 0.991, 0.996, 1.0]
-PACE_WIDENING = [0.07, 0.13, 0.19, 0.245, 0.295, 0.34, 0.385, 0.425, 0.46, 0.495, 0.53, 0.56,
-                 0.59, 0.62, 0.65, 0.68, 0.705, 0.73, 0.755, 0.78, 0.805, 0.83, 0.855, 0.88,
-                 0.90, 0.92, 0.935, 0.95, 0.962, 0.973, 0.982, 0.989, 0.994, 0.997, 0.999, 1.0]
+PACE_WIDENING = [0.04, 0.075, 0.11, 0.145, 0.18, 0.21, 0.24, 0.27, 0.30, 0.33, 0.36, 0.385,
+                 0.41, 0.435, 0.46, 0.49, 0.52, 0.55, 0.58, 0.61, 0.64, 0.67, 0.70, 0.73,
+                 0.76, 0.79, 0.82, 0.85, 0.88, 0.905, 0.93, 0.95, 0.965, 0.98, 0.99, 1.0]
 EVENTUAL = 0.82
 SUSPEND_P = 0.075
 
@@ -266,6 +266,15 @@ def build(rng, W):
             if new != a["muni"]:
                 incidents.append({"fid": fid, "ex": a["ex"], "date": day(), "type": "DOM", "dato": new})
     incidents.sort(key=lambda r: (r["date"], r["fid"], r["type"]))
+    # a move takes effect from the month after it is recorded; resolutions starting from then carry the new address
+    for r in incidents:
+        if r["type"] != "DOM":
+            continue
+        eff = t_of(r["date"].year, r["date"].month) + 1
+        for a in awards:
+            if a["fid"] == r["fid"] and ((a["first"] is not None and a["first"] >= eff)
+                                         or (a["first"] is None and a["claim"] > r["date"])):
+                a["muni"] = r["dato"]
     # case numbers run in registration order within each year; an appeal keeps its claim's number
     firsts = [a for a in awards if not a["appeal"]]
     order = sorted(range(len(firsts)), key=lambda i: (firsts[i]["claim"], i))

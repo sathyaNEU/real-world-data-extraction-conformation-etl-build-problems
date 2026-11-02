@@ -108,6 +108,13 @@ def chart(E, path):
     fig.tight_layout()
     fig.savefig(path, format="svg", metadata={"Date": None, "Creator": None})
     plt.close(fig)
+    import re
+    txt = open(path, encoding="utf-8").read()
+    txt = re.sub(r"\s*<metadata>.*?</metadata>", "", txt, flags=re.S)
+    txt = re.sub(r"<!--.*?-->\s*", "", txt, flags=re.S)
+    txt = txt.replace('id="matplotlib.', 'id="')
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(txt)
 
 
 def write(E, outdir):

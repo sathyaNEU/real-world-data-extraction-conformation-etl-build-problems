@@ -38,8 +38,6 @@ def figures(res):
             "prices_rechecked_found": "{:,}".format(found),
             "disagreement_low": "%.1f" % min(dis.values()), "disagreement_high": "%.1f" % max(dis.values()),
             "disagreement_low_region": names[min(dis, key=dis.get)], "disagreement_high_region": names[max(dis, key=dis.get)],
-            "credit_region_accuracy_whole": {names[r]: int(round(gold[r])) for r in p.regions if outs[r] == "Service credit"},
-            "corrective_accuracy_whole": sorted({int(round(gold[r])) for r in p.regions if outs[r] == "Corrective action"}),
             "days_per_month": "30.4",
             "band_compliant": "%.1f" % p.band_compliant, "band_credit": "%.1f" % p.band_credit,
             "default_credit_dollars": money(p.credit(p.outcomes(p.agreement()))),

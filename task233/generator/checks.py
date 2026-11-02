@@ -5,6 +5,7 @@
 import csv
 import datetime as dt
 import json
+import math
 import os
 import re
 import shutil
@@ -104,11 +105,17 @@ def main(target, golden):
     ok("C3 rung 1 (fruit and vegetables set aside) names a wrong set", vec(p, nofv) != gvec and vec(p, nofv) != dvec, vec(p, nofv))
     pers = p.persistence()
     ok("C4 rung 2 (price persistence read quote by quote) names a wrong set", vec(p, pers) != gvec and vec(p, pers) not in (dvec, vec(p, nofv)), vec(p, pers))
+    pv = persistence_variants(p)
+    ok("C4b every reading of rung 2 names a wrong set and files no service credit",
+       all(vec(p, v) != gvec and "S" not in vec(p, v) for v in pv.values()),
+       "; ".join("%s %s" % (k, vec(p, v)) for k, v in pv.items()))
     fam = {}
     for key in ("class", "item", "stratum", "all", "region", "region_class", "region_only"):
         for form in ("exp", "lin"):
             fam["%s %s" % (key, form)] = p.netted(key=key, form=form)
     fam["expected changes subtracted from the disagreements"] = additive_variant(p)
+    fam["common daily rate fitted to agreement against delay, linear"], \
+        fam["common daily rate fitted to agreement against delay, multiplicative"] = delay_fit_variants(p)
     fam["Q3 window"] = p.netted(months=["2026-07", "2026-08", "2026-09"])
     fam["Jan to Sep window"] = p.netted(months=[m for m in p.months if m >= "2026-01"])
     fam["index day as visit date (SF2)"] = p.netted(basis="index")
@@ -276,6 +283,63 @@ def workday_variant(p):
         a = sum(abs(b["rec"] - b["fqt"]) < 0.005 for b in v)
         out[r] = 100.0 * a / sum((1 - f[p.fkey(b, "class")]) ** (p.lag(b, workdays=True) / 21.7) for b in v)
     return out
+
+
+def persistence_variants(p):
+    nxt = {"2026-07": "2026-08", "2026-08": "2026-09"}
+    prv = {"2026-07": "2026-06", "2026-08": "2026-07", "2026-09": "2026-08"}
+    out = {}
+    for need_prev in (True, False):
+        for drop_sep in (False, True):
+            acc = {}
+            for r in p.regions:
+                v = [b for b in p.counted() if b["region"] == r and not (drop_sep and b["month"] == "2026-09")]
+                err = 0
+                for b in v:
+                    if abs(b["rec"] - b["fqt"]) < 0.005:
+                        continue
+                    n = p.quotes.get((nxt.get(b["month"], ""), b["quote"]))
+                    q = p.quotes.get((prv[b["month"]], b["quote"]))
+                    okn = n is not None and n["price"] and abs(float(n["price"]) - b["fqt"]) < 0.005
+                    okp = q is not None and q["price"] and abs(float(q["price"]) - b["rec"]) < 0.005
+                    err += not (okn and (okp or not need_prev))
+                acc[r] = 100.0 * (1 - err / len(v))
+            out["previous month %s, September %s" % ("checked" if need_prev else "not checked",
+                                                     "left out" if drop_sep else "kept")] = acc
+    return out
+
+
+def delay_fit_variants(p):
+    import numpy as np
+    R = p.regions
+    data = [(R.index(b["region"]), p.lag(b), 1.0 if abs(b["rec"] - b["fqt"]) < 0.005 else 0.0) for b in p.counted()]
+    X = np.zeros((len(data), len(R) + 1))
+    y = np.zeros(len(data))
+    for i, (ri, L, a) in enumerate(data):
+        X[i, ri], X[i, -1], y[i] = 1.0, -L, a
+    beta = np.linalg.lstsq(X, y, rcond=None)[0]
+    lin = {r: 100.0 * float(beta[i]) for i, r in enumerate(R)}
+    h, a = 0.003, {}
+    for _ in range(200):
+        for i, r in enumerate(R):
+            v = [(L, s) for (ri, L, s) in data if ri == i]
+            lo, hi = 0.5, 0.99999
+            for _ in range(60):
+                mid = (lo + hi) / 2
+                g = sum(s / mid - (1 - s) * math.exp(-h * L) / (1 - mid * math.exp(-h * L)) for L, s in v)
+                lo, hi = (mid, hi) if g > 0 else (lo, mid)
+            a[r] = (lo + hi) / 2
+        lo, hi = 0.0, 0.05
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            sc = sum(-s * L + (1 - s) * a[R[ri]] * math.exp(-mid * L) * L / (1 - a[R[ri]] * math.exp(-mid * L))
+                     for (ri, L, s) in data)
+            lo, hi = (mid, hi) if sc > 0 else (lo, mid)
+        hn = (lo + hi) / 2
+        if abs(hn - h) < 1e-9:
+            break
+        h = hn
+    return lin, {r: 100.0 * a[r] for r in R}
 
 
 def additive_variant(p):

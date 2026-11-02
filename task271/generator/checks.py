@@ -103,12 +103,8 @@ r2_margin = min(margin(L[c]["R2"]) for c in stocked)
 check("back-test rung: every lake at least 1.05 from the line", r2_margin >= 1.05, "%.3f" % r2_margin)
 r0 = sorted(c for c in stocked if L[c]["R0"] >= K.THRESHOLD)
 check("rung 0 (pooled anglers per boat, count x 17) misses the golden set", r0 != GOLD, ", ".join(r0))
-# AM and PM counts agree (the textbook route's own check)
-am = {c: np.mean([x["boats"] + x["shore"] for x in cts_by[c] if x["loop"] == "AM"]) for c in stocked}
-pm = {c: np.mean([x["boats"] + x["shore"] for x in cts_by[c] if x["loop"] == "PM"]) for c in stocked}
-ratio = [pm[c] / am[c] for c in stocked if am[c] > 0]
-check("back-test: the two loops' mean counts agree within a third at every lake (flat-looking day)",
-      all(0.67 <= x <= 1.5 for x in ratio), "PM/AM %.2f to %.2f" % (min(ratio), max(ratio)))
+check("back-test: the pooled correction keeps all four fly-only flip lakes out (the reassuring check)",
+      all(L[c]["R2"] < K.THRESHOLD for c in ("PP-05", "PP-09", "PP-16", "PP-20")))
 
 # ------------------------------------------------------------------------------------------------- three rules
 print("== the three rules (R1 to R3c)")

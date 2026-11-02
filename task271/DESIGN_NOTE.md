@@ -1,179 +1,197 @@
 # task271 design note
 
-Architecture 5, re-rooted 2026-10-27 in a fresh world (wave 4, Descriptive lane, sathay3012); architectures 1 to 4 are recorded below and in `## Tried and rejected`, and stay dead. Fenmarsh Investment Management runs a central dealing desk in London that works its funds' UK equity orders through the algorithms of two brokers, Ashlowe Securities and Pemberwick & Co, on eight execution venues: the Wexcombe Stock Exchange's order book, the lit and midpoint books of Ardenwick MTF, Delvenne MTF's lit book and its Delvenne Midpoint, Thursgate MTF's midpoint book, and two systematic internalisers, Brindock Securities and Quintrell Markets. Its wealth arm, Fenmarsh Wealth Limited, runs a platform for retail clients (ISAs, SIPPs and general accounts) whose dealing in UK shares Gresmere Stockbrokers has executed; from Monday 4 January 2027 the central desk deals for the platform. The platform nets its clients' orders at three dealing points a day into one market order per share, each small and sent whole to one venue on the platform's venue list. The order execution policy keeps a venue off a client flow's list when the fills that flow's orders would receive there meet an average adverse move above 1.5 basis points in the 60 seconds after the fill, and the wealth board approves the platform's list on 9 December 2026.
+Architecture 6, re-rooted 2026-11-01 at the Batch 3 queue reset in a fresh world, domain and shell; architectures 1 to 5 are recorded below and in `## Tried and rejected`, and stay dead. The Pelloran Plateau Fisheries Society, a non-profit in the British Columbia interior, raises catchable rainbow trout at its Quillet Creek Hatchery and stocks the plateau's lakes. Its Catchable Trout Allocation Policy (2026 revision) puts a lake into the high-use tier for a stocking year when anglers fished it for 500 or more angler-hours per hectare in the open-water season before, a lake's angler-hours being the anglers fishing it in each hour of the 05:00 to 22:00 angling day added up over every day from 15 May to 31 August. The creel survey measures effort two ways: Vellacott Air flies two count loops on each survey day, passing each lake at the time its place on the route brings the aircraft over it, and on interview days two clerks interview every party leaving one lake's main access, recording when it started and finished fishing. The board takes the 2027 plan at its November meeting (19 November 2026) and the society files its 2027 stocking application, each lake's tier and allocation, with the Ministry by 1 December 2026. The fiction's as-of date is 26 October 2026, the stocking program manager's working day after the survey's season files were exported on 23 October.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task271.json`, architecture 5, registered 2026-10-27 with `guard.py check` at PASS, then re-registered the same morning after the window moved (WARN, `repeat.question_form` only); architectures 1 to 4 are in its lineage with their fates. Axes redrawn at the draw against the window's last three live cards, each to the honester label rather than argued: the deciding forum `board_of_directors` (the wealth subsidiary's board approves its order execution policy and venue list before dealing moves in-house; the desk's best execution committee, `committee_or_panel`, is banned and is not who decides a client flow's list), the forcing event `cutover_or_migration` (the platform's dealing moves from Gresmere to the central desk on 4 January 2027), the context artifact `monitoring_export` (the transaction cost provider's per-fill export the requester works from). After the pull the same morning, task273 v3 and task141 v4 (registered earlier by other sessions, pushed after this card's first check) entered the window, and task141 v4's `research_desk` and `population_selection` BLOCKed; both were redrawn: the requester is the head of dealing, who owns the router's venue lists (`operations_director`), with the head of execution research doing the analysis, and the strategy is `causal_design` (interference: the desk's own following trades in the same share move each earlier fill's measured outcome, so a venue's effect on a lone order is read on a comparison that holds them out; `decomposition_attribution` is banned in the window by task204). Gate G keeps `decomposition_attribution`: the post-fill move is correctly recorded and the call turns on assigning it to the counterparty or to the desk's own following trades. No calibration organ.
+1. Card: `.claude/skills/fingerprint/cards/task271.json`, architecture 6, registered 2026-11-01 with `guard.py check` at WARN and no BLOCK before and after registration (`overuse.gate_g`, `repeat.decision`; `shell.repeat` read off the old prompt); architecture 5 moved to the lineage with its fate. Axes redrawn at the draw against the window's last three live cards (task233, task134 v2, task485 v5), each to the honester label rather than argued: the forcing event `season_or_peak` to `statutory_or_regulatory_filing` (the society's 1 December stocking application, each lake's tier in it, fixes the date), the deliverable pair pptx and xlsx to docx and xlsx, the persona Edwin Weiss (`people.first` against task246) to Luis Thomas.
+2. Pairing: Survey Research & Official Statistics (client domain) / sample-design-allocation-weighting / Descriptive & Distribution Analysis. The task type's own object decides the call: a time-location survey's design-based estimate of effort, instantaneous counts expanded over the frame of hours and days the design samples, and the call is how that effort per hectare is distributed across the lakes against a line.
+3. Niche: a lake-stocking society's creel survey, each stocked lake's open-water angler-hours per hectare from aerial boat and shore counts flown at route-fixed hours and the access interviews' start and finish times, for the 2027 catchable tier.
+4. Call and shape: which lakes go into the 2027 high-use tier (`designation_set`, question form where). Shape 07, each lake that takes catchables a cell (22 tiers) with the bar chart's parts, beside two per-lake ask blocks (22 release figures, 9 warm-day figures): about 60 criteria.
+5. Gate G `method_or_model_selection`, strategy `other`, gaps time then population, generators G7 (when the anglers are on the water) then G14 (which anglers a count stands for). Every count is correct and every rule reads right; the counts are taken at hours the lakes' anglers do not share alike.
+6. Data-native sentence: Vellacott's loops leave the float base at 09:20 and 14:15 and pass the lakes in route order, so each lake is counted at the same two moments of every survey day, between about 09:30 and 12:00 and between 14:30 and 17:00, while the access clerks interview parties finishing at any hour from 06:00 to 22:00; only the interviewed parties' start and finish times show that the fly-only lakes are fished at dawn and in the evening and the general-regulation lakes through the middle of the day.
+7. Sources, one line each:
+   - Creel survey practice (Pollock, Jones and Brown, Angler Survey Methods and Their Applications in Fisheries Management, 1994): instantaneous counts expanded by the length of the fishing day and the days in each stratum estimate effort without bias when count times fall at random over the fishing day; aerial-access designs that count at set times read each count against the share of the day's effort present at that time, from completed-trip interviews.
+   - The client's rigor library has no card for creel effort; this build's own pattern is `own:route-fixed-instantaneous-counts-expanded-by-each-lake-hour-by-hour-presence`.
+   - `guard.py slots` on the setting's nouns (aerial count, stocking, trout, hatchery, boat ramp, fishing day) and on the driver's words (time of day, hour-by-hour, head-counts at set hours): no screen of this mechanism on file; `guard.py check` places no driver on file within its similarity line after the differentiation lines (task451, task135, task161, task460).
+8. People, drawn with `guard.py names --geo CA --locale en_CA --seed 271`: Katrina Newman (stocking program manager, the requester), Luis Thomas (creel survey coordinator: the protocol, the counts, the interviews) and Robin Fields (hatchery manager). The invented names (Pelloran, Quillet, Vellacott and the 24 lakes) pass the H21 screen against UK and Canadian place lists; Larchwood, Sedgemoor, Rushmere, Whinmoor, Ironmask and Spurwick were replaced at the draw for being real or within a letter or two of a real place.
+9. Candidates written before choosing, each dropped one in `## Tried and rejected`: (a) the creel survey drawn here; (b) small-area estimation of a regional library system's branch reading-programme participation from a thin member survey; (c) a transit agency's on-board survey with trips as clusters; (d) a ferry operator's passenger survey reweighted for nonresponse; (e) an aerial waterfowl count corrected for sightability with a double-observer file. The coordinator's lessons of this batch (task123's coverage gap, task304's filed procedure) were checked against (a): every reported count is complete and correct and the plain route still files the wrong list (the FINE-numbers test), and the policy names the quantity while no sentence performs its estimate.
+10. Screens, run as code on the clean world before the pack (scratch `t271a6/quick.py`, `fam.py`, `tune.py`) and kept in `generator/checks.py`: the plain expansion (count times 17, each lake's own anglers per boat) files Galloran, Nockell and Farrowdale in and the four fly-only lakes out; the pooled-profile correction files the same list; ten golden-family members (each lake's own hourly shares by hour bin, interpolated to the minute, at the count's exact minute, by parties, by day type; regulation-class shares with the lake's or the class's anglers per boat; ratios of summed counts) all land the golden set, every lake at least 1.16 from the line; no cheap route lands it; and the golden set is neither the top nor the bottom ten of any of ten shipped statistics.
+
+## Default path
+
+1. Read the policy's tier line (2.2: 500 or more angler-hours per hectare in the season before) and its angler-hours (2.3), and the protocol's design: two count loops on each survey day, three weekdays and three weekend days a month drawn at random.
+2. Match the counts' Vellacott numbers and the interviews' tablet names to the lake register; leave out the fog loop and the smoke lakes entered with no count.
+3. Turn each count into anglers: boats times the lake's own mean party size among the interviewed boat parties, plus the shore anglers.
+4. Expand the creel survey's standard way, the instantaneous count method: a count times the 17-hour angling day is that day's angler-hours; average the survey day's counts, take the mean survey day in each month's weekday and weekend strata, multiply by the stratum's days and add up the season.
+5. Divide by the register's surface area and set each lake that takes catchables against 500.
+
+Ends on: Corriemore, Tessaly, Kesterway, Brackwater, Pinewhistle, Galloran, Nockell, Farrowdale and Kittiwake
+
+Golden: Corriemore, Tessaly, Ellerdine, Kesterway, Quorrin, Brackwater, Pinewhistle, Ravensky, Inverkeld and Kittiwake
+
+## Stump sentence
+
+A competent analyst who turns every flight count into anglers correctly and expands it the creel survey's standard way, the count times the 17-hour angling day by weekday and weekend day each month, files Corriemore, Tessaly, Kesterway, Brackwater, Pinewhistle, Galloran, Nockell, Farrowdale and Kittiwake for the 2027 high-use tier (Galloran 620, Nockell 590 and Farrowdale 610 angler-hours per hectare; Ellerdine 420, Quorrin 430, Ravensky 320 and Inverkeld 390), because the flights pass every lake between about 09:30 and 17:00, the general lakes' busy hours and the fly-only lakes' quiet ones; read against each lake's own hour-by-hour presence from the interviewed parties' start and finish times, Ellerdine, Quorrin, Ravensky and Inverkeld clear 500 (700, 790, 660 and 830) and Galloran, Nockell and Farrowdale fall under it (390, 430 and 360).
+
+## Three rules
+
+- Task type: sample-design-allocation-weighting (Survey Research & Official Statistics), which serves Descriptive & Distribution Analysis: the design-based expansion of a time-location survey's counts over the hours and days its frame covers, read as each lake's effort per hectare against a line.
+- Domain test: the call turns on each lake's season angler-hours, the creel survey's effort estimate, built the way the field builds it from instantaneous counts, the angling day and the sampled days of each stratum; replace it with fish stocked, campground nights or a count of visits and nothing is left to estimate, and no counted moment stands for a day.
+- Swap: "which car parks go into the busy tier on vehicle-hours per space, from two patrol counts a day" reads only until the parking tickets appear, because tickets record every vehicle's stay and nothing needs estimating; it is the creel survey's design (sampled days, counts at moments, completed trips interviewed at one access) that makes effort an estimate, and the anglers' dawn and evening habits by regulation that put the counted moments off the day's pattern.
+- Layer 1: the count file keyed by the operator's 2026 Vellacott numbers and its own lake spellings (the register crosswalks both); the fog loop and the smoke lakes entered with no count; interview start times heaped on the quarter and half hour as anglers recall them, about one party in eleven giving hours fished instead; two clerk shifts and tablet numbering; the flight log in UTC; the hatchery's split trips with the net load on every row, raceways renumbered mid-season and a trip sheet template that kept the old numbers; loggers launched on UTC, downloads that name only the last station, readings in air at launch, relocation and download. Each is produced by its own system and none is placed to be caught; the call's neutrality to each is asserted (L1 and SF rows).
+- Layer 2: estimation_fit: instantaneous counts made at route-fixed hours expanded by each lake's own hourly presence from completed trips rather than by the length of the day.
+- Decisive step: recognising that the route fixes the hour of every count, so the counts are not spread over the angling day as the instantaneous count expansion needs, and reading each count against the share of that lake's angler-hours falling in its hour, taken from the interviewed parties' start and finish times.
+- Not semantics: with every field read right (Vellacott numbers through the register, boats turned into anglers by each lake's own anglers per boat, blank counts left out, missing starts filled from hours fished) the plain expansion still files Galloran, Nockell and Farrowdale and leaves the four fly-only lakes out; no field, code or unit carries the hours anglers fish, and the clean world without any mess files the same wrong list (checks R2, R3b).
+- Not rule application: no filed sentence performs the estimate: the policy names the quantity (each hour's anglers added up over the season) and the protocol the design, and executing both the standard way (count times 17 by stratum) files the wrong list. The enumerated family (thirteen members: the plain expansion with pooled and own anglers per boat, the pooled profile and the ten presence members) spreads the seven flip lakes from 276 to 861 angler-hours per hectare, across the line; the standing family (the ten members that estimate each hour from the lake's or its class's interviewed presence) has a spread of zero on the graded unit, the list, with every lake at least 1.16 from 500 under every member (within a lake the members differ by up to 42 per cent, at Kittiwake, all of them above 1,000); what rules the rest out is the data, quietly: the pooled profile is rejected against each lake it moves (chi-square p under 0.0001), and the policy's "anglers fishing it".
+- Analyst test: a strong analyst who reads every field and rule right and expands each count by the 17-hour day files Corriemore, Tessaly, Kesterway, Brackwater, Pinewhistle, Galloran, Nockell, Farrowdale and Kittiwake, because the counts sit in the general lakes' busy hours and the fly-only lakes' quiet ones.
+- Estimand: catchable_allocation_policy_2026.pdf 2.2 and 2.3: population, each lake that takes catchables (the register's column); outcome, the anglers fishing it in each hour of the 05:00 to 22:00 angling day; window, every day of 15 May to 31 August 2026; unit, angler-hours per hectare of the register's area; comparison, 500 or more.
+- No decoy: nothing is planted to be caught: every shipped count is the anglers truly on the lake at its time (checks R3a), no memo, prior tier list, draft or stakeholder figure argues a list, and the two declared distractors (the flight log and the campground occupancy) rank nothing.
+- No certified replay: no published, certified or prior-year angler-hours or tiers ship, so nothing is reproduced to recover the method; the golden is estimated from the counts and interviews alone.
+- Lesson: a count taken at set hours stands for a whole day only where the anglers' hours match the count's, so a model learns to read each lake's presence from completed trips before expanding; no build on file expands a time-location survey's counts, and none reads presence from visit intervals.
+
+## Survivor anatomy
+
+- Actor: each lake's hour-by-hour presence has no column in any file: it is a relation across the interviewed parties' start and finish times, read hour by hour, while the count file carries only the time the aircraft was over the lake.
+- Link: the count's moment is read against the same lake's interviewed parties through the hour of the day, a comparison no key or sentence invites: the counts key by Vellacott number and the interviews by tablet name, the register maps both to a lake, and nothing joins a count's time to a party's hours.
+- Reflex: the field's named method for the deciding quantity, the instantaneous count expansion (count times the 17-hour day by stratum), sits at rung 1 and files the nine-lake list with Galloran, Nockell and Farrowdale; the same expansion with pooled anglers per boat files yet another wrong list.
+- Back-test: the textbook's own correction for time of day, the survey's pooled hourly profile from every interview, leaves the plain list unchanged (R2 files R1's set), so the analyst who checks finds the plain list confirmed.
+- Second use: every file the step reads ships for its own reason: the counts are the survey's effort record, the interviews are taken for catch, harvest, clipped fish, party size and licence, with start and finish recorded for hours fished, and the register crosswalks codes, numbers and areas; deleting the step from the design leaves every one of them in the pack.
+- Shock: the fly-only lakes' move reads as ordinary explained movement: the golden set is neither the top nor the bottom ten of interviews per lake or per hectare, interviewed angler-hours per hectare, mean count, mean count per hectare, the plain estimate, area, route position, kept fish per hectare or hours fished (asserted in checks.py).
+- Pins: the WHAT is filed in the society's allocation policy (2.2, 2.3) in its own genre, and no filed sentence names the count hours, a presence profile, a grouping or an estimator (checks R3c finds no estimator word in either document).
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| Rung 1: count x 17, each lake's own anglers per boat (default) | no | no | fires: the field's named method | no | no | no | no | readable |
+| Rung 2: counts spread by the pooled hourly profile | no | no | fires: the textbook's time-of-day correction | no | no | no | no | readable |
+| Golden (decisive): each count over its lake's share of angler-hours in its hour | no: 2.3 names each hour's anglers, nothing names a profile or the count hours | no: no presence column, no key from a count to a party | no: the reflex is the count times the day, then the pooled profile | no: no control or prior list scores it | no: nothing to clean | no: a per-lake hourly profile from party intervals, then each count over it, then the stratified expansion | no: start and finish are what every catch interview records | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | lake | each lake that takes catchables (register column) | every register lake, walk-in lakes included | same call | the walk-in lakes stay under 500 under every member (asserted) |
+| SF2 | angler-hours | each hour's anglers added up | anglers times hours fished per party | same call | the same quantity: hourly shares built from party hours sum to the party hours (asserted) |
+| SF3 | angling day | 05:00 to 22:00 (policy 2.3) | the clerks' 06:00 to 22:00 | same call | asserted with the profile cut at 06:00 |
+| SF4 | season expansion | stratum mean times the stratum's days | mean survey day times the season's days | same call | asserted |
+| SF5 | surface area | the register's area | none other ships | same call | one source |
+| SF6 | boats to anglers | each lake's anglers per boat | pooled or class anglers per boat; boats as anglers | same call (pooled, class); boats as anglers files another list | policy 2.3 counts anglers; pooled and class asserted |
+| SF7 | shore anglers | counted as anglers | left out | another list | policy 2.3: a shore angler counts the same |
+| SF8 | the count's hour | the hour bin of time over | interpolated share; presence at the exact minute | same call | asserted per reading |
+| SF9 | share weight | anglers times hours | parties times hours | same call | asserted |
+| SF10 | missing start | finish less hours fished | the party dropped | same call | asserted |
+| SF11 | blank counts | left out | read as zero | same call (and the default's list unchanged) | asserted for the golden and the default |
+| SF12 | a survey day's counts | mean of each count's day estimate | ratio of summed counts | same call | asserted |
+| SF13 | strata | month by weekday or weekend day (protocol 1) | no strata | same call | asserted |
+| SF14 | "500 or more" | at or over 500 | over 500 | same call | no lake within 1.16 of 500 under any member |
+| SF15 | rounding | none before the comparison | estimates rounded to 10 first | same call | asserted |
+| SF16 | clerk shifts | both shifts one lake-day | early shift only | same call | every interviewed party used; asserted |
+| SF17 | profile grouping | the lake's own hours | the regulation class's hours | same call | asserted (two members) |
+| SF18 | day type | one profile per lake | weekday and weekend profiles | same call | asserted |
+| SF19 | count lake identity | Vellacott number through the register | the operator's spelling | same call | both map each lake once (asserted) |
+| SF20 | interview lake identity | tablet name through the register | none other | same call | every tablet name matches one lake (asserted) |
+| SF21 | pooled hourly profile | not a reading of "anglers fishing it" | every interview's hours for every lake | another list (R2) | policy 2.3 and the data: rejected against each lake it moves, p under 0.0001 (asserted) |
+| SF22 | fish per kg at a load | the raceway's latest Monday sample | interpolated between Mondays; nearest Monday | same figures | every lake at least 21 fish inside its 100 under all three (asserted) |
+| SF23 | a split trip's load | shared by the drop crew's nets | split equally | other figures | the nets are the drop's own record; asserted that equal moves a lake |
+| SF24 | alive | less the dead counted at the drop | dead left in | other figures | the asking sentence says alive |
+| SF25 | a trip's raceway | the raceway its number maps to before the template change | the numbering in force | other figures (the device) | the Monday inventory: every window trip emptied the mapped raceway (asserted) |
+| SF26 | a day | the Pacific-time day | the logger's own stamps | other figures (the hazard) | the asking sentence; two UTC loggers found by their warmest hour (asserted) |
+| SF27 | a lake-day mean | every reading at 1 m that day | each logger's mean, then their mean | same figures | asserted |
+| SF28 | above 20 C | over 20.00 | at or over; rounded to 0.1 | same figures | no lake-day mean within 0.066 of 20 (asserted) |
+| SF29 | part days | the readings the day has | the day left out | same figures | both relocation days under 19.7 (asserted) |
+| SF30 | lakes with a 1 m logger | the nine the deployment sheet gives for July and August | stations the downloads name | other figures (the device) | the deployment sheet by date (asserted) |
+
+## Ladder
+
+| Rung | Route | List filed | Nearest lake to the line |
+|---|---|---|---|
+| R1 (default) | count x 17, each lake's own anglers per boat | Corriemore, Tessaly, Kesterway, Brackwater, Pinewhistle, Galloran, Nockell, Farrowdale, Kittiwake | every lake at least 1.16 from 500 (Quorrin 431, Nockell 586) |
+| R2 (back-test) | counts spread by the pooled hourly profile | the R1 list | every lake at least 1.06 from 500 (Nockell 529) |
+| Golden | each count over its lake's share in its hour (ten members) | Corriemore, Tessaly, Ellerdine, Kesterway, Quorrin, Brackwater, Pinewhistle, Ravensky, Inverkeld, Kittiwake | every lake at least 1.16 from 500 under every member (Nockell 430, Ravensky 609 at the lowest member) |
+
+R1 and R2 file one list, which is the back-test; the golden differs from it at seven lakes. The plain expansion with pooled anglers per boat is not a rung (it sits on the line at Inverkeld, 499) and stays among the cheap routes checks.py prices, none of which lands the golden list.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | each lake that takes catchables | filed (policy 1, 2.1; register column); C1 for the walk-in lakes (SF1) |
+| 2 Unit of account | the lake | the question and policy 2.2 |
+| 3 Attribution window | 15 May to 31 August 2026 | filed (policy 2.3); every survey day inside it |
+| 4 As-of dating | the season's exported files | the export of 23 October; no later revision ships |
+| 5 Version basis | one version of each file | C1, no file revised |
+| 6 Denominator | the register's surface area | filed (policy 2.4) |
+| 7 Weighting | each hour's anglers, stratified expansion | the design (protocol 1); C1 across shares by anglers or parties (SF9) |
+| 8 Window length | one season | filed |
+| 9 Boundary inclusivity | 500 or more | C1, no lake within 1.16 (SF14) |
+| 10 Rounding path | no rounding before the comparison | C1 (SF15); asks round once at the figure |
+| 11 Tie-break | none needed | C1, no tie |
+| 12 Maturity and censoring | parties finishing outside 06:00 to 22:00 are not interviewed | C1, the profile cut at 06:00 prints the same list (SF3) |
+| 13 Order of operations | count to anglers, over its share, day mean, stratum, area | C1 across the day-combination orders (SF12) |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | none in the call's files | C1 |
+| 16 Identity normalisation | Vellacott numbers and tablet names through the register | C4, each maps once (SF19, SF20) |
+| 17 Netting against gross | none | not applicable to a sum of anglers |
+| 18 Dimensional units | anglers, hours, hectares | units in the data |
+| 19 Code and status semantics | blank counts are no count | C1, zero or dropped (SF11) |
+| 20 Integerisation | none in the call; asks rounded once | C1 |
+| 21 Clause scope | policy 2.2 for the stocking year 2027 | filed |
+| 22 Forward window contents | the 2027 tier rests on the closed 2026 season | filed (policy 2.2: the season before); the call faces forward to the 2027 stocking year |
+
+## Literal reader
+
+Executed word for word, the prompt and policy 2.2 to 2.4 fix the population (each lake that takes catchables), the quantity (each hour's anglers from 05:00 to 22:00 added up over every day of the season), the unit (per hectare of the register's area) and the comparison (500 or more). Where the text is silent, how a count at one moment becomes each hour's anglers, every licensed reading was computed: the plain expansion takes each hour to hold the counted hour's anglers, which the interviews contradict at every lake it moves (SF21), so it does not execute 2.3 on these data; every reading that estimates each hour from the interviews' presence, ten members, prints the golden list with every lake at least 1.16 from the line. Literal reader: PASS.
+
+## Oracles
+
+none: no control, prior tier list, published angler-hours or reconciliation column confirms either reading; no earlier season's figures ship, the flight log carries block times only and the campground occupancy is nightly sites.
+
+## Ask sheet
+
+Two asks, both on files the call never reads, each a component of the stocking application the tiers go into.
+
+**Ask A, catchable rainbow trout released alive into each lake in 2026 (22 figures, nearest 100 fish).** Home: the application lists each lake's 2026 releases beside its 2027 tier and allocation.
+- Primary device (D2, a label stored before a silent switch with a false-clean as-of join): the hatchery renumbered its raceways from the intake end when the new headbox came into use on 22 June (old n became 9 - n) and its Monday samples switched with it, but the drivers' trip sheet template kept the old numbers until 17 August, when a tank temperature column appeared. Read in the numbering in force, every trip from 22 June to 16 August joins cleanly to a sample of the reversed raceway, whose fish per kilogram differs by 35 to 56 per cent; only the Monday inventory (each window trip emptied fish from the raceway the crosswalk maps its number to) shows which raceway each load came from. 21 of 22 lakes move by one bin or more.
+- Hazards: split trips carry the whole net load on both rows (shared by the drop crew's nets, a recorded weight); the dead counted at the drop come off; lake names on the trip sheets, codes in the drop app.
+
+**Ask B, July and August days on which each lake's 1 m water averaged above 20 C over the Pacific-time day (9 figures, whole days).** Home: timing the summer releases.
+- Primary device (D7, the true key in another file): the compiled logger download names only the station each logger was retrieved from, so the paired logger moved from Brackwater to Kelloran on 14 July and the one moved from Tessaly to Inverkeld on 22 July carry their earlier water under their last lakes (Kelloran's own logger failed in early June, Inverkeld's was never recovered); only the deployment sheet, read by date, puts each reading in its lake. Kelloran moves from 11 to 20 days, Inverkeld from 6 to 24.
+- Hazards: two loggers launched on UTC (found from their warmest hour), paired loggers at Tessaly and Brackwater, readings in air at launch, relocation and download.
+
+Pin test: the asking sentences pin the unit, rounding, window, depth, threshold, the Pacific-time day and "alive"; no pin names a raceway number, a template, a deployment or a station, and no filed sentence states a device's handling. The call's population carries zero device rows: the call reads the counts, the interviews and the register; the devices sit in the hatchery's and the loggers' files.
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, the 21 lakes stocked between 22 June and 16 August | reads each trip sheet raceway number in the numbering the crosswalk puts in force and takes that raceway's latest Monday sample | miss |
+| B, Kelloran and Inverkeld | files each logger's readings under the station its download names | miss |
+
+Pair ceiling: 42.7 ((38 + 7 + 55 x 0.258) and (5 + 7 + 55 x 0.258), averaged)
+Mirror leakage: 25.8 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Build record
+
+Generator under `generator/`: `common.py` (constants, seed 2711119), `world.py` (every party on every lake and day, the survey's counts and interviews, the hatchery's trips and samples, the loggers), `pack.py` and `docs.py` (the 13 shipped files), `analysis.py` (every rung, the family and both asks from `target/` alone), `deliver.py` (the goldens, figures.json), `writeup.py` (submission.md), `metadata.py`, `checks.py`, `verify.py` (its own readers: xlsx as XML, PDF streams through ASCII85 and Flate), `ceiling.py`, `build.py` (builds twice and compares byte for byte, cuts target.zip). The pack: lake register (xlsx), flight counts (csv, 1,152 rows), interviews (csv, 3,551 parties), flight log (xlsx, distractor), trip sheets (xlsx), drop tallies (json), raceway samples and numbering (csv), temperature loggers (csv, 101,650 readings), deployments (csv), campground occupancy (xlsx, distractor), the allocation policy and the survey protocol (pdf).
+
+## Architecture 5 record (re-rooted 2026-11-01)
+
+Shipped 2026-10-27 (target.zip 7718f1c7) with no portal result and re-rooted on 2026-11-01 at the Batch 3 queue reset, when the author had every queued task rebuilt as a fresh architecture; the venue-list world is closed with it. Its setting, draw and stump, kept for the record:
+
+Architecture 5, re-rooted 2026-10-27 in a fresh world (wave 4, Descriptive lane, sathay3012); architectures 1 to 4 are recorded below and in `## Tried and rejected`, and stay dead. Fenmarsh Investment Management runs a central dealing desk in London that works its funds' UK equity orders through the algorithms of two brokers, Ashlowe Securities and Pemberwick & Co, on eight execution venues: the Wexcombe Stock Exchange's order book, the lit and midpoint books of Ardenwick MTF, Delvenne MTF's lit book and its Delvenne Midpoint, Thursgate MTF's midpoint book, and two systematic internalisers, Brindock Securities and Quintrell Markets. Its wealth arm, Fenmarsh Wealth Limited, runs a platform for retail clients (ISAs, SIPPs and general accounts) whose dealing in UK shares Gresmere Stockbrokers has executed; from Monday 4 January 2027 the central desk deals for the platform. The platform nets its clients' orders at three dealing points a day into one market order per share, each small and sent whole to one venue on the platform's venue list. The order execution policy keeps a venue off a client flow's list when the fills that flow's orders would receive there meet an average adverse move above 1.5 basis points in the 60 seconds after the fill, and the wealth board approves the platform's list on 9 December 2026.
+
+### Architecture 5 draw
+
 2. Pairing: Quantitative Finance (client domain) / market-microstructure-execution-cost / Descriptive & Distribution Analysis. The task type's own object decides the call: each venue's distribution of post-fill adverse moves at a fixed horizon (its markouts), the venue analysis an execution desk runs for best execution, read with the trader's own price impact separated from the counterparty's information.
 3. Niche: a UK asset manager's venue list for its wealth platform's in-house dealing orders, each venue's adverse move in the minute after a fill read from a year of the central desk's algorithmic fills.
 4. Call and shape: which of the eight venues the board keeps off the platform's venue list (`designation_set`, question form which), with each venue's adverse move graded. Shape 10 (scorecard against thresholds): eight venues scored against the policy's 1.5 basis points, beside the asks' per-point and per-month figures.
 5. Gate G `decomposition_attribution`, strategy `causal_design`, gaps objective then population, pattern E, generators G14 then G3. The 2026 fills' post-fill moves are recorded correctly and are not what the decision is scored on, the moves the platform's lone orders will meet; the decisive step assigns each fill's move to its counterparties or to the desk's own following trades in the same share, and carries only the first to the platform.
 6. Data-native sentence: the brokers' implementation-shortfall algorithms open each parent order with a burst of child orders that pings the midpoint books in its first minute and a half and then work the rest through the lit books and the internalisers, so a fill on a midpoint book is usually followed within the minute by the same order's next fills, each pushing the mid the order's way; the platform's orders go whole to one venue and nothing of the desk's follows them.
-7. Sources, one line each:
-   - The client's rigor library has no card for this task type; its quantitative-finance cards (trade on the next bar, Fama-MacBeth errors, expected shortfall) answer other questions.
-   - `guard.py slots` on the driver's words (venue, fill, markout, dark; parent, child, order, slicing, impact) and on the setting's: no screen of this mechanism on file; the hits (task179, task187, task193) use "fill" and "venue" in other senses.
-   - `guard.py check` places the nearest drivers on file under 0.05 (task264 v2 the nearest); no build separates a measured move from the measuring actor's own continuing activity.
-8. People, drawn with `guard.py names --geo GB --seed 271`: Owen Porter (head of dealing, the requester, who signs the router configuration), Declan Davies (head of execution research, who runs the venue analysis) and Oliver Hamilton (Fenmarsh Wealth's chief operating officer, who wrote the dealing plan). Pamela Waters, Megan Howard, Amy Griffiths, Craig Newton and Nathan Cartwright were passed over on `people.first` WARNs. The invented names (Fenmarsh, Wexcombe, Ardenwick, Delvenne, Thursgate, Brindock, Quintrell, Ashlowe, Pemberwick, Hessenby, Gresmere) were screened against the H21 reference register at the build, each three or more edits from every reference place (`checks.py`); the first draft's Arden, Corvel, Bramwell, Merriton, Tallis and Lindale sat within two edits of real places and were renamed before any file was cut.
-9. WARNs answered: none at the first registration (PASS); after the redraw, `repeat.question_form` (which, after task273 v3), because the board names a set of venues. The deliverable set moved from a board paper in Word and a workbook (`repeat.deliverables` against task118 v2) to the board paper as PDF beside the workbook, which is how a board pack is circulated.
-10. Screens, run as code at the draw (scratch `t271/mm/proto2.py` and `proto3.py`, 20 worlds each) and on the generator (`probe_world.py`): the raw average over every 2026 fill names the two toxic lit or SI venues and passes the toxic midpoint books in every world; the 1-second markout names none; the 2026 single orders leave the midpoint books unread; each fill against its own parent order's mean names none or two; the family that leaves the desk's following trades out of the move names the four in every world. An additive adverse move on one shared mid path was tried first and dropped: each fill's counterparty move then piles into its neighbours' minutes, the contamination turns against the desk and the following-volume regression parts from the lone-fill read; the generator now carries each fill's counterparty move on its own markout and only the desk's own impact on the shared path (`## Tried and rejected`).
 
-## Default path
-
-1. Read the order execution policy's adverse-move test (the mid 60 seconds after the fill against the mid at the fill, in basis points of the mid at the fill, positive when the price has moved against the order, averaged over fills, kept off the list above 1.5) and the platform's dealing plan.
-2. Build the 2026 fills from the cost provider's export: one row per broker execution ID, the busts both brokers report out, the closing auction out, Thursgate's two segment codes as one book.
-3. Compute each fill's adverse move at 60 seconds and average it by venue over every fill.
-4. Keep off the list every venue above 1.5 basis points.
-
-Ends on: Delvenne lit and Quintrell SI
-
-Golden: Ardenwick mid, Delvenne lit, Thursgate mid and Quintrell SI
-
-## Stump sentence
+### Architecture 5 stump sentence
 
 A competent analyst who builds the 2026 fills correctly and averages each venue's adverse move over every one of them keeps only Delvenne lit and Quintrell SI off the platform's list (1.67 and 1.73 basis points) and passes Ardenwick mid and Thursgate mid (0.48 and -0.44), because the algorithms ping those midpoint books in each parent order's opening seconds and the same order's next fills, inside the minute, push the mid the desk's way; on the fills after which no desk execution in the share printed within the minute, the platform's lone-order case, the two midpoint books meet 3.01 and 1.89 basis points and fail the test too.
-
-## Three rules
-
-Task type: market-microstructure-execution-cost (Quantitative Finance), which serves Descriptive & Distribution Analysis in the taxonomy.
-Domain test: the quantity that decides the call is each venue's adverse selection, the average move of the mid against the order in the 60 seconds after a fill (its markout), which execution analysis measures fill by fill and separates from the trader's own price impact by reading the move against the trader's following trades; the platform's orders, sent whole, carry the counterparty's part alone.
-Swap: "which of eight hospital wards should single admissions avoid, by how far a patient's early warning score rises in the hour after admission, read from a year of admissions that came in batches" has no order whose later child fills push the measured price the trader's way, so the move that decides the call (netting the desk's own following trades out of each fill's markout) has nothing to act on.
-Layer 1: the cost provider's export delivering 543 executions twice under fresh references, both brokers reporting busts as their own reversal rows (444), Pemberwick reporting in pounds, London local time, its own venue names and monthly sheets against Ashlowe's pence, UTC and MIC codes, Thursgate's segment code changing from THGD to THGM on 1 June, closing auction executions and fills in the last minute before the close with no 60-second mid, and the 18 May share consolidation carrying the old line's code, pence and shares before it; each is produced by its system, nothing is placed to be caught, and on the call's path each mishandled keeps the call (SF6, SF7, SF8, SF13).
-Layer 2: estimand_identification: the adverse move the platform's lone orders will meet is the counterparty's part of each fill's markout, and the 2026 fills' markouts carry beside it the desk's own following trades in the same share, which the platform's orders will not have.
-Decisive step: reading each venue's move on the fills the desk did not follow with its own trades in the share within the minute, or net of the desk's following volume, not over every 2026 fill.
-Not semantics: every field read correctly (both brokers' units, times and venue codes, the busts and duplicate deliveries, the cost provider's mids, the session flag) and the policy's test applied as written still leave the every-fill averages naming two venues.
-Not rule application: the policy fixes the horizon, the reference mid, the sign and the 1.5 basis point line and says nothing of the desk's own trades; the enumerated family (every fill, the median, the 1 and 5 second markouts, the 2026 single orders, parent fixed effects, the fills with no desk trade in the next minute, the same with none in the minute before, the regression on following volume, the fills outside each order's opening 90 seconds) spans four designated sets, and the standing family (the five constructions that leave the desk's following trades out of the move) files one set at the same whole basis points for every venue on the pack (`checks.py` FAMILY rows, every member 0.23 bp or more from the line and 0.17 bp or more inside its whole-basis-point bin); what rules the rest out is the record itself, the move falling 13.9 basis points for each 1 per cent of average daily volume the desk trades in the share in the following minute, not a filed clause.
-Analyst test: a strong analyst who builds the 2026 fills correctly (one row per execution, busts out, the auction out, Thursgate's codes joined) and averages each venue's 60-second adverse move over every fill keeps off Delvenne lit and Quintrell SI, because the averages of Ardenwick mid and Thursgate mid, the books the algorithms ping in each order's opening seconds, sit at 0.48 and -0.44 basis points; those fills were followed within the minute by the same order's next fills, which pushed the mid the desk's way, so on the fills no desk execution in the share followed within the minute the two midpoint books meet 3.01 and 1.89 and fail the test too (`checks.py`, R3a, on the generator's clean truth).
-Estimand: the policy's test, section 4.3 ("A venue's adverse move for a client flow is the average adverse move of the fills that flow's orders would receive there, in continuous trading. A venue whose adverse move for a client flow is above 1.5 basis points is kept off that flow's venue list"), its definition of the move (the change in the mid price from the moment of the fill to 60 seconds after it, in basis points of the mid at the fill, positive when the mid has moved against the order), section 4.4's evidence (the desk's own executions as the cost provider records them, the year to date, busts out), and the dealing plan's platform orders (section 4: each market order sent whole to one venue and filled in one execution).
-No decoy: no memo, report, draft or stakeholder figure states or ranks any venue's adverse move; the desk's 2025 venue report gives volume shares only (a distractor named in metadata.json), and the router configuration and the dealing plan state operational facts.
-No certified replay: no published or certified venue figure ships to be reproduced; the policy's test is run on the desk's own 2026 fills and blesses no construction.
-Lesson: a markout measured inside a sliced order carries the order's own later trades, so a venue the algorithms use at the start of orders looks benign on the raw average; carried to orders that go whole to one venue, a venue's move has to be read net of the trader's own following trades. No build on file separates a measured move from the measuring actor's own continuing activity.
-
-## Readability screen
-
-| Rung | What a reader needs to take it | Verdict |
-|---|---|---|
-| R0 every 2026 fill averaged by venue | the cost provider's mids and the policy's test | readable |
-| R1 a shorter horizon (1 or 5 seconds), or the median | the export's other mid columns | readable |
-| R2 the desk's 2026 single orders, every fill for the midpoint books | the OMS's DMA strategy and the router note | readable |
-| R3 each fill against its parent order's mean (parent fixed effects) | the client order ID on every execution | readable |
-| R4 (decisive) each venue read on the fills no desk execution in the share followed within the minute | no file names the desk's own following trades or says a fill's minute holds them; the execution times and order IDs are there for other uses, and the dealing plan states only that platform orders go whole | silent |
-
-## Semantic fork table
-
-| Id | Term | Readings | Ruled out by |
-|---|---|---|---|
-| SF1 | adverse move's sign | positive against the order; positive in the order's favour | policy 4.3 ("counted positive when the mid has moved against the order"); the reversed sign keeps no venue off (asserted) |
-| SF2 | horizon | 60 seconds; 1, 5, 30 or 300 seconds | policy 4.3 and the prompt |
-| SF3 | reference price | the mid at the fill; the fill price | policy 4.3 files the change in the mid price, in basis points of the mid at the fill; the fill-price reading adds the spread paid and is not a reading of it (asserted) |
-| SF4 | average | the mean over fills; weighted by shares | policy 4.3 ("the average adverse move of the fills"); share-weighted lone fills name the same set (asserted) |
-| SF5 | continuous trading | auction and last-minute fills out | policy 4.3; no auction execution carries a 60-second mid (asserted) |
-| SF6 | busts | out | policy 4.4; kept in, the same set and figures (asserted) |
-| SF7 | duplicate deliveries | one row per broker execution ID | same call: counted twice, the same set and figures (asserted) |
-| SF8 | Thursgate's codes | THGD and THGM one book | the venue register; read apart each half is over the line (asserted) |
-| SF9 | evidence window | 2 January to 30 October 2026 | policy 4.4 (a list first set during a year, that year to date); the export's span (asserted) |
-| SF10 | the fills the platform's orders would receive | none of the desk's executions in the share in the minute after; none in the minute before or after | same call: both name the golden set at the same whole basis points (asserted) |
-| SF11 | rounding | whole basis points | the prompt; every family member's every venue 0.17 bp or more inside its bin (asserted) |
-| SF12 | order size | the platform's orders are smaller than many child fills | same call: the lone fills in each size tercile name the golden set (asserted) |
-| SF13 | the consolidating line's codes | old and new codes one share | same call: the two codes never meet inside a minute (asserted) |
-| SF14 | busted executions among the following trades | counted (golden) or not | same call (asserted) |
-| SF15 | above 1.5 | strict | policy 4.3; no family member's venue within 0.23 bp of 1.5 (asserted) |
-
-## Ladder
-
-Measured on the cut pack (`checks.py` RUNG and FAMILY rows), basis points:
-
-| Rung | Route | Wexcombe | Ardenwick lit | Delvenne lit | Ardenwick mid | Delvenne Midpoint | Thursgate mid | Brindock SI | Quintrell SI | Keeps off |
-|---|---|---|---|---|---|---|---|---|---|---|
-| R0 | every fill | -0.35 | 0.46 | 1.67 | 0.48 | -1.19 | -0.44 | -0.31 | 1.73 | Delvenne lit, Quintrell SI |
-| R1 | 1-second markout | 0.02 | 0.20 | 0.62 | 0.04 | -0.02 | 0.03 | 0.03 | 0.24 | none |
-| R1b | 5-second markout | 0.02 | 0.60 | 1.71 | 0.16 | -0.07 | 0.01 | 0.03 | 0.98 | Delvenne lit |
-| R2 | 2026 single orders, every fill for the midpoint books | 0.11 | 0.89 | 2.23 | 0.48 | -1.19 | -0.44 | 0.06 | 2.46 | Delvenne lit, Quintrell SI |
-| R3 | parent fixed effects | -0.60 | 0.21 | 1.44 | 0.96 | -0.79 | 0.07 | -0.53 | 1.43 | none |
-| Golden | fills with no desk execution in the share in the next minute | 0.08 | 0.92 | 2.18 | 3.01 | 0.96 | 1.89 | 0.23 | 2.23 | Ardenwick mid, Delvenne lit, Thursgate mid, Quintrell SI |
-
-The median of every venue's moves is 0.00 on the half-tick mid grid. The standing family (no desk execution in the next minute; none in the minute before or after; the regression on the desk's following volume; the fills outside each order's opening 90 seconds, with and without a following execution) names the golden set and prints the golden's whole basis points for every venue (0, 1, 2, 3, 1, 2, 0, 2). The world's true moves are 0.10, 0.90, 2.20, 3.00, 1.00, 2.00, 0.10 and 2.20 (R3a).
-
-## Closure table
-
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | the fills the platform's 2027 orders would receive at each venue, read from the desk's 2026 continuous-trading executions | filed (policy 4.3, 4.4; plan 4); SF10 |
-| 2 | Unit of account | a fill's adverse move in basis points of the mid at the fill | filed (policy 4.3); SF3 |
-| 3 | Attribution window | each fill's 60 seconds | filed (policy 4.3); SF2 |
-| 4 | As-of dating | executions 2 January to 30 October 2026, pulled 2 November | the export's span; SF9 |
-| 5 | Version basis | the cost provider's export with the brokers' busts applied | filed (policy 4.4); SF6 |
-| 6 | Denominator | fills | filed (policy 4.3); SF4 |
-| 7 | Weighting | none, each fill once | filed; SF4 same call asserted |
-| 8 | Window length | the year to date | filed (policy 4.4) |
-| 9 | Boundary inclusivity | above 1.5, strict; a following execution within 60 seconds inclusive | filed (policy 4.3); SF15; the family's members agree |
-| 10 | Rounding path | each venue's mean, then whole basis points | the prompt; SF11 |
-| 11 | Tie-break | none: no venue within 0.23 bp of the line | asserted |
-| 12 | Maturity and censoring | fills in the last minute before the close have no 60-second mid | SF5 |
-| 13 | Order of operations | busts and duplicates out, then the lone fills, then means | SF6, SF7 same call |
-| 14 | Row order | sums | n/a |
-| 15 | Duplicate resolution | one row per broker execution ID | SF7 same call asserted |
-| 16 | Identity normalisation | Thursgate's two codes one book; the consolidating line's two codes one share | SF8, SF13 |
-| 17 | Netting against gross | none on the call's rows | n/a |
-| 18 | Dimensional units | pence for every mid; Pemberwick's pounds unused on the call's path | the export is in pence throughout |
-| 19 | Code and status semantics | the session flag; the brokers' bust rows | SF5, SF6 |
-| 20 | Integerisation | whole basis points per venue | SF11 |
-| 21 | Clause scope | policy 4.3 for a client flow's list; 4.4's evidence | filed |
-| 22 | Forward window contents | the platform's 2027 orders, whole, one execution each, small against the market | filed (plan 4); SF12 same call |
-
-## Literal reader
-
-Executing the prompt, the policy's sections 4.3 and 4.4 and the dealing plan word for word gives, for each venue, the average 60-second adverse move of the fills the platform's orders would receive there, kept off above 1.5 basis points, read from the desk's 2026 executions with busts out. The platform has no 2026 fills at the desk, so a literal reader must decide which of the desk's fills stand for orders sent whole and filled in one execution; the fork table leaves no reading under which the every-fill averages are the golden, and the standing family names one set at one set of whole basis points.
-
-## Oracles
-
-- The desk's 2026 single orders (DMA, routed to the lit books and the internalisers only): on Wexcombe, Ardenwick lit, Delvenne lit, Brindock SI and Quintrell SI they agree with the golden (0.11, 0.89, 2.23, 0.06, 2.46; the same five decisions), and they hold no midpoint-book fill, so they confirm the method where they reach and are silent on the venues the call turns on.
-- No control ties only under the golden; no certified or published venue figure ships.
-
-## Ask sheet
-
-The asks read files the call never opens (`checks.py` SEP rows): the platform's client order book, Gresmere's contract notes, the securities master, the corporate actions and the trading calendar. Each is a measure of the flow the venue list will carry (the platform's market orders at each dealing point and its monthly net buying through Gresmere), which the venue test does not turn on.
-
-**Ask A. The mean size of the platform's 2026 dealt orders as 2027 market orders, by dealing point, per cent of average daily volume to three decimals (3 figures).** Golden: 09:30 0.169, 12:00 0.119, 14:30 0.112. Each client order Gresmere dealt in 2026 by trade date (any note dated 1 January to 30 October, every part it was dealt in summed) goes whole to the point its placing time gives under the plan's 15-minute cut-offs; buys and sells in a share net. The trade date is pinned in the prompt for both asks (the judge's round 1 FIX_NOW: the notes file is cut by settlement date, and settlement months give other Ask B figures and keeping the December 2025 trades moves 12:00 to 0.118). Primary (silent, D2 a label stored before a silent switch): the platform re-keyed every order in the consolidating line to the new line's code after 18 May but kept each order's shares as placed, so the line's orders before the consolidation carry old shares under a code that joins the master's current ADV, and nothing sends a reader to the corporate actions; the old shares divide by ten (undivided: 0.205, 0.156, 0.138). Hazards: placed_at is UTC with no marker (read as London time: 0.172, 0.115, 0.109); Gresmere took orders to ten minutes before a point in 2026, so its trade times put the orders placed 10 to 15 minutes ahead at the earlier point (0.169, 0.117, 0.112); value orders carry no shares until dealt; cancelled notes, the end-of-June second issues and the split deals.
-
-**Ask B. The value of shares clients bought through Gresmere less the value they sold, each trade month January to October 2026, £ million to two decimals (10 figures).** Golden: 4.72, 4.40, 5.05, 3.71, 4.31, 3.13, 4.65, 4.23, 3.18, 3.87. Primary (silent, D3 a per-row convention that passes the identity check): the notes' consideration carries stamp duty on the old system's purchases and the client's net amount (charges added on a purchase, taken off a sale) on the new system's notes from 1 July, so only shares times price gives the value before charges (the column summed: 4.83, 4.51, 5.16, 3.82, 4.42, 3.25, 4.83, 4.39, 3.36, 4.05). Hazards: the new system's second issue of every end-of-June trade (kept: June 3.51); cancelled notes and their reissues (kept: every month moves); trades of 30 and 31 December 2025 in a file cut by settlement date; split deals, two genuine notes for one order.
-
-**Separation.** Zero device rows reach the call: the re-keyed orders, the unmarked clock, the notes' conventions, the second issues and the split deals sit in the platform's order book and Gresmere's notes, which the call never reads (asserted), and no ask figure is a desk execution.
-
-**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness, exact and near duplicates, unmatched joins, the placing clock read from its January and July hour profiles and converted from UTC, cancelled rows out) and executed every filed rule the asks point at (the plan's cut-offs, weekends and bank holidays from the calendar, netting by share and point, the notes' shares for value orders):
-
-| Ask row | What the cracker does | Against the golden | Cracker |
-|---|---|---|---|
-| A, mean size, three dealing points | joins the order book's code to the master's ADV (no unmatched join), so the consolidating line's old shares stay undivided | every point high (0.205, 0.156, 0.138 against 0.169, 0.119, 0.112) | miss |
-| B, net bought, ten months | sums the notes' consideration by trade month, purchases less sales | every month off (4.83 against 4.72 in January) | miss |
-
-**Mirror sheet.** The response on R0 (Delvenne lit and Quintrell SI) reads the asks as the cracker does (they consume nothing the call's construction produces), so its ask rows miss the same way.
-
-Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker).
-
-Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
-
-Measured by: generator/cracker.py on the cut pack.
-
-## Build record
-
-- Generator: `common`, `world` (120 shares with their mids, the desk's 2,800 algorithmic parent orders sliced into child fills, each child's own impact on the share's path and each fill's counterparty move on its own markout, and 2,100 single DMA orders), `wealth` (the platform's 26,000 accounts placing orders through 2026, Gresmere dealing them at its 2026 points and cut-offs), `records` (the cost provider's export, the two brokers' reports, the OMS, the venue register, the master, the corporate actions, the calendar, the client order book, Gresmere's notes across its July migration, the auction statistics), `docs`, `calc`, `deliver`, `checks`, `verify` (independent), `cracker`, `metadata`, `postprocess`, `build`. Seed 2711102.
-- Pack: 15 files (CSV, JSON, PDF, XLSX); the cost provider's export 172,960 rows, the client order book 106,299, Gresmere's notes 104,523, Pemberwick 90,015, Ashlowe 82,846, the auction statistics 25,320, the OMS 4,900. Distractors (`metadata.json`): the Wexcombe closing auction statistics and the 2025 venue report.
-- Free gates (2026-10-27): checks 71 of 71, verify 34 figures with none differing, two byte-identical builds, figures_check 29 of 29, precut exit 0, the container audit clean on the pack and the goldens, the cracker 0 of 13, `guard.py heart` WARN (question form, answered at the draw) and `surface` clean.
-- `leak.py` REVIEW, ruled here: the figure 1.5 in order_execution_policy_2025.pdf is the test's filed line, the one the prompt sends every reader to; the call's words in the policy and the router configuration are the venue names of Annex A and the router's venue lists, with no adverse move stated or ranked; the 2025 venue report names five venues beside 2025 volume and order shares and passive and aggressive splits, the declared distractor, which ranks on volume and not on the test; the calendar runs to 31 January 2027 because the plan's dealing points from 4 January need its holidays (a forward record, H16). After the round 1 fixes the stump-vocabulary sweep also lists record, second and provider in the policy: they are its evidence clause (4.4, the executions "as the transaction cost provider records them") and its 60-second horizon, and the policy says nothing of the desk's following trades. All harmless.
-- Leak reader (2026-10-27, on target.zip 93bbb64c): no file announces the decisive step, none ranks the venues on the test and none exists only to help; it read policy 4.3 literally as the fills the platform's orders would receive, not the desk's whole fill population, and classed the deciding step as an analytical choice; the five REVIEW lines harmless. Its realism note on the master held: 120 names from one syllable template (ten beginning Wel-), four of them real places (Norbury, Welwick, Ulcombe, Welbury), tickers such as JOKE and DARK, and a name change carrying one name. The names and tickers now come from a screened table with the universe's random stream consumed as before (every price, volume and fill unchanged), asserted by an H21 row on every distinctive word and a uniqueness row, and the 3 August name change carries the former and the new name.
-- Determinism judge round 1 (2026-10-27, on 93bbb64c, `determinism_check_report.md`): DETERMINISTIC, FIX_NOW (optional). Every graded figure reproduced, and the call held across every population the thread tried (no desk execution in the minute before as well, gaps of 30 to 300 seconds, value weights, each month, broker, side and time of day); Gate G statistical_rigor and analytical_non_defect with no surface read, Gate H domain, layers and decisive step analytical. Fixed in one pass: the trade date pinned in the prompt for both asks and the golden's Ask A population read by Gresmere's trade date (the sizes unchanged at three decimals); the market-order counts, unasked and moved by two at 14:30 by the 31 December half day, taken off the goldens and the write-up; step 2 saying busted executions count among the following trades (69,118 lone fills, 69,237 without them, no venue figure moving, SF14); step 4 naming the twin rule. Recorded, not built for: the last fill of each order alone puts Delvenne Midpoint at 1.62 on 211 fills (standard error 0.39), discarding the 93 per cent of lone fills inside orders, while the last two fills of each order and the lone fills that are not an order's last both name the golden four (`checks.py` RECORD rows).
-- Leak reader round 2 (2026-10-27, on target.zip d6135883, the prompt carrying the trade-date pin): no file announces the decisive step, ranks the venues or exists only to help; policy 4.3 read literally as the platform's flow, its construction from the desk's fills left to the analyst; the deciding step an analytical choice; both asks left nothing material open; the five REVIEW lines harmless. Its two realism tells were fixed in the generator: the calendar marked Friday 1 January 2027 open (now New Year's Day, closed), and the dealing plan's cut-off table printed after section 5 (now under section 2's dealing points). Neither file enters a graded computation on a 2027 date or by its layout.
-- Determinism judge round 2 (2026-10-27, on d6135883, `determinism_check_report_pass2.md`): DETERMINISTIC, APPROVE, stump power strong. Every graded figure reproduced; every window variant (same-order only, any desk fill, 30 to 300 seconds either side, share weights) keeps the same four off; the trade-date pin closed the asks, every order-level, part-level and first or last date reading giving the same three decimals; Gate G method selection, analytical_non_defect, no surface read; Gate H domain, layers and decisive step analytical. Its residuals: the order book's unmarked UTC clock, pinned by Gresmere's cut-off boundaries and the clock change in the placing hours (Ask A's silent device, left as built), and the last fill of each order alone (recorded above).
-- Leak reader round 3 (2026-10-27, on 7718f1c7, the shipped pack): no decisive-step sentence, no ranking or helping file, the deciding step an analytical choice, the five REVIEW lines harmless, and the calendar, holidays, early closes and dates consistent across files.
-
-## Pre-ship check
-
-1. Domain: the call stands on each venue's markout, the average move of the mid against the order in the 60 seconds after a fill, which execution analysis reads as the venue's adverse selection, read for orders that go whole to one venue by leaving the desk's own following trades in the share out of each fill's minute. With wards for venues and early warning scores for mids there is no order whose later fills move the measured quantity the measurer's way, so nothing is left to separate.
-2. Two layers: Layer 1 (the cost provider's duplicate deliveries, both brokers' busts as reversal rows, Pemberwick's pounds, London time and monthly sheets, Thursgate's segment code changing on 1 June, auction and last-minute fills without a 60-second mid, the 18 May consolidation; in the ask files the order book's re-keyed codes, its unmarked UTC clock, Gresmere's July migration with its second issues, cancelled notes and reissues, and split deals) is neutral on the call, each item asserted (SF6 to SF8, SF13, SF14); Layer 2 is the lone-fill read, asserted to move the default path to the golden on the clean truth (R3a).
-3. No banned stump decides: nothing is planted (no memo, report or draft states or ranks a venue's adverse move; the 2025 venue report is a declared distractor with volume shares only); every field read correctly still leaves the every-fill averages naming two venues; and no filed rule names the fills, since policy 4.3 and 4.4 fix the move, the horizon, the line and the evidence, and the dealing plan says only that the platform's orders go whole to one venue and fill in one execution.
-4. The analyst test on the built pack: every 2026 fill averaged keeps off Delvenne lit (1.67) and Quintrell SI (1.73) and passes Ardenwick mid (0.48) and Thursgate mid (-0.44); on the lone fills the two midpoint books meet 3.01 and 1.89.
-5. The asks: the cracker keeps 0 of 13 ask figures, every one passing through a silent device in files the call never reads (`checks.py` SEP rows).
 
 ## Architecture 4 record (spent 2026-10-26)
 
@@ -228,3 +246,13 @@ A 38-hospital nonprofit health system's 2027 Family Outreach Program (statistica
 
 - An additive adverse move on one shared mid path (each fill's counterparty move added to the path every later fill reads), dropped at stage 3 on 2026-10-27: each fill's move piled into its neighbours' minutes, so the desk's own following trades read against it rather than for it, the every-fill average rose above the lone-fill read instead of below, and the following-volume regression parted from the lone-fill family; the generator carries each fill's counterparty move on that fill's own markout and only the desk's own impact on the shared path.
 - The first ask layer (market-order counts at each dealing point, mean sizes by point and quarter, the value bought and the value sold through Gresmere each month, 35 figures), dropped at stage 3 on 2026-10-27: the cracker kept 15 of 35, the counts (no device touches how many orders net at a point), the third and fourth quarters' sizes (the re-keying touched no order after 18 May) and the old system's sales (stamp duty falls on purchases only); the asks became the sizes by point and the monthly net, every figure of which passes through a device (cracker 0 of 13).
+- Architecture 5 (Fenmarsh Wealth's 2027 venue list from each venue's adverse move in the minute after a fill), re-rooted on 2026-11-01 at the Batch 3 queue reset after shipping on 2026-10-27 with no portal result; the venue-list world is closed for this slot.
+- Draw candidate (b), small-area estimation of a regional library system's branch reading-programme participation from a thin member survey, dropped at the draw on 2026-11-01: the decisive step would be borrowing strength across branches, the field's named shrinkage at the top of the ladder (stumping 1.1b) and a grouping choice the data either separate or leave forked (1.1c).
+- Draw candidate (c), a transit agency's on-board survey with trips as clusters, dropped at the draw on 2026-11-01: the step that moves a route over its line is the clustered variance, so the call would hang on a filed confidence convention, a knob once filed (determinism-check section 1).
+- Draw candidate (d), a ferry operator's passenger survey reweighted for nonresponse, dropped at the draw on 2026-11-01: a nonresponse model of who was reached is architecture 2's driver, a lineage repeat.
+- Draw candidate (e), an aerial waterfowl count corrected for sightability with a double-observer file, dropped at the draw on 2026-11-01: the double-observer correction is the field's named method, and the observer file would ship only for it (readability test 7).
+- Interview counts per hectare ranking the golden lakes exactly (the Shock screen), found on the first tuned world on 2026-11-01: every lake's main access took 55 to 75 per cent of its parties, so the interviews tracked effort; main-access shares now run 0.38 to 0.95 (the busy lakes have campground, day-use and resort accesses) and clerks work early and late shifts, and the golden list is not an interval of any of ten statistics.
+- An ask on the survey charter's cost (block hours at the Beaver and Cessna 185 rates, positioning, the smoke-day split blocks), dropped on 2026-11-01 before any data was cut: every figure executes the charter terms, a filed rule the cracker keeps; the flight log ships as a distractor.
+- The two loops agreeing as the plain route's back-test, dropped on 2026-11-02 at the first checks run: the loops disagree at the general lakes (the morning ramp-up; Tessaly's afternoon mean is three times its morning's), so the back-test is the pooled-profile correction leaving the list unchanged.
+- Weekly raceway samples of 2.4 to 3.6 kg (about ten fish each), dropped on 2026-11-02: fish per kilogram from samples that small spread the latest, interpolated and nearest-sample conventions past a 100-fish bin at six lakes; samples are 18 to 26 kg and the summer ration slow, and every lake sits at least 21 fish inside its bin under all three.
+- The plain expansion with pooled anglers per boat as a ladder rung, dropped on 2026-11-02: it sits on the line at Inverkeld (499), under the 1.15 rung margin; it stays a priced cheap route.

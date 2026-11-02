@@ -24,8 +24,9 @@ Net cost per 30-day supply, fiscal 2026:
 3. Read the five rebate_remittance statements and assigned every current quarter and prior period line to its quarter of service and plan account, leaving out the lines for fiscal 2025 service.
 4. For each manufacturer, fitted its fiscal 2026 remittances per account and quarter of service on the 30-day supplies of every product it supplies in the same account and quarter (least squares; the fit is exact to the cent), giving each product's rebate per 30-day supply and its fiscal 2026 rebates.
 5. Divided each product's ingredient cost less its rebates by its 30-day supplies, giving the net costs in block 2.
-6. Counted fiscal 2026 brand claims (compound claims out) by quarter of service and by the pharmacy's network on the date of service per Exhibit C, a claim carrying the retail dispensing fee as retail (the three hospital outpatient pharmacies that pharmacy_network_202610.txt lists as specialty were retail until 1 May 2026), priced them at Exhibit C's rates and set them against every remittance line for that quarter's service.Matched each claim before 1 January 2026 to member_roster_20261009.csv through the subscriber's legacy_cardholder_id and the member's birth date and gender, and counted the distinct members with a paid claim in each class under each account.
-7. Preferred the product with the lowest net cost per 30-day supply in each class, per the policy.
+6. Counted fiscal 2026 brand claims (compound claims out) by quarter of service and by the pharmacy's network on the date of service per Exhibit C, a claim carrying the retail dispensing fee as retail (the three hospital outpatient pharmacies that pharmacy_network_202610.txt lists as specialty were retail until 1 May 2026), priced them at Exhibit C's rates and set them against every remittance line for that quarter's service.
+7. Matched each claim before 1 January 2026 to member_roster_20261009.csv through the subscriber's legacy_cardholder_id and the member's birth date and gender, and counted the distinct members with a paid claim (reversed claims out) in each class under each account.
+8. Preferred the product with the lowest net cost per 30-day supply in each class, per the policy.
 
 ## 4. Deliverable Answers
 

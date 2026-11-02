@@ -49,7 +49,7 @@ FQT_DRAW_DAYS = 4            # the team re-collects at outlets visited in the wi
 # shelf price has changed since the last visit, which carries the regions' differences
 ERRORS = {
     "CR01": (0.0024, 0.0016, 0.0235),
-    "CR02": (0.0031, 0.0019, 0.1938),
+    "CR02": (0.0031, 0.0019, 0.1900),
     "CR03": (0.0022, 0.0015, 0.0647),
     "CR04": (0.0026, 0.0017, 0.0691),
     "CR05": (0.0034, 0.0021, 0.5378),

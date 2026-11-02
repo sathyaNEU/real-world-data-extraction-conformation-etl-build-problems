@@ -250,7 +250,7 @@ class Pack:
         rows.sort(key=lambda x: (x[4], x[0]))
         self.visit_rows = rows
         write_csv(self.path("tallis_visit_log_2026-07_2026-09.csv"),
-                  ["visit_ref", "collector", "outlet_no", "area", "started", "finished", "prices_entered", "device"], rows)
+                  ["visit_ref", "collector", "outlet_no", "area", "started", "finished", "prices_entered", "handheld_id"], rows)
 
     def schedule(self):
         w = self.w

@@ -71,10 +71,10 @@ def write(task_dir):
         "Counted fiscal 2026 brand claims (compound claims out) by quarter of service and by the pharmacy's network on "
         "the date of service per Exhibit C, a claim carrying the retail dispensing fee as retail (the three hospital "
         "outpatient pharmacies that pharmacy_network_202610.txt lists as specialty were retail until 1 May 2026), "
-        "priced them at Exhibit C's rates and set them against every remittance line for that quarter's service."
+        "priced them at Exhibit C's rates and set them against every remittance line for that quarter's service.",
         "Matched each claim before 1 January 2026 to member_roster_20261009.csv through the subscriber's "
         "legacy_cardholder_id and the member's birth date and gender, and counted the distinct members with a paid "
-        "claim in each class under each account.",
+        "claim (reversed claims out) in each class under each account.",
         "Preferred the product with the lowest net cost per 30-day supply in each class, per the policy.",
     ]
     for i, s in enumerate(steps, 1):
