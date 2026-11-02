@@ -27,7 +27,7 @@ YEAR_FACTOR = {2016: 1.07, 2017: 1.05, 2018: 1.03, 2019: 1.02, 2020: 0.80, 2021:
                2022: 1.0, 2023: 1.0, 2024: 1.0, 2025: 1.0, 2026: 1.0}
 
 # Network size by layout and control (give-way or stop for T, ST, X)
-N_LAYOUT = {"T": 318, "ST": 41, "X": 117, "MR": 38, "RB": 57, "SIG": 34}
+N_LAYOUT = {"T": 960, "ST": 118, "X": 352, "MR": 61, "RB": 88, "SIG": 47}
 
 # The six junctions the 2026 screening lists (designed; their 2021 to 2025 counts are their own records).
 # name, district, layout, control, major road, minor road, major AADT 2026, minor AADT 2026, theta, counts 2021..2025
@@ -41,7 +41,7 @@ CANDIDATES = [
 ]
 
 # Collisions away from junctions and at junction types the record keeps, per year (validated record)
-LINK_COLLISIONS = 2400                    # non-junction injury collisions a year, about
+LINK_COLLISIONS = 2150                    # non-junction injury collisions a year, about
 SEVERITY_SHARE = (0.016, 0.205, 0.779)    # fatal, serious, slight
 
 # 2026 provisional data (the annex asks)

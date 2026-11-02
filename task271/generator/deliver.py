@@ -27,6 +27,12 @@ import postprocess as PP    # noqa: E402
 
 F_TIERS = "stocking_tiers_2027.xlsx"
 F_NOTE = "stocking_board_note_2027.docx"
+# the precision every reading of the counts shares: each high-use lake above BAND_HIGH and each standard lake below
+# BAND_STD angler-hours per hectare under all fifty presence readings (checks.py asserts it); the plain expansion
+# puts its three general lakes above BAND_PLAIN_IN and the four fly-only lakes below BAND_PLAIN_OUT under each of its
+# own readings
+BAND_HIGH, BAND_STD = 550, 480
+BAND_PLAIN_IN, BAND_PLAIN_OUT = 550, 460
 
 
 def r10(x):
@@ -52,6 +58,15 @@ def compute(target):
     name = {c: reg[c]["name"] for c in reg}
     lakes = M["lakes"]
     high = [c for c in stocked if lakes[c]["golden"] >= K.THRESHOLD]
+    fam = A.presence_family(target)
+    nh, ns = {}, {}
+    for k in fam[high[0]]:
+        lo = min(high, key=lambda c: fam[c][k])
+        hi = max((c for c in stocked if c not in high), key=lambda c: fam[c][k])
+        nh[lo] = nh.get(lo, 0) + 1
+        ns[hi] = ns.get(hi, 0) + 1
+    nearest_high = sorted(nh, key=lambda c: (-nh[c], c))
+    nearest_std = sorted(ns, key=lambda c: (-ns[c], c))
     f = {
         "call": {
             "high_use": [name[c] for c in high],
@@ -60,15 +75,17 @@ def compute(target):
             "count_high_use": len(high),
             "count_lakes": len(stocked),
         },
-        "angler_hours_per_ha": {name[c]: r10(lakes[c]["golden"]) for c in stocked},
-        "angler_hours_season": {name[c]: r100(lakes[c]["golden"] * reg[c]["area"]) for c in stocked},
+        "chart_bars_per_ha": {name[c]: r10(lakes[c]["golden"]) for c in stocked},
+        "bands": {"high_use_above": BAND_HIGH, "standard_below": BAND_STD,
+                  "plain_in_above": BAND_PLAIN_IN, "plain_out_below": BAND_PLAIN_OUT},
+        "nearest_high": [name[c] for c in nearest_high],
+        "nearest_standard": [name[c] for c in nearest_std],
         "anglers_per_boat": {name[c]: round(lakes[c]["apb"], 2) for c in stocked},
         "parties_interviewed": {name[c]: lakes[c]["n_parties"] for c in stocked},
         "area_ha": {name[c]: reg[c]["area"] for c in stocked},
         "tier": {name[c]: ("high use" if c in high else "standard") for c in stocked},
         "plain_expansion": {
             "set": [name[c] for c in stocked if lakes[c]["R1"] >= K.THRESHOLD],
-            "per_ha": {name[c]: r10(lakes[c]["R1"]) for c in stocked},
         },
         "pooled_profile_set": [name[c] for c in stocked if lakes[c]["R2"] >= K.THRESHOLD],
         "releases_alive": {name[c]: r100(rel[c]) for c in sorted(rel)},
@@ -86,14 +103,16 @@ def write_tiers(path, M, f):
     ws = wb.active
     ws.title = "Tiers 2027"
     head = ["PPFS code", "Lake", "Regulation", "Area (ha)", "Parties interviewed", "Anglers per boat",
-            "Angler-hours 2026", "Angler-hours per ha", "Tier 2027"]
+            "Angler-hours per ha, 2026", "Tier 2027"]
     ws.append(head)
+    bands = f["bands"]
     for c in sorted(f["call"]["high_use_codes"] + [k for k, v in reg.items() if v["access"] != "walk-in"
                                                     and k not in f["call"]["high_use_codes"]]):
         n = reg[c]["name"]
+        band = ("above %d" % bands["high_use_above"]) if f["tier"][n] == "high use" else ("below %d" % bands["standard_below"])
         ws.append([c, n, reg[c]["reg"], reg[c]["area"], f["parties_interviewed"][n], f["anglers_per_boat"][n],
-                   f["angler_hours_season"][n], f["angler_hours_per_ha"][n], f["tier"][n].capitalize()])
-    widths = [10, 19, 30, 9, 11, 10, 13, 12, 11]
+                   band, f["tier"][n].capitalize()])
+    widths = [10, 19, 30, 9, 11, 10, 14, 11]
     for i, w in enumerate(widths, start=1):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
         cell = ws.cell(row=1, column=i)
@@ -103,16 +122,14 @@ def write_tiers(path, M, f):
     for r in range(2, ws.max_row + 1):
         ws.cell(row=r, column=4).number_format = "0.0"
         ws.cell(row=r, column=6).number_format = "0.00"
-        ws.cell(row=r, column=7).number_format = "#,##0"
-        ws.cell(row=r, column=8).number_format = "#,##0"
-        if ws.cell(row=r, column=9).value == "High use":
-            ws.cell(row=r, column=9).font = Font(bold=True)
+        if ws.cell(row=r, column=8).value == "High use":
+            ws.cell(row=r, column=8).font = Font(bold=True)
     ws.freeze_panes = "C2"
     r = ws.max_row + 2
     ws.cell(row=r, column=1, value="High-use line: 500 angler-hours per ha (allocation policy 2.2). Angler-hours: "
-                                   "each flight count over the share of that lake's interviewed angler-hours in the "
-                                   "hour of the count, averaged by survey day and expanded by weekday and weekend day "
-                                   "each month.")
+                                   "each flight count over the share of that lake's interviewed angler-hours at the "
+                                   "time of the count, averaged by survey day and expanded by weekday and weekend day "
+                                   "each month; the bands hold however the count's time is read against the hours.")
     ws.cell(row=r, column=1).font = Font(italic=True, size=9)
 
     ws2 = wb.create_sheet("Releases 2026")
@@ -141,7 +158,7 @@ def write_tiers(path, M, f):
 
 
 def chart_png(f):
-    items = sorted(f["angler_hours_per_ha"].items(), key=lambda kv: -kv[1])
+    items = sorted(f["chart_bars_per_ha"].items(), key=lambda kv: -kv[1])
     names = [n.replace(" Lake", "") for n, _ in items]
     vals = [v for _, v in items]
     cols = ["#2f6b3a" if f["tier"][n] == "high use" else "#a9b8ac" for n, _ in items]

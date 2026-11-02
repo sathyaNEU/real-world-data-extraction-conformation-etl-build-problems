@@ -212,19 +212,20 @@ def call(secs, key):
 
 # ----------------------------------------------------------------- ask A: counters' heavy goods vehicles per day
 def switch_date(P):
-    """The day every counter's channel 5 stops carrying two-axle rigid goods vehicles and starts carrying buses:
-    the largest step in channel 5's share of the day, pooled over the counters."""
-    sh = []
+    """The day the counters' channel 5 stops carrying two-axle rigid goods vehicles and starts carrying buses:
+    on weekdays channel 5 runs at about twice channel 8 under the legacy classes and below it under the native
+    ones; the first weekday from which every later weekday reads native, pooled over the counters."""
+    r = []
     for sid in sorted(P["atc"]):
         a = P["atc"][sid]
-        sh.append(a["cls"][:, 4] / a["q24"])
-    sh = np.nanmean(np.array(sh), axis=0)
-    best, bi = 0.0, None
-    for i in range(14, 351):
-        step = abs(np.nanmean(sh[i - 14:i]) - np.nanmean(sh[i:i + 14]))
-        if step > best:
-            best, bi = step, i
-    return DAYS[bi]
+        r.append(a["cls"][:, 4] / a["cls"][:, 7])
+    r = np.nanmedian(np.array(r), axis=0)
+    wk = [i for i, d in enumerate(DAYS) if d.weekday() < 5]
+    native = {i: r[i] < 1.0 for i in wk}
+    for k, i in enumerate(wk):
+        if all(native[j] for j in wk[k:]) and not native[wk[k - 1]]:
+            return DAYS[i]
+    raise RuntimeError("no switch found")
 
 
 def hgv_per_day(P, how, sw=None):
@@ -302,7 +303,7 @@ def approach_flows(P, how):
         arms = {}
         for d in dets:
             x = P["detectors"][d]
-            arms.setdefault((x["approach"], x["heading"]), []).append(d)
+            arms.setdefault((norm(x["approach"]).title(), x["heading"]), []).append(d)
         for (road, head), ds in sorted(arms.items()):
             series = np.zeros(365)
             for d in ds:
@@ -315,7 +316,7 @@ def approach_flows(P, how):
                 series = series + v
             if how == "post":
                 series[:DIDX[sw]] = np.nan
-            out[(name, "%s %s" % (road, head))] = float(np.nanmean(series))
+            out[(name, "%s %s" % (road, head))] = float(np.nansum(series))
     return out
 
 

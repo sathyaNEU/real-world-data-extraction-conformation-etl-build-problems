@@ -181,10 +181,12 @@ def main():
                 evening[key] = evening.get(key, np.zeros(8)) + vals[34:42] * 2
     # PQ: hourly averages per serial
     pq = {}
+    hourmax = {}
     with open(f("QES_PQ_hourly_V")) as fh:
         rd = csv.DictReader(fh)
         for r in rd:
             pq.setdefault(r["meter_serial"], {}).setdefault(r["element"], []).append((r["interval_start_utc"], float(r["v_avg"])))
+            hourmax[(r["meter_serial"], r["element"], r["interval_start_utc"][:13])] = float(r["v_max"])
     # phase groups: iterative correlation-to-centroid assignment, its own method
     shares = {}
     for rid in sorted(risers):
@@ -234,8 +236,10 @@ def main():
     reads, rtype = {}, {}
     with open(f("QES_register_reads")) as fh:
         for r in csv.DictReader(fh):
+            if not r["read_local"].endswith(" 00:00"):
+                continue                  # a read later in the day is not the month's boundary
             reads[(r["meter_serial"], r["register"], r["read_local"][:10])] = float(r["reading_kwh"])
-            rtype[(r["meter_serial"], r["register"], r["read_local"][:10])] = r["read_type"]
+            rtype[(r["meter_serial"], r["register"], r["read_local"][:10])] = r["read_type_desc"]
     exch = {}
     with open(f("QES_meter_exchanges")) as fh:
         for r in csv.DictReader(fh):
@@ -243,7 +247,7 @@ def main():
     use = {}
     for u, x in units.items():
         regs = [g for g in ("E1", "E2") if (x["serial"], g, "2026-08-01") in reads]
-        if any(rtype[(x["serial"], g, "2026-08-01")] != "A" for g in regs):
+        if any(rtype[(x["serial"], g, "2026-08-01")] != "Actual" for g in regs):
             use[u] = allsum[x["nmi"]]
             continue
         t = 0.0
@@ -269,8 +273,13 @@ def main():
             if datetime.strptime(a["Lodged"], "%d/%m/%Y") < datetime(2025, 3, 15):
                 sp = remark[sp]
             else:
-                cand = unit_written(a["Unit or owner address"])
-                if cand and owner.get(sp) != cand and owner.get(remark.get(sp)) == cand:
+                w = a["Unit or owner address"]
+                cand = unit_written(w)
+                mine = set(units[cand]["spaces"]) if cand else set()
+                ml = re.match(r"Lot (\d+), ", w)
+                if ml:
+                    mine = {x.strip() for x in lots[int(ml.group(1))]["Accessory car spaces"].split(",") if x.strip()}
+                if mine and sp not in mine and remark.get(sp) in mine:
                     sp = remark[sp]
         spaces.add(sp)
     reqs = {rid: 0 for rid in risers}
@@ -287,6 +296,16 @@ def main():
     for e in ev_doc["events"]:
         u = s2u.get(e["meter_serial"])
         if not u:
+            continue
+        # the meter's own hourly maxima: a record in hours that stay inside 253 V records no time outside
+        h0 = datetime.strptime(e["start_utc"][:13], "%Y-%m-%dT%H")
+        hs = []
+        while h0 < datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ"):
+            k = (e["meter_serial"], e["element"], h0.strftime("%Y-%m-%dT%H"))
+            if k in hourmax:
+                hs.append(hourmax[k])
+            h0 += timedelta(hours=1)
+        if hs and max(hs) <= 253.0:
             continue
         s = max(datetime.strptime(e["start_utc"], "%Y-%m-%dT%H:%M:%SZ"), lo)
         t = min(datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ"), hi)

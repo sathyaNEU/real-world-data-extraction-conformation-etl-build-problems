@@ -235,10 +235,10 @@ def build_world():
         var = {"sat": rng.normal(0, 0.012), "sun": rng.normal(0, 0.012)}
         q = series(kind, aadf, var, loc_sd=0.018)
         s12 = share12(kind, 0.005)
-        hgv = rng.uniform(0.038, 0.072) if rclass == "A" else rng.uniform(0.026, 0.052)
+        hgv = rng.uniform(0.042, 0.074) if rclass == "A" else rng.uniform(0.036, 0.058)
         W.atcs.append({"name": name, "road_class": rclass, "setting": setting, "kind": kind, "q24": q,
                        "q12": q * s12, "installed": inst, "hgv_share": hgv,
-                       "rigid2_frac": rng.uniform(0.36, 0.46), "bus_share": rng.uniform(0.006, 0.014),
+                       "rigid2_frac": rng.uniform(0.47, 0.56), "bus_share": rng.uniform(0.0025, 0.0065),
                        "lgv_share": rng.uniform(0.125, 0.16), "mc_share": rng.uniform(0.006, 0.011),
                        "trailer_share": rng.uniform(0.008, 0.016)})
     # counted sections (two-way daily flow)

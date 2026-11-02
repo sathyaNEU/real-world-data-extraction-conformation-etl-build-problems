@@ -1,141 +1,141 @@
 {
-  "task": "task301",
-  "architecture": "v3",
-  "drawn": "2026-11-02",
-  "slot_note": "",
-  "domain": "economics-econometrics",
-  "subdomain": "elasticity-welfare-policy-impact-estimation",
-  "client_domain": "economics-econometrics",
-  "niche": "a Spanish regional government choosing which child poverty measure its 2027 budget funds, sized by the children each brings above the poverty line in 2027 by tax-benefit microsimulation on the regional living conditions survey, when one measure widens an existing claimed benefit whose newly entitled families claim gradually and are paid only from the month after approval",
-  "objective": "opportunity-sizing-decision",
-  "shape": "14",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time",
+ "task": "task301",
+ "architecture": "v3",
+ "drawn": "2026-11-02",
+ "slot_note": "",
+ "domain": "economics-econometrics",
+ "subdomain": "elasticity-welfare-policy-impact-estimation",
+ "client_domain": "economics-econometrics",
+ "niche": "a Spanish regional government choosing which child poverty measure its 2027 budget funds, sized by the children each brings above the poverty line in 2027 by tax-benefit microsimulation on the regional living conditions survey, when one measure widens an existing claimed benefit whose newly entitled families claim gradually and are paid only from the month after approval",
+ "objective": "opportunity-sizing-decision",
+ "shape": "14",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "measure A (Prestación Infancia Directa), 3,700 children brought above the poverty line in 2027 (Valmesura 1,100, Las Cuencas 1,400, Sierra del Alba 1,200)",
+ "answer_source": "generator/analysis.py golden() on target/ (rung R3), recomputed by generator/verify.py",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G14",
+  "G13"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "existing_book_actuals",
+ "stump_strategy": "maturity_censoring",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who simulates every measure correctly on the survey (2027 incomes, the line, the equivalence scale, the weights) and credits the claimed measures with the Complemento Familiar's 71.8 per cent coverage for all of 2027 recommends the limit rise, measure C (about 13,200 children); adding the decision lag with claims at the opening, or building claims up at the scheme launch's pace or evenly, still files C, and only letting the families the limit rise newly entitles claim at the pace the April 2024 limit rise's newly entitled families claimed, each paid from the month after approval, shows the automatic payment, measure A, brings the most children above the line in 2027.",
+ "domain_test": "The deciding quantity is the number of children each measure brings above the relative poverty line in 2027, which public economics estimates by tax-benefit microsimulation on household survey microdata, each household's equivalised disposable income with and without the measure's payments as the family would receive them in 2027, grossed by the survey weights; swapped into customers or subscribers there is no equivalence scale, no relative poverty line, no means test and no claim the benefit rules time.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:first-year-claims-of-the-newly-entitled-arrive-at-the-last-widening's-pace",
+ "layer1": [
+  "two survey waves with renamed income components",
+  "province codes in the survey against province names in the benefits ledger",
+  "benefits ledger migrated in 2024 with day-month-year dates before and ISO dates after",
+  "a mid-2025 uprating of the Complemento's monthly amount",
+  "re-awards of the same family under new award numbers",
+  "household members linked to parents by person number, not by household type",
+  "a take-up report published as a PDF table"
+ ],
+ "stakeholder_role": "the head of the regional statistics institute's social policy modelling unit, who appraises the cash measures for the regional cabinet",
+ "role_family": "research_desk",
+ "scoring_unit": "units served",
+ "spine": {
+  "file": "ecvv2026_persons.csv",
+  "rows": 26539,
+  "entity": "one person in a household of the regional living conditions survey, 2026 wave (2025 incomes)",
+  "grain": "person",
+  "source": "synthetic"
+ },
+ "forum": "minister_or_cabinet",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "Spain (a fictional autonomous community, the Comunidad de Valmesura, its provinces, institutions and benefits invented)",
+  "currency": "EUR",
+  "org_type": "regional statistics institute's social policy modelling unit appraising cash measures for the regional cabinet",
+  "invented_names": [
+   "Comunidad de Valmesura",
+   "Complemento Familiar"
+  ],
+  "people": [
+   "Guiomar Iñiguez",
+   "Diego Hervia"
+  ]
+ },
+ "deliverables": [
+  "cabinet_note_child_poverty_2027.pdf",
+  "appraisal_annex_2027.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "Widening an existing claimed entitlement is credited in its first year with the settled caseload's claiming rate for the whole year, when the newly entitled claim gradually, at the pace the last widening's newly entitled claimed, and are paid only from the month after each claim is approved, so in its first year it brings far fewer members over the line than a payment made automatically from the first month.",
+ "driver_concrete": "Raising the Complemento Familiar's income limit (measure C) is credited by static microsimulation, and again at the Complemento's settled 71.8 per cent coverage for all of 2027, with more children brought above the line than any other measure, and still leads when claims are built up at the scheme launch's pace, when the families the April 2024 limit rise newly entitled claimed at about half the launch's first-year pace and the Complemento pays only from the month after approval, so C's 2027 payments reach few newly entitled families for enough months to lift them and the automatic payment through the regional tax agency (measure A) brings the most children above the line in 2027.",
+ "stump": "A competent solver simulates every measure on the 2026 survey, credits the income-limit rise with the Complemento's 71.8 per cent coverage for the whole of 2027 and recommends measure C at about 13,200 children, where the golden is measure A at 3,700; the step that lands it there is crediting the newly entitled families with a full year, or with the launch's claiming pace, when the April 2024 limit rise's own claim record shows its newly entitled families claiming at about half the launch's first-year pace and the Complemento pays only from the month after approval.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task118": "task118 v3 prices a harm by time since each unit's exposure began, recovering the real start from a renewal chain in another record; task301 v3 has no start to recover: the families a limit rise newly entitles claim through the measure's first year at the pace the last limit rise's newly entitled families claimed, and only the months each is paid in 2027 count.",
+  "task131": "task131 v2 moves load out of a window and the moved load returns as a surge that sets the target-day maximum; task301 v3 moves nothing between periods: a widened entitlement reaches its newly entitled families only as they claim through its first year, so its 2027 effect is a fraction of the settled one.",
+  "task169": "task169 v1 carries a cell's own growth with an outside condition held fixed; task301 v3 carries no growth: the deciding quantity is when in 2027 the families a limit rise newly entitles would claim, read from the cohort the 2024 limit rise entitled.",
+  "task183": "task183 forecasts events from each part's own failure history; task301 v3 has no per-unit history to carry: the newly entitled families have never claimed, and their first-year claiming is read from the cohort the last limit rise entitled.",
+  "task130": "task130 v5 reads a judge's leniency at the number of earlier visits each judge makes to each unit; task301 v3 has no judge, mark or visit count: the decisive quantity is the claiming pace of a newly entitled cohort in a measure's first year.",
+  "task230": "task230 v3 carries a classification bias to a late channel processed under a looser rule; task301 v3 classifies nothing: a claimed widening's first-year payments reach newly entitled families only after each claims and is approved, at the pace the last widening's cohort claimed.",
+  "task446": "task446 v3 carries each kind of flag's conversion, traced back to the component that raised it; task301 v3 has no flags or components: the pool is the families a limit rise newly entitles, and their claims build up through the first year."
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "driver": "A loss read at site level averages a deposit that falls off with distance from its source over the many units far from it, so no site in the record looks affected; the candidate's units all sit close to a similar source and its own weather clears the deposit less often, so its expected output is the resource less a loss several times any site-level figure on file, and the leader on the resource falls behind.",
+   "domain": "energy-systems-utilities",
+   "subdomain": "generation-capacity-planning",
+   "gap": [
     "population"
-  ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G14",
-    "G13"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who simulates every measure correctly on the survey (2027 incomes, the line, the equivalence scale, the weights) and credits the income-limit rise with the Complemento Familiar's published settled take-up for all of 2027 recommends the limit rise, measure C, where only letting the families it newly entitles claim at the pace the 2024 limit rise's newly entitled families claimed, each paid from the month after approval, shows the automatic payment, measure A, brings the most children above the line in 2027.",
-  "domain_test": "The deciding quantity is the number of children each measure brings above the relative poverty line in 2027, which public economics estimates by tax-benefit microsimulation on household survey microdata, each household's equivalised disposable income with and without the measure's payments as the family would receive them in 2027, grossed by the survey weights; swapped into customers or subscribers there is no equivalence scale, no relative poverty line, no means test and no claim the benefit rules time.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:first-year-claims-of-the-newly-entitled-arrive-at-the-last-widening's-pace",
-  "layer1": [
-    "two survey waves with renamed income components",
-    "province codes in the survey against province names in the benefits ledger",
-    "benefits ledger migrated in 2024 with day-month-year dates before and ISO dates after",
-    "a mid-2025 uprating of the Complemento's monthly amount",
-    "re-awards of the same family under new award numbers",
-    "household members linked to parents by person number, not by household type",
-    "a take-up report published as a PDF table"
-  ],
-  "stakeholder_role": "the head of the regional statistics institute's social policy modelling unit, who appraises the cash measures for the regional cabinet",
-  "role_family": "research_desk",
-  "scoring_unit": "units served",
-  "spine": {
-    "file": "ecvv2026_personas.csv",
-    "rows": 26000,
-    "entity": "one person in a household of the regional living conditions survey, 2026 wave (2025 incomes)",
-    "grain": "person",
-    "source": "synthetic"
+   ],
+   "pattern": [
+    "D"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "composition_mix",
+   "decision_type": "pick_one_of_n",
+   "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.",
+   "fate": "spent at stage 4 on target.zip 402a51e4 (2026-10-25): scored reader A landed the call (Kingsley Fields 9,700 MWh) by matching Hallam Down's broiler unit to Wexcombe's word for word and reading the gradient in Wexcombe's block SCADA; both readers took all 31 ask figures"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "research_or_statistics_office",
-  "world": {
-    "geography": "Spain (a fictional autonomous community, the Comunidad de Valdemora, its provinces, institutions and benefits invented)",
-    "currency": "EUR",
-    "org_type": "regional statistics institute's social policy modelling unit appraising cash measures for the regional cabinet",
-    "invented_names": [
-      "Comunidad de Valdemora",
-      "Complemento Familiar"
-    ],
-    "people": [
-      "Guiomar Iñiguez",
-      "Diego Hervia"
-    ]
-  },
-  "deliverables": [
-    "nota_consejo_infancia_2027.pdf",
-    "medidas_infancia_2027.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "Widening an existing claimed entitlement is credited in its first year with the settled caseload's claiming rate for the whole year, when the newly entitled claim gradually, at the pace the last widening's newly entitled claimed, and are paid only from the month after each claim is approved, so in its first year it brings far fewer members over the line than a payment made automatically from the first month.",
-  "driver_concrete": "Raising the Complemento Familiar's income limit (measure C) is credited by static microsimulation, and again at the Complemento's settled 81.9 per cent take-up for all of 2027, with more children brought above the line than any other measure, when the families the 2024 limit rise newly entitled claimed over about two years and the Complemento pays only from the month after approval, so C's 2027 payments reach few newly eligible families for enough months to lift them and the automatic payment through the regional tax agency (measure A) brings the most children above the line in 2027.",
-  "stump": "A competent solver simulates every measure on the 2026 survey, credits the income-limit rise with the Complemento's 81.9 per cent take-up for the whole of 2027 and recommends measure C, where the golden is measure A; the step that lands it there is crediting the newly entitled families with a full year of payments, when the 2024 limit rise's own claim record shows newly entitled families claiming over about two years and the Complemento pays only from the month after approval.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task118": "task118 v3 prices a harm by time since each unit's exposure began, recovering the real start from a renewal chain in another record; task301 v3 has no start to recover: the families a limit rise newly entitles claim through the measure's first year at the pace the last limit rise's newly entitled families claimed, and only the months each is paid in 2027 count.",
-    "task131": "task131 v2 moves load out of a window and the moved load returns as a surge that sets the target-day maximum; task301 v3 moves nothing between periods: a widened entitlement reaches its newly entitled families only as they claim through its first year, so its 2027 effect is a fraction of the settled one.",
-    "task169": "task169 v1 carries a cell's own growth with an outside condition held fixed; task301 v3 carries no growth: the deciding quantity is when in 2027 the families a limit rise newly entitles would claim, read from the cohort the 2024 limit rise entitled.",
-    "task183": "task183 forecasts events from each part's own failure history; task301 v3 has no per-unit history to carry: the newly entitled families have never claimed, and their first-year claiming is read from the cohort the last limit rise entitled.",
-    "task130": "task130 v5 reads a judge's leniency at the number of earlier visits each judge makes to each unit; task301 v3 has no judge, mark or visit count: the decisive quantity is the claiming pace of a newly entitled cohort in a measure's first year.",
-    "task230": "task230 v3 carries a classification bias to a late channel processed under a looser rule; task301 v3 classifies nothing: a claimed widening's first-year payments reach newly entitled families only after each claims and is approved, at the pace the last widening's cohort claimed.",
-    "task446": "task446 v3 carries each kind of flag's conversion, traced back to the component that raised it; task301 v3 has no flags or components: the pool is the families a limit rise newly entitles, and their claims build up through the first year."
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "driver": "A loss read at site level averages a deposit that falls off with distance from its source over the many units far from it, so no site in the record looks affected; the candidate's units all sit close to a similar source and its own weather clears the deposit less often, so its expected output is the resource less a loss several times any site-level figure on file, and the leader on the resource falls behind.",
-      "domain": "energy-systems-utilities",
-      "subdomain": "generation-capacity-planning",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "D"
-      ],
-      "gate_g": "forecasting",
-      "stump_strategy": "composition_mix",
-      "decision_type": "pick_one_of_n",
-      "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.",
-      "fate": "spent at stage 4 on target.zip 402a51e4 (2026-10-25): scored reader A landed the call (Kingsley Fields 9,700 MWh) by matching Hallam Down's broiler unit to Wexcombe's word for word and reading the gradient in Wexcombe's block SCADA; both readers took all 31 ask figures"
-    },
-    {
-      "architecture": "v2",
-      "driver": "A yield measured on a list recorded recently and carried to lists recorded long ago files the largest list, when members leave the recorded state between recordings at a rate that differs by population and shows only in each population's own consecutive recordings, so the members still in the state when acted on are each list discounted at its own rate over its own record ages, and the list with the oldest records and the fastest exits shrinks the most.",
-      "domain": "epidemiology-public-health",
-      "subdomain": "health-burden-impact-modeling",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "C"
-      ],
-      "gate_g": "forecasting",
-      "stump_strategy": "population_selection",
-      "decision_type": "pick_one_of_n",
-      "stump": "A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.",
-      "shell": null,
-      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-25 as the quit outreach team's 2027 placement, no portal result; the world is closed)"
-    }
-  ],
-  "lineage_shells": [],
-  "architecture_spent": false,
-  "notes": "Re-rooted 2026-11-01 at the Batch 3 queue reset from architecture 2 (the quit outreach world, closed). Architecture 1 (solar soiling) spent at stage 4.",
-  "registered": "2026-11-02T00:31:24Z",
-  "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "the",
-    "rounding opener": "quits",
-    "deliverable set": "docx+xlsx"
+  {
+   "architecture": "v2",
+   "driver": "A yield measured on a list recorded recently and carried to lists recorded long ago files the largest list, when members leave the recorded state between recordings at a rate that differs by population and shows only in each population's own consecutive recordings, so the members still in the state when acted on are each list discounted at its own rate over its own record ages, and the list with the oldest records and the fastest exits shrinks the most.",
+   "domain": "epidemiology-public-health",
+   "subdomain": "health-burden-impact-modeling",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "C"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "population_selection",
+   "decision_type": "pick_one_of_n",
+   "stump": "A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.",
+   "shell": null,
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-25 as the quit outreach team's 2027 placement, no portal result; the world is closed)"
   }
+ ],
+ "lineage_shells": [],
+ "architecture_spent": false,
+ "notes": "Re-rooted 2026-11-01 at the Batch 3 queue reset from architecture 2 (the quit outreach world, closed). Architecture 1 (solar soiling) spent at stage 4.",
+ "registered": "2026-11-02T00:31:24Z",
+ "shell": {
+  "question form": "which",
+  "second-sentence opener": "the",
+  "rounding opener": "children",
+  "deliverable set": "pdf+xlsx"
+ }
 }

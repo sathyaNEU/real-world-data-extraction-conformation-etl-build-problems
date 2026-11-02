@@ -165,9 +165,12 @@ def main(target):
     high = sorted(c for c in reg if reg[c]["stocked"] and est[c] >= 500)
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     ok("call recomputed on its own path matches figures.json", high == fig["call"]["high_use_codes"], ", ".join(high))
-    ok("angler-hours per ha recomputed (nearest 10) match figures.json",
-       all(int(math.floor(est[c] / 10 + 0.5) * 10) == fig["angler_hours_per_ha"][reg[c]["name"]]
+    ok("the golden chart's bars recompute on this path (the drawing, nearest 10)",
+       all(int(math.floor(est[c] / 10 + 0.5) * 10) == fig["chart_bars_per_ha"][reg[c]["name"]]
            for c in reg if reg[c]["stocked"]))
+    ok("this path keeps every high-use lake above the high band and every standard lake below the standard band",
+       all(est[c] > fig["bands"]["high_use_above"] for c in high) and
+       all(est[c] < fig["bands"]["standard_below"] for c in reg if reg[c]["stocked"] and c not in high))
 
     # ---- releases, own code
     tr = xlsx_rows(os.path.join(target, "quillet_creek_trip_sheets_2026.xlsx"), "Trips 2026")

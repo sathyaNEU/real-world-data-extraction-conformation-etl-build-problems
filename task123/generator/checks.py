@@ -250,11 +250,46 @@ def run(W, target, E):
         return sum(1 for k in gold[key] if bin_of(route_vals[k], u) == bin_of(gold[key][k], u))
 
     for name, fn, key, cap in [("natural interval sum", R.a_intervals_all, "july_mwh", 9), ("one record a day", R.a_dedup, "july_mwh", 2),
-                               ("careful route", R.a_cracker, "july_mwh", 12),
-                               ("rows by written unit", R.b_rows_by_unit, "requests", 9), ("careful route", R.b_cracker, "requests", 12),
-                               ("UTC dates, summed", R.c_sum_utc, "voltage_pct", 3), ("careful route", R.c_cracker, "voltage_pct", 12)]:
+                               ("careful route (the later actual read for an estimate)", R.a_cracker, "july_mwh", 4),
+                               ("estimated reads as given", R.a_estimates_as_given, "july_mwh", 1),
+                               ("general supply alone", R.a_general_only, "july_mwh", 0),
+                               ("rows by written unit", R.b_rows_by_unit, "requests", 9), ("careful route (the date rule)", R.b_cracker, "requests", 6),
+                               ("UTC dates, summed", R.c_sum_utc, "voltage_pct", 3),
+                               ("careful route (spans across elements, every record)", R.c_cracker, "voltage_pct", 3),
+                               ("elements summed", R.c_elements_summed, "voltage_pct", 3)]:
         k = kept(fn(D, U), key)
         ok("ask device: %s keeps at most %d of 18 %s figures" % (name, cap, key), k <= cap, "%d kept" % k)
+    # F3 and F2: the export's own legend fixes the reading; every July figure lands in its bin only under it
+    with open(os.path.join(target, P.READS_NAME)) as f:
+        rrows = list(csv.DictReader(f))
+    leg_r = {(r["register"], r["register_desc"]) for r in rrows}
+    leg_t = {(r["read_type"], r["read_type_desc"]) for r in rrows}
+    ok("F2: the reads export names its registers (E1 general supply, E2 controlled load) on every row",
+       leg_r == {("E1", "General supply"), ("E2", "Controlled load")}, str(sorted(leg_r)))
+    ok("F3: the reads export describes its read types (A actual, E estimated) on every row",
+       leg_t == {("A", "Actual"), ("E", "Estimated")}, str(sorted(leg_t)))
+    est_ser = {r["meter_serial"] for r in rrows if r["read_type"] == "E"}
+    est_ris = {x["riser"] for x in U.values() if x["serial"] in est_ser}
+    given = R.a_estimates_as_given(D, U)
+    moved = [k for k in est_ris if bin_of(given[k], 0.01) != bin_of(E["july_mwh"][k], 0.01)]
+    ok("F3: with the estimated midnight reads taken as given, every riser holding one leaves its bin",
+       len(moved) == len(est_ris) and len(est_ris) >= 17, "%d of %d risers with an estimate" % (len(moved), len(est_ris)))
+    later = {}
+    for r in rrows:
+        if r["read_local"].startswith("2026-08-01") and r["read_local"][11:] != "00:00":
+            later.setdefault(r["meter_serial"], set()).add(r["read_type"])
+    ok("F3: every estimated midnight read has an actual read later on 1 August beside it",
+       all(sv in later for sv in est_ser), "%d estimated meters" % len(est_ser))
+    twins = [sv for sv in later if sv not in est_ser]
+    ok("ask A: some meters with an actual midnight read also carry a later special read (no marker)", len(twins) >= 5, "%d" % len(twins))
+    gen = R.a_general_only(D, U)
+    ok("F2: the general supply register alone moves every riser out of its bin",
+       all(bin_of(gen[k], 0.01) != bin_of(E["july_mwh"][k], 0.01) for k in gen), "")
+    ok("F2: the standard files use as both registers together",
+       "general supply and controlled load together" in " ".join(D["std_text"].split()), "")
+    # F1: the standard files the any-phase reading for three-phase supplies
+    ok("F1: the standard files when a three-phase supply is outside the limits",
+       "A three-phase supply is outside the limits while any one of its phases is outside them" in " ".join(D["std_text"].split()), "")
     # the asks' devices move no call figure: zero device rows in the call's population
     exch_days = [int(e["exchanged_local"][:2]) for e in D["exchanges"]]
     ok("separation: every meter exchange falls before 13 July", max(exch_days) < 13, str(sorted(set(exch_days))))
@@ -265,36 +300,76 @@ def run(W, target, E):
     est_days = sorted({int(d[6:]) for n in D["nem12"] for d, recs in D["nem12"][n].items() if any(r["q"].startswith("E") for r in recs)})
     ok("separation: no substituted day falls in 13 to 17 July", not set(est_days) & set(range(13, 18)), str(est_days))
     late_old = 0
-    su = {}
-    for u, x in U.items():
-        for s_ in x["spaces"]:
-            su[s_] = u
     for a in D["apps"]:
         sp = a["Car space"].strip()
         if sp[:3] in ("B2-", "B3-") and datetime.strptime(a["Lodged"], "%d/%m/%Y") >= datetime(2025, 3, 15):
-            if A.true_space(a, D, su) != sp:
+            if A.true_space(a, D, U) != sp:
                 late_old += 1
     ok("ask B: old car space numbers written after the re-marking are resolved by the applicant's own space", late_old >= 6, "%d" % late_old)
-    amb = 0
+    # F4: every application maps to exactly one car space under the evidence (the re-marking date and the
+    # applicant's own spaces, by the unit written or the lot an owner elsewhere gives)
+    amb, offsite, no_lot = 0, 0, 0
+    lots_known = {int(r["Lot"]) for r in D["lots"]}
     for a in D["apps"]:
-        sp = a["Car space"].strip()
-        u = A.parse_unit(a["Unit or owner address"])
-        if u and sp[:3] in ("B2-", "B3-") and "(for the OC)" not in a["Unit or owner address"]:
-            cands = [c for c in {sp, D["remark"].get(sp)} if c and su.get(c) == u]
-            if len(cands) != 1:
+        cands = A.candidate_spaces(a, D)
+        own = A.applicant_spaces(a, D, U)
+        w = a["Unit or owner address"]
+        if A.parse_unit(w) is None and "(for the OC)" not in w:
+            offsite += 1
+            if A.parse_lot(w) not in lots_known:
+                no_lot += 1
+        if own is None:
+            if len(cands) != 1 or cands[0] in {s_ for x in U.values() for s_ in x["spaces"]}:
                 amb += 1
-    ok("ask B: every resident's B2 or B3 application matches exactly one of the applicant's spaces", amb == 0, "%d ambiguous" % amb)
-    dups = 0
-    seen = {}
+        elif sum(1 for c in cands if c in own) != 1:
+            amb += 1
+    ok("F4: every application maps to exactly one car space under the evidence", amb == 0, "%d ambiguous of %d" % (amb, len(D["apps"])))
+    ok("F4: every owner writing from another address gives a lot the register holds", offsite >= 5 and no_lot == 0, "%d off-site, %d without a lot" % (offsite, no_lot))
+    # ask C: the stored-log re-sends, refereed by the meters' own hourly maxima
+    hv_ex, hv_in = [], []
     for e in D["events"]:
-        k = (e["meter_serial"], e["element"])
-        seen.setdefault(k, []).append((e["start_utc"], e["end_utc"]))
-    for k, lst in seen.items():
-        lst.sort()
-        for (s1, e1), (s2, e2) in zip(lst, lst[1:]):
-            if s2 < e1:
-                dups += 1
-    ok("ask C: re-sent records overlap their originals (one excursion, two records)", dups >= 20, "%d overlapping pairs" % dups)
+        st = datetime.strptime(e["start_utc"], "%Y-%m-%dT%H:%M:%SZ")
+        en = datetime.strptime(e["end_utc"], "%Y-%m-%dT%H:%M:%SZ")
+        h = st.replace(minute=0, second=0)
+        vs = []
+        while h < en:
+            v = D["pq_max"].get((e["meter_serial"], e["element"], h.strftime("%Y-%m-%dT%H:%M:%SZ")))
+            if v is not None:
+                vs.append(v)
+            h = h + (datetime(2026, 1, 1, 1) - datetime(2026, 1, 1, 0))
+        if vs:
+            (hv_ex if A.excursion_record(e, D) else hv_in).append(max(vs))
+    ok("ask C: the hourly maxima separate the records cleanly (every excursion's hour 253.1 V or more, every other record's hours 252.9 V or less)",
+       min(hv_ex) >= 253.1 and max(hv_in) <= 252.9, "excursions from %.1f, others to %.1f" % (min(hv_ex), max(hv_in)))
+    rs_written = [e for e in W["events_written"] if e.get("resent")]
+    rs_in = [e for e in rs_written if datetime(2026, 7, 12) <= e["start"] < datetime(2026, 7, 20)]
+    ok("ask C: the records the hourly maxima refuse are exactly the re-sent ones", len(hv_in) == len(rs_in) >= 100, "%d refused, %d re-sent" % (len(hv_in), len(rs_in)))
+    inside = 0
+    orig = {}
+    for e in W["events_written"]:
+        if not e.get("resent"):
+            orig.setdefault((e["serial"], e["element"]), []).append((e["start"], e["end"]))
+    from datetime import timedelta as _td
+    for c in rs_written:
+        s0, t0 = c["start"] - _td(hours=10), c["end"] - _td(hours=10)
+        if any(a0 <= s0 and t0 <= b0 for a0, b0 in orig.get((c["serial"], c["element"]), [])):
+            inside += 1
+    ok("ask C: each re-sent record, moved back ten hours, lies inside the excursion it repeats", inside == len(rs_written), "%d of %d" % (inside, len(rs_written)))
+    sb = R.c_shifted_back(D, U)
+    ok("ask C: dropping the re-sent records and moving them back ten hours give the same figures", all(abs(sb[k] - E["voltage_pct"][k]) < 1e-12 for k in sb), "")
+    truth_secs = {}
+    for e in W["events_written"]:
+        if e.get("resent"):
+            continue
+        s2, t2 = max(e["start"], A.WEEK_UTC[0]), min(e["end"], A.WEEK_UTC[1])
+        if t2 > s2:
+            truth_secs.setdefault(e["i"], []).append((s2, t2))
+    tot = {}
+    for i, lst in truth_secs.items():
+        u = apts[i]["apt"].replace("-", "")
+        tot[u] = R._union(lst)
+    ok("ask C: the golden time outside equals each apartment's true excursions for every apartment",
+       all(abs(E["secs"].get(u, 0.0) - tot.get(u, 0.0)) < 1e-6 for u in set(tot) | set(E["secs"])), "")
 
     # --------------------------------------------------------------------------------------- input gates
     exts = {n.rsplit(".", 1)[1] for n in files}

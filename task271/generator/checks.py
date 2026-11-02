@@ -15,6 +15,7 @@ import sys
 import zipfile
 
 import numpy as np
+import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
@@ -206,6 +207,60 @@ for nm, s in stats.items():
     check("Shock: golden set is not the top or bottom of %s" % nm,
           set(order[:k]) != set(GOLD) and set(order[-k:]) != set(GOLD), "overlap %d" % len(set(order[:k]) & set(GOLD)))
 
+# ------------------------------------------------------------------------------------------------- shared precision
+print("== the precision every reading shares")
+import deliver as DL  # noqa: E402
+PF = A.presence_family(TARGET)
+check("bands: fifty presence readings (hour bin, nearest hour, two interpolations, centred hour, minute; lake or "
+      "class profile and anglers per boat; day mean or ratio; parties; day type) all land the golden set",
+      all(sorted(c for c in stocked if PF[c][k] >= K.THRESHOLD) == GOLD for k in PF[GOLD[0]]), "%d readings" % len(PF[GOLD[0]]))
+lo_high = min(min(PF[c].values()) for c in GOLD)
+hi_std = max(max(PF[c].values()) for c in stocked if c not in GOLD)
+check("bands: every high-use lake above %d under every reading" % DL.BAND_HIGH, lo_high > DL.BAND_HIGH,
+      "lowest %.0f" % lo_high)
+check("bands: every standard lake below %d under every reading" % DL.BAND_STD, hi_std < DL.BAND_STD,
+      "highest %.0f" % hi_std)
+check("bands: the high band clears the judge's closest high lake (626) and the standard band its closest standard "
+      "lake (462)", DL.BAND_HIGH < 626 and DL.BAND_STD > 462)
+nh, ns = set(), set()
+for k in PF[GOLD[0]]:
+    nh.add(min(GOLD, key=lambda c: PF[c][k]))
+    ns.add(max((c for c in stocked if c not in GOLD), key=lambda c: PF[c][k]))
+check("bands: the lakes the write-up names nearest the line are each reading's nearest",
+      sorted(reg[c]["name"] for c in nh) == sorted(fig["nearest_high"]) and
+      sorted(reg[c]["name"] for c in ns) == sorted(fig["nearest_standard"]))
+crow = {}
+for c in reg:
+    crow.setdefault(reg[c]["reg"], []).extend(by_lake[c])
+vno_ = {v["vno"]: c for c, v in reg.items()}
+blank_rows = [r for r in csv.DictReader(open(os.path.join(TARGET, "survey_flight_counts_2026.csv"))) if r["boats"] == ""]
+plain_lo, plain_hi = {}, {}
+for c in ["PP-14", "PP-18", "PP-24", "PP-05", "PP-09", "PP-16", "PP-20"]:
+    vals = []
+    for apb in (A.anglers_per_boat(by_lake[c]), A.anglers_per_boat(crow[reg[c]["reg"]])):
+        for zero in (False, True):
+            rows = list(cts_by[c])
+            if zero:
+                rows += [dict(date=dt.date.fromisoformat(b["survey_date"]), loop=b["loop"], t=12.0, boats=0, shore=0)
+                         for b in blank_rows if vno_[int(b["lake_no"])] == c]
+            vals.append(A.season_estimate(rows, reg[c]["area"], apb))
+            byday = {}
+            for x in rows:
+                byday.setdefault(x["date"], []).append((x["boats"] * apb + x["shore"]) * K.DAY_HOURS)
+            vals.append(np.mean([np.mean(v) for v in byday.values()]) * len(K.SEASON_DAYS) / reg[c]["area"])
+    plain_lo[c], plain_hi[c] = min(vals), max(vals)
+check("bands: the plain expansion keeps Galloran, Nockell and Farrowdale above %d under each of its readings"
+      % DL.BAND_PLAIN_IN, all(plain_lo[c] > DL.BAND_PLAIN_IN for c in ("PP-14", "PP-18", "PP-24")),
+      "lowest %.0f" % min(plain_lo[c] for c in ("PP-14", "PP-18", "PP-24")))
+check("bands: the plain expansion keeps the four fly-only lakes below %d under each of its readings"
+      % DL.BAND_PLAIN_OUT, all(plain_hi[c] < DL.BAND_PLAIN_OUT for c in ("PP-05", "PP-09", "PP-16", "PP-20")),
+      "highest %.0f" % max(plain_hi[c] for c in ("PP-05", "PP-09", "PP-16", "PP-20")))
+gw = openpyxl.load_workbook(os.path.join(TASK, "golden", "stocking_tiers_2027.xlsx"), read_only=True)
+grows = list(gw["Tiers 2027"].iter_rows(values_only=True))
+bandcol = [r[6] for r in grows[1:] if r and r[0] and str(r[0]).startswith("PP-")]
+check("bands: the golden workbook gives each lake its band, not a figure",
+      all(v in ("above %d" % DL.BAND_HIGH, "below %d" % DL.BAND_STD) for v in bandcol) and len(bandcol) == len(stocked))
+
 # ------------------------------------------------------------------------------------------------- semantic forks
 print("== semantic fork table")
 walk = [c for c in reg if reg[c]["access"] == "walk-in"]
@@ -395,6 +450,40 @@ ask_files = {"quillet_creek_trip_sheets_2026.xlsx", "quillet_creek_drop_tallies_
 check("L1 every ask device sits in files the call never reads (zero device rows in the call's population)",
       not ask_files & {"survey_flight_counts_2026.csv", "creel_interviews_2026.csv", "lake_register_2026.xlsx"})
 
+print("== hygiene across files")
+fl = openpyxl.load_workbook(os.path.join(TARGET, "vellacott_air_flight_log_2026.xlsx"), read_only=True)
+frows = list(fl["Flight log"].iter_rows(values_only=True))
+fh = frows[0]
+air = {}
+for r in frows[1:]:
+    d = dict(zip(fh, r))
+    if not d.get("Flight"):
+        continue
+    base = dt.datetime.fromisoformat(str(d["Date (UTC)"])[:10])
+
+    def at(hhmm, after=None):
+        h, m = [int(x) for x in str(hhmm).split(":")[:2]]
+        t = base + dt.timedelta(hours=h, minutes=m)
+        if after is not None and t < after:
+            t += dt.timedelta(days=1)
+        return t
+    off = at(d["Block off (UTC)"])
+    to = at(d["Take-off (UTC)"], off)
+    ld = at(d["Landing (UTC)"], to)
+    pt_to, pt_ld = to - dt.timedelta(hours=7), ld - dt.timedelta(hours=7)
+    air.setdefault((pt_to.date(), d["Route"][-2:]), []).append((pt_to, pt_ld))
+outside = []
+for x in cts:
+    t = dt.datetime.combine(x["date"], dt.time(0, 0)) + dt.timedelta(hours=x["t"])
+    if not any(a <= t <= b for a, b in air.get((x["date"], x["loop"]), [])):
+        outside.append((x["date"].isoformat(), x["loop"], x["lake"]))
+check("H every count's time over its lake falls inside an airborne leg of that loop in the flight log", not outside,
+      "%d outside" % len(outside))
+check("H the tiers do not read the flight log (a distractor): the call is unchanged by it", fig["call"]["high_use_codes"] == GOLD)
+recs = json.load(open(os.path.join(TARGET, "quillet_creek_drop_tallies_2026.json")))["records"]
+check("H the drop tallies carry the dead at the drop in fish, in the key's own name",
+      all("doaFish" in r and "doa" not in r for r in recs))
+
 # ------------------------------------------------------------------------------------------------- input gates
 print("== input gates")
 files = sorted(os.listdir(TARGET))
@@ -419,7 +508,9 @@ seqs = {}
 for x in cts:
     seqs.setdefault(x["lake"], []).append(x["boats"])
 check("Z no two lakes carry the same count sequence", len({tuple(v) for v in seqs.values()}) == len(seqs))
-check("Z no round season totals in the goldens", not any(v % 1000 == 0 for v in fig["angler_hours_season"].values()))
+check("Z no per-lake angler-hours figure is written at a precision the readings split on (bands only)",
+      "angler_hours_per_ha" not in fig and "angler_hours_season" not in fig and
+      "nearest 10" not in open(os.path.join(TASK, "submission.md")).read())
 starts = [K.parse_hm(r["started"]) for r in raw_iv if r["started"]]
 q = sum(1 for s in starts if abs(s * 4 - round(s * 4)) < 1e-6) / len(starts)
 check("Z start times heaped like recall (most on the quarter hour, not all)", 0.6 < q < 0.98, "%.2f on quarters" % q)

@@ -1,4 +1,167 @@
-# task142: Ironbark Health Alliance, the January to March 2027 Hospital in the Home overflow block (architecture 1)
+# task142 design note
+
+Architecture 2, drawn 2026-11-02 at the Batch 3 queue reset. Architecture 1 (Ironbark Health Alliance's January to March 2027 Hospital in the Home overflow block, healthcare-delivery / utilization-access-demand-forecasting) shipped 2026-10-15 with no portal result and is closed with its world (one architecture per world); task160 holds that pairing in this batch, so the slot moves to Energy Systems & Utilities with a new world, dataset, generator and shell. The old architecture sits in the card's `lineage` and in its record below. The objective is kept: Forecasting & Predictive Modeling.
+
+## Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task142.json`, architecture v2, registered 2026-11-02 at WARN (repeat.gate_g against task301: both file `forecasting`; task301 is another world and another driver, and the Gate G class is the only shared axis), then checked again as the draw's last act after the sibling builders' cards landed.
+2. Pairing: Energy Systems & Utilities / `load-forecasting` / Forecasting & Predictive Modeling. The forecast quantity is each connecting block's design-day circulation flow once it is on the network, a value no file holds: the block's design heat load is filed, the drop its heating installation will make on the network is not, and the call turns on estimating it from the network's own metered connections.
+3. Niche: Stadswarmte Lekstede runs Warmtenet West, a secondary district heating network fed by its OS West station on a weather-compensated supply curve (90 C at a daily mean of 0 C and below, design basis 90/50 C at -10 C). Woonstichting Weidehaven moves fifteen 1962 to 1971 portiek and galerij blocks from their collective gas boiler rooms onto the network in six phases (three in 2027, three in 2028); each boiler room becomes a delivery set and every block keeps its piping and radiators.
+4. Forward facing: the call is the first heating season (2027-28 or 2028-29) in which the blocks connected by its start need more design-day flow than the station has available, or neither; both seasons are open windows.
+5. Shape 06 (schedule under capacity: each finish period). Criteria: the season called (1), 2027-28 holding (1), the drop the blocks are carried at (1), six phase flows (6), two season flows against the available flow (2), the 2028-29 shortfall (1), six phase gas figures (6), the 2024-25 heat by category (2), the change to 2025-26 by category (2), the chart's parts (bars, available-flow line, axis unit, labelled seasons: 4), the file (1) = 27.
+6. Decision type `date_or_period`, answer unit a heating season, question form when. Forum `executive_team` (Stadswarmte's directors decide whether OS West's pumps and exchangers are reinforced before a season); forcing event `season_or_peak`; organisation `utility_or_infrastructure`; role `capacity_planner`.
+7. Deliverable: `os_west_debiet_2027-2029.xlsx`, one workbook with the phases, the seasons against the available flow, a native column chart of the two seasons with the available flow drawn across them, the boiler rooms' gas by phase and the connections' heat by category. A single workbook is the deliverable set least used on file (`voice-check.py` shares: png+xlsx 19, docx+xlsx 15, pdf+xlsx 13 per cent).
+8. People, drawn with `guard.py names --geo Netherlands --locale nl_NL --seed 142`: Elif Meeusen (Stadswarmte network capacity planner, owner of the hydraulic test), Maurits Weijland (Hoogland & Brak heat-load engineer), Stella Gnodde (Weidehaven programme manager aardgasvrij). None appears in the prompt.
+9. Candidates written before the choice, each screened on the survivor anatomy and the WHAT screen:
+   - A (taken): the design-day flow of blocks that keep their radiators, carried at the drop the network's own like installations make, those installations recognisable only as the high-return regime in their heat meters. The field's method (flow at the design drop, or at the network's metered drop) sits at rungs 0 and 1 and the dataset violates its precondition (the newcomers' installations are not the network's average installation).
+   - B: diversion of a depot's demand by its own stock-outs: `guard.py slots` showed task302 carries stock-out diversion; dropped as a clone.
+   - C: an air traffic sector's readback load: ban.pattern G14 (task301) and same_puzzle against task122; dropped.
+   - D: a district heating draw with the population gap as the decisive generator (G6): same_driver_older and shell.template; redrawn here with the objective gap and G1 decisive.
+   - E: a motorway's breakdown hour from loop detectors: the decisive step reduced to a threshold on a speed series (a knob, determinism-check section 1); dropped.
+   - F: a lottery's prize liability from sales by draw: the forecast is a filed ratio times a filed volume (rule application); dropped.
+   - G: a warranty clock on a fleet's failures: task134 v2's mechanism; dropped.
+   - H: transporting a measured rate by a recorded composition: task281's camera mix carried by clinic; dropped as the same driver.
+10. Screens before the draw: `guard.py recent`, `coverage`, `mechanisms --objective forecasting` and `slots` on the mechanism nouns (drop, return temperature, installation regime, design-day flow, like units, mixture) and the setting nouns (district heating, heat network, pump station, housing corporation, gas boiler room): no build on file carries a heat network or a supply-return drop.
+11. Abstraction test against the nearest drivers on the objective: task281 carries a validated rate to sites by a latent device mix recovered from dated placements; this build recovers no composition of the newcomers (they are all one kind) and transports no rate: it estimates a physical parameter of an unmetered unit from the metered units that share its installation, found as a regime in their own readings.
+12. Data-native sentence: Warmtenet West's pre-1985 blocks were connected either on their original radiators or after a renovation that changed their emitters, nothing in the register records which, and on the 36 days at or below 0 C the first kind return at 63.7 to 66.3 C while every other connection returns at 33.8 to 54.7 C; the Weidehaven blocks keep their original radiators, so the drop the network's own data put on them is the high-return regime's 24 K, not the network's 38.8 K or the pre-1985 buildings' 31 to 36 K.
+
+## Survivor anatomy
+
+- Actor: the deciding property is each existing connection's installation regime (original radiators or renovated emitters), and no file has a column for it: the register carries build year, category, object name, wijk, contracted capacity and connection date, the heat meters carry energy, volume and temperatures; the regime exists only as the cluster a connection's cold-day returns fall in, and the converting blocks have no meter at all.
+- Link: the like installations are found by a cross-unit comparison the capacity procedure never asks for: unmetered blocks specified in kilowatts matched to metered connections with the same kind of installation, recognised from their own return regime; no key offers it (build year, wijk, street family, category and connection year each hold both regimes).
+- Reflex: the field's method for a new connection's design-day flow (design heat load over 1.163 times the network's design drop, 90/50 so 40 K, or the network's metered cold-day drop) sits at rungs 0 and 1 and files none through 2028-29.
+- Back-test: the textbook route validates: carrying every existing connection at the network's kW-weighted cold-day drop (38.8 K) reproduces the hydraulic study's committed 953 m3/h exactly, and the network's flow-weighted drop reproduces the station's metered heat over its metered flow on the same days; the pre-1985 average is the textbook refinement and nothing in the pack refutes it.
+- Second use: the heat meter export is read by the default path itself (rungs 1 and 2) and carries the 2025-26 heat of Ask 2; the register carries every rung's build years and Ask 2's categories and meter history; the weather file carries the procedure's window for every rung; the schedule, the rev2 study, the procedure and the hydraulic study carry every rung; the scope carries what the conversion replaces and Ask 1's gas year; delete the decisive step and every file still has its job.
+- Shock: nothing moves; the like installations read as ordinary connections (no surcharge, no status, no complaint, energy per contracted kilowatt inside the network's spread), they sit at the top of a cold-day return sort that no question asks for, and the call's answer (a season) is not an interval of any sort of any shipped column.
+- Pins: procedure CT-03 v3 sections 3.2 to 3.4 file the WHAT (design-day flow is the design heat load over 1.163 times the drop between supply and return the connection's heating installation makes at the connection on days with a daily mean of 0 C or lower; for a connection not yet in service, the drop its installation is expected to make in service; the most recent heat-load study; the season test against the hydraulic study's available flow for the connections connected by 1 October); no filed sentence names a regime, a comparison group, a build year or a return temperature.
+
+## Default path
+
+1. Read procedure CT-03 v3 sections 3.2 to 3.4 and the hydraulic test: OS West has 170 m3/h of design-day flow available for connections from 1 October 2026; the network's design basis is 90/50 C.
+2. Take each block's design heat load from the rev2 heat-load study (the most recent, 3.4): phases 1 to 3 total 4,247 kW, phases 1 to 6 total 5,525 kW.
+3. The blocks have no heat meter, so carry them at the drop the network makes: the design basis (40 K), or better the metered drop of the network's connections on the 36 days at or below 0 C (38.8 K flow-weighted), or, refining to buildings like the blocks, the connections in pre-1985 buildings (31.1 to 35.8 K, kW-weighted to arithmetic).
+4. Design-day flow at 1.163 times that drop: phases 1 to 3 at most 117 m3/h, phases 1 to 6 at most 153 m3/h, against 170 available.
+5. Apply section 3.3 season by season: neither season is short.
+
+Ends on: none: the west station stays inside its available design-day flow through the 2028-29 season
+
+Golden: 2028-29 heating season (phases 1 to 6 need about 200 m3/h against 170, short by about 30; 2027-28 holds at about 150)
+
+## Stump sentence
+
+The default path carries the blocks at the network's 40 K design drop, its metered cold-day drop of 38.8 K or the 31 to 36 K of its pre-1985 buildings and files none: the station stays inside its 170 m3/h through 2028-29; but the blocks keep their original radiators, and the network's own original-radiator connections, recognisable only as the regime whose cold-day returns sit at 64 to 66 C, make about 24 K, which puts the blocks connected by 2028-29 at about 200 m3/h and the station short in that season.
+
+## Three rules
+
+- Task type: energy-systems-utilities / load-forecasting, which serves Forecasting & Predictive Modeling in the taxonomy: the peak hydraulic load a network will carry once committed connections come on, estimated from the network's metered history.
+- Domain test: the deciding quantity is each connecting block's design-day circulation flow, its design heat load over 1.163 kWh per cubic metre per kelvin times the supply-return drop its heating installation makes at design conditions, the flow a district heating planner sizes the station's pumps and exchangers on.
+- Swap: "a hospital's blood bank runs short of fridge space as wards join" keeps a capacity and arrivals but loses what decides it: there is no supply and return temperature, no installation whose drop sets the flow, and no newcomer whose draw is its load over a property its equipment shares with some units already on the carrier.
+- Layer 1: two reading systems (the drive-by system's monthly registers in GJ or MWh until each meter's summer 2025 migration, the AMR feed's daily kWh after), AMR days in UTC against local weather days and gas reads in local time with offsets, meter exchanges under one connection mapped by the register's meter history, AMR communication gaps and temperature-log faults, the weather in tenths of a degree, the corporation's complex codes against the consultant's addresses and the grid operator's EANs, the consultant's concept and rev2 releases overlapping, the grid operator's EAN re-registrations and meter exchanges; each produced by the system named, none placed to be caught.
+- Layer 2: estimation of an unmetered unit's parameter from comparable metered units: the methodological choice is which metered connections stand in for the blocks' retained installations, recognised from the structure of their own readings, rather than the network's design value, its metered average or the units that look similar by build year.
+- Decisive step: recognising that the network's cold-day drops are a mixture of installation regimes no field records, that the blocks' retained radiators belong to the high-return regime, and carrying them at that regime's metered cold-day drop instead of the network's or the pre-1985 buildings'.
+- Not semantics: every field read correctly (UTC days, GJ and MWh, the register's meter history, rev2 over the concept, the window of 0 C and below) still leaves the regime in no column; with the clean truth's regime labels removed the default route files none (checks.py R3b).
+- Not rule application: no filed rule names a regime, a comparison group, build years or return temperatures (R3c); executing CT-03 3.2 to 3.4 with the design drop, the network's metered drop or the pre-1985 drop files none. Enumerated family: design drop, network drop (mean, median, kW-weighted, flow-weighted, residential only), similar buildings (pre-1985, pre-1985 residential, built 1955 to 1975, built 1962 to 1971, each four ways, and a build-year regression), the textbook radiator regime (90/70, 20 K), the like installations (four poolings, two drop routes, five windows, connection or station supply, the whole season): spread none to 2027-28. Standing family once the regime is seen: every like-installation member, 23.7 to 24.2 K at the filed window and route, spread zero on the call (2028-29 in all 23, f3 150.7 to 154.0 and f6 196.0 to 200.3 m3/h against 170); the ruling-out is loud only to a reader who plots cold-day returns (a 9 K gap between 54.7 and 63.7 C).
+- Analyst test: a strong planner who reads CT-03, the hydraulic test, the rev2 study and the meter data correctly and carries the blocks at the design drop, the network's metered cold-day drop or the pre-1985 buildings' drop files none (the station stays inside 170 m3/h through 2028-29), against the golden's 2028-29.
+- Estimand: CT-03 v3 sections 3.2 to 3.4 (procedure_capaciteitstoets_aansluitingen_v3.pdf): the population is the blocks connected by 1 October of each season, the outcome their design-day flow (design heat load in the most recent heat-load study over 1.163 times the drop their installations will make at the connection on days at or below 0 C), the unit m3/h, the comparison the available design-day flow in the station's current hydraulic test.
+- No decoy: nothing is planted: no memo, briefing, draft or stakeholder figure argues a drop; the hydraulic test states the design basis as the network's design, true; the concept study is a declared distractor superseded by rev2 under 3.4; no block of readings is copied or withheld.
+- No certified replay: no published or certified drop or flow for the blocks exists anywhere in the pack; the method is not recovered by reproducing a figure.
+- Lesson: a newcomer's draw on a shared carrier belongs to the equipment behind it; before carrying it at the carrier's design or average value, find the units already on the carrier that share that equipment, recognised from the structure of their own readings, and read the parameter there. No build on file teaches a heat network's drop or an unmetered unit's parameter estimated from a regime in its peers' readings.
+
+## Readability screen
+
+| Rung | What the reader does | Test that could fire | Verdict |
+|---|---|---|---|
+| 0 design basis | carries every block at 90/50, 40 K | the field's reflex; the hydraulic test states the design basis | readable |
+| 1 network metered drop | carries the blocks at the network's flow-weighted cold-day drop, 38.8 K | the empirical planner's reflex; the committed-flow identity validates it | readable |
+| 2 similar buildings | carries the blocks at the pre-1985 connections' drop, 31.1 to 35.8 K | build year is a register column, one filter away | readable |
+| side textbook radiators | carries the blocks at a 90/70 radiator regime, 20 K | a rule of thumb, no data read | readable |
+| 3 like installations (decisive) | reads the regime from the cold-day returns, carries the blocks at the original-radiator connections' drop, about 24 K | no column, no key, no filed sentence names a regime or a comparison group; nothing sorts the like connections together but a sort nobody is asked for | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | design-day flow | design heat load over 1.163 times the drop | another heat capacity (4.19 kJ/kg K, 1.16) | same call | CT-03 3.2 files 1.163; same call |
+| SF2 | days the drop is read on | daily mean of 0 C or lower (TG at or below 0) | at or below -2, -1, +1, +2 | same call | CT-03 3.2; same call (2028-29 in every window) |
+| SF3 | a connection's metered drop | mean of daily supply less return | energy over 1.163 times volume | same call | same call |
+| SF4 | matching meter days to weather days | the same date label (UTC day against local day) | shifted a day | same call | same call |
+| SF5 | the supply side of the drop | the connection's own supply at its meter | the station's supply | same call (24.4 to 24.6 K) | CT-03 3.2 (at the connection); same call |
+| SF6 | pooling the like installations | arithmetic mean of connection drops | median, kW-weighted, flow-weighted | same call | same call |
+| SF7 | design heat load | rev2 study (18 September 2026) | concept study (27 March 2026) | same call | CT-03 3.4 (the most recent study); same call |
+| SF8 | connected by a season | connected before 1 October of the season | connected before the design day | same call | CT-03 3.3; every phase dated May to September |
+| SF9 | adding block loads | at full value | with a simultaneity factor | same call | CT-03 3.3 files full value |
+| SF10 | available flow | the hydraulic test's 170 m3/h | capacity less a metered peak | figures differ | CT-03 3.3 (the current hydraulic test's available flow) |
+| SF11 | like installations | every connection in the high-return regime | the residential ones, any threshold in the 54.7 to 63.7 C gap | same call | same call (one set) |
+| SF12 | comparison and rounding | unrounded flow against 170 | rounded flows | same call | same call |
+| SF13 | the season's whole load | blocks of every earlier phase stay connected | a season's own phases only | moves 2028-29 to none | CT-03 3.3 (the connections to be connected by the start of the season) |
+| SF14 | the gas year | registers at 06:00 local on 1 October 2025 and 2026 | calendar months by UTC | same graded figures | the scope's reporting clause; same figures |
+| SF15 | heat taken in a gas year | register difference between the readings on 1 October | the first AMR day's closing register | same graded figures | same graded figures (asserted) |
+| SF16 | residential and utility | the register's category | object names | same graded figures | the register's category column |
+
+## Ladder
+
+| Rung | Route | Drop (K) | Phases 1-3, 2027-28 (m3/h) | Phases 1-6, 2028-29 (m3/h) | Call |
+|---|---|---|---|---|---|
+| 0 | design basis 90/50 | 40.0 | 91.3 | 118.8 | none |
+| 1 | network metered cold-day drop, flow-weighted | 38.8 | 94.1 | 122.4 | none |
+| 2 | pre-1985 buildings (kW-weighted residential to arithmetic) | 31.1 to 35.8 | 102.1 to 117.4 | 132.8 to 152.7 | none |
+| side | textbook radiator regime 90/70 | 20.0 | 182.6 | 237.5 | 2027-28 |
+| golden | like installations, the high-return regime | 23.7 to 24.2 | 150.7 to 154.0 | 196.0 to 200.3 | 2028-29 |
+
+Available design-day flow 170 m3/h (capacity 1,123 less committed 953). Margins: the golden's 2027-28 flow clears the available flow by 10 per cent or more under every member, its 2028-29 flow exceeds it by 15 per cent or more; rung 2's 2028-29 flow sits 10 per cent or more under it; the textbook regime's 2027-28 flow sits 7 per cent over it. Graded figures under the golden family: phase flows 45, 50, 55, 20, 15 and 10 m3/h (nearest 5), 2027-28 150 and 2028-29 200 (nearest 10), shortfall 30 (nearest 10), the drop about 24 K; every member inside every bin (checks.py G and SF6).
+
+## Closure table
+
+| Axis | Name | Reading here | Move |
+|---|---|---|---|
+| 1 | Population | the blocks connected by 1 October of each season | filed, CT-03 3.3 and the schedule's dates (SF8, SF13) |
+| 2 | Unit of account | the block connection | filed, CT-03 3.2 |
+| 3 | Attribution window | days with a daily mean of 0 C or lower in the 2025-26 meter year | filed, CT-03 3.2; C1 across windows (SF2) |
+| 4 | As-of dating | the hydraulic test of 9 October 2026 and the rev2 study | filed, CT-03 3.3 and 3.4 |
+| 5 | Version basis | rev2 over the concept | filed, CT-03 3.4 (SF7) |
+| 6 | Denominator | the drop of the blocks' installations | filed, CT-03 3.2; estimated from the like installations |
+| 7 | Weighting | arithmetic mean of connection drops | C1 across poolings (SF6) |
+| 8 | Window length | the whole 2025-26 meter year's cold days | C1 (SF2) |
+| 9 | Boundary inclusivity | a daily mean of exactly 0.0 C counts | filed, CT-03 3.2 (or lower) |
+| 10 | Rounding path | unrounded flows against 170, rounded on report | C1 (SF12) |
+| 11 | Tie-break | none needed | C1: no season within 10 per cent of the line |
+| 12 | Maturity and censoring | none: every like connection metered all winter | asserted: no gap on a cold day |
+| 13 | Order of operations | drop first, then each phase's flow, then the cumulative test | C1: flows add |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | an exchange day carries two partial rows under two serials | asks only; zero such rows on a cold day |
+| 16 | Identity normalisation | a meter serial maps to its connection through the register's meter history | C1: one connection per serial at any date |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | kW, m3/h, K, m3 gas, MWh | stated in the prompt and CT-03 |
+| 19 | Code and status semantics | AMR status G (temperatures estimated) | asks only; none on a cold day |
+| 20 | Integerisation | none | not applicable |
+| 21 | Clause scope | 3.2 per connection, 3.3 per season | filed |
+| 22 | Forward window contents | the schedule's phase dates and rev2 loads | filed, CT-03 3.3 and 3.4 |
+
+## Literal reader
+
+Executed word for word, CT-03 3.2 asks for the drop each block's heating installation is expected to make at the connection on days at or below 0 C; the blocks have no meter, so every literal reader must estimate it, and the only shipped evidence of what installations make on such days is the network's own heat meters. The design basis is the network's design, not an installation's expected drop, and the network or pre-1985 average is the drop of other installations, so neither complies with the sentence as written; reading which metered installations are the blocks' kind is the estimate the sentence leaves to the analyst. Every term and convention is a row in the fork table and every row gives the golden or violates a quoted sentence. Every write-up step names the file and clause it executes.
+
+## Oracles
+
+None. No file holds a drop or a flow for the blocks; the hydraulic test's committed flow reconciles under every rung (it is an identity over the existing connections), the station's metered flow equals the connections' metered volumes on every day, and the concept study is superseded by rule. No control ties only under the golden.
+
+## Ask sheet
+
+The asks sit on files the call never reads (the grid operator's gas telemetry and master data, the drive-by reads of 2024-25) and on the heat meters' registers outside the call's cold days. Ask 1: each phase's boiler-room gas from 1 October 2025 to 1 October 2026 (6 figures). Ask 2: the heat the residential and utility connections took in the 2024-25 gas year and the change to 2025-26 (4 figures).
+
+- Pair ceiling: 35.5 (cracker 52.0 on the call with 0 of 10 ask figures, mirror 19.0 with 0 of 10).
+- Mirror leakage: 0.0 per cent of the ask weight (nothing in the asks comes from the call).
+- Measured by: generator/ceiling.py on the cut pack.
+
+| Ask | Primary device | Hazards | Cracker's handling | Cracker |
+|---|---|---|---|---|
+| Ask 1 gas by phase | two boiler rooms re-registered under new EANs at a capacity change in January and February 2026, the schedule carrying the new EAN and the old EAN's reads reachable only through the master data's address; four meters exchanged under one EAN in the grid operator's replacement programme, the closing and opening registers only in the master data | local timestamps with offsets, one resent read | joins the schedule's EAN to the telemetry, de-duplicates, differences each serial's first and last read | miss |
+| Ask 2 heat 2024-25 by category | the summer 2025 migration: the drive-by reads stop at each meter's migration and the rest of the gas year sits in the AMR opening register (generation B keeps its serial, MWh then kWh; generation A takes a refurbished meter whose placement reading is only in the register's meter history) | GJ and MWh by meter generation, connections first read at connection | converts units, differences each meter from the annual read to its last drive-by read | miss |
+| Ask 2 change to 2025-26 by category | the same 2024-25 base under the change | AMR gaps, summer 2026 exchanges | 2025-26 from the registers per serial, less its 2024-25 | miss |
+
+The full includer (old EANs through the master data, the master data's closing and opening registers, the AMR opening register through the meter history) keeps all ten. Zero device rows sit in the call's population: no gas or drive-by row is read by the call, and no gap, exchange or estimated row falls on a day at or below 0 C (checks.py M).
+
+## Architecture 1 record
 
 Private, never ships. A new build (wave 3), numbered from seed FC13. The seed (contract technician visits split across
 four data centres for one quarter) was read at its header and Situation only. Its world is not kept: a data-centre
@@ -9,7 +172,7 @@ requirement above in-house capacity. The pitfall is re-found from how the Hospit
 a nurse visit is one home day of an admitted patient, and the patient stays for as long as the infection's course
 runs.
 
-## Draw
+### Draw
 
 | Axis | Value |
 |---|---|
@@ -83,7 +246,7 @@ stream and month; the capacity return gives each member's in-house visits for th
 Hillcrest have treated bone and joint infections in HITH for years; Northgate and Westmere open the pathway on 1
 October 2026, after the warehouse extract closes on 30 September. The booking is lodged by Friday 6 November 2026.
 
-## Default path
+### Default path
 
 1. Read Schedule 2 (850 visits, lots of 25, the member order, each member topped up to the visits by which its
    90th-percentile requirement for the quarter exceeds its in-house capacity) and the capacity return (each member's
@@ -100,7 +263,7 @@ Ends on: Northgate 100 visits, Riverbend 50, Westmere 50, Kingsdale 25, Hillcres
 Golden: Northgate 300 visits, Riverbend 250, Westmere 225, Kingsdale 75, Hillcrest none (the block runs out at
 Kingsdale; requirements 2,400, 2,150, 1,800, 1,400 and 1,250 to the nearest 50; generator, asserted).
 
-## Stump sentence
+### Stump sentence
 
 A competent solver takes each member's planned January to March 2027 visits as its expected requirement, adds the
 90th-percentile margin of a Poisson count, tops each member up above its in-house capacity in Schedule 2's order in
@@ -110,7 +273,7 @@ they are the home days of admissions whose stays run from a few days to six week
 the admissions' and their stays': built from the plan's admissions by stream and the stays on file, counted inside the
 quarter, Northgate books 300, Riverbend 250, Westmere 225, Kingsdale 75 and Hillcrest none.
 
-## Three rules
+### Three rules
 
 - **Task type:** healthcare-delivery-health-economics, utilization-access-demand-forecasting (serves Forecasting): each
   member's HITH visit requirement for January to March 2027, forecast as a distribution around its operating plan and
@@ -180,7 +343,7 @@ quarter, Northgate books 300, Riverbend 250, Westmere 225, Kingsdale 75 and Hill
   understates it. No build on file teaches the spread of a period total from its generating units (task135 teaches a
   timing lag between priced components, task59 caps new episodes at the window's remaining weeks for a mean).
 
-## Readability screen
+### Readability screen
 
 Six tests per rung (`stumping` 2.1): 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear. A
 rung is readable when any test fires.
@@ -195,7 +358,7 @@ rung is readable when any test fires.
 | R2f the quarter's admissions with their whole stays (the cohort) | yes: clause 2.3 counts the visits on the quarter's days, patients admitted before it included | no | no | no | no | no: a compound over stays | readable |
 | R3 (decisive) the quarter built from the plan's admissions by stream and the stays on file, counted inside 1 January to 31 March 2027, admissions from the autumn included | no: no sentence says the visits come in stays or how the percentile is estimated | no: no column carries a stay-level spread, a percentile or a margin; the episode extract is the members' routine separations file | no: the reflexes (Poisson, the history's spread, a negative binomial) all land elsewhere | no: no closed quarter, past booking or published percentile ships | no: the battery finds nothing, there is nothing wrong in the files | no: a simulation or a compound over thousands of stays, non-linear in the stays | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 Every term of the main ask and every convention the main computation needs, with the golden reading, each
 alternative, the call under it, and the shipped sentence that rules it out (or `same call`). Each id is asserted in
@@ -218,7 +381,7 @@ alternative, the call under it, and the shipped sentence that rules it out (or `
 | SF13 | the stream codes before 1 July 2025 | mapped to the new streams through the crosswalk (infections split by principal diagnosis) | old codes as their own streams, or dropped | same call (asserted: the pooled stays per new stream, built from post-revision episodes only or with the mapped earlier ones, give the same lots; the old heart failure code HF read as a stream of its own, its stays lost, gives the same lots) | C1, asserted |
 | SF14 | the requirement's rounding in the deliverable | the 90th percentile rounded to the nearest 50 visits | to the nearest visit or 25 | graded at 50 only | the prompt's last sentence |
 
-## Ladder
+### Ladder
 
 Every figure from the generator (`calc.rivals`, `calc.family`), asserted by name in `checks.py` and recomputed by
 `verify.py` for the golden and the default path. Lots of 25; the block 850 visits (34 lots); order Northgate,
@@ -257,7 +420,7 @@ Riverbend, Westmere, Kingsdale, Hillcrest. Margins are the 90th percentile less 
 - **Worth.** Graded quantities are lots (counts) and requirements to the nearest 50 (each 21 to 24 visits inside its
   50-visit bin), never intermediates (`stumping` Part 3).
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -284,7 +447,7 @@ Riverbend, Westmere, Kingsdale, Hillcrest. Margins are the 90th percentile less 
 | 21 | Clause scope | Schedule 2 governs the January to March 2027 block only | filed in its title |
 | 22 | Forward window contents | admissions from 1 October 2026 to 31 March 2027 under the plan | the plan's months July 2026 to June 2027 cover the span; admissions before 1 October 2026 add no visit inside the quarter (longest stay on file 92 days); starting from 1 September gives the same lots (asserted) |
 
-## Literal reader
+### Literal reader
 
 Executing the prompt and Schedule 2 word for word (the requirement is the visits on the quarter's days, its expected
 value the plan, the 90th percentile of that requirement, the excess over the capacity return's figure rounded up to
@@ -292,7 +455,7 @@ lots of 25, members in the listed order until 850 are used) fixes every term but
 reading of every term converges on the golden or violates a quoted clause (SF1 to SF14), and the easy answer comes
 from an easy estimator on the same literal estimand (a Poisson margin), never from another reading.
 
-## Oracles
+### Oracles
 
 - The history (census and episodes): no closed quarter is graded, reproduced or certified; the history describes past
   quarters under another mix and confirms no estimator.
@@ -302,7 +465,7 @@ from an easy estimator on the same literal estimand (a Poisson margin), never fr
   about January to March 2027 and no percentile.
 - Nothing ties only under the golden: there is no published booking, percentile or reconciliation for the quarter.
 
-## Ask sheet
+### Ask sheet
 
 Two asks and a chart, all on July to September 2026 records the call never reads (Bellbird's visit export, the
 Alliance referral portal, Bellbird's intake line log, Schedules 3 and 4, Bellbird's client accounts, the Alliance
@@ -414,7 +577,7 @@ call with no device handled average 48.1)
 Mirror leakage: 34 per cent of ask weight at most with one device handled (12 of 35 figures); 6 per cent with none; no
 ask whole on one device
 
-## Pins
+### Pins
 
 | Pin | Authority | What it fixes | Never says |
 |---|---|---|---|
@@ -424,14 +587,14 @@ ask whole on one device
 | The pathway | 2 | that Northgate and Westmere follow the Alliance bone and joint protocol from 1 October 2026 | any stay figure or admission count beyond the plan |
 | The dictionary, plans' and capacity return's notes | 4 | fields, UTC on Bellbird's platform, the two status vintages, the calendar's pay weeks (Monday to Sunday, the first commencing 29 June 2026), the plan's visits as every visit on the month's days, the return's in-house visits | anything about selection, the outage or a re-post |
 
-## Prompt
+### Prompt
 
 `prompt.txt`, gated by `voice-check.py` (in `precut.py`): the call as a question with the 850-visit block, the
 workbook with each member's requirement, the two July to September 2026 tables, the chart, and the rounding once at the
 close. The call sentence is unchanged since stage 2; at stage 4 the chart sentence became "the number of Bellbird's
 payable visits by pay week and member" (the leak reader's week and count readings). 838 characters.
 
-## Leak review
+### Leak review
 
 `leak.py task142 --asof 2026-11-03` on the built pack: REVIEW, no LEAK. Each REVIEW line answered:
 
@@ -465,7 +628,7 @@ read` in `leak_check_report.md`, every REVIEW line harmless. Its readings, ruled
   the H04 plan rows are kept, since their October to March months feed the call and no change to them is
   figure-neutral.
 
-## Build record
+### Build record
 
 - Generator `task142/generator/` (common, world, model, records, docs, postprocess, calc, deliver, checks, verify,
   metadata, build): `python3 task142/generator/build.py` builds the world, the pack, the goldens, `metadata.json` and
@@ -503,7 +666,7 @@ read` in `leak_check_report.md`, every REVIEW line harmless. Its readings, ruled
   prompt's chart sentence came back clean (`leak_check_report.md`, round 2). `target.zip` is the stage 4 final
   rebuild's cut, byte-identical on the second build (sha256 c0616cc42ee80a2d); no file moved after the re-checks.
 
-## Pre-ship check
+### Pre-ship check
 
 Written at stage 5 against the built pack (the stage 4 fix pass in); the reader and judge lines are stage 4's, the
 targeted re-read's and the re-judge's.
@@ -583,3 +746,26 @@ targeted re-read's and the re-judge's.
 - 2026-10-15, stage 4: naturalising the H04 plan rows (a ramp in the pathway's first months) was dropped: October to
   March admissions feed the call's expected visits and percentile, so no change there is figure-neutral.
 
+- 2026-11-01, re-root: architecture 1 (the Ironbark Health Alliance's Hospital in the Home overflow block) shipped
+  2026-10-15 with no portal result and is closed with its world at the Batch 3 queue reset; task160 holds the
+  healthcare-delivery / utilization-access-demand-forecasting pairing in this batch, so the slot moved domain.
+- 2026-11-02, draw: diversion of a depot's demand by its own stock-outs dropped as a clone of task302's stock-out
+  diversion (`guard.py slots`).
+- 2026-11-02, draw: an air traffic sector's readback load dropped on ban.pattern G14 (task301) and same_puzzle against
+  task122.
+- 2026-11-02, draw: a motorway's breakdown hour from loop detectors dropped: the decisive step reduced to a threshold
+  on a speed series, a knob with no method behind it.
+- 2026-11-02, draw: a lottery's prize liability dropped: the forecast was a filed ratio times a filed volume.
+- 2026-11-02, draw: a fleet's warranty clock dropped as task134 v2's mechanism; a measured rate transported by a
+  recorded composition dropped as task281's driver.
+- 2026-11-02, draw: the district heating world with the population gap and G6 decisive hit same_driver_older and
+  shell.template; redrawn with the objective gap and G1 decisive, the shell redrawn (when, build, xlsx).
+- 2026-11-02, design: an 80 C network with the like installations at about 22 K was dropped before data: the textbook
+  radiator regime (90/70, 20 K) landed the same season as the golden, a second cheap route to the call; at 90 C the
+  original radiators make about 24 K and the textbook regime files 2027-28.
+- 2026-11-02, design: reading the design-day drop by extrapolating each connection's drop to -10 C was dropped as the
+  window: it would leave the deciding configuration out of sample; CT-03 3.2 files the cold days actually metered.
+- 2026-11-02, design: a summer heat-loss ask (station heat less the connections' heat by month) dropped: interpolating
+  the AMR gaps lands within a whole per cent, so the device bit only a reader who summed blanks.
+- 2026-11-02, design: a shared boiler room split between phases dropped from Ask 1: the split needs an allocation key
+  the records do not force (dwellings, floor area or load), a fork, not a device.

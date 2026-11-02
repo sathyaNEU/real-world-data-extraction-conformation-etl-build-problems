@@ -134,6 +134,28 @@ class World:
                     break
                 j["theta"] = float(rng.gamma(1 / P.K_TRUE, P.K_TRUE))
             j["n"] = n
+        self._steady_years()
+
+    def _steady_years(self):
+        """The network's give-way junction collisions held near the window's year-on-year level: a few collisions
+        moved between years within background junctions so 2022 to 2025 run level and 2021 at its lower level."""
+        rng = self.rng
+        ref = [j for j in self.reference() if not j["cand"]]
+        win = P.WINDOW
+        f = {y: P.YEAR_FACTOR[y] for y in win}
+        for _ in range(4000):
+            tot = {y: sum(j["n"][y] for j in self.reference()) for y in win}
+            all_ = sum(tot.values())
+            target = {y: all_ * f[y] / sum(f.values()) for y in win}
+            gap = {y: tot[y] - target[y] for y in win}
+            hi = max(win, key=lambda y: gap[y])
+            lo = min(win, key=lambda y: gap[y])
+            if gap[hi] < 1.5 and gap[lo] > -1.5:
+                break
+            pool = [j for j in ref if j["n"][hi] > 0]
+            j = pool[int(rng.integers(0, len(pool)))]
+            j["n"][hi] -= 1
+            j["n"][lo] += 1
 
     def reference(self):
         """Give-way or stop-controlled T, staggered and crossroads junctions: the screening's population."""

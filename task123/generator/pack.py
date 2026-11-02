@@ -135,8 +135,9 @@ def pq_hourly(W, path):
             seg = x[s:s + 192 * 12].astype(float).reshape(192, 12)
             for h in range(192):
                 blk = seg[h]
-                vmin = blk.min() - abs(rng.normal(0, 0.25))
-                vmax = blk.max() + abs(rng.normal(0, 0.25))
+                # the hour's extremes are the meter's one-second values, beyond its five-minute averages
+                vmin = blk.min() - 0.15 - abs(rng.normal(0, 0.25))
+                vmax = blk.max() + 0.15 + abs(rng.normal(0, 0.25))
                 samples = 60 if rng.random() > 0.004 else int(rng.integers(52, 60))
                 rows.append((a["serial"], el, (t0 + timedelta(hours=h)).strftime("%Y-%m-%dT%H:%M:%SZ"),
                              "%.1f" % blk.mean(), "%.1f" % vmin, "%.1f" % vmax, samples))

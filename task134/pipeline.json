@@ -17,19 +17,19 @@
  },
  "leak": {
   "leak_py": "REVIEW ruled (2026-11-02, --asof 2027-01-18), no LEAK; each REVIEW line answered in the design note ## Leak review",
-  "reader": "round 1 clean (main session); to be re-read since the licence and the sampling workbook changed"
+  "reader": "rounds 1 and 2 clean (main session); round 2's repair changed data only, no document text"
  },
  "duplicate_check": {
   "heart": "PASS 2026-11-02 (NOTE same_puzzle_older, differentiated against task154 on the card)",
   "nearest": "surface: task133 (back to back), task166 and task154 promoted for adjudication; surface 0.08 to 0.10; the task154 collision is differentiated on the card"
  },
  "judge": {
-  "verdict": "round 1 on target.zip 456d4b72: DETERMINISTIC, FIX_NOW (small); G and H pass, F moderate",
-  "disposition": "fixed in the generator 2026-11-02 on target.zip 890c87d8: the 2026 area summary is the licence 5.5 mean printed to three decimals and every placement keeps its bin under the full-precision recomputation (the campaigns' dry-solids levels tuned, no load re-read, every total 415 t or more inside its bin); licence 5.3 and 5.4 name UK civil time; step 3 names the cell membership and component 1 is stated to 0.1 m; the basis docx template parts removed and every Office file's zip entries dated by its own last-saved stamp; main call and six parts unchanged",
+  "verdict": "round 1 on 456d4b72: DETERMINISTIC, FIX_NOW (small), fixed on 890c87d8; round 2 on 890c87d8: DETERMINISTIC, Gate F strong, G and H pass, two residuals",
+  "disposition": "round 2 residuals fixed in the generator 2026-11-02 on target.zip dc8dc926: one infill coefficient across the parts and berths within a natural spread under one per cent (0.1129 to 0.1142), each part's natural bed set so its golden sits about 8,500 m3 inside its bin, the berths on the basin's bed and Berth 2's relaxation reading the same coefficient fitted either way; every part lands in its bin under 18 model forms, the tightest 5,769 m3 inside (asserted per part and per model); the revision export carries what it revises, its basis, issuer and issue date; the call 1,750,000 and the six part bins unchanged; R3 moves from 2,300,000 to 2,200,000 (not graded)",
   "report": ""
  },
  "returned": [],
- "resume": "stage 4 re-check: the main session re-judges once and re-runs the leak reader on target.zip 890c87d8 (the licence and the sampling workbook changed); any finding fixed in the generator, every gate re-run, then ship",
+ "resume": "stage 4 final judge pass on target.zip dc8dc926 by the main session; any finding fixed in the generator and every gate re-run, then ship (ledger row, card current, SHIPPED commit)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -161,8 +161,8 @@
  ],
  "gates": {
   "date": "2026-11-02",
-  "generator_checks": "102 assertions, 0 failed",
-  "verify": "65 checks, 0 failed (own readers; every graded figure, the golden workbook, and the placements under the 5.5 recomputation)",
+  "generator_checks": "212 assertions, 0 failed",
+  "verify": "65 checks, 0 failed",
   "byte_identical_builds": "two builds in fresh interpreters byte-identical (13 target files, 2 goldens, target.zip)",
   "figures_check": "PASS, 72 figures, 0 absent",
   "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
@@ -170,7 +170,8 @@
   "leak_py": "REVIEW, no LEAK (--asof 2027-01-18)",
   "guard_heart": "PASS",
   "guard_surface": "3 pairs promoted for adjudication (task133 back to back, task166, task154)",
+  "card_check": "PASS",
   "ceiling": "pair 36.4, mirror 14.3, full includer 49.1 (generator/ceiling.py on the cut pack)",
-  "target_zip_sha256": "890c87d8875f38741fb455285e3284d3c42921d0379b838c36e6ecb3fa571610"
+  "target_zip_sha256": "dc8dc92670998b1eb1a1bf18565086ae754cbb7f319c33ab4a5c5abba907ab2b"
  }
 }
