@@ -143,9 +143,9 @@ def planning_note_docx(path):
         "series assessment to me by 22 May, dated today, 4 May, so that its review period is the twelve weeks to Sunday 3 May.",
         "Series team overtime is held in the seasonal allocation. Patrol and community response staffing for the "
         "summer is set separately and does not wait on the assessment.",
-        "The Police Commission's June report compares each district's figures for the offences OPS-41 covers with the "
-        "same weeks of last year, 10 February to 4 May 2025, so please include that comparison on the current district "
-        "layout. Carvale Transit's security operations manager has also asked for the fare-gate entries and the number "
+        "The Police Commission's June report sets each district's figures beside the offences OPS-41 covers that took "
+        "place in the same weeks of last year, 10 February to 4 May 2025, so please include that comparison on the "
+        "current district layout. Carvale Transit's security operations manager has also asked for the fare-gate entries and the number "
         "of scheduled Eastline train calls at each Eastline station over the same twelve weeks, for the platform "
         "staffing review the two agencies are running.",
         "Records will pull the occurrence extract on Monday 11 May, once the late reports for the period are in, and "

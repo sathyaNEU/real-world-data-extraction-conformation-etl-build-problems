@@ -260,7 +260,7 @@ def write_codes_xlsx(path):
     for r in rows:
         ws2.append(r)
     ws.append([])
-    ws.append(["Code list revision 14, 30 March 2026 (Fairgrounds station and the Eastline renumbering)"])
+    ws.append(["Code list revision 14, 30 March 2026"])
     wb.properties.creator = "Carvale Transit Fare Systems"
     wb.properties.lastModifiedBy = "Carvale Transit Fare Systems"
     wb.properties.created = dt.datetime(2026, 3, 30, 16, 2, 40)

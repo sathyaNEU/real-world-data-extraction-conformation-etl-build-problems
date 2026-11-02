@@ -67,9 +67,12 @@ def write(target, w, r):
         hrs = W.hours_of(d)
         t = W.local(d, r.uniform(hrs[0], hrs[-1] + 1))
         i = int(r.integers(len(w.upc)))
-        reason = r.choice(["Return - no receipt", "Damaged", "Rain Check", "Price Match", "Bottle deposit"],
+        reason = r.choice(["Return - no receipt", "Damaged", "Rain Check", "Price Match", "Coupon"],
                           p=[0.34, 0.22, 0.12, 0.2, 0.12])
-        amt = round(float(w.reg[i]) * (1.0 if reason != "Price Match" else 0.15), 2)
+        if reason == "Coupon":
+            amt = [0.50, 0.75, 1.00, 1.50, 2.00][i % 5]
+        else:
+            amt = round(float(w.reg[i]) * {"Price Match": 0.15, "Rain Check": 0.25}.get(reason, 1.0), 2)
         desk.append([STORE[no][2], t, "%d-%02d-%d" % (no, int(r.integers(1, 9)), int(r.integers(4000, 9999))),
                      ean13(w.upc[i]), w.desc[i], reason, amt])
     ov = [x for x in ov if "2026-10-01T00:00:00Z" <= x[3] < "2027-01-01T00:00:00Z"]   # the export's UTC window
@@ -200,9 +203,11 @@ def write(target, w, r):
             for _ in range(int(r.poisson(2.2))):
                 i = int(r.integers(len(w.upc)))
                 p = float(w.reg[i])
-                rows.append([no, d.isoformat(), w.upc[i], DEPT_CODE[w.dept[i]], money(round(p * 0.5, 2)),
-                             r.choice(["BEST BEFORE", "DAMAGED PKG", "DISCONTINUED", "SEASONAL"],
-                                      p=[0.45, 0.25, 0.2, 0.1]), int(r.integers(1, 7))])
+                why = r.choice(["BEST BEFORE", "DAMAGED PKG", "DISCONTINUED", "SEASONAL"], p=[0.45, 0.25, 0.2, 0.1])
+                if why == "BEST BEFORE" and w.dept[i] in ("HOUSEHOLD", "HEALTH BEAUTY"):
+                    why = "DISCONTINUED"     # no best-before date on paper towels or shampoo
+                rows.append([no, d.isoformat(), w.upc[i], DEPT_CODE[w.dept[i]], money(round(p * 0.5, 2)), why,
+                             int(r.integers(1, 7))])
     write_csv(os.path.join(target, F["markdowns"]),
               ["store_no", "printed_date", "upc", "dept", "clearance_price", "reason", "tags"], rows)
     n["markdowns"] = len(rows)

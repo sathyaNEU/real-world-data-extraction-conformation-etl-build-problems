@@ -297,11 +297,11 @@ class Events:
             e["tpo"] = None
             if e["group"] is not None or e["station"] is None:
                 continue
-            p_tpo = 0.9 if e["loc"] == "LRT TRAIN" else 0.56
+            p_tpo = 0.92 if e["loc"] == "LRT TRAIN" else 0.68
             if r.random() >= p_tpo:
                 continue
             u = r.random()
-            kind = "REF_NUM" if u < 0.6 else ("REF_BLANK" if u < 0.76 else "NOT_REF")
+            kind = "REF_NUM" if u < 0.44 else ("REF_BLANK" if u < 0.6 else "NOT_REF")
             lag = int(r.integers(2, 16))
             e["tpo"] = {"kind": kind, "t_logged": e["t_event"] + dt.timedelta(minutes=lag)}
             if kind == "NOT_REF":

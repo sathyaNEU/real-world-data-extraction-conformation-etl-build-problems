@@ -44,7 +44,7 @@ def is_trunk(road, easting, boundary=None):
 class World:
     def __init__(self, seed=P.SEED):
         self.rng = np.random.default_rng(seed)            # the network
-        self.rc = np.random.default_rng(seed + 1)         # the junctions' collision counts
+        self.rc = np.random.default_rng(getattr(P, "COUNT_DRAW", seed + 1))   # the junctions' collision counts
         self.rr = np.random.default_rng(seed + 2)         # the records' details
         self.rp = np.random.default_rng(seed + 3)         # the 2026 provisional data
         self.junctions = []

@@ -171,9 +171,14 @@ class Pack:
         ("layout-split junction-year (crossroads; T and staggered)", dict(groups=[("X",), ("T", "ST")])),
         ("layout-split junction-year (each layout)", dict(groups=[("X",), ("T",), ("ST",)])),
         ("layout-split five-year totals (crossroads; T and staggered)", dict(unit="total", groups=[("X",), ("T", "ST")])),
+        ("layout-split five-year totals (each layout)", dict(unit="total", groups=[("X",), ("T",), ("ST",)])),
+        ("five-year site totals on 2026 traffic", dict(unit="total", cov26=True)),
+        ("junction-year, stop-control term", dict(ctrl=True)),
+        ("five-year site totals, stop-control term", dict(unit="total", ctrl=True)),
+        ("junction-year, at the 2021 to 2025 traffic", dict(window=True)),
     ]
 
-    def _fit_group(self, layouts, unit, stx, yeardum, kmode):
+    def _fit_group(self, layouts, unit, stx, yeardum, kmode, ctrl=False, cov26=False):
         rows = []
         for n in self.reference():
             v = self.nodes[n]
@@ -182,11 +187,14 @@ class Pack:
             if unit == "year":
                 for y in WINDOW:
                     rows.append(dict(layout=v["layout"], maj=v["maj"][y], mnr=v["mnr"][y], year=y, n=self.counts[(n, y)],
-                                     off=0.0))
+                                     off=0.0, stop=v["control"] == "STOP"))
             else:
-                rows.append(dict(layout=v["layout"], maj=float(np.mean([v["maj"][y] for y in WINDOW])),
-                                 mnr=float(np.mean([v["mnr"][y] for y in WINDOW])), year=None,
-                                 n=sum(self.counts[(n, y)] for y in WINDOW), off=float(np.log(len(WINDOW)))))
+                if cov26:
+                    maj, mnr = v["maj"][PRESENT], v["mnr"][PRESENT]
+                else:
+                    maj, mnr = float(np.mean([v["maj"][y] for y in WINDOW])), float(np.mean([v["mnr"][y] for y in WINDOW]))
+                rows.append(dict(layout=v["layout"], maj=maj, mnr=mnr, year=None, n=sum(self.counts[(n, y)] for y in WINDOW),
+                                 off=float(np.log(len(WINDOW))), stop=v["control"] == "STOP"))
         present = sorted(set(r["layout"] for r in rows))
         terms = []
         if "X" in present and len(present) > 1:
@@ -199,6 +207,8 @@ class Pack:
             cols = [np.ones(len(rr))] + [np.array([r["layout"] == t for r in rr], dtype=float) for t in terms]
             cols += [np.log([r["maj"] for r in rr]), np.log([r["mnr"] for r in rr])]
             cols += [np.array([r["year"] == y for r in rr], dtype=float) for y in years[1:]]
+            if ctrl:
+                cols.append(np.array([r["stop"] for r in rr], dtype=float))
             return np.column_stack(cols)
         X = X_(rows)
         y = np.array([r["n"] for r in rows], dtype=float)
@@ -209,16 +219,19 @@ class Pack:
             a = max(float((((y - fit) ** 2 - fit)).sum() / (fit ** 2).sum()), 1e-3)
         return dict(b=b, a=a, X_=X_, years=years, terms=terms)
 
-    def family_benefits(self, unit="year", stx=True, yeardum=True, kmode="mle", level="mean", groups=None):
+    def family_benefits(self, unit="year", stx=True, yeardum=True, kmode="mle", level="mean", groups=None, ctrl=False,
+                        cov26=False, window=False):
         groups = groups or [("T", "ST", "X")]
         out = {}
         for g in groups:
-            m = self._fit_group(g, unit, stx, yeardum, kmode)
+            m = self._fit_group(g, unit, stx, yeardum, kmode, ctrl, cov26)
 
             def mu(v, traffic_year, level_year, mean_traffic=False):
                 maj = float(np.mean([v["maj"][y] for y in WINDOW])) if mean_traffic else v["maj"][traffic_year]
                 mnr = float(np.mean([v["mnr"][y] for y in WINDOW])) if mean_traffic else v["mnr"][traffic_year]
-                r = dict(layout=v["layout"], maj=maj, mnr=mnr, year=level_year)
+                if mean_traffic and cov26:
+                    maj, mnr = v["maj"][PRESENT], v["mnr"][PRESENT]
+                r = dict(layout=v["layout"], maj=maj, mnr=mnr, year=level_year, stop=v["control"] == "STOP")
                 return float(np.exp(m["X_"]([r]) @ m["b"])[0])
             for node in self.listed:
                 v = self.nodes[node]
@@ -232,10 +245,13 @@ class Pack:
                 else:
                     musum = len(WINDOW) * mu(v, None, None, mean_traffic=True)
                     mu26 = mu(v, PRESENT, None)
+                if window:
+                    mu26 = musum / len(WINDOW)
                 obs = sum(self.counts[(node, y)] for y in WINDOW)
                 w = 1.0 / (1.0 + m["a"] * musum)
                 eb = (w * musum + (1 - w) * obs) / musum * mu26
-                out[v["name"]] = dict(benefit=eb * (1 - self.cmf[v["layout"]]), expected=eb, k=m["a"], w=w)
+                out[v["name"]] = dict(benefit=eb * (1 - self.cmf[v["layout"]]), expected=eb, k=m["a"], w=w,
+                                      model=mu26 * (1 - self.cmf[v["layout"]]))
         return out
 
     def family(self):

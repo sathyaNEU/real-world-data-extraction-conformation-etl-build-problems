@@ -250,7 +250,11 @@ def main():
     # ---- asks ---------------------------------------------------------------------------------------------------------
     crackA = A.ask_a(rms, tpo, codes, polys, stref, fare, date_aware=False)
     dA = sum(1 for d in A.DISTRICTS for k in range(3) if crackA[d][k] != res["ask_a"][d][k])
-    check("A1: 2025 transit codes read on the current code list miss ten or more of the thirty cells", dA >= 10, dA)
+    check("A1: 2025 transit codes read on the current code list miss eight or more of the thirty cells", dA >= 8, dA)
+    rep_win = reported_grid(rms, tpo, codes, polys, stref, fare)
+    dW = sum(1 for d in A.DISTRICTS for k in range(3) if rep_win[d][k] != res["ask_a"][d][k])
+    check("A1b: windowing 2025 by reported date moves %d cells; the note's 'took place in the same weeks' files the occurrence date" % dW,
+          "took place in the same weeks of last year, 10 February to 4 May 2025" in " ".join(note.split()) and dW <= 4, dW)
     recA = A.ask_a(rms, tpo, codes, polys, stref, fare, redistrict=False)
     dR = sum(1 for d in A.DISTRICTS for k in range(3) if recA[d][k] != res["ask_a"][d][k])
     check("A2: 2025 offences left in their recorded (2025 layout) districts miss six or more cells", dR >= 6, dR)
@@ -413,6 +417,21 @@ def by_reported(rms, tpo, codes, fare):
     offs = A.phone_offences(rms, tpo, codes, wide, fare_codes=fare)
     rep = {r["occurrence_no"]: A.parse_local(r["reported_local"]).date() for r in rms}
     return [o for o in offs if A.W26[0] <= (rep[o["id"]] if o["src"] == "RMS" else o["t"].date()) <= A.W26[1]]
+
+
+def reported_grid(rms, tpo, codes, polys, stref, fare):
+    """The 2025 grid with RMS offences placed by reported date (occurrence times kept for the cross-system match)."""
+    wide = (A.W25[0] - dt.timedelta(days=3), A.W25[1] + dt.timedelta(days=3))
+    offs = A.phone_offences(rms, tpo, codes, wide, fare_codes=fare)
+    rep = {r["occurrence_no"]: A.parse_local(r["reported_local"]).date() for r in rms}
+    grid = {d: [0, 0, 0] for d in A.DISTRICTS}
+    for o in offs:
+        day = rep[o["id"]] if o["src"] == "RMS" else o["t"].date()
+        dist = A.district_at(polys, o["x"], o["y"]) if o["src"] == "RMS" else stref.get(o["station"])
+        for k, (a, b) in enumerate(A.PERIODS25):
+            if a <= day <= b and dist in grid:
+                grid[dist][k] += 1
+    return grid
 
 
 def one_direction(offs, gt, cache):

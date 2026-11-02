@@ -153,7 +153,10 @@ def design(rows, base, slope=True, times=TIMES, baseline_cov=True):
 
 def fit(rows, base, slope=True, baseline_cov=True):
     Y, X, Z, G, subjects = design(rows, base, slope=slope, baseline_cov=baseline_cov)
-    out = lme_reml(Y, X, Z, G)
+    Zs = Z.copy()
+    if slope:
+        Zs[:, 1] = Zs[:, 1] / 1000.0          # random slope per 1,000 ng/mL (a reparametrisation of G only)
+    out = lme_reml(Y, X, Zs, G)
     out.update(n_obs=len(Y), n_subj=len(subjects), p=X.shape[1])
     return out
 

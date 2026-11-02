@@ -44,7 +44,8 @@ Nova Scotia grocery chain's price integrity monitoring.
   names the printer fleet log the decisive window is read from.
 - **Forum, event, organisation:** operations_desk (the Director of Price Integrity issues the list under PI-2 s.4.2),
   period_close (the quarter's close), retailer_or_ecommerce. Shell: question form whether, second sentence opened by
-  the deliverable ("I want ..."), rounding sentence opened by the figures ("Accuracies are ..."), deliverables
+  the deliverable ("I want ..."), rounding sentence opened by the verb ("Show accuracies as percentages ...": the first
+  wording, "Accuracies are per cents ...", shared a construction with task470, task233 and task301), deliverables
   xlsx+svg; architecture 1's shell was what, xlsx+png.
 - **Deliverables:** `price_watch_2027q1.xlsx` (the Price Watch call for every store with each Price Watch store's
   accuracy, the Scanner Code payouts by store, the flyer misses by week) and `price_accuracy_q4_2026.svg` (a dot chart
@@ -302,10 +303,10 @@ receipt number typed three ways, so the same payout sits in both systems with no
 takes the line back to the shelf price leaves the rest of the Code remedy to the desk on the same receipt line, which is
 a second payout. The repair needs a judgment the battery does not make (which records are one event): a desk entry on
 a receipt line the register also paid is a duplicate only when it repeats that payout's amount. Hazards: the override
-export in UTC with 30 September evening payouts inside its window (D8; a UTC-date reading moves 7 stores), the payout
+export in UTC with 30 September evening payouts inside its window (D8; a UTC-date reading moves 6 stores), the payout
 as the original less the override price in cents (D3; the override price read as the payout moves 11), reason codes
-(PM, MD, DM, MGR beside SC). Stops: adding both logs (misses 9 stores), dropping every desk entry that matches a register
-line (misses 10), desk only (11), register only (14). Realism: a supervisor's approval log and a two-stage remedy are
+(PM, MD, DM, MGR beside SC). Stops: adding both logs (misses 10 stores), dropping every desk entry that matches a register
+line (misses 10), desk only (10), register only (13). Realism: a supervisor's approval log and a two-stage remedy are
 how service desks run the Code. Pin test: the asking sentence pins the basis (paid out under the Code), the window (in
 the quarter) and the unit (dollars); the device sits in which records are one payout, which no pin names.
 
@@ -316,37 +317,37 @@ weekly_price_change_releases_2026Q4.xlsx (9 columns, PRELIM and REVISED sheets),
 columns), flyer_item_daily_units_2026Q4.csv (5 columns). Primary devices: an assorted flyer line lists only its lead
 UPC, and its other varieties are found among the week's AD START items by the lead's abbreviated brand, product and size
 (D7/D6: the true key elsewhere; matching on the lead's keyed price, the natural shortcut, drops exactly the mis-keyed
-varieties: misses 9 weeks; the lead only misses 12); a mid-week correction fixes a register price from its own opening
-date, so the overcharge runs only to the day before (D2 dated: the release price all week misses 13 weeks' dollars,
-the correction taken for the whole week misses 13 weeks' counts and dollars). Hazards: the Monday preliminary against
-the Tuesday revision (13 weeks), a multi-buy compared per unit (2 counts, 9 dollar figures), each zone's own units (12
-dollar figures). Realism: a promotions ad plan keys an assorted line to its lead item, and a pricing desk corrects a
+varieties: misses 9 weeks; the lead only misses 13); a mid-week correction fixes a register price from its own opening
+date, so the overcharge runs only to the day before (D2 dated: the release price all week misses 14 weeks' dollars,
+the correction taken for the whole week misses 14 weeks' counts and dollars). Hazards: the Monday preliminary against
+the Tuesday revision (13 weeks' counts, 14 weeks' dollars), a multi-buy compared per unit (3 counts, 10 dollar figures),
+each zone's own units (13 dollar figures). Realism: a promotions ad plan keys an assorted line to its lead item, and a pricing desk corrects a
 keying error mid-week with correction labels sent the night before. Pin test: the asking sentence pins the week (each
 flyer week that started in the quarter, its seven days), the set (advertised UPCs), the comparison (the flyer price)
 and the unit; the devices sit in which UPCs an assorted line covers and which days a register price was in force,
 which no pin names.
 
 Main population zero counts: no device row in the hourly report, the movement report, the printer fleet log, the checks
-or the audits (asserted: the main call reads no ask file, sep.main_call_reads_no_ask_file). Hazard table: UTC (ask A, 7
-stores), cents (ask A, 11), preliminary release (ask B, 13 weeks), multi-buy (ask B, 9 dollar figures), zone units
-(ask B, 12 dollar figures). Referee: none; every repair is forced by an internal inconsistency (a receipt line paid
+or the audits (asserted: the main call reads no ask file, sep.main_call_reads_no_ask_file). Hazard table: UTC (ask A, 6
+stores), cents (ask A, 11), preliminary release (ask B, 13 weeks' counts, 14 weeks' dollars), multi-buy (ask B, 3 counts
+and 10 dollar figures), zone units (ask B, 13 dollar figures). Referee: none; every repair is forced by an internal inconsistency (a receipt line paid
 twice for the same amount; a variety in the week's AD START items sharing the lead's brand, product and size; a
 correction dated inside the week).
 
 | Ask | Figures | Cracker's route (call landed, battery run, every filed rule executed) | Cracker hits | Verdict |
 |---|---|---|---|---|
 | A payouts | 14 | both logs, UTC converted, SC only, original less override, every desk entry on a register-paid receipt line dropped | 4 of 14 | miss |
-| B counts | 14 | revised release, per unit, zones, the corrections file applied as the latest version, varieties by the lead's keyed price | 1 of 14 | miss |
-| B dollars | 14 | as above | 1 of 14 | miss |
+| B counts | 14 | revised release, per unit, zones, the corrections file applied as the latest version, varieties by the lead's keyed price | 0 of 14 | miss |
+| B dollars | 14 | as above | 0 of 14 | miss |
 
 The full includer (every device noticed and handled: amount-aware de-duplication, varieties by brand, product and size,
-corrections from their own dates) keeps the whole ask layer; its pair against the mirror is 61.2, which is the open
-risk this sheet carries (supplemental-stumping rule 2: no third device on a disjoint block was found that it would
-miss without a fork).
+corrections from their own dates) keeps the whole ask layer; its pair against the mirror is 59.2, under 60 but with
+little margin, which is the open risk this sheet carries (supplemental-stumping rule 2: no third device on a disjoint
+block was found that it would miss without a fork).
 
-Pair ceiling: 37.6 (cracker on the call 52.9, mirror off the call 22.4; 38 + 7 + 55)
-Mirror leakage: 19.0 per cent of ask weight (the mirror adds both payout logs, reads each flyer line's lead UPC, keeps the release price all week)
-Measured by: generator/ceiling.py on the cut pack (target/ of the final build)
+Pair ceiling: 34.3 (cracker on the call 50.2, mirror off the call 18.4; 38 + 7 + 55)
+Mirror leakage: 11.9 per cent of ask weight (the mirror adds both payout logs, reads each flyer line's lead UPC, keeps the release price all week)
+Measured by: generator/ceiling.py on the cut pack (target/ of the final build, sha256 over its files 37e5f1af)
 
 ## Pre-ship check
 
@@ -422,6 +423,10 @@ reworded in docs.py to "sold"). Each REVIEW line, ruled:
 - 2026-11-02, grading every store's accuracy: the stray-label basis (pooled or each store's own audits) forks the
   night stores and Amherst at one decimal; the prompt asks for the Price Watch stores' accuracies only, which every
   standing estimator prints alike.
+- 2026-11-02, an assortment whose varieties, sizes and prices came from one list for every product (diapers in beef,
+  garbage bags in dark roast, hummus in 12 x 355 mL cans at 99 cents): a realism tell any reader quotes; each family is
+  now dressed by catalogue.py on its own stream (a brand's product in one of its real sizes, that product's own
+  varieties, a price from the product's level), and the master stream is untouched, so the call did not move.
 
 ## Architecture 1 record (re-rooted 2026-11-01 at the Batch 3 queue reset)
 
