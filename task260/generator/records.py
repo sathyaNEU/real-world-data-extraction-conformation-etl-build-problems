@@ -241,5 +241,5 @@ def write_qa(path, RD):
         nr = int(np.clip(round(r.normal(4.2 - 2 * x["skill"], 1.5)), 0, 12))
         rows.append([x["code"], "Self-assessment round 2025", "2025-%02d-%02d" % (int(r.integers(5, 12)), int(r.integers(1, 29))),
                      60, 20, cr, nr, "%.1f" % (100 * cr / 20), "%.1f" % (100 * (40 - nr) / 40)])
-    return _csv(path, ["reader", "round", "read_on", "cases", "cancers", "cancers_recalled", "normals_recalled",
+    return _csv(path, ["participant", "scheme_round", "read_on", "cases", "cancer_cases", "cancers_recalled", "normals_recalled",
                        "sensitivity_pct", "specificity_pct"], rows)

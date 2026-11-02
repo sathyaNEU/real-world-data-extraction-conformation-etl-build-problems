@@ -100,7 +100,6 @@ PANEL_DATE = dt.date(2026, 11, 18)
 # ------------------------------------------------------------------ file names
 EXPORTS = {"S1": "readpoint_MBS-AI-01_export_2026-04-24.csv", "S2": "readpoint_MBS-AI-02_export_2026-07-08.csv",
            "S3": "readpoint_MBS-AI-03_export_2026-09-25.csv"}
-EXPORT_GUIDE = "readpoint_export_fields_v4.pdf"
 CASES = "reader_study_case_sets_2026.xlsx"
 PANELS = "reader_study_panels_2026.xlsx"
 PROTOCOL = "ai_evaluation_protocol_v2.pdf"

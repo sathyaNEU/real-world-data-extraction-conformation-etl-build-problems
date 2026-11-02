@@ -1,5 +1,5 @@
-"""The pack's documents: the service's evaluation protocol, ReadPoint's export field guide, the three vendors'
-commercial proposals and the vendors' product summaries."""
+"""The pack's documents: the service's evaluation protocol, the three vendors' commercial
+proposals and the vendors' product summaries."""
 from __future__ import annotations
 
 from reportlab import rl_config
@@ -74,19 +74,20 @@ def write_protocol(path):
             "1.2 The service will license at most one tool, for two years from 1 April 2027, for use by its film "
             "readers on its routine screening examinations. The service reads about 45,000 screening studies a year "
             "from four screening sites and three mobile units."]),
-        ("2. Reader studies", [
+        ("2. Evaluation studies", [
             "2.1 Each shortlisted tool is evaluated in its own reader study on ReadPoint.",
             "2.2 Panel: ten of the service's film readers, drawn within each role (consultant radiologists, "
             "consultant and advanced practitioner radiographers, breast clinicians) in proportion to the service's "
             "film readers.",
-            "2.3 Study set: 300 examinations from the service's 2019 to 2022 screening archive, sampled within two "
+            "2.3 The study set: 300 examinations from the service's 2019 to 2022 screening archive, sampled within two "
             "groups: 75 examinations of women whose breast cancer was confirmed by histology (cancers "
             "detected at that screen, and interval cancers diagnosed within 36 months of it) and 225 examinations "
             "that were normal at the woman's next screening round. Each study draws its own set.",
             "2.4 Every panel reader reads every examination in the set twice, once unaided and once with the tool, in "
             "sessions at least four weeks apart; half the panel reads unaided first.",
             "2.5 For each examination the reader records a probability of malignancy from 0 to 100 and a recall "
-            "decision."]),
+            "decision. A reader can reopen an examination and submit again while the session is open; the reading "
+            "of record is the last one the reader submitted for that examination in that condition."]),
         ("3. Measure", [
             "3.1 A reader's accuracy in a condition is the area under the empirical ROC curve of their "
             "probability-of-malignancy ratings against the reference standard (cancer or normal, section 2.3).",
@@ -100,7 +101,7 @@ def write_protocol(path):
             "4.4 Cost, integration and support are assessed by procurement after the clinical decision and do not "
             "change it."]),
         ("5. Calendar", [
-            "5.1 Reader studies run from February to September 2026; the procurement invitation is issued on 1 "
+            "5.1 The evaluation studies run from February to September 2026; the procurement invitation is issued on 1 "
             "September 2026; the AI evaluation panel takes the decision on 18 November 2026."]),
     ]
     for h, paras in sections:
@@ -110,47 +111,6 @@ def write_protocol(path):
     story.append(Paragraph("Questions about this protocol go to the AI evaluation lead.", NOTE))
     doc = _doc(path, "AI reading support: evaluation and procurement protocol", lead)
     f = _frame(K.ORG, "AI evaluation protocol, version 2")
-    doc.build(story, onFirstPage=f, onLaterPages=f)
-
-
-def write_export_guide(path):
-    story = [Paragraph("Reader study exports: field guide", H1),
-             Paragraph("ReadPoint support. Applies to project exports from platform versions 4.1 and 4.2 (4.2 released "
-                       "on 1 July 2026). Last revised 3 July 2026.", META)]
-    story.append(Paragraph("About exports", H2))
-    for t in ["An export holds one row for every submission made in the project, practice cases included. Each "
-              "session can open with practice cases configured by the project owner.",
-              "A reader can reopen a case from the session list until the session is closed. Every submission is "
-              "exported; the reading of record is the reader's last submission for the case and condition.",
-              "Reader identifiers are pseudonymous and unique within a project. Times are recorded in UTC."]:
-        story.append(Paragraph(t, BODY))
-    story.append(Paragraph("Version 4.1", H2))
-    rows = [["Field", "Meaning"],
-            ["project", "the project code"], ["user_id", "the reader's identifier in the project"],
-            ["case_code", "the case as configured by the project owner"],
-            ["arm", "UNAIDED, or AIDED when the project's decision-support overlay was shown"],
-            ["session_no", "the reader's sessions in the order they were opened"],
-            ["position", "the case's place in the session"],
-            ["opened_utc, submitted_utc", "when the case was opened and the reading submitted"],
-            ["pom", "the reader's probability of malignancy, a whole number from 0 to 100"],
-            ["recall", "the reader's recall decision, Y or N"],
-            ["revision", "1 for the first submission of a case in a session, 2 for the next"]]
-    story += [_table(rows, (48, 118)), Spacer(1, 4)]
-    story.append(Paragraph("Version 4.2", H2))
-    rows = [["Field", "Meaning"],
-            ["project_code", "the project code"], ["reader_ref", "the reader's identifier in the project"],
-            ["case_ref", "the case as configured by the project owner"],
-            ["condition", "Unaided, or AI-assisted when the decision-support overlay was shown"],
-            ["session, seq", "the reader's session number and the case's place in it"],
-            ["started_at, completed_at", "when the case was opened and the reading submitted (ISO 8601)"],
-            ["malignancy_probability", "the reader's probability of malignancy, from 0 to 1 in steps of 0.01"],
-            ["recall_decision", "Recall to assessment, or Return to routine recall"],
-            ["edit_count", "0 for the first submission of a case in a session, 1 for the next"],
-            ["workstation", "the reading workstation's identifier"]]
-    story += [_table(rows, (48, 118))]
-    story.append(Paragraph("ReadPoint support: exports are produced on request by the project owner.", NOTE))
-    doc = _doc(path, "Reader study exports: field guide", "ReadPoint support")
-    f = _frame("ReadPoint support centre", "Article RP-EXP-041")
     doc.build(story, onFirstPage=f, onLaterPages=f)
 
 

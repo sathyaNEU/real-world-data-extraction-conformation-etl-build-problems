@@ -189,6 +189,13 @@ def run(target, golden, st, meta_path):
     ck("R3b: the decisive step alone (readers and examinations random) on the clean truth files Halvic", r3 == A, r3)
     r2, _ = pick("paired_t", mats=cm)
     ck("R3b: the other one-factor correction (readers random alone) on the clean truth files Lumidra", r2 == V, r2)
+    easy = {m: pick(m, mats=cm)[0] for m in ("fixed_dl", "fixed_jk", "boot_cases", "pooled", "paired_t",
+                                               "signed_rank", "boot_readers")}
+    ck("R3a: every easy route the note names, on the clean truth, files a tool other than Halvic",
+       all(v != A for v in easy.values()) and {easy[m] for m in ("fixed_dl", "fixed_jk", "boot_cases")} == {Q}
+       and {easy[m] for m in ("pooled", "paired_t", "signed_rank", "boot_readers")} == {V}, easy)
+    hard = {m: pick(m, mats=cm)[0] for m in ("or_jk", "or_dl", "dbm", "boot_both")}
+    ck("R3b: every both-random construction, on the clean truth, files Halvic", set(hard.values()) == {A}, hard)
     for S in K.STUDIES:
         ex = T["exports"][S["sid"]]
         ck("R3c: %s no reading row repeated" % S["sid"], not ex.duplicated(["reader", "case", "cond", "revision",

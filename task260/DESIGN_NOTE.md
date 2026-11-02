@@ -107,12 +107,22 @@ Layer 1: ReadPoint's export layout changing between platform versions (renamed c
 Layer 2: field_method, the reader-study field's own method: each study is fully crossed, so every reader's gain is measured on one shared set of examinations and every examination's effect through one shared panel, and an interval speaks for the service's readers and examinations only when it carries both reader and examination sampling (Obuchowski-Rockette or DBM).
 Decisive step: Judging each tool's gain with an interval that treats the ten panel readers and the 300 study examinations both as random samples of the service's film readers and screening examinations (Obuchowski-Rockette or DBM), because Ondrix's gain varies from reader to reader and Lumidra's varies from examination to examination the same way for every reader, and each looks precise when only the other factor is resampled.
 Not semantics: Every export, case list and protocol clause read correctly still leaves the analyst building an interval, and the bootstrap over examinations with the panel fixed, DeLong's test, or a paired t-test across the readers are each a correct reading of every field; no field, code or definition says how the interval is built.
-Not rule application: The protocol states the outcome, the comparison, the populations and the 95 per cent level and leaves the interval's construction to the analyst; executing every stated rule with either one-factor interval files Ondrix or Lumidra, and no filed rule decomposes the gain's variance into its reader and examination parts.
+Not rule application: The protocol states the outcome, the comparison, the populations and the 95 per cent level and leaves the interval's construction to the analyst; executing every stated rule with either one-factor interval files Ondrix or Lumidra, and no filed rule decomposes the gain's variance into its reader and examination parts. Measured on the cut pack: the enumerated family (eleven constructions: DeLong and the jackknife with the panel fixed, the case bootstrap, the pooled curve, the paired t-test, the signed-rank test, the reader bootstrap, Obuchowski-Rockette with jackknife or DeLong covariances, DBM, the two-way bootstrap) spreads over all three tools (Ondrix 3, Lumidra 4, Halvic 4); the standing family (the constructions whose interval speaks for both filed populations) is the four both-random ones, spread zero (Halvic 0.014 to 0.038, the two-way bootstrap 0.007 to 0.045); the ruling-out is one sentence of protocol 4.1 naming the populations, with no factor, variance or method in it, so its loudness is the risk: an analyst who knows the reader-study literature reads it as the MRMC population and takes the step on sight.
 Analyst test: A strong analyst who cleans the exports and reads every rule correctly computes each reader's area with and without each tool, bootstraps the examinations with the readers held fixed, and files Ondrix Mammo, the default path's answer (executed on the generator's clean ratings in checks.py); a paired t-test across the readers instead files Lumidra Detect.
 Estimand: The gain in the readers' average area under the empirical ROC curve of their probability-of-malignancy ratings, aided minus unaided, with its two-sided 95 per cent interval, for the service's film readers reading the service's screening examinations; adopt the largest gain whose interval lies wholly above zero, else keep unaided double reading (ai_evaluation_protocol_v2.pdf, sections 3 and 4).
 No decoy: Nothing is planted: no vendor, study or interim report states a gain, an interval or a verdict, the vendors' product summaries carry standalone accuracy on their own datasets (another quantity), and no record is copied, withheld or written to carry the wrong answer.
 No certified replay: No certified or published result exists for a method to reproduce; the verdicts are forced by the ratings' own structure, where every interval with readers and examinations both random (Obuchowski-Rockette with jackknife or DeLong covariances, DBM, a two-way bootstrap) admits Halvic alone.
 Lesson: A fully crossed reader study measures every reader on the same examinations, so an interval that resamples one factor treats the other's variation as fixed and admits whichever tool's gain that factor carries; the field's multi-reader multi-case analysis carries both, and no build on file teaches two crossed random factors (task186 adds one shared within-place cycle, task253 shrinks noisy unit averages).
+
+## Survivor anatomy
+
+Actor: The deciding property has no column in any file: Ondrix's reader-by-tool spread (per-reader changes -0.065 to 0.125, standard deviation 0.069, three of ten worse) and Lumidra's examination-by-tool effect live only in the relation between a reader's two readings of the same examination across 6,000 rows per study; no export, case list or panel row stores an area, a change, a variance or a factor (asserted, R1).
+Link: Weak, named as a risk: the signal is read through the reader-by-examination cross inside one export, not across files or entities, and the reader-study field's own analysis (Obuchowski-Rockette, DBM) is exactly the comparison that asks for both factors, so no key is needed and the link is invited to any analyst who knows that literature.
+Reflex: Fails the 1.1b test, named as the build's main risk: rung 0 is the generic ROC-comparison reflex (DeLong or a case bootstrap with the readers fixed, filing Ondrix), but the reader-study field's named method for this quantity is the golden itself (Obuchowski-Rockette or DBM), so the Domain test and the Decisive step name one method family and an opponent that executes the field's method by reflex lands Halvic.
+Back-test: The textbook one-factor routes validate each other: DeLong with the panel fixed, the fixed-reader jackknife and the stratified case bootstrap all give Ondrix 0.011 to 0.073 (0.013 to 0.073 bootstrapped) and the same verdicts, and the paired t-test, signed-rank test and reader bootstrap all agree on Lumidra; nothing in the pack refutes either easy route.
+Second use: Every file the decisive step reads (the three exports, the case sets, the protocol) is read by the default path too for the areas themselves; the panels file carries the roles and reading order the protocol's panel clause describes; deleting the decisive step from the design drops no file.
+Shock: No unit is the pack's anomaly and the golden is no sort's sole top on the call's rule: Halvic has the smallest gain (0.026 against 0.042 and 0.047); but on the one-factor routes Halvic already shows the highest z (3.88 with the panel fixed against Ondrix's 2.64; 5.28 across readers against Lumidra's 5.32) and the smallest reader spread (0.016), so a solver ranking by certainty rather than by the protocol's largest qualifying gain lands it, a named risk.
+Pins: The WHAT is filed in the service's evaluation protocol (sections 1.2, 2.2, 2.3, 3 and 4.1: the licence's readers and examinations, the panel and set as drawn from them, the measure, the level, the largest qualifying gain); no sentence names a random factor, a variance or a resampling unit, but 4.1's population sentence is what the stump rides on: deleted, a fixed-panel interval becomes defensible and the call is unforced, so the pin is necessary and pointed, a named risk.
 
 ## Readability screen
 
@@ -130,9 +140,9 @@ Lesson: A fully crossed reader study measures every reader on the same examinati
 | SF1 | "gain" | the readers' average aided area minus their average unaided area | the area of all readings pooled per condition | Lumidra (pooled gains 0.061, 0.046 and 0.026; asserted) | the protocol, 3: a reader's accuracy is their own area, and the gain is the readers' average |
 | SF2 | "area under the ROC curve" | the empirical (Mann-Whitney) area, ties counted half | a fitted binormal area; the trapezoid rule | another quantity; the trapezoid rule is the same area (asserted) | the protocol, 3: the empirical ROC curve |
 | SF3 | the rating | the probability of malignancy | the recall decision as a two-point rating | another quantity | the protocol, 2 and 3 |
-| SF4 | a reading submitted twice | the final revision | the first, or both | same call (asserted) | ReadPoint's export guide |
-| SF5 | practice cases | not in the study set | read as study cases | same call: they have no reference standard and fall out of the join (asserted) | the export guide and the case lists |
-| SF6 | the probability's scale | 0 to 100, or 0 to 1 in the 4.2 export | either | same call: the area is unchanged by the scale (asserted) | the export guide |
+| SF4 | a reading submitted twice | the final revision | the first, or both | same call (asserted); the first moves Lumidra's gain to 0.048 | the protocol, 2.5: the reading of record is the last one submitted for the examination in that condition |
+| SF5 | practice cases | not in the study set | read as study cases | same call: they have no reference standard and fall out of the join (asserted) | the case lists (the protocol, 2.3: the study set) |
+| SF6 | the probability's scale | 0 to 100, or 0 to 1 in the 4.2 export | either | same call: the area is unchanged by the scale (asserted) | the protocol, 2.5 (0 to 100), and the export's own values |
 | SF7 | interval cancers | cancers (the case lists' outcome) | normal at that screen | another reference standard | the protocol, 2, and the case lists |
 | SF8 | the 95 per cent interval | two-sided, each tool's own | one-sided 95 per cent | same call (asserted) | the protocol, 4.1 |
 | SF9 | three tools judged | no adjustment for three comparisons | Bonferroni at 98.3 per cent | same call (asserted) | the protocol, 4.1: each tool's own interval |
@@ -183,8 +193,8 @@ Lesson: A fully crossed reader study measures every reader on the same examinati
 | 1 | Population | the service's film readers reading its screening examinations, of which each study's panel and set are samples | filed (protocol 1, 4.1); SF10 |
 | 2 | Unit of account | the reading; a reader's area per condition; a tool's gain | filed (protocol 3) |
 | 3 | Attribution window | each tool on its own 2026 study | filed (protocol 2) |
-| 4 | As-of dating | readings as submitted; the final revision | export guide; C1 (SF4) |
-| 5 | Version basis | the final revision of each reading | export guide; C1 (SF4) |
+| 4 | As-of dating | readings as submitted; the final revision | protocol 2.5; C1 (SF4) |
+| 5 | Version basis | the final revision of each reading | protocol 2.5; C1 (SF4) |
 | 6 | Denominator | the ten panel readers in the average; each study's 75 cancers and 225 normals in an area | filed (protocol 2, 3) |
 | 7 | Weighting | every reader and every examination once | filed (protocol 3) |
 | 8 | Window length | one study per tool | filed (protocol 2) |
@@ -194,11 +204,11 @@ Lesson: A fully crossed reader study measures every reader on the same examinati
 | 12 | Maturity and censoring | the reference standard is complete: 2019 to 2022 screens, interval cancers within 36 months known by 2026 | by construction (protocol 2) |
 | 13 | Order of operations | clean, area per reader and condition, average, difference, interval | method-level; C1 |
 | 14 | Row order | none matters | C1 |
-| 15 | Duplicate resolution | the final revision per reading; practice cases out; for the asks, an imaging record loaded twice is one study and a reader with two contracts one person | export guide; C1 for the call; the asks' devices (ask sheet) |
+| 15 | Duplicate resolution | the final revision per reading; practice cases out; for the asks, an imaging record loaded twice is one study and a reader with two contracts one person | protocol 2.5; C1 for the call; the asks' devices (ask sheet) |
 | 16 | Identity normalisation | per-study pseudonymous reader ids, each study analysed alone | by construction |
 | 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | probability of malignancy 0 to 100 (4.1) or 0 to 1 (4.2); costs in pounds excluding VAT | export guide; SF6; the quotes |
-| 19 | Code and status semantics | arm and condition codes, recall wording; for the asks, examination codes and booking statuses | export guide and code table; never the stump |
+| 18 | Dimensional units | probability of malignancy 0 to 100 (4.1) or 0 to 1 (4.2); costs in pounds excluding VAT | SF6; the quotes |
+| 19 | Code and status semantics | arm and condition codes, recall wording; for the asks, examination codes and booking statuses | the exports' own values and the code table; never the stump |
 | 20 | Integerisation | costs in whole pounds; counts whole | prompt |
 | 21 | Clause scope | the protocol governs the clinical decision; cost is assessed after it | filed (protocol 4.4) |
 | 22 | Forward window contents | the licence covers 2027 and 2028 reading by the service's film readers | filed (protocol 1) |
@@ -251,11 +261,16 @@ None bears on the gains or the intervals on either path, and none ties to an ask
 | C readers in post | film readers in post on 1 April 2027 by employee number | 28 against 27 (asserted) | miss |
 | D the chart | the golden's intervals | right | outside |
 
-Mirror leakage: 5 per cent of the ask weight on the most attractive wrong rung (Ondrix on the bootstrap over
-examinations): it misses every Ask A, B and C figure as the cracker does, and of the chart keeps the axes and the gains,
-its intervals drawn with the panel fixed.
-Pair ceiling: 34 (the cracker about 52 with the call, its verdicts, reasons and the chart; the Ondrix mirror about 16
-with the gains and two of three verdicts).
+Mirror leakage: 10.0 per cent of the ask weight on the most attractive wrong rung (Ondrix on the panel-fixed interval,
+and Lumidra across readers the same): it misses every Ask A, B and C figure as the cracker does, and of the chart keeps
+the gains on their axis, its intervals drawn with one factor fixed.
+
+Pair ceiling: 42.5 (the cracker 53.6: call side 35, instructions 7, 2 of 10 ask units; the better mirror 31.3: the
+gains, two of three verdicts and Lumidra's reason, 18.5, instructions 7, 1 of 10 ask units).
+
+Measured by: generator/ceiling.py on the cut pack (2026-11-01: the cracker keeps 0 of the 8 Ask A to C figures and the
+chart, 53.6; the panel-fixed mirror files Ondrix, 31.3; the across-readers mirror files Lumidra, 31.3; pair 42.5, above
+the paper figure of 34 because the gains and the verdicts the mirrors share are graded on the call side)
 
 ## Build record
 
@@ -265,7 +280,7 @@ with the gains and two of three verdicts).
   checks (190 assertions: input gates, bundle against the clean truth, R1 to R3c, SF1 to SF18, every route's pick,
   margins, every ask stop and the cracker sheet, separation, goldens, realism), verify (independent: scipy's
   Mann-Whitney, a brute-force jackknife, its own Obuchowski-Rockette and asks), two byte-identical builds, target.zip.
-- **Pack.** 18 files in four formats (CSV, XLSX, PDF, JSON); the RIS export 55,920 rows; the three ReadPoint exports
+- **Pack.** 17 files in four formats (CSV, XLSX, PDF, JSON); the RIS export 55,920 rows; the three ReadPoint exports
   6,456, 6,474 and 6,465 rows; distractors: the vendors' product summaries (declared wrong-basis: standalone areas
   rank Lumidra first), the screening KPIs and the readers' self-assessment scores.
 - **Golden.** Halvic Breast: gains 0.047 (Lumidra), 0.042 (Ondrix), 0.026 (Halvic); intervals with both random
@@ -341,6 +356,9 @@ with the gains and two of three verdicts).
   registration, the full legal name), and a mammographer holds a double contract too.
 - One sentence of scope and terms shared by the three quotes, rejected after the leak re-read: each vendor now
   writes its own scope, basis and commercial terms.
+- ReadPoint's export field guide in the pack, rejected at the 11-01 re-check: a file that lists every column of the
+  exports describes the data (leak.py sweeps 1 and 12); the reading of record moved to protocol 2.5 as a WHAT, and the
+  other readings it carried (the scale, the practice cases, the layout) move no figure (SF5, SF6).
 
 ## Stage 4
 
@@ -385,3 +403,40 @@ with the gains and two of three verdicts).
   what to count, not how to repair a record. The reader's case-mix question (screen-detected against interval
   cancers) is closed by protocol 3.1's empirical area on the study set, with no service mix in the pack to weight
   to. Realism tells kept as texture. Ready to ship.
+
+## Re-check 2026-11-01
+
+- **Rebuild.** The generator reproduced the shipped target.zip byte for byte (a861819b) once scipy, matplotlib and
+  faker were installed into the container; the golden chart differs in bytes only under the installed matplotlib.
+- **Analyst test on the clean truth** (checks.py R3a and R3b, extended to every route the note names): DeLong and the
+  jackknife with the panel fixed and the case bootstrap file Ondrix; the pooled curve, the paired t-test, the
+  signed-rank test and the reader bootstrap file Lumidra; Obuchowski-Rockette (jackknife and DeLong), DBM and the
+  two-way bootstrap alone file Halvic.
+- **Failing gates on the shipped cut.** leak.py LEAK (sweep 1: readpoint_export_fields_v4.pdf by name; sweep 12: the
+  same guide naming all of the exports' columns, and the protocol naming 8 plain-word headers: Reader and Study in its
+  headings, the self-assessment file's reader, round and cancers); precut FAIL (no Measured by line) with the seven
+  survivor-anatomy lines missing; voice-check's count rule ("each of the four sites").
+- **Repair, in the generator.** The field guide leaves the pack (17 files); its one reading a graded figure needs (the
+  last submission is the reading of record, which moves Lumidra's gain to 0.048 if the first is kept) is filed as a
+  WHAT in protocol 2.5; the protocol's headings read "Evaluation studies" and "The study set"; the self-assessment
+  scheme's export carries participant, scheme_round and cancer_cases; the prompt asks for each screening site;
+  generator/ceiling.py measures the pair ceiling on the cut pack (42.5); the survivor anatomy is written from
+  measurement, with Link, Reflex, Shock and Pins named as risks. The call, the stump and every graded figure are
+  frozen.
+- **Heart BLOCK, predating the re-check and not caused by it:** ban.pattern and ban.org_family against task457 v1
+  (registered 2026-10-14) and test.same_puzzle_older against task464 v8 (registered 2026-10-29), from ban rules added
+  after this build shipped at WARN; recorded, not re-rooted.
+- **Leak reader (re-check, one read of the new cut).** Questions 1 to 4 none; question 5 quotes protocol 4.1 (the
+  golden's populations), 2.5 (the reading of record) and 3.1 to 3.2; question 6 an analytical choice. Every REVIEW
+  line harmless. The design-note-vocabulary line on the protocol (examinations, examination, question) ruled here:
+  harmless, the protocol's own nouns and its closing contact line, naming no move. Realism tells (the documents'
+  shared plain layout, the self-assessment scheme's fixed case mix) kept as texture.
+- **Determinism judge (re-check pass, fresh unzip of the new cut).** DETERMINISTIC, APPROVE: the gains (0.047, 0.042,
+  0.026), the both-random intervals (only Halvic's 0.014 to 0.038 above zero), the site counts, 27 film readers and
+  the three costs reproduced. Gate G statistical_rigor, analytical_non_defect, no surface-read dependency, no sole data
+  defect; Gate H domain pass, layers pass, decisive step analytical. Its residual notes (the history load's copies as
+  Ask A's device, the routine-coded later recalls as Ask B's, the 1 April starter counted in post) are the asks'
+  designed devices and literal readings already on file; none moves the call and nothing was changed.  The judge's optional note (file the screening round's length to close Lumidra's episode count against a
+  patient-day count) is left as the 10-15 re-judge approved it: Lumidra's quote counts one episode per woman and
+  screening round, and the call and every graded figure stay frozen.
+

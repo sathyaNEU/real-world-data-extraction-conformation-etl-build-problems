@@ -1,10 +1,10 @@
 # leak check, task260
 
-**Verdict: REVIEW.** 18 files read, 10 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 10 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: examinations, random, asserted, delong, bootstrap, examination, shared, obuchowski-rockette, decisive, analysis, crossed, pooled, export, carries, method, populations, factor, factors, rejected, question, ratings, readings, paired, generator, two-way
+Stump terms swept: examinations, bootstrap, random, delong, decisive, obuchowski-rockette, asserted, examination, method, shared, question, populations, factor, pooled, analysis, carries, two-way, crossed, factors, readings, paired, jackknife, generator, export, variance
 
 ## 3 answer figures in the pack (REVIEW 4)
 - **REVIEW** `ai_evaluation_protocol_v2.pdf`: carries 4 of 5 distinctive words of the committed call: 'License Halvic Breast for two years from 1 April 2027.'
@@ -13,7 +13,7 @@ Stump terms swept: examinations, random, asserted, delong, bootstrap, examinatio
 - **REVIEW** `quote_ondrix_mammo_2027.pdf`: carries 3 of 5 distinctive words of the committed call: 'License Halvic Breast for two years from 1 April 2027.'
 
 ## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `ai_evaluation_protocol_v2.pdf`: 4 of 25 stump-paragraph terms appear (examinations, examination, question, ratings); read whether the document names the move
+- **REVIEW** `ai_evaluation_protocol_v2.pdf`: 3 of 25 stump-paragraph terms appear (examinations, examination, question); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 4, INFO 3)
 - **REVIEW** `film_reader_workforce_2026-10.xlsx`: names 4 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -24,11 +24,18 @@ Stump terms swept: examinations, random, asserted, delong, bootstrap, examinatio
 - **INFO** `screening_locations.json`: names 4 of 11 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `vendor_product_summaries_2026.pdf`: names 3 of 11 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `film_reader_workforce_2026-10.xlsx`: 3 ISO dates after 2026-10-15, e.g. 2027-02-01, 2027-03-31, 2027-04-01
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); rounding opener 'give' at 48% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (REVIEW 2)
+- **REVIEW** `ai_evaluation_protocol_v2.pdf`: names 4 column(s) of the data files verbatim (condition, recall, session, sites): confirm it is the organisation's own record and not a note written for the analyst
+- **REVIEW** `quote_halvic_breast_2027.pdf`: names 5 column(s) of the data files verbatim (Reader, Site, site, sites, workstation): confirm it is the organisation's own record and not a note written for the analyst
 
 ## 1 file names (clean)
 
@@ -39,8 +46,6 @@ Stump terms swept: examinations, random, asserted, delong, bootstrap, examinatio
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read (loop 0)
@@ -155,3 +160,17 @@ Realism tells, disposition: the self-assessment file's fixed 60-case set and rep
 the same set, and rates over 20 cancers repeat); the staff list's three two-row people "neat" but plausible (kept);
 the two volume-priced quotes both echoing the tender's 12-month basis (kept: the tender asked bidders to price on it);
 regular mobile visit days (kept).
+
+## Solver's-eye read (re-check 2026-11-02)
+
+One isolated read of a fresh copy of prompt.txt and target/ (17 files), after the field guide left the pack.
+
+1. Decisive step stated: none. Protocol 4.1 ("The gain and its interval are for the service's film readers reading the service's screening examinations.") fixes the target of inference, not the method.
+2. Ranks or scores the candidates on the question: none (the vendors' product summaries carry standalone areas, labelled as not the service's reader studies).
+3. Helper-only files: none; the code table and the location directory read as ordinary system lookups, and no readme, codebook or manifest ships.
+4. Reads as the answer: none.
+5. Filed sentences: protocol 4.1 (the service's readers and its screening examinations, beyond the panel and the set), 2.5 (the last submission is the reading of record), 3.1 and 3.2 (each reader's empirical area, the gain as the difference of the readers' averages); the quotes' bases of charge.
+6. What decides: an analytical choice (the inferential population, readers and examinations both treated as sampled); the mess is Layer 1 and nothing reads as planted; the costs and counts are rule application on the asks only.
+
+Sweep lines: a (call words in the protocol and quotes) harmless, scope language; b (names beside numbers) harmless, nothing scores a tool; c (shell quota) harmless, style; d (protocol names condition, recall, session, sites) harmless, the organisation's own governing document; e (Halvic quote names Reader, Site, site, sites, workstation) harmless, product terms in a vendor proposal.
+Realism tells: the quotes and protocol share a plain layout and size (minor, kept); the self-assessment scheme's fixed 60 cases and 20 cancers (plausible for a scheme, kept).

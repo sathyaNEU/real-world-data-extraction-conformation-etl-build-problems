@@ -26,12 +26,12 @@ import world as W          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 NAMES = dict({"export_" + s: f for s, f in K.EXPORTS.items()},
-             guide=K.EXPORT_GUIDE, cases=K.CASES, panels=K.PANELS, protocol=K.PROTOCOL, ris=K.RIS, codes=K.CODES,
+             cases=K.CASES, panels=K.PANELS, protocol=K.PROTOCOL, ris=K.RIS, codes=K.CODES,
              locations=K.LOCATIONS, visits=K.VISITS, workforce=K.WORKFORCE, quote_q=K.QUOTES["Ondrix"],
              quote_a=K.QUOTES["Halvic"], quote_v=K.QUOTES["Lumidra"], summaries=K.PRODUCT_SUMMARIES, kpis=K.KPIS,
              qa=K.QA_SCORES)
 DISTRACTORS = ("summaries", "kpis", "qa")
-CALL_FILES = ("export_S1", "export_S2", "export_S3", "guide", "cases", "protocol")
+CALL_FILES = ("export_S1", "export_S2", "export_S3", "cases", "protocol")
 ASK_FILES = ("ris", "codes", "locations", "visits", "workforce", "quote_q", "quote_a", "quote_v")
 NEUTRAL = ("panels",)
 
@@ -65,7 +65,6 @@ def build(out, quiet=False):
     R.write_kpis(p("kpis"))
     counts["qa"] = R.write_qa(p("qa"), S["RD"])
     D.write_protocol(p("protocol"))
-    D.write_export_guide(p("guide"))
     D.write_quote(p("quote_q"), "Ondrix")
     D.write_quote(p("quote_a"), "Halvic")
     D.write_quote(p("quote_v"), "Lumidra")
@@ -80,7 +79,6 @@ def build(out, quiet=False):
     PP.normalize_ooxml(p("kpis"), "Screening Office", "Screening Office", "2024-05-20T12:00:31Z",
                        "2026-06-03T09:47:15Z", excel=True)
     PP.normalize_pdf(p("protocol"), b"D:20260112101520+00'00'", b"D:20260112101520+00'00'")
-    PP.normalize_pdf(p("guide"), b"D:20260703142208+01'00'", b"D:20260703142208+01'00'")
     PP.normalize_pdf(p("quote_q"), b"D:20260924160213+01'00'", b"D:20260924160213+01'00'")
     PP.normalize_pdf(p("quote_a"), b"D:20260928114751+01'00'", b"D:20260928114751+01'00'")
     PP.normalize_pdf(p("quote_v"), b"D:20260922093340+01'00'", b"D:20260922093340+01'00'")
