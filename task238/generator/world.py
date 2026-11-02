@@ -127,12 +127,12 @@ class World:
         return hrs, w / w.sum()
 
     def scans(self):
-        r = self.r
         dow = [0.86, 0.84, 0.93, 1.12, 1.16, 1.27, 0.88]
         self.hourly = {}     # (store, date) -> (hours, counts)
         self.daytot = {}
         for s in P.STORES:
             no, size, morning = s[0], s[6], s[8]
+            r = np.random.default_rng([P.SEED, no, 5])
             for d in days():
                 hrs, prof = self.profile(d, morning)
                 if not hrs:
@@ -196,10 +196,10 @@ class World:
 
     # ------------------------------------------------------------------ print time and every label's hang time
     def labels_and_hanging(self):
-        r = self.r
         self.batch = {}     # (store, k) -> dict(print=datetime, labels=int, rate=float, hang=array per item)
         for s in P.STORES:
             no, crew, phour, sd, hol = s[0], s[5], s[9], s[10], s[11]
+            r = np.random.default_rng([P.SEED, no, 7])
             for k, c in enumerate(self.co):
                 d = c["date"]
                 keep = self.stocked[no][c["items"]]
@@ -226,12 +226,12 @@ class World:
 
     # ------------------------------------------------------------------ changed items' Thursday scans
     def thursday_scans(self):
-        r = self.r
         self.thu = {}       # (store, k) -> dict(units per item, prior units per item, stale count, overcharge rows)
         self.truth_stale = {s[0]: 0 for s in P.STORES}
         self.overcharge_scans = []    # (store, datetime, item index, scanned price, shelf price)
         for s in P.STORES:
             no, share = s[0], s[7]
+            r = np.random.default_rng([P.SEED, no, 11])
             for k, c in enumerate(self.co):
                 d = c["date"]
                 hrs, counts = self.hourly[(no, d)]
@@ -266,10 +266,10 @@ class World:
 
     # ------------------------------------------------------------------ the weekly random price audit
     def audits(self):
-        r = self.r
         self.audit_rows = []
         for s in P.STORES:
             no = s[0]
+            r = np.random.default_rng([P.SEED, no, 13])
             for k, c in enumerate(self.co[:13]):
                 d0 = c["date"]
                 cands = [d0 + dt.timedelta(days=j) for j in range(7) if hours_of(d0 + dt.timedelta(days=j))]
@@ -300,10 +300,10 @@ class World:
 
     # ------------------------------------------------------------------ Thursday changeover checks
     def checks(self):
-        r = self.r
         self.check_rows = []
         for s in P.STORES:
             no = s[0]
+            r = np.random.default_rng([P.SEED, no, 17])
             for k, c in enumerate(self.co):
                 d = c["date"]
                 close = P.SHORT_CLOSE.get(d, P.CLOSE_H)

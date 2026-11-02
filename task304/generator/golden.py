@@ -38,6 +38,9 @@ def chart_png(F):
     ax.set_xticklabels([n.replace(" Junction", "\nJunction").replace(" Crossroads", "\nCrossroads") for n in names], fontsize=8)
     ax.set_ylabel("Injury collisions prevented a year", fontsize=8.5)
     ax.set_ylim(0, max(vals) * 1.28)
+    from matplotlib.ticker import FormatStrFormatter, MultipleLocator
+    ax.yaxis.set_major_locator(MultipleLocator(0.5))
+    ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
     k = names.index(F["call"])
     ax.annotate("%s, the junction chosen" % F["call"], xy=(k, vals[k] + 0.17), xytext=(k + 0.55, max(vals) * 1.17),
                 fontsize=8.5, color=ACCENT, fontweight="bold", ha="left",
