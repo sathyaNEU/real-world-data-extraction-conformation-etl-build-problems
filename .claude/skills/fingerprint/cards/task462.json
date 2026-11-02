@@ -89,7 +89,7 @@
     "task456": "task456 classifies unit-days from three imperfect categorical records with a latent class model; task462 scales one instrument's continuous detections by its measured detection curve across repeated snapshots of intermittent sources"
   },
   "lineage": [],
-  "notes": "",
+  "notes": " Architecture 1 spent at the 11-02 re-check: the golden is the field's own POD-corrected aerial methane inventory (each plume over its detection probability fitted to controlled releases) applied as the literature states it, so the field's method is the top rung rather than rung 0 or 1 (Link, Reflex, Back-test, Second use and Shock fail on the honest anatomy; the golden four are the bottom four of the default sort); the clean-truth easy routes (eight, none, ten) do file wrong slates.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:detection-weighted snapshot totals",
   "layer1": [
@@ -100,5 +100,6 @@
     "genuine overlap: plumes imaged twice on overlapping flight lines in one campaign",
     "real coverage: flight lines lost to cloud, a few sites not imaged in a campaign"
   ],
-  "registered": "2026-10-15T15:36:19Z"
+  "registered": "2026-10-15T15:36:19Z",
+  "architecture_spent": true
 }

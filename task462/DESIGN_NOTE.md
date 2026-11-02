@@ -157,6 +157,33 @@ Calbrent, Ostrel, Corrandale and Brushy Mesa.
   and each correction alone files its own wrong slate; no build on file weights detections by a measured detection
   curve.
 
+## Survivor anatomy
+
+Written at the 11-02 re-check from two measurements on the clean truth (`checks.py` R3a, R3b and the convergence
+check; `figures.json` rungs), not from the design's intent.
+
+- **Actor:** holds only in part: no column holds a detection probability, a weight or an emitted total (R1 asserted),
+  but each plume's detection chance is a function of its own shipped rate through a curve whose form the provider's
+  note 4.2 files, one fit away from a column.
+- **Link:** fails: the link from a plume to the release study is the rate itself, the release file carries metered
+  rates and detected flags, and the provider's note invites it ("a pass does not detect every plume", the curve's form
+  fitted to its releases); one logistic fit and one division.
+- **Reflex:** fails: the golden is the field's own measurement-informed inventory method for aerial surveys, each plume
+  over the probability of detection at its rate fitted to single-blind controlled releases, applied as the literature
+  states it, so the field's method is the top rung rather than rung 0 or 1 (stumping 1.1b); nothing in the data
+  violates that method's precondition, and every member of the family lands the four (SF10's five curve forms and the
+  coarse correction, standing spread zero).
+- **Back-test:** fails: no validation record confirms the easy route; the release study refutes blanks-as-zeros on its
+  face (1 of 49 releases below 3 kg/h detected, 34 of 35 above 40), a search signal toward the golden.
+- **Second use:** fails: the controlled-release study and the note's 4.2 are read by the decisive step alone; the asks
+  read no release row (the separation check), so deleting the step from the design drops the file, and its presence
+  announces the step.
+- **Shock:** fails: the golden four (Calbrent 0.077, Ostrel 0.085, Corrandale 0.109, Brushy Mesa 0.126 on the default
+  path) are exactly the four lowest of the default path's sort, an interval of a shipped statistic's ordering.
+- **Pins:** holds: the standard files the WHAT (emitted at 5 kg/h or more over the rating year, against methane
+  produced, campaigns counting equally) and no filed sentence names a weight or a correction; the note's 4.2 files the
+  instrument's curve form, which the step rides on.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -412,3 +439,9 @@ standard's measured basis.
 - 2026-10-15, build: every producer's site count a multiple of five and its year of gas a round level. Rejected as
   realism tells; the register leaves out a few imaged sites that carry no source and sit 400 m or more from every
   plume, and each producer's gas takes a non-round level.
+- 2026-11-02, re-check under the new gates: architecture 1 spent, not re-rooted. The easy routes on the clean truth
+  file wrong slates (blanks as zeros eight, carried sources none, detected share ten), but the golden is the field's
+  own POD-corrected aerial inventory (each plume over its detection probability from controlled releases) applied as
+  the textbook states it, with nothing in the data violating its precondition, every curve form and the coarse
+  correction landing the same four, the release study read by the decisive step alone, and the four the bottom four of
+  the default sort (Reflex, Link, Back-test, Second use and Shock fail on the honest anatomy).

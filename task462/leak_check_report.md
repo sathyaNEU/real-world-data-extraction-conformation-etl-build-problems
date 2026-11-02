@@ -1,10 +1,15 @@
 # leak check, task462
 
-**Verdict: REVIEW.** 19 files read, 54 golden figures and 14 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 19 files read, 54 golden figures and 14 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: standard, detection, imaged, production, probability, coverage, sources, campaign, releases, average, passes, emissions, aerial, reports, operator, register, operating, survey, decisive, blanks, weight, rejected, detections, emission, source
+Stump terms swept: detection, standard, production, imaged, probability, decisive, coverage, sources, campaign, releases, passes, emissions, aerial, reports, provider, average, operator, weighting, weight, correction, register, source, survey, nothing, blanks
+
+## 1 file names (LEAK 2, REVIEW 1)
+- **LEAK** `tarvane_rating_folder_data_dictionary.xlsx`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `tarvane_rating_folder_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `talmora_controlled_release_study_2025.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 3)
 - **REVIEW** `ogc_well_production_tollaver_2025_2026.csv`: golden figure 350,917 appears: ...660,585 31-5H,OP-21976,Sunmere Dome,2026-07,22916,350,917,31,ORIGINAL,2026-09-08 35-123-71660,585 31-5H,OP-...
@@ -12,8 +17,8 @@ Stump terms swept: standard, detection, imaged, production, probability, coverag
 - **REVIEW** `tarvane_low_methane_rating_standard_2026.pdf`: golden figure 150 appears: ...register site nearest its estimated origin within 150 m. 4.3 A site's methane emitted over the part o...
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `talmora_survey_methods_note_2026.pdf`: 10 of 25 stump-paragraph terms appear (detection, imaged, coverage, campaign, releases, aerial); read whether the document names the move
-- **REVIEW** `tarvane_low_methane_rating_standard_2026.pdf`: 16 of 25 stump-paragraph terms appear (standard, detection, imaged, production, coverage, campaign); read whether the document names the move
+- **REVIEW** `talmora_survey_methods_note_2026.pdf`: 9 of 25 stump-paragraph terms appear (detection, imaged, coverage, campaign, releases, aerial); read whether the document names the move
+- **REVIEW** `tarvane_low_methane_rating_standard_2026.pdf`: 14 of 25 stump-paragraph terms appear (detection, standard, production, imaged, coverage, campaign); read whether the document names the move
 
 ## 5 announcements (REVIEW 2)
 - **REVIEW** `talmora_survey_methods_note_2026.pdf`: | Technical note TA-TN-26-07 | Issued 12 October 2026 Page 1 Survey Methods Note: Tollaver Basin Campaigns, 2025-2026 Talmora Aerial, Inc.
@@ -24,10 +29,25 @@ Stump terms swept: standard, detection, imaged, production, probability, coverag
 - **INFO** `ghgrp_subpart_w_tollaver_facilities_2023_2025.csv`: names 13 of 14 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `ogc_operator_list_2026.csv`: names 12 of 14 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); second-sentence opener 'put' at 39% of 196 prompts (cap 20%); rounding opener 'give' at 48% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (LEAK 2)
+- **LEAK** `talmora_survey_methods_note_2026.pdf`: names 6 column(s) of the data files verbatim, 43% of talmora_flight_line_coverage_tollaver_2025_2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **LEAK** `tarvane_low_methane_rating_standard_2026.pdf`: names 7 column(s) of the data files verbatim, 40% of ogc_basin_flaring_summary_2025_2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+
+## 13 task metadata (LEAK 3, REVIEW 2)
+- **LEAK** `metadata.json`: title carries a figure from the submission's graded blocks (0.20)
+- **LEAK** `metadata.json`: prompt_shape carries a figure from the submission's graded blocks (0.20)
+- **LEAK** `metadata.json`: stated_inputs[2] carries a figure from the submission's graded blocks (0.20)
+- **REVIEW** `metadata.json`: title shares the design note's stump vocabulary (production, coverage, aerial, reports, register): say what the task decides, not how
+- **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (detection, emissions, aerial): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
@@ -35,9 +55,6 @@ Stump terms swept: standard, detection, imaged, production, probability, coverag
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 

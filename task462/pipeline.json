@@ -5,7 +5,7 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-11-02",
  "stump": "The default path averages each producer's plume rates over its passes and campaigns, counting every imaged site without a plume as zero, and rates eight producers low-methane, among them Anchell, Pinyon Draw, Pellisto and Ashmund (0.150, 0.155, 0.179 and 0.181 per cent), whose methane leaks from many 5 to 15 kg/h sources a pass catches less than half the time; carrying each detected source through the year instead rates none; only weighting each plume by one over the detection probability at its rate, fitted to the provider's blind controlled releases, rates the golden four.",
  "architecture": 1,
  "loops": 0,
@@ -29,9 +29,25 @@
   "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "returned": [],
- "resume": "portal: pending review; nothing open on the build",
+ "resume": "Architecture 1 spent at the 11-02 re-check, on the honest survivor anatomy; not re-rooted on the orchestrating session's rule. The shipped pack (target.zip 33e6d0c4) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (architecture 2) or leave the shipped version to the portal.",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
- "source_note": "seed ET19 (analytical_tasks/07_data_extraction_conformation): the decision (what an emissions data company publishes for each emitter) and the quantity (an emissions intensity across EPA greenhouse gas reporting, production statistics and a measurement record joining many-to-many) kept; the seed's own world (CAMD and GHGRP to EIA through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity from aerial surveys; the crosswalk-key trap is Layer 1 only"
+ "source_note": "seed ET19 (analytical_tasks/07_data_extraction_conformation): the decision (what an emissions data company publishes for each emitter) and the quantity (an emissions intensity across EPA greenhouse gas reporting, production statistics and a measurement record joining many-to-many) kept; the seed's own world (CAMD and GHGRP to EIA through the EPA-EIA crosswalk) is task459's pack, so the intensity is a gas producer's methane intensity from aerial surveys; the crosswalk-key trap is Layer 1 only",
+ "architecture_spent": true,
+ "recheck_2026_11_02": {
+  "rebuild": "reproduces the shipped target.zip byte for byte (sha256 33e6d0c45cc135f0); generator 91 checks, verify green, two builds byte-identical; scipy and statsmodels installed into the container",
+  "analyst_test": "clean truth, generator/checks.py R3a/R3b: blanks as zeros rates eight, each source carried through the year none, sources at their detected share of campaigns ten; only detection weighting rates the golden four; the coarse correction (default total over mean detection chance) and every SF10 curve form also rate the four",
+  "reflex": "the golden is the field's own measurement-informed inventory (inverse probability of detection fitted to controlled releases) applied as stated; nothing in the data violates its precondition; standing spread zero",
+  "survivor_anatomy": "Actor in part, Link fail, Reflex fail, Back-test fail, Second use fail, Shock fail (golden four the bottom four of the default sort), Pins hold",
+  "gates_on_shipped_cut": {
+   "precut": "FAIL: no Measured by line; 7 survivor-anatomy WARNs before the anatomy was written",
+   "voice_check": "PASS (shell quota WARN); the prompt names 'twelve gas producers', a population count the rule does not catch",
+   "leak_py": "LEAK: sweep 1 (data dictionary and manifest by name), sweep 12 (the methods note and the standard name 6 and 7 of the files' columns), sweep 13 (metadata.json title, prompt_shape and stated_inputs carry 0.20)",
+   "guard_heart": "BLOCK: test.same_puzzle_older (task271 v3, task273 v1) and test.same_driver_older (task196 v2, task268 v2, task271 v3, task273 v1, task305 v1), older lineage signatures predating the re-check",
+   "guard_surface": "exit 0; no persona found in the cut pack",
+   "figures_check": "PASS 78 of 78"
+  },
+  "repair": "none cut; nothing in target/, golden/, target.zip, the prompt or any graded figure moved"
+ }
 }
