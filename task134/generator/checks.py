@@ -376,13 +376,13 @@ def main(tdir):
     check("SF24 every cell membership (nearest segment by chainage, rectangle on each segment, nearest segment by distance "
           "or by square offset) files the call and every part", mem_ok)
     figs_now = json.load(open(os.path.join(HERE, "figures.json"))) if os.path.exists(os.path.join(HERE, "figures.json")) else {}
+
+    def holds(text, v):
+        xs = [float(x) for x in re.findall(r"\d+\.\d", text)]
+        return (xs[0] - 0.05 - 1e-9 <= v <= xs[-1] + 0.05 + 1e-9) if xs else False
     if figs_now:
-        held = all(any(abs(natm[n_] - float(x)) <= 0.05 + 1e-9 for x in re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_]))
-                   or (len(re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_])) == 2 and
-                       float(re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_])[0]) - 0.05 <= natm[n_] <=
-                       float(re.findall(r"\d+\.\d", figs_now["component.natural_bed_1dp.%s" % n_])[1]) + 0.05)
-                   for natm in memb.values() for n_ in A.REACH_NAMES)
-        check("SF24 component 1's one-decimal natural beds hold every membership's value", held,
+        check("SF24 component 1's one-decimal natural beds hold every membership's value",
+              all(holds(figs_now["component.natural_bed_1dp.%s" % n_], natm[n_]) for natm in memb.values() for n_ in A.REACH_NAMES),
               str({n_: figs_now["component.natural_bed_1dp.%s" % n_] for n_ in A.REACH_NAMES}))
     check("SF23 ask figures: every placement 150 t and every mean 0.0012 inside its rounding edge",
           min(edge(v, 1000) for v in res["raw"]["a"].values()) >= 150 and min(edge(v, 0.01) for v in res["raw"]["b"].values()) >= 0.0012,
