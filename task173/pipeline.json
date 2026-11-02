@@ -1,44 +1,50 @@
 {
  "task": "task173",
- "status": "PAUSED",
- "domain": "energy-systems-utilities / asset-condition-maintenance",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics / utilization-access-demand-forecasting",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-23",
- "stump": "A competent solver carries the record's service leak repairs per year (1,936, or its trend at 1,998) to 2027 and files 2,000 against 3,000, because it never reads a service's failures on its own meter exchange visits, which add about one repair per 100 exchanges in the weeks after the new meter is set and which the 2027 AMI contract multiplies to 108,398.",
- "architecture": 3,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-02",
+ "stump": "A competent planner carries the FY2024/25 to FY2026/27 age-sex-specific emergency gallstone admission rates on the 2022-based population projections and files about 850 for 2027/28, because it never lays the emergency spells against the cholecystectomy waiting list, where about 45 per cent of them were patients already listed, admitted at about 2.4 per cent a month while they waited, whose admissions fall away once the Wyecross Elective Centre clears the list before the plan year, which puts 2027/28 at about 600.",
+ "architecture": 4,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-23); every REVIEW line answered in ## Leak sweep",
-  "reader": "reader A: call landed (3,000), asks 11 of 52 (21.2 per cent); reader B stopped"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN before the final pull; BLOCK after it at c64ed370 (ban.forcing_event and ban.org_family against task478 v7, which entered the window when the cards drawn between were marked spent; check as drawn now: WARN)",
-  "nearest": "guard.py surface exit 0; nearest drivers task149 and task183 at 0.10",
-  "ruling": "heart BLOCK after the final pull (task478 v7 entered the window when the cards drawn between were marked spent) falls under the author's standing ruling 'Ship, window fixed at draw'; nothing relabelled"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "not run (stopped)",
+  "verdict": "",
   "disposition": "",
   "report": ""
  },
  "returned": [],
- "wave": "wave 8 (new), seed FC44",
- "resume": "stage 1: architecture 3 spent at stage 4 on Gate F (zip c3223db0, reader A landed 3,000 by joining meter sets to leak repairs and the AMI schedule); the next cell comes from the main session",
+ "wave": "Batch 5 wave 9 (resume: new draw)",
+ "resume": "Architecture 4 drawn 2026-11-02 (card v4 registered, DRAWN committed). Next: stage 2 design (readability screen, fork table, ladder, closure, literal reader, oracles, asks, prompt), then the generator at stage 3; precut sits at exit 1 until generator/checks.py and the ceiling script exist.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "target_zip_md5": "c3223db0bdc5ea36cfb4edd35d427dca",
+ "target_zip_md5": "",
  "figures_call_keys": [
-  "call.service_leak_repairs_2027"
+  "call.gallstone_emergency_2027_28"
+ ],
+ "history": [
+  {
+   "architecture": 3,
+   "fate": "spent 2026-10-23 at stage 4 on Gate F (zip c3223db0)",
+   "resume_was": "stage 1: architecture 3 spent at stage 4 on Gate F (zip c3223db0, reader A landed 3,000 by joining meter sets to leak repairs and the AMI schedule); the next cell comes from the main session"
+  }
  ]
 }

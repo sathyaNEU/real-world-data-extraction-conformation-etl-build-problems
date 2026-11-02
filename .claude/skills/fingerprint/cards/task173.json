@@ -1,18 +1,18 @@
 {
   "task": "task173",
-  "architecture": "v3",
-  "drawn": "2026-10-23",
-  "slot_note": "rebuild of a number marked RETIRED on 2026-10-22 and reopened by the author; v2 (load forecasting) spent at Gate F, two later cells died at stage 1 uncarded",
-  "domain": "energy-systems-utilities",
-  "subdomain": "asset-condition-maintenance",
-  "client_domain": "energy-systems-utilities",
-  "niche": "a Texas clay-soil city's water utility forecasting the utility-side service leaks its crews will repair in calendar 2027, the year its AMI contractor exchanges about two thirds of the city's meters in six months, for the estimated quantities of its 2027 service repair and restoration term contract",
+  "architecture": "v4",
+  "drawn": "2026-11-02",
+  "slot_note": "architecture 4 of a reopened number: v3 (water service leaks carried to 2027 through AMI meter exchanges) spent at stage 4 on Gate F; Energy x Forecasting was barred by ban.pairing against task273 at this draw, so the build moved to Healthcare Delivery under the same objective and number",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "utilization-access-demand-forecasting",
+  "client_domain": "healthcare-delivery-health-economics",
+  "niche": "an English two-hospital acute trust's 2027/28 operational plan line for emergency admissions with gallstone disease, the year its new elective surgical centre drains a cholecystectomy waiting list that has run at about thirteen hundred patients since 2022",
   "objective": "forecasting",
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Enter 3,000 water service leak repairs as the Item 101 estimated quantity for 2027 (2,977.6 expected: about 1,900 without exchange visits and about 1.0 added repair per 100 of the 108,398 AMI meter exchanges).",
-  "answer_source": "task173/submission.md block 1; task173/golden/service_leak_forecast_2027.xlsx; task173/generator/figures.json (call.service_leak_repairs_2027)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
@@ -21,77 +21,78 @@
     "none"
   ],
   "generators": [
-    "G2",
+    "G5",
     "G7",
     "G6"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "other",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the legacy and EAM work orders, counts one repair per leak, reads Item 101's scope and the AMI schedule's work types correctly and carries the last two years' 1,936 service leak repairs a year (or the same rate by material and zone, or the 2016 to 2025 trend at 1,998) to 2027 files 2,000 against 3,000, because an exchange closes and reopens an old angle valve and remakes the setter's couplings and the record shows about one added repair per 100 exchanges in the weeks after, while the 2027 AMI contract exchanges 108,398 meters in six months.",
-  "domain_test": "The deciding quantity is the expected count of service failures in 2027, a buried-asset failure hazard estimated per service from its own repair history with each service's own exposure to a work-induced risk window after a meter exchange; with another field's nouns there is no meter setter operated on an old service, no exchange visit that disturbs it and no risk window after it, so the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:work-induced-failure-risk-window-carried-to-a-mass-meter-exchange",
+  "analyst_test": "A strong analyst who rebuilds hospital spells from the finished consultant episodes across the 2023 Fennick record migration, applies the plan's gallstone code list and carries the FY2024/25 to FY2026/27 age-sex-specific emergency admission rates on the 2022-based population projections, the NHS planning method that back-tests within 3 per cent on FY2024/25 and FY2025/26, files about 850 emergency gallstone admissions for 2027/28 against about 600.",
+  "domain_test": "The deciding quantity is the expected count of emergency admissions for gallstone disease in 2027/28, which hospital demand planning forecasts as age-sex-specific rates on the projected population and which here is the sum of first presentations and of admissions of patients already waiting for a cholecystectomy, a clinical hazard of untreated symptomatic gallstones carried on the list's planned size; in another field's nouns there is no elective list with clinical priorities and RTT clocks, no coded emergency spell and no inflamed gallbladder that brings an untreated patient back.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:elective-queue-overflow-in-emergency-demand",
   "layer1": [
-    "two work order systems either side of a 2021 CMMS cutover, the legacy one keyed by street address and the new one by GIS service ID",
-    "one leak carried on several work orders (investigation, repair, restoration)",
-    "a premise-to-service crosswalk that is not one to one (multi-unit premises on one service)",
-    "meter history as separate remove and install rows in the CIS",
-    "material codes from two GIS conversions",
-    "a fiscal year from October to September in the utility's budget against calendar-year counts"
+    "episode-level PAS extract with several finished consultant episodes per spell",
+    "a 2023 migration of Fennick Hospital from its PAS to the trust EPR with a second hospital number series and a crosswalk",
+    "ICD-10 codes written with and without the dot and with fifth-character and asterisk suffixes",
+    "monthly PTL snapshots carrying re-listed pathways and repeated rows",
+    "financial years April to March against mid-year population projections",
+    "theatre times in local clock time across the BST changes",
+    "e-referral clock starts against PAS decision-to-admit dates",
+    "admission method codes in the old two-digit and the EPR text forms"
   ],
-  "stakeholder_role": "distribution maintenance planner in the city water utility, sizing the 2027 service repair and restoration term contract",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
+  "stakeholder_role": "head of capacity and demand planning at an English acute NHS trust, preparing the 2027/28 operational plan's non-elective activity lines",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per episode",
   "spine": {
-    "file": "cis_meter_events_2012_2026.csv",
-    "rows": 141859,
-    "entity": "one meter set or removal on a premise in the CIS",
-    "grain": "premise x meter event",
-    "source": "synthetic (constructed in the layout of a utility CIS meter history extract)"
+    "file": "pas_general_surgery_episodes_2021_2026.csv",
+    "rows": 0,
+    "entity": "one finished consultant episode in general surgery at either hospital",
+    "grain": "episode",
+    "source": "synthetic (constructed in the layout of an NHS PAS episode extract)"
   },
-  "forum": "council_or_assembly",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "local_government",
+  "forum": "board_of_directors",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States, Texas (a fictional clay-soil city of about 380,000)",
-    "currency": "USD",
-    "org_type": "city-owned water utility",
+    "geography": "England (a fictional city and market town)",
+    "currency": "GBP",
+    "org_type": "NHS acute hospitals trust with two hospitals and a new elective surgical centre",
     "invented_names": [
-      "Hollis Bend",
-      "Hollis Bend Water Utilities",
-      "Mabry-Teague Utility Constructors",
-      "Halvorsen Metering Services",
-      "Arredondo Field Services"
+      "Marlstead",
+      "Fennick",
+      "Marlstead and Fennick Hospitals NHS Trust",
+      "Marlstead General Hospital",
+      "Fennick Hospital",
+      "Wyecross Elective Centre",
+      "Coldvale"
     ],
     "people": [
-      "Mario Barnett"
+      "Alison Morgan",
+      "Gordon Wallis"
     ]
   },
   "deliverables": [
-    "service_leak_forecast_2027.xlsx",
-    "service_leaks_by_month.png"
+    "gallstone_emergency_plan_2027_28.xlsx",
+    "gallstone_emergency_profile_2027_28.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "Work done on a unit raises the chance that a part attached to it fails in the weeks that follow, and the record spreads such work thinly across every year, so a failure rate read per unit-year carries only the thin history's share of work-induced failures into a window in which most units are worked on at once; the window's failures are each unit's own rate plus each scheduled visit's induced chance, read from the history's visits on each unit's own record.",
-  "driver_concrete": "An old curb stop or meter setter that is operated when a meter is exchanged leaks within weeks about one time in a hundred, and the record's routine exchanges touch about four meters in a hundred a year, so the service leaks per service-year the history shows carry almost none of the leaks the 2027 AMI exchange of two thirds of the meters will set off; the forecast adds to each service's own rate the induced chance per exchange, read from the leaks on each service in the weeks after its own past exchanges.",
-  "stump": "A competent solver carries the record's service leak repairs per year (1,936, or its trend at 1,998) to 2027 and files 2,000 against 3,000, because it never reads a service's failures on its own meter exchange visits, which add about one repair per 100 exchanges in the weeks after the new meter is set and which the 2027 AMI contract multiplies to 108,398.",
+  "question_form": "what",
+  "driver": "Part of an outcome series is generated by units waiting in a second queue, which convert to the outcome at a steady monthly hazard until they are served, so the series' rate per head of population carries the queue's overflow at the queue's historical size, and a forward plan that drains the queue before the window removes most of that component; the forecast has to split the series by linking each outcome to the queue's own records and carry the queue's part on the queue's planned size.",
+  "driver_concrete": "About 45 per cent of the Trust's emergency gallstone admissions since 2022 were patients already on the cholecystectomy waiting list, admitted at about 2.4 per cent a month while they wait; the Wyecross Elective Centre opens in January 2027 and cuts the list from about 1,300 to about 300 by the summer, so the age-sex rates carried on the population keep a waiting-list share that the plan year will not have.",
+  "stump": "A competent planner carries the age-sex-specific emergency gallstone admission rates of FY2024/25 to FY2026/27 on the 2022-based population projections and files about 850 for 2027/28, because it never links the emergency spells to the cholecystectomy waiting list, where about 45 per cent of them were patients already listed whose admissions fall away once the elective centre clears the list, which puts 2027/28 at about 600.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task125": "task125 re-estimates an aggregate on each period's mix of filtered and unfiltered intakes after a recruitment change; task173 adds to each service's own failure rate the induced chance per scheduled meter exchange, a transient risk window after work on the unit itself, with no intake, filter or recruitment",
-    "task150": "task150 projects a unit's count from its own members, steady outside arrivals and sibling transfers; task173 forecasts failures as each unit's own rate plus a risk window opened by work done on it, read from each unit's own past work",
-    "task501": "task501 reads a transmission matrix's eigenvalue under the season's mixing regime; task173 has no transmission or threshold: failures are independent per service, raised for weeks after an exchange visit",
-    "task132": "task132 resets a wear-out curve when a failed item is replaced in its position; task173's exchanged meter is not the failing part: the visit disturbs the old setter and service it sits on, which fail in the weeks after",
-    "task183": "task183 carries each part's own prior failures forward as a frailty; task173's raised risk comes from work done on the unit, not from its failure history, and lasts weeks",
-    "task149": "task149 reads a hazard per unit of working time against how fast engineered work is done; task173's hazard is per service-day, raised in a window after a discrete visit",
-    "task480": "task480 v1 read old meters' under-registration at their exchange (what the meter had recorded); task173 reads the service leaks the exchange visit sets off on the old setter and service, nothing about what the meter recorded",
-    "task177": "task177 v3 read a default almost only through an exit whose forward hazard a second register shows (a behaviour, estimated per sector); task173's trigger is the organisation's own scheduled visit, its forward count filed, the failures it sets off a few per cent of the record's, and the decisive estimate is the transient excess over each service's own baseline in the weeks after its own past visits"
+    "task137": "task137 v4 recovers demand a capacity-limited service turned away to referrers who served it themselves; task173 adds no unmet demand, it splits an emergency series into first presentations and conversions of patients waiting in the elective queue, read by linking each spell to the queue, and carries the second part on the queue's planned size",
+    "task156": "task156 v1 reads a volunteer tier's capacity off its shortfall periods to size a paid tier; task173 has no tier capacity to read, the waiting patients are a population at risk whose monthly hazard generates another service's admissions",
+    "task111": "task111 v2 names which closed-quarter cause still operates once a returning provider takes the late-day overflow; task173 forecasts a count whose hidden component is the elective list's own conversions, sized by patient-months on the list under the elective centre's plan, not a ranking of causes",
+    "task86": "task86 v2 runs an earlier scheduled draw on a shared pool forward member by member before the decision's own draw; task173 has no draw on a pool, the queue's members generate the outcome at a hazard while they wait and the plan drains the queue"
   },
   "lineage": [
     {
@@ -137,9 +138,39 @@
       "domain": "energy-systems-utilities",
       "subdomain": "load-forecasting",
       "stump_strategy": "decomposition_attribution"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4 on Gate F (zip c3223db0): blind reader A joined the CIS meter sets to the leak repairs and the AMI schedule and landed 3,000; the AMI schedule's one use was the decisive step, so it was joined on sight",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G7",
+        "G6"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "Work done on a unit raises the chance that a part attached to it fails in the weeks that follow, and the record spreads such work thinly across every year, so a failure rate read per unit-year carries only the thin history's share of work-induced failures into a window in which most units are worked on at once; the window's failures are each unit's own rate plus each scheduled visit's induced chance, read from the history's visits on each unit's own record.",
+      "domain": "energy-systems-utilities",
+      "subdomain": "asset-condition-maintenance",
+      "stump_strategy": "causal_design"
     }
   ],
-  "notes": "Architecture 3 of a reopened number. Coding: decisive gap time (the record holds meter exchanges thinly, the forward year massively), population second (the 2027 service-months sit mostly inside the post-exchange window). G2 decisive (the unit the failure rate is read on is each service's own exchange visit and the weeks after it, not the service-year, its route or its street), G7 second (when the induced failures can happen is pinned by an operations file, the AMI deployment schedule), G6 third (the forward year's service-months move to the post-exchange state). Layer 2 family estimand_identification: which exposure the failure rate is read on; Energy carries no client cards, so own: pattern. Architecture 3 spent 2026-10-23 at stage 4 on Gate F (zip c3223db0): blind reader A joined each meter set to the same service's leak repairs within 90 days (about 1 per cent), took that effect out of the history and added it for the 108,398 AMI exchanges, landing 3,000; the AMI schedule's only use was the decisive step, and a file that exists only to carry the forward change is joined to the outcome on sight.",
-  "registered": "2026-10-23T11:00:40Z",
-  "architecture_spent": true
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "that",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "notes": "Architecture 4 of a reopened number. Coding: decisive gap time (the plan year sits after the elective centre's drain, a list state the record never held; the conversions are a monthly hazard over time spent waiting), population second (who generates the 2027/28 emergencies). G5 decisive (the need for a cholecystectomy is met electively or surfaces as an emergency), G7 (the elective centre's sessions are pinned in the capacity plan), G6 (the emergency population's mix of listed and first-presenting patients shifts). stump_strategy decomposition_attribution: the emergency series is the sum of two components with different drivers and only the queue component follows the forward plan. validated_decoy false: no certified or published figure is shipped; the planning method back-tests on the stable 2022-2026 list because the list was stable, which is the survivor anatomy's Back-test line, not a record built to bless it.",
+  "registered": "2026-11-02T02:10:57Z"
 }

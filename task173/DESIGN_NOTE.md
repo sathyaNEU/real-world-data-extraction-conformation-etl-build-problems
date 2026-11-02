@@ -1,327 +1,204 @@
-# task173: Hollis Bend Water Utilities' 2027 utility-side service leak repairs, the year its AMI contractor exchanges two thirds of the city's meters (architecture 3)
+# task173: Marlstead and Fennick Hospitals NHS Trust's 2027/28 plan line for emergency admissions with gallstone disease, the year the Wyecross Elective Centre drains the cholecystectomy waiting list (architecture 4)
 
-**Status (2026-10-23).** Reopened by the author for a from-scratch rebuild (`## Retired`, `## Rebuild (2026-10-23)`).
-Architecture 2 (load forecasting) is spent at Gate F and the psychology and human-reliability cells died at stage 1;
-every world, cell and mechanism in `## Tried and rejected` is spent and is not re-screened. Architecture 3 is drawn in
-`energy-systems-utilities` / `asset-condition-maintenance` (Forecasting), chosen shape first (below).
+**Status (2026-11-02).** Architecture 3 (Hollis Bend's water service leaks carried to 2027 through AMI meter exchanges)
+is spent at stage 4 on Gate F; its world, decisive step and prompt shell are dead and not re-screened. Architecture 4 is
+a new draw at stage 1 in another domain, world and dataset under the same objective and number. Energy Systems &
+Utilities was the sheet's domain, but `guard.py check` returned `ban.pairing` (energy x forecasting against task273 v5)
+on every Energy probe at this draw, and a ban is redrawn, never waited out (`CLAUDE.md`, a stuck build is unblocked).
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task173.json`, architecture v3 (v1 and v2 in `lineage`, v2 marked spent) |
-| Domain / task type | `energy-systems-utilities`, task type `asset-condition-maintenance` (serves Forecasting): the deciding quantity is the count of buried service failures a water utility's crews will repair in 2027, a failure hazard per service carried to a year in which most services are worked on |
-| Objective | Forecasting & Predictive Modeling: utility-side service leak repairs completed in calendar 2027, a window not yet open; records run to 30 September 2026 |
-| Shape | `02`, a forecast with its history: the call (the 2027 count, nearest 250), three critical components (the 2027 base, the added repairs per 100 exchanges, the scheduled exchanges), Form 3B's base-year grids (Item 201 by service centre and month, 36 figures; Items 301 to 305 by surface type and quarter, 16 figures), the monthly chart and the two files: about 58 criteria |
-| Spine | `cis_meter_events_2012_2026.csv`, one row per meter set or removal, 141,859 rows; with `gis_service_lines_20260930.csv` (147,361 services), `cis_premises_20260930.csv` and `ami_install_schedule_2027.csv` (155,460 premises each) |
-| Deliverables | `service_leak_forecast_2027.xlsx` (the forecast, its working, the two Form 3B tables, notes), `service_leaks_by_month.png` |
-| Decision | `quantity_figure`, answer unit `count`: the estimated quantity of service leak repairs in the 2027 service repair and restoration term contract |
-| Mechanism | gap time (decisive: the record spreads meter exchanges thinly, about one meter in twenty a year, and the forward year exchanges about two in three within six months), with population (the 2027 service-months sit mostly inside the weeks after an exchange, where the record has few); pattern none; generators G2 (decisive: the unit the failure rate is read on is each service's own exchange visit and the weeks after it, not the service-year, its route or its street), G7 (when the induced failures can happen is pinned by an operations file, the AMI deployment schedule), G6 (the forward year's service-months move to the post-exchange state); Gate G `forecasting`; strategy `causal_design` (a transient risk window after a discrete visit, identified on each service against its own baseline) |
-| Layer 2 family / pattern | `estimand_identification` (which exposure the failure rate is read on); `own:work-induced-failure-risk-window-carried-to-a-mass-meter-exchange` (Energy carries no client cards; the five families and the nearest domains' cards are the seeds) |
-| Furniture | forum `council_or_assembly` (the City Council awards term contracts above the purchasing threshold on the estimated quantities), forcing event `purchase_order_or_contract` (the 2027 service repair and restoration term contract goes to bid with estimated quantities), organisation `local_government` (the utility is a department of the City), role `operations_director`, context artifact `other` (the bid schedule of estimated quantities), calibration `none` |
-| World | Hollis Bend, a fictional Texas city of about 380,000 on shrink-swell clay; Hollis Bend Water Utilities, a city department, about 140,000 metered services with meters in curb boxes on setters with angle valves; meters exchanged at end of life by the utility's meter shop (and in 2022 by a contractor clearing stopped meters); a 2026 AMI contract exchanges every pre-2019 meter February to July 2027 and fits radio endpoints to the rest. All fictional; the field's method is real |
-| People | `guard.py names --geo us --seed 173`: Mario Barnett (the planner; the golden workbook's author, in no pack file); Heidi Snyder drawn and not used; Michelle Russell dropped on a people.first WARN |
+| Card | `.claude/skills/fingerprint/cards/task173.json`, architecture v4 (v1 to v3 in `lineage`, v3 spent at stage 4) |
+| Domain / task type | `healthcare-delivery-health-economics`, task type `utilization-access-demand-forecasting` (serves Forecasting): the deciding quantity is the count of emergency admissions with gallstone disease a two-hospital acute trust will have in a plan year, demand that hospital planning forecasts per head of the projected population |
+| Objective | Forecasting & Predictive Modeling: emergency gallstone admissions in financial year 2027/28 (1 April 2027 to 31 March 2028), a window not yet open; the records run to 31 October 2026 |
+| Shape | `02`, a forecast across periods: the call (the 2027/28 count, nearest 50), the monthly profile by hospital (24 figures, the plan's upload rows), critical components, and the asks (designed at stage 2 in `supplemental-stumping`); about 45 criteria planned |
+| Spine | `pas_general_surgery_episodes_2021_2026.csv`, one row per finished consultant episode in general surgery at either hospital, April 2021 to October 2026 (about 130,000 rows), with the monthly admitted PTL snapshots (about 90,000 rows), the theatre case log and the e-referral extract |
+| Deliverables | `gallstone_emergency_plan_2027_28.xlsx` (the forecast, its working, the chart, the ask tables) and `gallstone_emergency_profile_2027_28.csv` (the plan's monthly activity rows by hospital, in the ICB upload layout) |
+| Decision | `quantity_figure`, answer unit `count`: the planned activity for the 2027/28 non-elective line "emergency admissions, gallstone disease" in the Trust's operational plan, approved by the Trust Board and submitted to NHS England |
+| Mechanism | gap time (decisive: the plan year sits after the elective centre drains the list, a list state the record never held, and the list's emergency admissions accrue per month spent waiting) with population (who generates the plan year's emergencies); pattern none; generators G5 (decisive: the need for a cholecystectomy is met electively or surfaces as an emergency, and the plan year meets far more of it electively), G7 (the elective centre's sessions are pinned in the capacity plan), G6 (the emergency population's mix of listed and first-presenting patients shifts); Gate G `forecasting`; strategy `decomposition_attribution` (the emergency series is two components with different drivers, and only the list component follows the plan) |
+| Layer 2 family / pattern | `estimation_fit` (a decomposition the data's structure forces); `own:elective-queue-overflow-in-emergency-demand`; the client's utilization card 2 (age-specific rates on the projected population) is the default path's method |
+| Furniture | forum `board_of_directors` (the Trust Board approves the operational plan), forcing event `statutory_or_regulatory_filing` (the 2027/28 operational plan submission to NHS England through the ICB), organisation `hospital_or_health_provider`, role `capacity_planner` (head of capacity and demand planning), context artifact `capacity_report` (the 2027/28 elective capacity plan), calibration `none` |
+| World | Marlstead and Fennick Hospitals NHS Trust, a fictional English acute trust of two hospitals (Marlstead General Hospital in the city, Fennick Hospital in the market town) serving about 560,000 people across Marlstead and Coldvale districts; Fennick Hospital moved from its own PAS to the Trust EPR in 2023; the Wyecross Elective Centre, four day-case theatres on the Fennick site, opens on 11 January 2027. All fictional; the field's method is real |
+| People | `guard.py names --geo uk --seed 173`: Alison Morgan (the planner, the golden workbook's author, in no pack file) and Gordon Wallis drawn; Kirsty Elliott dropped on a `people.last` WARN |
 
-**Why this cell, shape first.** The shape that held this round is a forward population sitting at one end of an
-exposure the record measures at a finer grain than the textbook model uses, the right exposure chosen by fit (task175),
-or a structural estimand choice the textbook route does not make (task169). In buried-asset failure forecasting the
-textbook route is a failure rate per asset-year by material, age and environment carried to the forward inventory;
-the judgment it takes for granted is what exposure the failures are read on. Here the forward year is the end of an
-exposure (work on the service) that the record holds only thinly, and the exposure is visible only by linking each
-service's leaks to its own meter history.
+**Guard (registered card, 2026-11-02T02:10:57Z).** `guard.py check` on the registered card: WARN only, no BLOCK.
+`overuse.objective`, `overuse.gate_g` and `repeat.gate_g` (task166): the number belongs to the Forecasting lane and the
+Gate G mechanism is honestly a forecast. `repeat.decision` (quantity_figure against task166): an operational plan line
+is a count, the plan's own unit. The older `test.same_puzzle` and `test.same_driver` signatures (task137 v4, task156
+v1, task111 v2, task86 v2) carry a differentiation line each on the card. The deliverable set moved from docx+xlsx
+(repeat of task273) and svg+xlsx (repeat of task157) to csv+xlsx, the plan's upload rows beside the workbook; the
+shell is read from `prompt.txt` at stage 2 and must differ from architecture 3's (how-many | that | png+xlsx), which
+sits in `lineage_shells`. Personas from `guard.py names`; Kirsty Elliott dropped on `people.last` (task453).
 
-**Data-native sentence.** In Hollis Bend a meter exchange means closing and reopening a decades-old angle valve and
-breaking and remaking the setter's couplings in a clay-filled box, and about one exchange in a hundred leaks within
-weeks, while the record's routine exchanges touch only about one meter in twenty a year, so the leaks per service-year
-the record shows carry almost none of what the 2027 exchange of two thirds of the meters sets off; the induced chance
-is readable only on each service's own record, its leaks in the weeks after its own past exchanges against its own
-baseline.
+**Why this cell.** The held shape in this batch is the field's own method for the deciding quantity at the bottom of the
+ladder, filing a wrong answer, with the decisive step the precondition this dataset violates. Hospital demand planning
+forecasts emergency admissions per head of population by age and sex (the client's utilization card 2), which takes for
+granted that the rate per head does not depend on the hospital's own elective capacity. For gallstone disease it does:
+patients waiting for a cholecystectomy are admitted as emergencies while they wait, so part of the emergency series is
+the elective list's own overflow, and a plan year that follows a large change in the list breaks the rate per head.
 
-**Screen measured before the card** (`scratchpad/b173s/proto/s1b.py` to `s1d.py`, 140,000 services, 2012 to 2026,
-about 60,000 routine exchanges and 16,000 leaks, four seeds): the default (leaks per service-year of the last two
-years) files 0.53 to 0.57 of the 2027 expected truth; the golden family (the per-exchange excess over each service's
-own base inside a 120, 180 or 365 day window, with the delay profile applied to the 2027 schedule) sits at 0.98 to 1.05
-of the truth across seeds and within 1 to 3 per cent of itself within a seed; windows of 60 to 90 days without the
-delay tail file 0.89 to 0.96. Final magnitudes are set on the generator (`## Ladder`).
+**Data-native sentence.** In this trust the cholecystectomy waiting list has run at about 1,300 patients and a
+fifteen-month wait since 2022, and while they wait about one listed patient in forty a month comes back through the
+emergency department with biliary colic, cholecystitis, cholangitis or gallstone pancreatitis, so nearly half the
+emergency gallstone series is the list's overflow; the Wyecross Elective Centre drains the list in the first half of
+2027, before the plan year begins, which a rate per head carried on the population cannot see, and the overflow shows
+only when each emergency spell is laid against the PTL snapshot in force on its admission date.
 
-## Guard
+**Abstraction sentence (the test of `stumping` Part 6).** "Part of an outcome series is generated by units waiting in a
+second queue at a steady monthly hazard, so the series' rate per head carries the queue at its historical size, and a
+plan that drains the queue before the window removes that part." Written against the nearest approved and shipped
+drivers it does not describe them: task148 (callers who abandon drain the queue each new caller meets, the waits being
+the answer), task137 v4 (demand a capacity-limited service turned away to referrers), task111 v2 (which closed-quarter
+cause still operates once a returning provider takes late-day overflow), task156 v1 (a volunteer tier's capacity read
+off its shortfall periods) and task134 v2 (inflow from a pool outside the register converting after entry). None has a
+queue whose waiting members generate another service's outcome at a hazard per month waited.
 
-`guard.py check`: WARN only (`overuse.objective`, `overuse.gate_g`: the lane's objective and its Gate G;
-`repeat.decision` quantity_figure and `repeat.question_form` how-many against task176: a count of repairs is a
-quantity and asks how many; `repeat.deliverables` xlsx and png against task175: a forecast workbook and its chart).
-Axes redrawn at the probe and under the registration lock, each on the axis the guard named: forum
-`council_or_assembly` first blocked against task274 and `board_of_directors` against task177, then `executive_team`
-blocked against task175 once task274's card was spent; the City Council awards term contracts above the purchasing
-threshold, and with task274 spent that forum is open again, so `council_or_assembly`. Organisation
-`utility_or_infrastructure` blocked against task175: the utility is a department of the City, `local_government`.
-Pattern G6 blocked against task175 and G14 against task176: the decisive rung is the unit the rate is read on (each
-service's own visit and the weeks after it), G2, with G7 and G6 kept beside it. Context artifact `planning_thread`
-blocked against task171, so `other` (the bid schedule). Same-puzzle and same-driver signatures differentiated on the
-card against task125, task150 and task501 v3, with lines against task132, task149, task177 v3, task183 and task480 v1.
+**Screen measured before the card** (`scratchpad/t173/proto/w1b.py`, `w1c.py`, `w1d.py`: patient-level monthly
+simulation, first presentations at age-sex rates growing 1.8 per cent a year, a list held near 1,300 with a conversion
+hazard of 2.4 to 2.5 per cent a month, 40 per cent of converting patients operated in the emergency spell): with the
+elective centre opening in January 2027 the age-sex rate route and the linear trend file 1.40 to 1.62 times the
+decisive route's expected 2027/28 figure across six seeds, and both back-test within 3 per cent on FY2025/26 in four
+seeds of six (up to 11 per cent in two, to be tightened in the generator); with the centre opening in April 2027 the
+lever falls to 1.12 to 1.18, and with the day surgery unit closing instead (the list growing) to 1.09 to 1.25 (both in
+`## Tried and rejected`). The analyst test runs as code on the generator's clean truth at stage 3.
 
-**Abstraction test.** Nearest drivers task149 (hazard per unit of working time against the pace of work, 0.10),
-task183 (a part's own failure history as a frailty, 0.10), task111 v1 (a failure's originating delay in earlier work,
-0.07), task132 (a wear curve reset by replacement, 0.07). None raises a unit's hazard for weeks after a discrete visit
-of work to that unit and carries the visit count of a forward window; task480 v1 read old meters' under-registration at
-their exchange, which is what the meter recorded, not what the visit set off.
+### Candidate screen (stage 1, 2026-11-02)
+
+Each candidate's default path, swap test, anatomy and bin test; every dead one has its line in `## Tried and rejected`.
+
+| # | Candidate (cell) | Default path ends on | Swap | Anatomy | Bin test | Verdict |
+|---|---|---|---|---|---|---|
+| A4.1 | Emergency gallstone admissions, the elective centre draining the cholecystectomy list before the plan year (healthcare delivery, utilization forecasting) | age-sex rates on the projected population, about 850, against about 600 | housing repairs read the same structure but have no clinical priority, RTT clock, coded spell or untreated gallbladder | Actor: on the list at admission, a dated join; Link: PTL against spells, no sentence invites; Reflex: the planning method files 850; Back-test: within 3 per cent; Second use: PTL, capacity plan and theatre log each feed an ask; Shock: the list flat 2022 to 2026; Pins: the plan definitions file the WHAT | nearest 50: 850 against 600, lever 1.40 to 1.62 | carded |
+| A4.2 | The same cell, the day surgery unit closing March to November 2027 and the list growing | 620 against 670 to 720 | as A4.1 | as A4.1 | lever 1.09 to 1.25: the list's share times its growth bounds it | dead on the bin test |
+| A4.3 | The same cell, the elective centre opening in April 2027 | 840 against 700 to 740 | as A4.1 | as A4.1 | lever 1.12 to 1.18: the drain spans the window | dead on the bin test |
+| A4.4 | Haemodialysis access-associated bloodstream infections with vascular access surgery delayed (epidemiology, health burden; healthcare delivery) | rates per patient-day, about 70, against about 100 | strong | Reflex fails: the field's surveillance method rates infections by access type and asks for the forward access mix, whose textbook driver is the access surgery queue | lever about 1.4 | dead on readability test 3 |
+| A4.5 | Domestic abuse incidents by perpetrators on bail awaiting trial, Crown Court sitting days cut (criminology, recidivism) | the incident trend | moderate | Link holds (police against court records, no key) | bail-period incidents about 15 per cent of the total: lever about 1.1, and the correction is a hazard times bail-days, a linear exposure move | dead on the bin test and linearity |
+| A4.6 | Heart-failure outcomes trial events by the cut-off with SGLT2 inhibitor uptake read off the concomitant medication log (biomedical, survival) | the blinded pooled Weibull | strong | the honest label is `composition_mix`, barred by `ban.strategy` against task166 | lever 1.15 to 1.2 | dead on the guard and the bin test |
+| A4.7 | Personal-loan defaults with a named plant closure, exposure read from salary-credit narratives (banking, expected credit loss) | the PD bands with the macro overlay | weak (any creditor) | Pins fail: the macro scenario has to name the plant, which sends the solver looking (readability test 1) | large | dead on test 1 and rule 1 |
+| A4.8 | Hospital-onset C. difficile with genomic cross-transmission and a single-room building (epidemiology, infectious disease) | rate per bed-day | strong | Reflex fails: single rooms announce cross-transmission, and the single-room effect is a free parameter | about 1.3 | dead on tests 1 and 3 and a fork |
+| A4.9 | Energy Systems & Utilities, load forecasting and asset condition (the sheet's domain) | not drawn | | | | barred: `ban.pairing` against task273 v5 on every probe |
 
 ## Default path
 
-The pipeline a strong analyst builds from the prompt, the bid schedule's measurement section and the files' grain,
-every filed rule applied.
+The pipeline a competent planner builds from the prompt's words and the files' grain, with the field's own method for
+emergency demand in it (`stumping` 1.1b; the client's utilization card 2).
 
-1. Stitch the two work order systems: the legacy export to 14 May 2021 (keyed by typed street address) and the EAM
-   workbook from 17 May 2021 (keyed by GIS service ID), dropping CANCELLED orders and counting each MIGRATED order once,
-   in EAM.
-2. Count one repair per leak, as Item 101 measures it: the CLOSED REP orders of WORK_TYPE SERVICE LEAK (investigation
-   and restoration orders are not repairs; customer-side investigations carry no repair order), dated by COMPLETED.
-3. Take the last two full years of the record, October 2024 to September 2026: 3,872 repairs, 1,936 a year; the
-   2016 to 2025 trend (the 2021 freeze year left out) projects 1,998 for 2027, and the same rate by material and
-   pressure zone carried to the 2027 inventory gives 1,936.
-4. Carry the rate to 2027 (the CIP 2027 renewals move it by about 15, inside every bin).
+1. Read the 2027/28 activity definitions: the line counts hospital provider spells at either hospital with an emergency
+   admission method and a first-episode primary diagnosis in the gallstone code list, by admission date.
+2. Rebuild spells from the finished consultant episodes, mapping Fennick's pre-2023 PAS numbers through the crosswalk to
+   the EPR numbers, normalise the ICD-10 codes, take each spell's first episode, keep the emergency admission methods
+   and the code list, and count spells by hospital and month from April 2021 to October 2026.
+3. Compute age-sex-specific emergency admission rates per head over FY2024/25 to FY2026/27 to date against the mid-year
+   population for the two districts, and back-test the method: the FY2023/24 rates on the FY2024/25 population file
+   FY2024/25 within 3 per cent, and the FY2024/25 rates file FY2025/26 within 3 per cent.
+4. Apply the rates to the 2022-based projections for mid-2027, phase by the record's month-of-year profile and the
+   hospitals' shares, and round.
+5. Read the elective capacity plan for the asks: the Wyecross Elective Centre adds general surgery day-case lists from
+   January 2027; it is elective capacity and changes nothing in the emergency line.
 
-Ends on: 2,000 repairs (1,936.0 a year, the record's rate)
+Ends on: about 850 emergency gallstone admissions for 2027/28 (the measured figure is written here at stage 3).
 
-Golden: 3,000 repairs (2,977.6 unrounded)
+Golden: about 600: about 470 first presentations (the same age-sex rates, read on the spells of patients not on the
+list) and about 130 admissions of patients waiting for a cholecystectomy, at the list's measured monthly rate carried on
+the patient-months the capacity plan leaves on the list in 2027/28.
 
 ## Stump sentence
 
-A competent solver carries the record's service leak repairs per year (or the same rate by material and pressure
-zone, or its trend) to 2027 and files 2,000 repairs against 3,000, because it never reads a service's failures on its
-own meter exchange visits: an exchange closes and reopens the old angle valve and remakes the setter's couplings, and
-the record shows about one added repair per 100 exchanges in the weeks after the new meter is set, while the Meter
-Shop's routine change-outs touched about one meter in thirty a year and the AMI contract exchanges 108,398 meters
-between February and July 2027.
+A competent planner who rebuilds spells from episodes across the 2023 migration, applies the plan's gallstone code list
+and carries the FY2024/25 to FY2026/27 age-sex-specific emergency admission rates on the 2022-based population
+projections, a method that back-tests within 3 per cent, files about 850 emergency gallstone admissions for 2027/28;
+the step that lands it there is reading the rate per head as one process, when about 45 per cent of the record's
+admissions were patients already on the cholecystectomy waiting list, admitted at about 2.4 per cent a month while they
+waited, and the Wyecross Elective Centre cuts that list from about 1,300 to about 300 before the plan year begins, so
+the plan year carries about 600.
 
 ## Three rules
 
-- Task type: asset-condition-maintenance (Energy Systems & Utilities), which serves Forecasting & Predictive Modeling: a
-  water utility's count of buried service failures for the contract year, a failure hazard per service carried forward.
-- Domain test: the deciding quantity is the expected number of utility-side service failures in 2027, estimated the
-  way buried-asset failure forecasting estimates it, a rate per service read on each service's own exposure, here the
-  weeks after each service's own meter exchange against the service's base rate, carried to a schedule that exchanges
-  two meters in three.
-- Swap: "how many infusion pump incidents will the hospital log in 2027, the year it replaces two thirds of its pumps"
-  keeps a replacement wave but loses what decides it: an old angle valve and setter operated on a buried service when
-  its meter is changed, failing in the weeks after; a new pump does not disturb an old part it sits on, so the task
-  collapses to a replacement count.
-- Layer 1: two work order systems across a May 2021 cutover (legacy by typed address, EAM by GIS service ID, MIGRATED
-  orders in both), investigation, repair and restoration orders for one leak, CANCELLED call-centre duplicates, a
-  premise-to-service crosswalk with 2.6 per cent of premises unlinked and multifamily premises sharing a service, meter
-  exchanges as REMOVE and SET rows a day or a weekend apart, material codes from two GIS conversions and unknown
-  install years, contract pay estimates resubmitted, payments in vouchers that cover two months, a fiscal year from
-  October against calendar counts; each written by its system and none placed to be caught (`## Layer 1 inventory`).
-- Layer 2: `estimand_identification`, which exposure the failure rate is read on: the record's rate per service-year
-  averages a thin share of service-years inside the weeks after an exchange, and the forward year puts most of its
-  service-years there.
-- Decisive step: read each service's leak repairs against its own meter exchange history (a risk window after each
-  exchange against the service's base rate) and carry the added rate per exchange to the 2027 exchange schedule.
-- Not semantics: every field, code and definition read correctly (a leak is one unit, utility side only, the
-  retrofit leaves the meter in place) still files 2,000, because no field, code or sentence says an exchange visit
-  raises a service's failure rate; the risk window exists only in the timing of each service's repairs against its own
-  meter history, two systems apart.
-- Not rule application: no filed rule or procedure links exchanges to leaks, so executing every stated rule files the
-  record's rate (1,936); once the exposure is read, the licensed family (windows of 90, 120, 180 and 365 days, the
-  pooled base or each service's own prior year, the full record or the EAM years only, the exchange dated by its SET or
-  its REMOVE) spreads 2,933.8 to 3,040.3, 0.43 of the printed unit of 250, all on 3,000; the standing family
-  (windows of 90 to 180 days) spreads 2,933.8 to 2,985.2; what rules the easy route out is the data's own excess, 929
-  repairs inside the 120-day windows of 65,620 exchanges against 269 expected from the base rate, a difference of
-  about 40 standard errors that no filed clause states.
-- Analyst test: a strong analyst who stitches both systems, counts one repair per leak and reads Item 101's scope
-  correctly carries the last two years' 1,936 repairs a year (or its trend, 1,998) to 2027 and files 2,000, against
-  3,000 (`Ends on:`).
-- Estimand: Item 101 of the bid schedule (`itb_27-0114_service_repair_restoration_bid_schedule.pdf`, section 02)
-  files the unit (one leak, however many work orders, on the City's portion of a service from the corporation stop
-  through the meter's outlet coupling), the period (completion), the population (City crews and the contractor
-  together, section 01) and the window (the contract year, 1 January to 31 December 2027, an estimate of the work the
-  year will require); the prompt asks for calendar 2027 to the nearest 250.
-- No decoy: nothing is planted; no memo, draft or stakeholder figure states a 2027 quantity, the AMI schedule and the
-  meter history are the organisation's own operational files, and no document argues for the record's rate.
-- No certified replay: no published or certified figure is reproduced by one method only; the method is not hidden and
-  recovered, it is the analysis of each service's own repairs against its own exchanges.
-- Lesson: a failure rate learned per unit-year carries to a period only at the period's own exposure to the visits that
-  raise it, so a forecaster reads the record's failures on each unit's own work history before carrying a rate into a
-  year when most units are worked on; no build on file reads a maintenance-induced risk window (task132 resets a wear
-  curve at replacement, task149 reads a hazard per unit of working time, task183 carries a part's own failure history).
+- Task type: healthcare delivery and health economics, utilization, access and demand forecasting
+  (`healthcare-delivery-health-economics` / `utilization-access-demand-forecasting`): a hospital's emergency admissions
+  for a condition over a plan year not yet begun; it serves Forecasting & Predictive Modeling in the taxonomy.
+- Domain test: the deciding quantity is the expected number of emergency admissions with gallstone disease in 2027/28,
+  which hospital demand planning forecasts as admission rates per head of the projected population by age and sex; the
+  count here is first presentations plus the admissions of patients already listed for a cholecystectomy, whose
+  frequency is the natural history of symptomatic gallstones left untreated, so the deciding analysis is clinical
+  demand modelling of an elective list's overflow, not a generic count.
+- Swap: "how many emergency boiler repairs should a housing association's 2027/28 plan provide for while its kitchen and
+  heating renewals clear their backlog" keeps the words and loses the task: there is no elective list with clinical
+  priorities and RTT clocks, no spell coded by first-episode diagnosis, no inflamed gallbladder or stone in the bile
+  duct that brings an untreated patient back, and no theatre plan counted in lists; the quantity is an emergency
+  admission count for a disease and it does not survive the swap.
+- Layer 1: the PAS extract is episode-level, a spell carrying several finished consultant episodes (the PAS); Fennick
+  Hospital's 2023 move to the Trust EPR leaves two hospital number series and a crosswalk (the migration); ICD-10 codes
+  come with and without the dot and with fifth-character and asterisk suffixes (the coding systems); admission methods
+  are two-digit codes before the migration and EPR text after it; the PTL is monthly snapshots in which a pathway
+  re-listed after a cancellation appears twice (the PTL report); the theatre log stamps local clock time across the
+  BST changes (the theatre system); clock starts sit in the e-referral extract, not the PTL (two systems); financial
+  years run April to March against mid-year projections. Nothing is placed to be caught.
+- Layer 2: estimation that fits the data: the emergency series is the sum of two components with different drivers,
+  first presentations, which follow the population, and the waiting list's own conversions, which follow the list, and
+  only the second responds to the plan year's elective capacity.
+- Decisive step: recognising that the emergency spells include patients already waiting for their cholecystectomy,
+  reading each spell against the PTL snapshot in force on its admission date, measuring the listed patients' emergency
+  admission hazard per patient-month on the list, and carrying that part on the patient-months the elective capacity
+  plan leaves on the list in 2027/28, while the first presentations alone take the rates per head.
+- Not semantics: every field, code, unit and definition read correctly (episodes rolled to spells, the migration
+  crosswalk applied, the codes normalised, the admission methods mapped, the financial year cut) still leaves the easy
+  route on about 850, because no field, code or flag on a spell says the patient was on the waiting list; that is a
+  relation between a spell's admission date and a PTL pathway's listing and removal dates in another system.
+- Not rule application: no filed rule or procedure performs the step: the activity definitions file what is counted,
+  the access policy files the order lists are worked in, the capacity plan files the sessions, and none says anything
+  about emergency admissions of listed patients, so executing every stated rule files about 850. The enumerated family
+  (age-sex rates over two or three years, a linear trend, seasonal exponential smoothing, rates on the 2018-based or
+  2022-based projections, and the list-linked routes with a pooled, priority-specific or wait-banded hazard) spans the
+  prototype's 746 to 878 on the rate and trend routes against 528 to 582 on the pooled list-linked route over six seeds;
+  the standing family's spread (every route that links the spells to the list and carries the list's planned
+  patient-months, under each hazard form and each first-presentation basis) is measured on the generator's clean truth
+  at stage 3 and asserted in `generator/checks.py` to sit inside the golden's band of 50; nothing in the record rules the
+  easy routes out, because the list held near 1,300 from 2022, so the series never moved with it.
+- Analyst test: a strong analyst who rebuilds spells from episodes across the 2023 migration, applies the code list and
+  carries the FY2024/25 to FY2026/27 age-sex-specific rates on the 2022-based projections, the planning method that
+  back-tests within 3 per cent on FY2024/25 and FY2025/26, files about 850 for 2027/28 (the default path's `Ends on:`),
+  against about 600.
+- Estimand: the 2027/28 activity definitions (`operational_plan_activity_definitions_2027_28.pdf`, the line "NEL-GS-07
+  Emergency admissions, gallstone disease") fix the population (provider spells at Marlstead General Hospital or Fennick
+  Hospital, any age, any residence), the outcome (an emergency admission method with the first finished consultant
+  episode's primary diagnosis in K80, K81, K83.0 or K85.1), the window (admission date 1 April 2027 to 31 March 2028),
+  the unit (a spell, counted once) and the figure planned (the central expectation, not a percentile), and file
+  forecasts against the Trust's own capacity plan as written.
+- No decoy: nothing is planted to be caught: no copied block of records, no hidden rule, no memo, draft, briefing or
+  stakeholder figure carries the wrong answer; the capacity plan is the Trust's real plan and says nothing about
+  emergency admissions, and the access policy is the Trust's real policy.
+- No certified replay: the method is not hidden and recovered by reproducing certified figures; no published or
+  certified emergency figure for the line ships, and the back-test the planner runs is on the record itself.
+- Lesson: a model that gets it right learns that a hospital's emergency demand for a condition with an elective cure is
+  partly the overflow of its own waiting list, so an emergency forecast has to follow the list's planned size, not the
+  population alone; no build on file teaches a queue whose waiting members generate another service's demand.
 
-## Readability screen
+## Survivor anatomy
 
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 the record's repairs a year (two years) | none needed | the EAM count | yes | none | n/a | one count | readable |
-| R1 the same rate by material and pressure zone | none | GIS columns | yes (rate by attribute) | none | n/a | rates times counts | readable |
-| R2 the trend through 2016 to 2025 | none | yearly counts | yes | none | n/a | a fit on counts | readable |
-| R3 the exchange effect read on the route | none | ROUTE column | partly (an area grain) | none | n/a | no | readable |
-| R4 (decisive) each service's repairs in the weeks after its own exchange, against its base | no sentence names exchange visits and leaks together (asserted, R1d) | no column holds it; the meter history (CIS, by premise) and the repairs (EAM by service, legacy by address) join only through the premise-to-service crosswalk and a date window | no textbook leak forecast reads a meter history | none | no sweep joins meter events to repairs | a time-windowed join across two systems through a crosswalk, then a base subtraction | silent |
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | a repair | one per leak (the REP order) | every service leak order (INV, REP, RST) | 3,244 base, another call | Item 101: "A leak is one unit however many work orders or visits its repair takes" |
-| SF2 | the City's side | corporation stop through the meter outlet | customer-side investigations | same call (they carry no repair order) | Item 101's scope sentence |
-| SF3 | in 2027 | repair completed in 2027 | the report date | same call (2,974.2) | Item 101: counted in the period its repair is completed |
-| SF4 | who repairs | City crews and the contractor | the contractor's share only | the contractor's share is assigned later | section 01: the City's total |
-| SF5 | the window | calendar 2027 | fiscal 2027 | the prompt and section 01 | prompt, section 01 |
-| SF6 | the quantity | the expected count | a percentile or a cap | section 01: the City's estimate of the work the year will require | section 01 |
-| SF7 | the schedule | the deployment schedule as filed | four weeks' slippage | same call (2,972.2) | asserted |
-| SF8 | rounding | the unrounded total to the nearest 250 | rounding parts first | same call | prompt |
-| SF9 | HOLD - CIP 2027 rows | not exchanged by the AMI contractor | counted as exchanges | same call (2,981.2) | the CIP: services renewed, meter reset by the main contractor |
-| SF10 | ENDPOINT RETROFIT rows | the meter stays, no exchange | every AMI visit an exchange | 3,447.4, prints 3,500 | the schedule's WORK_TYPE definition in the field definitions (the meter in place keeps its register); the record measures exchanges only |
-| SF11 | Meter Shop change-outs before February 2027 | none scheduled (age change-outs stopped on the AMI award in April 2026) | continuing to March 2027 | same call (2,989.8) | asserted |
-| SF12 | CIP 2027 renewals | renewed services from completion | ignored | same call (within 15) | asserted |
-
-## Ladder
-
-| Rung | Construction | 2027 figure | Prints | Dies to |
-|---|---|---|---|---|
-| R0 | the record's repairs a year, Oct 2024 to Sep 2026 | 1,936.0 | 2,000 | the record's own excess after exchanges |
-| R1 | the same rate by material and pressure zone, carried to the 2027 inventory | 1,936.0 | 2,000 | the same |
-| R2 | the 2016 to 2025 trend (2021 left out) | 1,998.1 | 2,000 | the same |
-| R3 | the exchange effect read on the meter route | 1,954.7 | 2,000 | the fit: the excess sits on the exchanged service, not its route |
-| R4 | each service's repairs after its own exchange, against its base, carried to 108,398 exchanges | 2,977.6 | 3,000 | golden |
-| rival | every AMI visit read as an exchange (retrofits too) | 3,447.4 | 3,500 | SF10 |
-
-Margins: the golden sits 102.6 inside its bin's nearest edge (2,875) against a sampling sigma of 57.2 on the added
-repairs (asserted F2); the default sits 1,041.6 below the golden, more than four bins; the truth expectation is 3,004.6
-(3,000). Family members W90 2,974.0, W120 2,977.6, W180 2,980.2, W365 3,040.3, own base 2,933.8, EAM years 2,985.2,
-REMOVE date 2,977.6, all 3,000 (F1). Components: the 2027 base 1,887.2 (1,900 at the nearest 100; 1,884.3 to 1,887.4
-across windows) and 1.006 added repairs per 100 exchanges (1.0 at one decimal).
-
-## Closure table
-
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | every utility-side service leak repaired in 2027, City crews and contractor | Item 101, section 01; C1 |
-| 2 | Unit of account | one leak | Item 101 sentence; SF1 asserted |
-| 3 | Attribution window | completion date in calendar 2027 | Item 101; SF3 C1 |
-| 4 | As-of dating | the record to 30 September 2026, schedule rev. 4 | manifest; SF7 C3 |
-| 5 | Version basis | the deployment schedule as filed | SF7 C3 |
-| 6 | Denominator | per exchange (the METER EXCHANGE rows) | the schedule's WORK_TYPE definition; SF10 C4 |
-| 7 | Weighting | pooled over exchanges | C1: own-base and pooled both 3,000 (F1) |
-| 8 | Window length | 90 to 365 days | C1 asserted (F1) |
-| 9 | Boundary inclusivity | a repair on the exchange day is outside the window | C1: none moves a bin |
-| 10 | Rounding path | the unrounded total to the nearest 250 | prompt; SF8 |
-| 11 | Tie-break | none | no candidates to tie |
-| 12 | Maturity and censoring | exchanges whose window closes after 30 September 2026 left out | C1 across windows |
-| 13 | Order of operations | base less the record's own exchange repairs, then the added repairs | C1: either order the same call |
-| 14 | Row order | none | sums |
-| 15 | Duplicate resolution | MIGRATED counted once, CANCELLED out | R2a, R2b asserted |
-| 16 | Identity normalisation | legacy addresses normalised to the GIS; premises to services by SERVICE_ID or address | R2c, R2d asserted |
-| 17 | Netting against gross | none | n/a |
-| 18 | Dimensional units | counts | n/a |
-| 19 | Code and status semantics | WORK_CLASS REP is the repair; INV, RST are not | dictionary; SF1 |
-| 20 | Integerisation | none before the final rounding | SF8 |
-| 21 | Clause scope | Item 101 applies to the contract year | section 01 |
-| 22 | Forward window contents | the AMI schedule (rev. 4) and the CIP 2027 program | shipped driver files |
-
-## Literal reader
-
-Executed word for word, the prompt and Item 101 ask for the expected count of leaks repaired on the City's side of
-services in calendar 2027; every literal reading of a term (SF1 to SF12) either files 3,000 or violates a quotable
-sentence (SF1, SF10). The easy answer (2,000) comes from an easy method on the same literal estimand, never from another
-reading.
-
-## Oracles
-
-none for the call: no shipped control, published figure or corpus ties under the record's rate or under the golden.
-For Items 301 to 305 the accounts payable vouchers are the referee (they confirm which revision was paid and hand over
-no square yards); for Item 201 nothing ties.
-
-## Ask sheet
-
-**Ask A, Item 201 base-year quantities: fiscal 2026 main break repairs by service centre and month (36 figures).**
-H18 home: Form 3B, the base-year quantities the bid schedule's Item 201 estimate is set against. Use: the bid form.
-Primary device (D1/D7, which records are one event): a break the crew clamps and the contractor repairs carries two
-repair orders (REP and REPC) with one REPORTED time and one location, counted once at the permanent repair; a second
-break found on the same call carries its own crew REP with the same REPORTED time at another location, a second unit.
-No field says which orders are one break. Hazards: CANCELLED duplicates; the crew yard against the GIS centre (mutual
-aid on 12 per cent of breaks); breaks reported in fiscal 2025 whose permanent repair falls in October 2025. Path:
-`eam_workorders_2021_2026.xlsx` (WORK_TYPE, WORK_CLASS, STATUS, ASSET_ID, ADDRESS, REPORTED, COMPLETED, CREW_YARD),
-`gis_water_mains_20260930.csv` (MAIN_ID, SVC_CENTER, STATUS). Stops: every REP and REPC row (0 of 36); crew REP rows only
-(4); the crew yard (7); one break per asset and reported time (11); the crew's completion date (12); per asset and
-initiated date (2). Realism: crews clamp and hand large breaks to the term contractor, and a crew pressurising a main
-finds a second break on the same call; both are how an EAM records it. Separation: no REPC class on any service leak
-order (asserted); the call reads no main break row.
-
-**Ask B, Items 301 to 305 base-year quantities: fiscal 2026 restoration in square yards by surface type and quarter
-(16 figures).** H18 home: Form 3B. Use: the bid form. Primary device (D9, a paper row covering several ledger lines):
-the contractor resubmits pay estimates (the inspector's re-measure paid at its revision; a later resubmission with
-added quantities returned unpaid), and in each fiscal 2026 quarter one invoice covers two months, one paid at its
-revision and one as first submitted, so no voucher matches either month alone. Hazards: quarter by the estimate's month
-against WORK_COMPLETED; every revision summed. Path: `mabry_teague_pay_estimates_fy2025_fy2026.xlsx` (ESTIMATE_NO, REVISION,
-ITEM, QTY, AMOUNT, WORK_COMPLETED), `ap_payments_contract_23-0388.csv` (GROSS_AMOUNT), the bid schedule's item
-crosswalk. Stops: the latest revision (0 of 16), the first (0), every revision (0), one-to-one reconciliation with the
-latest (0) or first (1) where no voucher matches, the estimate month for the quarter (5). Realism: contract
-administration systems keep every submission; a contractor invoices two months together over the holidays and at
-quarter ends. Separation: the call reads neither file (asserted).
-
-| Ask | Figures | Cracker path (lands the call, runs the battery, executes the filed rules, reconciles controls one to one) | Cracker keeps | Mirror path and keep | Cracker |
-|---|---|---|---|---|---|
-| A Item 201 by centre and month | 36 | every REP and REPC row once CANCELLED orders are out | 0 of 36 | the same, 0 of 36 | miss |
-| B Items 301-305 by surface type and quarter | 16 | each estimate matched one to one to a voucher's gross, the latest (or the first) revision where no voucher matches | 0 of 16 | the latest revision, 0 of 16 | miss |
-
-Pair ceiling: 28.5 (cracker keeps 0 of 52, 45.0; mirror keeps 0 of 52, 12.0; weights 38, 7, 55; every other priced reader route keeps at most 12 of 52, `generator/ceiling.py` output)
-
-Mirror leakage: 0.0 per cent of ask weight
-
-Measured by: generator/ceiling.py
-
-## Layer 1 inventory
-
-| Item | System that writes it | File | Natural mishandling | Neutral (asserted) |
-|---|---|---|---|---|
-| two work order systems across the 17 May 2021 cutover, MIGRATED in both | legacy WMS and EAM | lwms, eam | counting MIGRATED twice | R2a, same call |
-| typed legacy addresses (long suffixes, a dropped directional, a stray space) | legacy WMS | lwms | exact matching only | R2c, same call |
-| investigation, repair and restoration orders for one leak | EAM, legacy | both | counting every order | SF1, ruled out by Item 101 |
-| CANCELLED call-centre duplicates | EAM, legacy | both | counting them | R2b, same call |
-| premises with no SERVICE_ID, multifamily premises on one service | CIS | cis_premises | dropping them | R2d, same call |
-| REMOVE and SET a day or a weekend apart | CIS | cis_meter_events | dating by REMOVE | R2e, same call |
-| one-letter material codes, HDPE, UNK, blank install years | GIS conversions | gis_service_lines | reading them as classes | R2f, rung 1 only |
-| a 2022 stopped-meter contractor's exchanges | CIS | cis_meter_events | leaving them out | R2g, same call |
-| resubmitted pay estimates, combined invoices | contract system, AP | pay estimates, AP | latest revision | Ask B only |
-| fiscal year October to September | Finance | bid schedule | calendar quarters | asks only |
-
-## Leak sweep
-
-`leak.py task173 --asof 2026-10-21`: REVIEW, no LEAK. Each REVIEW line answered:
-- Sweep 3, `field_definitions.txt` and the bid schedule carry the call's nouns (water service leak repair, Item 101,
-  estimated quantity, 2027): the bid schedule asks the question the call answers and defines Item 101, and the field
-  definitions name the work types; neither carries a 2027 figure. Harmless.
-- Sweep 4, `field_definitions.txt` carries record, exchange, history, schedule, family, carried: the file describes
-  the CIS meter history (an exchange is a REMOVE and a SET), the deployment schedule, single-family premises and
-  orders carried into EAM; no sentence relates an exchange to a leak (asserted, R1d). Harmless.
-- Sweep 9, the AMI schedule's planned weeks in 2027: a forward plan on the allow-list (H16), as are the CIP's
-  completion months and the contract year. Harmless.
-- Single-use test: the AMI schedule's only use in the solution is the decisive step; it sits in the folder as one of
-  three 2027 programmes (the CIP, used by the default path to take renewed services out, and the flushing plan, a
-  distractor), so its presence is the planner's 2027 context, not a pointer. The meter history is the CIS's own
-  record and the default path reads none of it. Recorded for the stage 4 reader's question 3.
-
-## Stage 3 gates
-
-- `generator/checks.py`: 81 ok, 0 FAIL (input gates, R1, R2a to R2g, R3a to R3c, the golden family F1 to F5, SF1 to
-  SF12, the asks' devices and separation, documents, registers and realism).
-- `generator/verify.py` (pandas and pypdf, its own path): 0 FAIL; the call 2,977.9 against 2,977.6.
-- Two consecutive full builds byte-identical (16 target files, 2 golden files, the write-up).
-- `figures_check.py task173`: PASS, 51 figures, 0 absent.
-- `generator/ceiling.py`: pair ceiling 28.5, mirror leakage 0.0.
-- `leak.py --asof 2026-10-21`: REVIEW, no LEAK (`## Leak sweep`).
-- `scrub_producer_metadata.py` on `target/` and `golden/`: clean.
-- `precut.py task173`: exit 0; `voice-check.py task173`: PASS.
-- `guard.py surface task173`: exit 0, no persona in the cut pack. `guard.py heart task173` before the final pull
-  (corpus at 3c961849's parent): WARN, no BLOCK (overuse of the lane's objective and Gate G; quantity_figure, how-many
-  and xlsx with png against task175 and task176; nearest drivers task149 and task183 at 0.10).
-- Re-read after the final pull (corpus at c64ed370, H31): `heart` BLOCKs on `ban.forcing_event`
-  (purchase_order_or_contract) and `ban.org_family` (local_government) against task478 v7, registered 02:34Z on 23
-  October, before this card (11:00Z). It entered this card's three-build window because the live cards drawn between
-  the two have since been marked spent; under the registration lock `check` passed, and `guard.py check` on this card
-  as if drawn now passes with WARN only. No honest redraw clears it inside that window: the forcing event is the
-  contract's bid (purchase_order_or_contract; vote_or_meeting, budget_or_appropriation and the filing kinds are
-  banned there too), and the utility is a City department (local_government, against task478) or a water utility
-  (utility_or_infrastructure, against task175). Left for the main session; no axis relabelled.
-- Ruling (main session, 2026-10-23): the heart BLOCK falls under the author's standing ruling "Ship, window fixed at
-  draw"; the card passed `check` under the lock and nothing is relabelled.
+- Actor: the deciding property, that an emergency gallstone spell belongs to a patient already listed for a
+  cholecystectomy, has no column in any file: it is a relation between the spell's admission date and hospital number
+  and a PTL pathway whose listing date precedes it and whose removal date follows it, in a monthly snapshot of another
+  system.
+- Link: the signal is read through a comparison the field's method never asks for: emergency demand is forecast per head
+  of population, and nothing invites laying the emergency spells against the elective PTL; the shared hospital number
+  is only usable once Fennick's pre-2023 numbers are crosswalked, and no sentence in any file joins the two.
+- Reflex: the field's named method for emergency demand, age-sex-specific admission rates carried on the projected
+  population (the NHS planning method; the client's utilization card 2), sits at rung 0 and files about 850; the trend
+  and seasonal-smoothing routes at rung 1 file about 840 to 880.
+- Back-test: the textbook route validates: the FY2023/24 rates file FY2024/25 within 3 per cent and the FY2024/25 rates
+  file FY2025/26 within 3 per cent, because the list held near 1,300 throughout and the series never moved with it.
+- Second use: every file the decisive step reads has its own use: the PTL snapshots the RTT asks, the capacity plan the
+  elective asks and the plan year's sessions, the theatre log the index cholecystectomy ask and the record of sessions,
+  the episodes the default path itself; delete the decisive step and every file stays.
+- Shock: the movement the step recovers reads as ordinary: the list's conversions are steady from 2022 to 2026, the
+  emergency series is flat with ageing growth, and the elective centre is the plan's own good news for electives; no
+  unit appears only in the later period and no statistic sorts to the golden.
+- Pins: the WHAT is filed in the Trust's planning genre (the activity definitions for the 2027/28 plan) and the forecast
+  basis ("against the Trust's own capacity plan as written"); no filed sentence names the waiting list, a hazard, a
+  link or a grouping, and deleting each filed sentence leaves the call forced by the data.
 
 ## Tried and rejected
 
@@ -420,6 +297,43 @@ Measured by: generator/ceiling.py
   (here the AMI schedule, whose one use was the decisive step) is joined to the outcome on sight; the forward
   condition has to sit in a file the default path already reads for another reason.
 
+
+- Architecture 4 draw, Energy Systems & Utilities probes (2026-11-02): `guard.py check` on probe cards for
+  `energy-systems-utilities` / `asset-condition-maintenance` and `/ load-forecasting` returned `ban.pairing` (energy x
+  forecasting against task273 v5, a live card in the last three) and `ban.subdomain` for load forecasting; task307's
+  card registered the same morning carries `architecture_spent`, so it holds no slot and did not move the window. The
+  build moved to another client domain under the same objective and number rather than wait for the window.
+- A4.2, emergency gallstone admissions with Marlstead's day surgery unit closing March to November 2027 and the
+  cholecystectomy list growing (`proto/w1b.py`, four seeds): the trend and age-sex routes file 562 to 646 against an
+  expected 2027/28 of 639 to 703, a lever of 1.09 to 1.25, because the list's share of the emergency series (about a
+  quarter at a list of 500) times its growth over the window (about half) bounds it; under the 1.2x floor more often
+  than not and nowhere near the 1.5 to 2x target. Dead on the bin test.
+- A4.3, the same cell with the Wyecross Elective Centre opening in April 2027 (`proto/w1c.py`, four seeds, a list of
+  1,300 that is 45 per cent of the emergency series): the expected-value lever is 1.12 to 1.18, because the drain spans
+  the plan year and its average list is still about 800. Moving the opening to 11 January 2027 puts most of the drain
+  before 1 April and lifts the lever to 1.40 to 1.62 (`proto/w1d.py`, six seeds): carded as A4.1.
+- A4.4, haemodialysis access-associated bloodstream infections with vascular access surgery delayed by a surgeon's
+  unfilled post: the lever is about 1.4 (catheter days dominate the count at ten to twenty times the fistula rate), but
+  the field's surveillance method rates infections by access type and so asks at once for the forward access mix, whose
+  textbook driver is the access surgery queue; the decisive step is the reflex's own next line (readability test 3), and
+  infections fit neither the utilization task type nor the transmission one cleanly. Dead on paper.
+- A4.5, domestic abuse incidents generated by perpetrators on bail awaiting a Crown Court trial whose 2027 sitting days
+  are cut: the police-to-court link holds no key, but bail-period incidents are about 15 per cent of a force's domestic
+  abuse incidents, a lever of about 1.1, and the correction is a hazard per bail-day times the bail-days, the linear
+  exposure move `strategies.md` Part 6 records as landed twice. Dead on paper.
+- A4.6, a heart-failure outcomes trial's adjudicated events by the 2027 data cut-off with SGLT2 inhibitor uptake read
+  off the concomitant medication log: the honest strategy is `composition_mix` (the at-risk pool's mix on background
+  therapy shifts), barred by `ban.strategy` against task166 at this draw, and the lever (a hazard ratio near 0.75 on a
+  share moving from a fifth to four fifths) is 1.15 to 1.2. Dead on the guard and the bin test.
+- A4.7, a lender's 2027 personal-loan defaults after a named plant closure, exposure read from salary-credit narratives:
+  the forward condition has to sit in the macro scenario, which must name the plant and so sends the solver looking
+  (readability test 1); the swap reads the same for any creditor of the plant's staff (rule 1), and the honest label is
+  population or composition. Dead on paper.
+- A4.8, hospital-onset C. difficile after a move to an all-single-room building, cross-transmission read from
+  genetically linked isolates whose patients shared a ward: single rooms announce cross-transmission to any infection
+  prevention reader (tests 1 and 3), and the single-room effect beyond the record's side rooms is a free parameter (Gate
+  C). Dead on paper.
+
 ## Retired
 
 **RETIRED 2026-10-22 under this round's rule that a number which dies in its second new cell is retired.** Three
@@ -449,3 +363,13 @@ architecture 3, card v3 registered with v2 moved into `lineage` as spent, `pipel
 Architecture 3 (energy-systems-utilities / asset-condition-maintenance) spent at stage 4 on Gate F on zip c3223db0
 (`## Tried and rejected`); card v3 marked `architecture_spent`. PAUSED at stage 1; the next cell comes from the main
 session.
+
+## Re-root (2026-11-02)
+
+Architecture 3 spent at stage 4 on Gate F on zip c3223db0 (`## Tried and rejected`); card v3 moved into `lineage` with
+its fate and its prompt shell (how-many | that | png+xlsx) into `lineage_shells`. Energy Systems & Utilities was barred
+by `ban.pairing` at this draw, so architecture 4 is drawn in `healthcare-delivery-health-economics` /
+`utilization-access-demand-forecasting` (Forecasting) in a new world, dataset and shell, card v4 registered, nine
+candidates screened across six task types (`## Draw`, candidate screen). Architecture 3's generator, pack, goldens,
+prompt, submission, metadata and leak report are removed from the folder at the DRAWN commit (never shipped; git
+history keeps them).
