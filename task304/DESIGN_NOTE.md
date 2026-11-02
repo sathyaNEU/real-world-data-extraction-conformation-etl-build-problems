@@ -364,15 +364,21 @@ Measured by: generator/ceiling.py (run on the cut pack: ask A 3 of 9 to the crac
 - **Gates on the final cut (2026-11-02):** generator checks 62 of 62; verify 15 of 15 (its own NB2 fit by joint
   quasi-Newton, overdispersion 0.260); two byte-identical builds, target.zip 32a9da59; figures_check 37 figures, 0
   absent; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (710 characters); leak.py REVIEW, no LEAK (ruled below);
-  guard heart and surface as recorded in the gate line below. Pair ceiling 44.3, mirror leakage 33.3 per cent
+  guard heart WARN (repeat.question_form against task484 v4, a card registered after this one: the prompt opens on
+  which and how many because the call is a pick sized by a count; nearest driver 0.07); guard surface: no hard tell (no
+  shared file, seed table or invented name; personas Alison Hartley and Cheryl Gregory, the card's), two pairs promoted
+  on surface similarity alone (corpus top 1 per cent) against task271 and task231, each sharing only the decisive gap
+  label (time), for the author's adjudicated clone check. Pair ceiling 44.3, mirror leakage 33.3 per cent
   (generator/ceiling.py): with the handover on the register rows the careful route keeps the third quarter.
 
 **leak.py REVIEW lines, ruled:**
 - Sweep 3 on the screening note (all five of the call's distinctive words): it lists all six junctions alphabetically
   with nodes, districts, layouts and roads, and names the county; no count, rate or rank. Harmless.
-- Sweep 4 on the guidance (record, junctions, traffic, control, expected, crossroads): clauses 3.2 and 3.3 (the filed
-  WHAT: expected annual injury collisions as the junction stands at its 2026 traffic, estimated from the validated
-  record for 2021 to 2025) and Table 2's factors; it names no model, weighting, chance or selection. Harmless.
+- Sweep 4 on the guidance (record, traffic, junctions, control, average, expected, crossroads): clauses 3.2 and 3.3
+  (the filed WHAT: expected annual injury collisions as the junction stands at its 2026 traffic, the long-run yearly
+  average with its own layout and traffic, its recorded count evidence and not the average, the validated record for
+  2021 to 2025) and Table 2's factors; it names no model, comparison group, weighting or blend. Harmless: the stage 4
+  judge asked for exactly this quantity to be filed.
 - Sweep 4 on the screening note (record, junctions, control, crossroads): what was screened and the screening's own
   rule (twelve or more in 2021 to 2025), the fact the bid's list rests on. Harmless.
 - Sweep 6 on the inventory (six of the seven answer-set names beside numbers): traffic estimates by year for every one

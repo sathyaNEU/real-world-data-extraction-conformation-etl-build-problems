@@ -138,20 +138,22 @@ def holes(df, edge):
             rows.append((int(b["ijk"]), b["bench"], b["xc"] - P.BX / 2 + u, b["yc"] - P.BY / 2 + v, a,
                          b["mined"] - dt.timedelta(days=lead), True))
     # edge waste: one or two holes, drilled with their neighbours
-    hb = hist.set_index(["i", "k"])["mined"]
+    hb = {}
+    for (i_, k_), m_ in zip(zip(hist["i"], hist["k"]), hist["mined"]):
+        hb.setdefault((int(i_), int(k_)), m_)
     eh = edge[edge["bench"].isin(P.HIST_BENCH_FLOORS)]
     for _, b in eh.iterrows():
-        key = (b["i"], b["k"])
-        if key not in hb.index:
+        key = (int(b["i"]), int(b["k"]))
+        if key not in hb:
             continue
-        mined = hb.loc[key]
-        mined = mined.iloc[0] if hasattr(mined, "iloc") else mined
+        mined = hb[key]
         for h in range(int(rng.integers(1, 3))):
             u, v = rng.uniform(1.0, P.BX - 1.0), rng.uniform(1.0, P.BY - 1.0)
             a = b["true"] * math.exp(rng.normal(0, P.HOLE_LOG_SD) - P.HOLE_LOG_SD ** 2 / 2.0)
             rows.append((-1, b["bench"], b["xc"] - P.BX / 2 + u, b["yc"] - P.BY / 2 + v, a,
                          mined - dt.timedelta(days=int(rng.integers(4, 24))), False))
     hd = pd.DataFrame(rows, columns=["ijk", "bench", "mx", "my", "au", "drilled", "in_zone"])
+    hd["bench"] = hd["bench"].astype(int)
     hd = hd.sort_values(["drilled", "bench", "mx", "my"]).reset_index(drop=True)
     return hd
 

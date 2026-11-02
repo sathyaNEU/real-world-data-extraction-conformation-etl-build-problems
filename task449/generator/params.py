@@ -25,15 +25,15 @@ THRESHOLD = 1.5                # the order: at most 1.5 registered jobseekers pe
 # QEVS sector groups: code, title, NAICS 2017 sectors, Workshore coverage (share of the sector's vacancies posted
 # on the board), sampling coefficient of variation of the survey estimate.
 SECTORS = [
-    ("AGR", "Agriculture, forestry, fishing and hunting", "11", 0.42, 0.071),
+    ("AGR", "Agriculture, forestry, fishing and hunting", "11", 0.30, 0.071),
     ("CON", "Construction", "23", 0.47, 0.044),
-    ("MFG", "Manufacturing", "31-33", 0.52, 0.041),
-    ("TRD", "Wholesale and retail trade", "41, 44-45", 0.34, 0.038),
+    ("MFG", "Manufacturing", "31-33", 0.46, 0.041),
+    ("TRD", "Wholesale and retail trade", "41, 44-45", 0.38, 0.038),
     ("TRW", "Transportation and warehousing", "48-49", 0.45, 0.052),
     ("PBA", "Professional, business and administrative services", "51-56", 0.40, 0.046),
     ("EDU", "Educational services", "61", 0.66, 0.057),
     ("HCS", "Health care and social assistance", "62", 0.50, 0.033),
-    ("AFS", "Accommodation and food services", "72", 0.33, 0.042),
+    ("AFS", "Accommodation and food services", "72", 0.40, 0.042),
     ("OSP", "Other services and public administration", "71, 81, 91", 0.48, 0.049),
 ]
 SECTOR_CODES = [s[0] for s in SECTORS]
@@ -124,6 +124,7 @@ JS_SEASONAL = {
     "harvest": [1.34, 1.34, 1.24, 1.06, 0.90, 0.80, 0.74, 0.72, 0.76, 0.92, 1.12, 1.26],
 }
 
+SCALE = 2.6                     # province size multiplier on every stock level and jobseeker level
 WEIBULL_SHAPE = 1.3
 EMPLOYER_SPEED_SD = 0.12        # employer-level multiplier on time to fill (lognormal sd)
 DILIGENT_SHARE = 0.48           # self-service employers who take a filled posting down

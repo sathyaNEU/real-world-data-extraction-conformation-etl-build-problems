@@ -26,6 +26,7 @@ def make_world():
     w.ev = E.make_events(w.trips)
     w.other = O.make_other(np.random.default_rng(P.SEED + 11))
     w.entries = O.make_entries(np.random.default_rng(P.SEED + 13))
+    w.entries25 = O.make_entries_2025(np.random.default_rng(P.SEED + 17))
     return w
 
 
@@ -39,8 +40,10 @@ def write_pack(w, target):
     tpo = D.tpo_rows(w, index)
     D.write_tpo_xlsx(os.path.join(target, "tpo_occurrence_log_2025_2026.xlsx"), tpo)
     D.write_codes_xlsx(os.path.join(target, "carvale_transit_codes.xlsx"))
-    D.write_csv(os.path.join(target, "fare_gate_entries_hourly_2026.csv"), ["gate_code", "hour_start_utc", "entries"],
+    D.write_csv(os.path.join(target, "fare_gate_entries_hourly_2026.csv"), ["gate_code", "array_id", "hour_start_utc", "entries"],
                 D.entries_rows(w))
+    D.write_csv(os.path.join(target, "fare_gate_daily_summary_2025.csv"), ["service_day", "gate", "array", "entries_total"],
+                D.entries_2025_rows(w))
     D.gtfs_files(w, os.path.join(target, "gtfs"))
     D.write_geojson(os.path.join(target, "patrol_districts_2026.geojson"), P.D26, "2026-01-01", None)
     D.write_geojson(os.path.join(target, "patrol_districts_2025.geojson"), P.D25, "2019-01-01", "2025-12-31")

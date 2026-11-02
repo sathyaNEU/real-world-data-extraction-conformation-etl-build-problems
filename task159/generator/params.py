@@ -41,3 +41,13 @@ PLAN_DATE = dt.date(2026, 11, 9)
 BASIS_DATE = dt.date(2026, 11, 12)
 BOARD_DATE = dt.date(2026, 12, 8)
 EXPORT_MTIME = dt.datetime(2026, 11, 13, 9, 30, 0)
+
+# The 2027 schedule ends partway along bench 1185 (planned face position, mine grid easting)
+PLAN_1185_FACE_X = 10_150.0
+
+# Dispatch: share of hauls the dispatch system logged a second time (auto-assigned while a truck's GNSS dropped out)
+PHANTOM_RATE = 0.043
+
+# Low-grade stockpile at the 2022 year-end survey
+LGSP_OPEN_T = 2_164_310
+LGSP_OPEN_G = 0.39

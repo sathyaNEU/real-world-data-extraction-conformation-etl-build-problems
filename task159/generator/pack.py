@@ -61,7 +61,7 @@ def build(out):
     lab = lab.sort_values(["received", "batch"], kind="stable").reset_index(drop=True)
     mig = dt.date(2025, 7, 1)
     hole_ids = _hole_ids(hd)
-    leg_no, new_no = 104_116, {}
+    leg_no, new_no, job_no = 104_116, {}, {}
     rows = []
     for _, r in lab.iterrows():
         legacy = r["received"] < mig
@@ -72,8 +72,11 @@ def build(out):
         else:
             yy = r["received"].year % 100
             new_no[yy] = new_no.get(yy, 0) + 1
-            sid = "KS%02d-%06d" % (yy, new_no[yy] + (3 if yy == 25 else 0) * 1000)
-            job = "KLAB-%02d-%04d" % (yy, 300 + int(r["batch"]) % 7000 if yy == 25 else int(r["batch"]) - 1800)
+            sid = "KS%02d-%06d" % (yy, new_no[yy] + (4000 if yy == 25 else 100))
+            bkey = (yy, int(r["batch"]))
+            if bkey not in job_no:
+                job_no[bkey] = sum(1 for k in job_no if k[0] == yy) + (412 if yy == 25 else 1)
+            job = "KLAB-%02d-%04d" % (yy, job_no[bkey])
         kind = r["kind"]
         stype = {"BH": ("BH", "BLASTHOLE"), "FD": ("DUP", "FIELD DUP"), "CRM": ("STD", "CRM"),
                  "BLK": ("BLK", "BLANK")}[kind][0 if legacy else 1]
@@ -385,11 +388,10 @@ def _write_dcs(path, stops, outages):
         duty = other
         t += dt.timedelta(hours=float(rng.uniform(6, 11)))
     rows = []
+    bm0 = 0 if ((s["su"] <= t0) & (s["eu"] > t0)).any() else 1
+    state = {"BM": bm0, "SAG": bm0, "PA": 1, "PB": 0}
     for k in ("BM", "SAG", "PA", "PB"):
-        init = 1 if k in ("BM", "SAG", "PA") else 0
-        rows.append((t0, TAGS[k][0], TAGS[k][2], init, "INITIAL"))
-    # the new tags' first values when the upgraded DCS came on line
-    state = {"BM": 1, "SAG": 1, "PA": 1, "PB": 0}
+        rows.append((t0, TAGS[k][0], TAGS[k][2], state[k], "INITIAL"))
     for t, k, v in sorted(ev, key=lambda x: x[0]):
         if not (t0 < t < t1):
             continue
@@ -450,11 +452,11 @@ def _write_cmms(path, stops):
 def _write_exploration(path, df):
     rng = W._rng("expl")
     rows = []
-    for h in range(1, 236):
+    for h in range(1, 91):
         x = P.X0 + rng.uniform(60, 1060)
         y = P.Y0 + rng.uniform(160, 420)
         e, n = W.mine_to_utm(x, y)
-        hole = "KL%02d-%03d" % (19 + (h - 1) // 60, h)
+        hole = "KL%02d-%03d" % (19 + (h - 1) // 23, 100 + h * 3)
         depth = rng.uniform(140, 320)
         frm = 0.0
         while frm < depth:

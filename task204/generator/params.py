@@ -100,19 +100,19 @@ OTHER_RATE = 134.0
 # Fare gates: gate codes before and after the spring service change (codes were reissued when the
 # infill station opened). Station -> list of (entrance, code_before, code_after).
 GATES = {
-    "WG": [("Main", "E01", "E01")],
-    "CS": [("Concourse", "C01", "C01"), ("4 Street", "C02", "C02")],
-    "UY": [("Main", "E03", "E03")],
-    "MB": [("North", "E04", "E04"), ("South", "E14", "E15")],
-    "FG": [("Main", None, "E05")],
-    "CB": [("Main", "E05", "E06")],
-    "AR": [("Main", "E06", "E07")],
-    "RV": [("Main", "E07", "E08"), ("Park and Ride", "E17", "E18")],
-    "PG": [("Main", "E08", "E09")],
-    "SH": [("Main", "N02", "N02")],
-    "KP": [("Main", "N03", "N03")],
-    "HL": [("Main", "N04", "N04"), ("School Lane", "N14", "N14")],
-    "LM": [("Main", "N05", "N05")],
+    "WG": [("Main", "E01", "E01", "GA-1102")],
+    "CS": [("Concourse", "C01", "C01", "GA-1007"), ("4 Street", "C02", "C02", "GA-1038")],
+    "UY": [("Main", "E03", "E03", "GA-1215")],
+    "MB": [("North", "E04", "E04", "GA-1311"), ("South", "E14", "E15", "GA-1349")],
+    "FG": [("Main", None, "E05", "GA-2604"), ("Exhibition", None, "E17", "GA-2611")],
+    "CB": [("Main", "E05", "E06", "GA-1426")],
+    "AR": [("Main", "E06", "E07", "GA-1520")],
+    "RV": [("Main", "E07", "E08", "GA-1633"), ("Park and Ride", "E17", "E14", "GA-1689")],
+    "PG": [("Main", "E08", "E09", "GA-1702")],
+    "SH": [("Main", "N02", "N02", "GA-3104")],
+    "KP": [("Main", "N03", "N03", "GA-3151")],
+    "HL": [("Main", "N04", "N04", "GA-3227"), ("School Lane", "N14", "N14", "GA-3260")],
+    "LM": [("Main", "N05", "N05", "GA-3318")],
 }
 # Mean weekday entries per station per day (both entrances together); weekend factor applied in world.py.
 ENTRIES = {"WG": 3100, "CS": 9800, "UY": 2700, "MB": 4300, "FG": 1500, "CB": 2400, "AR": 2200,

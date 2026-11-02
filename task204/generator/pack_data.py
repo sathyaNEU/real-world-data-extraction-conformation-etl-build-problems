@@ -119,7 +119,7 @@ RMS_HEADER = ["occurrence_no", "reported_local", "occurred_from_local", "occurre
 
 def station_code_on(st, d):
     """Carvale Transit's station code (the code of the station's main gate) in force on date d."""
-    ent, before, after = P.GATES[st][0]
+    ent, before, after, dev = P.GATES[st][0]
     return before if d < P.SPRING_CHANGE else after
 
 
@@ -191,39 +191,31 @@ def write_tpo_xlsx(path, rows):
 
 
 def write_codes_xlsx(path):
+    """Carvale Transit's code list as the fare systems group publishes it (current codes only)."""
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Stations"
-    ws.append(["station_code", "station_name", "line", "effective_from", "effective_to"])
+    ws.append(["station_code", "station_name", "line", "in_service_from"])
     rows = []
     for st in sorted(P.GATES):
         name = N.STN[st]["name"]
         line = "Eastline / Northline" if st == "CS" else ("Northline" if st in ("SH", "KP", "HL", "LM") else "Eastline")
-        ent, before, after = P.GATES[st][0]
-        if before == after:
-            rows.append([before, name, line, "2008-04-27", ""])
-        else:
-            if before:
-                rows.append([before, name, line, "2008-04-27", "2026-03-28"])
-            rows.append([after, name, line, "2026-03-29", ""])
-    rows.sort(key=lambda r: (r[0], r[3]))
+        opened = "2026-03-29" if st == "FG" else ("2012-04-23" if st in ("RV", "PG") else "2008-04-27")
+        rows.append([P.GATES[st][0][2], name, line, opened])
+    rows.sort(key=lambda r: r[0])
     for r in rows:
         ws.append(r)
     ws2 = wb.create_sheet("Fare gates")
-    ws2.append(["gate_code", "station_name", "entrance", "effective_from", "effective_to"])
+    ws2.append(["gate_code", "station_name", "entrance", "gate_array"])
     rows = []
     for st in sorted(P.GATES):
-        for ent, before, after in P.GATES[st]:
-            name = N.STN[st]["name"]
-            if before == after:
-                rows.append([before, name, ent, "2014-09-02", ""])
-            else:
-                if before:
-                    rows.append([before, name, ent, "2014-09-02", "2026-03-28"])
-                rows.append([after, name, ent, "2026-03-29", ""])
-    rows.sort(key=lambda r: (r[0], r[3]))
+        for ent, before, after, dev in P.GATES[st]:
+            rows.append([after, N.STN[st]["name"], ent, dev])
+    rows.sort(key=lambda r: r[0])
     for r in rows:
         ws2.append(r)
+    ws.append([])
+    ws.append(["Code list revision 14, 30 March 2026 (Fairgrounds station and the Eastline renumbering)"])
     wb.properties.creator = "Carvale Transit Fare Systems"
     wb.properties.lastModifiedBy = "Carvale Transit Fare Systems"
     wb.properties.created = dt.datetime(2026, 3, 30, 16, 2, 40)
@@ -234,8 +226,8 @@ def write_codes_xlsx(path):
 
 def entries_rows(world):
     out = []
-    for (code, tu), n in sorted(world.entries.items(), key=lambda kv: (kv[0][1], kv[0][0])):
-        out.append([code, tu.strftime("%Y-%m-%dT%H:00Z"), n])
+    for (code, dev, tu), n in sorted(world.entries.items(), key=lambda kv: (kv[0][2], kv[0][0])):
+        out.append([code, dev.replace("GA-", "ga"), tu.strftime("%Y-%m-%dT%H:00Z"), n])
     return out
 
 
@@ -285,7 +277,11 @@ def gtfs_files(world, folder):
         cdates.append([sid_of[(per, "WKD")], d.strftime("%Y%m%d"), "2"])
         cdates.append([sid_of[(per, "SUN")], d.strftime("%Y%m%d"), "1"])
     write_csv(os.path.join(folder, "calendar_dates.txt"), ["service_id", "date", "exception_type"], cdates)
-    trows, strows = [], []
+    trows, strows, frows = [], [], []
+    trips, freqs = compress_frequencies(trips)
+    for tid, start, end, hw in freqs:
+        frows.append([tid, N.gtfs_time(start), N.gtfs_time(end), str(hw), "1"])
+    frows.sort(key=lambda r: (r[0], r[1]))
     for tr in sorted(trips, key=lambda t: t["trip_id"]):
         route = "201" if tr["line"] == "EL" else "202"
         last = tr["stops"][-1][0]
@@ -298,10 +294,49 @@ def gtfs_files(world, folder):
     write_csv(os.path.join(folder, "trips.txt"), ["route_id", "service_id", "trip_id", "trip_headsign", "direction_id", "block_id"], trows)
     write_csv(os.path.join(folder, "stop_times.txt"),
               ["trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type", "drop_off_type"], strows)
+    write_csv(os.path.join(folder, "frequencies.txt"), ["trip_id", "start_time", "end_time", "headway_secs", "exact_times"], frows)
     write_csv(os.path.join(folder, "feed_info.txt"),
               ["feed_publisher_name", "feed_publisher_url", "feed_lang", "feed_start_date", "feed_end_date", "feed_version"],
               [["Carvale Transit", "https://www.carvaletransit.ca", "en", "20260104", "20260627", "2026.03.29-r2"]])
     return len(strows)
+
+
+FREQ_BANDS = {"WKD": [(9 * 3600, 15 * 3600), (21 * 3600, 25 * 3600)], "SAT": [(8 * 3600, 21 * 3600)],
+              "SUN": [(9 * 3600, 23 * 3600)]}
+
+
+def compress_frequencies(trips):
+    """Carvale Transit publishes its clock-face service as frequency templates (GTFS frequencies.txt, exact times)."""
+    keep, freqs = [], []
+    groups = {}
+    for tr in trips:
+        groups.setdefault((tr["period"], tr["daytype"], tr["line"], tr["direction"]), []).append(tr)
+    for key, lst in sorted(groups.items()):
+        lst.sort(key=lambda t: t["stops"][0][2])
+        used = set()
+        for (b0, b1) in FREQ_BANDS[key[1]]:
+            band = [t for t in lst if b0 <= t["stops"][0][2] < b1]
+            i = 0
+            while i < len(band):
+                j = i
+                pat = lambda t: tuple((s, a - t["stops"][0][2], d - t["stops"][0][2]) for s, a, d in t["stops"])
+                while (j + 1 < len(band) and pat(band[j + 1]) == pat(band[i])
+                       and (j == i or band[j + 1]["stops"][0][2] - band[j]["stops"][0][2]
+                            == band[i + 1]["stops"][0][2] - band[i]["stops"][0][2])):
+                    j += 1
+                if j - i + 1 >= 4:
+                    hw = band[i + 1]["stops"][0][2] - band[i]["stops"][0][2]
+                    freqs.append((band[i]["trip_id"], band[i]["stops"][0][2], band[j]["stops"][0][2] + hw, hw))
+                    keep.append(band[i])
+                    for t in band[i:j + 1]:
+                        used.add(t["trip_id"])
+                    i = j + 1
+                else:
+                    i += 1
+        for t in lst:
+            if t["trip_id"] not in used:
+                keep.append(t)
+    return keep, freqs
 
 
 def write_geojson(path, layout, eff_from, eff_to):
@@ -340,3 +375,10 @@ def pawn_rows():
                          int(rng.integers(4, 60)) * 10])
         d += dt.timedelta(days=1)
     return rows
+
+
+def entries_2025_rows(world):
+    out = []
+    for (code, dev, day), n in sorted(world.entries25.items(), key=lambda kv: (kv[0][2], kv[0][0])):
+        out.append([day.strftime("%d/%m/%Y"), code, dev, n])
+    return out

@@ -8,25 +8,25 @@
  "updated": "2026-11-02",
  "stump": "Taking each listed junction's 2021 to 2025 injury collisions as its expected count (the cluster-site practice) files Saxby Cross at 2.1 prevented a year; the performance function alone files Tollgate Crossroads; each junction's record weighed against a negative binomial performance function fitted to the county's 1,436 comparable junctions by empirical Bayes files Mill Lane Crossroads at 1.3 a year (Tollgate Crossroads 1.0), because the screening listed the junctions on the counts that estimate them.",
  "architecture": 5,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-02",
   "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-02 on 1a624630, no LEAK; four lines (sweeps 3, 4 and 6 on the screening note, the guidance and the inventory) ruled harmless in the note's Build record",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-02 on 32a9da59, no LEAK; four lines (sweeps 3, 4 and 6) ruled harmless in the note's Build record",
+  "reader": "1a624630: clean, question 6 analytical (estimating expected collisions at sites listed for a high count); to be re-run on 32a9da59 since the guidance changed"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-02 (repeat.question_form against task484 v4, registered later)",
   "nearest": "0.07 task464 v1",
-  "surface": "2026-11-02: no hard tell; two pairs promoted on surface similarity alone (task231, task271; shared gap label time) for the author's adjudicated clone check"
+  "surface": "2026-11-02 on 32a9da59: no hard tell; two pairs promoted on surface similarity alone (task271, task231; shared gap label time)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK (repair)",
+  "report": "stage 4 on 1a624630: Gates C and E; repaired on 32a9da59, re-judge pending"
  },
  "returned": [
   {
@@ -40,9 +40,15 @@
    "portal": "FAILED_TO_STUMP: both responses filed the golden (the needle exchange registrants, about 70 found and 50 starts)",
    "repair": "re-root",
    "commit": ""
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "stage 4 judge on 1a624630 (architecture 5): NOT_DETERMINISTIC, SEND_BACK on Gates C and E, G and H pass; clause 3.3 let the own count comply; the register named no authority for unclassified roads; the A4600 handover needed a placement convention. Leak reader clean.",
+   "repair": "filed the WHAT: clause 3.3 defines the expectation (long-run yearly average as the junction stands, its recorded count evidence and not the average); register U and C entries; grid references on every section row; call and every graded figure unchanged",
+   "commit": ""
   }
  ],
- "resume": "stage 4 (main session): the leak reader and the determinism judge on target.zip 1a624630; every finding fixed in the generator, then stage 5",
+ "resume": "stage 4 (main session): re-judge once and re-run the leak reader on target.zip 32a9da59",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
@@ -118,13 +124,13 @@
   },
   "fate": "spent 2026-11-02 at stage 4; the parcel-hub noise world closed"
  },
- "target_zip": "1a624630",
+ "target_zip": "32a9da59",
  "as_of": "2026-12-04",
  "gates_final_cut": {
   "date": "2026-11-02",
-  "target_zip": "1a624630",
-  "checks": "58 of 58",
-  "verify": "14 of 14",
+  "target_zip": "32a9da59",
+  "checks": "62 of 62",
+  "verify": "15 of 15",
   "rebuilds": "two byte-identical",
   "figures_check": "37 figures, 0 absent",
   "precut": "61 checks, 0 FAIL, 0 WARN",
@@ -132,6 +138,6 @@
   "leak_py": "REVIEW, no LEAK",
   "heart": "WARN",
   "surface": "2 promoted on surface similarity, no hard tell",
-  "pair_ceiling": "28.6 (mirror leakage 4.8 per cent, generator/ceiling.py)"
+  "pair_ceiling": "44.3 (mirror leakage 33.3 per cent, generator/ceiling.py)"
  }
 }

@@ -67,5 +67,5 @@ STORM_DAY = dt.date(2026, 1, 24)
 CLOCK_RESETS = {"AH": 6.0, "CF": 3.0, "EB": 8.0, "GC": 4.0, "HS": 2.0}
 CONSOLE_SWAP = ("DH", dt.date(2026, 2, 17))
 POS_SHADOW = (dt.date(2026, 11, 9), dt.date(2026, 11, 15))
-POS_GOLIVE = dt.datetime(2026, 11, 16, 8, 0)
+POS_GOLIVE = dt.datetime(2026, 11, 16, 6, 0)
 READ_EVERY_H = 2

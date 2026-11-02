@@ -86,7 +86,7 @@ HOUR_WKE = [0.6, 0.2, 0.0, 0.0, 0.0, 0.0, 0.4, 1.4, 2.6, 3.8, 5.2, 6.2, 6.6, 6.6
 
 
 def gate_code_on(station, entrance_i, t_local):
-    ent, before, after = P.GATES[station][entrance_i]
+    ent, before, after, dev = P.GATES[station][entrance_i]
     return before if t_local.date() < P.SPRING_CHANGE else after
 
 
@@ -117,6 +117,27 @@ def make_entries(rng):
                     if n == 0:
                         continue
                     code = gate_code_on(st, i, t_local)
+                    dev = P.GATES[st][i][3]
                     tu = to_utc(t_local)
-                    rows[(code, tu)] = rows.get((code, tu), 0) + n
+                    rows[(code, dev, tu)] = rows.get((code, dev, tu), 0) + n
+    return rows
+
+
+def make_entries_2025(rng):
+    """Daily entries per gate for the 2025 comparison weeks (the fare system's archived daily summary)."""
+    rows = {}
+    for d in dates(P.X25[0], P.X25[1]):
+        wd = d.weekday()
+        holiday = d in P.HOLIDAYS
+        dayf = 1.0 if (wd < 5 and not holiday) else (0.62 if wd == 5 else 0.46)
+        for st in sorted(P.GATES):
+            if st == "FG":
+                continue
+            base = P.ENTRIES[st] * 0.94 * dayf * float(rng.normal(1.0, 0.06))
+            ents = P.GATES[st]
+            shares = [0.68, 0.32] if len(ents) == 2 else [1.0]
+            for i, sh in enumerate(shares):
+                ent, before, after, dev = ents[i]
+                n = int(rng.poisson(base * sh))
+                rows[(before, dev, d)] = n
     return rows

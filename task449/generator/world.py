@@ -77,8 +77,8 @@ def make_employers(rng):
     used_num = set()
     used_bn = set()
     for sc in P.SECTOR_CODES:
-        n_s = {"AGR": 70, "CON": 190, "MFG": 110, "TRD": 260, "TRW": 90, "PBA": 200, "EDU": 40,
-               "HCS": 190, "AFS": 240, "OSP": 150}[sc]
+        n_s = {"AGR": 120, "CON": 380, "MFG": 210, "TRD": 520, "TRW": 170, "PBA": 380, "EDU": 70,
+               "HCS": 360, "AFS": 470, "OSP": 280}[sc]
         for k in range(n_s):
             public = False
             name = None
@@ -138,10 +138,10 @@ def occupation_cells():
     for o in P.OCCUPATIONS:
         code, title, c16, sw, s_share, med, stock, seas, js = o
         for sc, w in sw.items():
-            cells.append((code, sc, w, s_share, med, stock * w, seas, True))
+            cells.append((code, sc, w, s_share, med, stock * w * P.SCALE, seas, True))
     for o in P.OTHER_OCCUPATIONS:
         code, title, c16, sc, s_share, med, stock, seas = o
-        cells.append((code, sc, 1.0, s_share, med, stock, seas, False))
+        cells.append((code, sc, 1.0, s_share, med, stock * P.SCALE, seas, False))
     return cells
 
 

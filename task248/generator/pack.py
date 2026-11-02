@@ -188,8 +188,8 @@ def build(target, o):
     with open(os.path.join(target, "dock_sales_2026-11-09_2026-12-31.jsonl"), "w", encoding="utf-8", newline="\n") as f:
         for rec_ in newpos:
             f.write(json.dumps(rec_, separators=(",", ":")) + "\n")
-    write_csv(os.path.join(target, "pos_grades.csv"), ["site", "grade", "description"],
-              [(idm["newsite"][m], g, POS_PROD[p]) for (m, g), p in sorted(grade_tab.items(), key=lambda kv: (idm["newsite"][kv[0][0]], kv[0][1]))])
+    write_csv(os.path.join(target, "pos_grades.csv"), ["site", "site_name", "grade", "description"],
+              [(idm["newsite"][m], P.MARINAS[m][0], g, POS_PROD[p]) for (m, g), p in sorted(grade_tab.items(), key=lambda kv: (idm["newsite"][kv[0][0]], kv[0][1]))])
 
     # ---- bills of lading (the distributor's export) ----
     rows = []

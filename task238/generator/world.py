@@ -355,69 +355,62 @@ class World:
 
     # ------------------------------------------------------------------ Scanner Code claims (ask A)
     def claims(self):
-        r = self.r
-        self.claim_rows = []   # (store, moment, item, scanned, shelf, channel, register, txn, dup_logged)
-        txn = {s[0]: 4000 + int(r.integers(0, 900)) for s in P.STORES}
-        # overcharges from stray labels on any day, beside the changeover ones the scans produced
-        extra = []
-        for s in P.STORES:
-            no = s[0]
-            tot = sum(v for (st, d), v in self.daytot.items() if st == no)
-            n_stray = int(r.poisson(tot * P.BASE_ERR * 0.5 * 0.022))
-            keys = [d for (st, d) in self.daytot if st == no]
-            for _ in range(n_stray):
-                d = keys[r.integers(len(keys))]
-                hrs = hours_of(d)
-                t = local(d, r.uniform(hrs[0], hrs[-1] + 1))
-                i = int(r.integers(len(self.upc)))
-                sh = float(self.reg[i])
-                sc = round(sh + float(r.choice([0.20, 0.30, 0.40, 0.50, 1.00])), 2)
-                extra.append((no, t, i, sc, sh))
-        pool = [x for x in self.overcharge_scans if r.random() < 0.030] + extra
-        # a few claims made on the evening of 30 September, inside the UTC export window but outside the quarter
-        for s in P.STORES[:9]:
-            no = s[0]
-            if r.random() < 0.8:
-                t = local(dt.date(2026, 9, 30), r.uniform(21.05, 21.95))
-                i = int(r.integers(len(self.upc)))
-                sh = float(self.reg[i])
-                pool.append((no, t, i, round(sh + 0.40, 2), sh))
-        pool.sort(key=lambda x: (x[0], x[1]))
+        """Scanner Code claims: a share of the overcharged changeover scans and of stray-label overcharges, each
+        paid at the register or at the desk; drawn store by store, redrawn while a store's quarter total sits
+        within five cents of a half dollar."""
+        self.claim_rows = []
         zone = {s[0]: s[4] for s in P.STORES}
-        for (no, t, i, sc, sh) in pool:
-            at_till = r.random() < 0.66
-            reg_no = int(r.integers(1, 9))
-            txn[no] += int(r.integers(3, 40))
-            if at_till:
-                # Halifax stores: a supervisor approves the Code payout and logs it in the desk app as well.
-                # Zone 2 stores: the cashier often takes the line back to the shelf price only, and the desk
-                # pays the free item (or the 10.00) when the customer asks for the Code's remedy.
-                u = r.random()
-                if zone[no] == 1:
-                    kind = "dup" if u < 0.45 else ("partial" if u < 0.65 else "plain")
-                else:
-                    kind = "dup" if u < 0.15 else ("partial" if u < 0.60 else "plain")
-                later = t + dt.timedelta(minutes=float(r.uniform(2, 35)))
-                self.claim_rows.append((no, t, i, sc, sh, "till", reg_no, txn[no], (kind, later)))
-            else:
-                later = t + dt.timedelta(hours=float(r.uniform(2, 70)))
-                if later.date() in P.CLOSED or not hours_of(later.date()):
-                    later = later + dt.timedelta(days=1)
-                self.claim_rows.append((no, t, i, sc, sh, "desk", reg_no, txn[no], ("desk", later)))
+        over_by_store = {}
+        for x in self.overcharge_scans:
+            over_by_store.setdefault(x[0], []).append(x)
         for s in P.STORES:
             no = s[0]
-            for _ in range(30):
+            for attempt in range(40):
+                r = np.random.default_rng([P.SEED, no, 23, attempt])
+                txn = 4000 + int(r.integers(0, 900))
+                tot = sum(v for (st, d), v in self.daytot.items() if st == no)
+                keys = [d for (st, d) in self.daytot if st == no]
+                extra = []
+                for _ in range(int(r.poisson(tot * P.BASE_ERR * 0.5 * 0.022))):
+                    d = keys[r.integers(len(keys))]
+                    hrs = hours_of(d)
+                    t = local(d, r.uniform(hrs[0], hrs[-1] + 1))
+                    i = int(r.integers(len(self.upc)))
+                    sh = float(self.reg[i])
+                    sc = round(sh + float(r.choice([0.20, 0.30, 0.40, 0.50, 1.00])), 2)
+                    extra.append((no, t, i, sc, sh))
+                pool = [x for x in over_by_store.get(no, []) if r.random() < 0.030] + extra
+                if no in (101, 102, 103, 104, 105, 106, 107, 201, 202) and r.random() < 0.8:
+                    t = local(dt.date(2026, 9, 30), r.uniform(21.05, 21.95))
+                    i = int(r.integers(len(self.upc)))
+                    sh = float(self.reg[i])
+                    pool.append((no, t, i, round(sh + 0.40, 2), sh))
+                pool.sort(key=lambda x: x[1])
+                rows = []
+                for (no_, t, i, sc, sh) in pool:
+                    at_till = r.random() < 0.66
+                    reg_no = int(r.integers(1, 9))
+                    txn += int(r.integers(3, 40))
+                    if at_till:
+                        u = r.random()
+                        if zone[no] == 1:
+                            kind = "dup" if u < 0.45 else ("partial" if u < 0.65 else "plain")
+                        else:
+                            kind = "dup" if u < 0.15 else ("partial" if u < 0.60 else "plain")
+                        later = t + dt.timedelta(minutes=float(r.uniform(2, 35)))
+                        rows.append((no, t, i, sc, sh, "till", reg_no, txn, (kind, later)))
+                    else:
+                        later = t + dt.timedelta(hours=float(r.uniform(2, 70)))
+                        if later.date() in P.CLOSED or not hours_of(later.date()):
+                            later = later + dt.timedelta(days=1)
+                        rows.append((no, t, i, sc, sh, "desk", reg_no, txn, ("desk", later)))
+                keep = self.claim_rows
+                self.claim_rows = rows
                 v = self.store_payout(no)
+                self.claim_rows = keep
                 if abs((v % 1.0) - 0.5) > 0.05:
                     break
-                rows = [k for k, x in enumerate(self.claim_rows) if x[0] == no and x[5] == "till"]
-                if not rows:
-                    break
-                k = rows[int(r.integers(len(rows)))]
-                x = self.claim_rows[k]
-                kind = x[8][0]
-                new = {"plain": "dup", "dup": "partial", "partial": "plain"}[kind]
-                self.claim_rows[k] = x[:8] + ((new, x[8][1]),)
+            self.claim_rows.extend(rows)
 
     def store_payout(self, no):
         """the dollars store `no` paid out under the Code in the quarter (the clean truth)"""

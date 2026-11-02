@@ -53,24 +53,40 @@ def read_codes(target):
     return out
 
 
-def code_lookup(rows, code, d):
-    """The station a code meant on date d (codes were reissued, so the date decides)."""
-    for r in rows:
-        name_key = "station_code" if "station_code" in r else "gate_code"
-        if r[name_key] != code:
-            continue
-        a = dt.date.fromisoformat(r["effective_from"])
-        b = dt.date.fromisoformat(r["effective_to"]) if r["effective_to"] else dt.date(2099, 1, 1)
-        if a <= d <= b:
+def array_station(codes):
+    """Each gate array's station, from the fare systems code list (arrays keep their id when codes change)."""
+    return {r["gate_array"].replace("-", "").lower(): r["station_name"] for r in codes["Fare gates"]}
+
+
+def code_current(codes, code):
+    """The station a code means in the current code list (a join on the code alone)."""
+    for r in codes["Fare gates"]:
+        if r["gate_code"] == code:
             return r["station_name"]
     return None
 
 
-def code_lookup_current(rows, code):
-    for r in rows:
-        name_key = "station_code" if "station_code" in r else "gate_code"
-        if r[name_key] == code and not r["effective_to"]:
-            return r["station_name"]
+def read_fare_codes(target):
+    """(code, local date) -> gate array, from the 2026 hourly file and the 2025 daily summary."""
+    seen = {}
+    with open(os.path.join(target, "fare_gate_entries_hourly_2026.csv"), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            d = utc_to_local(r["hour_start_utc"]).date()
+            seen[(r["gate_code"], d)] = r["array_id"]
+    with open(os.path.join(target, "fare_gate_daily_summary_2025.csv"), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            d = dt.datetime.strptime(r["service_day"], "%d/%m/%Y").date()
+            seen[(r["gate"], d)] = r["array"]
+    return seen
+
+
+def code_on(fare_codes, arrays, code, d):
+    """The station a code stood for on date d: the array that carried the code that day."""
+    for k in range(0, 8):
+        for dd in (d - dt.timedelta(days=k), d + dt.timedelta(days=k)):
+            a = fare_codes.get((code, dd))
+            if a:
+                return arrays.get(a)
     return None
 
 
@@ -124,7 +140,7 @@ def rms_station(loc_text):
 
 
 # ---- the population -----------------------------------------------------------------------------------
-def phone_offences(rms, tpo, codes, window, dedupe=True, date_aware_codes=True):
+def phone_offences(rms, tpo, codes, window, dedupe=True, date_aware_codes=True, fare_codes=None):
     """Robbery and theft from a person with a phone taken, reported to the Service or to transit officers, once."""
     out = []
     in_win = lambda d: window[0] <= d <= window[1]
@@ -151,8 +167,8 @@ def phone_offences(rms, tpo, codes, window, dedupe=True, date_aware_codes=True):
             continue
         t = utc_to_local(r["Logged (UTC)"])
         d = t.date()
-        st = (code_lookup(codes["Stations"], r["Station Code"], d) if date_aware_codes
-              else code_lookup_current(codes["Stations"], r["Station Code"]))
+        st = (code_on(fare_codes, array_station(codes), r["Station Code"], d) if date_aware_codes
+              else code_current(codes, r["Station Code"]))
         if not in_win(d):
             continue
         if dedupe:
@@ -248,6 +264,11 @@ class GTFS:
         self.st = defaultdict(list)
         for r in rd("stop_times.txt"):
             self.st[r["trip_id"]].append(r)
+        self.freq = defaultdict(list)
+        if os.path.exists(os.path.join(g, "frequencies.txt")):
+            for r in rd("frequencies.txt"):
+                self.freq[r["trip_id"]].append(r)
+        self.expand = True
         self.station_of_stop = {sid: s["stop_name"].rsplit(" Station", 1)[0] for sid, s in self.stops.items()}
         self.route_line = {"201": "EL", "202": "NL"}
 
@@ -266,13 +287,26 @@ class GTFS:
     def departures(self, d):
         """(station, departure datetime, service date, trip_id, pickup_type) for every trip running on service date d."""
         out = []
+        sec = lambda x: int(x[0:-6]) * 3600 + int(x[-5:-3]) * 60 + int(x[-2:])
+        base = dt.datetime(d.year, d.month, d.day)
         for tid, tr in self.trips.items():
             if not self.runs_on(tr["service_id"], d):
                 continue
-            for r in self.st[tid]:
-                h, m, s = map(int, r["departure_time"].split(":"))
-                t = dt.datetime(d.year, d.month, d.day) + dt.timedelta(hours=h, minutes=m, seconds=s)
-                out.append((self.station_of_stop[r["stop_id"]], t, d, tid, r["pickup_type"], self.route_line[tr["route_id"]]))
+            rows = self.st[tid]
+            starts = [(tid, 0)]
+            if self.expand and self.freq.get(tid):
+                first = sec(rows[0]["departure_time"])
+                starts = []
+                for f in self.freq[tid]:
+                    t0, t1, hw = sec(f["start_time"]), sec(f["end_time"]), int(f["headway_secs"])
+                    k = t0
+                    while k < t1:
+                        starts.append(("%s@%d" % (tid, k), k - first))
+                        k += hw
+            for sid_, shift in starts:
+                for r in rows:
+                    t = base + dt.timedelta(seconds=sec(r["departure_time"]) + shift)
+                    out.append((self.station_of_stop[r["stop_id"]], t, d, sid_, r["pickup_type"], self.route_line[tr["route_id"]]))
         return out
 
 
@@ -324,8 +358,8 @@ def team_table(series, polys26):
 
 
 # ---- asks -------------------------------------------------------------------------------------------------
-def ask_a(rms, tpo, codes, polys26, stref, redistrict=True, date_aware=True, dedupe=True):
-    offs = phone_offences(rms, tpo, codes, W25, dedupe=dedupe, date_aware_codes=date_aware)
+def ask_a(rms, tpo, codes, polys26, stref, fare_codes, redistrict=True, date_aware=True, dedupe=True):
+    offs = phone_offences(rms, tpo, codes, W25, dedupe=dedupe, date_aware_codes=date_aware, fare_codes=fare_codes)
     grid = {d: [0, 0, 0] for d in DISTRICTS}
     for o in offs:
         if o["src"] == "RMS":
@@ -342,14 +376,14 @@ def ask_a(rms, tpo, codes, polys26, stref, redistrict=True, date_aware=True, ded
 
 def ask_b(target, codes, date_aware=True, local_window=True):
     out = {s: 0 for s in EASTLINE}
+    arrays = array_station(codes)
     with open(os.path.join(target, "fare_gate_entries_hourly_2026.csv"), encoding="utf-8") as f:
         for r in csv.DictReader(f):
             tu = dt.datetime.strptime(r["hour_start_utc"], "%Y-%m-%dT%H:00Z")
             t = utc_to_local(r["hour_start_utc"]) if local_window else tu
             if not (W26[0] <= t.date() <= W26[1]):
                 continue
-            st = (code_lookup(codes["Fare gates"], r["gate_code"], t.date()) if date_aware
-                  else code_lookup_current(codes["Fare gates"], r["gate_code"]))
+            st = arrays.get(r["array_id"]) if date_aware else code_current(codes, r["gate_code"])
             if st in out:
                 out[st] += int(r["entries"])
     return out
@@ -384,7 +418,8 @@ def run_all(target):
     gtfs = GTFS(target)
     stref = read_station_reference()
     cache = {}
-    offs = phone_offences(rms, tpo, codes, W26)
+    fare_codes = read_fare_codes(target)
+    offs = phone_offences(rms, tpo, codes, W26, fare_codes=fare_codes)
     r0 = local_series(offs)
     r2 = corridor_series(offs)
     gold, runs = golden_series(offs, gtfs, cache=cache)
@@ -395,7 +430,7 @@ def run_all(target):
         "rung2": team_table(r2, polys26),
         "golden": team_table(gold, polys26),
         "runs": runs,
-        "ask_a": ask_a(rms, tpo, codes, polys26, stref),
+        "ask_a": ask_a(rms, tpo, codes, polys26, stref, fare_codes),
         "ask_b": ask_b(target, codes),
         "ask_c": ask_c(gtfs, cache=cache),
     }
@@ -406,6 +441,7 @@ def run_all(target):
     res["_gtfs"] = gtfs
     res["_cache"] = cache
     res["_rms"], res["_tpo"], res["_codes"], res["_polys26"], res["_stref"] = rms, tpo, codes, polys26, stref
+    res["_fare_codes"] = fare_codes
     return res
 
 
