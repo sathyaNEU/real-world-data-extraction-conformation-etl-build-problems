@@ -38,3 +38,14 @@ Stump terms swept: architecture, propane, survey, appliance, counters, heating, 
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (Leak reader, architecture 4 round 1 (2026-11-02, isolated, Sonnet at medium effort, on target.zip ec5ec5c1))
+
+1. Decisive step: none stated; the nearest is the terms' section 4 definition of a section's annual traffic (every motor vehicle passing along it, both directions, on all the days of the calendar year), a definition, not a method.
+2. Nothing ranks the sections on annual traffic (manual counts are one-day 07:00 to 19:00 hourly counts; the counter file is daily totals).
+3. Nothing exists only to help the analyst; the closest is the expansion factor review, scoped to the permanent counters only ("the review does not test count point sections"), a method-validation record that fixes no count-point figure.
+4. Nothing reads as the answer (no section carries an annual figure).
+5. Terms sections 2 and 4 and the noise-mapping scope's section 3 read literally: each counted section's motor vehicles, both directions, over every day of 2025, for the sections counted in 2025; no sentence says how to estimate it from a one-day count.
+6. An analytical choice: estimating annual traffic from the 12-hour counts; nothing states which expansion source to use.
+Sweep flags: the terms and the operations log are harmless (definitions and dated operational entries); the count-point register and the factor review give no section traffic; the UTC asset register lists detectors by junction and approach with inconsistent naming and maps none to a counted section.
+Realism: none generated; minor: every counter shows the same 98 weekdays tested in the factor review.
