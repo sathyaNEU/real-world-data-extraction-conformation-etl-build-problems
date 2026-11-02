@@ -1,427 +1,137 @@
-# task464 design note: the 2027/28 losses reconductoring at Copsewell Cross (architecture 10)
+# task464 design note: Brenmoor's leak-detection grant at Pellow Living's April 2027 renewal (architecture 11)
 
-Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the measured
-screens at the foot of this file before resuming. Architecture 1 (the Wendlemere building emissions slate) was
-sent back by the determinism judge. Architecture 2 (placing the retiring reading test's scores on the new scale)
-was solved on the portal because its decisive step was psychometrics' own named method. Architecture 3 (the 2027
-outpatient capacity register) was sent back at the stage 4 re-judge on Gate C and its world then measured
-closed. Architecture 4 screened the author's fixed education and ETL pairing and refused all four candidates.
-Architecture 5 screened all six ETL cells and refused or barred every one, closing the ETL objective for this
-number. Architecture 6 (the adult skills place slate) was refused twice on measured arithmetic. Architecture 7's
-two candidates were refused on the ledger and on arithmetic. Architecture 8 (the adult education withdrawal
-reasons) was sent back at stage 4 on Gate H3. Architecture 9 (a primary care network's statin continuity
-sessions) held its call on the portal and died twice at the determinism block, because its decisive step was a
-forecast's estimator. Architecture 10 leaves forecasting and estimation behind: the graded quantity is the
-technical loss each project would have removed on flows the network metered, and physics, not a choice of
-estimator, forces its construction.
-- 2026-11-01, re-check under the new leak gate: the IIS reporting rules shipped under a file name the describing-file sweep reads as a dictionary (`definitions`); renamed `iis_regulatory_return_rules_2025-26.pdf` with its text unchanged, nothing else moved (freeze.py PASS).
+Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the records at the foot of
+this file before resuming. Architectures 1 to 9 died as the foot and `## Tried and rejected` record (a determinism
+send-back, a portal solve, a Gate C re-judge, three screened-out cells, two refusals on arithmetic, a Gate H3 send-back
+and two portal determinism returns on a forecast's estimator). Architecture 10 (a distribution network operator's
+losses reconductoring, I2R on net section flows) held its call at the in-house judge and was delivered, but its ask
+layer measured spent at the 2026-11-01 honest-cracker audit and no record in that world could carry a passing device,
+so it was re-rooted on 2026-11-02. Architecture 11 moves to a client domain none of the lineage used and to a world
+chosen so that the ask layer has records the call never reads.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 10; architectures 1, 2, 3, 6, 8 and 9 in
-  `lineage`, architecture 9 carrying its fate), registered 2026-10-28, guard WARN only, 306 cards validated,
-  nearest driver on file 0.09 (task173's architecture 2, a cut group replacing volume from a second source behind
-  one shared meter: a meter shared by two supplies, nothing like a section's net flow).
-- **The WARNs answered.** `overuse.forum` (committee_or_panel in 47 builds): the operator's investment review
-  panel is who decides a losses project, and the honest forum; forum, forcing event and organisation family are
-  all clear of the live window (task488, task270, task268). `overuse.shape` (07 in 3 of the last 12): the
-  panel paper's grid is the eight feeders by three measures (the losses each project removes and its value, the
-  feeder's CI and its CML), the pick the project with the largest saving. The structural NOTES are differentiated on the card: task101 (a threshold cut
-  from a published total less the decision's own payments) and task121's second architecture (a unit
-  re-attributed through a second party's identifier). Two axes were redrawn at the first check and the
-  replacements are the honester labels: `context_artifact` monitoring_export (banned against task488) became
-  `register`, since the file the analysis turns on is the network model the operator keeps, not the monitoring
-  platform's export; and the pattern moved from D to none with G3 first, since the decisive structure is the
-  head meter's net against what each section carries in operation (record against operation), which is truer than
-  "two flawless grains" and clears five spent (population, D, decomposition) signatures.
-- **Pairing:** energy-systems-utilities / asset-condition-maintenance (serves Forecasting and Opportunity Sizing),
-  objective Opportunity Sizing & Decision Support, prompt shape 07 (a grid of cells). The objective is the honest
-  one: the headline is a sized opportunity, the losses on the old sections (the pool) to what the new conductor
-  removes (the realisable), and it drives a one-project call. Forecasting is not drawn: the slot's architecture 9
-  died because a forecast's estimator can always be re-validated into a rival, and this quantity is closed
-  history on metered flows.
-- **Why this ground, measured.** Pharmacology's adherence ground is spent for this number (architecture 9) and
-  education for this number (architectures 2, 4 and 8). The energy OS builds on file size outages (task303,
-  customer-minutes at feeder breakers), unserved energy (task308) and a battery's yield under an export hold
-  (task310); none sizes technical losses. Screened in slot notes before drawing, on the mechanism's words and the
-  setting's: reverse power, reverse flow, two-way flow, I2R, square of the current, reconductoring, technical
-  losses, feeder losses, loss load factor, secondary substation, primary substation, normally open and solar farm
-  return nothing; embedded generation returns task136's connection register (a forecast of new connections) and
-  technical losses one passing task303 line; delay propagation and turnaround, screened for a rejected rail
-  candidate, return task469's note (below).
-- **Niche:** a distribution network operator's 2027/28 losses programme funding one reconductoring project among
-  eight 11 kV feeders out of Copsewell Cross primary, each project replacing its feeder's remaining old conductor,
-  sized as the I2R technical losses the new conductor would have removed on the 2025/26 regulatory year's
-  half-hourly flows and valued at the regulator's losses value.
-- **Strategy:** `decomposition_attribution` (the feeder's correctly metered flow split section by section, where
-  the loads and the solar farm's export overlapping on the same sections decide the split), gap `population`,
-  pattern none with generators `G3` then `G2`, Gate G `decomposition_attribution`, calibration organ none, decisive
-  rule filed `false`, official decoy `false`, validated decoy `false`, `stump_class: analytical`.
-- **Data-native sentence.** The Hob Moor solar farm sits at the far end of Kestle feeder, beyond about 4 km of
-  the feeder's original 0.1 sq in copper overhead line, and the Kestle Park estate that takes most of its export
-  on weekdays is fed from the first two kilometres out of Copsewell Cross; so on a sunny day the old line carries up
-  to 5 MW back toward the estate while the feeder-head meter reads only the estate's load less the export, the
-  estate's and the village's monitors read only their own loads, and no meter on the network reads the old line's
-  flow at all.
-- **Sources, one line each.** task303 (approved ground, shipped) attributes customer-minutes logged at feeder
-  breakers to a shared substation supply; here nothing is re-attributed and the quantity is an energy loss built
-  from metered flows by the line's own topology. task310 rebuilds the output a constrained site's equipment
-  discarded; here no output is rebuilt and every flow the construction uses is metered. task162 replays a pressure
-  valve's setting through a steep leakage law; here the steep law is the square of the current and the decisive
-  structure is where along the line each flow runs, not when a device acts. task308 credits a unit with the hours
-  it would really have been available; nothing here is about availability. task258 carries a measured effect only
-  where its mechanism reaches; here no effect is carried onto any unit, the loss being physics on the record.
-- **Fiction.** An invented licence area in the English West Midlands, GBP, Marchway Power Networks and its Copsewell
-  Cross 33/11 kV primary substation with eight 11 kV feeders (Copsewell Town, Ashlade, Oxenford Lane, Kestle,
-  Pennick Hill, Redburn, Stowmere and Ingle Road), the Hob Moor Solar Park (5 MW export, on Kestle), the Crane
-  Hill wind turbine (1.5 MW, on Stowmere), the Ashlade Community Hospital's CHP (1.2 MW, on Ashlade) and the
-  Kestle Park Industrial Estate. Forum `committee_or_panel` (the investment review panel), forcing event
-  `vote_or_meeting` (the panel's 9 December 2026 meeting), org family `utility_or_infrastructure`. People drawn
-  with `guard.py names --geo england --seed 464`: Gail Dobson (losses strategy lead), Ricky Fisher (network
-  planning engineer), Tracy Parkes (network data lead).
-- **Deliverables:** `losses_programme_2027.xlsx` (each project's 2025/26 saving in MWh and its value at the
-  losses value, the pick and the runner-up), `losses_saving_2027.png` (the eight savings, one labelled bar each,
-  the pick highlighted) and `iis_feeders_2025-26.csv` (each feeder's 2025/26 CI per 100 customers and CML per
-  customer).
-- **The call faces forward:** the panel funds the 2027/28 project in December 2026; each project is sized on
-  the latest complete regulatory year's metered flows, 1 April 2025 to 31 March 2026, which is closed history,
-  so no forecast enters the graded figure.
-- **Measured at the draw** on the clean-truth prototype (scratch `a10/proto3.py`, three solar seeds, before any
-  row was cut; superseded by the cut pack's figures in `## Ladder`). MWh of losses a year each project would have removed:
-
-  | feeder | R0 head current through the replaced sections | R1 head current allocated by transformer kVA | R2 sections' flows from the substations' loads | R3 net of every load and generator beyond each section (golden) |
-  |---|---|---|---|---|
-  | Copsewell Town | 46 | 39 | 40 | 40 |
-  | Ashlade | 59 | 21 | 20 | 14 |
-  | Oxenford Lane | 596 | 23 | 14 | 14 |
-  | Kestle | 394 to 400 | 5 | 2 | 51 to 59 |
-  | Pennick Hill | 192 | 69 | 3 | 3 |
-  | Redburn | 97 | 10 | 10 | 10 |
-  | Stowmere | 48 to 52 | 14 to 16 | 19 | 14 to 15 |
-  | Ingle Road | 20 | 6 | 6 | 6 |
-
-  Each rung names its own feeder (Oxenford Lane, Pennick Hill, Copsewell Town, Kestle), and the golden reorders the
-  whole slate: Kestle is second on the head current, last on both one-way constructions and first on the net flow,
-  1.27 to 1.47 times Copsewell Town. Kestle's saving falls 82 per cent in the summer half, Copsewell Town's 63 per cent
-  in the winter half. Stage 2 tunes the build so that rung 0's figures sit at plausible shares of each feeder's
-  energy, the feeder head never reverses outside a handful of sunny holiday middays, and the golden margin clears
-  1.30 on the cut pack's own weather.
+- **Card:** `.claude/skills/fingerprint/cards/task464.json`, architecture 11, registered 2026-11-02T11:18:59Z,
+  `guard.py check` on the registered card PASS (two NOTEs differentiated on the card, task101 and task121's second
+  architecture, on the gap, the G3 pattern and the Gate G mechanism; nearest drivers 0.09 task306's third architecture
+  and 0.08 task303, task130, task274, task265). Architecture 10 moved into `lineage` with its fate and its prompt shell
+  into `lineage_shells`; seven lineage entries.
+- **Screens run before the draw:** `guard.py recent`, `coverage`, `mechanisms --objective opportunity-sizing-decision`
+  (19 builds, one line each read on the insight spent), `slots` on the mechanism's words (escape of water, flat above,
+  cascade, leak detector, block of flats, stack) and the setting's (repairs log, build-to-rent, landlord, washing
+  machine, leak repair, portfolio policy, flats beneath), and the `resume` of the sibling builds in flight (task180,
+  task183, task453, task154, task266). The live ban window when the card was filed: task453, task154, task183 (forum
+  trustees, regulator, operations desk; forcing period close, statutory filing, season; org nonprofit, agriculture,
+  local government; strategy composition, forecast back-test, grain; shapes other and 13); every axis here clears it.
+- **Pairing:** actuarial-science-insurance / pricing-ratemaking-credibility, which serves Opportunity Sizing and
+  Forecasting; the objective is Opportunity Sizing & Decision Support. The headline is a sized opportunity, pool to
+  realisable: the portfolio's escape-of-water claims (the pool) to the claims of the escapes that start in a
+  programme's flats (what its detectors would have stopped), and it drives a one-programme call. Forecasting is not
+  drawn: the sizing is closed history (the three policy years to 31 March 2026), the record the insurer prices the
+  renewal on, so no forecast enters the graded figure, and the call itself faces forward (the grant for the 2027-28
+  policy year, set at the 1 April 2027 renewal).
+- **Why this ground.** The lineage spent education, healthcare delivery, pharmacology and energy, and screened the
+  survey, physical-science and general-statistics ETL cells; energy and the physical sciences are also where three
+  builds in flight sit with the overuse window full. Actuarial Opportunity Sizing carries one card (task309, a roof
+  retrofit's expected hurricane loss through a vendor event set, catastrophe accumulation), and escape of water in
+  flats was screened only as a pricing lever by floor (task177: a frequency relativity the dwelling-type column takes)
+  and as leak valves by plumbing type (task177: a join and a heterogeneity check), neither the step here.
+- **Niche:** a specialist property insurer's 1 April 2027 renewal of a build-to-rent landlord's portfolio buildings
+  policy: which leak-detection programme on the renewal shortlist (each a list of flats to be fitted with an automatic
+  shut-off detector) the insurer funds as its risk-improvement grant, sized as the escape-of-water claims cost the
+  detectors would have prevented over the policy years 2023-24 to 2025-26.
+- **Strategy:** `decomposition_attribution` (every escape-of-water claim is correctly recorded at the flat that
+  suffered the damage, and the decision needs each escape's claims booked to the flat where the escape started), gap
+  `population` (the claims file is not the escapes), pattern none with generators `G3` (record against operation: the
+  claim records where the water landed, the escape operated in the flat above) then `G10` (one escape under several
+  claims), Gate G `decomposition_attribution`, calibration organ none, decisive rule filed `false`, official decoy
+  `false`, validated decoy `false`, `stump_class: analytical`, Layer 2 family `field_method` (the source attribution
+  insurers already make when they recover a neighbour's escape from the flat it came from).
+- **Data-native sentence.** Pellow Living refitted kitchens on void turnover between 2017 and 2019 and put integrated
+  washing machines in floor-level cupboards, whose hose and valve leaks run under the flat's floor and come through the
+  ceiling of the flat beneath; so the refitted flats themselves rarely claim, the flats under them claim again and
+  again, the insurer's bordereau records each claim at the flat where the water landed, and the only record of where
+  each escape started is the landlord's repairs log, where the plumber who stopped it raised the job.
+- **The abstraction sentence, tested.** The nearest approved build by mechanism is task303 (a feeder's recorded
+  interruptions include losses every sibling feeder logged in the same minute, which originate upstream and leave the
+  conversion's figure). The sentence a reviewer would need, "an intervention at a unit removes only the losses that
+  start there, and the records file losses at units that did not start them", is not true of task303's step, which
+  removes a shared loss from every candidate by simultaneity, and here nothing is shared or removed: each escape starts
+  inside one candidate flat and its claims are moved whole onto that flat from the flats beneath, found by where the
+  escape was stopped and by water running downward, so the source's figure rises by what the others' fall. Against the
+  slot's own architecture 10, which rebuilt a flow magnitude and squared it, nothing here is a flow or a square.
+- **Sources, one line each.** task303 (approved): an upstream shared loss subtracted by the same minute across
+  siblings; here a downstream loss moved to its source by a second system's job record. task309 (approved): an
+  intervention's effect read class by class of intensity through a vendor event set; here no effect is estimated and
+  no event set ships, the detector stopping the escapes that start in its flat by its own specification. task120:
+  a day's use as production less storage gain; nothing here is a balance. task127: a fused wait's replaced step;
+  nothing here is a duration. task106: a shared pool double-booked; no pool is shared here.
+- **Fiction.** An invented portfolio in Greater Manchester: Pellow Living, a build-to-rent landlord with about forty
+  buildings (two 1970s galvanised-pipework towers, mid-rise 1990s and 2000s blocks, low-rise 2015 to 2021 new
+  builds), insured by Brenmoor Insurance, a specialist property insurer, under one portfolio buildings policy with a
+  per-claim escape-of-water excess. Forum `customer_or_counterparty` (Brenmoor puts the funded programme in the renewal
+  terms it offers Pellow), forcing event `purchase_order_or_contract` (the 1 April 2027 renewal), org family
+  `financial_institution`. People drawn with `guard.py names --geo england --seed 464`: Charlotte Holmes (Brenmoor's
+  portfolio underwriter for the account), Pauline Rahman (Pellow's head of property operations, who keeps the repairs
+  log), Katie Gill (Brenmoor's claims analyst).
+- **Deliverables:** `leak_programmes_2027.xlsx` (each programme's prevented claims cost and claims, the pick and the
+  runner-up, and the ask tables) and `renewal_note_2027.pdf` (a one-page note for the landlord with a chart of the
+  programmes' prevented costs). Shell drawn with the world (question form, second-sentence opener `book`, deliverable
+  set pdf+xlsx), differing from architecture 10's (how-much, size, csv+png+xlsx).
+- **Measured at the draw** on a clean-truth prototype (scratch `task464_a11/proto_eow2.py`, 8 seeds, before any row was
+  cut): with equal-sized programmes, booking each claim to its own flat (R0), grouping each escape's claims under the
+  highest flat that claimed (R1) and booking them to the flat where the escape started (R2) name different programmes
+  on most seeds, and R2 names the refitted-flat programme at 1.7 to 2.3 times the next. R0 and R1's winners vary by
+  seed; stage 2 sets the world so that each rung names its own programme and the golden margin clears 1.15 on the cut
+  pack.
 
 ## Default path
 
-A competent analyst builds this without hesitating, from the prompt's words and the files' grain.
-
-1. Conform the primary substation's SCADA (UK local time across both clock changes, half-hour ending, amps per
-   phase) into each feeder's half-hourly current for 1 April 2025 to 31 March 2026.
-2. Read each project's replaced sections (the brief's IDs), their lengths and conductors from the network model,
-   and the existing and replacement conductors' resistances at 20 C from the data sheet.
-3. Take each half-hour's loss removed as three times the feeder current squared times each replaced section's
-   change in resistance, sum over the year, and value it at GBP 64.80 per MWh.
-4. Fund the project with the largest year.
-
-- **Ends on:** Oxenford Lane, 558.2 MWh a year.
-- **Golden:** Kestle, 74.2 MWh a year, with Copsewell Town next at 48.2.
+(stage 2)
 
 ## Stump sentence
 
-A competent analyst carries each feeder's metered head current through the sections its project replaces and funds
-Oxenford Lane at 558.2 MWh a year, charging its old overhead line with a current that line never carries; rebuilt
-from the loads beyond each section, the flows fund Copsewell Town at 48.2, because almost no load lies beyond Kestle's
-old line; but the Hob Moor Solar Park beyond it exports up to 5 MW back through that line to the Kestle Park estate,
-and on the net of every load and generator beyond each section Kestle removes 74.2 MWh a year, the most of the eight.
+(stage 2)
 
 ## Three rules
 
-- **Task type:** asset-condition-maintenance (energy-systems-utilities), which serves Forecasting and Opportunity
-  Sizing & Decision Support in the client taxonomy; this build is the latter, a reconductoring programme's project
-  sized by the losses it removes.
+(stage 2)
 
-- **Domain test:** the deciding quantity is the technical loss each reconductoring project removes, three times
-  each replaced section's current squared times the change in its resistance, which distribution network
-  engineers estimate from the network's own metering through the feeder's metered current and its loss load
-  factor; what decides it is how power runs on a radial feeder carrying embedded generation, where each section
-  carries the net of every load and generator beyond it.
+## Survivor anatomy
 
-- **Swap:** put a pipeline's or a road's nouns in and the call stops reading the same, because there is no loss
-  that grows with the square of an electric current through a conductor's resistance per kilometre, no radial
-  feeder metered only at its source and at each substation, no secondary substation monitor that reads only its
-  own load, and no generator whose export runs back through part of the line while the source meter reads the net.
-
-- **Layer 1:** the primary SCADA in UK local time with a 23-hour March day and a 25-hour October day, the
-  substation monitors in UTC and the generators' export meters in settlement periods 1 to 48 (46 and 50 on the
-  clock-change days); amps per phase at the primary against kW and kVAr at the monitors and kWh at the export
-  meters; old conductors written imperially (0.1 sq in, 0.04 sq in) and new ones metrically, read through the
-  catalogue PDF's table; the network model's node identifiers against the substation register's site numbers and
-  names; a monitoring vendor change part-way through the year on some substations (kVA and power factor before, kW
-  and kVAr after); a replaced monitor's few-day gap on a spur no project section carries; rooftop solar netted
-  inside residential monitors. Each is produced by the operator's own systems, each is asserted neutral on the call
-  in `checks.py`, and none carries the stump.
-
-- **Layer 2:** family `field_method`, the network's losses worked the way the field works them on measured flows:
-  each replaced section's current rebuilt, half-hour by half-hour, as the net of every substation's metered flow and
-  every generator's metered export beyond it on the feeder's topology, so that two-way flow is seen where an export
-  beyond a section exceeds the load beyond it.
-
-- **Decisive step:** recognising that Kestle's old overhead sections lie between the Hob Moor solar farm and the
-  estate the farm's export supplies, so the flow through them is the farm's export less the little load beyond,
-  running toward the primary for most of every sunny day; the feeder-head reading nets that export against the
-  estate and the one-way construction from the substations' loads cannot see it, so the section's current is
-  rebuilt from every connection beyond it, generators included, before its square is taken.
-
-- **Not semantics:** every field is read correctly on the easy route: the SCADA's amps, the monitors' kW and kVAr,
-  the export meters' kWh, the network model's sections and the catalogue's resistances all mean what they say, and
-  the route still files Oxenford Lane or Copsewell Town, because what it omits is where along the line each flow runs,
-  which no field states and no reading of a field supplies.
-
-- **Not rule application:** no shipped sentence says how a section's current is found; the brief files the
-  estimand (each replaced section's I2R loss at the current that section carried in each half-hour, on the existing
-  against the replacement conductor, balanced at 11 kV nominal, the data sheet's 20 C resistances, nothing added for
-  the network's own losses) and nothing about the current's construction (`checks.py` R3c greps it for beyond,
-  downstream, net, export, generation, solar, monitor and metered: none). The enumerated family (head current,
-  kVA allocation, one-way loads, net flows, daily means) spreads Kestle's figure from 1.4 to 350.1 MWh a year and
-  names four feeders; the standing family, the half-hourly net-flow constructions under the filed conventions,
-  spreads it by 0.1 MWh (74.1 on active power alone to 74.2) and names one feeder; what rules the others out is no
-  clause and no one-group-by comparison but Kirchhoff's current law on the network's own topology, which no file
-  states.
-
-- **Analyst test:** the easy route is the default path, the feeder head's current carried through every replaced
-  section, and it files Oxenford Lane at 558.2 MWh a year; the careful one-way route, each section's flow from the
-  loads beyond it (the monitors and the HV customers' imports), files Copsewell Town at 48.2. Changing the decisive
-  step alone, the net of every load and generator beyond each section, files Kestle at 74.2.
-
-- **Estimand:** `losses_programme_2027-28_brief.pdf` files it: each project on the half-hours from 00:00 on 1
-  April 2025 to 24:00 on 31 March 2026, UK time; for each half-hour and each section the project replaces, the
-  section's I2R loss at the current that section carried, once on its existing and once on its replacement
-  conductor, the saving the difference summed over the sections and the half-hours; the current balanced across the
-  three phases at 11 kV nominal, the data sheet's resistances at 20 C, nothing added for the network's own losses or
-  voltage drop; reported in MWh for the year and valued at GBP 64.80 per MWh; the panel funds the project with the
-  most losses removed. The prompt rounds MWh to one decimal place and values to the nearest GBP 100.
-
-- **No decoy:** nothing is planted to be caught. There is no memo, draft or stakeholder figure arguing for a
-  feeder, no copied block and no hidden rule; the solar farm, the estate, the hospital CHP and the wind turbine are
-  ordinary connections in the operator's registers, and the feeder-head SCADA is true metering.
-
-- **No certified replay:** no shipped figure states any section's flow or loss, no losses report ranks the
-  projects, and no figure in the pack ties only under the golden; the method is not recovered by reproducing
-  anything.
-
-- **Lesson:** a model learns that a radial line's technical losses live in each section's own net flow, so the
-  source meter's current overstates the far sections and a construction from the loads alone misses an injection
-  beyond them, and that an embedded generator large against the load beyond it raises the losses on the sections
-  between it and the load it supplies; no build on file prices a loss on a network's flows or two-way flow through
-  a line.
-
+(stage 2)
 
 ## Readability screen
 
-Tests on paper, one row per rung (`stumping` 2.1): 1 filed sentence, 2 schema, 3 reflex, 4 control bench,
-5 hygiene battery, 6 linear, 7 dedicated organ. The reflex row is written from what the field does to the
-deciding quantity, a section's current: carry the metered feeder current, allocate it by connected capacity, or
-build it from the loads beyond.
-
-| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 the feeder-head current through every replaced section (default path) | the brief's "current" with a file of currents beside it | SCADA carries amps per feeder | fires: the metered current is the field's first move | none | none | one square and a sum | none | readable |
-| R1 the head current allocated to each section by the transformer kVA beyond it | none | the register's kVA and the model's topology | fires: the planning approximation when sections are unmetered | none | none | a ratio of the head current | none | readable |
-| R2 each section's flow from the loads beyond it (the monitors and the HV customers' imports) | none | the monitors keyed to the model's nodes | fires for a careful solver who walks the topology | none | none | no | none | readable |
-| R3 (decisive) the net of every connection beyond each section, the generators' exports subtracted half-hour by half-hour | silent: the brief names the estimand, never how a section's current is found (R3c) | silent: the export runs in the settlement file's export MPAN rows, which R2 also reads for the imports; no column marks a direction | silent: the reflexes above all treat the current as load-driven, and a generator 4 km out cannot move a load-built current | silent: no control scores the constructions; the head SCADA ties to the connections under any accounting that keeps every meter, and no replaced section sits at a head | silent: no duplicate, key or count tie touches it | silent: a topology walk, a signed sum of eleven streams and a square every half-hour | silent: the monitors, the settlement data and the network model each serve R2 as much as R3, and the export MPANs are settlement's routine rows | silent |
+(stage 2)
 
 ## Semantic fork table
 
-Every term in the main ask and every convention the main computation needs, each asserted in `generator/checks.py`
-under its id.
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the sections a project replaces | the brief's section IDs | every closed section of the same old conductor on the feeder, spurs included | same call (Kestle) | the brief's table, "Sections replaced (network model IDs)" |
-| SF2 | saving | existing-conductor loss less replacement-conductor loss | the existing conductor's whole loss | same call | "the project's saving is the difference" |
-| SF3 | current | apparent: active and reactive flow balanced over three phases at 11 kV | active power alone | same call (Kestle 74.1) | "the current is taken as balanced across the three phases at 11 kV nominal" |
-| SF4 | the year | 17,520 half-hours, UK time | the UTC year | same call, every saving to the same 0.1 MWh | "00:00 on 1 April 2025 to 24:00 on 31 March 2026, UK time" |
-| SF5 | resistance | the data sheet at 20 C | the data sheet at maximum conductor temperature | same call | "the conductor data sheet's values at 20°C" |
-| SF6 | the network's own losses | nothing added to a section's current | the downstream sections' and transformers' losses added | same call | "nothing is added to a section's current for the network's own losses" |
-| SF7 | a monitor half-hour with no record | the substation drew nothing (off supply, or Redburn Meadows before energisation) | interpolated across the gap | same call | "the current that section carried in that half-hour"; every gap on a replaced section's path is an outage (M5) |
-| SF8 | the feeder's arrangement | the closed sections, radial from each breaker | the normally-open points closed | same call (the closed graph is a forest; asserted) | the network model's "Normal state: Open" |
-| SF9 | the most losses | the largest year's saving | saving per pound | same call; no cost ships | the brief: "funds the project whose replacement conductor would have removed the most losses" |
-| SF10 | a project's value | the unrounded saving at GBP 64.80, to the nearest GBP 100 | the rounded saving at GBP 64.80 | same values, all eight | asserted identical |
-| SF11 | the gap | the difference of the two savings | the difference of the rounded savings | same figure, 26.0 | asserted identical |
-| SF12 | an HV customer's flow | its settlement import less its export | its import alone | the decisive step, not a reading: asserted that every import and export MPAN ships | settlement records both directions for every HV generator |
-| SF13 | a settlement period | the UK-time half-hour, 46 and 50 on the clock-change days | read as a UTC half-hour | same call | the periods' own count on 29 March and 26 October |
-| SF14 | a first-generation monitor's reading | kVA times power factor and its reactive complement | kVA read as kW | same call | the vendor's own columns |
-| SF15 | the shared monitoring export | Copsewell Cross's substations only | Feltmoor's rows summed in | same call; no Feltmoor site sits on a Copsewell Cross node | the register's primary column |
+(stage 2)
 
 ## Ladder
 
-Measured on the cut pack by `generator/answers.py` (`figures.json` "rungs"), MWh a year each project removes:
-
-| Feeder | R0 head current | R1 kVA share | R2 loads beyond | R3 net beyond (golden) |
-|---|---|---|---|---|
-| Copsewell Town | 101.1 | 46.9 | 48.2 | 48.2 |
-| Ashlade | 41.8 | 7.9 | 9.3 | 7.7 |
-| Oxenford Lane | 558.2 | 10.5 | 8.9 | 8.9 |
-| Kestle | 350.1 | 2.1 | 1.4 | 74.2 |
-| Pennick Hill | 453.1 | 79.8 | 19.9 | 19.9 |
-| Redburn | 399.4 | 24.8 | 22.6 | 22.6 |
-| Stowmere | 62.1 | 10.6 | 23.6 | 17.5 |
-| Ingle Road | 15.8 | 4.5 | 4.2 | 4.2 |
-
-- **Rung winners and margins:** R0 Oxenford Lane over Pennick Hill 1.232, Kestle fourth; R1 Pennick Hill over
-  Copsewell Town 1.700, Kestle last; R2 Copsewell Town over Stowmere 2.045, Kestle last; R3 Kestle over Copsewell Town
-  1.540. Four rungs, four feeders, every margin over 1.15, the final 1.54.
-- **Dominance:** the golden's edge on the net flow, 1.540, against 1.2 times the decoy's edge on the head current,
-  1.478 (L6).
-- **Gate F, the cheap routes:** of the eleven constructions `answers.routes` enumerates (head current by phase
-  amps and by MW and MVAr, three capacity allocations, monitors alone, loads beyond, the net flow, the net flow on
-  active power alone, the export added as load, daily mean flows), three land Kestle and all three are the
-  half-hourly net-flow construction executed with or without its reactive part or with the export's sign wrong
-  (74.2, 74.1 and 92.4); every route that does not build a section's current from the connections beyond it with
-  the generators in, at the half-hour, misses (L7). The allocation that counts the solar farm's export capacity
-  as connected capacity names Pennick Hill (79.8 against Kestle's 55.5); daily mean flows name Copsewell Town (42.5
-  against 30.5).
-- **Clean truth:** on the generator's world before any file is cut the head current files Oxenford Lane and the
-  one-way flow Copsewell Town (R2 in `checks.py`); the pack's golden matches the clean truth to 0.0001 MWh (L0).
-- **Season:** Kestle's saving falls 82 per cent in the summer half-year, Copsewell Town's 63 per cent in the winter
-  half: the solar farm's export carries Kestle's.
+(stage 2)
 
 ## Closure table
 
-| # | Axis | Reading here | Move |
-|---|---|---|---|
-| 1 | Population | the eight projects the brief lists, each its listed sections | filed in the brief's table; SF1 C1 |
-| 2 | Unit of account | the project, its sections summed | the brief: "summed over its sections" |
-| 3 | Attribution window | the half-hours of 1 April 2025 to 31 March 2026, UK time | filed; SF4 C1 |
-| 4 | As-of dating | the network model's normal arrangement at the extract, unchanged through the year | the model is the year's arrangement; no switching record moves a section; C1 |
-| 5 | Version basis | the one extract of 12 June 2026; no revised metering ships | C1 |
-| 6 | Denominator | none on the call; the asks' customers at 31 March 2026 | filed in the reporting definitions |
-| 7 | Weighting | every half-hour equally, summed | the estimand sums half-hours |
-| 8 | Window length | one regulatory year | filed |
-| 9 | Boundary inclusivity | the year's first and last half-hours carry night flows | SF4 asserts the UTC alternative lands every saving to the same 0.1 MWh |
-| 10 | Rounding path | savings rounded once at the end; values from the unrounded saving | SF10, SF11 C1 |
-| 11 | Tie-break | none needed: the final margin is 1.54 | L5 |
-| 12 | Maturity and censoring | closed history; no window past the extract | C1 |
-| 13 | Order of operations | sum the flows, then square each half-hour | the estimand: the loss at the current each half-hour; a daily mean first files Copsewell Town (L7) and is ruled out by "in that half-hour" |
-| 14 | Row order | no step depends on file order | C1 |
-| 15 | Duplicate resolution | none on the call's files (one row per monitor half-hour, one per MPAN period) | asserted by the readers' shapes |
-| 16 | Identity normalisation | site numbers written "SS 123456" and "123456", nodes "WX123" and "WX 123" | both forms resolve to one site; C1 |
-| 17 | Netting against gross | a section's current is the net of the flows beyond it, export against load | the decisive step; physics, not a filed rule |
-| 18 | Dimensional units | kW and kVAr, kVA and power factor, kWh per half-hour, amps per phase | units in the headers; SF14 |
-| 19 | Code and status semantics | conductor codes through the data sheet; Normal state Open | SF8; the data sheet's asset codes |
-| 20 | Integerisation | none | C1 |
-| 21 | Clause scope | "nothing added for the network's own losses" governs the current, not the resistance | SF6 same call |
-| 22 | Forward window contents | none: the call is sized on closed history for a 2027/28 decision | C1 |
+(stage 2)
 
 ## Literal reader
 
-Executed word for word, the brief's estimand asks for each replaced section's current in each half-hour, and the
-pack meters no replaced section: every one sits beyond the first section out of its breaker, so the only literal
-execution builds each section's current from the connections beyond it on the normal arrangement, every metered
-flow in, and lands Kestle at 74.2 with Copsewell Town at 48.2. The head current is a different quantity (the first
-section's current), and carrying it into the far sections violates "the current that section carried"; the one-way
-construction leaves a metered flow out. Every convention the computation needs has a row in the fork table, each
-closed by a quoted sentence or a same-call assertion, and no reading difference moves the call.
+(stage 2)
 
 ## Oracles
 
-- **The feeder-head SCADA** (a distractor): ties to the sum of the connections' metered flows plus the network's
-  own losses on every feeder, under any construction that keeps every meter; it never meters a replaced section,
-  so it confirms the accounting at the breaker and arbitrates no section's current. Its own route is rung 0.
-- **The HV connections register's capacities** (import kVA, export kW): describe the connections, not their
-  flows; the allocation that uses them names Pennick Hill.
-- **The line loss factor statement** (a distractor): area-wide averages by connection class, stated not to
-  describe any circuit; it names no feeder.
-- **The conductor data sheet's maximum-temperature column**: ruled out by the brief's 20 C (SF5, same call).
-- No figure in the pack ties only under the golden, no shipped file states a section's flow or loss, and nothing
-  ranks the projects (R3a).
+(stage 2)
 
 ## Ask sheet
 
-Three asks, decoupled from the call (H18): each is a measure every feeder carries that the call does not turn on.
-
-1. **Each project's 2025/26 saving and its value** (eight MWh, eight GBP): the construction layer, the decisive
-   construction's own output on every project; the cracker has it, so it never stands alone.
-2. **Each feeder's CI per 100 customers** (eight figures) and 3. **each feeder's CML per customer** (eight
-   figures), as the network reports them for 2025/26 under `iis_reporting_definitions_2025-26.pdf`.
-
-**Devices (silent, on rows the call never reads):**
-- **D-A, mobile generation, `generator_hire_2025-26.xlsx`:** the control system logs every site on a switched-out
-  or faulted section as off supply until the network is restored; the generation team's hire log, a cost record of
-  units, fuel and charges keyed to its own deployment jobs, is the only record that a generator was connected at a
-  site. A site a generator kept on supply through a planned outage never lost supply (it leaves CI and CML); a site
-  a generator re-supplied during a fault was restored when it was connected (its minutes end there). Found only by
-  joining the hire log to the interruption log on site and time; no filed sentence names generators. Moves every
-  feeder's CI and CML (D1, D4).
-- **D-B, cross-system duplicates:** a work-management LV job raised at a site whose customers were already off in
-  an HV incident records the same customers again, opening inside the HV outage and closing after it; its
-  reference, cause and times are its own and no field links it. Found only by the cardinality the hygiene battery
-  does not run (customers off at a site at once exceeding the site's customers). Moves every feeder's CI and CML
-  (D1, D3: no job shares a bound with its outage).
-- **Hazards (filed rules the cracker executes):** short interruptions under 3 minutes, pre-arranged interruptions
-  at half weight, the transmission trip of 19 August 2025, the accepted storm of 6 to 7 January 2026 on three
-  circuits, customers at 31 March 2026, staged restoration; each moves several feeders' figures (D2).
-- **Separation line:** the call reads the network model, the registers, the monitors, the settlement data and two
-  documents; the asks read the interruption log, the customer counts, the hire log and the reporting definitions.
-  No device or hazard row sits in the call's files, and an outage reaches the call's meters only as the metering
-  the network really recorded (a site off supply draws nothing, with or without a generator on its LV board), so no
-  device moves a section's current (X1, X2).
-
-**Cracker sheet** (`generator/ceiling.py` on the cut pack, md5 recorded in `ceiling.json`):
-
-| Ask | The cracker's route | CI or CML kept | Verdict |
-|---|---|---|---|
-| CI per 100 customers, eight feeders | every filed rule executed, the hygiene battery run, the hire log unused, the LV jobs kept | 0 of 8 | miss |
-| CML per customer, eight feeders | the same | 0 of 8 | miss |
-
-**Mirror sheet:** the mirror stops at rung 0 (Oxenford Lane), keeps none of the sixteen construction figures and
-none of the sixteen interruption figures, and two of the chart's four named parts (a labelled bar per project).
-
-- **Pair ceiling:** 45.3 (the cracker 75.6 with 20 of 36 ask criteria, all of them construction and chart; the
-  mirror 15.1 with 2 of 36).
-- **Mirror leakage:** 5.6 per cent of ask weight.
-- **Measured by:** generator/ceiling.py
+(stage 2)
 
 ## Pre-ship check
 
-The 10/10 rules re-read against the built pack, 2026-10-28 (architecture 10, the pack of `generator/build.py`).
-
-- **Rule 1, the domain:** the deciding quantity on the pack is each replaced section's I2R loss at its own
-  half-hourly current, which the brief files and no file states; the swap test fails on the pack's own nouns
-  (no pipeline or road has a conductor resistance per kilometre, a source meter that nets an export against
-  draw-offs, or a loss in the square of a current).
-- **Rule 2, two layers:** Layer 1 on the pack is the SCADA's local half-hour-ending clock and phase amps, the
-  monitors' UTC and the first-generation monitors' kVA and power factor, the settlement periods with 46 and 50
-  on the clock-change days, the two spellings of site numbers and node IDs, the replaced monitor's gap, Redburn
-  Meadows energised in October and the shared Feltmoor rows; each is asserted neutral on the call (SF4, SF7,
-  SF13 to SF15, M1 to M5). Layer 2 is the net-flow construction (L1 to L8).
-- **Rule 3, the decisive step:** analytical. A strong analyst who cleans every clock and unit and reads every
-  rule still files Oxenford Lane on the head current or Copsewell Town on the loads beyond; only building each
-  section's current from every connection beyond it, the export subtracted, lands Kestle (R2, R3b, R3c, L7).
-  No decoy, no withheld rule (the brief files the estimand and no construction), no field reading decides it.
-- **The mess carries no stump:** with every Layer 1 item mishandled one at a time the call holds (M1, SF4,
-  SF13, SF14), and on the clean truth the easy routes still miss (R2).
-- **leak.py's design-note vocabulary lines, ruled here:** the data sheet's "conductor", "register" and
-  "construction" are its own column and scope words and name no move; the line loss factor statement's
-  "export", "metered", "substation", "settlement" and "measured" are its genre's words, and it states that its
-  factors describe no circuit; the brief's "section", "current", "half-hour", "Kestle" and "conductor" are the
-  estimand and the project table, and the brief says nothing of how a section's current is found (R3c).
-- **Stage 4, 2026-10-28:** the leak reader (sonnet, medium, a fresh copy of the prompt and the pack) found no
-  decisive-step sentence, no ranking file, no answer-like figure and no realism tell; its question 3 named the
-  reporting definitions and the conductor data sheet, ruled harmless (the organisation's governing definitions and
-  its engineering data sheet; neither describes a column or a join); its question 5 found the brief fixing
-  everything but how a section's current is obtained, whose only physical execution is the golden; its question 6
-  read the decisive step as an analytical choice. It flagged that the session's startup context named the
-  mechanism before it opened a file (the repository's commit subjects), so its read is not fully cold. The
-  determinism judge (pass 10, `determinism_check_report_pass10.md`) returned DETERMINISTIC and APPROVE, Gate G
-  method_or_model_selection analytical_non_defect (the card's decomposition_attribution, a naming difference
-  only), Gate H domain pass, layers pass, decisive step analytical; its thread rebuilt the topology and filed
-  Kestle at 73.9 against 74.2 and Copsewell Town at 48.18, and spot-checked Kestle's CI at about 105.4 against
-  105.1. The CI gap is exactly the denominator without Kestle's two HV-connected customers (630 against 632),
-  which the customer file then labelled under a separate "Kestle (HV)" circuit string while the definitions count
-  every HV-connected customer as one: the file now carries the plain circuit and a connection column (LV or HV),
-  a data-only fix that moves no graded figure. The 73.9 is a half-hour alignment or active-power-only slip (each
-  moves Kestle by 0.1 to 0.2 MWh; SF3, SF13), not a reading the shipped text licenses.
-- **Gates at the final rebuild:** generator checks 82 of 82, verify 0 failures, two byte-identical builds,
-  figures_check 47 of 47, precut 53 of 53, voice-check PASS, leak.py REVIEW (no LEAK), guard heart WARN (no
-  BLOCK, nearest driver 0.09), guard surface three pairs promoted for the author's adjudicated read only
-  (task308, task307, task101; none shares the mechanism), containers clean.
+(stage 5)
 
 ## Tried and rejected
 
@@ -1028,6 +738,32 @@ The 10/10 rules re-read against the built pack, 2026-10-28 (architecture 10, the
 - **Architecture 10 names, 2026-10-28:** the primary was first called Wennock Cross and its neighbour Ludcombe; both sat one letter from real places (Much Wenlock in Shropshire, Luccombe in Somerset), the first in the very region the fiction is set in (reduce-house-fixes H21), so both were renamed in the generator (Copsewell Cross, Feltmoor) before the pack was read by anyone; every graded figure held to its printed decimal.
 - The ceiling recorded on the shipped cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver keeps 16 of 16 device figures against the recorded 0 (36 of 36 ask criteria against 20), SPENT on both device asks (CI per 100 customers and CML per customer), pair 69.8 against the recorded 45.3; the reason in one line: the generator hire log's site, connected and disconnected times settle the mobile-generation exclusion by plain meaning against the definitions' 'restoration of that customer's supply', and 9 of 21 LV jobs sit wholly inside an HV outage at their own site with the same customer count, which the cross-system duplicate check drops. The ask layer is owed a rework before delivery.
 - **The ask layer's re-site and full replacement (the 2026-11-02 rubric rework, step 4b) were screened as code and stopped: no candidate in this world passes both tests in a family this batch has not shipped.** Two careful responses on the call keep the construction's 16 savings and the chart's 4 parts, so they sit under 70 only beside 25 or more device figures they miss, on records the call never reads. Screens (scratch `task464_askscreen/`: `rel.simulate` replayed with each fault's section recorded, asserted identical to the shipped 162 incidents; the transformer and rooftop screens on the frozen flows): (1) the old conductor's fault record per project, the CBA's interruptions benefit, on a fault-and-damage report keyed to the faulted section: 19 of 24 project-year cells are zero and the five cable projects' replaced sections carry no fault in three years, and with the section plain the careful solver lands every figure under the filed rules; (2) a cable fault's two reports joined by their pre-location distances from each end, summing to the section's length: forced and missed on paper, dead on the same empty record, which cannot be thickened because the interruption simulation drives every flow through `onf`; (3) each feeder's secondary transformer losses by half-year from test certificates: parallel units, rating basis and certificate units are battery items or textbook physics, the one device no battery item performs (no-load loss stops only while the HV supply is off, not for an LV fault and not under a mobile generator) moves at most 0.046 MWh on any feeder, under the 0.05 MWh half-bin, and the load-loss half reads the call's own monitored rows; (4) rooftop solar export by residential substation and quarter, orphan or mis-linked export meters placed on their installation by the solar geometry they record: forced and missed on paper, but the frozen flows carry rooftop PV at 7 of 56 substations on four feeders (a per-feeder grid half structurally zero), the orientation fingerprint needs about 19.8 million half-hourly rows, and a data stream placed by the physics it recorded is task247's logger family in the one-installation-under-two-keys shape; (5) the connection queue per feeder under the 2025 reform's re-offers: a re-offer joins its original only through a shared applicant or site, or a capacity no domain law fixes, so the judge has two readings; (6) Priority Services Register customers by needs group: the records' device is one customer registered by supplier and network, two keys; (7) feeder operating costs by quarter: schedule-of-rates pricing is a reconciliation to a filed schedule, and bulk invoices, accruals and recharges are battery items; (8) the 2026 condition review per project: the span-to-section link is a shared pole or RMU key or a walk along the route (task247), on the call's own sections; (9) the CI and CML devices re-sited: a notice log is an anti-join under the definitions' own "given with notice", an LV back-feed needs the neighbour's frozen monitor to carry load it does not, a generator fuel-out is an inference with a second explanation, and a permanent NOP move contradicts the normal-arrangement closure (C1); (10) short interruptions per 100 customers: the threshold is filed and the five cable feeders have no auto-reclose; (11) unmetered street lighting: no network record places a lamp on a feeder. This world's ask records are the interruption record, whose devices are spent, and records the frozen flows either contradict or leave empty; nothing in the pack, the generator, the prompt or the goldens moved.
+
+- **Architecture 10 re-rooted, 2026-11-02.** Its main call held at the in-house judge (DETERMINISTIC, APPROVE) and the
+  version stays on the portal as delivered, but the ask layer measured spent (16 of 16 device figures kept by the
+  careful cracker, pair 69.8) and the full replacement found no record in that world able to carry a passing device
+  (the line above). The slot moves to a client domain none of the lineage used, with a world chosen so the ask layer
+  has records the call never reads; the card's lineage carries architecture 10's identity, fate and shell.
+- **Architecture 11 draw screens, 2026-11-02, each set aside before a harness except the first and the last.** (a) A
+  rail track-renewal slot ranked by the passenger time each site's speed restriction costs (braking and acceleration,
+  the train's own length, trains calling beside the site, two restrictions closer than a train needs to regain line
+  speed): prototyped (`proto1.py`) and dropped, because once the timetable planning rules file the class rates the
+  golden is the field's own train-performance run, which a strong solver writes on sight (`stumping` 1.1b), and with
+  the rates unfiled the method forks; urban-regional-science was also a stretch for an asset-renewal call. (b) Bus
+  frequency upgrades sized by waiting time where a rise breaks a clockface pattern on a shared corridor: the WHAT must
+  file the first bus to the passenger's destination, and the rest is the inspection paradox on merged gaps, a reflex
+  (task135's, task270's and task271's screens). (c) Pooled PCR testing by stream (clustered positives, Ct dilution):
+  the WHAT must file how pools are formed, and replaying the rack order is then the literal execution. (d) Road
+  links valued under concurrent closures: task308's common-mode outages by abstraction, in task307's road-network
+  world. (e) A yacht insurer's storm accumulation afloat against ashore: the as-if must file the presence calendar,
+  which names the step. (f) A port's tidal windows by binding reach: the minimum over reaches is the field's reflex and
+  the world reads as physical science. (g) A tariff-rate quota's regime (over-quota imports make an expansion a
+  transfer): the welfare needs an elasticity. (h) Direct-debit dates aligned to pay cycles (a filed date rule
+  replayed), credit-hire capture timing (a population defined by timing), social-housing vacancy chains (the WHAT
+  screen), car-park displacement (a min of capacity and demand, censored), recycling-centre compaction by weight
+  against volume (one group-by). The escape-of-water origin attribution survived the slot screens (task177's
+  floor-pricing and valve-by-plumbing screens are other decisions and other steps) and the clean-truth prototype
+  (`proto_eow2.py`) and is drawn as architecture 11.
 
 ## Portal result and the diagnosis, 2026-10-27
 
