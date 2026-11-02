@@ -65,6 +65,29 @@ Sources, one line each (what it teaches; how this build differs):
   next contact), task236 (a capture share against an independent fixed-protocol sample). None separates a composite's
   variance into its target attribute and a second source shared by a subset of its components.
 
+## Survivor anatomy
+
+- **Actor:** the deciding property, a wording factor shared by a version's six negatively worded items, has no column
+  in any file: it is a relation among those items' answers (their covariance with each other beyond what they share
+  with the six positively worded items), stored nowhere and marked on no version.
+- **Link:** read through a comparison no key or clause offers: within each version, the negatively worded items'
+  covariance with each other against their covariance with the positively worded items; TAS-4 s.6 defines the trait's
+  share and names no model, factor or item set.
+- **Reflex:** the field's named methods sit at rungs 0 and 1: Cronbach's alpha and omega from a single factor file 6 of
+  the 10 versions wrong (Ends on: the Mandarin, Tagalog, Arabic, Vietnamese and Korean versions released and the
+  Cantonese version held).
+- **Back-test:** the textbook route validates: alpha and a one-factor omega agree within 0.03 in every version, and the
+  manual reports the English items as one factor at 0.90; no shipped record refutes the one-factor reading.
+- **Second use:** every file the decisive step reads has its own reason to ship: the vendors' files, the ledger and the
+  back-check log build TAS-4 s.4's population, the register dates each pilot, TAS-4 files the gate and the manual the
+  scale and its keying.
+- **Shock:** the six affected versions interleave with the four others on alpha (0.75 to 0.87 among 0.60 to 0.89), on
+  valid completes and on pilot means; one caveat, measured 2026-11-02: the three released versions are also the three
+  highest pilot means, a coincidence of each translation's level of agreement that no rung reads.
+- **Pins:** TAS-4 files the WHAT (s.4's population, s.5's score, s.6's quantity and bands, compared unrounded), and no
+  filed sentence names a coefficient, a model, a factor, the negatively worded items' wording or a response style
+  (SF12 and the documents' sweep, asserted).
+
 ## Default path
 
 1. Read the translation and adaptation standard: each version's reliability (the share of its total score's variance
@@ -156,13 +179,13 @@ half of a reported figure.
 | SF4 | the fitting method | maximum likelihood | unweighted least squares | same call | same call (asserted) |
 | SF5 | the comparison with the bands | unrounded | at two decimals | same call: every version 0.046 or more from an edge | s.6 ("compared unrounded"); same call (asserted) |
 | SF6 | "connectedness" | the attribute the scale measures, the single factor of the source version | connectedness and the wording factor together (all common variance) | the default path's answer: the wording factor read as connectedness | manual s.1 ("The BCS-12 measures connectedness") and s.4 ("the twelve items formed a single factor"); the wording factor adds nothing in the four other versions (asserted): a factor that comes with some translations is the translation's, not the attribute's |
-| SF7 | the total score | the twelve item scores summed with BCS02 to BCS12 even items reversed | the raw answers summed | not a reliability of the scored total | s.5 ("the item score is 6 minus the answer") |
-| SF8 | unanswered items | 9, -8 and -9 leave the item unanswered | codes read as answers | the respondent leaves the full answerers either way | s.5; codebook |
+| SF7 | the total score | the twelve item scores summed with BCS02 to BCS12 even items reversed | the raw answers summed | not a reliability of the scored total | s.5 ("Items 2, 4, 6, 8, 10 and 12 are reverse-scored: the item score is 6 minus the answer"), the manual's keying table agreeing; neither document names a file's column (asserted through the verifier's own reader) |
+| SF8 | unanswered items | 9, -8 and -9 leave the item unanswered | codes read as answers | the respondent leaves the full answerers either way | s.5 (prefer not to say, don't know or refused leaves the item unanswered); the manual's five-point scale (s.2); each vendor's own value labels (9 Prefer not to say; -8 Don't know; -9 Refused); C1: every item value off the scale is one of those three (asserted through the verifier) |
 | SF9 | the bands | 0.80 or more release; 0.70 to under 0.80 hold; under 0.70 rework | edges assigned the other way | same call (no version within 0.046 of an edge) | s.6 table |
 | SF10 | the unit | each version on its own pilot | versions pooled by vendor or language family | not the standard's gate | s.6 ("A version's reliability"); prompt |
 | SF11 | the covariance's divisor | n - 1 | n | same call | same call (asserted) |
 | SF12 | how the reliability is estimated | open: the analysis | a coefficient named by a rule | no rule names one | the standard names no coefficient or model (asserted) |
-| SF13 | an online entry's date for the pilot window | the Eastern date it started | the Eastern date it ended | same: every entry starts and ends on one Eastern date (asserted) | s.4; dictionary ("Dates are Eastern dates ... unless a field says UTC") |
+| SF13 | an online entry's date for the pilot window | the Eastern date it started | the Eastern date it ended | same: every entry starts and ends on one Eastern date (asserted) | s.4; the register's own cover ("Dates are Eastern dates."); the export's clocks named start_utc and end_utc (asserted) |
 | SF14 | a panel member's "first" valid complete | the earliest by time | earliest by start against earliest by end | same: every later completion by the same member starts after the earlier one ends (asserted) | s.4 |
 
 ## Ladder
@@ -195,7 +218,7 @@ ko).
 | 1 | Population | each version's valid pilot completes who answered all twelve items | TAS-4 s.4 and s.6 (SF1) |
 | 2 | Unit of account | the respondent's total score | s.5, s.6 (SF7) |
 | 3 | Attribution window | each version's pilot fieldwork dates in the register | s.4; register |
-| 4 | As-of dating | the vendors' final files of 26 February 2027; sign-off 1 March 2027 | README |
+| 4 | As-of dating | the vendors' final files of 26 February 2027; sign-off 1 March 2027 | metadata.json's provenance (outside target/); C1: no entry, ledger row or interview after the files (asserted) |
 | 5 | Version basis | TAS-4 in force from 1 September 2026; the register as kept | standard header; register |
 | 6 | Denominator | the total score's variance over the population | s.6 |
 | 7 | Weighting | none: unweighted pilot completes | s.6 |
@@ -206,14 +229,14 @@ ko).
 | 12 | Maturity and censoring | every pilot closed before the files; no interview after its pilot | register; C1 |
 | 13 | Order of operations | valid completes, item scores, full answerers, covariance, model, share, band | s.4 to s.6 |
 | 14 | Row order | irrelevant | C1 |
-| 15 | Duplicate resolution | a panel member once, at their first valid complete (merged accounts one member); a reissued case's interviews judged each on its own back-check | s.4; dictionary |
-| 16 | Identity normalisation | version codes from the survey link and the register; panel members through the ledger | dictionary; codebook |
+| 15 | Duplicate resolution | a panel member once, at their first valid complete (merged accounts one member); a reissued case's interviews judged each on its own back-check | s.4; C1: each merged row moves an account's points into another account that has its own entries, after the merged account's entry (asserted) |
+| 16 | Identity normalisation | version codes from the survey link and the register; panel members through the ledger | C1: the survey link's own code against the register's version; the ledger's accounts; every back-check row's case and interviewer name exactly one interview, dated before the check (asserted) |
 | 17 | Netting against gross | none | s.4 |
 | 18 | Dimensional units | item scores 1 to 5, totals 12 to 60, shares of variance | s.5, s.6 |
-| 19 | Code and status semantics | 9, -8, -9 unanswered; blank or no row not reached; status and RESULT the interview's, not the module's | codebook (SF8) |
+| 19 | Code and status semantics | 9, -8, -9 unanswered; blank or no row not reached; status and RESULT the interview's, not the module's | s.5 and each vendor's value labels (SF8); C1: an online item is blank only after the last item reached and never in a complete, and an interview's item rows run from BCS01 without a gap (asserted) |
 | 20 | Integerisation | completes are integers | C1 |
 | 21 | Clause scope | the ten new versions in the register | prompt; register |
-| 22 | Forward window contents | none: the decisions govern the wave 6 fieldwork from 22 March | README |
+| 22 | Forward window contents | none: the decisions govern the wave 6 fieldwork from 22 March | TAS-4 s.6 (signed off before the wave's fieldwork launches); metadata.json's provenance (the launch on 22 March 2027) |
 
 ## Literal reader
 
@@ -254,8 +277,8 @@ in the call's population; dropping them moves no decision.
 
 | Ask | Figures | H18 home | Use | Primary device (family) | Hazards | Path (files, columns) | Stops |
 |---|---|---|---|---|---|---|---|
-| A: each version's valid pilot completes | 10 | the audit trail of the decision: the pilot each decision stands on, which s.6 tells the quality lead to report | the sign-off's table | D5, the population a blanket exclusion destroys: the vendors' status describes the questionnaire (online status complete or partial, CAPI RESULT 1 or 2), s.4 the module; respondents who reached the end of the BCS-12 module and left in the background questions are valid completes the status filter drops. CAPI also D7, the true key elsewhere: Fernlow keys interviews by sample case, a case whose interview the back-check did not confirm is reissued to another interviewer, and the back-check log names the case and the checked interviewer, so a join on the case drops the replacement too | NCP retakes under fresh entry ids, some from second accounts merged afterwards (the ledger); soft-launch entries the evening before the pilot, dated the first day in UTC; switchers to English; partials inside the module; screen-outs; FLR pretest interviews; unconfirmed interviews; unreached back-checks kept | export (status, start_utc, ui_language_at_end, age, BCS01 to BCS12), ledger (panel_member_id, respondent_id, outcome, merged_into), CAPI long (case_id, interviewer_id, interview_date, variable, value), back-check log (case_id, interviewer_id, outcome), register (pilot_start, pilot_end), codebook, TAS-4 s.4, dictionary: 8 files, 15 columns | status filter (every version 7 to 18 low); back-check joined by case (CAPI 11 to 17 low); merged accounts apart (online 3 to 5 high); UTC dates (online 2 to 7 high); no online window (11 to 15 high); retakes (16 to 23 high); switchers (10 to 13 high); partials inside the module (9 to 26 high); pretest (33 to 41 high); unconfirmed (16 to 20 high); unreached dropped (31 to 35 low); the answer |
-| B: each version's pilot mean score, two decimals | 10 | a measure every version carries that the decision does not turn on | the sign-off's table | the same population devices: the partials past the module are less connected, the replacements are new respondents | prorating one or two unanswered items; codes 9, -8, -9 read as answers | as A, plus TAS-4 s.5 and the codebook's codes | status filter (every version 0.01 to 0.20 off); back-check by case (CAPI 0.03 to 0.12 off); no prorating (0.26 to 0.75 high); codes as answers (every version 0.01 to 0.34 off); retakes, switchers, pretest, unconfirmed (0.01 to 0.26 off where they move); the answer |
+| A: each version's valid pilot completes | 10 | the audit trail of the decision: the pilot each decision stands on, which s.6 tells the quality lead to report | the sign-off's table | D5, the population a blanket exclusion destroys: the vendors' status describes the questionnaire (online status complete or partial, CAPI RESULT 1 or 2), s.4 the module; respondents who reached the end of the BCS-12 module and left in the background questions are valid completes the status filter drops. CAPI also D7, the true key elsewhere: Fernlow keys interviews by sample case, a case whose interview the back-check did not confirm is reissued to another interviewer, and the back-check log names the case and the checked interviewer, so a join on the case drops the replacement too | NCP retakes under fresh entry ids, some from second accounts merged afterwards (the ledger); soft-launch entries the evening before the pilot, dated the first day in UTC; switchers to English; partials inside the module; screen-outs; FLR pretest interviews; unconfirmed interviews; unreached back-checks kept | export (status, start_utc, ui_language_at_end, age, BCS01 to BCS12), ledger (panel_member_id, respondent_id, outcome, merged_into), CAPI long (case_id, interviewer_id, interview_date, variable, value), back-check log (case_id, interviewer_id, outcome), register (pilot_start, pilot_end), TAS-4 s.4: 6 files, 15 columns | status filter (every version 7 to 18 low); back-check joined by case (CAPI 11 to 17 low); merged accounts apart (online 3 to 5 high); UTC dates (online 2 to 7 high); no online window (11 to 15 high); retakes (16 to 23 high); switchers (10 to 13 high); partials inside the module (9 to 26 high); pretest (33 to 41 high); unconfirmed (16 to 20 high); unreached dropped (31 to 35 low); the answer |
+| B: each version's pilot mean score, two decimals | 10 | a measure every version carries that the decision does not turn on | the sign-off's table | the same population devices: the partials past the module are less connected, the replacements are new respondents | prorating one or two unanswered items; codes 9, -8, -9 read as answers | as A, plus TAS-4 s.5 and each vendor's value labels | status filter (every version 0.01 to 0.20 off); back-check by case (CAPI 0.03 to 0.12 off); no prorating (0.26 to 0.75 high); codes as answers (every version 0.01 to 0.34 off); retakes, switchers, pretest, unconfirmed (0.01 to 0.26 off where they move); the answer |
 
 - **Span:** eight files and 15 columns across the asks. The status device moves both asks in every version; the case
   device both asks in every CAPI version; the merged accounts A in every online version.
@@ -267,18 +290,21 @@ in the call's population; dropping them moves no decision.
   evening before an agreed start.
 - **Referee:** none.
 
-| Ask figure | Where the cracker's path goes | Mirror (stops at rung 0) | Cracker (lands the call, runs the battery) |
+| Ask figure | Where the careful cracker's path goes | Mirror (stops at rung 0) | Cracker (lands the call, runs the battery) |
 |---|---|---|---|
-| A valid completes (10) | executes s.4 through the ledger, the window in Eastern time and the back-check log; its status filter keeps complete and RESULT 1 only, dropping every partial past the module (every version 7 to 18 low), and its back-check join on the log's key drops each reissued case's replacement (CAPI 11 to 17 low) | misses the same way | miss |
-| B pilot mean score (10) | the same population, scored right: every version 0.01 to 0.20 off at two decimals | misses the same way | miss |
+| A valid completes (10) | executes s.4 as worded: the module's end read from the items each record reached (95 online partials and 30 RESULT 2 interviews reached BCS12), the back-check joined on the case and the interviewer the log names (568 of 568 rows match one interview), the ledger's merged rows followed to the account they name, the panel's UTC stamps read as the register's Eastern dates; every figure exact | the asks do not depend on the call: on the careful ask route every figure exact; on the natural read without the battery (the vendors' status, the case join, the accounts as they stand, the UTC date) every figure off | keeps 10 of 10 |
+| B pilot mean score (10) | the same population scored by s.5 and each vendor's value labels; every figure exact | the same: exact on the careful ask route, every figure off on the natural read | keeps 10 of 10 |
 
-- **Cracker keeps:** under 0.05 of the ask figures (every figure turns on the status device; the CAPI rows on the case
-  device too). The chart's parts sit on the call (the bands and the decisions), about a fifth of the ask weight if the
-  generated rubric files them there. A solver that reads s.4's module end against the item columns and joins the
-  back-check on case and interviewer lands both asks; the merged accounts and the soft launch remain on its path.
-- Mirror leakage: 10 per cent of ask weight (the chart's frame and bands; the mirror's ask path is the cracker's).
-- Pair ceiling: 38.7 (C = 38 + 7 + 55 x 0.20 = 56.0 with the chart's parts kept; S = 10 + 7 + 55 x 0.08 = 21.4, the
-  mirror's four right decisions counted in r = 10; mean 38.7).
+- **Measured by:** generator/ceiling.py on target.zip md5 8d00d519cd132def57651b40677b7a47 (the 2026-11-02 leak cut; the full includer reproduces
+  figures.json's 20 figures). The cracker the sheet recorded at ship (the vendors' status for the module's end, the
+  back-check joined on its case) keeps 0 of 20 on the same pack: it was a narrowed cracker, the miss the portal would
+  not see.
+- **Cracker keeps:** 20 of 20 ask figures (ceiling.py): both asks are spent (Tried and rejected, 2026-11-02).
+- Mirror leakage: 92.0 per cent of ask weight (the mirror on the careful ask route keeps both asks whole; 12.0 per cent
+  on the natural read without the battery).
+- Pair ceiling: 83.8 (C = 38 + 7 + 55 x 25/25 = 100.0 with the chart's five parts; S = 10 + 7 + 55 x 23/25 = 67.6;
+  61.8 with the mirror on the natural read without the battery; two careful responses on the call 100.0). The ask
+  layer is owed before the build ships again.
 
 ## Pre-ship check
 
@@ -312,9 +338,10 @@ in the call's population; dropping them moves no decision.
    in the four versions (the factor test, p 0.37 to 0.71) rather than a single factor's fit.
 6. Asks: A is moved in every version by the vendors' status against the module's end (7 to 18 low) and in every CAPI
    version by the back-check joined on the case (11 to 17 low); B in every version by the same (0.01 to 0.20 off at two
-   decimals); no stop moves a decision (asserted).
-7. Input gates: 12 files in four formats (csv, md, pdf, xlsx), the CAPI long file at 39,298 rows, two distractors
-   named in metadata.json; 113 generator checks with the realism sweep; the verifier (its own valid-complete rules and
+   decimals); no stop moves a decision (asserted). Measured 2026-11-02 with the careful-solver cracker
+   (generator/ceiling.py): both asks spent, 20 of 20 figures kept, pair 83.8; the ask layer is owed (Ask sheet).
+7. Input gates: 11 files in three formats (csv, pdf, xlsx) since the 2026-11-02 leak reship (12 in four at ship), the
+   CAPI long file at 39,298 rows, two distractors named in metadata.json; 123 generator checks with the realism sweep; the verifier (its own valid-complete rules and
    its own bifactor fit) green; two builds byte-identical; figures_check 44 of 44; containers clean.
 8. Duplicate guard: `guard.py heart` PASS (nearest 0.08, task181 and task135); `guard.py surface` promoted task236,
    task235, task234 and task233 (the same author's Data Quality builds: a README file name and the designation-set
@@ -354,6 +381,16 @@ failed back-check, "a clean 55 of 55" (fixed: 22 of the 80 such cases are revisi
 points per outcome (kept: a panel pays a set incentive per outcome). The prompt's one change after pass 2 ("rework for
 retranslation") passed leak.py's prompt gate and the voice check; no document changed, so no third read.
 
+Re-check of 2026-11-01 under the new gate (`leak.py --asof 2027-03-01`): LEAK on six lines (DATA_DICTIONARY.md,
+README.md and bcs12_pilot_codebook.xlsx by name; the dictionary, the technical manual and TAS-4 by content, naming 19,
+14 and 13 of the data files' column names). Repaired 2026-11-02 (Tried and rejected): leak.py REVIEW, no LEAK. Each
+REVIEW line ruled: the register's sheet named About is its keeper's own cover (its title, its keeper and "Dates are
+Eastern dates.") and names no file or field (asserted); the bands 0.80 and 0.70 in TAS-4's table are the filed
+comparison; the manual's and TAS-4's domain vocabulary names no wording factor, model or coefficient (asserted); the
+prompt's "wave 6 of the" is the wave's number, and "each of the ten" sits in the call sentence, frozen in every repair
+mode (left for the author). Two documents changed (TAS-4 s.5 and the manual's item table now give the items by
+number) and three files left the pack, so the leak reader owes a re-read.
+
 ## Tried and rejected
 
 - The seed's alpha against congeneric omega as the stump: with the bands at 0.70 and 0.80, unequal loadings move alpha
@@ -375,3 +412,28 @@ retranslation") passed leak.py's prompt gate and the voice check; no document ch
   clause-level items kept as hazards.
 - The pilot mean score to one decimal: the population devices moved it by 0.01 to 0.19, inside one rounding for most
   versions; two decimals, the precision a pilot report gives a scale mean, makes every device a miss.
+- 2026-11-02, the leak reship: the pack shipped DATA_DICTIONARY.md, README.md and bcs12_pilot_codebook.xlsx (the new
+  gate's LEAK by name, and by content for the dictionary), and the technical manual's item table and TAS-4 s.5 named the
+  export's columns BCS01 to BCS12 (LEAK by content); replaced by nothing inside target/ that describes the data: both
+  documents give the items by number, the register's cover keeps its title, keeper and date zone and loses its line on
+  two columns, each vendor's value labels ship as its own code crosswalk, provenance moved to metadata.json, and the
+  merges, the back-check's interviewer, the blanks and the missing rows are carried by the records' own structure (C1,
+  asserted); no figure moved.
+- 2026-11-02, the ask audit: the Ask sheet's cracker (the vendors' status for the module's end, the back-check joined on
+  its case) was a narrowed cracker; generator/ceiling.py's careful solver executes s.4 and s.5 as worded and reads the
+  back-check log's interviewer, the ledger's merged_into and the export's UTC clock by their plain meaning, and keeps
+  20 of 20 ask figures (pair 83.8, mirror leakage 92.0 per cent): both asks are spent.
+- 2026-11-02, the ask rework stopped (ask-rework brief, step 5): no re-site inside the files the asks read passes both
+  tests (every file the asks read is one the call reads, and each device there is a filed clause of s.4 or s.5, a field
+  read by its plain meaning, or a battery item: a balance transfer's two halves, a back-check fanned out on its case, a
+  resumed entry under its own member), and the full replacement (step 4b) failed too. The pilot sample each version
+  stands on (the panel members invited and the addresses issued, each once; new invitation and issued-sample records;
+  the WHAT in TAS-4 s.3) has no device both missed and forced: a second account is linked through merged_into, which
+  57 of 57 merged rows carry, or else only through demographics, which 60 keys share across distinct completes; a
+  staff test account is an inference; a reissue keeps one case id at all 80 such cases; a dwelling made in the field is
+  an anti-join; a replacement slot is an issue-date filter. Interview length (sessions grouped on a shared key, units by
+  magnitude), pilot cost (reconciled to the ledger and the rates), a translation revision chain (the latest-version
+  rule), an outcome code renumbered mid-pilot (a label against a sequence, or else a frequency inference), GPS fixes
+  against the issued address (drift explains a far fix) and an incentive top-up on a second account (one person under
+  two keys, the schedule unfiled) were weighed and died spent or forked. Cutting both asks leaves about 18 criteria,
+  under 25.

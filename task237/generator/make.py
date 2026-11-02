@@ -27,13 +27,36 @@ GOLDEN = os.path.join(TASK, "golden")
 STAMP = (2027, 3, 1, 13, 40, 0)          # 08:40 on Monday 1 March 2027, Eastern (UTC-5)
 
 
+# what each file is, who made it and when: the provenance a readme or manifest would otherwise have carried inside
+# target/ (dataset-generation sections 3 and 9); never the method, the link or the mechanism
+PROVENANCE = {
+    "online": "Nesscroft Panels' export of its online pilots, every entry to the survey links, from its final pilot files "
+              "of Friday 26 February 2027",
+    "ledger": "Nesscroft Panels' incentive ledger for the pilots, sent with its invoice (the centre pays the panel's "
+              "incentives at cost)",
+    "para": "Nesscroft Panels' paradata for the pilots",
+    "ncp_labels": "Nesscroft Panels' answer labels for its export",
+    "capi": "Fernlow Research's interviewer-administered pilot and pretest interviews, from its final pilot file of Friday "
+            "26 February 2027",
+    "bc": "Fernlow Research's back-check log for the pilots",
+    "flr_labels": "Fernlow Research's value labels for its interview file",
+    "reg": "The translation register for the wave 6 language versions, kept by the translation coordinator (Rodney "
+           "Fernandez)",
+    "wave5": "Wave 5 results for the BCS-12 by region and version (English, French), from the survey's wave 5 tables",
+    "std": "The Survey Research Centre's translation and adaptation standard TAS-4, in force from 1 September 2026, owned "
+           "by the translation quality lead (Tara Bauer)",
+    "manual": "The BCS-12 technical manual, English edition (second edition, March 2022)",
+}
+
+
 def metadata(target):
     files = []
     for k, f in B.FILES.items():
         p = os.path.join(target, f)
         rows = sum(1 for _ in open(p, encoding="utf-8")) - 1 if f.endswith(".csv") else None
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator)", "date": "2027-03-01", "license": "CC0-1.0 (original work)"})
+                      "provenance": PROVENANCE[k], "source": "Constructed (seeded generator)", "date": "2027-03-01",
+                      "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task237",
@@ -42,9 +65,7 @@ def metadata(target):
                  "pilot score's variance due to the trait",
         "domain": "Psychology & Behavioral Science",
         "subdomain": "psychometric-measurement-scale-validation (a university survey research centre's release gate for "
-                     "translated versions of the Belonging and Connection Scale: each version's pilot reliability, the "
-                     "share of its total score's variance due to differences in connectedness, against the translation "
-                     "standard's bands)",
+                     "the new language versions of a survey scale)",
         "objective": "Data Quality Monitoring & Alerting",
         "prompt_shape": "07: a grid of cells, ten language versions each with its release decision, its valid pilot "
                         "completes and its pilot mean score, and a chart of each version against the release bands "
@@ -63,6 +84,9 @@ def metadata(target):
                      "date": "2027-03-01", "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-17",
         "generator": "task237/generator/make.py",
+        "pack_provenance": "compiled by the pilot fieldwork manager (Cindy Stein) on Friday 26 February 2027 from the two "
+                           "vendors' final pilot files, for the translation quality lead's release decisions before the "
+                           "wave 6 fieldwork, which launches on Monday 22 March 2027",
         "files": files,
     }
     with open(os.path.join(TASK, "metadata.json"), "w") as fh:

@@ -1,20 +1,21 @@
 {
  "task": "task237",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "psychology-behavioral-science",
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-11-02",
  "stump": "A competent solver gates each version on Cronbach's alpha or a one-factor omega and files 6 of the 10 versions wrong; the step that lands it there is taking the score's whole common variance for connectedness when, in those six translations, the negatively worded items share a wording factor that the standard's quantity leaves out.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": 1,
+  "date": "2026-11-02",
+  "fails": "pair ceiling 83.8 (ceiling 60); mirror leakage 92.0 per cent (under 50); cracker keeps A (10) and B (10): the honest measurement of generator/ceiling.py; the prompt gate, because voice-check fails a paused build where it warned a shipped one: 'each of the ten' in the call sentence (frozen in every repair mode, present at ship) and 'wave 6 of the' read as a count; every other row passes, the survivor anatomy and the script-measured ceiling included"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2027-03-01",
+  "leak_py": "REVIEW, no LEAK (2026-11-02, the leak cut, --asof 2027-03-01); every REVIEW line ruled in the design note's Leak check; the reader owes a re-read (TAS-4 s.5 and the manual's item table changed, three files left the pack, two value-label files joined it); earlier: REVIEW, no LEAK, 2027-03-01",
   "reader": "two passes: question 1 none, question 6 analytical; realism notes fixed"
  },
  "duplicate_check": {
@@ -26,12 +27,32 @@
   "disposition": "APPROVE",
   "report": "determinism_check_report.md (pass r3 on the final pack; r1 and r2 APPROVE on earlier builds)"
  },
- "returned": [],
- "resume": "shipped; waits on the portal",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK: DATA_DICTIONARY.md, README.md and bcs12_pilot_codebook.xlsx are files whose names say they describe the data (dataset-generation section 3); DATA_DICTIONARY.md names 19 of the data files' columns verbatim, 100% of ncp_incentive_ledger_bcs12_pilot.csv; bcs12_technical_manual_english.pdf names 14, 60% of ncp_bcs12_pilot_export_wave6.csv; translation_adaptation_standard_TAS-4.pdf names 13, 40% of bcs12_translation_register_wave6.xlsx)",
+   "repair": "leak",
+   "move": "Stopped writing the three describing files (docs.py's dictionary(), readme() and codebook() removed, build.py's FILES without them) and stripped the column names from the two genuine documents: the technical manual's item table and TAS-4 s.5 now give the BCS-12 items by number (1 to 12; items 2, 4, 6, 8, 10 and 12 reverse-scored) instead of the export's columns BCS01 to BCS12; no other document text changed. The register's About sheet keeps its keeper's own cover (title, keeper, 'Dates are Eastern dates.') and loses its line on the two pilot-date columns. What the files carried went home: each file's provenance (what it is, who made it, when, that the ledger came with the panel's invoice) and the pack's compilation and launch dates to metadata.json, whose subdomain no longer narrates the estimand; the answer codes to each vendor's own value labels, shipped as plain code crosswalks (ncp_bcs12_pilot_value_labels.csv, flr_bcs12_pilot_value_labels.csv: codes and labels, nothing else), which keep the input gate at 11 files in three formats; the merges, the back-check log's interviewer, blank as not reached and the missing rows to the records' own structure (C1). The fork rows SF7, SF8 and SF13 and closures 4, 15, 16, 19 and 22 now cite those homes, each asserted in checks.py with a positive control through the verifier's readers; verify.py now reads TAS-4, the manual, the register's cover and the value labels back and takes its scoring rules from them; checks.py asserts that no shipped file or sheet describes the data, by name and by content. Every data file the call reads is byte-identical to the shipped pack, figures.json and submission.md did not move, and leak.py is REVIEW with no LEAK. generator/ceiling.py (new) then measured the ask layer with the careful-solver cracker: 20 of 20 ask figures kept (pair 83.8), so both asks are spent, and the ask rework under the ask-rework brief stopped at step 5 with no passing device, the step 4b full replacement included (ask_audit_2026_11_01).",
+   "target_zip_md5": "8d00d519cd132def57651b40677b7a47",
+   "commit": ""
+  }
+ ],
+ "resume": "ASK LAYER owed before the build ships again (honest-cracker audit, 2026-11-02): the shipped Ask sheet's cracker was a narrowed one; generator/ceiling.py's careful solver keeps 20 of 20 ask figures (pair 83.8), and the ask rework stopped at step 5 with no passing device, the step 4b full replacement included (candidate table: the design note's last Tried and rejected line). Cutting both asks leaves about 18 criteria, under 25. Next, the author's call: a new ask layer on records this world would hold, designed at stage 2 and screened as code against the careful-solver cracker before any data is cut, or a re-root. The leak repair is done on the cut 8d00d519cd132def57651b40677b7a47 (no LEAK; every gate green but precut's three ask rows and, on the paused status, the voice check's count line on the call sentence's 'each of the ten', which any new ask layer's prompt pass should settle with the author); the leak reader owes a re-read.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "target_zip_md5": "8d00d519cd132def57651b40677b7a47",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks A and B",
+  "careful_cracker_keeps": "20 of 20 against the recorded 0 of 20",
+  "pair": "83.8 (61.8 with the mirror on the natural read without the battery; two careful responses on the call 100.0 each)",
+  "why": "the sheet's cracker kept the vendors' status (complete, RESULT 1) for s.4's end of the module and joined the back-check on its case alone; the careful solver executes s.4 as worded, reading the module's end from the items each record reached (95 online partials and 30 RESULT 2 interviews reached BCS12), joins the log on the case and the interviewer it names (568 of 568 rows match one interview), follows the ledger's merged_into, reads the UTC stamps as the register's Eastern dates and scores by s.5 and the vendors' labels; every hazard is a filed clause or a battery item",
+  "probe": "task237/generator/ceiling.py on target.zip md5 8d00d519cd132def57651b40677b7a47 (the full includer reproduces figures.json)",
+  "status_before": "SHIPPED",
+  "rework": "stopped 2026-11-02 under the ask-rework brief (steps 4b and 5), no ask data changed: no re-site inside the files the asks read passes both tests (each is a file the call reads), and the full replacement on new ask-only records (the pilot sample each version stands on, members invited and addresses issued, each once) has no device both missed by the careful solver and forced for the judge; the candidate table is the design note's last Tried and rejected line and the reship report"
+ },
+ "main_call_concern_2026_11_02": "the reship agent's Survivor anatomy records that the three released versions are also the three highest pilot means; if ranking the published means lands the call, the stump is a backdrop (CLAUDE.md rule 1); weigh at the re-root"
 }

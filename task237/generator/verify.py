@@ -1,5 +1,7 @@
-"""task237 verifier: rebuilds every owed figure from the pack with its own code (plain csv reading, its own valid-complete
-rules, its own factor model fit) and compares it with the golden CSV, figures.json and submission.md."""
+"""task237 verifier: rebuilds every owed figure from the pack with its own code (plain csv reading, its own reading of
+the documents, its own valid-complete rules, its own factor model fit) and compares it with the golden CSV,
+figures.json and submission.md. The scoring rules it applies are read back from the shipped documents and the vendors'
+own value labels (filed()), each with a positive control, so a document whose wording drifts fails here."""
 import csv
 import datetime as dt
 import json
@@ -14,6 +16,9 @@ from scipy.optimize import minimize
 CODES = ["BCS%02d" % i for i in range(1, 13)]
 NEG = [1, 3, 5, 7, 9, 11]
 POS = [0, 2, 4, 6, 8, 10]
+MISSING = {9, -8, -9}
+RULES = {"age": 18, "release": 0.80, "hold": 0.70}   # replaced by what the documents file (filed())
+NON_ANSWERS = ("prefer not to say", "don't know", "refused")
 
 
 def rows(path):
@@ -28,17 +33,71 @@ def register(path):
     return {r[0]: dict(zip(head, r)) for r in it if r[0]}
 
 
+def sheet_lines(path, sheet):
+    """every non-empty cell of one sheet of a workbook, row by row, as text"""
+    ws = load_workbook(path, read_only=True)[sheet]
+    return [" ".join(str(c) for c in r if c is not None) for r in ws.iter_rows(values_only=True) if any(r)]
+
+
+def pdf_text(path):
+    """a PDF's text, whitespace collapsed (the reader every document assertion goes through)"""
+    from pypdf import PdfReader
+    text = " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path).pages)
+    assert len(text) > 200, "no text extracted from %s" % path
+    return text
+
+
+def value_labels(path):
+    """a vendor's value labels: {(variable, code): label}"""
+    out = {}
+    for r in rows(path):
+        code = r.get("code", r.get("value"))
+        out[(r["variable"], code)] = r["label"]
+    assert out, "no value labels in %s" % path
+    return out
+
+
+def filed(target, files):
+    """the rules the scoring and the population rest on, read from TAS-4, the manual, the register and the vendors'
+    value labels; each read is checked against a sentence known to be there (positive control)"""
+    std = pdf_text(os.path.join(target, files["std"]))
+    man = pdf_text(os.path.join(target, files["manual"]))
+    assert "the item score is 6 minus the answer" in std, "control: TAS-4 s.5 read"
+    m = re.search(r"Items ((?:\d+, )*\d+) and (\d+) are reverse-scored", std)
+    assert m, "TAS-4 s.5: the reverse-scored items"
+    neg = [int(x) - 1 for x in m.group(1).split(", ")] + [int(m.group(2)) - 1]
+    keyed = re.findall(r"\b(\d{1,2}) [^0-9]+? negative \(reverse-scored\)", man)
+    assert sorted(int(x) - 1 for x in keyed) == neg, ("the manual's keying against TAS-4 s.5", keyed, neg)
+    assert "prefer not to say, don't know or refused leaves the item unanswered" in std, "TAS-4 s.5: the non-answers"
+    assert "five-point scale from strongly disagree (1) to strongly agree (5)" in man, "the manual: the answer scale"
+    codes = set()
+    for k in ("ncp_labels", "flr_labels"):
+        lab = value_labels(os.path.join(target, files[k]))
+        item = {int(code): t for (var, code), t in lab.items() if var in CODES}
+        assert all(item.get(v) for v in range(1, 6)), "control: %s labels the five answers" % files[k]
+        codes |= {c for c, t in item.items() if t.lower() in NON_ANSWERS}
+        assert all(1 <= c <= 5 or t.lower() in NON_ANSWERS for c, t in item.items()), files[k]
+    m4 = re.search(r"the respondent was (\d+) or older", std)
+    assert m4, "TAS-4 s.4: the age"
+    bands = re.search(r"(\d\.\d\d) or more Release .*? (\d\.\d\d) to under (\d\.\d\d) Hold", std)
+    assert bands and bands.group(1) == bands.group(3), "TAS-4 s.6: the bands"
+    about = sheet_lines(os.path.join(target, files["reg"]), "About")
+    assert any("Translation register" in x for x in about), "control: the register's About sheet read"
+    return dict(neg=neg, missing=codes, age=int(m4.group(1)), release=float(bands.group(1)),
+                hold=float(bands.group(2)), eastern=any("Dates are Eastern dates." in x for x in about))
+
+
 def score(answers):
     """TAS-4 s.5 on one respondent's raw answers (strings), None when three or more are unanswered"""
     s = []
     for i, a in enumerate(answers):
         a = int(a)
-        if a in (9, -8, -9):
+        if a in MISSING:
             continue
         s.append(6 - a if i in NEG else a)
     if len(s) < 10:
         return None, None
-    item = [None if int(a) in (9, -8, -9) else (6 - int(a) if i in NEG else int(a)) for i, a in enumerate(answers)]
+    item = [None if int(a) in MISSING else (6 - int(a) if i in NEG else int(a)) for i, a in enumerate(answers)]
     return sum(s) / len(s) * 12, item
 
 
@@ -55,7 +114,7 @@ def online(target, files, reg):
     for r in rows(os.path.join(target, files["online"])):
         code = r["survey_code"].split("CCS6-BCS-")[1]
         v = {k.upper(): k for k in reg}[code]
-        if r["status"] not in ("complete", "partial") or int(r["age"]) < 18 or any(r[c] == "" for c in CODES):
+        if r["status"] not in ("complete", "partial") or int(r["age"]) < RULES["age"] or any(r[c] == "" for c in CODES):
             continue
         if r["ui_language_at_end"] != v:
             continue
@@ -79,7 +138,7 @@ def capi(target, files, reg):
         iv.setdefault(k, {})[r["variable"]] = r["value"]
     out = []
     for (case, v, who, day), d in iv.items():
-        if any(c not in d for c in CODES) or int(d["AGE"]) < 18:
+        if any(c not in d for c in CODES) or int(d["AGE"]) < RULES["age"]:
             continue
         if not (str(reg[v]["pilot_start"])[:10] <= day <= str(reg[v]["pilot_end"])[:10]):
             continue
@@ -122,13 +181,18 @@ def alpha(S):
 
 
 def band(x):
-    return "release" if x >= 0.80 else "hold" if x >= 0.70 else "rework"
+    return "release" if x >= RULES["release"] else "hold" if x >= RULES["hold"] else "rework"
 
 
 def main(target, golden, figures_path, submission_path):
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import build as B
     import golden as GD
+    global NEG, MISSING
+    F = filed(target, B.FILES)
+    assert F["neg"] == [1, 3, 5, 7, 9, 11] and F["missing"] == {9, -8, -9} and F["eastern"], F
+    NEG, MISSING = F["neg"], F["missing"]
+    RULES.update(age=F["age"], release=F["release"], hold=F["hold"])
     reg = register(os.path.join(target, B.FILES["reg"]))
     comp = online(target, B.FILES, reg) + capi(target, B.FILES, reg)
     order = list(reg)

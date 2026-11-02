@@ -32,8 +32,40 @@ def ok(cond, label):
 
 
 def _pdf_text(path):
-    from pypdf import PdfReader
-    return " ".join(" ".join(pg.extract_text().split()) for pg in PdfReader(path).pages)
+    """the verifier's own PDF reader, so the documents are read one way only"""
+    import verify as V
+    return V.pdf_text(path)
+
+
+# a file or sheet whose job is to describe the data (dataset-generation section 3), by name
+DESCRIBE_NAME = re.compile(r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+                           r"manifest|file_list|file_layout|glossary|data_?notes|how_to_read|about_this|export_notes|"
+                           r"extract_notes|definitions|schema|layouts?_notes|release_notes|datamap)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"how to (read|use)( this)?|columns?|codebook|variables)$", re.I)
+
+
+def describing_content(target, names):
+    """the documents' hits on the data files' identifier-style column names (snake_case, digits, interior capitals):
+    a document naming them lists the data's fields whatever its name"""
+    import verify as V
+    cols = set()
+    for f in names:
+        if f.endswith(".csv"):
+            cols |= set(open(os.path.join(target, f), encoding="utf-8").readline().strip().split(","))
+        elif f.endswith(".xlsx"):
+            from openpyxl import load_workbook
+            ws = load_workbook(os.path.join(target, f), read_only=True).worksheets[0]      # the data sheet's header
+            first = next(ws.iter_rows(values_only=True, max_row=1), ())
+            cols |= {str(c) for c in first if c}
+    ident = {c for c in cols if len(c) >= 4 and " " not in c
+             and ("_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c))}
+    hits = {}
+    for f in names:
+        if f.endswith(".pdf"):
+            text = V.pdf_text(os.path.join(target, f))
+            hits[f] = sorted(c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text))
+    return ident, hits
 
 
 def bands(d):
@@ -87,8 +119,7 @@ def run(target, golden, o, X):
     files = {k: os.path.join(target, f) for k, f in B.FILES.items()}
     std = _pdf_text(files["std"])
     man = _pdf_text(files["manual"])
-    dic = open(files["dict"]).read()
-    dicf = " ".join(dic.split())
+    import verify as V
     rel, calls = X["rel"], X["calls"]
     shares = {v: rel[v]["golden"] for v in E.ORDER}
 
@@ -165,10 +196,16 @@ def run(target, golden, o, X):
     wt = X["wording"]
     ok(all(wt[v]["p"] > 0.05 for v in set(E.ORDER) - WORDING) and all(wt[v]["p"] < 1e-15 for v in WORDING),
        "SF6 a single factor fits the four other versions (p over 0.05) and fails in the six (p under 1e-15)")
-    ok("the item score is 6 minus the answer" in std and "BCS02, BCS04, BCS06, BCS08, BCS10 and BCS12" in std,
-       "SF7 the total score as scored: the six negatively worded items reversed (s.5)")
-    ok("prefer not to say, don't know or refused leaves the item unanswered" in std,
-       "SF8 codes 9, -8 and -9 leave the item unanswered (s.5, the codebook)")
+    F = V.filed(target, B.FILES)
+    ok("the item score is 6 minus the answer" in std and "Items 2, 4, 6, 8, 10 and 12 are reverse-scored" in std
+       and F["neg"] == P.NEG,
+       "SF7 the total score as scored: items 2 to 12 even reversed (s.5), the manual's keying table agreeing, read "
+       "through the verifier")
+    ok(not re.search(r"BCS\d\d", std + man), "SF7 neither document names a file's column: the items go by their numbers")
+    vals = set(pd.unique(pd.concat([D["online"][E.CODES].stack(), D["capi"][D["capi"].variable.isin(E.CODES)].value])))
+    ok(F["missing"] == {9, -8, -9} and {int(v) for v in vals if v != ""} - set(range(1, 6)) == F["missing"],
+       "SF8 every item value off the manual's five-point scale is a code the vendor's own labels give as prefer not to "
+       "say, don't know or refused, which s.5 leaves unanswered (C1, read through the verifier)")
     ok("0.80 or more" in std and "0.70 to under 0.80" in std and "under 0.70" in std, "SF9 the bands' edges (s.6)")
     ok(all(v in E.ORDER for v in calls) and len(calls) == 10, "SF10 each version gated on its own pilot")
     gpe = {v: E.trait_share(np.cov(E.item_scores(df[df.version == v])[~np.isnan(E.item_scores(df[df.version == v])).any(axis=1)],
@@ -267,9 +304,32 @@ def run(target, golden, o, X):
     neg_notes = [v for v, t in zip(D["reg"].version, D["reg"].note)
                  if re.search(r"[Ii]tem (2|4|6|8|10|12)\b", t)]
     ok(set(neg_notes) and not set(neg_notes) & WORDING, "the notes on negatively worded items sit in versions with no wording factor")
-    ok("the panel merges a second account it finds a member holding" in dicf,
-       "the dictionary describes the panel's merges flatly")
-    ok("the interviewer whose interview was checked" in dicf, "the dictionary describes the back-check log's interviewer")
+    # what the dictionary used to say, now carried by the records' own structure (C1)
+    acc_first = led[led.respondent_id != ""].groupby("panel_member_id").activity_utc.min()
+    ok(len(mg) >= 40 and mg.merged_into.isin(acc_first.index).all() and (mg.respondent_id == "").all()
+       and (mg.points.astype(int) < 0).all()
+       and (mg.activity_utc.values > mg.panel_member_id.map(acc_first).values).all(),
+       "closure 15 a merged row moves an account's points into another account that has its own entries, after the "
+       "merged account's entry (C1: the ledger's own rows say who a member is)")
+    wkey = w.assign(k=w.case_id + "|" + w.interviewer_id).groupby("k").interview_date.agg(["size", "max"])
+    bkey = bc.case_id + "|" + bc.interviewer_id
+    ok(bkey.isin(wkey.index).all() and (wkey.loc[bkey, "size"] == 1).all()
+       and (bc.backcheck_date.values > wkey.loc[bkey, "max"].values).all(),
+       "closure 16 every back-check row's case and interviewer name exactly one interview, dated before the check (C1)")
+    about = V.sheet_lines(files["reg"], "About")
+    ok("Dates are Eastern dates." in " ".join(about) and {"start_utc", "end_utc"} <= set(D["online"].columns)
+       and "activity_utc" in led.columns,
+       "SF13 the register's own cover gives its dates as Eastern and the panel's clocks are named UTC (read through the "
+       "verifier)")
+    ok(F["eastern"] and F["age"] == 18 and (F["release"], F["hold"]) == (P.RELEASE, P.HOLD),
+       "the verifier's rules read back from TAS-4 s.4 and s.6 and the register (positive controls)")
+    blank_mid = on[E.CODES].apply(lambda r: "".join("x" if v == "" else "a" for v in r), axis=1)
+    ok(blank_mid.str.fullmatch(r"a*x*").all() and (on.loc[blank_mid.str.contains("x"), "status"] != "complete").all(),
+       "closure 19 an online item is blank only after the last item reached, and never in a complete (C1: blank is "
+       "not reached)")
+    reached = D["capi"][D["capi"].variable.isin(E.CODES)].groupby(["case_id", "interviewer_id", "interview_date"]).variable
+    ok(reached.apply(lambda s: sorted(s) == E.CODES[:len(s)]).all(),
+       "closure 19 an interview's item rows run from BCS01 without a gap (C1: no row is not reached)")
 
     # ------------------------------------------------------------ R3c, input gates, dates
     names = os.listdir(target)
@@ -292,12 +352,26 @@ def run(target, golden, o, X):
     prof = {v: tuple(np.round(np.nanmean(T[v], axis=0), 3)) for v in E.ORDER}
     ok(len(set(prof.values())) == 10, "R3c no two versions share an item profile")
 
-    # ------------------------------------------------------------ the pack's own registers (H9)
-    readme = open(files["readme"]).read()
-    listed = set(re.findall(r"`([^`]+\.(?:csv|xlsx|pdf|md))`", readme))
-    ok(listed == set(names) - {"README.md"}, "H9 the readme lists every shipped file and nothing else")
-    data_files = {f for f in names if f.endswith((".csv", ".xlsx"))}
-    ok(data_files == set(re.findall(r"^## (\S+\.(?:csv|xlsx))$", dic, re.M)), "H9 the dictionary describes every data file")
+    # ------------------------------------------------------------ no shipped file describes the data (section 3)
+    ok(not [f for f in names if DESCRIBE_NAME.search(f.rsplit(".", 1)[0])] and not [f for f in names if f.endswith((".md", ".txt"))],
+       "describing files: no readme, dictionary, codebook, notes or manifest ships, by name (%d files)" % len(names))
+    from openpyxl import load_workbook
+    sheets = {f: load_workbook(os.path.join(target, f), read_only=True).sheetnames for f in names if f.endswith(".xlsx")}
+    ok(sheets == {B.FILES["reg"]: ["Register", "About"]} and not [s for v in sheets.values() for s in v if DESCRIBE_SHEET.match(s)],
+       "describing sheets: none by name (%s)" % sheets)
+    ident, dhits = describing_content(target, names)
+    ok(len(ident) >= 30 and "start_utc" in ident and "BCS01" in ident and set(dhits) == {B.FILES["std"], B.FILES["manual"]}
+       and not any(dhits.values()),
+       "describing content: neither document names any of the data files' %d field names (%s)" % (len(ident), dhits))
+    about_text = " ".join(about)
+    ok(not [c for c in ident if c in about_text] and not [f for f in names if f in about_text] and len(about) == 2,
+       "describing content: the register's cover names no file and no field, only its title, keeper and date zone")
+    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
+    ok({m["path"] for m in meta["files"]} == set(names) and all(len(m.get("provenance", "")) >= 30 for m in meta["files"]),
+       "provenance: metadata.json, outside target/, says what each shipped file is and who made it")
+    ok("26 February 2027" in meta["pack_provenance"] and "22 March 2027" in meta["pack_provenance"]
+       and "signs off every version's decision before the wave's fieldwork launches" in std,
+       "closures 4 and 22: the files' date and the launch in metadata.json; the sign-off before the launch in TAS-4 s.6")
     path = os.path.join(os.path.dirname(target), "submission.md")
     if os.path.exists(path):
         cited = set(re.findall(r"[\w.-]+\.(?:csv|xlsx|pdf)", open(path).read())) - {"bcs12_wave6_release_decisions.csv"}

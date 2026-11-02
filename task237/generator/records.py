@@ -1,6 +1,6 @@
 """The records each system writes from task237's world: the online panel vendor's export, its incentive ledger and
-paradata, the interviewer-administered vendor's item-level file and back-check log, the translation register, the
-vendors' codebook and the wave 5 results by region."""
+paradata, the interviewer-administered vendor's item-level file and back-check log, the translation register, each
+vendor's value labels and the wave 5 results by region."""
 import datetime as dt
 
 import numpy as np
@@ -251,6 +251,27 @@ class Records:
                              reconciled=rec.isoformat(), pretest=pre, pilot_start=start.isoformat(),
                              pilot_end=end.isoformat(), note=self.NOTES[code]))
         return pd.DataFrame(rows)
+
+    # ------------------------------------------------------------------ each vendor's value labels, as its system exports them
+    AGREE = [(1, "Strongly disagree"), (2, "Disagree"), (3, "Neither agree nor disagree"), (4, "Agree"),
+             (5, "Strongly agree")]
+
+    def ncp_labels(self):
+        """Nesscroft Panels' answer labels for the coded columns of its export: codes and labels, nothing else"""
+        rows = [dict(variable=c, code=k, label=t) for c in CODES for k, t in self.AGREE + [(9, "Prefer not to say")]]
+        rows += [dict(variable="sex", code=k, label=t) for k, t in (("F", "Female"), ("M", "Male"), ("X", "Another gender"))]
+        rows += [dict(variable="hh_size", code=9, label="Nine or more")]
+        return pd.DataFrame(rows)[["variable", "code", "label"]]
+
+    def flr_labels(self):
+        """Fernlow Research's value labels for the coded variables of its long file: values and labels, nothing else"""
+        rows = [dict(variable="RESULT", value=k, label=t) for k, t in ((1, "Full interview"),
+                                                                      (2, "Partial interview (broken off)"))]
+        rows += [dict(variable=c, value=k, label=t) for c in CODES
+                 for k, t in self.AGREE + [(-8, "Don't know"), (-9, "Refused")]]
+        rows += [dict(variable="SEX", value=k, label=t) for k, t in ((1, "Male"), (2, "Female"), (3, "Another gender"))]
+        rows += [dict(variable="HHSIZE", value=9, label="Nine or more")]
+        return pd.DataFrame(rows)[["variable", "value", "label"]]
 
     # ------------------------------------------------------------------ a neighbouring file the analysis does not use
     REGIONS = [("Capital", 2104), ("Lakeshore", 1588), ("North Woods", 812), ("Prairie South", 1240), ("River Valley", 1376),

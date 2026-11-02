@@ -2,7 +2,7 @@
   "task": "task237",
   "title": "Whether each of the ten new language versions of a survey's twelve-item connectedness scale is released for fieldwork, held for a second pilot or sent back for retranslation, each judged on the share of its pilot score's variance due to the trait",
   "domain": "Psychology & Behavioral Science",
-  "subdomain": "psychometric-measurement-scale-validation (a university survey research centre's release gate for translated versions of the Belonging and Connection Scale: each version's pilot reliability, the share of its total score's variance due to differences in connectedness, against the translation standard's bands)",
+  "subdomain": "psychometric-measurement-scale-validation (a university survey research centre's release gate for the new language versions of a survey scale)",
   "objective": "Data Quality Monitoring & Alerting",
   "prompt_shape": "07: a grid of cells, ten language versions each with its release decision, its valid pilot completes and its pilot mean score, and a chart of each version against the release bands (37 criteria)",
   "as_of": "2027-03-01",
@@ -16,10 +16,9 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 12,
+    "files": 11,
     "formats": [
       "csv",
-      "md",
       "pdf",
       "xlsx"
     ],
@@ -36,12 +35,14 @@
   ],
   "created": "2026-10-17",
   "generator": "task237/generator/make.py",
+  "pack_provenance": "compiled by the pilot fieldwork manager (Cindy Stein) on Friday 26 February 2027 from the two vendors' final pilot files, for the translation quality lead's release decisions before the wave 6 fieldwork, which launches on Monday 22 March 2027",
   "files": [
     {
       "path": "ncp_bcs12_pilot_export_wave6.csv",
       "format": "csv",
       "bytes": 414655,
       "rows": 3772,
+      "provenance": "Nesscroft Panels' export of its online pilots, every entry to the survey links, from its final pilot files of Friday 26 February 2027",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -51,6 +52,7 @@
       "format": "csv",
       "bytes": 297591,
       "rows": 3829,
+      "provenance": "Nesscroft Panels' incentive ledger for the pilots, sent with its invoice (the centre pays the panel's incentives at cost)",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -60,6 +62,17 @@
       "format": "csv",
       "bytes": 106625,
       "rows": 3772,
+      "provenance": "Nesscroft Panels' paradata for the pilots",
+      "source": "Constructed (seeded generator)",
+      "date": "2027-03-01",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "ncp_bcs12_pilot_value_labels.csv",
+      "format": "csv",
+      "bytes": 1780,
+      "rows": 76,
+      "provenance": "Nesscroft Panels' answer labels for its export",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -69,6 +82,7 @@
       "format": "csv",
       "bytes": 1592441,
       "rows": 39298,
+      "provenance": "Fernlow Research's interviewer-administered pilot and pretest interviews, from its final pilot file of Friday 26 February 2027",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -78,6 +92,17 @@
       "format": "csv",
       "bytes": 28373,
       "rows": 568,
+      "provenance": "Fernlow Research's back-check log for the pilots",
+      "source": "Constructed (seeded generator)",
+      "date": "2027-03-01",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "flr_bcs12_pilot_value_labels.csv",
+      "format": "csv",
+      "bytes": 1976,
+      "rows": 90,
+      "provenance": "Fernlow Research's value labels for its interview file",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -85,17 +110,9 @@
     {
       "path": "bcs12_translation_register_wave6.xlsx",
       "format": "xlsx",
-      "bytes": 8054,
+      "bytes": 7998,
       "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2027-03-01",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "bcs12_pilot_codebook.xlsx",
-      "format": "xlsx",
-      "bytes": 8681,
-      "rows": null,
+      "provenance": "The translation register for the wave 6 language versions, kept by the translation coordinator (Rodney Fernandez)",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -105,6 +122,7 @@
       "format": "csv",
       "bytes": 525,
       "rows": 14,
+      "provenance": "Wave 5 results for the BCS-12 by region and version (English, French), from the survey's wave 5 tables",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -112,8 +130,9 @@
     {
       "path": "translation_adaptation_standard_TAS-4.pdf",
       "format": "pdf",
-      "bytes": 5029,
+      "bytes": 5021,
       "rows": null,
+      "provenance": "The Survey Research Centre's translation and adaptation standard TAS-4, in force from 1 September 2026, owned by the translation quality lead (Tara Bauer)",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
@@ -121,26 +140,9 @@
     {
       "path": "bcs12_technical_manual_english.pdf",
       "format": "pdf",
-      "bytes": 3765,
+      "bytes": 3757,
       "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2027-03-01",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "DATA_DICTIONARY.md",
-      "format": "md",
-      "bytes": 2391,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2027-03-01",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "README.md",
-      "format": "md",
-      "bytes": 1165,
-      "rows": null,
+      "provenance": "The BCS-12 technical manual, English edition (second edition, March 2022)",
       "source": "Constructed (seeded generator)",
       "date": "2027-03-01",
       "license": "CC0-1.0 (original work)"
