@@ -147,7 +147,7 @@ class Events:
             uy = next(e for e in run["events"] if e["station"] == "UY")
             ok = False
             for _ in range(400):
-                ev = uy["t_event"] + dt.timedelta(seconds=int(r.integers(-150, 151)))
+                ev = uy["t_event"] + dt.timedelta(seconds=int(r.integers(-95, 96)))
                 if self.clear_of_trips(run["date"], "CB", ev, 6):
                     ok = True
                     break
