@@ -1,124 +1,81 @@
-# determinism-check report, task183, 2026-10-12 (pass 3, the one re-judge after the portal determinism return)
+# determinism-check report, task183, 2026-11-02
 
 ## Verdict
 DETERMINISTIC
-**Disposition:** APPROVE
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Disposition:** SEND_BACK (Gate G: the DMS fault-location log is a wrong-methodology official artifact, and it is the stump, not a declared distractor)
+**Stumping type:** mechanism: planted_defect_flip (wrong-methodology official artifact), stumping_family: surface_read_rejection, surface_read_dependency: yes, sole_data_defect: yes
+
+Runtime note: no `Agent` tool was available. The brief was written to /tmp/determinism-check-task183-1793614319/judge_brief.md. The coordinator spawned the single sonnet thread, and its verdict is /tmp/determinism-check-task183-1793614319/verdict.md. Input: prompt.txt (not legacy), target.zip md5 a11364baec2f5b19cd19ed09cf133325, submission.md.
 
 ## Why
-One isolated sonnet thread saw only a fresh unzip of target.zip, prompt.txt, the graded blocks and the judge system prompt. Sections with status IS in the 30 Sep 2026 GIS export, INS/SPL/TRM only, each carried forward at the rate for its own count of prior cable failures, put Quarry Hill 21 first (14.95 expected 2027 failures against 9.85 for Harrow Road 12). All 24 reliability figures reproduce from the files under TVE-RS-04 rev 6. No semantic fork on the main call. The residual risk the thread noted (no data after Sutter Park 5's second feed on 15 Sep 2026) was acted on after the verdict: the 2025 report now also carries 6.4, a factual precedent that Harrow Road 14's 2021 to 2024 elbow run ended with the 2024 change-out and its failures are back at the earlier level, verifiable in the work orders. Recorded as the same fork closed further. No graded figure moved: freeze.py determinism mode PASS (236 checks), verify green, two builds byte-identical, target.zip re-cut. The thread judged the pre-6.4 bundle; this is the coordinator's account of the change, and the verdict is not re-run.
+Every golden figure reproduces from the shipped files on a literal reading. Main call: 40 TRIP rows in 2026 (36 phase, 4 ground); the 24 section-7 trips sit at mile 6.91 to 7.14, at least 0.3 mi from any boundary. They are unchanged under larger, mean or smaller faulted-phase current, collapsing the 04/18 shots, or any window, ground-trip, duplicate or mile-versus-pole reading. The line model reproduces the study's 3.36 kA and 2.91 kA at mile 1.9. The block fails Gate G, not determinism. `dms_fault_location_log.csv` is an official, validated-looking artifact that locates the same 24 trips in section 9 (mile 8.58 to 8.88). It is right only before mile 3.6, and the main call stumps only because it is wrong. On clean data the DMS log would give section 7 directly, so the clean-data test fails. The DMS log is not named in `metadata.json` as a declared distractor (those are the pole inspection and member contacts files), so the Gate G exception does not apply.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| INS/SPL/TRM work orders | cause filter per code file | 937 orders, 538 on IS sections, every section joins GIS | yes |
-| QH21 IS sections with 2+ failures | 17, others none | 17 (5+3+4+1+2+2); every other feeder 0 | yes |
-| Hazard after 2 failures vs 1 | more than 10x | 0.311 vs 0.0201 per year (15x); 0.0224 / 0.579 at 0 / 3+ | yes |
-| Expected 2027, QH21 first | first | QH21 14.95, HR12 9.85, HR14 8.25, ML07 7.88, SP05 7.55, ML03 7.50, SP09 6.87, QH22 5.52 | yes |
-| SAIFI x8 | 1.40 1.97 1.73 1.31 1.58 1.52 2.23 1.53 | 1.399 1.967 1.730 1.312 1.582 1.520 2.230 1.532 | yes |
-| SAIDI x8 | 71.3 131.4 88.2 85.7 92.4 73.5 139.7 125.5 | 71.29 131.38 88.19 85.67 92.39 73.51 139.72 125.51 | yes |
-| CEMI4 x8 | 108 1,163 445 485 262 44 1,812 65 | identical | yes |
-| MEDs | 2026-01-25, 2026-07-28 | 34.18 and 55.11 min vs threshold 13.69 (13.72 sample SD); next day 9.32 | yes |
-| Customers served | from the connectivity model | HR12 3878, HR14 3105, ML03 4168, ML07 3971, QH21 2781, QH22 3306, SP05 3650, SP09 3362 | yes |
-| Chart | QH21 tallest | QH21 first under count-only, insulation-by-count and Poisson splits | yes |
+| 2026 trips (r1407_event_history.csv) | 40 (36 phase, 4 ground) | 40 (36, 4) | yes |
+| Section 7 trips / miles | 24, mile 6.9 to 7.1 | 24, mile 6.91 to 7.14 | yes |
+| Next-largest section | at most 4 | section 2, 4 trips | yes |
+| DMS cluster | mile 8.6 to 8.9, section 9 | 8.58 to 8.88, section 9 | yes |
+| Section 7 ends | SW1406 F14-0132 mile 6.4; SW1407 F14-0149 mile 7.5 | same (docx and GIS) | yes |
+| Lateral counts L05..L18 | 34 28 74 39 47 6 44 35 6 6 30 35 25 22 | identical | yes, all 14 |
+| Section net costs S1..S14 (hundreds) | 2500 2200 900 2700 500 400 1100 3700 400 800 1100 400 1300 1100 | identical; all more than 20 dollars from a rounding edge | yes, all 14 |
 
 ## Competing answers that survived
-None on the committed answers.
-1. Trailing or 5-year feeder history (Harrow Road 12, Sutter Park 5): closed by report 6.2 (PILC replaced; 7 PILC sections in service, all SP05), 6.3 and the extract notes (Kessler loop overload ended by the second feed on 15 Sep 2026).
-2. Successors inheriting a predecessor's count: closed by the code file (failed cable removed, new section is new cable).
-3. Residual: SP05 loop failures continuing at about 10 a year after the second feed would reach about 17 and pass QH21's 15. The data has no post-feed period; the filed cause and remedy close it, and the later 6.4 sentence on Harrow Road 14 adds the reversion precedent. Low risk.
-4. One work order is raised on ML03 but its section is on ML07 in GIS; the notes explain work-order feeder is the feeder when raised. Immaterial.
+None on the main call.
+
+- **Main call, conductor legend:** no shipped file maps RAVEN to a C-3 row, only by industry convention (RAVEN = 1/0). Read as 4/0, the cluster moves to mile 8.27 to 8.40, section 8, 23 trips; read as #2, to section 6. The thread judged 1/0 forced for an expert. The ground-fault currents at the two crew poles sit nearer the 1/0 values. This is a soft Gate B note, not a surviving fork.
+- **Lateral ask, planned outages:** the prompt says "lost power", not "unplanned". The literal reading gives L07 74. Excluding planned outages gives L07 3, with L11 unchanged. This is a soft fork, with the literal reading as the golden.
+- **Lateral ask, other readings (all rejected by the shipped text):**
+
+| Reading | Result |
+|---|---|
+| No merge of overlapping outages | L13 48, L16 36 |
+| Ignore connect dates | L07 76, L12 36, L16 37, L17 26 |
+| Include finaled meters | L06 29 |
+| Threshold 3 or more | L10 37, L13 48, L14 33 |
+| Threshold 5 or more | L05 1, L07 3, L11 44 |
+| Count momentary shots | no change |
+| AMI log alone | L05 28, L06 24, L07 69, L08 33, L09 37, L10 2, L11 37, L12 27, L13 3, L14 to L18 0 |
+
+- **Section repairs, other readings:**
+
+| Reading | Result |
+|---|---|
+| REPAIR orders only | S1 1,400; S2 1,100; S3 0; S4 1,600; S7 0; S13 minus 2,900 |
+| Positive receipts only (ignore the NSF) | S7 minus 800 |
+| Drop the squirrel-guard job at F14-0010 | S1 2,000 |
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 14 | yes |
-| Formats | 3 or more | 6 (csv, pdf, xlsx, parquet, json, md) | yes |
-| Large file | 25,000 rows or more | connectivity_meter_points.parquet 37,008 rows (CIS csv 28,221 per the earlier pass) | yes |
-| Distractors | 2 or more in metadata.json, none named in a file | vault_manhole_inspections_2022-2026.csv, feeder_peak_loading_2021-2026.xlsx | yes |
-| Distractors relevant, unused | weighed, not carrying the answer | both same-world files; the thread named neither as the surface read (it lists the annual report's table 6.1 and the MED list as further non-deciding items) | yes |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, png), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | call plus 8 x 3 indices plus chart; two decimals, one decimal, whole numbers stated | yes |
-| Shape and rubric | identifiable, 25 or more criteria | shape 01; 1 call + 24 cells + chart | yes |
-| Prompt | one paragraph, under 1,000 characters | 829 | yes |
-| Realism | no LLM tells | export irregularities (banner rows, mixed dates, dual clocks); no authoring language found; golden visual realism not judged here | yes |
+| Files | 10 or more | 16 | yes |
+| Formats | 3 or more | 5 (csv, xlsx, pdf, docx, json) | yes |
+| Large file | 25,000 rows or more | ami_outage_events_2026.csv, 25,701 rows (counted) | yes |
+| Distractors | 2 or more, in metadata, none in a file name | 2 named (f14_pole_inspection_2024.csv, member_contacts_blinks_2026.csv). The thread also found pawnee_ridge_airport_daily_2026.csv unused. File names do not label them | yes |
+| Distractors unused but weighable | relevant, ruled out by a shipped fact | not separately confirmed by the thread; the pole inspection and member contacts files are plausible feeder-relevant context | partial, not verified |
+| Deliverables | 1 to 3, all in golden | 3 (docx, csv, csv), all present in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 14 laterals, 14 sections, miles to one decimal, dollars to the nearest hundred | yes |
+| Prompt shape and 25 criteria | identifiable, 25 or more | shape `other`; the design note's ladder gives about 6 call + 4 chart + 14 + 14 criteria (reaches 25 or more) | yes |
+| Not LLM generated, goldens real | read as real work products | thread found utility-realistic artifacts, nothing exclusion-level; cosmetic PDF title mismatch | yes |
 
 ## Gate G reconciliation
-Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_class analytical (match); analyst_test (strong analyst on clean data forecasts from feeder rate or insulation/age rates and names Mill Lane 7 or Sutter Park 5) matches the thread's easy routes (trailing or pooled rate giving SP05 or HR12). Label difference only: the card and design note declare Gate G `forecasting`, the thread chose method_or_model_selection. The design note records that the latter blocks as same_driver against task134 v2 on the guard, so the declared label stays; the family and the mechanism of the stump (hazard conditioned on a section's own failure history) agree. The declared distractors were not named as carrying the task.
+- **Thread:** mechanism planted_defect_flip, stumping_family surface_read_rejection, surface_read_dependency yes, sole_data_defect yes.
+- **Design note:** its stump sentence is the same: trust the DMS locator and file section 9, against re-deriving from the currents through the as-built line.
+- **Match:** the two agree. The finding is the design itself: the surface read is the DMS log, which is not the declared distractor, and it is too load-bearing. The note calls it field_method (F2/F6, "a correct monitor blind at its configured grain"), but the shipped DMS artifact is the wrong ranker of candidates. A mismatch with the note is not the problem, so the finding is a design-level send-back.
+- **Card:** the card's `stump_class` / `analyst_test` / `domain_test` lines were not printed, because my cards query returned no fields.
 
-Gate H: domain pass, layers pass, decisive_step analytical. Card domain_test (second failure marks degraded insulation, the reason utilities replace at the second failure) matches the thread's reliability-engineering reading.
-
-## Stump power (Gate F)
-Moderate to good. Feeder-level trailing counts give SP05 or HR12; a pooled section rate gives HR12. QH21 needs a recurrent-event panel conditioned on prior failures, replacement-removal handling and the SP05 regime check, plus an ETL-heavy reliability layer (UTC conversion, bank dedupe, per-customer restore steps, MED recomputation, dated connectivity). No solver run data supplied; the empirical bar is not assessed here.
-
-## Findings, ranked
-1. Low: SP05 post-feed expectation rests on filed cause and remedy only; hardened by 6.4 after the verdict (not re-judged).
-2. Informational: Gate G label differs (forecasting vs method_or_model_selection), explained above.
-3. Informational: work-order count in this pass (937 on cause codes, 538 IS) differs from pass 2 (1,055 and 647 IS); both pass the same figures, the earlier count likely covers a wider set of cause codes. Not a graded figure.
-
-## Next action for the author
-Ship: no repair needed, no further judge run. Re-cut target.zip is already the final.
-
----
-
-# determinism-check report, task183, 2026-10-12
-
-## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE (no FIX_NOW items; no rerun needed)
-**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
-
-## Why
-The judge recomputed from target/ that Quarry Hill 21 is the only feeder with in-service sections that have already failed twice or more (17). The section-year hazard is 0.0224 / 0.0201 / 0.311 / 0.578 per year after 0 / 1 / 2 / 3+ failures, so the rate after two failures is 15.4x the rate after one. Carried onto the in-service stock, QH21 leads with 14.9 expected 2027 failures (HR12 9.85, HR14 8.25, ML07 7.88, SP05 7.55). The naive routes land elsewhere: ML07 on the five-year in-service count, SP05 on the trailing 12 months or on insulation and age, HR12 on the filed table 6.1 or all sections ever. All 24 SAIFI, SAIDI and CEMI4 figures reproduce exactly, and none is near a rounding edge. Gates A to E pass.
-
-## Recomputation ledger
-| Figure | Claimed | Judge recomputed | Reproduced |
-|---|---|---|---|
-| Cable failures INS/SPL/TRM on GIS status IS | counted as stated | 1,055 WOs; 647 on IS sections, 408 on RET | yes |
-| QH21 in-service sections with 2+ failures | 17, others none | 17 (5+3+4+1+2+2); all other feeders 0 | yes |
-| Hazard ratio, 2 failures vs 1 | more than 10x | 15.4x | yes |
-| Expected 2027 failures, QH21 first | QH21 first | QH21 14.9 first; QH22 5.52 last | yes |
-| SAIFI, 8 feeders | 1.40 1.97 1.73 1.31 1.58 1.52 2.23 1.53 | 1.399 1.967 1.730 1.312 1.582 1.520 2.230 1.532 | yes |
-| SAIDI, 8 feeders | 71.3 131.4 88.2 85.7 92.4 73.5 139.7 125.5 | 71.29 131.38 88.19 85.67 92.39 73.51 139.72 125.51 | yes |
-| CEMI4, 8 feeders | 108 1,163 445 485 262 44 1,812 65 | identical | yes |
-| MEDs | 2026-01-25, 2026-07-28 | 34.2 and 55.1 min against a 13.69 threshold; the next day is 9.3 | yes |
-| Chart | QH21 tallest bar | top bar QH21 under every model variant that includes the prior-failure count, except count plus a feeder fixed effect (HR12 21.8) | yes (top bar only graded) |
-
-## Competing answers that survived
-None survive on the committed answers. Residual forks, none of which flips a graded figure under the literal text:
-1. **CEMI4 and MEDs.** The prompt's "both with major event days left out" binds the two indices. TVE-RS-04 clause 6.1 keeps MEDs in the count, which is the golden. The excluded reading would give HR12 57, HR14 354, ML03 170, ML07 412, QH21 85, QH22 44, SP05 59, SP09 65. This is the weakest wording point and the shipped clause closes it. Watch it if the portal shows a CEMI4 split.
-2. **The 412 customers moved from ML03 to ML07 on 2026-06-14.** Clause 4.2 (the device feeder at the time of the outage) gives the golden. Last-day attribution would give ML03 1.43 / 57.8 and ML07 1.62 / 117.6. The stale CIS labels are a distractor.
-3. **Chart bars other than QH21.** Their order is method-dependent (6 distinct orders across 10 variants, per the design note). Only the top bar is graded.
-
-## Spec gates
-| Gate | Required | Actual | Pass |
-|---|---|---|---|
-| Files | 10 or more | 14 | yes |
-| Formats | 3 or more | 6 (csv, pdf, xlsx, parquet, json, md) | yes |
-| Largest file | 25,000 rows or more | connectivity_meter_points.parquet 37,008 rows; CIS csv 28,221 | yes |
-| Distractors | 2 or more in metadata.json, none labelled in a file name | vault_manhole_inspections_2022-2026.csv and feeder_peak_loading_2021-2026.xlsx; neither name labels it | yes |
-| Distractors relevant but unused | same world, unused by the solution | both are same-world asset and loading files; the judge named neither as a surface read carrying the task. The judge's fuller distractor list (filed table 6.1, CIS labels, published MED list, OMS cust_minutes) is wrong-basis material that shipped facts rule out | yes |
-| Deliverables | 1 to 3 | 2 (xlsx, png), both present in golden/ | yes |
-| Asks | multi-dimensional | the call plus 8x3 per-feeder indices plus the chart | yes |
-| Units and rounding stated | in the asking sentence | two decimals, one decimal and whole numbers all stated | yes |
-| Prompt shape and 25 criteria | 25 or more | shape 01; 1 call + 24 index cells + chart reaches 25 or more | yes |
-| Prompt length | under 1,000 characters | 829, one paragraph | yes |
-| Realism | no LLM tells | the judge found system-export irregularities (cp1252/CRLF, banner rows, legacy against ADMS clocks), no authoring disclosure | yes (the golden's visual realism was not judged here) |
-
-## Gate G reconciliation
-The judge says forecasting / analytical_non_defect / surface_read_dependency no / sole_data_defect no. The design note and card say mechanism forecasting, Gate G forecasting, strategy composition_mix. They match. The design note's stump sentence (14 sections, 6.4 expected) is the planned figure. Its built-state section records QH21 at 5 + 12 = 17 sections in service with 2+ failures and 15.0 expected, which matches the judge's 17 and 14.9 (the design note's 15.0 is not independently reproduced here). Metadata distractors (vault inspections, peak loading) are not named by the judge as carrying the answer, so no too-load-bearing finding.
+## Gate H
+`domain: pass`, `layers: pass`, `decisive_step: analytical` (narrowly). Impedance-based fault location is the field's own method, and the thread read the decisive step as a decoy as well as analysis. The design note's Three rules (No decoy / Not semantics / Not rule application) lines are present. The thread's "Honest note" that the decisive step reads as a decoy contradicts the note's claim of no decoy, so the main thread should weigh it.
 
 ## Stump power (Gate F)
-The judge rates it moderate to good. The easy routes are the five-year in-service count (ML07), the trailing-12-month count and the insulation-and-age model (SP05), and the filed table (HR12). The stump is conditioning the hazard on each section's own prior-failure count. The 17 QH21 sections are all 1986 XLPE in conduit, so a solver who reads work orders section by section can find the cluster. The judge names no too-easy signal.
-
-## Gate H (the three rules)
-domain: pass, layers: pass, decisive_step: analytical. The field's own analysis is a repeat-failure hazard for underground cable sections, plus IEEE 1366-style indices for the asks. Layer 1 is time zones, OMS against ADMS, dated meter rows, repeated bank totals, REPL successor sections and the moved lateral. Layer 2 is the hazard conditioned on prior failures. The easy route a strong analyst takes with every field read correctly is a recent-count or attribute forecast, which files ML07 or SP05 instead of QH21.
+The easy route (trust the DMS log, or use the AMI log or REPAIR orders alone) lands a clean wrong answer on all three deliverables. Asks are hard: many lateral meters sit at exactly four interruptions. Note for the main thread: the thread called the from-scratch impedance relocation real analysis, but the stump depends on a wrong official log. Impedance location is also a textbook route a strong solver can take once it distrusts the log, so the landable-call risk (`stumping` 1.3) should be weighed against the design note's ladder.
 
 ## Findings, ranked
-1. No blocking finding.
-2. Optional, wording only: the CEMI4 clause could say "(major event days left in)". The judge does not recommend it. It changes what solvers see and invalidates prior runs, and clause 6.1 closes the fork.
+1. Gate G, banned scaffold: the wrong DMS locator, an official artifact not declared in metadata, carries the main-call stump (retired surface-read-rejection strategy).
+2. Soft, Gate B: no file maps RAVEN or SPARROW to a C-3 row. If RAVEN were 4/0, the answer moves to section 8 (23 trips).
+3. Soft fork: "lost power" includes planned outages. L07 is 74 on the literal reading, 3 excluding planned.
+4. Cosmetic: PDF title metadata says "Overhead Conductors" while the heading says "Primary Conductors".
 
 ## Next action for the author
-Ship. Take the CEMI4 wording fork to the portal only if the portal result shows a CEMI4 split.
-
-Note: the judge ran from `/tmp/determinism-check-task183-030137/judge_brief.md` as one sonnet thread. Its output is `/tmp/determinism-check-task183-030137/verdict.md`.
+Re-root the main-call stump so it does not depend on a wrong shipped locator. Either make the DMS model correct or drop it, and put the difficulty in the engineering (see the verdict's Fix). The solution blocks need no regeneration, since every figure reproduced.

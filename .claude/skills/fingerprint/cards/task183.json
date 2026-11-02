@@ -1,90 +1,83 @@
 {
   "task": "task183",
-  "architecture": "v2 (architecture 2, re-root 2026-11-02: a new world, dataset and shell; a Nebraska city electric department's January 2027 patrol of Feeder 14, the line recloser's 2026 trips relocated through the main line's segment impedances)",
+  "architecture": "v3 (architecture 3, re-root 2026-11-02: a new world, dataset and shell in another client domain; a regional train operating company's 2027 SPAD review, each 2024-2026 SPAD's braking judged at the deceleration a full-service application achieves on that signal's own approach)",
   "drawn": "2026-11-02",
-  "slot_note": "Re-root of the anomaly-detection slot. Architecture 1 (an investor-owned utility's underground cable failures) is spent on measurement and stays delivered on the portal. Architecture 2 moves to a new world (a city-owned electric department's overhead rural feeder), a new dataset and a new shell; the decisive step moves off any count of rows by key onto a per-trip relocation forced by the GIS segment impedances.",
-  "domain": "energy-systems-utilities",
-  "subdomain": "grid-reliability-outage-analysis",
-  "client_domain": "energy-systems-utilities",
-  "niche": "a city-owned electric department locating what kept tripping its longest rural feeder's line recloser through 2026, for the one main-line section its January 2027 patrol walks, when the recloser's own fault locator carries the first conductor's impedance over a main line whose conductor changes partway out",
+  "slot_note": "Re-root of the anomaly-detection slot to architecture 3. Architecture 1 (an investor-owned utility's underground cable failures) stays delivered on the portal; architecture 2 (a city electric department's feeder patrol) is spent at the judge on Gate G. Architecture 3 leaves energy for Human Factors & Ergonomics: a train operator's SPAD review, where the default path is the analyst's own braking reconstruction at the fleet's rated deceleration on correct records and no shipped artifact estimates any SPAD's cause.",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a regional train operating company choosing the one signal whose approach gets its 2027 driver-focused SPAD mitigation, from the 2024 to 2026 SPADs in which the driver began braking too late to stop, when one approach's falling gradient holds every train's full-service deceleration below the fleet's level-track rating, so its late-braking SPADs read as poor adhesion against the rating",
   "objective": "anomaly-detection",
-  "shape": "other",
+  "shape": "08",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "rule"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
-    "G16",
-    "G3"
+    "G14",
+    "G3",
+    "G16"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_model",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field correctly maps the recloser's own fault-locator distances, which agree with every crew-found fault location on file to within a tenth of a mile, onto the main-line sections and sends the patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault.",
-  "domain_test": "Protection engineering's fault location by apparent impedance decides the call: a fault's distance follows from its current and the cumulative impedance of the line between the source and the fault, which stops being proportional to distance where the conductor changes; with another field's nouns there is no impedance, conductor or fault current and the task does not read the same.",
+  "analyst_test": "A strong analyst who reads every field correctly reconstructs each SPAD's braking from its OTMR download, tests whether a full-service application at the fleet's rated deceleration could have stopped the train at the signal from where braking began, books the rest to poor adhesion, and sends the 2027 package to the level junction signal whose three late-braking SPADs lead that count.",
+  "domain_test": "Railway SPAD analysis decides the call: a SPAD is the driver's when, from the point braking began, a full-service application could not have stopped the train at the signal, a stopping-distance question in the train's speed and the deceleration the brake achieves on that approach; with another field's nouns there is no brake application, approach gradient or stopping distance and the task does not read the same.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:fault location on a non-uniform line",
+  "layer2_pattern": "own:service-braking-judged-at-the-approach-own-achieved-rate",
   "layer1": [
-    "a recloser event export in local time across the November daylight-saving change, against the AMI head-end's UTC",
-    "fault currents in amperes in the event export and kiloamperes in the protection study",
-    "GIS segment lengths in feet against the patrol's miles and the study's miles",
-    "conductor carried by ACSR code name in the GIS and by size in the construction standards' impedance table, which sits inside a PDF",
-    "pole tags renumbered in the 2023 GIS conversion, the old tags still on older work orders"
+    "OTMR clocks kept in GMT all year against the SPAD register's local time across the British Summer Time changes",
+    "overrun distances in yards in the SPAD register against metres in the OTMR downloads",
+    "signal identities carried with the signal box prefix in one system and without it in another",
+    "headcodes reused every day, the unit read from the day's fleet allocation",
+    "a preliminary SPAD register export superseded by a revised one",
+    "routine approach events duplicated where an OTMR card was downloaded twice"
   ],
-  "stakeholder_role": "the electric department's system engineering group, which writes the January patrol order",
-  "role_family": "capacity_planner",
-  "scoring_unit": "other",
+  "stakeholder_role": "the train operator's Head of Operational Standards, who sets the SPAD mitigation programme",
+  "role_family": "operations_director",
+  "scoring_unit": "per episode",
   "spine": {
-    "file": "ami_meter_events_2026.csv",
-    "rows": 0,
-    "entity": "one AMI meter event (power off, power on or momentary interruption) at one service meter",
-    "grain": "meter x event",
+    "file": "otmr_approach_events_2024_2026.csv",
+    "rows": 30000,
+    "entity": "one recorded approach of a train to a signal at caution or danger in a routine OTMR download",
+    "grain": "train approach x signal",
     "source": "synthetic"
   },
-  "forum": "operations_desk",
-  "forcing_event": "season_or_peak",
-  "org_family": "local_government",
+  "forum": "committee_or_panel",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United States, Nebraska (a fictional city, its electric department, substation, feeder and places)",
-    "currency": "USD",
-    "org_type": "a city-owned electric distribution department with long rural feeders",
-    "invented_names": [
-      "Pawnee Ridge",
-      "Pawnee Ridge Electric Department",
-      "Westside Substation",
-      "Feeder 14",
-      "R1407"
-    ],
+    "geography": "England (a fictional regional train operating company, route, stations and signals)",
+    "currency": "GBP",
+    "org_type": "a regional train operating company running diesel units on a main line and a branch",
+    "invented_names": [],
     "people": [
-      "Debbie Kline",
-      "Lisa Lawson"
+      "Nicholas Reynolds",
+      "Kim Arnold"
     ]
   },
-  "deliverables": [
-    "patrol_order_jan2027.docx",
-    "lateral_outages_2026.csv",
-    "section_repairs_2026.csv"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "A device records where each event arose by a calculation that assumes the line is uniform along its whole length, every check on file falls in the stretch where it is, and beyond a change in the line's make-up the calculation overshoots, so the place the events cluster in the device's record is not where they arise; only re-deriving each event's position from its raw measurement through the line's actual make-up, segment by segment, finds it.",
-  "driver_concrete": "Each 2026 two-phase trip of Feeder 14's line recloser R1407 is relocated from its fault current through the GIS segment impedances (336.4 ACSR to the conductor change, 1/0 ACSR beyond), not read from the recloser's own fault locator, which carries the 336.4 impedance over the whole main line and so places the wind-day cluster about two miles too far out, while every crew-found fault on file lies on the 336.4 stretch where the setting is exact.",
-  "stump": "A competent solver maps the recloser's fault-locator distances onto the main-line sections and sends the January patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault; the step that lands it there is trusting a single-impedance locator, validated only on faults inside its first conductor, on a main line whose conductor changes partway out.",
+  "question_form": "which",
+  "driver": "Each event is judged against what a unit could have achieved, read from the fleet's rating on a reference condition, when every place sets its own achievable level and only the other units' routine records at that place show it; judged against the rating, the place whose own conditions hold every unit below the rating books the operators' late responses there to the conditions of the moment, and the place whose events lead under the rating is not the one whose operators responded late most often.",
+  "driver_concrete": "Each 2024-2026 SPAD is the driver's when, from where braking began, a full-service application could not have stopped the train at the signal, judged at the deceleration full service achieves on that signal's approach in the routine OTMR approach events, not at the fleet's level-track rating; on the falling-gradient approach every train achieves about 0.68 metres per second squared against the rated 0.88, so its late-braking SPADs read as poor adhesion against the rating.",
+  "stump": "A competent solver tests each SPAD at the fleet's rated full-service deceleration, books the falling-gradient signal's SPADs to poor adhesion because their trains decelerated at about 0.68 against the rated 0.88, and sends the package to the level junction signal; the step that lands it there is using the level-track rating on an approach whose own routine stops show every train achieving about 0.68 in dry weather, so the late braking there is the drivers'.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task186": "task186 tests each fuel station's price change across an event against its own changes in quiet periods under shared local cycles (a noise model for a change); task183 tests no change: each recorded trip's position is re-derived from its fault current through the main line's segment impedances, because the recloser's locator assumes one conductor for the whole line"
+    "task191": "task191 architecture 3 rated bus depots on warnings whose trigger was real, an exposure denominator over fixed structures; task183 v3 rates no exposure and catches no artefact: each SPAD's braking is judged at the deceleration its own approach permits, which the routine stops there measure",
+    "task186": "task186 tests a unit's change against the shared cycles of its place (a noise model for a change); task183 v3 has no change and no null: each event is judged against the physical braking performance its place permits",
+    "task308": "task308 values a capacity offer by the shortfall it would remove when units of its kind fail together from one shared cause, so their rated availability overstates them in the hours that matter (a correlated-availability correction to a forward valuation); task183 v3 values nothing and corrects no availability: each past SPAD is classed by whether full service could have stopped the train from where braking began, at the deceleration its own approach permits, which the routine stops there measure"
   },
   "lineage": [
     {
@@ -123,6 +116,42 @@
         "rounding opener": "give",
         "deliverable set": "png+xlsx"
       }
+    },
+    {
+      "architecture": "v2 (a Nebraska city electric department's January 2027 patrol of Feeder 14, the line recloser's 2026 trips relocated through the main line's segment impedances)",
+      "drawn": "2026-11-02",
+      "fate": "spent 2026-11-02 at stage 4: the determinism judge returned DETERMINISTIC with SEND_BACK on Gate G (cut a11364ba): the shipped DMS fault-location log, the system's own per-trip estimate of where each trip came from, located the 24 trips in section 9 on a model carrying one conductor's impedance over the whole main line, and refuting it was the stump (planted_defect_flip, surface_read_rejection, sole_data_defect yes); dropping or correcting the log leaves the decisive step a textbook relocation, so the architecture and its world are spent; re-rooted the same day to architecture 3 in another client domain, world, dataset and shell",
+      "domain": "energy-systems-utilities",
+      "subdomain": "grid-reliability-outage-analysis",
+      "objective": "anomaly-detection",
+      "shape": "other",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "rule"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G16",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "grain_or_unit",
+      "forum": "operations_desk",
+      "forcing_event": "season_or_peak",
+      "org_family": "local_government",
+      "niche": "a city-owned electric department locating what kept tripping its longest rural feeder's line recloser through 2026, for the one main-line section its January 2027 patrol walks, when the recloser's own fault locator carries the first conductor's impedance over a main line whose conductor changes partway out",
+      "driver": "A device records where each event arose by a calculation that assumes the line is uniform along its whole length, every check on file falls in the stretch where it is, and beyond a change in the line's make-up the calculation overshoots, so the place the events cluster in the device's record is not where they arise; only re-deriving each event's position from its raw measurement through the line's actual make-up, segment by segment, finds it.",
+      "stump": "A competent solver maps the recloser's fault-locator distances onto the main-line sections and sends the January patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault; the step that lands it there is trusting a single-impedance locator, validated only on faults inside its first conductor, on a main line whose conductor changes partway out.",
+      "why": "The decisive step was carried by a shipped estimate of the decision quantity (the DMS locator's per-trip distance) that was wrong; without it the field's own method (relocation through the GIS segment impedances) is the opponent's first move, so the default path has to be the analyst's own easy method on correct records and the field's method has to sit at the bottom of the ladder.",
+      "shell": {
+        "question form": "where",
+        "second-sentence opener": "name",
+        "rounding opener": "miles",
+        "deliverable set": "csv+csv+docx"
+      }
     }
   ],
   "lineage_shells": [
@@ -131,14 +160,20 @@
       "second-sentence opener": "put",
       "rounding opener": "give",
       "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "name",
+      "rounding opener": "miles",
+      "deliverable set": "csv+csv+docx"
     }
   ],
-  "notes": "Anomaly Detection & Diagnostics: separating where a recurring fault really is from where a device's record places it. The prompt asks where the patrol should look; no method is named. The physics forces the relocation (the apparent impedance of a fault is the cumulative impedance of the line to it, filed in the GIS and the construction standards), and the record's own locator is refuted only by recomputing it, a check no sentence asks for. Gap rule: no filed sentence says how a fault is located; G2 decisive (the locator works at the line grain, the answer needs the segment grain), G16 (the method the line's structure entitles), G3 (the recorded location against the fault's). Personas drawn with guard.py names (en_US, seed 183): Debbie Kline and Lisa Lawson, not the v1 personas.",
-  "registered": "2026-11-02T08:25:18Z",
+  "notes": "Anomaly Detection & Diagnostics: a real driver-error SPAD hotspot separated from SPADs that read as adhesion against the fleet rating. Stump strategy other, named here: an achievable-performance reference taken per place from the place's own routine record rather than from the fleet's rating. Gap objective: the fleet's rated deceleration is correct for level track and is not what decides a SPAD's class on a falling approach. G14 decisive (the pooled fleet rate does not apply to this approach), G3 (the rated against the operated), G16 (the method the records entitle). Personas drawn with guard.py names --geo 'United Kingdom' --seed 183 (en_GB): Nicholas Reynolds and Kim Arnold, not the v1 or v2 personas.",
+  "registered": "2026-11-02T12:28:59Z",
   "shell": {
     "question form": "where",
-    "second-sentence opener": "name",
-    "rounding opener": "miles",
-    "deliverable set": "csv+csv+docx"
+    "second-sentence opener": "send",
+    "rounding opener": "counts",
+    "deliverable set": "csv+pptx+xlsx"
   }
 }

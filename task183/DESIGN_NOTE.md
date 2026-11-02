@@ -1,88 +1,111 @@
 # task183 design note
 
-Architecture 2, a re-root (2026-11-02). Architecture 1 (Tamsin Valley Electric's underground cable program) is spent on
-measurement and stays delivered on the portal as it shipped; its identity sits in the card's lineage. The objective and
-the number are kept; the world, the dataset, the generator, the shell and the decisive step are new.
+Architecture 3, a re-root (2026-11-02). Architecture 1 (Tamsin Valley Electric's underground cable program) is spent on
+measurement and stays delivered on the portal as it shipped; architecture 2 (the City of Pawnee Ridge Electric
+Department's Feeder 14 patrol) is spent at the judge on Gate G, its shipped DMS fault-location log having carried the
+stump. Both identities sit in the card's lineage with their fates. The objective and the number are kept; the client
+domain, the world, the dataset, the generator, the shell and the decisive step are new.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task183.json`, architecture v2, registered 2026-11-02T08:25:18Z after
-  `guard.py check` on the filed card (no BLOCK). v1 moved into `lineage` with its fate and its shell into
-  `lineage_shells`.
-- **Pairing:** Energy Systems & Utilities, task type grid reliability and outage analysis (serves RC and AD),
-  objective Anomaly Detection & Diagnostics. Shape `other` (criteria arithmetic in `## Ladder`); decision
-  `pick_one_of_n`, answer a named main-line section. Question form `where`.
-- **World:** the City of Pawnee Ridge Electric Department (Nebraska, a fictional city-owned distribution utility).
-  Feeder 14 leaves Westside Substation at 12.47 kV and runs a three-phase main line 15.8 miles into farmland: 336.4
-  ACSR (Linnet) through town and the Elk Creek woods to mile 3.6, 1/0 ACSR (Raven) beyond. Line recloser R1407 at
-  mile 1.9 tripped through 2026, mostly two-phase trips on windy days, and members on the far laterals complain of
-  blinks; the department's January 2027 patrol walks one main-line section before the spring wind season.
-- **Mechanism:** gap rule (no filed sentence says how a fault is located), pattern none, generators G2 decisive (the
-  recloser's locator works at the line grain with one conductor's impedance; the location needs the segment grain), G16
-  (the method the line's own structure entitles), G3 (the recorded location against where the fault is). Gate G
-  `method_or_model_selection`; strategy `grain_or_unit`; calibration `gold_standard_subsample` (the crews' found
-  locations, every one on the 336.4 stretch, where the locator's setting is exact).
-- **Furniture:** forum `operations_desk` (the department's operations desk issues the patrol order), forcing event
-  `season_or_peak` (the patrol before the spring wind season), organisation `local_government`, role
-  `capacity_planner` (system engineering writes the order), context artifact `filed_model` (the protection
-  coordination study), opening `question-first`. Personas drawn with `guard.py names --geo "United States" --seed
-  183`: Debbie Kline, Lisa Lawson (neither a v1 persona); the prompt carries none.
-- **Guard result on the filed card:** no BLOCK. WARNs answered:
-  - `three_rules.strategy_risk` (grain_or_unit): the analyst test below reads every field correctly and still files
-    section 8, because the field read correctly (the locator's distance) is the device's own estimate, and only
-    recomputing it from the trip's current through the line's segments shows it overshoots; no field or rule decides.
-  - `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection against task266 v2, five of twelve): the honest
-    label, two locating methods, the right one entitled by the line's physical make-up; the alternatives
-    (`decomposition_attribution`, `forecasting`) do not describe a location.
-  - `test.same_puzzle_older` against task186 is differentiated on the card (a noise model for a change against a
-    per-trip relocation through segment impedances).
-  - Nearest driver on file 0.05 (task1); no driver within the 0.12 warn band.
-- **Data-native sentence:** Feeder 14's main line is 336.4 ACSR through town and the woods to mile 3.6 and 1/0 ACSR
-  for twelve miles of farmland beyond; R1407's fault locator was set with the 336.4 impedance for the whole line, every
-  fault the crews have pinned down since the control was fitted sat in the woods where that setting is exact, and the
-  wind-driven two-phase trips of 2026 came from the farmland, where it places every fault too far out.
-- **Abstraction sentence (the one a reviewer would say is the same, written to test it):** "a device's recorded
-  position for each event assumes the line is uniform, is validated only where it is, and is re-derived event by event
-  through the line's actual make-up." No approved build carries it: the nearest delivered drivers, task185's
-  instrument conversion sized at the reading and task192's audit frame, correct a value or a label, never a position
-  through a structure; neither is approved.
+- **Card:** `.claude/skills/fingerprint/cards/task183.json`, architecture v3, registered 2026-11-02 after `guard.py
+  check` on the draft and again on the filed card (WARN, no BLOCK). v2 moved into `lineage` with its fate beside v1,
+  and both dead shells into `lineage_shells`.
+- **Pairing:** Human Factors & Ergonomics, task type `safety-incident-error-analysis` (serves RC and AD), objective
+  Anomaly Detection & Diagnostics: a real driver-error SPAD hotspot separated from SPADs that read as poor adhesion.
+  Shape `08` (the SPAD procedure's classification replayed on each year of the window, a cell per signal and year);
+  decision `pick_one_of_n`, answer one signal. Question form `where`. Not energy, not physical or environmental
+  sciences, not biomedical and clinical research (the main thread's exclusions).
+- **World:** Helmsdyke Valley Trains, a fictional regional train operating company in the north of England running
+  Class 162 diesel units (a fictional class) over the Helmsdyke Valley line (double track, Helmsdyke to Skelby over
+  Ravensholme summit) and the single-track Owlsden branch. The 2027 driver SPAD package (a route-risk briefing for every
+  driver signed for the road, a SPAD indicator request to the infrastructure manager and a targeted OTMR download
+  programme) goes to one signal's approach under the company's SPAD procedure SP-07, on the SPADs of 1 January 2024 to
+  30 November 2026. As-of Monday 7 December 2026; the SPAD Review Group meets on 14 December.
+- **Mechanism:** gap `objective` (the brake sheet's rating is correct for level track and is not the deceleration that
+  decides a SPAD's class on a falling approach), pattern none, generators G14 decisive (the pooled fleet rate does not
+  apply to this approach), G3 (the rated against the operated), G16 (the method the records entitle). Gate G
+  `method_or_model_selection`; strategy `other` (an achievable-performance reference taken per place from the place's
+  own routine record, not the fleet's rating); calibration `gold_standard_subsample` (the formally investigated SPADs,
+  every one on a level approach, where the rating holds).
+- **Furniture:** forum `committee_or_panel` (the SPAD Review Group), forcing event `budget_or_appropriation` (the 2027
+  safety improvement budget funds one package), organisation `utility_or_infrastructure`, role `operations_director`
+  (the Head of Operational Standards sets the programme), context artifact `register` (the SPAD register), opening
+  `question-first`. Personas drawn with `guard.py names --geo "United Kingdom" --seed 183` (en_GB): Nicholas Reynolds
+  and Kim Arnold, neither a v1 or v2 persona; the prompt carries none.
+- **Guard result on the filed card:** WARN, no BLOCK. Each WARN answered:
+  - `overuse.gate_g` (method_or_model_selection, five of the last twelve): the honest label. Two defensible references
+    for what a full-service application achieves stand in the pack (the brake sheet's rating and each approach's routine
+    stops) and the records entitle one; `decomposition_attribution` (banned against task464 in any case) would describe
+    splitting a count between causes, which is the analysis's output, not the step that decides it.
+  - `repeat.decision` (pick_one_of_n repeats task464): one package, one signal, is the decision as the company takes it;
+    a slate or a set would invent a second package the budget does not fund.
+  - `test.same_puzzle_older` and `test.same_driver_older` against task308 (gap objective, G14, pick one, method
+    selection) are differentiated on the card: task308 corrects a capacity offer's rated availability for a shared
+    failure cause in a forward valuation; task183 v3 values nothing and classes past events by the braking each place
+    permits.
+  - Nearest driver on file 0.05 (task231 v2, task170, task97, task473, task251 v1); none within the 0.12 warn band.
+  - `guard.py slots` on the setting nouns (SPAD, adhesion, OTMR, braking, falling gradient): one line, task464's
+    rejected rail track-renewal ranking by restriction time, a different question; on the mechanism nouns (rated
+    against achieved performance, routine records per place) nothing on file.
+- **Data-native sentence:** the Helmsdyke Valley line falls at 1 in 46 for two and a half kilometres from Ravensholme
+  summit to Cauldwell Junction, so every 162 braking for CJ58 achieves about 0.66 metres per second squared on full
+  service against the 0.88 the Class 162 brake sheet rates on level track; the drivers who know the road brake early, and
+  the ones who braked where a level approach would have let them stop overran CJ58 decelerating exactly as the hill
+  allows.
+- **Abstraction sentence (written to test it):** "an event is judged against a fleet rating of what a unit can achieve,
+  when each place sets its own achievable level and only the other units' routine records at that place show it; against
+  the rating, the place holding every unit below it reads as the conditions of the moment and its operators' late
+  responses are booked to those conditions." No approved build carries it: task186 holds a place's shared noise for a
+  change test and task308 a shared failure cause in a forward valuation; neither classes events against the
+  performance a place permits.
+- **The 10/10 rules first (`CLAUDE.md`):** the deciding quantity, each signal's SPADs in which a full-service
+  application could not have stopped the train from where the driver began braking, is railway SPAD analysis's own
+  (rule 1); the mess is clocks, units, signal keys, re-sent OTMR cards and a superseded register export, none of which
+  moves a SPAD's class (rule 2, Layer 1); the decisive step is estimating what full service achieves on each approach
+  from that approach's routine stops instead of taking the brake sheet's level-track rating, with every record correct
+  and no shipped artifact estimating any SPAD's cause (rule 3; lesson 9).
 - **Sources read, one line each:**
-  - `stumping/references/client/two-layer-task-design.md`: the three rules and the two layers; the mess here is clocks,
-    units, codes and a PDF table, and none of it moves a trip's location.
-  - `stumping/references/evidence.md` Part 3 (step three, the benchmark screen, the multiplicative floor) and 1.6a: the
-    correcting quantity is one per trip, forced by the GIS segments, with no free parameter; the cluster's correcting
-    factor is not 1; the easy route sits outside the licensed family because the physics refutes it.
-  - `stumping/references/strategies.md` F2 and F6: a correct monitor blind at its configured grain (48 v2's form, here
-    a locator configured for one conductor), the bridge a geometry, never a key column.
-  - `layer2-rigor-patterns.md`: Energy Systems & Utilities has no card; the family is `field_method` (the field's own
-    method done right), pattern `own:fault location on a non-uniform line`.
-  - `guide-to-prompt/references/examples.md`: the forcing fact once (the January patrol, one section), the question
-    first, the method never named.
+  - `CLAUDE.md` and the build brief (lessons 1 to 9): no shipped estimate of the decision quantity; the default path is
+    the analyst's own braking test on correct records; two ask device families on disjoint blocks.
+  - `stumping/SKILL.md` 1.1b and 1.4: the field's method (the OTMR braking reconstruction at the rated deceleration) sits
+    at rung 1 and files the wrong signal; the decisive step is the recognition that this approach violates the rating's
+    level-track precondition.
+  - `stumping/references/evidence.md` 1.6a and 1.2a: an unobserved quantity (whether full service could have stopped
+    the train) identified by combining the SPAD downloads with the routine approach events at another grain; the
+    approach's achievable rate is one per approach, estimated from thousands of stops, and the test is one per SPAD.
+  - task182 and task200 cell screens, task190 architectures 7 to 9, task191 v3 (bus warnings at fixed structures, spent
+    on Gate G as Layer 1 mess carrying the stump): the CJ58 shortfall is no artefact in the records and no fixed-place
+    nuisance to be caught; on clean data the rating test still books CJ58 to adhesion.
+  - `supplemental-stumping/SKILL.md` Parts 0 to 3: the ask layer is designed at stage 2 on rows outside the main
+    population, two primary families on disjoint blocks, measured by `generator/ceiling.py`.
 
 ## Default path
 
-The pipeline a competent analyst builds from the prompt's words and the files' grain:
+The pipeline a competent rail safety analyst builds from the prompt and SP-07, with the field's method in it.
 
-1. Read the question: where on Feeder 14's main line the January patrol should look for what kept tripping R1407 in
-   2026.
-2. Load R1407's 2026 event report; keep the trips (operations that saw fault current), each with its fault type,
-   phase currents and the control's own fault-locator distance.
-3. Map each trip's locator distance onto the GIS main-line sections: the two-phase trips on windy days cluster at
-   8.6 to 8.8 miles, in section 8 (8.4 to 9.3 miles).
-4. Validate the locator, the field's method for where a fault is: for every 2026 trip the crews pinned to a pole
-   (the tree faults in the woods), the locator's distance agrees with the pole's mileage within 0.1 mile.
-5. Corroborate: section 8 carries the long span over State Highway 92, the kind of span where conductors slap in wind.
+1. Read SP-07: the 2027 package goes to the signal with the most driver braking SPADs from 1 January 2024 to
+   30 November 2026; a driver braking SPAD is one in which, from the point the driver first applied the brake, a
+   full-service application could not have stopped the train at the signal.
+2. Build the SPAD list from the revised SPAD register (the preliminary export superseded), signals keyed with their box
+   prefix, overruns in metres, register times aligned to the OTMR downloads' GMT.
+3. For each SPAD, read its OTMR download: the speed and the distance to the signal at the first brake application.
+4. Test the stop at the Class 162's rated full-service deceleration from the brake sheet (0.88 metres per second
+   squared): the stopping distance v squared over 2 a against the distance to the signal. A SPAD whose train could have
+   stopped from where braking began goes to poor adhesion, or to the signaller where the signal was replaced late.
+5. Count the driver braking SPADs per signal and file the leader.
 
-Ends on: section 8
-Golden: section 6
+- **Ends on:** SK112, Skelby station junction (three driver braking SPADs); counting every SPAD instead files RV23,
+  Ravensholme cutting.
+- **Golden:** CJ58, Cauldwell Junction (six driver braking SPADs).
 
 ## Stump sentence
 
-A competent solver takes R1407's own fault-locator distances, which agree with every crew-found fault on file within a
-tenth of a mile, maps the 2026 two-phase wind-day trips onto the main-line sections and sends the January patrol to
-section 8 (8.4 to 9.3 miles, the State Highway 92 crossing); the step that lands it there is trusting a locator set
-with one conductor's impedance on a main line whose conductor changes at mile 3.6, when each trip's own fault current,
-carried through the line's segment impedances, puts the cluster at mile 7.0, in section 6.
+A competent solver tests each SPAD at the Class 162's rated full-service deceleration of 0.88 metres per second squared
+and sends the 2027 package to SK112 with three driver braking SPADs, booking CJ58's six to poor adhesion because their
+trains decelerated at about 0.66 against the rating; the step that lands it there is testing the stop at a level-track
+rating on an approach whose own routine stops show every 162 achieving about 0.66 in dry weather, so from where those
+drivers began braking a full-service application could not have stopped them and the six are driver braking SPADs.
 
 ## Tried and rejected
 
@@ -233,3 +256,48 @@ carried through the line's segment impedances, puts the cluster at mile 7.0, in 
     signature (same_puzzle and same_driver in the last twelve). The organisation was redrawn to a city-owned electric
     department (local government, the honest family for a municipal utility), the forum to the department's operations
     desk, the decisive generator to G2 under gap rule (no filed sentence says how a fault is located).
+- 2026-11-02, stage 2 and 3 measurements of this architecture, set aside before data was final:
+  - a recloser control's own reactance-based locator (voltage and current): on these conductors 1/0 ACSR's reactance
+    per mile is within 10 per cent of 336.4's, so the overshoot past mile 3.6 is about 0.3 mile and no section
+    changes; the locator is the DMS's current-magnitude model, the recloser senses current only;
+  - a study table of fault duty at every tap: hands the position over by lookup, so the study tabulates 14B and R1407
+    only; a line-end duty figure lets a 1/I interpolation from R1407 land the golden, so none is tabulated;
+  - recorded currents carrying the prefault load: the DMS cluster moves to mile 8.4, the edge of sections 8 and 9,
+    so the history's currents are the fault currents and no load or voltage series ships (A1 to A3);
+  - ask A with the meters served per lateral as a column and ask B with the end poles per section: 42 lookups a
+    cracker keeps, cut from the goldens;
+  - the sections table's repair cost sentence naming "repair orders and trouble calls alike": it hands ask B's
+    device over; it now files the WHAT as "everything charged for repair work on the section's poles".
+- 2026-11-02, ask B's first device, spent before stage 4: one F14 job per crew per day, so a cracker that included
+  the blanket (the sections table files "everything charged for repair work on the section's poles") and linked each
+  line by crew and date kept 13 or 14 of 14, and two careful on-call responses sat near 72.5. Replaced by call-list
+  days where crew and date match two or three jobs and only each line's hours or item places it. The radio retrofit
+  was widened from L16 to L18 to L14 to L18 in the same pass, so a careful route that rebuilds only the never-heard
+  meters keeps 9 of 14 laterals rather than 11.
+- 2026-11-02, stage 4 (architecture 2 spent): the judge (determinism_check_report.md, cut a11364ba) returned DETERMINISTIC but SEND_BACK on Gate G. Every golden figure reproduced and no competing answer survived, but the main call's wrong route was the DMS fault-location log, a shipped artifact that locates each of the 24 trips in section 9 on a model carrying one conductor's impedance over the whole main line. The stump was catching that the system's own estimate of the decision quantity is wrong and flipping away from it (planted_defect_flip, surface_read_rejection, sole_data_defect yes; on clean data the log would give section 7 directly). The design note's argument that the log is the system's own record and ranks nothing did not hold: a per-trip location is the decision question's own answer. Dropping or correcting the log would leave the decisive step a textbook relocation, and a SEND_BACK spends the architecture; re-rooted at stage 1 into another world and dataset.
+- 2026-11-02, the architecture 3 draw (outside energy, physical and environmental sciences, biomedical and clinical
+  research), candidates screened on paper and with `guard.py slots` before the card was filed, one line each:
+  - pharmacovigilance lot attribution by replaying each pharmacy's first-in-first-out stock: the swap test fails (a
+    food lot traced through shop stock reads the same), and assigning lots is linkage, Layer 1;
+  - seroprevalence corrected for antibody waning through each district's epidemic timing, and satellite burn scars
+    fading by time since the burning: both are task242's shipped driver (a detector whose chance of registering an
+    event fades with time since it happened);
+  - signal detection theory's sensitivity against criterion for screeners: spent twice (task194 architecture 8,
+    task230 architecture 2, task177);
+  - pseudohyperkalaemia from samples left unspun in cold transport: task46's driver, and a scale per source pinned by
+    paired samples is this batch's banned ask family;
+  - colonisation pressure on a ward (acquisitions per exposure to unisolated carriers): task181 v4's crossings driver
+    told in patients, and the field's own transmission reasoning;
+  - household secondary attack rates net of community infection: the estimand ("infected by the index case") names
+    the step on test 1;
+  - over-adjustment of a provider comparison by coding the provider controls: dead on the WHAT screen (task194's
+    record), and coding intensity is task458's;
+  - circular flows in money laundering: task190 M3 measured dead (one divide names the round-tripper 30 of 30);
+  - a SPAD world judged on wheel-measured OTMR speed that under-reads while the wheels slide: the record would be
+    wrong exactly where the call turns, so the stump would be catching a recorder's error (architecture 2's Gate G
+    death in another instrument); replaced by correct records and a level-track rating applied where the approach is
+    not level;
+  - rail SPADs per red-aspect approach: task191 architecture 3's exposure insight (warnings whose trigger was real),
+    so no exposure ships for the call;
+  - sun glare on east-west junction approaches: the estimand would have to name glare (test 1) or leave the junction's
+    real problem open (a fork); traffic camera or STATS19-style records also carry a dazzling-sun factor (semantics).
