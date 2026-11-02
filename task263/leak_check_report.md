@@ -1,18 +1,18 @@
 # leak check, task263
 
-**Verdict: REVIEW.** 12 files read, 26 golden figures and 15 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 34 golden figures and 15 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: samples, sample, balance, sources, average, pumping, mixture, inventory, collection, source, asserted, register, records, blends, entry-point, beside, results, decisive, proportions, environmental, mixtures, mixing, blanks, service, nothing
+Stump terms swept: samples, sample, balance, sources, pumping, average, asserted, mixture, inventory, collection, records, blends, source, entry-point, beside, results, golden, register, decisive, proportions, sentence, mixing, nothing, environmental, mixtures
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: candidate 'Torvik Water Utility' sits beside decision vocabulary: ...FAS priority list Rank PWS ID System County Population served Priority points 1 4626844 Torvik Water Utility Hedstrom 6,538 92 2 4664327 City of Halvorsen Water Department Engvall 8,917 88 3 4...
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: carries 13 of 18 distinctive words of the committed call: 'The $36 million reaches 16 of the 20 systems on the 2027 PFAS priority list, Torvik Water Utility through Valdahl Sanita'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: 7 of 25 stump-paragraph terms appear (average, inventory, source, register, records, environmental); read whether the document names the move
-- **REVIEW** `pfas_initial_monitoring_sampling_guide_rev2.pdf`: 13 of 25 stump-paragraph terms appear (samples, sample, sources, pumping, inventory, collection); read whether the document names the move
+- **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: 7 of 25 stump-paragraph terms appear (average, inventory, records, source, register, nothing); read whether the document names the move
+- **REVIEW** `pfas_initial_monitoring_sampling_guide_rev2.pdf`: 11 of 25 stump-paragraph terms appear (samples, sample, sources, pumping, inventory, collection); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 5, INFO 1)
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: names 15 of 15 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -27,7 +27,7 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 
 ## 11 prompt gate (REVIEW 2)
 - **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "How many of the twenty"; the N things: "the twenty systems" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
-- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 44% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 21% of 196 prompts (cap 20%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: deliverable set 'png+xlsx' at 21% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -121,3 +121,13 @@ Verdict after loop 3: no LEAK; nothing names the decisive step or either ask's d
 First cut (81d61969): the reader read the pump sentence the repair had filed at the end of the plan's 6.3 ("Well pumps in the state's community systems are constant-speed: a well pumps at its rated capacity whenever it runs.") together with 6.3's "A well's own water is the water the well itself pumps" as a mild hint toward recovering each well's water from the blends. The fact moved to the inventory's own `pump` column (every well constant speed), 6.3 went back to its shipped wording, and the plan keeps only the population-served note under Table 6-1.
 
 Final cut (c38b7092): 1 none states the move (the nearest it names is 6.3's own-water sentence with the guide's sources-in-service field, read as pointing at samples where one well ran alone, the default path's own route); 2 none (Table 6-1 ranks by priority points, the funding order the prompt takes as given); 3 no dictionary, readme, manifest or notes sheet, the sampling guide and the laboratories list read as agency artifacts; 4 none; 5 the plan's 6.1, 6.3, 6.4 and the note under Table 6-1, and the guide's sections 5 and 7, each executed as written; 6 an analytical choice (each well's own water inferred from the entry-point blends), nothing planted. The pump column drew no remark. Its supplementary readings are settled per judge pass 3: the county water counts every well of the listed systems that pumped, Kesselring's emergency Well 3 included, since "active" governs only the grant and the chart; the county population takes each renumbered buyer at its active record; the non-detect convention moves no flagged well or grant; the wholesale buyers' customers are the ask's own step. Its realism notes (the placeholder geography, the QC ratios matching the guide, the identical analyte lists) are on files this reship did not change.
+
+### Ask-rework read, 2026-11-02 (the cut 2c87c47f; the final cut 7a18885f changed only the operating reports' gallons)
+
+One isolated reader on prompt.txt and target/ only, nothing computed. Questions 1 to 4: none (IUP section 6.3 files
+the grant rule and "a well's own water", not how to recover it; no file ranks the systems or computes a grant; the
+sampling guide is the programme's own procedure). Question 6: an analytical choice, each well's own water recovered
+from the entry-point samples and the sources in service; the easy route, the entry-point average for every well,
+is wrong. On the water ask: no shipped sentence or column says a well discharges through another's wellhouse (the
+device silent); the register's common discharge headers are stated as written. Realism notes (recorded): invented
+names, sequential facility ids, round populations, a short IUP excerpt. Verdict: clean.

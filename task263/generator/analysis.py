@@ -318,80 +318,125 @@ def golden(D):
     return dict(levels=lv, over=over, **route(D, over))
 
 
-# ---------------------------------------------------------------------------------------------- the asks
-def meters_by_month(target, month):
-    """Meter groups in service in a month: each meter's facilities."""
-    groups = []
-    for m in rd(target, K.FILES["meters"]):
-        start = dt.date.fromisoformat(m["installed"])
-        end = dt.date.fromisoformat(m["removed"]) if m["removed"] else None
-        first = dt.date(2025, month, 1)
-        last = dt.date(2025 + month // 12, month % 12 + 1, 1) - dt.timedelta(days=1)
-        if start <= last and (end is None or end >= first):
-            groups.append(set(m["facility_ids"].split(";")))
-    return groups
+# ---------------------------------------------------------------------------------------------- the ask
+QUARTERS = ("Q1", "Q2", "Q3", "Q4")
 
 
-def ask_a(D, target, mode="golden"):
-    """2025 water pumped by the listed systems' wells, by county. mode: golden (each meter once), every_row,
-    active_only (each meter once, active wells only), readings (each meter once, from the readings)."""
+def quarter(report_month):
+    return "Q%d" % ((int(report_month[5:]) - 1) // 3 + 1)
+
+
+def mor_lines(D, target):
+    """The listed systems' 2025 operating-report lines, each with its facility's type, status, entry point and rated
+    capacity from the inventory, and Table 6-1's county."""
     county = {p["pws"]: p["county"] for p in D["plan"]}
-    ftype = {f["facility_id"]: (f["facility_type"], f["status"]) for f in D["inv"]}
-    rows = [r for r in rd(target, K.FILES["mor"]) if r["pws_id"] in county]
-    out = collections.defaultdict(float)
-    by_month = collections.defaultdict(list)
-    for r in rows:
-        if mode != "every_row_all" and ftype[r["facility_id"]][0] != "Well":
+    inv = {f["facility_id"]: f for f in D["inv"]}
+    out = []
+    for r in rd(target, K.FILES["mor"]):
+        f = inv.get(r["facility_id"])
+        if r["pws_id"] not in county or f is None:
             continue
-        if mode == "active_only" and ftype[r["facility_id"]][1] != "Active":
-            continue
-        by_month[(r["pws_id"], int(r["report_month"][5:]))].append(r)
-    for (pws, mth), rr in by_month.items():
-        if mode in ("every_row", "every_row_all"):
-            for r in rr:
-                out[county[pws]] += int(r["volume_gal"])
-            continue
-        groups = meters_by_month(target, mth)
-        done = set()
-        for r in rr:
-            g = next((g for g in groups if r["facility_id"] in g and len(g) > 1), {r["facility_id"]})
-            key = frozenset(g)
-            if key in done:
+        out.append(dict(pws=r["pws_id"], county=county[r["pws_id"]], fid=r["facility_id"], type=f["facility_type"],
+                        status=f["status"], ep=f["entry_point"] or "",
+                        gpm=int(f["rated_capacity_gpm"]) if f["rated_capacity_gpm"] not in (None, "") else None,
+                        month=int(r["report_month"][5:]), q=quarter(r["report_month"]), start=int(r["meter_start"]),
+                        end=int(r["meter_end"]), gal=int(r["volume_gal"]), days=int(r["days_in_service"])))
+    return out
+
+
+def shared_meters(target):
+    """Facility -> the facilities of the register's meter it shares (a meter listed on two or more facilities)."""
+    out = {}
+    for m in rd(target, K.FILES["meters"]):
+        fs = m["facility_ids"].split(";")
+        if len(fs) > 1:
+            for f in fs:
+                out[f] = frozenset(fs)
+    return out
+
+
+def most(line):
+    """The most a constant-speed well can pump in a month: its rated capacity for 24 hours of every day in service."""
+    return line["gpm"] * 1440 * line["days"]
+
+
+def beyond(line):
+    return line["gpm"] is not None and line["gal"] > most(line)
+
+
+def each_meter_once(lines, shared):
+    done, out = set(), []
+    for l in lines:
+        g = shared.get(l["fid"])
+        if g:
+            if (g, l["month"]) in done:
                 continue
-            done.add(key)
-            out[county[pws]] += (int(r["meter_end"]) - int(r["meter_start"])) if mode == "readings" else int(r["volume_gal"])
-    return {c: round(v / 1e6, 1) for c, v in out.items()}
+            done.add((g, l["month"]))
+        out.append(l)
+    return out
 
 
-def ask_b(D, target, mode="golden"):
-    """People who get their water from the listed systems' wells, by the county they live in. mode: golden (chains
-    of full purchases in service, an id the register holds as inactive taken to the active system of that name and
-    county), as_found (the chains, each id's register row as found), active_only (the chains, inactive ids left out),
-    listed (the listed systems alone), one_step (buyers of a listed system), every_tie (chains through every
-    connection)."""
-    reg = {r["pws_id"]: r for r in rd(target, K.FILES["register"])}
-    live = {(r["system_name"], r["county"]): r["pws_id"] for r in reg.values() if r["status"] == "Active"}
-    con = rd(target, K.FILES["connections"])
-    base = set(D["listed"])
-    if mode == "listed":
-        reach = base
-    elif mode == "one_step":
-        reach = base | {c["buyer_pws_id"] for c in con if c["seller_pws_id"] in base and
-                        c["connection_type"] == "Full purchase" and not c["in_service_to"]}
-    else:
-        reach = set(base)
-        while True:
-            nxt = reach | {c["buyer_pws_id"] for c in con if c["seller_pws_id"] in reach and
-                           (mode == "every_tie" or (c["connection_type"] == "Full purchase" and not c["in_service_to"]))}
-            if nxt == reach:
-                break
-            reach = nxt
-    if mode in ("golden", "every_tie"):
-        reach = {live.get((reg[p]["system_name"], reg[p]["county"]), p) if reg[p]["status"] == "Inactive" else p
-                 for p in reach}
-    elif mode == "active_only":
-        reach = {p for p in reach if reg[p]["status"] == "Active"}
-    out = collections.defaultdict(int)
-    for p in reach:
-        out[reg[p]["county"]] += int(reg[p]["population_served"])
-    return dict(out)
+def nested(lines, shared):
+    """The wells whose meter line carries another well's water, read from the rows by the pump physics: a well whose
+    line goes beyond what its pump can deliver in its days in service in some month, with no shared meter on the
+    register to explain it, and the one other well at its entry point whose own line, taken off it, leaves it within
+    its pump in every month. Returns {parent facility: child facility} and, per parent, every candidate that fits."""
+    by = collections.defaultdict(lambda: collections.defaultdict(dict))
+    for l in lines:
+        if l["type"] == "Well":
+            by[(l["pws"], l["ep"])][l["fid"]][l["month"]] = l
+    pairs, fits = {}, {}
+    for wells in by.values():
+        for fid, months in wells.items():
+            if fid in shared or not any(beyond(l) for l in months.values()):
+                continue
+            ok = [o for o, om in wells.items() if o != fid and
+                  all(l["gal"] - om.get(m, dict(gal=0))["gal"] <= most(l) for m, l in months.items())]
+            fits[fid] = ok
+            if len(ok) == 1:
+                pairs[fid] = ok[0]
+    return pairs, fits
+
+
+def ask_a(D, target, mode="golden", raw=False):
+    """2025 water pumped by the listed systems' wells, by Table 6-1's county and calendar quarter, million gallons to
+    one decimal. Modes: golden (the wells' lines, each register meter once a month, and a wellhouse meter that the pump
+    physics shows carrying another well's water taken net of that well's own line every month); careful (the wells'
+    lines, each register meter once a month: the battery); every_row; every_row_all (purchased water included); half
+    (the other well taken off only in the months the line is beyond its pump); over (at such an entry point, only the
+    overloaded well's line); readings (the golden from each meter's readings); active_only (the golden, active wells
+    only); drop_child (the golden reached by leaving the second well's own line out)."""
+    lines = mor_lines(D, target)
+    if mode != "every_row_all":
+        lines = [l for l in lines if l["type"] == "Well"]
+    if mode == "active_only":
+        lines = [l for l in lines if l["status"] == "Active"]
+    shared = shared_meters(target)
+    if mode not in ("every_row", "every_row_all"):
+        lines = each_meter_once(lines, shared)
+    take = {(l["fid"], l["month"]): (l["end"] - l["start"]) if mode == "readings" else l["gal"] for l in lines}
+    if mode not in ("every_row", "every_row_all", "careful"):
+        pairs, _ = nested(lines, shared)
+        ep = {l["fid"]: (l["pws"], l["ep"]) for l in lines}
+        if mode == "over":
+            drop = {f for f in ep if any(ep[f] == ep[p] and f != p for p in pairs)}
+            take = {k: v for k, v in take.items() if k[0] not in drop}
+        elif mode == "drop_child":
+            take = {k: v for k, v in take.items() if k[0] not in set(pairs.values())}
+        else:
+            for p, c in pairs.items():
+                for m in range(1, 13):
+                    if (p, m) not in take:
+                        continue
+                    line = next(l for l in lines if l["fid"] == p and l["month"] == m)
+                    if mode == "half" and not beyond(line):
+                        continue
+                    take[(p, m)] -= take.get((c, m), 0)
+    q = {(l["fid"], l["month"]): (l["county"], l["q"]) for l in lines}
+    out = collections.defaultdict(float)
+    for k, v in take.items():
+        out[q[k]] += v
+    res = {}
+    for (c, qq), v in out.items():
+        res.setdefault(c, {})[qq] = v if raw else round(v / 1e6, 1)
+    return res

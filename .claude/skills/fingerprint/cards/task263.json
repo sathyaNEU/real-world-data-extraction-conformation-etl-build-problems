@@ -91,7 +91,8 @@
     "provisional and approved records overlap (reissued reports loaded beside the results they replace)",
     "free-text sources in service in each sampler's hand, some blank",
     "mixed date formats across two systems",
-    "mixed units and bases (the national survey in micrograms per litre)"
+    "mixed units and bases (the national survey in micrograms per litre)",
+    "monthly operating reports by facility with meter readings, gallons and days in service, a meter register naming each meter's facility, a common discharge header written on both wells' lines, a meter changed out mid-month, an emergency well and an emergency interconnection"
   ],
   "registered": "2026-10-16T22:32:11Z"
 }

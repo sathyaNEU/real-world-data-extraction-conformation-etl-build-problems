@@ -1,15 +1,29 @@
 {
  "ask_a": {
-  "Engvall": 1318.4,
-  "Granlund": 1342.9,
-  "Hedstrom": 913.5,
-  "Sandholm": 714.6
- },
- "ask_b": {
-  "Engvall": 29442,
-  "Granlund": 30167,
-  "Hedstrom": 21518,
-  "Sandholm": 17614
+  "Engvall": {
+   "Q1": 283.8,
+   "Q2": 329.6,
+   "Q3": 381.7,
+   "Q4": 296.6
+  },
+  "Granlund": {
+   "Q1": 291.6,
+   "Q2": 341.2,
+   "Q3": 387.1,
+   "Q4": 307.1
+  },
+  "Hedstrom": {
+   "Q1": 196.4,
+   "Q2": 229.3,
+   "Q3": 263.7,
+   "Q4": 208.2
+  },
+  "Sandholm": {
+   "Q1": 153.4,
+   "Q2": 179.7,
+   "Q3": 207.0,
+   "Q4": 163.8
+  }
  },
  "call": {
   "first_not_reached": "Village of Nordvold",

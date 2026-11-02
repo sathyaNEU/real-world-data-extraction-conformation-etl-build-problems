@@ -21,9 +21,8 @@ The grants rest on the 23 wells whose own water, solved from each entry point's 
 3. Solved each entry point's samples together by least squares, each sample's PFOA and PFOS the mix of the wells pumping in proportion to their rated capacities, for every active well's own PFOA and PFOS: 23 wells over 4.0 ng/L.
 4. Sized each system's grant at $2.4 million per MGD of the rated capacity of those wells (gallons a minute times 1,440 over 1,000,000), capped at $6 million (section 6.3).
 5. Funded Table 6-1 in order until the remaining set-aside did not cover the next grant (section 6.4): 16 systems, $451,200 left, Nordvold's $691,200 not covered.
-6. Summed the 2025 gallons in monthly_operating_reports_2025.csv for the listed systems' wells (facility type Well in the inventory), each meter in source_meter_register_2026.csv counted once a month where two wells share it, by each system's county in Table 6-1.
-7. Added to each listed system's population in community_water_system_register_2026.csv the populations of the systems that buy all their water from it, directly or through another buyer, on the in-service full-purchase connections in wholesale_connections_2026.csv (a buyer the register holds under an inactive id taken to the active system of the same name and county), each counted in the county where it is.
-8. The $36 million reaches 16 systems, Torvik Water Utility through Valdahl Sanitary District.
+6. Summed the 2025 gallons in monthly_operating_reports_2025.csv for the listed systems' wells (facility type Well in the inventory) by each system's county in Table 6-1 and the quarter of the report month, each meter in source_meter_register_2026.csv once a month, with the wellhouse meters on Torvik's Well 1, Halvorsen's Well 1, Lindvik Lake's Well 1 and Elvholm Falls' Well 2 taken net of the own meter of the well piped into each wellhouse (Well 2, Well 2, Well 2 and Well 3) in every month it runs: that well runs only in the months it leads (bar a sampler's visit), and in each of them its wellhouse line carries more than the line's own pump delivers at its rated capacity in its days in service, up to six times as much: the county figures of block 4.
+7. The $36 million reaches 16 systems, Torvik Water Utility through Valdahl Sanitary District.
 
 ## 4. Deliverable Answers
 
@@ -54,15 +53,10 @@ The grants rest on the 23 wells whose own water, solved from each entry point's 
 3. The first system it cannot reach: Village of Nordvold
 4. Left of the $36 million: $451,200
 5. Water the listed systems' wells pumped in 2025, million gallons to one decimal:
-   - Granlund: 1,342.9
-   - Engvall: 1,318.4
-   - Hedstrom: 913.5
-   - Sandholm: 714.6
-6. People living in the county who get their water from any of those wells:
-   - Granlund: 30,167
-   - Engvall: 29,442
-   - Hedstrom: 21,518
-   - Sandholm: 17,614
+   - Granlund: Jan to Mar 291.6, Apr to Jun 341.2, Jul to Sep 387.1, Oct to Dec 307.1
+   - Engvall: Jan to Mar 283.8, Apr to Jun 329.6, Jul to Sep 381.7, Oct to Dec 296.6
+   - Hedstrom: Jan to Mar 196.4, Apr to Jun 229.3, Jul to Sep 263.7, Oct to Dec 208.2
+   - Sandholm: Jan to Mar 153.4, Apr to Jun 179.7, Jul to Sep 207.0, Oct to Dec 163.8
 
 ### well_pfas_2027.png
 

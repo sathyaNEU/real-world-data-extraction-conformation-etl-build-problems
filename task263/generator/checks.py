@@ -1,7 +1,8 @@
 """The generator's assertions on every build: the three rules (R1 raw material, R2 each mess item neutral, R3a the
 analyst test, R3b the decisive step alone, R3c no plant), the ladder and the shortcuts beside it, every row of the
-semantic fork table (SF1 to SF17), the estimators' convergence and the margins, the asks' goldens against the
-generator's truth and their stops, the separation line, the distractors, the screen that no shipped file or sheet
+semantic fork table (SF1 to SF17), the estimators' convergence and the margins, the ask's golden against the
+generator's truth, its stops, its forcing and its silence, the separation line (the call's files byte-identical to the
+shipped cut), the distractors, the screen that no shipped file or sheet
 describes the data (by name and by content, each positive-controlled), the provenance in metadata.json, the input
 gates, the realism sweep and the invented names (H21)."""
 from __future__ import annotations
@@ -29,6 +30,10 @@ import world as W
 
 PASSED = []
 TASK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# the files the call reads, as the shipped cut carried them (target.zip c38b70927ef7065db923fe1d22411dca, 2026-11-01)
+SHIPPED_CALL_MD5 = {"results": "73a1363a5c217432f122ed7bc065d8a4", "records": "bae22579527947c549c5277fbd1a6c7c",
+                    "inventory": "380c66ed79239b82d168718baac2bb14", "iup": "ed262b26a9e54e712c23ee322d7e08c9",
+                    "guide": "e173cef2301a76d7866ab0df42bbbdb1"}
 
 
 def check(label, cond, detail=""):
@@ -158,6 +163,20 @@ def run(target, T):
     check("R3c no plant: no sample's results (four or more detections) repeat another sample's except a reissued "
           "report of itself",
           no_repeated_samples(target))
+    r0o = A.presence(D)
+    epo = A.ep_route(D)
+    check("survivor anatomy, back-test: every well R0 puts over the line stands at an entry point with a result over 4.0",
+          all(set(v) <= set(epo.get(k, set())) for k, v in r0o.items()))
+    sst = collections.defaultdict(list)
+    for x in A.window(D):
+        for n in x["on"]:
+            sst[(x["pws"], x["ep"], n)].append(max(A.value(x, "PFOA"), A.value(x, "PFOS")))
+    gw = {(p, e, n) for p, s in G["over"].items() for e, n in s}
+    aw = [(p, e, n) for (p, e), w in D["wells"].items() if p in D["listed"] for n in w]
+    tops = [set(sorted(aw, key=lambda k, f=f: -f(sst[k]))[:len(gw)]) for f in (np.mean, np.median, np.max, np.min)]
+    tops.append(set(sorted(aw, key=lambda k: -D["wells"][(k[0], k[1])][k[2]])[:len(gw)]))
+    check("survivor anatomy, shock: no sort of the active wells by the mean, median, highest or lowest of the samples "
+          "each ran in, or by rated capacity, puts the golden's 23 on top", all(t != gw for t in tops))
     texts = all_text(target)
     check("R3c no plant: no shipped file names a well's own level, a mixing share, a mass balance or a grant amount",
           not any(re.search(r"mass balance|unmix|own level|mixing (share|proportion)|least squares|\$[0-9,]{7,} grant",
@@ -281,87 +300,120 @@ def run(target, T):
     check("SF17 sources not recorded (%d samples): left out or inferred from the entry-point flow, same call" % nblank,
           nblank > 0 and walk_key(A.route(D, A.over_from_levels(A.own_levels(D, missing="infer")))) == base)
 
-    # ------------------------------------------------------------------------------------------ the asks
+    # ------------------------------------------------------------------------------------------ the ask
+    # the water the listed systems' wells pumped in 2025, by Table 6-1's county and calendar quarter (16 figures)
     aa = A.ask_a(D, target)
-    truth_a = {c: round(v / 1e6, 1) for c, v in W.pumped_by_county(S, T["ops"]).items()}
-    check("Ask A: the golden equals the generator's truth (each well once)", aa == truth_a, str((aa, truth_a)))
-    check("Ask A: figures.json carries it", F["ask_a"] == aa)
-    edges = [abs((v * 10) % 1 - 0.5) for v in (x / 1e6 for x in W.pumped_by_county(S, T["ops"]).values())]
-    check("Ask A: every county's figure sits at least 0.05 of a rounding step from an edge", min(
-        abs(((v / 1e5) % 1) - 0.5) for v in W.pumped_by_county(S, T["ops"]).values()) > 0.05)
-    for mode, lab, counties in (("every_row", "every row of the reports (shared meters on both wells)", None),
-                                ("active_only", "active wells only", ["Hedstrom"]),
-                                ("readings", "the meter readings in place of the gallons", ["Granlund"]),
-                                ("every_row_all", "every row, purchased water included", None)):
+    tq = W.pumped_by_county_quarter(S, T["ops"])
+    check("Ask: the golden equals the generator's truth (each well's own water once, by county and quarter)",
+          aa == {c: {q: round(v / 1e6, 1) for q, v in d.items()} for c, d in tq.items()}, str(aa))
+    check("Ask: figures.json carries it, 16 figures", F["ask_a"] == aa and sum(len(v) for v in aa.values()) == 16)
+    edge = min(abs(((v / 1e5) % 1) - 0.5) for d in tq.values() for v in d.values())
+    check("Ask: every county-quarter figure sits at least a tenth of a rounding step from an edge (%.3f)" % edge,
+          edge >= 0.10)
+    for mode, lab, cells in (("careful", "the careful solver's route (wells only, each register meter once)", 16),
+                             ("every_row", "every line as written", 16),
+                             ("every_row_all", "every line, the interconnection's purchase in", 16),
+                             ("over", "only the overloaded well's line at its entry point", 16),
+                             ("readings", "the golden from the meter readings (the June meter change)", 1),
+                             ("active_only", "the golden with active wells only (the emergency well out)", 1)):
         v = A.ask_a(D, target, mode)
-        miss = [c for c in aa if abs(v[c] - aa[c]) > 0.05]
-        check("Ask A stop: %s misses %s" % (lab, "every county" if counties is None else ", ".join(counties)),
-              (len(miss) == 4) if counties is None else set(counties) <= set(miss), str(v))
-    ab = A.ask_b(D, target)
-    check("Ask B: the golden equals the generator's truth (chains of full purchases in service)",
-          ab == W.people_reached(S, T["conns"]), str(ab))
-    check("Ask B: figures.json carries it", F["ask_b"] == ab)
-    for mode, lab, counties in (("listed", "the listed systems alone", None), ("one_step", "buyers one step out", None),
-                                ("as_found", "the chains, each id's register row as found", None),
-                                ("active_only", "the chains, inactive ids left out", None),
-                                ("every_tie", "every tie followed", ["Granlund", "Sandholm"])):
-        v = A.ask_b(D, target, mode)
-        miss = [c for c in ab if v.get(c) != ab[c]]
-        check("Ask B stop: %s misses %s" % (lab, "every county" if counties is None else ", ".join(counties)),
-              (len(miss) == 4) if counties is None else set(counties) == set(miss), str(v))
-    two = [m for m in A.rd(target, K.FILES["meters"]) if ";" in m["facility_ids"]]
-    lst = {p["pws"] for p in D["plan"]}
-    cty = {p["pws"]: p["county"] for p in D["plan"]}
-    check("Ask A device: one shared header meter at a listed system in each county, and three off the list",
-          sorted(cty[m["pws_id"]] for m in two if m["pws_id"] in lst) == sorted(("Granlund", "Engvall", "Hedstrom", "Sandholm"))
-          and sum(1 for m in two if m["pws_id"] not in lst) == 3)
-    check("Ask B device: a buyer of a buyer in each county", chains_by_county(target, D) == {"Granlund", "Engvall",
-                                                                                             "Hedstrom", "Sandholm"})
-    reg = {r["pws_id"]: r for r in A.rd(target, K.FILES["register"])}
-    con = A.rd(target, K.FILES["connections"])
-    ren = [s for s in S if s.get("old_pws")]
-    check("Ask B device: a buyer in each county renumbered on a change of owner, the register holding the old id as an "
-          "inactive system of the same name and county at an older population, every connection still on the old id",
-          sorted(s["county"] for s in ren) == sorted(("Granlund", "Engvall", "Hedstrom", "Sandholm")) and
-          all(reg[s["old_pws"]]["status"] == "Inactive" and reg[s["pws"]]["status"] == "Active" and
-              reg[s["old_pws"]]["system_name"] == reg[s["pws"]]["system_name"] and
-              reg[s["old_pws"]]["county"] == reg[s["pws"]]["county"] and
-              reg[s["old_pws"]]["population_served"] != reg[s["pws"]]["population_served"] for s in ren) and
-          not any(s["pws"] in (x["buyer_pws_id"], x["seller_pws_id"]) for s in ren for x in con) and
-          all(any(s["old_pws"] in (x["buyer_pws_id"], x["seller_pws_id"]) for x in con) for s in ren))
-    check("Ask B device: no other active system shares an inactive id's name and county (the closed systems the "
-          "register keeps match none)", sum(1 for r in reg.values() if r["status"] == "Inactive" and any(
-              q["status"] == "Active" and q["system_name"] == r["system_name"] and q["county"] == r["county"]
-              for q in reg.values())) == len(ren))
-    rule = "a system that sells water to another counts only its own customers"
-    check("Ask B referee: the counting rule (a system's population counts its own customers) is filed once, in the "
-          "plan's note under Table 6-1, read by the checks' extractor and by the verifier's",
-          rule in texts[K.FILES["iup"]] and rule in pypdf_text(target, K.FILES["iup"]) and
-          [f for f, t in texts.items() if "own customers" in t] == [K.FILES["iup"]])
-    check("Ask B referee: the register's populations are each system's own (people per service connection between 2.2 "
-          "and 2.8 for every seller and buyer on a connection)",
-          all(2.2 <= int(reg[i]["population_served"]) / int(reg[i]["service_connections"]) <= 2.8
-              for c in con for i in (c["buyer_pws_id"], c["seller_pws_id"])))
-    check("Ask B labels: every full-purchase buyer in service is on purchased water in the register, and every system on "
-          "an emergency tie or an ended purchase has its own source",
-          all(reg[c["buyer_pws_id"]]["primary_source"].startswith("Purchased") for c in con
-              if c["connection_type"] == "Full purchase" and not c["in_service_to"]) and
-          all(not reg[c["buyer_pws_id"]]["primary_source"].startswith("Purchased") for c in con
-              if c["connection_type"] == "Emergency" or c["in_service_to"]) and
-          {c["connection_type"] for c in con} == {"Full purchase", "Emergency"})
+        miss = [(c, q) for c in aa for q in aa[c] if abs(v.get(c, {}).get(q, 0) - aa[c][q]) > 0.05]
+        check("Ask stop: %s misses %d of 16" % (lab, cells), len(miss) == cells, str(v))
+    cv = A.ask_a(D, target, "careful")
+    gap = min(abs(cv[c][q] - aa[c][q]) for c in aa for q in aa[c])
+    check("Ask stop: the careful route misses every county-quarter by %.1f million gallons or more (ten or more "
+          "rounding steps)" % gap, gap >= 1.0)
+    check("Ask rival link: leaving the second well's own line out gives the golden in every county-quarter",
+          A.ask_a(D, target, "drop_child") == aa)
+    check("Ask rival link: the other well taken off only in the months its host's line is beyond the host's pump gives "
+          "the golden in every county-quarter (the second well runs only in the months it leads, and in every one of "
+          "them the line is beyond the pump)", A.ask_a(D, target, "half") == aa, str(A.ask_a(D, target, "half")))
+    lines = A.mor_lines(D, target)
+    wl = [l for l in lines if l["type"] == "Well"]
+    sh = A.shared_meters(target)
+    once = A.each_meter_once(wl, sh)
+    pairs, fits = A.nested(once, sh)
+    fac = {f["facility_id"]: f for f in D["inv"]}
+    truth_nest = {(s["full"], p, c) for s in S for (n, p, c) in W.NESTED if s["name"] == n}
+    found = {(next(x["system_name"] for x in D["inv"] if x["facility_id"] == p), int(fac[p]["facility_name"].split()[-1]),
+              int(fac[c]["facility_name"].split()[-1])) for p, c in pairs.items()}
+    check("Ask device: the pump physics, read from the rows, finds exactly the generator's four wellhouse meters and "
+          "the one second well each carries (one listed system in each county)", found == truth_nest and
+          all(len(v) == 1 for v in fits.values()) and len(fits) == 4 and
+          sorted(D["listed"][fac[p]["pws_id"]]["county"] for p in pairs) == sorted(("Engvall", "Granlund", "Hedstrom",
+                                                                                    "Sandholm")), str((found, fits)))
+    by = collections.defaultdict(dict)
+    for l in once:
+        by[l["fid"]][l["month"]] = l
+    worst = {p: max(by[p][m]["gal"] / A.most(by[p][m]) if A.most(by[p][m]) else 99 for m in by[p]) for p in pairs}
+    perq = all(any(by[p][m]["gal"] > 1.4 * A.most(by[p][m]) for m in by[p] if W.quarter(m) == q)
+               for p in pairs for q in A.QUARTERS)
+    twice = min(sum(1 for m in by[p] if by[p][m]["gal"] > 2.0 * A.most(by[p][m])) for p in pairs)
+    check("Ask forcing: each wellhouse line goes beyond 1.4 times what its own pump can deliver in its days in service in "
+          "at least one month of every quarter, beyond twice it in %d months or more, up to %.1f times"
+          % (twice, max(worst.values())), perq and twice >= 2)
+    net = max((by[p][m]["gal"] - by[c][m]["gal"]) / A.most(by[p][m]) for p, c in pairs.items() for m in by[p]
+              if A.most(by[p][m]))
+    check("Ask forcing: net of its second well, each wellhouse line is within its pump in every month (at most %.2f "
+          "of rated capacity for 24 hours of each day in service)" % net, net <= 0.95)
+    rest = max(l["gal"] / A.most(l) for l in once if l["fid"] not in pairs and l["fid"] not in sh and A.most(l))
+    check("Ask forcing: every other listed well line is within its pump (at most %.2f), so nothing else in the reports "
+          "goes beyond a pump" % rest, rest <= 0.95)
+    third = []
+    for p, c in pairs.items():
+        for o, om in by.items():
+            if o in (p, c) or (fac[o]["pws_id"], fac[o]["entry_point"]) != (fac[p]["pws_id"], fac[p]["entry_point"]):
+                continue
+            third.append(max((by[p][m]["gal"] - om[m]["gal"]) / A.most(by[p][m]) for m in by[p] if A.most(by[p][m])))
+    check("Ask over-cleaning half: each wellhouse entry point has another, separately metered well, and taking it off "
+          "leaves the wellhouse line beyond its pump (at least %.1f times)" % min(third), len(third) >= 4 and
+          min(third) > 1.5)
+    met = A.rd(target, K.FILES["meters"])
+    nm = [m for m in met if m["facility_ids"] in pairs or m["facility_ids"] in pairs.values()]
+    check("Ask silence: the register lists each wellhouse meter and each second well's meter on its one facility at "
+          "the wellhouse discharge, as every single-facility well meter", len(nm) == 8 and
+          all(m["location"] == "wellhouse discharge" and ";" not in m["facility_ids"] for m in nm) and
+          {m["location"] for m in met if ";" not in m["facility_ids"] and m["location"] != "interconnect vault"} ==
+          {"wellhouse discharge"})
+    rows_mor = A.rd(target, K.FILES["mor"])
+    amt = collections.Counter((r["pws_id"], r["report_month"], r["volume_gal"]) for r in rows_mor
+                              if r["facility_id"] not in sh)
+    seqs = collections.defaultdict(list)
+    for r in rows_mor:
+        seqs[r["facility_id"]].append(r)
+    cont = all(a["meter_end"] == b["meter_start"] for f in list(pairs) + list(pairs.values())
+               for a, b in zip(sorted(seqs[f], key=lambda r: r["report_month"]),
+                               sorted(seqs[f], key=lambda r: r["report_month"])[1:]))
+    check("Ask silence: off the register's shared meters no two lines of one system and month carry the same gallons, "
+          "and the wellhouse and second-well meters read on without a restart", max(amt.values()) == 1 and cont)
+    shared_listed = sorted({m["pws_id"] for m in met if ";" in m["facility_ids"] and m["pws_id"] in D["listed"]})
+    check("Ask hazard: one listed system's two wells share a header meter the register lists on both, its readings on "
+          "both lines, and three systems off the list do the same", len(shared_listed) == 1 and
+          sum(1 for m in met if ";" in m["facility_ids"] and m["pws_id"] not in D["listed"]) == 3)
+    check("Ask hazards: the interconnection's September purchase, the June meter change and the emergency well's three "
+          "July days are on the listed systems' lines", any(fac[r["facility_id"]]["facility_type"] == "Interconnection"
+                                                             and int(r["volume_gal"]) > 0 for r in rows_mor
+                                                             if r["facility_id"] in fac and r["pws_id"] in D["listed"])
+          and any(m["removed"] for m in met if m["pws_id"] in D["listed"]) and
+          any(fac[r["facility_id"]]["status"] == "Emergency" and int(r["volume_gal"]) > 0 for r in rows_mor
+              if r["facility_id"] in fac))
 
-    import cracker as CR
-    rows_cr = CR.score(target)
-    _, lc, ls, pair = CR.ceiling(rows_cr, rows_cr)
-    check("cracker.py on the cut pack: the cracker keeps no ask figure (%s), pair ceiling %.1f" % (
-        ", ".join("%s %d of %d" % (a, h, n) for a, n, h in rows_cr), pair), lc == 0 and pair <= 40)
+    import ceiling as CL
+    kc, km, n, pair, ctrl = CL.score(target)
+    check("ceiling.py on the cut pack: the careful-solver cracker keeps %d of %d ask figures, the mirror %d, pair "
+          "ceiling %.1f, the full includer reproduces figures.json" % (kc, n, km, pair),
+          kc == 0 and km == 0 and pair <= 40 and ctrl)
 
     # ------------------------------------------------------------------------------------------ separation, distractors
     check("separation: the call computed from the call's files alone (results, records, inventory, plan) equals the "
           "golden", call_alone(target, G))
+    import hashlib
+    check("separation: every file the call reads is byte-identical to the shipped cut (target.zip c38b7092)",
+          {k: hashlib.md5(open(os.path.join(target, K.FILES[k]), "rb").read()).hexdigest() for k in K.CALL_FILES}
+          == SHIPPED_CALL_MD5)
     for k in K.DISTRACTORS:
-        check("distractor: %s deleted leaves the call and both asks unchanged" % K.FILES[k], without(target, K.FILES[k], G,
-                                                                                                     aa, ab))
+        check("distractor: %s deleted leaves the call and the ask unchanged" % K.FILES[k], without(target, K.FILES[k], G,
+                                                                                                     aa))
     meta = json.load(open(os.path.join(TASK, "metadata.json")))
     check("distractors named in metadata.json by bundle path", sorted(meta["distractor_files"]) ==
           sorted("target/" + K.FILES[k] for k in K.DISTRACTORS))
@@ -515,14 +567,6 @@ def sampled_facilities(D):
     fid = {(f["pws_id"], f["entry_point"], int(f["facility_name"].split()[-1])): f["facility_id"] for f in D["inv"]
            if f["facility_type"] == "Well" and f["entry_point"]}
     return {fid.get((x["pws"], x["ep"], n)) for x in D["samples"] if x["on"] for n in x["on"]}
-
-
-def chains_by_county(target, D):
-    reg = {r["pws_id"]: r for r in A.rd(target, K.FILES["register"])}
-    con = [c for c in A.rd(target, K.FILES["connections"]) if c["connection_type"] == "Full purchase" and not c["in_service_to"]]
-    first = {c["buyer_pws_id"] for c in con if c["seller_pws_id"] in D["listed"]}
-    second = {c["buyer_pws_id"] for c in con if c["seller_pws_id"] in first}
-    return {reg[p]["county"] for p in second}
 
 
 def mor_consistent(target, D):
@@ -681,7 +725,7 @@ def call_alone(target, G):
         shutil.rmtree(tmp)
 
 
-def without(target, name, G, aa, ab):
+def without(target, name, G, aa):
     tmp = tempfile.mkdtemp()
     try:
         for f in os.listdir(target):
@@ -689,7 +733,7 @@ def without(target, name, G, aa, ab):
                 shutil.copy(os.path.join(target, f), tmp)
         D2 = A.load(tmp)
         G2 = A.golden(D2)
-        return walk_key(G2) == walk_key(G) and A.ask_a(D2, tmp) == aa and A.ask_b(D2, tmp) == ab
+        return walk_key(G2) == walk_key(G) and A.ask_a(D2, tmp) == aa
     finally:
         shutil.rmtree(tmp)
 

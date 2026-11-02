@@ -264,11 +264,14 @@ def write_inventory(path, S):
 
 # ---------------------------------------------------------------------------------------------- 2025 operations
 def meters(S):
-    """The source meters: one on each facility, except where two wells discharge to one header and share it."""
+    """The source meters: one on each facility, except where two wells discharge to one header and share it. Where a
+    second well is piped into a first well's wellhouse (W.NESTED), the wellhouse's discharge meter is registered to
+    the first well and measures both wells' water (its `measures`), and the second well keeps its own meter."""
     r = K.rng("meters")
     out, mid = [], 100410
     shared = {(n, a): b for n, (a, b) in W.SHARED}
     shared.update({(n, b): a for n, (a, b) in W.SHARED})
+    nested = {(n, p): c for n, p, c in W.NESTED}
     others = [s for s in S if not s["listed"] and len([w for w in s["wells"] if w["status"] == "Active"]) >= 2
               and not s.get("surface")]
     pick = set(s["name"] for s in [others[i] for i in r.choice(len(others), W.SHARED_OTHER, replace=False)])
@@ -289,6 +292,9 @@ def meters(S):
             m = dict(id="M-%d" % mid, pws=s["pws"], wells=group, size=[2, 3, 4, 6, 8][min(4, int(w["gpm"] // 250))],
                      installed=dt.date(int(r.integers(2004, 2023)), int(r.integers(1, 13)), int(r.integers(1, 28))),
                      removed=None, start=int(r.integers(1_000_000, 900_000_000)))
+            child = nested.get((s["name"], w["no"]))
+            if child:
+                m["measures"] = group + [x for x in ws if x["no"] == child]
             for (n, no, when) in W.REPLACED:
                 if n == s["name"] and no == w["no"]:
                     m["removed"] = when
@@ -316,8 +322,9 @@ def write_meters(path, M):
 
 
 def write_mor(path, S, ops, M):
-    """One row a facility a month, as the operator fills the form: the meter's readings at the start and end of
-    the month, the gallons through it, and the days the facility ran."""
+    """One row a facility a month, as the operator fills the form: the readings of the meter registered to the
+    facility at the start and end of the month, the gallons through it, and the days the facility ran. A wellhouse
+    meter that a second well is piped into carries both wells' water on the first well's line."""
     by_fid = {}
     for m in M:
         for w in m["wells"]:
@@ -334,7 +341,7 @@ def write_mor(path, S, ops, M):
                 ms = by_fid[w["fid"]]
                 m = ms[-1]
                 days, gal = ops.get((s["name"], w["no"], mth), [0, 0.0])
-                meter_gal = sum(ops.get((s["name"], x["no"], mth), [0, 0.0])[1] for x in m["wells"])
+                meter_gal = sum(ops.get((s["name"], x["no"], mth), [0, 0.0])[1] for x in m.get("measures", m["wells"]))
                 month_rows.append((w, ms, days, int(round(meter_gal))))
             seen = set()
             for w, ms, days, meter_gal in month_rows:

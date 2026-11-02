@@ -7,7 +7,9 @@
   ],
   "distractor_files": [
     "target/national_pfas_survey_2023.csv",
-    "target/private_well_pfas_2024-2026.csv"
+    "target/private_well_pfas_2024-2026.csv",
+    "target/community_water_system_register_2026.csv",
+    "target/wholesale_connections_2026.csv"
   ],
   "sources": [
     {
@@ -82,7 +84,7 @@
     {
       "path": "target/source_meter_register_2026.csv",
       "format": "csv",
-      "rows": 215,
+      "rows": 218,
       "source": "Constructed: the department's source meter register",
       "source_system": "SDWIS Reports",
       "extracted_or_issued": "2026-09-01",

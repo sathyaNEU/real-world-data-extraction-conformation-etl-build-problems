@@ -1,5 +1,5 @@
 """The goldens: the 2027 grant workbook (the list with each system's grant and the walk, the wells' own water, the
-county figures) and the chart of each active well's PFOA and PFOS against the line, both from analysis.py on the
+county water by quarter) and the chart of each active well's PFOA and PFOS against the line, both from analysis.py on the
 shipped pack; generator/figures.json, the figures the write-up states; and metadata.json, the distractors and each
 file's provenance."""
 from __future__ import annotations
@@ -30,7 +30,7 @@ def results(target):
     n_ep = {}
     for x in rows:
         n_ep[(x["pws"], x["ep"])] = n_ep.get((x["pws"], x["ep"]), 0) + 1
-    return D, G, A.ask_a(D, target), A.ask_b(D, target), n_ep
+    return D, G, A.ask_a(D, target), A.ask_a(D, target, raw=True), n_ep
 
 
 def _head(ws, head, widths):
@@ -43,7 +43,7 @@ def _head(ws, head, widths):
         ws.column_dimensions[chr(65 + i)].width = w
 
 
-def workbook(path, D, G, ask_a, ask_b, n_ep):
+def workbook(path, D, G, ask_a, gal, n_ep):
     wb = Workbook()
     ws = wb.active
     ws.title = "2027 grants"
@@ -90,19 +90,25 @@ def workbook(path, D, G, ask_a, ask_b, n_ep):
     ws.freeze_panes = "A2"
 
     ws = wb.create_sheet("Counties")
-    _head(ws, ["County", "Water pumped by the listed systems' wells, 2025 (million gallons)",
-               "People living in the county who get their water from any of those wells"], [12, 26, 30])
-    for c in COUNTIES:
-        ws.append([c, ask_a[c], ask_b[c]])
-        ws.cell(ws.max_row, 2).number_format = "#,##0.0"
-        ws.cell(ws.max_row, 3).number_format = "#,##0"
-    ws.append(["Total", round(sum(ask_a[c] for c in COUNTIES), 1), sum(ask_b[c] for c in COUNTIES)])
+    peak = all(max(A.QUARTERS, key=lambda q: gal[c][q]) == "Q3" for c in COUNTIES)
+    ws.append(["July to September was the listed wells' heaviest quarter in all four counties" if peak else
+               "Water the listed systems' wells pumped in 2025"])
     ws.cell(ws.max_row, 1).font = Font(bold=True)
-    ws.cell(ws.max_row, 2).number_format = "#,##0.0"
-    ws.cell(ws.max_row, 3).number_format = "#,##0"
+    _head(ws, ["County", "Jan to Mar", "Apr to Jun", "Jul to Sep", "Oct to Dec", "2025"], [14, 11, 11, 11, 11, 11])
+    for c in COUNTIES:
+        ws.append([c] + [ask_a[c][q] for q in A.QUARTERS] + [round(sum(gal[c].values()) / 1e6, 1)])
+        for col in range(2, 7):
+            ws.cell(ws.max_row, col).number_format = "#,##0.0"
+    ws.append(["Four counties"] + [round(sum(gal[c][q] for c in COUNTIES) / 1e6, 1) for q in A.QUARTERS] +
+              [round(sum(sum(gal[c].values()) for c in COUNTIES) / 1e6, 1)])
+    for col in range(1, 7):
+        ws.cell(ws.max_row, col).font = Font(bold=True)
+        if col > 1:
+            ws.cell(ws.max_row, col).number_format = "#,##0.0"
+    ws.freeze_panes = "B3"
     ws.append([])
-    ws.append(["Water: 2025 monthly operating reports, each meter once a month. People: the system register's "
-               "populations, 1 September 2026."])
+    ws.append(["Million gallons. 2025 monthly operating reports, by the county in Table 6-1 and the report month; each "
+               "meter counted once a month, wellhouse meters net of the wells piped in ahead of them (Notes)."])
 
     ws = wb.create_sheet("Notes")
     ws.column_dimensions["A"].width = 120
@@ -127,15 +133,15 @@ NOTES = [
     "added; no well's estimate sits close enough to the line for the choice to matter.",
     "Grants: $2.4 million per MGD of the rated capacity of the active wells over 4.0 ng/L, capped at $6 million, in the "
     "order of Table 6-1 until the remaining set-aside does not cover the next grant.",
-    "Counties. Water: the 2025 monthly operating reports for the listed systems' wells, each meter counted once a month "
-    "(Lindvik Lake, Halvorsen, Skogen and Elvholm Falls each have two wells on one header meter, written on both "
-    "wells' lines); Ackerholt Creek's September purchase through its emergency interconnect is not well water and is "
-    "left out; Kesselring's emergency well (three days in July) is in.",
-    "People: each listed system's own customers plus the customers of every system that buys all its water from it, "
-    "directly or through another buyer, on the connections in service (Solberg Lake's emergency tie and Hagestad "
-    "Corners' purchase, closed 30 June 2025, are left out), counted in the county where the buyer is. Four buyers "
-    "are on the connections under an id the register holds as inactive beside an active system of the same name and "
-    "county; each is counted as that active system, at its current population.",
+    "Counties. Water: the 2025 monthly operating reports for the listed systems' wells, by the county in Table 6-1 and "
+    "the quarter of the report month, each meter counted once a month (Skogen's two wells share one header meter, "
+    "written on both wells' lines). Four wellhouse meters also take the water of a second well piped into the "
+    "wellhouse ahead of the meter, which keeps its own meter at its pump: Torvik's Well 1 meter (Well 2), Halvorsen's "
+    "Well 1 meter (Well 2), Lindvik Lake's Well 1 meter (Well 2) and Elvholm Falls' Well 2 meter (Well 3). Each is "
+    "taken net of the second well's own meter in every month: in every month the second well leads, the wellhouse meter "
+    "records more than its own well can pump at its rated capacity in its days in service, up to six times as much, and "
+    "net of the second well every month falls within it. Ackerholt Creek's September purchase through its emergency interconnect "
+    "is not well water and is left out; Kesselring's emergency well (three days in July) is in.",
 ]
 
 
@@ -188,7 +194,7 @@ def chart(path, D, G):
     plt.close(fig)
 
 
-def figures(D, G, ask_a, ask_b):
+def figures(D, G, ask_a):
     name = {p["pws"]: p["name"] for p in D["plan"]}
     rows = A.window(D)
     blank = sum(1 for x in D["samples"] if x["listed"] and x["on"] is None and x["kind"] in ("RT", "CO")
@@ -205,20 +211,20 @@ def figures(D, G, ask_a, ask_b):
              wells_over={name[pws]: sorted("Well %d" % n for ep, n in v) for pws, v in G["over"].items()},
              levels={"%s %s Well %d" % (name[pws], ep, n): [round(a, 1), round(b, 1)]
                      for (pws, ep), lv in G["levels"].items() if pws in name for n, (a, b) in lv.items()},
-             ask_a=ask_a, ask_b=ask_b)
+             ask_a=ask_a)
     return F
 
 
 def write(target, golden, T=None):
     os.makedirs(golden, exist_ok=True)
-    D, G, aa, ab, n_ep = results(target)
+    D, G, aa, gal, n_ep = results(target)
     xp = os.path.join(golden, K.DELIVERABLES[0])
-    workbook(xp, D, G, aa, ab, n_ep)
+    workbook(xp, D, G, aa, gal, n_ep)
     PP.COMPANY = "Water Infrastructure Finance Authority"
     PP.normalize_ooxml(xp, K.PEOPLE["manager"], K.PEOPLE["manager"], "2026-10-07T15:12:40Z", "2026-10-09T19:47:03Z",
                        excel=True)
     chart(os.path.join(golden, K.DELIVERABLES[1]), D, G)
-    F = figures(D, G, aa, ab)
+    F = figures(D, G, aa)
     json.dump(F, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     json.dump(metadata(target), open(os.path.join(os.path.dirname(target), "metadata.json"), "w"), indent=2)
     return F

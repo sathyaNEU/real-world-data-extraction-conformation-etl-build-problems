@@ -451,9 +451,18 @@ def people_reached(S, conns):
 
 # ---------------------------------------------------------------------------------------------- 2025 operations
 SEASON = [0.86, 0.87, 0.90, 0.95, 1.05, 1.18, 1.30, 1.26, 1.10, 0.97, 0.90, 0.88]
-# wells measured by one meter on a common discharge (listed systems, one in each county, and three elsewhere)
-SHARED = [("Marsden Lake", (2, 3)), ("Halloway", (1, 2)), ("Sedgwick", (1, 2)), ("Ashgrove Falls", (1, 3))]
+# wells measured by one meter on a common discharge header, the register listing both on the meter and the operator
+# writing its readings on both wells' lines (one listed system, and three elsewhere)
+SHARED = [("Sedgwick", (1, 2))]
 SHARED_OTHER = 3
+# a second well piped into a first well's wellhouse upstream of the wellhouse's discharge meter, so that meter carries
+# both wells' water while the second well keeps its own meter at its pump; the register links each meter to the one
+# facility it is registered to and the operator writes each meter on that facility's line (parent, child), one listed
+# system in each county
+NESTED = [("Tillerton", 1, 2), ("Halloway", 1, 2), ("Marsden Lake", 1, 2), ("Ashgrove Falls", 2, 3)]
+# two small systems whose 2025 demand runs a little above the state's draw, set so every county-quarter water figure
+# sits at least a tenth of a rounding step from an edge (the generator's margin; nothing in the pack reads it)
+DEMAND_ADJ = {"Dalby": 1.002, "Ellery": 1.002}
 REPLACED = [("Quenby", 2, dt.date(2025, 6, 12))]          # a meter changed out in the month
 EMERGENCY_WELL = ("Corrigan", 3, 400, (dt.date(2025, 7, 22), dt.date(2025, 7, 23), dt.date(2025, 7, 24)))
 INACTIVE = [("Marsden Lake", 5, 600, dt.date(2018, 10, 1)), ("Halloway", 4, 450, dt.date(2021, 4, 1))]
@@ -499,11 +508,17 @@ def operations_2025(S, conns, X=()):
         if x["when"].year == 2025:
             seen_on.setdefault((x["system"], x["ep"], x["when"].date()), set()).update(x["on"])
     ops = {}
+    nested_child = {}
+    for name, parent, child in NESTED:
+        sys_ = next(x for x in S if x["name"] == name)
+        for ep in sys_["eps"]:
+            if any(w["no"] == child for w in ep["wells"]):
+                nested_child[(name, ep["code"])] = child
     for s in S:
         if not s["wells"] or s.get("buyer"):
             continue
         r = K.rng("ops", s["name"])
-        gpcd = r.uniform(96, 132)
+        gpcd = r.uniform(96, 132) * DEMAND_ADJ.get(s["name"], 1.0)
         cap = sum(w["gpm"] for w in s["wells"] if w["status"] == "Active")
         start_well = s.get("well_from")
         for ep in s["eps"]:
@@ -536,6 +551,14 @@ def operations_2025(S, conns, X=()):
                     for n in lags:
                         hours[n] = (rest / (60 * sum(rate[k] for k in lags))) if rest > 0 else r.uniform(1.5, 4.5)
                         hours[n] = min(hours[n], 20.0)
+                    # a well piped into another's wellhouse runs only as the month's lead: off its lead days it is
+                    # valved out of the rotation (the draws above are kept, so no other day moves)
+                    child = nested_child.get((s["name"], ep["code"]))
+                    if child is not None and child != lead and child in hours:
+                        if child in seen_on.get((s["name"], ep["code"], day), set()):
+                            hours[child] = 0.5          # run for the sampler's visit only
+                        else:
+                            hours.pop(child)
                     for n, h in hours.items():
                         o = ops[(s["name"], n, m)]
                         o[0] += 1
@@ -559,6 +582,22 @@ def pumped_by_county(S, ops):
         s = by[name]
         if s["listed"] and not any(w.get("plant") for w in s["wells"]):
             out[s["county"]] = out.get(s["county"], 0.0) + gal
+    return out
+
+
+def quarter(month):
+    return "Q%d" % ((month - 1) // 3 + 1)
+
+
+def pumped_by_county_quarter(S, ops):
+    """The listed systems' wells' 2025 gallons by county and calendar quarter (the truth, each well's water once)."""
+    by = {s["name"]: s for s in S}
+    out = {}
+    for (name, no, m), (days, gal) in ops.items():
+        s = by[name]
+        if s["listed"] and not any(w.get("plant") for w in s["wells"]):
+            out.setdefault(s["county"], {}).setdefault(quarter(m), 0.0)
+            out[s["county"]][quarter(m)] += gal
     return out
 
 

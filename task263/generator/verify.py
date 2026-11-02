@@ -1,6 +1,6 @@
 """Independent verifier for task263: reads only the bundle (target/), on its own code path (pandas, pypdf, a normal-
 equations solve per entry point and analyte), and recomputes the call, every grant, the walk, the rungs below the
-golden and both asks; compares them with generator/figures.json. Exit 0 when everything agrees.
+golden and the ask; compares them with generator/figures.json. Exit 0 when everything agrees.
 
     python3 task263/generator/verify.py task263/target"""
 import json
@@ -127,12 +127,15 @@ def main(target):
         n0 += 1
     same("default path (average of the samples a well ran in) reaches 7", n0, 7)
 
-    # Ask A: each meter once a month, wells only
+    # The ask: 2025 water pumped by the listed systems' wells, by county and quarter. Each register meter once a
+    # month; then, by the pump physics on this verifier's own reading of the rows, a wellhouse meter whose line goes
+    # beyond its well's rated capacity for 24 hours of each day in service, which no shared meter explains, is taken
+    # net of the one other well at its entry point that brings it within its pump in every month.
     mor = pd.read_csv(os.path.join(target, "monthly_operating_reports_2025.csv"), dtype={"pws_id": str, "facility_id": str})
     met = pd.read_csv(os.path.join(target, "source_meter_register_2026.csv"), dtype={"pws_id": str})
-    wellfac = set(inv[inv.facility_type == "Well"].facility_id)
+    wells = inv[inv.facility_type == "Well"].set_index("facility_id")
     county = {p["pws"]: p["county"] for p in P}
-    mor = mor[mor.pws_id.isin(ids) & mor.facility_id.isin(wellfac)]
+    mor = mor[mor.pws_id.isin(ids) & mor.facility_id.isin(wells.index)].copy()
     group = {}
     for _, m in met.iterrows():
         fs = str(m.facility_ids).split(";")
@@ -140,28 +143,31 @@ def main(target):
             for f in fs:
                 group[f] = "+".join(sorted(fs))
     mor["meter_group"] = [group.get(f, f) for f in mor.facility_id]
-    once = mor.drop_duplicates(["meter_group", "report_month"])
-    a = (once.groupby(once.pws_id.map(county)).volume_gal.sum() / 1e6).round(1).to_dict()
-    same("Ask A pumpage by county", {k: float(v) for k, v in a.items()}, {k: float(v) for k, v in F["ask_a"].items()})
-
-    # Ask B: listed customers and every chain of in-service full purchases
-    reg = pd.read_csv(os.path.join(target, "community_water_system_register_2026.csv"), dtype={"pws_id": str})
-    con = pd.read_csv(os.path.join(target, "wholesale_connections_2026.csv"), dtype={"buyer_pws_id": str,
-                                                                                     "seller_pws_id": str})
-    live = con[(con.connection_type == "Full purchase") & con.in_service_to.isna()]
-    reach = set(ids)
-    while True:
-        more = set(live[live.seller_pws_id.isin(reach)].buyer_pws_id) - reach
-        if not more:
-            break
-        reach |= more
-    # a connection still carrying an id the register holds as inactive: the active system of that name and county
-    act = reg[reg.status == "Active"].set_index(["system_name", "county"]).pws_id
-    old = reg.set_index("pws_id")
-    reach = {act.get((old.at[p, "system_name"], old.at[p, "county"]), p) if old.at[p, "status"] == "Inactive" else p
-             for p in reach}
-    b = reg[reg.pws_id.isin(reach)].groupby("county").population_served.sum().to_dict()
-    same("Ask B people by county", {k: int(v) for k, v in b.items()}, F["ask_b"])
+    mor = mor.drop_duplicates(["meter_group", "report_month"]).copy()
+    mor["gpm"] = mor.facility_id.map(wells.rated_capacity_gpm).astype(int)
+    mor["ep"] = mor.facility_id.map(wells.entry_point)
+    mor["most"] = mor.gpm * 1440 * mor.days_in_service
+    vol = mor.set_index(["facility_id", "report_month"]).volume_gal
+    net = mor.volume_gal.astype(float).copy()
+    for f, g in mor.groupby("facility_id"):
+        if f in group or not (g.volume_gal > g.most).any():
+            continue
+        peers = mor[(mor.pws_id == g.pws_id.iloc[0]) & (mor.ep == g.ep.iloc[0]) & (mor.facility_id != f)]
+        fit = [o for o in peers.facility_id.unique()
+               if all(r.volume_gal - vol.get((o, r.report_month), 0) <= r.most for _, r in g.iterrows())]
+        one = len(fit) == 1
+        ok &= one
+        print("%-5s wellhouse meter on facility %s carries facility %s" % ("OK" if one else "DIFF", f, fit))
+        for i, r in g.iterrows():
+            net.at[i] = r.volume_gal - vol.get((fit[0], r.report_month), 0)
+    mor["net"] = net
+    mor["q"] = "Q" + ((mor.report_month.str[5:].astype(int) - 1) // 3 + 1).astype(str)
+    a = (mor.groupby([mor.pws_id.map(county), "q"]).net.sum() / 1e6).round(1)
+    got = {}
+    for (c, q), v in a.items():
+        got.setdefault(c, {})[q] = float(v)
+    same("Ask: water pumped by county and quarter", got, {c: {q: float(v) for q, v in d.items()}
+                                                         for c, d in F["ask_a"].items()})
     print("verify: %s" % ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
 

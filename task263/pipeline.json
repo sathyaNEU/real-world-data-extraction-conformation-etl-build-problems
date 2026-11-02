@@ -1,11 +1,11 @@
 {
  "task": "task263",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-11-01",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-02",
  "stump": "The default path funds 7 systems and stops at Nesvold with $672,000 left because it gives each well the average of the entry-point samples taken while it pumped, so a clean well that runs beside a well over the line takes on that well's water; solving every entry point's samples as a mass balance of its wells' own water leaves only the wells whose own water is over 4.0 ng/L, and the $36 million reaches 16 systems, stopping at Nordvold with $451,200 left.",
  "architecture": 1,
  "loops": 0,
@@ -15,21 +15,24 @@
  },
  "leak": {
   "leak_py": "REVIEW, no LEAK (--asof 2026-09-30, the reshipped cut c38b7092, 2026-11-01)",
-  "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed; wave 3 audit loop 3 clean on the re-cut pack and the reworded ask 6 (Q1 none, Q6 analytical, neither ask's device named); reship read 1 (first cut 81d61969) read the pump sentence the repair had put in the plan's 6.3 beside the own-water definition as a mild hint at the unmixing, so the fact moved to the inventory's own pump column and 6.3 went back to its shipped wording; reship read 2 (final cut c38b7092): no decisive-step sentence, no ranking, Q6 an analytical choice, the hint it names is the single-well route (the default path's), the pump column unremarked"
+  "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed; wave 3 audit loop 3 clean on the re-cut pack and the reworded ask 6 (Q1 none, Q6 analytical, neither ask's device named); reship read 1 (first cut 81d61969) read the pump sentence the repair had put in the plan's 6.3 beside the own-water definition as a mild hint at the unmixing, so the fact moved to the inventory's own pump column and 6.3 went back to its shipped wording; reship read 2 (final cut c38b7092): no decisive-step sentence, no ranking, Q6 an analytical choice, the hint it names is the single-well route (the default path's), the pump column unremarked",
+  "reader_2026_11_02": "ask-rework read on 2c87c47f (the prompt and every document unchanged since, so no re-read on 7a18885f): questions 1 to 4 none; question 6 an analytical choice, each well's own water recovered from entry-point samples; on the water ask no shipped sentence or column says a well discharges through another's wellhouse (the device silent), the common discharge headers stated in the register as written; realism notes recorded"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g vs task152 answered; repeat.deliverables vs task189 answered)",
   "nearest": "task234 0.08, task181 v1 lineage 0.08",
-  "heart_2026_11_01": "BLOCK, read against the dates as H27 artifacts: test.same_puzzle_older against task269 v3 (drawn 2026-10-19) and task279 (drawn 2026-10-24), test.same_driver_older against task279, all drawn after this build's 2026-10-16 draw; task279's card already differentiates against task263. Surface exit 0, 8 pairs promoted on card and surface axes at the corpus floor."
+  "heart_2026_11_01": "BLOCK, read against the dates as H27 artifacts: test.same_puzzle_older against task269 v3 (drawn 2026-10-19) and task279 (drawn 2026-10-24), test.same_driver_older against task279, all drawn after this build's 2026-10-16 draw; task279's card already differentiates against task263. Surface exit 0, 8 pairs promoted on card and surface axes at the corpus floor.",
+  "heart_2026_11_02": "BLOCK read against the dates: the items recorded 2026-11-01, against task269 v3 and task279, both drawn after this build (H27); surface exit 0"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (r1); wave 3 audit pass 2 DETERMINISTIC (the re-cut Ask B reproduced); reship pass 3 DETERMINISTIC (2026-11-01, the final cut c38b7092)",
+  "verdict": "DETERMINISTIC (pass 5)",
   "disposition": "APPROVE",
-  "report": "task263/determinism_check_report.md, task263/determinism_check_report_pass2.md, task263/determinism_check_report_pass3.md (reship)",
-  "gate_g": "method_or_model_selection, analytical_non_defect",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "pass2": "APPROVE; soft readings the renumbering resolved by name, the county people are counted in, the emergency well; its optional tightening (people living in the county) taken into the prompt after the verdict, no graded figure moved",
-  "pass3": "2026-11-01 on the reshipped cut c38b70927ef7065db923fe1d22411dca: DETERMINISTIC, APPROVE; Gate G decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; 16 systems, Nordvold, USD 451,200 reproduce, 23 of 53 wells under every non-detect, revision, confirmation and weighting variant; nothing the removed notes carried opens a second figure (capacity weighting derivable from the entry-point flow, 0.95 to 1.06 of the running wells' capacities on all 393 records); Kesselring's emergency Well 3 and the inactive buyer ids each closed to one figure. The thread on the first reship cut (81d61969) was stopped before it wrote."
+  "report": "task263/determinism_check_report_pass5.md",
+  "pass3": "DETERMINISTIC, APPROVE (task263/determinism_check_report_pass3.md, the leak reship's cut c38b7092)",
+  "pass4": "NOT_DETERMINISTIC on the water ask only, SEND_BACK (task263/determinism_check_report_pass4.md, on 2c87c47f): the second wells' water was inside their hosts' lines every month while the pump evidence showed it only in their lead months, so netting only those months was a second reading (1.0 to 6.5 million gallons off in every cell); the main call forced",
+  "pass5": "DETERMINISTIC, APPROVE on 7a18885f: every graded figure reproduced; netting the second well in every month it runs, netting only where a line is beyond its pump and leaving the second well's own line out all file the golden in all 16 cells; each line as written double counts (14 to 77 high); residual risk recorded: the emergency well's 0.8 million gallons in Hedstrom Q3 (the prompt's 'wells', with no 'active', includes it; excluding it gives 262.9 against 263.7)",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical (the easy route, entry-point averaging, reaches 6 systems against 16)"
  },
  "returned": [
   {
@@ -38,9 +41,25 @@
    "repair": "leak",
    "move": "The generator no longer writes data_request_notes_2026-09-02.txt (the department's covering notes naming each file's columns, codes and row counts) or the source facility inventory's Notes sheet (glosses of rated_capacity_gpm, entry_point and status, with the pump fact). Against the judged pack: 9 files byte-identical; the inventory's Facilities sheet identical but for a new pump column beside rated_capacity_gpm; the federal survey identical but for its own Units column; the plan identical but for its note under Table 6-1; the goldens and figures.json byte-identical. Provenance (each file's source system, extraction or issue date and rows) moved to metadata.json through common.PROVENANCE, which checks.py also uses to assert no file carries a date past its extraction. SF16's pump fact is carried by the producing system: the inventory's own pump column reads \"Vertical turbine, constant speed\" (37 wells) or \"Submersible, constant speed\" (183 wells) and is blank on the two surface water plants and the interconnection, the pump type drawn on its own stream so no other value moves; with the entry-point flow on every listed record within 7 per cent of the running wells' rated capacities (median gap 1.2 per cent, largest 6.0, 393 records) it closes the monthly-volume reading's 11 systems. This reship's first cut (81d61969) filed the fact as a last sentence of the plan's 6.3, where the stage 4 leak reader read it beside the own-water definition as a hint; 6.3 is back to its shipped wording. Ask B's counting rule, the referee and not a device, is filed once in the plan's note under Table 6-1: \"Population served is the number of people a system serves directly, as the department's system register records it on 1 September 2026; a system that sells water to another counts only its own customers.\" The federal survey carries its own Units column in micrograms per litre (closure 18). Everything else the two files said (sample types, non-detects, revisions, date formats, meter and connection glosses) is carried by the sampling guide or the systems' own columns and labels, asserted to agree; the asks' devices stay unstated. checks.py asserts no shipped file or sheet describes the data by name (leak.py's own patterns plus a notes token, positive-controlled on the two old names) and by content (positive-controlled on the records' header); the pump fact filed once, in that column, read through the verifier's own xlsx reader, and absent from the plan under pdftotext and pypdf; the flow convergence through the verifier's readers; the counting rule through both extractors. Gates: checks 120, verify PASS, two builds byte-identical, freeze determinism PASS, figures.json unchanged, figures_check 61 of 61, precut exit 0 (61 checks, 0 FAIL, 8 WARN), voice-check PASS, leak.py --asof 2026-09-30 REVIEW with no LEAK, guard surface exit 0, cracker 0 of 8 ask figures (pair ceiling 31.0). Documents changed: the plan (its note under Table 6-1); the leak reader and the judge are re-run by the main thread. Stage 4: the first cut's leak read moved the pump fact from the plan to the inventory (above); on the final cut the leak read is clean and judge pass 3 returned DETERMINISTIC, APPROVE, Gate H decisive step analytical.",
    "commit": "RESHIPPED (task263)"
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house honest-cracker audit (ask_audit_2026_11_01, SPENT on Asks A and B, the careful solver keeping 8 of 8)",
+   "repair": "rubric",
+   "move": "Ask A re-sited and widened to each county by quarter of 2025 (16 figures); Ask B (people) cut. The device: at one listed system in each county (Torvik, Halvorsen, Lindvik Lake, Elvholm Falls) a second well is piped into the first well's wellhouse ahead of its discharge meter and keeps its own meter, the register links each meter to its one facility at the wellhouse discharge, and the operator writes each meter on its facility's line, so the second well's water is on both lines; only the pumps show it (every month the second well leads, the wellhouse line carries 1.4 to 6.0 times what its constant-speed pump delivers at rated capacity in its days in service; net of the second well it stays within 0.88; no other listed line passes 0.89). Over-cleaning half: a third, separately metered well at each wellhouse entry point. Skogen's announced header stays as a hazard; the register and the connections ship as distractors. Every file the call reads is byte-identical to c38b7092 (asserted by md5); only the operating reports and the meter register moved, with the prompt's ask sentence and its closing rounding sentence. Two small systems' demand raised 0.2 per cent for the rounding margin (every county-quarter at least 0.12 of a step from an edge). The call's SF16 rival now files 14 systems as the reports write the meters (12 on each well's own volume), still ruled out. ceiling.py replaces cracker.py: the careful solver's battery runs clean and keeps 0 of 16, mirror 0.0 per cent, pair 31.0, the full includer exact.",
+   "md5": "c38b70927ef7065db923fe1d22411dca to 2c87c47f08be016430c82fed5ccc13ad",
+   "commit": "none yet: the main thread runs stage 4 (the leak reader on the new copy and the judge, the ask's wording having changed) and commits RESHIPPED"
+  },
+  {
+   "date": "2026-11-02",
+   "portal": "none: in-house determinism judge pass 4 on the ask rework's cut (SEND_BACK on the water ask: the piped wells' water outside their lead months had no evidence in the rows)",
+   "repair": "determinism",
+   "move": "Closed in the operating reports alone, no call file, document or prompt touched: each piped-in well runs only as its month's lead (valved out of the rotation otherwise; the samplers' one sighting at Lindvik Lake in January kept as a half-hour run), so its water sits in its host's line only where the line is beyond its pump and every netting reading files the golden (checks.py asserts it). The 16 water figures moved with it; ceiling.py: the cracker 0 of 16, pair 31.0. Re-judged once (pass 5): DETERMINISTIC, APPROVE.",
+   "md5": "7a18885f5f63334818699b3ce753f30a",
+   "commit": ""
   }
  ],
- "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 8 of 8 against the recorded 0 of 8, SPENT on Asks A and B, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
@@ -48,19 +67,19 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "analytical_tasks/03_descriptive_distribution/DA13_pfas-design-grants-blend-down-source-sets.md (header and Situation only)",
- "target_zip_md5": "c38b70927ef7065db923fe1d22411dca",
+ "target_zip_md5": "7a18885f5f63334818699b3ce753f30a",
  "gates": {
-  "checks": "120 assertions passed",
+  "checks": "125 assertions passed",
   "verify": "PASS",
-  "rebuild": "byte-identical, target.zip c38b70927ef7065db923fe1d22411dca twice",
-  "freeze": "determinism PASS",
-  "figures_check": "PASS, 61 figures",
-  "precut": "61 checks, 0 FAIL, 8 WARN",
-  "voice_check": "PASS",
-  "leak_py": "REVIEW, no LEAK",
-  "cracker": "0 of 8 ask figures, pair ceiling 31.0",
+  "rebuild": "byte-identical, target.zip 2c87c47f08be016430c82fed5ccc13ad twice",
+  "freeze": "rubric PASS (24 ask figures moved, the xlsx answers block); determinism mode flags only the ask keys (ask_a, ask_b) and the xlsx answers block",
+  "figures_check": "PASS, 69 figures",
+  "precut": "61 checks, 1 FAIL, 0 WARN: the prompt gate's count rule on the frozen call sentence ('the twenty systems'), a FAIL while status is PAUSED and a WARN once SHIPPED, as on the shipped prompt",
+  "voice_check": "FAIL while PAUSED on the frozen call sentence's count only (WARN once SHIPPED); rounding once at the close; deliverable-set quota WARN",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-09-30)",
+  "cracker": "ceiling.py on target.zip: 0 of 16 ask figures, mirror 0.0 per cent, pair ceiling 31.0, two careful responses on the call 50.0, full includer exact",
   "surface": "exit 0",
-  "heart": "BLOCK read against the dates (duplicate_check.heart_2026_11_01)"
+  "heart": "BLOCK, the corpus-window items of duplicate_check.heart_2026_11_01 unchanged (test.same_puzzle_older against task269 v3 and task279, test.same_driver_older against task279, both drawn after this build's draw); for the main thread"
  },
  "ask_audit_2026_11_01": {
   "verdict": "SPENT on Asks A and B",
@@ -68,6 +87,7 @@
   "pair": "58.5 with the mirror held at 0 (83.5 with the mirror on the honest route)",
   "why": "Ask A the paired wells' identical meter lines and the register's common discharge header; Ask B the inactive buyer rows with an active row of the same name and county",
   "probe": "scratchpad audit_cracker/task263/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
-  "status_before": "SHIPPED"
+  "status_before": "SHIPPED",
+  "resolution": "2026-11-02 rubric rework: both spent devices replaced (Ask A re-sited onto wellhouse meters carrying a second well, found only by the pumps; Ask B cut), measured by generator/ceiling.py on target.zip 2c87c47f: the careful-solver cracker keeps 0 of 16, pair 31.0"
  }
 }

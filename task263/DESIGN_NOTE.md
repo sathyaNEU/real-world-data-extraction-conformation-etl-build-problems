@@ -62,6 +62,16 @@ No decoy: nothing is planted; no memo, draft, published figure or staff note arg
 No certified replay: the method is not recovered by reproducing a published figure; no file publishes a well's own level, a share or a grant.
 Lesson: a sample taken where sources mix measures the mixture, and a source's own level comes from solving the mixtures together with their proportions; attributing a mixture's level to every source in it, even weighted by share, is what the field's mass balance replaces, and no build on file inverts measured mixtures into their sources.
 
+## Survivor anatomy
+
+Actor: each listed well's own PFOA and PFOS has no column in any file; the results hold entry-point blends and the records the wells pumping, so the deciding property is a relation across each entry point's samples that nothing stores (R1, asserted).
+Link: the signal is read through each entry point's samples solved together, the pumping wells' rated capacities as the mixing proportions; no key joins a sample to a well's own level and no shipped sentence says a sample is a sum of its sources (R3c, asserted).
+Reflex: the field's reflex, crediting each well with the samples taken while it pumped (the average of the samples it ran in), is rung 0 and files 7 systems stopping at Nesvold, the Ends on line, not the golden 16.
+Back-test: the easy route validates on the pack: every well R0 puts over the line stands at an entry point with a result over 4.0 (asserted), and no file publishes a well's own level that could refute it.
+Second use: every file the decisive step reads has its own use in the pack (the state's compliance export, the samplers' forms, the facility inventory, the grant rules), and deleting the step leaves every one of them.
+Shock: the wells the mass balance moves are ordinary clean wells pumping beside a contaminated lead; on no sort of the active wells by a shipped statistic (the mean, median, highest or lowest of the samples each ran in, or rated capacity) are the golden's 23 the top 23 (asserted).
+Pins: the plan files the WHAT (a well's own water averaged over 2024 and 2025, the rate, the cap, the order) and no filed sentence names a mixture, a balance, a share, the rotation or the sampling clock the stump rides on.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -90,7 +100,7 @@ Lesson: a sample taken where sources mix measures the mixture, and a source's ow
 | SF13 | left | $36 million less the grants made | none | same call | the plan |
 | SF14 | non-detects | half the reporting limit | zero; the reporting limit | same call | asserted: same call and same wells at every substitution |
 | SF15 | quality-control samples and reissued reports | blanks and duplicates set aside, the latest revision | duplicates kept; blanks kept as zero; both revisions kept | same call | the guide's sample types and revision rule; asserted: same call |
-| SF16 | the mixing proportions | each pumping well's rated capacity over the sum | the entry-point flow shared by capacity; equal shares; each well's 2025 monthly pumped volume | same call; same call; 11 systems | asserted: same wells under the first two; the monthly volumes are ruled out by the inventory's own pump column beside rated capacity (every well "Vertical turbine, constant speed" or "Submersible, constant speed", so a well pumps at its rated capacity whenever it runs; filed once, read through the verifier's xlsx reader) and by the entry-point flow on every listed record, within 7 per cent of the running wells' rated capacities (median gap 1.2 per cent, largest 6.0; the verifier's readers) |
+| SF16 | the mixing proportions | each pumping well's rated capacity over the sum | the entry-point flow shared by capacity; equal shares; each well's 2025 monthly pumped volume | same call; same call; 14 systems as the operating reports write the meters (12 on each well's own volume, the wellhouse lines net of the wells piped into them) | asserted: same wells under the first two; the monthly volumes are ruled out by the inventory's own pump column beside rated capacity (every well "Vertical turbine, constant speed" or "Submersible, constant speed", so a well pumps at its rated capacity whenever it runs; filed once, read through the verifier's xlsx reader) and by the entry-point flow on every listed record, within 7 per cent of the running wells' rated capacities (median gap 1.2 per cent, largest 6.0; the verifier's readers) |
 | SF17 | sources not recorded | those samples left out | the wells inferred from the entry-point flow | same call | asserted: same call |
 
 ## Ladder
@@ -141,9 +151,9 @@ Values on the built pack (analysis.py; asserted in checks.py, recomputed in veri
 | 16 | Identity normalisation | the state sample number joins results and collection records; the sampler's text parses to well numbers | by construction; SF17 |
 | 17 | Netting against gross | none | n/a |
 | 18 | Dimensional units | ng/L in the state's export (the 2023 national survey's micrograms per litre is a distractor); gallons a minute to MGD | the producing systems' own units columns (the export's ng/L, the survey's own Units column in micrograms per litre, asserted); SF8 |
-| 19 | Code and status semantics | sample types, revision numbers, facility statuses; for the asks, facility types, meters, connection types | the guide (sample types, revisions), the plan (the active wells are those the inventory lists as active) and the systems' own labels (Active, Emergency, Inactive; Well, Interconnection; each meter's facilities and location; Full purchase, Emergency, the end date and the register's primary source, asserted to agree); never the stump |
-| 20 | Integerisation | dollars whole; people whole; water to a tenth of a million gallons | prompt |
-| 21 | Clause scope | section 6 of the plan governs the call; the operating reports and the register govern the asks | filed |
+| 19 | Code and status semantics | sample types, revision numbers, facility statuses; for the ask, facility types and meters | the guide (sample types, revisions), the plan (the active wells are those the inventory lists as active) and the systems' own labels (Active, Emergency, Inactive; Well, Interconnection; each meter's registered facility and location); never the stump |
+| 20 | Integerisation | dollars whole; water to a tenth of a million gallons | prompt |
+| 21 | Clause scope | section 6 of the plan governs the call; the operating reports and the meter register carry the ask, by Table 6-1's county and the quarter of the report month | filed (the prompt, the plan's Table 6-1) |
 | 22 | Forward window contents | the 2027 grants rest on the 2024 and 2025 samples, the two complete years the department reviewed | filed (the plan) |
 
 ## Literal reader
@@ -159,38 +169,72 @@ mixtures', so the readings that differ (SF2, SF7, SF11) each violate a quoted se
 
 none for the call: no file publishes a well's own level, a mixing proportion, a grant or a reach; the national survey
 (2023, distractor) holds older entry-point blends in micrograms per litre with no sources in service, so it confirms no
-well. For the asks, the meter register ties each shared meter's readings to its wells under every handling, and the
-register's population counts each system's own customers only.
+well. For the ask, no file publishes a county's, a system's or a well's 2025 water; the referee is the pumps (the
+inventory's rated capacity and constant-speed pump column against each line's days in service), never a total the
+answer inverts from.
 
 ## Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A, for each county, how much water the listed systems' wells pumped in 2025, in million gallons to one decimal | 4 | each listed system's 2025 production, a measure every candidate carries that the call does not turn on | the board's view of the water the list's wells deliver | D6: where two wells discharge to one header and share a meter, the operator writes the meter's readings and gallons on both wells' lines (Lindvik Lake, Halvorsen, Skogen, Elvholm Falls, one in each county, and three systems off the list); the meter register lists both facilities on the one meter | H1 (D5): Ackerholt Creek's emergency interconnect, purchased water on its own line in September; H2: Fjelstad's Well 2 meter changed out in June (the readings restart, the gallons are right); H3: Kesselring's emergency well ran three days in July (it is a listed system's well that pumped) | the operating reports (pws_id, report_month, facility_id, meter_start, meter_end, volume_gal), the meter register (meter_id, facility_ids, removed), the inventory (facility_type, status), the plan's Table 6-1 (county); 4 files, 10 columns | every row: over by 136.3 to 322.6 million gallons a county; wells only, each row: the same; active wells only: Hedstrom 912.7 against 913.5 once the meter is right; readings in place of gallons: Granlund 1,135.2 against 1,342.9 | a common discharge meter written on each well's line is what a monthly operating report form produces |
-| B, for each county, how many people living in the county get their water from any of the listed systems' wells | 4 | each listed system's reach, a measure every candidate carries that the call does not turn on | the board's view of the people the list's wells serve | D7, a retired id on the chain (silent): one buyer in each county (Fjelstad Junction, Halvorsen Township, Torvik East, Wikstrom Heights) took a new PWS id when it changed hands, and the register keeps the old id as an inactive system of the same name and county at the population last reported under it while every wholesale connection still carries the old id, so the chain lands on the inactive row; found only by an in-service purchase to an inactive system. Under it, D7 and D5: systems that buy all their water from a listed system and systems that buy from those buyers (Tamsholt to Oakmere, Halvorsen Township to Haldorsen Estates, Hedstrom Rural to Stensrud and Gunderholm, Fjelstad Junction to Lundquist), the chain only in the connections file | H4: an emergency tie (Solberg Lake to Elvholm Falls) and a purchase that ended on 30 June 2025 (Hagestad Corners from Ackerholt Creek); H5: buyers living in another county than their seller (Arneberg, Gunderholm, Oakmere); the closed systems the register keeps, none matching an active name | the register (pws_id, system_name, county, population_served, status), the wholesale connections (buyer_pws_id, seller_pws_id, connection_type, in_service_to), Table 6-1; 3 files, 9 columns | listed systems only: under by 586 to 3,871 a county; buyers one step out: under by 246 to 778; the chains with each id's register row as found (the cracker): under by 51 to 297 in every county; the chains with inactive ids left out: under by 318 to 1,436; every tie followed with no regard to type or end date: Granlund over by 846, Sandholm by 1,271 | a system renumbered on a change of owner, its old id kept as inactive, consecutive systems buying from a buyer, emergency ties and ended purchases are what a state's system register holds |
+| A, for each county, how much water the listed systems' wells pumped in each quarter of 2025, in million gallons to one decimal | 16 (four counties by four quarters) | each listed system's 2025 production through the year, a measure every candidate carries that the call does not turn on | the board's view of the water the list's wells deliver, the summer quarter the treatment has to carry | a wellhouse meter that also carries a second well's water, a cardinality judged across two systems by the pumps: at Torvik (Hedstrom), Halvorsen (Engvall), Lindvik Lake (Granlund) and Elvholm Falls (Sandholm) a second well is piped into the first well's wellhouse ahead of its discharge meter and keeps its own meter at its pump; the register links each meter to the one facility it is registered to, at the wellhouse discharge like every other well meter, and the operator writes each meter on its facility's line, so the second well's water is on both lines; no field, location or note says so, the two lines never match in readings or gallons, and only the pumps show it | H1: Ackerholt Creek's September emergency purchase on its interconnection's line (not a well); H2: Fjelstad's Well 2 meter changed out in June (the readings restart, the gallons are right); H3: Kesselring's emergency well ran three days in July (a listed system's well that pumped); H4: Skogen's two wells on one header meter the register lists on both, its readings written on both lines (each meter once) | the operating reports (pws_id, report_month, facility_id, meter_start, meter_end, volume_gal, days_in_service), the meter register (facility_ids, location, removed), the inventory (facility_type, status, entry_point, rated_capacity_gpm, pump), the plan's Table 6-1 (county); 4 files, 15 columns | every line: over by 14.9 to 78.4 million gallons a county-quarter; each meter once (the careful route): over by 14.9 to 77.8; the second well taken off only where a line is beyond its pump: over by 0.6 to 7.9; only the overloaded well's line at its entry point: under by 5.1 to 41.3; active wells only: Hedstrom July to September under by 0.8; readings for gallons: Granlund April to June under by 207.7 | a newer well piped into an older wellhouse to share its chlorination and discharge meter, a register carrying one facility per meter and an operator reporting each meter on its facility's line are what a monthly operating report and a facility inventory produce |
 | C, the chart | its parts | the construction | the call's own exhibit | none | none | the golden's well levels | R0 to R3 | the analyst's own exhibit |
 
+- **The device's forcing (checks.py, on the shipped rows).** In every month the second well leads, the wellhouse line
+  carries more than its own constant-speed pump delivers at its rated capacity in its days in service, 1.4 to 6.0
+  times, in at least one month of every quarter at each wellhouse and twice or more in at least two months; net of the
+  second well's own line it stays within 0.88 of its pump in every month; every other listed well line stays at or
+  under 0.89 of its pump; the pump physics read from the rows finds exactly these four wellhouse meters and, at each,
+  exactly one well that brings it within its pump (every other well at the entry point leaves it 4.2 times or more
+  beyond).
+- **Over-cleaning half.** Each wellhouse entry point has a third, separately metered well (Torvik's Wells 3 and 4,
+  Halvorsen's Well 3, Lindvik Lake's Well 3, Elvholm Falls' Well 1). Taking every other well at the entry point off the
+  overloaded line, or keeping only that line, undercounts every county-quarter by 4.7 to 40.9 million gallons. The
+  second well runs only in the months it leads (bar one sampler's visit at Lindvik Lake, half an hour), so taking it
+  off only in the months its line is beyond the pump files the golden: the piping's evidence and its effect coincide.
+- **Pin test.** The asking sentence pins the population (the listed systems' wells), the grain (Table 6-1's county by
+  calendar quarter of 2025), the unit and rounding (million gallons to one decimal, in the closing sentence); the
+  device sits in the one dimension the pins leave open, which lines carry a well's own water, and no filed sentence
+  names a meter, a wellhouse, a header or a pump's limit.
 - **Main population zero-counts.** No ask device or hazard sits in the twenty systems' 2024 and 2025 PFOA and PFOS
-  samples, their collection records, their active wells' inventory rows or section 6 of the plan: the call computed
-  with the operating reports, meter register, register and connections deleted equals the golden (asserted).
-- **Hazard table.** H1 moves Granlund in A; H2 moves Granlund for a path reading meter readings; H3 moves Hedstrom for a path
-  keeping active wells only; H4 moves Granlund and Sandholm in B for a path following every tie; H5 moves Hedstrom, Sandholm and
-  Engvall for a path placing buyers in their seller's county, closed by the ask's "people living in the county".
-- **Referee.** The plan's note under Table 6-1 files the counting rule for B once (a system's population counts its own
-  customers; a seller counts only its own), asserted through both extractors, and the register's populations agree
-  (between 2.2 and 2.8 people a service connection for every seller and buyer, asserted); the inventory's own facility
-  types carry A; no file says which meters are shared on the reports or which buyers sell on.
+  samples, their collection records, their active wells' inventory rows or section 6 of the plan: every file the call
+  reads is byte-identical to the shipped cut c38b7092 (asserted by md5), and the call computed with the operating
+  reports and the meter register deleted equals the golden (asserted).
+- **Hazard table.** H1 moves Granlund July to September by 2.6 for a path keeping the purchase; H2 moves Granlund April
+  to June by 207.7 for a path reading the meter readings; H3 moves Hedstrom July to September by 0.8 for a path keeping
+  active wells only; H4 moves Hedstrom by 35.2 to 50.1 in every quarter for a path counting the header meter on both
+  lines.
+- **Referee.** The pumps: the inventory's rated capacity and its pump column (every well on a constant-speed drive)
+  against each line's days in service, never a total the answer inverts from; no file publishes a county's, a
+  system's or a well's 2025 water.
+- **Ask B is cut** (the people living in each county who get their water from the listed wells): its renumbered buyer
+  was spent by the register's twin of the same name and county, and no people device in the register and the
+  connections passes both tests (Tried and rejected); the two files ship as distractors, named in metadata.json.
+- **One primary family.** A response that models every pump keeps the ask; the ceiling prints that case (pair 58.5 if
+  the cracker alone does it, 86.0 if both responses do) and no second family on these rows passed both tests.
 
-| Ask figures | Cracker's path | Cracker's value | Verdict |
+| Rival reading (a careful judge's) | County-quarter figures | Verdict |
+|---|---|---|
+| the second well's own line left out instead of taken off the wellhouse line | the golden in every county-quarter | same |
+| the second well found from the rows as the one well at the entry point that brings the wellhouse line within its pump every month | the golden; one well fits at each wellhouse (asserted) | same |
+| the second well taken off only in the months the wellhouse line is beyond its pump | the golden in every county-quarter | same: the second well runs only in the months it leads, and in each of them its host's line is beyond the pump (asserted) |
+| every other well at the entry point taken off, or only the overloaded line kept | 4.7 to 40.9 low in every county-quarter | ruled out: the third well brings no wellhouse line within its pump (asserted), so it is not inside the meter |
+| the lines as written, each register meter once a month | 14.0 to 76.7 high in every county-quarter | ruled out: four wellhouse lines carry more than their pumps can deliver |
+| the wellhouse well's rated capacity understated | n/a | ruled out: the entry-point flow on every listed record matches the running wells' rated capacities within 7 per cent (SF16), and the excess comes only in the months the second well leads |
+| active wells only | Hedstrom July to September 0.8 low | ruled out: the emergency well is a listed system's well and pumped three days |
+| the meter readings in place of the gallons | Granlund April to June 207.7 low | ruled out: the readings restart at the June meter change the register records; volume_gal is the gallons |
+| the interconnection's purchase in | Granlund July to September 2.6 high | ruled out: purchased water, the inventory's Interconnection, not a well |
+
+| Ask figures | Cracker's path (the careful solver: lands the call, runs the battery, reads every field by its plain meaning, executes every filed rule) | Cracker's value | Verdict |
 |---|---|---|---|
-| A pumpage (4) | the operating reports' gallons for the listed systems' wells, facility types from the inventory, summed by county | over by 136.3 to 322.6 million gallons in every county (the shared meters counted on both wells) | miss |
-| B people (4) | the listed systems and every system buying all its water from them, directly or through another buyer, on the full purchases in service, each system's register row as the connection's id finds it, by the county it serves | under by 51 to 297 in every county (the renumbered buyers at their old ids' populations) | miss |
+| A water by county and quarter (16) | the operating reports' gallons for the listed systems' wells (facility types from the inventory, the emergency well that ran in, the interconnection out), each register meter once a month (Skogen's header), the battery clean (no exact or near-exact duplicate off the header, no equal gallons, no roll-up, readings continuous, units gallons by magnitude, every listed well twelve lines), by Table 6-1's county and the report month's quarter | over by 14.9 to 77.8 million gallons in every county-quarter (the four second wells' water on both lines) | miss |
 
-Mirror leakage: 0 per cent of the ask weight: the mirror (R0) takes A and B the cracker's way and misses all 8; it
-keeps only the chart's format parts where it draws the chart.
-Pair ceiling: 31.0 (the cracker 50 with the call, its components and the chart; the mirror 12).
-Measured by: `generator/cracker.py`, run on the cut pack after every change (checks.py runs it and asserts it): the
-cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
+Mirror leakage: 0.0 per cent of the ask weight: the mirror (R0) takes the ask the cracker's way and misses all 16.
+Pair ceiling: 31.0 on the cut pack (the cracker 50.0 with the call, its components and the chart; the mirror 12.0);
+two careful responses on the call 50.0 each; 58.5 if the cracker alone models every pump.
+Measured by: `generator/ceiling.py`, run on target.zip after every change (checks.py runs its scoring on the cut
+folder and asserts it): the careful-solver cracker keeps 0 of 16 ask figures, the mirror the same, the full includer
+(the golden's own route) reproduces figures.json.
 
 ## Build record
 
@@ -264,6 +308,23 @@ cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
     sentence, frozen in a determinism-scope repair; for the main thread.
   - 11, the shell quota ("give", png+xlsx): predates this repair, a corpus quota WARN; for the main thread.
 
+- **Ask rework (2026-11-02, rubric scope, the call frozen).** The honest-cracker audit's two spent devices are gone:
+  the four listed shared header meters (identical lines on both wells) became four wellhouse meters that also carry a
+  second well piped in ahead of them, each second well keeping its own meter (world.py NESTED, records.py meters and
+  write_mor), and Skogen's header stays as an announced hazard; Ask A moved from county totals to county by quarter
+  (16 figures); Ask B (people) is cut and the system register and the wholesale connections ship as distractors. Two
+  small systems' 2025 demand was raised 0.2 per cent (DEMAND_ADJ, Dalrud and Ekholm) so every county-quarter sits at
+  least 0.12 of a rounding step from an edge. Every file the call reads is byte-identical to the shipped cut c38b7092
+  (asserted by md5); only the operating reports and the meter register moved, with the prompt's ask sentence and its
+  closing rounding sentence. The call's SF16 rival (the 2025 monthly volumes as mixing proportions) now files 14
+  systems as the reports write the meters (12 on each well's own volume), still ruled out by the pump column and the
+  entry-point flows. ceiling.py replaces cracker.py: the careful solver's battery runs clean and keeps 0 of 16, the
+  mirror 0, pair 31.0, the full includer exact. Found while writing the survivor anatomy, for the main thread and
+  outside this repair's scope: crediting a well as over the line only when even its lowest sample is over (the lowest
+  sample it ran in) files 16 systems and leaves $451,200, every one of the 16 grants the golden's, and stops at
+  Glomstad rather than Nordvold (it misses Nordvold's and Ekholm's Well 2 and adds Halvorsen's Well 3); the ladder
+  does not list it.
+
 ## Pre-ship check
 
 - **Rule 1, the domain, on the built pack.** The call is decided by each listed well's own PFOA and PFOS, recovered
@@ -286,8 +347,9 @@ cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
   shares, every non-detect substitution, routine samples alone, duplicates or blanks kept, both report revisions
   kept, 2026 added and blank records inferred from the entry-point flow all flag the same 23 wells (the nearest
   1.61 ng/L from the line) and the same walk; skipping Nordvold changes nothing (no later grant fits $451,200);
-  every grant is exact to the dollar; each county's water sits at least 0.13 of a rounding step from an edge and
-  people are counted whole; the cracker's path misses all eight county figures (asserted).
+  every grant is exact to the dollar; every county-quarter water figure sits at least 0.12 of a rounding step from an
+  edge; the careful solver's route misses all sixteen county-quarter figures by ten or more rounding steps, and the
+  second well's own line left out gives the golden as taken off the wellhouse line (asserted; ceiling.py on the cut).
 
 ## Tried and rejected
 
@@ -307,3 +369,24 @@ cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
 - 2026-11-01, in-house re-check under the new leak gate: the department's covering notes (`data_request_notes_2026-09-02.txt`, each file's columns, codes and row counts; LEAK, 12 of the results export's columns named) and the inventory's Notes sheet (glosses of rated_capacity_gpm, entry_point and status, and the pump fact) shipped through wave 3 and describe the data. Replaced by metadata.json for provenance, by the plan for the two facts the build needs (6.3's pump fact closing SF16, the note under Table 6-1's counting rule as Ask B's referee), by the survey's own Units column for closure 18, and by the guide and the systems' own columns and labels for the rest; the asks' devices stay unstated.
 - 2026-11-01, this reship's first cut (target.zip 81d61969): the pump fact filed as the last sentence of the plan's 6.3 ("Well pumps in the state's community systems are constant-speed: a well pumps at its rated capacity whenever it runs.") sat beside the own-water definition, and the stage 4 leak reader read the two together as a hint at the step the call turns on (recovering each well's own water from the entry-point samples); the sentence left the plan (6.3 reads as shipped) and the fact moved to the inventory's own pump column beside rated capacity, every well's pump on a constant-speed drive.
 - The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 8 of 8 against the recorded 0 of 8, SPENT on Asks A and B, pair 58.5 with the mirror held at 0 (83.5 with the mirror on the honest route); the reason in one line: Ask A the paired wells' identical meter lines and the register's common discharge header; Ask B the inactive buyer rows with an active row of the same name and county. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.
+
+- 2026-11-02, ask rework: Ask A's shared header meters (the same readings and gallons on both wells' lines, the
+  register listing both facilities on the meter) were executed by the careful solver's near-duplicate and
+  each-meter-once battery; replaced by wellhouse meters that also carry a second well's water, found only by the pumps
+  (Skogen's header kept as a hazard).
+- 2026-11-02, ask rework: Ask B's renumbered buyers (the old id inactive beside an active twin of the same name and
+  county) were re-keyed by the careful solver's name and county join; cut, with every people device screened as code:
+  a consecutive system on an emergency tie with no source (an anti-join of the register against the inventory finds
+  it), a stale full purchase whose buyer's own well came on (one county only can carry it, the inventory being the
+  call's and frozen, and a label check finds it), an emergency tie carrying a buyer's whole supply (2025 flows against
+  the 1 September 2026 register, a fork), a reseller's population holding its buyers' (against the plan's filed
+  counting rule, a fork), a buyer across two counties (an allocation, a fork), a buyer renumbered under a new name
+  (one system under two keys, the batch's closed re-keyed family).
+- 2026-11-02, ask rework, new ask-only records screened and dropped: sanitary-survey deficiencies (a system-wide
+  finding on every facility row is read off its element's plain meaning), wholesale bills in hundred cubic feet beside
+  thousand gallons (a contract-rate second explanation, and the unit family another build in this batch carries),
+  SCADA run hours for months a meter was out (the reconstruction forks at the rounding, and the blank volumes are an
+  anti-join), the 2023 federal survey's sample points placed by their PFAS profile (only 8 of 24 entry points move),
+  a PFAS mass inventory (it reads the call's construction), the 2026 design grants' amendments (the latest-version
+  rule executes them), PFAS monitoring violations (the results, a call file, yield them).
+- 2026-11-02, judge pass 4 on the ask rework (2c87c47f): the main call forced, the water ask SEND_BACK on one rival: the pump evidence showed the second well inside its host's line only in the 21 months it leads, so netting only those months (1.0 to 6.5 million gallons off in every cell) was as defensible as the golden's every month. Closed in the operations, no call file touched: the four piped wells run only as their month's lead (valved out of the rotation otherwise; the samplers' one sighting at Lindvik Lake in January kept as a half-hour run), so the evidence and the effect coincide and both readings file the golden (asserted). Filing which meters carry another well's water was rejected: it names the device. ceiling.py on 7a18885f: the cracker 0 of 16, pair 31.0.

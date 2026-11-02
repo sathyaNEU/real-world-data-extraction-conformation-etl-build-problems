@@ -72,9 +72,9 @@ FILES = {
     "survey": "national_pfas_survey_2023.csv",
     "private": "private_well_pfas_2024-2026.csv",
 }
-DISTRACTORS = ("survey", "private")
+DISTRACTORS = ("survey", "private", "register", "connections")
 CALL_FILES = ("results", "records", "inventory", "iup", "guide")
-ASK_FILES = ("mor", "meters", "register", "connections")
+ASK_FILES = ("mor", "meters")
 DELIVERABLES = ("pfas_design_grants_2027.xlsx", "well_pfas_2027.png")
 AS_OF = dt.date(2026, 9, 30)           # the pack's latest document, the draft plan
 
