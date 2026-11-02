@@ -1,10 +1,10 @@
 {
  "task": "task301",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "economics-econometrics",
  "objective": "opportunity-sizing-decision",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-02",
  "stump": "C (the Complemento's higher limit, about 11,900 children at the coverage rate) against the golden A (3,700): the families a limit rise newly entitles claim as the April 2024 band did, a steady 2 to 3 per cent a month, not at once and not as the launch's families did, each paid from the month after its decision",
  "architecture": 3,
@@ -14,22 +14,22 @@
   "date": "2026-11-02"
  },
  "leak": {
-  "leak_py": "REVIEW (2 lines, answered in the design note), 2026-11-02",
-  "reader": "clean on ae2a4182 (question 6 analytical); re-run due, the guidance changed"
+  "leak_py": "REVIEW ruled (2026-11-02, --asof 2026-11-06)",
+  "reader": "clean in both rounds (round 2 after guidance 3.9 was added); question 6 analytical each round; appended to task301/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "PASS 2026-11-02 (NOTEs differentiated)",
-  "nearest": "surface: 5 pairs promoted for adjudication (task302 same pairing back to back; task230, task131, task446, task183 on the time/G14/forecasting signature)"
+  "heart": "PASS 2026-11-02 at the ship gate",
+  "nearest": "surface promoted task302 (same pairing back to back, different task type and world) and task230, task131, task446 and task183 on the time/G14/forecasting signature; differentiation lines on the card"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK (underspecified_objective, Gates A, B, C; G and H PASS) on ae2a4182; repaired, awaiting the re-judge",
-  "report": ""
+  "verdict": "round 2 DETERMINISTIC, APPROVE (order kept; Gate F good; Gate G forecasting / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; round 1's main-call fork closed by filing which payments count at the WHAT level and widening the margin under every claim-pace estimator",
+  "report": "task301/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4 again: the determinism judge re-judges once and the leak reader re-reads (guidance 3.9 added); the main session commits",
+ "resume": "Shipped 2026-11-02 (architecture 3, Opportunity Sizing): measure A, the automatic tax-agency payment, brings 3,700 children above the line in 2027; target.zip 3ab80e13. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-02",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
