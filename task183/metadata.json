@@ -1,168 +1,142 @@
 {
-  "task": "task183",
-  "title": "The underground feeder for a 2027 cable program, with each feeder's RY2026 reliability indices",
-  "domain": "Energy Systems & Utilities",
-  "subdomain": "grid reliability and outage analysis (underground distribution cable failures and feeder reliability indices at a Pennsylvania electric utility)",
-  "objective": "Anomaly Detection & Diagnostics",
-  "prompt_shape": "01 (ranked list under a cap): the one feeder for the 2027 program, with every feeder's SAIFI, SAIDI and multiple-interruption count",
-  "as_of": "2026-10-06",
-  "deliverables": [
-    "cable_program_2027.xlsx",
-    "feeder_failures_2027.png"
-  ],
-  "distractor_files": [
-    "vault_manhole_inspections_2022-2026.csv",
-    "feeder_peak_loading_2021-2026.xlsx"
-  ],
-  "input_gates": {
-    "files": 14,
-    "formats": [
-      "csv",
-      "json",
-      "md",
-      "parquet",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "connectivity_meter_points.parquet",
-    "largest_file_rows": 37008
+ "task": "task183",
+ "title": "Which cash-intensive business customers of a regional Irish bank go to Financial Crime Investigations for cash lodged in 2025-26 beyond what their own trading took, with the year's post office agency and till service months",
+ "domain": "Banking, Credit & Financial Risk",
+ "subdomain": "fraud and anti-money-laundering detection (a fictional regional bank's annual review of its cash-intensive business customers)",
+ "objective": "Anomaly Detection & Diagnostics",
+ "prompt_shape": "01: the referral list under a line, each reviewed customer's figure charted, with two monthly tables",
+ "as_of": "2026-11-06",
+ "deliverables": [
+  "fci_referrals_jan2027.docx",
+  "cash_review_2026.xlsx"
+ ],
+ "largest_file": {
+  "path": "business_account_transactions_2025-01_2026-09.csv",
+  "rows": 66735
+ },
+ "distractors": [
+  {
+   "path": "retail_sales_index_2024-01_2026-09.csv",
+   "why": "a sector index of retail trade: relevant to whether the year's trading was ordinary, used by no figure"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task183/generator/build.py (seeded, deterministic) around a fictional electric utility (Tamsin Valley Electric), its fictional substations, feeders, customers and places in Pennsylvania; no real utility, person, account or asset is depicted.",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-11",
-  "generator": "task183/generator/build.py",
-  "files": [
-    {
-      "path": "2025_annual_reliability_report_sec6_ug_cable.pdf",
-      "format": "pdf",
-      "bytes": 65240,
-      "rows": null,
-      "source": "Constructed: 2025 annual reliability report, section 6 (underground cable)",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "TVE-RS-04_reliability_reporting_standard_rev6.pdf",
-      "format": "pdf",
-      "bytes": 64826,
-      "rows": null,
-      "source": "Constructed: Reliability reporting standard TVE-RS-04 revision 6",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "asset_analytics_extract_notes_2026-10.md",
-      "format": "md",
-      "bytes": 2619,
-      "rows": null,
-      "source": "Constructed: Asset analytics hand-off note for the extract: where each file came from and what to know reading it",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cis_service_accounts_20260930.csv",
-      "format": "csv",
-      "bytes": 2061550,
-      "rows": 28221,
-      "source": "Constructed: Customer information system: active service accounts at 30 September 2026",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "connectivity_meter_points.parquet",
-      "format": "parquet",
-      "bytes": 675902,
-      "rows": 37008,
-      "source": "Constructed: Network connectivity model: metered points to transformers, protective devices and feeders, dated rows",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "feeder_device_list.json",
-      "format": "json",
-      "bytes": 77678,
-      "rows": null,
-      "source": "Constructed: Network model protective device hierarchy: substations, banks, breakers, automated switches, fuses",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "feeder_peak_loading_2021-2026.xlsx",
-      "format": "xlsx",
-      "bytes": 21170,
-      "rows": null,
-      "source": "Constructed: SCADA feeder monthly peak loading, 2021 to 2026",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "gis_ug_primary_sections_20260930.xlsx",
-      "format": "xlsx",
-      "bytes": 193695,
-      "rows": null,
-      "source": "Constructed: GIS export: underground primary cable sections of the eight feeders, in service and retired, as of 30 September 2026",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "major_event_days_RY2021-RY2025.csv",
-      "format": "csv",
-      "bytes": 1751,
-      "rows": 31,
-      "source": "Constructed: Published major event days, reliability years 2021 to 2025",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "oms_outage_export_2020-10_2026-09.csv",
-      "format": "csv",
-      "bytes": 144593,
-      "rows": 1432,
-      "source": "Constructed: Outage management export (legacy OMS to 17 March 2026, ADMS after): one row per outage per feeder, October 2020 to September 2026",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "oms_restoration_steps_2020-10_2026-09.csv",
-      "format": "csv",
-      "bytes": 103765,
-      "rows": 1608,
-      "source": "Constructed: Outage management restoration steps for the same outages",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ug_cable_fault_work_orders_2012_2026.csv",
-      "format": "csv",
-      "bytes": 123504,
-      "rows": 1055,
-      "source": "Constructed: Work management system: cable fault work orders on the district's underground primary sections, January 2012 to 30 September 2026",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "vault_manhole_inspections_2022-2026.csv",
-      "format": "csv",
-      "bytes": 133929,
-      "rows": 1806,
-      "source": "Constructed: Manhole and vault inspection records, 2022 to 2026",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "wo_cause_repair_codes.csv",
-      "format": "csv",
-      "bytes": 752,
-      "rows": 10,
-      "source": "Constructed: Work order cause and repair codes and GIS status codes",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "path": "branch_cash_orders_2025-26.xlsx",
+   "why": "the branches' cash orders from the cash centre: relevant to the cash cycle, used by no figure"
+  },
+  {
+   "path": "an_post_office_list_2026-10.xlsx",
+   "why": "An Post's office list with types and hours: relevant to the post office channel, used by no figure"
+  }
+ ],
+ "files": [
+  {
+   "path": "an_post_agency_agreement_schedule_2_fees.pdf",
+   "format": "pdf",
+   "bytes": 41441,
+   "rows": null,
+   "source": "Constructed: Schedule 2 (fees) of the agency services agreement between An Post and the Bank",
+   "date": "2025-06-24",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "an_post_business_lodgements_2025-10_2026-09.csv",
+   "format": "csv",
+   "bytes": 709065,
+   "rows": 9082,
+   "source": "Constructed: An Post's export of the business lodgements its counters took for the Bank, October 2025 to September 2026",
+   "date": "2026-10-09",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "an_post_office_list_2026-10.xlsx",
+   "format": "xlsx",
+   "bytes": 7002,
+   "rows": 20,
+   "source": "Constructed: An Post's list of the post offices in the Bank's branch areas, with office type and opening hours",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "branch_cash_orders_2025-26.xlsx",
+   "format": "xlsx",
+   "bytes": 21019,
+   "rows": 424,
+   "source": "Constructed: The branches' weekly note and coin orders from the cash centre, 2025-26",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "business_account_transactions_2025-01_2026-09.csv",
+   "format": "csv",
+   "bytes": 7471845,
+   "rows": 66735,
+   "source": "Constructed: Core banking export of every posting on the reviewed customers' current accounts, January 2025 to September 2026",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "business_cash_review_standard_BCR-3.pdf",
+   "format": "pdf",
+   "bytes": 42665,
+   "rows": null,
+   "source": "Constructed: The Bank's Business Cash Review Standard BCR-3, issue 3",
+   "date": "2025-06-18",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cash_segment_review_list_2025-26.xlsx",
+   "format": "xlsx",
+   "bytes": 10022,
+   "rows": 48,
+   "source": "Constructed: Financial Crime Operations' cash-intensive segment review list for the review year 2025-26",
+   "date": "2025-10-01",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "merchant_register_2026-10.xlsx",
+   "format": "xlsx",
+   "bytes": 11677,
+   "rows": 81,
+   "source": "Constructed: Merchant register of the Bank's acquiring business, October 2026",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "merchant_services_daily_trade_2025-01_2026-09.csv",
+   "format": "csv",
+   "bytes": 2381240,
+   "rows": 43980,
+   "source": "Constructed: Merchant services daily trade by terminal for the reviewed customers and the till service's other customers, January 2025 to September 2026",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "retail_sales_index_2024-01_2026-09.csv",
+   "format": "csv",
+   "bytes": 9548,
+   "rows": 198,
+   "source": "Constructed: A monthly retail sales value and volume index by retail sector, January 2024 to September 2026",
+   "date": "2026-10-28",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "till_service_daily_totals_2025-01_2026-09.csv",
+   "format": "csv",
+   "bytes": 469626,
+   "rows": 6986,
+   "source": "Constructed: Till service daily totals for the reviewed customers on the Bank's till service, January 2025 to September 2026",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "till_service_z_report_log_2025-10_2026-10.csv",
+   "format": "csv",
+   "bytes": 705422,
+   "rows": 9271,
+   "source": "Constructed: The till service's central log of Z-reports received from every till-service customer, October 2025 to the October 2026 extract",
+   "date": "2026-10-14",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ],
+ "fictional": "Lough Ree Bank DAC, its customers, staff, accounts and records are invented; the towns, An Post and the Irish public holidays are real."
 }

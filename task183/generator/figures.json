@@ -1,70 +1,197 @@
 {
- "recommended_feeder": "Quarry Hill 21",
- "recommended_feeder_id": "QH21",
- "sections_twice_failed_in_service": {
-  "HR12": 0,
-  "HR14": 0,
-  "ML03": 0,
-  "ML07": 0,
-  "QH21": 17,
-  "QH22": 0,
-  "SP05": 0,
-  "SP09": 0
+ "an_post": {
+  "2025-10": {
+   "cash_eur": 1507545.73,
+   "fee_eur": 1876.85
+  },
+  "2025-11": {
+   "cash_eur": 1425294.83,
+   "fee_eur": 1778.54
+  },
+  "2025-12": {
+   "cash_eur": 1416027.52,
+   "fee_eur": 1778.25
+  },
+  "2026-01": {
+   "cash_eur": 1481013.8,
+   "fee_eur": 1851.54
+  },
+  "2026-02": {
+   "cash_eur": 1337503.58,
+   "fee_eur": 1653.83
+  },
+  "2026-03": {
+   "cash_eur": 1413914.83,
+   "fee_eur": 1770.11
+  },
+  "2026-04": {
+   "cash_eur": 1410976.98,
+   "fee_eur": 1785.39
+  },
+  "2026-05": {
+   "cash_eur": 1438140.78,
+   "fee_eur": 1796.19
+  },
+  "2026-06": {
+   "cash_eur": 1476062.06,
+   "fee_eur": 1819.78
+  },
+  "2026-07": {
+   "cash_eur": 1522007.65,
+   "fee_eur": 1909.32
+  },
+  "2026-08": {
+   "cash_eur": 1384580.71,
+   "fee_eur": 1753.25
+  },
+  "2026-09": {
+   "cash_eur": 1516109.13,
+   "fee_eur": 1890.65
+  }
  },
- "saifi_ry2026": {
-  "HR12": "1.40",
-  "HR14": "1.97",
-  "ML03": "1.73",
-  "ML07": "1.31",
-  "QH21": "1.58",
-  "QH22": "1.52",
-  "SP05": "2.23",
-  "SP09": "1.53"
- },
- "saidi_ry2026_min": {
-  "HR12": "71.3",
-  "HR14": "131.4",
-  "ML03": "88.2",
-  "ML07": "85.7",
-  "QH21": "92.4",
-  "QH22": "73.5",
-  "SP05": "139.7",
-  "SP09": "125.5"
- },
- "customers_4plus_ry2026": {
-  "HR12": 108,
-  "HR14": 1163,
-  "ML03": 445,
-  "ML07": 485,
-  "QH21": 262,
-  "QH22": 44,
-  "SP05": 1812,
-  "SP09": 65
- },
- "customers_served_2026_09_30": {
-  "HR12": 3878,
-  "HR14": 3105,
-  "ML03": 4168,
-  "ML07": 3971,
-  "QH21": 2781,
-  "QH22": 3306,
-  "SP05": 3650,
-  "SP09": 3362
- },
- "major_event_days_ry2026": [
-  "2026-01-25",
-  "2026-07-28"
+ "highest_other_eur": 1346,
+ "line_eur": 40000,
+ "not_referred": [
+  {
+   "customer": "BC-10444",
+   "name": "The Abbey Tea Rooms, Longford",
+   "times_trade_median": 2.6
+  },
+  {
+   "customer": "BC-10643",
+   "name": "Old Town Barber Shop, Roscommon",
+   "times_trade_median": 1.9
+  }
  ],
- "major_event_day_method": "2.5 beta (TVE-RS-04)",
- "feeder_names": [
-  "Harrow Road 12",
-  "Harrow Road 14",
-  "Mill Lane 3",
-  "Mill Lane 7",
-  "Quarry Hill 21",
-  "Quarry Hill 22",
-  "Sutter Park 5",
-  "Sutter Park 9"
+ "referrals": [
+  {
+   "account": "97-41-10 64725605",
+   "branch": "Athlone",
+   "customer": "BC-10896",
+   "fixed_per_lodgement_eur": 970,
+   "lodgements": 103,
+   "name": "Crystal Auto Spa, Athlone",
+   "own_ratio": 0.1,
+   "referral_cash_eur": 100000,
+   "trade": "Car wash / valeting",
+   "unexplained_eur": 99898.7
+  },
+  {
+   "account": "97-41-60 78856209",
+   "branch": "Tuam",
+   "customer": "BC-10731",
+   "fixed_per_lodgement_eur": 485,
+   "lodgements": 103,
+   "name": "Polished Nail Studio, Tuam",
+   "own_ratio": 0.07,
+   "referral_cash_eur": 50000,
+   "trade": "Nail and beauty salon",
+   "unexplained_eur": 49951.64
+  }
  ],
- "twice_failed_sections_location": "State Route 443"
+ "reviewed": {
+  "BC-10418": -1676.08,
+  "BC-10437": -4040.42,
+  "BC-10444": 395.29,
+  "BC-10457": -643.19,
+  "BC-10480": -5791.9,
+  "BC-10487": -773.04,
+  "BC-10504": -4351.81,
+  "BC-10515": -726.13,
+  "BC-10522": -148.69,
+  "BC-10533": 125.54,
+  "BC-10544": -8542.22,
+  "BC-10551": 1345.72,
+  "BC-10574": -751.86,
+  "BC-10587": -4332.56,
+  "BC-10600": 258.09,
+  "BC-10613": 397.8,
+  "BC-10626": 645.43,
+  "BC-10643": -1487.05,
+  "BC-10656": -3972.29,
+  "BC-10673": -3187.54,
+  "BC-10684": -1010.75,
+  "BC-10701": -1374.0,
+  "BC-10708": 434.26,
+  "BC-10731": 49951.64,
+  "BC-10754": -2325.15,
+  "BC-10773": -908.6,
+  "BC-10796": 387.53,
+  "BC-10813": -974.74,
+  "BC-10836": 1246.09,
+  "BC-10843": -2023.63,
+  "BC-10860": 432.16,
+  "BC-10877": -1324.51,
+  "BC-10896": 99898.7,
+  "BC-10913": -4984.74,
+  "BC-10924": -503.23,
+  "BC-10947": -2719.57,
+  "BC-10958": 528.27,
+  "BC-10975": -482.51,
+  "BC-10998": -1165.61,
+  "BC-11021": 227.12,
+  "BC-11044": -3335.95,
+  "BC-11063": 1282.32,
+  "BC-11076": -820.98,
+  "BC-11083": 721.74,
+  "BC-11094": -4896.26,
+  "BC-11105": 234.27,
+  "BC-11118": -1360.62,
+  "BC-11137": -3753.21
+ },
+ "till": {
+  "2025-10": {
+   "cash_sales_eur": 346451.75,
+   "paid_outs_eur": 6728.64
+  },
+  "2025-11": {
+   "cash_sales_eur": 361567.45,
+   "paid_outs_eur": 7226.25
+  },
+  "2025-12": {
+   "cash_sales_eur": 363469.6,
+   "paid_outs_eur": 7080.51
+  },
+  "2026-01": {
+   "cash_sales_eur": 345697.45,
+   "paid_outs_eur": 6773.76
+  },
+  "2026-02": {
+   "cash_sales_eur": 322061.01,
+   "paid_outs_eur": 6264.91
+  },
+  "2026-03": {
+   "cash_sales_eur": 349666.76,
+   "paid_outs_eur": 7046.34
+  },
+  "2026-04": {
+   "cash_sales_eur": 301642.38,
+   "paid_outs_eur": 5621.91
+  },
+  "2026-05": {
+   "cash_sales_eur": 342640.37,
+   "paid_outs_eur": 6811.74
+  },
+  "2026-06": {
+   "cash_sales_eur": 366442.65,
+   "paid_outs_eur": 7220.53
+  },
+  "2026-07": {
+   "cash_sales_eur": 337779.51,
+   "paid_outs_eur": 6625.73
+  },
+  "2026-08": {
+   "cash_sales_eur": 270270.49,
+   "paid_outs_eur": 5015.02
+  },
+  "2026-09": {
+   "cash_sales_eur": 346837.4,
+   "paid_outs_eur": 6821.63
+  }
+ },
+ "till_customers": {
+  "above_trade_median_pct": 13.0,
+  "below_trade_median_pct": 16.0,
+  "count": 12
+ }
 }

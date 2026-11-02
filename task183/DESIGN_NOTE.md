@@ -92,16 +92,18 @@ step are new.
   took) names the quantity and never the card trade, the lodgement window or the co-movement the step recognises
   (lesson 10's test, run here: the sentence that would close a peer-ratio reading is the data's own refutation of it,
   every legitimate customer's cash tracking its own card trade at its own ratio in every lodgement, not a filing).
-- **Ask layer, named at the draw (screened as code against the honest cracker at stage 2 before any data is cut):**
-  two blocks on records the main call never reads and customers outside the review population.
-  - Ask A, the post office channel: the post office's daily counter-transaction reports for every Lough Ree business
-    lodgement card and the bank's lodgement card register; the mechanic is the card itself, the post office keying each
-    counter lodgement to the card and the bank re-pointing a card to a new account when a customer moves its banking,
-    with the register holding only the current account (family D2, a label stored before a silent switch).
-  - Ask B, merchant disputes: the merchant services dispute case file for every Lough Ree merchant and the merchant
-    register; the mechanic is the dispute cycle, a chargeback, the merchant's representment and the issuer's second
-    chargeback each logged as its own case tied to the first only through the original sale's amount and date at the
-    same merchant, beside genuine repeat disputes for the same price (family D1, which records are one event).
+- **Ask layer, as built (screened as code at stage 2, `generator/ceiling.py`):** two blocks on records the main call
+  never reads, their devices on customers outside the review population.
+  - Ask A, the post office channel: An Post's export of every business lodgement its counters took for the Bank and
+    Schedule 2 of the agency agreement; the mechanic is An Post's move from its older counter platform to the newer one
+    office by office through the year, the older platform writing the whole cash tendered into the export's notes field
+    beside the coin declaration (family D3, a per-row convention; the draw's card re-pointing was dropped at stage 2,
+    its population needed a filed pin that named it).
+  - Ask B, the till service: the service's central Z-report log for every till customer and the merchant services
+    file; the mechanic is the mobile tills (market stalls, a food truck, a caterer) that hold their Z-reports and send
+    them in a batch when they next connect, so the log's received time stands for several trading days (family D8, an
+    upload date for the event date; the draw's dispute cycles were dropped at stage 2, the cycle count was a fork only a
+    pin naming the device closed).
 - **Sources read, one line each:**
   - `CLAUDE.md` and the build brief (lessons 1 to 11): the default path is the analyst's own model on correct records,
     no shipped figure of the decision quantity, the WHAT names nothing the step recognises, two ask families.
@@ -141,17 +143,17 @@ The pipeline a competent AML analyst builds from the prompt and BCR-3, with the 
 5. Take the cash its trading took as its card takings at the peer ratio, the excess as lodged cash less that, and refer
    every customer whose excess is over EUR 40,000.
 
-Ends on: the cafe and the barber (design targets about EUR 115,000 and 68,000 over the peer ratio; the generator fixes
-the figures), with the car wash and the nail bar passing at about EUR 7,000 and 6,000.
-Golden: the car wash and the nail bar (design targets about EUR 97,000 and 50,000 lodged beyond their own trade).
+Ends on: the cafe and the barber, EUR 118,551 and 51,301 over the peer ratio (EUR 120,000 and 50,000 at the bin), with
+the car wash and the nail bar under the line.
+Golden: the car wash and the nail bar, EUR 99,899 and 49,952 lodged beyond their own trade (EUR 100,000 and 50,000).
 
 ## Stump sentence
 
 A competent analyst reads each customer's lodged cash against its card takings at its trade's peer ratio and refers
-the cafe and the barber, whose cash runs about EUR 115,000 and 68,000 above it; the step that lands it there is judging
-a customer's cash against its peers' ratio instead of against its own card trade lodgement by lodgement, which shows the
+the cafe and the barber, whose cash runs EUR 118,551 and 51,301 above it; the step that lands it there is judging a
+customer's cash against its peers' ratio instead of against its own card trade lodgement by lodgement, which shows the
 cafe's and the barber's cash moving with their trade at their own ratio in every lodgement and the car wash and the nail
-bar carrying a fixed sum in every lodgement, about EUR 97,000 and 50,000 over the year, that their trade never moved.
+bar carrying a fixed sum in every lodgement, EUR 99,899 and 49,952 over the year, that their trade never moved.
 
 ## Three rules
 
@@ -187,16 +189,16 @@ method for a customer without a till; executed with the field's screen it refers
 family (harness h2.py, three seeds): peer median, mean and pooled ratio (the cafe and the barber with two or three
 others), own ratio through the origin (no one), calendar-week and calendar-month regressions (dozens), windows dated by
 the credit day (dozens), lodgement-window decompositions by least squares, length-weighted least squares, Huber and with
-a per-day term (the car wash and the nail bar, EUR 94,000 to 100,000 and 49,000 to 51,000). Standing family once the
-records are read right: the lodgement-window decompositions, spread about EUR 6,000 on the car wash and 2,000 on the
-nail bar, one set. What rules out the rest is loud: every legitimate customer's fixed part sits within EUR 10,000 of
+a per-day term (the car wash and the nail bar, EUR 98,487 to 99,899 and 49,410 to 50,466 on the cut pack). Standing
+family once the records are read right: the lodgement-window decompositions, spread EUR 1,412 on the car wash and 1,056
+on the nail bar, one set and both bins held (checks F1 to F3). What rules out the rest is loud: every legitimate customer's fixed part sits within EUR 10,000 of
 nought against the fronts' 49,000 and more, the peer ratio misses individual till customers' observed cash by tens of
 per cent, and the till back-test reproduces every till customer's cash with no fixed part (figures fixed at stage 3).
 Analyst test: a strong analyst who cleans both exports, reads every field correctly and runs the field's AML screen,
-cash intensity against the trade's peer median, refers the cafe and the barber, whose cash runs about EUR 115,000 and
-68,000 above their card takings at the peer ratio (the default path's Ends on); it misses the car wash and the nail bar,
-whose cash shares sit at their trades' median.
-Estimand: BCR-3 sections 3 and 4 in `business_cash_review_standard_bcr3.pdf`: population every customer in the
+cash intensity against the trade's peer median, refers the cafe and the barber, EUR 118,551 and 51,301 over the peer ratio (EUR 120,000 and 50,000 at the bin), with
+the car wash and the nail bar under the line (the default path's Ends on): their cash shares sit inside their trades'
+ranges.
+Estimand: BCR-3 sections 3 and 4 in `business_cash_review_standard_BCR-3.pdf`: population every customer in the
 cash-intensive segment reviewed for the year; outcome the cash lodged to its accounts in the review year beyond what its
 own trading took, the till's cash sales being that measure for a customer on the bank's till service; window
 1 October 2025 to 30 September 2026; unit the customer; comparison more than EUR 40,000, referred.
@@ -209,6 +211,222 @@ Lesson: a business's own takings move with its own trade from one lodgement to t
 does not move with that trade is outside cash however ordinary the business's cash share looks, and a peer ratio both
 hides a front at its trade's median and refers a business whose own customers pay cash. No build on file decomposes a
 unit's payments against its own activity interval by interval.
+
+## Survivor anatomy
+
+Actor: each customer has rows (lodgements in the account export, terminal days in the merchant services file); the
+property that decides, a fixed sum riding in every lodgement that its own trade never moves, has no column anywhere: it
+is a relation between each lodgement and the card trade of the trading days that lodgement carried.
+Link: nothing keys a lodgement to its days; the comparison is each lodgement's amount against the card trade, by trading
+date through the merchant register, of the days since the customer's previous lodgement, across two files, a join the
+field's screen never asks for because it compares a customer's year totals with its trade's peers.
+Reflex: the field's AML screen for a cash-intensive business, cash intensity against the trade's peer median (mean and
+pooled ratio alike), sits at rung 0 and refers the cafe and the barber at EUR 118,551 and 51,301 (`Ends on:`).
+Back-test: the screen validates where an analyst checks it: the median, mean and pooled peer ratios refer the same two,
+the cafe's and the barber's cash ratios are the highest in their trades, and the next model a careful analyst tries,
+each customer's own ratio through the origin, fits every legitimate customer closely and refers no one.
+Second use: the account export is the lodgement record, the merchant services file the card takings the screen itself
+reads (and ask B's terminal days), the merchant register the terminal map, the till file BCR-3 4.2's measure and the
+lesson 12 back-test, the review list the population; with the decisive step deleted every file still carries the
+default path.
+Shock: the fronts are no extreme of any shipped statistic: the car wash's cash-to-card share (0.427) is its trade's
+median and the nail bar's (0.365) sits inside its trade's 0.274 to 0.424, they rank 23rd and 42nd of 48 by cash lodged,
+and both lodge twice a week like most of the segment (checks SH1, SH2).
+Pins: BCR-3 files the WHAT in the bank's own standard (population 2.1, year 2.2, lodgement and its date 3.1 and 3.2,
+unexplained cash 4.1, the till measure for till customers only 4.2, the line 4.3); no sentence names the lodgement
+window, the fit, the fixed part or a peer comparison, and no peer table, ratio or screen ships (lessons 10 and 11).
+
+## Readability screen
+
+| Rung | Route | What it needs from the pack | Verdict |
+|---|---|---|---|
+| 0 | peer median screen | the review list's Trade, the year's lodgements and card takings | readable |
+| 0b | peer mean or pooled ratio | the same totals | readable |
+| 1 | own ratio through the origin | each customer's own year totals or lodgement windows | readable |
+| 2 | calendar week or month regressions | weekly or monthly lodgements against card takings | readable |
+| 3 (decisive) | the lodgement-window decomposition with a part that does not move | each lodgement against the card trade of the days it carried, a relation no column holds | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | lodgements to which accounts | all of a customer's accounts | the current account only | same call (no lodgement reaches a second account) | BCR-3 3.2, and same call |
+| SF2 | a lodgement's date | the day handed in (the post office counter date in the reference) | the posting date | a different call | BCR-3 3.2 |
+| SF3 | the review year | 1 October 2025 to 30 September 2026 | none in the files | same call | BCR-3 2.2 and the prompt |
+| SF4 | the trading days a lodgement carries | the days from the previous lodgement to the day before | the lodgement's own day included | five referred | every lodgement handed in before 13:00, and the till back-test: the own-day window misses the tills' cash on nearly every lodgement |
+| SF4d | the window's edges, the judge's residual | the previous lodgement's day to the day before | the previous lodgement's day to the lodgement's own day | same call, the car wash at EUR 94,183 (the 95,000 bin) and the nail bar at 49,601; the day after the previous one to the own day moves the nail bar to 54,583, and to the day before gives 105,036 and 53,808 | the till back-test: only the day-before window reproduces every till customer's lodgement to the cent, each other edge missing nearly all of them (SF4d, SF4e) |
+| SF5 | the day of the card trade | trading_date | settlement_date | dozens referred | the merchant services file's own trading_date |
+| SF6 | refunds | net | gross | same call | same call |
+| SF7 | the quarter delivered twice | each Transaction Ref once | both copies | a different call | the repeated Transaction Ref |
+| SF8 | till customers | BCR-3 4.2, the till's cash sales | the card model | same call | BCR-3 4.2, and same call |
+| SF9 | more than EUR 40,000 | strictly over | at or over | same call | both referrals clear the line by EUR 9,400 and more under every member |
+| SF10 | post office lodgements handed in on the last days of September and credited in October | in the year, not in the account export | read from An Post's export | same call (both referrals lodge at branch counters) | asserted |
+| SF11 | rounding | the nearest five thousand euro | none | bins 100,000 and 50,000 across the standing family | the prompt |
+| SF12 | ask A: a fee falling on an exact half cent | rounded up | half to even, or the float the arithmetic leaves | ask figures only: half to even moves 10 of the 12 monthly fees, float all 12 (the call untouched) | Schedule 2 clause 1.2, "a half cent rounding up" |
+
+## Ladder
+
+| Rung | Method | Referred | Car wash | Nail bar |
+|---|---|---|---|---|
+| 0 | peer median ratio (mean and pooled the same) | the cafe and the barber | under the line | under the line |
+| 1 | own ratio through the origin | no one | EUR 13,625 | EUR 1,892 |
+| 2 | windows dated by settlement, or by posting, or with the own day | dozens, a dozen, five | off | off |
+| 3 | lodgement-window decomposition, least squares (golden) | the car wash and the nail bar | EUR 99,899 | EUR 49,952 |
+
+Margins: the fronts clear the line by EUR 59,899 and 9,952 at the golden and by 58,487 and 9,410 at the family's lowest;
+every other customer sits at EUR 1,346 or less; the family's spread (EUR 1,412 and 1,056) stays inside both bins. The
+rung-1 fit is refuted on the fronts' own records (intercept t 61 and 32, through-origin RSS 38 and 11 times the
+decomposition's, residuals against card correlated -0.985 and -0.953), and on no legitimate customer (median |t| under
+1.5).
+
+## Closure table
+
+| Axis | Reading here | Closure |
+|---|---|---|
+| 1 Population | every customer on the review list | BCR-3 2.1; the list ships |
+| 2 Unit of account | the customer, all its accounts | BCR-3 3.2; SF1 same call |
+| 3 Attribution window | a lodgement in the year by the day handed in | BCR-3 3.2; SF2, SF10 |
+| 4 As-of dating | records pulled after the year closes | BCR-3 5.1; C1 |
+| 5 Version basis | the export as delivered, the repeated quarter once | SF7 |
+| 6 Denominator | none: an amount, not a rate | not applicable, C1 |
+| 7 Weighting | each lodgement once in the fit | C4: WLS and Huber in the standing family, same bins |
+| 8 Window length | the review year's lodgements | C1: fitting on all history gives the same bins |
+| 9 Boundary inclusivity | strictly over EUR 40,000 | SF9, C1 |
+| 10 Rounding path | each figure once to the nearest five thousand | SF11 |
+| 11 Tie-break | none needed | C1: no figure near a bin edge (nearest 987) |
+| 12 Maturity and censoring | none: the year is closed | C1 |
+| 13 Order of operations | de-duplicate, date, window, fit | C1 |
+| 14 Row order | none | C1, the fit is order-free |
+| 15 Duplicate resolution | one copy per Transaction Ref | SF7 |
+| 16 Identity normalisation | terminals to customers through the merchant register | the register's own keys, C1 |
+| 17 Netting against gross | refunds net | SF6 same call |
+| 18 Dimensional units | cent in the merchant file, euro elsewhere | the column names, C1 |
+| 19 Code and status semantics | LDG lodgements, AN POST LODGEMENT references | BCR-3 3.1, the export's own labels |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | 4.2 for till customers only | BCR-3 4.2's own words |
+| 22 Forward window contents | none: a closed year | not applicable |
+
+## Literal reader
+
+Executing BCR-3 and the prompt word for word: the population is the review list (2.1), the year 1 October 2025 to 30
+September 2026 (2.2), a lodgement is cash handed in at a branch counter or a post office counter (3.1) dated by the day
+handed in, totalled over all the customer's accounts (3.2); unexplained cash is the year's lodgements beyond what its own
+trading took (4.1), the till's cash sales for a till customer (4.2), referred when more than EUR 40,000 (4.3). For a card
+customer the text leaves the estimate of what its trading took to the analyst and ships no rate, ratio or peer table to
+apply, so no literal reading files a number; every model the records leave standing (the lodgement-window
+decompositions) files the car wash and the nail bar in the same bins, and every model they refute (the peer ratios, the
+own ratio through the origin) is refuted by records a grader can rerun (checks D1, D2, B1 to B3). The asks: Schedule 2
+1.1 to 1.3 file the cash (notes and coin together), the fee and the counter's month; the till ask files the trading day
+in its own words. Every fork row above is asserted in `generator/checks.py`.
+
+## Oracles
+
+No control ties only under the golden or only on the wrong read. BCR-3 carries no figure; the till file is a measure for
+till customers only and validates the golden's model without stating it (lesson 12); An Post's export carries no
+totals, and Schedule 2 only rates; the till log has no daily or monthly summary. The merchant services file is the trade
+record under every reading; it arbitrates ask B's batched Z-reports by amount and hands over no ask figure.
+
+## Ask sheet
+
+Ask A, An Post (24 figures: each month's cash lodged at post office counters and the agency fee due).
+- H18 home: the audit trail of an input the call consumes (the reviewed customers' post office lodgements are part of
+  what An Post took) through rows the call never reads (the other business customers') to the agency's own terms.
+- Use: Financial Crime Operations shows the committee the post office channel the reviewed cash came through, and cash
+  operations settles An Post's invoices against Schedule 2.
+- Primary device (D3, a per-row convention): An Post moved its counters from the older platform to the newer one office
+  by office (six offices, the last still on the older one at year end); the older platform writes the whole cash
+  tendered into notes_eur beside the coin declaration, so notes plus coin counts the coin twice. Forced row by row:
+  banknotes come in fives, and on exactly those rows notes_eur is off a whole five while notes_eur less coin_eur is on
+  one (K1, K2). Over-cleaning half: notes_eur alone for every row drops the newer platform's coin (K5).
+- Hazard: 21 January 2026 sent twice under the same ap_ref (K6).
+- File: an_post_business_lodgements_2025-10_2026-09.csv, 9 columns; Schedule 2 PDF.
+- Stops: plain notes plus coin misses every figure (cash high by EUR 8,880 to 79,572 a month, fees by EUR 5.74 to
+  51.76); notes only misses every figure (cash low by EUR 66,998 to 137,900); the golden.
+- Realism: a counter platform migrated office by office, its export field carrying what that platform recorded.
+- Pin test: the asking sentence and Schedule 2 file cash, fee, month and the half-cent rounding (1.2, added at the
+  judge's FIX_NOW: 46 lodgements carry an exact half-cent fee); no pin names a field or a platform.
+
+Ask B, the till service (24 figures: each month's cash sales and paid-outs the tills recorded on its trading days).
+- H18 home: the audit trail of BCR-3 4.2's own input, the till service's records, across the service's customers.
+- Use: the committee sees the till service's cash month by month, the measure 4.2 rests on.
+- Primary device (D8, an upload date for the event date): the mobile tills (market stalls, a food truck, a caterer)
+  hold their Z-reports and send them in a morning batch, so received_at stands for several trading days; some of their
+  trading days run on the portable terminal alone with no Z-report. Forced: one Z-report closes one trading day, and
+  each Z-report's card sales equal its terminal's trade on exactly one day after the till's previous Z (T1 to T4).
+  Over-cleaning half: laying a batch on the terminal's last days by count misses (T6).
+- Hazard: the late bars' Z-reports sent after midnight (the hour profile repairs them). The log carries no repeated
+  row: a retried upload was drafted and is not in the cut.
+- File: till_service_z_report_log_2025-10_2026-10.csv, 9 columns; merchant services file; merchant register.
+- Stops: received dates miss every figure; the careful reconstruction (morning batches filled back one a day) misses
+  every figure (cash sales off by EUR 296 to 4,073 a month); laying batches on the terminal's last days misses 18 of
+  24; the golden.
+- Realism: mobile EPOS that store and forward when they next have a connection.
+- Pin test: "on that month's trading days" files the date the figure is cut by; nothing names a batch or a terminal.
+
+Main population zero-counts: no reviewed customer's An Post row is a device row (K3) and every reviewed till sends each
+Z-report the evening it closes (T5); the devices sit in ask-only files the call never reads.
+
+| Response (the cracker sheet) | Ask A device | Ask B device | Verdict |
+|---|---|---|---|
+| cracker: battery, plain fields, Schedule 2 executed | reads notes_eur as notes | fills each batch back one a day | miss |
+| mirror at the peer screen, same asks | same | same | miss |
+| lazy: received dates, plain notes | same | received dates | miss |
+| over-corrected: notes only | drops the newer platform's coin | fills back one a day | miss |
+
+Pair ceiling: 28.5 (cracker 45.0 on the call, mirror 12.0 off it), measured on the cut pack.
+Mirror leakage: 0.0 per cent of the ask weight.
+Single-device exposure: a response that repairs one device and not the other keeps half the ask weight, 72.5;
+the full includer (both repaired) reproduces figures.json, as the script requires.
+Measured by: generator/ceiling.py.
+
+## Leak review
+
+`leak.py task183 --asof 2026-11-06`: REVIEW, no LEAK; each line ruled.
+- Sweep 3, "golden figures" 10896, 10731, 10643 and 10444 in the review list, the merchant register and the merchant
+  services file: they are the customer numbers of BC-10896, BC-10731, BC-10643 and BC-10444, the keys every file joins
+  on, and once a coincidental cent figure (10643 cents of trade, a balance of 10,731.65); no referral figure appears.
+- Sweep 3, BCR-3 carries 11 of 16 words of the call: its referral clause 4.3 (Financial Crime Investigations, the
+  January committee, EUR 40,000), the WHAT the call executes; it names no customer and no method.
+- Sweep 4, six stump-paragraph words in BCR-3 (lodgement, record, population, operations, refers): the standard's own
+  vocabulary for population, lodgement and referral; it names no window, fit, fixed part or peer comparison.
+- Sweep 6, the review list and the merchant register name candidates beside numbers: account numbers, MCCs, opening
+  dates and statuses, nothing ranked on the decision question (Gate G).
+
+## Pre-ship check
+
+- **The 10/10 rules, re-read against the built pack.** Rule 1: the deciding quantity is each customer's cash lodged
+  beyond what its own trading took, the AML question for a cash-intensive business, worked from the bank's own
+  lodgement and card records; the swap to oxygen and beds loses the outside cash riding in every lodgement. Rule 2:
+  Layer 1 is the systems' own mess (the repeated quarter, counter dates in references, settlement against trading days,
+  refunds, lodgements credited after 30 September), none of it deciding (SF2, SF5, SF6, SF7, SF10); Layer 2 is the
+  decomposition of each lodgement against the card trade of the days it carried. Rule 3: nothing planted, no field read
+  decides, and no filed rule performs the step: BCR-3 files the WHAT and ships no rate, ratio or peer table.
+- **The decisive step is still analytical, on the built pack.** A strong analyst who de-duplicates the export, dates
+  each lodgement by its counter day and runs the field's peer screen files the cafe and the barber at EUR 118,551 and
+  51,301 (L1 to L3); the own ratio through the origin files no one (L4); only the lodgement-window decomposition with a
+  part that does not move files the car wash and the nail bar, every standing member in the same bins (F1 to F3), the
+  through-origin fit refuted on the fronts' own records (D1) and on no legitimate customer (D2, A2).
+- **Determinacy on the built pack.** The standing family spans EUR 98,487 to 99,899 and 49,410 to 50,466, inside both
+  bins; the judge's window residual (previous lodgement's day to the own day) gives 94,183 and 49,601, the same call,
+  and is closed by the till back-test, which only the day-before window passes (SF4d, SF4e, B1); every other customer
+  stays under EUR 4,000 under every reading (G5); the asks' fee rounding is pinned in Schedule 2 clause 1.2 (SF12).
+- **Gate G.** No shipped artifact ranks the customers on the decision question: the review list rates every customer
+  High and the merchant register lists terminals. The judge read Gate G as method_or_model_selection,
+  analytical_non_defect, with no surface-read dependency.
+- **Stage 4.** The leak reader on a490e8dc was clean (Q1 no announcement; Q2 to Q4 none; Q5 the estimand fixed and the
+  method open for card customers; Q6 analytical) and its re-read on b8730f43 was clean, the half-cent pin read as a fee
+  rule only. The judge's pass 2 returned DETERMINISTIC with FIX_NOW (Schedule 2's half-cent rounding, pinned in clause
+  1.2; submission step 4 reworded to the card trade of the windows the year's lodgements carry), and pass 3 on b8730f43
+  returned DETERMINISTIC, step 7's wording fixed in the write-up (the Z log carries no repeated row, so the step has no
+  de-duplication clause) with no pack change.
+- **The ask layer.** The cracker misses 48 of 48 ask figures (pair 28.5, mirror leakage 0.0); a response that repairs
+  one device and not the other keeps half the asks, 72.5.
+- **Every gate on the final cut.** checks 83 run, 0 failed; verify 0 differences; two builds byte-identical; target.zip
+  md5 b8730f43987be07f5090d1ce8004c29a; freeze.py determinism PASS; precut exit 0; voice-check PASS; figures_check 67
+  of 67; leak.py REVIEW with no LEAK, every line ruled above; guard.py surface exit 0; heart PASS.
+- **House fixes run.** H1: producer metadata clean in target/ and golden/; H4: the archive's members are target/'s,
+  flat; H8: every cited clause resolves (BCR-3 2.2, 3.1, 3.2, 4.1 to 4.4; Schedule 2 1.1 to 1.3); H9: no file describes
+  the pack; H13: transaction references scrambled, no constant step; H16: no date past the extract of 14 October 2026.
 
 ## Tried and rejected
 
@@ -454,3 +672,13 @@ unit's payments against its own activity interval by interval.
   (EUR -10,000); calendar-week and calendar-month regressions and windows dated by the credit day gave every legitimate
   customer spurious fixed parts (dozens referred). The design adds the outside sum to each of a front's lodgements and
   the golden reads each lodgement against the trading days it carries (`h2.py`).
+- 2026-11-02, stage 2 ask screen: the draw's ask A (business lodgement cards re-pointed to a new account, the register
+  holding only the current one) needed its population filed as the card's account at the counter date, a pin naming the
+  device; replaced by An Post's notes field on the older counter platform.
+- 2026-11-02, stage 2 ask screen: the draw's ask B (dispute cycles logged as fresh cases) forked on whether a second
+  chargeback is a chargeback received; only a pin counting each sale once closed it, and that pin names the device;
+  replaced by the till service's batched Z-reports.
+- 2026-11-02, stage 2 ask screen: ask B's trading-day count per month landed for the careful reader by cancellation in
+  one to three months on five upload seeds; replaced by the paid-outs, a cent figure no cancellation reaches. Card sales
+  were left out of the ask so it does not point at the till-to-terminal identity the repair rides on.
+

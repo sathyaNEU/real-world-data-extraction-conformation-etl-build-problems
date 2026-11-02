@@ -1,11 +1,8 @@
-"""The goldens, computed from the pack in target/: cable_program_2027.xlsx (the named feeder, every feeder's 2027
-expected cable failures and its RY2026 reliability figures) and feeder_failures_2027.png (the bar chart), plus
-generator/figures.json, the owed figures the write-up is drafted from.
+"""task183 goldens: fci_referrals_jan2027.docx (the referral paper with the chart) and cash_review_2026.xlsx (the
+An Post and till service months), every figure computed from target/ by calc.py, and generator/figures.json."""
+from __future__ import annotations
 
-The 2027 forecast: each in-service section's failure rate for its count of cable failures so far (0, 1, 2, 3 or
-more), estimated on every section year of the record (January 2012 to 30 September 2026, exact time at risk),
-summed by feeder."""
-import datetime as dt
+import io
 import json
 import os
 import sys
@@ -13,235 +10,323 @@ import sys
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt   # noqa: E402
-import openpyxl                   # noqa: E402
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side   # noqa: E402
-from openpyxl.utils import get_column_letter                             # noqa: E402
+matplotlib.rcParams["svg.hashsalt"] = "task183"
+matplotlib.rcParams["font.family"] = "DejaVu Sans"
+import matplotlib.pyplot as plt                                   # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import asks as A          # noqa: E402
-import load as L          # noqa: E402
-import models as M        # noqa: E402
-import postprocess as PP  # noqa: E402
-import world as W         # noqa: E402
+import calc as C           # noqa: E402
+import postprocess as PP   # noqa: E402
 
-XLSX = "cable_program_2027.xlsx"
-PNG = "feeder_failures_2027.png"
-INK, INK2, MUTED, ACCENT, SURFACE, GRID = "#0b0b0b", "#52514e", "#b9b7b0", "#2a78d6", "#fcfcfb", "#e4e2dc"
+MONTH_NAME = {m: n for m, n in zip(C.MONTHS, ["October 2025", "November 2025", "December 2025", "January 2026",
+                                              "February 2026", "March 2026", "April 2026", "May 2026", "June 2026",
+                                              "July 2026", "August 2026", "September 2026"])}
 
 
-def compute(target):
-    wo, reg = L.work_orders(target), L.register(target)
-    fc, rates = M.kmodel(wo, reg)
-    _, fails = M.prep(wo, reg)
-    ex = M.exposures(reg, fails)
-    ex["kc"] = ex["k"].clip(upper=3)
-    tab = ex.groupby("kc")[["years", "events"]].sum()
-    st = M.stock(reg, fails)
-    twice = st[st["k"] >= 2].groupby("feeder_id").size().to_dict()
-    n_sec = st.groupby("feeder_id").size().to_dict()
-    oms, steps, conn, dv = L.oms(target), L.steps(target), L.connectivity(target), L.devices(target)
-    g = A.golden(oms, steps, conn, dv)
-    order, lead = M.rank(fc)
-    return dict(fc=fc, rates=rates, tab=tab, twice=twice, n_sec=n_sec, g=g, order=order, lead=lead)
+def nearest5k(x):
+    return int(5000 * round(x / 5000.0))
 
 
-def figures(c):
-    g = c["g"]
-    out = {
-        "recommended_feeder": W.NAME[c["order"][0]],
-        "recommended_feeder_id": c["order"][0],
-        "sections_twice_failed_in_service": {f: int(c["twice"].get(f, 0)) for f in W.FEEDERS},
-        "saifi_ry2026": {f: "%.2f" % g["saifi"][f] for f in W.FEEDERS},
-        "saidi_ry2026_min": {f: "%.1f" % g["saidi"][f] for f in W.FEEDERS},
-        "customers_4plus_ry2026": {f: int(g["cemi4"][f]) for f in W.FEEDERS},
-        "customers_served_2026_09_30": {f: int(g["served"][f]) for f in W.FEEDERS},
-        "major_event_days_ry2026": [d.isoformat() for d in g["meds"]],
-        "major_event_day_method": "2.5 beta (TVE-RS-04)",
-        "feeder_names": [W.NAME[f] for f in W.FEEDERS],
-        "twice_failed_sections_location": "State Route 443",
-    }
-    return out
+def others_bound(P, referred):
+    """An upper bound on every non-referred customer's figure over every reading the records leave standing (the
+    estimator family and the edge of the year's card trade), rounded up to the thousand."""
+    import math
+    vals = []
+    for kw in ({}, dict(kind="wls"), dict(kind="huber"), dict(kind="days"), dict(fit_on="all"),
+               dict(net_refunds=False)):
+        f = C.unexplained(P, **kw)
+        vals += [f[c] for c in P.cust if c not in referred]
+    lods, card = P.lodgements(), P.card_by_day()
+    for cid in P.cust:
+        if cid in referred or cid in P.till_cids:
+            continue
+        pairs = [p for p in C.windows(lods.get(cid, []), card.get(cid, {})) if C.in_year(p[0])]
+        _, s, _, _ = C.fit(pairs, "ols")
+        vals.append(sum(L["amount"] for L, _, _ in pairs) - s * sum(
+            v for d, v in card.get(cid, {}).items() if C.REVIEW_START <= d <= C.REVIEW_END))
+    return int(1000 * math.ceil(max(vals) / 1000.0))
 
 
-def write_xlsx(path, c):
-    g = c["g"]
-    wb = openpyxl.Workbook()
-    thin = Side(style="thin", color="A6A39B")
-    head_fill = PatternFill("solid", fgColor="1F3A5F")
-    pick_fill = PatternFill("solid", fgColor="E3EEFA")
-
-    ws = wb.active
-    ws.title = "2027 program"
-    ws["A1"] = "2027 underground cable program: Quarry Hill 21"
-    ws["A1"].font = Font(bold=True, size=14)
-    ws["A2"] = "Distribution Asset Management, Tamsin Valley district. Prepared %s from the October 2026 extract " \
-               "(records through 30 September 2026)." % "9 October 2026"
-    ws["A2"].font = Font(italic=True, size=9, color="52514E")
-    lines = [
-        ("Feeder for the 2027 program", W.NAME[c["order"][0]]),
-        ("Basis", "Expected failures of the cable itself (insulation, splice, termination) in calendar 2027 on the "
-                  "sections in service at 30 September 2026, damage by others left out"),
-        ("Method", "Each section's failure rate for the number of cable failures it has already had (0, 1, 2, 3 or "
-                   "more), estimated on every section year since January 2012, summed over the feeder's sections"),
-        ("Why not the five-year counts", "Mill Lane 7's recent failures are first failures on different sections, "
-                                         "which rarely fail again; Quarry Hill 21 is the only feeder with in-service "
-                                         "sections that have failed twice or more (the State Route 443 crossing)"),
-    ]
-    for i, (k, v) in enumerate(lines, 4):
-        ws.cell(row=i, column=1, value=k).font = Font(bold=True)
-        cell = ws.cell(row=i, column=2, value=v)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.cell(row=i, column=1).alignment = Alignment(vertical="top")
-    ws.cell(row=4, column=2).font = Font(bold=True, size=12, color="1F3A5F")
-    ws.column_dimensions["A"].width = 30
-    ws.column_dimensions["B"].width = 96
-    for r in (5, 6, 7):
-        ws.row_dimensions[r].height = 32
-
-    ws = wb.create_sheet("Feeders")
-    cols = ["Feeder", "Circuit", "Substation", "UG sections in service", "In-service sections with 2+ failures",
-            "Expected cable failures 2027", "Customers served 30 Sep 2026", "SAIFI RY2026 (MED excl.)",
-            "SAIDI RY2026, min (MED excl.)", "Customers with 4+ sustained interruptions"]
-    for j, h in enumerate(cols, 1):
-        cell = ws.cell(row=1, column=j, value=h)
-        cell.font = Font(bold=True, color="FFFFFF", size=10)
-        cell.fill = head_fill
-        cell.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
-    ws.row_dimensions[1].height = 44
-    sub = {f: n for s, n, fs in W.SUBSTATIONS for f in fs}
-    for i, f in enumerate(W.FEEDERS, 2):
-        vals = [W.NAME[f], W.CIRCUIT_NO[f], sub[f], int(c["n_sec"].get(f, 0)), int(c["twice"].get(f, 0)),
-                round(c["fc"][f], 1), int(g["served"][f]), round(g["saifi"][f], 2), round(g["saidi"][f], 1),
-                int(g["cemi4"][f])]
-        fmts = [None, None, None, "#,##0", "0", "0.0", "#,##0", "0.00", "#,##0.0", "#,##0"]
-        for j, (v, fm) in enumerate(zip(vals, fmts), 1):
-            cell = ws.cell(row=i, column=j, value=v)
-            if fm:
-                cell.number_format = fm
-                cell.alignment = Alignment(horizontal="right")
-            cell.border = Border(bottom=Side(style="hair", color="D0CEC7"))
-            if f == c["order"][0]:
-                cell.fill = pick_fill
-                cell.font = Font(bold=True)
-    tot = len(W.FEEDERS) + 2
-    ws.cell(row=tot, column=1, value="District").font = Font(bold=True)
-    for j, v, fm in ((4, sum(c["n_sec"].values()), "#,##0"), (5, sum(c["twice"].values()), "0"),
-                     (7, sum(g["served"].values()), "#,##0")):
-        cell = ws.cell(row=tot, column=j, value=int(v))
-        cell.number_format = fm
-        cell.font = Font(bold=True)
-        cell.border = Border(top=thin)
-    ws.cell(row=tot + 2, column=1, value="Expected failures are model estimates for ranking the feeders; the SAIFI, "
-                                          "SAIDI and 4+ counts are the reliability year 1 Oct 2025 to 30 Sep 2026 "
-                                          "under TVE-RS-04 rev 6.").font = Font(italic=True, size=9, color="52514E")
-    widths = [16, 9, 12, 11, 13, 12, 13, 11, 12, 14]
-    for j, wdt in enumerate(widths, 1):
-        ws.column_dimensions[get_column_letter(j)].width = wdt
-    ws.freeze_panes = "B2"
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
-    ws.sheet_properties.pageSetUpPr.fitToPage = True
-    ws.print_title_rows = "1:1"
-
-    ws = wb.create_sheet("Failure rates")
-    for j, h in enumerate(["Cable failures already on the section", "Section years at risk", "Failures",
-                           "Failures per section year"], 1):
-        cell = ws.cell(row=1, column=j, value=h)
-        cell.font = Font(bold=True, color="FFFFFF")
-        cell.fill = head_fill
-        cell.alignment = Alignment(wrap_text=True, vertical="center")
-    ws.row_dimensions[1].height = 32
-    for i, (kc, row) in enumerate(c["tab"].iterrows(), 2):
-        ws.cell(row=i, column=1, value=["None", "One", "Two", "Three or more"][int(kc)])
-        ws.cell(row=i, column=2, value=round(float(row["years"]), 1)).number_format = "#,##0.0"
-        ws.cell(row=i, column=3, value=int(row["events"])).number_format = "#,##0"
-        ws.cell(row=i, column=4, value=round(float(row["events"] / row["years"]), 4)).number_format = "0.0%"
-    ws.cell(row=7, column=1, value="Section years from January 2012 (start of the work order archive) to 30 September "
-                                   "2026, split at each failure; INS, SPL and TRM work orders only.").font = Font(
-        italic=True, size=9, color="52514E")
-    for j, wdt in enumerate([30, 14, 10, 14], 1):
-        ws.column_dimensions[get_column_letter(j)].width = wdt
-
-    ws = wb.create_sheet("Notes")
-    notes = [
-        "Cable failures: work orders with cause INS, SPL or TRM (wo_cause_repair_codes.csv); TPD (damage by others) "
-        "and OTH left out.",
-        "Sections in service: status IS in the GIS export as of 30 September 2026; a section's failures stay with "
-        "it, and a replacement section starts its own record.",
-        "Reliability year RY2026: 1 October 2025 to 30 September 2026, Eastern local time. ADMS times (UTC) "
-        "converted before assigning days.",
-        "Sustained interruption: more than five minutes for the customer, timed to that customer's own restoration "
-        "step (TVE-RS-04 3.3); customers served from the connectivity model on 30 September 2026 (3.2).",
-        "Major event days RY2026 (2.5 beta, threshold %.2f min of daily SAIDI from RY2021 to RY2025): %s. Left out "
-        "of SAIFI and SAIDI, kept in the 4+ count (TVE-RS-04 6.1)." % (g["T"], ", ".join(
-            d.strftime("%d %b %Y").lstrip("0") for d in g["meds"])),
-        "Substation bank outages counted once per customer on each feeder, not at the outage totals the OMS export "
-        "repeats on each feeder row.",
-    ]
-    ws["A1"] = "Notes"
-    ws["A1"].font = Font(bold=True)
-    for i, t in enumerate(notes, 2):
-        ws.cell(row=i, column=1, value="%d. %s" % (i - 1, t)).alignment = Alignment(wrap_text=True, vertical="top")
-        ws.row_dimensions[i].height = 30
-    ws.column_dimensions["A"].width = 120
-    wb.active = 0
-    wb.save(path)
-    PP.normalize_ooxml(path, W.PEOPLE["asset"], W.PEOPLE["asset"], "2026-10-07T13:12:40Z", "2026-10-09T20:47:15Z",
-                       excel=True)
+def figures(target):
+    P = C.Pack(target)
+    fig, referred = C.golden(P)
+    apg = C.ap_figures(target, "golden")
+    tg = C.till_figures_ask(P, target, "golden")
+    lods, card = P.lodgements(), P.card_by_day()
+    refs = []
+    for cid in referred:
+        s = P.cust[cid]
+        pairs = [p for p in C.windows(lods[cid], card[cid]) if C.in_year(p[0])]
+        a, sl, _, _ = C.fit(pairs, "ols")
+        refs.append(dict(customer=cid, name=s["Trading name"], trade=s["Trade"], branch=s["Home branch"],
+                         account=s["Current account"], unexplained_eur=round(fig[cid], 2),
+                         referral_cash_eur=nearest5k(fig[cid]), lodgements=len(pairs),
+                         fixed_per_lodgement_eur=int(round(a)), own_ratio=round(sl, 2)))
+    _, _, info = C.default_path(P)
+    rel = {c: info["ratio"][c] / info["peer"][P.cust[c]["Trade"]] for c in P.cust}
+    heavy = [c for c, _ in sorted(rel.items(), key=lambda kv: -kv[1])[:2]]
+    tills = sorted(rel[c] - 1.0 for c in P.till_cids)
+    return dict(
+        line_eur=40000,
+        highest_other_eur=int(round(max(v for c, v in fig.items() if c not in referred))),
+        not_referred=[dict(customer=c, name=P.cust[c]["Trading name"], times_trade_median=round(rel[c], 1))
+                      for c in heavy],
+        till_customers=dict(count=len(P.till_cids), below_trade_median_pct=round(-100 * tills[0], 0),
+                            above_trade_median_pct=round(100 * tills[-1], 0)),
+        referrals=refs,
+        reviewed={cid: round(fig[cid], 2) for cid in sorted(fig)},
+        an_post={m: dict(cash_eur=apg[m][1], fee_eur=apg[m][2]) for m in C.MONTHS},
+        till={m: dict(cash_sales_eur=tg[m][1], paid_outs_eur=tg[m][2]) for m in C.MONTHS})
 
 
-def write_png(path, c):
-    fc = c["fc"]
-    order = sorted(W.FEEDERS, key=lambda f: fc[f])
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9.5, "svg.hashsalt": "t183",
-                         "axes.edgecolor": INK2, "axes.labelcolor": INK2, "xtick.color": INK2, "ytick.color": INK})
-    fig, ax = plt.subplots(figsize=(7.6, 4.3), dpi=150)
-    fig.patch.set_facecolor(SURFACE)
-    ax.set_facecolor(SURFACE)
-    colors = [ACCENT if f == c["order"][0] else MUTED for f in order]
-    ax.barh([W.NAME[f] for f in order], [fc[f] for f in order], color=colors, height=0.62, edgecolor=SURFACE,
-            linewidth=2)
-    for i, f in enumerate(order):
-        ax.text(fc[f] + 0.15, i, "%.1f" % fc[f], va="center", fontsize=8.5,
-                color=INK if f == c["order"][0] else INK2, fontweight="bold" if f == c["order"][0] else "normal")
-    top = c["order"][0]
-    n2 = int(c["twice"].get(top, 0))
-    second = sorted(fc.values())[-2]
-    ax.annotate("%d sections already failed\ntwice or more, spliced in place\nunder State Route 443" % n2,
-                xy=(second + 2.6, len(order) - 1.3), xytext=(second + 1.4, len(order) - 2.55),
-                fontsize=7.8, color=INK2, ha="left", va="center", linespacing=1.3,
-                arrowprops=dict(arrowstyle="-", color=INK2, linewidth=0.7, shrinkA=2, shrinkB=0))
-    ax.set_xlabel("Expected cable failures in 2027 (insulation, splice, termination)")
-    ax.xaxis.grid(True, color=GRID, linewidth=0.8)
-    ax.set_axisbelow(True)
-    for s in ("top", "right", "left"):
-        ax.spines[s].set_visible(False)
-    ax.tick_params(axis="y", length=0)
-    ax.set_xlim(0, max(fc.values()) * 1.12)
-    fig.suptitle("Quarry Hill 21 is expected to have the most cable failures in 2027", x=0.02, ha="left",
-                 fontsize=11.5, fontweight="bold", color=INK)
-    ax.set_title("Sections in service at 30 Sep 2026, each at the failure rate for the failures it has already had",
-                 loc="left", fontsize=8.5, color=INK2)
-    fig.text(0.02, 0.015, "Source: cable fault work orders 2012-2026 and GIS UG primary sections, Tamsin Valley district",
-             fontsize=7, color=INK2)
-    fig.tight_layout(rect=(0, 0.03, 1, 0.97))
-    fig.savefig(path, facecolor=SURFACE, metadata={"Software": None})
+INK, INK2, MUTED, GRID = "#1d2126", "#52575e", "#8a9099", "#e3e5e8"
+BAR, HOT, LINE = "#9fb3c8", "#123f6b", "#b23a2e"
+
+
+def chart_png(f, names):
+    items = sorted(f["reviewed"].items(), key=lambda kv: kv[1])
+    ref = {r["customer"] for r in f["referrals"]}
+    fig, ax = plt.subplots(figsize=(7.2, 7.6), dpi=150)
+    fig.patch.set_facecolor("white")
+    ys = range(len(items))
+    ax.barh(list(ys), [v / 1000.0 for _, v in items], height=0.72,
+            color=[HOT if c in ref else BAR for c, _ in items], zorder=3)
+    ax.axvline(40, color=LINE, lw=1.3, zorder=4)
+    ax.text(40.8, 1.0, "EUR 40,000\nreferral line", color=LINE, fontsize=7.5, va="bottom")
+    for y, (c, v) in zip(ys, items):
+        if c in ref:
+            ax.text(v / 1000.0 + 1.2, y, "%s  (%s)" % (names[c], c), va="center", fontsize=7.5, color=INK,
+                    fontweight="bold")
+    ax.axvline(0, color=MUTED, lw=0.8, zorder=2)
+    ax.set_yticks([])
+    ax.set_xlabel("Unexplained cash, review year 2025-26 (EUR thousand)", fontsize=8.5, color=INK2)
+    ax.set_xlim(-20, 145)
+    ax.tick_params(axis="x", colors=MUTED, labelsize=8, length=0)
+    ax.grid(axis="x", color=GRID, lw=0.8, zorder=0)
+    for sp in ("top", "right", "left"):
+        ax.spines[sp].set_visible(False)
+    ax.spines["bottom"].set_color(MUTED)
+    ax.set_title("Only two customers lodged more than EUR 40,000 their own trading did not take", fontsize=9.5,
+                 color=INK, loc="left", pad=10)
+    ax.text(0.0, -0.075, "One bar per customer on the 2025-26 review list (%d). Referrals in dark blue." % len(items),
+            transform=ax.transAxes, fontsize=7.2, color=MUTED)
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", metadata={"Software": None})
     plt.close(fig)
+    return buf.getvalue()
 
 
-def main(target, golden, figures_path):
+def write_docx(path, f, png):
+    from docx import Document
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Cm, Pt, RGBColor
+
+    d = Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    for s in d.sections:
+        s.left_margin = s.right_margin = Cm(2.2)
+        s.top_margin = s.bottom_margin = Cm(2.0)
+    h = d.add_paragraph()
+    r = h.add_run("Lough Ree Bank DAC  |  Financial Crime Operations")
+    r.font.size = Pt(9)
+    r.font.color.rgb = RGBColor(0x12, 0x3F, 0x6B)
+    r.bold = True
+    t = d.add_paragraph()
+    r = t.add_run("Business cash review 2025-26: two customers referred to Financial Crime Investigations")
+    r.bold = True
+    r.font.size = Pt(14)
+    meta = d.add_table(rows=4, cols=2)
+    for i, (k, v) in enumerate([("To", "Financial Crime Risk Committee, meeting of 21 January 2027"),
+                                ("From", "Malachy Crohan, Head of Financial Crime Operations"),
+                                ("Date", "6 November 2026"),
+                                ("Under", "BCR-3, Business Cash Review Standard, issue 3, sections 4.1 to 4.3")]):
+        meta.cell(i, 0).text = k
+        meta.cell(i, 1).text = v
+        meta.cell(i, 0).paragraphs[0].runs[0].bold = True
+        meta.cell(i, 0).width = Cm(2.4)
+        meta.cell(i, 1).width = Cm(14.2)
+    d.add_paragraph()
+    n = len(f["reviewed"])
+    refs = f["referrals"]
+    d.add_paragraph(
+        "We reviewed the %d customers on the cash-intensive segment's list for the year to 30 September 2026. "
+        "%s customers lodged more than EUR 40,000 that their own trading did not take, and we refer them to "
+        "Financial Crime Investigations. Their accounts are restricted from the committee's decision until "
+        "Investigations closes each case (BCR-3 4.3). A referral is not a finding of wrongdoing (4.4)."
+        % (n, "Two" if len(refs) == 2 else str(len(refs))))
+    tb = d.add_table(rows=1 + len(refs), cols=5)
+    tb.style = "Light Grid Accent 1"
+    for j, hd in enumerate(["Customer", "Trading name", "Trade", "Home branch", "Unexplained cash"]):
+        tb.cell(0, j).text = hd
+    for i, rr in enumerate(refs, 1):
+        vals = [rr["customer"], rr["name"].split(",")[0], rr["trade"], rr["branch"],
+                "EUR %s" % format(rr["referral_cash_eur"], ",")]
+        for j, v in enumerate(vals):
+            tb.cell(i, j).text = v
+        tb.cell(i, 4).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    src = d.add_paragraph("Source: account export and merchant services daily trade, review year 2025-26. Unexplained "
+                          "cash to the nearest EUR 5,000 (BCR-3 4.1, 4.3).")
+    src.runs[0].font.size = Pt(8.5)
+    src.runs[0].font.color.rgb = RGBColor(0x5D, 0x65, 0x70)
+    d.add_paragraph()
+    d.add_paragraph("How the figures were reached", style="Heading 2")
+    d.add_paragraph(
+        "For each customer we set every cash lodgement in the year against the card trade its terminals took on the "
+        "trading days since its previous lodgement, the days whose takings it carried. A customer's cash moves with "
+        "its card trade at a ratio of its own, so we fitted that ratio, with a fixed part per lodgement, to the "
+        "customer's own lodgements. The cash its trading took is that ratio times the card trade of the days its "
+        "lodgements in the year carried; the rest of what it lodged is unexplained. For the customers on our till service BCR-3 4.2 applies and the "
+        "till's own cash sales are the measure.")
+    tc = f["till_customers"]
+    d.add_paragraph(
+        "The %d till customers show why the comparison has to be with each business's own trade. Their lodgements "
+        "match the till's cash, net of paid-outs, over the same days to the cent, with no fixed part, yet their cash "
+        "per euro of card trade runs from %d per cent below to %d per cent above their trade's median. A trade "
+        "average would have mis-stated every one of them." % (tc["count"], tc["below_trade_median_pct"],
+                                                              tc["above_trade_median_pct"]))
+    for rr in refs:
+        d.add_paragraph("%s, %s (%s)" % (rr["name"], rr["customer"], rr["account"]), style="Heading 3")
+        d.add_paragraph(
+            "Each of its %d lodgements in the year carried about EUR %s more than the card trade of its days "
+            "explains, in busy weeks and quiet ones alike. The cash that does move with its trade runs at %s cent a "
+            "euro of card trade, light for the trade. Over the year the fixed part comes to EUR %s to the nearest "
+            "five thousand." % (rr["lodgements"], format(rr["fixed_per_lodgement_eur"], ","),
+                               "%d" % round(100 * rr["own_ratio"]), format(rr["referral_cash_eur"], ",")))
+    nr = f["not_referred"]
+    d.add_paragraph("Not referred", style="Heading 2")
+    d.add_paragraph(
+        "%s (%s) and %s (%s) lodge the most cash per euro of card trade against their trades, %s and %s times "
+        "their trade's median. Their cash rises and falls with their own card trade lodgement by lodgement, with no "
+        "fixed part, so their own trading took it, and neither is referred."
+        % (nr[0]["name"], nr[0]["customer"], nr[1]["name"], nr[1]["customer"], nr[0]["times_trade_median"],
+           nr[1]["times_trade_median"]))
+    d.add_paragraph()
+    d.add_picture(io.BytesIO(png), width=Cm(15.5))
+    cap = d.add_paragraph("Figure 1. Unexplained cash by customer, review year 2025-26.")
+    cap.runs[0].italic = True
+    cap.runs[0].font.size = Pt(9)
+    d.add_paragraph()
+    d.add_paragraph(
+        "The monthly An Post and till service figures that support this paper are in cash_review_2026.xlsx.")
+    fn = d.add_paragraph(
+        "Note. Post office lodgements are dated by the counter day carried in the An Post reference, not the day "
+        "they were credited (BCR-3 3.2). The account export repeats April to June 2026 in full; each posting is "
+        "counted once.")
+    fn.runs[0].font.size = Pt(8.5)
+    fn.runs[0].font.color.rgb = RGBColor(0x5D, 0x65, 0x70)
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    fp = d.sections[0].footer.paragraphs[0]
+    fr = fp.add_run("Lough Ree Bank DAC  |  Financial Crime Operations  |  Restricted  |  Page ")
+    fr.font.size = Pt(8)
+    run = fp.add_run()
+    run.font.size = Pt(8)
+    for tag, text in (("begin", None), (None, "PAGE"), ("end", None)):
+        if tag:
+            el = OxmlElement("w:fldChar")
+            el.set(qn("w:fldCharType"), tag)
+        else:
+            el = OxmlElement("w:instrText")
+            el.set(qn("xml:space"), "preserve")
+            el.text = text
+        run._r.append(el)
+    d.core_properties.author = "Malachy Crohan"
+    d.save(path)
+
+
+def write_xlsx(path, f):
+    import openpyxl
+    from openpyxl.styles import Alignment, Font, PatternFill
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "An Post"
+    ws.append(["Business lodgements taken at post office counters for the Bank, review year 2025-26"])
+    ws["A1"].font = Font(bold=True, size=11)
+    ws.append(["Cash is notes and coin together. Agency fee per Schedule 2: EUR 1.15 a lodgement plus 0.065% of the "
+               "cash, each lodgement's fee to the cent."])
+    ws["A2"].font = Font(italic=True, size=9, color="555555")
+    ws.append([])
+    ws.append(["Month", "Cash lodged (EUR)", "Agency fee due (EUR)"])
+    for c in ws[4]:
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="123F6B")
+    for m in C.MONTHS:
+        ws.append([MONTH_NAME[m], f["an_post"][m]["cash_eur"], f["an_post"][m]["fee_eur"]])
+    ws.append(["Year", round(sum(f["an_post"][m]["cash_eur"] for m in C.MONTHS), 2),
+               round(sum(f["an_post"][m]["fee_eur"] for m in C.MONTHS), 2)])
+    for c in ws[ws.max_row]:
+        c.font = Font(bold=True)
+    for row in ws.iter_rows(min_row=5, min_col=2, max_col=3):
+        for c in row:
+            c.number_format = "#,##0.00"
+            c.alignment = Alignment(horizontal="right")
+    ws.column_dimensions["A"].width = 18
+    ws.column_dimensions["B"].width = 20
+    ws.column_dimensions["C"].width = 22
+    ws.freeze_panes = "A5"
+    ws2 = wb.create_sheet("Till service")
+    ws2.append(["Till service: cash sales and paid-outs recorded, all till-service customers, review year 2025-26"])
+    ws2["A1"].font = Font(bold=True, size=11)
+    ws2.append(["Each Z-report is placed on the trading day it closed. Figures as the tills recorded them."])
+    ws2["A2"].font = Font(italic=True, size=9, color="555555")
+    ws2.append([])
+    ws2.append(["Month", "Cash sales (EUR)", "Paid-outs (EUR)"])
+    for c in ws2[4]:
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="123F6B")
+    for m in C.MONTHS:
+        v = f["till"][m]
+        ws2.append([MONTH_NAME[m], v["cash_sales_eur"], v["paid_outs_eur"]])
+    ws2.append(["Year", round(sum(f["till"][m]["cash_sales_eur"] for m in C.MONTHS), 2),
+                round(sum(f["till"][m]["paid_outs_eur"] for m in C.MONTHS), 2)])
+    for c in ws2[ws2.max_row]:
+        c.font = Font(bold=True)
+    for row in ws2.iter_rows(min_row=5, min_col=2, max_col=3):
+        for c in row:
+            c.number_format = "#,##0.00"
+    for col, w in zip("ABC", (18, 18, 18)):
+        ws2.column_dimensions[col].width = w
+    ws2.freeze_panes = "A5"
+    ws3 = wb.create_sheet("Notes")
+    for line in [
+        "Business cash review 2025-26: supporting months for the referral paper of 6 November 2026.",
+        "",
+        "An Post: every business lodgement a post office counter took for the Bank, in the month the counter took it "
+        "(Schedule 2, 1.3).",
+        "Cash is notes and coin together. Fees are Schedule 2's EUR 1.15 a lodgement and 0.065% of its cash, each "
+        "lodgement's fee rounded to the cent.",
+        "An Post's file for 21 January 2026 arrived twice; each lodgement is counted once.",
+        "",
+        "Till service: every Z-report in the service's central log, on the trading day it closed, all till-service "
+        "customers.",
+        "Cash sales and paid-outs as the tills recorded them.",
+    ]:
+        ws3.append([line or None])
+    ws3.column_dimensions["A"].width = 120
+    ws3["A1"].font = Font(bold=True)
+    wb.save(path)
+
+
+def main(target, golden, figs_path):
     os.makedirs(golden, exist_ok=True)
-    c = compute(target)
-    write_xlsx(os.path.join(golden, XLSX), c)
-    write_png(os.path.join(golden, PNG), c)
-    with open(figures_path, "w") as fh:
-        json.dump(figures(c), fh, indent=1)
+    f = figures(target)
+    P = C.Pack(target)
+    names = {cid: P.cust[cid]["Trading name"].split(",")[0] for cid in P.cust}
+    png = chart_png(f, names)
+    dpath = os.path.join(golden, "fci_referrals_jan2027.docx")
+    write_docx(dpath, f, png)
+    PP.normalize_ooxml(dpath, "Malachy Crohan", "Malachy Crohan", "2026-11-04T09:12:00Z", "2026-11-06T16:48:00Z",
+                       title="Business cash review 2025-26: referrals to Financial Crime Investigations")
+    xpath = os.path.join(golden, "cash_review_2026.xlsx")
+    write_xlsx(xpath, f)
+    PP.normalize_ooxml(xpath, "Conall Mulgrew", "Malachy Crohan", "2026-11-03T10:05:00Z", "2026-11-06T15:20:00Z",
+                       excel=True)
+    with open(figs_path, "w") as fh:
+        json.dump(f, fh, indent=1, sort_keys=True)
         fh.write("\n")
-    return c
-
-
-if __name__ == "__main__":
-    task = os.path.dirname(HERE)
-    main(os.path.join(task, "target"), os.path.join(task, "golden"), os.path.join(HERE, "figures.json"))
+    return f

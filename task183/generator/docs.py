@@ -1,219 +1,153 @@
-"""The pack's documents: the reliability reporting standard (TVE-RS-04), the underground cable section of the 2025
-annual reliability report, and the extract notes (field definitions and where each file came from)."""
-import datetime as dt
+"""task183 documents: the Bank's Business Cash Review Standard BCR-3 (PDF). The ask documents are written by
+asks.py with the same helpers."""
+from __future__ import annotations
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
 from reportlab.lib import colors                                           # noqa: E402
-from reportlab.lib.pagesizes import LETTER                                 # noqa: E402
+from reportlab.lib.pagesizes import A4                                     # noqa: E402
 from reportlab.lib.styles import ParagraphStyle                            # noqa: E402
-from reportlab.lib.units import inch                                       # noqa: E402
+from reportlab.lib.units import mm                                         # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                   # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                               # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import world as W   # noqa: E402
-
-STANDARD = "TVE-RS-04_reliability_reporting_standard_rev6.pdf"
-REPORT = "2025_annual_reliability_report_sec6_ug_cable.pdf"
-NOTES = "asset_analytics_extract_notes_2026-10.md"
+import world as W    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
-pdfmetrics.registerFont(TTFont("LiberationSerif", FONT_DIR + "LiberationSerif-Regular.ttf"))
-pdfmetrics.registerFont(TTFont("LiberationSerif-Bold", FONT_DIR + "LiberationSerif-Bold.ttf"))
 pdfmetrics.registerFont(TTFont("LiberationSans", FONT_DIR + "LiberationSans-Regular.ttf"))
 pdfmetrics.registerFont(TTFont("LiberationSans-Bold", FONT_DIR + "LiberationSans-Bold.ttf"))
-SERIF, SERIF_B, SANS, SANS_B = "LiberationSerif", "LiberationSerif-Bold", "LiberationSans", "LiberationSans-Bold"
-INK = colors.HexColor("#1b1f24")
-GREY = colors.HexColor("#5b6470")
-BODY = ParagraphStyle("body", fontName=SERIF, fontSize=10.2, leading=13.4, textColor=INK, spaceAfter=5)
-CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=30, firstLineIndent=-30)
-H1 = ParagraphStyle("h1", fontName=SANS_B, fontSize=14, leading=18, textColor=INK, spaceAfter=2)
-H2 = ParagraphStyle("h2", fontName=SANS_B, fontSize=10.5, leading=14, textColor=INK, spaceBefore=7, spaceAfter=3)
-META = ParagraphStyle("meta", fontName=SANS, fontSize=8.2, leading=10.5, textColor=GREY, spaceAfter=8)
-CELL = ParagraphStyle("cell", fontName=SANS, fontSize=8.3, leading=10, textColor=INK)
+pdfmetrics.registerFont(TTFont("LiberationSans-Italic", FONT_DIR + "LiberationSans-Italic.ttf"))
+SANS, SANS_B, SANS_I = "LiberationSans", "LiberationSans-Bold", "LiberationSans-Italic"
+INK = colors.HexColor("#1d2126")
+GREY = colors.HexColor("#5d6570")
+BRAND = colors.HexColor("#123f6b")
+BODY = ParagraphStyle("body", fontName=SANS, fontSize=9.6, leading=13.0, textColor=INK, spaceAfter=4.5)
+CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=10 * mm, firstLineIndent=-10 * mm)
+H1 = ParagraphStyle("h1", fontName=SANS_B, fontSize=15, leading=19, textColor=BRAND, spaceAfter=3)
+H2 = ParagraphStyle("h2", fontName=SANS_B, fontSize=10.6, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3)
+META = ParagraphStyle("meta", fontName=SANS, fontSize=8.2, leading=10.8, textColor=GREY, spaceAfter=9)
+CELL = ParagraphStyle("cell", fontName=SANS, fontSize=8.6, leading=10.8, textColor=INK)
 CELLB = ParagraphStyle("cellb", parent=CELL, fontName=SANS_B)
 
 
-def _frame(left, right):
+def frame(left, right, org=W.BANK):
     def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFont(SANS, 7.5)
+        canvas.setStrokeColor(BRAND)
+        canvas.setLineWidth(1.2)
+        canvas.line(18 * mm, A4[1] - 14 * mm, A4[0] - 18 * mm, A4[1] - 14 * mm)
+        canvas.setFont(SANS_B, 7.6)
+        canvas.setFillColor(BRAND)
+        canvas.drawString(18 * mm, A4[1] - 12 * mm, org.upper())
+        canvas.setFont(SANS, 7.4)
         canvas.setFillColor(GREY)
-        canvas.drawString(0.85 * inch, 0.55 * inch, left)
-        canvas.drawRightString(LETTER[0] - 0.85 * inch, 0.55 * inch, "%s  |  Page %d" % (right, doc.page))
+        canvas.drawString(18 * mm, 11 * mm, left)
+        canvas.drawRightString(A4[0] - 18 * mm, 11 * mm, "%s  |  Page %d" % (right, doc.page))
         canvas.restoreState()
     return draw
 
 
-def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=LETTER, leftMargin=0.85 * inch, rightMargin=0.85 * inch,
-                             topMargin=0.8 * inch, bottomMargin=0.85 * inch, title=title, author=author,
-                             subject="", creator="", producer="")
+def doc(path, title, author):
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=20 * mm,
+                             bottomMargin=18 * mm, title=title, author=author, subject="", creator="", producer="")
 
 
-STANDARD_CLAUSES = [
-    ("1", "Scope", [
-        ("1.1", "This standard sets how %s computes the reliability indices it reports for the Tamsin Valley "
-                "district and files with the Commission. It adopts the definitions and methods of IEEE Std "
-                "1366-2022 except where a clause below says otherwise." % W.COMPANY),
-        ("1.2", "The Tamsin Valley district (Harrow Road, Mill Lane, Quarry Hill and Sutter Park substations and "
-                "their eight 13.2 kV feeders) reports as one system."),
-    ]),
-    ("2", "Reporting period and time", [
-        ("2.1", "The reliability year runs from 1 October to 30 September and is named for the year in which it "
-                "ends. Reliability years, days and every period in this standard are in local prevailing time "
-                "(Eastern)."),
-        ("2.2", "An interruption belongs to the day, and to the period, in which the outage that caused it began."),
-    ]),
-    ("3", "Customers and interruptions", [
-        ("3.1", "A customer is a metered service point."),
-        ("3.2", "Customers served, for a feeder or for the system, are the metered points connected to it in the "
-                "network connectivity model on the last day of the period."),
-        ("3.3", "A sustained interruption is a loss of supply to a customer lasting more than five minutes, timed "
-                "for that customer from the start of the outage to the restoration of that customer's supply. An "
-                "interruption of five minutes or less is momentary and is left out of SAIFI, SAIDI and CEMI."),
-    ]),
-    ("4", "Indices", [
-        ("4.1", "SAIFI is the number of customer sustained interruptions divided by customers served. SAIDI is the "
-                "customer minutes of sustained interruption divided by customers served."),
-        ("4.2", "A feeder's customer interruptions and customer minutes are those of the outages on its own "
-                "devices; for an outage of a substation transformer bank, those of the bank's customers on that "
-                "feeder."),
-    ]),
-    ("5", "Major event days", [
-        ("5.1", "Major event days are identified by the 2.5 beta method. The daily SAIDI of each day of the five "
-                "reliability years before the reporting year is the customer minutes of sustained interruptions "
-                "beginning that day divided by the customers served on the last day of that reliability year. Days "
-                "with no customer minutes are left out. Alpha is the mean and beta the standard deviation of the "
-                "natural logarithms of the remaining daily values, and the threshold is exp(alpha + 2.5 beta)."),
-        ("5.2", "A day of the reporting year whose daily SAIDI, on the reporting year's customers served, exceeds "
-                "the threshold is a major event day. Indices reported with major event days excluded leave out the "
-                "interruptions that began on them."),
-    ]),
-    ("6", "Customers experiencing multiple interruptions", [
-        ("6.1", "CEMIn counts the customers with n or more sustained interruptions in the period, major event days "
-                "included. The count is taken for each metered point over every outage that interrupted it in the "
-                "period, and the point is reported under the feeder it is connected to on the last day of the "
-                "period."),
-    ]),
-    ("7", "Records", [
-        ("7.1", "Interruptions are taken from the outage management records: the legacy outage management system "
-                "to 17 March 2026 and the advanced distribution management system (ADMS) from that date."),
-        ("7.2", "Reliability Engineering holds the published major event day list for each reliability year."),
-    ]),
-]
-
-
-def write_standard(path):
-    doc = _doc(path, "TVE-RS-04 Reliability Reporting Standard", W.PEOPLE["reliability"])
-    story = [Paragraph("Reliability Reporting Standard", H1),
-             Paragraph("TVE-RS-04, revision 6. Effective 1 January 2024. Owner: Reliability Engineering (%s). "
-                       "Supersedes revision 5 (2019)." % W.PEOPLE["reliability"], META)]
-    for no, head, clauses in STANDARD_CLAUSES:
-        story.append(Paragraph("%s  %s" % (no, head), H2))
-        for cno, text in clauses:
-            story.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (cno, text), CLAUSE))
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("Revision 6 moves the reliability year to October through September to match the "
-                           "Commission's filing calendar and adds clause 6.", META))
-    frame = _frame("%s  |  TVE-RS-04 rev 6" % W.COMPANY, "Controlled copy on the standards library")
-    doc.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-def _grid(rows, widths, bold_last=False):
-    data = [[Paragraph(str(c), CELLB if (i == 0 or (bold_last and i == len(rows) - 1)) else CELL) for c in r]
-            for i, r in enumerate(rows)]
-    t = Table(data, colWidths=widths, hAlign="LEFT")
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.7, INK), ("LINEBELOW", (0, -1), (-1, -1), 0.5, GREY),
-                           ("ALIGN", (1, 0), (-1, -1), "RIGHT"), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
+def table(rows, widths, head=1, align_right=()):
+    data = []
+    for i, r in enumerate(rows):
+        data.append([Paragraph(str(x), CELLB if i < head else CELL) for x in r])
+    t = Table(data, colWidths=[w * mm for w in widths], repeatRows=head)
+    style = [("LINEBELOW", (0, 0), (-1, head - 1), 0.8, BRAND), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+             ("LINEBELOW", (0, head), (-1, -1), 0.25, colors.HexColor("#d4d8de")),
+             ("TOPPADDING", (0, 0), (-1, -1), 2.2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2)]
+    for c in align_right:
+        style.append(("ALIGN", (c, 0), (c, -1), "RIGHT"))
+    t.setStyle(TableStyle(style))
     return t
 
 
-def write_report(path, failures, miles, customers):
-    """failures: {feeder: {year: n}}; miles: {feeder: {year: miles}}; customers: {feeder: {year: n}}."""
-    doc = _doc(path, "2025 Annual Reliability Report, Section 6", W.PEOPLE["reliability"])
-    years = [2021, 2022, 2023, 2024, 2025]
-    story = [Paragraph("Section 6. Underground cable, Tamsin Valley district", H1),
-             Paragraph("2025 Annual Reliability Report to the Commission (calendar year 2025). Filed 30 April 2026. "
-                       "Prepared by Reliability Engineering.", META),
-             Paragraph("6.1&nbsp;&nbsp;This section reports the district's underground primary cable failures by "
-                       "feeder and calendar year: the failures of the cable itself (insulation, splice and "
-                       "termination failures; damage by others is reported in section 7) repaired in the year on the "
-                       "cable in service on the feeder at the time.", BODY)]
-    rows = [["Feeder"] + [str(y) for y in years] + ["2021-2025"]]
-    for f in W.FEEDERS:
-        rows.append([W.NAME[f]] + [str(failures[f][y]) for y in years] + [str(sum(failures[f][y] for y in years))])
-    rows.append(["District"] + [str(sum(failures[f][y] for f in W.FEEDERS)) for y in years] +
-                [str(sum(failures[f][y] for f in W.FEEDERS for y in years))])
-    story += [Paragraph("Table 6.1  Underground primary cable failures by feeder", H2),
-              _grid(rows, [1.45 * inch] + [0.7 * inch] * 5 + [0.85 * inch], bold_last=True)]
-    rows = [["Feeder"] + ["%d" % y for y in years]]
-    for f in W.FEEDERS:
-        rows.append([W.NAME[f]] + ["%.1f" % miles[f][y] for y in years])
-    story += [Paragraph("Table 6.2  Underground primary cable in service at 31 December, circuit miles", H2),
-              _grid(rows, [1.45 * inch] + [0.7 * inch] * 5),
-              Paragraph("2021 and 2022 as filed, on the plat lengths; from 2023 on the GIS lengths after the 2023 "
-                        "re-measurement of the network.", META)]
-    rows = [["Feeder"] + ["%d" % y for y in years]]
-    for f in W.FEEDERS:
-        rows.append([W.NAME[f]] + ["{:,}".format(customers[f][y]) for y in years])
-    story += [Paragraph("Table 6.3  Customers served at 31 December", H2),
-              _grid(rows, [1.45 * inch] + [0.7 * inch] * 5),
-              Spacer(1, 6),
-              Paragraph("6.2&nbsp;&nbsp;Harrow Road 12's paper-insulated lead-covered cable was replaced between April "
-                        "and November 2025 under the PILC replacement program; its 2025 count includes the failures "
-                        "on that cable before it was retired.", BODY),
-              Paragraph("6.3&nbsp;&nbsp;Most of Sutter Park 5's 2025 failures were on the Kessler Avenue loop, the "
-                        "EPR cable laid from 2006 to 2010 to the warehouse park, which has carried the park's load "
-                        "above the loop's rating at the summer peaks since the park's 2024 expansion. A second feed from "
-                        "Sutter Park 5 to the loop's far end is under construction, for service by September 2026.", BODY),
-              Paragraph("6.4&nbsp;&nbsp;Harrow Road 14's run of termination failures, on a batch of loadbreak elbows "
-                        "fitted from 2017 to 2019, ended with the elbows' change-out in 2024, and its failures are back "
-                        "at the feeder's level before the run.", BODY)]
-    frame = _frame("%s  |  2025 Annual Reliability Report" % W.COMPANY, "Section 6")
-    doc.build(story, onFirstPage=frame, onLaterPages=frame)
+def c(no, text):
+    return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (no, text), CLAUSE)
 
 
-NOTES_TEXT = """# Extract for the 2027 UG cable program review
+def write_bcr3(path):
+    s = []
+    s.append(Paragraph("Business Cash Review Standard", H1))
+    s.append(Paragraph("BCR-3, issue 3. Owner: %s, Money Laundering Reporting Officer. Approved by the Financial "
+                       "Crime Risk Committee on 18 June 2025; effective for review years from 1 October 2025."
+                       % W.PEOPLE["mlro"], META))
+    s.append(Paragraph("1. Purpose", H2))
+    s.append(c("1.1", "Each year the Bank reviews the business customers whose trade is mostly taken in cash for cash "
+                      "put through their accounts that their own trading did not take, and refers those customers to "
+                      "Financial Crime Investigations. This standard sets the population, the year, the quantity "
+                      "reviewed and the line for referral. It supersedes BCR-2."))
+    s.append(Paragraph("2. Population and review year", H2))
+    s.append(c("2.1", "The population is every customer on the cash-intensive segment's review list for the year. "
+                      "Financial Crime Operations draws the list at the start of October from the trades in "
+                      "Schedule A."))
+    s.append(c("2.2", "The review year runs from 1 October to 30 September. The review year 2025-26 runs from "
+                      "1 October 2025 to 30 September 2026."))
+    s.append(Paragraph("3. Lodgements", H2))
+    s.append(c("3.1", "A lodgement is cash, in notes or coin, handed in for credit to a customer's account at a "
+                      "branch counter of the Bank or at a post office counter under the Bank's agency arrangement "
+                      "with An Post."))
+    s.append(c("3.2", "A lodgement is dated by the day the cash was handed in at the counter. The cash a customer "
+                      "lodged in the review year is the total of its lodgements dated in that year, to all of its "
+                      "accounts with the Bank."))
+    s.append(Paragraph("4. Unexplained cash and referral", H2))
+    s.append(c("4.1", "A customer's unexplained cash for the review year is the cash it lodged in the review year "
+                      "beyond what its own trading took."))
+    s.append(c("4.2", "Where a customer runs the Bank's till service throughout the review year, what its own "
+                      "trading took is the cash sales its till recorded in the review year."))
+    s.append(c("4.3", "Every customer whose unexplained cash for the review year is more than EUR 40,000 is "
+                      "referred to Financial Crime Investigations at the Financial Crime Risk Committee's January "
+                      "meeting. A referral restricts the customer's accounts until Financial Crime Investigations "
+                      "closes the case."))
+    s.append(c("4.4", "A referral is not a finding of wrongdoing, and no customer is contacted about the review "
+                      "before the committee meets."))
+    s.append(Paragraph("5. Timetable and records", H2))
+    s.append(c("5.1", "The review is carried out on the Bank's own records, pulled after the review year closes. "
+                      "Financial Crime Operations presents its referral paper to the committee in January."))
+    s.append(c("5.2", "The referral paper and the review's working files are kept for six years from the "
+                      "committee's decision."))
+    s.append(Spacer(1, 4 * mm))
+    s.append(Paragraph("Schedule A. Trades in the cash-intensive segment", H2))
+    rows = [["Trade", "Typical business"]]
+    for tkey, tlabel, _, _, _ in W.TRADES:
+        rows.append([tlabel, {"cafe": "cafes, coffee shops and tea rooms", "takeaway": "chippers, takeaways, pizza "
+                              "and kebab shops", "barber": "barbers and hairdressers", "nails": "nail bars and "
+                              "beauty salons", "carwash": "hand car washes and valeting centres", "convenience":
+                              "convenience stores and newsagents", "launderette": "launderettes and dry cleaners"}[tkey]])
+    s.append(table(rows, [62, 108]))
+    d = doc(path, "Business Cash Review Standard BCR-3", W.PEOPLE["mlro"])
+    d.build(s, onFirstPage=frame("BCR-3 Business Cash Review Standard, issue 3", "Financial Crime"),
+            onLaterPages=frame("BCR-3 Business Cash Review Standard, issue 3", "Financial Crime"))
 
-Pulled 6 Oct 2026 for {asset} (Distribution Asset Management). Tamsin Valley district only, the eight feeders out of
-Harrow Road, Mill Lane, Quarry Hill and Sutter Park. Everything runs through 30 Sep 2026 unless it says otherwise.
-GIS and work order questions to {gis}, outage and reliability questions to {rel}.
 
-Files:
-- {wo}: SAP PM cable fault orders (order type ZUGF). Orders before 2012 were not converted.
-- {reg}: GIS UG primary sections layer, nightly export of 30 Sep, in service and retired.
-- {codes}: cause, repair and GIS status codes.
-- {oms}, {steps}: one export view over legacy OMS (to 17 Mar 2026) and ADMS (from 17 Mar 2026), outages from 1 Oct 2020.
-- {conn}, {devices}: network model, meter to transformer to protective device, and the device hierarchy.
-- {cis}: CIS active accounts at 30 Sep.
-- {med}: Reliability Engineering's published MED list, RY2021 to RY2025.
-- {standard}, {report}: from the standards library and the 2025 filing.
-- {vaults}, {loading}: inspections database and SCADA monthly peaks, as asked.
-
-Things to know:
-- When a section is replaced the old one is retired in GIS (status RET, retired_date filled) and the new cable goes in as
-  a new section with predecessor_section_id pointing at the old one. A retired section keeps the feeder it was on when
-  it was retired.
-- feeder_id on a work order is the feeder when the order was raised. On a REPL order completed_date is the day the new
-  cable was energised.
-- OMS export is one row per outage per feeder affected; restore_ts is when the last customer came back. Legacy OMS
-  times are Eastern local, ADMS times are UTC, and the step table uses the same clock as its outage.
-- Connectivity rows: eff_to is the first day the row no longer applies, blank while current. A new row is opened when
-  the point's device, feeder or meter changes.
-- Device list in-service dates are blank for devices in service since the model went live (Nov 2014).
-- SP05: the second feed to the Kessler Avenue loop was energised on 15 Sep 2026; the loop now runs closed, fed from
-  both ends off SP05, and is back inside its rating. No meter moved, so connectivity has no rows for it.
-"""
-
-
-def write_notes(path, counts):
-    import records as R
-    text = NOTES_TEXT.format(asset=W.PEOPLE["asset"], gis=W.PEOPLE["gis"], rel=W.PEOPLE["reliability"], wo=R.WO, reg=R.REGISTER,
-                             codes=R.CODES, oms=R.OMS, steps=R.STEPS, conn=R.CONN, devices=R.DEVICES, cis=R.CIS,
-                             med=R.MED, standard=STANDARD, report=REPORT, vaults=R.VAULTS, loading=R.LOADING)
-    with open(path, "w", newline="\n") as fh:
-        fh.write(text)
+def write_apfee(path):
+    """Schedule 2 (fees) of the agency services agreement between An Post and the Bank."""
+    s = []
+    s.append(Paragraph("Agency Services Agreement: Schedule 2, Fees", H1))
+    s.append(Paragraph("Between An Post and %s. Agreement dated 4 March 2024; this schedule as varied with effect "
+                       "from 1 July 2025." % W.BANK, META))
+    s.append(Paragraph("1. Business lodgements", H2))
+    s.append(c("1.1", "For each business lodgement that a post office counter takes for a customer of the Bank, the "
+                      "Bank pays An Post a transaction fee of EUR 1.15 and a cash handling fee of 0.065 per cent of "
+                      "the cash lodged, notes and coin together."))
+    s.append(c("1.2", "The fees are worked out lodgement by lodgement, and the fees for each lodgement are rounded "
+                      "to the nearest cent, a half cent rounding up."))
+    s.append(c("1.3", "A lodgement falls in the calendar month in which the counter took it."))
+    s.append(Paragraph("2. Invoicing and payment", H2))
+    s.append(c("2.1", "An Post invoices the Bank monthly in arrears for the lodgements of the month. The Bank pays "
+                      "within 30 days of the invoice."))
+    s.append(c("2.2", "No VAT is chargeable on the fees in this schedule."))
+    s.append(c("2.3", "Either party may ask for a lodgement-level reconciliation of an invoice within six months of "
+                      "its date. Differences found are settled on the next invoice."))
+    s.append(Paragraph("3. Other services", H2))
+    s.append(c("3.1", "Personal lodgements, bill payments and cash withdrawals under the agreement are priced in "
+                      "Schedule 3 and are not covered by this schedule."))
+    d = doc(path, "Agency Services Agreement Schedule 2", "An Post Agency Services")
+    d.build(s, onFirstPage=frame("Agency Services Agreement, Schedule 2", "Commercial in confidence", org="An Post"),
+            onLaterPages=frame("Agency Services Agreement, Schedule 2", "Commercial in confidence", org="An Post"))

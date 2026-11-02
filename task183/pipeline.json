@@ -1,35 +1,35 @@
 {
   "task": "task183",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "banking-credit-financial-risk",
   "objective": "anomaly-detection",
-  "stage": 2,
-  "stage_name": "design (architecture 4 drawn and registered 2026-11-02)",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-11-02",
   "stump": "A competent analyst reads each customer's lodged cash against its card takings at its trade's peer ratio and refers the cafe and the barber, whose cash runs about EUR 115,000 and 68,000 above it; the step that lands it there is judging a customer's cash against its peers' ratio instead of against its own card trade lodgement by lodgement, which shows the cafe's and the barber's cash moving with their trade at their own ratio in every lodgement and the car wash and the nail bar carrying a fixed sum in every lodgement, about EUR 97,000 and 50,000 over the year, that their trade never moved (design targets; the generator fixes the figures).",
   "architecture": 4,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-11-02"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK; 14 lines ruled in the design note's Leak review)",
+    "reader": "clean on a490e8dc (Q1 no announcement; Q2 to Q4 none; Q5 estimand fixed, method open; Q6 analytical); re-read clean on b8730f43"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.08 (task196 v2) at the draw"
+    "heart": "PASS (NOTE test.same_driver_older vs task69, differentiated)",
+    "nearest": "0.08 (task196 v2); surface promoted task181 (0.090) and task182 (0.084) for adjudication on gap and decision type, not blocking"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "pass 3 on b8730f43 DETERMINISTIC (step 7 wording fixed in the write-up, no pack change); pass 2 FIX_NOW repaired (Schedule 2 half-cent pin, step 4)",
+    "report": "determinism_check_report_pass3.md"
   },
   "returned": [],
-  "resume": "Architecture 4 drawn and registered 2026-11-02 (card task183 v4, PASS, task69's never-built PA draw differentiated): Lough Ree Bank's January 2027 review of its cash-intensive business customers, each customer's lodged cash decomposed against its own card trade lodgement window by lodgement window. Next: stage 2 (survivor anatomy, readability screen, fork table with the lodgement-window convention closed by lodgement times, ladder, closure, literal reader, oracles, the till back-test of lesson 12, the two ask blocks screened as code against the honest cracker before any data is cut), then precut.py and stage 3. The working tree's architecture 3 generator, goldens and target are replaced at stage 3.",
+  "resume": "SHIPPED 2026-11-02 (architecture 4, target.zip b8730f43): pending the portal. A portal result routes per build-pipeline Returned tasks.",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-11-02",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -178,5 +178,15 @@
     }
   },
   "solver_rounds": [],
-  "build": {}
+  "build": {
+    "generator": "world, sim, asks, pack, docs, calc, deliver, checks, verify, ceiling, metadata, build",
+    "checks": "83 run, 0 failed",
+    "verify": "0 differences",
+    "rebuild": "two builds byte-identical",
+    "target_zip_md5": "b8730f43987be07f5090d1ce8004c29a",
+    "ceiling": "cracker 45.0 on the call, mirror 12.0, pair 28.5, mirror leakage 0.0; one device repaired keeps half the asks, 72.5",
+    "figures_check": "67 of 67",
+    "precut": "exit 0",
+    "voice": "PASS"
+  }
 }

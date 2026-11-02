@@ -1,225 +1,228 @@
 {
-  "task": "task183",
-  "architecture": "v4 (architecture 4, re-root 2026-11-02: a new world, dataset and shell in another client domain; an Irish regional bank's January 2027 review of its cash-intensive business customers, each customer's lodged cash split into the part its own card trade moves and the part it does not)",
-  "drawn": "2026-11-02",
-  "slot_note": "Re-root of the anomaly-detection slot to architecture 4. Architecture 1 (an investor-owned utility's underground cable failures) stays delivered on the portal; architecture 2 (a city electric department's feeder patrol) is spent at the judge on Gate G; architecture 3 (a train operator's SPAD review) is spent at the judge on a filed rate the default applied. Architecture 4 leaves energy and human factors for Banking, Credit & Financial Risk: a bank's financial crime operations review of cash-intensive business customers, where the default path is the field's own AML screen (cash intensity against the trade's peers) computed by the analyst on correct records, no shipped figure states any ratio, rating or estimate of the decision quantity, and the golden is a decomposition of each customer's lodgements against its own card trade window by window.",
-  "domain": "banking-credit-financial-risk",
-  "subdomain": "fraud-aml-detection",
-  "client_domain": "banking-credit-financial-risk",
-  "niche": "a regional bank's annual review of its cash-intensive business customers for cash lodged that their own trading did not take, each lodgement read against the card takings of the trading days since the customer's previous lodgement, when outside cash put through a front on its own weekly schedule lifts the front's cash share only to its trade's ordinary level",
-  "objective": "anomaly-detection",
-  "shape": "01",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective"
-  ],
-  "pattern": [
-    "D"
-  ],
-  "generators": [
-    "G2",
+ "task": "task183",
+ "architecture": "v4 (architecture 4, re-root 2026-11-02: a new world, dataset and shell in another client domain; an Irish regional bank's January 2027 review of its cash-intensive business customers, each customer's lodged cash split into the part its own card trade moves and the part it does not)",
+ "drawn": "2026-11-02",
+ "slot_note": "Re-root of the anomaly-detection slot to architecture 4. Architecture 1 (an investor-owned utility's underground cable failures) stays delivered on the portal; architecture 2 (a city electric department's feeder patrol) is spent at the judge on Gate G; architecture 3 (a train operator's SPAD review) is spent at the judge on a filed rate the default applied. Architecture 4 leaves energy and human factors for Banking, Credit & Financial Risk: a bank's financial crime operations review of cash-intensive business customers, where the default path is the field's own AML screen (cash intensity against the trade's peers) computed by the analyst on correct records, no shipped figure states any ratio, rating or estimate of the decision quantity, and the golden is a decomposition of each customer's lodgements against its own card trade window by window.",
+ "domain": "banking-credit-financial-risk",
+ "subdomain": "fraud-aml-detection",
+ "client_domain": "banking-credit-financial-risk",
+ "niche": "a regional bank's annual review of its cash-intensive business customers for cash lodged that their own trading did not take, each lodgement read against the card takings of the trading days since the customer's previous lodgement, when outside cash put through a front on its own weekly schedule lifts the front's cash share only to its trade's ordinary level",
+ "objective": "anomaly-detection",
+ "shape": "01",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Refer Crystal Auto Spa (BC-10896) and Polished Nail Studio (BC-10731) to Financial Crime Investigations at the January committee: they lodged EUR 100,000 and EUR 50,000 in 2025-26 beyond what their own trading took, against the EUR 40,000 line.",
+ "answer_source": "task183/submission.md block 1; generator/figures.json referrals (deliver.py from calc.golden)",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "D"
+ ],
+ "generators": [
+  "G2",
+  "G14",
+  "G3"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "settled_transaction_ledger",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who cleans the account exports and the acquirer's daily trade file and reads every field correctly computes each customer's cash intensity, lodged cash against its card takings, and measures it against its trade's peer median, the field's AML screen for cash-intensive businesses, and refers the cafe and the barber whose cash runs more than 40,000 euro above their card trade at the peer ratio, while the two fronts sit at their peers' median and pass.",
+ "domain_test": "AML monitoring of cash-intensive businesses decides it: the quantity is each customer's cash its own trade did not take, estimated by decomposing its lodgements into the part that moves with its own card trade from one lodgement to the next and the part that does not; with another field's nouns (a hospital's oxygen against its bed-days) there is no outside cash supply co-mingled with takings, no lodgement cycle carrying several trading days and no card channel recording the same customers' spend day by day, so the task does not read the same.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:lodged-cash-decomposed-against-own-card-trade-per-lodgement-window",
+ "layer1": [
+  "card settlements credited a working day or more after the trading day, Friday to Sunday trade settled together on Monday, net of the acquirer's charges, against the acquirer's daily file at gross by trading day",
+  "amounts in cent in the acquirer's file against euro in the account export",
+  "post office counter lodgements credited the next working day under the post office's own reference, with the counter date only in that reference",
+  "an account export delivered twice for one quarter, its rows repeated",
+  "merchant ids several to a customer (a second terminal) mapped through the merchant register",
+  "dates written day-first in the account export and ISO in the acquirer's file",
+  "bank holidays and the Christmas closure with no settlement",
+  "refunds and chargebacks as negative lines in the acquirer's file"
+ ],
+ "stakeholder_role": "the bank's Head of Financial Crime Operations, who runs the investigations desk and decides which customers go to the Financial Intelligence Unit",
+ "role_family": "operations_director",
+ "scoring_unit": "per active unit per period",
+ "spine": {
+  "file": "business_account_transactions_2025-01_2026-09.csv",
+  "rows": 66735,
+  "entity": "one posted transaction on a cash-intensive business customer's current account: a card settlement credit, a cash lodgement, a transfer or a debit",
+  "grain": "transaction x account",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "audit_or_inspection",
+ "org_family": "financial_institution",
+ "world": {
+  "geography": "Ireland (a fictional regional bank with branches in Connacht and the midlands; real counties and towns)",
+  "currency": "EUR",
+  "org_type": "a regional bank's business banking and financial crime operations",
+  "invented_names": [],
+  "people": [
+   "Malachy Crohan",
+   "Helen Culhane",
+   "Conall Mulgrew",
+   "Dearbhail Cashman"
+  ]
+ },
+ "deliverables": [
+  "fci_referrals_jan2027.docx",
+  "cash_review_2026.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "who",
+ "driver": "Each unit's ordinary inflow through one channel moves with its activity, which a second channel records day by day, so every lump the unit pays in carries the activity of the days since its last one at the unit's own ratio; an inflow from outside the activity arrives on its own schedule and does not move with it, so it shows only as a fixed amount per lump against the unit's own activity, while a ratio of the unit's channel totals to its peers' reads the outside inflow as an ordinary channel mix and flags units whose own mix is simply heavy.",
+ "driver_concrete": "Each business's cash takings move with its card takings day by day, so each cash lodgement carries the card trade of the trading days since its previous lodgement at the business's own cash ratio; cash put through a front on the launderer's weekly schedule does not move with the trade and shows only as a fixed amount per lodgement window, while cash intensity against the trade's peers reads it as an ordinary cash share and refers cafes and barbers whose own customers simply pay cash.",
+ "stump": "A competent analyst refers the businesses whose cash intensity stands highest above their trade's peer median, the cafe and the barber, because their lodged cash exceeds their card takings at the peer ratio by more than 40,000 euro; the step that lands them there is judging each business's cash against its peers' ratio instead of against its own card trade lodgement by lodgement, which shows the cafe's and the barber's cash moving exactly with their trade and the car wash and the nail bar each carrying a fixed weekly sum their trade never moved.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task69": "task69's PA draw (never built) rebuilt experiment effects in the joint cells of two concurrent randomisations, an interaction no balance check sees; task183 v4 randomises nothing and rebuilds no assignment cell: each customer's lodged cash is split into the part that moves with its own card trade from one lodgement window to the next and the part that does not.",
+  "task201": "task201's v1a (killed at its draw) read one contributor's share of a test-statistic inflation off the intercept of a cross-variant regression on a covariate the signal scales with; task183 v4 is a decomposition inside each customer's own lodgement series against its own card trade, with no population-wide regression and no inflation of a statistic, and the decision is which customers carry cash their trade did not move.",
+  "task180": "task180 v5 splits a volume-linked book shortfall between meter drift on the litres since calibration and a leak that runs only while the pump runs; task183 v4 has no instrument and no drift: the outside cash does not move with the trade at all, and the field's screen it defeats is a peer ratio of channel totals, not a throughput regression."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (Tamsin Valley Electric's underground cable program: which of eight feeders fails most in 2027, from each section's own failure history)",
+   "drawn": "2026-10-11",
+   "fate": "spent 2026-10-22 on measurement at the rework, never by a portal result (delivered 2026-10-12, pending review, left as delivered): the decisive step is reachable by one group-by on section_id, which names the call at an infinite lead in 300 of 300 swept world settings, and the designed forecast is linear in the in-service stock counts (regression on the twice-failed count alone R-squared 0.8180); re-rooted 2026-11-02 to architecture 2 in a new world, dataset and shell",
+   "domain": "energy-systems-utilities",
+   "subdomain": "grid-reliability-outage-analysis",
+   "objective": "anomaly-detection",
+   "shape": "01",
+   "decision_type": "pick_one_of_n",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
     "G14",
+    "G6",
+    "G13"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "composition_mix",
+   "forum": "regulator_or_inspector",
+   "forcing_event": "statutory_or_regulatory_filing",
+   "org_family": "utility_or_infrastructure",
+   "niche": "an electric distribution utility's underground cable program naming the one feeder whose worst sections it replaces in 2027, by the cable failures each feeder's in-service sections will have next year, when a first failure seldom recurs and a section that has failed twice keeps failing",
+   "driver": "When a unit's coming events arise in its parts and a part that has already failed more than once keeps failing at many times the rate of a part with one or no failures, both the unit's trailing event rate and any rate built from its parts' visible attributes miss that the forward count is driven by the current mix of its parts' own failure histories; only a forecast that carries each part's prior failures forward names the unit with the most events ahead.",
+   "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
+   "why": "The correcting quantity was one per class (four pooled rates by prior-failure count), forced from the same file at the same grain as the main file, so a count of rows by section_id carried it; the re-root needs a correcting quantity one per case, forced by a second file at a finer grain, with no group-by on any shipped key reaching the call.",
+   "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "png+xlsx"
+   }
+  },
+  {
+   "architecture": "v2 (a Nebraska city electric department's January 2027 patrol of Feeder 14, the line recloser's 2026 trips relocated through the main line's segment impedances)",
+   "drawn": "2026-11-02",
+   "fate": "spent 2026-11-02 at stage 4: the determinism judge returned DETERMINISTIC with SEND_BACK on Gate G (cut a11364ba): the shipped DMS fault-location log, the system's own per-trip estimate of where each trip came from, located the 24 trips in section 9 on a model carrying one conductor's impedance over the whole main line, and refuting it was the stump (planted_defect_flip, surface_read_rejection, sole_data_defect yes); dropping or correcting the log leaves the decisive step a textbook relocation, so the architecture and its world are spent; re-rooted the same day to architecture 3 in another client domain, world, dataset and shell",
+   "domain": "energy-systems-utilities",
+   "subdomain": "grid-reliability-outage-analysis",
+   "objective": "anomaly-detection",
+   "shape": "other",
+   "decision_type": "pick_one_of_n",
+   "gap": [
+    "rule"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G2",
+    "G16",
     "G3"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "settled_transaction_ledger",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the account exports and the acquirer's daily trade file and reads every field correctly computes each customer's cash intensity, lodged cash against its card takings, and measures it against its trade's peer median, the field's AML screen for cash-intensive businesses, and refers the cafe and the barber whose cash runs more than 40,000 euro above their card trade at the peer ratio, while the two fronts sit at their peers' median and pass.",
-  "domain_test": "AML monitoring of cash-intensive businesses decides it: the quantity is each customer's cash its own trade did not take, estimated by decomposing its lodgements into the part that moves with its own card trade from one lodgement to the next and the part that does not; with another field's nouns (a hospital's oxygen against its bed-days) there is no outside cash supply co-mingled with takings, no lodgement cycle carrying several trading days and no card channel recording the same customers' spend day by day, so the task does not read the same.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:lodged-cash-decomposed-against-own-card-trade-per-lodgement-window",
-  "layer1": [
-    "card settlements credited a working day or more after the trading day, Friday to Sunday trade settled together on Monday, net of the acquirer's charges, against the acquirer's daily file at gross by trading day",
-    "amounts in cent in the acquirer's file against euro in the account export",
-    "post office counter lodgements credited the next working day under the post office's own reference, with the counter date only in that reference",
-    "an account export delivered twice for one quarter, its rows repeated",
-    "merchant ids several to a customer (a second terminal) mapped through the merchant register",
-    "dates written day-first in the account export and ISO in the acquirer's file",
-    "bank holidays and the Christmas closure with no settlement",
-    "refunds and chargebacks as negative lines in the acquirer's file"
-  ],
-  "stakeholder_role": "the bank's Head of Financial Crime Operations, who runs the investigations desk and decides which customers go to the Financial Intelligence Unit",
-  "role_family": "operations_director",
-  "scoring_unit": "per active unit per period",
-  "spine": {
-    "file": "business_account_transactions_2025-01_2026-09.csv",
-    "rows": 0,
-    "entity": "one posted transaction on a cash-intensive business customer's current account: a card settlement credit, a cash lodgement, a transfer or a debit",
-    "grain": "transaction x account",
-    "source": "synthetic"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "grain_or_unit",
+   "forum": "operations_desk",
+   "forcing_event": "season_or_peak",
+   "org_family": "local_government",
+   "niche": "a city-owned electric department locating what kept tripping its longest rural feeder's line recloser through 2026, for the one main-line section its January 2027 patrol walks, when the recloser's own fault locator carries the first conductor's impedance over a main line whose conductor changes partway out",
+   "driver": "A device records where each event arose by a calculation that assumes the line is uniform along its whole length, every check on file falls in the stretch where it is, and beyond a change in the line's make-up the calculation overshoots, so the place the events cluster in the device's record is not where they arise; only re-deriving each event's position from its raw measurement through the line's actual make-up, segment by segment, finds it.",
+   "stump": "A competent solver maps the recloser's fault-locator distances onto the main-line sections and sends the January patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault; the step that lands it there is trusting a single-impedance locator, validated only on faults inside its first conductor, on a main line whose conductor changes partway out.",
+   "why": "The decisive step was carried by a shipped estimate of the decision quantity (the DMS locator's per-trip distance) that was wrong; without it the field's own method (relocation through the GIS segment impedances) is the opponent's first move, so the default path has to be the analyst's own easy method on correct records and the field's method has to sit at the bottom of the ladder.",
+   "shell": {
+    "question form": "where",
+    "second-sentence opener": "name",
+    "rounding opener": "miles",
+    "deliverable set": "csv+csv+docx"
+   }
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "audit_or_inspection",
-  "org_family": "financial_institution",
-  "world": {
-    "geography": "Ireland (a fictional regional bank with branches in Connacht and the midlands; real counties and towns)",
-    "currency": "EUR",
-    "org_type": "a regional bank's business banking and financial crime operations",
-    "invented_names": [],
-    "people": [
-      "Malachy Crohan",
-      "Helen Culhane",
-      "Conall Mulgrew",
-      "Dearbhail Cashman"
-    ]
-  },
-  "deliverables": [],
-  "opening_move": "question-first",
-  "question_form": "who",
-  "driver": "Each unit's ordinary inflow through one channel moves with its activity, which a second channel records day by day, so every lump the unit pays in carries the activity of the days since its last one at the unit's own ratio; an inflow from outside the activity arrives on its own schedule and does not move with it, so it shows only as a fixed amount per lump against the unit's own activity, while a ratio of the unit's channel totals to its peers' reads the outside inflow as an ordinary channel mix and flags units whose own mix is simply heavy.",
-  "driver_concrete": "Each business's cash takings move with its card takings day by day, so each cash lodgement carries the card trade of the trading days since its previous lodgement at the business's own cash ratio; cash put through a front on the launderer's weekly schedule does not move with the trade and shows only as a fixed amount per lodgement window, while cash intensity against the trade's peers reads it as an ordinary cash share and refers cafes and barbers whose own customers simply pay cash.",
-  "stump": "A competent analyst refers the businesses whose cash intensity stands highest above their trade's peer median, the cafe and the barber, because their lodged cash exceeds their card takings at the peer ratio by more than 40,000 euro; the step that lands them there is judging each business's cash against its peers' ratio instead of against its own card trade lodgement by lodgement, which shows the cafe's and the barber's cash moving exactly with their trade and the car wash and the nail bar each carrying a fixed weekly sum their trade never moved.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task69": "task69's PA draw (never built) rebuilt experiment effects in the joint cells of two concurrent randomisations, an interaction no balance check sees; task183 v4 randomises nothing and rebuilds no assignment cell: each customer's lodged cash is split into the part that moves with its own card trade from one lodgement window to the next and the part that does not.",
-    "task201": "task201's v1a (killed at its draw) read one contributor's share of a test-statistic inflation off the intercept of a cross-variant regression on a covariate the signal scales with; task183 v4 is a decomposition inside each customer's own lodgement series against its own card trade, with no population-wide regression and no inflation of a statistic, and the decision is which customers carry cash their trade did not move.",
-    "task180": "task180 v5 splits a volume-linked book shortfall between meter drift on the litres since calibration and a leak that runs only while the pump runs; task183 v4 has no instrument and no drift: the outside cash does not move with the trade at all, and the field's screen it defeats is a peer ratio of channel totals, not a throughput regression."
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (Tamsin Valley Electric's underground cable program: which of eight feeders fails most in 2027, from each section's own failure history)",
-      "drawn": "2026-10-11",
-      "fate": "spent 2026-10-22 on measurement at the rework, never by a portal result (delivered 2026-10-12, pending review, left as delivered): the decisive step is reachable by one group-by on section_id, which names the call at an infinite lead in 300 of 300 swept world settings, and the designed forecast is linear in the in-service stock counts (regression on the twice-failed count alone R-squared 0.8180); re-rooted 2026-11-02 to architecture 2 in a new world, dataset and shell",
-      "domain": "energy-systems-utilities",
-      "subdomain": "grid-reliability-outage-analysis",
-      "objective": "anomaly-detection",
-      "shape": "01",
-      "decision_type": "pick_one_of_n",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G6",
-        "G13"
-      ],
-      "gate_g": "forecasting",
-      "stump_strategy": "composition_mix",
-      "forum": "regulator_or_inspector",
-      "forcing_event": "statutory_or_regulatory_filing",
-      "org_family": "utility_or_infrastructure",
-      "niche": "an electric distribution utility's underground cable program naming the one feeder whose worst sections it replaces in 2027, by the cable failures each feeder's in-service sections will have next year, when a first failure seldom recurs and a section that has failed twice keeps failing",
-      "driver": "When a unit's coming events arise in its parts and a part that has already failed more than once keeps failing at many times the rate of a part with one or no failures, both the unit's trailing event rate and any rate built from its parts' visible attributes miss that the forward count is driven by the current mix of its parts' own failure histories; only a forecast that carries each part's prior failures forward names the unit with the most events ahead.",
-      "stump": "A competent solver averages each feeder's last five years of cable-condition failures on the sections still in service and files Mill Lane 7 (about 14.4 a year against Quarry Hill 21's 10.4, fifth of eight), or applies failure rates by insulation and age and files Sutter Park 5; the step that lands it there is forecasting from feeder history or visible attributes when a section's next failure depends on how often it has already failed, and only Quarry Hill 21 carries in-service sections that have failed twice or more (17, heading 2027 at about 15 expected failures).",
-      "why": "The correcting quantity was one per class (four pooled rates by prior-failure count), forced from the same file at the same grain as the main file, so a count of rows by section_id carried it; the re-root needs a correcting quantity one per case, forced by a second file at a finer grain, with no group-by on any shipped key reaching the call.",
-      "shell": {
-        "question form": "which",
-        "second-sentence opener": "put",
-        "rounding opener": "give",
-        "deliverable set": "png+xlsx"
-      }
-    },
-    {
-      "architecture": "v2 (a Nebraska city electric department's January 2027 patrol of Feeder 14, the line recloser's 2026 trips relocated through the main line's segment impedances)",
-      "drawn": "2026-11-02",
-      "fate": "spent 2026-11-02 at stage 4: the determinism judge returned DETERMINISTIC with SEND_BACK on Gate G (cut a11364ba): the shipped DMS fault-location log, the system's own per-trip estimate of where each trip came from, located the 24 trips in section 9 on a model carrying one conductor's impedance over the whole main line, and refuting it was the stump (planted_defect_flip, surface_read_rejection, sole_data_defect yes); dropping or correcting the log leaves the decisive step a textbook relocation, so the architecture and its world are spent; re-rooted the same day to architecture 3 in another client domain, world, dataset and shell",
-      "domain": "energy-systems-utilities",
-      "subdomain": "grid-reliability-outage-analysis",
-      "objective": "anomaly-detection",
-      "shape": "other",
-      "decision_type": "pick_one_of_n",
-      "gap": [
-        "rule"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G2",
-        "G16",
-        "G3"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "grain_or_unit",
-      "forum": "operations_desk",
-      "forcing_event": "season_or_peak",
-      "org_family": "local_government",
-      "niche": "a city-owned electric department locating what kept tripping its longest rural feeder's line recloser through 2026, for the one main-line section its January 2027 patrol walks, when the recloser's own fault locator carries the first conductor's impedance over a main line whose conductor changes partway out",
-      "driver": "A device records where each event arose by a calculation that assumes the line is uniform along its whole length, every check on file falls in the stretch where it is, and beyond a change in the line's make-up the calculation overshoots, so the place the events cluster in the device's record is not where they arise; only re-deriving each event's position from its raw measurement through the line's actual make-up, segment by segment, finds it.",
-      "stump": "A competent solver maps the recloser's fault-locator distances onto the main-line sections and sends the January patrol to the section where the 2026 trips cluster in that record, about two miles beyond the fault; the step that lands it there is trusting a single-impedance locator, validated only on faults inside its first conductor, on a main line whose conductor changes partway out.",
-      "why": "The decisive step was carried by a shipped estimate of the decision quantity (the DMS locator's per-trip distance) that was wrong; without it the field's own method (relocation through the GIS segment impedances) is the opponent's first move, so the default path has to be the analyst's own easy method on correct records and the field's method has to sit at the bottom of the ladder.",
-      "shell": {
-        "question form": "where",
-        "second-sentence opener": "name",
-        "rounding opener": "miles",
-        "deliverable set": "csv+csv+docx"
-      }
-    },
-    {
-      "architecture": "v3 (a regional train operating company's 2027 SPAD review: each 2024-2026 SPAD's braking judged at the deceleration a full-service application achieves on that signal's own approach)",
-      "drawn": "2026-11-02",
-      "fate": "spent 2026-11-02 at stage 4: the determinism judge returned NOT_DETERMINISTIC with SEND_BACK (cut 2d063320): SP-07 3.5 leaves the rate that tests a full-service application unfiled, the Class 162 sheet's filed 0.88 m/s2 read literally files SK112 (3) with CJ58 on 0 and the judge licensed that reading against the golden's rate from each approach's own routine stands, and the sentence that would close the fork (the rate full service gives on that approach) names the decisive step, so the fork is the stump; the asks forked as well (TPWS events on non-signal loops filed under signal_ref, turns extended by no filed sentence); re-rooted the same day to architecture 4 in another client domain, world, dataset and shell",
-      "domain": "human-factors-ergonomics",
-      "subdomain": "safety-incident-error-analysis",
-      "objective": "anomaly-detection",
-      "shape": "08",
-      "decision_type": "pick_one_of_n",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G14",
-        "G3",
-        "G16"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "other",
-      "forum": "committee_or_panel",
-      "forcing_event": "budget_or_appropriation",
-      "org_family": "utility_or_infrastructure",
-      "niche": "a regional train operating company choosing the one signal whose approach gets its 2027 driver-focused SPAD mitigation, from the 2024 to 2026 SPADs in which the driver began braking too late to stop, when one approach's falling gradient holds every train's full-service deceleration below the fleet's level-track rating, so its late-braking SPADs read as poor adhesion against the rating",
-      "driver": "Each event is judged against what a unit could have achieved, read from the fleet's rating on a reference condition, when every place sets its own achievable level and only the other units' routine records at that place show it; judged against the rating, the place whose own conditions hold every unit below the rating books the operators' late responses there to the conditions of the moment, and the place whose events lead under the rating is not the one whose operators responded late most often.",
-      "stump": "A competent solver tests each SPAD at the fleet's rated full-service deceleration, books the falling-gradient signal's SPADs to poor adhesion because their trains decelerated at about 0.68 against the rated 0.88, and sends the package to the level junction signal; the step that lands it there is using the level-track rating on an approach whose own routine stops show every train achieving about 0.68 in dry weather, so the late braking there is the drivers'.",
-      "why": "The default path applied a figure a shipped document states (the fleet's filed level-track rating) to the decision quantity, and the judge licensed it as a literal reading; a default path must be the analyst's own model, refuted by the data's own fit, and no rating, factor or stated rate the default can apply to the decision quantity may ship.",
-      "shell": {
-        "question form": "where",
-        "second-sentence opener": "send",
-        "rounding opener": "counts",
-        "deliverable set": "csv+pptx+xlsx"
-      }
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "which",
-      "second-sentence opener": "put",
-      "rounding opener": "give",
-      "deliverable set": "png+xlsx"
-    },
-    {
-      "question form": "where",
-      "second-sentence opener": "name",
-      "rounding opener": "miles",
-      "deliverable set": "csv+csv+docx"
-    },
-    {
-      "question form": "where",
-      "second-sentence opener": "send",
-      "rounding opener": "counts",
-      "deliverable set": "csv+pptx+xlsx"
-    }
-  ],
-  "notes": "Banking fraud and AML, anomaly detection: a front's laundered cash separated from a legitimately cash-heavy trade. Pattern D: the account totals and the lodgement-level detail are both correct, and the decision lives only at the lodgement grain, where each lodgement can be read against the card trade of its own window. G2 decisive (the lodgement window is the grain the trade's cash is visible at), G14 (the peer ratio does not apply to this business), G3 (the lodgement record against the trading operation). Personas drawn with guard.py names --geo Ireland --seed 183 (en_IE), not the v1 to v3 personas. Calibration form settled_transaction_ledger: the acquirer's daily file of settled card trade is the forcing file at a finer grain than the account export.",
-  "registered": "2026-11-02T17:04:45Z",
-  "shell": {
-    "question form": "who",
-    "second-sentence opener": "write",
-    "rounding opener": "referral",
-    "deliverable set": "docx+xlsx"
+  {
+   "architecture": "v3 (a regional train operating company's 2027 SPAD review: each 2024-2026 SPAD's braking judged at the deceleration a full-service application achieves on that signal's own approach)",
+   "drawn": "2026-11-02",
+   "fate": "spent 2026-11-02 at stage 4: the determinism judge returned NOT_DETERMINISTIC with SEND_BACK (cut 2d063320): SP-07 3.5 leaves the rate that tests a full-service application unfiled, the Class 162 sheet's filed 0.88 m/s2 read literally files SK112 (3) with CJ58 on 0 and the judge licensed that reading against the golden's rate from each approach's own routine stands, and the sentence that would close the fork (the rate full service gives on that approach) names the decisive step, so the fork is the stump; the asks forked as well (TPWS events on non-signal loops filed under signal_ref, turns extended by no filed sentence); re-rooted the same day to architecture 4 in another client domain, world, dataset and shell",
+   "domain": "human-factors-ergonomics",
+   "subdomain": "safety-incident-error-analysis",
+   "objective": "anomaly-detection",
+   "shape": "08",
+   "decision_type": "pick_one_of_n",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G14",
+    "G3",
+    "G16"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "other",
+   "forum": "committee_or_panel",
+   "forcing_event": "budget_or_appropriation",
+   "org_family": "utility_or_infrastructure",
+   "niche": "a regional train operating company choosing the one signal whose approach gets its 2027 driver-focused SPAD mitigation, from the 2024 to 2026 SPADs in which the driver began braking too late to stop, when one approach's falling gradient holds every train's full-service deceleration below the fleet's level-track rating, so its late-braking SPADs read as poor adhesion against the rating",
+   "driver": "Each event is judged against what a unit could have achieved, read from the fleet's rating on a reference condition, when every place sets its own achievable level and only the other units' routine records at that place show it; judged against the rating, the place whose own conditions hold every unit below the rating books the operators' late responses there to the conditions of the moment, and the place whose events lead under the rating is not the one whose operators responded late most often.",
+   "stump": "A competent solver tests each SPAD at the fleet's rated full-service deceleration, books the falling-gradient signal's SPADs to poor adhesion because their trains decelerated at about 0.68 against the rated 0.88, and sends the package to the level junction signal; the step that lands it there is using the level-track rating on an approach whose own routine stops show every train achieving about 0.68 in dry weather, so the late braking there is the drivers'.",
+   "why": "The default path applied a figure a shipped document states (the fleet's filed level-track rating) to the decision quantity, and the judge licensed it as a literal reading; a default path must be the analyst's own model, refuted by the data's own fit, and no rating, factor or stated rate the default can apply to the decision quantity may ship.",
+   "shell": {
+    "question form": "where",
+    "second-sentence opener": "send",
+    "rounding opener": "counts",
+    "deliverable set": "csv+pptx+xlsx"
+   }
   }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "which",
+   "second-sentence opener": "put",
+   "rounding opener": "give",
+   "deliverable set": "png+xlsx"
+  },
+  {
+   "question form": "where",
+   "second-sentence opener": "name",
+   "rounding opener": "miles",
+   "deliverable set": "csv+csv+docx"
+  },
+  {
+   "question form": "where",
+   "second-sentence opener": "send",
+   "rounding opener": "counts",
+   "deliverable set": "csv+pptx+xlsx"
+  }
+ ],
+ "notes": "Banking fraud and AML, anomaly detection: a front's laundered cash separated from a legitimately cash-heavy trade. Pattern D: the account totals and the lodgement-level detail are both correct, and the decision lives only at the lodgement grain, where each lodgement can be read against the card trade of its own window. G2 decisive (the lodgement window is the grain the trade's cash is visible at), G14 (the peer ratio does not apply to this business), G3 (the lodgement record against the trading operation). Personas drawn with guard.py names --geo Ireland --seed 183 (en_IE), not the v1 to v3 personas. Calibration form settled_transaction_ledger: the acquirer's daily file of settled card trade is the forcing file at a finer grain than the account export.",
+ "registered": "2026-11-02T17:04:45Z",
+ "shell": {
+  "question form": "who",
+  "second-sentence opener": "write",
+  "rounding opener": "referral",
+  "deliverable set": "docx+xlsx"
+ }
 }
